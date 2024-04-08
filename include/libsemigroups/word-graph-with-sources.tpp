@@ -19,6 +19,7 @@
 // This file contains an implementation of a class for WordGraphs that also
 // keep track of the edges pointing into any node (not only those point out).
 
+#include "libsemigroups/word-graph-with-sources.hpp"
 namespace libsemigroups {
   ////////////////////////////////////////////////////////////////////////////
   // Constructors
@@ -76,6 +77,9 @@ namespace libsemigroups {
     rebuild_sources_no_checks(WordGraph<Node>::cbegin_nodes(),
                               WordGraph<Node>::cend_nodes());
   }
+
+  template <typename Node>
+  WordGraphWithSources<Node>::~WordGraphWithSources() = default;
 
   ////////////////////////////////////////////////////////////////////////////
   // Public member functions

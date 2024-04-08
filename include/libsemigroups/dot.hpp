@@ -28,6 +28,7 @@
 #include <vector>       // for vector
 
 #include "exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
+#include "ranges.hpp"     // for LIBSEMIGROUPS_EXCEPTION
 
 #include "detail/fmt.hpp"     // for format
 #include "detail/report.hpp"  // for LIBSEMIGROUPS_EXCEPTION
@@ -102,7 +103,7 @@ namespace libsemigroups {
       std::string                        to;
     };
 
-    enum class Kind { digraph, graph };
+    enum class Kind { digraph, graph, subgraph };
 
     static constexpr std::array<std::string_view, 24> colors
         = {"#00ff00", "#ff00ff", "#007fff", "#ff7f00", "#7fbf7f", "#4604ac",
@@ -118,9 +119,10 @@ namespace libsemigroups {
     Kind                               _kind;
     std::string                        _name;
     std::map<std::string, Node>        _nodes;
+    std::vector<Dot>                   _subgraphs;
 
    public:
-    Dot() : _attrs(), _edges(), _kind(), _name(), _nodes() {}
+    Dot() : _attrs(), _edges(), _kind(), _name(), _nodes(), _subgraphs() {}
 
     Dot& kind(Kind val) {
       _kind = val;
@@ -129,6 +131,41 @@ namespace libsemigroups {
 
     Dot& name(std::string val) {
       _name = val;
+      return *this;
+    }
+
+    std::string const& name() const noexcept {
+      return _name;
+    }
+
+    auto nodes() noexcept {
+      return rx::iterator_range(_nodes.begin(), _nodes.end())
+             | rx::transform([](auto& pair) -> Node& { return pair.second; });
+    }
+
+    auto& edges() {
+      return _edges;
+    }
+
+    Dot& add_subgraph(Dot&& subgraph) {
+      subgraph.kind(Kind::subgraph)
+          .add_attr("label", subgraph.name())
+          .name(fmt::format("cluster_{}", subgraph.name()));
+
+      for (auto& node : subgraph.nodes()) {
+        auto old_name = node.name;
+        node.name     = subgraph.name() + "_" + node.name;
+        add_node(node.name);
+        node.add_attr("label", old_name);
+      }
+
+      for (auto& edge : subgraph.edges()) {
+        edge.from = subgraph.name() + "_" + edge.from;
+        edge.to   = subgraph.name() + "_" + edge.to;
+        edge.add_attr("constraint", "false");
+      }
+
+      _subgraphs.push_back(std::move(subgraph));
       return *this;
     }
 
@@ -173,20 +210,28 @@ namespace libsemigroups {
     }
 
     std::string to_string() const {
-      constexpr std::string_view head = "digraph";
-      std::string                result(head);
-      if (_kind == Kind::graph) {
-        result.erase(result.begin(), result.begin() + 2);
-      }
+      std::string result(fmt::format("{}", _kind));
       if (!_name.empty()) {
         result += " ";
       }
       result += _name + " {\n";
       append_attrs(result, _attrs, false);
 
+      for (Dot const& sg : _subgraphs) {
+        result += sg.to_string() + "\n";
+      }
+
+      constexpr std::string_view cluster = "cluster";
+
       for (auto const& [_, node] : _nodes) {
-        result += fmt::format("  {}", node.name);
-        append_attrs(result, node.attrs);
+        if (_kind == Kind::subgraph
+            || !detail::is_prefix(node.name.begin(),
+                                  node.name.end(),
+                                  cluster.begin(),
+                                  cluster.end())) {
+          result += fmt::format("  {}", node.name);
+          append_attrs(result, node.attrs);
+        }
       }
 
       for (auto const& edge : _edges) {
@@ -238,7 +283,11 @@ namespace libsemigroups {
       std::string_view sep = "";
       for (auto const& attr : map) {
         if (!attr.second.empty()) {
-          s += fmt::format("{}{}=\"{}\"", sep, attr.first, attr.second);
+          s += fmt::format(
+              "{}{}=\"{}\"",
+              sep,
+              attr.first,
+              attr.second == "__NONE__" ? "" : attr.second);  // TODO fixme
         } else {
           s += fmt::format("{}\n  ", attr.first);
         }

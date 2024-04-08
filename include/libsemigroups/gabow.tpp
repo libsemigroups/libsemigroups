@@ -20,6 +20,9 @@
 namespace libsemigroups {
 
   template <typename Node>
+  Gabow<Node>::~Gabow() = default;
+
+  template <typename Node>
   Gabow<Node>& Gabow<Node>::init(WordGraph<node_type> const& wg) {
     _graph = &wg;
     _comps.clear();

@@ -62,6 +62,23 @@ namespace libsemigroups {
   }
 
   template <typename Word>
+  Presentation<Word>::Presentation(Presentation const&) = default;
+
+  template <typename Word>
+  Presentation<Word>::Presentation(Presentation&&) = default;
+
+  template <typename Word>
+  Presentation<Word>& Presentation<Word>::operator=(Presentation<Word> const&)
+      = default;
+
+  template <typename Word>
+  Presentation<Word>& Presentation<Word>::operator=(Presentation<Word>&&)
+      = default;
+
+  template <typename Word>
+  Presentation<Word>::~Presentation() = default;
+
+  template <typename Word>
   Presentation<Word>& Presentation<Word>::alphabet(size_type n) {
     if (n > std::numeric_limits<letter_type>::max()
                 - std::numeric_limits<letter_type>::min()) {
@@ -771,6 +788,22 @@ namespace libsemigroups {
       }
     }
 
+    // TODO declare and doc in hpp
+    template <typename Word>
+    void greedy_reduce_length_and_number_of_gens(Presentation<Word>& p) {
+      auto w = longest_subword_reducing_length(p);
+      while (!w.empty()) {
+        auto copy = p;
+        replace_word_with_new_generator(p, w);
+        w = longest_subword_reducing_length(p);
+        if (presentation::length(p) + p.alphabet().size()
+            >= presentation::length(copy) + copy.alphabet().size()) {
+          std::swap(copy, p);
+          break;
+        }
+      }
+    }
+
     template <typename Word>
     bool is_strongly_compressible(Presentation<Word> const& p) {
       if (p.rules.size() != 2) {
@@ -866,9 +899,9 @@ namespace libsemigroups {
       size_t const       n = letters2.size();
       Presentation<Word> q;
       for (size_t i = 0; i < m; ++i) {
-        word_type u = {letters1[i]};
+        Word u = {letters1[i]};
         for (size_t j = 0; j < n; ++j) {
-          word_type v = {letters2[j]};
+          Word v = {letters2[j]};
           if (u != v) {
             presentation::add_rule_no_checks(q, u + v, v + u);
           }

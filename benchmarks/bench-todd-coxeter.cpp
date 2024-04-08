@@ -1,6 +1,6 @@
 //
 // libsemigroups - C++ library for semigroups and monoids
-// Copyright (C) 2020-21 James D. Mitchell
+// Copyright (C) 2020-24 James D. Mitchell
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -16,917 +16,1128 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include <array>     // for array
-#include <chrono>    // for duration, seconds
-#include <cmath>     // for pow
-#include <cstddef>   // for size_t
-#include <cstdint>   // for uint64_t
-#include <iostream>  // for operator<<, cout, ostream
-#include <memory>    // for allocator, shared_ptr, sha...
-#include <string>    // for operator+, basic_string
-#include <vector>    // for vector, operator==
+#include <chrono>
+#include <initializer_list>
+#define CATCH_CONFIG_ENABLE_BENCHMARKING
 
-#include "bench-main.hpp"  // for Benchmark, SourceLineInfo
-#include "catch.hpp"       // for REQUIRE, REQUIRE_NOTHROW, REQUIRE_THROWS_AS
+#include <cstddef>  // for size_t
+#include <cstdint>  // for uint64_t
+#include <string>   // for operator+, basic_string
+#include <vector>   // for vector, operator==
 
-#include "libsemigroups/cong-intf.hpp"      // for congruence_kind, congruenc...
-#include "libsemigroups/constants.hpp"      // for PositiveInfinity, POSITIVE...
-#include "libsemigroups/detail/report.hpp"  // for ReportGuard
+#include "catch.hpp"  // for REQUIRE, REQUIRE_NOTHROW, REQUIRE_THROWS_AS
+
 #include "libsemigroups/fpsemi-examples.hpp"
-#include "libsemigroups/froidure-pin-base.hpp"  // for FroidurePinBase
+#include "libsemigroups/presentation.hpp"
 #include "libsemigroups/todd-coxeter.hpp"  // for ToddCoxeter, ToddCoxeter::...
 #include "libsemigroups/types.hpp"         // for word_type, letter_type
+#include "libsemigroups/words.hpp"         // for operator""_p
 
-#include "examples/cong-intf.hpp"
-#include "examples/fpsemi-intf.hpp"
-
+#include "libsemigroups/detail/report.hpp"  // for ReportGuard
+//
 namespace libsemigroups {
-
-  congruence_kind constexpr twosided = congruence_kind::twosided;
-  congruence_kind constexpr right    = congruence_kind::right;
-  using options                      = congruence::ToddCoxeter::options;
-
-  using fpsemigroup::author;
+  using literals::operator""_p;
+  using strategy         = ToddCoxeter::options::strategy;
+  using lookahead_extent = ToddCoxeter::options::lookahead_extent;
+  using def_policy       = ToddCoxeter::options::def_policy;
+  using def_version      = ToddCoxeter::options::def_version;
 
   namespace {
-    template <typename T, typename F, typename... Args>
-    void setup(T& tc, size_t num_gens, F func, Args... args) {
-      tc.set_number_of_generators(num_gens);
-      for (auto const& w : func(args...)) {
-        tc.add_pair(w.first, w.second);
+    template <typename S, typename T>
+    void open_xml_tag(S name, T val) {
+      fmt::print("      <{} value=\"{}\">\n", name, val);
+    }
+
+    template <typename S>
+    void close_xml_tag(S name) {
+      fmt::print("      </{}>\n", name);
+    }
+
+    std::string xml_tag() {
+      return "/>\n";
+    }
+
+    template <typename K, typename V, typename... Args>
+    auto xml_tag(K key, V val, Args&&... args)
+        -> std::enable_if_t<sizeof...(Args) % 2 == 0, std::string> {
+      return fmt::format(" {}=\"{}\"", key, val)
+             + xml_tag(std::forward<Args>(args)...);
+    }
+
+    template <typename... Args>
+    auto xml_tag(char const* name, Args&&... args)
+        -> std::enable_if_t<sizeof...(Args) % 2 == 0, std::string> {
+      return fmt::format("      <{} ", name)
+             + xml_tag(std::forward<Args>(args)...);
+    }
+
+    template <typename Word>
+    void preprocess_presentation(Presentation<Word>& p) {
+      // Removing redundant generators reverses things like
+      // greedy_reduce_length, so we don't do it.
+      // presentation::remove_redundant_generators(p);
+      presentation::reduce_complements(p);
+      presentation::remove_trivial_rules(p);
+      presentation::remove_duplicate_rules(p);
+      presentation::normalize_alphabet(p);
+      presentation::sort_each_rule(p);
+      presentation::sort_rules(p);
+    }
+
+    template <typename Word>
+    void emit_xml_presentation_tags(Presentation<Word>& p,
+                                    std::string const&  index,
+                                    size_t              size) {
+      fmt::print("{}", xml_tag("Index", "value", index));
+      fmt::print("{}", xml_tag("Size", "value", size));
+      fmt::print("{}",
+                 xml_tag("PresentationNumGens", "value", p.alphabet().size()));
+      fmt::print("{}",
+                 xml_tag("PresentationNumRels", "value", p.rules.size() / 2));
+      fmt::print(
+          "{}",
+          xml_tag("PresentationLength", "value", presentation::length(p)));
+    }
+
+    template <typename Word>
+    void emit_xml_presentation_tags(Presentation<Word>& p,
+                                    size_t              index,
+                                    size_t              size) {
+      emit_xml_presentation_tags(p, std::to_string(index), size);
+    }
+
+    constexpr auto DoNothing = [](ToddCoxeter&) {};
+
+    template <typename Func2>
+    void benchmark_todd_coxeter_single(
+        size_t                                 size,
+        Presentation<word_type>&&              p,
+        size_t                                 n,
+        std::initializer_list<strategy> const& strategies,
+        Func2&&                                init) {
+      preprocess_presentation(p);
+      emit_xml_presentation_tags(p, n, size);
+      auto rg = ReportGuard(true);
+      for (auto strategy : strategies) {
+        auto title = fmt::format("{}", strategy);
+        open_xml_tag("LatexColumnTitle", title);
+        SECTION(title) {
+          ToddCoxeter tc(congruence_kind::twosided, p);
+          init(tc);
+          tc.strategy(strategy);
+          auto start = std::chrono::high_resolution_clock::now();
+          REQUIRE(tc.number_of_classes() == size);
+          auto now = std::chrono::high_resolution_clock::now();
+          open_xml_tag("BenchmarkResults", title);
+          fmt::print(
+              "{}",
+              xml_tag("mean",
+                      "value",
+                      std::chrono::duration_cast<std::chrono::nanoseconds>(
+                          now - start)
+                          .count()));
+          fmt::print("{}", xml_tag("standardDeviation", "value", 0));
+          close_xml_tag("BenchmarkResults");
+        }
+        close_xml_tag("LatexColumnTitle");
       }
     }
+
+    void benchmark_todd_coxeter_single(
+        size_t                                 size,
+        Presentation<word_type>&&              p,
+        size_t                                 n,
+        std::initializer_list<strategy> const& strategies = {strategy::hlt}) {
+      benchmark_todd_coxeter_single<decltype(DoNothing) const&>(
+          size, std::move(p), n, strategies, DoNothing);
+    }
+
+    // TODO be good to recover the below
+    // std::cout << tc.settings_string();
+    // std::cout << tc.stats_string();
+
+#define BENCHMARK_TODD_COXETER_RANGE(SIZES,                    \
+                                     CAPTION,                  \
+                                     LABEL,                    \
+                                     SYMBOL,                   \
+                                     FIRST,                    \
+                                     LAST,                     \
+                                     PRESENTATION,             \
+                                     PRESENTATION_NAME,        \
+                                     STRATEGIES,               \
+                                     INIT)                     \
+  TEST_CASE(PRESENTATION_NAME "(n), n = " #FIRST " .. " #LAST, \
+            "[paper][" PRESENTATION_NAME "][000]") {           \
+    benchmark_todd_coxeter_range(SIZES,                        \
+                                 CAPTION,                      \
+                                 LABEL,                        \
+                                 SYMBOL,                       \
+                                 FIRST,                        \
+                                 LAST,                         \
+                                 PRESENTATION,                 \
+                                 STRATEGIES,                   \
+                                 INIT);                        \
+  }
+
+    using sizes_type = std::initializer_list<uint64_t>;
+
+    template <typename Func1, typename Func2>
+    void benchmark_todd_coxeter_range(
+        sizes_type const&                      ilist_sizes,
+        std::string_view                       caption,
+        std::string_view                       label,
+        std::string_view                       symbol,
+        size_t                                 first,
+        size_t                                 last,
+        Func1&&                                constructor,
+        std::initializer_list<strategy> const& strategies,
+        Func2&&                                init) {
+      std::vector<uint64_t> sizes(ilist_sizes);
+      auto                  rg = ReportGuard(false);
+      fmt::print("{}", xml_tag("LatexCaption", "value", caption));
+      fmt::print("{}", xml_tag("LatexLabel", "value", label));
+      fmt::print("{}", xml_tag("LatexSymbol", "value", symbol));
+      for (size_t n = first; n <= last; ++n) {
+        auto p = constructor(n);
+        preprocess_presentation(p);
+        emit_xml_presentation_tags(p, std::to_string(n), sizes[n]);
+        for (auto const& strategy : strategies) {
+          auto title = fmt::format("{}", strategy);
+          open_xml_tag("LatexColumnTitle", title);
+          BENCHMARK(title.c_str()) {
+            ToddCoxeter tc(congruence_kind::twosided, p);
+            tc.strategy(strategy);
+            init(tc);
+            REQUIRE(tc.number_of_classes() == static_cast<uint64_t>(sizes[n]));
+          };
+          close_xml_tag("LatexColumnTitle");
+        }
+      }
+    }
+
+#define TEST_CASE_TODD_COXETER(PRESENTATION) \
+  TEST_CASE(PRESENTATION, "[paper][" PRESENTATION "]")
+
+    void start_table(char const* caption,
+                     char const* label,
+                     char const* symbol) {
+      fmt::print("{}", xml_tag("LatexCaption", "value", caption));
+      fmt::print("{}", xml_tag("LatexLabel", "value", label));
+      fmt::print("{}", xml_tag("LatexSymbol", "value", symbol));
+    }
+
   }  // namespace
 
   using fpsemigroup::dual_symmetric_inverse_monoid;
   using fpsemigroup::orientation_preserving_monoid;
   using fpsemigroup::orientation_reversing_monoid;
   using fpsemigroup::partition_monoid;
-  using fpsemigroup::rook_monoid;
   using fpsemigroup::singular_brauer_monoid;
   using fpsemigroup::stellar_monoid;
   using fpsemigroup::stylic_monoid;
   using fpsemigroup::temperley_lieb_monoid;
   using fpsemigroup::uniform_block_bijection_monoid;
 
-  namespace {
-    using order = congruence::ToddCoxeter::order;
-    fpsemigroup::ToddCoxeter* before_normal_forms2(FpSemiIntfArgs const& p) {
-      auto tc = make<fpsemigroup::ToddCoxeter>(p);
-      tc->run();
-      tc->congruence().standardize(order::shortlex);
-      return tc;
-    }
+  ////////////////////////////////////////////////////////////////////////
+  // 1. orientation_preserving_monoid
+  ////////////////////////////////////////////////////////////////////////
 
-    congruence::ToddCoxeter* before_normal_forms1(CongIntfArgs const& p) {
-      auto tc = make<congruence::ToddCoxeter>(p);
-      tc->run();
-      tc->standardize(order::shortlex);
-      return tc;
-    }
+  namespace orientation_preserving {
+    sizes_type sizes = {0,
+                        0,
+                        0,
+                        24,
+                        128,
+                        610,
+                        2'742,
+                        11'970,
+                        51'424,
+                        218'718,
+                        923'690,
+                        3'879'766,
+                        16'224'804,
+                        67'603'744};
 
-    void bench_normal_forms(fpsemigroup::ToddCoxeter* tc, size_t) {
-      auto ptr = tc->froidure_pin();
-      ptr->run();
-    }
+    auto strategies = {strategy::hlt, strategy::felsch};
 
-    void bench_normal_forms(congruence::ToddCoxeter* tc, size_t) {
-      auto ptr = tc->quotient_froidure_pin();
-      ptr->run();
-    }
+    BENCHMARK_TODD_COXETER_RANGE(
+        sizes,
+        "The presentations for the monoid $OP_n$ of orientation "
+        "preserving transformations of a chain from \\cite{Arthur2000aa}.",
+        "table-orient",
+        "OP_n",
+        3,
+        9,
+        orientation_preserving_monoid,
+        "orientation_preserving_monoid",
+        strategies,
+        DoNothing);
+  }  // namespace orientation_preserving
 
-    template <typename S>
-    void after_normal_forms(S* tc) {
-      delete tc;
-    }
+  // Becomes impractical to do multiple runs when n >= 10, so we switch to
+  // doing single runs.
+  // Approx 27s (2021 - MacBook Air M1 - 8GB RAM)
+  TEST_CASE("orientation_preserving_monoid(n) (Arthur-Ruskuc), n = 10",
+            "[paper][orientation_preserving_monoid][n=10][hlt]") {
+    benchmark_todd_coxeter_single(
+        923'690, orientation_preserving_monoid(10), 10);
+  }
 
-    using options = typename congruence::ToddCoxeter::options;
+  // 4m13s (2021 - MacBook Air M1 - 8GB RAM)
+  TEST_CASE("orientation_preserving_monoid(n) (Arthur-Ruskuc), n = 11",
+            "[paper][orientation_preserving_monoid][n=11][hlt]") {
+    benchmark_todd_coxeter_single(
+        3'879'766, orientation_preserving_monoid(11), 11);
+  }
 
-    void check_felsch(congruence::ToddCoxeter& var) {
-      SECTION("Felsch (default)") {
-        std::cout << "Running Felsch (default) . . ." << std::endl;
-        var.strategy(options::strategy::felsch);
-      }
-    }
+  // 54m35s (2021 - MacBook Air M1 - 8GB RAM)
+  TEST_CASE("orientation_preserving_monoid(n) (Arthur-Ruskuc), n = 12",
+            "[paper][orientation_preserving_monoid][n=12][hlt]") {
+    benchmark_todd_coxeter_single(
+        16'224'804, orientation_preserving_monoid(12), 12);
+  }
 
-    void check_hlt(congruence::ToddCoxeter& var) {
-      SECTION("HLT (default)") {
-        std::cout << "Running HLT (default) . . ." << std::endl;
-        var.strategy(options::strategy::hlt);
-      }
-    }
+  // 9h14m (2021 - MacBook Air M1 - 8GB RAM)
+  TEST_CASE("orientation_preserving_monoid(n) (Arthur-Ruskuc), n = 13",
+            "[paper][orientation_preserving_monoid][n=13][hlt]") {
+    benchmark_todd_coxeter_single(
+        67'603'744, orientation_preserving_monoid(13), 13);
+  }
 
-    void check_Rc_full_style(congruence::ToddCoxeter& tc) {
-      SECTION("Rc style + full lookahead") {
-        std::cout << "Running Rc style + full lookahead . . ." << std::endl;
-        tc.strategy(options::strategy::Rc).lookahead(options::lookahead::full);
-      }
-    }
-    void check_random(congruence::ToddCoxeter& tc) {
-      SECTION("random") {
-        std::cout << "Running random strategy . . ." << std::endl;
-        tc.strategy(options::strategy::random);
-      }
-    }
-  }  // namespace
+  ////////////////////////////////////////////////////////////////////////
+  // 2. orientation_reversing_monoid
+  ////////////////////////////////////////////////////////////////////////
 
-  LIBSEMIGROUPS_BENCHMARK("Shortlex normal forms ToddCoxeter 1",
-                          "[ToddCoxeter][normal_forms_short_lex][quick][001]",
-                          before_normal_forms1,
-                          bench_normal_forms,
-                          after_normal_forms<congruence::ToddCoxeter>,
-                          congruence::finite_examples());
+  namespace orientation_reversing {
+    sizes_type sizes      = {0,
+                             0,
+                             0,
+                             27,
+                             180,
+                             1'015,
+                             5'028,
+                             23'051,
+                             101'272,
+                             434'835,
+                             1'843'320,
+                             7'753'471,
+                             32'440'884,
+                             135'195'307,
+                             561'615'460,
+                             2'326'740'315};
+    auto       strategies = {strategy::hlt, strategy::felsch};
+    BENCHMARK_TODD_COXETER_RANGE(
+        sizes,
+        "The presentations for the monoid $OR_n$ of orientation preserving "
+        "and reversing transformations of a chain from \\cite{Arthur2000aa}.",
+        "table-orient-reverse",
+        "OR_n",
+        3,
+        8,
+        orientation_reversing_monoid,
+        "orientation_reversing_monoid",
+        strategies,
+        DoNothing);
+  }  // namespace orientation_reversing
 
-  LIBSEMIGROUPS_BENCHMARK("Shortlex normal forms ToddCoxeter 2",
-                          "[ToddCoxeter][normal_forms_short_lex][quick][002]",
-                          before_normal_forms2,
-                          bench_normal_forms,
-                          after_normal_forms<fpsemigroup::ToddCoxeter>,
-                          fpsemigroup::finite_examples());
+  // Approx 9s (2021 - MacBook Air M1 - 8GB RAM)
+  TEST_CASE("orientation_reversing_monoid(9) - hlt",
+            "[paper][orientation_reversing_monoid][n=9][hlt]") {
+    benchmark_todd_coxeter_single(434'835, orientation_reversing_monoid(9), 9);
+  }
 
-  namespace congruence {
+  // Approx 90s (2021 - MacBook Air M1 - 8GB RAM)
+  TEST_CASE("orientation_reversing_monoid(10) - hlt",
+            "[paper][orientation_reversing_monoid][n=10][hlt]") {
+    benchmark_todd_coxeter_single(
+        1'843'320, orientation_reversing_monoid(10), 10);
+  }
 
-    ////////////////////////////////////////////////////////////////////////
-    // DualSymInv
-    ////////////////////////////////////////////////////////////////////////
+  // ?? (2021 - MacBook Air M1 - 8GB RAM)
+  TEST_CASE("orientation_reversing_monoid(11) - hlt",
+            "[paper][orientation_reversing_monoid][n=11][hlt]") {
+    benchmark_todd_coxeter_single(
+        7'753'471, orientation_reversing_monoid(11), 11);
+  }
 
-    TEST_CASE("DualSymInv(n) (Easdown-East-FitzGerald), n = 3 .. 6",
-              "[paper][DualSymInv][EEF]") {
-      std::array<uint64_t, 9> sizes
-          = {0, 0, 0, 25, 339, 6'721, 179'643, 6'166'105, 262'308'819};
-      auto rg = ReportGuard(false);
-      for (size_t n = 3; n <= 7; ++n) {
-        std::string title
-            = std::string("DualSymInv(") + std::to_string(n) + ") ";
-        BENCHMARK((title + "+ Rc (full HLT lookahead)").c_str()) {
-          ToddCoxeter tc(congruence_kind::twosided);
-          setup(tc,
-                n + 1,
-                dual_symmetric_inverse_monoid,
-                n,
-                author::Easdown + author::East + author::FitzGerald);
-          tc.strategy(ToddCoxeter::options::strategy::Rc)
-              .lookahead(ToddCoxeter::options::lookahead::full);
-          REQUIRE(tc.number_of_classes() == sizes[n]);
-        };
-        BENCHMARK((title + "+ HLT (default)").c_str()) {
-          ToddCoxeter tc(congruence_kind::twosided);
-          setup(tc,
-                n + 1,
-                dual_symmetric_inverse_monoid,
-                n,
-                author::Easdown + author::East + author::FitzGerald);
-          tc.strategy(ToddCoxeter::options::strategy::hlt);
-          REQUIRE(tc.number_of_classes() == sizes[n]);
-        };
-        BENCHMARK((title + "+ Felsch (default)").c_str()) {
-          ToddCoxeter tc(congruence_kind::twosided);
-          setup(tc,
-                n + 1,
-                dual_symmetric_inverse_monoid,
-                n,
-                author::Easdown + author::East + author::FitzGerald);
-          tc.strategy(ToddCoxeter::options::strategy::felsch);
-          REQUIRE(tc.number_of_classes() == sizes[n]);
-        };
-        BENCHMARK((title + "+ random").c_str()) {
-          ToddCoxeter tc(congruence_kind::twosided);
-          setup(tc,
-                n + 1,
-                dual_symmetric_inverse_monoid,
-                n,
-                author::Easdown + author::East + author::FitzGerald);
-          tc.strategy(ToddCoxeter::options::strategy::random);
-          REQUIRE(tc.number_of_classes() == sizes[n]);
-        };
-      }
-    }
+  // ?? (2021 - MacBook Air M1 - 8GB RAM)
+  TEST_CASE("orientation_reversing_monoid(12) - hlt",
+            "[paper][orientation_reversing_monoid][n=12][hlt]") {
+    benchmark_todd_coxeter_single(
+        32'440'884, orientation_reversing_monoid(12), 12);
+  }
 
-    // Becomes impractical to do multiple runs after n = 6, so we switch to
+  // ?? (2021 - MacBook Air M1 - 8GB RAM)
+  // TEST_CASE("orientation_reversing_monoid(13) - hlt",
+  //           "[paper][orientation_reversing_monoid][n=13][hlt]") {
+  //   benchmark_todd_coxeter_single(
+  //       135'195'307, orientation_reversing_monoid(13), 13);
+  // }
+
+  ////////////////////////////////////////////////////////////////////////
+  // partition_monoid
+  ////////////////////////////////////////////////////////////////////////
+
+  namespace partition {
+    sizes_type sizes = {0, 2, 15, 203, 4'140, 115'975, 4'213'597, 190'899'322};
+    auto       strategies = {strategy::hlt, strategy::felsch};
+
+    BENCHMARK_TODD_COXETER_RANGE(
+        sizes,
+        "The presentations for the partition monoids $P_n$ from "
+        "\\cite[Theorem 41]{East2011aa}.",
+        "table-partition",
+        "P_n",
+        4,
+        6,
+        [](size_t n) { return partition_monoid(n); },
+        "partition_monoid",
+        strategies,
+        DoNothing);
+
+    // Becomes impractical to do multiple runs for n >= 7, so we switch to
     // doing single runs.
-    namespace {
-      template <typename Func>
-      void bench_sym_inv(size_t n, size_t size, Func&& foo) {
-        auto        rg = ReportGuard(true);
-        ToddCoxeter tc(congruence_kind::twosided);
-        setup(tc,
-              n + 1,
-              dual_symmetric_inverse_monoid,
-              n,
-              author::Easdown + author::East + author::FitzGerald);
-        foo(tc);
-        tc.random_interval(std::chrono::seconds(15));
-        std::cout << tc.settings_string();
-        REQUIRE(tc.number_of_classes() == size);
-        std::cout << tc.stats_string();
-      }
-    }  // namespace
 
-    TEST_CASE("SymInv(7) - Felsch (default)", "[paper][SymInv][n=7][Felsch]") {
-      bench_sym_inv(7, 6'166'105, check_felsch);
+    auto init_func = [](ToddCoxeter& tc) {
+      tc.use_relations_in_extra(true)
+          .lookahead_next(200'000'000)
+          .save(true)
+          .lower_bound(190'899'322);
+    };
+
+    // Approx 49m35s
+    TEST_CASE("partition_monoid(7) - hlt",
+              "[paper][partition_monoid][n=7][hlt]") {
+      auto p = partition_monoid(7);
+      benchmark_todd_coxeter_single(
+          190'899'322, std::move(p), 7, {strategy::hlt}, init_func);
     }
 
-    TEST_CASE("SymInv(7) - HLT (default)", "[paper][SymInv][n=7][HLT]") {
-      bench_sym_inv(7, 6'166'105, check_hlt);
-    }
+  }  // namespace partition
 
-    TEST_CASE("SymInv(7) - Rc (+ full HLT lookahead)",
-              "[paper][SymInv][n=7][Rc]") {
-      bench_sym_inv(7, 6'166'105, check_Rc_full_style);
-    }
+  ////////////////////////////////////////////////////////////////////////
+  // DualSymInv
+  ////////////////////////////////////////////////////////////////////////
 
-    TEST_CASE("SymInv(7) - random strategy", "[paper][SymInv][n=7][random]") {
-      bench_sym_inv(7, 6'166'105, check_random);
-    }
+  namespace dual_symmetric_inverse {
+    sizes_type sizes
+        = {0, 0, 0, 25, 339, 6'721, 179'643, 6'166'105, 262'308'819};
 
-    ////////////////////////////////////////////////////////////////////////
-    // uniform_block_bijection_monoid
-    ////////////////////////////////////////////////////////////////////////
+    auto strategies = {strategy::hlt, strategy::felsch, strategy::Rc};
 
-    TEST_CASE("uniform_block_bijection_monoid(n) (FitzGerald), n = 3 .. 7",
-              "[paper][uniform_block_bijection_monoid][EEF]") {
-      std::array<uint64_t, 8> sizes
-          = {0, 0, 0, 16, 131, 1'496, 22'482, 426'833};
-      auto rg = ReportGuard(false);
-      for (size_t n = 3; n <= 7; ++n) {
-        std::string title = std::string("uniform_block_bijection_monoid(")
-                            + std::to_string(n) + ") ";
-        BENCHMARK((title + "+ Rc (full HLT lookahead)").c_str()) {
-          ToddCoxeter tc(congruence_kind::twosided);
-          setup(
-              tc, n + 1, uniform_block_bijection_monoid, n, author::FitzGerald);
-          tc.strategy(ToddCoxeter::options::strategy::Rc)
-              .lookahead(ToddCoxeter::options::lookahead::full);
-          REQUIRE(tc.number_of_classes() == sizes[n]);
-        };
-        BENCHMARK((title + "+ HLT (default)").c_str()) {
-          ToddCoxeter tc(congruence_kind::twosided);
-          setup(
-              tc, n + 1, uniform_block_bijection_monoid, n, author::FitzGerald);
-          tc.strategy(ToddCoxeter::options::strategy::hlt);
-          REQUIRE(tc.number_of_classes() == sizes[n]);
-        };
-        BENCHMARK((title + "+ Felsch (default)").c_str()) {
-          ToddCoxeter tc(congruence_kind::twosided);
-          setup(
-              tc, n + 1, uniform_block_bijection_monoid, n, author::FitzGerald);
-          tc.strategy(ToddCoxeter::options::strategy::felsch);
-          REQUIRE(tc.number_of_classes() == sizes[n]);
-        };
-        BENCHMARK((title + "+ random").c_str()) {
-          ToddCoxeter tc(congruence_kind::twosided);
-          setup(
-              tc, n + 1, uniform_block_bijection_monoid, n, author::FitzGerald);
-          tc.strategy(ToddCoxeter::options::strategy::random);
-          REQUIRE(tc.number_of_classes() == sizes[n]);
-        };
-      }
-    }
+    BENCHMARK_TODD_COXETER_RANGE(
+        sizes,
+        "The presentations for the dual symmetric inverse "
+        "monoids $I_n ^ *$ from \\cite{Easdown2008aa}.",
+        "table-dual-sym-inv",
+        "I_n^*",
+        3,
+        6,
+        [](size_t n) { return dual_symmetric_inverse_monoid(n); },
+        "dual_symmetric_inverse_monoid",
+        strategies,
+        DoNothing);
 
-    // Becomes impractical to do multiple runs after n = 7, so we switch to
+    // Becomes impractical to do multiple runs for n >= 7, so we switch to
     // doing single runs.
-    namespace {
-      template <typename Func>
-      void bench_uniform_block_bijection(size_t n, size_t size, Func&& foo) {
-        auto        rg = ReportGuard(true);
-        ToddCoxeter tc(congruence_kind::twosided);
-        setup(tc, n + 1, uniform_block_bijection_monoid, n, author::FitzGerald);
-        foo(tc);
-        std::cout << tc.settings_string();
-        REQUIRE(tc.number_of_classes() == size);
-        std::cout << tc.stats_string();
-      }
-    }  // namespace
 
-    // Approx 1m15s (2021 - MacBook Air M1 - 8GB RAM)
-    TEST_CASE("uniform_block_bijection_monoid(8) - Felsch (default)",
-              "[paper][uniform_block_bijection_monoid][n=8][Felsch]") {
-      bench_uniform_block_bijection(8, 9'934'563, check_felsch);
+    auto init = [](ToddCoxeter& tc) {
+      tc.lookahead_min(10'000'000).save(true).def_policy(def_policy::unlimited);
+    };
+
+    TEST_CASE("dual_symmetric_inverse_monoid(7)",
+              "[paper][dual_symmetric_inverse_monoid][n=7]") {
+      auto p = dual_symmetric_inverse_monoid(7);
+      benchmark_todd_coxeter_single(
+          6'166'105, std::move(p), 7, {strategy::hlt, strategy::felsch}, init);
     }
+  }  // namespace dual_symmetric_inverse
 
-    // Approx 1m39s (2021 - MacBook Air M1 - 8GB RAM)
-    TEST_CASE("uniform_block_bijection_monoid(8) - HLT (default)",
-              "[paper][uniform_block_bijection_monoid][n=8][hlt]") {
-      bench_uniform_block_bijection(8, 9'934'563, check_hlt);
-    }
+  ////////////////////////////////////////////////////////////////////////
+  // uniform_block_bijection_monoid
+  ////////////////////////////////////////////////////////////////////////
 
-    // Approx 1m46s (2021 - MacBook Air M1 - 8GB RAM)
-    TEST_CASE("uniform_block_bijection_monoid(8) - Rc + full lookahead",
-              "[paper][uniform_block_bijection_monoid][n=8][Rc]") {
-      bench_uniform_block_bijection(8, 9'934'563, check_Rc_full_style);
-    }
+  namespace uniform_block_bijection {
+    sizes_type sizes      = {0, 0, 0, 16, 131, 1'496, 22'482, 426'833};
+    auto       strategies = {strategy::hlt, strategy::felsch, strategy::Rc};
 
-    // Approx 2m (2021 - MacBook Air M1 - 8GB RAM)
-    TEST_CASE("uniform_block_bijection_monoid(8) - random",
-              "[paper][uniform_block_bijection_monoid][n=8][random]") {
-      bench_uniform_block_bijection(8, 9'934'563, check_random);
-    }
+    BENCHMARK_TODD_COXETER_RANGE(
+        sizes,
+        "The presentations for the factorisable dual symmetric inverse "
+        "monoids $FI_n ^ *$ from \\cite{fitzgerald_2003}. This monoid is "
+        "sometimes called the \\textit{uniform block bijection monoid}.",
+        "table-uniform",
+        "FI_n^*",
+        3,
+        7,
+        [](size_t n) { return uniform_block_bijection_monoid(n); },
+        "uniform_block_bijection_monoid",
+        strategies,
+        [](ToddCoxeter& tc) {
+          if (tc.strategy() == strategy::Rc) {
+            tc.lookahead_extent(lookahead_extent::full);
+          }
+        });
 
-    // |FI_9 ^ *| = 277'006'192 which would require too much memory at present.
-
-    ////////////////////////////////////////////////////////////////////////
-    // stylic_monoid
-    ////////////////////////////////////////////////////////////////////////
-
-    TEST_CASE("stylic_monoid(n) (Abram-Reutenauer), n = 3 .. 10",
-              "[paper][stylic_monoid]") {
-      std::array<uint64_t, 13> sizes = {0,
-                                        1,
-                                        4,
-                                        14,
-                                        51,
-                                        202,
-                                        876,
-                                        4'139,
-                                        21'146,
-                                        115'974,
-                                        678'569,
-                                        4'213'596,
-                                        27'644'436};
-      auto                     rg    = ReportGuard(false);
-      for (size_t n = 3; n <= 10; ++n) {
-        std::string title
-            = std::string("strlic_monoid(") + std::to_string(n) + ") ";
-        BENCHMARK((title + "+ HLT (default)").c_str()) {
-          ToddCoxeter tc(congruence_kind::twosided);
-          setup(tc, n, stylic_monoid, n);
-          tc.strategy(ToddCoxeter::options::strategy::hlt);
-          REQUIRE(tc.number_of_classes() == sizes[n]);
-        };
-        BENCHMARK((title + "+ Felsch (default)").c_str()) {
-          ToddCoxeter tc(congruence_kind::twosided);
-          setup(tc, n, stylic_monoid, n);
-          tc.strategy(ToddCoxeter::options::strategy::felsch);
-          REQUIRE(tc.number_of_classes() == sizes[n]);
-        };
-      }
-    }
-
-    // Becomes impractical to do multiple runs after n = 10, so we switch to
+    // Becomes impractical to do multiple runs for n >= 8, so we switch to
     // doing single runs.
-    namespace {
-      template <typename Func>
-      void bench_stylic(size_t n, size_t size, Func&& foo) {
-        auto        rg = ReportGuard(true);
-        ToddCoxeter tc(congruence_kind::twosided);
-        setup(tc, n, stylic_monoid, n);
-        foo(tc);
-        std::cout << tc.settings_string();
-        REQUIRE(tc.number_of_classes() == size);
-        std::cout << tc.stats_string();
-      }
-    }  // namespace
+
+    // Approx 4m39s (2021 - MacBook Air M1 - 8GB RAM)
+    TEST_CASE("uniform_block_bijection_monoid(8)",
+              "[paper][uniform_block_bijection_monoid][n=8]") {
+      benchmark_todd_coxeter_single(
+          9'934'563,
+          uniform_block_bijection_monoid(8),
+          8,
+          {strategy::hlt, strategy::felsch, strategy::Rc});
+    }
+  }  // namespace uniform_block_bijection
+
+  // |FI_9 ^ *| = 277'006'192 which would require too much memory at present.
+
+  ////////////////////////////////////////////////////////////////////////
+  // temperley_lieb_monoid
+  ////////////////////////////////////////////////////////////////////////
+
+  namespace temperley_lieb {
+    sizes_type sizes      = {0,
+                             0,
+                             0,
+                             5,
+                             14,
+                             42,
+                             132,
+                             429,
+                             1'430,
+                             4'862,
+                             16'796,
+                             58'786,
+                             208'012,
+                             742'900,
+                             2'674'440,
+                             9'694'845,
+                             35'357'670};
+    auto       strategies = {strategy::hlt, strategy::felsch};
+
+    BENCHMARK_TODD_COXETER_RANGE(
+        sizes,
+        "The presentations for the Temperley-Lieb monoids $J_n$ from "
+        "\\cite[Theorem 2.2]{East2021aa}; the Temperley-Lieb monoid is also "
+        "sometimes referred to as the \\textit{Jones monoid} in the "
+        "literature.",
+        "table-temperley-lieb",
+        "J_n",
+        3,
+        14,
+        temperley_lieb_monoid,
+        "temperley_lieb_monoid",
+        strategies,
+        DoNothing);
+
+    // Becomes impractical to do multiple runs after n >= 15, so we switch to
+    // doing single runs.
+
+    // Approx. 18s (2021 - MacBook Air M1 - 8GB RAM)
+    TEST_CASE("temperley_lieb_monoid(15) - hlt",
+              "[paper][temperley_lieb_monoid][n=15][hlt]") {
+      benchmark_todd_coxeter_single(9'694'845, temperley_lieb_monoid(15), 15);
+    }
+
+    // Approx. 82s (2021 - MacBook Air M1 - 8GB RAM)
+    TEST_CASE("temperley_lieb_monoid(16) - hlt",
+              "[paper][temperley_lieb_monoid][n=16][hlt]") {
+      benchmark_todd_coxeter_single(35'357'670, temperley_lieb_monoid(16), 16);
+    }
+
+    // Approx. ? (2021 - MacBook Air M1 - 8GB RAM)
+    // TEST_CASE("temperley_lieb_monoid(17) - hlt",
+    //           "[paper][temperley_lieb_monoid][n=17][hlt]") {
+    //   benchmark_todd_coxeter_single(129'644'790, temperley_lieb_monoid(17),
+    //   17);
+    // }
+  }  // namespace temperley_lieb
+
+  ////////////////////////////////////////////////////////////////////////
+  // singular_brauer_monoid
+  ////////////////////////////////////////////////////////////////////////
+
+  namespace singular_brauer {
+    sizes_type sizes
+        = {0, 0, 0, 9, 81, 825, 9'675, 130'095, 1'986'705, 34'096'545};
+
+    auto strategies = {strategy::hlt, strategy::felsch};
+
+    BENCHMARK_TODD_COXETER_RANGE(
+        sizes,
+        "The presentations for the singular Brauer monoids "
+        "$B_n \\setminus S_n$ from \\cite{Maltcev2007aa}.",
+        "table-singular-brauer",
+        "B_n\\setminus S_n",
+        3,
+        7,
+        singular_brauer_monoid,
+        "singular_brauer_monoid",
+        strategies,
+        DoNothing);
+
+    // Approx. 1 minute
+    // TODO lower bound has no impact here, because HLT doesn't check for
+    // this, maybe it should? When there are no nodes defined or killed in
+    // some interval of time, then we should check if we're already complete
+    // and compatible, and if the lower_bound() == number_of_active_nodes
+    TEST_CASE("singular_brauer_monoid(8) (Maltcev-Mazorchuk)",
+              "[paper][singular_brauer_monoid][n=8]") {
+      uint64_t size      = 1'986'705;
+      auto     init_func = [&size](ToddCoxeter& tc) {
+        tc.lookahead_next(size / 2).lookahead_min(size / 2).lower_bound(size);
+      };
+      benchmark_todd_coxeter_single(
+          size, singular_brauer_monoid(8), 8, {strategy::hlt}, init_func);
+    }
+
+    // Approx. ? Running this appears to use >27gb of memory, which JDM's
+    // laptop does not have. The presentation is also huge, which makes it
+    // unlikely that this will work
+    // TEST_CASE("singular_brauer_monoid(9) (Maltcev-Mazorchuk)",
+    //          "[paper][singular_brauer_monoid][n=9]") {
+    //            uint64_t size      = 34'096'545;
+    //            auto     init_func = [&size](ToddCoxeter& tc) {
+    //              tc.lookahead_next(size / 2).lookahead_min(size / 2);
+    //            };
+    //            benchmark_todd_coxeter_single(size,
+    //                                          singular_brauer_monoid(9),
+    //                                          9,
+    //                                          {strategy::hlt},
+    //                                          init_func);
+    //          }
+
+  }  // namespace singular_brauer
+
+  ////////////////////////////////////////////////////////////////////////
+  // stylic_monoid
+  ////////////////////////////////////////////////////////////////////////
+
+  namespace stylic {
+    sizes_type sizes = {0,
+                        2,
+                        5,
+                        15,
+                        52,
+                        203,
+                        877,
+                        4'140,
+                        21'147,
+                        115'975,
+                        678'570,
+                        4'213'597,
+                        27'644'437};
+
+    auto strategies = {strategy::hlt, strategy::felsch};
+
+    BENCHMARK_TODD_COXETER_RANGE(
+        sizes,
+        "The presentations for the stylic monoids from \\cite{Abram2021aa}.",
+        "table-stylic",
+        "\\operatorname{Stylic}(n)",
+        3,
+        10,
+        stylic_monoid,
+        "stylic_monoid",
+        strategies,
+        DoNothing);
+
+    // Becomes impractical to do multiple runs after n >= 11, so we switch to
+    // doing single runs.
 
     // Approx 17s (2021 - MacBook Air M1 - 8GB RAM)
     TEST_CASE("stylic_monoid(11) - HLT (default)",
               "[paper][stylic_monoid][n=11][hlt]") {
-      bench_stylic(11, 4'213'596, check_hlt);
+      benchmark_todd_coxeter_single(4'213'597, stylic_monoid(11), 11);
     }
 
     // Approx 153s (2021 - MacBook Air M1 - 8GB RAM)
     TEST_CASE("stylic_monoid(12) - HLT (default)",
               "[paper][stylic_monoid][n=12][hlt]") {
-      bench_stylic(12, 27'644'436, check_hlt);
+      benchmark_todd_coxeter_single(
+          27'644'437, stylic_monoid(12), 12, {strategy::hlt});
     }
 
     // Approx ?? (2021 - MacBook Air M1 - 8GB RAM)
-    TEST_CASE("stylic_monoid(13) - HLT (default)",
-              "[paper][stylic_monoid][n=13][hlt]") {
-      bench_stylic(13, 27'644'436, check_hlt);
-    }
+    // TODO try implementing lookahead_max, and ensure that lower_bound is
+    // used by HLT this currently just spirals off into too many nodes.
+    // TEST_CASE("stylic_monoid(13) - HLT (default)",
+    //           "[paper][stylic_monoid][n=13][hlt]") {
+    //   benchmark_todd_coxeter_single(190'899'322, stylic_monoid(13), 13);
+    // }
+  }  // namespace stylic
 
-    ////////////////////////////////////////////////////////////////////////
-    // stellar_monoid
-    ////////////////////////////////////////////////////////////////////////
+  ////////////////////////////////////////////////////////////////////////
+  // stellar_monoid
+  ////////////////////////////////////////////////////////////////////////
+  namespace stellar {
+    sizes_type sizes      = {1,
+                             2,
+                             5,
+                             16,
+                             65,
+                             326,
+                             1'957,
+                             13'700,
+                             109'601,
+                             986'410,
+                             9'864'101,
+                             108'505'112};
+    auto       strategies = {strategy::hlt, strategy::felsch};
 
-    TEST_CASE("stellar_monoid(n) (Gay-Hivert), n = 3 .. 9",
-              "[paper][stellar_monoid]") {
-      std::array<uint64_t, 13> sizes = {1,
-                                        2,
-                                        5,
-                                        16,
-                                        65,
-                                        326,
-                                        1'957,
-                                        13'700,
-                                        109'601,
-                                        986'410,
-                                        9'864'101,
-                                        108'505'112};
-      auto                     rg    = ReportGuard(false);
-      for (size_t n = 3; n <= 9; ++n) {
-        std::string title
-            = std::string("stellar_monoid(") + std::to_string(n) + ") ";
-        BENCHMARK((title + "+ HLT (default)").c_str()) {
-          ToddCoxeter tc1(congruence_kind::twosided);
-          setup(tc1, n + 1, rook_monoid, n, 0);
-          ToddCoxeter tc2(congruence_kind::twosided, tc1);
-          setup(tc2, n + 1, stellar_monoid, n);
-          tc2.strategy(ToddCoxeter::options::strategy::hlt);
-          REQUIRE(tc2.number_of_classes() == sizes[n]);
-        };
-        BENCHMARK((title + "+ Felsch (default)").c_str()) {
-          ToddCoxeter tc1(congruence_kind::twosided);
-          setup(tc1, n + 1, rook_monoid, n, 0);
-          ToddCoxeter tc2(congruence_kind::twosided, tc1);
-          setup(tc2, n + 1, stellar_monoid, n);
-          tc2.strategy(ToddCoxeter::options::strategy::felsch);
-          REQUIRE(tc2.number_of_classes() == sizes[n]);
-        };
-      }
-    }
+    BENCHMARK_TODD_COXETER_RANGE(
+        sizes,
+        "The presentations for the stellar monoids from \\cite{Gay2019aa}.",
+        "table-stellar",
+        "\\operatorname{Stellar}(n)",
+        3,
+        9,
+        stellar_monoid,
+        "stellar_monoid",
+        strategies,
+        DoNothing);
 
-    // Becomes impractical to do multiple runs after n = 9, so we switch to
+    // Becomes impractical to do multiple runs after n >= 10, so we switch to
     // doing single runs.
-    namespace {
-      void bench_stellar(size_t n, size_t size) {
-        auto        rg = ReportGuard(true);
-        ToddCoxeter tc1(congruence_kind::twosided);
-        setup(tc1, n + 1, rook_monoid, n, 0);
-        ToddCoxeter tc2(congruence_kind::twosided, tc1);
-        setup(tc2, n + 1, stellar_monoid, n);
-        std::cout << tc2.settings_string();
-        REQUIRE(tc2.number_of_classes() == size);
-        std::cout << tc2.stats_string();
-      }
-
-      // Approx 90s (2021 - MacBook Air M1 - 8GB RAM)
-      TEST_CASE("stellar_monoid(10) - HLT (default)",
-                "[paper][stellar_monoid][n=10][hlt]") {
-        bench_stellar(10, 9'864'101);
-      }
-
-      // Approx 22m52s (2021 - MacBook Air M1 - 8GB RAM)
-      TEST_CASE("stellar_monoid(11) - HLT (default)",
-                "[paper][stellar_monoid][n=11][hlt]") {
-        bench_stellar(11, 108'505'112);
-      }
-    }  // namespace
-
-    ////////////////////////////////////////////////////////////////////////
-    // partition_monoid
-    ////////////////////////////////////////////////////////////////////////
-
-    TEST_CASE("partition_monoid(n) (East 41), n = 4 .. 6",
-              "[paper][partition_monoid]") {
-      std::array<uint64_t, 13> sizes
-          = {0, 2, 15, 203, 4'140, 115'975, 4'213'597, 190'899'322};
-
-      auto rg = ReportGuard(false);
-      for (size_t n = 4; n <= 6; ++n) {
-        std::string title
-            = std::string("partition_monoid(") + std::to_string(n) + ") ";
-        BENCHMARK((title + "+ HLT (default) + save").c_str()) {
-          ToddCoxeter tc(congruence_kind::twosided);
-          setup(tc, 5, partition_monoid, n, author::East);
-          tc.strategy(ToddCoxeter::options::strategy::hlt).save(true);
-          REQUIRE(tc.number_of_classes() == sizes[n]);
-        };
-        BENCHMARK((title + "+ Felsch (default)").c_str()) {
-          ToddCoxeter tc(congruence_kind::twosided);
-          setup(tc, 5, partition_monoid, n, author::East);
-          tc.strategy(ToddCoxeter::options::strategy::felsch);
-          REQUIRE(tc.number_of_classes() == sizes[n]);
-        };
-      }
-    }
-
-    // Becomes impractical to do multiple runs after n = 7, so we switch to
-    // doing single runs.
-    namespace {
-      void bench_partition(size_t n, size_t size) {
-        auto        rg = ReportGuard(true);
-        ToddCoxeter tc(congruence_kind::twosided);
-        setup(tc, 5, partition_monoid, n, author::East);
-        tc.lookahead(options::lookahead::hlt | options::lookahead::partial)
-            .use_relations_in_extra(true)
-            .sort_generating_pairs()
-            .remove_duplicate_generating_pairs()
-            .next_lookahead(200'000)
-            .lookahead_growth_factor(2.5)
-            .reserve(15'000'000);
-        check_hlt(tc);
-        std::cout << tc.settings_string();
-        REQUIRE(tc.number_of_classes() == size);
-        std::cout << tc.stats_string();
-      }
-    }  // namespace
-
-    // Approx 31s (2021 - MacBook Air M1 - 8GB RAM)
-    TEST_CASE("partition_monoid(6) - hlt",
-              "[paper][partition_monoid][n=6][hlt]") {
-      bench_partition(6, 4'213'597);
-    }
-
-    // Approx 49m35s ??
-    TEST_CASE("partition_monoid(7) - hlt",
-              "[paper][partition_monoid][n=7][hlt]") {
-      bench_partition(7, 190'899'322);
-    }
-
-    ////////////////////////////////////////////////////////////////////////
-    // singular_brauer_monoid
-    ////////////////////////////////////////////////////////////////////////
-
-    TEST_CASE("singular_brauer_monoid(n) (Maltcev-Mazorchuk), n = 4 .. 7",
-              "[paper][singular_brauer_monoid]") {
-      std::array<uint64_t, 13> sizes
-          = {0, 0, 0, 9, 81, 825, 9'675, 130'095, 1'986'705, 34'096'545};
-
-      auto rg = ReportGuard(false);
-      for (size_t n = 3; n <= 7; ++n) {
-        std::string title
-            = std::string("singular_brauer_monoid(") + std::to_string(n) + ") ";
-        BENCHMARK((title + "+ HLT (default)").c_str()) {
-          ToddCoxeter tc(congruence_kind::twosided);
-          setup(tc, n * n - n, singular_brauer_monoid, n);
-          tc.strategy(ToddCoxeter::options::strategy::hlt);
-          REQUIRE(tc.number_of_classes() == sizes[n]);
-        };
-        BENCHMARK((title + "+ Felsch (default)").c_str()) {
-          ToddCoxeter tc(congruence_kind::twosided);
-          setup(tc, n * n - n, singular_brauer_monoid, n);
-          tc.strategy(ToddCoxeter::options::strategy::felsch);
-          REQUIRE(tc.number_of_classes() == sizes[n]);
-        };
-      }
-    }
-
-    namespace {
-      void bench_singular_brauer(size_t n, size_t size) {
-        auto        rg = ReportGuard(true);
-        ToddCoxeter tc(congruence_kind::twosided);
-        setup(tc, n * n - n, singular_brauer_monoid, n);
-        tc.sort_generating_pairs().remove_duplicate_generating_pairs();
-        tc.strategy(options::strategy::hlt)
-            .next_lookahead(size / 2)
-            .min_lookahead(size / 2);
-        check_hlt(tc);
-        std::cout << tc.settings_string();
-        REQUIRE(tc.number_of_classes() == size);
-        std::cout << tc.stats_string();
-      }
-    }  // namespace
-
-    TEST_CASE("singular_brauer_monoid(8) (Maltcev-Mazorchuk)",
-              "[paper][singular_brauer_monoid][n=8]") {
-      bench_singular_brauer(8, 1'986'705);
-    }
-
-    TEST_CASE("singular_brauer_monoid(9) (Maltcev-Mazorchuk)",
-              "[paper][singular_brauer_monoid][n=9]") {
-      bench_singular_brauer(9, 34'096'545);
-    }
-
-    ////////////////////////////////////////////////////////////////////////
-    // orientation_preserving_monoid
-    ////////////////////////////////////////////////////////////////////////
-
-    TEST_CASE("orientation_preserving_monoid(n) (Arthur-Ruskuc), n = 3 .. 9",
-              "[paper][OP][orientation_preserving_monoid]") {
-      std::array<uint64_t, 15> sizes = {0,
-                                        0,
-                                        0,
-                                        24,
-                                        128,
-                                        610,
-                                        2'742,
-                                        11'970,
-                                        51'424,
-                                        218'718,
-                                        923'690,
-                                        3'879'766,
-                                        16'224'804,
-                                        67'603'744,
-                                        280'816'018};
-
-      auto rg = ReportGuard(false);
-      for (size_t n = 3; n <= 9; ++n) {
-        std::string title = std::string("orientation_preserving_monoid(")
-                            + std::to_string(n) + ") ";
-        BENCHMARK((title + "+ HLT (default)").c_str()) {
-          auto p = orientation_preserving_monoid(n);
-          p.alphabet(3);
-          presentation::replace_word(p, word_type({}), {2});
-          presentation::add_identity_rules(p, 2);
-
-          ToddCoxeter tc(congruence_kind::twosided);
-          tc.set_number_of_generators(3);
-          for (size_t i = 0; i < p.rules.size() - 1; i += 2) {
-            tc.add_pair(p.rules[i], p.rules[i + 1]);
-          }
-          tc.strategy(ToddCoxeter::options::strategy::hlt);
-          REQUIRE(tc.number_of_classes() == sizes[n]);
-        };
-        BENCHMARK((title + "+ Felsch (default)").c_str()) {
-          auto p = orientation_preserving_monoid(n);
-          p.alphabet(3);
-          presentation::replace_word(p, word_type({}), {2});
-          presentation::add_identity_rules(p, 2);
-
-          ToddCoxeter tc(congruence_kind::twosided);
-          tc.set_number_of_generators(3);
-          for (size_t i = 0; i < p.rules.size() - 1; i += 2) {
-            tc.add_pair(p.rules[i], p.rules[i + 1]);
-          }
-
-          tc.strategy(ToddCoxeter::options::strategy::felsch);
-          REQUIRE(tc.number_of_classes() == sizes[n]);
-        };
-      }
-    }
-
-    // Becomes impractical to do multiple runs after n = 7, so we switch to
-    // doing single runs.
-    namespace {
-      void bench_orientation(size_t n, size_t size) {
-        auto rg = ReportGuard(true);
-        auto p  = orientation_preserving_monoid(n);
-        p.alphabet(3);
-        presentation::replace_word(p, word_type({}), {2});
-        presentation::add_identity_rules(p, 2);
-
-        ToddCoxeter tc(congruence_kind::twosided);
-        tc.set_number_of_generators(3);
-        for (size_t i = 0; i < p.rules.size() - 1; i += 2) {
-          tc.add_pair(p.rules[i], p.rules[i + 1]);
-        }
-        check_hlt(tc);
-        std::cout << tc.settings_string();
-        REQUIRE(tc.number_of_classes() == size);
-        std::cout << tc.stats_string();
-      }
-    }  // namespace
-
-    // Approx 27s (2021 - MacBook Air M1 - 8GB RAM)
-    TEST_CASE("orientation_preserving_monoid(10) - hlt",
-              "[paper][orientation_preserving_monoid][n=10][hlt]") {
-      bench_orientation(10, 923'690);
-    }
-
-    // 4m13s (2021 - MacBook Air M1 - 8GB RAM)
-    TEST_CASE("orientation_preserving_monoid(11) - hlt",
-              "[paper][orientation_preserving_monoid][n=11][hlt]") {
-      bench_orientation(11, 3'879'766);
-    }
-
-    // 54m35s (2021 - MacBook Air M1 - 8GB RAM)
-    TEST_CASE("orientation_preserving_monoid(12) - hlt",
-              "[paper][orientation_preserving_monoid][n=12][hlt]") {
-      bench_orientation(12, 16'224'804);
-    }
-
-    // 9h14m (2021 - MacBook Air M1 - 8GB RAM)
-    TEST_CASE("orientation_preserving_monoid(13) - hlt",
-              "[paper][orientation_preserving_monoid][n=13][hlt]") {
-      bench_orientation(13, 67'603'744);
-    }
-
-    ////////////////////////////////////////////////////////////////////////
-    // temperley_lieb_monoid
-    ////////////////////////////////////////////////////////////////////////
-
-    TEST_CASE("temperley_lieb_monoid(n) (East), n = 3 .. 14",
-              "[paper][temperley_lieb_monoid]") {
-      std::array<uint64_t, 17> sizes = {0,
-                                        0,
-                                        0,
-                                        5,
-                                        14,
-                                        42,
-                                        132,
-                                        429,
-                                        1'430,
-                                        4'862,
-                                        16'796,
-                                        58'786,
-                                        208'012,
-                                        742'900,
-                                        2'674'440,
-                                        9'694'845,
-                                        35'357'670};
-
-      auto rg = ReportGuard(false);
-      for (size_t n = 3; n <= 14; ++n) {
-        std::string title
-            = std::string("temperley_lieb_monoid(") + std::to_string(n) + ") ";
-        BENCHMARK((title + "+ HLT (default)").c_str()) {
-          ToddCoxeter tc(congruence_kind::twosided);
-          setup(tc, n - 1, temperley_lieb_monoid, n);
-          tc.strategy(ToddCoxeter::options::strategy::hlt);
-          REQUIRE(tc.number_of_classes() == sizes[n] - 1);
-        };
-        BENCHMARK((title + "+ Felsch (default)").c_str()) {
-          ToddCoxeter tc(congruence_kind::twosided);
-          setup(tc, n - 1, temperley_lieb_monoid, n);
-          tc.strategy(ToddCoxeter::options::strategy::felsch);
-          REQUIRE(tc.number_of_classes() == sizes[n] - 1);
-        };
-      }
-    }
-
-    // Becomes impractical to do multiple runs after n = 14, so we switch to
-    // doing single runs.
-    namespace {
-      void bench_temperley_lieb(size_t n, size_t size) {
-        auto        rg = ReportGuard(true);
-        ToddCoxeter tc(congruence_kind::twosided);
-        setup(tc, n - 1, temperley_lieb_monoid, n);
-        check_hlt(tc);
-        std::cout << tc.settings_string();
-        REQUIRE(tc.number_of_classes() == size);
-        std::cout << tc.stats_string();
-      }
-    }  // namespace
-
-    // Approx. ? (2021 - MacBook Air M1 - 8GB RAM)
-    TEST_CASE("temperley_lieb_monoid(15) - hlt",
-              "[paper][temperley_lieb_monoid][n=15][hlt]") {
-      bench_temperley_lieb(15, 9'694'845);
-    }
-
-    // Approx. ? (2021 - MacBook Air M1 - 8GB RAM)
-    TEST_CASE("temperley_lieb_monoid(16) - hlt",
-              "[paper][temperley_lieb_monoid][n=16][hlt]") {
-      bench_temperley_lieb(15, 35'357'670);
-    }
-
-    // Approx. ? (2021 - MacBook Air M1 - 8GB RAM)
-    TEST_CASE("temperley_lieb_monoid(17) - hlt",
-              "[paper][temperley_lieb_monoid][n=17][hlt]") {
-      bench_temperley_lieb(15, 129'644'790);
-    }
-
-    ////////////////////////////////////////////////////////////////////////
-    // orientation_reversing_monoid
-    ////////////////////////////////////////////////////////////////////////
-
-    TEST_CASE("orientation_reversing_monoid(n) (Arthur-Ruskuc), n = 3 .. 8",
-              "[paper][orientation_reversing_monoid][OR]") {
-      std::array<uint64_t, 17> sizes = {0,
-                                        0,
-                                        0,
-                                        27,
-                                        180,
-                                        1'015,
-                                        5'028,
-                                        23'051,
-                                        101'272,
-                                        434'835,
-                                        1'843'320,
-                                        7'753'471,
-                                        32'440'884,
-                                        135'195'307,
-                                        561'615'460,
-                                        2'326'740'315};
-
-      auto rg = ReportGuard(false);
-      for (size_t n = 3; n <= 8; ++n) {
-        std::string title = std::string("orientation_reversing_monoid(")
-                            + std::to_string(n) + ") ";
-        BENCHMARK((title + "+ HLT (default)").c_str()) {
-          auto p = orientation_reversing_monoid(n);
-          p.alphabet(4);
-          presentation::replace_word(p, word_type({}), {3});
-          presentation::add_identity_rules(p, 3);
-
-          ToddCoxeter tc(congruence_kind::twosided);
-          tc.set_number_of_generators(4);
-          for (size_t i = 0; i < p.rules.size() - 1; i += 2) {
-            tc.add_pair(p.rules[i], p.rules[i + 1]);
-          }
-          tc.strategy(ToddCoxeter::options::strategy::hlt);
-          tc.next_lookahead(4 * sizes[n]).sort_generating_pairs();
-          REQUIRE(tc.number_of_classes() == sizes[n]);
-        };
-        BENCHMARK((title + "+ Felsch (default)").c_str()) {
-          auto p = orientation_reversing_monoid(n);
-          p.alphabet(4);
-          presentation::replace_word(p, word_type({}), {3});
-          presentation::add_identity_rules(p, 3);
-
-          ToddCoxeter tc(congruence_kind::twosided);
-          tc.set_number_of_generators(4);
-          for (size_t i = 0; i < p.rules.size() - 1; i += 2) {
-            tc.add_pair(p.rules[i], p.rules[i + 1]);
-          }
-          tc.strategy(ToddCoxeter::options::strategy::felsch);
-          REQUIRE(tc.number_of_classes() == sizes[n]);
-        };
-      }
-    }
-
-    namespace {
-      void bench_orient_reverse(size_t n, size_t size) {
-        auto rg = ReportGuard(true);
-        auto p  = orientation_reversing_monoid(n);
-        p.alphabet(4);
-        presentation::replace_word(p, word_type({}), {3});
-        presentation::add_identity_rules(p, 3);
-
-        ToddCoxeter tc(congruence_kind::twosided);
-        tc.set_number_of_generators(4);
-        for (size_t i = 0; i < p.rules.size() - 1; i += 2) {
-          tc.add_pair(p.rules[i], p.rules[i + 1]);
-        }
-        check_hlt(tc);
-        tc.next_lookahead(5'000'000).sort_generating_pairs();
-        std::cout << tc.settings_string();
-        REQUIRE(tc.number_of_classes() == size);
-        std::cout << tc.stats_string();
-      }
-    }  // namespace
-
-    // Approx 9s (2021 - MacBook Air M1 - 8GB RAM)
-    TEST_CASE("orientation_reversing_monoid(9) - hlt",
-              "[paper][orientation_reversing_monoid][n=9][hlt]") {
-      bench_orient_reverse(9, 434'835);
-    }
-
     // Approx 90s (2021 - MacBook Air M1 - 8GB RAM)
-    TEST_CASE("orientation_reversing_monoid(10) - hlt",
-              "[paper][orientation_reversing_monoid][n=10][hlt]") {
-      bench_orient_reverse(10, 1'843'320);
+    TEST_CASE("stellar_monoid(10) - Felsch (default)",
+              "[paper][stellar_monoid][n=10][hlt]") {
+      benchmark_todd_coxeter_single(
+          9'864'101, stellar_monoid(10), 10, {strategy::felsch});
     }
 
-    // ?? (2021 - MacBook Air M1 - 8GB RAM)
-    TEST_CASE("orientation_reversing_monoid(11) - hlt",
-              "[paper][orientation_reversing_monoid][n=11][hlt]") {
-      bench_orient_reverse(11, 7'753'471);
+    // Approx 22m52s (2021 - MacBook Air M1 - 8GB RAM)
+    TEST_CASE("stellar_monoid(11) - Felsch (default)",
+              "[paper][stellar_monoid][n=11][hlt]") {
+      benchmark_todd_coxeter_single(
+          108'505'112, stellar_monoid(11), 11, {strategy::felsch});
+    }
+  }  // namespace stellar
+
+  ////////////////////////////////////////////////////////////////////////
+  // walker
+  ////////////////////////////////////////////////////////////////////////
+
+  namespace walker {
+    Presentation<word_type> walker(size_t index) {
+      Presentation<std::string> p;
+      if (index == 1) {
+        p.alphabet("abc");
+        presentation::add_rule(p, "a", "a^14"_p);
+        presentation::add_rule(p, "b", "b^14"_p);
+        presentation::add_rule(p, "c", "c^14"_p);
+        presentation::add_rule(p, "bbb", "a^4ba"_p);
+        presentation::add_rule(p, "aaa", "b^4ab"_p);
+        presentation::add_rule(p, "ccc", "a^4ca"_p);
+        presentation::add_rule(p, "aaa", "c^4ac"_p);
+        presentation::add_rule(p, "ccc", "b^4cb"_p);
+        presentation::add_rule(p, "bbb", "c^4bc"_p);
+      } else if (index == 2) {
+        p.alphabet("ab");
+        presentation::add_rule(p, "a^32"_p, "a");
+        presentation::add_rule(p, "bbb", "b");
+        presentation::add_rule(p, "ababa", "b");
+        presentation::add_rule(p, "a^16ba^4ba^16ba^4"_p, "b");
+        presentation::greedy_reduce_length(p);
+      } else if (index == 3) {
+        p.alphabet("ab");
+        presentation::add_rule(p, "aaaaaaaaaaaaaaaa", "a");
+        presentation::add_rule(p, "bbbbbbbbbbbbbbbb", "b");
+        presentation::add_rule(p, "abb", "baa");
+      } else if (index == 4) {
+        p.alphabet("ab");
+        presentation::add_rule(p, "aaa", "a");
+        presentation::add_rule(p, "b^6"_p, "b");
+        presentation::add_rule(p, "((ab)^2b^3)^7ab^2a"_p, "bb");
+        presentation::greedy_reduce_length(p);
+        REQUIRE(presentation::length(p) == 29);
+        // REQUIRE(p.alphabet() == "abcd");
+        p.rules = std::vector<std::string>({"aaa",
+                                            "a",
+                                            "dbb",
+                                            "b",
+                                            "abeceba",
+                                            "bb",
+                                            "c",
+                                            "adab",
+                                            "d",
+                                            "bbbb",
+                                            "ccc",
+                                            "e"});
+        p.alphabet_from_rules();
+      } else if (index == 5) {
+        p.alphabet("ab");
+        presentation::add_rule(p, "aaa", "a");
+        presentation::add_rule(p, "b^6"_p, "b");
+        presentation::add_rule(p, "((ab)^2b^3)^7(ab^2)^2b^3a^2"_p, "bb");
+        REQUIRE(presentation::length(p) == 73);
+        presentation::greedy_reduce_length(p);
+        REQUIRE(presentation::length(p) == 34);
+        REQUIRE(p.alphabet() == "abcd");
+        REQUIRE(p.rules
+                == std::vector<std::string>({"aaa",
+                                             "a",
+                                             "ddd",
+                                             "b",
+                                             "abc^7bad^2ba^2"_p,
+                                             "d",
+                                             "c",
+                                             "addab",
+                                             "d",
+                                             "bb"}));
+        presentation::replace_word_with_new_generator(p, "ccc");
+      } else if (index == 6) {
+        p.alphabet("ab");
+        presentation::add_rule(p, "aaa", "a");
+        presentation::add_rule(p, "b^9"_p, "b");
+        presentation::add_rule(p, "((ab)^2b^6)^2(ab^2)^2b^6"_p, "bb");
+
+        REQUIRE(presentation::length(p) == 48);
+        presentation::greedy_reduce_length(p);
+        REQUIRE(presentation::length(p) == 28);
+        REQUIRE(p.alphabet() == "abcde");
+        REQUIRE(p.rules
+                == std::vector<std::string>({"aaa",
+                                             "a",
+                                             "cd",
+                                             "b",
+                                             "aeedacb",
+                                             "d",
+                                             "c",
+                                             "dddb",
+                                             "d",
+                                             "bb",
+                                             "e",
+                                             "baca"}));
+
+        presentation::replace_word_with_new_generator(p, "bbb");
+        REQUIRE(presentation::length(p) == 32);
+      } else if (index == 7) {
+        p.alphabet("abcde");
+        presentation::add_rule(p, "aaa", "a");
+        presentation::add_rule(p, "bbb", "b");
+        presentation::add_rule(p, "ccc", "c");
+        presentation::add_rule(p, "ddd", "d");
+        presentation::add_rule(p, "eee", "e");
+        presentation::add_rule(p, "(ab) ^ 3"_p, "aa");
+        presentation::add_rule(p, "(bc) ^ 3"_p, "bb");
+        presentation::add_rule(p, "(cd) ^ 3"_p, "cc");
+        presentation::add_rule(p, "(de) ^ 3"_p, "dd");
+        presentation::add_rule(p, "ac", "ca");
+        presentation::add_rule(p, "ad", "da");
+        presentation::add_rule(p, "ae", "ea");
+        presentation::add_rule(p, "bd", "db");
+        presentation::add_rule(p, "be", "eb");
+        presentation::add_rule(p, "ce", "ec");
+      } else if (index == 8) {
+        p.alphabet("ab");
+        presentation::add_rule(p, "aaa", "a");
+        presentation::add_rule(p, "b^23"_p, "b");
+        presentation::add_rule(p, "ab^11ab^2"_p, "bba");
+      }
+      return to_presentation<word_type>(p);
     }
 
-    // ?? (2021 - MacBook Air M1 - 8GB RAM)
-    TEST_CASE("orientation_reversing_monoid(12) - hlt",
-              "[paper][orientation_reversing_monoid][n=12][hlt]") {
-      bench_orient_reverse(12, 32'440'884);
+    auto       rg = ReportGuard();
+    sizes_type sizes
+        = {0, 1, 14'911, 20'490, 36'412, 72'822, 78'722, 153'500, 270'272};
+
+    TEST_CASE_TODD_COXETER("Walker") {
+      start_table("Comparison of \\libsemigroups and GAP~\\cite{GAP4} "
+                  "(semigroups Todd-Coxeter implementation) on examples from "
+                  "Walker~\\cite{Walker1992aa}.",
+                  "table-walker",
+                  "S");
+
+      {
+        size_t index = 1;
+        auto   p     = walker(index);
+        preprocess_presentation(p);
+        emit_xml_presentation_tags(p, std::to_string(index), 1);
+        auto rg = ReportGuard(false);
+
+        open_xml_tag("LatexColumnTitle", "HLT");
+        BENCHMARK("HLT") {
+          ToddCoxeter tc(congruence_kind::twosided, p);
+          tc.strategy(strategy::hlt)
+              .lookahead_next(500'000)
+              .large_collapse(2'000);
+          REQUIRE(tc.number_of_classes() == 1);
+        };
+        close_xml_tag("LatexColumnTitle");
+        presentation::greedy_reduce_length(p);
+        open_xml_tag("LatexColumnTitle", "Felsch");
+        BENCHMARK("Felsch") {
+          ToddCoxeter tc(congruence_kind::twosided, p);
+          tc.strategy(strategy::felsch).use_relations_in_extra(true);
+          REQUIRE(tc.number_of_classes() == 1);
+        };
+        close_xml_tag("LatexColumnTitle");
+      }
+      {
+        size_t index = 2;
+        auto   p     = walker(index);
+        preprocess_presentation(p);
+        emit_xml_presentation_tags(p, index, 14'911);
+        auto rg = ReportGuard(false);
+
+        open_xml_tag("LatexColumnTitle", "HLT");
+        BENCHMARK("HLT") {
+          ToddCoxeter tc(congruence_kind::twosided, p);
+          tc.strategy(strategy::hlt)
+              .use_relations_in_extra(true)
+              .lookahead_next(2'000'000);
+          REQUIRE(tc.number_of_classes() == 14'911);
+        };
+        close_xml_tag("LatexColumnTitle");
+        open_xml_tag("LatexColumnTitle", "Felsch");
+        BENCHMARK("Felsch") {
+          ToddCoxeter tc(congruence_kind::twosided, p);
+          tc.strategy(strategy::felsch);
+          REQUIRE(tc.number_of_classes() == 14'911);
+        };
+        close_xml_tag("LatexColumnTitle");
+      }
+      {
+        size_t index = 3;
+        auto   p     = walker(index);
+        preprocess_presentation(p);
+        emit_xml_presentation_tags(p, index, 20'490);
+        auto rg = ReportGuard(false);
+
+        open_xml_tag("LatexColumnTitle", "HLT");
+        BENCHMARK("HLT") {
+          ToddCoxeter tc(congruence_kind::twosided, p);
+          tc.strategy(strategy::hlt).lookahead_next(2'000'000);
+          REQUIRE(tc.number_of_classes() == 20'490);
+        };
+        close_xml_tag("LatexColumnTitle");
+        open_xml_tag("LatexColumnTitle", "Felsch");
+        BENCHMARK("Felsch") {
+          ToddCoxeter tc(congruence_kind::twosided, p);
+          tc.strategy(strategy::felsch)
+              .use_relations_in_extra(true)
+              .def_max(100'000)
+              .def_version(def_version::one)
+              .def_policy(def_policy::no_stack_if_no_space);
+          REQUIRE(tc.number_of_classes() == 20'490);
+        };
+        close_xml_tag("LatexColumnTitle");
+      }
+      {
+        size_t index = 4;
+        size_t N     = 36'412;
+        auto   p     = walker(index);
+        preprocess_presentation(p);
+        emit_xml_presentation_tags(p, index, N);
+        auto rg = ReportGuard(false);
+
+        open_xml_tag("LatexColumnTitle", "HLT");
+        BENCHMARK("HLT") {
+          ToddCoxeter tc(congruence_kind::twosided, p);
+          tc.strategy(strategy::hlt).lookahead_next(3'000'000);
+          REQUIRE(tc.number_of_classes() == N);
+        };
+        close_xml_tag("LatexColumnTitle");
+        open_xml_tag("LatexColumnTitle", "Felsch");
+        BENCHMARK("Felsch") {
+          ToddCoxeter tc(congruence_kind::twosided, p);
+          tc.strategy(strategy::felsch)
+              .use_relations_in_extra(true)
+              .def_max(10'000)
+              .large_collapse(3'000);
+          REQUIRE(tc.number_of_classes() == N);
+        };
+        close_xml_tag("LatexColumnTitle");
+      }
+      {
+        size_t index = 5;
+        size_t N     = 72'822;
+        auto   p     = walker(index);
+        emit_xml_presentation_tags(p, index, N);
+        auto rg = ReportGuard(false);
+
+        open_xml_tag("LatexColumnTitle", "HLT");
+        BENCHMARK("HLT") {
+          ToddCoxeter tc(congruence_kind::twosided, p);
+          tc.strategy(strategy::hlt).lookahead_next(5'000'000).save(true);
+          REQUIRE(tc.number_of_classes() == N);
+        };
+        BENCHMARK("Felsch"){
+            // This is intentionally empty so that all the columns have the same
+            // values.
+        };
+        close_xml_tag("LatexColumnTitle");
+      }
+      {
+        size_t index = 6;
+        size_t N     = 78'722;
+        auto   p     = walker(index);
+        preprocess_presentation(p);
+        emit_xml_presentation_tags(p, index, N);
+        auto rg = ReportGuard(false);
+
+        open_xml_tag("LatexColumnTitle", "HLT");
+        BENCHMARK("HLT") {
+          ToddCoxeter tc(congruence_kind::twosided, p);
+          tc.strategy(strategy::hlt).lookahead_next(5'000'000).save(true);
+          REQUIRE(tc.number_of_classes() == N);
+        };
+        close_xml_tag("LatexColumnTitle");
+        open_xml_tag("LatexColumnTitle", "Felsch");
+        BENCHMARK("Felsch") {
+          ToddCoxeter tc(congruence_kind::twosided, p);
+          tc.strategy(strategy::felsch).use_relations_in_extra(true);
+          REQUIRE(tc.number_of_classes() == N);
+        };
+        close_xml_tag("LatexColumnTitle");
+      }
+      {
+        size_t index = 7;
+        size_t N     = 153'500;
+        auto   p     = walker(index);
+        preprocess_presentation(p);
+        emit_xml_presentation_tags(p, index, N);
+        auto rg = ReportGuard(false);
+
+        open_xml_tag("LatexColumnTitle", "HLT");
+        BENCHMARK("HLT") {
+          ToddCoxeter tc(congruence_kind::twosided, p);
+          tc.strategy(strategy::hlt);
+          REQUIRE(tc.number_of_classes() == N);
+        };
+        close_xml_tag("LatexColumnTitle");
+        presentation::greedy_reduce_length(p);
+        open_xml_tag("LatexColumnTitle", "Felsch");
+        BENCHMARK("Felsch") {
+          ToddCoxeter tc(congruence_kind::twosided, p);
+          tc.strategy(strategy::felsch)
+              .def_version(def_version::one)
+              .use_relations_in_extra(true);
+          REQUIRE(tc.number_of_classes() == N);
+        };
+        close_xml_tag("LatexColumnTitle");
+      }
+      {
+        size_t index = 8;
+        size_t N     = 270'272;
+        auto   p     = walker(index);
+        preprocess_presentation(p);
+        emit_xml_presentation_tags(p, index, N);
+        auto rg = ReportGuard(false);
+
+        open_xml_tag("LatexColumnTitle", "HLT");
+        BENCHMARK("HLT") {
+          ToddCoxeter tc(congruence_kind::twosided, p);
+          tc.strategy(strategy::hlt).lookahead_next(500'000);
+          REQUIRE(tc.number_of_classes() == N);
+        };
+        close_xml_tag("LatexColumnTitle");
+        presentation::greedy_reduce_length_and_number_of_gens(p);
+        open_xml_tag("LatexColumnTitle", "Felsch");
+        BENCHMARK("Felsch") {
+          ToddCoxeter tc(congruence_kind::twosided, p);
+          tc.strategy(strategy::felsch).use_relations_in_extra(true);
+          REQUIRE(tc.number_of_classes() == N);
+        };
+        close_xml_tag("LatexColumnTitle");
+      }
+    }
+  }  // namespace walker
+
+  namespace ace {
+
+    TEST_CASE("ACE --- table header", "[paper][ace]") {
+      start_table("Comparison of \\libsemigroups, ACE~\\cite{Havas1999aa}, and "
+                  "GAP~\\cite{GAP4}.",
+                  "table-ace",
+                  "|G:H|");
     }
 
-    // ?? (2021 - MacBook Air M1 - 8GB RAM)
-    TEST_CASE("orientation_reversing_monoid(13) - hlt",
-              "[paper][orientation_reversing_monoid][n=13][hlt]") {
-      bench_orient_reverse(13, 135'195'307);
-    }
-  }  // namespace congruence
-
-  namespace fpsemigroup {
     TEST_CASE("ACE --- 2p17-2p14", "[paper][ace][2p17-2p14]") {
-      auto        rg = ReportGuard(false);
-      ToddCoxeter G;
-      G.set_alphabet("abcABCe");
-      G.set_identity("e");
-      G.set_inverses("ABCabce");
-      G.add_rule("aBCbac", "e");
-      G.add_rule("bACbaacA", "e");
-      G.add_rule("accAABab", "e");
+      Presentation<std::string> p;
+      p.alphabet("abcABC");
+      p.contains_empty_word(true);
+      std::string inverses = "ABCabc";
+      presentation::add_inverse_rules(p, inverses);
+      presentation::add_rule(p, "aBCbac", "");
+      presentation::add_rule(p, "bACbaacA", "");
+      presentation::add_rule(p, "accAABab", "");
 
+      emit_xml_presentation_tags(p, "2p17-2p14", 16'384);
+
+      open_xml_tag("LatexColumnTitle", "HLT");
       BENCHMARK("HLT") {
-        congruence::ToddCoxeter H(right, G.congruence());
-        H.add_pair({1, 2}, {6});
-        H.simplify();
-        H.next_lookahead(1'000'000).lookahead(options::lookahead::partial);
+        ToddCoxeter H(congruence_kind::right, p);
+        H.add_pair({1, 2}, {});
+        H.lookahead_next(1'000'000).lookahead_extent(lookahead_extent::partial);
         REQUIRE(H.number_of_classes() == 16'384);
       };
+      close_xml_tag("LatexColumnTitle");
+      // About 2s
+      // open_xml_tag("LatexColumnTitle", "Felsch");
+      // BENCHMARK("Felsch") {
+      //  ToddCoxeter H(congruence_kind::right, p);
+      //  H.add_pair({1, 2}, {});
+      //  H.strategy(strategy::felsch).def_max(100'000);
+      //  REQUIRE(H.number_of_classes() == 16'384);
+      //};
     }
 
     TEST_CASE("ACE --- 2p17-2p3", "[paper][ace][2p17-2p3]") {
-      auto        rg = ReportGuard(false);
-      ToddCoxeter G;
-      G.set_alphabet("abcABCe");
-      G.set_identity("e");
-      G.set_inverses("ABCabce");
-      G.add_rule("aBCbac", "e");
-      G.add_rule("bACbaacA", "e");
-      G.add_rule("accAABab", "e");
+      auto                      rg = ReportGuard(false);
+      Presentation<std::string> p;
+      p.contains_empty_word(true);
+      p.alphabet("abcABC");
+      presentation::add_inverse_rules(p, "ABCabc");
+      presentation::add_rule(p, "aBCbac", "");
+      presentation::add_rule(p, "bACbaacA", "");
+      presentation::add_rule(p, "accAABab", "");
 
-      letter_type a = 0;
+      emit_xml_presentation_tags(p, "2p17-2p3", 8);
+
       letter_type b = 1;
       letter_type c = 2;
       letter_type A = 3;
       letter_type B = 4;
       letter_type C = 5;
-      letter_type e = 6;
+      open_xml_tag("LatexColumnTitle", "HLT");
       BENCHMARK("HLT") {
-        congruence::ToddCoxeter H(right, G.congruence());
-        H.add_pair({b, c}, {e});
-        H.add_pair({A, B, A, A, b, c, a, b, C}, {e});
+        ToddCoxeter H(congruence_kind::right, p);
+        H.add_pair({b, c}, {});
+        H.add_pair({A, B, A, A, b}, {c, B, A, C});
 
-        H.strategy(options::strategy::hlt)
-            .save(true)
-            .lookahead(options::lookahead::partial);
+        H.strategy(strategy::hlt).save(true).def_max(100'000);
 
         REQUIRE(H.number_of_classes() == 8);
       };
+      close_xml_tag("LatexColumnTitle");
+      // About 2s
+      // open_xml_tag("LatexColumnTitle", "Felsch");
+      // BENCHMARK("Felsch") {
+      //   ToddCoxeter H(congruence_kind::right, p);
+      //   H.add_pair({b, c}, {});
+      //   H.add_pair({A, B, A, A, b, c, a, b, C}, {});
+
+      //   H.strategy(strategy::felsch);
+
+      //   REQUIRE(H.number_of_classes() == 8);
+      // };
     }
 
     TEST_CASE("ACE --- 2p17-fel1", "[paper][ace][2p17-1]") {
-      auto        rg = ReportGuard(false);
-      ToddCoxeter G;
-      G.set_alphabet("abcABCe");
-      G.set_identity("e");
-      G.set_inverses("ABCabce");
-      G.add_rule("aBCbac", "e");
-      G.add_rule("bACbaacA", "e");
-      G.add_rule("accAABab", "e");
+      auto                      rg = ReportGuard(false);
+      Presentation<std::string> p;
+      p.alphabet("abcABC");
+      p.contains_empty_word(true);
+      presentation::add_inverse_rules(p, "ABCabc");
+      presentation::add_rule(p, "aBCbac", "");
+      presentation::add_rule(p, "bACbaacA", "");
+      presentation::add_rule(p, "accAABab", "");
 
       letter_type a = 0;
       letter_type b = 1;
@@ -934,607 +1145,303 @@ namespace libsemigroups {
       letter_type A = 3;
       letter_type B = 4;
       letter_type C = 5;
-      letter_type e = 6;
 
+      presentation::remove_duplicate_rules(p);
+
+      emit_xml_presentation_tags(p, "2p17-fel1", 131'072);
+
+      open_xml_tag("LatexColumnTitle", "HLT");
       BENCHMARK("HLT") {
-        congruence::ToddCoxeter H(right, G.congruence());
-        H.add_pair({e}, {a, B, C, b, a, c});
-        H.add_pair({b, A, C, b, a, a, c, A}, {e});
-        H.add_pair({a, c, c, A, A, B, a, b}, {e});
+        ToddCoxeter H(congruence_kind::right, p);
+        H.add_pair({}, {a, B, C, b, a, c});
+        H.add_pair({b, A, C, b, a, a, c, A}, {});
+        H.add_pair({a, c, c, A, A, B, a, b}, {});
 
-        H.save(true)
-            .lookahead(options::lookahead::partial)
-            .max_deductions(20'000)
-            .large_collapse(10'000)
-            .remove_duplicate_generating_pairs();
+        H.save(true).def_max(20'000).large_collapse(10'000);
         REQUIRE(H.number_of_classes() == 131'072);
       };
+      close_xml_tag("LatexColumnTitle");
     }
 
     TEST_CASE("ACE --- 2p17-fel1a", "[paper][ace][2p17-1a]") {
-      auto        rg = ReportGuard(false);
-      ToddCoxeter G;
-      G.set_alphabet("abcABCe");
-      G.set_identity("e");
-      G.set_inverses("ABCabce");
-      G.add_rule("aBCbac", "e");
-      G.add_rule("bACbaacA", "e");
-      G.add_rule("accAABab", "e");
+      auto                      rg = ReportGuard(false);
+      Presentation<std::string> p;
+      p.alphabet("abcABC");
+      p.contains_empty_word(true);
+      presentation::add_inverse_rules(p, "ABCabc");
+      presentation::add_rule(p, "aBCbac", "");
+      presentation::add_rule(p, "bACbaacA", "");
+      presentation::add_rule(p, "accAABab", "");
 
+      emit_xml_presentation_tags(p, "2p17-fel1a", 1);
       letter_type a = 0;
       letter_type b = 1;
       letter_type c = 2;
       letter_type A = 3;
       letter_type B = 4;
       letter_type C = 5;
-      letter_type e = 6;
 
+      open_xml_tag("LatexColumnTitle", "HLT");
       BENCHMARK("HLT") {
-        congruence::ToddCoxeter H(right, G.congruence());
-        H.add_pair({b, c}, {e});
-        H.add_pair({A, B, A, A, b, c, a, b, C}, {e});
-        H.add_pair({A, c, c, c, a, c, B, c, A}, {e});
+        ToddCoxeter H(congruence_kind::right, p);
+        H.add_pair({b, c}, {});
+        H.add_pair({A, B, A, A, b, c, a, b, C}, {});
+        H.add_pair({A, c, c, c, a, c, B, c, A}, {});
 
-        H.strategy(options::strategy::hlt)
+        H.strategy(strategy::hlt)
             .save(true)
-            .lookahead(options::lookahead::full)
-            .max_deductions(10'000)
+            .lookahead_extent(lookahead_extent::full)
+            .def_max(10'000)
             .large_collapse(10'000);
         REQUIRE(H.number_of_classes() == 1);
       };
+      close_xml_tag("LatexColumnTitle");
     }
 
     TEST_CASE("ACE --- 2p17-id-fel1", "[paper][ace][2p17-id]") {
-      auto rg = ReportGuard(false);
+      auto                      rg = ReportGuard(false);
+      Presentation<std::string> p;
+      p.alphabet("abcABC");
+      p.contains_empty_word(true);
+      presentation::add_inverse_rules(p, "ABCabc");
+      presentation::add_rule(p, "aBCbac", "");
+      presentation::add_rule(p, "bACbaacA", "");
+      presentation::add_rule(p, "accAABab", "");
+
+      emit_xml_presentation_tags(p, "2p17-id-fel1", 131'072);
+      open_xml_tag("LatexColumnTitle", "HLT");
       BENCHMARK("HLT") {
-        ToddCoxeter G;
-        G.set_alphabet("abcABCe");
-        G.set_identity("e");
-        G.set_inverses("ABCabce");
-        G.add_rule("aBCbac", "e");
-        G.add_rule("bACbaacA", "e");
-        G.add_rule("accAABab", "e");
-
-        G.congruence().reserve(5'000'000);
-        G.congruence()
-            .strategy(options::strategy::hlt)
-            .lookahead(options::lookahead::partial)
+        ToddCoxeter tc(congruence_kind::twosided, p);
+        tc.strategy(strategy::hlt)
+            .lookahead_extent(lookahead_extent::partial)
             .save(true)
-            .max_deductions(POSITIVE_INFINITY);
+            .def_max(POSITIVE_INFINITY);
 
-        REQUIRE(G.size() == std::pow(2, 17));
+        REQUIRE(tc.number_of_classes() == std::pow(2, 17));
       };
+      close_xml_tag("LatexColumnTitle");
     }
 
     TEST_CASE("ACE --- 2p18-fe1", "[paper][ace][2p18]") {
-      auto        rg = ReportGuard(false);
-      ToddCoxeter G;
-      G.set_alphabet("abcABCex");
-      G.set_identity("e");
-      G.set_inverses("ABCabcex");
-      G.add_rule("aBCbac", "e");
-      G.add_rule("bACbaacA", "e");
-      G.add_rule("accAABab", "e");
-      G.add_rule("xx", "e");
-      G.add_rule("Axax", "e");
-      G.add_rule("Bxbx", "e");
-      G.add_rule("Cxcx", "e");
+      auto                      rg = ReportGuard(false);
+      Presentation<std::string> p;
+      p.alphabet("abcABCx");
+      p.contains_empty_word(true);
+      presentation::add_inverse_rules(p, "ABCabcx");
+      presentation::add_rule(p, "aBCbac", "");
+      presentation::add_rule(p, "bACbaacA", "");
+      presentation::add_rule(p, "accAABab", "");
+      presentation::add_rule(p, "xx", "");
+      presentation::add_rule(p, "Axax", "");
+      presentation::add_rule(p, "Bxbx", "");
+      presentation::add_rule(p, "Cxcx", "");
 
-      letter_type constexpr a = 0, b = 1, c = 2, A = 3, B = 4, C = 5, e = 6;
+      emit_xml_presentation_tags(p, "2p18-fe1", 262'144);
 
+      letter_type constexpr a = 0, b = 1, c = 2, A = 3, B = 4, C = 5;
+
+      open_xml_tag("LatexColumnTitle", "HLT");
       BENCHMARK("HLT") {
-        congruence::ToddCoxeter H(right, G.congruence());
-        H.add_pair({a, B, C, b, a, c}, {e});
-        H.add_pair({b, A, C, b, a, a, c, A}, {e});
-        H.add_pair({a, c, c, A, A, B, a, b}, {e});
+        ToddCoxeter H(congruence_kind::right, p);
+        H.add_pair({a, B, C, b, a, c}, {});
+        H.add_pair({b, A, C, b, a, a, c, A}, {});
+        H.add_pair({a, c, c, A, A, B, a, b}, {});
 
-        H.strategy(options::strategy::hlt)
+        H.strategy(strategy::hlt)
             .save(true)
-            .lookahead(options::lookahead::partial)
-            .sort_generating_pairs()
-            .remove_duplicate_generating_pairs()
             .large_collapse(10'000)
-            .max_deductions(10'000)
-            .next_lookahead(5'000'000);
+            .def_max(10'000)
+            .lookahead_extent(lookahead_extent::partial)
+            .lookahead_next(5'000'000);
 
         REQUIRE(H.number_of_classes() == 262'144);
       };
+      close_xml_tag("LatexColumnTitle");
     }
 
     TEST_CASE("ACE --- F27", "[paper][ace][F27]") {
-      auto rg = ReportGuard(false);
+      auto                      rg = ReportGuard(false);
+      Presentation<std::string> p;
+      p.alphabet("abcdxyzABCDXYZ");
+      p.contains_empty_word(true);
+      presentation::add_inverse_rules(p, "ABCDXYZabcdxyz");
+      presentation::add_rule(p, "ab", "c");
+      presentation::add_rule(p, "bc", "d");
+      presentation::add_rule(p, "cd", "x");
+      presentation::add_rule(p, "dx", "y");
+      presentation::add_rule(p, "xy", "z");
+      presentation::add_rule(p, "yz", "a");
+      presentation::add_rule(p, "za", "b");
+      emit_xml_presentation_tags(p, "F27", 29);
+      open_xml_tag("LatexColumnTitle", "HLT");
       BENCHMARK("HLT") {
-        ToddCoxeter G;
-        G.set_alphabet("abcdxyzABCDXYZe");
-        G.set_identity("e");
-        G.set_inverses("ABCDXYZabcdxyze");
-        G.add_rule("abC", "e");
-        G.add_rule("bcD", "e");
-        G.add_rule("cdX", "e");
-        G.add_rule("dxY", "e");
-        G.add_rule("xyZ", "e");
-        G.add_rule("yzA", "e");
-        G.add_rule("zaB", "e");
-
-        G.congruence()
-            .strategy(options::strategy::hlt)
+        ToddCoxeter tc(congruence_kind::twosided, p);
+        tc.strategy(strategy::hlt)
             .save(true)
-            .lookahead(options::lookahead::partial);
-        REQUIRE(G.size() == 29);
+            .lookahead_extent(lookahead_extent::partial);
+        REQUIRE(tc.number_of_classes() == 29);
       };
+      close_xml_tag("LatexColumnTitle");
     }
 
     TEST_CASE("ACE --- M12", "[paper][ace][M12]") {
       auto rg = ReportGuard(false);
+
+      Presentation<std::string> p;
+      p.alphabet("abcABC");
+      p.contains_empty_word(true);
+      presentation::add_inverse_rules(p, "ABCabc");
+      presentation::add_rule(p, "bb", "");
+      presentation::add_rule(p, "cc", "");
+      presentation::add_rule(p, "ababab", "");
+      presentation::add_rule(p, "acacac", "");
+      presentation::add_rule(p, "aaaaaaaaaaa", "");
+      presentation::add_rule(p, "cbcbabcbc", "aaaaa");
+      presentation::add_rule(p, "bcbcbcbcbcbcbcbcbcbc", "");
+      presentation::replace_word_with_new_generator(
+          p, presentation::longest_subword_reducing_length(p));
+      emit_xml_presentation_tags(p, "M12", 95'040);
+
+      open_xml_tag("LatexColumnTitle", "HLT");
       BENCHMARK("HLT") {
-        ToddCoxeter G;
-        G.set_alphabet("abcABCe");
-        G.set_identity("e");
-        G.set_inverses("ABCabce");
-        G.add_rule("aaaaaaaaaaa", "e");
-        G.add_rule("bb", "e");
-        G.add_rule("cc", "e");
-        G.add_rule("ababab", "e");
-        G.add_rule("acacac", "e");
-        G.add_rule("bcbcbcbcbcbcbcbcbcbc", "e");
-        G.add_rule("cbcbabcbcAAAAA", "e");
+        ToddCoxeter H(congruence_kind::twosided, p);
 
-        congruence::ToddCoxeter H(twosided, G);
-
-        H.strategy(options::strategy::hlt)
+        H.strategy(strategy::hlt)
             .save(true)
-            .lookahead(options::lookahead::partial);
+            .lookahead_extent(lookahead_extent::partial);
 
         REQUIRE(H.number_of_classes() == 95'040);
       };
+      close_xml_tag("LatexColumnTitle");
     }
 
     TEST_CASE("ACE --- SL(2, 19)", "[paper][ace][SL219]") {
-      auto rg = ReportGuard(false);
+      auto                      rg = ReportGuard(false);
+      Presentation<std::string> p;
+      p.alphabet("abAB");
+      p.contains_empty_word(true);
+      presentation::add_inverse_rules(p, "ABab");
+      presentation::add_rule(p, "aBABAB", "");
+      presentation::add_rule(p, "BAAbaa", "");
+      presentation::add_rule(
+          p,
+          "abbbbabbbbbbbbbbabbbbabbbbbbbbbbbbbbbbbbbbbbbbbbbbbaaaaaaaaaaaa",
+          "");
+      presentation::balance(p, "abAB", "ABab");
+      presentation::sort_rules(p);
+
+      letter_type b = 1;
+      emit_xml_presentation_tags(p, "SL219", 180);
+
+      open_xml_tag("LatexColumnTitle", "HLT");
       BENCHMARK("HLT") {
-        ToddCoxeter G;
-        G.set_alphabet("abABe");
-        G.set_identity("e");
-        G.set_inverses("ABabe");
-        G.add_rule("aBABAB", "e");
-        G.add_rule("BAAbaa", "e");
-        G.add_rule(
-            "abbbbabbbbbbbbbbabbbbabbbbbbbbbbbbbbbbbbbbbbbbbbbbbaaaaaaaaaaaa",
-            "e");
+        ToddCoxeter H(congruence_kind::right, p);
+        H.add_pair({b}, {});
 
-        letter_type b = 1;
-        letter_type e = 4;
-
-        congruence::ToddCoxeter H(right, G);
-        H.add_pair({b}, {e});
-
-        H.strategy(options::strategy::hlt)
+        H.strategy(strategy::hlt)
             .save(false)
-            .lookahead(options::lookahead::partial)
-            .next_lookahead(500'000);
+            .lookahead_extent(lookahead_extent::partial)
+            .lookahead_next(500'000);
         REQUIRE(H.number_of_classes() == 180);
       };
+      close_xml_tag("LatexColumnTitle");
     }
 
     TEST_CASE("ACE --- big-hard", "[paper][ace][big-hard]") {
-      auto        rg = ReportGuard(false);
-      ToddCoxeter G;
-      G.set_alphabet("abcyABCYex");
-      G.set_identity("e");
-      G.set_inverses("ABCYabcyex");
-      G.add_rule("aBCbac", "e");
-      G.add_rule("bACbaacA", "e");
-      G.add_rule("accAABab", "e");
-      G.add_rule("xx", "e");
-      G.add_rule("yyy", "e");
-      G.add_rule("Axax", "e");
-      G.add_rule("Bxbx", "e");
-      G.add_rule("Cxcx", "e");
-      G.add_rule("AYay", "e");
-      G.add_rule("BYby", "e");
-      G.add_rule("CYcy", "e");
-      G.add_rule("xYxy", "e");
+      auto                      rg = ReportGuard(false);
+      Presentation<std::string> p;
+      p.alphabet("abcyABCYx");
+      p.contains_empty_word(true);
+      presentation::add_inverse_rules(p, "ABCYabcyx");
+      presentation::add_rule(p, "aBCbac", "");
+      presentation::add_rule(p, "bACbaacA", "");
+      presentation::add_rule(p, "accAABab", "");
+      presentation::add_rule(p, "xx", "");
+      presentation::add_rule(p, "yyy", "");
+      presentation::add_rule(p, "Axax", "");
+      presentation::add_rule(p, "Bxbx", "");
+      presentation::add_rule(p, "Cxcx", "");
+      presentation::add_rule(p, "AYay", "");
+      presentation::add_rule(p, "BYby", "");
+      presentation::add_rule(p, "CYcy", "");
+      presentation::add_rule(p, "xYxy", "");
 
-      letter_type constexpr a = 0, b = 1, c = 2, A = 4, B = 5, C = 6, e = 8;
+      letter_type constexpr a = 0, b = 1, c = 2, A = 4, B = 5, C = 6;
+      emit_xml_presentation_tags(p, "big-hard", 786'432);
 
+      open_xml_tag("LatexColumnTitle", "HLT");
       BENCHMARK("HLT") {
-        congruence::ToddCoxeter H(right, G.congruence());
-        H.add_pair({a, B, C, b, a, c}, {e});
-        H.add_pair({b, A, C, b, a, a, c, A}, {e});
-        H.add_pair({a, c, c, A, A, B, a, b}, {e});
-        H.strategy(options::strategy::hlt)
+        ToddCoxeter H(congruence_kind::right, p);
+        H.add_pair({a, B, C, b, a, c}, {});
+        H.add_pair({b, A, C, b, a, a, c, A}, {});
+        H.add_pair({a, c, c, A, A, B, a, b}, {});
+        H.strategy(strategy::hlt)
             .save(true)
-            .lookahead(options::lookahead::partial)
-            .next_lookahead(1'000'000)
+            .lookahead_extent(lookahead_extent::partial)
+            .lookahead_next(1'000'000)
             .large_collapse(5'000)
-            .max_deductions(1'000'000)
+            .def_max(1'000'000)
             .lower_bound(786'432);
         REQUIRE(H.number_of_classes() == 786'432);
       };
+      close_xml_tag("LatexColumnTitle");
     }
-
-    TEST_CASE("ACE --- g25.a", "[paper][ace][g25.a]") {
-      auto        rg = ReportGuard(true);
-      ToddCoxeter G;
-      G.set_alphabet("abcdeABCDx");
-      G.set_identity("x");
-      G.set_inverses("ABCDeabcdx");
-
-      G.add_rule("ee", "x");
-      G.add_rule("DaDa", "x");
-      G.add_rule("dddd", "x");
-      G.add_rule("BDbd", "x");
-      G.add_rule("ccccc", "x");
-      G.add_rule("bbbbb", "x");
-      G.add_rule("AABaab", "x");
-      G.add_rule("ddAAAA", "x");
-      G.add_rule("AAcaacc", "x");
-      G.add_rule("ececBBC", "x");
-      G.add_rule("abababab", "x");
-      G.add_rule("BBcbceceBCC", "x");
-      G.add_rule("ebcBebCBBcB", "x");
-      G.add_rule("ebebccBBcbC", "x");
-      G.add_rule("ACabCBAcabcB", "x");
-      G.add_rule("ABabABabABab", "x");
-      G.add_rule("CACaCaCAccaCA", "x");
-      G.add_rule("ABcbabCBCBccb", "x");
-      G.add_rule("BCbcACaCBcbAca", "x");
-      G.add_rule("eabbaBAeabbaBA", "x");
-      G.add_rule("eBcbeabcBcACBB", "x");
-      G.add_rule("BCbAcaBcbCACac", "x");
-      G.add_rule("CACacaCAcACaCACa", "x");
-      G.add_rule("CAcacbcBCACacbCB", "x");
-      G.add_rule("CaCAcacAcaCACacA", "x");
-      G.add_rule("cacbcBACCaCbCBAc", "x");
-      G.add_rule("CBCbcBcbCCACACaca", "x");
-      G.add_rule("BAcabbcBcbeCebACa", "x");
-      G.add_rule("ACacAcaebcBCBcBCe", "x");
-      G.add_rule("eDCDbABCDACaCAcabb", "x");
-      G.add_rule("BCbbCBBcbbACacAcaB", "x");
-      G.add_rule("eaaebcBACaCAcbABBA", "x");
-      G.add_rule("BACaCAcacbCACacAca", "x");
-      G.add_rule("AbcBabCBCbCBBcbAcaC", "x");
-      G.add_rule("aabaBabaabaBabaabaBab", "x");
-      G.add_rule("eAcaeACaeAcabCBaBcbaaa", "x");
-      G.add_rule("deBAceAeACACacAcabcBcbaBBA", "x");
-      G.add_rule("dCACacAcadACaCAcacdCACacAcA", "x");
-      G.add_rule("dCACacAcadCACacAcadCACacAcadCACacAcadCACacAcadCACacAca", "x");
-
-      G.congruence()
-          .remove_duplicate_generating_pairs()
-          .sort_generating_pairs();
-      REQUIRE(G.size() == 1);
-      std::cout << G.congruence().stats_string();
-    }
-
-    namespace {
-      void walker1(ToddCoxeter& tc) {
-        tc.set_alphabet("abc");
-        tc.add_rule("aaaaaaaaaaaaaa", "a");
-        tc.add_rule("bbbbbbbbbbbbbb", "b");
-        tc.add_rule("cccccccccccccc", "c");
-        tc.add_rule("aaaaba", "bbb");
-        tc.add_rule("bbbbab", "aaa");
-        tc.add_rule("aaaaca", "ccc");
-        tc.add_rule("ccccac", "aaa");
-        tc.add_rule("bbbbcb", "ccc");
-        tc.add_rule("ccccbc", "bbb");
-      }
-
-      void walker2(ToddCoxeter& tc) {
-        tc.set_alphabet("ab");
-        tc.add_rule("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "a");
-        tc.add_rule("bbb", "b");
-        tc.add_rule("ababa", "b");
-        tc.add_rule("aaaaaaaaaaaaaaaabaaaabaaaaaaaaaaaaaaaabaaaa", "b");
-      }
-
-      void walker3(ToddCoxeter& tc) {
-        tc.set_alphabet("ab");
-        tc.add_rule("aaaaaaaaaaaaaaaa", "a");
-        tc.add_rule("bbbbbbbbbbbbbbbb", "b");
-        tc.add_rule("abb", "baa");
-      }
-
-      void walker4(ToddCoxeter& tc) {
-        tc.set_alphabet("ab");
-        tc.add_rule("aaa", "a");
-        tc.add_rule("bbbbbb", "b");
-        tc.add_rule("ababbbbababbbbababbbbababbbbababbbbababbbbababbbbabba",
-                    "bb");
-      }
-
-      void walker5(ToddCoxeter& tc) {
-        tc.set_alphabet("ab");
-        tc.add_rule("aaa", "a");
-        tc.add_rule("bbbbbb", "b");
-        tc.add_rule(
-            "ababbbbababbbbababbbbababbbbababbbbababbbbababbbbabbabbbbbaa",
-            "bb");
-      }
-
-      void walker6(ToddCoxeter& tc) {
-        tc.set_alphabet("ab");
-        tc.add_rule("aaa", "a");
-        tc.add_rule("bbbbbbbbb", "b");
-        std::string lng("ababbbbbbb");
-        lng += lng;
-        lng += "abbabbbbbbbb";
-        tc.add_rule(lng, "bb");
-      }
-
-      void walker7(ToddCoxeter& tc) {
-        tc.set_alphabet("abcde");
-        tc.add_rule("aaa", "a");
-        tc.add_rule("bbb", "b");
-        tc.add_rule("ccc", "c");
-        tc.add_rule("ddd", "d");
-        tc.add_rule("eee", "e");
-        tc.add_rule("ababab", "aa");
-        tc.add_rule("bcbcbc", "bb");
-        tc.add_rule("cdcdcd", "cc");
-        tc.add_rule("dedede", "dd");
-        tc.add_rule("ac", "ca");
-        tc.add_rule("ad", "da");
-        tc.add_rule("ae", "ea");
-        tc.add_rule("bd", "db");
-        tc.add_rule("be", "eb");
-        tc.add_rule("ce", "ec");
-      }
-
-      void walker8(ToddCoxeter& tc) {
-        tc.set_alphabet("ab");
-        tc.add_rule("aaa", "a");
-        tc.add_rule("bbbbbbbbbbbbbbbbbbbbbbb", "b");
-        tc.add_rule("abbbbbbbbbbbabb", "bba");
-      }
-    }  // namespace
-
-    TEST_CASE("Walker 1", "[quick][Walker1][paper]") {
-      using options = libsemigroups::congruence::ToddCoxeter::options;
-      auto rg       = ReportGuard(false);
-      BENCHMARK("HLT") {
-        ToddCoxeter tc;
-        walker1(tc);
-        tc.congruence()
-            .sort_generating_pairs()
-            .strategy(options::strategy::hlt)
-            .next_lookahead(500'000)
-            .large_collapse(2'000);
-
-        REQUIRE(tc.size() == 1);
-      };
-      BENCHMARK("Felsch") {
-        ToddCoxeter tc;
-        walker1(tc);
-        tc.congruence().simplify();
-        tc.congruence()
-            .sort_generating_pairs()
-            .strategy(options::strategy::felsch)
-            .max_deductions(2'000)
-            .preferred_defs(options::preferred_defs::immediate_no_stack)
-            .large_collapse(10'000);
-        REQUIRE(tc.size() == 1);
-      };
-    }
-
-    TEST_CASE("Walker 2", "[quick][Walker2][paper]") {
-      using options = libsemigroups::congruence::ToddCoxeter::options;
-      auto rg       = ReportGuard(false);
-      BENCHMARK("HLT") {
-        ToddCoxeter tc;
-        walker2(tc);
-        tc.congruence().simplify();
-        tc.congruence()
-            .strategy(options::strategy::hlt)
-            .next_lookahead(2'000'000);
-        REQUIRE(tc.size() == 14'911);
-      };
-
-      BENCHMARK("Felsch") {
-        ToddCoxeter tc;
-        walker2(tc);
-        tc.congruence().simplify();
-        tc.congruence()
-            .strategy(options::strategy::felsch)
-            .use_relations_in_extra(true)
-            .max_deductions(100'000);
-        REQUIRE(tc.size() == 14'911);
-      };
-
-      BENCHMARK("HLT tweaked") {
-        ToddCoxeter tc;
-        walker2(tc);
-        tc.congruence().simplify();
-        tc.congruence()
-            .sort_generating_pairs()
-            .next_lookahead(1'000'000)
-            .max_deductions(2'000)
-            .use_relations_in_extra(true)
-            .strategy(options::strategy::hlt)
-            .lookahead(options::lookahead::partial | options::lookahead::felsch)
-            .deduction_policy(options::deductions::v2
-                              | options::deductions::no_stack_if_no_space);
-        REQUIRE(tc.size() == 14'911);
-      };
-    }
-
-    TEST_CASE("Walker 3", "[quick][Walker3][paper]") {
-      using options = libsemigroups::congruence::ToddCoxeter::options;
-      auto rg       = ReportGuard(false);
-      BENCHMARK("HLT") {
-        ToddCoxeter tc;
-        walker3(tc);
-        tc.congruence().next_lookahead(2'000'000).strategy(
-            options::strategy::hlt);
-        REQUIRE(tc.size() == 20'490);
-      };
-
-      BENCHMARK("Felsch") {
-        ToddCoxeter tc;
-        walker3(tc);
-        tc.congruence()
-            .strategy(options::strategy::felsch)
-            .use_relations_in_extra(true)
-            .max_deductions(100'000)
-            .deduction_policy(options::deductions::v1
-                              | options::deductions::no_stack_if_no_space)
-            .preferred_defs(options::preferred_defs::none);
-        REQUIRE(tc.size() == 20'490);
-      };
-    }
-
-    TEST_CASE("Walker 4", "[quick][Walker4][paper]") {
-      using options = libsemigroups::congruence::ToddCoxeter::options;
-      auto rg       = ReportGuard(false);
-      BENCHMARK("HLT") {
-        ToddCoxeter tc;
-        walker4(tc);
-        tc.congruence().next_lookahead(3'000'000).strategy(
-            options::strategy::hlt);
-        REQUIRE(tc.size() == 36'412);
-      };
-    }
-
-    TEST_CASE("Walker 4 - Felsch only", "[paper][Walker4][felsch]") {
-      auto        rg = ReportGuard(true);
-      ToddCoxeter tc;
-      walker4(tc);
-      tc.congruence().simplify(3);
-      REQUIRE(std::vector<word_type>(tc.congruence().cbegin_relations(),
-                                     tc.congruence().cend_relations())
-              == std::vector<word_type>({{0},
-                                         {0, 0, 0},
-                                         {1, 1},
-                                         {0, 1, 2, 2, 2, 2, 2, 2, 2, 1, 0},
-                                         {1},
-                                         {3, 1, 1},
-                                         {2},
-                                         {0, 3, 0, 1},
-                                         {3},
-                                         {1, 1, 1, 1}}));
-
-      tc.congruence()
-          .strategy(options::strategy::felsch)
-          .preferred_defs(options::preferred_defs::deferred)
-          .max_deductions(10'000)
-          .large_collapse(3'000);
-      std::cout << tc.congruence().settings_string();
-      REQUIRE(tc.size() == 36'412);
-      std::cout << tc.congruence().stats_string();
-    }
-
-    TEST_CASE("Walker 5", "[quick][Walker5][paper]") {
-      using options = libsemigroups::congruence::ToddCoxeter::options;
-      auto rg       = ReportGuard(false);
-      BENCHMARK("HLT") {
-        ToddCoxeter tc;
-        walker5(tc);
-        tc.congruence().next_lookahead(5'000'000).strategy(
-            options::strategy::hlt);
-        // REQUIRE(tc.congruence().number_of_generators() == 2);
-        // REQUIRE(tc.congruence().number_of_generating_pairs() == 3);
-        // REQUIRE(tc.congruence().length_of_generating_pairs() == 73);
-        REQUIRE(tc.size() == 72'822);
-      };
-    }
-
-    TEST_CASE("Walker 5 - Felsch only", "[paper][Walker5][felsch]") {
-      auto        rg = ReportGuard(true);
-      ToddCoxeter tc;
-      walker5(tc);
-      tc.congruence().simplify(3);
-      tc.congruence()
-          .strategy(options::strategy::felsch)
-          .max_deductions(POSITIVE_INFINITY)
-          .preferred_defs(options::preferred_defs::none);
-      REQUIRE(std::vector<word_type>(tc.congruence().cbegin_relations(),
-                                     tc.congruence().cend_relations())
-              == std::vector<word_type>(
-                  {{0, 0, 0},
-                   {0},
-                   {3, 1, 1},
-                   {1},
-                   {0, 1, 2, 2, 2, 2, 2, 2, 2, 1, 0, 3, 1, 0, 0},
-                   {1, 1},
-                   {2},
-                   {0, 3, 0, 1},
-                   {3},
-                   {1, 1, 1, 1}}));
-      std::cout << tc.congruence().settings_string();
-      REQUIRE(tc.size() == 72'822);
-      std::cout << tc.congruence().stats_string();
-    }
-
-    TEST_CASE("Walker 6", "[quick][Walker6][paper]") {
-      using options = libsemigroups::congruence::ToddCoxeter::options;
-      auto rg       = ReportGuard(false);
-      BENCHMARK("HLT") {
-        ToddCoxeter tc;
-        walker6(tc);
-        tc.congruence().simplify(1);
-        tc.congruence()
-            .sort_generating_pairs()
-            .remove_duplicate_generating_pairs();
-        tc.congruence().strategy(options::strategy::hlt);
-        REQUIRE(tc.size() == 78'722);
-      };
-      BENCHMARK("Felsch") {
-        ToddCoxeter tc;
-        walker6(tc);
-        tc.congruence().simplify(10);
-        tc.congruence()
-            .sort_generating_pairs()
-            .remove_duplicate_generating_pairs()
-            .use_relations_in_extra(true);
-        tc.congruence().strategy(options::strategy::felsch);
-        REQUIRE(tc.size() == 78'722);
-      };
-    }
-
-    TEST_CASE("Walker 7", "[quick][Walker7][paper]") {
-      using options = libsemigroups::congruence::ToddCoxeter::options;
-      auto rg       = ReportGuard(false);
-      BENCHMARK("HLT") {
-        ToddCoxeter tc;
-        walker7(tc);
-        tc.congruence().strategy(options::strategy::hlt);
-        REQUIRE(tc.size() == 153'500);
-      };
-      BENCHMARK("Felsch") {
-        ToddCoxeter tc;
-        walker7(tc);
-        tc.congruence().simplify(10);
-        tc.congruence()
-            .strategy(options::strategy::felsch)
-            .deduction_policy(options::deductions::no_stack_if_no_space
-                              | options::deductions::v1)
-            .preferred_defs(options::preferred_defs::none);
-        REQUIRE(tc.size() == 153'500);
-      };
-    }
-
-    TEST_CASE("Walker 8", "[quick][Walker8][paper]") {
-      using options = libsemigroups::congruence::ToddCoxeter::options;
-      auto rg       = ReportGuard(false);
-      BENCHMARK("HLT") {
-        ToddCoxeter tc;
-        walker8(tc);
-        tc.congruence().next_lookahead(500'000);
-        tc.congruence().strategy(options::strategy::hlt);
-        REQUIRE(tc.size() == 270'272);
-      };
-    }
-
-    TEST_CASE("Walker 8 - Felsch only", "[paper][Walker8][felsch]") {
-      auto        rg = ReportGuard(true);
-      ToddCoxeter tc;
-      walker5(tc);
-      tc.congruence().simplify(10);
-      tc.congruence().strategy(options::strategy::felsch);
-      std::cout << tc.congruence().settings_string();
-      REQUIRE(tc.size() == 270'272);
-      std::cout << tc.congruence().stats_string();
-    }
-  }  // namespace fpsemigroup
+  }  // namespace ace
+  //
 }  // namespace libsemigroups
+
+// Unused!
+//    TEST_CASE("ACE --- g25.a", "[paper][ace][g25.a]") {
+//      auto        rg = ReportGuard(true);
+//      Presentation<std::string> p;
+//      p.alphabet("abcdeABCDx");
+//      G.set_identity("x");
+//      presentation::add_inverse_rules(p, "ABCDeabcdx");
+//
+//      presentation::add_rule(p, "ee", "x");
+//      presentation::add_rule(p, "DaDa", "x");
+//      presentation::add_rule(p, "dddd", "x");
+//      presentation::add_rule(p, "BDbd", "x");
+//      presentation::add_rule(p, "ccccc", "x");
+//      presentation::add_rule(p, "bbbbb", "x");
+//      presentation::add_rule(p, "AABaab", "x");
+//      presentation::add_rule(p, "ddAAAA", "x");
+//      presentation::add_rule(p, "AAcaacc", "x");
+//      presentation::add_rule(p, "ececBBC", "x");
+//      presentation::add_rule(p, "abababab", "x");
+//      presentation::add_rule(p, "BBcbceceBCC", "x");
+//      presentation::add_rule(p, "ebcBebCBBcB", "x");
+//      presentation::add_rule(p, "ebebccBBcbC", "x");
+//      presentation::add_rule(p, "ACabCBAcabcB", "x");
+//      presentation::add_rule(p, "ABabABabABab", "x");
+//      presentation::add_rule(p, "CACaCaCAccaCA", "x");
+//      presentation::add_rule(p, "ABcbabCBCBccb", "x");
+//      presentation::add_rule(p, "BCbcACaCBcbAca", "x");
+//      presentation::add_rule(p, "eabbaBAeabbaBA", "x");
+//      presentation::add_rule(p, "eBcbeabcBcACBB", "x");
+//      presentation::add_rule(p, "BCbAcaBcbCACac", "x");
+//      presentation::add_rule(p, "CACacaCAcACaCACa", "x");
+//      presentation::add_rule(p, "CAcacbcBCACacbCB", "x");
+//      presentation::add_rule(p, "CaCAcacAcaCACacA", "x");
+//      presentation::add_rule(p, "cacbcBACCaCbCBAc", "x");
+//      presentation::add_rule(p, "CBCbcBcbCCACACaca", "x");
+//      presentation::add_rule(p, "BAcabbcBcbeCebACa", "x");
+//      presentation::add_rule(p, "ACacAcaebcBCBcBCe", "x");
+//      presentation::add_rule(p, "eDCDbABCDACaCAcabb", "x");
+//      presentation::add_rule(p, "BCbbCBBcbbACacAcaB", "x");
+//      presentation::add_rule(p, "eaaebcBACaCAcbABBA", "x");
+//      presentation::add_rule(p, "BACaCAcacbCACacAca", "x");
+//      presentation::add_rule(p, "AbcBabCBCbCBBcbAcaC", "x");
+//      presentation::add_rule(p, "aabaBabaabaBabaabaBab", "x");
+//      presentation::add_rule(p, "eAcaeACaeAcabCBaBcbaaa", "x");
+//      presentation::add_rule(p, "deBAceAeACACacAcabcBcbaBBA", "x");
+//      presentation::add_rule(p, "dCACacAcadACaCAcacdCACacAcA", "x");
+//      presentation::add_rule(p,
+//  "dCACacAcadCACacAcadCACacAcadCACacAcadCACacAcadCACacAca", "x");
+//
+//      p
+//          .remove_duplicate_generating_pairs()
+//          .sort_generating_pairs();
+//      REQUIRE(tc.number_of_classes() == 1);
+//      std::cout << p.stats_string();
+//    }

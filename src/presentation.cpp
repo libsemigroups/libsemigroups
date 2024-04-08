@@ -26,10 +26,11 @@
 
 #include "libsemigroups/exception.hpp"     // for LIBSEMIGROUPS_EXCEPTION
 #include "libsemigroups/presentation.hpp"  // for Presentation, to_string, to_word
-#include "libsemigroups/types.hpp"         // for word_type
-#include "libsemigroups/words.hpp"         // for human_readable_char
-                                           //
-#include "libsemigroups/detail/fmt.hpp"    // for format
+#include "libsemigroups/to-presentation.hpp"  // for human_readable_char
+#include "libsemigroups/types.hpp"            // for word_type
+#include "libsemigroups/words.hpp"            // for human_readable_char
+
+#include "libsemigroups/detail/fmt.hpp"  // for format
 
 namespace libsemigroups {
   namespace detail {
@@ -67,12 +68,16 @@ namespace libsemigroups {
 
     std::string to_gap_string(Presentation<word_type> const& p,
                               std::string const&             var_name) {
+      p.validate();
       if (p.alphabet().size() > 49) {
         LIBSEMIGROUPS_EXCEPTION("expected at most 49 generators, found {}!",
                                 p.alphabet().size());
       }
 
       auto to_gap_word = [](word_type const& w) -> std::string {
+        if (w.empty()) {
+          return "One(F)";
+        }
         std::string out;
         std::string sep = "";
         for (auto it = w.cbegin(); it < w.cend(); ++it) {
@@ -82,7 +87,13 @@ namespace libsemigroups {
         return out;
       };
 
-      std::string out = "free := FreeSemigroup(";
+      std::string out = "F := Free";
+      if (p.contains_empty_word()) {
+        out += "Monoid(";
+      } else {
+        out += "Semigroup(";
+      }
+
       std::string sep = "";
       for (auto it = p.alphabet().cbegin(); it != p.alphabet().cend(); ++it) {
         out += fmt::format("{}\"{}\"", sep, human_readable_char(*it));
@@ -90,12 +101,9 @@ namespace libsemigroups {
       }
       out += ");\n";
 
-      for (size_t i = 0; i != p.alphabet().size(); ++i) {
-        out += fmt::format("{} := free.{};\n", human_readable_char(i), i + 1);
-      }
-      out += "\n";
+      out += "AssignGeneratorVariables(F);;\n";
 
-      out += "rules := [";
+      out += "R := [";
       sep = "";
       for (auto it = p.rules.cbegin(); it < p.rules.cend(); it += 2) {
         out += fmt::format("{}\n          [{}, {}]",
@@ -105,9 +113,15 @@ namespace libsemigroups {
         sep = ", ";
       }
       out += "\n         ];\n";
-      out += var_name + " := free / rules;\n";
+      out += var_name + " := F / R;\n";
       return out;
     }
+
+    std::string to_gap_string(Presentation<std::string> const& p,
+                              std::string const&               var_name) {
+      return to_gap_string(to_presentation<word_type>(p), var_name);
+    }
+
   }  // namespace presentation
 
   void to_word(Presentation<std::string> const& p,

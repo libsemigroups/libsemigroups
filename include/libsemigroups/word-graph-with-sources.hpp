@@ -89,6 +89,8 @@ namespace libsemigroups {
     WordGraphWithSources& operator=(WordGraphWithSources const&) = default;
     WordGraphWithSources& operator=(WordGraphWithSources&&)      = default;
 
+    ~WordGraphWithSources();
+
     // the template is for uniformity of interface with FelschGraph
     template <bool = true>
     void set_target_no_checks(node_type c, label_type x, node_type d) noexcept {
@@ -172,7 +174,7 @@ namespace libsemigroups {
     void rebuild_sources_no_checks(It first, It last);
 
     // TODO remove
-    // Copied from digraph-with-sources.hpp in fp-inverse-monoids branch
+    // Copied from word graph-with-sources.hpp in fp-inverse-monoids branch
     // void shrink_to_fit(size_type m) {
     //   this->restrict(m);
     //   _preim_init.shrink_rows_to(m);
@@ -200,6 +202,7 @@ namespace libsemigroups {
                                   label_type x,
                                   node_type  cx);
   };
+
 }  // namespace libsemigroups
 
 #include "word-graph-with-sources.tpp"

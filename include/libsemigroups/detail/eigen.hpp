@@ -30,6 +30,7 @@
 #endif
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wold-style-cast"
+#pragma GCC diagnostic ignored "-Winline"
 #define _SILENCE_ALL_CXX17_DEPRECATION_WARNINGS
 #include <Eigen/Core>
 #include <unsupported/Eigen/MatrixFunctions>

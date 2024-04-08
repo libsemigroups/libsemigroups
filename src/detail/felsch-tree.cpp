@@ -38,6 +38,8 @@ namespace libsemigroups {
       init(n);
     }
 
+    FelschTree::~FelschTree() = default;
+
     void FelschTree::init(size_t n) {
       _automata.init(n, 1, initial_state);
       _current_state = initial_state;

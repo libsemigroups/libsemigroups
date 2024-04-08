@@ -23,7 +23,9 @@
 .!*
 .DS_Store
 .VERSION
+.cache
 .ccls
+.ccls-cache
 .deps
 .dirstamp
 .ipynb_checkpoints
@@ -50,6 +52,7 @@ coverage/
 docs-old/build/*
 docs/build
 docs/source/_generated
+docs/xml
 extern/HPCombi/*.md
 extern/HPCombi/*.txt
 extern/HPCombi/.*
@@ -83,5 +86,3 @@ site/*
 tags
 test_*
 tmp/*
-.cache
-docs/xml

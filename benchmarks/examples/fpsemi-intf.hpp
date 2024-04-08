@@ -24,7 +24,6 @@
 #include <vector>   // for vector
 
 #include "libsemigroups/cong-intf.hpp"
-#include "libsemigroups/fpsemi-intf.hpp"
 #include "libsemigroups/types.hpp"
 
 #include "common.hpp"

@@ -384,7 +384,6 @@ namespace libsemigroups {
   }
 
   void FroidurePinBase::const_rule_iterator::populate_relation() const {
-    // TODO(now) to cpp
     if (_relation.first.empty()) {
       if (_current[2] == UNDEFINED) {
         _relation.first  = word_type({_current[0]});

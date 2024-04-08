@@ -74,6 +74,26 @@ namespace libsemigroups {
       return *this;
     }
 
+    template <typename BaseGraph>
+    NodeManagedGraph<BaseGraph>::NodeManagedGraph(NodeManagedGraph const&)
+        = default;
+
+    template <typename BaseGraph>
+    NodeManagedGraph<BaseGraph>::NodeManagedGraph(NodeManagedGraph&&) = default;
+
+    template <typename BaseGraph>
+    NodeManagedGraph<BaseGraph>&
+    NodeManagedGraph<BaseGraph>::operator=(NodeManagedGraph const&)
+        = default;
+
+    template <typename BaseGraph>
+    NodeManagedGraph<BaseGraph>&
+    NodeManagedGraph<BaseGraph>::operator=(NodeManagedGraph&&)
+        = default;
+
+    template <typename BaseGraph>
+    NodeManagedGraph<BaseGraph>::~NodeManagedGraph() = default;
+
     ////////////////////////////////////////////////////////////////////////
     // Stats
     ////////////////////////////////////////////////////////////////////////

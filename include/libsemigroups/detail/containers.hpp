@@ -147,10 +147,10 @@ namespace libsemigroups {
       using const_pointer   = typename std::vector<T, A>::const_pointer;
       using pointer         = typename std::vector<T, A>::pointer;
 
-      DynamicArray2(DynamicArray2 const&)            = default;
-      DynamicArray2(DynamicArray2&&)                 = default;
-      DynamicArray2& operator=(DynamicArray2 const&) = default;
-      DynamicArray2& operator=(DynamicArray2&&)      = default;
+      DynamicArray2(DynamicArray2 const&);
+      DynamicArray2(DynamicArray2&&);
+      DynamicArray2& operator=(DynamicArray2 const&);
+      DynamicArray2& operator=(DynamicArray2&&);
 
       ~DynamicArray2() = default;
 
@@ -226,6 +226,11 @@ namespace libsemigroups {
           return false;
         }
         return std::equal(cbegin(), cend(), that.cbegin());
+      }
+
+      bool operator<(DynamicArray2<T, A> const& that) const {
+        return std::lexicographical_compare(
+            _vec.cbegin(), _vec.cend(), that.cbegin(), that.cend());
       }
 
       // Not noexcept, since operator== can throw
@@ -757,6 +762,20 @@ namespace libsemigroups {
         return const_column_iterator(this, _vec.end() + col_index);
       }
     };
+
+    template <typename T, typename A>
+    DynamicArray2<T, A>::DynamicArray2(DynamicArray2 const&) = default;
+
+    template <typename T, typename A>
+    DynamicArray2<T, A>::DynamicArray2(DynamicArray2&&) = default;
+
+    template <typename T, typename A>
+    DynamicArray2<T, A>& DynamicArray2<T, A>::operator=(DynamicArray2 const&)
+        = default;
+
+    template <typename T, typename A>
+    DynamicArray2<T, A>& DynamicArray2<T, A>::operator=(DynamicArray2&&)
+        = default;
 
     // StaticVector1 wraps an array, providing it with some of the syntax of
     // std::vector.

@@ -85,6 +85,8 @@ namespace libsemigroups {
     return *this;
   }
 
+  Ukkonen::~Ukkonen() = default;
+
   ////////////////////////////////////////////////////////////////////////
   // Ukkonen - initialisation - public
   ////////////////////////////////////////////////////////////////////////
@@ -590,6 +592,8 @@ namespace libsemigroups {
             _num_leafs(st.nodes().size(), 0),
             _scratch(),
             _suffix_index() {}
+
+      GreedyReduceHelper::~GreedyReduceHelper() = default;
 
       void GreedyReduceHelper::pre_order(Ukkonen const& st, size_t v) {
         auto const& nodes = st.nodes();

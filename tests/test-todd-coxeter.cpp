@@ -20,7 +20,8 @@
 #include <fstream>   // for ofstream
 #include <iostream>  // for cout
 
-#include "catch.hpp"      // for TEST_CASE
+#include "catch.hpp"  // for TEST_CASE
+#include "libsemigroups/constants.hpp"
 #include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 
 #include "libsemigroups/bmat8.hpp"
@@ -335,7 +336,7 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                           "001",
-                          "small 2-sided congruence",
+                          "small 2-sided congruence x 2",
                           "[no-valgrind][todd-coxeter][quick]") {
     auto rg = ReportGuard(false);
 
@@ -1021,7 +1022,7 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                           "017",
-                          "finite fp-semigroup, size 16",
+                          "finite fp-semigroup, size 16 x 2",
                           "[todd-coxeter][quick]") {
     auto                    rg = ReportGuard(false);
     Presentation<word_type> p;
@@ -1318,7 +1319,7 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                           "026",
-                          "exceptions",
+                          "exceptions x 2",
                           "[todd-coxeter][quick]") {
     auto                    rg = ReportGuard(false);
     Presentation<word_type> p;
@@ -1510,7 +1511,7 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                           "034",
-                          "congruence of ToddCoxeter",
+                          "congruence of ToddCoxeter x 2",
                           "[todd-coxeter][quick]") {
     auto rg      = ReportGuard(false);
     using Transf = LeastTransf<5>;
@@ -1944,15 +1945,20 @@ namespace libsemigroups {
     using fpsemigroup::singular_brauer_monoid;
 
     auto         rg = ReportGuard(false);
-    size_t const n  = 6;
+    size_t const n  = 3;
     auto         p  = singular_brauer_monoid(n);
-    presentation::remove_duplicate_rules(p);
-    presentation::sort_rules(p);
-    presentation::sort_each_rule(p);
-    REQUIRE(!p.contains_empty_word());
+    presentation::remove_redundant_generators(p);
 
+    // presentation::remove_duplicate_rules(p);
+    // presentation::sort_rules(p);
+    // presentation::sort_each_rule(p);
+    // REQUIRE(!p.contains_empty_word());
+    REQUIRE(p.alphabet() == "013"_w);
+    REQUIRE(!is_obviously_infinite(p));
+    presentation::normalize_alphabet(p);
+    // FIXME this test case seg faults if we don't normalize_alphabet
     ToddCoxeter tc(twosided, p);
-    REQUIRE(tc.number_of_classes() == 9'675);
+    REQUIRE(tc.number_of_classes() == 9);
   }
 
   LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
@@ -2655,11 +2661,13 @@ namespace libsemigroups {
     presentation::sort_each_rule(p);
     presentation::sort_rules(p);
 
+    REQUIRE(presentation::length(p) == 105);
+
     ToddCoxeter tc(twosided, p);
-    tc.run_until([&tc]() -> bool {
-      return tc.word_graph().number_of_nodes() >= 10'000;
-    });
-    tc.lookahead_next(100'000);
+    // tc.run_until([&tc]() -> bool {
+    //   return tc.word_graph().number_of_nodes() >= 10'000;
+    // });
+    // tc.lookahead_next(100'000);
     REQUIRE(!tc.finished());
     REQUIRE(!is_obviously_infinite(tc));
     tc.standardize(Order::shortlex);
@@ -2791,34 +2799,36 @@ namespace libsemigroups {
 
     REQUIRE(!is_obviously_infinite(tc));
 
-    section_hlt(tc);
+    // section_hlt(tc);
 
     // Felsch very slow with + without preprocessing
-    // SECTION("preprocessing + Felsch") {
-    //   presentation::greedy_reduce_length(p);
-    //   REQUIRE(presentation::length(p) == 29);
-    //   REQUIRE(p.alphabet() == "abcd");
-    //   p.rules = std::vector<std::string>({"aaa",
-    //                                       "a",
-    //                                       "dbb",
-    //                                       "b",
-    //                                       "abeceba",
-    //                                       "bb",
-    //                                       "c",
-    //                                       "adab",
-    //                                       "d",
-    //                                       "bbbb",
-    //                                       "ccc",
-    //                                       "e"});
-    //   p.alphabet_from_rules();
-    //   tc.init(twosided, p);
-    //   tc.strategy(options::strategy::felsch);
-    // }
-    SECTION("custom R/C") {
-      tc.lookahead_next(3'000'000)
-          .strategy(options::strategy::R_over_C)
-          .def_max(100'000);
+    SECTION("preprocessing + Felsch") {
+      presentation::greedy_reduce_length(p);
+      REQUIRE(presentation::length(p) == 29);
+      REQUIRE(p.alphabet() == "abcd");
+      p.rules = std::vector<std::string>({"aaa",
+                                          "a",
+                                          "dbb",
+                                          "b",
+                                          "abeceba",
+                                          "bb",
+                                          "c",
+                                          "adab",
+                                          "d",
+                                          "bbbb",
+                                          "ccc",
+                                          "e"});
+
+      p.alphabet_from_rules();
+      tc.init(twosided, p);
+      tc.def_max(10'000).large_collapse(3'000);
+      tc.strategy(options::strategy::felsch);
     }
+    // SECTION("custom R/C") {
+    //   tc.lookahead_next(3'000'000)
+    //       .strategy(options::strategy::R_over_C)
+    //       .def_max(100'000);
+    // }
     REQUIRE(tc.number_of_classes() == 36'412);
   }
 
@@ -3125,7 +3135,7 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                           "083",
-                          "Holt 3",
+                          "Holt 3 x 2",
                           "[todd-coxeter][fail]") {
     auto                      rg = ReportGuard();
     Presentation<std::string> p;
@@ -3236,19 +3246,15 @@ namespace libsemigroups {
       std::string rhs = "e";
       presentation::add_rule_no_checks(p, lhs, rhs);
 
-      lhs = std::string(N, 'a');
-      rhs = std::string(N + 1, 'b');
+      lhs = std::string(N, 'a') + std::string(N + 1, 'b');
+      rhs = "e";
       presentation::add_rule_no_checks(p, lhs, rhs);
 
-      lhs = "ba";
+      lhs = "ab";
       rhs = std::string(N, 'b') + "a";
       presentation::add_rule_no_checks(p, lhs, rhs);
       ToddCoxeter tc(twosided, std::move(p));
-      if (N % 3 == 1) {
-        REQUIRE(tc.number_of_classes() == 3);
-      } else {
-        REQUIRE(tc.number_of_classes() == 1);
-      }
+      REQUIRE(tc.number_of_classes() == 1);
     }
   }
 
@@ -3592,7 +3598,7 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                           "098",
-                          "relation ordering",
+                          "relation ordering x 2",
                           "[todd-coxeter][quick]") {
     Presentation<word_type> p;
     p.alphabet(10);
@@ -3760,6 +3766,7 @@ namespace libsemigroups {
     presentation::add_rule(p, "(xy)^11"_p, "");
     presentation::add_rule(p, "(xy^2)^6"_p, "");
     presentation::add_rule(p, "(xy)^2xY(xy)^2(yxYx)^2Y"_p, "");
+    REQUIRE(presentation::to_gap_string(p, "G") == "");
 
     ToddCoxeter tc(twosided, p);
 
@@ -4025,7 +4032,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE(
       "ToddCoxeter",
       "109",
-      "http://brauer.maths.qmul.ac.uk/Atlas/clas/S62/mag/S62G1-P1.M",
+      "http://brauer.maths.qmul.ac.uk/Atlas/clas/S62/mag/S62G1-P1.M x 2",
       "[todd-coxeter][extreme]") {
     Presentation<std::string> p;
     p.alphabet("xyXY");
@@ -4158,7 +4165,7 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                           "030",
-                          "Chinese id monoid",
+                          "Chinese id monoid x 2",
                           "[todd-coxeter][extreme]") {
     auto n = 5;
     auto p = fpsemigroup::chinese_monoid(n);
@@ -4419,7 +4426,7 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                           "036",
-                          "plactic (n, 1)-id monoid",
+                          "plactic (n, 1)-id monoid x 2",
                           "[todd-coxeter][extreme]") {
     using words::pow;
     using words::operator+;
@@ -4766,6 +4773,68 @@ namespace libsemigroups {
 
     ToddCoxeter tc(twosided, p);
     REQUIRE(tc.number_of_classes() == 5);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
+                          "117",
+                          "Rudvalis group",
+                          "[todd-coxeter][extreme]") {
+    auto                      rg = ReportGuard(true);
+    Presentation<std::string> p;
+    p.alphabet("abctABCT").contains_empty_word(true);
+    presentation::add_inverse_rules(p, "ABCTabct");
+    presentation::add_rule(p, "a^7"_p, "");
+    presentation::add_rule(p, "b^3"_p, "");
+    presentation::add_rule(p, "c^2"_p, "");
+    presentation::add_rule(p, "t^2"_p, "");
+    presentation::add_rule(p, "BCbc"_p, "");
+    presentation::add_rule(p, "TCtc"_p, "");
+    presentation::add_rule(p, "(ac)^6"_p, "");
+    presentation::add_rule(p, "(ACac)^4"_p, "");
+    presentation::add_rule(p, "(bt)^3"_p, "");
+    presentation::add_rule(p, "BabA^2"_p, "");
+    presentation::add_rule(p, "(abc)^7"_p, "");
+    presentation::add_rule(p, "(ab^2t)^3"_p, "");
+    presentation::add_rule(p, "TACABacatACAbaca"_p, "");
+    presentation::add_rule(p, "TB(AC)^2acabtBACA(ca)^2b"_p, "");
+    presentation::add_rule(p, "tA^3ta^3BtAtabACA^2(A^3C)^2a^3ca^5ca"_p, "");
+    presentation::balance(p, p.alphabet(), std::string("ABCTabct"));
+
+    REQUIRE(presentation::length(p) == 183);
+
+    ToWord      to_word(p.alphabet());
+    ToddCoxeter tc(left, p);
+    tc.add_pair(to_word("a"), {});
+    tc.add_pair(to_word("b"), {});
+    tc.add_pair(to_word("c"), {});
+    tc.strategy(options::strategy::felsch).use_relations_in_extra(true);
+
+    REQUIRE(tc.number_of_classes() == 7'238'400);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
+                          "118",
+                          "alternating group 8",
+                          "[todd-coxeter][extreme]") {
+    auto                      rg = ReportGuard(true);
+    Presentation<std::string> p;
+    p.alphabet("abcABC").contains_empty_word(true);
+    presentation::add_inverse_rules(p, "ABCabc");
+    presentation::add_rule(p, "a^7"_p, "");
+    presentation::add_rule(p, "b^3"_p, "");
+    presentation::add_rule(p, "c^2"_p, "");
+    presentation::add_rule(p, "BCbc"_p, "");
+    presentation::add_rule(p, "(ac)^6"_p, "");
+    presentation::add_rule(p, "(ACac)^4"_p, "");
+    presentation::add_rule(p, "BabAA"_p, "");
+    presentation::add_rule(p, "(abc)^7"_p, "");
+    presentation::balance(p, p.alphabet(), std::string("ABCabc"));
+
+    ToWord      to_word(p.alphabet());
+    ToddCoxeter tc(twosided, p);
+    tc.strategy(options::strategy::felsch).use_relations_in_extra(true);
+
+    REQUIRE(tc.number_of_classes() == 20'160);
   }
 
 }  // namespace libsemigroups

@@ -431,7 +431,7 @@ namespace libsemigroups {
                        Iterator3              first_rule,
                        Iterator3              last_rule) {
       for (auto nit = first_node; nit != last_node; ++nit) {
-        for (auto rit = first_rule; rit != last_rule; ++rit) {
+        for (auto rit = first_rule; rit < last_rule; ++rit) {
           auto l = word_graph::follow_path_no_checks(
               wg, *nit, rit->cbegin(), rit->cend());
           ++rit;
@@ -452,12 +452,37 @@ namespace libsemigroups {
     }
 
     template <typename Node, typename Iterator1, typename Iterator2>
+    bool is_compatible(WordGraph<Node> const& wg,
+                       Iterator1              first_node,
+                       Iterator2              last_node,
+                       word_type const&       lhs,
+                       word_type const&       rhs) {
+      for (auto nit = first_node; nit != last_node; ++nit) {
+        auto l = word_graph::follow_path_no_checks(
+            wg, *nit, lhs.cbegin(), lhs.cend());
+        if (l == UNDEFINED) {
+          continue;
+        }
+        auto r = word_graph::follow_path_no_checks(
+            wg, *nit, rhs.cbegin(), rhs.cend());
+        if (r == UNDEFINED) {
+          continue;
+        }
+        if (l != r) {
+          return false;
+        }
+      }
+      return true;
+    }
+
+    template <typename Node, typename Iterator1, typename Iterator2>
     bool is_complete(WordGraph<Node> const& wg,
                      Iterator1              first_node,
                      Iterator2              last_node) {
-      size_t const n = wg.out_degree();
+      using label_type = typename WordGraph<Node>::label_type;
+      size_t const n   = wg.out_degree();
       for (auto it = first_node; it != last_node; ++it) {
-        for (size_t a = 0; a < n; ++a) {
+        for (label_type a = 0; a < n; ++a) {
           if (wg.target_no_checks(*it, a) == UNDEFINED) {
             return false;
           }
@@ -805,7 +830,7 @@ namespace libsemigroups {
     }
 
     template <typename Node>
-    std::string dot(WordGraph<Node> const& wg) {
+    Dot dot(WordGraph<Node> const& wg) {
       Dot result;
       result.name("WordGraph").kind(Dot::Kind::digraph);
       for (auto n : wg.nodes()) {
@@ -818,7 +843,7 @@ namespace libsemigroups {
           }
         }
       }
-      return result.to_string();
+      return result;
     }
 
   }  // namespace word_graph

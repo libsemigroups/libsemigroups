@@ -330,6 +330,8 @@ namespace libsemigroups {
     return *this;
   }
 
+  ToddCoxeter::~ToddCoxeter() = default;
+
   ////////////////////////////////////////////////////////////////////////
   // ToddCoxeter - settings - public
   ////////////////////////////////////////////////////////////////////////
@@ -535,9 +537,9 @@ namespace libsemigroups {
         && (!running_for()
             || report_every() >= std::chrono::milliseconds(1'500))) {
       // TODO report_strategy
-      auto msg = fmt::format("{:+<93}\n", "");
+      auto msg = fmt::format("{:+<90}\n", "");
       msg += fmt_default("ToddCoxeter: Using {} strategy . . .\n", strategy());
-      msg += fmt::format("{:+<93}\n", "");
+      msg += fmt::format("{:+<90}\n", "");
       report_no_prefix(msg);
 
       detail::Ticker t([this]() { _word_graph.report_progress_from_thread(); });
@@ -676,12 +678,14 @@ namespace libsemigroups {
           // push_settings();
           lookahead_extent(options::lookahead_extent::full);
           lookahead_style(options::lookahead_style::hlt);
+          // TODO this doesn't do
           perform_lookahead(DoNotStopEarly);
           // pop_settings();
           // }
         }
       }
       _word_graph.report_progress_from_thread();
+      report_no_prefix("{:-<90}\n", "");
       _finished = true;
     }
   }
@@ -822,17 +826,18 @@ namespace libsemigroups {
   void ToddCoxeter::report_next_lookahead(size_t old_value) const {
     static const std::string pad(8, ' ');
     int64_t                  diff = int64_t(lookahead_next()) - old_value;
-    report_default("ToddCoxeter: next lookahead at {}  | {:>12} (nodes)  "
+    report_default("ToddCoxeter: next lookahead at {} | {:>12} (nodes)  "
                    "| {:>12} (diff)\n",
                    pad,
                    fmt::group_digits(lookahead_next()),
                    detail::signed_group_digits(diff));
-    report_no_prefix("{:-<93}\n", "");
+    report_no_prefix("{:-<90}\n", "");
   }
 
   void ToddCoxeter::report_nodes_killed(int64_t N) const {
+    report_no_prefix("{:-<90}\n", "");
     report_default(
-        "ToddCoxeter: lookahead complete with     | {:>12} (killed) |\n",
+        "ToddCoxeter: lookahead complete with    | {:>12} (killed) |\n",
         detail::group_digits(-1 * N));
   }
 
@@ -841,10 +846,11 @@ namespace libsemigroups {
   ////////////////////////////////////////////////////////////////////////
 
   void ToddCoxeter::perform_lookahead(bool stop_early) {
+    report_no_prefix("{:-<90}\n", "");
     report_default("ToddCoxeter: performing {} {} lookahead . . .\n",
                    lookahead_extent(),
                    lookahead_style());
-    report_no_prefix("{:-<93}\n", "");
+    report_no_prefix("{:-<90}\n", "");
     auto& current = _word_graph.lookahead_cursor();
 
     if (lookahead_extent() == options::lookahead_extent::partial) {
@@ -958,7 +964,7 @@ namespace libsemigroups {
       return tril::unknown;
     }
 
-#if defined(__GNUC__) && !defined(__clang__)
+#if !defined(__clang__)
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wmaybe-uninitialized"
 #endif
@@ -974,8 +980,12 @@ namespace libsemigroups {
              })
              | rx::count();
     }
-#if defined(__GNUC__) && !defined(__clang__)
+#if !defined(__clang__)
 #pragma GCC diagnostic pop
 #endif
+    std::vector<std::vector<word_type>> non_trivial_classes(ToddCoxeter& tc1,
+                                                            ToddCoxeter& tc2) {
+      return non_trivial_classes(tc1, normal_forms(tc2));
+    }
   }  // namespace todd_coxeter
 }  // namespace libsemigroups

@@ -27,6 +27,10 @@
 #ifndef LIBSEMIGROUPS_FROIDURE_PIN_HPP_
 #define LIBSEMIGROUPS_FROIDURE_PIN_HPP_
 
+#ifndef PARSED_BY_DOXYGEN
+#define NOT_PARSED_BY_DOXYGEN
+#endif
+
 #include <chrono>            // for high_resolution_clock
 #include <cstddef>           // for size_t
 #include <initializer_list>  // for initializer_list
@@ -508,7 +512,7 @@ namespace libsemigroups {
     //! \sa \ref position and \ref sorted_position.
     element_index_type current_position(const_reference x) const;
 
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
+#ifdef NOT_PARSED_BY_DOXYGEN
     using FroidurePinBase::current_position;
 #endif
 
@@ -709,7 +713,7 @@ namespace libsemigroups {
     //! \note This function may trigger a (partial) enumeration.
     word_type minimal_factorisation(const_reference x);
 
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
+#ifdef NOT_PARSED_BY_DOXYGEN
     // The following are required, they are documented in FroidurePinBase.
     // Sphinx/doxygen get confused by this, so we don't allow Doxygen to parse
     // these two declarations.

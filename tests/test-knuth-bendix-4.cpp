@@ -47,14 +47,15 @@
 #include "catch.hpp"      // for AssertionHandler, oper...
 #include "test-main.hpp"  // for TEMPLATE_TEST_CASE
 
-#include "libsemigroups/constants.hpp"     // for operator==, operator!=
-#include "libsemigroups/exception.hpp"     // for LibsemigroupsException
-#include "libsemigroups/knuth-bendix.hpp"  // for KnuthBendix, normal_forms
-#include "libsemigroups/order.hpp"         // for shortlex_compare
-#include "libsemigroups/paths.hpp"         // for Paths
-#include "libsemigroups/presentation.hpp"  // for add_rule, Presentation
-#include "libsemigroups/word-graph.hpp"    // for WordGraph
-#include "libsemigroups/words.hpp"         // for Inner, Strings, to_str...
+#include "libsemigroups/constants.hpp"        // for operator==, operator!=
+#include "libsemigroups/exception.hpp"        // for LibsemigroupsException
+#include "libsemigroups/fpsemi-examples.hpp"  // for partition_monoid
+#include "libsemigroups/knuth-bendix.hpp"     // for KnuthBendix, normal_forms
+#include "libsemigroups/order.hpp"            // for shortlex_compare
+#include "libsemigroups/paths.hpp"            // for Paths
+#include "libsemigroups/presentation.hpp"     // for add_rule, Presentation
+#include "libsemigroups/word-graph.hpp"       // for WordGraph
+#include "libsemigroups/words.hpp"            // for Inner, Strings, to_str...
 
 #include "libsemigroups/detail/report.hpp"  // for ReportGuard
 #include "libsemigroups/detail/stl.hpp"     // for apply_permutation
@@ -737,6 +738,15 @@ namespace libsemigroups {
     TestType k(twosided, p);
     k.run_for(std::chrono::seconds(10));
     REQUIRE(!k.finished());
+  }
+  LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
+                          "136",
+                          "partition_monoid(7)",
+                          "[knuthbendix][extreme]") {
+    auto        rg = ReportGuard(true);
+    auto        p  = fpsemigroup::partition_monoid(7);
+    KnuthBendix k(twosided, p);
+    REQUIRE(k.number_of_classes() == 0);
   }
 
 }  // namespace libsemigroups

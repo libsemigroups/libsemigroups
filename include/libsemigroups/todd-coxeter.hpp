@@ -249,7 +249,7 @@ namespace libsemigroups {
     ToddCoxeter& operator=(ToddCoxeter const&) = default;
     ToddCoxeter& operator=(ToddCoxeter&&)      = default;
 
-    ~ToddCoxeter() = default;
+    ~ToddCoxeter();
 
     explicit ToddCoxeter(congruence_kind knd);
     ToddCoxeter& init(congruence_kind knd);
@@ -293,11 +293,19 @@ namespace libsemigroups {
     template <typename Node>
     ToddCoxeter(congruence_kind                knd,
                 Presentation<word_type> const& p,
-                WordGraph<Node> const&         ad)
-        : ToddCoxeter(knd, p) {
+                WordGraph<Node> const&         ad) {
+      init(knd, p, ad);
+    }
+
+    template <typename Node>
+    ToddCoxeter& init(congruence_kind                knd,
+                      Presentation<word_type> const& p,
+                      WordGraph<Node> const&         ad) {
+      init(knd, p);
       _word_graph = ad;
       _word_graph.presentation(p);
       _word_graph.report_prefix("ToddCoxeter");
+      return *this;
     }
 
     ToddCoxeter(congruence_kind knd, ToddCoxeter const& tc);
@@ -948,10 +956,8 @@ namespace libsemigroups {
       return tc.class_index_to_word(tc.word_to_class_index(w));
     }
 
-    inline std::vector<std::vector<word_type>>
-    non_trivial_classes(ToddCoxeter& tc1, ToddCoxeter& tc2) {
-      return non_trivial_classes(tc1, normal_forms(tc2));
-    }
+    std::vector<std::vector<word_type>> non_trivial_classes(ToddCoxeter& tc1,
+                                                            ToddCoxeter& tc2);
 
     uint64_t number_of_idempotents(ToddCoxeter& tc);
 

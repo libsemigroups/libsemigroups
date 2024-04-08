@@ -327,7 +327,7 @@ namespace libsemigroups {
     // FroidurePinBase - pure virtual member functions - public
     ////////////////////////////////////////////////////////////////////////
 
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
+#ifndef PARSED_BY_DOXYGEN
 
     [[nodiscard]] virtual size_t number_of_generators() const = 0;
     [[nodiscard]] virtual tril   is_finite() const            = 0;
@@ -916,7 +916,7 @@ namespace libsemigroups {
     //! Return type of \ref cbegin_rules and \ref cend_rules.
     // TODO(later) delete
     class const_rule_iterator {
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
+#ifndef PARSED_BY_DOXYGEN
 
      public:
       using size_type = typename std::vector<relation_type>::size_type;
@@ -939,7 +939,6 @@ namespace libsemigroups {
       const_rule_iterator& operator=(const_rule_iterator const&) = default;
       const_rule_iterator& operator=(const_rule_iterator&&)      = default;
 
-      // TODO(now) to cpp
       const_rule_iterator(FroidurePinBase const* ptr,
                           enumerate_index_type   pos,
                           generator_index_type   gen);
@@ -982,7 +981,7 @@ namespace libsemigroups {
         std::swap(_gen, that._gen);
         std::swap(_pos, that._pos);
       }
-#endif
+#endif  // NOT BEING PARSED_BY_DOXYGEN
 
      private:
       void populate_relation() const;
@@ -1304,7 +1303,7 @@ namespace libsemigroups {
     ////////////////////////////////////////////////////////////////////////
     void partial_copy(FroidurePinBase const& S);
 
-    // TODO(later) delete
+    // TODO should be minimal_factorisation_no_checks
     void private_minimal_factorisation(word_type&         word,
                                        element_index_type pos) const {
       word.clear();

@@ -16,7 +16,7 @@ else
   export TAG=
 fi
 
-./$EXEC $TAG -l | perl -ne 'print if s/^.*(\d\d\d):.*$/\1/' > tmp.txt
+./$EXEC $TAG -l | perl -ne 'print if s/^.*?\[(\d\d\d)\].*$/\1/' > tmp.txt
 
 python3 - <<END
 import os, sys

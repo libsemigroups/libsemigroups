@@ -123,16 +123,18 @@ namespace libsemigroups {
     Presentation& init();
 
     //! Default copy constructor.
-    Presentation(Presentation const&) = default;
+    Presentation(Presentation const&);
 
     //! Default move constructor.
-    Presentation(Presentation&&) = default;
+    Presentation(Presentation&&);
 
     //! Default copy assignment operator.
-    Presentation& operator=(Presentation const&) = default;
+    Presentation& operator=(Presentation const&);
 
     //! Default move assignment operator.
-    Presentation& operator=(Presentation&&) = default;
+    Presentation& operator=(Presentation&&);
+
+    ~Presentation();
 
     //! Returns the alphabet of the presentation.
     //!
@@ -651,6 +653,20 @@ namespace libsemigroups {
     void add_rules_no_checks(Presentation<Word>&       p,
                              Presentation<Word> const& q) {
       add_rules_no_checks(p, q.rules.cbegin(), q.rules.cend());
+    }
+
+    // TODO to tpp
+    template <typename Word>
+    [[nodiscard]] bool contains_rule(Presentation<Word>& p,
+                                     Word const&         lhs,
+                                     Word const&         rhs) {
+      for (auto it = p.rules.cbegin(); it != p.rules.cend(); it += 2) {
+        if ((*it == lhs && *(it + 1) == rhs)
+            || (*it == rhs && *(it + 1) == lhs)) {
+          return true;
+        }
+      }
+      return false;
     }
 
     //! Add rules for an identity element.
@@ -1447,7 +1463,7 @@ namespace libsemigroups {
     // TODO(doc)
     template <typename Word>
     void add_idempotent_rules_no_checks(Presentation<Word>& p,
-                                        word_type const&    letters) {
+                                        Word const&         letters) {
       for (auto x : letters) {
         add_rule_no_checks(p, {x, x}, {x});
       }
@@ -1567,6 +1583,9 @@ namespace libsemigroups {
     std::string to_gap_string(Presentation<word_type> const& p,
                               std::string const&             var_name);
 
+    std::string to_gap_string(Presentation<std::string> const& p,
+                              std::string const&               var_name);
+
   }  // namespace presentation
 
   template <typename Word>
@@ -1673,6 +1692,7 @@ namespace libsemigroups {
 
   template <typename T>
   static constexpr bool IsPresentation = detail::IsPresentationHelper<T>::value;
+
 }  // namespace libsemigroups
 
 #include "presentation.tpp"

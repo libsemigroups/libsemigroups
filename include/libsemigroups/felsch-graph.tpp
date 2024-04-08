@@ -23,6 +23,23 @@ namespace libsemigroups {
   ////////////////////////////////////////////////////////////////////////
 
   template <typename Word, typename Node, typename Definitions>
+  FelschGraph<Word, Node, Definitions>::FelschGraph(FelschGraph const&)
+      = default;
+
+  template <typename Word, typename Node, typename Definitions>
+  FelschGraph<Word, Node, Definitions>::FelschGraph(FelschGraph&&) = default;
+
+  template <typename Word, typename Node, typename Definitions>
+  FelschGraph<Word, Node, Definitions>&
+  FelschGraph<Word, Node, Definitions>::operator=(FelschGraph const&)
+      = default;
+
+  template <typename Word, typename Node, typename Definitions>
+  FelschGraph<Word, Node, Definitions>&
+  FelschGraph<Word, Node, Definitions>::operator=(FelschGraph&&)
+      = default;
+
+  template <typename Word, typename Node, typename Definitions>
   FelschGraph<Word, Node, Definitions>&
   FelschGraph<Word, Node, Definitions>::init() {
     WordGraphWithSources<Node>::init();
@@ -96,6 +113,9 @@ namespace libsemigroups {
     WordGraphWithSources<Node>::init(std::move(ad));
     return private_init_from_word_graph();
   }
+
+  template <typename Word, typename Node, typename Definitions>
+  FelschGraph<Word, Node, Definitions>::~FelschGraph() = default;
 
   // TODO this should be removed
   template <typename Word, typename Node, typename Definitions>

@@ -88,9 +88,14 @@ namespace libsemigroups {
       // not noexcept because the constructors of std::vector and std::array
       // aren't
       explicit UF(size_type size = 0) : _data() {
+        init(size);
+      }
+
+      UF& init(size_type size = 0) {
         set_data_capacity(_data, size);
         std::iota(_data.begin(), _data.end(), 0);
         init_data(_data.begin(), _data.end());
+        return *this;
       }
 
       // not noexcept because the constructors of std::vector and std::array

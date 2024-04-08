@@ -424,6 +424,7 @@ namespace libsemigroups {
       }
       auto p = plactic_monoid(n);
       presentation::add_idempotent_rules_no_checks(p, range(n));
+      p.contains_empty_word(true);
       return p;
     }
 
@@ -598,7 +599,6 @@ namespace libsemigroups {
       return p;
     }
 
-    // From https://core.ac.uk/reader/33304940
     Presentation<word_type> dual_symmetric_inverse_monoid(size_t n,
                                                           author val) {
       if (n < 3) {
@@ -609,70 +609,81 @@ namespace libsemigroups {
                                 "author::East + author::FitzGerald, found {}",
                                 val);
       }
+      auto mij = [](size_t i, size_t j) {
+        if (i == j) {
+          return 1;
+        } else if (std::abs(static_cast<int64_t>(i) - static_cast<int64_t>(j))
+                   == 1) {
+          return 3;
+        } else {
+          return 2;
+        }
+      };
 
-      word_type x = {n - 1}, e = ""_w;
+      std::vector<word_type> alphabet;
+      for (size_t i = 0; i < n; ++i) {
+        alphabet.push_back({i});
+      }
+      auto                    x = alphabet.back();
+      auto                    e = ""_w;
+      Presentation<word_type> result;
+      result.alphabet(n).contains_empty_word(true);
 
-      Presentation<word_type> p;
-      p.alphabet(n);
-      p.contains_empty_word(true);
+      auto s = alphabet.cbegin();
 
       // R1
-      for (size_t i = 0; i <= n - 2; ++i) {
-        presentation::add_rule_no_checks(p, {i, i}, e);
-        if (i != n - 2) {
-          presentation::add_rule_no_checks(p, pow({i, i + 1}, 3), e);
-        }
-        if (i != 0) {
-          presentation::add_rule_no_checks(p, pow({i - 1, i}, 3), e);
-          for (size_t j = 0; j < i - 1; ++j) {
-            presentation::add_rule_no_checks(p, pow({i, j}, 2), e);
-          }
-        }
-        for (size_t j = i + 2; j < n - 1; ++j) {
-          presentation::add_rule_no_checks(p, pow({i, j}, 2), e);
+      for (size_t i = 0; i < n - 1; ++i) {
+        for (size_t j = 0; j < n - 1; ++j) {
+          presentation::add_rule_no_checks(
+              result, pow((s[i] + s[j]), mij(i, j)), e);
         }
       }
-
       // R2
-      presentation::add_rule_no_checks(p, pow(x, 3), x);
-
+      presentation::add_rule_no_checks(result, pow(x, 3), x);
       // R3
-      presentation::add_rule_no_checks(p, x + 0_w, x);
-      presentation::add_rule_no_checks(p, 0_w + x, x);
-
+      presentation::add_rule_no_checks(result, x + s[0], x);
+      presentation::add_rule_no_checks(result, s[0] + x, x);
       // R4
-      presentation::add_rule_no_checks(p, x + 1_w + x, pow(x + 1_w, 2));
-      presentation::add_rule_no_checks(p, pow(x + 1_w, 2), pow(1_w + x, 2));
-      presentation::add_rule_no_checks(p, pow(1_w + x, 2), x + 1_w + pow(x, 2));
       presentation::add_rule_no_checks(
-          p, x + 1_w + pow(x, 2), pow(x, 2) + 1_w + x);
-
+          result, x + s[1] + x, x + s[1] + x + s[1]);
+      presentation::add_rule_no_checks(
+          result, x + s[1] + x + s[1], s[1] + x + s[1] + x);
+      presentation::add_rule_no_checks(
+          result, s[1] + x + s[1] + x, x + s[1] + x + x);
+      presentation::add_rule_no_checks(
+          result, x + s[1] + x + x, x + x + s[1] + x);
       if (n == 3) {
-        return p;
+        return result;
       }
-
       // R5
-      presentation::add_rule_no_checks(
-          p, pow(pow(x, 2) + 1201_w, 2), pow(1201_w + pow(x, 2), 2));
-      presentation::add_rule_no_checks(
-          p, pow(1201_w + pow(x, 2), 2), x + 121_w + x);
-
+      word_type const sigma = s[1] + s[2] + s[0] + s[1];
+      presentation::add_rule_no_checks(result,
+                                       (x + x) + sigma + (x + x) + sigma,
+                                       sigma + (x + x) + sigma + (x + x));
+      presentation::add_rule_no_checks(result,
+                                       sigma + (x + x) + sigma + (x + x),
+                                       x + s[1] + s[2] + s[1] + x);
       // R6
-      auto l = 2_w + x + 1021_w, y = x;
-      for (size_t i = 2; i <= n - 2; ++i) {
-        word_type z = {i};
-        presentation::add_rule_no_checks(p, y + z + y, z + y + z);
-        y = l + y + z;
-        l = z + l + word_type({i, i - 1});
+      std::vector<word_type> l = {{}, {}, x + s[1] + s[0]};
+      for (size_t i = 2; i < n - 1; ++i) {
+        l.push_back(s[i] + l[i] + s[i] + s[i - 1]);
       }
-
+      std::vector<word_type> y = {{}, {}, {}, x};
+      for (size_t i = 3; i < n; ++i) {
+        y.push_back(l[i] + y[i] + s[i - 1]);
+      }
+      for (size_t i = 2; i < n - 1; ++i) {
+        presentation::add_rule_no_checks(
+            result, y[i + 1] + s[i] + y[i + 1], s[i] + y[i + 1] + s[i]);
+      }
       if (n == 4) {
-        return p;
+        return result;
       }
-
       // R7
-      presentation::add_commutes_rules_no_checks(p, range(3, n - 1), x);
-      return p;
+      for (size_t i = 3; i < n - 1; ++i) {
+        presentation::add_rule_no_checks(result, x + s[i], s[i] + x);
+      }
+      return result;
     }
 
     Presentation<word_type> uniform_block_bijection_monoid(size_t n,
@@ -1164,7 +1175,7 @@ namespace libsemigroups {
     Presentation<word_type> full_transformation_monoid(size_t n, author val) {
       if (n < 4) {
         LIBSEMIGROUPS_EXCEPTION(
-            "the 1st argument (size_t) must be at least 4, found {}", n);
+            "the 1st argument (degree) must be at least 4, found {}", n);
       } else if (val != author::Aizenstat && val != author::Iwahori) {
         LIBSEMIGROUPS_EXCEPTION(
             "expected 2nd argument to be author::Aizenstat or "

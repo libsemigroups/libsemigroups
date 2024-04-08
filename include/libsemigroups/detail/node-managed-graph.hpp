@@ -107,10 +107,11 @@ namespace libsemigroups {
       NodeManagedGraph() = default;
       NodeManagedGraph& init();
 
-      NodeManagedGraph(NodeManagedGraph const&)            = default;
-      NodeManagedGraph(NodeManagedGraph&&)                 = default;
-      NodeManagedGraph& operator=(NodeManagedGraph const&) = default;
-      NodeManagedGraph& operator=(NodeManagedGraph&&)      = default;
+      NodeManagedGraph(NodeManagedGraph const&);
+      NodeManagedGraph(NodeManagedGraph&&);
+      NodeManagedGraph& operator=(NodeManagedGraph const&);
+      NodeManagedGraph& operator=(NodeManagedGraph&&);
+      ~NodeManagedGraph();
 
       // TODO corresponding init
       template <typename OtherNode>

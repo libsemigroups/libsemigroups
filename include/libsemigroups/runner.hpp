@@ -160,7 +160,7 @@ namespace libsemigroups {
       return duration_cast<nanoseconds>(high_resolution_clock::now() - t);
     }
 
-    Reporter& reset_start_time() {
+    Reporter const& reset_start_time() const {
       _last_report = std::chrono::high_resolution_clock::now();
       _start_time  = _last_report;
       return *this;
@@ -221,9 +221,9 @@ namespace libsemigroups {
                 // 1. the Ticker goes out of scope, the mutex is locked, then
                 //    _stop is set to false, Ticker is destroyed, maybe the
                 //    object where Ticker is created is also destroyed (the
-                //    object containing _func and/or its related data), then we
-                //    acquire the mutex here, and _stop is false, so we don't
-                //    call _func (which is actually destroyed).
+                //    object containing _func and/or its related data), then
+                //    we acquire the mutex here, and _stop is false, so we
+                //    don't call _func (which is actually destroyed).
                 // 2. we acquire the lock on the mutex here first, and then
                 //    Ticker goes out of scope, the destructor of Ticker is
                 //    then blocked (and so too is the possible destruction of
@@ -563,16 +563,7 @@ namespace libsemigroups {
     //!
     //! \sa started()
     // Not noexcept because finished_impl isn't
-    [[nodiscard]] inline bool finished() const {
-      if (started() && !dead() && finished_impl()) {
-        _state = state::not_running;
-        return true;
-      } else {
-        return false;
-      }
-      // since kill() may leave the object in an invalid state we only return
-      // true here if we are not dead and the object thinks it is finished.
-    }
+    [[nodiscard]] bool finished() const;
 
     //! Check if \ref run has been called at least once before.
     //!
