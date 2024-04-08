@@ -3,7 +3,9 @@
 ##############################################################################
 
 AM_CXXFLAGS =  -I$(abs_top_srcdir)/include
-AM_CXXFLAGS += -I$(abs_top_srcdir)/extern  ## for HPCombi
+AM_CXXFLAGS += -I$(abs_top_srcdir)/extern # for magic_enum
+AM_CXXFLAGS += -I$(abs_top_srcdir)/extern/HPCombi/include
+AM_CXXFLAGS += -I$(abs_top_srcdir)/extern/HPCombi/third_party
 AM_CXXFLAGS += -I$(abs_top_srcdir)/extern/rx-ranges/include
 AM_CXXFLAGS += -std=gnu++17 -Wall -Wextra
 AM_CXXFLAGS += $(WARNING_CXXFLAGS)
@@ -20,10 +22,6 @@ AM_CPPFLAGS = -DDEBUG
 AM_CXXFLAGS += -g3 -O0 -fno-omit-frame-pointer
 else
 AM_CPPFLAGS = -DNDEBUG
-endif
-
-if HPCOMBI_CONSTEXPR_FUN_ARGS
-AM_CPPFLAGS += -DHPCOMBI_CONSTEXPR_FUN_ARGS
 endif
 
 AM_CPPFLAGS += $(CODE_COVERAGE_CPPFLAGS)
@@ -153,23 +151,21 @@ backwardcppinclude_HEADERS=extern/backward-cpp/backward.hpp
 ## uninstall-hook
 hpcombiincludedir = $(includedir)/libsemigroups/HPCombi/include
 if LIBSEMIGROUPS_HPCOMBI_ENABLED
-hpcombiinclude_HEADERS =  extern/HPCombi/include/bmat8.hpp
-hpcombiinclude_HEADERS += extern/HPCombi/include/bmat8_impl.hpp
-hpcombiinclude_HEADERS += extern/HPCombi/include/epu.hpp
-hpcombiinclude_HEADERS += extern/HPCombi/include/epu_impl.hpp
-hpcombiinclude_HEADERS += extern/HPCombi/include/hpcombi.hpp
-hpcombiinclude_HEADERS += extern/HPCombi/include/perm16.hpp
-hpcombiinclude_HEADERS += extern/HPCombi/include/perm16_impl.hpp
-hpcombiinclude_HEADERS += extern/HPCombi/include/perm_generic.hpp
-hpcombiinclude_HEADERS += extern/HPCombi/include/perm_generic_impl.hpp
-hpcombiinclude_HEADERS += extern/HPCombi/include/power.hpp
-hpcombiinclude_HEADERS += extern/HPCombi/include/testtools.hpp
-hpcombiinclude_HEADERS += extern/HPCombi/include/vect16.hpp
-hpcombiinclude_HEADERS += extern/HPCombi/include/vect_generic.hpp
-
-hpcombifallbackincludedir = $(includedir)/libsemigroups/HPCombi/include/fallback
-hpcombifallbackinclude_HEADERS =  extern/HPCombi/include/fallback/gcdlcm.hpp
-hpcombifallbackinclude_HEADERS += extern/HPCombi/include/fallback/seq.hpp
+hpcombiinclude_HEADERS =  extern/HPCombi/include/hpcombi/arch.hpp
+hpcombiinclude_HEADERS =  extern/HPCombi/include/hpcombi/bmat8.hpp
+hpcombiinclude_HEADERS += extern/HPCombi/include/hpcombi/bmat8_impl.hpp
+hpcombiinclude_HEADERS += extern/HPCombi/include/hpcombi/builder.hpp
+hpcombiinclude_HEADERS += extern/HPCombi/include/hpcombi/debug.hpp
+hpcombiinclude_HEADERS += extern/HPCombi/include/hpcombi/epu8.hpp
+hpcombiinclude_HEADERS += extern/HPCombi/include/hpcombi/epu8_impl.hpp
+hpcombiinclude_HEADERS += extern/HPCombi/include/hpcombi/hpcombi.hpp
+hpcombiinclude_HEADERS += extern/HPCombi/include/hpcombi/perm16.hpp
+hpcombiinclude_HEADERS += extern/HPCombi/include/hpcombi/perm16_impl.hpp
+hpcombiinclude_HEADERS += extern/HPCombi/include/hpcombi/perm_generic.hpp
+hpcombiinclude_HEADERS += extern/HPCombi/include/hpcombi/perm_generic_impl.hpp
+hpcombiinclude_HEADERS += extern/HPCombi/include/hpcombi/power.hpp
+hpcombiinclude_HEADERS += extern/HPCombi/include/hpcombi/vect16.hpp
+hpcombiinclude_HEADERS += extern/HPCombi/include/hpcombi/vect_generic.hpp
 endif ## LIBSEMIGROUPS_HPCOMBI_ENABLED
 
 ## Define fmtincludedir outside the conditional
