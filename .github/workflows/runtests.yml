@@ -223,6 +223,9 @@ jobs:
            run: |
                 brew install gcc
                 brew install doxygen
+         - name: "Clone doxygen-awesome-css . . ."
+           run: |
+                git submodule update --init --recursive
          - name: "Configure . . ."
            run: |
                 mkdir -p m4 && ./autogen.sh && ./configure

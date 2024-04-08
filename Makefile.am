@@ -93,6 +93,7 @@ pkginclude_HEADERS += include/libsemigroups/ranges.tpp
 pkginclude_HEADERS += include/libsemigroups/rewriters.hpp
 pkginclude_HEADERS += include/libsemigroups/runner.hpp
 pkginclude_HEADERS += include/libsemigroups/schreier-sims.hpp
+pkginclude_HEADERS += include/libsemigroups/schreier-sims.tpp
 pkginclude_HEADERS += include/libsemigroups/sims.hpp
 pkginclude_HEADERS += include/libsemigroups/stephen.hpp
 pkginclude_HEADERS += include/libsemigroups/stephen.tpp
