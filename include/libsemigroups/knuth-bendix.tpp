@@ -278,7 +278,7 @@ namespace libsemigroups {
       return 1 + modifier;
     } else {
       uint64_t const out = knuth_bendix::normal_forms(*this).count();
-      return (out == POSITIVE_INFINITY ? out : out + modifier);
+      return out;
     }
   }
 

@@ -101,6 +101,20 @@ namespace libsemigroups {
 
     p.from(50);
     REQUIRE((p | count()) == 50);
+
+    p.next();
+    REQUIRE((p.count()) == 49);
+    p.next();
+    REQUIRE((p.count()) == 48);
+
+    p.from(99);
+    REQUIRE((p.count()) == 1);
+
+    p.next();
+    REQUIRE((p.count()) == 0);
+
+    p.next();
+    REQUIRE((p.count()) == 0);
   }
 
   LIBSEMIGROUPS_TEST_CASE("Paths", "001", "#1", "[quick]") {

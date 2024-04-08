@@ -811,6 +811,7 @@ namespace libsemigroups {
 
     if (!_current_valid && N != 0) {
       _current_valid = true;
+      _position      = 0;
       if (_order == Order::shortlex && _source != UNDEFINED) {
         if (_target != UNDEFINED) {
           _current = cbegin_pstislo(*_digraph, _source, _target, _min, _max);
@@ -841,13 +842,20 @@ namespace libsemigroups {
 
   template <typename Node>
   uint64_t Paths<Node>::size_hint_no_checks() const {
+    uint64_t num_paths = 0;
     if (_digraph->number_of_nodes() == 0) {
-      return 0;
+      return num_paths;
     } else if (_target != UNDEFINED) {
-      return number_of_paths(*_digraph, _source, _target, _min, _max);
+      num_paths = number_of_paths(*_digraph, _source, _target, _min, _max);
     } else {
-      return number_of_paths(*_digraph, _source, _min, _max);
+      num_paths = number_of_paths(*_digraph, _source, _min, _max);
     }
+
+    if (_current_valid && num_paths != POSITIVE_INFINITY) {
+      num_paths -= _position;
+    }
+
+    return num_paths;
   }
 
   template <typename Node>
@@ -863,6 +871,7 @@ namespace libsemigroups {
     _order         = Order::shortlex;
     _max           = POSITIVE_INFINITY;
     _min           = 0;
+    _position      = 0;
     _source        = UNDEFINED;
     _target        = UNDEFINED;
     return *this;

@@ -956,7 +956,7 @@ namespace libsemigroups {
   std::ostream& operator<<(std::ostream&,
                            KnuthBendix<Rewriter, ReductionOrder> const&);
 
-  KnuthBendix(congruence_kind) -> KnuthBendix<>;
+  KnuthBendix(congruence_kind)->KnuthBendix<>;
 
   namespace knuth_bendix {
 
@@ -1043,11 +1043,10 @@ namespace libsemigroups {
     template <typename Rewriter, typename ReductionOrder>
     [[nodiscard]] inline auto
     normal_forms(KnuthBendix<Rewriter, ReductionOrder>& kb) {
-      using rx::operator|;
       ReversiblePaths paths(kb.gilman_graph());
       paths.from(0).reverse(kb.kind() == congruence_kind::left);
       if (!kb.presentation().contains_empty_word()) {
-        paths | rx::skip_n(1);
+        paths.next();
       }
       return paths;
     }

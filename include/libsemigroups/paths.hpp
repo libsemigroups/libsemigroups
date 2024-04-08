@@ -908,6 +908,7 @@ namespace libsemigroups {
     Order                       _order;
     size_type                   _max;
     size_type                   _min;
+    mutable size_type           _position;
     node_type                   _source;
     node_type                   _target;
     mutable const_iterator      _current;
@@ -920,11 +921,15 @@ namespace libsemigroups {
    public:
     output_type get() const {
       set_iterator();
-      return std::visit([](auto& it) -> auto const& { return *it; }, _current);
+      return std::visit(
+          [](auto& it) -> auto const& { return *it; }, _current);
     }
 
     void next() {
-      std::visit([](auto& it) { ++it; }, _current);
+      if (!at_end()) {
+        ++_position;
+        std::visit([](auto& it) { ++it; }, _current);
+      }
     }
 
     bool at_end() const {
