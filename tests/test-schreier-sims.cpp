@@ -101,7 +101,7 @@ namespace libsemigroups {
 
   // The next tests fail (04 to 09, inclusive), with default template
   // parameters, due to HPCombi 0.0.3 currently composing functions from
-  // right to left.
+  // right to left. TODO(0) revise this comment
   LIBSEMIGROUPS_TEST_CASE("SchreierSims",
                           "003",
                           "symmetric perm. group (degree 5)",

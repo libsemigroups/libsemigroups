@@ -136,6 +136,8 @@ namespace libsemigroups {
 
     ~Presentation();
 
+    ~Presentation();
+
     //! Returns the alphabet of the presentation.
     //!
     //! \returns A const reference to Presentation::word_type
