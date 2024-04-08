@@ -4,6 +4,16 @@ Information for developers
 Building the documentation from source
 --------------------------------------
 
+If you are checking out the libsemigroups git repo, then the following steps
+are required to build the documentation:
+
+1. Install doxygen (using homebrew or apt-get)
+2. Check out the doxygen-awesome-css/ submodule using:
+
+   git submodule update --init --recursive
+
+3. Type `make doc`
+
 See the `manual <https://libsemigroups.readthedocs.io/en/latest/install.html>`_
 for details of how to do this.
 
