@@ -2262,7 +2262,7 @@ namespace libsemigroups {
   class SimsRefinerIdeals {
    private:
     using node_type = uint32_t;
-    KnuthBendix _knuth_bendix;
+    KnuthBendix<> _knuth_bendix;
 
    public:
     explicit SimsRefinerIdeals(Presentation<std::string> const& p)

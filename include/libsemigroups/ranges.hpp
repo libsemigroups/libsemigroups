@@ -30,7 +30,13 @@
 #include <type_traits>  // for enable_if_t
 #include <utility>      // for forward
 
-#include "ranges.hpp"  // for count, iterator_range
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wshadow"
+#if defined(__GNUC__) && !defined(__clang__)
+#pragma GCC diagnostic ignored "-Wmaybe-uninitialized"
+#endif
+#include <rx/ranges.hpp>  // for count, iterator_range
+#pragma GCC diagnostic pop
 
 #include "detail/string.hpp"  // for to_string
 

@@ -75,6 +75,7 @@
 namespace libsemigroups {
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
   class ToddCoxeter;  // forward decl
+
   template <typename Rewriter, typename ReductionOrder>
   class KnuthBendix;  // forward decl
   class Congruence;   // forward decl
