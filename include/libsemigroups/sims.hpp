@@ -48,6 +48,7 @@
 #include <algorithm>   // for max
 #include <cstddef>     // for size_t
 #include <cstdint>     // for uint64_t, uint32_t
+#include <filesystem>  // for path, create_directories, temp_directory_path
 #include <functional>  // for function
 #include <iterator>    // for forward_iterator_tag
 #include <mutex>       // for mutex
