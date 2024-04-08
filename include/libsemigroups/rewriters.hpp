@@ -50,7 +50,7 @@ namespace libsemigroups {
 
    public:
     // Construct from KnuthBendix with new but empty internal_string_type's
-    Rule(int64_t id);
+    explicit Rule(int64_t id);
 
     Rule& operator=(Rule const& copy) = delete;
     Rule(Rule const& copy)            = delete;
@@ -276,7 +276,7 @@ namespace libsemigroups {
     RewriterBase() = default;
     RewriterBase& init();
 
-    RewriterBase(bool requires_alphabet) : RewriterBase() {
+    explicit RewriterBase(bool requires_alphabet) : RewriterBase() {
       _requires_alphabet = requires_alphabet;
     }
 

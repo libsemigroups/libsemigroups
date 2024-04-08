@@ -54,7 +54,7 @@ namespace libsemigroups {
     //! Constant.
     //!
     //! \sa BMat8::one.
-    // TODO(0) noexcept should depend on whether or not the constructor of
+    // TODO(later) noexcept should depend on whether or not the constructor of
     // T is noexcept
     template <typename T>
     T one(size_t dim) noexcept {
@@ -261,7 +261,7 @@ namespace libsemigroups {
       return (_data << (8 * i + j)) >> 63;
     }
 
-    // TODO(later) at method
+    // TODO(2) at method
 
     //! Sets the (\p i, \p j)th position to \p val.
     //!
@@ -472,7 +472,7 @@ namespace libsemigroups {
     //!
     //! \par Parameters
     //! (None)
-    // TODO(later) make this return an array instead of a vector
+    // TODO(2) make this return an array instead of a vector
     std::vector<uint8_t> rows() const;
 
     //! Find the size of the row space of \c this.
@@ -567,7 +567,7 @@ namespace libsemigroups {
   //! public member functions of BMat8, and so they are declared as free
   //! functions instead.
   namespace bmat8 {
-    // TODO(later) these should be templated to allow using HPCombi::BMat8's
+    // TODO(0) these should be templated to allow using HPCombi::BMat8's
     // here too.
     //! Returns the number of non-zero columns in \p x.
     //!

@@ -438,8 +438,7 @@ namespace libsemigroups {
     //! function could be anything.
     [[nodiscard]] output_type get() const noexcept {
       set_iterator();
-      return std::visit(
-          [](auto& it) -> auto const& { return *it; }, _current);
+      return std::visit([](auto& it) -> auto const& { return *it; }, _current);
     }
 
     //! \brief Advance to the next value.
@@ -1081,7 +1080,7 @@ namespace libsemigroups {
   //! output as `Words() | ToStrings("ab")`, but is more convenient in some
   //! cases.
   //!
-  //!\note There is a small overhead to using a Strings object rather than
+  //! \note There is a small overhead to using a Strings object rather than
   //! using \ref cbegin_wislo or \ref cbegin_wilo directly.
   //!
   //! The order and range of the words in a Strings instance can be set using
@@ -1735,7 +1734,7 @@ namespace libsemigroups {
   //! \endcode
   namespace literals {
     //! \anchor literal_operator_w
-    //!\brief Literal for defining \ref word_type over integers less than 10.
+    //! \brief Literal for defining \ref word_type over integers less than 10.
     //!
     //! This operator provides a convenient brief means of constructing a  \ref
     //! word_type from an sequence of literal integer digits or a string. For
@@ -2148,6 +2147,7 @@ namespace libsemigroups {
       return result;
     }
   }  // namespace words
+  //
 }  // namespace libsemigroups
 
 #endif  // LIBSEMIGROUPS_WORDS_HPP_
