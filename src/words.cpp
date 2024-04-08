@@ -421,7 +421,7 @@ namespace libsemigroups {
 
   word_type ToWord::operator()(std::string const& input) const {
     word_type output;
-              operator()(input, output);
+    operator()(input, output);
     return output;
   }
 

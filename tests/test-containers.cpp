@@ -612,7 +612,7 @@ namespace libsemigroups {
                             "[containers][quick]") {
       DynamicArray2<size_t> rv1 = DynamicArray2<size_t>(10, 10, 3);
       DynamicArray2<size_t> rv2 = DynamicArray2<size_t>(9, 9, 2);
-      rv1.                  operator=(rv2);
+      rv1.operator=(rv2);
       REQUIRE(rv1.number_of_cols() == 9);
       REQUIRE(rv1.number_of_rows() == 9);
       REQUIRE(std::all_of(
@@ -624,7 +624,7 @@ namespace libsemigroups {
 
       DynamicArray2<bool> rv3 = DynamicArray2<bool>(10, 10, false);
       DynamicArray2<bool> rv4 = DynamicArray2<bool>(9, 9, true);
-      rv3.                operator=(rv4);
+      rv3.operator=(rv4);
       REQUIRE(rv3.number_of_cols() == 9);
       REQUIRE(rv3.number_of_rows() == 9);
       REQUIRE(std::all_of(
