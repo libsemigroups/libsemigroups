@@ -230,8 +230,12 @@ namespace libsemigroups {
 
       it = S.cbegin(3);
       REQUIRE(*it == to_word_graph<node_type>(3, {{0, 0}}));
-      S.for_each(5,
-                 [&S](auto const& wg) { check_right_generating_pairs(S, wg); });
+      // Note that Catch's REQUIRE macro is not thread safe, see:
+      // https://github.com/catchorg/Catch2/issues/99
+      // as such we cannot call any function (like check_right_generating_pairs)
+      // that uses REQUIRE in multiple threads.
+      S.number_of_threads(1).for_each(
+          5, [S](auto const& wg) { check_right_generating_pairs(S, wg); });
     }
     // [[[0, 0]],
     // [[1, 2], [1, 1], [3, 2], [3, 3]],
@@ -3341,7 +3345,11 @@ namespace libsemigroups {
     });
     REQUIRE(count == 52);
 
-    S.for_each(
+    // Note that Catch's REQUIRE macro is not thread safe, see:
+    // https://github.com/catchorg/Catch2/issues/99
+    // as such we cannot call any function (like check_right_generating_pairs)
+    // that uses REQUIRE in multiple threads.
+    S.number_of_threads(1).for_each(
         5, [&S](auto const& wg) { check_two_sided_generating_pairs(S, wg); });
     S.for_each(5,
                [&S](auto const& wg) { check_right_generating_pairs(S, wg); });
