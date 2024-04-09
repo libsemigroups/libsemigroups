@@ -1091,48 +1091,47 @@ namespace libsemigroups {
     REQUIRE(a == "aaaaa");
   }
 
-  // LIBSEMIGROUPS_TEST_CASE("Words", "035", "prod", "[quick][word_functions]")
-  // {
-  //   using namespace literals;
-  //   using words::pow;
-  //   using words::prod;
-  //   word_type eps = 012345_w;
-  //   REQUIRE(prod(012345_w, 1, 6, 2) == 135_w);
-  //   REQUIRE(prod(012345_w, 0, 6, 1) == 012345_w);
-  //   REQUIRE(prod(012345_w, 5, 0, -1) == 54321_w);
-  //   REQUIRE(prod(012345_w, 5, 3, 1) == ""_w);
-  //   REQUIRE(prod(012345_w, 3, 10, -1) == ""_w);
+  LIBSEMIGROUPS_TEST_CASE("Words", "035", "prod", "[quick][word_functions]") {
+    using namespace literals;
+    using words::pow;
+    using words::prod;
+    word_type eps = 012345_w;
+    REQUIRE(prod(012345_w, 1, 6, 2) == 135_w);
+    REQUIRE(prod(012345_w, 0, 6, 1) == 012345_w);
+    REQUIRE(prod(012345_w, 5, 0, -1) == 54321_w);
+    REQUIRE(prod(012345_w, 5, 3, 1) == ""_w);
+    REQUIRE(prod(012345_w, 3, 10, -1) == ""_w);
 
-  //   REQUIRE(prod(1245_w, 0, 8, 3) == 154_w);
-  //   REQUIRE(prod(01_w, 0, 0, 1) == ""_w);
+    REQUIRE(prod(1245_w, 0, 8, 3) == 154_w);
+    REQUIRE(prod(01_w, 0, 0, 1) == ""_w);
 
-  //   REQUIRE(prod("abcdef", 0, 6, 2) == "ace");
+    REQUIRE(prod("abcdef", 0, 6, 2) == "ace");
 
-  //   REQUIRE_THROWS_AS(prod(""_w, 0, 1, 1), LibsemigroupsException);
+    REQUIRE_THROWS_AS(prod(""_w, 0, 1, 1), LibsemigroupsException);
 
-  //   REQUIRE(prod(""_w, 0, 0, 1) == ""_w);
-  //   REQUIRE(prod(0_w, 1, 1, -1) == ""_w);
+    REQUIRE(prod(""_w, 0, 0, 1) == ""_w);
+    REQUIRE(prod(0_w, 1, 1, -1) == ""_w);
 
-  //   REQUIRE_THROWS_AS(prod({0, 1}, 0, 1, 0), LibsemigroupsException);
+    REQUIRE_THROWS_AS(prod({0, 1}, 0, 1, 0), LibsemigroupsException);
 
-  //   REQUIRE(prod(012345_w, 2, -1, -1) == 210_w);
-  //   REQUIRE(prod(012345_w, -1, -2, -1) == 5_w);
-  //   REQUIRE(prod(0123_w, 0, 16, 3) == 032103_w);
+    REQUIRE(prod(012345_w, 2, -1, -1) == 210_w);
+    REQUIRE(prod(012345_w, -1, -2, -1) == 5_w);
+    REQUIRE(prod(0123_w, 0, 16, 3) == 032103_w);
 
-  //   REQUIRE(prod(0123_w, 16) == pow(0123_w, 4));
-  //   // Test for the function that uses an initializer_list of letters
-  //   REQUIRE(prod({0, 1, 2, 3}, 16) == pow(0123_w, 4));
-  //   REQUIRE(prod(0123_w, -16) == ""_w);
-  //   REQUIRE(prod(012345_w, -1, -2, -1) == 5_w);
-  //   REQUIRE(prod(012345_w, -10, -2, 1) == 23450123_w);
+    REQUIRE(prod(0123_w, 16) == pow(0123_w, 4));
+    // Test for the function that uses an initializer_list of letters
+    REQUIRE(prod({0, 1, 2, 3}, 16) == pow(0123_w, 4));
+    REQUIRE(prod(0123_w, -16) == ""_w);
+    REQUIRE(prod(012345_w, -1, -2, -1) == 5_w);
+    REQUIRE(prod(012345_w, -10, -2, 1) == 23450123_w);
 
-  //   REQUIRE(prod({010_w, 232_w}, 0, 4, 1) == 010232010232_w);
-  //   REQUIRE(prod({010_w, 232_w}, 4) == 010232010232_w);
+    REQUIRE(prod({010_w, 232_w}, 0, 4, 1) == 010232010232_w);
+    REQUIRE(prod({010_w, 232_w}, 4) == 010232010232_w);
 
-  //   REQUIRE(prod({"aba", "xyz"}, 0, 4, 1) == "abaxyzabaxyz");
-  //   REQUIRE(prod({"aba", "xyz"}, 4) == "abaxyzabaxyz");
-  //   REQUIRE(prod("aba", 4) == "abaa");
-  // }
+    REQUIRE(prod({"aba", "xyz"}, 0, 4, 1) == "abaxyzabaxyz");
+    REQUIRE(prod({"aba", "xyz"}, 4) == "abaxyzabaxyz");
+    REQUIRE(prod("aba", 4) == "abaa");
+  }
 
   LIBSEMIGROUPS_TEST_CASE("random_word", "036", "", "[quick]") {
     auto w = random_word(10, 3);

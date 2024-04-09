@@ -438,7 +438,8 @@ namespace libsemigroups {
     //! function could be anything.
     [[nodiscard]] output_type get() const noexcept {
       set_iterator();
-      return std::visit([](auto& it) -> auto const& { return *it; }, _current);
+      return std::visit(
+          [](auto& it) -> auto const& { return *it; }, _current);
     }
 
     //! \brief Advance to the next value.
@@ -2110,11 +2111,15 @@ namespace libsemigroups {
         LIBSEMIGROUPS_EXCEPTION("the 4th argument must not be 0");
       } else if (((first < last && step > 0) || (first > last && step < 0))
                  && elts.size() == 0) {
+        LIBSEMIGROUPS_EXCEPTION("the 1st argument must not be empty if the "
+                                "given range is not empty");
+      } else if (elts.size() > std::numeric_limits<int>::max()) {
         LIBSEMIGROUPS_EXCEPTION(
-            // FIXME what does this exception message even mean???
-            "the 1st argument must be empty if the given range is not empty");
+            "the 1st argument must have size less than or equal to {}",
+            std::numeric_limits<int>::max());
       }
-      Word result;
+      Word      result;
+      int const s = elts.size();
 
       if (first < last) {
         if (step < 0) {
@@ -2122,15 +2127,9 @@ namespace libsemigroups {
         }
         result.reserve((last - first) / step);
 
-        int i = first;
-        for (; i < last && i < 0; i += step) {
-          size_t const a = ((-i / elts.size()) + 1) * elts.size() + i;
-          LIBSEMIGROUPS_ASSERT(a < elts.size());
-          result += elts[a];
-        }
-        for (; i < last; i += step) {
-          size_t const a = i % elts.size();
-          LIBSEMIGROUPS_ASSERT(a < elts.size());
+        for (int i = first; i < last; i += step) {
+          size_t const a = (i % s + s) % s;
+          LIBSEMIGROUPS_ASSERT(a < s);
           result += elts[a];
         }
       } else {
@@ -2139,15 +2138,9 @@ namespace libsemigroups {
         }
         size_t steppos = static_cast<size_t>(-step);
         result.reserve((first - last) / steppos);
-        int i = first;
-        for (; i > last && i >= 0; i += step) {
-          size_t const a = i % elts.size();
-          LIBSEMIGROUPS_ASSERT(a < elts.size());
-          result += elts[a];
-        }
-        for (; i > last; i += step) {
-          size_t const a = ((-i / elts.size()) + 1) * elts.size() + i;
-          LIBSEMIGROUPS_ASSERT(a < elts.size());
+        for (int i = first; i > last; i += step) {
+          size_t const a = (i % s + s) % s;
+          LIBSEMIGROUPS_ASSERT(a < s);
           result += elts[a];
         }
       }
