@@ -6,25 +6,6 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-   cygwin:
-      defaults:
-        run:
-          shell: C:\cygwin64\bin\bash.exe --login -o igncr '{0}'
-      timeout-minutes: 60
-      runs-on: windows-latest
-      env:
-        CHERE_INVOKING: 1
-      steps:
-         - uses: gap-actions/setup-cygwin@v1
-         - uses: actions/checkout@v3
-         - name: "Configure . . ."
-           run: ./autogen.sh && ./configure
-         - name: "Build libsemigroups . . ."
-           run: make -j4
-         - name: "Build test_all . . ."
-           run: make check -j4
-         - name: "Run the quick tests . . ."
-           run: ./test_all "[quick]"
    benchmark:
       timeout-minutes: 10
       runs-on: ubuntu-latest
