@@ -173,7 +173,6 @@ namespace libsemigroups {
     _gen_pairs_initted = false;
     _gilman_graph.init(0, 0);
     _internal_is_same_as_external = false;
-    _overlap_measure              = nullptr;
     _presentation.init();
     overlap_policy(_settings.overlap_policy);
     return *this;
