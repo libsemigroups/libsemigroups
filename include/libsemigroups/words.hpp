@@ -438,8 +438,7 @@ namespace libsemigroups {
     //! function could be anything.
     [[nodiscard]] output_type get() const noexcept {
       set_iterator();
-      return std::visit(
-          [](auto& it) -> auto const& { return *it; }, _current);
+      return std::visit([](auto& it) -> auto const& { return *it; }, _current);
     }
 
     //! \brief Advance to the next value.
@@ -2112,7 +2111,8 @@ namespace libsemigroups {
       } else if (((first < last && step > 0) || (first > last && step < 0))
                  && elts.size() == 0) {
         LIBSEMIGROUPS_EXCEPTION(
-            "1st argument must be empty if the given range is not empty");
+            // FIXME what does this exception message even mean???
+            "the 1st argument must be empty if the given range is not empty");
       }
       Word result;
 
@@ -2124,11 +2124,14 @@ namespace libsemigroups {
 
         int i = first;
         for (; i < last && i < 0; i += step) {
-          size_t a = ((-i / elts.size()) + 1) * elts.size() + i;
+          size_t const a = ((-i / elts.size()) + 1) * elts.size() + i;
+          LIBSEMIGROUPS_ASSERT(a < elts.size());
           result += elts[a];
         }
         for (; i < last; i += step) {
-          result += elts[i % elts.size()];
+          size_t const a = i % elts.size();
+          LIBSEMIGROUPS_ASSERT(a < elts.size());
+          result += elts[a];
         }
       } else {
         if (step > 0) {
