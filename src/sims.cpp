@@ -97,6 +97,7 @@ namespace libsemigroups {
         _longs_begin(),
         _num_threads(1),
         _presentation(),
+        _pruners(),
         _stats() {
     _longs_begin = _presentation.rules.cend();
   }
