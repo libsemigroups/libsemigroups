@@ -19,7 +19,7 @@ delete_gcda_files() {
 if [ -x "$(command -v ccache)" ]; then
   bold "using ccache. . ."
   MYCXX="ccache g++"
-  MYCXXFLAGS="-fdiagnostics-color --coverage"
+  MYCXXFLAGS="$CXXFLAGS -fdiagnostics-color --coverage"
 else
   bold "not using ccache (not available). . ."
   MYCXX="$CXX"
@@ -58,13 +58,13 @@ fi
 if [[ ! -f config.log ]]; then
   bold "No config.log file found, running $CONFIGURE. . ."
   printf "\033[2m";
-  ./configure CXX="$MYCXX" CXXFLAGS="$MYCXXFLAGS" --enable-code-coverage
+  ./configure CXX="$MYCXX" CXXFLAGS="$MYCXXFLAGS" --enable-code-coverage --disable-backward
   ./autogen.sh
   printf "\033[0m"
 elif [[ ! -f Makefile ]]; then
   bold "No Makefile found, running $CONFIGURE. . ."
   printf "\033[2m"
-  ./configure CXX="$MYCXX" CXXFLAGS="$MYCXXFLAGS" --enable-code-coverage
+  ./configure CXX="$MYCXX" CXXFLAGS="$MYCXXFLAGS" --enable-code-coverage --disable-backward
   printf "\033[0m"
 elif ! grep -q "\.\/configure.*\-\-enable-code\-coverage" config.log; then
   bold "Didn't find --enable-code-coverage flag in config.log, running make clean && ./configure --enable-code-coverage. . ."
@@ -97,12 +97,11 @@ fi
 
 bold "Running lcov and genhtml . . .";
 printf "\033[2m";
-lcov  --directory . --capture --output-file "coverage.info.tmp" --test-name "libsemigroups_1_0_0" --no-checksum --no-external --compat-libtool --gcov-tool "gcov" | grep -v "ignoring data for external file"
-lcov  --directory . --remove "coverage.info.tmp" "/tmp/*" "/Applications/*" --output-file "coverage.info"
-LANG=C genhtml  --prefix . --output-directory "coverage" --title "libsemigroups Code Coverage" --legend --show-details "coverage.info.tmp"
+lcov  --directory . --capture --output-file "coverage.info.tmp" --test-name "libsemigroups_1_0_0" --no-checksum --no-external --compat-libtool --gcov-tool "gcov" --ignore-errors empty  --ignore-errors inconsistent --ignore-errors gcov| grep -v "ignoring data for external file"
+lcov  --directory . --remove "coverage.info.tmp" --output-file "coverage.info" --ignore-errors empty --ignore-errors inconsistent --ignore-errors gcov
+LANG=C genhtml  --ignore-errors inconsistent --ignore-errors unmapped --prefix . --output-directory "coverage" --title "libsemigroups Code Coverage" --legend --show-details "coverage.info.tmp" 
 rm -f coverage.info.tmp
 printf "\033[0m";
-
 delete_gcda_files
 
 fnam=$1
