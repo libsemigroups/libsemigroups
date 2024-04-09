@@ -596,17 +596,18 @@ namespace libsemigroups {
         }
       }
 
-      for (auto const& pruner : _sims1or2->pruners()) {
-        if (!pruner(_felsch_graph)) {
-          return false;
-        }
-      }
       return true;
     }
 
     template <typename Sims1or2>
     bool SimsBase<Sims1or2>::IteratorBase::install_descendents(
         PendingDef const& current) {
+      for (auto const& pruner : _sims1or2->pruners()) {
+        if (!pruner(_felsch_graph)) {
+          return false;
+        }
+      }
+
       letter_type     a        = current.generator + 1;
       size_type const M        = _felsch_graph.number_of_active_nodes();
       size_type const N        = _felsch_graph.number_of_edges();
