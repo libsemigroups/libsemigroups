@@ -23,13 +23,13 @@
 #ifndef LIBSEMIGROUPS_RUNNER_HPP_
 #define LIBSEMIGROUPS_RUNNER_HPP_
 
-#include <atomic>   // for atomic
-#include <chrono>   // for nanoseconds, high_resolution_clock
-#include <numeric>  // for accumulate
-#include <thread>   // for ??
+// TODO(0) check thread safety
 
-#include "debug.hpp"      // for LIBSEMIGROUPS_ASSERT
-#include "exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
+#include <atomic>  // for atomic
+#include <chrono>  // for nanoseconds, high_resolution_clock
+#include <thread>  // for ??
+
+#include "debug.hpp"  // for LIBSEMIGROUPS_ASSERT
 
 #include "detail/function-ref.hpp"  // for FunctionRef
 #include "detail/report.hpp"        // for LibsemigroupsException
@@ -50,8 +50,8 @@ namespace libsemigroups {
     std::string _prefix;
     nanoseconds _report_time_interval;
 
-    mutable time_point _last_report;
-    mutable time_point _start_time;
+    mutable std::atomic<time_point> _last_report;
+    mutable time_point              _start_time;
 
    public:
     // not noexcept because std::string constructor isn't
@@ -66,11 +66,37 @@ namespace libsemigroups {
     }
 
     Reporter& init();
+    // TODO(0) to cpp
+    Reporter(Reporter const& that)
+        : _prefix(that._prefix),
+          _report_time_interval(that._report_time_interval),
+          _last_report(that._last_report.load()),
+          _start_time(that._start_time) {}
 
-    Reporter(Reporter const&)            = default;
-    Reporter(Reporter&&)                 = default;
-    Reporter& operator=(Reporter const&) = default;
-    Reporter& operator=(Reporter&&)      = default;
+    // TODO(0) to cpp
+    Reporter(Reporter&& that)
+        : _prefix(std::move(that._prefix)),
+          _report_time_interval(std::move(that._report_time_interval)),
+          _last_report(that._last_report.load()),
+          _start_time(std::move(that._start_time)) {}
+
+    // TODO(0) to cpp
+    Reporter& operator=(Reporter const& that) {
+      _prefix               = that._prefix;
+      _report_time_interval = that._report_time_interval;
+      _last_report          = that._last_report.load();
+      _start_time           = that._start_time;
+      return *this;
+    }
+
+    // TODO(0) to cpp
+    Reporter& operator=(Reporter&& that) {
+      _prefix               = std::move(that._prefix);
+      _report_time_interval = std::move(that._report_time_interval);
+      _last_report          = that._last_report.load();
+      _start_time           = std::move(that._start_time);
+      return *this;
+    }
 
     ~Reporter() = default;
 
@@ -91,7 +117,7 @@ namespace libsemigroups {
     // TODO(v3) remove!
     [[nodiscard]] inline bool report() const {
       auto t       = std::chrono::high_resolution_clock::now();
-      auto elapsed = t - _last_report;
+      auto elapsed = t - _last_report.load();
 
       if (elapsed > _report_time_interval) {
         _last_report = t;

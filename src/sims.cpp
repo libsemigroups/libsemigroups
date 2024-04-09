@@ -77,10 +77,10 @@ namespace libsemigroups {
   }
 
   SimsStats& SimsStats::init_from(SimsStats const& that) {
-    count_last         = that.count_last;
+    count_last         = that.count_last.load();
     count_now          = that.count_now.load();
     max_pending        = that.max_pending.load();
-    total_pending_last = that.total_pending_last;
+    total_pending_last = that.total_pending_last.load();
     total_pending_now  = that.total_pending_now.load();
     return *this;
   }

@@ -43,6 +43,7 @@
 #ifndef LIBSEMIGROUPS_SIMS_HPP_
 #define LIBSEMIGROUPS_SIMS_HPP_
 
+#include <atomic>
 #include <iostream>
 
 #include <algorithm>   // for max
@@ -85,9 +86,10 @@ namespace libsemigroups {
   //! \sa \ref Sims1
   class SimsStats {
    public:
+    // TODO(0) might be better to have a mutex here and just lock it in
+    // check_point below
     // TODO(doc)
-    // Not atomic because this is only accessed by report_progress_from_thread
-    uint64_t count_last;
+    std::atomic_uint64_t count_last;
     // TODO(doc)
     // Atomic so as to avoid races between report_progress_from_thread and the
     // threads modifying count_last
@@ -113,8 +115,7 @@ namespace libsemigroups {
     //! occur during the running of the algorithms in Sims1. This is the same
     //! as the number of nodes in the search tree encounter during the running
     //! of Sims1.
-    // Not atomic because this is only accessed by report_progress_from_thread
-    uint64_t total_pending_last;
+    std::atomic_uint64_t total_pending_last;
 
     // TODO(doc)
     // Atomic so as to avoid races between report_progress_from_thread and the
@@ -142,8 +143,8 @@ namespace libsemigroups {
     SimsStats& stats_zero();
 
     SimsStats& stats_check_point() {
-      count_last         = count_now;
-      total_pending_last = total_pending_now;
+      count_last         = count_now.load();
+      total_pending_last = total_pending_now.load();
       return *this;
     }
 
