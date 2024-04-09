@@ -956,7 +956,7 @@ namespace libsemigroups {
   std::ostream& operator<<(std::ostream&,
                            KnuthBendix<Rewriter, ReductionOrder> const&);
 
-  KnuthBendix(congruence_kind)->KnuthBendix<>;
+  KnuthBendix(congruence_kind) -> KnuthBendix<>;
 
   namespace knuth_bendix {
 
@@ -1169,7 +1169,6 @@ namespace libsemigroups {
         } else if (kb.finished()) {
           return tril::FALSE;
         }
-
       } while (std::next_permutation(perm.begin(), perm.end()));
       return tril::unknown;
     }
