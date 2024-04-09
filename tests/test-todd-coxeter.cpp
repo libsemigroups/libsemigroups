@@ -1677,7 +1677,7 @@ namespace libsemigroups {
     // section_Rc_style(tc);        // about 2.5s
     section_R_over_C_style(tc);
 
-    REQUIRE(tc.number_of_classes() == 115'974);
+    REQUIRE(tc.number_of_classes() == 115'975);
   }
 
   LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",

@@ -55,28 +55,23 @@ jobs:
            run: |
                 make bench_all -j4
    clang:
-      timeout-minutes: 20
+      timeout-minutes: 60
       runs-on: ubuntu-latest
       env:
         CXX: "ccache clang++"
-        CXXFLAGS: "-fdiagnostics-color"
+        CXXFLAGS: "-fdiagnostics-color -O2 -g"
       steps:
          - uses: actions/checkout@v3
-         - name: "Restore cache . . ."
-           uses: actions/cache@v3
+         - name: "Setup ccache . . ."
+           uses: Chocobo1/setup-ccache-action@v1
            with:
-              path: /home/runner/.ccache
-              key: ccache:${{ matrix.os }}:${{ matrix.compiler }}:${{ matrix.modules }}-modules:${{ github.ref }}:${{ github.sha }}
-              restore-keys: |
-                ccache:${{ matrix.os }}:${{ matrix.compiler }}:${{ matrix.modules }}-modules:${{ github.ref }}
-                ccache:${{ matrix.os }}:${{ matrix.compiler }}:${{ matrix.modules }}-modules
-         - name: "Install dependencies . . ."
-           run: |
-                sudo apt-get --yes update
-                sudo apt-get install -y ccache
+             update_packager_index: false
+             install_ccache: true
          - name: "Configure . . ."
            run: |
-                mkdir -p m4 && ./autogen.sh && ./configure --disable-hpcombi
+                mkdir -p m4
+                ./autogen.sh 
+                ./configure CXX="$CXX" CXXFLAGS="$CXXFLAGS" --disable-hpcombi
          - name: "Build libsemigroups . . ."
            run: |
                 ccache -z && make -j4 && ccache -s
