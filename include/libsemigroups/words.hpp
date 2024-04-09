@@ -2141,10 +2141,13 @@ namespace libsemigroups {
         result.reserve((first - last) / steppos);
         int i = first;
         for (; i > last && i >= 0; i += step) {
-          result += elts[i % elts.size()];
+          size_t const a = i % elts.size();
+          LIBSEMIGROUPS_ASSERT(a < elts.size());
+          result += elts[a];
         }
         for (; i > last; i += step) {
-          size_t a = ((-i / elts.size()) + 1) * elts.size() + i;
+          size_t const a = ((-i / elts.size()) + 1) * elts.size() + i;
+          LIBSEMIGROUPS_ASSERT(a < elts.size());
           result += elts[a];
         }
       }
