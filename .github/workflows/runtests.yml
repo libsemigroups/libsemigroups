@@ -199,7 +199,7 @@ jobs:
          - name: "Configure . . ."
            run: |
                 mkdir -p m4 && ./autogen.sh && ./configure
-         - name: "make discheck . . ."
+         - name: "make distcheck . . ."
            run: |
                 make distcheck -j4
    doc:
