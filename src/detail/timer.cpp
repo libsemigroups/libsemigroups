@@ -40,6 +40,10 @@ namespace libsemigroups {
         s += fmt::format("{}", x);
       }
 
+      void append(std::string& s, minutes const& x) {
+        s += fmt::format("{}min", x.count());
+      }
+
       void append(std::string& s, days const& x) {
         s += fmt::format("{}d", x.count());
       }
