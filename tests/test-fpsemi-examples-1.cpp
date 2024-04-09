@@ -52,6 +52,7 @@ namespace libsemigroups {
   using fpsemigroup::order_preserving_monoid;
   using fpsemigroup::orientation_preserving_monoid;
   using fpsemigroup::orientation_reversing_monoid;
+  using fpsemigroup::partial_brauer_monoid;
   using fpsemigroup::partial_isometries_cycle_graph_monoid;
   using fpsemigroup::partial_transformation_monoid;
   using fpsemigroup::partition_monoid;
@@ -93,6 +94,46 @@ namespace libsemigroups {
             == symmetric_group(4, author::Moore, 0));
     REQUIRE(cyclic_inverse_monoid(4, author::Fernandes)
             == cyclic_inverse_monoid(4, author::Fernandes, 1));
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("fpsemi-examples",
+                          "102",
+                          "test semigroup/monoid status",
+                          "[fpsemi-examples][quick]") {
+    auto rg = ReportGuard(REPORT);
+    REQUIRE(stellar_monoid(5).contains_empty_word());
+    REQUIRE(dual_symmetric_inverse_monoid(5).contains_empty_word());
+    REQUIRE(uniform_block_bijection_monoid(5).contains_empty_word());
+    REQUIRE(partition_monoid(5, author::East).contains_empty_word());
+    REQUIRE(not partition_monoid(3, author::Machine).contains_empty_word());
+    REQUIRE(not singular_brauer_monoid(5).contains_empty_word());
+    REQUIRE(orientation_preserving_monoid(5).contains_empty_word());
+    REQUIRE(orientation_reversing_monoid(5).contains_empty_word());
+    REQUIRE(temperley_lieb_monoid(5).contains_empty_word());
+    REQUIRE(brauer_monoid(5).contains_empty_word());
+    REQUIRE(partial_brauer_monoid(5).contains_empty_word());
+    REQUIRE(not fibonacci_semigroup(5, 2).contains_empty_word());
+    REQUIRE(plactic_monoid(5).contains_empty_word());
+    REQUIRE(stylic_monoid(5).contains_empty_word());
+    REQUIRE(symmetric_group(5, author::Burnside + author::Miller).contains_empty_word());
+    REQUIRE(symmetric_group(5, author::Carmichael).contains_empty_word());
+    REQUIRE(symmetric_group(5, author::Coxeter + author::Moser).contains_empty_word());
+    REQUIRE(symmetric_group(5, author::Moore).contains_empty_word());
+    REQUIRE(alternating_group(5).contains_empty_word());
+    REQUIRE(not rectangular_band(5, 5).contains_empty_word());
+    REQUIRE(full_transformation_monoid(5, author::Iwahori).contains_empty_word());
+    REQUIRE(full_transformation_monoid(5, author::Aizenstat).contains_empty_word());
+    REQUIRE(partial_transformation_monoid(5, author::Sutov).contains_empty_word());
+    REQUIRE(partial_transformation_monoid(3, author::Machine).contains_empty_word());
+    REQUIRE(symmetric_inverse_monoid(5).contains_empty_word());
+    REQUIRE(chinese_monoid(5).contains_empty_word());
+    REQUIRE(monogenic_semigroup(0, 5).contains_empty_word());
+    REQUIRE(not monogenic_semigroup(2, 6).contains_empty_word());
+    REQUIRE(order_preserving_monoid(5).contains_empty_word());
+    REQUIRE(cyclic_inverse_monoid(5).contains_empty_word());
+    REQUIRE(order_preserving_cyclic_inverse_monoid(5).contains_empty_word());
+    REQUIRE(partial_isometries_cycle_graph_monoid(5).contains_empty_word());
+    REQUIRE(not_symmetric_group(5).contains_empty_word());
   }
 
   LIBSEMIGROUPS_TEST_CASE("fpsemi-examples",

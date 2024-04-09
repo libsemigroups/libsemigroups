@@ -367,6 +367,7 @@ namespace libsemigroups {
         t.insert(t.begin(), i);
         presentation::add_rule_no_checks(p, t + word_type({i}), t);
       }
+      p.contains_empty_word(true);
       return p;
     }
 
@@ -414,6 +415,7 @@ namespace libsemigroups {
           presentation::add_rule_no_checks(p, {b, b, a}, {b, a, b});
         }
       }
+      p.contains_empty_word(true);
       return p;
     }
 
@@ -1354,7 +1356,7 @@ namespace libsemigroups {
       return p;
     }
 
-    Presentation<word_type> monogenic_semigroup(size_t m, size_t r) {
+    Presentation<word_type> monogenic_semigroup(size_t m, size_t r) { 
       if (r == 0) {
         LIBSEMIGROUPS_EXCEPTION(
             "expected 2nd argument to be strictly positive, found {}", r);
@@ -1362,6 +1364,12 @@ namespace libsemigroups {
       Presentation<word_type> p;
       presentation::add_rule_no_checks(p, pow(0_w, m + r), pow(0_w, m));
       p.alphabet_from_rules();
+      if (m == 0) {
+        p.contains_empty_word(true);
+      }
+      else {
+        p.contains_empty_word(false);
+      }
       return p;
     }
 
