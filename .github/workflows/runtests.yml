@@ -131,17 +131,17 @@ jobs:
             make clean
             ./configure --with-external-eigen
             make test_obvinf -j4 || exit 1
-            make test_digraph -j4 || exit 1
+            make test_word_graph -j4 || exit 1
             ./test_obvinf "[quick]"
-            ./test_digraph "[quick]"
+            ./test_word_graph "[quick]"
         - name: "Test flag: --disable-eigen"
           run: |
             make clean
             ./configure --disable-eigen
             make test_obvinf -j4 || exit 1
-            make test_digraph -j4 || exit 1
+            make test_word_graph -j4 || exit 1
             ./test_obvinf "[quick]"
-            ./test_digraph "[quick]"
+            ./test_word_graph "[quick]"
    coverage:
       timeout-minutes: 60
       runs-on: ubuntu-latest
