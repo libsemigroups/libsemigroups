@@ -152,7 +152,7 @@ backwardcppinclude_HEADERS=extern/backward-cpp/backward.hpp
 hpcombiincludedir = $(includedir)/libsemigroups/HPCombi/include
 if LIBSEMIGROUPS_HPCOMBI_ENABLED
 hpcombiinclude_HEADERS =  extern/HPCombi/include/hpcombi/arch.hpp
-hpcombiinclude_HEADERS =  extern/HPCombi/include/hpcombi/bmat8.hpp
+hpcombiinclude_HEADERS += extern/HPCombi/include/hpcombi/bmat8.hpp
 hpcombiinclude_HEADERS += extern/HPCombi/include/hpcombi/bmat8_impl.hpp
 hpcombiinclude_HEADERS += extern/HPCombi/include/hpcombi/builder.hpp
 hpcombiinclude_HEADERS += extern/HPCombi/include/hpcombi/debug.hpp
