@@ -59,7 +59,7 @@ namespace libsemigroups {
         : _prefix(),
           _report_time_interval(),
           // mutable
-          _last_report(),
+          _last_report(time_point()),
           _start_time() {
       // All values set in init
       init();
