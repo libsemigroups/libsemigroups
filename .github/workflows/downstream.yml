@@ -15,10 +15,10 @@ jobs:
   GAP:
       env:
         GAP_VERSION: "4.12.2"
-        GAP_SEMIGROUPS_REPO: "semigroups"
-        GAP_SEMIGROUPS_BRANCH: "stable-5.3"
+        GAP_SEMIGROUPS_REPO: "james-d-mitchell"
+        GAP_SEMIGROUPS_BRANCH: "libsemigroups-v3"
         GAP: "gap -A -T --quitonbreak"
-      name: GAP 4.12.2 / Semigroups / stable-5.3 / ubuntu / 64-bit
+      name: GAP 4.12.2 / Semigroups / libsemigroups-v3 / ubuntu / 64-bit
       runs-on: ubuntu-latest
       container:
           image: jamesdbmitchell/gap-docker-minimal:version-4.12.2
@@ -51,42 +51,43 @@ jobs:
               cd /home/gap/inst/gap-$GAP_VERSION/pkg/Semigroups
               cp .LIBSEMIGROUPS_VERSION libsemigroups/.VERSION # FIXME
               ./autogen.sh
-              ./configure --disable-hpcombi
+              ./configure
               make -j4
-          - name: "Install Semigroups GAP package dependencies"
-            run: |
-              echo "LoadPackage(\"PackageManager\"); QuitGap(InstallPackage(\"autodoc\", false));" | $GAP
-              echo "LoadPackage(\"PackageManager\"); QuitGap(InstallPackage(\"datastructures\", false));" | $GAP
-              echo "LoadPackage(\"PackageManager\"); QuitGap(InstallPackage(\"digraphs\", false));" | $GAP
-              echo "LoadPackage(\"PackageManager\"); QuitGap(InstallPackage(\"genss\", false));" | $GAP
-              echo "LoadPackage(\"PackageManager\"); QuitGap(InstallPackage(\"images\", false));" | $GAP
-              echo "LoadPackage(\"PackageManager\"); QuitGap(InstallPackage(\"orb\", false) and CompilePackage(\"orb\"));" | $GAP
-          - name: "Run Semigroups GAP package workspace tests"
-            run: |
-              cd /home/gap/inst/gap-$GAP_VERSION/pkg/Semigroups
-              $GAP tst/workspaces/save.g
-              $GAP -L tst/workspaces/test-output.w tst/workspaces/load.g
-          - name: "Run Semigroups GAP package standard tests"
-            run: |
-              cd /home/gap/inst/gap-4.12.2/pkg/Semigroups
-              $GAP tst/teststandard.g
-          - name: "Run GAP testinstall"
-            run: |
-              cd /home/gap/inst/gap-$GAP_VERSION/pkg/Semigroups
-              $GAP ci/run-gap-testinstall.g
-          - name: "Run GAP teststandard"
-            run: |
-              cd /home/gap/inst/gap-$GAP_VERSION/
-              rm -f tst/teststandard/ctblsymm.tst
-              cd pkg/Semigroups
-              $GAP ci/run-gap-teststandard.g
-          - name: "Run GAP testbugfix"
-            run: |
-              cd /home/gap/inst/gap-$GAP_VERSION/
-              rm -f tst/testbugfix/2005-05-03-t00061.tst
-              rm -f tst/testbugfix/2016-03-03-t00332.tst
-              rm -f tst/testbugfix/2018-05-24-IntermediateSubgroups.tst
-              rm -f tst/testbugfix/2018-09-13-MTC.tst
-              rm -f tst/testbugfix/2018-12-06-GroupWithGenerators.tst
-              cd pkg/Semigroups
-              $GAP ci/run-gap-testbugfix.g
+         # TODO uncomment, we are only checking compilation at present
+         #  - name: "Install Semigroups GAP package dependencies"
+         #    run: |
+         #      echo "LoadPackage(\"PackageManager\"); QuitGap(InstallPackage(\"autodoc\", false));" | $GAP
+         #      echo "LoadPackage(\"PackageManager\"); QuitGap(InstallPackage(\"datastructures\", false));" | $GAP
+         #      echo "LoadPackage(\"PackageManager\"); QuitGap(InstallPackage(\"digraphs\", false));" | $GAP
+         #      echo "LoadPackage(\"PackageManager\"); QuitGap(InstallPackage(\"genss\", false));" | $GAP
+         #      echo "LoadPackage(\"PackageManager\"); QuitGap(InstallPackage(\"images\", false));" | $GAP
+         #      echo "LoadPackage(\"PackageManager\"); QuitGap(InstallPackage(\"orb\", false) and CompilePackage(\"orb\"));" | $GAP
+         #  - name: "Run Semigroups GAP package workspace tests"
+         #    run: |
+         #      cd /home/gap/inst/gap-$GAP_VERSION/pkg/Semigroups
+         #      $GAP tst/workspaces/save.g
+         #      $GAP -L tst/workspaces/test-output.w tst/workspaces/load.g
+         #  - name: "Run Semigroups GAP package standard tests"
+         #    run: |
+         #      cd /home/gap/inst/gap-4.12.2/pkg/Semigroups
+         #      $GAP tst/teststandard.g
+         #  - name: "Run GAP testinstall"
+         #    run: |
+         #      cd /home/gap/inst/gap-$GAP_VERSION/pkg/Semigroups
+         #      $GAP ci/run-gap-testinstall.g
+         #  - name: "Run GAP teststandard"
+         #    run: |
+         #      cd /home/gap/inst/gap-$GAP_VERSION/
+         #      rm -f tst/teststandard/ctblsymm.tst
+         #      cd pkg/Semigroups
+         #      $GAP ci/run-gap-teststandard.g
+         #  - name: "Run GAP testbugfix"
+         #    run: |
+         #      cd /home/gap/inst/gap-$GAP_VERSION/
+         #      rm -f tst/testbugfix/2005-05-03-t00061.tst
+         #      rm -f tst/testbugfix/2016-03-03-t00332.tst
+         #      rm -f tst/testbugfix/2018-05-24-IntermediateSubgroups.tst
+         #      rm -f tst/testbugfix/2018-09-13-MTC.tst
+         #      rm -f tst/testbugfix/2018-12-06-GroupWithGenerators.tst
+         #      cd pkg/Semigroups
+         #      $GAP ci/run-gap-testbugfix.g
