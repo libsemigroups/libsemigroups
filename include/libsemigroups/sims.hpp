@@ -84,14 +84,16 @@ namespace libsemigroups {
   //! class is to collect some statistics related to `Sims1` or `Sims2` class
   //! template.
   //!
-  //! \sa \ref Sims1
+  //! \sa \ref Sims1 \ref Sims2
   class SimsStats {
    public:
     //! Number of congruences found at time of last report.
     //!
-    //! This member tracks a snapshot of the number of congruences found by the
-    //! Sims1 or Sims2 algorithm at some earlier point during the running of
-    //! Sims1 or Sims2.
+    //! This member holds the of the number of congruences found by the
+    //! Sims1 or Sims2 algorithm at the time of the last call
+    //! to \ref stats_check_point.
+    //!
+    //! \sa \ref stats_check_point \ref count_now
     // TODO(0) might be better to have a mutex here and just lock it in
     // check_point below
     std::atomic_uint64_t count_last;
@@ -120,10 +122,12 @@ namespace libsemigroups {
     //! point in the future in the WordGraph represented by a Sims1 or Sims2
     //! instance at any given moment.
     //!
-    //! This member tracks a snapshot of the total number of pending definitions
-    //! that occur at some earlier point during the running of the algorithms in
-    //! Sims1 or Sims2. This is the same as the number of nodes in the search
+    //! This member tracks the total number of pending definitions
+    //! that occur at the time of the last call to \ref stats_check_point.
+    //! This is the same as the number of nodes in the search
     //! tree encounter during the running of Sims1 or Sims2.
+    //!
+    //! \sa \ref stats_check_point \ref total_pending_now
     std::atomic_uint64_t total_pending_last;
 
     //! The total number of pending definitions.
@@ -140,26 +144,90 @@ namespace libsemigroups {
     // threads modifying total_pending_now
     std::atomic_uint64_t total_pending_now;
 
+    //! Default constructor.
+    //!
+    //! Constructs a SimsStats object with all statistics set to zero.
+    //!
+    //! \parameters (None)
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
     SimsStats();
 
+    //! Copy constructor.
+    //!
+    //! Returns a SimsStats object that is a copy of \p that. The state
+    //! of the new SimsStats object is the same as \p that. This triggers an
+    //! atomic load on the member variables of \p that.
+    //!
+    //! \param that the SimsStats to copy.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
     SimsStats(SimsStats const& that) : SimsStats() {
       init_from(that);
     }
 
+    //! Copy assignment operator.
+    //!
+    //! Assigns a SimsStats object that is a copy of \p that. The state
+    //! of the new SimsStats object is the same as \p that. This triggers an
+    //! atomic load on the member variables of \p that.
+    //!
+    //! \param that the SimsStats to move from.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
     SimsStats& operator=(SimsStats const& that) {
       return init_from(that);
     }
 
+    //! Move constructor.
+    //!
+    //! Returns a SimsStats object that is initialized from \p that. The state
+    //! of the new SimsStats object is the same as \p that. This triggers an
+    //! atomic load on the member variables of \p that.
+    //!
+    //! \param that the SimsStats to move from.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
     SimsStats(SimsStats&& that) : SimsStats() {
       init_from(that);
     }
 
+    //! Move assignment operator.
+    //!
+    //! Assigns a SimsStats object that is initialized from \p that. The state
+    //! of the new SimsStats object is the same as \p that. This triggers an
+    //! atomic load on the member variables of \p that.
+    //!
+    //! \param that the SimsStats to move from.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
     SimsStats& operator=(SimsStats&& that) {
       return init_from(that);
     }
 
+    //! Set all statistics to zero.
+    //!
+    //! \parameters (None)
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
     SimsStats& stats_zero();
 
+    //! Checkpoint statistics.
+    //!
+    //! Overwrites the values of \ref count_last and \ref total_pending_last
+    //! with \ref count_now and \ref total_pending_now respectively. Triggers an
+    //! atomic load on \ref count_now and \ref total_pending_now.
+    //!
+    //! \parameters (None)
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
     SimsStats& stats_check_point() {
       count_last         = count_now.load();
       total_pending_last = total_pending_now.load();
@@ -205,13 +273,47 @@ namespace libsemigroups {
     mutable SimsStats                                        _stats;
 
    public:
-    // TODO(doc)
+    //! Default constructor.
+    //!
+    //! Constructs a SimsSettings object. Defaults to a single thread and 64
+    //! idle thread restarts, no other settings set. Use
+    //! * \ref presentation to set the presentation;
+    //! * \ref number_of_threads to set the number of threads;
+    //! * \ref include to set the pairs to be included;
+    //! * \ref exclude to set the pairs to be excluded;
+    //! * \ref add_pruner to add a pruninf function;
+    //! * \ref long_rule_length to set the length of long rules;
+    //! * \ref idle_thread_restarts to set the number of idle thread restarts.
+    //!
+    //! \parameters (None)
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
     SimsSettings();
 
-    // TODO(doc)
+    //! \brief Initialize an existing SimsSettings object.
+    //!
+    //! This function puts a SimsSettings object back into the same state as if
+    //! it had been newly default constructed.
+    //!
+    //! \parameters (None)
+    //!
+    //! \returns A reference to \c *this.
+    //!
+    //! \exception
+    //! \no_libsemigroups_except
     // TODO(tests)
     Subclass& init();
 
+    //! Copy constructor.
+    //!
+    //! Returns a SimsSettings object that is a copy of \p that. The state
+    //! of the new SimsSettings object is the same as \p that.
+    //!
+    //! \param that the SimsSettings to copy.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
     // Copy constructor is explicitly required, the constructor template is not
     // a substitute. If no copy constructor is implemented, then _longs_begin
     // is not properly initialised, and leads to badness.
@@ -219,7 +321,43 @@ namespace libsemigroups {
       init(that);
     }
 
+    //! Copy assignment operator.
+    //!
+    //! Assigns a SimsSettings object that is a copy of \p that. The state
+    //! of the new SimsSettings object is the same as \p that.
+    //!
+    //! \param that the SimsSettings to copy.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
     SimsSettings& operator=(SimsSettings const& that) {
+      init(that);
+      return *this;
+    }
+
+    //! Move constructor.
+    //!
+    //! Returns a SimsSettings object that is initialized from \p that. The
+    //! state of the new SimsSettings object is the same as \p that.
+    //!
+    //! \param that the SimsSettings to copy.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    SimsSettings(SimsSettings&& that) {
+      init(that);
+    }
+
+    //! Move assignment operator.
+    //!
+    //! Assigns a SimsSettings object that is initialized from \p that. The
+    //! state of the new SimsSettings object is the same as \p that.
+    //!
+    //! \param that the SimsSettings to copy.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    SimsSettings& operator=(SimsSettings&& that) {
       init(that);
       return *this;
     }
@@ -230,6 +368,7 @@ namespace libsemigroups {
       init(that);
     }
 
+    //! Initialize from SimsSettings with different subclass.
     template <typename OtherSubclass>
     SimsSettings& init(SimsSettings<OtherSubclass> const& that);
 
@@ -373,7 +512,30 @@ namespace libsemigroups {
     //! `presentation().rules`).
     Subclass& cbegin_long_rules(std::vector<word_type>::const_iterator it);
 
-    // TODO(doc)
+    //! \brief Set the beginning of the long rules (position).
+    //!
+    //! Set the beginning of the long rules using a position in
+    //! `presentation().rules`.
+    //!
+    //! The "long rules" are the rules used after a complete deterministic word
+    //! graph has been found in the search. If such a word graph is compatible
+    //! with the long rules specified by this function, then this word graph is
+    //! accepted, and if not it is rejected.
+    //!
+    //! The purpose of this is to improve the backtrack search by reducing the
+    //! time spent processing "long" rules in each node of the search tree, and
+    //! to only check them at the leaves.
+    //!
+    //! \param pos position of the the left hand side of the first long
+    //! rule.
+    //!
+    //! \returns A reference to \c this.
+    //!
+    //! \throws LibsemigroupsException if \p pos is not a valid position in
+    //! `presentation().rules`
+    //!
+    //! \throws LibsemigroupsException if the rule at position \p pos is not
+    //! the left hand side of a rule (i.e. if \p pos is odd).
     Subclass& cbegin_long_rules(size_t pos);
 
     //! Returns the pointer to the first long rule.
@@ -390,12 +552,17 @@ namespace libsemigroups {
       return _longs_begin;
     }
 
-    // TODO(doc)
+    //! Clear the set of long rules.
+    //!
+    //! \returns A reference to \c this.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
     Subclass& clear_long_rules() {
       return cbegin_long_rules(_presentation.rules.cend());
     }
 
-    // TODO(doc)
+    //! Returns the number of rules marked as long rules.
     [[nodiscard]] size_t number_of_long_rules() const noexcept {
       return std::distance(_longs_begin, _presentation.rules.cend()) / 2;
     }
@@ -419,6 +586,40 @@ namespace libsemigroups {
     //! \no_libsemigroups_except
     Subclass& long_rule_length(size_t val);
 
+    //! \anchor extra
+    //! Returns a const reference to the set of pruners.
+    //!
+    //! A pruner is any function that takes as input a word graph and returns a
+    //! boolean. We require that if a pruner returns false for a word graph
+    //! `wg`, then it returns false for all word graphs that are descended from
+    //! `wg` in the Sims word graph search tree. The pruners are used to refine
+    //! the congruence search tree during the execution of the Sims algorithm.
+    //! As such, the congruences computed by this instance are only taken among
+    //! those whose word graphs are accepted by all pruners returned by
+    //! `pruners()`.
+    //!
+    //! \param (None) this function has no parameters.
+    //!
+    //! \returns
+    //! A const reference to `std::vector<std::function<bool(word_graph_type
+    //! const&)>> _pruners`, the set of all pruners.
+    //!
+    //! \exceptions
+    //! \noexcept
+    auto const& pruners() const noexcept {
+      return _pruners;
+    }
+
+    //! Add a new pruner.
+    //!
+    //! \param an rvalue reference to a pruner function.
+    //!
+    //! \returns A reference to \c this.
+    //!
+    //! \exceptions
+    //! \noexcept
+    //!
+    //! \sa \ref pruners()
     template <typename Func>
     Subclass& add_pruner(Func&& func) {
       _pruners.emplace_back(func);
@@ -427,13 +628,15 @@ namespace libsemigroups {
       return static_cast<Subclass&>(*this);
     }
 
+    //! Clear the set of pruners.
+    //!
+    //! \returns A reference to \c this.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
     Subclass& clear_pruners() {
       _pruners.clear();
       return static_cast<Subclass&>(*this);
-    }
-
-    auto const& pruners() const noexcept {
-      return _pruners;
     }
 
     //! \anchor extra
@@ -453,7 +656,6 @@ namespace libsemigroups {
     //! A const reference to `Presentation<word_type>`.
     //!
     //! \exceptions
-
     //! \noexcept
     [[nodiscard]] std::vector<word_type> const& include() const noexcept {
       return _include;
@@ -470,6 +672,10 @@ namespace libsemigroups {
     //! underlying semigroup (defined by the presentation returned by \ref
     //! presentation) represented by the relations returned by `include()`.
     //!
+    //! \note
+    //! Note that this function replaces all previously set `include` pairs with
+    //! those found in `[first, last)`.
+    //!
     //! \tparam Iterator the type of the arguments, an iterator pointing at a
     //! word_type.
     //!
@@ -479,7 +685,11 @@ namespace libsemigroups {
     //!
     //! \returns A reference to \c this.
     //!
-    // TODO exceptions
+    //! \throws LibsemigroupsException if the iterators do not define a set of
+    //! pairs, i.e. there are an odd number of words between `first` and `last`.
+    //!
+    //! \throws LibsemigroupsException if `validate_word(w)` throws for any word
+    //! `w` between `first` and `last`.
     template <typename Iterator>
     Subclass& include(Iterator first, Iterator last) {
       return include_exclude(first, last, _include);
@@ -499,11 +709,37 @@ namespace libsemigroups {
     //! \param rhs the right hand side of the rule being added.
     //!
     //! \returns A reference to \c this.
-    // TODO exceptions
+    //!
+    //! \throws LibsemigroupsException if `validate_word(lhs)` or
+    //! `validate_word(rhs)` throws.
     Subclass& include(word_type const& lhs, word_type const& rhs) {
       return include_exclude(lhs, rhs, _include);
     }
 
+    //! \brief Define a set of pairs that should be included in every
+    //! congruence.
+    //!
+    //! Define a set of pairs that should be included in every congruence.
+    //!
+    //! The congruences computed by an instance of this type will always contain
+    //! the relations input here. In other words, the congruences computed are
+    //! only taken among those that contains the pairs of elements of the
+    //! underlying semigroup (defined by the presentation returned by \ref
+    //! presentation) represented by the relations returned by `include()`.
+    //!
+    //! \note
+    //! Note that this function replaces all previously set `include` pairs with
+    //! those found in \param c.
+    //!
+    //! \param a container of rules to be included.
+    //!
+    //! \returns A reference to \c this.
+    //!
+    //! \throws LibsemigroupsException if `c` does not define a set of
+    //! pairs, i.e. there are an odd number of words in `c`.
+    //!
+    //! \throws LibsemigroupsException if `validate_word(w)` throws for any word
+    //! `w` in `c`.
     // TODO move to helper namespace
     template <typename Container>
     Subclass& include(Container const& c) {
@@ -511,13 +747,68 @@ namespace libsemigroups {
       return static_cast<Subclass&>(*this);
     }
 
-    // TODO(doc)
+    //! Clear the set of included words.
+    //!
+    //! \returns A reference to \c this.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
     Subclass& clear_include() {
       _include.clear();
       return static_cast<Subclass&>(*this);
     }
 
-    // TODO(doc)
+    //! \anchor extra
+    //! Returns a const reference to the excluded pairs.
+    //!
+    //! The congruences computed by a Sims1 instance will never contain the
+    //! relations of this presentation. In other words, the congruences
+    //! computed by this instance are only taken among those that do not contain
+    //! any of the pairs of elements of the underlying semigroup (defined by the
+    //! presentation returned by \ref presentation and \ref long_rules)
+    //! represented by the relations of the presentation returned by
+    //! `exclude()`.
+    //!
+    //! \param (None) this function has no parameters.
+    //!
+    //! \returns
+    //! A const reference to `Presentation<word_type>`.
+    //!
+    //! \exceptions
+    //! \noexcept
+    [[nodiscard]] std::vector<word_type> const& exclude() const noexcept {
+      return _exclude;
+    }
+
+    //! \brief Define a set of pairs that should be excluded from every
+    //! congruence.
+    //!
+    //! Define a set of pairs that should be excluded from every congruence.
+    //!
+    //! The congruences computed by an instance of this type will never contain
+    //! the relations input here. In other words, the congruences computed are
+    //! only taken among those that do not contain the pairs of elements of the
+    //! underlying semigroup (defined by the presentation returned by \ref
+    //! presentation) represented by the relations returned by `exclude()`.
+    //!
+    //! \note
+    //! Note that this function replaces all previously set `exclude` pairs with
+    //! those found in `[first, last)`.
+    //!
+    //! \tparam Iterator the type of the arguments, an iterator pointing at a
+    //! word_type.
+    //!
+    //! \param first an iterator pointing to the first rule to be excluded.
+    //! \param last an iterator pointing one beyond the last rule to be
+    //! excluded.
+    //!
+    //! \returns A reference to \c this.
+    //!
+    //! \throws LibsemigroupsException if the iterators do not define a set of
+    //! pairs, i.e. there are an odd number of words between `first` and `last`.
+    //!
+    //! \throws LibsemigroupsException if `validate_word(w)` throws for any word
+    //! `w` between `first` and `last`.
     // TODO maybe should add instead of replacing similar to exclude of r pair?
     // Replaces current exclude with [first, last)
     template <typename Iterator>
@@ -525,7 +816,51 @@ namespace libsemigroups {
       return include_exclude(first, last, _exclude);
     }
 
-    // TODO(doc)
+    //! \brief Define a pair that should be excluded from every congruence.
+    //!
+    //! Define a pair that should be excluded from every congruence.
+    //!
+    //! The congruences computed by an instance of this type will never contain
+    //! the relations input here. In other words, the congruences computed are
+    //! only taken among those that do not contain the pairs of elements of the
+    //! underlying semigroup (defined by the presentation returned by \ref
+    //! presentation) represented by the relations returned by `include()`.
+    //!
+    //! \param lhs the left hand side of the rule being added.
+    //! \param rhs the right hand side of the rule being added.
+    //!
+    //! \throws LibsemigroupsException if `validate_word(lhs)` or
+    //! `validate_word(rhs)` throws.
+    Subclass& exclude(word_type const& lhs, word_type const& rhs) {
+      return include_exclude(lhs, rhs, _exclude);
+    }
+
+    //! \brief Define a set of pairs that should be excluded from every
+    //! congruence.
+    //!
+    //! Define a set of pairs that should be excluded from every congruence.
+    //!
+    //! The congruences computed by an instance of this type will never contain
+    //! the relations input here. In other words, the congruences computed are
+    //! only taken among those that do not contain the pairs of elements of the
+    //! underlying semigroup (defined by the presentation returned by \ref
+    //! presentation) represented by the relations returned by `exclude()`.
+    //! \brief Define a set of pairs that should be included in every
+    //! congruence.
+    //!
+    //! \note
+    //! Note that this function replaces all previously set `exclude` pairs with
+    //! those found in \param c.
+    //!
+    //! \param a container of rules to be excluded.
+    //!
+    //! \returns A reference to \c this.
+    //!
+    //! \throws LibsemigroupsException if `c` does not define a set of
+    //! pairs, i.e. there are an odd number of words in `c`.
+    //!
+    //! \throws LibsemigroupsException if `validate_word(w)` throws for any word
+    //! `w` in `c`.
     // TODO move to helper namespace
     template <typename Container>
     Subclass& exclude(Container const& c) {
@@ -533,18 +868,12 @@ namespace libsemigroups {
       return static_cast<Subclass&>(*this);
     }
 
-    // TODO(doc)
-    // Adds a pair to exclude
-    Subclass& exclude(word_type const& lhs, word_type const& rhs) {
-      return include_exclude(lhs, rhs, _exclude);
-    }
-
-    // TODO(doc)
-    [[nodiscard]] std::vector<word_type> const& exclude() const noexcept {
-      return _exclude;
-    }
-
-    // TODO(doc)
+    //! Clear the set of excluded words.
+    //!
+    //! \returns A reference to \c this.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
     Subclass& clear_exclude() {
       // TODO remove the pruner
       _exclude.clear();
@@ -571,12 +900,13 @@ namespace libsemigroups {
     }
 
     // TODO doc
-    Subclass& idle_thread_restarts(size_t val);
-
-    // TODO doc
     [[nodiscard]] size_t idle_thread_restarts() const noexcept {
       return _idle_thread_restarts;
     }
+
+    // Number of times an idle thread will attempt to restart before yielding.
+    // TODO doc
+    Subclass& idle_thread_restarts(size_t val);
 
    protected:
     Subclass const& stats_copy_from(SimsStats const& stts) const {
@@ -692,6 +1022,7 @@ namespace libsemigroups {
       //! Type for the nodes in the associated WordGraph objects.
       using node_type = typename word_graph_type::node_type;
 
+      //! Type for the labels in the associated WordGraph objects.
       using label_type = typename word_graph_type::label_type;
 
       //! The size_type of the associated WordGraph objects.
@@ -977,6 +1308,7 @@ namespace libsemigroups {
 
    public:
     //! Default constructor
+    // TODO(doc)
     Sims1() = default;
 
     // TODO(doc)
@@ -1533,6 +1865,7 @@ namespace libsemigroups {
     //! Default constructor
     MinimalRepOrc() = default;
 
+    // TODO(doc)
     MinimalRepOrc& init() {
       _size = 0;
       return *this;
@@ -1612,6 +1945,7 @@ namespace libsemigroups {
   // generating pairs of the minimal 2-sided congruences are known. These pairs
   // should be added to forbid, and then your Pruno instance should be passed to
   // a Sims1 object via add_pruner.
+  // TODO: probably rename this to describe functionality better
   struct Pruno {
     std::vector<word_type> forbid;
     // TODO to cpp
