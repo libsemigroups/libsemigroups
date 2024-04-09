@@ -149,7 +149,7 @@ backwardcppinclude_HEADERS=extern/backward-cpp/backward.hpp
 ## Define hpcombiincludedir outside the conditional
 ## LIBSEMIGROUPS_HPCOMBI_ENABLED because it is used by
 ## uninstall-hook
-hpcombiincludedir = $(includedir)/libsemigroups/HPCombi/include
+hpcombiincludedir = $(includedir)/libsemigroups/hpcombi
 if LIBSEMIGROUPS_HPCOMBI_ENABLED
 hpcombiinclude_HEADERS =  extern/HPCombi/include/hpcombi/arch.hpp
 hpcombiinclude_HEADERS += extern/HPCombi/include/hpcombi/bmat8.hpp
@@ -166,6 +166,31 @@ hpcombiinclude_HEADERS += extern/HPCombi/include/hpcombi/perm_generic_impl.hpp
 hpcombiinclude_HEADERS += extern/HPCombi/include/hpcombi/power.hpp
 hpcombiinclude_HEADERS += extern/HPCombi/include/hpcombi/vect16.hpp
 hpcombiinclude_HEADERS += extern/HPCombi/include/hpcombi/vect_generic.hpp
+endif ## LIBSEMIGROUPS_HPCOMBI_ENABLED
+
+hpcombisimdeincludedir = $(includedir)/libsemigroups/hpcombi/simde
+if LIBSEMIGROUPS_HPCOMBI_ENABLED
+hpcombisimdeinclude_HEADERS =  extern/HPCombi/third_party/simde/arm/neon.h
+hpcombisimdeinclude_HEADERS += extern/HPCombi/third_party/simde/arm/sve.h
+hpcombisimdeinclude_HEADERS += extern/HPCombi/third_party/simde/mips/msa.h
+hpcombisimdeinclude_HEADERS += extern/HPCombi/third_party/simde/wasm/relaxed-simd.h
+hpcombisimdeinclude_HEADERS += extern/HPCombi/third_party/simde/wasm/simd128.h
+hpcombisimdeinclude_HEADERS += extern/HPCombi/third_party/simde/x86/avx.h
+hpcombisimdeinclude_HEADERS += extern/HPCombi/third_party/simde/x86/avx2.h
+hpcombisimdeinclude_HEADERS += extern/HPCombi/third_party/simde/x86/avx512.h
+hpcombisimdeinclude_HEADERS += extern/HPCombi/third_party/simde/x86/clmul.h
+hpcombisimdeinclude_HEADERS += extern/HPCombi/third_party/simde/x86/f16c.h
+hpcombisimdeinclude_HEADERS += extern/HPCombi/third_party/simde/x86/fma.h
+hpcombisimdeinclude_HEADERS += extern/HPCombi/third_party/simde/x86/gfni.h
+hpcombisimdeinclude_HEADERS += extern/HPCombi/third_party/simde/x86/mmx.h
+hpcombisimdeinclude_HEADERS += extern/HPCombi/third_party/simde/x86/sse.h
+hpcombisimdeinclude_HEADERS += extern/HPCombi/third_party/simde/x86/sse2.h
+hpcombisimdeinclude_HEADERS += extern/HPCombi/third_party/simde/x86/sse3.h
+hpcombisimdeinclude_HEADERS += extern/HPCombi/third_party/simde/x86/sse4.1.h
+hpcombisimdeinclude_HEADERS += extern/HPCombi/third_party/simde/x86/sse4.2.h
+hpcombisimdeinclude_HEADERS += extern/HPCombi/third_party/simde/x86/ssse3.h
+hpcombisimdeinclude_HEADERS += extern/HPCombi/third_party/simde/x86/svml.h
+hpcombisimdeinclude_HEADERS += extern/HPCombi/third_party/simde/x86/xop.h
 endif ## LIBSEMIGROUPS_HPCOMBI_ENABLED
 
 ## Define fmtincludedir outside the conditional
@@ -1130,9 +1155,10 @@ uninstall-hook:
 	if test -d ${unsupportedincludedir}; then rmdir ${unsupportedincludedir}; fi
 	if test -d ${eigenincludedir}; then rm -rf ${eigenincludedir}; fi
 	if test -d ${fmtincludedir}; then rm -rf ${fmtincludedir}; fi
-	if test -d $(includedir)/libsemigroups/HPCombi; then rm -rf $(includedir)/libsemigroups/HPCombi; fi
 	if test -d ${magicenumincludedir}; then rmdir ${magicenumincludedir}; fi
 	if test -d ${rxrangesincludedir}; then rmdir ${rxrangesincludedir}; fi
+	if test -d ${hpcombisimdeincludedir}; then rmdir ${hpcombisimdeincludedir}; fi
+	if test -d ${hpcombiincludedir}; then rm -rf ${hpcombiincludedir}; fi
 	if test -d ${includedir}/libsemigroups; then rmdir ${includedir}/libsemigroups; fi
 .PHONY: uninstall-hook
 
