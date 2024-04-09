@@ -29,18 +29,13 @@
 #include <utility>    // for pair
 #include <vector>     // for vector
 
-// for LIBSEMIGROUPS_EIGEN_ENABLED
-#include "libsemigroups/config.hpp"
-
 #include "libsemigroups/cong.hpp"       // for ToWord
 #include "libsemigroups/constants.hpp"  // for UNDEFINED
 #include "libsemigroups/debug.hpp"      // for LIBSEMIGROUPS_ASSERT
 #include "libsemigroups/todd-coxeter.hpp"
 #include "libsemigroups/words.hpp"  // for ToWord
 
-#ifdef LIBSEMIGROUPS_EIGEN_ENABLED
-#include "libsemigroups/eigen.hpp"
-#endif
+#include "libsemigroups/detail/eigen.hpp"
 
 namespace libsemigroups {
   namespace detail {

@@ -1,6 +1,6 @@
 //
 // libsemigroups - C++ library for semigroups and monoids
-// Copyright (C) 2023 James D. Mitchell
+// Copyright (C) 2024 James D. Mitchell
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -33,6 +33,7 @@
 #pragma GCC diagnostic ignored "-Winline"
 #define _SILENCE_ALL_CXX17_DEPRECATION_WARNINGS
 #include <Eigen/Core>
+#include <Eigen/QR>
 #include <unsupported/Eigen/MatrixFunctions>
 #undef _SILENCE_ALL_CXX17_DEPRECATION_WARNINGS
 #pragma GCC diagnostic pop
