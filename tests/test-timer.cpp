@@ -55,19 +55,19 @@ namespace libsemigroups {
       ns *= 10;
       REQUIRE(string_time(ns) == "10.000s");
       ns *= 10;
-      REQUIRE(string_time(ns) == "1m40s");
+      REQUIRE(string_time(ns) == "1min40s");
       ns *= 10;
-      REQUIRE(string_time(ns) == "16m40s");
+      REQUIRE(string_time(ns) == "16min40s");
       ns *= 10;
-      REQUIRE(string_time(ns) == "2h46m40s");
+      REQUIRE(string_time(ns) == "2h46min40s");
       ns *= 10;
-      REQUIRE(string_time(ns) == "1d3h46m40s");
+      REQUIRE(string_time(ns) == "1d3h46min40s");
       ns *= 10;
-      REQUIRE(string_time(ns) == "1w4d13h46m40s");
+      REQUIRE(string_time(ns) == "1w4d13h46min40s");
       ns *= 10;
-      REQUIRE(string_time(ns) == "3mon3w3d10h19m22s");
+      REQUIRE(string_time(ns) == "3mon3w3d10h19min22s");
       ns *= 10;
-      REQUIRE(string_time(ns) == "3y2mon19h20m52s");
+      REQUIRE(string_time(ns) == "3y2mon19h20min52s");
     }
 
     LIBSEMIGROUPS_TEST_CASE("Timer",
