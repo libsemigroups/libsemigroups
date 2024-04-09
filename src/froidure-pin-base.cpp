@@ -54,6 +54,7 @@ namespace libsemigroups {
         _lenindex({0, 0}),
         _letter_to_pos(),
         _nr(0),
+        _nr_products(0),
         _nr_rules(0),
         _pos(0),
         _pos_one(0),
@@ -62,11 +63,7 @@ namespace libsemigroups {
         _right(),
         _suffix(),
         // (length of the current word) - 1
-        _wordlen(0) {
-#ifdef LIBSEMIGROUPS_VERBOSE
-    _nr_products = 0;
-#endif
-  }
+        _wordlen(0) {}
 
   FroidurePinBase::FroidurePinBase(FroidurePinBase const& S)
       : Runner(S),
@@ -83,6 +80,7 @@ namespace libsemigroups {
         _lenindex(S._lenindex),
         _letter_to_pos(S._letter_to_pos),
         _nr(S._nr),
+        _nr_products(0),
         _nr_rules(S._nr_rules),
         _pos(S._pos),
         _pos_one(S._pos_one),
@@ -90,11 +88,7 @@ namespace libsemigroups {
         _reduced(S._reduced),
         _right(S._right),
         _suffix(S._suffix),
-        _wordlen(S._wordlen) {
-#ifdef LIBSEMIGROUPS_VERBOSE
-    _nr_products = 0;
-#endif
-  }
+        _wordlen(S._wordlen) {}
 
   FroidurePinBase::~FroidurePinBase() = default;
 
@@ -132,6 +126,7 @@ namespace libsemigroups {
     _lenindex          = {0, S._lenindex[1]};
     _letter_to_pos     = S._letter_to_pos;
     _nr                = S._nr;
+    _nr_products       = 0;
     _nr_rules          = 0;
     _pos               = S._pos;
     _pos_one           = S._pos_one;  // copy in case degree doesn't change in
@@ -141,10 +136,6 @@ namespace libsemigroups {
     _wordlen = 0;
 
     LIBSEMIGROUPS_ASSERT(S._lenindex.size() > 1);
-
-#ifdef LIBSEMIGROUPS_VERBOSE
-    _nr_products = 0;
-#endif
 
     // the following are required for assignment to specific positions in
     // add_generators

@@ -108,11 +108,6 @@ jobs:
                 ./configure --disable-popcnt --disable-clzll
                 make test_bitset -j4|| exit 1
                 ./test_bitset "[quick]"
-         - name: "Test flag: --enable-verbose"
-           run: |
-                ./configure --enable-verbose
-                make test_all -j4 || exit 1
-                ./test_all "[quick]"
    config-external-deps:
       timeout-minutes: 45
       runs-on: ubuntu-latest

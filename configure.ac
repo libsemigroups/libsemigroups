@@ -68,14 +68,6 @@ AC_MSG_RESULT([$enable_debug])
 
 AM_CONDITIONAL([LIBSEMIGROUPS_DEBUG], [test "x$enable_debug" = xyes])
 
-AC_ARG_ENABLE([verbose],
-    [AS_HELP_STRING([--enable-verbose], [enable verbose mode])],
-    [AC_DEFINE([VERBOSE], [1], [define if building in verbose mode])],
-    [enable_verbose=no]
-    )
-AC_MSG_CHECKING([whether to enable verbose mode])
-AC_MSG_RESULT([$enable_verbose])
-
 AC_ARG_ENABLE([compile-warnings],
     [AS_HELP_STRING([--enable-compile-warnings], [enable compiler warnings])],
     [enable_compile_warnings=yes],
