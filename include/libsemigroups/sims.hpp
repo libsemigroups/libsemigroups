@@ -81,16 +81,25 @@ namespace libsemigroups {
   //! Defined in ``sims.hpp``.
   //!
   //! On this page we describe the `SimsStats` class. The purpose of this
-  //! class is to collect some statistics related to `Sims1` class template.
+  //! class is to collect some statistics related to `Sims1` or `Sims2` class
+  //! template.
   //!
   //! \sa \ref Sims1
   class SimsStats {
    public:
+    //! Number of congruences found at time of last report.
+    //!
+    //! This member tracks a snapshot of the number of congruences found by the
+    //! Sims1 or Sims2 algorithm at some earlier point during the running of
+    //! Sims1 or Sims2.
     // TODO(0) might be better to have a mutex here and just lock it in
     // check_point below
-    // TODO(doc)
     std::atomic_uint64_t count_last;
-    // TODO(doc)
+
+    //! Number of congruences found up to this point.
+    //!
+    //! This member tracks the total number of congruences found during the
+    //! running of the Sims1 or Sims2 algorithm.
     // Atomic so as to avoid races between report_progress_from_thread and the
     // threads modifying count_last
     std::atomic_uint64_t count_now;
@@ -98,26 +107,35 @@ namespace libsemigroups {
     //! The maximum number of pending definitions.
     //!
     //! A *pending definition* is just an edge that will be defined at some
-    //! point in the future in the WordGraph represented by a Sims1
+    //! point in the future in the WordGraph represented by a Sims1 or Sims2
     //! instance at any given moment.
     //!
     //! This member tracks the maximum number of such pending definitions that
-    //! occur during the running of the algorithms in Sims1.
+    //! occur during the running of the algorithms in Sims1 or Sims2.
     std::atomic_uint64_t max_pending;
+
+    //! The total number of pending definitions at time of last report.
+    //!
+    //! A *pending definition* is just an edge that will be defined at some
+    //! point in the future in the WordGraph represented by a Sims1 or Sims2
+    //! instance at any given moment.
+    //!
+    //! This member tracks a snapshot of the total number of pending definitions
+    //! that occur at some earlier point during the running of the algorithms in
+    //! Sims1 or Sims2. This is the same as the number of nodes in the search
+    //! tree encounter during the running of Sims1 or Sims2.
+    std::atomic_uint64_t total_pending_last;
 
     //! The total number of pending definitions.
     //!
     //! A *pending definition* is just an edge that will be defined at some
-    //! point in the future in the WordGraph represented by a Sims1
+    //! point in the future in the WordGraph represented by a Sims1 or Sims2
     //! instance at any given moment.
     //!
     //! This member tracks the total number of pending definitions that
-    //! occur during the running of the algorithms in Sims1. This is the same
-    //! as the number of nodes in the search tree encounter during the running
-    //! of Sims1.
-    std::atomic_uint64_t total_pending_last;
-
-    // TODO(doc)
+    //! occur during the running of the algorithms in Sims1 or Sims2. This is
+    //! the same as the number of nodes in the search tree encounter during the
+    //! running of Sims1 or Sims2.
     // Atomic so as to avoid races between report_progress_from_thread and the
     // threads modifying total_pending_now
     std::atomic_uint64_t total_pending_now;
@@ -167,6 +185,7 @@ namespace libsemigroups {
     //! Type for the nodes in the associated WordGraph objects.
     using node_type = typename word_graph_type::node_type;
 
+    //! Type for the labels in the associated WordGraph objects.
     using label_type = typename word_graph_type::label_type;
 
     //! The size_type of the associated WordGraph objects.
