@@ -493,7 +493,7 @@ namespace libsemigroups {
     REQUIRE_THROWS_AS(words.order(Order::recursive), LibsemigroupsException);
 
     Words copy;
-    copy.operator=(words);
+    copy. operator=(words);
     REQUIRE(copy.get() == 00_w);
     copy.next();
     REQUIRE(copy.get() == 000_w);
@@ -506,7 +506,7 @@ namespace libsemigroups {
     REQUIRE(copy.count() == 25);
 
     Words move;
-    move.operator=(std::move(words));
+    move. operator=(std::move(words));
     REQUIRE(equal(copy, move));
     REQUIRE(move.upper_bound() == 28);
     REQUIRE(move.first() == 0_w);
@@ -889,7 +889,7 @@ namespace libsemigroups {
     REQUIRE_THROWS_AS(strings.order(Order::recursive), LibsemigroupsException);
 
     Strings copy;
-    copy.operator=(strings);
+    copy.   operator=(strings);
     REQUIRE(copy.get() == "a");  // FIXME was "aa"
     copy.next();
     REQUIRE(copy.get() == "aa");  // FIXME was "aaa"
@@ -902,7 +902,7 @@ namespace libsemigroups {
     REQUIRE(copy.count() == 26);  // FIXME was 25
 
     Strings move;
-    move.operator=(std::move(strings));
+    move.   operator=(std::move(strings));
     REQUIRE(equal(copy, move));
     REQUIRE(move.upper_bound() == 28);
     REQUIRE(move.first() == "a");
@@ -1006,8 +1006,8 @@ namespace libsemigroups {
                           "[quick][word_functions]") {
     using namespace literals;
     using words::operator+;
-    word_type w = 01_w;
-    word_type v = 2_w;
+    word_type    w = 01_w;
+    word_type    v = 2_w;
     REQUIRE((w + v) == 012_w);
     REQUIRE((w + v + w) == 01201_w);
 
@@ -1025,8 +1025,8 @@ namespace libsemigroups {
                           "[quick][word_functions]") {
     using namespace literals;
     using words::operator+=;
-    word_type w = 123_w;
-    word_type v = 345_w;
+    word_type    w = 123_w;
+    word_type    v = 345_w;
     w += v;
     REQUIRE(w == 123345_w);
     word_type t = word_type({});
