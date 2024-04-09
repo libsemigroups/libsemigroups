@@ -168,29 +168,35 @@ hpcombiinclude_HEADERS += extern/HPCombi/include/hpcombi/vect16.hpp
 hpcombiinclude_HEADERS += extern/HPCombi/include/hpcombi/vect_generic.hpp
 endif ## LIBSEMIGROUPS_HPCOMBI_ENABLED
 
-hpcombisimdeincludedir = $(includedir)/libsemigroups/hpcombi/simde
+hpcombisimdearmincludedir = $(includedir)/libsemigroups/hpcombi/simde/arm
+hpcombisimdemipsincludedir = $(includedir)/libsemigroups/hpcombi/simde/mips
+hpcombisimdewasmincludedir = $(includedir)/libsemigroups/hpcombi/simde/wasm
+hpcombisimdex86includedir = $(includedir)/libsemigroups/hpcombi/simde/x86
 if LIBSEMIGROUPS_HPCOMBI_ENABLED
-hpcombisimdeinclude_HEADERS =  extern/HPCombi/third_party/simde/arm/neon.h
-hpcombisimdeinclude_HEADERS += extern/HPCombi/third_party/simde/arm/sve.h
-hpcombisimdeinclude_HEADERS += extern/HPCombi/third_party/simde/mips/msa.h
-hpcombisimdeinclude_HEADERS += extern/HPCombi/third_party/simde/wasm/relaxed-simd.h
-hpcombisimdeinclude_HEADERS += extern/HPCombi/third_party/simde/wasm/simd128.h
-hpcombisimdeinclude_HEADERS += extern/HPCombi/third_party/simde/x86/avx.h
-hpcombisimdeinclude_HEADERS += extern/HPCombi/third_party/simde/x86/avx2.h
-hpcombisimdeinclude_HEADERS += extern/HPCombi/third_party/simde/x86/avx512.h
-hpcombisimdeinclude_HEADERS += extern/HPCombi/third_party/simde/x86/clmul.h
-hpcombisimdeinclude_HEADERS += extern/HPCombi/third_party/simde/x86/f16c.h
-hpcombisimdeinclude_HEADERS += extern/HPCombi/third_party/simde/x86/fma.h
-hpcombisimdeinclude_HEADERS += extern/HPCombi/third_party/simde/x86/gfni.h
-hpcombisimdeinclude_HEADERS += extern/HPCombi/third_party/simde/x86/mmx.h
-hpcombisimdeinclude_HEADERS += extern/HPCombi/third_party/simde/x86/sse.h
-hpcombisimdeinclude_HEADERS += extern/HPCombi/third_party/simde/x86/sse2.h
-hpcombisimdeinclude_HEADERS += extern/HPCombi/third_party/simde/x86/sse3.h
-hpcombisimdeinclude_HEADERS += extern/HPCombi/third_party/simde/x86/sse4.1.h
-hpcombisimdeinclude_HEADERS += extern/HPCombi/third_party/simde/x86/sse4.2.h
-hpcombisimdeinclude_HEADERS += extern/HPCombi/third_party/simde/x86/ssse3.h
-hpcombisimdeinclude_HEADERS += extern/HPCombi/third_party/simde/x86/svml.h
-hpcombisimdeinclude_HEADERS += extern/HPCombi/third_party/simde/x86/xop.h
+hpcombisimdearminclude_HEADERS =  extern/HPCombi/third_party/simde/arm/neon.h
+hpcombisimdearminclude_HEADERS += extern/HPCombi/third_party/simde/arm/sve.h
+
+hpcombisimdemipsinclude_HEADERS = extern/HPCombi/third_party/simde/mips/msa.h
+
+hpcombisimdewasminclude_HEADERS =  extern/HPCombi/third_party/simde/wasm/relaxed-simd.h
+hpcombisimdewasminclude_HEADERS += extern/HPCombi/third_party/simde/wasm/simd128.h
+
+hpcombisimdex86include_HEADERS =  extern/HPCombi/third_party/simde/x86/avx.h
+hpcombisimdex86include_HEADERS += extern/HPCombi/third_party/simde/x86/avx2.h
+hpcombisimdex86include_HEADERS += extern/HPCombi/third_party/simde/x86/avx512.h
+hpcombisimdex86include_HEADERS += extern/HPCombi/third_party/simde/x86/clmul.h
+hpcombisimdex86include_HEADERS += extern/HPCombi/third_party/simde/x86/f16c.h
+hpcombisimdex86include_HEADERS += extern/HPCombi/third_party/simde/x86/fma.h
+hpcombisimdex86include_HEADERS += extern/HPCombi/third_party/simde/x86/gfni.h
+hpcombisimdex86include_HEADERS += extern/HPCombi/third_party/simde/x86/mmx.h
+hpcombisimdex86include_HEADERS += extern/HPCombi/third_party/simde/x86/sse.h
+hpcombisimdex86include_HEADERS += extern/HPCombi/third_party/simde/x86/sse2.h
+hpcombisimdex86include_HEADERS += extern/HPCombi/third_party/simde/x86/sse3.h
+hpcombisimdex86include_HEADERS += extern/HPCombi/third_party/simde/x86/sse4.1.h
+hpcombisimdex86include_HEADERS += extern/HPCombi/third_party/simde/x86/sse4.2.h
+hpcombisimdex86include_HEADERS += extern/HPCombi/third_party/simde/x86/ssse3.h
+hpcombisimdex86include_HEADERS += extern/HPCombi/third_party/simde/x86/svml.h
+hpcombisimdex86include_HEADERS += extern/HPCombi/third_party/simde/x86/xop.h
 endif ## LIBSEMIGROUPS_HPCOMBI_ENABLED
 
 ## Define fmtincludedir outside the conditional
@@ -1157,7 +1163,10 @@ uninstall-hook:
 	if test -d ${fmtincludedir}; then rm -rf ${fmtincludedir}; fi
 	if test -d ${magicenumincludedir}; then rmdir ${magicenumincludedir}; fi
 	if test -d ${rxrangesincludedir}; then rmdir ${rxrangesincludedir}; fi
-	if test -d ${hpcombisimdeincludedir}; then rmdir ${hpcombisimdeincludedir}; fi
+	if test -d ${hpcombisimdearmincludedir}; then rmdir ${hpcombisimdearmincludedir}; fi
+	if test -d ${hpcombisimdemipsincludedir}; then rmdir ${hpcombisimdemipsincludedir}; fi
+	if test -d ${hpcombisimdewasmincludedir}; then rmdir ${hpcombisimdewasmincludedir}; fi
+	if test -d ${hpcombisimdex86includedir}; then rmdir ${hpcombisimdex86includedir}; fi
 	if test -d ${hpcombiincludedir}; then rm -rf ${hpcombiincludedir}; fi
 	if test -d ${includedir}/libsemigroups; then rmdir ${includedir}/libsemigroups; fi
 .PHONY: uninstall-hook
