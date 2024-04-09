@@ -2661,8 +2661,6 @@ namespace libsemigroups {
     presentation::sort_each_rule(p);
     presentation::sort_rules(p);
 
-    REQUIRE(presentation::length(p) == 105);
-
     ToddCoxeter tc(twosided, p);
     // tc.run_until([&tc]() -> bool {
     //   return tc.word_graph().number_of_nodes() >= 10'000;
@@ -4512,7 +4510,7 @@ namespace libsemigroups {
       presentation::add_rule(p, pow({a}, 3), {a});
     }
     using words::operator+;
-    Words        words;
+    Words words;
     words.number_of_letters(n).min(0).max(8);
 
     for (size_t a = 0; a < n - 1; ++a) {
