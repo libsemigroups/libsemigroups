@@ -218,8 +218,8 @@ jobs:
                 echo "Doxygen version: "
                 doxygen --version
                 make doc 
-                # echo TODO(0) actually check that the doc can be built ok
-                # ( ! (grep "WARNING:" make-doc-sphinx.log | grep -v "WARNING: bibtex citations changed, rerun sphinx" | grep -v "WARNING: Could not lex literal_block") )
+              # echo TODO(0) actually check that the doc can be built ok
+              # ( ! (grep "WARNING:" make-doc-sphinx.log | grep -v "WARNING: bibtex citations changed, rerun sphinx" | grep -v "WARNING: Could not lex literal_block") )
    macosx:
       timeout-minutes: 60
       runs-on: macOS-latest
@@ -228,23 +228,20 @@ jobs:
          CXXFLAGS: "-fdiagnostics-color"
       steps:
          - uses: actions/checkout@v3
-         - name: "Restore cache . . ."
-           uses: actions/cache@v3
+         - name: "Setup ccache . . ."
+           uses: Chocobo1/setup-ccache-action@v1
            with:
-              path: /home/runner/.ccache
-              key: ccache:${{ matrix.os }}:${{ matrix.compiler }}:${{ matrix.modules }}-modules:${{ github.ref }}:${{ github.sha }}
-              restore-keys: |
-                ccache:${{ matrix.os }}:${{ matrix.compiler }}:${{ matrix.modules }}-modules:${{ github.ref }}
-                ccache:${{ matrix.os }}:${{ matrix.compiler }}:${{ matrix.modules }}-modules
+             update_packager_index: false
+             install_ccache: true
          - name: "Install dependencies . . ."
-           run: |
-                brew install ccache autoconf automake
+           run: brew install autoconf automake
          - name: "Clang version . . ."
-           run: |
-                clang++ --version
+           run: clang++ --version
          - name: "Configure . . ."
            run: |
-                mkdir -p m4 && ./autogen.sh && ./configure --disable-hpcombi
+                mkdir -p m4
+                ./autogen.sh 
+                ./configure CXX="$CXX" CXXFLAGS="$CXXFLAGS" --disable-hpcombi --disable-backward
          - name: "Build libsemigroups . . ."
            run: |
                 ccache -z && make -j4 && ccache -s
