@@ -342,11 +342,7 @@ namespace libsemigroups {
     p.contains_empty_word(true).alphabet(2);
     presentation::add_rule(p, 01_w, {});
 
-#ifdef LIBSEMIGROUPS_EIGEN_ENABLED
     REQUIRE(is_obviously_infinite(p));
-#else
-    REQUIRE(!is_obviously_infinite(p));
-#endif
 
     Congruence cong(twosided, p);
     cong.add_pair(111_w, {});
