@@ -56,8 +56,12 @@ jobs:
       key: 'ccache | "$(Agent.OS)"'
       path: $(CCACHE_DIR)
     displayName: "Restore cache . . ."
-  - bash: |
-      mkdir -p m4 && ./autogen.sh && ./configure --disable-hpcombi --disable-popcnt --disable-clzll
+  - bash: | 
+      # The CXXFLAGS below must be set to -O0 because o/w this CI job fails 
+      # with a library loading issue (related to fmt). The flag -O3 is set 
+      # in libsemigroups/Makefile.am, and removing that also resolves this
+      # issue. JDM also tried with -O1/2 and this didn't work either. 
+      mkdir -p m4 && ./autogen.sh && ./configure CXXFLAGS="-O0" --disable-hpcombi --disable-popcnt --disable-clzll
     displayName: "Configure . . ."
   - bash: |
       ccache -z && sudo make install -j4 && ccache -s
