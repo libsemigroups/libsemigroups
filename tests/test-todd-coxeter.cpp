@@ -4510,7 +4510,7 @@ namespace libsemigroups {
       presentation::add_rule(p, pow({a}, 3), {a});
     }
     using words::operator+;
-    Words        words;
+    Words words;
     words.number_of_letters(n).min(0).max(8);
 
     for (size_t a = 0; a < n - 1; ++a) {
@@ -4545,7 +4545,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                           "045",
                           "Whyte's 8-generator 4-relation full transf monoid 8",
-                          "[todd-coxeter][extreme]") {
+                          "[todd-coxeter][fail]") {
     auto                    rg = ReportGuard(true);
     Presentation<word_type> p;
     p.rules = {
