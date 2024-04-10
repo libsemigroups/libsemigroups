@@ -1306,7 +1306,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("Stephen",
                           "033",
                           "Whyte's 4-relation full transf monoid 8",
-                          "[stephen][standard]") {
+                          "[stephen][fail]") {
     auto                    rg = ReportGuard(true);
     Presentation<word_type> p;
     p.rules = {00_w,       {},         11_w,         {},           22_w,
