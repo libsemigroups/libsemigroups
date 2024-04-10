@@ -121,6 +121,8 @@ jobs:
             ./configure --disable-eigen
             make test_obvinf -j4 || exit 1
             make test_word_graph -j4 || exit 1
+            make test_cong -j4 || exit 1
+            ./test_cong "[quick]"
             ./test_obvinf "[quick]"
             ./test_word_graph "[quick]"
    coverage:
