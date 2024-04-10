@@ -93,7 +93,6 @@ configuration options are available for `libsemigroups`:
   \--enable-debug              enable debug mode (default=no)
   \--enable-eigen              enable `eigen` (default=yes)
   \--enable-hpcombi            enable `HPCombi` (default=yes)
-  \--enable-stats              enable statistics mode in `ToddCoxeter`{.interpreted-text role="cpp:any"} (default=yes)
   \--with-external-fmt         do not use the included copy of fmt (default=no)
   \--with-external-eigen       do not use the included copy of eigen (default=no)
   \--disable-popcnt            do not use \_\_builtin_popcountl (default=yes)
