@@ -572,7 +572,7 @@ namespace libsemigroups {
     return w;
   }
 
-  size_t ToddCoxeter::number_of_classes_impl() {
+  uint64_t ToddCoxeter::number_of_classes_impl() {
     if (is_obviously_infinite(*this)) {
       return POSITIVE_INFINITY;
     }

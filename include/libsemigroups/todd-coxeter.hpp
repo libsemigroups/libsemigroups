@@ -878,7 +878,7 @@ namespace libsemigroups {
     // TODO all of these should be public and called _no_checks
     word_type class_index_to_word_impl(node_type i);
 
-    size_t number_of_classes_impl();
+    uint64_t number_of_classes_impl();
 
     node_type word_to_class_index_impl(word_type const& w);
 
