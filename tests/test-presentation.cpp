@@ -2083,24 +2083,19 @@ namespace libsemigroups {
 
   namespace {
     std::string chomp(std::string_view what) {
-      auto suffix
-          = std::string_view(what.begin() + what.find(": ") + 2, what.size());
-      std::string result;
-      for (auto& c : suffix) {
-        if (c != '\n') {
-          result += c;
-        }
-      }
-      return result;
+      size_t pos = what.find(": ");
+      LIBSEMIGROUPS_ASSERT(pos != std::string::npos);
+      LIBSEMIGROUPS_ASSERT(pos + 2 <= what.size() - 1);
+      return std::string(what.begin() + pos + 2);
     }
   }  // namespace
 
-#define REQUIRE_EXCEPTION_MSG(code, expected)                  \
-  REQUIRE_THROWS_AS(code, LibsemigroupsException);             \
-  try {                                                        \
-    code;                                                      \
-  } catch (LibsemigroupsException const& e) {                  \
-    REQUIRE(chomp(e.what()).c_str() == std::string(expected)); \
+#define REQUIRE_EXCEPTION_MSG(code, expected)      \
+  REQUIRE_THROWS_AS(code, LibsemigroupsException); \
+  try {                                            \
+    code;                                          \
+  } catch (LibsemigroupsException const& e) {      \
+    REQUIRE(chomp(e.what()) == expected);          \
   }
 
   LIBSEMIGROUPS_TEST_CASE("Presentation",
@@ -2108,7 +2103,7 @@ namespace libsemigroups {
                           "meaningful exception messages",
                           "[quick][presentation]") {
     using literals::operator""_w;
-    auto            rg = ReportGuard(false);
+    auto rg = ReportGuard(false);
 
     {
       Presentation<std::string> p;
