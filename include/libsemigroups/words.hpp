@@ -2129,7 +2129,7 @@ namespace libsemigroups {
 
         for (int i = first; i < last; i += step) {
           size_t const a = (i % s + s) % s;
-          LIBSEMIGROUPS_ASSERT(a < s);
+          LIBSEMIGROUPS_ASSERT(static_cast<int>(a) < s);
           result += elts[a];
         }
       } else {
@@ -2140,7 +2140,7 @@ namespace libsemigroups {
         result.reserve((first - last) / steppos);
         for (int i = first; i > last; i += step) {
           size_t const a = (i % s + s) % s;
-          LIBSEMIGROUPS_ASSERT(a < s);
+          LIBSEMIGROUPS_ASSERT(static_cast<int>(a) < s);
           result += elts[a];
         }
       }
