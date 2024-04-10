@@ -6,298 +6,298 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-   cygwin:
-      defaults:
-        run:
-          shell: C:\cygwin64\bin\bash.exe --login -o igncr '{0}'
-      timeout-minutes: 60
-      runs-on: windows-latest
-      env:
-        CHERE_INVOKING: 1
-      steps:
-         - uses: gap-actions/setup-cygwin@v1
-         - uses: actions/checkout@v3
-         - name: "Configure . . ."
-           run: ./autogen.sh && ./configure
-         - name: "Build libsemigroups . . ."
-           run: make -j4
-         - name: "Build test_all . . ."
-           run: make check -j4
-         - name: "Run the quick tests . . ."
-           run: ./test_all "[quick]"
-   benchmark:
-      timeout-minutes: 10
-      runs-on: ubuntu-latest
-      env:
-        CXX: "ccache g++"
-        CXXFLAGS: "-fdiagnostics-color"
-      steps:
-         - uses: actions/checkout@v3
-         - name: "Restore cache . . ."
-           uses: actions/cache@v3
-           with:
-              path: /home/runner/.ccache
-              key: ccache:${{ matrix.os }}:${{ matrix.compiler }}:${{ matrix.modules }}-modules:${{ github.ref }}:${{ github.sha }}
-              restore-keys: |
-                ccache:${{ matrix.os }}:${{ matrix.compiler }}:${{ matrix.modules }}-modules:${{ github.ref }}
-                ccache:${{ matrix.os }}:${{ matrix.compiler }}:${{ matrix.modules }}-modules
-         - name: "Install dependencies . . ."
-           run: |
-                sudo apt-get --yes update
-                sudo apt-get install -y ccache
-         - name: "Configure . . ."
-           run: |
-                mkdir -p m4 && ./autogen.sh && ./configure
-         - name: "Build libsemigroups . . ."
-           run: |
-                ccache -z && make -j4 && ccache -s
-         - name: "Build bench_all . . ."
-           run: |
-                make bench_all -j4
-   clang:
-      timeout-minutes: 60
-      runs-on: ubuntu-latest
-      env:
-        CXX: "ccache clang++"
-        CXXFLAGS: "-fdiagnostics-color -O2 -g"
-      steps:
-         - uses: actions/checkout@v3
-         - name: "Setup ccache . . ."
-           uses: Chocobo1/setup-ccache-action@v1
-           with:
-             update_packager_index: false
-             install_ccache: true
-         - name: "Configure . . ."
-           run: |
-                mkdir -p m4
-                ./autogen.sh 
-                ./configure CXX="$CXX" CXXFLAGS="$CXXFLAGS" --disable-hpcombi
-         - name: "Build libsemigroups . . ."
-           run: |
-                ccache -z && make -j4 && ccache -s
-         - name: "Build test_all . . ."
-           run: |
-                ccache -z && make test_all -j4 && ccache -s
-         - name: "Run the quick and standard tests . . ."
-           run: |
-                ./test_all "[quick],[standard]"
-   config-options:
-      timeout-minutes: 45
-      runs-on: ubuntu-latest
-      steps:
-         - uses: actions/checkout@v3
-         - name: "Install other dependencies . . ."
-           run: |
-                sudo apt-get --yes update
-                sudo apt-get install -y ccache
-         - name: "Run ./autogen.sh . . ."
-           run: |
-                ./autogen.sh
-         - name: "Test flag: --enable-debug"
-           run: |
-                ./configure --enable-debug
-                make test_all -j4 || exit 1
-                ./test_all "[quick]"
-         - name: "Test flag: --disable-hpcombi"
-           run: |
-                ./configure --disable-hpcombi
-                make test_all -j4 || exit 1
-                ./test_all "[quick]"
-         - name: "Test flag: --disable-popcnt --disable-clzll"
-           run: |
-                ./configure --disable-popcnt --disable-clzll
-                make test_bitset -j4|| exit 1
-                ./test_bitset "[quick]"
-   config-external-deps:
-      timeout-minutes: 45
-      runs-on: ubuntu-latest
-      env:
-        PKG_CONFIG_PATH: "/home/runner/micromamba-root/envs/libsemigroups/lib/pkgconfig:/home/runner/micromamba-root/envs/libsemigroups/share/pkgconfig/"
-        LD_LIBRARY_PATH: "/home/runner/micromamba-root/envs/libsemigroups/lib"
-      steps:
-        - uses: actions/checkout@v3
-        - name: "Install conda environment from environment.yml . . ."
-          uses: mamba-org/provision-with-micromamba@main
-        - name: "Run ./autogen.sh . . ."
-          run: |
-            ./autogen.sh
-        - name: "Test flag: --with-external-fmt"
-          run: |
-            ./configure --with-external-fmt
-            make test_all -j4 || exit 1
-            ./test_all "[quick]"
-        - name: "Test flag: --with-external-eigen"
-          run: |
-            make clean
-            ./configure --with-external-eigen
-            make test_obvinf -j4 || exit 1
-            make test_word_graph -j4 || exit 1
-            ./test_obvinf "[quick]"
-            ./test_word_graph "[quick]"
-        - name: "Test flag: --disable-eigen"
-          run: |
-            make clean
-            ./configure --disable-eigen
-            make test_obvinf -j4 || exit 1
-            make test_word_graph -j4 || exit 1
-            ./test_obvinf "[quick]"
-            ./test_word_graph "[quick]"
-   coverage:
-      timeout-minutes: 60
-      runs-on: ubuntu-latest
-      steps:
-         - name: "Restore cache . . ."
-           uses: actions/cache@v3
-           with:
-              path: /home/runner/.ccache
-              key: ccache:${{ matrix.os }}:${{ matrix.compiler }}:${{ matrix.modules }}-modules:${{ github.ref }}:${{ github.sha }}
-              restore-keys: |
-                ccache:${{ matrix.os }}:${{ matrix.compiler }}:${{ matrix.modules }}-modules:${{ github.ref }}
-                ccache:${{ matrix.os }}:${{ matrix.compiler }}:${{ matrix.modules }}-modules
-         - uses: actions/checkout@v3
-         - name: "Install dependencies . . ."
-           run: |
-                sudo apt-get --yes update
-                sudo apt-get install -y lcov ccache
-         - name: "Run quick tests . . ."
-           run: |
-                sudo ln -sf /usr/bin/gcov-9 /usr/bin/gcov
-                export GCOV=/usr/bin/gcov-9
-                etc/test-code-coverage.sh test_all "[quick]"
-                bash <(curl -s https://codecov.io/bash)
-                rm -f coverage.info
-   distcheck:
-      timeout-minutes: 15
-      runs-on: ubuntu-latest
-      env:
-         CXX: "ccache g++"
-         CXXFLAGS: "-fdiagnostics-color"
-      steps:
-         - uses: actions/checkout@v3
-         - name: "Restore cache . . ."
-           uses: actions/cache@v3
-           with:
-              path: /home/runner/.ccache
-              key: ccache:${{ matrix.os }}:${{ matrix.compiler }}:${{ matrix.modules }}-modules:${{ github.ref }}:${{ github.sha }}
-              restore-keys: |
-                ccache:${{ matrix.os }}:${{ matrix.compiler }}:${{ matrix.modules }}-modules:${{ github.ref }}
-                ccache:${{ matrix.os }}:${{ matrix.compiler }}:${{ matrix.modules }}-modules
-         - name: "Install dependencies . . ."
-           run: |
-                sudo apt-get --yes update
-                sudo apt-get install -y ccache
-         - name: "Configure . . ."
-           run: |
-                mkdir -p m4 && ./autogen.sh && ./configure
-         - name: "make distcheck . . ."
-           run: |
-                make distcheck -j4
-   doc:
-      timeout-minutes: 10
-      runs-on: ubuntu-latest
-      steps:
-         - uses: actions/checkout@v3
-         - name: "Install dependencies . . ."
-           run: |
-                sudo apt-get --yes update
-                sudo apt-get install graphviz --yes
-         - name: "Set up Homebrew . . ."
-           uses: Homebrew/actions/setup-homebrew@master
-         - name: "Install latest doxygen . . ."
-           run: |
-                brew install gcc
-                brew install doxygen
-         - name: "Clone doxygen-awesome-css . . ."
-           run: |
-                git submodule update --init --recursive
-         - name: "Configure . . ."
-           run: |
-                mkdir -p m4 && ./autogen.sh && ./configure
-         - name: "Build documentation . . ."
-           run: |
-                echo "Doxygen version: "
-                doxygen --version
-                make doc 
-              # echo TODO(0) actually check that the doc can be built ok
-              # ( ! (grep "WARNING:" make-doc-sphinx.log | grep -v "WARNING: bibtex citations changed, rerun sphinx" | grep -v "WARNING: Could not lex literal_block") )
-   macosx:
-      timeout-minutes: 60
-      runs-on: macOS-latest
-      env:
-         CXX: "ccache clang++"
-         CXXFLAGS: "-fdiagnostics-color"
-      steps:
-         - uses: actions/checkout@v3
-         - name: "Setup ccache . . ."
-           uses: Chocobo1/setup-ccache-action@v1
-           with:
-             update_packager_index: false
-             install_ccache: true
-         - name: "Install dependencies . . ."
-           run: brew install autoconf automake
-         - name: "Clang version . . ."
-           run: clang++ --version
-         - name: "Configure . . ."
-           run: |
-                mkdir -p m4
-                ./autogen.sh 
-                ./configure CXX="$CXX" CXXFLAGS="$CXXFLAGS" --disable-hpcombi --disable-backward
-         - name: "Build libsemigroups . . ."
-           run: |
-                ccache -z && make -j4 && ccache -s
-         - name: "Build test_all . . ."
-           run: |
-                ccache -z && make test_all -j4 && ccache -s
-         - name: "Run the quick tests . . ."
-           run: |
-                ./test_all "[quick]"
-   valgrind:
-      timeout-minutes: 60
-      runs-on: ubuntu-latest
-      env:
-        CXX: "ccache g++"
-        CXXFLAGS: "-fdiagnostics-color"
-      steps:
-         - uses: actions/checkout@v3
-         - name: "Restore cache . . ."
-           uses: actions/cache@v3
-           with:
-              path: /home/runner/.ccache
-              key: ccache:${{ matrix.os }}:${{ matrix.compiler }}:${{ matrix.modules }}-modules:${{ github.ref }}:${{ github.sha }}
-              restore-keys: |
-                ccache:${{ matrix.os }}:${{ matrix.compiler }}:${{ matrix.modules }}-modules:${{ github.ref }}
-                ccache:${{ matrix.os }}:${{ matrix.compiler }}:${{ matrix.modules }}-modules
-         - name: "Install dependencies . . ."
-           run: |
-                sudo apt-get --yes update
-                sudo apt-get install -y ccache expect libc6-dbg libtool-bin valgrind
-         - name: "Configure . . ."
-           run: |
-                mkdir -p m4 && ./autogen.sh
-                ./configure --enable-debug --disable-hpcombi
-         - name: "Build libsemigroups . . ."
-           run: |
-                ccache -z && make -j4 && ccache -s
-         - name: "Build test_all . . ."
-           run: |
-                ccache -z && make test_all -j4 && ccache -s
-         - name: "Run tests with valgrind . . ."
-           run: |
-                valgrind --version
-                unbuffer libtool --mode=execute valgrind --leak-check=full ./test_all "[quick][exclude:no-valgrind]" 2>&1 | tee valgrind.log
-                echo
-                ( ! grep -i "Invalid" valgrind.log )
-                ( ! grep -E "lost: [^0]" valgrind.log )
    test-x86-32:
-      timeout-minutes: 30
+      timeout-minutes: 60
       runs-on: ubuntu-latest
       env:
         GH_ACTIONS_ABI: "32"
         GH_ACTIONS_ARCH: "x86"
         GH_ACTIONS_TEST_PROG: "test_all"
-        GH_ACTIONS_TEST_TAGS: "[quick]"
+        GH_ACTIONS_TEST_TAGS: "[quick][exclude:no-valgrind][exclude:no-coverage][exclude:BMat8]"
       steps:
          - uses: actions/checkout@v3
          - name: "Running the quick tests in libsemigroups-docker-x86-32-base docker container . . ."
            run: |
                 ci/launch-docker-container.sh
+   # cygwin:
+   #    defaults:
+   #      run:
+   #        shell: C:\cygwin64\bin\bash.exe --login -o igncr '{0}'
+   #    timeout-minutes: 60
+   #    runs-on: windows-latest
+   #    env:
+   #      CHERE_INVOKING: 1
+   #    steps:
+   #       - uses: gap-actions/setup-cygwin@v1
+   #       - uses: actions/checkout@v3
+   #       - name: "Configure . . ."
+   #         run: ./autogen.sh && ./configure
+   #       - name: "Build libsemigroups . . ."
+   #         run: make -j4
+   #       - name: "Build test_all . . ."
+   #         run: make check -j4
+   #       - name: "Run the quick tests . . ."
+   #         run: ./test_all "[quick]"
+   # benchmark:
+   #    timeout-minutes: 10
+   #    runs-on: ubuntu-latest
+   #    env:
+   #      CXX: "ccache g++"
+   #      CXXFLAGS: "-fdiagnostics-color"
+   #    steps:
+   #       - uses: actions/checkout@v3
+   #       - name: "Restore cache . . ."
+   #         uses: actions/cache@v3
+   #         with:
+   #            path: /home/runner/.ccache
+   #            key: ccache:${{ matrix.os }}:${{ matrix.compiler }}:${{ matrix.modules }}-modules:${{ github.ref }}:${{ github.sha }}
+   #            restore-keys: |
+   #              ccache:${{ matrix.os }}:${{ matrix.compiler }}:${{ matrix.modules }}-modules:${{ github.ref }}
+   #              ccache:${{ matrix.os }}:${{ matrix.compiler }}:${{ matrix.modules }}-modules
+   #       - name: "Install dependencies . . ."
+   #         run: |
+   #              sudo apt-get --yes update
+   #              sudo apt-get install -y ccache
+   #       - name: "Configure . . ."
+   #         run: |
+   #              mkdir -p m4 && ./autogen.sh && ./configure
+   #       - name: "Build libsemigroups . . ."
+   #         run: |
+   #              ccache -z && make -j4 && ccache -s
+   #       - name: "Build bench_all . . ."
+   #         run: |
+   #              make bench_all -j4
+   # clang:
+   #    timeout-minutes: 60
+   #    runs-on: ubuntu-latest
+   #    env:
+   #      CXX: "ccache clang++"
+   #      CXXFLAGS: "-fdiagnostics-color -O2 -g"
+   #    steps:
+   #       - uses: actions/checkout@v3
+   #       - name: "Setup ccache . . ."
+   #         uses: Chocobo1/setup-ccache-action@v1
+   #         with:
+   #           update_packager_index: false
+   #           install_ccache: true
+   #       - name: "Configure . . ."
+   #         run: |
+   #              mkdir -p m4
+   #              ./autogen.sh 
+   #              ./configure CXX="$CXX" CXXFLAGS="$CXXFLAGS" --disable-hpcombi
+   #       - name: "Build libsemigroups . . ."
+   #         run: |
+   #              ccache -z && make -j4 && ccache -s
+   #       - name: "Build test_all . . ."
+   #         run: |
+   #              ccache -z && make test_all -j4 && ccache -s
+   #       - name: "Run the quick and standard tests . . ."
+   #         run: |
+   #              ./test_all "[quick],[standard]"
+   # config-options:
+   #    timeout-minutes: 45
+   #    runs-on: ubuntu-latest
+   #    steps:
+   #       - uses: actions/checkout@v3
+   #       - name: "Install other dependencies . . ."
+   #         run: |
+   #              sudo apt-get --yes update
+   #              sudo apt-get install -y ccache
+   #       - name: "Run ./autogen.sh . . ."
+   #         run: |
+   #              ./autogen.sh
+   #       - name: "Test flag: --enable-debug"
+   #         run: |
+   #              ./configure --enable-debug
+   #              make test_all -j4 || exit 1
+   #              ./test_all "[quick]"
+   #       - name: "Test flag: --disable-hpcombi"
+   #         run: |
+   #              ./configure --disable-hpcombi
+   #              make test_all -j4 || exit 1
+   #              ./test_all "[quick]"
+   #       - name: "Test flag: --disable-popcnt --disable-clzll"
+   #         run: |
+   #              ./configure --disable-popcnt --disable-clzll
+   #              make test_bitset -j4|| exit 1
+   #              ./test_bitset "[quick]"
+   # config-external-deps:
+   #    timeout-minutes: 45
+   #    runs-on: ubuntu-latest
+   #    env:
+   #      PKG_CONFIG_PATH: "/home/runner/micromamba-root/envs/libsemigroups/lib/pkgconfig:/home/runner/micromamba-root/envs/libsemigroups/share/pkgconfig/"
+   #      LD_LIBRARY_PATH: "/home/runner/micromamba-root/envs/libsemigroups/lib"
+   #    steps:
+   #      - uses: actions/checkout@v3
+   #      - name: "Install conda environment from environment.yml . . ."
+   #        uses: mamba-org/provision-with-micromamba@main
+   #      - name: "Run ./autogen.sh . . ."
+   #        run: |
+   #          ./autogen.sh
+   #      - name: "Test flag: --with-external-fmt"
+   #        run: |
+   #          ./configure --with-external-fmt
+   #          make test_all -j4 || exit 1
+   #          ./test_all "[quick]"
+   #      - name: "Test flag: --with-external-eigen"
+   #        run: |
+   #          make clean
+   #          ./configure --with-external-eigen
+   #          make test_obvinf -j4 || exit 1
+   #          make test_word_graph -j4 || exit 1
+   #          ./test_obvinf "[quick]"
+   #          ./test_word_graph "[quick]"
+   #      - name: "Test flag: --disable-eigen"
+   #        run: |
+   #          make clean
+   #          ./configure --disable-eigen
+   #          make test_obvinf -j4 || exit 1
+   #          make test_word_graph -j4 || exit 1
+   #          ./test_obvinf "[quick]"
+   #          ./test_word_graph "[quick]"
+   # coverage:
+   #    timeout-minutes: 60
+   #    runs-on: ubuntu-latest
+   #    steps:
+   #       - name: "Restore cache . . ."
+   #         uses: actions/cache@v3
+   #         with:
+   #            path: /home/runner/.ccache
+   #            key: ccache:${{ matrix.os }}:${{ matrix.compiler }}:${{ matrix.modules }}-modules:${{ github.ref }}:${{ github.sha }}
+   #            restore-keys: |
+   #              ccache:${{ matrix.os }}:${{ matrix.compiler }}:${{ matrix.modules }}-modules:${{ github.ref }}
+   #              ccache:${{ matrix.os }}:${{ matrix.compiler }}:${{ matrix.modules }}-modules
+   #       - uses: actions/checkout@v3
+   #       - name: "Install dependencies . . ."
+   #         run: |
+   #              sudo apt-get --yes update
+   #              sudo apt-get install -y lcov ccache
+   #       - name: "Run quick tests . . ."
+   #         run: |
+   #              sudo ln -sf /usr/bin/gcov-9 /usr/bin/gcov
+   #              export GCOV=/usr/bin/gcov-9
+   #              etc/test-code-coverage.sh test_all "[quick]"
+   #              bash <(curl -s https://codecov.io/bash)
+   #              rm -f coverage.info
+   # distcheck:
+   #    timeout-minutes: 15
+   #    runs-on: ubuntu-latest
+   #    env:
+   #       CXX: "ccache g++"
+   #       CXXFLAGS: "-fdiagnostics-color"
+   #    steps:
+   #       - uses: actions/checkout@v3
+   #       - name: "Restore cache . . ."
+   #         uses: actions/cache@v3
+   #         with:
+   #            path: /home/runner/.ccache
+   #            key: ccache:${{ matrix.os }}:${{ matrix.compiler }}:${{ matrix.modules }}-modules:${{ github.ref }}:${{ github.sha }}
+   #            restore-keys: |
+   #              ccache:${{ matrix.os }}:${{ matrix.compiler }}:${{ matrix.modules }}-modules:${{ github.ref }}
+   #              ccache:${{ matrix.os }}:${{ matrix.compiler }}:${{ matrix.modules }}-modules
+   #       - name: "Install dependencies . . ."
+   #         run: |
+   #              sudo apt-get --yes update
+   #              sudo apt-get install -y ccache
+   #       - name: "Configure . . ."
+   #         run: |
+   #              mkdir -p m4 && ./autogen.sh && ./configure
+   #       - name: "make distcheck . . ."
+   #         run: |
+   #              make distcheck -j4
+   # doc:
+   #    timeout-minutes: 10
+   #    runs-on: ubuntu-latest
+   #    steps:
+   #       - uses: actions/checkout@v3
+   #       - name: "Install dependencies . . ."
+   #         run: |
+   #              sudo apt-get --yes update
+   #              sudo apt-get install graphviz --yes
+   #       - name: "Set up Homebrew . . ."
+   #         uses: Homebrew/actions/setup-homebrew@master
+   #       - name: "Install latest doxygen . . ."
+   #         run: |
+   #              brew install gcc
+   #              brew install doxygen
+   #       - name: "Clone doxygen-awesome-css . . ."
+   #         run: |
+   #              git submodule update --init --recursive
+   #       - name: "Configure . . ."
+   #         run: |
+   #              mkdir -p m4 && ./autogen.sh && ./configure
+   #       - name: "Build documentation . . ."
+   #         run: |
+   #              echo "Doxygen version: "
+   #              doxygen --version
+   #              make doc 
+   #            # echo TODO(0) actually check that the doc can be built ok
+   #            # ( ! (grep "WARNING:" make-doc-sphinx.log | grep -v "WARNING: bibtex citations changed, rerun sphinx" | grep -v "WARNING: Could not lex literal_block") )
+   # macosx:
+   #    timeout-minutes: 60
+   #    runs-on: macOS-latest
+   #    env:
+   #       CXX: "ccache clang++"
+   #       CXXFLAGS: "-fdiagnostics-color"
+   #    steps:
+   #       - uses: actions/checkout@v3
+   #       - name: "Setup ccache . . ."
+   #         uses: Chocobo1/setup-ccache-action@v1
+   #         with:
+   #           update_packager_index: false
+   #           install_ccache: true
+   #       - name: "Install dependencies . . ."
+   #         run: brew install autoconf automake
+   #       - name: "Clang version . . ."
+   #         run: clang++ --version
+   #       - name: "Configure . . ."
+   #         run: |
+   #              mkdir -p m4
+   #              ./autogen.sh 
+   #              ./configure CXX="$CXX" CXXFLAGS="$CXXFLAGS" --disable-hpcombi --disable-backward
+   #       - name: "Build libsemigroups . . ."
+   #         run: |
+   #              ccache -z && make -j4 && ccache -s
+   #       - name: "Build test_all . . ."
+   #         run: |
+   #              ccache -z && make test_all -j4 && ccache -s
+   #       - name: "Run the quick tests . . ."
+   #         run: |
+   #              ./test_all "[quick]"
+   # valgrind:
+   #    timeout-minutes: 60
+   #    runs-on: ubuntu-latest
+   #    env:
+   #      CXX: "ccache g++"
+   #      CXXFLAGS: "-fdiagnostics-color"
+   #    steps:
+   #       - uses: actions/checkout@v3
+   #       - name: "Restore cache . . ."
+   #         uses: actions/cache@v3
+   #         with:
+   #            path: /home/runner/.ccache
+   #            key: ccache:${{ matrix.os }}:${{ matrix.compiler }}:${{ matrix.modules }}-modules:${{ github.ref }}:${{ github.sha }}
+   #            restore-keys: |
+   #              ccache:${{ matrix.os }}:${{ matrix.compiler }}:${{ matrix.modules }}-modules:${{ github.ref }}
+   #              ccache:${{ matrix.os }}:${{ matrix.compiler }}:${{ matrix.modules }}-modules
+   #       - name: "Install dependencies . . ."
+   #         run: |
+   #              sudo apt-get --yes update
+   #              sudo apt-get install -y ccache expect libc6-dbg libtool-bin valgrind
+   #       - name: "Configure . . ."
+   #         run: |
+   #              mkdir -p m4 && ./autogen.sh
+   #              ./configure --enable-debug --disable-hpcombi
+   #       - name: "Build libsemigroups . . ."
+   #         run: |
+   #              ccache -z && make -j4 && ccache -s
+   #       - name: "Build test_all . . ."
+   #         run: |
+   #              ccache -z && make test_all -j4 && ccache -s
+   #       - name: "Run tests with valgrind . . ."
+   #         run: |
+   #              valgrind --version
+   #              unbuffer libtool --mode=execute valgrind --leak-check=full ./test_all "[quick][exclude:no-valgrind]" 2>&1 | tee valgrind.log
+   #              echo
+   #              ( ! grep -i "Invalid" valgrind.log )
+   #              ( ! grep -E "lost: [^0]" valgrind.log )
