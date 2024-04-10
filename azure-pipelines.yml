@@ -29,7 +29,9 @@ jobs:
       path: $(CCACHE_DIR)
     displayName: Restore cache . . .
   - bash: |
-      mkdir -p m4 && ./autogen.sh && ./configure --disable-hpcombi --disable-popcnt --disable-clzll
+      mkdir -p m4
+      ./autogen.sh
+      ./configure CXX="ccache g++" CXXFLAGS="-O2 -g" --disable-hpcombi --disable-popcnt --disable-clzll
     displayName: "Configure . . ."
   - bash: |
       ccache -z && make -j4 && ccache -s
