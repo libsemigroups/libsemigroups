@@ -273,7 +273,15 @@ namespace libsemigroups {
         = std::unordered_set<internal_char_type>::const_iterator;
 
    public:
-    RewriterBase() = default;
+    // TODO(0) to cpp
+    RewriterBase()
+        : _alphabet(),
+          _cached_confluent(false),
+          _confluence_known(false),
+          _max_stack_depth(0),
+          _pending_rules(),
+          _requires_alphabet() {}
+
     RewriterBase& init();
 
     explicit RewriterBase(bool requires_alphabet) : RewriterBase() {
