@@ -7,7 +7,7 @@ AM_CXXFLAGS += -I$(abs_top_srcdir)/extern # for magic_enum
 AM_CXXFLAGS += -I$(abs_top_srcdir)/extern/HPCombi/include
 AM_CXXFLAGS += -I$(abs_top_srcdir)/extern/HPCombi/third_party
 AM_CXXFLAGS += -I$(abs_top_srcdir)/extern/rx-ranges/include
-AM_CXXFLAGS += -std=gnu++17 -Wall -Wextra
+AM_CXXFLAGS += -std=gnu++17 -O3 -Wall -Wextra
 AM_CXXFLAGS += $(WARNING_CXXFLAGS)
 AM_CXXFLAGS += $(FMT_CFLAGS)
 AM_CXXFLAGS += $(EIGEN3_CFLAGS)
