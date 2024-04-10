@@ -455,6 +455,7 @@ namespace libsemigroups {
 
       static inline size_type quotient(difference_type a,
                                        difference_type b) noexcept {
+        LIBSEMIGROUPS_ASSERT(b != 0);
         if (a % b >= 0) {
           return a / b;
         } else {
@@ -476,7 +477,7 @@ namespace libsemigroups {
           }
           size_type s = da->number_of_cols();
           size_type n = da->_nr_unused_cols;
-
+          LIBSEMIGROUPS_ASSERT(s != 0);
           size_type q = val / s;
           size_type r = val % s;
 
@@ -503,7 +504,7 @@ namespace libsemigroups {
           }
           size_type s = da->number_of_cols();
           size_type n = da->_nr_unused_cols;
-
+          LIBSEMIGROUPS_ASSERT(s != 0);
           size_type q = val / s;
           size_type r = val % s;
 
@@ -550,6 +551,9 @@ namespace libsemigroups {
           difference_type n = da1->_nr_unused_cols;
           difference_type b = it1 - da1->_vec.begin();
           difference_type a = it2 - da1->_vec.begin();
+          if (s == 0 && n == 0) {
+            return 0;
+          }
           return (b - a) - n * (quotient(b, s + n) - quotient(a, s + n));
         }
       };
@@ -590,9 +594,9 @@ namespace libsemigroups {
                    TInternalIteratorType const& it2) const noexcept {
           LIBSEMIGROUPS_ASSERT(da1 == da2);
           (void) da2;
-          return (it1 - it2)
-                 / static_cast<difference_type>(da1->_nr_used_cols
-                                                + da1->_nr_unused_cols);
+          difference_type denom = da1->_nr_used_cols + da1->_nr_unused_cols;
+          LIBSEMIGROUPS_ASSERT(denom != 0);
+          return (it1 - it2) / denom;
         }
       };
 
