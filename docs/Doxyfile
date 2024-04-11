@@ -698,7 +698,7 @@ SORT_MEMBER_DOCS       = YES
 # this will also influence the order of the classes in the class list.
 # The default value is: NO.
 
-SORT_BRIEF_DOCS        = NO
+SORT_BRIEF_DOCS        = YES
 
 # If the SORT_MEMBERS_CTORS_1ST tag is set to YES then doxygen will sort the
 # (brief and detailed) documentation of class members so that constructors and
@@ -954,11 +954,7 @@ WARN_LOGFILE           =
 
 INPUT = "../include/libsemigroups" \
         "../README.md"             \
-        "install.md"               \
-        "Congruences.md"           \
-        "Words.md"                 \
-        "WordGraphs.md"            \
-        "KnuthBendix.md"
+        "install.md"
 
 # This tag can be used to specify the character encoding of the source files
 # that doxygen parses. Internally doxygen uses the UTF-8 encoding. Doxygen uses
@@ -1334,7 +1330,7 @@ HTML_FILE_EXTENSION    = .html
 # of the possible markers and block names see the documentation.
 # This tag requires that the tag GENERATE_HTML is set to YES.
 
-HTML_HEADER            = doxygen-awesome-css/doxygen-custom/header.html
+HTML_HEADER            = header.html
 
 # The HTML_FOOTER tag can be used to specify a user-defined HTML footer for each
 # generated HTML page. If the tag is left blank doxygen will generate a standard
@@ -1374,9 +1370,9 @@ HTML_STYLESHEET        =
 # documentation.
 # This tag requires that the tag GENERATE_HTML is set to YES.
 
-HTML_EXTRA_STYLESHEET  = doxygen-awesome-css/doxygen-awesome.css \
-                         doxygen-awesome-css/doxygen-custom/custom.css \
-                         doxygen-awesome-css/doxygen-custom/custom-alternative.css
+HTML_EXTRA_STYLESHEET  = doxygen-awesome-css/doxygen-awesome.css              \
+                         doxygen-awesome-css/doxygen-awesome-sidebar-only.css \
+                         custom.css
 
 # The HTML_EXTRA_FILES tag can be used to specify one or more extra images or
 # other source files which should be copied to the HTML output directory. Note
@@ -1387,11 +1383,7 @@ HTML_EXTRA_STYLESHEET  = doxygen-awesome-css/doxygen-awesome.css \
 # This tag requires that the tag GENERATE_HTML is set to YES.
 
 HTML_EXTRA_FILES       = doxygen-awesome-css/doxygen-awesome-darkmode-toggle.js \
-                         doxygen-awesome-css/doxygen-awesome-fragment-copy-button.js \
-                         doxygen-awesome-css/doxygen-awesome-paragraph-link.js \
-                         doxygen-awesome-css/doxygen-custom/toggle-alternative-theme.js \
-                         doxygen-awesome-css/doxygen-awesome-interactive-toc.js \
-                         doxygen-awesome-css/doxygen-awesome-tabs.js
+                         doxygen-awesome-css/doxygen-awesome-fragment-copy-button.js
 
 # The HTML_COLORSTYLE tag can be used to specify if the generated HTML output
 # should be rendered with a dark or light theme.
@@ -1445,7 +1437,7 @@ HTML_COLORSTYLE_GAMMA  = 113
 # The default value is: YES.
 # This tag requires that the tag GENERATE_HTML is set to YES.
 
-HTML_DYNAMIC_MENUS     = YES
+HTML_DYNAMIC_MENUS     = NO
 
 # If the HTML_DYNAMIC_SECTIONS tag is set to YES then the generated HTML
 # documentation will contain sections that can be hidden and shown after the
@@ -1796,7 +1788,7 @@ USE_MATHJAX            = YES
 # The default value is: MathJax_2.
 # This tag requires that the tag USE_MATHJAX is set to YES.
 
-MATHJAX_VERSION        = MathJax_2
+MATHJAX_VERSION        = MathJax_3
 
 # When MathJax is enabled you can set the default output format to be used for
 # the MathJax output. For more details about the output format see MathJax
@@ -1827,7 +1819,7 @@ MATHJAX_FORMAT         = HTML-CSS
 # - in case of MathJax version 3: https://cdn.jsdelivr.net/npm/mathjax@3
 # This tag requires that the tag USE_MATHJAX is set to YES.
 
-MATHJAX_RELPATH        = https://cdn.jsdelivr.net/npm/mathjax@2
+MATHJAX_RELPATH        = https://cdn.jsdelivr.net/npm/mathjax@3
 
 # The MATHJAX_EXTENSIONS tag can be used to specify one or more MathJax
 # extension names that should be enabled during MathJax rendering. For example

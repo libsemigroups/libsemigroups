@@ -1195,3 +1195,4 @@ lint:
 
 doc:
 	cd docs && doxygen
+	cd docs && ./fixup.py
