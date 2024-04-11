@@ -1,0 +1,14 @@
+#MSearchBox {
+  width: var(--searchbar-width);
+}
+
+.tabs #MSearchBox {
+  position: relative;
+}
+
+.github-corner svg {
+  fill: var(--primary-light-color);
+  color: var(--page-background-color);
+  width: 72px;
+  height: 72px;
+}
