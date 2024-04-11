@@ -39,6 +39,19 @@
 // * change RepOrc and MinimalRepOrc to compute minimal 2-sided congruences
 //   first (by using generating pairs), and then to try and find a right
 //   congruence not containing any of the minimal 2-sided congruences.
+//
+// TODO(far future):
+// * Figure out a way of making refining functions possible. A refining function
+// differs from a pruner in that it is also allowed to modify the word graph.
+// * Implement one and two sided compatibility checking as refiners, following
+// the theoretical description in the paper.
+// * Modify SimsBase to perform the backtrack on all standard word graphs
+// (without explicitly checking compatibility).
+// * Make SimsBase -> Sims, i.e. implement all the relevant functions and
+// settings of Sims1, Sims2, RepOrc, MinimalRepOrc into a single unified
+// class.
+// * Implement Sims1, Sim2, RepOrc, MinimalRepOrc just particular constructors
+// of the Sims object, which automatically set the relevant pruners etc.
 
 #ifndef LIBSEMIGROUPS_SIMS_HPP_
 #define LIBSEMIGROUPS_SIMS_HPP_
@@ -76,15 +89,26 @@
 
 #include "rx/ranges.hpp"
 
+//! \defgroup congruences_group Congruences
+//!
+//! This file contains documentation for the functionality in
+//! `libsemigroups` related to congruences of semigroups and monoids.
+
 namespace libsemigroups {
 
+  //! \ingroup congruences_group
+  //!
+  //! \brief For keeping track of various statistics arising during the runtime
+  //! of the low index algorithm.
+  //!
   //! Defined in ``sims.hpp``.
   //!
   //! On this page we describe the SimsStats class. The purpose of this
   //! class is to collect some statistics related to Sims1 or Sims2 class
   //! template.
   //!
-  //! \sa \ref Sims1, \ref Sims2
+  //! \sa \ref Sims1
+  //! \sa \ref Sims2
   class SimsStats {
    public:
     //! Number of congruences found at time of last report.
@@ -93,7 +117,8 @@ namespace libsemigroups {
     //! Sims1 or Sims2 algorithm at the time of the last call
     //! to \ref stats_check_point.
     //!
-    //! \sa \ref stats_check_point \ref count_now
+    //! \sa \ref stats_check_point
+    //! \sa \ref count_now
     // TODO(0) might be better to have a mutex here and just lock it in
     // check_point below
     std::atomic_uint64_t count_last;
@@ -102,6 +127,7 @@ namespace libsemigroups {
     //!
     //! This member tracks the total number of congruences found during the
     //! running of the Sims1 or Sims2 algorithm.
+    //! \sa \ref count_last
     // Atomic so as to avoid races between report_progress_from_thread and the
     // threads modifying count_last
     std::atomic_uint64_t count_now;
@@ -127,7 +153,8 @@ namespace libsemigroups {
     //! This is the same as the number of nodes in the search
     //! tree encounter during the running of Sims1 or Sims2.
     //!
-    //! \sa \ref stats_check_point \ref total_pending_now
+    //! \sa \ref stats_check_point
+    //! \sa \ref total_pending_now
     std::atomic_uint64_t total_pending_last;
 
     //! The total number of pending definitions.
@@ -140,6 +167,8 @@ namespace libsemigroups {
     //! occur during the running of the algorithms in Sims1 or Sims2. This is
     //! the same as the number of nodes in the search tree encounter during the
     //! running of Sims1 or Sims2.
+    //!
+    //! \sa \ref total_pending_last
     // Atomic so as to avoid races between report_progress_from_thread and the
     // threads modifying total_pending_now
     std::atomic_uint64_t total_pending_now;
@@ -240,13 +269,21 @@ namespace libsemigroups {
     SimsStats& init_from(SimsStats const& that);
   };
 
+  //! \ingroup congruences_group
+  //!
+  //! \brief For setting the presentation and various runtime parameters of the
+  //! Sims low index algorithm.
+  //!
   //! Defined in ``sims.hpp``.
   //!
   //! On this page we describe the SimsSettings class. The purpose of this class
   //! is to allow us to use the same interface for settings for Sims1, Sims2,
   //! RepOrc, and MinimalRepOrc.
   //!
-  //! \sa \ref Sims1, \ref Sims2, \ref RepOrc and \ref MinimalRepOrc
+  //! \sa \ref Sims1
+  //! \sa \ref Sims2
+  //! \sa \ref RepOrc
+  //! \sa \ref MinimalRepOrc
   template <typename Subclass>
   class SimsSettings {
    public:
@@ -304,7 +341,7 @@ namespace libsemigroups {
     //!
     //! \parameters (None)
     //!
-    //! \returns A reference to \c *this.
+    //! \returns A reference to \c this.
     //!
     //! \exception
     //! \no_libsemigroups_except
@@ -595,8 +632,7 @@ namespace libsemigroups {
     //!
     //! \param val the value of the long rule length.
     //!
-    //! \returns
-    //! A reference to `this`.
+    //! \returns A reference to \c this.
     //!
     //! \exceptions
     //! \no_libsemigroups_except
@@ -1292,6 +1328,11 @@ namespace libsemigroups {
     class const_rcgp_iterator;
   }  // namespace sims
 
+  //! \ingroup congruences_group
+  //!
+  //! \brief For computing finite index right congruences of a finitely
+  //! presented semigroup or monoid.
+  //!
   //! Defined in ``sims.hpp``.
   //!
   //! On this page we describe the functionality relating to the small index
@@ -1306,10 +1347,10 @@ namespace libsemigroups {
   //! The purpose of this class is to provide the functions \ref cbegin, \ref
   //! cend, \ref for_each, and \ref find_if which permit iterating through the
   //! one-sided congruences of a semigroup or monoid defined by a presentation
-  //! containing (a possibly empty) set of pairs and with at most a given
-  //! number of classes. An iterator returned by \ref cbegin points at an
-  //! WordGraph instance containing the action of the semigroup or monoid
-  //! on the classes of a congruence.
+  //! containing (a possibly empty) set of pairs and with at most a given number
+  //! of classes. An iterator returned by \ref cbegin points at an WordGraph
+  //! instance containing the action of the semigroup or monoid on the classes
+  //! of a congruence.
   //!
   //! \sa Sims2 for equivalent functionality for 2-sided congruences.
   //! \sa SimsSettings for the various things that can be set in a Sims1 object.
@@ -1554,8 +1595,7 @@ namespace libsemigroups {
     //! prefix incrementing \c ++it the returned  iterator \c it
     //! significantly cheaper than postfix incrementing \c it++.
     //!
-    //! \sa
-    //! \ref cend
+    //! \sa cend
     // TODO(Sims1) it'd be good to remove node 0 to avoid confusion. This
     // seems complicated however, and so isn't done at present.
     [[nodiscard]] iterator cbegin(size_type n) const;
@@ -1583,12 +1623,16 @@ namespace libsemigroups {
     //! prefix incrementing \c ++it the returned  iterator \c it
     //! significantly cheaper than postfix incrementing \c it++.
     //!
-    //! \sa
-    //! \ref cbegin
+    //! \sa cbegin
     [[nodiscard]] iterator cend(size_type n) const;
 #endif
   };
 
+  //! \ingroup congruences_group
+  //!
+  //! \brief For computing finite index two-sided congruences of a finitely
+  //! presented semigroup or monoid.
+  //!
   //! Defined in ``sims.hpp``.
   //!
   //! On this page we describe the functionality relating to the small index
@@ -1647,7 +1691,7 @@ namespace libsemigroups {
     //! \tparam Word the type of the words in the presentation \p p
     //! \param p the presentation
     //!
-    //! \returns A reference to \c *this.
+    //! \returns A reference to \c this.
     //!
     //! \throws LibsemigroupsException if `to_presentation<word_type>(p)` throws
     //! \throws LibsemigroupsException if `p` is not valid
@@ -1750,6 +1794,11 @@ namespace libsemigroups {
     };  // class iterator_base
   };    // Sims2
 
+  //! \ingroup congruences_group
+  //!
+  //! \brief For computing small degree transformation representations of a
+  //! finite semigroup or monoid.
+  //!
   //! Defined in ``sims.hpp``.
   //!
   //! This class is a helper for Sims1 calling the word_graph member
@@ -1811,7 +1860,7 @@ namespace libsemigroups {
     //!
     //! \param val the minimum number of nodes
     //!
-    //! \returns A reference to `this`.
+    //! \returns A reference to \c this.
     //!
     //! \exceptions
     //! \noexcept
@@ -1842,7 +1891,7 @@ namespace libsemigroups {
     //!
     //! \param val the maximum number of nodes
     //!
-    //! \returns A reference to `this`.
+    //! \returns A reference to \c this.
     //!
     //! \exceptions
     //! \noexcept
@@ -1874,7 +1923,7 @@ namespace libsemigroups {
     //!
     //! \param val the target size.
     //!
-    //! \returns A reference to `this`.
+    //! \returns A reference to \c this.
     //!
     //! \exceptions
     //! \noexcept
@@ -1929,6 +1978,11 @@ namespace libsemigroups {
     [[nodiscard]] Sims1::word_graph_type word_graph() const;
   };
 
+  //! \ingroup congruences_group
+  //!
+  //! \brief For computing the minimal degree of a transformation representation
+  //! arising from a right congruences of a finite semigroup or monoid.
+  //!
   //! Defined in ``sims.hpp``.
   //!
   //! This class is a helper for Sims1, calling the word_graph member
@@ -1964,7 +2018,7 @@ namespace libsemigroups {
     //!
     //! \param val the target size.
     //!
-    //! \returns A reference to `this`.
+    //! \returns A reference to \c this.
     //!
     //! \exceptions
     //! \noexcept
@@ -2065,6 +2119,11 @@ namespace libsemigroups {
   namespace sims {
     class const_cgp_iterator;
 
+    //! \ingroup congruences_group
+    //!
+    //! \brief For iterating over the right congruence generating pairs.
+    //!
+    //! TODO: Finish
     // This is similar to FroidurePinBase::const_rule_iterator
     // Right Congruence Generating Pairs (rcgp)
     class const_rcgp_iterator {
@@ -2250,6 +2309,14 @@ namespace libsemigroups {
     right_generating_pairs(Presentation<word_type> const& p,
                            WordGraph<Node> const&         wg);
 
+    //! \ingroup congruences_group
+    //!
+    //! \brief Compute the right congruence generating pairs given a word graph.
+    //!
+    //! Returns the right congruence generating pairs of the congruence
+    //! associated to \p wg as a congruence on the free monoid.
+    //!
+    //! TODO: finish
     template <typename Node>
     rx::iterator_range<const_rcgp_iterator>
     right_generating_pairs(WordGraph<Node> const& wg);
