@@ -22,6 +22,15 @@ AS_IF([test "x$enable_hpcombi" = xyes],
                              AX_APPEND_FLAG(-mavx, [ax_hpcombi_cxxflags_variable]),
                              [])])
 
+# The next check is because on Mac OS running on arm processors clang accepts
+# the flag -mavx but doesn't actually use it, and so complains about it being
+# unused. Adding -Wno-unused-command-line-argument suppresses these warnings 
+AS_IF([test "x$enable_hpcombi" = xyes], 
+      [AX_CHECK_COMPILE_FLAG(-Wno-unused-command-line-argument, 
+                             AX_APPEND_FLAG(-Wno-unused-command-line-argument,  
+                                            [ax_hpcombi_cxxflags_variable]),
+                             [])])
+
 AS_IF([test "x$enable_hpcombi" = xyes], 
       [AX_CHECK_COMPILE_FLAG(-flax-vector-conversions, 
                              AX_APPEND_FLAG(-flax-vector-conversions, 
