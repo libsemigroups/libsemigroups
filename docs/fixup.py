@@ -189,12 +189,18 @@ def fix_menu_3_part_2(data: str) -> tuple[str, bool]:
                 assert value[0] >= 0, "Malformed navigation index"
                 bad_indices.append(value[0])
             value.insert(0, 0)
+    bad_indices.sort()
     k = max(bad_indices)
+
+    if k == 0:
+        # Everything is already fine
+        return data, True
 
     if bad_indices != list(range(k + 1)):
         # TODO: Implement this.
         raise NotImplementedError(
-            "Can't handle case where index navtree indices are non contiguous"
+            "Can't handle case where index navtree indices are non contiguous",
+            (data, bad_indices, k),
         )
 
     for key, value in paths.items():
