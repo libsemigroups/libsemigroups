@@ -20,6 +20,8 @@
         <tab type="user" visible="yes" url="@ref libsemigroups::RepOrc" title="RepOrc" />
         <tab type="user" visible="yes" url="@ref libsemigroups::MinimalRepOrc" title="MinimalRepOrc" />
         <tab type="user" visible="yes" url="@ref libsemigroups::sims::const_rcgp_iterator" title="const_rcgp_iterator" />
+        <tab type="user" visible="yes" url="@ref libsemigroups::sims::const_cgp_iterator" title="const_cgp_iterator" />
+        <tab type="user" visible="yes" url="@ref libsemigroups::SimsRefinerIdeals" title="SimsRefinerIdeals" />
       </tab>
       <!-- TODO: Figure out a way to avoid this hack -->
       <tab type="user" visible="yes" url="group__congruences__group.html#func-members" title="Functions" />
