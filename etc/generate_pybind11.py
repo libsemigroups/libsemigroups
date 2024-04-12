@@ -5,8 +5,9 @@ This module partially generates pybind11 bindings from the doxygen output in doc
 # pylint: disable=missing-docstring
 
 # TODO(0):
-# * rtype
 # * enums
+# * static mem_fns
+# *
 
 import os
 import re
@@ -114,12 +115,16 @@ __FOOTER = """
 } // namespace libsemigroups
 """
 
+########################################################################
+# Internal stuff for this script
+########################################################################
+
 
 def __error(msg: str) -> None:
     sys.stderr.write(f"\033[0;31m{msg}\n\033[0m")
 
 
-def __parse_args():
+def __parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         prog="generate_pybind11", usage="%(prog)s [options]"
     )
@@ -131,25 +136,30 @@ def __parse_args():
     return parser.parse_args()
 
 
+########################################################################
+# Stuff for extracting info from doxygen xml
+########################################################################
+
+
 @cache
 @accepts(str)
-def doxygen_filename(name: str) -> str:
+def doxygen_filename(thing: str) -> str:
     """
-    Returns the xml filename used by Doxygen for the class with name
-    <name>.
+    Returns the xml filename used by Doxygen for the class with thing
+    <thing>.
 
     Arguments:
-    name -- a string containing the fully qualified name of a C++ class, struct, or
+    thing -- a string containing the fully qualified thing of a C++ class, struct, or
     namespace.
     """
-    orig = name
-    name = re.sub("_", "__", name)
+    orig = thing
+    thing = re.sub("_", "__", thing)
     p = re.compile(r"::")
-    name = p.sub("_1_1", name)
+    thing = p.sub("_1_1", thing)
     p = re.compile(r"([A-Z])")
-    name = p.sub(r"_\1", name).lower()
-    for thing in ("class", "struct", "namespace"):
-        fname = f"docs/xml/{thing}{name}.xml"
+    thing = p.sub(r"_\1", thing).lower()
+    for possible in ("class", "struct", "namespace"):
+        fname = f"docs/xml/{possible}{thing}.xml"
         if exists(fname) and isfile(fname):
             return fname
     __error(f'Can\'t find the doxygen file for "{orig}" IGNORING!!!')
@@ -157,14 +167,16 @@ def doxygen_filename(name: str) -> str:
 
 
 @accepts(str, str, str)
-def get_xml(thing, fn=None, params_t=None):
+def get_xml(
+    thing: str, fn: str | None = None, params_t: str | None = None
+) -> dict[str, bs4.element.Tag]:
     """
     Returns the xml entity of thing::fn(params_t).
 
     Arguments:
     thing  -- a string containing a fully qualified C++ class or struct name.
-    fn   -- a string containing the unqualified name of a member function
-                of <thing>.
+    fn   -- a string containing the unqualified name of a function
+            in <thing>.
     params_t -- a string containing the types of the parameters of the
                 overload of <thing::fn> required formatted as doxygen
                 xml does:
@@ -205,32 +217,34 @@ def get_xml(thing, fn=None, params_t=None):
     return __DOXY_DICT[thing]
 
 
+########################################################################
+# Any function
+########################################################################
+
+
+@cache
 @accepts(str, str, str)
-def is_public_mem_fn(class_n, mem_fn, params_t):
-    xml = get_xml(class_n, mem_fn, params_t)
+def is_public_fn(thing: str, fn: str, params_t: str) -> bool:
+    if is_namespace(thing):
+        return True
+    xml = get_xml(thing, fn, params_t)
     prot = xml.get("prot")
     if prot is not None:
         return prot == "public"
     return False
 
 
-@accepts(str, str, str)
-def is_const_mem_fn(class_n, mem_fn, params_t):
-    xml = get_xml(class_n, mem_fn, params_t)
-    assert "const" in xml.attrs, "const not an attribute!"
-    return xml["const"] == "yes"
-
-
-@accepts(str, str, str)
-def is_mem_fn_template(class_n, mem_fn, params_t):
-    xml = get_xml(class_n, mem_fn, params_t)
-    return xml.find("templateparamlist") is not None
+########################################################################
+# Classes or structs
+########################################################################
 
 
 @cache
 @accepts(str)
-def template_params(thing: str) -> list[str]:
+def class_template_params(thing: str) -> list[str]:
     result = []
+    if is_namespace(thing):
+        return result
     with open(doxygen_filename(thing), "r", encoding="utf-8") as xml:
         xml = BeautifulSoup(xml, "xml")
         for x in xml.doxygen.compounddef.children:
@@ -244,63 +258,34 @@ def template_params(thing: str) -> list[str]:
 
 @cache
 @accepts(str)
-def is_template(thing: str) -> bool:
-    return len(template_params(thing)) != 0
+def is_class_template(thing: str) -> bool:
+    return len(class_template_params(thing)) != 0
 
 
-@accepts(str, str, str)
-def is_deleted_mem_fn(class_n, mem_fn, params_t):
-    xml = get_xml(class_n, mem_fn, params_t)
-    if xml.find("argsstring") is None:
-        return False
-    return xml.find("argsstring").text.find("=delete") != -1
-
-
+@cache
 @accepts(str, str)
-def is_constructor(class_n, mem_fn):
-    return mem_fn.startswith(class_n.split("::")[-1])
+def is_overloaded(thing: str, fn: str) -> bool:
+    return len(get_xml(thing, fn)) > 1
 
 
-@accepts(str, str)
-def is_overloaded(class_n, mem_fn):
-    return len(get_xml(class_n, mem_fn)) > 1
-
-
+@cache
 @accepts(str)
-def is_namespace(name: str) -> bool:
-    return "namespace" in doxygen_filename(name)
+def is_namespace(thing: str) -> bool:
+    return "namespace" in doxygen_filename(thing)
 
 
+@cache
 @accepts(str, str, str)
-def skip_mem_fn(class_n, mem_fn, params_t):
-    if (
-        mem_fn.startswith("operator")
-        or mem_fn.endswith("_type")
-        or "iterator" in mem_fn
-        or mem_fn.endswith("_no_checks")
-    ):
-        return True
-    try:
-        get_xml(class_n, mem_fn, params_t)
-    except KeyError:
-        return True
-    return (
-        is_deleted_mem_fn(class_n, mem_fn, params_t)
-        #    or is_mem_fn_template(class_n, mem_fn, params_t)
-        or not is_public_mem_fn(class_n, mem_fn, params_t)
-    )
-
-
-@accepts(str, str, str)
-def params_dict(class_n, mem_fn, params_t):
-    xml = get_xml(class_n, mem_fn, params_t)
+def params_dict(thing: str, fn: str, params_t: str) -> dict[str, str]:
+    xml = get_xml(thing, fn, params_t)
     result = {}
     for x in xml.find_all("param"):
-        type_ = x.find("type")
-        if type_.find("ref"):
-            type_ = type_.find("ref").text
-        else:
-            type_ = type_.text
+        type_ = x.find("type").text
+        # print(type_)
+        # if type_.find("ref"):
+        #     type_ = type_.find("ref").text + type_.text
+        # else:
+        #     type_ = type_.text
         if not type_.startswith("typename"):
             name = x.find("declname")
             if name:
@@ -310,51 +295,84 @@ def params_dict(class_n, mem_fn, params_t):
 
 @cache
 @accepts(str, str, str)
-def return_type(class_n: str, mem_fn: str, params_t: str) -> str:
-    xml = get_xml(class_n, mem_fn, params_t)
+def return_type(thing: str, fn: str, params_t: str) -> str:
+    xml = get_xml(thing, fn, params_t)
     return xml.find("type").text
 
 
 @accepts(str, str, str)
-def param_names(class_n, mem_fn, params_t):
-    return list(params_dict(class_n, mem_fn, params_t).keys())
+def param_names(thing: str, fn: str, params_t: str) -> list[str]:
+    return list(params_dict(thing, fn, params_t).keys())
 
 
 @accepts(str, str, str)
-def fn_sig(class_n, mem_fn, params_t):
-    params_d = params_dict(class_n, mem_fn, params_t)
+def fn_sig(thing: str, fn: str, params_t: str) -> list[str]:
+    params_d = params_dict(thing, fn, params_t)
     result = []
     for name, type_ in params_d.items():
         result.append(f"{type_} {name}")
-
     return result
 
 
 @accepts(str)
-def normalize_params_t(params_t):
-    if params_t in __PARAMS_T_SUBSTITUTIONS:
-        return __PARAMS_T_SUBSTITUTIONS[params_t]
-    params_t = params_t.strip()
-    # replace more than 1 space by a single space
-    params_t = re.sub(r"\s{2,}", " ", params_t)
-    # Add space after < if it's a non-space
-    params_t = re.sub(r"(?<=[<])(?=[^\s])", " ", params_t)
-    # Add space before > if it's a non-space
-    params_t = re.sub(r"(?<=[^\s])(?=[>])", " ", params_t)
-    # Add space before & if it's a non-space and not &
-    params_t = re.sub(r"(?<=[^\s\&])(?=[\&])", " ", params_t)
-    # Add space after & if it's a non-space and not &
-    params_t = re.sub(r"(?<=[\&])(?=[^\s\&])", " ", params_t)
-    # remove whitespace around commas
-    params_t = re.sub(r"\s*,\s*", ",", params_t)
-    return params_t
+def shortname(thing: str) -> str:
+    if thing.startswith("libsemigroups::"):
+        return thing[len("libsemigroups::") :]
+    return thing
+
+
+@accepts(str)
+def shortname_(thing: str) -> str:
+    name = shortname(thing)
+    if is_class_template(thing):
+        name += "_"
+    return name
+
+
+########################################################################
+# Member functions
+########################################################################
+
+
+@cache
+@accepts(str, str, str)
+def is_const_mem_fn(thing: str, fn: str, params_t: str) -> bool:
+    if is_namespace(thing):
+        return False
+    xml = get_xml(thing, fn, params_t)
+    assert "const" in xml.attrs, "const not an attribute!"
+    return xml["const"] == "yes"
+
+
+@cache
+@accepts(str, str, str)
+def is_deleted_mem_fn(class_n: str, mem_fn: str, params_t: str) -> bool:
+    xml = get_xml(class_n, mem_fn, params_t)
+    if xml.find("argsstring") is None:
+        return False
+    return xml.find("argsstring").text.find("=delete") != -1
+
+
+@cache
+@accepts(str, str)
+def is_constructor(class_n: str, mem_fn: str) -> bool:
+    return mem_fn.startswith(class_n.split("::")[-1])
 
 
 @accepts(str, str)
-def exceptional_mem_fn(class_n, mem_fn):
-    return __EXCEPTIONAL_MEM_FN[mem_fn] % class_n
+def try_rewrite_exceptional_mem_fn(class_n: str, mem_fn: str) -> str:
+    try:
+        return __EXCEPTIONAL_MEM_FN[mem_fn] % class_n
+    except KeyError:
+        return ""
 
 
+########################################################################
+# Documentation
+########################################################################
+
+
+@accepts(str)
 def translate_cpp_to_py(type_: str) -> str:
     if type_ == "std::out_of_range":
         return "IndexError"
@@ -384,13 +402,6 @@ def convert_to_rst(xml, context=[]):
     if "kind" in xml.attrs and xml.attrs["kind"] == "enum":
         context.append(xml.attrs["kind"])
 
-    def indent(context):
-        n = context.count("memberdef")
-        n += context.count("compounddef")
-        n += context.count("parameterdescription")
-        n += context.count("programlisting")
-        return " " * (3 * n)
-
     result = ""
     if xml.name == "compounddef":
         try:
@@ -409,9 +420,7 @@ def convert_to_rst(xml, context=[]):
             bd = next((x for x in xml if x.name == "briefdescription"))
         except StopIteration:
             pass
-        xml = [n, bd] + [
-            x for x in xml if x.name != "briefdescription" and x.name != "name"
-        ]
+        xml = [n, bd] + [x for x in xml if x.name not in ("briefdescription", "name")]
     for x in xml:
         if isinstance(x, str):
             x = x.strip()
@@ -420,12 +429,12 @@ def convert_to_rst(xml, context=[]):
         elif "enum" in context and x.name == "name":
             result += x.text.strip()
         elif "enum" in context and x.name == "enumvalue":
-            result += "\n\n" + indent(context) + ".. py:enumerator:: "
+            result += "\n\n.. py:enumerator:: "
             result += convert_to_rst(x, context)
         elif x.name == "briefdescription":
-            result += "\n\n" + indent(context) + convert_to_rst(x, context)
+            result += "\n\n" + convert_to_rst(x, context)
         elif x.name == "detaileddescription":
-            result += "\n" + indent(context) + convert_to_rst(x, context)
+            result += "\n" + convert_to_rst(x, context)
         elif x.name == "templateparamlist":
             params = []
             for y in x.find_all("param"):
@@ -440,40 +449,38 @@ def convert_to_rst(xml, context=[]):
         elif x.name == "formula":
             result += " :math:`" + x.text.replace("$", "") + "`"
         elif x.name == "title":
-            result += "\n\n%s:%s: " % (indent(context), x.text.lower())
+            result += f"\n\n:{x.text.lower()}:"
         elif x.name == "para":
             result += convert_to_rst(x, context)
         elif x.name == "simplesect" and x.attrs["kind"] == "par":
             result += convert_to_rst(x, context)
         elif x.name == "parameterlist" and x.attrs["kind"] == "exception":
             for y in x.find_all("parameteritem"):
-                result += "\n\n" + indent(context)
+                result += "\n\n"
                 # TODO should be :raises LibsemigroupsError: description
-                result += ":raises:" + indent(context) + " " * 3
+                result += ":raises: " + " " * 3
                 result += convert_to_rst(y.find("parametername"), context)
                 result += convert_to_rst(y.find("parameterdescription"), context)
         elif x.name == "simplesect" and x.attrs["kind"] == "see":
-            result += (
-                "\n\n" + indent(context) + ".. seealso:: " + convert_to_rst(x, context)
-            )
+            result += "\n\n.. seealso:: " + convert_to_rst(x, context)
         elif x.name == "ref":
             result += f" :any:`{translate_cpp_to_py(x.text)}`"
         elif x.name == "emphasis":
-            result += " *%s*" % x.text
+            result += f" *{x.text}*"
         elif x.name == "bold":
-            result += "\n\n" + indent(context) + "**%s**" % x.text
+            result += f"**{x.text}**"
         elif x.name == "compoundname":
             result += x.text[x.text.rfind("::") + 2 :]
         elif x.name == "ulink":
-            result += " `%s <%s>`_" % (x.text, x.attrs["url"])
+            result += f'`{x.text} <{x.attrs["url"]}>`_'
         elif x.name == "itemizedlist":
             result += "\n" + convert_to_rst(x, context)
         elif x.name == "listitem":
-            result += "\n" + indent(context) + "* " + convert_to_rst(x, context)
+            result += "\n* " + convert_to_rst(x, context)
         elif x.name == "programlisting":
-            result += "\n\n" + indent(context) + ".. code-block::\n" + convert_to_rst(x)
+            result += "\n\n.. code-block::\n" + convert_to_rst(x)
         elif x.name == "codeline":
-            result += "\n" + indent(context) + convert_to_rst(x)
+            result += "\n" + convert_to_rst(x)
         elif x.name == "highlight":
             result += convert_to_rst(x)
         elif x.name == "sp":
@@ -482,9 +489,14 @@ def convert_to_rst(xml, context=[]):
     if len(context) > 0 and context[-1] == "enum":
         context.pop()
     if context.pop() == "itemizedlist":
-        result += "\n\n" + indent(context)
+        result += "\n\n"
 
     return result
+
+
+########################################################################
+# Formatting output doc
+########################################################################
 
 
 @accepts(str)
@@ -503,6 +515,11 @@ def rst_fmt(doc: str) -> str:
         pass
     os.remove("tmp.rst")
     return doc
+
+
+########################################################################
+# Output pybind11 doc
+########################################################################
 
 
 @accepts(str, str, str)
@@ -533,7 +550,6 @@ def pybind11_doc(class_n, mem_fn, params_t):
                     f'Can\'t find the parameter "{nam}" for "{class_n}::{mem_fn}({params_t})" IGNORING!!!'
                 )
 
-    # get return text
     return_ = [
         x for x in detailed.find_all("simplesect") if x.attrs["kind"] == "return"
     ]
@@ -556,76 +572,76 @@ def pybind11_mem_fn_params_n(class_n, mem_fn, params_t):
 
 
 @accepts(str)
-def shortname(class_n: str) -> str:
-    if class_n.startswith("libsemigroups::"):
-        return class_n[len("libsemigroups::") :]
-    return class_n
-
-
-@accepts(str)
-def shortname_(thing: str) -> str:
-    name = shortname(thing)
-    if is_template(thing):
-        name += "_"
-    return name
-
-
-@accepts(str)
 def pybind11_class_n(thing):
     if not is_namespace(thing):
-        if not is_template(thing):
+        if not is_class_template(thing):
             return f'py::class_<{shortname_(thing)}>(m, "{shortname(thing)}")\n'
         return f"py::class_<{shortname_(thing)}>(m, name.c_str())\n"
     return "m"
 
 
 @accepts(str, str, str)
-def pybind11_mem_fn(class_n, mem_fn, params_t):
-    short_class_n = shortname_(class_n)
-    if is_constructor(class_n, mem_fn):
-        if is_template(class_n):
-            params_t = re.sub(shortname(class_n), shortname_(class_n), params_t)
+def pybind11_mem_fn(thing: str, fn: str, params_t: str) -> str:
+    if is_constructor(thing, fn):
+        if is_class_template(thing):
+            params_t = re.sub(shortname(thing), shortname_(thing), params_t)
         return f".def(py::init<{params_t}>())\n"
-    try:
-        func = exceptional_mem_fn(class_n, mem_fn)
-    except KeyError:
+    func = try_rewrite_exceptional_mem_fn(thing, fn)
+    if not func:
         # Use lambdas not overload_cast
-        if is_overloaded(class_n, mem_fn):
-            sig = fn_sig(class_n, mem_fn, params_t)
-            if not is_namespace(class_n):
-                if is_const_mem_fn(class_n, mem_fn, params_t):
-                    sig = ", ".join([f"{short_class_n} const& self"] + sig)
+        if is_overloaded(thing, fn):
+            sig = fn_sig(thing, fn, params_t)
+            if not is_namespace(thing):
+                if is_const_mem_fn(thing, fn, params_t):
+                    sig = ", ".join([f"{shortname_(thing)} const& self"] + sig)
                 else:
-                    sig = ", ".join([f"{short_class_n}& self"] + sig)
+                    sig = ", ".join([f"{shortname_(thing)}& self"] + sig)
             else:
                 sig = ", ".join(sig)
             func = f"""[]({sig}) {{
-                    return self.{mem_fn}({", ".join(param_names(class_n, mem_fn, params_t))});
+                    return self.{fn}({", ".join(param_names(thing, fn, params_t))});
                     }}"""
         else:
-            func = f"&{short_class_n}::{mem_fn}"
+            func = f"&{shortname_(thing)}::{fn}"
 
-    params_n = pybind11_mem_fn_params_n(class_n, mem_fn, params_t)
-    short_mem_fn = shortname(mem_fn)
+    params_n = pybind11_mem_fn_params_n(thing, fn, params_t)
+    short_mem_fn = shortname(fn)
     if len(params_n) > 0:
         return f""".def("{short_mem_fn}",
 {func},
 {params_n},
 R"pbdoc(
-{pybind11_doc(class_n, mem_fn, params_t)}
+{pybind11_doc(thing, fn, params_t)}
 )pbdoc")\n"""
     return f""".def("{short_mem_fn}",
 {func},
 R"pbdoc(
-{pybind11_doc(class_n, mem_fn, params_t)}
+{pybind11_doc(thing, fn, params_t)}
 )pbdoc")\n"""
 
 
+########################################################################
+# The main event
+########################################################################
+
+
 @accepts(str, str, str)
-def replace_in_doc_string(pattern: str, repl: str, string: str) -> str:
-    pattern = rf"(pbdoc\(.*?){pattern}(.*?\)pbdoc)"
-    repl = rf"\1{repl}\2"
-    return re.sub(pattern, repl, string, flags=re.DOTALL)
+def skip_fn(thing: str, fn: str, params_t: str) -> bool:
+    if (
+        fn.startswith("operator")
+        or fn.endswith("_type")
+        or "iterator" in fn
+        or fn.endswith("_no_checks")
+        or "initializer_list" in params_t
+    ):
+        return True
+    try:
+        get_xml(thing, fn, params_t)
+    except KeyError:
+        return True
+    return is_deleted_mem_fn(thing, fn, params_t) or not is_public_fn(
+        thing, fn, params_t
+    )
 
 
 @accepts(str)
@@ -636,7 +652,7 @@ def generate(thing: str) -> str:
     fns = get_xml(thing)
     for fn, overloads in fns.items():
         for params in overloads:
-            if not isinstance(fn, str) or skip_mem_fn(thing, fn, params):
+            if not isinstance(fn, str) or skip_fn(thing, fn, params):
                 continue  # ignore
             out += pybind11_mem_fn(thing, fn, params)
     return out + ";"
@@ -649,7 +665,7 @@ def main():
     print(__COPYRIGHT)
     print(__HEADERS)
     for thing in args.things:
-        template_p = template_params(thing)
+        template_p = class_template_params(thing)
         if len(template_p) != 0:
             print(template_header(thing, template_p))
         else:
