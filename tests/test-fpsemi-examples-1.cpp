@@ -46,7 +46,10 @@ namespace libsemigroups {
   using fpsemigroup::dual_symmetric_inverse_monoid;
   using fpsemigroup::fibonacci_semigroup;
   using fpsemigroup::full_transformation_monoid;
+  using fpsemigroup::hypo_plactic_monoid;
   using fpsemigroup::monogenic_semigroup;
+  using fpsemigroup::not_renner_type_B_monoid;
+  using fpsemigroup::not_renner_type_D_monoid;
   using fpsemigroup::not_symmetric_group;
   using fpsemigroup::order_preserving_cyclic_inverse_monoid;
   using fpsemigroup::order_preserving_monoid;
@@ -58,7 +61,11 @@ namespace libsemigroups {
   using fpsemigroup::partition_monoid;
   using fpsemigroup::plactic_monoid;
   using fpsemigroup::rectangular_band;
+  using fpsemigroup::renner_type_B_monoid;
+  using fpsemigroup::renner_type_D_monoid;
+  using fpsemigroup::sigma_stylic_monoid;
   using fpsemigroup::singular_brauer_monoid;
+  using fpsemigroup::special_linear_group_2;
   using fpsemigroup::stellar_monoid;
   using fpsemigroup::stylic_monoid;
   using fpsemigroup::symmetric_group;
@@ -88,6 +95,33 @@ namespace libsemigroups {
     REQUIRE(partition_monoid(4) == partition_monoid(4, author::East));
     REQUIRE(cyclic_inverse_monoid(4)
             == cyclic_inverse_monoid(4, author::Fernandes));
+
+    // author::Any defaults
+    REQUIRE(stellar_monoid(4, author::Any) == stellar_monoid(4));
+    REQUIRE(singular_brauer_monoid(4, author::Any) == singular_brauer_monoid(4));
+    REQUIRE(orientation_preserving_monoid(4, author::Any) == orientation_preserving_monoid(4));
+    REQUIRE(orientation_reversing_monoid(4, author::Any) == orientation_reversing_monoid(4));
+    REQUIRE(temperley_lieb_monoid(4, author::Any) == temperley_lieb_monoid(4));
+    REQUIRE(brauer_monoid(4, author::Any) == brauer_monoid(4));
+    REQUIRE(partial_brauer_monoid(4, author::Any) == partial_brauer_monoid(4));
+    REQUIRE(fibonacci_semigroup(5, 2, author::Any) == fibonacci_semigroup(5, 2));
+    REQUIRE(plactic_monoid(4, author::Any) == plactic_monoid(4));
+    REQUIRE(stylic_monoid(4, author::Any) == stylic_monoid(4));
+    REQUIRE(rectangular_band(5, 3, author::Any) == rectangular_band(5, 3));
+    REQUIRE(chinese_monoid(5, author::Any) == chinese_monoid(5));
+    REQUIRE(monogenic_semigroup(6, 3, author::Any) == monogenic_semigroup(6, 3));
+    REQUIRE(order_preserving_monoid(4, author::Any) == order_preserving_monoid(4));
+    REQUIRE(order_preserving_cyclic_inverse_monoid(4, author::Any) == order_preserving_cyclic_inverse_monoid(4));
+    REQUIRE(partial_isometries_cycle_graph_monoid(4, author::Any) == partial_isometries_cycle_graph_monoid(4));
+    REQUIRE(special_linear_group_2(5, author::Any) == special_linear_group_2(5));
+    REQUIRE(hypo_plactic_monoid(4, author::Any) == hypo_plactic_monoid(4));
+    REQUIRE(sigma_stylic_monoid({3, 4}, author::Any) == sigma_stylic_monoid({3, 4}));
+    REQUIRE(zero_rook_monoid(4, author::Any) == zero_rook_monoid(4));
+    REQUIRE(renner_type_B_monoid(4, 1, author::Any) == renner_type_B_monoid(4, 1));
+    REQUIRE(not_renner_type_B_monoid(4, 1, author::Any) == not_renner_type_B_monoid(4, 1));
+    REQUIRE(renner_type_D_monoid(4, 1, author::Any) == renner_type_D_monoid(4, 1));
+    REQUIRE(not_renner_type_D_monoid(4, 1, author::Any) == not_renner_type_D_monoid(4, 1));
+
 
     // index defaults
     REQUIRE(symmetric_group(4, author::Moore)
