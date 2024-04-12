@@ -449,7 +449,7 @@ def convert_to_rst(xml, context=[]):
         elif x.name == "formula":
             result += " :math:`" + x.text.replace("$", "") + "`"
         elif x.name == "title":
-            result += f"\n\n:{x.text.lower()}:"
+            result += f"\n\n:{x.text.lower()}: "
         elif x.name == "para":
             result += convert_to_rst(x, context)
         elif x.name == "simplesect" and x.attrs["kind"] == "par":
@@ -518,13 +518,29 @@ def rst_fmt(doc: str) -> str:
 
 
 ########################################################################
-# Output pybind11 doc
+# Output pybind11 stuff
 ########################################################################
 
 
+@accepts(str)
+def pybind11_stub(thing):
+    if not is_namespace(thing):
+        if not is_class_template(thing):
+            return f'py::class_<{shortname_(thing)}>(m, "{shortname(thing)}")\n'
+        return f"py::class_<{shortname_(thing)}>(m, name.c_str())\n"
+    return "m"
+
+
 @accepts(str, str, str)
-def pybind11_doc(class_n, mem_fn, params_t):
-    xml = get_xml(class_n, mem_fn, params_t)
+def pybind11_fn_params(thing, fn, params_t):
+    params_n = param_names(thing, fn, params_t)
+    out = [f'py::arg("{x}")' for x in params_n]
+    return ", ".join(out)
+
+
+@accepts(str, str, str)
+def pybind11_doc(thing, fn, params_t):
+    xml = get_xml(thing, fn, params_t)
     doc = xml.find("briefdescription").text.strip() + "\n"
     detailed = xml.find("detaileddescription")
 
@@ -532,7 +548,7 @@ def pybind11_doc(class_n, mem_fn, params_t):
     params = detailed.find_all("parameterlist")
     params = [x for x in params if x.attrs["kind"] == "param"]
 
-    params_d = params_dict(class_n, mem_fn, params_t)
+    params_d = params_dict(thing, fn, params_t)
     for x in params:
         paramitem = x.find_all("parameteritem")
         for y in paramitem:
@@ -547,7 +563,7 @@ def pybind11_doc(class_n, mem_fn, params_t):
                 doc += f"\n:type {nam}: {translate_cpp_to_py(params_d[nam])}"
             except KeyError:
                 __error(
-                    f'Can\'t find the parameter "{nam}" for "{class_n}::{mem_fn}({params_t})" IGNORING!!!'
+                    f'Can\'t find the parameter "{nam}" for "{thing}::{fn}({params_t})" IGNORING!!!'
                 )
 
     return_ = [
@@ -558,26 +574,8 @@ def pybind11_doc(class_n, mem_fn, params_t):
         if len(params) > 0:
             doc += "\n"
         doc += f"\n\n:returns: {convert_to_rst(return_[0])}"
-        doc += (
-            f"\n\n:rtype: {translate_cpp_to_py(return_type(class_n, mem_fn, params_t))}"
-        )
+        doc += f"\n\n:rtype: {translate_cpp_to_py(return_type(thing, fn, params_t))}"
     return rst_fmt(doc)
-
-
-@accepts(str, str, str)
-def pybind11_mem_fn_params_n(class_n, mem_fn, params_t):
-    params_n = param_names(class_n, mem_fn, params_t)
-    out = [f'py::arg("{x}")' for x in params_n]
-    return ", ".join(out)
-
-
-@accepts(str)
-def pybind11_class_n(thing):
-    if not is_namespace(thing):
-        if not is_class_template(thing):
-            return f'py::class_<{shortname_(thing)}>(m, "{shortname(thing)}")\n'
-        return f"py::class_<{shortname_(thing)}>(m, name.c_str())\n"
-    return "m"
 
 
 @accepts(str, str, str)
@@ -604,7 +602,7 @@ def pybind11_mem_fn(thing: str, fn: str, params_t: str) -> str:
         else:
             func = f"&{shortname_(thing)}::{fn}"
 
-    params_n = pybind11_mem_fn_params_n(thing, fn, params_t)
+    params_n = pybind11_fn_params(thing, fn, params_t)
     short_mem_fn = shortname(fn)
     if len(params_n) > 0:
         return f""".def("{short_mem_fn}",
@@ -648,7 +646,7 @@ def skip_fn(thing: str, fn: str, params_t: str) -> bool:
 def generate(thing: str) -> str:
     if len(doxygen_filename(thing)) == 0:
         return ""
-    out = pybind11_class_n(thing)
+    out = pybind11_stub(thing)
     fns = get_xml(thing)
     for fn, overloads in fns.items():
         for params in overloads:
