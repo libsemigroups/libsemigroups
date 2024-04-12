@@ -431,8 +431,6 @@ namespace libsemigroups {
     //! initialise another Sims1, Sims2, RepOrc, or
     //! MinimalRepOrc with these settings.
     //!
-    //! \param (None) this function has no parameters.
-    //!
     //! \returns A const reference to SimsSettings.
     //!
     //! \exceptions
@@ -462,8 +460,6 @@ namespace libsemigroups {
     //! \brief Get the number of threads.
     //!
     //! Returns the current number of threads.
-    //!
-    //! \param (None) this function has no parameters.
     //!
     //! \returns
     //! A `size_t`.
@@ -514,11 +510,11 @@ namespace libsemigroups {
     //! presentation.
     //!
     //! This function returns the defining presentation of a Sims1 or Sims2
-    //! instance. The congruences computed by \ref cbegin and \ref cend are
-    //! defined over the semigroup or monoid defined by this presentation.
+    //! instance. The congruences computed by `cbegin` and `cend` of the
+    //! appropriate subclass are defined over the semigroup or monoid defined by
+    //! this presentation.
     //!
-    //! \returns
-    //! A const reference to `Presentation<word_type>`.
+    //! \returns A const reference to `Presentation<word_type>`.
     //!
     //! \exceptions
     //! \noexcept
@@ -591,8 +587,7 @@ namespace libsemigroups {
     //!
     //! Returns the pointer to the first long rule.
     //!
-    //! \returns
-    //! A const reference to `Presentation<word_type>`.
+    //! \returns A const reference to `Presentation<word_type>`.
     //!
     //! \exceptions
     //! \noexcept
@@ -651,11 +646,9 @@ namespace libsemigroups {
     //! those whose word graphs are accepted by all pruners returned by
     //! \ref pruners.
     //!
-    //! \param (None) this function has no parameters.
-    //!
-    //! \returns
-    //! A const reference to `std::vector<std::function<bool(word_graph_type
-    //! const&)>>`, the set of all pruners.
+    //! \returns A const reference to
+    //! `std::vector<std::function<bool(word_graph_type const&)>>`, the set of
+    //! all pruners.
     //!
     //! \exceptions
     //! \noexcept
@@ -665,7 +658,7 @@ namespace libsemigroups {
 
     //! Add a pruner to the search tree.
     //!
-    //! \param an rvalue reference to a pruner function.
+    //! \param func an rvalue reference to a pruner function.
     //!
     //! \returns A reference to \c this.
     //!
@@ -706,10 +699,7 @@ namespace libsemigroups {
     //! represented by the relations of the presentation returned by
     //! \ref include.
     //!
-    //! \param (None) this function has no parameters.
-    //!
-    //! \returns
-    //! A const reference to `Presentation<word_type>`.
+    //! \returns A const reference to `Presentation<word_type>`.
     //!
     //! \exceptions
     //! \noexcept
@@ -823,10 +813,7 @@ namespace libsemigroups {
     //! represented by the relations of the presentation returned by
     //! \ref exclude.
     //!
-    //! \param (None) this function has no parameters.
-    //!
-    //! \returns
-    //! A const reference to `Presentation<word_type>`.
+    //! \returns A const reference to `Presentation<word_type>`.
     //!
     //! \exceptions
     //! \noexcept
@@ -940,10 +927,7 @@ namespace libsemigroups {
     //! contains some statistics related to the current Sims1 or Sims2 instance
     //! and any part of the depth first search already conducted.
     //!
-    //! \param (None) this function has no parameters.
-    //!
-    //! \returns
-    //! A const reference to `SimsStats`.
+    //! \returns A const reference to `SimsStats`.
     //!
     //! \exceptions
     //! \noexcept
@@ -958,11 +942,9 @@ namespace libsemigroups {
     //!
     //! \note This setting has no effect if \ref number_of_threads is 1.
     //!
-    //! \param (None) this function has no parameters.
-    //!
-    //! \returns
-    //! A const reference to `std::vector<std::function<bool(word_graph_type
-    //! const&)>>`, the set of all pruners.
+    //! \returns A const reference to
+    //! `std::vector<std::function<bool(word_graph_type const&)>>`, the set of
+    //! all pruners.
     //!
     //! \exceptions
     //! \noexcept
@@ -1581,9 +1563,8 @@ namespace libsemigroups {
     //! unnecessary copies, we've left it in for the time being. \param n
     //! the maximum number of classes in a congruence.
     //!
-    //! \returns
-    //! An iterator \c it of type \c iterator pointing to an WordGraph with
-    //! at most \p n nodes.
+    //! \returns An iterator \c it of type \c iterator pointing to an WordGraph
+    //! with at most \p n nodes.
     //!
     //! \throws LibsemigroupsException if \p n is \c 0.
     //! \throws LibsemigroupsException if `presentation()`
@@ -1610,9 +1591,8 @@ namespace libsemigroups {
     //! \param n the maximum number of classes in a
     //! congruence.
     //!
-    //! \returns
-    //! An iterator \c it of type \c iterator pointing to an WordGraph with
-    //! at most \p 0 nodes.
+    //! \returns An iterator \c it of type \c iterator pointing to an WordGraph
+    //! with at most \p 0 nodes.
     //!
     //! \throws LibsemigroupsException if \p n is \c 0.
     //! \throws LibsemigroupsException if `presentation()` has 0-generators
@@ -1685,23 +1665,15 @@ namespace libsemigroups {
 
     //! \brief Reinitialize an existing Sims2 object.
     //!
-    //! This function puts an object back into the same state as if it had
-    //! been newly constructed from the presentation \p p.
+    //! This function puts a Sims2 object back into the same state as if
+    //! it had been newly default constructed.
     //!
-    //! \tparam Word the type of the words in the presentation \p p
-    //! \param p the presentation
+    //! \parameters (None)
     //!
     //! \returns A reference to \c this.
     //!
-    //! \throws LibsemigroupsException if `to_presentation<word_type>(p)` throws
-    //! \throws LibsemigroupsException if `p` is not valid
-    //! \throws LibsemigroupsException if `p` has 0-generators and 0-relations.
-    //!
-    //! \warning This function has no exception guarantee, the object will be
-    //! in the same state as if it was default constructed if an exception is
-    //! thrown.
-    //!
-    //! \sa presentation(Presentation<Word> const&)
+    //! \exception
+    //! \no_libsemigroups_except
     Sims2& init() {
       SimsSettings<Sims2>::init();
       return *this;
@@ -1874,8 +1846,6 @@ namespace libsemigroups {
     //! This function returns the current value for the minimum number of nodes
     //! in the WordGraph that we are seeking.
     //!
-    //! \param (None) this function has no parameters.
-    //!
     //! \returns A value of type `size_t`.
     //!
     //! \exceptions
@@ -1904,8 +1874,6 @@ namespace libsemigroups {
     //!
     //! This function returns the current value for the maximum number of nodes
     //! in the WordGraph that we are seeking.
-    //!
-    //! \param (None) this function has no parameters.
     //!
     //! \returns A value of type `size_t`.
     //!
@@ -1937,8 +1905,6 @@ namespace libsemigroups {
     //! This function returns the current value for the target size, i.e. the
     //! desired size of the transformation semigroup corresponding to the
     //! WordGraph returned by the function \ref word_graph.
-    //!
-    //! \param (None) this function has no parameters.
     //!
     //! \returns A value of type `size_t`.
     //!
@@ -2123,11 +2089,19 @@ namespace libsemigroups {
     //!
     //! \brief For iterating over the right congruence generating pairs.
     //!
-    //! TODO: Finish
+    //! Defined in ``sims.hpp``.
+    //!
+    //! This class provides a means of iterating over the right congruence
+    //! generating pairs (rcgp) of a finite index right congruence defined by a
+    //! \ref WordGraph.
+    //!
+    //! \sa \ref const_cgp_iterator for the two-sided congruence generating pair
+    //! iterator.
     // This is similar to FroidurePinBase::const_rule_iterator
     // Right Congruence Generating Pairs (rcgp)
     class const_rcgp_iterator {
      public:
+      // TODO(doc)?
       using size_type = typename std::vector<relation_type>::size_type;
       using difference_type =
           typename std::vector<relation_type>::difference_type;
@@ -2202,42 +2176,58 @@ namespace libsemigroups {
 
      public:
       // TODO add noexcept?
-      const_rcgp_iterator()                                      = default;
-      const_rcgp_iterator(const_rcgp_iterator const&)            = default;
-      const_rcgp_iterator(const_rcgp_iterator&&)                 = default;
+      // NOTE(RC): Not sure if noexcept, initializing the _tree field of type
+      // Forest allocates memory
+      //! Default constructor
+      const_rcgp_iterator() = default;
+      //! Default copy constructor.
+      const_rcgp_iterator(const_rcgp_iterator const&) = default;
+      //! Default move constructor.
+      const_rcgp_iterator(const_rcgp_iterator&&) = default;
+      //! Default copy assignment operator.
       const_rcgp_iterator& operator=(const_rcgp_iterator const&) = default;
-      const_rcgp_iterator& operator=(const_rcgp_iterator&&)      = default;
+      //! Default move assignment operator.
+      const_rcgp_iterator& operator=(const_rcgp_iterator&&) = default;
 
       ~const_rcgp_iterator();
 
+      //! Check if both iterators point to the same generating pair
       [[nodiscard]] bool
       operator==(const_rcgp_iterator const& that) const noexcept {
         return _gen == that._gen && _source == that._source;
       }
 
+      //! Check if both iterators point to distinct generating pairs
       [[nodiscard]] bool
       operator!=(const_rcgp_iterator const& that) const noexcept {
         return !(this->operator==(that));
       }
 
+      //! Return a const reference to the generating pair pointed to by the
+      //! iterator
       [[nodiscard]] const_reference operator*() const {
         populate_relation();
         return _relation;
       }
 
+      //! Return a const pointer to the generating pair pointed to by the
+      //! iterator
       [[nodiscard]] const_pointer operator->() const {
         populate_relation();
         return &_relation;
       }
 
+      //! No doc
       // prefix
       const_rcgp_iterator const& operator++();
 
+      //! No doc
       // postfix
       const_rcgp_iterator operator++(int) noexcept {
         return detail::default_postfix_increment(*this);
       }
 
+      //! No doc
       void swap(const_rcgp_iterator& that) noexcept;
 
      protected:
@@ -2249,6 +2239,18 @@ namespace libsemigroups {
       bool populate_relation() const;
     };  // const_rcgp_iterator
 
+    //! \ingroup congruences_group
+    //!
+    //! \brief For iterating over the two-sided congruence generating pairs.
+    //!
+    //! Defined in ``sims.hpp``.
+    //!
+    //! This class provides a means of iterating over the two-sided congruence
+    //! generating pairs (cgp) of a finite index two-sided congruence defined by
+    //! a \ref WordGraph.
+    //!
+    //! \sa \ref const_rcgp_iterator for the right congruence generating
+    //! pair iterator.
     class const_cgp_iterator : public const_rcgp_iterator {
      public:
       using size_type         = const_rcgp_iterator::size_type;
@@ -2274,6 +2276,7 @@ namespace libsemigroups {
       using const_rcgp_iterator::operator*;
       using const_rcgp_iterator::operator->;
 
+      //! No doc
       // prefix
       // TODO to cpp file
       const_cgp_iterator const& operator++() {
@@ -2291,11 +2294,13 @@ namespace libsemigroups {
         return *this;
       }
 
+      //! No doc
       // postfix
       const_cgp_iterator operator++(int) noexcept {
         return detail::default_postfix_increment(*this);
       }
 
+      //! No doc
       void swap(const_cgp_iterator& that) noexcept {
         const_rcgp_iterator::swap(that);
       }
@@ -2304,32 +2309,35 @@ namespace libsemigroups {
       bool populate_relation() const;
     };  // const_cgp_iterator
 
+    // Forward decl, documented below
     template <typename Node>
     rx::iterator_range<const_rcgp_iterator>
     right_generating_pairs(Presentation<word_type> const& p,
                            WordGraph<Node> const&         wg);
 
-    //! \ingroup congruences_group
-    //!
-    //! \brief Compute the right congruence generating pairs given a word graph.
-    //!
-    //! Returns the right congruence generating pairs of the congruence
-    //! associated to \p wg as a congruence on the free monoid.
-    //!
-    //! TODO: finish
+    // Forward decl, documented below
     template <typename Node>
     rx::iterator_range<const_rcgp_iterator>
     right_generating_pairs(WordGraph<Node> const& wg);
 
+    // Forward decl, documented below
     template <typename Node>
     rx::iterator_range<const_cgp_iterator>
     two_sided_generating_pairs(Presentation<word_type> const& p,
                                WordGraph<Node> const&         wg);
 
+    // Forward decl, documented below
     template <typename Node>
     rx::iterator_range<const_cgp_iterator>
     two_sided_generating_pairs(WordGraph<Node> const& wg);
 
+    //! \ingroup congruences_group
+    //!
+    //! \brief Check if a word graph defines a right congruence on an
+    //! f.p. semigroup or monoid.
+    //!
+    //! Returns `true` if the word graph \p wg defines a right congruence
+    //! on the semigroup or monoid defined by \p p and `false` otherwise.
     template <typename Node>
     bool is_right_congruence(Presentation<word_type> const& p,
                              WordGraph<Node> const&         wg) {
@@ -2350,6 +2358,7 @@ namespace libsemigroups {
           norf.begin(), norf.end(), [&N](auto n) { return n < N; });
     }
 
+    //! No doc
     template <typename Node>
     void validate_right_congruence(Presentation<word_type> const& p,
                                    WordGraph<Node> const&         wg) {
@@ -2360,6 +2369,15 @@ namespace libsemigroups {
       }
     }
 
+    //! \ingroup congruences_group
+    //!
+    //! \brief Check if a word graph defines a right congruence on the dual of
+    //! an f.p. semigroup or monoid.
+    //!
+    //! Returns `true` if the word graph \p wg defines a right congruence
+    //! on the dual of the semigroup or monoid defined by \p p and `false`
+    //! otherwise. This is equivalent to checking if the word graph defines a
+    //! left congruence in the semigroup or monoid defined by \p p.
     template <typename Node>
     bool is_right_congruence_of_dual(Presentation<word_type> const& p,
                                      WordGraph<Node> const&         wg) {
@@ -2368,6 +2386,20 @@ namespace libsemigroups {
       return is_right_congruence(p_rev, wg);
     }
 
+    //! \ingroup congruences_group
+    //!
+    //! \brief Check if a word graph defines a two-sided congruence on
+    //! an f.p. semigroup or monoid (no checks).
+    //!
+    //! Returns `true` if the word graph \p wg defines a two-sided
+    //! congruence on the semigroup or monoid defined by \p p and `false`
+    //! otherwise.
+    //!
+    //! \warning
+    //! This function does no checks on its arguments whatsoever and assumes
+    //! that \p wg already defines a two-sided congruence on the semigroup or
+    //! monoid defined by \p p. If this is not the case, then bad things may
+    //! happen.
     template <typename Node>
     bool is_two_sided_congruence_no_checks(Presentation<word_type> const& p,
                                            WordGraph<Node> const&         wg) {
@@ -2384,6 +2416,14 @@ namespace libsemigroups {
       return true;
     }
 
+    //! \ingroup congruences_group
+    //!
+    //! \brief Check if a word graph defines a two sided congruence on
+    //! an f.p. semigroup or monoid.
+    //!
+    //! Returns `true` if the word graph \p wg defines a two-sided
+    //! congruence on the semigroup or monoid defined by \p p and `false`
+    //! otherwise.
     template <typename Node>
     bool is_two_sided_congruence(Presentation<word_type> const& p,
                                  WordGraph<Node> const&         wg) {
@@ -2393,6 +2433,7 @@ namespace libsemigroups {
       return is_two_sided_congruence_no_checks(p, wg);
     }
 
+    //! No doc
     template <typename Node>
     void validate_two_sided_congruence(Presentation<word_type> const& p,
                                        WordGraph<Node> const&         wg) {
@@ -2404,10 +2445,21 @@ namespace libsemigroups {
       }
     }
 
-    // Returns an iterator pointing to the first generating pair of the right
-    // congruence on the semigroup or monoid defined by \p p defined by the word
-    // graph \p wg. Note that this is the generating pairs of the right
-    // congruence so defined not the 2-sided congruence.
+    //! \ingroup congruences_group
+    //!
+    //! \brief Get an iterator pointing to the first right congruence generating
+    //! pair (no checks).
+    //!
+    //! Returns an iterator pointing to the first generating pair of the right
+    //! congruence defined by the word graph \p wg on the semigroup or monoid
+    //! defined by \p p.
+    //!
+    //! \warning
+    //! This function does no checks on its arguments whatsoever and assumes
+    //! that \p wg already defines a right congruence on the semigroup or monoid
+    //! defined by \p p. If this is not the case, then bad things may happen.
+    // Note that this is the generating pairs of the right
+    // congruence so defined not the two-sided congruence.
     template <typename Node>
     const_rcgp_iterator
     cbegin_right_generating_pairs_no_checks(Presentation<word_type> const& p,
@@ -2415,6 +2467,17 @@ namespace libsemigroups {
       return const_rcgp_iterator(p, &wg, 0, 0);
     }
 
+    //! \ingroup congruences_group
+    //!
+    //! \brief Get an iterator pointing to the first right congruence generating
+    //! pair.
+    //!
+    //! Returns an iterator pointing to the first generating pair of the right
+    //! congruence defined by the word graph \p wg on the semigroup or monoid
+    //! defined by \p p.
+    //!
+    //! \throws LibsemigroupsException if the argument \p wg does not define a
+    //! right congruence on the monoid presented by \p p.
     template <typename Node>
     const_rcgp_iterator
     cbegin_right_generating_pairs(Presentation<word_type> const& p,
@@ -2423,6 +2486,29 @@ namespace libsemigroups {
       return cbegin_right_generating_pairs(p, wg);
     }
 
+    //! \ingroup congruences_group
+    //!
+    //! \brief Get an iterator pointing to the first two-sided congruence
+    //! generating pair (no checks).
+    //!
+    //! Returns an iterator pointing to the first generating pair of the
+    //! two-sided congruence defined by the word graph \p wg on the semigroup or
+    //! monoid defined by \p p.
+    //!
+    //! \note
+    //! The generating pairs of a two-sided congruence \f$\rho\f$ as a two-sided
+    //! congruence differ from the generating pairs of \f$\rho\f$ as a right
+    //! congruence. This function returns the two-sided congruence generating
+    //! pairs, not the right congruence generating pairs of a two-sided
+    //! congruence.
+    //!
+    //! \warning
+    //! This function does no checks on its arguments whatsoever and assumes
+    //! that \p wg already defines a two-sided congruence on the semigroup or
+    //! monoid defined by \p p. If this is not the case, then bad things may
+    //! happen.
+    // Note that this is the generating pairs of the right
+    // congruence so defined not the two-sided congruence.
     template <typename Node>
     const_cgp_iterator cbegin_two_sided_generating_pairs_no_checks(
         Presentation<word_type> const& p,
@@ -2430,6 +2516,24 @@ namespace libsemigroups {
       return const_cgp_iterator(p, &wg, 0, 0);
     }
 
+    //! \ingroup congruences_group
+    //!
+    //! \brief Get an iterator pointing to the first two-sided congruence
+    //! generating pair.
+    //!
+    //! Returns an iterator pointing to the first generating pair of the
+    //! two-sided congruence defined by the word graph \p wg on the semigroup or
+    //! monoid defined by \p p.
+    //!
+    //! \throws LibsemigroupsException if the argument \p wg does not define a
+    //! two-sided congruence on the semigroup or monoid defined by \p p.
+    //!
+    //! \note
+    //! The generating pairs of a two-sided congruence \f$\rho\f$ as a two-sided
+    //! congruence differ from the generating pairs of \f$\rho\f$ as a right
+    //! congruence. This function returns the two-sided congruence generating
+    //! pairs, not the right congruence generating pairs of a two-sided
+    //! congruence.
     template <typename Node>
     const_cgp_iterator
     cbegin_two_sided_generating_pairs(Presentation<word_type> const& p,
@@ -2438,6 +2542,20 @@ namespace libsemigroups {
       return cbegin_two_sided_generating_pairs_no_checks(p, wg);
     }
 
+    //! \ingroup congruences_group
+    //!
+    //! \brief Get an iterator pointing to one after the last right congruence
+    //! generating pair (no checks).
+    //!
+    //! Returns an iterator pointing to one after the last generating pair of
+    //! the right congruence defined by the word graph \p wg on the semigroup or
+    //! monoid defined by \p p.
+    //!
+    //! \warning
+    //! This function does no checks on its arguments whatsoever and assumes
+    //! that \p wg already defines a right congruence on the semigroup or
+    //! monoid defined by \p p. If this is not the case, then bad things may
+    //! happen.
     template <typename Node>
     const_rcgp_iterator
     cend_right_generating_pairs_no_checks(Presentation<word_type> const& p,
@@ -2445,6 +2563,17 @@ namespace libsemigroups {
       return const_rcgp_iterator(p, &wg, wg.number_of_active_nodes(), 0);
     }
 
+    //! \ingroup congruences_group
+    //!
+    //! \brief Get an iterator pointing to one after the last right congruence
+    //! generating pair.
+    //!
+    //! Returns an iterator pointing to one after the last generating pair of
+    //! the right congruence defined by the word graph \p wg on the semigroup or
+    //! monoid defined by \p p.
+    //!
+    //! \throws LibsemigroupsException if the argument \p wg does not define a
+    //! right congruence on the semigroup or monoid defined by \p p.
     template <typename Node>
     const_rcgp_iterator
     cend_right_generating_pairs(Presentation<word_type> const& p,
@@ -2453,6 +2582,27 @@ namespace libsemigroups {
       return cend_right_generating_pairs_no_checks(p, wg);
     }
 
+    //! \ingroup congruences_group
+    //!
+    //! \brief Get an iterator pointing to one after the last two-sided
+    //! congruence generating pair (no checks).
+    //!
+    //! Returns an iterator pointing to one after the last generating pair of
+    //! the two-sided congruence defined by the word graph \p wg on the
+    //! semigroup or monoid defined by \p p.
+    //!
+    //! \note
+    //! The generating pairs of a two-sided congruence \f$\rho\f$ as a two-sided
+    //! congruence differ from the generating pairs of \f$\rho\f$ as a right
+    //! congruence. This function returns the two-sided congruence generating
+    //! pairs, not the right congruence generating pairs of a two-sided
+    //! congruence.
+    //!
+    //! \warning
+    //! This function does no checks on its arguments whatsoever and assumes
+    //! that \p wg already defines a two-sided congruence on the semigroup or
+    //! monoid defined by \p p. If this is not the case, then bad things may
+    //! happen.
     template <typename Node>
     const_cgp_iterator
     cend_two_sided_generating_pairs_no_checks(Presentation<word_type> const& p,
@@ -2460,6 +2610,24 @@ namespace libsemigroups {
       return const_cgp_iterator(p, &wg, wg.number_of_active_nodes(), 0);
     }
 
+    //! \ingroup congruences_group
+    //!
+    //! \brief Get an iterator pointing to one after the last two-sided
+    //! congruence generating pair.
+    //!
+    //! Returns an iterator pointing to one after the last generating pair of
+    //! the two-sided congruence defined by the word graph \p wg on the
+    //! semigroup or monoid defined by \p p.
+    //!
+    //! \note
+    //! The generating pairs of a two-sided congruence \f$\rho\f$ as a two-sided
+    //! congruence differ from the generating pairs of \f$\rho\f$ as a right
+    //! congruence. This function returns the two-sided congruence generating
+    //! pairs, not the right congruence generating pairs of a two-sided
+    //! congruence.
+    //!
+    //! \throws LibsemigroupsException if the argument \p wg does not define a
+    //! two-sided congruence on the semigroup or monoid defined by \p p.
     template <typename Node>
     const_cgp_iterator
     cend_two_sided_generating_pairs(Presentation<word_type> const& p,
@@ -2468,6 +2636,19 @@ namespace libsemigroups {
       return cend_two_sided_generating_pairs_no_checks(p, wg);
     }
 
+    //! \ingroup congruences_group
+    //!
+    //! \brief Compute the right congruence generating pairs of a word graph on
+    //! an f.p. semigroup or monoid (no checks).
+    //!
+    //! Returns the right congruence generating pairs of the right
+    //! congruence defined by the
+    //! word graph \p wg on the semigroup or monoid defined by \p p.
+    //!
+    //! \warning
+    //! This function does no checks on its arguments whatsoever and assumes
+    //! that \p wg already defines a right congruence on the semigroup or monoid
+    //! defined by \p p. If this is not the case, then bad things may happen.
     template <typename Node>
     rx::iterator_range<const_rcgp_iterator>
     right_generating_pairs_no_checks(Presentation<word_type> const& p,
@@ -2476,6 +2657,17 @@ namespace libsemigroups {
                                 cend_right_generating_pairs_no_checks(p, wg));
     }
 
+    //! \ingroup congruences_group
+    //!
+    //! \brief Compute the right congruence generating pairs of a word graph on
+    //! an f.p. semigroup or monoid.
+    //!
+    //! Returns the right congruence generating pairs of the right
+    //! congruence defined by the
+    //! word graph \p wg on the semigroup or monoid defined by \p p.
+    //!
+    //! \throws LibsemigroupsException if the argument \p wg does not define a
+    //! right congruence on the semigroup or monoid defined by \p p.
     template <typename Node>
     rx::iterator_range<const_rcgp_iterator>
     right_generating_pairs(Presentation<word_type> const& p,
@@ -2484,6 +2676,19 @@ namespace libsemigroups {
       return right_generating_pairs_no_checks(p, wg);
     }
 
+    //! \ingroup congruences_group
+    //!
+    //! \brief Compute the right congruence generating pairs of a word graph on
+    //! the free monoid (no checks).
+    //!
+    //! Returns the right congruence generating pairs of the right
+    //! congruence defined by the
+    //! word graph \p wg on the free monoid.
+    //!
+    //! \warning
+    //! This function does no checks on its arguments whatsoever and assumes
+    //! that \p wg already defines a right congruence on the free monoid. If
+    //! this is not the case, then bad things may happen.
     template <typename Node>
     rx::iterator_range<const_rcgp_iterator>
     right_generating_pairs_no_checks(WordGraph<Node> const& wg) {
@@ -2492,6 +2697,17 @@ namespace libsemigroups {
       return right_generating_pairs_no_checks(p, wg);
     }
 
+    //! \ingroup congruences_group
+    //!
+    //! \brief Compute the right congruence generating pairs of a word graph on
+    //! the free monoid.
+    //!
+    //! Returns the right congruence generating pairs of the right
+    //! congruence defined by the
+    //! word graph \p wg on the free monoid.
+    //!
+    //! \throws LibsemigroupsException if the argument \p wg does not define a
+    //! right congruence on the semigroup or monoid presented by \p p.
     template <typename Node>
     rx::iterator_range<const_rcgp_iterator>
     right_generating_pairs(WordGraph<Node> const& wg) {
@@ -2501,6 +2717,27 @@ namespace libsemigroups {
       return right_generating_pairs_no_checks(p, wg);
     }
 
+    //! \ingroup congruences_group
+    //!
+    //! \brief Compute the two-sided congruence generating pairs of a word graph
+    //! on an f.p. semigroup or monoid (no checks).
+    //!
+    //! Returns the two-sided congruence generating pairs of the two-sided
+    //! congruence defined by the
+    //! word graph \p wg on the semigroup or monoid defined by \p p.
+    //!
+    //! \note
+    //! The generating pairs of a two-sided congruence \f$\rho\f$ as a two-sided
+    //! congruence differ from the generating pairs of \f$\rho\f$ as a right
+    //! congruence. This function returns the two-sided congruence generating
+    //! pairs, not the right congruence generating pairs of a two-sided
+    //! congruence.
+    //!
+    //! \warning
+    //! This function does no checks on its arguments whatsoever and assumes
+    //! that \p wg already defines a two-sided congruence on the semigroup or
+    //! monoid defined by \p p. If this is not the case, then bad things may
+    //! happen.
     template <typename Node>
     rx::iterator_range<const_cgp_iterator>
     two_sided_generating_pairs_no_checks(Presentation<word_type> const& p,
@@ -2510,6 +2747,24 @@ namespace libsemigroups {
           cend_two_sided_generating_pairs_no_checks(p, wg));
     }
 
+    //! \ingroup congruences_group
+    //!
+    //! \brief Compute the two-sided congruence generating pairs of a word graph
+    //! on an f.p. semigroup or monoid.
+    //!
+    //! Returns the two-sided congruence generating pairs of the two-sided
+    //! congruence defined by the
+    //! word graph \p wg on the semigroup or monoid defined by \p p.
+    //!
+    //! \note
+    //! The generating pairs of a two-sided congruence \f$\rho\f$ as a two-sided
+    //! congruence differ from the generating pairs of \f$\rho\f$ as a right
+    //! congruence. This function returns the two-sided congruence generating
+    //! pairs, not the right congruence generating pairs of a two-sided
+    //! congruence.
+    //!
+    //! \throws LibsemigroupsException if the argument \p wg does not define a
+    //! two-sided congruence on the semigroup or monoid presented by \p p.
     template <typename Node>
     rx::iterator_range<const_cgp_iterator>
     two_sided_generating_pairs(Presentation<word_type> const& p,
@@ -2518,6 +2773,26 @@ namespace libsemigroups {
       return two_sided_generating_pairs_no_checks(p, wg);
     }
 
+    //! \ingroup congruences_group
+    //!
+    //! \brief Compute the two-sided congruence generating pairs of a word graph
+    //! on the free monoid (no checks).
+    //!
+    //! Returns the two-sided congruence generating pairs of the two-sided
+    //! congruence defined by the
+    //! word graph \p wg on the free monoid.
+    //!
+    //! \note
+    //! The generating pairs of a two-sided congruence \f$\rho\f$ as a two-sided
+    //! congruence differ from the generating pairs of \f$\rho\f$ as a right
+    //! congruence. This function returns the two-sided congruence generating
+    //! pairs, not the right congruence generating pairs of a two-sided
+    //! congruence.
+    //!
+    //! \warning
+    //! This function does no checks on its arguments whatsoever and assumes
+    //! that \p wg already defines a two-sided congruence on the free monoid. If
+    //! this is not the case, then bad things may happen.
     template <typename Node>
     rx::iterator_range<const_cgp_iterator>
     two_sided_generating_pairs_no_checks(WordGraph<Node> const& wg) {
@@ -2528,6 +2803,24 @@ namespace libsemigroups {
           cend_two_sided_generating_pairs_no_checks(p, wg));
     }
 
+    //! \ingroup congruences_group
+    //!
+    //! \brief Compute the two-sided congruence generating pairs of a word graph
+    //! on the free monoid.
+    //!
+    //! Returns the two-sided congruence generating pairs of the two-sided
+    //! congruence defined by the
+    //! word graph \p wg on the free monoid.
+    //!
+    //! \note
+    //! The generating pairs of a two-sided congruence \f$\rho\f$ as a two-sided
+    //! congruence differ from the generating pairs of \f$\rho\f$ as a right
+    //! congruence. This function returns the two-sided congruence generating
+    //! pairs, not the right congruence generating pairs of a two-sided
+    //! congruence.
+    //!
+    //! \throws LibsemigroupsException if the argument \p wg does not define a
+    //! two-sided congruence on the free monoid.
     template <typename Node>
     rx::iterator_range<const_cgp_iterator>
     two_sided_generating_pairs(WordGraph<Node> const& wg) {
@@ -2537,6 +2830,14 @@ namespace libsemigroups {
       return two_sided_generating_pairs_no_checks(p, wg);
     }
 
+    //! \ingroup congruences_group
+    //!
+    //! \brief Check if a word graph defines a maximal right congruence on
+    //! an f.p. semigroup or monoid.
+    //!
+    //! Returns `true` if the word graph \p wg defines a maximal right
+    //! congruence on the semigroup or monoid defined by \p p and `false`
+    //! otherwise.
     template <typename Node>
     bool is_maximal_right_congruence(Presentation<word_type> const& p,
                                      WordGraph<Node> const&         wg) {
@@ -2581,6 +2882,22 @@ namespace libsemigroups {
       return true;
     }
 
+    //! \ingroup congruences_group
+    //!
+    //! \brief Compute the inclusion poset of a collection of congruences
+    //! defined by word graphs.
+    //!
+    //! Returns a boolean matrix whose `(i, j)`-th entry is 1 if and only if the
+    //! congruence defined by the `i`-th word graph in `[first, last)` is a
+    //! subrelation of the congruence defined by the `j`-th word graph in
+    //! `[first, last)`. If `[first, last)` is the collection of all congruences
+    //! of a given semigroup or monoid, then this is equivalent to computing the
+    //! congruence lattice of the semigroup or monoid.
+    //!
+    //! \warning
+    //! This function does no checks on its arguments whatsoever and assumes
+    //! that every element in the range `[first, last)` is a complete word
+    //! graph. If this is not the case, then bad things may happen.
     template <typename Iterator>
     BMat<> poset(Iterator first, Iterator last) {
       using WordGraph_ = std::decay_t<decltype(*first)>;
@@ -2617,6 +2934,10 @@ namespace libsemigroups {
       return zero;
     }
 
+    //! \ingroup congruences_group
+    //!
+    //! Construct a \ref Dot object representing the inclusion poset of a
+    //! collection of word graphs.
     // The following produces a self-contained Dot object which doesn't render
     // very well.
     template <typename Iterator>
@@ -2654,6 +2975,10 @@ namespace libsemigroups {
       return result;
     }
 
+    //! \ingroup congruences_group
+    //!
+    //! Create and save a graphical rendering of the inclusion poset of a
+    //! collection of word graphs.
     template <typename Iterator>
     void dot_poset(std::string_view work_dir,
                    std::string_view fname,
@@ -2723,64 +3048,53 @@ namespace libsemigroups {
     }
   }  // namespace sims
 
-  // FIXME: RC writes:
-  // Second: I am writing a proof for the method of checking if a right
-  // congruence is a right Rees congruence (i.e. right congruence corresponding
-  // to quotient by right ideal), and there is an issue.
-
-  // The condition we discussed in the meeting way back when was:
-  // a) Check there is a unique sink
-  // b) Check that no extra relations hold for paths leading to non-sink nodes.
-  //
-  // These conditions are both sufficient and necessary for two-sided
-  // congruences, I think. However, to be uniform with our handling of right and
-  // two-sided congruences, I want to tackle the right Rees congruences first.
-  // But in the one-sided case they are not enough!
-  //
-  // Indeed, consider the f.p. monoid M=Mon<a, b | ba=b, b^2=b>. The
-  // right-Cayley graph of M has infinitely many sinks b, ab, a^2b ... .
-  // Furthermore, for each $n\in\mathbb{N}$ the quotient by the right ideal a^nM
-  // has n+1 sinks. E.g. for n=1 we get the graph [[1, 2], [1, 1], [2, 2]]. So
-  // we have a bit of a problem here. Somehow the sink at a^n is the "real sink"
-  // and the others are "impostor sinks", which we should be suspicious of.
-  //
-  // I think a way of patching this would be to require that among all sinks
-  // there is a unique sink, call it $\omega$, that has at least one letter
-  // $a\in A$ and vertex $\alpha in V$ (alpha can be equal to omega as well
-  // (something something biblical joke something something)) such that
-  // $(\alpha, a, \omega)\in E$ and $w_\alpha a != w_\omega$ in $M$. This
-  // guarantees that $\omega$ occurs as a result of a genuine quotienting and is
-  // not implied by the relations. However where this does fail is on the
-  // trivial congruence if that is a right Rees congruence (i.e. if we are
-  // finite and have a right zero). E.g. in Mon<a, b | ba=b, b^2 = b, ab = a,
-  // a^2 = a> we have two sinks a, b and e.g. aM = a, so M/aM = M. In this case
-  // no quotienting occurs. To include this case we could change the above
-  // condition so that there is AT MOST ONE sink `\omega` such that there is an
-  // edge $(\alpha, a, \omega)\in E$ with $w_\alpha a \neq w_\omega$ in $M$. The
-  // proof then considers the cases when we have the distinguished sink and when
-  // we do not (establishing that the relation is trivial if this is not the
-  // case).
-  //
-  // We can then mention the improvement of only needing to check if there is a
-  // unique sink in the two sided case.
-  //
-  // When I originally was starting to write this I wasn't sure of how to
-  // resolve the issue but I think in the process of writing it out I have the
-  // fix. So Im mostly letting you know why the original idea didn't work in the
-  // one sided case.
+  //! \ingroup congruences_group
+  //!
+  //! \brief For pruning the search tree when looking for congruences arising
+  //! from right or two-sided ideals.
+  //!
+  //! Defined in ``sims.hpp``.
+  //!
+  //! This class provides a pruner for pruning the search tree when looking for
+  //! right or two-sided congruences arising from ideals (Rees congruences).
+  //!
+  //! \sa \ref SimsSettings::pruners
+  //! \sa \ref SimsSettings::add_pruner
   class SimsRefinerIdeals {
    private:
     using node_type = uint32_t;
     KnuthBendix<> _knuth_bendix;
 
    public:
+    //! \brief Default constructor.
+    //!
+    //! Constructs a SimsRefinerIdeals pruner for the semigroup or monoid
+    //! defined by \p p.
+    //!
+    //! \warning
+    //! This method assumes that KnuthBendix terminates on the input
+    //! presentation \p p. If this is not the case then th pruner may not
+    //! terminate on certain inputs.
     explicit SimsRefinerIdeals(Presentation<std::string> const& p)
         : _knuth_bendix(congruence_kind::twosided, p) {}
 
+    //! \copydoc SimsRefinerIdeals::SimsRefinerIdeals(Presentation<std::string>
+    //! const&)
     explicit SimsRefinerIdeals(Presentation<word_type> const& p)
         : _knuth_bendix(congruence_kind::twosided,
                         to_presentation<std::string>(p)) {}
 
+    //! \brief Check if a word graph can be extended to one defining a Rees
+    //! congruence.
+    //!
+    //! Returns `false` if there is no way of adding edges and nodes to \par wg
+    //! which will result in a word graph defining a Rees congruence. Otherwise
+    //! returns `true`.
+    //!
+    //! \warning
+    //! This method assumes that KnuthBendix terminates on the underlying
+    //! presentation that was used to construct the SimsRefinerIdeals object. If
+    //! this is not the case then th pruner may not terminate on certain inputs.
     bool operator()(Sims1::word_graph_type const& wg) {
       using sims::right_generating_pairs_no_checks;
       _knuth_bendix.run();
