@@ -30,8 +30,8 @@
 
 namespace libsemigroups {
 
- //! This namespace contains functions which give presentations for some
- //! finitely presented semigroups and monoids.
+  //! This namespace contains functions which give presentations for some
+  //! finitely presented semigroups and monoids.
   namespace fpsemigroup {
 
     // The values in this enum class are used to specify the authors of a
@@ -39,26 +39,27 @@ namespace libsemigroups {
     // authors, values of this type can be passed as an argument to disambiguate
     // which presentation is wanted.
     enum class author : uint64_t {
-      Machine    = 0,
-      Aizenstat  = 1,
-      Burnside   = 2,
-      Carmichael = 4,
-      Coxeter    = 8,
-      Easdown    = 16,
-      East       = 32,
-      Fernandes  = 64,
-      FitzGerald = 128,
-      Gay        = 262'144,
-      Godelle    = 256,
-      Guralnick  = 512,
-      Iwahori    = 1024,
-      Kantor     = 2048,
-      Kassabov   = 4096,
-      Lubotzky   = 8192,
-      Miller     = 16'384,
-      Moore      = 32'768,
-      Moser      = 65'536,
-      Sutov      = 131'072,
+      Any        = 0,
+      Machine    = 1,
+      Aizenstat  = 2,
+      Burnside   = 4,
+      Carmichael = 8,
+      Coxeter    = 16,
+      Easdown    = 32,
+      East       = 64,
+      Fernandes  = 128,
+      FitzGerald = 256,
+      Gay        = 521,
+      Godelle    = 1024,
+      Guralnick  = 2048,
+      Iwahori    = 4096,
+      Kantor     = 8192,
+      Kassabov   = 16'384,
+      Lubotzky   = 32'768,
+      Miller     = 65'536,
+      Moore      = 131'072,
+      Moser      = 262'144,
+      Sutov      = 524'288,
     };
 
     //! This operator can be used arbitrarily to combine author values (see \ref
@@ -81,7 +82,7 @@ namespace libsemigroups {
     //! \throws LibsemigroupsException if `l < 2`
     //!
     //! [10.48550/arXiv.1910.11740]: https://doi.org/10.48550/arXiv.1910.11740
-    Presentation<word_type> stellar_monoid(size_t l);
+    Presentation<word_type> stellar_monoid(size_t l, author val = author::Any);
 
     //! A presentation for the dual symmetric inverse monoid.
     //!
@@ -169,7 +170,8 @@ namespace libsemigroups {
     //! \throws LibsemigroupsException if `n < 3`
     //!
     //! [10.21136/MB.2007.134125]: https://doi.org/10.21136/MB.2007.134125
-    Presentation<word_type> singular_brauer_monoid(size_t n);
+    Presentation<word_type> singular_brauer_monoid(size_t n,
+                                                   author val = author::Any);
 
     //! A presentation for the monoid of orientation preserving
     //! mappings.
@@ -185,7 +187,9 @@ namespace libsemigroups {
     //! \throws LibsemigroupsException if `n < 3`
     //!
     //! [10.1007/s10012-000-0001-1]: https://doi.org/10.1007/s10012-000-0001-1
-    Presentation<word_type> orientation_preserving_monoid(size_t n);
+    Presentation<word_type> orientation_preserving_monoid(size_t n,
+                                                          author val
+                                                          = author::Any);
 
     //! A presentation for the monoid of orientation reversing mappings.
     //!
@@ -202,7 +206,9 @@ namespace libsemigroups {
     //! \throws LibsemigroupsException if `n < 3`
     //!
     //! [10.1007/s10012-000-0001-1]: https://doi.org/10.1007/s10012-000-0001-1
-    Presentation<word_type> orientation_reversing_monoid(size_t n);
+    Presentation<word_type> orientation_reversing_monoid(size_t n,
+                                                         author val
+                                                         = author::Any);
 
     //! A presentation for the Temperley-Lieb monoid.
     //!
@@ -217,7 +223,8 @@ namespace libsemigroups {
     //! \throws LibsemigroupsException if `n < 3`
     //!
     //! [10.1093/qmath/haab001]: https://doi.org/10.1093/qmath/haab001
-    Presentation<word_type> temperley_lieb_monoid(size_t n);
+    Presentation<word_type> temperley_lieb_monoid(size_t n,
+                                                  author val = author::Any);
 
     //! A presentation for the Brauer monoid.
     //!
@@ -233,10 +240,11 @@ namespace libsemigroups {
     //!
     //! [10.2478/s11533-006-0017-6]:
     //! https://doi.org/10.2478/s11533-006-0017-6
-    Presentation<word_type> brauer_monoid(size_t n);
+    Presentation<word_type> brauer_monoid(size_t n, author val = author::Any);
 
     // THIS IS UNDOCUMENTED
-    Presentation<word_type> partial_brauer_monoid(size_t n);
+    Presentation<word_type> partial_brauer_monoid(size_t n,
+                                                  author val = author::Any);
 
     //! A presentation for a Fibonacci semigroup.
     //!
@@ -254,7 +262,9 @@ namespace libsemigroups {
     //!
     //! [10.1016/0022-4049(94)90005-1]:
     //! https://doi.org/10.1016/0022-4049(94)90005-1
-    Presentation<word_type> fibonacci_semigroup(size_t r, size_t n);
+    Presentation<word_type> fibonacci_semigroup(size_t r,
+                                                size_t n,
+                                                author val = author::Any);
 
     //! A presentation for the plactic monoid.
     //!
@@ -269,7 +279,7 @@ namespace libsemigroups {
     //! \throws LibsemigroupsException if `n < 2`
     //!
     //! [10.1007/s00233-022-10285-3]: https://doi.org/10.1007/s00233-022-10285-3
-    Presentation<word_type> plactic_monoid(size_t n);
+    Presentation<word_type> plactic_monoid(size_t n, author val = author::Any);
 
     //! A presentation for the stylic monoid.
     //!
@@ -284,7 +294,7 @@ namespace libsemigroups {
     //! \throws LibsemigroupsException if `n < 2`
     //!
     //! [10.1007/s00233-022-10285-3]: https://doi.org/10.1007/s00233-022-10285-3
-    Presentation<word_type> stylic_monoid(size_t n);
+    Presentation<word_type> stylic_monoid(size_t n, author val = author::Any);
 
     //! A presentation for the symmetric group.
     //!
@@ -360,7 +370,9 @@ namespace libsemigroups {
     //! \throws LibsemigroupsException if `n = 0`
     //!
     //! [10.1007/s002339910016]: https://doi.org/10.1007/s002339910016
-    Presentation<word_type> rectangular_band(size_t m, size_t n);
+    Presentation<word_type> rectangular_band(size_t m,
+                                             size_t n,
+                                             author val = author::Any);
 
     //! A presentation for the full transformation monoid.
     //!
@@ -456,7 +468,7 @@ namespace libsemigroups {
     //! \throws LibsemigroupsException if `n < 2`
     //!
     //! [10.1142/S0218196701000425]: https://doi.org/10.1142/S0218196701000425
-    Presentation<word_type> chinese_monoid(size_t n);
+    Presentation<word_type> chinese_monoid(size_t n, author val = author::Any);
 
     //! A presentation for a monogenic semigroup.
     //!
@@ -474,7 +486,9 @@ namespace libsemigroups {
     //!
     //! \throws LibsemigroupsException if `m < 0`
     //! \throws LibsemigroupsException if `r = 0`
-    Presentation<word_type> monogenic_semigroup(size_t m, size_t r);
+    Presentation<word_type> monogenic_semigroup(size_t m,
+                                                size_t r,
+                                                author val = author::Any);
 
     //! A presentation for the monoid of order-preserving mappings.
     //!
@@ -492,7 +506,8 @@ namespace libsemigroups {
     //! \throws LibsemigroupsException if `n < 3`
     //!
     //! [10.1007/s10012-000-0001-1]: https://doi.org/10.1007/s10012-000-0001-1
-    Presentation<word_type> order_preserving_monoid(size_t n);
+    Presentation<word_type> order_preserving_monoid(size_t n,
+                                                    author val = author::Any);
 
     //! A presentation for the cyclic inverse monoid.
     //!
@@ -545,7 +560,8 @@ namespace libsemigroups {
     //! \throws LibsemigroupsException if `n < 3`
     //!
     //! [10.48550/arxiv.2211.02155]: https://doi.org/10.48550/arxiv.2211.02155
-    Presentation<word_type> order_preserving_cyclic_inverse_monoid(size_t n);
+    Presentation<word_type>
+    order_preserving_cyclic_inverse_monoid(size_t n, author val = author::Any);
 
     //! A presentation for the monoid of partial isometries of a cycle graph.
     //!
@@ -560,7 +576,8 @@ namespace libsemigroups {
     //! \throws LibsemigroupsException if `n < 3`
     //!
     //! [10.48550/arxiv.2205.02196]: https://doi.org/10.48550/arxiv.2205.02196
-    Presentation<word_type> partial_isometries_cycle_graph_monoid(size_t n);
+    Presentation<word_type>
+    partial_isometries_cycle_graph_monoid(size_t n, author val = author::Any);
 
     //! A non-presentation for the symmetric group.
     //!
@@ -589,13 +606,16 @@ namespace libsemigroups {
                         author val = author::Guralnick + author::Kantor
                                      + author::Kassabov + author::Lubotzky);
 
-    Presentation<word_type> special_linear_group_2(size_t n);
+    Presentation<word_type> special_linear_group_2(size_t n,
+                                                   author val = author::Any);
 
     // TODO (doc)
-    Presentation<word_type> hypo_plactic_monoid(size_t n);
+    Presentation<word_type> hypo_plactic_monoid(size_t n,
+                                                author val = author::Any);
 
     Presentation<word_type>
-    sigma_stylic_monoid(std::vector<size_t> const& sigma);
+    sigma_stylic_monoid(std::vector<size_t> const& sigma,
+                        author                     val = author::Any);
 
     // TODO add okada_monoid
     // TODO add free_semilattice
@@ -607,7 +627,8 @@ namespace libsemigroups {
     // https://theses.hal.science/tel-01861199
     //
     //  This could also be called the RennerTypeAMonoid
-    Presentation<word_type> zero_rook_monoid(size_t n);
+    Presentation<word_type> zero_rook_monoid(size_t n,
+                                             author val = author::Any);
 
     // TODO rename renner_type_b_monoid:
     // when q = 0: Definition 8.4.1 + Example 8.4.2 in Joel's thesis.
@@ -615,7 +636,9 @@ namespace libsemigroups {
     // with pi_i ^ 2 = 1 (usual Renner monoid) (q is the Iwahori-Hecke
     // deformation of the Renner monoid). q = 1From Joel's thesis,
     // Theorem 8.4.19.
-    Presentation<word_type> renner_type_B_monoid(size_t l, int q);
+    Presentation<word_type> renner_type_B_monoid(size_t l,
+                                                 int    q,
+                                                 author val = author::Any);
 
     // not_renner_type_b_monoid
     // when q = 0, Example 7.1.2, of Joel's thesis
@@ -623,17 +646,23 @@ namespace libsemigroups {
     // https://www.cambridge.org/core/services/aop-cambridge-core/content/view/B6BAB75BD3463916FEDEC15BEDA724FF/S0004972710000365a.pdf/presentation_for_renner_monoids.pdf
     // or
     // https://arxiv.org/abs/0904.0926
-    Presentation<word_type> not_renner_type_B_monoid(size_t l, int q);
+    Presentation<word_type> not_renner_type_B_monoid(size_t l,
+                                                     int    q,
+                                                     author val = author::Any);
 
     // See Theorem 8.4.43 in Joel's thesis q = 1,
     // for q = 0, Definition 8.4.22 (author = Gay)
-    Presentation<word_type> renner_type_D_monoid(size_t l, int q);
+    Presentation<word_type> renner_type_D_monoid(size_t l,
+                                                 int    q,
+                                                 author val = author::Any);
 
     // Godelle's:
     // when q = 1, p41 of
     // https://www.cambridge.org/core/services/aop-cambridge-core/content/view/B6BAB75BD3463916FEDEC15BEDA724FF/S0004972710000365a.pdf/presentation_for_renner_monoids.pdf
     // q = 0, no reference
-    Presentation<word_type> not_renner_type_D_monoid(size_t l, int q);
+    Presentation<word_type> not_renner_type_D_monoid(size_t l,
+                                                     int    q,
+                                                     author val = author::Any);
 
   }  // namespace fpsemigroup
 }  // namespace libsemigroups

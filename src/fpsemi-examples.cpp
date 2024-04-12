@@ -355,10 +355,13 @@ namespace libsemigroups {
     using words::operator+;
     using words::operator+=;
 
-    Presentation<word_type> stellar_monoid(size_t l) {
+    Presentation<word_type> stellar_monoid(size_t l, author val) {
       if (l < 2) {
-        LIBSEMIGROUPS_EXCEPTION("expected argument to be at least 2, found {}",
-                                l);
+        LIBSEMIGROUPS_EXCEPTION(
+            "expected 1st argument to be at least 2, found {}", l);
+      } else if (val != author::Any) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "expected 2nd argument to be author::Any, found {}", val);
       }
       auto p = zero_rook_monoid(l);
 
@@ -371,13 +374,18 @@ namespace libsemigroups {
       return p;
     }
 
-    Presentation<word_type> fibonacci_semigroup(size_t r, size_t n) {
+    Presentation<word_type> fibonacci_semigroup(size_t r,
+                                                size_t n,
+                                                author val) {
       if (r == 0) {
         LIBSEMIGROUPS_EXCEPTION(
             "expected 1st argument to be strictly positive, found {}", r);
       } else if (n == 0) {
         LIBSEMIGROUPS_EXCEPTION(
             "expected 2nd argument to be strictly positive, found {}", n);
+      } else if (val != author::Any) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "expected 3rd argument to be author::Any, found {}", val);
       }
       Presentation<word_type> p;
 
@@ -391,10 +399,13 @@ namespace libsemigroups {
       return p;
     }
 
-    Presentation<word_type> plactic_monoid(size_t n) {
+    Presentation<word_type> plactic_monoid(size_t n, author val) {
       if (n < 1) {
-        LIBSEMIGROUPS_EXCEPTION("expected argument to be at least 1, found {}",
-                                n);
+        LIBSEMIGROUPS_EXCEPTION(
+            "expected 1st argument to be at least 1, found {}", n);
+      } else if (val != author::Any) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "expected 2nd argument to be author::Any, found {}", val);
       }
       Presentation<word_type> p;
       p.alphabet(n);
@@ -419,10 +430,13 @@ namespace libsemigroups {
       return p;
     }
 
-    Presentation<word_type> stylic_monoid(size_t n) {
+    Presentation<word_type> stylic_monoid(size_t n, author val) {
       if (n < 2) {
-        LIBSEMIGROUPS_EXCEPTION("expected argument to be at least 2, found {}",
-                                n);
+        LIBSEMIGROUPS_EXCEPTION(
+            "expected 1st argument to be at least 2, found {}", n);
+      } else if (val != author::Any) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "expected 2nd argument to be author::Any, found {}", val);
       }
       auto p = plactic_monoid(n);
       presentation::add_idempotent_rules_no_checks(p, range(n));
@@ -864,19 +878,22 @@ namespace libsemigroups {
 
     // From Theorem 5 in 10.21136/MB.2007.134125
     // https://dml.cz/bitstream/handle/10338.dmlcz/134125/MathBohem_132-2007-3_6.pdf
-    Presentation<word_type> singular_brauer_monoid(size_t n) {
+    Presentation<word_type> singular_brauer_monoid(size_t n, author val) {
       if (n < 3) {
-        LIBSEMIGROUPS_EXCEPTION("expected argument to be at least 3, found {}",
-                                n);
+        LIBSEMIGROUPS_EXCEPTION(
+            "expected 1st argument to be at least 3, found {}", n);
+      } else if (val != author::Any) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "expected 2nd argument to be author::Any, found {}", val);
       }
       std::vector<std::vector<word_type>> t;
-      size_t                              val = 0;
+      size_t                              value = 0;
       for (size_t i = 0; i < n; ++i) {
         t.push_back({});
         for (size_t j = 0; j < n; ++j) {
           if (i != j) {
-            t.back().push_back({val});
-            val++;
+            t.back().push_back({value});
+            value++;
           } else {
             t.back().push_back({0});
           }
@@ -932,10 +949,14 @@ namespace libsemigroups {
     }
 
     // From https://doi.org/10.1007/s10012-000-0001-1
-    Presentation<word_type> orientation_preserving_monoid(size_t n) {
+    Presentation<word_type> orientation_preserving_monoid(size_t n,
+                                                          author val) {
       if (n < 3) {
-        LIBSEMIGROUPS_EXCEPTION("expected argument to be at least 3, found {}",
-                                n);
+        LIBSEMIGROUPS_EXCEPTION(
+            "expected 1st argument to be at least 3, found {}", n);
+      } else if (val != author::Any) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "expected 2nd argument to be author::Any, found {}", val);
       }
       Presentation<word_type> p;
       p.alphabet(2);
@@ -957,10 +978,13 @@ namespace libsemigroups {
     }
 
     // Also from https://doi.org/10.1007/s10012-000-0001-1
-    Presentation<word_type> orientation_reversing_monoid(size_t n) {
+    Presentation<word_type> orientation_reversing_monoid(size_t n, author val) {
       if (n < 3) {
-        LIBSEMIGROUPS_EXCEPTION("expected argument to be at least 3, found {}",
-                                n);
+        LIBSEMIGROUPS_EXCEPTION(
+            "expected 1st argument to be at least 3, found {}", n);
+      } else if (val != author::Any) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "expected 2nd argument to be author::Any, found {}", val);
       }
       Presentation<word_type> p;
       p.alphabet(3);
@@ -992,10 +1016,13 @@ namespace libsemigroups {
     }
 
     // From Theorem 2.2 in https://doi.org/10.1093/qmath/haab001
-    Presentation<word_type> temperley_lieb_monoid(size_t n) {
+    Presentation<word_type> temperley_lieb_monoid(size_t n, author val) {
       if (n < 3) {
-        LIBSEMIGROUPS_EXCEPTION("expected argument to be at least 3, found {}",
-                                n);
+        LIBSEMIGROUPS_EXCEPTION(
+            "expected 1st argument to be at least 3, found {}", n);
+      } else if (val != author::Any) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "expected 2nd argument to be author::Any, found {}", val);
       }
 
       Presentation<word_type> p;
@@ -1022,7 +1049,11 @@ namespace libsemigroups {
 
     // From Theorem 3.1 in
     // https://link.springer.com/content/pdf/10.2478/s11533-006-0017-6.pdf
-    Presentation<word_type> brauer_monoid(size_t n) {
+    Presentation<word_type> brauer_monoid(size_t n, author val) {
+      if (val != author::Any) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "expected 2nd argument to be author::Any, found {}", val);
+      }
       std::vector<word_type> s(n), t(n);
       for (size_t i = 0; i < n - 1; ++i) {
         s[i] = {i};
@@ -1065,9 +1096,13 @@ namespace libsemigroups {
       return p;
     }
 
-    Presentation<word_type> partial_brauer_monoid(size_t n) {
+    Presentation<word_type> partial_brauer_monoid(size_t n, author val) {
       if (n == 0) {
         LIBSEMIGROUPS_EXCEPTION("TODO");
+      }
+      if (val != author::Any) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "expected 2nd argument to be author::Any, found {}", val);
       }
 
       std::vector<word_type> s(n), t(n), v(n);
@@ -1129,7 +1164,7 @@ namespace libsemigroups {
 
     // From Proposition 4.2 in
     // https://link.springer.com/content/pdf/10.1007/s002339910016.pdf
-    Presentation<word_type> rectangular_band(size_t m, size_t n) {
+    Presentation<word_type> rectangular_band(size_t m, size_t n, author val) {
       if (m == 0) {
         LIBSEMIGROUPS_EXCEPTION(
             "expected 1st argument to be strictly positive, found {}", m);
@@ -1137,6 +1172,9 @@ namespace libsemigroups {
       if (n == 0) {
         LIBSEMIGROUPS_EXCEPTION(
             "expected 2nd argument to be strictly positive, found {}", n);
+      } else if (val != author::Any) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "expected 3rd argument to be author::Any, found {}", val);
       }
 
       std::vector<word_type> a(m);
@@ -1331,10 +1369,13 @@ namespace libsemigroups {
     // Chinese monoid
     // See: The Chinese Monoid - Cassaigne, Espie, Krob, Novelli and Hivert,
     // 2001
-    Presentation<word_type> chinese_monoid(size_t n) {
+    Presentation<word_type> chinese_monoid(size_t n, author val) {
       if (n < 2) {
-        LIBSEMIGROUPS_EXCEPTION("expected argument to be at least 2, found {}",
-                                n);
+        LIBSEMIGROUPS_EXCEPTION(
+            "expected 1st argument to be at least 2, found {}", n);
+      } else if (val != author::Any) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "expected 2nd argument to be author::Any, found {}", val);
       }
       Presentation<word_type> p;
       p.alphabet(n);
@@ -1356,27 +1397,34 @@ namespace libsemigroups {
       return p;
     }
 
-    Presentation<word_type> monogenic_semigroup(size_t m, size_t r) { 
+    Presentation<word_type> monogenic_semigroup(size_t m,
+                                                size_t r,
+                                                author val) {
       if (r == 0) {
         LIBSEMIGROUPS_EXCEPTION(
             "expected 2nd argument to be strictly positive, found {}", r);
+      } else if (val != author::Any) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "expected 3rd argument to be author::Any, found {}", val);
       }
       Presentation<word_type> p;
       presentation::add_rule_no_checks(p, pow(0_w, m + r), pow(0_w, m));
       p.alphabet_from_rules();
       if (m == 0) {
         p.contains_empty_word(true);
-      }
-      else {
+      } else {
         p.contains_empty_word(false);
       }
       return p;
     }
 
-    Presentation<word_type> order_preserving_monoid(size_t n) {
+    Presentation<word_type> order_preserving_monoid(size_t n, author val) {
       if (n < 3) {
-        LIBSEMIGROUPS_EXCEPTION("expected argument to be at least 3, found {}",
-                                n);
+        LIBSEMIGROUPS_EXCEPTION(
+            "expected 1st argument to be at least 3, found {}", n);
+      } else if (val != author::Any) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "expected 2nd argument to be author::Any, found {}", val);
       }
       std::vector<word_type> u, v;
 
@@ -1493,10 +1541,14 @@ namespace libsemigroups {
     }
 
     // See Theorem 2.17 of https://arxiv.org/pdf/2211.02155.pdf
-    Presentation<word_type> order_preserving_cyclic_inverse_monoid(size_t n) {
+    Presentation<word_type> order_preserving_cyclic_inverse_monoid(size_t n,
+                                                                   author val) {
       if (n < 3) {
-        LIBSEMIGROUPS_EXCEPTION("expected argument to be at least 3, found {}",
-                                n);
+        LIBSEMIGROUPS_EXCEPTION(
+            "expected 1st argument to be at least 3, found {}", n);
+      } else if (val != author::Any) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "expected 2nd argument to be author::Any, found {}", val);
       }
 
       Presentation<word_type> p;
@@ -1538,10 +1590,14 @@ namespace libsemigroups {
     }
 
     // See Theorem 2.8 of https://arxiv.org/pdf/2205.02196.pdf
-    Presentation<word_type> partial_isometries_cycle_graph_monoid(size_t n) {
+    Presentation<word_type> partial_isometries_cycle_graph_monoid(size_t n,
+                                                                  author val) {
       if (n < 3) {
-        LIBSEMIGROUPS_EXCEPTION("expected argument to be at least 3, found {}",
-                                n);
+        LIBSEMIGROUPS_EXCEPTION(
+            "expected 1st argument to be at least 3, found {}", n);
+      } else if (val != author::Any) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "expected 2nd argument to be author::Any, found {}", val);
       }
 
       Presentation<word_type> p;
@@ -1632,7 +1688,11 @@ namespace libsemigroups {
 
     // n should be prime for this presentation to actually defined the claimed
     // group.
-    Presentation<word_type> special_linear_group_2(size_t n) {
+    Presentation<word_type> special_linear_group_2(size_t n, author val) {
+      if (val != author::Any) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "expected 2nd argument to be author::Any, found {}", val);
+      }
       Presentation<word_type> p;
       p.alphabet(4);
       p.contains_empty_word(true);
@@ -1646,7 +1706,11 @@ namespace libsemigroups {
       return p;
     }
 
-    Presentation<word_type> hypo_plactic_monoid(size_t n) {
+    Presentation<word_type> hypo_plactic_monoid(size_t n, author val) {
+      if (val != author::Any) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "expected 2nd argument to be author::Any, found {}", val);
+      }
       auto result = plactic_monoid(n);
 
       for (letter_type a = 0; a < n; ++a) {
@@ -1673,7 +1737,11 @@ namespace libsemigroups {
     }
 
     Presentation<word_type>
-    sigma_stylic_monoid(std::vector<size_t> const& sigma) {
+    sigma_stylic_monoid(std::vector<size_t> const& sigma, author val) {
+      if (val != author::Any) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "expected 2nd argument to be author::Any, found {}", val);
+      }
       auto p = plactic_monoid(sigma.size());
       p.contains_empty_word(true);
       for (auto [a, e] : rx::enumerate(sigma)) {
@@ -1682,10 +1750,13 @@ namespace libsemigroups {
       return p;
     }
 
-    Presentation<word_type> zero_rook_monoid(size_t n) {
+    Presentation<word_type> zero_rook_monoid(size_t n, author val) {
       if (n < 2) {
         LIBSEMIGROUPS_EXCEPTION(
             "the 1st argument (degree) must at least 2, found {}", n);
+      } else if (val != author::Any) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "expected 2nd argument to be author::Any, found {}", val);
       }
 
       Presentation<word_type> p;
@@ -1696,9 +1767,14 @@ namespace libsemigroups {
       return p;
     }
 
-    Presentation<word_type> not_renner_type_B_monoid(size_t l, int q) {
+    Presentation<word_type> not_renner_type_B_monoid(size_t l,
+                                                     int    q,
+                                                     author val) {
       if (q != 0 && q != 1) {
         LIBSEMIGROUPS_EXCEPTION("the 2nd argument must be 0 or 1, found {}", q);
+      } else if (val != author::Any) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "expected 3rd argument to be author::Any, found {}", val);
       }
 
       Presentation<word_type> p;
@@ -1714,9 +1790,12 @@ namespace libsemigroups {
       return p;
     }
 
-    Presentation<word_type> renner_type_B_monoid(size_t l, int q) {
+    Presentation<word_type> renner_type_B_monoid(size_t l, int q, author val) {
       if (q != 0 && q != 1) {
         LIBSEMIGROUPS_EXCEPTION("the 2nd argument must be 0 or 1, found {}", q);
+      } else if (val != author::Any) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "expected 3rd argument to be author::Any, found {}", val);
       }
 
       Presentation<word_type> p;
@@ -1735,9 +1814,14 @@ namespace libsemigroups {
       return p;
     }
 
-    Presentation<word_type> not_renner_type_D_monoid(size_t l, int q) {
+    Presentation<word_type> not_renner_type_D_monoid(size_t l,
+                                                     int    q,
+                                                     author val) {
       if (q != 0 && q != 1) {
         LIBSEMIGROUPS_EXCEPTION("the 2nd argument must be 0 or 1, found {}", q);
+      } else if (val != author::Any) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "expected 3rd argument to be author::Any, found {}", val);
       }
       Presentation<word_type> p;
       add_renner_type_D_common(p, l, q);
@@ -1756,9 +1840,12 @@ namespace libsemigroups {
       return p;
     }
 
-    Presentation<word_type> renner_type_D_monoid(size_t l, int q) {
+    Presentation<word_type> renner_type_D_monoid(size_t l, int q, author val) {
       if (q != 0 && q != 1) {
         LIBSEMIGROUPS_EXCEPTION("the 2nd argument must be 0 or 1, found {}", q);
+      } else if (val != author::Any) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "expected 3rd argument to be author::Any, found {}", val);
       }
       Presentation<word_type> p;
       add_renner_type_D_common(p, l, q);
