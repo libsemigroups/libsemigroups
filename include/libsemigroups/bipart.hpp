@@ -295,20 +295,17 @@ namespace libsemigroups {
     //! (None)
     [[nodiscard]] uint32_t rank() const;
 
-    //! Returns a hash value for a Blocks instance.
+    //! \brief Returns a hash value for a Blocks instance.
     //!
     //! This value is recomputed every time this function is called.
     //!
     //! \returns A hash value for a \c this.
     //!
-    //! \exceptions
+    //! \throws
     //! \noexcept
     //!
     //! \complexity
     //! Linear in `degree()`.
-    //!
-    //! \parameters
-    //! (None)
     [[nodiscard]] size_t hash_value() const noexcept;
 
     //! Returns a const iterator pointing to the first transverse
@@ -585,9 +582,6 @@ namespace libsemigroups {
     }
 
     //! Returns a hash value.
-    //!
-    //! \parameters
-    //! (None)
     //!
     //! \returns
     //! A value of \c size_t.

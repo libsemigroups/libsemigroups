@@ -167,7 +167,7 @@ namespace libsemigroups {
     //! \par Complexity
     //! \f$O(mn)\f$ where \p m is the number of nodes, and \p n is the
     //! out-degree of the digraph.
-    WordGraph& init(size_type m, size_type n);
+    WordGraph& init(size_type m = 0, size_type n = 0);
 
     //! Default copy constructor
     WordGraph(WordGraph const&);
@@ -204,7 +204,7 @@ namespace libsemigroups {
     //! \par Complexity
     //! \f$O(mn)\f$ where \p m is the number of nodes, and \p n is
     //! the out-degree of the digraph.
-    static WordGraph random(size_type    number_of_size_types,
+    static WordGraph random(size_type    number_of_nodes,
                             size_type    out_degree,
                             std::mt19937 mt
                             = std::mt19937(std::random_device()()));
@@ -226,7 +226,7 @@ namespace libsemigroups {
     //! \par Complexity
     //! At least \f$O(mn)\f$ where \p m is the number of nodes, and \p n is the
     //! out-degree of the digraph.
-    static WordGraph random(size_type    number_of_size_types,
+    static WordGraph random(size_type    number_of_nodes,
                             size_type    out_degree,
                             size_type    number_of_edges,
                             std::mt19937 mt
@@ -252,7 +252,7 @@ namespace libsemigroups {
     //! \par Complexity
     //! At least \f$O(mn)\f$ where \p m is the number of nodes, and \p n is the
     //! out-degree of the digraph.
-    static WordGraph random_acyclic(size_type    number_of_size_types,
+    static WordGraph random_acyclic(size_type    number_of_nodes,
                                     size_type    out_degree,
                                     size_type    number_of_edges,
                                     std::mt19937 mt
@@ -953,12 +953,19 @@ namespace libsemigroups {
       return nodes_reachable_from(wg, source).size();
     }
 
+    // TODO(0): doc
+    template <typename Node1, typename Node2, typename Iterator>
+    Node1 follow_path(WordGraph<Node1> const& wg,
+                      Node2                   from,
+                      Iterator                first,
+                      Iterator                last);
+
     //! Find the node that a path starting at a given node leads to.
     //!
     //! \tparam T the type used as the template parameter for the WordGraph.
     //!
     //! \param wg the WordGraph object to check.
-    //! \param first the starting node.
+    //! \param from the starting node.
     //! \param path the path to follow.
     //!
     //! \returns
@@ -972,12 +979,6 @@ namespace libsemigroups {
     //! Linear in the length of \p path.
     // TODO(later) example
     // not noexcept because WordGraph::target isn't
-    template <typename Node1, typename Node2, typename Iterator>
-    Node1 follow_path(WordGraph<Node1> const& wg,
-                      Node2                   from,
-                      Iterator                first,
-                      Iterator                last);
-
     template <typename Node1, typename Node2>
     Node1 follow_path(WordGraph<Node1> const& wg,
                       Node2                   from,
