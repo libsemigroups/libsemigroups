@@ -72,15 +72,8 @@ namespace libsemigroups {
       // For the partial transformation monoid presentation, we want e12_value =
       // n.
 
-      if (n < 4) {
-        LIBSEMIGROUPS_EXCEPTION(
-            "expected 1st argument to be at least 4, found {}", n);
-      } else if (e12_value >= pi_start && e12_value <= pi_start + n - 2) {
-        // TODO improve the error message
-        LIBSEMIGROUPS_EXCEPTION("e12 must not lie in the range [pi_start, "
-                                "pi_start + n - 2], found {}",
-                                e12_value);
-      }
+      LIBSEMIGROUPS_ASSERT(n >= 5);
+      LIBSEMIGROUPS_ASSERT(e12_value < pi_start | e12_value >= pi_start + n - 2)
 
       word_type              e12 = {e12_value};
       std::vector<word_type> pi;
