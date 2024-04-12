@@ -1,0 +1,27 @@
+.. Copyright (c) 2019-20, J. D. Mitchell
+
+   Distributed under the terms of the GPL license version 3.
+
+   The full license is in the file LICENSE, distributed with this software.
+
+.. _staticmatrix_coords:
+
+coords
+======
+
+.. cpp:namespace:: libsemigroups::StaticMatrix<PlusOp, ProdOp, ZeroOp, OneOp, R, C, Scalar>
+
+.. cpp:function:: std::pair<scalar_type, scalar_type> \
+                  coords(const_iterator it) const
+
+   Returns a pair containing the row and columns corresponding to an iterator.
+
+   :param it: the iterator
+
+   :returns:
+     A value of type ``std::pair<scalar_type, scalar_type>``.
+
+   :complexity: Constant
+
+   :exceptions:
+     this function guarantees not to throw a :cpp:any:`LibsemigroupsException`.
