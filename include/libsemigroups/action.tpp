@@ -1,6 +1,6 @@
 //
 // libsemigroups - C++ library for semigroups and monoids
-// Copyright (C) 2019-2023 James D. Mitchell
+// Copyright (C) 2019-2024 James D. Mitchell
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -66,6 +66,10 @@ namespace libsemigroups {
     Options(Options&&)                 = default;
     Options& operator=(Options const&) = default;
     Options& operator=(Options&&)      = default;
+    Options& init() {
+      _cache_scc_multipliers = false;
+      return *this;
+    }
 
     bool _cache_scc_multipliers;
   };
@@ -89,6 +93,24 @@ namespace libsemigroups {
         _scc(_graph),
         _tmp_point(),
         _tmp_point_init(false) {}
+
+  template <typename Element,
+            typename Point,
+            typename Func,
+            typename Traits,
+            side LeftOrRight>
+  Action<Element, Point, Func, Traits, LeftOrRight>&
+  Action<Element, Point, Func, Traits, LeftOrRight>::init() {
+    _gens.clear();
+    _graph.init();
+    _map.clear();
+    _options.init();
+    _orb.clear();
+    _pos = 0;
+    _scc.init(_graph);
+    // Don't reset _tmp_point or _tmp_point_init
+    return *this;
+  }
 
   template <typename Element,
             typename Point,

@@ -34,6 +34,11 @@
             "[" classname " " nr "][" classname "][" nr "][" __FILE__ \
             "][" STR(__LINE__) "]" tags)
 
+#define LIBSEMIGROUPS_TEST_CASE_V3(classname, nr, msg, tags)          \
+  TEST_CASE(classname ": " msg,                                       \
+            "[" classname " " nr "][" classname "][" nr "][" __FILE__ \
+            "][" STR(__LINE__) "]" tags)
+
 namespace libsemigroups {
 
   template <typename T>
