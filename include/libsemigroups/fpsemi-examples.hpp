@@ -191,10 +191,10 @@ namespace libsemigroups {
                                                           author val
                                                           = author::Any);
 
-    //! A presentation for the monoid of orientation reversing mappings.
+    //! A presentation for the monoid of orientation preserving or reversing mappings.
     //!
     //! Returns a monoid presentation defining
-    //! the monoid of orientation reversing mappings on a finite chain of order
+    //! the monoid of orientation preserving or reversing mappings on a finite chain of order
     //! `n`, as described in [10.1007/s10012-000-0001-1][].
     //
     // TODO: This really should say preserving and reversing
@@ -206,7 +206,7 @@ namespace libsemigroups {
     //! \throws LibsemigroupsException if `n < 3`
     //!
     //! [10.1007/s10012-000-0001-1]: https://doi.org/10.1007/s10012-000-0001-1
-    Presentation<word_type> orientation_reversing_monoid(size_t n,
+    Presentation<word_type> orientation_preserving_reversing_monoid(size_t n,
                                                          author val
                                                          = author::Any);
 

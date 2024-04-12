@@ -54,7 +54,7 @@ namespace libsemigroups {
   using fpsemigroup::order_preserving_cyclic_inverse_monoid;
   using fpsemigroup::order_preserving_monoid;
   using fpsemigroup::orientation_preserving_monoid;
-  using fpsemigroup::orientation_reversing_monoid;
+  using fpsemigroup::orientation_preserving_reversing_monoid;
   using fpsemigroup::partial_brauer_monoid;
   using fpsemigroup::partial_isometries_cycle_graph_monoid;
   using fpsemigroup::partial_transformation_monoid;
@@ -100,7 +100,7 @@ namespace libsemigroups {
     REQUIRE(stellar_monoid(4, author::Any) == stellar_monoid(4));
     REQUIRE(singular_brauer_monoid(4, author::Any) == singular_brauer_monoid(4));
     REQUIRE(orientation_preserving_monoid(4, author::Any) == orientation_preserving_monoid(4));
-    REQUIRE(orientation_reversing_monoid(4, author::Any) == orientation_reversing_monoid(4));
+    REQUIRE(orientation_preserving_reversing_monoid(4, author::Any) == orientation_preserving_reversing_monoid(4));
     REQUIRE(temperley_lieb_monoid(4, author::Any) == temperley_lieb_monoid(4));
     REQUIRE(brauer_monoid(4, author::Any) == brauer_monoid(4));
     REQUIRE(partial_brauer_monoid(4, author::Any) == partial_brauer_monoid(4));
@@ -142,7 +142,7 @@ namespace libsemigroups {
     REQUIRE(not partition_monoid(3, author::Machine).contains_empty_word());
     REQUIRE(not singular_brauer_monoid(5).contains_empty_word());
     REQUIRE(orientation_preserving_monoid(5).contains_empty_word());
-    REQUIRE(orientation_reversing_monoid(5).contains_empty_word());
+    REQUIRE(orientation_preserving_reversing_monoid(5).contains_empty_word());
     REQUIRE(temperley_lieb_monoid(5).contains_empty_word());
     REQUIRE(brauer_monoid(5).contains_empty_word());
     REQUIRE(partial_brauer_monoid(5).contains_empty_word());
@@ -450,20 +450,20 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("fpsemi-examples",
                           "025",
-                          "orientation_reversing_monoid degree except",
+                          "orientation_preserving_reversing_monoid degree except",
                           "[fpsemi-examples][quick]") {
     auto rg = ReportGuard(REPORT);
-    REQUIRE_THROWS_AS(orientation_reversing_monoid(0), LibsemigroupsException);
-    REQUIRE_THROWS_AS(orientation_reversing_monoid(1), LibsemigroupsException);
-    REQUIRE_THROWS_AS(orientation_reversing_monoid(2), LibsemigroupsException);
+    REQUIRE_THROWS_AS(orientation_preserving_reversing_monoid(0), LibsemigroupsException);
+    REQUIRE_THROWS_AS(orientation_preserving_reversing_monoid(1), LibsemigroupsException);
+    REQUIRE_THROWS_AS(orientation_preserving_reversing_monoid(2), LibsemigroupsException);
   }
 
     LIBSEMIGROUPS_TEST_CASE("fpsemi-examples",
                           "108",
-                          "orientation_reversing_monoid auth except",
+                          "orientation_preserving_reversing_monoid auth except",
                           "[fpsemi-examples][quick]") {
     auto rg = ReportGuard(REPORT);
-    REQUIRE_THROWS_AS(orientation_reversing_monoid(0, author::Sutov), LibsemigroupsException);
+    REQUIRE_THROWS_AS(orientation_preserving_reversing_monoid(0, author::Sutov), LibsemigroupsException);
   }
 
   LIBSEMIGROUPS_TEST_CASE("fpsemi-examples",
@@ -633,11 +633,11 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("fpsemi-examples",
                           "038",
-                          "orientation_reversing_monoid(5)",
+                          "orientation_preserving_reversing_monoid(5)",
                           "[fpsemi-examples][quick]") {
     auto        rg = ReportGuard(REPORT);
     size_t      n  = 5;
-    ToddCoxeter tc(congruence_kind::twosided, orientation_reversing_monoid(n));
+    ToddCoxeter tc(congruence_kind::twosided, orientation_preserving_reversing_monoid(n));
     REQUIRE(tc.number_of_classes() == 1'015);
   }
 

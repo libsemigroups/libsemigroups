@@ -105,7 +105,7 @@ Contents
      - A presentation for the monoid of orientation preserving
        mappings.
 
-   * - :cpp:any:`orientation_reversing_monoid`
+   * - :cpp:any:`orientation_preserving_reversing_monoid`
      - A presentation for the monoid of orientation reversing
        mappings.
 
@@ -186,7 +186,7 @@ Full API
 .. doxygenfunction:: libsemigroups::fpsemigroup::orientation_preserving_monoid
    :project: libsemigroups
 
-.. doxygenfunction:: libsemigroups::fpsemigroup::orientation_reversing_monoid
+.. doxygenfunction:: libsemigroups::fpsemigroup::orientation_preserving_reversing_monoid
    :project: libsemigroups
 
 .. doxygenfunction:: libsemigroups::fpsemigroup::order_preserving_monoid

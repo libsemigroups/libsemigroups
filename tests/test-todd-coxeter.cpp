@@ -1985,12 +1985,12 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                           "052",
-                          "orientation_reversing_monoid(5) (Ruskuc + Arthur)",
+                          "orientation_preserving_reversing_monoid(5) (Ruskuc + Arthur)",
                           "[todd-coxeter][quick][no-valgrind][no-coverage]") {
-    using fpsemigroup::orientation_reversing_monoid;
+    using fpsemigroup::orientation_preserving_reversing_monoid;
     auto         rg = ReportGuard(false);
     size_t const n  = 5;
-    auto         p  = orientation_reversing_monoid(n);
+    auto         p  = orientation_preserving_reversing_monoid(n);
     ToddCoxeter  tc(congruence_kind::twosided, p);
 
     section_hlt(tc);
@@ -2128,11 +2128,11 @@ namespace libsemigroups {
                           "060",
                           "Generate GAP benchmarks for OR_n",
                           "[todd-coxeter][fail]") {
-    using fpsemigroup::orientation_reversing_monoid;
+    using fpsemigroup::orientation_preserving_reversing_monoid;
 
     auto rg = ReportGuard(true);
     for (size_t n = 3; n <= 8; ++n) {
-      auto        p = orientation_reversing_monoid(n);
+      auto        p = orientation_preserving_reversing_monoid(n);
       ToddCoxeter tc(congruence_kind::twosided, p);
       output_gap_benchmark_file("orient-reverse-" + std::to_string(n) + ".g",
                                 tc);
