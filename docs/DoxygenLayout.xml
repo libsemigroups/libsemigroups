@@ -8,13 +8,13 @@
     <tab type="user" visible="yes" url="@ref md_install" title="Install" />
     <tab type="usergroup" visible="yes" url="@ref congruences_group" title="Congruences" >
       <tab type="usergroup" visible="yes" url="group__congruences__group.html#nested-classes" title="Classes" >
-        <tab type="user" visible="yes" url="@ref libsemigroups::sims::const_rcgp_iterator" title="const_rcgp_iterator" />
-        <tab type="user" visible="yes" url="@ref libsemigroups::MinimalRepOrc" title="MinimalRepOrc" />
-        <tab type="user" visible="yes" url="@ref libsemigroups::RepOrc" title="RepOrc" />
+        <tab type="user" visible="yes" url="@ref libsemigroups::SimsStats" title="SimsStats" />
+        <tab type="user" visible="yes" url="@ref libsemigroups::SimsSettings" title="SimsSettings" />
         <tab type="user" visible="yes" url="@ref libsemigroups::Sims1" title="Sims1" />
         <tab type="user" visible="yes" url="@ref libsemigroups::Sims2" title="Sims2" />
-        <tab type="user" visible="yes" url="@ref libsemigroups::SimsSettings" title="SimsSettings" />
-        <tab type="user" visible="yes" url="@ref libsemigroups::SimsStats" title="SimsStats" />
+        <tab type="user" visible="yes" url="@ref libsemigroups::RepOrc" title="RepOrc" />
+        <tab type="user" visible="yes" url="@ref libsemigroups::MinimalRepOrc" title="MinimalRepOrc" />
+        <tab type="user" visible="yes" url="@ref libsemigroups::sims::const_rcgp_iterator" title="const_rcgp_iterator" />
       </tab>
       <!-- TODO: Figure out a way to avoid this hack -->
       <tab type="user" visible="yes" url="group__congruences__group.html#func-members" title="Functions" />
