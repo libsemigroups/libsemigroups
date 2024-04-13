@@ -76,7 +76,7 @@ namespace libsemigroups {
 
 def template_header(thing: str, template_p: list[str]) -> str:
     pack = ", ".join(template_p)
-    alias = ", ".join([x.split(" ")[1] for x in template_p])
+    alias = ", ".join([x.split(" ")[1] for x in template_p if x != "typename"])
     return f"""
 namespace {{
     template <{pack}>
