@@ -42,6 +42,43 @@
 #include "detail/report.hpp"            // for report_default
 
 namespace libsemigroups {
+  //! \defgroup action_group Actions
+  //! This page contains an overview summary of the functionality in
+  //! ``libsemigroups`` for finding actions of semigroups, or groups, on sets.
+  //! The notion of an "action" in the context of ``libsemigroups`` is analogous
+  //! to the notion of an orbit of a group.
+  //!
+  //! You are unlikely to want to use :cpp:class:`Action` directly, but rather
+  //! via the more convenient aliases :cpp:any:`RightAction` and
+  //! :cpp:any:`LeftAction`. To use :cpp:any:`RightAction` and
+  //! :cpp:any:`LeftAction` with custom types, actions, and so on, see
+  //! :cpp:class:`ActionTraits`.
+  //!
+  //! See also :cpp:any:`ImageLeftAction` and :cpp:any:`ImageRightAction`.
+  //!
+  //! \codeblock
+  //! using namespace libsemigroups;
+  //! RightAction<PPerm<16>, PPerm<16>, ImageRightAction<PPerm<16>, PPerm<16>>>
+  //! o; o.add_seed(PPerm<16>::identity(16)); o.add_generator(
+  //!    PPerm<16>({0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15},
+  //!              {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 0},
+  //!              16));
+  //! o.add_generator(
+  //!    PPerm<16>({0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15},
+  //!              {1, 0, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15},
+  //!              16));
+  //! o.add_generator(PPerm<16>({1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14,
+  //! 15},
+  //!                          {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13,
+  //!                          14}, 16));
+  //! o.add_generator(PPerm<16>({0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13,
+  //! 14},
+  //!                          {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14,
+  //!                          15}, 16));
+  //! o.reserve(70000);
+  //! o.size();  // returns 65536
+  //! \endcode
+
   //! The values in this enum can be used as a template parameter for the Action
   //! class to specify whether the action of the Action  is a left or right
   //! action.
@@ -115,7 +152,7 @@ namespace libsemigroups {
   //!               16));
   //! o.reserve(70000);
   //! o.size(); // 65536
-  //! o.word graph().number_of_scc(); // 17 // TODO(0) update
+  //! Gabow(o.word graph()).number_of_components(); // 17
   //! \endcode
   //!
   //! \par Complexity
@@ -194,6 +231,22 @@ namespace libsemigroups {
     //!
     //! \sa ImageRightAction, ImageLeftAction
     using action_type = Func;
+
+    //! Insertion operator
+    //!
+    //! This member function allows Action objects to be inserted into an
+    //! std::ostringstream.
+    friend std::ostringstream& operator<<(std::ostringstream& os,
+                                          Action const&       action);
+
+    //! Insertion operator
+    //!
+    //! This member function allows Action objects to be inserted into a
+    //! std::ostream.
+    friend std::ostream& operator<<(std::ostream& os, Action const& action) {
+      os << detail::to_string(action);
+      return os;
+    }
 
     ////////////////////////////////////////////////////////////////////////
     // Action - iterators - public
@@ -356,6 +409,32 @@ namespace libsemigroups {
     ////////////////////////////////////////////////////////////////////////
     // Action - member functions: position, empty, size, etc - public
     ////////////////////////////////////////////////////////////////////////
+
+    //! \brief Returns the number of generators.
+    //!
+    //! \returns The number of generators.
+    //!
+    //! \exceptions
+    //! \noexcept
+    //!
+    //! \complexity
+    //! Constant.
+    [[nodiscard]] size_t number_of_generators() const noexcept {
+      return _gens.size();
+    }
+
+    //! \brief Returns a const reference to the vector of generators.
+    //!
+    //! \returns A value of type `std::vector<Element>`.
+    //!
+    //! \exceptions
+    //! \noexcept
+    //!
+    //! \complexity
+    //! Constant.
+    [[nodiscard]] std::vector<Element> const& generators() const noexcept {
+      return _gens;
+    }
 
     //! \brief Returns the position of a point in the so far discovered
     //! points.

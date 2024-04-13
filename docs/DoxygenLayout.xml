@@ -6,6 +6,11 @@
   <!-- Navigation index tabs for HTML output -->
   <navindex>
     <tab type="user" visible="yes" url="@ref md_install" title="Install" />
+    <tab type="usergroup" visible="yes" url="@ref actions_group" title="Action" >
+      <tab type="usergroup" visible="yes" url="actions__group.html#nested-classes" title="Classes" >
+        <tab type="user" visible="yes" url="@ref libsemigroups::Action" title="Action" />
+      </tab>
+    </tab>
     <tab type="usergroup" visible="yes" url="@ref congruences_group" title="Congruences" >
       <tab type="usergroup" visible="yes" url="group__congruences__group.html#nested-classes" title="Classes" >
         <tab type="user" visible="yes" url="@ref libsemigroups::SimsStats" title="SimsStats" />
