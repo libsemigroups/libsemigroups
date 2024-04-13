@@ -7,7 +7,7 @@ This module partially generates pybind11 bindings from the doxygen output in doc
 # TODO(0):
 # * enums
 # * static mem_fns
-# *
+# * operators
 
 import os
 import re
@@ -23,7 +23,6 @@ import bs4
 from bs4 import BeautifulSoup
 
 __DOXY_DICT = {}
-__PARAMS_T_SUBSTITUTIONS = {"bool (*)": "bool(*)()"}
 __EXCEPTIONAL_MEM_FN = {
     "run_for": "(void (%s::*)(std::chrono::nanoseconds))& Runner::run_for",
     "run_until": "(void (%s::*)(std::function<bool()> &)) & Runner::run_until",
