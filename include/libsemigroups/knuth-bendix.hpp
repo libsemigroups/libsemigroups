@@ -798,7 +798,7 @@ namespace libsemigroups {
 
     // REVIEW None of these \sa's exist anymore. Should it be \ref
     // number_of_classes and \ref normal_forms?
-    //! \brief Return the Gilman \Ref WordGraph.
+    //! \brief Return the Gilman \ref WordGraph.
     //!
     //! Return the Gilman WordGraph of the system.
     //!

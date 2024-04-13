@@ -22,6 +22,26 @@
 namespace libsemigroups {
 
   ////////////////////////////////////////////////////////////////////////
+  // Action - friends
+  ////////////////////////////////////////////////////////////////////////
+
+  template <typename Element,
+            typename Point,
+            typename Func,
+            typename Traits,
+            side LeftOrRight>
+  std::ostringstream&
+  operator<<(std::ostringstream&                                      os,
+             Action<Element, Point, Func, Traits, LeftOrRight> const& action) {
+    os << fmt::format("<{} {} action with {} generators, {} points>",
+                      action.finished() ? "closed" : "open",
+                      LeftOrRight,
+                      action.number_of_generators(),
+                      action.current_size());
+    return os;
+  }
+
+  ////////////////////////////////////////////////////////////////////////
   // Action - nested classes - private
   ////////////////////////////////////////////////////////////////////////
 
@@ -66,6 +86,7 @@ namespace libsemigroups {
     Options(Options&&)                 = default;
     Options& operator=(Options const&) = default;
     Options& operator=(Options&&)      = default;
+
     Options& init() {
       _cache_scc_multipliers = false;
       return *this;
