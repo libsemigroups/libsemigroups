@@ -7,7 +7,8 @@ This module partially generates pybind11 bindings from the doxygen output in doc
 # TODO(0):
 # * enums
 # * static mem_fns
-# * operators
+# * repr
+# * update the requirements.txt file
 
 import os
 import re
@@ -123,6 +124,10 @@ def __error(msg: str) -> None:
     sys.stderr.write(f"\033[0;31m{msg}\n\033[0m")
 
 
+def __bold(msg: str) -> None:
+    sys.stderr.write(f"\033[1m{msg}\n\033[0m")
+
+
 def __parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         prog="generate_pybind11", usage="%(prog)s [options]"
@@ -163,6 +168,12 @@ def doxygen_filename(thing: str) -> str:
             return fname
     __error(f'Can\'t find the doxygen file for "{orig}" IGNORING!!!')
     return ""
+
+
+# TODO doesn't seem to work for "Bipartition::at", this is because we cannot
+# currently distinguish between const and non-const mem fns with the same
+# parameters. This could be resolved by adding a 4th parameter here with is
+# const/not const
 
 
 @accepts(str, str, str)
@@ -358,12 +369,41 @@ def is_constructor(class_n: str, mem_fn: str) -> bool:
     return mem_fn.startswith(class_n.split("::")[-1])
 
 
+@cache
+@accepts(str, str)
+def is_operator(_: str, mem_fn: str) -> bool:
+    return mem_fn.startswith("operator") or mem_fn == "at"
+
+
 @accepts(str, str)
 def try_rewrite_exceptional_mem_fn(class_n: str, mem_fn: str) -> str:
     try:
         return __EXCEPTIONAL_MEM_FN[mem_fn] % class_n
     except KeyError:
         return ""
+
+
+# TODO combine with translate_cpp_to_py
+def translate_cpp_operator_to_py(mem_fn: str) -> str:
+    translator = {
+        "operator==": "__eq__",
+        "operator!=": "__ne__",
+        "operator<": "__lt__",
+        "operator>": "__gt__",
+        "operator<=": "__le__",
+        "operator>=": "__ge__",
+        "operator+": "__add__",
+        "operator*": "__mul__",
+        "at": "__getitem__",
+        "operator()": "__call__",
+        "operator*=": "__imul__",
+        "operator+=": "__iadd__",
+    }
+    if mem_fn in translator:
+        return translator[mem_fn]
+
+    __error(f"Unknown operator {mem_fn}")
+    return mem_fn
 
 
 ########################################################################
@@ -373,6 +413,10 @@ def try_rewrite_exceptional_mem_fn(class_n: str, mem_fn: str) -> str:
 
 @accepts(str)
 def translate_cpp_to_py(type_: str) -> str:
+    type_ = re.sub(r"<.*?>", "", type_)
+    type_ = re.sub(r"\bconst\b", "", type_)
+    type_ = re.sub(r"\&", "", type_)
+    type_ = type_.strip()
     if type_ == "std::out_of_range":
         return "IndexError"
     if type_ == "std::bad_alloc":
@@ -389,9 +433,8 @@ def translate_cpp_to_py(type_: str) -> str:
         return "True"
     if type_ == "false":
         return "False"
-    type_ = re.sub(r"<.*?>", "", type_)
-    type_ = re.sub(r"\bconst\b", "", type_)
-    type_ = re.sub(r"\&", "", type_)
+    if type_ == "void":
+        return "None"
     return type_
 
 
@@ -455,11 +498,11 @@ def convert_to_rst(xml, context=[]):
             result += convert_to_rst(x, context)
         elif x.name == "parameterlist" and x.attrs["kind"] == "exception":
             for y in x.find_all("parameteritem"):
-                result += "\n\n"
-                # TODO should be :raises LibsemigroupsError: description
-                result += ":raises: " + " " * 3
-                result += convert_to_rst(y.find("parametername"), context)
-                result += convert_to_rst(y.find("parameterdescription"), context)
+                exception = y.find("parametername").text
+                if exception != "(None)":
+                    result += "\n\n"
+                    result += f":raises {translate_cpp_to_py(exception)}: "
+                    result += convert_to_rst(y.find("parameterdescription"), context)
         elif x.name == "simplesect" and x.attrs["kind"] == "see":
             result += "\n\n.. seealso:: " + convert_to_rst(x, context)
         elif x.name == "ref":
@@ -540,8 +583,11 @@ def pybind11_fn_params(thing, fn, params_t):
 @accepts(str, str, str)
 def pybind11_doc(thing, fn, params_t):
     xml = get_xml(thing, fn, params_t)
-    doc = xml.find("briefdescription").text.strip() + "\n"
+    brief = xml.find("briefdescription").text.strip()
     detailed = xml.find("detaileddescription")
+    doc = ""
+    if brief:
+        doc += brief + "\n"
 
     # get param text (if any)
     params = detailed.find_all("parameterlist")
@@ -559,7 +605,7 @@ def pybind11_doc(thing, fn, params_t):
                 des = ""
             doc += f"\n:param {nam}: {des}"
             try:
-                doc += f"\n:type {nam}: {translate_cpp_to_py(params_d[nam])}"
+                doc += f"\n:type {nam}: {translate_cpp_to_py(params_d[nam])}\n"
             except KeyError:
                 __error(
                     f'Can\'t find the parameter "{nam}" for "{thing}::{fn}({params_t})" IGNORING!!!'
@@ -573,17 +619,28 @@ def pybind11_doc(thing, fn, params_t):
         if len(params) > 0:
             doc += "\n"
         doc += f"\n\n:returns: {convert_to_rst(return_[0])}"
-        doc += f"\n\n:rtype: {translate_cpp_to_py(return_type(thing, fn, params_t))}"
+        doc += f"\n\n:rtype: {translate_cpp_to_py(return_type(thing, fn, params_t))}\n"
     return rst_fmt(doc)
+
+
+def pybind11_operator(thing: str, fn: str, params_t: str) -> str:
+    assert is_operator(thing, fn)
+    op = fn[len("operator") :]
+    if op not in ("[]"):
+        return f"py::self {op} py::self"
+    return f'"{translate_cpp_operator_to_py(fn)}", &{shortname_(thing)}::{fn}, py::is_operator()'
 
 
 @accepts(str, str, str)
 def pybind11_mem_fn(thing: str, fn: str, params_t: str) -> str:
     if is_constructor(thing, fn):
+        if "&&" in params_t:
+            return ""
         if is_class_template(thing):
             params_t = re.sub(shortname(thing), shortname_(thing), params_t)
         return f".def(py::init<{params_t}>())\n"
     func = try_rewrite_exceptional_mem_fn(thing, fn)
+    short_mem_fn = f'"{shortname(fn)}", '
     if not func:
         # Use lambdas not overload_cast
         if is_overloaded(thing, fn):
@@ -599,18 +656,21 @@ def pybind11_mem_fn(thing: str, fn: str, params_t: str) -> str:
                     return self.{fn}({", ".join(param_names(thing, fn, params_t))});
                     }}"""
         else:
-            func = f"&{shortname_(thing)}::{fn}"
+            if is_operator(thing, fn):
+                func = pybind11_operator(thing, fn, params_t)
+                short_mem_fn = ""
+            else:
+                func = f"&{shortname_(thing)}::{fn}"
 
     params_n = pybind11_fn_params(thing, fn, params_t)
-    short_mem_fn = shortname(fn)
     if len(params_n) > 0:
-        return f""".def("{short_mem_fn}",
+        return f""".def({short_mem_fn}
 {func},
 {params_n},
 R"pbdoc(
 {pybind11_doc(thing, fn, params_t)}
 )pbdoc")\n"""
-    return f""".def("{short_mem_fn}",
+    return f""".def({short_mem_fn}
 {func},
 R"pbdoc(
 {pybind11_doc(thing, fn, params_t)}
@@ -625,11 +685,17 @@ R"pbdoc(
 @accepts(str, str, str)
 def skip_fn(thing: str, fn: str, params_t: str) -> bool:
     if (
-        fn.startswith("operator")
-        or fn.endswith("_type")
-        or "iterator" in fn
-        or fn.endswith("_no_checks")
-        or "initializer_list" in params_t
+        fn.endswith("_type")  # type definition
+        or "iterator" in fn  # type definition
+        or fn.endswith("_no_checks")  # don't offer no_checks functions by default
+        or "initializer_list" in params_t  # no python analogue of initializer_list
+        or fn.startswith("cbegin")  # use `make_iterator` instead (TODO add this)
+        or fn.startswith("cend")
+        or fn.startswith("begin")
+        or fn.startswith("end")
+        # copy/move assignment op no python analogue, operator[] is no checks
+        # so skip it
+        or fn in ("operator=", "operator[]")
     ):
         return True
     try:
@@ -674,8 +740,16 @@ def main():
         else:
             print(__NON_TEMPLATE_FOOTER)
     print(__FOOTER)
-    __error(
-        """Things to do to include the generated code in _libsemigroups_pybind11:
+    __bold(
+        """
+Current limitations:
+
+* if a member function is overloaded because there is a const and a non-const
+  version, then this is not detected, and the generated code will not compile.
+  For example, Bipartition::at has const and non-const overloads with the same
+  parameters.
+
+Things to do to include the generated code in _libsemigroups_pybind11:
 
 1. add the generated code to a cpp file in libsemigroups_pybind11/src
 
@@ -683,8 +757,6 @@ def main():
 
 3. add your name in place of TODO in the copyright statement in line 3 of the
    generated file
-
-4. Add a `__repr__` method to any classes that might benefit from one.
 
 4. declare the function init_TODO in libsemigroups_pybind11/src/main.hpp
 
