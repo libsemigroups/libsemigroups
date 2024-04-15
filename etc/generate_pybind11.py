@@ -6,9 +6,7 @@ This module partially generates pybind11 bindings from the doxygen output in doc
 
 # TODO(0):
 # * enums
-# * repr
 # * update the requirements.txt file
-# * iterator
 
 import os
 import re
@@ -382,7 +380,13 @@ def is_constructor(class_n: str, mem_fn: str) -> bool:
 @cache
 @accepts(str, str)
 def is_operator(_: str, mem_fn: str) -> bool:
-    return mem_fn.startswith("operator") or mem_fn == "at" or mem_fn == "hash_value"
+    return mem_fn.startswith("operator") or mem_fn in ("at", "hash_value")
+
+
+@cache
+@accepts(str, str)
+def is_iterator(_: str, mem_fn: str) -> bool:
+    return mem_fn.startswith("cbegin") or mem_fn.startswith("begin")
 
 
 @accepts(str, str)
@@ -450,6 +454,8 @@ def translate_cpp_to_py(type_: str) -> str:
         return "None"
     if type_ == "std::vector":
         return "list"
+    if "iterator" in type_:
+        return "Iterator"
     return type_
 
 
@@ -646,19 +652,29 @@ def pybind11_operator(thing: str, fn: str, params_t: str) -> str:
     return f'"{translate_cpp_operator_to_py(fn)}", &{shortname_(thing)}::{fn}, py::is_operator()'
 
 
+def pybind11_iterator(thing: str, fn: str, param_names: str) -> str:
+    assert is_iterator(thing, fn)
+    if fn.startswith("begin"):
+        pos = 5
+        prefix = ""
+    else:
+        pos = 6
+        prefix = "c"
+    end = f"{prefix}end{fn[pos:]}"
+    return f"py::make_iterator(self.{fn}({param_names}), self.{end}({param_names}))"
+
+
 @accepts(str, str, str)
 def pybind11_mem_fn(thing: str, fn: str, params_t: str) -> str:
     if is_constructor(thing, fn):
-        if "&&" in params_t:
-            return ""
         if is_class_template(thing):
             params_t = re.sub(shortname(thing), shortname_(thing), params_t)
         return f".def(py::init<{params_t}>())\n"
     func = try_rewrite_exceptional_mem_fn(thing, fn)
-    short_mem_fn = f'"{shortname(fn)}", '
+    py_fn_name = f'"{shortname(fn)}", '
     if not func:
         # Use lambdas not overload_cast
-        if is_overloaded(thing, fn):
+        if is_overloaded(thing, fn) or is_iterator(thing, fn):
             sig = fn_sig(thing, fn, params_t)
             if not is_namespace(thing):
                 if is_const_mem_fn(thing, fn, params_t):
@@ -667,15 +683,23 @@ def pybind11_mem_fn(thing: str, fn: str, params_t: str) -> str:
                     sig = ", ".join([f"{shortname_(thing)}& self"] + sig)
             else:
                 sig = ", ".join(sig)
-            func = f"""[]({sig}) {{
-                    return self.{fn}({", ".join(param_names(thing, fn, params_t))});
-                    }}"""
-        else:
-            if is_operator(thing, fn):
-                func = pybind11_operator(thing, fn, params_t)
-                short_mem_fn = ""
+
+            param_n = ", ".join(param_names(thing, fn, params_t))
+            if is_iterator(thing, fn):
+                pos = fn.find("_")
+                suffix = fn[pos:] if pos != -1 else ""
+                py_fn_name = f'"iterator{suffix}"'
+                fun_body = pybind11_iterator(thing, fn, param_n)
             else:
-                func = f"&{shortname_(thing)}::{fn}"
+                fun_body = f"self.{fn}({param_n})"
+            func = f"""[]({sig}) {{
+return {fun_body};
+}}"""
+        elif is_operator(thing, fn):
+            func = pybind11_operator(thing, fn, params_t)
+            py_fn_name = ""
+        else:
+            func = f"&{shortname_(thing)}::{fn}"
 
     params_n = pybind11_fn_params(thing, fn, params_t)
     if is_static_mem_fn(thing, fn, params_t):
@@ -683,13 +707,13 @@ def pybind11_mem_fn(thing: str, fn: str, params_t: str) -> str:
     else:
         def_ = "def"
     if len(params_n) > 0:
-        return f""".{def_}({short_mem_fn}
+        return f""".{def_}({py_fn_name}
 {func},
 {params_n},
 R"pbdoc(
 {pybind11_doc(thing, fn, params_t)}
 )pbdoc")\n"""
-    return f""".{def_}({short_mem_fn}
+    return f""".{def_}({py_fn_name}
 {func},
 R"pbdoc(
 {pybind11_doc(thing, fn, params_t)}
@@ -712,13 +736,15 @@ def skip_fn(thing: str, fn: str, params_t: str) -> bool:
         or "iterator" in fn  # type definition
         or fn.endswith("_no_checks")  # don't offer no_checks functions by default
         or "initializer_list" in params_t  # no python analogue of initializer_list
-        or fn.startswith("cbegin")  # use `make_iterator` instead (TODO add this)
+        # only create a make_iterator for cbegin/begin
         or fn.startswith("cend")
-        or fn.startswith("begin")
         or fn.startswith("end")
         # copy/move assignment op no python analogue, operator[] is no checks
         # so skip it
         or fn in ("operator=", "operator[]", "operator<<")
+        or "&&" in params_t
+        or "*" in params_t
+        or "*" in return_type(thing, fn, params_t)
     ):
         return True
     try:
