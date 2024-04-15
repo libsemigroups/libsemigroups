@@ -6,7 +6,6 @@ This module partially generates pybind11 bindings from the doxygen output in doc
 
 # TODO(0):
 # * enums
-# * static mem_fns
 # * repr
 # * update the requirements.txt file
 
@@ -282,6 +281,15 @@ def is_overloaded(thing: str, fn: str) -> bool:
 @accepts(str)
 def is_namespace(thing: str) -> bool:
     return "namespace" in doxygen_filename(thing)
+
+
+@cache
+@accepts(str, str, str)
+def is_static_mem_fn(thing: str, fn: str, params_t: str) -> bool:
+    if is_namespace(thing):
+        return False
+    xml = get_xml(thing, fn, params_t)
+    return xml["static"] == "yes"
 
 
 @cache
@@ -663,14 +671,18 @@ def pybind11_mem_fn(thing: str, fn: str, params_t: str) -> str:
                 func = f"&{shortname_(thing)}::{fn}"
 
     params_n = pybind11_fn_params(thing, fn, params_t)
+    if is_static_mem_fn(thing, fn, params_t):
+        def_ = "def_static"
+    else:
+        def_ = "def"
     if len(params_n) > 0:
-        return f""".def({short_mem_fn}
+        return f""".{def_}({short_mem_fn}
 {func},
 {params_n},
 R"pbdoc(
 {pybind11_doc(thing, fn, params_t)}
 )pbdoc")\n"""
-    return f""".def({short_mem_fn}
+    return f""".{def_}({short_mem_fn}
 {func},
 R"pbdoc(
 {pybind11_doc(thing, fn, params_t)}
