@@ -8,6 +8,7 @@ This module partially generates pybind11 bindings from the doxygen output in doc
 # * enums
 # * repr
 # * update the requirements.txt file
+# * iterator
 
 import os
 import re
@@ -169,10 +170,10 @@ def doxygen_filename(thing: str) -> str:
     return ""
 
 
-# TODO doesn't seem to work for "Bipartition::at", this is because we cannot
-# currently distinguish between const and non-const mem fns with the same
-# parameters. This could be resolved by adding a 4th parameter here with is
-# const/not const
+# TODO doesn't seem to work for "Bipartition::at", this is because
+# we cannot currently distinguish between const and non-const mem
+# fns with the same parameters. This could be resolved by adding a
+# 4th parameter here with is const/not const
 
 
 @accepts(str, str, str)
@@ -252,9 +253,10 @@ def is_public_fn(thing: str, fn: str, params_t: str) -> bool:
 @accepts(str)
 def class_template_params(thing: str) -> list[str]:
     result = []
-    if is_namespace(thing):
+    doxy_file = doxygen_filename(thing)
+    if is_namespace(thing) or not doxy_file:
         return result
-    with open(doxygen_filename(thing), "r", encoding="utf-8") as xml:
+    with open(doxy_file, "r", encoding="utf-8") as xml:
         xml = BeautifulSoup(xml, "xml")
         for x in xml.doxygen.compounddef.children:
             if x.name == "templateparamlist":
@@ -380,7 +382,7 @@ def is_constructor(class_n: str, mem_fn: str) -> bool:
 @cache
 @accepts(str, str)
 def is_operator(_: str, mem_fn: str) -> bool:
-    return mem_fn.startswith("operator") or mem_fn == "at"
+    return mem_fn.startswith("operator") or mem_fn == "at" or mem_fn == "hash_value"
 
 
 @accepts(str, str)
@@ -402,10 +404,11 @@ def translate_cpp_operator_to_py(mem_fn: str) -> str:
         "operator>=": "__ge__",
         "operator+": "__add__",
         "operator*": "__mul__",
-        "at": "__getitem__",
         "operator()": "__call__",
         "operator*=": "__imul__",
         "operator+=": "__iadd__",
+        "at": "__getitem__",
+        "hash_value": "__hash__",
     }
     if mem_fn in translator:
         return translator[mem_fn]
@@ -421,9 +424,11 @@ def translate_cpp_operator_to_py(mem_fn: str) -> str:
 
 @accepts(str)
 def translate_cpp_to_py(type_: str) -> str:
-    type_ = re.sub(r"<.*?>", "", type_)
     type_ = re.sub(r"\bconst\b", "", type_)
     type_ = re.sub(r"\&", "", type_)
+    if type_ == "std::vector<uint8_t>":
+        return "list[int]"
+    type_ = re.sub(r"<.*?>", "", type_)
     type_ = type_.strip()
     if type_ == "std::out_of_range":
         return "IndexError"
@@ -433,7 +438,7 @@ def translate_cpp_to_py(type_: str) -> str:
         return "ValueError"
     if type_ == "LibsemigroupsException":
         return "LibsemigroupsError"
-    if type_ in ("size_t", "uint32_t", "size_type"):
+    if type_ in ("size_t", "uint32_t", "size_type", "uint64_t"):
         return "int"
     if type_ in ("this", "*this"):
         return "self"
@@ -443,6 +448,8 @@ def translate_cpp_to_py(type_: str) -> str:
         return "False"
     if type_ == "void":
         return "None"
+    if type_ == "std::vector":
+        return "list"
     return type_
 
 
@@ -633,8 +640,8 @@ def pybind11_doc(thing, fn, params_t):
 
 def pybind11_operator(thing: str, fn: str, params_t: str) -> str:
     assert is_operator(thing, fn)
-    op = fn[len("operator") :]
-    if op not in ("[]"):
+    op = fn[len("operator") :] if fn.startswith("operator") else fn
+    if op not in ("at", "hash_value"):
         return f"py::self {op} py::self"
     return f'"{translate_cpp_operator_to_py(fn)}", &{shortname_(thing)}::{fn}, py::is_operator()'
 
@@ -689,6 +696,10 @@ R"pbdoc(
 )pbdoc")\n"""
 
 
+def pybind11_default_repr(thing: str) -> str:
+    return f'.def("__repr__", &detail::to_string<{shortname_(thing)}> const&>)\n'
+
+
 ########################################################################
 # The main event
 ########################################################################
@@ -707,7 +718,7 @@ def skip_fn(thing: str, fn: str, params_t: str) -> bool:
         or fn.startswith("end")
         # copy/move assignment op no python analogue, operator[] is no checks
         # so skip it
-        or fn in ("operator=", "operator[]")
+        or fn in ("operator=", "operator[]", "operator<<")
     ):
         return True
     try:
@@ -724,6 +735,7 @@ def generate(thing: str) -> str:
     if len(doxygen_filename(thing)) == 0:
         return ""
     out = pybind11_stub(thing)
+    out += pybind11_default_repr(thing)
     fns = get_xml(thing)
     for fn, overloads in fns.items():
         for params in overloads:
@@ -760,6 +772,10 @@ Current limitations:
   version, then this is not detected, and the generated code will not compile.
   For example, Bipartition::at has const and non-const overloads with the same
   parameters.
+
+* the default method for "__repr__" that is generated uses
+  libsemigroups::detail::to_string, which must be implemented or it won't
+  compile.
 
 Things to do to include the generated code in _libsemigroups_pybind11:
 
