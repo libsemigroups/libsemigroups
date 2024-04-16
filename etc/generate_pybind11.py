@@ -803,6 +803,9 @@ Current limitations:
   libsemigroups::detail::to_string, which must be implemented or it won't
   compile.
 
+* free functions in the namespace `libsemigroups` (so not in a nested
+  namespace) are not picked up by this script at all.
+
 Things to do to include the generated code in _libsemigroups_pybind11:
 
 1. add the generated code to a cpp file in libsemigroups_pybind11/src
