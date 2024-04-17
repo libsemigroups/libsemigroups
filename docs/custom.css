@@ -12,3 +12,9 @@
   width: 72px;
   height: 72px;
 }
+
+#nav-tree .label[role="heading"] {
+  text-transform: uppercase;
+  color: var(--primary-dark-color);
+  font-weight: 600;
+}
