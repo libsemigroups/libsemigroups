@@ -18,6 +18,7 @@
 
 // The purpose of this file is to test the Runner class.
 
+#include <chrono>
 #include <cstddef>  // for size_t
 
 #include "catch.hpp"      // for REQUIRE, REQUIRE_NOTHROW
@@ -68,6 +69,53 @@ namespace libsemigroups {
         return started();
       }
     };
+
+    class TestRunner4 : public Runner {
+     private:
+      void run_impl() override {
+        std::this_thread::sleep_for(std::chrono::milliseconds(10));
+        LIBSEMIGROUPS_EXCEPTION("testing");
+      }
+
+      bool finished_impl() const override {
+        return started();
+      }
+    };
+
+    LIBSEMIGROUPS_TEST_CASE("Reporter", "010", "Code coverage", "[quick]") {
+      Reporter r;
+      REQUIRE(!r.report());
+      REQUIRE(r.report_every() == std::chrono::seconds(1));
+      r.report_every(std::chrono::seconds(2));
+      REQUIRE(r.report_every() == std::chrono::seconds(2));
+      REQUIRE_NOTHROW(r.last_report());
+      r.reset_last_report();
+      REQUIRE(delta(r.last_report()) < std::chrono::seconds(1));
+      r.report_prefix("Banana");
+      REQUIRE(r.report_prefix() == "Banana");
+      r.init();
+      REQUIRE(r.report_prefix() == "");
+      REQUIRE(r.report_every() == std::chrono::seconds(1));
+      r.report_prefix("Banana");
+      r.report_every(std::chrono::seconds(32));
+
+      Reporter s;
+      s = r;
+      REQUIRE(s.report_prefix() == "Banana");
+      REQUIRE(s.report_every() == std::chrono::seconds(32));
+      REQUIRE(s.last_report() == r.last_report());
+      s.init();
+      REQUIRE(s.report_prefix() == "");
+      REQUIRE(s.report_every() == std::chrono::seconds(1));
+
+      Reporter t(std::move(r));
+      REQUIRE(t.report_prefix() == "Banana");
+      REQUIRE(t.report_every() == std::chrono::seconds(32));
+
+      t = std::move(s);
+      REQUIRE(t.report_prefix() == "");
+      REQUIRE(t.report_every() == std::chrono::seconds(1));
+    }
 
     LIBSEMIGROUPS_TEST_CASE("Runner", "000", "run_for", "[quick]") {
       auto        rg = ReportGuard(REPORT);
@@ -215,6 +263,55 @@ namespace libsemigroups {
       REQUIRE(tr.finished());
       REQUIRE(tr.stopped());
       REQUIRE(!tr.dead());
+
+      tr.init();
+      REQUIRE(!tr.finished());
+      REQUIRE(!tr.stopped());
+      REQUIRE(!tr.dead());
+    }
+
+    LIBSEMIGROUPS_TEST_CASE("Runner",
+                            "011",
+                            "run throws an exception",
+                            "[quick][no-valgrind]") {
+      TestRunner4 tr;
+      REQUIRE_THROWS_AS(tr.run(), LibsemigroupsException);
+      REQUIRE(tr.current_state() == Runner::state::not_running);
+      REQUIRE(tr.finished());
+      REQUIRE_NOTHROW(tr.run_for(std::chrono::seconds(1)));
+      REQUIRE(tr.current_state() == Runner::state::not_running);
+      tr.init();
+      REQUIRE(!tr.finished());
+      REQUIRE(!tr.dead());
+      REQUIRE(tr.current_state() == Runner::state::never_run);
+      REQUIRE_THROWS_AS(tr.run_for(std::chrono::seconds(1)),
+                        LibsemigroupsException);
+      REQUIRE_THROWS_AS(tr.run(), LibsemigroupsException);
+      REQUIRE(tr.finished());
+      auto rg = ReportGuard();
+      REQUIRE_NOTHROW(tr.run_for(std::chrono::seconds(1)));
+    }
+
+    LIBSEMIGROUPS_TEST_CASE("Runner",
+                            "012",
+                            "run throws an exception",
+                            "[quick][no-valgrind]") {
+      TestRunner3 tr;
+      REQUIRE(!tr.started());
+      tr.run();
+      REQUIRE(tr.finished());
+
+      TestRunner3 copy;
+      copy = tr;  // test copy assignment
+      REQUIRE(copy.finished());
+      REQUIRE(copy.current_state() == tr.current_state());
+
+      TestRunner3 other(std::move(copy));
+      REQUIRE(other.finished());
+      REQUIRE(other.current_state() == tr.current_state());
+
+      other = std::move(tr);
+      REQUIRE(other.finished());
     }
 
   }  // namespace detail
