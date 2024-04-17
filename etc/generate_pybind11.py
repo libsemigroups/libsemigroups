@@ -22,11 +22,8 @@ import bs4
 from bs4 import BeautifulSoup
 
 __DOXY_DICT = {}
-__EXCEPTIONAL_MEM_FN = {
-    "run_for": "(void (%s::*)(std::chrono::nanoseconds))& Runner::run_for",
-    "run_until": "(void (%s::*)(std::function<bool()> &)) & Runner::run_until",
-    "report_every": "(void (%s::*)(std::chrono::nanoseconds)) & Runner::report_every",
-}
+__ABSTRACT_CLASSES = {}
+
 
 __COPYRIGHT = """
 //
@@ -57,11 +54,14 @@ __HEADERS = """
 
 // libsemigroups headers
 // #include<libsemigroups/libsemigroups.hpp>
-// TODO complete or delete
+// TODO uncomment/delete
 
 // pybind11....
+// #include <pybind11/chrono.h>
+// #include <pybind11/functional.h>
 // #include <pybind11/pybind11.h>
-// TODO complete or delete
+// #include <pybind11/stl.h>
+// TODO uncomment/delete
 
 // libsemigroups_pybind11....
 #include "main.hpp"  // for init_TODO
@@ -177,7 +177,7 @@ def doxygen_filename(thing: str) -> str:
 @accepts(str, str, str)
 def get_xml(
     thing: str, fn: str | None = None, params_t: str | None = None
-) -> dict[str, bs4.element.Tag]:
+) -> dict[str, bs4.element.Tag]:  # FIXME the return type is not correct
     """
     Returns the xml entity of thing::fn(params_t).
 
@@ -197,6 +197,11 @@ def get_xml(
     if thing not in __DOXY_DICT:
         with open(doxygen_filename(thing), "r", encoding="utf-8") as xml:
             xml = BeautifulSoup(xml, "xml")
+            compounddefs = xml.find_all("compounddef")
+
+            for compounddef in compounddefs:
+                if "abstract" in compounddef.attrs and compounddef["abstract"] == "yes":
+                    __ABSTRACT_CLASSES[thing] = True  # TODO could use set
             fn_list = xml.find_all("memberdef")
             fn_dict = {}
 
@@ -246,6 +251,20 @@ def is_enum(thing: str, fn: str, params_t: str) -> bool:
     xml = get_xml(thing, fn, params_t)
     kind = xml.get("kind")
     return kind is not None and kind == "enum"
+
+
+@cache
+@accepts(str, str, str)
+def is_typedef(thing: str, fn: str, params_t: str) -> bool:
+    xml = get_xml(thing, fn, params_t)
+    kind = xml.get("kind")
+    return kind is not None and kind == "typedef"
+
+
+@cache
+@accepts(str)
+def is_abstract_class(thing: str) -> bool:  # TODO move to the correct place
+    return thing in __ABSTRACT_CLASSES
 
 
 ########################################################################
@@ -393,14 +412,6 @@ def is_operator(_: str, mem_fn: str) -> bool:
 @accepts(str, str)
 def is_iterator(_: str, mem_fn: str) -> bool:
     return mem_fn.startswith("cbegin") or mem_fn.startswith("begin")
-
-
-@accepts(str, str)
-def try_rewrite_exceptional_mem_fn(class_n: str, mem_fn: str) -> str:
-    try:
-        return __EXCEPTIONAL_MEM_FN[mem_fn] % class_n
-    except KeyError:
-        return ""
 
 
 # TODO combine with translate_cpp_to_py
@@ -672,16 +683,16 @@ def pybind11_iterator(thing: str, fn: str, param_names: str) -> str:
 
 def pybind11_enum(thing: str, fn: str, param_types: str) -> str:
     assert is_enum(thing, fn, param_types)
-    enum_cpp_name = f"{thing}::{fn}"
-    enum_py_name = f"{thing}__{fn}"
+    enum_cpp_name = f"{shortname(thing)}::{fn}"
+    enum_py_name = f"{shortname(thing)}__{fn}"
     result = f"""py::enum_<{enum_cpp_name}>(m, "{enum_py_name}", R"pbdoc(
 {pybind11_doc(thing, fn, param_types)}
 )pbdoc")"""
     xml = get_xml(thing, fn, param_types)
     for enum_val in xml.find_all("enumvalue"):
         name = enum_val.find("name").text
-        result += f'\n.value("{name}", {fn}::{name})'
-    return result + ";"
+        result += f'\n.value("{name}", {shortname(thing)}::{fn}::{name})'
+    return result + ";\n"
 
 
 @accepts(str, str, str)
@@ -689,39 +700,39 @@ def pybind11_fn(thing: str, fn: str, params_t: str) -> str:
     if is_enum(thing, fn, params_t) and is_public(thing, fn, params_t):
         return pybind11_enum(thing, fn, params_t)
     if is_constructor(thing, fn):
+        if is_abstract_class(thing):
+            return ""
         if is_class_template(thing):
             params_t = re.sub(shortname(thing), shortname_(thing), params_t)
         return f"thing.def(py::init<{params_t}>());\n"  # TODO include doc here too
-    func = try_rewrite_exceptional_mem_fn(thing, fn)  # TODO required?
     py_fn_name = f'"{shortname(fn)}", '
-    if not func:
-        # Use lambdas not overload_cast
-        if is_overloaded(thing, fn) or is_iterator(thing, fn):
-            sig = fn_sig(thing, fn, params_t)
-            if not is_namespace(thing):
-                if is_const_mem_fn(thing, fn, params_t):
-                    sig = ", ".join([f"{shortname_(thing)} const& self"] + sig)
-                else:
-                    sig = ", ".join([f"{shortname_(thing)}& self"] + sig)
+    # Use lambdas not overload_cast
+    if is_overloaded(thing, fn) or is_iterator(thing, fn):
+        sig = fn_sig(thing, fn, params_t)
+        if not is_namespace(thing):
+            if is_const_mem_fn(thing, fn, params_t):
+                sig = ", ".join([f"{shortname_(thing)} const& self"] + sig)
             else:
-                sig = ", ".join(sig)
+                sig = ", ".join([f"{shortname_(thing)}& self"] + sig)
+        else:
+            sig = ", ".join(sig)
 
-            param_n = ", ".join(param_names(thing, fn, params_t))
-            if is_iterator(thing, fn):
-                pos = fn.find("_")
-                suffix = fn[pos:] if pos != -1 else ""
-                py_fn_name = f'"iterator{suffix}"'
-                fun_body = pybind11_iterator(thing, fn, param_n)
-            else:
-                fun_body = f"self.{fn}({param_n})"
-            func = f"""[]({sig}) {{
+        param_n = ", ".join(param_names(thing, fn, params_t))
+        if is_iterator(thing, fn):
+            pos = fn.find("_")
+            suffix = fn[pos:] if pos != -1 else ""
+            py_fn_name = f'"iterator{suffix}"'
+            fun_body = pybind11_iterator(thing, fn, param_n)
+        else:
+            fun_body = f"self.{fn}({param_n})"
+        func = f"""[]({sig}) {{
 return {fun_body};
 }}"""
-        elif is_operator(thing, fn):
-            func = pybind11_operator(thing, fn, params_t)
-            py_fn_name = ""
-        else:
-            func = f"&{shortname_(thing)}::{fn}"
+    elif is_operator(thing, fn):
+        func = pybind11_operator(thing, fn, params_t)
+        py_fn_name = ""
+    else:
+        func = f"&{shortname_(thing)}::{fn}"
 
     params_n = pybind11_fn_params(thing, fn, params_t)
     if is_static_mem_fn(thing, fn, params_t):
@@ -743,7 +754,9 @@ R"pbdoc(
 
 
 def pybind11_default_repr(thing: str) -> str:
-    return f'thing.def("__repr__", &detail::to_string<{shortname_(thing)}> const&>);\n'
+    if is_abstract_class(thing):
+        return ""
+    return f'thing.def("__repr__", &detail::to_string<{shortname_(thing)} const&>);\n'
 
 
 ########################################################################
@@ -754,9 +767,7 @@ def pybind11_default_repr(thing: str) -> str:
 @accepts(str, str, str)
 def skip_fn(thing: str, fn: str, params_t: str) -> bool:
     if (
-        fn.endswith("_type")  # type definition
-        or "iterator" in fn  # type definition
-        or fn.endswith("_no_checks")  # don't offer no_checks functions by default
+        fn.endswith("_no_checks")  # don't offer no_checks functions by default
         or "initializer_list" in params_t  # no python analogue of initializer_list
         # only create a make_iterator for cbegin/begin
         or fn.startswith("cend")
@@ -767,6 +778,7 @@ def skip_fn(thing: str, fn: str, params_t: str) -> bool:
         or "&&" in params_t
         or "*" in params_t
         or "*" in return_type(thing, fn, params_t)
+        or is_typedef(thing, fn, params_t)
     ):
         return True
     try:
@@ -780,6 +792,7 @@ def skip_fn(thing: str, fn: str, params_t: str) -> bool:
 def generate(thing: str) -> str:
     if len(doxygen_filename(thing)) == 0:
         return ""
+    get_xml(thing)  # to ensure is_abstract_class is initialised
     out = pybind11_stub(thing)
     out += pybind11_default_repr(thing)
     fns = get_xml(thing)
@@ -788,7 +801,7 @@ def generate(thing: str) -> str:
             if not isinstance(fn, str) or skip_fn(thing, fn, param_types):
                 continue  # ignore
             out += pybind11_fn(thing, fn, param_types)
-    return out + ";"
+    return out
 
 
 def main():
