@@ -21,6 +21,7 @@
 #ifndef LIBSEMIGROUPS_DETAIL_REPORT_HPP_
 #define LIBSEMIGROUPS_DETAIL_REPORT_HPP_
 
+#include <chrono>   // for std::chrono
 #include <cstddef>  // for size_t
 #include <mutex>    // for mutex, lock_guard
 #include <string>   // for string
@@ -41,7 +42,92 @@ namespace libsemigroups {
     void reset_thread_ids();
 
     bool is_report_suppressed_for(std::string_view);
-  }  // namespace detail
+
+    // This class provides a thread-safe means of calling a function every
+    // second in a detached thread. The purpose of this class is so that the
+    // TickerImpl, which contains the data required by the function to be
+    // called, inside the Ticker, can outlive the Ticker, the TickerImpl is
+    // deleted by the function called in the thread.
+    // TODO(0) prevent too many Tickers being created at a time
+    class Ticker {
+      class TickerImpl;
+
+      TickerImpl* _ticker_impl;
+
+     public:
+      // Construct a Ticker that calls \c func every \c time, until the Ticker
+      // object is destructed.
+      template <typename Func, typename Time = std::chrono::seconds>
+      explicit Ticker(Func&& func, Time time = std::chrono::seconds(1));
+
+      Ticker()                         = delete;
+      Ticker(Ticker const&)            = delete;
+      Ticker(Ticker&&)                 = delete;
+      Ticker& operator=(Ticker const&) = delete;
+      Ticker& operator=(Ticker&&)      = delete;
+
+      ~Ticker();
+    };
+
+    // This object is a helper for formatting information reported by various
+    // classes in libsemigroups such as ToddCoxeter, KnuthBendix, etc.
+    //
+    // The idea is to store the rows in the _rows, and to properly align the
+    // values in each column. This is done by storing the rows and their widths,
+    // then using std::apply to call report_default on the properly aligned
+    // columns. This happens when the ReportCell object is destroyed.
+    template <size_t C>
+    class ReportCell {
+     private:
+      using Row = std::array<std::string, C + 1>;
+
+      std::array<size_t, C + 1> _col_widths;
+      std::vector<Row>          _rows;
+
+     public:
+      ReportCell() : _col_widths(), _rows() {
+        _col_widths.fill(0);
+      }
+
+      ReportCell(ReportCell const&)            = delete;
+      ReportCell(ReportCell&&)                 = delete;
+      ReportCell& operator=(ReportCell const&) = delete;
+      ReportCell& operator=(ReportCell&&)      = delete;
+
+      ~ReportCell() {
+        emit();
+      }
+
+      // Set the minimum width of every column
+      ReportCell& min_width(size_t val) {
+        _col_widths.fill(val);
+        return *this;
+      }
+
+      // Set the minimum width of a specific column
+      ReportCell& min_width(size_t col, size_t val) {
+        LIBSEMIGROUPS_ASSERT(col < C);
+        _col_widths[col + 1] = val;
+        return *this;
+      }
+
+      // Insert a row using a format string and arguments
+      template <typename... Args>
+      void operator()(std::string_view fmt_str, Args&&... args);
+
+      // Insert a row using a function, format string, and arguments. The
+      // function is called on each of the arguments.
+      template <typename Func, typename... Args>
+      void operator()(Func&& f, char const* fmt_str, Args&&... args) {
+        operator()(fmt_str, f(args)...);
+      }
+
+     private:
+      size_t line_width() const;
+
+      void emit();
+    };  // ReportCell
+  }     // namespace detail
 
   bool reporting_enabled() noexcept;
 
@@ -104,5 +190,7 @@ namespace libsemigroups {
     ~SuppressReportFor();
   };
 }  // namespace libsemigroups
+
+#include "report.tpp"
 
 #endif  // LIBSEMIGROUPS_DETAIL_REPORT_HPP_

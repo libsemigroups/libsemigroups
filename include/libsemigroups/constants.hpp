@@ -93,6 +93,9 @@ namespace libsemigroups {
   //! Type for negative infinity.
   using NegativeInfinity = detail::Constant<0, detail::Min>;
 
+  //! \defgroup constants_group Constants
+
+  //! \ingroup
   //! This variable is used to indicate that a value is undefined. \ref
   //! UNDEFINED is comparable with any integral value (signed or unsigned) or
   //! constant via `==` and `!=` but not via `<` or `>`.

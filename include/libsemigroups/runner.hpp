@@ -1,6 +1,6 @@
 //
 // libsemigroups - C++ library for semigroups and monoids
-// Copyright (C) 2019-2023 James D. Mitchell
+// Copyright (C) 2019-2024 James D. Mitchell
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -23,27 +23,75 @@
 #ifndef LIBSEMIGROUPS_RUNNER_HPP_
 #define LIBSEMIGROUPS_RUNNER_HPP_
 
-// TODO(0) check thread safety
-
-#include <atomic>  // for atomic
-#include <chrono>  // for nanoseconds, high_resolution_clock
-#include <thread>  // for ??
+#include <algorithm>    // for max
+#include <array>        // for array
+#include <atomic>       // for atomic
+#include <chrono>       // for time_point, nanoseconds
+#include <cstddef>      // for size_t
+#include <functional>   // for function
+#include <memory>       // for unique_ptr
+#include <mutex>        // for mutex
+#include <string>       // for basic_string, string
+#include <string_view>  // for basic_string_view
+#include <thread>       // for sleep_for, thread
+#include <tuple>        // for apply
+#include <utility>      // for move, forward
+#include <vector>       // for vector
 
 #include "debug.hpp"  // for LIBSEMIGROUPS_ASSERT
 
 #include "detail/function-ref.hpp"  // for FunctionRef
-#include "detail/report.hpp"        // for LibsemigroupsException
+#include "detail/report.hpp"        // for report_default
+#include "detail/string.hpp"        // for unicode_string_length
 
 namespace libsemigroups {
+
+  //! \defgroup misc_group Miscellaneous
+  //! In this section we describe some miscellaneous functionality in
+  //! \c libsemigroups.
+  //!
+  //! * \ref constants_group
+
+  //! \ingroup misc_group
+  //! \brief The time between a point and now.
+  //!
+  //! \param t the time point
+  //!
+  //! \returns The nanoseconds between the time point \p t and now.
+  // Not noexcept because std::chrono::duration_cast isn't
+  [[nodiscard]] static inline std::chrono::nanoseconds
+  delta(std::chrono::high_resolution_clock::time_point const& t) {
+    using std::chrono::duration_cast;
+    using std::chrono::high_resolution_clock;
+    return duration_cast<std::chrono::nanoseconds>(high_resolution_clock::now()
+                                                   - t);
+  }
+
+  //! \ingroup constants_group
+  //! \brief Value indicating forever (system dependent but possibly approx.
+  //! 292 years).
+  //!
+  //! Defined in \c runner.hpp
+  //!
   //! A pseudonym for std::chrono::nanoseconds::max().
   constexpr std::chrono::nanoseconds FOREVER = std::chrono::nanoseconds::max();
 
-  // This class exists so that the "reporting" functionality can be used
-  // independently from the "runner" functionality, for example in
-  // NodeManagedDigraph, Sims1, and so on
+  //! \ingroup misc_group
+  //! \brief Collection of values related to reporting.
+  //!
+  //! Defined in ``runner.hpp``.
+  //!
+  //! This class exists to collect some values related to reporting in its
+  //! derived classes. These values are:
+  //! * report_prefix();
+  //! * report_every();
+  //! * last_report();
+  //! * start_time().
   class Reporter {
    public:
-    using time_point  = std::chrono::high_resolution_clock::time_point;
+    //! \brief Alias for std::chrono::high_resolution_clock::time_point
+    using time_point = std::chrono::high_resolution_clock::time_point;
+    //! \brief Alias for std::chrono::nanoseconds
     using nanoseconds = std::chrono::nanoseconds;
 
    private:
@@ -54,67 +102,61 @@ namespace libsemigroups {
     mutable time_point              _start_time;
 
    public:
+    //! \brief Default constructor.
+    //!
+    //! Default construct a Reporter object such that the following hold:
+    //! * report_prefix() is empty;
+    //! * report_every() is set to 1 second;
+    //! * last_report() is now;
+    //! * start_time() is now.
     // not noexcept because std::string constructor isn't
-    Reporter()
-        : _prefix(),
-          _report_time_interval(),
-          // mutable
-          _last_report(time_point()),
-          _start_time() {
-      // All values set in init
-      init();
-    }
+    Reporter();
 
+    //! \brief Initialize an existing Reporter object.
+    //!
+    //! This function puts a Reporter object back into the same state as if it
+    //! had been newly default constructed.
+    //!
+    //! \returns A reference to \c *this.
+    //!
+    //! \note This function is not thread-safe.
+    //!
+    //! \sa Reporter()
     Reporter& init();
-    // TODO(0) to cpp
-    Reporter(Reporter const& that)
-        : _prefix(that._prefix),
-          _report_time_interval(that._report_time_interval),
-          _last_report(that._last_report.load()),
-          _start_time(that._start_time) {}
 
-    // TODO(0) to cpp
-    Reporter(Reporter&& that)
-        : _prefix(std::move(that._prefix)),
-          _report_time_interval(std::move(that._report_time_interval)),
-          _last_report(that._last_report.load()),
-          _start_time(std::move(that._start_time)) {}
+    //! \brief Default copy constructor
+    Reporter(Reporter const& that);
 
-    // TODO(0) to cpp
-    Reporter& operator=(Reporter const& that) {
-      _prefix               = that._prefix;
-      _report_time_interval = that._report_time_interval;
-      _last_report          = that._last_report.load();
-      _start_time           = that._start_time;
-      return *this;
-    }
+    //! \brief Default move constructor
+    Reporter(Reporter&& that);
 
-    // TODO(0) to cpp
-    Reporter& operator=(Reporter&& that) {
-      _prefix               = std::move(that._prefix);
-      _report_time_interval = std::move(that._report_time_interval);
-      _last_report          = that._last_report.load();
-      _start_time           = std::move(that._start_time);
-      return *this;
-    }
+    //! \brief Default copy assignment operator
+    Reporter& operator=(Reporter const& that);
+
+    //! \brief Default move assignment operator
+    Reporter& operator=(Reporter&& that);
 
     ~Reporter() = default;
 
-    //! Check if it is time to report.
+    //! \brief Check if it is time to report.
     //!
-    //! This function can be used in an implementation of run() (in a
-    //! derived class of Runner) to check if enough time has
-    //! passed that we should report again.
+    //! This function can be used to check if enough time has passed that we
+    //! should report again.  That is if the time between last_report() and now
+    //! is greater than the value of report_every().
+    //!
+    //! If \c true is returned, then last_report() is set to now.
     //!
     //! \returns
-    //! A \c bool.
+    //! A value of type \c bool.
     //!
-    //! \par Parameters
-    //! (None)
+    //! \sa report_every(std::chrono::nanoseconds) and report_every(Time).
     //!
-    //! \sa report_every(std::chrono::nanoseconds) and report_every(TIntType).
+    //! \warning This function can be somewhat expensive, and so you should
+    //! avoid invoking it too often.
+    //!
+    //! \note This function is thread-safe.
     // not noexcept because operator- for time_points can throw.
-    // TODO(v3) remove!
+    // TODO(later) remove? Used by Action
     [[nodiscard]] inline bool report() const {
       auto t       = std::chrono::high_resolution_clock::now();
       auto elapsed = t - _last_report.load();
@@ -127,256 +169,172 @@ namespace libsemigroups {
       }
     }
 
-    //! Set the minimum elapsed time between reports.
+    //! \brief Set the minimum elapsed time between reports in nanoseconds.
     //!
     //! This function can be used to specify at run time the minimum elapsed
-    //! time between two calls to report() that return \c true. If
+    //! time between two calls to report() that will return \c true. If
     //! report() returns \c true at time \c s, then report() will
-    //! only return \c true again after time \c s + \c t has elapsed.
+    //! only return \c true again after at least time \c s + \c t has elapsed.
     //!
     //! \param val the amount of time (in nanoseconds) between reports.
     //!
+    //! \exceptions
+    //! \noexcept
+    //!
     //! \returns
-    //! A reference to this.
+    //! A reference to \c this.
     //!
     //! \sa
-    //! report_every(TIntType)
+    //! report_every(Time)
+    //!
+    //! \note This function is not thread-safe.
     Reporter& report_every(nanoseconds val) noexcept {
       _last_report          = std::chrono::high_resolution_clock::now();
       _report_time_interval = val;
       return *this;
     }
 
-    //! Set the minimum elapsed time between reports.
+    //! \brief Set the minimum elapsed time between reports in a unit of time
+    //! other than nanoseconds.
     //!
-    //! This function can be used to specify at run time the minimum elapsed
-    //! time between two calls to report() that return \c true. If
-    //! report() returns \c true at time \c s, then report() will
-    //! only return \c true again after time \c s + \c t has elapsed.
+    //! This function converts its argument to std::chrono::nanoseconds and
+    //! calls report_every(std::chrono::nanoseconds).
     //!
-    //! \param t the amount of time (in \c TIntType) between reports.
+    //! \tparam Time the type of the argument (should be
+    //! std::chrono::something).
+    //!
+    //! \param t the amount of time (in \c Time) between reports.
+    //!
+    //! \exceptions
+    //! \noexcept
     //!
     //! \returns
-    //! (None)
+    //! A reference to \c this.
     //!
-    //! \sa report_every(std::chrono::nanoseconds)
-    template <typename TIntType>
-    Reporter& report_every(TIntType t) noexcept {
+    //! \note This function is not thread-safe.
+    template <typename Time>
+    Reporter& report_every(Time t) noexcept {
       return report_every(nanoseconds(t));
     }
 
-    //! Get the minimum elapsed time between reports.
+    //! \brief Get the minimum elapsed time between reports.
     //!
-    //! \par Parameters
-    //! (None)
+    //! \exceptions
+    //! \noexcept
     //!
     //! \returns
     //! The number of nanoseconds between reports.
+    //!
+    //! \note This function is thread-safe.
     [[nodiscard]] nanoseconds report_every() const noexcept {
       return _report_time_interval;
     }
 
+    //! \brief Get the start time.
+    //!
+    //!  This is the time point at which reset_start_time() was last called,
+    //!  which is also the time of construction of a Reporter instance if
+    //!  reset_start_time() is not explicitly called.
+    //!
+    //! \exceptions
+    //! \noexcept
+    //!
+    //! \returns The time point representing the start time.
+    //!
+    //! \note This function is thread-safe.
     [[nodiscard]] time_point start_time() const noexcept {
       return _start_time;
     }
 
-    [[nodiscard]] static nanoseconds delta(time_point const& t) {
-      using std::chrono::duration_cast;
-      using std::chrono::high_resolution_clock;
-      return duration_cast<nanoseconds>(high_resolution_clock::now() - t);
-    }
-
+    //! \brief Reset the start time (and last report) to now.
+    //!
+    //! \returns A const reference to \c this.
+    //!
+    //! \note This function is not thread-safe.
+    // Not sure if this is noexcept or not,
+    // std::chrono::high_resolution_clock::now is noexcept, but JDM couldn't
+    // find the noexcept spec of the copy assignment operator of a time_point.
     Reporter const& reset_start_time() const {
       _last_report = std::chrono::high_resolution_clock::now();
       _start_time  = _last_report;
       return *this;
     }
 
+    //! \brief Get the time point of the last report.
+    //!
+    //! Returns the time point of the last report, as set by one of:
+    //! * reset_start_time();
+    //! * report_every(); or
+    //! * report().
+    //!
+    //! \exceptions
+    //! \noexcept
+    //!
+    //! \returns A \ref time_point.
+    //!
+    //! \note This function is thread-safe.
     [[nodiscard]] time_point last_report() const noexcept {
       return _last_report;
     }
 
-    // TODO noexcept
+    //! \brief Set the last report time point to now.
+    //!
+    //! Returns the time point of the last report, as set by one of:
+    //! * reset_start_time();
+    //! * report_every(); or
+    //! * report().
+    //!
+    //! \returns A const reference to \c this.
+    //!
+    //! \note This function is thread-safe.
+    // Not sure if this is noexcept or not,
+    // std::chrono::high_resolution_clock::now is noexcept, but JDM couldn't
+    // find the noexcept spec of the copy assignment operator of a time_point.
     Reporter const& reset_last_report() const {
       _last_report = std::chrono::high_resolution_clock::now();
       return *this;
     }
 
+    //! \brief Set the prefix string for reporting.
+    //!
+    //! This function sets the return value of report_prefix() to (a copy of)
+    //! the argument \p val. Typically this prefix should be the name of the
+    //! algorithm being run at the outmost level.
+    //!
+    //! \param val the new value of the report prefix.
+    //!
+    //! \returns A reference to \c this.
+    //!
+    //! \note This function is not thread-safe.
     // Not noexcept because std::string::operator= isn't
     Reporter& report_prefix(std::string const& val) {
       _prefix = val;
       return *this;
     }
 
+    //! \brief Get the current prefix string for reporting.
+    //!
+    //! This function gets the current value of the prefix string for reporting
+    //! (set via report_prefix(std::string const&)), which is typically
+    //! the name of the algorithm being run at the outmost level.
+    //!
+    //! \exceptions
+    //! \noexcept
+    //!
+    //! \returns A const reference to the prefix string.
+    //!
+    //! \note This function is thread-safe.
     [[nodiscard]] std::string const& report_prefix() const noexcept {
       return _prefix;
     }
   };
 
-  namespace detail {
-    // This class provides a thread-safe means of calling a function every
-    // second in a detached thread. The purpose of this class is so that the
-    // TickerImpl, which contains the data required by the function to be
-    // called, inside the Ticker, can outlive the Ticker, the TickerImpl is
-    // deleted by the function called in the thread.
-    class Ticker {
-      class TickerImpl {
-        using nanoseconds = std::chrono::nanoseconds;
-
-        std::function<void(void)> _func;
-        std::mutex                _mtx;
-        bool                      _stop;
-        nanoseconds               _report_time_interval;
-
-       public:
-        template <typename Func, typename TIntType = std::chrono::seconds>
-        explicit TickerImpl(Func&&   func,
-                            TIntType time = std::chrono::seconds(1))
-            : _func(std::forward<Func>(func)),
-              _stop(false),
-              _report_time_interval(nanoseconds(time)) {
-          auto thread_func = [this](TickerImpl* dtg) {
-            std::unique_ptr<TickerImpl> ptr;
-            ptr.reset(dtg);
-            std::this_thread::sleep_for(_report_time_interval);
-            while (true) {
-              {
-                std::lock_guard<std::mutex> lck(_mtx);
-                // This stops _func() from being called, when the object it
-                // relates to is destroyed, two scenarios arise:
-                // 1. the Ticker goes out of scope, the mutex is locked, then
-                //    _stop is set to false, Ticker is destroyed, maybe the
-                //    object where Ticker is created is also destroyed (the
-                //    object containing _func and/or its related data), then
-                //    we acquire the mutex here, and _stop is false, so we
-                //    don't call _func (which is actually destroyed).
-                // 2. we acquire the lock on the mutex here first, and then
-                //    Ticker goes out of scope, the destructor of Ticker is
-                //    then blocked (and so too is the possible destruction of
-                //    the object containing the data for _func) until we've
-                //    finished calling _func again.
-                if (!_stop) {
-                  _func();
-                } else {
-                  break;
-                }
-              }
-              std::this_thread::sleep_for(_report_time_interval);
-            }
-          };
-          auto t = std::thread(thread_func, this);
-          t.detach();
-        }
-
-        void stop() {
-          _stop = true;
-        }
-
-        std::mutex& mtx() noexcept {
-          return _mtx;
-        }
-      };
-      // TODO rename variable
-      TickerImpl* _detached_thread;
-
-     public:
-      template <typename Func, typename TIntType = std::chrono::seconds>
-      explicit Ticker(Func&& func, TIntType time = std::chrono::seconds(1))
-          : _detached_thread(new TickerImpl(std::forward<Func>(func), time)) {}
-
-      ~Ticker() {
-        // See above for an explanation of why we lock the mtx here.
-        std::lock_guard<std::mutex> lck(_detached_thread->mtx());
-        _detached_thread->stop();
-      }
-    };
-
-    template <size_t C>
-    class ReportCell {
-     private:
-      using Row = std::array<std::string, C + 1>;
-
-      std::array<size_t, C + 1> _col_widths;
-      std::vector<Row>          _rows;
-
-     public:
-      ReportCell() : _col_widths(), _rows() {
-        _col_widths.fill(0);
-      }
-
-      ~ReportCell() {
-        emit();
-      }
-
-      ReportCell& min_width(size_t val) {
-        // TODO check that sum of col widths doesn't exceed 93
-        _col_widths.fill(val);
-        return *this;
-      }
-
-      ReportCell& min_width(size_t col, size_t val) {
-        // TODO check that sum of col widths doesn't exceed 93
-        // TODO check that col is in bounds
-        _col_widths[col + 1] = val;
-        return *this;
-      }
-
-      // template <typename... Args>
-      // ReportCell& divider(std::string_view val) {
-      //   if (val.size() != 1) {
-      //     LIBSEMIGROUPS_EXCEPTION(
-      //         "expected the argument to be of length 1, found {}",
-      //         val.size());
-      //   }
-      //   _divider = val;
-      //   return *this;
-      // }
-
-      template <typename... Args>
-      void operator()(std::string_view fmt_str, Args&&... args) {
-        static_assert(sizeof...(args) <= C);
-        _rows.push_back(
-            Row({std::string(fmt_str), std::forward<Args>(args)...}));
-        for (size_t i = 0; i < _rows.back().size(); ++i) {
-          _col_widths[i] = std::max(_col_widths[i], _rows.back()[i].size());
-        }
-      }
-
-      template <typename Func, typename... Args>
-      void operator()(Func&& f, char const* fmt_str, Args&&... args) {
-        operator()(fmt_str, f(args)...);
-      }
-
-     private:
-      size_t line_width() const {
-        auto fmt = [](auto&&... args) {
-          return fmt::format(std::forward<decltype(args)>(args)...).size();
-        };
-        return std::apply(fmt, _rows[0]) + 3;
-      }
-
-      void emit() {
-        auto fmt = [](auto&&... args) {
-          report_default(std::forward<decltype(args)>(args)...);
-        };
-        // This isn't quite right
-        for (size_t i = 0; i < _rows.size(); ++i) {
-          for (size_t j = 1; j < C + 1; ++j) {
-            _rows[i][j]
-                = std::string(
-                      _col_widths[j] - unicode_string_length(_rows[i][j]), ' ')
-                  + _rows[i][j];
-          }
-        }
-        report_no_prefix("{:-<{}}\n", "", line_width());
-        for (size_t i = 0; i < _rows.size(); ++i) {
-          std::apply(fmt, _rows[i]);
-        }
-      }
-    };
-
-  }  // namespace detail
-
+  //! \ingroup misc_group
+  //!
+  //! \brief Abstract class for derived classes that run an algorithm.
+  //!
+  //! Defined in \c runner.hpp
+  //!
   //! Many of the classes in ``libsemigroups`` implementing the algorithms,
   //! that are the reason for the existence of this library, are derived from
   //! Runner.  The Runner class exists to collect various common tasks
@@ -384,9 +342,6 @@ namespace libsemigroups {
   //! These common tasks include:
   //! * running for a given amount of time (\ref run_for)
   //! * running until a nullary predicate is true (\ref run_until)
-  //! * reporting after a given amount of time (\ref report_every)
-  //! * checking if the given amount of time has elapsed since last report
-  //! (\ref report)
   //! * checking the status of the algorithm: has it
   //! \ref started?  \ref finished? been killed by another thread
   //! (\ref dead)? has it timed out (\ref timed_out)? has it
@@ -395,16 +350,32 @@ namespace libsemigroups {
   //! (\ref kill).
   class Runner : public Reporter {
    public:
-    // Enum class for the state of the Runner.
+    //! Enum class for the state of the Runner.
     enum class state {
-      never_run            = 0,
-      running_to_finish    = 1,
-      running_for          = 2,
-      running_until        = 3,
-      timed_out            = 4,
+      //! Indicates that none of \ref run, \ref run_for, or \ref run_until has
+      //! been called since construction or the last call to \ref init.
+      never_run = 0,
+      //! Indicates that the Runner is currently running to the finish (via
+      //! \ref run).
+      running_to_finish = 1,
+      //! Indicates that the Runner is currently running for a specific amount
+      //! of time (via \ref run_for).
+      running_for = 2,
+      //! Indicates that the Runner is currently running until some condition
+      //! is met (via \ref run_until).
+      running_until = 3,
+      //! Indicates that the Runner was run via \ref run_for for a specific
+      //! amount of time and that time has elapsed.
+      timed_out = 4,
+      //! Indicates that the Runner was run via \ref run_until until the
+      //! condition specified by the argument to \ref run_until was met.
       stopped_by_predicate = 6,
-      not_running          = 7,
-      dead                 = 8
+      //! Indicates that the Runner is not in any of the previous states and is
+      //! not currently running. This can occur when, for example, \ref run
+      //! throws an exception.
+      not_running = 7,
+      //! Indicates that the Runner was killed (by another thread).
+      dead = 8
     };
 
    private:
@@ -421,22 +392,28 @@ namespace libsemigroups {
     // Runner - constructors + destructor - public
     ////////////////////////////////////////////////////////////////////////
 
-    //! Default constructor.
+    //! \brief Default constructor.
     //!
     //! Returns a runner that is not started, not finished, not dead, not
     //! timed out, will run \ref FOREVER if not instructed otherwise,  that
-    //! last reported at the time of construction, and that will report every
-    //! std::chrono::seconds(1) if reporting is enabled.
+    //! last reported at the time of construction.
     //!
-    //! \par Parameters
-    //! (None)
     // not noexcept because Reporter() isn't
     Runner();
 
-    // TODO doc
+    //! \brief Initialize an existing Runner object.
+    //!
+    //! This function puts a Runner object back into the same state as if it
+    //! had been newly default constructed.
+    //!
+    //! \returns A reference to \c *this.
+    //!
+    //! \note This function is not thread-safe.
+    //!
+    //! \sa Runner()
     Runner& init();
 
-    //! Copy constructor.
+    //! \brief Copy constructor.
     //!
     //! Returns a runner that is a copy of \p other. The state of the new
     //! runner is the same as \p other, except that the function passed as an
@@ -445,7 +422,7 @@ namespace libsemigroups {
     //! \param other the Runner to copy.
     Runner(Runner const& other);
 
-    //! Move constructor
+    //! \brief Move constructor
     //!
     //! Returns a runner that is initialised from \p other. The state of the
     //! new runner is the same as \p copy, except that the function passed as
@@ -454,7 +431,7 @@ namespace libsemigroups {
     //! \param other the Runner to move from.
     Runner(Runner&& other);
 
-    //! Copy assignment operator.
+    //! \brief Copy assignment operator.
     //!
     //! Returns a runner that is initialised from \p other. The state of the
     //! new runner is the same as \p copy, except that the function passed as
@@ -463,7 +440,7 @@ namespace libsemigroups {
     //! \param other the Runner to move from.
     Runner& operator=(Runner const& other);
 
-    //! Move assignment operator.
+    //! \brief Move assignment operator.
     //!
     //! Returns a runner that is initialised from \p other. The state of the
     //! new runner is the same as \p copy, except that the function passed as
@@ -478,20 +455,18 @@ namespace libsemigroups {
     // Runner - non-virtual member functions - public
     ////////////////////////////////////////////////////////////////////////
 
-    //! Run until \ref finished.
+    // The following mem fns don't return a reference to Runner to avoid the
+    // unexpected behaviour of e.g. Sims1.run_for() returning a reference to not
+    // a Sims1.
+
+    //! \brief Run until \ref finished.
     //!
-    //! Run the main algorithm implemented by a derived class derived of
+    //! Run the main algorithm implemented by a derived class of
     //! Runner.
-    //!
-    //! \returns
-    //! (None)
-    //!
-    //! \par Parameters
-    //! (None)
     // At the end of this either finished, or dead.
     void run();
 
-    //! Run for a specified amount of time.
+    //! \brief Run for a specified amount of time.
     //!
     //! For this to work it is necessary to periodically check if
     //! timed_out() returns \c true, and to stop if it is, in the
@@ -499,35 +474,27 @@ namespace libsemigroups {
     //!
     //! \param t the time in nanoseconds to run for.
     //!
-    //! \returns
-    //! (None)
-    //!
-    //! \sa run_for(TIntType)
+    //! \sa run_for(Time)
     // At the end of this either finished, dead, or timed_out.
     void run_for(std::chrono::nanoseconds t);
 
-    //! Run for a specified amount of time.
-    //!
+    //! \brief Run for a specified amount of time.
     //!
     //! For this to work it is necessary to periodically check if
     //! timed_out() returns \c true, and to stop if it is, in the
     //! run() member function of any derived class of Runner.
     //!
-    //! \param t the time to run for (in \c TIntType).
+    //! \tparam Time unit of time
     //!
-    //! \returns
-    //! (None)
+    //! \param t the time to run for (in \c Time).
     //!
     //! \sa run_for(std::chrono::nanoseconds)
-    template <typename TIntType>
-    void run_for(TIntType t) {
+    template <typename Time>
+    void run_for(Time t) {
       run_for(std::chrono::nanoseconds(t));
     }
 
-    //! Check if the amount of time passed to \ref run_for has elapsed.
-    //!
-    //! \par Parameters
-    //! (None)
+    //! \brief Check if the amount of time passed to \ref run_for has elapsed.
     //!
     //! \returns
     //! A \c bool
@@ -540,49 +507,36 @@ namespace libsemigroups {
                             : current_state() == state::timed_out);
     }
 
-    //! Run until a nullary predicate returns \p true or \ref finished.
+    //! \brief Run until a nullary predicate returns \p true or \ref finished.
     //!
+    //! \tparam Func the type of the argument
     //! \param func a callable type that will exist for at
     //! least until this function returns, or a function pointer.
-    //!
-    //! \returns
-    //! (None)
     // At the end of this either finished, dead, or stopped_by_predicate.
-    template <typename T>
-    void run_until(T&& func);
+    template <typename Func>
+    void run_until(Func&& func);
 
-    //! Run until a nullary predicate returns \p true or \ref finished.
+    //! \brief Run until a nullary predicate returns \p true or \ref finished.
     //!
     //! \param func a function pointer.
-    //!
-    //! \returns
-    //! (None)
     void run_until(bool (*func)()) {
       run_until(detail::FunctionRef<bool(void)>(func));
     }
 
-    //! Report why \ref run stopped.
+    //! \brief Report why \ref run stopped.
     //!
     //! Reports whether run() was stopped because it is finished(),
     //! timed_out(), or dead().
     //!
-    //! \par Parameters
-    //! (None)
-    //!
-    //! \returns
-    //! (None)
     // not noexcept because it calls timed_out which is not noexcept
     void report_why_we_stopped() const;
 
-    //! Check if \ref run has been run to completion or not.
+    //! \brief Check if \ref run has been run to completion or not.
     //!
     //! Returns \c true if run() has been run to completion. For this to
     //! work, the implementation of run() in a derived class of
     //! Runner must implement a specialisation of
     //! \c finished_impl.
-    //!
-    //! \par Parameters
-    //! (None)
     //!
     //! \returns
     //! A \c bool.
@@ -591,13 +545,13 @@ namespace libsemigroups {
     // Not noexcept because finished_impl isn't
     [[nodiscard]] bool finished() const;
 
-    //! Check if \ref run has been called at least once before.
+    //! \brief  Check if \ref run has been called at least once before.
     //!
     //! Returns \c true if run() has started to run (it can be running or
     //! not).
     //!
-    //! \par Parameters
-    //! (None)
+    //! \exceptions
+    //! \noexcept
     //!
     //! \returns
     //! A \c bool.
@@ -607,13 +561,13 @@ namespace libsemigroups {
       return current_state() != state::never_run;
     }
 
-    //! Check if currently running.
+    //! \brief Check if currently running.
     //!
-    //! \returns
-    //! \c true if run() is in the process of running and \c false it is not.
+    //! Returns \c true if run() is in the process of running and \c false it is
+    //! not.
     //!
-    //! \par Parameters
-    //! (None)
+    //! \exceptions
+    //! \noexcept
     //!
     //! \returns
     //! A \c bool.
@@ -625,17 +579,11 @@ namespace libsemigroups {
              || current_state() == state::running_until;
     }
 
-    //! Stop \ref run from running (thread-safe).
+    //! \brief Stop \ref run from running (thread-safe).
     //!
     //! This function can be used to terminate run() from another thread.
     //! After kill() has been called the Runner may no longer be in a valid
     //! state, but will return \c true from dead() .
-    //!
-    //! \par Parameters
-    //! (None)
-    //!
-    //! \returns
-    //! (None).
     //!
     //! \exceptions
     //! \noexcept
@@ -645,13 +593,10 @@ namespace libsemigroups {
       set_state(state::dead);
     }
 
-    //! Check if the runner is dead.
+    //! \brief Check if the runner is dead.
     //!
     //! This function can be used to check if we should terminate run()
     //! because it has been killed by another thread.
-    //!
-    //! \par Parameters
-    //! (None)
     //!
     //! \returns
     //! A \c bool.
@@ -664,7 +609,7 @@ namespace libsemigroups {
       return current_state() == state::dead;
     }
 
-    //! Check if the runner is stopped.
+    //! \brief Check if the runner is stopped.
     //!
     //! This function can be used to check whether or not run() has been
     //! stopped for whatever reason. In other words, it checks if
@@ -673,16 +618,14 @@ namespace libsemigroups {
     //! \returns
     //! A \c bool.
     //!
-    //! \par Parameters
-    //! (None)
     // not noexcept because timed_out isn't
     [[nodiscard]] bool stopped() const {
       return (running() ? (timed_out() || stopped_by_predicate())
                         : current_state() > state::running_until);
     }
 
-    //! Check if the runner was, or should, stop because of
-    //! the argument for \ref run_until.
+    //! \brief Check if the runner was stopped, or should stop, because of
+    //! the argument last passed to \ref run_until.
     //!
     //! If \c this is running, then the nullary predicate is called and its
     //! return value is returned. If \c this is not running, then \c true is
@@ -697,9 +640,6 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! Constant.
-    //!
-    //! \par Parameters
-    //! (None)
     // noexcept should depend on whether _stopper can throw or not
     [[nodiscard]] inline bool stopped_by_predicate() const {
       if (running_until()) {
@@ -710,8 +650,8 @@ namespace libsemigroups {
       }
     }
 
-    //! Check if the runner is currently running for a particular length of
-    //! time.
+    //! \brief Check if the runner is currently running for a particular length
+    //! of time.
     //!
     //! If the Runner is currently running because its member function \ref
     //! run_for has been invoked, then this function returns \c true.
@@ -725,15 +665,12 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! Constant.
-    //!
-    //! \par Parameters
-    //! (None)
     [[nodiscard]] bool running_for() const noexcept {
       return _state == state::running_for;
     }
 
-    //! Check if the runner is currently running until a nullary predicate
-    //! returns \c true.
+    //! \brief Check if the runner is currently running until a nullary
+    //! predicate returns \c true.
     //!
     //! If the Runner is currently running because its member function \ref
     //! run_until has been invoked, then this function returns \c true.
@@ -747,14 +684,22 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! Constant.
-    //!
-    //! \par Parameters
-    //! (None)
     [[nodiscard]] bool running_until() const noexcept {
       return _state == state::running_until;
     }
 
-    // TODO doc
+    //! \brief Return the current state.
+    //!
+    //! Returns the current state of the Runner as given by \ref state.
+    //!
+    //! \exceptions
+    //! \noexcept
+    //!
+    //! \complexity
+    //! Constant.
+    //!
+    //! \returns
+    //! A value of type \c state.
     [[nodiscard]] state current_state() const noexcept {
       return _state;
     }
@@ -772,26 +717,8 @@ namespace libsemigroups {
         _state = stt;
       }
     }
-  };
-
-  // TODO to tpp file
-  template <typename T>
-  void Runner::run_until(T&& func) {
-    if (!finished() && !dead()) {
-      _stopper = std::forward<T>(func);
-      if (!_stopper()) {
-        set_state(state::running_until);
-        run_impl();
-        if (!finished()) {
-          if (!dead()) {
-            set_state(state::stopped_by_predicate);
-          }
-        } else {
-          set_state(state::not_running);
-        }
-      }
-      _stopper.invalidate();
-    }
-  }
+  };  // class Runner
 }  // namespace libsemigroups
+
+#include "runner.tpp"
 #endif  // LIBSEMIGROUPS_RUNNER_HPP_

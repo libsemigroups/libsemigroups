@@ -126,6 +126,13 @@ namespace libsemigroups {
     void reset_thread_ids() {
       thread_id_manager.reset();
     }
+
+    Ticker::~Ticker() {
+      // See TickerImpl for an explanation of why we lock the mtx here.
+      std::lock_guard<std::mutex> lck(_ticker_impl->mtx());
+      _ticker_impl->stop();
+    }
+
   }  // namespace detail
 
   ////////////////////////////////////////////////////////////////////////

@@ -1,6 +1,6 @@
 //
 // libsemigroups - C++ library for semigroups and monoids
-// Copyright (C) 2019-2023 James D. Mitchell
+// Copyright (C) 2019-2024 James D. Mitchell
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -27,15 +27,52 @@
 #include "libsemigroups/detail/timer.hpp"   // for Timer::string
 
 namespace libsemigroups {
+  ////////////////////////////////////////////////////////////////////////
+  // Reporter - constructors + initializers - public
+  ////////////////////////////////////////////////////////////////////////
 
-  ////////////////////////////////////////////////////////////////////////
-  // Reporter - constructors - public
-  ////////////////////////////////////////////////////////////////////////
+  Reporter::Reporter()
+      : _prefix(),
+        _report_time_interval(),
+        // mutable
+        _last_report(time_point()),
+        _start_time() {
+    // All values set in init
+    init();
+  }
 
   Reporter& Reporter::init() {
     _prefix               = "";
     _report_time_interval = nanoseconds(std::chrono::seconds(1));
     reset_start_time();
+    return *this;
+  }
+
+  Reporter::Reporter(Reporter const& that)
+      : _prefix(that._prefix),
+        _report_time_interval(that._report_time_interval),
+        _last_report(that._last_report.load()),
+        _start_time(that._start_time) {}
+
+  Reporter::Reporter(Reporter&& that)
+      : _prefix(std::move(that._prefix)),
+        _report_time_interval(std::move(that._report_time_interval)),
+        _last_report(that._last_report.load()),
+        _start_time(std::move(that._start_time)) {}
+
+  Reporter& Reporter::operator=(Reporter const& that) {
+    _prefix               = that._prefix;
+    _report_time_interval = that._report_time_interval;
+    _last_report          = that._last_report.load();
+    _start_time           = that._start_time;
+    return *this;
+  }
+
+  Reporter& Reporter::operator=(Reporter&& that) {
+    _prefix               = std::move(that._prefix);
+    _report_time_interval = std::move(that._report_time_interval);
+    _last_report          = that._last_report.load();
+    _start_time           = std::move(that._start_time);
     return *this;
   }
 
@@ -127,6 +164,8 @@ namespace libsemigroups {
         set_state(state::not_running);
       }
     } else {
+      // This line is definitely tested, but not showing up in code coverage for
+      // JDM
       report_default("already finished, not running\n");
     }
   }
