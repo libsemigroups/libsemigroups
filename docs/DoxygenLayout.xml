@@ -5,7 +5,10 @@
 
   <!-- Navigation index tabs for HTML output -->
   <navindex>
+    <tab type="mainpage" visible="yes" title=""/>
+    <tab type="user" visible="yes" url="_HEADING_" title="Installation and Changelog" />
     <tab type="user" visible="yes" url="@ref md_install" title="Install" />
+    <tab type="user" visible="yes" url="_HEADING_" title="API Reference" />
     <tab type="usergroup" visible="yes" url="@ref actions_group" title="Action" >
       <tab type="usergroup" visible="yes" url="actions__group.html#nested-classes" title="Classes" >
         <tab type="user" visible="yes" url="@ref libsemigroups::Action" title="Action" />
@@ -27,11 +30,12 @@
       <tab type="user" visible="yes" url="group__congruences__group.html#func-members" title="Functions" />
     </tab>
     <tab type="examples" visible="yes" title="" intro=""/>
+    <tab type="user" visible="yes" url="_HEADING_" title="Bibliography" />
     <tab type="user" visible="yes" url="@ref citelist" title="Bibliography" />
+    <tab type="user" visible="yes" url="_HEADING_" title="Further info" />
     <tab type="user" url="https://github.com/libsemigroups/libsemigroups" title="GitHub"/>
     
     <!--
-    <tab type="mainpage" visible="yes" title=""/>
     <tab type="pages" visible="no" title="" intro=""/>
     <tab type="namespaces" visible="no" title="">
       <tab type="namespacelist" visible="no" title="" intro=""/>
