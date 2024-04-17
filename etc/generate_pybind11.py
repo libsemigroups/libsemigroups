@@ -232,14 +232,20 @@ def get_xml(
 
 @cache
 @accepts(str, str, str)
-def is_public_fn(thing: str, fn: str, params_t: str) -> bool:
+def is_public(thing: str, fn: str, params_t: str) -> bool:
     if is_namespace(thing):
         return True
     xml = get_xml(thing, fn, params_t)
     prot = xml.get("prot")
-    if prot is not None:
-        return prot == "public"
-    return False
+    return prot is not None and prot == "public"
+
+
+@cache
+@accepts(str, str, str)
+def is_enum(thing: str, fn: str, params_t: str) -> bool:
+    xml = get_xml(thing, fn, params_t)
+    kind = xml.get("kind")
+    return kind is not None and kind == "enum"
 
 
 ########################################################################
@@ -589,8 +595,8 @@ def rst_fmt(doc: str) -> str:
 def pybind11_stub(thing):
     if not is_namespace(thing):
         if not is_class_template(thing):
-            return f'py::class_<{shortname_(thing)}>(m, "{shortname(thing)}")\n'
-        return f"py::class_<{shortname_(thing)}>(m, name.c_str())\n"
+            return f'py::class_<{shortname_(thing)}> thing(m, "{shortname(thing)}");\n'
+        return f"py::class_<{shortname_(thing)}> thing(m, name.c_str());\n"
     return "m"
 
 
@@ -664,13 +670,29 @@ def pybind11_iterator(thing: str, fn: str, param_names: str) -> str:
     return f"py::make_iterator(self.{fn}({param_names}), self.{end}({param_names}))"
 
 
+def pybind11_enum(thing: str, fn: str, param_types: str) -> str:
+    assert is_enum(thing, fn, param_types)
+    enum_cpp_name = f"{thing}::{fn}"
+    enum_py_name = f"{thing}__{fn}"
+    result = f"""py::enum_<{enum_cpp_name}>(m, "{enum_py_name}", R"pbdoc(
+{pybind11_doc(thing, fn, param_types)}
+)pbdoc")"""
+    xml = get_xml(thing, fn, param_types)
+    for enum_val in xml.find_all("enumvalue"):
+        name = enum_val.find("name").text
+        result += f'\n.value("{name}", {fn}::{name})'
+    return result + ";"
+
+
 @accepts(str, str, str)
-def pybind11_mem_fn(thing: str, fn: str, params_t: str) -> str:
+def pybind11_fn(thing: str, fn: str, params_t: str) -> str:
+    if is_enum(thing, fn, params_t) and is_public(thing, fn, params_t):
+        return pybind11_enum(thing, fn, params_t)
     if is_constructor(thing, fn):
         if is_class_template(thing):
             params_t = re.sub(shortname(thing), shortname_(thing), params_t)
-        return f".def(py::init<{params_t}>())\n"
-    func = try_rewrite_exceptional_mem_fn(thing, fn)
+        return f"thing.def(py::init<{params_t}>());\n"  # TODO include doc here too
+    func = try_rewrite_exceptional_mem_fn(thing, fn)  # TODO required?
     py_fn_name = f'"{shortname(fn)}", '
     if not func:
         # Use lambdas not overload_cast
@@ -707,21 +729,21 @@ return {fun_body};
     else:
         def_ = "def"
     if len(params_n) > 0:
-        return f""".{def_}({py_fn_name}
+        return f"""thing.{def_}({py_fn_name}
 {func},
 {params_n},
 R"pbdoc(
 {pybind11_doc(thing, fn, params_t)}
-)pbdoc")\n"""
-    return f""".{def_}({py_fn_name}
+)pbdoc");\n"""
+    return f"""thing.{def_}({py_fn_name}
 {func},
 R"pbdoc(
 {pybind11_doc(thing, fn, params_t)}
-)pbdoc")\n"""
+)pbdoc");\n"""
 
 
 def pybind11_default_repr(thing: str) -> str:
-    return f'.def("__repr__", &detail::to_string<{shortname_(thing)}> const&>)\n'
+    return f'thing.def("__repr__", &detail::to_string<{shortname_(thing)}> const&>);\n'
 
 
 ########################################################################
@@ -751,9 +773,7 @@ def skip_fn(thing: str, fn: str, params_t: str) -> bool:
         get_xml(thing, fn, params_t)
     except KeyError:
         return True
-    return is_deleted_mem_fn(thing, fn, params_t) or not is_public_fn(
-        thing, fn, params_t
-    )
+    return is_deleted_mem_fn(thing, fn, params_t) or not is_public(thing, fn, params_t)
 
 
 @accepts(str)
@@ -764,10 +784,10 @@ def generate(thing: str) -> str:
     out += pybind11_default_repr(thing)
     fns = get_xml(thing)
     for fn, overloads in fns.items():
-        for params in overloads:
-            if not isinstance(fn, str) or skip_fn(thing, fn, params):
+        for param_types in overloads:
+            if not isinstance(fn, str) or skip_fn(thing, fn, param_types):
                 continue  # ignore
-            out += pybind11_mem_fn(thing, fn, params)
+            out += pybind11_fn(thing, fn, param_types)
     return out + ";"
 
 
