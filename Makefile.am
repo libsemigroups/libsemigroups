@@ -1194,5 +1194,5 @@ lint:
 	@etc/make-lint.sh
 
 doc:
-	cd docs && doxygen
-	cd docs && ./fixup.py
+	@echo "Running doxygen . . ."
+	@etc/make-doc.sh
