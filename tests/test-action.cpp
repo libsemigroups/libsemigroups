@@ -204,20 +204,20 @@ namespace libsemigroups {
     REQUIRE(row_orb.size() == 553);
     REQUIRE(row_orb.scc().number_of_components() == 14);
     REQUIRE((row_orb.scc().roots() | to_vector())
-            == std::vector<size_t>({277,
-                                    317,
-                                    160,
-                                    119,
-                                    267,
-                                    116,
-                                    411,
-                                    497,
-                                    183,
-                                    272,
-                                    154,
-                                    443,
-                                    65,
-                                    101}));
+            == std::vector<uint32_t>({277,
+                                      317,
+                                      160,
+                                      119,
+                                      267,
+                                      116,
+                                      411,
+                                      497,
+                                      183,
+                                      272,
+                                      154,
+                                      443,
+                                      65,
+                                      101}));
 
     for (size_t i = 0; i < row_orb.size(); ++i) {
       REQUIRE(

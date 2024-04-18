@@ -34,7 +34,7 @@ namespace libsemigroups {
   operator<<(std::ostringstream&                                      os,
              Action<Element, Point, Func, Traits, LeftOrRight> const& action) {
     os << fmt::format("<{} {} action with {} generators, {} points>",
-                      action.finished() ? "closed" : "open",
+                      action.finished() ? "complete" : "incomplete",
                       LeftOrRight,
                       action.number_of_generators(),
                       action.current_size());

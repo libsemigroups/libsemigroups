@@ -735,9 +735,11 @@ def pybind11_constructor(thing: str, fn: str, param_types: str) -> str:
     assert is_constructor(thing, fn)
     if is_abstract_class(thing):
         return ""
+    # get the doc before changing the param_types if thing is a class template
+    doc = pybind11_doc(thing, fn, param_types)
     if is_class_template(thing):
         param_types = re.sub(shortname(thing), shortname_(thing), param_types)
-    return f"thing.def(py::init<{param_types}>(), {pybind11_doc(thing, fn, param_types)});\n"
+    return f"thing.def(py::init<{param_types}>(), {doc});\n"
 
 
 def pybind11_prefix(thing: str) -> str:
@@ -768,7 +770,7 @@ def pybind11_fn(thing: str, fn: str, params_t: str) -> str:
         if is_iterator(thing, fn):
             pos = fn.find("_")
             suffix = fn[pos:] if pos != -1 else ""
-            py_fn_name = f'"iterator{suffix}"'
+            py_fn_name = f'"iterator{suffix}", '
             fun_body = pybind11_iterator(thing, fn, param_n)
         else:
             fun_body = f"self.{fn}({param_n})"
