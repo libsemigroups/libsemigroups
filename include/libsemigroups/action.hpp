@@ -43,23 +43,24 @@
 
 namespace libsemigroups {
   //! \defgroup action_group Actions
-  //! This page contains an overview summary of the functionality in
+  //! This page contains an overview of the functionality in
   //! ``libsemigroups`` for finding actions of semigroups, or groups, on sets.
   //! The notion of an "action" in the context of ``libsemigroups`` is analogous
   //! to the notion of an orbit of a group.
   //!
-  //! You are unlikely to want to use :cpp:class:`Action` directly, but rather
-  //! via the more convenient aliases :cpp:any:`RightAction` and
-  //! :cpp:any:`LeftAction`. To use :cpp:any:`RightAction` and
-  //! :cpp:any:`LeftAction` with custom types, actions, and so on, see
-  //! :cpp:class:`ActionTraits`.
+  //! You are unlikely to want to use Action directly, but rather via the more
+  //! convenient aliases \ref RightAction and \ref LeftAction. To use
+  //! \ref RightAction and \ref LeftAction with custom types, actions, and so
+  //! on, see ActionTraits.
   //!
-  //! See also :cpp:any:`ImageLeftAction` and :cpp:any:`ImageRightAction`.
+  //! See also ImageLeftAction and ImageRightAction.
   //!
-  //! \codeblock
+  //! \code
   //! using namespace libsemigroups;
   //! RightAction<PPerm<16>, PPerm<16>, ImageRightAction<PPerm<16>, PPerm<16>>>
-  //! o; o.add_seed(PPerm<16>::identity(16)); o.add_generator(
+  //! o;
+  //! o.add_seed(PPerm<16>::identity(16));
+  //! o.add_generator(
   //!    PPerm<16>({0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15},
   //!              {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 0},
   //!              16));
@@ -67,18 +68,21 @@ namespace libsemigroups {
   //!    PPerm<16>({0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15},
   //!              {1, 0, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15},
   //!              16));
-  //! o.add_generator(PPerm<16>({1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14,
-  //! 15},
-  //!                          {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13,
-  //!                          14}, 16));
-  //! o.add_generator(PPerm<16>({0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13,
-  //! 14},
-  //!                          {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14,
-  //!                          15}, 16));
+  //! o.add_generator(
+  //!    PPerm<16>({1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15},
+  //!              {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14},
+  //!              16));
+  //! o.add_generator(
+  //!    PPerm<16>({0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14},
+  //!              {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15},
+  //!              16));
   //! o.reserve(70000);
   //! o.size();  // returns 65536
   //! \endcode
 
+  //! \ingroup action_group
+  //! \brief Enum class indicating the handedness or side of an action.
+  //!
   //! The values in this enum can be used as a template parameter for the Action
   //! class to specify whether the action of the Action  is a left or right
   //! action.
@@ -91,6 +95,10 @@ namespace libsemigroups {
     right
   };
 
+  //! \ingroup action_group
+  //!
+  //! \brief Class for generating the action of a semigroup.
+  //!
   //! Defined in ``action.hpp``.
   //!
   //! This page contains details of the Action class in ``libsemigroups`` for
@@ -115,8 +123,8 @@ namespace libsemigroups {
   //! `Element` on points of type `Point`. This type should be a
   //! stateless trivially default constructible class with a call operator of
   //! signature `void(Point&, Point const&, Element const&)`
-  //! which computes the action of the 3rd argument on the 2nd argument, and
-  //! stores it in the 1st argument. See, for example,
+  //! which computes the action of its 3rd argument on its 2nd argument, and
+  //! stores it in its 1st argument. See, for example,
   //! ImageLeftAction and ImageRightAction.
   //!
   //! \tparam Traits the type of a traits class with the requirements of
@@ -152,7 +160,7 @@ namespace libsemigroups {
   //!               16));
   //! o.reserve(70000);
   //! o.size(); // 65536
-  //! Gabow(o.word graph()).number_of_components(); // 17
+  //! o.scc().number_of_components(); // 17
   //! \endcode
   //!
   //! \par Complexity
@@ -206,40 +214,50 @@ namespace libsemigroups {
     // Action - typedefs - public
     ////////////////////////////////////////////////////////////////////////
 
-    //! The template parameter \p Element.
+    //! \brief The template parameter \p Element.
     //!
-    //! Also the type of the elements of the semigroup.
+    //! The template parameter \p Element, which is the type of the elements of
+    //! the semigroup whose action is represented by an Action instance.
     using element_type = Element;
 
-    //! The template parameter \p Point.
+    //! \brief The template parameter \p Point.
     //!
-    //! Also the type of the points acted on by this class.
+    //! The template parameter \p Point, which is the type of the points of
+    //! acted on in an Action instance.
     using point_type = Point;
 
-    //! The type of a const reference to a \ref point_type.
-    using const_reference_point_type =
-        typename detail::BruidhinnTraits<Point>::const_reference;
-
-    //! The type of a const pointer to a \ref point_type.
-    using const_pointer_point_type =
-        typename detail::BruidhinnTraits<Point>::const_pointer;
-
-    //! The type of the index of a point.
+    //! \brief The type of the index of a point.
+    //!
+    //! Type of indices for values in an Action instance.
+    //!
+    //! \sa \ref operator[] and \ref at.
     using index_type = size_t;
 
-    //! Type of the action of \ref element_type on  \ref point_type.
+    //! \brief Type of the action of \ref element_type on  \ref point_type.
+    //!
+    //! The type of the action of elements of type `Element` on points of type
+    //! `Point`. This type should be a stateless trivially default constructible
+    //! class with a call operator of signature `void(Point&, Point const&,
+    //! Element const&)` which computes the action of its 3rd argument on its
+    //! 2nd argument, and stores it in its 1st argument.
     //!
     //! \sa ImageRightAction, ImageLeftAction
     using action_type = Func;
 
-    //! Insertion operator
+    //! \brief Insertion operator
     //!
     //! This member function allows Action objects to be inserted into an
     //! std::ostringstream.
-    friend std::ostringstream& operator<<(std::ostringstream& os,
-                                          Action const&       action);
+    template <typename Elment,
+              typename Pint,
+              typename Fnc,
+              typename Trits,
+              side LftOrRight>
+    friend std::ostringstream&
+    operator<<(std::ostringstream&                                 os,
+               Action<Elment, Pint, Fnc, Trits, LftOrRight> const& action);
 
-    //! Insertion operator
+    //! \brief Insertion operator
     //!
     //! This member function allows Action objects to be inserted into a
     //! std::ostream.
@@ -252,10 +270,27 @@ namespace libsemigroups {
     // Action - iterators - public
     ////////////////////////////////////////////////////////////////////////
 
-    //! The type of a const iterator pointing to a \ref point_type.
+    //! \brief The type of a const iterator pointing to a \ref point_type.
+    //!
+    //! The type of a const iterator pointing to the \ref point_type values
+    //! contained in an Action object.
     using const_iterator
         = detail::BruidhinnConstIterator<point_type,
                                          std::vector<internal_point_type>>;
+
+    //! \brief The type of a const reference to a \ref point_type.
+    //!
+    //! The type of a const reference to the \ref point_type values
+    //! contained in an Action object.
+    using const_reference_point_type =
+        typename detail::BruidhinnTraits<Point>::const_reference;
+
+    //! \brief The type of a const pointer to a \ref point_type.
+    //!
+    //! The type of a const pointer to the \ref point_type values
+    //! contained in an Action object.
+    using const_pointer_point_type =
+        typename detail::BruidhinnTraits<Point>::const_pointer;
 
    private:
     ////////////////////////////////////////////////////////////////////////
@@ -292,7 +327,7 @@ namespace libsemigroups {
 
     // TODO(1) change size_t -> uint32_t
     std::vector<element_type> _gens;
-    WordGraph<size_t>         _graph;
+    WordGraph<uint32_t>       _graph;
     std::unordered_map<internal_const_point_type,
                        size_t,
                        InternalHash,
@@ -303,7 +338,7 @@ namespace libsemigroups {
     MultiplierCache                  _multipliers_from_scc_root;
     MultiplierCache                  _multipliers_to_scc_root;
     size_t                           _pos;
-    Gabow<size_t>                    _scc;
+    Gabow<uint32_t>                  _scc;
     internal_point_type              _tmp_point;
     bool                             _tmp_point_init;
 
@@ -314,8 +349,8 @@ namespace libsemigroups {
 
     //! \brief Default constructor.
     //!
-    //! A constructor that creates an Action instance representing a
-    //! left or right action.
+    //! A constructor that creates an uninitialized Action instance representing
+    //! a left or right action.
     //!
     //! \exceptions
     //! \no_libsemigroups_except
@@ -331,7 +366,7 @@ namespace libsemigroups {
     //!
     //! \returns A reference to \c *this.
     //!
-    //! \exception
+    //! \exceptions
     //! \no_libsemigroups_except
     Action& init();
 
@@ -356,14 +391,13 @@ namespace libsemigroups {
     //! \brief Increase the capacity to a value that is greater or equal to \p
     //! val.
     //!
+    //! Increase the capacity to a value that is greater or equal to \p val.
+    //!
     //! \param val new capacity of an action instance.
     //!
     //! \returns A reference to `*this`.
     //!
     //! \throws std::length_error if \p val is too large.
-    //!
-    //! \throws std::bad_alloc or any exception thrown by the allocators of
-    //! private data members.
     //!
     //! \complexity
     //! At most linear in the size() of the Action.
@@ -383,14 +417,13 @@ namespace libsemigroups {
     //! \no_libsemigroups_except
     //!
     //! \complexity
-    //! At most linear in the size() of the action.
+    //! Constant.
     Action& add_seed(const_reference_point_type seed);
 
     //! \brief Add a generator to the action.
     //!
-    //! An Action instance represents the
-    //! action of the semigroup generated by the elements added via this
-    //! member function.
+    //! An Action instance represents the action of the semigroup generated by
+    //! the elements added via this member function.
     //!
     //! \param gen the generator to add.
     //!
@@ -400,8 +433,10 @@ namespace libsemigroups {
     //! \no_libsemigroups_except
     //!
     //! \complexity
-    //! At most linear in the size() of the action.
-    Action& add_generator(element_type gen) {
+    //! Constant.
+    Action& add_generator(element_type const& gen) {
+      // TODO shouldn't this check if the degree of gen is the same as the
+      // degrees of the other generators in _gens?
       _gens.push_back(gen);
       return *this;
     }
@@ -439,6 +474,9 @@ namespace libsemigroups {
     //! \brief Returns the position of a point in the so far discovered
     //! points.
     //!
+    //! Returns the position of a point in the so far discovered
+    //! points.
+    //!
     //! \param pt the point whose position is sought.
     //!
     //! \returns The index of \p pt in \c this or \ref UNDEFINED.
@@ -466,7 +504,7 @@ namespace libsemigroups {
 
     //! \brief Returns a const reference to the point in a given position.
     //!
-    //! \param pos the index of an element.
+    //! \param pos the index of a point.
     //!
     //! \returns
     //! A \ref const_reference_point_type to the point in position
@@ -478,14 +516,14 @@ namespace libsemigroups {
     //! \complexity
     //! Constant.
     [[nodiscard]] inline const_reference_point_type
-    operator[](size_t pos) const noexcept {
+    operator[](index_type pos) const noexcept {
       LIBSEMIGROUPS_ASSERT(pos < _orb.size());
       return this->to_external_const(_orb[pos]);
     }
 
     //! \brief Returns a const reference to the point in a given position.
     //!
-    //! \param pos the index of an element.
+    //! \param pos the index of a point.
     //!
     //! \returns
     //! A \ref const_reference_point_type to the point in position \p
@@ -496,11 +534,13 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! Constant.
-    [[nodiscard]] inline const_reference_point_type at(size_t pos) const {
+    [[nodiscard]] inline const_reference_point_type at(index_type pos) const {
       return this->to_external_const(_orb.at(pos));
     }
 
     //! \brief Returns the size of the fully enumerated action.
+    //!
+    //! Returns the size of the fully enumerated action.
     //!
     //! \returns The size of the action, a value of type \c size_t.
     //!
@@ -517,6 +557,8 @@ namespace libsemigroups {
 
     //! \brief Returns the number of points found so far.
     //!
+    //! Returns the number of points found so far.
+    //!
     //! \returns
     //! A value of type \c size_t.
     //!
@@ -531,6 +573,9 @@ namespace libsemigroups {
 
     //! \brief Returns a \ref const_iterator (random access
     //! iterator) pointing at the first point.
+    //!
+    //!  This function returns a \ref const_iterator to the first point in the
+    //!  action (if any). No enumeration is triggered by calling this function.
     //!
     //! \returns
     //! A const iterator to the first point.
@@ -552,6 +597,10 @@ namespace libsemigroups {
     //! \brief Returns a range object containing the current points in the
     //! action.
     //!
+    //! Returns a range object containing the current points in the
+    //! action.
+    // TODO(1) add a reference to the ranges page when it exists
+    //!
     //! \returns A range object.
     //!
     //! \complexity
@@ -568,6 +617,10 @@ namespace libsemigroups {
 
     //! \brief Returns a \ref const_iterator (random access iterator) pointing
     //! one past the last point.
+    //!
+    //!  This function returns a \ref const_iterator pointing one beyond the
+    //!  last point in the action (if any). No enumeration is triggered by
+    //!  calling this function.
     //!
     //! \returns
     //! A const iterator to one past the end.
@@ -678,6 +731,9 @@ namespace libsemigroups {
     //! \brief Returns a const reference to the root point of a strongly
     //! connected component.
     //!
+    //! Returns a const reference to the root point of a strongly
+    //! connected component.
+    //!
     //! \param x the point whose root we want to find.
     //!
     //! \returns A value of type \ref const_reference_point_type.
@@ -691,10 +747,14 @@ namespace libsemigroups {
     //! the action.
     [[nodiscard]] const_reference_point_type
     root_of_scc(const_reference_point_type x) {
+      // TODO(2) this could be a helper
       return root_of_scc(position(x));
     }
 
     //! \brief Returns a const reference to the root point of a strongly
+    //! connected component.
+    //!
+    //! Returns a const reference to the root point of a strongly
     //! connected component.
     //!
     //! \param pos the index of the point in the action whose root we want to
@@ -712,9 +772,9 @@ namespace libsemigroups {
       return this->to_external_const(_orb[_scc.root_of(pos)]);
     }
 
-    //! \brief Returns the word graph of the completely enumerated action.
+    //! Returns the word graph of the completely enumerated action.
     //!
-    //! \returns A const reference to a WordGraph<size_t>.
+    //! \returns A const reference to a WordGraph<uint32_t>.
     //!
     //! \complexity
     //! At most \f$O(mn)\f$ where \f$m\f$ is the complexity of multiplying
@@ -723,7 +783,7 @@ namespace libsemigroups {
     //!
     //! \exceptions
     //! \no_libsemigroups_except
-    [[nodiscard]] WordGraph<size_t> const& word_graph() {
+    [[nodiscard]] WordGraph<uint32_t> const& word_graph() {
       run();
       return _graph;
     }
@@ -731,7 +791,10 @@ namespace libsemigroups {
     //! \brief Returns a reference to a Gabow object for strongly connected
     //! components.
     //!
-    //! \returns A const reference to a Gabow<size_t> object.
+    //! Returns a reference to a Gabow object for strongly connected
+    //! components.
+    //!
+    //! \returns A const reference to a Gabow object.
     //!
     //! \complexity
     //! At most \f$O(mn)\f$ where \f$m\f$ is the complexity of multiplying
@@ -740,7 +803,7 @@ namespace libsemigroups {
     //!
     //! \exceptions
     //! \no_libsemigroups_except
-    [[nodiscard]] Gabow<size_t> const& scc() {
+    [[nodiscard]] Gabow<uint32_t> const& scc() {
       run();
       return _scc;
     }
@@ -769,6 +832,7 @@ namespace libsemigroups {
     void validate_gens() const;
   };
 
+  //! \ingroup action_group
   //! This is a traits class for use with Action, \ref LeftAction,
   //! and \ref RightAction.
   //!
@@ -790,6 +854,7 @@ namespace libsemigroups {
     using Product = ::libsemigroups::Product<Element>;
   };
 
+  //! \ingroup action_group
   //! This class represents the right action of a semigroup on a set.
   //!
   //! \sa Action for further details.
@@ -799,6 +864,7 @@ namespace libsemigroups {
             typename Traits = ActionTraits<Element, Point>>
   using RightAction = Action<Element, Point, Func, Traits, side::right>;
 
+  //! \ingroup action_group
   //! This class represents the left action of a semigroup on a set.
   //!
   //! \sa Action for further details.
@@ -808,7 +874,7 @@ namespace libsemigroups {
             typename Traits = ActionTraits<Element, Point>>
   using LeftAction = Action<Element, Point, Func, Traits, side::left>;
 
-  // TODO(0): doc (not individually but globally for libsemigroups)
+  // TODO(1): doc (not individually but globally for libsemigroups)
   template <typename Element,
             typename Point,
             typename Func,
@@ -819,7 +885,7 @@ namespace libsemigroups {
     return action.begin();
   }
 
-  // TODO(0): doc (not individually but globally for libsemigroups)
+  // TODO(1): doc (not individually but globally for libsemigroups)
   template <typename Element,
             typename Point,
             typename Func,
@@ -830,7 +896,7 @@ namespace libsemigroups {
     return action.end();
   }
 
-  // TODO(0): doc (not individually but globally for libsemigroups)
+  // TODO(1): doc (not individually but globally for libsemigroups)
   template <typename Element,
             typename Point,
             typename Func,
@@ -841,7 +907,7 @@ namespace libsemigroups {
     return action.cbegin();
   }
 
-  // TODO(0): doc (not individually but globally for libsemigroups)
+  // TODO(1): doc (not individually but globally for libsemigroups)
   template <typename Element,
             typename Point,
             typename Func,

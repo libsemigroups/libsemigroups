@@ -9,10 +9,11 @@
     <tab type="user" visible="yes" url="_HEADING_" title="Installation and Changelog" />
     <tab type="user" visible="yes" url="@ref md_install" title="Install" />
     <tab type="user" visible="yes" url="_HEADING_" title="API Reference" />
-    <tab type="usergroup" visible="yes" url="@ref actions_group" title="Action" >
-      <tab type="usergroup" visible="yes" url="actions__group.html#nested-classes" title="Classes" >
+    <tab type="usergroup" visible="yes" url="@ref action_group" title="Actions" >
+        <tab type="user" visible="yes" url="@ref libsemigroups::side" title="side" />
         <tab type="user" visible="yes" url="@ref libsemigroups::Action" title="Action" />
-      </tab>
+        <tab type="user" visible="yes" url="@ref libsemigroups::LeftAction" title="LeftAction" />
+        <tab type="user" visible="yes" url="@ref libsemigroups::RightAction" title="RightAction" />
     </tab>
     <tab type="usergroup" visible="yes" url="@ref congruences_group" title="Congruences" >
       <tab type="usergroup" visible="yes" url="group__congruences__group.html#nested-classes" title="Classes" >
