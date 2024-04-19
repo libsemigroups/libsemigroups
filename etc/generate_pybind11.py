@@ -776,7 +776,8 @@ def skip_fn(thing: str, fn: str, params_t: str) -> bool:
         # so skip it
         or fn in ("operator=", "operator[]", "operator<<")
         or "&&" in params_t
-        or "*" in params_t
+        # TODO use regex for the next line
+        or ("*" in params_t and params_t.strip() != "bool(*)()")
         or "*" in return_type(thing, fn, params_t)
         or is_typedef(thing, fn, params_t)
     ):
