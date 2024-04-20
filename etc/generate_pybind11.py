@@ -5,8 +5,7 @@ This module partially generates pybind11 bindings from the doxygen output in doc
 # pylint: disable=missing-docstring
 
 # TODO(0):
-# * enums
-# * update the requirements.txt file
+# * add a requirements.txt file
 
 import os
 import re
@@ -15,6 +14,7 @@ import argparse
 import subprocess
 from os.path import isfile, exists
 from functools import cache
+from glob import glob
 
 from accepts import accepts
 
@@ -86,7 +86,6 @@ namespace {{
 @accepts()
 def non_template_header() -> str:
     return """
-namespace {
     void init_TODO(py::module& m) {
 """
 
@@ -106,7 +105,6 @@ __TEMPLATE_FOOTER = """
 
 __NON_TEMPLATE_FOOTER = """
 } // init_TODO
-} // namespace
 """
 
 __FOOTER = """
@@ -135,6 +133,20 @@ def __parse_args() -> argparse.Namespace:
         nargs="+",
         help="the things (classes, structs, namespaces) to create bindings for",
     )
+    parser.add_argument(
+        "--no-advice",
+        dest="no_advice",
+        default=False,
+        action="store_true",
+        help="use this flag to disable the advice at the end of the script",
+    )
+    parser.add_argument(
+        "--no-header-footer",
+        dest="no_header_footer",
+        default=False,
+        action="store_true",
+        help="use this flag to disable the file header and footer",
+    )
     return parser.parse_args()
 
 
@@ -151,8 +163,8 @@ def doxygen_filename(thing: str) -> str:
     <thing>.
 
     Arguments:
-    thing -- a string containing the fully qualified thing of a C++ class, struct, or
-    namespace.
+        thing -- a string containing the fully qualified thing of a C++ class,
+        struct, or namespace.
     """
     orig = thing
     thing = re.sub("_", "__", thing)
@@ -163,6 +175,13 @@ def doxygen_filename(thing: str) -> str:
     for possible in ("class", "struct", "namespace"):
         fname = f"docs/xml/{possible}{thing}.xml"
         if exists(fname) and isfile(fname):
+            return fname
+    thing = thing.split("_1_1")[-1]
+    pattern = re.compile(rf">{thing}<")
+    for fname in glob("docs/xml/group__*.xml"):
+        with open(fname, "r", encoding="utf-8") as file:
+            lines = file.read()
+        if pattern.search(lines):
             return fname
     __error(f'Can\'t find the doxygen file for "{orig}" IGNORING!!!')
     return ""
@@ -261,12 +280,6 @@ def is_typedef(thing: str, fn: str, params_t: str) -> bool:
     return kind is not None and kind == "typedef"
 
 
-@cache
-@accepts(str)
-def is_abstract_class(thing: str) -> bool:  # TODO move to the correct place
-    return thing in __ABSTRACT_CLASSES
-
-
 ########################################################################
 # Classes or structs
 ########################################################################
@@ -309,12 +322,24 @@ def is_namespace(thing: str) -> bool:
 
 
 @cache
+@accepts(str)
+def is_free_fn(thing: str) -> bool:
+    return doxygen_filename(thing).startswith("docs/xml/group__")
+
+
+@cache
 @accepts(str, str, str)
 def is_static_mem_fn(thing: str, fn: str, params_t: str) -> bool:
-    if is_namespace(thing):
+    if is_namespace(thing) or is_free_fn(thing):
         return False
     xml = get_xml(thing, fn, params_t)
     return xml["static"] == "yes"
+
+
+@cache
+@accepts(str)
+def is_abstract_class(thing: str) -> bool:
+    return thing in __ABSTRACT_CLASSES
 
 
 @cache
@@ -324,11 +349,6 @@ def params_dict(thing: str, fn: str, params_t: str) -> dict[str, str]:
     result = {}
     for x in xml.find_all("param"):
         type_ = x.find("type").text
-        # print(type_)
-        # if type_.find("ref"):
-        #     type_ = type_.find("ref").text + type_.text
-        # else:
-        #     type_ = type_.text
         if not type_.startswith("typename"):
             name = x.find("declname")
             if name:
@@ -344,7 +364,7 @@ def return_type(thing: str, fn: str, params_t: str) -> str:
 
 
 @accepts(str, str, str)
-def param_names(thing: str, fn: str, params_t: str) -> list[str]:
+def param_names_str(thing: str, fn: str, params_t: str) -> list[str]:
     return list(params_dict(thing, fn, params_t).keys())
 
 
@@ -399,7 +419,7 @@ def is_deleted_mem_fn(class_n: str, mem_fn: str, params_t: str) -> bool:
 @cache
 @accepts(str, str)
 def is_constructor(class_n: str, mem_fn: str) -> bool:
-    return mem_fn.startswith(class_n.split("::")[-1])
+    return not is_free_fn(class_n) and mem_fn.startswith(class_n.split("::")[-1])
 
 
 @cache
@@ -473,6 +493,8 @@ def translate_cpp_to_py(type_: str) -> str:
         return "list"
     if "iterator" in type_:
         return "Iterator"
+    if type_.startswith("std::chrono") or type_ == "time_point":
+        return "datetime.timedelta"
     return type_
 
 
@@ -604,16 +626,16 @@ def rst_fmt(doc: str) -> str:
 
 @accepts(str)
 def pybind11_stub(thing):
-    if not is_namespace(thing):
+    if not is_namespace(thing) and not is_free_fn(thing):
         if not is_class_template(thing):
             return f'py::class_<{shortname_(thing)}> thing(m, "{shortname(thing)}");\n'
         return f"py::class_<{shortname_(thing)}> thing(m, name.c_str());\n"
-    return "m"
+    return ""
 
 
 @accepts(str, str, str)
 def pybind11_fn_params(thing, fn, params_t):
-    params_n = param_names(thing, fn, params_t)
+    params_n = param_names_str(thing, fn, params_t)
     out = [f'py::arg("{x}")' for x in params_n]
     return ", ".join(out)
 
@@ -658,10 +680,11 @@ def pybind11_doc(thing, fn, params_t):
             doc += "\n"
         doc += f"\n\n:returns: {convert_to_rst(return_[0])}"
         doc += f"\n\n:rtype: {translate_cpp_to_py(return_type(thing, fn, params_t))}\n"
-    return rst_fmt(doc)
+    return f"""R"pbdoc(
+{rst_fmt(doc)})pbdoc")"""
 
 
-def pybind11_operator(thing: str, fn: str, params_t: str) -> str:
+def pybind11_operator(thing: str, fn: str, _: str) -> str:
     assert is_operator(thing, fn)
     op = fn[len("operator") :] if fn.startswith("operator") else fn
     if op not in ("at", "hash_value"):
@@ -669,7 +692,7 @@ def pybind11_operator(thing: str, fn: str, params_t: str) -> str:
     return f'"{translate_cpp_operator_to_py(fn)}", &{shortname_(thing)}::{fn}, py::is_operator()'
 
 
-def pybind11_iterator(thing: str, fn: str, param_names: str) -> str:
+def pybind11_iterator(thing: str, fn: str, param_types: str) -> str:
     assert is_iterator(thing, fn)
     if fn.startswith("begin"):
         pos = 5
@@ -678,21 +701,36 @@ def pybind11_iterator(thing: str, fn: str, param_names: str) -> str:
         pos = 6
         prefix = "c"
     end = f"{prefix}end{fn[pos:]}"
-    return f"py::make_iterator(self.{fn}({param_names}), self.{end}({param_names}))"
+    return f"py::make_iterator(self.{fn}({param_types}), self.{end}({param_types}))"
 
 
 def pybind11_enum(thing: str, fn: str, param_types: str) -> str:
     assert is_enum(thing, fn, param_types)
     enum_cpp_name = f"{shortname(thing)}::{fn}"
     enum_py_name = f"{shortname(thing)}__{fn}"
-    result = f"""py::enum_<{enum_cpp_name}>(m, "{enum_py_name}", R"pbdoc(
-{pybind11_doc(thing, fn, param_types)}
-)pbdoc")"""
+    result = f'py::enum_<{enum_cpp_name}>(m, "{enum_py_name}",' + pybind11_doc(
+        thing, fn, param_types
+    )
     xml = get_xml(thing, fn, param_types)
     for enum_val in xml.find_all("enumvalue"):
         name = enum_val.find("name").text
-        result += f'\n.value("{name}", {shortname(thing)}::{fn}::{name})'
+        result += f'\n.value("{name}", {shortname(thing)}::{fn}::{name}, {pybind11_doc(thing, fn, param_types)})'
     return result + ";\n"
+
+
+def pybind11_constructor(thing: str, fn: str, param_types: str) -> str:
+    assert is_constructor(thing, fn)
+    if is_abstract_class(thing):
+        return ""
+    if is_class_template(thing):
+        param_types = re.sub(shortname(thing), shortname_(thing), param_types)
+    return f"thing.def(py::init<{param_types}>(), {pybind11_doc(thing, fn, param_types)});\n"
+
+
+def pybind11_prefix(thing: str) -> str:
+    if is_namespace(thing) or is_free_fn(thing):
+        return "m"
+    return "thing"
 
 
 @accepts(str, str, str)
@@ -700,24 +738,20 @@ def pybind11_fn(thing: str, fn: str, params_t: str) -> str:
     if is_enum(thing, fn, params_t) and is_public(thing, fn, params_t):
         return pybind11_enum(thing, fn, params_t)
     if is_constructor(thing, fn):
-        if is_abstract_class(thing):
-            return ""
-        if is_class_template(thing):
-            params_t = re.sub(shortname(thing), shortname_(thing), params_t)
-        return f"thing.def(py::init<{params_t}>());\n"  # TODO include doc here too
+        return pybind11_constructor(thing, fn, params_t)
+
     py_fn_name = f'"{shortname(fn)}", '
     # Use lambdas not overload_cast
     if is_overloaded(thing, fn) or is_iterator(thing, fn):
         sig = fn_sig(thing, fn, params_t)
-        if not is_namespace(thing):
+        if not is_namespace(thing) and not is_free_fn(thing):
             if is_const_mem_fn(thing, fn, params_t):
                 sig = ", ".join([f"{shortname_(thing)} const& self"] + sig)
             else:
                 sig = ", ".join([f"{shortname_(thing)}& self"] + sig)
         else:
             sig = ", ".join(sig)
-
-        param_n = ", ".join(param_names(thing, fn, params_t))
+        param_n = ", ".join(param_names_str(thing, fn, params_t))
         if is_iterator(thing, fn):
             pos = fn.find("_")
             suffix = fn[pos:] if pos != -1 else ""
@@ -731,6 +765,8 @@ return {fun_body};
     elif is_operator(thing, fn):
         func = pybind11_operator(thing, fn, params_t)
         py_fn_name = ""
+    elif is_free_fn(thing):
+        func = f"&{fn}"
     else:
         func = f"&{shortname_(thing)}::{fn}"
 
@@ -739,22 +775,19 @@ return {fun_body};
         def_ = "def_static"
     else:
         def_ = "def"
+    py_prefix = pybind11_prefix(thing)
     if len(params_n) > 0:
-        return f"""thing.{def_}({py_fn_name}
+        return f"""{py_prefix}.{def_}({py_fn_name}
 {func},
 {params_n},
-R"pbdoc(
-{pybind11_doc(thing, fn, params_t)}
-)pbdoc");\n"""
+{pybind11_doc(thing, fn, params_t)});\n"""
     return f"""thing.{def_}({py_fn_name}
 {func},
-R"pbdoc(
-{pybind11_doc(thing, fn, params_t)}
-)pbdoc");\n"""
+{pybind11_doc(thing, fn, params_t)});\n"""
 
 
 def pybind11_default_repr(thing: str) -> str:
-    if is_abstract_class(thing):
+    if is_abstract_class(thing) or is_namespace(thing) or is_free_fn(thing):
         return ""
     return f'thing.def("__repr__", &detail::to_string<{shortname_(thing)} const&>);\n'
 
@@ -809,8 +842,9 @@ def main():
     if sys.version_info[0] < 3:
         raise Exception("Python 3 is required")
     args = __parse_args()
-    print(__COPYRIGHT)
-    print(__HEADERS)
+    if not args.no_header_footer:
+        print(__COPYRIGHT)
+        print(__HEADERS)
     for thing in args.things:
         template_p = class_template_params(thing)
         if len(template_p) != 0:
@@ -823,40 +857,39 @@ def main():
             print(__TEMPLATE_FOOTER)
         else:
             print(__NON_TEMPLATE_FOOTER)
-    print(__FOOTER)
-    __bold(
-        """
-Current limitations:
+    if not args.no_header_footer:
+        print(__FOOTER)
+    if not args.no_advice:
+        __bold(
+            """
+    Current limitations:
 
-* if a member function is overloaded because there is a const and a non-const
-  version, then this is not detected, and the generated code will not compile.
-  For example, Bipartition::at has const and non-const overloads with the same
-  parameters.
+    * if a member function is overloaded because there is a const and a non-const
+      version, then this is not detected, and the generated code will not compile.
+      For example, Bipartition::at has const and non-const overloads with the same
+      parameters.
 
-* the default method for "__repr__" that is generated uses
-  libsemigroups::detail::to_string, which must be implemented or it won't
-  compile.
+    * the default method for "__repr__" that is generated uses
+      libsemigroups::detail::to_string, which must be implemented or it won't
+      compile.
 
-* free functions in the namespace `libsemigroups` (so not in a nested
-  namespace) are not picked up by this script at all.
+    Things to do to include the generated code in _libsemigroups_pybind11:
 
-Things to do to include the generated code in _libsemigroups_pybind11:
+    1. add the generated code to a cpp file in libsemigroups_pybind11/src
 
-1. add the generated code to a cpp file in libsemigroups_pybind11/src
+    2. rename init_TODO and bind_TODO (if it exists) to more appropriate names
 
-2. rename init_TODO and bind_TODO (if it exists) to more appropriate names
+    3. add your name in place of TODO in the copyright statement in line 3 of the
+       generated file
 
-3. add your name in place of TODO in the copyright statement in line 3 of the
-   generated file
+    4. declare the function init_TODO in libsemigroups_pybind11/src/main.hpp
 
-4. declare the function init_TODO in libsemigroups_pybind11/src/main.hpp
+    5. call the function init_TODO in libsemigroups_pybind11/src/main.cpp
 
-5. call the function init_TODO in libsemigroups_pybind11/src/main.cpp
-
-6. Check that the document is correct, and doesn't use C++ names/idioms but
-   rather python such, see libsemigroups_pybind11/CONTRIBUTING.rst for details
-"""
-    )
+    6. Check that the document is correct, and doesn't use C++ names/idioms but
+       rather python such, see libsemigroups_pybind11/CONTRIBUTING.rst for details
+    """
+        )
 
 
 if __name__ == "__main__":
