@@ -12,10 +12,11 @@ import re
 import sys
 import argparse
 import subprocess
+import textwrap
+
 from os.path import isfile, exists
 from functools import cache
 from glob import glob
-
 from accepts import accepts
 
 import bs4
@@ -193,7 +194,7 @@ def doxygen_filename(thing: str) -> str:
 # 4th parameter here with is const/not const
 
 
-@accepts(str, str, str)
+@accepts(str, str | None, str | None)
 def get_xml(
     thing: str, fn: str | None = None, params_t: str | None = None
 ) -> dict[str, bs4.element.Tag]:  # FIXME the return type is not correct
@@ -495,6 +496,8 @@ def translate_cpp_to_py(type_: str) -> str:
         return "Iterator"
     if type_.startswith("std::chrono") or type_ == "time_point":
         return "datetime.timedelta"
+    if type_ == "std::string":
+        return "str"
     return type_
 
 
@@ -625,12 +628,23 @@ def rst_fmt(doc: str) -> str:
 
 
 @accepts(str)
-def pybind11_stub(thing):
+def pybind11_stub(thing: str) -> str:
+    result = ""
     if not is_namespace(thing) and not is_free_fn(thing):
         if not is_class_template(thing):
-            return f'py::class_<{shortname_(thing)}> thing(m, "{shortname(thing)}");\n'
-        return f"py::class_<{shortname_(thing)}> thing(m, name.c_str());\n"
-    return ""
+            result += f'py::class_<{shortname_(thing)}> thing(m, "{shortname(thing)}"'
+        else:
+            result += f"py::class_<{shortname_(thing)}> thing(m, name.c_str()"
+        with open(doxygen_filename(thing), "r", encoding="utf-8") as xml:
+            xml = BeautifulSoup(xml, "xml")
+        xml = xml.find("compounddef")
+        brief = xml.find("briefdescription", recursive=False)
+        brief = convert_to_rst(brief)
+        detailed = xml.find("detaileddescription", recursive=False)
+        detailed = convert_to_rst(detailed)
+
+        result += f',\nR"pbdoc(\n{brief}\n\n{detailed})pbdoc");\n'
+    return result
 
 
 @accepts(str, str, str)
@@ -640,7 +654,7 @@ def pybind11_fn_params(thing, fn, params_t):
     return ", ".join(out)
 
 
-@accepts(str, str, str)
+@accepts(str, str | None, str | None)
 def pybind11_doc(thing, fn, params_t):
     xml = get_xml(thing, fn, params_t)
     brief = xml.find("briefdescription").text.strip()
@@ -680,8 +694,7 @@ def pybind11_doc(thing, fn, params_t):
             doc += "\n"
         doc += f"\n\n:returns: {convert_to_rst(return_[0])}"
         doc += f"\n\n:rtype: {translate_cpp_to_py(return_type(thing, fn, params_t))}\n"
-    return f"""R"pbdoc(
-{rst_fmt(doc)})pbdoc")"""
+    return f'R"pbdoc(\n{rst_fmt(doc)})pbdoc"'
 
 
 def pybind11_operator(thing: str, fn: str, _: str) -> str:
@@ -708,8 +721,9 @@ def pybind11_enum(thing: str, fn: str, param_types: str) -> str:
     assert is_enum(thing, fn, param_types)
     enum_cpp_name = f"{shortname(thing)}::{fn}"
     enum_py_name = f"{shortname(thing)}__{fn}"
-    result = f'py::enum_<{enum_cpp_name}>(m, "{enum_py_name}",' + pybind11_doc(
-        thing, fn, param_types
+    result = (
+        f'py::enum_<{enum_cpp_name}>(m, "{enum_py_name}",'
+        + f"{pybind11_doc(thing, fn, param_types)})"
     )
     xml = get_xml(thing, fn, param_types)
     for enum_val in xml.find_all("enumvalue"):
@@ -862,33 +876,33 @@ def main():
     if not args.no_advice:
         __bold(
             """
-    Current limitations:
+Current limitations:
 
-    * if a member function is overloaded because there is a const and a non-const
-      version, then this is not detected, and the generated code will not compile.
-      For example, Bipartition::at has const and non-const overloads with the same
-      parameters.
+* if a member function is overloaded because there is a const and a non-const
+  version, then this is not detected, and the generated code will not compile.
+  For example, Bipartition::at has const and non-const overloads with the same
+  parameters.
 
-    * the default method for "__repr__" that is generated uses
-      libsemigroups::detail::to_string, which must be implemented or it won't
-      compile.
+* the default method for "__repr__" that is generated uses
+  libsemigroups::detail::to_string, which must be implemented or it won't
+  compile.
 
-    Things to do to include the generated code in _libsemigroups_pybind11:
+Things to do to include the generated code in _libsemigroups_pybind11:
 
-    1. add the generated code to a cpp file in libsemigroups_pybind11/src
+1. add the generated code to a cpp file in libsemigroups_pybind11/src
 
-    2. rename init_TODO and bind_TODO (if it exists) to more appropriate names
+2. rename init_TODO and bind_TODO (if it exists) to more appropriate names
 
-    3. add your name in place of TODO in the copyright statement in line 3 of the
-       generated file
+3. add your name in place of TODO in the copyright statement in line 3 of the
+   generated file
 
-    4. declare the function init_TODO in libsemigroups_pybind11/src/main.hpp
+4. declare the function init_TODO in libsemigroups_pybind11/src/main.hpp
 
-    5. call the function init_TODO in libsemigroups_pybind11/src/main.cpp
+5. call the function init_TODO in libsemigroups_pybind11/src/main.cpp
 
-    6. Check that the document is correct, and doesn't use C++ names/idioms but
-       rather python such, see libsemigroups_pybind11/CONTRIBUTING.rst for details
-    """
+6. Check that the document is correct, and doesn't use C++ names/idioms but
+   rather python such, see libsemigroups_pybind11/CONTRIBUTING.rst for details
+"""
         )
 
 
