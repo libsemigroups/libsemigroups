@@ -12,7 +12,6 @@ import re
 import sys
 import argparse
 import subprocess
-import textwrap
 
 from os.path import isfile, exists
 from functools import cache
