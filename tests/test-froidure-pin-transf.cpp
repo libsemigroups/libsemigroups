@@ -224,8 +224,8 @@ namespace libsemigroups {
 
     for (size_t i = 0; i < U.size(); ++i) {
       REQUIRE_NOTHROW(U.prefix(i));
-      REQUIRE_THROWS_AS(U.prefix(i + U.size()), LibsemigroupsException);
     }
+    REQUIRE_THROWS_AS(U.prefix(U.size()), LibsemigroupsException);
   }
 
   // FIXME not sure that this isn't much slower than it used to be
@@ -244,8 +244,8 @@ namespace libsemigroups {
 
     for (size_t i = 0; i < U.size(); ++i) {
       REQUIRE_NOTHROW(U.suffix(i));
-      REQUIRE_THROWS_AS(U.suffix(i + U.size()), LibsemigroupsException);
     }
+    REQUIRE_THROWS_AS(U.suffix(U.size()), LibsemigroupsException);
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin<Transf<>>",

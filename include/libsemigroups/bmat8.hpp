@@ -1,6 +1,6 @@
 //
 // libsemigroups - C++ library for semigroups and monoids
-// Copyright (C) 2019 Finn Smith
+// Copyright (C) 2019-24 Finn Smith
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -18,79 +18,77 @@
 
 // This file contains a declaration of fast boolean matrices up to dimension 8.
 
+// TODO
+// * is it better to pass BMat8 by value rather than by const&?
+
 #ifndef LIBSEMIGROUPS_BMAT8_HPP_
 #define LIBSEMIGROUPS_BMAT8_HPP_
 
-#include <algorithm>  // for uniform_int_distribution, swap
-#include <cstddef>    // for size_t
-#include <cstdint>    // for uint64_t
-#include <iosfwd>     // for operator<<, ostringstream
-#include <random>     // for mt19937, random_device
-#include <utility>    // for hash
-#include <vector>     // for vector
+#include <array>       // for array
+#include <cstddef>     // for size_t
+#include <cstdint>     // for uint64_t
+#include <functional>  // for hash
+#include <string>      // for string
+#include <utility>     // for swap
+#include <vector>      // for vector
 
 #include "adapters.hpp"  // for Complexity, Degree, etc . . .
 #include "debug.hpp"     // for LIBSEMIGROUPS_ASSERT
 
-#include "detail/string.hpp"  // for detail::to_string
-
 namespace libsemigroups {
-  namespace bmat8 {
-    //! Returns the identity boolean matrix of a given dimension.
-    //!
-    //! \tparam T the type of the boolean matrix being constructed, should be
-    //! BMat8 or HPCombi::BMat8.
-    //!
-    //! \param dim the dimension of the identity matrix, must be at most 7.
-    //!
-    //! \returns
-    //! A value of type \p T with the first \p dim values on the main diagonal
-    //! equal to 1 and every other entry equal to 0.
-    //!
-    //! \exceptions
-    //! \noexcept
-    //!
-    //! \complexity
-    //! Constant.
-    //!
-    //! \sa BMat8::one.
-    // TODO(later) noexcept should depend on whether or not the constructor of
-    // T is noexcept
-    template <typename T>
-    T one(size_t dim) noexcept {
-      LIBSEMIGROUPS_ASSERT(dim <= 8);
-      static std::array<uint64_t, 9> const ones = {0x0000000000000000,
-                                                   0x8000000000000000,
-                                                   0x8040000000000000,
-                                                   0x8040200000000000,
-                                                   0x8040201000000000,
-                                                   0x8040201008000000,
-                                                   0x8040201008040000,
-                                                   0x8040201008040200,
-                                                   0x8040201008040201};
-      return T(ones[dim]);
-    }
-  }  // namespace bmat8
+  //! \defgroup matrix_group Matrix
+  //!
+  //! This file TODO
+  //! * \ref bmat8_group
 
+  //! \defgroup bmat8_group BMat8
+  //! This page describes the class BMat8 that are an optimized
+  //! representation of boolean matrices of dimension at most \f$8\f$.
+  //!
+  //! For boolean matrices of higher dimensions see \ref BMat.
+
+  //! \ingroup bmat8_group
+  //!
   //! Defined in ``bmat8.hpp``.
   //!
-  //! Class for fast boolean matrices of dimension up to 8 x 8
+  //! \brief Fast boolean matrices of dimension up to 8 x 8
   //!
-  //! The member functions for these small matrices over the boolean semiring
-  //! are more optimised than the generic member functions for boolean matrices.
-  //! Note that all BMat8 are represented internally as an 8 x 8 matrix;
-  //! any entries not defined by the user are taken to be 0. This does
-  //! not affect the results of any calculations.
-  //!
-  //! BMat8 is a trivial class.
+  //! This class represents 8 x 8 matrices over the boolean semiring.
+  //! The functions for these small matrices over the boolean semiring
+  //! are more optimised than the generic functions for boolean matrices.
+  //! Note that all BMat8 are represented internally as an 8 x 8 matrix; any
+  //! entries not defined by the user are taken to be 0. This does not affect
+  //! the results of any calculations.
   class BMat8 {
+    uint64_t _data;
+    // Proxy class for reference to bits in the matrix
+    class BitRef {
+     private:
+      uint64_t& _data;
+      uint64_t  _mask;
+
+     public:
+      // Constructor: takes a reference to a byte and the index of the bit in
+      // that byte
+      constexpr BitRef(uint64_t& data, size_t index) noexcept
+          : _data(data), _mask(uint64_t(1) << (63 - index)) {}
+
+      // Assignment operator to allow setting the bit through the proxy
+      constexpr BitRef& operator=(bool val) noexcept {
+        _data ^= (-val ^ _data) & _mask;
+        return *this;
+      }
+
+      // Conversion operator to read the value of the bit as a boolean
+      [[nodiscard]] constexpr operator bool() const {
+        return _data & _mask;
+      }
+    };
+
    public:
-    //! Default constructor.
+    //! \brief Default constructor.
     //!
     //! There is no guarantee about the contents of the matrix constructed.
-    //!
-    //! \par Parameters
-    //! (None)
     //!
     //! \exceptions
     //! \noexcept
@@ -99,7 +97,7 @@ namespace libsemigroups {
     //! Constant.
     BMat8() noexcept = default;
 
-    //! Construct from uint64_t.
+    //! \brief Construct from an integer.
     //!
     //! This constructor initializes a BMat8 to have rows equal to the
     //! 8 chunks, of 8 bits each, of the binary representation of \p mat.
@@ -111,9 +109,9 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! Constant.
-    explicit BMat8(uint64_t mat) noexcept : _data(mat) {}
+    constexpr explicit BMat8(uint64_t mat) noexcept : _data(mat) {}
 
-    //! A constructor.
+    //! \brief A constructor.
     //!
     //! This constructor initializes a matrix where the rows of the matrix
     //! are the vectors in \p mat.
@@ -130,47 +128,49 @@ namespace libsemigroups {
     //! Constant.
     explicit BMat8(std::vector<std::vector<bool>> const& mat);
 
-    //! Default copy constructor.
+    //! \brief Default copy constructor.
     //!
     //! \exceptions
     //! \noexcept
     //!
     //! \complexity
     //! Constant.
-    BMat8(BMat8 const&) noexcept = default;
+    constexpr BMat8(BMat8 const&) noexcept = default;
 
-    //! Default move constructor.
+    //! \brief Default move constructor.
     //!
     //! \exceptions
     //! \noexcept
     //!
     //! \complexity
     //! Constant.
-    BMat8(BMat8&&) noexcept = default;
+    constexpr BMat8(BMat8&&) noexcept = default;
 
-    //! Default copy assignment operator.
+    //! \brief Default copy assignment operator.
     //!
     //! \exceptions
     //! \noexcept
     //!
     //! \complexity
     //! Constant.
-    BMat8& operator=(BMat8 const&) noexcept = default;
+    constexpr BMat8& operator=(BMat8 const&) noexcept = default;
 
-    //! Default move assignment operator.
+    //! \brief Default move assignment operator.
     //!
     //! \exceptions
     //! \noexcept
     //!
     //! \complexity
     //! Constant.
-    BMat8& operator=(BMat8&&) noexcept = default;
+    constexpr BMat8& operator=(BMat8&&) noexcept = default;
 
     ~BMat8() = default;
 
+    //! \brief Equality operator.
+    //!
     //! Returns \c true if \c this equals \p that.
     //!
-    //! This member function checks the mathematical equality of two BMat8
+    //! This function checks the mathematical equality of two BMat8
     //! objects.
     //!
     //! \param that the BMat8 for comparison.
@@ -180,13 +180,15 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! Constant.
-    bool operator==(BMat8 const& that) const noexcept {
+    [[nodiscard]] constexpr bool operator==(BMat8 const& that) const noexcept {
       return _data == that._data;
     }
 
+    //! \brief Inequality operator.
+    //!
     //! Returns \c true if \c this does not equal \p that
     //!
-    //! This member function checks the mathematical inequality of two BMat8
+    //! This function checks the mathematical inequality of two BMat8
     //! objects.
     //!
     //! \param that the BMat8 for comparison.
@@ -196,14 +198,16 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! Constant.
-    bool operator!=(BMat8 const& that) const noexcept {
+    [[nodiscard]] constexpr bool operator!=(BMat8 const& that) const noexcept {
       return _data != that._data;
     }
 
+    //! \brief Less than operator.
+    //!
     //! Returns \c true if \c this is less than \p that.
     //!
-    //! This member function checks whether a BMat8 objects is less than
-    //! another. We order by the results of to_int() for each matrix.
+    //! This function checks whether a BMat8 objects is less than
+    //! another; where the order is defined by \ref to_int.
     //!
     //! \param that the BMat8 for comparison.
     //!
@@ -212,14 +216,16 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! Constant.
-    bool operator<(BMat8 const& that) const noexcept {
+    [[nodiscard]] constexpr bool operator<(BMat8 const& that) const noexcept {
       return _data < that._data;
     }
 
-    //! Returns \c true if \c this is greater than \p that.
+    //! \brief Less than or equal operator.
     //!
-    //! This member function checks whether a BMat8 objects is greater than
-    //! another. We order by the results of to_int() for each matrix.
+    //! Returns \c true if \c this is less than or equal to \p that.
+    //!
+    //! This function checks whether a BMat8 objects is less or equal than
+    //! another; where the order is defined by \ref to_int.
     //!
     //! \param that the BMat8 for comparison.
     //!
@@ -228,16 +234,52 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! Constant.
-    bool operator>(BMat8 const& that) const noexcept {
+    [[nodiscard]] constexpr bool operator<=(BMat8 const& that) const noexcept {
+      return *this < that || *this == that;
+    }
+
+    //! \brief Greater than operator.
+    //!
+    //! Returns \c true if \c this is greater than \p that.
+    //!
+    //! This function checks whether a BMat8 objects is greater than
+    //! another; where the order is defined by \ref to_int.
+    //!
+    //! \param that the BMat8 for comparison.
+    //!
+    //! \exceptions
+    //! \noexcept
+    //!
+    //! \complexity
+    //! Constant.
+    [[nodiscard]] constexpr bool operator>(BMat8 const& that) const noexcept {
       return _data > that._data;
     }
 
-    //! Returns the entry in the (\p i, \p j)th position.
+    //! \brief Greater than or equal operator.
     //!
-    //! This member function returns the entry in the (\p i, \p j)th position.
+    //! Returns \c true if \c this is greater than or equal to \p that.
     //!
-    //! \param i the row of the entry sought.
-    //! \param j the column of the entry sought.
+    //! This function checks whether a BMat8 objects is greater or equal than
+    //! another; where the order is defined by \ref to_int.
+    //!
+    //! \param that the BMat8 for comparison.
+    //!
+    //! \exceptions
+    //! \noexcept
+    //!
+    //! \complexity
+    //! Constant.
+    [[nodiscard]] constexpr bool operator>=(BMat8 const& that) const noexcept {
+      return *this > that || *this == that;
+    }
+
+    //! \brief Access entries in a matrix (no bound checks).
+    //!
+    //! Returns the entry in the matrix in row \p r and column \p c.
+    //!
+    //! \param r the index of the row.
+    //! \param c the index of the column.
     //!
     //! \returns
     //! A ``bool``.
@@ -253,36 +295,136 @@ namespace libsemigroups {
     //! is possible to access entries that you might not believe exist.
     //!
     //! \warning
-    //! No checks on the parameters \p i and \p j are performed, if \p i or \p
-    //! j is greater than 7, then bad things will happen.
-    bool get(size_t i, size_t j) const noexcept {
-      LIBSEMIGROUPS_ASSERT(i < 8);
-      LIBSEMIGROUPS_ASSERT(j < 8);
-      return (_data << (8 * i + j)) >> 63;
+    //! No checks on the parameters \p r and \p c are performed, if \p r or \p
+    //! c is greater than 7, then bad things will happen.
+    //!
+    //! \sa
+    //! \ref at
+    [[nodiscard]] constexpr bool operator()(size_t r, size_t c) const noexcept {
+      LIBSEMIGROUPS_ASSERT(r < 8);
+      LIBSEMIGROUPS_ASSERT(c < 8);
+      return (_data << (8 * r + c)) >> 63;
     }
 
-    // TODO(2) at method
-
-    //! Sets the (\p i, \p j)th position to \p val.
+    //! \brief Access a row of a BMat8 (no bound checks).
     //!
-    //! This member function sets the (\p i, \p j)th entry of \c this to \p val.
-    //! Uses the bit twiddle for setting bits found
-    //! <a href=http://graphics.stanford.edu/~seander/bithacks>here</a>.
+    //! Returns the row with index \p r in the matrix represented as a \c
+    //! uint8_t.
     //!
-    //! \param i the row
-    //! \param j the column
-    //! \param val the value to set in position (\p i, \p j)th
+    //! \param r the index of the row.
     //!
     //! \returns
-    //! (None)
+    //! A row of the matrix.
     //!
-    //! \throws LibsemigroupsException if \p i or \p j is out of bounds.
+    //! \exceptions
+    //! \noexcept
     //!
     //! \complexity
     //! Constant.
-    void set(size_t i, size_t j, bool val);
+    //!
+    //! \note
+    //! Note that since all matrices are internally represented as 8 x 8, it
+    //! is possible to access entries that you might not believe exist.
+    //!
+    //! \warning
+    //! No checks on the parameter \p r are performed.
+    //!
+    //! \sa
+    //! \ref at, \ref bmat8::rows, and \ref bmat8::to_vector.
+    [[nodiscard]] constexpr uint8_t operator()(size_t r) const noexcept {
+      LIBSEMIGROUPS_ASSERT(r < 8);
+      return static_cast<uint8_t>(to_int() << 8 * r >> 56);
+    }
 
-    //! Returns the integer representation of \c this.
+    //! \brief Access a row of a BMat8 (with bound checks).
+    //!
+    //! Returns the row with index \p r in the matrix represented as a \c
+    //! uint8_t.
+    //!
+    //! \param r the index of the row.
+    //!
+    //! \returns
+    //! A row of the matrix.
+    //!
+    //! \throws LibsemigroupsException if \p r is out of bounds (i.e. \f$>=
+    //! 8\f$).
+    //!
+    //! \complexity
+    //! Constant.
+    //!
+    //! \note
+    //! Note that since all matrices are internally represented as 8 x 8, it
+    //! is possible to access entries that you might not believe exist.
+    //!
+    //! \sa
+    //! \ref BMat8::operator()(size_t r) \ref bmat8::rows, and \ref
+    //! bmat8::to_vector.
+    [[nodiscard]] uint8_t at(size_t r) const;
+
+    //! \brief Access entries in a matrix (no bound checks).
+    //!
+    //! Returns a reference to the entry in the matrix in row \p r and column
+    //! \p c.
+    //!
+    //! \param r the index of the row.
+    //! \param c the index of the column.
+    //!
+    //! \returns
+    //! A reference to the entry.
+    //!
+    //! \exceptions
+    //! \noexcept
+    //!
+    //! \complexity
+    //! Constant.
+    //!
+    //! \note
+    //! Note that since all matrices are internally represented as 8 x 8, it
+    //! is possible to access entries that you might not believe exist.
+    //!
+    //! \warning
+    //! No checks on the parameters \p r and \p c are performed, if \p r or \p
+    //! c is greater than 7, then bad things will happen.
+    //!
+    //! \sa
+    //! \ref at
+    [[nodiscard]] constexpr BitRef operator()(size_t r, size_t c) {
+      return BitRef(_data, 8 * r + c);
+    }
+
+    //! \brief Access entries in a matrix (with bound checks).
+    //!
+    //! Returns the value of the entry in the row \p r and column \p c.
+    //!
+    //! \param r the row
+    //! \param c the column
+    //!
+    //! \throws LibsemigroupsException if \p r or \p c is out of bounds.
+    //!
+    //! \complexity
+    //! Constant.
+    //!
+    //! \sa
+    //! \ref BMat8::operator()()
+    [[nodiscard]] bool at(size_t r, size_t c) const;
+
+    //! \brief Access entries in a matrix (with bound checks).
+    //!
+    //! Returns a reference to the entry in the row \p r and column \p c.
+    //!
+    //! \param r the row
+    //! \param c the column
+    //!
+    //! \throws LibsemigroupsException if \p r or \p c is out of bounds.
+    //!
+    //! \complexity
+    //! Constant.
+    //!
+    //! \sa
+    //! \ref BMat8::operator()()
+    [[nodiscard]] BitRef at(size_t r, size_t c);
+
+    //! \brief Returns the integer representation of \c this.
     //!
     //! Returns an unsigned integer obtained by interpreting an 8 x 8
     //! BMat8 as a sequence of 64 bits (reading rows left to right,
@@ -297,42 +439,13 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! Constant.
-    //!
-    //! \par Parameters
-    //! (None)
-    inline uint64_t to_int() const noexcept {
+    [[nodiscard]] constexpr inline uint64_t to_int() const noexcept {
       return _data;
     }
 
-    //! Returns the transpose of \c this.
+    //! \brief Returns the matrix product of \c this and \p that
     //!
-    //! Uses the technique found in [Knu09](../biblio.html#knuth2009aa).
-    //!
-    //! \returns
-    //! A BMat8.
-    //!
-    //! \exceptions
-    //! \noexcept
-    //!
-    //! \complexity
-    //! Constant.
-    //!
-    //! \par Parameters
-    //! (None)
-    inline BMat8 transpose() const noexcept {
-      uint64_t x = _data;
-      uint64_t y = (x ^ (x >> 7)) & 0xAA00AA00AA00AA;
-      x          = x ^ y ^ (y << 7);
-      y          = (x ^ (x >> 14)) & 0xCCCC0000CCCC;
-      x          = x ^ y ^ (y << 14);
-      y          = (x ^ (x >> 28)) & 0xF0F0F0F0;
-      x          = x ^ y ^ (y << 28);
-      return BMat8(x);
-    }
-
-    //! Returns the matrix product of \c this and \p that
-    //!
-    //! This member function returns the standard matrix product (over the
+    //! This function returns the standard matrix product (over the
     //! boolean semiring) of two BMat8 objects.
     //! Uses the technique given [here](https://stackoverflow.com/a/18448513).
     //!
@@ -346,67 +459,112 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! Constant.
-    BMat8 operator*(BMat8 const& that) const noexcept;
+    [[nodiscard]] BMat8 operator*(BMat8 const& that) const noexcept;
 
-    //! Insertion operator
+    //! \brief Multiply a BMat8 by a scalar.
     //!
-    //! This member function allows BMat8 objects to be inserted into an
-    //! std::ostringstream.
-    friend std::ostringstream& operator<<(std::ostringstream& os,
-                                          BMat8 const&        bm);
-
-    //! Insertion operator
+    //! This function returns the product of a BMat8 object and the boolean
+    //! scalar value \p scalar.
     //!
-    //! This member function allows BMat8 objects to be inserted into a
-    //! std::ostream.
-    friend std::ostream& operator<<(std::ostream& os, BMat8 const& bm) {
-      os << detail::to_string(bm);
-      return os;
-    }
-
-    //! Construct a random BMat8.
-    //!
-    //! This static member function returns a BMat8 chosen at random.
+    //! \param scalar the scalar.
     //!
     //! \returns
     //! A BMat8.
     //!
     //! \exceptions
-    //! \no_libsemigroups_except
+    //! \noexcept
     //!
-    //! \par Parameters
-    //! (None)
-    // Not noexcept since std::uniform_int_distribution::operator() is not
-    // noexcept.
-    static BMat8 random() {
-      return BMat8(_dist(_gen));
+    //! \complexity
+    //! Constant.
+    [[nodiscard]] constexpr BMat8 operator*(bool scalar) const noexcept {
+      if (scalar) {
+        return *this;
+      } else {
+        return BMat8(0);
+      }
     }
 
-    //! Construct a random BMat8 of dimension at most \p dim.
+    //! \brief Multiply a BMat8 by a scalar (in-place)
     //!
-    //! This static member function returns a BMat8 chosen at random, where
-    //! only the top-left \p dim x \p dim entries can be non-zero.
+    //! This function returns the product of a BMat8 object and the boolean
+    //! scalar value \p scalar.
+    //!
+    //! \param scalar the scalar.
     //!
     //! \returns
-    //! A BMat8.
+    //! A reference to \c this.
     //!
     //! \exceptions
-    //! \no_libsemigroups_except
+    //! \noexcept
     //!
-    //! \par Parameters
-    //! (None)
-    // Not noexcept since std::uniform_int_distribution::operator() is not
-    // noexcept.
-    static BMat8 random(size_t dim);
+    //! \complexity
+    //! Constant.
+    constexpr BMat8& operator*=(bool scalar) noexcept {
+      if (!scalar) {
+        _data = 0;
+      }
+      return *this;
+    }
 
-    //! Swaps \c this with \p that.
+    //! \brief Sum BMat8 objects.
     //!
-    //! This member function swaps the values of \c this and \p that.
+    //! This function returns the sum of two BMat8 objects.
+    //!
+    //! \param that the BMat8 to add.
+    //!
+    //! \returns
+    //! The sum of `*this` and \c that.
+    //!
+    //! \exceptions
+    //! \noexcept
+    //!
+    //! \complexity
+    //! Constant.
+    [[nodiscard]] constexpr BMat8 operator+(BMat8 const& that) const noexcept {
+      return BMat8(_data | that._data);
+    }
+
+    //! \brief Sum BMat8 objects (in-place).
+    //!
+    //! This function adds \c that to `*this` in-place.
+    //!
+    //! \param that the BMat8 to add.
+    //!
+    //! \returns
+    //! A reference to `*this`.
+    //!
+    //! \exceptions
+    //! \noexcept
+    //!
+    //! \complexity
+    //! Constant.
+    constexpr BMat8& operator+=(BMat8 const& that) noexcept {
+      _data |= that._data;
+      return *this;
+    }
+
+    //! \brief Multiply \c this by \p that in-place.
+    //!
+    //! This function replaces the value of \c this by the standard matrix
+    //! product (over the boolean semiring) of \c this and \p that.
+    //!
+    //! \param that the matrix we want to multiply by \c this.
+    //!
+    //! \returns
+    //! A reference to `*this`.
+    //!
+    //! \exceptions
+    //! \noexcept
+    //!
+    //! \complexity
+    //! Constant.
+    BMat8& operator*=(BMat8 const& that) noexcept;
+
+    //! \brief Swaps \c this with \p that.
+    //!
+    //! This function swaps the values of \c this and \p that.
     //!
     //! \param that the BMat8 to swap \c this with.
-    //!
-    //! \returns
-    //! (None)
     //!
     //! \exceptions
     //! \noexcept
@@ -416,14 +574,33 @@ namespace libsemigroups {
     inline void swap(BMat8& that) noexcept {
       std::swap(this->_data, that._data);
     }
+  };
 
-    //! Find a basis for the row space of \c this.
+  static_assert(std::is_trivial<BMat8>(), "BMat8 is not a trivial class!");
+
+  //! \ingroup bmat8_group
+  //!
+  //! \brief Namespace for BMat8 helper functions.
+  //!
+  //! Defined in ``bmat8.hpp``.
+  //!
+  //! This namespace contains various helper functions for the class BMat8.
+  //! These functions could be functions of BMat8 but they only use
+  //! public member functions of BMat8, and so they are declared as free
+  //! functions instead.
+  namespace bmat8 {
+    //! \brief Returns the identity boolean matrix of a given dimension.
     //!
-    //! This member function returns a BMat8 whose non-zero rows form a basis
-    //! for the row space of \c this.
+    //! Returns the identity boolean matrix of a given dimension.
+    //!
+    //! \tparam T the type of the boolean matrix being constructed, should be
+    //! BMat8 or HPCombi::BMat8.
+    //!
+    //! \param dim the dimension of the identity matrix, must be at most 8.
     //!
     //! \returns
-    //! A BMat8.
+    //! A value of type \p T with the first \p dim values on the main diagonal
+    //! equal to 1 and every other entry equal to 0.
     //!
     //! \exceptions
     //! \noexcept
@@ -431,109 +608,28 @@ namespace libsemigroups {
     //! \complexity
     //! Constant.
     //!
-    //! \par Parameters
-    //! (None)
-    BMat8 row_space_basis() const noexcept;
-
-    //! Find a basis for the column space of \c this.
-    //!
-    //! This member function returns a BMat8 whose non-zero columns form a basis
-    //! for the column space of \c this.
-    //!
-    //! \returns
-    //! A BMat8.
-    //!
-    //! \exceptions
-    //! \noexcept
-    //!
-    //! \complexity
-    //! Constant.
-    //!
-    //! \par Parameters
-    //! (None)
-    BMat8 col_space_basis() const noexcept {
-      return this->transpose().row_space_basis().transpose();
+    //! \sa \ref one
+    // TODO(later) noexcept should depend on whether or not the constructor of
+    template <typename T>
+    [[nodiscard]] constexpr T one(size_t dim = 8) noexcept {
+      LIBSEMIGROUPS_ASSERT(dim <= 8);
+      constexpr std::array<uint64_t, 9> const ones = {0x0000000000000000,
+                                                      0x8000000000000000,
+                                                      0x8040000000000000,
+                                                      0x8040200000000000,
+                                                      0x8040201000000000,
+                                                      0x8040201008000000,
+                                                      0x8040201008040000,
+                                                      0x8040201008040200,
+                                                      0x8040201008040201};
+      return T(ones[dim]);
     }
 
-    //! Returns a vector containing the rows of \c this
+    //! \brief Returns the identity BMat8 of a given dimension.
     //!
-    //! This member function returns a std::vector of uint8_ts representing the
-    //! rows of \c this. The vector will always be of length 8, even if \c this
-    //! was constructed with fewer rows.
-    //!
-    //! \returns
-    //! A std::vector<uint8_t>.
-    //!
-    //! \exceptions
-    //! \no_libsemigroups_except
-    //!
-    //! \complexity
-    //! Constant.
-    //!
-    //! \par Parameters
-    //! (None)
-    // TODO(2) make this return an array instead of a vector
-    std::vector<uint8_t> rows() const;
-
-    //! Find the size of the row space of \c this.
-    //!
-    //! \returns
-    //! A \c size_t.
-    //!
-    //! \exceptions
-    //! \no_libsemigroups_except
-    //!
-    //! \complexity
-    //! \f$O(n)\f$ where \f$n\f$ is the return value of this function.
-    //!
-    //! \par Parameters
-    //! (None)
-    //!
-    //! \sa bmat8::col_space_size.
-    size_t row_space_size() const;
-
-    //! Returns the number of non-zero rows in \c this.
-    //!
-    //! BMat8s do not know their "dimension" - in effect they are all of
-    //! dimension 8. However, this member function can be used to obtain the
-    //! number of non-zero rows of \c this.
-    //!
-    //! \returns
-    //! A \c size_t.
-    //!
-    //! \exceptions
-    //! \noexcept
-    //!
-    //! \complexity
-    //! Constant.
-    //!
-    //! \par Parameters
-    //! (None)
-    //!
-    //! \sa bmat8::number_of_cols and bmat8::minimum_dim.
-    size_t number_of_rows() const noexcept;
-
-    //! Check whether \c this is a regular element of the full boolean matrix
-    //! monoid of appropriate dimension.
-    //!
-    //! \returns
-    //! A \c true if there exists a boolean matrix \c y such that `x * y * x =
-    //! x` where \c x is \c *this.
-    //!
-    //! \exceptions
-    //! \noexcept
-    //!
-    //! \complexity
-    //! Constant.
-    //!
-    //! \par Parameters
-    //! (None)
-    bool is_regular_element() const noexcept;
-
-    //! Returns the identity BMat8.
-    //!
-    //! This member function returns the BMat8 with the first \c dim entries in
-    //! the main diagonal equal to \c 1 and every other value equal to \c 0.
+    //! This function returns the BMat8 with the first \c dim entries
+    //! in the main diagonal equal to \c 1 and every other value equal to \c
+    //! 0.
     //!
     //! \param dim the dimension of the identity (default: 8)
     //!
@@ -545,40 +641,112 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! Constant.
-    static BMat8 one(size_t dim = 8) noexcept {
-      return bmat8::one<BMat8>(dim);
+    [[nodiscard]] constexpr BMat8 one(size_t dim = 8) noexcept {
+      return one<BMat8>(dim);
     }
 
-   private:
-    void sort_rows() noexcept;
-
-    uint64_t                                       _data;
-    static std::random_device                      _rd;
-    static std::mt19937                            _gen;
-    static std::uniform_int_distribution<uint64_t> _dist;
-  };
-
-  static_assert(std::is_trivial<BMat8>(), "BMat8 is not a trivial class!");
-
-  //! Defined in ``bmat8.hpp``.
-  //!
-  //! This namespace contains various helper functions for the class BMat8.
-  //! These functions could be member functions of BMat8 but they only use
-  //! public member functions of BMat8, and so they are declared as free
-  //! functions instead.
-  namespace bmat8 {
-    // TODO(0) these should be templated to allow using HPCombi::BMat8's
-    // here too.
-    //! Returns the number of non-zero columns in \p x.
+    //! \brief Construct a random BMat8.
     //!
-    //! BMat8s do not know their "dimension" - in effect they are all of
-    //! dimension 8. However, this member function can be used to obtain the
-    //! number of non-zero rows of \c this.
-    //!
-    //! \param x the BMat8 whose number of columns we want.
+    //! This function returns a BMat8 chosen at random.
     //!
     //! \returns
-    //! A \c size_t.
+    //! A BMat8.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    // Not noexcept since std::uniform_int_distribution::operator() is not
+    // noexcept.
+    [[nodiscard]] BMat8 random();
+
+    //! \brief Construct a random BMat8 of dimension at most \p dim.
+    //!
+    //! This function returns a BMat8 chosen at random, where
+    //! only the top-left \p dim x \p dim entries can be non-zero.
+    //!
+    //! \param dim the dimension.
+    //!
+    //! \returns
+    //! A BMat8.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    // Not noexcept since std::uniform_int_distribution::operator() is not
+    // noexcept.
+    [[nodiscard]] BMat8 random(size_t dim);
+
+    //! \brief Returns the transpose of a BMat8.
+    //!
+    //! This function returns the transpose of its argument \p x, which is
+    //! computed using the technique found in
+    //! [Knu09](../biblio.html#knuth2009aa).
+    //!
+    //! \param x the matrix to transpose.
+    //!
+    //! \returns
+    //! A BMat8.
+    //!
+    //! \exceptions
+    //! \noexcept
+    //!
+    //! \complexity
+    //! Constant.
+    [[nodiscard]] constexpr BMat8 transpose(BMat8 const& x) noexcept {
+      uint64_t y = x.to_int();
+      uint64_t z = (y ^ (y >> 7)) & 0xAA00AA00AA00AA;
+      y          = y ^ z ^ (z << 7);
+      z          = (y ^ (y >> 14)) & 0xCCCC0000CCCC;
+      y          = y ^ z ^ (z << 14);
+      z          = (y ^ (y >> 28)) & 0xF0F0F0F0;
+      y          = y ^ z ^ (z << 28);
+      return BMat8(y);
+    }
+
+    //! \brief Find a basis for the row space of a BMat8.
+    //!
+    //! This function returns a BMat8 whose non-zero rows form a basis
+    //! for the row space of \p x.
+    //!
+    //! \param x the matrix.
+    //!
+    //! \returns
+    //! A BMat8.
+    //!
+    //! \exceptions
+    //! \noexcept
+    //!
+    //! \complexity
+    //! Constant.
+    [[nodiscard]] BMat8 row_space_basis(BMat8 const& x) noexcept;
+
+    //! \brief Find a basis for the column space of a BMat8.
+    //!
+    //! This function returns a BMat8 whose non-zero columns form a
+    //! basis for the column space of \p x.
+    //!
+    //! \param x the matrix.
+    //!
+    //! \returns
+    //! A BMat8.
+    //!
+    //! \exceptions
+    //! \noexcept
+    //!
+    //! \complexity
+    //! Constant.
+    [[nodiscard]] inline BMat8 col_space_basis(BMat8 const& x) noexcept {
+      return transpose(row_space_basis(transpose(x)));
+    }
+
+    //! \brief Returns the number of non-zero rows in a BMat8.
+    //!
+    //! BMat8s do not know their "dimension" - in effect they are all of
+    //! dimension 8. However, this function can be used to obtain the
+    //! number of non-zero rows of a BMat8.
+    //!
+    //! \param x the matrix.
+    //!
+    //! \returns
+    //! The number of non-zero rows.
     //!
     //! \exceptions
     //! \noexcept
@@ -586,18 +754,48 @@ namespace libsemigroups {
     //! \complexity
     //! Constant.
     //!
-    //! \sa BMat8::number_of_rows and bmat8::minimum_dim.
-    // noexcept because transpose and number_of_rows are.
-    static inline size_t number_of_cols(BMat8 const& x) noexcept {
-      return x.transpose().number_of_rows();
+    //! \sa number_of_cols and minimum_dim.
+    [[nodiscard]] constexpr size_t number_of_rows(BMat8 const& x) noexcept {
+      size_t count = 0;
+      for (size_t i = 0; i < 8; ++i) {
+        if (x.to_int() << (8 * i) >> 56 > 0) {
+          count++;
+        }
+      }
+      return count;
     }
 
-    //! Find the size of the column space of \c x.
+    // TODO(2) these should be templated to allow using HPCombi::BMat8's
+    // here too.
+    //! \brief Returns the number of non-zero columns in a BMat8.
     //!
-    //! \param x a BMat8.
+    //! BMat8s do not know their "dimension" - in effect they are all of
+    //! dimension 8. However, this function can be used to obtain the
+    //! number of non-zero rows of a BMat8.
+    //!
+    //! \param x the matrix.
     //!
     //! \returns
-    //! A \c size_t.
+    //! The number of non-zero columns.
+    //!
+    //! \exceptions
+    //! \noexcept
+    //!
+    //! \complexity
+    //! Constant.
+    //!
+    //! \sa \ref number_of_rows and \ref minimum_dim.
+    // noexcept because transpose and number_of_rows are.
+    [[nodiscard]] constexpr size_t number_of_cols(BMat8 const& x) noexcept {
+      return number_of_rows(transpose(x));
+    }
+
+    //! \brief Returns the size of the row space of a BMat8.
+    //!
+    //! \param x the matrix.
+    //!
+    //! \returns
+    //! The size of the row space of \p x.
     //!
     //! \exceptions
     //! \no_libsemigroups_except
@@ -605,27 +803,155 @@ namespace libsemigroups {
     //! \complexity
     //! \f$O(n)\f$ where \f$n\f$ is the return value of this function.
     //!
-    //! \sa BMat8::row_space_size.
+    //! \sa col_space_size.
+    [[nodiscard]] size_t row_space_size(BMat8 const& x);
+
+    //! \brief Returns the size of the column space of a BMat8.
+    //!
+    //! \param x the matrix.
+    //!
+    //! \returns
+    //! The size of the column space of \p x.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    //! \complexity
+    //! \f$O(n)\f$ where \f$n\f$ is the return value of this function.
+    //!
+    //! \sa row_space_size.
     // Not noexcept because row_space_size isn't.
-    static inline size_t col_space_size(BMat8 const& x) {
-      return x.transpose().row_space_size();
+    [[nodiscard]] inline size_t col_space_size(BMat8 const& x) {
+      return row_space_size(transpose(x));
     }
 
-    //! Find the minimum dimension of \p x.
+    //! \brief Returns the minimum dimension of a BMat8.
     //!
-    //! This member function returns the maximal \c i such that row \c i or
-    //! column \c i contains a \c 1.
+    //! This function returns the maximal \c n such that row \c n or
+    //! column \c n contains a \c 1. Equivalent to the maximum of \ref
+    //! number_of_rows and \ref number_of_cols.
     //!
-    //! \param x a BMat8.
+    //! \param x the matrix.
+    //!
+    //! \returns The minimum dimension of \p x.
     //!
     //! \exceptions
     //! \noexcept
     //!
     //! \complexity
     //! Constant.
-    size_t minimum_dim(BMat8 const& x) noexcept;
+    [[nodiscard]] size_t minimum_dim(BMat8 const& x) noexcept;
+
+    //! \brief Returns a vector of the rows of a BMat8.
+    //!
+    //! This function returns a \c std::vector of \c uint8_t representing
+    //! the rows of \p x. The returned vector always has length 8, even
+    //! if \c x was constructed with fewer rows.
+    //!
+    //! \param x the matrix.
+    //!
+    //! \returns
+    //! A `std::vector<uint8_t>`.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    //! \complexity
+    //! Constant.
+    [[nodiscard]] std::vector<uint8_t> rows(BMat8 const& x);
+
+    //! \brief Push the rows of a BMat8 into the back of a container.
+    //!
+    //! This function adds the \c uint8_t values representing the rows of \p x
+    //! to the container \p rows using its \c push_back member function.
+    //!
+    //! \tparam Container the type of the container. Must support \c push_back
+    //! and have Container::value_type equal to \c uint8_t.
+    //!
+    //! \param rows the container.
+    //! \param x the matrix.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    //! \complexity
+    //! Constant.
+    template <typename Container>
+    void push_back_rows(Container& rows, BMat8 const& x) {
+      static_assert(std::is_same_v<typename Container::value_type, uint8_t>);
+      for (size_t i = 0; i < 8; ++i) {
+        rows.push_back(x(i));
+      }
+    }
+
+    //! \brief Checks whether a BMat8 is regular in the monoid of all
+    //! BMat8 objects.
+    //!
+    //! Check whether \p x is a regular element of the full boolean matrix
+    //! monoid of appropriate dimension.
+    //!
+    //! \param x the matrix.
+    //!
+    //! \returns
+    //! A \c true if there exists a boolean matrix \c y such that `x * y * x =
+    //! x` where \c x, and \c false otherwise.
+    //!
+    //! \exceptions
+    //! \noexcept
+    //!
+    //! \complexity
+    //! Constant.
+    [[nodiscard]] bool is_regular_element(BMat8 const& x) noexcept;
+
+    //! \brief Convert a \c uint8_t to a vector.
+    //!
+    //! This function converts its argument \p row to a \c std::vector<bool>
+    //! such that the item with index \c i is \c true if the bit with index \c i
+    //! in \p row is \c 1, and \c false if the corresponding bit is \c 0.
+    //!
+    //! \param row the matrix.
+    //!
+    //! \returns
+    //! The row represented as a boolean vector.
+    //!
+    //! \complexity
+    //! Constant.
+    std::vector<bool> to_vector(uint8_t row);
 
   }  // namespace bmat8
+
+  //! \ingroup bmat8_group
+  //! \brief Insertion operator
+  //!
+  //! This function allows BMat8 objects to be inserted into an
+  //! std::ostringstream.
+  std::ostringstream& operator<<(std::ostringstream& os, BMat8 const& x);
+
+  //! \ingroup bmat8_group
+  //! \brief Insertion operator
+  //!
+  //! This function allows BMat8 objects to be inserted into a
+  //! std::ostream.
+  std::ostream& operator<<(std::ostream& os, BMat8 const& x);
+
+  //! \ingroup bmat8_group
+  //! \brief Returns a string representation.
+  //!
+  //! \param x the matrix
+  //! \param braces the type of braces to use in the returned string (default:
+  //! `"{}"`).
+  //!
+  //! \returns A string containing a representation of \p x.
+  std::string to_string(BMat8 const& x, std::string const& braces = "{}");
+
+  [[nodiscard]] constexpr BMat8 operator*(bool         scalar,
+                                          BMat8 const& x) noexcept {
+    if (scalar) {
+      return x;
+    } else {
+      return BMat8(0);
+    }
+  }
 }  // namespace libsemigroups
 
 namespace std {
@@ -638,55 +964,63 @@ namespace std {
 }  // namespace std
 
 namespace libsemigroups {
-  //! Specialization of the adapter Complexity for instances of BMat8.
+  //! \ingroup bmat8_group
+  //! \brief Specialization of the adapter Complexity for instances of BMat8.
   //!
-  //! \sa Complexity.
+  //! \copydoc Complexity
   template <>
   struct Complexity<BMat8> {
     //! Returns 0; BMat8 multiplication is constant complexity.
-    constexpr inline size_t operator()(BMat8 const&) const noexcept {
+    [[nodiscard]] constexpr inline size_t
+    operator()(BMat8 const&) const noexcept {
       return 0;
     }
   };
 
-  //! Specialization of the adapter Degree for instances of BMat8.
+  //! \ingroup bmat8_group
+  //! \brief Specialization of the adapter Degree for instances of BMat8.
   //!
-  //! \sa Degree.
+  //! \copydoc Degree.
   template <>
   struct Degree<BMat8> {
     //! Returns 8; all BMat8s have degree 8.
-    constexpr inline size_t operator()(BMat8 const&) const noexcept {
+    [[nodiscard]] constexpr inline size_t
+    operator()(BMat8 const&) const noexcept {
       return 8;
     }
   };
 
-  //! Specialization of the adapter IncreaseDegree for instances of BMat8.
+  //! \ingroup bmat8_group
+  //! \brief Specialization of the adapter IncreaseDegree for instances of
+  //! BMat8.
   //!
-  //! \sa IncreaseDegree.
+  //! \copydoc IncreaseDegree.
   template <>
   struct IncreaseDegree<BMat8> {
     //! Does nothing.
     inline void operator()(BMat8 const&, size_t) const noexcept {}
   };
 
-  //! Specialization of the adapter One for instances of BMat8.
+  //! \ingroup bmat8_group
+  //! \brief Specialization of the adapter One for instances of BMat8.
   //!
-  //! \sa One.
+  //! \copydoc One.
   template <>
   struct One<BMat8> {
     //! Returns \p x.one()
-    inline BMat8 operator()(BMat8 const& x) const noexcept {
-      return x.one();
+    [[nodiscard]] inline BMat8 operator()(BMat8 const&) const noexcept {
+      return bmat8::one();
     }
-    //! Returns BMat8::one(dim)
-    inline BMat8 operator()(size_t dim = 8) const noexcept {
-      return BMat8::one(dim);
+    //! Returns bmat8::one(dim)
+    [[nodiscard]] inline BMat8 operator()(size_t dim = 8) const noexcept {
+      return bmat8::one(dim);
     }
   };
 
-  //! Specialization of the adapter Product for instances of BMat8.
+  //! \ingroup bmat8_group
+  //! \brief Specialization of the adapter Product for instances of BMat8.
   //!
-  //! \sa Product.
+  //! \copydoc Product.
   template <>
   struct Product<BMat8> {
     //! Changes \p xy in place to hold the product of \p x and \p y
@@ -698,9 +1032,11 @@ namespace libsemigroups {
     }
   };
 
-  //! Specialization of the adapter ImageRightAction for instances of BMat8.
+  //! \ingroup bmat8_group
+  //! \brief Specialization of the adapter ImageRightAction for instances of
+  //! BMat8.
   //!
-  //! \sa ImageRightAction.
+  //! \copydoc ImageRightAction.
   template <>
   struct ImageRightAction<BMat8, BMat8> {
     //! Changes \p res in place to hold the image of \p pt under the right
@@ -708,13 +1044,15 @@ namespace libsemigroups {
     void operator()(BMat8&       res,
                     BMat8 const& pt,
                     BMat8 const& x) const noexcept {
-      res = (pt * x).row_space_basis();
+      res = bmat8::row_space_basis(pt * x);
     }
   };
 
-  //! Specialization of the adapter ImageLeftAction for instances of BMat8.
+  //! \ingroup bmat8_group
+  //! \brief Specialization of the adapter ImageLeftAction for instances of
+  //! BMat8.
   //!
-  //! \sa ImageLeftAction.
+  //! \copydoc ImageLeftAction.
   template <>
   struct ImageLeftAction<BMat8, BMat8> {
     //! Changes \p res in place to hold the image of \p pt under the left
@@ -722,25 +1060,27 @@ namespace libsemigroups {
     void operator()(BMat8&       res,
                     BMat8 const& pt,
                     BMat8 const& x) const noexcept {
-      res = (x * pt).col_space_basis();
+      res = bmat8::col_space_basis(x * pt);
     }
   };
 
-  //! Specialization of the adapter Inverse for instances of BMat8.
+  //! \ingroup bmat8_group
+  //! \brief Specialization of the adapter Inverse for instances of BMat8.
   //!
-  //! \sa Inverse.
+  //! \copydoc Inverse.
   template <>
   struct Inverse<BMat8> {
     //! Returns the group inverse of \p x.
-    inline BMat8 operator()(BMat8 const& x) const noexcept {
-      LIBSEMIGROUPS_ASSERT(x * x.transpose() == x.one());
-      return x.transpose();
+    [[nodiscard]] inline BMat8 operator()(BMat8 const& x) const noexcept {
+      LIBSEMIGROUPS_ASSERT(x * bmat8::transpose(x) == bmat8::one());
+      return bmat8::transpose(x);
     }
   };
 
-  //! Specialization of the adapter LambdaValue for instances of BMat8.
+  //! \ingroup bmat8_group
+  //! \brief Specialization of the adapter LambdaValue for instances of BMat8.
   //!
-  //! \sa LambdaValue
+  //! \copydoc LambdaValue
   template <>
   struct LambdaValue<BMat8> {
     //! The type of Lambda values for BMat8 is also BMat8; this provides an
@@ -748,9 +1088,10 @@ namespace libsemigroups {
     using type = BMat8;
   };
 
-  //! Specialization of the adapter RhoValue for instances of BMat8.
+  //! \ingroup bmat8_group
+  //! \brief Specialization of the adapter RhoValue for instances of BMat8.
   //!
-  //! \sa RhoValue
+  //! \copydoc RhoValue
   template <>
   struct RhoValue<BMat8> {
     //! The type of Rho values for BMat8 is also BMat8; this provides an
@@ -758,41 +1099,43 @@ namespace libsemigroups {
     using type = BMat8;
   };
 
-  //! Specialization of the adapter Lambda for instances of BMat8.
+  //! \ingroup bmat8_group
+  //! \brief Specialization of the adapter Lambda for instances of BMat8.
   //!
-  //! \sa Lambda.
+  //! \copydoc Lambda
   template <>
   struct Lambda<BMat8, BMat8> {
-    //! Returns the lambda value of \p x as used in the Konieczny algorithm; for
-    //! BMat8 this is the row space basis.
-    // noexcept because BMat8::row_space_basis is noexcept
+    //! Returns the lambda value of \p x as used in the Konieczny algorithm;
+    //! for BMat8 this is the row space basis.
+    // noexcept because bmat8::row_space_basis is noexcept
     inline void operator()(BMat8& res, BMat8 const& x) const noexcept {
-      res = x.row_space_basis();
+      res = bmat8::row_space_basis(x);
     }
   };
 
-  //! Specialization of the adapter Rho for instances of BMat8.
-  //!
-  //! \sa Rho.
+  //! \ingroup bmat8_group
+  //! \brief Specialization of the adapter Rho for instances of BMat8.
+  //! \copydoc Rho
   template <>
   struct Rho<BMat8, BMat8> {
     //! Returns the rho value of \p x as used in the Konieczny algorithm; for
     //! BMat8 this is the column space basis.
-    // noexcept because BMat8::col_space_basis is noexcept
+    // noexcept because bmat8::col_space_basis is noexcept
     inline void operator()(BMat8& res, BMat8 const& x) const noexcept {
-      res = x.col_space_basis();
+      res = bmat8::col_space_basis(x);
     }
   };
 
-  //! Specialization of the adapter Rank for instances of BMat8.
+  //! \ingroup bmat8_group
+  //! \brief Specialization of the adapter Rank for instances of BMat8.
   //!
-  //! \sa Rank.
+  //! \copydoc Rank.
   template <>
   struct Rank<BMat8> {
     //! Returns the rank of \p x as used in the Konieczny algorithm; for BMat8
     //! this is the size of the row space.
-    inline size_t operator()(BMat8 const& x) const noexcept {
-      return x.row_space_size();
+    [[nodiscard]] inline size_t operator()(BMat8 const& x) const noexcept {
+      return bmat8::row_space_size(x);
     }
   };
 }  // namespace libsemigroups

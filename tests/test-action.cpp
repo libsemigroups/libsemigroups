@@ -73,11 +73,13 @@ namespace libsemigroups {
                              "002",
                              "row and column basis orbits for BMat8 x 2",
                              "[quick]") {
+    using bmat8::col_space_basis;
+    using bmat8::row_space_basis;
+
     auto         rg = ReportGuard(REPORT);
     row_orb_type row_orb;
-    row_orb.add_seed(
-        BMat8({{1, 1, 1, 0}, {1, 1, 0, 0}, {0, 1, 0, 1}, {0, 1, 0, 0}})
-            .row_space_basis());
+    row_orb.add_seed(row_space_basis(
+        BMat8({{1, 1, 1, 0}, {1, 1, 0, 0}, {0, 1, 0, 1}, {0, 1, 0, 0}})));
 
     row_orb.add_generator(
         BMat8({{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}));
@@ -93,9 +95,8 @@ namespace libsemigroups {
     REQUIRE(row_orb.size() == 553);
     row_orb.init();
 
-    row_orb.add_seed(
-        BMat8({{1, 1, 1, 0}, {1, 1, 0, 0}, {0, 1, 0, 1}, {0, 1, 0, 0}})
-            .row_space_basis());
+    row_orb.add_seed(row_space_basis(
+        BMat8({{1, 1, 1, 0}, {1, 1, 0, 0}, {0, 1, 0, 1}, {0, 1, 0, 0}})));
 
     row_orb.add_generator(
         BMat8({{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}));
@@ -111,9 +112,8 @@ namespace libsemigroups {
     REQUIRE(row_orb.size() == 553);
 
     col_orb_type col_orb;
-    col_orb.add_seed(
-        BMat8({{1, 1, 1, 0}, {1, 1, 0, 0}, {0, 1, 0, 1}, {0, 1, 0, 0}})
-            .col_space_basis());
+    col_orb.add_seed(col_space_basis(
+        BMat8({{1, 1, 1, 0}, {1, 1, 0, 0}, {0, 1, 0, 1}, {0, 1, 0, 0}})));
 
     col_orb.add_generator(
         BMat8({{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}));
@@ -133,11 +133,12 @@ namespace libsemigroups {
                              "003",
                              "add generators after enumeration",
                              "[quick]") {
+    using bmat8::col_space_basis;
+    using bmat8::row_space_basis;
     auto         rg = ReportGuard(REPORT);
     row_orb_type row_orb;
-    row_orb.add_seed(
-        BMat8({{1, 1, 1, 0}, {1, 1, 0, 0}, {0, 1, 0, 1}, {0, 1, 0, 0}})
-            .row_space_basis());
+    row_orb.add_seed(row_space_basis(
+        BMat8({{1, 1, 1, 0}, {1, 1, 0, 0}, {0, 1, 0, 1}, {0, 1, 0, 0}})));
 
     row_orb.add_generator(
         BMat8({{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}));
@@ -156,9 +157,8 @@ namespace libsemigroups {
     REQUIRE(row_orb.size() == 553);
 
     col_orb_type col_orb;
-    col_orb.add_seed(
-        BMat8({{1, 1, 1, 0}, {1, 1, 0, 0}, {0, 1, 0, 1}, {0, 1, 0, 0}})
-            .col_space_basis());
+    col_orb.add_seed(col_space_basis(
+        BMat8({{1, 1, 1, 0}, {1, 1, 0, 0}, {0, 1, 0, 1}, {0, 1, 0, 0}})));
 
     col_orb.add_generator(
         BMat8({{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}));
@@ -181,11 +181,12 @@ namespace libsemigroups {
                              "004",
                              "multipliers for BMat8 row and column orbits",
                              "[quick][no-valgrind]") {
+    using bmat8::col_space_basis;
+    using bmat8::row_space_basis;
     auto         rg = ReportGuard(REPORT);
     row_orb_type row_orb;
-    row_orb.add_seed(
-        BMat8({{1, 1, 1, 0}, {1, 1, 0, 0}, {0, 1, 0, 1}, {0, 1, 0, 0}})
-            .row_space_basis());
+    row_orb.add_seed(row_space_basis(
+        BMat8({{1, 1, 1, 0}, {1, 1, 0, 0}, {0, 1, 0, 1}, {0, 1, 0, 0}})));
 
     row_orb.add_generator(
         BMat8({{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}));
@@ -220,20 +221,17 @@ namespace libsemigroups {
                                       101}));
 
     for (size_t i = 0; i < row_orb.size(); ++i) {
-      REQUIRE(
-          row_orb.position((row_orb.at(i) * row_orb.multiplier_to_scc_root(i))
-                               .row_space_basis())
-          == row_orb.position(row_orb.root_of_scc(i)));
-      REQUIRE((row_orb.at(i) * row_orb.multiplier_to_scc_root(i)
-               * row_orb.multiplier_from_scc_root(i))
-                  .row_space_basis()
+      REQUIRE(row_orb.position(row_space_basis(
+                  row_orb.at(i) * row_orb.multiplier_to_scc_root(i)))
+              == row_orb.position(row_orb.root_of_scc(i)));
+      REQUIRE(row_space_basis(row_orb.at(i) * row_orb.multiplier_to_scc_root(i)
+                              * row_orb.multiplier_from_scc_root(i))
               == row_orb.at(i));
     }
 
     col_orb_type col_orb;
-    col_orb.add_seed(
-        BMat8({{1, 1, 1, 0}, {1, 1, 0, 0}, {0, 1, 0, 1}, {0, 1, 0, 0}})
-            .col_space_basis());
+    col_orb.add_seed(col_space_basis(
+        BMat8({{1, 1, 1, 0}, {1, 1, 0, 0}, {0, 1, 0, 1}, {0, 1, 0, 0}})));
 
     col_orb.add_generator(
         BMat8({{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}));
@@ -249,9 +247,9 @@ namespace libsemigroups {
     REQUIRE(col_orb.size() == 553);
 
     for (size_t i = 0; i < col_orb.size(); ++i) {
-      REQUIRE((col_orb.multiplier_from_scc_root(i)
-               * col_orb.multiplier_to_scc_root(i) * col_orb.at(i))
-                  .col_space_basis()
+      REQUIRE(col_space_basis(col_orb.multiplier_from_scc_root(i)
+                              * col_orb.multiplier_to_scc_root(i)
+                              * col_orb.at(i))
               == col_orb.at(i));
     }
   }
@@ -284,8 +282,8 @@ namespace libsemigroups {
     row_orb_type             row_orb;
     col_orb_type             col_orb;
 
-    row_orb.add_seed(BMat8::one());
-    col_orb.add_seed(BMat8::one());
+    row_orb.add_seed(bmat8::one());
+    col_orb.add_seed(bmat8::one());
     for (BMat8 g : reg_bmat5_gens) {
       row_orb.add_generator(g);
       col_orb.add_generator(g);
@@ -328,7 +326,7 @@ namespace libsemigroups {
                                                       {0, 0, 0, 0, 0, 0}})};
     row_orb_type             row_orb;
 
-    row_orb.add_seed(BMat8::one());
+    row_orb.add_seed(bmat8::one());
     for (BMat8 g : reg_bmat6_gens) {
       row_orb.add_generator(g);
     }
@@ -634,8 +632,8 @@ namespace libsemigroups {
     row_orb_type row_orb;
     col_orb_type col_orb;
 
-    row_orb.add_seed(BMat8::one());
-    col_orb.add_seed(BMat8::one());
+    row_orb.add_seed(bmat8::one());
+    col_orb.add_seed(bmat8::one());
     for (BMat8 g : reg_bmat5_gens) {
       row_orb.add_generator(g);
       col_orb.add_generator(g);

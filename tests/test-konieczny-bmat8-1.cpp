@@ -141,7 +141,7 @@ namespace libsemigroups {
 
     // test that the top D-class contains only permutation matrices
     for (auto it = S.cbegin(); it < S.cend(); it++) {
-      REQUIRE(D.contains(*it) == (((*it) * (*it).transpose()) == gens[0]));
+      REQUIRE(D.contains(*it) == (((*it) * bmat8::transpose(*it)) == gens[0]));
     }
   }
 
