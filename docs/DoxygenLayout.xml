@@ -15,6 +15,9 @@
         <tab type="user" visible="yes" url="@ref libsemigroups::LeftAction" title="LeftAction" />
         <tab type="user" visible="yes" url="@ref libsemigroups::RightAction" title="RightAction" />
     </tab>
+    <tab type="usergroup" visible="yes" url="@ref matrix_group" title="Matrix" >
+      <tab type="user" visible="yes" url="@ref bmat8_group" title="BMat8" />
+    </tab>
     <tab type="usergroup" visible="yes" url="@ref congruences_group" title="Congruences" >
       <tab type="usergroup" visible="yes" url="group__congruences__group.html#nested-classes" title="Classes" >
         <tab type="user" visible="yes" url="@ref libsemigroups::SimsStats" title="SimsStats" />

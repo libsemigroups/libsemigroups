@@ -1,6 +1,6 @@
 //
 // libsemigroups - C++ library for semigroups and monoids
-// Copyright (C) 2019 Finn Smith
+// Copyright (C) 2019-24 Finn Smith
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -24,161 +24,145 @@
 #include <algorithm>  // for uniform_int_distribution
 #include <array>      // for array
 #include <climits>    // for CHAR_BIT
-#include <iostream>   // for operator<<, ostringstream
 #include <random>     // for mt19937, random_device
+#include <sstream>    // for operator<<, ostringstream
 #include <vector>     // for vector
 
 #include "libsemigroups/exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
 
+#include "libsemigroups/detail/string.hpp"  // for to_string
+
 namespace libsemigroups {
 
-  ////////////////////////////////////////////////////////////////////////
-  // Static helper data and functions
-  ////////////////////////////////////////////////////////////////////////
-
-  static std::array<uint64_t, 8> const ROW_MASK = {0xff00000000000000,
-                                                   0xff000000000000,
-                                                   0xff0000000000,
-                                                   0xff00000000,
-                                                   0xff000000,
-                                                   0xff0000,
-                                                   0xff00,
-                                                   0xff};
-
-  static std::array<uint64_t, 8> const COL_MASK = {0x8080808080808080,
-                                                   0x4040404040404040,
-                                                   0x2020202020202020,
-                                                   0x1010101010101010,
-                                                   0x808080808080808,
-                                                   0x404040404040404,
-                                                   0x202020202020202,
-                                                   0x101010101010101};
-
-  static std::array<uint64_t, 64> const BIT_MASK = {0x8000000000000000,
-                                                    0x4000000000000000,
-                                                    0x2000000000000000,
-                                                    0x1000000000000000,
-                                                    0x800000000000000,
-                                                    0x400000000000000,
-                                                    0x200000000000000,
-                                                    0x100000000000000,
-                                                    0x80000000000000,
-                                                    0x40000000000000,
-                                                    0x20000000000000,
-                                                    0x10000000000000,
-                                                    0x8000000000000,
-                                                    0x4000000000000,
-                                                    0x2000000000000,
-                                                    0x1000000000000,
-                                                    0x800000000000,
-                                                    0x400000000000,
-                                                    0x200000000000,
-                                                    0x100000000000,
-                                                    0x80000000000,
-                                                    0x40000000000,
-                                                    0x20000000000,
-                                                    0x10000000000,
-                                                    0x8000000000,
-                                                    0x4000000000,
-                                                    0x2000000000,
-                                                    0x1000000000,
-                                                    0x800000000,
-                                                    0x400000000,
-                                                    0x200000000,
-                                                    0x100000000,
-                                                    0x80000000,
-                                                    0x40000000,
-                                                    0x20000000,
-                                                    0x10000000,
-                                                    0x8000000,
-                                                    0x4000000,
-                                                    0x2000000,
-                                                    0x1000000,
-                                                    0x800000,
-                                                    0x400000,
-                                                    0x200000,
-                                                    0x100000,
-                                                    0x80000,
-                                                    0x40000,
-                                                    0x20000,
-                                                    0x10000,
-                                                    0x8000,
-                                                    0x4000,
-                                                    0x2000,
-                                                    0x1000,
-                                                    0x800,
-                                                    0x400,
-                                                    0x200,
-                                                    0x100,
-                                                    0x80,
-                                                    0x40,
-                                                    0x20,
-                                                    0x10,
-                                                    0x8,
-                                                    0x4,
-                                                    0x2,
-                                                    0x1};
-
-  // Cyclically shifts bits to left by 8m
-  // https://stackoverflow.com/a/776523
-  static uint64_t cyclic_shift(uint64_t n) noexcept {
-    const unsigned int mask
-        = (CHAR_BIT * sizeof(n) - 1);  // assumes width is a power of 2.
-    // assert ( (c<=mask) &&"rotate by type width or more");
-    unsigned int c = 8;
-    c &= mask;
-    return (n << c) | (n >> ((-c) & mask));
-  }
-
-  // Given 8 x 8 matrices A and B, this function returns a matrix where each
-  // row is the corresponding row of B if that row of B is a subset of the
-  // corresponding row of A, and 0 otherwise.
-  static uint64_t zero_if_row_not_contained(uint64_t A, uint64_t B) noexcept {
-    uint64_t w = A & B;
-    for (size_t i = 0; i < 8; ++i) {
-      if ((w & ROW_MASK[i]) == (B & ROW_MASK[i])) {
-        w |= (B & ROW_MASK[i]);
-      } else {
-        w &= ~(ROW_MASK[i]);
+  namespace {
+    void throw_if_indices_out_of_bound(size_t r, size_t c) {
+      if (r >= 8) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "the 1st argument (row index) must be < 8, found {}", r);
+      }
+      if (c >= 8) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "the 2nd argument (column index) must be < 8, found {}", c);
       }
     }
-    return w;
-  }
 
-  static std::array<uint64_t, 8> for_sorting = {0, 0, 0, 0, 0, 0, 0, 0};
-
-  static inline void swap_for_sorting(size_t a, size_t b) noexcept {
-    if (for_sorting[b] < for_sorting[a]) {
-      std::swap(for_sorting[a], for_sorting[b]);
+    void throw_if_dim_out_of_bound(size_t dim) {
+      if (0 == dim || dim > 8) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "the argument (dimension) should be in [1, 8], got {}", dim);
+      }
     }
-  }
 
-  ////////////////////////////////////////////////////////////////////////
-  // BMat8 - static data members - private
-  ////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////
+    // Helper data and functions
+    ////////////////////////////////////////////////////////////////////////
 
-  std::random_device                      BMat8::_rd;
-  std::mt19937                            BMat8::_gen(_rd());
-  std::uniform_int_distribution<uint64_t> BMat8::_dist(0, 0xffffffffffffffff);
+    constexpr std::array<uint64_t, 8> const ROW_MASK = {0xff00000000000000,
+                                                        0xff000000000000,
+                                                        0xff0000000000,
+                                                        0xff00000000,
+                                                        0xff000000,
+                                                        0xff0000,
+                                                        0xff00,
+                                                        0xff};
+
+    constexpr std::array<uint64_t, 8> const COL_MASK = {0x8080808080808080,
+                                                        0x4040404040404040,
+                                                        0x2020202020202020,
+                                                        0x1010101010101010,
+                                                        0x808080808080808,
+                                                        0x404040404040404,
+                                                        0x202020202020202,
+                                                        0x101010101010101};
+
+    // Cyclically shifts bits to left by 8m
+    // https://stackoverflow.com/a/776523
+    [[nodiscard]] constexpr uint64_t cyclic_shift(uint64_t n) noexcept {
+      const unsigned int mask
+          = (CHAR_BIT * sizeof(n) - 1);  // assumes width is a power of 2.
+      // assert ( (c<=mask) &&"rotate by type width or more");
+      unsigned int c = 8;
+      c &= mask;
+      return (n << c) | (n >> ((-c) & mask));
+    }
+
+    // Given 8 x 8 matrices A and B, this function returns a matrix where each
+    // row is the corresponding row of B if that row of B is a subset of the
+    // corresponding row of A, and 0 otherwise.
+    [[nodiscard]] constexpr uint64_t
+    zero_if_row_not_contained(uint64_t A, uint64_t B) noexcept {
+      uint64_t w = A & B;
+      for (size_t i = 0; i < 8; ++i) {
+        if ((w & ROW_MASK[i]) == (B & ROW_MASK[i])) {
+          w |= (B & ROW_MASK[i]);
+        } else {
+          w &= ~(ROW_MASK[i]);
+        }
+      }
+      return w;
+    }
+
+    std::array<uint64_t, 8> for_sorting = {0, 0, 0, 0, 0, 0, 0, 0};
+
+    inline void swap_for_sorting(size_t a, size_t b) noexcept {
+      if (for_sorting[b] < for_sorting[a]) {
+        std::swap(for_sorting[a], for_sorting[b]);
+      }
+    }
+
+    void sort_rows(BMat8& x) noexcept {
+      auto data = x.to_int();
+      for (size_t i = 0; i < 8; ++i) {
+        for_sorting[i] = (data << 8 * i) & ROW_MASK[0];
+      }
+      swap_for_sorting(0, 1);
+      swap_for_sorting(2, 3);
+      swap_for_sorting(0, 2);
+      swap_for_sorting(1, 3);
+      swap_for_sorting(1, 2);
+      swap_for_sorting(4, 5);
+      swap_for_sorting(6, 7);
+      swap_for_sorting(4, 6);
+      swap_for_sorting(5, 7);
+      swap_for_sorting(5, 6);
+      swap_for_sorting(0, 4);
+      swap_for_sorting(1, 5);
+      swap_for_sorting(1, 4);
+      swap_for_sorting(2, 6);
+      swap_for_sorting(3, 7);
+      swap_for_sorting(3, 6);
+      swap_for_sorting(2, 4);
+      swap_for_sorting(3, 5);
+      swap_for_sorting(3, 4);
+      data = 0;
+      for (size_t i = 0; i < 7; ++i) {
+        data |= for_sorting[i];
+        data = (data >> 8);
+      }
+      data |= for_sorting[7];
+      x = BMat8(data);
+    }
+  }  // namespace
 
   ////////////////////////////////////////////////////////////////////////
   // BMat8 - constructors - public
   ////////////////////////////////////////////////////////////////////////
 
   BMat8::BMat8(std::vector<std::vector<bool>> const& mat) {
-    if (0 == mat.size() || mat.size() > 8) {
-      LIBSEMIGROUPS_EXCEPTION(
-          "expected a vector with size in [1, 8], got a vector of size %d",
-          mat.size());
-    }
+    throw_if_dim_out_of_bound(mat.size());
     _data        = 0;
     uint64_t pow = 1;
     pow          = pow << 63;
-    for (auto row : mat) {
-      if (row.size() != mat.size()) {
-        LIBSEMIGROUPS_EXCEPTION("the vectors must all have the same length!");
+    for (size_t i = 0; i < mat.size(); ++i) {
+      if (mat[i].size() != mat.size()) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "the entries of the argument (rows) must all be the same length "
+            "{}, found length {} for row with index {}",
+            mat.size(),
+            mat[i].size(),
+            i);
       }
-      for (auto entry : row) {
+      for (auto entry : mat[i]) {
         if (entry) {
           _data ^= pow;
         }
@@ -188,72 +172,27 @@ namespace libsemigroups {
     }
   }
 
-  // Not noexcept because it can throw.
-  BMat8 BMat8::random(size_t dim) {
-    if (0 == dim || dim > 8) {
-      LIBSEMIGROUPS_EXCEPTION("the argument should be in [1, 8], got %d", dim);
-    }
-    BMat8 bm = BMat8::random();
-    for (size_t i = dim; i < 8; ++i) {
-      bm._data &= ~(ROW_MASK[i]);
-      bm._data &= ~(COL_MASK[i]);
-    }
-    return bm;
-  }
-
   ////////////////////////////////////////////////////////////////////////
   // BMat8 - member functions - public
   ////////////////////////////////////////////////////////////////////////
 
-  BMat8 BMat8::row_space_basis() const noexcept {
-    uint64_t out            = 0;
-    uint64_t combined_masks = 0;
-
-    BMat8 bm(_data);
-    bm.sort_rows();
-    uint64_t no_dups = bm._data;
-    for (size_t i = 0; i < 7; ++i) {
-      combined_masks |= ROW_MASK[i];
-      while ((no_dups & ROW_MASK[i + 1]) << 8 == (no_dups & ROW_MASK[i])
-             && (no_dups & ROW_MASK[i]) != 0) {
-        no_dups = ((no_dups & combined_masks)
-                   | (no_dups & ~combined_masks & ~ROW_MASK[i + 1]) << 8);
-      }
-    }
-    uint64_t cm = no_dups;
-    for (size_t i = 0; i < 7; ++i) {
-      cm = cyclic_shift(cm);
-      out |= zero_if_row_not_contained(no_dups, cm);
-    }
-    for (size_t i = 0; i < 8; ++i) {
-      if ((out & ROW_MASK[i]) == (no_dups & ROW_MASK[i])) {
-        out &= ~ROW_MASK[i];
-      } else {
-        out |= (no_dups & ROW_MASK[i]);
-      }
-    }
-    combined_masks = 0;
-    for (size_t i = 0; i < 8; ++i) {
-      combined_masks |= ROW_MASK[i];
-      while ((out & ROW_MASK[i]) == 0 && ((out & ~combined_masks) != 0)) {
-        out = (out & combined_masks) | ((out & ~combined_masks) << 8);
-      }
-    }
-    return BMat8(out);
+  bool BMat8::at(size_t r, size_t c) const {
+    throw_if_indices_out_of_bound(r, c);
+    return this->operator()(r, c);
   }
 
-  void BMat8::set(size_t i, size_t j, bool val) {
-    if (7 < i || 7 < j) {
-      LIBSEMIGROUPS_EXCEPTION(
-          "the arguments should each be at most 7, got {} as the {} argument",
-          (7 < i) ? i : j,
-          (7 < i) ? "first" : "second");
-    }
-    _data ^= (-val ^ _data) & BIT_MASK[8 * i + j];
+  BMat8::BitRef BMat8::at(size_t r, size_t c) {
+    throw_if_indices_out_of_bound(r, c);
+    return this->operator()(r, c);
+  }
+
+  uint8_t BMat8::at(size_t r) const {
+    throw_if_indices_out_of_bound(r, 0);
+    return this->operator()(r);
   }
 
   BMat8 BMat8::operator*(BMat8 const& that) const noexcept {
-    uint64_t y    = that.transpose()._data;
+    uint64_t y    = bmat8::transpose(that).to_int();
     uint64_t data = 0;
     uint64_t tmp  = 0;
     uint64_t diag = 0x8040201008040201;
@@ -272,93 +211,20 @@ namespace libsemigroups {
     return BMat8(data);
   }
 
-  size_t BMat8::row_space_size() const {
-    std::array<char, 256> lookup;
-    lookup.fill(0);
-    std::vector<uint8_t> row_vec = row_space_basis().rows();
-    auto                 last = std::remove(row_vec.begin(), row_vec.end(), 0);
-    row_vec.erase(last, row_vec.end());
-    for (uint8_t x : row_vec) {
-      lookup[x] = true;
-    }
-    std::vector<uint8_t> row_space(row_vec.begin(), row_vec.end());
-    for (size_t i = 0; i < row_space.size(); ++i) {
-      for (uint8_t row : row_vec) {
-        uint8_t x = row_space[i] | row;
-        if (!lookup[x]) {
-          row_space.push_back(x);
-          lookup[x] = true;
-        }
-      }
-    }
-    return row_space.size() + 1;
-  }
-
-  size_t BMat8::number_of_rows() const noexcept {
-    size_t count = 0;
-    for (size_t i = 0; i < 8; ++i) {
-      if (_data << (8 * i) >> 56 > 0) {
-        count++;
-      }
-    }
-    return count;
-  }
-
-  bool BMat8::is_regular_element() const noexcept {
-    return *this
-               * BMat8(~(*this * BMat8(~_data).transpose() * (*this)).to_int())
-                     .transpose()
-               * (*this)
-           == *this;
-  }
-
-  std::vector<uint8_t> BMat8::rows() const {
-    std::vector<uint8_t> rows;
-    for (size_t i = 0; i < 8; ++i) {
-      uint8_t row = static_cast<uint8_t>(_data << (8 * i) >> 56);
-      rows.push_back(row);
-    }
-    return rows;
+  BMat8& BMat8::operator*=(BMat8 const& that) noexcept {
+    BMat8 val(*this * that);
+    this->swap(val);
+    return *this;
   }
 
   ////////////////////////////////////////////////////////////////////////
-  // BMat8 - member functions - private
+  // Free functions
   ////////////////////////////////////////////////////////////////////////
 
-  void BMat8::sort_rows() noexcept {
-    for (size_t i = 0; i < 8; ++i) {
-      for_sorting[i] = (_data << 8 * i) & ROW_MASK[0];
-    }
-    swap_for_sorting(0, 1);
-    swap_for_sorting(2, 3);
-    swap_for_sorting(0, 2);
-    swap_for_sorting(1, 3);
-    swap_for_sorting(1, 2);
-    swap_for_sorting(4, 5);
-    swap_for_sorting(6, 7);
-    swap_for_sorting(4, 6);
-    swap_for_sorting(5, 7);
-    swap_for_sorting(5, 6);
-    swap_for_sorting(0, 4);
-    swap_for_sorting(1, 5);
-    swap_for_sorting(1, 4);
-    swap_for_sorting(2, 6);
-    swap_for_sorting(3, 7);
-    swap_for_sorting(3, 6);
-    swap_for_sorting(2, 4);
-    swap_for_sorting(3, 5);
-    swap_for_sorting(3, 4);
-    _data = 0;
-    for (size_t i = 0; i < 7; ++i) {
-      _data |= for_sorting[i];
-      _data = (_data >> 8);
-    }
-    _data |= for_sorting[7];
+  std::ostream& operator<<(std::ostream& os, BMat8 const& bm) {
+    os << detail::to_string(bm);
+    return os;
   }
-
-  ////////////////////////////////////////////////////////////////////////
-  // BMat8 - friend functions
-  ////////////////////////////////////////////////////////////////////////
 
   std::ostringstream& operator<<(std::ostringstream& os, BMat8 const& bm) {
     uint64_t x   = bm.to_int();
@@ -378,11 +244,120 @@ namespace libsemigroups {
     return os;
   }
 
+  std::string to_string(BMat8 const& x, std::string const& braces) {
+    if (braces.size() != 2) {
+      LIBSEMIGROUPS_EXCEPTION(
+          "the 2nd argument (braces) must have size 2, found {}",
+          braces.size());
+    }
+    auto        lbrace = braces[0], rbrace = braces[1];
+    std::string result = fmt::format("BMat8({0}", lbrace);
+
+    auto n = bmat8::minimum_dim(x);
+    if (n == 0) {
+      return "BMat8(0)";
+    }
+    std::string rindent;
+    for (size_t r = 0; r < n; ++r) {
+      result += fmt::format("{}{}", rindent, lbrace);
+      rindent          = "       ";
+      std::string csep = "";
+      for (size_t c = 0; c < n; ++c) {
+        result += fmt::format("{}{:d}", csep, x(r, c));
+        csep = ", ";
+      }
+      result += fmt::format("{}", rbrace);
+      if (r != n - 1) {
+        result += ",\n";
+      }
+    }
+    result += fmt::format("{})", rbrace);
+    return result;
+  }
+
   ////////////////////////////////////////////////////////////////////////
   // BMat8 helpers
   ////////////////////////////////////////////////////////////////////////
 
   namespace bmat8 {
+    BMat8 row_space_basis(BMat8 const& x) noexcept {
+      uint64_t out            = 0;
+      uint64_t combined_masks = 0;
+
+      BMat8 bm(x);
+      sort_rows(bm);
+      uint64_t no_dups = bm.to_int();
+      for (size_t i = 0; i < 7; ++i) {
+        combined_masks |= ROW_MASK[i];
+        while ((no_dups & ROW_MASK[i + 1]) << 8 == (no_dups & ROW_MASK[i])
+               && (no_dups & ROW_MASK[i]) != 0) {
+          no_dups = ((no_dups & combined_masks)
+                     | (no_dups & ~combined_masks & ~ROW_MASK[i + 1]) << 8);
+        }
+      }
+      uint64_t cm = no_dups;
+      for (size_t i = 0; i < 7; ++i) {
+        cm = cyclic_shift(cm);
+        out |= zero_if_row_not_contained(no_dups, cm);
+      }
+      for (size_t i = 0; i < 8; ++i) {
+        if ((out & ROW_MASK[i]) == (no_dups & ROW_MASK[i])) {
+          out &= ~ROW_MASK[i];
+        } else {
+          out |= (no_dups & ROW_MASK[i]);
+        }
+      }
+      combined_masks = 0;
+      for (size_t i = 0; i < 8; ++i) {
+        combined_masks |= ROW_MASK[i];
+        while ((out & ROW_MASK[i]) == 0 && ((out & ~combined_masks) != 0)) {
+          out = (out & combined_masks) | ((out & ~combined_masks) << 8);
+        }
+      }
+      return BMat8(out);
+    }
+
+    size_t row_space_size(BMat8 const& x) {
+      std::array<char, 256> lookup;
+      lookup.fill(0);
+      auto row_vec = bmat8::rows(bmat8::row_space_basis(x));
+      auto last    = std::remove(row_vec.begin(), row_vec.end(), 0);
+      row_vec.erase(last, row_vec.end());
+      for (uint8_t x : row_vec) {
+        lookup[x] = true;
+      }
+      std::vector<uint8_t> row_space(row_vec.begin(), row_vec.end());
+      for (size_t i = 0; i < row_space.size(); ++i) {
+        for (uint8_t row : row_vec) {
+          uint8_t x = row_space[i] | row;
+          if (!lookup[x]) {
+            row_space.push_back(x);
+            lookup[x] = true;
+          }
+        }
+      }
+      return row_space.size() + 1;
+    }
+
+    BMat8 random() {
+      static std::mt19937 gen(
+          std::random_device{}());  // NOLINT(whitespace/braces)
+      static std::uniform_int_distribution<uint64_t> dist(0,
+                                                          0xffffffffffffffff);
+      return BMat8(dist(gen));
+    }
+
+    // Not noexcept because it can throw.
+    BMat8 random(size_t dim) {
+      throw_if_dim_out_of_bound(dim);
+      uint64_t val = random().to_int();
+      for (size_t i = dim; i < 8; ++i) {
+        val &= ~(ROW_MASK[i]);
+        val &= ~(COL_MASK[i]);
+      }
+      return BMat8(val);
+    }
+
     size_t minimum_dim(BMat8 const& x) noexcept {
       size_t   i = 0;
       uint64_t c = x.to_int();
@@ -390,8 +365,8 @@ namespace libsemigroups {
         return 0;
       }
       uint64_t d = x.to_int();
-      uint64_t y = x.transpose().to_int();
-      uint64_t z = x.transpose().to_int();
+      uint64_t y = transpose(x).to_int();
+      uint64_t z = transpose(x).to_int();
 
       do {
         d = d >> 8;
@@ -400,6 +375,30 @@ namespace libsemigroups {
       } while (i < 8 && (d << (8 * i)) == c && (y << (8 * i)) == z);
 
       return 9 - i;
+    }
+
+    std::vector<uint8_t> rows(BMat8 const& x) {
+      std::vector<uint8_t> rows;
+      push_back_rows(rows, x);
+      return rows;
+    }
+
+    bool is_regular_element(BMat8 const& x) noexcept {
+      return x
+                 * bmat8::transpose(BMat8(
+                     ~(x * bmat8::transpose(BMat8(~x.to_int())) * x).to_int()))
+                 * x
+             == x;
+    }
+
+    std::vector<bool> to_vector(uint8_t row) {
+      std::vector<bool> result;
+      uint8_t           mask = 128;
+      for (size_t i = 0; i < 8; ++i) {
+        result.push_back(row & mask);
+        mask >>= 1;
+      }
+      return result;
     }
   }  // namespace bmat8
 }  // namespace libsemigroups
