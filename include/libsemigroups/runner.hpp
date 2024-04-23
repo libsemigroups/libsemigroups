@@ -53,7 +53,7 @@ namespace libsemigroups {
   //! * \ref constants_group
 
   //! \ingroup misc_group
-  //! \brief The time between a point and now.
+  //! \brief The time between a given point and now.
   //!
   //! \param t the time point
   //!
@@ -335,7 +335,7 @@ namespace libsemigroups {
   //!
   //! Defined in \c runner.hpp
   //!
-  //! Many of the classes in ``libsemigroups`` implementing the algorithms,
+  //! Many of the classes in ``libsemigroups`` implementing the algorithms
   //! that are the reason for the existence of this library, are derived from
   //! Runner.  The Runner class exists to collect various common tasks
   //! required by such a derived class with a possibly long running \ref run.
@@ -500,7 +500,7 @@ namespace libsemigroups {
     //! A \c bool
     //!
     //! \sa run_for(std::chrono::nanoseconds) and
-    //! run_for(TIntType).
+    //! run_for(Time).
     // not noexcept because operator-(time_point, time_point) isn't
     [[nodiscard]] inline bool timed_out() const {
       return (running_for() ? delta(start_time()) >= _run_for
