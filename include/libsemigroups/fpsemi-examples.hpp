@@ -236,8 +236,6 @@ namespace libsemigroups {
     //!
     //! \returns A `std::vector<relation_type>`
     //!
-    //! \noexcept
-    //!
     //! [10.2478/s11533-006-0017-6]:
     //! https://doi.org/10.2478/s11533-006-0017-6
     Presentation<word_type> brauer_monoid(size_t n, author val = author::Any);
