@@ -21,21 +21,24 @@
 
 #include "libsemigroups/fpsemi-examples.hpp"
 
-#include <algorithm>  // for for_each
-#include <cmath>      // for abs
-#include <cstdint>    // for int64_t
-#include <cstdlib>    // for abs
-#include <numeric>    // for iota
-#include <utility>    // for move
+#include <algorithm>         // for max, for_each
+#include <cmath>             // for abs
+#include <cstdint>           // for int64_t
+#include <cstdlib>           // for abs
+#include <initializer_list>  // for initializer_list
+#include <numeric>           // for iota
+#include <string>            // for basic_string
+#include <utility>           // for move, swap
 
-#include "libsemigroups/debug.hpp"      // for LIBSEMIGROUPS_ASSERT
-#include "libsemigroups/exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION, Libs...
-#include "libsemigroups/presentation.hpp"  // for operator+, add_rule, operator+=
-#include "libsemigroups/ranges.hpp"  // for seq, Inner, operator|, to_vector
-#include "libsemigroups/types.hpp"   // for word_type, relation_type, let...
-#include "libsemigroups/words.hpp"   // for operator""_w
-
-#include "libsemigroups/detail/report.hpp"  // for magic_enum formatting
+#include "libsemigroups/constants.hpp"     // for operator==
+#include "libsemigroups/debug.hpp"         // for LIBSEMIGROUPS_ASSERT
+#include "libsemigroups/detail/fmt.hpp"    // for format
+#include "libsemigroups/exception.hpp"     // for LIBSEMIGROUPS_EXCEPTION
+#include "libsemigroups/order.hpp"         // for shortlex_compare
+#include "libsemigroups/presentation.hpp"  // for add_rule_no_checks, Presen...
+#include "libsemigroups/ranges.hpp"        // for operator|, to_vector, enum...
+#include "libsemigroups/types.hpp"         // for word_type, letter_type
+#include "libsemigroups/words.hpp"         // for operator""_w, operator+, pow
 
 namespace libsemigroups {
   using literals::operator""_w;
@@ -971,7 +974,8 @@ namespace libsemigroups {
     }
 
     // Also from https://doi.org/10.1007/s10012-000-0001-1
-    Presentation<word_type> orientation_preserving_reversing_monoid(size_t n, author val) {
+    Presentation<word_type>
+    orientation_preserving_reversing_monoid(size_t n, author val) {
       if (n < 3) {
         LIBSEMIGROUPS_EXCEPTION(
             "expected 1st argument to be at least 3, found {}", n);
