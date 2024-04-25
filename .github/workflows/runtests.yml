@@ -217,7 +217,7 @@ jobs:
              update_packager_index: false
              install_ccache: true
          - name: "Install dependencies . . ."
-           run: brew install autoconf automake
+           run: brew install autoconf automake libtool
          - name: "Clang version . . ."
            run: clang++ --version
          - name: "Configure . . ."
