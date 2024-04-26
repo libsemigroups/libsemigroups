@@ -351,6 +351,15 @@ namespace libsemigroups {
     o.add_generator(PPerm<8>({1, 2, 3, 4, 5, 6, 7}, {0, 1, 2, 3, 4, 5, 6}, 8));
     o.add_generator(PPerm<8>({0, 1, 2, 3, 4, 5, 6}, {1, 2, 3, 4, 5, 6, 7}, 8));
     REQUIRE(o.size() == 256);
+    o.init();  // Test init with non-trivial point_type
+    o.add_seed(PPerm<8>::identity(8));
+    o.add_generator(
+        PPerm<8>({0, 1, 2, 3, 4, 5, 6, 7}, {1, 2, 3, 4, 5, 6, 7, 0}, 8));
+    o.add_generator(
+        PPerm<8>({0, 1, 2, 3, 4, 5, 6, 7}, {1, 0, 2, 3, 4, 5, 6, 7}, 8));
+    o.add_generator(PPerm<8>({1, 2, 3, 4, 5, 6, 7}, {0, 1, 2, 3, 4, 5, 6}, 8));
+    o.add_generator(PPerm<8>({0, 1, 2, 3, 4, 5, 6}, {1, 2, 3, 4, 5, 6, 7}, 8));
+    REQUIRE(o.size() == 256);
   }
 
   LIBSEMIGROUPS_TEST_CASE_V3("Action",

@@ -126,6 +126,9 @@ namespace libsemigroups {
     _graph.init();
     _map.clear();
     _options.init();
+    for (auto pt : _orb) {
+      this->internal_free(pt);
+    }
     _orb.clear();
     _pos = 0;
     _scc.init(_graph);
