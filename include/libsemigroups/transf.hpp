@@ -1,6 +1,6 @@
 //
 // libsemigroups - C++ library for semigroups and monoids
-// Copyright (C) 2021 James D. Mitchell
+// Copyright (C) 2021-24 James D. Mitchell
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -35,10 +35,11 @@
 #include <iterator>          // for distance
 #include <limits>            // for numeric_limits
 #include <numeric>           // for iota
-#include <tuple>             // for tuple_size
-#include <type_traits>       // for enable_if_t
-#include <unordered_set>     // for unordered_set
-#include <vector>            // for vector
+#include <string_view>
+#include <tuple>          // for tuple_size
+#include <type_traits>    // for enable_if_t
+#include <unordered_set>  // for unordered_set
+#include <vector>         // for vector
 
 #include "config.hpp"  // for LIBSEMIGROUPS_HPCOMBI_ENABLED
 
@@ -58,7 +59,7 @@ namespace libsemigroups {
 
   namespace detail {
     template <typename T>
-    struct IsDerivedFromPTransfHelper final {
+    struct IsDerivedFromPTransfHelper {
       static constexpr bool value
           = std::is_base_of<PTransfPolymorphicBase, T>::value;
     };
@@ -77,10 +78,10 @@ namespace libsemigroups {
   namespace detail {
 
     template <typename... Args>
-    struct IsStdArray final : std::false_type {};
+    struct IsStdArray : std::false_type {};
 
     template <typename T, size_t N>
-    struct IsStdArray<std::array<T, N>> final : std::true_type {};
+    struct IsStdArray<std::array<T, N>> : std::true_type {};
 
     template <typename T>
     struct IsStaticHelper : std::false_type {};
@@ -700,6 +701,34 @@ namespace libsemigroups {
         return result;
       }
 
+      // TODO helper
+      // TODO doc
+      template <typename T>
+      void image(std::vector<T>& im) const {
+        im.clear();
+        for (size_t i = 0; i < degree(); ++i) {
+          auto j = (*this)[i];
+          if (j != undef()) {
+            im.push_back(j);
+          }
+        }
+        std::sort(im.begin(), im.end());
+      }
+
+      // TODO helper
+      // TODO doc
+      template <typename T>
+      void domain(std::vector<T>& dom) const {
+        dom.clear();
+        for (size_t i = 0; i < degree(); ++i) {
+          auto j = (*this)[i];
+          if (j != undef()) {
+            dom.push_back(i);
+          }
+        }
+        std::sort(dom.begin(), dom.end());
+      }
+
      protected:
       //! No doc
       template <typename SFINAE = void>
@@ -928,8 +957,8 @@ namespace libsemigroups {
 
   //! Defined in ``transf.hpp``.
   //!
-  //! This alias equals either DynamicPTransf or StaticPTransf depending on the
-  //! template parameters \p N and \p Scalar.
+  //! This alias equals either DynamicPTransf or StaticPTransf depending on
+  //! the template parameters \p N and \p Scalar.
   //!
   //! If \p N is \c 0 (the default), then \c PTransf is \ref
   //! DynamicPTransf. In this case the default value of \p Scalar is \c
@@ -961,6 +990,18 @@ namespace libsemigroups {
 
     template <typename Scalar>
     struct IsDynamicHelper<DynamicPTransf<Scalar>> : std::true_type {};
+
+    template <typename T>
+    std::string ptransf_repr(T const&         f,
+                             std::string_view prefix,
+                             std::string_view braces) {
+      // TODO check that braces has size 2
+      return fmt::format("{}({}{}{})",
+                         prefix,
+                         braces[0],
+                         fmt::join(f.cbegin(), f.cend(), ", "),
+                         braces[1]);
+    }
   }  // namespace detail
 
   //! Helper variable template.
@@ -1006,6 +1047,12 @@ namespace libsemigroups {
                                 uint64_t(val));
       }
     }
+  }
+
+  template <size_t N, typename Scalar>
+  std::string to_string(PTransf<N, Scalar> const& f,
+                        std::string_view          braces = "{}") {
+    return detail::ptransf_repr(f, "PTransf", braces);
   }
 
   ////////////////////////////////////////////////////////////////////////
@@ -1213,6 +1260,28 @@ namespace libsemigroups {
     }
   }
 
+  template <size_t N, typename Scalar>
+  std::string to_string(Transf<N, Scalar> const& f,
+                        std::string_view         braces = "{}") {
+    std::string type;
+    switch (sizeof(Scalar)) {
+      case 1:
+        type = "uint8_t";
+        break;
+      case 2:
+        type = "uint16_t";
+        break;
+      case 4:
+        type = "uint32_t";
+        break;
+      case 8:
+        type = "uint64_t";
+        break;
+    }
+    return detail::ptransf_repr(
+        f, fmt::format("Transf<{}, {}>", N, type), braces);
+  }
+
   ////////////////////////////////////////////////////////////////////////
   // PPerm
   ////////////////////////////////////////////////////////////////////////
@@ -1244,7 +1313,7 @@ namespace libsemigroups {
       size_t N = 0,
       typename Scalar
       = std::conditional_t<N == 0, uint32_t, typename SmallestInteger<N>::type>>
-  class PPerm final : public PTransf<N, Scalar> {
+  class PPerm : public PTransf<N, Scalar> {
     using base_type = PTransf<N, Scalar>;
 
    public:
@@ -1308,9 +1377,9 @@ namespace libsemigroups {
 
     //! Construct from domain, range, and degree, and validate
     //!
-    //! Constructs a partial perm of degree \p M such that `(dom[i])f = ran[i]`
-    //! for all \c i and which is \ref UNDEFINED on every other value in the
-    //! range \f$[0, M)\f$.
+    //! Constructs a partial perm of degree \p M such that `(dom[i])f =
+    //! ran[i]` for all \c i and which is \ref UNDEFINED on every other value
+    //! in the range \f$[0, M)\f$.
     //!
     //! \param dom the domain
     //! \param ran the range
@@ -1335,9 +1404,9 @@ namespace libsemigroups {
 
     //! Construct from domain, range, and degree.
     //!
-    //! Constructs a partial perm of degree \p M such that `(dom[i])f = ran[i]`
-    //! for all \c i and which is \ref UNDEFINED on every other value in the
-    //! range \f$[0, M)\f$.
+    //! Constructs a partial perm of degree \p M such that `(dom[i])f =
+    //! ran[i]` for all \c i and which is \ref UNDEFINED on every other value
+    //! in the range \f$[0, M)\f$.
     //!
     //! \param dom the domain
     //! \param ran the range
@@ -1371,9 +1440,9 @@ namespace libsemigroups {
 
     //! Construct from domain, range, and degree.
     //!
-    //! Constructs a partial perm of degree \p M such that `(dom[i])f = ran[i]`
-    //! for all \c i and which is \ref UNDEFINED on every other value in the
-    //! range \f$[0, M)\f$.
+    //! Constructs a partial perm of degree \p M such that `(dom[i])f =
+    //! ran[i]` for all \c i and which is \ref UNDEFINED on every other value
+    //! in the range \f$[0, M)\f$.
     //!
     //! \param dom the domain
     //! \param ran the range
@@ -1702,7 +1771,7 @@ namespace libsemigroups {
       size_t N = 0,
       typename Scalar
       = std::conditional_t<N == 0, uint32_t, typename SmallestInteger<N>::type>>
-  class Perm final : public Transf<N, Scalar> {
+  class Perm : public Transf<N, Scalar> {
     using base_type = PTransf<N, Scalar>;
 
    public:
@@ -1743,8 +1812,8 @@ namespace libsemigroups {
     }
 
 #ifndef PARSED_BY_DOXYGEN
-    // We don't document this, because it's basically identical to the function
-    // template above, and because it confuses the doc system.
+    // We don't document this, because it's basically identical to the
+    // function template above, and because it confuses the doc system.
     static Perm make(std::initializer_list<value_type>&& cont) {
       return make<std::initializer_list<value_type>>(std::move(cont));
     }

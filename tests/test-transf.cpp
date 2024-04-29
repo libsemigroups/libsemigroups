@@ -122,6 +122,7 @@ namespace libsemigroups {
     auto y = Transf<>({0, 1});
     REQUIRE(x > y);
     // Can't compare static transf of different degrees
+    REQUIRE(to_string(x, "{}") == "");
   }
 
   LIBSEMIGROUPS_TEST_CASE("Transf", "001", "mem fns", "[quick][transf]") {
@@ -286,6 +287,12 @@ namespace libsemigroups {
     REQUIRE_THROWS_AS(PPerm<3>::make({1, 0, 3}), LibsemigroupsException);
     REQUIRE_THROWS_AS(PPerm<5>::make({1, 0, 3, 6, 4}), LibsemigroupsException);
     REQUIRE_THROWS_AS(PPerm<5>::make({1, 5, 0, 3, 2}), LibsemigroupsException);
+    auto                    x = PPerm<5>::make({0, 2}, {3, 0}, 5);
+    std::vector<value_type> set;
+    x.image(set);
+    REQUIRE(set == decltype(set)({0, 3}));
+    x.domain(set);
+    REQUIRE(set == decltype(set)({0, 2}));
   }
 
   LIBSEMIGROUPS_TEST_CASE("Perm", "007", "inverse", "[quick][perm]") {

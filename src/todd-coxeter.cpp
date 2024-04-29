@@ -181,6 +181,7 @@ namespace libsemigroups {
         break;
       }
       case def_policy::purge_all: {
+        // FIXME
         std::remove_if(
             _definitions.begin(),
             _definitions.end(),
