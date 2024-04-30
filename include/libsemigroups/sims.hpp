@@ -324,7 +324,7 @@ namespace libsemigroups {
     //! * \ref number_of_threads to set the number of threads;
     //! * \ref include to set the pairs to be included;
     //! * \ref exclude to set the pairs to be excluded;
-    //! * \ref add_pruner to add a pruninf function;
+    //! * \ref add_pruner to add a pruner;
     //! * \ref long_rule_length to set the length of long rules;
     //! * \ref idle_thread_restarts to set the number of idle thread restarts.
     //!
@@ -3119,6 +3119,13 @@ namespace libsemigroups {
           if (t != UNDEFINED && t != sink) {
             return false;
           }
+        }
+      } else {
+        auto const N     = wg.number_of_active_nodes();
+        auto       first = wg.cbegin_nodes();
+        auto       last  = wg.cbegin_nodes() + N;
+        if (word_graph::is_complete(wg, first, last)) {
+          return false;
         }
       }
       return true;
