@@ -1055,6 +1055,19 @@ namespace libsemigroups {
     return detail::ptransf_repr(f, "PTransf", braces);
   }
 
+  template <size_t N, typename Scalar>
+  std::ostringstream& operator<<(std::ostringstream&       os,
+                                 PTransf<N, Scalar> const& f) {
+    os << to_string(f);
+    return os;
+  }
+
+  template <size_t N, typename Scalar>
+  std::ostream& operator<<(std::ostream& os, PTransf<N, Scalar> const& f) {
+    os << to_string(f);
+    return os;
+  }
+
   ////////////////////////////////////////////////////////////////////////
   // Transf
   ////////////////////////////////////////////////////////////////////////
@@ -1425,9 +1438,10 @@ namespace libsemigroups {
     //! \ref make.
     // Note: we use vectors here not container_type (which might be array),
     // because the length of dom and ran might not equal degree().
-    PPerm(std::vector<value_type> const& dom,
-          std::vector<value_type> const& ran,
-          size_t                         M = N)
+    template <typename Scalar2>
+    PPerm(std::vector<Scalar2> const& dom,
+          std::vector<Scalar2> const& ran,
+          size_t                      M = N)
         : PPerm(M) {
       LIBSEMIGROUPS_ASSERT(M >= N);
       LIBSEMIGROUPS_ASSERT(dom.size() <= M);
@@ -1614,7 +1628,7 @@ namespace libsemigroups {
 
     //! Replace contents of a partial perm with the inverse of another.
     //!
-    //! This function inverts \p that into \c this.
+    //! This function inverts \p this into \c that.
     //!
     //! \param that the partial perm to invert.
     //!
@@ -1665,6 +1679,12 @@ namespace libsemigroups {
       }
     }
   };
+
+  template <size_t N, typename Scalar>
+  std::string to_string(PPerm<N, Scalar> const& f,
+                        std::string_view        braces = "{}") {
+    return detail::ptransf_repr(f, "PPerm", braces);
+  }
 
   ////////////////////////////////////////////////////////////////////////
   // PPerm helpers
