@@ -3859,24 +3859,15 @@ namespace libsemigroups {
     SimsRefinerIdeals ip(s.presentation());
     s.add_pruner(ip);
 
-    REQUIRE(s.number_of_congruences(1) == 1);      // computed using GAP
-    REQUIRE(s.number_of_congruences(2) == 3);      // computed using GAP
-    REQUIRE(s.number_of_congruences(3) == 5);      // computed using GAP
-    REQUIRE(s.number_of_congruences(4) == 7);      // computed using GAP
-    REQUIRE(s.number_of_congruences(5) == 9);      // computed using GAP
-    REQUIRE(s.number_of_congruences(6) == 11);     // computed using GAP
-    REQUIRE(s.number_of_congruences(7) == 12);     // computed using GAP
-    REQUIRE(s.number_of_congruences(8) == 12);     // computed using GAP
-    REQUIRE(s.number_of_congruences(9) == 12);     // computed using GAP
-    REQUIRE(s.number_of_congruences(10) == 12);    // computed using GAP
-    REQUIRE(s.number_of_congruences(11) == 12);    // computed using GAP
-    REQUIRE(s.number_of_congruences(12) == 12);    // computed using GAP
-    REQUIRE(s.number_of_congruences(13) == 12);    // computed using GAP
-    REQUIRE(s.number_of_congruences(14) == 12);    // computed using GAP
-    REQUIRE(s.number_of_congruences(15) == 12);    // computed using GAP
-    REQUIRE(s.number_of_congruences(50) == 12);    // computed using GAP
-    REQUIRE(s.number_of_congruences(100) == 12);   // computed using GAP
-    REQUIRE(s.number_of_congruences(1000) == 12);  // computed using GAP
+    REQUIRE(s.number_of_congruences(1) == 1);   // computed using GAP
+    REQUIRE(s.number_of_congruences(2) == 3);   // computed using GAP
+    REQUIRE(s.number_of_congruences(3) == 5);   // computed using GAP
+    REQUIRE(s.number_of_congruences(4) == 7);   // computed using GAP
+    REQUIRE(s.number_of_congruences(5) == 9);   // computed using GAP
+    REQUIRE(s.number_of_congruences(6) == 11);  // computed using GAP
+    REQUIRE(s.number_of_congruences(7) == 12);  // computed using GAP
+    for (size_t nr_classes = 8; nr_classes < 16; ++nr_classes)
+      REQUIRE(s.number_of_congruences(nr_classes) == 12);  // computed using GAP
   }
 
   // about 2 seconds
