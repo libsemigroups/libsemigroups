@@ -18,6 +18,7 @@
 
 #include "libsemigroups/detail/stl.hpp"
 #include "libsemigroups/word-graph.hpp"
+#include <cstdint>
 #define CATCH_CONFIG_ENABLE_PAIR_STRINGMAKER
 #define CATCH_CONFIG_ENABLE_TUPLE_STRINGMAKER
 
@@ -4005,6 +4006,99 @@ namespace libsemigroups {
     REQUIRE(s.number_of_congruences(12) == 41);  // computed using GAP
     s.add_pruner(ip);
     REQUIRE(s.number_of_congruences(12) == 12);  // computed using GAP
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Sims1",
+                          "124",
+                          "Right congruence checking",
+                          "[quick][low-index]") {
+    Presentation<word_type> p;
+    p.alphabet(01_w);
+    p.contains_empty_word(true);
+    presentation::add_rule(p, 000_w, 11_w);
+    presentation::add_rule(p, 001_w, 10_w);
+
+    word_graph_type wg;
+
+    // Wrong alphabet size
+    wg = to_word_graph<node_type>(3, {{1, 1, 1}, {2, 2, 2}, {2, 2, 2}});
+    wg.number_of_active_nodes(3);
+    REQUIRE(!sims::is_right_congruence(p, wg));
+
+    // Incomplete
+    wg = to_word_graph<node_type>(2, {{1, 1}, {1, UNDEFINED}});
+    wg.number_of_active_nodes(2);
+    REQUIRE(!sims::is_right_congruence(p, wg));
+
+    // Incompatible
+    wg = to_word_graph<node_type>(2, {{1, 1}, {1, 0}});
+    wg.number_of_active_nodes(2);
+    REQUIRE(!sims::is_right_congruence(p, wg));
+    REQUIRE_THROWS_AS(sims::validate_right_congruence(p, wg),
+                      LibsemigroupsException);
+
+    // Works
+    wg = to_word_graph<node_type>(4, {{1, 2}, {2, 2}, {3, 3}, {3, 3}});
+    wg.number_of_active_nodes(4);
+    REQUIRE(sims::is_right_congruence(p, wg));
+
+    // Non maximal
+    wg = to_word_graph<node_type>(2, {{1, 1}, {1, 0}});
+    wg.number_of_active_nodes(2);
+    REQUIRE(!sims::is_maximal_right_congruence(p, wg));
+    wg = to_word_graph<node_type>(4, {{1, 2}, {2, 2}, {3, 3}, {3, 3}});
+    wg.number_of_active_nodes(4);
+    REQUIRE(!sims::is_maximal_right_congruence(p, wg));
+    wg = to_word_graph<node_type>(1, {{0, 0}});
+    wg.number_of_active_nodes(1);
+    REQUIRE(!sims::is_maximal_right_congruence(p, wg));
+
+    // Is maximal
+    wg = to_word_graph<node_type>(2, {{1, 1}, {1, 1}});
+    wg.number_of_active_nodes(2);
+    REQUIRE(sims::is_maximal_right_congruence(p, wg));
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Sims2",
+                          "125",
+                          "Two-sided congruence checking",
+                          "[quick][low-index]") {
+    Presentation<word_type> p;
+    p.alphabet(01_w);
+    p.contains_empty_word(true);
+    presentation::add_rule(p, 000_w, 11_w);
+    presentation::add_rule(p, 001_w, 10_w);
+
+    word_graph_type wg;
+
+    // Wrong alphabet size
+    wg = to_word_graph<node_type>(3, {{1, 1, 1}, {2, 2, 2}, {2, 2, 2}});
+    wg.number_of_active_nodes(3);
+    REQUIRE(!sims::is_two_sided_congruence(p, wg));
+
+    // Incomplete
+    wg = to_word_graph<node_type>(2, {{1, 1}, {1, UNDEFINED}});
+    wg.number_of_active_nodes(2);
+    REQUIRE(!sims::is_two_sided_congruence(p, wg));
+
+    // Incompatible
+    wg = to_word_graph<node_type>(2, {{1, 1}, {1, 0}});
+    wg.number_of_active_nodes(2);
+    REQUIRE(!sims::is_two_sided_congruence(p, wg));
+    REQUIRE_THROWS_AS(sims::validate_two_sided_congruence(p, wg),
+                      LibsemigroupsException);
+
+    // Not compatible with X_Gamma
+    wg = to_word_graph<node_type>(4, {{1, 2}, {2, 2}, {3, 3}, {3, 3}});
+    wg.number_of_active_nodes(4);
+    REQUIRE(!sims::is_two_sided_congruence(p, wg));
+    REQUIRE_THROWS_AS(sims::validate_two_sided_congruence(p, wg),
+                      LibsemigroupsException);
+
+    // Works
+    wg = to_word_graph<node_type>(2, {{1, 1}, {1, 1}});
+    wg.number_of_active_nodes(2);
+    REQUIRE(sims::is_two_sided_congruence(p, wg));
   }
 }  // namespace libsemigroups
 
