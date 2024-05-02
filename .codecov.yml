@@ -1,6 +1,7 @@
+github_checks:
+  annotations: false
+
 coverage:
-  github_checks:
-    annotations: false
   precision: 2
   round: down
   range: "90...100"
