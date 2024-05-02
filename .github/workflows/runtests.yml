@@ -147,7 +147,15 @@ jobs:
                 sudo ln -sf /usr/bin/gcov-9 /usr/bin/gcov
                 export GCOV=/usr/bin/gcov-9
                 etc/test-code-coverage.sh test_all "[quick]"
-                bash <(curl -s https://codecov.io/bash)
+         - name: "Uploading to Codecov . . ."
+           uses: codecov/codecov-action@v4
+           with:
+              fail_ci_if_error: true
+              file: coverage.info
+              token: ${{ secrets.CODECOV_TOKEN }}
+              verbose: true
+         - name: "Cleanup . . ."
+           run: |
                 rm -f coverage.info
    distcheck:
       timeout-minutes: 15
