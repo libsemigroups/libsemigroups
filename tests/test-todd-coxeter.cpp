@@ -1983,10 +1983,11 @@ namespace libsemigroups {
     REQUIRE(tc.number_of_classes() == 128);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
-                          "052",
-                          "orientation_preserving_reversing_monoid(5) (Ruskuc + Arthur)",
-                          "[todd-coxeter][quick][no-valgrind][no-coverage]") {
+  LIBSEMIGROUPS_TEST_CASE(
+      "ToddCoxeter",
+      "052",
+      "orientation_preserving_reversing_monoid(5) (Ruskuc + Arthur)",
+      "[todd-coxeter][quick][no-valgrind][no-coverage]") {
     using fpsemigroup::orientation_preserving_reversing_monoid;
     auto         rg = ReportGuard(false);
     size_t const n  = 5;

@@ -343,7 +343,8 @@ namespace libsemigroups {
   // Approx 9s (2021 - MacBook Air M1 - 8GB RAM)
   TEST_CASE("orientation_preserving_reversing_monoid(9) - hlt",
             "[paper][orientation_preserving_reversing_monoid][n=9][hlt]") {
-    benchmark_todd_coxeter_single(434'835, orientation_preserving_reversing_monoid(9), 9);
+    benchmark_todd_coxeter_single(
+        434'835, orientation_preserving_reversing_monoid(9), 9);
   }
 
   // Approx 90s (2021 - MacBook Air M1 - 8GB RAM)

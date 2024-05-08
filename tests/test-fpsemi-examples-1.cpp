@@ -23,7 +23,6 @@
 // #define CATCH_CONFIG_ENABLE_PAIR_STRINGMAKER
 
 #include <cmath>                              // for pow
-#include <cmath>                              // for pow
 #include <cstddef>                            // for size_t
 #include <unordered_map>                      // for operator!=
 #include <vector>                             // for vector, allocator, oper...
@@ -166,14 +165,14 @@ namespace libsemigroups {
     REQUIRE(dual_symmetric_inverse_monoid(5).contains_empty_word());
     REQUIRE(uniform_block_bijection_monoid(5).contains_empty_word());
     REQUIRE(partition_monoid(5, author::East).contains_empty_word());
-    REQUIRE(not partition_monoid(3, author::Machine).contains_empty_word());
-    REQUIRE(not singular_brauer_monoid(5).contains_empty_word());
+    REQUIRE(!partition_monoid(3, author::Machine).contains_empty_word());
+    REQUIRE(!singular_brauer_monoid(5).contains_empty_word());
     REQUIRE(orientation_preserving_monoid(5).contains_empty_word());
     REQUIRE(orientation_preserving_reversing_monoid(5).contains_empty_word());
     REQUIRE(temperley_lieb_monoid(5).contains_empty_word());
     REQUIRE(brauer_monoid(5).contains_empty_word());
     REQUIRE(partial_brauer_monoid(5).contains_empty_word());
-    REQUIRE(not fibonacci_semigroup(5, 2).contains_empty_word());
+    REQUIRE(!fibonacci_semigroup(5, 2).contains_empty_word());
     REQUIRE(plactic_monoid(5).contains_empty_word());
     REQUIRE(stylic_monoid(5).contains_empty_word());
     REQUIRE(symmetric_group(5, author::Burnside + author::Miller)
@@ -183,7 +182,7 @@ namespace libsemigroups {
                 .contains_empty_word());
     REQUIRE(symmetric_group(5, author::Moore).contains_empty_word());
     REQUIRE(alternating_group(5).contains_empty_word());
-    REQUIRE(not rectangular_band(5, 5).contains_empty_word());
+    REQUIRE(!rectangular_band(5, 5).contains_empty_word());
     REQUIRE(
         full_transformation_monoid(5, author::Iwahori).contains_empty_word());
     REQUIRE(
@@ -195,7 +194,7 @@ namespace libsemigroups {
     REQUIRE(symmetric_inverse_monoid(5).contains_empty_word());
     REQUIRE(chinese_monoid(5).contains_empty_word());
     REQUIRE(monogenic_semigroup(0, 5).contains_empty_word());
-    REQUIRE(not monogenic_semigroup(2, 6).contains_empty_word());
+    REQUIRE(!monogenic_semigroup(2, 6).contains_empty_word());
     REQUIRE(order_preserving_monoid(5).contains_empty_word());
     REQUIRE(cyclic_inverse_monoid(5).contains_empty_word());
     REQUIRE(order_preserving_cyclic_inverse_monoid(5).contains_empty_word());
