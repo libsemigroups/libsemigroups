@@ -51,7 +51,7 @@ namespace libsemigroups {
       East       = 64,
       Fernandes  = 128,
       FitzGerald = 256,
-      Gay        = 521,
+      Gay        = 512,
       Godelle    = 1024,
       Guralnick  = 2048,
       Iwahori    = 4096,
