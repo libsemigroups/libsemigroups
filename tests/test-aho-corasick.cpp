@@ -18,6 +18,7 @@
 #include <fstream>
 
 #include "libsemigroups/aho-corasick.hpp"  // for AhoCorasick
+#include "libsemigroups/types.hpp"         // for word_type
 
 #include "catch.hpp"      // for REQUIRE, REQUIRE_THROWS_AS, REQUI...
 #include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
@@ -36,9 +37,6 @@ namespace libsemigroups {
     REQUIRE(ac.number_of_nodes() == 8);
     REQUIRE(aho_corasick::traverse(ac, 00101_w) == 5);
     REQUIRE(aho_corasick::traverse(ac, 010_w) == 7);
-
-    // std::ofstream file("aho.gv");
-    // file << dot(ac).to_string();
   }
 
   LIBSEMIGROUPS_TEST_CASE("AhoCorasick",
@@ -72,6 +70,9 @@ namespace libsemigroups {
     REQUIRE(aho_corasick::traverse(ac, 1110_w) == 29);
     REQUIRE(aho_corasick::traverse(ac, 1111_w) == 30);
 
+    std::ofstream file("aho.gv");
+    file << dot(ac).to_string();
+
     // Should do nothing
     aho_corasick::rm_word_no_checks(ac, 000_w);
     REQUIRE(ac.number_of_nodes() == 31);
@@ -100,10 +101,6 @@ namespace libsemigroups {
     REQUIRE(aho_corasick::traverse(ac, 010_w) == 7);
     REQUIRE(ac.node(5).is_terminal());
     REQUIRE(ac.node(7).is_terminal());
-
-    // std::ofstream file("aho.gv");
-    // file << dot(ac).to_string();
-    // file.close();
 
     aho_corasick::rm_word_no_checks(ac, 010_w);
     REQUIRE(ac.number_of_nodes() == 6);
@@ -154,11 +151,126 @@ namespace libsemigroups {
     ac.add_word_no_checks(y.begin(), y.end());
 
     REQUIRE(ac.number_of_nodes() == 8);
-    REQUIRE(aho_corasick::traverse(ac, x.begin(), x.end()) == 5);
-    REQUIRE(aho_corasick::traverse(ac, y.begin(), y.end()) == 7);
+    REQUIRE(ac.traverse_from(0, x.begin(), x.end()) == 5);
+    REQUIRE(ac.traverse_from(0, y.begin(), y.end()) == 7);
+  }
 
-    // std::ofstream file("aho.gv");
-    // file << dot(ac).to_string();
+  LIBSEMIGROUPS_TEST_CASE("AhoCorasick",
+                          "005",
+                          "initial test with string helpers",
+                          "[quick][aho-corasick]") {
+    AhoCorasick ac;
+    std::string x = "aabab";
+    std::string y = "aba";
+    aho_corasick::add_word_no_checks(ac, x);
+    aho_corasick::add_word_no_checks(ac, y);
+
+    REQUIRE(ac.number_of_nodes() == 8);
+    REQUIRE(aho_corasick::traverse(ac, x) == 5);
+    REQUIRE(aho_corasick::traverse(ac, y) == 7);
+
+    aho_corasick::rm_word_no_checks(ac, x);
+    REQUIRE(ac.number_of_nodes() == 4);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("AhoCorasick",
+                          "006",
+                          "init",
+                          "[quick][aho-corasick]") {
+    AhoCorasick ac;
+
+    REQUIRE(ac.number_of_nodes() == 1);
+
+    Words words;
+    words.number_of_letters(2).min(4).max(5);
+    for (auto const& w : words) {
+      aho_corasick::add_word_no_checks(ac, w);
+    }
+    REQUIRE(ac.number_of_nodes() == 31);
+
+    aho_corasick::rm_word_no_checks(ac, 0010_w);
+    aho_corasick::rm_word_no_checks(ac, 0110_w);
+    REQUIRE(ac.number_of_nodes() == 29);
+
+    ac.init();
+    REQUIRE(ac.number_of_nodes() == 1);
+    REQUIRE(ac.node(0).number_of_children() == 0);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("AhoCorasick",
+                          "007",
+                          "height",
+                          "[quick][aho-corasick]") {
+    AhoCorasick ac;
+    std::string x = "aabab";
+    std::string y = "aba";
+    ac.add_word_no_checks(x.begin(), x.end());
+    ac.add_word_no_checks(y.begin(), y.end());
+
+    REQUIRE(ac.height(0) == 0);
+    REQUIRE(ac.height(1) == 1);
+    REQUIRE(ac.height(5) == 5);
+    REQUIRE(ac.height(6) == 2);
+    REQUIRE(ac.height(7) == 3);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("AhoCorasick",
+                          "008",
+                          "child",
+                          "[quick][aho-corasick]") {
+    AhoCorasick ac;
+    std::string b = "aab";
+    std::string c = "aac";
+    std::string d = "aad";
+    ac.add_word_no_checks(b.begin(), b.end());
+    ac.add_word_no_checks(c.begin(), c.end());
+    ac.add_word_no_checks(d.begin(), d.end());
+
+    REQUIRE(ac.child(0, 'a') == 1);
+    REQUIRE(ac.child(0, 'b') == UNDEFINED);
+    REQUIRE(ac.child(2, 'b') == 3);
+    REQUIRE(ac.child(2, 'c') == 4);
+    REQUIRE(ac.child(2, 'd') == 5);
+
+    ac.rm_word_no_checks(d.begin(), d.end());
+    REQUIRE(ac.child(2, 'b') == 3);
+    REQUIRE(ac.child(2, 'c') == 4);
+    REQUIRE(ac.child(2, 'd') == UNDEFINED);
+    REQUIRE(aho_corasick::traverse_from(ac, 2, 'd') == 0);
+    REQUIRE(aho_corasick::traverse_from(ac, 2, 'a') == 2);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("AhoCorasick",
+                          "009",
+                          "signature",
+                          "[quick][aho-corasick]") {
+    AhoCorasick ac;
+
+    Words words;
+    words.number_of_letters(2).min(4).max(5);
+    for (auto const& w : words) {
+      aho_corasick::add_word_no_checks(ac, w);
+    }
+
+    word_type w;
+    ac.signature(w, 4);
+    REQUIRE(w == 0000_w);
+    ac.signature(w, 5);
+    REQUIRE(w == 0001_w);
+    ac.signature(w, 7);
+    REQUIRE(w == 0010_w);
+    ac.signature(w, 8);
+    REQUIRE(w == 0011_w);
+    ac.signature(w, 11);
+    REQUIRE(w == 0100_w);
+    ac.signature(w, 12);
+    REQUIRE(w == 0101_w);
+    ac.signature(w, 14);
+    REQUIRE(w == 0110_w);
+    ac.signature(w, 15);
+    REQUIRE(w == 0111_w);
+    ac.signature(w, 19);
+    REQUIRE(w == 1000_w);
   }
 
 }  // namespace libsemigroups
