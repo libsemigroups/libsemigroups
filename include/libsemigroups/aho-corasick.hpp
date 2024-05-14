@@ -217,11 +217,13 @@ namespace libsemigroups {
 
     // TODO(0) Can these all be made inline?
     // JDM: yes they can
-    inline void add_word_no_checks(AhoCorasick& ac, word_type const& w) {
+    template <typename Word>
+    inline void add_word_no_checks(AhoCorasick& ac, Word const& w) {
       ac.add_word_no_checks(w.cbegin(), w.cend());
     }
 
-    inline index_type rm_word_no_checks(AhoCorasick& ac, word_type const& w) {
+    template <typename Word>
+    inline index_type rm_word_no_checks(AhoCorasick& ac, Word const& w) {
       return ac.rm_word_no_checks(w.cbegin(), w.cend());
     }
 
@@ -245,8 +247,9 @@ namespace libsemigroups {
       return ac.traverse_from(AhoCorasick::root, first, last);
     }
 
+    template <typename Word>
     [[nodiscard]] inline index_type traverse(AhoCorasick const& ac,
-                                             word_type const&   w) {
+                                             Word const&        w) {
       return ac.traverse_from(AhoCorasick::root, w.cbegin(), w.cend());
     }
   }  // namespace aho_corasick
