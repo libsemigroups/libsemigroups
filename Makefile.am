@@ -785,6 +785,7 @@ LDADD = libsemigroups.la
 
 test_all_SOURCES =  tests/bmat-data.cpp
 test_all_SOURCES += tests/test-action.cpp
+test_all_SOURCES += tests/test-aho-corasick.cpp
 test_all_SOURCES += tests/test-bipart.cpp
 test_all_SOURCES += tests/test-bitset.cpp
 test_all_SOURCES += tests/test-bmat8.cpp
