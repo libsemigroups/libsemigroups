@@ -40,6 +40,17 @@
 // new rules, but more care would be needed when removing rules.
 namespace libsemigroups {
 
+  //! \brief For an implementation of the Aho-Corasick algorithm
+  //!
+  //! Defined in ``aho-corasick.hpp``.
+  //!
+  //! This class implements the Aho-Corasick algorithm for string-searching
+  //! using a trie with suffix links. An introduction to this algorithm can be
+  //! found at:
+  //!
+  //! https://en.wikipedia.org/wiki/Aho%E2%80%93Corasick_algorithm
+  //!
+  //! Several helper functions are provided in the ``aho_corasick`` namespace.
   class AhoCorasick {
    public:
     using index_type     = size_t;
