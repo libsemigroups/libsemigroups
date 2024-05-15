@@ -268,7 +268,7 @@ namespace libsemigroups {
         "OP_n",
         3,
         9,
-        orientation_preserving_monoid,
+        [](size_t n) { return orientation_preserving_monoid(n); },
         "orientation_preserving_monoid",
         strategies,
         DoNothing);
@@ -334,7 +334,7 @@ namespace libsemigroups {
         "OR_n",
         3,
         8,
-        orientation_preserving_reversing_monoid,
+        [](size_t n) { return orientation_preserving_reversing_monoid(n); },
         "orientation_preserving_reversing_monoid",
         strategies,
         DoNothing);
@@ -530,7 +530,7 @@ namespace libsemigroups {
         "J_n",
         3,
         14,
-        temperley_lieb_monoid,
+        [](size_t n) { return temperley_lieb_monoid(n); },
         "temperley_lieb_monoid",
         strategies,
         DoNothing);
@@ -576,7 +576,7 @@ namespace libsemigroups {
         "B_n\\setminus S_n",
         3,
         7,
-        singular_brauer_monoid,
+        [](size_t n) { return singular_brauer_monoid(n); },
         "singular_brauer_monoid",
         strategies,
         DoNothing);
@@ -642,7 +642,7 @@ namespace libsemigroups {
         "\\operatorname{Stylic}(n)",
         3,
         10,
-        stylic_monoid,
+        [](size_t n) { return stylic_monoid(n); },
         "stylic_monoid",
         strategies,
         DoNothing);
@@ -697,7 +697,7 @@ namespace libsemigroups {
         "\\operatorname{Stellar}(n)",
         3,
         9,
-        stellar_monoid,
+        [](size_t n) { return stellar_monoid(n); },
         "stellar_monoid",
         strategies,
         DoNothing);
