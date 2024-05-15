@@ -75,7 +75,7 @@ namespace libsemigroups {
       // For the partial transformation monoid presentation, we want e12_value =
       // n.
 
-      LIBSEMIGROUPS_ASSERT(n >= 5);
+      LIBSEMIGROUPS_ASSERT(n >= 4);
       LIBSEMIGROUPS_ASSERT(e12_value < pi_start
                            | e12_value >= pi_start + n - 2);
 
