@@ -30,7 +30,8 @@
 
 namespace libsemigroups {
 
-  AhoCorasick::Node& AhoCorasick::Node::init(index_type parent, letter_type a) {
+  AhoCorasick::Node& AhoCorasick::Node::init(index_type  parent,
+                                             letter_type a) noexcept {
     _parent        = parent;
     _parent_letter = a;
     _children.clear();
@@ -40,15 +41,16 @@ namespace libsemigroups {
     return *this;
   }
 
+  // Not noexcept because std::unordered_map::count isn't
   [[nodiscard]] AhoCorasick::index_type
-  AhoCorasick::Node::child(letter_type a) const noexcept {
+  AhoCorasick::Node::child(letter_type a) const {
     if (_children.count(a) == 0) {
       return UNDEFINED;
     }
     return static_cast<index_type>(_children[a]);
   }
 
-  void AhoCorasick::Node::clear_suffix_link() const {
+  void AhoCorasick::Node::clear_suffix_link() const noexcept {
     if (parent() == root || parent() == UNDEFINED) {
       set_suffix_link(root);
     } else {

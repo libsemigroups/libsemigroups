@@ -82,9 +82,9 @@ namespace libsemigroups {
         init(parent, a);
       }
 
-      Node& init(index_type parent, letter_type a);
+      Node& init(index_type parent, letter_type a) noexcept;
 
-      [[nodiscard]] index_type child(letter_type a) const noexcept;
+      [[nodiscard]] index_type child(letter_type a) const;
 
       [[nodiscard]] size_t height() const noexcept {
         return _height;
@@ -94,13 +94,13 @@ namespace libsemigroups {
         return _link;
       }
 
-      void clear_suffix_link() const;
+      void clear_suffix_link() const noexcept;
 
-      [[nodiscard]] decltype(_children)& children() const {
+      [[nodiscard]] decltype(_children)& children() const noexcept {
         return _children;
       }
 
-      [[nodiscard]] size_t number_of_children() const {
+      [[nodiscard]] size_t number_of_children() const noexcept {
         return _children.size();
       }
 
@@ -108,7 +108,7 @@ namespace libsemigroups {
         return _terminal;
       }
 
-      Node& set_terminal(bool val) {
+      Node& set_terminal(bool val) noexcept {
         _terminal = val;
         return *this;
       }
@@ -121,11 +121,11 @@ namespace libsemigroups {
         return _parent_letter;
       }
 
-      void set_suffix_link(index_type val) const {
+      void set_suffix_link(index_type val) const noexcept {
         _link = val;
       }
 
-      void set_height(size_t val) const {
+      void set_height(size_t val) const noexcept {
         _height = val;
       }
     };
@@ -140,7 +140,7 @@ namespace libsemigroups {
 
     AhoCorasick& init();
 
-    size_t number_of_nodes() const noexcept {
+    size_t number_of_nodes() const {
       return _active_nodes_index.size();
     }
 
