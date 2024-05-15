@@ -33,6 +33,7 @@
       <!-- TODO: Figure out a way to avoid this hack -->
       <tab type="user" visible="yes" url="group__congruences__group.html#func-members" title="Functions" />
     </tab>
+    <tab type="user" visible="yes" url="@ref md_fpsemi-examples" title="Examples of presentations" />
     <tab type="usergroup" visible="yes" url="@ref misc_group" title="Miscellaneous" >
       <tab type="usergroup" visible="yes" url="@ref constants_group" title="Constants" />
       <tab type="user" visible="yes" url="@ref libsemigroups::Reporter" title="Reporter" />
