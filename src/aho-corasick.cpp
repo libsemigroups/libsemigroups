@@ -73,6 +73,22 @@ namespace libsemigroups {
     return *this;
   }
 
+  size_t AhoCorasick::height(index_type i) const {
+    size_t cached_height = _all_nodes[i].height();
+    if (cached_height != UNDEFINED) {
+      return cached_height;
+    }
+
+    if (i == root) {
+      _all_nodes[i].set_height(0);
+      return 0;
+    }
+
+    cached_height = height(_all_nodes[i].parent()) + 1;
+    _all_nodes[i].set_height(cached_height);
+    return cached_height;
+  }
+
   void AhoCorasick::signature(word_type& w, index_type i) const {
     w.clear();
     while (i != root) {
@@ -109,6 +125,18 @@ namespace libsemigroups {
       _all_nodes[index].init(parent, a);
     }
     return index;
+  }
+
+  void AhoCorasick::deactivate_node(index_type i) {
+    LIBSEMIGROUPS_ASSERT(i < _all_nodes.size());
+#ifdef LIBSEMIGROUPS_DEBUG
+    auto num_removed = _active_nodes_index.erase(i);
+    (void) num_removed;
+    LIBSEMIGROUPS_ASSERT(num_removed == 1);
+#else
+    _active_nodes_index.erase(i);
+#endif
+    _inactive_nodes_index.push(i);
   }
 
   [[nodiscard]] AhoCorasick::index_type

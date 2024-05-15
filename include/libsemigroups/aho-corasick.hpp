@@ -163,21 +163,7 @@ namespace libsemigroups {
     // TODO(2) template to accept Iterator not word_type&
     void signature(word_type& w, index_type i) const;
 
-    size_t height(index_type i) const {
-      size_t cached_height = _all_nodes[i].height();
-      if (cached_height != UNDEFINED) {
-        return cached_height;
-      }
-
-      if (i == root) {
-        _all_nodes[i].set_height(0);
-        return 0;
-      }
-
-      cached_height = height(_all_nodes[i].parent()) + 1;
-      _all_nodes[i].set_height(cached_height);
-      return cached_height;
-    }
+    size_t height(index_type i) const;
 
     [[nodiscard]] index_type suffix_link(index_type current) const;
 
@@ -193,15 +179,7 @@ namespace libsemigroups {
    private:
     index_type new_active_node(index_type parent, letter_type a);
 
-    void deactivate_node(index_type i) {
-      LIBSEMIGROUPS_ASSERT(i < _all_nodes.size());
-#ifdef LIBSEMIGROUPS_DEBUG
-      auto num_removed =
-#endif
-          _active_nodes_index.erase(i);
-      LIBSEMIGROUPS_ASSERT(num_removed == 1);
-      _inactive_nodes_index.push(i);
-    }
+    void deactivate_node(index_type i);
 
     template <typename Iterator>
     [[nodiscard]] index_type traverse_trie(Iterator first, Iterator last) const;
