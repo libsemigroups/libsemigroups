@@ -128,9 +128,6 @@ namespace libsemigroups {
       //! This static function returns the value of type \ref value_type used to
       //! represent an \"undefined\" value.
       //!
-      //! \parameters
-      //! (None)
-      //!
       //! \returns
       //! A value of type \ref value_type.
       //!
@@ -143,9 +140,6 @@ namespace libsemigroups {
       //! Default constructor.
       //!
       //! Constructs an uninitialized partial transformation of degree \c 0.
-      //!
-      //! \parameters
-      //! (None)
       //!
       //! \exceptions
       //! \no_libsemigroups_except_detail
@@ -507,9 +501,6 @@ namespace libsemigroups {
       //!
       //! \exceptions
       //! \noexcept
-      //!
-      //! \par Parameters
-      //! (None)
       [[nodiscard]] const_iterator cbegin() const noexcept {
         return _container.cbegin();
       }
@@ -525,9 +516,6 @@ namespace libsemigroups {
       //!
       //! \exceptions
       //! \noexcept
-      //!
-      //! \par Parameters
-      //! (None)
       [[nodiscard]] const_iterator cend() const noexcept {
         return _container.cend();
       }
@@ -553,9 +541,6 @@ namespace libsemigroups {
       //!
       //! \exceptions
       //! \noexcept
-      //!
-      //! \par Parameters
-      //! (None)
       [[nodiscard]] iterator begin() noexcept {
         return _container.begin();
       }
@@ -571,9 +556,6 @@ namespace libsemigroups {
       //!
       //! \exceptions
       //! \noexcept
-      //!
-      //! \par Parameters
-      //! (None)
       [[nodiscard]] iterator end() noexcept {
         return _container.end();
       }
@@ -591,9 +573,6 @@ namespace libsemigroups {
       //!
       //! \complexity
       //! Linear in degree().
-      //!
-      //! \par Parameters
-      //! (None)
       [[nodiscard]] size_t rank() const {
         auto vals
             = std::unordered_set<value_type>(this->cbegin(), this->cend());
@@ -611,9 +590,6 @@ namespace libsemigroups {
       //!
       //! \complexity
       //! Linear in degree().
-      //!
-      //! \par Parameters
-      //! (None)
       // not noexcept because Hash<T>::operator() isn't
       [[nodiscard]] size_t hash_value() const {
         return Hash<TContainer>()(_container);
@@ -622,9 +598,6 @@ namespace libsemigroups {
       //! Swap with another partial transformation.
       //!
       //! \param that the partial transformation to swap with.
-      //!
-      //! \returns
-      //! (None)
       //!
       //! \exceptions
       //! \noexcept
@@ -643,9 +616,6 @@ namespace libsemigroups {
       //!
       //! \exceptions
       //! \noexcept
-      //!
-      //! \par Parameters
-      //! (None)
       [[nodiscard]] size_t degree() const noexcept {
         return _container.size();
       }
@@ -664,9 +634,6 @@ namespace libsemigroups {
       //!
       //! \exceptions
       //! \noexcept
-      //!
-      //! \par Parameters
-      //! (None)
       template <typename TSubclass>
       [[nodiscard]] TSubclass identity() const {
         static_assert(IsDerivedFromPTransf<TSubclass>,
@@ -689,9 +656,6 @@ namespace libsemigroups {
       //!
       //! \exceptions
       //! \noexcept
-      //!
-      //! \par Parameters
-      //! (None)
       template <typename TSubclass>
       [[nodiscard]] static TSubclass identity(size_t N) {
         static_assert(IsDerivedFromPTransf<TSubclass>,
@@ -841,9 +805,6 @@ namespace libsemigroups {
     //!
     //! \exceptions
     //! \noexcept
-    //!
-    //! \par Parameters
-    //! (None)
     using base_type::degree;
 
     //! \copydoc detail::PTransfBase<value_type, container_type>::end
@@ -1024,9 +985,6 @@ namespace libsemigroups {
   //!
   //! \param x a const reference to the partial transformation to validate.
   //!
-  //! \returns
-  //! (None)
-  //!
   //! \throw LibsemigroupsException if any of the following hold:
   //! * the size of \p cont is incompatible with `T::container_type`.
   //! * any value in \p cont exceeds `cont.size()` and is not equal to \ref
@@ -1156,9 +1114,6 @@ namespace libsemigroups {
     //! \param x a transformation.
     //! \param y a transformation.
     //!
-    //! \returns
-    //! (None)
-    //!
     //! \exceptions
     //! \no_libsemigroups_except
     //!
@@ -1189,9 +1144,6 @@ namespace libsemigroups {
     //!
     //! \exceptions
     //! \no_libsemigroups_except
-    //!
-    //! \par Parameters
-    //! (None)
     [[nodiscard]] Transf identity() const {
       return identity(degree());
     }
@@ -1487,9 +1439,6 @@ namespace libsemigroups {
     //! \param x a partial perm.
     //! \param y a partial perm.
     //!
-    //! \returns
-    //! (None)
-    //!
     //! \exceptions
     //! \no_libsemigroups_except
     //!
@@ -1520,9 +1469,6 @@ namespace libsemigroups {
     //!
     //! \exceptions
     //! \no_libsemigroups_except
-    //!
-    //! \par Parameters
-    //! (None)
     [[nodiscard]] PPerm identity() const {
       return identity(degree());
     }
@@ -1558,9 +1504,6 @@ namespace libsemigroups {
     //! \exceptions
     //! \no_libsemigroups_except
     //!
-    //! \par Parameters
-    //! (None)
-    //!
     //! \complexity
     //! Linear in degree()
     [[nodiscard]] PPerm right_one() const {
@@ -1588,9 +1531,6 @@ namespace libsemigroups {
     //! \exceptions
     //! \no_libsemigroups_except
     //!
-    //! \par Parameters
-    //! (None)
-    //!
     //! \complexity
     //! Linear in degree()
     [[nodiscard]] PPerm left_one() const {
@@ -1616,9 +1556,6 @@ namespace libsemigroups {
     //! \exceptions
     //! \no_libsemigroups_except
     //!
-    //! \par Parameters
-    //! (None)
-    //!
     //! \complexity
     //! Linear in degree()
     [[nodiscard]] PPerm inverse() const {
@@ -1632,9 +1569,6 @@ namespace libsemigroups {
     //! This function inverts \p this into \c that.
     //!
     //! \param that the partial perm to invert.
-    //!
-    //! \returns
-    //! (None)
     //!
     //! \exceptions
     //! \no_libsemigroups_except
@@ -1851,9 +1785,6 @@ namespace libsemigroups {
     //!
     //! \exceptions
     //! \no_libsemigroups_except
-    //!
-    //! \par Parameters
-    //! (None)
     [[nodiscard]] Perm identity() const {
       return identity(degree());
     }
@@ -1888,9 +1819,6 @@ namespace libsemigroups {
     //!
     //! \exceptions
     //! \no_libsemigroups_except
-    //!
-    //! \par Parameters
-    //! (None)
     //!
     //! \complexity
     //! Linear in degree()
@@ -2169,9 +2097,6 @@ namespace libsemigroups {
     //!
     //! \param res the container for the result.
     //! \param x the transf.
-    //!
-    //! \returns
-    //! (None).
     //!
     //! \complexity
     //! Linear in `x.degree()`.
