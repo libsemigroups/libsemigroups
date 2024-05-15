@@ -17,10 +17,16 @@
 //
 
 // This file contains the implementation of the AhoCorasick class.
-
 #include "libsemigroups/aho-corasick.hpp"
 
-#include "libsemigroups/dot.hpp"
+#include <array>        // for array
+#include <string>       // for basic_string, string, to_string
+#include <string_view>  // for basic_string_view, string_view
+
+#include "libsemigroups/constants.hpp"   // for Undefined, UNDEFINED, operator==
+#include "libsemigroups/detail/fmt.hpp"  // for format
+#include "libsemigroups/dot.hpp"         // for Dot, Dot::Edge, Dot::Node
+#include "libsemigroups/types.hpp"       // for word_type, letter_type
 
 namespace libsemigroups {
 

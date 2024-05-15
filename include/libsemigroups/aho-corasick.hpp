@@ -19,16 +19,17 @@
 #ifndef LIBSEMIGROUPS_AHO_CORASICK_HPP_
 #define LIBSEMIGROUPS_AHO_CORASICK_HPP_
 
-#include <algorithm>
-#include <map>
-#include <set>
-#include <stack>
-#include <unordered_map>
-#include <vector>
+#include <algorithm>      // for copy, max
+#include <memory>         // for allocator_traits<>::value_type
+#include <set>            // for set
+#include <stack>          // for stack
+#include <stddef.h>       // for size_t
+#include <unordered_map>  // for unordered_map
+#include <vector>         // for vector
 
-#include "constants.hpp"  // for UNDEFINED
+#include "constants.hpp"  // for Undefined, operator!=, UNDEFINED, operator==
 #include "debug.hpp"      // for LIBSEMIGROUPS_ASSERT
-#include "types.hpp"      // for letter_type
+#include "types.hpp"      // for letter_type, word_type
 
 // TODO(2) make nodes accessible as indices of some list (numbered nodes).
 // Make sure this address the badness of traversals (lots of different data
