@@ -15,7 +15,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include <fstream>
+#include <iostream>
 
 #include "libsemigroups/aho-corasick.hpp"  // for AhoCorasick
 #include "libsemigroups/types.hpp"         // for word_type
@@ -69,9 +69,6 @@ namespace libsemigroups {
     REQUIRE(aho_corasick::traverse(ac, 1101_w) == 27);
     REQUIRE(aho_corasick::traverse(ac, 1110_w) == 29);
     REQUIRE(aho_corasick::traverse(ac, 1111_w) == 30);
-
-    std::ofstream file("aho.gv");
-    file << dot(ac).to_string();
 
     // Should do nothing
     aho_corasick::rm_word_no_checks(ac, 000_w);
@@ -271,6 +268,20 @@ namespace libsemigroups {
     REQUIRE(w == 0111_w);
     ac.signature(w, 19);
     REQUIRE(w == 1000_w);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("AhoCorasick",
+                          "010",
+                          "dot",
+                          "[quick][aho-corasick]") {
+    AhoCorasick ac;
+
+    Words words;
+    words.number_of_letters(2).min(4).max(5);
+    for (auto const& w : words) {
+      aho_corasick::add_word_no_checks(ac, w);
+    }
+    std::cout << "\n" << dot(ac).to_string() << "\n";
   }
 
 }  // namespace libsemigroups
