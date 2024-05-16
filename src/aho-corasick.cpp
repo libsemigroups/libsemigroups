@@ -75,6 +75,26 @@ namespace libsemigroups {
     return *this;
   }
 
+  [[nodiscard]] AhoCorasick::index_type
+  AhoCorasick::traverse(index_type current, letter_type a) const {
+    index_type next = _all_nodes[current].child(a);
+    if (next != UNDEFINED) {
+      return next;
+    } else if (current == root) {
+      return root;
+    }
+    return traverse(suffix_link(current), a);
+  }
+
+  void AhoCorasick::signature(word_type& w, index_type i) const {
+    w.clear();
+    while (i != root) {
+      w.push_back(_all_nodes[i].parent_letter());
+      i = _all_nodes[i].parent();
+    }
+    std::reverse(w.begin(), w.end());
+  }
+
   [[nodiscard]] size_t AhoCorasick::height(index_type i) const {
     size_t cached_height = _all_nodes[i].height();
     if (cached_height != UNDEFINED) {
@@ -89,15 +109,6 @@ namespace libsemigroups {
     cached_height = height(_all_nodes[i].parent()) + 1;
     _all_nodes[i].set_height(cached_height);
     return cached_height;
-  }
-
-  void AhoCorasick::signature(word_type& w, index_type i) const {
-    w.clear();
-    while (i != root) {
-      w.push_back(_all_nodes[i].parent_letter());
-      i = _all_nodes[i].parent();
-    }
-    std::reverse(w.begin(), w.end());
   }
 
   [[nodiscard]] AhoCorasick::index_type
@@ -139,17 +150,6 @@ namespace libsemigroups {
     _active_nodes_index.erase(i);
 #endif
     _inactive_nodes_index.push(i);
-  }
-
-  [[nodiscard]] AhoCorasick::index_type
-  AhoCorasick::traverse(index_type current, letter_type a) const {
-    index_type next = _all_nodes[current].child(a);
-    if (next != UNDEFINED) {
-      return next;
-    } else if (current == root) {
-      return root;
-    }
-    return traverse(suffix_link(current), a);
   }
 
   void AhoCorasick::clear_suffix_links() const {

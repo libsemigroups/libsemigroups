@@ -94,6 +94,10 @@ namespace libsemigroups {
         return _link;
       }
 
+      void set_suffix_link(index_type val) const noexcept {
+        _link = val;
+      }
+
       void clear_suffix_link() const noexcept;
 
       [[nodiscard]] decltype(_children)& children() const noexcept {
@@ -119,10 +123,6 @@ namespace libsemigroups {
 
       [[nodiscard]] letter_type parent_letter() const noexcept {
         return _parent_letter;
-      }
-
-      void set_suffix_link(index_type val) const noexcept {
-        _link = val;
       }
 
       void set_height(size_t val) const noexcept {
