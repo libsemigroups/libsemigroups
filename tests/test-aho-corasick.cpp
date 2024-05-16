@@ -148,8 +148,8 @@ namespace libsemigroups {
     ac.add_word_no_checks(y.begin(), y.end());
 
     REQUIRE(ac.number_of_nodes() == 8);
-    REQUIRE(ac.traverse_from(0, x.begin(), x.end()) == 5);
-    REQUIRE(ac.traverse_from(0, y.begin(), y.end()) == 7);
+    REQUIRE(aho_corasick::traverse_from(ac, 0, x.begin(), x.end()) == 5);
+    REQUIRE(aho_corasick::traverse_from(ac, 0, y.begin(), y.end()) == 7);
   }
 
   LIBSEMIGROUPS_TEST_CASE("AhoCorasick",

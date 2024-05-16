@@ -74,19 +74,6 @@ namespace libsemigroups {
 
   template <typename Iterator>
   [[nodiscard]] AhoCorasick::index_type
-  AhoCorasick::traverse_from(index_type start,
-                             Iterator   first,
-                             Iterator   last) const {
-    index_type current = start;
-    for (auto it = first; it != last; ++it) {
-      // Uses private traverse by node function
-      current = traverse(current, *it);
-    }
-    return current;
-  }
-
-  template <typename Iterator>
-  [[nodiscard]] AhoCorasick::index_type
   AhoCorasick::traverse_trie(Iterator first, Iterator last) const {
     index_type current = root;
     for (auto it = first; it != last; ++it) {
@@ -98,4 +85,17 @@ namespace libsemigroups {
     return current;
   }
 
+  namespace aho_corasick {
+    template <typename Iterator>
+    [[nodiscard]] AhoCorasick::index_type traverse_from(AhoCorasick const& ac,
+                                                        index_type start,
+                                                        Iterator   first,
+                                                        Iterator   last) {
+      index_type current = start;
+      for (auto it = first; it != last; ++it) {
+        current = ac.traverse(current, *it);
+      }
+      return current;
+    }
+  }  // namespace aho_corasick
 }  // namespace libsemigroups

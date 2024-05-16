@@ -39,6 +39,7 @@
 // overlap/confluence checking. One compromise is to have a pointer to the rules
 // any given node is contained within. This could be updated easily when adding
 // new rules, but more care would be needed when removing rules.
+// TODO(0) change names from set_X and get_X to set(val) and get()
 namespace libsemigroups {
 
   //! \brief For an implementation of the Aho-Corasick algorithm
@@ -155,11 +156,6 @@ namespace libsemigroups {
 
     [[nodiscard]] index_type traverse(index_type current, letter_type a) const;
 
-    template <typename Iterator>
-    [[nodiscard]] index_type traverse_from(index_type start,
-                                           Iterator   first,
-                                           Iterator   last) const;
-
     // TODO(2) template to accept Iterator not word_type&
     void signature(word_type& w, index_type i) const;
 
@@ -206,6 +202,12 @@ namespace libsemigroups {
       return ac.rm_word_no_checks(w.cbegin(), w.cend());
     }
 
+    template <typename Iterator>
+    [[nodiscard]] index_type traverse_from(AhoCorasick const& ac,
+                                           index_type         start,
+                                           Iterator           first,
+                                           Iterator           last);
+
     template <typename Letter>
     [[nodiscard]] inline index_type traverse_from(AhoCorasick const& ac,
                                                   index_type         start,
@@ -216,20 +218,20 @@ namespace libsemigroups {
     [[nodiscard]] inline index_type traverse_from(AhoCorasick const& ac,
                                                   index_type         start,
                                                   word_type const&   w) {
-      return ac.traverse_from(start, w.cbegin(), w.cend());
+      return traverse_from(ac, start, w.cbegin(), w.cend());
     }
 
     template <typename Iterator>
     [[nodiscard]] index_type traverse(AhoCorasick const& ac,
                                       Iterator           first,
                                       Iterator           last) {
-      return ac.traverse_from(AhoCorasick::root, first, last);
+      return traverse_from(ac, AhoCorasick::root, first, last);
     }
 
     template <typename Word>
     [[nodiscard]] inline index_type traverse(AhoCorasick const& ac,
                                              Word const&        w) {
-      return ac.traverse_from(AhoCorasick::root, w.cbegin(), w.cend());
+      return traverse_from(ac, AhoCorasick::root, w.cbegin(), w.cend());
     }
   }  // namespace aho_corasick
 
