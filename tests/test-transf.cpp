@@ -42,6 +42,8 @@ namespace libsemigroups {
 
       auto z = T({0, 1, 0, 3});
       REQUIRE(x < z);
+      REQUIRE(transf::image(z)
+              == std::vector<typename T::value_type>({0, 1, 3}));
 
       auto expected = T({0, 0, 0});
       REQUIRE(expected < x);
@@ -287,12 +289,9 @@ namespace libsemigroups {
     REQUIRE_THROWS_AS(PPerm<3>::make({1, 0, 3}), LibsemigroupsException);
     REQUIRE_THROWS_AS(PPerm<5>::make({1, 0, 3, 6, 4}), LibsemigroupsException);
     REQUIRE_THROWS_AS(PPerm<5>::make({1, 5, 0, 3, 2}), LibsemigroupsException);
-    auto                    x = PPerm<5>::make({0, 2}, {3, 0}, 5);
-    std::vector<value_type> set;
-    x.image(set);
-    REQUIRE(set == decltype(set)({0, 3}));
-    x.domain(set);
-    REQUIRE(set == decltype(set)({0, 2}));
+    auto x = PPerm<5>::make({0, 2}, {3, 0}, 5);
+    REQUIRE(transf::image(x) == std::vector<value_type>({0, 3}));
+    REQUIRE(transf::domain(x) == std::vector<value_type>({0, 2}));
   }
 
   LIBSEMIGROUPS_TEST_CASE("Perm", "007", "inverse", "[quick][perm]") {

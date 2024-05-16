@@ -666,34 +666,6 @@ namespace libsemigroups {
         return result;
       }
 
-      // TODO helper
-      // TODO doc
-      template <typename T>
-      void image(std::vector<T>& im) const {
-        im.clear();
-        for (size_t i = 0; i < degree(); ++i) {
-          auto j = (*this)[i];
-          if (j != undef()) {
-            im.push_back(j);
-          }
-        }
-        std::sort(im.begin(), im.end());
-      }
-
-      // TODO helper
-      // TODO doc
-      template <typename T>
-      void domain(std::vector<T>& dom) const {
-        dom.clear();
-        for (size_t i = 0; i < degree(); ++i) {
-          auto j = (*this)[i];
-          if (j != undef()) {
-            dom.push_back(i);
-          }
-        }
-        std::sort(dom.begin(), dom.end());
-      }
-
      protected:
       //! No doc
       template <typename SFINAE = void>
@@ -794,6 +766,9 @@ namespace libsemigroups {
     //! \copydoc detail::PTransfBase<value_type, container_type>::begin
     using base_type::begin;
 
+    //! \copydoc detail::PTransfBase<value_type, container_type>::end
+    using base_type::end;
+
     //! Returns the degree of a transformation.
     //!
     //! The *degree* of a transformation is the number of points used
@@ -806,9 +781,6 @@ namespace libsemigroups {
     //! \exceptions
     //! \noexcept
     using base_type::degree;
-
-    //! \copydoc detail::PTransfBase<value_type, container_type>::end
-    using base_type::end;
 
     //! Construct with given degree.
     //!
@@ -838,9 +810,10 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! At worst linear in the sum of the parameter \p m and degree().
-    void increase_degree_by(size_t m) {
+    DynamicPTransf& increase_degree_by(size_t m) {
       resize(degree() + m);
       std::iota(end() - m, end(), degree() - m);
+      return *this;
     }
 
    protected:
@@ -893,8 +866,17 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! Linear in the template parameter \p N.
-    explicit StaticPTransf(size_t = 0) : base_type() {
+    StaticPTransf() : base_type() {
       std::fill(begin(), end(), UNDEFINED);
+    }
+
+    explicit StaticPTransf(size_t n) : StaticPTransf() {
+      if (n != N) {
+        LIBSEMIGROUPS_EXCEPTION("StaticPTransf has fixed degree {}, cannot "
+                                "construct a StaticPTransf of degree {}!",
+                                N,
+                                n);
+      }
     }
 
     //! \copydoc detail::PTransfBase<Scalar,TContainer>::degree
@@ -907,9 +889,10 @@ namespace libsemigroups {
     //! This doesn't make sense for this type, and it throws every time.
     //!
     //! \throws LibsemigroupsException every time.
-    void increase_degree_by(size_t) {
+    StaticPTransf& increase_degree_by(size_t) {
       // do nothing can't increase the degree
       LIBSEMIGROUPS_EXCEPTION("cannot increase the degree of a StaticPTransf!");
+      return *this;
     }
   };
 
@@ -2430,6 +2413,27 @@ namespace libsemigroups {
   template <size_t N>
   using LeastPerm = typename detail::LeastPermHelper<N>::type;
 
+  namespace transf {
+    // TODO doc
+    template <typename Transf, typename Image>
+    void image(Transf const& x, std::vector<Image>& im);
+
+    // TODO doc
+    template <typename Transf>
+    [[nodiscard]] std::vector<typename Transf::value_type>
+    image(Transf const& x);
+
+    // TODO doc
+    template <typename Transf, typename Image>
+    void domain(Transf const& x, std::vector<Image>& im);
+
+    // TODO doc
+    template <typename Transf>
+    [[nodiscard]] std::vector<typename Transf::value_type>
+    domain(Transf const& x);
+  }  // namespace transf
 }  // namespace libsemigroups
+
+#include "transf.tpp"
 
 #endif  // LIBSEMIGROUPS_TRANSF_HPP_
