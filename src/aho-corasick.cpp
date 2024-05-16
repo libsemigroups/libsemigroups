@@ -75,7 +75,7 @@ namespace libsemigroups {
     return *this;
   }
 
-  size_t AhoCorasick::height(index_type i) const {
+  [[nodiscard]] size_t AhoCorasick::height(index_type i) const {
     size_t cached_height = _all_nodes[i].height();
     if (cached_height != UNDEFINED) {
       return cached_height;
@@ -113,8 +113,8 @@ namespace libsemigroups {
     return n.suffix_link();
   }
 
-  AhoCorasick::index_type AhoCorasick::new_active_node(index_type  parent,
-                                                       letter_type a) {
+  [[nodiscard]] AhoCorasick::index_type
+  AhoCorasick::new_active_node(index_type parent, letter_type a) {
     index_type index;
     if (_inactive_nodes_index.empty()) {
       index = _all_nodes.size();
@@ -160,7 +160,7 @@ namespace libsemigroups {
     }
   }
 
-  Dot dot(AhoCorasick& ac) {
+  [[nodiscard]] Dot dot(AhoCorasick& ac) {
     auto to_word = [](word_type const& w) {
       if (w.empty()) {
         return std::string("&#949;");

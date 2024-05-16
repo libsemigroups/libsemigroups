@@ -140,7 +140,7 @@ namespace libsemigroups {
 
     AhoCorasick& init();
 
-    size_t number_of_nodes() const {
+    [[nodiscard]] size_t number_of_nodes() const {
       return _active_nodes_index.size();
     }
 
@@ -163,7 +163,7 @@ namespace libsemigroups {
     // TODO(2) template to accept Iterator not word_type&
     void signature(word_type& w, index_type i) const;
 
-    size_t height(index_type i) const;
+    [[nodiscard]] size_t height(index_type i) const;
 
     [[nodiscard]] index_type suffix_link(index_type current) const;
 
@@ -177,7 +177,7 @@ namespace libsemigroups {
     }
 
    private:
-    index_type new_active_node(index_type parent, letter_type a);
+    [[nodiscard]] index_type new_active_node(index_type parent, letter_type a);
 
     void deactivate_node(index_type i);
 
@@ -189,7 +189,7 @@ namespace libsemigroups {
 
   class Dot;  // forward decl
 
-  Dot dot(AhoCorasick& ac);
+  [[nodiscard]] Dot dot(AhoCorasick& ac);
 
   namespace aho_corasick {
     using index_type = AhoCorasick::index_type;
