@@ -84,6 +84,11 @@ namespace libsemigroups {
         init(parent, a);
       }
 
+      Node(const Node&)            = default;
+      Node& operator=(const Node&) = default;
+      Node(Node&&)                 = default;
+      Node& operator=(Node&&)      = default;
+
       Node& init(index_type parent, letter_type a) noexcept;
 
       [[nodiscard]] index_type child(letter_type a) const;
@@ -139,6 +144,10 @@ namespace libsemigroups {
 
    public:
     AhoCorasick();
+    AhoCorasick(const AhoCorasick&)            = default;
+    AhoCorasick& operator=(const AhoCorasick&) = default;
+    AhoCorasick(AhoCorasick&&)                 = default;
+    AhoCorasick& operator=(AhoCorasick&&)      = default;
 
     AhoCorasick& init();
 
