@@ -18,6 +18,7 @@
 #include <iostream>
 
 #include "libsemigroups/aho-corasick.hpp"  // for AhoCorasick
+#include "libsemigroups/exception.hpp"     // for LibsemigroupsException
 #include "libsemigroups/types.hpp"         // for word_type
 
 #include "catch.hpp"      // for REQUIRE, REQUIRE_THROWS_AS, REQUI...
@@ -31,8 +32,8 @@ namespace libsemigroups {
                           "initial test",
                           "[quick][aho-corasick]") {
     AhoCorasick ac;
-    aho_corasick::add_word_no_checks(ac, 00101_w);
-    aho_corasick::add_word_no_checks(ac, 010_w);
+    aho_corasick::add_word(ac, 00101_w);
+    aho_corasick::add_word(ac, 010_w);
 
     REQUIRE(ac.number_of_nodes() == 8);
     REQUIRE(aho_corasick::traverse(ac, 00101_w) == 5);
@@ -48,7 +49,7 @@ namespace libsemigroups {
     Words words;
     words.number_of_letters(2).min(4).max(5);
     for (auto const& w : words) {
-      aho_corasick::add_word_no_checks(ac, w);
+      aho_corasick::add_word(ac, w);
     }
 
     REQUIRE(ac.number_of_nodes() == 31);
@@ -70,11 +71,7 @@ namespace libsemigroups {
     REQUIRE(aho_corasick::traverse(ac, 1110_w) == 29);
     REQUIRE(aho_corasick::traverse(ac, 1111_w) == 30);
 
-    // Should do nothing
-    aho_corasick::rm_word_no_checks(ac, 000_w);
-    REQUIRE(ac.number_of_nodes() == 31);
-
-    aho_corasick::rm_word_no_checks(ac, 0111_w);
+    aho_corasick::rm_word(ac, 0111_w);
     REQUIRE(ac.number_of_nodes() == 30);
     REQUIRE(aho_corasick::traverse(ac, 0111_w)
             == aho_corasick::traverse(ac, 111_w));
@@ -85,7 +82,7 @@ namespace libsemigroups {
                           "add/rm_word",
                           "[quick][aho-corasick]") {
     AhoCorasick ac;
-    aho_corasick::add_word_no_checks(ac, 00101_w);
+    aho_corasick::add_word(ac, 00101_w);
 
     REQUIRE(ac.number_of_nodes() == 6);
     REQUIRE(aho_corasick::traverse(ac, 00101_w) == 5);
@@ -93,22 +90,28 @@ namespace libsemigroups {
     REQUIRE(aho_corasick::traverse(ac, 010_w) == 1);
     REQUIRE(!ac.node(1).is_terminal());
 
-    aho_corasick::add_word_no_checks(ac, 010_w);
+    aho_corasick::add_word(ac, 010_w);
     REQUIRE(ac.number_of_nodes() == 8);
     REQUIRE(aho_corasick::traverse(ac, 010_w) == 7);
     REQUIRE(ac.node(5).is_terminal());
     REQUIRE(ac.node(7).is_terminal());
 
-    aho_corasick::rm_word_no_checks(ac, 010_w);
+    REQUIRE_THROWS_AS(aho_corasick::rm_word(ac, 01_w), LibsemigroupsException);
+    REQUIRE_THROWS_AS(aho_corasick::rm_word(ac, 0101_w),
+                      LibsemigroupsException);
+
+    aho_corasick::rm_word(ac, 010_w);
     REQUIRE(ac.number_of_nodes() == 6);
     REQUIRE(aho_corasick::traverse(ac, 00101_w) == 5);
     REQUIRE(ac.node(5).is_terminal());
     REQUIRE(aho_corasick::traverse(ac, 010_w) == 1);
     REQUIRE(!ac.node(1).is_terminal());
 
-    aho_corasick::add_word_no_checks(ac, 010_w);
-    aho_corasick::add_word_no_checks(ac, 00_w);
-    aho_corasick::rm_word_no_checks(ac, 00_w);
+    aho_corasick::add_word(ac, 010_w);
+    REQUIRE_THROWS_AS(aho_corasick::add_word(ac, 010_w),
+                      LibsemigroupsException);
+    aho_corasick::add_word(ac, 00_w);
+    aho_corasick::rm_word(ac, 00_w);
 
     REQUIRE(ac.number_of_nodes() == 8);
     REQUIRE(aho_corasick::traverse(ac, 00101_w) == 5);
@@ -127,8 +130,8 @@ namespace libsemigroups {
     using words::pow;
     using index_type = AhoCorasick::index_type;
     AhoCorasick ac;
-    aho_corasick::add_word_no_checks(ac, pow(01_w, 1000));
-    aho_corasick::add_word_no_checks(ac, pow(010_w, 10'000));
+    aho_corasick::add_word(ac, pow(01_w, 1000));
+    aho_corasick::add_word(ac, pow(010_w, 10'000));
     REQUIRE(ac.number_of_nodes() == 31'998);
     for (index_type n = 0; n < ac.number_of_nodes(); ++n) {
       std::ignore = ac.suffix_link(n);
@@ -144,8 +147,8 @@ namespace libsemigroups {
     AhoCorasick ac;
     std::string x = "aabab";
     std::string y = "aba";
-    ac.add_word_no_checks(x.begin(), x.end());
-    ac.add_word_no_checks(y.begin(), y.end());
+    ac.add_word(x.begin(), x.end());
+    ac.add_word(y.begin(), y.end());
 
     REQUIRE(ac.number_of_nodes() == 8);
     REQUIRE(aho_corasick::traverse_from(ac, 0, x.begin(), x.end()) == 5);
@@ -159,14 +162,14 @@ namespace libsemigroups {
     AhoCorasick ac;
     std::string x = "aabab";
     std::string y = "aba";
-    aho_corasick::add_word_no_checks(ac, x);
-    aho_corasick::add_word_no_checks(ac, y);
+    aho_corasick::add_word(ac, x);
+    aho_corasick::add_word(ac, y);
 
     REQUIRE(ac.number_of_nodes() == 8);
     REQUIRE(aho_corasick::traverse(ac, x) == 5);
     REQUIRE(aho_corasick::traverse(ac, y) == 7);
 
-    aho_corasick::rm_word_no_checks(ac, x);
+    aho_corasick::rm_word(ac, x);
     REQUIRE(ac.number_of_nodes() == 4);
   }
 
@@ -181,12 +184,12 @@ namespace libsemigroups {
     Words words;
     words.number_of_letters(2).min(4).max(5);
     for (auto const& w : words) {
-      aho_corasick::add_word_no_checks(ac, w);
+      aho_corasick::add_word(ac, w);
     }
     REQUIRE(ac.number_of_nodes() == 31);
 
-    aho_corasick::rm_word_no_checks(ac, 0010_w);
-    aho_corasick::rm_word_no_checks(ac, 0110_w);
+    aho_corasick::rm_word(ac, 0010_w);
+    aho_corasick::rm_word(ac, 0110_w);
     REQUIRE(ac.number_of_nodes() == 29);
 
     ac.init();
@@ -201,8 +204,8 @@ namespace libsemigroups {
     AhoCorasick ac;
     std::string x = "aabab";
     std::string y = "aba";
-    ac.add_word_no_checks(x.begin(), x.end());
-    ac.add_word_no_checks(y.begin(), y.end());
+    ac.add_word(x.begin(), x.end());
+    ac.add_word(y.begin(), y.end());
 
     REQUIRE(ac.height(0) == 0);
     REQUIRE(ac.height(1) == 1);
@@ -219,9 +222,9 @@ namespace libsemigroups {
     std::string b = "aab";
     std::string c = "aac";
     std::string d = "aad";
-    ac.add_word_no_checks(b.begin(), b.end());
-    ac.add_word_no_checks(c.begin(), c.end());
-    ac.add_word_no_checks(d.begin(), d.end());
+    ac.add_word(b.begin(), b.end());
+    ac.add_word(c.begin(), c.end());
+    ac.add_word(d.begin(), d.end());
 
     REQUIRE(ac.child(0, 'a') == 1);
     REQUIRE(ac.child(0, 'b') == UNDEFINED);
@@ -229,7 +232,7 @@ namespace libsemigroups {
     REQUIRE(ac.child(2, 'c') == 4);
     REQUIRE(ac.child(2, 'd') == 5);
 
-    ac.rm_word_no_checks(d.begin(), d.end());
+    ac.rm_word(d.begin(), d.end());
     REQUIRE(ac.child(2, 'b') == 3);
     REQUIRE(ac.child(2, 'c') == 4);
     REQUIRE(ac.child(2, 'd') == UNDEFINED);
@@ -246,7 +249,7 @@ namespace libsemigroups {
     Words words;
     words.number_of_letters(2).min(4).max(5);
     for (auto const& w : words) {
-      aho_corasick::add_word_no_checks(ac, w);
+      aho_corasick::add_word(ac, w);
     }
 
     word_type w;
@@ -279,7 +282,7 @@ namespace libsemigroups {
     Words words;
     words.number_of_letters(2).min(4).max(5);
     for (auto const& w : words) {
-      aho_corasick::add_word_no_checks(ac, w);
+      aho_corasick::add_word(ac, w);
     }
     std::cout << "\n" << dot(ac).to_string() << "\n";
   }

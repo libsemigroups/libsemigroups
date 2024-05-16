@@ -29,6 +29,7 @@
 
 #include "constants.hpp"  // for Undefined, operator!=, UNDEFINED, operator==
 #include "debug.hpp"      // for LIBSEMIGROUPS_ASSERT
+#include "exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
 #include "types.hpp"      // for letter_type, word_type
 
 // TODO(2) make nodes accessible as indices of some list (numbered nodes).
@@ -146,6 +147,9 @@ namespace libsemigroups {
     }
 
     template <typename Iterator>
+    index_type add_word(Iterator first, Iterator last);
+
+    template <typename Iterator>
     index_type add_word_no_checks(Iterator first, Iterator last);
 
     template <typename Iterator>
@@ -200,6 +204,16 @@ namespace libsemigroups {
     template <typename Word>
     inline index_type rm_word_no_checks(AhoCorasick& ac, Word const& w) {
       return ac.rm_word_no_checks(w.cbegin(), w.cend());
+    }
+
+    template <typename Word>
+    inline void add_word(AhoCorasick& ac, Word const& w) {
+      ac.add_word(w.cbegin(), w.cend());
+    }
+
+    template <typename Word>
+    inline index_type rm_word(AhoCorasick& ac, Word const& w) {
+      return ac.rm_word(w.cbegin(), w.cend());
     }
 
     template <typename Iterator>
