@@ -112,7 +112,9 @@ namespace libsemigroups {
     }
     template <typename T>
     bool test_inverse(T const& p) {
-      return p * p.inverse() == p.identity() && p.inverse() * p == p.identity();
+      // TODO make identity a helper also
+      return p * transf::inverse(p) == p.identity()
+             && transf::inverse(p) * p == p.identity();
     }
   }  // namespace
 
@@ -209,9 +211,8 @@ namespace libsemigroups {
     REQUIRE_THROWS_AS(PPerm<>::make({1, 2}, {0, 5}, 4), LibsemigroupsException);
     REQUIRE_THROWS_AS(PPerm<>::make({1, 5}, {0, 2}, 4), LibsemigroupsException);
 
-    REQUIRE_NOTHROW(PPerm<>::make({1, 1}, {0, 2}, 3));
-    // Note: It's not necessary for domain to be duplicate free, it just means
-    // that the pperm defined above is 1 -> 2, and that's it.
+    REQUIRE_THROWS_AS(PPerm<>::make({1, 1}, {0, 2}, 3), LibsemigroupsException);
+    REQUIRE_THROWS_AS(PPerm<>::make({1, 0}, {2, 2}, 3), LibsemigroupsException);
     REQUIRE_THROWS_AS(PPerm<>::make({1, 2}), LibsemigroupsException);
     REQUIRE_THROWS_AS(PPerm<>::make({1, 0, 3}), LibsemigroupsException);
     REQUIRE_THROWS_AS(PPerm<>::make({1, 0, 3, 6, 4}), LibsemigroupsException);
@@ -248,9 +249,10 @@ namespace libsemigroups {
     REQUIRE_THROWS_AS(PPerm<4>::make({1, 5}, {0, 2}, 4),
                       LibsemigroupsException);
 
-    REQUIRE_NOTHROW(PPerm<3>::make({1, 1}, {0, 2}, 3));
-    // Note: It's not necessary for domain to be duplicate free, it just means
-    // that the pperm defined above is 1 -> 2, and that's it.
+    REQUIRE_THROWS_AS(PPerm<3>::make({1, 1}, {0, 2}, 3),
+                      LibsemigroupsException);
+    REQUIRE_THROWS_AS(PPerm<3>::make({0, 2}, {1, 1}, 3),
+                      LibsemigroupsException);
 
     REQUIRE_THROWS_AS(PPerm<1>::make({1, 2}), LibsemigroupsException);
     REQUIRE_THROWS_AS(PPerm<2>::make({1, 2}), LibsemigroupsException);

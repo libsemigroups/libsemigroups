@@ -39,6 +39,7 @@
 #include <string_view>
 #include <tuple>          // for tuple_size
 #include <type_traits>    // for enable_if_t
+#include <unordered_map>  // for unordered_map
 #include <unordered_set>  // for unordered_set
 #include <vector>         // for vector
 
@@ -222,14 +223,8 @@ namespace libsemigroups {
       //!
       //! \complexity
       //! Linear in the size of the container \p cont.
-      // TODO to tpp
       template <typename Subclass, typename ContainerAgain = Container>
-      [[nodiscard]] static Subclass make(ContainerAgain&& cont) {
-        validate_args(std::forward<ContainerAgain>(cont));
-        Subclass result(std::forward<ContainerAgain>(cont));
-        validate(result);
-        return result;
-      }
+      [[nodiscard]] static Subclass make(ContainerAgain&& cont);
 
       //! Construct from an initializer list.
       //!
@@ -275,7 +270,7 @@ namespace libsemigroups {
       //! \complexity
       //! At worst linear in degree().
       [[nodiscard]] bool operator<(PTransfBase const& that) const {
-        return this->_container < that._container;
+        return _container < that._container;
       }
 
       //! Compare for greater.
@@ -313,7 +308,7 @@ namespace libsemigroups {
       //! \complexity
       //! At worst linear in degree().
       [[nodiscard]] bool operator==(PTransfBase const& that) const {
-        return this->_container == that._container;
+        return _container == that._container;
       }
 
       //! Compare for less than or equal.
@@ -332,8 +327,7 @@ namespace libsemigroups {
       //! \complexity
       //! At worst linear in degree().
       [[nodiscard]] bool operator<=(PTransfBase const& that) const {
-        return this->_container < that._container
-               || this->_container == that._container;
+        return _container < that._container || _container == that._container;
       }
 
       //! Compare for greater than or equal.
@@ -568,10 +562,9 @@ namespace libsemigroups {
       //!
       //! \complexity
       //! Linear in degree().
-      // TODO to tpp
+      // Becomes 3 lines in tpp file!
       [[nodiscard]] size_t rank() const {
-        auto vals
-            = std::unordered_set<point_type>(this->cbegin(), this->cend());
+        auto vals = std::unordered_set<point_type>(cbegin(), cend());
         return (vals.find(UNDEFINED) == vals.end() ? vals.size()
                                                    : vals.size() - 1);
       }
@@ -598,7 +591,7 @@ namespace libsemigroups {
       //! \exceptions
       //! \noexcept
       void swap(PTransfBase& that) noexcept {
-        std::swap(this->_container, that._container);
+        std::swap(_container, that._container);
       }
 
       //! Returns the degree of a partial transformation.
@@ -663,34 +656,14 @@ namespace libsemigroups {
       }
 
      protected:
-      //! No doc
-      // TODO to tpp
-      static void resize(container_type& c, size_t N, point_type val = 0) {
-        if constexpr (detail::is_array_v<container_type>) {
-          std::fill(c.begin() + N, c.end(), val);
-        } else {
-          c.resize(N, val);
-        }
-      }
-
-      //! No doc
-      void resize(size_t N, point_type val = 0) {
+      static void resize(container_type& c, size_t N, point_type val = 0);
+      void        resize(size_t N, point_type val = 0) {
         resize(_container, N, val);
       }
 
      private:
-      // TODO to tpp
       template <typename T>
-      static void validate_args(T const& cont) {
-        if constexpr (detail::is_array_v<container_type>) {
-          if (cont.size() != std::tuple_size_v<container_type>) {
-            LIBSEMIGROUPS_EXCEPTION(
-                "incorrect container size, expected {}, found {}",
-                std::tuple_size_v<container_type>,
-                cont.size());
-          }
-        }
-      }
+      static void validate_args(T const& cont);
 
       Container _container;
     };
@@ -858,15 +831,7 @@ namespace libsemigroups {
     }
 
     // TODO doc
-    // TODO to tpp file
-    explicit StaticPTransf(size_t n) : StaticPTransf() {
-      if (n != N) {
-        LIBSEMIGROUPS_EXCEPTION("StaticPTransf has fixed degree {}, cannot "
-                                "construct a StaticPTransf of degree {}!",
-                                N,
-                                n);
-      }
-    }
+    explicit StaticPTransf(size_t n);
 
     //! \copydoc detail::PTransfBase<Scalar,Container>::degree
     [[nodiscard]] constexpr size_t degree() const noexcept {
@@ -1103,16 +1068,7 @@ namespace libsemigroups {
     //! \warning
     //! No checks are made on whether or not the parameters are compatible. If
     //! \p x and \p y have different degrees, then bad things will happen.
-    // TODO to tpp
-    void product_inplace(Transf const& x, Transf const& y) {
-      LIBSEMIGROUPS_ASSERT(x.degree() == y.degree());
-      LIBSEMIGROUPS_ASSERT(x.degree() == this->degree());
-      LIBSEMIGROUPS_ASSERT(&x != this && &y != this);
-      size_t const n = this->degree();
-      for (point_type i = 0; i < n; ++i) {
-        (*this)[i] = y[x[i]];
-      }
-    }
+    void product_inplace(Transf const& x, Transf const& y);
 
     //! Returns the identity transformation on degree() points.
     //!
@@ -1184,7 +1140,8 @@ namespace libsemigroups {
 
   //! Validate a transformation.
   //!
-  //! \tparam T the type of the transformation to validate.
+  //! \tparam N the number of points
+  //! \tparam Scalar the type of the points
   //!
   //! \param x the transformation.
   //!
@@ -1193,20 +1150,8 @@ namespace libsemigroups {
   //!
   //! \complexity
   //! Linear in the size of the container \c x.degree().
-  // TODO to tpp
   template <size_t N, typename Scalar>
-  void validate(Transf<N, Scalar> const& x) {
-    size_t const M = x.degree();
-    for (auto const& val : x) {
-      if (val >= M) {
-        LIBSEMIGROUPS_EXCEPTION("image value out of bounds, expected value in "
-                                "[{}, {}), found {}",
-                                0,
-                                M,
-                                val);
-      }
-    }
-  }
+  void validate(Transf<N, Scalar> const& x);
 
   // TODO to tpp
   template <size_t N, typename Scalar>
@@ -1347,14 +1292,17 @@ namespace libsemigroups {
     //! * \p dom and \p ran do not have the same size
     //! * any value in \p dom or \p ran is greater than \p M
     //! * there are repeated entries in \p dom or \p ran.
-    // TODO to tpp
-    [[nodiscard]] static PPerm make(std::vector<point_type> const& dom,
-                                    std::vector<point_type> const& ran,
-                                    size_t const                   M) {
-      validate_args(dom, ran, M);
-      PPerm result(dom, ran, M);
-      validate(result);
-      return result;
+    // TODO update doc
+    template <typename OtherScalar>
+    [[nodiscard]] static PPerm make(std::vector<OtherScalar> const& dom,
+                                    std::vector<OtherScalar> const& ran,
+                                    size_t const                    M);
+
+    // TODO doc
+    [[nodiscard]] static PPerm make(std::initializer_list<Scalar> const& dom,
+                                    std::initializer_list<Scalar> const& ran,
+                                    size_t const                         M) {
+      return make(std::vector<Scalar>(dom), std::vector<Scalar>(ran), M);
     }
 
     //! Construct from domain, range, and degree.
@@ -1380,20 +1328,10 @@ namespace libsemigroups {
     //! \ref make.
     // Note: we use vectors here not container_type (which might be array),
     // because the length of dom and ran might not equal degree().
-    // TODO to tpp
-    template <typename Scalar2>
-    PPerm(std::vector<Scalar2> const& dom,
-          std::vector<Scalar2> const& ran,
-          size_t                      M = N)
-        : PPerm(M) {
-      LIBSEMIGROUPS_ASSERT(M >= N);
-      LIBSEMIGROUPS_ASSERT(dom.size() <= M);
-      LIBSEMIGROUPS_ASSERT(ran.size() <= M);
-      LIBSEMIGROUPS_ASSERT(ran.size() <= dom.size());
-      for (size_t i = 0; i < dom.size(); ++i) {
-        (*this)[dom[i]] = ran[i];
-      }
-    }
+    template <typename OtherScalar>
+    PPerm(std::vector<OtherScalar> const& dom,
+          std::vector<OtherScalar> const& ran,
+          size_t                          M = N);
 
     //! Construct from domain, range, and degree.
     //!
@@ -1438,16 +1376,7 @@ namespace libsemigroups {
     //! \warning
     //! No checks are made on whether or not the parameters are compatible. If
     //! \p x and \p y have different degrees, then bad things will happen.
-    // TODO to tpp
-    void product_inplace(PPerm const& x, PPerm const& y) {
-      LIBSEMIGROUPS_ASSERT(x.degree() == y.degree());
-      LIBSEMIGROUPS_ASSERT(x.degree() == degree());
-      LIBSEMIGROUPS_ASSERT(&x != this && &y != this);
-      size_t const n = degree();
-      for (point_type i = 0; i < n; ++i) {
-        (*this)[i] = (x[i] == UNDEFINED ? UNDEFINED : y[x[i]]);
-      }
-    }
+    void product_inplace(PPerm const& x, PPerm const& y);
 
     //! Returns the identity partial perm on degree() points.
     //!
@@ -1483,131 +1412,40 @@ namespace libsemigroups {
       return base_type::template identity<PPerm>(M);
     }
 
-    //! Returns the right one of this.
-    //!
-    //! This function returns a newly constructed partial perm with
-    //! degree equal to \p M that fixes every value in the range of \c this,
-    //! and is \ref UNDEFINED on any other values.
-    //!
-    //! \returns
-    //! A value of type \c PPerm.
-    //!
-    //! \exceptions
-    //! \no_libsemigroups_except
-    //!
-    //! \complexity
-    //! Linear in degree()
-    // TODO to tpp
-    // TODO to helper
-    [[nodiscard]] PPerm right_one() const {
-      size_t const n = degree();
-      PPerm        result(n);
-      std::fill(
-          result.begin(), result.end(), static_cast<point_type>(UNDEFINED));
-      for (size_t i = 0; i < n; ++i) {
-        if ((*this)[i] != UNDEFINED) {
-          result[(*this)[i]] = (*this)[i];
-        }
-      }
-      return result;
-    }
-
-    //! Returns the left one of this.
-    //!
-    //! This function returns a newly constructed partial perm with
-    //! degree equal to \p M that fixes every value in the domain of \c this,
-    //! and is \ref UNDEFINED on any other values.
-    //!
-    //! \returns
-    //! A value of type \c PPerm.
-    //!
-    //! \exceptions
-    //! \no_libsemigroups_except
-    //!
-    //! \complexity
-    //! Linear in degree()
-    // TODO to tpp
-    // TODO to helper
-    [[nodiscard]] PPerm left_one() const {
-      size_t const n = degree();
-      PPerm        result(n);
-      std::fill(
-          result.begin(), result.end(), static_cast<point_type>(UNDEFINED));
-      for (size_t i = 0; i < n; ++i) {
-        if ((*this)[i] != UNDEFINED) {
-          result[i] = i;
-        }
-      }
-      return result;
-    }
-
-    //! Returns the inverse.
-    //!
-    //! This function returns a newly constructed inverse of \c this.
-    //!
-    //! \returns
-    //! A value of type \c PPerm.
-    //!
-    //! \exceptions
-    //! \no_libsemigroups_except
-    //!
-    //! \complexity
-    //! Linear in degree()
-    [[nodiscard]] PPerm inverse() const {
-      PPerm result(degree());
-      inverse(result);
-      return result;
-    }
-
-    //! Replace contents of a partial perm with the inverse of another.
-    //!
-    //! This function inverts \p this into \c that.
-    //!
-    //! \param that the partial perm to invert.
-    //!
-    //! \exceptions
-    //! \no_libsemigroups_except
-    //!
-    //! \complexity
-    //! Linear in degree()
-    // Put the inverse of this into that
-    void inverse(PPerm& that) const {
-      that.resize(degree());
-      std::fill(that.begin(), that.end(), static_cast<point_type>(UNDEFINED));
-      for (size_t i = 0; i < degree(); ++i) {
-        if ((*this)[i] != UNDEFINED) {
-          that[(*this)[i]] = i;
-        }
-      }
-    }
-
    private:
-    // TODO to tpp
     static void validate_args(std::vector<point_type> const& dom,
                               std::vector<point_type> const& ran,
-                              size_t                         deg = N) {
-      if (N != 0 && deg != N) {
-        // Sanity check that the final argument is compatible with the
-        // template param N, if we have a dynamic pperm
-        LIBSEMIGROUPS_EXCEPTION(
-            "the 3rd argument is not valid, expected {}, found {}", N, deg);
-      } else if (dom.size() != ran.size()) {
-        // The next 2 checks just verify that we can safely run the
-        // constructor that uses *this[dom[i]] = im[i] for i = 0, ...,
-        // dom.size() - 1.
-        LIBSEMIGROUPS_EXCEPTION("domain and range size mismatch, domain has "
-                                "size {} but range has size {}",
-                                dom.size(),
-                                ran.size());
-      } else if (!(dom.empty()
-                   || deg > *std::max_element(dom.cbegin(), dom.cend()))) {
-        LIBSEMIGROUPS_EXCEPTION(
-            "domain value out of bounds, found {}, must be less than {}",
-            *std::max_element(dom.cbegin(), dom.cend()),
-            deg);
+                              size_t                         deg = N);
+  };
+
+  namespace detail {
+    template <typename Iterator>
+    void validate_no_duplicates(
+        Iterator                                                    first,
+        Iterator                                                    last,
+        std::unordered_map<std::decay_t<decltype(*first)>, size_t>& seen) {
+      seen.clear();
+      for (auto it = first; it != last; ++it) {
+        if (*it != UNDEFINED) {
+          auto [pos, inserted] = seen.emplace(*it, seen.size());
+          if (!inserted) {
+            LIBSEMIGROUPS_EXCEPTION(
+                "duplicate image value, found {} in position {}, first "
+                "occurrence in position {}",
+                *it,
+                std::distance(first, it),
+                *pos);
+          }
+        }
       }
     }
-  };
+
+    template <typename Iterator>
+    void validate_no_duplicates(Iterator first, Iterator last) {
+      std::unordered_map<std::decay_t<decltype(*first)>, size_t> seen;
+      validate_no_duplicates(first, last, seen);
+    }
+  }  // namespace detail
 
   // TODO improve
   template <size_t N, typename Scalar>
@@ -1650,28 +1488,6 @@ namespace libsemigroups {
   // PPerm validate
   ////////////////////////////////////////////////////////////////////////
 
-  namespace detail {
-    // TODO to tpp
-    template <typename T>
-    void validate_no_duplicate_image_values(T const& x) {
-      size_t const     deg = x.degree();
-      std::vector<int> present(deg, false);
-      for (auto it = x.cbegin(); it != x.cend(); ++it) {
-        if (*it != UNDEFINED) {
-          if (present[*it]) {
-            LIBSEMIGROUPS_EXCEPTION(
-                "duplicate image value, found {} in position {}, first "
-                "occurrence in position {}",
-                *it,
-                std::distance(x.begin(), it),
-                std::distance(x.begin(), std::find(x.begin(), it, *it)));
-          }
-          present[*it] = 1;
-        }
-      }
-    }
-  }  // namespace detail
-
   //! Validate a partial perm.
   //!
   //! \tparam T the type of the partial perm to validate.
@@ -1688,7 +1504,7 @@ namespace libsemigroups {
   template <size_t N, typename Scalar>
   void validate(PPerm<N, Scalar> const& x) {
     validate(static_cast<PTransf<N, Scalar> const&>(x));
-    detail::validate_no_duplicate_image_values(x);
+    detail::validate_no_duplicates(x.begin(), x.end());
   }
 
   ////////////////////////////////////////////////////////////////////////
@@ -1803,31 +1619,6 @@ namespace libsemigroups {
     [[nodiscard]] static Perm identity(size_t M) {
       return base_type::template identity<Perm>(M);
     }
-
-    //! Returns the inverse.
-    //!
-    //! This function returns a newly constructed inverse of \c this.
-    //! The *inverse* of a permutation \f$f\f$ is the permutation \f$g\f$ such
-    //! that \f$fg = gf\f$ is the identity permutation of degree \f$n\f$.
-    //!
-    //! \returns
-    //! A value of type \c PPerm.
-    //!
-    //! \exceptions
-    //! \no_libsemigroups_except
-    //!
-    //! \complexity
-    //! Linear in degree()
-    // TODO to tpp
-    [[nodiscard]] Perm inverse() const {
-      size_t const n = degree();
-      Perm         id(n);
-      for (Scalar i = 0; i < n; i++) {
-        id[(*this)[i]] = i;
-      }
-      return id;
-    }
-    // TODO inverse(that)
   };
 
   ////////////////////////////////////////////////////////////////////////
@@ -1870,8 +1661,122 @@ namespace libsemigroups {
   template <size_t N, typename Scalar>
   auto validate(Perm<N, Scalar> const& x) {
     validate(static_cast<Transf<N, Scalar> const&>(x));
-    detail::validate_no_duplicate_image_values(x);
+    detail::validate_no_duplicates(x.begin(), x.end());
   }
+
+  ////////////////////////////////////////////////////////////////////////
+  // Helper namespace
+  ////////////////////////////////////////////////////////////////////////
+  namespace transf {
+    // TODO doc
+    template <typename Transf, typename Image>
+    void image(Transf const& x, std::vector<Image>& im);
+
+    // TODO doc
+    template <typename Transf>
+    [[nodiscard]] std::vector<typename Transf::point_type>
+    image(Transf const& x);
+
+    // TODO doc
+    template <typename Transf, typename Image>
+    void domain(Transf const& x, std::vector<Image>& im);
+
+    // TODO doc
+    template <typename Transf>
+    [[nodiscard]] std::vector<typename Transf::point_type>
+    domain(Transf const& x);
+
+    //! Returns the right one of this.
+    //!
+    //! This function returns a newly constructed partial perm with
+    //! degree equal to \p M that fixes every value in the range of \c this,
+    //! and is \ref UNDEFINED on any other values.
+    //!
+    //! \returns
+    //! A value of type \c PPerm.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    //! \complexity
+    //! Linear in degree()
+    template <size_t N, typename Scalar>
+    [[nodiscard]] PPerm<N, Scalar> right_one(PPerm<N, Scalar> const& x);
+
+    //! Returns the left one of this.
+    //!
+    //! This function returns a newly constructed partial perm with
+    //! degree equal to \p M that fixes every value in the domain of \c this,
+    //! and is \ref UNDEFINED on any other values.
+    //!
+    //! \returns
+    //! A value of type \c PPerm.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    //! \complexity
+    //! Linear in degree()
+    template <size_t N, typename Scalar>
+    [[nodiscard]] PPerm<N, Scalar> left_one(PPerm<N, Scalar> const& x);
+
+    //! Replace contents of a partial perm with the inverse of another.
+    //!
+    //! This function inverts \p this into \c that.
+    //!
+    //! \param that the partial perm to invert.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    //! \complexity
+    //! Linear in degree()
+    // Put the inverse of this into that
+    // TODO to tpp file
+    template <size_t N, typename Scalar>
+    void inverse(PPerm<N, Scalar> const& from, PPerm<N, Scalar>& to);
+
+    //! Returns the inverse.
+    //!
+    //! This function returns a newly constructed inverse of \c this.
+    //!
+    //! \returns
+    //! A value of type \c PPerm.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    //! \complexity
+    //! Linear in degree()
+    template <size_t N, typename Scalar>
+    [[nodiscard]] PPerm<N, Scalar> inverse(PPerm<N, Scalar> const& from) {
+      PPerm<N, Scalar> to(from.degree());
+      inverse(from, to);
+      return to;
+    }
+
+    //! Returns the inverse.
+    //!
+    //! This function returns a newly constructed inverse of \c this.
+    //! The *inverse* of a permutation \f$f\f$ is the permutation \f$g\f$ such
+    //! that \f$fg = gf\f$ is the identity permutation of degree \f$n\f$.
+    //!
+    //! \returns
+    //! A value of type \c PPerm.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    //! \complexity
+    //! Linear in degree()
+    template <size_t N, typename Scalar>
+    void inverse(Perm<N, Scalar> const& from, Perm<N, Scalar>& to);
+
+    // TODO doc
+    template <size_t N, typename Scalar>
+    [[nodiscard]] Perm<N, Scalar> inverse(Perm<N, Scalar> const& from);
+
+  }  // namespace transf
 
   ////////////////////////////////////////////////////////////////////////
   // Adapters
@@ -1932,7 +1837,7 @@ namespace libsemigroups {
   struct IncreaseDegree<T, std::enable_if_t<IsDerivedFromPTransf<T>>> {
     //! Returns \p x->increase_degree_by(\p n).
     inline void operator()(T& x, size_t n) const {
-      return x.increase_degree_by(n);
+      x.increase_degree_by(n);
     }
   };
 
@@ -1950,15 +1855,7 @@ namespace libsemigroups {
   template <size_t N, typename Scalar, typename T>
   struct ImageRightAction<Transf<N, Scalar>, T> {
     //! Stores the image set of \c pt under \c x in \p res.
-    // TODO to tpp
-    void operator()(T& res, T const& pt, Transf<N, Scalar> const& x) const {
-      res.clear();
-      for (auto i : pt) {
-        res.push_back(x[i]);
-      }
-      std::sort(res.begin(), res.end());
-      res.erase(std::unique(res.begin(), res.end()), res.end());
-    }
+    void operator()(T& res, T const& pt, Transf<N, Scalar> const& x) const;
   };
 
   // Fastest, but limited to at most degree 64
@@ -2161,7 +2058,7 @@ namespace libsemigroups {
                     PPerm<N, Scalar> const& pt,
                     PPerm<N, Scalar> const& x) const noexcept {
       res.product_inplace(pt, x);
-      res = res.right_one();
+      res = transf::right_one(res);
     }
   };
 
@@ -2220,7 +2117,7 @@ namespace libsemigroups {
                     PPerm<N, Scalar> const& pt,
                     PPerm<N, Scalar> const& x) const noexcept {
       res.product_inplace(x, pt);
-      res = res.left_one();
+      res = transf::left_one(res);
     }
   };
 
@@ -2243,7 +2140,7 @@ namespace libsemigroups {
     void operator()(T& res, T const& pt, PPerm<N, Scalar> const& x) const {
       //! Stores the inverse image set of \c pt under \c x in \p res.
       static PPerm<N, Scalar> xx({});
-      x.inverse(xx);  // invert x into xx
+      inverse(x, xx);  // invert x into xx
       ImageRightAction<PPerm<N, Scalar>, T>()(res, pt, xx);
     }
   };
@@ -2321,7 +2218,7 @@ namespace libsemigroups {
             x.degree());
       }
       static PPerm<N, Scalar> xx({});
-      x.inverse(xx);
+      inverse(x, xx);
       Lambda<PPerm<N, Scalar>, BitSet<M>>()(res, xx);
     }
   };
@@ -2432,25 +2329,6 @@ namespace libsemigroups {
   template <size_t N>
   using LeastPerm = typename detail::LeastPermHelper<N>::type;
 
-  namespace transf {
-    // TODO doc
-    template <typename Transf, typename Image>
-    void image(Transf const& x, std::vector<Image>& im);
-
-    // TODO doc
-    template <typename Transf>
-    [[nodiscard]] std::vector<typename Transf::point_type>
-    image(Transf const& x);
-
-    // TODO doc
-    template <typename Transf, typename Image>
-    void domain(Transf const& x, std::vector<Image>& im);
-
-    // TODO doc
-    template <typename Transf>
-    [[nodiscard]] std::vector<typename Transf::point_type>
-    domain(Transf const& x);
-  }  // namespace transf
 }  // namespace libsemigroups
 
 #include "transf.tpp"
