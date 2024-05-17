@@ -23,6 +23,7 @@
 // * benchmarks
 // * add some tests for PTransf themselves
 // * allocator
+// * repr
 
 #ifndef LIBSEMIGROUPS_TRANSF_HPP_
 #define LIBSEMIGROUPS_TRANSF_HPP_
@@ -50,20 +51,14 @@
 #include "hpcombi.hpp"    // for HPCombi::Transf16
 #include "types.hpp"      // for SmallestInteger
 
+#include "detail/stl.hpp"  // for is_specialization_of_v
+
 namespace libsemigroups {
 
   //! Empty base class for polymorphism.
   //!
   //! \sa IsDerivedFromPTransf
   struct PTransfPolymorphicBase {};
-
-  namespace detail {
-    template <typename T>
-    struct IsDerivedFromPTransfHelper {
-      static constexpr bool value
-          = std::is_base_of<PTransfPolymorphicBase, T>::value;
-    };
-  }  // namespace detail
 
   //! Helper variable template.
   //!
@@ -73,15 +68,9 @@ namespace libsemigroups {
   //! \tparam T a type.
   template <typename T>
   static constexpr bool IsDerivedFromPTransf
-      = detail::IsDerivedFromPTransfHelper<T>::value;
+      = std::is_base_of_v<PTransfPolymorphicBase, T>;
 
   namespace detail {
-
-    template <typename... Args>
-    struct IsStdArray : std::false_type {};
-
-    template <typename T, size_t N>
-    struct IsStdArray<std::array<T, N>> : std::true_type {};
 
     template <typename T>
     struct IsStaticHelper : std::false_type {};
@@ -93,9 +82,9 @@ namespace libsemigroups {
     //!
     //! This is a class template for partial transformations.
     //!
-    //! \tparam TValueType the type of image values (must be an unsigned integer
+    //! \tparam Point the type of image values (must be an unsigned integer
     //! type).
-    //! \tparam TContainer the type of the container holding the image values.
+    //! \tparam Container the type of the container holding the image values.
     //!
     //! A *partial transformation* \f$f\f$ is just a function defined on a
     //! subset of \f$\{0, 1, \ldots, n - 1\}\f$ for some integer \f$n\f$ called
@@ -104,37 +93,37 @@ namespace libsemigroups {
     //! \ldots, (n - 1)f\}\f$ where the value \ref UNDEFINED is used to
     //! indicate that \f$(i)f\f$ is, you guessed it, undefined (i.e. not among
     //! the points where \f$f\f$ is defined).
-    template <typename TValueType, typename TContainer>
+    template <typename Point, typename Container>
     class PTransfBase : public PTransfPolymorphicBase {
-      static_assert(std::is_integral<TValueType>::value,
-                    "template parameter TValueType must be an integral type");
-      static_assert(!std::numeric_limits<TValueType>::is_signed,
-                    "template parameter TValueType must be unsigned");
+      static_assert(std::is_integral_v<Point>,
+                    "template parameter Point must be an integral type");
+      static_assert(!std::numeric_limits<Point>::is_signed,
+                    "template parameter Point must be unsigned");
 
      public:
       //! Type of the image values.
       //!
       //! Also the template parameter \c Scalar.
-      using value_type = TValueType;
+      using point_type = Point;
 
       //! Type of the underlying container.
       //!
-      //! In this case, this is `std::vector<value_type>`.
-      using container_type = TContainer;
+      //! In this case, this is `std::vector<point_type>`.
+      using container_type = Container;
 
       // Required by python bindings
       //! Returns the value used to represent \"undefined\".
       //!
-      //! This static function returns the value of type \ref value_type used to
+      //! This static function returns the value of type \ref point_type used to
       //! represent an \"undefined\" value.
       //!
       //! \returns
-      //! A value of type \ref value_type.
+      //! A value of type \ref point_type.
       //!
       //! \exception
       //! \noexcept
-      [[nodiscard]] static value_type undef() noexcept {
-        return static_cast<value_type>(UNDEFINED);
+      [[nodiscard]] static point_type undef() noexcept {
+        return static_cast<point_type>(UNDEFINED);
       }
 
       //! Default constructor.
@@ -165,7 +154,7 @@ namespace libsemigroups {
       //!
       //! \warning
       //! No checks on the validity of \p cont are performed.
-      explicit PTransfBase(TContainer&& cont) : _container(std::move(cont)) {}
+      explicit PTransfBase(Container&& cont) : _container(std::move(cont)) {}
 
       //! Construct from container.
       //!
@@ -184,7 +173,7 @@ namespace libsemigroups {
       //!
       //! \warning
       //! No checks on the validity of \p cont are performed.
-      explicit PTransfBase(TContainer const& cont) : _container(cont) {}
+      explicit PTransfBase(Container const& cont) : _container(cont) {}
 
       //! Construct from an initializer list.
       //!
@@ -192,7 +181,7 @@ namespace libsemigroups {
       //! container \p cont as follows: the image of the point \c i under
       //! the partial transformation is the value in position \c i of the
       //! container \p cont. The values in the initializer list must be
-      //! convertible to value_type or equal to \ref UNDEFINED.
+      //! convertible to point_type or equal to \ref UNDEFINED.
       //!
       //! \param cont the initializer list.
       //!
@@ -209,10 +198,10 @@ namespace libsemigroups {
       //! \ref make
       template <typename T>
       explicit PTransfBase(std::initializer_list<T> cont) : PTransfBase() {
-        static_assert(std::is_same<T, Undefined>::value
-                          || std::is_convertible<T, value_type>::value,
+        static_assert(std::is_same_v<T, Undefined>
+                          || std::is_convertible_v<T, point_type>,
                       "the template parameter T must be Undefined or "
-                      "convertible to value_type!");
+                      "convertible to point_type!");
         resize(_container, cont.size());
         std::copy(cont.begin(), cont.end(), _container.begin());
       }
@@ -233,10 +222,11 @@ namespace libsemigroups {
       //!
       //! \complexity
       //! Linear in the size of the container \p cont.
-      template <typename TSubclass, typename TContainerAgain = TContainer>
-      [[nodiscard]] static TSubclass make(TContainerAgain&& cont) {
-        validate_args(std::forward<TContainerAgain>(cont));
-        TSubclass result(std::forward<TContainerAgain>(cont));
+      // TODO to tpp
+      template <typename Subclass, typename ContainerAgain = Container>
+      [[nodiscard]] static Subclass make(ContainerAgain&& cont) {
+        validate_args(std::forward<ContainerAgain>(cont));
+        Subclass result(std::forward<ContainerAgain>(cont));
         validate(result);
         return result;
       }
@@ -245,11 +235,16 @@ namespace libsemigroups {
       //!
       //! \sa
       //! \ref make
-      template <typename TSubclass>
-      [[nodiscard]] static TSubclass
-      make(std::initializer_list<value_type> const& cont) {
-        return PTransfBase::make<TSubclass, std::initializer_list<value_type>>(
+      template <typename Subclass>
+      [[nodiscard]] static Subclass
+      make(std::initializer_list<point_type> const& cont) {
+        return PTransfBase::make<Subclass, std::initializer_list<point_type>>(
             cont);
+      }
+
+      template <typename Subclass>
+      [[nodiscard]] static Subclass make() {
+        return Subclass();
       }
 
       //! Default copy constructor
@@ -386,7 +381,7 @@ namespace libsemigroups {
       //! \param i the point.
       //!
       //! \returns
-      //! A reference to a \ref value_type.
+      //! A reference to a \ref point_type.
       //!
       //! \exceptions
       //! \noexcept
@@ -396,7 +391,7 @@ namespace libsemigroups {
       //!
       //! \warning
       //! No bound checks are performed on \p i.
-      [[nodiscard]] value_type& operator[](size_t i) {
+      [[nodiscard]] point_type& operator[](size_t i) {
         return _container[i];
       }
 
@@ -407,7 +402,7 @@ namespace libsemigroups {
       //! \param i the point.
       //!
       //! \returns
-      //! A const reference to a \ref value_type.
+      //! A const reference to a \ref point_type.
       //!
       //! \exceptions
       //! \noexcept
@@ -417,7 +412,7 @@ namespace libsemigroups {
       //!
       //! \warning
       //! No bound checks are performed on \p i.
-      [[nodiscard]] value_type const& operator[](size_t i) const {
+      [[nodiscard]] point_type const& operator[](size_t i) const {
         return _container[i];
       }
 
@@ -428,13 +423,13 @@ namespace libsemigroups {
       //! \param i the point.
       //!
       //! \returns
-      //! A reference to a \ref value_type.
+      //! A reference to a \ref point_type.
       //!
       //! \throws std::out_of_range if \p i is out of range.
       //!
       //! \complexity
       //! Constant.
-      [[nodiscard]] value_type& at(size_t i) {
+      [[nodiscard]] point_type& at(size_t i) {
         return _container.at(i);
       }
 
@@ -445,13 +440,13 @@ namespace libsemigroups {
       //! \param i the point.
       //!
       //! \returns
-      //! A const reference to a \ref value_type.
+      //! A const reference to a \ref point_type.
       //!
       //! \throws std::out_of_range if \p i is out of range.
       //!
       //! \complexity
       //! Constant.
-      [[nodiscard]] value_type const& at(size_t i) const {
+      [[nodiscard]] point_type const& at(size_t i) const {
         return _container.at(i);
       }
 
@@ -460,13 +455,13 @@ namespace libsemigroups {
       //! Returns a newly constructed partial transformation holding the
       //! product of `*this` and `that`.
       //!
-      //! \tparam TSubclass
+      //! \tparam Subclass
       //! A class derived from libsemigroups::PTransfPolymorphicBase.
       //!
       //! \param that a partial transformation.
       //!
       //! \returns
-      //! A value of type \c TSubclass
+      //! A value of type \c Subclass
       //!
       //! \exceptions
       //! \no_libsemigroups_except_detail
@@ -474,21 +469,21 @@ namespace libsemigroups {
       //! \complexity
       //! Linear in degree().
       // TODO(later) other operators
-      template <typename TSubclass>
-      [[nodiscard]] TSubclass operator*(TSubclass const& that) const {
-        static_assert(IsDerivedFromPTransf<TSubclass>,
-                      "the template parameter TSubclass must be derived from "
+      template <typename Subclass>
+      [[nodiscard]] Subclass operator*(Subclass const& that) const {
+        static_assert(IsDerivedFromPTransf<Subclass>,
+                      "the template parameter Subclass must be derived from "
                       "PTransfPolymorphicBase");
-        TSubclass xy(that.degree());
-        xy.product_inplace(*static_cast<TSubclass const*>(this), that);
+        Subclass xy(that.degree());
+        xy.product_inplace(*static_cast<Subclass const*>(this), that);
         return xy;
       }
 
       //! Type of iterators point to image values.
-      using iterator = typename TContainer::iterator;
+      using iterator = typename Container::iterator;
 
       //! Type of const iterators point to image values.
-      using const_iterator = typename TContainer::const_iterator;
+      using const_iterator = typename Container::const_iterator;
 
       //! Returns a \ref const_iterator (random access
       //! iterator) pointing at the first image value.
@@ -573,9 +568,10 @@ namespace libsemigroups {
       //!
       //! \complexity
       //! Linear in degree().
+      // TODO to tpp
       [[nodiscard]] size_t rank() const {
         auto vals
-            = std::unordered_set<value_type>(this->cbegin(), this->cend());
+            = std::unordered_set<point_type>(this->cbegin(), this->cend());
         return (vals.find(UNDEFINED) == vals.end() ? vals.size()
                                                    : vals.size() - 1);
       }
@@ -592,7 +588,7 @@ namespace libsemigroups {
       //! Linear in degree().
       // not noexcept because Hash<T>::operator() isn't
       [[nodiscard]] size_t hash_value() const {
-        return Hash<TContainer>()(_container);
+        return Hash<Container>()(_container);
       }
 
       //! Swap with another partial transformation.
@@ -626,20 +622,20 @@ namespace libsemigroups {
       //! degree equal to the degree of \c this that fixes every value from \c 0
       //! to degree().
       //!
-      //! \tparam TSubclass
+      //! \tparam Subclass
       //! A class derived from libsemigroups::PTransfPolymorphicBase.
       //!
       //! \returns
-      //! A value of type \c TSubclass.
+      //! A value of type \c Subclass.
       //!
       //! \exceptions
       //! \noexcept
-      template <typename TSubclass>
-      [[nodiscard]] TSubclass identity() const {
-        static_assert(IsDerivedFromPTransf<TSubclass>,
-                      "the template parameter TSubclass must be derived from "
+      template <typename Subclass>
+      [[nodiscard]] Subclass identity() const {
+        static_assert(IsDerivedFromPTransf<Subclass>,
+                      "the template parameter Subclass must be derived from "
                       "PTransfPolymorphicBase");
-        return identity<TSubclass>(degree());
+        return identity<Subclass>(degree());
       }
 
       //! Returns the identity transformation on the given number of points.
@@ -648,64 +644,55 @@ namespace libsemigroups {
       //! degree equal to the degree of \c this that fixes every value from \c 0
       //! to degree().
       //!
-      //! \tparam TSubclass
+      //! \tparam Subclass
       //! A class derived from libsemigroups::PTransfPolymorphicBase.
       //!
       //! \returns
-      //! A value of type \c TSubclass.
+      //! A value of type \c Subclass.
       //!
       //! \exceptions
       //! \noexcept
-      template <typename TSubclass>
-      [[nodiscard]] static TSubclass identity(size_t N) {
-        static_assert(IsDerivedFromPTransf<TSubclass>,
-                      "the template parameter TSubclass must be derived from "
+      template <typename Subclass>
+      [[nodiscard]] static Subclass identity(size_t N) {
+        static_assert(IsDerivedFromPTransf<Subclass>,
+                      "the template parameter Subclass must be derived from "
                       "PTransfPolymorphicBase");
-        TSubclass result(N);
+        Subclass result(N);
         std::iota(result.begin(), result.end(), 0);
         return result;
       }
 
      protected:
       //! No doc
-      template <typename SFINAE = void>
-      static auto resize(container_type& c, size_t N, value_type val = 0)
-          -> std::enable_if_t<detail::IsStdArray<container_type>::value,
-                              SFINAE> {
-        std::fill(c.begin() + N, c.end(), val);
+      // TODO to tpp
+      static void resize(container_type& c, size_t N, point_type val = 0) {
+        if constexpr (detail::is_array_v<container_type>) {
+          std::fill(c.begin() + N, c.end(), val);
+        } else {
+          c.resize(N, val);
+        }
       }
 
       //! No doc
-      template <typename SFINAE = void>
-      static auto resize(container_type& c, size_t N, value_type val = 0)
-          -> std::enable_if_t<!detail::IsStdArray<container_type>::value,
-                              SFINAE> {
-        c.resize(N, val);
-      }
-
-      //! No doc
-      void resize(size_t N, value_type val = 0) {
+      void resize(size_t N, point_type val = 0) {
         resize(_container, N, val);
       }
 
      private:
-      template <typename T, typename SFINAE = void>
-      static auto validate_args(T const& cont)
-          -> std::enable_if_t<detail::IsStdArray<container_type>::value,
-                              SFINAE> {
-        if (cont.size() != std::tuple_size<container_type>::value) {
-          LIBSEMIGROUPS_EXCEPTION(
-              "incorrect container size, expected {}, found {}",
-              uint64_t(std::tuple_size<container_type>::value),
-              uint64_t(cont.size()));
+      // TODO to tpp
+      template <typename T>
+      static void validate_args(T const& cont) {
+        if constexpr (detail::is_array_v<container_type>) {
+          if (cont.size() != std::tuple_size_v<container_type>) {
+            LIBSEMIGROUPS_EXCEPTION(
+                "incorrect container size, expected {}, found {}",
+                std::tuple_size_v<container_type>,
+                cont.size());
+          }
         }
       }
 
-      template <typename T, typename SFINAE = void>
-      static auto validate_args(T const&)
-          -> std::enable_if_t<!detail::IsStdArray<container_type>::value,
-                              SFINAE> {}
-      TContainer _container;
+      Container _container;
     };
   }  // namespace detail
 
@@ -752,21 +739,21 @@ namespace libsemigroups {
     //! Type of the image values.
     //!
     //! Also the template parameter \c Scalar.
-    using value_type = Scalar;
+    using point_type = Scalar;
 
     //! Type of the underlying container.
     //!
-    //! In this case, this is `std::vector<value_type>`.
-    using container_type = std::vector<value_type>;
+    //! In this case, this is `std::vector<point_type>`.
+    using container_type = std::vector<point_type>;
 
     // TODO(later) This is currently undocumentable. The doc is available in
     // PTransfBase but they aren't present in the doxygen xml output.
-    using detail::PTransfBase<value_type, container_type>::PTransfBase;
+    using detail::PTransfBase<point_type, container_type>::PTransfBase;
 
-    //! \copydoc detail::PTransfBase<value_type, container_type>::begin
+    //! \copydoc detail::PTransfBase<point_type, container_type>::begin
     using base_type::begin;
 
-    //! \copydoc detail::PTransfBase<value_type, container_type>::end
+    //! \copydoc detail::PTransfBase<point_type, container_type>::end
     using base_type::end;
 
     //! Returns the degree of a transformation.
@@ -838,22 +825,22 @@ namespace libsemigroups {
     using base_type = detail::PTransfBase<Scalar, std::array<Scalar, N>>;
 
    public:
-    //! \copydoc detail::PTransfBase::value_type
-    using value_type = Scalar;
+    //! \copydoc detail::PTransfBase::point_type
+    using point_type = Scalar;
 
     //! Type of the underlying container.
     //!
-    //! In this case, this is `std::array<value_type, N>`.
+    //! In this case, this is `std::array<point_type, N>`.
     using container_type = std::array<Scalar, N>;
 
     // TODO(later) This is currently undocumentable. The doc is available in
     // PTransfBase but they aren't present in the doxygen xml output.
-    using detail::PTransfBase<value_type, container_type>::PTransfBase;
+    using detail::PTransfBase<point_type, container_type>::PTransfBase;
 
-    //! \copydoc detail::PTransfBase<value_type, container_type>::begin
+    //! \copydoc detail::PTransfBase<point_type, container_type>::begin
     using base_type::begin;
 
-    //! \copydoc detail::PTransfBase<value_type, container_type>::end
+    //! \copydoc detail::PTransfBase<point_type, container_type>::end
     using base_type::end;
 
     //! Default constructor.
@@ -870,6 +857,8 @@ namespace libsemigroups {
       std::fill(begin(), end(), UNDEFINED);
     }
 
+    // TODO doc
+    // TODO to tpp file
     explicit StaticPTransf(size_t n) : StaticPTransf() {
       if (n != N) {
         LIBSEMIGROUPS_EXCEPTION("StaticPTransf has fixed degree {}, cannot "
@@ -879,7 +868,7 @@ namespace libsemigroups {
       }
     }
 
-    //! \copydoc detail::PTransfBase<Scalar,TContainer>::degree
+    //! \copydoc detail::PTransfBase<Scalar,Container>::degree
     [[nodiscard]] constexpr size_t degree() const noexcept {
       return N;
     }
@@ -940,7 +929,11 @@ namespace libsemigroups {
     [[nodiscard]] std::string ptransf_repr(T const&         f,
                                            std::string_view prefix,
                                            std::string_view braces) {
-      // TODO check that braces has size 2
+      if (braces.size() != 2) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "the 3rd argument (braces) must have size 2, found {}",
+            braces.size());
+      }
       return fmt::format("{}({}{}{})",
                          prefix,
                          braces[0],
@@ -1048,7 +1041,7 @@ namespace libsemigroups {
     //! Type of the image values.
     //!
     //! Also the template parameter \c Scalar.
-    using value_type = Scalar;
+    using point_type = Scalar;
 
     //! Type of the underlying container.
     //!
@@ -1057,7 +1050,6 @@ namespace libsemigroups {
 
     using PTransf<N, Scalar>::PTransf;
 
-    //! tESTING
     using base_type::degree;
 
     //! Construct from a container and validate.
@@ -1086,8 +1078,13 @@ namespace libsemigroups {
     //! Construct from a container and validate.
     //!
     //! \sa \ref make
-    [[nodiscard]] static Transf make(std::initializer_list<value_type>&& cont) {
-      return make<std::initializer_list<value_type>>(std::move(cont));
+    [[nodiscard]] static Transf make(std::initializer_list<point_type>&& cont) {
+      return make<std::initializer_list<point_type>>(std::move(cont));
+    }
+
+    // TODO doc
+    [[nodiscard]] static Transf make() {
+      return base_type::template make<Transf>();
     }
 
     //! Multiply two transformations and store the product in \c this.
@@ -1106,12 +1103,13 @@ namespace libsemigroups {
     //! \warning
     //! No checks are made on whether or not the parameters are compatible. If
     //! \p x and \p y have different degrees, then bad things will happen.
+    // TODO to tpp
     void product_inplace(Transf const& x, Transf const& y) {
       LIBSEMIGROUPS_ASSERT(x.degree() == y.degree());
       LIBSEMIGROUPS_ASSERT(x.degree() == this->degree());
       LIBSEMIGROUPS_ASSERT(&x != this && &y != this);
       size_t const n = this->degree();
-      for (value_type i = 0; i < n; ++i) {
+      for (point_type i = 0; i < n; ++i) {
         (*this)[i] = y[x[i]];
       }
     }
@@ -1195,6 +1193,7 @@ namespace libsemigroups {
   //!
   //! \complexity
   //! Linear in the size of the container \c x.degree().
+  // TODO to tpp
   template <size_t N, typename Scalar>
   void validate(Transf<N, Scalar> const& x) {
     size_t const M = x.degree();
@@ -1202,13 +1201,14 @@ namespace libsemigroups {
       if (val >= M) {
         LIBSEMIGROUPS_EXCEPTION("image value out of bounds, expected value in "
                                 "[{}, {}), found {}",
-                                uint64_t(0),
-                                uint64_t(M),
-                                uint64_t(val));
+                                0,
+                                M,
+                                val);
       }
     }
   }
 
+  // TODO to tpp
   template <size_t N, typename Scalar>
   [[nodiscard]] std::string to_string(Transf<N, Scalar> const& f,
                                       std::string_view         braces = "{}") {
@@ -1269,7 +1269,7 @@ namespace libsemigroups {
     //! Type of the image values.
     //!
     //! Also the template parameter \c Scalar.
-    using value_type = Scalar;
+    using point_type = Scalar;
 
     //! Type of the underlying container.
     //!
@@ -1277,7 +1277,7 @@ namespace libsemigroups {
     using container_type = typename base_type::container_type;
 
     // Currently no way to document these
-    using PTransf<N, value_type>::PTransf;
+    using PTransf<N, point_type>::PTransf;
 
     // Currently no way to document these
     using base_type::degree;
@@ -1320,8 +1320,13 @@ namespace libsemigroups {
     //! * any value in \p cont exceeds `cont.size()` and is not equal to
     //!   \ref UNDEFINED.
     //! * there are repeated values in \p cont.
-    [[nodiscard]] static PPerm make(std::initializer_list<value_type>&& cont) {
-      return make<std::initializer_list<value_type>>(std::move(cont));
+    [[nodiscard]] static PPerm make(std::initializer_list<point_type>&& cont) {
+      return make<std::initializer_list<point_type>>(std::move(cont));
+    }
+
+    // TODO doc
+    [[nodiscard]] static PPerm make() {
+      return base_type::template make<PPerm>();
     }
 
     //! Construct from domain, range, and degree, and validate
@@ -1342,8 +1347,9 @@ namespace libsemigroups {
     //! * \p dom and \p ran do not have the same size
     //! * any value in \p dom or \p ran is greater than \p M
     //! * there are repeated entries in \p dom or \p ran.
-    [[nodiscard]] static PPerm make(std::vector<value_type> const& dom,
-                                    std::vector<value_type> const& ran,
+    // TODO to tpp
+    [[nodiscard]] static PPerm make(std::vector<point_type> const& dom,
+                                    std::vector<point_type> const& ran,
                                     size_t const                   M) {
       validate_args(dom, ran, M);
       PPerm result(dom, ran, M);
@@ -1374,6 +1380,7 @@ namespace libsemigroups {
     //! \ref make.
     // Note: we use vectors here not container_type (which might be array),
     // because the length of dom and ran might not equal degree().
+    // TODO to tpp
     template <typename Scalar2>
     PPerm(std::vector<Scalar2> const& dom,
           std::vector<Scalar2> const& ran,
@@ -1409,10 +1416,10 @@ namespace libsemigroups {
     //!
     //! \sa
     //! \ref make.
-    PPerm(std::initializer_list<value_type> dom,
-          std::initializer_list<value_type> ran,
+    PPerm(std::initializer_list<point_type> dom,
+          std::initializer_list<point_type> ran,
           size_t                            M)
-        : PPerm(std::vector<value_type>(dom), std::vector<value_type>(ran), M) {
+        : PPerm(std::vector<point_type>(dom), std::vector<point_type>(ran), M) {
     }
 
     //! Multiply two partial perms and store the product in \c this.
@@ -1431,12 +1438,13 @@ namespace libsemigroups {
     //! \warning
     //! No checks are made on whether or not the parameters are compatible. If
     //! \p x and \p y have different degrees, then bad things will happen.
+    // TODO to tpp
     void product_inplace(PPerm const& x, PPerm const& y) {
       LIBSEMIGROUPS_ASSERT(x.degree() == y.degree());
       LIBSEMIGROUPS_ASSERT(x.degree() == degree());
       LIBSEMIGROUPS_ASSERT(&x != this && &y != this);
       size_t const n = degree();
-      for (value_type i = 0; i < n; ++i) {
+      for (point_type i = 0; i < n; ++i) {
         (*this)[i] = (x[i] == UNDEFINED ? UNDEFINED : y[x[i]]);
       }
     }
@@ -1489,11 +1497,13 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! Linear in degree()
+    // TODO to tpp
+    // TODO to helper
     [[nodiscard]] PPerm right_one() const {
       size_t const n = degree();
       PPerm        result(n);
       std::fill(
-          result.begin(), result.end(), static_cast<value_type>(UNDEFINED));
+          result.begin(), result.end(), static_cast<point_type>(UNDEFINED));
       for (size_t i = 0; i < n; ++i) {
         if ((*this)[i] != UNDEFINED) {
           result[(*this)[i]] = (*this)[i];
@@ -1516,11 +1526,13 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! Linear in degree()
+    // TODO to tpp
+    // TODO to helper
     [[nodiscard]] PPerm left_one() const {
       size_t const n = degree();
       PPerm        result(n);
       std::fill(
-          result.begin(), result.end(), static_cast<value_type>(UNDEFINED));
+          result.begin(), result.end(), static_cast<point_type>(UNDEFINED));
       for (size_t i = 0; i < n; ++i) {
         if ((*this)[i] != UNDEFINED) {
           result[i] = i;
@@ -1561,7 +1573,7 @@ namespace libsemigroups {
     // Put the inverse of this into that
     void inverse(PPerm& that) const {
       that.resize(degree());
-      std::fill(that.begin(), that.end(), static_cast<value_type>(UNDEFINED));
+      std::fill(that.begin(), that.end(), static_cast<point_type>(UNDEFINED));
       for (size_t i = 0; i < degree(); ++i) {
         if ((*this)[i] != UNDEFINED) {
           that[(*this)[i]] = i;
@@ -1570,34 +1582,34 @@ namespace libsemigroups {
     }
 
    private:
-    static void validate_args(std::vector<value_type> const& dom,
-                              std::vector<value_type> const& ran,
+    // TODO to tpp
+    static void validate_args(std::vector<point_type> const& dom,
+                              std::vector<point_type> const& ran,
                               size_t                         deg = N) {
       if (N != 0 && deg != N) {
         // Sanity check that the final argument is compatible with the
         // template param N, if we have a dynamic pperm
         LIBSEMIGROUPS_EXCEPTION(
-            "the 3rd argument is not valid, expected {}, found {}",
-            uint64_t(N),
-            uint64_t(deg));
+            "the 3rd argument is not valid, expected {}, found {}", N, deg);
       } else if (dom.size() != ran.size()) {
         // The next 2 checks just verify that we can safely run the
         // constructor that uses *this[dom[i]] = im[i] for i = 0, ...,
         // dom.size() - 1.
         LIBSEMIGROUPS_EXCEPTION("domain and range size mismatch, domain has "
                                 "size {} but range has size {}",
-                                uint64_t(dom.size()),
-                                uint64_t(ran.size()));
+                                dom.size(),
+                                ran.size());
       } else if (!(dom.empty()
                    || deg > *std::max_element(dom.cbegin(), dom.cend()))) {
         LIBSEMIGROUPS_EXCEPTION(
             "domain value out of bounds, found {}, must be less than {}",
-            uint64_t(*std::max_element(dom.cbegin(), dom.cend())),
-            uint64_t(deg));
+            *std::max_element(dom.cbegin(), dom.cend()),
+            deg);
       }
     }
   };
 
+  // TODO improve
   template <size_t N, typename Scalar>
   [[nodiscard]] std::string to_string(PPerm<N, Scalar> const& f,
                                       std::string_view        braces = "{}") {
@@ -1639,6 +1651,7 @@ namespace libsemigroups {
   ////////////////////////////////////////////////////////////////////////
 
   namespace detail {
+    // TODO to tpp
     template <typename T>
     void validate_no_duplicate_image_values(T const& x) {
       size_t const     deg = x.degree();
@@ -1649,7 +1662,7 @@ namespace libsemigroups {
             LIBSEMIGROUPS_EXCEPTION(
                 "duplicate image value, found {} in position {}, first "
                 "occurrence in position {}",
-                uint64_t(*it),
+                *it,
                 std::distance(x.begin(), it),
                 std::distance(x.begin(), std::find(x.begin(), it, *it)));
           }
@@ -1716,12 +1729,12 @@ namespace libsemigroups {
     //! Type of the image values.
     //!
     //! Also the template parameter \c Scalar.
-    using value_type = Scalar;
+    using point_type = Scalar;
 
     //! Type of the underlying container.
     //!
     //! In this case, this is \c PTransf<N, Scalar>::container_type.
-    using container_type = typename PTransf<N, value_type>::container_type;
+    using container_type = typename PTransf<N, point_type>::container_type;
 
     // Currently no way to document these
     using Transf<N, Scalar>::Transf;
@@ -1752,8 +1765,8 @@ namespace libsemigroups {
 #ifndef PARSED_BY_DOXYGEN
     // We don't document this, because it's basically identical to the
     // function template above, and because it confuses the doc system.
-    [[nodiscard]] static Perm make(std::initializer_list<value_type>&& cont) {
-      return make<std::initializer_list<value_type>>(std::move(cont));
+    [[nodiscard]] static Perm make(std::initializer_list<point_type>&& cont) {
+      return make<std::initializer_list<point_type>>(std::move(cont));
     }
 #endif
 
@@ -1805,6 +1818,7 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! Linear in degree()
+    // TODO to tpp
     [[nodiscard]] Perm inverse() const {
       size_t const n = degree();
       Perm         id(n);
@@ -1813,7 +1827,7 @@ namespace libsemigroups {
       }
       return id;
     }
-    // TODO(later) inverse(that)
+    // TODO inverse(that)
   };
 
   ////////////////////////////////////////////////////////////////////////
@@ -1888,12 +1902,10 @@ namespace libsemigroups {
     }
   };
 
-  template <typename TSubclass>
-  struct Product<TSubclass, std::enable_if_t<IsDerivedFromPTransf<TSubclass>>> {
-    void operator()(TSubclass&       xy,
-                    TSubclass const& x,
-                    TSubclass const& y,
-                    size_t = 0) {
+  template <typename Subclass>
+  struct Product<Subclass, std::enable_if_t<IsDerivedFromPTransf<Subclass>>> {
+    void
+    operator()(Subclass& xy, Subclass const& x, Subclass const& y, size_t = 0) {
       xy.product_inplace(x, y);
     }
   };
@@ -1938,6 +1950,7 @@ namespace libsemigroups {
   template <size_t N, typename Scalar, typename T>
   struct ImageRightAction<Transf<N, Scalar>, T> {
     //! Stores the image set of \c pt under \c x in \p res.
+    // TODO to tpp
     void operator()(T& res, T const& pt, Transf<N, Scalar> const& x) const {
       res.clear();
       for (auto i : pt) {
@@ -1956,6 +1969,7 @@ namespace libsemigroups {
   template <size_t N, typename Scalar, size_t M>
   struct ImageRightAction<Transf<N, Scalar>, BitSet<M>> {
     //! Stores the image set of \c pt under \c x in \p res.
+    // TODO to tpp
     void operator()(BitSet<M>&               res,
                     BitSet<M> const&         pt,
                     Transf<N, Scalar> const& x) const {
@@ -1973,6 +1987,7 @@ namespace libsemigroups {
   //! \sa ImageLeftAction
   template <size_t N, typename Scalar, typename T>
   struct ImageLeftAction<Transf<N, Scalar>, T> {
+    // TODO to tpp
     //! Stores the image of \p pt under the left action of \p x in \p res.
     void operator()(T& res, T const& pt, Transf<N, Scalar> const& x) const {
       res.clear();
@@ -2034,6 +2049,7 @@ namespace libsemigroups {
     // StaticVector1::resize is).
     //! Modifies \p res to contain the image set of \p x; that is, \p res[i]
     //! will be \c true if and only if `x[j] = i` for some \f$j\f$.
+    // TODO to tpp
     void operator()(T& res, Transf<N, Scalar> const& x) const {
       res.clear();
       res.resize(x.degree());
@@ -2054,6 +2070,7 @@ namespace libsemigroups {
     // not noexcept because it can throw
     //! Modifies \p res to contain the image set of \p x; that is, \p res[i]
     //! will be \c true if and only if `x[j] = i` for some \f$j\f$.
+    // TODO to tpp
     void operator()(BitSet<M>& res, Transf<N, Scalar> const& x) const {
       if (x.degree() > M) {
         LIBSEMIGROUPS_EXCEPTION(
@@ -2088,6 +2105,7 @@ namespace libsemigroups {
     //! \no_libsemigroups_except
     // not noexcept because std::vector::resize isn't (although
     // StaticVector1::resize is).
+    // TODO to tpp
     void operator()(T& res, Transf<N, Scalar> const& x) const {
       res.clear();
       res.resize(x.degree());
@@ -2156,6 +2174,7 @@ namespace libsemigroups {
   template <size_t N, typename Scalar, typename T>
   struct ImageRightAction<PPerm<N, Scalar>, T> {
     //! Stores the image set of \c pt under \c x in \p res.
+    // TODO to tpp
     void operator()(T& res, T const& pt, PPerm<N, Scalar> const& x) const {
       res.clear();
       for (auto i : pt) {
@@ -2175,6 +2194,7 @@ namespace libsemigroups {
   template <size_t N, typename Scalar, size_t M>
   struct ImageRightAction<PPerm<N, Scalar>, BitSet<M>> {
     //! Stores the image set of \c pt under \c x in \p res.
+    // TODO to tpp
     void operator()(BitSet<M>&              res,
                     BitSet<M> const&        pt,
                     PPerm<N, Scalar> const& x) const {
@@ -2267,12 +2287,13 @@ namespace libsemigroups {
   struct Lambda<PPerm<N, Scalar>, BitSet<M>> {
     //! Modifies \p res to contain the image set of \p x; that is, \p res[i]
     //! will be \c true if and only if `x[j] = i` for some \f$j\f$.
+    // TODO to tpp
     void operator()(BitSet<M>& res, PPerm<N, Scalar> const& x) const {
       if (x.degree() > M) {
         LIBSEMIGROUPS_EXCEPTION(
             "expected partial perm of degree at most {}, found {}",
-            static_cast<uint64_t>(M),
-            static_cast<uint64_t>(x.degree()));
+            M,
+            x.degree());
       }
       res.reset();
       for (size_t i = 0; i < x.degree(); ++i) {
@@ -2291,6 +2312,7 @@ namespace libsemigroups {
   struct Rho<PPerm<N, Scalar>, BitSet<M>> {
     //! Modifies \p res to contain the domain of \p x; that is, \p res[i]
     //! will be \c true if and only if `x[i] != UNDEFINED`.
+    // TODO to tpp
     void operator()(BitSet<M>& res, PPerm<N, Scalar> const& x) const {
       if (x.degree() > M) {
         LIBSEMIGROUPS_EXCEPTION(
@@ -2329,7 +2351,7 @@ namespace libsemigroups {
   template <size_t N, typename Scalar, typename T>
   struct ImageRightAction<Perm<N, Scalar>,
                           T,
-                          std::enable_if_t<std::is_integral<T>::value>> {
+                          std::enable_if_t<std::is_integral_v<T>>> {
     //! Stores the image of \p pt under the action of \p p in \p res.
     void operator()(T&                     res,
                     T const&               pt,
@@ -2352,8 +2374,7 @@ namespace libsemigroups {
     template <size_t N>
     struct LeastTransfHelper {
 #ifdef LIBSEMIGROUPS_HPCOMBI_ENABLED
-      using type = typename std::
-          conditional<N >= 17, Transf<N>, HPCombi::Transf16>::type;
+      using type = std::conditional_t<N >= 17, Transf<N>, HPCombi::Transf16>;
 #else
       using type = Transf<N>;
 #endif
@@ -2362,8 +2383,7 @@ namespace libsemigroups {
     template <size_t N>
     struct LeastPPermHelper {
 #ifdef LIBSEMIGROUPS_HPCOMBI_ENABLED
-      using type =
-          typename std::conditional<N >= 17, PPerm<N>, HPCombi::PPerm16>::type;
+      using type = std::conditional_t<N >= 17, PPerm<N>, HPCombi::PPerm16>;
 #else
       using type = PPerm<N>;
 #endif
@@ -2372,8 +2392,7 @@ namespace libsemigroups {
     template <size_t N>
     struct LeastPermHelper {
 #ifdef LIBSEMIGROUPS_HPCOMBI_ENABLED
-      using type =
-          typename std::conditional<N >= 17, Perm<N>, HPCombi::Perm16>::type;
+      using type = std::conditional_t<N >= 17, Perm<N>, HPCombi::Perm16>;
 #else
       using type = Perm<N>;
 #endif
@@ -2420,7 +2439,7 @@ namespace libsemigroups {
 
     // TODO doc
     template <typename Transf>
-    [[nodiscard]] std::vector<typename Transf::value_type>
+    [[nodiscard]] std::vector<typename Transf::point_type>
     image(Transf const& x);
 
     // TODO doc
@@ -2429,7 +2448,7 @@ namespace libsemigroups {
 
     // TODO doc
     template <typename Transf>
-    [[nodiscard]] std::vector<typename Transf::value_type>
+    [[nodiscard]] std::vector<typename Transf::point_type>
     domain(Transf const& x);
   }  // namespace transf
 }  // namespace libsemigroups
