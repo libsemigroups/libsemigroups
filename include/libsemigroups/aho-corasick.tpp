@@ -23,11 +23,11 @@ namespace libsemigroups {
   AhoCorasick::index_type AhoCorasick::add_word(Iterator first, Iterator last) {
     auto last_index = traverse_trie(first, last);
     if (last_index != UNDEFINED && _all_nodes[last_index].is_terminal()) {
-      LIBSEMIGROUPS_EXCEPTION(
-          "word already exists in trie. Cannot add ({}, {}) since it already "
-          "corresponds to a terminal node",
-          *first,
-          *last);
+      LIBSEMIGROUPS_EXCEPTION("the word {} given by the arguments [first, "
+                              "last) already belongs to the trie",
+                              word_type(first, last));
+      // Look in presentations and do one thing for chars and one thing for
+      // letter type.
     }
     return add_word_no_checks(first, last);
   }
@@ -56,16 +56,16 @@ namespace libsemigroups {
   AhoCorasick::index_type AhoCorasick::rm_word(Iterator first, Iterator last) {
     auto last_index = traverse_trie(first, last);
     if (last_index == UNDEFINED) {
-      LIBSEMIGROUPS_EXCEPTION("cannot remove ({}, {}), as it does not "
+      LIBSEMIGROUPS_EXCEPTION("cannot remove the word {} given by the "
+                              "arguments (first, last], as it does not "
                               "correspond to a node in the trie",
-                              *first,
-                              *last);
+                              word_type(first, last));
     }
     if (!_all_nodes[last_index].is_terminal()) {
-      LIBSEMIGROUPS_EXCEPTION("cannot remove ({}, {}), as it does not "
+      LIBSEMIGROUPS_EXCEPTION("cannot remove the word {} given by the "
+                              "arguments (first, last], as it does not "
                               "correspond to a terminal node in the trie",
-                              *first,
-                              *last);
+                              word_type(first, last));
     }
     return rm_word_no_checks(first, last);
   }

@@ -41,6 +41,7 @@
 // any given node is contained within. This could be updated easily when adding
 // new rules, but more care would be needed when removing rules.
 // TODO(0) change names from set_X and get_X to set(val) and get()
+// TODO(2) add something that gets a ranges element to find all terminal nodes.
 namespace libsemigroups {
 
   //! \brief For an implementation of the Aho-Corasick algorithm
