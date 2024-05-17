@@ -187,6 +187,8 @@ namespace libsemigroups {
 
     [[nodiscard]] index_type child(index_type  parent,
                                    letter_type letter) const {
+      LIBSEMIGROUPS_ASSERT(parent < _all_nodes.size());
+      LIBSEMIGROUPS_ASSERT(_active_nodes_index.count(parent) == 1);
       return _all_nodes[parent].child(letter);
     }
 
