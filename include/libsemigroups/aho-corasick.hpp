@@ -91,6 +91,10 @@ namespace libsemigroups {
 
       Node& init(index_type parent, letter_type a) noexcept;
 
+      Node& init() noexcept {
+        return init(UNDEFINED, UNDEFINED);
+      }
+
       [[nodiscard]] index_type child(letter_type a) const;
 
       [[nodiscard]] size_t height() const noexcept {
