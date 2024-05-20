@@ -42,7 +42,8 @@ namespace libsemigroups {
       if (next != UNDEFINED) {
         current = next;
       } else {
-        next = new_active_node(current, *it);  // index of next node added
+        next = new_active_node_no_checks(current,
+                                         *it);  // index of next node added
         // set next as child of parent
         _all_nodes[current].children()[*it] = next;
         current                             = next;
@@ -83,13 +84,13 @@ namespace libsemigroups {
     _valid_links       = false;
     auto parent_index  = _all_nodes[last_index].parent();
     auto parent_letter = *(last - 1);
-    deactivate_node(last_index);
+    deactivate_node_no_checks(last_index);
     while (_all_nodes[parent_index].number_of_children() == 1
            && parent_index != root) {
       last_index    = parent_index;
       parent_index  = _all_nodes[last_index].parent();
       parent_letter = _all_nodes[last_index].parent_letter();
-      deactivate_node(last_index);
+      deactivate_node_no_checks(last_index);
     }
     _all_nodes[parent_index].children().erase(parent_letter);
     return rule_index;
@@ -110,13 +111,14 @@ namespace libsemigroups {
 
   namespace aho_corasick {
     template <typename Iterator>
-    [[nodiscard]] AhoCorasick::index_type traverse_from(AhoCorasick const& ac,
-                                                        index_type start,
-                                                        Iterator   first,
-                                                        Iterator   last) {
+    [[nodiscard]] AhoCorasick::index_type
+    traverse_from_no_checks(AhoCorasick const& ac,
+                            index_type         start,
+                            Iterator           first,
+                            Iterator           last) {
       index_type current = start;
       for (auto it = first; it != last; ++it) {
-        current = ac.traverse(current, *it);
+        current = ac.traverse_no_checks(current, *it);
       }
       return current;
     }

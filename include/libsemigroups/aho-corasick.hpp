@@ -40,7 +40,8 @@
 // overlap/confluence checking. One compromise is to have a pointer to the rules
 // any given node is contained within. This could be updated easily when adding
 // new rules, but more care would be needed when removing rules.
-// TODO(0) change names from set_X and get_X to set(val) and get()
+// TODO(1) change names from set_X and get_X to X(val) and X(). e.g.
+// set_suffix_link('a') -> suffix_link('a')
 // TODO(2) add something that gets a ranges element to find all terminal nodes.
 namespace libsemigroups {
 
@@ -172,30 +173,78 @@ namespace libsemigroups {
     template <typename Iterator>
     index_type rm_word_no_checks(Iterator first, Iterator last);
 
-    [[nodiscard]] index_type traverse(index_type current, letter_type a) const;
+    [[nodiscard]] index_type traverse_no_checks(index_type  current,
+                                                letter_type a) const;
+
+    [[nodiscard]] index_type traverse(index_type current, letter_type a) const {
+      validate_active_node_index(current);
+      return traverse_no_checks(current, a);
+    }
 
     // TODO(2) template to accept Iterator not word_type&
-    void signature(word_type& w, index_type i) const;
+    void signature_no_checks(word_type& w, index_type i) const;
 
-    [[nodiscard]] size_t height(index_type i) const;
+    void signature(word_type& w, index_type i) const {
+      validate_active_node_index(i);
+      signature_no_checks(w, i);
+    }
 
-    [[nodiscard]] index_type suffix_link(index_type current) const;
+    [[nodiscard]] size_t height_no_checks(index_type i) const;
 
-    [[nodiscard]] Node const& node(index_type i) const {
+    [[nodiscard]] size_t height(index_type i) const {
+      validate_active_node_index(i);
+      return height_no_checks(i);
+    }
+
+    [[nodiscard]] index_type suffix_link_no_checks(index_type current) const;
+
+    [[nodiscard]] index_type suffix_link(index_type current) const {
+      validate_active_node_index(current);
+      return suffix_link_no_checks(current);
+    }
+
+    [[nodiscard]] Node const& node_no_checks(index_type i) const {
+      LIBSEMIGROUPS_ASSERT(parent < _all_nodes.size());
       return _all_nodes.at(i);
     }
 
-    [[nodiscard]] index_type child(index_type  parent,
-                                   letter_type letter) const {
+    [[nodiscard]] Node const& node(index_type i) const {
+      validate_node_index(i);
+      return _all_nodes.at(i);
+    }
+
+    [[nodiscard]] index_type child_no_checks(index_type  parent,
+                                             letter_type letter) const {
       LIBSEMIGROUPS_ASSERT(parent < _all_nodes.size());
       LIBSEMIGROUPS_ASSERT(_active_nodes_index.count(parent) == 1);
       return _all_nodes[parent].child(letter);
     }
 
-   private:
-    [[nodiscard]] index_type new_active_node(index_type parent, letter_type a);
+    [[nodiscard]] index_type child(index_type  parent,
+                                   letter_type letter) const {
+      validate_active_node_index(parent);
+      return _all_nodes[parent].child(letter);
+    }
 
-    void deactivate_node(index_type i);
+    void validate_node_index(index_type i) const;
+
+    void validate_active_node_index(index_type i) const;
+
+   private:
+    [[nodiscard]] index_type new_active_node_no_checks(index_type  parent,
+                                                       letter_type a);
+
+    [[nodiscard]] index_type new_active_node(index_type parent, letter_type a) {
+      validate_active_node_index(parent);
+      return new_active_node_no_checks(parent, a);
+    }
+
+    void deactivate_node_no_checks(index_type i);
+
+    void deactivate_node(index_type i) {
+      validate_active_node_index(i);
+      deactivate_node_no_checks(i);
+    }
 
     template <typename Iterator>
     [[nodiscard]] index_type traverse_trie(Iterator first, Iterator last) const;
@@ -233,10 +282,34 @@ namespace libsemigroups {
     }
 
     template <typename Iterator>
+    [[nodiscard]] index_type traverse_from_no_checks(AhoCorasick const& ac,
+                                                     index_type         start,
+                                                     Iterator           first,
+                                                     Iterator           last);
+
+    template <typename Letter>
+    [[nodiscard]] inline index_type
+    traverse_from_no_checks(AhoCorasick const& ac,
+                            index_type         start,
+                            Letter const&      w) {
+      return ac.traverse_no_checks(start, w);
+    }
+
+    [[nodiscard]] inline index_type
+    traverse_from_no_checks(AhoCorasick const& ac,
+                            index_type         start,
+                            word_type const&   w) {
+      return traverse_from_no_checks(ac, start, w.cbegin(), w.cend());
+    }
+
+    template <typename Iterator>
     [[nodiscard]] index_type traverse_from(AhoCorasick const& ac,
                                            index_type         start,
                                            Iterator           first,
-                                           Iterator           last);
+                                           Iterator           last) {
+      ac.validate_active_node_index(start);
+      return traverse_from_no_checks(ac, start, first, last);
+    }
 
     template <typename Letter>
     [[nodiscard]] inline index_type traverse_from(AhoCorasick const& ac,
@@ -255,7 +328,7 @@ namespace libsemigroups {
     [[nodiscard]] index_type traverse(AhoCorasick const& ac,
                                       Iterator           first,
                                       Iterator           last) {
-      return traverse_from(ac, AhoCorasick::root, first, last);
+      return traverse_from_no_checks(ac, AhoCorasick::root, first, last);
     }
 
     template <typename Word>
