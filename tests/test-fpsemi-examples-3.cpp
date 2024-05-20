@@ -20,13 +20,16 @@
 
 // #define CATCH_CONFIG_ENABLE_PAIR_STRINGMAKER
 
-#include "catch.hpp"      // for REQUIRE, REQUIRE_NOTHROW, REQUIRE_THROWS_AS
+#include <cstddef>  // for size_t
+
+#include "catch.hpp"      // for StringRef, SourceLineInfo
 #include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 
-#include "libsemigroups/fpsemi-examples.hpp"  // for the presentations
+#include "libsemigroups/fpsemi-examples.hpp"  // for not_symmetric_group
 #include "libsemigroups/sims.hpp"             // for Sims1
-#include "libsemigroups/types.hpp"            // for word_type
+#include "libsemigroups/types.hpp"            // for tril
 
+#include "libsemigroups/detail/fmt.hpp"     // for format, print
 #include "libsemigroups/detail/report.hpp"  // for ReportGuard
 
 namespace libsemigroups {

@@ -954,7 +954,12 @@ WARN_LOGFILE           =
 
 INPUT = "../include/libsemigroups" \
         "../README.md"             \
-        "install.md"
+        "install.md"               \
+        "Congruences.md"           \
+        "Words.md"                 \
+        "WordGraphs.md"            \
+        "KnuthBendix.md" \
+        "fpsemi-examples.md"
 
 # This tag can be used to specify the character encoding of the source files
 # that doxygen parses. Internally doxygen uses the UTF-8 encoding. Doxygen uses

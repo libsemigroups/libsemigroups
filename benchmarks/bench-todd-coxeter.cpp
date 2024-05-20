@@ -230,7 +230,7 @@ namespace libsemigroups {
 
   using fpsemigroup::dual_symmetric_inverse_monoid;
   using fpsemigroup::orientation_preserving_monoid;
-  using fpsemigroup::orientation_reversing_monoid;
+  using fpsemigroup::orientation_preserving_reversing_monoid;
   using fpsemigroup::partition_monoid;
   using fpsemigroup::singular_brauer_monoid;
   using fpsemigroup::stellar_monoid;
@@ -268,7 +268,7 @@ namespace libsemigroups {
         "OP_n",
         3,
         9,
-        orientation_preserving_monoid,
+        [](size_t n) { return orientation_preserving_monoid(n); },
         "orientation_preserving_monoid",
         strategies,
         DoNothing);
@@ -305,7 +305,7 @@ namespace libsemigroups {
   }
 
   ////////////////////////////////////////////////////////////////////////
-  // 2. orientation_reversing_monoid
+  // 2. orientation_preserving_reversing_monoid
   ////////////////////////////////////////////////////////////////////////
 
   namespace orientation_reversing {
@@ -334,44 +334,45 @@ namespace libsemigroups {
         "OR_n",
         3,
         8,
-        orientation_reversing_monoid,
-        "orientation_reversing_monoid",
+        [](size_t n) { return orientation_preserving_reversing_monoid(n); },
+        "orientation_preserving_reversing_monoid",
         strategies,
         DoNothing);
   }  // namespace orientation_reversing
 
   // Approx 9s (2021 - MacBook Air M1 - 8GB RAM)
-  TEST_CASE("orientation_reversing_monoid(9) - hlt",
-            "[paper][orientation_reversing_monoid][n=9][hlt]") {
-    benchmark_todd_coxeter_single(434'835, orientation_reversing_monoid(9), 9);
+  TEST_CASE("orientation_preserving_reversing_monoid(9) - hlt",
+            "[paper][orientation_preserving_reversing_monoid][n=9][hlt]") {
+    benchmark_todd_coxeter_single(
+        434'835, orientation_preserving_reversing_monoid(9), 9);
   }
 
   // Approx 90s (2021 - MacBook Air M1 - 8GB RAM)
-  TEST_CASE("orientation_reversing_monoid(10) - hlt",
-            "[paper][orientation_reversing_monoid][n=10][hlt]") {
+  TEST_CASE("orientation_preserving_reversing_monoid(10) - hlt",
+            "[paper][orientation_preserving_reversing_monoid][n=10][hlt]") {
     benchmark_todd_coxeter_single(
-        1'843'320, orientation_reversing_monoid(10), 10);
+        1'843'320, orientation_preserving_reversing_monoid(10), 10);
   }
 
   // ?? (2021 - MacBook Air M1 - 8GB RAM)
-  TEST_CASE("orientation_reversing_monoid(11) - hlt",
-            "[paper][orientation_reversing_monoid][n=11][hlt]") {
+  TEST_CASE("orientation_preserving_reversing_monoid(11) - hlt",
+            "[paper][orientation_preserving_reversing_monoid][n=11][hlt]") {
     benchmark_todd_coxeter_single(
-        7'753'471, orientation_reversing_monoid(11), 11);
+        7'753'471, orientation_preserving_reversing_monoid(11), 11);
   }
 
   // ?? (2021 - MacBook Air M1 - 8GB RAM)
-  TEST_CASE("orientation_reversing_monoid(12) - hlt",
-            "[paper][orientation_reversing_monoid][n=12][hlt]") {
+  TEST_CASE("orientation_preserving_reversing_monoid(12) - hlt",
+            "[paper][orientation_preserving_reversing_monoid][n=12][hlt]") {
     benchmark_todd_coxeter_single(
-        32'440'884, orientation_reversing_monoid(12), 12);
+        32'440'884, orientation_preserving_reversing_monoid(12), 12);
   }
 
   // ?? (2021 - MacBook Air M1 - 8GB RAM)
-  // TEST_CASE("orientation_reversing_monoid(13) - hlt",
-  //           "[paper][orientation_reversing_monoid][n=13][hlt]") {
+  // TEST_CASE("orientation_preserving_reversing_monoid(13) - hlt",
+  //           "[paper][orientation_preserving_reversing_monoid][n=13][hlt]") {
   //   benchmark_todd_coxeter_single(
-  //       135'195'307, orientation_reversing_monoid(13), 13);
+  //       135'195'307, orientation_preserving_reversing_monoid(13), 13);
   // }
 
   ////////////////////////////////////////////////////////////////////////
@@ -529,7 +530,7 @@ namespace libsemigroups {
         "J_n",
         3,
         14,
-        temperley_lieb_monoid,
+        [](size_t n) { return temperley_lieb_monoid(n); },
         "temperley_lieb_monoid",
         strategies,
         DoNothing);
@@ -575,7 +576,7 @@ namespace libsemigroups {
         "B_n\\setminus S_n",
         3,
         7,
-        singular_brauer_monoid,
+        [](size_t n) { return singular_brauer_monoid(n); },
         "singular_brauer_monoid",
         strategies,
         DoNothing);
@@ -641,7 +642,7 @@ namespace libsemigroups {
         "\\operatorname{Stylic}(n)",
         3,
         10,
-        stylic_monoid,
+        [](size_t n) { return stylic_monoid(n); },
         "stylic_monoid",
         strategies,
         DoNothing);
@@ -696,7 +697,7 @@ namespace libsemigroups {
         "\\operatorname{Stellar}(n)",
         3,
         9,
-        stellar_monoid,
+        [](size_t n) { return stellar_monoid(n); },
         "stellar_monoid",
         strategies,
         DoNothing);

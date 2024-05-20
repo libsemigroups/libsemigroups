@@ -19,21 +19,37 @@
 // functions. The presentations here define not necessarily finite semigroups,
 // and we use KnuthBendix in testing them.
 
-#include "libsemigroups/constants.hpp"
 #define CATCH_CONFIG_ENABLE_PAIR_STRINGMAKER
 
-#include "catch.hpp"      // for REQUIRE, REQUIRE_NOTHROW, REQUIRE_THROWS_AS
+#include <algorithm>      // for max, next_permutation
+#include <chrono>         // for operator-
+#include <cstddef>        // for size_t
+#include <list>           // for operator!=
+#include <string>         // for basic_string, operator+
+#include <unordered_map>  // for unordered_map, operator==
+#include <utility>        // for pair
+#include <vector>         // for vector, operator==
+
+#include "catch.hpp"      // for StringRef, SourceLineInfo
 #include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 
-#include "libsemigroups/fpsemi-examples.hpp"  // for the presentations
-#include "libsemigroups/knuth-bendix.hpp"     // for KnuthBendix
+#include "libsemigroups/constants.hpp"        // for operator==, operator!=
+#include "libsemigroups/fpsemi-examples.hpp"  // for not_renner_type_D_monoid
+#include "libsemigroups/knuth-bendix.hpp"     // for KnuthBendix, to_present...
 #include "libsemigroups/obvinf.hpp"           // for is_obviously_infinite
-#include "libsemigroups/types.hpp"            // for word_type
-#include "libsemigroups/words.hpp"            // for literals
+#include "libsemigroups/paths.hpp"            // for ReversiblePaths
+#include "libsemigroups/presentation.hpp"     // for longest_rule_length
+#include "libsemigroups/ranges.hpp"           // for operator|, to_vector
+#include "libsemigroups/rewriters.hpp"        // for RewriteTrie
+#include "libsemigroups/to-presentation.hpp"  // for to_presentation
+#include "libsemigroups/types.hpp"            // for congruence_kind, word_type
+#include "libsemigroups/word-graph.hpp"       // for is_complete
+#include "libsemigroups/words.hpp"            // for operator""_w, to_string
 
-#include "libsemigroups/detail/report.hpp"  // for ReportGuard
-
-#include "libsemigroups/ranges.hpp"
+#include "libsemigroups/detail/eigen.hpp"  // // for DenseBase::row, DenseBa...
+#include "libsemigroups/detail/fmt.hpp"    // for format, print
+#include "libsemigroups/detail/iterator.hpp"  // for operator+
+#include "libsemigroups/detail/report.hpp"    // for ReportGuard
 
 namespace libsemigroups {
 

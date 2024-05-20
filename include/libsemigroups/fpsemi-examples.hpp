@@ -28,7 +28,12 @@
 #include "presentation.hpp"  // for Presentation
 #include "types.hpp"         // for relation_type
 
+// TODO: Run include-what-you-use on this file (I (Murray) couldn't)
+
 namespace libsemigroups {
+
+  //! This namespace contains functions which give presentations for some
+  //! finitely presented semigroups and monoids.
   namespace fpsemigroup {
 
     // The values in this enum class are used to specify the authors of a
@@ -36,38 +41,39 @@ namespace libsemigroups {
     // authors, values of this type can be passed as an argument to disambiguate
     // which presentation is wanted.
     enum class author : uint64_t {
-      Machine    = 0,
-      Aizenstat  = 1,
-      Burnside   = 2,
-      Carmichael = 4,
-      Coxeter    = 8,
-      Easdown    = 16,
-      East       = 32,
-      Fernandes  = 64,
-      FitzGerald = 128,
-      Gay        = 262'144,
-      Godelle    = 256,
-      Guralnick  = 512,
-      Iwahori    = 1024,
-      Kantor     = 2048,
-      Kassabov   = 4096,
-      Lubotzky   = 8192,
-      Miller     = 16'384,
-      Moore      = 32'768,
-      Moser      = 65'536,
-      Sutov      = 131'072,
+      Any        = 0,
+      Machine    = 1,
+      Aizenstat  = 2,
+      Burnside   = 4,
+      Carmichael = 8,
+      Coxeter    = 16,
+      Easdown    = 32,
+      East       = 64,
+      Fernandes  = 128,
+      FitzGerald = 256,
+      Gay        = 512,
+      Godelle    = 1024,
+      Guralnick  = 2048,
+      Iwahori    = 4096,
+      Kantor     = 8192,
+      Kassabov   = 16'384,
+      Lubotzky   = 32'768,
+      Miller     = 65'536,
+      Moore      = 131'072,
+      Moser      = 262'144,
+      Sutov      = 524'288,
     };
 
     //! This operator can be used arbitrarily to combine author values (see \ref
     //! author).
-    inline author operator+(author auth1, author auth2) {
+    [[nodiscard]] inline author operator+(author auth1, author auth2) {
       return static_cast<author>(static_cast<uint64_t>(auth1)
                                  + static_cast<uint64_t>(auth2));
     }
 
     //! A presentation for the stellar monoid.
     //!
-    //! Returns a vector of relations giving a semigroup presentation defining
+    //! Returns a monoid presentation defining
     //! the stellar monoid with `l` generators, as in Theorem 4.39 of
     //! [10.48550/arXiv.1910.11740][].
     //!
@@ -78,11 +84,13 @@ namespace libsemigroups {
     //! \throws LibsemigroupsException if `l < 2`
     //!
     //! [10.48550/arXiv.1910.11740]: https://doi.org/10.48550/arXiv.1910.11740
-    Presentation<word_type> stellar_monoid(size_t l);
+    [[nodiscard]] Presentation<word_type> stellar_monoid(size_t l,
+                                                         author val
+                                                         = author::Any);
 
     //! A presentation for the dual symmetric inverse monoid.
     //!
-    //! Returns a vector of relations giving a semigroup presentation defining
+    //! Returns a monoid presentation defining
     //! the dual symmetric inverse monoid of degree `n`. The argument `val`
     //! determines the specific presentation which is returned. The options are:
     //! * `author::Easdown + author::East + author::FitzGerald` (from Section 3
@@ -100,13 +108,13 @@ namespace libsemigroups {
     //! `author::Easdown + author::East + author::FitzGerald`
     //!
     //! [10.48550/arxiv.0707.2439]: https://doi.org/10.48550/arxiv.0707.2439
-    Presentation<word_type> dual_symmetric_inverse_monoid(
+    [[nodiscard]] Presentation<word_type> dual_symmetric_inverse_monoid(
         size_t n,
         author val = author::Easdown + author::East + author::FitzGerald);
 
     //! A presentation for the uniform block bijection monoid.
     //!
-    //! Returns a vector of relations giving a semigroup presentation defining
+    //! Returns a monoid presentation defining
     //! the uniform block bijection monoid of degree `n`. The argument `val`
     //! determines the specific presentation which is returned. The only option
     //! is:
@@ -123,12 +131,12 @@ namespace libsemigroups {
     //! \throws LibsemigroupsException if `val` is not `author::FitzGerald`
     //!
     //! [10.1017/s0004972700037692]: https://doi.org/10.1017/s0004972700037692
-    Presentation<word_type>
+    [[nodiscard]] Presentation<word_type>
     uniform_block_bijection_monoid(size_t n, author val = author::FitzGerald);
 
     //! A presentation for the partition monoid.
     //!
-    //! Returns a vector of relations giving a semigroup presentation defining
+    //! Returns a presentation defining
     //! the partition monoid of degree `n`. The argument `val` determines the
     //! specific presentation which is returned. The options are:
     //! * `author::Machine`
@@ -136,6 +144,9 @@ namespace libsemigroups {
     //! [10.1016/j.jalgebra.2011.04.008][])
     //!
     //! The default for `val` is `author::East`.
+    //!
+    //! Note that `author::East` returns a monoid presentation, and
+    //! `author::Machine` returns a semigroup presentation.
     //!
     //! \param n the degree
     //! \param val the author of the presentation
@@ -147,12 +158,13 @@ namespace libsemigroups {
     //!
     //! [10.1016/j.jalgebra.2011.04.008]:
     //! https://doi.org/10.1016/j.jalgebra.2011.04.008
-    Presentation<word_type> partition_monoid(size_t n,
-                                             author val = author::East);
+    [[nodiscard]] Presentation<word_type> partition_monoid(size_t n,
+                                                           author val
+                                                           = author::East);
 
     //! A presentation for the singular part of the Brauer monoid.
     //!
-    //! Returns a vector of relations giving a semigroup presentation for the
+    //! Returns a monoid presentation for the
     //! singular part of the Brauer monoid of degree `n`, as in Theorem 5 of
     //! [10.21136/MB.2007.134125][]).
     //!
@@ -163,12 +175,14 @@ namespace libsemigroups {
     //! \throws LibsemigroupsException if `n < 3`
     //!
     //! [10.21136/MB.2007.134125]: https://doi.org/10.21136/MB.2007.134125
-    Presentation<word_type> singular_brauer_monoid(size_t n);
+    [[nodiscard]] Presentation<word_type> singular_brauer_monoid(size_t n,
+                                                                 author val
+                                                                 = author::Any);
 
     //! A presentation for the monoid of orientation preserving
     //! mappings.
     //!
-    //! Returns a vector of relations giving a monoid presentation defining
+    //! Returns a monoid presentation defining
     //! the monoid of orientation preserving mappings on a finite chain of order
     //! `n`, as described in [10.1007/s10012-000-0001-1][].
     //!
@@ -179,14 +193,16 @@ namespace libsemigroups {
     //! \throws LibsemigroupsException if `n < 3`
     //!
     //! [10.1007/s10012-000-0001-1]: https://doi.org/10.1007/s10012-000-0001-1
-    Presentation<word_type> orientation_preserving_monoid(size_t n);
+    [[nodiscard]] Presentation<word_type>
+    orientation_preserving_monoid(size_t n, author val = author::Any);
 
-    //! A presentation for the monoid of orientation reversing mappings.
+    //! A presentation for the monoid of orientation preserving or reversing
+    //! mappings.
     //!
-    //! Returns a vector of relations giving a monoid presentation defining
-    //! the monoid of orientation reversing mappings on a finite chain of order
-    //! `n`, as described in [10.1007/s10012-000-0001-1][].
-    //!
+    //! Returns a monoid presentation defining
+    //! the monoid of orientation preserving or reversing mappings on a finite
+    //! chain of order `n`, as described in [10.1007/s10012-000-0001-1][].
+    //
     //! \param n the order of the chain
     //!
     //! \returns A `std::vector<relation_type>`
@@ -194,11 +210,12 @@ namespace libsemigroups {
     //! \throws LibsemigroupsException if `n < 3`
     //!
     //! [10.1007/s10012-000-0001-1]: https://doi.org/10.1007/s10012-000-0001-1
-    Presentation<word_type> orientation_reversing_monoid(size_t n);
+    [[nodiscard]] Presentation<word_type>
+    orientation_preserving_reversing_monoid(size_t n, author val = author::Any);
 
     //! A presentation for the Temperley-Lieb monoid.
     //!
-    //! Returns a vector of relations giving a semigroup presentation defining
+    //! Returns a monoid presentation defining
     //! the Temperley-Lieb monoid with `n` generators, as described in
     //! Theorem 2.2 of [10.1093/qmath/haab001][].
     //!
@@ -209,11 +226,13 @@ namespace libsemigroups {
     //! \throws LibsemigroupsException if `n < 3`
     //!
     //! [10.1093/qmath/haab001]: https://doi.org/10.1093/qmath/haab001
-    Presentation<word_type> temperley_lieb_monoid(size_t n);
+    [[nodiscard]] Presentation<word_type> temperley_lieb_monoid(size_t n,
+                                                                author val
+                                                                = author::Any);
 
     //! A presentation for the Brauer monoid.
     //!
-    //! Returns a vector of relations giving a semigroup presentation defining
+    //! Returns a monoid presentation defining
     //! the Brauer monoid of degree `n`, as described in Theorem 3.1 of the
     //! paper [10.2478/s11533-006-0017-6][].
     //!
@@ -221,17 +240,20 @@ namespace libsemigroups {
     //!
     //! \returns A `std::vector<relation_type>`
     //!
-    //! \noexcept
-    //!
     //! [10.2478/s11533-006-0017-6]:
     //! https://doi.org/10.2478/s11533-006-0017-6
-    Presentation<word_type> brauer_monoid(size_t n);
+    [[nodiscard]] Presentation<word_type> brauer_monoid(size_t n,
+                                                        author val
+                                                        = author::Any);
 
-    Presentation<word_type> partial_brauer_monoid(size_t n);
+    // THIS IS UNDOCUMENTED
+    [[nodiscard]] Presentation<word_type> partial_brauer_monoid(size_t n,
+                                                                author val
+                                                                = author::Any);
 
     //! A presentation for a Fibonacci semigroup.
     //!
-    //! Returns a vector of relations giving a semigroup presentation defining
+    //! Returns a semigroup presentation defining
     //! the Fibonacci semigroup \f$F(r, n)\f$, as described in
     //! [10.1016/0022-4049(94)90005-1][].
     //!
@@ -245,11 +267,12 @@ namespace libsemigroups {
     //!
     //! [10.1016/0022-4049(94)90005-1]:
     //! https://doi.org/10.1016/0022-4049(94)90005-1
-    Presentation<word_type> fibonacci_semigroup(size_t r, size_t n);
+    [[nodiscard]] Presentation<word_type>
+    fibonacci_semigroup(size_t r, size_t n, author val = author::Any);
 
     //! A presentation for the plactic monoid.
     //!
-    //! Returns a vector of relations giving a semigroup presentation defining
+    //! Returns a monoid presentation defining
     //! the plactic monoid with `n` generators (see Section 3 of
     //! [10.1007/s00233-022-10285-3][]).
     //!
@@ -260,11 +283,13 @@ namespace libsemigroups {
     //! \throws LibsemigroupsException if `n < 2`
     //!
     //! [10.1007/s00233-022-10285-3]: https://doi.org/10.1007/s00233-022-10285-3
-    Presentation<word_type> plactic_monoid(size_t n);
+    [[nodiscard]] Presentation<word_type> plactic_monoid(size_t n,
+                                                         author val
+                                                         = author::Any);
 
     //! A presentation for the stylic monoid.
     //!
-    //! Returns a vector of relations giving a semigroup presentation defining
+    //! Returns a monoid presentation defining
     //! the stylic monoid with `n` generators (see Theorem 8.1 of
     //! [10.1007/s00233-022-10285-3]).
     //!
@@ -275,11 +300,13 @@ namespace libsemigroups {
     //! \throws LibsemigroupsException if `n < 2`
     //!
     //! [10.1007/s00233-022-10285-3]: https://doi.org/10.1007/s00233-022-10285-3
-    Presentation<word_type> stylic_monoid(size_t n);
+    [[nodiscard]] Presentation<word_type> stylic_monoid(size_t n,
+                                                        author val
+                                                        = author::Any);
 
     //! A presentation for the symmetric group.
     //!
-    //! Returns a vector of relations giving a monoid presentation for the
+    //! Returns a monoid presentation for the
     //! symmetric group. The argument `val` determines the specific presentation
     //! which is returned. The options are:
     //!
@@ -311,13 +338,14 @@ namespace libsemigroups {
     //! \throws LibsemigroupsException if the author-index combination is
     //! invalid
     //!
-    Presentation<word_type> symmetric_group(size_t n,
-                                            author val   = author::Carmichael,
-                                            size_t index = 0);
+    [[nodiscard]] Presentation<word_type> symmetric_group(size_t n,
+                                                          author val
+                                                          = author::Carmichael,
+                                                          size_t index = 0);
 
     //! A presentation for the alternating group.
     //!
-    //! Returns a vector of relations giving a monoid presentation defining the
+    //! Returns a monoid presentation defining the
     //! alternating group of degree `n`. The argument `val` determines the
     //! specific presentation which is returned. The options are:
     //! * `author::Moore` (see Ch. 3, Prop 1.3 of [hdl.handle.net/10023/2821][])
@@ -333,12 +361,13 @@ namespace libsemigroups {
     //! \throws LibsemigroupsException if `n < 4`
     //!
     //! [hdl.handle.net/10023/2821]: http://hdl.handle.net/10023/2821
-    Presentation<word_type> alternating_group(size_t n,
-                                              author val = author::Moore);
+    [[nodiscard]] Presentation<word_type> alternating_group(size_t n,
+                                                            author val
+                                                            = author::Moore);
 
     //! A presentation for a rectangular band.
     //!
-    //! Returns a vector of relations giving a semigroup presentation defining
+    //! Returns a semigroup presentation defining
     //! the `m` by `n` rectangular band, as given in Proposition 4.2 of
     //! [10.1007/s002339910016][].
     //!
@@ -351,11 +380,12 @@ namespace libsemigroups {
     //! \throws LibsemigroupsException if `n = 0`
     //!
     //! [10.1007/s002339910016]: https://doi.org/10.1007/s002339910016
-    Presentation<word_type> rectangular_band(size_t m, size_t n);
+    [[nodiscard]] Presentation<word_type>
+    rectangular_band(size_t m, size_t n, author val = author::Any);
 
     //! A presentation for the full transformation monoid.
     //!
-    //! Returns a vector of relations giving a monoid presentation defining the
+    //! Returns a monoid presentation defining the
     //! full transformation monoid. The argument `val` determines the specific
     //! presentation which is returned. The options are:
     //! * `author::Aizenstat` (see Ch. 3, Prop 1.7 of
@@ -375,13 +405,12 @@ namespace libsemigroups {
     //!
     //! [http://hdl.handle.net/10023/2821]: http://hdl.handle.net/10023/2821
     //! [10.1007/978-1-84800-281-4]: https://doi.org/10.1007/978-1-84800-281-4
-    Presentation<word_type> full_transformation_monoid(size_t n,
-                                                       author val
-                                                       = author::Iwahori);
+    [[nodiscard]] Presentation<word_type>
+    full_transformation_monoid(size_t n, author val = author::Iwahori);
 
     //! A presentation for the partial transformation monoid.
     //!
-    //! Returns a vector of relations giving a monoid presentation defining the
+    //! Returns a monoid presentation defining the
     //! partial transformation monoid. The argument `val` determines the
     //! specific presentation which is returned. The options are:
     //! * `author::Machine`
@@ -399,13 +428,12 @@ namespace libsemigroups {
     //! order of author)
     //!
     //! [10.1007/978-1-84800-281-4]: https://doi.org/10.1007/978-1-84800-281-4
-    Presentation<word_type> partial_transformation_monoid(size_t n,
-                                                          author val
-                                                          = author::Sutov);
+    [[nodiscard]] Presentation<word_type>
+    partial_transformation_monoid(size_t n, author val = author::Sutov);
 
     //! A presentation for the symmetric inverse monoid.
     //!
-    //! Returns a vector of relations giving a monoid presentation defining the
+    //! Returns a monoid presentation defining the
     //! symmetric inverse monoid. The argument `val` determines the specific
     //! presentation which is returned. The options are:
     //! * `author::Sutov` (see Theorem 9.2.2 of
@@ -431,13 +459,12 @@ namespace libsemigroups {
     //! order of author)
     //!
     //! [10.1007/978-1-84800-281-4]: https://doi.org/10.1007/978-1-84800-281-4
-    Presentation<word_type> symmetric_inverse_monoid(size_t n,
-                                                     author val
-                                                     = author::Sutov);
+    [[nodiscard]] Presentation<word_type>
+    symmetric_inverse_monoid(size_t n, author val = author::Sutov);
 
     //! A presentation for the Chinese monoid.
     //!
-    //! Returns a vector of relations giving a semigroup presentation defining
+    //! Returns a monoid presentation defining
     //! the Chinese monoid, as described in [10.1142/S0218196701000425][].
     //!
     //! \param n the number of generators
@@ -447,25 +474,32 @@ namespace libsemigroups {
     //! \throws LibsemigroupsException if `n < 2`
     //!
     //! [10.1142/S0218196701000425]: https://doi.org/10.1142/S0218196701000425
-    Presentation<word_type> chinese_monoid(size_t n);
+    [[nodiscard]] Presentation<word_type> chinese_monoid(size_t n,
+                                                         author val
+                                                         = author::Any);
 
     //! A presentation for a monogenic semigroup.
     //!
-    //! Returns a vector of relations giving a semigroup presentation defining
+    //! Returns a presentation defining
     //! the monogenic semigroup defined by the presentation \f$\langle a \mid
     //! a^{m + r} = a^m \rangle\f$.
+    //!
+    //! If \param m = 0, the presentation returned is a monoid presentation;
+    //! otherwise, a semigroup presentation is returned.
     //!
     //! \param m the index
     //! \param r the period
     //!
     //! \returns A `std::vector<relation_type>`
     //!
+    //! \throws LibsemigroupsException if `m < 0`
     //! \throws LibsemigroupsException if `r = 0`
-    Presentation<word_type> monogenic_semigroup(size_t m, size_t r);
+    [[nodiscard]] Presentation<word_type>
+    monogenic_semigroup(size_t m, size_t r, author val = author::Any);
 
     //! A presentation for the monoid of order-preserving mappings.
     //!
-    //! Returns a vector of relations giving a semigroup presentation defining
+    //! Returns a monoid presentation defining
     //! the monoid of order-preserving transformations of degree `n`, as
     //! described in Section 2 of the paper [10.1007/s10012-000-0001-1][].
     //!
@@ -479,11 +513,12 @@ namespace libsemigroups {
     //! \throws LibsemigroupsException if `n < 3`
     //!
     //! [10.1007/s10012-000-0001-1]: https://doi.org/10.1007/s10012-000-0001-1
-    Presentation<word_type> order_preserving_monoid(size_t n);
+    [[nodiscard]] Presentation<word_type>
+    order_preserving_monoid(size_t n, author val = author::Any);
 
     //! A presentation for the cyclic inverse monoid.
     //!
-    //! Returns a vector of relations giving a monoid presentation defining
+    //! Returns a monoid presentation defining
     //! the cyclic inverse monoid of degree `n`.
     //!
     //! The combination of `val` and `index` determines the specific
@@ -512,15 +547,15 @@ namespace libsemigroups {
     //! relations.
     //!
     //! [10.48550/arxiv.2211.02155]: https://doi.org/10.48550/arxiv.2211.02155
-    Presentation<word_type> cyclic_inverse_monoid(size_t n,
-                                                  author val
-                                                  = author::Fernandes,
-                                                  size_t index = 1);
+    [[nodiscard]] Presentation<word_type>
+    cyclic_inverse_monoid(size_t n,
+                          author val   = author::Fernandes,
+                          size_t index = 1);
 
     //! A presentation for the order-preserving part of the cyclic inverse
     //! monoid.
     //!
-    //! Returns a vector of relations giving a semigroup presentation defining
+    //! Returns a monoid presentation defining
     //! the order-preserving part of the cyclic inverse monoid of degree `n`, as
     //! described in Theorem 2.17 of
     //! the paper [10.48550/arxiv.2211.02155][].
@@ -532,11 +567,12 @@ namespace libsemigroups {
     //! \throws LibsemigroupsException if `n < 3`
     //!
     //! [10.48550/arxiv.2211.02155]: https://doi.org/10.48550/arxiv.2211.02155
-    Presentation<word_type> order_preserving_cyclic_inverse_monoid(size_t n);
+    [[nodiscard]] Presentation<word_type>
+    order_preserving_cyclic_inverse_monoid(size_t n, author val = author::Any);
 
     //! A presentation for the monoid of partial isometries of a cycle graph.
     //!
-    //! Returns a vector of relations giving a monoid presentation defining
+    //! Returns a monoid presentation defining
     //! the monoid of partial isometries of an \f$n\f$-cycle graph, as described
     //! in Theorem 2.8 of [10.48550/arxiv.2205.02196][].
     //!
@@ -547,11 +583,12 @@ namespace libsemigroups {
     //! \throws LibsemigroupsException if `n < 3`
     //!
     //! [10.48550/arxiv.2205.02196]: https://doi.org/10.48550/arxiv.2205.02196
-    Presentation<word_type> partial_isometries_cycle_graph_monoid(size_t n);
+    [[nodiscard]] Presentation<word_type>
+    partial_isometries_cycle_graph_monoid(size_t n, author val = author::Any);
 
     //! A non-presentation for the symmetric group.
     //!
-    //! Returns a vector of relations giving a monoid presentation which is
+    //! Returns a monoid presentation which is
     //! claimed to define the symmetric group of degree `n`, but does not. The
     //! argument `val` determines the specific presentation which is returned.
     //! The options are:
@@ -571,18 +608,23 @@ namespace libsemigroups {
     //!
     //! [doi.org/10.1090/S0894-0347-08-00590-0]:
     //! https://doi.org/10.1090/S0894-0347-08-00590-0
-    Presentation<word_type>
+    [[nodiscard]] Presentation<word_type>
     not_symmetric_group(size_t n,
                         author val = author::Guralnick + author::Kantor
                                      + author::Kassabov + author::Lubotzky);
 
-    Presentation<word_type> special_linear_group_2(size_t n);
+    [[nodiscard]] Presentation<word_type> special_linear_group_2(size_t n,
+                                                                 author val
+                                                                 = author::Any);
 
     // TODO (doc)
-    Presentation<word_type> hypo_plactic_monoid(size_t n);
+    [[nodiscard]] Presentation<word_type> hypo_plactic_monoid(size_t n,
+                                                              author val
+                                                              = author::Any);
 
-    Presentation<word_type>
-    sigma_stylic_monoid(std::vector<size_t> const& sigma);
+    [[nodiscard]] Presentation<word_type>
+    sigma_stylic_monoid(std::vector<size_t> const& sigma,
+                        author                     val = author::Any);
 
     // TODO add okada_monoid
     // TODO add free_semilattice
@@ -594,7 +636,9 @@ namespace libsemigroups {
     // https://theses.hal.science/tel-01861199
     //
     //  This could also be called the RennerTypeAMonoid
-    Presentation<word_type> zero_rook_monoid(size_t n);
+    [[nodiscard]] Presentation<word_type> zero_rook_monoid(size_t n,
+                                                           author val
+                                                           = author::Any);
 
     // TODO rename renner_type_b_monoid:
     // when q = 0: Definition 8.4.1 + Example 8.4.2 in Joel's thesis.
@@ -602,7 +646,8 @@ namespace libsemigroups {
     // with pi_i ^ 2 = 1 (usual Renner monoid) (q is the Iwahori-Hecke
     // deformation of the Renner monoid). q = 1From Joel's thesis,
     // Theorem 8.4.19.
-    Presentation<word_type> renner_type_B_monoid(size_t l, int q);
+    [[nodiscard]] Presentation<word_type>
+    renner_type_B_monoid(size_t l, int q, author val = author::Any);
 
     // not_renner_type_b_monoid
     // when q = 0, Example 7.1.2, of Joel's thesis
@@ -610,17 +655,20 @@ namespace libsemigroups {
     // https://www.cambridge.org/core/services/aop-cambridge-core/content/view/B6BAB75BD3463916FEDEC15BEDA724FF/S0004972710000365a.pdf/presentation_for_renner_monoids.pdf
     // or
     // https://arxiv.org/abs/0904.0926
-    Presentation<word_type> not_renner_type_B_monoid(size_t l, int q);
+    [[nodiscard]] Presentation<word_type>
+    not_renner_type_B_monoid(size_t l, int q, author val = author::Any);
 
     // See Theorem 8.4.43 in Joel's thesis q = 1,
     // for q = 0, Definition 8.4.22 (author = Gay)
-    Presentation<word_type> renner_type_D_monoid(size_t l, int q);
+    [[nodiscard]] Presentation<word_type>
+    renner_type_D_monoid(size_t l, int q, author val = author::Any);
 
     // Godelle's:
     // when q = 1, p41 of
     // https://www.cambridge.org/core/services/aop-cambridge-core/content/view/B6BAB75BD3463916FEDEC15BEDA724FF/S0004972710000365a.pdf/presentation_for_renner_monoids.pdf
     // q = 0, no reference
-    Presentation<word_type> not_renner_type_D_monoid(size_t l, int q);
+    [[nodiscard]] Presentation<word_type>
+    not_renner_type_D_monoid(size_t l, int q, author val = author::Any);
 
   }  // namespace fpsemigroup
 }  // namespace libsemigroups
