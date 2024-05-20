@@ -263,7 +263,7 @@ jobs:
                 ccache:${{ matrix.os }}:${{ matrix.compiler }}:${{ matrix.modules }}-modules
          - name: "Install dependencies . . ."
            run: |
-                brew install ccache autoconf automake
+                brew install ccache autoconf automake libtool
          - name: "Clang version . . ."
            run: |
                 clang++ --version
