@@ -201,6 +201,8 @@ namespace libsemigroups {
                           "032",
                           "Example 000",
                           "[quick][froidure-pin][intmat]") {
+    // FIXME this test seemingly causes undefined behaviour (multiplication of
+    // signed integers that overflows)
     test_IntMat000<IntMat<2, 2, int64_t>>();  // Static
   }
 

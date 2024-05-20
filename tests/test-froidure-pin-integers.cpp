@@ -83,11 +83,11 @@ namespace libsemigroups {
                           "031",
                           "(integers)",
                           "[quick][froidure-pin][integers]") {
-    auto             rg = ReportGuard(REPORT);
-    FroidurePin<int> S({2});
+    auto                  rg = ReportGuard(REPORT);
+    FroidurePin<uint32_t> S({2});
     REQUIRE(S.size() == 32);
     REQUIRE(S.number_of_idempotents() == 1);
-    FroidurePin<int>::const_iterator it = S.cbegin();
+    FroidurePin<uint32_t>::const_iterator it = S.cbegin();
     REQUIRE(*it == 2);
 
     FroidurePin<uint8_t> T({2, 3});
