@@ -25,46 +25,42 @@ namespace libsemigroups {
   // PTransfBase
   ////////////////////////////////////////////////////////////////////////
 
-  namespace detail {
+  // STATIC
+  template <typename Point, typename Container>
+  template <typename Subclass, typename ContainerAgain>
+  [[nodiscard]] Subclass
+  PTransfBase<Point, Container>::make(ContainerAgain&& cont) {
+    validate_args(std::forward<ContainerAgain>(cont));
+    Subclass result(std::forward<ContainerAgain>(cont));
+    validate(result);
+    return result;
+  }
 
-    // STATIC
-    template <typename Point, typename Container>
-    template <typename Subclass, typename ContainerAgain>
-    [[nodiscard]] Subclass
-    PTransfBase<Point, Container>::make(ContainerAgain&& cont) {
-      validate_args(std::forward<ContainerAgain>(cont));
-      Subclass result(std::forward<ContainerAgain>(cont));
-      validate(result);
-      return result;
+  // STATIC
+  template <typename Point, typename Container>
+  void PTransfBase<Point, Container>::resize(container_type& c,
+                                             size_t          N,
+                                             point_type      val) {
+    if constexpr (detail::is_array_v<container_type>) {
+      std::fill(c.begin() + N, c.end(), val);
+    } else {
+      c.resize(N, val);
     }
+  }
 
-    // STATIC
-    template <typename Point, typename Container>
-    void PTransfBase<Point, Container>::resize(container_type& c,
-                                               size_t          N,
-                                               point_type      val) {
-      if constexpr (detail::is_array_v<container_type>) {
-        std::fill(c.begin() + N, c.end(), val);
-      } else {
-        c.resize(N, val);
+  // STATIC
+  template <typename Point, typename Container>
+  template <typename T>
+  void PTransfBase<Point, Container>::validate_args(T const& cont) {
+    if constexpr (detail::is_array_v<container_type>) {
+      if (cont.size() != std::tuple_size_v<container_type>) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "incorrect container size, expected {}, found {}",
+            std::tuple_size_v<container_type>,
+            cont.size());
       }
     }
-
-    // STATIC
-    template <typename Point, typename Container>
-    template <typename T>
-    void PTransfBase<Point, Container>::validate_args(T const& cont) {
-      if constexpr (detail::is_array_v<container_type>) {
-        if (cont.size() != std::tuple_size_v<container_type>) {
-          LIBSEMIGROUPS_EXCEPTION(
-              "incorrect container size, expected {}, found {}",
-              std::tuple_size_v<container_type>,
-              cont.size());
-        }
-      }
-    }
-
-  }  // namespace detail
+  }
 
   ////////////////////////////////////////////////////////////////////////
   // StaticPTransf
@@ -254,11 +250,10 @@ namespace libsemigroups {
 
   template <size_t N, typename Scalar>
   void inverse(PPerm<N, Scalar> const& from, PPerm<N, Scalar>& to) {
-    if (to.degree() != from.degree()) {
-      LIBSEMIGROUPS_EXCEPTION(
-          "the arguments must have the same degrees, but found {} != {}",
-          to.degree(),
-          from.degree());
+    if (to.degree() < from.degree()) {
+      // Shouldn't be possible to get here if PPerm<N, Scalar> is static
+      LIBSEMIGROUPS_ASSERT(IsDynamic<PPerm<N, Scalar>>);
+      to.increase_degree_by(from.degree() - to.degree());
     }
     std::fill(to.begin(), to.end(), static_cast<Scalar>(UNDEFINED));
     for (size_t i = 0; i < from.degree(); ++i) {

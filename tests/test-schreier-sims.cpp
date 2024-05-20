@@ -81,7 +81,7 @@ namespace libsemigroups {
     auto S     = new SchreierSims<N>();
     using Perm = std::remove_pointer<decltype(S)>::type::element_type;
 
-    auto p = Perm::identity(N);
+    auto p = Perm::one(N);
 
     S->add_generator(p);
 
@@ -101,7 +101,7 @@ namespace libsemigroups {
 
   // The next tests fail (04 to 09, inclusive), with default template
   // parameters, due to HPCombi 0.0.3 currently composing functions from
-  // right to left. TODO(0) revise this comment
+  // right to left.
   LIBSEMIGROUPS_TEST_CASE("SchreierSims",
                           "003",
                           "symmetric perm. group (degree 5)",
@@ -2702,7 +2702,7 @@ namespace libsemigroups {
     auto             rg = ReportGuard(false);
     constexpr size_t N  = 8;
     using Perm          = Perm<>;
-    auto S              = SchreierSims<N, Perm::value_type, Perm>();
+    auto S              = SchreierSims<N, Perm::point_type, Perm>();
 
     S.add_generator(Perm({1, 0, 2, 3, 4, 5, 6, 7}));
     S.add_generator(Perm({0, 1, 3, 2, 4, 5, 6, 7}));
@@ -2729,7 +2729,7 @@ namespace libsemigroups {
     auto             rg = ReportGuard(false);
     constexpr size_t N  = 10;
     using Perm          = Perm<>;
-    auto S              = SchreierSims<N, Perm::value_type, Perm>();
+    auto S              = SchreierSims<N, Perm::point_type, Perm>();
 
     S.add_generator(Perm({0, 9, 2, 3, 4, 5, 6, 7, 8, 1}));
     S.add_generator(Perm({1, 2, 3, 4, 5, 6, 7, 8, 9, 0}));
@@ -2744,7 +2744,7 @@ namespace libsemigroups {
     auto             rg = ReportGuard(false);
     constexpr size_t N  = 12;
     using Perm          = Perm<>;
-    auto S              = SchreierSims<N, Perm::value_type, Perm>();
+    auto S              = SchreierSims<N, Perm::point_type, Perm>();
 
     S.add_generator(Perm({0, 1, 2, 3, 4, 5, 6, 7, 8, 11, 10, 9}));
     S.add_generator(Perm({0, 1, 2, 3, 4, 5, 6, 7, 9, 8, 11, 10}));
@@ -2831,7 +2831,7 @@ namespace libsemigroups {
     auto             rg = ReportGuard(false);
     constexpr size_t N  = 57;
     using Perm          = Perm<>;
-    auto S              = new SchreierSims<N, Perm::value_type, Perm>();
+    auto S              = new SchreierSims<N, Perm::point_type, Perm>();
 
     S->add_generator(
         Perm({1,  8,  15, 22, 29, 36, 43, 50, 12, 19, 26, 33, 40, 47, 54,
@@ -2959,7 +2959,7 @@ namespace libsemigroups {
                           "[quick][schreier-sims]") {
     auto rg    = ReportGuard(false);
     using Perm = Perm<>;
-    SchreierSims<5, Perm::value_type, Perm> S;
+    SchreierSims<5, Perm::point_type, Perm> S;
     S.add_generator(Perm({1, 2, 3, 4, 0}));
     S.add_generator(Perm({1, 0, 2, 3, 4}));
     REQUIRE(S.size() == static_cast<uint64_t>(120));
@@ -3037,7 +3037,7 @@ namespace libsemigroups {
                           "[quick][schreier-sims]") {
     auto rg    = ReportGuard(false);
     using Perm = Perm<>;
-    SchreierSims<5, Perm::value_type, Perm> S;
+    SchreierSims<5, Perm::point_type, Perm> S;
     S.add_generator(Perm({1, 2, 3, 4, 0}));
     S.add_generator(Perm({1, 0, 2, 3, 4}));
     REQUIRE(S.size() == static_cast<uint64_t>(120));
@@ -3067,7 +3067,7 @@ namespace libsemigroups {
                           "[quick][schreier-sims]") {
     auto rg    = ReportGuard(false);
     using Perm = Perm<>;
-    SchreierSims<5, Perm::value_type, Perm> S;
+    SchreierSims<5, Perm::point_type, Perm> S;
     S.add_generator(Perm({1, 2, 3, 4, 0}));
     S.add_generator(Perm({1, 0, 2, 3, 4}));
     REQUIRE_THROWS_AS(S.add_base_point(0), LibsemigroupsException);

@@ -71,8 +71,8 @@ namespace libsemigroups {
                           "exceptions",
                           "[quick][pperm][no-valgrind]") {
     auto rg          = ReportGuard(REPORT);
-    using value_type = typename PPerm<>::value_type;
-    std::vector<value_type> v(65, 0);
+    using point_type = typename PPerm<>::point_type;
+    std::vector<point_type> v(65, 0);
     std::iota(v.begin(), v.end(), 0);
     REQUIRE_THROWS_AS(Konieczny<PPerm<>>({PPerm<>(v)}), LibsemigroupsException);
     std::vector<PPerm<>> const gens
