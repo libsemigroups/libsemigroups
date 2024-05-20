@@ -55,12 +55,27 @@
 #include "detail/stl.hpp"  // for is_specialization_of_v
 
 namespace libsemigroups {
+  //! \defgroup elements_group Elements
+  //!
+  //! This page contains an overview summary of the functionality in
+  //! `libsemigroups` for defining elements of semigroups and monoids.
+  //!
+  //! * \ref transf_group
 
+  //! \ingroup transf_group
   //! Empty base class for polymorphism.
   //!
   //! \sa IsDerivedFromPTransf
   struct PTransfPolymorphicBase {};
 
+  //! \defgroup transf_group Transformations
+  //!
+  //! Defined in `transf.hpp`.
+  //!
+  //! This page contains the documentation for functionality in
+  //! `libsemigroups` for transformations.
+
+  //! \ingroup transf_group
   //! Helper variable template.
   //!
   //! The value of this variable is \c true if the template parameter \p T is
@@ -650,6 +665,7 @@ namespace libsemigroups {
   // Helper variable templates
   ////////////////////////////////////////////////////////////////////////
 
+  //! \ingroup transf_group
   //! Helper variable template.
   //!
   //! The value of this variable is \c true if the template parameter \p T is
@@ -659,6 +675,7 @@ namespace libsemigroups {
   template <typename T>
   static constexpr bool IsStatic = detail::IsStaticHelper<T>::value;
 
+  //! \ingroup transf_group
   //! Helper variable template.
   //!
   //! The value of this variable is \c true if the template parameter \p T is
@@ -672,6 +689,8 @@ namespace libsemigroups {
   // DynamicPTransf
   ////////////////////////////////////////////////////////////////////////
 
+  //! \ingroup transf_group
+  //!
   //! Defined in ``transf.hpp``.
   //!
   //! Dynamic partial transformations.
@@ -761,6 +780,8 @@ namespace libsemigroups {
   // StaticPTransf
   ////////////////////////////////////////////////////////////////////////
 
+  //! \ingroup transf_group
+  //!
   //! Defined in ``transf.hpp``.
   //!
   //! Static partial transformations.
@@ -831,6 +852,8 @@ namespace libsemigroups {
   // PTransf
   ////////////////////////////////////////////////////////////////////////
 
+  //! \ingroup transf_group
+  //!
   //! Defined in ``transf.hpp``.
   //!
   //! This alias equals either DynamicPTransf or StaticPTransf depending on
@@ -885,6 +908,7 @@ namespace libsemigroups {
     }
   }  // namespace detail
 
+  //! \ingroup transf_group
   //! Helper variable template.
   //!
   //! The value of this variable is \c true if the template parameter \p T is
@@ -897,6 +921,7 @@ namespace libsemigroups {
   template <typename T>
   static constexpr bool IsPTransf = detail::IsPTransfHelper<T>::value;
 
+  //! \ingroup transf_group
   //! Check that a partial transformation is valid.
   //!
   //! \tparam N  the degree
@@ -927,12 +952,14 @@ namespace libsemigroups {
     }
   }
 
+  //! \ingroup transf_group
   template <size_t N, typename Scalar>
   [[nodiscard]] std::string to_string(PTransf<N, Scalar> const& f,
                                       std::string_view          braces = "{}") {
     return detail::ptransf_repr(f, "PTransf", braces);
   }
 
+  //! \ingroup transf_group
   template <size_t N, typename Scalar>
   std::ostringstream& operator<<(std::ostringstream&       os,
                                  PTransf<N, Scalar> const& f) {
@@ -940,6 +967,7 @@ namespace libsemigroups {
     return os;
   }
 
+  //! \ingroup transf_group
   template <size_t N, typename Scalar>
   std::ostream& operator<<(std::ostream& os, PTransf<N, Scalar> const& f) {
     os << to_string(f);
@@ -950,6 +978,7 @@ namespace libsemigroups {
   // Transf
   ////////////////////////////////////////////////////////////////////////
 
+  //! \ingroup transf_group
   //! Defined in ``transf.hpp``.
   //!
   //! A *transformation* \f$f\f$ is just a function defined on the
@@ -1103,6 +1132,7 @@ namespace libsemigroups {
   // Transf helpers
   ////////////////////////////////////////////////////////////////////////
 
+  //! \ingroup transf_group
   //! Helper variable template.
   //!
   //! The value of this variable is \c true if the template parameter \p T is
@@ -1116,6 +1146,7 @@ namespace libsemigroups {
   // Transf validate
   ////////////////////////////////////////////////////////////////////////
 
+  //! \ingroup transf_group
   //! Validate a transformation.
   //!
   //! \tparam N the number of points
@@ -1131,6 +1162,7 @@ namespace libsemigroups {
   template <size_t N, typename Scalar>
   void validate(Transf<N, Scalar> const& x);
 
+  //! \ingroup transf_group
   // TODO to tpp
   template <size_t N, typename Scalar>
   [[nodiscard]] std::string to_string(Transf<N, Scalar> const& f,
@@ -1158,6 +1190,8 @@ namespace libsemigroups {
   // PPerm
   ////////////////////////////////////////////////////////////////////////
 
+  //! \ingroup transf_group
+  //!
   //! Defined in ``transf.hpp``.
   //!
   //! A *partial permutation* \f$f\f$ is just an injective partial
@@ -1425,6 +1459,7 @@ namespace libsemigroups {
     }
   }  // namespace detail
 
+  //! \ingroup transf_group
   // TODO improve
   template <size_t N, typename Scalar>
   [[nodiscard]] std::string to_string(PPerm<N, Scalar> const& f,
@@ -1453,6 +1488,7 @@ namespace libsemigroups {
 
   }  // namespace detail
 
+  //! \ingroup transf_group
   //! Helper variable template.
   //!
   //! The value of this variable is \c true if the template parameter \p T is
@@ -1466,6 +1502,7 @@ namespace libsemigroups {
   // PPerm validate
   ////////////////////////////////////////////////////////////////////////
 
+  //! \ingroup transf_group
   //! Validate a partial perm.
   //!
   //! \tparam T the type of the partial perm to validate.
@@ -1489,6 +1526,8 @@ namespace libsemigroups {
   // Perm
   ////////////////////////////////////////////////////////////////////////
 
+  //! \ingroup transf_group
+  //!
   //! Defined in ``transf.hpp``.
   //!
   //! A *permutation* \f$f\f$ is an injective transformation defined on the
@@ -1611,6 +1650,7 @@ namespace libsemigroups {
     struct IsPermHelper<Perm<N, Scalar>> : std::true_type {};
   }  // namespace detail
 
+  //! \ingroup transf_group
   //! Helper variable template.
   //!
   //! The value of this variable is \c true if the template parameter \p T is
@@ -1624,6 +1664,7 @@ namespace libsemigroups {
   // Perm validate
   ////////////////////////////////////////////////////////////////////////
 
+  //! \ingroup transf_group
   //! Validate a permutation.
   //!
   //! \tparam T the type of the permutation to validate.
@@ -1646,25 +1687,30 @@ namespace libsemigroups {
   // Helper functions
   ////////////////////////////////////////////////////////////////////////
 
+  //! \ingroup transf_group
   // JDM decided not to use a namespace here because there are multiple classes,
   // and it just seemed to complicated.
   // TODO doc
   template <typename Transf, typename Image>
   void image(Transf const& x, std::vector<Image>& im);
 
+  //! \ingroup transf_group
   // TODO doc
   template <typename Transf>
   [[nodiscard]] std::vector<typename Transf::point_type> image(Transf const& x);
 
+  //! \ingroup transf_group
   // TODO doc
   template <typename Transf, typename Image>
   void domain(Transf const& x, std::vector<Image>& im);
 
+  //! \ingroup transf_group
   // TODO doc
   template <typename Transf>
   [[nodiscard]] std::vector<typename Transf::point_type>
   domain(Transf const& x);
 
+  //! \ingroup transf_group
   //! Returns the identity transformation on degree() points.
   //!
   //! This function returns a newly constructed partial transformation with
@@ -1687,6 +1733,7 @@ namespace libsemigroups {
     return Subclass::one(x.degree());
   }
 
+  //! \ingroup transf_group
   //! Returns the right one of this.
   //!
   //! This function returns a newly constructed partial perm with
@@ -1704,6 +1751,7 @@ namespace libsemigroups {
   template <size_t N, typename Scalar>
   [[nodiscard]] PPerm<N, Scalar> right_one(PPerm<N, Scalar> const& x);
 
+  //! \ingroup transf_group
   //! Returns the left one of this.
   //!
   //! This function returns a newly constructed partial perm with
@@ -1721,6 +1769,7 @@ namespace libsemigroups {
   template <size_t N, typename Scalar>
   [[nodiscard]] PPerm<N, Scalar> left_one(PPerm<N, Scalar> const& x);
 
+  //! \ingroup transf_group
   //! Replace contents of a partial perm with the inverse of another.
   //!
   //! This function inverts \p this into \c that.
@@ -1736,6 +1785,7 @@ namespace libsemigroups {
   template <size_t N, typename Scalar>
   void inverse(PPerm<N, Scalar> const& from, PPerm<N, Scalar>& to);
 
+  //! \ingroup transf_group
   //! Returns the inverse.
   //!
   //! This function returns a newly constructed inverse of \c this.
@@ -1755,6 +1805,7 @@ namespace libsemigroups {
     return to;
   }
 
+  //! \ingroup transf_group
   //! Returns the inverse.
   //!
   //! This function returns a newly constructed inverse of \c this.
@@ -1772,6 +1823,7 @@ namespace libsemigroups {
   template <size_t N, typename Scalar>
   void inverse(Perm<N, Scalar> const& from, Perm<N, Scalar>& to);
 
+  //! \ingroup transf_group
   // TODO doc
   template <size_t N, typename Scalar>
   [[nodiscard]] Perm<N, Scalar> inverse(Perm<N, Scalar> const& from);
