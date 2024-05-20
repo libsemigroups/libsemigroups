@@ -102,6 +102,7 @@ pkginclude_HEADERS += include/libsemigroups/to-presentation.hpp
 pkginclude_HEADERS += include/libsemigroups/to-todd-coxeter.hpp
 pkginclude_HEADERS += include/libsemigroups/todd-coxeter.hpp
 pkginclude_HEADERS += include/libsemigroups/transf.hpp
+pkginclude_HEADERS += include/libsemigroups/transf.tpp
 pkginclude_HEADERS += include/libsemigroups/types.hpp
 pkginclude_HEADERS += include/libsemigroups/ukkonen.hpp
 pkginclude_HEADERS += include/libsemigroups/ukkonen.tpp

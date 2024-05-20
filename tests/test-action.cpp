@@ -326,7 +326,8 @@ namespace libsemigroups {
                                                       {0, 0, 0, 0, 0, 0}})};
     row_orb_type             row_orb;
 
-    row_orb.add_seed(bmat8::one());
+    row_orb.add_seed(bmat8::one());  // TODO(0) change to BMat8::one for
+                                     // consistency
     for (BMat8 g : reg_bmat6_gens) {
       row_orb.add_generator(g);
     }
@@ -341,7 +342,7 @@ namespace libsemigroups {
                              "[quick]") {
     auto rg = ReportGuard(REPORT);
     RightAction<PPerm<8>, PPerm<8>, ImageRightAction<PPerm<8>, PPerm<8>>> o;
-    o.add_seed(PPerm<8>::identity(8));
+    o.add_seed(PPerm<8>::one(8));
     o.add_generator(
         PPerm<8>({0, 1, 2, 3, 4, 5, 6, 7}, {1, 2, 3, 4, 5, 6, 7, 0}, 8));
     o.add_generator(
@@ -350,7 +351,7 @@ namespace libsemigroups {
     o.add_generator(PPerm<8>({0, 1, 2, 3, 4, 5, 6}, {1, 2, 3, 4, 5, 6, 7}, 8));
     REQUIRE(o.size() == 256);
     o.init();  // Test init with non-trivial point_type
-    o.add_seed(PPerm<8>::identity(8));
+    o.add_seed(PPerm<8>::one(8));
     o.add_generator(
         PPerm<8>({0, 1, 2, 3, 4, 5, 6, 7}, {1, 2, 3, 4, 5, 6, 7, 0}, 8));
     o.add_generator(
@@ -366,7 +367,7 @@ namespace libsemigroups {
                              "[quick][no-valgrind]") {
     auto rg = ReportGuard(REPORT);
     RightAction<PPerm<16>, PPerm<16>, ImageRightAction<PPerm<16>, PPerm<16>>> o;
-    o.add_seed(PPerm<16>::identity(16));
+    o.add_seed(PPerm<16>::one(16));
     o.add_generator(
         PPerm<16>({0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15},
                   {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 0},

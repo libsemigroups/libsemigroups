@@ -562,7 +562,6 @@ namespace libsemigroups {
       //!
       //! \complexity
       //! Linear in degree().
-      // Becomes 3 lines in tpp file!
       [[nodiscard]] size_t rank() const {
         auto vals = std::unordered_set<point_type>(cbegin(), cend());
         return (vals.find(UNDEFINED) == vals.end() ? vals.size()
@@ -609,28 +608,6 @@ namespace libsemigroups {
         return _container.size();
       }
 
-      //! Returns the identity transformation on degree() points.
-      //!
-      //! This function returns a newly constructed partial transformation with
-      //! degree equal to the degree of \c this that fixes every value from \c 0
-      //! to degree().
-      //!
-      //! \tparam Subclass
-      //! A class derived from libsemigroups::PTransfPolymorphicBase.
-      //!
-      //! \returns
-      //! A value of type \c Subclass.
-      //!
-      //! \exceptions
-      //! \noexcept
-      template <typename Subclass>
-      [[nodiscard]] Subclass identity() const {
-        static_assert(IsDerivedFromPTransf<Subclass>,
-                      "the template parameter Subclass must be derived from "
-                      "PTransfPolymorphicBase");
-        return identity<Subclass>(degree());
-      }
-
       //! Returns the identity transformation on the given number of points.
       //!
       //! This function returns a newly constructed partial transformation with
@@ -646,7 +623,7 @@ namespace libsemigroups {
       //! \exceptions
       //! \noexcept
       template <typename Subclass>
-      [[nodiscard]] static Subclass identity(size_t N) {
+      [[nodiscard]] static Subclass one(size_t N) {
         static_assert(IsDerivedFromPTransf<Subclass>,
                       "the template parameter Subclass must be derived from "
                       "PTransfPolymorphicBase");
@@ -890,6 +867,7 @@ namespace libsemigroups {
     template <typename Scalar>
     struct IsDynamicHelper<DynamicPTransf<Scalar>> : std::true_type {};
 
+    // TODO to tpp file
     template <typename T>
     [[nodiscard]] std::string ptransf_repr(T const&         f,
                                            std::string_view prefix,
@@ -1081,9 +1059,9 @@ namespace libsemigroups {
     //!
     //! \exceptions
     //! \no_libsemigroups_except
-    [[nodiscard]] Transf identity() const {
-      return identity(degree());
-    }
+    //[[nodiscard]] Transf one() const {
+    //  return one(degree());
+    //}
 
     //! Returns the identity transformation on the given number of points.
     //!
@@ -1100,8 +1078,8 @@ namespace libsemigroups {
     //!
     //! \exceptions
     //! \no_libsemigroups_except
-    [[nodiscard]] static Transf identity(size_t M) {
-      return base_type::template identity<Transf>(M);
+    [[nodiscard]] static Transf one(size_t M) {
+      return base_type::template one<Transf>(M);
     }
   };
 
@@ -1389,9 +1367,9 @@ namespace libsemigroups {
     //!
     //! \exceptions
     //! \no_libsemigroups_except
-    [[nodiscard]] PPerm identity() const {
-      return identity(degree());
-    }
+    // [[nodiscard]] PPerm one() const {
+    //  return one(degree());
+    //}
 
     //! Returns the identity partial perm on the given number of points.
     //!
@@ -1408,8 +1386,8 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! Linear in \p M.
-    [[nodiscard]] static PPerm identity(size_t M) {
-      return base_type::template identity<PPerm>(M);
+    [[nodiscard]] static PPerm one(size_t M) {
+      return base_type::template one<PPerm>(M);
     }
 
    private:
@@ -1597,9 +1575,9 @@ namespace libsemigroups {
     //!
     //! \exceptions
     //! \no_libsemigroups_except
-    [[nodiscard]] Perm identity() const {
-      return identity(degree());
-    }
+    // [[nodiscard]] Perm one() const {
+    //   return one(degree());
+    // }
 
     //! Returns the identity permutation on the given number of points.
     //!
@@ -1616,8 +1594,8 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! Linear in \p M.
-    [[nodiscard]] static Perm identity(size_t M) {
-      return base_type::template identity<Perm>(M);
+    [[nodiscard]] static Perm one(size_t M) {
+      return base_type::template one<Perm>(M);
     }
   };
 
@@ -1665,118 +1643,138 @@ namespace libsemigroups {
   }
 
   ////////////////////////////////////////////////////////////////////////
-  // Helper namespace
+  // Helper functions
   ////////////////////////////////////////////////////////////////////////
-  namespace transf {
-    // TODO doc
-    template <typename Transf, typename Image>
-    void image(Transf const& x, std::vector<Image>& im);
 
-    // TODO doc
-    template <typename Transf>
-    [[nodiscard]] std::vector<typename Transf::point_type>
-    image(Transf const& x);
+  // JDM decided not to use a namespace here because there are multiple classes,
+  // and it just seemed to complicated.
+  // TODO doc
+  template <typename Transf, typename Image>
+  void image(Transf const& x, std::vector<Image>& im);
 
-    // TODO doc
-    template <typename Transf, typename Image>
-    void domain(Transf const& x, std::vector<Image>& im);
+  // TODO doc
+  template <typename Transf>
+  [[nodiscard]] std::vector<typename Transf::point_type> image(Transf const& x);
 
-    // TODO doc
-    template <typename Transf>
-    [[nodiscard]] std::vector<typename Transf::point_type>
-    domain(Transf const& x);
+  // TODO doc
+  template <typename Transf, typename Image>
+  void domain(Transf const& x, std::vector<Image>& im);
 
-    //! Returns the right one of this.
-    //!
-    //! This function returns a newly constructed partial perm with
-    //! degree equal to \p M that fixes every value in the range of \c this,
-    //! and is \ref UNDEFINED on any other values.
-    //!
-    //! \returns
-    //! A value of type \c PPerm.
-    //!
-    //! \exceptions
-    //! \no_libsemigroups_except
-    //!
-    //! \complexity
-    //! Linear in degree()
-    template <size_t N, typename Scalar>
-    [[nodiscard]] PPerm<N, Scalar> right_one(PPerm<N, Scalar> const& x);
+  // TODO doc
+  template <typename Transf>
+  [[nodiscard]] std::vector<typename Transf::point_type>
+  domain(Transf const& x);
 
-    //! Returns the left one of this.
-    //!
-    //! This function returns a newly constructed partial perm with
-    //! degree equal to \p M that fixes every value in the domain of \c this,
-    //! and is \ref UNDEFINED on any other values.
-    //!
-    //! \returns
-    //! A value of type \c PPerm.
-    //!
-    //! \exceptions
-    //! \no_libsemigroups_except
-    //!
-    //! \complexity
-    //! Linear in degree()
-    template <size_t N, typename Scalar>
-    [[nodiscard]] PPerm<N, Scalar> left_one(PPerm<N, Scalar> const& x);
+  //! Returns the identity transformation on degree() points.
+  //!
+  //! This function returns a newly constructed partial transformation with
+  //! degree equal to the degree of \c this that fixes every value from \c 0
+  //! to degree().
+  //!
+  //! \tparam Subclass
+  //! A class derived from libsemigroups::PTransfPolymorphicBase.
+  //!
+  //! \returns
+  //! A value of type \c Subclass.
+  //!
+  //! \exceptions
+  //! \noexcept
+  template <typename Subclass>
+  [[nodiscard]] Subclass one(Subclass const& x) {
+    static_assert(IsDerivedFromPTransf<Subclass>,
+                  "the template parameter Subclass must be derived from "
+                  "PTransfPolymorphicBase");
+    return Subclass::one(x.degree());
+  }
 
-    //! Replace contents of a partial perm with the inverse of another.
-    //!
-    //! This function inverts \p this into \c that.
-    //!
-    //! \param that the partial perm to invert.
-    //!
-    //! \exceptions
-    //! \no_libsemigroups_except
-    //!
-    //! \complexity
-    //! Linear in degree()
-    // Put the inverse of this into that
-    // TODO to tpp file
-    template <size_t N, typename Scalar>
-    void inverse(PPerm<N, Scalar> const& from, PPerm<N, Scalar>& to);
+  //! Returns the right one of this.
+  //!
+  //! This function returns a newly constructed partial perm with
+  //! degree equal to \p M that fixes every value in the range of \c this,
+  //! and is \ref UNDEFINED on any other values.
+  //!
+  //! \returns
+  //! A value of type \c PPerm.
+  //!
+  //! \exceptions
+  //! \no_libsemigroups_except
+  //!
+  //! \complexity
+  //! Linear in degree()
+  template <size_t N, typename Scalar>
+  [[nodiscard]] PPerm<N, Scalar> right_one(PPerm<N, Scalar> const& x);
 
-    //! Returns the inverse.
-    //!
-    //! This function returns a newly constructed inverse of \c this.
-    //!
-    //! \returns
-    //! A value of type \c PPerm.
-    //!
-    //! \exceptions
-    //! \no_libsemigroups_except
-    //!
-    //! \complexity
-    //! Linear in degree()
-    template <size_t N, typename Scalar>
-    [[nodiscard]] PPerm<N, Scalar> inverse(PPerm<N, Scalar> const& from) {
-      PPerm<N, Scalar> to(from.degree());
-      inverse(from, to);
-      return to;
-    }
+  //! Returns the left one of this.
+  //!
+  //! This function returns a newly constructed partial perm with
+  //! degree equal to \p M that fixes every value in the domain of \c this,
+  //! and is \ref UNDEFINED on any other values.
+  //!
+  //! \returns
+  //! A value of type \c PPerm.
+  //!
+  //! \exceptions
+  //! \no_libsemigroups_except
+  //!
+  //! \complexity
+  //! Linear in degree()
+  template <size_t N, typename Scalar>
+  [[nodiscard]] PPerm<N, Scalar> left_one(PPerm<N, Scalar> const& x);
 
-    //! Returns the inverse.
-    //!
-    //! This function returns a newly constructed inverse of \c this.
-    //! The *inverse* of a permutation \f$f\f$ is the permutation \f$g\f$ such
-    //! that \f$fg = gf\f$ is the identity permutation of degree \f$n\f$.
-    //!
-    //! \returns
-    //! A value of type \c PPerm.
-    //!
-    //! \exceptions
-    //! \no_libsemigroups_except
-    //!
-    //! \complexity
-    //! Linear in degree()
-    template <size_t N, typename Scalar>
-    void inverse(Perm<N, Scalar> const& from, Perm<N, Scalar>& to);
+  //! Replace contents of a partial perm with the inverse of another.
+  //!
+  //! This function inverts \p this into \c that.
+  //!
+  //! \param that the partial perm to invert.
+  //!
+  //! \exceptions
+  //! \no_libsemigroups_except
+  //!
+  //! \complexity
+  //! Linear in degree()
+  // Put the inverse of this into that
+  template <size_t N, typename Scalar>
+  void inverse(PPerm<N, Scalar> const& from, PPerm<N, Scalar>& to);
 
-    // TODO doc
-    template <size_t N, typename Scalar>
-    [[nodiscard]] Perm<N, Scalar> inverse(Perm<N, Scalar> const& from);
+  //! Returns the inverse.
+  //!
+  //! This function returns a newly constructed inverse of \c this.
+  //!
+  //! \returns
+  //! A value of type \c PPerm.
+  //!
+  //! \exceptions
+  //! \no_libsemigroups_except
+  //!
+  //! \complexity
+  //! Linear in degree()
+  template <size_t N, typename Scalar>
+  [[nodiscard]] PPerm<N, Scalar> inverse(PPerm<N, Scalar> const& from) {
+    PPerm<N, Scalar> to(from.degree());
+    inverse(from, to);
+    return to;
+  }
 
-  }  // namespace transf
+  //! Returns the inverse.
+  //!
+  //! This function returns a newly constructed inverse of \c this.
+  //! The *inverse* of a permutation \f$f\f$ is the permutation \f$g\f$ such
+  //! that \f$fg = gf\f$ is the identity permutation of degree \f$n\f$.
+  //!
+  //! \returns
+  //! A value of type \c PPerm.
+  //!
+  //! \exceptions
+  //! \no_libsemigroups_except
+  //!
+  //! \complexity
+  //! Linear in degree()
+  template <size_t N, typename Scalar>
+  void inverse(Perm<N, Scalar> const& from, Perm<N, Scalar>& to);
+
+  // TODO doc
+  template <size_t N, typename Scalar>
+  [[nodiscard]] Perm<N, Scalar> inverse(Perm<N, Scalar> const& from);
 
   ////////////////////////////////////////////////////////////////////////
   // Adapters
@@ -1796,7 +1794,7 @@ namespace libsemigroups {
     }
 
     [[nodiscard]] T operator()(size_t N = 0) const {
-      return T::identity(N);
+      return T::one(N);
     }
   };
 
@@ -1866,7 +1864,6 @@ namespace libsemigroups {
   template <size_t N, typename Scalar, size_t M>
   struct ImageRightAction<Transf<N, Scalar>, BitSet<M>> {
     //! Stores the image set of \c pt under \c x in \p res.
-    // TODO to tpp
     void operator()(BitSet<M>&               res,
                     BitSet<M> const&         pt,
                     Transf<N, Scalar> const& x) const {
@@ -1884,23 +1881,8 @@ namespace libsemigroups {
   //! \sa ImageLeftAction
   template <size_t N, typename Scalar, typename T>
   struct ImageLeftAction<Transf<N, Scalar>, T> {
-    // TODO to tpp
     //! Stores the image of \p pt under the left action of \p x in \p res.
-    void operator()(T& res, T const& pt, Transf<N, Scalar> const& x) const {
-      res.clear();
-      res.resize(x.degree());
-      static thread_local std::vector<Scalar> buf;
-      buf.clear();
-      buf.resize(x.degree(), Scalar(UNDEFINED));
-      Scalar next = 0;
-
-      for (size_t i = 0; i < res.size(); ++i) {
-        if (buf[pt[x[i]]] == UNDEFINED) {
-          buf[pt[x[i]]] = next++;
-        }
-        res[i] = buf[pt[x[i]]];
-      }
-    }
+    void operator()(T& res, T const& pt, Transf<N, Scalar> const& x) const;
   };
 
   ////////////////////////////////////////////////////////////////////////
@@ -1946,16 +1928,7 @@ namespace libsemigroups {
     // StaticVector1::resize is).
     //! Modifies \p res to contain the image set of \p x; that is, \p res[i]
     //! will be \c true if and only if `x[j] = i` for some \f$j\f$.
-    // TODO to tpp
-    void operator()(T& res, Transf<N, Scalar> const& x) const {
-      res.clear();
-      res.resize(x.degree());
-      for (size_t i = 0; i < res.size(); ++i) {
-        res[i] = x[i];
-      }
-      std::sort(res.begin(), res.end());
-      res.erase(std::unique(res.begin(), res.end()), res.end());
-    }
+    void operator()(T& res, Transf<N, Scalar> const& x) const;
   };
 
   //! Specialization of the adapter Lambda for instances of Transformation and
@@ -1967,19 +1940,7 @@ namespace libsemigroups {
     // not noexcept because it can throw
     //! Modifies \p res to contain the image set of \p x; that is, \p res[i]
     //! will be \c true if and only if `x[j] = i` for some \f$j\f$.
-    // TODO to tpp
-    void operator()(BitSet<M>& res, Transf<N, Scalar> const& x) const {
-      if (x.degree() > M) {
-        LIBSEMIGROUPS_EXCEPTION(
-            "expected a transformation of degree at most {}, found {}",
-            M,
-            x.degree());
-      }
-      res.reset();
-      for (size_t i = 0; i < x.degree(); ++i) {
-        res.set(x[i]);
-      }
-    }
+    void operator()(BitSet<M>& res, Transf<N, Scalar> const& x) const;
   };
 
   // T = std::vector<S> or StaticVector1<S, N>
@@ -2002,22 +1963,7 @@ namespace libsemigroups {
     //! \no_libsemigroups_except
     // not noexcept because std::vector::resize isn't (although
     // StaticVector1::resize is).
-    // TODO to tpp
-    void operator()(T& res, Transf<N, Scalar> const& x) const {
-      res.clear();
-      res.resize(x.degree());
-      static thread_local std::vector<Scalar> buf;
-      buf.clear();
-      buf.resize(x.degree(), Scalar(UNDEFINED));
-      Scalar next = 0;
-
-      for (size_t i = 0; i < res.size(); ++i) {
-        if (buf[x[i]] == UNDEFINED) {
-          buf[x[i]] = next++;
-        }
-        res[i] = buf[x[i]];
-      }
-    }
+    void operator()(T& res, Transf<N, Scalar> const& x) const;
   };
 
   //! Specialization of the adapter Rank for instances of Transf<N, Scalar>.
@@ -2058,7 +2004,7 @@ namespace libsemigroups {
                     PPerm<N, Scalar> const& pt,
                     PPerm<N, Scalar> const& x) const noexcept {
       res.product_inplace(pt, x);
-      res = transf::right_one(res);
+      res = right_one(res);
     }
   };
 
@@ -2071,16 +2017,7 @@ namespace libsemigroups {
   template <size_t N, typename Scalar, typename T>
   struct ImageRightAction<PPerm<N, Scalar>, T> {
     //! Stores the image set of \c pt under \c x in \p res.
-    // TODO to tpp
-    void operator()(T& res, T const& pt, PPerm<N, Scalar> const& x) const {
-      res.clear();
-      for (auto i : pt) {
-        if (x[i] != UNDEFINED) {
-          res.push_back(x[i]);
-        }
-      }
-      std::sort(res.begin(), res.end());
-    }
+    void operator()(T& res, T const& pt, PPerm<N, Scalar> const& x) const;
   };
 
   // Fastest, but limited to at most degree 64
@@ -2091,18 +2028,9 @@ namespace libsemigroups {
   template <size_t N, typename Scalar, size_t M>
   struct ImageRightAction<PPerm<N, Scalar>, BitSet<M>> {
     //! Stores the image set of \c pt under \c x in \p res.
-    // TODO to tpp
     void operator()(BitSet<M>&              res,
                     BitSet<M> const&        pt,
-                    PPerm<N, Scalar> const& x) const {
-      res.reset();
-      // Apply the lambda to every set bit in pt
-      pt.apply([&x, &res](size_t i) {
-        if (x[i] != UNDEFINED) {
-          res.set(x[i]);
-        }
-      });
-    }
+                    PPerm<N, Scalar> const& x) const;
   };
 
   // Slowest
@@ -2117,7 +2045,7 @@ namespace libsemigroups {
                     PPerm<N, Scalar> const& pt,
                     PPerm<N, Scalar> const& x) const noexcept {
       res.product_inplace(x, pt);
-      res = transf::left_one(res);
+      res = left_one(res);
     }
   };
 
@@ -2184,21 +2112,7 @@ namespace libsemigroups {
   struct Lambda<PPerm<N, Scalar>, BitSet<M>> {
     //! Modifies \p res to contain the image set of \p x; that is, \p res[i]
     //! will be \c true if and only if `x[j] = i` for some \f$j\f$.
-    // TODO to tpp
-    void operator()(BitSet<M>& res, PPerm<N, Scalar> const& x) const {
-      if (x.degree() > M) {
-        LIBSEMIGROUPS_EXCEPTION(
-            "expected partial perm of degree at most {}, found {}",
-            M,
-            x.degree());
-      }
-      res.reset();
-      for (size_t i = 0; i < x.degree(); ++i) {
-        if (x[i] != UNDEFINED) {
-          res.set(x[i]);
-        }
-      }
-    }
+    void operator()(BitSet<M>& res, PPerm<N, Scalar> const& x) const;
   };
 
   //! Specialization of the adapter Rho for instances of PPerm and
@@ -2209,18 +2123,7 @@ namespace libsemigroups {
   struct Rho<PPerm<N, Scalar>, BitSet<M>> {
     //! Modifies \p res to contain the domain of \p x; that is, \p res[i]
     //! will be \c true if and only if `x[i] != UNDEFINED`.
-    // TODO to tpp
-    void operator()(BitSet<M>& res, PPerm<N, Scalar> const& x) const {
-      if (x.degree() > M) {
-        LIBSEMIGROUPS_EXCEPTION(
-            "expected partial perm of degree at most {}, found {}",
-            M,
-            x.degree());
-      }
-      static PPerm<N, Scalar> xx({});
-      inverse(x, xx);
-      Lambda<PPerm<N, Scalar>, BitSet<M>>()(res, xx);
-    }
+    void operator()(BitSet<M>& res, PPerm<N, Scalar> const& x) const;
   };
 
   //! Specialization of the adapter Rank for instances of PPerm.

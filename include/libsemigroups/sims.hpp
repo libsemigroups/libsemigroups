@@ -59,10 +59,10 @@
 #include <atomic>
 #include <iostream>
 
-#include <algorithm>   // for max
-#include <cstddef>     // for size_t
-#include <cstdint>     // for uint64_t, uint32_t
-#include <filesystem>  // for path, create_directories, temp_directory_path
+#include <algorithm>  // for max
+#include <cstddef>    // for size_t
+#include <cstdint>    // for uint64_t, uint32_t
+// #include <filesystem>  // for path, create_directories, temp_directory_path
 #include <functional>  // for function
 #include <iterator>    // for forward_iterator_tag
 #include <mutex>       // for mutex
@@ -2979,73 +2979,73 @@ namespace libsemigroups {
     //!
     //! Create and save a graphical rendering of the inclusion poset of a
     //! collection of word graphs.
-    template <typename Iterator>
-    void dot_poset(std::string_view work_dir,
-                   std::string_view fname,
-                   Iterator         first,
-                   Iterator         last) {
-      int  index = 0;
-      auto wdir  = std::filesystem::path(work_dir);
-      std::filesystem::create_directories(wdir);
-      fmt::print("\nUsing temporary directory {} . . .\n", wdir.c_str());
+    // template <typename Iterator>
+    // void dot_poset(std::string_view work_dir,
+    //                std::string_view fname,
+    //                Iterator         first,
+    //                Iterator         last) {
+    //   int  index = 0;
+    //   auto wdir  = std::filesystem::path(work_dir);
+    //   std::filesystem::create_directories(wdir);
+    //   fmt::print("\nUsing temporary directory {} . . .\n", wdir.c_str());
 
-      for (auto it = first; it != last; ++it) {
-        auto copy = *it;
-        copy.induced_subgraph_no_checks(0, copy.number_of_active_nodes());
-        Dot         dot_graph = word_graph::dot(copy);
-        std::string name      = std::to_string(index);
-        dot_graph.name(name);
-        wdir /= fmt::format("{}.gv", index++);
-        std::ofstream f(wdir);
-        f << dot_graph.to_string();  // TODO should be f << dot_graph;
-        wdir.remove_filename();
-      }
+    //   for (auto it = first; it != last; ++it) {
+    //     auto copy = *it;
+    //     copy.induced_subgraph_no_checks(0, copy.number_of_active_nodes());
+    //     Dot         dot_graph = word_graph::dot(copy);
+    //     std::string name      = std::to_string(index);
+    //     dot_graph.name(name);
+    //     wdir /= fmt::format("{}.gv", index++);
+    //     std::ofstream f(wdir);
+    //     f << dot_graph.to_string();  // TODO should be f << dot_graph;
+    //     wdir.remove_filename();
+    //   }
 
-      auto mat = poset(first, last);
-      auto n   = mat.number_of_rows();
+    //   auto mat = poset(first, last);
+    //   auto n   = mat.number_of_rows();
 
-      Dot result;
+    //   Dot result;
 
-      result.kind(Dot::Kind::digraph)
-          .add_attr("node [shape=\"box\"]")
-          .add_attr("rankdir=\"BT\"");
-      index = 0;
-      for (size_t i = 0; i < n; ++i) {
-        wdir /= fmt::format("{}.png", index);
-        result.add_node(index)
-            .add_attr("image", wdir.c_str())
-            .add_attr("xlabel", std::to_string(index++))
-            .add_attr("label", "__NONE__");
-        wdir.remove_filename();
-      }
-      for (size_t i = 0; i < n; ++i) {
-        for (size_t j = 0; j < n; ++j) {
-          if (mat(i, j)) {
-            result.add_edge(fmt::format("{}", i), fmt::format("{}", j))
-                .add_attr("minlen", "2.5");
-          }
-        }
-      }
-      {
-        std::ofstream f(std::string(fname) + ".gv");
-        f << result.to_string();
-      }
-      int code = 0;
-      while (--index >= 0 && code == 0) {
-        wdir /= fmt::format("{}", index);
-        auto cmd = fmt::format("dot -Tpng {0}.gv > {0}.png", wdir.c_str());
-        code     = std::system(cmd.c_str());
-        wdir.remove_filename();
-      }
-      // TODO handle code if not 0
-      std::system(fmt::format("dot -Tpng {0}.gv > {0}.png", fname).c_str());
-    }
+    //   result.kind(Dot::Kind::digraph)
+    //       .add_attr("node [shape=\"box\"]")
+    //       .add_attr("rankdir=\"BT\"");
+    //   index = 0;
+    //   for (size_t i = 0; i < n; ++i) {
+    //     wdir /= fmt::format("{}.png", index);
+    //     result.add_node(index)
+    //         .add_attr("image", wdir.c_str())
+    //         .add_attr("xlabel", std::to_string(index++))
+    //         .add_attr("label", "__NONE__");
+    //     wdir.remove_filename();
+    //   }
+    //   for (size_t i = 0; i < n; ++i) {
+    //     for (size_t j = 0; j < n; ++j) {
+    //       if (mat(i, j)) {
+    //         result.add_edge(fmt::format("{}", i), fmt::format("{}", j))
+    //             .add_attr("minlen", "2.5");
+    //       }
+    //     }
+    //   }
+    //   {
+    //     std::ofstream f(std::string(fname) + ".gv");
+    //     f << result.to_string();
+    //   }
+    //   int code = 0;
+    //   while (--index >= 0 && code == 0) {
+    //     wdir /= fmt::format("{}", index);
+    //     auto cmd = fmt::format("dot -Tpng {0}.gv > {0}.png", wdir.c_str());
+    //     code     = std::system(cmd.c_str());
+    //     wdir.remove_filename();
+    //   }
+    //   // TODO handle code if not 0
+    //   std::system(fmt::format("dot -Tpng {0}.gv > {0}.png", fname).c_str());
+    // }
 
-    template <typename Iterator>
-    void dot_poset(std::string_view fname, Iterator first, Iterator last) {
-      auto tmp_dir = std::filesystem::temp_directory_path() / "libsemigroups";
-      dot_poset(tmp_dir.c_str(), fname, first, last);
-    }
+    // template <typename Iterator>
+    // void dot_poset(std::string_view fname, Iterator first, Iterator last) {
+    //   auto tmp_dir = std::filesystem::temp_directory_path() /
+    //   "libsemigroups"; dot_poset(tmp_dir.c_str(), fname, first, last);
+    // }
   }  // namespace sims
 
   //! \ingroup congruences_group

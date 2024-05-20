@@ -19,8 +19,6 @@
 // This file contains the declaration of the partial transformation class and
 // its subclasses.
 
-#include "libsemigroups/transf.hpp"
-#include <initializer_list>
 namespace libsemigroups {
 
   ////////////////////////////////////////////////////////////////////////
@@ -188,108 +186,111 @@ namespace libsemigroups {
   // transf namespace
   ////////////////////////////////////////////////////////////////////////
 
-  namespace transf {
-    template <typename Transf, typename Point>
-    void image(Transf const& x, std::vector<Point>& im) {
-      im.clear();
-      for (size_t i = 0; i < x.degree(); ++i) {
-        auto j = x[i];
-        if (j != x.undef()) {
-          im.push_back(j);
-        }
-      }
-      std::sort(im.begin(), im.end());
-      im.erase(std::unique(im.begin(), im.end()), im.end());
-    }
-
-    template <typename Transf>
-    std::vector<typename Transf::point_type> image(Transf const& x) {
-      std::vector<typename Transf::point_type> result;
-      image(x, result);
-      return result;
-    }
-
-    template <typename Transf, typename Point>
-    void domain(Transf const& x, std::vector<Point>& dom) {
-      dom.clear();
-      for (size_t i = 0; i < x.degree(); ++i) {
-        auto j = x[i];
-        if (j != x.undef()) {
-          dom.push_back(i);
-        }
-      }
-      std::sort(dom.begin(), dom.end());
-      dom.erase(std::unique(dom.begin(), dom.end()), dom.end());
-    }
-
-    template <typename Transf>
-    std::vector<typename Transf::point_type> domain(Transf const& x) {
-      std::vector<typename Transf::point_type> result;
-      domain(x, result);
-      return result;
-    }
-
-    template <size_t N, typename Scalar>
-    [[nodiscard]] PPerm<N, Scalar> right_one(PPerm<N, Scalar> const& x) {
-      size_t const     n = x.degree();
-      PPerm<N, Scalar> result(n);
-      std::fill(result.begin(), result.end(), static_cast<Scalar>(UNDEFINED));
-      for (size_t i = 0; i < n; ++i) {
-        if (x[i] != UNDEFINED) {
-          result[x[i]] = x[i];
-        }
-      }
-      return result;
-    }
-
-    template <size_t N, typename Scalar>
-    [[nodiscard]] PPerm<N, Scalar> left_one(PPerm<N, Scalar> const& x) {
-      size_t const     n = x.degree();
-      PPerm<N, Scalar> result(n);
-      std::fill(result.begin(), result.end(), static_cast<Scalar>(UNDEFINED));
-      for (size_t i = 0; i < n; ++i) {
-        if (x[i] != UNDEFINED) {
-          result[i] = i;
-        }
-      }
-      return result;
-    }
-
-    template <size_t N, typename Scalar>
-    void inverse(PPerm<N, Scalar> const& from, PPerm<N, Scalar>& to) {
-      if (to.degree() != from.degree()) {
-        LIBSEMIGROUPS_EXCEPTION("TODO");
-      }
-      std::fill(to.begin(), to.end(), static_cast<Scalar>(UNDEFINED));
-      for (size_t i = 0; i < from.degree(); ++i) {
-        if (from[i] != UNDEFINED) {
-          to[from[i]] = i;
-        }
+  template <typename Transf, typename Point>
+  void image(Transf const& x, std::vector<Point>& im) {
+    im.clear();
+    for (size_t i = 0; i < x.degree(); ++i) {
+      auto j = x[i];
+      if (j != x.undef()) {
+        im.push_back(j);
       }
     }
+    std::sort(im.begin(), im.end());
+    im.erase(std::unique(im.begin(), im.end()), im.end());
+  }
 
-    template <size_t N, typename Scalar>
-    void inverse(Perm<N, Scalar> const& from, Perm<N, Scalar>& to) {
-      if (to.degree() != from.degree()) {
-        LIBSEMIGROUPS_EXCEPTION("TODO");
+  template <typename Transf>
+  std::vector<typename Transf::point_type> image(Transf const& x) {
+    std::vector<typename Transf::point_type> result;
+    image(x, result);
+    return result;
+  }
+
+  template <typename Transf, typename Point>
+  void domain(Transf const& x, std::vector<Point>& dom) {
+    dom.clear();
+    for (size_t i = 0; i < x.degree(); ++i) {
+      auto j = x[i];
+      if (j != x.undef()) {
+        dom.push_back(i);
       }
-      std::fill(to.begin(), to.end(), static_cast<Scalar>(UNDEFINED));
-      for (size_t i = 0; i < from.degree(); ++i) {
+    }
+    std::sort(dom.begin(), dom.end());
+    dom.erase(std::unique(dom.begin(), dom.end()), dom.end());
+  }
+
+  template <typename Transf>
+  std::vector<typename Transf::point_type> domain(Transf const& x) {
+    std::vector<typename Transf::point_type> result;
+    domain(x, result);
+    return result;
+  }
+
+  template <size_t N, typename Scalar>
+  [[nodiscard]] PPerm<N, Scalar> right_one(PPerm<N, Scalar> const& x) {
+    size_t const     n = x.degree();
+    PPerm<N, Scalar> result(n);
+    std::fill(result.begin(), result.end(), static_cast<Scalar>(UNDEFINED));
+    for (size_t i = 0; i < n; ++i) {
+      if (x[i] != UNDEFINED) {
+        result[x[i]] = x[i];
+      }
+    }
+    return result;
+  }
+
+  template <size_t N, typename Scalar>
+  [[nodiscard]] PPerm<N, Scalar> left_one(PPerm<N, Scalar> const& x) {
+    size_t const     n = x.degree();
+    PPerm<N, Scalar> result(n);
+    std::fill(result.begin(), result.end(), static_cast<Scalar>(UNDEFINED));
+    for (size_t i = 0; i < n; ++i) {
+      if (x[i] != UNDEFINED) {
+        result[i] = i;
+      }
+    }
+    return result;
+  }
+
+  template <size_t N, typename Scalar>
+  void inverse(PPerm<N, Scalar> const& from, PPerm<N, Scalar>& to) {
+    if (to.degree() != from.degree()) {
+      LIBSEMIGROUPS_EXCEPTION(
+          "the arguments must have the same degrees, but found {} != {}",
+          to.degree(),
+          from.degree());
+    }
+    std::fill(to.begin(), to.end(), static_cast<Scalar>(UNDEFINED));
+    for (size_t i = 0; i < from.degree(); ++i) {
+      if (from[i] != UNDEFINED) {
         to[from[i]] = i;
       }
     }
+  }
 
-    template <size_t N, typename Scalar>
-    [[nodiscard]] Perm<N, Scalar> inverse(Perm<N, Scalar> const& from) {
-      Perm<N, Scalar> to(from.degree());
-      inverse(from, to);
-      return to;
+  template <size_t N, typename Scalar>
+  void inverse(Perm<N, Scalar> const& from, Perm<N, Scalar>& to) {
+    if (to.degree() != from.degree()) {
+      LIBSEMIGROUPS_EXCEPTION(
+          "the arguments must have the same degrees, but found {} != {}",
+          to.degree(),
+          from.degree());
     }
+    std::fill(to.begin(), to.end(), static_cast<Scalar>(UNDEFINED));
+    for (size_t i = 0; i < from.degree(); ++i) {
+      to[from[i]] = i;
+    }
+  }
 
-  }  // namespace transf
+  template <size_t N, typename Scalar>
+  [[nodiscard]] Perm<N, Scalar> inverse(Perm<N, Scalar> const& from) {
+    Perm<N, Scalar> to(from.degree());
+    inverse(from, to);
+    return to;
+  }
 
   ////////////////////////////////////////////////////////////////////////
-  // ImageRight/LeftAction - Transf
+  // Adapters
   ////////////////////////////////////////////////////////////////////////
 
   template <size_t N, typename Scalar, typename T>
@@ -303,5 +304,133 @@ namespace libsemigroups {
     }
     std::sort(res.begin(), res.end());
     res.erase(std::unique(res.begin(), res.end()), res.end());
+  }
+
+  template <size_t N, typename Scalar, typename T>
+  void ImageLeftAction<Transf<N, Scalar>, T>::operator()(
+      T&                       res,
+      T const&                 pt,
+      Transf<N, Scalar> const& x) const {
+    res.clear();
+    res.resize(x.degree());
+    static thread_local std::vector<Scalar> buf;
+    buf.clear();
+    buf.resize(x.degree(), Scalar(UNDEFINED));
+    Scalar next = 0;
+
+    for (size_t i = 0; i < res.size(); ++i) {
+      if (buf[pt[x[i]]] == UNDEFINED) {
+        buf[pt[x[i]]] = next++;
+      }
+      res[i] = buf[pt[x[i]]];
+    }
+  }
+
+  template <size_t N, typename Scalar, typename T>
+  void
+  Lambda<Transf<N, Scalar>, T>::operator()(T&                       res,
+                                           Transf<N, Scalar> const& x) const {
+    res.clear();
+    res.resize(x.degree());
+    for (size_t i = 0; i < res.size(); ++i) {
+      res[i] = x[i];
+    }
+    std::sort(res.begin(), res.end());
+    res.erase(std::unique(res.begin(), res.end()), res.end());
+  }
+
+  template <size_t N, typename Scalar, size_t M>
+  void Lambda<Transf<N, Scalar>, BitSet<M>>::operator()(
+      BitSet<M>&               res,
+      Transf<N, Scalar> const& x) const {
+    if (x.degree() > M) {
+      LIBSEMIGROUPS_EXCEPTION(
+          "expected a transformation of degree at most {}, found {}",
+          M,
+          x.degree());
+    }
+    res.reset();
+    for (size_t i = 0; i < x.degree(); ++i) {
+      res.set(x[i]);
+    }
+  }
+
+  template <size_t N, typename Scalar, typename T>
+  void Rho<Transf<N, Scalar>, T>::operator()(T&                       res,
+                                             Transf<N, Scalar> const& x) const {
+    res.clear();
+    res.resize(x.degree());
+    static thread_local std::vector<Scalar> buf;
+    buf.clear();
+    buf.resize(x.degree(), Scalar(UNDEFINED));
+    Scalar next = 0;
+
+    for (size_t i = 0; i < res.size(); ++i) {
+      if (buf[x[i]] == UNDEFINED) {
+        buf[x[i]] = next++;
+      }
+      res[i] = buf[x[i]];
+    }
+  }
+
+  template <size_t N, typename Scalar, typename T>
+  void ImageRightAction<PPerm<N, Scalar>, T>::operator()(
+      T&                      res,
+      T const&                pt,
+      PPerm<N, Scalar> const& x) const {
+    res.clear();
+    for (auto i : pt) {
+      if (x[i] != UNDEFINED) {
+        res.push_back(x[i]);
+      }
+    }
+    std::sort(res.begin(), res.end());
+  }
+
+  template <size_t N, typename Scalar, size_t M>
+  void ImageRightAction<PPerm<N, Scalar>, BitSet<M>>::operator()(
+      BitSet<M>&              res,
+      BitSet<M> const&        pt,
+      PPerm<N, Scalar> const& x) const {
+    res.reset();
+    // Apply the lambda to every set bit in pt
+    pt.apply([&x, &res](size_t i) {
+      if (x[i] != UNDEFINED) {
+        res.set(x[i]);
+      }
+    });
+  }
+
+  template <size_t N, typename Scalar, size_t M>
+  void Lambda<PPerm<N, Scalar>, BitSet<M>>::operator()(
+      BitSet<M>&              res,
+      PPerm<N, Scalar> const& x) const {
+    if (x.degree() > M) {
+      LIBSEMIGROUPS_EXCEPTION(
+          "expected partial perm of degree at most {}, found {}",
+          M,
+          x.degree());
+    }
+    res.reset();
+    for (size_t i = 0; i < x.degree(); ++i) {
+      if (x[i] != UNDEFINED) {
+        res.set(x[i]);
+      }
+    }
+  }
+
+  template <size_t N, typename Scalar, size_t M>
+  void Rho<PPerm<N, Scalar>, BitSet<M>>::operator()(
+      BitSet<M>&              res,
+      PPerm<N, Scalar> const& x) const {
+    if (x.degree() > M) {
+      LIBSEMIGROUPS_EXCEPTION(
+          "expected partial perm of degree at most {}, found {}",
+          M,
+          x.degree());
+    }
+    static PPerm<N, Scalar> xx({});
+    inverse(x, xx);
+    Lambda<PPerm<N, Scalar>, BitSet<M>>()(res, xx);
   }
 }  // namespace libsemigroups

@@ -42,8 +42,7 @@ namespace libsemigroups {
 
       auto z = T({0, 1, 0, 3});
       REQUIRE(x < z);
-      REQUIRE(transf::image(z)
-              == std::vector<typename T::point_type>({0, 1, 3}));
+      REQUIRE(image(z) == std::vector<typename T::point_type>({0, 1, 3}));
 
       auto expected = T({0, 0, 0});
       REQUIRE(expected < x);
@@ -51,7 +50,7 @@ namespace libsemigroups {
       REQUIRE(z.degree() == 4);
       REQUIRE(Complexity<T>()(z) == 4);
       REQUIRE(z.rank() == 3);
-      auto id = z.identity();
+      auto id = one(z);
 
       expected = T({0, 1, 2, 3});
       REQUIRE(id == expected);
@@ -96,7 +95,7 @@ namespace libsemigroups {
       REQUIRE(y.rank() == 3);
       REQUIRE(x.rank() == 3);
 
-      auto id  = x.identity();
+      auto id  = one(x);
       expected = T({0, 1, 2, 3, 4, 5, 6, 7, 8, 9});
       REQUIRE(id == expected);
 
@@ -112,9 +111,7 @@ namespace libsemigroups {
     }
     template <typename T>
     bool test_inverse(T const& p) {
-      // TODO make identity a helper also
-      return p * transf::inverse(p) == p.identity()
-             && transf::inverse(p) * p == p.identity();
+      return p * inverse(p) == one(p) && inverse(p) * p == one(p);
     }
   }  // namespace
 
@@ -260,8 +257,8 @@ namespace libsemigroups {
     REQUIRE_THROWS_AS(PPerm<5>::make({1, 0, 3, 6, 4}), LibsemigroupsException);
     REQUIRE_THROWS_AS(PPerm<5>::make({1, 5, 0, 3, 2}), LibsemigroupsException);
     auto x = PPerm<5>::make({0, 2}, {3, 0}, 5);
-    REQUIRE(transf::image(x) == std::vector<point_type>({0, 3}));
-    REQUIRE(transf::domain(x) == std::vector<point_type>({0, 2}));
+    REQUIRE(image(x) == std::vector<point_type>({0, 3}));
+    REQUIRE(domain(x) == std::vector<point_type>({0, 2}));
   }
 
   LIBSEMIGROUPS_TEST_CASE("Perm", "007", "inverse", "[quick][perm]") {
