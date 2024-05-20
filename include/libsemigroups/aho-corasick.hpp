@@ -259,8 +259,6 @@ namespace libsemigroups {
   namespace aho_corasick {
     using index_type = AhoCorasick::index_type;
 
-    // TODO(0) Can these all be made inline?
-    // JDM: yes they can
     template <typename Word>
     inline void add_word_no_checks(AhoCorasick& ac, Word const& w) {
       ac.add_word_no_checks(w.cbegin(), w.cend());
@@ -282,10 +280,11 @@ namespace libsemigroups {
     }
 
     template <typename Iterator>
-    [[nodiscard]] index_type traverse_from_no_checks(AhoCorasick const& ac,
-                                                     index_type         start,
-                                                     Iterator           first,
-                                                     Iterator           last);
+    [[nodiscard]] inline index_type
+    traverse_from_no_checks(AhoCorasick const& ac,
+                            index_type         start,
+                            Iterator           first,
+                            Iterator           last);
 
     template <typename Letter>
     [[nodiscard]] inline index_type
@@ -303,10 +302,10 @@ namespace libsemigroups {
     }
 
     template <typename Iterator>
-    [[nodiscard]] index_type traverse_from(AhoCorasick const& ac,
-                                           index_type         start,
-                                           Iterator           first,
-                                           Iterator           last) {
+    [[nodiscard]] inline index_type traverse_from(AhoCorasick const& ac,
+                                                  index_type         start,
+                                                  Iterator           first,
+                                                  Iterator           last) {
       ac.validate_active_node_index(start);
       return traverse_from_no_checks(ac, start, first, last);
     }
@@ -325,9 +324,9 @@ namespace libsemigroups {
     }
 
     template <typename Iterator>
-    [[nodiscard]] index_type traverse(AhoCorasick const& ac,
-                                      Iterator           first,
-                                      Iterator           last) {
+    [[nodiscard]] inline index_type traverse(AhoCorasick const& ac,
+                                             Iterator           first,
+                                             Iterator           last) {
       return traverse_from_no_checks(ac, AhoCorasick::root, first, last);
     }
 
