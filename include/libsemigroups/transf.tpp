@@ -434,7 +434,7 @@ namespace libsemigroups {
           M,
           x.degree());
     }
-    static PPerm<N, Scalar> xx({});
+    static PPerm<N, Scalar> xx(x.degree());
     inverse(x, xx);
     Lambda<PPerm<N, Scalar>, BitSet<M>>()(res, xx);
   }

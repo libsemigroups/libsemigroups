@@ -1357,7 +1357,7 @@ namespace libsemigroups {
 
     //! Construct from domain, range, and degree, and validate
     //!
-    //! Constructs a partial perm of degree \p M such that `(dom[i])f =
+    //! Constructs a partial perm of degree \p M such that `f[dom[i]] =
     //! ran[i]` for all \c i and which is \ref UNDEFINED on every other value
     //! in the range \f$[0, M)\f$.
     //!
@@ -1373,7 +1373,6 @@ namespace libsemigroups {
     //! * \p dom and \p ran do not have the same size
     //! * any value in \p dom or \p ran is greater than \p M
     //! * there are repeated entries in \p dom or \p ran.
-    // TODO update doc
     template <typename OtherScalar>
     [[nodiscard]] static PPerm make(std::vector<OtherScalar> const& dom,
                                     std::vector<OtherScalar> const& ran,
@@ -2051,7 +2050,7 @@ namespace libsemigroups {
       return (*this)(x.degree());
     }
 
-    [[nodiscard]] T operator()(size_t N = 0) const {
+    [[nodiscard]] T operator()(size_t N) const {
       return T::one(N);
     }
   };
@@ -2325,7 +2324,7 @@ namespace libsemigroups {
   struct ImageLeftAction<PPerm<N, Scalar>, T> {
     void operator()(T& res, T const& pt, PPerm<N, Scalar> const& x) const {
       //! Stores the inverse image set of \c pt under \c x in \p res.
-      static PPerm<N, Scalar> xx({});
+      static PPerm<N, Scalar> xx(x.degree());
       inverse(x, xx);  // invert x into xx
       ImageRightAction<PPerm<N, Scalar>, T>()(res, pt, xx);
     }
@@ -2401,11 +2400,11 @@ namespace libsemigroups {
   // Perm
   ////////////////////////////////////////////////////////////////////////
 
-  // TODO(later) this could work for everything derived from PTransf
   //! Specialization of the adapter ImageRightAction for instances of
   //! Permutation.
   //!
   //! \sa ImageRightAction.
+  // TODO(later) this could work for everything derived from PTransf
   template <size_t N, typename Scalar, typename T>
   struct ImageRightAction<Perm<N, Scalar>,
                           T,

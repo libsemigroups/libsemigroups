@@ -38,7 +38,7 @@ namespace libsemigroups {
            LeastPPerm<9>({0, 1, 2, 3, 5, 6, 8}, {2, 4, 6, 1, 5, 8, 7}, 9),
            LeastPPerm<9>({0, 1, 2, 3, 5, 8}, {7, 3, 6, 4, 2, 5}, 9)};
     Konieczny<LeastPPerm<9>> S(gens);
-    for (auto x : gens) {
+    for (auto const& x : gens) {
       REQUIRE(S.contains(x));
       REQUIRE(S.D_class_of_element(x).contains(x));
     }

@@ -42,7 +42,7 @@
 
 namespace libsemigroups {
   using literals::operator""_w;
-  using words::   operator+;
+  using words::operator+;
 
   namespace {
 
@@ -77,7 +77,7 @@ namespace libsemigroups {
 
       LIBSEMIGROUPS_ASSERT(n >= 4);
       LIBSEMIGROUPS_ASSERT(e12_value < pi_start
-                           | e12_value >= pi_start + n - 2);
+                           || e12_value >= pi_start + n - 2);
 
       word_type              e12 = {e12_value};
       std::vector<word_type> pi;
