@@ -312,28 +312,91 @@ namespace libsemigroups {
     [[nodiscard]] index_type traverse_no_checks(index_type  current,
                                                 letter_type a) const;
 
+    //! See \ref traverse_no_checks
+    //!
+    //! \throws LibsemigroupsException if `validate_active_node_index(current)`
+    //! throws.
     [[nodiscard]] index_type traverse(index_type current, letter_type a) const {
       validate_active_node_index(current);
       return traverse_no_checks(current, a);
     }
 
+    //! \brief Find the signature of a node
+    //!
+    //! Changes \p w in-place to contain the signature of the node with index
+    //! \p i . Recall that the *signature* of a node  \f$n\f$ is the word
+    //! consisting of the edge labels of the unique path from the root to
+    //! \f$n\f$.
+    //!
+    //! \param w the word to clear and change in-place
+    //! \param i the index of the node whose signature is sought
+    //!
+    //! \returns (None)
+    //!
+    //! \warning This function does no checks on its arguments whatsoever. In
+    //! particular, if the index \p i is greater than the number of nodes that
+    //! have ever been created, then bad things will happen.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
     // TODO(2) template to accept Iterator not word_type&
     void signature_no_checks(word_type& w, index_type i) const;
 
+    //! See \ref signature_no_checks
+    //!
+    //! \throws LibsemigroupsException if `validate_active_node_index(i)`
+    //! throws.
     void signature(word_type& w, index_type i) const {
       validate_active_node_index(i);
       signature_no_checks(w, i);
     }
 
+    //! \brief Calculate the height of a node
+    //!
+    //! \param i the index of the node whose height is sought
+    //!
+    //! \returns A value of type `size_t`
+    //!
+    //! \warning This function does no checks on its arguments whatsoever. In
+    //! particular, if the index \p i is greater than the number of nodes that
+    //! have ever been created, then bad things will happen.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
     [[nodiscard]] size_t height_no_checks(index_type i) const;
 
+    //! See \ref height_no_checks
+    //!
+    //! \throws LibsemigroupsException if `validate_active_node_index(i)`
+    //! throws.
     [[nodiscard]] size_t height(index_type i) const {
       validate_active_node_index(i);
       return height_no_checks(i);
     }
 
+    //! \brief Calculate the index of the suffix link of a node
+    //!
+    //! Calculate the index of a suffix link of a node. Recall that the
+    //! *suffix link* of a node with signature \f$W\f$ is the node with the
+    //! signature equal to that of the longest proper suffix of \f$W\f$
+    //! contained in the trie.
+    //!
+    //! \param i the index of the node whose suffix link is sought
+    //!
+    //! \returns A value of type `index_type`
+    //!
+    //! \warning This function does no checks on its arguments whatsoever. In
+    //! particular, if the index \p i is greater than the number of nodes that
+    //! have ever been created, then bad things will happen.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
     [[nodiscard]] index_type suffix_link_no_checks(index_type current) const;
 
+    //! See \ref suffix_link_no_checks
+    //!
+    //! \throws LibsemigroupsException if `validate_active_node_index(current)`
+    //! throws.
     [[nodiscard]] index_type suffix_link(index_type current) const {
       validate_active_node_index(current);
       return suffix_link_no_checks(current);
