@@ -8,15 +8,26 @@
     <tab type="mainpage" visible="yes" title=""/>
     <tab type="user" visible="yes" url="_HEADING_" title="Installation and Changelog" />
     <tab type="user" visible="yes" url="@ref md_install" title="Install" />
-    <tab type="user" visible="yes" url="_HEADING_" title="API Reference" />
+    <tab type="user" visible="yes" url="_HEADING_" title="Data structures" />
+    <tab type="usergroup" visible="yes" url="@ref elements_group" title="Elements" >
+      <tab type="user" visible="yes" url="@ref bmat8_group" title="BMat8" />
+      <tab type="user" visible="yes" url="@ref transf_group" title="Transformations" />
+      <tab type="usergroup" visible="yes" url="@ref matrix_group" title="Matrix" >
+        <tab type="user" visible="yes" url="@ref bmat8_group" title="BMat8" />
+      </tab>
+    </tab>
+    <tab type="user" visible="yes" url="@ref md_fpsemi-examples" title="Presentations"/>
+    <tab type="usergroup" visible="yes" url="@ref misc_group" title="Miscellaneous" >
+      <tab type="usergroup" visible="yes" url="@ref constants_group" title="Constants" />
+      <tab type="user" visible="yes" url="@ref libsemigroups::Reporter" title="Reporter" />
+      <tab type="user" visible="yes" url="@ref libsemigroups::Runner" title="Runner" />
+    </tab>
+    <tab type="examples" visible="yes" title="" intro=""/>
+    <tab type="user" visible="yes" url="_HEADING_" title="Main Algorithms" />
     <tab type="usergroup" visible="yes" url="@ref action_group" title="Actions" >
         <tab type="user" visible="yes" url="@ref libsemigroups::side" title="side" />
         <tab type="user" visible="yes" url="@ref libsemigroups::Action" title="Action" />
-        <tab type="user" visible="yes" url="@ref libsemigroups::LeftAction" title="LeftAction" />
         <tab type="user" visible="yes" url="@ref libsemigroups::RightAction" title="RightAction" />
-    </tab>
-    <tab type="usergroup" visible="yes" url="@ref matrix_group" title="Matrix" >
-      <tab type="user" visible="yes" url="@ref bmat8_group" title="BMat8" />
     </tab>
     <tab type="usergroup" visible="yes" url="@ref congruences_group" title="Congruences" >
       <tab type="usergroup" visible="yes" url="group__congruences__group.html#nested-classes" title="Classes" >
@@ -33,13 +44,6 @@
       <!-- TODO: Figure out a way to avoid this hack -->
       <tab type="user" visible="yes" url="group__congruences__group.html#func-members" title="Functions" />
     </tab>
-    <tab type="user" visible="yes" url="@ref md_fpsemi-examples" title="Examples of presentations" />
-    <tab type="usergroup" visible="yes" url="@ref misc_group" title="Miscellaneous" >
-      <tab type="usergroup" visible="yes" url="@ref constants_group" title="Constants" />
-      <tab type="user" visible="yes" url="@ref libsemigroups::Reporter" title="Reporter" />
-      <tab type="user" visible="yes" url="@ref libsemigroups::Runner" title="Runner" />
-    </tab>
-    <tab type="examples" visible="yes" title="" intro=""/>
     <tab type="user" visible="yes" url="_HEADING_" title="Bibliography" />
     <tab type="user" visible="yes" url="@ref citelist" title="Bibliography" />
     <tab type="user" visible="yes" url="_HEADING_" title="Further info" />
