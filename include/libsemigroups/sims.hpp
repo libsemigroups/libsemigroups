@@ -2101,7 +2101,7 @@ namespace libsemigroups {
     // Right Congruence Generating Pairs (rcgp)
     class const_rcgp_iterator {
      public:
-      // TODO(doc)?
+      // TODO(doc)
       using size_type = typename std::vector<relation_type>::size_type;
       using difference_type =
           typename std::vector<relation_type>::difference_type;

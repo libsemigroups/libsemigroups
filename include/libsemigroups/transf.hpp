@@ -1413,7 +1413,7 @@ namespace libsemigroups {
     template <typename OtherScalar>
     PPerm(std::vector<OtherScalar> const& dom,
           std::vector<OtherScalar> const& ran,
-          size_t                          M = N);
+          size_t                          M);
 
     //! Construct from domain, range, and degree.
     //!

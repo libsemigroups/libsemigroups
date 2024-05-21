@@ -4711,10 +4711,10 @@ namespace libsemigroups {
       "[todd-coxeter][extreme]") {
     using PPerm = LeastPPerm<5>;
     FroidurePin<PPerm> S;
-    S.add_generator(PPerm({1, 3, 4}, {0, 4, 3}));
-    S.add_generator(PPerm({1, 3, 4}, {2, 4, 3}));
-    S.add_generator(PPerm({0, 3, 4}, {1, 4, 3}));
-    S.add_generator(PPerm({2, 3, 4}, {1, 4, 3}));
+    S.add_generator(PPerm({1, 3, 4}, {0, 4, 3}, 5));
+    S.add_generator(PPerm({1, 3, 4}, {2, 4, 3}, 5));
+    S.add_generator(PPerm({0, 3, 4}, {1, 4, 3}, 5));
+    S.add_generator(PPerm({2, 3, 4}, {1, 4, 3}, 5));
 
     REQUIRE(S.size() == 11);
     auto p = to_presentation<std::string>(S);  // TODO should use better letters
