@@ -1896,10 +1896,8 @@ namespace libsemigroups {
   //! \complexity
   //! Linear in degree()
   template <typename T>
-  [[nodiscard]] T one(T const& f) {
-    static_assert(IsDerivedFromPTransf<T>,
-                  "the template parameter T must be derived from "
-                  "PTransfPolymorphicBase");
+  [[nodiscard]] auto one(T const& f)
+      -> std::enable_if_t<IsDerivedFromPTransf<T>, T> {
     return T::one(f.degree());
   }
 

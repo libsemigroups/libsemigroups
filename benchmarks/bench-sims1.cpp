@@ -105,7 +105,7 @@ namespace libsemigroups {
             "[ReflexiveBooleanMatMonoid3][Sim1][fail]") {
     auto                        rg = ReportGuard(true);
     FroidurePin<FastestBMat<3>> S;
-    S.add_generator(FastestBMat<3>::one(3));
+    S.add_generator(One<FastestBMat<3>>()());
     S.add_generator(FastestBMat<3>({{1, 1, 0}, {0, 1, 1}, {1, 0, 1}}));
     S.add_generator(FastestBMat<3>({{1, 1, 0}, {0, 1, 0}, {0, 0, 1}}));
     S.add_generator(FastestBMat<3>({{1, 0, 1}, {1, 1, 0}, {0, 1, 1}}));
