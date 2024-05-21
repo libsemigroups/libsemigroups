@@ -26,8 +26,8 @@ namespace libsemigroups {
       LIBSEMIGROUPS_EXCEPTION("the word {} given by the arguments [first, "
                               "last) already belongs to the trie",
                               word_type(first, last));
-      // Look in presentations and do one thing for chars and one thing for
-      // letter type.
+      // TODO(2) Look in presentations and do one thing for chars and one thing
+      // for letter type.
     }
     return add_word_no_checks(first, last);
   }
@@ -86,7 +86,7 @@ namespace libsemigroups {
     auto parent_letter = *(last - 1);
     deactivate_node_no_checks(last_index);
     while (_all_nodes[parent_index].number_of_children() == 1
-           && parent_index != root) {
+           && !_all_nodes[parent_index].is_terminal() && parent_index != root) {
       last_index    = parent_index;
       parent_index  = _all_nodes[last_index].parent();
       parent_letter = _all_nodes[last_index].parent_letter();

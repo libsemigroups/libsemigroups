@@ -16,6 +16,9 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
+// This file contains the implementation of a trie with suffix links for use by
+// the Aho-Corasick dictionary search algorithm
+
 #ifndef LIBSEMIGROUPS_AHO_CORASICK_HPP_
 #define LIBSEMIGROUPS_AHO_CORASICK_HPP_
 
@@ -45,25 +48,32 @@
 // TODO(2) add something that gets a ranges element to find all terminal nodes.
 namespace libsemigroups {
 
+  //! \ingroup misc_group
+  //!
   //! \brief For an implementation of the Aho-Corasick algorithm
   //!
   //! Defined in ``aho-corasick.hpp``.
   //!
-  //! This class implements the Aho-Corasick algorithm for string-searching
-  //! using a trie with suffix links. An introduction to this algorithm can be
-  //! found at:
+  //! This class implements a trie based data structure with suffix links to be
+  //! used with the Aho-Corasick dictionary searching algorithm. An introduction
+  //! to this algorithm can be found at:
   //!
   //! https://en.wikipedia.org/wiki/Aho%E2%80%93Corasick_algorithm
   //!
   //! Several helper functions are provided in the ``aho_corasick`` namespace.
   class AhoCorasick {
    public:
-    using index_type     = size_t;
-    using const_iterator = word_type::const_iterator;
+    //! Alias for the index of a node in the trie
+    using index_type = size_t;
 
+    //! Used for `word_type` iterators.
+    using const_iterator = typename word_type::const_iterator;
+
+    //! Constant for the root of the trie
     static constexpr index_type root = 0;
 
    private:
+    //  Implements the node of a trie
     class Node {
      private:
       mutable std::unordered_map<letter_type, index_type> _children;
@@ -149,30 +159,156 @@ namespace libsemigroups {
     mutable bool           _valid_links;
 
    public:
+    //! \brief Construct an empty AhoCorasick
+    //!
+    //! Construct an AhoCorasick containing only the root that corresponds to
+    //! the empty word \f$\varepsilon\f$.
     AhoCorasick();
-    AhoCorasick(const AhoCorasick&)            = default;
-    AhoCorasick& operator=(const AhoCorasick&) = default;
-    AhoCorasick(AhoCorasick&&)                 = default;
-    AhoCorasick& operator=(AhoCorasick&&)      = default;
 
+    //! Default copy constructor
+    AhoCorasick(const AhoCorasick&) = default;
+
+    //! Default copy assignment
+    AhoCorasick& operator=(const AhoCorasick&) = default;
+
+    //! Default move constructor
+    AhoCorasick(AhoCorasick&&) = default;
+
+    //! Default move assignment
+    AhoCorasick& operator=(AhoCorasick&&) = default;
+
+    //! \brief Reinitialize an existing AhoCorasick object
+    //!
+    //! This function puts an AhoCorasick object back into the same state as if
+    //! it had been newly default constructed.
+    //!
+    //! \parameters (None)
+    //!
+    //! \returns A reference to \c this.
     AhoCorasick& init();
 
-    [[nodiscard]] size_t number_of_nodes() const {
+    //! Returns the number of nodes in the forest.
+    //!
+    //! \returns
+    //! A `size_t`.
+    //!
+    //! \exceptions
+    //! \noexcept
+    //!
+    //! \complexity
+    //! Constant
+    //!
+    //! \par Parameters
+    //! (None)
+    [[nodiscard]] size_t number_of_nodes() const noexcept {
       return _active_nodes_index.size();
     }
 
+    //! \brief Check and add a word to the trie.
+    //!
+    //! This function does the same as \ref add_word_no_checks
+    //! "add_word_no_checks(Iterator, Iterator)" after first checking that the
+    //! word corresponding to \p first and \p last does not correspond to an
+    //! existing terminal node in the trie.
+    //!
+    //! \throws LibsemigroupsException if the word corresponding to \p first and
+    //! \p last corresponds to an existing terminal node in the trie.
+    //!
+    //! \sa \ref add_word_no_checks
     template <typename Iterator>
     index_type add_word(Iterator first, Iterator last);
 
+    //! \brief Add a word to the trie.
+    //!
+    //! Calling this function immediately adds the given word to the trie, and
+    //! sets the final node to terminal (if it is not already the case). After
+    //! adding a word, existing suffix links become invalid. If an identical
+    //! word has already been added to the trie, then this function does
+    //! nothing. If `first == last`, then this function does nothing.
+    //!
+    //! \tparam Iterator the type of the 1st and 2nd parameters
+    //! \param first iterator pointing to the first letter of the word to add.
+    //! \param last one beyond the last letter of the word to add.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    //! \complexity
+    //! Linear in the distance between `first` and `last`.
+    //!
+    //! \returns An \ref index_type corresponding to the final node added to the
+    //! trie. This node will have a \ref signature equal to that of the given
+    //! word.
+    //!
+    //! \sa \ref signature
     template <typename Iterator>
     index_type add_word_no_checks(Iterator first, Iterator last);
 
+    //! \brief Check and add a word to the trie.
+    //!
+    //! This function does the same as \ref rm_word_no_checks
+    //! "rm_word_no_checks(Iterator, Iterator)" after first checking that the
+    //! word corresponding to \p first and \p last is terminal node in the trie.
+    //!
+    //! \throws LibsemigroupsException if the word corresponding to \p first and
+    //! \p last does not correspond to an existing terminal node in the trie.
+    //!
+    //! \sa \ref rm_word_no_checks
     template <typename Iterator>
     index_type rm_word(Iterator first, Iterator last);
 
+    //! \brief Remove a word from the trie.
+    //!
+    //! From the trie, remove each node of the given word that is not part of
+    //! the prefix of a different word.
+    //!
+    //! If the given word \f$W\f$ corresponds to a terminal node with no
+    //! children, then calling this function removes the nodes \f$n_i\f$ from
+    //! the trie that correspond to the largest suffix \f$W\f$, such
+    //! that each \f$n_i\f$ has either zero children or one. After this,
+    //! existing suffix links become invalid.
+    //!
+    //! If \f$W\f$ corresponds to a terminal node \f$n\f$ with children, then
+    //! calling this function makes \f$n\f$ not terminal.
+    //!
+    //! If \f$W\f$ does not correspond to a terminal node, then calling this
+    //! function does nothing.
+    //!
+    //! \tparam Iterator the type of the 1st and 2nd parameters
+    //! \param first iterator pointing to the first letter of the word to add.
+    //! \param last one beyond the last letter of the word to add.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    //! \complexity
+    //! Linear in the distance between `first` and `last`.
+    //!
+    //! \returns An \ref index_type corresponding to the node with signature
+    //! equal to the given word.
+    //!
+    //! \sa \ref signature
     template <typename Iterator>
     index_type rm_word_no_checks(Iterator first, Iterator last);
 
+    //! \brief Traverse the trie using suffix links where necessary
+    //!
+    //! This function traverse the trie using suffix links where necessary,
+    //! behaving like a combination of the *goto* function and the *fail*
+    //! function in \cite Aho1975aa.
+    //!
+    //! If \p current is the index of a node with signature \f$W\f$, and
+    //! \p a is the letter \f$a\f$, then \c traverse_no_checks(current, a)
+    //! returns the index of the node with signature equal to the longest suffix
+    //! of \f$Wa\f$ contained in the trie.
+    //!
+    //! \param current the index of the node to traverse from
+    //! \param a the letter to traverse
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    //! \returns A value of type `index_type`
     [[nodiscard]] index_type traverse_no_checks(index_type  current,
                                                 letter_type a) const;
 

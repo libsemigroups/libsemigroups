@@ -164,7 +164,7 @@ namespace libsemigroups {
   }
 
   void AhoCorasick::clear_suffix_links() const {
-    // TODO determine if it is more efficient to clear the link of all nodes,
+    // TODO(2) determine if it is more efficient to clear the link of all nodes,
     // or just the active ones
     for (auto node = _all_nodes.begin(); node != _all_nodes.end(); ++node) {
       node->clear_suffix_link();

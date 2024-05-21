@@ -125,6 +125,29 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("AhoCorasick",
                           "003",
+                          "path tree",
+                          "[quick][aho-corasick]") {
+    AhoCorasick ac;
+    aho_corasick::add_word(ac, 0_w);
+    aho_corasick::add_word(ac, 00_w);
+    aho_corasick::add_word(ac, 000_w);
+    aho_corasick::add_word(ac, 0000_w);
+    aho_corasick::add_word(ac, 00000_w);
+    aho_corasick::add_word(ac, 000000_w);
+    aho_corasick::add_word(ac, 0000000_w);
+
+    REQUIRE(ac.number_of_nodes() == 8);
+
+    for (auto i = 1; i <= 7; ++i) {
+      REQUIRE(ac.node(i).is_terminal());
+    }
+
+    aho_corasick::rm_word(ac, 0000000_w);
+    REQUIRE(ac.number_of_nodes() == 7);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("AhoCorasick",
+                          "004",
                           "long word",
                           "[quick][aho-corasick]") {
     using words::pow;
@@ -141,7 +164,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("AhoCorasick",
-                          "004",
+                          "005",
                           "initial test with strings",
                           "[quick][aho-corasick]") {
     AhoCorasick ac;
@@ -156,7 +179,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("AhoCorasick",
-                          "005",
+                          "006",
                           "initial test with string helpers",
                           "[quick][aho-corasick]") {
     AhoCorasick ac;
@@ -174,7 +197,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("AhoCorasick",
-                          "006",
+                          "007",
                           "init",
                           "[quick][aho-corasick]") {
     AhoCorasick ac;
@@ -198,7 +221,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("AhoCorasick",
-                          "007",
+                          "008",
                           "height",
                           "[quick][aho-corasick]") {
     AhoCorasick ac;
@@ -215,7 +238,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("AhoCorasick",
-                          "008",
+                          "009",
                           "child",
                           "[quick][aho-corasick]") {
     AhoCorasick ac;
@@ -241,7 +264,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("AhoCorasick",
-                          "009",
+                          "010",
                           "signature",
                           "[quick][aho-corasick]") {
     AhoCorasick ac;
@@ -274,7 +297,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("AhoCorasick",
-                          "010",
+                          "011",
                           "dot",
                           "[quick][aho-corasick]") {
     AhoCorasick ac;
