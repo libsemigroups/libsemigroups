@@ -1874,7 +1874,7 @@ namespace libsemigroups {
   //! \complexity
   //! \f$O(n)\f$ where \f$n\f$ equals PTransfBase::degree() of \p x.
   //!
-  //! \sa \ref domain
+  //! \sa \ref image
   template <typename T>
   [[nodiscard]] std::vector<typename T::point_type> domain(T const& f);
 
@@ -1921,6 +1921,7 @@ namespace libsemigroups {
   //! Linear in degree()
   template <size_t N, typename Scalar>
   [[nodiscard]] PPerm<N, Scalar> right_one(PPerm<N, Scalar> const& x);
+  // TODO void pass by reference version
 
   //! \ingroup transf_group
   //! \brief Returns the left one of a partial perm.
@@ -1939,6 +1940,7 @@ namespace libsemigroups {
   //! Linear in degree()
   template <size_t N, typename Scalar>
   [[nodiscard]] PPerm<N, Scalar> left_one(PPerm<N, Scalar> const& x);
+  // TODO void pass by reference version
 
   //! \ingroup transf_group
   //! \brief Replace contents of a partial perm with the inverse of another.
