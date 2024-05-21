@@ -165,7 +165,7 @@ namespace libsemigroups {
 
     //! Construct from container.
     //!
-    //! Constructs an partial transformation initialized using the
+    //! Constructs a partial transformation initialized using the
     //! container \p cont as follows: the image of the point \c i under
     //! the partial transformation is the value in position \c i of the
     //! container \p cont.
@@ -184,7 +184,7 @@ namespace libsemigroups {
 
     //! Construct from container.
     //!
-    //! Constructs an partial transformation initialized using the
+    //! Constructs a partial transformation initialized using the
     //! container \p cont as follows: the image of the point \c i under
     //! the partial transformation is the value in position \c i of the
     //! container \p cont.
@@ -203,7 +203,7 @@ namespace libsemigroups {
 
     //! Construct from an initializer list.
     //!
-    //! Constructs an partial transformation initialized using the
+    //! Constructs a partial transformation initialized using the
     //! container \p cont as follows: the image of the point \c i under
     //! the partial transformation is the value in position \c i of the
     //! container \p cont. The values in the initializer list must be
@@ -232,9 +232,20 @@ namespace libsemigroups {
       std::copy(cont.begin(), cont.end(), _container.begin());
     }
 
+    // TODO doc
+    template <typename T>
+    explicit PTransfBase(std::vector<T> const& cont) : PTransfBase() {
+      static_assert(std::is_same_v<T, Undefined>
+                        || std::is_convertible_v<T, point_type>,
+                    "the template parameter T must be Undefined or "
+                    "convertible to point_type!");
+      resize(_container, cont.size());
+      std::copy(cont.begin(), cont.end(), _container.begin());
+    }
+
     //! Construct from a container and validates.
     //!
-    //! Constructs an partial transformation initialized using the
+    //! Constructs a partial transformation initialized using the
     //! container \p cont as follows: the image of the point \c i under
     //! the partial transformation is the value in position \c i of the
     //! container \p cont.
@@ -250,6 +261,10 @@ namespace libsemigroups {
     //! Linear in the size of the container \p cont.
     template <typename Subclass, typename ContainerAgain = Container>
     [[nodiscard]] static Subclass make(ContainerAgain&& cont);
+
+    // TODO(doc)
+    template <typename Subclass, typename ContainerAgain = Container>
+    [[nodiscard]] static Subclass make(ContainerAgain const& cont);
 
     //! Construct from an initializer list.
     //!
@@ -505,8 +520,8 @@ namespace libsemigroups {
     //! Type of const iterators point to image values.
     using const_iterator = typename Container::const_iterator;
 
-    //! Returns a \ref const_iterator (random access
-    //! iterator) pointing at the first image value.
+    //! Returns a \ref const_iterator (random access iterator) pointing at the
+    //! first image value.
     //!
     //! \returns
     //! A const iterator to the first image value.
@@ -637,17 +652,16 @@ namespace libsemigroups {
     //! Returns the identity transformation on the given number of points.
     //!
     //! This function returns a newly constructed partial transformation with
-    //! degree equal to the degree of \c this that fixes every value from \c 0
-    //! to degree().
+    //! degree equal to the degree of \c N that fixes every value from \c 0
+    //! to \c N.
     //!
     //! \tparam Subclass
     //! A class derived from libsemigroups::PTransfPolymorphicBase.
     //!
+    //! \param N the degree of the identity being constructed.
+    //!
     //! \returns
     //! A value of type \c Subclass.
-    //!
-    //! \exceptions
-    //! \noexcept
     template <typename Subclass>
     [[nodiscard]] static Subclass one(size_t N) {
       static_assert(IsDerivedFromPTransf<Subclass>,
@@ -1046,8 +1060,8 @@ namespace libsemigroups {
   //! A *transformation* \f$f\f$ is just a function defined on the
   //! whole of \f$\{0, 1, \ldots, n - 1\}\f$ for some integer \f$n\f$
   //! called the *degree* of \f$f\f$.  A transformation is stored as a
-  //! vector of the images of \f$\{0, 1, \ldots, n - 1\}\f$, i.e.
-  //! \f$\{(0)f, (1)f, \ldots, (n - 1)f\}\f$.
+  //! container of the images of \f$\{0, 1, \ldots, n - 1\}\f$, i.e.
+  //! \f$((0)f, (1)f, \ldots, (n - 1)f)\f$.
   //!
   //! If \p N is \c 0 (the default), then the degree of a \ref Transf instance
   //! can be defined at runtime, and if \p N is not \c 0, then the degree is
@@ -1139,21 +1153,6 @@ namespace libsemigroups {
     //! \p x and \p y have different degrees, then bad things will happen.
     void product_inplace(Transf const& x, Transf const& y);
 
-    //! Returns the identity transformation on degree() points.
-    //!
-    //! This function returns a newly constructed transformation with
-    //! degree equal to the degree of \c this that fixes every value from \c 0
-    //! to degree().
-    //!
-    //! \returns
-    //! A value of type \c Transf.
-    //!
-    //! \exceptions
-    //! \no_libsemigroups_except
-    //[[nodiscard]] Transf one() const {
-    //  return one(degree());
-    //}
-
     //! Returns the identity transformation on the given number of points.
     //!
     //! This function returns a newly constructed transformation with
@@ -1164,11 +1163,7 @@ namespace libsemigroups {
     //! \returns
     //! A value of type \c Transf.
     //!
-    //! \exceptions
-    //! \no_libsemigroups_except
-    //!
-    //! \exceptions
-    //! \no_libsemigroups_except
+    // TODO(doc) exception thrown if Transf is static and M <> degree()
     [[nodiscard]] static Transf one(size_t M) {
       return base_type::template one<Transf>(M);
     }
@@ -1269,8 +1264,8 @@ namespace libsemigroups {
   //! Defined in ``transf.hpp``.
   //!
   //! A *partial permutation* \f$f\f$ is just an injective partial
-  //! transformation, which is stored as a vector of the images of \f$\{0, 1,
-  //! \ldots, n - 1\}\f$, i.e.  i.e. \f$\{(0)f, (1)f, \ldots, (n - 1)f\}\f$
+  //! transformation, which is stored as a container of the images of \f$\{0, 1,
+  //! \ldots, n - 1\}\f$, i.e.  i.e. \f$((0)f, (1)f, \ldots, (n - 1)f)\f$
   //! where the value \ref UNDEFINED is used to indicate that \f$(i)f\f$ is
   //! undefined (i.e. not among the points where \f$f\f$ is defined).
   //!
@@ -1476,9 +1471,6 @@ namespace libsemigroups {
     //!
     //! \exceptions
     //! \no_libsemigroups_except
-    // [[nodiscard]] PPerm one() const {
-    //  return one(degree());
-    //}
 
     //! Returns the identity partial perm on the given number of points.
     //!
@@ -1522,7 +1514,7 @@ namespace libsemigroups {
                 "occurrence in position {}",
                 *it,
                 std::distance(first, it),
-                *pos);
+                pos->second);
           }
         }
       }
@@ -1692,21 +1684,6 @@ namespace libsemigroups {
       return make<std::initializer_list<point_type>>(std::move(cont));
     }
 #endif
-
-    //! Returns the identity permutation on degree() points.
-    //!
-    //! This function returns a newly constructed permutation with degree
-    //! equal to the degree of \c this that fixes every value from \c 0 to
-    //! degree().
-    //!
-    //! \returns
-    //! A value of type \c PPerm.
-    //!
-    //! \exceptions
-    //! \no_libsemigroups_except
-    // [[nodiscard]] Perm one() const {
-    //   return one(degree());
-    // }
 
     //! Returns the identity permutation on the given number of points.
     //!

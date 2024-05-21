@@ -36,6 +36,16 @@ namespace libsemigroups {
     return result;
   }
 
+  template <typename Point, typename Container>
+  template <typename Subclass, typename ContainerAgain>
+  [[nodiscard]] Subclass
+  PTransfBase<Point, Container>::make(ContainerAgain const& cont) {
+    validate_args(cont);
+    Subclass result(cont);
+    validate(result);
+    return result;
+  }
+
   // STATIC
   template <typename Point, typename Container>
   void PTransfBase<Point, Container>::resize(container_type& c,
@@ -252,7 +262,7 @@ namespace libsemigroups {
   void inverse(PPerm<N, Scalar> const& from, PPerm<N, Scalar>& to) {
     if (to.degree() < from.degree()) {
       // Shouldn't be possible to get here if PPerm<N, Scalar> is static
-      LIBSEMIGROUPS_ASSERT(IsDynamic<PPerm<N, Scalar>>);
+      LIBSEMIGROUPS_ASSERT((IsDynamic<PPerm<N, Scalar>>) );
       to.increase_degree_by(from.degree() - to.degree());
     }
     std::fill(to.begin(), to.end(), static_cast<Scalar>(UNDEFINED));
