@@ -1485,7 +1485,7 @@ namespace libsemigroups {
     REQUIRE(d.number_of_nodes() == 11);
     REQUIRE(word_graph::is_strictly_cyclic(d));
     auto S = to_froidure_pin<Transf<0, node_type>>(d);
-    S.add_generator(S.generator(0).identity());
+    S.add_generator(one(S.generator(0)));
     REQUIRE(S.size() == 19);
   }
 
@@ -1574,7 +1574,7 @@ namespace libsemigroups {
       REQUIRE(orc.target_size() == sizes[n]);
       REQUIRE(word_graph::is_strictly_cyclic(d));
       auto S = to_froidure_pin<Transf<0, node_type>>(d);
-      S.add_generator(S.generator(0).identity());
+      S.add_generator(one(S.generator(0)));
       REQUIRE(S.size() == sizes[n]);
       REQUIRE(d.number_of_nodes() == min_degrees[n]);
     }
@@ -1849,9 +1849,9 @@ namespace libsemigroups {
       auto W = to_froidure_pin<Transf<0, node_type>>(
           *it, 1, it->number_of_active_nodes());
       if (p.contains_empty_word()) {
-        auto one = W.generator(0).identity();
-        if (!W.contains(one)) {
-          W.add_generator(one);
+        auto id = one(W.generator(0));
+        if (!W.contains(id)) {
+          W.add_generator(id);
         }
       }
       if (W.size() == 5) {
@@ -2352,7 +2352,7 @@ namespace libsemigroups {
             .word_graph();
 
     auto S = to_froidure_pin<Transf<0, node_type>>(d);
-    S.add_generator(S.generator(0).identity());
+    S.add_generator(one(S.generator(0)));
     REQUIRE(S.size() == 4'862);
     REQUIRE(orc.min_nodes() == 80);
     REQUIRE(orc.max_nodes() == 100);
@@ -2416,7 +2416,7 @@ namespace libsemigroups {
                    .word_graph();
       REQUIRE(word_graph::is_strictly_cyclic(d));
       auto S = to_froidure_pin<Transf<0, node_type>>(d);
-      S.add_generator(S.generator(0).identity());
+      S.add_generator(one(S.generator(0)));
       REQUIRE(S.size() == 5);
       REQUIRE(d.number_of_nodes() == 4);
     }
@@ -2865,9 +2865,10 @@ namespace libsemigroups {
       auto S     = to_froidure_pin<Transf<0, node_type>>(
           x, first, x.number_of_active_nodes());
       if (T.presentation().contains_empty_word()) {
-        auto one = S.generator(0).identity();
-        if (!S.contains(one)) {
-          S.add_generator(one);
+        auto id = one(S.generator(0));
+
+        if (!S.contains(id)) {
+          S.add_generator(id);
         }
       }
       if (S.size() == 120) {
@@ -2925,8 +2926,8 @@ namespace libsemigroups {
     auto S = to_froidure_pin<Transf<0, node_type>>(
         d, 0, d.number_of_active_nodes());
     REQUIRE(d == to_word_graph<uint32_t>(1, {{}}));
-    auto one = S.generator(0).identity();
-    S.add_generator(one);
+    auto id = one(S.generator(0));
+    S.add_generator(id);
     REQUIRE(S.size() == 120);
     REQUIRE(S.number_of_generators() == 6);  // number 6 is the identity
     REQUIRE(S.generator(0)

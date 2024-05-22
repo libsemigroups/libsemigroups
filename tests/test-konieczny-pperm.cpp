@@ -38,7 +38,7 @@ namespace libsemigroups {
            LeastPPerm<9>({0, 1, 2, 3, 5, 6, 8}, {2, 4, 6, 1, 5, 8, 7}, 9),
            LeastPPerm<9>({0, 1, 2, 3, 5, 8}, {7, 3, 6, 4, 2, 5}, 9)};
     Konieczny<LeastPPerm<9>> S(gens);
-    for (auto x : gens) {
+    for (auto const& x : gens) {
       REQUIRE(S.contains(x));
       REQUIRE(S.D_class_of_element(x).contains(x));
     }
@@ -71,8 +71,8 @@ namespace libsemigroups {
                           "exceptions",
                           "[quick][pperm][no-valgrind]") {
     auto rg          = ReportGuard(REPORT);
-    using value_type = typename PPerm<>::value_type;
-    std::vector<value_type> v(65, 0);
+    using point_type = typename PPerm<>::point_type;
+    std::vector<point_type> v(65, 0);
     std::iota(v.begin(), v.end(), 0);
     REQUIRE_THROWS_AS(Konieczny<PPerm<>>({PPerm<>(v)}), LibsemigroupsException);
     std::vector<PPerm<>> const gens

@@ -38,14 +38,12 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("to_froidure_pin<Transf>",
                           "000",
                           "from WordGraph",
-                          "[quick][make]") {
+                          "[quick][to_froidure_pin]") {
     auto rg = ReportGuard(false);
     auto ad = to_word_graph<uint8_t>(
         5,
         {{1, 3, 4, 1}, {0, 0, 1, 1}, {2, 1, 2, 2}, {3, 2, 3, 3}, {4, 4, 4, 4}});
-    auto S = to_froidure_pin<Transf<5>>(ad);
-    REQUIRE(S.size() == 625);
-    auto T = to_froidure_pin<Transf<6>>(ad);
+    auto T = to_froidure_pin<Transf<5>>(ad);
     REQUIRE(T.size() == 625);
     auto U = to_froidure_pin<Transf<0, uint8_t>>(ad);
     REQUIRE(U.size() == 625);

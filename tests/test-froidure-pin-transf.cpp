@@ -194,10 +194,10 @@ namespace libsemigroups {
     auto rg = ReportGuard(REPORT);
     for (size_t i = 1; i < 20; ++i) {
       std::vector<Transf<>> gens;
-      using value_type = typename Transf<>::value_type;
+      using point_type = typename Transf<>::point_type;
 
       for (size_t j = 0; j < i; ++j) {
-        std::vector<value_type> trans;
+        std::vector<point_type> trans;
         for (size_t k = 0; k < i; ++k) {
           trans.push_back((k + j) % i);
         }
@@ -347,10 +347,10 @@ namespace libsemigroups {
     auto rg = ReportGuard(REPORT);
     for (size_t i = 1; i < 20; ++i) {
       std::vector<Transf<>> gens;
-      using value_type = typename Transf<>::value_type;
+      using point_type = typename Transf<>::point_type;
 
       for (size_t j = 0; j < i; ++j) {
-        std::vector<value_type> trans;
+        std::vector<point_type> trans;
         for (size_t k = 0; k < i; ++k) {
           trans.push_back((k + j) % i);
         }
@@ -2456,11 +2456,11 @@ namespace libsemigroups {
                           "140",
                           "exception: gens, current_position",
                           "[quick][froidure-pin][transf]") {
-    using value_type = typename Transf<>::value_type;
+    using point_type = typename Transf<>::point_type;
     for (size_t i = 1; i < 20; ++i) {
       std::vector<Transf<>> gens;
       for (size_t j = 0; j < i; ++j) {
-        std::vector<value_type> trans;
+        std::vector<point_type> trans;
         for (size_t k = 0; k < i; ++k) {
           trans.push_back((k + j) % i);
         }

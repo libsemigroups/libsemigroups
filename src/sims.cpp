@@ -1245,9 +1245,9 @@ namespace libsemigroups {
         // It'd be nice to reuse S here, but this is tricky because hook
         // maybe called in multiple threads, and so we can't easily do this.
         if (presentation().contains_empty_word()) {
-          auto one = S.generator(0).identity();
-          if (!S.contains(one)) {
-            S.add_generator(one);
+          auto id = one(S.generator(0));
+          if (!S.contains(id)) {
+            S.add_generator(id);
           }
         }
         LIBSEMIGROUPS_ASSERT(S.size() <= _size);

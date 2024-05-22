@@ -169,8 +169,8 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("Konieczny", "037", "exceptions", "[quick][transf]") {
     auto rg          = ReportGuard(REPORT);
-    using value_type = typename Transf<>::value_type;
-    std::vector<value_type> v(65, 0);
+    using point_type = typename Transf<>::point_type;
+    std::vector<point_type> v(65, 0);
     std::iota(v.begin(), v.end(), 0);
     REQUIRE_THROWS_AS(Konieczny<Transf<>>({Transf<>(v)}),
                       LibsemigroupsException);
