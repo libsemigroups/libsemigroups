@@ -403,7 +403,7 @@ namespace libsemigroups {
     }
 
     [[nodiscard]] Node const& node_no_checks(index_type i) const {
-      LIBSEMIGROUPS_ASSERT(parent < _all_nodes.size());
+      LIBSEMIGROUPS_ASSERT(i < _all_nodes.size());
       return _all_nodes.at(i);
     }
 
