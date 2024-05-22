@@ -24,10 +24,6 @@
 // * add some tests for PTransf themselves
 // * allocator
 
-// TODO(now)
-// * repr
-// * use "f" as the variable name for transformations
-
 #ifndef LIBSEMIGROUPS_TRANSF_HPP_
 #define LIBSEMIGROUPS_TRANSF_HPP_
 
@@ -113,7 +109,10 @@ namespace libsemigroups {
   //!
   //! \brief Base class for partial transformations.
   //!
-  //! This is a class template for partial transformations.
+  //! This is a class template for partial transformations that collects all
+  //! the common aspects of the subclasses StaticPTransf and DynamicPTransf.
+  //! It is not intended that instance of this class are actually constructed,
+  //! only its derived classes.
   //!
   //! \tparam Point the type of image values (must be an unsigned integer
   //! type).
@@ -127,18 +126,18 @@ namespace libsemigroups {
                   "template parameter Point must be unsigned");
 
    public:
-    //! Type of the image values.
+    //! \brief Type of the image values.
     //!
     //! Also the template parameter \c Scalar.
     using point_type = Point;
 
-    //! Type of the underlying container.
+    //! \brief Type of the underlying container.
     //!
-    //! In this case, this is `std::vector<point_type>`.
+    //! Type of the underlying container.
     using container_type = Container;
 
     // Required by python bindings
-    //! Returns the value used to represent \"undefined\".
+    //! \brief Returns the value used to represent \"undefined\".
     //!
     //! This static function returns the value of type \ref point_type used to
     //! represent an \"undefined\" value.
@@ -152,18 +151,34 @@ namespace libsemigroups {
       return static_cast<point_type>(UNDEFINED);
     }
 
-    //! Default constructor.
+    //! \brief Default constructor.
     //!
     //! Constructs an uninitialized partial transformation of degree \c 0.
     //!
     //! \exceptions
-    //! \no_libsemigroups_except_detail
+    //! \no_libsemigroups_except
     //!
     //! \complexity
     //! Constant.
     PTransfBase() = default;
 
-    //! Construct from container.
+    //! \brief Construct with given degree.
+    //!
+    //! Constructs a partial transformation of degree \p n with the image of
+    //! every point set to \ref UNDEFINED.
+    //!
+    //! \param n the degree
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    //! \complexity
+    //! Linear in the parameter \p n.
+    explicit PTransfBase(size_t n) : PTransfBase() {
+      resize(_container, n);
+    }
+
+    //! \brief Construct from a container of images.
     //!
     //! Constructs a partial transformation initialized using the
     //! container \p cont as follows: the image of the point \c i under
@@ -173,82 +188,68 @@ namespace libsemigroups {
     //! \param cont the container.
     //!
     //! \exceptions
-    //! \no_libsemigroups_except_detail
+    //! \no_libsemigroups_except
     //!
     //! \complexity
     //! Linear in the size of the container \p cont.
-    //!
-    //! \warning
-    //! No checks on the validity of \p cont are performed.
-    explicit PTransfBase(Container&& cont) : _container(std::move(cont)) {}
-
-    //! Construct from container.
-    //!
-    //! Constructs a partial transformation initialized using the
-    //! container \p cont as follows: the image of the point \c i under
-    //! the partial transformation is the value in position \c i of the
-    //! container \p cont.
-    //!
-    //! \param cont the container.
-    //!
-    //! \exceptions
-    //! \no_libsemigroups_except_detail
-    //!
-    //! \complexity
-    //! Linear in the size of the container \p cont.
-    //!
-    //! \warning
-    //! No checks on the validity of \p cont are performed.
-    explicit PTransfBase(Container const& cont) : _container(cont) {}
-
-    //! Construct from an initializer list.
-    //!
-    //! Constructs a partial transformation initialized using the
-    //! container \p cont as follows: the image of the point \c i under
-    //! the partial transformation is the value in position \c i of the
-    //! container \p cont. The values in the initializer list must be
-    //! convertible to point_type or equal to \ref UNDEFINED.
-    //!
-    //! \param cont the initializer list.
-    //!
-    //! \exceptions
-    //! \no_libsemigroups_except_detail
-    //!
-    //! \complexity
-    //! Linear in the size of the initializer list \p cont.
     //!
     //! \warning
     //! No checks on the validity of \p cont are performed.
     //!
     //! \sa
     //! \ref make
-    template <typename T>
-    explicit PTransfBase(std::initializer_list<T> cont) : PTransfBase() {
-      static_assert(std::is_same_v<T, Undefined>
-                        || std::is_convertible_v<T, point_type>,
-                    "the template parameter T must be Undefined or "
+    explicit PTransfBase(Container const& cont) : _container(cont) {}
+
+    //! \copydoc PTransfBase::PTransfBase(Container const&)
+    explicit PTransfBase(Container&& cont) : _container(std::move(cont)) {}
+
+    //! \copydoc PTransfBase::PTransfBase(Container const&)
+    //!
+    //! \tparam T type of the image points in \p cont
+    //!
+    //! The values in the vector must be convertible to point_type or equal to
+    //! \ref UNDEFINED.
+    template <typename OtherContainer,
+              typename = std::enable_if_t<!std::is_integral_v<OtherContainer>>>
+    explicit PTransfBase(OtherContainer&& cont) : PTransfBase(cont.size()) {
+      using OtherScalar = typename std::decay_t<OtherContainer>::value_type;
+      static_assert(std::is_same_v<OtherScalar, Undefined>
+                        || std::is_convertible_v<OtherScalar, point_type>,
+                    "the template parameter OtherScalar must be Undefined or "
                     "convertible to point_type!");
-      resize(_container, cont.size());
       std::copy(cont.begin(), cont.end(), _container.begin());
     }
 
-    // TODO doc
-    template <typename T>
-    explicit PTransfBase(std::vector<T> const& cont) : PTransfBase() {
-      static_assert(std::is_same_v<T, Undefined>
-                        || std::is_convertible_v<T, point_type>,
-                    "the template parameter T must be Undefined or "
-                    "convertible to point_type!");
-      resize(_container, cont.size());
-      std::copy(cont.begin(), cont.end(), _container.begin());
+    //! \copydoc PTransfBase::PTransfBase(OtherContainer&&)
+    template <typename OtherScalar>
+    explicit PTransfBase(std::initializer_list<OtherScalar> cont)
+        : PTransfBase(std::vector<OtherScalar>(cont)) {}
+
+    //! \brief Make an instance of \c Subclass with degree 0.
+    //!
+    //! This is equivalent to default constructing a \c Subclass instance and is
+    //! here for consistency of interface only. The \c make static member
+    //! functions check their arguments, and the constructed \c Subclass
+    //! instance for validity, but in this case there's nothing to check.
+    //!
+    //! \tparam Subclass the type of the return value.
+    //!
+    //! \returns A \c Subclass instance with degree 0.
+    template <typename Subclass>
+    [[nodiscard]] static Subclass make() {
+      return Subclass();
     }
 
-    //! Construct from a container and validates.
+    //! \brief Construct from universal reference container and validate.
     //!
     //! Constructs a partial transformation initialized using the
     //! container \p cont as follows: the image of the point \c i under
     //! the partial transformation is the value in position \c i of the
     //! container \p cont.
+    //!
+    //! \tparam Subclass the type of the return value.
+    //! \tparam OtherContainer universal reference for the type of the container
+    //! (default: Container).
     //!
     //! \param cont the container.
     //!
@@ -259,43 +260,52 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! Linear in the size of the container \p cont.
-    template <typename Subclass, typename ContainerAgain = Container>
-    [[nodiscard]] static Subclass make(ContainerAgain&& cont);
+    template <typename Subclass, typename OtherContainer = Container>
+    [[nodiscard]] static Subclass make(OtherContainer&& cont);
 
-    // TODO(doc)
-    template <typename Subclass, typename ContainerAgain = Container>
-    [[nodiscard]] static Subclass make(ContainerAgain const& cont);
-
-    //! Construct from an initializer list.
+    //! \brief Construct from std::initializer_list and validate
     //!
-    //! \sa
-    //! \ref make
-    template <typename Subclass>
-    [[nodiscard]] static Subclass
-    make(std::initializer_list<point_type> const& cont) {
-      return PTransfBase::make<Subclass, std::initializer_list<point_type>>(
-          cont);
-    }
+    //! Constructs a partial transformation initialized using the
+    //! container \p cont as follows: the image of the point \c i under
+    //! the partial transformation is the value in position \c i of the
+    //! container \p cont.
+    //!
+    //! \tparam Subclass the type of the return value.
+    //! \tparam T the type of the points in \p cont.
+    //!
+    //! \param cont the initializer list.
+    //!
+    //! \throw LibsemigroupsException if any of the following hold:
+    //! * the size of \p cont is incompatible with \ref container_type.
+    //! * any value in \p cont exceeds `cont.size()` and is not equal to
+    //!   libsemigroups::UNDEFINED.
+    //!
+    //! \complexity
+    //! Linear in the size of the container \p cont.
+    template <typename Subclass, typename T>
+    [[nodiscard]] static Subclass make(std::initializer_list<T> cont);
 
-    //! Make an empty instance of \c Subclass with degree 0.
-    template <typename Subclass>
-    [[nodiscard]] static Subclass make() {
-      return Subclass();
-    }
-
+    //! \brief Default copy constructor
+    //!
     //! Default copy constructor
     PTransfBase(PTransfBase const&) = default;
 
+    //! \brief Default move constructor
+    //!
     //! Default move constructor
     PTransfBase(PTransfBase&&) = default;
 
+    //! \brief Default copy assignment operator.
+    //!
     //! Default copy assignment operator.
     PTransfBase& operator=(PTransfBase const&) = default;
 
+    //! \brief Default move assignment operator.
+    //!
     //! Default move assignment operator.
     PTransfBase& operator=(PTransfBase&&) = default;
 
-    //! Compare for less.
+    //! \brief Compare for less.
     //!
     //! Returns \c true if `*this` is less than \p that by comparing the
     //! image values of `*this` and \p that.
@@ -306,7 +316,7 @@ namespace libsemigroups {
     //! A value of type \c bool.
     //!
     //! \exceptions
-    //! \no_libsemigroups_except_detail
+    //! \no_libsemigroups_except
     //!
     //! \complexity
     //! At worst linear in degree().
@@ -314,7 +324,7 @@ namespace libsemigroups {
       return _container < that._container;
     }
 
-    //! Compare for greater.
+    //! \brief Compare for greater.
     //!
     //! Returns \c true if `*this` is greater than \p that by comparing the
     //! image values of `*this` and \p that.
@@ -325,7 +335,7 @@ namespace libsemigroups {
     //! A value of type \c bool.
     //!
     //! \exceptions
-    //! \no_libsemigroups_except_detail
+    //! \no_libsemigroups_except
     //!
     //! \complexity
     //! At worst linear in degree().
@@ -333,7 +343,7 @@ namespace libsemigroups {
       return that < *this;
     }
 
-    //! Compare for equality.
+    //! \brief Compare for equality.
     //!
     //! Returns \c true if `*this` equals \p that by comparing the
     //! image values of `*this` and \p that.
@@ -344,7 +354,7 @@ namespace libsemigroups {
     //! A value of type \c bool.
     //!
     //! \exceptions
-    //! \no_libsemigroups_except_detail
+    //! \no_libsemigroups_except
     //!
     //! \complexity
     //! At worst linear in degree().
@@ -352,7 +362,7 @@ namespace libsemigroups {
       return _container == that._container;
     }
 
-    //! Compare for less than or equal.
+    //! \brief Compare for less than or equal.
     //!
     //! Returns \c true if `*this` is less than or equal to \p that by
     //! comparing the image values of `*this` and \p that.
@@ -363,7 +373,7 @@ namespace libsemigroups {
     //! A value of type \c bool.
     //!
     //! \exceptions
-    //! \no_libsemigroups_except_detail
+    //! \no_libsemigroups_except
     //!
     //! \complexity
     //! At worst linear in degree().
@@ -371,7 +381,7 @@ namespace libsemigroups {
       return _container < that._container || _container == that._container;
     }
 
-    //! Compare for greater than or equal.
+    //! \brief Compare for greater than or equal.
     //!
     //! Returns \c true if `*this` is greater than or equal to \p that by
     //! comparing the image values of `*this` and \p that.
@@ -382,7 +392,7 @@ namespace libsemigroups {
     //! A value of type \c bool.
     //!
     //! \exceptions
-    //! \no_libsemigroups_except_detail
+    //! \no_libsemigroups_except
     //!
     //! \complexity
     //! At worst linear in degree().
@@ -390,7 +400,7 @@ namespace libsemigroups {
       return that <= *this;
     }
 
-    //! Compare for inequality.
+    //! \brief Compare for inequality.
     //!
     //! Returns \c true if `*this` does not equal \p that by comparing the
     //! image values of `*this` and \p that.
@@ -401,7 +411,7 @@ namespace libsemigroups {
     //! A value of type \c bool.
     //!
     //! \exceptions
-    //! \no_libsemigroups_except_detail
+    //! \no_libsemigroups_except
     //!
     //! \complexity
     //! At worst linear in degree().
@@ -409,7 +419,7 @@ namespace libsemigroups {
       return !(*this == that);
     }
 
-    //! Get a reference to the image of a point.
+    //! \brief Get a reference to the image of a point.
     //!
     //! Returns a reference to the image of \p i.
     //!
@@ -417,9 +427,6 @@ namespace libsemigroups {
     //!
     //! \returns
     //! A reference to a \ref point_type.
-    //!
-    //! \exceptions
-    //! \noexcept
     //!
     //! \complexity
     //! Constant.
@@ -430,7 +437,7 @@ namespace libsemigroups {
       return _container[i];
     }
 
-    //! Get a const reference to the image of a point.
+    //! \brief Get a const reference to the image of a point.
     //!
     //! Returns a const reference to the image of \p i.
     //!
@@ -438,9 +445,6 @@ namespace libsemigroups {
     //!
     //! \returns
     //! A const reference to a \ref point_type.
-    //!
-    //! \exceptions
-    //! \noexcept
     //!
     //! \complexity
     //! Constant.
@@ -451,7 +455,7 @@ namespace libsemigroups {
       return _container[i];
     }
 
-    //! Get a reference to the image of a point.
+    //! \brief Get a reference to the image of a point.
     //!
     //! Returns a reference to the image of \p i.
     //!
@@ -464,11 +468,12 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! Constant.
+    // TODO better exception message for python bindings
     [[nodiscard]] point_type& at(size_t i) {
       return _container.at(i);
     }
 
-    //! Get a const reference to the image of a point.
+    //! \brief Get a const reference to the image of a point.
     //!
     //! Returns a const reference to the image of \p i.
     //!
@@ -481,29 +486,32 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! Constant.
+    // TODO better exception message for python bindings
     [[nodiscard]] point_type const& at(size_t i) const {
       return _container.at(i);
     }
 
-    //! Multiply by another partial transformation.
+    //! \brief Multiply by another partial transformation.
     //!
     //! Returns a newly constructed partial transformation holding the
     //! product of `*this` and `that`.
     //!
-    //! \tparam Subclass
-    //! A class derived from libsemigroups::PTransfPolymorphicBase.
+    //! \tparam Subclass the return type.
     //!
     //! \param that a partial transformation.
     //!
     //! \returns
-    //! A value of type \c Subclass
+    //! A value of type \c Subclass.
     //!
     //! \exceptions
-    //! \no_libsemigroups_except_detail
+    //! \no_libsemigroups_except
     //!
     //! \complexity
     //! Linear in degree().
-    // TODO(later) other operators
+    //!
+    //! \warning This function does not check its arguments. In particular, if
+    //! \c *this and \c that have different degrees, then bad things may happen.
+    // TODO(later) other operators such as power
     template <typename Subclass>
     [[nodiscard]] Subclass operator*(Subclass const& that) const {
       static_assert(IsDerivedFromPTransf<Subclass>,
@@ -514,14 +522,16 @@ namespace libsemigroups {
       return xy;
     }
 
+    //! \brief Type of iterators point to image values.
     //! Type of iterators point to image values.
     using iterator = typename Container::iterator;
 
+    //! \brief Type of const iterators point to image values.
     //! Type of const iterators point to image values.
     using const_iterator = typename Container::const_iterator;
 
-    //! Returns a \ref const_iterator (random access iterator) pointing at the
-    //! first image value.
+    //! \brief Returns a \ref const_iterator (random access iterator) pointing
+    //! at the first image value.
     //!
     //! \returns
     //! A const iterator to the first image value.
@@ -535,7 +545,7 @@ namespace libsemigroups {
       return _container.cbegin();
     }
 
-    //! Returns a \ref const_iterator (random access
+    //! \brief Returns a \ref const_iterator (random access
     //! iterator) pointing one past the last image value.
     //!
     //! \returns
@@ -560,7 +570,7 @@ namespace libsemigroups {
       return _container.end();
     }
 
-    //! Returns an \ref iterator (random access iterator) pointing at the
+    //! \brief Returns an \ref iterator (random access iterator) pointing at the
     //! first image value.
     //!
     //! \returns
@@ -575,7 +585,7 @@ namespace libsemigroups {
       return _container.begin();
     }
 
-    //! Returns an \ref iterator (random access
+    //! \brief Returns an \ref iterator (random access
     //! iterator) pointing one past the last image value.
     //!
     //! \returns
@@ -590,7 +600,7 @@ namespace libsemigroups {
       return _container.end();
     }
 
-    //! Returns the number of distinct image values.
+    //! \brief Returns the number of distinct image values.
     //!
     //! The *rank* of a partial transformation is the number of its distinct
     //! image values, not including \ref libsemigroups::UNDEFINED.
@@ -599,7 +609,7 @@ namespace libsemigroups {
     //! A value of type \c size_t.
     //!
     //! \exceptions
-    //! \no_libsemigroups_except_detail
+    //! \no_libsemigroups_except
     //!
     //! \complexity
     //! Linear in degree().
@@ -609,13 +619,13 @@ namespace libsemigroups {
                                                  : vals.size() - 1);
     }
 
-    //! Returns a hash value.
+    //! \brief Returns a hash value.
     //!
     //! \returns
     //! A value of type \c size_t.
     //!
     //! \exceptions
-    //! \no_libsemigroups_except_detail
+    //! \no_libsemigroups_except
     //!
     //! \complexity
     //! Linear in degree().
@@ -624,7 +634,7 @@ namespace libsemigroups {
       return Hash<Container>()(_container);
     }
 
-    //! Swap with another partial transformation.
+    //! \brief Swap with another partial transformation.
     //!
     //! \param that the partial transformation to swap with.
     //!
@@ -634,7 +644,7 @@ namespace libsemigroups {
       std::swap(_container, that._container);
     }
 
-    //! Returns the degree of a partial transformation.
+    //! \brief Returns the degree of a partial transformation.
     //!
     //! The *degree* of a partial transformation is the number of points used
     //! in its definition, which is equal to the size of the underlying
@@ -649,14 +659,14 @@ namespace libsemigroups {
       return _container.size();
     }
 
-    //! Returns the identity transformation on the given number of points.
+    //! \brief Returns the identity transformation on the given number of
+    //! points.
     //!
     //! This function returns a newly constructed partial transformation with
     //! degree equal to the degree of \c N that fixes every value from \c 0
     //! to \c N.
     //!
-    //! \tparam Subclass
-    //! A class derived from libsemigroups::PTransfPolymorphicBase.
+    //! \tparam Subclass the return type.
     //!
     //! \param N the degree of the identity being constructed.
     //!
@@ -744,45 +754,22 @@ namespace libsemigroups {
     //! In this case, this is `std::vector<point_type>`.
     using container_type = std::vector<point_type>;
 
-    // Documented in PTransfBase
     using PTransfBase<point_type, container_type>::PTransfBase;
-
-    // Documented in PTransfBase
     using base_type::begin;
-
-    // Documented in PTransfBase
+    using base_type::degree;
     using base_type::end;
 
-    //! Returns the degree of a transformation.
-    //!
-    //! The *degree* of a transformation is the number of points used
-    //! in its definition, which is equal to the size of the underlying
-    //! container.
-    //!
-    //! \returns
-    //! A value of type \c size_t.
-    //!
-    //! \exceptions
-    //! \noexcept
-    using base_type::degree;
+    // No default constructor, because the degree would be 0, and so we can
+    // just use the PTransfBase default constructor for that. Note that there's
+    // a default constructor for StaticPTransf since there we do know the degree
+    // (at compile time) and we can fill it with UNDEFINED values.
 
-    //! Construct with given degree.
-    //!
-    //! Constructs a partial transformation of degree \p n with the image of
-    //! every point set to \ref UNDEFINED.
-    //!
-    //! \param n the degree
-    //!
-    //! \exceptions
-    //! \no_libsemigroups_except
-    //!
-    //! \complexity
-    //! Linear in the parameter \p n.
+    //! \copydoc PTransfBase::PTransfBase(size_t)
     explicit DynamicPTransf(size_t n) : base_type() {
       resize(n, UNDEFINED);
     }
 
-    //! Increase the degree in-place.
+    //! \brief Increase the degree in-place.
     //!
     //! Increases the degree of \c this in-place, leaving existing values
     //! unaltered.
@@ -828,22 +815,16 @@ namespace libsemigroups {
     //! \copydoc PTransfBase::point_type
     using point_type = Scalar;
 
-    //! Type of the underlying container.
+    //! \brief Type of the underlying container.
     //!
     //! In this case, this is `std::array<point_type, N>`.
     using container_type = std::array<Scalar, N>;
 
-    // TODO(later) This is currently undocumentable. The doc is available in
-    // PTransfBase but they aren't present in the doxygen xml output.
     using PTransfBase<point_type, container_type>::PTransfBase;
-
-    //! \copydoc PTransfBase<point_type, container_type>::begin
     using base_type::begin;
-
-    //! \copydoc PTransfBase<point_type, container_type>::end
     using base_type::end;
 
-    //! Default constructor.
+    //! \brief Default constructor.
     //!
     //! Constructs a partial transformation of degree equal to the template
     //! parameter \p N with the image of every point set to \ref UNDEFINED.
@@ -857,7 +838,7 @@ namespace libsemigroups {
       std::fill(begin(), end(), UNDEFINED);
     }
 
-    //! Construct with given degree.
+    //! \brief Construct with given degree.
     //!
     //! This function constructs the same partial transformation as the default
     //! constructor, and exists only for consistency of interface with
@@ -869,12 +850,7 @@ namespace libsemigroups {
     //! template parameter \p N.
     explicit StaticPTransf(size_t n);
 
-    //! \copydoc PTransfBase<Scalar,Container>::degree
-    [[nodiscard]] constexpr size_t degree() const noexcept {
-      return N;
-    }
-
-    //! Increase the degree in-place.
+    //! \brief Increase the degree in-place.
     //!
     //! This doesn't make sense for this type, and it throws every time.
     //!
@@ -930,23 +906,6 @@ namespace libsemigroups {
     template <typename Scalar>
     struct IsDynamicHelper<DynamicPTransf<Scalar>> : std::true_type {};
 
-    // TODO to tpp file
-    //! No doc
-    template <typename T>
-    [[nodiscard]] std::string ptransf_repr(T const&         f,
-                                           std::string_view prefix,
-                                           std::string_view braces) {
-      if (braces.size() != 2) {
-        LIBSEMIGROUPS_EXCEPTION(
-            "the 3rd argument (braces) must have size 2, found {}",
-            braces.size());
-      }
-      return fmt::format("{}({}{}{})",
-                         prefix,
-                         braces[0],
-                         fmt::join(f.cbegin(), f.cend(), ", "),
-                         braces[1]);
-    }
   }  // namespace detail
 
   //! \ingroup transf_group
@@ -977,6 +936,7 @@ namespace libsemigroups {
   //!
   //! \complexity
   //! Linear in degree().
+  // TODO to tpp
   template <typename T>
   auto validate(T const& f) -> std::enable_if_t<IsPTransf<T>> {
     size_t const M = f.degree();
@@ -991,60 +951,6 @@ namespace libsemigroups {
                                 val);
       }
     }
-  }
-
-  //! \ingroup transf_group
-  //!
-  //! \brief Convert a partial transformation to a string.
-  //!
-  //! \tparam N  the degree
-  //! \tparam Scalar the type of the image values
-  //!
-  //! \param f the partial transformation
-  //! \param braces the type of braces to use (default: "{}")
-  //!
-  //! \returns A string containing a string representation of the argument \p f.
-  template <size_t N, typename Scalar>
-  [[nodiscard]] std::string to_string(PTransf<N, Scalar> const& f,
-                                      std::string_view          braces = "{}") {
-    return detail::ptransf_repr(f, "PTransf", braces);
-  }
-
-  //! \ingroup transf_group
-  //! \brief Insert a partial transformation into a string stream.
-  //!
-  //! \tparam N  the degree
-  //! \tparam Scalar the type of the image values
-  //!
-  //! \param os the string stream
-  //! \param f the partial transformation
-  //!
-  //! \returns A reference to the 1st argument \p os.
-  //!
-  //! \sa to_string
-  template <size_t N, typename Scalar>
-  std::ostringstream& operator<<(std::ostringstream&       os,
-                                 PTransf<N, Scalar> const& f) {
-    os << to_string(f);
-    return os;
-  }
-
-  //! \ingroup transf_group
-  //! \brief Insert a partial transformation into a std::ostream.
-  //!
-  //! \tparam N  the degree
-  //! \tparam Scalar the type of the image values
-  //!
-  //! \param os the std::ostream
-  //! \param f the partial transformation
-  //!
-  //! \returns A reference to the 1st argument \p os.
-  //!
-  //! \sa to_string
-  template <size_t N, typename Scalar>
-  std::ostream& operator<<(std::ostream& os, PTransf<N, Scalar> const& f) {
-    os << to_string(f);
-    return os;
   }
 
   ////////////////////////////////////////////////////////////////////////
@@ -1073,11 +979,6 @@ namespace libsemigroups {
   //!
   //! \tparam N  the degree (default: \c 0)
   //! \tparam Scalar an unsigned integer type (the type of the image values)
-  //!
-  //! \note
-  //! Transf has the same member functions as
-  //! \ref StaticPTransf and \ref DynamicPTransf, this isn't currently
-  //! reflected by the contents of this page.
   template <
       size_t N = 0,
       typename Scalar
@@ -1086,61 +987,49 @@ namespace libsemigroups {
     using base_type = PTransf<N, Scalar>;
 
    public:
-    //! Type of the image values.
+    //! \brief Type of the image values.
     //!
     //! Also the template parameter \c Scalar.
     using point_type = Scalar;
 
-    //! Type of the underlying container.
+    //! \brief Type of the underlying container.
     //!
     //! In this case, this is PTransf<N, Scalar>::container_type.
     using container_type = typename base_type::container_type;
 
     using PTransf<N, Scalar>::PTransf;
-
     using base_type::degree;
 
-    //! Construct from a container and validate.
+    //! \copydoc PTransfBase::make()
     //!
-    //! Constructs an transformation initialized using the
-    //! container \p cont as follows: the image of the point \c i under
-    //! the transformation is the value in position \c i of the container \p
-    //! cont.
-    //!
-    //! \tparam T the type of the container \p cont.
-    //!
-    //! \param cont the container.
-    //!
-    //! \throw LibsemigroupsException if any of the following hold:
-    //! * the size of \p cont is incompatible with \ref container_type.
-    //! * any value in \p cont exceeds `cont.size()` or is equal to \ref
-    //!    UNDEFINED.
-    //!
-    //! \complexity
-    //! Linear in the size of the container \p cont.
-    template <typename T>
-    [[nodiscard]] static Transf make(T&& cont) {
-      return base_type::template make<Transf>(std::forward<T>(cont));
-    }
-
-    //! Construct from a container and validate.
-    //!
-    //! \sa \ref make
-    [[nodiscard]] static Transf make(std::initializer_list<point_type>&& cont) {
-      return make<std::initializer_list<point_type>>(std::move(cont));
-    }
-
-    //! Make an empty Transf with degree 0.
+    //! \note \c Subclass is \c Transf !!
     [[nodiscard]] static Transf make() {
       return base_type::template make<Transf>();
     }
 
-    //! Multiply two transformations and store the product in \c this.
+    //! \copydoc PTransfBase::make(OtherContainer&&)
+    template <typename OtherContainer>
+    [[nodiscard]] static Transf make(OtherContainer&& cont) {
+      auto result = base_type::template make<Transf>(
+          std::forward<OtherContainer>(cont));
+      validate(result);
+      return result;
+    }
+
+    //! \copydoc PTransfBase::make(std::initializer_list<T>)
+    //! \throws LibsemigroupsException if the value \ref UNDEFINED belongs to \p
+    //! cont.
+    template <typename OtherScalar>
+    [[nodiscard]] static Transf make(std::initializer_list<OtherScalar> cont) {
+      return make<std::initializer_list<OtherScalar>>(std::move(cont));
+    }
+
+    //! \brief Multiply two transformations and store the product in \c this.
     //!
-    //! Replaces the contents of \c this by the product of \p x and \p y.
+    //! Replaces the contents of \c this by the product of \p f and \p g.
     //!
-    //! \param x a transformation.
-    //! \param y a transformation.
+    //! \param f a transformation.
+    //! \param g a transformation.
     //!
     //! \exceptions
     //! \no_libsemigroups_except
@@ -1150,10 +1039,11 @@ namespace libsemigroups {
     //!
     //! \warning
     //! No checks are made on whether or not the parameters are compatible. If
-    //! \p x and \p y have different degrees, then bad things will happen.
-    void product_inplace(Transf const& x, Transf const& y);
+    //! \p f and \p g have different degrees, then bad things will happen.
+    void product_inplace(Transf const& f, Transf const& g);
 
-    //! Returns the identity transformation on the given number of points.
+    //! \brief Returns the identity transformation on the given number of
+    //! points.
     //!
     //! This function returns a newly constructed transformation with
     //! degree equal to \p M that fixes every value from \c 0 to \p M.
@@ -1163,7 +1053,8 @@ namespace libsemigroups {
     //! \returns
     //! A value of type \c Transf.
     //!
-    // TODO(doc) exception thrown if Transf is static and M <> degree()
+    //! \throws LibsemigroupsException if IsStatic<Transf> is true, and \p M is
+    //! not the same as the template parameter \p N.
     [[nodiscard]] static Transf one(size_t M) {
       return base_type::template one<Transf>(M);
     }
@@ -1209,49 +1100,15 @@ namespace libsemigroups {
   //! \tparam N the number of points
   //! \tparam Scalar the type of the points
   //!
-  //! \param x the transformation.
+  //! \param f the transformation.
   //!
   //! \throw LibsemigroupsException if the image of any point exceeds \c
-  //! x.degree() or is equal to \ref UNDEFINED.
+  //! f.degree() or is equal to \ref UNDEFINED.
   //!
   //! \complexity
-  //! Linear in the size of the container \c x.degree().
+  //! Linear in the size of the container \c f.degree().
   template <size_t N, typename Scalar>
-  void validate(Transf<N, Scalar> const& x);
-
-  //! \ingroup transf_group
-  //!
-  //! \brief Convert a transformation to a string.
-  //!
-  //! \tparam N  the degree
-  //! \tparam Scalar the type of the image values
-  //!
-  //! \param f the transformation
-  //! \param braces the type of braces to use (default: "{}")
-  //!
-  //! \returns A string containing a string representation of the argument \p f.
-  // TODO to tpp
-  template <size_t N, typename Scalar>
-  [[nodiscard]] std::string to_string(Transf<N, Scalar> const& f,
-                                      std::string_view         braces = "{}") {
-    std::string type;
-    switch (sizeof(Scalar)) {
-      case 1:
-        type = "uint8_t";
-        break;
-      case 2:
-        type = "uint16_t";
-        break;
-      case 4:
-        type = "uint32_t";
-        break;
-      case 8:
-        type = "uint64_t";
-        break;
-    }
-    return detail::ptransf_repr(
-        f, fmt::format("Transf<{}, {}>", N, type), braces);
-  }
+  void validate(Transf<N, Scalar> const& f);
 
   ////////////////////////////////////////////////////////////////////////
   // PPerm
@@ -1265,7 +1122,7 @@ namespace libsemigroups {
   //!
   //! A *partial permutation* \f$f\f$ is just an injective partial
   //! transformation, which is stored as a container of the images of \f$\{0, 1,
-  //! \ldots, n - 1\}\f$, i.e.  i.e. \f$((0)f, (1)f, \ldots, (n - 1)f)\f$
+  //! \ldots, n - 1\}\f$, i.e. \f$((0)f, (1)f, \ldots, (n - 1)f)\f$
   //! where the value \ref UNDEFINED is used to indicate that \f$(i)f\f$ is
   //! undefined (i.e. not among the points where \f$f\f$ is defined).
   //!
@@ -1279,11 +1136,7 @@ namespace libsemigroups {
   //!
   //! \tparam N  the degree (default: \c 0)
   //! \tparam Scalar an unsigned integer type (the type of the image values)
-  //!
-  //! \note
-  //! PPerm has the same member functions as \ref StaticPTransf and \ref
-  //! DynamicPTransf, this isn't current reflected by the contents of this
-  //! page.
+  //! (default: \c uint32_t)
   template <
       size_t N = 0,
       typename Scalar
@@ -1292,70 +1145,82 @@ namespace libsemigroups {
     using base_type = PTransf<N, Scalar>;
 
    public:
-    //! Type of the image values.
+    //! \brief Type of the image values.
     //!
     //! Also the template parameter \c Scalar.
     using point_type = Scalar;
 
-    //! Type of the underlying container.
+    //! \brief Type of the underlying container.
     //!
     //! In this case, this is \c PTransf<N, Scalar>::container_type.
     using container_type = typename base_type::container_type;
 
-    // Currently no way to document these
     using PTransf<N, point_type>::PTransf;
-
-    // Currently no way to document these
     using base_type::degree;
     using base_type::undef;
 
-    //! Construct from image list and validate
+    //! \brief Construct from domain, range, and degree.
     //!
-    //! Constructs a partial perm \f$f\f$ of degree \c M such that \f$f(i) =
-    //! cont[i]\f$ for every value in the range \f$[0, M)\f$ where \f$M\f$ is
-    //! \c cont.size()
+    //! Constructs a partial perm of degree \p M such that `f[dom[i]] =
+    //! img[i]` for all \c i and which is \ref UNDEFINED on every other value
+    //! in the range \f$[0, M)\f$.
     //!
-    //! \param cont list of images or \ref UNDEFINED
+    //! \tparam OtherScalar the type of the points in \p dom and \p img.
+    //! \param dom the domain
+    //! \param img the range
+    //! \param M the degree
     //!
-    //! \complexity
-    //! Linear in the size of \p cont.
-    //!
-    //! \throws LibsemigroupsException if any of the following fail to hold:
-    //! * the size of \p cont is incompatible with \ref container_type.
-    //! * any value in \p cont exceeds `cont.size()` and is not equal to \ref
-    //!   UNDEFINED.
-    //! * there are repeated values in \p cont.
-    template <typename T>
-    [[nodiscard]] static PPerm make(T&& cont) {
-      return base_type::template make<PPerm>(std::forward<T>(cont));
-    }
-
-    //! Construct from image list and validate
-    //!
-    //! Constructs a partial perm \f$f\f$ of degree \c M such that \f$f(i) =
-    //! cont[i]\f$ for every value in the range \f$[0, M)\f$ where \f$M\f$ is
-    //! \c cont.size()
-    //!
-    //! \param cont list of images or \ref UNDEFINED
+    //! \exceptions
+    //! \no_libsemigroups_except
     //!
     //! \complexity
-    //! Linear in the size of \p cont.
+    //! Linear in the size of \p dom.
     //!
-    //! \throws LibsemigroupsException if any of the following fail to hold:
-    //! * the size of \p cont is incompatible with \ref container_type.
-    //! * any value in \p cont exceeds `cont.size()` and is not equal to
-    //!   \ref UNDEFINED.
-    //! * there are repeated values in \p cont.
-    [[nodiscard]] static PPerm make(std::initializer_list<point_type>&& cont) {
-      return make<std::initializer_list<point_type>>(std::move(cont));
+    //! \warning
+    //! No checks whatsoever are performed on the validity of the arguments.
+    //!
+    //! \sa
+    //! \ref make.
+    //
+    // Note: we use vectors here not container_type (which might be array),
+    // because the length of dom and img might not equal degree().
+    // Also we don't use a universal reference because we can't actually use an
+    // rvalue reference here (we don't store dom or img).
+    template <typename OtherScalar>
+    PPerm(std::vector<OtherScalar> const& dom,
+          std::vector<OtherScalar> const& img,
+          size_t                          M);
+
+    //! \copydoc PPerm(std::vector<OtherScalar> const&, std::vector<OtherScalar>
+    //! const&, size_t)
+    PPerm(std::initializer_list<point_type> dom,
+          std::initializer_list<point_type> img,
+          size_t                            M)
+        : PPerm(std::vector<point_type>(dom), std::vector<point_type>(img), M) {
     }
 
-    //! Make an empty PPerm of degree 0.
+    //! \copydoc PTransfBase::make()
+    //!
+    //! \note \c Subclass is \c PPerm !!
     [[nodiscard]] static PPerm make() {
       return base_type::template make<PPerm>();
     }
 
-    //! Construct from domain, range, and degree, and validate
+    //! \copydoc PTransfBase::make(OtherContainer&&)
+    //!
+    //! \note \c Subclass is \c PPerm !!
+    template <typename OtherContainer>
+    [[nodiscard]] static PPerm make(OtherContainer&& cont) {
+      return base_type::template make<PPerm>(
+          std::forward<OtherContainer>(cont));
+    }
+
+    //! \copydoc make(OtherContainer&&)
+    [[nodiscard]] static PPerm make(std::initializer_list<point_type> cont) {
+      return make<std::initializer_list<point_type>>(std::move(cont));
+    }
+
+    //! \brief Construct from domain, range, and degree, and validate
     //!
     //! Constructs a partial perm of degree \p M such that `f[dom[i]] =
     //! ran[i]` for all \c i and which is \ref UNDEFINED on every other value
@@ -1380,73 +1245,18 @@ namespace libsemigroups {
 
     //! \copydoc make(std::vector<OtherScalar> const&, std::vector<OtherScalar>
     //! const&, size_t const)
-    [[nodiscard]] static PPerm make(std::initializer_list<Scalar> const& dom,
-                                    std::initializer_list<Scalar> const& ran,
-                                    size_t                               M) {
+    [[nodiscard]] static PPerm make(std::initializer_list<Scalar> dom,
+                                    std::initializer_list<Scalar> ran,
+                                    size_t                        M) {
       return make(std::vector<Scalar>(dom), std::vector<Scalar>(ran), M);
     }
 
-    //! Construct from domain, range, and degree.
+    //! \brief Multiply two partial perms and store the product in \c this.
     //!
-    //! Constructs a partial perm of degree \p M such that `(dom[i])f =
-    //! ran[i]` for all \c i and which is \ref UNDEFINED on every other value
-    //! in the range \f$[0, M)\f$.
+    //! Replaces the contents of \c this by the product of \p f and \p g.
     //!
-    //! \param dom the domain
-    //! \param ran the range
-    //! \param M the degree
-    //!
-    //! \exceptions
-    //! \no_libsemigroups_except
-    //!
-    //! \complexity
-    //! Linear in the size of \p dom.
-    //!
-    //! \warning
-    //! No checks whatsoever are performed on the validity of the arguments.
-    //!
-    //! \sa
-    //! \ref make.
-    // Note: we use vectors here not container_type (which might be array),
-    // because the length of dom and ran might not equal degree().
-    template <typename OtherScalar>
-    PPerm(std::vector<OtherScalar> const& dom,
-          std::vector<OtherScalar> const& ran,
-          size_t                          M);
-
-    //! Construct from domain, range, and degree.
-    //!
-    //! Constructs a partial perm of degree \p M such that `(dom[i])f =
-    //! ran[i]` for all \c i and which is \ref UNDEFINED on every other value
-    //! in the range \f$[0, M)\f$.
-    //!
-    //! \param dom the domain
-    //! \param ran the range
-    //! \param M the degree
-    //!
-    //! \exceptions
-    //! \no_libsemigroups_except
-    //!
-    //! \complexity
-    //! Linear in the size of \p dom.
-    //!
-    //! \warning
-    //! No checks whatsoever are performed on the validity of the arguments.
-    //!
-    //! \sa
-    //! \ref make.
-    PPerm(std::initializer_list<point_type> dom,
-          std::initializer_list<point_type> ran,
-          size_t                            M)
-        : PPerm(std::vector<point_type>(dom), std::vector<point_type>(ran), M) {
-    }
-
-    //! Multiply two partial perms and store the product in \c this.
-    //!
-    //! Replaces the contents of \c this by the product of \p x and \p y.
-    //!
-    //! \param x a partial perm.
-    //! \param y a partial perm.
+    //! \param f a partial perm.
+    //! \param g a partial perm.
     //!
     //! \exceptions
     //! \no_libsemigroups_except
@@ -1456,36 +1266,10 @@ namespace libsemigroups {
     //!
     //! \warning
     //! No checks are made on whether or not the parameters are compatible. If
-    //! \p x and \p y have different degrees, then bad things will happen.
-    void product_inplace(PPerm const& x, PPerm const& y);
+    //! \p f and \p g have different degrees, then bad things will happen.
+    void product_inplace(PPerm const& f, PPerm const& g);
 
-    //! Returns the identity partial perm on degree() points.
-    //!
-    //! This function returns a newly constructed partial perm with degree
-    //! equal to the degree of \c this that fixes every value from \c 0 to
-    //! degree().
-    //!
-    //! \returns
-    //! A value of type \c PPerm.
-    //!
-    //! \exceptions
-    //! \no_libsemigroups_except
-
-    //! Returns the identity partial perm on the given number of points.
-    //!
-    //! This function returns a newly constructed partial perm with
-    //! degree equal to \p M that fixes every value from \c 0 to \p M.
-    //!
-    //! \param M the degree.
-    //!
-    //! \returns
-    //! A value of type \c PPerm.
-    //!
-    //! \exceptions
-    //! \no_libsemigroups_except
-    //!
-    //! \complexity
-    //! Linear in \p M.
+    //! \copydoc Transf::one(size_t)
     [[nodiscard]] static PPerm one(size_t M) {
       return base_type::template one<PPerm>(M);
     }
@@ -1498,6 +1282,7 @@ namespace libsemigroups {
 
   namespace detail {
     //! No doc
+    // TODO to tpp
     template <typename Iterator>
     void validate_no_duplicates(
         Iterator                                                    first,
@@ -1526,25 +1311,6 @@ namespace libsemigroups {
       validate_no_duplicates(first, last, seen);
     }
   }  // namespace detail
-
-  //! \ingroup transf_group
-  //!
-  //! \brief Convert a partial perm to a string.
-  //!
-  //! \tparam N  the degree
-  //! \tparam Scalar the type of the image values
-  //!
-  //! \param f the partial perm
-  //! \param braces the type of braces to use (default: "{}")
-  //!
-  //! \returns A string containing a string representation of the argument \p f.
-  // TODO to tpp
-  // TODO improve
-  template <size_t N, typename Scalar>
-  [[nodiscard]] std::string to_string(PPerm<N, Scalar> const& f,
-                                      std::string_view        braces = "{}") {
-    return detail::ptransf_repr(f, "PPerm", braces);
-  }
 
   ////////////////////////////////////////////////////////////////////////
   // PPerm helpers
@@ -1586,19 +1352,19 @@ namespace libsemigroups {
   //!
   //! \tparam T the type of the partial perm to validate.
   //!
-  //! \param x the partial perm.
+  //! \param f the partial perm.
   //!
   //! \throw LibsemigroupsException if:
-  //! * the image of any point in \p x exceeds \c x.degree() and is not equal
+  //! * the image of any point in \p f exceeds \c f.degree() and is not equal
   //!   to \ref UNDEFINED; or
-  //! * \p x is not injective
+  //! * \p f is not injective
   //!
   //! \complexity
-  //! Linear in the size of the container \c x.degree().
+  //! Linear in the size of the container \c f.degree().
   template <size_t N, typename Scalar>
-  void validate(PPerm<N, Scalar> const& x) {
-    validate(static_cast<PTransf<N, Scalar> const&>(x));
-    detail::validate_no_duplicates(x.begin(), x.end());
+  void validate(PPerm<N, Scalar> const& f) {
+    validate(static_cast<PTransf<N, Scalar> const&>(f));
+    detail::validate_no_duplicates(f.begin(), f.end());
   }
 
   ////////////////////////////////////////////////////////////////////////
@@ -1613,11 +1379,11 @@ namespace libsemigroups {
   //!
   //! A *permutation* \f$f\f$ is an injective transformation defined on the
   //! whole of \f$\{0, 1, \ldots, n - 1\}\f$ for some integer \f$n\f$ called
-  //! the *degree* of \f$f\f$. A permutation is stored as a vector of the
+  //! the *degree* of \f$f\f$. A permutation is stored as a container of the
   //! images of \f$(0, 1, \ldots, n - 1)\f$, i.e. \f$((0)f, (1)f, \ldots, (n -
   //! 1)f)\f$.
   //!
-  //! If \p N is \c 0 (the default), then the degree of a \ref PPerm instance
+  //! If \p N is \c 0 (the default), then the degree of a \ref Perm instance
   //! can be defined at runtime, and if \p N is not \c 0, then the degree is
   //! fixed at compile time.
   //!
@@ -1627,11 +1393,6 @@ namespace libsemigroups {
   //!
   //! \tparam N  the degree (default: \c 0)
   //! \tparam Scalar an unsigned integer type (the type of the image values)
-  //!
-  //! \note
-  //! Perm has the same member functions as \ref StaticPTransf and \ref
-  //! DynamicPTransf, this isn't current reflected by the contents of this
-  //! page.
   template <
       size_t N = 0,
       typename Scalar
@@ -1640,87 +1401,36 @@ namespace libsemigroups {
     using base_type = PTransf<N, Scalar>;
 
    public:
-    //! Type of the image values.
+    //! \brief Type of the image values.
     //!
     //! Also the template parameter \c Scalar.
     using point_type = Scalar;
 
-    //! Type of the underlying container.
+    //! \brief Type of the underlying container.
     //!
     //! In this case, this is \c PTransf<N, Scalar>::container_type.
     using container_type = typename PTransf<N, point_type>::container_type;
 
-    // Currently no way to document these
     using Transf<N, Scalar>::Transf;
-
-    // Currently no way to document these
     using base_type::degree;
 
-    //! Construct from image list and validate
-    //!
-    //! Constructs a permutation \f$f\f$ of degree \c M such that \f$f(i) =
-    //! cont[i]\f$ for every value in the range \f$[0, M)\f$ where \f$M\f$ is
-    //! \c cont.size()
-    //!
-    //! \param cont list of images
-    //!
-    //! \complexity
-    //! Linear in the size of \p cont.
-    //!
-    //! \throws LibsemigroupsException if any of the following fail to hold:
-    //! * the size of \p cont is incompatible with \ref container_type.
-    //! * any value in \p cont exceeds `cont.size()`
+    //! \copydoc Transf::make(OtherContainer&&)
     //! * there are repeated values in \p cont.
-    template <typename T>
-    [[nodiscard]] static Perm make(T&& cont) {
-      return base_type::template make<Perm>(std::forward<T>(cont));
+    template <typename OtherContainer>
+    [[nodiscard]] static Perm make(OtherContainer&& cont) {
+      return base_type::template make<Perm>(std::forward<OtherContainer>(cont));
     }
 
-#ifndef PARSED_BY_DOXYGEN
-    // We don't document this, because it's basically identical to the
-    // function template above, and because it confuses the doc system.
+    //! \copydoc make(OtherContainer&&)
     [[nodiscard]] static Perm make(std::initializer_list<point_type>&& cont) {
       return make<std::initializer_list<point_type>>(std::move(cont));
     }
-#endif
 
-    //! Returns the identity permutation on the given number of points.
-    //!
-    //! This function returns a newly constructed permutation with
-    //! degree equal to \p M that fixes every value from \c 0 to \p M.
-    //!
-    //! \param M the degree.
-    //!
-    //! \returns
-    //! A value of type \c PPerm.
-    //!
-    //! \exceptions
-    //! \no_libsemigroups_except
-    //!
-    //! \complexity
-    //! Linear in \p M.
+    //! \copydoc Transf::one(size_t)
     [[nodiscard]] static Perm one(size_t M) {
       return base_type::template one<Perm>(M);
     }
   };
-
-  //! \ingroup transf_group
-  //!
-  //! \brief Convert a perm to a string.
-  //!
-  //! \tparam N  the degree
-  //! \tparam Scalar the type of the image values
-  //!
-  //! \param f the permutation
-  //! \param braces the type of braces to use (default: "{}")
-  //!
-  //! \returns A string containing a string representation of the argument \p f.
-  // TODO improve
-  template <size_t N, typename Scalar>
-  [[nodiscard]] std::string to_string(Perm<N, Scalar> const& f,
-                                      std::string_view       braces = "{}") {
-    return detail::ptransf_repr(f, "Perm", braces);
-  }
 
   ////////////////////////////////////////////////////////////////////////
   // Perm helpers
@@ -1753,18 +1463,18 @@ namespace libsemigroups {
   //!
   //! \tparam T the type of the permutation to validate.
   //!
-  //! \param x the permutation.
+  //! \param f the permutation.
   //!
   //! \throw LibsemigroupsException if:
-  //! * the image of any point in \p x exceeds \c x.degree()
-  //! * \p x is not injective
+  //! * the image of any point in \p f exceeds \c f.degree()
+  //! * \p f is not injective
   //!
   //! \complexity
-  //! Linear in the size of the container \c x.degree().
+  //! Linear in the size of the container \c f.degree().
   template <size_t N, typename Scalar>
-  auto validate(Perm<N, Scalar> const& x) {
-    validate(static_cast<Transf<N, Scalar> const&>(x));
-    detail::validate_no_duplicates(x.begin(), x.end());
+  auto validate(Perm<N, Scalar> const& f) {
+    validate(static_cast<Transf<N, Scalar> const&>(f));
+    detail::validate_no_duplicates(f.begin(), f.end());
   }
 
   ////////////////////////////////////////////////////////////////////////
@@ -1794,7 +1504,7 @@ namespace libsemigroups {
   //! \no_libsemigroups_except
   //!
   //! \complexity
-  //! \f$O(n\log(n))\f$ where \f$n\f$ equals PTransfBase::degree() of \p x.
+  //! \f$O(n\log(n))\f$ where \f$n\f$ equals PTransfBase::degree() of \p f.
   //!
   //! \sa \ref domain
   template <typename T, typename Point>
@@ -1818,7 +1528,7 @@ namespace libsemigroups {
   //! \no_libsemigroups_except
   //!
   //! \complexity
-  //! \f$O(n\log(n))\f$ where \f$n\f$ equals PTransfBase::degree() of \p x.
+  //! \f$O(n\log(n))\f$ where \f$n\f$ equals PTransfBase::degree() of \p f.
   //!
   //! \sa \ref domain
   template <typename T>
@@ -1871,7 +1581,7 @@ namespace libsemigroups {
   //! \no_libsemigroups_except
   //!
   //! \complexity
-  //! \f$O(n)\f$ where \f$n\f$ equals PTransfBase::degree() of \p x.
+  //! \f$O(n)\f$ where \f$n\f$ equals PTransfBase::degree() of \p f.
   //!
   //! \sa \ref image
   template <typename T>
@@ -1908,6 +1618,8 @@ namespace libsemigroups {
   //! to \p N that fixes every value in the image of the argument \p f, and is
   //! \ref UNDEFINED on any other values.
   //!
+  //! \param f the partial perm
+  //!
   //! \returns
   //! A value of type PPerm<N, Scalar>.
   //!
@@ -1917,7 +1629,7 @@ namespace libsemigroups {
   //! \complexity
   //! Linear in degree()
   template <size_t N, typename Scalar>
-  [[nodiscard]] PPerm<N, Scalar> right_one(PPerm<N, Scalar> const& x);
+  [[nodiscard]] PPerm<N, Scalar> right_one(PPerm<N, Scalar> const& f);
   // TODO void pass by reference version
 
   //! \ingroup transf_group
@@ -1927,6 +1639,8 @@ namespace libsemigroups {
   //! to \p N that fixes every value in the domain of \p f, and is \ref
   //! UNDEFINED on any other values.
   //!
+  //! \param f the partial perm
+  //!
   //! \returns
   //! A value of type PPerm<N, Scalar>.
   //!
@@ -1936,7 +1650,7 @@ namespace libsemigroups {
   //! \complexity
   //! Linear in degree()
   template <size_t N, typename Scalar>
-  [[nodiscard]] PPerm<N, Scalar> left_one(PPerm<N, Scalar> const& x);
+  [[nodiscard]] PPerm<N, Scalar> left_one(PPerm<N, Scalar> const& f);
   // TODO void pass by reference version
 
   //! \ingroup transf_group

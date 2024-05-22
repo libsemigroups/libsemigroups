@@ -36,14 +36,12 @@ namespace libsemigroups {
     return result;
   }
 
+  // STATIC
   template <typename Point, typename Container>
-  template <typename Subclass, typename ContainerAgain>
+  template <typename Subclass, typename T>
   [[nodiscard]] Subclass
-  PTransfBase<Point, Container>::make(ContainerAgain const& cont) {
-    validate_args(cont);
-    Subclass result(cont);
-    validate(result);
-    return result;
+  PTransfBase<Point, Container>::make(std::initializer_list<T> cont) {
+    return make<Subclass, std::vector<T>>(cont);
   }
 
   // STATIC
