@@ -310,6 +310,8 @@ namespace libsemigroups {
     REQUIRE_THROWS_AS(Perm<5>::make({1, 0, 3, 6, 4}), LibsemigroupsException);
     REQUIRE_THROWS_AS(Perm<5>::make({1, 5, 0, 3, 2}), LibsemigroupsException);
     REQUIRE_THROWS_AS(Perm<5>::make({0, 1, 2, 3, 0}), LibsemigroupsException);
+
+    REQUIRE_NOTHROW(Perm<5>::make());
   }
 
   LIBSEMIGROUPS_TEST_CASE("LeastTransf etc",

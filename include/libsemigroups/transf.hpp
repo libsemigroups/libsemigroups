@@ -114,22 +114,22 @@ namespace libsemigroups {
   //! It is not intended that instance of this class are actually constructed,
   //! only its derived classes.
   //!
-  //! \tparam Point the type of image values (must be an unsigned integer
+  //! \tparam Scalar the type of image values (must be an unsigned integer
   //! type).
   //!
   //! \tparam Container the type of the container holding the image values.
-  template <typename Point, typename Container>
+  template <typename Scalar, typename Container>
   class PTransfBase : public detail::PTransfPolymorphicBase {
-    static_assert(std::is_integral_v<Point>,
-                  "template parameter Point must be an integral type");
-    static_assert(!std::numeric_limits<Point>::is_signed,
-                  "template parameter Point must be unsigned");
+    static_assert(std::is_integral_v<Scalar>,
+                  "template parameter Scalar must be an integral type");
+    static_assert(!std::numeric_limits<Scalar>::is_signed,
+                  "template parameter Scalar must be unsigned");
 
    public:
     //! \brief Type of the image values.
     //!
     //! Also the template parameter \c Scalar.
-    using point_type = Point;
+    using point_type = Scalar;
 
     //! \brief Type of the underlying container.
     //!
@@ -162,21 +162,8 @@ namespace libsemigroups {
     //! Constant.
     PTransfBase() = default;
 
-    //! \brief Construct with given degree.
-    //!
-    //! Constructs a partial transformation of degree \p n with the image of
-    //! every point set to \ref UNDEFINED.
-    //!
-    //! \param n the degree
-    //!
-    //! \exceptions
-    //! \no_libsemigroups_except
-    //!
-    //! \complexity
-    //! Linear in the parameter \p n.
-    explicit PTransfBase(size_t n) : PTransfBase() {
-      resize(_container, n);
-    }
+    // No constructor from size_t this is delegated to StaticPTransf and
+    // DynamicPTransf
 
     //! \brief Construct from a container of images.
     //!
@@ -203,29 +190,43 @@ namespace libsemigroups {
     //! \copydoc PTransfBase::PTransfBase(Container const&)
     explicit PTransfBase(Container&& cont) : _container(std::move(cont)) {}
 
-    //! \copydoc PTransfBase::PTransfBase(Container const&)
+    //! \brief Construct from a range of images.
     //!
-    //! \tparam T type of the image points in \p cont
+    //! Constructs a partial transformation initialized using the
+    //! iterators \p first and \p last as follows: the image of the point \c i
+    //! under the partial transformation at `first + i`.
     //!
-    //! The values in the vector must be convertible to point_type or equal to
-    //! \ref UNDEFINED.
-    template <typename OtherContainer,
-              typename = std::enable_if_t<!std::is_integral_v<OtherContainer>>>
-    explicit PTransfBase(OtherContainer&& cont) : PTransfBase(cont.size()) {
-      using OtherScalar = typename std::decay_t<OtherContainer>::value_type;
-      static_assert(std::is_same_v<OtherScalar, Undefined>
-                        || std::is_convertible_v<OtherScalar, point_type>,
-                    "the template parameter OtherScalar must be Undefined or "
-                    "convertible to point_type!");
-      std::copy(cont.begin(), cont.end(), _container.begin());
+    //! The values pointed at by iterators of type Iterator must be convertible
+    //! to point_type or equal to \ref UNDEFINED.
+    //!
+    //! \param first iterator pointing at the first image point
+    //! \param last iterator pointing one beyond the last image point
+    //!
+    //! \complexity
+    //! Linear in the size of the container \p cont.
+    //!
+    //! \warning
+    //! No checks on the validity of \p cont are performed.
+    //!
+    //! \sa
+    //! \ref make
+    template <typename Iterator>
+    explicit PTransfBase(Iterator first, Iterator last) : PTransfBase() {
+      using OtherScalar = typename std::iterator_traits<Iterator>::value_type;
+      static_assert(
+          std::is_same_v<OtherScalar, Undefined>
+              || std::is_convertible_v<OtherScalar, point_type>,
+          "the template parameter Iterator must have "
+          "value_type \"Undefined\" or convertible to \"point_type\"!");
+      resize(_container, std::distance(first, last));
+      std::copy(first, last, _container.begin());
     }
 
-    //! \copydoc PTransfBase::PTransfBase(OtherContainer&&)
-    template <typename OtherScalar>
-    explicit PTransfBase(std::initializer_list<OtherScalar> cont)
-        : PTransfBase(std::vector<OtherScalar>(cont)) {}
+    //! \copydoc PTransfBase::PTransfBase(Container const&)
+    PTransfBase(std::initializer_list<Scalar> cont)
+        : PTransfBase(cont.begin(), cont.end()) {}
 
-    //! \brief Make an instance of \c Subclass with degree 0.
+    //! \brief Make an instance of \c Subclass with degree \c 0.
     //!
     //! This is equivalent to default constructing a \c Subclass instance and is
     //! here for consistency of interface only. The \c make static member
@@ -234,7 +235,7 @@ namespace libsemigroups {
     //!
     //! \tparam Subclass the type of the return value.
     //!
-    //! \returns A \c Subclass instance with degree 0.
+    //! \returns A \c Subclass instance with degree \c 0.
     template <typename Subclass>
     [[nodiscard]] static Subclass make() {
       return Subclass();
@@ -256,7 +257,7 @@ namespace libsemigroups {
     //! \throw LibsemigroupsException if any of the following hold:
     //! * the size of \p cont is incompatible with \ref container_type.
     //! * any value in \p cont exceeds `cont.size()` and is not equal to
-    //!   libsemigroups::UNDEFINED.
+    //!   UNDEFINED.
     //!
     //! \complexity
     //! Linear in the size of the container \p cont.
@@ -271,19 +272,19 @@ namespace libsemigroups {
     //! container \p cont.
     //!
     //! \tparam Subclass the type of the return value.
-    //! \tparam T the type of the points in \p cont.
+    //! \tparam OtherScalar the type of the points in \p cont.
     //!
     //! \param cont the initializer list.
     //!
     //! \throw LibsemigroupsException if any of the following hold:
     //! * the size of \p cont is incompatible with \ref container_type.
     //! * any value in \p cont exceeds `cont.size()` and is not equal to
-    //!   libsemigroups::UNDEFINED.
+    //!   UNDEFINED.
     //!
     //! \complexity
     //! Linear in the size of the container \p cont.
-    template <typename Subclass, typename T>
-    [[nodiscard]] static Subclass make(std::initializer_list<T> cont);
+    template <typename Subclass, typename OtherScalar>
+    [[nodiscard]] static Subclass make(std::initializer_list<OtherScalar> cont);
 
     //! \brief Default copy constructor
     //!
@@ -523,10 +524,12 @@ namespace libsemigroups {
     }
 
     //! \brief Type of iterators point to image values.
+    //!
     //! Type of iterators point to image values.
     using iterator = typename Container::iterator;
 
     //! \brief Type of const iterators point to image values.
+    //!
     //! Type of const iterators point to image values.
     using const_iterator = typename Container::const_iterator;
 
@@ -603,7 +606,7 @@ namespace libsemigroups {
     //! \brief Returns the number of distinct image values.
     //!
     //! The *rank* of a partial transformation is the number of its distinct
-    //! image values, not including \ref libsemigroups::UNDEFINED.
+    //! image values, not including \ref UNDEFINED.
     //!
     //! \returns
     //! A value of type \c size_t.
@@ -764,7 +767,18 @@ namespace libsemigroups {
     // a default constructor for StaticPTransf since there we do know the degree
     // (at compile time) and we can fill it with UNDEFINED values.
 
-    //! \copydoc PTransfBase::PTransfBase(size_t)
+    //! \brief Construct with given degree.
+    //!
+    //! Constructs a partial transformation of degree \p n with the image of
+    //! every point set to \ref UNDEFINED.
+    //!
+    //! \param n the degree
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    //! \complexity
+    //! Linear in the parameter \p n.
     explicit DynamicPTransf(size_t n) : base_type() {
       resize(n, UNDEFINED);
     }
@@ -932,7 +946,7 @@ namespace libsemigroups {
   //! \throw LibsemigroupsException if any of the following hold:
   //! * the size of \p cont is incompatible with `T::container_type`.
   //! * any value in \p cont exceeds `cont.size()` and is not equal to \ref
-  //!   libsemigroups::UNDEFINED.
+  //!   UNDEFINED.
   //!
   //! \complexity
   //! Linear in degree().
@@ -979,6 +993,10 @@ namespace libsemigroups {
   //!
   //! \tparam N  the degree (default: \c 0)
   //! \tparam Scalar an unsigned integer type (the type of the image values)
+  //!
+  //! This class inherits from either StaticPTransf or DynamicPTransf, see the
+  //! documentation of these classes for more details of the available member
+  //! functions.
   template <
       size_t N = 0,
       typename Scalar
@@ -1010,13 +1028,11 @@ namespace libsemigroups {
     //! \copydoc PTransfBase::make(OtherContainer&&)
     template <typename OtherContainer>
     [[nodiscard]] static Transf make(OtherContainer&& cont) {
-      auto result = base_type::template make<Transf>(
+      return base_type::template make<Transf>(
           std::forward<OtherContainer>(cont));
-      validate(result);
-      return result;
     }
 
-    //! \copydoc PTransfBase::make(std::initializer_list<T>)
+    //! \copydoc PTransfBase::make(std::initializer_list<OtherScalar>)
     //! \throws LibsemigroupsException if the value \ref UNDEFINED belongs to \p
     //! cont.
     template <typename OtherScalar>
@@ -1035,7 +1051,7 @@ namespace libsemigroups {
     //! \no_libsemigroups_except
     //!
     //! \complexity
-    //! Linear in PTransf::degree.
+    //! Linear in \ref degree.
     //!
     //! \warning
     //! No checks are made on whether or not the parameters are compatible. If
@@ -1106,7 +1122,7 @@ namespace libsemigroups {
   //! f.degree() or is equal to \ref UNDEFINED.
   //!
   //! \complexity
-  //! Linear in the size of the container \c f.degree().
+  //! Linear in \c f.degree().
   template <size_t N, typename Scalar>
   void validate(Transf<N, Scalar> const& f);
 
@@ -1137,6 +1153,10 @@ namespace libsemigroups {
   //! \tparam N  the degree (default: \c 0)
   //! \tparam Scalar an unsigned integer type (the type of the image values)
   //! (default: \c uint32_t)
+  //!
+  //! This class inherits from either StaticPTransf or DynamicPTransf, see the
+  //! documentation of these classes for more details of the available member
+  //! functions.
   template <
       size_t N = 0,
       typename Scalar
@@ -1262,7 +1282,7 @@ namespace libsemigroups {
     //! \no_libsemigroups_except
     //!
     //! \complexity
-    //! Linear in degree().
+    //! Linear in \ref PTransfBase::degree() "degree" of \p f or \p g.
     //!
     //! \warning
     //! No checks are made on whether or not the parameters are compatible. If
@@ -1360,7 +1380,7 @@ namespace libsemigroups {
   //! * \p f is not injective
   //!
   //! \complexity
-  //! Linear in the size of the container \c f.degree().
+  //! Linear in \c f.degree().
   template <size_t N, typename Scalar>
   void validate(PPerm<N, Scalar> const& f) {
     validate(static_cast<PTransf<N, Scalar> const&>(f));
@@ -1393,6 +1413,10 @@ namespace libsemigroups {
   //!
   //! \tparam N  the degree (default: \c 0)
   //! \tparam Scalar an unsigned integer type (the type of the image values)
+  //!
+  //! This class inherits from either StaticPTransf or DynamicPTransf, see the
+  //! documentation of these classes for more details of the available member
+  //! functions.
   template <
       size_t N = 0,
       typename Scalar
@@ -1415,14 +1439,19 @@ namespace libsemigroups {
     using base_type::degree;
 
     //! \copydoc Transf::make(OtherContainer&&)
-    //! * there are repeated values in \p cont.
+    //! \throws LibsemigroupsException if there are repeated values in \p cont.
     template <typename OtherContainer>
     [[nodiscard]] static Perm make(OtherContainer&& cont) {
       return base_type::template make<Perm>(std::forward<OtherContainer>(cont));
     }
 
+    //! \copydoc Transf::make()
+    [[nodiscard]] static Perm make() {
+      return base_type::template make<Perm>();
+    }
+
     //! \copydoc make(OtherContainer&&)
-    [[nodiscard]] static Perm make(std::initializer_list<point_type>&& cont) {
+    [[nodiscard]] static Perm make(std::initializer_list<point_type> cont) {
       return make<std::initializer_list<point_type>>(std::move(cont));
     }
 
@@ -1470,7 +1499,7 @@ namespace libsemigroups {
   //! * \p f is not injective
   //!
   //! \complexity
-  //! Linear in the size of the container \c f.degree().
+  //! Linear in \c f.degree().
   template <size_t N, typename Scalar>
   auto validate(Perm<N, Scalar> const& f) {
     validate(static_cast<Transf<N, Scalar> const&>(f));
@@ -1494,7 +1523,7 @@ namespace libsemigroups {
   //!
   //! \tparam T the type of the 1st argument (Transf, libsemigroups::PTransf,
   //! PPerm, or Perm)
-  //! \tparam Point the type of the values in the 2nd argument
+  //! \tparam Scalar the type of the values in the 2nd argument
   //! (typically T::point_type where \c T is the 1st template parameter.
   //!
   //! \param f the partial transformation whose image is sought.
@@ -1507,8 +1536,8 @@ namespace libsemigroups {
   //! \f$O(n\log(n))\f$ where \f$n\f$ equals PTransfBase::degree() of \p f.
   //!
   //! \sa \ref domain
-  template <typename T, typename Point>
-  void image(T const& f, std::vector<Point>& im);
+  template <typename T, typename Scalar>
+  void image(T const& f, std::vector<Scalar>& im);
 
   //! \ingroup transf_group
   //!
@@ -1547,7 +1576,7 @@ namespace libsemigroups {
   //!
   //! \tparam T the type of the 1st argument (Transf, libsemigroups::PTransf,
   //! PPerm, or Perm)
-  //! \tparam Point the type of the values in the 2nd argument
+  //! \tparam Scalar the type of the values in the 2nd argument
   //! (typically T::point_type where \c T is the 1st template parameter.
   //!
   //! \param f the partial transformation whose image is sought.
@@ -1560,8 +1589,8 @@ namespace libsemigroups {
   //! \f$O(n)\f$ where \f$n\f$ equals PTransfBase::degree() of \p f.
   //!
   //! \sa \ref image
-  template <typename T, typename Point>
-  void domain(T const& f, std::vector<Point>& dom);
+  template <typename T, typename Scalar>
+  void domain(T const& f, std::vector<Scalar>& dom);
 
   //! \ingroup transf_group
   //!
@@ -1604,7 +1633,7 @@ namespace libsemigroups {
   //! \no_libsemigroups_except
   //!
   //! \complexity
-  //! Linear in degree()
+  //! Linear in \c f.degree().
   template <typename T>
   [[nodiscard]] auto one(T const& f)
       -> std::enable_if_t<IsDerivedFromPTransf<T>, T> {
@@ -1627,7 +1656,7 @@ namespace libsemigroups {
   //! \no_libsemigroups_except
   //!
   //! \complexity
-  //! Linear in degree()
+  //! Linear in \c f.degree().
   template <size_t N, typename Scalar>
   [[nodiscard]] PPerm<N, Scalar> right_one(PPerm<N, Scalar> const& f);
   // TODO void pass by reference version
@@ -1648,7 +1677,7 @@ namespace libsemigroups {
   //! \no_libsemigroups_except
   //!
   //! \complexity
-  //! Linear in degree()
+  //! Linear in \c f.degree().
   template <size_t N, typename Scalar>
   [[nodiscard]] PPerm<N, Scalar> left_one(PPerm<N, Scalar> const& f);
   // TODO void pass by reference version
@@ -1667,7 +1696,7 @@ namespace libsemigroups {
   //! \no_libsemigroups_except
   //!
   //! \complexity
-  //! Linear in degree()
+  //! Linear in \c f.degree().
   // Put the inverse of this into that
   template <size_t N, typename Scalar>
   void inverse(PPerm<N, Scalar> const& from, PPerm<N, Scalar>& to);
@@ -1691,7 +1720,7 @@ namespace libsemigroups {
   //! \no_libsemigroups_except
   //!
   //! \complexity
-  //! Linear in degree()
+  //! Linear in \c f.degree().
   //!
   //! \sa right_one and left_one
   template <size_t N, typename Scalar>
@@ -1718,7 +1747,7 @@ namespace libsemigroups {
   //! \no_libsemigroups_except
   //!
   //! \complexity
-  //! Linear in degree()
+  //! Linear in \c f.degree().
   template <size_t N, typename Scalar>
   void inverse(Perm<N, Scalar> const& from, Perm<N, Scalar>& to);
 
@@ -1741,7 +1770,7 @@ namespace libsemigroups {
   //! \no_libsemigroups_except
   //!
   //! \complexity
-  //! Linear in degree()
+  //! Linear in \c f.degree().
   template <size_t N, typename Scalar>
   [[nodiscard]] Perm<N, Scalar> inverse(Perm<N, Scalar> const& f);
 
