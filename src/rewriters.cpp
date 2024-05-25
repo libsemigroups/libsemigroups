@@ -558,8 +558,7 @@ namespace libsemigroups {
       // Read first letter of W and traverse trie
       auto x = *w_begin;
       ++w_begin;
-      current = aho_corasick::traverse_from_no_checks(
-          _trie, current, static_cast<letter_type>(x));
+      current = _trie.traverse_no_checks(current, static_cast<letter_type>(x));
 
       if (!_trie.node_no_checks(current).is_terminal()) {
         nodes.push_back(current);

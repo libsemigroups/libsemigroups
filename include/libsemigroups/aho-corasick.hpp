@@ -553,102 +553,219 @@ namespace libsemigroups {
   //! TODO doc
   [[nodiscard]] Dot dot(AhoCorasick& ac);
 
+  //! \ingroup aho_corasick_group
+  //!
+  //! \brief Namespace for AhoCorasick helper functions
+  //!
+  //! Defined in ``aho-corasick.hpp``.
+  //!
+  //! This namespace contains various helper functions for the class
+  //! AhoCorasick. These functions could be functions of AhoCorasick but they
+  //! only use public member functions of AhoCorasick, and so they are declared
+  //! as free functions instead.
   namespace aho_corasick {
     using index_type = AhoCorasick::index_type;
 
-    //! TODO doc
-    inline std::string repr(AhoCorasick& ac) {
-      std::string n_nodes = std::to_string(ac.number_of_nodes());
-      return "<AhoCorasick with " + n_nodes + " nodes>";
-    }
-
-    //! TODO doc
+    //! \brief Add a word to the trie of \p ac.
+    //!
+    //! This function performs the same as `ac.add_word_no_checks(w.begin(),
+    //! w.end())`
+    //!
+    //! \tparam Word the type of the 2nd parameter \p w.
+    //! \param ac AhoCorasick object to add the word to.
+    //! \param w the word to add.
+    //!
+    //! \returns An \ref index_type corresponding to the final node added to the
+    //! \p ac.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    //! \complexity
+    //! Linear in the length of \p w.
+    //!
+    //! \sa \ref AhoCorasick::add_word_no_checks.
     template <typename Word>
-    inline void add_word_no_checks(AhoCorasick& ac, Word const& w) {
+    void add_word_no_checks(AhoCorasick& ac, Word const& w) {
       ac.add_word_no_checks(w.cbegin(), w.cend());
     }
 
-    //! TODO doc
+    //! \brief Remove a word from the trie of \p ac.
+    //!
+    //! This function performs the same as `ac.rm_word_no_checks(w.begin(),
+    //! w.end())`
+    //!
+    //! \tparam Word the type of the 2nd parameter \p w.
+    //! \param ac AhoCorasick object to remove the word from.
+    //! \param w the word to remove.
+    //!
+    //! \returns An \ref index_type corresponding to the node with signature
+    //! equal to \p w.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    //! \complexity
+    //! Linear in the length of \p w.
+    //!
+    //! \sa \ref AhoCorasick::rm_word_no_checks.
     template <typename Word>
-    inline index_type rm_word_no_checks(AhoCorasick& ac, Word const& w) {
+    index_type rm_word_no_checks(AhoCorasick& ac, Word const& w) {
       return ac.rm_word_no_checks(w.cbegin(), w.cend());
     }
 
-    //! TODO doc
+    //! \brief Add a word to the trie of \p ac.
+    //!
+    //! This function performs the same as `ac.add_word(w.begin(), w.end())`
+    //!
+    //! \tparam Word the type of the 2nd parameter \p w.
+    //! \param ac AhoCorasick object to add the word to.
+    //! \param w the word to add.
+    //!
+    //! \returns An \ref index_type corresponding to the final node added to the
+    //! \p ac.
+    //!
+    //! \throws LibsemigroupsException if the word \p w corresponds to an
+    //! existing terminal node in the trie.
+    //!
+    //! \complexity
+    //! Linear in the length of \p w.
+    //!
+    //! \sa \ref AhoCorasick::add_word.
     template <typename Word>
-    inline void add_word(AhoCorasick& ac, Word const& w) {
+    void add_word(AhoCorasick& ac, Word const& w) {
       ac.add_word(w.cbegin(), w.cend());
     }
 
-    //! TODO doc
+    //! \brief Remove a word from the trie of \p ac.
+    //!
+    //! This function performs the same as `ac.rm_word(w.begin(), w.end())`
+    //!
+    //! \tparam Word the type of the 2nd parameter \p w.
+    //! \param ac AhoCorasick object to remove the word from.
+    //! \param w the word to remove.
+    //!
+    //! \returns An \ref index_type corresponding to the node with signature
+    //! equal to \p w.
+    //!
+    //! \throws LibsemigroupsException if the word \p w does not correspond to
+    //! an existing terminal node in the trie.
+    //!
+    //! \complexity
+    //! Linear in the length of \p w.
+    //!
+    //! \sa \ref AhoCorasick::rm_word.
     template <typename Word>
-    inline index_type rm_word(AhoCorasick& ac, Word const& w) {
+    index_type rm_word(AhoCorasick& ac, Word const& w) {
       return ac.rm_word(w.cbegin(), w.cend());
     }
 
-    //! TODO doc
+    //! \brief Traverse the trie of \p ac using suffix links where necessary.
+    //!
+    //! This function traverses the trie of \p ac, starting at the node with
+    //! index \p start, and traversing using the letters in the word
+    //! corresponding to \p first and \p last.
+    //!
+    //! \tparam Iterator the type of the 2nd and 3rd parameters.
+    //! \param ac AhoCorasick object to traverse.
+    //! \param start the index of the node to first traverse from.
+    //! \param first iterator pointing to the first letter of the word to
+    //! traverse.
+    //! \param last one beyond the last letter of the word to traverse.
+    //!
+    //! \returns An value of type `index_type`
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    //! \warning This function does no checks on its arguments whatsoever. In
+    //! particular, if the index \p start is greater than the number of nodes
+    //! that have ever been created, then bad things will happen.
+    //!
+    //! \sa \ref AhoCorasick::traverse_no_checks
     template <typename Iterator>
-    [[nodiscard]] inline index_type
-    traverse_from_no_checks(AhoCorasick const& ac,
-                            index_type         start,
-                            Iterator           first,
-                            Iterator           last);
+    [[nodiscard]] index_type traverse_word_no_checks(AhoCorasick const& ac,
+                                                     index_type         start,
+                                                     Iterator           first,
+                                                     Iterator           last);
 
-    //! TODO doc
-    template <typename Letter>
+    //! \brief Traverse the trie of \p ac using suffix links where necessary.
+    //!
+    //! This function performs the same as `traverse_word_no_checks(ac, start,
+    //! w.cbegin(), w.cend())`
+    //!
+    //! \sa \ref traverse_word_no_checks.
     [[nodiscard]] inline index_type
-    traverse_from_no_checks(AhoCorasick const& ac,
-                            index_type         start,
-                            Letter const&      w) {
-      return ac.traverse_no_checks(start, w);
-    }
-
-    //! TODO doc
-    [[nodiscard]] inline index_type
-    traverse_from_no_checks(AhoCorasick const& ac,
+    traverse_word_no_checks(AhoCorasick const& ac,
                             index_type         start,
                             word_type const&   w) {
-      return traverse_from_no_checks(ac, start, w.cbegin(), w.cend());
+      return traverse_word_no_checks(ac, start, w.cbegin(), w.cend());
     }
 
-    //! TODO doc
+    //! \brief Traverse the trie of \p ac using suffix links where necessary.
+    //!
+    //! After validating \p start with respect to \p ac, this function performs
+    //! the same as `traverse_word_no_checks(ac, start, first, last)`.
+    //!
+    //! \throws LibsemigroupsException if `ac.validate_active_node_index(start)`
+    //! throws.
+    //!
+    //! \sa \ref traverse_word_no_checks, \ref
+    //! AhoCorasick::validate_active_node_index.
     template <typename Iterator>
-    [[nodiscard]] inline index_type traverse_from(AhoCorasick const& ac,
-                                                  index_type         start,
-                                                  Iterator           first,
-                                                  Iterator           last) {
+    [[nodiscard]] index_type traverse_word(AhoCorasick const& ac,
+                                           index_type         start,
+                                           Iterator           first,
+                                           Iterator           last) {
       ac.validate_active_node_index(start);
-      return traverse_from_no_checks(ac, start, first, last);
+      return traverse_word_no_checks(ac, start, first, last);
     }
 
-    //! TODO doc
-    template <typename Letter>
-    [[nodiscard]] inline index_type traverse_from(AhoCorasick const& ac,
-                                                  index_type         start,
-                                                  Letter const&      w) {
-      return ac.traverse(start, w);
-    }
-
-    //! TODO doc
-    [[nodiscard]] inline index_type traverse_from(AhoCorasick const& ac,
+    //! \brief Traverse the trie of \p ac using suffix links where necessary.
+    //!
+    //! This function performs the same as `traverse_word(ac, start, w.cbegin(),
+    //! w.cend())`
+    //!
+    //! \sa \ref traverse_word.
+    [[nodiscard]] inline index_type traverse_word(AhoCorasick const& ac,
                                                   index_type         start,
                                                   word_type const&   w) {
-      return traverse_from(ac, start, w.cbegin(), w.cend());
+      return traverse_word(ac, start, w.cbegin(), w.cend());
     }
 
-    //! TODO doc
+    //! \brief Traverse the trie of \p ac from the root using suffix links where
+    //! necessary.
+    //!
+    //! This function performs the same as `traverse_word_no_checks(ac,
+    //! AhoCorasick::root, first, last)`
+    //!
+    //! \note
+    //! There is no `_no_checks` suffix here as AhoCorasick::root is always a
+    //! valid node of a trie, and therefore no checks are needed.
+    //!
+    //! \sa \ref traverse_word_no_checks.
     template <typename Iterator>
-    [[nodiscard]] inline index_type traverse(AhoCorasick const& ac,
-                                             Iterator           first,
-                                             Iterator           last) {
-      return traverse_from_no_checks(ac, AhoCorasick::root, first, last);
+    [[nodiscard]] index_type traverse_word(AhoCorasick const& ac,
+                                           Iterator           first,
+                                           Iterator           last) {
+      return traverse_word_no_checks(ac, AhoCorasick::root, first, last);
     }
 
-    //! TODO doc
+    //! \brief Traverse the trie of \p ac from the root using suffix links where
+    //! necessary.
+    //!
+    //! This function performs the same as `traverse_word_no_checks(ac,
+    //! AhoCorasick::root, w.cbegin(), w.end())`
+    //!
+    //! \note
+    //! There is no `_no_checks` suffix here as AhoCorasick::root is always a
+    //! valid node of a trie, and therefore no checks are needed.
+    //!
+    //! \sa \ref traverse_word_no_checks.
     template <typename Word>
-    [[nodiscard]] inline index_type traverse(AhoCorasick const& ac,
-                                             Word const&        w) {
-      return traverse_from(ac, AhoCorasick::root, w.cbegin(), w.cend());
+    [[nodiscard]] index_type traverse_word(AhoCorasick const& ac,
+                                           Word const&        w) {
+      return traverse_word(ac, AhoCorasick::root, w.cbegin(), w.cend());
     }
   }  // namespace aho_corasick
 

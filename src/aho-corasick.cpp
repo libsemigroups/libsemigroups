@@ -188,6 +188,13 @@ namespace libsemigroups {
     }
   }
 
+  std::string to_string(AhoCorasick& ac) {
+    auto        n_nodes = ac.number_of_nodes();
+    std::string nodes
+        = (n_nodes == 1) ? "1 node" : std::to_string(n_nodes) + " nodes";
+    return "<AhoCorasick with " + nodes + ">";
+  }
+
   [[nodiscard]] Dot dot(AhoCorasick& ac) {
     auto to_word = [](word_type const& w) {
       if (w.empty()) {

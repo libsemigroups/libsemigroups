@@ -112,7 +112,7 @@ namespace libsemigroups {
   namespace aho_corasick {
     template <typename Iterator>
     [[nodiscard]] AhoCorasick::index_type
-    traverse_from_no_checks(AhoCorasick const& ac,
+    traverse_word_no_checks(AhoCorasick const& ac,
                             index_type         start,
                             Iterator           first,
                             Iterator           last) {
