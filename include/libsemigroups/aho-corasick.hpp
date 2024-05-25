@@ -326,6 +326,7 @@ namespace libsemigroups {
     //!
     //! \exceptions
     //! \no_libsemigroups_except
+    // TODO(2) Should this be templated?
     [[nodiscard]] index_type traverse_no_checks(index_type  current,
                                                 letter_type a) const;
 
