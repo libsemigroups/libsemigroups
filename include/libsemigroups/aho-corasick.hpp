@@ -46,9 +46,14 @@
 // TODO(1) change names from set_X and get_X to X(val) and X(). e.g.
 // set_suffix_link('a') -> suffix_link('a')
 // TODO(2) add something that gets a ranges element to find all terminal nodes.
+
+//! \defgroup aho_corasick_group Aho Corasick
+//!
+//! This file contains documentation for the functionality in the `AhoCorasick`
+//! class in `libsemigroups`.
 namespace libsemigroups {
 
-  //! \ingroup misc_group
+  //! \ingroup aho_corasick_group
   //!
   //! \brief For an implementation of the Aho-Corasick algorithm
   //!
@@ -165,15 +170,23 @@ namespace libsemigroups {
     //! the empty word \f$\varepsilon\f$.
     AhoCorasick();
 
+    //! \brief Default copy constructor
+    //!
     //! Default copy constructor
     AhoCorasick(AhoCorasick const&) = default;
 
+    //! \brief Default copy assignment
+    //!
     //! Default copy assignment
     AhoCorasick& operator=(AhoCorasick const&) = default;
 
+    //! \brief Default move constructor
+    //!
     //! Default move constructor
     AhoCorasick(AhoCorasick&&) = default;
 
+    //! \brief Default move assignment
+    //!
     //! Default move assignment
     AhoCorasick& operator=(AhoCorasick&&) = default;
 
@@ -183,6 +196,12 @@ namespace libsemigroups {
     //! it had been newly default constructed.
     //!
     //! \returns A reference to \c this.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    //! \complexity
+    //! Linear in the number of nodes in the trie
     AhoCorasick& init();
 
     //! \brief Returns the number of nodes in the trie.
@@ -190,7 +209,7 @@ namespace libsemigroups {
     //! This function Returns the number of nodes in the trie.
     //!
     //! \returns
-    //! A `size_t`.
+    //! A value of type `size_t`.
     //!
     //! \exceptions
     //! \noexcept
@@ -204,7 +223,7 @@ namespace libsemigroups {
     //! \brief Check and add a word to the trie.
     //!
     //! This function does the same as \ref add_word_no_checks
-    //! "add_word_no_checks(Iterator, Iterator)" after first checking that the
+    //! `add_word_no_checks(Iterator, Iterator)` after first checking that the
     //! word corresponding to \p first and \p last does not correspond to an
     //! existing terminal node in the trie.
     //!
@@ -228,15 +247,15 @@ namespace libsemigroups {
     //! \param first iterator pointing to the first letter of the word to add.
     //! \param last one beyond the last letter of the word to add.
     //!
+    //! \returns An \ref index_type corresponding to the final node added to the
+    //! trie. This node will have a \ref signature equal to that of the given
+    //! word.
+    //!
     //! \exceptions
     //! \no_libsemigroups_except
     //!
     //! \complexity
     //! Linear in the distance between `first` and `last`.
-    //!
-    //! \returns An \ref index_type corresponding to the final node added to the
-    //! trie. This node will have a \ref signature equal to that of the given
-    //! word.
     //!
     //! \sa \ref signature
     template <typename Iterator>
@@ -245,7 +264,7 @@ namespace libsemigroups {
     //! \brief Check and add a word to the trie.
     //!
     //! This function does the same as \ref rm_word_no_checks
-    //! "rm_word_no_checks(Iterator, Iterator)" after first checking that the
+    //! `rm_word_no_checks(Iterator, Iterator)` after first checking that the
     //! word corresponding to \p first and \p last is terminal node in the trie.
     //!
     //! \throws LibsemigroupsException if the word corresponding to \p first and
@@ -276,14 +295,14 @@ namespace libsemigroups {
     //! \param first iterator pointing to the first letter of the word to add.
     //! \param last one beyond the last letter of the word to add.
     //!
+    //! \returns An \ref index_type corresponding to the node with signature
+    //! equal to the given word.
+    //!
     //! \exceptions
     //! \no_libsemigroups_except
     //!
     //! \complexity
     //! Linear in the distance between `first` and `last`.
-    //!
-    //! \returns An \ref index_type corresponding to the node with signature
-    //! equal to the given word.
     //!
     //! \sa \ref signature
     template <typename Iterator>
@@ -291,7 +310,7 @@ namespace libsemigroups {
 
     //! \brief Traverse the trie using suffix links where necessary
     //!
-    //! This function traverse the trie using suffix links where necessary,
+    //! This function traverses the trie using suffix links where necessary,
     //! behaving like a combination of the *goto* function and the *fail*
     //! function in \cite Aho1975aa.
     //!
@@ -303,20 +322,22 @@ namespace libsemigroups {
     //! \param current the index of the node to traverse from
     //! \param a the letter to traverse
     //!
+    //! \returns An value of type `index_type`
+    //!
     //! \exceptions
     //! \no_libsemigroups_except
-    //!
-    //! \returns A value of type `index_type`
     [[nodiscard]] index_type traverse_no_checks(index_type  current,
                                                 letter_type a) const;
 
-    //! \brief After checking, traverse the trie using suffix links where
-    //! necessary
+    //! \brief Traverse the trie using suffix links where necessary.
     //!
-    //! See \ref traverse_no_checks
+    //! After validating \p current, this function performs the same as
+    //! `traverse_no_checks(current, a)`.
     //!
     //! \throws LibsemigroupsException if `validate_active_node_index(current)`
     //! throws.
+    //!
+    //! \sa \ref traverse_no_checks, \ref validate_active_node_index.
     [[nodiscard]] index_type traverse(index_type current, letter_type a) const {
       validate_active_node_index(current);
       return traverse_no_checks(current, a);
@@ -332,24 +353,27 @@ namespace libsemigroups {
     //! \param w the word to clear and change in-place
     //! \param i the index of the node whose signature is sought
     //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
     //! \complexity
     //! Linear in the height of the node
     //!
     //! \warning This function does no checks on its arguments whatsoever. In
     //! particular, if the index \p i is greater than the number of nodes that
     //! have ever been created, then bad things will happen.
-    //!
-    //! \exceptions
-    //! \no_libsemigroups_except
     // TODO(2) template to accept Iterator not word_type&
     void signature_no_checks(word_type& w, index_type i) const;
 
-    //! \brief After checking, find the signature of a node
+    //! \brief Find the signature of a node
     //!
-    //! See \ref signature_no_checks
+    //! After validating \p i, this function performs the same as
+    //! `signature_no_checks(w, i)`.
     //!
     //! \throws LibsemigroupsException if `validate_active_node_index(i)`
     //! throws.
+    //!
+    //! \sa \ref signature_no_checks, \ref validate_active_node_index.
     void signature(word_type& w, index_type i) const {
       validate_active_node_index(i);
       signature_no_checks(w, i);
@@ -361,23 +385,27 @@ namespace libsemigroups {
     //!
     //! \returns A value of type `size_t`
     //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    //! \complexity
+    //! Linear in the return value which is, at worst, the maximum length of a
+    //! word in the trie
+    //!
     //! \warning This function does no checks on its arguments whatsoever. In
     //! particular, if the index \p i is greater than the number of nodes that
     //! have ever been created, then bad things will happen.
-    //!
-    //! \complexity
-    //! Linear in the height of the node
-    //!
-    //! \exceptions
-    //! \no_libsemigroups_except
     [[nodiscard]] size_t height_no_checks(index_type i) const;
 
-    //! \brief After checking, calculate the height of a node
+    //! \brief Calculate the height of a node
     //!
-    //! See \ref height_no_checks
+    //! After validating \p i, this function performs the same as
+    //! `height_no_checks(i)`.
     //!
     //! \throws LibsemigroupsException if `validate_active_node_index(i)`
     //! throws.
+    //!
+    //! \sa \ref height_no_checks, \ref validate_active_node_index.
     [[nodiscard]] size_t height(index_type i) const {
       validate_active_node_index(i);
       return height_no_checks(i);
@@ -394,23 +422,26 @@ namespace libsemigroups {
     //!
     //! \returns A value of type `index_type`
     //!
-    //! \warning This function does no checks on its arguments whatsoever. In
-    //! particular, if the index \p current is greater than the number of nodes
-    //! that have ever been created, then bad things will happen.
+    //! \exceptions
+    //! \no_libsemigroups_except
     //!
     //! \complexity
     //! Linear in the height of the node.
     //!
-    //! \exceptions
-    //! \no_libsemigroups_except
+    //! \warning This function does no checks on its arguments whatsoever. In
+    //! particular, if the index \p current is greater than the number of nodes
+    //! that have ever been created, then bad things will happen.
     [[nodiscard]] index_type suffix_link_no_checks(index_type current) const;
 
-    //! \brief After checking, calculate the index of the suffix link of a node
+    //! \brief Calculate the index of the suffix link of a node
     //!
-    //! See \ref suffix_link_no_checks
+    //! After validating \p current, this function performs the same as
+    //! `suffix_link_no_checks(current)`.
     //!
     //! \throws LibsemigroupsException if `validate_active_node_index(current)`
     //! throws.
+    //!
+    //! \sa \ref suffix_link_no_checks, \ref validate_active_node_index.
     [[nodiscard]] index_type suffix_link(index_type current) const {
       validate_active_node_index(current);
       return suffix_link_no_checks(current);
@@ -425,30 +456,34 @@ namespace libsemigroups {
     //!
     //! \returns A value of type `Node`
     //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    //! \complexity
+    //! Constant
+    //!
     //! \note The node returned by this function may not represent a node
     //! presently stored in the trie. See \ref validate_active_node_index
     //!
     //! \warning This function does no checks on its arguments whatsoever. In
     //! particular, if the index \p i is greater than the number of nodes that
     //! have ever been created, then bad things will happen.
-    //!
-    //! \complexity
-    //! Constant
-    //!
-    //! \throws std::out_of_range if \p i is too large.
     [[nodiscard]] Node const& node_no_checks(index_type i) const {
       LIBSEMIGROUPS_ASSERT(i < _all_nodes.size());
-      return _all_nodes.at(i);
+      return _all_nodes[i];
     }
 
-    //! \brief After checking, return the node given an index
+    //! \brief Return the node given an index
     //!
-    //! See \ref node_no_checks
+    //! After validating \p i, this function performs the same as
+    //! `node_no_checks(i)`.
     //!
     //! \throws LibsemigroupsException if `validate_node_index(i)` throws.
+    //!
+    //! \sa \ref node_no_checks, \ref validate_node_index.
     [[nodiscard]] Node const& node(index_type i) const {
       validate_node_index(i);
-      return _all_nodes.at(i);
+      return node_no_checks(i);
     }
 
     //! \brief Return the child of \p parent with edge-label \p letter
@@ -461,6 +496,9 @@ namespace libsemigroups {
     //! \param letter the edge-label connecting the parent to the desired child
     //!
     //! \returns A value of type `index_type`
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
     //!
     //! \complexity
     //! Constant
@@ -475,13 +513,15 @@ namespace libsemigroups {
       return _all_nodes[parent].child(letter);
     }
 
-    //! \brief After checking, return the child of \p parent with edge-label
-    //! \p letter
+    //! \brief Return the child of \p parent with edge-label \p letter
     //!
-    //! See \ref child_no_checks
+    //! After validating \p parent, this function performs the same as
+    //! `child_no_checks(parent, letter)`.
     //!
     //! \throws LibsemigroupsException if `validate_active_node_index(parent)`
     //! throws.
+    //!
+    //! \sa \ref child_no_checks, \ref validate_active_node_index.
     [[nodiscard]] index_type child(index_type  parent,
                                    letter_type letter) const {
       validate_active_node_index(parent);
@@ -495,12 +535,12 @@ namespace libsemigroups {
     //!
     //! \param i the index to validate
     //!
-    //! \complexity
-    //! Constant
-    //!
     //! \throws LibsemigroupsException if \p i does not correspond to the index
     //! of a node; that is, if \p i is larger than the size of the container
     //! storing the indices of nodes.
+    //!
+    //! \complexity
+    //! Constant
     void validate_node_index(index_type i) const;
 
     //! \brief Check if an index corresponds to a node currently in the trie
@@ -509,21 +549,21 @@ namespace libsemigroups {
     //! *active* and *inactive*. An active node is a node that is currently a
     //! node in the trie. An inactive node is a node that used to be part of the
     //! trie, but has since been removed. It may later become active again after
-    //! being reinitialised (see \ref init), and exists as a way of minimising
-    //! how frequently memory needs to be allocated and deallocated for nodes.
+    //! being reinitialised, and exists as a way of minimising how frequently
+    //! memory needs to be allocated and deallocated for nodes.
     //!
     //! This function validates whether the given index \p i corresponds to an
     //! active node.
     //!
     //! \param i the index to validate
     //!
-    //! \complexity
-    //! Constant
-    //!
     //! \throws LibsemigroupsException if `validate_node_index(i)` throws, or if
     //! \p i is not an active node.
     //!
-    //! \sa \ref validate_node_index, init.
+    //! \complexity
+    //! Constant
+    //!
+    //! \sa \ref validate_node_index.
     void validate_active_node_index(index_type i) const;
 
    private:
@@ -548,9 +588,27 @@ namespace libsemigroups {
     void clear_suffix_links() const;
   };
 
+  //! \ingroup aho_corasick_group
+  //!
+  //! \brief Return a string representation
+  //!
+  //! Return a string representation of \p ac. This has the form `<AhoCorasick
+  //! with [ac.number_of_nodes] node(s)>`
+  //!
+  //! \returns A string containing a representation of \p ac.
+  //!
+  //! \exception
+  //! \no_libsemigroups_except
+  std::string to_string(AhoCorasick& ac);
+
   class Dot;  // forward decl
 
-  //! TODO doc
+  //! \ingroup aho_corasick_group
+  //!
+  //! \brief Construct a dot object of \p ac
+  //!
+  //! Construct a \ref Dot object representing the trie of \p ac with suffix
+  //! links.
   [[nodiscard]] Dot dot(AhoCorasick& ac);
 
   //! \ingroup aho_corasick_group
