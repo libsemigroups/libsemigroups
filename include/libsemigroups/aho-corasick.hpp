@@ -22,11 +22,11 @@
 #ifndef LIBSEMIGROUPS_AHO_CORASICK_HPP_
 #define LIBSEMIGROUPS_AHO_CORASICK_HPP_
 
-#include <algorithm>      // for copy, max
 #include <memory>         // for allocator_traits<>::value_type
 #include <set>            // for set
 #include <stack>          // for stack
 #include <stddef.h>       // for size_t
+#include <string>         // for string
 #include <unordered_map>  // for unordered_map
 #include <vector>         // for vector
 
