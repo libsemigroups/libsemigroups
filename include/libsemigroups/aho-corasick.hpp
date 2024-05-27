@@ -786,9 +786,10 @@ namespace libsemigroups {
     //! w.cend())`
     //!
     //! \sa \ref traverse_word.
+    template <typename Word>
     [[nodiscard]] inline index_type traverse_word(AhoCorasick const& ac,
                                                   index_type         start,
-                                                  word_type const&   w) {
+                                                  Word const&        w) {
       return traverse_word(ac, start, w.cbegin(), w.cend());
     }
 
