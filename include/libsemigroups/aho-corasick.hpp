@@ -46,6 +46,7 @@
 // TODO(1) change names from set_X and get_X to X(val) and X(). e.g.
 // set_suffix_link('a') -> suffix_link('a')
 // TODO(2) add something that gets a ranges element to find all terminal nodes.
+// TODO(2) change all_nodes[i] to node_no_checks(i);
 
 //! \defgroup aho_corasick_group Aho Corasick
 //!
@@ -164,33 +165,33 @@ namespace libsemigroups {
     mutable bool           _valid_links;
 
    public:
-    //! \brief Construct an empty AhoCorasick
+    //! \brief Construct an empty AhoCorasick.
     //!
     //! Construct an AhoCorasick containing only the root that corresponds to
     //! the empty word \f$\varepsilon\f$.
     AhoCorasick();
 
-    //! \brief Default copy constructor
+    //! \brief Default copy constructor.
     //!
-    //! Default copy constructor
+    //! Default copy constructor.
     AhoCorasick(AhoCorasick const&) = default;
 
-    //! \brief Default copy assignment
+    //! \brief Default copy assignment.
     //!
-    //! Default copy assignment
+    //! Default copy assignment.
     AhoCorasick& operator=(AhoCorasick const&) = default;
 
-    //! \brief Default move constructor
+    //! \brief Default move constructor.
     //!
-    //! Default move constructor
+    //! Default move constructor.
     AhoCorasick(AhoCorasick&&) = default;
 
-    //! \brief Default move assignment
+    //! \brief Default move assignment.
     //!
-    //! Default move assignment
+    //! Default move assignment.
     AhoCorasick& operator=(AhoCorasick&&) = default;
 
-    //! \brief Reinitialise an existing AhoCorasick object
+    //! \brief Reinitialise an existing AhoCorasick object.
     //!
     //! This function puts an AhoCorasick object back into the same state as if
     //! it had been newly default constructed.
@@ -201,7 +202,7 @@ namespace libsemigroups {
     //! \no_libsemigroups_except
     //!
     //! \complexity
-    //! Linear in the number of nodes in the trie
+    //! Linear in the number of nodes in the trie.
     AhoCorasick& init();
 
     //! \brief Returns the number of nodes in the trie.
@@ -215,22 +216,21 @@ namespace libsemigroups {
     //! \noexcept
     //!
     //! \complexity
-    //! Constant
+    //! Constant.
     [[nodiscard]] size_t number_of_nodes() const noexcept {
       return _active_nodes_index.size();
     }
 
     //! \brief Check and add a word to the trie.
     //!
-    //! This function does the same as \ref add_word_no_checks
-    //! `add_word_no_checks(Iterator, Iterator)` after first checking that the
-    //! word corresponding to \p first and \p last does not correspond to an
-    //! existing terminal node in the trie.
+    //! This function does the same as `add_word_no_checks(Iterator, Iterator)`
+    //! after first checking that the word corresponding to \p first and \p last
+    //! does not correspond to an existing terminal node in the trie.
     //!
     //! \throws LibsemigroupsException if the word corresponding to \p first and
     //! \p last corresponds to an existing terminal node in the trie.
     //!
-    //! \sa \ref add_word_no_checks
+    //! \sa \ref add_word_no_checks.
     template <typename Iterator>
     index_type add_word(Iterator first, Iterator last);
 
@@ -243,7 +243,7 @@ namespace libsemigroups {
     //! this function does nothing. If `first == last`, then this function does
     //! nothing.
     //!
-    //! \tparam Iterator the type of the 1st and 2nd parameters
+    //! \tparam Iterator the type of the 1st and 2nd parameters.
     //! \param first iterator pointing to the first letter of the word to add.
     //! \param last one beyond the last letter of the word to add.
     //!
@@ -263,14 +263,14 @@ namespace libsemigroups {
 
     //! \brief Check and add a word to the trie.
     //!
-    //! This function does the same as \ref rm_word_no_checks
-    //! `rm_word_no_checks(Iterator, Iterator)` after first checking that the
-    //! word corresponding to \p first and \p last is terminal node in the trie.
+    //! This function does the same as `rm_word_no_checks(Iterator, Iterator)`
+    //! after first checking that the word corresponding to \p first and \p last
+    //! is terminal node in the trie.
     //!
     //! \throws LibsemigroupsException if the word corresponding to \p first and
     //! \p last does not correspond to an existing terminal node in the trie.
     //!
-    //! \sa \ref rm_word_no_checks
+    //! \sa \ref rm_word_no_checks.
     template <typename Iterator>
     index_type rm_word(Iterator first, Iterator last);
 
@@ -304,11 +304,11 @@ namespace libsemigroups {
     //! \complexity
     //! Linear in the distance between `first` and `last`.
     //!
-    //! \sa \ref signature
+    //! \sa \ref signature.
     template <typename Iterator>
     index_type rm_word_no_checks(Iterator first, Iterator last);
 
-    //! \brief Traverse the trie using suffix links where necessary
+    //! \brief Traverse the trie using suffix links where necessary.
     //!
     //! This function traverses the trie using suffix links where necessary,
     //! behaving like a combination of the *goto* function and the *fail*
@@ -319,10 +319,10 @@ namespace libsemigroups {
     //! returns the index of the node with signature equal to the longest suffix
     //! of \f$Wa\f$ contained in the trie.
     //!
-    //! \param current the index of the node to traverse from
-    //! \param a the letter to traverse
+    //! \param current the index of the node to traverse from.
+    //! \param a the letter to traverse.
     //!
-    //! \returns An value of type `index_type`
+    //! \returns An value of type `index_type`.
     //!
     //! \exceptions
     //! \no_libsemigroups_except
@@ -344,21 +344,21 @@ namespace libsemigroups {
       return traverse_no_checks(current, a);
     }
 
-    //! \brief Find the signature of a node
+    //! \brief Find the signature of a node (in-place).
     //!
     //! Changes \p w in-place to contain the signature of the node with index
     //! \p i . Recall that the *signature* of a node  \f$n\f$ is the word
     //! consisting of the edge labels of the unique path from the root to
     //! \f$n\f$.
     //!
-    //! \param w the word to clear and change in-place
-    //! \param i the index of the node whose signature is sought
+    //! \param w the word to clear and change in-place.
+    //! \param i the index of the node whose signature is sought.
     //!
     //! \exceptions
     //! \no_libsemigroups_except
     //!
     //! \complexity
-    //! Linear in the height of the node
+    //! Linear in the height of the node.
     //!
     //! \warning This function does no checks on its arguments whatsoever. In
     //! particular, if the index \p i is greater than the number of nodes that
@@ -366,7 +366,32 @@ namespace libsemigroups {
     // TODO(2) template to accept Iterator not word_type&
     void signature_no_checks(word_type& w, index_type i) const;
 
-    //! \brief Find the signature of a node
+    //! \brief Find the signature of a node (out-of-place).
+    //!
+    //! Return the the signature of the node with index \p i. Recall that the
+    //! *signature* of a node  \f$n\f$ is the word consisting of the edge labels
+    //! of the unique path from the root to \f$n\f$.
+    //!
+    //! \param i the index of the node whose signature is sought.
+    //!
+    //! \returns A value of type `word_type`.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    //! \complexity
+    //! Linear in the height of the node.
+    //!
+    //! \warning This function does no checks on its arguments whatsoever. In
+    //! particular, if the index \p i is greater than the number of nodes that
+    //! have ever been created, then bad things will happen.
+    word_type signature_no_checks(index_type i) const {
+      word_type w;
+      signature_no_checks(w, i);
+      return w;
+    }
+
+    //! \brief Find the signature of a node (in-place)
     //!
     //! After validating \p i, this function performs the same as
     //! `signature_no_checks(w, i)`.
@@ -380,25 +405,41 @@ namespace libsemigroups {
       signature_no_checks(w, i);
     }
 
-    //! \brief Calculate the height of a node
+    //! \brief Find the signature of a node (out-of-place).
     //!
-    //! \param i the index of the node whose height is sought
+    //! After validating \p i, this function performs the same as
+    //! `signature_no_checks(i)`.
     //!
-    //! \returns A value of type `size_t`
+    //! \throws LibsemigroupsException if `validate_active_node_index(i)`
+    //! throws.
+    //!
+    //! \sa \ref signature_no_checks, \ref validate_active_node_index.
+    word_type signature(index_type i) const {
+      validate_active_node_index(i);
+      return signature_no_checks(i);
+    }
+
+    //! \brief Calculate the height of a node.
+    //!
+    //! Calculate the height of a node.
+    //!
+    //! \param i the index of the node whose height is sought.
+    //!
+    //! \returns A value of type `size_t`.
     //!
     //! \exceptions
     //! \no_libsemigroups_except
     //!
     //! \complexity
     //! Linear in the return value which is, at worst, the maximum length of a
-    //! word in the trie
+    //! word in the trie.
     //!
     //! \warning This function does no checks on its arguments whatsoever. In
     //! particular, if the index \p i is greater than the number of nodes that
     //! have ever been created, then bad things will happen.
     [[nodiscard]] size_t height_no_checks(index_type i) const;
 
-    //! \brief Calculate the height of a node
+    //! \brief Calculate the height of a node.
     //!
     //! After validating \p i, this function performs the same as
     //! `height_no_checks(i)`.
@@ -412,16 +453,16 @@ namespace libsemigroups {
       return height_no_checks(i);
     }
 
-    //! \brief Calculate the index of the suffix link of a node
+    //! \brief Calculate the index of the suffix link of a node.
     //!
     //! Calculate the index of a suffix link of a node. Recall that the
     //! *suffix link* of a node with signature \f$W\f$ is the node with the
     //! signature equal to that of the longest proper suffix of \f$W\f$
     //! contained in the trie.
     //!
-    //! \param current the index of the node whose suffix link is sought
+    //! \param current the index of the node whose suffix link is sought.
     //!
-    //! \returns A value of type `index_type`
+    //! \returns A value of type `index_type`.
     //!
     //! \exceptions
     //! \no_libsemigroups_except
@@ -434,7 +475,7 @@ namespace libsemigroups {
     //! that have ever been created, then bad things will happen.
     [[nodiscard]] index_type suffix_link_no_checks(index_type current) const;
 
-    //! \brief Calculate the index of the suffix link of a node
+    //! \brief Calculate the index of the suffix link of a node.
     //!
     //! After validating \p current, this function performs the same as
     //! `suffix_link_no_checks(current)`.
@@ -448,23 +489,23 @@ namespace libsemigroups {
       return suffix_link_no_checks(current);
     }
 
-    //! \brief Return the node given an index
+    //! \brief Return the node given an index.
     //!
     //! This function returns the node stored in the trie given by the index
-    //! \p i
+    //! \p i.
     //!
-    //! \param i the index of the node to return
+    //! \param i the index of the node to return.
     //!
-    //! \returns A value of type `Node`
+    //! \returns A value of type `Node`.
     //!
     //! \exceptions
     //! \no_libsemigroups_except
     //!
     //! \complexity
-    //! Constant
+    //! Constant.
     //!
     //! \note The node returned by this function may not represent a node
-    //! presently stored in the trie. See \ref validate_active_node_index
+    //! presently stored in the trie. See \ref validate_active_node_index.
     //!
     //! \warning This function does no checks on its arguments whatsoever. In
     //! particular, if the index \p i is greater than the number of nodes that
@@ -474,7 +515,7 @@ namespace libsemigroups {
       return _all_nodes[i];
     }
 
-    //! \brief Return the node given an index
+    //! \brief Return the node given an index.
     //!
     //! After validating \p i, this function performs the same as
     //! `node_no_checks(i)`.
@@ -487,22 +528,22 @@ namespace libsemigroups {
       return node_no_checks(i);
     }
 
-    //! \brief Return the child of \p parent with edge-label \p letter
+    //! \brief Return the child of \p parent with edge-label \p letter.
     //!
     //! This function returns the index of the child of the node with index
     //! \p parent along the edge labelled by \p letter. If no such child exists,
     //! \ref UNDEFINED is returned.
     //!
-    //! \param parent the index of the node whose child is sought
-    //! \param letter the edge-label connecting the parent to the desired child
+    //! \param parent the index of the node whose child is sought.
+    //! \param letter the edge-label connecting the parent to the desired child.
     //!
-    //! \returns A value of type `index_type`
+    //! \returns A value of type `index_type`.
     //!
     //! \exceptions
     //! \no_libsemigroups_except
     //!
     //! \complexity
-    //! Constant
+    //! Constant.
     //!
     //! \warning This function does no checks on its arguments whatsoever. In
     //! particular, if the index \p parent is greater than the number of nodes
@@ -514,7 +555,7 @@ namespace libsemigroups {
       return _all_nodes[parent].child(letter);
     }
 
-    //! \brief Return the child of \p parent with edge-label \p letter
+    //! \brief Return the child of \p parent with edge-label \p letter.
     //!
     //! After validating \p parent, this function performs the same as
     //! `child_no_checks(parent, letter)`.
@@ -529,19 +570,19 @@ namespace libsemigroups {
       return _all_nodes[parent].child(letter);
     }
 
-    //! \brief Check if an index corresponds to a node
+    //! \brief Check if an index corresponds to a node.
     //!
     //! This function checks if the given index \p i corresponds to the index of
     //! a node.
     //!
-    //! \param i the index to validate
+    //! \param i the index to validate.
     //!
     //! \throws LibsemigroupsException if \p i does not correspond to the index
     //! of a node; that is, if \p i is larger than the size of the container
     //! storing the indices of nodes.
     //!
     //! \complexity
-    //! Constant
+    //! Constant.
     void validate_node_index(index_type i) const;
 
     //! \brief Check if an index corresponds to a node currently in the trie
@@ -556,13 +597,13 @@ namespace libsemigroups {
     //! This function validates whether the given index \p i corresponds to an
     //! active node.
     //!
-    //! \param i the index to validate
+    //! \param i the index to validate.
     //!
     //! \throws LibsemigroupsException if `validate_node_index(i)` throws, or if
     //! \p i is not an active node.
     //!
     //! \complexity
-    //! Constant
+    //! Constant.
     //!
     //! \sa \ref validate_node_index.
     void validate_active_node_index(index_type i) const;
@@ -591,10 +632,10 @@ namespace libsemigroups {
 
   //! \ingroup aho_corasick_group
   //!
-  //! \brief Return a string representation
+  //! \brief Return a string representation.
   //!
   //! Return a string representation of \p ac. This has the form `<AhoCorasick
-  //! with [ac.number_of_nodes] node(s)>`
+  //! with [ac.number_of_nodes] node(s)>`.
   //!
   //! \returns A string containing a representation of \p ac.
   //!
@@ -606,7 +647,7 @@ namespace libsemigroups {
 
   //! \ingroup aho_corasick_group
   //!
-  //! \brief Construct a dot object of \p ac
+  //! \brief Construct a dot object of \p ac.
   //!
   //! Construct a \ref Dot object representing the trie of \p ac with suffix
   //! links.
@@ -614,7 +655,7 @@ namespace libsemigroups {
 
   //! \ingroup aho_corasick_group
   //!
-  //! \brief Namespace for AhoCorasick helper functions
+  //! \brief Namespace for AhoCorasick helper functions.
   //!
   //! Defined in ``aho-corasick.hpp``.
   //!
@@ -623,12 +664,13 @@ namespace libsemigroups {
   //! only use public member functions of AhoCorasick, and so they are declared
   //! as free functions instead.
   namespace aho_corasick {
+    //! Alias for the index of a node in the trie.
     using index_type = AhoCorasick::index_type;
 
     //! \brief Add a word to the trie of \p ac.
     //!
     //! This function performs the same as `ac.add_word_no_checks(w.begin(),
-    //! w.end())`
+    //! w.end())`.
     //!
     //! \tparam Word the type of the 2nd parameter \p w.
     //! \param ac AhoCorasick object to add the word to.
@@ -645,14 +687,14 @@ namespace libsemigroups {
     //!
     //! \sa \ref AhoCorasick::add_word_no_checks.
     template <typename Word>
-    void add_word_no_checks(AhoCorasick& ac, Word const& w) {
-      ac.add_word_no_checks(w.cbegin(), w.cend());
+    index_type add_word_no_checks(AhoCorasick& ac, Word const& w) {
+      return ac.add_word_no_checks(w.cbegin(), w.cend());
     }
 
     //! \brief Remove a word from the trie of \p ac.
     //!
     //! This function performs the same as `ac.rm_word_no_checks(w.begin(),
-    //! w.end())`
+    //! w.end())`.
     //!
     //! \tparam Word the type of the 2nd parameter \p w.
     //! \param ac AhoCorasick object to remove the word from.
@@ -675,7 +717,7 @@ namespace libsemigroups {
 
     //! \brief Add a word to the trie of \p ac.
     //!
-    //! This function performs the same as `ac.add_word(w.begin(), w.end())`
+    //! This function performs the same as `ac.add_word(w.begin(), w.end())`.
     //!
     //! \tparam Word the type of the 2nd parameter \p w.
     //! \param ac AhoCorasick object to add the word to.
@@ -692,13 +734,13 @@ namespace libsemigroups {
     //!
     //! \sa \ref AhoCorasick::add_word.
     template <typename Word>
-    void add_word(AhoCorasick& ac, Word const& w) {
-      ac.add_word(w.cbegin(), w.cend());
+    index_type add_word(AhoCorasick& ac, Word const& w) {
+      return ac.add_word(w.cbegin(), w.cend());
     }
 
     //! \brief Remove a word from the trie of \p ac.
     //!
-    //! This function performs the same as `ac.rm_word(w.begin(), w.end())`
+    //! This function performs the same as `ac.rm_word(w.begin(), w.end())`.
     //!
     //! \tparam Word the type of the 2nd parameter \p w.
     //! \param ac AhoCorasick object to remove the word from.
@@ -732,7 +774,7 @@ namespace libsemigroups {
     //! traverse.
     //! \param last one beyond the last letter of the word to traverse.
     //!
-    //! \returns An value of type `index_type`
+    //! \returns An value of type `index_type`.
     //!
     //! \exceptions
     //! \no_libsemigroups_except
@@ -741,7 +783,7 @@ namespace libsemigroups {
     //! particular, if the index \p start is greater than the number of nodes
     //! that have ever been created, then bad things will happen.
     //!
-    //! \sa \ref AhoCorasick::traverse_no_checks
+    //! \sa \ref AhoCorasick::traverse_no_checks.
     template <typename Iterator>
     [[nodiscard]] index_type traverse_word_no_checks(AhoCorasick const& ac,
                                                      index_type         start,
@@ -751,9 +793,10 @@ namespace libsemigroups {
     //! \brief Traverse the trie of \p ac using suffix links where necessary.
     //!
     //! This function performs the same as `traverse_word_no_checks(ac, start,
-    //! w.cbegin(), w.cend())`
+    //! w.cbegin(), w.cend())`.
     //!
-    //! \sa \ref traverse_word_no_checks.
+    //! \sa \ref traverse_word_no_checks(AhoCorasick const& ac, index_type
+    //! start, Iterator first, Iterator last).
     [[nodiscard]] inline index_type
     traverse_word_no_checks(AhoCorasick const& ac,
                             index_type         start,
@@ -769,7 +812,8 @@ namespace libsemigroups {
     //! \throws LibsemigroupsException if `ac.validate_active_node_index(start)`
     //! throws.
     //!
-    //! \sa \ref traverse_word_no_checks, \ref
+    //! \sa \ref traverse_word_no_checks(AhoCorasick const& ac, index_type
+    //! start, Iterator first, Iterator last), \ref
     //! AhoCorasick::validate_active_node_index.
     template <typename Iterator>
     [[nodiscard]] index_type traverse_word(AhoCorasick const& ac,
@@ -783,9 +827,10 @@ namespace libsemigroups {
     //! \brief Traverse the trie of \p ac using suffix links where necessary.
     //!
     //! This function performs the same as `traverse_word(ac, start, w.cbegin(),
-    //! w.cend())`
+    //! w.cend())`.
     //!
-    //! \sa \ref traverse_word.
+    //! \sa \ref traverse_word(AhoCorasick const& ac, index_type start, Iterator
+    //! first, Iterator last).
     template <typename Word>
     [[nodiscard]] inline index_type traverse_word(AhoCorasick const& ac,
                                                   index_type         start,
@@ -797,13 +842,14 @@ namespace libsemigroups {
     //! necessary.
     //!
     //! This function performs the same as `traverse_word_no_checks(ac,
-    //! AhoCorasick::root, first, last)`
+    //! AhoCorasick::root, first, last)`.
     //!
     //! \note
     //! There is no `_no_checks` suffix here as AhoCorasick::root is always a
     //! valid node of a trie, and therefore no checks are needed.
     //!
-    //! \sa \ref traverse_word_no_checks.
+    //! \sa \ref traverse_word_no_checks(AhoCorasick const& ac, index_type
+    //! start, Iterator first, Iterator last).
     template <typename Iterator>
     [[nodiscard]] index_type traverse_word(AhoCorasick const& ac,
                                            Iterator           first,
@@ -815,13 +861,14 @@ namespace libsemigroups {
     //! necessary.
     //!
     //! This function performs the same as `traverse_word_no_checks(ac,
-    //! AhoCorasick::root, w.cbegin(), w.end())`
+    //! AhoCorasick::root, w.cbegin(), w.end())`.
     //!
     //! \note
     //! There is no `_no_checks` suffix here as AhoCorasick::root is always a
     //! valid node of a trie, and therefore no checks are needed.
     //!
-    //! \sa \ref traverse_word_no_checks.
+    //! \sa \ref traverse_word_no_checks(AhoCorasick const& ac, index_type
+    //! start, Iterator first, Iterator last).
     template <typename Word>
     [[nodiscard]] index_type traverse_word(AhoCorasick const& ac,
                                            Word const&        w) {
