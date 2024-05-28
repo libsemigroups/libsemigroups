@@ -58,13 +58,13 @@ namespace libsemigroups {
     auto last_index = traverse_trie(first, last);
     if (last_index == UNDEFINED) {
       LIBSEMIGROUPS_EXCEPTION("cannot remove the word {} given by the "
-                              "arguments (first, last], as it does not "
+                              "arguments [first, last), as it does not "
                               "correspond to a node in the trie",
                               word_type(first, last));
     }
     if (!_all_nodes[last_index].is_terminal()) {
       LIBSEMIGROUPS_EXCEPTION("cannot remove the word {} given by the "
-                              "arguments (first, last], as it does not "
+                              "arguments [first, last), as it does not "
                               "correspond to a terminal node in the trie",
                               word_type(first, last));
     }
