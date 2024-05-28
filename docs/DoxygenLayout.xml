@@ -11,6 +11,7 @@
     <tab type="user" visible="yes" url="_HEADING_" title="Data structures" />
     <tab type="usergroup" visible="yes" url="@ref elements_group" title="Elements" >
       <tab type="user" visible="yes" url="@ref bmat8_group" title="BMat8" />
+      <tab type="user" visible="yes" url="@ref bipart_group" title="Bipartitions" />
       <tab type="user" visible="yes" url="@ref transf_group" title="Transformations" />
       <tab type="usergroup" visible="yes" url="@ref matrix_group" title="Matrix" >
         <tab type="user" visible="yes" url="@ref bmat8_group" title="BMat8" />

@@ -59,6 +59,7 @@ namespace libsemigroups {
   //! This page contains an overview summary of the functionality in
   //! `libsemigroups` for defining elements of semigroups and monoids.
   //!
+  //! * \ref bipart_group
   //! * \ref transf_group
 
   namespace detail {

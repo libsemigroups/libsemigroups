@@ -40,9 +40,10 @@ the strong exception guarantee, and if not that this is documented.
 Some more conventions:
 
 * If a function does not check its arguments (including `*this` for member
-  functions), then it must have the suffix `_no_checks`. This indicates that
-  anything may happen if the function is called on a non-valid object or for
-  non-valid arguments. 
+  functions), then it must have the suffix `_no_checks` if there is any
+  possibility that the function will fail. This indicates that anything may
+  happen if the function is called on a non-valid object or for non-valid
+  arguments. 
 
   In the python bindings ``libsemigroups_pybind11`` it should not be possible
   to construct or modify an object so that it is invalid. For example, it

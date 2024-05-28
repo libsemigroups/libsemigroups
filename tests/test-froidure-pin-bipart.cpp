@@ -185,10 +185,10 @@ namespace libsemigroups {
     Bipartition y({0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0});
     REQUIRE(S.position(y) == 2);
     REQUIRE(S.contains(y));
-    y.product_inplace(S.generator(0), S.generator(1));
+    y.product_inplace_no_checks(S.generator(0), S.generator(1));
     REQUIRE(S.position(y) == 4);
     REQUIRE(S.contains(y));
-    y.product_inplace(S.generator(1), S.generator(2));
+    y.product_inplace_no_checks(S.generator(1), S.generator(2));
     REQUIRE(S.position(y) == 7);
     REQUIRE(S.contains(y));
   }
