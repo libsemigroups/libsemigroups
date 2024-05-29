@@ -492,23 +492,23 @@ namespace libsemigroups {
   void RewriteTrie::all_overlaps() {
     // For each active rule, get the corresponding terminal node.
     for (auto node_it = _rules.begin(); node_it != _rules.end(); ++node_it) {
-      index_type link = _trie.suffix_link(node_it->first);
+      index_type link = _trie.suffix_link_no_checks(node_it->first);
       while (link != _trie.root) {
         // For each suffix link, add an overlap between rule and every other
         // rule that corresponds to a terminal descendant of link
-        add_overlaps(node_it->second, link, _trie.height(link));
-        link = _trie.suffix_link(link);
+        add_overlaps(node_it->second, link, _trie.height_no_checks(link));
+        link = _trie.suffix_link_no_checks(link);
       }
     }
   }
 
   void RewriteTrie::rule_overlaps(index_type node) {
-    index_type link = _trie.suffix_link(node);
+    index_type link = _trie.suffix_link_no_checks(node);
     while (link != _trie.root) {
       // For each suffix link, add an overlap between rule and every other
       // rule that corresponds to a terminal descendant of link
-      add_overlaps(_rules[node], link, _trie.height(link));
-      link = _trie.suffix_link(link);
+      add_overlaps(_rules[node], link, _trie.height_no_checks(link));
+      link = _trie.suffix_link_no_checks(link);
     }
   }
 
@@ -516,7 +516,7 @@ namespace libsemigroups {
                                  index_type node,
                                  size_t     overlap_length) {
     // BFS find the terminal descendants of node and add overlaps with rule
-    if (_trie.node(node).is_terminal()) {
+    if (_trie.node_no_checks(node).is_terminal()) {
       // TODO Add function that takes two rules and a length
       Rule const*             rule2 = _rules.find(node)->second;
       detail::MultiStringView x(rule->lhs()->cbegin(),
@@ -528,7 +528,7 @@ namespace libsemigroups {
       add_pending_rule(x, y);
     }
     for (auto a = alphabet_cbegin(); a != alphabet_cend(); ++a) {
-      auto child = _trie.child(node, static_cast<letter_type>(*a));
+      auto child = _trie.child_no_checks(node, static_cast<letter_type>(*a));
       if (child != UNDEFINED) {
         add_overlaps(rule, child, overlap_length);
       }
@@ -558,10 +558,9 @@ namespace libsemigroups {
       // Read first letter of W and traverse trie
       auto x = *w_begin;
       ++w_begin;
-      current = aho_corasick::traverse_from(
-          _trie, current, static_cast<letter_type>(x));
+      current = _trie.traverse_no_checks(current, static_cast<letter_type>(x));
 
-      if (!_trie.node(current).is_terminal()) {
+      if (!_trie.node_no_checks(current).is_terminal()) {
         nodes.push_back(current);
         *v_end = x;
         ++v_end;
@@ -634,14 +633,15 @@ namespace libsemigroups {
     // For each rule, check if any descendent of any suffix breaks confluence
     for (auto node_it = _rules.begin(); node_it != _rules.end(); ++node_it) {
       seen++;
-      link = _trie.suffix_link(node_it->first);
+      link = _trie.suffix_link_no_checks(node_it->first);
       LIBSEMIGROUPS_ASSERT(node_it->first != _trie.root);
       while (link != _trie.root) {
-        if (!descendants_confluent(node_it->second, link, _trie.height(link))) {
+        if (!descendants_confluent(
+                node_it->second, link, _trie.height_no_checks(link))) {
           set_cached_confluent(tril::FALSE);
           return false;
         }
-        link = _trie.suffix_link(link);
+        link = _trie.suffix_link_no_checks(link);
       }
     }
     // Set cached value
@@ -653,7 +653,7 @@ namespace libsemigroups {
   RewriteTrie::descendants_confluent(Rule const* rule1,
                                      index_type  current_node,
                                      size_t      overlap_length) const {
-    if (_trie.node(current_node).is_terminal()) {
+    if (_trie.node_no_checks(current_node).is_terminal()) {
       Rule const* rule2 = _rules.find(current_node)->second;
       // Process overlap
       // Word looks like ABC where the LHS of rule1 corresponds to AB,
@@ -685,7 +685,8 @@ namespace libsemigroups {
 
     // Read each possible letter and traverse down the trie
     for (auto x = alphabet_cbegin(); x != alphabet_cend(); ++x) {
-      auto child = _trie.child(current_node, static_cast<letter_type>(*x));
+      auto child
+          = _trie.child_no_checks(current_node, static_cast<letter_type>(*x));
       if (child != UNDEFINED) {
         if (!descendants_confluent(rule1, child, overlap_length)) {
           return false;

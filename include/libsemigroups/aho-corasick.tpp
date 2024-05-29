@@ -20,6 +20,19 @@
 
 namespace libsemigroups {
   template <typename Iterator>
+  AhoCorasick::index_type AhoCorasick::add_word(Iterator first, Iterator last) {
+    auto last_index = traverse_trie(first, last);
+    if (last_index != UNDEFINED && _all_nodes[last_index].is_terminal()) {
+      LIBSEMIGROUPS_EXCEPTION("the word {} given by the arguments [first, "
+                              "last) already belongs to the trie",
+                              word_type(first, last));
+      // TODO(2) Look in presentations and do one thing for chars and one thing
+      // for letter type.
+    }
+    return add_word_no_checks(first, last);
+  }
+
+  template <typename Iterator>
   AhoCorasick::index_type AhoCorasick::add_word_no_checks(Iterator first,
                                                           Iterator last) {
     _valid_links       = false;
@@ -29,7 +42,8 @@ namespace libsemigroups {
       if (next != UNDEFINED) {
         current = next;
       } else {
-        next = new_active_node(current, *it);  // index of next node added
+        next = new_active_node_no_checks(current,
+                                         *it);  // index of next node added
         // set next as child of parent
         _all_nodes[current].children()[*it] = next;
         current                             = next;
@@ -42,8 +56,18 @@ namespace libsemigroups {
   template <typename Iterator>
   AhoCorasick::index_type AhoCorasick::rm_word(Iterator first, Iterator last) {
     auto last_index = traverse_trie(first, last);
-    LIBSEMIGROUPS_ASSERT(last_index != UNDEFINED);
-    LIBSEMIGROUPS_ASSERT(_all_nodes[last_index].is_terminal());
+    if (last_index == UNDEFINED) {
+      LIBSEMIGROUPS_EXCEPTION("cannot remove the word {} given by the "
+                              "arguments [first, last), as it does not "
+                              "correspond to a node in the trie",
+                              word_type(first, last));
+    }
+    if (!_all_nodes[last_index].is_terminal()) {
+      LIBSEMIGROUPS_EXCEPTION("cannot remove the word {} given by the "
+                              "arguments [first, last), as it does not "
+                              "correspond to a terminal node in the trie",
+                              word_type(first, last));
+    }
     return rm_word_no_checks(first, last);
   }
 
@@ -60,29 +84,16 @@ namespace libsemigroups {
     _valid_links       = false;
     auto parent_index  = _all_nodes[last_index].parent();
     auto parent_letter = *(last - 1);
-    deactivate_node(last_index);
+    deactivate_node_no_checks(last_index);
     while (_all_nodes[parent_index].number_of_children() == 1
-           && parent_index != root) {
+           && !_all_nodes[parent_index].is_terminal() && parent_index != root) {
       last_index    = parent_index;
       parent_index  = _all_nodes[last_index].parent();
       parent_letter = _all_nodes[last_index].parent_letter();
-      deactivate_node(last_index);
+      deactivate_node_no_checks(last_index);
     }
     _all_nodes[parent_index].children().erase(parent_letter);
     return rule_index;
-  }
-
-  template <typename Iterator>
-  [[nodiscard]] AhoCorasick::index_type
-  AhoCorasick::traverse_from(index_type start,
-                             Iterator   first,
-                             Iterator   last) const {
-    index_type current = start;
-    for (auto it = first; it != last; ++it) {
-      // Uses private traverse by node function
-      current = traverse(current, *it);
-    }
-    return current;
   }
 
   template <typename Iterator>
@@ -98,4 +109,18 @@ namespace libsemigroups {
     return current;
   }
 
+  namespace aho_corasick {
+    template <typename Iterator>
+    [[nodiscard]] AhoCorasick::index_type
+    traverse_word_no_checks(AhoCorasick const& ac,
+                            index_type         start,
+                            Iterator           first,
+                            Iterator           last) {
+      index_type current = start;
+      for (auto it = first; it != last; ++it) {
+        current = ac.traverse_no_checks(current, *it);
+      }
+      return current;
+    }
+  }  // namespace aho_corasick
 }  // namespace libsemigroups

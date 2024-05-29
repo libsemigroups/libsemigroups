@@ -29,6 +29,8 @@
         <tab type="user" visible="yes" url="@ref libsemigroups::Action" title="Action" />
         <tab type="user" visible="yes" url="@ref libsemigroups::RightAction" title="RightAction" />
     </tab>
+    <tab type="user" visible="yes" url="@ref aho_corasick_group" title="Aho Corasick">
+    </tab>
     <tab type="usergroup" visible="yes" url="@ref congruences_group" title="Congruences" >
       <tab type="usergroup" visible="yes" url="group__congruences__group.html#nested-classes" title="Classes" >
         <tab type="user" visible="yes" url="@ref libsemigroups::SimsStats" title="SimsStats" />
