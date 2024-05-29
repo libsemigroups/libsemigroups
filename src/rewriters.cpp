@@ -399,8 +399,9 @@ namespace libsemigroups {
                    "{:>{width}} ({:>4.1f}%) pairs of rules ({}s)\n",
                    detail::group_digits(seen),
                    total_pairs_s,
-                   // TODO avoid dividing by 0
-                   100 * static_cast<double>(seen) / total_pairs,
+                   (total_pairs != 0)
+                       ? 100 * static_cast<double>(seen) / total_pairs
+                       : 100,
                    time.count(),
                    fmt::arg("width", total_pairs_s.size()));
   }
@@ -517,7 +518,6 @@ namespace libsemigroups {
                                  size_t     overlap_length) {
     // BFS find the terminal descendants of node and add overlaps with rule
     if (_trie.node_no_checks(node).is_terminal()) {
-      // TODO Add function that takes two rules and a length
       Rule const*             rule2 = _rules.find(node)->second;
       detail::MultiStringView x(rule->lhs()->cbegin(),
                                 rule->lhs()->cend() - overlap_length);
@@ -620,8 +620,9 @@ namespace libsemigroups {
                    "{:>{width}} ({:>4.1f}%) rules ({}s)\n",
                    detail::group_digits(seen),
                    total_rules_s,
-                   // TODO avoid dividing by 0
-                   100 * static_cast<double>(seen) / total_rules,
+                   (total_rules != 0)
+                       ? 100 * static_cast<double>(seen) / total_rules
+                       : 100,
                    time.count(),
                    fmt::arg("width", total_rules_s.size()));
   }
@@ -703,8 +704,7 @@ namespace libsemigroups {
     index_type node
         = _trie.rm_word_no_checks(rule->lhs()->cbegin(), rule->lhs()->cend());
     _rules.erase(node);
-    // TODO Add assertion that checks number of rules stored in trie is
-    // equal to number of rules in number_of_active_rules()
     return Rules::erase_from_active_rules(it);
+    LIBSEMIGROUPS_ASSERT(_trie.number_of_nodes() == number_of_active_rules());
   }
 }  // namespace libsemigroups

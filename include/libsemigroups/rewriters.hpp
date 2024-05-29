@@ -32,12 +32,12 @@
 
 #include "detail/multi-string-view.hpp"  // for MultiStringView
 
-// TODO Add a KnuthBendix pointer to the rewriter class so that overlap
+// TODO(2) Add a KnuthBendix pointer to the rewriter class so that overlap
 // detection can be handled by the rewriter (and therefore depend on the
 // implementation) rather than on the KB object.
 
 namespace libsemigroups {
-  // TODO remove from libsemigroups namespace and put into relevant class
+  // TODO(2) remove from libsemigroups namespace and put into relevant class
   using external_string_type = std::string;
   using internal_string_type = std::string;
   using external_char_type   = char;
@@ -165,11 +165,11 @@ namespace libsemigroups {
       // std::unordered_set<internal_string_type> unique_lhs_rules;
     };
 
-    // TODO remove const?
+    // TODO(2) remove const?
     std::list<Rule const*>  _active_rules;
     std::array<iterator, 2> _cursors;
     std::list<Rule*>        _inactive_rules;
-    mutable Stats           _stats;  // REVIEW is this allowed to be mutable?
+    mutable Stats           _stats;
 
    public:
     Rules() = default;
@@ -178,7 +178,7 @@ namespace libsemigroups {
     // Rules(Rules&& that);
     Rules& operator=(Rules const&);
 
-    // TODO the other constructors
+    // TODO(1) the other constructors
 
     ~Rules();
 
@@ -223,7 +223,7 @@ namespace libsemigroups {
       return _cursors[index];
     }
 
-    // TODO is this ever called?
+    // TODO(0) is this ever called?
     void add_active_rule(Rule* rule) {
       _active_rules.push_back(rule);
     }
@@ -238,7 +238,7 @@ namespace libsemigroups {
 
     [[nodiscard]] iterator erase_from_active_rules(iterator it);
 
-    // TODO this feels like it should be add_active rule. The above
+    // TODO(0) this feels like it should be add_active rule. The above
     // add_active_rule seems a bit dangerous
     void add_rule(Rule* rule);
 
@@ -359,7 +359,7 @@ namespace libsemigroups {
       rule->reorder();
     }
 
-    // TODO remove virtual functions
+    // TODO(2) remove virtual functions
     virtual void rewrite(internal_string_type& u) const = 0;
 
     virtual void add_rule(Rule* rule) = 0;
@@ -382,7 +382,7 @@ namespace libsemigroups {
       if (lhs != rhs) {
         if (add_pending_rule(
                 new_rule(lhs.cbegin(), lhs.cend(), rhs.cbegin(), rhs.cend()))) {
-          // TODO only process_pending_rules when ready to run
+          // TODO(0) only process_pending_rules when ready to run
           process_pending_rules();
         }
       }
@@ -412,9 +412,9 @@ namespace libsemigroups {
 
     RewriteFromLeft& operator=(RewriteFromLeft const&);
 
-    // TODO the other constructors
+    // TODO(2) the other constructors
 
-    ~RewriteFromLeft() = default;  // TODO out-of-line this
+    ~RewriteFromLeft() = default;  // TODO(2) out-of-line this
 
     RewriteFromLeft& init();
 
@@ -422,7 +422,7 @@ namespace libsemigroups {
 
     [[nodiscard]] bool confluent() const;
 
-    // TODO private?
+    // TODO(0) private?
     void add_rule(Rule* rule);
 
     using RewriterBase::add_rule;
