@@ -16,7 +16,23 @@
         <tab type="user" visible="yes" url="@ref bmat8_group" title="BMat8" />
       </tab>
     </tab>
-    <tab type="user" visible="yes" url="@ref md_fpsemi-examples" title="Presentations"/>
+    <tab type="user" visible="yes" url="@ref paths_group" title="Paths"/>
+    <tab type="usergroup" visible="yes" url="@ref presentations_group" title="Presentations">
+      <tab type="user" visible="yes" url="@ref libsemigroups::Presentation" title="Presentation class" />
+      <tab type="usergroup" visible="yes" url="@ref libsemigroups::presentation" title="Helper functions" />
+      <tab type="usergroup" visible="yes" url="@ref libsemigroups::fpsemigroup" title="Examples" />
+    </tab>
+    <tab type="usergroup" visible="yes" url="@ref word_graph_group" title="Word graphs" >
+      <tab type="user" visible="yes" url="@ref libsemigroups::Forest" title="Forest" />
+      <tab type="user" visible="yes" url="@ref libsemigroups::WordGraph" title="WordGraph" />
+      <tab type="user" visible="yes" url="@ref libsemigroups::word_graph" title="WordGraph helpers" />
+    </tab>
+    <tab type="usergroup" visible="yes" url="@ref words_group" title="Words" >
+      <tab type="user" visible="yes" url="@ref libsemigroups::words" title="Functions for words and strings" />
+      <tab type="user" visible="yes" url="@ref libsemigroups::Strings" title="Strings" />
+      <tab type="user" visible="yes" url="@ref libsemigroups::Words" title="ToWord" />
+      <tab type="user" visible="yes" url="@ref libsemigroups::Words" title="Words" />
+    </tab>
     <tab type="usergroup" visible="yes" url="@ref misc_group" title="Miscellaneous" >
       <tab type="usergroup" visible="yes" url="@ref constants_group" title="Constants" />
       <tab type="user" visible="yes" url="@ref libsemigroups::Reporter" title="Reporter" />

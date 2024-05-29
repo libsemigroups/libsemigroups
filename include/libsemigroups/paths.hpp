@@ -59,7 +59,13 @@
 
 namespace libsemigroups {
 
+  //! \defgroup paths_group Paths
+  //!
+  //! TODO
+
   namespace paths {
+    //! \ingroup paths_group
+    //!
     //! An enum for specifying the algorithm to the functions number_of_paths().
     enum class algorithm {
       //! Use a depth-first-search.
@@ -80,6 +86,8 @@ namespace libsemigroups {
   // pilo = Path And (terminal) Node In Lex Order
   ////////////////////////////////////////////////////////////////////////
 
+  //! \ingroup paths_group
+  //!
   //! Return type of \ref cbegin_pilo and \ref cend_pilo.
   template <typename Node>
   class const_pilo_iterator {
@@ -161,12 +169,14 @@ namespace libsemigroups {
     }
   };
 
+  //! \ingroup paths_group
   template <typename Node>
   inline void swap(const_pilo_iterator<Node>& x,
                    const_pilo_iterator<Node>& y) noexcept {
     x.swap(y);
   }
 
+  //! \ingroup paths_group
   //! Returns an iterator for pilo (Path And Node In Lex Order).
   //!
   //! Returns a forward iterator pointing to a pair consisting of the edge
@@ -220,6 +230,7 @@ namespace libsemigroups {
     return const_pilo_iterator<Node1>(&d, source, min, max);
   }
 
+  //! \ingroup paths_group
   //! Returns an iterator for pilo (Path And Node In Lex Order).
   //!
   //! Returns a forward iterator pointing to one after the last path from any
@@ -241,6 +252,7 @@ namespace libsemigroups {
   // be traversed 10 times). But the performance of this iterator is
   // dominated by memory allocation (when creating
   // iterators, at least), and so this doesn't seem that bad.
+  //! \ingroup paths_group
   //! Return type of cbegin_pislo and cend_pislo.
   template <typename Node>
   class const_pislo_iterator {
@@ -320,6 +332,8 @@ namespace libsemigroups {
     x.swap(y);
   }
 
+  //! \ingroup paths_group
+  //!
   //! Returns an iterator for pislo (Path And Node In Short Lex Order).
   //!
   //! Returns a forward iterator pointing to a pair consisting of the edge
@@ -374,6 +388,7 @@ namespace libsemigroups {
     return const_pislo_iterator<Node1>(&d, source, min, max);
   }
 
+  //! \ingroup paths_group
   //! Returns an iterator for pislo (Path And Node In Short Lex Order).
   //!
   //! Returns a forward iterator pointing to one after the last path from any
@@ -391,6 +406,7 @@ namespace libsemigroups {
   }
 
   // PSTILO = Path Source Target In Lex Order
+  //! \ingroup paths_group
   template <typename Node>
   class const_pstilo_iterator {
    public:
@@ -476,6 +492,7 @@ namespace libsemigroups {
     x.swap(y);
   }
 
+  //! \ingroup paths_group
   //! Returns an iterator for PSTILO (Path Source Target In Lex Order).
   //!
   //! Returns a forward iterator pointing to the edge labels of the first
@@ -529,6 +546,7 @@ namespace libsemigroups {
     return const_pstilo_iterator<Node1>(&d, source, target, min, max);
   }
 
+  //! \ingroup paths_group
   //! Returns an iterator for PSTILO (Path Source Target In Lex Order).
   //!
   //! Returns a forward iterator pointing to one after the last path from any
@@ -545,6 +563,7 @@ namespace libsemigroups {
     return const_pstilo_iterator<Node>(&d, 0, 0, 0, 0);
   }
 
+  //! \ingroup paths_group
   //! Return type of \ref cbegin_pstislo and \ref cend_pstislo.
   template <typename Node>
   class const_pstislo_iterator {
@@ -621,12 +640,15 @@ namespace libsemigroups {
     }
   };
 
+  //! \ingroup paths_group
   template <typename Node>
   inline void swap(const_pstislo_iterator<Node>& x,
                    const_pstislo_iterator<Node>& y) noexcept {
     x.swap(y);
   }
 
+  //! \ingroup paths_group
+  //!
   //! Returns an iterator for PSTISLO (Path Source Target In Short Lex
   //! Order).
   //!
@@ -681,6 +703,8 @@ namespace libsemigroups {
     return const_pstislo_iterator<Node1>(&d, source, target, min, max);
   }
 
+  //! \ingroup paths_group
+  //!
   //! Returns an iterator for PSTISLO (Path Source Target In Short Lex
   //! Order).
   //!
@@ -698,6 +722,7 @@ namespace libsemigroups {
     return const_pstislo_iterator<Node>(&d, UNDEFINED, UNDEFINED, 0, 0);
   }
 
+  //! \ingroup paths_group
   //! Returns the \ref algorithm used by number_of_paths().
   //!
   //! \param source the source node.
@@ -717,6 +742,7 @@ namespace libsemigroups {
     return paths::algorithm::acyclic;
   }
 
+  //! \ingroup paths_group
   //! Returns the number of paths from a source node.
   //!
   //! \param source the source node.
@@ -736,6 +762,7 @@ namespace libsemigroups {
   [[nodiscard]] uint64_t number_of_paths(WordGraph<Node1> const& d,
                                          Node2                   source);
 
+  //! \ingroup paths_group
   //! Returns the \ref algorithm used by number_of_paths().
   //!
   //! Returns the algorithm used by number_of_paths() to compute the number
@@ -762,6 +789,7 @@ namespace libsemigroups {
                             size_t                  min,
                             size_t                  max);
 
+  //! \ingroup paths_group
   //! Returns the number of paths starting at a given node with length in a
   //! given range.
   //!
@@ -812,6 +840,8 @@ namespace libsemigroups {
                                          paths::algorithm        lgrthm
                                          = paths::algorithm::automatic);
 
+  //! \ingroup paths_group
+  //!
   //! Returns the \ref paths::algorithm used by number_of_paths().
   //!
   //! Returns the \ref paths::algorithm used by number_of_paths() to compute
@@ -840,6 +870,8 @@ namespace libsemigroups {
                             size_t                  min,
                             size_t                  max);
 
+  //! \ingroup paths_group
+  //!
   //! Returns the number of paths between a pair of nodes with length in a
   //! given range.
   //!
@@ -891,6 +923,9 @@ namespace libsemigroups {
                                          = paths::algorithm::automatic);
 
   // Helper class
+  //! \ingroup paths_group
+  //!
+  //! TODO
   template <typename Node>
   class Paths {
    public:
@@ -1054,6 +1089,9 @@ namespace libsemigroups {
   template <typename Node>
   Paths(WordGraph<Node>&&) -> Paths<Node>;
 
+  //! \ingroup paths_group
+  //!
+  //! TODO
   template <typename Node>
   class ReversiblePaths : public Paths<Node> {
    private:

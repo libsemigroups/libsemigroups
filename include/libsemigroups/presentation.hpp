@@ -59,6 +59,17 @@
 
 namespace libsemigroups {
 
+  //! \defgroup presentations_group Presentations
+  //!
+  //! This file contains documentation related to semigroup and monoid
+  //! presentations in `libsemigroups`.
+  //!
+  //! There is one class and two namespaces with functionality related to
+  //! presentations:
+  //! * \ref the Presentation class
+  //! * \ref libsemigroups::presentation "Helper functions for presentations"
+  //! * \ref libsemigroups::fpsemigroup "Presentations for standard examples"
+
   //! No doc
   struct PresentationBase {};
 
@@ -443,6 +454,7 @@ namespace libsemigroups {
     void validate_alphabet(decltype(_alphabet_map)& alphabet_map) const;
   };
 
+  //! TODO
   namespace presentation {
 
     template <typename Word, typename Iterator>

@@ -72,6 +72,13 @@ namespace libsemigroups {
   // TODO(now) doc
   struct WordGraphBase {};
 
+  //! \defgroup word_graph_group Word graphs and related functionality
+  //!
+  //! TODO
+  //!
+  //! Blah
+
+  //! \ingroup word_graph_group
   //! Defined in ``word-graph.hpp``.
   //!
   //! This class represents a word graph.
@@ -898,6 +905,8 @@ namespace libsemigroups {
     mutable detail::DynamicArray2<Node> _dynamic_array_2;
   };
 
+  //! \ingroup word_graph_group
+  //!
   //! \brief Blurb
   //!
   //! Defined in ``word-graph.hpp``.
