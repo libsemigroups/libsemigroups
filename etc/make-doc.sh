@@ -8,3 +8,4 @@ doxygen --version
 doxygen
 echo "Deploying doc fixups . . ."
 ./fixup.py
+echo "See: docs/html/index.html"

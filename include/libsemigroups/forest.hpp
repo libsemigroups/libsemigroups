@@ -33,6 +33,8 @@
 #include "types.hpp"      // for word_type
 
 namespace libsemigroups {
+  //! \ingroup word_graph_group
+  //!
   //! Defined in ``forest.hpp``.
   //!
   //! This class represents the collection of spanning trees of the strongly
