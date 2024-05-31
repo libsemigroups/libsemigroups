@@ -54,7 +54,6 @@
 #include "paths.hpp"            // for Paths
 #include "presentation.hpp"     // for Presentation
 #include "ranges.hpp"           // for operator<<
-#include "rewriters.hpp"        // for RewriteTrie
 #include "runner.hpp"           // for Runner
 #include "to-presentation.hpp"  // for to_presentation
 #include "types.hpp"            // for word_type
@@ -63,6 +62,7 @@
 
 #include "detail/multi-string-view.hpp"  // for MultiStringView
 #include "detail/report.hpp"             // for Reporter, REPORT_DEFAULT, REP...
+#include "detail/rewriters.hpp"          // for RewriteTrie
 #include "detail/string.hpp"             // for is_prefix, maximum_common_prefix
 
 #include "ranges.hpp"  // for iterator_range
@@ -105,7 +105,7 @@ namespace libsemigroups {
   //! kb.confluent();               // true
   //! kb.number_of_classes();       // POSITIVE_INFINITY
   //! \endcode
-  template <typename Rewriter       = RewriteTrie,
+  template <typename Rewriter       = detail::RewriteTrie,
             typename ReductionOrder = ShortLexCompare>
   class KnuthBendix : public CongruenceInterface {
     // defined in detail/kbe.hpp
@@ -115,10 +115,10 @@ namespace libsemigroups {
     // KnuthBendix - typedefs/aliases - private
     ////////////////////////////////////////////////////////////////////////
 
-    using external_string_type = std::string;
-    using internal_string_type = std::string;
-    using external_char_type   = char;
-    using internal_char_type   = char;
+    // using external_string_type = std::string;
+    // using internal_string_type = std::string;
+    // using external_char_type   = char;
+    // using internal_char_type   = char;
 
     ////////////////////////////////////////////////////////////////////////
     // KnuthBendix - nested subclasses - private
@@ -126,9 +126,10 @@ namespace libsemigroups {
 
     // Overlap measures
     struct OverlapMeasure {
-      virtual size_t operator()(Rule const*,
-                                Rule const* examples,
-                                internal_string_type::const_iterator const&)
+      virtual size_t
+      operator()(detail::Rule const*,
+                 detail::Rule const* examples,
+                 detail::internal_string_type::const_iterator const&)
           = 0;
       virtual ~OverlapMeasure() {}
     };
@@ -728,8 +729,10 @@ namespace libsemigroups {
       return iterator_range(_rewriter.begin(), _rewriter.end())
              | transform([this](auto const& rule) {
                  // TODO remove allocation
-                 internal_string_type lhs = internal_string_type(*rule->lhs());
-                 internal_string_type rhs = internal_string_type(*rule->rhs());
+                 detail::internal_string_type lhs
+                     = detail::internal_string_type(*rule->lhs());
+                 detail::internal_string_type rhs
+                     = detail::internal_string_type(*rule->rhs());
                  internal_to_external_string(lhs);
                  internal_to_external_string(rhs);
                  if (this->kind() == congruence_kind::left) {
@@ -912,28 +915,31 @@ namespace libsemigroups {
     void throw_if_started() const;
     void stats_check_point();
 
-    [[nodiscard]] static internal_char_type uint_to_internal_char(size_t a);
-    [[nodiscard]] static size_t internal_char_to_uint(internal_char_type c);
+    [[nodiscard]] static detail::internal_char_type
+    uint_to_internal_char(size_t a);
+    [[nodiscard]] static size_t
+    internal_char_to_uint(detail::internal_char_type c);
 
-    [[nodiscard]] static internal_string_type uint_to_internal_string(size_t i);
+    [[nodiscard]] static detail::internal_string_type
+    uint_to_internal_string(size_t i);
 
     [[nodiscard]] static word_type
-    internal_string_to_word(internal_string_type const& s);
+    internal_string_to_word(detail::internal_string_type const& s);
 
-    [[nodiscard]] internal_char_type
-    external_to_internal_char(external_char_type c) const;
-    [[nodiscard]] external_char_type
-    internal_to_external_char(internal_char_type a) const;
+    [[nodiscard]] detail::internal_char_type
+    external_to_internal_char(detail::external_char_type c) const;
+    [[nodiscard]] detail::external_char_type
+    internal_to_external_char(detail::internal_char_type a) const;
 
-    void external_to_internal_string(external_string_type& w) const;
-    void internal_to_external_string(internal_string_type& w) const;
+    void external_to_internal_string(detail::external_string_type& w) const;
+    void internal_to_external_string(detail::internal_string_type& w) const;
 
-    void add_octo(external_string_type& w) const;
-    void rm_octo(external_string_type& w) const;
+    void add_octo(detail::external_string_type& w) const;
+    void rm_octo(detail::external_string_type& w) const;
 
     void add_rule_impl(std::string const& p, std::string const& q);
 
-    void overlap(Rule const* u, Rule const* v);
+    void overlap(detail::Rule const* u, detail::Rule const* v);
 
     [[nodiscard]] size_t max_active_word_length() const {
       return _rewriter.max_active_word_length();
@@ -1131,8 +1137,8 @@ namespace libsemigroups {
             continue;
           }
 
-          if (rule.first.find(lhs) != internal_string_type::npos
-              || rule.second.find(lhs) != internal_string_type::npos) {
+          if (rule.first.find(lhs) != detail::internal_string_type::npos
+              || rule.second.find(lhs) != detail::internal_string_type::npos) {
             return false;
           }
         }

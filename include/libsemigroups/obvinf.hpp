@@ -64,13 +64,13 @@
 #include <utility>  // for pair
 #include <vector>   // for vector
 
-#include "config.hpp"     // for LIBSEMIGROUPS_EIGEN_ENABLED
-#include "ranges.hpp"     // for word_type etc
-#include "rewriters.hpp"  // for RewriteTrie
-#include "types.hpp"      // for word_type etc
+#include "config.hpp"  // for LIBSEMIGROUPS_EIGEN_ENABLED
+#include "ranges.hpp"  // for word_type etc
+#include "types.hpp"   // for word_type etc
 
 #include "detail/eigen.hpp"
-#include "detail/uf.hpp"  // for Duf
+#include "detail/rewriters.hpp"  // for RewriteTrie
+#include "detail/uf.hpp"         // for Duf
 
 namespace libsemigroups {
 #ifndef DOXYGEN_SHOULD_SKIP_THIS

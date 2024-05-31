@@ -62,7 +62,6 @@
 #include "pbr.hpp"
 #include "presentation.hpp"
 #include "ranges.hpp"
-#include "rewriters.hpp"
 #include "runner.hpp"
 #include "schreier-sims.hpp"
 #include "sims.hpp"
