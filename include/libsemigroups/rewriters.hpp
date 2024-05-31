@@ -14,7 +14,10 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
-//
+
+// This file contains the implementation of a Rule object containers for Rule
+// objects. It also includes rewriter classes that can be used to rewrite
+// strings relative to a collection of rules.
 
 #ifndef LIBSEMIGROUPS_REWRITERS_HPP_
 #define LIBSEMIGROUPS_REWRITERS_HPP_
@@ -36,20 +39,66 @@
 // detection can be handled by the rewriter (and therefore depend on the
 // implementation) rather than on the KB object.
 
+//! \defgroup \rewriters_group Rewriters
+//!
+//! This file contains documentation for the functionality of the following
+//! classes in `libsemigroups`:
+//! * \ref libsemigroups::Rule "Rule"
+//! * \ref RuleLookup
+//! * \ref Rules
+//! * \ref RewriterBase
+//! * \ref RewriteFromLeft
+//! * \ref RewriteTrie
 namespace libsemigroups {
   // TODO(2) remove from libsemigroups namespace and put into relevant class
-  using external_string_type = std::string;
-  using internal_string_type = std::string;
-  using external_char_type   = char;
-  using internal_char_type   = char;
 
+  //! \ingroup rewriters_group
+  //!
+  //! Alias for the type of word that can be input by the user
+  using external_string_type = std::string;
+
+  //! \ingroup rewriters_group
+  //!
+  //! Alias for the type of word used internally in the implementation
+  using internal_string_type = std::string;
+
+  //! \ingroup rewriters_group
+  //!
+  //! Alias for the type of letter that can be input by the user
+  using external_char_type = char;
+
+  //! \ingroup rewriters_group
+  //!
+  //! Alias for the type of letter used internally in the implementation
+  using internal_char_type = char;
+
+  //! \ingroup rewriters_group
+  //!
+  //! \brief For a rewriting rule
+  //!
+  //! Defined in ``rewriters.hpp``.
+  //!
+  //! This class implements a data structure for storing *rewriting rules*.
+  //! Here, a rewriting rule is a rule of the form \f$A \to B\f$, where \f$A\f$
+  //! and \f$B\f$ are both words over some alphabet \f$\Sigma\f$.
+  //!
+  //! The left-hand and right-hand sides of a rule are specified externally with
+  //! the type \ref external_string_type, and stored internally with type \ref
+  //! internal_string_type.
   class Rule {
     internal_string_type* _lhs;
     internal_string_type* _rhs;
     int64_t               _id;
 
    public:
-    // Construct from KnuthBendix with new but empty internal_string_type's
+    //! \brief Construct with new empty left-hand and right-hand sides.
+    //!
+    //! Construct with new empty left-hand and right-hand sides.
+    //!
+    //! \param id the id of the new rule.
+    //!
+    //! \exception
+    //! \no_libsemigroups_except
     explicit Rule(int64_t id);
 
     Rule& operator=(Rule const& copy) = delete;
@@ -57,50 +106,188 @@ namespace libsemigroups {
     Rule(Rule&& copy)                 = delete;
     Rule& operator=(Rule&& copy)      = delete;
 
-    // Destructor, deletes pointers used to create the rule.
+    //! \brief Destruct the Rule.
+    //!
+    //! This function destructs a \ref Rule object by deleting the pointers used
+    //! for the left-hand and right-hand sides.
     ~Rule() {
       delete _lhs;
       delete _rhs;
     }
 
-    // Returns the left hand side of the rule, which is guaranteed to be
-    // greater than its right hand side according to the reduction ordering
-    // of the KnuthBendix used to construct this.
+    //! \brief Return the left-hand side of the rule.
+    //!
+    //! Return the left-hand side of the rule. If this rule was create by a
+    //! \ref KnuthBendix, this is guaranteed to be greater than its right-hand
+    //! side according to the reduction ordering of that \ref KnuthBendix.
+    //!
+    //! \returns A pointer to the left-hand side.
+    //!
+    //! \exception
+    //! \noexcept
+    //!
+    //! \complexity
+    //! Constant.
+    //!
+    //! \sa
+    //! \ref KnuthBendix
     [[nodiscard]] internal_string_type* lhs() const noexcept {
       return _lhs;
     }
 
-    // Returns the right hand side of the rule, which is guaranteed to be
-    // less than its left hand side according to the reduction ordering of
-    // the KnuthBendix used to construct this.
+    //! \brief Return the right-hand side of the rule.
+    //!
+    //! Return the right-hand side of the rule. If this rule was create by a
+    //! \ref KnuthBendix, this is guaranteed to be less than its left-hand
+    //! side according to the reduction ordering of that \ref KnuthBendix.
+    //!
+    //! \returns A pointer to the right-hand side.
+    //!
+    //! \exception
+    //! \noexcept
+    //!
+    //! \complexity
+    //! Constant.
+    //!
+    //! \sa
+    //! \ref KnuthBendix
     [[nodiscard]] internal_string_type* rhs() const noexcept {
       return _rhs;
     }
 
+    //! \brief Check if the left-hand and right-hand sides are empty.
+    //!
+    //! Check if the words pointed to by both the left-hand and the right-hand
+    //! sides are empty.
+    //!
+    //! \returns A value of type `bool`.
+    //!
+    //! \exception
+    //! \noexcept
+    //!
+    //! \complexity
+    //! Constant.
     [[nodiscard]] bool empty() const noexcept {
       return _lhs->empty() && _rhs->empty();
     }
 
+    //! \brief Check if the Rule is active.
+    //!
+    //! Check if the rule is active.
+    //!
+    //! \returns A value of type `bool`.
+    //!
+    //! \exception
+    //! \noexcept
+    //!
+    //! \complexity
+    //! Constant.
+    //!
+    //! \sa
+    //! \ref RewriterBase::active_rules()
+    // TODO check the above ref points to something sensible
     [[nodiscard]] inline bool active() const noexcept {
       LIBSEMIGROUPS_ASSERT(_id != 0);
       return (_id > 0);
     }
 
+    //! \brief Deactivate a rule.
+    //!
+    //! Deactivate a rule, if it is active.
+    //!
+    //! \exception
+    //! \noexcept
+    //!
+    //! \complexity
+    //! Constant.
+    //!
+    //! \sa
+    //! \ref active
     void deactivate() noexcept;
 
+    //! \brief Activate a rule.
+    //!
+    //! Activate a rule, if it is inactive.
+    //!
+    //! \exception
+    //! \noexcept
+    //!
+    //! \complexity
+    //! Constant.
+    //!
+    //! \sa
+    //! \ref active
     void activate() noexcept;
 
-    void set_id(int64_t id) noexcept {
+    //! \brief Set the id of a rule.
+    //!
+    //! Set the id of a rule.
+    //!
+    //! \param id the id to set.
+    //!
+    //! \exception
+    //! \noexcept
+    //!
+    //! \complexity
+    //! Constant.
+    //!
+    //! \note
+    //! This function does no checks on its parameters; however, the id of a
+    //! rule should only be set if the rule is inactive, and the id of a rule
+    //! should always be positive.
+    void set_id_no_checks(int64_t id) noexcept {
       LIBSEMIGROUPS_ASSERT(id > 0);
       LIBSEMIGROUPS_ASSERT(!active());
       _id = -1 * id;
     }
 
+    //! \brief Set the id of a rule.
+    //!
+    //! After checking that the Rule is inactive \p id is positive, this
+    //! function performs the same as \ref set_id_no_checks.
+    //!
+    //! \throws LIBSEMIGROUPS_EXCEPTION if \p id is non-positive, or if `this`
+    //! is active.
+    void set_id(int64_t id) {
+      if (id <= 0) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "invalid id, expected a value greater than 0, found {}", id);
+      }
+      if (active()) {
+        LIBSEMIGROUPS_EXCEPTION("cannot set the id of an active rule");
+      }
+      set_id_no_checks(id);
+    }
+
+    //! \brief Return the id of a rule.
+    //!
+    //! Return the id of a rule.
+    //!
+    //! \returns A value of type `int64_t`
+    //!
+    //! \complexity
+    //! Constant.
+    //!
+    //! \exception
+    //! \noexcept
     [[nodiscard]] int64_t id() const noexcept {
       LIBSEMIGROUPS_ASSERT(_id != 0);
       return _id;
     }
 
+    //! \brief Reorder the left-hand and right-hand sides.
+    //!
+    //! If the right-hand side is greater than the left-hand side of a rule,
+    //! with regards to length-lexicographical order, then swap them.
+    //!
+    //! \complexity
+    //! The same complexity as \ref shortlex_compare(T* const, T* const)
+    //!
+    //! \exceptions
+    //! Throws if \ref shortlex_compare(T* const, T* const) does.
+    //!
+    //! \sa
+    //! shortlex_compare(T* const, T* const)
     void reorder() {
       if (shortlex_compare(_lhs, _rhs)) {
         std::swap(_lhs, _rhs);
