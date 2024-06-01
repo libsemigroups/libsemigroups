@@ -94,7 +94,7 @@ namespace libsemigroups {
   }  // namespace
 
 #define KNUTH_BENDIX_TYPES \
-  KnuthBendix<RewriteTrie>, KnuthBendix<RewriteFromLeft>
+  KnuthBendix<detail::RewriteTrie>, KnuthBendix<detail::RewriteFromLeft>
 
   TEMPLATE_TEST_CASE("confluent fp semigroup 1 (infinite)",
                      "[000][quick][knuth-bendix][" __FILE__

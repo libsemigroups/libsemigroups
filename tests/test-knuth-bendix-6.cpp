@@ -56,7 +56,7 @@ namespace libsemigroups {
   using literals::operator""_w;
 
 #define KNUTH_BENDIX_TYPES \
-  KnuthBendix<RewriteTrie>, KnuthBendix<RewriteFromLeft>
+  KnuthBendix<detail::RewriteTrie>, KnuthBendix<detail::RewriteFromLeft>
 
   TEMPLATE_TEST_CASE("Presentation<word_type>",
                      "[129][quick][knuth-bendix]",

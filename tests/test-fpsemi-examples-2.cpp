@@ -40,7 +40,6 @@
 #include "libsemigroups/paths.hpp"            // for ReversiblePaths
 #include "libsemigroups/presentation.hpp"     // for longest_rule_length
 #include "libsemigroups/ranges.hpp"           // for operator|, to_vector
-#include "libsemigroups/rewriters.hpp"        // for RewriteTrie
 #include "libsemigroups/to-presentation.hpp"  // for to_presentation
 #include "libsemigroups/types.hpp"            // for congruence_kind, word_type
 #include "libsemigroups/word-graph.hpp"       // for is_complete
@@ -48,8 +47,9 @@
 
 #include "libsemigroups/detail/eigen.hpp"  // // for DenseBase::row, DenseBa...
 #include "libsemigroups/detail/fmt.hpp"    // for format, print
-#include "libsemigroups/detail/iterator.hpp"  // for operator+
-#include "libsemigroups/detail/report.hpp"    // for ReportGuard
+#include "libsemigroups/detail/iterator.hpp"   // for operator+
+#include "libsemigroups/detail/report.hpp"     // for ReportGuard
+#include "libsemigroups/detail/rewriters.hpp"  // for RewriteTrie
 
 namespace libsemigroups {
 
