@@ -146,7 +146,6 @@ namespace libsemigroups {
   Presentation<Word>::index(letter_type val) const {
     validate_letter(val);
     return _alphabet_map.find(val)->second;
-    // TODO index_no_checks
   }
 
   // TODO use to_printable
@@ -196,6 +195,7 @@ namespace libsemigroups {
       auto it = alphabet_map.emplace(letter, index++);
       // FIXME this doesn't compile when using a size_type to initialise the
       // alphabet (rather than a word), see 045
+      // Is this fixed now? JE
       if (!it.second) {
         LIBSEMIGROUPS_EXCEPTION("invalid alphabet {}, duplicate letter {}!",
                                 detail::to_printable(_alphabet),
@@ -232,6 +232,7 @@ namespace libsemigroups {
       // meaningful exception message
       p.validate_word(vals.begin(), vals.end());
 
+      // TODO does this actually check for duplicates?
       Word cpy = vals;
       std::sort(cpy.begin(), cpy.end());
       for (auto it = cpy.cbegin(); it < cpy.cend() - 1; ++it) {
@@ -258,6 +259,19 @@ namespace libsemigroups {
           }
         }
       }
+    }
+
+    template <typename Word>
+    [[nodiscard]] bool contains_rule(Presentation<Word>& p,
+                                     Word const&         lhs,
+                                     Word const&         rhs) {
+      for (auto it = p.rules.cbegin(); it != p.rules.cend(); it += 2) {
+        if ((*it == lhs && *(it + 1) == rhs)
+            || (*it == rhs && *(it + 1) == lhs)) {
+          return true;
+        }
+      }
+      return false;
     }
 
     template <typename Word>

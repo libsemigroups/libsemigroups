@@ -1,6 +1,6 @@
 //
 // libsemigroups - C++ library for semigroups and monoids
-// Copyright (C) 2022-2023 James D. Mitchell
+// Copyright (C) 2022-2024 James D. Mitchell
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -66,13 +66,17 @@ namespace libsemigroups {
   //!
   //! There is one class and two namespaces with functionality related to
   //! presentations:
-  //! * \ref the Presentation class
+  //! * \ref Presentation "the Presentation class"
   //! * \ref libsemigroups::presentation "Helper functions for presentations"
   //! * \ref libsemigroups::fpsemigroup "Presentations for standard examples"
 
   //! No doc
   struct PresentationBase {};
 
+  //! \ingroup presentations_group
+  //!
+  //! \brief For an implementations of presentations for semigroups or monoids.
+  //!
   //! Defined in ``presentation.hpp``.
   //!
   //! This class template can be used to construction presentations for
@@ -80,7 +84,7 @@ namespace libsemigroups {
   //! algorithms in `libsemigroups`. The idea is to provide a shallow wrapper
   //! around a vector of words of type `Word`. We refer to this vector of words
   //! as the rules of the presentation. The Presentation class template also
-  //! provide some checks that the rules really defines a presentation, (i.e.
+  //! provide some checks that the rules really define a presentation, (i.e.
   //! it's consistent with its alphabet), and some related functionality is
   //! available in the namespace `libsemigroups::presentation`.
   //!
@@ -88,20 +92,20 @@ namespace libsemigroups {
   template <typename Word>
   class Presentation : public PresentationBase {
    public:
-    //! The type of the words in the rules of a Presentation object.
+    //! \brief The type of the words in the rules of a Presentation object.
     using word_type = Word;
 
-    //! The type of the letters in the words that constitute the rules of a
-    //! Presentation object.
+    //! \brief The type of the letters in the words that constitute the rules of
+    //! a Presentation object.
     using letter_type = typename word_type::value_type;
 
-    //! Type of a const iterator to either side of a rule
+    //! \brief Type of a const iterator to either side of a rule
     using const_iterator = typename std::vector<word_type>::const_iterator;
 
-    //! Type of an iterator to either side of a rule.
+    //! \brief Type of an iterator to either side of a rule.
     using iterator = typename std::vector<word_type>::iterator;
 
-    //! Size type for rules.
+    //! \brief Size type for rules.
     using size_type = typename std::vector<word_type>::size_type;
 
    private:
@@ -110,142 +114,166 @@ namespace libsemigroups {
     bool                                       _contains_empty_word;
 
    public:
-    //! Data member holding the rules of the presentation.
+    //! \brief Data member holding the rules of the presentation.
     //!
     //! The rules can be altered using the member functions of `std::vector`,
     //! and the presentation can be checked for validity using \ref validate.
     std::vector<word_type> rules;
 
-    //! Default constructor.
+    //! \brief Default constructor.
     //!
     //! Constructs an empty presentation with no rules and no alphabet.
     Presentation();
 
-    //! Remove the alphabet and all rules.
+    //! \brief Remove the alphabet and all rules.
     //!
     //! This function clears the alphabet and all rules from the presentation,
     //! putting it back into the state it would be in if it was newly
     //! constructed.
     //!
-    //! \param (None)
-    //!
     //! \returns
     //! A reference to `this`.
     Presentation& init();
 
+    //! \brief Default copy constructor.
+    //!
     //! Default copy constructor.
     Presentation(Presentation const&);
 
+    //! \brief Default move constructor.
+    //!
     //! Default move constructor.
     Presentation(Presentation&&);
 
+    //! \brief Default copy assignment operator.
+    //!
     //! Default copy assignment operator.
     Presentation& operator=(Presentation const&);
 
+    //! \brief Default move assignment operator.
+    //!
     //! Default move assignment operator.
     Presentation& operator=(Presentation&&);
 
     ~Presentation();
 
+    //! \brief Returns the alphabet of the presentation.
+    //!
     //! Returns the alphabet of the presentation.
     //!
-    //! \returns A const reference to Presentation::word_type
+    //! \returns A const reference to \c Presentation::word_type.
     //!
     //! \exceptions
     //! \noexcept
     //!
-    //! \param (None)
+    //! \complexity
+    //! Constant.
     [[nodiscard]] word_type const& alphabet() const noexcept {
       return _alphabet;
     }
 
-    //! Set the alphabet by size.
+    //! \brief Set the alphabet by size.
     //!
     //! Sets the alphabet to the range \f$[0, n)\f$ consisting of values of
-    //! type \ref letter_type
+    //! type \ref letter_type.
     //!
-    //! \param n the size of the alphabet
+    //! \param n the size of the alphabet.
     //!
-    //! \returns A const reference to \c *this
+    //! \returns A const reference to \c *this.
     //!
     //! \throws LibsemigroupsException if the value of \p n is greater than the
     //! maximum number of letters supported by \ref letter_type.
     //!
     //! \warning
-    //! No checks are performed by this function, in particular, it is not
-    //! verified that the rules in the presentation (if any) consist of letters
-    //! belonging to the alphabet
+    //! This function does not verify that the rules in the presentation (if
+    //! any) consist of letters belonging to the alphabet.
     //!
-    //! \sa validate_alphabet, validate_rules, and \ref validate
+    //! \sa validate_alphabet, validate_rules, and \ref validate.
     Presentation& alphabet(size_type n);
 
-    //! Set the alphabet const reference.
+    //! \brief Set the alphabet const reference.
     //!
     //! Sets the alphabet to be the letters in \p lphbt.
     //!
-    //! \param lphbt the alphabet
+    //! \param lphbt the alphabet.
     //!
-    //! \returns A const reference to \c *this
+    //! \returns A const reference to \c *this.
     //!
     //! \throws LibsemigroupsException if there are duplicate letters in \p
-    //! lphbt
+    //! lphbt.
     //!
     //! \warning
     //! This function does not verify that the rules in the presentation (if
-    //! any) consist of letters belonging to the alphabet
+    //! any) consist of letters belonging to the alphabet.
     //!
-    //! \sa validate_rules and \ref validate
+    //! \sa validate_rules and \ref validate.
     Presentation& alphabet(word_type const& lphbt);
 
-    //! Set the alphabet from rvalue reference.
+    //! \brief Set the alphabet from rvalue reference.
     //!
     //! Sets the alphabet to be the letters in \p lphbt.
     //!
-    //! \param lphbt the alphabet
+    //! \param lphbt the alphabet.
     //!
-    //! \returns A const reference to \c *this
+    //! \returns A const reference to \c *this.
     //!
     //! \throws LibsemigroupsException if there are duplicate letters in \p
-    //! lphbt
+    //! lphbt.
     //!
     //! \warning
     //! This function does not verify that the rules in the presentation (if
-    //! any) consist of letters belonging to the alphabet
+    //! any) consist of letters belonging to the alphabet.
     //!
-    //! \sa validate_rules and \ref validate
+    //! \sa validate_rules and \ref validate.
     Presentation& alphabet(word_type&& lphbt);
 
-    //! Set the alphabet to be the letters in the rules.
+    //! \brief Set the alphabet to be the letters in the rules.
     //!
     //! Sets the alphabet to be the letters in \ref rules.
     //!
-    //! \returns A const reference to \c *this
+    //! \returns A const reference to \c *this.
     //!
-    //! \sa validate_rules, and \ref validate
+    //! \exceptions
+    //! \no_libsemigroups_except
     //!
-    //! \param (None)
+    //! \complexity
+    //! At most \f$O(mn)\f$ where \f$m\f$ is the number of rules, and \f$n\f$ is
+    //! the length of the longest rule.
+    //!
+    //! \sa validate_rules, and \ref validate.
     Presentation& alphabet_from_rules();
 
-    //! Get a letter in the alphabet by index
+    //! \brief Get a letter in the alphabet by index.
     //!
-    //! Returns the letter of the alphabet in position \p i
+    //! Returns the letter of the alphabet in position \p i.
     //!
-    //! \param i the index
-    //! \returns A value of type \ref letter_type
+    //! \param i the index.
+    //!
+    //! \returns A value of type \ref letter_type.
     //!
     //! \exceptions
     //! \no_libsemigroups_except
     //!
     //! \warning
-    //! This function performs no bound checks on the argument \p i
+    //! This function performs no bound checks on the argument \p i.
     [[nodiscard]] letter_type letter_no_checks(size_type i) const {
       LIBSEMIGROUPS_ASSERT(i < _alphabet.size());
       return _alphabet[i];
     }
 
-    // TODO(doc)
+    //! \brief Get a letter in the alphabet by index.
+    //!
+    //! After checking that \p i is in the range \f$[0, n)\f$, where \f$n\f$ is
+    //! the length of the alphabet, this function performs the same as
+    //! `letter_no_checks(size_type i) const`.
+    //!
+    //! \throws LibsemigroupsException if \p i is not in the range \f$[0, n)\f$.
+    //!
+    //! \sa letter_no_checks.
     [[nodiscard]] letter_type letter(size_type i) const;
 
+    //! \brief Get the index of a letter in the alphabet
+    //!
     //! Get the index of a letter in the alphabet
     //!
     //! \param val the letter
@@ -254,8 +282,6 @@ namespace libsemigroups {
     //!
     //! \exceptions
     //! \no_libsemigroups_except
-    // \throws LibsemigroupsException if \p val does not belong to the
-    // alphabet
     //!
     //! \complexity
     //! Constant.
@@ -266,43 +292,63 @@ namespace libsemigroups {
       return _alphabet_map.find(val)->second;
     }
 
-    // TODO(doc)
+    //! \brief Get the index of a letter in the alphabet
+    //!
+    //! After checking that \p val is in the the alphabet, this function
+    //! performs the same as `index_no_checks(letter_type val) const`.
+    //!
+    //! \throws LibsemigroupsException if \p val does not belong to the
+    //! alphabet.
+    //!
+    //! \sa \ref index_no_checks.
     [[nodiscard]] size_type index(letter_type val) const;
 
-    //! Check if a letter belongs to the alphabet or not.
+    //! \brief Check if a letter belongs to the alphabet or not.
     //!
-    //! \no_libsemigroups_except
+    //! Check if a letter belongs to the alphabet or not.
     //!
     //! \param val the letter to check
     //!
-    //! \returns
-    //! A value of type `bool`.
+    //! \returns a value of type \c bool.
+    //!
+    //! \exception
+    //! \no_libsemigroups_except
+    //!
+    //! \complexity
+    //! Constant on average, worst case linear in the size of the alphabet.
     [[nodiscard]] bool in_alphabet(letter_type val) const {
       return _alphabet_map.find(val) != _alphabet_map.cend();
     }
 
-    //! Add a rule to the presentation
+    //! \brief Add a rule to the presentation
     //!
     //! Adds the rule with left hand side `[lhs_begin, lhs_end)` and
-    //! right hand side `[rhs_begin, rhs_end)` to the rules.
+    //! right hand side `[rhs_begin, rhs_end)` to the rules. It is possible to
+    //! add rules directly via the data member \ref rules, this function just
+    //! exists to encourage adding rules with both sides defined at the same
+    //! time.
     //!
     //! \tparam S the type of the first two parameters (iterators, or
-    //! pointers)
+    //! pointers).
     //! \tparam T the type of the second two parameters (iterators,
-    //! or pointers)
+    //! or pointers).
     //!
     //! \param lhs_begin an iterator pointing to the first letter of the left
-    //! hand side of the rule to be added
+    //! hand side of the rule to be added.
     //! \param lhs_end an iterator pointing one past the last letter of the
-    //! left hand side of the rule to be added \param rhs_begin an iterator
-    //! pointing to the first letter of the right hand side of the rule to be
-    //! added \param rhs_end an iterator pointing one past the last letter of
-    //! the right hand side of the rule to be added
+    //! left hand side of the rule to be added.
+    //! \param rhs_begin an iterator pointing to the first letter of the right
+    //! hand side of the rule to be added.
+    //! \param rhs_end an iterator pointing one past the last letter of the
+    //! right hand side of the rule to be added
     //!
     //! \returns A const reference to \c *this
     //!
     //! \exceptions
     //! \no_libsemigroups_except
+    //!
+    //! \complexity
+    //! Amortized constant.
     //!
     //! \warning
     //! It is not checked that the arguments describe words over the alphabet
@@ -320,36 +366,21 @@ namespace libsemigroups {
       return *this;
     }
 
-    //! Add a rule to the presentation and check it is valid
+    //! \brief Add a rule to the presentation and check it is valid.
     //!
-    //! Adds the rule with left hand side `[lhs_begin, lhs_end)` and right
-    //! hand side `[rhs_begin, rhs_end)` to the rules and checks that they
-    //! only contain letters in \ref alphabet. It is possible to add rules
-    //! directly via the data member \ref rules, this function just exists to
-    //! encourage adding rules with both sides defined at the same time.
-    //!
-    //! \tparam S the type of the first two parameters (iterators, or
-    //! pointers) \tparam T the type of the second two parameters (iterators,
-    //! or pointers)
-    //!
-    //! \param lhs_begin an iterator pointing to the first letter of the left
-    //! hand side of the rule to be added
-    //! \param lhs_end an iterator pointing one past the last letter of the
-    //! left hand side of the rule to be added \param rhs_begin an iterator
-    //! pointing to the first letter of the right hand side of the rule to be
-    //! added \param rhs_end an iterator pointing one past the last letter of
-    //! the right hand side of the rule to be added
-    //!
-    //! \returns A const reference to \c *this
+    //! After checking that they left-hand side and right-hand side only contain
+    //! letters in \ref alphabet, this function performs the same as
+    //! `add_rule_no_checks(Iterator1 lhs_begin, Iterator1 lhs_end, Iterator2
+    //! rhs_begin, Iterator2 rhs_end)`.
     //!
     //! \throws LibsemigroupsException if any letter does not below to the
-    //! alphabet
+    //! alphabet.
     //! \throws LibsemigroupsException if \ref contains_empty_word returns \c
     //! false and \p lhs_begin equals \p lhs_end or \p rhs_begin equals \p
-    //! rhs_end
+    //! rhs_end.
     //!
     //! \sa
-    //! add_rule_no_checks
+    //! add_rule_no_checks.
     template <typename Iterator1, typename Iterator2>
     Presentation& add_rule(Iterator1 lhs_begin,
                            Iterator1 lhs_end,
@@ -360,19 +391,25 @@ namespace libsemigroups {
       return add_rule_no_checks(lhs_begin, lhs_end, rhs_begin, rhs_end);
     }
 
-    //! Check if the presentation should contain the empty word
+    //! \brief Check if the presentation should contain the empty word.
     //!
-    //! \param (None)
+    //! Check if the presentation should contain the empty word.
     //!
-    //! \returns A value of type `bool`
+    //! \returns A value of type `bool`.
     //!
     //! \exceptions
     //! \noexcept
+    //!
+    //! \complexity
+    //! Constant.
     [[nodiscard]] bool contains_empty_word() const noexcept {
       return _contains_empty_word;
     }
 
-    //! Specify that the presentation should (not) contain the empty word
+    //! \brief Specify that the presentation should (not) contain the empty
+    //! word.
+    //!
+    //! Specify that the presentation should (not) contain the empty word.
     //!
     //! \param val whether the presentation should contain the empty word
     //!
@@ -380,69 +417,82 @@ namespace libsemigroups {
     //!
     //! \exceptions
     //! \noexcept
+    //!
+    //! \complexity
+    //! Constant
     Presentation& contains_empty_word(bool val) noexcept {
       _contains_empty_word = val;
       return *this;
     }
 
-    //! Check if the alphabet is valid
+    //! \brief Check if the alphabet is valid.
+    //!
+    //! Check if the alphabet is valid.
     //!
     //! \throws LibsemigroupsException if there are duplicate letters in the
-    //! alphabet
+    //! alphabet.
     //!
-    //! \param (None)
-    //!
-    //! \returns
-    //! (None)
+    //! \complexity
+    //! Linear in the length of the alphabet.
     void validate_alphabet() const {
       decltype(_alphabet_map) alphabet_map;
       validate_alphabet(alphabet_map);
     }
 
+    //! \brief Check if a letter belongs to the alphabet or not.
+    //!
     //! Check if a letter belongs to the alphabet or not.
     //!
-    //! \throws LibsemigroupsException if \p c does not belong to the alphabet
+    //! \param c the letter to check.
     //!
-    //! \param c the letter to check
+    //! \throws LibsemigroupsException if \p c does not belong to the alphabet.
     //!
-    //! \returns
-    //! (None)
+    //! \complexity
+    //! Constant on average, worst case linear in the size of the alphabet.
     void validate_letter(letter_type c) const;
 
-    //! Check if every letter in a range belongs to the alphabet.
+    //! \brief Check if every letter in a range belongs to the alphabet.
     //!
-    //! \throws LibsemigroupsException if there is a letter not in the
-    //! alphabet between \p first and \p last
+    //! Check if every letter in a range belongs to the alphabet.
     //!
     //! \tparam T the type of the arguments (iterators)
     //! \param first iterator pointing at the first letter to check
     //! \param last iterator pointing one beyond the last letter to check
     //!
-    //! \returns
-    //! (None)
+    //! \throws LibsemigroupsException if there is a letter not in the
+    //! alphabet between \p first and \p last
+    //!
+    //! \complexity
+    //! Worst case \f$O(mn)\f$ where \f$m\f$ is the length of the longest
+    //! word, and \f$n\f$ is the size of the alphabet.
     template <typename Iterator>
     void validate_word(Iterator first, Iterator last) const;
 
+    //! \brief Check if every rule consists of letters belonging to the
+    //! alphabet.
+    //!
     //! Check if every rule consists of letters belonging to the alphabet.
     //!
     //! \throws LibsemigroupsException if any word contains a letter not in
     //! the alphabet.
     //!
-    //! \param (None)
-    //!
-    //! \returns
-    //! (None)
+    //! \complexity
+    //! Worst case \f$O(mnt)\f$ where \f$m\f$ is the length of the longest
+    //! word, \f$n\f$ is the size of the alphabet and \f$t\f$ is the number of
+    //! rules.
     void validate_rules() const;
 
+    //! \brief Check if the alphabet and rules are valid.
+    //!
     //! Check if the alphabet and rules are valid.
     //!
     //! \throws LibsemigroupsException if \ref validate_alphabet or \ref
     //! validate_rules does.
     //!
-    //! \param (None)
-    //!
-    //! \returns
-    //! (None)
+    //! \complexity
+    //! Worst case \f$O(mnp)\f$ where \f$m\f$ is the length of length of the
+    //! word, \f$n\f$ is the size of the alphabet and \f$p\f$ is the number of
+    //! rules.
     void validate() const {
       validate_alphabet();
       validate_rules();
@@ -454,9 +504,36 @@ namespace libsemigroups {
     void validate_alphabet(decltype(_alphabet_map)& alphabet_map) const;
   };
 
-  //! TODO
+  //! \ingroup presentations_group
+  //!
+  //! \brief Namespace for Presentation helper functions.
+  //!
+  //! Defined in ``presentation.hpp``.
+  //!
+  //! This namespace contains various helper functions for the class
+  //! \ref Presentation. These functions could be functions of \ref Presentation
+  //! but they only use public member functions of \ref Presentation, and so
+  //! they are declared as free functions instead.
   namespace presentation {
 
+    //! \brief Validate rules against the alphabet of \p p.
+    //!
+    //! Check if every rule of in `[first, last)` consists of letters belonging
+    //! to the alphabet of \p p.
+    //!
+    //! \tparam Word the type of the words in the presentation.
+    //! \tparam Iterator the type of the second and third arguments.
+    //! \param p the presentation whose alphabet is being validated against.
+    //! \param first iterator pointing at the first rule to check.
+    //! \param last iterator pointing one beyond the last rule to check.
+    //!
+    //! \throws LibsemigroupsException if any word contains a letter not in
+    //! the alphabet \p.
+    //!
+    //! \complexity
+    //! Worst case \f$O(mnt)\f$ where \f$m\f$ is the length of the longest
+    //! word, \f$n\f$ is the size of the \p p 's alphabet and \f$t\f$ is the
+    //! distance between \p first and \p last.
     template <typename Word, typename Iterator>
     void validate_rules(Presentation<Word> const& p,
                         Iterator                  first,
@@ -466,22 +543,44 @@ namespace libsemigroups {
       }
     }
 
-    // TODO(now) doc
+    //! \brief Validate if \p vals act as semigroup inverses in \p p.
+    //!
+    //! Check if the values in \p vals act as semigroup inverses for the letters
+    //! of the alphabet of \p p. Specifically, it checks that the \f$i\f$th
+    //! value in \p vals acts as an inverse for the \f$i\f$th value in
+    //! `p.alphabet()`.
+    //!
+    //! Let \f$x_i\f$ be the \f$i\f$th letter in `p.alphabet()`, and
+    //! suppose that \f$x_i=v_j\f$ is in the \f$j\f$th position of \p vals. This
+    //! function checks that \f$v_i = x_j\f$, and therefore that
+    //! \f$(x_i^{-1})^{-1} = x\f$.
+    //!
+    //! \tparam Word the type of the words in the presentation.
+    //! \param p the presentation.
+    //! \param vals the values to check if the act as inverses.
+    //!
+    //! \throws Libsemigroups_Exception if the length of \p vals is not the same
+    //! as the length of `p.alphabet()`
+    //!
+    //! \throws Libsemigroups_Exception if `p.validate_word(vals)` throws.
+    //!
+    //! \throws Libsemigroups_Exception if \p vals contains duplicate letters
+    //!
+    //! \throws Libsemigroups_Exception if the values in \p vals do not serve as
+    //! semigroup inverses.
     template <typename Word>
     void validate_semigroup_inverses(Presentation<Word> const& p,
                                      Word const&               vals);
 
-    //! Add a rule to the presentation by reference.
+    //! \brief Add a rule to the presentation by reference.
     //!
-    //! Adds the rule with left hand side `lhop` and right hand side `rhop`
+    //! Adds the rule with left hand side \p lhop and right hand side \p rhop
     //! to the rules.
     //!
-    //! \tparam Word the type of the words in the presentation
-    //! \param p the presentation
-    //! \param lhop the left hand side of the rule
-    //! \param rhop the left hand side of the rule
-    //!
-    //! \returns (None)
+    //! \tparam Word the type of the words in the presentation.
+    //! \param p the presentation.
+    //! \param lhop the left hand side of the rule.
+    //! \param rhop the right hand side of the rule.
     //!
     //! \exceptions
     //! \no_libsemigroups_except
@@ -496,18 +595,16 @@ namespace libsemigroups {
       p.add_rule_no_checks(lhop.begin(), lhop.end(), rhop.begin(), rhop.end());
     }
 
-    //! Add a rule to the presentation by reference and check.
+    //! \brief Add a rule to the presentation by reference and check.
     //!
     //! Adds the rule with left hand side \p lhop and right hand side \p rhop
     //! to the rules, after checking that \p lhop and \p rhop consist entirely
     //! of letters in the alphabet of \p p.
     //!
-    //! \tparam Word the type of the words in the presentation
-    //! \param p the presentation
-    //! \param lhop the left hand side of the rule
-    //! \param rhop the left hand side of the rule
-    //!
-    //! \returns (None)
+    //! \tparam Word the type of the words in the presentation.
+    //! \param p the presentation.
+    //! \param lhop the left hand side of the rule.
+    //! \param rhop the right hand side of the rule.
     //!
     //! \throws LibsemigroupsException if \p lhop or \p rhop contains any
     //! letters not belonging to `p.alphabet()`.
@@ -516,17 +613,14 @@ namespace libsemigroups {
       p.add_rule(lhop.begin(), lhop.end(), rhop.begin(), rhop.end());
     }
 
-    //! Add a rule to the presentation by `char const*`.
+    //! \brief Add a rule to the presentation by `char const*`.
     //!
-    //! Adds the rule with left hand side `lhop` and right hand side `rhop`
+    //! Adds the rule with left hand side \p lhop and right hand side \p rhop
     //! to the rules.
     //!
-    //! \tparam Word the type of the words in the presentation
-    //! \param p the presentation
-    //! \param lhop the left hand side of the rule
-    //! \param rhop the left hand side of the rule
-    //!
-    //! \returns (None)
+    //! \param p the presentation.
+    //! \param lhop the left hand side of the rule.
+    //! \param rhop the right hand side of the rule.
     //!
     //! \exceptions
     //! \no_libsemigroups_except
@@ -540,60 +634,113 @@ namespace libsemigroups {
       add_rule_no_checks(p, std::string(lhop), std::string(rhop));
     }
 
-    //! Add a rule to the presentation by `char const*`.
+    //! \brief Add a rule to the presentation by `char const*`.
     //!
-    //! Adds the rule with left hand side `lhop` and right hand side `rhop`
+    //! Adds the rule with left hand side \p lhop and right hand side \p rhop
     //! to the rules.
     //!
-    //! \tparam Word the type of the words in the presentation
-    //! \param p the presentation
-    //! \param lhop the left hand side of the rule
-    //! \param rhop the left hand side of the rule
-    //!
-    //! \returns (None)
+    //! \param p the presentation.
+    //! \param lhop the left hand side of the rule.
+    //! \param rhop the right hand side of the rule.
     //!
     //! \throws LibsemigroupsException if \p lhop or \p rhop contains any
     //! letters not belonging to `p.alphabet()`.
-    template <typename Word>
-    void add_rule(Presentation<Word>& p, char const* lhop, char const* rhop) {
+    inline void add_rule(Presentation<std::string>& p,
+                         char const*                lhop,
+                         char const*                rhop) {
       add_rule(p, std::string(lhop), std::string(rhop));
     }
 
+    //! \brief Add a rule to the presentation by `string const &` and `char
+    //! const*`.
+    //!
+    //! Adds the rule with left hand side \p lhop and right hand side \p rhop
+    //! to the rules.
+    //!
+    //! \param p the presentation.
+    //! \param lhop the left hand side of the rule.
+    //! \param rhop the right hand side of the rule.
+    //!
+    //! \throws LibsemigroupsException if \p lhop or \p rhop contains any
+    //! letters not belonging to `p.alphabet()`.
     inline void add_rule(Presentation<std::string>& p,
                          std::string const&         lhop,
                          char const*                rhop) {
       add_rule(p, lhop, std::string(rhop));
     }
 
+    //! \brief Add a rule to the presentation by `char const*` and `string const
+    //! &`.
+    //!
+    //! Adds the rule with left hand side \p lhop and right hand side \p rhop
+    //! to the rules.
+    //!
+    //! \param p the presentation.
+    //! \param lhop the left hand side of the rule.
+    //! \param rhop the right hand side of the rule.
+    //!
+    //! \throws LibsemigroupsException if \p lhop or \p rhop contains any
+    //! letters not belonging to `p.alphabet()`.
     inline void add_rule(Presentation<std::string>& p,
                          char const*                lhop,
                          std::string const&         rhop) {
       add_rule(p, std::string(lhop), rhop);
     }
 
+    //! \brief Add a rule to the presentation by `string const&` and `char
+    //! const*`.
+    //!
+    //! Adds the rule with left hand side \p lhop and right hand side \p rhop
+    //! to the rules.
+    //!
+    //! \param p the presentation.
+    //! \param lhop the left hand side of the rule.
+    //! \param rhop the right hand side of the rule.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    //! \warning
+    //! No checks that the arguments describe words over the alphabet of the
+    //! presentation are performed.
     inline void add_rule_no_checks(Presentation<std::string>& p,
                                    std::string const&         lhop,
                                    char const*                rhop) {
       add_rule_no_checks(p, lhop, std::string(rhop));
     }
 
+    //! \brief Add a rule to the presentation by `char const*` and `string
+    //! const&`.
+    //!
+    //! Adds the rule with left hand side \p lhop and right hand side \p rhop
+    //! to the rules.
+    //!
+    //! \param p the presentation.
+    //! \param lhop the left hand side of the rule.
+    //! \param rhop the right hand side of the rule.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    //! \warning
+    //! No checks that the arguments describe words over the alphabet of the
+    //! presentation are performed.
     inline void add_rule_no_checks(Presentation<std::string>& p,
                                    char const*                lhop,
                                    std::string const&         rhop) {
       add_rule_no_checks(p, std::string(lhop), rhop);
     }
 
-    //! Add a rule to the presentation by `initializer_list`.
+    //! \brief Add a rule to the presentation by `initializer_list`.
     //!
-    //! Adds the rule with left hand side `lhop` and right hand side `rhop`
+    //! Adds the rule with left hand side \p lhop and right hand side \p rhop
     //! to the rules.
     //!
-    //! \tparam Word the type of the words in the presentation
-    //! \param p the presentation
-    //! \param lhop the left hand side of the rule
-    //! \param rhop the left hand side of the rule
-    //!
-    //! \returns (None)
+    //! \tparam Word the type of the words in the presentation.
+    //! \tparam Letter the type of the values in the `initializer_list`.
+    //! \param p the presentation.
+    //! \param lhop the left hand side of the rule.
+    //! \param rhop the right hand side of the rule.
     //!
     //! \exceptions
     //! \no_libsemigroups_except
@@ -608,20 +755,16 @@ namespace libsemigroups {
       p.add_rule_no_checks(lhop.begin(), lhop.end(), rhop.begin(), rhop.end());
     }
 
-    //! Add a rule to the presentation by `initializer_list`.
+    //! \brief Add a rule to the presentation by `initializer_list`.
     //!
-    //! Adds the rule with left hand side `lhop` and right hand side `rhop`
+    //! Adds the rule with left hand side \p lhop and right hand side \p rhop
     //! to the rules.
     //!
-    //! \tparam Word the type of the words in the presentation
-    //! \param p the presentation
-    //! \param lhop the left hand side of the rule
-    //! \param rhop the left hand side of the rule
-    //!
-    //! \returns (None)
-    //!
-    //! \exceptions
-    //! \no_libsemigroups_except
+    //! \tparam Word the type of the words in the presentation.
+    //! \tparam Letter the type of the values in the `initializer_list`.
+    //! \param p the presentation.
+    //! \param lhop the left hand side of the rule.
+    //! \param rhop the right hand side of the rule.
     //!
     //! \throws LibsemigroupsException if \p lhop or \p rhop contains any
     //! letters not belonging to `p.alphabet()`.
@@ -632,6 +775,18 @@ namespace libsemigroups {
       p.add_rule(lhop.begin(), lhop.end(), rhop.begin(), rhop.end());
     }
 
+    //! \brief Add a rules to the presentation.
+    //!
+    //! Adds the rules stored in the range `[first, last)`.
+    //!
+    //! \tparam Word the type of the words in the presentation.
+    //! \tparam Iterator the type of the second and third arguments.
+    //! \param p the presentation.
+    //! \param first iterator pointing at the first rule to add.
+    //! \param last iterator pointing one beyond the last rule to add.
+    //!
+    //! \throws LibsemigroupsException if any rule contains any letters not
+    //! belonging to `p.alphabet()`.
     template <typename Word, typename Iterator>
     void add_rules(Presentation<Word>& p, Iterator first, Iterator last) {
       for (auto it = first; it != last; it += 2) {
@@ -639,6 +794,22 @@ namespace libsemigroups {
       }
     }
 
+    //! \brief Add a rules to the presentation.
+    //!
+    //! Adds the rules stored in the range `[first, last)`.
+    //!
+    //! \tparam Word the type of the words in the presentation.
+    //! \tparam Iterator the type of the second and third arguments.
+    //! \param p the presentation.
+    //! \param first iterator pointing at the first rule to add.
+    //! \param last iterator pointing one beyond the last rule to add.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    //! \warning
+    //! No checks that the arguments describe words over the alphabet of the
+    //! presentation are performed.
     template <typename Word, typename Iterator>
     void add_rules_no_checks(Presentation<Word>& p,
                              Iterator            first,
@@ -648,7 +819,7 @@ namespace libsemigroups {
       }
     }
 
-    //! Add a rule to the presentation from another presentation.
+    //! \brief Add a rule to the presentation from another presentation.
     //!
     //! Adds all the rules of the second argument to the first argument
     //! which is modified in-place.
@@ -656,8 +827,6 @@ namespace libsemigroups {
     //! \tparam Word the type of the words in the presentation
     //! \param p the presentation to add rules to
     //! \param q the presentation with the rules to add
-    //!
-    //! \returns (None)
     //!
     //! \exceptions
     //! \no_libsemigroups_except
@@ -667,19 +836,23 @@ namespace libsemigroups {
       add_rules_no_checks(p, q.rules.cbegin(), q.rules.cend());
     }
 
+    //! \brief Check if a presentation contains a rule
+    //!
+    //! Checks if the rule with left hand side \p lhop and right hand side \p
+    //! rhop is contained in \p p.
+    //!
+    //! \tparam Word the type of the words in the presentation.
+    //! \param p the presentation.
+    //! \param lhop the left hand side of the rule.
+    //! \param rhop the right hand side of the rule.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
     // TODO to tpp
     template <typename Word>
     [[nodiscard]] bool contains_rule(Presentation<Word>& p,
                                      Word const&         lhs,
-                                     Word const&         rhs) {
-      for (auto it = p.rules.cbegin(); it != p.rules.cend(); it += 2) {
-        if ((*it == lhs && *(it + 1) == rhs)
-            || (*it == rhs && *(it + 1) == lhs)) {
-          return true;
-        }
-      }
-      return false;
-    }
+                                     Word const&         rhs);
 
     //! Add rules for an identity element.
     //!
