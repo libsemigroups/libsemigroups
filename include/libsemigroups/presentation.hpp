@@ -1961,6 +1961,19 @@ namespace libsemigroups {
 
   }  // namespace presentation
 
+  //! \ingroup presentations_group
+  //!
+  //! \brief For an implementations of inverse presentations for semigroups or
+  //! monoids.
+  //!
+  //! Defined in ``presentation.hpp``.
+  //!
+  //! This class template can be used to construction inverse presentations for
+  //! semigroups or monoids and is intended to be used as the input to other
+  //! algorithms in `libsemigroups`. This class inherits from \ref
+  //! Presentation<Word>
+  //!
+  //! \tparam Word the type of the underlying words.
   template <typename Word>
   class InversePresentation : public Presentation<Word> {
    public:
