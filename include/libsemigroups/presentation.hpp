@@ -1456,7 +1456,8 @@ namespace libsemigroups {
     //!
     //! \throws LibsemigroupsException if the length of \p p.rules is odd.
     template <typename Word>
-    auto longest_rule(Presentation<Word> const& p) {
+    typename std::vector<Word>::const_iterator
+    longest_rule(Presentation<Word> const& p) {
       return longest_rule(p.rules.cbegin(), p.rules.cend());
     }
 
@@ -1496,7 +1497,8 @@ namespace libsemigroups {
     //!
     //! \throws LibsemigroupsException if the length of \p p.rules is odd.
     template <typename Word>
-    auto shortest_rule(Presentation<Word> const& p) {
+    typename std::vector<Word>::const_iterator
+    shortest_rule(Presentation<Word> const& p) {
       return shortest_rule(p.rules.cbegin(), p.rules.cend());
     }
 
