@@ -1328,7 +1328,7 @@ namespace libsemigroups {
           p,
           "abbbbabbbbbbbbbbabbbbabbbbbbbbbbbbbbbbbbbbbbbbbbbbbaaaaaaaaaaaa",
           "");
-      presentation::balance(p, "abAB", "ABab");
+      presentation::balance_no_checks(p, "abAB", "ABab");
       presentation::sort_rules(p);
 
       letter_type b = 1;

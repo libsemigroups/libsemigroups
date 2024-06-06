@@ -1332,7 +1332,7 @@ namespace libsemigroups {
                217121_w,   17171_w,    0102720107_w, 7010270102_w, 107017_w,
                70107010_w, 1217_w,     7121_w};
     p.alphabet_from_rules();
-    presentation::balance(p, 0123456_w, 0123456_w);
+    presentation::balance_no_checks(p, 0123456_w, 0123456_w);
 
     Stephen s(p);
     s.set_word(1217_w);

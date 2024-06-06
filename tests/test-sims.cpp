@@ -1991,7 +1991,7 @@ namespace libsemigroups {
     presentation::add_inverse_rules(p, "XxYy");
     presentation::add_rule(p, "yXYYxyYYxyyXYYxyyXyXYYxy", "x");
     presentation::add_rule(p, "YxyyXXYYxyxYxyyXYXyXYYxxyyXYXyXYYxyx", "y");
-    presentation::balance(p, p.alphabet(), std::string("XxYy"));
+    presentation::balance_no_checks(p, p.alphabet(), std::string("XxYy"));
 
     REQUIRE(p.rules
             == std::vector<std::string>({"xX",
@@ -2787,7 +2787,7 @@ namespace libsemigroups {
     presentation::add_rule(p, "Aba", "aab");
     presentation::sort_each_rule(p);
     presentation::sort_rules(p);
-    presentation::balance(p, "abcABC", "ABCabc");
+    presentation::balance_no_checks(p, "abcABC", "ABCabc");
 
     REQUIRE(presentation::longest_subword_reducing_length(p) == "aa");
     presentation::replace_word_with_new_generator(p, "aa");

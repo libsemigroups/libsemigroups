@@ -950,5 +950,52 @@ namespace libsemigroups {
       presentation::add_rules_no_checks(p, q);
     }
 
+    template <typename Word>
+    void balance_no_checks(Presentation<Word>& p,
+                           Word const&         letters,
+                           Word const&         inverses) {
+      // TODO check args
+      // So that longer relations are on the lhs
+      presentation::sort_each_rule(p);
+
+      std::unordered_map<typename Word::value_type, size_t> map;
+
+      for (auto [i, x] : rx::enumerate(letters)) {
+        map.emplace(x, i);
+      }
+
+      for (auto it = p.rules.begin(); it != p.rules.end(); it += 2) {
+        auto& l = *it;
+        auto& r = *(it + 1);
+        // Check that we aren't actually about to remove one of the inverse
+        // relations itself
+        if (l.size() == 2 && r.empty()) {
+          auto mit = map.find(l.front());
+          if (mit != map.cend() && l.back() == inverses[mit->second]) {
+            continue;
+          }
+        }
+
+        size_t const min = (l.size() + r.size()) % 2;
+        while (l.size() - r.size() > min) {
+          auto mit = map.find(l.back());
+          if (mit != map.cend()) {
+            r.insert(r.end(), inverses[mit->second]);
+            l.erase(l.end() - 1);
+          } else {
+            break;
+          }
+        }
+        while (l.size() - r.size() > min) {
+          auto mit = map.find(l.front());
+          if (mit != map.cend()) {
+            r.insert(r.begin(), inverses[mit->second]);
+            l.erase(l.begin());
+          } else {
+            break;
+          }
+        }
+      }
+    }
   }  // namespace presentation
 }  // namespace libsemigroups
