@@ -602,6 +602,12 @@ namespace libsemigroups {
       std::for_each(p.rules.begin(), p.rules.end(), rplc_wrd);
     }
 
+    template <typename Iterator>
+    size_t length(Iterator first, Iterator last) {
+      auto op = [](size_t val, auto const& x) { return val + x.size(); };
+      return std::accumulate(first, last, size_t(0), op);
+    }
+
     template <typename Word>
     void normalize_alphabet(Presentation<Word>& p) {
       using letter_type = typename Presentation<Word>::letter_type;
@@ -997,5 +1003,37 @@ namespace libsemigroups {
         }
       }
     }
+
+    // TODO do a proper version of this
+    template <typename Word>
+    void add_cyclic_conjugates(Presentation<Word>& p,
+                               Word const&         lhs,
+                               Word const&         rhs) {
+      p.validate_word(lhs);
+      p.validate_word(rhs);
+      for (size_t i = 0; i < lhs.size(); ++i) {
+        std::string lcopy(rhs.crbegin(), rhs.crbegin() + i);
+        lcopy.insert(lcopy.end(), lhs.cbegin() + i, lhs.cend());
+        for (auto it = lcopy.begin(); it < lcopy.begin() + i; ++it) {
+          if (std::isupper(*it)) {
+            *it = std::tolower(*it);
+          } else {
+            *it = std::toupper(*it);
+          }
+        }
+
+        std::string rcopy(rhs.cbegin(), rhs.cend() - i + 1);
+        rcopy.insert(rcopy.end(), lhs.crbegin(), lhs.crend() + i);
+        for (auto it = rcopy.end() - i; it < rcopy.end(); ++it) {
+          if (std::isupper(*it)) {
+            *it = std::tolower(*it);
+          } else {
+            *it = std::tolower(*it);
+          }
+        }
+        presentation::add_rule(p, lcopy, rcopy);
+      }
+    }
+
   }  // namespace presentation
 }  // namespace libsemigroups
