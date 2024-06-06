@@ -523,7 +523,7 @@ namespace libsemigroups {
     void add_generator(Presentation<Word>&                      p,
                        typename Presentation<Word>::letter_type x) {
       try {
-        p.index(x);  // throws if x belongs to p.alphabet()
+        p.validate_letter(x);  // throws if x does not belong to p.alphabet()
       } catch (LibsemigroupsException const& e) {
         add_generator_no_checks(p, x);
         return;
@@ -531,8 +531,8 @@ namespace libsemigroups {
       LIBSEMIGROUPS_EXCEPTION(
           "the 2nd argument {} already belongs to the alphabet {}, "
           "expected an unused letter",
-          to_printable(x),
-          to_printable(p.alphabet()));
+          detail::to_printable(x),
+          detail::to_printable(p.alphabet()));
     }
 
     template <typename Word, typename Iterator, typename>
