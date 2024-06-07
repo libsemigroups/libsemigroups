@@ -133,7 +133,8 @@ namespace libsemigroups {
     });
   }
 
-  word_type to_word(Presentation<std::string> const& p, std::string const& s) {
+  [[nodiscard]] word_type to_word(Presentation<std::string> const& p,
+                                  std::string const&               s) {
     word_type w;
     to_word(p, s, w);
     return w;

@@ -64,9 +64,10 @@ namespace libsemigroups {
   //! This file contains documentation related to semigroup and monoid
   //! presentations in `libsemigroups`.
   //!
-  //! There is one class and two namespaces with functionality related to
+  //! There are two classes and two namespaces with functionality related to
   //! presentations:
   //! * \ref Presentation "the Presentation class"
+  //! * \ref InversePresentation "the InversePresentation class"
   //! * \ref libsemigroups::presentation "Helper functions for presentations"
   //! * \ref libsemigroups::fpsemigroup "Presentations for standard examples"
 
@@ -1688,6 +1689,26 @@ namespace libsemigroups {
     template <typename Word>
     void greedy_reduce_length(Presentation<Word>& p);
 
+    //! \brief Greedily reduce the length and number of generators of the
+    //! presentation
+    //!
+    //! This function repeatedly calls `longest_subword_reducing_length` and
+    //! `replace_subword` to temporarily introduce a new generator and try to
+    //! reduce the length of the presentation \p p.  If, for a given subword,
+    //! this operation is successfully reduces the length of the presentation,
+    //! the changes are kept. Otherwise, the presentation is reverted and the
+    //! next subword is tried. This is done  until
+    //! `longest_subword_reducing_length` returns the empty word.
+    //!
+    //! \tparam Word the type of the words in the presentation
+    //!
+    //! \param p the presentation
+    //!
+    //! \throws LibsemigroupsException if `longest_subword_reducing_length` or
+    //!  `replace_word` does.
+    template <typename Word>
+    void greedy_reduce_length_and_number_of_gens(Presentation<Word>& p);
+
     //! \brief Returns `true` if the \f$1\f$-relation presentation can be
     //! strongly compressed.
     //!
@@ -1929,7 +1950,7 @@ namespace libsemigroups {
     //!
     //! \throws LibsemigroupsException if either \p lhs or \p rhs contain
     //! letters not in `p.alphabet()`
-    // TODO do a proper version of this
+    // TODO(later) do a proper version of this
     template <typename Word>
     void add_cyclic_conjugates(Presentation<Word>& p,
                                Word const&         lhs,
@@ -1971,17 +1992,28 @@ namespace libsemigroups {
   //! This class template can be used to construction inverse presentations for
   //! semigroups or monoids and is intended to be used as the input to other
   //! algorithms in `libsemigroups`. This class inherits from \ref
-  //! Presentation<Word>
+  //! Presentation<Word>.
   //!
   //! \tparam Word the type of the underlying words.
   template <typename Word>
   class InversePresentation : public Presentation<Word> {
    public:
-    using word_type      = typename Presentation<Word>::word_type;
-    using letter_type    = typename Presentation<Word>::letter_type;
+    //! \brief The type of the words in the rules of an InversePresentation
+    //! object.
+    using word_type = typename Presentation<Word>::word_type;
+
+    //! \brief The type of the letters in the words that constitute the rules of
+    //! an InversePresentation object.
+    using letter_type = typename Presentation<Word>::letter_type;
+
+    //! \brief Type of a const iterator to either side of a rule.
     using const_iterator = typename Presentation<Word>::const_iterator;
-    using iterator       = typename Presentation<Word>::iterator;
-    using size_type      = typename Presentation<Word>::size_type;
+
+    //! \brief Type of an iterator to either side of a rule.
+    using iterator = typename Presentation<Word>::iterator;
+
+    //! \brief Size type for rules.
+    using size_type = typename Presentation<Word>::size_type;
 
    private:
     word_type _inverses;
@@ -1990,40 +2022,110 @@ namespace libsemigroups {
     using Presentation<Word>::Presentation;
 
     // TODO init functions
+
+    //! \brief Construct an InversePresentation from a Presentation reference
+    //!
+    //! Construct an InversePresentation, initially with empty inverses, from a
+    //! reference to a Presentation.
+    //!
+    //! \tparam Word the type of the words in the presentation.
+    //! \param p a reference to the Presentation to construct from.
     InversePresentation<Word>(Presentation<Word> const& p)
         : Presentation<Word>(p), _inverses() {}
 
+    //! \brief Construct an InversePresentation from a Presentation rvalue
+    //! reference.
+    //!
+    //! Construct an InversePresentation, initially with empty inverses, from a
+    //! Presentation rvalue reference
+    //!
+    //! \tparam Word the type of the words in the presentation.
+    //! \param p an rvalue reference to the Presentation to construct from.
     InversePresentation<Word>(Presentation<Word>&& p)
         : Presentation<Word>(p), _inverses() {}
 
-    // TODO validate that checks that inverses are set
-    // TODO to tpp
-    InversePresentation& inverses(word_type const& w) {
-      // TODO maybe don't validate here but only in the validate function to
-      // be written. Set the alphabet to include the inverses
-      _inverses = w;
-      return *this;
-    }
+    //! \brief Set the inverse of each letter in the alphabet.
+    //!
+    //! Set the inverse of each letter in the alphabet.
+    //!
+    //! \param w a word containing the inverses
+    //!
+    //! \returns a reference to `this`.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    //! \warning
+    //! This function does no checks on its argument. In particular, it does not
+    //! check that the letters in \p w belong to the alphabet, nor does it add
+    //! new letters to the alphabet.
+    // TODO(later) validate that checks that inverses are set
+    InversePresentation& inverses_no_checks(word_type const& w);
 
+    //! \brief Return the inverse of each letter in the alphabet.
+    //!
+    //! Return the inverse of each letter in the alphabet.
+    //!
+    //! \returns a value of type \ref word_type.
+    //!
+    //! \exceptions
+    //! \noexcept
     word_type const& inverses() const noexcept {
       return _inverses;
     }
 
-    // TODO to tpp
-    letter_type inverse(letter_type x) const {
-      if (_inverses.empty()) {
-        LIBSEMIGROUPS_EXCEPTION("no inverses have been defined")
-      }
-      return _inverses[this->index(x)];
-    }
+    //! \brief Return the inverse of a letter in the alphabet.
+    //!
+    //! Return the inverse of the letter \p x.
+    //!
+    //! \param x the letter whose index is sought.
+    //!
+    //! \returns a value of type \ref letter_type
+    //!
+    //! \throws LibsemigroupsException if no inverses have been set, or if
+    //! `index(letter_type x) const` throws.
+    letter_type inverse(letter_type x) const;
 
+    //! \brief Check if the InversePresentation is valid.
+    //!
+    //! Check if the InversePresentation is valid. Specifically, check that the
+    //! alphabet does not contain duplicate letters, that all rules only contain
+    //! letters defined in the alphabet, and that the inverses act as semigroup
+    //! inverses.
+    //!
+    //! \throw LibsemigroupsException if:
+    //! * the alphabet contains duplicate letters
+    //! * the rules contain letters not defined in the alphabet
+    //! * the inverses do not act as semigroup inverses
+    //!
+    //! \sa
+    //! \ref Presentation<Word>::validate and \ref
+    //! presentation::validate_semigroup_inverses.
     void validate() const {
       Presentation<Word>::validate();
       presentation::validate_semigroup_inverses(*this, inverses());
     }
   };
 
-  // TODO(doc)
+  //! \ingroup presentations_group
+  //!
+  //! \brief Compare for equality.
+  //!
+  //! Returns \c true if \p lhop equals \p rhop by comparing the
+  //! the alphabets and the rules.
+  //!
+  //! \tparam Word the type of the words in the presentations.
+  //! \param lhop a presentation that is to be compared.
+  //! \param rhop a presentation that is to be compared.
+  //!
+  //! \returns
+  //! A value of type \c bool.
+  //!
+  //! \exceptions
+  //! \no_libsemigroups_except
+  //!
+  //! \complexity
+  //! At worst linear in the sum of the alphabet sizes and numbers of rules.
   // TODO(later) also we could do a more sophisticated version of this
   template <typename Word>
   bool operator==(Presentation<Word> const& lhop,
@@ -2031,28 +2133,113 @@ namespace libsemigroups {
     return lhop.alphabet() == rhop.alphabet() && lhop.rules == rhop.rules;
   }
 
+  //! \ingroup presentations_group
+  //!
+  //! \brief Compare for inequality.
+  //!
+  //! Returns \c true if \p lhop does not equal \p rhop by comparing the
+  //! the alphabets and the rules.
+  //!
+  //! \tparam Word the type of the words in the presentations.
+  //! \param lhop a presentation that is to be compared.
+  //! \param rhop a presentation that is to be compared.
+  //!
+  //! \returns
+  //! A value of type \c bool.
+  //!
+  //! \exceptions
+  //! \no_libsemigroups_except
+  //!
+  //! \complexity
+  //! At worst linear in the sum of the alphabet sizes and numbers of rules.
   template <typename Word>
   bool operator!=(Presentation<Word> const& lhop,
                   Presentation<Word> const& rhop) {
     return !(lhop == rhop);
   }
 
+  //! \ingroup presentations_group
+  //! \brief Convert a string to a word_type.
+  //!
+  //! This function converts its second argument \p input into a \ref word_type
+  //! and stores the result in the third argument \p output. The characters of
+  //! \p input are converted using `p.index()`, so that each letter
+  //! is mapped to the corresponding index in `p.alphabet()`.
+  //!
+  //! The content of the third argument \p output, if any, is removed.
+  //!
+  //! \param p the presentation whose alphabet will be used to convert
+  //! \param input the string to convert
+  //! \param output word to hold the result
+  //!
+  //! \throws LibsemigroupsException if any letter in \p input is not contained
+  //! in `p.alphabet()`.
+  //!
+  //! \sa \ref Presentation::index.
   // TODO(later) could do a no_check version
   void to_word(Presentation<std::string> const& p,
                std::string const&               input,
                word_type&                       output);
 
+  //! \ingroup presentations_group
+  //! \brief Convert a string to a word_type.
+  //!
+  //! This function converts its second argument \p input into a \ref word_type
+  //! and returns this result. The characters of \p input are converted using
+  //! `p.index()`, so that each letter is mapped to the corresponding index in
+  //! `p.alphabet()`.
+  //!
+  //! \param p the presentation whose alphabet will be used to convert
+  //! \param input the string to convert
+  //!
+  //! \throws LibsemigroupsException if any letter in \p input is not contained
+  //! in `p.alphabet()`.
+  //!
+  //! \sa \ref Presentation::index.
   // TODO(later) could do a no_check version
-  word_type to_word(Presentation<std::string> const& p,
-                    std::string const&               input);
+  [[nodiscard]] word_type to_word(Presentation<std::string> const& p,
+                                  std::string const&               input);
 
+  //! \ingroup presentations_group
+  //! \brief Convert a word_type to a string.
+  //!
+  //! This function converts its second argument \p input into a `string`
+  //! and stores the result in the third argument \p output. The indices in
+  //! \p input are converted using `p.letter()`, so that each index
+  //! is mapped to the corresponding letter.
+  //!
+  //! The content of the third argument \p output, if any, is removed.
+  //!
+  //! \param p the presentation whose alphabet will be used to convert.
+  //! \param input the \ref word_type to convert.
+  //! \param output the `string` to hold the result.
+  //!
+  //! \throws LibsemigroupsException if any index in \p input is not in the
+  //! range `[0, p.alphabet().size())`
+  //!
+  //! \sa \ref Presentation::letter.
   // TODO(later) could do a no_check version
   void to_string(Presentation<std::string> const& p,
                  word_type const&                 input,
                  std::string&                     output);
 
+  //! \ingroup presentations_group
+  //! \brief Convert a word_type to a string.
+  //!
+  //! This function converts its second argument \p input into a `string`
+  //! and returns this result. The indices in \p input are converted using
+  //! `p.letter()`, so that each index is mapped to the corresponding letter.
+  //!
+  //! \param p the presentation whose alphabet will be used to convert.
+  //! \param input the \ref word_type to convert.
+  //!
+  //! \throws LibsemigroupsException if any index in \p input is not in the
+  //! range `[0, p.alphabet().size())`
+  //!
+  //! \sa \ref Presentation::letter.
   // TODO(later) could do a no check version
-  std::string to_string(Presentation<std::string> const& p, word_type const& w);
+  std::string to_string(Presentation<std::string> const& p,
+                        word_type const&                 input);
 
   namespace detail {
     template <typename T>
@@ -2072,10 +2259,30 @@ namespace libsemigroups {
         : std::true_type {};
   }  // namespace detail
 
+  //! \ingroup presentations_group
+  //!
+  //! \brief Helper variable template.
+  //!
+  //! Helper variable template.
+  //!
+  //! The value of this variable is \c true if the template parameter \p T is
+  //! \ref InversePresentation.
+  //!
+  //! \tparam T a type.
   template <typename T>
   static constexpr bool IsInversePresentation
       = detail::IsInversePresentationHelper<T>::value;
 
+  //! \ingroup presentations_group
+  //!
+  //! \brief Helper variable template.
+  //!
+  //! Helper variable template.
+  //!
+  //! The value of this variable is \c true if the template parameter \p T is
+  //! \ref InversePresentation.
+  //!
+  //! \tparam T a type.
   template <typename T>
   static constexpr bool IsPresentation = detail::IsPresentationHelper<T>::value;
 

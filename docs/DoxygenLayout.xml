@@ -19,6 +19,7 @@
     <tab type="user" visible="yes" url="@ref paths_group" title="Paths"/>
     <tab type="usergroup" visible="yes" url="@ref presentations_group" title="Presentations">
       <tab type="user" visible="yes" url="@ref libsemigroups::Presentation" title="Presentation class" />
+      <tab type="user" visible="yes" url="@ref libsemigroups::InversePresentation" title="InversePresentation class" />
       <tab type="usergroup" visible="yes" url="@ref libsemigroups::presentation" title="Helper functions" />
       <tab type="usergroup" visible="yes" url="@ref libsemigroups::fpsemigroup" title="Examples" />
     </tab>
