@@ -2241,6 +2241,20 @@ namespace libsemigroups {
   std::string to_string(Presentation<std::string> const& p,
                         word_type const&                 input);
 
+  //! \ingroup presentations_group
+  //!
+  //! \brief Return a human readable representation of a presentation
+  //!
+  //! Return a human readable representation of a presentation
+  //!
+  //! \tparam Word the type of the words in the presentation.
+  //! \param p the presentation
+  //!
+  //! \exceptions
+  //! \no_libsemigroups_except
+  template <typename Word>
+  std::string to_human_readable_repr(Presentation<Word> const& p);
+
   namespace detail {
     template <typename T>
     struct IsPresentationHelper : std::false_type {};
