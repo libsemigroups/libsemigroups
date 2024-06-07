@@ -808,7 +808,6 @@ namespace libsemigroups {
       }
     }
 
-    // TODO declare and doc in hpp
     template <typename Word>
     void greedy_reduce_length_and_number_of_gens(Presentation<Word>& p) {
       auto w = longest_subword_reducing_length(p);
@@ -1036,4 +1035,22 @@ namespace libsemigroups {
     }
 
   }  // namespace presentation
+
+  template <typename Word>
+  InversePresentation<Word>&
+  InversePresentation<Word>::inverses_no_checks(word_type const& w) {
+    // TODO(later) maybe don't validate here but only in the validate function
+    // to be written. Set the alphabet to include the inverses
+    _inverses = w;
+    return *this;
+  }
+
+  template <typename Word>
+  typename InversePresentation<Word>::letter_type
+  InversePresentation<Word>::inverse(letter_type x) const {
+    if (_inverses.empty()) {
+      LIBSEMIGROUPS_EXCEPTION("no inverses have been defined")
+    }
+    return _inverses[this->index(x)];
+  }
 }  // namespace libsemigroups
