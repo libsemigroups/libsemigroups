@@ -2196,7 +2196,56 @@ namespace libsemigroups {
       Presentation<std::string> p;
       p.alphabet("ac");
       presentation::add_generator(p, 'b');
-      // REQUIRE(p.alphabet() == "acb");
+      REQUIRE(p.alphabet() == "acb");
+    }
+    {
+      Presentation<std::string> p;
+      p.alphabet("ac");
+      REQUIRE_EXCEPTION_MSG(presentation::add_generator(p, 'c'),
+                            "the 2nd argument 'c' already belongs to the "
+                            "alphabet \"ac\", expected an unused letter");
+    }
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Presentation",
+                          "048",
+                          "to_human_readble_repr",
+                          "[quick][presentation]") {
+    auto rg = ReportGuard(false);
+    {
+      Presentation<std::string> p;
+      presentation::add_rule_no_checks(p, "abcb", "aa");
+      p.alphabet_from_rules();
+      presentation::add_identity_rules(p, 'a');
+      REQUIRE(to_human_readable_repr(p)
+              == "<Semigroup Presentation on 3 letters with 6 rules>");
+    }
+    {
+      Presentation<std::string> p;
+      p.contains_empty_word(true);
+      presentation::add_rule_no_checks(p, "abcb", "aa");
+      p.alphabet_from_rules();
+      presentation::add_identity_rules(p, 'a');
+      REQUIRE(to_human_readable_repr(p)
+              == "<Monoid Presentation on 3 letters with 6 rules>");
+    }
+    {
+      Presentation<std::string> p;
+      REQUIRE(to_human_readable_repr(p)
+              == "<Semigroup Presentation on 0 letters with 0 rules>");
+    }
+    {
+      Presentation<std::string> p;
+      p.alphabet("a");
+      REQUIRE(to_human_readable_repr(p)
+              == "<Semigroup Presentation on 1 letter with 0 rules>");
+    }
+    {
+      Presentation<std::string> p;
+      p.alphabet("a");
+      presentation::add_rule_no_checks(p, "aa", "a");
+      REQUIRE(to_human_readable_repr(p)
+              == "<Semigroup Presentation on 1 letter with 1 rule>");
     }
   }
 }  // namespace libsemigroups
