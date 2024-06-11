@@ -160,7 +160,7 @@ namespace libsemigroups {
     InversePresentation<WordOutput> result;
     result.contains_empty_word(p.contains_empty_word());
     result.alphabet(new_alphabet);
-    result.inverses(new_inverses);
+    result.inverses_no_checks(new_inverses);
 
     WordOutput rel;
     for (auto it = p.rules.cbegin(); it != p.rules.cend(); ++it) {
@@ -190,7 +190,7 @@ namespace libsemigroups {
     result.alphabet(2 * result.alphabet().size());
     auto invs = result.alphabet();
     std::rotate(invs.begin(), invs.begin() + invs.size() / 2, invs.end());
-    result.inverses(std::move(invs));
+    result.inverses_no_checks(std::move(invs));
     // result.validate();
     return result;
   }
