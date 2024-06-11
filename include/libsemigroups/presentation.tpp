@@ -1008,8 +1008,8 @@ namespace libsemigroups {
     void add_cyclic_conjugates(Presentation<Word>& p,
                                Word const&         lhs,
                                Word const&         rhs) {
-      p.validate_word(lhs);
-      p.validate_word(rhs);
+      p.validate_word(lhs.cbegin(), lhs.cend());
+      p.validate_word(rhs.cbegin(), rhs.cend());
       for (size_t i = 0; i < lhs.size(); ++i) {
         std::string lcopy(rhs.crbegin(), rhs.crbegin() + i);
         lcopy.insert(lcopy.end(), lhs.cbegin() + i, lhs.cend());
