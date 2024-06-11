@@ -2248,4 +2248,77 @@ namespace libsemigroups {
               == "<Semigroup Presentation on 1 letter with 1 rule>");
     }
   }
+
+  LIBSEMIGROUPS_TEST_CASE("Presentation",
+                          "049",
+                          "to_word",
+                          "[quick][presentation]") {
+    auto                      rg = ReportGuard(false);
+    Presentation<std::string> p;
+
+    p.alphabet("ab");
+    REQUIRE(to_word(p, "aaabbbab") == word_type({0, 0, 0, 1, 1, 1, 0, 1}));
+
+    word_type output({1, 2, 3, 4, 5, 6, 7, 6, 5, 4, 3, 2, 1});
+    to_word(p, "ababab", output);
+    REQUIRE(output == word_type({0, 1, 0, 1, 0, 1}));
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Presentation",
+                          "050",
+                          "to_string",
+                          "[quick][presentation]") {
+    auto                      rg = ReportGuard(false);
+    Presentation<std::string> p;
+
+    p.alphabet("ab");
+    REQUIRE(to_string(p, word_type({0, 0, 0, 1, 1, 1, 0, 1})) == "aaabbbab");
+
+    std::string output("sample");
+    to_string(p, word_type({0, 1, 1, 0}), output);
+    REQUIRE(output == "abba");
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Presentation",
+                          "051",
+                          "to_gap_string",
+                          "[quick][presentation]") {
+    auto                      rg = ReportGuard(false);
+    Presentation<std::string> p;
+
+    p.alphabet(50);
+    std::string var_name("my_var");
+    REQUIRE_EXCEPTION_MSG(presentation::to_gap_string(p, var_name),
+                          "expected at most 49 generators, found 50!");
+
+    p.init();
+    p.alphabet("abc");
+    presentation::add_rule_no_checks(p, "abba", "bac");
+    presentation::add_rule_no_checks(p, "ba", "ab");
+    presentation::add_rule_no_checks(p, "cab", "ba");
+
+    REQUIRE(presentation::to_gap_string(p, var_name)
+            == "F := FreeSemigroup(\"a\", \"b\", \"c\");\n"
+               "AssignGeneratorVariables(F);;\n"
+               "R := [\n"
+               "          [a * b * b * a, b * a * c], \n"
+               "          [b * a, a * b], \n"
+               "          [c * a * b, b * a]\n"
+               "         ];\n"
+               "my_var := F / R;\n");
+
+    p.contains_empty_word(true);
+    presentation::add_rule_no_checks(p, "cba", "");
+    REQUIRE(presentation::to_gap_string(p, var_name)
+            == "F := FreeMonoid(\"a\", \"b\", \"c\");\n"
+               "AssignGeneratorVariables(F);;\n"
+               "R := [\n"
+               "          [a * b * b * a, b * a * c], \n"
+               "          [b * a, a * b], \n"
+               "          [c * a * b, b * a], \n"
+               "          [c * b * a, One(F)]\n"
+               "         ];\n"
+               "my_var := F / R;\n");
+  }
+
 }  // namespace libsemigroups
