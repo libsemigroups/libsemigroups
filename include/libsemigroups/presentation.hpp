@@ -1897,41 +1897,55 @@ namespace libsemigroups {
                                       Word const&                 letters,
                                       std::initializer_list<Word> words);
 
-    //! \brief TODO
+    //! \brief Balance the length of the left-hand and right-hand sides
     //!
-    //! TODO
+    //! This function first sorts the sides of each rules so that the larger
+    //! side of the rule is on the left. Then for each rule, while the last
+    //! letter of the left-hand side is in \p letters, the last letter of the
+    //! left-hand side is removed and the corresponding value in \p inverses is
+    //! appended to the end of the right-hand side. Next, while the first
+    //! letter of the left-hand side is in \p letters, the first letter of the
+    //! left-hand side is removed and the corresponding value in \p inverses is
+    //! appended to the front of the right-hand side.
     //!
     //! \tparam Word the type of the words in the presentation
     //! \param p the presentation
-    //! \param letters TODO
-    //! \param inverses TODO
+    //! \param letters the letters that can be replaced in the left-hand side
+    //! \param inverses the inverses of the letters
     //!
     //! \exceptions
     //! \no_libsemigroups_except
     //!
     //! \warning
     //! No checks that the arguments describe words over the alphabet of \p p
-    //! are performed.
+    //! are performed, nor that \p inverses are valid inverses.
     template <typename Word>
     void balance_no_checks(Presentation<Word>& p,
                            Word const&         letters,
                            Word const&         inverses);
 
-    //! \brief TODO
+    //! \brief Balance the length of the left-hand and right-hand sides
     //!
-    //! TODO
+    //! This function first sorts the sides of each rules so that the larger
+    //! side of the rule is on the left. Then for each rule, while the last
+    //! letter of the left-hand side is in \p letters, the last letter of the
+    //! left-hand side is removed and the corresponding value in \p inverses is
+    //! appended to the end of the right-hand side. Next, while the first
+    //! letter of the left-hand side is in \p letters, the first letter of the
+    //! left-hand side is removed and the corresponding value in \p inverses is
+    //! appended to the front of the right-hand side.
     //!
     //! \tparam Word the type of the words in the presentation
     //! \param p the presentation
-    //! \param letters TODO
-    //! \param inverses TODO
+    //! \param letters the letters that can be replaced in the left-hand side
+    //! \param inverses the inverses of the letters
     //!
     //! \exceptions
     //! \no_libsemigroups_except
     //!
     //! \warning
     //! No checks that the arguments describe words over the alphabet of \p p
-    //! are performed.
+    //! are performed, nor that \p inverses are valid inverses.
     inline void balance_no_checks(Presentation<std::string>& p,
                                   char const*                letters,
                                   char const*                inverses) {
@@ -1955,27 +1969,31 @@ namespace libsemigroups {
                                Word const&         lhs,
                                Word const&         rhs);
 
-    //! \brief TODO
+    //! \brief Return the code that would create \p p in GAP.
     //!
-    //! TODO
+    //! This function returns the string of GAP code that could be used to
+    //! create an object with the same alphabet and rules as \p p in GAP.
+    //! Presentations in GAP are created by taking quotients of free semigroups
+    //! or monoids.
     //!
     //! \param p the presentation
-    //! \param var_name TODO
+    //! \param var_name the name of the variable to be used in GAP
     //!
-    //! \exceptions
-    //! \no_libsemigroups_except
+    //! \throws LibsemigroupsException if \p has more than 49 generators.
     std::string to_gap_string(Presentation<word_type> const& p,
                               std::string const&             var_name);
 
-    //! \brief TODO
+    //! \brief Return the code that would create \p p in GAP.
     //!
-    //! TODO
+    //! This function returns the string of GAP code that could be used to
+    //! create an object with the same alphabet and rules as \p p in GAP.
+    //! Presentations in GAP are created by taking quotients of free semigroups
+    //! or monoids.
     //!
     //! \param p the presentation
-    //! \param var_name TODO
+    //! \param var_name the name of the variable to be used in GAP
     //!
-    //! \exceptions
-    //! \no_libsemigroups_except
+    //! \throws LibsemigroupsException if \p has more than 49 generators.
     std::string to_gap_string(Presentation<std::string> const& p,
                               std::string const&               var_name);
 
