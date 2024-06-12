@@ -53,6 +53,9 @@
 #include "libsemigroups/detail/report.hpp"      // for ReportGuard
 #include "libsemigroups/detail/string.hpp"      // for operator<<
 
+// TODO(later) Add tests for InversePresentation
+// TODO(later) Add tests for add_cyclic_conjugates
+
 namespace libsemigroups {
 
   struct LibsemigroupsException;  // forward decl
@@ -127,6 +130,19 @@ namespace libsemigroups {
     }
 
     template <typename W>
+    void check_contains_rule() {
+      Presentation<W> p;
+      presentation::add_rule_no_checks(p, {0, 5}, {0, 4});
+      presentation::add_rule_no_checks(
+          p, {4, 1}, {0, 1, 1, 1, 1, 1, 1, 1, 1, 1});
+      REQUIRE(presentation::contains_rule(p, {0, 5}, {0, 4}));
+      REQUIRE(presentation::contains_rule(p, {0, 4}, {0, 5}));
+      REQUIRE(presentation::contains_rule(
+          p, {4, 1}, {0, 1, 1, 1, 1, 1, 1, 1, 1, 1}));
+      REQUIRE(!presentation::contains_rule(p, {0, 4}, {4, 1}));
+    }
+
+    template <typename W>
     void check_validate_rules_throws() {
       Presentation<W> p;
       p.rules.emplace_back();
@@ -154,6 +170,23 @@ namespace libsemigroups {
                   {{4, 1}, {0, 5}, {4, 1}, {0, 1, 1, 1, 1, 1, 1, 1, 1, 1}}));
       REQUIRE_THROWS_AS(p.validate(), LibsemigroupsException);
       REQUIRE_THROWS_AS(q.validate(), LibsemigroupsException);
+      p.alphabet_from_rules();
+      q.alphabet_from_rules();
+      presentation::add_rule_no_checks(q, {0}, {1});
+      presentation::add_rules(p, q.rules.cbegin(), q.rules.cend());
+      REQUIRE(p.rules
+              == std::vector<W>({{0, 1, 2, 1},
+                                 {0, 0},
+                                 {4, 1},
+                                 {0, 5},
+                                 {4, 1},
+                                 {0, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+                                 {4, 1},
+                                 {0, 5},
+                                 {4, 1},
+                                 {0, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+                                 {0},
+                                 {1}}));
     }
 
     template <typename W>
@@ -200,6 +233,107 @@ namespace libsemigroups {
                                  {0},
                                  {0, 2},
                                  {0}}));
+    }
+
+    template <typename W>
+    void check_add_commutes_rules() {
+      Presentation<W> p;
+      presentation::add_rule_no_checks(p, {0, 1, 2, 1}, {0, 0});
+      presentation::add_commutes_rules_no_checks(p, {0}, {1});
+      p.alphabet_from_rules();
+      REQUIRE(p.rules
+              == std::vector<W>({{0, 1, 2, 1}, {0, 0}, {0, 1}, {1, 0}}));
+
+      // TODO (now) Note that, if the provided letters have duplicates, there
+      // will be duplicate rules
+      presentation::add_commutes_rules_no_checks(p, {1, 1}, {2});
+      REQUIRE(p.rules
+              == std::vector<W>({{0, 1, 2, 1},
+                                 {0, 0},
+                                 {0, 1},
+                                 {1, 0},
+                                 {2, 1},
+                                 {1, 2},
+                                 {2, 1},
+                                 {1, 2}}));
+
+      presentation::add_commutes_rules_no_checks(p, {2});
+      REQUIRE(p.rules
+              == std::vector<W>({{0, 1, 2, 1},
+                                 {0, 0},
+                                 {0, 1},
+                                 {1, 0},
+                                 {2, 1},
+                                 {1, 2},
+                                 {2, 1},
+                                 {1, 2}}));
+
+      presentation::add_commutes_rules_no_checks(p, {2, 0});
+      REQUIRE(p.rules
+              == std::vector<W>({{0, 1, 2, 1},
+                                 {0, 0},
+                                 {0, 1},
+                                 {1, 0},
+                                 {2, 1},
+                                 {1, 2},
+                                 {2, 1},
+                                 {1, 2},
+                                 {2, 0},
+                                 {0, 2}}));
+
+      presentation::add_commutes_rules_no_checks(p,
+                                                 {1, 2},
+                                                 {{0, 0, 1},
+                                                  {
+                                                      1,
+                                                      0,
+                                                  }});
+      REQUIRE(p.rules
+              == std::vector<W>({
+                  {0, 1, 2, 1},
+                  {0, 0},
+                  {0, 1},
+                  {1, 0},
+                  {2, 1},
+                  {1, 2},
+                  {2, 1},
+                  {1, 2},
+                  {2, 0},
+                  {0, 2},
+                  {1, 0, 0, 1},
+                  {0, 0, 1, 1},
+                  {1, 1, 0},
+                  {1, 0, 1},
+                  {2, 0, 0, 1},
+                  {0, 0, 1, 2},
+                  {2, 1, 0},
+                  {1, 0, 2},
+              }));
+    }
+
+    template <typename W>
+    void check_add_idempotent_rules() {
+      Presentation<W> p;
+      presentation::add_rule_no_checks(p, {0, 1, 2, 1}, {0, 0});
+      presentation::add_idempotent_rules_no_checks(p, {0, 1});
+      p.alphabet_from_rules();
+      REQUIRE(
+          p.rules
+          == std::vector<W>({{0, 1, 2, 1}, {0, 0}, {0, 0}, {0}, {1, 1}, {1}}));
+    }
+
+    template <typename W>
+    void check_add_transposition_rules() {
+      Presentation<W> p;
+      presentation::add_rule_no_checks(p, {0, 1, 2, 1}, {0, 0});
+      presentation::add_transposition_rules_no_checks(p, {0, 1});
+      REQUIRE(
+          p.rules
+          == std::vector<W>({{0, 1, 2, 1}, {0, 0}, {0, 0}, {}, {1, 1}, {}}));
+      REQUIRE_THROWS_AS(p.validate(), LibsemigroupsException);
+      p.alphabet_from_rules();
+      p.contains_empty_word(true);
+      p.validate();
     }
 
     template <typename W>
@@ -280,6 +414,90 @@ namespace libsemigroups {
                                  {0},
                                  {1, 1, 2, 1},
                                  {0}}));
+    }
+
+    template <typename W>
+    void check_balance() {
+      Presentation<W> p;
+      p.contains_empty_word(true);
+      presentation::add_rule_no_checks(p, {1, 1, 1, 1, 1, 1, 1, 1}, {});
+      REQUIRE(p.rules == std::vector<W>({{1, 1, 1, 1, 1, 1, 1, 1}, {}}));
+      presentation::balance_no_checks(p, {1}, {1});
+      REQUIRE(p.rules == std::vector<W>({{1, 1, 1, 1}, {1, 1, 1, 1}}));
+
+      presentation::add_rule_no_checks(p, {1, 1, 1}, {1, 1, 1, 1, 1, 1});
+      presentation::balance_no_checks(p, {1}, {1});
+      REQUIRE(p.rules
+              == std::vector<W>(
+                  {{1, 1, 1, 1}, {1, 1, 1, 1}, {1, 1, 1, 1, 1}, {1, 1, 1, 1}}));
+
+      presentation::add_rule_no_checks(p, {1, 1}, {});
+      REQUIRE(p.rules
+              == std::vector<W>({{1, 1, 1, 1},
+                                 {1, 1, 1, 1},
+                                 {1, 1, 1, 1, 1},
+                                 {1, 1, 1, 1},
+                                 {1, 1},
+                                 {}}));
+      presentation::balance_no_checks(p, {1}, {1});
+      REQUIRE(p.rules
+              == std::vector<W>({{1, 1, 1, 1},
+                                 {1, 1, 1, 1},
+                                 {1, 1, 1, 1, 1},
+                                 {1, 1, 1, 1},
+                                 {1, 1},
+                                 {}}));
+
+      presentation::add_rule_no_checks(
+          p, {1, 2, 2, 1}, {2, 1, 1, 1, 1, 1, 1, 1, 1, 2});
+      presentation::balance_no_checks(p, {2}, {1});
+      REQUIRE(p.rules
+              == std::vector<W>({{1, 1, 1, 1},
+                                 {1, 1, 1, 1},
+                                 {1, 1, 1, 1, 1},
+                                 {1, 1, 1, 1},
+                                 {1, 1},
+                                 {},
+                                 {1, 1, 1, 1, 1, 1, 1, 1},
+                                 {1, 1, 2, 2, 1, 1}}));
+      presentation::balance_no_checks(p, {1}, {3});
+      REQUIRE(p.rules
+              == std::vector<W>({{1, 1, 1, 1},
+                                 {1, 1, 1, 1},
+                                 {1, 1, 1, 1, 1},
+                                 {1, 1, 1, 1},
+                                 {1},
+                                 {3},
+                                 {1, 1, 1, 1, 1, 1, 1},
+                                 {1, 1, 2, 2, 1, 1, 3}}));
+      presentation::add_rule_no_checks(p, {2, 1, 1, 1, 1, 1, 1, 2, 2, 2}, {});
+      presentation::balance_no_checks(p, {1, 2}, {3, 4});
+      REQUIRE(p.rules
+              == std::vector<W>({{1, 1, 1, 1},
+                                 {1, 1, 1, 1},
+                                 {1, 1, 1, 1, 1},
+                                 {1, 1, 1, 1},
+                                 {3},
+                                 {1},
+                                 {1, 1, 2, 2, 1, 1, 3},
+                                 {1, 1, 1, 1, 1, 1, 1},
+                                 {2, 1, 1, 1, 1},
+                                 {4, 4, 4, 3, 3}}));
+      presentation::add_rule_no_checks(p, {1, 2, 3, 1, 2, 4}, {});
+      presentation::balance_no_checks(p, {1, 2, 3}, {5, 6, 7});
+      REQUIRE(p.rules
+              == std::vector<W>({{1, 1, 1, 1},
+                                 {1, 1, 1, 1},
+                                 {1, 1, 1, 1, 1},
+                                 {1, 1, 1, 1},
+                                 {3},
+                                 {1},
+                                 {1, 1, 2, 2, 1, 1, 3},
+                                 {1, 1, 1, 1, 1, 1, 1},
+                                 {4, 4, 4, 3, 3},
+                                 {2, 1, 1, 1, 1},
+                                 {1, 2, 4},
+                                 {7, 6, 5}}));
     }
 
     template <typename W>
@@ -876,6 +1094,16 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("Presentation",
                           "008",
+                          "contains_rule",
+                          "[quick][presentation]") {
+    auto rg = ReportGuard(false);
+    check_contains_rule<word_type>();
+    check_contains_rule<StaticVector1<uint16_t, 16>>();
+    check_contains_rule<std::string>();
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Presentation",
+                          "009",
                           "validate_rules throws",
                           "[quick][presentation]") {
     auto rg = ReportGuard(false);
@@ -885,7 +1113,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Presentation",
-                          "009",
+                          "010",
                           "helpers add_rule(s)",
                           "[quick][presentation]") {
     auto rg = ReportGuard(false);
@@ -895,7 +1123,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Presentation",
-                          "010",
+                          "011",
                           "helpers add_rule(s) (std::string)",
                           "[quick][presentation]") {
     auto                      rg = ReportGuard(false);
@@ -905,18 +1133,47 @@ namespace libsemigroups {
     presentation::add_rule_no_checks(q, "eb", "af");
     presentation::add_rule_no_checks(q, "eb", "abbbbbbbbb");
     presentation::add_rules_no_checks(p, q);
+    presentation::add_rule_no_checks(p, std::string("ab"), "ba");
+    presentation::add_rule_no_checks(p, "ac", std::string("ab"));
     REQUIRE(p.rules
-            == std::vector<std::string>(
-                {"abcb", "aa", "eb", "af", "eb", "abbbbbbbbb"}));
+            == std::vector<std::string>({"abcb",
+                                         "aa",
+                                         "eb",
+                                         "af",
+                                         "eb",
+                                         "abbbbbbbbb",
+                                         "ab",
+                                         "ba",
+                                         "ac",
+                                         "ab"}));
     REQUIRE(q.rules
             == std::vector<std::string>({"eb", "af", "eb", "abbbbbbbbb"}));
     REQUIRE_THROWS_AS(p.validate(), LibsemigroupsException);
     REQUIRE_THROWS_AS(q.validate(), LibsemigroupsException);
+    p.alphabet_from_rules();
+    p.validate();
+    presentation::add_rule(p, std::string("bbb"), "baa");
+    presentation::add_rule(p, "b", std::string("bb"));
+    REQUIRE(p.rules
+            == std::vector<std::string>({"abcb",
+                                         "aa",
+                                         "eb",
+                                         "af",
+                                         "eb",
+                                         "abbbbbbbbb",
+                                         "ab",
+                                         "ba",
+                                         "ac",
+                                         "ab",
+                                         "bbb",
+                                         "baa",
+                                         "b",
+                                         "bb"}));
   }
 
   LIBSEMIGROUPS_TEST_CASE(
       "Presentation",
-      "011",
+      "012",
       "helpers add_identity_rules (std::vector/StaticVector1)",
       "[quick][presentation]") {
     auto rg = ReportGuard(false);
@@ -925,7 +1182,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Presentation",
-                          "012",
+                          "013",
                           "helpers add_zero_rules (std::vector/StaticVector1)",
                           "[quick][presentation]") {
     auto rg = ReportGuard(false);
@@ -934,7 +1191,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Presentation",
-                          "013",
+                          "014",
                           "helpers add_identity_rules (std::string)",
                           "[quick][presentation]") {
     auto                      rg = ReportGuard(false);
@@ -960,7 +1217,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Presentation",
-                          "014",
+                          "015",
                           "helpers add_zero_rules (std::string)",
                           "[quick][presentation]") {
     auto                      rg = ReportGuard(false);
@@ -990,7 +1247,38 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Presentation",
-                          "015",
+                          "016",
+                          "helpers add_commutes_rules (all)",
+                          "[quick][presentation]") {
+    auto rg = ReportGuard(false);
+    check_add_commutes_rules<word_type>();
+    // TODO Can't do this until operator+ works with StaticVector
+    // check_add_commutes_rules<StaticVector1<uint16_t, 10>>();
+    check_add_commutes_rules<std::string>();
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Presentation",
+                          "017",
+                          "helpers add_idempotent_rules (all)",
+                          "[quick][presentation]") {
+    auto rg = ReportGuard(false);
+    check_add_idempotent_rules<word_type>();
+    check_add_idempotent_rules<StaticVector1<uint16_t, 10>>();
+    check_add_idempotent_rules<std::string>();
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Presentation",
+                          "018",
+                          "helpers add_transposition_rules (all)",
+                          "[quick][presentation]") {
+    auto rg = ReportGuard(false);
+    check_add_transposition_rules<word_type>();
+    check_add_transposition_rules<StaticVector1<uint16_t, 10>>();
+    check_add_transposition_rules<std::string>();
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Presentation",
+                          "019",
                           "helpers add_inverse_rules (all)",
                           "[quick][presentation]") {
     auto rg = ReportGuard(false);
@@ -1000,7 +1288,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Presentation",
-                          "016",
+                          "020",
                           "helpers add_inverse_rules (std::string)",
                           "[quick][presentation]") {
     auto                      rg = ReportGuard(false);
@@ -1038,7 +1326,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Presentation",
-                          "017",
+                          "021",
                           "helpers remove_duplicate_rules",
                           "[quick][presentation]") {
     auto rg = ReportGuard(false);
@@ -1048,7 +1336,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Presentation",
-                          "018",
+                          "022",
                           "helpers reduce_complements",
                           "[quick][presentation]") {
     auto rg = ReportGuard(false);
@@ -1086,7 +1374,53 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Presentation",
-                          "019",
+                          "023",
+                          "helpers balance_no_checks (all)",
+                          "[quick][presentation]") {
+    auto rg = ReportGuard(false);
+    check_balance<word_type>();
+    // TODO Can't do this until StaticVector1 has .front or . end
+    // check_balance<StaticVector1<uint16_t, 10>>();
+    check_balance<std::string>();
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Presentation",
+                          "024",
+                          "helpers balance_no_checks (std::string)",
+                          "[quick][presentation]") {
+    auto                      rg = ReportGuard(false);
+    Presentation<std::string> p;
+    p.contains_empty_word(true);
+    presentation::add_rule_no_checks(p, "aaaaaaaa", "");
+    presentation::balance_no_checks(p, "a", "a");
+    presentation::add_rule_no_checks(p, "aaa", "aaaaaa");
+    presentation::balance_no_checks(p, "a", "a");
+    presentation::add_rule_no_checks(p, "aa", "");
+    presentation::balance_no_checks(p, "a", "a");
+    presentation::add_rule_no_checks(p, "abba", "baaaaaaaab");
+    presentation::balance_no_checks(p, "b", "a");
+    presentation::balance_no_checks(p, "a", "c");
+    presentation::add_rule_no_checks(p, "baaaaaabbb", "");
+    presentation::balance_no_checks(p, "ab", "cd");
+    presentation::add_rule_no_checks(p, "abcabd", "");
+    presentation::balance_no_checks(p, "abc", "efg");
+    REQUIRE(p.rules
+            == std::vector<std::string>({"aaaa",
+                                         "aaaa",
+                                         "aaaaa",
+                                         "aaaa",
+                                         "c",
+                                         "a",
+                                         "aabbaac",
+                                         "aaaaaaa",
+                                         "dddcc",
+                                         "baaaa",
+                                         "abd",
+                                         "gfe"}));
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Presentation",
+                          "025",
                           "helpers sort_each_rule",
                           "[quick][presentation]") {
     auto rg = ReportGuard(false);
@@ -1096,7 +1430,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Presentation",
-                          "020",
+                          "026",
                           "helpers sort_rules",
                           "[quick][presentation]") {
     auto rg = ReportGuard(false);
@@ -1107,7 +1441,7 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE(
       "Presentation",
-      "021",
+      "027",
       "helpers longest_subword_reducing_length/replace_subword",
       "[quick][presentation]") {
     auto rg = ReportGuard(false);
@@ -1117,7 +1451,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Presentation",
-                          "022",
+                          "028",
                           "helpers redundant_rule",
                           "[quick][presentation]") {
     auto rg = ReportGuard(false);
@@ -1127,7 +1461,7 @@ namespace libsemigroups {
   }
 
   // LIBSEMIGROUPS_TEST_CASE("Presentation",
-  //                         "023",
+  //                         "029",
   //                         "helpers shortlex_compare_concat",
   //                         "[quick][presentation]") {
   //   auto rg = ReportGuard(false);
@@ -1137,7 +1471,7 @@ namespace libsemigroups {
   // }
 
   LIBSEMIGROUPS_TEST_CASE("Presentation",
-                          "024",
+                          "030",
                           "helpers remove_trivial_rules",
                           "[quick][presentation]") {
     auto rg = ReportGuard(false);
@@ -1147,7 +1481,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Presentation",
-                          "025",
+                          "031",
                           "helpers replace_subword (existing, replacement)",
                           "[quick][presentation]") {
     auto rg = ReportGuard(false);
@@ -1157,7 +1491,18 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Presentation",
-                          "026",
+                          "032",
+                          "helpers replace_subword (std::string)",
+                          "[quick][presentation]") {
+    auto                      rg = ReportGuard(false);
+    Presentation<std::string> p;
+    presentation::add_rule_no_checks(p, "abababab", "bbaabb");
+    presentation::replace_subword(p, "ab", "c");
+    REQUIRE(p.rules == std::vector<std::string>({"cccc", "bbacb"}));
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Presentation",
+                          "033",
                           "helpers replace_word",
                           "[quick][presentation]") {
     auto rg = ReportGuard(false);
@@ -1167,7 +1512,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Presentation",
-                          "027",
+                          "034",
                           "helpers longest_rule",
                           "[quick][presentation]") {
     auto rg = ReportGuard(false);
@@ -1177,7 +1522,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Presentation",
-                          "028",
+                          "035",
                           "helpers longest_rule_length",
                           "[quick][presentation]") {
     auto rg = ReportGuard(false);
@@ -1187,7 +1532,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Presentation",
-                          "029",
+                          "036",
                           "helpers remove_redundant_generators",
                           "[quick][presentation]") {
     auto rg = ReportGuard(false);
@@ -1197,7 +1542,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Presentation",
-                          "030",
+                          "037",
                           "helpers reverse",
                           "[quick][presentation]") {
     auto rg = ReportGuard(false);
@@ -1207,7 +1552,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Presentation",
-                          "031",
+                          "038",
                           "in_alphabet",
                           "[quick][presentation]") {
     auto rg = ReportGuard(false);
@@ -1217,7 +1562,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Presentation",
-                          "032",
+                          "039",
                           "replace_subword with empty word",
                           "[quick][presentation]") {
     auto                      rg = ReportGuard(false);
@@ -1231,7 +1576,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Presentation",
-                          "033",
+                          "040",
                           "clear",
                           "[quick][presentation]") {
     auto                      rg = ReportGuard(false);
@@ -1246,7 +1591,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Presentation",
-                          "034",
+                          "041",
                           "change_alphabet",
                           "[quick][presentation]") {
     Presentation<std::string> p;
@@ -1278,7 +1623,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Presentation",
-                          "035",
+                          "042",
                           "letter",
                           "[quick][presentation]") {
     Presentation<std::vector<uint16_t>> p;
@@ -1299,7 +1644,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Presentation",
-                          "036",
+                          "043",
                           "normalize_alphabet",
                           "[quick][presentation]") {
     Presentation<std::string> p;
@@ -1313,7 +1658,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Presentation",
-                          "037",
+                          "044",
                           "first_unused_letter/letter",
                           "[quick][presentation]") {
     Presentation<std::string> p;
@@ -1350,7 +1695,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Presentation",
-                          "038",
+                          "045",
                           "longest_subword_reducing_length issue",
                           "[quick][presentation]") {
     Presentation<std::string> p;
@@ -1402,7 +1747,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Presentation",
-                          "039",
+                          "046",
                           "make_semigroup",
                           "[quick][presentation]") {
     check_make_semigroup<word_type>();
@@ -1411,7 +1756,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Presentation",
-                          "040",
+                          "047",
                           "greedy_reduce_length",
                           "[quick][presentation]") {
     Presentation<std::string> p;
@@ -1438,7 +1783,45 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Presentation",
-                          "041",
+                          "048",
+                          "greedy_reduce_length_and_number_of_gens",
+                          "[quick][presentation]") {
+    Presentation<std::string> p1;
+    p1.alphabet("ab");
+    p1.rules.clear();
+    presentation::add_rule(p1, "aaaaaa", "a");
+    presentation::add_rule(p1, "bbbbbb", "b");
+    presentation::add_rule(p1, "abb", "baa");
+    Presentation<std::string> q1(p1);
+
+    REQUIRE(presentation::length(p1) == 20);
+    REQUIRE(p1.alphabet().size() == 2);
+
+    presentation::greedy_reduce_length_and_number_of_gens(p1);
+    REQUIRE(presentation::length(p1) == 20);
+    REQUIRE(p1.alphabet().size() == 2);
+    REQUIRE(presentation::longest_subword_reducing_length(p1) != "");
+
+    presentation::greedy_reduce_length(q1);
+    REQUIRE(presentation::length(q1) == 18);
+    REQUIRE(q1.alphabet().size() == 4);
+    REQUIRE(presentation::longest_subword_reducing_length(q1) == "");
+    REQUIRE(p1 != q1);
+
+    Presentation<std::string> p2;
+    p2.alphabet("ab");
+    p2.alphabet("ab");
+    presentation::add_rule(p2, "aaaaaaaaaaaaaaaa", "a");
+    presentation::add_rule(p2, "bbbbbbbbbbbbbbbb", "b");
+    presentation::add_rule(p2, "abb", "baa");
+    Presentation<std::string> q2(p2);
+    presentation::greedy_reduce_length(p2);
+    presentation::greedy_reduce_length_and_number_of_gens(q2);
+    REQUIRE(p2 == q2);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Presentation",
+                          "049",
                           "aaaaaaaab = aaaaaaaaab strong compression",
                           "[quick][presentation]") {
     Presentation<std::string> p;
@@ -1464,7 +1847,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Presentation",
-                          "042",
+                          "050",
                           "case where strong compression doesn't work",
                           "[quick][presentation]") {
     Presentation<std::string> p;
@@ -1483,7 +1866,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Presentation",
-                          "043",
+                          "051",
                           "proof that",
                           "[quick][presentation]") {
     Presentation<std::string> p;
@@ -1520,7 +1903,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Presentation",
-                          "044",
+                          "052",
                           "decompression",
                           "[quick][presentation]") {
     Presentation<std::string> p;
@@ -1535,7 +1918,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Presentation",
-                          "045",
+                          "053",
                           "sort_rules bug",
                           "[quick][presentation]") {
     std::string prefix1 = "dabd", suffix1 = "cbb", prefix2 = "abbaba",
@@ -2100,7 +2483,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Presentation",
-                          "046",
+                          "054",
                           "meaningful exception messages",
                           "[quick][presentation]") {
     using literals::operator""_w;
@@ -2143,6 +2526,10 @@ namespace libsemigroups {
                             "invalid inverses, (char with value) 0 ^ -1 = "
                             "(char with value) 1 but (char with value) 1 ^ -1 "
                             "= (char with value) 2");
+      REQUIRE_EXCEPTION_MSG(
+          presentation::add_inverse_rules(p, {1, 0, 2}, 0),
+          "invalid inverses, the identity is (char with value) 0, but (char "
+          "with value) 0 ^ -1 = (char with value) 1");
       p.alphabet("abc");
       REQUIRE_EXCEPTION_MSG(presentation::add_inverse_rules(p, "aab"),
                             "invalid inverses, the letter 'a' is duplicated!");
@@ -2174,7 +2561,7 @@ namespace libsemigroups {
     }
   }
   LIBSEMIGROUPS_TEST_CASE("Presentation",
-                          "047",
+                          "055",
                           "add_generator",
                           "[quick][presentation]") {
     auto            rg = ReportGuard(false);
@@ -2208,7 +2595,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Presentation",
-                          "048",
+                          "056",
                           "to_human_readble_repr",
                           "[quick][presentation]") {
     auto rg = ReportGuard(false);
@@ -2250,7 +2637,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Presentation",
-                          "049",
+                          "057",
                           "to_word",
                           "[quick][presentation]") {
     auto                      rg = ReportGuard(false);
@@ -2265,7 +2652,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Presentation",
-                          "050",
+                          "058",
                           "to_string",
                           "[quick][presentation]") {
     auto                      rg = ReportGuard(false);
@@ -2280,7 +2667,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Presentation",
-                          "051",
+                          "059",
                           "to_gap_string",
                           "[quick][presentation]") {
     auto                      rg = ReportGuard(false);
