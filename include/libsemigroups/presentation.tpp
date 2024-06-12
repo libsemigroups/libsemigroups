@@ -312,7 +312,7 @@ namespace libsemigroups {
       for (size_t i = 0; i < p.alphabet().size(); ++i) {
         if (p.letter_no_checks(i) == id && vals[i] != id) {
           LIBSEMIGROUPS_EXCEPTION(
-              "invalid inverses, the identity is {}, but {} ^ -1 != {}",
+              "invalid inverses, the identity is {}, but {} ^ -1 = {}",
               detail::to_printable(p.letter_no_checks(i)),
               detail::to_printable(p.letter_no_checks(i)),
               detail::to_printable(vals[i]));
@@ -913,21 +913,29 @@ namespace libsemigroups {
     void add_commutes_rules_no_checks(Presentation<Word>& p,
                                       Word const&         letters1,
                                       Word const&         letters2) {
-      using words::      operator+;
-      size_t const       m = letters1.size();
-      size_t const       n = letters2.size();
+      using words::operator+;
+      size_t       m = letters1.size();
+      size_t       n = letters2.size();
+      Word         shorter;
+      Word         longer;
+      if (m <= n) {
+        shorter = letters1;
+        longer  = letters2;
+      } else {
+        shorter = letters2;
+        longer  = letters1;
+        std::swap(m, n);
+      }
       Presentation<Word> q;
       for (size_t i = 0; i < m; ++i) {
-        Word u = {letters1[i]};
-        for (size_t j = 0; j < n; ++j) {
-          Word v = {letters2[j]};
+        Word u = {shorter[i]};
+        for (size_t j = i; j < n; ++j) {
+          Word v = {longer[j]};
           if (u != v) {
             presentation::add_rule_no_checks(q, u + v, v + u);
           }
         }
       }
-      q.alphabet_from_rules();
-      presentation::remove_duplicate_rules(q);
       presentation::add_rules_no_checks(p, q);
     }
 
@@ -938,20 +946,16 @@ namespace libsemigroups {
       using words::operator+;
 
       size_t const       m = letters.size();
-      size_t const       n = words.size();
       Presentation<Word> q;
-
       for (size_t i = 0; i < m; ++i) {
         Word u = {letters[i]};
-        for (size_t j = 0; j < n; ++j) {
-          Word const& v = *(words.begin() + j);
+        for (auto j = words.begin(); j < words.end(); ++j) {
+          Word const& v = *j;
           if (u != v) {
             presentation::add_rule_no_checks(q, u + v, v + u);
           }
         }
       }
-      q.alphabet_from_rules();
-      presentation::remove_duplicate_rules(q);
       presentation::add_rules_no_checks(p, q);
     }
 
@@ -974,6 +978,7 @@ namespace libsemigroups {
         auto& r = *(it + 1);
         // Check that we aren't actually about to remove one of the inverse
         // relations itself
+        // TODO(later) what if the identity element isn't the empty word?
         if (l.size() == 2 && r.empty()) {
           auto mit = map.find(l.front());
           if (mit != map.cend() && l.back() == inverses[mit->second]) {
