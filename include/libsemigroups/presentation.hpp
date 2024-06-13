@@ -827,10 +827,30 @@ namespace libsemigroups {
     //!
     //! \exceptions
     //! \no_libsemigroups_except
+    //!
+    //! \warning
+    //! No checks that the arguments describe words over the alphabet of the
+    //! presentation are performed.
     template <typename Word>
     void add_rules_no_checks(Presentation<Word>&       p,
                              Presentation<Word> const& q) {
       add_rules_no_checks(p, q.rules.cbegin(), q.rules.cend());
+    }
+
+    //! \brief Add a rule to the presentation from another presentation.
+    //!
+    //! Adds all the rules of the second argument to the first argument
+    //! which is modified in-place.
+    //!
+    //! \tparam Word the type of the words in the presentation
+    //! \param p the presentation to add rules to
+    //! \param q the presentation with the rules to add
+    //!
+    //! \throws LibsemigroupsException if any rule contains any letters not
+    //! belonging to `p.alphabet()`.
+    template <typename Word>
+    void add_rules(Presentation<Word>& p, Presentation<Word> const& q) {
+      add_rules(p, q.rules.cbegin(), q.rules.cend());
     }
 
     //! \brief Check if a presentation contains a rule

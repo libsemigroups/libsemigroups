@@ -157,6 +157,7 @@ namespace libsemigroups {
       presentation::add_rule_no_checks(q, {4, 1}, {0, 5});
       presentation::add_rule_no_checks(
           q, {4, 1}, {0, 1, 1, 1, 1, 1, 1, 1, 1, 1});
+      REQUIRE_THROWS_AS(presentation::add_rules(p, q), LibsemigroupsException);
       presentation::add_rules_no_checks(p, q);
       REQUIRE(p.rules
               == std::vector<W>({{0, 1, 2, 1},
@@ -173,7 +174,7 @@ namespace libsemigroups {
       p.alphabet_from_rules();
       q.alphabet_from_rules();
       presentation::add_rule_no_checks(q, {0}, {1});
-      presentation::add_rules(p, q.rules.cbegin(), q.rules.cend());
+      presentation::add_rules(p, q);
       REQUIRE(p.rules
               == std::vector<W>({{0, 1, 2, 1},
                                  {0, 0},
