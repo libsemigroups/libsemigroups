@@ -232,7 +232,6 @@ namespace libsemigroups {
       // meaningful exception message
       p.validate_word(vals.begin(), vals.end());
 
-      // TODO does this actually check for duplicates?
       Word cpy = vals;
       std::sort(cpy.begin(), cpy.end());
       for (auto it = cpy.cbegin(); it < cpy.cend() - 1; ++it) {
@@ -361,9 +360,8 @@ namespace libsemigroups {
       }
     }
 
-    // TODO this appears to be non-deterministic (different results with
-    // g++-11 than with clang++). Not sure that this is a problem, but this
-    // should be recorded in the doc.
+    // This appears to be non-deterministic (different results with
+    // g++-11 than with clang++). This is reflected in the docs
     template <typename Word>
     void reduce_complements(Presentation<Word>& p) {
       // the first loop below depends on p.rules being of even length
@@ -963,7 +961,7 @@ namespace libsemigroups {
     void balance_no_checks(Presentation<Word>& p,
                            Word const&         letters,
                            Word const&         inverses) {
-      // TODO check args
+      // TODO (later) check args
       // So that longer relations are on the lhs
       presentation::sort_each_rule(p);
 
@@ -1008,7 +1006,7 @@ namespace libsemigroups {
       }
     }
 
-    // TODO do a proper version of this
+    // TODO(later) do a proper version of this
     template <typename Word>
     void add_cyclic_conjugates(Presentation<Word>& p,
                                Word const&         lhs,
