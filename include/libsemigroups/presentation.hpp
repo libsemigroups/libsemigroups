@@ -190,6 +190,8 @@ namespace libsemigroups {
     //! any) consist of letters belonging to the alphabet.
     //!
     //! \sa validate_alphabet, validate_rules, and \ref validate.
+    // TODO(later) should this set the characters to human readable for
+    // std:string?
     Presentation& alphabet(size_type n);
 
     //! \brief Set the alphabet const reference.
