@@ -998,6 +998,9 @@ namespace libsemigroups {
     //! \param p the presentation to add rules to
     //!
     //! \throws LibsemigroupsException if `p.rules.size()` is odd.
+    //!
+    //! \note This function is non-deterministic; different results may be
+    //! obtained when compiling with clang vs gcc
     template <typename Word>
     void reduce_complements(Presentation<Word>& p);
 
