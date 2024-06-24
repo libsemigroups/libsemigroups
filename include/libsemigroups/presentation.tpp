@@ -88,7 +88,11 @@ namespace libsemigroups {
                               n);
     }
     word_type lphbt(n, 0);
-    std::iota(lphbt.begin(), lphbt.end(), 0);
+    if constexpr (std::is_same<Word, std::string>::value) {
+      std::iota(lphbt.begin(), lphbt.end(), human_readable_char(0));
+    } else {
+      std::iota(lphbt.begin(), lphbt.end(), 0);
+    }
     return alphabet(lphbt);
   }
 
