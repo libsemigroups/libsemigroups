@@ -76,7 +76,7 @@ namespace libsemigroups {
 
   //! \ingroup presentations_group
   //!
-  //! \brief For an implementations of presentations for semigroups or monoids.
+  //! \brief For an implementation of presentations for semigroups or monoids.
   //!
   //! Defined in ``presentation.hpp``.
   //!
@@ -84,23 +84,29 @@ namespace libsemigroups {
   //! semigroups or monoids and is intended to be used as the input to other
   //! algorithms in `libsemigroups`. The idea is to provide a shallow wrapper
   //! around a vector of words of type `Word`. We refer to this vector of words
-  //! as the rules of the presentation. The Presentation class template also
-  //! provide some checks that the rules really define a presentation, (i.e.
-  //! it's consistent with its alphabet), and some related functionality is
-  //! available in the namespace `libsemigroups::presentation`.
+  //! as the \a rules of the presentation. In addition to the rules, a
+  //! Presentation object has an \a alphabet.
+  //!
+  //! In a valid presentation, rules will only consist of letters from within
+  //! the alphabet; however, for performance reasons, it is possible to update
+  //! both the rules and the alphabet independently of each other. For this
+  //! reason, it is possible for the alphabet and the rules to become out of
+  //! sync. The Presentation class provides some checks that the rules define a
+  //! valid presentation, and some related functionality is available in the
+  //! namespace `libsemigroups::presentation`.
   //!
   //! \tparam Word the type of the underlying words.
   template <typename Word>
   class Presentation : public PresentationBase {
    public:
-    //! \brief The type of the words in the rules of a Presentation object.
+    //! \brief Type of the words in the rules of a Presentation object.
     using word_type = Word;
 
-    //! \brief The type of the letters in the words that constitute the rules of
+    //! \brief Type of the letters in the words that constitute the rules of
     //! a Presentation object.
     using letter_type = typename word_type::value_type;
 
-    //! \brief Type of a const iterator to either side of a rule
+    //! \brief Type of a const iterator to either side of a rule.
     using const_iterator = typename std::vector<word_type>::const_iterator;
 
     //! \brief Type of an iterator to either side of a rule.
@@ -132,8 +138,10 @@ namespace libsemigroups {
     //! putting it back into the state it would be in if it was newly
     //! constructed.
     //!
-    //! \returns
-    //! A reference to `this`.
+    //! \returns A reference to `this`.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
     Presentation& init();
 
     //! \brief Default copy constructor.
@@ -158,7 +166,9 @@ namespace libsemigroups {
 
     ~Presentation();
 
-    //! \brief Returns the alphabet of the presentation.
+    // TODO alphabet_no_checks
+
+    //! \brief Return the alphabet of the presentation.
     //!
     //! Returns the alphabet of the presentation.
     //!
@@ -189,7 +199,10 @@ namespace libsemigroups {
     //! This function does not verify that the rules in the presentation (if
     //! any) consist of letters belonging to the alphabet.
     //!
-    //! \sa validate_alphabet, validate_rules, and \ref validate.
+    //! \sa
+    //! * \ref validate_alphabet
+    //! * \ref validate_rules
+    //! * \ref validate
     // TODO(later) should this set the characters to human readable for
     // std:string?
     Presentation& alphabet(size_type n);
@@ -209,7 +222,9 @@ namespace libsemigroups {
     //! This function does not verify that the rules in the presentation (if
     //! any) consist of letters belonging to the alphabet.
     //!
-    //! \sa validate_rules and \ref validate.
+    //! \sa
+    //! * \ref validate_rules
+    //! * \ref validate
     Presentation& alphabet(word_type const& lphbt);
 
     //! \brief Set the alphabet from rvalue reference.
@@ -227,7 +242,9 @@ namespace libsemigroups {
     //! This function does not verify that the rules in the presentation (if
     //! any) consist of letters belonging to the alphabet.
     //!
-    //! \sa validate_rules and \ref validate.
+    //! \sa
+    //! * \ref validate_rules
+    //! * \ref validate
     Presentation& alphabet(word_type&& lphbt);
 
     //! \brief Set the alphabet to be the letters in the rules.
@@ -243,10 +260,12 @@ namespace libsemigroups {
     //! At most \f$O(mn)\f$ where \f$m\f$ is the number of rules, and \f$n\f$ is
     //! the length of the longest rule.
     //!
-    //! \sa validate_rules, and \ref validate.
+    //! \sa
+    //! * \ref validate_rules
+    //! * \ref validate
     Presentation& alphabet_from_rules();
 
-    //! \brief Get a letter in the alphabet by index.
+    //! \brief Return a letter in the alphabet by index.
     //!
     //! Returns the letter of the alphabet in position \p i.
     //!
@@ -264,7 +283,7 @@ namespace libsemigroups {
       return _alphabet[i];
     }
 
-    //! \brief Get a letter in the alphabet by index.
+    //! \brief Return a letter in the alphabet by index.
     //!
     //! After checking that \p i is in the range \f$[0, n)\f$, where \f$n\f$ is
     //! the length of the alphabet, this function performs the same as
@@ -272,16 +291,17 @@ namespace libsemigroups {
     //!
     //! \throws LibsemigroupsException if \p i is not in the range \f$[0, n)\f$.
     //!
-    //! \sa letter_no_checks.
+    //! \sa
+    //! * \ref letter_no_checks
     [[nodiscard]] letter_type letter(size_type i) const;
 
-    //! \brief Get the index of a letter in the alphabet
+    //! \brief Return the index of a letter in the alphabet.
     //!
-    //! Get the index of a letter in the alphabet
+    //! Get the index of a letter in the alphabet.
     //!
-    //! \param val the letter
+    //! \param val the letter.
     //!
-    //! \returns A value of type \ref size_type
+    //! \returns A value of type \ref size_type.
     //!
     //! \exceptions
     //! \no_libsemigroups_except
@@ -295,7 +315,7 @@ namespace libsemigroups {
       return _alphabet_map.find(val)->second;
     }
 
-    //! \brief Get the index of a letter in the alphabet
+    //! \brief Return the index of a letter in the alphabet.
     //!
     //! After checking that \p val is in the the alphabet, this function
     //! performs the same as `index_no_checks(letter_type val) const`.
@@ -303,18 +323,19 @@ namespace libsemigroups {
     //! \throws LibsemigroupsException if \p val does not belong to the
     //! alphabet.
     //!
-    //! \sa \ref index_no_checks.
+    //! \sa
+    //! * \ref index_no_checks
     [[nodiscard]] size_type index(letter_type val) const;
 
     //! \brief Check if a letter belongs to the alphabet or not.
     //!
     //! Check if a letter belongs to the alphabet or not.
     //!
-    //! \param val the letter to check
+    //! \param val the letter to check.
     //!
-    //! \returns a value of type \c bool.
+    //! \returns A value of type \c bool.
     //!
-    //! \exception
+    //! \exceptions
     //! \no_libsemigroups_except
     //!
     //! \complexity
@@ -323,7 +344,7 @@ namespace libsemigroups {
       return _alphabet_map.find(val) != _alphabet_map.cend();
     }
 
-    //! \brief Add a rule to the presentation
+    //! \brief Add a rule to the presentation.
     //!
     //! Adds the rule with left-hand side `[lhs_begin, lhs_end)` and
     //! right-hand side `[rhs_begin, rhs_end)` to the rules. It is possible to
@@ -331,21 +352,20 @@ namespace libsemigroups {
     //! exists to encourage adding rules with both sides defined at the same
     //! time.
     //!
-    //! \tparam S the type of the first two parameters (iterators, or
+    //! \tparam Iterator1 the type of the first two parameters (iterators, or
     //! pointers).
-    //! \tparam T the type of the second two parameters (iterators,
+    //! \tparam Iterator2 the type of the second two parameters (iterators,
     //! or pointers).
     //!
-    //! \param lhs_begin an iterator pointing to the first letter of the left
-    //! hand side of the rule to be added.
+    //! \param lhs_begin an iterator pointing to the first letter of the
+    //! left-hand side of the rule to be added.
     //! \param lhs_end an iterator pointing one past the last letter of the
     //! left-hand side of the rule to be added.
-    //! \param rhs_begin an iterator pointing to the first letter of the right
-    //! hand side of the rule to be added.
+    //! \param rhs_begin an iterator pointing to the first letter of the
+    //! right-hand side of the rule to be added.
     //! \param rhs_end an iterator pointing one past the last letter of the
-    //! right-hand side of the rule to be added
-    //!
-    //! \returns A const reference to \c *this
+    //! right-hand side of the rule to be added.
+    //! \returns A const reference to \c *this.
     //!
     //! \exceptions
     //! \no_libsemigroups_except
@@ -358,7 +378,7 @@ namespace libsemigroups {
     //! of the presentation.
     //!
     //! \sa
-    //! add_rule
+    //! * \ref add_rule
     template <typename Iterator1, typename Iterator2>
     Presentation& add_rule_no_checks(Iterator1 lhs_begin,
                                      Iterator1 lhs_end,
@@ -371,19 +391,19 @@ namespace libsemigroups {
 
     //! \brief Add a rule to the presentation and check it is valid.
     //!
-    //! After checking that they left-hand side and right-hand side only contain
+    //! After checking that the left-hand side and right-hand side only contain
     //! letters in \ref alphabet, this function performs the same as
     //! `add_rule_no_checks(Iterator1 lhs_begin, Iterator1 lhs_end, Iterator2
     //! rhs_begin, Iterator2 rhs_end)`.
     //!
-    //! \throws LibsemigroupsException if any letter does not below to the
+    //! \throws LibsemigroupsException if any letter does not belong to the
     //! alphabet.
     //! \throws LibsemigroupsException if \ref contains_empty_word returns \c
     //! false and \p lhs_begin equals \p lhs_end or \p rhs_begin equals \p
     //! rhs_end.
     //!
     //! \sa
-    //! add_rule_no_checks.
+    //! * \ref add_rule_no_checks
     template <typename Iterator1, typename Iterator2>
     Presentation& add_rule(Iterator1 lhs_begin,
                            Iterator1 lhs_end,
@@ -394,9 +414,12 @@ namespace libsemigroups {
       return add_rule_no_checks(lhs_begin, lhs_end, rhs_begin, rhs_end);
     }
 
-    //! \brief Check if the presentation should contain the empty word.
+    //! \brief Return whether the underlying presentation is a monoid or
+    //! semigroup presentation.
     //!
-    //! Check if the presentation should contain the empty word.
+    //! Returns \c true if the underlying presentation is a monoid
+    //! presentation, and \c false if the underlying presentation is a semigroup
+    //! presentation.
     //!
     //! \returns A value of type `bool`.
     //!
@@ -409,20 +432,22 @@ namespace libsemigroups {
       return _contains_empty_word;
     }
 
-    //! \brief Specify that the presentation should (not) contain the empty
-    //! word.
+    //! \brief Set whether the underlying presentation is a monoid or semigroup
+    //! presentation
     //!
-    //! Specify that the presentation should (not) contain the empty word.
+    //! Specify whether the underlying presentation should be a monoid
+    //! presentation (corresponding to \p val being ``true``), or a semigroup
+    //! presentation (corresponding to \p val being ``false``).
     //!
-    //! \param val whether the presentation should contain the empty word
+    //! \param val whether the presentation should contain the empty word.
     //!
-    //! \returns A const reference to \c *this
+    //! \returns A const reference to \c *this.
     //!
     //! \exceptions
     //! \noexcept
     //!
     //! \complexity
-    //! Constant
+    //! Constant.
     Presentation& contains_empty_word(bool val) noexcept {
       _contains_empty_word = val;
       return *this;
@@ -458,9 +483,9 @@ namespace libsemigroups {
     //!
     //! Check if every letter in a range belongs to the alphabet.
     //!
-    //! \tparam T the type of the arguments (iterators)
-    //! \param first iterator pointing at the first letter to check
-    //! \param last iterator pointing one beyond the last letter to check
+    //! \tparam Iterator the type of the arguments (iterators).
+    //! \param first iterator pointing at the first letter to check.
+    //! \param last iterator pointing one beyond the last letter to check.
     //!
     //! \throws LibsemigroupsException if there is a letter not in the
     //! alphabet between \p first and \p last
@@ -471,10 +496,10 @@ namespace libsemigroups {
     template <typename Iterator>
     void validate_word(Iterator first, Iterator last) const;
 
-    //! \brief Check if every rule consists of letters belonging to the
+    //! \brief Check if every rule consists only of letters belonging to the
     //! alphabet.
     //!
-    //! Check if every rule consists of letters belonging to the alphabet.
+    //! Check if every rule consists only of letters belonging to the alphabet.
     //!
     //! \throws LibsemigroupsException if any word contains a letter not in
     //! the alphabet.
@@ -774,9 +799,15 @@ namespace libsemigroups {
       p.add_rule(lhop.begin(), lhop.end(), rhop.begin(), rhop.end());
     }
 
-    //! \brief Add a rules to the presentation.
+    //! \brief Add the rules stored in the range `[first, last)`.
     //!
-    //! Adds the rules stored in the range `[first, last)`.
+    //! This function adds the rules stored in the range `[first, last)` to
+    //! \p p.
+    //!
+    //! Before it is added, each rule is validated to check it contains
+    //! only letters of the alphabet of \p p. If the \f$n\f$th rule causes this
+    //! function to throw, the first \f$n-1\f$ rules will still be added to
+    //! \p p.
     //!
     //! \tparam Word the type of the words in the presentation.
     //! \tparam Iterator the type of the second and third arguments.
@@ -793,9 +824,10 @@ namespace libsemigroups {
       }
     }
 
-    //! \brief Add a rules to the presentation.
+    //! \brief Add the rules stored in the range `[first, last)`.
     //!
-    //! Adds the rules stored in the range `[first, last)`.
+    //! This function adds the rules stored in the range `[first, last)` to the
+    //! presentation \p p.
     //!
     //! \tparam Word the type of the words in the presentation.
     //! \tparam Iterator the type of the second and third arguments.
@@ -818,14 +850,14 @@ namespace libsemigroups {
       }
     }
 
-    //! \brief Add a rule to the presentation from another presentation.
+    //! \brief Add the rules of \p q to \p p.
     //!
-    //! Adds all the rules of the second argument to the first argument
-    //! which is modified in-place.
+    //! Adds all the rules of the second argument \p q to the first argument
+    //! \p p which is modified in-place.
     //!
-    //! \tparam Word the type of the words in the presentation
-    //! \param p the presentation to add rules to
-    //! \param q the presentation with the rules to add
+    //! \tparam Word the type of the words in the presentation.
+    //! \param p the presentation to add rules to.
+    //! \param q the presentation with the rules to add.
     //!
     //! \exceptions
     //! \no_libsemigroups_except
@@ -839,14 +871,19 @@ namespace libsemigroups {
       add_rules_no_checks(p, q.rules.cbegin(), q.rules.cend());
     }
 
-    //! \brief Add a rule to the presentation from another presentation.
+    //! \brief Add the rules of \p q to \p p.
     //!
-    //! Adds all the rules of the second argument to the first argument
-    //! which is modified in-place.
+    //! Adds all the rules of the second argument \p q to the first argument
+    //! \p p which is modified in-place.
     //!
-    //! \tparam Word the type of the words in the presentation
-    //! \param p the presentation to add rules to
-    //! \param q the presentation with the rules to add
+    //! Before it is added, each rule is validated to check it contains
+    //! only letters of the alphabet of \p p. If the \f$n\f$th rule causes this
+    //! function to throw, the first \f$n-1\f$ rules will still be added to
+    //! \p p.
+    //!
+    //! \tparam Word the type of the words in the presentation.
+    //! \param p the presentation to add rules to.
+    //! \param q the presentation with the rules to add.
     //!
     //! \throws LibsemigroupsException if any rule contains any letters not
     //! belonging to `p.alphabet()`.
@@ -855,7 +892,7 @@ namespace libsemigroups {
       add_rules(p, q.rules.cbegin(), q.rules.cend());
     }
 
-    //! \brief Check if a presentation contains a rule
+    //! \brief Check if a presentation contains a rule.
     //!
     //! Checks if the rule with left-hand side \p lhs and right-hand side \p rhs
     //! is contained in \p p.
@@ -865,13 +902,13 @@ namespace libsemigroups {
     //! \param lhs the left-hand side of the rule.
     //! \param rhs the right-hand side of the rule.
     //!
-    //! \returns a value of type `bool`
+    //! \returns A value of type `bool`.
     //!
     //! \exceptions
     //! \no_libsemigroups_except
     //!
     //! \complexity
-    //! Linear in the number of rules
+    //! Linear in the number of rules.
     template <typename Word>
     [[nodiscard]] bool contains_rule(Presentation<Word>& p,
                                      Word const&         lhs,
@@ -882,15 +919,15 @@ namespace libsemigroups {
     //! Adds rules of the form \f$ae = ea = a\f$ for every letter \f$a\f$ in
     //! the alphabet of \p p, and where \f$e\f$ is the second parameter.
     //!
-    //! \tparam Word the type of the words in the presentation
-    //! \param p the presentation to add rules to
-    //! \param e the identity element
+    //! \tparam Word the type of the words in the presentation.
+    //! \param p the presentation to add rules to.
+    //! \param e the identity element.
     //!
     //! \throws LibsemigroupsException if \p e is not a letter in
     //! `p.alphabet()`.
     //!
     //! \complexity
-    //! Linear in the number of rules
+    //! Linear in the number of rules.
     template <typename Word>
     void add_identity_rules(Presentation<Word>&                      p,
                             typename Presentation<Word>::letter_type e);
@@ -900,9 +937,9 @@ namespace libsemigroups {
     //! Adds rules of the form \f$az = za = z\f$ for every letter \f$a\f$ in
     //! the alphabet of \p p, and where \f$z\f$ is the second parameter.
     //!
-    //! \tparam Word the type of the words in the presentation
-    //! \param p the presentation to add rules to
-    //! \param z the zero element
+    //! \tparam Word the type of the words in the presentation.
+    //! \param p the presentation to add rules to.
+    //! \param z the zero element.
     //!
     //! \throws LibsemigroupsException if \p z is not a letter in
     //! `p.alphabet()`.
@@ -915,17 +952,17 @@ namespace libsemigroups {
 
     //! \brief Add rules for inverses.
     //!
-    //! The letter in \c a with index \c i in \p vals is the inverse of the
+    //! The letter \c a with index \c i in \p vals is the inverse of the
     //! letter in `alphabet()` with index \c i. The rules added are \f$a_ib_i
     //! = e\f$ where the alphabet is \f$\{a_1, \ldots, a_n\}\f$; the 2nd
     //! parameter \p vals is \f$\{b_1, \ldots, b_n\}\f$; and \f$e\f$ is the
     //! 3rd parameter.
     //!
-    //! \tparam Word the type of the words in the presentation
-    //! \param p the presentation to add rules to
-    //! \param vals the inverses
+    //! \tparam Word the type of the words in the presentation.
+    //! \param p the presentation to add rules to.
+    //! \param vals the inverses.
     //! \param e the identity element (defaults to \ref UNDEFINED, meaning use
-    //! the empty word)
+    //! the empty word).
     //!
     //! \throws LibsemigroupsException if any of the following apply:
     //! * the length of \p vals is not equal to `alphabet().size()`;
@@ -944,17 +981,17 @@ namespace libsemigroups {
 
     //! \brief Add rules for inverses.
     //!
-    //! The letter in \c a with index \c i in \p vals is the inverse of the
+    //! The letter \c a with index \c i in \p vals is the inverse of the
     //! letter in `alphabet()` with index \c i. The rules added are \f$a_ib_i
     //! = e\f$ where the alphabet is \f$\{a_1, \ldots, a_n\}\f$; the 2nd
     //! parameter \p vals is \f$\{b_1, \ldots, b_n\}\f$; and \f$e\f$ is the
     //! 3rd parameter.
     //!
-    //! \tparam Word the type of the words in the presentation
-    //! \param p the presentation to add rules to
-    //! \param vals the inverses
+    //! \tparam Word the type of the words in the presentation.
+    //! \param p the presentation to add rules to.
+    //! \param vals the inverses.
     //! \param e the identity element (defaults to \ref UNDEFINED, meaning use
-    //! the empty word)
+    //! the empty word).
     //!
     //! \throws LibsemigroupsException if any of the following apply:
     //! * the length of \p vals is not equal to `alphabet().size()`;
@@ -978,8 +1015,8 @@ namespace libsemigroups {
     //! considered duplicates. Also note that the rules may be reordered by
     //! this function even if there are no duplicate rules.
     //!
-    //! \tparam Word the type of the words in the presentation
-    //! \param p the presentation
+    //! \tparam Word the type of the words in the presentation.
+    //! \param p the presentation.
     //!
     //! \throws LibsemigroupsException if `p.rules.size()` is odd.
     //!
@@ -993,8 +1030,8 @@ namespace libsemigroups {
     //! Removes all instance of rules (if any) where the left-hand side and
     //! the right-hand side are identical.
     //!
-    //! \tparam Word the type of the words in the presentation
-    //! \param p the presentation
+    //! \tparam Word the type of the words in the presentation.
+    //! \param p the presentation.
     //!
     //! \throws LibsemigroupsException if `p.rules.size()` is odd.
     //!
@@ -1016,8 +1053,8 @@ namespace libsemigroups {
     //! The rules may be reordered by this function even if there are no
     //! reductions found.
     //!
-    //! \tparam Word the type of the words in the presentation
-    //! \param p the presentation to add rules to
+    //! \tparam Word the type of the words in the presentation.
+    //! \param p the presentation to add rules to.
     //!
     //! \throws LibsemigroupsException if `p.rules.size()` is odd.
     //!
@@ -1047,15 +1084,15 @@ namespace libsemigroups {
     //! Sort each rule \f$u = v\f$ so that the left-hand side is greater than
     //! the right-hand side with respect to \p cmp.
     //!
-    //! \tparam Word the type of the words in the presentation
-    //! \tparam Compare the type of the compare function
+    //! \tparam Word the type of the words in the presentation.
+    //! \tparam Compare the type of the compare function.
     //! \param p the presentation whose rules should be sorted.
-    //! \param cmp the comparision function
+    //! \param cmp the comparision function.
     //!
     //! \throws LibsemigroupsException if `p.rules.size()` is odd.
     //!
     //! \complexity
-    //! Linear in the number of rules
+    //! Linear in the number of rules.
     template <typename Word, typename Compare>
     bool sort_each_rule(Presentation<Word>& p, Compare cmp);
 
@@ -1067,10 +1104,10 @@ namespace libsemigroups {
     //! \f$u_1v_1 < \cdots < u_nv_n\f$ where \f$<\f$ is the order defined by
     //! \p cmp.
     //!
-    //! \tparam Word the type of the words in the presentation
-    //! \tparam Compare the type of the compare function
-    //! \param p the presentation to sort
-    //! \param cmp the comparision function
+    //! \tparam Word the type of the words in the presentation.
+    //! \tparam Compare the type of the compare function.
+    //! \param p the presentation to sort.
+    //! \param cmp the comparision function.
     //!
     //! \throws LibsemigroupsException if `p.rules.size()` is odd.
     template <typename Word, typename Compare>
@@ -1081,8 +1118,8 @@ namespace libsemigroups {
     //! Sort the rules \f$u_1 = v_1, \ldots, u_n = v_n\f$ so that
     //! \f$u_1v_1 < \cdots < u_nv_n\f$ where \f$<\f$ is the shortlex order.
     //!
-    //! \tparam Word the type of the words in the presentation
-    //! \param p the presentation to sort
+    //! \tparam Word the type of the words in the presentation.
+    //! \param p the presentation to sort.
     //!
     //! \throws LibsemigroupsException if `p.rules.size()` is odd.
     template <typename Word>
@@ -1090,44 +1127,46 @@ namespace libsemigroups {
       sort_rules(p, ShortLexCompare());
     }
 
-    //! \brief Check the rules are sorted relative to \p cmp
+    //! \brief Check the rules are sorted relative to \p cmp .
     //!
     //! Check if the rules \f$u_1 = v_1, \ldots, u_n = v_n\f$ satisfy
     //! \f$u_1v_1 < \cdots < u_nv_n\f$ where \f$<\f$ is the order described by
-    //! \p cmp.
+    //! \p cmp .
     //!
-    //! \tparam Word the type of the words in the presentation
-    //! \tparam Compare the type of the compare function
-    //! \param p the presentation to check
-    //! \param cmp the comparision function
+    //! \tparam Word the type of the words in the presentation.
+    //! \tparam Compare the type of the compare function.
+    //! \param p the presentation to check.
+    //! \param cmp the comparision function.
     //!
     //! \returns A value of type `bool`.
     //!
     //! \throws LibsemigroupsException if `p.rules.size()` is odd.
     //!
-    //! \sa \ref sort_rules(Presentation<Word>& p, Compare cmp).
+    //! \sa
+    //! * \ref sort_rules(Presentation<Word>& p, Compare cmp)
     template <typename Word, typename Compare>
     bool are_rules_sorted(Presentation<Word> const& p, Compare cmp);
 
-    //! \brief Check the rules are sorted relative to shortlex
+    //! \brief Check the rules are sorted relative to shortlex.
     //!
     //! Check if the rules \f$u_1 = v_1, \ldots, u_n = v_n\f$ satisfy
     //! \f$u_1v_1 < \cdots < u_nv_n\f$ where \f$<\f$ is shortlex order.
     //!
-    //! \tparam Word the type of the words in the presentation
-    //! \param p the presentation to check
+    //! \tparam Word the type of the words in the presentation.
+    //! \param p the presentation to check.
     //!
     //! \returns A value of type `bool`.
     //!
     //! \throws LibsemigroupsException if `p.rules.size()` is odd.
     //!
-    //! \sa \ref sort_rules(Presentation<Word>& p).
+    //! \sa
+    //! * \ref sort_rules(Presentation<Word>& p)
     template <typename Word>
     bool are_rules_sorted(Presentation<Word> const& p) {
       return are_rules_sorted(p, ShortLexCompare());
     }
 
-    //! \brief Returns the longest common subword of the rules.
+    //! \brief Return the longest common subword of the rules.
     //!
     //! If it is possible to find a subword \f$w\f$ of the rules \f$u_1 = v_1,
     //! \ldots, u_n = v_n\f$ such that the introduction of a new generator
@@ -1136,8 +1175,8 @@ namespace libsemigroups {
     //! \f$w\f$. If no such word can be found, then a word of length \f$0\f$ is
     //! returned.
     //!
-    //! \tparam Word the type of the words in the presentation
-    //! \param p the presentation
+    //! \tparam Word the type of the words in the presentation.
+    //! \param p the presentation.
     //!
     //! \returns A value of type \p Word.
     //!
@@ -1155,7 +1194,7 @@ namespace libsemigroups {
     //! \tparam Word the type of the words in the presentation.
     //! \param p the presentation.
     //!
-    //! \returns a value of type \ref letter_type.
+    //! \returns A value of type \ref letter_type.
     //!
     //! \exceptions
     //! \no_libsemigroups_except
@@ -1196,11 +1235,11 @@ namespace libsemigroups {
     //! generator \f$z\f$, and the rule \f$w = z\f$. The new generator and
     //! rule are added even if \f$w\f$ is not a subword of any rule.
     //!
-    //! \tparam Word the type of the words in the presentation
-    //! \tparam T the type of the 2nd and 3rd parameters (iterators)
-    //! \param p the presentation
-    //! \param first the start of the subword to replace
-    //! \param last one beyond the end of the subword to replace
+    //! \tparam Word the type of the words in the presentation.
+    //! \tparam Iterator the type of the 2nd and 3rd parameters (iterators).
+    //! \param p the presentation.
+    //! \param first the start of the subword to replace.
+    //! \param last one beyond the end of the subword to replace.
     //!
     //! \throws LibsemigroupsException if `first == last`.
     // TODO(later) complexity
@@ -1263,9 +1302,9 @@ namespace libsemigroups {
     //! replaces every non-overlapping instance of \p existing in every rule
     //! by \p replacement. The presentation \p p is changed in-place.
     //!
-    //! \tparam Word the type of the words in the presentation
-    //! \param p the presentation
-    //! \param existing the word to be replaced
+    //! \tparam Word the type of the words in the presentation.
+    //! \param p the presentation.
+    //! \param existing the word to be replaced.
     //! \param replacement the replacement word.
     //!
     //! \throws LibsemigroupsException if `existing` is empty.
@@ -1281,20 +1320,20 @@ namespace libsemigroups {
     //! last_existing)` in every rule by `[first_replacement,
     //! last_replacement)`. The presentation \p p  is changed in-place
     //!
-    //! \tparam S the type of the first two parameters (iterators, or
-    //! pointers)
-    //! \tparam T the type of the second two parameters (iterators,
-    //! or pointers)
+    //! \tparam Iterator1 the type of the first two parameters (iterators, or
+    //! pointers).
+    //! \tparam Iterator2 the type of the second two parameters (iterators,
+    //! or pointers).
     //!
-    //! \param p the presentation
+    //! \param p the presentation.
     //! \param first_existing an iterator pointing to the first letter of the
-    //! existing subword to be replaced
+    //! existing subword to be replaced.
     //! \param last_existing an iterator pointing one past the last letter of
-    //! the existing subword to be replaced
+    //! the existing subword to be replaced.
     //! \param first_replacement an iterator pointing to the first letter of
-    //! the replacement word
+    //! the replacement word.
     //! \param last_replacement an iterator pointing one past the last letter
-    //! of the replacement word
+    //! of the replacement word.
     //!
     //! \throws LibsemigroupsException if `first_existing == last_existing`.
     template <typename Word, typename Iterator1, typename Iterator2>
@@ -1310,9 +1349,9 @@ namespace libsemigroups {
     //! This function replaces every non-overlapping instance of \p existing in
     //! every rule by \p replacement. The presentation \p p is changed in-place.
     //!
-    //! \tparam Word the type of the words in the presentation
-    //! \param p the presentation
-    //! \param existing the word to be replaced
+    //! \tparam Word the type of the words in the presentation.
+    //! \param p the presentation.
+    //! \param existing the word to be replaced.
     //! \param replacement the replacement word.
     //!
     //! \throws LibsemigroupsException if `existing` is empty.
@@ -1347,10 +1386,11 @@ namespace libsemigroups {
                       Word const&         existing,
                       Word const&         replacement);
 
-    //! \brief The sum of the lengths of all values in the range `[first,
+    //! \brief Return the sum of the lengths of all values in the range `[first,
     //! last)`.
     //!
-    //! The sum of the lengths of all values in the range `[first, last)`.
+    //! Return the sum of the lengths of all values in the range `[first,
+    //! last)`.
     //!
     //! \tparam Iterator the type of the first and second arguments (iterators).
     //! \param first iterator pointing at the first value to calculate the
@@ -1358,19 +1398,19 @@ namespace libsemigroups {
     //! \param last iterator pointing one beyond the last value to
     //! calculate the length of.
     //!
-    //! \returns a value of type `size_t`.
+    //! \returns A value of type `size_t`.
     //!
     //! \exceptions
     //! \no_libsemigroups_except
     template <typename Iterator>
     size_t length(Iterator first, Iterator last);
 
-    //! \brief Return the sum of the lengths of the rules.
+    //! \brief Return the sum of the lengths of the rules of \p p.
     //!
-    //! Return the sum of the lengths of the rules.
+    //! Returns the sum of the lengths of the rules of \p p.
     //!
-    //! \tparam Word the type of the words in the presentation
-    //! \param p the presentation
+    //! \tparam Word the type of the words in the presentation.
+    //! \param p the presentation.
     //!
     //! \returns A value of type `size_t`.
     //!
@@ -1385,8 +1425,8 @@ namespace libsemigroups {
     //!
     //! Reverse every rule.
     //!
-    //! \tparam Word the type of the words in the presentation
-    //! \param p the presentation
+    //! \tparam Word the type of the words in the presentation.
+    //! \param p the presentation.
     //!
     //! \exceptions
     //! \no_libsemigroups_except
@@ -1397,7 +1437,7 @@ namespace libsemigroups {
       }
     }
 
-    //! \brief Normalize the alphabet to \f$\{0, \ldots, n - 1\}\f$
+    //! \brief Normalize the alphabet to \f$\{0, \ldots, n - 1\}\f$.
     //!
     //! Modify the presentation in-place so that the alphabet is \f$\{0, \ldots,
     //! n - 1\}\f$ (or equivalent) and rewrites the rules to use this alphabet.
@@ -1405,8 +1445,8 @@ namespace libsemigroups {
     //! If the alphabet is already normalized, then no changes are made to the
     //! presentation.
     //!
-    //! \tparam Word the type of the words in the presentation
-    //! \param p the presentation
+    //! \tparam Word the type of the words in the presentation.
+    //! \param p the presentation.
     //!
     //! \throws LibsemigroupsException if \ref validate throws on the initial
     //! presentation.
@@ -1419,10 +1459,10 @@ namespace libsemigroups {
     //! possible, and re-writes the rules in the presentation using the new
     //! alphabet.
     //!
-    //! \tparam Word the type of the words in the presentation
+    //! \tparam Word the type of the words in the presentation.
     //!
-    //! \param p the presentation
-    //! \param new_alphabet the replacement alphabet
+    //! \param p the presentation.
+    //! \param new_alphabet the replacement alphabet.
     //!
     //! \throws LibsemigroupsException if the size of `p.alphabet()` and \p
     //! new_alphabet do not agree.
@@ -1435,8 +1475,8 @@ namespace libsemigroups {
     //! possible, and re-writes the rules in the presentation using the new
     //! alphabet.
     //!
-    //! \param p the presentation
-    //! \param new_alphabet the replacement alphabet
+    //! \param p the presentation.
+    //! \param new_alphabet the replacement alphabet.
     //!
     //! \throws LibsemigroupsException if the size of `p.alphabet()` and \p
     //! new_alphabet do not agree.
@@ -1445,7 +1485,7 @@ namespace libsemigroups {
       change_alphabet(p, std::string(new_alphabet));
     }
 
-    //! \brief Returns an iterator pointing at the left-hand side of the first
+    //! \brief Return an iterator pointing at the left-hand side of the first
     //! rule of maximal length in the given range.
     //!
     //! Returns an iterator pointing at the left-hand side of the first
@@ -1454,18 +1494,18 @@ namespace libsemigroups {
     //! The *length* of a rule is defined to be the sum of the lengths of its
     //! left-hand and right-hand sides.
     //!
-    //! \tparam T the type of the parameters
-    //! \param first left-hand side of the first rule
-    //! \param last one past the right-hand side of the last rule
+    //! \tparam Iterator the type of the parameters.
+    //! \param first left-hand side of the first rule.
+    //! \param last one past the right-hand side of the last rule.
     //!
-    //! \returns A value of type `T`.
+    //! \returns A value of type `Iterator`.
     //!
     //! \throws LibsemigroupsException if the distance between \p first and \p
     //! last is odd.
     template <typename Iterator>
     Iterator longest_rule(Iterator first, Iterator last);
 
-    //! \brief Returns an iterator pointing at the left-hand side of the first
+    //! \brief Return an iterator pointing at the left-hand side of the first
     //! rule in the presentation with maximal length.
     //!
     //! Returns an iterator pointing at the left-hand side of the first
@@ -1474,8 +1514,8 @@ namespace libsemigroups {
     //! The *length* of a rule is defined to be the sum of the lengths of its
     //! left-hand and right-hand sides.
     //!
-    //! \tparam Word the type of the words in the presentation
-    //! \param p the presentation
+    //! \tparam Word the type of the words in the presentation.
+    //! \param p the presentation.
     //!
     //! \returns A value of type `std::vector<Word>::const_iterator`.
     //!
@@ -1486,7 +1526,7 @@ namespace libsemigroups {
       return longest_rule(p.rules.cbegin(), p.rules.cend());
     }
 
-    //! \brief Returns an iterator pointing at the left-hand side of the first
+    //! \brief Return an iterator pointing at the left-hand side of the first
     //! rule of minimal length in the given range.
     //!
     //! Returns an iterator pointing at the left-hand side of the first
@@ -1495,18 +1535,18 @@ namespace libsemigroups {
     //! The *length* of a rule is defined to be the sum of the lengths of its
     //! left-hand and right-hand sides.
     //!
-    //! \tparam T the type of the parameters
-    //! \param first left-hand side of the first rule
-    //! \param last one past the right-hand side of the last rule
+    //! \tparam Iterator the type of the parameters.
+    //! \param first left-hand side of the first rule.
+    //! \param last one past the right-hand side of the last rule.
     //!
-    //! \returns A value of type `T`.
+    //! \returns A value of type `Iterator`.
     //!
     //! \throws LibsemigroupsException if the distance between \p first and \p
     //! last is odd.
     template <typename Iterator>
     Iterator shortest_rule(Iterator first, Iterator last);
 
-    //! \brief Returns an iterator pointing at the left-hand side of the first
+    //! \brief Return an iterator pointing at the left-hand side of the first
     //! rule in the presentation with minimal length.
     //!
     //! Returns an iterator pointing at the left-hand side of the first
@@ -1515,8 +1555,8 @@ namespace libsemigroups {
     //! The *length* of a rule is defined to be the sum of the lengths of its
     //! left-hand and right-hand sides.
     //!
-    //! \tparam Word the type of the words in the presentation
-    //! \param p the presentation
+    //! \tparam Word the type of the words in the presentation.
+    //! \param p the presentation.
     //!
     //! \returns A value of type `std::vector<Word>::const_iterator`.
     //!
@@ -1527,16 +1567,16 @@ namespace libsemigroups {
       return shortest_rule(p.rules.cbegin(), p.rules.cend());
     }
 
-    //! \brief Returns the maximum length of a rule in the given range.
+    //! \brief Return the maximum length of a rule in the given range.
     //!
     //! Returns the maximum length of a rule in the given range.
     //!
     //! The *length* of a rule is defined to be the sum of the lengths of its
     //! left-hand and right-hand sides.
     //!
-    //! \tparam Iterator the type of the parameters
-    //! \param first left-hand side of the first rule
-    //! \param last one past the right-hand side of the last rule
+    //! \tparam Iterator the type of the parameters.
+    //! \param first left-hand side of the first rule.
+    //! \param last one past the right-hand side of the last rule.
     //!
     //! \returns A value of type `Iterator::value_type::size_type`.
     //!
@@ -1544,15 +1584,15 @@ namespace libsemigroups {
     template <typename Iterator>
     auto longest_rule_length(Iterator first, Iterator last);
 
-    //! \brief the maximum length of a rule in the presentation.
+    //! \brief Return the maximum length of a rule in the presentation.
     //!
     //! Returns the maximum length of a rule in the presentation.
     //!
     //! The *length* of a rule is defined to be the sum of the lengths of its
     //! left-hand and right-hand sides.
     //!
-    //! \tparam Word the type of the words in the presentation
-    //! \param p the presentation
+    //! \tparam Word the type of the words in the presentation.
+    //! \param p the presentation.
     //!
     //! \returns A value of type `Word::size_type`.
     //!
@@ -1562,33 +1602,33 @@ namespace libsemigroups {
       return longest_rule_length(p.rules.cbegin(), p.rules.cend());
     }
 
-    //! \brief Returns the minimum length of a rule in the given range.
+    //! \brief Return the minimum length of a rule in the given range.
     //!
     //! Returns the minimum length of a rule in the given range.
     //!
     //! The *length* of a rule is defined to be the sum of the lengths of its
     //! left-hand and right-hand sides.
     //!
-    //! \tparam Iterator the type of the parameters
-    //! \param first left-hand side of the first rule
-    //! \param last one past the right-hand side of the last rule
+    //! \tparam Iterator the type of the parameters.
+    //! \param first left-hand side of the first rule.
+    //! \param last one past the right-hand side of the last rule.
     //!
     //! \returns A value of type `Iterator::value_type::size_type`.
     //!
     //! \throws LibsemigroupsException if the length of \p p.rules is odd.
-    // TODO is this the correct return type?
+    // TODO what is the correct return type?
     template <typename Iterator>
     auto shortest_rule_length(Iterator first, Iterator last);
 
-    //! \brief Returns the minimum length of a rule in the presentation.
+    //! \brief Return the minimum length of a rule in the presentation.
     //!
     //! Returns the minimum length of a rule in the presentation.
     //!
     //! The *length* of a rule is defined to be the sum of the lengths of its
     //! left-hand and right-hand sides.
     //!
-    //! \tparam Word the type of the words in the presentation
-    //! \param p the presentation
+    //! \tparam Word the type of the words in the presentation.
+    //! \param p the presentation.
     //!
     //! \returns A value of type `Word::size_type`.
     //!
@@ -1608,8 +1648,8 @@ namespace libsemigroups {
     //! identical) are removed. If both sides of a rule are letters, then the
     //! greater letter is replaced by the lesser one.
     //!
-    //! \tparam Word the type of the words in the presentation
-    //! \param p the presentation
+    //! \tparam Word the type of the words in the presentation.
+    //! \param p the presentation.
     //!
     //! \throws LibsemigroupsException if `p.rules.size()` is odd.
     template <typename Word>
@@ -1624,9 +1664,9 @@ namespace libsemigroups {
     //! `std::string`s the human readable characters are used before
     //! non-readable ones.
     //!
-    //! \tparam Word the type of the words in the presentation
-    //! \param p the presentation (unused)
-    //! \param i the index of the letter to find
+    //! \tparam Word the type of the words in the presentation.
+    //! \param p the presentation (unused).
+    //! \param i the index of the letter to find.
     //!
     //! \returns A `letter_type`.
     //!
@@ -1646,8 +1686,8 @@ namespace libsemigroups {
     //! `std::string`s the human readable characters are used before
     //! non-readable ones.
     //!
-    //! \param p a presentation (unused)
-    //! \param i the index
+    //! \param p a presentation (unused).
+    //! \param i the index.
     //!
     //! \returns A `letter_type`.
     //!
@@ -1664,9 +1704,9 @@ namespace libsemigroups {
     //! value such that `!p.in_alphabet(letter(p, i))` if such a letter
     //! exists.
     //!
-    //! \tparam Word the type of the words in the presentation
+    //! \tparam Word the type of the words in the presentation.
     //!
-    //! \param p the presentation
+    //! \param p the presentation.
     //!
     //! \returns A `letter_type`.
     //!
@@ -1684,9 +1724,9 @@ namespace libsemigroups {
     //! presentation is not modified and \ref UNDEFINED is returned. If a new
     //! generator is added as the identity, then this generator is returned.
     //!
-    //! \tparam Word the type of the words in the presentation
+    //! \tparam Word the type of the words in the presentation.
     //!
-    //! \param p the presentation
+    //! \param p the presentation.
     //!
     //! \returns The new generator added, if any, and \ref UNDEFINED if not.
     //!
@@ -1704,9 +1744,9 @@ namespace libsemigroups {
     //! of the presentation \p p until `longest_subword_reducing_length` returns
     //! the empty word.
     //!
-    //! \tparam Word the type of the words in the presentation
+    //! \tparam Word the type of the words in the presentation.
     //!
-    //! \param p the presentation
+    //! \param p the presentation.
     //!
     //! \throws LibsemigroupsException if `longest_subword_reducing_length` or
     //!  `replace_word` does.
@@ -1714,26 +1754,28 @@ namespace libsemigroups {
     void greedy_reduce_length(Presentation<Word>& p);
 
     //! \brief Greedily reduce the length and number of generators of the
-    //! presentation
+    //! presentation.
     //!
     //! This function repeatedly calls `longest_subword_reducing_length` and
-    //! `replace_subword` to temporarily introduce a new generator and try to
-    //! reduce the length of the presentation \p p.  If, for a given subword,
-    //! this operation is successfully reduces the length of the presentation,
-    //! the changes are kept. Otherwise, the presentation is reverted and the
-    //! next subword is tried. This is done  until
-    //! `longest_subword_reducing_length` returns the empty word.
+    //! `replace_subword` to introduce a new generator to try to reduce the
+    //! length of the presentation \p p and the number of generators. This is
+    //! done until either `longest_subword_reducing_length` returns the empty
+    //! word, or the new length and number of generators is greater than or
+    //! equal to that of the presentation in the previous iteration.
     //!
-    //! \tparam Word the type of the words in the presentation
+    //! In the latter case, the presentation \p p gets restored to the state it
+    //! was in after the previous iteration.
     //!
-    //! \param p the presentation
+    //! \tparam Word the type of the words in the presentation.
+    //!
+    //! \param p the presentation.
     //!
     //! \throws LibsemigroupsException if `longest_subword_reducing_length` or
     //!  `replace_word` does.
     template <typename Word>
     void greedy_reduce_length_and_number_of_gens(Presentation<Word>& p);
 
-    //! \brief Returns `true` if the \f$1\f$-relation presentation can be
+    //! \brief Return `true` if the \f$1\f$-relation presentation can be
     //! strongly compressed.
     //!
     //! A \f$1\f$-relation presentation is *strongly compressible* if both
@@ -1744,16 +1786,17 @@ namespace libsemigroups {
     //! \p p is strongly compressible. See [Section
     //! 3.2](https://doi.org/10.1007/s00233-021-10216-8) for details.
     //!
-    //! \tparam Word the type of the words in the presentation
+    //! \tparam Word the type of the words in the presentation.
     //!
-    //! \param p the presentation
+    //! \param p the presentation.
     //!
     //! \returns A value of type `bool`.
     //!
     //! \exceptions
     //! \no_libsemigroups_except
     //!
-    //! \sa `strongly_compress`
+    //! \sa
+    //! * \ref strongly_compress
     // not noexcept because std::vector::operator[] isn't
     template <typename Word>
     bool is_strongly_compressible(Presentation<Word> const& p);
@@ -1766,16 +1809,17 @@ namespace libsemigroups {
     //! modified and `false` if not. The word problem is solvable for the
     //! input presentation if it is solvable for the modified version.
     //!
-    //! \tparam Word the type of the words in the presentation
+    //! \tparam Word the type of the words in the presentation.
     //!
-    //! \param p the presentation
+    //! \param p the presentation.
     //!
     //! \returns A value of type `bool`.
     //!
     //! \exceptions
     //! \no_libsemigroups_except
     //!
-    //! \sa `is_strongly_compressible`
+    //! \sa
+    //! * \ref is_strongly_compressible
     // not noexcept because is_strongly_compressible isn't
     template <typename Word>
     bool strongly_compress(Presentation<Word>& p);
@@ -1798,9 +1842,9 @@ namespace libsemigroups {
     //! problem for the modified version obtained from this function is
     //! solvable.
     //!
-    //! \tparam Word the type of the words in the presentation
+    //! \tparam Word the type of the words in the presentation.
     //!
-    //! \param p the presentation
+    //! \param p the presentation.
     //! \param index determines the choice of letter to use, `0` uses
     //! `p.rules[0].front()` and `1` uses `p.rules[1].front()` (defaults to:
     //! `0`).
@@ -1816,9 +1860,9 @@ namespace libsemigroups {
     //! Adds rules to \p p of the form \f$a^2 = a\f$ for every letter \f$a\f$ in
     //! \p letters.
     //!
-    //! \tparam Word the type of the words in the presentation
-    //! \param p the presentation to add rules to
-    //! \param letters the letters to make idempotent
+    //! \tparam Word the type of the words in the presentation.
+    //! \param p the presentation to add rules to.
+    //! \param letters the letters to make idempotent.
     //!
     //! \exceptions
     //! \no_libsemigroups_except
@@ -1839,9 +1883,9 @@ namespace libsemigroups {
     //! Adds rules to \p p of the form \f$a^2 = \varepsilon\f$ for every letter
     //! \f$a\f$ in \p letters.
     //!
-    //! \tparam Word the type of the words in the presentation
-    //! \param p the presentation to add rules to
-    //! \param letters the letters to add transposition rules for
+    //! \tparam Word the type of the words in the presentation.
+    //! \param p the presentation to add rules to.
+    //! \param letters the letters to add transposition rules for.
     //!
     //! \exceptions
     //! \no_libsemigroups_except
@@ -1858,15 +1902,15 @@ namespace libsemigroups {
       }
     }
 
-    //! \brief Add rules that assert specific letters commute
+    //! \brief Add rules that assert specific letters commute.
     //!
     //! Adds rules to \p p of the form \f$uv = vu\f$ for every letter \f$u\f$ in
     //! \p letters1 and \f$v\f$ in \p letters2.
     //!
-    //! \tparam Word the type of the words in the presentation
-    //! \param p the presentation to add rules to
-    //! \param letters1 the first collection of letters to add rules for
-    //! \param letters2 the second collection of letters to add rules for
+    //! \tparam Word the type of the words in the presentation.
+    //! \param p the presentation to add rules to.
+    //! \param letters1 the first collection of letters to add rules for.
+    //! \param letters2 the second collection of letters to add rules for.
     //!
     //! \exceptions
     //! \no_libsemigroups_except
@@ -1879,14 +1923,14 @@ namespace libsemigroups {
                                       Word const&         letters1,
                                       Word const&         letters2);
 
-    //! \brief Add rules that assert specific letters commute
+    //! \brief Add rules that assert specific letters commute.
     //!
     //! Adds rules to \p p of the form \f$uv = vu\f$ for every pair of letters
     //! \f$u, v\f$ in \p letters.
     //!
-    //! \tparam Word the type of the words in the presentation
-    //! \param p the presentation to add rules to
-    //! \param letters the collection of letters to add rules for
+    //! \tparam Word the type of the words in the presentation.
+    //! \param p the presentation to add rules to.
+    //! \param letters the collection of letters to add rules for.
     //!
     //! \exceptions
     //! \no_libsemigroups_except
@@ -1906,10 +1950,10 @@ namespace libsemigroups {
     //! Adds rules to \p p of the form \f$uv = vu\f$ for every letter \f$u\f$ in
     //! \p letters and \f$v\f$ in \p words.
     //!
-    //! \tparam Word the type of the words in the presentation
-    //! \param p the presentation to add rules to
-    //! \param letters the collection of letters to add rules for
-    //! \param words the collection of words to add rules for
+    //! \tparam Word the type of the words in the presentation.
+    //! \param p the presentation to add rules to.
+    //! \param letters the collection of letters to add rules for.
+    //! \param words the collection of words to add rules for.
     //!
     //! \exceptions
     //! \no_libsemigroups_except
@@ -1922,7 +1966,7 @@ namespace libsemigroups {
                                       Word const&                 letters,
                                       std::initializer_list<Word> words);
 
-    //! \brief Balance the length of the left-hand and right-hand sides
+    //! \brief Balance the length of the left-hand and right-hand sides.
     //!
     //! This function first sorts the sides of each rules so that the larger
     //! side of the rule is on the left. Then for each rule, while the last
@@ -1933,10 +1977,10 @@ namespace libsemigroups {
     //! left-hand side is removed and the corresponding value in \p inverses is
     //! appended to the front of the right-hand side.
     //!
-    //! \tparam Word the type of the words in the presentation
-    //! \param p the presentation
-    //! \param letters the letters that can be replaced in the left-hand side
-    //! \param inverses the inverses of the letters
+    //! \tparam Word the type of the words in the presentation.
+    //! \param p the presentation.
+    //! \param letters the letters that can be replaced in the left-hand side.
+    //! \param inverses the inverses of the letters.
     //!
     //! \exceptions
     //! \no_libsemigroups_except
@@ -1949,7 +1993,7 @@ namespace libsemigroups {
                            Word const&         letters,
                            Word const&         inverses);
 
-    //! \brief Balance the length of the left-hand and right-hand sides
+    //! \brief Balance the length of the left-hand and right-hand sides.
     //!
     //! This function first sorts the sides of each rules so that the larger
     //! side of the rule is on the left. Then for each rule, while the last
@@ -1960,10 +2004,10 @@ namespace libsemigroups {
     //! left-hand side is removed and the corresponding value in \p inverses is
     //! appended to the front of the right-hand side.
     //!
-    //! \tparam Word the type of the words in the presentation
-    //! \param p the presentation
-    //! \param letters the letters that can be replaced in the left-hand side
-    //! \param inverses the inverses of the letters
+    //! \tparam Word the type of the words in the presentation.
+    //! \param p the presentation.
+    //! \param letters the letters that can be replaced in the left-hand side.
+    //! \param inverses the inverses of the letters.
     //!
     //! \exceptions
     //! \no_libsemigroups_except
@@ -1971,11 +2015,19 @@ namespace libsemigroups {
     //! \warning
     //! No checks that the arguments describe words over the alphabet of \p p
     //! are performed, nor that \p inverses are valid inverses.
+    //! TODO (now) If the arguments
+    //! are not valid, the semigroup defined by the presentation \p p before
+    //! this function is called and after this
     inline void balance_no_checks(Presentation<std::string>& p,
                                   char const*                letters,
                                   char const*                inverses) {
       balance_no_checks(p, std::string(letters), std::string(inverses));
     }
+
+    // TODO (later) add balance that checks p contains empty word, no duplicate
+    // letters in alphabet, and inverses are valid.
+
+    // TODO (later) add balance for presentation word_types
 
     //! \brief TODO
     //!
@@ -2001,8 +2053,8 @@ namespace libsemigroups {
     //! Presentations in GAP are created by taking quotients of free semigroups
     //! or monoids.
     //!
-    //! \param p the presentation
-    //! \param var_name the name of the variable to be used in GAP
+    //! \param p the presentation.
+    //! \param var_name the name of the variable to be used in GAP.
     //!
     //! \throws LibsemigroupsException if \p has more than 49 generators.
     std::string to_gap_string(Presentation<word_type> const& p,
@@ -2015,8 +2067,8 @@ namespace libsemigroups {
     //! Presentations in GAP are created by taking quotients of free semigroups
     //! or monoids.
     //!
-    //! \param p the presentation
-    //! \param var_name the name of the variable to be used in GAP
+    //! \param p the presentation.
+    //! \param var_name the name of the variable to be used in GAP.
     //!
     //! \throws LibsemigroupsException if \p has more than 49 generators.
     std::string to_gap_string(Presentation<std::string> const& p,
@@ -2026,7 +2078,7 @@ namespace libsemigroups {
 
   //! \ingroup presentations_group
   //!
-  //! \brief For an implementations of inverse presentations for semigroups or
+  //! \brief For an implementation of inverse presentations for semigroups or
   //! monoids.
   //!
   //! Defined in ``presentation.hpp``.
@@ -2040,11 +2092,11 @@ namespace libsemigroups {
   template <typename Word>
   class InversePresentation : public Presentation<Word> {
    public:
-    //! \brief The type of the words in the rules of an InversePresentation
+    //! \brief Type of the words in the rules of an InversePresentation
     //! object.
     using word_type = typename Presentation<Word>::word_type;
 
-    //! \brief The type of the letters in the words that constitute the rules of
+    //! \brief Type of the letters in the words that constitute the rules of
     //! an InversePresentation object.
     using letter_type = typename Presentation<Word>::letter_type;
 
@@ -2065,7 +2117,7 @@ namespace libsemigroups {
 
     // TODO init functions
 
-    //! \brief Construct an InversePresentation from a Presentation reference
+    //! \brief Construct an InversePresentation from a Presentation reference.
     //!
     //! Construct an InversePresentation, initially with empty inverses, from a
     //! reference to a Presentation.
@@ -2090,9 +2142,9 @@ namespace libsemigroups {
     //!
     //! Set the inverse of each letter in the alphabet.
     //!
-    //! \param w a word containing the inverses
+    //! \param w a word containing the inverses.
     //!
-    //! \returns a reference to `this`.
+    //! \returns A reference to `this`.
     //!
     //! \exceptions
     //! \no_libsemigroups_except
@@ -2106,9 +2158,9 @@ namespace libsemigroups {
 
     //! \brief Return the inverse of each letter in the alphabet.
     //!
-    //! Return the inverse of each letter in the alphabet.
+    //! Returns the inverse of each letter in the alphabet.
     //!
-    //! \returns a value of type \ref word_type.
+    //! \returns A value of type \ref word_type.
     //!
     //! \exceptions
     //! \noexcept
@@ -2118,11 +2170,11 @@ namespace libsemigroups {
 
     //! \brief Return the inverse of a letter in the alphabet.
     //!
-    //! Return the inverse of the letter \p x.
+    //! Returns the inverse of the letter \p x.
     //!
     //! \param x the letter whose index is sought.
     //!
-    //! \returns a value of type \ref letter_type
+    //! \returns A value of type \ref letter_type.
     //!
     //! \throws LibsemigroupsException if no inverses have been set, or if
     //! `index(letter_type x) const` throws.
@@ -2141,8 +2193,8 @@ namespace libsemigroups {
     //! * the inverses do not act as semigroup inverses
     //!
     //! \sa
-    //! \ref Presentation<Word>::validate and \ref
-    //! presentation::validate_semigroup_inverses.
+    //! * \ref Presentation<Word>::validate
+    //! * \ref presentation::validate_semigroup_inverses
     void validate() const {
       Presentation<Word>::validate();
       presentation::validate_semigroup_inverses(*this, inverses());
@@ -2160,8 +2212,7 @@ namespace libsemigroups {
   //! \param lhop a presentation that is to be compared.
   //! \param rhop a presentation that is to be compared.
   //!
-  //! \returns
-  //! A value of type \c bool.
+  //! \returns A value of type \c bool.
   //!
   //! \exceptions
   //! \no_libsemigroups_except
@@ -2186,8 +2237,7 @@ namespace libsemigroups {
   //! \param lhop a presentation that is to be compared.
   //! \param rhop a presentation that is to be compared.
   //!
-  //! \returns
-  //! A value of type \c bool.
+  //! \returns A value of type \c bool.
   //!
   //! \exceptions
   //! \no_libsemigroups_except
@@ -2210,14 +2260,15 @@ namespace libsemigroups {
   //!
   //! The content of the third argument \p output, if any, is removed.
   //!
-  //! \param p the presentation whose alphabet will be used to convert
-  //! \param input the string to convert
-  //! \param output word to hold the result
+  //! \param p the presentation whose alphabet will be used to convert.
+  //! \param input the string to convert.
+  //! \param output word to hold the result.
   //!
   //! \throws LibsemigroupsException if any letter in \p input is not contained
   //! in `p.alphabet()`.
   //!
-  //! \sa \ref Presentation::index.
+  //! \sa
+  //! * \ref Presentation::index
   // TODO(later) could do a no_check version
   void to_word(Presentation<std::string> const& p,
                std::string const&               input,
@@ -2231,13 +2282,14 @@ namespace libsemigroups {
   //! `p.index()`, so that each letter is mapped to the corresponding index in
   //! `p.alphabet()`.
   //!
-  //! \param p the presentation whose alphabet will be used to convert
-  //! \param input the string to convert
+  //! \param p the presentation whose alphabet will be used to convert.
+  //! \param input the string to convert.
   //!
   //! \throws LibsemigroupsException if any letter in \p input is not contained
   //! in `p.alphabet()`.
   //!
-  //! \sa \ref Presentation::index.
+  //! \sa
+  //! * \ref Presentation::index
   // TODO(later) could do a no_check version
   [[nodiscard]] word_type to_word(Presentation<std::string> const& p,
                                   std::string const&               input);
@@ -2259,7 +2311,8 @@ namespace libsemigroups {
   //! \throws LibsemigroupsException if any index in \p input is not in the
   //! range `[0, p.alphabet().size())`
   //!
-  //! \sa \ref Presentation::letter.
+  //! \sa
+  //! * \ref Presentation::letter
   // TODO(later) could do a no_check version
   void to_string(Presentation<std::string> const& p,
                  word_type const&                 input,
@@ -2278,19 +2331,20 @@ namespace libsemigroups {
   //! \throws LibsemigroupsException if any index in \p input is not in the
   //! range `[0, p.alphabet().size())`
   //!
-  //! \sa \ref Presentation::letter.
+  //! \sa
+  //! * \ref Presentation::letter
   // TODO(later) could do a no check version
   std::string to_string(Presentation<std::string> const& p,
                         word_type const&                 input);
 
   //! \ingroup presentations_group
   //!
-  //! \brief Return a human readable representation of a presentation
+  //! \brief Return a human readable representation of a presentation.
   //!
-  //! Return a human readable representation of a presentation
+  //! Return a human readable representation of a presentation.
   //!
   //! \tparam Word the type of the words in the presentation.
-  //! \param p the presentation
+  //! \param p the presentation.
   //!
   //! \exceptions
   //! \no_libsemigroups_except
