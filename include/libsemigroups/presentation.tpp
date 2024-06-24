@@ -533,7 +533,7 @@ namespace libsemigroups {
           detail::to_printable(p.alphabet()));
     }
 
-    template <typename Word, typename Iterator, typename>
+    template <typename Word, typename Iterator>
     typename Presentation<Word>::letter_type
     replace_word_with_new_generator(Presentation<Word>& p,
                                     Iterator            first,
