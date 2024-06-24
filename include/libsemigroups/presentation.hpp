@@ -1245,9 +1245,7 @@ namespace libsemigroups {
     // TODO(later) complexity
     // TODO do we need this, since there is no other overloaded function with
     // three parameters?
-    template <typename Word,
-              typename Iterator,
-              typename = std::enable_if_t<!std::is_same<Iterator, Word>::value>>
+    template <typename Word, typename Iterator>
     typename Presentation<Word>::letter_type
     replace_word_with_new_generator(Presentation<Word>& p,
                                     Iterator            first,
