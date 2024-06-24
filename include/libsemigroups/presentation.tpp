@@ -197,9 +197,6 @@ namespace libsemigroups {
     size_type index = 0;
     for (auto const& letter : _alphabet) {
       auto it = alphabet_map.emplace(letter, index++);
-      // FIXME this doesn't compile when using a size_type to initialise the
-      // alphabet (rather than a word), see 045
-      // Is this fixed now? JE
       if (!it.second) {
         LIBSEMIGROUPS_EXCEPTION("invalid alphabet {}, duplicate letter {}!",
                                 detail::to_printable(_alphabet),
@@ -916,23 +913,17 @@ namespace libsemigroups {
                                       Word const&         letters1,
                                       Word const&         letters2) {
       using words::operator+;
-      size_t       m = letters1.size();
-      size_t       n = letters2.size();
-      Word         shorter;
-      Word         longer;
-      if (m <= n) {
-        shorter = letters1;
-        longer  = letters2;
-      } else {
-        shorter = letters2;
-        longer  = letters1;
+      size_t       m = letters1.size(), n = letters2.size();
+      Word const * shorter = &letters1, *longer = &letters2;
+      if (m > n) {
+        std::swap(shorter, longer);
         std::swap(m, n);
       }
       Presentation<Word> q;
       for (size_t i = 0; i < m; ++i) {
-        Word u = {shorter[i]};
+        Word u = {(*shorter)[i]};
         for (size_t j = i; j < n; ++j) {
-          Word v = {longer[j]};
+          Word v = {(*longer)[j]};
           if (u != v) {
             presentation::add_rule_no_checks(q, u + v, v + u);
           }
@@ -947,12 +938,10 @@ namespace libsemigroups {
                                       std::initializer_list<Word> words) {
       using words::operator+;
 
-      size_t const       m = letters.size();
       Presentation<Word> q;
-      for (size_t i = 0; i < m; ++i) {
-        Word u = {letters[i]};
-        for (auto j = words.begin(); j < words.end(); ++j) {
-          Word const& v = *j;
+      for (auto a : letters) {
+        Word u = {a};
+        for (auto const& v : words) {
           if (u != v) {
             presentation::add_rule_no_checks(q, u + v, v + u);
           }
@@ -965,7 +954,7 @@ namespace libsemigroups {
     void balance_no_checks(Presentation<Word>& p,
                            Word const&         letters,
                            Word const&         inverses) {
-      // TODO (later) check args
+      // TODO (Later) check args (including that p.contains_empty_word)
       // So that longer relations are on the lhs
       presentation::sort_each_rule(p);
 
