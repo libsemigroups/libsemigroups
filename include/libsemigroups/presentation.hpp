@@ -1573,7 +1573,8 @@ namespace libsemigroups {
     //!
     //! \throws LibsemigroupsException if the length of \p p.rules is odd.
     template <typename Iterator>
-    auto longest_rule_length(Iterator first, Iterator last);
+    typename Iterator::value_type::size_type longest_rule_length(Iterator first,
+                                                                 Iterator last);
 
     //! \brief Return the maximum length of a rule in the presentation.
     //!
@@ -1589,7 +1590,7 @@ namespace libsemigroups {
     //!
     //! \throws LibsemigroupsException if the length of \p p.rules is odd.
     template <typename Word>
-    auto longest_rule_length(Presentation<Word> const& p) {
+    typename Word::size_type longest_rule_length(Presentation<Word> const& p) {
       return longest_rule_length(p.rules.cbegin(), p.rules.cend());
     }
 
@@ -1607,9 +1608,9 @@ namespace libsemigroups {
     //! \returns A value of type `Iterator::value_type::size_type`.
     //!
     //! \throws LibsemigroupsException if the length of \p p.rules is odd.
-    // TODO what is the correct return type?
     template <typename Iterator>
-    auto shortest_rule_length(Iterator first, Iterator last);
+    typename Iterator::value_type::size_type
+    shortest_rule_length(Iterator first, Iterator last);
 
     //! \brief Return the minimum length of a rule in the presentation.
     //!
@@ -1625,7 +1626,7 @@ namespace libsemigroups {
     //!
     //! \throws LibsemigroupsException if the length of \p p.rules is odd.
     template <typename Word>
-    auto shortest_rule_length(Presentation<Word> const& p) {
+    typename Word::size_type shortest_rule_length(Presentation<Word> const& p) {
       return shortest_rule_length(p.rules.cbegin(), p.rules.cend());
     }
 

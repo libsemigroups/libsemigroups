@@ -774,6 +774,8 @@ namespace libsemigroups {
     template <typename W>
     void check_longest_rule() {
       Presentation<W> p;
+      REQUIRE(presentation::longest_rule(p) == p.rules.cend());
+      REQUIRE(presentation::shortest_rule(p) == p.rules.cend());
       p.rules.push_back(W({0, 1, 2, 1}));
       REQUIRE_THROWS_AS(presentation::longest_rule(p), LibsemigroupsException);
       p.rules.push_back(W({1, 2, 1}));
@@ -799,6 +801,8 @@ namespace libsemigroups {
     template <typename W>
     void check_longest_rule_length() {
       Presentation<W> p;
+      REQUIRE(presentation::longest_rule_length(p) == 0);
+      REQUIRE(presentation::shortest_rule_length(p) == 0);
       p.rules.push_back(W({0, 1, 2, 1}));
       REQUIRE_THROWS_AS(presentation::longest_rule_length(p),
                         LibsemigroupsException);

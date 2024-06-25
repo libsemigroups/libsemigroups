@@ -680,12 +680,13 @@ namespace libsemigroups {
     }
 
     template <typename Iterator>
-    auto longest_rule_length(Iterator first, Iterator last) {
+    typename Iterator::value_type::size_type
+    longest_rule_length(Iterator first, Iterator last) {
       auto it = longest_rule(first, last);
       if (it != last) {
         return it->size() + (it + 1)->size();
       } else {
-        return decltype(it->size())(0);  // TODO remove this!
+        return 0;
       }
     }
 
@@ -706,12 +707,13 @@ namespace libsemigroups {
     }
 
     template <typename Iterator>
-    auto shortest_rule_length(Iterator first, Iterator last) {
+    typename Iterator::value_type::size_type
+    shortest_rule_length(Iterator first, Iterator last) {
       auto it = shortest_rule(first, last);
       if (it != last) {
         return it->size() + (it + 1)->size();
       } else {
-        return decltype(it->size())(0);  // TODO remove this!
+        return 0;
       }
     }
 
