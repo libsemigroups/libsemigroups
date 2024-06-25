@@ -2566,9 +2566,10 @@ namespace libsemigroups {
                             "invalid inverses, 0 ^ -1 = 1 but 1 ^ -1 = 2");
     }
   }
+
   LIBSEMIGROUPS_TEST_CASE("Presentation",
                           "055",
-                          "add_generator",
+                          "add_generator (std::string)",
                           "[quick][presentation]") {
     auto            rg = ReportGuard(false);
     using literals::operator""_w;
@@ -2576,27 +2577,59 @@ namespace libsemigroups {
     {
       Presentation<std::string> p;
       p.alphabet("ab");
-      presentation::add_generator(p);
+      p.add_generator();
       REQUIRE(p.alphabet() == "abc");
     }
     {
       Presentation<std::string> p;
       p.alphabet("ac");
-      presentation::add_generator(p);
+      p.add_generator();
       REQUIRE(p.alphabet() == "acb");
     }
     {
       Presentation<std::string> p;
       p.alphabet("ac");
-      presentation::add_generator(p, 'b');
+      p.add_generator('b');
       REQUIRE(p.alphabet() == "acb");
     }
     {
       Presentation<std::string> p;
       p.alphabet("ac");
-      REQUIRE_EXCEPTION_MSG(presentation::add_generator(p, 'c'),
-                            "the 2nd argument 'c' already belongs to the "
+      REQUIRE_EXCEPTION_MSG(p.add_generator('c'),
+                            "the argument 'c' already belongs to the "
                             "alphabet \"ac\", expected an unused letter");
+    }
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Presentation",
+                          "056",
+                          "add_generator (word_type)",
+                          "[quick][presentation]") {
+    auto rg = ReportGuard(false);
+    {
+      Presentation<word_type> p;
+      p.alphabet(word_type({0, 1}));
+      p.add_generator();
+      REQUIRE(p.alphabet() == word_type({0, 1, 2}));
+    }
+    {
+      Presentation<word_type> p;
+      p.alphabet(word_type({0, 2}));
+      p.add_generator();
+      REQUIRE(p.alphabet() == word_type({0, 2, 1}));
+    }
+    {
+      Presentation<word_type> p;
+      p.alphabet(word_type({0, 2}));
+      p.add_generator({1});
+      REQUIRE(p.alphabet() == word_type({0, 2, 1}));
+    }
+    {
+      Presentation<word_type> p;
+      p.alphabet(word_type({0, 2}));
+      REQUIRE_EXCEPTION_MSG(p.add_generator({2}),
+                            "the argument 2 already belongs to the "
+                            "alphabet [0, 2], expected an unused letter");
     }
   }
 

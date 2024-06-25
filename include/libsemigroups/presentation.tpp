@@ -152,6 +152,42 @@ namespace libsemigroups {
     return _alphabet_map.find(val)->second;
   }
 
+  template <typename Word>
+  void Presentation<Word>::add_generator_no_checks(
+      typename Presentation<Word>::letter_type x) {
+    size_t index = _alphabet_map.size();
+#ifdef LIBSEMIGROUPS_DEBUG
+    auto inserted = _alphabet_map.emplace(x, index);
+    LIBSEMIGROUPS_ASSERT(inserted.second);
+#else
+    _alphabet_map.emplace(x, index);
+#endif
+    _alphabet.push_back(x);
+  }
+
+  template <typename Word>
+  void Presentation<Word>::add_generator(
+      typename Presentation<Word>::letter_type x) {
+    try {
+      validate_letter(x);  // throws if x does not belong to p.alphabet()
+    } catch (LibsemigroupsException const& e) {
+      add_generator_no_checks(x);
+      return;
+    }
+    LIBSEMIGROUPS_EXCEPTION("the argument {} already belongs to the alphabet "
+                            "{}, expected an unused letter",
+                            detail::to_printable(x),
+                            detail::to_printable(alphabet()));
+  }
+
+  // TODO should this be a helper function?
+  template <typename Word>
+  typename Presentation<Word>::letter_type Presentation<Word>::add_generator() {
+    auto result = presentation::first_unused_letter(*this);
+    add_generator_no_checks(result);
+    return result;
+  }
+
   // TODO use to_printable
   template <typename Word>
   void Presentation<Word>::validate_letter(
@@ -502,44 +538,12 @@ namespace libsemigroups {
       return Word(first, last);
     }
 
-    template <typename Word>
-    typename Presentation<Word>::letter_type
-    add_generator(Presentation<Word>& p) {
-      auto result = first_unused_letter(p);
-      add_generator_no_checks(p, result);
-      return result;
-    }
-
-    template <typename Word>
-    void add_generator_no_checks(Presentation<Word>&                      p,
-                                 typename Presentation<Word>::letter_type x) {
-      auto new_alphabet = p.alphabet();
-      new_alphabet.push_back(x);
-      p.alphabet(new_alphabet);
-    }
-
-    template <typename Word>
-    void add_generator(Presentation<Word>&                      p,
-                       typename Presentation<Word>::letter_type x) {
-      try {
-        p.validate_letter(x);  // throws if x does not belong to p.alphabet()
-      } catch (LibsemigroupsException const& e) {
-        add_generator_no_checks(p, x);
-        return;
-      }
-      LIBSEMIGROUPS_EXCEPTION(
-          "the 2nd argument {} already belongs to the alphabet {}, "
-          "expected an unused letter",
-          detail::to_printable(x),
-          detail::to_printable(p.alphabet()));
-    }
-
     template <typename Word, typename Iterator>
     typename Presentation<Word>::letter_type
     replace_word_with_new_generator(Presentation<Word>& p,
                                     Iterator            first,
                                     Iterator            last) {
-      auto x = add_generator(p);
+      auto x = p.add_generator();
       replace_subword(p, first, last, &x, &x + 1);
       p.add_rule_no_checks(&x, &x + 1, first, last);
       return x;

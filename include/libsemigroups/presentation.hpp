@@ -414,6 +414,36 @@ namespace libsemigroups {
       return add_rule_no_checks(lhs_begin, lhs_end, rhs_begin, rhs_end);
     }
 
+    //! \brief Add a generator.
+    //!
+    //! Add the first letter not in the alphabet as a generator and return this
+    //! letter.
+    //!
+    //! \returns A value of type \ref letter_type.
+    //!
+    //! \throws LibsemigroupsException if the alphabet is of the maximum
+    //! possible size supported by `letter_type`.
+    letter_type add_generator();
+
+    //! \brief Add \p x as a generator.
+    //!
+    //! Add the letter \p x as a generator.
+    //!
+    //! \param x the letter to add as a generator.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    void add_generator_no_checks(letter_type x);
+
+    //! \brief Add \p x as a generator.
+    //!
+    //! Add the letter \p x as a generator.
+    //!
+    //! \param x the letter to add as a generator.
+    //!
+    //! \throws LibsemigroupsException if \p x is in `p.alphabet()`.
+    void add_generator(letter_type x);
+
     //! \brief Return whether the underlying presentation is a monoid or
     //! semigroup presentation.
     //!
@@ -1185,48 +1215,6 @@ namespace libsemigroups {
     // TODO(later) complexity
     template <typename Word>
     Word longest_subword_reducing_length(Presentation<Word>& p);
-
-    //! \brief Add a generator to \p p.
-    //!
-    //! Add the first letter not in the alphabet of \p p as a generator of \p p,
-    //! and return this letter.
-    //!
-    //! \tparam Word the type of the words in the presentation.
-    //! \param p the presentation.
-    //!
-    //! \returns A value of type \ref letter_type.
-    //!
-    //! \exceptions
-    //! \no_libsemigroups_except
-    template <typename Word>
-    typename Presentation<Word>::letter_type
-    add_generator(Presentation<Word>& p);
-
-    //! \brief Add \p x as a generator of \p p.
-    //!
-    //! Add the letter \p x as a generator of \p p.
-    //!
-    //! \tparam Word the type of the words in the presentation.
-    //! \param p the presentation.
-    //! \param x the letter to add as a generator.
-    //!
-    //! \throws LibsemigroupsException if \p x is in `p.alphabet()`.
-    template <typename Word>
-    void add_generator_no_checks(Presentation<Word>&                      p,
-                                 typename Presentation<Word>::letter_type x);
-
-    //! \brief Add \p x as a generator of \p p.
-    //!
-    //! Add the letter \p x as a generator of \p p.
-    //!
-    //! \tparam Word the type of the words in the presentation.
-    //! \param p the presentation.
-    //! \param x the letter to add as a generator.
-    //!
-    //! \throws LibsemigroupsException if \p x is in `p.alphabet()`.
-    template <typename Word>
-    void add_generator(Presentation<Word>&                      p,
-                       typename Presentation<Word>::letter_type x);
 
     //! \brief Replace non-overlapping instances of a subword via iterators.
     //!
