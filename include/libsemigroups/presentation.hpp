@@ -1841,7 +1841,7 @@ namespace libsemigroups {
     template <typename Word>
     bool reduce_to_2_generators(Presentation<Word>& p, size_t index = 0);
 
-    //! \brief Add rules that assert each letter is idempotent.
+    //! \brief Add rules that define each letter as an idempotent.
     //!
     //! Adds rules to \p p of the form \f$a^2 = a\f$ for every letter \f$a\f$ in
     //! \p letters.
@@ -1864,14 +1864,14 @@ namespace libsemigroups {
       }
     }
 
-    //! \brief Add rules that respect transpositions.
+    //! \brief Add rules that define involution.
     //!
     //! Adds rules to \p p of the form \f$a^2 = \varepsilon\f$ for every letter
     //! \f$a\f$ in \p letters.
     //!
     //! \tparam Word the type of the words in the presentation.
     //! \param p the presentation to add rules to.
-    //! \param letters the letters to add transposition rules for.
+    //! \param letters the letters to add involution rules for.
     //!
     //! \exceptions
     //! \no_libsemigroups_except
@@ -1881,14 +1881,14 @@ namespace libsemigroups {
     //! are performed.
     // TODO does this doc make any sense?
     template <typename Word>
-    void add_transposition_rules_no_checks(Presentation<Word>& p,
-                                           word_type const&    letters) {
+    void add_involution_rules_no_checks(Presentation<Word>& p,
+                                        word_type const&    letters) {
       for (auto x : letters) {
         add_rule_no_checks(p, {x, x}, {});
       }
     }
 
-    //! \brief Add rules that assert specific letters commute.
+    //! \brief Add rules so specific letters commute.
     //!
     //! Adds rules to \p p of the form \f$uv = vu\f$ for every letter \f$u\f$ in
     //! \p letters1 and \f$v\f$ in \p letters2.
@@ -1909,7 +1909,7 @@ namespace libsemigroups {
                                       Word const&         letters1,
                                       Word const&         letters2);
 
-    //! \brief Add rules that assert specific letters commute.
+    //! \brief Add rules so specific letters commute.
     //!
     //! Adds rules to \p p of the form \f$uv = vu\f$ for every pair of letters
     //! \f$u, v\f$ in \p letters.
@@ -1930,8 +1930,7 @@ namespace libsemigroups {
       add_commutes_rules_no_checks(p, letters, letters);
     }
 
-    //! \brief Add rules that assert specific letters commute with specific
-    //! words
+    //! \brief Add rules so specific letters commute with specific words
     //!
     //! Adds rules to \p p of the form \f$uv = vu\f$ for every letter \f$u\f$ in
     //! \p letters and \f$v\f$ in \p words.
