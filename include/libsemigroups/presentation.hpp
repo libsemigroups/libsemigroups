@@ -444,12 +444,14 @@ namespace libsemigroups {
     //! \throws LibsemigroupsException if \p x is in `p.alphabet()`.
     void add_generator(letter_type x);
 
-    //! \brief Return whether the underlying presentation is a monoid or
-    //! semigroup presentation.
+    //! \brief Return whether the empty word is a valid relation word.
     //!
-    //! Returns \c true if the underlying presentation is a monoid
-    //! presentation, and \c false if the underlying presentation is a semigroup
-    //! presentation.
+    //! Returns \c true if the empty word is a valid relation word, and \c false
+    //! if the empty word is not a valid relation word.
+    //!
+    //! If the presentation is not allowed to contain the empty word (according
+    //! to this function), the presentation may still be isomorphic to a monoid,
+    //! but is not given as a quotient of a free monoid.
     //!
     //! \returns A value of type `bool`.
     //!
@@ -462,14 +464,17 @@ namespace libsemigroups {
       return _contains_empty_word;
     }
 
-    //! \brief Set whether the underlying presentation is a monoid or semigroup
-    //! presentation
+    //! \brief Set whether whether the empty word is a valid relation word.
     //!
-    //! Specify whether the underlying presentation should be a monoid
-    //! presentation (corresponding to \p val being ``true``), or a semigroup
-    //! presentation (corresponding to \p val being ``false``).
+    //! Specify whether the empty word should be a valid relation word
+    //! (corresponding to \p val being ``true``), or not (corresponding to
+    //! \p val being ``false``).
     //!
-    //! \param val whether the presentation should contain the empty word.
+    //! If the presentation is not allowed to contain the empty word (according
+    //! to the value specified here), the presentation may still be isomorphic
+    //! to a monoid, but is not given as a quotient of a free monoid.
+    //!
+    //! \param val whether the presentation can contain the empty word.
     //!
     //! \returns A const reference to \c *this.
     //!
