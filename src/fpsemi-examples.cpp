@@ -178,7 +178,7 @@ namespace libsemigroups {
       if (q == 0) {
         presentation::add_idempotent_rules_no_checks(p, s);
       } else {
-        presentation::add_transposition_rules_no_checks(p, s);
+        presentation::add_involution_rules_no_checks(p, s);
       }
 
       for (size_t i = 0; i < l; ++i) {
@@ -231,7 +231,7 @@ namespace libsemigroups {
       if (q == 0) {
         presentation::add_idempotent_rules_no_checks(p, s);
       } else {
-        presentation::add_transposition_rules_no_checks(p, s);
+        presentation::add_involution_rules_no_checks(p, s);
       }
 
       for (size_t i = 1; i < l; ++i) {  // tout sauf \pi_1^f
@@ -479,7 +479,7 @@ namespace libsemigroups {
       if (val == author::Carmichael) {
         // Exercise 9.5.2, p172 of
         // https://link.springer.com/book/10.1007/978-1-84800-281-4
-        presentation::add_transposition_rules_no_checks(p, range(n - 1));
+        presentation::add_involution_rules_no_checks(p, range(n - 1));
         for (size_t i = 0; i < n - 2; ++i) {
           presentation::add_rule_no_checks(p, pow({i, i + 1}, 3), {});
         }
@@ -499,7 +499,7 @@ namespace libsemigroups {
         // From Chapter 3, Proposition 1.2 in https://bit.ly/3R5ZpKW (Ruskuc
         // thesis)
 
-        presentation::add_transposition_rules_no_checks(p, range(n - 1));
+        presentation::add_involution_rules_no_checks(p, range(n - 1));
         add_coxeter_common(p, n);
       } else if (val == author::Moore) {
         if (index == 0) {
@@ -517,7 +517,7 @@ namespace libsemigroups {
                 {});
           }
         } else if (index == 1) {
-          presentation::add_transposition_rules_no_checks(p, range(n - 1));
+          presentation::add_involution_rules_no_checks(p, range(n - 1));
           for (size_t i = 0; i <= n - 4; ++i) {
             for (size_t j = i + 2; j <= n - 2; ++j) {
               presentation::add_rule_no_checks(p, {i, j}, {j, i});
@@ -532,7 +532,7 @@ namespace libsemigroups {
       } else if (val == author::Burnside + author::Miller) {
         // See Eq 2.6 of 'Presentations of finite simple groups: A
         // quantitative approach' J. Amer. Math. Soc. 21 (2008), 711-774
-        presentation::add_transposition_rules_no_checks(p, range(n - 1));
+        presentation::add_involution_rules_no_checks(p, range(n - 1));
 
         for (size_t i = 0; i <= n - 2; ++i) {
           for (size_t j = 0; j <= n - 2; ++j) {
@@ -559,7 +559,7 @@ namespace libsemigroups {
                                     + author::Kassabov + author::Lubotzky);
         // See Section 2.2 of 'Presentations of finite simple groups: A
         // quantitative approach' J. Amer. Math. Soc. 21 (2008), 711-774
-        presentation::add_transposition_rules_no_checks(p, range(n - 1));
+        presentation::add_involution_rules_no_checks(p, range(n - 1));
 
         for (size_t i = 0; i <= n - 2; ++i) {
           for (size_t j = 0; j <= n - 2; ++j) {
@@ -597,7 +597,7 @@ namespace libsemigroups {
 
       presentation::add_rule_no_checks(p, 000_w, {});
 
-      presentation::add_transposition_rules_no_checks(p, range(1, n - 2));
+      presentation::add_involution_rules_no_checks(p, range(1, n - 2));
 
       for (size_t i = 1; i <= n - 3; ++i) {
         presentation::add_rule_no_checks(p, pow({i - 1, i}, 3), {});

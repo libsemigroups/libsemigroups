@@ -329,10 +329,10 @@ namespace libsemigroups {
     }
 
     template <typename W>
-    void check_add_transposition_rules() {
+    void check_add_involution_rules() {
       Presentation<W> p;
       presentation::add_rule_no_checks(p, {0, 1, 2, 1}, {0, 0});
-      presentation::add_transposition_rules_no_checks(p, {0, 1});
+      presentation::add_involution_rules_no_checks(p, {0, 1});
       REQUIRE(
           p.rules
           == std::vector<W>({{0, 1, 2, 1}, {0, 0}, {0, 0}, {}, {1, 1}, {}}));
@@ -1275,12 +1275,12 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("Presentation",
                           "018",
-                          "helpers add_transposition_rules (all)",
+                          "helpers add_involution_rules (all)",
                           "[quick][presentation]") {
     auto rg = ReportGuard(false);
-    check_add_transposition_rules<word_type>();
-    check_add_transposition_rules<StaticVector1<uint16_t, 10>>();
-    check_add_transposition_rules<std::string>();
+    check_add_involution_rules<word_type>();
+    check_add_involution_rules<StaticVector1<uint16_t, 10>>();
+    check_add_involution_rules<std::string>();
   }
 
   LIBSEMIGROUPS_TEST_CASE("Presentation",
