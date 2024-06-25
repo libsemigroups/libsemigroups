@@ -2014,22 +2014,23 @@ namespace libsemigroups {
 
     // TODO (later) add balance for presentation word_types
 
-    //! \brief TODO
-    //!
-    //! TODO
-    //!
-    //! \tparam Word the type of the words in the presentation
-    //! \param p the presentation
-    //! \param lhs TODO
-    //! \param rhs TODO
-    //!
-    //! \throws LibsemigroupsException if either \p lhs or \p rhs contain
-    //! letters not in `p.alphabet()`
-    // TODO(later) do a proper version of this
-    template <typename Word>
-    void add_cyclic_conjugates(Presentation<Word>& p,
-                               Word const&         lhs,
-                               Word const&         rhs);
+    // //! \brief TODO
+    // //!
+    // //! TODO
+    // //!
+    // //! \tparam Word the type of the words in the presentation
+    // //! \param p the presentation
+    // //! \param lhs TODO
+    // //! \param rhs TODO
+    // //!
+    // //! \throws LibsemigroupsException if either \p lhs or \p rhs contain
+    // //! letters not in `p.alphabet()`
+    // // TODO(later) do a proper version of this, where the inverses are
+    // // specified, rather than being assumed to be upper/lower cases
+    // template <typename Word>
+    // void add_cyclic_conjugates(Presentation<Word>& p,
+    //                            Word const&         lhs,
+    //                            Word const&         rhs);
 
     //! \brief Return the code that would create \p p in GAP.
     //!
