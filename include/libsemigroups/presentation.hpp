@@ -1977,8 +1977,12 @@ namespace libsemigroups {
     //! \no_libsemigroups_except
     //!
     //! \warning
-    //! No checks that the arguments describe words over the alphabet of \p p
-    //! are performed, nor that \p inverses are valid inverses.
+    //! This function assumes that the semigroup defined by \p p is isomorphic
+    //! to a group, and that \p inverses are valid. However, this function does
+    //! no checks on its arguments. If the previous assumptions do not hold,
+    //! there is no guarantee the the semigroup \f$S\f$ defined by \p p before
+    //! this function is called will be isomorphic to the semigroup \f$S'\f$
+    //! defined by \p p after this function is called.
     template <typename Word>
     void balance_no_checks(Presentation<Word>& p,
                            Word const&         letters,
@@ -2004,11 +2008,12 @@ namespace libsemigroups {
     //! \no_libsemigroups_except
     //!
     //! \warning
-    //! No checks that the arguments describe words over the alphabet of \p p
-    //! are performed, nor that \p inverses are valid inverses.
-    //! TODO (now) If the arguments
-    //! are not valid, the semigroup defined by the presentation \p p before
-    //! this function is called and after this
+    //! This function assumes that the semigroup defined by \p p is isomorphic
+    //! to a group, and that \p inverses are valid. However, this function does
+    //! no checks on its arguments. If the previous assumptions do not hold,
+    //! there is no guarantee the the semigroup \f$S\f$ defined by \p p before
+    //! this function is called will be isomorphic to the semigroup \f$S'\f$
+    //! defined by \p p after this function is called.
     inline void balance_no_checks(Presentation<std::string>& p,
                                   char const*                letters,
                                   char const*                inverses) {
