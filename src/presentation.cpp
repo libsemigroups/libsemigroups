@@ -20,6 +20,7 @@
 // presentation.hpp
 
 #include <algorithm>  // for transform
+#include <cctype>     // for isprint
 #include <cstddef>    // for size_t
 #include <string>     // for basic_string, operator+
 #include <vector>     // for vector

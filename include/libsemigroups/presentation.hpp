@@ -27,10 +27,12 @@
 
 #include <algorithm>         // for reverse, sort
 #include <cstring>           // for size_t, strlen
+#include <ctype.h>           // for isprint
 #include <initializer_list>  // for initializer_list
 #include <iterator>          // for distance
 #include <limits>            // for numeric_limits
 #include <map>               // for map
+#include <math.h>            // for pow
 #include <numeric>           // for accumulate
 #include <string>            // for basic_string, operator==
 #include <tuple>             // for tie, tuple
@@ -43,19 +45,15 @@
 #include "adapters.hpp"   // for Hash, EqualTo
 #include "constants.hpp"  // for Max, UNDEFINED, operator==
 #include "debug.hpp"      // for LIBSEMIGROUPS_ASSERT
-#include "exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
 #include "order.hpp"      // for ShortLexCompare
-#include "ranges.hpp"     // for seq, operator|, rx, take
-#include "ranges.hpp"     // for chain, is_sorted
+#include "ranges.hpp"     // for seq, operator|, rx, take, chain, is_sorted
 #include "types.hpp"      // for word_type
 #include "ukkonen.hpp"    // for GreedyReduceHelper, Ukkonen
 #include "words.hpp"      // for operator+
 
-#include "detail/fmt.hpp"         // for format
-#include "detail/formatters.hpp"  // for StaticVector1 formatter
-#include "detail/report.hpp"      // for formatter<vector>
-#include "detail/string.hpp"      // for maximum_common_prefix
-#include "detail/uf.hpp"          // for Duf
+#include "detail/fmt.hpp"     // for format
+#include "detail/string.hpp"  // for maximum_common_prefix
+#include "detail/uf.hpp"      // for Duf
 
 namespace libsemigroups {
 
