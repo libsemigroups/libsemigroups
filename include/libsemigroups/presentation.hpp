@@ -1727,29 +1727,33 @@ namespace libsemigroups {
     //! \brief Greedily reduce the length of the presentation using
     //! `longest_subword_reducing_length`.
     //!
-    //! This function repeatedly calls `longest_subword_reducing_length` and
-    //! `replace_subword` to introduce a new generator and reduce the length
-    //! of the presentation \p p until `longest_subword_reducing_length` returns
-    //! the empty word.
+    //! This function repeatedly calls
+    //! `presentation::longest_subword_reducing_length` and
+    //! `presentation::replace_subword` to introduce a new generator and reduce
+    //! the length of the presentation \p p until
+    //! `presentation::longest_subword_reducing_length` returns the empty word.
     //!
     //! \tparam Word the type of the words in the presentation.
     //!
     //! \param p the presentation.
     //!
-    //! \throws LibsemigroupsException if `longest_subword_reducing_length` or
-    //!  `replace_word` does.
+    //! \throws LibsemigroupsException if
+    //! `presentation::longest_subword_reducing_length` or
+    //!  `presentation::replace_word` does.
     template <typename Word>
     void greedy_reduce_length(Presentation<Word>& p);
 
     //! \brief Greedily reduce the length and number of generators of the
     //! presentation.
     //!
-    //! This function repeatedly calls `longest_subword_reducing_length` and
-    //! `replace_subword` to introduce a new generator to try to reduce the
-    //! length of the presentation \p p and the number of generators. This is
-    //! done until either `longest_subword_reducing_length` returns the empty
-    //! word, or the new length and number of generators is greater than or
-    //! equal to that of the presentation in the previous iteration.
+    //! This function repeatedly calls
+    //! `presentation::longest_subword_reducing_length` and
+    //! `presentation::replace_subword` to introduce a new generator to try to
+    //! reduce the length of the presentation \p p and the number of generators.
+    //! This is done until either
+    //! `presentation::longest_subword_reducing_length` returns the empty word,
+    //! or the new length and number of generators is greater than or equal to
+    //! that of the presentation in the previous iteration.
     //!
     //! In the latter case, the presentation \p p gets restored to the state it
     //! was in after the previous iteration.
@@ -1758,8 +1762,9 @@ namespace libsemigroups {
     //!
     //! \param p the presentation.
     //!
-    //! \throws LibsemigroupsException if `longest_subword_reducing_length` or
-    //!  `replace_word` does.
+    //! \throws LibsemigroupsException if
+    //! `presentations::longest_subword_reducing_length` or
+    //!  `presentations::replace_word` does.
     template <typename Word>
     void greedy_reduce_length_and_number_of_gens(Presentation<Word>& p);
 
