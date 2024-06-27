@@ -180,7 +180,7 @@ namespace libsemigroups {
                             detail::to_printable(alphabet()));
   }
 
-  // TODO should this be a helper function?
+  // TODO(now) should this be a helper function?
   template <typename Word>
   typename Presentation<Word>::letter_type Presentation<Word>::add_generator() {
     auto result = presentation::first_unused_letter(*this);
@@ -960,7 +960,7 @@ namespace libsemigroups {
     void balance_no_checks(Presentation<Word>& p,
                            Word const&         letters,
                            Word const&         inverses) {
-      // TODO (Later) check args (including that p.contains_empty_word)
+      // TODO(later) check args (including that p.contains_empty_word)
       // So that longer relations are on the lhs
       presentation::sort_each_rule(p);
 
@@ -975,7 +975,6 @@ namespace libsemigroups {
         auto& r = *(it + 1);
         // Check that we aren't actually about to remove one of the inverse
         // relations itself
-        // TODO(later) what if the identity element isn't the empty word?
         if (l.size() == 2 && r.empty()) {
           auto mit = map.find(l.front());
           if (mit != map.cend() && l.back() == inverses[mit->second]) {

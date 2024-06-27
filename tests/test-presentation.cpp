@@ -250,8 +250,6 @@ namespace libsemigroups {
       REQUIRE(p.rules
               == std::vector<W>({{0, 1, 2, 1}, {0, 0}, {0, 1}, {1, 0}}));
 
-      // TODO (now) Note that, if the provided letters have duplicates, there
-      // will be duplicate rules
       presentation::add_commutes_rules_no_checks(p, {1, 1}, {2});
       REQUIRE(p.rules
               == std::vector<W>({{0, 1, 2, 1},
