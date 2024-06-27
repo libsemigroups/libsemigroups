@@ -166,8 +166,6 @@ namespace libsemigroups {
 
     ~Presentation();
 
-    // TODO alphabet_no_checks
-
     //! \brief Return the alphabet of the presentation.
     //!
     //! Returns the alphabet of the presentation.
@@ -182,6 +180,8 @@ namespace libsemigroups {
     [[nodiscard]] word_type const& alphabet() const noexcept {
       return _alphabet;
     }
+
+    // TODO (later) alphabet_no_checks
 
     //! \brief Set the alphabet by size.
     //!
@@ -203,8 +203,6 @@ namespace libsemigroups {
     //! * \ref validate_alphabet
     //! * \ref validate_rules
     //! * \ref validate
-    // TODO(later) should this set the characters to human readable for
-    // std:string?
     Presentation& alphabet(size_type n);
 
     //! \brief Set the alphabet const reference.
@@ -1236,8 +1234,6 @@ namespace libsemigroups {
     //!
     //! \throws LibsemigroupsException if `first == last`.
     // TODO(later) complexity
-    // TODO do we need this, since there is no other overloaded function with
-    // three parameters?
     template <typename Word, typename Iterator>
     typename Presentation<Word>::letter_type
     replace_word_with_new_generator(Presentation<Word>& p,
@@ -1885,7 +1881,6 @@ namespace libsemigroups {
     //! \warning
     //! No checks that the arguments describe words over the alphabet of \p p
     //! are performed.
-    // TODO does this doc make any sense?
     template <typename Word>
     void add_involution_rules_no_checks(Presentation<Word>& p,
                                         word_type const&    letters) {
@@ -2020,10 +2015,10 @@ namespace libsemigroups {
       balance_no_checks(p, std::string(letters), std::string(inverses));
     }
 
-    // TODO (later) add balance that checks p contains empty word, no duplicate
+    // TODO(later) add balance that checks p contains empty word, no duplicate
     // letters in alphabet, and inverses are valid.
 
-    // TODO (later) add balance for presentation word_types
+    // TODO(later) add balance for presentation word_types
 
     // //! \brief TODO
     // //!
@@ -2112,7 +2107,7 @@ namespace libsemigroups {
    public:
     using Presentation<Word>::Presentation;
 
-    // TODO init functions
+    // TODO(later) init functions
 
     //! \brief Construct an InversePresentation from a Presentation reference.
     //!
