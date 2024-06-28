@@ -57,7 +57,9 @@ namespace libsemigroups {
   // with no template WordOutput,
   // always use word_type, and can be
   // converted after if desirable
-  Presentation<WordOutput> to_presentation(FroidurePinBase& fp) {
+  auto to_presentation(FroidurePinBase& fp)
+      -> std::enable_if_t<!std::is_same_v<WordOutput, std::string>,
+                          Presentation<WordOutput>> {
     Presentation<WordOutput> p;
     p.alphabet(fp.number_of_generators());
     for (auto it = fp.cbegin_rules(); it != fp.cend_rules(); ++it) {
@@ -70,7 +72,10 @@ namespace libsemigroups {
     return p;
   }
 
-  static inline Presentation<std::string> to_presentation(FroidurePinBase& fp) {
+  template <typename WordOutput>
+  auto to_presentation(FroidurePinBase& fp)
+      -> std::enable_if_t<std::is_same_v<WordOutput, std::string>,
+                          Presentation<WordOutput>> {
     Presentation<std::string> p;
     p.alphabet(fp.number_of_generators());
     for (auto it = fp.cbegin_rules(); it != fp.cend_rules(); ++it) {
