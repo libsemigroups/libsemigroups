@@ -1136,7 +1136,7 @@ namespace libsemigroups {
     //! \tparam Word the type of the words in the presentation.
     //! \tparam Compare the type of the compare function.
     //! \param p the presentation whose rules should be sorted.
-    //! \param cmp the comparision function.
+    //! \param cmp the comparison function.
     //!
     //! \throws LibsemigroupsException if `p.rules.size()` is odd.
     //!
@@ -1156,7 +1156,7 @@ namespace libsemigroups {
     //! \tparam Word the type of the words in the presentation.
     //! \tparam Compare the type of the compare function.
     //! \param p the presentation to sort.
-    //! \param cmp the comparision function.
+    //! \param cmp the comparison function.
     //!
     //! \throws LibsemigroupsException if `p.rules.size()` is odd.
     template <typename Word, typename Compare>
@@ -1185,7 +1185,7 @@ namespace libsemigroups {
     //! \tparam Word the type of the words in the presentation.
     //! \tparam Compare the type of the compare function.
     //! \param p the presentation to check.
-    //! \param cmp the comparision function.
+    //! \param cmp the comparison function.
     //!
     //! \returns A value of type `bool`.
     //!
