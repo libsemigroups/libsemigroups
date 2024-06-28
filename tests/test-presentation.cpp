@@ -2636,7 +2636,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Presentation",
-                          "056",
+                          "057",
                           "to_human_readble_repr",
                           "[quick][presentation]") {
     auto rg = ReportGuard(false);
@@ -2678,7 +2678,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Presentation",
-                          "057",
+                          "058",
                           "to_word",
                           "[quick][presentation]") {
     auto                      rg = ReportGuard(false);
@@ -2693,7 +2693,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Presentation",
-                          "058",
+                          "059",
                           "to_string",
                           "[quick][presentation]") {
     auto                      rg = ReportGuard(false);
@@ -2708,7 +2708,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Presentation",
-                          "059",
+                          "060",
                           "to_gap_string",
                           "[quick][presentation]") {
     auto                      rg = ReportGuard(false);
