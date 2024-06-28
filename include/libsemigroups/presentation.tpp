@@ -168,16 +168,14 @@ namespace libsemigroups {
   template <typename Word>
   void Presentation<Word>::add_generator(
       typename Presentation<Word>::letter_type x) {
-    try {
-      validate_letter(x);  // throws if x does not belong to p.alphabet()
-    } catch (LibsemigroupsException const& e) {
+    if (!contains_generator(x)) {
       add_generator_no_checks(x);
-      return;
+    } else {
+      LIBSEMIGROUPS_EXCEPTION("the argument {} already belongs to the alphabet "
+                              "{}, expected an unused letter",
+                              detail::to_printable(x),
+                              detail::to_printable(alphabet()));
     }
-    LIBSEMIGROUPS_EXCEPTION("the argument {} already belongs to the alphabet "
-                            "{}, expected an unused letter",
-                            detail::to_printable(x),
-                            detail::to_printable(alphabet()));
   }
 
   // TODO(now) should this be a helper function?

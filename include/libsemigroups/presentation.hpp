@@ -440,6 +440,24 @@ namespace libsemigroups {
     //! \throws LibsemigroupsException if \p x is in `p.alphabet()`.
     void add_generator(letter_type x);
 
+    //! \brief Return whether \p x is a generator.
+    //!
+    //! Returns \c true if \p x is a generator (i.e. is contained in the
+    //! alphabet) and \c false otherwise.
+    //!
+    //! \param x the letter to check.
+    //!
+    //! \returns A value of type `bool`.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    //! \complexity
+    //! Logarithmic in the size of the alphabet.
+    [[nodiscard]] bool contains_generator(letter_type x) const {
+      return _alphabet_map.find(x) != _alphabet_map.cend();
+    }
+
     //! \brief Return whether the empty word is a valid relation word.
     //!
     //! Returns \c true if the empty word is a valid relation word, and \c false
