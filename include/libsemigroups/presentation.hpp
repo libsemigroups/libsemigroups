@@ -2148,8 +2148,28 @@ namespace libsemigroups {
     //! This function does no checks on its argument. In particular, it does not
     //! check that the letters in \p w belong to the alphabet, nor does it add
     //! new letters to the alphabet.
-    // TODO(later) validate that checks that inverses are set
     InversePresentation& inverses_no_checks(word_type const& w);
+
+    //! \brief Set the inverse of each letter in the alphabet.
+    //!
+    //! Set the inverse of each letter in the alphabet.
+    //!
+    //! \param w a word containing the inverses.
+    //!
+    //! \returns A reference to `this`.
+    //!
+    //! \throw LibsemigroupsException if:
+    //! * the alphabet contains duplicate letters
+    //! * the inverses do not act as semigroup inverses
+    //!
+    //! \sa
+    //! * \ref Presentation<Word>::validate_alphabet
+    //! * \ref presentation::validate_semigroup_inverses
+    InversePresentation& inverses(word_type const& w) {
+      Presentation<Word>::validate_alphabet();
+      presentation::validate_semigroup_inverses(*this, w);
+      return inverses_no_checks(w);
+    }
 
     //! \brief Return the inverse of each letter in the alphabet.
     //!
@@ -2220,6 +2240,8 @@ namespace libsemigroups {
                   Presentation<Word> const& rhop) {
     return lhop.alphabet() == rhop.alphabet() && lhop.rules == rhop.rules;
   }
+
+  // TODO(later) operator== for InversePresentations
 
   //! \ingroup presentations_group
   //!
