@@ -965,6 +965,72 @@ namespace libsemigroups {
       REQUIRE(presentation::make_semigroup(p) == UNDEFINED);
     }
 
+    template <typename W>
+    void check_inverse_constructors(InversePresentation<W> ip) {
+      ip.validate();
+      InversePresentation<W> pp(ip);
+      pp.validate();
+      REQUIRE(pp.alphabet() == ip.alphabet());
+      REQUIRE(pp.rules == ip.rules);
+      REQUIRE(pp.inverses() == ip.inverses());
+
+      InversePresentation<W> q(std::move(ip));
+      q.validate();
+      REQUIRE(q.alphabet() == pp.alphabet());
+      REQUIRE(q.rules == pp.rules);
+      REQUIRE(q.inverses() == pp.inverses());
+
+      ip = q;
+      ip.validate();
+      REQUIRE(q.alphabet() == ip.alphabet());
+      REQUIRE(q.rules == ip.rules);
+      REQUIRE(q.inverses() == ip.inverses());
+
+      ip = std::move(q);
+      ip.validate();
+      REQUIRE(pp.alphabet() == ip.alphabet());
+      REQUIRE(pp.rules == ip.rules);
+      REQUIRE(pp.inverses() == ip.inverses());
+    }
+
+    template <typename W>
+    void check_construct_from_presentation() {
+      Presentation<W> p;
+      p.alphabet({0, 1, 2});
+      presentation::add_rule_no_checks(p, {0, 0, 0}, {0});
+      presentation::add_rule(p, {0, 0, 0}, {0});
+      InversePresentation<W> ip(p);
+      REQUIRE_THROWS_AS(ip.validate(), LibsemigroupsException);
+      REQUIRE(ip.alphabet() == p.alphabet());
+      REQUIRE(ip.rules == ip.rules);
+      REQUIRE(ip.inverses() == W({}));
+
+      InversePresentation<W> ip2 = std::move(p);
+      REQUIRE_THROWS_AS(ip2.validate(), LibsemigroupsException);
+      REQUIRE(ip2.alphabet() == ip.alphabet());
+      REQUIRE(ip2.rules == ip.rules);
+      REQUIRE(ip2.inverses() == W({}));
+    }
+
+    template <typename W>
+    void check_inverses() {
+      InversePresentation<W> ip;
+      ip.alphabet({0, 1, 2});
+      presentation::add_rule_no_checks(ip, {0, 0, 0}, {0});
+      presentation::add_rule(ip, {0, 0, 0}, {0});
+      ip.inverses_no_checks({0, 0, 0});
+      REQUIRE_THROWS_AS(ip.validate(), LibsemigroupsException);
+      REQUIRE_THROWS_AS(ip.inverses({1, 2, 0}), LibsemigroupsException);
+      REQUIRE_THROWS_AS(ip.inverses({0, 0, 0}), LibsemigroupsException);
+      REQUIRE_THROWS_AS(ip.inverses({0, 1, 2, 0}), LibsemigroupsException);
+      REQUIRE_THROWS_AS(ip.inverses({0, 1, 3}), LibsemigroupsException);
+      ip.inverses({2, 1, 0});
+      REQUIRE(ip.inverses() == W({2, 1, 0}));
+      REQUIRE(ip.inverse(0) == 2);
+      REQUIRE(ip.inverse(1) == 1);
+      REQUIRE(ip.inverse(2) == 0);
+    }
+
   }  // namespace
 
   using detail::StaticVector1;
@@ -1467,8 +1533,8 @@ namespace libsemigroups {
     check_redundant_rule<StaticVector1<uint16_t, 10>>();
     // FIXME: If alphabet(n) uses human readable characters, then converting
     // FroidurePin to Presentation needs to be updated, as there is now not a
-    // nice mapping from initialiser lists starting at 0, to 'a', 'b', 'c', ...
-    // check_redundant_rule<std::string>();
+    // nice mapping from initialiser lists starting at 0, to 'a', 'b', 'c',
+    // ... check_redundant_rule<std::string>();
   }
 
   // LIBSEMIGROUPS_TEST_CASE("Presentation",
@@ -2747,6 +2813,73 @@ namespace libsemigroups {
                "          [c * b * a, One(F)]\n"
                "         ];\n"
                "my_var := F / R;\n");
+  }
+  LIBSEMIGROUPS_TEST_CASE("InversePresentation",
+                          "061",
+                          "constructors (word_type)",
+                          "[quick][presentation]") {
+    auto                           rg = ReportGuard(false);
+    InversePresentation<word_type> ip;
+    ip.alphabet({0, 1, 2});
+    presentation::add_rule_no_checks(ip, {0, 0, 0}, {0});
+    REQUIRE(ip.rules.size() == 2);
+    presentation::add_rule(ip, {0, 0, 0}, {0});
+    REQUIRE_THROWS_AS(ip.validate(), LibsemigroupsException);
+    ip.inverses_no_checks({2, 1, 0});
+    ip.validate();
+    check_inverse_constructors(ip);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("InversePresentation",
+                          "062",
+                          "constructors (StaticVector1)",
+                          "[quick][presentation]") {
+    auto                                             rg = ReportGuard(false);
+    InversePresentation<StaticVector1<uint16_t, 16>> ip;
+    ip.alphabet({0, 1, 2});
+    presentation::add_rule_no_checks(ip, {0, 0, 0}, {0});
+    REQUIRE(ip.rules.size() == 2);
+    presentation::add_rule(ip, {0, 0, 0}, {0});
+    REQUIRE_THROWS_AS(ip.validate(), LibsemigroupsException);
+    ip.inverses_no_checks({2, 1, 0});
+    ip.validate();
+    check_inverse_constructors(ip);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("InversePresentation",
+                          "063",
+                          "constructors (std::string)",
+                          "[quick][presentation]") {
+    auto                             rg = ReportGuard(false);
+    InversePresentation<std::string> ip;
+    ip.alphabet({0, 1, 2});
+    presentation::add_rule_no_checks(ip, {0, 0, 0}, {0});
+    REQUIRE(ip.rules.size() == 2);
+    presentation::add_rule(ip, {0, 0, 0}, {0});
+    REQUIRE_THROWS_AS(ip.validate(), LibsemigroupsException);
+    ip.inverses_no_checks({2, 1, 0});
+    ip.validate();
+    check_inverse_constructors(ip);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("InversePresentation",
+                          "064",
+                          "construct from presnetation",
+                          "[quick][presentation]") {
+    auto rg = ReportGuard(false);
+    check_construct_from_presentation<word_type>();
+    check_construct_from_presentation<StaticVector1<uint16_t, 16>>();
+    check_construct_from_presentation<std::string>();
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("InversePresentation",
+                          "065",
+                          "inverses",
+                          "[quick][presentation]") {
+    auto rg = ReportGuard(false);
+    check_inverses<word_type>();
+    check_inverses<StaticVector1<uint16_t, 16>>();
+    check_inverses<std::string>();
   }
 
 }  // namespace libsemigroups
