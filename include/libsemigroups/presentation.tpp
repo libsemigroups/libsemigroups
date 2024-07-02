@@ -168,7 +168,7 @@ namespace libsemigroups {
   template <typename Word>
   void Presentation<Word>::add_generator(
       typename Presentation<Word>::letter_type x) {
-    if (!contains_generator(x)) {
+    if (!in_alphabet(x)) {
       add_generator_no_checks(x);
     } else {
       LIBSEMIGROUPS_EXCEPTION("the argument {} already belongs to the alphabet "
