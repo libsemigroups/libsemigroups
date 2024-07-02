@@ -2162,6 +2162,11 @@ namespace libsemigroups {
     //! * the alphabet contains duplicate letters
     //! * the inverses do not act as semigroup inverses
     //!
+    //! \note
+    //! Whilst the alphabet is not specified as an argument to this function, it
+    //! is necessary to validate the alphabet here; a specification of inverses
+    //! cannot make sense if the alphabet contains duplicate letters.
+    //!
     //! \sa
     //! * \ref Presentation<Word>::validate_alphabet
     //! * \ref presentation::validate_semigroup_inverses
