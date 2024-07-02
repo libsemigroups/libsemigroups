@@ -2346,6 +2346,20 @@ namespace libsemigroups {
   template <typename Word>
   std::string to_human_readable_repr(Presentation<Word> const& p);
 
+  //! \ingroup presentations_group
+  //!
+  //! \brief Return a human readable representation of an InversePresentation.
+  //!
+  //! Return a human readable representation of an InversePresentation.
+  //!
+  //! \tparam Word the type of the words in the InversePresentation.
+  //! \param p the InversePresentation.
+  //!
+  //! \exceptions
+  //! \no_libsemigroups_except
+  template <typename Word>
+  std::string to_human_readable_repr(InversePresentation<Word> const& p);
+
   namespace detail {
     template <typename T>
     struct IsPresentationHelper : std::false_type {};

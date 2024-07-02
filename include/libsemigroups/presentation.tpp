@@ -1062,6 +1062,32 @@ namespace libsemigroups {
   }
 
   template <typename Word>
+  std::string to_human_readable_repr(InversePresentation<Word> const& p) {
+    size_t      alphabet_size = p.alphabet().size();
+    size_t      n_rules       = p.rules.size() / 2;
+    std::string out           = "<";
+    if (p.contains_empty_word()) {
+      out += "Monoid ";
+    } else {
+      out += "Semigroup ";
+    }
+    out += "Presentation with inverses on ";
+    if (alphabet_size == 1) {
+      out += "1 letter ";
+    } else {
+      out += std::to_string(alphabet_size) + " letters ";
+    }
+    out += "with ";
+    if (n_rules == 1) {
+      out += "1 rule";
+    } else {
+      out += std::to_string(n_rules) + " rules";
+    }
+    out += ">";
+    return out;
+  }
+
+  template <typename Word>
   InversePresentation<Word>&
   InversePresentation<Word>::inverses_no_checks(word_type const& w) {
     // TODO(later) maybe don't validate here but only in the validate function
