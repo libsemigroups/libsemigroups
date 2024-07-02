@@ -224,12 +224,12 @@ namespace libsemigroups {
     Presentation<std::string> p;
     p.alphabet(2);
 
-    REQUIRE(p.alphabet() == std::string({0, 1}));
+    REQUIRE(p.alphabet() == "ab");
 
     TestType kb(twosided, p);
-    REQUIRE(!kb.equal_to({0}, {1}));
-    REQUIRE(kb.equal_to({0}, {0}));
-    REQUIRE(kb.equal_to({0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0}));
+    REQUIRE(!kb.equal_to("a", "b"));
+    REQUIRE(kb.equal_to("a", "a"));
+    REQUIRE(kb.equal_to("aaaaaaa", "aaaaaaa"));
     REQUIRE(kb.number_of_classes() == POSITIVE_INFINITY);
 
     auto nf = knuth_bendix::normal_forms(kb).min(1).max(6);
@@ -717,7 +717,7 @@ namespace libsemigroups {
                      KNUTH_BENDIX_TYPES) {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
-    p.alphabet(3);
+    p.alphabet({0, 1, 2});
     presentation::add_rule(p, {0, 1}, {1, 0});
     presentation::add_rule(p, {0, 2}, {2, 0});
     presentation::add_rule(p, {0, 0}, {0});

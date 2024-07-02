@@ -52,10 +52,14 @@ namespace libsemigroups {
   //!
   //! \exceptions
   //! \no_libsemigroups_except
-  template <typename WordOutput>  // TODO why not just to_presentation with no
-                                  // template WordOutput, always use word_type,
-                                  // and can be converted after if desirable
-  Presentation<WordOutput> to_presentation(FroidurePinBase& fp) {
+  template <typename WordOutput>
+  // TODO why not just to_presentation
+  // with no template WordOutput,
+  // always use word_type, and can be
+  // converted after if desirable
+  auto to_presentation(FroidurePinBase& fp)
+      -> std::enable_if_t<!std::is_same_v<WordOutput, std::string>,
+                          Presentation<WordOutput>> {
     Presentation<WordOutput> p;
     p.alphabet(fp.number_of_generators());
     for (auto it = fp.cbegin_rules(); it != fp.cend_rules(); ++it) {
@@ -63,6 +67,22 @@ namespace libsemigroups {
                  it->first.cend(),
                  it->second.cbegin(),
                  it->second.cend());
+    }
+
+    return p;
+  }
+
+  template <typename WordOutput>
+  auto to_presentation(FroidurePinBase& fp)
+      -> std::enable_if_t<std::is_same_v<WordOutput, std::string>,
+                          Presentation<WordOutput>> {
+    Presentation<std::string> p;
+    p.alphabet(fp.number_of_generators());
+    for (auto it = fp.cbegin_rules(); it != fp.cend_rules(); ++it) {
+      std::string lhs, rhs;
+      to_string(p, it->first, lhs);
+      to_string(p, it->second, rhs);
+      presentation::add_rule(p, lhs, rhs);
     }
 
     return p;
@@ -160,7 +180,7 @@ namespace libsemigroups {
     InversePresentation<WordOutput> result;
     result.contains_empty_word(p.contains_empty_word());
     result.alphabet(new_alphabet);
-    result.inverses(new_inverses);
+    result.inverses_no_checks(new_inverses);
 
     WordOutput rel;
     for (auto it = p.rules.cbegin(); it != p.rules.cend(); ++it) {
@@ -190,7 +210,7 @@ namespace libsemigroups {
     result.alphabet(2 * result.alphabet().size());
     auto invs = result.alphabet();
     std::rotate(invs.begin(), invs.begin() + invs.size() / 2, invs.end());
-    result.inverses(std::move(invs));
+    result.inverses_no_checks(std::move(invs));
     // result.validate();
     return result;
   }
