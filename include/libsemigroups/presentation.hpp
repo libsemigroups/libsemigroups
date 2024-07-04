@@ -2256,7 +2256,31 @@ namespace libsemigroups {
     return lhop.alphabet() == rhop.alphabet() && lhop.rules == rhop.rules;
   }
 
-  // TODO(later) operator== for InversePresentations
+  //! \ingroup presentations_group
+  //!
+  //! \brief Compare for equality.
+  //!
+  //! Returns \c true if \p lhop equals \p rhop by comparing the
+  //! the alphabets and the rules.
+  //!
+  //! \tparam Word the type of the words in the inverse presentations.
+  //! \param lhop an inverse presentation that is to be compared.
+  //! \param rhop an inverse presentation that is to be compared.
+  //!
+  //! \returns A value of type \c bool.
+  //!
+  //! \exceptions
+  //! \no_libsemigroups_except
+  //!
+  //! \complexity
+  //! At worst linear in the sum of the alphabet sizes and numbers of rules.
+  // TODO(later) also we could do a more sophisticated version of this
+  template <typename Word>
+  bool operator==(InversePresentation<Word> const& lhop,
+                  InversePresentation<Word> const& rhop) {
+    return lhop.alphabet() == rhop.alphabet() && lhop.rules == rhop.rules
+           && lhop.inverses() == rhop.inverses();
+  }
 
   //! \ingroup presentations_group
   //!
@@ -2279,6 +2303,30 @@ namespace libsemigroups {
   template <typename Word>
   bool operator!=(Presentation<Word> const& lhop,
                   Presentation<Word> const& rhop) {
+    return !(lhop == rhop);
+  }
+
+  //! \ingroup presentations_group
+  //!
+  //! \brief Compare for inequality.
+  //!
+  //! Returns \c true if \p lhop does not equal \p rhop by comparing the
+  //! the alphabets and the rules.
+  //!
+  //! \tparam Word the type of the words in the inverse presentations.
+  //! \param lhop an inverse presentation that is to be compared.
+  //! \param rhop an inverse presentation that is to be compared.
+  //!
+  //! \returns A value of type \c bool.
+  //!
+  //! \exceptions
+  //! \no_libsemigroups_except
+  //!
+  //! \complexity
+  //! At worst linear in the sum of the alphabet sizes and numbers of rules.
+  template <typename Word>
+  bool operator!=(InversePresentation<Word> const& lhop,
+                  InversePresentation<Word> const& rhop) {
     return !(lhop == rhop);
   }
 
