@@ -457,23 +457,23 @@ def xml_is_deprecated(xml):
 def doxy_normalize_yml_params(params):
     params = params.strip()
     # replace more than 1 space by a single space
-    params = re.sub("\s{2,}", " ", params)
+    params = re.sub(r"\s{2,}", " ", params)
     # Add space after < if it's a non-space
-    params = re.sub("(?<=[<])(?=[^\s])", " ", params)
+    params = re.sub(r"(?<=[<])(?=[^\s])", " ", params)
     # Add space before > if it's a non-space
-    params = re.sub("(?<=[^\s])(?=[>])", " ", params)
+    params = re.sub(r"(?<=[^\s])(?=[>])", " ", params)
     # Add space before & if it's a non-space and not &
-    params = re.sub("(?<=[^\s\&])(?=[\&])", " ", params)
+    params = re.sub(r"(?<=[^\s\&])(?=[\&])", " ", params)
     # Add space after & if it's a non-space and not &
-    params = re.sub("(?<=[\&])(?=[^\s\&])", " ", params)
+    params = re.sub(r"(?<=[\&])(?=[^\s\&])", " ", params)
     # remove whitespace around commas
-    params = re.sub("\s*,\s*", ",", params)
+    params = re.sub(r"\s*,\s*", ",", params)
 
     # remove some of the spaces introduced above if for example the parameters
     # are: std::function<void(bool&)>, then doxygen does not want the spaces at
     # the end in "& ) >" for some reason
     if params.endswith("& ) >"):
-        params = re.sub("\& \) >$", "&)>", params)
+        params = re.sub(r"\& \) >$", "&)>", params)
     return params
 
 
