@@ -1053,6 +1053,10 @@ namespace libsemigroups {
       REQUIRE(ip2.alphabet() == ip.alphabet());
       REQUIRE(ip2.rules == ip.rules);
       REQUIRE(ip2.inverses() == W({}));
+      REQUIRE(ip == ip2);
+
+      ip.inverses_no_checks({2, 1, 0});
+      REQUIRE(ip != ip2);
     }
 
     template <typename W>
