@@ -1431,9 +1431,12 @@ namespace libsemigroups {
                 {"bb", "a", "bcb", "a", "abcb", "a", "bbcb", "a"}));
     REQUIRE(p.alphabet() == "abc");
     presentation::normalize_alphabet(p);
-    REQUIRE(p.letter_no_checks(0) == presentation::human_readable_letter(p, 0));
-    REQUIRE(p.letter_no_checks(1) == presentation::human_readable_letter(p, 1));
-    REQUIRE(p.letter_no_checks(2) == presentation::human_readable_letter(p, 2));
+    REQUIRE(p.letter_no_checks(0)
+            == presentation::human_readable_letter<std::string>(0));
+    REQUIRE(p.letter_no_checks(1)
+            == presentation::human_readable_letter<std::string>(1));
+    REQUIRE(p.letter_no_checks(2)
+            == presentation::human_readable_letter<std::string>(2));
     p.validate();
 
     presentation::add_rule_no_checks(p, "abcb", "ecb");
@@ -1531,10 +1534,7 @@ namespace libsemigroups {
     auto rg = ReportGuard(false);
     check_redundant_rule<word_type>();
     check_redundant_rule<StaticVector1<uint16_t, 10>>();
-    // FIXME: If alphabet(n) uses human readable characters, then converting
-    // FroidurePin to Presentation needs to be updated, as there is now not a
-    // nice mapping from initialiser lists starting at 0, to 'a', 'b', 'c',
-    // ... check_redundant_rule<std::string>();
+    check_redundant_rule<std::string>();
   }
 
   // LIBSEMIGROUPS_TEST_CASE("Presentation",
@@ -1704,9 +1704,11 @@ namespace libsemigroups {
                           "letter",
                           "[quick][presentation]") {
     Presentation<std::vector<uint16_t>> p;
-    REQUIRE_THROWS_AS(presentation::human_readable_letter(p, 65536),
-                      LibsemigroupsException);
-    REQUIRE(presentation::human_readable_letter(p, 10) == 10);
+    REQUIRE_THROWS_AS(
+        presentation::human_readable_letter<std::vector<uint16_t>>(65536),
+        LibsemigroupsException);
+    REQUIRE(presentation::human_readable_letter<std::vector<uint16_t>>(10)
+            == 10);
     REQUIRE_THROWS_AS(human_readable_char(65536), LibsemigroupsException);
     REQUIRE(human_readable_char(0) == 'a');
     REQUIRE(human_readable_char(10) == 'k');
@@ -1716,8 +1718,13 @@ namespace libsemigroups {
 
     REQUIRE(std::all_of(ir.cbegin(), ir.cend(), [&q](size_t i) {
       return human_readable_char(i)
-             == presentation::human_readable_letter(q, i);
+             == presentation::human_readable_letter<std::string>(i);
     }));
+
+    Presentation<word_type> r;
+    for (size_t i = 0; i < 1000; ++i) {
+      REQUIRE(presentation::human_readable_letter<word_type>(i) == i);
+    }
   }
 
   LIBSEMIGROUPS_TEST_CASE("Presentation",
@@ -1757,13 +1764,15 @@ namespace libsemigroups {
         = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
     std::unordered_set<letter_type> set;
     for (size_t i = 0; i < letters.size(); ++i) {
-      REQUIRE(letters[i] == presentation::human_readable_letter(p, i));
+      REQUIRE(letters[i]
+              == presentation::human_readable_letter<std::string>(i));
       REQUIRE(set.insert(letters[i]).second);
     }
     for (size_t i = letters.size(); i < 255; ++i) {
-      REQUIRE(set.insert(presentation::human_readable_letter(p, i)).second);
+      REQUIRE(set.insert(presentation::human_readable_letter<std::string>(i))
+                  .second);
     }
-    REQUIRE_THROWS_AS(presentation::human_readable_letter(p, 255),
+    REQUIRE_THROWS_AS(presentation::human_readable_letter<std::string>(255),
                       LibsemigroupsException);
     p.alphabet(255);
     REQUIRE_THROWS_AS(presentation::first_unused_letter(p),

@@ -88,11 +88,10 @@ namespace libsemigroups {
                               n);
     }
     word_type lphbt(n, 0);
-    if constexpr (std::is_same_v<Word, std::string>) {
-      std::iota(lphbt.begin(), lphbt.end(), human_readable_char(0));
-    } else {
-      std::iota(lphbt.begin(), lphbt.end(), 0);
-    }
+    std::iota(lphbt.begin(),
+              lphbt.end(),
+              presentation::human_readable_letter<Word>(0));
+
     return alphabet(lphbt);
   }
 
@@ -617,13 +616,13 @@ namespace libsemigroups {
 
       for (auto& rule : p.rules) {
         std::for_each(rule.begin(), rule.end(), [&p](letter_type& x) {
-          x = human_readable_letter(p, p.index(x));
+          x = human_readable_letter<Word>(p.index(x));
         });
       }
       Word A(p.alphabet().size(), 0);
 
       for (size_t i = 0; i < p.alphabet().size(); ++i) {
-        A[i] = human_readable_letter(p, i);
+        A[i] = human_readable_letter<Word>(i);
       }
       p.alphabet(std::move(A));
 #ifdef LIBSEMIGROUPS_DEBUG
@@ -746,16 +745,19 @@ namespace libsemigroups {
     }
 
     template <typename Word>
-    typename Presentation<Word>::letter_type
-    human_readable_letter(Presentation<Word> const&, size_t i) {
-      using letter_type = typename Presentation<Word>::letter_type;
-      if (i >= std::numeric_limits<letter_type>::max()) {
-        LIBSEMIGROUPS_EXCEPTION("expected the 2nd argument to be in "
-                                "the range [0, {}), found {}",
-                                std::numeric_limits<letter_type>::max(),
-                                i);
+    typename Presentation<Word>::letter_type human_readable_letter(size_t i) {
+      if constexpr (!std::is_same_v<Word, std::string>) {
+        using letter_type = typename Presentation<Word>::letter_type;
+        if (i >= std::numeric_limits<letter_type>::max()) {
+          LIBSEMIGROUPS_EXCEPTION(
+              "expected the argument to be in the range [0, {}), found {}",
+              std::numeric_limits<letter_type>::max(),
+              i);
+        }
+        return static_cast<letter_type>(i);
+      } else {
+        return human_readable_char(i);
       }
-      return static_cast<typename Presentation<Word>::letter_type>(i);
     }
 
     template <typename Word>
@@ -778,7 +780,7 @@ namespace libsemigroups {
 
       letter_type x;
       for (size_type i = 0; i < max_letter; ++i) {
-        x = human_readable_letter(p, i);
+        x = human_readable_letter<Word>(i);
         if (!p.in_alphabet(x)) {
           break;
         }
@@ -904,7 +906,7 @@ namespace libsemigroups {
       for (auto const& x : p.alphabet()) {
         if (x != other) {
           replace_subword(
-              p, {x}, {human_readable_letter(p, non_trivial_scc[index])});
+              p, {x}, {human_readable_letter<Word>(non_trivial_scc[index])});
         }
       }
       p.alphabet_from_rules();

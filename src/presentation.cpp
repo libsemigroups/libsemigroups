@@ -61,12 +61,6 @@ namespace libsemigroups {
   }  // namespace detail
 
   namespace presentation {
-
-    typename Presentation<std::string>::letter_type
-    human_readable_letter(Presentation<std::string> const&, size_t i) {
-      return human_readable_char(i);
-    }
-
     std::string to_gap_string(Presentation<word_type> const& p,
                               std::string const&             var_name) {
       p.validate();
