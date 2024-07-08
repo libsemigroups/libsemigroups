@@ -22,6 +22,7 @@
       <tab type="user" visible="yes" url="@ref libsemigroups::InversePresentation" title="InversePresentation class" />
       <tab type="usergroup" visible="yes" url="@ref libsemigroups::presentation" title="Helper functions" />
       <tab type="usergroup" visible="yes" url="@ref libsemigroups::fpsemigroup" title="Examples" />
+      <tab type="usergroup" visible="yes" url="@ref to_presentation_group" title="Making presentations from other objects" />
     </tab>
     <tab type="usergroup" visible="yes" url="@ref word_graph_group" title="Word graphs" >
       <tab type="user" visible="yes" url="@ref libsemigroups::Forest" title="Forest" />
