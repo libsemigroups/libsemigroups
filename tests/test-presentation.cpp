@@ -1057,6 +1057,7 @@ namespace libsemigroups {
 
       ip.inverses_no_checks({2, 1, 0});
       REQUIRE(ip != ip2);
+      ip.validate();
     }
 
     template <typename W>
@@ -1076,6 +1077,7 @@ namespace libsemigroups {
       REQUIRE(ip.inverse(0) == 2);
       REQUIRE(ip.inverse(1) == 1);
       REQUIRE(ip.inverse(2) == 0);
+      ip.validate();
     }
 
   }  // namespace
@@ -2928,6 +2930,7 @@ namespace libsemigroups {
     REQUIRE(ip.rules.size() == 2);
     presentation::add_rule(ip, {0, 0, 0}, {0});
     REQUIRE_THROWS_AS(ip.validate(), LibsemigroupsException);
+    REQUIRE_EXCEPTION_MSG(ip.inverse(0), "no inverses have been defined");
     ip.inverses_no_checks({2, 1, 0});
     ip.validate();
     check_inverse_constructors(ip);
@@ -2944,6 +2947,7 @@ namespace libsemigroups {
     REQUIRE(ip.rules.size() == 2);
     presentation::add_rule(ip, {0, 0, 0}, {0});
     REQUIRE_THROWS_AS(ip.validate(), LibsemigroupsException);
+    REQUIRE_EXCEPTION_MSG(ip.inverse(0), "no inverses have been defined");
     ip.inverses_no_checks({2, 1, 0});
     ip.validate();
     check_inverse_constructors(ip);
@@ -2960,6 +2964,7 @@ namespace libsemigroups {
     REQUIRE(ip.rules.size() == 2);
     presentation::add_rule(ip, {0, 0, 0}, {0});
     REQUIRE_THROWS_AS(ip.validate(), LibsemigroupsException);
+    REQUIRE_EXCEPTION_MSG(ip.inverse(0), "no inverses have been defined");
     ip.inverses_no_checks({2, 1, 0});
     ip.validate();
     check_inverse_constructors(ip);
