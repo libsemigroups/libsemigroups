@@ -98,6 +98,7 @@ pkginclude_HEADERS += include/libsemigroups/stephen.tpp
 pkginclude_HEADERS += include/libsemigroups/to-froidure-pin.hpp
 pkginclude_HEADERS += include/libsemigroups/to-knuth-bendix.hpp
 pkginclude_HEADERS += include/libsemigroups/to-presentation.hpp
+pkginclude_HEADERS += include/libsemigroups/to-presentation.tpp
 pkginclude_HEADERS += include/libsemigroups/to-todd-coxeter.hpp
 pkginclude_HEADERS += include/libsemigroups/todd-coxeter.hpp
 pkginclude_HEADERS += include/libsemigroups/transf.hpp
