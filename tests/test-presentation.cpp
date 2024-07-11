@@ -1792,7 +1792,7 @@ namespace libsemigroups {
     detail::IntRange          ir(0, 255);
     Presentation<std::string> q;
 
-    REQUIRE(std::all_of(ir.cbegin(), ir.cend(), [&q](size_t i) {
+    REQUIRE(std::all_of(ir.cbegin(), ir.cend(), [](size_t i) {
       return human_readable_char(i)
              == presentation::human_readable_letter<std::string>(i);
     }));
