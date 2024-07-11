@@ -43,16 +43,13 @@ namespace libsemigroups {
     return p;
   }
 
-  template <
-      typename WordOutput,
-      typename WordInput,
-      typename Func,
-      typename = std::enable_if_t<
+  template <typename WordOutput, typename WordInput, typename Func>
+  auto to_presentation(Presentation<WordInput> const& p, Func&& f)
+      -> std::enable_if_t<
           std::is_invocable_v<std::decay_t<Func>,
                               typename Presentation<WordInput>::letter_type>
-          && !std::is_same_v<WordOutput, WordInput>>>
-  Presentation<WordOutput> to_presentation(Presentation<WordInput> const& p,
-                                           Func&&                         f) {
+              && !std::is_same_v<WordOutput, WordInput>,
+          Presentation<WordOutput>> {
     p.validate();
     // Must call p.validate otherwise f(val) may segfault if val is not in the
     // alphabet
@@ -84,16 +81,14 @@ namespace libsemigroups {
     });
   }
 
-  template <
-      typename WordOutput,
-      typename WordInput,
-      typename Func,
-      typename = std::enable_if_t<
+  template <typename WordOutput, typename WordInput, typename Func>
+  auto to_inverse_presentation(InversePresentation<WordInput> const& ip,
+                               Func&&                                f)
+      -> std::enable_if_t<
           std::is_invocable_v<std::decay_t<Func>,
                               typename Presentation<WordInput>::letter_type>
-          && !std::is_same_v<WordOutput, WordInput>>>
-  InversePresentation<WordOutput>
-  to_inverse_presentation(InversePresentation<WordInput> const& ip, Func&& f) {
+              && !std::is_same_v<WordOutput, WordInput>,
+          InversePresentation<WordOutput>> {
     ip.validate_word(ip.inverses().begin(), ip.inverses().end());
     InversePresentation<WordOutput> result(
         std::move(to_presentation<WordOutput>(ip, f)));

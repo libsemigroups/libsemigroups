@@ -88,16 +88,13 @@ namespace libsemigroups {
   Presentation<WordOutput> to_presentation(Presentation<WordInput> const& p,
                                            Func&&                         f);
 #else
-  template <
-      typename WordOutput,
-      typename WordInput,
-      typename Func,
-      typename = std::enable_if_t<
+  template <typename WordOutput, typename WordInput, typename Func>
+  auto to_presentation(Presentation<WordInput> const& p, Func&& f)
+      -> std::enable_if_t<
           std::is_invocable_v<std::decay_t<Func>,
                               typename Presentation<WordInput>::letter_type>
-          && !std::is_same_v<WordOutput, WordInput>>>
-  Presentation<WordOutput> to_presentation(Presentation<WordInput> const& p,
-                                           Func&&                         f);
+              && !std::is_same_v<WordOutput, WordInput>,
+          Presentation<WordOutput>>;
 #endif
 
 #ifdef PARSED_BY_DOXYGEN
@@ -167,16 +164,14 @@ namespace libsemigroups {
   InversePresentation<WordOutput>
   to_inverse_presentation(InversePresentation<WordInput> const& ip, Func&& f);
 #else
-  template <
-      typename WordOutput,
-      typename WordInput,
-      typename Func,
-      typename = std::enable_if_t<
+  template <typename WordOutput, typename WordInput, typename Func>
+  auto to_inverse_presentation(InversePresentation<WordInput> const& ip,
+                               Func&&                                f)
+      -> std::enable_if_t<
           std::is_invocable_v<std::decay_t<Func>,
                               typename Presentation<WordInput>::letter_type>
-          && !std::is_same_v<WordOutput, WordInput>>>
-  InversePresentation<WordOutput>
-  to_inverse_presentation(InversePresentation<WordInput> const& ip, Func&& f);
+              && !std::is_same_v<WordOutput, WordInput>,
+          InversePresentation<WordOutput>>;
 #endif
 
   //! \ingroup to_presentation_group
