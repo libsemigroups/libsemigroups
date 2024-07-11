@@ -16,20 +16,24 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include <type_traits>
 #define CATCH_CONFIG_ENABLE_PAIR_STRINGMAKER
 
-#include <algorithm>      // for all_of, equal, fill, sort
-#include <chrono>         // for milliseconds
-#include <cmath>          // for pow
-#include <cstddef>        // for size_t
-#include <cstdint>        // for uint16_t
-#include <iterator>       // for distance
-#include <string>         // for basic_string, operator==
-#include <unordered_map>  // for operator==, operator!=
-#include <unordered_set>  // for unordered_set
-#include <utility>        // for move, make_pair, swap
-#include <vector>         // for vector, operator==, swap
+#include <algorithm>         // for all_of, equal, fill, sort
+#include <cctype>            // for isprint
+#include <chrono>            // for milliseconds
+#include <cmath>             // for pow
+#include <cstddef>           // for size_t
+#include <cstdint>           // for uint16_t, uint8_t
+#include <initializer_list>  // for initializer_list
+#include <iterator>          // for distance
+#include <string>            // for basic_string, operator==
+#include <string_view>       // for string_view
+#include <tuple>             // for _Swallow_assign, ignore
+#include <type_traits>       // for is_same, is_unsigned_v
+#include <unordered_map>     // for operator==, operator!=
+#include <unordered_set>     // for unordered_set
+#include <utility>           // for move, make_pair, swap
+#include <vector>            // for vector, operator==, swap
 
 #include "catch.hpp"      // for operator""_catch_sr
 #include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
@@ -38,6 +42,7 @@
 
 #include "libsemigroups/bipart.hpp"           // for Bipartition
 #include "libsemigroups/constants.hpp"        // for operator==, operator!=
+#include "libsemigroups/debug.hpp"            // for LIBSEMIGROUPS_ASSERT
 #include "libsemigroups/exception.hpp"        // for LibsemigroupsException
 #include "libsemigroups/froidure-pin.hpp"     // for FroidurePin
 #include "libsemigroups/knuth-bendix.hpp"     // for redundant_rule
@@ -53,7 +58,6 @@
 #include "libsemigroups/detail/report.hpp"      // for ReportGuard
 #include "libsemigroups/detail/string.hpp"      // for operator<<
 
-// TODO(later) Add tests for InversePresentation
 // TODO(later) Add tests for add_cyclic_conjugates
 // TODO(later) Change word_type({0, 1, 2}) to "012"_w
 
@@ -2770,13 +2774,13 @@ namespace libsemigroups {
     {
       Presentation<word_type> p;
       p.alphabet(word_type({0, 2}));
-      p.add_generator({1});
+      p.add_generator(1);
       REQUIRE(p.alphabet() == word_type({0, 2, 1}));
     }
     {
       Presentation<word_type> p;
       p.alphabet(word_type({0, 2}));
-      REQUIRE_EXCEPTION_MSG(p.add_generator({2}),
+      REQUIRE_EXCEPTION_MSG(p.add_generator(2),
                             "the argument 2 already belongs to the "
                             "alphabet [0, 2], expected an unused letter");
     }

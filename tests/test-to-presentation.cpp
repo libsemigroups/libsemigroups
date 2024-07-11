@@ -18,8 +18,11 @@
 
 #include <algorithm>         // for fill,  max_element
 #include <cstdint>           // for uint8_t, uint16_t
+#include <ctype.h>           // for isprint
 #include <initializer_list>  // for initializer_list
 #include <string>            // for basic_string, operator==
+#include <unordered_map>     // for operator==, operator!=
+#include <utility>           // for move
 #include <vector>            // for vector
 
 #include "catch.hpp"      // for REQUIRE, REQUIRE_THROWS_AS, REQUI...
@@ -35,6 +38,7 @@
 
 #include "libsemigroups/detail/containers.hpp"  // for StaticVector1, operat...
 #include "libsemigroups/detail/report.hpp"      // for ReportGuard
+#include "libsemigroups/detail/string.hpp"      // for operator<<
 
 namespace libsemigroups {
 

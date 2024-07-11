@@ -19,9 +19,8 @@
 #ifndef LIBSEMIGROUPS_TO_PRESENTATION_HPP_
 #define LIBSEMIGROUPS_TO_PRESENTATION_HPP_
 
-#include <algorithm>    // for transform
-#include <string>       // for string
-#include <type_traits>  // for is_base_of, enable_if_t
+#include <type_traits>  // for enable_if_t
+#include <utility>      // for pair
 #include <vector>       // for vector
 
 #include "froidure-pin-base.hpp"  // for FroidurePinBase::const_rule_i...
