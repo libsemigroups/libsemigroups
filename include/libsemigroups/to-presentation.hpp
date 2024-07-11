@@ -199,8 +199,8 @@ namespace libsemigroups {
   // TODO(now) is this the correct way to prevent the nonsensical conversion of
   // an inverse presentation to an inverse presentation of the same type?
   // JDE wanted some way of preventing the user from calling
-  // to_inverse_presentation(Presentaion<Word> const& p) in the case where p is,
-  // in fact, already an inverse presentation.
+  // to_inverse_presentation(Presentation<Word> const& p) in the case where p
+  // is, in fact, already an inverse presentation.
   template <typename Word>
   InversePresentation<Word>
   to_inverse_presentation(InversePresentation<Word> const& ip) {
