@@ -409,9 +409,15 @@ namespace libsemigroups {
       REQUIRE(p.index(presentation::human_readable_letter<W>(1)) == 1);
       REQUIRE(p.index(presentation::human_readable_letter<W>(2)) == 2);
       REQUIRE(p.index(presentation::human_readable_letter<W>(3)) == 3);
+      REQUIRE_THROWS_AS(p.index(presentation::human_readable_letter<W>(4)),
+                        LibsemigroupsException);
       REQUIRE(p.index(presentation::human_readable_letter<W>(5)) == 4);
       REQUIRE(p.index(presentation::human_readable_letter<W>(6)) == 5);
+      REQUIRE_THROWS_AS(p.index(presentation::human_readable_letter<W>(7)),
+                        LibsemigroupsException);
       REQUIRE(p.index(presentation::human_readable_letter<W>(8)) == 6);
+      REQUIRE_THROWS_AS(p.index(presentation::human_readable_letter<W>(9)),
+                        LibsemigroupsException);
       REQUIRE(p.letter(0) == presentation::human_readable_letter<W>(0));
       REQUIRE(p.letter(1) == presentation::human_readable_letter<W>(1));
       REQUIRE(p.letter(2) == presentation::human_readable_letter<W>(2));
