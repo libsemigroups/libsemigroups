@@ -81,38 +81,68 @@ namespace libsemigroups {
   // Constant values
   ////////////////////////////////////////////////////////////////////////
 
+  //! \defgroup constants_group Constants
+  //!
+  //! This file contains functionality for various constant values used in
+  //! ``libsemigroups``.
+
+  //! \ingroup constants_group
+  //! \brief Type for undefined values.
+  //!
   //! Type for undefined values.
   using Undefined = detail::Constant<0, detail::Max>;
 
+  //! \ingroup constants_group
+  //! \brief Type for positive infinity.
+  //!
   //! Type for positive infinity.
   using PositiveInfinity = detail::Constant<-1, detail::Max>;
 
+  //! \ingroup constants_group
+  //! \brief Type for the maximum value of something.
+  //!
   //! Type for the maximum value of something.
   using LimitMax = detail::Constant<-2, detail::Max>;
 
+  //! \ingroup constants_group
+  //! \brief Type for negative infinity.
+  //!
   //! Type for negative infinity.
   using NegativeInfinity = detail::Constant<0, detail::Min>;
 
-  //! \defgroup constants_group Constants
-
-  //! \ingroup
+  //! \ingroup constants_group
+  //!
+  //! \brief Value for something undefined.
+  //!
   //! This variable is used to indicate that a value is undefined. \ref
   //! UNDEFINED is comparable with any integral value (signed or unsigned) or
   //! constant via `==` and `!=` but not via `<` or `>`.
   extern Undefined const UNDEFINED;
 
+  //! \ingroup constants_group
+  //!
+  //! \brief Value for positive infinity.
+  //!
   //! This variable represents \f$\infty\f$.  \ref POSITIVE_INFINITY is
   //! comparable via `==`, `!=`, `<`, `>` with any integral value (signed or
   //! unsigned) and with \ref NEGATIVE_INFINITY, and is comparable to any other
   //! constant via `==` and `!=`, but not by `<` and `>`.
   extern PositiveInfinity const POSITIVE_INFINITY;
 
+  //! \ingroup constants_group
+  //!
+  //! \brief Value for the maximum of something.
+  //!
   //! This variable represents the maximum value that certain function
   //! parameters can have. \ref LIMIT_MAX is comparable via `==`, `!=`, `<`, `>`
   //! with any integral value (signed or unsigned), and is comparable to any
   //! other constant via `==` and `!=`, but not by `<` and `>`.
   extern LimitMax const LIMIT_MAX;
 
+  //! \ingroup constants_group
+  //!
+  //! \brief Value for negative infinity.
+  //!
   //! This variable represents \f$-\infty\f$.  \ref NEGATIVE_INFINITY is
   //! comparable via `==`, `!=`, `<`, `>` with any signed integral value and
   //! with \ref POSITIVE_INFINITY, and is comparable to any other constant via
