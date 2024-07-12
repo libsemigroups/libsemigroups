@@ -185,6 +185,33 @@ namespace libsemigroups {
     return result;
   }
 
+  template <typename Word>
+  void Presentation<Word>::remove_generator_no_checks(
+      typename Presentation<Word>::letter_type x) {
+    size_t index = _alphabet_map[x];
+    _alphabet_map.erase(x);
+    typename Word::iterator start = _alphabet.begin() + index;
+    for (auto it = start + 1; it != _alphabet.end(); ++it) {
+      --_alphabet_map[*it];
+    }
+    _alphabet.erase(start, start + 1);
+  }
+
+  // TODO(now) should this check that the alphabet is valid, as strange things
+  // happen if there you try to remove a duplicate letter from the alphabet?
+  template <typename Word>
+  void Presentation<Word>::remove_generator(
+      typename Presentation<Word>::letter_type x) {
+    if (in_alphabet(x)) {
+      remove_generator_no_checks(x);
+    } else {
+      LIBSEMIGROUPS_EXCEPTION("the argument {} does not belong to the alphabet "
+                              "{}, expected an existing letter",
+                              detail::to_printable(x),
+                              detail::to_printable(alphabet()));
+    }
+  }
+
   // TODO use to_printable
   template <typename Word>
   void Presentation<Word>::validate_letter(
@@ -732,16 +759,17 @@ namespace libsemigroups {
             std::swap(lhs, rhs);
           }
           replace_subword(p, lhs, rhs);
+          p.remove_generator_no_checks(lhs[0]);
         } else if (rhs.size() == 1
                    && std::none_of(
                        lhs.cbegin(), lhs.cend(), [&rhs](letter_type_ const& a) {
                          return a == rhs[0];
                        })) {
           replace_subword(p, rhs, lhs);
+          p.remove_generator_no_checks(rhs[0]);
         }
       }
       remove_trivial_rules(p);
-      p.alphabet_from_rules();
     }
 
     template <typename Word>
