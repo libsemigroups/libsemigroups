@@ -197,11 +197,10 @@ namespace libsemigroups {
     _alphabet.erase(start, start + 1);
   }
 
-  // TODO(now) should this check that the alphabet is valid, as strange things
-  // happen if there you try to remove a duplicate letter from the alphabet?
   template <typename Word>
   void Presentation<Word>::remove_generator(
       typename Presentation<Word>::letter_type x) {
+    validate_alphabet();
     if (in_alphabet(x)) {
       remove_generator_no_checks(x);
     } else {
@@ -254,6 +253,7 @@ namespace libsemigroups {
   template <typename Word>
   void Presentation<Word>::validate_alphabet(
       decltype(_alphabet_map)& alphabet_map) const {
+    LIBSEMIGROUPS_ASSERT(alphabet_map.empty());
     size_type index = 0;
     for (auto const& letter : _alphabet) {
       auto it = alphabet_map.emplace(letter, index++);
