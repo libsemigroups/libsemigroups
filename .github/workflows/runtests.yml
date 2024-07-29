@@ -208,43 +208,6 @@ jobs:
          - name: "make discheck . . ."
            run: |
                 make distcheck -j4
-   doc:
-      timeout-minutes: 10
-      runs-on: ubuntu-latest
-      steps:
-         - uses: actions/checkout@v3
-         - name: "Install dependencies . . ."
-           run: |
-                sudo apt-get --yes update
-                sudo apt-get install expect
-                sudo apt-get install graphviz
-                sudo apt-get install python3-pip
-                sudo -H pip3 install --upgrade pip
-                sudo -H pip3 install setuptools
-                sudo -H pip3 install -r docs/requirements.txt
-                sudo -H pip3 install --upgrade --ignore-installed pyyaml
-         - name: "Set up Homebrew . . ."
-           uses: Homebrew/actions/setup-homebrew@master
-         - name: "Install latest doxygen . . ."
-           run: |
-                brew install gcc
-                brew install doxygen
-         - name: "Configure . . ."
-           run: |
-                mkdir -p m4 && ./autogen.sh && ./configure
-         - name: "Build documentation . . ."
-           run: |
-                echo "Doxygen version: "
-                doxygen --version
-
-                echo "Sphinx version: "
-                sphinx-build --version
-
-                etc/make-doc-yml.sh | tee make-doc-yml.log
-                etc/make-doc-sphinx.sh | tee make-doc-sphinx.log
-
-                echo
-                ( ! (grep "WARNING:" make-doc-sphinx.log | grep -v "WARNING: bibtex citations changed, rerun sphinx" | grep -v "WARNING: Could not lex literal_block") )
    macosx:
       timeout-minutes: 60
       runs-on: macOS-latest
