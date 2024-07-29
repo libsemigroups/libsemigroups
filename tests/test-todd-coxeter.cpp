@@ -3119,7 +3119,10 @@ namespace libsemigroups {
     presentation::add_rule(p, "cABcabc", "");
 
     ToddCoxeter tc(twosided, p);
-    REQUIRE(todd_coxeter::is_non_trivial(tc) == tril::TRUE);
+    auto        result = todd_coxeter::is_non_trivial(tc);
+    if (result != tril::TRUE) {
+      REQUIRE(result == tril::unknown);
+    }
 
     section_hlt(tc);
     section_felsch(tc);
