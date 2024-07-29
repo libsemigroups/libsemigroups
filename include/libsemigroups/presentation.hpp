@@ -32,7 +32,7 @@
 #include <iterator>          // for distance
 #include <limits>            // for numeric_limits
 #include <map>               // for map
-#include <math.h>            // for pow
+#include <cmath>            // for pow
 #include <numeric>           // for accumulate
 #include <string>            // for basic_string, operator==
 #include <tuple>             // for tie, tuple
