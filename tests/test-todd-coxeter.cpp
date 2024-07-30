@@ -4579,7 +4579,7 @@ namespace libsemigroups {
                                        std::chrono::milliseconds(10))
             == tril::TRUE);
 
-    presentation::balance(p, 0123456_w, 0123456_w);
+    presentation::balance_no_checks(p, 0123456_w, 0123456_w);
     REQUIRE(p.rules
             == std::vector<word_type>(
                 {00_w,      {},      11_w,         {},           22_w,
@@ -4796,7 +4796,7 @@ namespace libsemigroups {
     presentation::add_rule(p, "TACABacatACAbaca"_p, "");
     presentation::add_rule(p, "TB(AC)^2acabtBACA(ca)^2b"_p, "");
     presentation::add_rule(p, "tA^3ta^3BtAtabACA^2(A^3C)^2a^3ca^5ca"_p, "");
-    presentation::balance(p, p.alphabet(), std::string("ABCTabct"));
+    presentation::balance_no_checks(p, p.alphabet(), std::string("ABCTabct"));
 
     REQUIRE(presentation::length(p) == 183);
 
@@ -4826,7 +4826,7 @@ namespace libsemigroups {
     presentation::add_rule(p, "(ACac)^4"_p, "");
     presentation::add_rule(p, "BabAA"_p, "");
     presentation::add_rule(p, "(abc)^7"_p, "");
-    presentation::balance(p, p.alphabet(), std::string("ABCabc"));
+    presentation::balance_no_checks(p, p.alphabet(), std::string("ABCabc"));
 
     ToWord      to_word(p.alphabet());
     ToddCoxeter tc(twosided, p);

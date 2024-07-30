@@ -20,6 +20,7 @@
 // presentation.hpp
 
 #include <algorithm>  // for transform
+#include <cctype>     // for isprint
 #include <cstddef>    // for size_t
 #include <string>     // for basic_string, operator+
 #include <vector>     // for vector
@@ -60,12 +61,6 @@ namespace libsemigroups {
   }  // namespace detail
 
   namespace presentation {
-
-    typename Presentation<std::string>::letter_type
-    human_readable_letter(Presentation<std::string> const&, size_t i) {
-      return human_readable_char(i);
-    }
-
     std::string to_gap_string(Presentation<word_type> const& p,
                               std::string const&             var_name) {
       p.validate();
@@ -133,7 +128,8 @@ namespace libsemigroups {
     });
   }
 
-  word_type to_word(Presentation<std::string> const& p, std::string const& s) {
+  [[nodiscard]] word_type to_word(Presentation<std::string> const& p,
+                                  std::string const&               s) {
     word_type w;
     to_word(p, s, w);
     return w;

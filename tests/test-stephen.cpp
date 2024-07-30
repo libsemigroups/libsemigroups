@@ -961,7 +961,7 @@ namespace libsemigroups {
 
     InversePresentation<word_type> p;
     p.alphabet(to_word("abcABC"));
-    p.inverses(to_word("ABCabc"));
+    p.inverses_no_checks(to_word("ABCabc"));
 
     auto S = Stephen(std::move(p));
 
@@ -986,7 +986,7 @@ namespace libsemigroups {
                           "[stephen][quick]") {
     InversePresentation<std::string> p;
     p.alphabet("abcABC");
-    p.inverses("ABCabc");
+    p.inverses_no_checks("ABCabc");
 
     Stephen S(p);
     REQUIRE(to_word(p, "aBcAbC") == 042315_w);
@@ -1013,7 +1013,7 @@ namespace libsemigroups {
     ToWord                         to_word("abcABC");
     InversePresentation<word_type> p;
     p.alphabet(to_word("abcABC"));
-    p.inverses(to_word("ABCabc"));
+    p.inverses_no_checks(to_word("ABCabc"));
 
     auto S = Stephen(p);
     S.set_word(to_word("aBbcABAabCc")).run();
@@ -1031,7 +1031,7 @@ namespace libsemigroups {
     ToWord                         to_word("xyXY");
     InversePresentation<word_type> p;
     p.alphabet(to_word("xyXY"));
-    p.inverses(to_word("XYxy"));
+    p.inverses_no_checks(to_word("XYxy"));
 
     auto S = Stephen(p);
     S.set_word(to_word("xxxyyy")).run();
@@ -1050,7 +1050,7 @@ namespace libsemigroups {
     ToWord                         to_word("xyXY");
     InversePresentation<word_type> p;
     p.alphabet(to_word("xyXY"));
-    p.inverses(to_word("XYxy"));
+    p.inverses_no_checks(to_word("XYxy"));
     presentation::add_rule(p, to_word("xyXxyX"), to_word("xyX"));
 
     auto S = Stephen(p);
@@ -1088,7 +1088,7 @@ namespace libsemigroups {
     ToWord                         to_word("xyXY");
     InversePresentation<word_type> p;
     p.alphabet(to_word("xyXY"));
-    p.inverses(to_word("XYxy"));
+    p.inverses_no_checks(to_word("XYxy"));
     presentation::add_rule(p, to_word("xyXxyX"), to_word("xyX"));
     presentation::add_rule(p, to_word("xyxy"), to_word("xy"));
 
@@ -1108,7 +1108,7 @@ namespace libsemigroups {
     ToWord                         to_word("abcABC");
     InversePresentation<word_type> p;
     p.alphabet(to_word("abcABC"));
-    p.inverses(to_word("ABCabc"));
+    p.inverses_no_checks(to_word("ABCabc"));
     presentation::add_rule(p, to_word("ac"), to_word("ca"));
     presentation::add_rule(p, to_word("ab"), to_word("ba"));
     presentation::add_rule(p, to_word("bc"), to_word("cb"));
@@ -1168,7 +1168,7 @@ namespace libsemigroups {
     ToWord                         to_word("abcABC");
     InversePresentation<word_type> p;
     p.alphabet(to_word("abcABC"));
-    p.inverses(to_word("ABCabc"));
+    p.inverses_no_checks(to_word("ABCabc"));
     presentation::add_rule(p, to_word("ac"), to_word("ca"));
     presentation::add_rule(p, to_word("ab"), to_word("ba"));
     presentation::add_rule(p, to_word("bc"), to_word("cb"));
@@ -1207,7 +1207,7 @@ namespace libsemigroups {
     {
       InversePresentation<word_type> p
           = fpsemigroup::symmetric_inverse_monoid(4);
-      p.inverses(0123_w);
+      p.inverses_no_checks(0123_w);
       p.validate();
 
       Stephen S(p);
@@ -1237,7 +1237,7 @@ namespace libsemigroups {
   //     ToWord           to_word("abcABC");
   //     InversePresentation<word_type> p;
   //     p.alphabet(to_word("abcABC"));
-  //     p.inverses(to_word("ABCabc"));
+  //     p.inverses_no_checks(to_word("ABCabc"));
   //     presentation::add_rule(p, to_word("ac"), to_word("ca"));
   //     presentation::add_rule(p, to_word("ab"), to_word("ba"));
   //     presentation::add_rule(p, to_word("bc"), to_word("cb"));
@@ -1332,7 +1332,7 @@ namespace libsemigroups {
                217121_w,   17171_w,    0102720107_w, 7010270102_w, 107017_w,
                70107010_w, 1217_w,     7121_w};
     p.alphabet_from_rules();
-    presentation::balance(p, 0123456_w, 0123456_w);
+    presentation::balance_no_checks(p, 0123456_w, 0123456_w);
 
     Stephen s(p);
     s.set_word(1217_w);
@@ -1354,7 +1354,7 @@ namespace libsemigroups {
 
     InversePresentation<word_type> p;
     p.alphabet(to_word("abcABC"));
-    p.inverses(to_word("ABCabc"));
+    p.inverses_no_checks(to_word("ABCabc"));
 
     auto S = Stephen(p);
     auto T = Stephen(p);
@@ -1394,7 +1394,7 @@ namespace libsemigroups {
     ToWord                         to_word("aA");
     InversePresentation<word_type> p;
     p.alphabet(to_word("aA"));
-    p.inverses(to_word("Aa"));
+    p.inverses_no_checks(to_word("Aa"));
     p.contains_empty_word(true);
     presentation::add_rule(p, to_word("aA"), to_word(""));
 

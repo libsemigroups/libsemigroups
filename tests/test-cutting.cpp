@@ -39,7 +39,7 @@ namespace libsemigroups {
     ToWord                         to_word("xX");
     InversePresentation<word_type> p;
     p.alphabet(to_word("xX"));
-    p.inverses(to_word("Xx"));
+    p.inverses_no_checks(to_word("Xx"));
     presentation::add_rule(p, to_word("xx"), to_word("xxxx"));
 
     auto c = Cutting(p);
@@ -54,7 +54,7 @@ namespace libsemigroups {
     ToWord                         to_word("xyXY");
     InversePresentation<word_type> p;
     p.alphabet(to_word("xyXY"));
-    p.inverses(to_word("XYxy"));
+    p.inverses_no_checks(to_word("XYxy"));
     presentation::add_rule(p, to_word("xxx"), to_word("x"));
     presentation::add_rule(p, to_word("yyyyy"), to_word("y"));
     presentation::add_rule(p, to_word("xyxy"), to_word("xx"));
@@ -71,7 +71,7 @@ namespace libsemigroups {
     ToWord                         to_word("xyzXYZ");
     InversePresentation<word_type> p;
     p.alphabet(to_word("xyzXYZ"));
-    p.inverses(to_word("XYZxyz"));
+    p.inverses_no_checks(to_word("XYZxyz"));
     presentation::add_rule(p, to_word("xxxxx"), to_word("x"));
     presentation::add_rule(p, to_word("yyyyy"), to_word("y"));
     presentation::add_rule(p, to_word("zzzzz"), to_word("z"));
@@ -146,7 +146,7 @@ namespace libsemigroups {
     ToWord                         to_word("egGx");
     InversePresentation<word_type> p;
     p.alphabet(to_word("egG"));
-    p.inverses(to_word("eGg"));
+    p.inverses_no_checks(to_word("eGg"));
     p.contains_empty_word(true);
     presentation::add_rule(p, to_word(words::pow("g", n)), to_word(""));
     presentation::add_rule(p, to_word("ee"), to_word("e"));
@@ -168,7 +168,7 @@ namespace libsemigroups {
     ToWord                         to_word("xyXY");
     InversePresentation<word_type> p;
     p.alphabet(to_word("xyXY"));
-    p.inverses(to_word("XYxy"));
+    p.inverses_no_checks(to_word("XYxy"));
     presentation::add_rule(p, to_word("xxx"), to_word("x"));
     presentation::add_rule(p, to_word("yyy"), to_word("y"));
     presentation::add_rule(p, to_word("xyy"), to_word("yxx"));
@@ -185,7 +185,7 @@ namespace libsemigroups {
     ToWord                         to_word("xeXE");
     InversePresentation<word_type> p;
     p.alphabet(to_word("xeXE"));
-    p.inverses(to_word("XExe"));
+    p.inverses_no_checks(to_word("XExe"));
     presentation::add_rule(p, to_word("xxxx"), to_word("x"));
     presentation::add_rule(p, to_word("ee"), to_word("e"));
 
@@ -202,7 +202,7 @@ namespace libsemigroups {
     InversePresentation<word_type> p;
     p.contains_empty_word(true);
     p.alphabet(to_word("abcABC"));
-    p.inverses(to_word("ABCabc"));
+    p.inverses_no_checks(to_word("ABCabc"));
 
     presentation::add_rule(p, to_word("aaa"), to_word(""));
     presentation::add_rule(p, to_word("bb"), to_word(""));
