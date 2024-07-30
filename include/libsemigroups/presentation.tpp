@@ -1067,53 +1067,23 @@ namespace libsemigroups {
 
   template <typename Word>
   std::string to_human_readable_repr(Presentation<Word> const& p) {
-    size_t      alphabet_size = p.alphabet().size();
-    size_t      n_rules       = p.rules.size() / 2;
-    std::string out           = "<";
-    if (p.contains_empty_word()) {
-      out += "Monoid ";
-    } else {
-      out += "Semigroup ";
-    }
-    out += "Presentation on ";
-    if (alphabet_size == 1) {
-      out += "1 letter ";
-    } else {
-      out += std::to_string(alphabet_size) + " letters ";
-    }
-    out += "with ";
-    if (n_rules == 1) {
-      out += "1 rule";
-    } else {
-      out += std::to_string(n_rules) + " rules";
-    }
-    out += ">";
-    return out;
+    size_t alphabet_size = p.alphabet().size();
+    size_t n_rules       = p.rules.size() / 2;
+    return fmt::format(
+        "<{} presentation with {} letter{}, {} rule{}, and length {}>",
+        (p.contains_empty_word() ? "monoid" : "semigroup"),
+        alphabet_size,
+        (alphabet_size == 1 ? "" : "s"),
+        n_rules,
+        (n_rules == 1 ? "" : "s"),
+        presentation::length(p));
   }
 
   template <typename Word>
   std::string to_human_readable_repr(InversePresentation<Word> const& p) {
-    size_t      alphabet_size = p.alphabet().size();
-    size_t      n_rules       = p.rules.size() / 2;
-    std::string out           = "<";
-    if (p.contains_empty_word()) {
-      out += "Monoid ";
-    } else {
-      out += "Semigroup ";
-    }
-    out += "Presentation with inverses on ";
-    if (alphabet_size == 1) {
-      out += "1 letter ";
-    } else {
-      out += std::to_string(alphabet_size) + " letters ";
-    }
-    out += "with ";
-    if (n_rules == 1) {
-      out += "1 rule";
-    } else {
-      out += std::to_string(n_rules) + " rules";
-    }
-    out += ">";
+    std::string out
+        = to_human_readable_repr(static_cast<Presentation<Word> const&>(p));
+    out.insert(1, "inverse ");
     return out;
   }
 

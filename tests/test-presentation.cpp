@@ -2796,8 +2796,9 @@ namespace libsemigroups {
       presentation::add_rule_no_checks(p, "abcb", "aa");
       p.alphabet_from_rules();
       presentation::add_identity_rules(p, 'a');
-      REQUIRE(to_human_readable_repr(p)
-              == "<Semigroup Presentation on 3 letters with 6 rules>");
+      REQUIRE(
+          to_human_readable_repr(p)
+          == "<semigroup presentation with 3 letters, 6 rules, and length 21>");
     }
     {
       Presentation<std::string> p;
@@ -2805,26 +2806,39 @@ namespace libsemigroups {
       presentation::add_rule_no_checks(p, "abcb", "aa");
       p.alphabet_from_rules();
       presentation::add_identity_rules(p, 'a');
-      REQUIRE(to_human_readable_repr(p)
-              == "<Monoid Presentation on 3 letters with 6 rules>");
+      REQUIRE(
+          to_human_readable_repr(p)
+          == "<monoid presentation with 3 letters, 6 rules, and length 21>");
     }
     {
       Presentation<std::string> p;
-      REQUIRE(to_human_readable_repr(p)
-              == "<Semigroup Presentation on 0 letters with 0 rules>");
+      REQUIRE(
+          to_human_readable_repr(p)
+          == "<semigroup presentation with 0 letters, 0 rules, and length 0>");
     }
     {
       Presentation<std::string> p;
       p.alphabet("a");
-      REQUIRE(to_human_readable_repr(p)
-              == "<Semigroup Presentation on 1 letter with 0 rules>");
+      REQUIRE(
+          to_human_readable_repr(p)
+          == "<semigroup presentation with 1 letter, 0 rules, and length 0>");
     }
     {
       Presentation<std::string> p;
       p.alphabet("a");
       presentation::add_rule_no_checks(p, "aa", "a");
-      REQUIRE(to_human_readable_repr(p)
-              == "<Semigroup Presentation on 1 letter with 1 rule>");
+      REQUIRE(
+          to_human_readable_repr(p)
+          == "<semigroup presentation with 1 letter, 1 rule, and length 3>");
+    }
+    {
+      InversePresentation<word_type> ip;
+      ip.alphabet({0, 1, 2, 3});
+      presentation::add_rule_no_checks(ip, {0, 0, 0}, {1, 3});
+      ip.inverses({0, 1, 2, 3});
+      REQUIRE(to_human_readable_repr(ip)
+              == "<inverse semigroup presentation with 4 letters, 1 rule, and "
+                 "length 5>");
     }
   }
 
