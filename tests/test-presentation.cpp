@@ -21,10 +21,10 @@
 
 #include <algorithm>      // for all_of, equal, fill, sort
 #include <chrono>         // for milliseconds
+#include <cmath>          // for pow
 #include <cstddef>        // for size_t
+#include <cstdint>        // for uint16_t
 #include <iterator>       // for distance
-#include <math.h>         // for pow
-#include <stdint.h>       // for uint16_t
 #include <string>         // for basic_string, operator==
 #include <unordered_map>  // for operator==, operator!=
 #include <unordered_set>  // for unordered_set

@@ -26,9 +26,9 @@
 #define LIBSEMIGROUPS_PRESENTATION_HPP_
 
 #include <algorithm>         // for reverse, sort
+#include <cctype>            // for isprint
 #include <cmath>             // for pow
 #include <cstring>           // for size_t, strlen
-#include <ctype.h>           // for isprint
 #include <initializer_list>  // for initializer_list
 #include <iterator>          // for distance
 #include <limits>            // for numeric_limits
