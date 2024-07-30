@@ -1,6 +1,6 @@
 //
 // libsemigroups - C++ library for semigroups and monoids
-// Copyright (C) 2019 James D. Mitchell
+// Copyright (C) 2019-2024 James D. Mitchell
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -30,9 +30,9 @@
 #define LIBSEMIGROUPS_ASSERT(x)
 #endif
 
-#if (defined(__GNUC__) && __GNUC__ < 6 \
+#if (defined(__GNUC__) && __GNUC__ < 9 \
      && !(defined(__clang__) || defined(__INTEL_COMPILER)))
-#error "GCC version 6.0 or higher is required"
+#error "GCC version 9.0 or higher is required"
 #endif
 
 #endif  // LIBSEMIGROUPS_DEBUG_HPP_
