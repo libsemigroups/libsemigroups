@@ -17,8 +17,8 @@
 //
 
 #include <algorithm>         // for fill,  max_element
+#include <cctype>            // for isprint
 #include <cstdint>           // for uint8_t, uint16_t
-#include <ctype.h>           // for isprint
 #include <initializer_list>  // for initializer_list
 #include <string>            // for basic_string, operator==
 #include <unordered_map>     // for operator==, operator!=
