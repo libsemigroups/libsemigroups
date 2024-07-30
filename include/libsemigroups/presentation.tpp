@@ -1102,6 +1102,6 @@ namespace libsemigroups {
     if (_inverses.empty()) {
       LIBSEMIGROUPS_EXCEPTION("no inverses have been defined")
     }
-    return _inverses[this->index(x)];
+    return _inverses[Presentation<Word>::index(x)];
   }
 }  // namespace libsemigroups
