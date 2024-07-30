@@ -26,13 +26,13 @@
 #define LIBSEMIGROUPS_PRESENTATION_HPP_
 
 #include <algorithm>         // for reverse, sort
+#include <cmath>             // for pow
 #include <cstring>           // for size_t, strlen
 #include <ctype.h>           // for isprint
 #include <initializer_list>  // for initializer_list
 #include <iterator>          // for distance
 #include <limits>            // for numeric_limits
 #include <map>               // for map
-#include <cmath>            // for pow
 #include <numeric>           // for accumulate
 #include <string>            // for basic_string, operator==
 #include <tuple>             // for tie, tuple
