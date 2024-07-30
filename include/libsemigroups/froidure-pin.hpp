@@ -324,6 +324,7 @@ namespace libsemigroups {
                           state_type*     stt,
                           size_t          tid = 0) const {
       if constexpr (std::is_void_v<state_type>) {
+        (void) stt;  // To silence warnings in g++-9
         Product()(xy, x, y, tid);
       } else {
         Product()(xy, x, y, stt, tid);
