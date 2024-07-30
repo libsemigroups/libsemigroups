@@ -191,21 +191,17 @@ namespace libsemigroups {
   //! \returns A value of type `InversePresentation<WordOutput>`.
   //!
   //! \throws LibsemigroupsException if `p.validate()` throws.
+  //!
+  //! \note The parameter \p p must not be an `InversePresentation`, otherwise a
+  //! compilation error is thrown.
   template <typename Word>
   InversePresentation<Word>
   to_inverse_presentation(Presentation<Word> const& p);
 
   //! No doc
-  // TODO(now) is this the correct way to prevent the nonsensical conversion of
-  // an inverse presentation to an inverse presentation of the same type?
-  // JDE wanted some way of preventing the user from calling
-  // to_inverse_presentation(Presentation<Word> const& p) in the case where p
-  // is, in fact, already an inverse presentation.
   template <typename Word>
   InversePresentation<Word>
-  to_inverse_presentation(InversePresentation<Word> const& ip) {
-    return ip;
-  }
+  to_inverse_presentation(InversePresentation<Word> const& ip) = delete;
 
 #ifdef PARSED_BY_DOXYGEN
   //! \ingroup to_presentation_group

@@ -227,8 +227,6 @@ namespace libsemigroups {
                 == std::vector<Word>({{0, 1, 2}, {0, 1}, {0, 2, 1}, {2}}));
         REQUIRE(ip.inverses() == Word({3, 4, 5, 0, 1, 2}));
       }
-
-      REQUIRE(ip == to_inverse_presentation(ip));
     }
   }  // namespace
 
