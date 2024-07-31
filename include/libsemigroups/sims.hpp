@@ -1024,8 +1024,13 @@ namespace libsemigroups {
     }
     // This normalises the rules in the case they are of the right type but
     // not normalised
-    auto p_copy = to_presentation<word_type>(p);
-    p_copy.validate();
+    Presentation<word_type> p_copy;
+    if constexpr (std::is_same_v<Word, word_type>) {
+      p_copy = p;
+      presentation::normalize_alphabet(p_copy);
+    } else {
+      p_copy = to_presentation<word_type>(p);
+    }
     try {
       presentation::validate_rules(
           p_copy, include().cbegin(), include().cend());

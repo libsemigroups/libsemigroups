@@ -131,8 +131,8 @@ namespace libsemigroups {
 
   TEST_CASE("singular_brauer_monoid(3) (Maltcev-Mazorchuk)",
             "[talk][singular_brauer_monoid3]") {
-    auto rg = ReportGuard(false);
-    auto p  = to_presentation<word_type>(singular_brauer_monoid(3));
+    auto                    rg = ReportGuard(false);
+    Presentation<word_type> p  = singular_brauer_monoid(3);
     REQUIRE(p.rules.size() == 48);
 
     BENCHMARK("Right congruences") {
@@ -149,8 +149,8 @@ namespace libsemigroups {
 
   TEST_CASE("singular_brauer_monoid(4) (Maltcev-Mazorchuk)",
             "[talk][singular_brauer_monoid4]") {
-    auto rg = ReportGuard(true);
-    auto p  = to_presentation<word_type>(singular_brauer_monoid(4));
+    auto                    rg = ReportGuard(true);
+    Presentation<word_type> p  = singular_brauer_monoid(4);
     REQUIRE(presentation::length(p) == 660);
     presentation::remove_duplicate_rules(p);
     REQUIRE(presentation::length(p) == 600);
@@ -169,8 +169,8 @@ namespace libsemigroups {
 
   TEST_CASE("symmetric_inverse_monoid(2) (Hivert)",
             "[talk][symmetric_inverse_monoid2]") {
-    auto rg = ReportGuard(true);
-    auto p  = to_presentation<word_type>(symmetric_inverse_monoid(2));
+    auto                    rg = ReportGuard(true);
+    Presentation<word_type> p  = symmetric_inverse_monoid(2);
     presentation::remove_duplicate_rules(p);
     presentation::sort_each_rule(p);
     presentation::sort_rules(p);
@@ -184,8 +184,8 @@ namespace libsemigroups {
 
   TEST_CASE("symmetric_inverse_monoid(3) (Hivert)",
             "[talk][symmetric_inverse_monoid3]") {
-    auto rg = ReportGuard(true);
-    auto p  = to_presentation<word_type>(symmetric_inverse_monoid(3));
+    auto                    rg = ReportGuard(true);
+    Presentation<word_type> p  = symmetric_inverse_monoid(3);
     presentation::remove_duplicate_rules(p);
     presentation::sort_each_rule(p);
     presentation::sort_rules(p);
@@ -199,8 +199,8 @@ namespace libsemigroups {
 
   TEST_CASE("symmetric_inverse_monoid(4) (Hivert)",
             "[talk][symmetric_inverse_monoid4]") {
-    auto rg = ReportGuard(false);
-    auto p  = to_presentation<word_type>(symmetric_inverse_monoid(4));
+    auto                    rg = ReportGuard(false);
+    Presentation<word_type> p  = symmetric_inverse_monoid(4);
     presentation::remove_duplicate_rules(p);
     presentation::sort_each_rule(p);
     presentation::sort_rules(p);
