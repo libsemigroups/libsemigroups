@@ -27,19 +27,23 @@
 #include "detail/formatters.hpp"
 
 namespace libsemigroups {
-  //! Exception class deriving from std::runtime_error.
+  //! \ingroup misc_group
+  //!
+  //! \brief Exception class deriving from std::runtime_error.
   //!
   //! Defined in ``exception.hpp``.
   //!
-  //! This page contains the documentation for the class
-  //! LibsemigroupsException.  All exceptions thrown by
-  //! ``libsemigroups`` are LibsemigroupsException instances.
+  //! This page contains the documentation for the class LibsemigroupsException.
+  //! All exceptions thrown by ``libsemigroups`` are LibsemigroupsException
+  //! instances.
   struct LibsemigroupsException : public std::runtime_error {
+    //! \brief Create an exception
+    //!
     //! Create an exception with filename, line number, function name, and
     //! message.
     //!
     //! \param fname the name of the file throwing the exception.
-    //! \param linenum the line number where the exception is thrown
+    //! \param linenum the line number where the exception is thrown.
     //! \param funcname the name of the function where the exception is thrown.
     //! \param msg the message of the exception being thrown.
     LibsemigroupsException(std::string const& fname,
@@ -47,15 +51,23 @@ namespace libsemigroups {
                            std::string const& funcname,
                            std::string const& msg);
 
+    //! \brief Default copy constructor.
+    //!
     //! Default copy constructor.
     LibsemigroupsException(LibsemigroupsException const&) = default;
 
+    //! \brief Default move constructor.
+    //!
     //! Default move constructor.
     LibsemigroupsException(LibsemigroupsException&&) = default;
 
+    //! \brief Default copy assignment operator.
+    //!
     //! Default copy assignment operator.
     LibsemigroupsException& operator=(LibsemigroupsException const&) = default;
 
+    //! \brief Default move assignment operator.
+    //!
     //! Default move assignment operator.
     LibsemigroupsException& operator=(LibsemigroupsException&&) = default;
 
@@ -63,6 +75,13 @@ namespace libsemigroups {
   };
 }  // namespace libsemigroups
 
+//! \ingroup misc_group
+//!
+//! \brief Throw a LibsemigroupsException
+//!
+//! Throw a `LibsemigroupsException` that reports the file name, line number and
+//! function that this macro is contained within, and any additional reporting
+//! information passed to the macro.
 #define LIBSEMIGROUPS_EXCEPTION(...)                             \
   {                                                              \
     throw LibsemigroupsException(                                \
