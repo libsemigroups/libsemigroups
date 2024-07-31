@@ -9,6 +9,7 @@
     <tab type="user" visible="yes" url="_HEADING_" title="Installation and Changelog" />
     <tab type="user" visible="yes" url="@ref md_install" title="Install" />
     <tab type="user" visible="yes" url="_HEADING_" title="Data structures" />
+    <tab type="usergroup" visible="yes" url="@ref adapters_group" title="Adapters"/>
     <tab type="usergroup" visible="yes" url="@ref elements_group" title="Elements" >
       <tab type="user" visible="yes" url="@ref bipart_group" title="Bipartitions" />
       <tab type="usergroup" visible="yes" url="@ref matrix_group" title="Matrix" >

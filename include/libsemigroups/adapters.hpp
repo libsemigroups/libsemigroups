@@ -31,6 +31,13 @@
 
 namespace libsemigroups {
 
+  //! \defgroup adapters_group Adapters
+  //!
+  //! This page describes some of the adapters used in `libsemigroups`. These
+  //! are classes that permit the generic classes in `libsemigroups` to be used
+  //! with arbitrary types, provided that the adapters are implemented for these
+  //! types.
+
   // This is not technically an adapter but put here for lack of a better place
   struct Noop {
     template <typename... Args>
