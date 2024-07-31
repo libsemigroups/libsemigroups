@@ -37,6 +37,33 @@ global variable       NAMED\_LIKE\_THIS
 Try to ensure that any new functionality added to ``libsemigroups`` satisfies
 the strong exception guarantee, and if not that this is documented.
 
+Some more conventions:
+
+* If a function does not check its arguments (including `*this` for member
+  functions), then it must have the suffix `_no_checks`. This indicates that
+  anything may happen if the function is called on a non-valid object or for
+  non-valid arguments. 
+
+  In the python bindings ``libsemigroups_pybind11`` it should not be possible
+  to construct or modify an object so that it is invalid. For example, it
+  shouldn't be possible to create an invalid `Bipartition` or to modify a valid
+  `Bipartition` so that it is invalid. So, it is safe to call the
+  `Bipartition::rank_no_checks` member function as if it was the
+  `Bipartition::rank` function. Hence in the python bindings we bind a
+  functions called `Bipartition.rank` to the C++ function
+  `Bipartition::rank_no_checks`. 
+
+* All class helper functions (i.e. those free functions taking a class as an
+  argument, and using public member functions of that class) should be in a
+  helper namespace with the same name as the class (but in lower case). I.e. 
+  `bipartition::one`, or `ptransf::one`. Exceptions are:
+  
+  - operators such as `operator*` etc. This is because these are more or less
+    difficult to use if they are in a nested namespace.
+  - functions that are (or should be) implemented for all of the public facing
+    classes in ``libsemigroups``, such as, for example
+    `to_human_readable_repr`. 
+
 Debugging and valgrinding
 -------------------------
 
