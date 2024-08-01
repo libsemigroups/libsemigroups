@@ -21,9 +21,9 @@
 #include "catch.hpp"      // for REQUIRE
 #include "test-main.hpp"  // FOR LIBSEMIGROUPS_TEST_CASE
 
-#include "libsemigroups/bmat.hpp"       // for BMat adapters
-#include "libsemigroups/konieczny.hpp"  // for Konieczny
-#include "libsemigroups/matrix.hpp"     // for BMat
+#include "libsemigroups/bmat-adapters.hpp"  // for BMat adapters
+#include "libsemigroups/konieczny.hpp"      // for Konieczny
+#include "libsemigroups/matrix.hpp"         // for BMat
 
 namespace libsemigroups {
 

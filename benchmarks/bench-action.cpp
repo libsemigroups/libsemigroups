@@ -23,7 +23,7 @@
 
 #include "libsemigroups/action.hpp"         // for LeftAction
 #include "libsemigroups/bitset.hpp"         // for BitSet
-#include "libsemigroups/bmat.hpp"           // for Lambda
+#include "libsemigroups/bmat-adapters.hpp"  // for Lambda
 #include "libsemigroups/bmat8.hpp"          // for BMat8
 #include "libsemigroups/detail/report.hpp"  // for ReportGuard
 #include "libsemigroups/matrix.hpp"         // for BMat<>
