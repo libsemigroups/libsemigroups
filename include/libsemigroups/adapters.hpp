@@ -33,10 +33,10 @@ namespace libsemigroups {
 
   //! \defgroup adapters_group Adapters
   //!
-  //! This page describes some of the adapters used in `libsemigroups`. These
-  //! are classes that permit the generic classes in `libsemigroups` to be used
-  //! with arbitrary types, provided that the adapters are implemented for these
-  //! types.
+  //! This file contains class templates for adapting a user-defined type for
+  //! use with the algorithms in `libsemigroups`. There are explicit
+  //! implementations for relevant element types from `libsemigroups` and
+  //! `HPCombi`.
 
   // This is not technically an adapter but put here for lack of a better place
   struct Noop {
@@ -44,9 +44,20 @@ namespace libsemigroups {
     constexpr void operator()(Args...) const noexcept {}
   };
 
-  // Adapters with no default implementation
+  //! \defgroup adapters_no_default_group Adapters with no default \
+  //!  implementation
+  //!
+  //! \ingroup adapters_group
+  //!
+  //! \brief TODO
+  //!
+  //! This section contains the documentation for adapters that have no default
+  //! implementation for arbitrary types.
+  //! TODO(now) expand on this.
+  //!
+  //! @{
 
-  //! Adapter for the complexity of multiplication.
+  //! \brief Adapter for the complexity of multiplication.
   //!
   //! Defined in ``adapters.hpp``.
   //!
@@ -80,7 +91,7 @@ namespace libsemigroups {
   template <typename Element, typename = void>
   struct Complexity;
 
-  //! Adapter for the degree of an element.
+  //! \brief Adapter for the degree of an element.
   //!
   //! Defined in ``adapters.hpp``.
   //!
@@ -118,7 +129,7 @@ namespace libsemigroups {
   template <typename Element, typename = void>
   struct Degree;
 
-  //! Adapter for increasing the degree of an element.
+  //! \brief Adapter for increasing the degree of an element.
   //!
   //! Defined in ``adapters.hpp``.
   //!
@@ -158,7 +169,7 @@ namespace libsemigroups {
   template <typename Element, typename = void>
   struct IncreaseDegree;
 
-  //! Adapter for the identity element of the given type.
+  //! \brief Adapter for the identity element of the given type.
   //!
   //! Specialisations of this struct should be stateless trivially default
   //! constructible with two call operator of signatures:
@@ -205,7 +216,7 @@ namespace libsemigroups {
   template <typename Element, typename = void>
   struct One;
 
-  //! Adapter for the product of two elements.
+  //! \brief Adapter for the product of two elements.
   //!
   //! Defined in ``adapters.hpp``.
   //!
@@ -244,7 +255,7 @@ namespace libsemigroups {
   template <typename Element, typename = void>
   struct Product;
 
-  //! Adapter for the inverse of an element.
+  //! \brief Adapter for the inverse of an element.
   //!
   //! Defined in ``adapters.hpp``.
   //!
@@ -279,7 +290,7 @@ namespace libsemigroups {
   template <typename Element, typename = void>
   struct Inverse;
 
-  //! Adapter for the value of a left action.
+  //! \brief Adapter for the value of a left action.
   //!
   //! Defined in ``adapters.hpp``.
   //!
@@ -310,7 +321,7 @@ namespace libsemigroups {
   template <typename Element, typename Point, typename = void>
   struct ImageLeftAction;
 
-  //! Adapter for the value of a right action.
+  //! \brief Adapter for the value of a right action.
   //!
   //! Defined in ``adapters.hpp``.
   //!
@@ -353,16 +364,28 @@ namespace libsemigroups {
   template <typename Element, typename Point, typename = void>
   struct ImageRightAction;
 
-  // Adapters with default implementations
-  //! Adapter for testing equality.
+  //! @}
+
+  //! \defgroup adapters_with_default_group Adapters with default implementation
+  //!
+  //! \ingroup adapters_group
+  //!
+  //! \brief TODO
+  //!
+  //! This section contains the documentation for adapters that have a default
+  //! implementation for arbitrary types.
+  //! TODO(now) expand on this.
+  //!
+  //! @{
+
+  //! \brief Adapter for testing equality.
   //!
   //! Defined in ``adapters.hpp``.
   //!
   //! This type should be a stateless trivially default constructible with a
   //! call operator of signature `bool operator()(Value const&, Value
   //! const&)` (possibly `noexcept`, `inline` and/or `constexpr` also) for use
-  //! with, for example,
-  //! [std::unordered_map](https://en.cppreference.com/w/cpp/container/unordered_map).
+  //! with, for example, std::unordered_map.
   //!
   //! \tparam Value the type of objects to compare.
   //!
@@ -374,8 +397,10 @@ namespace libsemigroups {
   //! * SchreierSimsTraits
   template <typename Value, typename = void>
   struct EqualTo {
-    //! This call operator compares \p x and \p y using \equal_to with template
-    //! parameter \c Value.
+    //! \brief Compare \p x and \p y with std::equal_to
+    //!
+    //! This call operator compares \p x and \p y using std::equal_to with
+    //! template parameter \c Value.
     //!
     //! \param x const reference to \c Value to compare with \p y.
     //! \param y const reference to \c Value to compare with \p x.
@@ -386,14 +411,13 @@ namespace libsemigroups {
     }
   };
 
-  //! Adapter for hashing.
+  //! \brief Adapter for hashing.
   //!
   //! Defined in ``adapters.hpp``.
   //!
   //! This type should be a stateless trivially default constructible
   //! with a call operator of signature `size_t operator()(Value
-  //! const&)` for use with, for example,
-  //! [std::unordered_map](https://en.cppreference.com/w/cpp/container/unordered_map).
+  //! const&)` for use with, for example, std::unordered_map.
   //!
   //! \tparam Value the type of objects to compare.
   //!
@@ -405,7 +429,9 @@ namespace libsemigroups {
   //! * SchreierSimsTraits
   template <typename Value, typename = void>
   struct Hash {
-    //! This call operator hashes \p x using \hash with template parameter
+    //! \brief Hash \p x using std::hash
+    //!
+    //! This call operator hashes \p x using std::hash with template parameter
     //! \c Value.
     //!
     //! \param x the value to hash
@@ -420,36 +446,56 @@ namespace libsemigroups {
   // Hash specializations
   ////////////////////////////////////////////////////////////////////////
 
+  //! \brief Specialised adapter for hashing vectors.
+  //!
   //! Defined in ``adapters.hpp``.
   //!
   //! This type is stateless trivially default constructible
   //! and has a call operator of signature `size_t operator()(std::vector<T>
-  //! const&)` for use with, for example,
-  //! [std::unordered_map](https://en.cppreference.com/w/cpp/container/unordered_map).
+  //! const&)` for use with, for example, std::unordered_map.
   //!
   //! \tparam T the type of objects to compare in the vector.
   //!
   //! \par Used by KoniecznyTraits.
   template <typename T>
   struct Hash<std::vector<T>> {
+    //! \brief Hashes \p vec
+    //!
     //! This call operator hashes \p vec.
     //!
-    //! \param vec the value to hash
+    //! \param vec the value to hash.
     //!
-    //! \returns A hash value for \p x, a value of type `size_t`.
+    //! \returns A hash value for \p vec, a value of type `size_t`.
+    //!
+    //! \sa \ref Hash::operator()() "Hash\<Value\>::operator()(Value const&)"
     size_t operator()(std::vector<T> const& vec) const {
       return Hash<std::vector<T>, Hash<T>>()(vec);
     }
   };
 
   // TODO(2) same for array!
+
+  //! \brief Specialised adapter for hashing vectors with non-standard hasher.
+  //!
+  //! Defined in ``adapters.hpp``.
+  //!
+  //! This type is stateless trivially default constructible
+  //! and has a call operator of signature `size_t operator()(std::vector<T>
+  //! const&)` for use with, for example, std::unordered_map.
+  //!
+  //! \tparam T the type of objects to compare in the vector.
+  //! \tparam Hasher the type of the hasher.
+  //!
+  //! TODO(now) What uses this?
   template <typename T, typename Hasher>
   struct Hash<std::vector<T>, Hasher> {
+    //! \brief Hashes \p vec
+    //!
     //! This call operator hashes \p vec.
     //!
     //! \param vec the value to hash
     //!
-    //! \returns A hash value for \p x, a value of type `size_t`.
+    //! \returns A hash value for \p vec, a value of type `size_t`.
     size_t operator()(std::vector<T> const& vec) const {
       size_t val = 0;
       for (T const& x : vec) {
@@ -459,14 +505,27 @@ namespace libsemigroups {
     }
   };
 
-  // TODO(1) doc
+  //! \brief Specialised adapter for hashing arrays.
+  //!
+  //! Defined in ``adapters.hpp``.
+  //!
+  //! This type is stateless trivially default constructible
+  //! and has a call operator of signature `size_t operator()(std::array<T, N>
+  //! const&)` for use with, for example, std::unordered_map.
+  //!
+  //! \tparam T the type of objects to compare in the array.
+  //!
+  //! \par Used by
+  //! TODO(now) What uses this?
   template <typename T, size_t N>
   struct Hash<std::array<T, N>> {
-    //! This call operator hashes \p vec.
+    //! \brief Hashes \p ar
     //!
-    //! \param ar the value to hash
+    //! This call operator hashes \p ar.
     //!
-    //! \returns A hash value for \p x, a value of type `size_t`.
+    //! \param ar the value to hash.
+    //!
+    //! \returns A hash value for \p ar, a value of type `size_t`.
     size_t operator()(std::array<T, N> const& ar) const {
       size_t val = 0;
       for (T const& x : ar) {
@@ -476,12 +535,26 @@ namespace libsemigroups {
     }
   };
 
-  // TODO(1) doc
+  //! \brief Specialised adapter for hashing pairs.
+  //!
+  //! Defined in ``adapters.hpp``.
+  //!
+  //! This type is stateless trivially default constructible
+  //! and has a call operator of signature `size_t operator()(std::pair<S, T>
+  //! const&)` for use with, for example, std::unordered_map.
+  //!
+  //! \tparam S the type of first object in the pair.
+  //! \tparam T the type of second object in the pair.
+  //!
+  //! \par Used by
+  //! TODO(now) What uses this?
   template <typename S, typename T>
   struct Hash<std::pair<S, T>> {
+    //! \brief Hashes \p x
+    //!
     //! This call operator hashes \p x.
     //!
-    //! \param x the value to hash
+    //! \param x the value to hash.
     //!
     //! \returns A hash value for \p x, a value of type `size_t`.
     size_t operator()(std::pair<S, T> const& x) const noexcept {
@@ -492,16 +565,19 @@ namespace libsemigroups {
     }
   };
 
+  //! \brief Specialised adapter for hashing pairs of `size_t`s.
+  //!
   //! Defined in ``adapters.hpp``.
   //!
   //! This type is stateless trivially default constructible
   //! and has a call operator of signature `size_t operator()(std::vector<T>
-  //! const&)` for use with, for example,
-  //! [std::unordered_map](https://en.cppreference.com/w/cpp/container/unordered_map).
+  //! const&)` for use with, for example, std::unordered_map.
   //!
   //! \par Used by Konieczny.
   template <>
   struct Hash<std::pair<size_t, size_t>> {
+    //! \brief Hashes \p x.
+    //!
     //! This call operator hashes \p x.
     //!
     //! \param x the value to hash
@@ -518,14 +594,14 @@ namespace libsemigroups {
     }
   };
 
-  //! Adapter for comparisons.
+  //! \brief Adapter for comparisons.
   //!
   //! Defined in ``adapters.hpp``.
   //!
   //! This type should be a stateless trivially default constructible with a
   //! call operator of signature `bool operator()(Value const&, Value
   //! const&)` (possibly `noexcept`, `inline` and/or `constexpr` also) which
-  //! defines a linear order on the objects of type Value
+  //! defines a linear order on the objects of type Value.
   //!
   //! \tparam Value the type of objects to compare.
   //!
@@ -535,23 +611,29 @@ namespace libsemigroups {
   //! * FroidurePinTraits
   template <typename Value, typename = void>
   struct Less {
-    //! This call operator compares \p x and \p y using \less with template
+    //! \brief Compare if \p x is less than \p y.
+    //!
+    //! This call operator compares \p x and \p y using std::less with template
     //! parameter \c Value.
+    //!
+    //! \param x const reference to \c Value to compare with \p y.
+    //! \param y const reference to \c Value to compare with \p x.
+    //!
+    //! \returns A \c bool.
     bool operator()(Value const& x, Value const& y) const {
       return std::less<Value>()(x, y);
     }
   };
 
-  //! Adapter for swapping.
+  //! \brief Adapter for swapping.
   //!
   //! Defined in ``adapters.hpp``.
   //!
   //! This type should be a stateless trivially default constructible with a
-  //! call operator of signature `void operator()(Value const&, Value
-  //! const&)` (possibly `noexcept`, `inline` and/or `constexpr` also) which
-  //! swaps its arguments.
+  //! call operator of signature `void operator()(Value&, Value&)` (possibly
+  //! `noexcept`, `inline` and/or `constexpr` also) which swaps its arguments.
   //!
-  //! \tparam Value the type of objects to compare.
+  //! \tparam Value the type of objects to swap.
   //!
   //! The second template parameter exists for SFINAE.
   //!
@@ -561,16 +643,24 @@ namespace libsemigroups {
   //! * SchreierSimsTraits
   template <typename Value, typename = void>
   struct Swap {
-    //! This call operator swaps \p x and \p y using \swap.
+    //! \brief Swap \p x and \p y
+    //!
+    //! This call operator swaps \p x and \p y using std::swap.
+    //!
+    //! \param x reference to \c Value to swap with \p y.
+    //! \param y reference to \c Value to swap with \p x.
     void operator()(Value& x, Value& y) {
       std::swap(x, y);
     }
   };
 
+  //! \brief Adapter for calculating right actions of each element in a
+  //! container.
+  //!
   //! Defined in ``adapters.hpp``.
   //!
-  //! This is struct applies `ImageRightAction<Element, Point>` to
-  //! every value in a container of type `Container`.
+  //! This struct applies `ImageRightAction<Element, Point>` to every value in a
+  //! container of type `Container`.
   //!
   //! \tparam Element the type of the elements of the semigroup
   //! \tparam Point the type of the points acted on
@@ -582,18 +672,18 @@ namespace libsemigroups {
     static_assert(std::is_same<typename Container::value_type, Point>::value,
                   "the 3rd template parameter is not a container of objects of "
                   "type the 2nd template parameter");
+    //! \brief Calculate right actions of each element in a container.
+    //!
     //! This call operator changes \p res in-place to contain the image of
     //! the container \p pt of points of type \c Point, under the induced
-    //! (left or right) action of the element \p x. The purpose of the 1st
-    //! parameter is to avoid repeated allocations of memory to hold temporary
-    //! points that are discarded soon after they are created.
+    //! right action of the element \p x. The purpose of the 1st parameter is to
+    //! avoid repeated allocations of memory to hold temporary points that are
+    //! discarded soon after they are created.
     //!
-    //! \param res a container of \c Point (such as \vector or \array)
-    //! to hold the result
-    //! \param pt  a container of \c Point
-    //! \param x   an element of type \c Element
-    //!
-    //! \returns (None)
+    //! \param res a container of \c Point (such as std::vector or std::array)
+    //! to hold the result.
+    //! \param pt  a container of \c Point.
+    //! \param x   an element of type \c Element.
     //!
     //! \complexity
     //! `pt.size()` times the complexity of `ImageRightAction<Element,
@@ -609,32 +699,39 @@ namespace libsemigroups {
     }
   };
 
+  //! \brief Adapter for calculating right actions of each element in a
+  //! container.
+  //!
   //! Defined in ``adapters.hpp``.
   //!
-  //! This is struct applies `OnTuples<Element, Point,
+  //! This struct applies `OnTuples<Element, Point,
   //! Container>` to  a container of `Container` and then sorts it.
   //!
   //! \tparam Element the type of elements
   //! \tparam Point the type of the points acted on
-  //! \tparam Container a container of \p Point (defaults to \vector
-  //! with template parameter \c Point).
+  //! \tparam Container a container of \p Point (defaults to std::vector with
+  //! template parameter \c Point).
   // TODO(2) add a template param for sorting
   template <typename Element,
             typename Point,
             typename Container = std::vector<Point>>
   struct OnSets {
+    //! \brief Calculate right actions of each element in a container, then
+    //! sort.
+    //!
     //! This call operator changes \p res in-place to contain the image of
     //! the container \p pt of points of type \c Point, under the induced
-    //! (left or right) action of the element \p x. The purpose of the 1st
-    //! parameter is to avoid repeated allocations of memory to hold temporary
-    //! points that are discarded soon after they are created.
+    //! right action of the element \p p. The purpose of the 1st parameter is to
+    //! avoid repeated allocations of memory to hold temporary points that are
+    //! discarded soon after they are created.
     //!
-    //! \param res a container of \c Point (such as \vector or
-    //! \array) to hold the result
+    //! Once the right action has been calculated, the container is sorted using
+    //! std::sort.
+    //!
+    //! \param res a container of \c Point (such as std::vector or std::array)
+    //! to hold the result.
     //! \param pt  a container of \c Point
-    //! \param p   an element of type \c Element
-    //!
-    //! \returns (None)
+    //! \param p an element of type \c Element
     //!
     //! \complexity
     //! `pt.size()` times the complexity of `ImageRightAction<Element,
@@ -648,11 +745,17 @@ namespace libsemigroups {
       std::sort(res.begin(), res.end());
     }
   };
+  //! @}
 
   /////////////////////////////////////////////////////////////////////
   // KONIECZNY THINGS
   /////////////////////////////////////////////////////////////////////
 
+  //! \addtogroup adapters_no_default_group
+  //! @{
+
+  //! \brief Adapter for lambda functions.
+  //!
   //! Defined in ``adapters.hpp``.
   //!
   //! This type should be a stateless struct with a single typedef \c type
@@ -670,6 +773,8 @@ namespace libsemigroups {
   template <typename Element, typename = void>
   struct LambdaValue;
 
+  //! \brief Adapter for rho functions.
+  //!
   //! Defined in ``adapters.hpp``.
   //!
   //! This type should be a stateless struct with a single typedef \c type
@@ -687,7 +792,7 @@ namespace libsemigroups {
   template <typename Element, typename = void>
   struct RhoValue;
 
-  //! Adapter for the action on LambdaValue's.
+  //! \brief Adapter for the action on LambdaValue's.
   //!
   //! Defined in ``adapters.hpp``.
   //!
@@ -708,7 +813,7 @@ namespace libsemigroups {
   template <typename Element, typename Point, typename = void>
   struct Lambda;
 
-  //! Adapter for the action on RhoValue's.
+  //! \brief Adapter for the action on RhoValue's.
   //!
   //! Defined in ``adapters.hpp``.
   //!
@@ -729,6 +834,9 @@ namespace libsemigroups {
   template <typename Element, typename Point, typename = void>
   struct Rho;
 
+  // TODO(now) does this brief make sense?
+  //! \brief Base class for states for ranks.
+  //!
   //! Defined in ``adapters.hpp``.
   //!
   //! Specialisations of this class should have a typedef \c type representing
@@ -771,7 +879,7 @@ namespace libsemigroups {
     RankState& operator=(RankState&&) = delete;
   };
 
-  //! Adapter for calculating ranks.
+  //! \brief Adapter for calculating ranks.
   //!
   //! Defined in ``adapters.hpp``.
   //!
@@ -801,5 +909,7 @@ namespace libsemigroups {
             typename State = RankState<Element>,
             typename       = void>
   struct Rank;
+
+  //! @}
 }  // namespace libsemigroups
 #endif  // LIBSEMIGROUPS_ADAPTERS_HPP_
