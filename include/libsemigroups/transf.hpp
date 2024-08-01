@@ -59,6 +59,7 @@ namespace libsemigroups {
   //! This page contains an overview summary of the functionality in
   //! `libsemigroups` for defining elements of semigroups and monoids.
   //!
+  //! * \ref bipart_group
   //! * \ref transf_group
 
   namespace detail {
@@ -667,7 +668,7 @@ namespace libsemigroups {
     //!
     //! This function returns a newly constructed partial transformation with
     //! degree equal to the degree of \c N that fixes every value from \c 0
-    //! to \c N.
+    //! to `N - 1`.
     //!
     //! \tparam Subclass the return type.
     //!
@@ -1621,7 +1622,7 @@ namespace libsemigroups {
   //!
   //! This function returns a newly constructed partial transformation with
   //! degree equal to the degree of \p f that fixes every value from \c 0
-  //! to f.degree().
+  //! to `f.degree() - 1`.
   //!
   //! \tparam T the type of the transformation being constructed (Perm, PPerm,
   //! Transf, or PTransf).
