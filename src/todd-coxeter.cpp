@@ -181,11 +181,12 @@ namespace libsemigroups {
         break;
       }
       case def_policy::purge_all: {
-        // FIXME
-        std::remove_if(
-            _definitions.begin(),
-            _definitions.end(),
-            [this](Definition const& d) { return !is_active_node(d.first); });
+        _definitions.erase(std::remove_if(_definitions.begin(),
+                                          _definitions.end(),
+                                          [this](Definition const& d) {
+                                            return !is_active_node(d.first);
+                                          }),
+                           _definitions.end());
         break;
       }
       case def_policy::discard_all_if_no_space: {
