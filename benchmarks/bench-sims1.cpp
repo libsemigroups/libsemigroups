@@ -28,9 +28,9 @@
 #include "catch.hpp"       // for REQUIRE, REQUIRE_NOTHROW, REQUIRE_THROWS_AS
 
 #include "libsemigroups/bipart.hpp"  // for Bipartition
+#include "libsemigroups/bmat-fastest.hpp"
 #include "libsemigroups/bmat8.hpp"
-#include "libsemigroups/detail/report.hpp"  // for ReportGuard
-#include "libsemigroups/fastest-bmat.hpp"
+#include "libsemigroups/detail/report.hpp"    // for ReportGuard
 #include "libsemigroups/fpsemi-examples.hpp"  // for singular_brauer_monoid, ...
 #include "libsemigroups/froidure-pin.hpp"     // for FroidurePinBase
 #include "libsemigroups/froidure-pin.hpp"     // for FroidurePin
@@ -104,16 +104,16 @@ namespace libsemigroups {
   TEST_CASE("ReflexiveBooleanMatMonoid(3) from FroidurePin",
             "[ReflexiveBooleanMatMonoid3][Sim1][fail]") {
     auto                        rg = ReportGuard(true);
-    FroidurePin<FastestBMat<3>> S;
-    S.add_generator(One<FastestBMat<3>>()());
-    S.add_generator(FastestBMat<3>({{1, 1, 0}, {0, 1, 1}, {1, 0, 1}}));
-    S.add_generator(FastestBMat<3>({{1, 1, 0}, {0, 1, 0}, {0, 0, 1}}));
-    S.add_generator(FastestBMat<3>({{1, 0, 1}, {1, 1, 0}, {0, 1, 1}}));
-    S.add_generator(FastestBMat<3>({{1, 0, 1}, {0, 1, 0}, {0, 0, 1}}));
-    S.add_generator(FastestBMat<3>({{1, 0, 0}, {1, 1, 0}, {0, 0, 1}}));
-    S.add_generator(FastestBMat<3>({{1, 0, 0}, {0, 1, 1}, {0, 0, 1}}));
-    S.add_generator(FastestBMat<3>({{1, 0, 0}, {0, 1, 0}, {1, 0, 1}}));
-    S.add_generator(FastestBMat<3>({{1, 0, 0}, {0, 1, 0}, {0, 1, 1}}));
+    FroidurePin<BMatFastest<3>> S;
+    S.add_generator(One<BMatFastest<3>>()());
+    S.add_generator(BMatFastest<3>({{1, 1, 0}, {0, 1, 1}, {1, 0, 1}}));
+    S.add_generator(BMatFastest<3>({{1, 1, 0}, {0, 1, 0}, {0, 0, 1}}));
+    S.add_generator(BMatFastest<3>({{1, 0, 1}, {1, 1, 0}, {0, 1, 1}}));
+    S.add_generator(BMatFastest<3>({{1, 0, 1}, {0, 1, 0}, {0, 0, 1}}));
+    S.add_generator(BMatFastest<3>({{1, 0, 0}, {1, 1, 0}, {0, 0, 1}}));
+    S.add_generator(BMatFastest<3>({{1, 0, 0}, {0, 1, 1}, {0, 0, 1}}));
+    S.add_generator(BMatFastest<3>({{1, 0, 0}, {0, 1, 0}, {1, 0, 1}}));
+    S.add_generator(BMatFastest<3>({{1, 0, 0}, {0, 1, 0}, {0, 1, 1}}));
     REQUIRE(S.size() == 64);
 
     auto p = to_presentation<word_type>(S);

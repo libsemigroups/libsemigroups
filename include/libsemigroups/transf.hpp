@@ -56,11 +56,12 @@
 namespace libsemigroups {
   //! \defgroup elements_group Elements
   //!
-  //! This page contains an overview summary of the functionality in
+  //! This page contains links to the functionality in
   //! `libsemigroups` for defining elements of semigroups and monoids.
   //!
   //! * \ref bipart_group
   //! * \ref transf_group
+  //! * \ref matrix_group
 
   namespace detail {
     //! Empty base class for polymorphism.

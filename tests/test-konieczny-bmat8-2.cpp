@@ -23,8 +23,8 @@
 #include "catch.hpp"      // for REQUIRE
 #include "test-main.hpp"  // for LIBSEMIGROUPS_TEST...
 
+#include "libsemigroups/bmat-fastest.hpp"  // for BMatFastest
 #include "libsemigroups/bmat8.hpp"         // for BMat8
-#include "libsemigroups/fastest-bmat.hpp"  // for FastestBMat
 #include "libsemigroups/konieczny.hpp"     // for Konieczny, Koniecz...
 
 #include "libsemigroups/detail/report.hpp"  // for ReportGuard
@@ -43,7 +43,7 @@ namespace libsemigroups {
 #pragma GCC diagnostic ignored "-Wpedantic"
 #pragma GCC diagnostic ignored "-Winline"
 #endif
-    using BMat                         = FastestBMat<5>;
+    using BMat                         = BMatFastest<5>;
     auto                    rg         = ReportGuard(true);
     const std::vector<BMat> bmat5_gens = {BMat({{1, 0, 0, 0, 0},
                                                 {0, 1, 0, 0, 0},
@@ -180,7 +180,7 @@ namespace libsemigroups {
 #pragma GCC diagnostic ignored "-Wpedantic"
 #pragma GCC diagnostic ignored "-Winline"
 #endif
-    using BMat                             = FastestBMat<5>;
+    using BMat                             = BMatFastest<5>;
     auto                    rg             = ReportGuard(true);
     const std::vector<BMat> reg_bmat5_gens = {BMat({{0, 1, 0, 0, 0},
                                                     {1, 0, 0, 0, 0},
@@ -314,7 +314,7 @@ namespace libsemigroups {
 #pragma GCC diagnostic ignored "-Wpedantic"
 #pragma GCC diagnostic ignored "-Winline"
 #endif
-    using BMat                   = FastestBMat<8>;
+    using BMat                   = BMatFastest<8>;
     auto                    rg   = ReportGuard(REPORT);
     const std::vector<BMat> gens = {BMat({{0, 1, 0, 0, 0, 0, 0, 0},
                                           {0, 0, 0, 0, 0, 1, 0, 0},
@@ -471,7 +471,7 @@ namespace libsemigroups {
 #pragma GCC diagnostic ignored "-Wpedantic"
 #pragma GCC diagnostic ignored "-Winline"
 #endif
-    using BMat                         = FastestBMat<5>;
+    using BMat                         = BMatFastest<5>;
     auto                    rg         = ReportGuard(true);
     const std::vector<BMat> bmat5_gens = {BMat({{1, 0, 0, 0, 0},
                                                 {0, 1, 0, 0, 0},

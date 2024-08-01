@@ -38,8 +38,26 @@
 namespace libsemigroups {
   //! \defgroup matrix_group Matrix
   //!
-  //! This file TODO
+  //! This page contains links to the documentation of the functionality in
+  //! libsemigroups for matrices.
+  //!
+  //! * \ref bmat_group
+  //!   * \ref bmat8_group
+  //!
+
+  //! \defgroup bmat_group Boolean matrices
+  //!
+  //! This page contains links to the documentation of the functionality in
+  //! libsemigroups for boolean matrices.
+  //!
   //! * \ref bmat8_group
+  //!
+  //! # Boolean matrix helpers
+  //!
+  //! The following helper struct can be used to determine the smallest type of
+  //! boolean matrix of specified dimension.
+  //!
+  //! * \ref BMatFastest
 
   //! \defgroup bmat8_group BMat8
   //! This page describes the class BMat8 that are an optimized
