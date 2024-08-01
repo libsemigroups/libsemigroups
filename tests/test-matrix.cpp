@@ -28,12 +28,12 @@
 #include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 
 #include "libsemigroups/adapters.hpp"       // for Complexity, Degree
+#include "libsemigroups/bmat-fastest.hpp"   // for BMatFastest
 #include "libsemigroups/bmat8.hpp"          // for BMat8
 #include "libsemigroups/constants.hpp"      // for NEGATIVE_INFINITY
 #include "libsemigroups/debug.hpp"          // for LIBSEMIGROUPS_A...
 #include "libsemigroups/detail/report.hpp"  // for ReportGuard
 #include "libsemigroups/exception.hpp"      // for LibsemigroupsEx...
-#include "libsemigroups/fastest-bmat.hpp"   // for FastestBMat
 #include "libsemigroups/matrix.hpp"         // for BMat, NTPMat
 
 #include "libsemigroups/detail/containers.hpp"  // for StaticVector1
@@ -1234,11 +1234,11 @@ namespace libsemigroups {
     }
   }
 
-  LIBSEMIGROUPS_TEST_CASE("FastestBMat",
+  LIBSEMIGROUPS_TEST_CASE("BMatFastest",
                           "046",
                           "check no throw",
                           "[quick][matrix]") {
-    REQUIRE_NOTHROW(FastestBMat<3>({{0, 1}, {0, 1}}));
+    REQUIRE_NOTHROW(BMatFastest<3>({{0, 1}, {0, 1}}));
   }
 
 }  // namespace libsemigroups

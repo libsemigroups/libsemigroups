@@ -20,8 +20,8 @@
 #include "catch.hpp"      // for REQUIRE
 #include "test-main.hpp"  // FOR LIBSEMIGROUPS_TEST_CASE
 
+#include "libsemigroups/bmat-fastest.hpp"  // for BMatFastest
 #include "libsemigroups/bmat8.hpp"         // for BMat8
-#include "libsemigroups/fastest-bmat.hpp"  // for FastestBMat
 #include "libsemigroups/konieczny.hpp"     // for Konieczny
 
 namespace libsemigroups {
@@ -169,7 +169,7 @@ namespace libsemigroups {
 #pragma GCC diagnostic ignored "-Winline"
 #endif
     auto rg    = ReportGuard();
-    using BMat = FastestBMat<5>;
+    using BMat = BMatFastest<5>;
     Konieczny<BMat> K;
     K.add_generator(BMat({{0, 1, 0, 0, 0},
                           {0, 0, 1, 0, 0},

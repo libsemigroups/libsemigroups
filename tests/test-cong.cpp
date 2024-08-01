@@ -19,9 +19,9 @@
 #include "catch.hpp"      // for TEST_CASE
 #include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 
+#include "libsemigroups/bmat-fastest.hpp"     // for BMatFastest
 #include "libsemigroups/bmat8.hpp"            // for BMat8
 #include "libsemigroups/cong.hpp"             // for Congruence
-#include "libsemigroups/fastest-bmat.hpp"     // for FastestBMat
 #include "libsemigroups/fpsemi-examples.hpp"  // for rook_monoid
 #include "libsemigroups/froidure-pin.hpp"     // for FroidurePin
 #include "libsemigroups/obvinf.hpp"           // for is_obviously_infinite
@@ -747,7 +747,7 @@ namespace libsemigroups {
 #pragma GCC diagnostic ignored "-Winline"
 #endif
     auto rg    = ReportGuard(false);
-    using BMat = FastestBMat<4>;
+    using BMat = BMatFastest<4>;
     std::vector<BMat> gens
         = {BMat({{0, 1, 0, 0}, {1, 0, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}),
            BMat({{0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}, {1, 0, 0, 0}}),

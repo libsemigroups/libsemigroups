@@ -16,11 +16,11 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-// This file contains the alias FastestBMat, and is separate from matrix.hpp,
+// This file contains the alias BMatFastest, and is separate from matrix.hpp,
 // bmat.hpp, and bmat8.hpp because these headers don't require each other.
 
-#ifndef LIBSEMIGROUPS_FASTEST_BMAT_HPP_
-#define LIBSEMIGROUPS_FASTEST_BMAT_HPP_
+#ifndef LIBSEMIGROUPS_BMAT_FASTEST_HPP_
+#define LIBSEMIGROUPS_BMAT_FASTEST_HPP_
 
 #include <cstddef>      // for size_t
 #include <type_traits>  // for conditional_t
@@ -34,7 +34,7 @@ namespace libsemigroups {
 
   namespace detail {
     template <size_t N>
-    struct FastestBMatHelper {
+    struct BMatFastestHelper {
 #ifdef LIBSEMIGROUPS_HPCOMBI_ENABLED
       using type = std::conditional_t<(N > 8), BMat<N>, HPCombi::BMat8>;
 #else
@@ -43,17 +43,20 @@ namespace libsemigroups {
     };
   }  // namespace detail
 
+  //! \ingroup bmat_group
+  //!
   //! Type of the fastest type of boolean matrix of given dimension.
   //!
-  //! Defined in ``fastest-bmat.hpp``.
+  //! Defined in ``bmat-fastest.hpp``.
   //!
   //! Helper for getting the type of the fastest boolean \c N by \c N matrix in
-  //! ``libsemigroups`` or ``HPCombi`` (if enabled).
+  //! ``libsemigroups`` or [HPCombi][] (if enabled).
   //!
   //! \tparam N the dimension of the boolean matrices.
+  //! [HPCombi]: https://libsemigroups.github.io/HPCombi/
   // TODO(later) example
   template <size_t N>
-  using FastestBMat = typename detail::FastestBMatHelper<N>::type;
+  using BMatFastest = typename detail::BMatFastestHelper<N>::type;
 
 }  // namespace libsemigroups
-#endif  // LIBSEMIGROUPS_FASTEST_BMAT_HPP_
+#endif  // LIBSEMIGROUPS_BMAT_FASTEST_HPP_

@@ -24,13 +24,16 @@
 #ifndef LIBSEMIGROUPS_BMAT8_HPP_
 #define LIBSEMIGROUPS_BMAT8_HPP_
 
-#include <array>       // for array
-#include <cstddef>     // for size_t
-#include <cstdint>     // for uint64_t
-#include <functional>  // for hash
-#include <string>      // for string
-#include <utility>     // for swap
-#include <vector>      // for vector
+#include <array>        // for array
+#include <cstddef>      // for size_t
+#include <cstdint>      // for uint64_t
+#include <functional>   // for hash
+#include <iosfwd>       // for ostream, ostringstream
+#include <string>       // for string
+#include <string_view>  // for hash
+#include <type_traits>  // for is_trivial
+#include <utility>      // for swap
+#include <vector>       // for vector
 
 #include "adapters.hpp"  // for Complexity, Degree, etc . . .
 #include "debug.hpp"     // for LIBSEMIGROUPS_ASSERT
@@ -38,8 +41,26 @@
 namespace libsemigroups {
   //! \defgroup matrix_group Matrix
   //!
-  //! This file TODO
+  //! This page contains links to the documentation of the functionality in
+  //! libsemigroups for matrices.
+  //!
+  //! * \ref bmat_group
+  //!   * \ref bmat8_group
+  //!
+
+  //! \defgroup bmat_group Boolean matrices
+  //!
+  //! This page contains links to the documentation of the functionality in
+  //! libsemigroups for boolean matrices.
+  //!
   //! * \ref bmat8_group
+  //!
+  //! # Boolean matrix helpers
+  //!
+  //! The following helper struct can be used to determine the smallest type of
+  //! boolean matrix of specified dimension.
+  //!
+  //! * \ref BMatFastest
 
   //! \defgroup bmat8_group BMat8
   //! This page describes the class BMat8 that are an optimized

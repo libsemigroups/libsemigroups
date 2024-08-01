@@ -20,8 +20,8 @@
 #include "catch.hpp"      // for REQUIRE
 #include "test-main.hpp"  // FOR LIBSEMIGROUPS_TEST_CASE
 
+#include "libsemigroups/bmat-fastest.hpp"  // for BMatFastest
 #include "libsemigroups/bmat8.hpp"         // for BMat8
-#include "libsemigroups/fastest-bmat.hpp"  // for FastestBMat
 #include "libsemigroups/froidure-pin.hpp"  // for FroidurePin
 #include "libsemigroups/konieczny.hpp"     // for Konieczny
 
@@ -38,7 +38,7 @@ namespace libsemigroups {
 #pragma GCC diagnostic ignored "-Wpedantic"
 #pragma GCC diagnostic ignored "-Winline"
 #endif
-    using BMat = FastestBMat<4>;
+    using BMat = BMatFastest<4>;
     auto rg    = ReportGuard(REPORT);
 
     const std::vector<BMat> gens
