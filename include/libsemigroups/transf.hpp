@@ -35,18 +35,19 @@
 #include <iterator>          // for distance
 #include <limits>            // for numeric_limits
 #include <numeric>           // for iota
-#include <string_view>
-#include <tuple>          // for tuple_size
-#include <type_traits>    // for enable_if_t
-#include <unordered_map>  // for unordered_map
-#include <unordered_set>  // for unordered_set
-#include <vector>         // for vector
+#include <tuple>             // for tuple_size
+#include <type_traits>       // for enable_if_t
+#include <unordered_map>     // for unordered_map
+#include <unordered_set>     // for unordered_set
+#include <utility>           // for forward
+#include <vector>            // for vector
 
 #include "config.hpp"  // for LIBSEMIGROUPS_HPCOMBI_ENABLED
 
 #include "adapters.hpp"   // for Hash etc
 #include "bitset.hpp"     // for BitSet
 #include "constants.hpp"  // for UNDEFINED, Undefined
+#include "debug.hpp"      // for LIBSEMIGROUPS_ASSERT
 #include "exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
 #include "hpcombi.hpp"    // for HPCombi::Transf16
 #include "types.hpp"      // for SmallestInteger
