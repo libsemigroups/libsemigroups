@@ -150,7 +150,7 @@ namespace libsemigroups {
 
   }  // namespace blocks
 
-  std::string to_human_readable_repr(Blocks const& x) {
+  [[nodiscard]] std::string to_human_readable_repr(Blocks const& x) {
     // TODO(2) allow different braces
     if (x.degree() < 32) {
       try {
@@ -166,6 +166,11 @@ namespace libsemigroups {
         x.degree(),
         x.number_of_blocks(),
         x.rank());
+  }
+
+  [[nodiscard]] Blocks
+  to_blocks(std::initializer_list<std::vector<int32_t>> const& cont) {
+    return to_blocks<std::initializer_list<std::vector<int32_t>>>(cont);
   }
 
   ////////////////////////////////////////////////////////////////////////
@@ -329,7 +334,20 @@ namespace libsemigroups {
 
   }  // namespace bipartition
 
-  std::string to_human_readable_repr(Bipartition const& x) {
+  [[nodiscard]] Bipartition
+  to_bipartition(std::initializer_list<uint32_t> const& cont) {
+    return to_bipartition<std::initializer_list<uint32_t>>(cont);
+  }
+
+  //! \brief Validate the arguments, construct a bipartition, and validate it.
+  //!
+  //! See to_bipartition(T const&) for full details.
+  [[nodiscard]] Bipartition
+  to_bipartition(std::initializer_list<std::vector<int32_t>> const& cont) {
+    return to_bipartition<std::initializer_list<std::vector<int32_t>>>(cont);
+  }
+
+  [[nodiscard]] std::string to_human_readable_repr(Bipartition const& x) {
     // TODO(2) allow different braces
     if (x.degree() < 32) {
       try {

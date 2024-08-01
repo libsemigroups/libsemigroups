@@ -668,7 +668,7 @@ namespace libsemigroups {
     //!
     //! This function returns a newly constructed partial transformation with
     //! degree equal to the degree of \c N that fixes every value from \c 0
-    //! to \c N - 1.
+    //! to `N - 1`.
     //!
     //! \tparam Subclass the return type.
     //!

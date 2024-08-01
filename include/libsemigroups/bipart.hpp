@@ -106,7 +106,7 @@ namespace libsemigroups {
     //! \brief Return the identity bipartition with the same degree as the
     //! given bipartition.
     //!
-    //! \param f the bipartition
+    //! \param f the bipartition.
     //! Returns the identity bipartition of degree equal to `f.degree()`.
     //!
     //! The *identity bipartition* of degree \f$n\f$ has blocks \f$\{i, -i\}\f$
@@ -128,7 +128,7 @@ namespace libsemigroups {
     //! * a block of the partition consists of negative numbers if and only if
     //! the corresponding block of \c x is a transverse block.
     //!
-    //! \param x the Bipartition.
+    //! \param x the bipartition.
     //!
     //! \returns
     //! A vector of vectors of integers.
@@ -146,7 +146,7 @@ namespace libsemigroups {
     //! This function validates a Bipartition object, and throws an exception if
     //! the object is not valid.
     //!
-    //! \param x the bipartition
+    //! \param x the bipartition.
     //!
     //! \throws LibsemigroupsException if \p x is invalid.
     void validate(Bipartition const& x);
@@ -272,7 +272,7 @@ namespace libsemigroups {
   //! \brief A Blocks object represents a signed partition of the set
   //! \f$\{0, \ldots, n - 1\}\f$.
   //!
-  //! Defined ``bipart.hpp``.
+  //! Defined in ``bipart.hpp``.
   //!
   //! It is possible to associate to every Bipartition a pair of blocks,
   //! Bipartition::left_blocks() and Bipartition::right_blocks(), which
@@ -320,9 +320,9 @@ namespace libsemigroups {
     //! The degree of the blocks object constructed is `last - first / 2`.
     //!
     //! \param first iterator pointing to the index of the block containing the
-    //! first point
+    //! first point.
     //! \param last iterator pointing one past the index of the block containing
-    //! the last point
+    //! the last point.
     //!
     //! \exceptions
     //! \no_libsemigroups_except
@@ -436,7 +436,7 @@ namespace libsemigroups {
     //! transverse (or signed) block and it returns \c false if it is not
     //! transverse (or unsigned).
     //!
-    //! \param index the index of a block
+    //! \param index the index of a block.
     //!
     //! \returns Whether or not the given block is transverse.
     //!
@@ -459,7 +459,7 @@ namespace libsemigroups {
     //! transverse (or signed) block and it returns \c false if it is not
     //! transverse (or unsigned).
     //!
-    //! \param index the index of a block
+    //! \param index the index of a block.
     //!
     //! \returns Whether or not the given block is transverse.
     //!
@@ -722,38 +722,47 @@ namespace libsemigroups {
       return _blocks.at(i);
     }
 
-    //! \brief Validate the arguments, construct a Blocks object, and validate
-    //! it.
-    //!
-    //! \tparam Container the type of the parameter \p cont
-    //!
-    //! \param cont container containing a lookup for the blocks.
-    //!
-    //! \throws LibsemigroupsException if the arguments do not describe a
-    //! signed partition.
-    //!
-    //! \throws LibsemigroupsException if the constructed Blocks object is not
-    //! valid.
-    template <typename Container>
-    [[nodiscard]] static Blocks make(Container const& cont);
-
-    //! \copydoc make(Container const&)
-    [[nodiscard]] static Blocks
-    make(std::initializer_list<std::vector<int32_t>> const& cont) {
-      return make<std::initializer_list<std::vector<int32_t>>>(cont);
-    }
-
    private:
     void throw_if_class_index_out_of_range(size_t index) const;
-  };
+  };  // class Blocks
 
+  //! \ingroup bipart_group
+  //!
+  //! \brief Validate the arguments, construct a Blocks object, and validate
+  //! it.
+  //!
+  //! \tparam Container the type of the parameter \p cont.
+  //!
+  //! \param cont container containing a lookup for the blocks.
+  //!
+  //! \throws LibsemigroupsException if the arguments do not describe a
+  //! signed partition.
+  //!
+  //! \throws LibsemigroupsException if the constructed Blocks object is not
+  //! valid.
   template <typename Container>
-  Blocks Blocks::make(Container const& cont) {
+  [[nodiscard]] Blocks to_blocks(Container const& cont) {
     detail::validate_args<Blocks>(cont);
     Blocks result(cont);
     blocks::validate(result);
     return result;
   }
+
+  //! \copydoc to_blocks(Container const&)
+  [[nodiscard]] Blocks
+  to_blocks(std::initializer_list<std::vector<int32_t>> const& cont);
+
+  //! \ingroup bipart_group
+  //!
+  //! \brief Return a human readable representation of a blocks object.
+  //!
+  //! Return a human readable representation of a blocks object.
+  //!
+  //! \param x the Blocks object.
+  //!
+  //! \exceptions
+  //! \no_libsemigroups_except
+  [[nodiscard]] std::string to_human_readable_repr(Blocks const& x);
 
   //! \ingroup bipart_group
   //!
@@ -891,42 +900,6 @@ namespace libsemigroups {
     Bipartition& operator=(Bipartition&&);
 
     ~Bipartition();
-
-    //! \brief Validate the arguments, construct a bipartition, and validate it.
-    //!
-    //! \tparam T the type of the parameter \p cont
-    //!
-    //! \param cont either a vector providing a lookup for the blocks of the
-    //! bipartition or a vector of vectors (or initializer list).
-    //!
-    //! \throws LibsemigroupsException if the arguments do not describe a
-    //! bipartition.
-    //!
-    //! \throws LibsemigroupsException if the constructed bipartition is not
-    //! valid.
-    template <typename T>
-    [[nodiscard]] static Bipartition make(T const& cont) {
-      detail::validate_args<Bipartition>(cont);
-      Bipartition result(cont);
-      bipartition::validate(result);
-      return result;
-    }
-
-    //! \brief Validate the arguments, construct a bipartition, and validate it.
-    //!
-    //! See make(T const&) for full details.
-    [[nodiscard]] static Bipartition
-    make(std::initializer_list<uint32_t> const& cont) {
-      return make<std::initializer_list<uint32_t>>(cont);
-    }
-
-    //! \brief Validate the arguments, construct a bipartition, and validate it.
-    //!
-    //! See make(T const&) for full details.
-    [[nodiscard]] static Bipartition
-    make(std::initializer_list<std::vector<int32_t>> const& cont) {
-      return make<std::initializer_list<std::vector<int32_t>>>(cont);
-    }
 
     //! \brief Compare bipartitions for equality.
     //!
@@ -1233,7 +1206,7 @@ namespace libsemigroups {
     //! This function returns the number of parts in the partition that
     //! instances of this class represent.
     //!
-    //! \returns The number of blocks..
+    //! \returns The number of blocks.
     //!
     //! \exceptions
     //! \no_libsemigroups_except
@@ -1297,7 +1270,7 @@ namespace libsemigroups {
     //! A block of a biparition is *transverse* if it contains integers less
     //! than and greater than \f$n\f$, which is the degree of the bipartition.
     //!
-    //! \param index the index of a block
+    //! \param index the index of a block.
     //!
     //! \returns Whether or not the given block is transverse.
     //!
@@ -1460,6 +1433,38 @@ namespace libsemigroups {
     void init_trans_blocks_lookup() const;
   };  // class Bipartition
 
+  //! \brief Validate the arguments, construct a bipartition, and validate it.
+  //!
+  //! \tparam T the type of the parameter \p cont
+  //!
+  //! \param cont either a vector providing a lookup for the blocks of the
+  //! bipartition or a vector of vectors (or initializer list).
+  //!
+  //! \throws LibsemigroupsException if the arguments do not describe a
+  //! bipartition.
+  //!
+  //! \throws LibsemigroupsException if the constructed bipartition is not
+  //! valid.
+  template <typename T>
+  [[nodiscard]] static Bipartition to_bipartition(T const& cont) {
+    detail::validate_args<Bipartition>(cont);
+    Bipartition result(cont);
+    bipartition::validate(result);
+    return result;
+  }
+
+  //! \brief Validate the arguments, construct a bipartition, and validate it.
+  //!
+  //! See to_bipartition(T const&) for full details.
+  [[nodiscard]] Bipartition
+  to_bipartition(std::initializer_list<uint32_t> const& cont);
+
+  //! \brief Validate the arguments, construct a bipartition, and validate it.
+  //!
+  //! See to_bipartition(T const&) for full details.
+  [[nodiscard]] Bipartition
+  to_bipartition(std::initializer_list<std::vector<int32_t>> const& cont);
+
   //! \ingroup bipart_group
   //!
   //! \brief Return a human readable representation of a bipartition.
@@ -1470,19 +1475,7 @@ namespace libsemigroups {
   //!
   //! \exceptions
   //! \no_libsemigroups_except
-  std::string to_human_readable_repr(Bipartition const& x);
-
-  //! \ingroup bipart_group
-  //!
-  //! \brief Return a human readable representation of a blocks object.
-  //!
-  //! Return a human readable representation of a blocks object.
-  //!
-  //! \param x the Blocks object.
-  //!
-  //! \exceptions
-  //! \no_libsemigroups_except
-  std::string to_human_readable_repr(Blocks const& x);
+  [[nodiscard]] std::string to_human_readable_repr(Bipartition const& x);
 
   //! \ingroup bipart_group
   //!

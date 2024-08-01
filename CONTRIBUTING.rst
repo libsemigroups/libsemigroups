@@ -63,7 +63,9 @@ Some more conventions:
     difficult to use if they are in a nested namespace.
   - functions that are (or should be) implemented for all of the public facing
     classes in ``libsemigroups``, such as, for example
-    `to_human_readable_repr`. 
+    `to_human_readable_repr`
+  - other functions with prefix `to_` such as `to_blocks`, `to_word_graph` etc,
+    to avoid the repetition in `blocks::to_blocks`, etc
 
 Debugging and valgrinding
 -------------------------
