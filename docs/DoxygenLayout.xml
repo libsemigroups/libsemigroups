@@ -24,6 +24,7 @@
       <tab type="usergroup" visible="yes" url="@ref libsemigroups::fpsemigroup" title="Examples" />
       <tab type="usergroup" visible="yes" url="@ref to_presentation_group" title="Making presentations from other objects" />
     </tab>
+      <tab type="user" visible="yes" url="@ref dot_group" title="Visualisation" />
     <tab type="usergroup" visible="yes" url="@ref word_graph_group" title="Word graphs" >
       <tab type="user" visible="yes" url="@ref libsemigroups::Forest" title="Forest" />
       <tab type="user" visible="yes" url="@ref libsemigroups::WordGraph" title="WordGraph" />

@@ -1456,6 +1456,7 @@ namespace libsemigroups {
     template <typename Graph>
     std::pair<bool, Forest> standardize(Graph& wg, Order val = Order::shortlex);
 
+    //! TODO
     template <typename Node>
     Dot dot(WordGraph<Node> const& wg);
 

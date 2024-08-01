@@ -1080,7 +1080,7 @@ EXCLUDE_PATTERNS       =
 # wildcard * is used, a substring. Examples: ANamespace, AClass,
 # ANamespace::AClass, ANamespace::*Test
 
-EXCLUDE_SYMBOLS       = libsemigroups::detail::* \
+EXCLUDE_SYMBOLS       = libsemigroups::detail \
                         libsemigroups::ukkonen::detail* \
                         libsemigroups::detail::group_digits \
                         *KBE* \
