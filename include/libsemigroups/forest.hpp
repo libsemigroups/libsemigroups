@@ -56,7 +56,8 @@ namespace libsemigroups {
     explicit Forest(size_t n = 0)
         : _edge_label(n, static_cast<size_t>(UNDEFINED)),
           _parent(n, static_cast<size_t>(UNDEFINED)) {}
-
+    // TODO doc
+    // TODO to cpp
     void init(size_t n = 0) {
       _edge_label.resize(n);
       std::fill(std::begin(_edge_label),
@@ -68,10 +69,12 @@ namespace libsemigroups {
                 static_cast<size_t>(UNDEFINED));
     }
 
+    // TODO doc
     bool operator==(Forest const& that) const {
       return _parent == that._parent && _edge_label == that._edge_label;
     }
 
+    // TODO doc
     bool operator!=(Forest const& that) const {
       return !(*this == that);
     }
@@ -106,6 +109,7 @@ namespace libsemigroups {
     //!
     //! \iterator_validity
     //! \iterator_invalid
+    // TODO to cpp
     void add_nodes(size_t n) {
       size_t const old_nr_nodes = number_of_nodes();
       try {
@@ -173,6 +177,8 @@ namespace libsemigroups {
     //! \complexity
     //! Constant
     // not noexcept because std::vector::operator[] isn't.
+    // TODO to cpp
+    // TODO set_no_checks
     void set(node_type node, node_type parent, label_type gen) {
       validate_node(node);
       validate_node(parent);
@@ -252,6 +258,7 @@ namespace libsemigroups {
     //!
     //! \par Parameters
     //! (None)
+    // TODO use or delete
 
     //! Returns an iterator pointing one-past the parent of the last node.
     //!
@@ -266,15 +273,18 @@ namespace libsemigroups {
     //!
     //! \par Parameters
     //! (None)
-
+    // TODO doc
     [[nodiscard]] auto const& parents() const noexcept {
       return _parent;
     }
 
+    // TODO doc
     [[nodiscard]] auto const& labels() const noexcept {
       return _edge_label;
     }
 
+    // TODO doc
+    // TODO to cpp
     void path_to_root_no_checks(word_type& w, node_type i) const {
       while (parent_no_checks(i) != UNDEFINED) {
         w.push_back(label_no_checks(i));
@@ -283,17 +293,20 @@ namespace libsemigroups {
       }
     }
 
+    // TODO doc
     [[nodiscard]] word_type path_to_root_no_checks(node_type i) const {
       word_type w;
       path_to_root_no_checks(w, i);
       return w;
     }
 
+    // TODO doc
     void path_to_root(word_type& w, node_type i) const {
       validate_node(i);
       path_to_root_no_checks(w, i);
     }
 
+    // TODO doc
     [[nodiscard]] word_type path_to_root(node_type i) const {
       word_type w;
       path_to_root(w, i);
@@ -301,6 +314,7 @@ namespace libsemigroups {
     }
 
    private:
+    // TODO to cpp
     void validate_node(node_type v) const {
       if (v >= number_of_nodes()) {
         LIBSEMIGROUPS_EXCEPTION("node value out of bounds, expected value in "
@@ -309,7 +323,7 @@ namespace libsemigroups {
                                 v);
       }
     }
-    // TODO(later) combine into 1 using a struct
+    // TODO move to top
     std::vector<size_t> _edge_label;
     std::vector<size_t> _parent;
   };
