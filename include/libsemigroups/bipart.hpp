@@ -353,7 +353,7 @@ namespace libsemigroups {
     //! (signed) integers, so that the blocks consisting of negative values are
     //! transverse and those consisting of positive values are not.
     //!
-    //! \param blocks the blocks
+    //! \param blocks the blocks.
     //!
     //! \throws LibsemigroupsException if the set consisting of the absolute
     //! values of the entries in \p blocks is not \f${1, \ldots, n\}\f$ where
@@ -361,7 +361,7 @@ namespace libsemigroups {
     //! \throws LibsemigroupsException if \c 0 is an item in any block.
     //! \throws LibsemigroupsException if any block is empty.
     //! \throws LibsemigroupsException if any block contains both negative and
-    //! positive values..
+    //! positive values.
     //! \throws LibsemigroupsException if the constructed Blocks object is not
     //! valid.
     //!
