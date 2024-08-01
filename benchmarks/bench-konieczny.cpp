@@ -22,7 +22,7 @@
 #include "catch.hpp"       // for TEST_CASE, BENCHMARK, REQUIRE
 
 #include "libsemigroups/bitset.hpp"         // for BitSet
-#include "libsemigroups/bmat.hpp"           // for BMat adapters
+#include "libsemigroups/bmat-adapters.hpp"  // for BMat adapters
 #include "libsemigroups/detail/report.hpp"  // for ReportGuard
 #include "libsemigroups/froidure-pin.hpp"   // for FroidurePin
 #include "libsemigroups/matrix.hpp"         // for BMat

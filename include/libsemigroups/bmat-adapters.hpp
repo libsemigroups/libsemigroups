@@ -1,6 +1,6 @@
 //
 // libsemigroups - C++ library for semigroups and monoids
-// Copyright (C) 2020 James D. Mitchell
+// Copyright (C) 2020-2024 James D. Mitchell
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -16,8 +16,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#ifndef LIBSEMIGROUPS_BMAT_HPP_
-#define LIBSEMIGROUPS_BMAT_HPP_
+#ifndef LIBSEMIGROUPS_BMAT_ADAPTERS_HPP_
+#define LIBSEMIGROUPS_BMAT_ADAPTERS_HPP_
 
 #include <cstddef>  // for size_t
 
@@ -29,9 +29,9 @@
 #include "matrix.hpp"     // for BMat
 
 namespace libsemigroups {
-  // ////////////////////////////////////////////////////////////////////////
-  // // ImageRight/LeftAction - BMat
-  // ////////////////////////////////////////////////////////////////////////
+  ////////////////////////////////////////////////////////////////////////
+  // ImageRight/LeftAction - BMat
+  ////////////////////////////////////////////////////////////////////////
 
   // T = StaticVector1<BitSet<N>, N> or std::vector<BitSet<N>>
   // Possibly further container when value_type is BitSet.
@@ -264,4 +264,4 @@ namespace libsemigroups {
     }
   };
 }  // namespace libsemigroups
-#endif  // LIBSEMIGROUPS_BMAT_HPP_
+#endif  // LIBSEMIGROUPS_BMAT_ADAPTERS_HPP_

@@ -22,12 +22,12 @@
 #include <stdexcept>  // for out_of_range
 #include <vector>     // for vector
 
-#include "libsemigroups/action.hpp"  // for LeftAction, RightAction
-#include "libsemigroups/bitset.hpp"  // for BitSet
-#include "libsemigroups/bmat.hpp"    // for adapters
-#include "libsemigroups/bmat8.hpp"   // for BMat8 etc
-#include "libsemigroups/matrix.hpp"  // for BMat
-#include "libsemigroups/transf.hpp"  // for PPerm<>
+#include "libsemigroups/action.hpp"         // for LeftAction, RightAction
+#include "libsemigroups/bitset.hpp"         // for BitSet
+#include "libsemigroups/bmat-adapters.hpp"  // for adapters
+#include "libsemigroups/bmat8.hpp"          // for BMat8 etc
+#include "libsemigroups/matrix.hpp"         // for BMat
+#include "libsemigroups/transf.hpp"         // for PPerm<>
 
 #include "libsemigroups/detail/containers.hpp"  // for StaticVector1
 #include "libsemigroups/detail/report.hpp"      // for ReportGuard
