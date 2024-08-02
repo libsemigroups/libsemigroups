@@ -59,9 +59,11 @@ namespace libsemigroups {
       Kassabov   = 16'384,
       Lubotzky   = 32'768,
       Miller     = 65'536,
-      Moore      = 131'072,
-      Moser      = 262'144,
-      Sutov      = 524'288,
+      Mitchell   = 131'072,
+      Moore      = 262'144,
+      Moser      = 524'288,
+      Sutov      = 1'048'576,
+      Whyte      = 2'097'152
     };
 
     //! This operator can be used arbitrarily to combine author values (see \ref
@@ -73,7 +75,7 @@ namespace libsemigroups {
 
     //! A presentation for the stellar monoid.
     //!
-    //! Returns a monoid presentation defining
+
     //! the stellar monoid with `l` generators, as in Theorem 4.39 of
     //! [10.48550/arXiv.1910.11740][].
     //!
@@ -392,6 +394,7 @@ namespace libsemigroups {
     //! [http://hdl.handle.net/10023/2821][])
     //! * `author::Iwahori` (see Theorem 9.3.1 of
     //! [10.1007/978-1-84800-281-4][])
+    //! * `author::Mitchell + author::Whyte` (see Theorem 1.5 of [10.48550/arXiv.2406.19294][])
     //!
     //! The default for `val` is `author::Iwahori`.
     //!
@@ -405,6 +408,7 @@ namespace libsemigroups {
     //!
     //! [http://hdl.handle.net/10023/2821]: http://hdl.handle.net/10023/2821
     //! [10.1007/978-1-84800-281-4]: https://doi.org/10.1007/978-1-84800-281-4
+    //! [10.48550/arXiv.2406.19294]: https://doi.org/10.48550/arXiv.2406.19294
     [[nodiscard]] Presentation<word_type>
     full_transformation_monoid(size_t n, author val = author::Iwahori);
 
@@ -416,6 +420,7 @@ namespace libsemigroups {
     //! * `author::Machine`
     //! * `author::Sutov` (see Theorem 9.4.1 of
     //! [10.1007/978-1-84800-281-4][])
+    //! * `author::Mitchell + author::Whyte`  (See Theorem 1.5 of [10.48550/arXiv.2406.19294])
     //!
     //! The default for `val` is `author::Sutov`.
     //!
@@ -428,6 +433,7 @@ namespace libsemigroups {
     //! order of author)
     //!
     //! [10.1007/978-1-84800-281-4]: https://doi.org/10.1007/978-1-84800-281-4
+    //! [10.48550/arXiv.2406.19294]: https://doi.org/10.48550/arXiv.2406.19294
     [[nodiscard]] Presentation<word_type>
     partial_transformation_monoid(size_t n, author val = author::Sutov);
 
@@ -438,7 +444,8 @@ namespace libsemigroups {
     //! presentation which is returned. The options are:
     //! * `author::Sutov` (see Theorem 9.2.2 of
     //! [10.1007/978-1-84800-281-4][])
-
+    //! * `author::Mitchell + author::Whyte` (see Theorem 1.4 of [10.48550/arXiv.2406.19294][])
+    //!
     // When val == author::Gay, this is just a presentation for the symmetric
     // inverse monoid, a slightly modified version from Solomon (so that
     // contains the Coxeter+Moser presentation for the symmetric group),
@@ -448,7 +455,7 @@ namespace libsemigroups {
     // Maybe should be Solomon:
     // https://www.sciencedirect.com/science/article/pii/S0021869303005933/pdf
     //!
-    //! The default for `val` is the only option above.
+    //! The default value for `val` is `author::Sutov`.
     //!
     //! \param n the degree of the symmetric inverse monoid
     //! \param val the author of the presentation
@@ -459,6 +466,7 @@ namespace libsemigroups {
     //! order of author)
     //!
     //! [10.1007/978-1-84800-281-4]: https://doi.org/10.1007/978-1-84800-281-4
+    //! [10.48550/arXiv.2406.19294]: https://doi.org/10.48550/arXiv.2406.19294
     [[nodiscard]] Presentation<word_type>
     symmetric_inverse_monoid(size_t n, author val = author::Sutov);
 
