@@ -224,7 +224,7 @@ namespace libsemigroups {
       return _active_nodes_index.size();
     }
 
-    //! \brief Return a the active nodes.
+    //! \brief Return the active nodes.
     //!
     //! This function returns the active nodes of the trie.
     //!
