@@ -86,17 +86,17 @@ docker pull libsemigroups/libsemigroups-docker:latest docker run \--rm
 In addition to the usual `autoconf` configuration options, the following
 configuration options are available for `libsemigroups`:
 
-  Option                       
-  ---------------------------- -----------------------------------------------------------------------------------------
-  \--enable-code-coverage      enable code coverage support (default=no)
-  \--enable-compile-warnings   enable compiler warnings (default=no)
-  \--enable-debug              enable debug mode (default=no)
-  \--enable-eigen              enable `eigen` (default=yes)
-  \--enable-hpcombi            enable `HPCombi` (default=yes)
-  \--with-external-fmt         do not use the included copy of fmt (default=no)
-  \--with-external-eigen       do not use the included copy of eigen (default=no)
-  \--disable-popcnt            do not use \_\_builtin_popcountl (default=yes)
-  \--disable-clzll             do not use \_\_builtin_ctzll (default=yes)
+| Option                     | Description                                        |
+| -------------------------- | -------------------------------------------------- |
+| \--enable-code-coverage    | enable code coverage support (default=no)          |
+| \--enable-compile-warnings | enable compiler warnings (default=no)              |
+| \--enable-debug            | enable debug mode (default=no)                     |
+| \--enable-eigen            | enable `eigen` (default=yes)                       |
+| \--enable-hpcombi          | enable `HPCombi` (default=yes)                     |
+| \--with-external-fmt       | do not use the included copy of fmt (default=no)   |
+| \--with-external-eigen     | do not use the included copy of eigen (default=no) |
+| \--disable-popcnt          | do not use \_\_builtin_popcountl (default=yes)     |
+| \--disable-clzll           | do not use \_\_builtin_ctzll (default=yes)         |
 
 Debug mode and verbose mode significantly degrade the performance of
 `libsemigroups`. Compiling with `fmt` enabled increases build times
