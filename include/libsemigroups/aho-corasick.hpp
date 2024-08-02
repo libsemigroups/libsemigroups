@@ -33,6 +33,7 @@
 #include "constants.hpp"  // for Undefined, operator!=, UNDEFINED, operator==
 #include "debug.hpp"      // for LIBSEMIGROUPS_ASSERT
 #include "exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
+#include "ranges.hpp"     // for rx::iterator_range
 #include "types.hpp"      // for letter_type, word_type
 
 // TODO(2) make nodes accessible as indices of some list (numbered nodes).
@@ -207,7 +208,7 @@ namespace libsemigroups {
 
     //! \brief Returns the number of nodes in the trie.
     //!
-    //! This function Returns the number of nodes in the trie.
+    //! This function returns the number of nodes in the trie.
     //!
     //! \returns
     //! A value of type `size_t`.
@@ -219,6 +220,89 @@ namespace libsemigroups {
     //! Constant.
     [[nodiscard]] size_t number_of_nodes() const noexcept {
       return _active_nodes_index.size();
+    }
+
+    //! \brief Return a the active nodes.
+    //!
+    //! This function returns the active nodes of the trie.
+    //!
+    //! \returns A value of type
+    //! `rx::iterator_range<std::set<index_type>::const_iterator>`.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    //! \complexity
+    //! Constant.
+    [[nodiscard]] rx::iterator_range<std::set<index_type>::const_iterator>
+    active_nodes() const {
+      return rx::iterator_range(cbegin_nodes(), cend_nodes());
+    }
+
+    //! \brief Return a const iterator pointing to the first active node.
+    //!
+    //! This function returns a const iterator pointing to the first active node
+    //! in the trie.
+    //!
+    //! \returns A value of type `std::set<index_type>::const_iterator`.
+    //!
+    //! \exceptions
+    //! \noexcept
+    //!
+    //! \complexity
+    //! Constant.
+    [[nodiscard]] std::set<index_type>::const_iterator
+    cbegin_nodes() const noexcept {
+      return _active_nodes_index.cbegin();
+    }
+
+    //! \brief Return a const iterator pointing one beyond the last active node.
+    //!
+    //! This function returns a const iterator pointing one beyond the last
+    //! active node in the trie.
+    //!
+    //! \returns A value of type `std::set<index_type>::const_iterator`.
+    //!
+    //! \exceptions
+    //! \noexcept
+    //!
+    //! \complexity
+    //! Constant.
+    [[nodiscard]] std::set<index_type>::const_iterator
+    cend_nodes() const noexcept {
+      return _active_nodes_index.cend();
+    }
+
+    //! \brief Return an iterator pointing to the first active node.
+    //!
+    //! This function returns an iterator pointing to the first active node
+    //! in the trie.
+    //!
+    //! \returns A value of type `std::set<index_type>::iterator`.
+    //!
+    //! \exceptions
+    //! \noexcept
+    //!
+    //! \complexity
+    //! Constant.
+    [[nodiscard]] std::set<index_type>::iterator begin_nodes() const noexcept {
+      return _active_nodes_index.begin();
+    }
+
+    //! \brief Return an iterator pointing one beyond the last active node.
+    //!
+    //! This function returns an iterator pointing one beyond the last active
+    //! node in the trie.
+    //!
+    //! \returns A value of type `std::set<index_type>::iterator`.
+    //!
+    //! \exceptions
+    //! \noexcept
+    //!
+    //! \complexity
+    //! Constant.
+    [[nodiscard]] std::set<index_type>::iterator end_nodes() const noexcept {
+      return _active_nodes_index.end();
     }
 
     //! \brief Check and add a word to the trie.
