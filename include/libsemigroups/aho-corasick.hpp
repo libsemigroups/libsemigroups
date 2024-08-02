@@ -55,6 +55,8 @@
 //! class in `libsemigroups`.
 namespace libsemigroups {
 
+  class Dot;  // forward decl
+
   //! \ingroup aho_corasick_group
   //!
   //! \brief For an implementation of the Aho-Corasick algorithm
@@ -727,16 +729,6 @@ namespace libsemigroups {
   //! \no_libsemigroups_except
   std::string to_string(AhoCorasick& ac);
 
-  class Dot;  // forward decl
-
-  //! \ingroup aho_corasick_group
-  //!
-  //! \brief Construct a dot object of \p ac.
-  //!
-  //! Construct a \ref Dot object representing the trie of \p ac with suffix
-  //! links.
-  [[nodiscard]] Dot dot(AhoCorasick& ac);
-
   //! \ingroup aho_corasick_group
   //!
   //! \brief Namespace for AhoCorasick helper functions.
@@ -958,6 +950,13 @@ namespace libsemigroups {
                                            Word const&        w) {
       return traverse_word(ac, AhoCorasick::root, w.cbegin(), w.cend());
     }
+
+    //! \brief Construct a dot object of \p ac.
+    //!
+    //! Construct a \ref Dot object representing the trie of \p ac with suffix
+    //! links.
+    [[nodiscard]] Dot dot(AhoCorasick& ac);
+
   }  // namespace aho_corasick
 
 }  // namespace libsemigroups
