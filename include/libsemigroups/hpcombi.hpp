@@ -31,7 +31,6 @@
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wpedantic"
 #pragma GCC diagnostic ignored "-Winline"
-#pragma GCC diagnostic ignored "-Winline"
 #if defined(__clang__)
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wbitwise-instead-of-logical"
@@ -47,7 +46,8 @@ namespace libsemigroups {
   //!
   //! \ingroup adapters_group
   //!
-  //! \brief TODO
+  //! \brief Documentation for the specialization of adapters that allow the
+  //! types in `HPCombi` to be used in the algorithms of `libsemigroups`.
   //!
   //! This page contains the documentation of the functionality in
   //! `libsemigroups` that adapts the types in `HPCombi` for use with the
@@ -59,11 +59,12 @@ namespace libsemigroups {
   //!
   //! @{
 
-  //! \brief Specialisation of the Complexity subclass.
+  //! \brief Specialisation of the Complexity adapter for subclasses of
+  //! ``HPCombi::PTransf16``.
   //!
   //! Defined in ``hpcombi.hpp``.
   //!
-  //! Specialization of the adapter Complexity for subclasses of
+  //! Specialization of the Complexity adapter for subclasses of
   //! ``HPCombi::PTransf16``.
   //!
   //! \sa Complexity.
@@ -82,11 +83,11 @@ namespace libsemigroups {
     }
   };
 
-  //! \brief Specialization of the Degree adapter.
+  //! \brief Specialization of the Degree adapter for ``HPCombi::PTransf16``.
   //!
   //! Defined in ``hpcombi.hpp``.
   //!
-  //! Specialization of the adapter Degree for subclasses of
+  //! Specialization of the Degree adapter for subclasses of
   //! ``HPCombi::PTransf16``.
   //!
   //! \sa Degree.
@@ -105,7 +106,7 @@ namespace libsemigroups {
     }
   };
 
-  //! \brief Specialisation of the One adapter.
+  //! \brief Specialisation of the One adapter for ``HPCombi::PTransf16``.
   //!
   //! Defined in ``hpcombi.hpp``.
   //!
@@ -137,7 +138,7 @@ namespace libsemigroups {
     }
   };
 
-  //! \brief Specialisation of the Product adapter.
+  //! \brief Specialisation of the Product adapter for ``HPCombi::PTransf16``.
   //!
   //! Defined in ``hpcombi.hpp``.
   //!
@@ -166,7 +167,7 @@ namespace libsemigroups {
     }
   };
 
-  //! \brief Specialization of the Swap adapter.
+  //! \brief Specialization of the Swap adapter for ``HPCombi::PTransf16``.
   //!
   //! Defined in ``hpcombi.hpp``.
   //!
@@ -190,7 +191,7 @@ namespace libsemigroups {
     }
   };
 
-  //! \brief Specialization of the Inverse adapter.
+  //! \brief Specialization of the Inverse adapter for ``HPCombi::PTransf16``.
   //!
   //! Defined in ``hpcombi.hpp``.
   //!
@@ -210,12 +211,12 @@ namespace libsemigroups {
     }
   };
 
-  //! \brief Specialization of the ImageRightAction adapter.
+  //! \brief Specialization of the ImageRightAction adapter for
+  //! ``HPCombi::PTransf16``.
   //!
   //! Defined in ``hpcombi.hpp``.
   //!
-  //! Specialization of the  ImageRightAction for
-  //! ``HPCombi::Perm16``.
+  //! Specialization of the  ImageRightAction for ``HPCombi::Perm16``.
   //!
   //! \sa ImageRightAction.
   template <typename TIntType>
@@ -244,14 +245,21 @@ namespace libsemigroups {
     }
   };
 
+  //! \brief Specialization of the ImageRightAction adapter for
+  //! ``HPCombi::PTransf16``.
+  //!
   //! Defined in ``hpcombi.hpp``.
   //!
-  //! Specialization of the adapter ImageRightAction for ``HPCombi::PPerm16``.
+  //! Specialization of the ImageRightAction adapter for ``HPCombi::PPerm16``.
   //!
   //! \sa ImageRightAction.
   template <>
   struct ImageRightAction<HPCombi::PPerm16, HPCombi::PPerm16> {
-    //! Stores the idempotent \f$(xy) ^ {-1}xy\f$ in \p res.
+    //! \brief Stores the idempotent \f$(xy) ^ {-1}xy\f$ in \p res.
+    //!
+    //! Modifies \p res in-place to store the idempotent \f$(xy) ^ {-1}xy\f$ in
+    //! \p res.
+    //!
     //! \exceptions
     //! \noexcept
     void operator()(HPCombi::PPerm16&       res,
@@ -261,14 +269,21 @@ namespace libsemigroups {
     }
   };
 
+  //! \brief Specialization of the ImageLeftAction adapter for
+  //! ``HPCombi::PTransf16``.
+  //!
   //! Defined in ``hpcombi.hpp``.
   //!
-  //! Specialization of the adapter ImageLeftAction for ``HPCombi::PPerm16``.
+  //! Specialization of the ImageLeftAction adapter for ``HPCombi::PPerm16``.
   //!
   //! \sa ImageLeftAction.
   template <>
   struct ImageLeftAction<HPCombi::PPerm16, HPCombi::PPerm16> {
-    //! Stores the idempotent \f$xy(xy) ^ {-1}\f$ in \p res.
+    //! \brief Stores the idempotent \f$xy(xy) ^ {-1}\f$ in \p res.
+    //!
+    //! Modifies res in-place to store the idempotent \f$xy(xy) ^ {-1}\f$ in \p
+    //! res.
+    //!
     //! \exceptions
     //! \noexcept
     void operator()(HPCombi::PPerm16&       res,
@@ -278,72 +293,92 @@ namespace libsemigroups {
     }
   };
 
+  //! \brief Specialization of the Complexity adapter for ``HPCombi::BMat8``.
+  //!
   //! Defined in ``hpcombi.hpp``.
   //!
-  //! Specialization of the adapter Complexity for instances of
-  //! HPCombi::BMat8.
+  //! Specialization of the Complexity adapter for instances of
+  //! ``HPCombi::BMat8``.
   //!
   //! \sa Complexity.
   template <>
   struct Complexity<HPCombi::BMat8> {
-    //! Returns 0; HPCombi::BMat8 multiplication is constant complexity.
+    //! \brief Returns 0.
+    //!
+    //! Returns 0; ``HPCombi::BMat8`` multiplication is constant complexity.
     constexpr inline size_t operator()(HPCombi::BMat8 const&) const noexcept {
       return 0;
     }
   };
 
+  //! \brief Specialization of the Degree adapter for ``HPCombi::BMat8``.
+  //!
   //! Defined in ``hpcombi.hpp``.
   //!
-  //! Specialization of the adapter Degree for instances of
-  //! HPCombi::BMat8.
+  //! Specialization of the Degree adapter for instances of ``HPCombi::BMat8``.
   //!
   //! \sa Degree.
   template <>
   struct Degree<HPCombi::BMat8> {
-    //! Returns 8; all HPCombi::BMat8s have degree 8.
+    //! \brief Returns 8.
+    //!
+    //! Returns 8; all ``HPCombi::BMat8``s have degree 8.
     constexpr inline size_t operator()(HPCombi::BMat8 const&) const noexcept {
       return 8;
     }
   };
 
+  //! \brief Specialization of the IncreaseDegree adapter for
+  //! ``HPCombi::BMat8``.
+  //!
   //! Defined in ``hpcombi.hpp``.
   //!
-  //! Specialization of the adapter IncreaseDegree for instances of
-  //! HPCombi::BMat8.
+  //! Specialization of the IncreaseDegree adapter for instances of
+  //! ``HPCombi::BMat8``.
   //!
   //! \sa IncreaseDegree.
   template <>
   struct IncreaseDegree<HPCombi::BMat8> {
+    //! \brief Does nothing.
+    //!
     //! Does nothing.
     inline void operator()(HPCombi::BMat8 const&) const noexcept {}
   };
 
+  //! \brief Specialization of the One adapter for ``HPCombi::BMat8``.
+  //!
   //! Defined in ``hpcombi.hpp``.
   //!
-  //! Specialization of the adapter One for instances of
-  //! HPCombi::BMat8.
+  //! Specialization of the One adapter for instances of ``HPCombi::BMat8``.
   //!
   //! \sa One.
   template <>
   struct One<HPCombi::BMat8> {
+    //! \brief Returns \p x.one()
+    //!
     //! Returns \p x.one()
     inline HPCombi::BMat8 operator()(HPCombi::BMat8 const& x) const noexcept {
       return x.one();
     }
-    //! Returns HPCombi::BMat8::one
+    //! \brief Returns ``HPCombi::BMat8::one``
+    //!
+    //! Returns ``HPCombi::BMat8::one``
     inline HPCombi::BMat8 operator()(size_t = 0) const noexcept {
       return HPCombi::BMat8::one();
     }
   };
 
+  //! \brief Specialization of the Product adapter for ``HPCombi::BMat8``.
+  //!
   //! Defined in ``hpcombi.hpp``.
   //!
-  //! Specialization of the adapter Product for instances of
-  //! HPCombi::BMat8.
+  //! Specialization of the Product adapter for instances of ``HPCombi::BMat8``.
   //!
   //! \sa Product.
   template <>
   struct Product<HPCombi::BMat8> {
+    //! \brief Changes \p xy in place to hold the product of \p x and \p y
+    //!
     //! Changes \p xy in place to hold the product of \p x and \p y
     inline void operator()(HPCombi::BMat8&       xy,
                            HPCombi::BMat8 const& x,
@@ -353,15 +388,20 @@ namespace libsemigroups {
     }
   };
 
+  //! \brief Specialization of the ImageRightAction adapter for
+  //! ``HPCombi::BMat8``.
+  //!
   //! Defined in ``hpcombi.hpp``.
   //!
-  //! Specialization of the adapter ImageRightAction for instances of
-  //! HPCombi::BMat8.
+  //! Specialization of the ImageRightAction adapter for instances of
+  //! ``HPCombi::BMat8``.
   //!
   //! \sa ImageRightAction.
   template <>
   struct ImageRightAction<HPCombi::BMat8, HPCombi::BMat8> {
-    //! Changes \p res in place to hold the image of \p pt under the right
+    //! \brief Store the image of \p pt under the right action of \p x.
+    //!
+    //! Changes \p res in-place to hold the image of \p pt under the right
     //! action of \p x.
     void operator()(HPCombi::BMat8&       res,
                     HPCombi::BMat8 const& pt,
@@ -370,15 +410,20 @@ namespace libsemigroups {
     }
   };
 
+  //! \brief Specialization of the ImageLeftAction adapter for
+  //! ``HPCombi::BMat8``.
+  //!
   //! Defined in ``hpcombi.hpp``.
   //!
-  //! Specialization of the adapter ImageLeftAction for instances of
-  //! HPCombi::BMat8.
+  //! Specialization of the ImageLeftAction adapter for instances of
+  //! ``HPCombi::BMat8``.
   //!
   //! \sa ImageLeftAction.
   template <>
   struct ImageLeftAction<HPCombi::BMat8, HPCombi::BMat8> {
-    //! Changes \p res in place to hold the image of \p pt under the left
+    //! \brief Stores the image of \p pt under the left action of \p x.
+    //!
+    //! Changes \p res in-place to hold the image of \p pt under the left
     //! action of \p x.
     void operator()(HPCombi::BMat8& res,
                     HPCombi::BMat8  pt,
@@ -387,14 +432,17 @@ namespace libsemigroups {
     }
   };
 
+  //! \brief Specialization of the Inverse adapter for ``HPCombi::BMat8``.
+  //!
   //! Defined in ``hpcombi.hpp``.
   //!
-  //! Specialization of the adapter Inverse for instances of
-  //! HPCombi::BMat8.
+  //! Specialization of the Inverse adapter for instances of ``HPCombi::BMat8``.
   //!
   //! \sa Inverse.
   template <>
   struct Inverse<HPCombi::BMat8> {
+    //! \brief Returns the group inverse of \p x.
+    //!
     //! Returns the group inverse of \p x.
     inline HPCombi::BMat8 operator()(HPCombi::BMat8 const& x) const noexcept {
       LIBSEMIGROUPS_ASSERT(x * x.transpose() == x.one());
@@ -406,54 +454,84 @@ namespace libsemigroups {
   // Konieczny adapters - HPCombi::BMat8
   ////////////////////////////////////////////////////////////////////////
 
-  //! Specialization of the adapter LambdaValue for instances of
-  //! HPCombi::BMat8.
+  //! \brief Specialization of the LambdaValue adapter for ``HPCombi::BMat8``.
+  //!
+  //! Specialization of the LambdaValue adapter for instances of
+  //! ``HPCombi::BMat8``.
   //!
   //! \sa LambdaValue
   template <>
   struct LambdaValue<HPCombi::BMat8> {
-    //! The type of Lambda values for HPCombi::BMat8 is also HPCombi::BMat8;
-    //! this provides an efficient representation of row space bases.
+    //! \brief The type of Lambda value.
+    //!
+    //! The type of Lambda values for ``HPCombi::BMat8`` is also
+    //! ``HPCombi::BMat8``; this provides an efficient representation of row
+    //! space bases.
     using type = HPCombi::BMat8;
   };
 
-  //! Specialization of the adapter RhoValue for instances of
-  //! HPCombi::BMat8.
+  //! \brief Specialization of the RhoValue adapter for ``HPCombi::BMat8``.
+  //!
+  //! Specialization of the RhoValue adapter for instances of
+  //! ``HPCombi::BMat8``.
   //!
   //! \sa RhoValue
   template <>
   struct RhoValue<HPCombi::BMat8> {
-    //! The type of Rho values for HPCombi::BMat8 is also HPCombi::BMat8;
-    //! this provides an efficient representation of row space bases.
+    //! \brief The type of Rho values for ``HPCombi::BMat8``.
+    //!
+    //! The type of Rho values for ``HPCombi::BMat8`` is also
+    //! ``HPCombi::BMat8``; this provides an efficient representation of row
+    //! space bases.
     using type = HPCombi::BMat8;
   };
 
-  //! Specialization of the adapter Lambda for instances of
-  //! BMat8.
+  //! \brief Specialization of the Lambda adapter for ``HPCombi::BMat8``.
+  //!
+  //! Specialization of the Lambda adapter for instances of ``HPCombi::BMat8``.
   //!
   //! \sa Lambda.
   template <>
   struct Lambda<HPCombi::BMat8, HPCombi::BMat8> {
-    //! Set \p res to the lambda value of \p x as used in the Konieczny
-    //! algorithm; for HPCombi::BMat8 this is the row space basis.
+    //! \brief Store the lambda value of \p x as used in the Konieczny
+    //! algorithm.
+    //!
+    //! Modify \p res in-place to the lambda value of \p x as used in the
+    //! Konieczny algorithm; for ``HPCombi::BMat8`` this is the row space basis.
     void operator()(HPCombi::BMat8&       res,
                     HPCombi::BMat8 const& x) const noexcept {
       res = x.row_space_basis();
     }
   };
 
+  //! \brief Specialization of the Rho adapter for ``HPCombi::BMat8``.
+  //!
+  //! Specialization of the Rho adapter for instances of
+  //! ``HPCombi::BMat8``.
+  //!
+  //! \sa Rho.
   template <>
   struct Rho<HPCombi::BMat8, HPCombi::BMat8> {
-    //! Set \p res to the rho value of \p x as used in the Konieczny
-    //! algorithm; for HPCombi::BMat8 this is the column space basis.
+    //! \brief Store the rho value of \p x as used in the Konieczny algorithm.
+    //!
+    //! Modify \p res in-place to the rho value of \p x as used in the Konieczny
+    //! algorithm; for ``HPCombi::BMat8`` this is the column space basis.
     void operator()(HPCombi::BMat8&       res,
                     HPCombi::BMat8 const& x) const noexcept {
       res = x.col_space_basis();
     }
   };
 
+  //! \brief Specialization of the Rank adapter for ``HPCombi::BMat8``.
+  //!
+  //! Specialization of the Rank adapter for instances of
+  //! ``HPCombi::BMat8``.
+  //!
+  //! \sa Rank.
   template <>
   struct Rank<HPCombi::BMat8> {
+    //! \brief Returns the rank of \p x as used in the Konieczny algorithm.
+    //!
     //! Returns the rank of \p x as used in the Konieczny algorithm; for BMat8
     //! this is the size of the row space.
     inline size_t operator()(HPCombi::BMat8 const& x) const noexcept {
@@ -465,32 +543,48 @@ namespace libsemigroups {
   // Konieczny adapters - HPCombi::PPerm16
   ////////////////////////////////////////////////////////////////////////
 
-  //! Specialization of the adapter LambdaValue for instances of
-  //! HPCombi::PPerm16.
+  //! \brief Specialization of the LambdaValue adapter for ``HPCombi::PPerm16``.
   //!
-  //! \sa LambdaValue
+  //! Specialization of the LambdaValue adapter for instances of
+  //! ``HPCombi::PPerm16``.
+  //!
+  //! \sa LambdaValue.
   template <>
   struct LambdaValue<HPCombi::PPerm16> {
+    //! \brief The type of Lambda values.
+    //!
     //! The type of Lambda values for PPerm16 is also PPerm16; this provides an
     //! efficient representation of image sets.
     using type = HPCombi::PPerm16;
   };
 
-  //! Specialization of the adapter RhoValue for instances of
-  //! HPCombi::PPerm16.
+  //! \brief Specialization of the RhoValue adapter for ``HPCombi::PPerm16``.
   //!
-  //! \sa RhoValue
+  //! Specialization of the RhoValue adapter for instances of
+  //! ``HPCombi::PPerm16``.
+  //!
+  //! \sa RhoValue.
   template <>
   struct RhoValue<HPCombi::PPerm16> {
+    //! \brief The type of Rho values.
+    //!
     //! The type of Rho values for PPerm16 is also PPerm16; this provides an
     //! efficient representation of domain sets.
     using type = HPCombi::PPerm16;
   };
 
-  //! \sa ImageRightAction.
+  //! \brief Specialization of the Lambda adapter for ``HPCombi::PPerm16``.
+  //!
+  //! Specialization of the Lambda adapter for instances of
+  //! ``HPCombi::PPerm16``.
+  //!
+  //! \sa Lambda, ImageRightAction.
   template <>
   struct Lambda<HPCombi::PPerm16, HPCombi::PPerm16> {
-    //! Stores the idempotent \f$(xy) ^ {-1}xy\f$ in \p res.
+    //! \b Stores the idempotent \f$(xy) ^ {-1}xy\f$.
+    //!
+    //! Modifies \p res in-place to store the idempotent \f$(xy) ^ {-1}xy\f$.
+    //!
     //! \exceptions
     //! \noexcept
     void operator()(HPCombi::PPerm16&       res,
@@ -499,11 +593,11 @@ namespace libsemigroups {
     }
   };
 
-  //! Defined in ``hpcombi.hpp``.
+  //! \brief Specialization of the Rho adapter for ``HPCombi::PPerm16``.
   //!
-  //! Specialization of the adapter ImageLeftAction for ``HPCombi::PPerm16``.
+  //! Specialization of the Rho adapter for instances of ``HPCombi::PPerm16``.
   //!
-  //! \sa ImageLeftAction.
+  //! \sa Rho, ImageLeftAction.
   template <>
   struct Rho<HPCombi::PPerm16, HPCombi::PPerm16> {
     //! Stores the idempotent \f$(xy) ^ {-1}xy\f$ in \p res.
@@ -519,14 +613,19 @@ namespace libsemigroups {
   // Konieczny adapters - Transf16
   ////////////////////////////////////////////////////////////////////////
 
+  //! \brief Specialization of the ImageRightAction adapter for
+  //! ``HPCombi::Transf16``.
+  //!
   //! Defined in ``hpcombi.hpp``.
   //!
-  //! Specialization of the adapter ImageRightAction for ``HPCombi::Transf16``.
+  //! Specialization of the ImageRightAction adapter for ``HPCombi::Transf16``.
   //!
   //! \sa ImageRightAction.
   template <>
   struct ImageRightAction<HPCombi::Transf16, HPCombi::PTransf16> {
-    //! Changes \p res in place to hold the image of \p x under the right
+    //! \brief Store the image of \p x under the right action of \p y.
+    //!
+    //! Modifies \p res in place to hold the image of \p x under the right
     //! action of \p y.
     void operator()(HPCombi::PTransf16&       res,
                     HPCombi::Transf16 const&  x,
@@ -536,14 +635,19 @@ namespace libsemigroups {
     }
   };
 
+  //! \brief Specialization of the ImageLeftAction adapter for
+  //! ``HPCombi::Transf16``.
+  //!
   //! Defined in ``hpcombi.hpp``.
   //!
-  //! Specialization of the adapter ImageLeftAction for ``HPCombi::Transf16``.
+  //! Specialization of the ImageLeftAction adapter for ``HPCombi::Transf16``.
   //!
   //! \sa ImageLeftAction.
   template <>
   struct ImageLeftAction<HPCombi::Transf16, HPCombi::Vect16> {
-    //! Changes \p res in place to hold the image of \p x under the left
+    //! \brief Store image of \p x under the left action of \p y.
+    //!
+    //! Modifies \p res in place to hold the image of \p x under the left
     //! action of \p y.
     void operator()(HPCombi::Vect16&         res,
                     HPCombi::Transf16 const& x,
@@ -574,36 +678,50 @@ namespace libsemigroups {
     }
   };
 
-  //! Specialization of the adapter LambdaValue for instances of
-  //! HPCombi::Transf16.
+  //! \brief Specialization of the LambdaValue adapter for
+  //! ``HPCombi::Transf16``.
+  //!
+  //! Specialization of the LambdaValue adapter for instances of
+  //! ``HPCombi::Transf16``.
   //!
   //! \sa LambdaValue
   template <>
   struct LambdaValue<HPCombi::Transf16> {
+    //! \brief The type of Lambda values.
+    //!
     //! The type of Lambda values for Transf16 is PTransf16; this provides an
     //! efficient representation of image sets.
     using type = HPCombi::PTransf16;
   };
 
-  //! Specialization of the adapter RhoValue for instances of
-  //! HPCombi::Transf16.
+  //! \brief Specialization of the RhoValue adapter for ``HPCombi::Transf16``.
+  //!
+  //! Specialization of the RhoValue adapter for instances of
+  //! ``HPCombi::Transf16``.
   //!
   //! \sa RhoValue
   template <>
   struct RhoValue<HPCombi::Transf16> {
+    //! \brief The type of Rho value for ``HPCombi::Transf16``.
+    //!
     //! The type of Rho values for Transf16 is a Vect16; this provides
     //! an efficient representation of the kernel.
     using type = HPCombi::Vect16;
   };
 
+  //! \brief Specialization of the Lambda adapter for ``HPCombi::Transf16``.
+  //!
   //! Defined in ``hpcombi.hpp``.
   //!
-  //! Specialization of the adapter Lambda for ``HPCombi::Transf16``.
+  //! Specialization of the Lambda adapter for ``HPCombi::Transf16``.
   //!
-  //! \sa ImageRightAction.
+  //! \sa ImageRightAction, Lambda.
   template <>
   struct Lambda<HPCombi::Transf16, HPCombi::PTransf16> {
-    //! Stores the identity function on the image of \p x in \p res.
+    //! \brief Stores the identity function on the image of \p x.
+    //!
+    //! Modifies \p res in-place to store the identity function on the image of
+    //! \p x.
     //! \exceptions
     //! \noexcept
     void operator()(HPCombi::PTransf16&      res,
@@ -612,14 +730,19 @@ namespace libsemigroups {
     }
   };
 
+  //! \brief Specialization of the Rho adapter for ``HPCombi::Transf16``.
+  //!
   //! Defined in ``hpcombi.hpp``.
   //!
-  //! Specialization of the adapter Lambda for ``HPCombi::Transf16``.
+  //! Specialization of the Lambda adapter for ``HPCombi::Transf16``.
   //!
   //! \sa ImageLeftAction.
   template <>
   struct Rho<HPCombi::Transf16, HPCombi::Vect16> {
-    //! Stores the kernel of \p x in \p res.
+    //! \brief Stores the kernel of \p x.
+    //!
+    //! Modifies \p res in-place to store the kernel of \p x.
+    //!
     //! \exceptions
     //! \noexcept
     void operator()(HPCombi::Vect16&         res,
@@ -654,16 +777,20 @@ namespace libsemigroups {
   // Konieczny adapters - generic
   ////////////////////////////////////////////////////////////////////////
 
+  //! \brief Specialization of the Rank adapter for `HPCombi` types.
+  //!
   //! Defined in ``hpcombi.hpp``.
   //!
-  //! Specialization of the adapter Rank for `HPCombi` types.
+  //! Specialization of the Rank adapter for `HPCombi` types.
   template <typename T>
   struct Rank<T,
               std::enable_if_t<std::is_base_of_v<HPCombi::PTransf16, T>,
                                RankState<T>>> {
+    //! \brief Returns the rank of \p x as used in the Konieczny algorithm.
+    //!
     //! Returns the rank of \p x as used in the Konieczny algorithm; for
-    //! HPCombi::Transf16 and HPCombi::PPerm16 this is the size of the image
-    //! set.
+    //! ``HPCombi::Transf16`` and ``HPCombi::PPerm16`` this is the size of the
+    //! image set.
     inline size_t operator()(T const& x) const noexcept {
       return x.rank();
     }

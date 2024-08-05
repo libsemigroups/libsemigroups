@@ -44,18 +44,21 @@ namespace libsemigroups {
     constexpr void operator()(Args...) const noexcept {}
   };
 
-  //! \defgroup adapters_no_default_group Adapters with no default \
-  //!  implementation
+  // clang-format off
+  //! \defgroup adapters_no_default_group Adapters with no default implementation
   //!
   //! \ingroup adapters_group
   //!
-  //! \brief TODO
+  //! \brief Documentation for the adapters, with no default implementation for
+  //! arbitrary types, that would allow user-defined types to be used in the
+  //! algorithms of `libsemigroups`.  
   //!
-  //! This section contains the documentation for adapters that have no default
-  //! implementation for arbitrary types.
-  //! TODO(now) expand on this.
+  //! This section contains the documentation for the adapters, with no default
+  //! implementation for arbitrary types, that would allow user-defined types to
+  //! be used in the algorithms of `libsemigroups`.
   //!
   //! @{
+  // clang-format on
 
   //! \brief Adapter for the complexity of multiplication.
   //!
@@ -370,11 +373,13 @@ namespace libsemigroups {
   //!
   //! \ingroup adapters_group
   //!
-  //! \brief TODO
+  //! \brief Documentation for the adapters, with default implementation for
+  //! arbitrary types, that would allow user-defined types to be used in the
+  //! algorithms of `libsemigroups`.
   //!
-  //! This section contains the documentation for adapters that have a default
-  //! implementation for arbitrary types.
-  //! TODO(now) expand on this.
+  //! This section contains the documentation for the adapters, with default
+  //! implementation for arbitrary types, that would allow user-defined types to
+  //! be used in the algorithms of `libsemigroups`.
   //!
   //! @{
 
@@ -486,7 +491,7 @@ namespace libsemigroups {
   //! \tparam T the type of objects to compare in the vector.
   //! \tparam Hasher the type of the hasher.
   //!
-  //! TODO(now) What uses this?
+  // TODO(later) What uses this?
   template <typename T, typename Hasher>
   struct Hash<std::vector<T>, Hasher> {
     //! \brief Hashes \p vec
@@ -516,7 +521,7 @@ namespace libsemigroups {
   //! \tparam T the type of objects to compare in the array.
   //!
   //! \par Used by
-  //! TODO(now) What uses this?
+  // TODO(later) What uses this?
   template <typename T, size_t N>
   struct Hash<std::array<T, N>> {
     //! \brief Hashes \p ar
@@ -547,7 +552,7 @@ namespace libsemigroups {
   //! \tparam T the type of second object in the pair.
   //!
   //! \par Used by
-  //! TODO(now) What uses this?
+  // TODO(later) What uses this?
   template <typename S, typename T>
   struct Hash<std::pair<S, T>> {
     //! \brief Hashes \p x
