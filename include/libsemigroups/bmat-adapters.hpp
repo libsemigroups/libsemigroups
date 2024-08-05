@@ -54,14 +54,24 @@ namespace libsemigroups {
   //! of ``BitSet``.
   //!
   //! \sa ImageRightAction.
+  //!
+  //! \warning
+  //! The template type `Mat` must be a `BMat` type (``IsBMat<Mat>`` must be
+  //! true), and the ``value_type`` of the template type ``Container`` must be a
+  //! bit set (``IsBitSet<typename Container::value_type>>`` must be true). If
+  //! not, template substitution will fail.
   // T = StaticVector1<BitSet<N>, N> or std::vector<BitSet<N>>
   // Possibly further container when value_type is BitSet.
   template <typename Container, typename Mat>
+#ifndef PARSED_BY_DOXYGEN
   struct ImageRightAction<
       Mat,
       Container,
-      std::enable_if_t<IsBMat<Mat>
-                       && IsBitSet<typename Container::value_type>>> {
+      std::enable_if_t<IsBMat<Mat> && IsBitSet<typename Container::value_type>>>
+#else
+  struct ImageRightAction<Mat, Container>
+#endif
+  {
     // TODO(now) Are pt and x the right way round in the doc?
     //! \brief Store the image of \p pt under the right action of \p x.
     //!
@@ -94,8 +104,17 @@ namespace libsemigroups {
   //! Specialization of the ImageLeftAction adapter for ``BMat``
   //!
   //! \sa ImageLeftAction.
+  //!
+  //! \warning
+  //! The template type `Mat` must be a `BMat` type (``IsBMat<Mat>`` must be
+  //! true). If not, template substitution will fail.
   template <typename Container, typename Mat>
-  struct ImageLeftAction<Mat, Container, std::enable_if_t<IsBMat<Mat>>> {
+#ifndef PARSED_BY_DOXYGEN
+  struct ImageLeftAction<Mat, Container, std::enable_if_t<IsBMat<Mat>>>
+#else
+  struct ImageLeftAction<Mat, Container>
+#endif
+  {
     //! \brief Store the image of \p pt under the left action of \p x.
     //!
     //! Modifies \p res in-place to hold the image of \p pt under the left
@@ -127,11 +146,20 @@ namespace libsemigroups {
   //! \note
   //! The the type chosen here limits the Konieczny algorithm to BMats of degree
   //! at most 64 (or 32 on 32-bit systems).
+  //!
+  //! \warning
+  //! The template type `Mat` must be a `BMat` type (``IsBMat<Mat>`` must be
+  //! true). If not, template substitution will fail.
   // This currently limits the use of Konieczny to matrices of dimension at
   // most 64 with the default traits class, since we cannot know the
   // dimension of the matrices at compile time, only at run time.
   template <typename Mat>
-  struct LambdaValue<Mat, std::enable_if_t<IsBMat<Mat>>> {
+#ifndef PARSED_BY_DOXYGEN
+  struct LambdaValue<Mat, std::enable_if_t<IsBMat<Mat>>>
+#else
+  struct LambdaValue<Mat>
+#endif
+  {
     static constexpr size_t N = BitSet<1>::max_size();
     //! \brief The type of Lambda Values.
     //!
@@ -150,8 +178,17 @@ namespace libsemigroups {
   //! \note
   //! The the type chosen here limits the Konieczny algorithm to BMats of degree
   //! at most 64 (or 32 on 32-bit systems).
+  //!
+  //! \warning
+  //! The template type `Mat` must be a `BMat` type (``IsBMat<Mat>`` must be
+  //! true). If not, template substitution will fail.
   template <typename Mat>
-  struct RhoValue<Mat, std::enable_if_t<IsBMat<Mat>>> {
+#ifndef PARSED_BY_DOXYGEN
+  struct RhoValue<Mat, std::enable_if_t<IsBMat<Mat>>>
+#else
+  struct RhoValue<Mat>
+#endif
+  {
     //! \brief The type of Rho Values.
     //!
     //! For BMats, \c type is ``StaticVector1<BitSet<N>, N>`, where \c N is the
@@ -170,8 +207,17 @@ namespace libsemigroups {
   //! ``std::vector<BitSet<N>>`` or ``StaticVector1<BitSet<N>>``.
   //!
   //! \sa Lambda.
+  //!
+  //! \warning
+  //! The template type `Mat` must be a `BMat` type (``IsBMat<Mat>`` must be
+  //! true). If not, template substitution will fail.
   template <typename Container, typename Mat>
-  struct Lambda<Mat, Container, std::enable_if_t<IsBMat<Mat>>> {
+#ifndef PARSED_BY_DOXYGEN
+  struct Lambda<Mat, Container, std::enable_if_t<IsBMat<Mat>>>
+#else
+  struct Lambda<Mat, Container>
+#endif
+  {
     //! \brief Modifies \p res in-place to contain the row space basis of \p x.
     //!
     //! Modifies \p res in-place to contain the row space basis of \p x.
@@ -207,8 +253,17 @@ namespace libsemigroups {
   //! ``std::vector<BitSet<N>>`` or ``StaticVector1<BitSet<N>>``.
   //!
   //! \sa Rho.
+  //!
+  //! \warning
+  //! The template type `Mat` must be a `BMat` type (``IsBMat<Mat>`` must be
+  //! true). If not, template substitution will fail.
   template <typename Container, typename Mat>
-  struct Rho<Mat, Container, std::enable_if_t<IsBMat<Mat>>> {
+#ifndef PARSED_BY_DOXYGEN
+  struct Rho<Mat, Container, std::enable_if_t<IsBMat<Mat>>>
+#else
+  struct Rho<Mat, Container>
+#endif
+  {
     //! \brief Modifies \p res in-place to contain the column space basis of \p
     //! x.
     //!
@@ -233,9 +288,18 @@ namespace libsemigroups {
   //! ``BitSet``.
   //!
   //! \sa ImageRightAction.
+  //!
+  //! \warning
+  //! The template type `Mat` must be a `BMat` type (``IsBMat<Mat>`` must be
+  //! true). If not, template substitution will fail.
   template <size_t N, typename Mat>
-  struct ImageRightAction<Mat, BitSet<N>, std::enable_if_t<IsBMat<Mat>>> {
-    //! No doc.
+#ifndef PARSED_BY_DOXYGEN
+  struct ImageRightAction<Mat, BitSet<N>, std::enable_if_t<IsBMat<Mat>>>
+#else
+  struct ImageRightAction<Mat, BitSet<N>>
+#endif
+  {
+    //! No doc
     using result_type = BitSet<N>;
 
     //! \brief Store the image of \p pt under the right action of \p x.
@@ -268,8 +332,17 @@ namespace libsemigroups {
   //! Specialization of the RankState adapter for ``BMat``.
   //!
   //! \sa RankState.
+  //!
+  //! \warning
+  //! The template type `Mat` must be a `BMat` type (``IsBMat<Mat>`` must be
+  //! true). If not, template substitution will fail.
   template <typename Mat>
-  class RankState<Mat, std::enable_if_t<IsBMat<Mat>>> {
+#ifndef PARSED_BY_DOXYGEN
+  class RankState<Mat, std::enable_if_t<IsBMat<Mat>>>
+#else
+  class RankState<Mat>
+#endif
+  {
    public:
     //! \brief The maximum size of ``BitSet``
     //!
@@ -341,8 +414,17 @@ namespace libsemigroups {
   //! Specialization of the Rank adapter for instances of BMat
   //!
   //! \sa Rank.
+  //!
+  //! \warning
+  //! The template type `Mat` must be a `BMat` type (``IsBMat<Mat>`` must be
+  //! true). If not, template substitution will fail.
   template <typename Mat>
-  struct Rank<Mat, RankState<Mat>, std::enable_if_t<IsBMat<Mat>>> {
+#ifndef PARSED_BY_DOXYGEN
+  struct Rank<Mat, RankState<Mat>, std::enable_if_t<IsBMat<Mat>>>
+#else
+  struct Rank<Mat, RankState<Mat>>
+#endif
+  {
     //! \brief Returns the rank of \p x.
     //!
     //! Returns the rank of \p x.
