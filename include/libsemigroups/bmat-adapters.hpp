@@ -19,7 +19,11 @@
 #ifndef LIBSEMIGROUPS_BMAT_ADAPTERS_HPP_
 #define LIBSEMIGROUPS_BMAT_ADAPTERS_HPP_
 
-#include <cstddef>  // for size_t
+#include <cstddef>      // for size_t
+#include <iterator>     // for distance
+#include <type_traits>  // for enable_if_t
+#include <utility>      // for move
+#include <vector>       // for vector, vector<>::ref...
 
 #include "action.hpp"     // for RightAction
 #include "adapters.hpp"   // for ImageRightAction
@@ -27,6 +31,8 @@
 #include "debug.hpp"      // for LIBSEMIGROUPS_ASSERT
 #include "exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
 #include "matrix.hpp"     // for BMat
+
+#include "libsemigroups/detail/containers.hpp"  // for StaticVector1
 
 namespace libsemigroups {
   //! \defgroup adapters_bmat_group Adapters for BMat

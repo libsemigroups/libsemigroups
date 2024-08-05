@@ -20,8 +20,10 @@
 #define LIBSEMIGROUPS_ADAPTERS_HPP_
 
 #include <algorithm>    // for std::sort
+#include <array>        // for array
 #include <cstddef>      // for size_t
 #include <functional>   // for std::equal_to
+#include <iterator>     // for pair
 #include <memory>       // for shared_ptr
 #include <type_traits>  // for hash, is_same
 #include <utility>      // for pair, hash
