@@ -29,18 +29,51 @@
 #include "matrix.hpp"     // for BMat
 
 namespace libsemigroups {
+  //! \defgroup adapters_bmat_group Adapters for BMat
+  //!
+  //! \ingroup adapters_group
+  //!
+  //! \brief Documentation for the specialization of adapters that allow
+  //! ``BMat`` types to be used in the algorithms of `libsemigroups`.
+  //!
+  //! This page contains the documentation of the functionality in
+  //! `libsemigroups` that adapts ``BMat`` types for use with the
+  //! algorithms in libsemigroups.
+  //!
+  //! @{
   ////////////////////////////////////////////////////////////////////////
   // ImageRight/LeftAction - BMat
   ////////////////////////////////////////////////////////////////////////
 
+  //! \brief Specialisation of the ImageRightAction adapter for ``BMat``.
+  //!
+  //! Defined in ``bmat-adapters.hpp``.
+  //!
+  //! Specialization of the ImageRightAction adapter for ``BMat``
+  //!
+  //! \sa ImageRightAction.
+  //!
+  //! \warning
+  //! The template type `Mat` must be a `BMat` type (``IsBMat<Mat>`` must be
+  //! true), and the ``value_type`` of the template type ``Container`` must be a
+  //! bit set (``IsBitSet<typename Container::value_type>>`` must be true). If
+  //! not, template substitution will fail.
   // T = StaticVector1<BitSet<N>, N> or std::vector<BitSet<N>>
   // Possibly further container when value_type is BitSet.
   template <typename Container, typename Mat>
   struct ImageRightAction<
       Mat,
-      Container,
-      std::enable_if_t<IsBMat<Mat>
-                       && IsBitSet<typename Container::value_type>>> {
+      Container
+#ifndef PARSED_BY_DOXYGEN
+      ,
+      std::enable_if_t<IsBMat<Mat> && IsBitSet<typename Container::value_type>>
+#endif
+      > {
+    // TODO(now) Are pt and x the right way round in the doc?
+    //! \brief Store the image of \p pt under the right action of \p x.
+    //!
+    //! Modifies \p res in place to hold the image of \p pt under the right
+    //! action of \p x.
     // not noexcept because BitSet<N>::apply isn'Container
     void operator()(Container& res, Container const& pt, Mat const& x) const {
       using value_type = typename Container::value_type;
@@ -61,8 +94,19 @@ namespace libsemigroups {
     }
   };
 
+  //! \brief Specialisation of the ImageLeftAction adapter for ``BMat``.
+  //!
+  //! Defined in ``bmat-adapters.hpp``.
+  //!
+  //! Specialization of the ImageLeftAction adapter for ``BMat``
+  //!
+  //! \sa ImageLeftAction.
   template <typename Container, typename Mat>
   struct ImageLeftAction<Mat, Container, std::enable_if_t<IsBMat<Mat>>> {
+    //! \brief Store the image of \p pt under the left action of \p x.
+    //!
+    //! Modifies \p res in place to hold the image of \p pt under the left
+    //! action of \p x.
     void operator()(Container& res, Container const& pt, Mat const& x) const {
       const_cast<Mat*>(&x)->transpose();
       try {
@@ -79,6 +123,17 @@ namespace libsemigroups {
   // Lambda/Rho - BMat
   ////////////////////////////////////////////////////////////////////////
 
+  //! \brief Specialisation of the LambdaValue adapter for ``BMat``.
+  //!
+  //! Defined in ``bmat-adapters.hpp``.
+  //!
+  //! Specialization of the LambdaValue adapter for ``BMat``
+  //!
+  //! \sa LambdaValue.
+  //!
+  //! \note
+  //! The the type chosen here limits the Konieczny algorithm to BMats of degree
+  //! at most 64 (or 32 on 32-bit systems).
   // This currently limits the use of Konieczny to matrices of dimension at
   // most 64 with the default traits class, since we cannot know the
   // dimension of the matrices at compile time, only at run time.
@@ -88,11 +143,15 @@ namespace libsemigroups {
     using type                = detail::StaticVector1<BitSet<N>, N>;
   };
 
-  //! Specialization of the adapter RhoValue for instances of BMat.
-  //! Note that the the type chosen here limits the Konieczny algorithm to
-  //! BMats of degree at most 64 (or 32 on 32-bit systems).
+  //! \brief Specialization of the RhoValue adapter for ``BMat``.
+  //!
+  //! Specialization of the RhoValue adapter for ``BMat``.
   //!
   //! \sa RhoValue.
+  //!
+  //! \note
+  //! The the type chosen here limits the Konieczny algorithm to BMats of degree
+  //! at most 64 (or 32 on 32-bit systems).
   template <typename Mat>
   struct RhoValue<Mat, std::enable_if_t<IsBMat<Mat>>> {
     //! For BMats, \c type is StaticVector1<BitSet<N>, N>, where \c N is the
@@ -263,5 +322,6 @@ namespace libsemigroups {
       return rnk;
     }
   };
+  //! @}
 }  // namespace libsemigroups
 #endif  // LIBSEMIGROUPS_BMAT_ADAPTERS_HPP_
