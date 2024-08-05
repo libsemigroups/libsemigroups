@@ -1514,12 +1514,12 @@ namespace libsemigroups {
       }
       return {sink, true};
     }
+
     // TODO to tpp
     template <typename Node1, typename Node2>
     void spanning_tree(WordGraph<Node1> const& wg, Node2 root, Forest& f) {
       using node_type = typename WordGraph<Node1>::node_type;
-      f.clear();
-      f.add_nodes(1);
+      f.init(1);
 
       std::queue<node_type> queue;
       queue.push(static_cast<node_type>(root));
@@ -1531,7 +1531,7 @@ namespace libsemigroups {
               f.add_nodes(t - f.number_of_nodes() + 1);
             }
             if (f.parent(t) == UNDEFINED) {
-              f.set(t, s, a);
+              f.set_parent_and_label(t, s, a);
               queue.push(t);
             }
           }

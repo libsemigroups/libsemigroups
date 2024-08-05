@@ -27,8 +27,8 @@ namespace libsemigroups {
     _graph = &wg;
     _comps.clear();
     _id.clear();
-    _bckwd_forest.clear();
-    _forwd_forest.clear();
+    _bckwd_forest.init();
+    _forwd_forest.init();
     reset();
     return *this;
   }
@@ -49,8 +49,7 @@ namespace libsemigroups {
 
     run();
 
-    _forwd_forest.clear();
-    _forwd_forest.add_nodes(_graph->number_of_nodes());
+    _forwd_forest.init(_graph->number_of_nodes());
 
     std::queue<node_type> queue;
     size_type const       n = number_of_components();
@@ -63,8 +62,8 @@ namespace libsemigroups {
         for (auto e : _graph->labels()) {
           node_type y = _graph->target_no_checks(x, e);
           if (y != UNDEFINED && y != root && _id[y] == _id[x]
-              && _forwd_forest.parent(y) == UNDEFINED) {
-            _forwd_forest.set(y, x, e);
+              && _forwd_forest.parent_no_checks(y) == UNDEFINED) {
+            _forwd_forest.set_parent_and_label_no_checks(y, x, e);
             queue.push(y);
           }
         }
@@ -83,8 +82,7 @@ namespace libsemigroups {
 
     run();
 
-    _bckwd_forest.clear();
-    _bckwd_forest.add_nodes(_graph->number_of_nodes());
+    _bckwd_forest.init(_graph->number_of_nodes());
     size_type const m = _graph->number_of_nodes();
 
     std::vector<std::vector<node_type>> reverse_edges(m,
@@ -114,9 +112,10 @@ namespace libsemigroups {
         for (size_type j = 0; j < reverse_edges[x].size(); ++j) {
           node_type y = reverse_edges[x][j];
           if (y != UNDEFINED && y != root
-              && _bckwd_forest.parent(y) == UNDEFINED) {
+              && _bckwd_forest.parent_no_checks(y) == UNDEFINED) {
             queue.push(y);
-            _bckwd_forest.set(y, x, reverse_labels[x][j]);
+            _bckwd_forest.set_parent_and_label_no_checks(
+                y, x, reverse_labels[x][j]);
           }
         }
         queue.pop();

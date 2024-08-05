@@ -24,17 +24,92 @@
 #include <iosfwd>            // for ostream
 #include <vector>            // for vector, allocator, operator==
 
+#include "libsemigroups/bipart.hpp"
 #include "libsemigroups/constants.hpp"  // for Max, operator!=, operator==
 #include "libsemigroups/exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
 #include "libsemigroups/types.hpp"      // for word_type
 
 #include "libsemigroups/detail/string.hpp"  // for operator<<
 
+// namespace forest {
+
+//! Returns a \ref normal_form_iterator pointing at the first normal
+//! form.
+//!
+//! Returns a const iterator pointing to the normal form of the first
+//! class of the congruence represented by an instance of ToddCoxeter.
+//! The order of the classes, and the normal form, that is returned are
+//! controlled by standardize(order).
+//!
+//! \returns A value of type \ref normal_form_iterator.
+//!
+//! \exceptions
+//! \no_libsemigroups_except
+//!
+// TODO(2): update the doc
+// TODO(2) This is probably not very efficient, better to have a custom range
+//
+// where the word_type is cached, and next just deletes the end of the word
+// and adds whatever's appropriate, rather than retracing the entire path
+// every time
+//
+// inline auto paths(Forest const& f) {
+//   rx::seq<Forest::node_type>() | rx::transform([&f](auto i) {
+//     word_type w;
+//     while (f.parent_no_checks(i) != UNDEFINED) {
+//       w.push_back(f.label_no_checks(i));
+//       i = f.parent_no_checks(i);
+//     }
+//     return w;
+//   });
+// }
+//}  // namespace forest
+
 namespace libsemigroups {
   Forest::~Forest() = default;
 
-  Forest to_forest(std::initializer_list<size_t> parent,
-                   std::initializer_list<size_t> edge_label) {
+  Forest& Forest::init(size_t n) {
+    _edge_label.resize(n);
+    std::fill(std::begin(_edge_label),
+              std::end(_edge_label),
+              static_cast<size_t>(UNDEFINED));
+    _parent.resize(n);
+    std::fill(
+        std::begin(_parent), std::end(_parent), static_cast<size_t>(UNDEFINED));
+    return *this;
+  }
+
+  Forest& Forest::add_nodes(size_t n) {
+    size_t const old_nr_nodes = number_of_nodes();
+    try {
+      _edge_label.insert(_edge_label.cend(), n, static_cast<size_t>(UNDEFINED));
+      _parent.insert(_parent.cend(), n, static_cast<size_t>(UNDEFINED));
+    } catch (...) {
+      _edge_label.resize(old_nr_nodes);
+      _parent.resize(old_nr_nodes);
+      throw;
+    }
+    return *this;
+  }
+
+  void Forest::path_to_root_no_checks(word_type& w, node_type i) const {
+    while (parent_no_checks(i) != UNDEFINED) {
+      w.push_back(label_no_checks(i));
+      LIBSEMIGROUPS_ASSERT(i != parent_no_checks(i));
+      i = parent_no_checks(i);
+    }
+  }
+
+  void Forest::throw_if_node_out_of_bounds(node_type v) const {
+    if (v >= number_of_nodes()) {
+      LIBSEMIGROUPS_EXCEPTION("node value out of bounds, expected value in "
+                              "the range [0, {}), got {}",
+                              number_of_nodes(),
+                              v);
+    }
+  }
+
+  Forest to_forest(std::vector<size_t> parent, std::vector<size_t> edge_label) {
     if (parent.size() != edge_label.size()) {
       LIBSEMIGROUPS_EXCEPTION(
           "expected the 1st and 2nd arguments (parents and edge labels) to "
@@ -48,7 +123,7 @@ namespace libsemigroups {
       auto p = *(parent.begin() + i);
       auto l = *(edge_label.begin() + i);
       if (p != UNDEFINED && l != UNDEFINED) {
-        result.set(i, p, l);
+        result.set_parent_and_label(i, p, l);
       } else if (!(p == UNDEFINED && l == UNDEFINED)) {
         LIBSEMIGROUPS_EXCEPTION(
             "roots not at the same indices in the 1st and 2nd arguments "
@@ -60,6 +135,21 @@ namespace libsemigroups {
       }
     }
     return result;
+  }
+
+  Forest to_forest(std::initializer_list<size_t> parent,
+                   std::initializer_list<size_t> edge_labels) {
+    return to_forest(std::vector<size_t>(parent), std::vector(edge_labels));
+  }
+
+  std::string to_human_readable_repr(Forest const& f) {
+    size_t const num_roots
+        = std::count(f.parents().begin(), f.parents().end(), UNDEFINED);
+    return fmt::format("<Forest with {} nodes, {} edges, and {} root{}>",
+                       f.number_of_nodes(),
+                       f.parents().size(),
+                       num_roots,
+                       num_roots == 1 ? "" : "s");
   }
 
 }  // namespace libsemigroups

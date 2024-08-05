@@ -599,9 +599,16 @@ namespace libsemigroups {
                                     std::string const&                  val);
   };
 
+  // TODO(doc)
   std::string to_human_readable_repr(Dot const& d);
+
+  // TODO(doc)
   std::string to_human_readable_repr(Dot::Node const& n);
+
+  // TODO(doc)
   std::string to_human_readable_repr(Dot::Edge const& e);
+
+  // TODO(doc)
   std::string to_human_readable_repr(Dot::Kind const&   k,
                                      std::string const& sep = "::");
 
