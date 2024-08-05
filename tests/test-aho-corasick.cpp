@@ -307,7 +307,7 @@ namespace libsemigroups {
     for (auto const& w : words) {
       aho_corasick::add_word(ac, w);
     }
-    REQUIRE(dot(ac).to_string() == R"(digraph {
+    REQUIRE(aho_corasick::dot(ac).to_string() == R"(digraph {
   node [shape="box"]
   
   0  [label="&#949;"]
@@ -402,6 +402,37 @@ namespace libsemigroups {
   28 -> 24  [color="black", constraint="false", style="dashed"]
   29 -> 25  [color="black", constraint="false", style="dashed"]
   30 -> 28  [color="black", constraint="false", style="dashed"]
+})");
+    AhoCorasick ac2;
+    aho_corasick::add_word(ac2, 0101_w);
+    aho_corasick::add_word(ac2, 0110_w);
+    aho_corasick::add_word(ac2, 01101_w);
+    aho_corasick::add_word(ac2, 01100_w);
+    aho_corasick::rm_word(ac2, 0101_w);
+
+    REQUIRE(aho_corasick::dot(ac2).to_string() == R"(digraph {
+  node [shape="box"]
+  
+  0  [label="&#949;"]
+  1  [label="0"]
+  2  [label="01"]
+  5  [label="011"]
+  6  [label="0110", peripheries="2"]
+  7  [label="01101", peripheries="2"]
+  8  [label="01100", peripheries="2"]
+  0 -> 1  [color="#00ff00", label="0"]
+  0 -> 0  [color="black", constraint="false", style="dashed"]
+  1 -> 2  [color="#ff00ff", label="1"]
+  1 -> 0  [color="black", constraint="false", style="dashed"]
+  2 -> 5  [color="#ff00ff", label="1"]
+  2 -> 0  [color="black", constraint="false", style="dashed"]
+  5 -> 6  [color="#00ff00", label="0"]
+  5 -> 0  [color="black", constraint="false", style="dashed"]
+  6 -> 8  [color="#00ff00", label="0"]
+  6 -> 7  [color="#ff00ff", label="1"]
+  6 -> 1  [color="black", constraint="false", style="dashed"]
+  7 -> 2  [color="black", constraint="false", style="dashed"]
+  8 -> 1  [color="black", constraint="false", style="dashed"]
 })");
   }
 

@@ -198,7 +198,7 @@ namespace libsemigroups {
     return "<AhoCorasick with " + nodes + ">";
   }
 
-  [[nodiscard]] Dot dot(AhoCorasick& ac) {
+  [[nodiscard]] Dot aho_corasick::dot(AhoCorasick& ac) {
     auto to_word = [](word_type const& w) {
       if (w.empty()) {
         return std::string("&#949;");
@@ -210,26 +210,25 @@ namespace libsemigroups {
       return result;
     };
 
-    using index_type = AhoCorasick::index_type;
     Dot result;
     result.kind(Dot::Kind::digraph).add_attr("node [shape=\"box\"]");
 
     word_type w;
-    for (index_type n = 0; n < ac.number_of_nodes(); ++n) {
-      ac.signature_no_checks(w, n);
-      auto& node = result.add_node(n).add_attr("label", to_word(w));
-      if (ac.node_no_checks(n).is_terminal()) {
+    for (auto index : ac.active_nodes()) {
+      ac.signature_no_checks(w, index);
+      auto& node = result.add_node(index).add_attr("label", to_word(w));
+      if (ac.node_no_checks(index).is_terminal()) {
         node.add_attr("peripheries", "2");
       }
     }
 
-    for (index_type n = 0; n < ac.number_of_nodes(); ++n) {
-      for (auto [label, child] : ac.node_no_checks(n).children()) {
-        result.add_edge(n, child)
+    for (auto index : ac.active_nodes()) {
+      for (auto [label, child] : ac.node_no_checks(index).children()) {
+        result.add_edge(index, child)
             .add_attr("color", result.colors[label])
             .add_attr("label", label);
       }
-      result.add_edge(n, ac.suffix_link_no_checks(n))
+      result.add_edge(index, ac.suffix_link_no_checks(index))
           .add_attr("color", "black")
           .add_attr("style", "dashed")
           .add_attr("constraint", "false");

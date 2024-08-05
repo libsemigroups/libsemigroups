@@ -33,6 +33,7 @@
 #include "constants.hpp"  // for Undefined, operator!=, UNDEFINED, operator==
 #include "debug.hpp"      // for LIBSEMIGROUPS_ASSERT
 #include "exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
+#include "ranges.hpp"     // for rx::iterator_range
 #include "types.hpp"      // for letter_type, word_type
 
 // TODO(2) make nodes accessible as indices of some list (numbered nodes).
@@ -54,6 +55,8 @@
 //! class in `libsemigroups`.
 namespace libsemigroups {
 
+  class Dot;  // forward decl
+
   //! \ingroup aho_corasick_group
   //!
   //! \brief For an implementation of the Aho-Corasick algorithm
@@ -65,6 +68,13 @@ namespace libsemigroups {
   //! to this algorithm can be found at:
   //!
   //! https://en.wikipedia.org/wiki/Aho%E2%80%93Corasick_algorithm
+  //!
+  //! The implementation of \ref AhoCorasick uses two different types of node;
+  //! *active* and *inactive*. An active node is a node that is currently a
+  //! node in the trie. An inactive node is a node that used to be part of the
+  //! trie, but has since been removed. It may later become active again after
+  //! being reinitialised, and exists as a way of minimising how frequently
+  //! memory needs to be allocated and deallocated for nodes.
   //!
   //! Several helper functions are provided in the ``aho_corasick`` namespace.
   class AhoCorasick {
@@ -207,7 +217,7 @@ namespace libsemigroups {
 
     //! \brief Returns the number of nodes in the trie.
     //!
-    //! This function Returns the number of nodes in the trie.
+    //! This function returns the number of nodes in the trie.
     //!
     //! \returns
     //! A value of type `size_t`.
@@ -219,6 +229,89 @@ namespace libsemigroups {
     //! Constant.
     [[nodiscard]] size_t number_of_nodes() const noexcept {
       return _active_nodes_index.size();
+    }
+
+    //! \brief Return the active nodes.
+    //!
+    //! This function returns the active nodes of the trie.
+    //!
+    //! \returns A value of type
+    //! `rx::iterator_range<std::set<index_type>::const_iterator>`.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    //! \complexity
+    //! Constant.
+    [[nodiscard]] rx::iterator_range<std::set<index_type>::const_iterator>
+    active_nodes() const {
+      return rx::iterator_range(cbegin_nodes(), cend_nodes());
+    }
+
+    //! \brief Return a const iterator pointing to the first active node.
+    //!
+    //! This function returns a const iterator pointing to the first active node
+    //! in the trie.
+    //!
+    //! \returns A value of type `std::set<index_type>::const_iterator`.
+    //!
+    //! \exceptions
+    //! \noexcept
+    //!
+    //! \complexity
+    //! Constant.
+    [[nodiscard]] std::set<index_type>::const_iterator
+    cbegin_nodes() const noexcept {
+      return _active_nodes_index.cbegin();
+    }
+
+    //! \brief Return a const iterator pointing one beyond the last active node.
+    //!
+    //! This function returns a const iterator pointing one beyond the last
+    //! active node in the trie.
+    //!
+    //! \returns A value of type `std::set<index_type>::const_iterator`.
+    //!
+    //! \exceptions
+    //! \noexcept
+    //!
+    //! \complexity
+    //! Constant.
+    [[nodiscard]] std::set<index_type>::const_iterator
+    cend_nodes() const noexcept {
+      return _active_nodes_index.cend();
+    }
+
+    //! \brief Return an iterator pointing to the first active node.
+    //!
+    //! This function returns an iterator pointing to the first active node
+    //! in the trie.
+    //!
+    //! \returns A value of type `std::set<index_type>::iterator`.
+    //!
+    //! \exceptions
+    //! \noexcept
+    //!
+    //! \complexity
+    //! Constant.
+    [[nodiscard]] std::set<index_type>::iterator begin_nodes() const noexcept {
+      return _active_nodes_index.begin();
+    }
+
+    //! \brief Return an iterator pointing one beyond the last active node.
+    //!
+    //! This function returns an iterator pointing one beyond the last active
+    //! node in the trie.
+    //!
+    //! \returns A value of type `std::set<index_type>::iterator`.
+    //!
+    //! \exceptions
+    //! \noexcept
+    //!
+    //! \complexity
+    //! Constant.
+    [[nodiscard]] std::set<index_type>::iterator end_nodes() const noexcept {
+      return _active_nodes_index.end();
     }
 
     //! \brief Check and add a word to the trie.
@@ -573,7 +666,7 @@ namespace libsemigroups {
     //! \brief Check if an index corresponds to a node.
     //!
     //! This function checks if the given index \p i corresponds to the index of
-    //! a node.
+    //! a node; either active or inactive.
     //!
     //! \param i the index to validate.
     //!
@@ -586,13 +679,6 @@ namespace libsemigroups {
     void validate_node_index(index_type i) const;
 
     //! \brief Check if an index corresponds to a node currently in the trie
-    //!
-    //! The implementation of \ref AhoCorasick uses two different types of node;
-    //! *active* and *inactive*. An active node is a node that is currently a
-    //! node in the trie. An inactive node is a node that used to be part of the
-    //! trie, but has since been removed. It may later become active again after
-    //! being reinitialised, and exists as a way of minimising how frequently
-    //! memory needs to be allocated and deallocated for nodes.
     //!
     //! This function validates whether the given index \p i corresponds to an
     //! active node.
@@ -642,16 +728,6 @@ namespace libsemigroups {
   //! \exception
   //! \no_libsemigroups_except
   std::string to_string(AhoCorasick& ac);
-
-  class Dot;  // forward decl
-
-  //! \ingroup aho_corasick_group
-  //!
-  //! \brief Construct a dot object of \p ac.
-  //!
-  //! Construct a \ref Dot object representing the trie of \p ac with suffix
-  //! links.
-  [[nodiscard]] Dot dot(AhoCorasick& ac);
 
   //! \ingroup aho_corasick_group
   //!
@@ -874,6 +950,13 @@ namespace libsemigroups {
                                            Word const&        w) {
       return traverse_word(ac, AhoCorasick::root, w.cbegin(), w.cend());
     }
+
+    //! \brief Construct a dot object of \p ac.
+    //!
+    //! Construct a \ref Dot object representing the trie of \p ac with suffix
+    //! links.
+    [[nodiscard]] Dot dot(AhoCorasick& ac);
+
   }  // namespace aho_corasick
 
 }  // namespace libsemigroups
