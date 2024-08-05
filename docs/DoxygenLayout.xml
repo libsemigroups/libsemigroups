@@ -65,6 +65,7 @@
       <!-- TODO: Figure out a way to avoid this hack -->
       <tab type="user" visible="yes" url="group__congruences__group.html#func-members" title="Functions" />
     </tab>
+    <tab type="user" visible="yes" url="@ref freeband_group" title="Radoszewski-Rytter"/>
     <tab type="user" visible="yes" url="_HEADING_" title="Bibliography" />
     <tab type="user" visible="yes" url="@ref citelist" title="Bibliography" />
     <tab type="user" visible="yes" url="_HEADING_" title="Further info" />

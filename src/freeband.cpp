@@ -19,6 +19,11 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
+// TODO(2):
+// * be better if the functions in this file were encapsulated in a class to
+//   avoid repeated memory allocations. This would be more inkeeping with the
+//   idioms of libsemigroups too.
+
 #include "libsemigroups/freeband.hpp"
 
 #include <algorithm>    // for max_element
@@ -82,7 +87,7 @@ namespace libsemigroups {
 
     template <typename T>
     void right(T first, T last, size_t const k, std::vector<size_t>& out) {
-      // TODO(later) assertions
+      // TODO(2) assertions
       static_assert(
           std::is_same<std::decay_t<T>,
                        typename word_type::const_iterator>::value

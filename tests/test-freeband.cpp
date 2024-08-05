@@ -1,7 +1,6 @@
 //
 // libsemigroups - C++ library for semigroups and monoids
-// Copyright (C) 2021 James D. Mitchell
-//                    Reinis Cirpons
+// Copyright (C) 2021-2024 Reinis Cirpons + James Mitchell
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -17,15 +16,14 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include <random>   // for mt19937, random_device
 #include <string>   // for tests with strings
 #include <utility>  // for std::move
 
 #include "catch.hpp"      // for REQUIRE etc
 #include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 
-#include "libsemigroups/constants.hpp"
-#include "libsemigroups/freeband.hpp"
+#include "libsemigroups/freeband.hpp"  // for freeband_equal_to
+#include "libsemigroups/types.hpp"     // for word_type
 
 namespace libsemigroups {
 
