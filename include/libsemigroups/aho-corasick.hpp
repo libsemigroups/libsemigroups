@@ -69,6 +69,13 @@ namespace libsemigroups {
   //!
   //! https://en.wikipedia.org/wiki/Aho%E2%80%93Corasick_algorithm
   //!
+  //! The implementation of \ref AhoCorasick uses two different types of node;
+  //! *active* and *inactive*. An active node is a node that is currently a
+  //! node in the trie. An inactive node is a node that used to be part of the
+  //! trie, but has since been removed. It may later become active again after
+  //! being reinitialised, and exists as a way of minimising how frequently
+  //! memory needs to be allocated and deallocated for nodes.
+  //!
   //! Several helper functions are provided in the ``aho_corasick`` namespace.
   class AhoCorasick {
    public:
@@ -659,7 +666,7 @@ namespace libsemigroups {
     //! \brief Check if an index corresponds to a node.
     //!
     //! This function checks if the given index \p i corresponds to the index of
-    //! a node.
+    //! a node; either active or inactive.
     //!
     //! \param i the index to validate.
     //!
@@ -672,13 +679,6 @@ namespace libsemigroups {
     void validate_node_index(index_type i) const;
 
     //! \brief Check if an index corresponds to a node currently in the trie
-    //!
-    //! The implementation of \ref AhoCorasick uses two different types of node;
-    //! *active* and *inactive*. An active node is a node that is currently a
-    //! node in the trie. An inactive node is a node that used to be part of the
-    //! trie, but has since been removed. It may later become active again after
-    //! being reinitialised, and exists as a way of minimising how frequently
-    //! memory needs to be allocated and deallocated for nodes.
     //!
     //! This function validates whether the given index \p i corresponds to an
     //! active node.
