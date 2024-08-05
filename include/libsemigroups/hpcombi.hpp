@@ -59,6 +59,8 @@ namespace libsemigroups {
   //!
   //! @{
 
+  //! \brief Specialisation of the Complexity subclass.
+  //!
   //! Defined in ``hpcombi.hpp``.
   //!
   //! Specialization of the adapter Complexity for subclasses of
@@ -69,7 +71,10 @@ namespace libsemigroups {
   struct Complexity<TPTransf16Subclass,
                     std::enable_if_t<std::is_base_of_v<HPCombi::PTransf16,
                                                        TPTransf16Subclass>>> {
+    //! \brief Returns 0.
+    //!
     //! Returns 0.
+    //!
     //! \exceptions
     //! \noexcept
     constexpr size_t operator()(TPTransf16Subclass const&) const noexcept {
@@ -77,6 +82,8 @@ namespace libsemigroups {
     }
   };
 
+  //! \brief Specialization of the Degree adapter.
+  //!
   //! Defined in ``hpcombi.hpp``.
   //!
   //! Specialization of the adapter Degree for subclasses of
@@ -87,7 +94,10 @@ namespace libsemigroups {
   struct Degree<TPTransf16Subclass,
                 std::enable_if_t<std::is_base_of_v<HPCombi::PTransf16,
                                                    TPTransf16Subclass>>> {
+    //! \brief Returns 16.
+    //!
     //! Returns 16.
+    //!
     //! \exceptions
     //! \noexcept
     constexpr size_t operator()(TPTransf16Subclass const&) const noexcept {
@@ -95,9 +105,11 @@ namespace libsemigroups {
     }
   };
 
+  //! \brief Specialisation of the One adapter.
+  //!
   //! Defined in ``hpcombi.hpp``.
   //!
-  //! Specialization of the adapter One for subclasses of
+  //! Specialization of the One adapter for subclasses of
   //! ``HPCombi::PTransf16``.
   //!
   //! \sa One.
@@ -105,14 +117,19 @@ namespace libsemigroups {
   struct One<TPTransf16Subclass,
              std::enable_if_t<
                  std::is_base_of_v<HPCombi::PTransf16, TPTransf16Subclass>>> {
-    //! Returns the identity ``HPCombi::PTransf16``.
+    //! \brief Returns the identity for ``HPCombi::PTransf16``.
+    //!
+    //! Returns the identity for ``HPCombi::PTransf16``.
+    //!
     //! \exceptions
     //! \noexcept
     TPTransf16Subclass operator()(size_t = 0) const noexcept {
       return TPTransf16Subclass::one();
     }
-
-    //! Returns the identity ``HPCombi::PTransf16``.
+    //! \brief Returns the identity for ``HPCombi::PTransf16``.
+    //!
+    //! Returns the identity for ``HPCombi::PTransf16``.
+    //!
     //! \exceptions
     //! \noexcept
     TPTransf16Subclass operator()(TPTransf16Subclass const&) const noexcept {
@@ -120,9 +137,11 @@ namespace libsemigroups {
     }
   };
 
+  //! \brief Specialisation of the Product adapter.
+  //!
   //! Defined in ``hpcombi.hpp``.
   //!
-  //! Specialization of the adapter Product for subclasses of
+  //! Specialization of the Product adapter for subclasses of
   //! ``HPCombi::PTransf16``.
   //!
   //! \sa Product.
@@ -133,7 +152,9 @@ namespace libsemigroups {
   struct Product<TPTransf16Subclass,
                  std::enable_if_t<std::is_base_of_v<HPCombi::PTransf16,
                                                     TPTransf16Subclass>>> {
-    //! Returns modifies \p xy in-place to be the product of \p x and \p y.
+    //! \brief Modifies \p xy in-place to be the product of \p x and \p y.
+    //!
+    //! Modifies \p xy in-place to be the product of \p x and \p y.
     //!
     //! \exceptions
     //! \noexcept
@@ -145,9 +166,11 @@ namespace libsemigroups {
     }
   };
 
+  //! \brief Specialization of the Swap adapter.
+  //!
   //! Defined in ``hpcombi.hpp``.
   //!
-  //! Specialization of the adapter Swap for subclasses of
+  //! Specialization of the Swap adapter for subclasses of
   //! ``HPCombi::PTransf16``.
   //!
   //! \sa Swap.
@@ -155,7 +178,9 @@ namespace libsemigroups {
   struct Swap<TPTransf16Subclass,
               std::enable_if_t<
                   std::is_base_of_v<HPCombi::PTransf16, TPTransf16Subclass>>> {
-    //! Swap \p x and \p y.
+    //! \brief Swap \p x and \p y.
+    //!
+    //! Swap \p x and \p y using std::swap.
     //!
     //! \exceptions
     //! \noexcept
@@ -165,14 +190,19 @@ namespace libsemigroups {
     }
   };
 
+  //! \brief Specialization of the Inverse adapter.
+  //!
   //! Defined in ``hpcombi.hpp``.
   //!
-  //! Specialization of the adapter Inverse for ``HPCombi::Perm16``.
+  //! Specialization of the Inverse adapter for ``HPCombi::Perm16``.
   //!
   //! \sa Inverse.
   template <>
   struct Inverse<HPCombi::Perm16> {
+    //! \brief Returns the inverse of \p x.
+    //!
     //! Returns the inverse of \p x.
+    //!
     //! \exceptions
     //! \noexcept
     HPCombi::Perm16 operator()(HPCombi::Perm16 const& x) const noexcept {
@@ -180,9 +210,11 @@ namespace libsemigroups {
     }
   };
 
+  //! \brief Specialization of the ImageRightAction adapter.
+  //!
   //! Defined in ``hpcombi.hpp``.
   //!
-  //! Specialization of the adapter ImageRightAction for
+  //! Specialization of the  ImageRightAction for
   //! ``HPCombi::Perm16``.
   //!
   //! \sa ImageRightAction.
@@ -190,7 +222,11 @@ namespace libsemigroups {
   struct ImageRightAction<HPCombi::Perm16,
                           TIntType,
                           std::enable_if_t<std::is_integral_v<TIntType>>> {
-    //! Stores the image of \p pt under \p p in \p res.
+    //! \brief Stores the image of \p pt under \p p.
+    //!
+    //! Modifies \p res in-place to store the image of \p pt under \p p in \p
+    //! res.
+    //!
     //! \exceptions
     //! \noexcept
     void operator()(TIntType&              res,
