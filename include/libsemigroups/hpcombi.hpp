@@ -377,9 +377,9 @@ namespace libsemigroups {
   //! \sa Product.
   template <>
   struct Product<HPCombi::BMat8> {
-    //! \brief Changes \p xy in place to hold the product of \p x and \p y
+    //! \brief Changes \p xy in-place to hold the product of \p x and \p y
     //!
-    //! Changes \p xy in place to hold the product of \p x and \p y
+    //! Changes \p xy in-place to hold the product of \p x and \p y
     inline void operator()(HPCombi::BMat8&       xy,
                            HPCombi::BMat8 const& x,
                            HPCombi::BMat8 const& y,
@@ -625,7 +625,7 @@ namespace libsemigroups {
   struct ImageRightAction<HPCombi::Transf16, HPCombi::PTransf16> {
     //! \brief Store the image of \p x under the right action of \p y.
     //!
-    //! Modifies \p res in place to hold the image of \p x under the right
+    //! Modifies \p res in-place to hold the image of \p x under the right
     //! action of \p y.
     void operator()(HPCombi::PTransf16&       res,
                     HPCombi::Transf16 const&  x,
@@ -647,7 +647,7 @@ namespace libsemigroups {
   struct ImageLeftAction<HPCombi::Transf16, HPCombi::Vect16> {
     //! \brief Store image of \p x under the left action of \p y.
     //!
-    //! Modifies \p res in place to hold the image of \p x under the left
+    //! Modifies \p res in-place to hold the image of \p x under the left
     //! action of \p y.
     void operator()(HPCombi::Vect16&         res,
                     HPCombi::Transf16 const& x,
