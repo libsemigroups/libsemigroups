@@ -68,7 +68,7 @@ namespace libsemigroups {
   //! not, template substitution will fail.
   // T = StaticVector1<BitSet<N>, N> or std::vector<BitSet<N>>
   // Possibly further container when value_type is BitSet.
-  template <typename Container, typename Mat>
+  template <typename Mat, typename Container>
 #ifndef PARSED_BY_DOXYGEN
   struct ImageRightAction<
       Mat,
@@ -114,7 +114,7 @@ namespace libsemigroups {
   //! \warning
   //! The template type `Mat` must be a `BMat` type (``IsBMat<Mat>`` must be
   //! true). If not, template substitution will fail.
-  template <typename Container, typename Mat>
+  template <typename Mat, typename Container>
 #ifndef PARSED_BY_DOXYGEN
   struct ImageLeftAction<Mat, Container, std::enable_if_t<IsBMat<Mat>>>
 #else
