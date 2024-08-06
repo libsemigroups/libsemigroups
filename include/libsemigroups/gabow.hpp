@@ -22,11 +22,16 @@
 #ifndef LIBSEMIGROUPS_GABOW_HPP_
 #define LIBSEMIGROUPS_GABOW_HPP_
 
-#include <cstddef>  // for size_t
-#include <queue>    // for queue
-#include <stack>    // for stack
-#include <vector>   // for vector
+#include <cstddef>   // for size_t
+#include <iterator>  // for pair
+#include <queue>     // for queue
+#include <stack>     // for stack
+#include <string>    // for string
+#include <vector>    // for vector
 
+#include "constants.hpp"   // for UNDEFINED, operator!=, Undefined
+#include "debug.hpp"       // for LIBSEMIGROUPS_ASSERT
+#include "exception.hpp"   // for LIBSEMIGROUPS_EXCEPTION
 #include "forest.hpp"      // for Forest
 #include "ranges.hpp"      // for iterator_range, transform
 #include "word-graph.hpp"  // for WordGraph
