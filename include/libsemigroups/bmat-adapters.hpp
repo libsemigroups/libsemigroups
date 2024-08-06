@@ -217,7 +217,7 @@ namespace libsemigroups {
   //! \warning
   //! The template type `Mat` must be a `BMat` type (``IsBMat<Mat>`` must be
   //! true). If not, template substitution will fail.
-  template <typename Container, typename Mat>
+  template <typename Mat, typename Container>
 #ifndef PARSED_BY_DOXYGEN
   struct Lambda<Mat, Container, std::enable_if_t<IsBMat<Mat>>>
 #else
@@ -263,7 +263,7 @@ namespace libsemigroups {
   //! \warning
   //! The template type `Mat` must be a `BMat` type (``IsBMat<Mat>`` must be
   //! true). If not, template substitution will fail.
-  template <typename Container, typename Mat>
+  template <typename Mat, typename Container>
 #ifndef PARSED_BY_DOXYGEN
   struct Rho<Mat, Container, std::enable_if_t<IsBMat<Mat>>>
 #else
