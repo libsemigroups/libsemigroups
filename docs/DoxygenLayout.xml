@@ -17,7 +17,6 @@
       </tab>
       <tab type="user" visible="yes" url="@ref transf_group" title="Transformations" />
     </tab>
-    <tab type="user" visible="yes" url="@ref paths_group" title="Paths"/>
     <tab type="usergroup" visible="yes" url="@ref presentations_group" title="Presentations">
       <tab type="user" visible="yes" url="@ref libsemigroups::Presentation" title="Presentation class" />
       <tab type="user" visible="yes" url="@ref libsemigroups::InversePresentation" title="InversePresentation class" />
@@ -28,6 +27,7 @@
       <tab type="user" visible="yes" url="@ref dot_group" title="Visualisation" />
     <tab type="usergroup" visible="yes" url="@ref word_graph_group" title="Word graphs" >
       <tab type="user" visible="yes" url="@ref libsemigroups::Forest" title="Forest" />
+      <tab type="user" visible="yes" url="@ref paths_group" title="Paths"/>
       <tab type="user" visible="yes" url="@ref libsemigroups::WordGraph" title="WordGraph" />
       <tab type="user" visible="yes" url="@ref libsemigroups::word_graph" title="WordGraph helpers" />
     </tab>

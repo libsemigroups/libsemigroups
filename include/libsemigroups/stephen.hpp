@@ -359,9 +359,10 @@ namespace libsemigroups {
 
 namespace libsemigroups {
   namespace stephen {
-    using const_iterator_words_accepted = const_pstislo_iterator<uint32_t>;
+    using const_iterator_words_accepted
+        = detail::const_pstislo_iterator<uint32_t>;
 
-    using const_iterator_left_factors = const_pislo_iterator<uint32_t>;
+    using const_iterator_left_factors = detail::const_pislo_iterator<uint32_t>;
 
     template <typename PresentationType>
     bool accepts(Stephen<PresentationType>& s, word_type const& w);

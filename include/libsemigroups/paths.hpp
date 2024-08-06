@@ -18,11 +18,8 @@
 
 // This file contains declarations related to iterating through paths in an
 // WordGraph.
-//
 
-// TODO:
-// * doc
-// * check code coverage
+// TODO(2) check code coverage
 
 #ifndef LIBSEMIGROUPS_PATHS_HPP_
 #define LIBSEMIGROUPS_PATHS_HPP_
@@ -53,16 +50,19 @@
 #include "word-graph.hpp"  // for WordGraph
 #include "words.hpp"       // for number_of_words
 
-#include "detail/containers.hpp"  // for DynamicArray2
-#include "detail/iterator.hpp"    // for default_postfix_increment
-#include "detail/report.hpp"      // for magic_enum formatter
+#include "detail/containers.hpp"      // for DynamicArray2
+#include "detail/iterator.hpp"        // for default_postfix_increment
+#include "detail/path-iterators.hpp"  // for default_postfix_increment
+#include "detail/report.hpp"          // for magic_enum formatter
 
 namespace libsemigroups {
 
   //! \defgroup paths_group Paths
   //!
-  //! TODO
+  //! This page contains links to the documentation for the functionality in
+  //! ``libsemigroups`` for finding and counting paths in WordGraph objects.
 
+  //! Helper namespace.
   namespace paths {
     //! \ingroup paths_group
     //!
@@ -72,7 +72,7 @@ namespace libsemigroups {
       dfs = 0,
       //! Use the adjacency matrix and matrix multiplication
       matrix,
-      //! Use a dynamic programming approach for acyclic digraphs
+      //! Use a dynamic programming approach for acyclic word graphs
       acyclic,
       //! Try to utilise some corner cases.
       trivial,
@@ -81,100 +81,6 @@ namespace libsemigroups {
       automatic
     };
   }  // namespace paths
-
-  ////////////////////////////////////////////////////////////////////////
-  // pilo = Path And (terminal) Node In Lex Order
-  ////////////////////////////////////////////////////////////////////////
-
-  //! \ingroup paths_group
-  //!
-  //! Return type of \ref cbegin_pilo and \ref cend_pilo.
-  template <typename Node>
-  class const_pilo_iterator {
-   public:
-    using node_type  = Node;
-    using label_type = typename WordGraph<Node>::label_type;
-
-    using value_type        = word_type;
-    using size_type         = typename std::vector<value_type>::size_type;
-    using difference_type   = typename std::vector<value_type>::difference_type;
-    using const_pointer     = typename std::vector<value_type>::const_pointer;
-    using pointer           = typename std::vector<value_type>::pointer;
-    using const_reference   = typename std::vector<value_type>::const_reference;
-    using reference         = const_reference;
-    using iterator_category = std::forward_iterator_tag;
-
-   private:
-    value_type             _edges;
-    WordGraph<Node> const* _digraph;
-    label_type             _edge;
-    size_t                 _min;
-    size_t                 _max;
-    std::vector<node_type> _nodes;
-
-   public:
-    const_pilo_iterator() noexcept;
-    const_pilo_iterator(const_pilo_iterator const&);
-    const_pilo_iterator(const_pilo_iterator&&) noexcept;
-    const_pilo_iterator& operator=(const_pilo_iterator const&);
-    const_pilo_iterator& operator=(const_pilo_iterator&&) noexcept;
-    ~const_pilo_iterator();
-
-    const_pilo_iterator(WordGraph<node_type> const* ptr,
-                        node_type                   source,
-                        size_type                   min,
-                        size_type                   max);
-
-    // noexcept because comparison of std::vector<node_type>'s is noexcept
-    // because comparison of node_type's is noexcept
-    [[nodiscard]] bool
-    operator==(const_pilo_iterator const& that) const noexcept {
-      return _nodes == that._nodes;
-    }
-
-    // noexcept because operator== is noexcept
-    [[nodiscard]] bool
-    operator!=(const_pilo_iterator const& that) const noexcept {
-      return !(this->operator==(that));
-    }
-
-    [[nodiscard]] const_reference operator*() const noexcept {
-      return _edges;
-    }
-
-    [[nodiscard]] const_pointer operator->() const noexcept {
-      return &_edges;
-    }
-
-    [[nodiscard]] node_type target() const noexcept {
-      if (!_nodes.empty()) {
-        return _nodes.back();
-      } else {
-        return UNDEFINED;
-      }
-    }
-
-    // prefix - not noexcept because std::vector::push_back isn't
-    const_pilo_iterator const& operator++();
-
-    // postfix - not noexcept because the prefix ++ isn't
-    const_pilo_iterator operator++(int) {
-      return detail::default_postfix_increment<const_pilo_iterator>(*this);
-    }
-
-    void swap(const_pilo_iterator& that) noexcept;
-
-    [[nodiscard]] WordGraph<Node> const& digraph() const noexcept {
-      return *_digraph;
-    }
-  };
-
-  //! \ingroup paths_group
-  template <typename Node>
-  inline void swap(const_pilo_iterator<Node>& x,
-                   const_pilo_iterator<Node>& y) noexcept {
-    x.swap(y);
-  }
 
   //! \ingroup paths_group
   //! Returns an iterator for pilo (Path And Node In Lex Order).
@@ -189,23 +95,24 @@ namespace libsemigroups {
   //! length in the range \f$[min, max)\f$.  Iterators of the type returned
   //! by this function are equal whenever they point to equal objects.
   //!
+  //! \param wg the WordGraph
   //! \param source the source node
   //! \param min the minimum length of a path to enumerate (defaults to \c 0)
   //! \param max the maximum length of a path to enumerate (defaults to
-  //!        libsemigroups::POSITIVE_INFINITY).
+  //!        \ref POSITIVE_INFINITY).
   //!
   //! \returns
   //! An iterator \c it of type \c const_pilo_iterator pointing to a
   //! [std::pair](https://en.cppreference.com/w/cpp/utility/pair)
   //! where:
-  //! * \c it->first is a libsemigroups::word_type consisting of the edge
+  //! * \c it->first is a \ref word_type consisting of the edge
   //! labels of the first path (in lexicographical order) from \p source of
   //! length in the range \f$[min, max)\f$; and
   //! * \c it->second is the last node on the path from \p source labelled by
-  //! \c it->first, a value of \ref node_type.
+  //! \c it->first, a value of \ref WordGraph::node_type.
   //!
   //! \throws LibsemigroupsException if \p source is not a node in the
-  //! digraph.
+  //! word graph.
   //!
   //! \warning
   //! Copying iterators of this type is expensive.  As a consequence, prefix
@@ -213,7 +120,7 @@ namespace libsemigroups {
   //! than postfix incrementing \c it++.
   //!
   //! \warning
-  //! If the action digraph represented by \c this contains a cycle that is
+  //! If the word graph represented by \c this contains a cycle that is
   //! reachable from \p source, then there are infinitely many paths starting
   //! at \p source, and so \p max should be chosen with some care.
   //!
@@ -221,20 +128,19 @@ namespace libsemigroups {
   //! cend_pilo
   // not noexcept because constructors of const_pilo_iterator aren't
   template <typename Node1, typename Node2>
-  [[nodiscard]] const_pilo_iterator<Node1>
-  cbegin_pilo(WordGraph<Node1> const& d,
-              Node2                   source,
-              size_t                  min = 0,
-              size_t                  max = POSITIVE_INFINITY) {
-    word_graph::validate_node(d, static_cast<Node1>(source));
-    return const_pilo_iterator<Node1>(&d, source, min, max);
+  [[nodiscard]] auto cbegin_pilo(WordGraph<Node1> const& wg,
+                                 Node2                   source,
+                                 size_t                  min = 0,
+                                 size_t max = POSITIVE_INFINITY) {
+    word_graph::validate_node(wg, static_cast<Node1>(source));
+    return detail::const_pilo_iterator<Node1>(&wg, source, min, max);
   }
 
   //! \ingroup paths_group
   //! Returns an iterator for pilo (Path And Node In Lex Order).
   //!
   //! Returns a forward iterator pointing to one after the last path from any
-  //! node in the digraph.
+  //! node in the word graph.
   //!
   //! The iterator returned by this function may still dereferenceable and
   //! incrementable, but may not point to a path in the correct range.
@@ -242,94 +148,8 @@ namespace libsemigroups {
   //! \sa cbegin_pilo
   // not noexcept because constructors of const_pilo_iterator aren't
   template <typename Node>
-  [[nodiscard]] const_pilo_iterator<Node> cend_pilo(WordGraph<Node> const& d) {
-    return const_pilo_iterator<Node>(&d, 0, 0, 0);
-  }
-
-  // Note that while the complexity of this is bad, it repeatedly does depth
-  // first searches, and so will examine every node and edge of the graph
-  // multiple times (if u -a-> v belongs to a path of length 10, then it will
-  // be traversed 10 times). But the performance of this iterator is
-  // dominated by memory allocation (when creating
-  // iterators, at least), and so this doesn't seem that bad.
-  //! \ingroup paths_group
-  //! Return type of cbegin_pislo and cend_pislo.
-  template <typename Node>
-  class const_pislo_iterator {
-   public:
-    using node_type         = Node;
-    using value_type        = word_type;
-    using size_type         = typename std::vector<value_type>::size_type;
-    using difference_type   = typename std::vector<value_type>::difference_type;
-    using const_pointer     = typename std::vector<value_type>::const_pointer;
-    using pointer           = typename std::vector<value_type>::pointer;
-    using const_reference   = typename std::vector<value_type>::const_reference;
-    using reference         = const_reference;
-    using iterator_category = std::forward_iterator_tag;
-
-   private:
-    size_type                 _length;
-    const_pilo_iterator<Node> _it;
-    size_type                 _max;
-    node_type                 _source;
-
-   public:
-    // None of the constructors are noexcept because the corresponding
-    // constructors for const_pilo_iterator are not.
-    const_pislo_iterator();
-    const_pislo_iterator(const_pislo_iterator const&);
-    const_pislo_iterator(const_pislo_iterator&&);
-    const_pislo_iterator& operator=(const_pislo_iterator const&);
-    const_pislo_iterator& operator=(const_pislo_iterator&&);
-    ~const_pislo_iterator();
-
-    const_pislo_iterator(WordGraph<node_type> const* ptr,
-                         node_type                   source,
-                         size_type                   min,
-                         size_type                   max);
-
-    // noexcept because comparison of const_pilo_iterator is noexcept
-    [[nodiscard]] bool
-    operator==(const_pislo_iterator const& that) const noexcept {
-      return _length == that._length && _it == that._it;
-    }
-
-    // noexcept because operator== is noexcept
-    [[nodiscard]] bool
-    operator!=(const_pislo_iterator const& that) const noexcept {
-      return !(this->operator==(that));
-    }
-
-    [[nodiscard]] const_reference operator*() const noexcept {
-      return *_it;
-    }
-
-    [[nodiscard]] const_pointer operator->() const noexcept {
-      return &(*_it);
-    }
-
-    [[nodiscard]] node_type target() const noexcept {
-      if (_it == cend_pilo(_it.digraph()) && _length == UNDEFINED) {
-        return UNDEFINED;
-      }
-      return _it.target();
-    }
-
-    // prefix - not noexcept because cbegin_pilo isn't
-    const_pislo_iterator const& operator++();
-
-    // postfix - not noexcept because copy constructor isn't
-    const_pislo_iterator operator++(int) {
-      return detail::default_postfix_increment<const_pislo_iterator>(*this);
-    }
-
-    void swap(const_pislo_iterator& that) noexcept;
-  };
-
-  template <typename Node>
-  inline void swap(const_pislo_iterator<Node>& x,
-                   const_pislo_iterator<Node>& y) noexcept {
-    x.swap(y);
+  [[nodiscard]] auto cend_pilo(WordGraph<Node> const& wg) {
+    return detail::const_pilo_iterator<Node>(&wg, 0, 0, 0);
   }
 
   //! \ingroup paths_group
@@ -346,23 +166,24 @@ namespace libsemigroups {
   //! length in the range \f$[min, max)\f$.  Iterators of the type returned
   //! by this function are equal whenever they point to equal objects.
   //!
+  //! \param wg the WordGraph
   //! \param source the source node
   //! \param min the minimum length of a path to enumerate (defaults to \c 0)
   //! \param max the maximum length of a path to enumerate (defaults to
-  //!        libsemigroups::POSITIVE_INFINITY).
+  //!        \ref POSITIVE_INFINITY).
   //!
   //! \returns
-  //! An iterator \c it of type \c const_pislo_iterator pointing to a
+  //! An iterator \c it of type \c detail::const_pislo_iterator pointing to a
   //! [std::pair](https://en.cppreference.com/w/cpp/utility/pair)
   //! where:
-  //! * \c it->first is a libsemigroups::word_type consisting of the edge
+  //! * \c it->first is a \ref word_type consisting of the edge
   //! labels of the first path (in short-lex order) from \p source of
   //! length in the range \f$[min, max)\f$; and
   //! * \c it->second is the last node on the path from \p source labelled by
-  //! \c it->first, a value of \ref node_type.
+  //! \c it->first, a value of \ref WordGraph::node_type.
   //!
   //! \throws LibsemigroupsException if \p source is not a node in the
-  //! digraph.
+  //! word graph.
   //!
   //! \warning
   //! Copying iterators of this type is expensive.  As a consequence, prefix
@@ -370,126 +191,37 @@ namespace libsemigroups {
   //! than postfix incrementing \c it++.
   //!
   //! \warning
-  //! If the action digraph represented by \c this contains a cycle that is
+  //! If the word graph represented by \c this contains a cycle that is
   //! reachable from \p source, then there are infinitely many paths starting
   //! at \p source, and so \p max should be chosen with some care.
   //!
   //! \sa
   //! cend_pislo
-  // TODO(later) example and what is the complexity?
-  // not noexcept because const_pislo_iterator constructors aren't
+  // TODO(2) example and what is the complexity?
+  // not noexcept because detail::const_pislo_iterator constructors aren't
   template <typename Node1, typename Node2>
-  [[nodiscard]] const_pislo_iterator<Node1>
-  cbegin_pislo(WordGraph<Node1> const& d,
-               Node2                   source,
-               size_t                  min = 0,
-               size_t                  max = POSITIVE_INFINITY) {
-    word_graph::validate_node(d, static_cast<Node1>(source));
-    return const_pislo_iterator<Node1>(&d, source, min, max);
+  [[nodiscard]] auto cbegin_pislo(WordGraph<Node1> const& wg,
+                                  Node2                   source,
+                                  size_t                  min = 0,
+                                  size_t max = POSITIVE_INFINITY) {
+    word_graph::validate_node(wg, static_cast<Node1>(source));
+    return detail::const_pislo_iterator<Node1>(&wg, source, min, max);
   }
 
   //! \ingroup paths_group
   //! Returns an iterator for pislo (Path And Node In Short Lex Order).
   //!
   //! Returns a forward iterator pointing to one after the last path from any
-  //! node in the digraph.
+  //! node in the word graph.
   //!
   //! The iterator returned by this function may still dereferenceable and
   //! incrementable, but may not point to a path in the correct range.
   //!
   //! \sa cbegin_pislo
-  // not noexcept because const_pislo_iterator constructors aren't
+  // not noexcept because detail::const_pislo_iterator constructors aren't
   template <typename Node>
-  [[nodiscard]] const_pislo_iterator<Node>
-  cend_pislo(WordGraph<Node> const& d) {
-    return const_pislo_iterator<Node>(&d, UNDEFINED, 0, 0);
-  }
-
-  // PSTILO = Path Source Target In Lex Order
-  //! \ingroup paths_group
-  template <typename Node>
-  class const_pstilo_iterator {
-   public:
-    using node_type         = Node;
-    using label_type        = typename WordGraph<node_type>::label_type;
-    using value_type        = word_type;
-    using size_type         = typename std::vector<value_type>::size_type;
-    using difference_type   = typename std::vector<value_type>::difference_type;
-    using const_pointer     = typename std::vector<value_type>::const_pointer;
-    using pointer           = typename std::vector<value_type>::pointer;
-    using const_reference   = typename std::vector<value_type>::const_reference;
-    using reference         = const_reference;
-    using iterator_category = std::forward_iterator_tag;
-
-   private:
-    std::vector<bool>      _can_reach_target;
-    value_type             _edges;
-    WordGraph<Node> const* _digraph;
-    label_type             _edge;
-    size_t                 _min;
-    size_t                 _max;
-    std::vector<node_type> _nodes;
-    node_type              _target;
-
-   public:
-    const_pstilo_iterator() noexcept;
-    const_pstilo_iterator(const_pstilo_iterator const&);
-    const_pstilo_iterator(const_pstilo_iterator&&) noexcept;
-    const_pstilo_iterator& operator=(const_pstilo_iterator const&);
-    const_pstilo_iterator& operator=(const_pstilo_iterator&&) noexcept;
-    ~const_pstilo_iterator();
-
-    const_pstilo_iterator(WordGraph<Node> const* ptr,
-                          node_type              source,
-                          node_type              target,
-                          size_type              min,
-                          size_type              max);
-
-    // noexcept because comparison of std::vector<node_type> is noexcept
-    // because comparison of node_type's is noexcept
-    [[nodiscard]] bool
-    operator==(const_pstilo_iterator const& that) const noexcept {
-      return _nodes == that._nodes;
-    }
-
-    // noexcept because operator== is noexcept
-    [[nodiscard]] bool
-    operator!=(const_pstilo_iterator const& that) const noexcept {
-      return !(this->operator==(that));
-    }
-
-    [[nodiscard]] const_reference operator*() const noexcept {
-      return _edges;
-    }
-
-    [[nodiscard]] const_pointer operator->() const noexcept {
-      return &_edges;
-    }
-
-    [[nodiscard]] node_type target() const noexcept {
-      return _target;
-    }
-
-    // prefix
-    // not noexcept because std::vector::push_back isn't
-    const_pstilo_iterator const& operator++();
-
-    // postfix
-    // not noexcept because (prefix) operator++ isn't
-    const_pstilo_iterator operator++(int) {
-      return detail::default_postfix_increment<const_pstilo_iterator>(*this);
-    }
-
-    void swap(const_pstilo_iterator& that) noexcept;
-
-   private:
-    void init_can_reach_target();
-  };
-
-  template <typename Node>
-  inline void swap(const_pstilo_iterator<Node>& x,
-                   const_pstilo_iterator<Node>& y) noexcept {
-    x.swap(y);
+  [[nodiscard]] auto cend_pislo(WordGraph<Node> const& wg) {
+    return detail::const_pislo_iterator<Node>(&wg, UNDEFINED, 0, 0);
   }
 
   //! \ingroup paths_group
@@ -504,20 +236,21 @@ namespace libsemigroups {
   //! returned by this function are equal whenever they point to equal
   //! objects.
   //!
+  //! \param wg the WordGraph
   //! \param source the first node
   //! \param target the last node
   //! \param min the minimum length of a path to enumerate (defaults to \c 0)
   //! \param max the maximum length of a path to enumerate (defaults to
-  //!        libsemigroups::POSITIVE_INFINITY).
+  //!        \ref POSITIVE_INFINITY).
   //!
   //! \returns
-  //! An iterator \c it of type \c const_pstilo_iterator pointing to a
-  //! libsemigroups::word_type consisting of the edge labels of the first
+  //! An iterator \c it of type \c detail::const_pstilo_iterator pointing to a
+  //! \ref word_type consisting of the edge labels of the first
   //! path (in lexicographical order) from the node \p source to the node \p
   //! target with length in the range \f$[min, max)\f$ (if any).
   //!
   //! \throws LibsemigroupsException if \p target or \p source is not a node
-  //! in the digraph.
+  //! in the word graph.
   //!
   //! \warning
   //! Copying iterators of this type is expensive.  As a consequence, prefix
@@ -525,126 +258,40 @@ namespace libsemigroups {
   //! than postfix incrementing \c it++.
   //!
   //! \warning
-  //! If the action digraph represented by \c this contains a cycle that is
+  //! If the word graph represented by \c this contains a cycle that is
   //! reachable from \p source, then there may be infinitely many paths
   //! starting at \p source, and so \p max should be chosen with some care.
   //!
   //! \sa
   //! cend_pstilo
-  // not noexcept because const_pstilo_iterator constructors aren't
+  // not noexcept because detail::const_pstilo_iterator constructors aren't
   template <typename Node1, typename Node2>
-  [[nodiscard]] const_pstilo_iterator<Node1>
-  cbegin_pstilo(WordGraph<Node1> const& d,
-                Node2                   source,
-                Node2                   target,
-                size_t                  min = 0,
-                size_t                  max = POSITIVE_INFINITY) {
+  [[nodiscard]] auto cbegin_pstilo(WordGraph<Node1> const& wg,
+                                   Node2                   source,
+                                   Node2                   target,
+                                   size_t                  min = 0,
+                                   size_t max = POSITIVE_INFINITY) {
     // source & target are validated in is_reachable.
-    if (!word_graph::is_reachable(d, source, target)) {
-      return cend_pstilo(d);
+    if (!word_graph::is_reachable(wg, source, target)) {
+      return cend_pstilo(wg);
     }
-    return const_pstilo_iterator<Node1>(&d, source, target, min, max);
+    return detail::const_pstilo_iterator<Node1>(&wg, source, target, min, max);
   }
 
   //! \ingroup paths_group
   //! Returns an iterator for PSTILO (Path Source Target In Lex Order).
   //!
   //! Returns a forward iterator pointing to one after the last path from any
-  //! node in the digraph.
+  //! node in the word graph.
   //!
   //! The iterator returned by this function may still dereferenceable and
   //! incrementable, but may not point to a path in the correct range.
   //!
   //! \sa cbegin_pstilo
-  // not noexcept because const_pstilo_iterator constructors aren't
+  // not noexcept because detail::const_pstilo_iterator constructors aren't
   template <typename Node>
-  [[nodiscard]] const_pstilo_iterator<Node>
-  cend_pstilo(WordGraph<Node> const& d) {
-    return const_pstilo_iterator<Node>(&d, 0, 0, 0, 0);
-  }
-
-  //! \ingroup paths_group
-  //! Return type of \ref cbegin_pstislo and \ref cend_pstislo.
-  template <typename Node>
-  class const_pstislo_iterator {
-   public:
-    using node_type         = Node;
-    using value_type        = word_type;
-    using reference         = value_type&;
-    using const_reference   = value_type const&;
-    using difference_type   = std::ptrdiff_t;
-    using size_type         = std::size_t;
-    using const_pointer     = value_type const*;
-    using pointer           = value_type*;
-    using iterator_category = std::forward_iterator_tag;
-
-   private:
-    const_pislo_iterator<Node> _it;
-    node_type                  _target;
-    const_pislo_iterator<Node> _end;  // TODO(3) remove?
-
-   public:
-    const_pstislo_iterator();
-    const_pstislo_iterator(const_pstislo_iterator const&);
-    const_pstislo_iterator(const_pstislo_iterator&&);
-    const_pstislo_iterator& operator=(const_pstislo_iterator const&);
-    const_pstislo_iterator& operator=(const_pstislo_iterator&&);
-    ~const_pstislo_iterator();
-
-    const_pstislo_iterator(WordGraph<node_type> const* ptr,
-                           node_type                   source,
-                           node_type                   target,
-                           size_type                   min,
-                           size_type                   max)
-        : _it(ptr, source, min, max), _target(target), _end(cend_pislo(*ptr)) {
-      operator++();
-    }
-
-    // noexcept because comparison of const_pilo_iterator is noexcept
-    [[nodiscard]] bool
-    operator==(const_pstislo_iterator const& that) const noexcept {
-      return _it == that._it;
-    }
-
-    // noexcept because operator== is noexcept
-    [[nodiscard]] bool
-    operator!=(const_pstislo_iterator const& that) const noexcept {
-      return !(operator==(that));
-    }
-
-    [[nodiscard]] const_reference operator*() const noexcept {
-      return *_it;
-    }
-
-    [[nodiscard]] const_pointer operator->() const noexcept {
-      return &(*_it);
-    }
-
-    // Will fail if there are no paths!
-    [[nodiscard]] node_type target() const noexcept {
-      return _target;
-    }
-
-    // prefix
-    const_pstislo_iterator const& operator++();
-
-    // postfix - not noexcept because the prefix ++ isn't
-    const_pstislo_iterator operator++(int) {
-      return detail::default_postfix_increment<const_pstislo_iterator>(*this);
-    }
-
-    void swap(const_pstislo_iterator& that) noexcept {
-      std::swap(_it, that._it);
-      std::swap(_target, that._target);
-      std::swap(_end, that._end);
-    }
-  };
-
-  //! \ingroup paths_group
-  template <typename Node>
-  inline void swap(const_pstislo_iterator<Node>& x,
-                   const_pstislo_iterator<Node>& y) noexcept {
-    x.swap(y);
+  [[nodiscard]] auto cend_pstilo(WordGraph<Node> const& wg) {
+    return detail::const_pstilo_iterator<Node>(&wg, 0, 0, 0, 0);
   }
 
   //! \ingroup paths_group
@@ -661,20 +308,21 @@ namespace libsemigroups {
   //! returned by this function are equal whenever they point to equal
   //! objects.
   //!
+  //! \param wg the WordGraph
   //! \param source the first node
   //! \param target the last node
   //! \param min the minimum length of a path to enumerate (defaults to \c 0)
   //! \param max the maximum length of a path to enumerate (defaults to
-  //!        libsemigroups::POSITIVE_INFINITY).
+  //!        \ref POSITIVE_INFINITY).
   //!
   //! \returns
-  //! An iterator \c it of type \c const_pstislo_iterator pointing to a
-  //! libsemigroups::word_type consisting of the edge labels of the first
+  //! An iterator \c it of type \c detail::const_pstislo_iterator pointing to a
+  //! \ref word_type consisting of the edge labels of the first
   //! path (in short-lex order) from the node \p source to the node \p target
   //! with length in the range \f$[min, max)\f$ (if any).
   //!
   //! \throws LibsemigroupsException if \p target or \p source is not a node
-  //! in the digraph.
+  //! in the word graph.
   //!
   //! \warning
   //! Copying iterators of this type is expensive.  As a consequence, prefix
@@ -682,7 +330,7 @@ namespace libsemigroups {
   //! than postfix incrementing \c it++.
   //!
   //! \warning
-  //! If the action digraph represented by \c this contains a cycle that is
+  //! If the word graph represented by \c this contains a cycle that is
   //! reachable from \p source, then there may be infinitely many paths
   //! starting at \p source, and so \p max should be chosen with some care.
   //!
@@ -690,17 +338,16 @@ namespace libsemigroups {
   //! cend_pstislo
   // not noexcept because cbegin_pislo isn't
   template <typename Node1, typename Node2>
-  [[nodiscard]] const_pstislo_iterator<Node1>
-  cbegin_pstislo(WordGraph<Node1> const& d,
-                 Node2                   source,
-                 Node2                   target,
-                 size_t                  min = 0,
-                 size_t                  max = POSITIVE_INFINITY) {
+  [[nodiscard]] auto cbegin_pstislo(WordGraph<Node1> const& wg,
+                                    Node2                   source,
+                                    Node2                   target,
+                                    size_t                  min = 0,
+                                    size_t max = POSITIVE_INFINITY) {
     // source & target are validated in is_reachable.
-    if (!word_graph::is_reachable(d, source, target)) {
-      return cend_pstislo(d);
+    if (!word_graph::is_reachable(wg, source, target)) {
+      return cend_pstislo(wg);
     }
-    return const_pstislo_iterator<Node1>(&d, source, target, min, max);
+    return detail::const_pstislo_iterator<Node1>(&wg, source, target, min, max);
   }
 
   //! \ingroup paths_group
@@ -709,7 +356,7 @@ namespace libsemigroups {
   //! Order).
   //!
   //! Returns a forward iterator pointing to one after the last path from any
-  //! node in the digraph.
+  //! node in the word graph.
   //!
   //! The iterator returned by this function may still dereferenceable and
   //! incrementable, but may not point to a path in the correct range.
@@ -717,17 +364,18 @@ namespace libsemigroups {
   //! \sa cbegin_pstislo
   // not noexcept because cend_pislo isn't
   template <typename Node>
-  [[nodiscard]] const_pstislo_iterator<Node>
-  cend_pstislo(WordGraph<Node> const& d) {
-    return const_pstislo_iterator<Node>(&d, UNDEFINED, UNDEFINED, 0, 0);
+  [[nodiscard]] auto cend_pstislo(WordGraph<Node> const& wg) {
+    return detail::const_pstislo_iterator<Node>(
+        &wg, UNDEFINED, UNDEFINED, 0, 0);
   }
 
   //! \ingroup paths_group
-  //! Returns the \ref algorithm used by number_of_paths().
+  //! Returns the paths::algorithm used by number_of_paths().
   //!
+  //! \param wg the WordGraph
   //! \param source the source node.
   //!
-  //! \returns A value of type \ref algorithm.
+  //! \returns A value of type paths::algorithm.
   //!
   //! \exceptions
   //! \noexcept
@@ -736,8 +384,8 @@ namespace libsemigroups {
   //! Constant
   template <typename Node1, typename Node2>
   [[nodiscard]] paths::algorithm
-  number_of_paths_algorithm(WordGraph<Node1> const& d, Node2 source) noexcept {
-    (void) d;
+  number_of_paths_algorithm(WordGraph<Node1> const& wg, Node2 source) noexcept {
+    (void) wg;
     (void) source;
     return paths::algorithm::acyclic;
   }
@@ -745,46 +393,48 @@ namespace libsemigroups {
   //! \ingroup paths_group
   //! Returns the number of paths from a source node.
   //!
+  //! \param wg the WordGraph
   //! \param source the source node.
   //!
   //! \returns A value of type `uint64_t`.
   //!
   //! \throws LibsemigroupsException if \p source is not a node in the
-  //! digraph.
+  //! word graph.
   //!
   //! \complexity
   //! At worst \f$O(nm)\f$ where \f$n\f$ is the number of nodes and \f$m\f$
-  //! is the out-degree of the digraph.
+  //! is the out-degree of the word graph.
   //!
   //! \warning If the number of paths exceeds 2 ^ 64, then return value of
   //! this function will not be correct.
   template <typename Node1, typename Node2>
-  [[nodiscard]] uint64_t number_of_paths(WordGraph<Node1> const& d,
+  [[nodiscard]] uint64_t number_of_paths(WordGraph<Node1> const& wg,
                                          Node2                   source);
 
   //! \ingroup paths_group
-  //! Returns the \ref algorithm used by number_of_paths().
+  //! Returns the paths::algorithm used by number_of_paths().
   //!
   //! Returns the algorithm used by number_of_paths() to compute the number
   //! of paths originating at the given source node with length in the range
   //! \f$[min, max)\f$.
   //!
+  //! \param wg the WordGraph
   //! \param source the source node
   //! \param min the minimum length of paths to count
   //! \param max the maximum length of paths to count
   //!
-  //! \returns A value of type \ref algorithm.
+  //! \returns A value of type paths::algorithm.
   //!
   //! \exceptions
   //! \no_libsemigroups_except
   //!
   //! \complexity
   //! At worst \f$O(nm)\f$ where \f$n\f$ is the number of nodes and \f$m\f$
-  //! is the out-degree of the digraph.
+  //! is the out-degree of the word graph.
   // Not noexcept because word_graph::topological_sort is not.
   template <typename Node1, typename Node2>
   [[nodiscard]] paths::algorithm
-  number_of_paths_algorithm(WordGraph<Node1> const& d,
+  number_of_paths_algorithm(WordGraph<Node1> const& wg,
                             Node2                   source,
                             size_t                  min,
                             size_t                  max);
@@ -793,6 +443,7 @@ namespace libsemigroups {
   //! Returns the number of paths starting at a given node with length in a
   //! given range.
   //!
+  //! \param wg the WordGraph
   //! \param source the first node
   //! \param min the minimum length of a path
   //! \param max the maximum length of a path
@@ -803,24 +454,24 @@ namespace libsemigroups {
   //! A value of type \c uint64_t.
   //!
   //! \throws LibsemigroupsException if:
-  //! * \p source is not a node in the digraph.
+  //! * \p source is not a node in the word graph.
   //! * the algorithm specified by \p lgrthm is not applicable.
   //!
   //! \complexity
   //! The complexity depends on the value of \p lgrthm as follows:
   //! * paths::algorithm::dfs: \f$O(r)\f$ where \f$r\f$ is the number of paths
   //! in
-  //!   the digraph starting at \p source
+  //!   the word graph starting at \p source
   //! * paths::algorithm::matrix: at worst \f$O(n ^ 3 k)\f$ where \f$n\f$ is the
   //!   number of nodes and \f$k\f$ equals \p max.
   //! * paths::algorithm::acyclic: at worst \f$O(nm)\f$ where \f$n\f$ is the
   //! number
-  //!   of nodes and \f$m\f$ is the out-degree of the digraph (only valid if
-  //!   the subdigraph induced by the nodes reachable from \p source is
+  //!   of nodes and \f$m\f$ is the out-degree of the word graph (only valid if
+  //!   the subgraph induced by the nodes reachable from \p source is
   //!   acyclic)
   //! * paths::algorithm::trivial: at worst \f$O(nm)\f$ where \f$n\f$ is the
   //! number
-  //!   of nodes and \f$m\f$ is the out-degree of the digraph (only valid in
+  //!   of nodes and \f$m\f$ is the out-degree of the word graph (only valid in
   //!   some circumstances)
   //! * paths::algorithm::automatic: attempts to select the fastest algorithm of
   //! the
@@ -833,7 +484,7 @@ namespace libsemigroups {
   //! this function will not be correct.
   // not noexcept for example detail::number_of_paths_trivial can throw
   template <typename Node1, typename Node2>
-  [[nodiscard]] uint64_t number_of_paths(WordGraph<Node1> const& d,
+  [[nodiscard]] uint64_t number_of_paths(WordGraph<Node1> const& wg,
                                          Node2                   source,
                                          size_t                  min,
                                          size_t                  max,
@@ -848,6 +499,7 @@ namespace libsemigroups {
   //! the number of paths originating at the given source node and ending at
   //! the given target node with length in the range \f$[min, max)\f$.
   //!
+  //! \param wg the WordGraph
   //! \param source the source node
   //! \param target the target node
   //! \param min the minimum length of paths to count
@@ -860,11 +512,11 @@ namespace libsemigroups {
   //!
   //! \complexity
   //! At worst \f$O(nm)\f$ where \f$n\f$ is the number of nodes and \f$m\f$
-  //! is the out-degree of the digraph.
+  //! is the out-degree of the word graph.
   // Not noexcept because word_graph::topological_sort isn't
   template <typename Node1, typename Node2>
   [[nodiscard]] paths::algorithm
-  number_of_paths_algorithm(WordGraph<Node1> const& d,
+  number_of_paths_algorithm(WordGraph<Node1> const& wg,
                             Node2                   source,
                             Node2                   target,
                             size_t                  min,
@@ -875,6 +527,7 @@ namespace libsemigroups {
   //! Returns the number of paths between a pair of nodes with length in a
   //! given range.
   //!
+  //! \param wg the WordGraph
   //! \param source the first node
   //! \param target the last node
   //! \param min the minimum length of a path
@@ -886,26 +539,23 @@ namespace libsemigroups {
   //! A value of type `uint64_t`.
   //!
   //! \throws LibsemigroupsException if:
-  //! * \p source is not a node in the digraph.
-  //! * \p target is not a node in the digraph.
+  //! * \p source is not a node in the word graph.
+  //! * \p target is not a node in the word graph.
   //! * the algorithm specified by \p lgrthm is not applicable.
   //!
   //! \complexity
   //! The complexity depends on the value of \p lgrthm as follows:
   //! * paths::algorithm::dfs: \f$O(r)\f$ where \f$r\f$ is the number of paths
-  //! in
-  //!   the digraph starting at \p source
+  //!   in the word graph starting at \p source
   //! * paths::algorithm::matrix: at worst \f$O(n ^ 3 k)\f$ where \f$n\f$ is the
   //!   number of nodes and \f$k\f$ equals \p max.
   //! * paths::algorithm::acyclic: at worst \f$O(nm)\f$ where \f$n\f$ is the
-  //! number
-  //!   of nodes and \f$m\f$ is the out-degree of the digraph (only valid if
-  //!   the subdigraph induced by the nodes reachable from \p source is
+  //!   number of nodes and \f$m\f$ is the out-degree of the word graph (only
+  //!   valid if the subgraph induced by the nodes reachable from \p source is
   //!   acyclic)
   //! * paths::algorithm::trivial: constant (only valid in some circumstances)
   //! * paths::algorithm::automatic: attempts to select the fastest algorithm of
-  //! the
-  //!   preceding algorithms and then applies that.
+  //!   the preceding algorithms and then applies that.
   //!
   //! \warning If \p lgrthm is paths::algorithm::automatic, then it is not
   //! always the case that the fastest algorithm is used.
@@ -914,7 +564,7 @@ namespace libsemigroups {
   //! this function will not be correct.
   // not noexcept because cbegin_pstilo isn't
   template <typename Node1, typename Node2>
-  [[nodiscard]] uint64_t number_of_paths(WordGraph<Node1> const& d,
+  [[nodiscard]] uint64_t number_of_paths(WordGraph<Node1> const& wg,
                                          Node2                   source,
                                          Node2                   target,
                                          size_t                  min,
@@ -922,24 +572,59 @@ namespace libsemigroups {
                                          paths::algorithm        lgrthm
                                          = paths::algorithm::automatic);
 
-  // Helper class
   //! \ingroup paths_group
   //!
-  //! TODO
+  //! \brief Range for iterating through paths in a WordGraph.
+  //!
+  //! This class represents a range object that facilitates iterating through
+  //! the paths in a WordGraph \ref from a given node (possible \ref to another
+  //! node) in a particular \ref order.
+  //!
+  //! \tparam Node the type of the nodes in the underlying WordGraph.
+  //!
+  //! So that the Paths class can be used efficiently with the functionality of
+  //! rx::ranges, the usual naming conventions in ``libsemigroups`` are not
+  //! used for the member functions of Paths. In particular, none of the member
+  //! functions check their arguments, but they do not have the suffix
+  //! ``_no_checks``.
+  //!
+  //! For a Paths object to be valid it must have both its source node defined
+  //! (using \ref from) and the underlying WordGraph defined (using \ref
+  //! init(WordGraph<Node> const&).
+  //! This can be verified using \ref is_valid. The following member functions
+  //! should only be called if \ref is_valid returns \c true:
+  //! * \ref get
+  //! * \ref next
+  //! * \ref at_end
+  //! * \ref size_hint
+  //! * \ref count
   template <typename Node>
   class Paths {
    public:
-    using node_type   = Node;
-    using size_type   = typename WordGraph<Node>::size_type;
+    //! \brief The template parameter \c Node, the type of the nodes in the
+    //! underlying WordGraph.
+    //!
+    //! The template parameter \c Node, the type of the nodes in the
+    //! underlying WordGraph.
+    using node_type = Node;
+
+    //! \brief Unsigned integer for indexing.
+    //!
+    //! Unsigned integer for indexing.
+    using size_type = typename WordGraph<Node>::size_type;
+
+    //! \brief Alias for const reference to a \ref word_type.
+    //!
+    //! The output type of this type of range.
     using output_type = word_type const&;
 
    private:
-    using const_iterator = std::variant<const_pstislo_iterator<Node>,
-                                        const_pstilo_iterator<Node>,
-                                        const_pislo_iterator<Node>,
-                                        const_pilo_iterator<Node>>;
+    using const_iterator = std::variant<detail::const_pstislo_iterator<Node>,
+                                        detail::const_pstilo_iterator<Node>,
+                                        detail::const_pislo_iterator<Node>,
+                                        detail::const_pilo_iterator<Node>>;
 
-    WordGraph<node_type> const* _digraph;
+    WordGraph<node_type> const* _word_graph;
     Order                       _order;
     size_type                   _max;
     size_type                   _min;
@@ -951,15 +636,119 @@ namespace libsemigroups {
     mutable bool                _current_valid;
 
     bool set_iterator_no_checks() const;
-    bool set_iterator() const;
+
+    // The following init function is private to avoid the case of constructing
+    // a Paths object without setting _word_graph
+    Paths& init();
 
    public:
-    output_type get() const {
-      set_iterator();
-      return std::visit(
-          [](auto& it) -> auto const& { return *it; }, _current);
+    ////////////////////////////////////////////////////////////////////////
+    // Constructors + initialization
+    ////////////////////////////////////////////////////////////////////////
+
+    //! \brief Deleted.
+    //!
+    //! To avoid the situation where the underlying WordGraph is not defined, it
+    //! is not possible to default construct a Paths object.
+    Paths() = delete;
+
+    //! \brief Default copy constructor.
+    //!
+    //! Default copy constructor.
+    Paths(Paths const&) = default;
+
+    //! \brief Default move constructor.
+    //!
+    //! Default move constructor.
+    Paths(Paths&&) = default;
+
+    //! \brief Default copy assignment operator.
+    //!
+    //! Default copy assignment operator.
+    Paths& operator=(Paths const&) = default;
+
+    //! \brief Default move assignment operator.
+    //!
+    //! Default move assignment operator.
+    Paths& operator=(Paths&&) = default;
+
+    //! \brief Construct from a WordGraph.
+    //!
+    //! This function constructs a Paths object from the WordGraph \p wg.
+    //!
+    //! \param wg the word graph.
+    //!
+    //! \warning It is also necessary to set the source node using \ref from
+    //! before the object is valid.
+    //!
+    //! \warning The Paths object only holds a reference to the underlying
+    //! WordGraph \p wg, and so \p wg must outlive any Paths object constructed
+    //! from \p wg.
+    explicit Paths(WordGraph<Node> const& wg) {
+      init(wg);
     }
 
+    //! \brief Reinitialize a Paths object.
+    //!
+    //! This function puts a Paths object back into the same state as
+    //! if it had been newly constructs from the WordGraph \p wg.
+    //!
+    //! \param wg the word graph.
+    //!
+    //! \warning It is also necessary to set the source node using \ref from
+    //! before the object is valid.
+    //!
+    //! \warning The Paths object only holds a reference to the underlying
+    //! WordGraph \p wg, and so \p wg must outlive any Paths object constructed
+    //! from \p wg.
+    Paths& init(WordGraph<Node> const& wg) {
+      init();
+      _word_graph = &wg;
+      return *this;
+    }
+
+    ////////////////////////////////////////////////////////////////////////
+    // Validation
+    ////////////////////////////////////////////////////////////////////////
+    //! TODO
+    // TODO to tpp
+    void throw_if_not_valid(std::string_view sep = "::") {
+      if (_source == UNDEFINED) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "no source node defined, use Paths{}from to set the source node",
+            sep);
+      }
+    }
+
+    //! TODO
+    [[nodiscard]] bool is_valid() const noexcept {
+      return _source != UNDEFINED;
+    }
+
+    ////////////////////////////////////////////////////////////////////////
+    // Functions + members required by rx::ranges
+    ////////////////////////////////////////////////////////////////////////
+
+    //! \brief Get the current path in the range.
+    //!
+    //! Get the current path in the range.
+    //!
+    //! \returns The current path, a value of \ref output_type.
+    //!
+    //! \warning It is the responsibility of the caller to ensure that \ref
+    //! is_valid returns \c true before calling this function.
+    output_type get() const {
+      set_iterator_no_checks();
+      return std::visit([](auto& it) -> auto const& { return *it; }, _current);
+    }
+
+    //! \brief Advance to the next path in the range.
+    //!
+    //! Advance to the current path in the range. If \ref at_end returns \c
+    //! true, then this function does nothing.
+    //!
+    //! \warning It is the responsibility of the caller to ensure that \ref
+    //! is_valid returns \c true before calling this function.
     void next() {
       if (!at_end()) {
         ++_position;
@@ -967,78 +756,150 @@ namespace libsemigroups {
       }
     }
 
-    bool at_end() const {
-      if (!set_iterator()) {
+    //! \brief Check if the range is exhausted.
+    //!
+    //! This function returns \c true if there are no more paths in the range,
+    //! and \c false otherwise.
+    //!
+    //! \returns Whether or not the range is exhausted.
+    //!
+    //! \warning It is the responsibility of the caller to ensure that \ref
+    //! is_valid returns \c true before calling this function.
+    [[nodiscard]] bool at_end() const {
+      if (!set_iterator_no_checks()) {
         return true;
       }
       return _current == _end;
     }
 
-    uint64_t size_hint() const;
-    uint64_t size_hint_no_checks() const;
+    //! \brief Get the size of the range.
+    //!
+    //! This function returns the number of paths in the range. The output is
+    //! identical to that of \ref count, and is included for compatibility with
+    //! [rx::ranges][].
+    //!
+    //! [rx::ranges]: https://github.com/simonask/rx-ranges
+    //!
+    //! \returns the number of paths in the range.
+    //!
+    //! \warning It is the responsibility of the caller to ensure that \ref
+    //! is_valid returns \c true before calling this function.
+    [[nodiscard]] uint64_t size_hint() const;
 
-    uint64_t count() const {
+    //! \brief Get the size of the range.
+    //!
+    //! This function returns the number of paths in the range. The output is
+    //! identical to that of \ref size_hint, and is included for compatibility
+    //! with [rx::ranges][].
+    //!
+    //! [rx::ranges]: https://github.com/simonask/rx-ranges
+    //!
+    //! \returns the number of paths in the range.
+    //!
+    //! \warning It is the responsibility of the caller to ensure that \ref
+    //! is_valid returns \c true before calling this function.
+    [[nodiscard]] uint64_t count() const {
       return size_hint();
     }
 
     static constexpr bool is_finite     = true;  // this isn't always true!
     static constexpr bool is_idempotent = true;
 
-    Paths() {
-      init();
+    ////////////////////////////////////////////////////////////////////////
+    // Settings
+    ////////////////////////////////////////////////////////////////////////
+
+    //! \brief Set the source node of every path in the range.
+    //!
+    //! This function can be used to set the source node (or the "from" node) of
+    //! all of the paths in the range.
+    //!
+    //! \param n the source node.
+    //!
+    //! \returns A reference to `*this`.
+    //!
+    //! \warning This function must be called at least once for a Paths object
+    //! to be valid.
+    //!
+    //! \exceptions
+    //! \noexcept
+    Paths& from(node_type n) noexcept {
+      return from(this, n);
     }
 
-    Paths& init();
-
-    Paths(Paths const&)            = default;
-    Paths(Paths&&)                 = default;
-    Paths& operator=(Paths const&) = default;
-    Paths& operator=(Paths&&)      = default;
-
-    explicit Paths(WordGraph<Node> const& digraph) {
-      init(digraph);
-    }
-
-    Paths& init(WordGraph<Node> const& digraph) {
-      init();
-      _digraph = &digraph;
-      return *this;
-    }
-
-    Paths& from(node_type src) {
-      return from(this, src);
-    }
-
+    //! TODO
     [[nodiscard]] node_type from() const noexcept {
       return _source;
     }
 
-    Paths& to(node_type trgt) noexcept {
-      return to(this, trgt);
+    //! \brief Set the target node of every path in the range.
+    //!
+    //! This function can be used to set the target node (or the "to" node) of
+    //! all of the paths in the range. It is not necessary to set this value.
+    //! If it is \ref UNDEFINED, then the range will contain every path \ref
+    //! from with every possible target in \ref word_graph.
+    //!
+    //! \param n the target node.
+    //!
+    //! \returns A reference to `*this`.
+    //!
+    //! \exceptions
+    //! \noexcept
+    Paths& to(node_type n) noexcept {
+      return to(this, n);
     }
 
+    //! TODO
     [[nodiscard]] node_type to() const;
 
+    //! \brief Set the minimum length of path in the range.
+    //!
+    //! This function can be used to set the minimum length of paths that will
+    //! be contained in the range. If this function is not called, then the
+    //! range will contain paths starting with length \c 0.
+    //!
+    //! \param val the minimum path length.
+    //!
+    //! \returns A reference to `*this`.
+    //!
+    //! \exceptions
+    //! \noexcept
     Paths& min(size_type val) noexcept {
       return min(this, val);
     }
 
+    //! TODO
     [[nodiscard]] size_type min() const noexcept {
       return _min;
     }
 
+    //! \brief Set the maximum length of path in the range.
+    //!
+    //! This function can be used to set the maximum length of path that will
+    //! be contained in the range. If this function is not called, then the
+    //! range will contain paths of unbounded length (possibly infinitely many).
+    //!
+    //! \param val the maximum path length.
+    //!
+    //! \returns A reference to `*this`.
+    //!
+    //! \exceptions
+    //! \noexcept
     Paths& max(size_type val) noexcept {
       return max(this, val);
     }
 
+    //! TODO
     [[nodiscard]] size_type max() const noexcept {
       return _max;
     }
 
+    //! TODO
     Paths& order(Order val) {
       return order(this, val);
     }
 
+    //! TODO
     [[nodiscard]] Order order() const noexcept {
       return _order;
     }
@@ -1074,18 +935,13 @@ namespace libsemigroups {
 
     template <typename Subclass>
     Subclass& order(Subclass* obj, Order val);
-
-   private:
-    void throw_if_word_graph_nullptr() const {
-      if (_digraph == nullptr) {
-        LIBSEMIGROUPS_EXCEPTION("No word graph defined");
-      }
-    }
   };
 
+  //! TODO
   template <typename Node>
   Paths(WordGraph<Node> const&) -> Paths<Node>;
 
+  //! TODO
   template <typename Node>
   Paths(WordGraph<Node>&&) -> Paths<Node>;
 
@@ -1099,61 +955,77 @@ namespace libsemigroups {
 
     using size_type = typename WordGraph<Node>::size_type;
 
-   public:
-    // this isn't always true!
-    static constexpr bool is_finite     = Paths<Node>::is_finite;
-    static constexpr bool is_idempotent = Paths<Node>::is_idempotent;
-
-    using output_type = word_type;
-
-    ReversiblePaths() {
-      init();
-    }
-
+    // Private so that we cannot create one of these without the word graph
+    // known.
     ReversiblePaths& init() {
       Paths<Node>::init();
       _reverse = false;
     }
 
-    ReversiblePaths(ReversiblePaths const&)            = default;
-    ReversiblePaths(ReversiblePaths&&)                 = default;
+   public:
+    // this isn't always true!
+    //! TODO
+    static constexpr bool is_finite = Paths<Node>::is_finite;
+    //! TODO
+    static constexpr bool is_idempotent = Paths<Node>::is_idempotent;
+
+    //! TODO
+    using output_type = word_type;
+
+    //! TODO
+    ReversiblePaths() = delete;
+
+    //! TODO
+    ReversiblePaths(ReversiblePaths const&) = default;
+    //! TODO
+    ReversiblePaths(ReversiblePaths&&) = default;
+    //! TODO
     ReversiblePaths& operator=(ReversiblePaths const&) = default;
-    ReversiblePaths& operator=(ReversiblePaths&&)      = default;
+    //! TODO
+    ReversiblePaths& operator=(ReversiblePaths&&) = default;
 
-    explicit ReversiblePaths(WordGraph<Node> const& digraph) {
-      init(digraph);
-    }
+    //! TODO
+    explicit ReversiblePaths(WordGraph<Node> const& wg) : Paths<Node>(wg) {}
 
-    ReversiblePaths& init(WordGraph<Node> const& digraph) {
-      Paths<Node>::init(digraph);
+    //! TODO
+    ReversiblePaths& init(WordGraph<Node> const& wg) {
+      Paths<Node>::init(wg);
       return *this;
     }
 
+    //! TODO
     ReversiblePaths& from(size_type val) noexcept {
       return Paths<Node>::from(this, val);
     }
 
+    //! TODO
     ReversiblePaths& to(size_type val) noexcept {
       return Paths<Node>::to(this, val);
     }
 
+    //! TODO
     ReversiblePaths& min(size_type val) noexcept {
       return Paths<Node>::min(this, val);
     }
 
+    //! TODO
     ReversiblePaths& max(size_type val) noexcept {
       return Paths<Node>::max(this, val);
     }
 
+    //! TODO
     ReversiblePaths& order(Order val) {
       return Paths<Node>::order(this, val);
     }
 
+    //! TODO
     ReversiblePaths& reverse(bool val) {
       _reverse = val;
       return *this;
     }
 
+    //! TODO
+    // TODO to tpp
     output_type get() const {
       word_type result = Paths<Node>::get();
       if (_reverse) {
@@ -1163,9 +1035,11 @@ namespace libsemigroups {
     }
   };
 
+  //! TODO
   template <typename Node>
   ReversiblePaths(WordGraph<Node> const&) -> ReversiblePaths<Node>;
 
+  //! TODO
   template <typename Node>
   ReversiblePaths(WordGraph<Node>&&) -> ReversiblePaths<Node>;
 
