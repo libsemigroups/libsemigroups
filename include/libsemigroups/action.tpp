@@ -221,7 +221,7 @@ namespace libsemigroups {
     if (started() && old_nr_gens < _gens.size()) {
       // Generators were added after the last call to run
       if (_pos > 0 && old_nr_gens < _gens.size()) {
-        _scc.reset();
+        _scc.init(_graph);
       }
       for (size_t i = 0; i < _pos; i++) {
         for (size_t j = old_nr_gens; j < _gens.size(); ++j) {
@@ -241,7 +241,7 @@ namespace libsemigroups {
       }
     }
     if (_pos < _orb.size() && !_gens.empty()) {
-      _scc.reset();
+      _scc.init(_graph);
     }
 
     detail::Timer t;

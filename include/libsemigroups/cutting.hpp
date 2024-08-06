@@ -41,11 +41,33 @@
 #ifndef LIBSEMIGROUPS_CUTTING_HPP_
 #define LIBSEMIGROUPS_CUTTING_HPP_
 
-#include "cong-intf.hpp"  // for CongruenceInterface
-#include "gabow.hpp"
-#include "runner.hpp"  // for Runner
-#include "stephen.hpp"
-#include "types.hpp"
+#include <algorithm>      // for for_each, copy
+#include <cstddef>        // for size_t
+#include <cstdint>        // for uint32_t, uin...
+#include <memory>         // for shared_ptr
+#include <string>         // for operator+
+#include <tuple>          // for tie
+#include <unordered_map>  // for operator==
+#include <utility>        // for swap, make_pair
+#include <vector>         // for vector
+
+#include "constants.hpp"                // for operator!=
+#include "gabow.hpp"                    // for Gabow
+#include "presentation.hpp"             // for InversePresen...
+#include "ranges.hpp"                   // for begin, end
+#include "runner.hpp"                   // for Runner
+#include "stephen.hpp"                  // for Stephen
+#include "types.hpp"                    // for word_type
+#include "word-graph-with-sources.hpp"  // for WordGraphWith...
+#include "word-graph.hpp"               // for WordGraph
+#include "word-graph.hpp"               // for standardize
+
+#include "detail/fmt.hpp"                 // for format, basic...
+#include "detail/int-range.hpp"           // for IntRange<>::v...
+#include "detail/iterator.hpp"            // for operator+
+#include "detail/node-managed-graph.hpp"  // for NodeManagedGr...
+#include "detail/node-manager.hpp"        // for NodeManager::...
+#include "detail/report.hpp"              // for Ticker::Ticker
 
 namespace libsemigroups {
   class Cutting : public Runner {
@@ -69,7 +91,7 @@ namespace libsemigroups {
           _stephens(),
           _finished(false),
           _graph(0, p.alphabet().size()),
-          _gabow() {
+          _gabow(_graph) {
       _presentation->validate();
       _presentation->contains_empty_word(true);  // TODO
       _stephens.emplace_back(_presentation);

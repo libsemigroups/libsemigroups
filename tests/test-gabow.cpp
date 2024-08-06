@@ -61,7 +61,7 @@ namespace libsemigroups {
     Gabow             scc(wg);
     for (size_t j = 1; j < 100; ++j) {
       wg.add_nodes(j);
-      scc.reset();
+      scc.init(wg);
 
       for (size_t i = 0; i < j * (j + 1) / 2; ++i) {
         REQUIRE(scc.id(i) == i);
@@ -75,7 +75,7 @@ namespace libsemigroups {
     Gabow scc(wg);
     for (size_t j = 2; j < 50; ++j) {
       word_graph::add_cycle(wg, j);
-      scc.reset();
+      scc.init(wg);
       REQUIRE((wg.nodes()
                | filter([&scc, j](auto v) { return scc.id(v) == j - 2; })
                | count())
@@ -247,7 +247,7 @@ namespace libsemigroups {
         (wg.nodes() | all_of([&scc](node_type i) { return scc.id(i) == 0; })));
 
     word_graph::add_cycle(wg, 10101);
-    scc.reset();
+    scc.init(wg);
     REQUIRE((wg.nodes() | take(100000)
              | all_of([&scc](node_type i) { return scc.id(i) == 0; })));
     REQUIRE((wg.nodes() | skip_n(100000)
@@ -269,7 +269,7 @@ namespace libsemigroups {
       REQUIRE(wg.number_of_nodes() == 2 * n);
       REQUIRE(wg.number_of_edges() == 2 * n * n);
 
-      scc.reset();
+      scc.init(wg);
       REQUIRE(scc.number_of_components() == 2);
 
       auto expected = std::vector<node_type>(n, 0);
@@ -339,5 +339,19 @@ namespace libsemigroups {
     REQUIRE(scc.number_of_components() == 1);
     REQUIRE(scc.reverse_spanning_forest()
             == to_forest({4, 2, 0, 4, UNDEFINED}, {2, 0, 1, 0, UNDEFINED}));
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Gabow",
+                          "013",
+                          "to_human_readable_repr",
+                          "[quick][gabow]") {
+    auto wg = to_word_graph<size_t>(
+        5, {{0, 1, 4, 3}, {2}, {2, 0, 3, 3}, {4, 1}, {1, 0, 2}});
+    Gabow scc(wg);
+    REQUIRE(to_human_readable_repr(scc)
+            == "<Gabow with 5 nodes and components not yet found>");
+    REQUIRE(scc.number_of_components() == 1);
+    REQUIRE(to_human_readable_repr(scc)
+            == "<Gabow with 5 nodes and 1 component>");
   }
 }  // namespace libsemigroups
