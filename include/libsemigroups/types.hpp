@@ -30,6 +30,19 @@
 #include <magic_enum/magic_enum.hpp>
 
 namespace libsemigroups {
+  //! \defgroup types_group Types
+  //!
+  //! \ingroup misc_group
+  //!
+  //! \brief Documentation for types.
+  //!
+  //! This file contains functionality for various types used in
+  //! ``libsemigroups``.
+  //!
+  //! @{
+
+  //! \brief Enum to indicate true, false or not currently knowable.
+  //!
   //! The values in this enum can be used to indicate a result is true, false,
   //! or not currently knowable.
   enum class tril {
@@ -41,10 +54,22 @@ namespace libsemigroups {
     unknown = 2
   };
 
+  //! \brief Enum to indicate the sided-ness of a congruence.
+  //!
   //! The values in this enum can be used to indicate that a congruence should
   //! be 2-sided, left, or right.
-  enum class congruence_kind { left = 0, right = 1, twosided = 2 };
+  enum class congruence_kind {
+    //! Value representing a left congruence.
+    left = 0,
+    //! Value representing a right congruence.
+    right = 1,
+    //! Value representing a two-sided congruence.
+    twosided = 2
+  };
 
+  //! \brief Type giving the smallest unsigned integer type that can represent a
+  //! template.
+  //!
   //! Provides a type giving the smallest unsigned integer type capable of
   //! representing the template \c N.
   //!
@@ -63,14 +88,16 @@ namespace libsemigroups {
                            std::conditional_t<N >= 0x100, uint16_t, uint8_t>>>;
   };
 
-  //! Type for the index of a generator of a semigroup.
+  //! \brief Type for the index of a generator of a semigroup.
   using letter_type = size_t;
 
-  //! Type for a word over the generators of a semigroup.
+  //! \brief Type for a word over the generators of a semigroup.
   using word_type = std::vector<letter_type>;
 
-  //! Type for a pair of word_type (a *relation*) of a semigroup.
+  //! \brief Type for a pair of word_type (a *relation*) of a semigroup.
   using relation_type = std::pair<word_type, word_type>;
+
+  //! @}
 }  // namespace libsemigroups
 
 #endif  // LIBSEMIGROUPS_TYPES_HPP_
