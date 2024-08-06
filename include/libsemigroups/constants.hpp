@@ -83,6 +83,10 @@ namespace libsemigroups {
 
   //! \defgroup constants_group Constants
   //!
+  //! \ingroup misc_group
+  //!
+  //! \brief Documentation for constant values.
+  //!
   //! This file contains functionality for various constant values used in
   //! ``libsemigroups``.
 

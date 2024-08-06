@@ -39,7 +39,7 @@
     </tab>
     <tab type="usergroup" visible="yes" url="@ref misc_group" title="Miscellaneous" >
       <tab type="usergroup" visible="yes" url="@ref constants_group" title="Constants" />
-      <tab type="user" visible="yes" url="@ref libsemigroups::LibsemigroupsException" title="LibsemigroupsException" />
+      <tab type="user" visible="yes" url="@ref exception_group" title="LibsemigroupsException" />
       <tab type="user" visible="yes" url="@ref libsemigroups::Reporter" title="Reporter" />
       <tab type="user" visible="yes" url="@ref libsemigroups::Runner" title="Runner" />
     </tab>

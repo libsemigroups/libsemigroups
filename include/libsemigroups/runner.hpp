@@ -48,15 +48,14 @@ namespace libsemigroups {
 
   //! \defgroup misc_group Miscellaneous
   //! In this section we describe some miscellaneous functionality in
-  //! \c libsemigroups, including:
+  //! \c libsemigroups.
   //!
-  //! * \ref constants_group
-  //! * \ref LibsemigroupsException
-  //! * \ref Reporter
-  //! * \ref Runner
+  //! \hidegroupgraph
 
-  //! \ingroup misc_group
+  //! \relates Reporter
   //! \brief The time between a given point and now.
+  //!
+  //! The time between a given point and now.
   //!
   //! \param t the time point
   //!

@@ -27,7 +27,17 @@
 #include "detail/formatters.hpp"
 
 namespace libsemigroups {
+  //! \defgroup exception_group Exceptions
+  //!
   //! \ingroup misc_group
+  //!
+  //! \brief Documentation for exceptions.
+  //!
+  //! This file contains functionality for the exceptions used in
+  //! ``libsemigroups``.
+  //!
+
+  //! \ingroup exception_group
   //!
   //! \brief Exception class deriving from std::runtime_error.
   //!
@@ -75,7 +85,7 @@ namespace libsemigroups {
   };
 }  // namespace libsemigroups
 
-//! \ingroup misc_group
+//! \ingroup exception_group
 //!
 //! \brief Throw a LibsemigroupsException
 //!
