@@ -59,7 +59,7 @@ namespace libsemigroups {
                   std::swap(q[p[t]], q[p[r]]);
                   result = true;
                 }
-                f.set(t, (s == t ? r : s), x);
+                f.set_parent_and_label_no_checks(t, (s == t ? r : s), x);
               }
             }
           }
@@ -101,7 +101,7 @@ namespace libsemigroups {
                 std::swap(q[p[t]], q[p[r]]);
                 result = true;
               }
-              f.set(t, (s == t ? r : s), x);
+              f.set_parent_and_label_no_checks(t, (s == t ? r : s), x);
               s = t;
               x = 0;
               continue;
@@ -154,7 +154,7 @@ namespace libsemigroups {
                 std::swap(q[p[tt]], q[p[r]]);
               }
               result = true;
-              f.set(tt, (ss == tt ? r : ss), x);
+              f.set_parent_and_label_no_checks(tt, (ss == tt ? r : ss), x);
             }
           }
           return result;
@@ -393,7 +393,7 @@ namespace libsemigroups {
                     "the template parameter Graph must be "
                     "derived from WordGraphBase");
       if (!f.empty()) {
-        f.clear();
+        f.init();
       }
       if (wg.number_of_nodes() == 0) {
         return false;

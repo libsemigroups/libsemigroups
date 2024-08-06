@@ -1380,9 +1380,10 @@ namespace libsemigroups {
             if (target2 == UNDEFINED) {
               _reconstructed_word_graph.set_target_no_checks(
                   _source, _gen, target1);
-              if (_tree.parent(target1) == UNDEFINED && target1 > _source) {
+              if (_tree.parent_no_checks(target1) == UNDEFINED
+                  && target1 > _source) {
                 // Tree edges
-                _tree.set(target1, _source, _gen);
+                _tree.set_parent_and_label_no_checks(target1, _source, _gen);
               } else {
                 // Non-tree edge, not implied by other edges
                 _gen++;

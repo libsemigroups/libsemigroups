@@ -17,7 +17,8 @@
 
 #include <cstddef>  // for size_t
 
-#include "catch.hpp"      // for REQUIRE, REQUIRE_NOTHROW, REQUIRE_THROWS_AS
+#include "catch.hpp"  // for REQUIRE, REQUIRE_NOTHROW, REQUIRE_THROWS_AS
+#include "libsemigroups/presentation.hpp"
 #include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 
 #include "libsemigroups/forest.hpp"  // for Forest
@@ -29,9 +30,10 @@ namespace libsemigroups {
     Forest forest(100);
     REQUIRE(forest.number_of_nodes() == 100);
     for (size_t i = 1; i < 100; ++i) {
-      forest.set(i, i - 1, i * i % 7);
+      forest.set_parent_and_label(i, i - 1, i * i % 7);
     }
-    REQUIRE_THROWS_AS(forest.set(0, -1, 0), LibsemigroupsException);
+    REQUIRE_THROWS_AS(forest.set_parent_and_label(0, -1, 0),
+                      LibsemigroupsException);
 
     for (size_t i = 1; i < 100; ++i) {
       REQUIRE(forest.label(i) == i * i % 7);
@@ -47,7 +49,9 @@ namespace libsemigroups {
              59,        60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73,
              74,        75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88,
              89,        90, 91, 92, 93, 94, 95, 96, 97, 98}));
-    REQUIRE_NOTHROW(forest.clear());
+    REQUIRE(to_human_readable_repr(forest)
+            == "<Forest with 100 nodes, 100 edges, and 1 root>");
+    REQUIRE_NOTHROW(forest.init());
     REQUIRE(forest.number_of_nodes() == 0);
     REQUIRE_NOTHROW(forest.add_nodes(10));
     REQUIRE(forest.number_of_nodes() == 10);
