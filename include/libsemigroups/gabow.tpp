@@ -29,12 +29,6 @@ namespace libsemigroups {
     _id.clear();
     _bckwd_forest.init();
     _forwd_forest.init();
-    reset();
-    return *this;
-  }
-
-  template <typename Node>
-  Gabow<Node> const& Gabow<Node>::reset() const noexcept {
     _finished             = false;
     _bckwd_forest_defined = false;
     _forwd_forest_defined = false;
@@ -127,7 +121,7 @@ namespace libsemigroups {
 
   template <typename Node>
   void Gabow<Node>::run() const {
-    if (finished()) {
+    if (has_components()) {
       return;
     }
 
@@ -221,5 +215,21 @@ namespace libsemigroups {
           number_of_components(),
           i);
     }
+  }
+
+  template <typename Node>
+  std::string to_human_readable_repr(Gabow<Node> const& g) {
+    std::string suffix = "";
+    if (g.has_components()) {
+      suffix = fmt::format("{} component{}",
+                           g.number_of_components(),
+                           g.number_of_components() != 1 ? "s" : "");
+    } else {
+      suffix = "components not yet found";
+    }
+    return fmt::format("<Gabow with {} node{} and {}>",
+                       g.word_graph().number_of_nodes(),
+                       g.word_graph().number_of_nodes() != 1 ? "s" : "",
+                       suffix);
   }
 }  // namespace libsemigroups
