@@ -187,6 +187,8 @@ namespace libsemigroups {
     //! \param parent the parent node.
     //! \param gen    the label of the edge from \p parent to \p node.
     //!
+    //! \returns A reference to `*this`.
+    //!
     //! \throws LibsemigroupsException if \p node or \p parent exceeds
     //! number_of_nodes().
     //!
@@ -354,6 +356,8 @@ namespace libsemigroups {
     //!
     //! \param i the node.
     //!
+    //! \returns The word labelling the path from a root node to \p i.
+    //!
     //! \warning No checks are performed on the arguments of this function.
     [[nodiscard]] word_type path_to_root_no_checks(node_type i) const {
       word_type w;
@@ -384,6 +388,8 @@ namespace libsemigroups {
     //! path from a root node to node \p i.
     //!
     //! \param i the node.
+    //!
+    //! \returns The word labelling the path from a root node to \p i.
     //!
     //! \throws LibsemigroupsException if \p i is greater than or equal to \ref
     //! number_of_nodes.
