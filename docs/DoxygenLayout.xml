@@ -42,6 +42,7 @@
       <tab type="user" visible="yes" url="@ref exception_group" title="LibsemigroupsException" />
       <tab type="user" visible="yes" url="@ref libsemigroups::Reporter" title="Reporter" />
       <tab type="user" visible="yes" url="@ref libsemigroups::Runner" title="Runner" />
+      <tab type="usergroup" visible="yes" url="@ref types_group" title="Types" />
     </tab>
     <tab type="examples" visible="yes" title="" intro=""/>
     <tab type="user" visible="yes" url="_HEADING_" title="Main Algorithms" />
