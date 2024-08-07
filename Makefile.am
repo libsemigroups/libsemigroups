@@ -140,8 +140,12 @@ detailinclude_HEADERS += include/libsemigroups/detail/string.hpp
 detailinclude_HEADERS += include/libsemigroups/detail/tce.hpp
 detailinclude_HEADERS += include/libsemigroups/detail/timer.hpp
 detailinclude_HEADERS += include/libsemigroups/detail/uf.hpp
+<<<<<<< HEAD
 detailinclude_HEADERS += include/libsemigroups/detail/word-graph-with-sources.hpp
 detailinclude_HEADERS += include/libsemigroups/detail/word-graph-with-sources.tpp
+=======
+detailinclude_HEADERS += include/libsemigroups/detail/word-iterators.hpp
+>>>>>>> d359538c (Add headers to makefile)
 
 magicenumincludedir = $(includedir)/libsemigroups/magic_enum
 magicenuminclude_HEADERS = extern/magic_enum/magic_enum.hpp
