@@ -73,7 +73,7 @@
 #include "detail/uf.hpp"         // for Duf
 
 namespace libsemigroups {
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
+#ifndef PARSED_BY_DOXYGEN
   class ToddCoxeter;  // forward decl
 
   template <typename Rewriter, typename ReductionOrder>
