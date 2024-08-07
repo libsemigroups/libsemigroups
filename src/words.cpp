@@ -42,7 +42,8 @@
 #include "libsemigroups/ranges.hpp"        // for count, operator|
 #include "libsemigroups/types.hpp"         // for word_type
 
-#include "libsemigroups/detail/formatters.hpp"  // for magic_enum formatting
+#include "libsemigroups/detail/formatters.hpp"      // for magic_enum formatting
+#include "libsemigroups/detail/word-iterators.hpp"  // for const_wilo_iterator
 
 namespace libsemigroups {
 
@@ -81,186 +82,67 @@ namespace libsemigroups {
     return out;
   }
 
-  const_wilo_iterator::const_wilo_iterator() noexcept = default;
-  const_wilo_iterator::const_wilo_iterator(const_wilo_iterator const&)
-      = default;
-  const_wilo_iterator::const_wilo_iterator(const_wilo_iterator&&) noexcept
-      = default;
-  const_wilo_iterator&
-  const_wilo_iterator::operator=(const_wilo_iterator const&)
-      = default;
-  const_wilo_iterator&
-  const_wilo_iterator::operator=(const_wilo_iterator&&) noexcept
-      = default;
-  const_wilo_iterator::~const_wilo_iterator() = default;
-
-  const_wilo_iterator::const_wilo_iterator(size_type   n,
-                                           size_type   upper_bound,
-                                           word_type&& first,
-                                           word_type&& last)
-      : _current(std::move(first)),
-        _index(),
-        _letter(0),
-        _upper_bound(upper_bound - 1),
-        _last(std::move(last)),
-        _number_letters(n) {
-    _index = (_current == _last ? UNDEFINED : size_type(0));
-  }
-
-  const_wilo_iterator const& const_wilo_iterator::operator++() noexcept {
-    if (_index != UNDEFINED) {
-      ++_index;
-    begin:
-      if (_current.size() < _upper_bound && _letter != _number_letters) {
-        _current.push_back(_letter);
-        _letter = 0;
-        if (lexicographical_compare(_current, _last)) {
-          return *this;
-        }
-      } else if (!_current.empty()) {
-        _letter = ++_current.back();
-        _current.pop_back();
-        goto begin;
-      }
-      _index = UNDEFINED;
-    }
-    return *this;
-  }
-
-  void const_wilo_iterator::swap(const_wilo_iterator& that) noexcept {
-    std::swap(_letter, that._letter);
-    std::swap(_index, that._index);
-    std::swap(_upper_bound, that._upper_bound);
-    std::swap(_last, that._last);
-    std::swap(_number_letters, that._number_letters);
-    _current.swap(that._current);
-  }
-
-  // Assert that the forward iterator requirements are met
-  static_assert(std::is_default_constructible<const_wilo_iterator>::value,
-                "forward iterator requires default-constructible");
-  static_assert(std::is_copy_constructible<const_wilo_iterator>::value,
-                "forward iterator requires copy-constructible");
-  static_assert(std::is_copy_assignable<const_wilo_iterator>::value,
-                "forward iterator requires copy-assignable");
-  static_assert(std::is_destructible<const_wilo_iterator>::value,
-                "forward iterator requires destructible");
-
-  const_wilo_iterator cbegin_wilo(size_t      n,
-                                  size_t      upper_bound,
-                                  word_type&& first,
-                                  word_type&& last) {
+  detail::const_wilo_iterator cbegin_wilo(size_t      n,
+                                          size_t      upper_bound,
+                                          word_type&& first,
+                                          word_type&& last) {
     if (!lexicographical_compare(
             first.cbegin(), first.cend(), last.cbegin(), last.cend())) {
       return cend_wilo(n, upper_bound, std::move(first), std::move(last));
     }
     if (first.size() >= upper_bound) {
-      return ++const_wilo_iterator(
+      return ++detail::const_wilo_iterator(
           n, upper_bound, std::move(first), std::move(last));
     }
-    return const_wilo_iterator(
+    return detail::const_wilo_iterator(
         n, upper_bound, std::move(first), std::move(last));
   }
 
-  const_wilo_iterator cbegin_wilo(size_t           n,
-                                  size_t           upper_bound,
-                                  word_type const& first,
-                                  word_type const& last) {
+  detail::const_wilo_iterator cbegin_wilo(size_t           n,
+                                          size_t           upper_bound,
+                                          word_type const& first,
+                                          word_type const& last) {
     return cbegin_wilo(n, upper_bound, word_type(first), word_type(last));
   }
 
-  const_wilo_iterator
+  detail::const_wilo_iterator
   cend_wilo(size_t n, size_t upper_bound, word_type&&, word_type&& last) {
-    return const_wilo_iterator(
+    return detail::const_wilo_iterator(
         n, upper_bound, word_type(last), std::move(last));
   }
 
-  const_wilo_iterator cend_wilo(size_t n,
-                                size_t upper_bound,
-                                word_type const&,
-                                word_type const& last) {
+  detail::const_wilo_iterator cend_wilo(size_t n,
+                                        size_t upper_bound,
+                                        word_type const&,
+                                        word_type const& last) {
     return cend_wilo(n, upper_bound, word_type(), word_type(last));
   }
 
-  const_wislo_iterator::const_wislo_iterator() noexcept = default;
-  const_wislo_iterator::const_wislo_iterator(const_wislo_iterator const&)
-      = default;
-  const_wislo_iterator::const_wislo_iterator(const_wislo_iterator&&) noexcept
-      = default;
-  const_wislo_iterator&
-  const_wislo_iterator::operator=(const_wislo_iterator const&)
-      = default;
-  const_wislo_iterator&
-  const_wislo_iterator::operator=(const_wislo_iterator&&) noexcept
-      = default;
-  const_wislo_iterator::~const_wislo_iterator() = default;
-
-  const_wislo_iterator::const_wislo_iterator(size_type   n,
-                                             word_type&& first,
-                                             word_type&& last)
-      : _current(std::move(first)),
-        _index(),
-        _last(std::move(last)),
-        _number_letters(n) {
-    _current.reserve(last.size());
-    _index = (_current == _last ? UNDEFINED : size_t(0));
-  }
-
-  const_wislo_iterator const& const_wislo_iterator::operator++() noexcept {
-    if (_index != UNDEFINED) {
-      ++_index;
-      size_t n = _current.size();
-      while (!_current.empty() && ++_current.back() == _number_letters) {
-        _current.pop_back();
-      }
-      _current.resize((_current.empty() ? n + 1 : n), 0);
-      if (!shortlex_compare(_current, _last)) {
-        _index = UNDEFINED;
-      }
-    }
-    return *this;
-  }
-
-  void const_wislo_iterator::swap(const_wislo_iterator& that) noexcept {
-    std::swap(_current, that._current);
-    std::swap(_index, that._index);
-    std::swap(_last, that._last);
-    std::swap(_number_letters, that._number_letters);
-  }
-
-  // Assert that the forward iterator requirements are met
-  static_assert(std::is_default_constructible<const_wislo_iterator>::value,
-                "forward iterator requires default-constructible");
-  static_assert(std::is_copy_constructible<const_wislo_iterator>::value,
-                "forward iterator requires copy-constructible");
-  static_assert(std::is_copy_assignable<const_wislo_iterator>::value,
-                "forward iterator requires copy-assignable");
-  static_assert(std::is_destructible<const_wislo_iterator>::value,
-                "forward iterator requires destructible");
-
-  const_wislo_iterator cbegin_wislo(size_t      n,
-                                    word_type&& first,
-                                    word_type&& last) {
+  detail::const_wislo_iterator cbegin_wislo(size_t      n,
+                                            word_type&& first,
+                                            word_type&& last) {
     if (!shortlex_compare(
             first.cbegin(), first.cend(), last.cbegin(), last.cend())) {
       return cend_wislo(n, std::move(first), std::move(last));
     }
-    return const_wislo_iterator(n, std::move(first), std::move(last));
+    return detail::const_wislo_iterator(n, std::move(first), std::move(last));
   }
 
-  const_wislo_iterator cbegin_wislo(size_t           n,
-                                    word_type const& first,
-                                    word_type const& last) {
+  detail::const_wislo_iterator cbegin_wislo(size_t           n,
+                                            word_type const& first,
+                                            word_type const& last) {
     return cbegin_wislo(n, word_type(first), word_type(last));
   }
 
-  const_wislo_iterator cend_wislo(size_t n, word_type&&, word_type&& last) {
-    return const_wislo_iterator(n, word_type(last), std::move(last));
+  detail::const_wislo_iterator cend_wislo(size_t n,
+                                          word_type&&,
+                                          word_type&& last) {
+    return detail::const_wislo_iterator(n, word_type(last), std::move(last));
   }
 
-  const_wislo_iterator cend_wislo(size_t n,
-                                  word_type const&,
-                                  word_type const& last) {
+  detail::const_wislo_iterator cend_wislo(size_t n,
+                                          word_type const&,
+                                          word_type const& last) {
     return cend_wislo(n, word_type(), word_type(last));
   }
 

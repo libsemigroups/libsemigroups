@@ -661,6 +661,7 @@ libsemigroups_la_SOURCES += src/detail/race.cpp
 libsemigroups_la_SOURCES += src/detail/report.cpp
 libsemigroups_la_SOURCES += src/detail/string.cpp
 libsemigroups_la_SOURCES += src/detail/timer.cpp
+libsemigroups_la_SOURCES += src/detail/word-iterators.cpp
 
 libsemigroups_la_CPPFLAGS = $(AM_CPPFLAGS)
 libsemigroups_la_CXXFLAGS = $(AM_CXXFLAGS)
