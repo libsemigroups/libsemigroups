@@ -31,6 +31,8 @@
 #include "libsemigroups/types.hpp"   // for word_type
 #include "libsemigroups/words.hpp"   // for number_of_words
 
+#include "libsemigroups/detail/word-iterators.hpp"  // for const_wilo_iterator
+
 namespace libsemigroups {
   using namespace literals;
   using namespace rx;
@@ -200,7 +202,7 @@ namespace libsemigroups {
     word_type first = 000_w;
     word_type last  = 0000_w;
 
-    const_wislo_iterator it;
+    detail::const_wislo_iterator it;
     it = cbegin_wislo(2, first, last);
     REQUIRE(*it == 000_w);
     REQUIRE(it->size() == 3);
@@ -229,7 +231,7 @@ namespace libsemigroups {
     REQUIRE(it == it2);
     REQUIRE(++it == ++it2);
 
-    const_wislo_iterator it3(cbegin_wislo(2, first, last));
+    detail::const_wislo_iterator it3(cbegin_wislo(2, first, last));
     it3 = cbegin_wislo(2, first, last);
     REQUIRE(*it3 == word_type(000_w));
     REQUIRE(it->size() == 3);
@@ -435,7 +437,7 @@ namespace libsemigroups {
     word_type first = 000_w;
     word_type last  = 1111_w;
 
-    const_wilo_iterator it;
+    detail::const_wilo_iterator it;
     it = cbegin_wilo(2, 5, first, last);
     REQUIRE(*it == word_type(000_w));
     REQUIRE(it->size() == 3);

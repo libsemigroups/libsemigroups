@@ -44,7 +44,8 @@
 #include "exception.hpp"  // for LibsemigroupsException
 #include "types.hpp"      // for word_type
 
-#include "detail/iterator.hpp"  // for default_postfix_increment
+#include "detail/iterator.hpp"        // for default_postfix_increment
+#include "detail/word-iterators.hpp"  // for const_wilo_iterator
 
 #include "ranges.hpp"  // for begin, end
 
@@ -117,75 +118,6 @@ namespace libsemigroups {
   // \sa \ref random_string
   [[nodiscard]] word_type random_word(size_t length, size_t nr_letters);
 
-#ifdef NOT_PARSED_BY_DOXYGEN
-
-  class const_wilo_iterator {
-   public:
-    using size_type         = typename std::vector<word_type>::size_type;
-    using difference_type   = typename std::vector<word_type>::difference_type;
-    using const_pointer     = typename std::vector<word_type>::const_pointer;
-    using pointer           = typename std::vector<word_type>::pointer;
-    using const_reference   = typename std::vector<word_type>::const_reference;
-    using reference         = typename std::vector<word_type>::reference;
-    using value_type        = word_type;
-    using iterator_category = std::forward_iterator_tag;
-
-   private:
-    word_type   _current;
-    size_type   _index;
-    letter_type _letter;
-    size_type   _upper_bound;
-    word_type   _last;
-    size_type   _number_letters;
-
-   public:
-    const_wilo_iterator() noexcept;
-    const_wilo_iterator(const_wilo_iterator const&);
-    const_wilo_iterator(const_wilo_iterator&&) noexcept;
-    const_wilo_iterator& operator=(const_wilo_iterator const&);
-    const_wilo_iterator& operator=(const_wilo_iterator&&) noexcept;
-    ~const_wilo_iterator();
-
-    const_wilo_iterator(size_type   n,
-                        size_type   upper_bound,
-                        word_type&& first,
-                        word_type&& last);
-
-    [[nodiscard]] bool
-    operator==(const_wilo_iterator const& that) const noexcept {
-      return _index == that._index;
-    }
-
-    [[nodiscard]] bool
-    operator!=(const_wilo_iterator const& that) const noexcept {
-      return !(this->operator==(that));
-    }
-
-    [[nodiscard]] const_reference operator*() const noexcept {
-      return _current;
-    }
-
-    [[nodiscard]] const_pointer operator->() const noexcept {
-      return &_current;
-    }
-
-    // prefix
-    const_wilo_iterator const& operator++() noexcept;
-
-    // postfix
-    const_wilo_iterator operator++(int) noexcept {
-      return detail::default_postfix_increment<const_wilo_iterator>(*this);
-    }
-
-    void swap(const_wilo_iterator& that) noexcept;
-  };
-
-  inline void swap(const_wilo_iterator& x, const_wilo_iterator& y) noexcept {
-    x.swap(y);
-  }
-
-#endif  // NOT_PARSED_BY_DOXYGEN
-
   //! \ingroup words_group
   //! \brief Returns a forward iterator pointing to the 3rd parameter \p first.
   //!
@@ -230,18 +162,18 @@ namespace libsemigroups {
   //!                        cend_wilo(2, 3, {0}, {1, 1, 1}));
   //! // {{0}, {0, 0}, {0, 1}, {1}, {1, 0}, {1, 1}};
   //! \endcode
-  [[nodiscard]] const_wilo_iterator cbegin_wilo(size_t      n,
-                                                size_t      upper_bound,
-                                                word_type&& first,
-                                                word_type&& last);
+  [[nodiscard]] detail::const_wilo_iterator cbegin_wilo(size_t      n,
+                                                        size_t      upper_bound,
+                                                        word_type&& first,
+                                                        word_type&& last);
 
   //! \ingroup words_group
   //! \brief Returns a forward iterator pointing to the 3rd parameter \p first.
   //! \copydoc cbegin_wilo(size_t, size_t, word_type&&, word_type&&)
-  [[nodiscard]] const_wilo_iterator cbegin_wilo(size_t           n,
-                                                size_t           upper_bound,
-                                                word_type const& first,
-                                                word_type const& last);
+  [[nodiscard]] detail::const_wilo_iterator cbegin_wilo(size_t n,
+                                                        size_t upper_bound,
+                                                        word_type const& first,
+                                                        word_type const& last);
 
   //! \ingroup words_group
   //! \brief Returns a forward iterator pointing to one after the end of the
@@ -251,81 +183,17 @@ namespace libsemigroups {
   //! incrementable, but does not point to a word in the correct range.
   //!
   //! \sa cbegin_wilo
-  [[nodiscard]] const_wilo_iterator
+  [[nodiscard]] detail::const_wilo_iterator
   cend_wilo(size_t n, size_t upper_bound, word_type&& first, word_type&& last);
 
   //! \ingroup words_group
   //! \brief Returns a forward iterator pointing to one after the end of the
   //! range from \p first to \p last.
   //! \copydoc cend_wilo(size_t, size_t, word_type&&, word_type&&)
-  [[nodiscard]] const_wilo_iterator cend_wilo(size_t           n,
-                                              size_t           upper_bound,
-                                              word_type const& first,
-                                              word_type const& last);
-
-#ifdef NOT_PARSED_BY_DOXYGEN
-  class const_wislo_iterator {
-   public:
-    using size_type         = typename std::vector<word_type>::size_type;
-    using difference_type   = typename std::vector<word_type>::difference_type;
-    using const_pointer     = typename std::vector<word_type>::const_pointer;
-    using pointer           = typename std::vector<word_type>::pointer;
-    using const_reference   = typename std::vector<word_type>::const_reference;
-    using reference         = typename std::vector<word_type>::reference;
-    using value_type        = word_type;
-    using iterator_category = std::forward_iterator_tag;
-
-   private:
-    word_type _current;
-    size_type _index;
-    word_type _last;
-    size_type _number_letters;
-
-   public:
-    const_wislo_iterator() noexcept;
-    const_wislo_iterator(const_wislo_iterator const&);
-    const_wislo_iterator(const_wislo_iterator&&) noexcept;
-    const_wislo_iterator& operator=(const_wislo_iterator const&);
-    const_wislo_iterator& operator=(const_wislo_iterator&&) noexcept;
-
-    const_wislo_iterator(size_type n, word_type&& first, word_type&& last);
-
-    ~const_wislo_iterator();
-
-    [[nodiscard]] bool
-    operator==(const_wislo_iterator const& that) const noexcept {
-      return _index == that._index;
-    }
-
-    [[nodiscard]] bool
-    operator!=(const_wislo_iterator const& that) const noexcept {
-      return !(this->operator==(that));
-    }
-
-    [[nodiscard]] const_reference operator*() const noexcept {
-      return _current;
-    }
-
-    [[nodiscard]] const_pointer operator->() const noexcept {
-      return &_current;
-    }
-
-    // prefix
-    const_wislo_iterator const& operator++() noexcept;
-
-    // postfix
-    const_wislo_iterator operator++(int) noexcept {
-      return detail::default_postfix_increment<const_wislo_iterator>(*this);
-    }
-
-    void swap(const_wislo_iterator& that) noexcept;
-  };
-
-  inline void swap(const_wislo_iterator& x, const_wislo_iterator& y) noexcept {
-    x.swap(y);
-  }
-
-#endif  // NOT_PARSED_BY_DOXYGEN
+  [[nodiscard]] detail::const_wilo_iterator cend_wilo(size_t n,
+                                                      size_t upper_bound,
+                                                      word_type const& first,
+                                                      word_type const& last);
 
   //! \ingroup words_group
   //! \brief Returns a forward iterator pointing to the 2nd parameter \p first.
@@ -362,16 +230,15 @@ namespace libsemigroups {
   //!                        cend_wislo(2,  {0}, {0, 0, 0}));
   //! // {{0}, {1}, {0, 0}, {0, 1}, {1, 0}, {1, 1}};
   //! \endcode
-  [[nodiscard]] const_wislo_iterator cbegin_wislo(size_t      n,
-                                                  word_type&& first,
-                                                  word_type&& last);
+  [[nodiscard]] detail::const_wislo_iterator cbegin_wislo(size_t      n,
+                                                          word_type&& first,
+                                                          word_type&& last);
 
   //! \ingroup words_group
   //! \brief Returns a forward iterator pointing to the 2nd parameter \p first.
   //! \copydoc cbegin_wislo(size_t const, word_type&&, word_type&&)
-  [[nodiscard]] const_wislo_iterator cbegin_wislo(size_t           n,
-                                                  word_type const& first,
-                                                  word_type const& last);
+  [[nodiscard]] detail::const_wislo_iterator
+  cbegin_wislo(size_t n, word_type const& first, word_type const& last);
 
   //! \ingroup words_group
   //! \brief Returns a forward iterator pointing to one after the end of the
@@ -381,17 +248,17 @@ namespace libsemigroups {
   //! but does not point to a word in the correct range.
   //!
   //! \sa cbegin_wislo
-  [[nodiscard]] const_wislo_iterator cend_wislo(size_t      n,
-                                                word_type&& first,
-                                                word_type&& last);
+  [[nodiscard]] detail::const_wislo_iterator cend_wislo(size_t      n,
+                                                        word_type&& first,
+                                                        word_type&& last);
 
   //! \ingroup words_group
   //! \brief Returns a forward iterator pointing to one after the end of the
   //! range from \p first to \p last.
   //! \copydoc cend_wislo(size_t const, word_type&&, word_type&&)
-  [[nodiscard]] const_wislo_iterator cend_wislo(size_t           n,
-                                                word_type const& first,
-                                                word_type const& last);
+  [[nodiscard]] detail::const_wislo_iterator cend_wislo(size_t           n,
+                                                        word_type const& first,
+                                                        word_type const& last);
 
   //! \ingroup words_group
   //! \brief Class for generating words in a given range and in a particular
@@ -434,8 +301,8 @@ namespace libsemigroups {
     using output_type = word_type const&;
 
    private:
-    using const_iterator
-        = std::variant<const_wilo_iterator, const_wislo_iterator>;
+    using const_iterator = std::variant<detail::const_wilo_iterator,
+                                        detail::const_wislo_iterator>;
 
     size_type              _number_of_letters;
     mutable const_iterator _current;
