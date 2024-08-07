@@ -995,7 +995,7 @@ namespace libsemigroups {
   // SimsSettings - impl of template mem fns
   ////////////////////////////////////////////////////////////////////////
 
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
+#ifndef PARSED_BY_DOXYGEN
   template <typename Subclass>
   template <typename OtherSubclass>
   SimsSettings<Subclass>&
@@ -1013,7 +1013,7 @@ namespace libsemigroups {
     _pruners     = that.pruners();
     return *this;
   }
-#endif /* DOXYGEN_SHOULD_SKIP_THIS */
+#endif /* PARSED_BY_DOXYGEN */
 
   template <typename Subclass>
   template <typename Word>
