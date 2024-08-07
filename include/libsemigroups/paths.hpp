@@ -739,7 +739,8 @@ namespace libsemigroups {
     //! is_valid returns \c true before calling this function.
     output_type get() const {
       set_iterator_no_checks();
-      return std::visit([](auto& it) -> auto const& { return *it; }, _current);
+      return std::visit(
+          [](auto& it) -> auto const& { return *it; }, _current);
     }
 
     //! \brief Advance to the next path in the range.
