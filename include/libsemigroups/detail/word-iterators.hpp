@@ -18,8 +18,8 @@
 
 // This file contains declarations of the iterator classes for words.
 
-#ifndef LIBSEMIGROUPS_WORD_ITERATORS_HPP_
-#define LIBSEMIGROUPS_WORD_ITERATORS_HPP_
+#ifndef LIBSEMIGROUPS_DETAIL_WORD_ITERATORS_HPP_
+#define LIBSEMIGROUPS_DETAIL_WORD_ITERATORS_HPP_
 
 #include <vector>
 
@@ -156,4 +156,4 @@ namespace libsemigroups {
     }
   }  // namespace detail
 }  // namespace libsemigroups
-#endif
+#endif  // LIBSEMIGROUPS_DETAIL_WORD_ITERATORS_HPP_
