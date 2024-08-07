@@ -19,6 +19,9 @@
 // This file contains declarations of the iterator classes for
 // paths in an WordGraph.
 
+#ifndef LIBSEMIGROUPS_DETAIL_PATH_ITERATORS_HPP_
+#define LIBSEMIGROUPS_DETAIL_PATH_ITERATORS_HPP_
+
 namespace libsemigroups {
   namespace detail {
     ////////////////////////////////////////////////////////////////////////
@@ -374,3 +377,4 @@ namespace libsemigroups {
 }  // namespace libsemigroups
 
 #include "path-iterators.tpp"
+#endif  // LIBSEMIGROUPS_DETAIL_PATH_ITERATORS_HPP_
