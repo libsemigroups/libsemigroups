@@ -42,7 +42,7 @@
 
 namespace libsemigroups {
   using literals::operator""_w;
-  using words::   operator+;
+  using words::operator+;
 
   namespace {
 
@@ -1211,14 +1211,21 @@ namespace libsemigroups {
     }
 
     Presentation<word_type> full_transformation_monoid(size_t n, author val) {
-      if (n < 4) {
-        LIBSEMIGROUPS_EXCEPTION(
-            "the 1st argument (degree) must be at least 4, found {}", n);
-      } else if (val != author::Aizenstat && val != author::Iwahori
-              && val != author::Mitchell + author::Whyte) {
+      if (val != author::Aizenstat && val != author::Iwahori
+          && val != author::Mitchell + author::Whyte) {
         LIBSEMIGROUPS_EXCEPTION(
             "expected 2nd argument to be author::Aizenstat, or "
             "author::Iwahori, or author::Mitchell + author::Whyte found {}",
+            val);
+      } else if (n < 4 && val != author::Mitchell + author::Whyte) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "the 1st argument (degree) must be at least 4 when the 2nd "
+            "argument is author::Aizenstat or author::Iwahori, found {}",
+            n);
+      } else if (n < 2 && val == author::Mitchell + author::Whyte) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "the 1st argument must be at least 2 when the 2nd argument is "
+            "author::Mitchell + author::Whyte found {}",
             val);
       }
 
@@ -1253,33 +1260,54 @@ namespace libsemigroups {
         // https://link.springer.com/book/10.1007/978-1-84800-281-4
         p = symmetric_group(n, author::Carmichael);
         add_full_transformation_monoid_relations(p, n, 0, n - 1);
-      }
-      else {
-        p = symmetric_group(n, author::Carmichael);
-        // From Theorem 1.5 of arXiv:2406.19294
+      } else {
+        // val == author::Mitchell + author::Whyte
 
-        // Relation T1
-        presentation::add_rule_no_checks(p, {n - 1, 1, n - 1, 1}, {n - 1});
+        if (n == 2) {
+          presentation::add_rule_no_checks(p, 00_w, ""_w);
+          presentation::add_rule_no_checks(p, 01_w, 1_w);
+          presentation::add_rule_no_checks(p, 11_w, 1_w);
+        } else if (n == 3) {
+          presentation::add_rule_no_checks(p, 00_w, ""_w);
+          presentation::add_rule_no_checks(p, 11_w, ""_w);
+          presentation::add_rule_no_checks(p, 010_w, 101_w);
+          presentation::add_rule_no_checks(p, 02_w, 2_w);
+          presentation::add_rule_no_checks(p, 2121_w, 2_w);
+          presentation::add_rule_no_checks(p, pow(0102_w, 3) + 010_w, 20102_w);
+        } else {
+          p = symmetric_group(n, author::Carmichael);
+          // From Theorem 1.5 of arXiv:2406.19294
 
-        // Relation T3
-        presentation::add_rule_no_checks(p, {1, 2, 1, n - 1}, {n - 1, 1, 2, 1});
+          // Relation T1
+          presentation::add_rule_no_checks(p, {n - 1, 1, n - 1, 1}, {n - 1});
 
-        // Relation T7
-        presentation::add_rule_no_checks(p, {n - 2, 0, 1, 0, n - 1, n - 2, 0, 1, 0, n - 1},
-            {n - 1, n - 2, 0, 1, 0, n - 1, n - 2, 0, 1, 0});
+          // Relation T3
+          presentation::add_rule_no_checks(
+              p, {1, 2, 1, n - 1}, {n - 1, 1, 2, 1});
 
-        // Relation T8
-        std::vector<size_t> gens(n - 1);  // list of generators to use prod on
-        std::iota(gens.begin(), gens.end(), 0);
-        presentation::add_rule_no_checks(p, prod(gens, 1, n - 1, 1) + word_type({1, 0, n - 1}),
-            word_type({n - 1}) + prod(gens, 1, n - 1, 1) + word_type({1}));
-        
-        // Relation T9
-        presentation::add_rule_no_checks(p, {0, 1, 0, n - 1, 0, 1, 0, n - 1, 0, 1, 0, n - 1, 0, 1, 0},
-            {n - 1, 0, 1, 0, n - 1});
+          // Relation T7
+          presentation::add_rule_no_checks(
+              p,
+              {n - 2, 0, 1, 0, n - 1, n - 2, 0, 1, 0, n - 1},
+              {n - 1, n - 2, 0, 1, 0, n - 1, n - 2, 0, 1, 0});
 
+          // Relation T8
+          std::vector<size_t> gens(n - 1);  // list of generators to use prod on
+          std::iota(gens.begin(), gens.end(), 0);
+          presentation::add_rule_no_checks(
+              p,
+              prod(gens, 1, n - 1, 1) + word_type({1, 0, n - 1}),
+              word_type({n - 1}) + prod(gens, 1, n - 1, 1) + word_type({1}));
+
+          // Relation T9
+          presentation::add_rule_no_checks(
+              p,
+              {0, 1, 0, n - 1, 0, 1, 0, n - 1, 0, 1, 0, n - 1, 0, 1, 0},
+              {n - 1, 0, 1, 0, n - 1});
+        }
       }
       p.alphabet_from_rules();
+      p.contains_empty_word(true);
       return p;
     }
 
@@ -1288,7 +1316,8 @@ namespace libsemigroups {
       if (n < 3) {
         LIBSEMIGROUPS_EXCEPTION(
             "the 1st argument (size_t) must be at least 3, found {}", n);
-      } else if (val != author::Machine && val != author::Sutov && val != author::Mitchell + author::Whyte) {
+      } else if (val != author::Machine && val != author::Sutov
+                 && val != author::Mitchell + author::Whyte) {
         LIBSEMIGROUPS_EXCEPTION(
             "expected 2nd argument to be author::Machine, or "
             "author::Sutov, or author::Mitchell + author::Whyte, found {}",
@@ -1334,45 +1363,51 @@ namespace libsemigroups {
         presentation::add_rule_no_checks(
             p, {n, n - 1}, {0, n - 1, 0, n - 1, n});
         presentation::add_rule_no_checks(p, {n, 1, n - 1, 1}, {1, n - 1, 1, n});
-      }
-      else {
+      } else {
         // From Theorem 1.6 of https://doi.org/10.48550/arXiv.2406.19294
         // val == author::Mitchell + author::Whyte
         p = symmetric_group(n, author::Carmichael);
-       
 
         // Relation I3
         std::vector<size_t> gens(n - 1);  // list of generators to use prod on
         std::iota(gens.begin(), gens.end(), 0);
-        presentation::add_rule_no_checks(p, prod(gens, 0, n - 1, 1) + word_type({0, n - 1}),
+        presentation::add_rule_no_checks(
+            p,
+            prod(gens, 0, n - 1, 1) + word_type({0, n - 1}),
             word_type({n - 1}) + prod(gens, 0, n - 1, 1) + word_type({0}));
 
         // Relation T3
         presentation::add_rule_no_checks(p, {1, 2, 1, n}, {n, 1, 2, 1});
 
         // Relation T7
-        presentation::add_rule_no_checks(p, {n - 2, 0, 1, 0, n, n - 2, 0, 1, 0, n},
+        presentation::add_rule_no_checks(
+            p,
+            {n - 2, 0, 1, 0, n, n - 2, 0, 1, 0, n},
             {n, n - 2, 0, 1, 0, n, n - 2, 0, 1, 0});
 
         // Relation T8
-        presentation::add_rule_no_checks(p, prod(gens, 1, n - 1, 1) + word_type({1, 0, n}),
+        presentation::add_rule_no_checks(
+            p,
+            prod(gens, 1, n - 1, 1) + word_type({1, 0, n}),
             word_type({n}) + prod(gens, 1, n - 1, 1) + word_type({1}));
-        
+
         // Relation T9
-        presentation::add_rule_no_checks(p, {0, 1, 0, n, 0, 1, 0, n, 0, 1, 0, n, 0, 1, 0},
-            {n, 0, 1, 0, n});
-       
+        presentation::add_rule_no_checks(
+            p, {0, 1, 0, n, 0, 1, 0, n, 0, 1, 0, n, 0, 1, 0}, {n, 0, 1, 0, n});
+
         // Relation P1
         presentation::add_rule_no_checks(p, {n, 0, n - 1, 0}, {n});
 
-         // Relation P5
-        presentation::add_rule_no_checks(p, {1, n - 1, 1, n}, {n, 1, n - 1, 1}); 
+        // Relation P5
+        presentation::add_rule_no_checks(p, {1, n - 1, 1, n}, {n, 1, n - 1, 1});
 
-         // Relation P6
-        presentation::add_rule_no_checks(p, {0, 1, 0, n - 1, 0, 1, 0}, {n - 1, 0, n, 0});
+        // Relation P6
+        presentation::add_rule_no_checks(
+            p, {0, 1, 0, n - 1, 0, 1, 0}, {n - 1, 0, n, 0});
 
-         // Relation P7
-        presentation::add_rule_no_checks(p, {0, n - 1, 0, n - 1, 0}, {n, n - 1});
+        // Relation P7
+        presentation::add_rule_no_checks(
+            p, {0, n - 1, 0, n - 1, 0}, {n, n - 1});
       }
       p.alphabet_from_rules();
       return p;
@@ -1382,10 +1417,12 @@ namespace libsemigroups {
     // https://link.springer.com/book/10.1007/978-1-84800-281-4 (Ganyushkin +
     // Mazorchuk)
     Presentation<word_type> symmetric_inverse_monoid(size_t n, author val) {
-      if (val != author::Sutov && val != author::Gay && val != author::Mitchell + author::Whyte) {
-        LIBSEMIGROUPS_EXCEPTION("expected 2nd argument to be author::Sutov, or "
-                                "author::Gay, or author::Mitchell + author::Whyte, found {}",
-                                val);
+      if (val != author::Sutov && val != author::Gay
+          && val != author::Mitchell + author::Whyte) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "expected 2nd argument to be author::Sutov, or "
+            "author::Gay, or author::Mitchell + author::Whyte, found {}",
+            val);
       } else if (val == author::Sutov && n < 4) {
         LIBSEMIGROUPS_EXCEPTION("the 1st argument must be at least 4 when the "
                                 "2nd argument is author::Sutov, found {}",
@@ -1395,9 +1432,10 @@ namespace libsemigroups {
                                 "2nd argument is author::Gay, found {}",
                                 n);
       } else if (val == author::Mitchell + author::Whyte && n < 4) {
-        LIBSEMIGROUPS_EXCEPTION("the 1st argument must be at least 4 when the "
-                                "2nd argument is author::Mitchell + author::Whyte, found {}",
-                                n);
+        LIBSEMIGROUPS_EXCEPTION(
+            "the 1st argument must be at least 4 when the "
+            "2nd argument is author::Mitchell + author::Whyte, found {}",
+            n);
       }
       Presentation<word_type> p;
       if (val == author::Sutov) {
@@ -1428,25 +1466,27 @@ namespace libsemigroups {
         p.alphabet(n);
         presentation::add_idempotent_rules_no_checks(p, {n - 1});
         add_rook_monoid_common(p, n);
-      }
-      else {
-      // val == author::Mitchell + author::Whyte
-      // From Theorem 1.4 of https://doi.org/10.48550/arXiv.2406.19294
-      
+      } else {
+        // val == author::Mitchell + author::Whyte
+        // From Theorem 1.4 of https://doi.org/10.48550/arXiv.2406.19294
+
         p = symmetric_group(n, author::Carmichael);
 
         // Relation I2
-        presentation::add_rule_no_checks(p, {0, 1, 0, n - 1}, {n - 1, 0, 1, 0}); 
+        presentation::add_rule_no_checks(p, {0, 1, 0, n - 1}, {n - 1, 0, 1, 0});
 
         // Relation I6
         std::vector<size_t> gens(n - 1);  // list of generators to use prod on
         std::iota(gens.begin(), gens.end(), 0);
-        presentation::add_rule_no_checks(p, prod(gens, 0, n - 1, 1) + word_type({0, n - 1}),
-            word_type({n - 1, n - 1}) + prod(gens, 0, n - 1, 1) + word_type({0}));
+        presentation::add_rule_no_checks(
+            p,
+            prod(gens, 0, n - 1, 1) + word_type({0, n - 1}),
+            word_type({n - 1, n - 1}) + prod(gens, 0, n - 1, 1)
+                + word_type({0}));
 
-           // Relation I7
-      presentation::add_rule_no_checks(p, {0, n - 1, 0, n - 1, 0, n - 1, 0}, {n - 1, 0, n - 1});
-
+        // Relation I7
+        presentation::add_rule_no_checks(
+            p, {0, n - 1, 0, n - 1, 0, n - 1, 0}, {n - 1, 0, n - 1});
       }
 
       p.alphabet_from_rules();

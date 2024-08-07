@@ -394,7 +394,8 @@ namespace libsemigroups {
     //! [http://hdl.handle.net/10023/2821][])
     //! * `author::Iwahori` (see Theorem 9.3.1 of
     //! [10.1007/978-1-84800-281-4][])
-    //! * `author::Mitchell + author::Whyte` (see Theorem 1.5 of [10.48550/arXiv.2406.19294][])
+    //! * `author::Mitchell + author::Whyte` (see Theorem 1.5 of
+    //! [10.48550/arXiv.2406.19294][])
     //!
     //! The default for `val` is `author::Iwahori`.
     //!
@@ -420,7 +421,8 @@ namespace libsemigroups {
     //! * `author::Machine`
     //! * `author::Sutov` (see Theorem 9.4.1 of
     //! [10.1007/978-1-84800-281-4][])
-    //! * `author::Mitchell + author::Whyte`  (See Theorem 1.5 of [10.48550/arXiv.2406.19294])
+    //! * `author::Mitchell + author::Whyte`  (See Theorem 1.5 of
+    //! [10.48550/arXiv.2406.19294])
     //!
     //! The default for `val` is `author::Sutov`.
     //!
@@ -444,7 +446,8 @@ namespace libsemigroups {
     //! presentation which is returned. The options are:
     //! * `author::Sutov` (see Theorem 9.2.2 of
     //! [10.1007/978-1-84800-281-4][])
-    //! * `author::Mitchell + author::Whyte` (see Theorem 1.4 of [10.48550/arXiv.2406.19294][])
+    //! * `author::Mitchell + author::Whyte` (see Theorem 1.4 of
+    //! [10.48550/arXiv.2406.19294][])
     //!
     // When val == author::Gay, this is just a presentation for the symmetric
     // inverse monoid, a slightly modified version from Solomon (so that
