@@ -47,13 +47,13 @@ namespace libsemigroups {
   };
 
   // clang-format off
-  //! \defgroup adapters_no_default_group Adapters with no default implementation
+  //! \defgroup adapters_no_default_group Adapters with no default implementation // NOLINT
   //!
   //! \ingroup adapters_group
   //!
   //! \brief Documentation for the adapters, with no default implementation for
   //! arbitrary types, that would allow user-defined types to be used in the
-  //! algorithms of `libsemigroups`.  
+  //! algorithms of `libsemigroups`.
   //!
   //! This section contains the documentation for the adapters, with no default
   //! implementation for arbitrary types, that would allow user-defined types to
