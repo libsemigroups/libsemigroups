@@ -347,10 +347,12 @@ namespace libsemigroups {
   Strings::~Strings()                         = default;
 
   Strings& Strings::alphabet(std::string const& x) {
-    _current_valid = false;
-    _words.number_of_letters(x.size());
-    _letters = x;
+    // Need to do this _to_word.init(x) first, because if this throws then the
+    // rest should remain unchanged.
     _to_word.init(x);
+    _words.number_of_letters(x.size());
+    _current_valid = _words.valid();
+    _letters       = x;
     return *this;
   }
 

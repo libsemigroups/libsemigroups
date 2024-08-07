@@ -655,6 +655,11 @@ namespace libsemigroups {
     auto end() const noexcept {
       return rx::end(*this);
     }
+
+    //! TODO
+    bool valid() const noexcept {
+      return _current_valid;
+    }
   };
 
   ////////////////////////////////////////////////////////////////////////
@@ -1019,7 +1024,8 @@ namespace libsemigroups {
 
     void init_current() const {
       if (!_current_valid) {
-        _current = to_string(_letters, _words.get());
+        _current       = to_string(_letters, _words.get());
+        _current_valid = true;
       }
     }
 
@@ -1049,8 +1055,8 @@ namespace libsemigroups {
     //!
     //! \sa \ref at_end
     void next() noexcept {
-      _current_valid = false;
       _words.next();
+      _current_valid = false;
     }
 
     //! \brief Check if the range object is exhausted.
@@ -1178,8 +1184,8 @@ namespace libsemigroups {
     //! \note Unlike Words::first, this function will throw if \p frst
     //! contains letters not belonging to alphabet().
     Strings& first(std::string const& frst) {
-      _current_valid = false;
       _words.first(_to_word(frst));
+      _current_valid = _words.valid();
       return *this;
     }
 
@@ -1212,8 +1218,8 @@ namespace libsemigroups {
     //! \note Unlike Words::last, this function will throw if \p lst
     //! contains letters not belonging to alphabet().
     Strings& last(std::string const& lst) {
-      _current_valid = false;
       _words.last(_to_word(lst));
+      _current_valid = _words.valid();
       return *this;
     }
 
@@ -1242,8 +1248,8 @@ namespace libsemigroups {
     //! \throws LibsemigroupsException if val is not Order::shortlex or
     //! Order::lex.
     Strings& order(Order val) {
-      _current_valid = false;
       _words.order(val);
+      _current_valid = _words.valid();
       return *this;
     }
 
@@ -1271,8 +1277,8 @@ namespace libsemigroups {
     //! \exception
     //! \no_libsemigroups_except
     Strings& upper_bound(size_type n) {
-      _current_valid = false;
       _words.upper_bound(n);
+      _current_valid = _words.valid();
       return *this;
     }
 
@@ -1301,8 +1307,8 @@ namespace libsemigroups {
     //! \exception
     //! \no_libsemigroups_except
     Strings& min(size_type val) {
-      _current_valid = false;
       _words.min(val);
+      _current_valid = _words.valid();
       return *this;
     }
 
@@ -1322,8 +1328,8 @@ namespace libsemigroups {
     //! \exception
     //! \no_libsemigroups_except
     Strings& max(size_type val) {
-      _current_valid = false;
       _words.max(val);
+      _current_valid = _words.valid();
       return *this;
     }
 

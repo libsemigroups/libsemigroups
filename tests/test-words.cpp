@@ -864,7 +864,6 @@ namespace libsemigroups {
     REQUIRE(*(++it) == *(++it2));
   }
 
-  // FIXME lots of the test in this case fail
   LIBSEMIGROUPS_TEST_CASE("Strings", "036", "code coverage", "[words][fail]") {
     using words::pow;
 
@@ -892,16 +891,16 @@ namespace libsemigroups {
 
     Strings copy;
     copy.   operator=(strings);
-    REQUIRE(copy.get() == "a");  // FIXME was "aa"
+    REQUIRE(copy.get() == "aa");
     copy.next();
-    REQUIRE(copy.get() == "aa");  // FIXME was "aaa"
+    REQUIRE(copy.get() == "aaa");
     strings.next();
 
     REQUIRE(equal(strings, copy));
     REQUIRE(copy.upper_bound() == 28);
     REQUIRE(copy.first() == "a");
     REQUIRE(copy.last() == pow("a", 28));
-    REQUIRE(copy.count() == 26);  // FIXME was 25
+    REQUIRE(copy.count() == 25);
 
     Strings move;
     move.   operator=(std::move(strings));
@@ -909,8 +908,8 @@ namespace libsemigroups {
     REQUIRE(move.upper_bound() == 28);
     REQUIRE(move.first() == "a");
     REQUIRE(move.last() == pow("a", 28));
-    REQUIRE(move.count() == 26);        // FIXME was 25
-    REQUIRE(move.alphabet() == "aba");  // FIXME this makes no sense
+    REQUIRE(move.count() == 25);
+    REQUIRE(move.alphabet() == "ab");
 
     Strings more;
     REQUIRE(more.at_end());
@@ -929,7 +928,7 @@ namespace libsemigroups {
     REQUIRE(move2.upper_bound() == 28);
     REQUIRE(move2.first() == "a");
     REQUIRE(move2.last() == pow("a", 28));
-    REQUIRE(move2.count() == 26);
+    REQUIRE(move2.count() == 25);
     REQUIRE(move2.alphabet() == "ab");
 
     Strings swap;
