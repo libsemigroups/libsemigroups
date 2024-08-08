@@ -27,6 +27,7 @@
 #ifndef LIBSEMIGROUPS_WORD_GRAPH_HPP_
 #define LIBSEMIGROUPS_WORD_GRAPH_HPP_
 
+#include "libsemigroups/presentation.hpp"
 #ifndef PARSED_BY_DOXYGEN
 #define NOT_PARSED_BY_DOXYGEN
 #endif
@@ -1950,6 +1951,15 @@ namespace libsemigroups {
 
   template <typename Node>
   WordGraphMeeter(WordGraph<Node> const&) -> WordGraphMeeter<Node>;
+
+  // TODO to tpp
+  template <typename Node>
+  std::string to_human_readable_repr(WordGraph<Node> const& wg) {
+    // TODO could be more elaborate, include complete, etc
+    return fmt::format("<WordGraph with {} nodes & {} edges>",
+                       wg.number_of_nodes(),
+                       wg.number_of_edges());
+  }
 
 }  // namespace libsemigroups
 

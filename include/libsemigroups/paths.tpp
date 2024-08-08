@@ -19,7 +19,6 @@
 // This file contains the implementations of the functionality declared in
 // paths.hpp for iterating through paths in an WordGraph.
 
-#include "libsemigroups/paths.hpp"
 namespace libsemigroups {
   namespace detail {
     static inline double magic_number(size_t N) {
@@ -445,7 +444,7 @@ namespace libsemigroups {
   void Paths<Node>::throw_if_source_undefined() const {
     if (_source == UNDEFINED) {
       LIBSEMIGROUPS_EXCEPTION("no source node defined, use the member "
-                              "function \"from\" to define the source node");
+                              "function \"source\" to define the source node");
     }
   }
 
@@ -501,24 +500,25 @@ namespace libsemigroups {
     _current_valid = false;
     _word_graph    = nullptr;
     _order         = Order::shortlex;
-    _max           = POSITIVE_INFINITY;
+    _max           = static_cast<size_type>(POSITIVE_INFINITY);
     _min           = 0;
     _position      = 0;
-    _source        = UNDEFINED;
-    _target        = UNDEFINED;
+    _source        = static_cast<Node>(UNDEFINED);
+    _target        = static_cast<Node>(UNDEFINED);
     return *this;
   }
 
   template <typename Node>
-  Node Paths<Node>::to() const {
+  Node Paths<Node>::current_target() const {
     if (_target != UNDEFINED) {
       return _target;
-    } else {
-      set_iterator_no_checks();
-      // We are enumerating all paths with a given source, and so we return
-      // the current target node using the iterator.
-      return std::visit([](auto& it) { return it.target(); }, _current);
+    } else if (_source == UNDEFINED) {
+      return UNDEFINED;
     }
+    set_iterator_no_checks();
+    // We are enumerating all paths with a given source, and so we return
+    // the current target node using the iterator.
+    return std::visit([](auto& it) { return it.target(); }, _current);
   }
 
   template <typename Node>
@@ -547,6 +547,28 @@ namespace libsemigroups {
     }
   }
 
+  template <typename Node>
+  std::string to_human_readable_repr(Paths<Node> const& p) {
+    std::string source_target;
+    std::string sep;
+    if (p.source() != UNDEFINED) {
+      source_target += fmt::format(" source {}", p.source());
+      sep = ",";
+    }
+    if (p.target() != UNDEFINED) {
+      source_target += fmt::format("{} target {}", sep, p.target());
+      sep = ",";
+    }
+
+    return fmt::format(
+        "<Paths in {} with{}{} length in [{}, {})>",
+        to_human_readable_repr(p.word_graph()),
+        source_target,
+        sep,
+        p.min(),
+        p.max() == POSITIVE_INFINITY ? "\u221e" : std::to_string(p.max() + 1));
+    // TODO(0) + 1 correct?
+  }
 }  // namespace libsemigroups
 
 template <typename Node>

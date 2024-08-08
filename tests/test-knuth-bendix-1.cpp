@@ -85,7 +85,7 @@ namespace libsemigroups {
     normal_forms_from_word_graph(KnuthBendix<Rewriter, ReductionOrder>& kb,
                                  WordGraph<WordType>&                   wg) {
       ReversiblePaths paths(wg);
-      paths.from(0).reverse(kb.kind() == congruence_kind::left);
+      paths.source(0).reverse(kb.kind() == congruence_kind::left);
       if (!kb.presentation().contains_empty_word()) {
         paths.next();
       }
@@ -456,7 +456,7 @@ namespace libsemigroups {
         = iterator_range(fp.cbegin_normal_forms(), fp.cend_normal_forms());
 
     Paths paths(ad);
-    paths.from(0).min(1).max(fp.current_max_word_length() + 1);
+    paths.source(0).min(1).max(fp.current_max_word_length() + 1);
 
     REQUIRE(equal(expected, paths));
 
@@ -510,7 +510,7 @@ namespace libsemigroups {
     REQUIRE(ad.number_of_edges() == 265);
     REQUIRE(word_graph::is_acyclic(ad));
     Paths paths(ad);
-    paths.from(0).min(0).max(13);
+    paths.source(0).min(0).max(13);
     REQUIRE(paths.count() == 336);
   }
 
@@ -539,7 +539,7 @@ namespace libsemigroups {
     REQUIRE(ad.number_of_edges() == 11);
     REQUIRE(word_graph::is_acyclic(ad));
     Paths paths(ad);
-    paths.from(0).min(0).max(5);
+    paths.source(0).min(0).max(5);
     REQUIRE(paths.count() == 12);
   }
 
@@ -563,7 +563,7 @@ namespace libsemigroups {
     REQUIRE(ad.number_of_edges() == 17);
     REQUIRE(!word_graph::is_acyclic(ad));
     Paths paths(ad);
-    paths.from(0).min(0).max(10);
+    paths.source(0).min(0).max(10);
     REQUIRE(paths.count() == 13'044);
   }
 
@@ -590,7 +590,7 @@ namespace libsemigroups {
   TEMPLATE_TEST_CASE("redundant_rule (word_type)",
                      "[014][quick][knuth-bendix]",
                      KNUTH_BENDIX_TYPES) {
-    using literals::        operator""_w;
+    using literals::operator""_w;
     auto                    rg = ReportGuard(false);
     Presentation<word_type> p;
     p.alphabet(3);
@@ -681,7 +681,7 @@ namespace libsemigroups {
                      "[016][quick][knuth-bendix]",
                      KNUTH_BENDIX_TYPES) {
     using literals::operator""_w;
-    auto            rg = ReportGuard(false);
+    auto rg = ReportGuard(false);
 
     Presentation<std::string> p;
     p.contains_empty_word(true);

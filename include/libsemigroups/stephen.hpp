@@ -390,7 +390,7 @@ namespace libsemigroups {
     template <typename PresentationType>
     auto words_accepted(Stephen<PresentationType>& s) {
       Paths paths(s.word_graph());
-      return paths.from(s.initial_state()).to(s.accept_state());
+      return paths.source(s.initial_state()).target(s.accept_state());
     }
 
     template <typename PresentationType>
@@ -412,7 +412,7 @@ namespace libsemigroups {
     template <typename PresentationType>
     auto left_factors(Stephen<PresentationType>& s) {
       Paths paths(s.word_graph());
-      return paths.from(s.initial_state());
+      return paths.source(s.initial_state());
     }
 
     // TODO to tpp

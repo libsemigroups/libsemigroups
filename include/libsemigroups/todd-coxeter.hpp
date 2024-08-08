@@ -923,7 +923,7 @@ namespace libsemigroups {
 
     inline auto class_of(ToddCoxeter& tc, node_type n) {
       size_t const offset = (tc.presentation().contains_empty_word() ? 0 : 1);
-      return Paths(tc.word_graph()).from(0).to(n + offset);
+      return Paths(tc.word_graph()).source(0).target(n + offset);
     }
 
     inline auto class_of(ToddCoxeter& tc, word_type const& w) {

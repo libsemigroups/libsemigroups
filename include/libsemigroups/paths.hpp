@@ -20,25 +20,25 @@
 // WordGraph.
 
 // TODO(2) check code coverage
-// TODO(0) rename from -> source and to -> target for consistency!
 
 #ifndef LIBSEMIGROUPS_PATHS_HPP_
 #define LIBSEMIGROUPS_PATHS_HPP_
 
 #include <algorithm>    // for any_of, for_each, max_element
 #include <cstddef>      // for size_t, ptrdiff_t
+#include <cstdint>      // for uint64_t
 #include <iterator>     // for distance, forward_iterator_tag
 #include <numeric>      // for accumulate
-#include <stdint.h>     // for uint64_t
 #include <tuple>        // for tie
 #include <type_traits>  // for true_type
 #include <variant>      // for visit, variant
 #include <vector>       // for vector, allocator
 
-#include "config.hpp"      // for LIBSEMIGROUPS_EIGEN_ENA...
-#include "constants.hpp"   // for Max, UNDEFINED, Positive...
-#include "debug.hpp"       // for LIBSEMIGROUPS_ASSERT
-#include "exception.hpp"   // for LIBSEMIGROUPS_EXCEPTION
+#include "config.hpp"     // for LIBSEMIGROUPS_EIGEN_ENA...
+#include "constants.hpp"  // for Max, UNDEFINED, Positive...
+#include "debug.hpp"      // for LIBSEMIGROUPS_ASSERT
+#include "exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
+#include "libsemigroups/presentation.hpp"
 #include "order.hpp"       // for order
 #include "ranges.hpp"      // for is_input_range
 #include "types.hpp"       // for word_type
@@ -574,8 +574,8 @@ namespace libsemigroups {
   //! Defined in ``paths.hpp``.
   //!
   //! This class represents a range object that facilitates iterating through
-  //! the paths in a WordGraph \ref from a given node (possible \ref to another
-  //! node) in a particular \ref order.
+  //! the paths in a WordGraph \ref source a given node (possible \ref target
+  //! another node) in a particular \ref order.
   //!
   //! \tparam Node the type of the nodes in the underlying WordGraph.
   //!
@@ -592,16 +592,17 @@ namespace libsemigroups {
   //! arguments, but they do not have the suffix ``_no_checks``.
   //!
   //! For a Paths object to be valid it must have its source node defined
-  //! (using \ref from), both the source (set using \ref from) and target (set
-  //! using \ref to) nodes must belong to the underlying WordGraph (\ref
-  //! word_graph). This can be verified by checking `from() != UNDEFINED`. The
-  //! functions listed above (\ref get, \ref next, \ref at_end, \ref size_hint,
-  //! \ref count) should only be called if `from() != UNDEFINED`, and it
-  //! is the responsibility of the caller to ensure that this is the case.
+  //! (using \ref source), both the source (set using \ref source) and target
+  //! (set using \ref target) nodes must belong to the underlying WordGraph
+  //! (\ref word_graph). This can be verified by checking `source() !=
+  //! UNDEFINED`. The functions listed above (\ref get, \ref next, \ref at_end,
+  //! \ref size_hint, \ref count) should only be called if `source() !=
+  //! UNDEFINED`, and it is the responsibility of the caller to ensure that this
+  //! is the case.
   //!
-  //! Changing the value of \ref from, \ref to, \ref min, \ref max, or \ref
-  //! order resets the Paths object to point at the first word in the specified
-  //! range.
+  //! Changing the value of \ref source, \ref target, \ref min, \ref max, or
+  //! \ref order resets the Paths object to point at the first word in the
+  //! specified range.
   //!
   //! [rx::ranges]: https://github.com/simonask/rx-ranges
   template <typename Node>
@@ -684,7 +685,7 @@ namespace libsemigroups {
     //!
     //! \param wg the word graph.
     //!
-    //! \warning It is also necessary to set the source node using \ref from
+    //! \warning It is also necessary to set the source node using \ref source
     //! before the object is valid.
     //!
     //! \warning The Paths object only holds a reference to the underlying
@@ -701,7 +702,7 @@ namespace libsemigroups {
     //!
     //! \param wg the word graph.
     //!
-    //! \warning It is also necessary to set the source node using \ref from
+    //! \warning It is also necessary to set the source node using \ref source
     //! before the object is valid.
     //!
     //! \warning The Paths object only holds a reference to the underlying
@@ -718,10 +719,10 @@ namespace libsemigroups {
     ////////////////////////////////////////////////////////////////////////
 
     //! \brief Throw an exception if the source node has not been defined
-    //! (using \ref from).
+    //! (using \ref source).
     //!
     //! This function throws an exception if the source node of the paths in
-    //! the range has not been specified (using \ref from).
+    //! the range has not been specified (using \ref source).
     void throw_if_source_undefined() const;
 
     ////////////////////////////////////////////////////////////////////////
@@ -735,7 +736,7 @@ namespace libsemigroups {
     //! \returns The current path, a value of \ref output_type.
     //!
     //! \warning It is the responsibility of the caller to ensure that
-    //! `from() != UNDEFINED` before calling this function.
+    //! `source() != UNDEFINED` before calling this function.
     output_type get() const {
       set_iterator_no_checks();
       return std::visit([](auto& it) -> auto const& { return *it; }, _current);
@@ -747,7 +748,7 @@ namespace libsemigroups {
     //! true, then this function does nothing.
     //!
     //! \warning It is the responsibility of the caller to ensure that
-    //! `from() != UNDEFINED` before calling this function.
+    //! `source() != UNDEFINED` before calling this function.
     void next() {
       if (!at_end()) {
         ++_position;
@@ -763,7 +764,7 @@ namespace libsemigroups {
     //! \returns Whether or not the range is exhausted.
     //!
     //! \warning It is the responsibility of the caller to ensure that
-    //! `from() != UNDEFINED` before calling this function.
+    //! `source() != UNDEFINED` before calling this function.
     [[nodiscard]] bool at_end() const {
       if (!set_iterator_no_checks()) {
         return true;
@@ -782,7 +783,7 @@ namespace libsemigroups {
     //! \returns the number of paths in the range.
     //!
     //! \warning It is the responsibility of the caller to ensure that
-    //! `from() != UNDEFINED` before calling this function.
+    //! `source() != UNDEFINED` before calling this function.
     [[nodiscard]] uint64_t size_hint() const;
 
     //! \brief Get the size of the range.
@@ -796,7 +797,7 @@ namespace libsemigroups {
     //! \returns the number of paths in the range.
     //!
     //! \warning It is the responsibility of the caller to ensure that
-    //! `from() != UNDEFINED` before calling this function.
+    //! `source() != UNDEFINED` before calling this function.
     [[nodiscard]] uint64_t count() const {
       return size_hint();
     }
@@ -841,7 +842,7 @@ namespace libsemigroups {
     //!
     //! \returns A reference to `*this`.
     //!
-    //! \warning It is necessary to set the source node using \ref from
+    //! \warning It is necessary to set the source node using \ref source
     //! before a Paths object is valid.
     //!
     //! \throws LibsemigroupsException if \p n is not a node in the underlying
@@ -849,7 +850,7 @@ namespace libsemigroups {
     //!
     //! \note Changing the value of the source node resets the Paths object to
     //! point at the first word in the specified range.
-    Paths& from(node_type n) {
+    Paths& source(node_type n) {
       word_graph::validate_node(word_graph(), n);
       return source_no_checks(n);
     }
@@ -863,7 +864,7 @@ namespace libsemigroups {
     //!
     //! \exceptions
     //! \noexcept
-    [[nodiscard]] node_type from() const noexcept {
+    [[nodiscard]] node_type source() const noexcept {
       return _source;
     }
 
@@ -872,7 +873,7 @@ namespace libsemigroups {
     //! This function can be used to set the target node (or the "to" node) of
     //! all of the paths in the range. It is not necessary to set this value.
     //! If the target node is set to \ref UNDEFINED, then the range will contain
-    //! every path from \ref from to every possible target in the underlying
+    //! every path from \ref source to every possible target in the underlying
     //! WordGraph (\ref word_graph).
     //!
     //! \param n the target node.
@@ -896,7 +897,7 @@ namespace libsemigroups {
     //! This function can be used to set the target node (or the "to" node) of
     //! all of the paths in the range. It is not necessary to set this value.
     //! If the target node is set to \ref UNDEFINED, then the range will contain
-    //! every path from \ref from to every possible target in the underlying
+    //! every path from \ref source to every possible target in the underlying
     //! WordGraph (\ref word_graph).
     //!
     //! \param n the target node.
@@ -908,7 +909,7 @@ namespace libsemigroups {
     //!
     //! \note Changing the value of the target node resets the Paths object to
     //! point at the first word in the specified range.
-    Paths& to(node_type n) {
+    Paths& target(node_type n) {
       if (n != UNDEFINED) {
         word_graph::validate_node(word_graph(), n);
       }
@@ -917,15 +918,30 @@ namespace libsemigroups {
 
     //! \brief Get the current target node of every path in the range.
     //!
-    //! This function returns the current target node of the every path in the
+    //! This function returns the target node of the every path in the
     //! range defined by a Paths object. This initial value is \ref UNDEFINED.
     //!
-    //! \returns The current target node.
+    //! \returns The target node.
+    //!
+    //! \exceptions
+    //! \noexcept
+    [[nodiscard]] node_type target() const noexcept {
+      return _target;
+    }
+
+    //! \brief Get the current target node of the path labelled by \ref
+    //! get.
+    //!
+    //! This function returns the current target node of the path labelled by
+    //! \ref get. If there is no such path (because, for example, the source
+    //! node hasn't been defined, then \ref UNDEFINED is returned.
+    //!
+    //! \returns The current target node of the path labelled by \ref get or
+    //! \ref UNDEFINED.
     //!
     //! \exceptions
     //! \no_libsemigroups_except
-    // TODO(1) is this really noexcept?
-    [[nodiscard]] node_type to() const;
+    [[nodiscard]] node_type current_target() const;
 
     //! \brief Set the minimum length of path in the range.
     //!
@@ -1059,11 +1075,15 @@ namespace libsemigroups {
     Subclass& order(Subclass* obj, Order val);
   };  // class Paths
 
+  //! \ingroup paths_group
+  //!
   //! Deduction guide to construct a Paths<Node> from a WordGraph<Node> const
   //! reference.
   template <typename Node>
   Paths(WordGraph<Node> const&) -> Paths<Node>;
 
+  //! \ingroup paths_group
+  //!
   //! Deduction guide to construct a Paths<Node> from a WordGraph<Node> rvalue
   //! reference.
   template <typename Node>
@@ -1076,8 +1096,8 @@ namespace libsemigroups {
   //! Defined in ``paths.hpp``.
   //!
   //! This class represents a range object that facilitates iterating through
-  //! the paths in a WordGraph \ref from a given node (possible \ref to another
-  //! node) in a particular \ref order.
+  //! the paths in a WordGraph \ref source a given node (possible \ref target
+  //! another node) in a particular \ref order.
   //!
   //! The ReversiblePaths class is essentially identical to Paths except that it
   //! permits the paths obtained by \ref get to be reversed (set via \ref
@@ -1152,11 +1172,11 @@ namespace libsemigroups {
       return Paths<Node>::source_no_checks(this, n);
     }
 
-    //! \copydoc Paths::from
+    //! \copydoc Paths::source
     // This fn is required because the return value of the fn of the same
     // name in Paths is not ReversiblePaths&.
-    ReversiblePaths& from(node_type n) noexcept {
-      Paths<Node>::from(n);
+    ReversiblePaths& source(node_type n) noexcept {
+      Paths<Node>::source(n);
       return *this;
     }
 
@@ -1165,11 +1185,11 @@ namespace libsemigroups {
       return Paths<Node>::target_no_checks(this, n);
     }
 
-    //! \copydoc Paths::to
+    //! \copydoc Paths::target
     // This fn is required because the return value of the fn of the same
     // name in Paths is not ReversiblePaths&.
-    ReversiblePaths& to(node_type n) noexcept {
-      Paths<Node>::to(n);
+    ReversiblePaths& target(node_type n) noexcept {
+      Paths<Node>::target(n);
       return *this;
     }
 
@@ -1223,15 +1243,34 @@ namespace libsemigroups {
     output_type get() const;
   };  // class ReversiblePaths
 
+  //! \ingroup paths_group
+  //!
   //! Deduction guide to construct a ReversiblePaths<Node> from a
   //! WordGraph<Node> const reference.
   template <typename Node>
   ReversiblePaths(WordGraph<Node> const&) -> ReversiblePaths<Node>;
 
+  //! \ingroup paths_group
+  //!
   //! Deduction guide to construct a ReversiblePaths<Node> from a
   //! WordGraph<Node> rvalue reference.
   template <typename Node>
   ReversiblePaths(WordGraph<Node>&&) -> ReversiblePaths<Node>;
+
+  //! \ingroup paths_group
+  //!
+  //! \brief Return a human readable representation of a Paths object.
+  //!
+  //! Return a human readable representation of a Paths object.
+  //!
+  //! \tparam Node the type of the nodes in the underlying WordGraph
+  //!
+  //! \param p the Paths object.
+  //!
+  //! \exceptions
+  //! \no_libsemigroups_except
+  template <typename Node>
+  std::string to_human_readable_repr(Paths<Node> const& p);
 
 }  // namespace libsemigroups
 
