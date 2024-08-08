@@ -68,6 +68,8 @@ namespace libsemigroups {
   //!  - \ref Words
   //!  - \ref Strings
   //!  - \ref random_word
+  //!  - \ref random_string
+  //!  - \ref random_strings
   //!
   //! * counting words:
   //!
@@ -75,22 +77,26 @@ namespace libsemigroups {
   //!
   //! * converting to and from strings and words:
   //!
+  //!   - \ref ToWord
+  //!   - \ref ToStings
   //!   - \ref to_string(std::string_view,Iterator,Iterator,std::string&)
   //!   "to_string"
   //!   - \ref to_word(std::string_view, word_type&) "to_word"
-  //!   - \ref ToWord
   //!
-  //! * parsing algebraic expressions in a string;
-  //!
-  //!   - TODO
+
+  // TODO(later)
+  // * parsing algebraic expressions in a string;
 
   //! \ingroup words_group
   //! \brief Returns the number of words over an alphabet with a given number of
   //! letters with length in a specified range.
   //!
-  //! \param n the number of letters in the alphabet
-  //! \param min the minimum length of a word
-  //! \param max the maximum length of a word
+  //! Returns the number of words over an alphabet with a given number of
+  //! letters with length in a specified range.
+  //!
+  //! \param n the number of letters in the alphabet.
+  //! \param min the minimum length of a word.
+  //! \param max the maximum length of a word.
   //!
   //! \returns
   //! A value of type \c uint64_t.
@@ -98,19 +104,20 @@ namespace libsemigroups {
   //! \exception
   //! \no_libsemigroups_except
   //!
-  //! \warning If the number of words exceeds 2 ^ 64 - 1, then
-  //! the return value of this function will not be correct.
+  //! \warning If the number of words exceeds 2 ^ 64 - 1, then the return value
+  //! of this function will not be correct.
   [[nodiscard]] uint64_t number_of_words(size_t n, size_t min, size_t max);
 
   //! \ingroup words_group
   //! \brief Returns a random word.
   //!
-  //! \param length the length of the word
-  //! \param nr_letters the size of the alphabet
+  //! Returns a random word on \f$\{0, \ldots, n - 1\}\f$ of length \p length
+  //! where \f$n\f$ is \p nr_letters.
   //!
-  //! \returns
-  //! A random word on \f$\{0, \ldots, n - 1\}\f$ of length \p length where
-  //! \f$n\f$ is \p nr_letters.
+  //! \param length the length of the word.
+  //! \param nr_letters the size of the alphabet.
+  //!
+  //! \returns A random word, value of `word_type`.
   //!
   //! \throws LibsemigroupsException if \p nr_letters is \c 0.
   //!
