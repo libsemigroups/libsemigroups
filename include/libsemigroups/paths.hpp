@@ -583,21 +583,30 @@ namespace libsemigroups {
   //! \tparam Node the type of the nodes in the underlying WordGraph.
   //!
   //! So that the Paths class can be used efficiently with the functionality of
-  //! rx::ranges, the usual naming conventions in ``libsemigroups`` are not
-  //! used for the member functions of Paths. In particular, none of the member
-  //! functions check their arguments, but they do not have the suffix
-  //! ``_no_checks``.
-  //!
-  //! For a Paths object to be valid it must have both its source node defined
-  //! (using \ref from) and the underlying WordGraph defined (using \ref
-  //! init(WordGraph<Node> const&).
-  //! This can be verified using \ref is_valid. The following member functions
-  //! should only be called if \ref is_valid returns \c true:
+  //! [rx::ranges][], the usual naming conventions in ``libsemigroups`` are not
+  //! used for the member functions:
   //! * \ref get
   //! * \ref next
   //! * \ref at_end
   //! * \ref size_hint
   //! * \ref count
+  //!
+  //! of Paths. In particular, none of these member functions check their
+  //! arguments, but they do not have the suffix ``_no_checks``.
+  //!
+  //! For a Paths object to be valid it must have its source node defined
+  //! (using \ref from), both the source (set using \ref from) and target (set
+  //! using \ref to) nodes must belong to the underlying WordGraph (\ref
+  //! word_graph). This can be verified using \ref is_valid. The functions
+  //! listed above (\ref get, \ref next, \ref at_end, \ref size_hint, \ref
+  //! count) should only be called if \ref is_valid returns \c true, and it is
+  //! the responsibility of the caller to ensure that this is the case.
+  //!
+  //! Changing the value of \ref from, \ref to, \ref min, \ref max, or \ref
+  //! order resets the Paths object to point at the first word in the specified
+  //! range.
+  //!
+  //! [rx::ranges]: https://github.com/simonask/rx-ranges
   template <typename Node>
   class Paths {
    public:
@@ -648,8 +657,8 @@ namespace libsemigroups {
 
     //! \brief Deleted.
     //!
-    //! To avoid the situation where the underlying WordGraph is not defined, it
-    //! is not possible to default construct a Paths object.
+    //! Deleted. To avoid the situation where the underlying WordGraph is not
+    //! defined, it is not possible to default construct a Paths object.
     Paths() = delete;
 
     //! \brief Default copy constructor.
@@ -683,7 +692,7 @@ namespace libsemigroups {
     //!
     //! \warning The Paths object only holds a reference to the underlying
     //! WordGraph \p wg, and so \p wg must outlive any Paths object constructed
-    //! from \p wg.
+    //! from it.
     explicit Paths(WordGraph<Node> const& wg) {
       init(wg);
     }
@@ -710,13 +719,18 @@ namespace libsemigroups {
     ////////////////////////////////////////////////////////////////////////
     // Validation
     ////////////////////////////////////////////////////////////////////////
-    //! TODO
+    //! \brief Throw an exception if the source node has not been defined
+    //! (using \ref from).
+    //!
+    //! This function throws and exception if the source node of the paths in
+    //! the range has not been specified (using \ref from).
+    //!
+    //!
     // TODO to tpp
-    void throw_if_not_valid(std::string_view sep = "::") {
+    void throw_if_not_valid() const {
       if (_source == UNDEFINED) {
-        LIBSEMIGROUPS_EXCEPTION(
-            "no source node defined, use Paths{}from to set the source node",
-            sep);
+        LIBSEMIGROUPS_EXCEPTION("no source node defined, use the member "
+                                "function \"from\" to define the source node");
       }
     }
 
@@ -739,8 +753,7 @@ namespace libsemigroups {
     //! is_valid returns \c true before calling this function.
     output_type get() const {
       set_iterator_no_checks();
-      return std::visit(
-          [](auto& it) -> auto const& { return *it; }, _current);
+      return std::visit([](auto& it) -> auto const& { return *it; }, _current);
     }
 
     //! \brief Advance to the next path in the range.
@@ -824,8 +837,13 @@ namespace libsemigroups {
     //!
     //! \exceptions
     //! \noexcept
-    Paths& from(node_type n) noexcept {
-      return from(this, n);
+    Paths& from_no_checks(node_type n) noexcept {
+      return from_no_checks(this, n);
+    }
+
+    Paths& from(node_type n) {
+      word_graph::validate_node(word_graph(), n);
+      return from_no_checks(n);
     }
 
     //! TODO
@@ -846,8 +864,15 @@ namespace libsemigroups {
     //!
     //! \exceptions
     //! \noexcept
-    Paths& to(node_type n) noexcept {
-      return to(this, n);
+    Paths& to_no_checks(node_type n) noexcept {
+      return to_no_checks(this, n);
+    }
+
+    Paths& to(node_type n) {
+      if (n != UNDEFINED) {
+        word_graph::validate_node(word_graph(), n);
+      }
+      return to_no_checks(n);
     }
 
     //! TODO
@@ -905,16 +930,20 @@ namespace libsemigroups {
       return _order;
     }
 
+    [[nodiscard]] WordGraph<Node> const& word_graph() const noexcept {
+      return *_word_graph;
+    }
+
    protected:
     template <typename Subclass>
-    Subclass& from(Subclass* obj, node_type src) {
+    Subclass& from_no_checks(Subclass* obj, node_type src) {
       _current_valid &= (src == _source);
       _source = src;
       return *obj;
     }
 
     template <typename Subclass>
-    Subclass& to(Subclass* obj, node_type trgt) noexcept {
+    Subclass& to_no_checks(Subclass* obj, node_type trgt) noexcept {
       _current_valid &= (trgt == _target);
       _target = trgt;
       return *obj;
@@ -995,13 +1024,27 @@ namespace libsemigroups {
     }
 
     //! TODO
+    ReversiblePaths& from_no_checks(size_type val) noexcept {
+      return Paths<Node>::from_no_checks(this, val);
+    }
+
+    // This fn is required because the return value of the fn of the same
+    // name in Paths is not ReversiblePaths&.
     ReversiblePaths& from(size_type val) noexcept {
-      return Paths<Node>::from(this, val);
+      Paths<Node>::from(val);
+      return *this;
     }
 
     //! TODO
+    ReversiblePaths& to_no_checks(size_type val) noexcept {
+      return Paths<Node>::to_no_checks(this, val);
+    }
+
+    // This fn is required because the return value of the fn of the same
+    // name in Paths is not ReversiblePaths&.
     ReversiblePaths& to(size_type val) noexcept {
-      return Paths<Node>::to(this, val);
+      Paths<Node>::from(val);
+      return *this;
     }
 
     //! TODO
