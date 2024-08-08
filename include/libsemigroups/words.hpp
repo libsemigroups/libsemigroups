@@ -22,6 +22,7 @@
 // TODO:
 // * iwyu
 // * nodiscard
+// * tests for code coverage
 
 #ifndef LIBSEMIGROUPS_WORDS_HPP_
 #define LIBSEMIGROUPS_WORDS_HPP_
