@@ -91,8 +91,8 @@ namespace libsemigroups {
   //! by this function are equal whenever they point to equal objects.
   //!
   //! \param wg the WordGraph.
-  //! \param source the source node
-  //! \param min the minimum length of a path to enumerate (defaults to \c 0)
+  //! \param source the source node.
+  //! \param min the minimum length of a path to enumerate (defaults to \c 0).
   //! \param max the maximum length of a path to enumerate (defaults to
   //!        \ref POSITIVE_INFINITY).
   //!
@@ -162,8 +162,8 @@ namespace libsemigroups {
   //! by this function are equal whenever they point to equal objects.
   //!
   //! \param wg the WordGraph.
-  //! \param source the source node
-  //! \param min the minimum length of a path to enumerate (defaults to \c 0)
+  //! \param source the source node.
+  //! \param min the minimum length of a path to enumerate (defaults to \c 0).
   //! \param max the maximum length of a path to enumerate (defaults to
   //!        \ref POSITIVE_INFINITY).
   //!
@@ -232,9 +232,9 @@ namespace libsemigroups {
   //! objects.
   //!
   //! \param wg the WordGraph.
-  //! \param source the first node
-  //! \param target the last node
-  //! \param min the minimum length of a path to enumerate (defaults to \c 0)
+  //! \param source the first node.
+  //! \param target the last node.
+  //! \param min the minimum length of a path to enumerate (defaults to \c 0).
   //! \param max the maximum length of a path to enumerate (defaults to
   //!        \ref POSITIVE_INFINITY).
   //!
@@ -304,9 +304,9 @@ namespace libsemigroups {
   //! objects.
   //!
   //! \param wg the WordGraph.
-  //! \param source the first node
-  //! \param target the last node
-  //! \param min the minimum length of a path to enumerate (defaults to \c 0)
+  //! \param source the first node.
+  //! \param target the last node.
+  //! \param min the minimum length of a path to enumerate (defaults to \c 0).
   //! \param max the maximum length of a path to enumerate (defaults to
   //!        \ref POSITIVE_INFINITY).
   //!
@@ -414,9 +414,9 @@ namespace libsemigroups {
   //! \f$[min, max)\f$.
   //!
   //! \param wg the WordGraph.
-  //! \param source the source node
-  //! \param min the minimum length of paths to count
-  //! \param max the maximum length of paths to count
+  //! \param source the source node.
+  //! \param min the minimum length of paths to count.
+  //! \param max the maximum length of paths to count.
   //!
   //! \returns A value of type paths::algorithm.
   //!
@@ -439,9 +439,9 @@ namespace libsemigroups {
   //! given range.
   //!
   //! \param wg the WordGraph.
-  //! \param source the first node
-  //! \param min the minimum length of a path
-  //! \param max the maximum length of a path
+  //! \param source the first node.
+  //! \param min the minimum length of a path.
+  //! \param max the maximum length of a path.
   //! \param lgrthm the algorithm to use (defaults to:
   //! paths::algorithm::automatic).
   //!
@@ -495,10 +495,10 @@ namespace libsemigroups {
   //! the given target node with length in the range \f$[min, max)\f$.
   //!
   //! \param wg the WordGraph.
-  //! \param source the source node
-  //! \param target the target node
-  //! \param min the minimum length of paths to count
-  //! \param max the maximum length of paths to count
+  //! \param source the source node.
+  //! \param target the target node.
+  //! \param min the minimum length of paths to count.
+  //! \param max the maximum length of paths to count.
   //!
   //! \returns A value of type \ref paths::algorithm.
   //!
@@ -523,10 +523,10 @@ namespace libsemigroups {
   //! given range.
   //!
   //! \param wg the WordGraph.
-  //! \param source the first node
-  //! \param target the last node
-  //! \param min the minimum length of a path
-  //! \param max the maximum length of a path
+  //! \param source the first node.
+  //! \param target the last node.
+  //! \param min the minimum length of a path.
+  //! \param max the maximum length of a path.
   //! \param lgrthm the algorithm to use (defaults to:
   //! paths::algorithm::automatic).
   //!
