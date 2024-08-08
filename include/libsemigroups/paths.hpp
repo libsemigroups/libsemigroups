@@ -90,7 +90,7 @@ namespace libsemigroups {
   //! length in the range \f$[min, max)\f$.  Iterators of the type returned
   //! by this function are equal whenever they point to equal objects.
   //!
-  //! \param wg the WordGraph
+  //! \param wg the WordGraph.
   //! \param source the source node
   //! \param min the minimum length of a path to enumerate (defaults to \c 0)
   //! \param max the maximum length of a path to enumerate (defaults to
@@ -161,7 +161,7 @@ namespace libsemigroups {
   //! length in the range \f$[min, max)\f$.  Iterators of the type returned
   //! by this function are equal whenever they point to equal objects.
   //!
-  //! \param wg the WordGraph
+  //! \param wg the WordGraph.
   //! \param source the source node
   //! \param min the minimum length of a path to enumerate (defaults to \c 0)
   //! \param max the maximum length of a path to enumerate (defaults to
@@ -231,7 +231,7 @@ namespace libsemigroups {
   //! returned by this function are equal whenever they point to equal
   //! objects.
   //!
-  //! \param wg the WordGraph
+  //! \param wg the WordGraph.
   //! \param source the first node
   //! \param target the last node
   //! \param min the minimum length of a path to enumerate (defaults to \c 0)
@@ -303,7 +303,7 @@ namespace libsemigroups {
   //! returned by this function are equal whenever they point to equal
   //! objects.
   //!
-  //! \param wg the WordGraph
+  //! \param wg the WordGraph.
   //! \param source the first node
   //! \param target the last node
   //! \param min the minimum length of a path to enumerate (defaults to \c 0)
@@ -367,7 +367,7 @@ namespace libsemigroups {
   //! \ingroup paths_group
   //! Returns the paths::algorithm used by number_of_paths().
   //!
-  //! \param wg the WordGraph
+  //! \param wg the WordGraph.
   //! \param source the source node.
   //!
   //! \returns A value of type paths::algorithm.
@@ -388,7 +388,7 @@ namespace libsemigroups {
   //! \ingroup paths_group
   //! Returns the number of paths from a source node.
   //!
-  //! \param wg the WordGraph
+  //! \param wg the WordGraph.
   //! \param source the source node.
   //!
   //! \returns A value of type `uint64_t`.
@@ -413,7 +413,7 @@ namespace libsemigroups {
   //! of paths originating at the given source node with length in the range
   //! \f$[min, max)\f$.
   //!
-  //! \param wg the WordGraph
+  //! \param wg the WordGraph.
   //! \param source the source node
   //! \param min the minimum length of paths to count
   //! \param max the maximum length of paths to count
@@ -438,7 +438,7 @@ namespace libsemigroups {
   //! Returns the number of paths starting at a given node with length in a
   //! given range.
   //!
-  //! \param wg the WordGraph
+  //! \param wg the WordGraph.
   //! \param source the first node
   //! \param min the minimum length of a path
   //! \param max the maximum length of a path
@@ -494,7 +494,7 @@ namespace libsemigroups {
   //! the number of paths originating at the given source node and ending at
   //! the given target node with length in the range \f$[min, max)\f$.
   //!
-  //! \param wg the WordGraph
+  //! \param wg the WordGraph.
   //! \param source the source node
   //! \param target the target node
   //! \param min the minimum length of paths to count
@@ -522,7 +522,7 @@ namespace libsemigroups {
   //! Returns the number of paths between a pair of nodes with length in a
   //! given range.
   //!
-  //! \param wg the WordGraph
+  //! \param wg the WordGraph.
   //! \param source the first node
   //! \param target the last node
   //! \param min the minimum length of a path
