@@ -78,7 +78,7 @@ namespace libsemigroups {
   //! * converting to and from strings and words:
   //!
   //!   - \ref ToWord
-  //!   - \ref ToStings
+  //!   - \ref ToStrings
   //!   - \ref to_string(std::string_view,Iterator,Iterator,std::string&)
   //!   "to_string"
   //!   - \ref to_word(std::string_view, word_type&) "to_word"
@@ -127,21 +127,22 @@ namespace libsemigroups {
   //! \ingroup words_group
   //! \brief Returns a forward iterator pointing to the 3rd parameter \p first.
   //!
-  //! If incremented, the iterator will point to the next least lexicographic
-  //! word after \p w over an \p n letter alphabet with length less than \p
-  //! upper_bound.  Iterators of the type returned by this function are equal
-  //! whenever they are obtained by advancing the return value of any call to
-  //! \c cbegin_wilo by the same amount, or they are both obtained by any call
-  //! to \c cend_wilo.
+  //! Returns a forward iterator used to iterate over words in lexicographic
+  //! order (wilo). If incremented, the iterator will point to the next least
+  //! lexicographic word after \p first over an \p n letter alphabet with length
+  //! less than \p upper_bound.  Iterators of the type returned by this function
+  //! are equal whenever they are obtained by advancing the return value of any
+  //! call to \c cbegin_wilo by the same amount, or they are both obtained by
+  //! any call to \c cend_wilo.
   //!
-  //! \param n the number of letters in the alphabet;
+  //! \param n the number of letters in the alphabet.
   //! \param upper_bound   only words of length less than this value are
-  //! considered;
-  //! \param first the starting point for the iteration;
+  //! considered.
+  //! \param first the starting point for the iteration.
   //! \param last the value one past the end of the last value in the
   //! iteration.
   //!
-  //! \returns An iterator of type \c const_wilo_iterator.
+  //! \returns An iterator pointing to \p first.
   //!
   //! \exception
   //! \no_libsemigroups_except
@@ -204,17 +205,19 @@ namespace libsemigroups {
   //! \ingroup words_group
   //! \brief Returns a forward iterator pointing to the 2nd parameter \p first.
   //!
-  //! If incremented, the iterator will point to the next least short-lex
-  //! word after \p w over an \p n letter alphabet. Iterators of the type
-  //! returned by this function are equal whenever they are obtained by
-  //! advancing the return value of any call to \c cbegin_wislo by the same
-  //! amount, or they are both obtained by any call to \c cend_wislo.
+  //! Returns a forward iterator used to iterate over words in
+  //! short-lexicographic order (wislo). If incremented, the iterator will point
+  //! to the next least short-lex word after \p w over an \p n letter alphabet.
+  //! Iterators of the type returned by this function are equal whenever they
+  //! are obtained by advancing the return value of any call to \c cbegin_wislo
+  //! by the same amount, or they are both obtained by any call to \c
+  //! cend_wislo.
   //!
-  //! \param n the number of letters in the alphabet;
-  //! \param first the starting point for the iteration;
+  //! \param n the number of letters in the alphabet.
+  //! \param first the starting point for the iteration.
   //! \param last the ending point for the iteration.
   //!
-  //! \returns An iterator of type \c const_wislo_iterator.
+  //! \returns An iterator pointing to \p first.
   //!
   //! \exception
   //! \no_libsemigroups_except
@@ -392,7 +395,10 @@ namespace libsemigroups {
     //! \noexcept
     [[nodiscard]] size_t count() const noexcept;
 
+    // For some reason, there needs to be two doxygen comment lines here for
+    // this to render.
     //! Value indicating that the range is finite.
+    //!
     static constexpr bool is_finite = true;  // This may not always be true
 
     //! Value indicating that if get() is called twice on a Words object that
@@ -426,18 +432,28 @@ namespace libsemigroups {
     Words& init();
 
     //! \brief Default copy constructor.
+    //!
+    //! Default copy constructor.
     Words(Words const&);
 
     //! \brief Default move constructor.
+    //!
+    //! Default move constructor.
     Words(Words&&);
 
     //! \brief Default copy assignment operator.
+    //!
+    //! Default copy assignment operator.
     Words& operator=(Words const&);
 
     //! \brief Default move assignment operator.
+    //!
+    //! Default move assignment operator.
     Words& operator=(Words&&);
 
     //! \brief Default destructor.
+    //!
+    //! Default destructor.
     ~Words();
 
     //! \brief Set the number of letters in the alphabet.
@@ -662,7 +678,27 @@ namespace libsemigroups {
       return rx::end(*this);
     }
 
-    //! TODO doc
+    // TODO(now) this doc doesn't feel nice, but JDE can't think of a good way
+    // to write it.
+    //! \brief Returns whether or not the settings have been changed since the
+    //! last time either \ref next or \ref get has been called.
+    //!
+    //! Other than by calling \ref next, the value returned by \ref get may be
+    //! altered by a call to one of the following:
+    //! * \ref order(Order)
+    //! * \ref number_of_letters(size_type)
+    //! * \ref min(size_type)
+    //! * \ref max(size_type)
+    //! * \ref first(word_type const&)
+    //! * \ref last(word_type const&)
+    //! * \ref upper_bound(size_type)
+    //!
+    //! This function returns \c true if none of the above settings have been
+    //! changed since the last time \ref next or \ref get is called, and \c
+    //! false otherwise.
+    //!
+    //! \returns A value of type `bool`.
+    // Required so Strings can accurately set _current_valid
     bool valid() const noexcept {
       return _current_valid;
     }
