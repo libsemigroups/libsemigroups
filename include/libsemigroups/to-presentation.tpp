@@ -121,5 +121,4 @@ namespace libsemigroups {
       return presentation::human_readable_letter<WordOutput>(ip.index(val));
     });
   }
-
 }  // namespace libsemigroups

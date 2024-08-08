@@ -1,7 +1,7 @@
 //
 // libsemigroups - C++ library for semigroups and monoids
-// Copyright (C) 2019-2023 Finn Smith
-// Copyright (C) 2019-2023 James D. Mitchell
+// Copyright (C) 2019-2024 Finn Smith
+// Copyright (C) 2019-2024 James D. Mitchell
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -27,6 +27,7 @@
 #ifndef LIBSEMIGROUPS_WORD_GRAPH_HPP_
 #define LIBSEMIGROUPS_WORD_GRAPH_HPP_
 
+#include "libsemigroups/presentation.hpp"
 #ifndef PARSED_BY_DOXYGEN
 #define NOT_PARSED_BY_DOXYGEN
 #endif
@@ -963,6 +964,7 @@ namespace libsemigroups {
     }
 
     // TODO(0): doc
+    //! TODO
     template <typename Node1, typename Node2, typename Iterator>
     Node1 follow_path(WordGraph<Node1> const& wg,
                       Node2                   from,
@@ -1079,6 +1081,7 @@ namespace libsemigroups {
                                 Iterator                first,
                                 Iterator                last) noexcept;
 
+    //! TODO
     template <typename Node1, typename Node2>
     std::pair<Node1, word_type::const_iterator>
     last_node_on_path(WordGraph<Node1> const& wg,
@@ -1948,6 +1951,16 @@ namespace libsemigroups {
 
   template <typename Node>
   WordGraphMeeter(WordGraph<Node> const&) -> WordGraphMeeter<Node>;
+
+  // TODO to tpp
+  template <typename Node>
+  std::string to_human_readable_repr(WordGraph<Node> const& wg) {
+    // TODO could be more elaborate, include complete, etc
+    return fmt::format("<WordGraph with {} nodes, {} edges, & out-degree {}>",
+                       wg.number_of_nodes(),
+                       wg.number_of_edges(),
+                       wg.out_degree());
+  }
 
 }  // namespace libsemigroups
 

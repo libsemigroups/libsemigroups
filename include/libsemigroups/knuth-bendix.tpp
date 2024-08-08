@@ -1116,15 +1116,15 @@ namespace libsemigroups {
       // We only want those paths that pass through at least one of the edges
       // in g2 but not g1. Hence we require the `filter` in the next
       // expression.
-      auto ntc
-          = partition(kb1,
-                      (paths.from(0) | rx::filter([&g1](word_type const& path) {
-                         return word_graph::last_node_on_path(
-                                    g1, 0, path.cbegin(), path.cend())
-                                    .second
-                                != path.cend();
-                       })
-                       | ToStrings(kb2.presentation().alphabet())));
+      auto ntc = partition(kb1,
+                           (paths.source(0)
+                            | rx::filter([&g1](word_type const& path) {
+                                return word_graph::last_node_on_path(
+                                           g1, 0, path.cbegin(), path.cend())
+                                           .second
+                                       != path.cend();
+                              })
+                            | ToStrings(kb2.presentation().alphabet())));
       // The check in the next loop could be put into the lambda passed to
       // filter above, but then we'd have to convert `path` to a string, and
       // then discard the string, so better to do it here. Note that the

@@ -1054,7 +1054,10 @@ namespace libsemigroups {
     [[nodiscard]] inline auto
     normal_forms(KnuthBendix<Rewriter, ReductionOrder>& kb) {
       ReversiblePaths paths(kb.gilman_graph());
-      paths.from(0).reverse(kb.kind() == congruence_kind::left);
+      paths.source_no_checks(0).reverse(kb.kind() == congruence_kind::left);
+      // It's possible that the gilman graph is empty, so the call to
+      // source_no_checks(0) is technically invalid, but nothing goes wrong, so
+      // we just go with it. This is slightly smelly.
       if (!kb.presentation().contains_empty_word()) {
         paths.next();
       }

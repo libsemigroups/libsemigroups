@@ -359,9 +359,10 @@ namespace libsemigroups {
 
 namespace libsemigroups {
   namespace stephen {
-    using const_iterator_words_accepted = const_pstislo_iterator<uint32_t>;
+    using const_iterator_words_accepted
+        = detail::const_pstislo_iterator<uint32_t>;
 
-    using const_iterator_left_factors = const_pislo_iterator<uint32_t>;
+    using const_iterator_left_factors = detail::const_pislo_iterator<uint32_t>;
 
     template <typename PresentationType>
     bool accepts(Stephen<PresentationType>& s, word_type const& w);
@@ -389,7 +390,7 @@ namespace libsemigroups {
     template <typename PresentationType>
     auto words_accepted(Stephen<PresentationType>& s) {
       Paths paths(s.word_graph());
-      return paths.from(s.initial_state()).to(s.accept_state());
+      return paths.source(s.initial_state()).target(s.accept_state());
     }
 
     template <typename PresentationType>
@@ -411,7 +412,7 @@ namespace libsemigroups {
     template <typename PresentationType>
     auto left_factors(Stephen<PresentationType>& s) {
       Paths paths(s.word_graph());
-      return paths.from(s.initial_state());
+      return paths.source(s.initial_state());
     }
 
     // TODO to tpp

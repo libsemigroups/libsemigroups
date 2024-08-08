@@ -221,7 +221,7 @@ namespace libsemigroups {
     REQUIRE(word_graph::is_acyclic(copy, source));
 
     Paths paths(copy);
-    REQUIRE(paths.min(1).from(source).count() == 72);
+    REQUIRE(paths.min(1).source(source).count() == 72);
 
     REQUIRE(!kb2.contains(2_w + S.factorisation(Transf<>({1, 3, 1, 3, 3})),
                           2_w + S.factorisation(Transf<>({4, 2, 4, 4, 2}))));
@@ -394,7 +394,7 @@ namespace libsemigroups {
     REQUIRE(word_graph::is_acyclic(copy, source));
 
     Paths paths1(copy);
-    REQUIRE(paths1.min(1).from(source).count() == 69);
+    REQUIRE(paths1.min(1).source(source).count() == 69);
 
     auto nrset = word_graph::nodes_reachable_from(copy, source);
     auto nrvec = std::vector<size_t>(nrset.begin(), nrset.end());
@@ -408,7 +408,7 @@ namespace libsemigroups {
     REQUIRE(copy.number_of_nodes() == 45);
 
     Paths paths(copy);
-    REQUIRE(paths.min(1).from(source).count() == 69);
+    REQUIRE(paths.min(1).source(source).count() == 69);
 
     REQUIRE(kb.gilman_graph().number_of_nodes() == 51);
   }
@@ -441,7 +441,7 @@ namespace libsemigroups {
     REQUIRE(word_graph::is_acyclic(copy, 0));
 
     Paths paths1(copy);
-    REQUIRE(paths1.min(1).from(0).count() == 69);
+    REQUIRE(paths1.min(1).source(0).count() == 69);
     REQUIRE(knuth_bendix::normal_forms(kb).min(1).count() == 69);
     REQUIRE(!kb.equal_to("aaaabb", "abaaabaa"));
 

@@ -26,393 +26,27 @@ namespace libsemigroups {
     }
   }  // namespace detail
 
-  template <typename Node>
-  const_pilo_iterator<Node>::~const_pilo_iterator() = default;
-
-  template <typename Node>
-  const_pilo_iterator<Node>::const_pilo_iterator(const_pilo_iterator const&)
-      = default;
-
-  template <typename Node>
-  const_pilo_iterator<Node>::const_pilo_iterator() noexcept = default;
-
-  template <typename Node>
-  const_pilo_iterator<Node>&
-  const_pilo_iterator<Node>::operator=(const_pilo_iterator const&)
-      = default;
-
-  template <typename Node>
-  const_pilo_iterator<Node>&
-  const_pilo_iterator<Node>::operator=(const_pilo_iterator&&) noexcept
-      = default;
-
-  template <typename Node>
-  const_pilo_iterator<Node>::const_pilo_iterator(const_pilo_iterator&&) noexcept
-      = default;
-
-  template <typename Node>
-  const_pilo_iterator<Node>::const_pilo_iterator(WordGraph<Node> const* ptr,
-                                                 Node                   source,
-                                                 size_type              min,
-                                                 size_type              max)
-      : _edges(),
-        _digraph(ptr),
-        _edge(UNDEFINED),
-        _min(min),
-        _max(max),
-        _nodes() {
-    if (_min < _max) {
-      _nodes.push_back(source);
-      if (_min != 0) {
-        ++(*this);
-      }
-    }
-  }
-
-  template <typename Node>
-  const_pilo_iterator<Node> const& const_pilo_iterator<Node>::operator++() {
-    if (_nodes.empty()) {
-      return *this;
-    } else if (_edge == UNDEFINED) {
-      // first call
-      _edge = 0;
-    }
-
-    do {
-      node_type next;
-      std::tie(next, _edge)
-          = _digraph->next_target_no_checks(_nodes.back(), _edge);
-      if (next != UNDEFINED && _edges.size() < _max - 1) {
-        _nodes.push_back(next);
-        _edges.push_back(_edge);
-        _edge = 0;
-        if (_edges.size() >= _min) {
-          return *this;
-        }
-      } else {
-        _nodes.pop_back();
-        if (!_edges.empty()) {
-          _edge = _edges.back() + 1;
-          _edges.pop_back();
-        }
-      }
-    } while (!_nodes.empty());
-
-    return *this;
-  }
-
-  template <typename Node>
-  void const_pilo_iterator<Node>::swap(const_pilo_iterator& that) noexcept {
-    std::swap(_edges, that._edges);
-    std::swap(_digraph, that._digraph);
-    std::swap(_edge, that._edge);
-    std::swap(_min, that._min);
-    std::swap(_max, that._max);
-    std::swap(_nodes, that._nodes);
-  }
-
-  // Assert that the forward iterator requirements are met
-  static_assert(
-      std::is_default_constructible<const_pilo_iterator<size_t>>::value,
-      "forward iterator requires default-constructible");
-  static_assert(std::is_copy_constructible<const_pilo_iterator<size_t>>::value,
-                "forward iterator requires copy-constructible");
-  static_assert(std::is_copy_assignable<const_pilo_iterator<size_t>>::value,
-                "forward iterator requires copy-assignable");
-  static_assert(std::is_destructible<const_pilo_iterator<size_t>>::value,
-                "forward iterator requires destructible");
-
-  template <typename Node>
-  const_pislo_iterator<Node>::~const_pislo_iterator() = default;
-
-  template <typename Node>
-  const_pislo_iterator<Node>::const_pislo_iterator(const_pislo_iterator const&)
-      = default;
-
-  template <typename Node>
-  const_pislo_iterator<Node>::const_pislo_iterator() = default;
-
-  template <typename Node>
-  const_pislo_iterator<Node>&
-  const_pislo_iterator<Node>::operator=(const_pislo_iterator const&)
-      = default;
-
-  template <typename Node>
-  const_pislo_iterator<Node>&
-  const_pislo_iterator<Node>::operator=(const_pislo_iterator&&)
-      = default;
-
-  template <typename Node>
-  const_pislo_iterator<Node>::const_pislo_iterator(const_pislo_iterator&&)
-      = default;
-
-  template <typename Node>
-  const_pislo_iterator<Node>::const_pislo_iterator(
-      WordGraph<Node> const*                         ptr,
-      Node                                           source,
-      typename const_pislo_iterator<Node>::size_type min,
-      typename const_pislo_iterator<Node>::size_type max)
-      : _length(min >= max ? UNDEFINED : min),
-        _it(),
-        _max(max),
-        _source(source) {
-    if (_length != UNDEFINED) {
-      _it = cbegin_pilo(*ptr, source, _length, _length + 1);
-    } else {
-      _it = cend_pilo(*ptr);
-    }
-  }
-
-  template <typename Node>
-  const_pislo_iterator<Node> const& const_pislo_iterator<Node>::operator++() {
-    ++_it;
-    if (_it == cend_pilo(_it.digraph())) {
-      if (_length < _max - 1) {
-        ++_length;
-        _it = cbegin_pilo(_it.digraph(), _source, _length, _length + 1);
-        if (_it == cend_pilo(_it.digraph())) {
-          _length = UNDEFINED;
-        }
-      } else {
-        _length = UNDEFINED;
-      }
-    }
-    return *this;
-  }
-
-  template <typename Node>
-  void const_pislo_iterator<Node>::swap(const_pislo_iterator& that) noexcept {
-    std::swap(_length, that._length);
-    std::swap(_it, that._it);
-    std::swap(_max, that._max);
-    std::swap(_source, that._source);
-  }
-
-  static_assert(
-      std::is_default_constructible<const_pislo_iterator<size_t>>::value,
-      "forward iterator requires default-constructible");
-  static_assert(std::is_copy_constructible<const_pislo_iterator<size_t>>::value,
-                "forward iterator requires copy-constructible");
-  static_assert(std::is_copy_assignable<const_pislo_iterator<size_t>>::value,
-                "forward iterator requires copy-assignable");
-  static_assert(std::is_destructible<const_pislo_iterator<size_t>>::value,
-                "forward iterator requires destructible");
-
-  template <typename Node>
-  const_pstilo_iterator<Node>::const_pstilo_iterator() noexcept = default;
-
-  template <typename Node>
-  const_pstilo_iterator<Node>::const_pstilo_iterator(
-      const_pstilo_iterator const&)
-      = default;
-
-  template <typename Node>
-  const_pstilo_iterator<Node>::const_pstilo_iterator(
-      const_pstilo_iterator&&) noexcept
-      = default;
-
-  template <typename Node>
-  const_pstilo_iterator<Node>&
-  const_pstilo_iterator<Node>::operator=(const_pstilo_iterator const&)
-      = default;
-
-  template <typename Node>
-  const_pstilo_iterator<Node>&
-  const_pstilo_iterator<Node>::operator=(const_pstilo_iterator&&) noexcept
-      = default;
-
-  template <typename Node>
-  const_pstilo_iterator<Node>::~const_pstilo_iterator() = default;
-
-  template <typename Node>
-  const_pstilo_iterator<Node>::const_pstilo_iterator(WordGraph<Node> const* ptr,
-                                                     node_type source,
-                                                     node_type target,
-                                                     size_type min,
-                                                     size_type max)
-      : _edges({}),
-        _digraph(ptr),
-        _edge(UNDEFINED),
-        _min(min),
-        _max(max),
-        _nodes(),
-        _target(target) {
-    if (_min < _max) {
-      _nodes.push_back(source);
-      ++(*this);
-    }
-  }
-
-  template <typename Node>
-  const_pstilo_iterator<Node> const& const_pstilo_iterator<Node>::operator++() {
-    if (_nodes.empty()) {
-      return *this;
-    } else if (_edge == UNDEFINED) {
-      // first call
-      _edge = 0;
-      init_can_reach_target();
-      if (_min == 0 && _nodes.front() == _target) {
-        // special case if the source == target, and we allow words of
-        // length 0, then we return the empty word here.
-        return *this;
-      }
-    }
-
-    do {
-      node_type next;
-      std::tie(next, _edge)
-          = _digraph->next_target_no_checks(_nodes.back(), _edge);
-      if (next != UNDEFINED && _edges.size() < _max - 1) {
-        // Avoid infinite loops when we can never reach _target
-        if (_can_reach_target[next]) {
-          _nodes.push_back(next);
-          _edges.push_back(_edge);
-          _edge = 0;
-          if (_edges.size() >= _min && next == _target) {
-            return *this;
-          }
-        } else {
-          _edge++;
-        }
-      } else {
-        _nodes.pop_back();
-        if (!_edges.empty()) {
-          _edge = _edges.back() + 1;
-          _edges.pop_back();
-        }
-      }
-    } while (!_nodes.empty());
-    return *this;
-  }
-
-  template <typename Node>
-  void const_pstilo_iterator<Node>::swap(const_pstilo_iterator& that) noexcept {
-    std::swap(_edges, that._edges);
-    std::swap(_digraph, that._digraph);
-    std::swap(_edge, that._edge);
-    std::swap(_min, that._min);
-    std::swap(_max, that._max);
-    std::swap(_nodes, that._nodes);
-    std::swap(_target, that._target);
-  }
-
-  template <typename Node>
-  void const_pstilo_iterator<Node>::init_can_reach_target() {
-    if (_can_reach_target.empty()) {
-      std::vector<std::vector<node_type>> in_neighbours(
-          _digraph->number_of_nodes(), std::vector<node_type>({}));
-      for (auto n = _digraph->cbegin_nodes(); n != _digraph->cend_nodes();
-           ++n) {
-        for (auto e = _digraph->cbegin_targets(*n);
-             e != _digraph->cend_targets(*n);
-             ++e) {
-          if (*e != UNDEFINED) {
-            in_neighbours[*e].push_back(*n);
-          }
-        }
-      }
-
-      _can_reach_target.resize(_digraph->number_of_nodes(), false);
-      _can_reach_target[_target]   = true;
-      std::vector<node_type>& todo = in_neighbours[_target];
-      std::vector<node_type>  next;
-
-      while (!todo.empty()) {
-        for (auto& m : todo) {
-          if (_can_reach_target[m] == 0) {
-            _can_reach_target[m] = true;
-            next.insert(
-                next.end(), in_neighbours[m].cbegin(), in_neighbours[m].cend());
-          }
-        }
-        std::swap(next, todo);
-        next.clear();
-      }
-    }
-  }
-
-  static_assert(
-      std::is_default_constructible<const_pstilo_iterator<size_t>>::value,
-      "forward iterator requires default-constructible");
-  static_assert(
-      std::is_copy_constructible<const_pstilo_iterator<size_t>>::value,
-      "forward iterator requires copy-constructible");
-  static_assert(std::is_copy_assignable<const_pstilo_iterator<size_t>>::value,
-                "forward iterator requires copy-assignable");
-  static_assert(std::is_destructible<const_pstilo_iterator<size_t>>::value,
-                "forward iterator requires destructible");
-
-  template <typename Node>
-  const_pstislo_iterator<Node>::~const_pstislo_iterator() = default;
-
-  template <typename Node>
-  const_pstislo_iterator<Node>::const_pstislo_iterator(
-      const_pstislo_iterator const&)
-      = default;
-
-  template <typename Node>
-  const_pstislo_iterator<Node>::const_pstislo_iterator() = default;
-
-  template <typename Node>
-  const_pstislo_iterator<Node>&
-  const_pstislo_iterator<Node>::operator=(const_pstislo_iterator const&)
-      = default;
-
-  template <typename Node>
-  const_pstislo_iterator<Node>&
-  const_pstislo_iterator<Node>::operator=(const_pstislo_iterator&&)
-      = default;
-
-  template <typename Node>
-  const_pstislo_iterator<Node>::const_pstislo_iterator(const_pstislo_iterator&&)
-      = default;
-
-  template <typename Node>
-  const_pstislo_iterator<Node> const&
-  const_pstislo_iterator<Node>::operator++() {
-    if (_it.target() != UNDEFINED) {
-      ++_it;
-      while (_it.target() != _target && _it != _end) {
-        ++_it;
-      }
-      if (_it == _end) {
-        _target = UNDEFINED;
-      }
-    }
-    return *this;
-  }
-  static_assert(
-      std::is_default_constructible<const_pstislo_iterator<size_t>>::value,
-      "forward iterator requires default-constructible");
-  static_assert(
-      std::is_copy_constructible<const_pstislo_iterator<size_t>>::value,
-      "forward iterator requires copy-constructible");
-  static_assert(std::is_copy_assignable<const_pstislo_iterator<size_t>>::value,
-                "forward iterator requires copy-assignable");
-  static_assert(std::is_destructible<const_pstislo_iterator<size_t>>::value,
-                "forward iterator requires destructible");
-
   namespace detail {
     template <typename Node1, typename Node2>
-    uint64_t number_of_paths_trivial(WordGraph<Node1> const& d,
+    uint64_t number_of_paths_trivial(WordGraph<Node1> const& wg,
                                      Node2                   source,
                                      size_t                  min,
                                      size_t                  max) {
       if (min >= max) {
         return 0;
-      } else if (word_graph::is_complete(d)) {
+      } else if (word_graph::is_complete(wg)) {
         // every edge is defined, and so the graph is not acyclic, and so the
         // number of words labelling paths is just the number of words
         if (max == POSITIVE_INFINITY) {
           return POSITIVE_INFINITY;
         } else {
-          // TODO(later) it's easy for number_of_words to exceed 2 ^ 64, so
+          // TODO(2) it's easy for number_of_words to exceed 2 ^ 64, so
           // better do something more intelligent here to avoid this case.
-          return number_of_words(d.out_degree(), min, max);
+          return number_of_words(wg.out_degree(), min, max);
         }
       }
       // Some edges are not defined ...
-      if (!word_graph::is_acyclic(d, source) && max == POSITIVE_INFINITY) {
+      if (!word_graph::is_acyclic(wg, source) && max == POSITIVE_INFINITY) {
         // Not acyclic
         return POSITIVE_INFINITY;
       }
@@ -420,14 +54,14 @@ namespace libsemigroups {
     }
 
     template <typename Node1, typename Node2>
-    uint64_t number_of_paths_trivial(WordGraph<Node1> const& d,
+    uint64_t number_of_paths_trivial(WordGraph<Node1> const& wg,
                                      Node2                   source,
                                      Node2                   target,
                                      size_t                  min,
                                      size_t                  max) {
-      if (min >= max || !word_graph::is_reachable(d, source, target)) {
+      if (min >= max || !word_graph::is_reachable(wg, source, target)) {
         return 0;
-      } else if (!word_graph::is_acyclic(d, source, target)
+      } else if (!word_graph::is_acyclic(wg, source, target)
                  && max == POSITIVE_INFINITY) {
         return POSITIVE_INFINITY;
       }
@@ -435,11 +69,11 @@ namespace libsemigroups {
     }
 
     template <typename Node1, typename Node2>
-    uint64_t number_of_paths_matrix(WordGraph<Node1> const& d,
+    uint64_t number_of_paths_matrix(WordGraph<Node1> const& wg,
                                     Node2                   source,
                                     size_t                  min,
                                     size_t                  max) {
-      auto am = word_graph::adjacency_matrix(d);
+      auto am = word_graph::adjacency_matrix(wg);
 #ifdef LIBSEMIGROUPS_EIGEN_ENABLED
       auto     acc   = word_graph::pow(am, min);
       uint64_t total = 0;
@@ -453,7 +87,7 @@ namespace libsemigroups {
       }
 #else
       auto           tmp   = am;
-      uint64_t const N     = d.number_of_nodes();
+      uint64_t const N     = wg.number_of_nodes();
       auto           acc   = matrix::pow(am, min);
       uint64_t       total = 0;
       for (size_t i = min; i < max; ++i) {
@@ -474,24 +108,24 @@ namespace libsemigroups {
     // Used by the matrix(source, target) and the dfs(source, target)
     // algorithms
     template <typename Node1, typename Node2>
-    bool number_of_paths_special(WordGraph<Node1> const& d,
+    bool number_of_paths_special(WordGraph<Node1> const& wg,
                                  Node2                   source,
                                  Node2                   target,
                                  size_t,
                                  size_t max) {
       if (max == POSITIVE_INFINITY) {
         if (source == target
-            && std::any_of(d.cbegin_targets(source),
-                           d.cend_targets(source),
-                           [&d, source](auto n) {
+            && std::any_of(wg.cbegin_targets(source),
+                           wg.cend_targets(source),
+                           [&wg, source](auto n) {
                              return n != UNDEFINED
                                     && word_graph::is_reachable(
-                                        d, n, static_cast<Node1>(source));
+                                        wg, n, static_cast<Node1>(source));
                            })) {
           return true;
         } else if (source != target
-                   && word_graph::is_reachable(d, source, target)
-                   && word_graph::is_reachable(d, target, source)) {
+                   && word_graph::is_reachable(wg, source, target)
+                   && word_graph::is_reachable(wg, target, source)) {
           return true;
         }
       }
@@ -499,18 +133,18 @@ namespace libsemigroups {
     }
 
     template <typename Node1, typename Node2>
-    uint64_t number_of_paths_matrix(WordGraph<Node1> const& d,
+    uint64_t number_of_paths_matrix(WordGraph<Node1> const& wg,
                                     Node2                   source,
                                     Node2                   target,
                                     size_t                  min,
                                     size_t                  max) {
-      if (!word_graph::is_reachable(d, source, target)) {
+      if (!word_graph::is_reachable(wg, source, target)) {
         // Complexity is O(number of nodes + number of edges).
         return 0;
-      } else if (number_of_paths_special(d, source, target, min, max)) {
+      } else if (number_of_paths_special(wg, source, target, min, max)) {
         return POSITIVE_INFINITY;
       }
-      auto am = word_graph::adjacency_matrix(d);
+      auto am = word_graph::adjacency_matrix(wg);
 #ifdef LIBSEMIGROUPS_EIGEN_ENABLED
       auto     acc   = word_graph::pow(am, min);
       uint64_t total = 0;
@@ -523,7 +157,7 @@ namespace libsemigroups {
         acc *= am;
       }
 #else
-      size_t const N     = d.number_of_nodes();
+      size_t const N     = wg.number_of_nodes();
       auto         tmp   = am;
       auto         acc   = matrix::pow(am, min);
       size_t       total = 0;
@@ -545,26 +179,26 @@ namespace libsemigroups {
     }
 
     template <typename Node1, typename Node2>
-    uint64_t number_of_paths_acyclic(WordGraph<Node1> const& d,
+    uint64_t number_of_paths_acyclic(WordGraph<Node1> const& wg,
                                      Node2                   source,
                                      size_t                  min,
                                      size_t                  max) {
-      auto topo = word_graph::topological_sort(d, source);
+      auto topo = word_graph::topological_sort(wg, source);
       if (topo.empty()) {
         // Can't topologically sort, so the digraph contains cycles.
         LIBSEMIGROUPS_EXCEPTION("the subdigraph induced by the nodes reachable "
                                 "from {} is not acyclic",
                                 source);
       } else if (topo.size() <= min) {
-        // There are fewer than `min` nodes reachable from source, and so there
-        // are no paths of length `min` or greater
+        // There are fewer than `min` nodes reachable from source, and so
+        // there are no paths of length `min` or greater
         return 0;
       }
 
       LIBSEMIGROUPS_ASSERT(static_cast<Node1>(source) == topo.back());
       // Digraph is acyclic...
       // Columns correspond to path lengths, rows to nodes in the graph
-      // TODO(later) replace with DynamicTriangularArray2
+      // TODO(2) replace with DynamicTriangularArray2
       auto number_paths = detail::DynamicArray2<uint64_t>(
           std::min(max, topo.size()),
           *std::max_element(topo.cbegin(), topo.cend()) + 1,
@@ -572,7 +206,7 @@ namespace libsemigroups {
       number_paths.set(topo[0], 0, 1);
       for (size_t m = 1; m < topo.size(); ++m) {
         number_paths.set(topo[m], 0, 1);
-        for (auto n = d.cbegin_targets(topo[m]); n != d.cend_targets(topo[m]);
+        for (auto n = wg.cbegin_targets(topo[m]); n != wg.cend_targets(topo[m]);
              ++n) {
           if (*n != UNDEFINED) {
             // there are no paths longer than m + 1 from the m-th entry in
@@ -593,12 +227,12 @@ namespace libsemigroups {
     }
 
     template <typename Node1, typename Node2>
-    uint64_t number_of_paths_acyclic(WordGraph<Node1> const& d,
+    uint64_t number_of_paths_acyclic(WordGraph<Node1> const& wg,
                                      Node2                   source,
                                      Node2                   target,
                                      size_t                  min,
                                      size_t                  max) {
-      auto topo = word_graph::topological_sort(d, source);
+      auto topo = word_graph::topological_sort(wg, source);
       if (topo.empty()) {
         // Can't topologically sort, so the digraph contains cycles.
         LIBSEMIGROUPS_EXCEPTION("the subdigraph induced by the nodes reachable "
@@ -621,7 +255,7 @@ namespace libsemigroups {
         return 0;
       }
       // Don't visit nodes that occur after target in "topo".
-      std::vector<bool> lookup(d.number_of_nodes(), true);
+      std::vector<bool> lookup(wg.number_of_nodes(), true);
       std::for_each(
           topo.cbegin(), it, [&lookup](auto n) { lookup[n] = false; });
 
@@ -629,14 +263,14 @@ namespace libsemigroups {
       topo.erase(topo.cbegin(), it);
 
       // Columns correspond to path lengths, rows to nodes in the graph
-      // TODO(later) replace with DynamicTriangularArray2
+      // TODO(2) replace with DynamicTriangularArray2
       auto number_paths = detail::DynamicArray2<uint64_t>(
           std::min(topo.size(), max),
           *std::max_element(topo.cbegin(), topo.cend()) + 1,
           0);
 
       for (size_t m = 1; m < topo.size(); ++m) {
-        for (auto n = d.cbegin_targets(topo[m]); n != d.cend_targets(topo[m]);
+        for (auto n = wg.cbegin_targets(topo[m]); n != wg.cend_targets(topo[m]);
              ++n) {
           if (*n == static_cast<Node1>(target)) {
             number_paths.set(topo[m], 1, number_paths.get(topo[m], 1) + 1);
@@ -662,12 +296,12 @@ namespace libsemigroups {
   }  // namespace detail
 
   template <typename Node1, typename Node2>
-  uint64_t number_of_paths(WordGraph<Node1> const& d, Node2 source) {
+  uint64_t number_of_paths(WordGraph<Node1> const& wg, Node2 source) {
     // Don't allow selecting the algorithm because we check
     // acyclicity anyway.
-    // TODO(later): could use algorithm::dfs in some cases.
-    word_graph::validate_node(d, static_cast<Node1>(source));
-    auto topo = word_graph::topological_sort(d, source);
+    // TODO(2): could use algorithm::dfs in some cases.
+    word_graph::validate_node(wg, static_cast<Node1>(source));
+    auto topo = word_graph::topological_sort(wg, source);
     if (topo.empty()) {
       // Can't topologically sort, so the subdigraph induced by the nodes
       // reachable from source, contains cycles, and so there are infinitely
@@ -681,9 +315,9 @@ namespace libsemigroups {
         // (the empty one).
         return 1;
       } else {
-        std::vector<uint64_t> number_paths(d.number_of_nodes(), 0);
+        std::vector<uint64_t> number_paths(wg.number_of_nodes(), 0);
         for (auto m = topo.cbegin() + 1; m < topo.cend(); ++m) {
-          for (auto n = d.cbegin_targets(*m); n != d.cend_targets(*m); ++n) {
+          for (auto n = wg.cbegin_targets(*m); n != wg.cend_targets(*m); ++n) {
             if (*n != UNDEFINED) {
               number_paths[*m] += (number_paths[*n] + 1);
             }
@@ -695,74 +329,75 @@ namespace libsemigroups {
   }
 
   template <typename Node1, typename Node2>
-  paths::algorithm number_of_paths_algorithm(WordGraph<Node1> const& d,
+  paths::algorithm number_of_paths_algorithm(WordGraph<Node1> const& wg,
                                              Node2                   source,
                                              size_t                  min,
                                              size_t                  max) {
-    if (min >= max || word_graph::is_complete(d)) {
+    if (min >= max || word_graph::is_complete(wg)) {
       return paths::algorithm::trivial;
     }
 
-    auto topo = word_graph::topological_sort(d, source);
+    auto topo = word_graph::topological_sort(wg, source);
     if (topo.empty()) {
       // Can't topologically sort, so the digraph contains cycles, and so
       // there are infinitely many words labelling paths.
       if (max == POSITIVE_INFINITY) {
         return paths::algorithm::trivial;
-      } else if (d.number_of_edges() < detail::magic_number(d.number_of_nodes())
-                                           * d.number_of_nodes()) {
+      } else if (wg.number_of_edges()
+                 < detail::magic_number(wg.number_of_nodes())
+                       * wg.number_of_nodes()) {
         return paths::algorithm::dfs;
       } else {
         return paths::algorithm::matrix;
       }
     } else {
-      // TODO(later) figure out threshold for using paths::algorithm::dfs
+      // TODO(2) figure out threshold for using paths::algorithm::dfs
       return paths::algorithm::acyclic;
     }
   }
 
   template <typename Node1, typename Node2>
-  uint64_t number_of_paths(WordGraph<Node1> const& d,
+  uint64_t number_of_paths(WordGraph<Node1> const& wg,
                            Node2                   source,
                            size_t                  min,
                            size_t                  max,
                            paths::algorithm        lgrthm) {
-    word_graph::validate_node(d, static_cast<Node1>(source));
+    word_graph::validate_node(wg, static_cast<Node1>(source));
 
     switch (lgrthm) {
       case paths::algorithm::dfs:
-        return std::distance(cbegin_pilo(d, source, min, max), cend_pilo(d));
+        return std::distance(cbegin_pilo(wg, source, min, max), cend_pilo(wg));
       case paths::algorithm::matrix:
-        return detail::number_of_paths_matrix(d, source, min, max);
+        return detail::number_of_paths_matrix(wg, source, min, max);
       case paths::algorithm::acyclic:
-        return detail::number_of_paths_acyclic(d, source, min, max);
+        return detail::number_of_paths_acyclic(wg, source, min, max);
       case paths::algorithm::trivial:
-        return detail::number_of_paths_trivial(d, source, min, max);
+        return detail::number_of_paths_trivial(wg, source, min, max);
       case paths::algorithm::automatic:
         // intentional fall through
       default:
-        return number_of_paths(d,
+        return number_of_paths(wg,
                                source,
                                min,
                                max,
-                               number_of_paths_algorithm(d, source, min, max));
+                               number_of_paths_algorithm(wg, source, min, max));
     }
   }
 
   template <typename Node1, typename Node2>
-  paths::algorithm number_of_paths_algorithm(WordGraph<Node1> const& d,
+  paths::algorithm number_of_paths_algorithm(WordGraph<Node1> const& wg,
                                              Node2                   source,
                                              Node2                   target,
                                              size_t                  min,
                                              size_t                  max) {
-    bool acyclic = word_graph::is_acyclic(d, source, target);
-    if (min >= max || !word_graph::is_reachable(d, source, target)
+    bool acyclic = word_graph::is_acyclic(wg, source, target);
+    if (min >= max || !word_graph::is_reachable(wg, source, target)
         || (!acyclic && max == POSITIVE_INFINITY)) {
       return paths::algorithm::trivial;
-    } else if (acyclic && word_graph::is_acyclic(d, source)) {
+    } else if (acyclic && word_graph::is_acyclic(wg, source)) {
       return paths::algorithm::acyclic;
-    } else if (d.number_of_edges() < detail::magic_number(d.number_of_nodes())
-                                         * d.number_of_nodes()) {
+    } else if (wg.number_of_edges() < detail::magic_number(wg.number_of_nodes())
+                                          * wg.number_of_nodes()) {
       return paths::algorithm::dfs;
     } else {
       return paths::algorithm::matrix;
@@ -770,63 +405,71 @@ namespace libsemigroups {
   }
 
   template <typename Node1, typename Node2>
-  uint64_t number_of_paths(WordGraph<Node1> const& d,
+  uint64_t number_of_paths(WordGraph<Node1> const& wg,
                            Node2                   source,
                            Node2                   target,
                            size_t                  min,
                            size_t                  max,
                            paths::algorithm        lgrthm) {
-    word_graph::validate_node(d, static_cast<Node1>(source));
-    word_graph::validate_node(d, static_cast<Node1>(target));
+    word_graph::validate_node(wg, static_cast<Node1>(source));
+    word_graph::validate_node(wg, static_cast<Node1>(target));
 
     switch (lgrthm) {
       case paths::algorithm::dfs:
-        if (detail::number_of_paths_special(d, source, target, min, max)) {
+        if (detail::number_of_paths_special(wg, source, target, min, max)) {
           return POSITIVE_INFINITY;
         }
-        return std::distance(cbegin_pstilo(d, source, target, min, max),
-                             cend_pstilo(d));
+        return std::distance(cbegin_pstilo(wg, source, target, min, max),
+                             cend_pstilo(wg));
       case paths::algorithm::matrix:
-        return detail::number_of_paths_matrix(d, source, target, min, max);
+        return detail::number_of_paths_matrix(wg, source, target, min, max);
       case paths::algorithm::acyclic:
-        return detail::number_of_paths_acyclic(d, source, target, min, max);
+        return detail::number_of_paths_acyclic(wg, source, target, min, max);
       case paths::algorithm::trivial:
-        return detail::number_of_paths_trivial(d, source, target, min, max);
+        return detail::number_of_paths_trivial(wg, source, target, min, max);
       case paths::algorithm::automatic:
         // intentional fall through
       default:
         return number_of_paths(
-            d,
+            wg,
             source,
             target,
             min,
             max,
-            number_of_paths_algorithm(d, source, target, min, max));
+            number_of_paths_algorithm(wg, source, target, min, max));
+    }
+  }
+
+  template <typename Node>
+  void Paths<Node>::throw_if_source_undefined() const {
+    if (_source == UNDEFINED) {
+      LIBSEMIGROUPS_EXCEPTION("no source node defined, use the member "
+                              "function \"source\" to define the source node");
     }
   }
 
   template <typename Node>
   bool Paths<Node>::set_iterator_no_checks() const {
-    size_t const N = _digraph->number_of_nodes();
+    size_t const N = _word_graph->number_of_nodes();
 
     if (!_current_valid && N != 0) {
       _current_valid = true;
       _position      = 0;
       if (_order == Order::shortlex && _source != UNDEFINED) {
         if (_target != UNDEFINED) {
-          _current = cbegin_pstislo(*_digraph, _source, _target, _min, _max);
-          _end     = cend_pstislo(*_digraph);
+          _current = cbegin_pstislo(*_word_graph, _source, _target, _min, _max);
+          _end     = cend_pstislo(*_word_graph);
         } else {
-          _current = cbegin_pislo(*_digraph, _source, _min, _max);
-          _end     = cend_pislo(*_digraph);
+          _current = cbegin_pislo(*_word_graph, _source, _min, _max);
+          _end     = cend_pislo(*_word_graph);
         }
       } else if (_order == Order::lex && _source != UNDEFINED) {
         if (_target != UNDEFINED) {
-          _current = cbegin_pstilo(*_digraph, _source, _target, _min, _max);
-          _end     = cend_pstilo(*_digraph);
+          _current = cbegin_pstilo(*_word_graph, _source, _target, _min, _max);
+          _end     = cend_pstilo(*_word_graph);
         } else {
-          _current = cbegin_pilo(*_digraph, _source, _min, _max);
-          _end     = cend_pilo(*_digraph);
+          _current = cbegin_pilo(*_word_graph, _source, _min, _max);
+          _end     = cend_pilo(*_word_graph);
         }
       }
       return true;
@@ -835,20 +478,14 @@ namespace libsemigroups {
   }
 
   template <typename Node>
-  bool Paths<Node>::set_iterator() const {
-    throw_if_word_graph_nullptr();
-    return set_iterator_no_checks();
-  }
-
-  template <typename Node>
-  uint64_t Paths<Node>::size_hint_no_checks() const {
+  uint64_t Paths<Node>::size_hint() const {
     uint64_t num_paths = 0;
-    if (_digraph->number_of_nodes() == 0) {
+    if (_word_graph->number_of_nodes() == 0) {
       return num_paths;
     } else if (_target != UNDEFINED) {
-      num_paths = number_of_paths(*_digraph, _source, _target, _min, _max);
+      num_paths = number_of_paths(*_word_graph, _source, _target, _min, _max);
     } else {
-      num_paths = number_of_paths(*_digraph, _source, _min, _max);
+      num_paths = number_of_paths(*_word_graph, _source, _min, _max);
     }
 
     if (_current_valid && num_paths != POSITIVE_INFINITY) {
@@ -859,34 +496,29 @@ namespace libsemigroups {
   }
 
   template <typename Node>
-  uint64_t Paths<Node>::size_hint() const {
-    throw_if_word_graph_nullptr();
-    return size_hint_no_checks();
-  }
-
-  template <typename Node>
   Paths<Node>& Paths<Node>::init() {
     _current_valid = false;
-    _digraph       = nullptr;
+    _word_graph    = nullptr;
     _order         = Order::shortlex;
-    _max           = POSITIVE_INFINITY;
+    _max           = static_cast<size_type>(POSITIVE_INFINITY);
     _min           = 0;
     _position      = 0;
-    _source        = UNDEFINED;
-    _target        = UNDEFINED;
+    _source        = static_cast<Node>(UNDEFINED);
+    _target        = static_cast<Node>(UNDEFINED);
     return *this;
   }
 
   template <typename Node>
-  Node Paths<Node>::to() const {
+  Node Paths<Node>::current_target() const {
     if (_target != UNDEFINED) {
       return _target;
-    } else {
-      set_iterator();
-      // We are enumerating all paths with a given source, and so we return
-      // the current target node using the iterator.
-      return std::visit([](auto& it) { return it.target(); }, _current);
+    } else if (_source == UNDEFINED) {
+      return UNDEFINED;
     }
+    set_iterator_no_checks();
+    // We are enumerating all paths with a given source, and so we return
+    // the current target node using the iterator.
+    return std::visit([](auto& it) { return it.target(); }, _current);
   }
 
   template <typename Node>
@@ -901,6 +533,42 @@ namespace libsemigroups {
     return *obj;
   }
 
+  template <typename Node>
+  typename ReversiblePaths<Node>::output_type
+  ReversiblePaths<Node>::get() const {
+    // TODO(2) optimise for repeated calls with no call to next in between
+    output_type result = Paths<Node>::get();
+    if (!_reverse) {
+      return result;
+    } else {
+      _result = result;
+      std::reverse(_result.begin(), _result.end());
+      return _result;
+    }
+  }
+
+  template <typename Node>
+  std::string to_human_readable_repr(Paths<Node> const& p) {
+    std::string source_target;
+    std::string sep;
+    if (p.source() != UNDEFINED) {
+      source_target += fmt::format(" source {}", p.source());
+      sep = ",";
+    }
+    if (p.target() != UNDEFINED) {
+      source_target += fmt::format("{} target {}", sep, p.target());
+      sep = ",";
+    }
+
+    return fmt::format(
+        "<Paths in {} with{}{} length in [{}, {})>",
+        to_human_readable_repr(p.word_graph()),
+        source_target,
+        sep,
+        p.min(),
+        p.max() == POSITIVE_INFINITY ? "\u221e" : std::to_string(p.max() + 1));
+    // TODO(0) + 1 correct?
+  }
 }  // namespace libsemigroups
 
 template <typename Node>
