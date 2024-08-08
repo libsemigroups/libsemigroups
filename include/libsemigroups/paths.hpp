@@ -20,6 +20,7 @@
 // WordGraph.
 
 // TODO(2) check code coverage
+// TODO(0) rename from -> source and to -> target for consistency!
 
 #ifndef LIBSEMIGROUPS_PATHS_HPP_
 #define LIBSEMIGROUPS_PATHS_HPP_
@@ -721,13 +722,7 @@ namespace libsemigroups {
     //!
     //! This function throws an exception if the source node of the paths in
     //! the range has not been specified (using \ref from).
-    // TODO(0) to tpp
-    void throw_if_source_undefined() const {
-      if (_source == UNDEFINED) {
-        LIBSEMIGROUPS_EXCEPTION("no source node defined, use the member "
-                                "function \"from\" to define the source node");
-      }
-    }
+    void throw_if_source_undefined() const;
 
     ////////////////////////////////////////////////////////////////////////
     // Functions + members required by rx::ranges
@@ -833,8 +828,8 @@ namespace libsemigroups {
     //!
     //! \note Changing the value of the source node resets the Paths object to
     //! point at the first word in the specified range.
-    Paths& from_no_checks(node_type n) noexcept {
-      return from_no_checks(this, n);
+    Paths& source_no_checks(node_type n) noexcept {
+      return source_no_checks(this, n);
     }
 
     //! \brief Set the source node of every path in the range.
@@ -856,7 +851,7 @@ namespace libsemigroups {
     //! point at the first word in the specified range.
     Paths& from(node_type n) {
       word_graph::validate_node(word_graph(), n);
-      return from_no_checks(n);
+      return source_no_checks(n);
     }
 
     //! \brief Get the current source node of every path in the range.
@@ -892,8 +887,8 @@ namespace libsemigroups {
     //!
     //! \note Changing the value of the target node resets the Paths object to
     //! point at the first word in the specified range.
-    Paths& to_no_checks(node_type n) noexcept {
-      return to_no_checks(this, n);
+    Paths& target_no_checks(node_type n) noexcept {
+      return target_no_checks(this, n);
     }
 
     //! \brief Set the target node of every path in the range.
@@ -917,7 +912,7 @@ namespace libsemigroups {
       if (n != UNDEFINED) {
         word_graph::validate_node(word_graph(), n);
       }
-      return to_no_checks(n);
+      return target_no_checks(n);
     }
 
     //! \brief Get the current target node of every path in the range.
@@ -1033,14 +1028,14 @@ namespace libsemigroups {
 
    protected:
     template <typename Subclass>
-    Subclass& from_no_checks(Subclass* obj, node_type src) {
+    Subclass& source_no_checks(Subclass* obj, node_type src) {
       _current_valid &= (src == _source);
       _source = src;
       return *obj;
     }
 
     template <typename Subclass>
-    Subclass& to_no_checks(Subclass* obj, node_type trgt) noexcept {
+    Subclass& target_no_checks(Subclass* obj, node_type trgt) noexcept {
       _current_valid &= (trgt == _target);
       _target = trgt;
       return *obj;
@@ -1152,9 +1147,9 @@ namespace libsemigroups {
       return *this;
     }
 
-    //! \copydoc Paths::from_no_checks
-    ReversiblePaths& from_no_checks(node_type n) noexcept {
-      return Paths<Node>::from_no_checks(this, n);
+    //! \copydoc Paths::source_no_checks
+    ReversiblePaths& source_no_checks(node_type n) noexcept {
+      return Paths<Node>::source_no_checks(this, n);
     }
 
     //! \copydoc Paths::from
@@ -1165,9 +1160,9 @@ namespace libsemigroups {
       return *this;
     }
 
-    //! \copydoc Paths::to_no_checks
-    ReversiblePaths& to_no_checks(node_type n) noexcept {
-      return Paths<Node>::to_no_checks(this, n);
+    //! \copydoc Paths::target_no_checks
+    ReversiblePaths& target_no_checks(node_type n) noexcept {
+      return Paths<Node>::target_no_checks(this, n);
     }
 
     //! \copydoc Paths::to
@@ -1225,18 +1220,7 @@ namespace libsemigroups {
     }
 
     //! \copydoc Paths::get
-    // TODO(0) to tpp
-    output_type get() const {
-      // TODO(2) optimise for repeated calls with no call to next in between
-      output_type result = Paths<Node>::get();
-      if (!_reverse) {
-        return result;
-      } else {
-        _result = result;
-        std::reverse(_result.begin(), _result.end());
-        return _result;
-      }
-    }
+    output_type get() const;
   };  // class ReversiblePaths
 
   //! Deduction guide to construct a ReversiblePaths<Node> from a

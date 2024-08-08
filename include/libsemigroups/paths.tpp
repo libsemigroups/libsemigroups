@@ -19,6 +19,7 @@
 // This file contains the implementations of the functionality declared in
 // paths.hpp for iterating through paths in an WordGraph.
 
+#include "libsemigroups/paths.hpp"
 namespace libsemigroups {
   namespace detail {
     static inline double magic_number(size_t N) {
@@ -441,6 +442,14 @@ namespace libsemigroups {
   }
 
   template <typename Node>
+  void Paths<Node>::throw_if_source_undefined() const {
+    if (_source == UNDEFINED) {
+      LIBSEMIGROUPS_EXCEPTION("no source node defined, use the member "
+                              "function \"from\" to define the source node");
+    }
+  }
+
+  template <typename Node>
   bool Paths<Node>::set_iterator_no_checks() const {
     size_t const N = _word_graph->number_of_nodes();
 
@@ -522,6 +531,20 @@ namespace libsemigroups {
     _current_valid &= (val == _order);
     _order = val;
     return *obj;
+  }
+
+  template <typename Node>
+  typename ReversiblePaths<Node>::output_type
+  ReversiblePaths<Node>::get() const {
+    // TODO(2) optimise for repeated calls with no call to next in between
+    output_type result = Paths<Node>::get();
+    if (!_reverse) {
+      return result;
+    } else {
+      _result = result;
+      std::reverse(_result.begin(), _result.end());
+      return _result;
+    }
   }
 
 }  // namespace libsemigroups
