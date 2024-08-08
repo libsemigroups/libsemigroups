@@ -874,6 +874,9 @@ namespace libsemigroups {
     //! terminates when the rewriting system is confluent, which may be never.
     //!
     //! \sa run.
+    // TODO rename contains
+    // TODO do a no check version of this
+    // TODO version taking rvalue refs
     [[nodiscard]] bool equal_to(std::string const& u, std::string const& v);
 
     // REVIEW Why does equal to take strings, but this take words?
@@ -888,6 +891,7 @@ namespace libsemigroups {
     //! contained within the congruence, and \c false otherwise.
     //!
     //! \sa \ref equal_to.
+    // TODO add perf warning
     [[nodiscard]] bool contains(word_type const& u,
                                 word_type const& v) override {
       return equal_to(to_string(presentation(), u),

@@ -291,29 +291,19 @@ namespace libsemigroups {
       return true;
     }
 
-    detail::external_string_type uu = u;
-    detail::external_string_type vv = v;
-
-    if (kind() == congruence_kind::left) {
-      std::reverse(uu.begin(), uu.end());
-      std::reverse(vv.begin(), vv.end());
-    }
-
-    add_octo(uu);
-    add_octo(vv);
-
-    rewrite_inplace(uu);
-    rewrite_inplace(vv);
+    auto uu = rewrite(u);
+    auto vv = rewrite(v);
 
     if (uu == vv) {
       return true;
+    } else if (finished()) {
+      return false;
     }
 
     run();
-    external_to_internal_string(uu);
-    external_to_internal_string(vv);
-    _rewriter.rewrite(uu);
-    _rewriter.rewrite(vv);
+
+    rewrite_inplace(uu);
+    rewrite_inplace(vv);
     return uu == vv;
   }
 
