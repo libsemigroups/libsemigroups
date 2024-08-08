@@ -1956,9 +1956,10 @@ namespace libsemigroups {
   template <typename Node>
   std::string to_human_readable_repr(WordGraph<Node> const& wg) {
     // TODO could be more elaborate, include complete, etc
-    return fmt::format("<WordGraph with {} nodes & {} edges>",
+    return fmt::format("<WordGraph with {} nodes, {} edges, & out-degree {}>",
                        wg.number_of_nodes(),
-                       wg.number_of_edges());
+                       wg.number_of_edges(),
+                       wg.out_degree());
   }
 
 }  // namespace libsemigroups

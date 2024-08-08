@@ -1041,26 +1041,26 @@ namespace libsemigroups {
     Paths p(wg);
     REQUIRE(p.target() == UNDEFINED);
     REQUIRE(to_human_readable_repr(p)
-            == "<Paths in <WordGraph with 2 nodes & 2 edges> with length in "
-               "[0, ∞)>");
+            == "<Paths in <WordGraph with 2 nodes, 2 edges, & out-degree 2> "
+               "with length in [0, ∞)>");
     p.source(1);
     REQUIRE(to_human_readable_repr(p)
-            == "<Paths in <WordGraph with 2 nodes & 2 edges> with source 1, "
-               "length in [0, ∞)>");
+            == "<Paths in <WordGraph with 2 nodes, 2 edges, & out-degree 2> "
+               "with source 1, length in [0, ∞)>");
     p.init(wg);
     p.target(1);
     REQUIRE(to_human_readable_repr(p)
-            == "<Paths in <WordGraph with 2 nodes & 2 edges> with target 1, "
-               "length in [0, ∞)>");
+            == "<Paths in <WordGraph with 2 nodes, 2 edges, & out-degree 2> "
+               "with target 1, length in [0, ∞)>");
     p.source(0);
     REQUIRE(to_human_readable_repr(p)
-            == "<Paths in <WordGraph with 2 nodes & 2 edges> with source 0, "
-               "target 1, length in [0, ∞)>");
+            == "<Paths in <WordGraph with 2 nodes, 2 edges, & out-degree 2> "
+               "with source 0, target 1, length in [0, ∞)>");
     p.min(1);
     p.max(12);
     REQUIRE(to_human_readable_repr(p)
-            == "<Paths in <WordGraph with 2 nodes & 2 edges> with source 0, "
-               "target 1, length in [1, 13)>");
+            == "<Paths in <WordGraph with 2 nodes, 2 edges, & out-degree 2> "
+               "with source 0, target 1, length in [1, 13)>");
     REQUIRE(p.count() == 6);
   }
 }  // namespace libsemigroups

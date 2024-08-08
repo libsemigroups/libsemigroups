@@ -574,8 +574,8 @@ namespace libsemigroups {
   //! Defined in ``paths.hpp``.
   //!
   //! This class represents a range object that facilitates iterating through
-  //! the paths in a WordGraph \ref source a given node (possible \ref target
-  //! another node) in a particular \ref order.
+  //! the paths in a WordGraph from a given \ref source node (possible to a \ref
+  //! target node) in a particular \ref order.
   //!
   //! \tparam Node the type of the nodes in the underlying WordGraph.
   //!
@@ -702,6 +702,9 @@ namespace libsemigroups {
     //!
     //! \param wg the word graph.
     //!
+    //! \returns
+    //! A reference to `*this`.
+    //!
     //! \warning It is also necessary to set the source node using \ref source
     //! before the object is valid.
     //!
@@ -739,8 +742,7 @@ namespace libsemigroups {
     //! `source() != UNDEFINED` before calling this function.
     output_type get() const {
       set_iterator_no_checks();
-      return std::visit(
-          [](auto& it) -> auto const& { return *it; }, _current);
+      return std::visit([](auto& it) -> auto const& { return *it; }, _current);
     }
 
     //! \brief Advance to the next path in the range.
@@ -935,7 +937,7 @@ namespace libsemigroups {
     //!
     //! This function returns the current target node of the path labelled by
     //! \ref get. If there is no such path (because, for example, the source
-    //! node hasn't been defined, then \ref UNDEFINED is returned.
+    //! node hasn't been defined, then \ref UNDEFINED is returned).
     //!
     //! \returns The current target node of the path labelled by \ref get or
     //! \ref UNDEFINED.
