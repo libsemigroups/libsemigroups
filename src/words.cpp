@@ -331,6 +331,50 @@ namespace libsemigroups {
   // 4. Strings
   ////////////////////////////////////////////////////////////////////////
 
+  std::string random_string(std::string const& alphabet, size_t length) {
+    static std::random_device       rd;
+    static std::mt19937             generator(rd());
+    std::uniform_int_distribution<> distribution(0, alphabet.size() - 1);
+
+    std::string result;
+
+    for (size_t i = 0; i < length; ++i) {
+      result += alphabet[distribution(generator)];
+    }
+
+    return result;
+  }
+
+  // Random string with random length in the range [min, max) over <alphabet>
+  std::string random_string(std::string const& alphabet,
+                            size_t             min,
+                            size_t             max) {
+    if (min >= max) {
+      LIBSEMIGROUPS_EXCEPTION(
+          "the 2nd argument (min) must be less than the 3rd argument (max)");
+    } else if (alphabet.empty() && min != 0) {
+      LIBSEMIGROUPS_EXCEPTION("expected non-empty 1st argument (alphabet)");
+    }
+    if (max == min + 1) {
+      return random_string(alphabet, min);
+    }
+    static std::random_device       rd;
+    static std::mt19937             generator(rd());
+    std::uniform_int_distribution<> distribution(min, max - 1);
+    return random_string(alphabet, distribution(generator));
+  }
+
+  std::vector<std::string> random_strings(std::string const& alphabet,
+                                          size_t             number,
+                                          size_t             min,
+                                          size_t             max) {
+    std::vector<std::string> result;
+    for (size_t j = 0; j < number; ++j) {
+      result.push_back(random_string(alphabet, min, max));
+    }
+    return result;
+  }
+
   Strings& Strings::init() {
     _current.clear();
     _current_valid = false;

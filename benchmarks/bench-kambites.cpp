@@ -33,8 +33,6 @@
 namespace libsemigroups {
   using detail::MultiStringView;
   using detail::power_string;
-  using detail::random_string;
-  using detail::random_strings;
 
   namespace {
     std::string zip(std::vector<std::string> const& x,

@@ -113,9 +113,7 @@ namespace libsemigroups {
   //!
   //! \throws LibsemigroupsException if \p nr_letters is \c 0.
   //!
-  // TODO move random_string from detail/string.hpp to here and then
-  // add the following line back into the doc
-  // \sa \ref random_string
+  //! \sa \ref random_string
   [[nodiscard]] word_type random_word(size_t length, size_t nr_letters);
 
   //! \ingroup words_group
@@ -971,6 +969,23 @@ namespace libsemigroups {
   ////////////////////////////////////////////////////////////////////////
   // Strings
   ////////////////////////////////////////////////////////////////////////
+
+  // TODO doc
+  // Random string with length <length> over <alphabet>.
+  std::string random_string(std::string const& alphabet, size_t length);
+
+  // TODO doc
+  // Random string with random length in the range [min, max) over <alphabet>
+  std::string random_string(std::string const& alphabet,
+                            size_t             min,
+                            size_t             max);
+
+  // TODO doc
+  // TODO change to a range object
+  std::vector<std::string> random_strings(std::string const& alphabet,
+                                          size_t             number,
+                                          size_t             min,
+                                          size_t             max);
 
   //! \ingroup words_group
   //! \brief Class for generating strings in a given range and in a particular
