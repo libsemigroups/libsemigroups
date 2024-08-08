@@ -24,13 +24,6 @@
 #ifndef LIBSEMIGROUPS_PATHS_HPP_
 #define LIBSEMIGROUPS_PATHS_HPP_
 
-// TODO(0) required?
-#if (defined(__GNUC__) && !(defined(__clang__) || defined(__INTEL_COMPILER)))
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wmaybe-uninitialized"
-#pragma GCC diagnostic ignored "-Wuninitialized"
-#endif
-
 #include <algorithm>    // for any_of, for_each, max_element
 #include <cstddef>      // for size_t, ptrdiff_t
 #include <iterator>     // for distance, forward_iterator_tag
@@ -1069,7 +1062,7 @@ namespace libsemigroups {
 
     template <typename Subclass>
     Subclass& order(Subclass* obj, Order val);
-  };
+  };  // class Paths
 
   //! Deduction guide to construct a Paths<Node> from a WordGraph<Node> const
   //! reference.
@@ -1244,7 +1237,7 @@ namespace libsemigroups {
         return _result;
       }
     }
-  };
+  };  // class ReversiblePaths
 
   //! Deduction guide to construct a ReversiblePaths<Node> from a
   //! WordGraph<Node> const reference.
@@ -1259,8 +1252,5 @@ namespace libsemigroups {
 }  // namespace libsemigroups
 
 #include "paths.tpp"
-// TODO(0) still required?
-#if (defined(__GNUC__) && !(defined(__clang__) || defined(__INTEL_COMPILER)))
-#pragma GCC diagnostic pop
-#endif
+
 #endif  // LIBSEMIGROUPS_PATHS_HPP_
