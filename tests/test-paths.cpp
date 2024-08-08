@@ -1027,7 +1027,7 @@ namespace libsemigroups {
     wg.set_target(0, 0, 1);
     wg.set_target(1, 0, 0);
     Paths p(wg);
-    REQUIRE_THROWS_AS(p.throw_if_not_valid(), LibsemigroupsException);
-    REQUIRE(!p.is_valid());
+    REQUIRE_THROWS_AS(p.throw_if_source_undefined(), LibsemigroupsException);
+    REQUIRE(p.from() == UNDEFINED);
   }
 }  // namespace libsemigroups

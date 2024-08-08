@@ -1,4 +1,4 @@
-# Doxyfile 1.9.7
+Doxyfile 1.9.7
 
 # This file describes the settings to be used by the documentation system
 # doxygen (www.doxygen.org) for a project.
@@ -284,7 +284,7 @@ TAB_SIZE = 4
 # @} or use a double escape (\\{ and \\})
 
 ALIASES = exceptions="\par Exceptions"
-ALIASES += noexcept="This function is $(noexcept) and is guaranteed never to throw."
+ALIASES += noexcept="This function is `noexcept` and is guaranteed never to throw."
 ALIASES += no_libsemigroups_except="This function guarantees not to throw a $(LibsemigroupsException)."
 ALIASES += no_libsemigroups_except_detail="This function guarantees not to throw a \ref libsemigroups::LibsemigroupsException."
 ALIASES += strong_guarantee="If an exception is thrown, \c this is guaranteed not to be modified (strong exception guarantee)."
