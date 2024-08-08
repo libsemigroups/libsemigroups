@@ -48,7 +48,6 @@ namespace libsemigroups {
 
   // clang-format off
   //! \defgroup adapters_no_default_group Adapters with no default implementation // NOLINT
-  // clang-format on
   //!
   //! \ingroup adapters_group
   //!
@@ -61,6 +60,7 @@ namespace libsemigroups {
   //! be used in the algorithms of `libsemigroups`.
   //!
   //! @{
+  // clang-format on
 
   //! \brief Adapter for the complexity of multiplication.
   //!
