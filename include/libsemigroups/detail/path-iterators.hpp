@@ -19,6 +19,17 @@
 // This file contains declarations of the iterator classes for
 // paths in an WordGraph.
 
+#include <cstddef>      // for size_t, ptrdiff_t
+#include <iterator>     // for forward_iterator_tag
+#include <tuple>        // for tie
+#include <type_traits>  // for integral_constant<>::value
+#include <vector>       // for vector, vector<>::const...
+
+#include "libsemigroups/constants.hpp"        // for UNDEFINED, Undefined
+#include "libsemigroups/detail/iterator.hpp"  // for default_postfix_increment
+#include "libsemigroups/types.hpp"            // for word_type
+#include "libsemigroups/word-graph.hpp"
+
 #ifndef LIBSEMIGROUPS_DETAIL_PATH_ITERATORS_HPP_
 #define LIBSEMIGROUPS_DETAIL_PATH_ITERATORS_HPP_
 
