@@ -544,4 +544,26 @@ namespace libsemigroups {
     REQUIRE(kb.contains({1, 1, 1}, {1}));
     REQUIRE_THROWS_AS(kb.presentation(p), LibsemigroupsException);
   }
+
+  LIBSEMIGROUPS_TEST_CASE(
+      "KnuthBendix",
+      "028",
+      "left congruence on finite semigroup (RewriteFromLeft)",
+      "[quick]") {
+    auto                  rg = ReportGuard(false);
+    FroidurePin<Transf<>> S;
+    S.add_generator(Transf<>({1, 3, 4, 2, 3}));
+    S.add_generator(Transf<>({3, 2, 1, 3, 3}));
+    REQUIRE(S.size() == 88);
+
+    auto l = 010001100_w;
+    auto r = 10001_w;
+
+    KnuthBendix kb(left, to_presentation<word_type>(S));
+    kb.add_pair(l, r);
+    REQUIRE(kb.number_of_classes() == 69);
+    REQUIRE(kb.rewrite("baabab") == "aab");
+    REQUIRE(kb.rewrite("aabaaab") == "aab");
+    REQUIRE(kb.equal_to("baabab", "aabaaab"));
+  }
 }  // namespace libsemigroups
