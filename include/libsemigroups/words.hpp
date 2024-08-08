@@ -980,11 +980,13 @@ namespace libsemigroups {
                             size_t             max);
 
   // TODO doc
-  // TODO change to a range object
-  std::vector<std::string> random_strings(std::string const& alphabet,
-                                          size_t             number,
-                                          size_t             min,
-                                          size_t             max);
+  auto inline random_strings(std::string const& alphabet,
+                             size_t             number,
+                             size_t             min,
+                             size_t             max) {
+    return rx::generate([&] { return random_string(alphabet, min, max); })
+           | rx::take(number);
+  }
 
   //! \ingroup words_group
   //! \brief Class for generating strings in a given range and in a particular

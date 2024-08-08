@@ -382,17 +382,6 @@ namespace libsemigroups {
     return random_string(alphabet, distribution(generator));
   }
 
-  std::vector<std::string> random_strings(std::string const& alphabet,
-                                          size_t             number,
-                                          size_t             min,
-                                          size_t             max) {
-    std::vector<std::string> result;
-    for (size_t j = 0; j < number; ++j) {
-      result.push_back(random_string(alphabet, min, max));
-    }
-    return result;
-  }
-
   Strings& Strings::init() {
     _current.clear();
     _current_valid = false;
