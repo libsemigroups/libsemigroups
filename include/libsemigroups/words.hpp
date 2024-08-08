@@ -654,7 +654,7 @@ namespace libsemigroups {
       return rx::end(*this);
     }
 
-    //! TODO
+    //! TODO doc
     bool valid() const noexcept {
       return _current_valid;
     }
@@ -738,32 +738,31 @@ namespace libsemigroups {
   //! toword("bac");        // returns {0, 1, 2}
   //! toword("bababbbcbc"); // returns { 0, 1, 0, 1, 0, 0, 0, 2, 0, 2}
   //! \endcode
-  // TODO a version that takes a word_type, so that we can permute the letters
-  // in a word
-  // TODO a version of ToWords that is similar, i.e. takes a word_type and so
-  // can be used to change the letters in a word.
+  // TODO (later) a version that takes a word_type, so that we can permute the
+  // letters in a word
+  // TODO (later) a version of ToWords that is similar, i.e. takes a word_type
+  // and so can be used to change the letters in a word.
   class ToWord {
    public:
     //! \brief Default constructor.
     //!
     //! Constructs an empty object with no alphabet set.
-    // TODO noexcept?
+    // Not noexcept because std::array::fill isn't
     ToWord() : _lookup() {
       init();
     }
 
-    // TODO noexcept?
-    // TODO Out of line these
-    //! TODO
-    ToWord(ToWord const&) = default;
-    //! TODO
-    ToWord(ToWord&&) = default;
-    //! TODO
-    ToWord& operator=(ToWord const&) = default;
-    //! TODO
-    ToWord& operator=(ToWord&&) = default;
-
-    ~ToWord() = default;
+    // TODO (later) noexcept?
+    //! TODO doc
+    ToWord(ToWord const&);
+    //! TODO doc
+    ToWord(ToWord&&);
+    //! TODO doc
+    ToWord& operator=(ToWord const&);
+    //! TODO doc
+    ToWord& operator=(ToWord&&);
+    //! TODO doc
+    ~ToWord();
 
     //! \brief Initialize an existing ToWord object.
     //!
@@ -963,8 +962,8 @@ namespace libsemigroups {
     return to_string(alphabet, input.cbegin(), input.cend());
   }
 
-  // TODO single arg to_string(word_type const&).
-  // TODO ToString object that stores the alphabet
+  // TODO (later) single arg to_string(word_type const&).
+  // TODO (later) ToString object that stores the alphabet
 
   ////////////////////////////////////////////////////////////////////////
   // Strings
@@ -1425,32 +1424,30 @@ namespace libsemigroups {
     //! The default constructor is deleted, since the alphabet must defined.
     ToWords() = delete;
 
-    // TODO out of line these
-
     //! \brief Default copy constructor.
     //!
     //! Default copy constructor.
-    ToWords(ToWords const&) = default;
+    ToWords(ToWords const&);
 
     //! \brief Default move constructor.
     //!
     //! Default move constructor.
-    ToWords(ToWords&&) = default;
+    ToWords(ToWords&&);
 
     //! \brief Default copy assignment operator.
     //!
     //! Default move assignment operator.
-    ToWords& operator=(ToWords const&) = default;
+    ToWords& operator=(ToWords const&);
 
     //! \brief Default move assignment operator.
     //!
     //! Default move assignment operator.
-    ToWords& operator=(ToWords&&) = default;
+    ToWords& operator=(ToWords&&);
 
     //! \brief Default destructor.
     //!
     //! Default destructor.
-    ~ToWords() = default;
+    ~ToWords();
 
     //! \brief Construct from `std::string_view`
     //!
@@ -1549,32 +1546,30 @@ namespace libsemigroups {
     //! The default constructor is deleted, since the alphabet must defined.
     ToStrings() = delete;
 
-    // TODO out of line these
-
     //! \brief Default copy constructor.
     //!
     //! Default copy constructor.
-    ToStrings(ToStrings const&) = default;
+    ToStrings(ToStrings const&);
 
     //! \brief Default move constructor.
     //!
     //! Default move constructor.
-    ToStrings(ToStrings&&) = default;
+    ToStrings(ToStrings&&);
 
     //! \brief Default copy assignment operator.
     //!
     //! Default move assignment operator.
-    ToStrings& operator=(ToStrings const&) = default;
+    ToStrings& operator=(ToStrings const&);
 
     //! \brief Default move assignment operator.
     //!
     //! Default move assignment operator.
-    ToStrings& operator=(ToStrings&&) = default;
+    ToStrings& operator=(ToStrings&&);
 
     //! \brief Default destructor.
     //!
     //! Default destructor.
-    ~ToStrings() = default;
+    ~ToStrings();
 
     //! \brief Construct from `std::string_view`
     //!
