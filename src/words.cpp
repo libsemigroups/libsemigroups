@@ -227,6 +227,12 @@ namespace libsemigroups {
     }
   }  // namespace
 
+  ToWord::ToWord(ToWord const&)            = default;
+  ToWord::ToWord(ToWord&&)                 = default;
+  ToWord& ToWord::operator=(ToWord const&) = default;
+  ToWord& ToWord::operator=(ToWord&&)      = default;
+  ToWord::~ToWord()                        = default;
+
   size_t human_readable_index(char c) {
     static bool first_call = true;
     // It might be preferable to use an array here but char is sometimes
@@ -307,6 +313,12 @@ namespace libsemigroups {
     return output;
   }
 
+  ToWords::ToWords(ToWords const&)            = default;
+  ToWords::ToWords(ToWords&&)                 = default;
+  ToWords& ToWords::operator=(ToWords const&) = default;
+  ToWords& ToWords::operator=(ToWords&&)      = default;
+  ToWords::~ToWords()                         = default;
+
   ////////////////////////////////////////////////////////////////////////
   // 3. Words -> Strings
   ////////////////////////////////////////////////////////////////////////
@@ -326,6 +338,12 @@ namespace libsemigroups {
     }
     return chars_in_human_readable_order()[i];
   }
+
+  ToStrings::ToStrings(ToStrings const&)            = default;
+  ToStrings::ToStrings(ToStrings&&)                 = default;
+  ToStrings& ToStrings::operator=(ToStrings const&) = default;
+  ToStrings& ToStrings::operator=(ToStrings&&)      = default;
+  ToStrings::~ToStrings()                           = default;
 
   ////////////////////////////////////////////////////////////////////////
   // 4. Strings
