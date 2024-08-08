@@ -707,8 +707,8 @@ namespace libsemigroups {
       presentation::add_rule(p, "bcbc", "");
 
       for (size_t i = 1; i < 3; ++i) {
-        auto lhs = detail::random_string(lphbt, 100);
-        auto rhs = detail::random_string(lphbt, 100);
+        auto lhs = random_string(lphbt, 100);
+        auto rhs = random_string(lphbt, 100);
         presentation::add_rule(p, lhs, rhs);
         std::cout << "trying rule " << lhs << " -> " << rhs << std::endl;
       }

@@ -46,7 +46,6 @@ namespace libsemigroups {
 
   constexpr bool REPORT = false;
   using detail::MultiStringView;
-  using detail::random_string;
 
   namespace {
 

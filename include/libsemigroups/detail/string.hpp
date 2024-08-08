@@ -232,23 +232,6 @@ namespace libsemigroups {
       return is_suffix(u.cbegin(), u.cend(), v.cbegin(), v.cend());
     }
 
-    // Random string with length <length> over <alphabet>.
-    // TODO to words.hpp
-    std::string random_string(std::string const& alphabet, size_t length);
-
-    // Random string with random length in the range [min, max) over <alphabet>
-    // TODO to words.hpp
-    std::string random_string(std::string const& alphabet,
-                              size_t             min,
-                              size_t             max);
-
-    // TODO to words.hpp
-    // TODO change to a range object
-    std::vector<std::string> random_strings(std::string const& alphabet,
-                                            size_t             number,
-                                            size_t             min,
-                                            size_t             max);
-
     // Returns the string s to the power N, not optimized, complexity is O(N *
     // |s|)
     // TODO move to words.hpp and/or remove
