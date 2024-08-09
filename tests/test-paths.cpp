@@ -1063,4 +1063,68 @@ namespace libsemigroups {
                "with source 0, target 1, length in [1, 13)>");
     REQUIRE(p.count() == 6);
   }
+
+  LIBSEMIGROUPS_TEST_CASE("ReversiblePaths",
+                          "021",
+                          "to_human_readable_repr",
+                          "[quick]") {
+    WordGraph<size_t> wg;
+    wg.add_nodes(2);
+    wg.add_to_out_degree(2);
+    wg.set_target(0, 0, 1);
+    wg.set_target(1, 0, 0);
+    ReversiblePaths p(wg);
+    REQUIRE(p.target() == UNDEFINED);
+    REQUIRE(to_human_readable_repr(p)
+            == "<ReversiblePaths (non-reversed) in <WordGraph with 2 nodes, 2 "
+               "edges, & out-degree 2> with length in [0, ∞)>");
+    p.source(1);
+    REQUIRE(to_human_readable_repr(p)
+            == "<ReversiblePaths (non-reversed) in <WordGraph with 2 nodes, 2 "
+               "edges, & out-degree 2> with source 1, length in [0, ∞)>");
+    p.init(wg);
+    p.target(1);
+    REQUIRE(to_human_readable_repr(p)
+            == "<ReversiblePaths (non-reversed) in <WordGraph with 2 nodes, 2 "
+               "edges, & out-degree 2> with target 1, length in [0, ∞)>");
+    p.source(0);
+    REQUIRE(
+        to_human_readable_repr(p)
+        == "<ReversiblePaths (non-reversed) in <WordGraph with 2 nodes, 2 "
+           "edges, & out-degree 2> with source 0, target 1, length in [0, ∞)>");
+    p.min(1);
+    p.max(12);
+    REQUIRE(to_human_readable_repr(p)
+            == "<ReversiblePaths (non-reversed) in <WordGraph with 2 nodes, 2 "
+               "edges, & out-degree 2> with source 0, target 1, length in [1, "
+               "13)>");
+    REQUIRE(p.count() == 6);
+
+    p.init(wg).reverse(true);
+    REQUIRE(p.target() == UNDEFINED);
+    REQUIRE(to_human_readable_repr(p)
+            == "<ReversiblePaths (reversed) in <WordGraph with 2 nodes, 2 "
+               "edges, & out-degree 2> with length in [0, ∞)>");
+    p.source(1);
+    REQUIRE(to_human_readable_repr(p)
+            == "<ReversiblePaths (reversed) in <WordGraph with 2 nodes, 2 "
+               "edges, & out-degree 2> with source 1, length in [0, ∞)>");
+    p.init(wg).reverse(true);
+    p.target(1);
+    REQUIRE(to_human_readable_repr(p)
+            == "<ReversiblePaths (reversed) in <WordGraph with 2 nodes, 2 "
+               "edges, & out-degree 2> with target 1, length in [0, ∞)>");
+    p.source(0);
+    REQUIRE(
+        to_human_readable_repr(p)
+        == "<ReversiblePaths (reversed) in <WordGraph with 2 nodes, 2 "
+           "edges, & out-degree 2> with source 0, target 1, length in [0, ∞)>");
+    p.min(1);
+    p.max(12);
+    REQUIRE(to_human_readable_repr(p)
+            == "<ReversiblePaths (reversed) in <WordGraph with 2 nodes, 2 "
+               "edges, & out-degree 2> with source 0, target 1, length in [1, "
+               "13)>");
+    REQUIRE(p.count() == 6);
+  }
 }  // namespace libsemigroups

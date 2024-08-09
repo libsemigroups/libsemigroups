@@ -1130,8 +1130,8 @@ namespace libsemigroups {
     // Private so that we cannot create one of these without the word graph
     // known.
     ReversiblePaths& init() {
-      Paths<Node>::init();
       _reverse = false;
+      return *this;
     }
 
    public:
@@ -1161,12 +1161,14 @@ namespace libsemigroups {
     ReversiblePaths& operator=(ReversiblePaths&&) = default;
 
     //! \copydoc Paths::Paths(WordGraph<Node> const&)
-    explicit ReversiblePaths(WordGraph<Node> const& wg) : Paths<Node>(wg) {}
+    explicit ReversiblePaths(WordGraph<Node> const& wg) : Paths<Node>(wg) {
+      init();
+    }
 
     //! \copydoc Paths::init(WordGraph<Node> const&)
     ReversiblePaths& init(WordGraph<Node> const& wg) {
       Paths<Node>::init(wg);
-      return *this;
+      return init();
     }
 
     //! \copydoc Paths::source_no_checks
@@ -1182,6 +1184,8 @@ namespace libsemigroups {
       return *this;
     }
 
+    using Paths<Node>::source;
+
     //! \copydoc Paths::target_no_checks
     ReversiblePaths& target_no_checks(node_type n) noexcept {
       return Paths<Node>::target_no_checks(this, n);
@@ -1195,20 +1199,27 @@ namespace libsemigroups {
       return *this;
     }
 
+    using Paths<Node>::target;
+
     //! \copydoc Paths::min
     ReversiblePaths& min(size_type val) noexcept {
       return Paths<Node>::min(this, val);
     }
+    using Paths<Node>::min;
 
     //! \copydoc Paths::max
     ReversiblePaths& max(size_type val) noexcept {
       return Paths<Node>::max(this, val);
     }
 
+    using Paths<Node>::max;
+
     //! \copydoc Paths::order
     ReversiblePaths& order(Order val) {
       return Paths<Node>::order(this, val);
     }
+
+    using Paths<Node>::order;
 
     //! \brief Set whether or not to reverse the paths in the range.
     //!
@@ -1273,6 +1284,21 @@ namespace libsemigroups {
   //! \no_libsemigroups_except
   template <typename Node>
   std::string to_human_readable_repr(Paths<Node> const& p);
+
+  //! \ingroup paths_group
+  //!
+  //! \brief Return a human readable representation of a Paths object.
+  //!
+  //! Return a human readable representation of a Paths object.
+  //!
+  //! \tparam Node the type of the nodes in the underlying WordGraph
+  //!
+  //! \param p the Paths object.
+  //!
+  //! \exceptions
+  //! \no_libsemigroups_except
+  template <typename Node>
+  std::string to_human_readable_repr(ReversiblePaths<Node> const& p);
 
 }  // namespace libsemigroups
 

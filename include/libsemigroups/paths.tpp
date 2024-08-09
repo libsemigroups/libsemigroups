@@ -569,6 +569,15 @@ namespace libsemigroups {
         p.max() == POSITIVE_INFINITY ? "\u221e" : std::to_string(p.max() + 1));
     // TODO(0) + 1 correct?
   }
+
+  template <typename Node>
+  std::string to_human_readable_repr(ReversiblePaths<Node> const& p) {
+    using namespace std::string_literals;
+    auto result = to_human_readable_repr(static_cast<Paths<Node> const&>(p));
+    result.erase(result.begin(), result.begin() + std::strlen("<Paths"));
+    std::string rev = p.reverse() ? "(reversed)" : "(non-reversed)";
+    return "<ReversiblePaths "s + rev + result;
+  }
 }  // namespace libsemigroups
 
 template <typename Node>
