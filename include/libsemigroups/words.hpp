@@ -988,10 +988,10 @@ namespace libsemigroups {
   //! * to_word
   //! * \ref literals
   template <typename Iterator>
-  void to_string(std::string_view alphabet,
-                 Iterator         input_first,
-                 Iterator         input_last,
-                 std::string&     output) {
+  void to_string_no_checks(std::string_view alphabet,
+                           Iterator         input_first,
+                           Iterator         input_last,
+                           std::string&     output) {
     output.resize(std::distance(input_first, input_last));
     size_t i = 0;
     for (auto it = input_first; it != input_last; ++it) {
@@ -1002,18 +1002,28 @@ namespace libsemigroups {
   //! \ingroup words_group
   //! \brief Convert a word_type to a string.
   //!
-  //! See to_string(std::string const&, Iterator, Iterator, std::string&)
-  static inline void to_string(std::string_view alphabet,
-                               word_type const& input,
-                               std::string&     output) {
-    return to_string(alphabet, input.cbegin(), input.cend(), output);
+  //! See to_string_no_checks(std::string const&, Iterator, Iterator,
+  //! std::string&). The difference is that this takes a \ref word_type to
+  //! convert, rather than a pair of iterators.
+  //!
+  //! \warning This function performs no checks on its arguments, and so in
+  //! particular if any letter in the word being converted is not less than \p
+  //! alphabet.size(), then bad things may happen.
+  static inline void to_string_no_checks(std::string_view alphabet,
+                                         word_type const& input,
+                                         std::string&     output) {
+    return to_string_no_checks(alphabet, input.cbegin(), input.cend(), output);
   }
 
   //! \ingroup words_group
   //! \brief Convert a word_type to a string.
   //!
-  //! See to_string(std::string const&, Iterator, Iterator, std::string&)
-  //! the difference is that this function returns a new string.
+  //! See to_string_no_checks(std::string const&, Iterator, Iterator,
+  //! std::string&). The difference is that this function returns a new string.
+  //!
+  //! \warning This function performs no checks on its arguments, and so in
+  //! particular if any letter in the word being converted is not less than \p
+  //! alphabet.size(), then bad things may happen.
   template <typename Iterator>
   [[nodiscard]] std::string to_string(std::string_view alphabet,
                                       Iterator         first,
@@ -1026,8 +1036,12 @@ namespace libsemigroups {
   //! \ingroup words_group
   //! \brief Convert a word_type to a string.
   //!
-  //! See to_string(std::string_view, Iterator, Iterator, std::string&)
-  //! the difference is that this function returns a new string.
+  //! See to_string(std::string_view, word_type const&, std::string&).
+  //! The difference is that this function returns a new string.
+  //!
+  //! \warning This function performs no checks on its arguments, and so in
+  //! particular if any letter in the word being converted is not less than \p
+  //! alphabet.size(), then bad things may happen.
   [[nodiscard]] static inline std::string to_string(std::string_view alphabet,
                                                     word_type const& input) {
     return to_string(alphabet, input.cbegin(), input.cend());
