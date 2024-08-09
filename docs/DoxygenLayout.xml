@@ -77,62 +77,82 @@
       <tab type="user" visible="yes" url="@ref transf_group" title="Transformations" />
     </tab>
     <tab type="usergroup" visible="yes" url="@ref presentations_group" title="Presentations">
-      <tab type="user" visible="yes" url="@ref libsemigroups::Presentation" title="Presentation class" />
-      <tab type="user" visible="yes" url="@ref libsemigroups::InversePresentation" title="InversePresentation class" />
-      <tab type="usergroup" visible="yes" url="@ref libsemigroups::presentation" title="Helper functions" />
+      <tab type="user" visible="yes" url="@ref libsemigroups::Presentation"
+        title="Presentation class" />
+      <tab type="user" visible="yes" url="@ref libsemigroups::InversePresentation"
+        title="InversePresentation class" />
+      <tab type="usergroup" visible="yes" url="@ref libsemigroups::presentation"
+        title="Helper functions" />
       <tab type="usergroup" visible="yes" url="@ref libsemigroups::fpsemigroup" title="Examples" />
-      <tab type="usergroup" visible="yes" url="@ref to_presentation_group" title="Making presentations from other objects" />
-      </tab>
-    <tab type="usergroup" visible="yes" url="@ref ranges_group" title="Ranges"/>
-      <tab type="user" visible="yes" url="@ref dot_group" title="Visualisation" />
-    <tab type="usergroup" visible="yes" url="@ref word_graph_group" title="Word graphs" >
+      <tab type="usergroup" visible="yes" url="@ref to_presentation_group"
+        title="Making presentations from other objects" />
+    </tab>
+    <tab type="usergroup" visible="yes" url="@ref ranges_group" title="Ranges" />
+    <tab type="user" visible="yes" url="@ref dot_group" title="Visualisation" />
+    <tab type="usergroup" visible="yes" url="@ref word_graph_group" title="Word graphs">
       <tab type="user" visible="yes" url="@ref libsemigroups::Forest" title="Forest" />
-      <tab type="user" visible="yes" url="@ref paths_group" title="Paths"/>
+      <tab type="user" visible="yes" url="@ref paths_group" title="Paths" />
       <tab type="user" visible="yes" url="@ref libsemigroups::WordGraph" title="WordGraph" />
       <tab type="user" visible="yes" url="@ref libsemigroups::word_graph" title="WordGraph helpers" />
     </tab>
-    <tab type="usergroup" visible="yes" url="@ref words_group" title="Words" >
-      <tab type="user" visible="yes" url="@ref libsemigroups::words" title="Functions for words and strings" />
+    <tab type="usergroup" visible="yes" url="@ref words_group" title="Words">
+      <tab type="user" visible="yes" url="@ref libsemigroups::words"
+        title="Functions for words and strings" />
       <tab type="user" visible="yes" url="@ref libsemigroups::Strings" title="Strings" />
-      <tab type="user" visible="yes" url="@ref libsemigroups::Words" title="ToWord" />
+      <tab type="user" visible="yes" url="@ref libsemigroups::ToWord" title="ToWord" />
       <tab type="user" visible="yes" url="@ref libsemigroups::Words" title="Words" />
     </tab>
-    <tab type="usergroup" visible="yes" url="@ref misc_group" title="Miscellaneous" >
+    <tab type="usergroup" visible="yes" url="@ref misc_group" title="Miscellaneous">
       <tab type="usergroup" visible="yes" url="@ref constants_group" title="Constants" />
       <tab type="user" visible="yes" url="@ref exception_group" title="LibsemigroupsException" />
       <tab type="user" visible="yes" url="@ref libsemigroups::Reporter" title="Reporter" />
       <tab type="user" visible="yes" url="@ref libsemigroups::Runner" title="Runner" />
       <tab type="usergroup" visible="yes" url="@ref types_group" title="Types" />
     </tab>
-    <tab type="examples" visible="yes" title="" intro=""/>
+    <tab type="examples" visible="yes" title="" intro="" />
     <tab type="user" visible="yes" url="_HEADING_" title="Main Algorithms" />
-    <tab type="usergroup" visible="yes" url="@ref action_group" title="Actions" >
-        <tab type="user" visible="yes" url="@ref libsemigroups::side" title="side" />
-        <tab type="user" visible="yes" url="@ref libsemigroups::Action" title="Action" />
-        <tab type="user" visible="yes" url="@ref libsemigroups::RightAction" title="RightAction" />
+    <tab type="usergroup" visible="yes" url="@ref action_group" title="Actions">
+      <tab type="user" visible="yes" url="@ref libsemigroups::side" title="side" />
+      <tab type="user" visible="yes" url="@ref libsemigroups::Action" title="Action" />
+      <tab type="user" visible="yes" url="@ref libsemigroups::RightAction" title="RightAction" />
     </tab>
-    <tab type="user" visible="yes" url="@ref aho_corasick_group" title="Aho Corasick"/>
+    <tab type="user" visible="yes" url="@ref aho_corasick_group" title="Aho Corasick" />
     <tab type="user" visible="yes" url="@ref gabow_group" title="Gabow" />
-    <tab type="usergroup" visible="yes" url="@ref congruences_group" title="Congruences" >
-      <tab type="usergroup" visible="yes" url="group__congruences__group.html#nested-classes" title="Classes" >
+    <tab type="usergroup" visible="yes" url="@ref congruences_group" title="Congruences">
+      <tab type="usergroup" visible="yes" url="group__congruences__group.html#nested-classes"
+        title="Classes">
         <tab type="user" visible="yes" url="@ref libsemigroups::SimsStats" title="SimsStats" />
         <tab type="user" visible="yes" url="@ref libsemigroups::SimsSettings" title="SimsSettings" />
         <tab type="user" visible="yes" url="@ref libsemigroups::Sims1" title="Sims1" />
         <tab type="user" visible="yes" url="@ref libsemigroups::Sims2" title="Sims2" />
         <tab type="user" visible="yes" url="@ref libsemigroups::RepOrc" title="RepOrc" />
         <tab type="user" visible="yes" url="@ref libsemigroups::MinimalRepOrc" title="MinimalRepOrc" />
-        <tab type="user" visible="yes" url="@ref libsemigroups::sims::const_rcgp_iterator" title="const_rcgp_iterator" />
-        <tab type="user" visible="yes" url="@ref libsemigroups::sims::const_cgp_iterator" title="const_cgp_iterator" />
-        <tab type="user" visible="yes" url="@ref libsemigroups::SimsRefinerIdeals" title="SimsRefinerIdeals" />
+        <tab type="user" visible="yes" url="@ref libsemigroups::sims::const_rcgp_iterator"
+          title="const_rcgp_iterator" />
+        <tab type="user" visible="yes" url="@ref libsemigroups::sims::const_cgp_iterator"
+          title="const_cgp_iterator" />
+        <tab type="user" visible="yes" url="@ref libsemigroups::SimsRefinerIdeals"
+          title="SimsRefinerIdeals" />
       </tab>
       <!-- TODO: Figure out a way to avoid this hack -->
-      <tab type="user" visible="yes" url="group__congruences__group.html#func-members" title="Functions" />
+      <tab type="user" visible="yes" url="group__congruences__group.html#func-members"
+        title="Functions" />
     </tab>
-    <tab type="user" visible="yes" url="@ref freeband_group" title="Radoszewski-Rytter"/>
+    <tab type="user" visible="yes" url="@ref freeband_group" title="Radoszewski-Rytter" />
     <tab type="user" visible="yes" url="_HEADING_" title="Bibliography" />
     <tab type="user" visible="yes" url="@ref citelist" title="Bibliography" />
     <tab type="user" visible="yes" url="_HEADING_" title="Further info" />
-    <tab type="user" url="https://github.com/libsemigroups/libsemigroups" title="GitHub"/>
+    <
+    <
+    <
+    <
+    <
+    <
+    < HEAD
+    <tab type="user" url="https://github.com/libsemigroups/libsemigroups" title="GitHub" />
+    =======
+    <tab type="user" url="https://github.com/libsemigroups/libsemigroups" title="GitHub" />
+    >>>>>>> dafaea9c (Add more doc)
 
     <!--
     <tab type="pages" visible="no" title="" intro=""/>
@@ -171,14 +191,14 @@
 
   <!-- Layout definition for a class page -->
   <class>
-    <detaileddescription title=""/>
-    <briefdescription visible="no"/>
-    <inheritancegraph visible="yes"/>
+    <detaileddescription title="" />
+    <briefdescription visible="no" />
+    <inheritancegraph visible="yes" />
     <memberdecl>
-      <nestedclasses visible="yes" title=""/>
-      <publictypes title=""/>
-      <publicmethods title=""/>
-      <publicstaticmethods title=""/>
+      <nestedclasses visible="yes" title="" />
+      <publictypes title="" />
+      <publicmethods title="" />
+      <publicstaticmethods title="" />
       <!--
       <services title=""/>
       <interfaces title=""/>
@@ -211,160 +231,160 @@
       -->
     </memberdecl>
     <memberdef>
-      <inlineclasses title=""/>
-      <typedefs title=""/>
-      <enums title=""/>
-      <services title=""/>
-      <interfaces title=""/>
-      <constructors title=""/>
-      <functions title=""/>
-      <related title=""/>
-      <variables title=""/>
-      <properties title=""/>
-      <events title=""/>
+      <inlineclasses title="" />
+      <typedefs title="" />
+      <enums title="" />
+      <services title="" />
+      <interfaces title="" />
+      <constructors title="" />
+      <functions title="" />
+      <related title="" />
+      <variables title="" />
+      <properties title="" />
+      <events title="" />
     </memberdef>
-    <allmemberslink visible="yes"/>
-    <usedfiles visible="$SHOW_USED_FILES"/>
-    <authorsection visible="yes"/>
+    <allmemberslink visible="yes" />
+    <usedfiles visible="$SHOW_USED_FILES" />
+    <authorsection visible="yes" />
   </class>
 
   <!-- Layout definition for a namespace page -->
   <namespace>
-    <detaileddescription title=""/>
+    <detaileddescription title="" />
     <memberdecl>
-      <nestednamespaces visible="yes" title=""/>
-      <constantgroups visible="yes" title=""/>
-      <interfaces visible="yes" title=""/>
-      <classes visible="yes" title=""/>
-      <concepts visible="yes" title=""/>
-      <structs visible="yes" title=""/>
-      <exceptions visible="yes" title=""/>
-      <typedefs title=""/>
-      <sequences title=""/>
-      <dictionaries title=""/>
-      <enums title=""/>
-      <functions title=""/>
-      <variables title=""/>
-      <membergroups visible="yes"/>
+      <nestednamespaces visible="yes" title="" />
+      <constantgroups visible="yes" title="" />
+      <interfaces visible="yes" title="" />
+      <classes visible="yes" title="" />
+      <concepts visible="yes" title="" />
+      <structs visible="yes" title="" />
+      <exceptions visible="yes" title="" />
+      <typedefs title="" />
+      <sequences title="" />
+      <dictionaries title="" />
+      <enums title="" />
+      <functions title="" />
+      <variables title="" />
+      <membergroups visible="yes" />
     </memberdecl>
     <memberdef>
-      <inlineclasses title=""/>
-      <typedefs title=""/>
-      <sequences title=""/>
-      <dictionaries title=""/>
-      <enums title=""/>
-      <functions title=""/>
-      <variables title=""/>
+      <inlineclasses title="" />
+      <typedefs title="" />
+      <sequences title="" />
+      <dictionaries title="" />
+      <enums title="" />
+      <functions title="" />
+      <variables title="" />
     </memberdef>
-    <authorsection visible="yes"/>
+    <authorsection visible="yes" />
   </namespace>
 
   <!-- Layout definition for a concept page -->
   <concept>
-    <briefdescription visible="yes"/>
-    <includes visible="$SHOW_HEADERFILE"/>
-    <definition visible="yes" title=""/>
-    <detaileddescription title=""/>
-    <authorsection visible="yes"/>
+    <briefdescription visible="yes" />
+    <includes visible="$SHOW_HEADERFILE" />
+    <definition visible="yes" title="" />
+    <detaileddescription title="" />
+    <authorsection visible="yes" />
   </concept>
 
   <!-- Layout definition for a file page -->
   <file>
-    <briefdescription visible="yes"/>
-    <includes visible="$SHOW_INCLUDE_FILES"/>
-    <includegraph visible="yes"/>
-    <includedbygraph visible="yes"/>
-    <sourcelink visible="yes"/>
+    <briefdescription visible="yes" />
+    <includes visible="$SHOW_INCLUDE_FILES" />
+    <includegraph visible="yes" />
+    <includedbygraph visible="yes" />
+    <sourcelink visible="yes" />
     <memberdecl>
-      <interfaces visible="yes" title=""/>
-      <classes visible="yes" title=""/>
-      <structs visible="yes" title=""/>
-      <exceptions visible="yes" title=""/>
-      <namespaces visible="yes" title=""/>
-      <concepts visible="yes" title=""/>
-      <constantgroups visible="yes" title=""/>
-      <defines title=""/>
-      <typedefs title=""/>
-      <sequences title=""/>
-      <dictionaries title=""/>
-      <enums title=""/>
-      <functions title=""/>
-      <variables title=""/>
-      <membergroups visible="yes"/>
+      <interfaces visible="yes" title="" />
+      <classes visible="yes" title="" />
+      <structs visible="yes" title="" />
+      <exceptions visible="yes" title="" />
+      <namespaces visible="yes" title="" />
+      <concepts visible="yes" title="" />
+      <constantgroups visible="yes" title="" />
+      <defines title="" />
+      <typedefs title="" />
+      <sequences title="" />
+      <dictionaries title="" />
+      <enums title="" />
+      <functions title="" />
+      <variables title="" />
+      <membergroups visible="yes" />
     </memberdecl>
-    <detaileddescription title=""/>
+    <detaileddescription title="" />
     <memberdef>
-      <inlineclasses title=""/>
-      <defines title=""/>
-      <typedefs title=""/>
-      <sequences title=""/>
-      <dictionaries title=""/>
-      <enums title=""/>
-      <functions title=""/>
-      <variables title=""/>
+      <inlineclasses title="" />
+      <defines title="" />
+      <typedefs title="" />
+      <sequences title="" />
+      <dictionaries title="" />
+      <enums title="" />
+      <functions title="" />
+      <variables title="" />
     </memberdef>
-    <authorsection/>
+    <authorsection />
   </file>
 
   <!-- Layout definition for a group page -->
   <group>
-    <detaileddescription title=""/>
+    <detaileddescription title="" />
     <!-- <briefdescription visible="yes"/> -->
-    <groupgraph visible="yes"/>
+    <groupgraph visible="yes" />
     <memberdecl>
-      <nestedgroups visible="yes" title=""/>
-      <dirs visible="yes" title=""/>
-      <files visible="yes" title=""/>
-      <namespaces visible="yes" title=""/>
-      <concepts visible="yes" title=""/>
-      <classes visible="yes" title=""/>
-      <defines title=""/>
-      <typedefs title=""/>
-      <sequences title=""/>
-      <dictionaries title=""/>
-      <enums title=""/>
-      <enumvalues title=""/>
-      <functions title=""/>
-      <variables title=""/>
-      <signals title=""/>
-      <publicslots title=""/>
-      <protectedslots title=""/>
-      <privateslots title=""/>
-      <events title=""/>
-      <properties title=""/>
-      <friends title=""/>
-      <membergroups visible="yes"/>
+      <nestedgroups visible="yes" title="" />
+      <dirs visible="yes" title="" />
+      <files visible="yes" title="" />
+      <namespaces visible="yes" title="" />
+      <concepts visible="yes" title="" />
+      <classes visible="yes" title="" />
+      <defines title="" />
+      <typedefs title="" />
+      <sequences title="" />
+      <dictionaries title="" />
+      <enums title="" />
+      <enumvalues title="" />
+      <functions title="" />
+      <variables title="" />
+      <signals title="" />
+      <publicslots title="" />
+      <protectedslots title="" />
+      <privateslots title="" />
+      <events title="" />
+      <properties title="" />
+      <friends title="" />
+      <membergroups visible="yes" />
     </memberdecl>
     <memberdef>
-      <pagedocs/>
-      <inlineclasses title=""/>
-      <defines title=""/>
-      <typedefs title=""/>
-      <sequences title=""/>
-      <dictionaries title=""/>
-      <enums title=""/>
-      <enumvalues title=""/>
-      <functions title=""/>
-      <variables title=""/>
-      <signals title=""/>
-      <publicslots title=""/>
-      <protectedslots title=""/>
-      <privateslots title=""/>
-      <events title=""/>
-      <properties title=""/>
-      <friends title=""/>
+      <pagedocs />
+      <inlineclasses title="" />
+      <defines title="" />
+      <typedefs title="" />
+      <sequences title="" />
+      <dictionaries title="" />
+      <enums title="" />
+      <enumvalues title="" />
+      <functions title="" />
+      <variables title="" />
+      <signals title="" />
+      <publicslots title="" />
+      <protectedslots title="" />
+      <privateslots title="" />
+      <events title="" />
+      <properties title="" />
+      <friends title="" />
     </memberdef>
-    <authorsection visible="yes"/>
+    <authorsection visible="yes" />
   </group>
 
   <!-- Layout definition for a directory page -->
   <directory>
-    <briefdescription visible="yes"/>
-    <directorygraph visible="yes"/>
+    <briefdescription visible="yes" />
+    <directorygraph visible="yes" />
     <memberdecl>
-      <dirs visible="yes"/>
-      <files visible="yes"/>
+      <dirs visible="yes" />
+      <files visible="yes" />
     </memberdecl>
-    <detaileddescription title=""/>
+    <detaileddescription title="" />
   </directory>
 </doxygenlayout>
