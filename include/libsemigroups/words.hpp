@@ -711,29 +711,35 @@ namespace libsemigroups {
   //! \ingroup words_group
   //! \brief Returns the index of a character in human readable order.
   //!
+  //! Defined in `words.hpp`.
+  //!
   //! This function is the inverse of \ref human_readable_char, see the
   //! documentation of that function for more details.
   //!
   //! \param c character whose index is sought.
   //!
+  //! \returns A value of type \ref letter_type.
+  //!
   //! \exception
   //! \no_libsemigroups_except
   //!
-  //! \returns A value of type \ref letter_type.
+  //! \sa human_readable_char
   [[nodiscard]] letter_type human_readable_index(char c);
 
   //! \ingroup words_group
   //! \brief Convert a string to a word_type.
   //!
-  //! This function converts its second argument \p input into a word_type and
-  //! stores the result in the first argument \p output. The characters of \p
-  //! input are converted using \ref human_readable_index, so that \c 'a' is
+  //! Defined in `words.hpp`.
+  //!
+  //! This function converts its first argument \p input into a \ref word_type
+  //! and stores the result in the second argument \p output. The characters of
+  //! \p input are converted using \ref human_readable_index, so that \c 'a' is
   //! mapped to \c 0, \c 'b' to \c 1, and so on.
   //!
-  //! The contents of the first argument \p output, if any, is removed.
+  //! The contents of the second argument \p output, if any, is removed.
   //!
-  //! \param output word to hold the result
   //! \param input the string to convert
+  //! \param output word to hold the result
   //!
   //! \exception
   //! \no_libsemigroups_except
@@ -747,13 +753,14 @@ namespace libsemigroups {
   //! \ingroup words_group
   //! \brief Convert a string to a word_type.
   //!
-  //! This function converts its argument \p s into a word_type. The characters
-  //! of \p s are converted using \ref human_readable_index, so that \c 'a' is
-  //! mapped to \c 0,\c 'b' to \c 1, and so on.
+  //! Defined in `words.hpp`.
   //!
-  //! The contents of the first argument \p w, if any, is removed.
+  //! This function converts its argument \p s into a \ref word_type. The
+  //! characters of \p s are converted using \ref human_readable_index, so that
+  //! \c 'a' is mapped to \c 0,\c 'b' to \c 1, and so on.
   //!
   //! \param s the string to convert
+  //!
   //! \returns A value of type \ref word_type.
   //!
   //! \exception
@@ -797,15 +804,29 @@ namespace libsemigroups {
     }
 
     // TODO (later) noexcept?
-    //! TODO doc
+    //! \brief Default copy constructor.
+    //!
+    //! Default copy constructor.
     ToWord(ToWord const&);
-    //! TODO doc
+
+    //! \brief Default move constructor.
+    //!
+    //! Default move constructor.
     ToWord(ToWord&&);
-    //! TODO doc
+
+    //! \brief Default copy assignment.
+    //!
+    //! Default copy assignment.
     ToWord& operator=(ToWord const&);
-    //! TODO doc
+
+    //! \brief Default move assignment.
+    //!
+    //! Default move assignment.
     ToWord& operator=(ToWord&&);
-    //! TODO doc
+
+    //! \brief Default destructor.
+    //!
+    //! Default destructor.
     ~ToWord();
 
     //! \brief Initialize an existing ToWord object.
@@ -817,6 +838,8 @@ namespace libsemigroups {
     //!
     //! \exception
     //! \no_libsemigroups_except
+    //!
+    //! \sa ToWord()
     ToWord& init() {
       _lookup.fill(UNDEFINED);
       _lookup.back() = 0;
@@ -825,7 +848,9 @@ namespace libsemigroups {
 
     //! \brief Construct with given alphabet.
     //!
-    //! \param alphabet the alphabet
+    //! Construct a ToWord object with the given alphabet.
+    //!
+    //! \param alphabet the alphabet.
     //!
     //! \throws LibsemigroupsException if there are repeated letters in
     //! \p alphabet.
@@ -844,6 +869,8 @@ namespace libsemigroups {
     //!
     //! \throws LibsemigroupsException if there are repeated letters in
     //! \p alphabet.
+    //!
+    //! \sa ToWord(std::string const& alphabet)
     ToWord& init(std::string const& alphabet);
 
     //! \brief Check if the alphabet is defined.
@@ -915,7 +942,7 @@ namespace libsemigroups {
   //!
   //! This function exists to map the numbers \c 0 to \c 254 to the possible
   //! values of a \c char, in such a way that the first characters are \c
-  //! a-zA-Z0-9 The ascii ranges for these characters are: \f$[97, 123)\f$,
+  //! a-zA-Z0-9. The ascii ranges for these characters are: \f$[97, 123)\f$,
   //! \f$[65, 91)\f$, \f$[48, 58)\f$ so the remaining range of chars that are
   //! appended to the end after these chars are \f$[0,48)\f$, \f$[58, 65)\f$,
   //! \f$[91, 97)\f$, \f$[123, 255)\f$.
@@ -932,17 +959,17 @@ namespace libsemigroups {
   //! \ingroup words_group
   //! \brief Convert a word_type to a string.
   //!
-  //! This function converts its the word_type pointed to by the 2nd and 3rd
-  //! arguments \p first and \p last into a \ref std::string, and stores the
-  //! result in the final argument \p output. The characters of \p input are
-  //! converted using \ref human_readable_index, so that \c i is mapped to \p
-  //! alphabet[i] for each letter \c i.
+  //! This function converts the word_type pointed to by the second and third
+  //! arguments \p input_first and \p inpput_last into a \ref std::string, and
+  //! stores the result in the final argument \p output. The characters in
+  //! `[input_first, input_last)` are converted using the fourth parameter \p
+  //! alphabet, so that \c i is mapped to \c alphabet[i] for each letter \c i.
   //!
-  //! The contents of the first argument \p output, if any, is removed.
+  //! The contents of the fourth argument \p output, if any, are removed.
   //!
-  //! \tparam Iterator the type of the 2nd and 3rd arguments
+  //! \tparam Iterator the type of the second and third arguments.
   //!
-  //! \param alphabet the alphabet to use for the conversion
+  //! \param alphabet the alphabet to use for the conversion.
   //! \param input_first iterator pointing at the first letter of the word to
   //! convert
   //! \param input_last iterator pointing one beyond the last letter of
