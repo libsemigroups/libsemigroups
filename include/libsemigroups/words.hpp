@@ -1114,17 +1114,61 @@ namespace libsemigroups {
   // Strings
   ////////////////////////////////////////////////////////////////////////
 
-  // TODO doc
-  // Random string with length <length> over <alphabet>.
+  //! \ingroup words_group
+  //! \brief Returns a random string.
+  //!
+  //! Returns a random string with length \p length over alphabet \p alphabet.
+  //!
+  //! \param alphabet the alphabet over which the string is constructed.
+  //! \param length the length of the string.
+  //!
+  //! \returns A random string, value of `std::string`.
+  //!
+  //! \exception
+  //! \no_libsemigroups_except
+  //!
+  //! \sa \ref random_word
   std::string random_string(std::string const& alphabet, size_t length);
 
-  // TODO doc
-  // Random string with random length in the range [min, max) over <alphabet>
+  //! \ingroup words_group
+  //! \brief Returns a random string.
+  //!
+  //! Returns a random string with random length in the range `[min, max)` over
+  //! alphabet \p alphabet.
+  //!
+  //! \param alphabet the alphabet over which the string is constructed.
+  //! \param min the minimum length of the returned string.
+  //! \param max one above the maximum length of the returned string.
+  //!
+  //! \returns A random string, value of `std::string`.
+  //!
+  //! \throws LibsemigroupsException if either:
+  //! * `min > max`; or
+  //! * `alphabet.size() == 0` and `min != 0`.
+  //!
+  //! \sa \ref random_word
   std::string random_string(std::string const& alphabet,
                             size_t             min,
                             size_t             max);
 
-  // TODO doc
+  //! \ingroup words_group
+  //! \brief Returns a range object of random strings.
+  //!
+  //! Returns a range object of random strings, each of which with random length
+  //! in the range `[min, max)` over alphabet \p alphabet.
+  //!
+  //! \param alphabet the alphabet over which the string is constructed.
+  //! \param number the number of random strings to construct.
+  //! \param min the minimum length of the returned string.
+  //! \param max one above the maximum length of the returned string.
+  //!
+  //! \returns A range of random strings.
+  //!
+  //! \throws LibsemigroupsException if either:
+  //! * `min > max`; or
+  //! * `alphabet.size() == 0` and `min != 0`.
+  //!
+  //! \sa \ref random_word
   auto inline random_strings(std::string const& alphabet,
                              size_t             number,
                              size_t             min,
