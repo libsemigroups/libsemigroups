@@ -22,6 +22,7 @@
 // TODO:
 // * iwyu
 // * nodiscard
+// * tests for code coverage
 
 #ifndef LIBSEMIGROUPS_WORDS_HPP_
 #define LIBSEMIGROUPS_WORDS_HPP_
@@ -44,7 +45,8 @@
 #include "exception.hpp"  // for LibsemigroupsException
 #include "types.hpp"      // for word_type
 
-#include "detail/iterator.hpp"  // for default_postfix_increment
+#include "detail/iterator.hpp"        // for default_postfix_increment
+#include "detail/word-iterators.hpp"  // for const_wilo_iterator
 
 #include "ranges.hpp"  // for begin, end
 
@@ -66,6 +68,8 @@ namespace libsemigroups {
   //!  - \ref Words
   //!  - \ref Strings
   //!  - \ref random_word
+  //!  - \ref random_string
+  //!  - \ref random_strings
   //!
   //! * counting words:
   //!
@@ -73,22 +77,26 @@ namespace libsemigroups {
   //!
   //! * converting to and from strings and words:
   //!
+  //!   - \ref ToWord
+  //!   - \ref ToStrings
   //!   - \ref to_string(std::string_view,Iterator,Iterator,std::string&)
   //!   "to_string"
   //!   - \ref to_word(std::string_view, word_type&) "to_word"
-  //!   - \ref ToWord
   //!
-  //! * parsing algebraic expressions in a string;
-  //!
-  //!   - TODO
+
+  // TODO(later)
+  // * parsing algebraic expressions in a string;
 
   //! \ingroup words_group
   //! \brief Returns the number of words over an alphabet with a given number of
   //! letters with length in a specified range.
   //!
-  //! \param n the number of letters in the alphabet
-  //! \param min the minimum length of a word
-  //! \param max the maximum length of a word
+  //! Returns the number of words over an alphabet with a given number of
+  //! letters with length in a specified range.
+  //!
+  //! \param n the number of letters in the alphabet.
+  //! \param min the minimum length of a word.
+  //! \param max the maximum length of a word.
   //!
   //! \returns
   //! A value of type \c uint64_t.
@@ -96,114 +104,45 @@ namespace libsemigroups {
   //! \exception
   //! \no_libsemigroups_except
   //!
-  //! \warning If the number of words exceeds 2 ^ 64 - 1, then
-  //! the return value of this function will not be correct.
+  //! \warning If the number of words exceeds 2 ^ 64 - 1, then the return value
+  //! of this function will not be correct.
   [[nodiscard]] uint64_t number_of_words(size_t n, size_t min, size_t max);
 
   //! \ingroup words_group
   //! \brief Returns a random word.
   //!
-  //! \param length the length of the word
-  //! \param nr_letters the size of the alphabet
+  //! Returns a random word on \f$\{0, \ldots, n - 1\}\f$ of length \p length
+  //! where \f$n\f$ is \p nr_letters.
   //!
-  //! \returns
-  //! A random word on \f$\{0, \ldots, n - 1\}\f$ of length \p length where
-  //! \f$n\f$ is \p nr_letters.
+  //! \param length the length of the word.
+  //! \param nr_letters the size of the alphabet.
+  //!
+  //! \returns A random word, value of `word_type`.
   //!
   //! \throws LibsemigroupsException if \p nr_letters is \c 0.
   //!
-  // TODO move random_string from detail/string.hpp to here and then
-  // add the following line back into the doc
-  // \sa \ref random_string
+  //! \sa \ref random_string
   [[nodiscard]] word_type random_word(size_t length, size_t nr_letters);
-
-#ifdef NOT_PARSED_BY_DOXYGEN
-
-  class const_wilo_iterator {
-   public:
-    using size_type         = typename std::vector<word_type>::size_type;
-    using difference_type   = typename std::vector<word_type>::difference_type;
-    using const_pointer     = typename std::vector<word_type>::const_pointer;
-    using pointer           = typename std::vector<word_type>::pointer;
-    using const_reference   = typename std::vector<word_type>::const_reference;
-    using reference         = typename std::vector<word_type>::reference;
-    using value_type        = word_type;
-    using iterator_category = std::forward_iterator_tag;
-
-   private:
-    word_type   _current;
-    size_type   _index;
-    letter_type _letter;
-    size_type   _upper_bound;
-    word_type   _last;
-    size_type   _number_letters;
-
-   public:
-    const_wilo_iterator() noexcept;
-    const_wilo_iterator(const_wilo_iterator const&);
-    const_wilo_iterator(const_wilo_iterator&&) noexcept;
-    const_wilo_iterator& operator=(const_wilo_iterator const&);
-    const_wilo_iterator& operator=(const_wilo_iterator&&) noexcept;
-    ~const_wilo_iterator();
-
-    const_wilo_iterator(size_type   n,
-                        size_type   upper_bound,
-                        word_type&& first,
-                        word_type&& last);
-
-    [[nodiscard]] bool
-    operator==(const_wilo_iterator const& that) const noexcept {
-      return _index == that._index;
-    }
-
-    [[nodiscard]] bool
-    operator!=(const_wilo_iterator const& that) const noexcept {
-      return !(this->operator==(that));
-    }
-
-    [[nodiscard]] const_reference operator*() const noexcept {
-      return _current;
-    }
-
-    [[nodiscard]] const_pointer operator->() const noexcept {
-      return &_current;
-    }
-
-    // prefix
-    const_wilo_iterator const& operator++() noexcept;
-
-    // postfix
-    const_wilo_iterator operator++(int) noexcept {
-      return detail::default_postfix_increment<const_wilo_iterator>(*this);
-    }
-
-    void swap(const_wilo_iterator& that) noexcept;
-  };
-
-  inline void swap(const_wilo_iterator& x, const_wilo_iterator& y) noexcept {
-    x.swap(y);
-  }
-
-#endif  // NOT_PARSED_BY_DOXYGEN
 
   //! \ingroup words_group
   //! \brief Returns a forward iterator pointing to the 3rd parameter \p first.
   //!
-  //! If incremented, the iterator will point to the next least lexicographic
-  //! word after \p w over an \p n letter alphabet with length less than \p
-  //! upper_bound.  Iterators of the type returned by this function are equal
-  //! whenever they are obtained by advancing the return value of any call to
-  //! \c cbegin_wilo by the same amount, or they are both obtained by any call
-  //! to \c cend_wilo.
+  //! Returns a forward iterator used to iterate over words in lexicographic
+  //! order (wilo). If incremented, the iterator will point to the next least
+  //! lexicographic word after \p first over an \p n letter alphabet with length
+  //! less than \p upper_bound.  Iterators of the type returned by this function
+  //! are equal whenever they are obtained by advancing the return value of any
+  //! call to \c cbegin_wilo by the same amount, or they are both obtained by
+  //! any call to \c cend_wilo.
   //!
-  //! \param n the number of letters in the alphabet;
+  //! \param n the number of letters in the alphabet.
   //! \param upper_bound   only words of length less than this value are
-  //! considered;
-  //! \param first the starting point for the iteration;
+  //! considered.
+  //! \param first the starting point for the iteration.
   //! \param last the value one past the end of the last value in the
   //! iteration.
   //!
-  //! \returns An iterator of type \c const_wilo_iterator.
+  //! \returns An iterator pointing to \p first.
   //!
   //! \exception
   //! \no_libsemigroups_except
@@ -230,18 +169,18 @@ namespace libsemigroups {
   //!                        cend_wilo(2, 3, {0}, {1, 1, 1}));
   //! // {{0}, {0, 0}, {0, 1}, {1}, {1, 0}, {1, 1}};
   //! \endcode
-  [[nodiscard]] const_wilo_iterator cbegin_wilo(size_t      n,
-                                                size_t      upper_bound,
-                                                word_type&& first,
-                                                word_type&& last);
+  [[nodiscard]] detail::const_wilo_iterator cbegin_wilo(size_t      n,
+                                                        size_t      upper_bound,
+                                                        word_type&& first,
+                                                        word_type&& last);
 
   //! \ingroup words_group
   //! \brief Returns a forward iterator pointing to the 3rd parameter \p first.
   //! \copydoc cbegin_wilo(size_t, size_t, word_type&&, word_type&&)
-  [[nodiscard]] const_wilo_iterator cbegin_wilo(size_t           n,
-                                                size_t           upper_bound,
-                                                word_type const& first,
-                                                word_type const& last);
+  [[nodiscard]] detail::const_wilo_iterator cbegin_wilo(size_t n,
+                                                        size_t upper_bound,
+                                                        word_type const& first,
+                                                        word_type const& last);
 
   //! \ingroup words_group
   //! \brief Returns a forward iterator pointing to one after the end of the
@@ -251,96 +190,34 @@ namespace libsemigroups {
   //! incrementable, but does not point to a word in the correct range.
   //!
   //! \sa cbegin_wilo
-  [[nodiscard]] const_wilo_iterator
+  [[nodiscard]] detail::const_wilo_iterator
   cend_wilo(size_t n, size_t upper_bound, word_type&& first, word_type&& last);
 
   //! \ingroup words_group
   //! \brief Returns a forward iterator pointing to one after the end of the
   //! range from \p first to \p last.
   //! \copydoc cend_wilo(size_t, size_t, word_type&&, word_type&&)
-  [[nodiscard]] const_wilo_iterator cend_wilo(size_t           n,
-                                              size_t           upper_bound,
-                                              word_type const& first,
-                                              word_type const& last);
-
-#ifdef NOT_PARSED_BY_DOXYGEN
-  class const_wislo_iterator {
-   public:
-    using size_type         = typename std::vector<word_type>::size_type;
-    using difference_type   = typename std::vector<word_type>::difference_type;
-    using const_pointer     = typename std::vector<word_type>::const_pointer;
-    using pointer           = typename std::vector<word_type>::pointer;
-    using const_reference   = typename std::vector<word_type>::const_reference;
-    using reference         = typename std::vector<word_type>::reference;
-    using value_type        = word_type;
-    using iterator_category = std::forward_iterator_tag;
-
-   private:
-    word_type _current;
-    size_type _index;
-    word_type _last;
-    size_type _number_letters;
-
-   public:
-    const_wislo_iterator() noexcept;
-    const_wislo_iterator(const_wislo_iterator const&);
-    const_wislo_iterator(const_wislo_iterator&&) noexcept;
-    const_wislo_iterator& operator=(const_wislo_iterator const&);
-    const_wislo_iterator& operator=(const_wislo_iterator&&) noexcept;
-
-    const_wislo_iterator(size_type n, word_type&& first, word_type&& last);
-
-    ~const_wislo_iterator();
-
-    [[nodiscard]] bool
-    operator==(const_wislo_iterator const& that) const noexcept {
-      return _index == that._index;
-    }
-
-    [[nodiscard]] bool
-    operator!=(const_wislo_iterator const& that) const noexcept {
-      return !(this->operator==(that));
-    }
-
-    [[nodiscard]] const_reference operator*() const noexcept {
-      return _current;
-    }
-
-    [[nodiscard]] const_pointer operator->() const noexcept {
-      return &_current;
-    }
-
-    // prefix
-    const_wislo_iterator const& operator++() noexcept;
-
-    // postfix
-    const_wislo_iterator operator++(int) noexcept {
-      return detail::default_postfix_increment<const_wislo_iterator>(*this);
-    }
-
-    void swap(const_wislo_iterator& that) noexcept;
-  };
-
-  inline void swap(const_wislo_iterator& x, const_wislo_iterator& y) noexcept {
-    x.swap(y);
-  }
-
-#endif  // NOT_PARSED_BY_DOXYGEN
+  [[nodiscard]] detail::const_wilo_iterator cend_wilo(size_t n,
+                                                      size_t upper_bound,
+                                                      word_type const& first,
+                                                      word_type const& last);
 
   //! \ingroup words_group
   //! \brief Returns a forward iterator pointing to the 2nd parameter \p first.
   //!
-  //! If incremented, the iterator will point to the next least short-lex
-  //! word after \p w over an \p n letter alphabet. Iterators of the type
-  //! returned by this function are equal whenever they are obtained by
-  //! advancing the return value of any call to \c cbegin_wislo by the same
-  //! amount, or they are both obtained by any call to \c cend_wislo.
+  //! Returns a forward iterator used to iterate over words in
+  //! short-lexicographic order (wislo). If incremented, the iterator will point
+  //! to the next least short-lex word after \p w over an \p n letter alphabet.
+  //! Iterators of the type returned by this function are equal whenever they
+  //! are obtained by advancing the return value of any call to \c cbegin_wislo
+  //! by the same amount, or they are both obtained by any call to \c
+  //! cend_wislo.
   //!
-  //! \param n the number of letters in the alphabet;
-  //! \param first the starting point for the iteration;
+  //! \param n the number of letters in the alphabet.
+  //! \param first the starting point for the iteration.
   //! \param last the ending point for the iteration.
   //!
-  //! \returns An iterator of type \c const_wislo_iterator.
+  //! \returns An iterator pointing to \p first.
   //!
   //! \exception
   //! \no_libsemigroups_except
@@ -362,16 +239,15 @@ namespace libsemigroups {
   //!                        cend_wislo(2,  {0}, {0, 0, 0}));
   //! // {{0}, {1}, {0, 0}, {0, 1}, {1, 0}, {1, 1}};
   //! \endcode
-  [[nodiscard]] const_wislo_iterator cbegin_wislo(size_t      n,
-                                                  word_type&& first,
-                                                  word_type&& last);
+  [[nodiscard]] detail::const_wislo_iterator cbegin_wislo(size_t      n,
+                                                          word_type&& first,
+                                                          word_type&& last);
 
   //! \ingroup words_group
   //! \brief Returns a forward iterator pointing to the 2nd parameter \p first.
   //! \copydoc cbegin_wislo(size_t const, word_type&&, word_type&&)
-  [[nodiscard]] const_wislo_iterator cbegin_wislo(size_t           n,
-                                                  word_type const& first,
-                                                  word_type const& last);
+  [[nodiscard]] detail::const_wislo_iterator
+  cbegin_wislo(size_t n, word_type const& first, word_type const& last);
 
   //! \ingroup words_group
   //! \brief Returns a forward iterator pointing to one after the end of the
@@ -381,17 +257,17 @@ namespace libsemigroups {
   //! but does not point to a word in the correct range.
   //!
   //! \sa cbegin_wislo
-  [[nodiscard]] const_wislo_iterator cend_wislo(size_t      n,
-                                                word_type&& first,
-                                                word_type&& last);
+  [[nodiscard]] detail::const_wislo_iterator cend_wislo(size_t      n,
+                                                        word_type&& first,
+                                                        word_type&& last);
 
   //! \ingroup words_group
   //! \brief Returns a forward iterator pointing to one after the end of the
   //! range from \p first to \p last.
   //! \copydoc cend_wislo(size_t const, word_type&&, word_type&&)
-  [[nodiscard]] const_wislo_iterator cend_wislo(size_t           n,
-                                                word_type const& first,
-                                                word_type const& last);
+  [[nodiscard]] detail::const_wislo_iterator cend_wislo(size_t           n,
+                                                        word_type const& first,
+                                                        word_type const& last);
 
   //! \ingroup words_group
   //! \brief Class for generating words in a given range and in a particular
@@ -434,8 +310,8 @@ namespace libsemigroups {
     using output_type = word_type const&;
 
    private:
-    using const_iterator
-        = std::variant<const_wilo_iterator, const_wislo_iterator>;
+    using const_iterator = std::variant<detail::const_wilo_iterator,
+                                        detail::const_wislo_iterator>;
 
     size_type              _number_of_letters;
     mutable const_iterator _current;
@@ -519,7 +395,10 @@ namespace libsemigroups {
     //! \noexcept
     [[nodiscard]] size_t count() const noexcept;
 
+    // For some reason, there needs to be two doxygen comment lines here for
+    // this to render.
     //! Value indicating that the range is finite.
+    //!
     static constexpr bool is_finite = true;  // This may not always be true
 
     //! Value indicating that if get() is called twice on a Words object that
@@ -553,18 +432,28 @@ namespace libsemigroups {
     Words& init();
 
     //! \brief Default copy constructor.
+    //!
+    //! Default copy constructor.
     Words(Words const&);
 
     //! \brief Default move constructor.
+    //!
+    //! Default move constructor.
     Words(Words&&);
 
     //! \brief Default copy assignment operator.
+    //!
+    //! Default copy assignment operator.
     Words& operator=(Words const&);
 
     //! \brief Default move assignment operator.
+    //!
+    //! Default move assignment operator.
     Words& operator=(Words&&);
 
     //! \brief Default destructor.
+    //!
+    //! Default destructor.
     ~Words();
 
     //! \brief Set the number of letters in the alphabet.
@@ -788,6 +677,31 @@ namespace libsemigroups {
     auto end() const noexcept {
       return rx::end(*this);
     }
+
+    // TODO(now) this doc doesn't feel nice, but JDE can't think of a good way
+    // to write it.
+    //! \brief Returns whether or not the settings have been changed since the
+    //! last time either \ref next or \ref get has been called.
+    //!
+    //! Other than by calling \ref next, the value returned by \ref get may be
+    //! altered by a call to one of the following:
+    //! * \ref order(Order)
+    //! * \ref number_of_letters(size_type)
+    //! * \ref min(size_type)
+    //! * \ref max(size_type)
+    //! * \ref first(word_type const&)
+    //! * \ref last(word_type const&)
+    //! * \ref upper_bound(size_type)
+    //!
+    //! This function returns \c true if none of the above settings have been
+    //! changed since the last time \ref next or \ref get is called, and \c
+    //! false otherwise.
+    //!
+    //! \returns A value of type `bool`.
+    // Required so Strings can accurately set _current_valid
+    bool valid() const noexcept {
+      return _current_valid;
+    }
   };
 
   ////////////////////////////////////////////////////////////////////////
@@ -797,29 +711,35 @@ namespace libsemigroups {
   //! \ingroup words_group
   //! \brief Returns the index of a character in human readable order.
   //!
+  //! Defined in `words.hpp`.
+  //!
   //! This function is the inverse of \ref human_readable_char, see the
   //! documentation of that function for more details.
   //!
   //! \param c character whose index is sought.
   //!
+  //! \returns A value of type \ref letter_type.
+  //!
   //! \exception
   //! \no_libsemigroups_except
   //!
-  //! \returns A value of type \ref letter_type.
+  //! \sa human_readable_char
   [[nodiscard]] letter_type human_readable_index(char c);
 
   //! \ingroup words_group
   //! \brief Convert a string to a word_type.
   //!
-  //! This function converts its second argument \p input into a word_type and
-  //! stores the result in the first argument \p output. The characters of \p
-  //! input are converted using \ref human_readable_index, so that \c 'a' is
+  //! Defined in `words.hpp`.
+  //!
+  //! This function converts its first argument \p input into a \ref word_type
+  //! and stores the result in the second argument \p output. The characters of
+  //! \p input are converted using \ref human_readable_index, so that \c 'a' is
   //! mapped to \c 0, \c 'b' to \c 1, and so on.
   //!
-  //! The contents of the first argument \p output, if any, is removed.
+  //! The contents of the second argument \p output, if any, is removed.
   //!
-  //! \param output word to hold the result
   //! \param input the string to convert
+  //! \param output word to hold the result
   //!
   //! \exception
   //! \no_libsemigroups_except
@@ -833,13 +753,14 @@ namespace libsemigroups {
   //! \ingroup words_group
   //! \brief Convert a string to a word_type.
   //!
-  //! This function converts its argument \p s into a word_type. The characters
-  //! of \p s are converted using \ref human_readable_index, so that \c 'a' is
-  //! mapped to \c 0,\c 'b' to \c 1, and so on.
+  //! Defined in `words.hpp`.
   //!
-  //! The contents of the first argument \p w, if any, is removed.
+  //! This function converts its argument \p s into a \ref word_type. The
+  //! characters of \p s are converted using \ref human_readable_index, so that
+  //! \c 'a' is mapped to \c 0,\c 'b' to \c 1, and so on.
   //!
   //! \param s the string to convert
+  //!
   //! \returns A value of type \ref word_type.
   //!
   //! \exception
@@ -868,32 +789,45 @@ namespace libsemigroups {
   //! toword("bac");        // returns {0, 1, 2}
   //! toword("bababbbcbc"); // returns { 0, 1, 0, 1, 0, 0, 0, 2, 0, 2}
   //! \endcode
-  // TODO a version that takes a word_type, so that we can permute the letters
-  // in a word
-  // TODO a version of ToWords that is similar, i.e. takes a word_type and so
-  // can be used to change the letters in a word.
+  // TODO (later) a version that takes a word_type, so that we can permute the
+  // letters in a word
+  // TODO (later) a version of ToWords that is similar, i.e. takes a word_type
+  // and so can be used to change the letters in a word.
   class ToWord {
    public:
     //! \brief Default constructor.
     //!
     //! Constructs an empty object with no alphabet set.
-    // TODO noexcept?
+    // Not noexcept because std::array::fill isn't
     ToWord() : _lookup() {
       init();
     }
 
-    // TODO noexcept?
-    // TODO Out of line these
-    //! TODO
-    ToWord(ToWord const&) = default;
-    //! TODO
-    ToWord(ToWord&&) = default;
-    //! TODO
-    ToWord& operator=(ToWord const&) = default;
-    //! TODO
-    ToWord& operator=(ToWord&&) = default;
+    // TODO (later) noexcept?
+    //! \brief Default copy constructor.
+    //!
+    //! Default copy constructor.
+    ToWord(ToWord const&);
 
-    ~ToWord() = default;
+    //! \brief Default move constructor.
+    //!
+    //! Default move constructor.
+    ToWord(ToWord&&);
+
+    //! \brief Default copy assignment.
+    //!
+    //! Default copy assignment.
+    ToWord& operator=(ToWord const&);
+
+    //! \brief Default move assignment.
+    //!
+    //! Default move assignment.
+    ToWord& operator=(ToWord&&);
+
+    //! \brief Default destructor.
+    //!
+    //! Default destructor.
+    ~ToWord();
 
     //! \brief Initialize an existing ToWord object.
     //!
@@ -904,6 +838,8 @@ namespace libsemigroups {
     //!
     //! \exception
     //! \no_libsemigroups_except
+    //!
+    //! \sa ToWord()
     ToWord& init() {
       _lookup.fill(UNDEFINED);
       _lookup.back() = 0;
@@ -912,7 +848,9 @@ namespace libsemigroups {
 
     //! \brief Construct with given alphabet.
     //!
-    //! \param alphabet the alphabet
+    //! Construct a ToWord object with the given alphabet.
+    //!
+    //! \param alphabet the alphabet.
     //!
     //! \throws LibsemigroupsException if there are repeated letters in
     //! \p alphabet.
@@ -931,6 +869,8 @@ namespace libsemigroups {
     //!
     //! \throws LibsemigroupsException if there are repeated letters in
     //! \p alphabet.
+    //!
+    //! \sa ToWord(std::string const& alphabet)
     ToWord& init(std::string const& alphabet);
 
     //! \brief Check if the alphabet is defined.
@@ -1002,7 +942,7 @@ namespace libsemigroups {
   //!
   //! This function exists to map the numbers \c 0 to \c 254 to the possible
   //! values of a \c char, in such a way that the first characters are \c
-  //! a-zA-Z0-9 The ascii ranges for these characters are: \f$[97, 123)\f$,
+  //! a-zA-Z0-9. The ascii ranges for these characters are: \f$[97, 123)\f$,
   //! \f$[65, 91)\f$, \f$[48, 58)\f$ so the remaining range of chars that are
   //! appended to the end after these chars are \f$[0,48)\f$, \f$[58, 65)\f$,
   //! \f$[91, 97)\f$, \f$[123, 255)\f$.
@@ -1017,19 +957,45 @@ namespace libsemigroups {
   [[nodiscard]] char human_readable_char(size_t i);
 
   //! \ingroup words_group
+  //! \brief Check if the word is valid over the given alphabet
+  //!
+  //! This function checks if every value in the range `[first, last)` is in the
+  //! range \f$[0, n)\f$.
+  //!
+  //! \tparam Iterator the type of the second and third arguments.
+  //!
+  //! \param n one beyond the upper bound of the valid alphabet.
+  //! \param first iterator pointing to the first letter of the word to
+  //! validate.
+  //! \param last iterator pointing one beyond the last letter of the
+  //! word to validate.
+  //!
+  //! \throws LibsemigroupsException if any letter in the range `[first, last)`
+  //! is not in the range \f$[0, n)\f$.
+  template <typename Iterator>
+  void validate_word(size_t n, Iterator first, Iterator last) {
+    for (auto it = first; it != last; ++it) {
+      if (*it < 0 || *it >= n) {
+        LIBSEMIGROUPS_EXCEPTION(fmt::format(
+            "invalid letter {}, letters must be in the range [0, {})", *it, n));
+      }
+    }
+  }
+
+  //! \ingroup words_group
   //! \brief Convert a word_type to a string.
   //!
-  //! This function converts its the word_type pointed to by the 2nd and 3rd
-  //! arguments \p first and \p last into a \ref std::string, and stores the
-  //! result in the final argument \p output. The characters of \p input are
-  //! converted using \ref human_readable_index, so that \c i is mapped to \p
-  //! alphabet[i] for each letter \c i.
+  //! This function converts the word_type pointed to by the second and third
+  //! arguments \p input_first and \p inpput_last into a \ref std::string, and
+  //! stores the result in the final argument \p output. The characters in
+  //! `[input_first, input_last)` are converted using the fourth parameter \p
+  //! alphabet, so that \c i is mapped to \c alphabet[i] for each letter \c i.
   //!
-  //! The contents of the first argument \p output, if any, is removed.
+  //! The contents of the fourth argument \p output, if any, are removed.
   //!
-  //! \tparam Iterator the type of the 2nd and 3rd arguments
+  //! \tparam Iterator the type of the second and third arguments.
   //!
-  //! \param alphabet the alphabet to use for the conversion
+  //! \param alphabet the alphabet to use for the conversion.
   //! \param input_first iterator pointing at the first letter of the word to
   //! convert
   //! \param input_last iterator pointing one beyond the last letter of
@@ -1048,10 +1014,10 @@ namespace libsemigroups {
   //! * to_word
   //! * \ref literals
   template <typename Iterator>
-  void to_string(std::string_view alphabet,
-                 Iterator         input_first,
-                 Iterator         input_last,
-                 std::string&     output) {
+  void to_string_no_checks(std::string_view alphabet,
+                           Iterator         input_first,
+                           Iterator         input_last,
+                           std::string&     output) {
     output.resize(std::distance(input_first, input_last));
     size_t i = 0;
     for (auto it = input_first; it != input_last; ++it) {
@@ -1059,46 +1025,157 @@ namespace libsemigroups {
     }
   }
 
-  //! \ingroup words_group
-  //! \brief Convert a word_type to a string.
-  //!
-  //! See to_string(std::string const&, Iterator, Iterator, std::string&)
-  static inline void to_string(std::string_view alphabet,
-                               word_type const& input,
-                               std::string&     output) {
-    return to_string(alphabet, input.cbegin(), input.cend(), output);
+  //! TODO doc
+  template <typename Iterator>
+  void to_string(std::string_view alphabet,
+                 Iterator         input_first,
+                 Iterator         input_last,
+                 std::string&     output) {
+    validate_word(alphabet.size(), input_first, input_last);
+    to_string_no_checks(alphabet, input_first, input_last, output);
   }
 
   //! \ingroup words_group
   //! \brief Convert a word_type to a string.
   //!
-  //! See to_string(std::string const&, Iterator, Iterator, std::string&)
-  //! the difference is that this function returns a new string.
+  //! See to_string_no_checks(std::string const&, Iterator, Iterator,
+  //! std::string&). The difference is that this takes a \ref word_type to
+  //! convert, rather than a pair of iterators.
+  //!
+  //! \warning This function performs no checks on its arguments, and so in
+  //! particular if any letter in the word being converted is not less than \p
+  //! alphabet.size(), then bad things may happen.
+  static inline void to_string_no_checks(std::string_view alphabet,
+                                         word_type const& input,
+                                         std::string&     output) {
+    to_string_no_checks(alphabet, input.cbegin(), input.cend(), output);
+  }
+
+  //! TODO doc
+  static inline void to_string(std::string_view alphabet,
+                               word_type const& input,
+                               std::string&     output) {
+    validate_word(alphabet.size(), input.cbegin(), input.cend());
+    to_string_no_checks(alphabet, input, output);
+  }
+
+  //! \ingroup words_group
+  //! \brief Convert a word_type to a string.
+  //!
+  //! See to_string_no_checks(std::string const&, Iterator, Iterator,
+  //! std::string&). The difference is that this function returns a new string.
+  //!
+  //! \warning This function performs no checks on its arguments, and so in
+  //! particular if any letter in the word being converted is not less than \p
+  //! alphabet.size(), then bad things may happen.
+  template <typename Iterator>
+  [[nodiscard]] std::string to_string_no_checks(std::string_view alphabet,
+                                                Iterator         first,
+                                                Iterator         last) {
+    std::string output;
+    to_string_no_checks(alphabet, first, last, output);
+    return output;
+  }
+
+  //! TODO doc
   template <typename Iterator>
   [[nodiscard]] std::string to_string(std::string_view alphabet,
                                       Iterator         first,
                                       Iterator         last) {
-    std::string output;
-    to_string(alphabet, first, last, output);
-    return output;
+    validate_word(alphabet.size(), first, last);
+    return to_string_no_checks(alphabet, first, last);
   }
 
   //! \ingroup words_group
   //! \brief Convert a word_type to a string.
   //!
-  //! See to_string(std::string_view, Iterator, Iterator, std::string&)
-  //! the difference is that this function returns a new string.
-  [[nodiscard]] static inline std::string to_string(std::string_view alphabet,
-                                                    word_type const& input) {
-    return to_string(alphabet, input.cbegin(), input.cend());
+  //! See to_string(std::string_view, word_type const&, std::string&).
+  //! The difference is that this function returns a new string.
+  //!
+  //! \warning This function performs no checks on its arguments, and so in
+  //! particular if any letter in the word being converted is not less than \p
+  //! alphabet.size(), then bad things may happen.
+  [[nodiscard]] static inline std::string
+  to_string_no_checks(std::string_view alphabet, word_type const& input) {
+    return to_string_no_checks(alphabet, input.cbegin(), input.cend());
   }
 
-  // TODO single arg to_string(word_type const&).
-  // TODO ToString object that stores the alphabet
+  //! TODO doc
+  [[nodiscard]] static inline std::string to_string(std::string_view alphabet,
+                                                    word_type const& input) {
+    validate_word(alphabet.size(), input.cbegin(), input.cend());
+    return to_string_no_checks(alphabet, input);
+  }
+
+  // TODO (later) single arg to_string(word_type const&).
+  // TODO (later) ToString object that stores the alphabet
 
   ////////////////////////////////////////////////////////////////////////
   // Strings
   ////////////////////////////////////////////////////////////////////////
+
+  //! \ingroup words_group
+  //! \brief Returns a random string.
+  //!
+  //! Returns a random string with length \p length over alphabet \p alphabet.
+  //!
+  //! \param alphabet the alphabet over which the string is constructed.
+  //! \param length the length of the string.
+  //!
+  //! \returns A random string, value of `std::string`.
+  //!
+  //! \exception
+  //! \no_libsemigroups_except
+  //!
+  //! \sa \ref random_word
+  std::string random_string(std::string const& alphabet, size_t length);
+
+  //! \ingroup words_group
+  //! \brief Returns a random string.
+  //!
+  //! Returns a random string with random length in the range `[min, max)` over
+  //! alphabet \p alphabet.
+  //!
+  //! \param alphabet the alphabet over which the string is constructed.
+  //! \param min the minimum length of the returned string.
+  //! \param max one above the maximum length of the returned string.
+  //!
+  //! \returns A random string, value of `std::string`.
+  //!
+  //! \throws LibsemigroupsException if either:
+  //! * `min > max`; or
+  //! * `alphabet.size() == 0` and `min != 0`.
+  //!
+  //! \sa \ref random_word
+  std::string random_string(std::string const& alphabet,
+                            size_t             min,
+                            size_t             max);
+
+  //! \ingroup words_group
+  //! \brief Returns a range object of random strings.
+  //!
+  //! Returns a range object of random strings, each of which with random length
+  //! in the range `[min, max)` over alphabet \p alphabet.
+  //!
+  //! \param alphabet the alphabet over which the string is constructed.
+  //! \param number the number of random strings to construct.
+  //! \param min the minimum length of the returned string.
+  //! \param max one above the maximum length of the returned string.
+  //!
+  //! \returns A range of random strings.
+  //!
+  //! \throws LibsemigroupsException if either:
+  //! * `min > max`; or
+  //! * `alphabet.size() == 0` and `min != 0`.
+  //!
+  //! \sa \ref random_word
+  auto inline random_strings(std::string const& alphabet,
+                             size_t             number,
+                             size_t             min,
+                             size_t             max) {
+    return rx::generate([&] { return random_string(alphabet, min, max); })
+           | rx::take(number);
+  }
 
   //! \ingroup words_group
   //! \brief Class for generating strings in a given range and in a particular
@@ -1152,7 +1229,8 @@ namespace libsemigroups {
 
     void init_current() const {
       if (!_current_valid) {
-        _current = to_string(_letters, _words.get());
+        _current       = to_string_no_checks(_letters, _words.get());
+        _current_valid = true;
       }
     }
 
@@ -1182,8 +1260,8 @@ namespace libsemigroups {
     //!
     //! \sa \ref at_end
     void next() noexcept {
-      _current_valid = false;
       _words.next();
+      _current_valid = false;
     }
 
     //! \brief Check if the range object is exhausted.
@@ -1311,8 +1389,8 @@ namespace libsemigroups {
     //! \note Unlike Words::first, this function will throw if \p frst
     //! contains letters not belonging to alphabet().
     Strings& first(std::string const& frst) {
-      _current_valid = false;
       _words.first(_to_word(frst));
+      _current_valid = _words.valid();
       return *this;
     }
 
@@ -1327,7 +1405,7 @@ namespace libsemigroups {
     //!
     //! \sa \ref min
     [[nodiscard]] std::string first() const noexcept {
-      return to_string(_letters, _words.first());
+      return to_string_no_checks(_letters, _words.first());
     }
 
     //! \brief Set one past the last string in the range.
@@ -1345,8 +1423,8 @@ namespace libsemigroups {
     //! \note Unlike Words::last, this function will throw if \p lst
     //! contains letters not belonging to alphabet().
     Strings& last(std::string const& lst) {
-      _current_valid = false;
       _words.last(_to_word(lst));
+      _current_valid = _words.valid();
       return *this;
     }
 
@@ -1361,7 +1439,7 @@ namespace libsemigroups {
     //!
     //! \sa \ref max
     [[nodiscard]] std::string last() const noexcept {
-      return to_string(_letters, _words.last());
+      return to_string_no_checks(_letters, _words.last());
     }
 
     //! \brief Set the order of the strings in the range.
@@ -1375,8 +1453,8 @@ namespace libsemigroups {
     //! \throws LibsemigroupsException if val is not Order::shortlex or
     //! Order::lex.
     Strings& order(Order val) {
-      _current_valid = false;
       _words.order(val);
+      _current_valid = _words.valid();
       return *this;
     }
 
@@ -1404,8 +1482,8 @@ namespace libsemigroups {
     //! \exception
     //! \no_libsemigroups_except
     Strings& upper_bound(size_type n) {
-      _current_valid = false;
       _words.upper_bound(n);
+      _current_valid = _words.valid();
       return *this;
     }
 
@@ -1434,8 +1512,8 @@ namespace libsemigroups {
     //! \exception
     //! \no_libsemigroups_except
     Strings& min(size_type val) {
-      _current_valid = false;
       _words.min(val);
+      _current_valid = _words.valid();
       return *this;
     }
 
@@ -1455,8 +1533,8 @@ namespace libsemigroups {
     //! \exception
     //! \no_libsemigroups_except
     Strings& max(size_type val) {
-      _current_valid = false;
       _words.max(val);
+      _current_valid = _words.valid();
       return *this;
     }
 
@@ -1537,32 +1615,30 @@ namespace libsemigroups {
     //! The default constructor is deleted, since the alphabet must defined.
     ToWords() = delete;
 
-    // TODO out of line these
-
     //! \brief Default copy constructor.
     //!
     //! Default copy constructor.
-    ToWords(ToWords const&) = default;
+    ToWords(ToWords const&);
 
     //! \brief Default move constructor.
     //!
     //! Default move constructor.
-    ToWords(ToWords&&) = default;
+    ToWords(ToWords&&);
 
     //! \brief Default copy assignment operator.
     //!
     //! Default move assignment operator.
-    ToWords& operator=(ToWords const&) = default;
+    ToWords& operator=(ToWords const&);
 
     //! \brief Default move assignment operator.
     //!
     //! Default move assignment operator.
-    ToWords& operator=(ToWords&&) = default;
+    ToWords& operator=(ToWords&&);
 
     //! \brief Default destructor.
     //!
     //! Default destructor.
-    ~ToWords() = default;
+    ~ToWords();
 
     //! \brief Construct from `std::string_view`
     //!
@@ -1661,32 +1737,30 @@ namespace libsemigroups {
     //! The default constructor is deleted, since the alphabet must defined.
     ToStrings() = delete;
 
-    // TODO out of line these
-
     //! \brief Default copy constructor.
     //!
     //! Default copy constructor.
-    ToStrings(ToStrings const&) = default;
+    ToStrings(ToStrings const&);
 
     //! \brief Default move constructor.
     //!
     //! Default move constructor.
-    ToStrings(ToStrings&&) = default;
+    ToStrings(ToStrings&&);
 
     //! \brief Default copy assignment operator.
     //!
     //! Default move assignment operator.
-    ToStrings& operator=(ToStrings const&) = default;
+    ToStrings& operator=(ToStrings const&);
 
     //! \brief Default move assignment operator.
     //!
     //! Default move assignment operator.
-    ToStrings& operator=(ToStrings&&) = default;
+    ToStrings& operator=(ToStrings&&);
 
     //! \brief Default destructor.
     //!
     //! Default destructor.
-    ~ToStrings() = default;
+    ~ToStrings();
 
     //! \brief Construct from `std::string_view`
     //!
@@ -1719,7 +1793,7 @@ namespace libsemigroups {
           : _input(input), _letters(t_strng._letters) {}
 
       [[nodiscard]] output_type get() const {
-        return to_string(_letters, _input.get());
+        return to_string_no_checks(_letters, _input.get());
       }
 
       constexpr void next() noexcept {
@@ -1750,6 +1824,8 @@ namespace libsemigroups {
   // Literals
   ////////////////////////////////////////////////////////////////////////
 
+  //! \ingroup words_group
+  //!
   //! \brief Namespace containing some custom literals for creating words.
   //!
   //! Defined in `words.hpp`.
@@ -1828,6 +1904,8 @@ namespace libsemigroups {
 
   ////////////////////////////////////////////////////////////////////////
 
+  //! \ingroup words_group
+  //!
   //! \brief Namespace containing some operators for creating words.
   //!
   //! Defined in `words.hpp`.

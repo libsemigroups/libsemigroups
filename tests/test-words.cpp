@@ -31,6 +31,8 @@
 #include "libsemigroups/types.hpp"   // for word_type
 #include "libsemigroups/words.hpp"   // for number_of_words
 
+#include "libsemigroups/detail/word-iterators.hpp"  // for const_wilo_iterator
+
 namespace libsemigroups {
   using namespace literals;
   using namespace rx;
@@ -200,7 +202,7 @@ namespace libsemigroups {
     word_type first = 000_w;
     word_type last  = 0000_w;
 
-    const_wislo_iterator it;
+    detail::const_wislo_iterator it;
     it = cbegin_wislo(2, first, last);
     REQUIRE(*it == 000_w);
     REQUIRE(it->size() == 3);
@@ -229,7 +231,7 @@ namespace libsemigroups {
     REQUIRE(it == it2);
     REQUIRE(++it == ++it2);
 
-    const_wislo_iterator it3(cbegin_wislo(2, first, last));
+    detail::const_wislo_iterator it3(cbegin_wislo(2, first, last));
     it3 = cbegin_wislo(2, first, last);
     REQUIRE(*it3 == word_type(000_w));
     REQUIRE(it->size() == 3);
@@ -435,7 +437,7 @@ namespace libsemigroups {
     word_type first = 000_w;
     word_type last  = 1111_w;
 
-    const_wilo_iterator it;
+    detail::const_wilo_iterator it;
     it = cbegin_wilo(2, 5, first, last);
     REQUIRE(*it == word_type(000_w));
     REQUIRE(it->size() == 3);
@@ -862,8 +864,7 @@ namespace libsemigroups {
     REQUIRE(*(++it) == *(++it2));
   }
 
-  // FIXME lots of the test in this case fail
-  LIBSEMIGROUPS_TEST_CASE("Strings", "036", "code coverage", "[words][fail]") {
+  LIBSEMIGROUPS_TEST_CASE("Strings", "036", "code coverage", "[words]") {
     using words::pow;
 
     size_t const m = 27;
@@ -890,16 +891,16 @@ namespace libsemigroups {
 
     Strings copy;
     copy.   operator=(strings);
-    REQUIRE(copy.get() == "a");  // FIXME was "aa"
+    REQUIRE(copy.get() == "aa");
     copy.next();
-    REQUIRE(copy.get() == "aa");  // FIXME was "aaa"
+    REQUIRE(copy.get() == "aaa");
     strings.next();
 
     REQUIRE(equal(strings, copy));
     REQUIRE(copy.upper_bound() == 28);
     REQUIRE(copy.first() == "a");
     REQUIRE(copy.last() == pow("a", 28));
-    REQUIRE(copy.count() == 26);  // FIXME was 25
+    REQUIRE(copy.count() == 25);
 
     Strings move;
     move.   operator=(std::move(strings));
@@ -907,8 +908,8 @@ namespace libsemigroups {
     REQUIRE(move.upper_bound() == 28);
     REQUIRE(move.first() == "a");
     REQUIRE(move.last() == pow("a", 28));
-    REQUIRE(move.count() == 26);        // FIXME was 25
-    REQUIRE(move.alphabet() == "aba");  // FIXME this makes no sense
+    REQUIRE(move.count() == 25);
+    REQUIRE(move.alphabet() == "ab");
 
     Strings more;
     REQUIRE(more.at_end());
@@ -927,7 +928,7 @@ namespace libsemigroups {
     REQUIRE(move2.upper_bound() == 28);
     REQUIRE(move2.first() == "a");
     REQUIRE(move2.last() == pow("a", 28));
-    REQUIRE(move2.count() == 26);
+    REQUIRE(move2.count() == 25);
     REQUIRE(move2.alphabet() == "ab");
 
     Strings swap;
