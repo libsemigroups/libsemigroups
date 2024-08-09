@@ -957,6 +957,32 @@ namespace libsemigroups {
   [[nodiscard]] char human_readable_char(size_t i);
 
   //! \ingroup words_group
+  //! \brief Check if the word is valid over the given alphabet
+  //!
+  //! This function checks if every value in the range `[first, last)` is in the
+  //! range \f$[0, n)\f$.
+  //!
+  //! \tparam Iterator the type of the second and third arguments.
+  //!
+  //! \param n one beyond the upper bound of the valid alphabet.
+  //! \param first iterator pointing to the first letter of the word to
+  //! validate.
+  //! \param last iterator pointing one beyond the last letter of the
+  //! word to validate.
+  //!
+  //! \throws LibsemigroupsException if any letter in the range `[first, last)`
+  //! is not in the range \f$[0, n)\f$.
+  template <typename Iterator>
+  void validate_word(size_t n, Iterator first, Iterator last) {
+    for (auto it = first; it != last; ++it) {
+      if (*it < 0 || *it >= n) {
+        LIBSEMIGROUPS_EXCEPTION(fmt::format(
+            "invalid letter {}, letters must be in the range [0, {})", *it, n));
+      }
+    }
+  }
+
+  //! \ingroup words_group
   //! \brief Convert a word_type to a string.
   //!
   //! This function converts the word_type pointed to by the second and third
@@ -999,6 +1025,16 @@ namespace libsemigroups {
     }
   }
 
+  //! TODO doc
+  template <typename Iterator>
+  void to_string(std::string_view alphabet,
+                 Iterator         input_first,
+                 Iterator         input_last,
+                 std::string&     output) {
+    validate_word(alphabet.size(), input_first, input_last);
+    to_string_no_checks(alphabet, input_first, input_last, output);
+  }
+
   //! \ingroup words_group
   //! \brief Convert a word_type to a string.
   //!
@@ -1012,7 +1048,15 @@ namespace libsemigroups {
   static inline void to_string_no_checks(std::string_view alphabet,
                                          word_type const& input,
                                          std::string&     output) {
-    return to_string_no_checks(alphabet, input.cbegin(), input.cend(), output);
+    to_string_no_checks(alphabet, input.cbegin(), input.cend(), output);
+  }
+
+  //! TODO doc
+  static inline void to_string(std::string_view alphabet,
+                               word_type const& input,
+                               std::string&     output) {
+    validate_word(alphabet.size(), input.cbegin(), input.cend());
+    to_string_no_checks(alphabet, input, output);
   }
 
   //! \ingroup words_group
@@ -1025,12 +1069,21 @@ namespace libsemigroups {
   //! particular if any letter in the word being converted is not less than \p
   //! alphabet.size(), then bad things may happen.
   template <typename Iterator>
+  [[nodiscard]] std::string to_string_no_checks(std::string_view alphabet,
+                                                Iterator         first,
+                                                Iterator         last) {
+    std::string output;
+    to_string_no_checks(alphabet, first, last, output);
+    return output;
+  }
+
+  //! TODO doc
+  template <typename Iterator>
   [[nodiscard]] std::string to_string(std::string_view alphabet,
                                       Iterator         first,
                                       Iterator         last) {
-    std::string output;
-    to_string(alphabet, first, last, output);
-    return output;
+    validate_word(alphabet.size(), first, last);
+    return to_string_no_checks(alphabet, first, last);
   }
 
   //! \ingroup words_group
@@ -1042,9 +1095,16 @@ namespace libsemigroups {
   //! \warning This function performs no checks on its arguments, and so in
   //! particular if any letter in the word being converted is not less than \p
   //! alphabet.size(), then bad things may happen.
+  [[nodiscard]] static inline std::string
+  to_string_no_checks(std::string_view alphabet, word_type const& input) {
+    return to_string_no_checks(alphabet, input.cbegin(), input.cend());
+  }
+
+  //! TODO doc
   [[nodiscard]] static inline std::string to_string(std::string_view alphabet,
                                                     word_type const& input) {
-    return to_string(alphabet, input.cbegin(), input.cend());
+    validate_word(alphabet.size(), input.cbegin(), input.cend());
+    return to_string_no_checks(alphabet, input);
   }
 
   // TODO (later) single arg to_string(word_type const&).
@@ -1125,7 +1185,7 @@ namespace libsemigroups {
 
     void init_current() const {
       if (!_current_valid) {
-        _current       = to_string(_letters, _words.get());
+        _current       = to_string_no_checks(_letters, _words.get());
         _current_valid = true;
       }
     }
@@ -1301,7 +1361,7 @@ namespace libsemigroups {
     //!
     //! \sa \ref min
     [[nodiscard]] std::string first() const noexcept {
-      return to_string(_letters, _words.first());
+      return to_string_no_checks(_letters, _words.first());
     }
 
     //! \brief Set one past the last string in the range.
@@ -1335,7 +1395,7 @@ namespace libsemigroups {
     //!
     //! \sa \ref max
     [[nodiscard]] std::string last() const noexcept {
-      return to_string(_letters, _words.last());
+      return to_string_no_checks(_letters, _words.last());
     }
 
     //! \brief Set the order of the strings in the range.
@@ -1689,7 +1749,7 @@ namespace libsemigroups {
           : _input(input), _letters(t_strng._letters) {}
 
       [[nodiscard]] output_type get() const {
-        return to_string(_letters, _input.get());
+        return to_string_no_checks(_letters, _input.get());
       }
 
       constexpr void next() noexcept {
@@ -1720,6 +1780,8 @@ namespace libsemigroups {
   // Literals
   ////////////////////////////////////////////////////////////////////////
 
+  //! \ingroup words_group
+  //!
   //! \brief Namespace containing some custom literals for creating words.
   //!
   //! Defined in `words.hpp`.
@@ -1798,6 +1860,8 @@ namespace libsemigroups {
 
   ////////////////////////////////////////////////////////////////////////
 
+  //! \ingroup words_group
+  //!
   //! \brief Namespace containing some operators for creating words.
   //!
   //! Defined in `words.hpp`.

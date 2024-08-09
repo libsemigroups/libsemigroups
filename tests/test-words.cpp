@@ -864,7 +864,7 @@ namespace libsemigroups {
     REQUIRE(*(++it) == *(++it2));
   }
 
-  LIBSEMIGROUPS_TEST_CASE("Strings", "036", "code coverage", "[words][fail]") {
+  LIBSEMIGROUPS_TEST_CASE("Strings", "036", "code coverage", "[words]") {
     using words::pow;
 
     size_t const m = 27;
