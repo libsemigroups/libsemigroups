@@ -29,21 +29,20 @@
 #include <cstdint>      // for uint64_t
 #include <iterator>     // for distance, forward_iterator_tag
 #include <numeric>      // for accumulate
-#include <string>       //for std::string
+#include <string>       // for std::string
 #include <type_traits>  // for true_type
 #include <variant>      // for visit, variant
 #include <vector>       // for vector, allocator
 
-#include "config.hpp"                    // for LIBSEMIGROUPS_EIGEN_ENA...
-#include "constants.hpp"                 // for Max, UNDEFINED, Positive...
-#include "debug.hpp"                     // for LIBSEMIGROUPS_ASSERT
-#include "exception.hpp"                 // for LIBSEMIGROUPS_EXCEPTION
-#include "libsemigroups/word-graph.hpp"  // for is_reachable, validate_node
-#include "order.hpp"                     // for order
-#include "ranges.hpp"                    // for is_input_range
-#include "types.hpp"                     // for word_type
-#include "word-graph.hpp"                // for WordGraph
-#include "words.hpp"                     // for number_of_words
+#include "config.hpp"      // for LIBSEMIGROUPS_EIGEN_ENA...
+#include "constants.hpp"   // for Max, UNDEFINED, Positive...
+#include "debug.hpp"       // for LIBSEMIGROUPS_ASSERT
+#include "exception.hpp"   // for LIBSEMIGROUPS_EXCEPTION
+#include "order.hpp"       // for order
+#include "ranges.hpp"      // for is_input_range
+#include "types.hpp"       // for word_type
+#include "word-graph.hpp"  // for WordGraph
+#include "words.hpp"       // for number_of_words
 
 #include "detail/containers.hpp"      // for DynamicArray2
 #include "detail/path-iterators.hpp"  // for default_postfix_increment

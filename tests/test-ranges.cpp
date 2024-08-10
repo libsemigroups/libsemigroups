@@ -66,4 +66,19 @@ namespace libsemigroups {
     size_t next_count = (sequence | rx::count());
     REQUIRE(no_next_count == next_count + 10);
   }
+
+  LIBSEMIGROUPS_TEST_CASE("Ranges", "003", "Random", "[quick]") {
+    auto range = (rx::seq() | rx::take(100) | Random());
+    REQUIRE((range | rx::count()) == 1);
+    auto val = range.get();
+    REQUIRE((range | rx::count()) == 1);
+
+    REQUIRE(val < 100);
+    REQUIRE(val >= 0);
+    REQUIRE(!range.at_end());
+    REQUIRE(range.get() == val);
+    range.next();
+    REQUIRE((range | rx::count()) == 0);
+    REQUIRE(range.at_end());
+  }
 }  // namespace libsemigroups

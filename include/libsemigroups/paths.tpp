@@ -572,7 +572,7 @@ namespace libsemigroups {
 
   template <typename Node>
   std::string to_human_readable_repr(ReversiblePaths<Node> const& p) {
-    using namespace std::string_literals;
+    using std::string_literals::operator""s;
     auto result = to_human_readable_repr(static_cast<Paths<Node> const&>(p));
     result.erase(result.begin(), result.begin() + std::strlen("<Paths"));
     std::string rev = p.reverse() ? "(reversed)" : "(non-reversed)";
