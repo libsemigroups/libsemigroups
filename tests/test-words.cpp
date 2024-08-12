@@ -629,7 +629,7 @@ namespace libsemigroups {
                                          "bba",
                                          "bbb"}));
 
-    REQUIRE((strings | ToWords("ab") | to_vector())
+    REQUIRE((strings | ToWord("ab") | to_vector())
             == std::vector<word_type>({0_w,
                                        00_w,
                                        000_w,
@@ -1187,18 +1187,18 @@ namespace libsemigroups {
     REQUIRE(to_word("ABC") == word_type({26, 27, 28}));
   }
 
-  LIBSEMIGROUPS_TEST_CASE("ToWords", "039", "code coverage", "[quick]") {
+  LIBSEMIGROUPS_TEST_CASE("ToWord", "039", "code coverage", "[quick]") {
     Strings strings;
     strings.alphabet("ab").first("a").last("bbbb");
 
-    REQUIRE((strings | ToWords(strings.alphabet()) | to_vector())
+    REQUIRE((strings | ToWord(strings.alphabet()) | to_vector())
             == std::vector<word_type>(
                 {0_w,    1_w,    00_w,   01_w,   10_w,   11_w,   000_w,  001_w,
                  010_w,  011_w,  100_w,  101_w,  110_w,  111_w,  0000_w, 0001_w,
                  0010_w, 0011_w, 0100_w, 0101_w, 0110_w, 0111_w, 1000_w, 1001_w,
                  1010_w, 1011_w, 1100_w, 1101_w, 1110_w}));
 
-    ToWords to_words("ba");
+    ToWord to_words("ba");
     REQUIRE((strings | to_words | to_vector())
             == std::vector<word_type>(
                 {1_w,    0_w,    11_w,   10_w,   01_w,   00_w,   111_w,  110_w,
@@ -1206,10 +1206,10 @@ namespace libsemigroups {
                  1101_w, 1100_w, 1011_w, 1010_w, 1001_w, 1000_w, 0111_w, 0110_w,
                  0101_w, 0100_w, 0011_w, 0010_w, 0001_w}));
 
-    ToWords copy(to_words);
+    ToWord copy(to_words);
     REQUIRE(equal(strings | to_words, strings | copy));
 
-    ToWords move(std::move(copy));
+    ToWord move(std::move(copy));
     REQUIRE(equal(strings | to_words, strings | move));
 
     move.operator=(to_words);

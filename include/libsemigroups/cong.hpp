@@ -339,7 +339,7 @@ namespace libsemigroups {
         std::vector<std::vector<word_type>> result;
         for (auto const& klass : strings) {
           result.push_back(rx::iterator_range(klass.begin(), klass.end())
-                           | ToWords(p.alphabet()) | rx::to_vector());
+                           | ToWord(p.alphabet()) | rx::to_vector());
         }
         return result;
       } else if (cong.has<Kambites<word_type>>()) {

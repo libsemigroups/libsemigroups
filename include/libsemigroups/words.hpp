@@ -747,8 +747,6 @@ namespace libsemigroups {
   //! \endcode
   // TODO (later) a version that takes a word_type, so that we can permute the
   // letters in a word
-  // TODO (later) a version of ToWords that is similar, i.e. takes a word_type
-  // and so can be used to change the letters in a word.
   class ToWord {
    public:
     //! \brief Default constructor.
@@ -881,6 +879,67 @@ namespace libsemigroups {
     //! \sa
     //! * \ref literals
     [[nodiscard]] word_type operator()(std::string const& input) const;
+
+   private:
+    template <typename InputRange>
+    struct Range {
+      using output_type = word_type;
+
+      static constexpr bool is_finite     = rx::is_finite_v<InputRange>;
+      static constexpr bool is_idempotent = rx::is_idempotent_v<InputRange>;
+
+      InputRange    _input;
+      ToWord const* _to_word;
+
+      explicit Range(InputRange const& input, ToWord const& t_wrd) noexcept
+          : _input(input), _to_word(&t_wrd) {}
+
+      explicit Range(InputRange&& input, ToWord const& t_wrd) noexcept
+          : _input(std::move(input)), _to_word(&t_wrd) {}
+
+      // Not noexcept because ToWord()() isn't
+      [[nodiscard]] output_type get() const {
+        return _to_word->operator()(_input.get());
+      }
+
+      constexpr void next() noexcept {
+        _input.next();
+      }
+
+      [[nodiscard]] constexpr bool at_end() const noexcept {
+        return _input.at_end();
+      }
+
+      [[nodiscard]] constexpr size_t size_hint() const noexcept {
+        return _input.size_hint();
+      }
+    };
+
+   public:
+    //! \brief Call operator for combining with other range objects.
+    //!
+    //! A custom combinator for rx::ranges to convert the output of a Strings
+    //! object into \ref word_type, that can be combined with other combinators
+    //! using `operator|`.
+    //!
+    //! \par Example
+    //! \code
+    //!  Strings strings;
+    //!  strings.letters("ab").first("a").last("bbbb");
+    //!  auto words = (strings | ToWord("ba"));
+    //!  // contains the words
+    //!  // {1_w,    0_w,    11_w,   10_w,   01_w,   00_w,   111_w,
+    //!  //  110_w,  101_w,  100_w,  011_w,  010_w,  001_w,  000_w,
+    //!  //  1111_w, 1110_w, 1101_w, 1100_w, 1011_w, 1010_w, 1001_w,
+    //!  //  1000_w, 0111_w, 0110_w, 0101_w, 0100_w, 0011_w, 0010_w,
+    //!  //  0001_w}));
+    //! \endcode
+    template <typename InputRange,
+              typename = std::enable_if_t<rx::is_input_or_sink_v<InputRange>>>
+    [[nodiscard]] constexpr auto operator()(InputRange&& input) const {
+      using Inner = rx::get_range_type_t<InputRange>;
+      return Range<Inner>(std::forward<InputRange>(input), *this);
+    }
 
    private:
     std::array<letter_type, 256> _lookup;
@@ -1535,127 +1594,6 @@ namespace libsemigroups {
   ////////////////////////////////////////////////////////////////////////
   // Ranges
   ////////////////////////////////////////////////////////////////////////
-
-  //! \ingroup word_range_group
-  //! \brief A custom combinator for rx::ranges to convert the output
-  //! of a Strings object into \ref word_type.
-  //!
-  //! A custom combinator for rx::ranges to convert the output of a Strings
-  //! object into \ref word_type, that can be combined with other combinators
-  //! using `operator|`.
-  //!
-  //! Defined in `words.hpp`.
-  //!
-  //! \par Example
-  //! \code
-  //!  Strings strings;
-  //!  strings.letters("ab").first("a").last("bbbb");
-  //!  auto words = (strings | ToWords("ba"));
-  //!  // contains the words
-  //!  // {1_w,    0_w,    11_w,   10_w,   01_w,   00_w,   111_w,
-  //!  //  110_w,  101_w,  100_w,  011_w,  010_w,  001_w,  000_w,
-  //!  //  1111_w, 1110_w, 1101_w, 1100_w, 1011_w, 1010_w, 1001_w,
-  //!  //  1000_w, 0111_w, 0110_w, 0101_w, 0100_w, 0011_w, 0010_w,
-  //!  //  0001_w}));
-  //! \endcode
-  class ToWords {
-   private:
-    std::string _letters;
-
-   public:
-    //! \brief Deleted.
-    //!
-    //! The default constructor is deleted, since the alphabet must defined.
-    ToWords() = delete;
-
-    //! \brief Default copy constructor.
-    //!
-    //! Default copy constructor.
-    ToWords(ToWords const&);
-
-    //! \brief Default move constructor.
-    //!
-    //! Default move constructor.
-    ToWords(ToWords&&);
-
-    //! \brief Default copy assignment operator.
-    //!
-    //! Default move assignment operator.
-    ToWords& operator=(ToWords const&);
-
-    //! \brief Default move assignment operator.
-    //!
-    //! Default move assignment operator.
-    ToWords& operator=(ToWords&&);
-
-    //! \brief Default destructor.
-    //!
-    //! Default destructor.
-    ~ToWords();
-
-    //! \brief Construct from `std::string_view`
-    //!
-    //! Constructs a ToWords object using the specified alphabet. The position
-    //! of each character in the alphabet \p lttrs is the corresponding letter
-    //! in output word. For example, if \p lttrs is \c "ba", then \c "b" is
-    //! mapped to \c 0 and \c "a" is mapped to \c 1.
-    //!
-    //! \param lttrs the letters in the alphabet
-    //!
-    //! \exceptions
-    //! \no_libsemigroups_except
-    //!
-    //! \warning  When combining a ToWords object with another range, for
-    //! example via `operator|`, no checks are done to ensure that the incoming
-    //! strings use the same letters as the alphabet used to define ToWords.
-    explicit ToWords(std::string_view lttrs) : _letters(lttrs) {}
-
-   private:
-    template <typename InputRange>
-    struct Range {
-      using output_type = word_type;
-
-      static constexpr bool is_finite     = true;
-      static constexpr bool is_idempotent = true;
-
-      InputRange _input;
-      ToWord     _to_word;
-
-      explicit Range(InputRange const& input, ToWords const& t_wrds) noexcept
-          : _input(input), _to_word(t_wrds._letters) {}
-
-      explicit Range(InputRange&& input, ToWords const& t_wrds) noexcept
-          : _input(std::move(input)), _to_word(t_wrds._letters) {}
-
-      // Not noexcept because ToWord()() isn't
-      [[nodiscard]] output_type get() const {
-        return _to_word(_input.get());
-      }
-
-      constexpr void next() noexcept {
-        _input.next();
-      }
-
-      [[nodiscard]] constexpr bool at_end() const noexcept {
-        return _input.at_end();
-      }
-
-      [[nodiscard]] constexpr size_t size_hint() const noexcept {
-        return _input.size_hint();
-      }
-    };
-
-   public:
-    //! \brief Call operator for combining with other range objects.
-    //!
-    //! This is the call operator that is used by `rx::ranges::operator|` for
-    //! combining ranges.
-    template <typename InputRange>
-    [[nodiscard]] constexpr auto operator()(InputRange&& input) const {
-      using Inner = rx::get_range_type_t<InputRange>;
-      return Range<Inner>(std::forward<InputRange>(input), *this);
-    }
-  };
 
   //! \ingroup word_range_group
   //! \brief A custom combinator for rx::ranges to convert the output

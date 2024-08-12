@@ -321,12 +321,6 @@ namespace libsemigroups {
     return output;
   }
 
-  ToWords::ToWords(ToWords const&)            = default;
-  ToWords::ToWords(ToWords&&)                 = default;
-  ToWords& ToWords::operator=(ToWords const&) = default;
-  ToWords& ToWords::operator=(ToWords&&)      = default;
-  ToWords::~ToWords()                         = default;
-
   ////////////////////////////////////////////////////////////////////////
   // 3. WordRange -> Strings
   ////////////////////////////////////////////////////////////////////////
