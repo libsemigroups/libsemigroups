@@ -45,7 +45,7 @@
 #include "libsemigroups/to-froidure-pin.hpp"
 #include "libsemigroups/types.hpp"       // for word_type, relation_type
 #include "libsemigroups/word-graph.hpp"  // for WordGraph, make, pow
-#include "libsemigroups/words.hpp"       // for operator""_w, Words
+#include "libsemigroups/words.hpp"       // for operator""_w, WordRange
 
 #include "libsemigroups/detail/report.hpp"  // for ReportGuard
 #include "libsemigroups/detail/stl.hpp"     // for hash
@@ -340,7 +340,7 @@ namespace libsemigroups {
 
     size_t const N = 18;
 
-    Words w;
+    WordRange w;
 
     auto expected2
         = (w.number_of_letters(2).min(0).max(N) | filter([&wg](auto const& ww) {
@@ -498,7 +498,7 @@ namespace libsemigroups {
 
     size_t const N = 18;
 
-    Words w;
+    WordRange w;
     expected
         = (w.number_of_letters(2).min(0).max(N) | filter([&wg](auto const& ww) {
              return word_graph::follow_path(wg, 0, ww) == 4;

@@ -1210,7 +1210,7 @@ namespace libsemigroups {
         REQUIRE_THROWS_AS(to_froidure_pin(cong), LibsemigroupsException);
       }
 
-      Words w;
+      WordRange w;
       w.number_of_letters(2).min(0).max(5);
 
       REQUIRE(w.count() == 31);
@@ -1238,7 +1238,7 @@ namespace libsemigroups {
     REQUIRE(cong.get<Kambites<word_type>>()->finished());
     REQUIRE(!cong.get<ToddCoxeter>()->finished());
 
-    Words w;
+    WordRange w;
     w.number_of_letters(p.alphabet().size()).min(1).max(4);
     REQUIRE(w.count() == 399);
     REQUIRE(cong.get<Kambites<word_type>>()->presentation().alphabet()

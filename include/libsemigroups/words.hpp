@@ -55,17 +55,17 @@ namespace libsemigroups {
   enum class Order : uint8_t;  // forward decl
 
   ////////////////////////////////////////////////////////////////////////
-  // Words
+  // WordRange
   ////////////////////////////////////////////////////////////////////////
 
-  //! \defgroup words_group Words
+  //! \defgroup word_range_group WordRange
   //! This page contains details of the functionality in \c libsemigroups
   //! related to generating words in a given range and in a given order.
   //!
   //! This file contains documentation for functionality for:
   //!
   //! * generating words and strings in a given range and in a certain order:
-  //!  - \ref Words
+  //!  - \ref WordRange
   //!  - \ref Strings
   //!  - \ref random_word
   //!  - \ref random_string
@@ -86,7 +86,7 @@ namespace libsemigroups {
   // TODO(later)
   // * parsing algebraic expressions in a string;
 
-  //! \ingroup words_group
+  //! \ingroup word_range_group
   //! \brief Returns the number of words over an alphabet with a given number of
   //! letters with length in a specified range.
   //!
@@ -107,7 +107,7 @@ namespace libsemigroups {
   //! of this function will not be correct.
   [[nodiscard]] uint64_t number_of_words(size_t n, size_t min, size_t max);
 
-  //! \ingroup words_group
+  //! \ingroup word_range_group
   //! \brief Returns a random word.
   //!
   //! Returns a random word on \f$\{0, \ldots, n - 1\}\f$ of length \p length
@@ -123,7 +123,7 @@ namespace libsemigroups {
   //! \sa \ref random_string
   [[nodiscard]] word_type random_word(size_t length, size_t nr_letters);
 
-  //! \ingroup words_group
+  //! \ingroup word_range_group
   //! \brief Returns a forward iterator pointing to the 3rd parameter \p first.
   //!
   //! Returns a forward iterator used to iterate over words in lexicographic
@@ -173,7 +173,7 @@ namespace libsemigroups {
                                                         word_type&& first,
                                                         word_type&& last);
 
-  //! \ingroup words_group
+  //! \ingroup word_range_group
   //! \brief Returns a forward iterator pointing to the 3rd parameter \p first.
   //! \copydoc cbegin_wilo(size_t, size_t, word_type&&, word_type&&)
   [[nodiscard]] detail::const_wilo_iterator cbegin_wilo(size_t n,
@@ -181,7 +181,7 @@ namespace libsemigroups {
                                                         word_type const& first,
                                                         word_type const& last);
 
-  //! \ingroup words_group
+  //! \ingroup word_range_group
   //! \brief Returns a forward iterator pointing to one after the end of the
   //! range from \p first to \p last.
   //!
@@ -192,7 +192,7 @@ namespace libsemigroups {
   [[nodiscard]] detail::const_wilo_iterator
   cend_wilo(size_t n, size_t upper_bound, word_type&& first, word_type&& last);
 
-  //! \ingroup words_group
+  //! \ingroup word_range_group
   //! \brief Returns a forward iterator pointing to one after the end of the
   //! range from \p first to \p last.
   //! \copydoc cend_wilo(size_t, size_t, word_type&&, word_type&&)
@@ -201,7 +201,7 @@ namespace libsemigroups {
                                                       word_type const& first,
                                                       word_type const& last);
 
-  //! \ingroup words_group
+  //! \ingroup word_range_group
   //! \brief Returns a forward iterator pointing to the 2nd parameter \p first.
   //!
   //! Returns a forward iterator used to iterate over words in
@@ -242,13 +242,13 @@ namespace libsemigroups {
                                                           word_type&& first,
                                                           word_type&& last);
 
-  //! \ingroup words_group
+  //! \ingroup word_range_group
   //! \brief Returns a forward iterator pointing to the 2nd parameter \p first.
   //! \copydoc cbegin_wislo(size_t const, word_type&&, word_type&&)
   [[nodiscard]] detail::const_wislo_iterator
   cbegin_wislo(size_t n, word_type const& first, word_type const& last);
 
-  //! \ingroup words_group
+  //! \ingroup word_range_group
   //! \brief Returns a forward iterator pointing to one after the end of the
   //! range from \p first to \p last.
   //!
@@ -260,7 +260,7 @@ namespace libsemigroups {
                                                         word_type&& first,
                                                         word_type&& last);
 
-  //! \ingroup words_group
+  //! \ingroup word_range_group
   //! \brief Returns a forward iterator pointing to one after the end of the
   //! range from \p first to \p last.
   //! \copydoc cend_wislo(size_t const, word_type&&, word_type&&)
@@ -268,7 +268,7 @@ namespace libsemigroups {
                                                         word_type const& first,
                                                         word_type const& last);
 
-  //! \ingroup words_group
+  //! \ingroup word_range_group
   //! \brief Class for generating words in a given range and in a particular
   //! order.
   //!
@@ -280,11 +280,11 @@ namespace libsemigroups {
   //! and \ref cbegin_wilo.
   //!
   //! \note
-  //! There is a small overhead to using a Words object rather than using \ref
-  //! cbegin_wislo or \ref cbegin_wilo directly.
+  //! There is a small overhead to using a WordRange object rather than using
+  //! \ref cbegin_wislo or \ref cbegin_wilo directly.
   //!
-  //! The order and range of the words in a Words instance can be set using the
-  //! member functions:
+  //! The order and range of the words in a WordRange instance can be set using
+  //! the member functions:
   //! * \ref order
   //! * \ref number_of_letters
   //! * \ref min
@@ -294,18 +294,18 @@ namespace libsemigroups {
   //!
   //! \par Example
   //! \code
-  //! Words words;
+  //! WordRange words;
   //! words.order(Order::shortlex) // words in shortlex order
   //!      .number_of_letters(2)   // on 2 letters
   //!      .min(1)                 // of length in the range from 1
   //!      .max(5);                // to 5
   //! \endcode
-  class Words {
+  class WordRange {
    public:
     //! Alias for the size type.
     using size_type = typename std::vector<word_type>::size_type;
 
-    //! The type of the output of a Words object.
+    //! The type of the output of a WordRange object.
     using output_type = word_type const&;
 
    private:
@@ -326,7 +326,7 @@ namespace libsemigroups {
    public:
     //! \brief Get the current value.
     //!
-    //! Returns the current word in a Words object.
+    //! Returns the current word in a WordRange object.
     //!
     //! \returns A value of type \ref output_type.
     //!
@@ -343,7 +343,7 @@ namespace libsemigroups {
 
     //! \brief Advance to the next value.
     //!
-    //! Advances a Words object to the next value (if any).
+    //! Advances a WordRange object to the next value (if any).
     //!
     //! \exception
     //! \noexcept
@@ -356,7 +356,7 @@ namespace libsemigroups {
 
     //! \brief Check if the range object is exhausted.
     //!
-    //! Returns \c true if a Words object is exhausted, and \c false if not.
+    //! Returns \c true if a WordRange object is exhausted, and \c false if not.
     //! \returns A value of type \c bool.
     //!
     //! \exception
@@ -368,7 +368,7 @@ namespace libsemigroups {
 
     //! \brief The possible size of the range.
     //!
-    //! Returns the number of words in a Words object if order() is
+    //! Returns the number of words in a WordRange object if order() is
     //! Order::shortlex. If order() is not Order::shortlex, then the return
     //! value of this function is meaningless.
     //!
@@ -383,7 +383,7 @@ namespace libsemigroups {
 
     //! \brief The actual size of the range.
     //!
-    //! Returns the number of words in a Words object. If order() is
+    //! Returns the number of words in a WordRange object. If order() is
     //! Order::shortlex, then size_hint() is used. If order() is not
     //! Order::shortlex, then a copy of the range may have to be looped over in
     //! order to find the return value of this function.
@@ -400,9 +400,9 @@ namespace libsemigroups {
     //!
     static constexpr bool is_finite = true;  // This may not always be true
 
-    //! Value indicating that if get() is called twice on a Words object that
-    //! is not changed between the two calls, then the return value of get() is
-    //! the same both times.
+    //! Value indicating that if get() is called twice on a WordRange object
+    //! that is not changed between the two calls, then the return value of
+    //! get() is the same both times.
     static constexpr bool is_idempotent = true;
 
     //! \brief Default constructor.
@@ -415,49 +415,49 @@ namespace libsemigroups {
     //! * last() equal to the empty word;
     //! * upper_bound() equal to \c 0;
     //! * letters() equal to \c 0.
-    Words() {
+    WordRange() {
       init();
     }
 
-    //! \brief Initialize an existing Words object.
+    //! \brief Initialize an existing WordRange object.
     //!
-    //! This function puts a Words object back into the same state as if it had
-    //! been newly default constructed.
+    //! This function puts a WordRange object back into the same state as if it
+    //! had been newly default constructed.
     //!
     //! \returns A reference to \c *this.
     //!
     //! \exception
     //! \no_libsemigroups_except
-    Words& init();
+    WordRange& init();
 
     //! \brief Default copy constructor.
     //!
     //! Default copy constructor.
-    Words(Words const&);
+    WordRange(WordRange const&);
 
     //! \brief Default move constructor.
     //!
     //! Default move constructor.
-    Words(Words&&);
+    WordRange(WordRange&&);
 
     //! \brief Default copy assignment operator.
     //!
     //! Default copy assignment operator.
-    Words& operator=(Words const&);
+    WordRange& operator=(WordRange const&);
 
     //! \brief Default move assignment operator.
     //!
     //! Default move assignment operator.
-    Words& operator=(Words&&);
+    WordRange& operator=(WordRange&&);
 
     //! \brief Default destructor.
     //!
     //! Default destructor.
-    ~Words();
+    ~WordRange();
 
     //! \brief Set the number of letters in the alphabet.
     //!
-    //! Sets the number of letters in a Words object to \p n.
+    //! Sets the number of letters in a WordRange object to \p n.
     //!
     //! \param n the number of letters.
     //!
@@ -465,7 +465,7 @@ namespace libsemigroups {
     //!
     //! \exception
     //! \noexcept
-    Words& number_of_letters(size_type n) noexcept {
+    WordRange& number_of_letters(size_type n) noexcept {
       _current_valid &= (n == _number_of_letters);
       _number_of_letters = n;
       return *this;
@@ -473,7 +473,7 @@ namespace libsemigroups {
 
     //! \brief The current number of letters in the alphabet.
     //!
-    //! Returns the current number of letters in a Words object.
+    //! Returns the current number of letters in a WordRange object.
     //!
     //! \returns A value of type \ref size_type.
     //!
@@ -485,9 +485,9 @@ namespace libsemigroups {
 
     //! \brief Set the first word in the range.
     //!
-    //! Sets the first word in a Words object to be \p frst. This function
+    //! Sets the first word in a WordRange object to be \p frst. This function
     //! performs no checks on its arguments. If \p frst contains letters greater
-    //! than letters(), then the Words object will be empty. Similarly, if
+    //! than letters(), then the WordRange object will be empty. Similarly, if
     //! first() is greater than last() with respect to order(), then the object
     //! will be empty.
     //!
@@ -496,7 +496,7 @@ namespace libsemigroups {
     //! \returns A reference to \c *this.
     //!
     //! \sa \ref min
-    Words& first(word_type const& frst) {
+    WordRange& first(word_type const& frst) {
       _current_valid &= (frst == _first);
       _first = frst;
       return *this;
@@ -504,7 +504,7 @@ namespace libsemigroups {
 
     //! \brief The current first word in the range.
     //!
-    //! Returns the first word in a Words object.
+    //! Returns the first word in a WordRange object.
     //!
     //! \returns A const reference to a \ref word_type.
     //!
@@ -518,16 +518,16 @@ namespace libsemigroups {
 
     //! \brief Set one past the last word in the range.
     //!
-    //! Sets one past the last word in a Words object to be \p lst. This
+    //! Sets one past the last word in a WordRange object to be \p lst. This
     //! function performs no checks on its arguments. If \p lst contains
-    //! letters greater than letters(), then the Words object will be empty.
+    //! letters greater than letters(), then the WordRange object will be empty.
     //!
     //! \param lst the first word.
     //!
     //! \returns A reference to \c *this.
     //!
     //! \sa \ref max
-    Words& last(word_type const& lst) {
+    WordRange& last(word_type const& lst) {
       _current_valid &= (lst == _last);
       _last = lst;
       return *this;
@@ -535,7 +535,7 @@ namespace libsemigroups {
 
     //! \brief The current one past the last word in the range.
     //!
-    //! Returns the last word in a Words object.
+    //! Returns the last word in a WordRange object.
     //!
     //! \returns A const reference to a \ref word_type.
     //!
@@ -549,7 +549,7 @@ namespace libsemigroups {
 
     //! \brief Set the order of the words in the range.
     //!
-    //! Sets the order of the words in a Words object to \p val.
+    //! Sets the order of the words in a WordRange object to \p val.
     //!
     //! \param val the order.
     //!
@@ -557,11 +557,11 @@ namespace libsemigroups {
     //!
     //! \throws LibsemigroupsException if val is not Order::shortlex or
     //! Order::lex.
-    Words& order(Order val);
+    WordRange& order(Order val);
 
     //! \brief The current order of the words in the range.
     //!
-    //! Returns the current order of the words in a Words object.
+    //! Returns the current order of the words in a WordRange object.
     //!
     //! \returns A value of type \ref Order.
     //!
@@ -573,7 +573,7 @@ namespace libsemigroups {
 
     //! \brief Set an upper bound for the length of a word in the range.
     //!
-    //! Sets an upper bound for the length of a word in a Words object.
+    //! Sets an upper bound for the length of a word in a WordRange object.
     //! This setting is only used if order() is Order::lex.
     //!
     //! \param n the upper bound.
@@ -582,7 +582,7 @@ namespace libsemigroups {
     //!
     //! \exception
     //! \no_libsemigroups_except
-    Words& upper_bound(size_type n) {
+    WordRange& upper_bound(size_type n) {
       _current_valid &= (n == _upper_bound);
       _upper_bound = n;
       return *this;
@@ -590,7 +590,7 @@ namespace libsemigroups {
 
     //! \brief The current upper bound on the length of a word in the range.
     //!
-    //! Returns the current upper bound on the length of a word in a Words
+    //! Returns the current upper bound on the length of a word in a WordRange
     //! object. This setting is only used if order() is Order::lex.
     //!
     //! \returns A value of type \ref size_type.
@@ -603,8 +603,8 @@ namespace libsemigroups {
 
     //! \brief Set the first word in the range by length.
     //!
-    //! Sets the first word in a Words object to be  `pow(0_w, val)` (the word
-    //! consisting of \p val letters equal to \c 0).
+    //! Sets the first word in a WordRange object to be  `pow(0_w, val)` (the
+    //! word consisting of \p val letters equal to \c 0).
     //!
     //! \param val the exponent.
     //!
@@ -612,7 +612,7 @@ namespace libsemigroups {
     //!
     //! \exception
     //! \no_libsemigroups_except
-    Words& min(size_type val) {
+    WordRange& min(size_type val) {
       first(word_type(val, 0));
       return *this;
     }
@@ -623,7 +623,7 @@ namespace libsemigroups {
 
     //! \brief Set one past the last word in the range by length.
     //!
-    //! Sets one past the last word in a Words object to be `pow(0_w, val)`
+    //! Sets one past the last word in a WordRange object to be `pow(0_w, val)`
     //! (the word consisting of \p val letters equal to \c 0).
     //!
     //! \param val the exponent.
@@ -632,7 +632,7 @@ namespace libsemigroups {
     //!
     //! \exception
     //! \no_libsemigroups_except
-    Words& max(size_type val) {
+    WordRange& max(size_type val) {
       last(word_type(val, 0));
       return *this;
     }
@@ -641,7 +641,7 @@ namespace libsemigroups {
     //! range.
     //!
     //! This function returns an input iterator pointing to the first word in
-    //! a Words object.
+    //! a WordRange object.
     //!
     //! \returns An input iterator.
     //!
@@ -661,7 +661,7 @@ namespace libsemigroups {
     //! the range.
     //!
     //! This function returns an input iterator pointing one beyond the last
-    //! word in a Words object.
+    //! word in a WordRange object.
     //!
     //! \returns An input iterator.
     //!
@@ -704,10 +704,10 @@ namespace libsemigroups {
   };
 
   ////////////////////////////////////////////////////////////////////////
-  // Strings -> Words
+  // Strings -> WordRange
   ////////////////////////////////////////////////////////////////////////
 
-  //! \ingroup words_group
+  //! \ingroup word_range_group
   //! \brief Returns the index of a character in human readable order.
   //!
   //! Defined in `words.hpp`.
@@ -725,7 +725,7 @@ namespace libsemigroups {
   //! \sa human_readable_char
   [[nodiscard]] letter_type human_readable_index(char c);
 
-  //! \ingroup words_group
+  //! \ingroup word_range_group
   //! \brief Class for converting strings to \ref word_type with specified
   //! alphabet.
   //!
@@ -887,10 +887,10 @@ namespace libsemigroups {
   };
 
   ////////////////////////////////////////////////////////////////////////
-  // Words -> Strings
+  // WordRange -> Strings
   ////////////////////////////////////////////////////////////////////////
 
-  //! \ingroup words_group
+  //! \ingroup word_range_group
   //! \brief Returns a character by index in human readable order.
   //!
   //! This function exists to map the numbers \c 0 to \c 254 to the possible
@@ -909,7 +909,7 @@ namespace libsemigroups {
   //! \throws LibsemigroupsException if \p i exceeds the number of characters.
   [[nodiscard]] char human_readable_char(size_t i);
 
-  //! \ingroup words_group
+  //! \ingroup word_range_group
   //! \brief Check if the word is valid over the given alphabet
   //!
   //! This function checks if every value in the range `[first, last)` is in the
@@ -935,7 +935,7 @@ namespace libsemigroups {
     }
   }
 
-  //! \ingroup words_group
+  //! \ingroup word_range_group
   //! \brief Convert a word_type to a string.
   //!
   //! This function converts the word_type pointed to by the second and third
@@ -988,7 +988,7 @@ namespace libsemigroups {
     to_string_no_checks(alphabet, input_first, input_last, output);
   }
 
-  //! \ingroup words_group
+  //! \ingroup word_range_group
   //! \brief Convert a word_type to a string.
   //!
   //! See to_string_no_checks(std::string const&, Iterator, Iterator,
@@ -1012,7 +1012,7 @@ namespace libsemigroups {
     to_string_no_checks(alphabet, input, output);
   }
 
-  //! \ingroup words_group
+  //! \ingroup word_range_group
   //! \brief Convert a word_type to a string.
   //!
   //! See to_string_no_checks(std::string const&, Iterator, Iterator,
@@ -1039,7 +1039,7 @@ namespace libsemigroups {
     return to_string_no_checks(alphabet, first, last);
   }
 
-  //! \ingroup words_group
+  //! \ingroup word_range_group
   //! \brief Convert a word_type to a string.
   //!
   //! See to_string(std::string_view, word_type const&, std::string&).
@@ -1067,7 +1067,7 @@ namespace libsemigroups {
   // Strings
   ////////////////////////////////////////////////////////////////////////
 
-  //! \ingroup words_group
+  //! \ingroup word_range_group
   //! \brief Returns a random string.
   //!
   //! Returns a random string with length \p length over alphabet \p alphabet.
@@ -1083,7 +1083,7 @@ namespace libsemigroups {
   //! \sa \ref random_word
   std::string random_string(std::string const& alphabet, size_t length);
 
-  //! \ingroup words_group
+  //! \ingroup word_range_group
   //! \brief Returns a random string.
   //!
   //! Returns a random string with random length in the range `[min, max)` over
@@ -1104,7 +1104,7 @@ namespace libsemigroups {
                             size_t             min,
                             size_t             max);
 
-  //! \ingroup words_group
+  //! \ingroup word_range_group
   //! \brief Returns a range object of random strings.
   //!
   //! Returns a range object of random strings, each of which with random length
@@ -1130,14 +1130,14 @@ namespace libsemigroups {
            | rx::take(number);
   }
 
-  //! \ingroup words_group
+  //! \ingroup word_range_group
   //! \brief Class for generating strings in a given range and in a particular
   //! order.
   //!
   //! Defined in `words.hpp`.
   //!
   //! This class implements a range object for strings and produces the same
-  //! output as `Words() | ToStrings("ab")`, but is more convenient in some
+  //! output as `WordRange() | ToStrings("ab")`, but is more convenient in some
   //! cases.
   //!
   //! \note There is a small overhead to using a Strings object rather than
@@ -1161,8 +1161,8 @@ namespace libsemigroups {
   //!        .max(5);                // to 5
   //! \endcode
   //!
-  //! \sa Words
-  // This can in many places be replaced by "Words | ToStrings" but this
+  //! \sa WordRange
+  // This can in many places be replaced by "WordRange | ToStrings" but this
   // makes some things more awkward and so we retain this class for its
   // convenience.
   class Strings {
@@ -1178,11 +1178,11 @@ namespace libsemigroups {
     mutable bool        _current_valid;
     std::string         _letters;
     ToWord              _to_word;
-    Words               _words;
+    WordRange           _word_range;
 
     void init_current() const {
       if (!_current_valid) {
-        _current       = to_string_no_checks(_letters, _words.get());
+        _current       = to_string_no_checks(_letters, _word_range.get());
         _current_valid = true;
       }
     }
@@ -1213,7 +1213,7 @@ namespace libsemigroups {
     //!
     //! \sa \ref at_end
     void next() noexcept {
-      _words.next();
+      _word_range.next();
       _current_valid = false;
     }
 
@@ -1226,7 +1226,7 @@ namespace libsemigroups {
     //! \exception
     //! \noexcept
     bool at_end() const noexcept {
-      return _words.at_end();
+      return _word_range.at_end();
     }
 
     //! \brief The possible size of the range.
@@ -1240,7 +1240,7 @@ namespace libsemigroups {
     //! \exception
     //! \noexcept
     size_t size_hint() const noexcept {
-      return _words.size_hint();
+      return _word_range.size_hint();
     }
 
     //! \brief The actual size of the range.
@@ -1255,7 +1255,7 @@ namespace libsemigroups {
     //! \exception
     //! \noexcept
     size_t count() const noexcept {
-      return _words.count();
+      return _word_range.count();
     }
 
     //! Value indicating that the range is finite.
@@ -1339,11 +1339,11 @@ namespace libsemigroups {
     //!
     //! \sa \ref min
     //!
-    //! \note Unlike Words::first, this function will throw if \p frst
+    //! \note Unlike WordRange::first, this function will throw if \p frst
     //! contains letters not belonging to alphabet().
     Strings& first(std::string const& frst) {
-      _words.first(_to_word(frst));
-      _current_valid = _words.valid();
+      _word_range.first(_to_word(frst));
+      _current_valid = _word_range.valid();
       return *this;
     }
 
@@ -1358,7 +1358,7 @@ namespace libsemigroups {
     //!
     //! \sa \ref min
     [[nodiscard]] std::string first() const noexcept {
-      return to_string_no_checks(_letters, _words.first());
+      return to_string_no_checks(_letters, _word_range.first());
     }
 
     //! \brief Set one past the last string in the range.
@@ -1373,11 +1373,11 @@ namespace libsemigroups {
     //!
     //! \sa \ref max
     //!
-    //! \note Unlike Words::last, this function will throw if \p lst
+    //! \note Unlike WordRange::last, this function will throw if \p lst
     //! contains letters not belonging to alphabet().
     Strings& last(std::string const& lst) {
-      _words.last(_to_word(lst));
-      _current_valid = _words.valid();
+      _word_range.last(_to_word(lst));
+      _current_valid = _word_range.valid();
       return *this;
     }
 
@@ -1392,7 +1392,7 @@ namespace libsemigroups {
     //!
     //! \sa \ref max
     [[nodiscard]] std::string last() const noexcept {
-      return to_string_no_checks(_letters, _words.last());
+      return to_string_no_checks(_letters, _word_range.last());
     }
 
     //! \brief Set the order of the strings in the range.
@@ -1406,8 +1406,8 @@ namespace libsemigroups {
     //! \throws LibsemigroupsException if val is not Order::shortlex or
     //! Order::lex.
     Strings& order(Order val) {
-      _words.order(val);
-      _current_valid = _words.valid();
+      _word_range.order(val);
+      _current_valid = _word_range.valid();
       return *this;
     }
 
@@ -1420,7 +1420,7 @@ namespace libsemigroups {
     //! \exception
     //! \noexcept
     [[nodiscard]] Order order() const noexcept {
-      return _words.order();
+      return _word_range.order();
     }
 
     //! \brief Set an upper bound for the length of a string in the range.
@@ -1435,8 +1435,8 @@ namespace libsemigroups {
     //! \exception
     //! \no_libsemigroups_except
     Strings& upper_bound(size_type n) {
-      _words.upper_bound(n);
-      _current_valid = _words.valid();
+      _word_range.upper_bound(n);
+      _current_valid = _word_range.valid();
       return *this;
     }
 
@@ -1450,7 +1450,7 @@ namespace libsemigroups {
     //! \exception
     //! \noexcept
     [[nodiscard]] size_type upper_bound() const noexcept {
-      return _words.upper_bound();
+      return _word_range.upper_bound();
     }
 
     //! \brief Set the first string in the range by length.
@@ -1465,8 +1465,8 @@ namespace libsemigroups {
     //! \exception
     //! \no_libsemigroups_except
     Strings& min(size_type val) {
-      _words.min(val);
-      _current_valid = _words.valid();
+      _word_range.min(val);
+      _current_valid = _word_range.valid();
       return *this;
     }
 
@@ -1486,8 +1486,8 @@ namespace libsemigroups {
     //! \exception
     //! \no_libsemigroups_except
     Strings& max(size_type val) {
-      _words.max(val);
-      _current_valid = _words.valid();
+      _word_range.max(val);
+      _current_valid = _word_range.valid();
       return *this;
     }
 
@@ -1536,7 +1536,7 @@ namespace libsemigroups {
   // Ranges
   ////////////////////////////////////////////////////////////////////////
 
-  //! \ingroup words_group
+  //! \ingroup word_range_group
   //! \brief A custom combinator for rx::ranges to convert the output
   //! of a Strings object into \ref word_type.
   //!
@@ -1657,20 +1657,20 @@ namespace libsemigroups {
     }
   };
 
-  //! \ingroup words_group
+  //! \ingroup word_range_group
   //! \brief A custom combinator for rx::ranges to convert the output
-  //! of a Words object into \ref std::string.
+  //! of a WordRange object into \ref std::string.
   //!
   //! Defined in `words.hpp`.
   //!
-  //! A custom combinator for rx::ranges to convert the output of a Words
+  //! A custom combinator for rx::ranges to convert the output of a WordRange
   //! object (or any other range with \c output_type equal to \ref
   //! word_type) into \ref std::string, that can be combined with other
   //! combinators using `operator|`.
   //!
   //! \par Example
   //! \code
-  //!  Words words;
+  //!  WordRange words;
   //!  words.letters(2).first(0_w).last(1111_w);
   //!  auto strings = (words | ToStrings("ba"));
   //!  // contains the strings
@@ -1777,7 +1777,7 @@ namespace libsemigroups {
   // Literals
   ////////////////////////////////////////////////////////////////////////
 
-  //! \ingroup words_group
+  //! \ingroup word_range_group
   //!
   //! \brief Namespace containing some custom literals for creating words.
   //!
@@ -1857,7 +1857,7 @@ namespace libsemigroups {
 
   ////////////////////////////////////////////////////////////////////////
 
-  //! \ingroup words_group
+  //! \ingroup word_range_group
   //!
   //! \brief Namespace containing some operators for creating words.
   //!

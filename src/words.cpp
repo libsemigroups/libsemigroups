@@ -48,7 +48,7 @@
 namespace libsemigroups {
 
   ////////////////////////////////////////////////////////////////////////
-  // 1. Words
+  // 1. WordRange
   ////////////////////////////////////////////////////////////////////////
 
   namespace {
@@ -146,7 +146,7 @@ namespace libsemigroups {
     return cend_wislo(n, word_type(), word_type(last));
   }
 
-  void Words::set_iterator() const {
+  void WordRange::set_iterator() const {
     if (!_current_valid) {
       _current_valid = true;
       if (_order == Order::shortlex) {
@@ -159,7 +159,7 @@ namespace libsemigroups {
     }
   }
 
-  size_t Words::count() const noexcept {
+  size_t WordRange::count() const noexcept {
     if (_order == Order::shortlex) {
       return size_hint();
     } else {
@@ -167,7 +167,7 @@ namespace libsemigroups {
     }
   }
 
-  Words& Words::init() {
+  WordRange& WordRange::init() {
     _number_of_letters = 0;
     _current_valid     = false;
     _first             = {};
@@ -177,13 +177,13 @@ namespace libsemigroups {
     return *this;
   }
 
-  Words::Words(Words const&)            = default;
-  Words::Words(Words&&)                 = default;
-  Words& Words::operator=(Words const&) = default;
-  Words& Words::operator=(Words&&)      = default;
-  Words::~Words()                       = default;
+  WordRange::WordRange(WordRange const&)            = default;
+  WordRange::WordRange(WordRange&&)                 = default;
+  WordRange& WordRange::operator=(WordRange const&) = default;
+  WordRange& WordRange::operator=(WordRange&&)      = default;
+  WordRange::~WordRange()                           = default;
 
-  Words& Words::order(Order val) {
+  WordRange& WordRange::order(Order val) {
     if (val != Order::shortlex && val != Order::lex) {
       LIBSEMIGROUPS_EXCEPTION(
           "the argument must be Order::shortlex or Order::lex, found {}", val);
@@ -194,7 +194,7 @@ namespace libsemigroups {
   }
 
   ////////////////////////////////////////////////////////////////////////
-  // 2. Strings -> Words
+  // 2. Strings -> WordRange
   ////////////////////////////////////////////////////////////////////////
 
   namespace {
@@ -328,7 +328,7 @@ namespace libsemigroups {
   ToWords::~ToWords()                         = default;
 
   ////////////////////////////////////////////////////////////////////////
-  // 3. Words -> Strings
+  // 3. WordRange -> Strings
   ////////////////////////////////////////////////////////////////////////
 
   char human_readable_char(size_t i) {
@@ -395,7 +395,7 @@ namespace libsemigroups {
     _current_valid = false;
     _letters.clear();
     _to_word.init();
-    _words.init();
+    _word_range.init();
     return *this;
   }
 
@@ -409,8 +409,8 @@ namespace libsemigroups {
     // Need to do this _to_word.init(x) first, because if this throws then the
     // rest should remain unchanged.
     _to_word.init(x);
-    _words.number_of_letters(x.size());
-    _current_valid = _words.valid();
+    _word_range.number_of_letters(x.size());
+    _current_valid = _word_range.valid();
     _letters       = x;
     return *this;
   }

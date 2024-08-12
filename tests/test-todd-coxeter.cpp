@@ -191,7 +191,7 @@ namespace libsemigroups {
         size_t const m = tc.number_of_classes();
         size_t const n = tc.presentation().alphabet().size();
 
-        Words words;
+        WordRange words;
         words.number_of_letters(n).min(1).max(m + 1);
 
         std::unordered_map<node_type, word_type> map;
@@ -222,7 +222,7 @@ namespace libsemigroups {
         size_t const m = tc.number_of_classes();
         size_t const n = tc.presentation().alphabet().size();
 
-        Words words;
+        WordRange words;
         words.order(Order::lex)
             .number_of_letters(n)
             .upper_bound(m + 1)
@@ -4511,7 +4511,7 @@ namespace libsemigroups {
       presentation::add_rule(p, pow({a}, 3), {a});
     }
     using words::operator+;
-    Words        words;
+    WordRange    words;
     words.number_of_letters(n).min(0).max(8);
 
     for (size_t a = 0; a < n - 1; ++a) {
