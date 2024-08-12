@@ -99,8 +99,8 @@ namespace libsemigroups {
       word_type lhs;
       word_type rhs;
       for (auto it = first; it < last; ++it) {
-        stw(it->first, lhs);   // lhs changed in-place
-        stw(it->second, rhs);  // rhs changed in-place
+        stw(lhs, it->first);   // lhs changed in-place
+        stw(rhs, it->second);  // rhs changed in-place
         private_add_rule(matrix_start + (it - first), lhs, rhs);
       }
       _nr_letter_components = _letter_components.number_of_blocks();
@@ -123,8 +123,8 @@ namespace libsemigroups {
       ToWord    stw(lphbt);
       word_type lhs, rhs;
       for (auto it = first; it < last; ++it) {
-        stw(*it++, lhs);  // lhs changed in-place
-        stw(*it, rhs);    // rhs changed in-place
+        stw(lhs, *it++);  // lhs changed in-place
+        stw(rhs, *it);    // rhs changed in-place
         private_add_rule(matrix_start + (it - first) / 2, lhs, rhs);
       }
       _nr_letter_components = _letter_components.number_of_blocks();

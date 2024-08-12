@@ -842,16 +842,64 @@ namespace libsemigroups {
 
     //! \brief Convert a string to a word_type.
     //!
-    //! This function converts its first argument \p input into a word_type and
-    //! stores the result in the second argument \p output. The characters of \p
+    //! This function converts its second argument \p input into a word_type and
+    //! stores the result in the first argument \p output. The characters of \p
     //! input are converted using the alphabet used to construct the object or
     //! set via init(), or with \ref human_readable_index if \ref empty returns
     //! `true`.
     //!
     //! The contents of the first argument \p output, if any, is removed.
     //!
-    //! \param input the string to convert
     //! \param output word to hold the result
+    //! \param input the string to convert
+    //!
+    //! \warning This functions performs no checks on its arguments. In
+    //! particular, if the alphabet used to define an instance of ToWord is not
+    //! empty, and \p input contains letters that do not correspond to letters
+    //! of the alphabet, then bad things will happen.
+    //!
+    //! \sa
+    //! * to_word
+    //! * to_string
+    //! * \ref literals
+    void call_no_checks(word_type& output, std::string const& input) const;
+
+    //! \brief Convert a string to a word_type.
+    //!
+    //! This function converts its argument \p input into a word_type The
+    //! characters of \p input are converted using the alphabet used to
+    //! construct the object or set via init(), or with \ref
+    //! human_readable_index if \ref empty returns `true`.
+    //!
+    //! \param input the string to convert
+    //!
+    //! \warning This functions performs no checks on its arguments. In
+    //! particular, if the alphabet used to define an instance of ToWord is not
+    //! empty, and \p input contains letters that do not correspond to letters
+    //! of the alphabet, then bad things will happen.
+    //!
+    //! \sa
+    //! * to_word
+    //! * to_string
+    //! * \ref literals
+    [[nodiscard]] word_type call_no_checks(std::string const& input) const {
+      word_type output;
+      call_no_checks(output, input);
+      return output;
+    }
+
+    //! \brief Convert a string to a word_type.
+    //!
+    //! This function converts its second argument \p input into a word_type and
+    //! stores the result in the first argument \p output. The characters of \p
+    //! input are converted using the alphabet used to construct the object or
+    //! set via init(), or with \ref human_readable_index if \ref empty returns
+    //! `true`.
+    //!
+    //! The contents of the first argument \p output, if any, is removed.
+    //!
+    //! \param output word to hold the result
+    //! \param input the string to convert
     //!
     //! \throw LibsemigroupsException if the alphabet used to define an instance
     //! of ToWord is not empty and \p input contains letters that do not
@@ -861,7 +909,7 @@ namespace libsemigroups {
     //! * to_word
     //! * to_string
     //! * \ref literals
-    void operator()(std::string const& input, word_type& output) const;
+    void operator()(word_type& output, std::string const& input) const;
 
     //! \brief Convert a string to a word_type.
     //!
@@ -878,7 +926,11 @@ namespace libsemigroups {
     //!
     //! \sa
     //! * \ref literals
-    [[nodiscard]] word_type operator()(std::string const& input) const;
+    [[nodiscard]] word_type operator()(std::string const& input) const {
+      word_type output;
+                operator()(output, input);
+      return output;
+    }
 
    private:
     template <typename InputRange>

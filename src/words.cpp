@@ -293,7 +293,8 @@ namespace libsemigroups {
     return *this;
   }
 
-  void ToWord::operator()(std::string const& input, word_type& output) const {
+  void ToWord::call_no_checks(word_type&         output,
+                              std::string const& input) const {
     // Empty alphabet implies conversion should use human_readable_index
     if (empty()) {
       output.resize(input.size(), 0);
@@ -304,21 +305,23 @@ namespace libsemigroups {
       output.clear();
       output.reserve(input.size());
       for (auto const& c : input) {
-        if (_lookup[c] == UNDEFINED) {
-          LIBSEMIGROUPS_EXCEPTION(
-              "the 1st argument (input string) contains the letter \'{}\' that "
-              "does not belong to the alphabet!",
-              c);
-        }
         output.push_back(_lookup[c]);
       }
     }
   }
 
-  word_type ToWord::operator()(std::string const& input) const {
-    word_type output;
-              operator()(input, output);
-    return output;
+  void ToWord::operator()(word_type& output, std::string const& input) const {
+    if (!empty()) {
+      for (auto const& c : input) {
+        if (_lookup[c] == UNDEFINED) {
+          LIBSEMIGROUPS_EXCEPTION(
+              "the 2nd argument (input string) contains the letter \'{}\' that "
+              "does not belong to the alphabet!",
+              c);
+        }
+      }
+    }
+    call_no_checks(output, input);
   }
 
   ////////////////////////////////////////////////////////////////////////
