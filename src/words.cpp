@@ -256,18 +256,18 @@ namespace libsemigroups {
     return it->second;
   }
 
-  void to_word(std::string_view s, word_type& w) {
-    w.resize(s.size(), 0);
-    std::transform(s.cbegin(), s.cend(), w.begin(), [](char c) {
-      return human_readable_index(c);
-    });
-  }
+  // void to_word(std::string_view s, word_type& w) {
+  //   w.resize(s.size(), 0);
+  //   std::transform(s.cbegin(), s.cend(), w.begin(), [](char c) {
+  //     return human_readable_index(c);
+  //   });
+  // }
 
-  word_type to_word(std::string_view s) {
-    word_type w;
-    to_word(s, w);
-    return w;
-  }
+  // word_type to_word(std::string_view s) {
+  //   word_type w;
+  //   to_word(s, w);
+  //   return w;
+  // }
 
   ToWord& ToWord::init(std::string const& alphabet) {
     if (alphabet.size() >= 256) {
@@ -294,16 +294,24 @@ namespace libsemigroups {
   }
 
   void ToWord::operator()(std::string const& input, word_type& output) const {
-    output.clear();
-    output.reserve(input.size());
-    for (auto const& c : input) {
-      if (_lookup[c] == UNDEFINED) {
-        LIBSEMIGROUPS_EXCEPTION(
-            "the 1st argument (input string) contains the letter \'{}\' that "
-            "does not belong to the alphabet!",
-            c);
+    // Empty alphabet implies conversion should use human_readable_index
+    if (empty()) {
+      output.resize(input.size(), 0);
+      std::transform(input.cbegin(), input.cend(), output.begin(), [](char c) {
+        return human_readable_index(c);
+      });
+    } else {  // Non-empty alphabet implies conversion should use the alphabet.
+      output.clear();
+      output.reserve(input.size());
+      for (auto const& c : input) {
+        if (_lookup[c] == UNDEFINED) {
+          LIBSEMIGROUPS_EXCEPTION(
+              "the 1st argument (input string) contains the letter \'{}\' that "
+              "does not belong to the alphabet!",
+              c);
+        }
+        output.push_back(_lookup[c]);
       }
-      output.push_back(_lookup[c]);
     }
   }
 

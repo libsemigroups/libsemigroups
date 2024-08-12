@@ -382,9 +382,9 @@ namespace libsemigroups {
                   10},
                  {UNDEFINED, UNDEFINED, UNDEFINED, UNDEFINED, UNDEFINED, 10},
                  {7}}));
-
-    auto rule = to_word(p.rules[0]);
-    auto m    = word_graph::last_node_on_path(
+    ToWord to_word;
+    auto   rule = to_word(p.rules[0]);
+    auto   m    = word_graph::last_node_on_path(
                  S.word_graph(), 0, rule.cbegin(), rule.cend())
                  .first;
     rule   = to_word(p.rules[1]);

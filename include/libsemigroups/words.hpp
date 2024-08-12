@@ -81,7 +81,6 @@ namespace libsemigroups {
   //!   - \ref ToStrings
   //!   - \ref to_string(std::string_view,Iterator,Iterator,std::string&)
   //!   "to_string"
-  //!   - \ref to_word(std::string_view, word_type&) "to_word"
   //!
 
   // TODO(later)
@@ -727,67 +726,24 @@ namespace libsemigroups {
   [[nodiscard]] letter_type human_readable_index(char c);
 
   //! \ingroup words_group
-  //! \brief Convert a string to a word_type.
-  //!
-  //! Defined in `words.hpp`.
-  //!
-  //! This function converts its first argument \p input into a \ref word_type
-  //! and stores the result in the second argument \p output. The characters of
-  //! \p input are converted using \ref human_readable_index, so that \c 'a' is
-  //! mapped to \c 0, \c 'b' to \c 1, and so on.
-  //!
-  //! The contents of the second argument \p output, if any, is removed.
-  //!
-  //! \param input the string to convert
-  //! \param output word to hold the result
-  //!
-  //! \exception
-  //! \no_libsemigroups_except
-  //!
-  //! \sa
-  //! * human_readable_index
-  //! * ToWord
-  //! * \ref literals
-  void to_word(std::string_view input, word_type& output);
-
-  //! \ingroup words_group
-  //! \brief Convert a string to a word_type.
-  //!
-  //! Defined in `words.hpp`.
-  //!
-  //! This function converts its argument \p s into a \ref word_type. The
-  //! characters of \p s are converted using \ref human_readable_index, so that
-  //! \c 'a' is mapped to \c 0,\c 'b' to \c 1, and so on.
-  //!
-  //! \param s the string to convert
-  //!
-  //! \returns A value of type \ref word_type.
-  //!
-  //! \exception
-  //! \no_libsemigroups_except
-  //!
-  //! \sa
-  //! * human_readable_index
-  //! * ToWord
-  //! * \ref literals
-  [[nodiscard]] word_type to_word(std::string_view s);
-
-  //! \ingroup words_group
   //! \brief Class for converting strings to \ref word_type with specified
   //! alphabet.
   //!
   //! Defined in `words.hpp`.
   //!
-  //! An instance of this class can be used like \ref to_word(std::string_view,
-  //! word_type&) "to_word" but where the characters in the string are converted
-  //! to integers according to their position in alphabet used to construct a
-  //! ToWord instance.
+  //! An instance of this class is used to convert from std::string to \ref
+  //! word_type. The characters in the string are converted to integers
+  //! according to their position in alphabet used to construct a ToWord
+  //! instance if one is provided, or using \ref human_readable_index otherwise.
   //!
   //! \par Example
   //! \code
   //! ToWord toword("bac");
   //! toword("bac");        // returns {0, 1, 2}
   //! toword("bababbbcbc"); // returns { 0, 1, 0, 1, 0, 0, 0, 2, 0, 2}
+  //!
+  //! toword.init();
+  //! toword("bac");        // returns {1, 0, 2}
   //! \endcode
   // TODO (later) a version that takes a word_type, so that we can permute the
   // letters in a word
@@ -891,16 +847,17 @@ namespace libsemigroups {
     //! This function converts its first argument \p input into a word_type and
     //! stores the result in the second argument \p output. The characters of \p
     //! input are converted using the alphabet used to construct the object or
-    //! set via init().
+    //! set via init(), or with \ref human_readable_index if \ref empty returns
+    //! `true`.
     //!
     //! The contents of the first argument \p output, if any, is removed.
     //!
     //! \param input the string to convert
     //! \param output word to hold the result
     //!
-    //! \throws LibsemigroupsException
-    //! If \p input contains any letters that letters that do not correspond to
-    //! letters of the alphabet used to define an instance of ToWord.
+    //! \throw LibsemigroupsException if the alphabet used to define an instance
+    //! of ToWord is not empty and \p input contains letters that do not
+    //! correspond to letters of the alphabet.
     //!
     //! \sa
     //! * to_word
@@ -912,20 +869,16 @@ namespace libsemigroups {
     //!
     //! This function converts its argument \p input into a word_type The
     //! characters of \p input are converted using the alphabet used to
-    //! construct the object or set via init().
+    //! construct the object or set via init(), or with \ref
+    //! human_readable_index if \ref empty returns `true`.
     //!
     //! \param input the string to convert
     //!
-    //! \exception
-    //! \no_libsemigroups_except
-    //!
-    //! \warning No checks on the arguments are performed, if \p input contains
-    //! letters that do not correspond to letters of the alphabet used to define
-    //! an instance of ToWord, then these letters are mapped to UNDEFINED.
+    //! \throw LibsemigroupsException if the alphabet used to define an instance
+    //! of ToWord is not empty and \p input contains letters that do not
+    //! correspond to letters of the alphabet.
     //!
     //! \sa
-    //! * to_word
-    //! * to_string
     //! * \ref literals
     [[nodiscard]] word_type operator()(std::string const& input) const;
 

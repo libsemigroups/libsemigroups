@@ -1167,6 +1167,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("to_word", "038", "", "[quick]") {
+    ToWord to_word;
     REQUIRE(to_word("abc") == 012_w);
     REQUIRE(to_word("ABC") == word_type({26, 27, 28}));
   }
