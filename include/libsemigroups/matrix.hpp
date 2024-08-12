@@ -16,8 +16,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-// TODO:
-// * tpp file
+// TODO(2) tpp file
+// TODO(0): document the adapters
 
 #ifndef LIBSEMIGROUPS_MATRIX_HPP_
 #define LIBSEMIGROUPS_MATRIX_HPP_
@@ -43,6 +43,97 @@
 #include "detail/string.hpp"      // for detail::to_string
 
 namespace libsemigroups {
+
+  //! \defgroup matrix_group Matrices
+  //!
+  //! This page contains links to the documentation of the functionality in
+  //! libsemigroups for matrices.
+  //!
+  //!
+  //! There are several different classes in ``libsemigroups`` for representing
+  //! matrices over various semirings. There are up to three different
+  //! representations for every type of matrix:
+  //!
+  //! 1. those whose dimension and arithmetic operations can be defined at
+  //!    compile time: \ref StaticMatrix.
+  //! 2. those whose arithmetic operation can be defined at compile time but
+  //!    whose dimensions can be set at run time: \ref DynamicMatrix
+  //! 3. those whose arithmetic operations and dimensions can be set at run
+  //!    time: \ref DynamicMatrix
+  //!
+  //! It's unlikely that you will want to use the classes described on this
+  //! page directly, but rather through the aliases described on the other
+  //! matrix pages (such as, for example, BMat).
+  //!
+  //! # Over specific semirings
+  //!
+  //! The following matrix classes are provided which define matrices over some
+  //! specific semirings:
+  //!
+  //! * \ref bmat_index_group
+  //! * \ref intmat_group
+  //! * \ref maxplusmat_group
+  //! * \ref minplusmat_group
+  //! * \ref maxplustruncmat_group
+  //! * \ref minplustruncmat_group
+  //! * \ref ntpmat_group
+  //! * \ref projmaxplus_group
+  //!
+  //! # Over arbitrary semirings
+  //!
+  //! The following general matrix classes are provided which can be used to
+  //! define matrices over arbitrary semirings:
+  //!
+  //! * \ref dynamicmatrix-compile
+  //! * \ref dynamicmatrix-run
+  //! * \ref staticmatrix
+  //! * \ref variable-templates
+  //
+  // TODO(0) incorporate
+  //
+  // Row views
+  // ---------
+  //
+  // A row view is a lightweight representation of a row of a matrix.  The
+  // following row view classes are provided:
+  //
+  // .. toctree::
+  //    :maxdepth: 1
+  //
+  //    dynamicrowview
+  //    staticrowview
+  //
+  //
+  // Helpers
+  // -------
+  //
+  // The namespace matrix_helpers contains a number of helper
+  // functions for certain types of matrices:
+  //
+  // .. toctree::
+  //    :maxdepth: 1
+  //
+  //    helpers/pow
+  //    helpers/rows
+  //    helpers/row_basis
+  //    helpers/row_space_size
+  //    helpers/bitset_rows
+  //    helpers/bitset_row_basis
+  //
+  // Adapters
+  // ---------------
+  //
+  // There are various specialisations of the adapters described on `this
+  // page<Adapters>` for the matrices described on this page:
+  //
+  // .. toctree::
+  //    :maxdepth: 1
+  //
+  //    adapters/complexity
+  //    adapters/degree
+  //    adapters/increasedegreeby
+  //    adapters/one
+  //    adapters/product
 
   ////////////////////////////////////////////////////////////////////////
   // Detail
@@ -127,14 +218,16 @@ namespace libsemigroups {
       ////////////////////////////////////////////////////////////////////////
 
       template <typename SFINAE = container_type>
-      auto resize(size_t r, size_t c) -> std::enable_if_t<
-          std::is_same<SFINAE, std::vector<scalar_type>>::value> {
+      auto resize(size_t r, size_t c)
+          -> std::enable_if_t<
+              std::is_same<SFINAE, std::vector<scalar_type>>::value> {
         _container.resize(r * c);
       }
 
       template <typename SFINAE = container_type>
-      auto resize(size_t, size_t) -> std::enable_if_t<
-          !std::is_same<SFINAE, std::vector<scalar_type>>::value> {}
+      auto resize(size_t, size_t)
+          -> std::enable_if_t<
+              !std::is_same<SFINAE, std::vector<scalar_type>>::value> {}
 
      public:
       ////////////////////////////////////////////////////////////////////////
@@ -887,8 +980,8 @@ namespace libsemigroups {
    private:
     using DynamicMatrix_ = DynamicMatrix<PlusOp, ProdOp, ZeroOp, OneOp, Scalar>;
     using RowViewCommon  = detail::RowViewCommon<
-        DynamicMatrix_,
-        DynamicRowView<PlusOp, ProdOp, ZeroOp, OneOp, Scalar>>;
+         DynamicMatrix_,
+         DynamicRowView<PlusOp, ProdOp, ZeroOp, OneOp, Scalar>>;
     friend RowViewCommon;
 
    public:
@@ -1154,9 +1247,9 @@ namespace libsemigroups {
             MatrixStaticArithmetic<PlusOp, ProdOp, ZeroOp, OneOp, Scalar> {
     using MatrixDynamicDim = ::libsemigroups::detail::MatrixDynamicDim<Scalar>;
     using MatrixCommon     = ::libsemigroups::detail::MatrixCommon<
-        std::vector<Scalar>,
-        DynamicMatrix<PlusOp, ProdOp, ZeroOp, OneOp, Scalar>,
-        DynamicRowView<PlusOp, ProdOp, ZeroOp, OneOp, Scalar>>;
+            std::vector<Scalar>,
+            DynamicMatrix<PlusOp, ProdOp, ZeroOp, OneOp, Scalar>,
+            DynamicRowView<PlusOp, ProdOp, ZeroOp, OneOp, Scalar>>;
     friend MatrixCommon;
 
    public:
@@ -1464,36 +1557,149 @@ namespace libsemigroups {
   // Boolean matrices - compile time semiring arithmetic
   ////////////////////////////////////////////////////////////////////////
 
+  //! \defgroup bmat_group BMat
+  //!
+  //! This page describes the functionality for \f$m \times n\f$ boolean
+  //! matrices for arbitrary dimensions \f$m\f$ and \f$n\f$. There are two
+  //! types of such boolean matrices those whose dimension is known at
+  //! compile-time, and those where it is not.  Both types can be accessed via
+  //! the alias template `BMat<R, C>`: if `R` or `C` has value
+  //! `0`, then the dimensions can be set at run time, otherwise the
+  //! dimensions are `R` and `C`. The default value of `R` is `0` and of
+  //! `C` is `R`.
+  //!
+  //! The alias `BMat<R, C>` is either StaticMatrix or DynamicMatrix, please
+  //! refer to the documentation of these class templates for more details. The
+  //! only substantial difference in the interface of StaticMatrix and
+  //! DynamicMatrix is that the former can be default constructed and the latter
+  //! should be constructed using the dimensions.
+  //!
+  //! \par Example
+  //!
+  //! \code
+  //!    BMat<3> m;       // default construct an uninitialized 3 x 3 static
+  //!    matrix BMat<>  m(4, 4); // construct an uninitialized 4 x 4 dynamic
+  //!    matrix
+  //! \endcode
+
+  //! \ingroup bmat_group
+  //!
+  //! \brief Function object for addition in the boolean semiring.
+  //!
+  //! This is a stateless struct with a single call operator of signature:
+  //! `bool operator()(bool x, bool y) const noexcept` which returns `x || y`;
+  //! representing addition in the boolean semiring.
   struct BooleanPlus {
+    //! \brief Call operator for addition.
+    //!
+    //! This function returns the sum of its arguments in the boolean semiring.
+    //!
+    //! \param x the first value.
+    //! \param y the second value.
+    //!
+    //! \returns The product of \p x and \p y in the boolean semiring.
+    //!
+    //! \exceptions
+    //! \noexcept
     bool operator()(bool x, bool y) const noexcept {
       return x || y;
     }
   };
 
+  //! \ingroup bmat_group
+  //!
+  //! \brief Function object for multiplication in the boolean semiring.
+  //!
+  //! This is a stateless struct with a single call operator of signature:
+  //! `bool operator()(bool x, bool y) const noexcept` which returns `x && y`;
+  //! representing multiplication in the boolean semiring.
   struct BooleanProd {
+    //! \brief Call operator for multiplication.
+    //!
+    //! This function returns the product of its arguments in the boolean
+    //! semiring.
+    //!
+    //! \param x the first value.
+    //! \param y the second value.
+    //!
+    //! \returns The product of \p x and \p y in the boolean semiring.
+    //!
+    //! \exceptions
+    //! \noexcept
     bool operator()(bool x, bool y) const noexcept {
       return x & y;
     }
   };
 
+  //! \ingroup bmat_group
+  //!
+  //! \brief Function object for returning the multiplicative identity.
+  //!
+  //! This is a stateless struct with a single call operator of signature:
+  //! `bool operator()() const noexcept` which returns `true`; representing
+  //! the multiplicative identity of the boolean semiring.
   struct BooleanOne {
+    //! \brief Call operator returning the multiplication identity \c true of
+    //! the boolean semiring.
+    //!
+    //! Call operator returning the multiplication identity \c true of
+    //! the boolean semiring.
+    //!
+    //! \returns the value \c true.
+    //!
+    //! \exceptions
+    //! \noexcept
+    // TODO constexpr
     bool operator()() const noexcept {
       return true;
     }
   };
 
+  //! \ingroup bmat_group
+  //!
+  //! \brief Function object for returning the additive identity.
+  //!
+  //! This is a stateless struct with a single call operator of signature:
+  //! `bool operator()() const noexcept` which returns `false`;
+  //! representing the additive identity of the boolean semiring.
   struct BooleanZero {
+    //! \brief Call operator returning the additive identity \c false of
+    //! the boolean semiring.
+    //!
+    //! Call operator returning the additive identity \c false of
+    //! the boolean semiring.
+    //!
+    //! \returns the value \c false.
+    //!
+    //! \exceptions
+    //! \noexcept
+    // TODO constexpr
     bool operator()() const noexcept {
       return false;
     }
   };
 
+  //! \ingroup bmat_group
+  //!
+  //! \brief Alias for dynamic boolean matrices.
+  //!
+  //! Alias for the type of dynamic boolean matrices where the dimensions of the
+  //! matrices can be defined at run time.
   // The use of `int` rather than `bool` as the scalar type for dynamic
   // boolean matrices is intentional, because the bit iterators implemented in
   // std::vector<bool> entail a significant performance penalty.
   using DynamicBMat
       = DynamicMatrix<BooleanPlus, BooleanProd, BooleanZero, BooleanOne, int>;
 
+  //! \ingroup bmat_group
+  //!
+  //! \brief Alias for static boolean matrices.
+  //!
+  //! Alias for the type of static boolean matrices where the dimensions of the
+  //! matrices are defined at compile time.
+  //!
+  //! \tparam R the number of rows.
+  //! \tparam C the number of columns.
   template <size_t R, size_t C>
   using StaticBMat = StaticMatrix<BooleanPlus,
                                   BooleanProd,
@@ -1503,6 +1709,17 @@ namespace libsemigroups {
                                   C,
                                   int>;
 
+  //! \ingroup bmat_group
+  //!
+  //! \brief Alias template for boolean matrices.
+  //!
+  //! Alias template for boolean matrices.
+  //!
+  //! \tparam R the number of rows of the matrices. A value of `0` (the default
+  //! value) indicates that the dimensions will be set at run time.
+  //!
+  //! \tparam C the number of columns of the matrices. A value of `0` indicates
+  //! that the dimensions will be set at run time (the default value is ``R``).
   // FLS + JDM considered adding BMat8 and decided it wasn't a good idea.
   template <size_t R = 0, size_t C = R>
   using BMat
@@ -1530,9 +1747,25 @@ namespace libsemigroups {
     };
   }  // namespace detail
 
+  //! \ingroup bmat_group
+  //!
+  //! \brief Helper to check if a type is \ref BMat.
+  //!
+  //! This variable has value `true` if the template parameter `T` is the
+  //! same as `BMat<R, C>` for some values of `R` and `C`.
+  //!
+  //! \tparam T the type to check.
   template <typename T>
   static constexpr bool IsBMat = detail::IsBMatHelper<T>::value;
 
+  //! \ingroup bmat_group
+  //!
+  //! \brief Validate that a boolean matrix is valid.
+  //!
+  //! This function can be used to validate that a matrix contains values in the
+  //! underlying semiring.
+  //!
+  //! \throws LibsemigroupsException if TODO(0)
   template <typename Mat>
   auto validate(Mat const& m) -> std::enable_if_t<IsBMat<Mat>> {
     using scalar_type = typename Mat::scalar_type;
@@ -1553,13 +1786,58 @@ namespace libsemigroups {
   // Integer matrices - compile time semiring arithmetic
   ////////////////////////////////////////////////////////////////////////
 
+  //! \defgroup intmat_group Integer matrices
+  //!
+  //! Defined in ``matrix.hpp``.
+  //!
+  //! This page describes the functionality for \f$m \times n\f$  matrices of
+  //! integers for arbitrary dimensions \f$m\f$ and \f$n\f$. There are two
+  //! types of such matrices: those whose dimension is known at compile-time,
+  //! and those where it is not.  Both types can be accessed via the alias
+  //! template IntMat: if `R` or `C` has value `0`, then the dimensions
+  //! can be set at run time, otherwise `R` and `C` are the dimension. The
+  //! default value of `R` is `0`, and of `C` is `R`.
+  //!
+  //! The alias \ref IntMat is either StaticMatrix or DynamicMatrix, please
+  //! refer to the documentation of these class templates for more details. The
+  //! only substantial difference in the interface of StaticMatrix and
+  //! DynamicMatrix is that the former can be default constructed and the latter
+  //! should be constructed using the dimensions.
+  //!
+  //! \par Example
+  //! \code
+  // clang-format off
+  //! IntMat<3> m;       // default construct an uninitialized 3 x 3 static matrix
+  //! IntMat<>  m(4, 4); // construct an uninitialized 4 x 4 dynamic matrix
+  //! \endcode
+  // clang-format on
+
+  //! \ingroup intmat_group
+  //!
+  //! \brief Function object for addition in the ring of integers.
+  //!
+  //! \tparam Scalar TODO
+  //!
+  //! This is a stateless struct with a single call operator of signature:
+  //! `Scalar operator()(Scalar const x, Scalar const y) const noexcept`
+  //! which returns the usual sum `x + y` of `x` and `y`; representing
+  //! addition in the integer semiring.
   template <typename Scalar>
   struct IntegerPlus {
+    // TODO doc
     Scalar operator()(Scalar x, Scalar y) const noexcept {
       return x + y;
     }
   };
 
+  //! \ingroup intmat_group
+  //!
+  //! \brief Function object for multiplication in the ring of integers.
+  //!
+  //! This is a stateless struct with a single call operator of signature:
+  //! `Scalar operator()(Scalar const x, Scalar const y) const noexcept`
+  //! which returns the usual product `x * y` of `x` and `y`;
+  //! representing multiplication in the integer semiring.
   template <typename Scalar>
   struct IntegerProd {
     Scalar operator()(Scalar x, Scalar y) const noexcept {
@@ -1567,6 +1845,13 @@ namespace libsemigroups {
     }
   };
 
+  //! \ingroup intmat_group
+  //!
+  //! \brief Function object for returning the additive identity.
+  //!
+  //! This is a stateless struct with a single call operator of signature:
+  //! `Scalar operator()() const noexcept` which returns `0`; representing
+  //! the additive identity of the integer semiring.
   template <typename Scalar>
   struct IntegerZero {
     Scalar operator()() const noexcept {
@@ -1574,13 +1859,29 @@ namespace libsemigroups {
     }
   };
 
+  //! \ingroup intmat_group
+  //!
+  //! \brief Function object for returning the multiplicative identity.
+  //!
+  //! This is a stateless struct with a single call operator of signature:
+  //! `Scalar operator()() const noexcept` which returns `1`; representing
+  //! the multiplicative identity of the integer semiring.
   template <typename Scalar>
   struct IntegerOne {
+    // TODO doc
     Scalar operator()() const noexcept {
       return 1;
     }
   };
 
+  //! \ingroup intmat_group
+  //!
+  //! \brief Alias for dynamic integer matrices.
+  //!
+  //! Alias for the type of dynamic integer matrices where the dimensions of the
+  //! matrices can be defined at run time.
+  //!
+  //! \tparam Scalar the type of the entries in the matrix (default: `int`).
   template <typename Scalar>
   using DynamicIntMat = DynamicMatrix<IntegerPlus<Scalar>,
                                       IntegerProd<Scalar>,
@@ -1588,6 +1889,20 @@ namespace libsemigroups {
                                       IntegerOne<Scalar>,
                                       Scalar>;
 
+  //! \ingroup intmat_group
+  //!
+  //! \brief Alias for static integer matrices.
+  //!
+  //! Alias for the type of static integer matrices where the dimensions of the
+  //! matrices can be defined at compile time.
+  //!
+  //! \tparam R the number of rows of the matrices. A value of `0` (the default
+  //! value) indicates that the dimensions will be set at run time.
+  //!
+  //! \tparam C the number of columns of the matrices. A value of `0` indicates
+  //! that the dimensions will be set at run time (the default value is `R`).
+  //!
+  //! \tparam Scalar the type of the entries in the matrix (default: `int`).
   template <size_t R, size_t C, typename Scalar>
   using StaticIntMat = StaticMatrix<IntegerPlus<Scalar>,
                                     IntegerProd<Scalar>,
@@ -1597,12 +1912,8 @@ namespace libsemigroups {
                                     C,
                                     Scalar>;
 
-  template <size_t R = 0, size_t C = R, typename Scalar = int>
-  using IntMat = std::conditional_t<R == 0 || C == 0,
-                                    DynamicIntMat<Scalar>,
-                                    StaticIntMat<R, C, Scalar>>;
-
   namespace detail {
+
     template <typename T>
     struct IsIntMatHelper : std::false_type {};
 
@@ -1613,21 +1924,111 @@ namespace libsemigroups {
     struct IsIntMatHelper<DynamicIntMat<Scalar>> : std::true_type {};
   }  // namespace detail
 
+  //! \ingroup intmat_group
+  //!
+  //! \brief Alias template for integer matrices.
+  //!
+  //! Alias template for integer matrices.
+  //!
+  //! \tparam R the number of rows of the matrices. A value of `0` (the
+  //! default value) indicates that the dimensions will be set at run time.
+  //!
+  //! \tparam C the number of columns of the matrices. A value of `0`
+  //! indicates that the dimensions will be set at run time (the default value
+  //! is `R`).
+  //!
+  //! \tparam Scalar the type of the entries in the matrix (default: `int`).
+  template <size_t R = 0, size_t C = R, typename Scalar = int>
+  using IntMat = std::conditional_t<R == 0 || C == 0,
+                                    DynamicIntMat<Scalar>,
+                                    StaticIntMat<R, C, Scalar>>;
+
+  //! \ingroup intmat_group
+  //!
+  //! \brief Helper to check if a type is IntMat.
+  //!
+  //! \tparam T a type
+  //!
+  //! This variable has value `true` if the template parameter `T` is the same
+  //! as IntMat for some values of the template paramaters `R`, `C`,  and
+  //! `Scalar`, and `false` otherwise.
   template <typename T>
   static constexpr bool IsIntMat = detail::IsIntMatHelper<T>::value;
 
+  //! \ingroup intmat_group
+  //!
+  //! \brief Validate that an integer matrix is valid.
+  //!
+  //! This function can be used to validate that a matrix contains values in the
+  //! underlying semiring. This is always \c true for \ref IntMat objects.
   template <typename Mat>
-  auto validate(Mat const&) -> std::enable_if_t<IsIntMat<Mat>> {}
+  auto validate(Mat const&) -> std::enable_if_t<IsIntMat<Mat>> {};
 
   ////////////////////////////////////////////////////////////////////////
   // Max-plus matrices
   ////////////////////////////////////////////////////////////////////////
+  //! \defgroup maxplusmat_group Max-plus matrices
+  //!
+  //! Defined in ``matrix.hpp``.
+  //!
+  //! This page describes the functionality for \f$n \times n\f$  matrices over
+  //! the max-plus semiring for arbitrary dimension \f$n\f$. There are two types
+  //! of such matrices those whose dimension is known at compile-time, and those
+  //! where it is not.  Both types can be accessed via the alias template
+  //! \ref MaxPlusMat: if `N` has value `0`, then the dimensions can be set at
+  //! run time, otherwise `N` is the dimension. The default value of `N` is `0`.
+  //!
+  //! The alias \ref MaxPlusMat is either StaticMatrix or DynamicMatrix, please
+  //! refer to the documentation of these class templates for more details. The
+  //! only substantial difference in the interface of StaticMatrix and
+  //! DynamicMatrix is that the former can be default constructed and the latter
+  //! should be constructed using the dimensions.
+  //!
+  //! \par Example
+  //! \code
+  //! MaxPlusMat<3> m;       // default construct an uninitialized 3 x 3
+  //!    static matrix MaxPlusMat<>  m(4, 4); // construct an uninitialized 4 x
+  //!    4 dynamic matrix
+  //! \endcode
+  // TODO(0) fix layout in example above
 
+  //! \ingroup maxplusmat_group
+  //!
+  //! \brief Function object for addition in the max-plus semiring.
+  //!
+  //! \tparam Scalar the type of the values in the semiring (must be signed
+  //! integer type).
+  //!
+  //! This is a stateless struct with a single call operator of signature:
+  //! `Scalar operator()(Scalar x, Scalar y) const noexcept`
+  //! that returns \f$x \oplus y\f$ which is defined by
+  //!
+  //! \f[
+  //!    x\oplus y =
+  //!    \begin{cases}
+  //!    \max\{x, y\}   & \text{if } x \neq -\infty\text{ and }y \neq -\infty
+  //!    \\
+  //!    -\infty & \text{if } x = -\infty \text{ or }y = -\infty; \\
+  //!    \end{cases}
+  //! \f]
+  //!
+  //! representing addition in the max-plus semiring.
   // Static arithmetic
   template <typename Scalar>
   struct MaxPlusPlus {
     static_assert(std::is_signed<Scalar>::value,
                   "MaxPlus requires a signed integer type as parameter!");
+    //! \brief Call operator for addition.
+    //!
+    //! This function returns the sum of its arguments in the max-plus semiring.
+    //!
+    //! \param x the first value.
+    //! \param y the second value.
+    //!
+    //! \returns The sum of \p x and \y in the max-plus semiring.
+    //!
+    //! \exceptions
+    //! \noexcept
     Scalar operator()(Scalar x, Scalar y) const noexcept {
       if (x == NEGATIVE_INFINITY) {
         return y;
@@ -1638,10 +2039,40 @@ namespace libsemigroups {
     }
   };
 
+  //! \ingroup maxplusmat_group
+  //!
+  //! \brief Function object for multiplication in the max-plus semiring.
+  //!
+  //!  This is a stateless struct with a single call operator of signature:
+  //!  `Scalar operator()(Scalar x, Scalar y) const noexcept`
+  //!  that returns \f$x \otimes y\f$ which is defined bitset_type
+  //!  \f[
+  //!     x\otimes y =
+  //!     \begin{cases}
+  //!     x + y   & \text{if } x \neq -\infty\text{ and }y \neq -\infty \\
+  //!     -\infty & \text{if } x = -\infty \text{ or }y = -\infty; \\
+  //!     \end{cases}
+  //!  \f]
+  //!  representing multiplication in the max-plus semiring.
+  //!
+  //! \tparam Scalar the type of the values in the semiring (must be signed
+  //! integer type).
   template <typename Scalar>
   struct MaxPlusProd {
     static_assert(std::is_signed<Scalar>::value,
                   "MaxPlus requires a signed integer type as parameter!");
+    //! \brief Call operator for multiplication.
+    //!
+    //! This function returns the product of its arguments in the max-plus
+    //! semiring.
+    //!
+    //! \param x the first value.
+    //! \param y the second value.
+    //!
+    //! \returns The product of \p x and \y in the max-plus semiring.
+    //!
+    //! \exceptions
+    //! \noexcept
     Scalar operator()(Scalar x, Scalar y) const noexcept {
       if (x == NEGATIVE_INFINITY || y == NEGATIVE_INFINITY) {
         return NEGATIVE_INFINITY;
@@ -1650,15 +2081,43 @@ namespace libsemigroups {
     }
   };
 
+  //! \ingroup maxplusmat_group
+  //!
+  //! \brief Function object for returning the additive identity of the max-plus
+  //! semiring.
+  //!
+  //! This is a stateless struct with a single call operator of signature:
+  //! `Scalar operator()() const noexcept` which returns \f$-\infty\f$;
+  //! representing the additive identity of the max-plus semiring.
+  //!
+  //! \tparam Scalar the type of the values in the semiring (must be signed
+  //! integer type).
   template <typename Scalar>
   struct MaxPlusZero {
     static_assert(std::is_signed<Scalar>::value,
                   "MaxPlus requires a signed integer type as parameter!");
+    //! \brief Call operator for additive identity.
+    //!
+    //! This function returns the additive identity in the max-plus
+    //! semiring.
+    //!
+    //! \returns The additive identity in the max-plus semiring.
+    //!
+    //! \exceptions
+    //! \noexcept
     Scalar operator()() const noexcept {
       return NEGATIVE_INFINITY;
     }
   };
 
+  //! \ingroup maxplusmat_group
+  //!
+  //! \brief Alias for dynamic max-plus matrices.
+  //!
+  //! Alias for the type of dynamic max-plus matrices where the dimensions of
+  //! the matrices can be defined at run time.
+  //!
+  //! \tparam Scalar the type of the entries in the matrix.
   template <typename Scalar>
   using DynamicMaxPlusMat = DynamicMatrix<MaxPlusPlus<Scalar>,
                                           MaxPlusProd<Scalar>,
@@ -1666,6 +2125,16 @@ namespace libsemigroups {
                                           IntegerZero<Scalar>,
                                           Scalar>;
 
+  //! \ingroup maxplusmat_group
+  //!
+  //! \brief Alias for static max-plus matrices.
+  //!
+  //! Alias for static max-plus matrices whose arithmetic and dimensions are
+  //! defined at compile-time.
+  //!
+  //! \tparam R the number of rows.
+  //! \tparam C the number of columns.
+  //! \tparam Scalar the type of the entries in the matrix.
   template <size_t R, size_t C, typename Scalar>
   using StaticMaxPlusMat = StaticMatrix<MaxPlusPlus<Scalar>,
                                         MaxPlusProd<Scalar>,
@@ -1675,6 +2144,19 @@ namespace libsemigroups {
                                         C,
                                         Scalar>;
 
+  //! \ingroup maxplusmat_group
+  //!
+  //! \brief Alias template for max-plus matrices.
+  //!
+  //! Alias template for max-plus matrices.
+  //!
+  //! \tparam R the number of rows.  A value of `0` indicates that the value
+  //! will be set at run time (default: `0`).
+  //!
+  //! \tparam C the number of columns.  A value of `0` indicates that the value
+  //! will be set at run time (default: `R`).
+  //!
+  //! \tparam Scalar the type of the entries in the matrix (default: `int`).
   template <size_t R = 0, size_t C = R, typename Scalar = int>
   using MaxPlusMat = std::conditional_t<R == 0 || C == 0,
                                         DynamicMaxPlusMat<Scalar>,
@@ -1692,9 +2174,26 @@ namespace libsemigroups {
     struct IsMaxPlusMatHelper<DynamicMaxPlusMat<Scalar>> : std::true_type {};
   }  // namespace detail
 
+  //! \ingroup maxplusmat_group
+  //!
+  //! \brief Helper to check if a type is MaxPlusMat.
+  //!
+  //! \tparam T a type
+  //!
+  //! This variable has value `true` if the template parameter `T` is the
+  //! same as MaxPlusMat for some values of the template paramaters \c R, \c C,
+  //! and \c Scalar, and `false` if not.
   template <typename T>
   static constexpr bool IsMaxPlusMat = detail::IsMaxPlusMatHelper<T>::value;
 
+  //! \ingroup maxplusmat_group
+  //!
+  //! \brief Validate that a max-plus matrix is valid.
+  //!
+  //! This function can be used to validate that a matrix contains values in the
+  //! underlying semiring. This is always \c true for \ref IntMat objects.
+  //!
+  // TODO replace with validate(MaxPlusMat<R, C, Mat> const&);
   template <typename Mat>
   auto validate(Mat const&) -> std::enable_if_t<IsMaxPlusMat<Mat>> {}
 
@@ -1702,11 +2201,68 @@ namespace libsemigroups {
   // Min-plus matrices
   ////////////////////////////////////////////////////////////////////////
 
+  //! \defgroup minplusmat_group Min-plus matrices
+  //!
+  //! Defined in ``matrix.hpp``.
+  //!
+  //! This page describes the functionality for \f$n \times n\f$  matrices
+  //! over the min-plus semiring for arbitrary dimension \f$n\f$. There are
+  //! two types of such matrices those whose dimension is known at compile-time,
+  //! and those where it is not.  Both types can be accessed via the alias
+  //! template \ref MinPlusMat: if `N` has value `0`, then
+  //! the dimensions can be set at run time, otherwise `N` is the dimension.
+  //! The default value of `N` is `0`.
+  //!
+  //! The alias \ref MinPlusMat is either StaticMatrix or DynamicMatrix, please
+  //! refer to the documentation of these class templates for more details. The
+  //! only substantial difference in the interface of StaticMatrix and
+  //! DynamicMatrix is that the former can be default constructed and the latter
+  //! should be constructed using the dimensions.
+  //!
+  //! \par Example
+  //!
+  //! \code
+  //!    MinPlusMat<3> m;       // default construct an uninitialized 3 x 3
+  //!    static matrix MinPlusMat<>  m(4, 4); // construct an uninitialized 4 x
+  //!    4 dynamic matrix
+  //!    \endcode
+  // TODO fix the example
+
+  //! \ingroup minplusmat_group
+  //!
+  //! \brief Function object for addition in the min-plus semiring.
+  //!
+  //!  This is a stateless struct with a single call operator of signature:
+  //!  `Scalar operator()(Scalar x, Scalar y) const noexcept` that returns \f$x
+  //!  \oplus y\f$ which is defined by
+  //!  \f[
+  //!     x\oplus y =
+  //!     \begin{cases}
+  //!     \min\{x, y\}   & \text{if } x \neq \infty\text{ and }y \neq \infty \\
+  //!     \infty & \text{if } x = \infty \text{ or }y = \infty; \\
+  //!     \end{cases}
+  //!  \f]
+  //!  representing addition in the min-plus semiring.
+  //!
+  //! \tparam Scalar the type of the values in the semiring (must be signed
+  //! integer type).
+  //!
   // Static arithmetic
   template <typename Scalar>
   struct MinPlusPlus {
     static_assert(std::is_signed<Scalar>::value,
                   "MinPlus requires a signed integer type as parameter!");
+    //! \brief Call operator for addition.
+    //!
+    //! This function returns the sum of its arguments in the min-plus semiring.
+    //!
+    //! \param x the first value.
+    //! \param y the second value.
+    //!
+    //! \returns The sum of \p x and \y in the min-plus semiring.
+    //!
+    //! \exceptions
+    //! \noexcept
     Scalar operator()(Scalar x, Scalar y) const noexcept {
       if (x == POSITIVE_INFINITY) {
         return y;
@@ -1717,10 +2273,40 @@ namespace libsemigroups {
     }
   };
 
+  //! \ingroup minplusmat_group
+  //!
+  //! \brief Function object for multiplication in the min-plus semiring.
+  //!
+  //! This is a stateless struct with a single call operator of signature:
+  //! `Scalar operator()(Scalar const x, Scalar const y) const noexcept`
+  //! that returns \f$x \otimes y\f$ which is defined by
+  //! \f[
+  //!     x\otimes y =
+  //!     \begin{cases}
+  //!     x + y  & \text{if } x \neq \infty\text{ and }y \neq \infty \\
+  //!     \infty & \text{if } x = \infty \text{ or }y = \infty; \\
+  //!     \end{cases}
+  //! \f]
+  //!  representing multiplication in the min-plus semiring.
+  //!
+  //! \tparam Scalar the type of the values in the semiring (must be signed
+  //! integer type).
   template <typename Scalar>
   struct MinPlusProd {
     static_assert(std::is_signed<Scalar>::value,
                   "MinPlus requires a signed integer type as parameter!");
+    //! \brief Call operator for multiplication.
+    //!
+    //! This function returns the product of its arguments in the min-plus
+    //! semiring.
+    //!
+    //! \param x the first value.
+    //! \param y the second value.
+    //!
+    //! \returns The product of \p x and \y in the min-plus semiring.
+    //!
+    //! \exceptions
+    //! \noexcept
     Scalar operator()(Scalar x, Scalar y) const noexcept {
       if (x == POSITIVE_INFINITY || y == POSITIVE_INFINITY) {
         return POSITIVE_INFINITY;
@@ -1729,15 +2315,43 @@ namespace libsemigroups {
     }
   };
 
+  //! \ingroup minplusmat_group
+  //!
+  //! \brief Function object for returning the additive identity of the min-plus
+  //! semiring.
+  //!
+  //!  This is a stateless struct with a single call operator of signature:
+  //!  `Scalar operator()() const noexcept` which returns \f$\infty\f$;
+  //!  representing the additive identity of the min-plus semiring.
+  //!
+  //! \tparam Scalar the type of the values in the semiring (must be signed
+  //! integer type).
   template <typename Scalar>
   struct MinPlusZero {
     static_assert(std::is_signed<Scalar>::value,
                   "MinPlus requires a signed integer type as parameter!");
+    //! \brief Call operator for additive identity.
+    //!
+    //! This function returns the additive identity in the min-plus
+    //! semiring.
+    //!
+    //! \returns The additive identity in the min-plus semiring.
+    //!
+    //! \exceptions
+    //! \noexcept
     Scalar operator()() const noexcept {
       return POSITIVE_INFINITY;
     }
   };
 
+  //! \ingroup minplusmat_group
+  //!
+  //! \brief Alias for dynamic min-plus matrices.
+  //!
+  //! Alias for the type of dynamic min-plus matrices where the dimensions of
+  //! the matrices can be defined at run time.
+  //!
+  //! \tparam Scalar the type of the entries in the matrix.
   template <typename Scalar>
   using DynamicMinPlusMat = DynamicMatrix<MinPlusPlus<Scalar>,
                                           MinPlusProd<Scalar>,
@@ -1745,6 +2359,16 @@ namespace libsemigroups {
                                           IntegerZero<Scalar>,
                                           Scalar>;
 
+  //! \ingroup minplusmat_group
+  //!
+  //! \brief Alias for static min-plus matrices.
+  //!
+  //! Alias for static min-plus matrices whose arithmetic and dimensions are
+  //! defined at compile-time.
+  //!
+  //! \tparam R  the number of rows.
+  //! \tparam C  the number of columns.
+  //! \tparam Scalar the type of the entries in the matrix.
   template <size_t R, size_t C, typename Scalar>
   using StaticMinPlusMat = StaticMatrix<MinPlusPlus<Scalar>,
                                         MinPlusProd<Scalar>,
@@ -1753,7 +2377,19 @@ namespace libsemigroups {
                                         R,
                                         C,
                                         Scalar>;
-
+  //! \ingroup minplusmat_group
+  //!
+  //! \brief Alias template for min-plus matrices.
+  //!
+  //! Alias template for min-plus matrices.
+  //!
+  //! \tparam R the number of rows.  A value of `0` indicates that the value
+  //! will be set at run time (default: `0`).
+  //!
+  //! \tparam C the number of columns.  A value of `0` indicates that the value
+  //! will be set at run time (default: `R`).
+  //!
+  //! \tparam Scalar the type of the entries in the matrix (default: `int`).
   template <size_t R = 0, size_t C = R, typename Scalar = int>
   using MinPlusMat = std::conditional_t<R == 0 || C == 0,
                                         DynamicMinPlusMat<Scalar>,
@@ -1771,9 +2407,27 @@ namespace libsemigroups {
     struct IsMinPlusMatHelper<DynamicMinPlusMat<Scalar>> : std::true_type {};
   }  // namespace detail
 
+  //! \ingroup minplusmat_group
+  //!
+  //! \brief Helper to check if a type is MinPlusMat.
+  //!
+  //! This variable has value `true` if the template parameter `T` is the
+  //! same as MinPlusMat for some values of the template paramaters \c R, \c C,
+  //! and \c Scalar, and `false` if not.
+  //!
+  //! \tparam T the type to check.
+  // TODO maybe remove this, and the others, they seem to only be used for
+  // validate below, where they aren't necessary
   template <typename T>
   static constexpr bool IsMinPlusMat = detail::IsMinPlusMatHelper<T>::value;
 
+  //! \ingroup minplusmat_group
+  //!
+  //! \brief Validate that a min-plus matrix is valid.
+  //!
+  //! This function can be used to validate that a matrix contains values in the
+  //! underlying semiring. This is always \c true for \ref MinPlusMat objects.
+  // TODO replace with validate(MinPlusMat<R, C, Mat> const&);
   template <typename Mat>
   auto validate(Mat const&) -> std::enable_if_t<IsMinPlusMat<Mat>> {}
 
@@ -1781,10 +2435,87 @@ namespace libsemigroups {
   // Max-plus matrices with threshold
   ////////////////////////////////////////////////////////////////////////
 
+  //! \defgroup maxplustruncmat_group Truncated max-plus  matrices
+  //!
+  //! Defined in ``matrix.hpp``.
+  //!
+  //! This page describes the functionality for \f$n \times n\f$  matrices
+  //! over the finite quotient of the max-plus semiring by the congruence
+  //! \f$t = t + 1\f$ for arbitrary \f$n\f$ and \f$t\f$. The value
+  //! \f$t\f$ is referred to as the *threshold*.
+  //!
+  //! There are three types of such matrices where:
+  //!
+  //! 1. the dimension is known at compile-time;
+  //! 2. the dimension is to be defined a run time but the arithmetic operations
+  //!    are known at compile-time (i.e. the value of \f$t\f$ is known at
+  //!    compile time)
+  //! 3. both the dimension and the arithmetic operations (i.e. \f$t\f$) are
+  //!    to be defined a run time.
+  //!
+  //! All three of these types can be accessed via the alias template
+  //! \ref MaxPlusTruncMat if `T` has value `0`,
+  //! then the threshold can be set at run time, and if `R` or `C` is `0`,
+  //! then the dimension can be set at run time.  The default value of `T` is
+  //! `0`, `R` is `0`, and of `C` is `R`.
+  //!
+  //! The alias \ref MaxPlusTruncMax is either
+  //! StaticMatrix or DynamicMatrix, please refer to the
+  //! documentation of these class templates for more details. The only
+  //! substantial difference in the interface of StaticMatrix and
+  //! DynamicMatrix is that the former can be default constructed and
+  //! the latter should be constructed using the dimensions.
+  //!
+  //! \par Example
+  //! \code
+  //!    MaxPlusTruncMat<11, 3> m;       // default construct an uninitialized 3
+  //!    x 3 static matrix with threshold 11 MaxPlusTruncMat<11> m(4, 4);    //
+  //!    construct an uninitialized 4 x 4 dynamic matrix with threshold 11
+  //!    MaxPlusTruncSemiring sr(11);    // construct a truncated max-plus
+  //!    semiring with threshold 11 MaxPlusTruncMat<>  m(sr, 5, 5); // construct
+  //!    an uninitialized 5 x 5 dynamic matrix with threshold 11 (defined at run
+  //!    time)
+  //!    \endcode
+  // TODO unscramble the example
+
+  //! \ingroup maxplustruncmat_group
+  //!
+  //! \brief Function object for multiplication in truncated max-plus semirings.
+  //!
+  //! This is a stateless struct with a single call operator of signature:
+  //! `Scalar operator()(Scalar x, Scalar y) const noexcept`
+  //! that returns \f$x \otimes y\f$ which is defined by
+  //! \f[
+  //!    x\otimes y =
+  //!    \begin{cases}
+  //!    \min\{x + y, T\}   & \text{if } x \neq -\infty\text{ and }y \neq
+  //!    -\infty \\
+  //!    -\infty & \text{if } x = -\infty \text{ or }y = -\infty;
+  //!    \end{cases}
+  //! \f]
+  //! representing multiplication in the quotient of the max-plus semiring by
+  //! the congruence \f$T = T + 1\f$.
+  //!
+  //! \tparam T the threshold (point at which the entries in the max-plus
+  //! semiring are truncated).
+  //! \tparam Scalar the type of the values in the semiring (must be signed
+  //! integer type).
   template <size_t T, typename Scalar>
   struct MaxPlusTruncProd {
     static_assert(std::is_signed<Scalar>::value,
                   "MaxPlus requires a signed integer type as parameter!");
+    //! \brief Call operator for multiplication.
+    //!
+    //! This function returns the product of its arguments in a max-plus
+    //! truncated semiring.
+    //!
+    //! \param x the first value.
+    //! \param y the second value.
+    //!
+    //! \returns The product of \p x and \y in truncated max-plus semiring.
+    //!
+    //! \exceptions
+    //! \noexcept
     Scalar operator()(Scalar x, Scalar y) const noexcept {
       LIBSEMIGROUPS_ASSERT((x >= 0 && x <= static_cast<Scalar>(T))
                            || x == NEGATIVE_INFINITY);
@@ -1797,20 +2528,62 @@ namespace libsemigroups {
     }
   };
 
+  //! \ingroup maxplustruncmat_group
+  //!
+  //! \brief Class representing a truncated max-plus semiring.
+  //!
+  //! This class represents the **truncated max-plus semiring** consists of the
+  //! integers \f$\{0, \ldots , t\}\f$ for some value \f$t\f$ (called the
+  //! **threshold** of the semiring) and \f$-\infty\f$. Instances of this
+  //! class can be used to define the value of the threshold \f$t\f$ at run
+  //! time.
+  //!
+  //! \tparam Scalar the type of the elements of the semiring. This must be a
+  //! signed integer type (defaults to \c int).
   template <typename Scalar = int>
   class MaxPlusTruncSemiring {
     static_assert(std::is_signed<Scalar>::value,
                   "MaxPlus requires a signed integer type as parameter!");
 
    public:
-    MaxPlusTruncSemiring()                                     = delete;
-    MaxPlusTruncSemiring(MaxPlusTruncSemiring const&) noexcept = default;
-    MaxPlusTruncSemiring(MaxPlusTruncSemiring&&) noexcept      = default;
-    MaxPlusTruncSemiring& operator=(MaxPlusTruncSemiring const&) noexcept
-        = default;  // NOLINT(whitespace/line_length)
-    MaxPlusTruncSemiring& operator=(MaxPlusTruncSemiring&&) noexcept = default;
-    ~MaxPlusTruncSemiring()                                          = default;
+    //! \brief Deleted default constructor.
+    //!
+    //! Deleted default constructor.
+    MaxPlusTruncSemiring() = delete;
 
+    //! \brief Default copy constructor.
+    //!
+    //! Default copy constructor.
+    MaxPlusTruncSemiring(MaxPlusTruncSemiring const&) noexcept = default;
+
+    //! \brief Default move constructor.
+    //!
+    //! Default move constructor.
+    MaxPlusTruncSemiring(MaxPlusTruncSemiring&&) noexcept = default;
+
+    //! \brief Default copy assignment operator.
+    //!
+    //! Default copy assignment operator.
+    MaxPlusTruncSemiring& operator=(MaxPlusTruncSemiring const&) noexcept
+        = default;
+
+    //! \brief Default move assignment operator.
+    //!
+    //! Default move assignment operator.
+    MaxPlusTruncSemiring& operator=(MaxPlusTruncSemiring&&) noexcept = default;
+
+    ~MaxPlusTruncSemiring() = default;
+
+    //! \brief Construct from threshold.
+    //!
+    //! Construct from threshold.
+    //!
+    //! \param threshold the threshold.
+    //!
+    //! \throws LibsemigroupsException if `threshold` is less than zero.
+    //!
+    //! \complexity
+    //! Constant.
     explicit MaxPlusTruncSemiring(Scalar threshold) : _threshold(threshold) {
       if (threshold < 0) {
         LIBSEMIGROUPS_EXCEPTION("expected non-negative value, found {}",
@@ -1818,14 +2591,58 @@ namespace libsemigroups {
       }
     }
 
+    //! \brief Get the multiplicative identity.
+    //!
+    //! This function returns the multiplicative identity in a truncated
+    //! max-plus semiring.
+    //!
+    //! \returns The additive identity in a truncated max-plus semiring (the
+    //! value `0`).
+    //!
+    //! \exceptions
+    //! \noexcept
     Scalar one() const noexcept {
       return 0;
     }
 
+    //! \brief Get the additive identity.
+    //!
+    //! This function returns the additive identity in a truncated max-plus
+    //! semiring.
+    //!
+    //! \returns The additive identity in a truncated max-plus semiring (the
+    //! value `NEGATIVE_INFINITY`).
+    //!
+    //! \exceptions
+    //! \noexcept
     Scalar zero() const noexcept {
       return NEGATIVE_INFINITY;
     }
 
+    //! \brief Multiplication in a truncated max-plus semiring.
+    //!
+    //! This function returns \f$x \otimes y\f$ which is defined by
+    //! \f[
+    //!    x\otimes y =
+    //!    \begin{cases}
+    //!    \min\{x + y, t\}   & \text{if } x \neq -\infty\text{ and }y \neq
+    //!    -\infty \\
+    //!    -\infty & \text{if } x = -\infty \text{ or }y = -\infty; \\
+    //!    \end{cases}
+    //! \f]
+    //! where \f$t\f$ is the threshold; representing multiplication in the
+    //! quotient of the max-plus semiring.
+    //!
+    //! \param x scalar.
+    //! \param y scalar.
+    //!
+    //! \returns A value of type `Scalar`.
+    //!
+    //! \exceptions
+    //! \noexcept
+    //!
+    //! \complexity
+    //! Constant.
     Scalar prod(Scalar x, Scalar y) const noexcept {
       LIBSEMIGROUPS_ASSERT((x >= 0 && x <= _threshold)
                            || x == NEGATIVE_INFINITY);
@@ -1837,6 +2654,29 @@ namespace libsemigroups {
       return std::min(x + y, _threshold);
     }
 
+    //! \brief Addition in a truncated max-plus semiring.
+    //!
+    //! Returns \f$x \oplus y\f$ which is defined by
+    //! \f[
+    //!   x\oplus y =
+    //!   \begin{cases}
+    //!     \max\{x, y\}   & \text{if } x \neq -\infty\text{ and }y \neq -\infty
+    //!     \\
+    //!     -\infty & \text{if } x = -\infty \text{ or }y = -\infty; \\
+    //!   \end{cases}
+    //! \f]
+    //! representing addition in the max-plus semiring (and its quotient).
+    //!
+    //! \param x scalar.
+    //! \param y scalar.
+    //!
+    //! \returns A value of type `Scalar`.
+    //!
+    //! \exceptions
+    //! \noexcept
+    //!
+    //! \complexity
+    //! Constant.
     Scalar plus(Scalar x, Scalar y) const noexcept {
       LIBSEMIGROUPS_ASSERT((x >= 0 && x <= _threshold)
                            || x == NEGATIVE_INFINITY);
@@ -1850,6 +2690,18 @@ namespace libsemigroups {
       return std::max(x, y);
     }
 
+    //! \brief Get the threshold.
+    //!
+    //! Returns the threshold value used to construct \ref MaxPlusTruncSemiring
+    //! instance.
+    //!
+    //! \returns A value of type `Scalar`.
+    //!
+    //! \exceptions
+    //! \noexcept
+    //!
+    //! \complexity
+    //! Constant.
     Scalar threshold() const noexcept {
       return _threshold;
     }
@@ -1858,10 +2710,21 @@ namespace libsemigroups {
     Scalar const _threshold;
   };
 
+  // TODO remove?
   template <typename Scalar>
   using DynamicMaxPlusTruncMatSR
       = DynamicMatrix<MaxPlusTruncSemiring<Scalar>, Scalar>;
 
+  //! \ingroup maxplustruncmat_group
+  //!
+  //! \brief Alias for dynamic truncated max-plus matrices.
+  //!
+  //! Alias for the type of dynamic truncated max-plus matrices where the
+  //! dimension is defined at run time, but the threshold is defined at
+  //! compile-time.
+  //!
+  //! \tparam T the threshold.
+  //! \tparam Scalar the type of the entries in the matrix.
   template <size_t T, typename Scalar>
   using DynamicMaxPlusTruncMat = DynamicMatrix<MaxPlusPlus<Scalar>,
                                                MaxPlusTruncProd<T, Scalar>,
@@ -1869,6 +2732,17 @@ namespace libsemigroups {
                                                IntegerZero<Scalar>,
                                                Scalar>;
 
+  //! \ingroup maxplustruncmat_group
+  //!
+  //! \brief Alias for static truncated max-plus matrices.
+  //!
+  //! Alias for static truncated max-plus matrices where the threshold and
+  //! dimensions are defined at compile-time.
+  //!
+  //! \tparam T  the threshold.
+  //! \tparam R  the number of rows.
+  //! \tparam C  the number of columns.
+  //! \tparam Scalar the type of the entries in the matrix.
   template <size_t T, size_t R, size_t C, typename Scalar>
   using StaticMaxPlusTruncMat = StaticMatrix<MaxPlusPlus<Scalar>,
                                              MaxPlusTruncProd<T, Scalar>,
@@ -1877,7 +2751,22 @@ namespace libsemigroups {
                                              R,
                                              C,
                                              Scalar>;
-
+  //! \ingroup maxplustruncmat_group
+  //!
+  //! \brief Alias template for truncated max-plus matrices.
+  //!
+  //! Alias template for truncated max-plus matrices.
+  //!
+  //! \tparam T the threshold. A value of `0` indicates that the value will be
+  //! set at run time (default: `0`).
+  //!
+  //! \tparam R the number of rows.  A value of `0` indicates that the value
+  //! will be set at run time (default: `0`).
+  //!
+  //! \tparam C the number of columns.  A value of `0` indicates that the value
+  //! will be set at run time (default: `R`).
+  //!
+  //! \tparam Scalar the type of the entries in the matrix (default: `int`).
   template <size_t T = 0, size_t R = 0, size_t C = R, typename Scalar = int>
   using MaxPlusTruncMat = std::conditional_t<
       R == 0 || C == 0,
@@ -1909,6 +2798,17 @@ namespace libsemigroups {
     };
   }  // namespace detail
 
+  //! \ingroup maxplustruncmat_group
+  //!
+  //! \brief Helper to check if a type is \ref MaxPlusTruncMat.
+  //!
+  //! This variable has value `true` if the template parameter `T` is the same
+  //! as \ref MaxPlusTruncMat for some template parameters; and `false` if it is
+  //! not.
+  //!
+  //! \tparam T the type to check.
+  // TODO maybe remove this, and the others, they seem to only be used for
+  // validate below, where they aren't necessary
   template <typename T>
   static constexpr bool IsMaxPlusTruncMat
       = detail::IsMaxPlusTruncMatHelper<T>::value;
@@ -1922,6 +2822,16 @@ namespace libsemigroups {
     };
   }  // namespace detail
 
+  //! \ingroup maxplustruncmat_group
+  //!
+  //! \brief Validate that a truncated max-plus matrix is valid.
+  //!
+  //! This function can be used to validate that a matrix contains values in the
+  //! underlying semiring.
+  //!
+  //! \throws LibsemigroupsException if TODO(0)
+  // TODO(0) replace with validate(MinPlusMat<R, C, Mat> const&);
+  // TODO(1) to tpp
   template <typename Mat>
   auto validate(Mat const& m) -> std::enable_if_t<IsMaxPlusTruncMat<Mat>> {
     // Check that the semiring pointer isn't the nullptr if it shouldn't be
@@ -1949,8 +2859,82 @@ namespace libsemigroups {
   // Min-plus matrices with threshold
   ////////////////////////////////////////////////////////////////////////
 
+  //! \defgroup minplustruncmat_group Truncated min-plus matrices
+  //!
+  //! Defined in ``matrix.hpp``.
+  //!
+  //! This page describes the functionality for \f$n \times n\f$  matrices
+  //! over the finite quotient of the min-plus semiring by the congruence
+  //! \f$t = t + 1\f$ for arbitrary \f$n\f$ and \f$t\f$. The value
+  //! \f$t\f$ is referred to as the *threshold*.
+  //!
+  //! There are three types of such matrices where:
+  //!
+  //! 1. the dimension is known at compile-time;
+  //! 2. the dimension is to be defined a run time but the arithmetic operations
+  //!    are known at compile-time (i.e. the value of \f$t\f$ is known at
+  //!    compile time)
+  //! 3. both the dimension and the arithmetic operations (i.e. \f$t\f$) are
+  //!    to be defined a run time.
+  //!
+  //! All three of these types can be accessed via the alias template \ref
+  //! MinPlusTruncMat: if `T` has value `0`, then the threshold can be set at
+  //! run time, and if `R` or `C` is `0`, then the dimension can be set at run
+  //! time. The default value of `T` is `0`, `R` is `0`, and of `C` is `R`.
+  //!
+  //! The alias \ref MinPlusTruncMat is either StaticMatrix or DynamicMatrix,
+  //! please refer to the documentation of these class templates for more
+  //! details. The only substantial difference in the interface of StaticMatrix
+  //! and DynamicMatrix is that the former can be default constructed and the
+  //! latter should be constructed using the dimensions.
+  //!
+  //! \par Example
+  //! \code
+  //!    MinPlusTruncMat<11, 3> m;       // default construct an uninitialized 3
+  //!    x 3 static matrix with threshold 11 MinPlusTruncMat<11> m(4, 4);    //
+  //!    construct an uninitialized 4 x 4 dynamic matrix with threshold 11
+  //!    MinPlusTruncSemiring sr(11);    // construct a truncated min-plus
+  //!    semiring with threshold 11 MinPlusTruncMat<>  m(sr, 5, 5); // construct
+  //!    an uninitialized 5 x 5 dynamic matrix with threshold 11 (defined at run
+  //!    time)
+  //! \endcode
+  // TODO unscramble the example
+
+  //! \ingroup minplustruncmat_group
+  //!
+  //! \brief Function object for multiplication in min-plus truncated semirings.
+  //!
+  //! This is a stateless struct with a single call operator of signature:
+  //! `Scalar operator()(Scalar x, Scalar y) const noexcept` that returns \f$x
+  //! \otimes y\f$ which is defined by
+  //! \f[
+  //!    x\otimes y =
+  //!    \begin{cases}
+  //!    \min\{x + y, T\}   & \text{if } x \neq \infty\text{ and }y \neq
+  //!    \infty \\
+  //!    \infty & \text{if } x = \infty \text{ or }y = \infty; \\
+  //!    \end{cases}
+  //! \f]
+  //! representing multiplication in the quotient of the min-plus semiring
+  //! by the congruence \f$T = T + 1\f$.
+  //!
+  //! \tparam T the threshold (point at which the entries in the min-plus
+  //! semiring are truncated).
+  //! \tparam Scalar the type of the values in the semiring.
   template <size_t T, typename Scalar>
   struct MinPlusTruncProd {
+    //! \brief Call operator for multiplication.
+    //!
+    //! This function returns the product of its arguments in a truncated
+    //! min-plus semiring.
+    //!
+    //! \param x the first value.
+    //! \param y the second value.
+    //!
+    //! \returns The product of \p x and \p y in truncated min-plus semiring.
+    //!
+    //! \exceptions
+    //! \noexcept
     Scalar operator()(Scalar x, Scalar y) const noexcept {
       LIBSEMIGROUPS_ASSERT((x >= 0 && x <= static_cast<Scalar>(T))
                            || x == POSITIVE_INFINITY);
@@ -1963,20 +2947,59 @@ namespace libsemigroups {
     }
   };
 
+  //! \ingroup minplustruncmat_group
+  //!
+  //! \brief Class representing a truncated min-plus semiring.
+  //!
+  //! This class represents the **min-plus truncated semiring** consists of the
+  //! integers \f$\{0, \ldots , t\}\f$ for some value \f$t\f$ (called the
+  //! **threshold** of the semiring) and \f$\infty\f$. Instances of this class
+  //! can be used to define the value of the threshold \f$t\f$ at run time.
+  //!
+  //! \tparam Scalar the type of the elements of the semiring. This must be an
+  //! integral type.
   template <typename Scalar = int>
   class MinPlusTruncSemiring {
     static_assert(std::is_integral<Scalar>::value,
                   "MinPlus requires an integral type as parameter!");
 
    public:
-    MinPlusTruncSemiring() noexcept                            = delete;
-    MinPlusTruncSemiring(MinPlusTruncSemiring const&) noexcept = default;
-    MinPlusTruncSemiring(MinPlusTruncSemiring&&) noexcept      = default;
-    MinPlusTruncSemiring& operator=(MinPlusTruncSemiring const&) noexcept
-        = default;  // NOLINT(whitespace/line_length)
-    MinPlusTruncSemiring& operator=(MinPlusTruncSemiring&&) noexcept = default;
-    ~MinPlusTruncSemiring()                                          = default;
+    //! \brief Deleted default constructor.
+    //!
+    //! Deleted default constructor.
+    MinPlusTruncSemiring() = delete;
 
+    //! \brief Default copy constructor.
+    //!
+    //! Default copy constructor.
+    MinPlusTruncSemiring(MinPlusTruncSemiring const&) noexcept = default;
+
+    //! \brief Default move constructor.
+    //!
+    //! Default move constructor.
+    MinPlusTruncSemiring(MinPlusTruncSemiring&&) noexcept = default;
+
+    //! \brief Default copy assignment operator.
+    //!
+    //! Default copy assignment operator.
+    MinPlusTruncSemiring& operator=(MinPlusTruncSemiring const&) noexcept
+        = default;
+
+    //! \brief Default move assignment operator.
+    //!
+    //! Default move assignment operator.
+    MinPlusTruncSemiring& operator=(MinPlusTruncSemiring&&) noexcept = default;
+
+    //! \brief Construct from threshold.
+    //!
+    //! Construct from threshold.
+    //!
+    //! \param threshold the threshold.
+    //!
+    //! \throws LibsemigroupsException if `threshold` is less than zero.
+    //!
+    //! \complexity
+    //! Constant.
     explicit MinPlusTruncSemiring(Scalar threshold) : _threshold(threshold) {
       if (std::is_signed<Scalar>::value && threshold < 0) {
         LIBSEMIGROUPS_EXCEPTION("expected non-negative value, found {}",
@@ -1984,15 +3007,60 @@ namespace libsemigroups {
       }
     }
 
+    //! \brief Get the multiplicative identity.
+    //!
+    //! This function returns the multiplicative identity in a truncated
+    //! min-plus semiring.
+    //!
+    //! \returns The multiplicative identity in a truncated min-plus semiring
+    //! (the value `0`).
+    //!
+    //! \exceptions
+    //! \noexcept
     Scalar one() const noexcept {
       return 0;
     }
 
-    // These mem fns (one and zero) aren't needed
+    //! \brief Get the additive identity.
+    //!
+    //! This function returns the additive identity in a truncated min-plus
+    //! semiring.
+    //!
+    //! \returns The additive identity in a truncated min-plus semiring (the
+    //! value `POSITIVE_INFINITY`).
+    //!
+    //! \exceptions
+    //! \noexcept
+    // TODO These mem fns (one and zero) aren't needed
+    // TODO constexpr?
     Scalar zero() const noexcept {
       return POSITIVE_INFINITY;
     }
 
+    //! \brief Multiplication in a truncated min-plus semiring.
+    //!
+    //! Returns \f$x \otimes y\f$ which is defined by
+    //! \f[
+    //!    x\otimes y =
+    //!    \begin{cases}
+    //!    \min\{x + y, t\}   & \text{if } x \neq \infty\text{ and }y \neq
+    //!    \infty \\
+    //!    \infty & \text{if } x = \infty \text{ or }y = \infty; \\
+    //!    \end{cases}
+    //! \f]
+    //! where \f$t\f$ is the threshold; representing multiplication in the
+    //! quotient of the min-plus semiring.
+    //!
+    //! \param x scalar
+    //! \param y scalar
+    //!
+    //! \returns A value of type `Scalar`.
+    //!
+    //! \exceptions
+    //! \noexcept
+    //!
+    //! \complexity
+    //! Constant.
     Scalar prod(Scalar x, Scalar y) const noexcept {
       LIBSEMIGROUPS_ASSERT((x >= 0 && x <= _threshold)
                            || x == POSITIVE_INFINITY);
@@ -2004,6 +3072,29 @@ namespace libsemigroups {
       return std::min(x + y, _threshold);
     }
 
+    //! \brief Addition in a truncated min-plus semiring.
+    //!
+    //! Returns \f$x \oplus y\f$ which is defined by
+    //! \f[
+    //!   x\oplus y =
+    //!   \begin{cases}
+    //!   \min\{x, y\}   & \text{if } x \neq \infty\text{ and }y \neq \infty \\
+    //!   \infty & \text{if } x = \infty \text{ or }y = \infty; \\
+    //!   \end{cases}
+    //! \f]
+    //! representing addition in the min-plus truncated semiring (and its
+    //! quotient).
+    //!
+    //! \param x scalar.
+    //! \param y scalar.
+    //!
+    //! \returns A value of type `Scalar`.
+    //!
+    //! \exceptions
+    //! \noexcept
+    //!
+    //! \complexity
+    //! Constant.
     Scalar plus(Scalar x, Scalar y) const noexcept {
       LIBSEMIGROUPS_ASSERT((x >= 0 && x <= _threshold)
                            || x == POSITIVE_INFINITY);
@@ -2017,6 +3108,18 @@ namespace libsemigroups {
       return std::min(x, y);
     }
 
+    //! \brief Get the threshold.
+    //!
+    //! Returns the threshold value used to construct \ref MinPlusTruncSemiring
+    //! instance.
+    //!
+    //! \returns A value of type `Scalar`.
+    //!
+    //! \exceptions
+    //! \noexcept
+    //!
+    //! \complexity
+    //! Constant.
     Scalar threshold() const noexcept {
       return _threshold;
     }
@@ -2025,10 +3128,21 @@ namespace libsemigroups {
     Scalar const _threshold;
   };
 
+  // TODO remove?
   template <typename Scalar>
   using DynamicMinPlusTruncMatSR
       = DynamicMatrix<MinPlusTruncSemiring<Scalar>, Scalar>;
 
+  //! \ingroup minplustruncmat_group
+  //!
+  //! \brief Alias for dynamic truncated min-plus matrices.
+  //!
+  //! Alias for the type of dynamic truncated min-plus matrices where the
+  //! dimension is defined at run time, but the threshold is defined at
+  //! compile-time.
+  //!
+  //! \tparam T the threshold.
+  //! \tparam Scalar the type of the entries in the matrix.
   template <size_t T, typename Scalar>
   using DynamicMinPlusTruncMat = DynamicMatrix<MinPlusPlus<Scalar>,
                                                MinPlusTruncProd<T, Scalar>,
@@ -2036,6 +3150,17 @@ namespace libsemigroups {
                                                IntegerZero<Scalar>,
                                                Scalar>;
 
+  //! \ingroup minplustruncmat_group
+  //!
+  //! \brief Alias for static truncated min-plus matrices.
+  //!
+  //! Alias for static truncated min-plus matrices where the threshold and
+  //! dimensions are defined at compile-time.
+  //!
+  //! \tparam T  the threshold.
+  //! \tparam R  the number of rows.
+  //! \tparam C  the number of columns.
+  //! \tparam Scalar the type of the entries in the matrix.
   template <size_t T, size_t R, size_t C, typename Scalar>
   using StaticMinPlusTruncMat = StaticMatrix<MinPlusPlus<Scalar>,
                                              MinPlusTruncProd<T, Scalar>,
@@ -2045,6 +3170,22 @@ namespace libsemigroups {
                                              C,
                                              Scalar>;
 
+  //! \ingroup minplustruncmat_group
+  //!
+  //! \brief Alias template for truncated min-plus matrices.
+  //!
+  //! Alias template for truncated min-plus matrices.
+  //!
+  //! \tparam T the threshold. A value of `0` indicates that the value will be
+  //! set at run time (default: `0`).
+  //!
+  //! \tparam R the number of rows.  A value of `0` indicates that the value
+  //! will be set at run time (default: `0`).
+  //!
+  //! \tparam C the number of columns.  A value of `0` indicates that the value
+  //! will be set at run time (default: `R`).
+  //!
+  //! \tparam Scalar the type of the entries in the matrix (default: `int`).
   template <size_t T = 0, size_t R = 0, size_t C = R, typename Scalar = int>
   using MinPlusTruncMat = std::conditional_t<
       R == 0 || C == 0,
@@ -2076,6 +3217,17 @@ namespace libsemigroups {
     };
   }  // namespace detail
 
+  //! \ingroup minplustruncmat_group
+  //!
+  //! \brief Helper to check if a type is \ref MinPlusTruncMat.
+  //!
+  //! This variable has value `true` if the template parameter `T` is the same
+  //! as \ref MinPlusTruncMat for some template parameters; and `false` if it is
+  //! not.
+  //!
+  //! \tparam T the type to check.
+  // TODO maybe remove this, and the others, they seem to only be used for
+  // validate below, where they aren't necessary
   template <typename T>
   static constexpr bool IsMinPlusTruncMat
       = detail::IsMinPlusTruncMatHelper<T>::value;
@@ -2089,6 +3241,16 @@ namespace libsemigroups {
     };
   }  // namespace detail
 
+  //! \ingroup minplustruncmat_group
+  //!
+  //! \brief Validate that a truncated min-plus matrix is valid.
+  //!
+  //! This function can be used to validate that a matrix contains values in the
+  //! underlying semiring.
+  //!
+  //! \throws LibsemigroupsException if TODO(0)
+  // TODO(0) replace with validate(MinPlusMat<R, C, Mat> const&);
+  // TODO(1) to tpp
   template <typename Mat>
   auto validate(Mat const& m) -> std::enable_if_t<IsMinPlusTruncMat<Mat>> {
     // Check that the semiring pointer isn't the nullptr if it shouldn't be
@@ -2117,6 +3279,58 @@ namespace libsemigroups {
   // NTP matrices
   ////////////////////////////////////////////////////////////////////////
 
+  // clang-format off
+
+  //! \defgroup ntpmat_group Matrices over the natural numbers quotiented by (t = t + p)
+  //!
+  //! Defined in ``matrix.hpp``.
+  //!
+  //! This page describes the functionality for \f$n \times n\f$ matrices over
+  //! the finite quotient of the usual semiring of natural number by the
+  //! congruence \f$t = t + p\f$ for arbitrary \f$n\f$, \f$t\f$, and
+  //! \f$p\f$. The value \f$t\f$ is referred to as the *threshold* and
+  //! \f$p\f$ is called the *period*. The matrices of this type are referred
+  //! to by the acronym **ntp** matrices, for "natural threshold period".  The
+  //! NTPSemiring has elements \f$\{0, 1, ..., t, t +  1, ..., t
+  //! + p - 1\}\f$ where  \f$t\f$, and \f$p\f$ are the threshold and period,
+  //! respectively; addition and multiplication in the NTPSemiring is
+  //! defined below.
+  //!
+  //! There are three types of such matrices where:
+  //!
+  //! 1. the dimension is known at compile-time;
+  //! 2. the dimension is to be defined a run time but the arithmetic operations
+  //!    are known at compile-time (i.e. the values of \f$t\f$ and \f$p\f$
+  //!    are known at compile time)
+  //! 3. both the dimension and the arithmetic operations (i.e. \f$t\f$ and
+  //!    \f$p\f$) are to be defined a run time.
+  //!
+  //! All three of these types can be accessed via the alias template \ref
+  //! NTPMat:
+  //! if `T` and `P` have value `0`, then the threshold and period can be set at
+  //! run time, and if `R` or `C` is `0`, then the dimension can be set at run
+  //! time.  The default values of `T`, `P`, and `R` are `0`, and the default
+  //! value of `C` is `R`.
+  //!
+  //! The alias \ref NTPMat is either StaticMatrix or DynamicMatrix, please
+  //! refer to the documentation of these class templates for more details. The
+  //! only substantial difference in the interface of StaticMatrix and
+  //! DynamicMatrix is that the former can be default constructed and the latter
+  //! should be constructed using the dimensions.
+  //!
+  //! \par Example
+  //! \code
+  //!
+  //!    NTPMat<11, 2, 3> m;  // default construct an uninitialized 3 x 3 static
+  //!    matrix with threshold 11, period 2 NTPMat<11, 2> m(4, 4);  // construct
+  //!    an uninitialized 4 x 4 dynamic matrix with threshold 11, period 2
+  //!    NTPSemiring sr(11, 2);  // construct an ntp semiring with threshold 11,
+  //!    period 2 NTPMat<>  m(sr, 5, 5);  // construct an uninitialized 5 x 5
+  //!    dynamic matrix with threshold 11, period 2
+  //!    \endcode
+  // clang-format on
+  // TODO unmangle the code block above
+
   namespace detail {
     template <size_t T, size_t P, typename Scalar>
     constexpr Scalar thresholdperiod(Scalar x) noexcept {
@@ -2137,71 +3351,272 @@ namespace libsemigroups {
     }
   }  // namespace detail
 
+  //! \ingroup ntpmat_group
+  //!
+  //! \brief Function object for addition in ntp semirings.
+  //!
+  //! This is a stateless struct with a single call operator of signature:
+  //! `Scalar operator()(Scalar x, Scalar y) const noexcept`
+  //! that returns \f$x \oplus y\f$ which is defined by
+  //! \f[
+  //!    x\oplus y =
+  //!    \begin{cases}
+  //!    x + y & \text{if } x + y \leq T \\
+  //!    T + ((x + y) - T \pmod{P}) & \text{if } x + y > T
+  //!    \end{cases}
+  //! \f]
+  //! representing addition in the quotient of the semiring natural numbers by
+  //! the congruence \f$(T = T + P)\f$.
+  //!
+  //! \tparam T the threshold.
+  //! \tparam P the period.
+  //! \tparam Scalar the type of the values in the semiring.
   // Static arithmetic
   template <size_t T, size_t P, typename Scalar>
   struct NTPPlus {
+    //! \brief Call operator for addition.
+    //!
+    //! This function returns the sum of its arguments in an ntp semiring.
+    //!
+    //! \param x the first value.
+    //! \param y the second value.
+    //!
+    //! \returns The sum of \p x and \p y in an ntp semiring.
+    //!
+    //! \exceptions
+    //! \noexcept
     Scalar operator()(Scalar x, Scalar y) const noexcept {
       return detail::thresholdperiod<T, P>(x + y);
     }
   };
 
+  //! \ingroup ntpmat_group
+  //!
+  //! \brief Function object for multiplication in an ntp semirings.
+  //!
+  //! This is a stateless struct with a single call operator of signature:
+  //! `Scalar operator()(Scalar x, Scalar y) const noexcept`
+  //! that returns \f$x \otimes y\f$ which is defined by
+  //!
+  //! \f[
+  //!   x\otimes y =
+  //!   \begin{cases}
+  //!   xy & \text{if } xy \leq T \\
+  //!   T + ((xy - T) \pmod{P}) & \text{if } xy > T
+  //!   \end{cases}
+  //! \f]
+  //! representing multiplication in the quotient of the semiring natural
+  //! numbers by the congruence \f$(T = T + P)\f$.
+  //!
+  //! \tparam T the threshold.
+  //! \tparam P the period.
+  //! \tparam Scalar the type of the values in the semiring.
   template <size_t T, size_t P, typename Scalar>
   struct NTPProd {
+    //! \brief Call operator for multiplication.
+    //!
+    //! This function returns the product of its arguments in an ntp semiring.
+    //!
+    //! \param x the first value.
+    //! \param y the second value.
+    //!
+    //! \returns The product of \p x and \p y in an ntp semiring.
+    //!
+    //! \exceptions
+    //! \noexcept
     Scalar operator()(Scalar x, Scalar y) const noexcept {
       return detail::thresholdperiod<T, P>(x * y);
     }
   };
 
+  //! \ingroup ntpmat_group
+  //!
+  //! \brief Class representing an ntp semiring.
+  //!
+  //! This class represents the **ntp semiring** consists of the integers
+  //! \f$\{0, 1, ..., t, t +  1, ..., t + p - 1\}\f$ for some  \f$t\f$ and
+  //! \f$p\f$ (called the **threshold** and **period**). Instances of this
+  //! class can be used to define the value of the threshold \f$t\f$ and
+  //! period \f$p\f$ at run time.
+  //!
+  //! \tparam Scalar the type of the elements of the semiring.
   // Dynamic arithmetic
   template <typename Scalar = size_t>
   class NTPSemiring {
    public:
+    //! \brief Deleted default constructor.
+    //!
+    //! Deleted default constructor.
     // Deleted to avoid uninitialised values of period and threshold.
-    NTPSemiring()                   = delete;
-    NTPSemiring(NTPSemiring const&) = default;
-    NTPSemiring(NTPSemiring&&)      = default;
+    NTPSemiring() = delete;
 
+    //! \brief Default copy constructor.
+    //!
+    //! Default copy constructor.
+    NTPSemiring(NTPSemiring const&) = default;
+
+    //! \brief Default move constructor.
+    //!
+    //! Default move constructor.
+    NTPSemiring(NTPSemiring&&) = default;
+
+    //! \brief Default copy assignment operator.
+    //!
+    //! Default copy assignment operator.
     NTPSemiring& operator=(NTPSemiring const&) = default;
-    NTPSemiring& operator=(NTPSemiring&&)      = default;
+
+    //! \brief Default move assignment operator.
+    //!
+    //! Default move assignment operator.
+    NTPSemiring& operator=(NTPSemiring&&) = default;
 
     ~NTPSemiring() = default;
 
+    //! \brief Construct from threshold and period.
+    //!
+    //! Construct from threshold and period.
+    //!
+    //! \param t the threshold (\f$t \geq 0\f$).
+    //! \param p the period (\f$p > 0\f$).
+    //!
+    //! \throws LibsemigroupsException if \p t is less than zero.
+    //! \throws LibsemigroupsException if \p p is less than or equal to zero.
+    //!
+    //! \complexity
+    //! Constant.
     NTPSemiring(Scalar t, Scalar p) : _period(p), _threshold(t) {
+      // TODO constexpr
       if (std::is_signed<Scalar>::value) {
         if (t < 0) {
           LIBSEMIGROUPS_EXCEPTION(
               "expected non-negative value for 1st argument, found {}", t);
         } else if (p <= 0) {
+          // TODO shouldn't this be outsize the is_signed bit?
           LIBSEMIGROUPS_EXCEPTION(
-              "expected non-negative value for 2nd argument, found {}", p);
+              "expected positive value for 2nd argument, found {}", p);
         }
       }
     }
 
+    //! \brief Get the multiplicative identity.
+    //!
+    //! This function returns \f$1\f$; representing the multiplicative identity
+    //! of the quotient of the semiring of natural numbers.
+    //!
+    //! \returns The multiplicative identity in an ntp semiring (the
+    //! value `0`).
+    //!
+    //! \exceptions
+    //! \noexcept
     Scalar one() const noexcept {
       return 1;
     }
 
+    //! \brief Get the additive identity.
+    //!
+    //! This function returns \f$0\f$ representing the additive identity of the
+    //! quotient of the semiring of natural numbers.
+    //!
+    //! \returns A value of type `Scalar`.
+    //!
+    //! \exceptions
+    //! \noexcept
+    //!
+    //! \complexity
+    //! Constant.
     Scalar zero() const noexcept {
       return 0;
     }
 
+    //! \brief Multiplication in an ntp semiring.
+    //!
+    //! This function returns \f$x \otimes y\f$ which is defined by
+    //! \f[
+    //!   x\otimes y =
+    //!   \begin{cases}
+    //!   xy & \text{if } xy \leq t \\
+    //!   t + ((xy - t)\pmod{p}) & \text{if } xy > t
+    //!   \end{cases}
+    //! \f]
+    //! where \f$t\f$ is the \ref threshold and \f$p\f$ is the \ref period;
+    //! representing multiplication in the quotient of the semiring of natural
+    //! numbers.
+    //!
+    //! \param x scalar (`0 <= x < threshold() + period()`).
+    //! \param y scalar (`0 <= y < threshold() + period()`).
+    //!
+    //! \returns A value of type `Scalar`.
+    //!
+    //! \exceptions
+    //! \noexcept
+    //!
+    //! \complexity
+    //! Constant.
+    // TODO should be _no_checks, also for the other Semirings
     Scalar prod(Scalar x, Scalar y) const noexcept {
       LIBSEMIGROUPS_ASSERT(x >= 0 && x <= _period + _threshold - 1);
       LIBSEMIGROUPS_ASSERT(y >= 0 && y <= _period + _threshold - 1);
       return detail::thresholdperiod(x * y, _threshold, _period);
     }
 
+    //! \brief Addition in an ntp semiring.
+    //!
+    //! This function returns \f$x \oplus y\f$ which is defined by
+    //! \f[
+    //!   x\oplus y =
+    //!   \begin{cases}
+    //!   x + y                      & \text{if } x + y \leq t \\
+    //!   t + ((x + y - t) \pmod{p}) & \text{if } x + y > t
+    //!   \end{cases}
+    //! \f]
+    //! where \f$t\f$ is the \ref threshold and \f$p\f$ is the \ref period;
+    //! representing multiplication in the quotient of the semiring of natural
+    //! numbers.
+    //!
+    //! \param x scalar (\f$0\leq x < t + p\f$).
+    //! \param y scalar (\f$0\leq y < t + p\f$).
+    //!
+    //! \returns A value of type `Scalar`.
+    //!
+    //! \exceptions
+    //! \noexcept
+    //!
+    //! \complexity
+    //! Constant.
     Scalar plus(Scalar x, Scalar y) const noexcept {
       LIBSEMIGROUPS_ASSERT(x >= 0 && x <= _period + _threshold - 1);
       LIBSEMIGROUPS_ASSERT(y >= 0 && y <= _period + _threshold - 1);
       return detail::thresholdperiod(x + y, _threshold, _period);
     }
 
+    //! \brief Get the threshold.
+    //!
+    //! Returns the threshold value used to construct \ref NTPSemiring
+    //! instance.
+    //!
+    //! \returns A value of type `Scalar`.
+    //!
+    //! \exceptions
+    //! \noexcept
+    //!
+    //! \complexity
+    //! Constant.
     Scalar threshold() const noexcept {
       return _threshold;
     }
 
+    //! \brief Get the period.
+    //!
+    //! Returns the period value used to construct \ref NTPSemiring
+    //! instance.
+    //!
+    //! \returns A value of type `Scalar`.
+    //!
+    //! \exceptions
+    //! \noexcept
+    //!
+    //! \complexity
+    //! Constant.
     Scalar period() const noexcept {
       return _period;
     }
@@ -2211,9 +3626,28 @@ namespace libsemigroups {
     Scalar _threshold;
   };
 
+  //! \ingroup ntpmat_group
+  //!
+  //! \brief Alias for ntp matrices with dynamic threshold and period.
+  //!
+  //! Alias for ntp matrices with dimensions, threshold, and period defined
+  //! at runtime.
+  //!
+  //! \tparam Scalar the type of the entries in the matrix.
   template <typename Scalar>
   using DynamicNTPMatWithSemiring = DynamicMatrix<NTPSemiring<Scalar>, Scalar>;
 
+  //! \ingroup ntpmat_group
+  //!
+  //! \brief Alias for ntp matrices with static threshold and period.
+  //!
+  //! Alias for the type of dynamic ntp matrices where the dimension
+  //! is defined at run time, but the threshold and period are defined at
+  //! compile-time.
+  //!
+  //! \tparam T       the threshold.
+  //! \tparam P       the period.
+  //! \tparam Scalar  the type of the entries in the matrix.
   template <size_t T, size_t P, typename Scalar>
   using DynamicNTPMatWithoutSemiring = DynamicMatrix<NTPPlus<T, P, Scalar>,
                                                      NTPProd<T, P, Scalar>,
@@ -2221,6 +3655,23 @@ namespace libsemigroups {
                                                      IntegerOne<Scalar>,
                                                      Scalar>;
 
+  //! \ingroup ntpmat_group
+  //!
+  //! \brief Alias for ntp matrices with static threshold and period, and
+  //! dimensions.
+  //!
+  //! Alias for static ntp matrices where the threshold, period, and
+  //! dimensions are defined at compile-time.
+  //!
+  //! \tparam T  the threshold.
+  //!
+  //! \tparam P  the period.
+  //!
+  //! \tparam R  the number of rows.
+  //!
+  //! \tparam C  the number of columns.
+  //!
+  //! \tparam Scalar the type of the entries in the matrix (default: `int`).
   template <size_t T, size_t P, size_t R, size_t C, typename Scalar>
   using StaticNTPMat = StaticMatrix<NTPPlus<T, P, Scalar>,
                                     NTPProd<T, P, Scalar>,
@@ -2230,6 +3681,25 @@ namespace libsemigroups {
                                     C,
                                     Scalar>;
 
+  //! \ingroup ntpmat_group
+  //!
+  //! \brief Alias template for ntp matrices.
+  //!
+  //! Alias template for truncated min-plus matrices.
+  //!
+  //! \tparam T the threshold. If both `T` and `P` are `0`, this indicates that
+  //!   the value will be set at run time (default: `0`).
+  //!
+  //! \tparam P the period. If both `T` and `P` are `0`, this indicates that the
+  //!   value will be set at run time (default: `0`).
+  //!
+  //! \tparam R the number of rows.  A value of `0` indicates that the value
+  //! will be set at run time (default: `0`).
+  //!
+  //! \tparam C the number of columns.  A value of `0` indicates that the value
+  //! will be set at run time (default: `R`).
+  //!
+  //! \tparam Scalar the type of the entries in the matrix (default: `size_t`).
   template <size_t T        = 0,
             size_t P        = 0,
             size_t R        = 0,
@@ -2266,7 +3736,16 @@ namespace libsemigroups {
     };
   }  // namespace detail
 
-  template <typename T>
+  //! \ingroup minplustruncmat_group
+  //!
+  //! \brief Helper to check if a type is \ref NTPMat.
+  //!
+  //! This variable has value `true` if the template parameter `U` is the same
+  //! as NTPMat for some values of `T`, `P`, `R`, `C`, and `Scalar`; and `false`
+  //! if it is not.
+  //!
+  //! \tparam U the type to check.
+  template <typename U>
   static constexpr bool IsNTPMat = detail::IsNTPMatHelper<T>::value;
 
   namespace detail {
@@ -2280,12 +3759,18 @@ namespace libsemigroups {
 
   }  // namespace detail
 
+  // TODO These do not need to have trailing return type and sfinae
+  // TODO doc
+  // TODO move to helper namespace
   template <typename Mat>
   auto matrix_period(Mat const&) noexcept
       -> std::enable_if_t<!IsNTPMat<Mat>, typename Mat::scalar_type> {
     return UNDEFINED;
   }
 
+  // TODO These do not need to have trailing return type and sfinae
+  // TODO doc
+  // TODO move to helper namespace
   template <typename Mat>
   auto matrix_period(Mat const&) noexcept
       -> std::enable_if_t<IsNTPMat<Mat> && !IsMatWithSemiring<Mat>,
@@ -2293,6 +3778,8 @@ namespace libsemigroups {
     return detail::IsTruncMatHelper<Mat>::period;
   }
 
+  // TODO These do not need to have trailing return type and sfinae
+  // TODO move to helper namespace
   template <typename Mat>
   auto matrix_period(Mat const& x) noexcept
       -> std::enable_if_t<IsNTPMat<Mat> && IsMatWithSemiring<Mat>,
@@ -2300,6 +3787,15 @@ namespace libsemigroups {
     return x.semiring()->period();
   }
 
+  //! \ingroup minplustruncmat_group
+  //!
+  //! \brief Validate that an ntp matrix is valid.
+  //!
+  //! This function can be used to validate that a matrix contains values in the
+  //! underlying semiring.
+  //!
+  //! \throws LibsemigroupsException if TODO(0)
+  // TODO remove trailing return type
   template <typename Mat>
   auto validate(Mat const& m) -> std::enable_if_t<IsNTPMat<Mat>> {
     // Check that the semiring pointer isn't the nullptr if it shouldn't be
@@ -2377,7 +3873,7 @@ namespace libsemigroups {
       ProjMaxPlusMat(
           std::initializer_list<std::initializer_list<scalar_type>> const& m)
           : ProjMaxPlusMat(
-              std::vector<std::vector<scalar_type>>(m.begin(), m.end())) {}
+                std::vector<std::vector<scalar_type>>(m.begin(), m.end())) {}
 
       static ProjMaxPlusMat make(
           std::initializer_list<std::initializer_list<scalar_type>> const& il) {
@@ -2609,14 +4105,91 @@ namespace libsemigroups {
     };
   }  // namespace detail
 
+  //! \defgroup projmaxplus_group Projective max-plus matrices
+  //!
+  //! Defined in ``matrix.hpp``.
+  //!
+  //! This page describes the functionality for \f$n \times n\f$ projective
+  //! matrices over the max-plus semiring. Projective max-plus matrices belong
+  //! to the quotient of the monoid of all max-plus matrices by the congruence
+  //! where two matrices are related if they differ by a scalar multiple; see
+  //! MaxPlusMat.
+  //!
+  //! There are two types of such matrices those whose dimension is known at
+  //! compile-time, and those where it is not.  Both types can be accessed via
+  //! the alias template \ref ProjMaxPlusMat: if `R` or `C` has value
+  //! `0`, then the dimensions can be set at run time, otherwise `R` and `C` are
+  //! the dimensions.  The default value of `R` is `0`, `C` is `R`, and `Scalar`
+  //! is `int`.
+  //!
+  //! Matrices in both these classes are modified when constructed to be in a
+  //! normal form which is obtained by subtracting the maximum finite entry in
+  //! the matrix from the every finite entry.
+  //!
+  //! The alias \ref ProjMaxPlusMat is neither StaticMatrix nor DynamicMatrix,
+  //! but has the same interface as each of these types. Every instance of \ref
+  //! ProjMaxPlusMat wraps a \ref MaxPlusMat.
+  //!
+  //! \note
+  //! The types RowView and Row are the same as those
+  //! in the wrapped matrix. This means that a Row object for a
+  //! projective max-plus matrix is never normalised, because if they were
+  //! they would be normalised according to their entries, and this might not
+  //! correspond to the normalised entries of the matrix.
+  //!
+  //! Please refer to the documentation of these class templates for more
+  //! details. The only substantial difference in the interface of StaticMatrix
+  //! and DynamicMatrix is that the former can be default constructed and the
+  //! latter should be constructed using the dimensions.
+  //!
+  //! \par Example
+  //! \code
+  //!    ProjMaxPlusMat<3> m;       // default construct an uninitialized 3 x 3
+  //!    static matrix ProjMaxPlusMat<>  m(4, 4); // construct an uninitialized
+  //!    4 x 4 dynamic matrix
+  //! \endcode
+  // TODO unscramble
+
+  //! \ingroup projmaxplus_group
+  //!
+  //! \brief Alias for static projective max-plus matrices with compile-time
+  //! arithmetic and dimensions.
+  //!
+  //! Alias for static projective max-plus matrices whose arithmetic and
+  //! dimensions are defined at compile-time.
+  //!
+  //! \tparam R the number of rows.
+  //! \tparam C the number of columns.
+  //! \tparam Scalar the type of the entries in the matrix.
   template <size_t R, size_t C, typename Scalar>
   using StaticProjMaxPlusMat
       = detail::ProjMaxPlusMat<StaticMaxPlusMat<R, C, Scalar>>;
 
+  //! \ingroup projmaxplus_group
+  //!
+  //! \brief Alias for dynamic projective max-plus matrices with run-time
+  //! dimensions.
+  //!
+  //! Alias for the type of dynamic projective max-plus matrices where the
+  //! dimensions of the matrices can be defined at run time.
+  //!
+  //! \tparam Scalar the type of the entries in the matrix.
   template <typename Scalar>
   using DynamicProjMaxPlusMat
       = detail::ProjMaxPlusMat<DynamicMaxPlusMat<Scalar>>;
 
+  //! \ingroup projmaxplus_group
+  //! \brief Alias template for projective max-plus matrices.
+  //!
+  //! Alias template for projective max-plus matrices.
+  //!
+  //! \tparam R the number of rows.  A value of `0` indicates that the value
+  //! will be set at run time (default: `0`).
+  //!
+  //! \tparam C the number of columns.  A value of `0` indicates that the value
+  //! will be set at run time (default: `R`).
+  //!
+  //! \tparam Scalar The type of the entries in the matrix (default: `int`).
   template <size_t R = 0, size_t C = R, typename Scalar = int>
   using ProjMaxPlusMat = std::conditional_t<R == 0 || C == 0,
                                             DynamicProjMaxPlusMat<Scalar>,
@@ -2635,15 +4208,34 @@ namespace libsemigroups {
         : std::true_type {};
   }  // namespace detail
 
+  //! \ingroup projmaxplus_group
+  //!
+  //! \brief Helper to check if a type is \ref ProjMaxPlusMat.
+  //!
+  //! This variable has value `true` if the template parameter `T` is the same
+  //! as \ref ProjMaxPlusMat for some values of `R`, `C`, and `Scalar`; and
+  //! `false` if it is not.
   template <typename T>
   static constexpr bool IsProjMaxPlusMat
       = detail::IsProjMaxPlusMatHelper<T>::value;
 
+  // \ingroup projmaxplus_group
+  //! TODO(0)
   template <typename Mat>
   auto validate(Mat const& m) -> std::enable_if_t<IsProjMaxPlusMat<Mat>> {
     validate(m.underlying_matrix());
   }
 
+  //! \ingroup matrix_group
+  //!
+  //! \brief Namespace for helper functions for matrices.
+  //!
+  //! Defined in ``matrix.hpp``.
+  //!
+  //! This namespace contains various helper functions for the various matrix
+  //! classes in ``libsemigroups``. These functions could have been member
+  //! functions of the matrix classes but they only use public member functions,
+  //! and so they are declared as free functions instead.
   namespace matrix {
 
     ////////////////////////////////////////////////////////////////////////
@@ -2651,6 +4243,7 @@ namespace libsemigroups {
     ////////////////////////////////////////////////////////////////////////
 
     // TODO(later) version that changes x in-place
+    //! TODO(0)
     template <typename Mat>
     Mat pow(Mat const& x, typename Mat::scalar_type e) {
       using scalar_type = typename Mat::scalar_type;
@@ -2692,6 +4285,7 @@ namespace libsemigroups {
     ////////////////////////////////////////////////////////////////////////
 
     // The main function
+    //! TODO(0)
     template <typename Mat, size_t R, size_t C, typename Container>
     void bitset_rows(Container&&                          views,
                      detail::StaticVector1<BitSet<C>, R>& result) {
@@ -2715,6 +4309,7 @@ namespace libsemigroups {
     }
 
     // Helper
+    //! TODO(0)
     template <typename Mat, size_t R, size_t C, typename Container>
     auto bitset_rows(Container&& views) {
       using RowView    = typename Mat::RowView;
@@ -2741,6 +4336,7 @@ namespace libsemigroups {
 
     // This works with std::vector and StaticVector1, with value_type equal
     // to std::bitset and BitSet.
+    //! TODO(0)
     template <typename Mat, typename Container>
     void bitset_row_basis(Container&& rows, std::decay_t<Container>& result) {
       using value_type = typename std::decay_t<Container>::value_type;
@@ -2773,6 +4369,7 @@ namespace libsemigroups {
       }
     }
 
+    //! TODO(0)
     template <typename Mat, typename Container>
     std::decay_t<Container> bitset_row_basis(Container&& rows) {
       using value_type = typename std::decay_t<Container>::value_type;
@@ -2791,6 +4388,7 @@ namespace libsemigroups {
     // Matrix helpers - rows
     ////////////////////////////////////////////////////////////////////////
 
+    //! TODO(0)
     template <typename Mat, typename = std::enable_if_t<IsDynamicMatrix<Mat>>>
     std::vector<typename Mat::RowView> rows(Mat const& x) {
       std::vector<typename Mat::RowView> container;
@@ -2798,6 +4396,7 @@ namespace libsemigroups {
       return container;
     }
 
+    //! TODO(0)
     template <typename Mat, typename = std::enable_if_t<IsStaticMatrix<Mat>>>
     detail::StaticVector1<typename Mat::RowView, Mat::nr_rows>
     rows(Mat const& x) {
@@ -2807,6 +4406,7 @@ namespace libsemigroups {
     }
 
     // Helper
+    //! TODO(0)
     template <typename Mat, size_t R, size_t C>
     void bitset_rows(Mat const&                           x,
                      detail::StaticVector1<BitSet<C>, R>& result) {
@@ -2821,6 +4421,7 @@ namespace libsemigroups {
     }
 
     // Helper
+    //! TODO(0)
     template <typename Mat>
     auto bitset_rows(Mat const& x) {
       static_assert(IsBMat<Mat>, "IsBMat<Mat> must be true!");
@@ -2830,6 +4431,7 @@ namespace libsemigroups {
       return bitset_rows<Mat, M, M>(std::move(rows(x)));
     }
 
+    //! TODO(0)
     template <typename Mat, size_t M = detail::BitSetCapacity<Mat>::value>
     detail::StaticVector1<BitSet<M>, M> bitset_row_basis(Mat const& x) {
       static_assert(IsBMat<Mat>, "IsBMat<Mat> must be true!");
@@ -2840,6 +4442,7 @@ namespace libsemigroups {
       return result;
     }
 
+    //! TODO(0)
     template <typename Mat, typename Container>
     void bitset_row_basis(Mat const& x, Container& result) {
       using value_type = typename Container::value_type;
@@ -2855,6 +4458,7 @@ namespace libsemigroups {
     // Matrix helpers - row_basis - MaxPlusTruncMat
     ////////////////////////////////////////////////////////////////////////
 
+    //! TODO(0)
     template <typename Mat, typename Container>
     auto row_basis(Container&& views, std::decay_t<Container>& result)
         -> std::enable_if_t<IsMaxPlusTruncMat<Mat>> {
@@ -2914,6 +4518,7 @@ namespace libsemigroups {
     // This version takes a container of row views of BMat, converts it to a
     // container of BitSets, computes the row basis using the BitSets, then
     // selects those row views in views that belong to the computed basis.
+    //! TODO(0)
     template <typename Mat, typename Container>
     auto row_basis(Container&& views, std::decay_t<Container>& result)
         -> std::enable_if_t<IsBMat<Mat>> {
@@ -2953,6 +4558,7 @@ namespace libsemigroups {
     // Matrix helpers - row_basis - generic helpers
     ////////////////////////////////////////////////////////////////////////
 
+    //! TODO(0)
     // Row basis of rowspace of matrix <x> appended to <result>
     template <typename Mat,
               typename Container,
@@ -2961,6 +4567,7 @@ namespace libsemigroups {
       row_basis<Mat>(std::move(rows(x)), result);
     }
 
+    //! TODO(0)
     // Row basis of rowspace of matrix <x>
     template <typename Mat, typename = std::enable_if_t<IsDynamicMatrix<Mat>>>
     std::vector<typename Mat::RowView> row_basis(Mat const& x) {
@@ -2969,6 +4576,7 @@ namespace libsemigroups {
       return container;
     }
 
+    //! TODO(0)
     // Row basis of rowspace of matrix <x>
     template <typename Mat, typename = std::enable_if_t<IsStaticMatrix<Mat>>>
     detail::StaticVector1<typename Mat::RowView, Mat::nr_rows>
@@ -2978,6 +4586,7 @@ namespace libsemigroups {
       return container;
     }
 
+    //! TODO(0)
     // Row basis of rowspace of space spanned by <rows>
     template <typename Mat, typename Container>
     std::decay_t<Container> row_basis(Container&& rows) {
@@ -2995,6 +4604,7 @@ namespace libsemigroups {
     // Matrix helpers - row_space_size
     ////////////////////////////////////////////////////////////////////////
 
+    //! TODO(0)
     template <typename Mat, typename = std::enable_if_t<IsBMat<Mat>>>
     size_t row_space_size(Mat const& x) {
       size_t const M                 = detail::BitSetCapacity<Mat>::value;
@@ -3025,6 +4635,8 @@ namespace libsemigroups {
   // Printing etc...
   ////////////////////////////////////////////////////////////////////////
 
+  //! \ingroup matrix_group
+  //! TODO(0)
   template <typename S, typename T>
   std::ostringstream& operator<<(std::ostringstream&                os,
                                  detail::RowViewCommon<S, T> const& x) {
@@ -3039,6 +4651,8 @@ namespace libsemigroups {
     return os;
   }
 
+  //! \ingroup matrix_group
+  //! TODO(0)
   template <typename T>
   auto operator<<(std::ostringstream& os, T const& x)
       -> std::enable_if_t<IsMatrix<T>, std::ostringstream&> {

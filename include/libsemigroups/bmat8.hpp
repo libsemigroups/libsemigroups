@@ -39,21 +39,14 @@
 #include "debug.hpp"     // for LIBSEMIGROUPS_ASSERT
 
 namespace libsemigroups {
-  //! \defgroup matrix_group Matrix
-  //!
-  //! This page contains links to the documentation of the functionality in
-  //! libsemigroups for matrices.
-  //!
-  //! * \ref bmat_group
-  //!   * \ref bmat8_group
-  //!
 
-  //! \defgroup bmat_group Boolean matrices
+  //! \defgroup bmat_index_group Boolean matrices
   //!
   //! This page contains links to the documentation of the functionality in
   //! libsemigroups for boolean matrices.
   //!
   //! * \ref bmat8_group
+  //! * \ref bmat_group
   //!
   //! # Boolean matrix helpers
   //!

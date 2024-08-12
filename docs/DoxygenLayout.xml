@@ -12,8 +12,15 @@
     <tab type="usergroup" visible="yes" url="@ref adapters_group" title="Adapters"/>
     <tab type="usergroup" visible="yes" url="@ref elements_group" title="Elements" >
       <tab type="user" visible="yes" url="@ref bipart_group" title="Bipartitions" />
-      <tab type="usergroup" visible="yes" url="@ref matrix_group" title="Matrix" >
-        <tab type="user" visible="yes" url="@ref bmat8_group" title="BMat8" />
+      <tab type="usergroup" visible="yes" url="@ref matrix_group" title="Matrices" >
+        <tab type="user" visible="yes" url="@ref bmat_index_group" title="Boolean matrices" /> 
+        <tab type="user" visible="yes" url="@ref intmat_group" title="Integer matrices" />
+        <tab type="user" visible="yes" url="@ref maxplusmat_group" title="Max-plus matrices" />
+        <tab type="user" visible="yes" url="@ref minplusmat_group" title="Min-plus matrices" />
+        <tab type="user" visible="yes" url="@ref maxplustruncmat_group" title="Truncated max-plus matrices" />
+        <tab type="user" visible="yes" url="@ref minplustruncmat_group" title="Truncated min-plus matrices" />
+        <tab type="user" visible="yes" url="@ref ntpmat_group" title="Matrices over ℕ/(t = t + p)" />
+        <tab type="user" visible="yes" url="@ref projmaxplus_group" title="Projective max-plus matrices" />
       </tab>
       <tab type="user" visible="yes" url="@ref transf_group" title="Transformations" />
     </tab>

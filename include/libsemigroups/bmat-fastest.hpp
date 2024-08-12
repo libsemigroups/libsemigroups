@@ -43,7 +43,7 @@ namespace libsemigroups {
     };
   }  // namespace detail
 
-  //! \ingroup bmat_group
+  //! \ingroup bmat_index_group
   //!
   //! Type of the fastest type of boolean matrix of given dimension.
   //!
