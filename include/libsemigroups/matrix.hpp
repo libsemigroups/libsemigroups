@@ -1912,18 +1912,6 @@ namespace libsemigroups {
                                     C,
                                     Scalar>;
 
-  namespace detail {
-
-    template <typename T>
-    struct IsIntMatHelper : std::false_type {};
-
-    template <size_t R, size_t C, typename Scalar>
-    struct IsIntMatHelper<StaticIntMat<R, C, Scalar>> : std::true_type {};
-
-    template <typename Scalar>
-    struct IsIntMatHelper<DynamicIntMat<Scalar>> : std::true_type {};
-  }  // namespace detail
-
   //! \ingroup intmat_group
   //!
   //! \brief Alias template for integer matrices.
@@ -1945,24 +1933,12 @@ namespace libsemigroups {
 
   //! \ingroup intmat_group
   //!
-  //! \brief Helper to check if a type is IntMat.
-  //!
-  //! \tparam T a type
-  //!
-  //! This variable has value `true` if the template parameter `T` is the same
-  //! as IntMat for some values of the template paramaters `R`, `C`,  and
-  //! `Scalar`, and `false` otherwise.
-  template <typename T>
-  static constexpr bool IsIntMat = detail::IsIntMatHelper<T>::value;
-
-  //! \ingroup intmat_group
-  //!
   //! \brief Validate that an integer matrix is valid.
   //!
   //! This function can be used to validate that a matrix contains values in the
   //! underlying semiring. This is always \c true for \ref IntMat objects.
-  template <typename Mat>
-  auto validate(Mat const&) -> std::enable_if_t<IsIntMat<Mat>> {};
+  template <size_t R, size_t C, typename Scalar>
+  void validate(IntMat<R, C, Scalar> const&) {}
 
   ////////////////////////////////////////////////////////////////////////
   // Max-plus matrices
@@ -2162,40 +2138,18 @@ namespace libsemigroups {
                                         DynamicMaxPlusMat<Scalar>,
                                         StaticMaxPlusMat<R, C, Scalar>>;
 
-  namespace detail {
-    template <typename T>
-    struct IsMaxPlusMatHelper : std::false_type {};
-
-    template <size_t R, size_t C, typename Scalar>
-    struct IsMaxPlusMatHelper<StaticMaxPlusMat<R, C, Scalar>> : std::true_type {
-    };
-
-    template <typename Scalar>
-    struct IsMaxPlusMatHelper<DynamicMaxPlusMat<Scalar>> : std::true_type {};
-  }  // namespace detail
-
-  //! \ingroup maxplusmat_group
-  //!
-  //! \brief Helper to check if a type is MaxPlusMat.
-  //!
-  //! \tparam T a type
-  //!
-  //! This variable has value `true` if the template parameter `T` is the
-  //! same as MaxPlusMat for some values of the template paramaters \c R, \c C,
-  //! and \c Scalar, and `false` if not.
-  template <typename T>
-  static constexpr bool IsMaxPlusMat = detail::IsMaxPlusMatHelper<T>::value;
-
   //! \ingroup maxplusmat_group
   //!
   //! \brief Validate that a max-plus matrix is valid.
   //!
   //! This function can be used to validate that a matrix contains values in the
-  //! underlying semiring. This is always \c true for \ref IntMat objects.
-  //!
-  // TODO replace with validate(MaxPlusMat<R, C, Mat> const&);
-  template <typename Mat>
-  auto validate(Mat const&) -> std::enable_if_t<IsMaxPlusMat<Mat>> {}
+  //! underlying semiring. This is always \c true for \ref MaxPlusMat objects.
+  template <size_t R, size_t C, typename Scalar>
+  void validate(StaticMaxPlusMat<R, C, Scalar> const&) {}
+
+  //! \copydoc validate(StaticMaxPlusMat<R, C, Scalar> const&)
+  template <typename Scalar>
+  void validate(DynamicMaxPlusMat<Scalar> const&) {}
 
   ////////////////////////////////////////////////////////////////////////
   // Min-plus matrices
@@ -2395,41 +2349,18 @@ namespace libsemigroups {
                                         DynamicMinPlusMat<Scalar>,
                                         StaticMinPlusMat<R, C, Scalar>>;
 
-  namespace detail {
-    template <typename T>
-    struct IsMinPlusMatHelper : std::false_type {};
-
-    template <size_t R, size_t C, typename Scalar>
-    struct IsMinPlusMatHelper<StaticMinPlusMat<R, C, Scalar>> : std::true_type {
-    };
-
-    template <typename Scalar>
-    struct IsMinPlusMatHelper<DynamicMinPlusMat<Scalar>> : std::true_type {};
-  }  // namespace detail
-
-  //! \ingroup minplusmat_group
-  //!
-  //! \brief Helper to check if a type is MinPlusMat.
-  //!
-  //! This variable has value `true` if the template parameter `T` is the
-  //! same as MinPlusMat for some values of the template paramaters \c R, \c C,
-  //! and \c Scalar, and `false` if not.
-  //!
-  //! \tparam T the type to check.
-  // TODO maybe remove this, and the others, they seem to only be used for
-  // validate below, where they aren't necessary
-  template <typename T>
-  static constexpr bool IsMinPlusMat = detail::IsMinPlusMatHelper<T>::value;
-
   //! \ingroup minplusmat_group
   //!
   //! \brief Validate that a min-plus matrix is valid.
   //!
   //! This function can be used to validate that a matrix contains values in the
   //! underlying semiring. This is always \c true for \ref MinPlusMat objects.
-  // TODO replace with validate(MinPlusMat<R, C, Mat> const&);
-  template <typename Mat>
-  auto validate(Mat const&) -> std::enable_if_t<IsMinPlusMat<Mat>> {}
+  template <typename Scalar>
+  void validate(DynamicMinPlusMat<Scalar> const&) {}
+
+  // \copydoc validate(DynamicMinPlusMat<Scalar> const&)
+  template <size_t R, size_t C, typename Scalar>
+  void validate(StaticMinPlusMat<R, C, Scalar> const&) {}
 
   ////////////////////////////////////////////////////////////////////////
   // Max-plus matrices with threshold
@@ -3746,7 +3677,7 @@ namespace libsemigroups {
   //!
   //! \tparam U the type to check.
   template <typename U>
-  static constexpr bool IsNTPMat = detail::IsNTPMatHelper<T>::value;
+  static constexpr bool IsNTPMat = detail::IsNTPMatHelper<U>::value;
 
   namespace detail {
     template <typename T>
@@ -3759,35 +3690,27 @@ namespace libsemigroups {
 
   }  // namespace detail
 
-  // TODO These do not need to have trailing return type and sfinae
-  // TODO doc
-  // TODO move to helper namespace
-  template <typename Mat>
-  auto matrix_period(Mat const&) noexcept
-      -> std::enable_if_t<!IsNTPMat<Mat>, typename Mat::scalar_type> {
-    return UNDEFINED;
-  }
+  namespace matrix {
+    // TODO doc
+    template <size_t T, size_t P, size_t R, size_t C, typename Scalar>
+    constexpr Scalar period(StaticNTPMat<T, P, R, C, Scalar> const&) noexcept {
+      return P;
+    }
 
-  // TODO These do not need to have trailing return type and sfinae
-  // TODO doc
-  // TODO move to helper namespace
-  template <typename Mat>
-  auto matrix_period(Mat const&) noexcept
-      -> std::enable_if_t<IsNTPMat<Mat> && !IsMatWithSemiring<Mat>,
-                          typename Mat::scalar_type> {
-    return detail::IsTruncMatHelper<Mat>::period;
-  }
+    template <size_t T, size_t P, typename Scalar>
+    constexpr Scalar
+    period(DynamicNTPMatWithoutSemiring<T, P, Scalar> const&) noexcept {
+      return P;
+    }
 
-  // TODO These do not need to have trailing return type and sfinae
-  // TODO move to helper namespace
-  template <typename Mat>
-  auto matrix_period(Mat const& x) noexcept
-      -> std::enable_if_t<IsNTPMat<Mat> && IsMatWithSemiring<Mat>,
-                          typename Mat::scalar_type> {
-    return x.semiring()->period();
-  }
+    // TODO doc
+    template <typename Scalar>
+    Scalar period(DynamicNTPMatWithSemiring<Scalar> const& x) noexcept {
+      return x.semiring()->period();
+    }
+  }  // namespace matrix
 
-  //! \ingroup minplustruncmat_group
+  //! \ingroup ntpmat_group
   //!
   //! \brief Validate that an ntp matrix is valid.
   //!
@@ -3803,7 +3726,7 @@ namespace libsemigroups {
 
     using scalar_type   = typename Mat::scalar_type;
     scalar_type const t = matrix_threshold(m);
-    scalar_type const p = matrix_period(m);
+    scalar_type const p = matrix::period(m);
     auto it = std::find_if_not(m.cbegin(), m.cend(), [t, p](scalar_type x) {
       return (0 <= x && x < p + t);
     });
