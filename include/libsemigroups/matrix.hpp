@@ -18,6 +18,7 @@
 
 // TODO(2) tpp file
 // TODO(0): document the adapters
+// TODO(0): constexpr
 
 #ifndef LIBSEMIGROUPS_MATRIX_HPP_
 #define LIBSEMIGROUPS_MATRIX_HPP_
@@ -1601,7 +1602,7 @@ namespace libsemigroups {
     //!
     //! \exceptions
     //! \noexcept
-    bool operator()(bool x, bool y) const noexcept {
+    constexpr bool operator()(bool x, bool y) const noexcept {
       return x || y;
     }
   };
@@ -1626,7 +1627,7 @@ namespace libsemigroups {
     //!
     //! \exceptions
     //! \noexcept
-    bool operator()(bool x, bool y) const noexcept {
+    constexpr bool operator()(bool x, bool y) const noexcept {
       return x & y;
     }
   };
@@ -1649,8 +1650,7 @@ namespace libsemigroups {
     //!
     //! \exceptions
     //! \noexcept
-    // TODO constexpr
-    bool operator()() const noexcept {
+    constexpr bool operator()() const noexcept {
       return true;
     }
   };
@@ -1673,8 +1673,7 @@ namespace libsemigroups {
     //!
     //! \exceptions
     //! \noexcept
-    // TODO constexpr
-    bool operator()() const noexcept {
+    constexpr bool operator()() const noexcept {
       return false;
     }
   };
@@ -1840,6 +1839,7 @@ namespace libsemigroups {
   //! representing multiplication in the integer semiring.
   template <typename Scalar>
   struct IntegerProd {
+    // TODO constepxr
     Scalar operator()(Scalar x, Scalar y) const noexcept {
       return x * y;
     }
@@ -1854,6 +1854,7 @@ namespace libsemigroups {
   //! the additive identity of the integer semiring.
   template <typename Scalar>
   struct IntegerZero {
+    // TODO constepxr
     Scalar operator()() const noexcept {
       return 0;
     }
@@ -1869,6 +1870,7 @@ namespace libsemigroups {
   template <typename Scalar>
   struct IntegerOne {
     // TODO doc
+    // TODO constepxr
     Scalar operator()() const noexcept {
       return 1;
     }
@@ -2641,11 +2643,6 @@ namespace libsemigroups {
     Scalar const _threshold;
   };
 
-  // TODO remove?
-  template <typename Scalar>
-  using DynamicMaxPlusTruncMatSR
-      = DynamicMatrix<MaxPlusTruncSemiring<Scalar>, Scalar>;
-
   //! \ingroup maxplustruncmat_group
   //!
   //! \brief Alias for dynamic truncated max-plus matrices.
@@ -2702,7 +2699,7 @@ namespace libsemigroups {
   using MaxPlusTruncMat = std::conditional_t<
       R == 0 || C == 0,
       std::conditional_t<T == 0,
-                         DynamicMaxPlusTruncMatSR<Scalar>,
+                         DynamicMatrix<MaxPlusTruncSemiring<Scalar>, Scalar>,
                          DynamicMaxPlusTruncMat<T, Scalar>>,
       StaticMaxPlusTruncMat<T, R, C, Scalar>>;
 
@@ -2723,8 +2720,8 @@ namespace libsemigroups {
     };
 
     template <typename Scalar>
-    struct IsMaxPlusTruncMatHelper<DynamicMaxPlusTruncMatSR<Scalar>>
-        : std::true_type {
+    struct IsMaxPlusTruncMatHelper<
+        DynamicMatrix<MaxPlusTruncSemiring<Scalar>, Scalar>> : std::true_type {
       static constexpr Scalar threshold = UNDEFINED;
     };
   }  // namespace detail
@@ -3416,16 +3413,15 @@ namespace libsemigroups {
     //! \complexity
     //! Constant.
     NTPSemiring(Scalar t, Scalar p) : _period(p), _threshold(t) {
-      // TODO constexpr
-      if (std::is_signed<Scalar>::value) {
+      if constexpr (std::is_signed<Scalar>::value) {
         if (t < 0) {
           LIBSEMIGROUPS_EXCEPTION(
               "expected non-negative value for 1st argument, found {}", t);
-        } else if (p <= 0) {
-          // TODO shouldn't this be outsize the is_signed bit?
-          LIBSEMIGROUPS_EXCEPTION(
-              "expected positive value for 2nd argument, found {}", p);
         }
+      }
+      if (p <= 0) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "expected positive value for 2nd argument, found {}", p);
       }
     }
 
@@ -3439,7 +3435,7 @@ namespace libsemigroups {
     //!
     //! \exceptions
     //! \noexcept
-    Scalar one() const noexcept {
+    static constexpr Scalar one() noexcept {
       return 1;
     }
 
@@ -3455,7 +3451,7 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! Constant.
-    Scalar zero() const noexcept {
+    static constexpr Scalar zero() noexcept {
       return 0;
     }
 

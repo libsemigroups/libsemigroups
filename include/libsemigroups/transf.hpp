@@ -52,8 +52,6 @@
 #include "hpcombi.hpp"    // for HPCombi::Transf16
 #include "types.hpp"      // for SmallestInteger
 
-#include "detail/stl.hpp"  // for is_specialization_of_v
-
 namespace libsemigroups {
   //! \defgroup elements_group Elements
   //!
@@ -1638,8 +1636,8 @@ namespace libsemigroups {
   //! \complexity
   //! Linear in \c f.degree().
   template <typename T>
-  [[nodiscard]] auto one(T const& f)
-      -> std::enable_if_t<IsDerivedFromPTransf<T>, T> {
+  [[nodiscard]] auto
+  one(T const& f) -> std::enable_if_t<IsDerivedFromPTransf<T>, T> {
     return T::one(f.degree());
   }
 
