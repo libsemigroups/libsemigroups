@@ -29,7 +29,7 @@
 #include "libsemigroups/kambites.hpp"      // for Kambites
 #include "libsemigroups/knuth-bendix.hpp"  // for KnuthBendix
 #include "libsemigroups/ranges.hpp"        // for operator|, to_vector
-#include "libsemigroups/words.hpp"         // for Strings
+#include "libsemigroups/words.hpp"         // for StringRange
 
 namespace libsemigroups {
   using detail::MultiStringView;
@@ -220,14 +220,14 @@ namespace libsemigroups {
   namespace {
     template <typename T>
     auto c4_check_2_gen_1_rel_all(size_t len) {
-      Strings lhs;
+      StringRange lhs;
       lhs.alphabet("ab").min(len).max(len + 1);
 
       rx::advance_by(lhs, lhs.count() - 1);
       auto last = lhs.get();
       lhs.init().alphabet("ab").min(len).max(len + 1);
 
-      Strings rhs;
+      StringRange rhs;
       rhs.alphabet("ab").min(1).max(len);
 
       uint64_t total_c4     = 0;

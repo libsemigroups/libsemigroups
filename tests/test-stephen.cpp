@@ -1244,7 +1244,7 @@ namespace libsemigroups {
   //     auto S = Stephen(p);
   //     auto T = Stephen(p);
   //
-  //     Strings strings;
+  //     StringRange strings;
   //     strings.letters("abcABC").first("aaaaa").last("aaaaaaaaa");
   //
   //     for (auto const& w : strings) {

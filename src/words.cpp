@@ -194,7 +194,7 @@ namespace libsemigroups {
   }
 
   ////////////////////////////////////////////////////////////////////////
-  // 2. Strings -> WordRange
+  // 2. Strings -> Words
   ////////////////////////////////////////////////////////////////////////
 
   namespace {
@@ -325,7 +325,7 @@ namespace libsemigroups {
   }
 
   ////////////////////////////////////////////////////////////////////////
-  // 3. WordRange -> Strings
+  // 3. Words -> Strings
   ////////////////////////////////////////////////////////////////////////
 
   char human_readable_char(size_t i) {
@@ -399,7 +399,7 @@ namespace libsemigroups {
   }
 
   ////////////////////////////////////////////////////////////////////////
-  // 4. Strings
+  // 4. StringRange
   ////////////////////////////////////////////////////////////////////////
 
   std::string random_string(std::string const& alphabet, size_t length) {
@@ -435,7 +435,7 @@ namespace libsemigroups {
     return random_string(alphabet, distribution(generator));
   }
 
-  Strings& Strings::init() {
+  StringRange& StringRange::init() {
     _current.clear();
     _current_valid = false;
     _letters.clear();
@@ -445,13 +445,13 @@ namespace libsemigroups {
     return *this;
   }
 
-  Strings::Strings(Strings const&)            = default;
-  Strings::Strings(Strings&&)                 = default;
-  Strings& Strings::operator=(Strings const&) = default;
-  Strings& Strings::operator=(Strings&&)      = default;
-  Strings::~Strings()                         = default;
+  StringRange::StringRange(StringRange const&)            = default;
+  StringRange::StringRange(StringRange&&)                 = default;
+  StringRange& StringRange::operator=(StringRange const&) = default;
+  StringRange& StringRange::operator=(StringRange&&)      = default;
+  StringRange::~StringRange()                             = default;
 
-  Strings& Strings::alphabet(std::string const& x) {
+  StringRange& StringRange::alphabet(std::string const& x) {
     // Need to do this _to_word.init(x) first, because if this throws then the
     // rest should remain unchanged.
     _to_word.init(x);

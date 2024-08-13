@@ -55,7 +55,7 @@
 #include "libsemigroups/paths.hpp"            // for Paths
 #include "libsemigroups/presentation.hpp"     // for add_rule, Presentation
 #include "libsemigroups/word-graph.hpp"       // for WordGraph
-#include "libsemigroups/words.hpp"            // for Inner, Strings, to_str...
+#include "libsemigroups/words.hpp"  // for Inner, StringRange, to_str...
 
 #include "libsemigroups/detail/report.hpp"  // for ReportGuard
 #include "libsemigroups/detail/stl.hpp"     // for apply_permutation
@@ -606,11 +606,11 @@ namespace libsemigroups {
                      KNUTH_BENDIX_TYPES) {
     auto rg = ReportGuard(false);
 
-    Strings lhss;
+    StringRange lhss;
     lhss.alphabet("ab").min(1).max(11);
     REQUIRE((lhss | count()) == 2'046);
 
-    Strings rhss;
+    StringRange rhss;
     rhss.alphabet("ab").max(11);
 
     size_t total_c4 = 0;

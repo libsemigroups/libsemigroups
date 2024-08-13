@@ -550,11 +550,11 @@ namespace libsemigroups {
     REQUIRE(swap.number_of_letters() == move.number_of_letters());
   }
 
-  LIBSEMIGROUPS_TEST_CASE("Strings",
+  LIBSEMIGROUPS_TEST_CASE("StringRange",
                           "020",
                           "lex | alphabet = a | min = 0 | max = 10",
                           "[lex][quick]") {
-    Strings strings;
+    StringRange strings;
 
     strings.order(Order::lex)
         .alphabet("a")
@@ -580,11 +580,11 @@ namespace libsemigroups {
     REQUIRE((strings | to_vector()) == std::vector<std::string>({"aa", "aaa"}));
   }
 
-  LIBSEMIGROUPS_TEST_CASE("Strings",
+  LIBSEMIGROUPS_TEST_CASE("StringRange",
                           "021",
                           "lex | corner cases",
                           "[lex][quick]") {
-    Strings strings;
+    StringRange strings;
     strings.order(Order::lex)
         .alphabet("ab")
         .first("aaaaaaaaaa")
@@ -603,11 +603,11 @@ namespace libsemigroups {
     REQUIRE((strings | to_vector()) == std::vector<std::string>({""}));
   }
 
-  LIBSEMIGROUPS_TEST_CASE("Strings",
+  LIBSEMIGROUPS_TEST_CASE("StringRange",
                           "022",
                           "lex | alphabet = ab | min = 1 | max = 4",
                           "[lex][quick]") {
-    Strings strings;
+    StringRange strings;
     strings.alphabet("ab")
         .order(Order::lex)
         .upper_bound(4)
@@ -667,11 +667,11 @@ namespace libsemigroups {
                                          "aaa"}));
   }
 
-  LIBSEMIGROUPS_TEST_CASE("Strings",
+  LIBSEMIGROUPS_TEST_CASE("StringRange",
                           "023",
                           "lex | alphabet = abc | min = 0 | max = 13",
                           "[lex][quick][no-valgrind]") {
-    Strings strings;
+    StringRange strings;
     strings.order(Order::lex)
         .alphabet("abc")
         .upper_bound(13)
@@ -683,13 +683,13 @@ namespace libsemigroups {
     REQUIRE((strings | count()) == 797'161);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("Strings",
+  LIBSEMIGROUPS_TEST_CASE("StringRange",
                           "024",
                           "lex | code coverage",
                           "[lex][quick]") {
-    auto    first = "aaa";
-    auto    last  = "bbbb";
-    Strings strings;
+    auto        first = "aaa";
+    auto        last  = "bbbb";
+    StringRange strings;
 
     strings.alphabet("ab").first(first).last(last).upper_bound(5).order(
         Order::lex);
@@ -718,7 +718,7 @@ namespace libsemigroups {
     REQUIRE(*(++it) == *(++it2));
   }
 
-  LIBSEMIGROUPS_TEST_CASE("Strings",
+  LIBSEMIGROUPS_TEST_CASE("ToString",
                           "025",
                           "shortlex | alphabet = a | min = 0 | max = 10",
                           "[shortlex][quick]") {
@@ -743,11 +743,11 @@ namespace libsemigroups {
             == std::vector<std::string>({"bb", "bbb"}));
   }
 
-  LIBSEMIGROUPS_TEST_CASE("Strings",
+  LIBSEMIGROUPS_TEST_CASE("StringRange",
                           "026",
                           "shortlex | corner cases",
                           "[shortlex][quick]") {
-    Strings strings;
+    StringRange strings;
     // TODO first and last throw if they contain letters not in the alphabet
     strings.alphabet("ab").last("").first("bbaaab");
 
@@ -784,11 +784,11 @@ namespace libsemigroups {
                  "babbab", "babbba", "babbbb", "bbaaaa"}));
   }
 
-  LIBSEMIGROUPS_TEST_CASE("Strings",
+  LIBSEMIGROUPS_TEST_CASE("StringRange",
                           "027",
                           "shortlex | alphabet = ab | min = 1 | max = 4",
                           "[shortlex][quick]") {
-    Strings strings;
+    StringRange strings;
 
     strings.alphabet("ab").first("a").last("aaaa");
     REQUIRE((strings | to_vector())
@@ -831,24 +831,24 @@ namespace libsemigroups {
                                          "aaa"}));
   }
 
-  LIBSEMIGROUPS_TEST_CASE("Strings",
+  LIBSEMIGROUPS_TEST_CASE("StringRange",
                           "028",
                           "shortlex | alphabet = abc | min = 0 | max = 13",
                           "[shortlex][quick][no-valgrind]") {
-    Strings strings;
+    StringRange strings;
     strings.alphabet("abc").max(13);
     REQUIRE((strings | count()) == number_of_words(3, 0, 13));
     REQUIRE(strings.count() == 797'161);
     REQUIRE(is_sorted(strings, ShortLexCompare()));
   }
 
-  LIBSEMIGROUPS_TEST_CASE("Strings",
+  LIBSEMIGROUPS_TEST_CASE("StringRange",
                           "029",
                           "shortlex | code coverage",
                           "[shortlex][quick]") {
-    auto    first = "aaa";
-    auto    last  = "bbbb";
-    Strings strings;
+    auto        first = "aaa";
+    auto        last  = "bbbb";
+    StringRange strings;
 
     strings.alphabet("ab").first(first).last(last).upper_bound(5).order(
         Order::shortlex);
@@ -875,12 +875,12 @@ namespace libsemigroups {
     REQUIRE(*(++it) == *(++it2));
   }
 
-  LIBSEMIGROUPS_TEST_CASE("Strings", "036", "code coverage", "[words]") {
+  LIBSEMIGROUPS_TEST_CASE("StringRange", "036", "code coverage", "[words]") {
     using words::pow;
 
     size_t const m = 27;
 
-    Strings strings;
+    StringRange strings;
     strings.order(Order::lex)
         .alphabet("ab")
         .upper_bound(m + 1)
@@ -900,8 +900,8 @@ namespace libsemigroups {
     REQUIRE_THROWS_AS(strings.order(Order::none), LibsemigroupsException);
     REQUIRE_THROWS_AS(strings.order(Order::recursive), LibsemigroupsException);
 
-    Strings copy;
-    copy.   operator=(strings);
+    StringRange copy;
+    copy.       operator=(strings);
     REQUIRE(copy.get() == "aa");
     copy.next();
     REQUIRE(copy.get() == "aaa");
@@ -913,8 +913,8 @@ namespace libsemigroups {
     REQUIRE(copy.last() == pow("a", 28));
     REQUIRE(copy.count() == 25);
 
-    Strings move;
-    move.   operator=(std::move(strings));
+    StringRange move;
+    move.       operator=(std::move(strings));
     REQUIRE(equal(copy, move));
     REQUIRE(move.upper_bound() == 28);
     REQUIRE(move.first() == "a");
@@ -922,7 +922,7 @@ namespace libsemigroups {
     REQUIRE(move.count() == 25);
     REQUIRE(move.alphabet() == "ab");
 
-    Strings more;
+    StringRange more;
     REQUIRE(more.at_end());
     REQUIRE_NOTHROW(more.next());
     REQUIRE(more.get() == "");
@@ -934,7 +934,7 @@ namespace libsemigroups {
     REQUIRE(more.count() == 0);
     REQUIRE(equal(more, move.init()));
 
-    Strings move2(std::move(copy));
+    StringRange move2(std::move(copy));
     REQUIRE(equal(move, move2));
     REQUIRE(move2.upper_bound() == 28);
     REQUIRE(move2.first() == "a");
@@ -942,7 +942,7 @@ namespace libsemigroups {
     REQUIRE(move2.count() == 25);
     REQUIRE(move2.alphabet() == "ab");
 
-    Strings swap;
+    StringRange swap;
     swap.alphabet("abc").first("abc").last("abcbcbcbcb");
     std::swap(swap, move2);
     REQUIRE(equal(move, swap));
@@ -1190,7 +1190,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("ToWord", "039", "code coverage", "[quick]") {
-    Strings strings;
+    StringRange strings;
     strings.alphabet("ab").first("a").last("bbbb");
 
     REQUIRE((strings | ToWord(strings.alphabet()) | to_vector())

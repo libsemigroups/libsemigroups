@@ -67,7 +67,7 @@ namespace libsemigroups {
   //!
   //! * generating words and strings in a given range and in a certain order:
   //!  - \ref WordRange
-  //!  - \ref Strings
+  //!  - \ref StringRange
   //!  - \ref random_word
   //!  - \ref random_string
   //!  - \ref random_strings
@@ -79,7 +79,7 @@ namespace libsemigroups {
   //! * converting to and from strings and words:
   //!
   //!   - \ref ToWord
-  //!   - \ref ToStrings
+  //!   - \ref ToString
   //!   - \ref to_string(std::string_view,Iterator,Iterator,std::string&)
   //!   "to_string"
   //!
@@ -653,7 +653,7 @@ namespace libsemigroups {
     //! type of \ref begin.
     //!
     //! \sa \ref end.
-    // REQUIRED so that we can use Strings in range based loops
+    // REQUIRED so that we can use StringRange in range based loops
     auto begin() const noexcept {
       return rx::begin(*this);
     }
@@ -673,7 +673,7 @@ namespace libsemigroups {
     //! type of \ref begin.
     //!
     //! \sa \ref begin.
-    // REQUIRED so that we can use Strings in range based loops
+    // REQUIRED so that we can use StringRange in range based loops
     auto end() const noexcept {
       return rx::end(*this);
     }
@@ -698,14 +698,14 @@ namespace libsemigroups {
     //! false otherwise.
     //!
     //! \returns A value of type `bool`.
-    // Required so Strings can accurately set _current_valid
+    // Required so StringRange can accurately set _current_valid
     bool valid() const noexcept {
       return _current_valid;
     }
   };
 
   ////////////////////////////////////////////////////////////////////////
-  // Strings -> WordRange
+  // Strings -> Words
   ////////////////////////////////////////////////////////////////////////
 
   //! \ingroup word_range_group
@@ -971,13 +971,13 @@ namespace libsemigroups {
    public:
     //! \brief Call operator for combining with other range objects.
     //!
-    //! A custom combinator for rx::ranges to convert the output of a Strings
-    //! object into \ref word_type, that can be combined with other combinators
-    //! using `operator|`.
+    //! A custom combinator for rx::ranges to convert the output of a
+    //! StringRange object into \ref word_type, that can be combined with other
+    //! combinators using `operator|`.
     //!
     //! \par Example
     //! \code
-    //!  Strings strings;
+    //!  StringRange strings;
     //!  strings.letters("ab").first("a").last("bbbb");
     //!  auto words = (strings | ToWord("ba"));
     //!  // contains the words
@@ -999,7 +999,7 @@ namespace libsemigroups {
   };
 
   ////////////////////////////////////////////////////////////////////////
-  // WordRange -> Strings
+  // Words -> Strings
   ////////////////////////////////////////////////////////////////////////
 
   //! \ingroup word_range_group
@@ -1282,7 +1282,7 @@ namespace libsemigroups {
   };
 
   ////////////////////////////////////////////////////////////////////////
-  // Strings
+  // StringRange
   ////////////////////////////////////////////////////////////////////////
 
   //! \ingroup word_range_group
@@ -1355,14 +1355,14 @@ namespace libsemigroups {
   //! Defined in `words.hpp`.
   //!
   //! This class implements a range object for strings and produces the same
-  //! output as `WordRange() | ToStrings("ab")`, but is more convenient in some
+  //! output as `WordRange() | ToString("ab")`, but is more convenient in some
   //! cases.
   //!
-  //! \note There is a small overhead to using a Strings object rather than
+  //! \note There is a small overhead to using a StringRange object rather than
   //! using \ref cbegin_wislo or \ref cbegin_wilo directly.
   //!
-  //! The order and range of the words in a Strings instance can be set using
-  //! the member functions:
+  //! The order and range of the words in a StringRange instance can be set
+  //! using the member functions:
   //! * \ref order
   //! * \ref alphabet
   //! * \ref min
@@ -1372,7 +1372,7 @@ namespace libsemigroups {
   //!
   //! \par Example
   //! \code
-  //! Strings strings;
+  //! StringRange strings;
   //! strings.order(Order::shortlex) // strings in shortlex order
   //!        .alphabet("ab")         // on 2 letters
   //!        .min(1)                 // of length in the range from 1
@@ -1380,10 +1380,10 @@ namespace libsemigroups {
   //! \endcode
   //!
   //! \sa WordRange
-  // This can in many places be replaced by "WordRange | ToStrings" but this
+  // This can in many places be replaced by "WordRange | ToString" but this
   // makes some things more awkward and so we retain this class for its
   // convenience.
-  class Strings {
+  class StringRange {
    public:
     //! Alias for the size type.
     using size_type = typename std::vector<std::string>::size_type;
@@ -1409,7 +1409,7 @@ namespace libsemigroups {
    public:
     //! \brief Get the current value.
     //!
-    //! Returns the current string in a Strings object.
+    //! Returns the current string in a StringRange object.
     //!
     //! \returns A value of type \ref output_type.
     //!
@@ -1425,7 +1425,7 @@ namespace libsemigroups {
 
     //! \brief Advance to the next value.
     //!
-    //! Advances a Strings object to the next value (if any).
+    //! Advances a StringRange object to the next value (if any).
     //!
     //! \exception
     //! \noexcept
@@ -1438,7 +1438,8 @@ namespace libsemigroups {
 
     //! \brief Check if the range object is exhausted.
     //!
-    //! Returns \c true if a Strings object is exhausted, and \c false if not.
+    //! Returns \c true if a StringRange object is exhausted, and \c false if
+    //! not.
     //!
     //! \returns A value of type \c bool.
     //!
@@ -1450,7 +1451,7 @@ namespace libsemigroups {
 
     //! \brief The possible size of the range.
     //!
-    //! Returns the number of words in a Strings object if order() is
+    //! Returns the number of words in a StringRange object if order() is
     //! Order::shortlex. If order() is not Order::shortlex, then the return
     //! value of this function is meaningless.
     //!
@@ -1480,9 +1481,9 @@ namespace libsemigroups {
     //! Value indicating that the range is finite.
     static constexpr bool is_finite = true;  // This may not always be true
 
-    //! Value indicating that if get() is called twice on a Strings object that
-    //! is not changed between the two calls, then the return value of get() is
-    //! the same both times.
+    //! Value indicating that if get() is called twice on a StringRange object
+    //! that is not changed between the two calls, then the return value of
+    //! get() is the same both times.
     static constexpr bool is_idempotent = true;
 
     //! \brief Default constructor.
@@ -1495,50 +1496,50 @@ namespace libsemigroups {
     //! * last() equal to the empty string;
     //! * upper_bound() equal to \c 0;
     //! * letters() equal to \c 0.
-    Strings() {
+    StringRange() {
       init();
     }
 
-    //! \brief Initialize an existing Strings object.
+    //! \brief Initialize an existing StringRange object.
     //!
-    //! This function puts a Strings object back into the same state as if it
-    //! had been newly default constructed.
+    //! This function puts a StringRange object back into the same state as if
+    //! it had been newly default constructed.
     //!
     //! \returns A reference to \c *this.
     //!
     //! \exception
     //! \no_libsemigroups_except
-    Strings& init();
+    StringRange& init();
 
     //! \brief Default copy constructor.
-    Strings(Strings const&);
+    StringRange(StringRange const&);
 
     //! \brief Default move constructor.
-    Strings(Strings&&);
+    StringRange(StringRange&&);
 
     //! \brief Default copy assignment operator.
-    Strings& operator=(Strings const&);
+    StringRange& operator=(StringRange const&);
 
     //! \brief Default move assignment operator.
-    Strings& operator=(Strings&&);
+    StringRange& operator=(StringRange&&);
 
     //! \brief Default destructor.
-    ~Strings();
+    ~StringRange();
 
     //! \brief Set the alphabet.
     //!
-    //! Sets the alphabet in a Strings object.
+    //! Sets the alphabet in a StringRange object.
     //!
     //! \param x the alphabet.
     //!
     //! \returns A reference to \c *this.
     //!
     //! \throws LibsemigroupsException if \p x contains repeated letters.
-    Strings& alphabet(std::string const& x);
+    StringRange& alphabet(std::string const& x);
 
     //! \brief The current alphabet.
     //!
-    //! Returns the current alphabet in a Strings object.
+    //! Returns the current alphabet in a StringRange object.
     //!
     //! \returns A value of type \ref std::string.
     //!
@@ -1550,7 +1551,7 @@ namespace libsemigroups {
 
     //! \brief Set the first string in the range.
     //!
-    //! Sets the first string in a Strings object to be \p frst.
+    //! Sets the first string in a StringRange object to be \p frst.
     //!
     //! \param frst the first string.
     //!
@@ -1560,7 +1561,7 @@ namespace libsemigroups {
     //!
     //! \note Unlike WordRange::first, this function will throw if \p frst
     //! contains letters not belonging to alphabet().
-    Strings& first(std::string const& frst) {
+    StringRange& first(std::string const& frst) {
       _word_range.first(_to_word(frst));
       _current_valid = _word_range.valid();
       return *this;
@@ -1568,7 +1569,7 @@ namespace libsemigroups {
 
     //! \brief The current first string in the range.
     //!
-    //! Returns the first string in a Strings object.
+    //! Returns the first string in a StringRange object.
     //!
     //! \returns A \ref std::string by value.
     //!
@@ -1582,9 +1583,10 @@ namespace libsemigroups {
 
     //! \brief Set one past the last string in the range.
     //!
-    //! Sets one past the last string in a Strings object to be \p lst. This
+    //! Sets one past the last string in a StringRange object to be \p lst. This
     //! function performs no checks on its arguments. If \p lst contains
-    //! letters greater than letters(), then the Strings object will be empty.
+    //! letters greater than letters(), then the StringRange object will be
+    //! empty.
     //!
     //! \param lst the first string.
     //!
@@ -1594,7 +1596,7 @@ namespace libsemigroups {
     //!
     //! \note Unlike WordRange::last, this function will throw if \p lst
     //! contains letters not belonging to alphabet().
-    Strings& last(std::string const& lst) {
+    StringRange& last(std::string const& lst) {
       _word_range.last(_to_word(lst));
       _current_valid = _word_range.valid();
       return *this;
@@ -1602,7 +1604,7 @@ namespace libsemigroups {
 
     //! \brief The current one past the last string in the range.
     //!
-    //! Returns the last string in a Strings object.
+    //! Returns the last string in a StringRange object.
     //!
     //! \returns A \ref std::string by value.
     //!
@@ -1616,7 +1618,7 @@ namespace libsemigroups {
 
     //! \brief Set the order of the strings in the range.
     //!
-    //! Sets the order of the strings in a Strings object to \p val.
+    //! Sets the order of the strings in a StringRange object to \p val.
     //!
     //! \param val the order.
     //!
@@ -1624,7 +1626,7 @@ namespace libsemigroups {
     //!
     //! \throws LibsemigroupsException if val is not Order::shortlex or
     //! Order::lex.
-    Strings& order(Order val) {
+    StringRange& order(Order val) {
       _word_range.order(val);
       _current_valid = _word_range.valid();
       return *this;
@@ -1632,7 +1634,7 @@ namespace libsemigroups {
 
     //! \brief The current order of the strings in the range.
     //!
-    //! Returns the current order of the strings in a Strings object.
+    //! Returns the current order of the strings in a StringRange object.
     //!
     //! \returns A value of type \ref Order.
     //!
@@ -1644,7 +1646,7 @@ namespace libsemigroups {
 
     //! \brief Set an upper bound for the length of a string in the range.
     //!
-    //! Sets an upper bound for the length of a string in a Strings object.
+    //! Sets an upper bound for the length of a string in a StringRange object.
     //! This setting is only used if order() is Order::lex.
     //!
     //! \param n the upper bound.
@@ -1653,7 +1655,7 @@ namespace libsemigroups {
     //!
     //! \exception
     //! \no_libsemigroups_except
-    Strings& upper_bound(size_type n) {
+    StringRange& upper_bound(size_type n) {
       _word_range.upper_bound(n);
       _current_valid = _word_range.valid();
       return *this;
@@ -1661,8 +1663,8 @@ namespace libsemigroups {
 
     //! \brief The current upper bound on the length of a string in the range.
     //!
-    //! Returns the current upper bound on the length of a string in a Strings
-    //! object. This setting is only used if order() is Order::lex.
+    //! Returns the current upper bound on the length of a string in a
+    //! StringRange object. This setting is only used if order() is Order::lex.
     //!
     //! \returns A value of type \ref size_type.
     //!
@@ -1674,7 +1676,7 @@ namespace libsemigroups {
 
     //! \brief Set the first string in the range by length.
     //!
-    //! Sets the first string in a Strings object to be `pow("a", val)` (the
+    //! Sets the first string in a StringRange object to be `pow("a", val)` (the
     //! string consisting of \p val letters equal to \c "a").
     //!
     //! \param val the exponent.
@@ -1683,7 +1685,7 @@ namespace libsemigroups {
     //!
     //! \exception
     //! \no_libsemigroups_except
-    Strings& min(size_type val) {
+    StringRange& min(size_type val) {
       _word_range.min(val);
       _current_valid = _word_range.valid();
       return *this;
@@ -1695,8 +1697,8 @@ namespace libsemigroups {
 
     //! \brief Set one past the last string in the range by length.
     //!
-    //! Sets one past the last string in a Strings object to be `pow("a", val)`
-    //! (the string consisting of \p val letters equal to \c "a").
+    //! Sets one past the last string in a StringRange object to be `pow("a",
+    //! val)` (the string consisting of \p val letters equal to \c "a").
     //!
     //! \param val the exponent.
     //!
@@ -1704,7 +1706,7 @@ namespace libsemigroups {
     //!
     //! \exception
     //! \no_libsemigroups_except
-    Strings& max(size_type val) {
+    StringRange& max(size_type val) {
       _word_range.max(val);
       _current_valid = _word_range.valid();
       return *this;
@@ -1714,7 +1716,7 @@ namespace libsemigroups {
     //! range.
     //!
     //! This function returns an input iterator pointing to the first string in
-    //! a Strings object.
+    //! a StringRange object.
     //!
     //! \returns An input iterator.
     //!
@@ -1725,7 +1727,7 @@ namespace libsemigroups {
     //! type of \ref begin.
     //!
     //! \sa \ref end.
-    // REQUIRED so that we can use Strings in range based loops
+    // REQUIRED so that we can use StringRange in range based loops
     auto begin() const noexcept {
       return rx::begin(*this);
     }
@@ -1734,7 +1736,7 @@ namespace libsemigroups {
     //! the range.
     //!
     //! This function returns an input iterator pointing one beyond the last
-    //! string in a Strings object.
+    //! string in a StringRange object.
     //!
     //! \returns An input iterator.
     //!
@@ -1745,7 +1747,7 @@ namespace libsemigroups {
     //! type of \ref begin.
     //!
     //! \sa \ref begin.
-    // REQUIRED so that we can use Strings in range based loops
+    // REQUIRED so that we can use StringRange in range based loops
     auto end() const noexcept {
       return rx::end(*this);
     }
@@ -1770,7 +1772,7 @@ namespace libsemigroups {
   //! \code
   //!  WordRange words;
   //!  words.letters(2).first(0_w).last(1111_w);
-  //!  auto strings = (words | ToStrings("ba"));
+  //!  auto strings = (words | ToString("ba"));
   //!  // contains the strings
   //!  // {"b",    "a",    "bb",   "ba",   "ab",   "aa",   "bbb",
   //!  //  "bba",  "bab",  "baa",  "abb",  "aba",  "aab",  "aaa",

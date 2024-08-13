@@ -235,7 +235,7 @@ namespace libsemigroups {
     auto nf = knuth_bendix::normal_forms(kb).min(1).max(6);
     REQUIRE(nf.count() == 62);
 
-    Strings s;
+    StringRange s;
     s.alphabet(p.alphabet()).min(1).max(6);
     REQUIRE(equal(s, nf | ToString(p.alphabet())));
   }
