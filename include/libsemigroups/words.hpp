@@ -56,10 +56,10 @@ namespace libsemigroups {
   enum class Order : uint8_t;  // forward decl
 
   ////////////////////////////////////////////////////////////////////////
-  // WordRange
+  // Words
   ////////////////////////////////////////////////////////////////////////
 
-  //! \defgroup word_range_group WordRange
+  //! \defgroup words_group Words
   //! This page contains details of the functionality in \c libsemigroups
   //! related to generating words in a given range and in a given order.
   //!
@@ -80,14 +80,12 @@ namespace libsemigroups {
   //!
   //!   - \ref ToWord
   //!   - \ref ToString
-  //!   - \ref to_string(std::string_view,Iterator,Iterator,std::string&)
-  //!   "to_string"
   //!
+  //! * parsing algebraic expressions in a string:
+  //!
+  //!   - \ref literal_operator_p
 
-  // TODO(later)
-  // * parsing algebraic expressions in a string;
-
-  //! \ingroup word_range_group
+  //! \ingroup words_group
   //! \brief Returns the number of words over an alphabet with a given number of
   //! letters with length in a specified range.
   //!
@@ -108,7 +106,7 @@ namespace libsemigroups {
   //! of this function will not be correct.
   [[nodiscard]] uint64_t number_of_words(size_t n, size_t min, size_t max);
 
-  //! \ingroup word_range_group
+  //! \ingroup words_group
   //! \brief Returns a random word.
   //!
   //! Returns a random word on \f$\{0, \ldots, n - 1\}\f$ of length \p length
@@ -124,7 +122,7 @@ namespace libsemigroups {
   //! \sa \ref random_string
   [[nodiscard]] word_type random_word(size_t length, size_t nr_letters);
 
-  //! \ingroup word_range_group
+  //! \ingroup words_group
   //! \brief Returns a forward iterator pointing to the 3rd parameter \p first.
   //!
   //! Returns a forward iterator used to iterate over words in lexicographic
@@ -174,7 +172,7 @@ namespace libsemigroups {
                                                         word_type&& first,
                                                         word_type&& last);
 
-  //! \ingroup word_range_group
+  //! \ingroup words_group
   //! \brief Returns a forward iterator pointing to the 3rd parameter \p first.
   //! \copydoc cbegin_wilo(size_t, size_t, word_type&&, word_type&&)
   [[nodiscard]] detail::const_wilo_iterator cbegin_wilo(size_t n,
@@ -182,7 +180,7 @@ namespace libsemigroups {
                                                         word_type const& first,
                                                         word_type const& last);
 
-  //! \ingroup word_range_group
+  //! \ingroup words_group
   //! \brief Returns a forward iterator pointing to one after the end of the
   //! range from \p first to \p last.
   //!
@@ -193,7 +191,7 @@ namespace libsemigroups {
   [[nodiscard]] detail::const_wilo_iterator
   cend_wilo(size_t n, size_t upper_bound, word_type&& first, word_type&& last);
 
-  //! \ingroup word_range_group
+  //! \ingroup words_group
   //! \brief Returns a forward iterator pointing to one after the end of the
   //! range from \p first to \p last.
   //! \copydoc cend_wilo(size_t, size_t, word_type&&, word_type&&)
@@ -202,7 +200,7 @@ namespace libsemigroups {
                                                       word_type const& first,
                                                       word_type const& last);
 
-  //! \ingroup word_range_group
+  //! \ingroup words_group
   //! \brief Returns a forward iterator pointing to the 2nd parameter \p first.
   //!
   //! Returns a forward iterator used to iterate over words in
@@ -243,13 +241,13 @@ namespace libsemigroups {
                                                           word_type&& first,
                                                           word_type&& last);
 
-  //! \ingroup word_range_group
+  //! \ingroup words_group
   //! \brief Returns a forward iterator pointing to the 2nd parameter \p first.
   //! \copydoc cbegin_wislo(size_t const, word_type&&, word_type&&)
   [[nodiscard]] detail::const_wislo_iterator
   cbegin_wislo(size_t n, word_type const& first, word_type const& last);
 
-  //! \ingroup word_range_group
+  //! \ingroup words_group
   //! \brief Returns a forward iterator pointing to one after the end of the
   //! range from \p first to \p last.
   //!
@@ -261,7 +259,7 @@ namespace libsemigroups {
                                                         word_type&& first,
                                                         word_type&& last);
 
-  //! \ingroup word_range_group
+  //! \ingroup words_group
   //! \brief Returns a forward iterator pointing to one after the end of the
   //! range from \p first to \p last.
   //! \copydoc cend_wislo(size_t const, word_type&&, word_type&&)
@@ -269,7 +267,7 @@ namespace libsemigroups {
                                                         word_type const& first,
                                                         word_type const& last);
 
-  //! \ingroup word_range_group
+  //! \ingroup words_group
   //! \brief Class for generating words in a given range and in a particular
   //! order.
   //!
@@ -708,7 +706,7 @@ namespace libsemigroups {
   // Strings -> Words
   ////////////////////////////////////////////////////////////////////////
 
-  //! \ingroup word_range_group
+  //! \ingroup words_group
   //! \brief Returns the index of a character in human readable order.
   //!
   //! Defined in `words.hpp`.
@@ -726,7 +724,7 @@ namespace libsemigroups {
   //! \sa human_readable_char
   [[nodiscard]] letter_type human_readable_index(char c);
 
-  //! \ingroup word_range_group
+  //! \ingroup words_group
   //! \brief Class for converting strings to \ref word_type with specified
   //! alphabet.
   //!
@@ -818,7 +816,7 @@ namespace libsemigroups {
     //! This function puts a ToWord object back into the same state as if it had
     //! been newly constructed from \p alphabet.
     //!
-    //! \param alphabet the alphabet
+    //! \param alphabet the alphabet.
     //!
     //! \returns A reference to \c *this.
     //!
@@ -830,7 +828,7 @@ namespace libsemigroups {
 
     //! \brief Check if the alphabet is defined.
     //!
-    //! This function return \c true if no alphabet has been defined, and \c
+    //! This function returns \c true if no alphabet has been defined, and \c
     //! false otherwise.
     //!
     //! \returns A value of type \c bool.
@@ -851,8 +849,8 @@ namespace libsemigroups {
     //!
     //! The contents of the first argument \p output, if any, is removed.
     //!
-    //! \param output word to hold the result
-    //! \param input the string to convert
+    //! \param output word to hold the result.
+    //! \param input the string to convert.
     //!
     //! \warning This functions performs no checks on its arguments. In
     //! particular, if the alphabet used to define an instance of ToWord is not
@@ -860,8 +858,6 @@ namespace libsemigroups {
     //! of the alphabet, then bad things will happen.
     //!
     //! \sa
-    //! * to_word
-    //! * to_string
     //! * \ref literals
     void call_no_checks(word_type& output, std::string const& input) const;
 
@@ -872,7 +868,7 @@ namespace libsemigroups {
     //! construct the object or set via init(), or with \ref
     //! human_readable_index if \ref empty returns `true`.
     //!
-    //! \param input the string to convert
+    //! \param input the string to convert.
     //!
     //! \warning This functions performs no checks on its arguments. In
     //! particular, if the alphabet used to define an instance of ToWord is not
@@ -880,8 +876,6 @@ namespace libsemigroups {
     //! of the alphabet, then bad things will happen.
     //!
     //! \sa
-    //! * to_word
-    //! * to_string
     //! * \ref literals
     [[nodiscard]] word_type call_no_checks(std::string const& input) const {
       word_type output;
@@ -899,16 +893,14 @@ namespace libsemigroups {
     //!
     //! The contents of the first argument \p output, if any, is removed.
     //!
-    //! \param output word to hold the result
-    //! \param input the string to convert
+    //! \param output word to hold the result.
+    //! \param input the string to convert.
     //!
     //! \throw LibsemigroupsException if the alphabet used to define an instance
     //! of ToWord is not empty and \p input contains letters that do not
     //! correspond to letters of the alphabet.
     //!
     //! \sa
-    //! * to_word
-    //! * to_string
     //! * \ref literals
     void operator()(word_type& output, std::string const& input) const;
 
@@ -919,7 +911,7 @@ namespace libsemigroups {
     //! construct the object or set via init(), or with \ref
     //! human_readable_index if \ref empty returns `true`.
     //!
-    //! \param input the string to convert
+    //! \param input the string to convert.
     //!
     //! \throw LibsemigroupsException if the alphabet used to define an instance
     //! of ToWord is not empty and \p input contains letters that do not
@@ -1002,7 +994,7 @@ namespace libsemigroups {
   // Words -> Strings
   ////////////////////////////////////////////////////////////////////////
 
-  //! \ingroup word_range_group
+  //! \ingroup words_group
   //! \brief Returns a character by index in human readable order.
   //!
   //! This function exists to map the numbers \c 0 to \c 254 to the possible
@@ -1021,7 +1013,7 @@ namespace libsemigroups {
   //! \throws LibsemigroupsException if \p i exceeds the number of characters.
   [[nodiscard]] char human_readable_char(size_t i);
 
-  //! \ingroup word_range_group
+  //! \ingroup words_group
   //! \brief Class for converting \ref word_type into std::string with specified
   //! alphabet.
   //!
@@ -1142,8 +1134,8 @@ namespace libsemigroups {
     //!
     //! The contents of the first argument \p output, if any, is removed.
     //!
-    //! \param output std::string to hold the result
-    //! \param input the \ref word_type to convert
+    //! \param output std::string to hold the result.
+    //! \param input the \ref word_type to convert.
     //!
     //! \warning This functions performs no checks on its arguments. In
     //! particular, if the alphabet used to define an instance of ToString is
@@ -1161,7 +1153,7 @@ namespace libsemigroups {
     //! construct the object or set via init(), or with \ref human_readable_char
     //! if \ref empty returns `true`.
     //!
-    //! \param input the \ref word_type to convert
+    //! \param input the \ref word_type to convert.
     //!
     //! \warning This functions performs no checks on its arguments. In
     //! particular, if the alphabet used to define an instance of ToString is
@@ -1186,8 +1178,8 @@ namespace libsemigroups {
     //!
     //! The contents of the first argument \p output, if any, is removed.
     //!
-    //! \param output word to hold the result
-    //! \param input the string to convert
+    //! \param output word to hold the result.
+    //! \param input the string to convert.
     //!
     //! \throw LibsemigroupsException if the alphabet used to define an instance
     //! of ToWord is not empty and \p input contains letters that do not
@@ -1204,7 +1196,7 @@ namespace libsemigroups {
     //! construct the object or set via init(), or with \ref human_readable_char
     //! if \ref empty returns `true`.
     //!
-    //! \param input the string to convert
+    //! \param input the string to convert.
     //!
     //! \throw LibsemigroupsException if the alphabet used to define an instance
     //! of ToWord is not empty and \p input contains letters that do not
@@ -1285,7 +1277,7 @@ namespace libsemigroups {
   // StringRange
   ////////////////////////////////////////////////////////////////////////
 
-  //! \ingroup word_range_group
+  //! \ingroup words_group
   //! \brief Returns a random string.
   //!
   //! Returns a random string with length \p length over alphabet \p alphabet.
@@ -1301,7 +1293,7 @@ namespace libsemigroups {
   //! \sa \ref random_word
   std::string random_string(std::string const& alphabet, size_t length);
 
-  //! \ingroup word_range_group
+  //! \ingroup words_group
   //! \brief Returns a random string.
   //!
   //! Returns a random string with random length in the range `[min, max)` over
@@ -1322,7 +1314,7 @@ namespace libsemigroups {
                             size_t             min,
                             size_t             max);
 
-  //! \ingroup word_range_group
+  //! \ingroup words_group
   //! \brief Returns a range object of random strings.
   //!
   //! Returns a range object of random strings, each of which with random length
@@ -1348,7 +1340,7 @@ namespace libsemigroups {
            | rx::take(number);
   }
 
-  //! \ingroup word_range_group
+  //! \ingroup words_group
   //! \brief Class for generating strings in a given range and in a particular
   //! order.
   //!
@@ -1563,7 +1555,7 @@ namespace libsemigroups {
     //! contains letters not belonging to alphabet().
     StringRange& first(std::string const& frst) {
       _word_range.first(_to_word(frst));
-      _current_valid = _word_range.valid();
+      _current_valid &= _word_range.valid();
       return *this;
     }
 
@@ -1598,7 +1590,7 @@ namespace libsemigroups {
     //! contains letters not belonging to alphabet().
     StringRange& last(std::string const& lst) {
       _word_range.last(_to_word(lst));
-      _current_valid = _word_range.valid();
+      _current_valid &= _word_range.valid();
       return *this;
     }
 
@@ -1628,7 +1620,7 @@ namespace libsemigroups {
     //! Order::lex.
     StringRange& order(Order val) {
       _word_range.order(val);
-      _current_valid = _word_range.valid();
+      _current_valid &= _word_range.valid();
       return *this;
     }
 
@@ -1657,7 +1649,7 @@ namespace libsemigroups {
     //! \no_libsemigroups_except
     StringRange& upper_bound(size_type n) {
       _word_range.upper_bound(n);
-      _current_valid = _word_range.valid();
+      _current_valid &= _word_range.valid();
       return *this;
     }
 
@@ -1687,7 +1679,7 @@ namespace libsemigroups {
     //! \no_libsemigroups_except
     StringRange& min(size_type val) {
       _word_range.min(val);
-      _current_valid = _word_range.valid();
+      _current_valid &= _word_range.valid();
       return *this;
     }
 
@@ -1708,7 +1700,7 @@ namespace libsemigroups {
     //! \no_libsemigroups_except
     StringRange& max(size_type val) {
       _word_range.max(val);
-      _current_valid = _word_range.valid();
+      _current_valid &= _word_range.valid();
       return *this;
     }
 
@@ -1754,38 +1746,10 @@ namespace libsemigroups {
   };
 
   ////////////////////////////////////////////////////////////////////////
-  // Ranges
-  ////////////////////////////////////////////////////////////////////////
-
-  //! \ingroup word_range_group
-  //! \brief A custom combinator for rx::ranges to convert the output
-  //! of a WordRange object into \ref std::string.
-  //!
-  //! Defined in `words.hpp`.
-  //!
-  //! A custom combinator for rx::ranges to convert the output of a WordRange
-  //! object (or any other range with \c output_type equal to \ref
-  //! word_type) into \ref std::string, that can be combined with other
-  //! combinators using `operator|`.
-  //!
-  //! \par Example
-  //! \code
-  //!  WordRange words;
-  //!  words.letters(2).first(0_w).last(1111_w);
-  //!  auto strings = (words | ToString("ba"));
-  //!  // contains the strings
-  //!  // {"b",    "a",    "bb",   "ba",   "ab",   "aa",   "bbb",
-  //!  //  "bba",  "bab",  "baa",  "abb",  "aba",  "aab",  "aaa",
-  //!  //  "bbbb", "bbba", "bbab", "bbaa", "babb", "baba", "baab",
-  //!  //  "baaa", "abbb", "abba", "abab", "abaa", "aabb", "aaba",
-  //!  //  "aaab"}));
-  //! \endcode
-
-  ////////////////////////////////////////////////////////////////////////
   // Literals
   ////////////////////////////////////////////////////////////////////////
 
-  //! \ingroup word_range_group
+  //! \ingroup words_group
   //!
   //! \brief Namespace containing some custom literals for creating words.
   //!
@@ -1817,10 +1781,11 @@ namespace libsemigroups {
     //! will not compile because it is interpreted as an invalid octal. However
     //! `"08"_w` behaves as expected.
     //! * if \p w consists of characters in `a-zA-Z`, then the output is
-    //! the same as that of `to_word(w)`, see \ref to_word(std::string_view).
+    //! the same as that of `ToWord::operator()(w)`, see \ref
+    //! ToWord::operator()()
     //!
-    //! \param w the letters of the word
-    //! \param n the length of \p w (defaults to the length of \p w)
+    //! \param w the letters of the word.
+    //! \param n the length of \p w (defaults to the length of \p w).
     //!
     //! \returns A value of type \ref word_type.
     //!
@@ -1844,12 +1809,12 @@ namespace libsemigroups {
     //!
     //! This function has the following behaviour:
     //! * arbitrarily nested brackets;
-    //! * spaces are ignore;
+    //! * spaces are ignored;
     //! * redundant matched brackets are ignored;
     //! * only the characters in \c "()^ " and in \c a-zA-Z0-9 are allowed.
     //!
-    //! \param w the letters of the word
-    //! \param n the length of \p w (defaults to the length of \p w)
+    //! \param w the letters of the word.
+    //! \param n the length of \p w (defaults to the length of \p w).
     //!
     //! \returns A value of type \ref std::string.
     //!
@@ -1865,7 +1830,7 @@ namespace libsemigroups {
 
   ////////////////////////////////////////////////////////////////////////
 
-  //! \ingroup word_range_group
+  //! \ingroup words_group
   //!
   //! \brief Namespace containing some operators for creating words.
   //!
@@ -1892,8 +1857,8 @@ namespace libsemigroups {
     //!
     //! Returns the concatenation of \c u and \c w.
     //!
-    //! \param u a word
-    //! \param w a word
+    //! \param u a word.
+    //! \param w a word.
     //!
     //! \returns A \ref word_type.
     //!
@@ -1930,8 +1895,8 @@ namespace libsemigroups {
     //!
     //! Changes \c u to `u + v` in-place. See \ref operator_plus "operator+".
     //!
-    //! \param u a word
-    //! \param v a word
+    //! \param u a word.
+    //! \param v a word.
     //!
     //! \exception
     //! \no_libsemigroups_except
@@ -1965,8 +1930,8 @@ namespace libsemigroups {
     //!
     //! \tparam Word the type of the first parameter.
     //!
-    //! \param w the word
-    //! \param n the power
+    //! \param w the word.
+    //! \param n the power.
     //!
     //! \exception
     //! \no_libsemigroups_except
@@ -1981,8 +1946,8 @@ namespace libsemigroups {
     //!
     //! \tparam Word the type of the first parameter.
     //!
-    //! \param x the word to power
-    //! \param n the power
+    //! \param x the word to power.
+    //! \param n the power.
     //!
     //! \returns A Word
     //!
@@ -2029,13 +1994,13 @@ namespace libsemigroups {
     //! analogously, where \f$k\f$ is the greatest positive integer such that
     //! \f$f + k s > l\f$.
     //!
-    //! \tparam Container the type of the 1st argument \c elts
+    //! \tparam Container the type of the 1st argument \c elts.
     //! \tparam Word the return type (defaults to Container).
     //!
-    //! \param elts the ordered set
-    //! \param first the first index
-    //! \param last the last index
-    //! \param step the step
+    //! \param elts the ordered set.
+    //! \param first the first index.
+    //! \param last the last index.
+    //! \param step the step.
     //!
     //! \return A Word.
     //!

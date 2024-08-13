@@ -96,11 +96,13 @@
       <tab type="user" visible="yes" url="@ref libsemigroups::word_graph" title="WordGraph helpers" />
     </tab>
     <tab type="usergroup" visible="yes" url="@ref words_group" title="Words">
+      <tab type="user" visible="yes" url="@ref libsemigroups::WordRange" title="WordRange" />
+      <tab type="user" visible="yes" url="@ref libsemigroups::StringRange" title="StringRange" />
+      <tab type="user" visible="yes" url="@ref libsemigroups::ToWord" title="ToWord" />
+      <tab type="user" visible="yes" url="@ref libsemigroups::ToString" title="ToString" />
       <tab type="user" visible="yes" url="@ref libsemigroups::words"
         title="Functions for words and strings" />
-      <tab type="user" visible="yes" url="@ref libsemigroups::Strings" title="Strings" />
-      <tab type="user" visible="yes" url="@ref libsemigroups::ToWord" title="ToWord" />
-      <tab type="user" visible="yes" url="@ref libsemigroups::Words" title="Words" />
+      <tab type="user" visible="yes" url="@ref libsemigroups::literals" title="Literals" />
     </tab>
     <tab type="usergroup" visible="yes" url="@ref misc_group" title="Miscellaneous">
       <tab type="usergroup" visible="yes" url="@ref constants_group" title="Constants" />
