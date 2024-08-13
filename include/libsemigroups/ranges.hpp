@@ -122,9 +122,9 @@ namespace libsemigroups {
       using output_type = typename InputRange::output_type;
 
       // TODO(1) this is probably not correct, should depend on InputRange
-      static constexpr bool is_finite = true;
+      static constexpr bool is_finite = rx::is_finite_v<InputRange>;
       // TODO(1) this is probably not correct, should depend on InputRange
-      static constexpr bool is_idempotent = true;
+      static constexpr bool is_idempotent = rx::is_idempotent_v<InputRange>;
 
       bool                _at_end;
       InputRange          _input;
