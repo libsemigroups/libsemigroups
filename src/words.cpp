@@ -344,11 +344,59 @@ namespace libsemigroups {
     return chars_in_human_readable_order()[i];
   }
 
-  ToStrings::ToStrings(ToStrings const&)            = default;
-  ToStrings::ToStrings(ToStrings&&)                 = default;
-  ToStrings& ToStrings::operator=(ToStrings const&) = default;
-  ToStrings& ToStrings::operator=(ToStrings&&)      = default;
-  ToStrings::~ToStrings()                           = default;
+  ToString::ToString(ToString const&)            = default;
+  ToString::ToString(ToString&&)                 = default;
+  ToString& ToString::operator=(ToString const&) = default;
+  ToString& ToString::operator=(ToString&&)      = default;
+  ToString::~ToString()                          = default;
+
+  ToString& ToString::init(std::string const& alphabet) {
+    auto _old_alphabet_map = _alphabet_map;
+    init();
+    LIBSEMIGROUPS_ASSERT(_alphabet_map.empty());
+    for (letter_type i = 0; i < alphabet.size(); ++i) {
+      auto it = _alphabet_map.emplace(i, alphabet[i]);
+      if (!it.second) {
+        std::swap(_old_alphabet_map, _alphabet_map);
+        LIBSEMIGROUPS_EXCEPTION("invalid alphabet {}, duplicate letter {}!",
+                                detail::to_printable(alphabet),
+                                detail::to_printable(alphabet[i]));
+      }
+    }
+    return *this;
+  }
+
+  void ToString::call_no_checks(std::string&     output,
+                                word_type const& input) const {
+    // Empty alphabet implies conversion should use human_readable_index
+    if (empty()) {
+      output.resize(input.size(), 0);
+      std::transform(input.cbegin(),
+                     input.cend(),
+                     output.begin(),
+                     [](letter_type c) { return human_readable_char(c); });
+    } else {  // Non-empty alphabet implies conversion should use the alphabet.
+      output.clear();
+      output.reserve(input.size());
+      for (letter_type const& l : input) {
+        output.push_back(_alphabet_map.at(l));
+      }
+    }
+  }
+
+  void ToString::operator()(std::string& output, word_type const& input) const {
+    if (!empty()) {
+      for (letter_type const& l : input) {
+        if (_alphabet_map.find(l) == _alphabet_map.cend()) {
+          LIBSEMIGROUPS_EXCEPTION(
+              "the 2nd argument (input string) contains the letter \'{}\' that "
+              "does not belong to the alphabet!",
+              l);
+        }
+      }
+    }
+    call_no_checks(output, input);
+  }
 
   ////////////////////////////////////////////////////////////////////////
   // 4. Strings
@@ -392,6 +440,7 @@ namespace libsemigroups {
     _current_valid = false;
     _letters.clear();
     _to_word.init();
+    _to_string.init();
     _word_range.init();
     return *this;
   }
@@ -406,6 +455,7 @@ namespace libsemigroups {
     // Need to do this _to_word.init(x) first, because if this throws then the
     // rest should remain unchanged.
     _to_word.init(x);
+    _to_string.init(x);
     _word_range.number_of_letters(x.size());
     _current_valid = _word_range.valid();
     _letters       = x;

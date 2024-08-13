@@ -43,7 +43,7 @@
 
 #include "libsemigroups/constants.hpp"        // for operator==, PositiveIn...
 #include "libsemigroups/exception.hpp"        // for LibsemigroupsException
-#include "libsemigroups/fpsemi-examples.hpp"  // for Inner, ToStrings, Str...
+#include "libsemigroups/fpsemi-examples.hpp"  // for Inner, ToString, Str...
 #include "libsemigroups/knuth-bendix.hpp"     // for KnuthBendix, normal_forms
 #include "libsemigroups/obvinf.hpp"           // for is_obviously_infinite
 #include "libsemigroups/order.hpp"            // for shortlex_compare
@@ -51,7 +51,7 @@
 #include "libsemigroups/presentation.hpp"     // for add_rule, Presentation
 #include "libsemigroups/ranges.hpp"           // for equal
 #include "libsemigroups/word-graph.hpp"       // for WordGraph
-#include "libsemigroups/words.hpp"            // for Inner, ToStrings, Str...
+#include "libsemigroups/words.hpp"            // for Inner, ToString, Str...
 
 #include "libsemigroups/detail/report.hpp"  // for ReportGuard
 
@@ -104,7 +104,7 @@ namespace libsemigroups {
     REQUIRE(kb.number_of_classes() == POSITIVE_INFINITY);
     REQUIRE(knuth_bendix::normal_forms(kb).min(0).max(6).count() == 1206);
     auto nf = knuth_bendix::normal_forms(kb);
-    REQUIRE((nf.min(2).max(3) | ToStrings(p.alphabet()) | to_vector())
+    REQUIRE((nf.min(2).max(3) | ToString(p.alphabet()) | to_vector())
             == std::vector<std::string>({"AB",
                                          "AC",
                                          "Ab",
@@ -146,7 +146,7 @@ namespace libsemigroups {
     REQUIRE(knuth_bendix::normal_forms(kb).min(1).max(POSITIVE_INFINITY).count()
             == 4);
     auto nf = knuth_bendix::normal_forms(kb);
-    REQUIRE((nf.min(1).max(10) | ToStrings(p.alphabet()) | to_vector())
+    REQUIRE((nf.min(1).max(10) | ToString(p.alphabet()) | to_vector())
             == std::vector<std::string>({"a", "b", "aa", "ab"}));
   }
 
@@ -172,7 +172,7 @@ namespace libsemigroups {
     REQUIRE(knuth_bendix::normal_forms(kb).min(0).max(POSITIVE_INFINITY).count()
             == POSITIVE_INFINITY);
     auto nf = knuth_bendix::normal_forms(kb);
-    REQUIRE((nf.min(1).max(4) | ToStrings(p.alphabet()) | to_vector())
+    REQUIRE((nf.min(1).max(4) | ToString(p.alphabet()) | to_vector())
             == std::vector<std::string>({"a",
                                          "b",
                                          "aa",
@@ -237,7 +237,7 @@ namespace libsemigroups {
 
     Strings s;
     s.alphabet(p.alphabet()).min(1).max(6);
-    REQUIRE(equal(s, nf | ToStrings(p.alphabet())));
+    REQUIRE(equal(s, nf | ToString(p.alphabet())));
   }
 
   TEMPLATE_TEST_CASE("from GAP smalloverlap gap/test.gi (infinite)",
@@ -268,7 +268,7 @@ namespace libsemigroups {
     REQUIRE(kb.number_of_classes() == POSITIVE_INFINITY);
     REQUIRE(knuth_bendix::normal_forms(kb).min(1).max(6).count() == 17'921);
     auto nf = knuth_bendix::normal_forms(kb);
-    REQUIRE((nf.min(1).max(2) | ToStrings(p.alphabet()) | to_vector())
+    REQUIRE((nf.min(1).max(2) | ToString(p.alphabet()) | to_vector())
             == std::vector<std::string>({"a", "b", "c", "d", "e", "f", "g"}));
   }
 
@@ -299,7 +299,7 @@ namespace libsemigroups {
     REQUIRE(knuth_bendix::normal_forms(kb).min(1).max(6).count() == 35'199);
     auto nf = knuth_bendix::normal_forms(kb);
     REQUIRE(
-        (nf.min(1).max(2) | ToStrings(p.alphabet()) | to_vector())
+        (nf.min(1).max(2) | ToString(p.alphabet()) | to_vector())
         == std::vector<std::string>({"a", "b", "c", "d", "e", "f", "g", "h"}));
   }
 
@@ -327,7 +327,7 @@ namespace libsemigroups {
 
     auto nf = knuth_bendix::normal_forms(kb);
     REQUIRE(
-        (nf.min(1).max(2) | ToStrings(p.alphabet()) | to_vector())
+        (nf.min(1).max(2) | ToString(p.alphabet()) | to_vector())
         == std::vector<std::string>({"a", "b", "c", "d", "e", "f", "g", "h"}));
   }
 
@@ -358,7 +358,7 @@ namespace libsemigroups {
     REQUIRE(kb.number_of_classes() == POSITIVE_INFINITY);
     REQUIRE(knuth_bendix::normal_forms(kb).min(1).max(6).count() == 102'255);
     auto nf = knuth_bendix::normal_forms(kb);
-    REQUIRE((nf.min(1).max(2) | ToStrings(p.alphabet()) | to_vector())
+    REQUIRE((nf.min(1).max(2) | ToString(p.alphabet()) | to_vector())
             == std::vector<std::string>(
                 {"a", "b", "c", "d", "e", "f", "g", "h", "i", "j"}));
   }
@@ -390,7 +390,7 @@ namespace libsemigroups {
             == POSITIVE_INFINITY);
     REQUIRE(knuth_bendix::normal_forms(kb).min(1).max(6).count() == 255'932);
     auto nf = knuth_bendix::normal_forms(kb);
-    REQUIRE((nf.min(1).max(2) | ToStrings(p.alphabet()) | to_vector())
+    REQUIRE((nf.min(1).max(2) | ToString(p.alphabet()) | to_vector())
             == std::vector<std::string>(
                 {"a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l"}));
   }
@@ -448,7 +448,7 @@ namespace libsemigroups {
     REQUIRE(knuth_bendix::normal_forms(kb).min(0).max(POSITIVE_INFINITY).count()
             == POSITIVE_INFINITY);
     auto nf = knuth_bendix::normal_forms(kb);
-    REQUIRE((nf.min(0).max(2) | ToStrings(p.alphabet()) | to_vector())
+    REQUIRE((nf.min(0).max(2) | ToString(p.alphabet()) | to_vector())
             == std::vector<std::string>({"", "A", "B", "a", "b", "c"}));
   }
 
@@ -529,7 +529,7 @@ namespace libsemigroups {
     REQUIRE(knuth_bendix::normal_forms(kb).min(1).max(POSITIVE_INFINITY).count()
             == POSITIVE_INFINITY);
     auto nf = knuth_bendix::normal_forms(kb);
-    REQUIRE((nf.min(1).max(2) | ToStrings(p.alphabet()) | to_vector())
+    REQUIRE((nf.min(1).max(2) | ToString(p.alphabet()) | to_vector())
             == std::vector<std::string>({"a", "b", "c"}));
   }
 
@@ -576,7 +576,7 @@ namespace libsemigroups {
     REQUIRE(knuth_bendix::normal_forms(kb).min(0).max(POSITIVE_INFINITY).count()
             == POSITIVE_INFINITY);
     auto nf = knuth_bendix::normal_forms(kb);
-    REQUIRE((nf.min(0).max(4) | ToStrings(p.alphabet()) | to_vector())
+    REQUIRE((nf.min(0).max(4) | ToString(p.alphabet()) | to_vector())
             == std::vector<std::string>(
                 {"",    "a",   "A",   "b",   "B",   "aa",  "ab",  "aB",  "AA",
                  "Ab",  "AB",  "bb",  "BB",  "aaa", "aab", "aaB", "abb", "aBB",
@@ -653,7 +653,7 @@ namespace libsemigroups {
     REQUIRE(knuth_bendix::normal_forms(kb).min(0).max(POSITIVE_INFINITY).count()
             == 22);
     auto nf = knuth_bendix::normal_forms(kb);
-    REQUIRE((nf.min(0).max(4) | ToStrings(p.alphabet()) | to_vector())
+    REQUIRE((nf.min(0).max(4) | ToString(p.alphabet()) | to_vector())
             == std::vector<std::string>({"",    "A",   "B",   "C",  "D",  "Y",
                                          "F",   "AB",  "AC",  "AD", "AY", "AF",
                                          "BA",  "BD",  "BY",  "CY", "DB", "ABA",
@@ -704,7 +704,7 @@ namespace libsemigroups {
     REQUIRE(knuth_bendix::normal_forms(kb).min(0).max(POSITIVE_INFINITY).count()
             == 24);
     auto nf = knuth_bendix::normal_forms(kb);
-    REQUIRE((nf.min(0).max(7) | ToStrings(p.alphabet()) | to_vector())
+    REQUIRE((nf.min(0).max(7) | ToString(p.alphabet()) | to_vector())
             == std::vector<std::string>(
                 {"",     "a",    "b",     "B",     "ab",    "aB",
                  "ba",   "Ba",   "aba",   "aBa",   "bab",   "baB",
@@ -872,7 +872,7 @@ namespace libsemigroups {
     auto nf = knuth_bendix::normal_forms(kb);
     REQUIRE(nf.min(1).max(POSITIVE_INFINITY).count() == 11);
     REQUIRE(
-        (nf | ToStrings(p.alphabet()) | to_vector())
+        (nf | ToString(p.alphabet()) | to_vector())
         == std::vector<std::string>(
             {"a", "b", "c", "d", "e", "aa", "ac", "ad", "bb", "be", "aad"}));
   }
@@ -901,7 +901,7 @@ namespace libsemigroups {
     auto nf = knuth_bendix::normal_forms(kb);
     REQUIRE(nf.min(0).max(POSITIVE_INFINITY).count() == 12);
     REQUIRE(
-        (nf | ToStrings(p.alphabet()) | to_vector())
+        (nf | ToString(p.alphabet()) | to_vector())
         == std::vector<std::string>(
             {"", "a", "b", "c", "d", "e", "f", "aa", "ac", "ae", "bd", "df"}));
   }
@@ -963,7 +963,7 @@ namespace libsemigroups {
     REQUIRE(knuth_bendix::normal_forms(kb).min(0).max(POSITIVE_INFINITY).count()
             == 120);
     auto nf = knuth_bendix::normal_forms(kb);
-    REQUIRE((nf.min(0).max(4) | ToStrings(p.alphabet()) | to_vector())
+    REQUIRE((nf.min(0).max(4) | ToString(p.alphabet()) | to_vector())
             == std::vector<std::string>({"",    "A",   "B",   "b",   "AB",
                                          "Ab",  "BA",  "BB",  "bA",  "bb",
                                          "ABA", "ABB", "AbA", "Abb", "BAB",
@@ -999,7 +999,7 @@ namespace libsemigroups {
             == 336);
     auto nf = knuth_bendix::normal_forms(kb);
     REQUIRE(
-        (nf.min(0).max(4) | ToStrings(p.alphabet()) | to_vector())
+        (nf.min(0).max(4) | ToString(p.alphabet()) | to_vector())
         == std::vector<std::string>(
             {"",    "a",   "b",   "A",   "B",   "aa",  "ab",  "aB",  "ba",
              "bb",  "bA",  "Ab",  "AA",  "AB",  "Ba",  "BA",  "aaa", "aab",
@@ -1028,7 +1028,7 @@ namespace libsemigroups {
     REQUIRE(knuth_bendix::normal_forms(kb).min(0).max(10).count() == 55);
 
     auto nf = knuth_bendix::normal_forms(kb);
-    REQUIRE((nf.min(0).max(4) | ToStrings(p.alphabet()) | to_vector())
+    REQUIRE((nf.min(0).max(4) | ToString(p.alphabet()) | to_vector())
             == std::vector<std::string>(
                 {"", "a", "b", "aa", "ba", "bb", "aaa", "baa", "bba", "bbb"}));
   }
@@ -1058,7 +1058,7 @@ namespace libsemigroups {
     REQUIRE(knuth_bendix::normal_forms(kb).min(0).max(10).count() == 19);
     auto nf = knuth_bendix::normal_forms(kb);
     REQUIRE(
-        (nf.min(0).max(4) | ToStrings(p.alphabet()) | to_vector())
+        (nf.min(0).max(4) | ToString(p.alphabet()) | to_vector())
         == std::vector<std::string>({"", "a", "c", "aa", "cc", "aaa", "ccc"}));
   }
 
@@ -1082,7 +1082,7 @@ namespace libsemigroups {
     REQUIRE(kb.number_of_classes() == POSITIVE_INFINITY);
     REQUIRE(knuth_bendix::normal_forms(kb).min(1).max(10).count() == 18);
     auto nf = knuth_bendix::normal_forms(kb);
-    REQUIRE((nf.min(1).max(4) | ToStrings(p.alphabet()) | to_vector())
+    REQUIRE((nf.min(1).max(4) | ToString(p.alphabet()) | to_vector())
             == std::vector<std::string>({"a", "b", "ab", "ba", "aba", "bab"}));
   }
 
@@ -1107,7 +1107,7 @@ namespace libsemigroups {
     REQUIRE(knuth_bendix::normal_forms(kb).min(1).max(POSITIVE_INFINITY).count()
             == 243);
     auto nf = knuth_bendix::normal_forms(kb);
-    REQUIRE((nf.min(1).max(4) | ToStrings(p.alphabet()) | to_vector())
+    REQUIRE((nf.min(1).max(4) | ToString(p.alphabet()) | to_vector())
             == std::vector<std::string>({"a",
                                          "b",
                                          "aa",
@@ -1144,7 +1144,7 @@ namespace libsemigroups {
     REQUIRE(knuth_bendix::normal_forms(kb).min(1).max(POSITIVE_INFINITY).count()
             == 99);
     auto nf = knuth_bendix::normal_forms(kb);
-    REQUIRE((nf.min(1).max(4) | ToStrings(p.alphabet()) | to_vector())
+    REQUIRE((nf.min(1).max(4) | ToString(p.alphabet()) | to_vector())
             == std::vector<std::string>({"a",
                                          "b",
                                          "aa",

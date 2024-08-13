@@ -171,7 +171,7 @@ namespace libsemigroups {
         std::vector<std::vector<std::string>> result;
         for (auto const& klass : words) {
           result.push_back(rx::iterator_range(klass.begin(), klass.end())
-                           | ToStrings(p.alphabet()) | rx::to_vector());
+                           | ToString(p.alphabet()) | rx::to_vector());
         }
         return result;
       }

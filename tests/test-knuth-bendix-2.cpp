@@ -55,7 +55,7 @@
 #include "libsemigroups/presentation.hpp"     // for add_rule, Presentation
 #include "libsemigroups/to-froidure-pin.hpp"  // for to_froidure_pin
 #include "libsemigroups/word-graph.hpp"       // for WordGraph
-#include "libsemigroups/words.hpp"            // for Inner, ToStrings
+#include "libsemigroups/words.hpp"            // for Inner, ToString
 
 #include "libsemigroups/detail/report.hpp"  // for ReportGuard
 
@@ -145,7 +145,7 @@ namespace libsemigroups {
 
     auto nf = knuth_bendix::normal_forms(kb);
     REQUIRE(
-        (nf.min(1).max(5) | ToStrings(p.alphabet()) | to_vector())
+        (nf.min(1).max(5) | ToString(p.alphabet()) | to_vector())
         == std::vector<std::string>(
             {"a", "b", "c", "d", "e", "aa", "ac", "ad", "bb", "be", "aad"}));
     REQUIRE(kb.number_of_classes() == 11);
@@ -230,7 +230,7 @@ namespace libsemigroups {
     auto nf = knuth_bendix::normal_forms(kb).min(0).max(7);
     REQUIRE(nf.count() == 155'577);
     REQUIRE(
-        (nf.min(0).max(3) | ToStrings(p.alphabet()) | to_vector())
+        (nf.min(0).max(3) | ToString(p.alphabet()) | to_vector())
         == std::vector<std::string>(
             {"",   "a",  "A",  "c",  "C",  "b",  "B",  "d",  "D",  "aa", "ac",
              "aC", "ab", "aB", "ad", "aD", "AA", "Ac", "AC", "Ab", "AB", "Ad",
@@ -281,7 +281,7 @@ namespace libsemigroups {
     auto nf = knuth_bendix::normal_forms(kb);
 
     REQUIRE(nf.count() == 1080);
-    REQUIRE((nf.min(0).max(3) | ToStrings(p.alphabet()) | to_vector())
+    REQUIRE((nf.min(0).max(3) | ToString(p.alphabet()) | to_vector())
             == std::vector<std::string>({"",
                                          "a",
                                          "b",
@@ -318,7 +318,7 @@ namespace libsemigroups {
 
     auto nf = knuth_bendix::normal_forms(kb).min(0).max(3);
 
-    REQUIRE((nf | ToStrings(p.alphabet()) | to_vector())
+    REQUIRE((nf | ToString(p.alphabet()) | to_vector())
             == std::vector<std::string>({"",
                                          "a",
                                          "A",
@@ -1047,7 +1047,7 @@ namespace libsemigroups {
 
     REQUIRE(nf.min(4).max(5).count() == 24);
     nf.min(4);
-    REQUIRE((nf | ToStrings(p.alphabet()) | to_vector())
+    REQUIRE((nf | ToString(p.alphabet()) | to_vector())
             == std::vector<std::string>({"aaaB", "aaac", "aaBa", "aacA", "aBaa",
                                          "aBac", "acAA", "acAb", "AAAB", "AAbA",
                                          "AABa", "AbAA", "AbAb", "ABaa", "ABac",
@@ -1081,7 +1081,7 @@ namespace libsemigroups {
     auto nf1 = knuth_bendix::normal_forms(kb).min(4).max(5);
     REQUIRE(nf1.count() == 0);
 
-    auto nf = (knuth_bendix::normal_forms(kb) | ToStrings(p.alphabet()));
+    auto nf = (knuth_bendix::normal_forms(kb) | ToString(p.alphabet()));
     REQUIRE((nf | to_vector())
             == std::vector<std::string>({"",
                                          "B",
@@ -1206,7 +1206,7 @@ namespace libsemigroups {
     REQUIRE(kb.presentation().rules.size() / 2 == 18);
     REQUIRE(kb.number_of_classes() == 22);
 
-    auto nf = (knuth_bendix::normal_forms(kb) | ToStrings(p.alphabet()));
+    auto nf = (knuth_bendix::normal_forms(kb) | ToString(p.alphabet()));
     REQUIRE((nf | to_vector())
             == std::vector<std::string>({"",    "A",   "B",   "C",  "D",  "Y",
                                          "F",   "AB",  "AC",  "AD", "AY", "AF",
@@ -1253,7 +1253,7 @@ namespace libsemigroups {
     REQUIRE(kb.confluent());
     REQUIRE(kb.number_of_classes() == 243);
     auto nf = (knuth_bendix::normal_forms(kb).min(1).max(3)
-               | ToStrings(p.alphabet()));
+               | ToString(p.alphabet()));
     REQUIRE((nf | to_vector())
             == std::vector<std::string>({"a", "b", "aa", "ab", "ba", "bb"}));
   }
@@ -1425,7 +1425,7 @@ namespace libsemigroups {
     REQUIRE(kb.normal_form("bd") == "bd");
     REQUIRE(kb.normal_form("db") == "db");
     REQUIRE(kb.normal_form("cbdcbd") == "cd");
-    REQUIRE((knuth_bendix::normal_forms(kb) | ToStrings("abcd") | to_vector())
+    REQUIRE((knuth_bendix::normal_forms(kb) | ToString("abcd") | to_vector())
             == std::vector<std::string>(
                 {"",    "a",   "b",   "c",   "d",    "ab",   "ac",   "ba",
                  "bc",  "bd",  "cb",  "cd",  "db",   "abc",  "acb",  "bac",
@@ -1500,7 +1500,7 @@ namespace libsemigroups {
     kb.run();
     // TODO implement knuth_bendix::idempotents
     REQUIRE(
-        (knuth_bendix::normal_forms(kb) | ToStrings("ab")
+        (knuth_bendix::normal_forms(kb) | ToString("ab")
          | filter([&kb](auto const& w) { return kb.normal_form(w + w) == w; })
          | to_vector())
         == std::vector<std::string>({"", "a", "b", "ba"}));

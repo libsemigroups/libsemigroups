@@ -140,7 +140,7 @@ namespace libsemigroups {
     REQUIRE(kb.number_of_active_rules() == 8);
     REQUIRE(kb.number_of_classes() == 3);
     auto nf = knuth_bendix::normal_forms(kb);
-    REQUIRE((nf | ToStrings(p.alphabet()) | to_vector())
+    REQUIRE((nf | ToString(p.alphabet()) | to_vector())
             == std::vector<std::string>({"", "a", "A"}));
   }
 
@@ -218,7 +218,7 @@ namespace libsemigroups {
     std::sort(ntc[0].begin(), ntc[0].end(), ShortLexCompare());
 
     REQUIRE(ntc[0]
-            == (knuth_bendix::normal_forms(kb) | ToStrings(p.alphabet())
+            == (knuth_bendix::normal_forms(kb) | ToString(p.alphabet())
                 | rx::sort(ShortLexCompare()) | rx::to_vector()));
   }
 
@@ -501,7 +501,7 @@ namespace libsemigroups {
     REQUIRE(kb.normal_form("aabbaabbaabbaabb") == "bbbbbbbb");
     REQUIRE(kb.normal_form("aabbaabbaabbaabbaabb") == "aabbbbbbbbbb");
     auto nf = knuth_bendix::normal_forms(kb).min(1);
-    REQUIRE((nf | ToStrings(p.alphabet()) | to_vector())
+    REQUIRE((nf | ToString(p.alphabet()) | to_vector())
             == std::vector<std::string>({"a",
                                          "b",
                                          "aa",

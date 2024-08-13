@@ -4155,7 +4155,7 @@ namespace libsemigroups {
       if (n < 3)
         continue;
 
-      //      REQUIRE((todd_coxeter::normal_forms(tc) | ToStrings("abc") |
+      //      REQUIRE((todd_coxeter::normal_forms(tc) | ToString("abc") |
       //      to_vector())
       //              == std::vector<std::string>());
     }
@@ -4214,7 +4214,7 @@ namespace libsemigroups {
     // };
 
     // std::for_each(ws.begin(), ws.end(), involution);
-    // REQUIRE((iterator_range(ws.begin(), ws.end()) | ToStrings("abcde")
+    // REQUIRE((iterator_range(ws.begin(), ws.end()) | ToString("abcde")
     //          | to_vector())
     //         == std::vector<std::string>());
 
@@ -4259,7 +4259,7 @@ namespace libsemigroups {
     //          | transform(convert) | to_vector())
     //         == std::vector<std::string>());
 
-    REQUIRE((todd_coxeter::normal_forms(tc) | ToStrings("abcd") | to_vector())
+    REQUIRE((todd_coxeter::normal_forms(tc) | ToString("abcd") | to_vector())
             == std::vector<std::string>());
   }
 
@@ -4416,7 +4416,7 @@ namespace libsemigroups {
       // REQUIRE(partition(tc, possible3.cbegin(), possible3.cend())
       //         == std::vector<std::vector<word_type>>());
       // REQUIRE(todd_coxeter::normal_form(tc, 3413401234_w) == ""_w);
-      // REQUIRE((todd_coxeter::normal_forms(tc) | ToStrings("abcd")
+      // REQUIRE((todd_coxeter::normal_forms(tc) | ToString("abcd")
       //          | to_vector())
       //         == std::vector<std::string>());
     }

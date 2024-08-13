@@ -37,6 +37,7 @@
 #include <initializer_list>  // for initializer_list
 #include <iterator>          // for distance
 #include <string>            // for basic_string
+#include <unordered_map>     // for vector, operator==
 #include <utility>           // for forward
 #include <variant>           // for visit, operator==
 #include <vector>            // for vector, operator==
@@ -866,7 +867,7 @@ namespace libsemigroups {
 
     //! \brief Convert a string to a word_type.
     //!
-    //! This function converts its argument \p input into a word_type The
+    //! This function converts its argument \p input into a word_type. The
     //! characters of \p input are converted using the alphabet used to
     //! construct the object or set via init(), or with \ref
     //! human_readable_index if \ref empty returns `true`.
@@ -1021,158 +1022,264 @@ namespace libsemigroups {
   [[nodiscard]] char human_readable_char(size_t i);
 
   //! \ingroup word_range_group
-  //! \brief Check if the word is valid over the given alphabet
+  //! \brief Class for converting \ref word_type into std::string with specified
+  //! alphabet.
   //!
-  //! This function checks if every value in the range `[first, last)` is in the
-  //! range \f$[0, n)\f$.
+  //! Defined in `words.hpp`.
   //!
-  //! \tparam Iterator the type of the second and third arguments.
+  //! An instance of this class is used to convert from \ref word_type to
+  //! std::string. The letters in the word are converted to characters
+  //! according to their position in alphabet used to construct a ToString
+  //! instance if one is provided, or using \ref human_readable_char otherwise.
   //!
-  //! \param n one beyond the upper bound of the valid alphabet.
-  //! \param first iterator pointing to the first letter of the word to
-  //! validate.
-  //! \param last iterator pointing one beyond the last letter of the
-  //! word to validate.
+  //! \par Example
+  //! \code
+  //! ToString tostring("bac");
+  //! tostring(word_type({1, 0, 2}));                 // returns "abc"
+  //! tostring(word_type({0, 1, 1, 0, 1, 1, 0, 2}));  // returns "baabaabc"
   //!
-  //! \throws LibsemigroupsException if any letter in the range `[first, last)`
-  //! is not in the range \f$[0, n)\f$.
-  template <typename Iterator>
-  void validate_word(size_t n, Iterator first, Iterator last) {
-    for (auto it = first; it != last; ++it) {
-      if (*it < 0 || *it >= n) {
-        LIBSEMIGROUPS_EXCEPTION(fmt::format(
-            "invalid letter {}, letters must be in the range [0, {})", *it, n));
+  //! tostring.init();
+  //! tostring(word_type({1, 0, 2}));                 // returns "bac"
+  //! \endcode
+  class ToString {
+   public:
+    //! \brief Default constructor.
+    //!
+    //! Constructs an empty object with no alphabet set.
+    ToString() noexcept : _alphabet_map() {
+      init();
+    }
+
+    // TODO (later) noexcept?
+    //! \brief Default copy constructor.
+    //!
+    //! Default copy constructor.
+    ToString(ToString const&);
+
+    //! \brief Default move constructor.
+    //!
+    //! Default move constructor.
+    ToString(ToString&&);
+
+    //! \brief Default copy assignment.
+    //!
+    //! Default copy assignment.
+    ToString& operator=(ToString const&);
+
+    //! \brief Default move assignment.
+    //!
+    //! Default move assignment.
+    ToString& operator=(ToString&&);
+
+    //! \brief Default destructor.
+    //!
+    //! Default destructor.
+    ~ToString();
+
+    //! \brief Initialize an existing ToString object.
+    //!
+    //! This function puts a ToString object back into the same state as if it
+    //! had been newly default constructed.
+    //!
+    //! \returns A reference to \c *this.
+    //!
+    //! \exception
+    //! \noexcept
+    //!
+    //! \sa ToString()
+    ToString& init() noexcept {
+      _alphabet_map.clear();
+      return *this;
+    }
+
+    //! \brief Construct with given alphabet.
+    //!
+    //! Construct a ToString object with the given alphabet.
+    //!
+    //! \param alphabet the alphabet.
+    //!
+    //! \throws LibsemigroupsException if there are repeated letters in
+    //! \p alphabet.
+    explicit ToString(std::string const& alphabet) : _alphabet_map() {
+      init(alphabet);
+    }
+
+    //! \brief Initialize an existing Tostring object.
+    //!
+    //! This function puts a ToString object back into the same state as if it
+    //! had been newly constructed from \p alphabet.
+    //!
+    //! \param alphabet the alphabet
+    //!
+    //! \returns A reference to \c *this.
+    //!
+    //! \throws LibsemigroupsException if there are repeated letters in
+    //! \p alphabet.
+    //!
+    //! \sa ToString(std::string const& alphabet)
+    ToString& init(std::string const& alphabet);
+
+    //! \brief Check if the alphabet is defined.
+    //!
+    //! This function return \c true if no alphabet has been defined, and \c
+    //! false otherwise.
+    //!
+    //! \returns A value of type \c bool.
+    //!
+    //! \exception
+    //! \noexcept
+    [[nodiscard]] bool empty() const noexcept {
+      return _alphabet_map.empty();
+    }
+
+    //! \brief Convert a \ref word_type to a std::string.
+    //!
+    //! This function converts its second argument \p input into a std::string
+    //! and stores the result in the first argument \p output. The characters of
+    //! \p input are converted using the alphabet used to construct the object
+    //! or set via init(), or with \ref human_readable_char if \ref empty
+    //! returns `true`.
+    //!
+    //! The contents of the first argument \p output, if any, is removed.
+    //!
+    //! \param output std::string to hold the result
+    //! \param input the \ref word_type to convert
+    //!
+    //! \warning This functions performs no checks on its arguments. In
+    //! particular, if the alphabet used to define an instance of ToString is
+    //! not empty, and \p input contains letters that do not correspond to
+    //! letters of the alphabet, then bad things will happen.
+    //!
+    //! \sa
+    //! * \ref literals
+    void call_no_checks(std::string& output, word_type const& input) const;
+
+    //! \brief Convert a \ref word_type to a std::string.
+    //!
+    //! This function converts its argument \p input into a std::string. The
+    //! characters of \p input are converted using the alphabet used to
+    //! construct the object or set via init(), or with \ref human_readable_char
+    //! if \ref empty returns `true`.
+    //!
+    //! \param input the \ref word_type to convert
+    //!
+    //! \warning This functions performs no checks on its arguments. In
+    //! particular, if the alphabet used to define an instance of ToString is
+    //! not empty, and \p input contains letters that do not correspond to
+    //! letters of the alphabet, then bad things will happen.
+    //!
+    //! \sa
+    //! * \ref literals
+    [[nodiscard]] std::string call_no_checks(word_type const& input) const {
+      std::string output;
+      call_no_checks(output, input);
+      return output;
+    }
+
+    //! \brief Convert a \ref word_type to a std::string.
+    //!
+    //! This function converts its second argument \p input into a std::string
+    //! and stores the result in the first argument \p output. The characters of
+    //! \p input are converted using the alphabet used to construct the object
+    //! or set via init(), or with \ref human_readable_char if \ref empty
+    //! returns `true`.
+    //!
+    //! The contents of the first argument \p output, if any, is removed.
+    //!
+    //! \param output word to hold the result
+    //! \param input the string to convert
+    //!
+    //! \throw LibsemigroupsException if the alphabet used to define an instance
+    //! of ToWord is not empty and \p input contains letters that do not
+    //! correspond to letters of the alphabet.
+    //!
+    //! \sa
+    //! * \ref literals
+    void operator()(std::string& output, word_type const& input) const;
+
+    //! \brief Convert a \ref word_type to a std::string.
+    //!
+    //! This function converts its argument \p input into a std::string. The
+    //! characters of \p input are converted using the alphabet used to
+    //! construct the object or set via init(), or with \ref human_readable_char
+    //! if \ref empty returns `true`.
+    //!
+    //! \param input the string to convert
+    //!
+    //! \throw LibsemigroupsException if the alphabet used to define an instance
+    //! of ToWord is not empty and \p input contains letters that do not
+    //! correspond to letters of the alphabet.
+    //!
+    //! \sa
+    //! * \ref literals
+    [[nodiscard]] std::string operator()(word_type const& input) const {
+      std::string output;
+                  operator()(output, input);
+      return output;
+    }
+
+   private:
+    template <typename InputRange>
+    struct Range {
+      using output_type = std::string;
+
+      static constexpr bool is_finite     = rx::is_finite_v<InputRange>;
+      static constexpr bool is_idempotent = rx::is_idempotent_v<InputRange>;
+
+      InputRange      _input;
+      ToString const* _to_string;
+
+      explicit Range(InputRange const& input, ToString const& t_str)
+          : _input(input), _to_string(new ToString(t_str)) {}
+
+      explicit Range(InputRange&& input, ToString const& t_str) noexcept
+          : _input(std::move(input)), _to_string(new ToString(t_str)) {}
+
+      // Not noexcept because ToString()() isn't
+      [[nodiscard]] output_type get() const {
+        return _to_string->operator()(_input.get());
       }
+
+      constexpr void next() noexcept {
+        _input.next();
+      }
+
+      [[nodiscard]] constexpr bool at_end() const noexcept {
+        return _input.at_end();
+      }
+
+      [[nodiscard]] constexpr size_t size_hint() const noexcept {
+        return _input.size_hint();
+      }
+    };
+
+   public:
+    //! \brief Call operator for combining with other range objects.
+    //!
+    //! A custom combinator for rx::ranges to convert the output of a WordRange
+    //! object into std::string, that can be combined with other combinators
+    //! using `operator|`.
+    //!
+    //! \par Example
+    //! \code
+    //! WordRange words;
+    //! words.number_of_letters(1).min(0).max(10);
+    //!
+    //! auto strings = (words | ToString("a"));
+    //! // Contains the strings
+    //! // {"", "a", "aa", "aaa", "aaaa", "aaaaa", "aaaaaa", "aaaaaaa",
+    //! // "aaaaaaaa", "aaaaaaaaa"};
+    //! \endcode
+    template <typename InputRange,
+              typename = std::enable_if_t<rx::is_input_or_sink_v<InputRange>>>
+    [[nodiscard]] constexpr auto operator()(InputRange&& input) const {
+      using Inner = rx::get_range_type_t<InputRange>;
+      return Range<Inner>(std::forward<InputRange>(input), *this);
     }
-  }
 
-  //! \ingroup word_range_group
-  //! \brief Convert a word_type to a string.
-  //!
-  //! This function converts the word_type pointed to by the second and third
-  //! arguments \p input_first and \p inpput_last into a \ref std::string, and
-  //! stores the result in the final argument \p output. The characters in
-  //! `[input_first, input_last)` are converted using the fourth parameter \p
-  //! alphabet, so that \c i is mapped to \c alphabet[i] for each letter \c i.
-  //!
-  //! The contents of the fourth argument \p output, if any, are removed.
-  //!
-  //! \tparam Iterator the type of the second and third arguments.
-  //!
-  //! \param alphabet the alphabet to use for the conversion.
-  //! \param input_first iterator pointing at the first letter of the word to
-  //! convert
-  //! \param input_last iterator pointing one beyond the last letter of
-  //! the word to convert
-  //! \param output word to hold the result
-  //!
-  //! \exception
-  //! \no_libsemigroups_except
-  //!
-  //! \warning This function performs no checks on its arguments, and so in
-  //! particular if any letter in the word being converted is not less than \p
-  //! alphabet.size(), then bad things may happen.
-  //!
-  //! \sa
-  //! * ToWord
-  //! * to_word
-  //! * \ref literals
-  template <typename Iterator>
-  void to_string_no_checks(std::string_view alphabet,
-                           Iterator         input_first,
-                           Iterator         input_last,
-                           std::string&     output) {
-    output.resize(std::distance(input_first, input_last));
-    size_t i = 0;
-    for (auto it = input_first; it != input_last; ++it) {
-      output[i++] = alphabet[*it];
-    }
-  }
-
-  //! TODO doc
-  template <typename Iterator>
-  void to_string(std::string_view alphabet,
-                 Iterator         input_first,
-                 Iterator         input_last,
-                 std::string&     output) {
-    validate_word(alphabet.size(), input_first, input_last);
-    to_string_no_checks(alphabet, input_first, input_last, output);
-  }
-
-  //! \ingroup word_range_group
-  //! \brief Convert a word_type to a string.
-  //!
-  //! See to_string_no_checks(std::string const&, Iterator, Iterator,
-  //! std::string&). The difference is that this takes a \ref word_type to
-  //! convert, rather than a pair of iterators.
-  //!
-  //! \warning This function performs no checks on its arguments, and so in
-  //! particular if any letter in the word being converted is not less than \p
-  //! alphabet.size(), then bad things may happen.
-  static inline void to_string_no_checks(std::string_view alphabet,
-                                         word_type const& input,
-                                         std::string&     output) {
-    to_string_no_checks(alphabet, input.cbegin(), input.cend(), output);
-  }
-
-  //! TODO doc
-  static inline void to_string(std::string_view alphabet,
-                               word_type const& input,
-                               std::string&     output) {
-    validate_word(alphabet.size(), input.cbegin(), input.cend());
-    to_string_no_checks(alphabet, input, output);
-  }
-
-  //! \ingroup word_range_group
-  //! \brief Convert a word_type to a string.
-  //!
-  //! See to_string_no_checks(std::string const&, Iterator, Iterator,
-  //! std::string&). The difference is that this function returns a new string.
-  //!
-  //! \warning This function performs no checks on its arguments, and so in
-  //! particular if any letter in the word being converted is not less than \p
-  //! alphabet.size(), then bad things may happen.
-  template <typename Iterator>
-  [[nodiscard]] std::string to_string_no_checks(std::string_view alphabet,
-                                                Iterator         first,
-                                                Iterator         last) {
-    std::string output;
-    to_string_no_checks(alphabet, first, last, output);
-    return output;
-  }
-
-  //! TODO doc
-  template <typename Iterator>
-  [[nodiscard]] std::string to_string(std::string_view alphabet,
-                                      Iterator         first,
-                                      Iterator         last) {
-    validate_word(alphabet.size(), first, last);
-    return to_string_no_checks(alphabet, first, last);
-  }
-
-  //! \ingroup word_range_group
-  //! \brief Convert a word_type to a string.
-  //!
-  //! See to_string(std::string_view, word_type const&, std::string&).
-  //! The difference is that this function returns a new string.
-  //!
-  //! \warning This function performs no checks on its arguments, and so in
-  //! particular if any letter in the word being converted is not less than \p
-  //! alphabet.size(), then bad things may happen.
-  [[nodiscard]] static inline std::string
-  to_string_no_checks(std::string_view alphabet, word_type const& input) {
-    return to_string_no_checks(alphabet, input.cbegin(), input.cend());
-  }
-
-  //! TODO doc
-  [[nodiscard]] static inline std::string to_string(std::string_view alphabet,
-                                                    word_type const& input) {
-    validate_word(alphabet.size(), input.cbegin(), input.cend());
-    return to_string_no_checks(alphabet, input);
-  }
-
-  // TODO (later) single arg to_string(word_type const&).
-  // TODO (later) ToString object that stores the alphabet
+   private:
+    std::unordered_map<letter_type, char> _alphabet_map;
+  };
 
   ////////////////////////////////////////////////////////////////////////
   // Strings
@@ -1289,11 +1396,12 @@ namespace libsemigroups {
     mutable bool        _current_valid;
     std::string         _letters;
     ToWord              _to_word;
+    ToString            _to_string;
     WordRange           _word_range;
 
     void init_current() const {
       if (!_current_valid) {
-        _current       = to_string_no_checks(_letters, _word_range.get());
+        _current       = _to_string(_word_range.get());
         _current_valid = true;
       }
     }
@@ -1469,7 +1577,7 @@ namespace libsemigroups {
     //!
     //! \sa \ref min
     [[nodiscard]] std::string first() const noexcept {
-      return to_string_no_checks(_letters, _word_range.first());
+      return _to_string(_word_range.first());
     }
 
     //! \brief Set one past the last string in the range.
@@ -1503,7 +1611,7 @@ namespace libsemigroups {
     //!
     //! \sa \ref max
     [[nodiscard]] std::string last() const noexcept {
-      return to_string_no_checks(_letters, _word_range.last());
+      return _to_string(_word_range.last());
     }
 
     //! \brief Set the order of the strings in the range.
@@ -1670,98 +1778,6 @@ namespace libsemigroups {
   //!  //  "baaa", "abbb", "abba", "abab", "abaa", "aabb", "aaba",
   //!  //  "aaab"}));
   //! \endcode
-  class ToStrings {
-   private:
-    std::string _letters;
-
-   public:
-    //! \brief Deleted.
-    //!
-    //! The default constructor is deleted, since the alphabet must defined.
-    ToStrings() = delete;
-
-    //! \brief Default copy constructor.
-    //!
-    //! Default copy constructor.
-    ToStrings(ToStrings const&);
-
-    //! \brief Default move constructor.
-    //!
-    //! Default move constructor.
-    ToStrings(ToStrings&&);
-
-    //! \brief Default copy assignment operator.
-    //!
-    //! Default move assignment operator.
-    ToStrings& operator=(ToStrings const&);
-
-    //! \brief Default move assignment operator.
-    //!
-    //! Default move assignment operator.
-    ToStrings& operator=(ToStrings&&);
-
-    //! \brief Default destructor.
-    //!
-    //! Default destructor.
-    ~ToStrings();
-
-    //! \brief Construct from `std::string_view`
-    //!
-    //! Constructs a ToStrings object using the specified alphabet.
-    //!
-    //! \param lttrs the letters in the alphabet
-    //!
-    //! \exceptions
-    //! \no_libsemigroups_except
-    //!
-    //! \warning  When combining a ToStrings object with another range, for
-    //! example via `operator|`, no checks are done to ensure that the incoming
-    //! words use the same letters as the alphabet used to define ToStrings.
-    explicit ToStrings(std::string_view lttrs) : _letters(lttrs) {}
-
-    template <typename InputRange>
-    struct Range {
-      using output_type = std::string;
-
-      static constexpr bool is_finite     = true;
-      static constexpr bool is_idempotent = true;
-
-      InputRange  _input;
-      std::string _letters;
-
-      constexpr Range(InputRange&& input, ToStrings const& t_strng)
-          : _input(std::move(input)), _letters(t_strng._letters) {}
-
-      constexpr Range(InputRange const& input, ToStrings const& t_strng)
-          : _input(input), _letters(t_strng._letters) {}
-
-      [[nodiscard]] output_type get() const {
-        return to_string_no_checks(_letters, _input.get());
-      }
-
-      constexpr void next() noexcept {
-        _input.next();
-      }
-
-      [[nodiscard]] constexpr bool at_end() const noexcept {
-        return _input.at_end();
-      }
-
-      [[nodiscard]] constexpr size_t size_hint() const noexcept {
-        return _input.size_hint();
-      }
-    };
-
-    //! \brief Call operator for combining with other range objects.
-    //!
-    //! This is the call operator that is used by `rx::ranges::operator|` for
-    //! combining ranges.
-    template <typename InputRange>
-    [[nodiscard]] constexpr auto operator()(InputRange&& input) const {
-      using Inner = rx::get_range_type_t<InputRange>;
-      return Range<Inner>(std::forward<InputRange>(input), *this);
-    }
-  };
 
   ////////////////////////////////////////////////////////////////////////
   // Literals

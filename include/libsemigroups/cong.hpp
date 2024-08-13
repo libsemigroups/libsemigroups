@@ -335,7 +335,7 @@ namespace libsemigroups {
                  && cong.get<KnuthBendix<>>()->finished()) {
         auto const& p       = cong.get<KnuthBendix<>>()->presentation();
         auto        strings = non_trivial_classes(*cong.get<KnuthBendix<>>(),
-                                           r | ToStrings(p.alphabet()));
+                                           r | ToString(p.alphabet()));
         std::vector<std::vector<word_type>> result;
         for (auto const& klass : strings) {
           result.push_back(rx::iterator_range(klass.begin(), klass.end())

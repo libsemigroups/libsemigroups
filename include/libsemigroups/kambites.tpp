@@ -556,7 +556,7 @@ namespace libsemigroups {
       } else {
         auto pairs = (rx::iterator_range(generating_pairs().cbegin(),
                                          generating_pairs().cend())
-                      | ToStrings(_presentation.alphabet()) | rx::to_vector());
+                      | ToString(_presentation.alphabet()) | rx::to_vector());
         ukkonen::add_words_no_checks(
             _suffix_tree, pairs.cbegin(), pairs.cend());
         _presentation.rules.insert(_presentation.rules.end(),

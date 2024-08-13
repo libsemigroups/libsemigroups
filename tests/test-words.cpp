@@ -72,11 +72,13 @@ namespace libsemigroups {
       ToWord toword("bac");
       REQUIRE(toword("bac") == 012_w);
       REQUIRE(toword("bababbbcbcbaac") == 01010002020112_w);
-      REQUIRE(to_string("bac", toword("bababbbcbcbaac")) == "bababbbcbcbaac");
-      REQUIRE(toword(to_string("bac", 01010002020112_w)) == 01010002020112_w);
+      ToString tostring("bac");
+      REQUIRE(tostring(toword("bababbbcbcbaac")) == "bababbbcbcbaac");
+      REQUIRE(toword(tostring(01010002020112_w)) == 01010002020112_w);
     }
     std::string output;
-    to_string("bac", 012101_w, output);
+    ToString    tostring("bac");
+    tostring(output, 012101_w);
     REQUIRE(output == "bacaba");
   }
 
@@ -723,7 +725,7 @@ namespace libsemigroups {
     WordRange words;
     words.number_of_letters(1).min(0).max(10);
 
-    auto w = (words | ToStrings("a"));
+    auto w = (words | ToString("a"));
     REQUIRE((w | count()) == 10);
     REQUIRE((w | to_vector())
             == std::vector<std::string>({"",
@@ -737,7 +739,7 @@ namespace libsemigroups {
                                          "aaaaaaaa",
                                          "aaaaaaaaa"}));
     words.min(2).max(4);
-    REQUIRE((words | ToStrings("b") | to_vector())
+    REQUIRE((words | ToString("b") | to_vector())
             == std::vector<std::string>({"bb", "bbb"}));
   }
 
@@ -1227,13 +1229,13 @@ namespace libsemigroups {
                  0101_w, 0100_w, 0011_w, 0010_w, 0001_w}));
   }
 
-  LIBSEMIGROUPS_TEST_CASE("ToStrings", "040", "code coverage", "[quick]") {
+  LIBSEMIGROUPS_TEST_CASE("ToString", "040", "code coverage", "[quick]") {
     using words::pow;
 
     WordRange words;
     words.number_of_letters(2).first(0_w).last(pow(1_w, 3));
 
-    REQUIRE((words | ToStrings("ba") | to_vector())
+    REQUIRE((words | ToString("ba") | to_vector())
             == std::vector<std::string>({"b",
                                          "a",
                                          "bb",
@@ -1248,8 +1250,8 @@ namespace libsemigroups {
                                          "aba",
                                          "aab"}));
 
-    ToStrings to_strings("xy");
-    REQUIRE((words | to_strings | to_vector())
+    ToString to_string("xy");
+    REQUIRE((words | to_string | to_vector())
             == std::vector<std::string>({"x",
                                          "y",
                                          "xx",
@@ -1264,20 +1266,20 @@ namespace libsemigroups {
                                          "yxy",
                                          "yyx"}));
 
-    ToStrings copy(to_strings);
-    REQUIRE(equal(words | to_strings, words | copy));
+    ToString copy(to_string);
+    REQUIRE(equal(words | to_string, words | copy));
 
-    ToStrings move(std::move(copy));
-    REQUIRE(equal(words | to_strings, words | move));
+    ToString move(std::move(copy));
+    REQUIRE(equal(words | to_string, words | move));
 
-    move.operator=(to_strings);
-    REQUIRE(equal(words | to_strings, words | move));
+    move.operator=(to_string);
+    REQUIRE(equal(words | to_string, words | move));
 
     copy = move;
     move.operator=(std::move(copy));
-    REQUIRE(equal(words | to_strings, words | move));
+    REQUIRE(equal(words | to_string, words | move));
 
-    REQUIRE((std::move(words) | to_strings | to_vector())
+    REQUIRE((std::move(words) | to_string | to_vector())
             == std::vector<std::string>({"x",
                                          "y",
                                          "xx",
@@ -1294,7 +1296,7 @@ namespace libsemigroups {
     using words::pow;
     words.number_of_letters(10).first(pow(0_w, 100)).last(pow(1_w, 1'000));
     for (auto const& s :
-         words | ToStrings("abcdefghij") | skip_n(1'000) | take(1)) {
+         words | ToString("abcdefghij") | skip_n(1'000) | take(1)) {
       REQUIRE(s
               == "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
                  "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaa");

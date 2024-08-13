@@ -97,7 +97,7 @@ namespace libsemigroups {
       Stephen S(p);
       S.set_word(to_word(word)).run();
 
-      REQUIRE((stephen::words_accepted(S) | ToStrings(p.alphabet())
+      REQUIRE((stephen::words_accepted(S) | ToString(p.alphabet())
                | rx::sort(LexicographicalCompare()) | rx::take(1))
                   .get()
               == nf);
@@ -438,7 +438,7 @@ namespace libsemigroups {
     REQUIRE(stephen::accepts(S, "baac"_w));
     REQUIRE(S.word_graph().number_of_nodes() == 3);
     REQUIRE(stephen::number_of_words_accepted(S) == POSITIVE_INFINITY);
-    REQUIRE((stephen::words_accepted(S) | rx::take(10) | ToStrings("abc")
+    REQUIRE((stephen::words_accepted(S) | rx::take(10) | ToString("abc")
              | rx::to_vector())
             == std::vector<std::string>(
                 {"a", "b", "aa", "ab", "ac", "ba", "bb", "bc", "ca", "cb"}));
@@ -498,7 +498,7 @@ namespace libsemigroups {
     REQUIRE(stephen::number_of_words_accepted(S) == 8);
 
     REQUIRE(
-        (stephen::words_accepted(S) | ToStrings(p.alphabet()) | rx::to_vector())
+        (stephen::words_accepted(S) | ToString(p.alphabet()) | rx::to_vector())
         == std::vector<std::string>({"dfcef",
                                      "dfceg",
                                      "dgcef",
@@ -509,7 +509,7 @@ namespace libsemigroups {
                                      "dgabcdg"}));
 
     REQUIRE((stephen::words_accepted(S) | rx::sort(LexicographicalCompare())
-             | rx::take(1) | ToStrings(p.alphabet()))
+             | rx::take(1) | ToString(p.alphabet()))
                 .get()
             == "dfabcdf");
 
@@ -522,7 +522,7 @@ namespace libsemigroups {
     S.set_word("abcdfceg"_w).run();
     REQUIRE(stephen::number_of_words_accepted(S) == 16);
 
-    REQUIRE((stephen::words_accepted(S) | ToStrings(p.alphabet())
+    REQUIRE((stephen::words_accepted(S) | ToString(p.alphabet())
              | rx::sort(LexicographicalCompare()) | rx::to_vector())
             == std::vector<std::string>({"abcdfabcdf",
                                          "abcdfabcdg",
@@ -541,9 +541,9 @@ namespace libsemigroups {
                                          "cegcef",
                                          "cegceg"}));
 
-    REQUIRE(ToStrings(p.alphabet())(stephen::words_accepted(S)
-                                    | rx::sort(LexicographicalCompare())
-                                    | rx::take(1))
+    REQUIRE(ToString(p.alphabet())(stephen::words_accepted(S)
+                                   | rx::sort(LexicographicalCompare())
+                                   | rx::take(1))
                 .get()
             == "abcdfabcdf");
     REQUIRE(stephen::accepts(S, "abcdfabcdf"_w));
@@ -571,7 +571,7 @@ namespace libsemigroups {
     REQUIRE(stephen::accepts(S, word("aabcabc")));
 
     S.set_word(word("acba")).run();
-    auto words = stephen::words_accepted(S) | ToStrings(p.alphabet());
+    auto words = stephen::words_accepted(S) | ToString(p.alphabet());
 
     REQUIRE((words | rx::to_vector())
             == std::vector<std::string>({"acba", "aabc"}));
