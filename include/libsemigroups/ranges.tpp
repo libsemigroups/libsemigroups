@@ -26,14 +26,19 @@ namespace libsemigroups {
   ////////////////////////////////////////////////////////////////////////
 
   template <typename InputRange>
-  typename random::Range<InputRange>::output_type
-  random::Range<InputRange>::get() const noexcept {
+  typename Random::Range<InputRange>::output_type
+  Random::Range<InputRange>::get() const noexcept {
     LIBSEMIGROUPS_ASSERT(!_input.at_end() && !_at_end);
 
-    static std::random_device             rd;
-    static std::mt19937                   gen(rd());
-    std::uniform_int_distribution<size_t> dist(0, _input | rx::count());
-    return (_input | rx::skip_n(dist(gen)) | rx::take(1)).get();
+    static std::random_device rd;
+    static std::mt19937       gen(rd());
+
+    if (!_val_set) {
+      std::uniform_int_distribution<size_t> dist(0, _input | rx::count());
+      _val     = (_input | rx::skip_n(dist(gen)) | rx::take(1)).get();
+      _val_set = true;
+    }
+    return _val;
   }
 
   ////////////////////////////////////////////////////////////////////////
@@ -41,7 +46,7 @@ namespace libsemigroups {
   ////////////////////////////////////////////////////////////////////////
 
   template <typename Range, typename Compare>
-  constexpr bool is_sorted(Range r, Compare comp) {
+  constexpr bool is_sorted(Range r, Compare&& comp) {
     if (!r.at_end()) {
       auto first = r.get();
       r.next();

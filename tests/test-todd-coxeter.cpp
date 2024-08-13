@@ -4539,7 +4539,7 @@ namespace libsemigroups {
     // p = to_presentation<word_type>(to_presentation(kb));
     // REQUIRE(p.rules == std::vector<word_type>());
     REQUIRE(tc.number_of_classes() == 3'945);
-    REQUIRE((todd_coxeter::normal_forms(tc) | random()).get() == word_type());
+    REQUIRE((todd_coxeter::normal_forms(tc) | Random()).get() == word_type());
   }
 
   // Takes nearly 13 hours to complete
