@@ -415,7 +415,7 @@ namespace libsemigroups {
         RowView(*static_cast<Subclass const*>(this)) += that;
       }
 
-      // TODO(later) uncomment and test (this works, just not tested or used
+      // TODO(2) uncomment and test (this works, just not tested or used
       // for anything, so because time is short commenting out for now)
       // void operator+=(scalar_type a) {
       //   for (auto it = _container.begin(); it < _container.end(); ++it) {
@@ -423,7 +423,7 @@ namespace libsemigroups {
       //   }
       // }
 
-      // TODO(later) implement operator*=(Subclass const&)
+      // TODO(2) implement operator*=(Subclass const&)
 
       ////////////////////////////////////////////////////////////////////////
       // Arithmetic operators - not in-place
@@ -444,8 +444,8 @@ namespace libsemigroups {
         return result;
       }
 
-      // TODO(later) implement operator*(Scalar)
-      // TODO(later) implement operator+(Scalar)
+      // TODO(2) implement operator*(Scalar)
+      // TODO(2) implement operator+(Scalar)
 
       ////////////////////////////////////////////////////////////////////////
       // Iterators
@@ -612,7 +612,7 @@ namespace libsemigroups {
           = default;
       MatrixStaticArithmetic& operator=(MatrixStaticArithmetic&&) = default;
 
-      // TODO(later) from here to the end of MatrixStaticArithmetic should be
+      // TODO(2) from here to the end of MatrixStaticArithmetic should be
       // private or protected
       using scalar_type = Scalar;
 
@@ -1262,9 +1262,8 @@ namespace libsemigroups {
 
     ~StaticMatrix() = default;
 
-    //! TODO one -> one
     static StaticMatrix one(size_t n = 0) {
-      static_assert(C == R, "cannot create non-square one matrix");
+      static_assert(C == R, "cannot create non-square identity matrix");
       // If specified the value of n must equal R or otherwise weirdness will
       // ensue...
       LIBSEMIGROUPS_ASSERT(n == 0 || n == R);
@@ -1287,7 +1286,6 @@ namespace libsemigroups {
       return x;
     }
 
-    //! TODO one -> one
     static StaticMatrix one(void const* ptr, size_t n = 0) {
       (void) ptr;
       LIBSEMIGROUPS_ASSERT(ptr == nullptr);
@@ -1498,6 +1496,7 @@ namespace libsemigroups {
     //! type, the details of which is implementation specific.
     //!
     //! \param that  the matrix for comparison.
+    //!
     //! \returns `true` if `*this` is less than `that` and `false` if it is
     //! not.
     //!
@@ -1509,9 +1508,9 @@ namespace libsemigroups {
     //! \brief Get the coordinates of an iterator.
     //!
     //! This function returns a pair containing the row and columns
-    //! corresponding to an const_iterator pointing into a matrix.
+    //! corresponding to a \ref const_iterator pointing into a matrix.
     //!
-    //! \param it the iterator
+    //! \param it the \ref iterator
     //! \returns A value of type `std::pair<scalar_type, scalar_type>`.
     //!
     //! \complexity  Constant
@@ -1664,7 +1663,7 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! Constant
-    // TODO should be row_no_checks
+    // TODO(0) should be row_no_checks
     RowView row(size_t i) const;
 
     //! \brief Add row views for every row in the matrix to a container.
@@ -1711,7 +1710,7 @@ namespace libsemigroups {
     //! \warning
     //! This only works when the template parameters `R` and `C` are equal
     //! (i.e. for square matrices), but this is not verified.
-    void transpose() noexcept;  // TODO -> transpose_no_checks
+    void transpose() noexcept;  // TODO(0) -> transpose_no_checks
 #endif                          // PARSED_BY_DOXYGEN
 
    private:
@@ -2242,7 +2241,9 @@ namespace libsemigroups {
   //! This function can be used to validate that a matrix contains values in the
   //! underlying semiring.
   //!
-  //! \throws LibsemigroupsException if TODO(0)
+  //! \throws LibsemigroupsException if any of the entries in the matrix are
+  //! not \c 0 or \1. The values in a boolean matrix are of type \c int, but a
+  //! matrix shouldn't contain values except \c 0 and \1.
   template <typename Mat>
   auto validate(Mat const& m) -> std::enable_if_t<IsBMat<Mat>> {
     using scalar_type = typename Mat::scalar_type;
@@ -2293,12 +2294,12 @@ namespace libsemigroups {
   //!
   //! \brief Function object for addition in the ring of integers.
   //!
-  //! \tparam Scalar TODO
-  //!
   //! This is a stateless struct with a single call operator of signature:
   //! `Scalar operator()(Scalar x, Scalar y) const noexcept`
   //! which returns the usual sum `x + y` of `x` and `y`; representing
   //! addition in the integer semiring.
+  //!
+  //! \tparam Scalar the type of the entries in the matrix.
   template <typename Scalar>
   struct IntegerPlus {
     // TODO doc
@@ -2315,9 +2316,12 @@ namespace libsemigroups {
   //! `Scalar operator()(Scalar x, Scalar y) const noexcept`
   //! which returns the usual product `x * y` of `x` and `y`;
   //! representing multiplication in the integer semiring.
+  //!
+  //! \tparam Scalar the type of the entries in the matrix.
   template <typename Scalar>
   struct IntegerProd {
     // TODO constepxr
+    // TODO doc
     Scalar operator()(Scalar x, Scalar y) const noexcept {
       return x * y;
     }
@@ -2333,6 +2337,7 @@ namespace libsemigroups {
   template <typename Scalar>
   struct IntegerZero {
     // TODO constepxr
+    // TODO doc
     Scalar operator()() const noexcept {
       return 0;
     }
@@ -2446,11 +2451,11 @@ namespace libsemigroups {
   //!
   //! \par Example
   //! \code
-  //! MaxPlusMat<3> m;       // default construct an uninitialized 3 x 3
-  //!    static matrix MaxPlusMat<>  m(4, 4); // construct an uninitialized 4 x
-  //!    4 dynamic matrix
+  //! // default construct an uninitialized 3 x 3 static matrix
+  //! MaxPlusMat<3> m;
+  //! // construct an uninitialized 4 x 4 dynamic matrix
+  //! MaxPlusMat<>  m(4, 4);
   //! \endcode
-  // TODO(0) fix layout in example above
 
   //! \ingroup maxplusmat_group
   //!
@@ -2660,11 +2665,11 @@ namespace libsemigroups {
   //! \par Example
   //!
   //! \code
-  //!    MinPlusMat<3> m;       // default construct an uninitialized 3 x 3
-  //!    static matrix MinPlusMat<>  m(4, 4); // construct an uninitialized 4 x
-  //!    4 dynamic matrix
-  //!    \endcode
-  // TODO fix the example
+  //! // default construct an uninitialized 3 x 3 static matrix
+  //! MinPlusMat<3> m;
+  //! // construct an uninitialized 4 x 4 dynamic matrix
+  //! MinPlusMat<> m(4, 4);
+  //! \endcode
 
   //! \ingroup minplusmat_group
   //!
@@ -2883,15 +2888,16 @@ namespace libsemigroups {
   //!
   //! \par Example
   //! \code
-  //!    MaxPlusTruncMat<11, 3> m;       // default construct an uninitialized 3
-  //!    x 3 static matrix with threshold 11 MaxPlusTruncMat<11> m(4, 4);    //
-  //!    construct an uninitialized 4 x 4 dynamic matrix with threshold 11
-  //!    MaxPlusTruncSemiring sr(11);    // construct a truncated max-plus
-  //!    semiring with threshold 11 MaxPlusTruncMat<>  m(sr, 5, 5); // construct
-  //!    an uninitialized 5 x 5 dynamic matrix with threshold 11 (defined at run
-  //!    time)
-  //!    \endcode
-  // TODO unscramble the example
+  //! // construct an uninitialized 3 x 3 static matrix with threshold 11
+  //! MaxPlusTruncMat<11, 3> m;
+  //! // construct an uninitialized 4 x 4 dynamic matrix with threshold 11
+  //! MaxPlusTruncMat<11> m(4, 4);
+  //! // construct a truncated max-plus semiring with threshold 11
+  //! MaxPlusTruncSemiring sr(11);
+  //! // construct an uninitialized 5 x 5 dynamic matrix with threshold 11
+  //! // (defined at run time)
+  //! MaxPlusTruncMat<>  m(sr, 5, 5);
+  //! \endcode
 
   //! \ingroup maxplustruncmat_group
   //!
@@ -3237,7 +3243,10 @@ namespace libsemigroups {
   //! This function can be used to validate that a matrix contains values in the
   //! underlying semiring.
   //!
-  //! \throws LibsemigroupsException if TODO(0)
+  //! \throws LibsemigroupsException if any entry in the matrix is not in the
+  //! set \f$\{0, 1, \ldots, t, -\infty\}\f$ where \f$t\f$ is the threshold of
+  //! the matrix or if the underlying semiring is not defined (only applies to
+  //! matrices with run time arithmetic).
   // TODO(1) to tpp
   template <typename Mat>
   auto validate(Mat const& m) -> std::enable_if_t<IsMaxPlusTruncMat<Mat>> {
@@ -3297,15 +3306,16 @@ namespace libsemigroups {
   //!
   //! \par Example
   //! \code
-  //!    MinPlusTruncMat<11, 3> m;       // default construct an uninitialized 3
-  //!    x 3 static matrix with threshold 11 MinPlusTruncMat<11> m(4, 4);    //
-  //!    construct an uninitialized 4 x 4 dynamic matrix with threshold 11
-  //!    MinPlusTruncSemiring sr(11);    // construct a truncated min-plus
-  //!    semiring with threshold 11 MinPlusTruncMat<>  m(sr, 5, 5); // construct
-  //!    an uninitialized 5 x 5 dynamic matrix with threshold 11 (defined at run
-  //!    time)
+  //! // construct an uninitialized 3 x 3 static matrix with threshold 11
+  //! MinPlusTruncMat<11, 3> m;
+  //! // construct an uninitialized 4 x 4 dynamic matrix with threshold 11
+  //! MinPlusTruncMat<11> m(4, 4);
+  //! // construct a truncated min-plus semiring with threshold 11
+  //! MinPlusTruncSemiring sr(11);
+  //! // construct an uninitialized 5 x 5 dynamic matrix with threshold 11
+  //! // (defined at run time)
+  //! MinPlusTruncMat<>  m(sr, 5, 5);
   //! \endcode
-  // TODO unscramble the example
 
   //! \ingroup minplustruncmat_group
   //!
@@ -3439,7 +3449,7 @@ namespace libsemigroups {
     //! \exceptions
     //! \noexcept
     // TODO These mem fns (one and zero) aren't needed?
-    // TODO constexpr?
+    // TODO constexpr
     Scalar scalar_zero() const noexcept {
       return POSITIVE_INFINITY;
     }
@@ -3535,11 +3545,6 @@ namespace libsemigroups {
     Scalar const _threshold;
   };
 
-  // TODO remove?
-  template <typename Scalar>
-  using DynamicMinPlusTruncMatSR
-      = DynamicMatrix<MinPlusTruncSemiring<Scalar>, Scalar>;
-
   //! \ingroup minplustruncmat_group
   //!
   //! \brief Alias for dynamic truncated min-plus matrices.
@@ -3597,7 +3602,7 @@ namespace libsemigroups {
   using MinPlusTruncMat = std::conditional_t<
       R == 0 || C == 0,
       std::conditional_t<T == 0,
-                         DynamicMinPlusTruncMatSR<Scalar>,
+                         DynamicMatrix<MinPlusTruncSemiring<Scalar>, Scalar>,
                          DynamicMinPlusTruncMat<T, Scalar>>,
       StaticMinPlusTruncMat<T, R, C, Scalar>>;
 
@@ -3618,8 +3623,8 @@ namespace libsemigroups {
     };
 
     template <typename Scalar>
-    struct IsMinPlusTruncMatHelper<DynamicMinPlusTruncMatSR<Scalar>>
-        : std::true_type {
+    struct IsMinPlusTruncMatHelper<
+        DynamicMatrix<MinPlusTruncSemiring<Scalar>, Scalar>> : std::true_type {
       static constexpr Scalar threshold = UNDEFINED;
     };
   }  // namespace detail
@@ -3653,7 +3658,10 @@ namespace libsemigroups {
   //! This function can be used to validate that a matrix contains values in the
   //! underlying semiring.
   //!
-  //! \throws LibsemigroupsException if TODO(0)
+  //! \throws LibsemigroupsException if any entry in the matrix is not in the
+  //! set \f$\{0, 1, \ldots, t, \infty\}\f$ where \f$t\f$ is the threshold of
+  //! the matrix or if the underlying semiring is not defined (only applies to
+  //! matrices with run time arithmetic).
   // TODO(1) to tpp
   template <typename Mat>
   auto validate(Mat const& m) -> std::enable_if_t<IsMinPlusTruncMat<Mat>> {
@@ -3683,9 +3691,7 @@ namespace libsemigroups {
   // NTP matrices
   ////////////////////////////////////////////////////////////////////////
 
-  // clang-format off
-
-  //! \defgroup ntpmat_group Matrices over the natural numbers quotiented by (t = t + p)
+  //! \defgroup ntpmat_group Matrices over the natural numbers over (t = t + p)
   //!
   //! Defined in ``matrix.hpp``.
   //!
@@ -3710,11 +3716,10 @@ namespace libsemigroups {
   //!    \f$p\f$) are to be defined a run time.
   //!
   //! All three of these types can be accessed via the alias template \ref
-  //! NTPMat:
-  //! if `T` and `P` have value `0`, then the threshold and period can be set at
-  //! run time, and if `R` or `C` is `0`, then the dimension can be set at run
-  //! time.  The default values of `T`, `P`, and `R` are `0`, and the default
-  //! value of `C` is `R`.
+  //! NTPMat: if `T` and `P` have value `0`, then the threshold and period can
+  //! be set at run time, and if `R` or `C` is `0`, then the dimension can be
+  //! set at run time.  The default values of `T`, `P`, and `R` are `0`, and the
+  //! default value of `C` is `R`.
   //!
   //! The alias \ref NTPMat is either StaticMatrix or DynamicMatrix, please
   //! refer to the documentation of these class templates for more details. The
@@ -3724,16 +3729,18 @@ namespace libsemigroups {
   //!
   //! \par Example
   //! \code
-  //!
-  //!    NTPMat<11, 2, 3> m;  // default construct an uninitialized 3 x 3 static
-  //!    matrix with threshold 11, period 2 NTPMat<11, 2> m(4, 4);  // construct
-  //!    an uninitialized 4 x 4 dynamic matrix with threshold 11, period 2
-  //!    NTPSemiring sr(11, 2);  // construct an ntp semiring with threshold 11,
-  //!    period 2 NTPMat<>  m(sr, 5, 5);  // construct an uninitialized 5 x 5
-  //!    dynamic matrix with threshold 11, period 2
-  //!    \endcode
-  // clang-format on
-  // TODO unmangle the code block above
+  //! // construct an uninitialized 3 x 3 static matrix with threshold
+  //! // 11, period 2
+  //! NTPMat<11, 2, 3> m;
+  //! // construct an uninitialized 4 x 4 dynamic matrix with threshold 11,
+  //! // period 2
+  //! NTPMat<11, 2> m(4, 4);
+  //! // construct an ntp semiring with threshold 11, period 2
+  //! NTPSemiring sr(11, 2);
+  //! // construct an uninitialized 5 x 5 dynamic matrix with threshold 11,
+  //! // period 2
+  //! NTPMat<> m(sr, 5, 5);
+  //! \endcode
 
   namespace detail {
     template <size_t T, size_t P, typename Scalar>
@@ -3986,6 +3993,7 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! Constant.
+    // TODO should be _no_checks, also for the other Semirings
     Scalar plus(Scalar x, Scalar y) const noexcept {
       LIBSEMIGROUPS_ASSERT(x >= 0 && x <= _period + _threshold - 1);
       LIBSEMIGROUPS_ASSERT(y >= 0 && y <= _period + _threshold - 1);
@@ -4190,7 +4198,10 @@ namespace libsemigroups {
   //! This function can be used to validate that a matrix contains values in the
   //! underlying semiring.
   //!
-  //! \throws LibsemigroupsException if TODO(0)
+  //! \throws LibsemigroupsException if any entry in the matrix is not in the
+  //! set \f$\{0, 1, \ldots, t + p - 1\}\f$ where \f$t\f$ is the threshold, and
+  //! \f$p\f$ the period, of the matrix or if the underlying semiring is not
+  //! defined (only applies to matrices with run time arithmetic).
   template <typename Mat>
   auto validate(Mat const& m) -> std::enable_if_t<IsNTPMat<Mat>> {
     // Check that the semiring pointer isn't the nullptr if it shouldn't be
@@ -4531,11 +4542,11 @@ namespace libsemigroups {
   //!
   //! \par Example
   //! \code
-  //!    ProjMaxPlusMat<3> m;       // default construct an uninitialized 3 x 3
-  //!    static matrix ProjMaxPlusMat<>  m(4, 4); // construct an uninitialized
-  //!    4 x 4 dynamic matrix
+  //! // default construct an uninitialized 3 x 3 static matrix
+  //! ProjMaxPlusMat<3> m;
+  //! // construct an uninitialized 4 x 4 dynamic matrix
+  //! ProjMaxPlusMat<>  m(4, 4);
   //! \endcode
-  // TODO unscramble
 
   //! \ingroup projmaxplus_group
   //!
@@ -4607,7 +4618,7 @@ namespace libsemigroups {
       = detail::IsProjMaxPlusMatHelper<T>::value;
 
   // \ingroup projmaxplus_group
-  //! TODO(0)
+  //! TODO(0) doc
   template <typename Mat>
   auto validate(Mat const& m) -> std::enable_if_t<IsProjMaxPlusMat<Mat>> {
     validate(m.underlying_matrix());
@@ -4629,8 +4640,8 @@ namespace libsemigroups {
     // Matrix helpers - pow
     ////////////////////////////////////////////////////////////////////////
 
-    // TODO(later) version that changes x in-place
-    //! TODO(0)
+    // TODO(2) version that changes x in-place
+    //! TODO(0) doc
     template <typename Mat>
     Mat pow(Mat const& x, typename Mat::scalar_type e) {
       using scalar_type = typename Mat::scalar_type;
@@ -4672,7 +4683,7 @@ namespace libsemigroups {
     ////////////////////////////////////////////////////////////////////////
 
     // The main function
-    //! TODO(0)
+    //! TODO(0) doc
     template <typename Mat, size_t R, size_t C, typename Container>
     void bitset_rows(Container&&                          views,
                      detail::StaticVector1<BitSet<C>, R>& result) {
@@ -4696,7 +4707,7 @@ namespace libsemigroups {
     }
 
     // Helper
-    //! TODO(0)
+    //! TODO(0) doc
     template <typename Mat, size_t R, size_t C, typename Container>
     auto bitset_rows(Container&& views) {
       using RowView    = typename Mat::RowView;
@@ -4723,7 +4734,7 @@ namespace libsemigroups {
 
     // This works with std::vector and StaticVector1, with value_type equal
     // to std::bitset and BitSet.
-    //! TODO(0)
+    //! TODO(0) doc
     template <typename Mat, typename Container>
     void bitset_row_basis(Container&& rows, std::decay_t<Container>& result) {
       using value_type = typename std::decay_t<Container>::value_type;
@@ -4756,7 +4767,7 @@ namespace libsemigroups {
       }
     }
 
-    //! TODO(0)
+    //! TODO(0) doc
     template <typename Mat, typename Container>
     std::decay_t<Container> bitset_row_basis(Container&& rows) {
       using value_type = typename std::decay_t<Container>::value_type;
@@ -4775,7 +4786,7 @@ namespace libsemigroups {
     // Matrix helpers - rows
     ////////////////////////////////////////////////////////////////////////
 
-    //! TODO(0)
+    //! TODO(0) doc
     template <typename Mat, typename = std::enable_if_t<IsDynamicMatrix<Mat>>>
     std::vector<typename Mat::RowView> rows(Mat const& x) {
       std::vector<typename Mat::RowView> container;
@@ -4783,7 +4794,7 @@ namespace libsemigroups {
       return container;
     }
 
-    //! TODO(0)
+    //! TODO(0) doc
     template <typename Mat, typename = std::enable_if_t<IsStaticMatrix<Mat>>>
     detail::StaticVector1<typename Mat::RowView, Mat::nr_rows>
     rows(Mat const& x) {
@@ -4793,7 +4804,7 @@ namespace libsemigroups {
     }
 
     // Helper
-    //! TODO(0)
+    //! TODO(0) doc
     template <typename Mat, size_t R, size_t C>
     void bitset_rows(Mat const&                           x,
                      detail::StaticVector1<BitSet<C>, R>& result) {
@@ -4808,7 +4819,7 @@ namespace libsemigroups {
     }
 
     // Helper
-    //! TODO(0)
+    //! TODO(0) doc
     template <typename Mat>
     auto bitset_rows(Mat const& x) {
       static_assert(IsBMat<Mat>, "IsBMat<Mat> must be true!");
@@ -4818,7 +4829,7 @@ namespace libsemigroups {
       return bitset_rows<Mat, M, M>(std::move(rows(x)));
     }
 
-    //! TODO(0)
+    //! TODO(0) doc
     template <typename Mat, size_t M = detail::BitSetCapacity<Mat>::value>
     detail::StaticVector1<BitSet<M>, M> bitset_row_basis(Mat const& x) {
       static_assert(IsBMat<Mat>, "IsBMat<Mat> must be true!");
@@ -4829,7 +4840,7 @@ namespace libsemigroups {
       return result;
     }
 
-    //! TODO(0)
+    //! TODO(0) doc
     template <typename Mat, typename Container>
     void bitset_row_basis(Mat const& x, Container& result) {
       using value_type = typename Container::value_type;
@@ -4845,7 +4856,7 @@ namespace libsemigroups {
     // Matrix helpers - row_basis - MaxPlusTruncMat
     ////////////////////////////////////////////////////////////////////////
 
-    //! TODO(0)
+    //! TODO(0) doc
     template <typename Mat, typename Container>
     auto row_basis(Container&& views, std::decay_t<Container>& result)
         -> std::enable_if_t<IsMaxPlusTruncMat<Mat>> {
@@ -4905,7 +4916,7 @@ namespace libsemigroups {
     // This version takes a container of row views of BMat, converts it to a
     // container of BitSets, computes the row basis using the BitSets, then
     // selects those row views in views that belong to the computed basis.
-    //! TODO(0)
+    //! TODO(0) doc
     template <typename Mat, typename Container>
     auto row_basis(Container&& views, std::decay_t<Container>& result)
         -> std::enable_if_t<IsBMat<Mat>> {
@@ -4945,7 +4956,7 @@ namespace libsemigroups {
     // Matrix helpers - row_basis - generic helpers
     ////////////////////////////////////////////////////////////////////////
 
-    //! TODO(0)
+    //! TODO(0) doc
     // Row basis of rowspace of matrix <x> appended to <result>
     template <typename Mat,
               typename Container,
@@ -4954,7 +4965,7 @@ namespace libsemigroups {
       row_basis<Mat>(std::move(rows(x)), result);
     }
 
-    //! TODO(0)
+    //! TODO(0) doc
     // Row basis of rowspace of matrix <x>
     template <typename Mat, typename = std::enable_if_t<IsDynamicMatrix<Mat>>>
     std::vector<typename Mat::RowView> row_basis(Mat const& x) {
@@ -4963,7 +4974,7 @@ namespace libsemigroups {
       return container;
     }
 
-    //! TODO(0)
+    //! TODO(0) doc
     // Row basis of rowspace of matrix <x>
     template <typename Mat, typename = std::enable_if_t<IsStaticMatrix<Mat>>>
     detail::StaticVector1<typename Mat::RowView, Mat::nr_rows>
@@ -4973,7 +4984,7 @@ namespace libsemigroups {
       return container;
     }
 
-    //! TODO(0)
+    //! TODO(0) doc
     // Row basis of rowspace of space spanned by <rows>
     template <typename Mat, typename Container>
     std::decay_t<Container> row_basis(Container&& rows) {
@@ -4991,7 +5002,7 @@ namespace libsemigroups {
     // Matrix helpers - row_space_size
     ////////////////////////////////////////////////////////////////////////
 
-    //! TODO(0)
+    //! TODO(0) doc
     template <typename Mat, typename = std::enable_if_t<IsBMat<Mat>>>
     size_t row_space_size(Mat const& x) {
       size_t const M                 = detail::BitSetCapacity<Mat>::value;
@@ -5082,7 +5093,7 @@ namespace libsemigroups {
   ////////////////////////////////////////////////////////////////////////
 
   //! \ingroup matrix_group
-  //! TODO(0)
+  //! TODO(0) doc
   template <typename S, typename T>
   std::ostringstream& operator<<(std::ostringstream&                os,
                                  detail::RowViewCommon<S, T> const& x) {
@@ -5098,7 +5109,7 @@ namespace libsemigroups {
   }
 
   //! \ingroup matrix_group
-  //! TODO(0)
+  //! TODO(0) doc
   template <typename T>
   auto operator<<(std::ostringstream& os, T const& x)
       -> std::enable_if_t<IsMatrix<T>, std::ostringstream&> {
