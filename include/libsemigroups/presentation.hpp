@@ -1694,8 +1694,8 @@ namespace libsemigroups {
     //! \throws LibsemigroupsException if `i` exceeds the number of letters in
     //! supported by `letter_type`.
     // TODO(later) move to words.*pp
-    template <typename Word>
-    typename Presentation<Word>::letter_type human_readable_letter(size_t i);
+    // template <typename Word>
+    // typename Presentation<Word>::letter_type human_readable_letter(size_t i);
 
     //! \brief Return the first letter **not** in the alphabet of a
     //! presentation.

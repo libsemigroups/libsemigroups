@@ -711,7 +711,7 @@ namespace libsemigroups {
   //!
   //! Defined in `words.hpp`.
   //!
-  //! This function is the inverse of \ref human_readable_char, see the
+  //! This function is the inverse of \ref human_readable_letter, see the
   //! documentation of that function for more details.
   //!
   //! \param c character whose index is sought.
@@ -721,7 +721,7 @@ namespace libsemigroups {
   //! \exception
   //! \no_libsemigroups_except
   //!
-  //! \sa human_readable_char
+  //! \sa human_readable_letter
   [[nodiscard]] letter_type human_readable_index(char c);
 
   //! \ingroup words_group
@@ -1003,6 +1003,10 @@ namespace libsemigroups {
   // Words -> Strings
   ////////////////////////////////////////////////////////////////////////
 
+  namespace detail {
+    std::string const& chars_in_human_readable_order();
+  }
+
   //! \ingroup words_group
   //! \brief Returns a character by index in human readable order.
   //!
@@ -1020,7 +1024,25 @@ namespace libsemigroups {
   //! \returns A value of type \c char.
   //!
   //! \throws LibsemigroupsException if \p i exceeds the number of characters.
-  [[nodiscard]] char human_readable_char(size_t i);
+  template <typename Word = std::string>
+  typename Word::value_type human_readable_letter(size_t i) {
+    if (i >= std::numeric_limits<typename Word::value_type>::max()
+                 - std::numeric_limits<typename Word::value_type>::min()) {
+      LIBSEMIGROUPS_EXCEPTION(
+          "expected the argument to be in the range [0, {}), found {}",
+          std::numeric_limits<typename Word::value_type>::max(),
+          i);
+    }
+    if constexpr (!std::is_same_v<Word, std::string>) {
+      return static_cast<typename Word::value_type>(i);
+    } else {
+      // Choose visible characters a-zA-Z0-9 first before anything else
+      // The ascii ranges for these characters are: [97, 123), [65, 91),
+      // [48, 58) so the remaining range of chars that are appended to the end
+      // after these chars are [0,48), [58, 65), [91, 97), [123, 255)
+      return detail::chars_in_human_readable_order()[i];
+    }
+  }
 
   //! \ingroup words_group
   //! \brief Class for converting \ref word_type into std::string with specified
@@ -1031,7 +1053,8 @@ namespace libsemigroups {
   //! An instance of this class is used to convert from \ref word_type to
   //! std::string. The letters in the word are converted to characters
   //! according to their position in alphabet used to construct a ToString
-  //! instance if one is provided, or using \ref human_readable_char otherwise.
+  //! instance if one is provided, or using \ref human_readable_letter
+  //! otherwise.
   //!
   //! \par Example
   //! \code
@@ -1138,7 +1161,7 @@ namespace libsemigroups {
     //! This function converts its second argument \p input into a std::string
     //! and stores the result in the first argument \p output. The characters of
     //! \p input are converted using the alphabet used to construct the object
-    //! or set via init(), or with \ref human_readable_char if \ref empty
+    //! or set via init(), or with \ref human_readable_letter if \ref empty
     //! returns `true`.
     //!
     //! The contents of the first argument \p output, if any, is removed.
@@ -1159,8 +1182,8 @@ namespace libsemigroups {
     //!
     //! This function converts its argument \p input into a std::string. The
     //! characters of \p input are converted using the alphabet used to
-    //! construct the object or set via init(), or with \ref human_readable_char
-    //! if \ref empty returns `true`.
+    //! construct the object or set via init(), or with \ref
+    //! human_readable_letter if \ref empty returns `true`.
     //!
     //! \param input the \ref word_type to convert.
     //!
@@ -1182,7 +1205,7 @@ namespace libsemigroups {
     //! This function converts its second argument \p input into a std::string
     //! and stores the result in the first argument \p output. The characters of
     //! \p input are converted using the alphabet used to construct the object
-    //! or set via init(), or with \ref human_readable_char if \ref empty
+    //! or set via init(), or with \ref human_readable_letter if \ref empty
     //! returns `true`.
     //!
     //! The contents of the first argument \p output, if any, is removed.
@@ -1202,8 +1225,8 @@ namespace libsemigroups {
     //!
     //! This function converts its argument \p input into a std::string. The
     //! characters of \p input are converted using the alphabet used to
-    //! construct the object or set via init(), or with \ref human_readable_char
-    //! if \ref empty returns `true`.
+    //! construct the object or set via init(), or with \ref
+    //! human_readable_letter if \ref empty returns `true`.
     //!
     //! \param input the string to convert.
     //!

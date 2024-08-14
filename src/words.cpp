@@ -197,7 +197,7 @@ namespace libsemigroups {
   // 2. Strings -> Words
   ////////////////////////////////////////////////////////////////////////
 
-  namespace {
+  namespace detail {
     std::string const& chars_in_human_readable_order() {
       // Choose visible characters a-zA-Z0-9 first before anything else
       // The ascii ranges for these characters are: [97, 123), [65, 91),
@@ -225,7 +225,7 @@ namespace libsemigroups {
       }
       return letters;
     }
-  }  // namespace
+  }  // namespace detail
 
   ToWord::ToWord(ToWord const&)            = default;
   ToWord::ToWord(ToWord&&)                 = default;
@@ -242,7 +242,7 @@ namespace libsemigroups {
         map;
     if (first_call) {
       first_call        = false;
-      auto const& chars = chars_in_human_readable_order();
+      auto const& chars = detail::chars_in_human_readable_order();
       for (letter_type i = 0; i < chars.size(); ++i) {
         map.emplace(chars[i], i);
       }
@@ -328,22 +328,6 @@ namespace libsemigroups {
   // 3. Words -> Strings
   ////////////////////////////////////////////////////////////////////////
 
-  char human_readable_char(size_t i) {
-    using letter_type_ = typename Presentation<std::string>::letter_type;
-    // Choose visible characters a-zA-Z0-9 first before anything else
-    // The ascii ranges for these characters are: [97, 123), [65, 91),
-    // [48, 58) so the remaining range of chars that are appended to the end
-    // after these chars are [0,48), [58, 65), [91, 97), [123, 255)
-    if (i >= std::numeric_limits<letter_type_>::max()
-                 - std::numeric_limits<letter_type_>::min()) {
-      LIBSEMIGROUPS_EXCEPTION("expected a value in the range [0, {}) found {}",
-                              std::numeric_limits<letter_type>::max()
-                                  - std::numeric_limits<letter_type>::min(),
-                              i);
-    }
-    return chars_in_human_readable_order()[i];
-  }
-
   ToString::ToString(ToString const&)            = default;
   ToString::ToString(ToString&&)                 = default;
   ToString& ToString::operator=(ToString const&) = default;
@@ -374,7 +358,7 @@ namespace libsemigroups {
       std::transform(input.cbegin(),
                      input.cend(),
                      output.begin(),
-                     [](letter_type c) { return human_readable_char(c); });
+                     [](letter_type c) { return human_readable_letter<>(c); });
     } else {  // Non-empty alphabet implies conversion should use the alphabet.
       output.clear();
       output.reserve(input.size());

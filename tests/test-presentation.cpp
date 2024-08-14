@@ -401,38 +401,37 @@ namespace libsemigroups {
     void check_remove_generator() {
       Presentation<W> p;
       p.alphabet(10);
-      p.remove_generator_no_checks(presentation::human_readable_letter<W>(4));
-      p.remove_generator_no_checks(presentation::human_readable_letter<W>(7));
-      p.remove_generator_no_checks(presentation::human_readable_letter<W>(9));
+      p.remove_generator_no_checks(human_readable_letter<W>(4));
+      p.remove_generator_no_checks(human_readable_letter<W>(7));
+      p.remove_generator_no_checks(human_readable_letter<W>(9));
       if constexpr (std::is_same_v<W, std::string>) {
         REQUIRE(p.alphabet() == "abcdfgi");
       } else {
         REQUIRE(p.alphabet() == W({0, 1, 2, 3, 5, 6, 8}));
       }
-      REQUIRE(p.index(presentation::human_readable_letter<W>(0)) == 0);
-      REQUIRE(p.index(presentation::human_readable_letter<W>(1)) == 1);
-      REQUIRE(p.index(presentation::human_readable_letter<W>(2)) == 2);
-      REQUIRE(p.index(presentation::human_readable_letter<W>(3)) == 3);
-      REQUIRE_THROWS_AS(p.index(presentation::human_readable_letter<W>(4)),
+      REQUIRE(p.index(human_readable_letter<W>(0)) == 0);
+      REQUIRE(p.index(human_readable_letter<W>(1)) == 1);
+      REQUIRE(p.index(human_readable_letter<W>(2)) == 2);
+      REQUIRE(p.index(human_readable_letter<W>(3)) == 3);
+      REQUIRE_THROWS_AS(p.index(human_readable_letter<W>(4)),
                         LibsemigroupsException);
-      REQUIRE(p.index(presentation::human_readable_letter<W>(5)) == 4);
-      REQUIRE(p.index(presentation::human_readable_letter<W>(6)) == 5);
-      REQUIRE_THROWS_AS(p.index(presentation::human_readable_letter<W>(7)),
+      REQUIRE(p.index(human_readable_letter<W>(5)) == 4);
+      REQUIRE(p.index(human_readable_letter<W>(6)) == 5);
+      REQUIRE_THROWS_AS(p.index(human_readable_letter<W>(7)),
                         LibsemigroupsException);
-      REQUIRE(p.index(presentation::human_readable_letter<W>(8)) == 6);
-      REQUIRE_THROWS_AS(p.index(presentation::human_readable_letter<W>(9)),
+      REQUIRE(p.index(human_readable_letter<W>(8)) == 6);
+      REQUIRE_THROWS_AS(p.index(human_readable_letter<W>(9)),
                         LibsemigroupsException);
-      REQUIRE(p.letter(0) == presentation::human_readable_letter<W>(0));
-      REQUIRE(p.letter(1) == presentation::human_readable_letter<W>(1));
-      REQUIRE(p.letter(2) == presentation::human_readable_letter<W>(2));
-      REQUIRE(p.letter(3) == presentation::human_readable_letter<W>(3));
-      REQUIRE(p.letter(4) == presentation::human_readable_letter<W>(5));
-      REQUIRE(p.letter(5) == presentation::human_readable_letter<W>(6));
-      REQUIRE(p.letter(6) == presentation::human_readable_letter<W>(8));
+      REQUIRE(p.letter(0) == human_readable_letter<W>(0));
+      REQUIRE(p.letter(1) == human_readable_letter<W>(1));
+      REQUIRE(p.letter(2) == human_readable_letter<W>(2));
+      REQUIRE(p.letter(3) == human_readable_letter<W>(3));
+      REQUIRE(p.letter(4) == human_readable_letter<W>(5));
+      REQUIRE(p.letter(5) == human_readable_letter<W>(6));
+      REQUIRE(p.letter(6) == human_readable_letter<W>(8));
 
-      REQUIRE_THROWS_AS(
-          p.remove_generator(presentation::human_readable_letter<W>(11)),
-          LibsemigroupsException);
+      REQUIRE_THROWS_AS(p.remove_generator(human_readable_letter<W>(11)),
+                        LibsemigroupsException);
     }
 
     template <typename W>
@@ -1484,12 +1483,9 @@ namespace libsemigroups {
                 {"bb", "a", "bcb", "a", "abcb", "a", "bbcb", "a"}));
     REQUIRE(p.alphabet() == "abc");
     presentation::normalize_alphabet(p);
-    REQUIRE(p.letter_no_checks(0)
-            == presentation::human_readable_letter<std::string>(0));
-    REQUIRE(p.letter_no_checks(1)
-            == presentation::human_readable_letter<std::string>(1));
-    REQUIRE(p.letter_no_checks(2)
-            == presentation::human_readable_letter<std::string>(2));
+    REQUIRE(p.letter_no_checks(0) == human_readable_letter<>(0));
+    REQUIRE(p.letter_no_checks(1) == human_readable_letter<>(1));
+    REQUIRE(p.letter_no_checks(2) == human_readable_letter<>(2));
     p.validate();
 
     presentation::add_rule_no_checks(p, "abcb", "ecb");
@@ -1780,26 +1776,18 @@ namespace libsemigroups {
                           "letter",
                           "[quick][presentation]") {
     Presentation<std::vector<uint16_t>> p;
-    REQUIRE_THROWS_AS(
-        presentation::human_readable_letter<std::vector<uint16_t>>(65536),
-        LibsemigroupsException);
-    REQUIRE(presentation::human_readable_letter<std::vector<uint16_t>>(10)
-            == 10);
-    REQUIRE_THROWS_AS(human_readable_char(65536), LibsemigroupsException);
-    REQUIRE(human_readable_char(0) == 'a');
-    REQUIRE(human_readable_char(10) == 'k');
+    REQUIRE_THROWS_AS(human_readable_letter<std::vector<uint16_t>>(65536),
+                      LibsemigroupsException);
+    REQUIRE(human_readable_letter<std::vector<uint16_t>>(10) == 10);
+    REQUIRE(human_readable_letter<>(0) == 'a');
+    REQUIRE(human_readable_letter<>(10) == 'k');
 
     detail::IntRange          ir(0, 255);
     Presentation<std::string> q;
 
-    REQUIRE(std::all_of(ir.cbegin(), ir.cend(), [](size_t i) {
-      return human_readable_char(i)
-             == presentation::human_readable_letter<std::string>(i);
-    }));
-
     Presentation<word_type> r;
     for (size_t i = 0; i < 1000; ++i) {
-      REQUIRE(presentation::human_readable_letter<word_type>(i) == i);
+      REQUIRE(human_readable_letter<word_type>(i) == i);
     }
   }
 
@@ -1840,16 +1828,13 @@ namespace libsemigroups {
         = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
     std::unordered_set<letter_type> set;
     for (size_t i = 0; i < letters.size(); ++i) {
-      REQUIRE(letters[i]
-              == presentation::human_readable_letter<std::string>(i));
+      REQUIRE(letters[i] == human_readable_letter<>(i));
       REQUIRE(set.insert(letters[i]).second);
     }
     for (size_t i = letters.size(); i < 255; ++i) {
-      REQUIRE(set.insert(presentation::human_readable_letter<std::string>(i))
-                  .second);
+      REQUIRE(set.insert(human_readable_letter<>(i)).second);
     }
-    REQUIRE_THROWS_AS(presentation::human_readable_letter<std::string>(255),
-                      LibsemigroupsException);
+    REQUIRE_THROWS_AS(human_readable_letter<>(255), LibsemigroupsException);
     p.alphabet(255);
     REQUIRE_THROWS_AS(presentation::first_unused_letter(p),
                       LibsemigroupsException);

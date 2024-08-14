@@ -122,7 +122,7 @@ namespace libsemigroups {
       }
 
       auto f1 = [&p](auto val) {
-        return presentation::human_readable_letter<W2>(p.index(val) + 7);
+        return human_readable_letter<W2>(p.index(val) + 7);
       };
       Presentation<W2> q = to_presentation<W2>(p, f1);
       REQUIRE(q.contains_empty_word());

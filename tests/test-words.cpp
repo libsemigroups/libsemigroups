@@ -1168,19 +1168,19 @@ namespace libsemigroups {
       val = human_readable_index(val);
     });
     std::for_each(result.begin(), result.end(), [](auto& val) {
-      val = human_readable_char(val);
+      val = human_readable_letter<>(val);
     });
     REQUIRE(result == expected);
 
     std::for_each(result.begin(), result.end(), [](auto& val) {
-      val = human_readable_char(val);
+      val = human_readable_letter<>(val);
     });
     std::for_each(result.begin(), result.end(), [](auto& val) {
       val = human_readable_index(val);
     });
     REQUIRE(result == expected);
 
-    REQUIRE_THROWS_AS(human_readable_char(1'000), LibsemigroupsException);
+    REQUIRE_THROWS_AS(human_readable_letter<>(1'000), LibsemigroupsException);
   }
 
   LIBSEMIGROUPS_TEST_CASE("to_word", "038", "", "[quick]") {

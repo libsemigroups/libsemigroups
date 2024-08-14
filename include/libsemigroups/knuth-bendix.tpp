@@ -798,6 +798,7 @@ namespace libsemigroups {
     return detail::internal_string_type({uint_to_internal_char(i)});
   }
 
+  // TODO (later) replace with ToWord somehow?
   template <typename Rewriter, typename ReductionOrder>
   word_type KnuthBendix<Rewriter, ReductionOrder>::internal_string_to_word(
       detail::internal_string_type const& s) {

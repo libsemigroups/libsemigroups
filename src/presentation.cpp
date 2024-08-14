@@ -28,9 +28,9 @@
 
 #include "libsemigroups/exception.hpp"     // for LIBSEMIGROUPS_EXCEPTION
 #include "libsemigroups/presentation.hpp"  // for Presentation, to_string, to_word
-#include "libsemigroups/to-presentation.hpp"  // for human_readable_char
+#include "libsemigroups/to-presentation.hpp"  // for to_presentation
 #include "libsemigroups/types.hpp"            // for word_type
-#include "libsemigroups/words.hpp"            // for human_readable_char
+#include "libsemigroups/words.hpp"            // for human_readable_letter
 
 #include "libsemigroups/detail/fmt.hpp"  // for format
 
@@ -77,7 +77,7 @@ namespace libsemigroups {
         std::string out;
         std::string sep = "";
         for (auto it = w.cbegin(); it < w.cend(); ++it) {
-          out += sep + human_readable_char(*it);
+          out += sep + human_readable_letter<>(*it);
           sep = " * ";
         }
         return out;
@@ -92,7 +92,7 @@ namespace libsemigroups {
 
       std::string sep = "";
       for (auto it = p.alphabet().cbegin(); it != p.alphabet().cend(); ++it) {
-        out += fmt::format("{}\"{}\"", sep, human_readable_char(*it));
+        out += fmt::format("{}\"{}\"", sep, human_readable_letter<>(*it));
         sep = ", ";
       }
       out += ");\n";
