@@ -3324,9 +3324,10 @@ namespace libsemigroups {
     presentation::add_rule(p, "accAABab", "");
 
     ToddCoxeter H(right, p);
-    H.add_pair(to_word(p, "bc"), ""_w);
-    H.add_pair(to_word(p, "ABAAbcabC"), ""_w);
-    H.add_pair(to_word(p, "AcccacBcA"), ""_w);
+    ToWord      to_word(p.alphabet());
+    H.add_pair(to_word("bc"), ""_w);
+    H.add_pair(to_word("ABAAbcabC"), ""_w);
+    H.add_pair(to_word("AcccacBcA"), ""_w);
     H.large_collapse(10'000)
         .strategy(options::strategy::hlt)
         .lookahead_extent(options::lookahead_extent::partial);
@@ -3912,7 +3913,8 @@ namespace libsemigroups {
 
     SECTION("custom HLT") {
       ToddCoxeter tc(right, p);
-      tc.add_pair(to_word(p, "xy"), ""_w);
+      ToWord      to_word(p.alphabet());
+      tc.add_pair(to_word("xy"), ""_w);
       tc.strategy(options::strategy::hlt)
           .lookahead_extent(options::lookahead_extent::partial)
           .lookahead_style(options::lookahead_style::hlt)
@@ -3927,7 +3929,8 @@ namespace libsemigroups {
       presentation::replace_word_with_new_generator(p, "axY");
       REQUIRE(presentation::length(p) == 140);
       ToddCoxeter tc(right, p);
-      tc.add_pair(to_word(p, "xy"), ""_w);
+      ToWord      to_word(p.alphabet());
+      tc.add_pair(to_word("xy"), ""_w);
       tc.strategy(options::strategy::felsch);
       REQUIRE(tc.number_of_classes() == 10'644'480);
     }
@@ -3965,7 +3968,8 @@ namespace libsemigroups {
     REQUIRE(presentation::length(p) == 367);
 
     ToddCoxeter tc(right, p);
-    tc.add_pair(to_word(p, "xy"), ""_w);
+    ToWord      to_word(p.alphabet());
+    tc.add_pair(to_word("xy"), ""_w);
     tc.lookahead_style(options::lookahead_style::felsch)
         .lookahead_extent(options::lookahead_extent::partial)
         .strategy(options::strategy::hlt)
@@ -4571,11 +4575,12 @@ namespace libsemigroups {
 
     p.alphabet_from_rules();
 
-    auto q = to_presentation<std::string>(p);
+    auto     q = to_presentation<std::string>(p);
+    ToString to_string(q.alphabet());
 
     REQUIRE(knuth_bendix::try_equal_to(q,
-                                       to_string(q, 1217_w),
-                                       to_string(q, 7121_w),
+                                       to_string(1217_w),
+                                       to_string(7121_w),
                                        std::chrono::milliseconds(10))
             == tril::TRUE);
 

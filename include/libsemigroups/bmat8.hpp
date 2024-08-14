@@ -959,6 +959,7 @@ namespace libsemigroups {
   //! `"{}"`).
   //!
   //! \returns A string containing a representation of \p x.
+  // TODO (now) rename this to_human_readable_repr
   std::string to_string(BMat8 const& x, std::string const& braces = "{}");
 
   [[nodiscard]] constexpr BMat8 operator*(bool         scalar,

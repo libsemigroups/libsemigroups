@@ -987,22 +987,23 @@ namespace libsemigroups {
     InversePresentation<std::string> p;
     p.alphabet("abcABC");
     p.inverses_no_checks("ABCabc");
+    ToWord to_word(p.alphabet());
 
     Stephen S(p);
-    REQUIRE(to_word(p, "aBcAbC") == 042315_w);
+    REQUIRE(to_word("aBcAbC") == 042315_w);
 
-    S.set_word(to_word(p, "aBcAbC")).run();
+    S.set_word(to_word("aBcAbC")).run();
 
     REQUIRE(S.finished());
     REQUIRE(S.word_graph().number_of_nodes() == 7);
-    REQUIRE(!stephen::accepts(S, to_word(p, "BaAbaBcAbC")));
-    REQUIRE(stephen::accepts(S, to_word(p, "aBcCbBcAbC")));
+    REQUIRE(!stephen::accepts(S, to_word("BaAbaBcAbC")));
+    REQUIRE(stephen::accepts(S, to_word("aBcCbBcAbC")));
 
-    S.set_word(to_word(p, "aBcCbBcAbC"));
-    REQUIRE(stephen::accepts(S, to_word(p, "aBcAbC")));
+    S.set_word(to_word("aBcCbBcAbC"));
+    REQUIRE(stephen::accepts(S, to_word("aBcAbC")));
 
-    S.set_word(to_word(p, "BaAbaBcAbC"));
-    REQUIRE(stephen::accepts(S, to_word(p, "aBcAbC")));
+    S.set_word(to_word("BaAbaBcAbC"));
+    REQUIRE(stephen::accepts(S, to_word("aBcAbC")));
   }
 
   LIBSEMIGROUPS_TEST_CASE("Stephen",

@@ -522,11 +522,13 @@ namespace libsemigroups {
 
     _gen_pairs_initted = true;
 
-    auto& p     = _presentation;
-    auto  pairs = (generating_pairs() | rx::transform([&p](auto const& w) {
-                    return to_string(p, w);
-                  }))
-                 | rx::in_groups_of_exactly(2);
+    auto&    p = _presentation;
+    ToString to_string(p.alphabet());
+    auto     pairs
+        = (generating_pairs() | rx::transform([&to_string](auto const& w) {
+             return to_string(w);
+           }))
+          | rx::in_groups_of_exactly(2);
 
     if (kind() != congruence_kind::twosided && (pairs | rx::count()) != 0) {
       p.alphabet(p.alphabet() + presentation::first_unused_letter(p));

@@ -74,13 +74,13 @@ namespace libsemigroups {
     REQUIRE(kb.number_of_classes() == 5);
     REQUIRE(kb.finished());
 
-    REQUIRE(kb.normal_form(to_string(kb.presentation(), 001_w)) == "aab");
-    REQUIRE(kb.normal_form(to_string(kb.presentation(), 00001_w)) == "aab");
-    REQUIRE(kb.normal_form(to_string(kb.presentation(), 011001_w)) == "aab");
-    REQUIRE(!kb.equal_to(to_string(kb.presentation(), 000_w),
-                         to_string(kb.presentation(), 1_w)));
-    REQUIRE(!kb.equal_to(to_string(kb.presentation(), 0000_w),
-                         to_string(kb.presentation(), 000_w)));
+    ToString to_string;
+
+    REQUIRE(kb.normal_form(to_string(001_w)) == "aab");
+    REQUIRE(kb.normal_form(to_string(00001_w)) == "aab");
+    REQUIRE(kb.normal_form(to_string(011001_w)) == "aab");
+    REQUIRE(!kb.equal_to(to_string(000_w), to_string(1_w)));
+    REQUIRE(!kb.equal_to(to_string(0000_w), to_string(000_w)));
   }
 
   TEMPLATE_TEST_CASE("free semigroup congruence (6 classes)",
@@ -108,9 +108,10 @@ namespace libsemigroups {
 
     TestType kb(twosided, p);
 
+    ToString to_string;
+
     REQUIRE(kb.number_of_classes() == 6);
-    REQUIRE(kb.equal_to(to_string(kb.presentation(), 1_w),
-                        to_string(kb.presentation(), 2_w)));
+    REQUIRE(kb.equal_to(to_string(1_w), to_string(2_w)));
   }
 
   TEMPLATE_TEST_CASE("free semigroup congruence (16 classes)",
@@ -143,10 +144,11 @@ namespace libsemigroups {
     presentation::add_rule(p, {2, 0, 2, 0}, {2, 0, 2});
 
     TestType kb(twosided, p);
+    ToString to_string;
+
     REQUIRE(kb.number_of_classes() == 16);
     REQUIRE(kb.number_of_active_rules() == 18);
-    REQUIRE(kb.equal_to(to_string(kb.presentation(), 2_w),
-                        to_string(kb.presentation(), 3_w)));
+    REQUIRE(kb.equal_to(to_string(2_w), to_string(3_w)));
   }
 
   TEMPLATE_TEST_CASE("free semigroup congruence (6 classes) x 2",
@@ -179,24 +181,16 @@ namespace libsemigroups {
 
     TestType kb(twosided, p);
     REQUIRE(kb.number_of_classes() == 16);
-    REQUIRE(kb.equal_to(to_string(kb.presentation(), {0}),
-                        to_string(kb.presentation(), {5})));
-    REQUIRE(kb.equal_to(to_string(kb.presentation(), {0}),
-                        to_string(kb.presentation(), {5})));
-    REQUIRE(kb.equal_to(to_string(kb.presentation(), {0}),
-                        to_string(kb.presentation(), {10})));
-    REQUIRE(kb.equal_to(to_string(kb.presentation(), {1}),
-                        to_string(kb.presentation(), {2})));
-    REQUIRE(kb.equal_to(to_string(kb.presentation(), {1}),
-                        to_string(kb.presentation(), {7})));
-    REQUIRE(kb.equal_to(to_string(kb.presentation(), {3}),
-                        to_string(kb.presentation(), {4})));
-    REQUIRE(kb.equal_to(to_string(kb.presentation(), {3}),
-                        to_string(kb.presentation(), {6})));
-    REQUIRE(kb.equal_to(to_string(kb.presentation(), {3}),
-                        to_string(kb.presentation(), {8})));
-    REQUIRE(kb.equal_to(to_string(kb.presentation(), {3}),
-                        to_string(kb.presentation(), {9})));
+    ToString to_string;
+    REQUIRE(kb.equal_to(to_string({0}), to_string({5})));
+    REQUIRE(kb.equal_to(to_string({0}), to_string({5})));
+    REQUIRE(kb.equal_to(to_string({0}), to_string({10})));
+    REQUIRE(kb.equal_to(to_string({1}), to_string({2})));
+    REQUIRE(kb.equal_to(to_string({1}), to_string({7})));
+    REQUIRE(kb.equal_to(to_string({3}), to_string({4})));
+    REQUIRE(kb.equal_to(to_string({3}), to_string({6})));
+    REQUIRE(kb.equal_to(to_string({3}), to_string({8})));
+    REQUIRE(kb.equal_to(to_string({3}), to_string({9})));
   }
 
   TEMPLATE_TEST_CASE("free semigroup congruence (240 classes)",

@@ -104,8 +104,9 @@ namespace libsemigroups {
     if constexpr (std::is_same_v<internal_type, word_type>) {
       return wp_prefix(internal_type(u), internal_type(v), internal_type());
     } else {
-      std::string uu = to_string(presentation(), u);
-      std::string vv = to_string(presentation(), v);
+      ToString    to_string(presentation().alphabet());
+      std::string uu = to_string(u);
+      std::string vv = to_string(v);
       return wp_prefix(internal_type(uu), internal_type(vv), internal_type());
     }
   }

@@ -372,15 +372,14 @@ namespace libsemigroups {
     REQUIRE(!p.contains_empty_word());
     p.alphabet(3);
     TestType kb(twosided, p);
-    REQUIRE(
-        to_string(kb.presentation(), S.factorisation(Transf<>({3, 4, 4, 4, 4})))
-        == "abaaabbaa");
-    REQUIRE(
-        to_string(kb.presentation(), S.factorisation(Transf<>({3, 1, 3, 3, 3})))
-        == "baaab");
+    ToString to_string;
+    ToWord   to_word;
 
-    kb.add_pair(to_word(kb.presentation(), "caabbaaaba"),
-                to_word(kb.presentation(), "cbaaab"));
+    REQUIRE(to_string(S.factorisation(Transf<>({3, 4, 4, 4, 4})))
+            == "abaaabbaa");
+    REQUIRE(to_string(S.factorisation(Transf<>({3, 1, 3, 3, 3}))) == "baaab");
+
+    kb.add_pair(to_word("caabbaaaba"), to_word("cbaaab"));
 
     kb.run();
     REQUIRE(kb.number_of_active_rules() == 23);

@@ -2860,10 +2860,11 @@ namespace libsemigroups {
     Presentation<std::string> p;
 
     p.alphabet("ab");
-    REQUIRE(to_word(p, "aaabbbab") == word_type({0, 0, 0, 1, 1, 1, 0, 1}));
+    ToWord to_word(p.alphabet());
+    REQUIRE(to_word("aaabbbab") == word_type({0, 0, 0, 1, 1, 1, 0, 1}));
 
     word_type output({1, 2, 3, 4, 5, 6, 7, 6, 5, 4, 3, 2, 1});
-    to_word(p, "ababab", output);
+    to_word(output, "ababab");
     REQUIRE(output == word_type({0, 1, 0, 1, 0, 1}));
   }
 
@@ -2875,10 +2876,11 @@ namespace libsemigroups {
     Presentation<std::string> p;
 
     p.alphabet("ab");
-    REQUIRE(to_string(p, word_type({0, 0, 0, 1, 1, 1, 0, 1})) == "aaabbbab");
+    ToString to_string(p.alphabet());
+    REQUIRE(to_string(word_type({0, 0, 0, 1, 1, 1, 0, 1})) == "aaabbbab");
 
     std::string output("sample");
-    to_string(p, word_type({0, 1, 1, 0}), output);
+    to_string(output, word_type({0, 1, 1, 0}));
     REQUIRE(output == "abba");
   }
 

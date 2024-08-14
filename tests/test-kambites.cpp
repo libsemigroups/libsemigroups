@@ -148,15 +148,16 @@ namespace libsemigroups {
     presentation::add_rule(p, "ef", "dg");
 
     Kambites<T> k(p);
+    ToWord      to_word(p.alphabet());
 
     REQUIRE(k.contains("abcd", "aaaeaa"));
     REQUIRE(k.contains("ef", "dg"));
     REQUIRE(k.contains("aaaaaef", "aaaaadg"));
     REQUIRE(k.contains("efababa", "dgababa"));
-    REQUIRE(k.contains(to_word(p, "abcd"), to_word(p, "aaaeaa")));
-    REQUIRE(k.contains(to_word(p, "ef"), to_word(p, "dg")));
-    REQUIRE(k.contains(to_word(p, "aaaaaef"), to_word(p, "aaaaadg")));
-    REQUIRE(k.contains(to_word(p, "efababa"), to_word(p, "dgababa")));
+    REQUIRE(k.contains(to_word("abcd"), to_word("aaaeaa")));
+    REQUIRE(k.contains(to_word("ef"), to_word("dg")));
+    REQUIRE(k.contains(to_word("aaaaaef"), to_word("aaaaadg")));
+    REQUIRE(k.contains(to_word("efababa"), to_word("dgababa")));
 
     auto s = to_froidure_pin(k);
     s.enumerate(100);
@@ -2595,6 +2596,8 @@ namespace libsemigroups {
 
     Presentation<std::string> p;
     p.alphabet("abcdefg");
+    ToWord to_word(p.alphabet());
+
     presentation::add_rule(p, "abcd", "aaaeaa");
     presentation::add_rule(p, "ef", "dg");
 
@@ -2608,7 +2611,7 @@ namespace libsemigroups {
     presentation::add_rule(p, "abcd", "aaaeaa");
     presentation::add_rule(p, "ef", "dg");
 
-    REQUIRE_THROWS_AS(kk.add_pair(to_word(p, "abababab"), to_word(p, "aba")),
+    REQUIRE_THROWS_AS(kk.add_pair(to_word("abababab"), to_word("aba")),
                       LibsemigroupsException);
 
     kk.init(std::move(p));
@@ -2616,13 +2619,13 @@ namespace libsemigroups {
     REQUIRE(kk.presentation().alphabet() == "abcdefg");
 
     p.alphabet("abcdefg");
-    kk.add_pair(to_word(p, "abababab"), to_word(p, "aba"));
+    kk.add_pair(to_word("abababab"), to_word("aba"));
     REQUIRE(kk.small_overlap_class() == 1);
 
     Presentation<word_type> pp;
     pp.alphabet(7);
-    presentation::add_rule(pp, to_word(p, "abcd"), to_word(p, "aaaeaa"));
-    presentation::add_rule(pp, to_word(p, "ef"), to_word(p, "dg"));
+    presentation::add_rule(pp, to_word("abcd"), to_word("aaaeaa"));
+    presentation::add_rule(pp, to_word("ef"), to_word("dg"));
 
     kk.init(pp);
     REQUIRE(kk.generating_pairs().empty());
