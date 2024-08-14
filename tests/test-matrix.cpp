@@ -767,8 +767,8 @@ namespace libsemigroups {
       auto x        = to_matrix<Mat>({{-2, 2, 0}, {-1, 0, 0}, {1, -3, 1}});
       auto expected = to_matrix<Mat>({{-4, 0, -2}, {-3, -2, -2}, {-1, -5, -1}});
       REQUIRE(x == expected);
-      REQUIRE(x.zero() == NEGATIVE_INFINITY);
-      REQUIRE(x.one() == 0);
+      REQUIRE(x.scalar_zero() == NEGATIVE_INFINITY);
+      REQUIRE(x.scalar_one() == 0);
 
       auto y
           = to_matrix<Mat>({{NEGATIVE_INFINITY, 0, 0}, {0, 1, 0}, {1, -1, 0}});
@@ -1182,11 +1182,8 @@ namespace libsemigroups {
     using Mat               = NTPMat<>;
     using scalar_type       = typename Mat::scalar_type;
     NTPSemiring<> const* sr = new NTPSemiring<>(23, 1);
-    REQUIRE(sr->one() == 1);
-    REQUIRE(sr->zero() == 0);
-    // TODO Uncomment or delete
-    // REQUIRE_THROWS_AS(to_matrix<Mat>(nullptr, {{0, 0}, {0, 0}}),
-    //                   LibsemigroupsException);
+    REQUIRE(sr->scalar_one() == 1);
+    REQUIRE(sr->scalar_zero() == 0);
     auto x = to_matrix<Mat>(sr, std::vector<std::vector<scalar_type>>());
     REQUIRE(x.number_of_cols() == x.number_of_rows());
     REQUIRE(x.number_of_cols() == 0);

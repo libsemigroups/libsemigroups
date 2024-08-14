@@ -166,11 +166,11 @@ namespace libsemigroups {
 
       using RowView = TRowView;
 
-      scalar_type one() const noexcept {
+      scalar_type scalar_one() const noexcept {
         return static_cast<Subclass const*>(this)->one_impl();
       }
 
-      scalar_type zero() const noexcept {
+      scalar_type scalar_zero() const noexcept {
         return static_cast<Subclass const*>(this)->zero_impl();
       }
 
@@ -276,9 +276,9 @@ namespace libsemigroups {
       Subclass identity() const {
         size_t const n = number_of_rows();
         Subclass     x(semiring(), n, n);
-        std::fill(x.begin(), x.end(), zero());
+        std::fill(x.begin(), x.end(), scalar_zero());
         for (size_t r = 0; r < n; ++r) {
-          x(r, r) = one();
+          x(r, r) = scalar_one();
         }
         return x;
       }
@@ -385,7 +385,7 @@ namespace libsemigroups {
                 A._container.begin() + r * N,
                 A._container.begin() + (r + 1) * N,
                 tmp.begin(),
-                zero(),
+                scalar_zero(),
                 [this](scalar_type x, scalar_type y) {
                   return this->plus(x, y);
                 },
@@ -1909,9 +1909,9 @@ namespace libsemigroups {
     // No static DynamicMatrix::identity(size_t n) because we need a semiring!
     static DynamicMatrix identity(Semiring const* sr, size_t n) {
       DynamicMatrix x(sr, n, n);
-      std::fill(x.begin(), x.end(), x.zero());
+      std::fill(x.begin(), x.end(), x.scalar_zero());
       for (size_t r = 0; r < n; ++r) {
-        x(r, r) = x.one();
+        x(r, r) = x.scalar_one();
       }
       return x;
     }
@@ -1941,11 +1941,11 @@ namespace libsemigroups {
     }
 
     scalar_type one_impl() const noexcept {
-      return _semiring->one();
+      return _semiring->scalar_one();
     }
 
     scalar_type zero_impl() const noexcept {
-      return _semiring->zero();
+      return _semiring->scalar_zero();
     }
 
     Semiring const* semiring_impl() const noexcept {
@@ -3018,7 +3018,7 @@ namespace libsemigroups {
     //!
     //! \exceptions
     //! \noexcept
-    Scalar one() const noexcept {
+    Scalar scalar_one() const noexcept {
       return 0;
     }
 
@@ -3032,7 +3032,7 @@ namespace libsemigroups {
     //!
     //! \exceptions
     //! \noexcept
-    Scalar zero() const noexcept {
+    Scalar scalar_zero() const noexcept {
       return NEGATIVE_INFINITY;
     }
 
@@ -3426,7 +3426,7 @@ namespace libsemigroups {
     //!
     //! \exceptions
     //! \noexcept
-    Scalar one() const noexcept {
+    Scalar scalar_one() const noexcept {
       return 0;
     }
 
@@ -3442,7 +3442,7 @@ namespace libsemigroups {
     //! \noexcept
     // TODO These mem fns (one and zero) aren't needed?
     // TODO constexpr?
-    Scalar zero() const noexcept {
+    Scalar scalar_zero() const noexcept {
       return POSITIVE_INFINITY;
     }
 
@@ -3913,7 +3913,7 @@ namespace libsemigroups {
     //!
     //! \exceptions
     //! \noexcept
-    static constexpr Scalar one() noexcept {
+    static constexpr Scalar scalar_one() noexcept {
       return 1;
     }
 
@@ -3929,7 +3929,7 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! Constant.
-    static constexpr Scalar zero() noexcept {
+    static constexpr Scalar scalar_zero() noexcept {
       return 0;
     }
 
@@ -4243,12 +4243,12 @@ namespace libsemigroups {
       // this might not correspond to the normalised entries of the matrix).
       using Row = typename T::Row;
 
-      scalar_type one() const noexcept {
-        return _underlying_mat.one();
+      scalar_type scalar_one() const noexcept {
+        return _underlying_mat.scalar_one();
       }
 
-      scalar_type zero() const noexcept {
-        return _underlying_mat.zero();
+      scalar_type scalar_zero() const noexcept {
+        return _underlying_mat.scalar_zero();
       }
 
       ////////////////////////////////////////////////////////////////////////
@@ -4868,11 +4868,11 @@ namespace libsemigroups {
 
       for (size_t r1 = 0; r1 < views.size(); ++r1) {
         if (r1 == 0 || views[r1] != views[r1 - 1]) {
-          std::fill(tmp1.begin(), tmp1.end(), tmp1.zero());
+          std::fill(tmp1.begin(), tmp1.end(), tmp1.scalar_zero());
           for (size_t r2 = 0; r2 < r1; ++r2) {
             scalar_type max_scalar = matrix_threshold(tmp1);
             for (size_t c = 0; c < tmp1.number_of_cols(); ++c) {
-              if (views[r2][c] == tmp1.zero()) {
+              if (views[r2][c] == tmp1.scalar_zero()) {
                 continue;
               }
               if (views[r1][c] >= views[r2][c]) {
@@ -4881,11 +4881,11 @@ namespace libsemigroups {
                       = std::min(max_scalar, views[r1][c] - views[r2][c]);
                 }
               } else {
-                max_scalar = tmp1.zero();
+                max_scalar = tmp1.scalar_zero();
                 break;
               }
             }
-            if (max_scalar != tmp1.zero()) {
+            if (max_scalar != tmp1.scalar_zero()) {
               tmp1 += views[r2] * max_scalar;
             }
           }
