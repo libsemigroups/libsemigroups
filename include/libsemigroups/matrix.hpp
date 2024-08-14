@@ -85,9 +85,9 @@ namespace libsemigroups {
   //! The following general matrix classes are provided which can be used to
   //! define matrices over arbitrary semirings:
   //!
-  //! * \ref dynamicmatrix-compile
+  //! * \ref DynamicMatrixStaticArithmetic "DynamicMatrix (static arithmetic)"
   //! * \ref dynamicmatrix-run
-  //! * \ref StaticMatrix
+  //! * \ref staticmatrix_group
   //! * \ref variable-templates
   //!
   //! # Row views
@@ -1030,6 +1030,16 @@ namespace libsemigroups {
   // StaticMatrix with compile time semiring arithmetic
   ////////////////////////////////////////////////////////////////////////
 
+  //! \defgroup staticmatrix_group Static matrices
+  //!
+  //! This page contains links to classes and functions for StaticMatrix
+  //! instances in ``libsemigroups``. These are matrices whose dimensions and
+  //! arithmetic are defined at compile time.
+
+  //! \ingroup staticmatrix_group
+  //!
+  //! \brief Static matrix class
+  //!
   //! Defined in ``matrix.hpp``.
   //!
   //! This is a class for matrices where both the arithmetic operations in
@@ -1750,6 +1760,24 @@ namespace libsemigroups {
     //! This only works when the template parameters `R` and `C` are equal
     //! (i.e. for square matrices), but this is not verified.
     void transpose_no_checks();
+
+    //! \brief Returns an identity matrix.
+    //!
+    //! This function returns an `R` times `C` identity matrix.
+    //!
+    //! \returns  The identity matrix with `R = C` rows and columns.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    //! \complexity
+    //! \f$O(n ^ 2)\f$ where \f$n\f$ is the template parameter `R`
+    //! and `C`.
+    //!
+    //! \warning
+    //! This only works when the template parameters `R` and `C` are
+    //! equal (i.e. for square matrices).
+    static StaticMatrix one() const;
 #endif  // PARSED_BY_DOXYGEN
 
    private:
@@ -1769,6 +1797,36 @@ namespace libsemigroups {
   // DynamicMatrix with compile time semiring arithmetic
   ////////////////////////////////////////////////////////////////////////
 
+  //! \anchor DynamicMatrixStaticArithmetic
+  //!
+  //! Defined in ``matrix.hpp``.
+  //!
+  //! This is a class for matrices where the arithmetic operations in the
+  //! underlying semiring are known at compile time, and the dimensions of the
+  //! matrix can be set at run time.
+  //!
+  //! \tparam PlusOp a stateless type with a call operator of signature
+  //! `scalar_type operator()(scalar_type, scalar_type)` implementing the
+  //! addition of the semiring
+  //!
+  //! \tparam ProdOp a stateless type with a call operator of signature
+  //! `scalar_type operator()(scalar_type, scalar_type)` implementing the
+  //! multiplication of the semiring
+  //!
+  //! \tparam ZeroOp a stateless type with a call operator of signature
+  //! `scalar_type operator()()` returning the zero of the semiring (the
+  //! additive identity element)
+  //!
+  //! \tparam OneOp a stateless type with a call operator of signature
+  //! `scalar_type operator()()` returning the one of the semiring (the
+  //! multiplicative identity element)
+  //!
+  //! \tparam Scalar the type of the entries in the matrices (the type of
+  //! elements in the underlying semiring)
+  //!
+  //! \note
+  //! Certain member functions only work for square matrices and some only
+  //! work for rows.
   template <typename PlusOp,
             typename ProdOp,
             typename ZeroOp,
@@ -2050,7 +2108,6 @@ namespace libsemigroups {
   }  // namespace detail
 
   namespace matrix {
-    // TODO(0) move to matrix namespace
     template <typename Mat>
     auto threshold(Mat const&) noexcept
         -> std::enable_if_t<!detail::IsTruncMat<Mat>,
@@ -5071,6 +5128,26 @@ namespace libsemigroups {
 
   }  // namespace matrix
 
+  //! \ingroup staticmatrix_group
+  //!
+  //! \brief Validates the arguments, constructs a matrix and validates it.
+  //!
+  //! Validates the arguments, constructs a matrix and validates it.
+  //!
+  //! \param il the values to be copied into the matrix.
+  //! \returns The constructed matrix if valid.
+  //!
+  //! \throws
+  //! LibsemigroupsException if `il` does not represent a
+  //! matrix of the correct dimensions.
+  //!
+  //! \throws
+  //! LibsemigroupsException if the constructed matrix
+  //! contains values that do not belong to the underlying semiring.
+  //!
+  //! \complexity
+  //! \f$O(mn)\f$ where \f$m\f$ is the number of rows and
+  //! \f$n\f$ is the number of columns of the matrix.
   template <typename Mat,
             typename
             = std::enable_if_t<IsMatrix<Mat> && !IsMatWithSemiring<Mat>>>
@@ -5082,6 +5159,27 @@ namespace libsemigroups {
     return m;
   }
 
+  //! \ingroup staticmatrix_group
+  //!
+  //! \brief Constructs a row and validates it.
+  //!
+  //! This function constructs a row from a std::initializer_list and then
+  //! calls \ref validate.
+  //!
+  //! \param il the values to be copied into the row.
+  //!
+  //! \returns the constructed row if valid.
+  //!
+  //! \throws
+  //! LibsemigroupsException if the constructed row contains
+  //! values that do not belong to the underlying semiring.
+  //!
+  //! \complexity
+  //! \f$O(n)\f$ where \f$n\f$ is the number of columns of the matrix.
+  //!
+  //! \warning
+  //! This function only works for rows, i.e. when the template
+  //! parameter `R` is `1`.
   template <typename Mat,
             typename
             = std::enable_if_t<IsMatrix<Mat> && !IsMatWithSemiring<Mat>>>
