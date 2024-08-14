@@ -16,9 +16,10 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-// TODO(2) tpp file
 // TODO(0): document the adapters
-// TODO(0): constexpr
+// TODO(0): make -> to_matrix
+// TODO(1) tpp file
+// TODO(1): constexpr
 
 #ifndef LIBSEMIGROUPS_MATRIX_HPP_
 #define LIBSEMIGROUPS_MATRIX_HPP_
@@ -36,6 +37,7 @@
 
 #include "adapters.hpp"   // for Degree
 #include "bitset.hpp"     // for BitSet
+#include "config.hpp"     // for PARSED_BY_DOXYGEN
 #include "constants.hpp"  // for POSITIVE_INFINITY
 #include "debug.hpp"      // for LIBSEMIGROUPS_ASSERT
 #include "exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
@@ -49,7 +51,6 @@ namespace libsemigroups {
   //!
   //! This page contains links to the documentation of the functionality in
   //! libsemigroups for matrices.
-  //!
   //!
   //! There are several different classes in ``libsemigroups`` for representing
   //! matrices over various semirings. There are up to three different
@@ -87,7 +88,7 @@ namespace libsemigroups {
   //!
   //! * \ref dynamicmatrix-compile
   //! * \ref dynamicmatrix-run
-  //! * \ref staticmatrix
+  //! * \ref StaticMatrix
   //! * \ref variable-templates
   //
   // TODO(0) incorporate
@@ -402,7 +403,7 @@ namespace libsemigroups {
       ////////////////////////////////////////////////////////////////////////
 
       // not noexcept because memory is allocated
-      void product_inplace(Subclass const& A, Subclass const& B) {
+      void product_inplace_no_checks(Subclass const& A, Subclass const& B) {
         LIBSEMIGROUPS_ASSERT(number_of_rows() == number_of_cols());
         LIBSEMIGROUPS_ASSERT(A.number_of_rows() == number_of_rows());
         LIBSEMIGROUPS_ASSERT(B.number_of_rows() == number_of_rows());
@@ -482,10 +483,11 @@ namespace libsemigroups {
         return result;
       }
 
-      // not noexcept because product_inplace isn't
+      // not noexcept because product_inplace_no_checks isn't
       Subclass operator*(Subclass const& y) const {
         Subclass result(*static_cast<Subclass const*>(this));
-        result.product_inplace(*static_cast<Subclass const*>(this), y);
+        result.product_inplace_no_checks(*static_cast<Subclass const*>(this),
+                                         y);
         return result;
       }
 
@@ -882,7 +884,6 @@ namespace libsemigroups {
   ////////////////////////////////////////////////////////////////////////
   // Matrix forward declarations
   ////////////////////////////////////////////////////////////////////////
-
   template <typename PlusOp,
             typename ProdOp,
             typename ZeroOp,
@@ -949,7 +950,7 @@ namespace libsemigroups {
     template <size_t R>
     StaticRowView(StaticMatrix_<R> const*,
                   typename RowViewCommon::iterator it,
-                  size_t const)
+                  size_t)
         : RowViewCommon(it) {}
 
     using RowViewCommon::size;
@@ -1059,6 +1060,36 @@ namespace libsemigroups {
   // StaticMatrix with compile time semiring arithmetic
   ////////////////////////////////////////////////////////////////////////
 
+  //! Defined in ``matrix.hpp``.
+  //!
+  //! This is a class for matrices where both the arithmetic operations in
+  //! the underlying semiring, and the dimensions of the matrices are known
+  //! at compile time.
+  //!
+  //! \tparam PlusOp a stateless type with a call operator of signature
+  //!    `scalar_type operator()(scalar_type, scalar_type)`
+  //!    implementing the addition of the semiring.
+  //!
+  //! \tparam ProdOp a stateless type with a call operator of signature
+  //!    `scalar_type operator()(scalar_type, scalar_type)`
+  //!    implementing the multiplication of the semiring.
+  //!
+  //! \tparam ZeroOp a stateless type with a call operator of signature
+  //!    `scalar_type operator()()` returning the zero of the semiring
+  //!    (the additive identity element).
+  //!
+  //! \tparam OneOp a stateless type with a call operator of signature
+  //!    `scalar_type operator()()` returning the one of the semiring
+  //!    (the multiplicative identity element).
+  //!
+  //! \tparam R  the number of rows of the matrices.
+  //! \tparam C  the number of columns of the matrices.
+  //!
+  //! \tparam Scalar the type of the entries in the matrices (the type of
+  //! elements in the underlying semiring)
+  //!
+  //! \note Certain member functions only work for square matrices and some only
+  //!    work for rows.
   template <typename PlusOp,
             typename ProdOp,
             typename ZeroOp,
@@ -1088,18 +1119,33 @@ namespace libsemigroups {
     // StaticMatrix - Aliases - public
     ////////////////////////////////////////////////////////////////////////
 
-    using scalar_type      = typename MatrixCommon::scalar_type;
+    //! Alias for the template parameter \p Scalar.
+    using scalar_type = typename MatrixCommon::scalar_type;
+
+    //! Alias for references to the template parameter \p Scalar.
     using scalar_reference = typename MatrixCommon::scalar_reference;
+
+    //! Alias for const references to the template parameter \p Scalar.
     using scalar_const_reference =
         typename MatrixCommon::scalar_const_reference;
 
-    using Row     = StaticMatrix<PlusOp, ProdOp, ZeroOp, OneOp, 1, C, Scalar>;
+    //! Alias for the type of the rows of a StaticMatrix.
+    using Row = StaticMatrix<PlusOp, ProdOp, ZeroOp, OneOp, 1, C, Scalar>;
+
+    //! Alias for the type of row views of a StaticMatrix.
     using RowView = StaticRowView<PlusOp, ProdOp, ZeroOp, OneOp, C, Scalar>;
 
+    //! Alias for the template parameter \p PlusOp.
     using Plus = PlusOp;
+
+    //! Alias for the template parameter \p ProdOp.
     using Prod = ProdOp;
+
+    //! Alias for the template parameter \p ZeroOp.
     using Zero = ZeroOp;
-    using One  = OneOp;
+
+    //! Alias for the template parameter \p OneOp.
+    using One = OneOp;
 
     static constexpr size_t nr_rows = R;
     static constexpr size_t nr_cols = C;
@@ -1108,6 +1154,22 @@ namespace libsemigroups {
     // StaticMatrix - Constructors + destructor - public
     ////////////////////////////////////////////////////////////////////////
 
+    //! \brief Construct a row (from std::initializer_list).
+    //!
+    //! Construct a row from an std::initializer_list.
+    //!
+    //! \param c  the values to be copied into the row.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    //! \complexity
+    //!   \f$O(n)\f$ where \f$n\f$ is the size of the row being
+    //!   constructed.
+    //!
+    //! \warning
+    //!   This constructor only works for rows, i.e. when the template
+    //!   parameter `R` is `1`.
     explicit StaticMatrix(std::initializer_list<scalar_type> const& c)
         : MatrixCommon(c) {
       static_assert(R == 1,
@@ -1116,31 +1178,99 @@ namespace libsemigroups {
       LIBSEMIGROUPS_ASSERT(c.size() == C);
     }
 
+    //! \brief Construct a matrix.
+    //!
+    //! Construct a matrix from an std::initializer_list of
+    //! std::initializer_list.
+    //!
+    //! \param m  the values to be copied into the matrix.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    //! \complexity
+    //!   \f$O(mn)\f$ where \f$m\f$ is the template parameter `R`
+    //!   and \f$n\f$ is the template parameter `C`.
+    //!
+    //! \par Example
+    //! \code
+    //!  Mat m({{1, 1}, {0, 0}});
+    //! \endcode
     explicit StaticMatrix(
         std::initializer_list<std::initializer_list<scalar_type>> const& m)
         : MatrixCommon(m) {}
 
-    StaticMatrix(size_t r, size_t c) : StaticMatrix() {
-      (void) r;
-      (void) c;
-      LIBSEMIGROUPS_ASSERT(r == number_of_rows());
-      LIBSEMIGROUPS_ASSERT(c == number_of_cols());
-    }
-
+    //! \brief Construct a matrix.
+    //!
+    //! Construct a matrix from an std::vector of std::vector.
+    //!
+    //! \param m  the values to be copied into the matrix.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    //! \complexity
+    //!   \f$O(mn)\f$ where \f$m\f$ is the template parameter `R`
+    //!   and \f$n\f$ is the template parameter `C`.
     explicit StaticMatrix(std::vector<std::vector<scalar_type>> const& m)
         : MatrixCommon(m) {}
 
+    //! \brief Construct a row from a row view.
+    //!
+    //! Construct a row from a row view.
+    //!
+    //! \param rv  the row view.
+    //!
+    //! \exceptions
+    //!   this function guarantees not to throw a
+    //!   LibsemigroupsException.
+    //!
+    //! \complexity
+    //!   \f$O(n)\f$ where \f$n\f$ is the size of the row being
+    //!   constructed.
+    //!
+    //! \warning
+    //!   This constructor will only compile for rows, i.e. when the template
+    //!   parameter `R` is `1`.
     explicit StaticMatrix(RowView const& rv) : MatrixCommon(rv) {
       static_assert(
           R == 1,
           "cannot construct Matrix with more than one row from RowView!");
     }
 
-    StaticMatrix()                               = default;
-    StaticMatrix(StaticMatrix const&)            = default;
-    StaticMatrix(StaticMatrix&&)                 = default;
+    //! \brief Default constructor.
+    //!
+    //! Default constructor.
+    StaticMatrix() = default;
+
+    //! \brief Default copy constructor.
+    //!
+    //! Default copy constructor.
+    StaticMatrix(StaticMatrix const&) = default;
+
+    //! \brief Default move constructor.
+    //!
+    //! Default move constructor.
+    StaticMatrix(StaticMatrix&&) = default;
+
+    //! \brief Default copy assignment operator.
+    //!
+    //! Default copy assignment operator.
     StaticMatrix& operator=(StaticMatrix const&) = default;
-    StaticMatrix& operator=(StaticMatrix&&)      = default;
+
+    //! \brief Default move assignment operator.
+    //!
+    //! Default move assignment operator.
+    StaticMatrix& operator=(StaticMatrix&&) = default;
+
+#ifndef PARSED_BY_DOXYGEN
+    // For uniformity of interface, the args do nothing
+    StaticMatrix(size_t r, size_t c) : StaticMatrix() {
+      (void) r;
+      (void) c;
+      LIBSEMIGROUPS_ASSERT(r == number_of_rows());
+      LIBSEMIGROUPS_ASSERT(c == number_of_cols());
+    }
 
     // For uniformity of interface, the first arg does nothing
     StaticMatrix(void const* ptr, std::initializer_list<scalar_type> const& c)
@@ -1170,9 +1300,11 @@ namespace libsemigroups {
       (void) ptr;
       LIBSEMIGROUPS_ASSERT(ptr == nullptr);
     }
+#endif
 
     ~StaticMatrix() = default;
 
+    //! TODO
     static StaticMatrix identity(size_t n = 0) {
       static_assert(C == R, "cannot create non-square identity matrix");
       // If specified the value of n must equal R or otherwise weirdness will
@@ -1197,6 +1329,7 @@ namespace libsemigroups {
       return x;
     }
 
+    //! TODO
     static StaticMatrix identity(void const* ptr, size_t n = 0) {
       (void) ptr;
       LIBSEMIGROUPS_ASSERT(ptr == nullptr);
@@ -1207,14 +1340,421 @@ namespace libsemigroups {
     ////////////////////////////////////////////////////////////////////////
     // StaticMatrix - member function aliases - public
     ////////////////////////////////////////////////////////////////////////
+#ifdef PARSED_BY_DOXYGEN
+    //! \brief Returns a reference to the specified entry of the matrix.
+    //!
+    //! Returns a reference to the specified entry of the matrix.
+    //!
+    //! \param r  the index of the row of the entry\param c  the index of the
+    //! column of the entry
+    //!
+    //! \returns  A value of type scalar_reference.
+    //!
+    //! \exceptions
+    //!   this function guarantees not to throw a LibsemigroupsException.
+    //!
+    //! \complexity
+    //!   Constant
+    //!
+    //! \warning
+    //!    No checks on the validity of the parameters `r` and `c` are
+    //!    performed.
+    scalar_reference operator()(size_t r, size_t c);
 
-    using MatrixCommon::operator();
-    using MatrixCommon::begin;
-    using MatrixCommon::number_of_cols;
-    using MatrixCommon::number_of_rows;
-    using MatrixCommon::operator==;
-    using MatrixCommon::operator!=;
-    using MatrixCommon::swap;
+    //! \brief Returns a const reference to the specified entry of the matrix.
+    //!
+    //! Returns a const reference to the specified entry of the matrix.
+    //!
+    //! \param r  the index of the row of the entry
+    //! \param c  the index of the column of the entry
+    //!
+    //! \returns  A value of type scalar_const_reference.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    //! \complexity
+    //! Constant
+    //!
+    //! \warning
+    //! No checks on the validity of the parameters `r` and `c` are
+    //! performed.
+    scalar_const_reference operator()(size_t r, size_t c) const;
+
+    //! \brief Returns an iterator pointing at the first entry.
+    //!
+    //! This function returns a random access iterator point at the first entry
+    //! of the matrix.
+    //!
+    //! \returns A value of type `iterator`.
+    //!
+    //! \complexity
+    //! Constant
+    //!
+    //! \exceptions
+    //! \noexcept
+    //!
+    //! \warning
+    //! The order in which entries in the matrix are iterated over is not
+    //! specified.
+    iterator begin() noexcept;
+
+    //! \brief Returns an iterator pointing one beyond the last entry in the
+    //! matrix.
+    //!
+    //! \returns A value of type \ref iterator.
+    //!
+    //! \complexity  Constant
+    //!
+    //! \exceptions
+    //! \noexcept
+    //!
+    //! \warning
+    //! The order in which entries in the matrix are iterated over is not
+    //! specified.
+    iterator end();
+
+    //! \brief Returns a const iterator pointing at the first entry.
+    //!
+    //! This function returns a const (random access) iterator pointing at the
+    //! first entry in the matrix.
+    //!
+    //! \returns  A value of type `const_iterator`.
+    //!
+    //! \complexity
+    //! Constant
+    //!
+    //! \exceptions
+    //! \noexcept
+    //!
+    //! \warning
+    //!   The order in which entries in the matrix are iterated over is not
+    //!   specified.
+    const_iterator cbegin() const noexcept;
+
+    //! \brief Returns a const iterator pointing one beyond the last entry in
+    //! the matrix.
+    //!
+    //! This function returns a const (random access) iterator pointing one
+    //! passed the last entry of the matrix.
+    //!
+    //! \returns A value of type \ref const_iterator.
+    //!
+    //! \complexity  Constant
+    //!
+    //! \exceptions
+    //! \noexcept
+    //!
+    //! \warning
+    //! The order in which entries in the matrix are iterated over is not
+    //! specified.
+    const_iterator cend();
+
+    //! \brief Equality operator.
+    //!
+    //! This function returns \c true if `*this` is equal to \p that;
+    //! and \c false otherwise.
+    //!
+    //! \param that  matrix for comparison.
+    //!
+    //! \returns `true` if `*this` and `that` are equal and `false` if they are
+    //! not.
+    //!
+    //! \complexity
+    //! At worst \f$O(mn)\f$ where \f$m\f$ is the number of rows and
+    //! \f$n\f$ is the number of columns of the matrix.
+    bool operator==(StaticMatrix const& that) const;
+
+    //! \brief Equality operator.
+    //!
+    //! This function returns \c true if `*this` is not equal to \p that;
+    //! and \c false otherwise.
+    //!
+    //! \param that  the row view for comparison.
+    //!
+    //! \returns `true` if `*this` and `that` are equal and `false` if they
+    //! are not.  In particular, if `*this` has more than one row, then
+    //! `false` is returned.
+    //!
+    //! \complexity
+    //! At worst \f$O(n)\f$ where \f$n\f$ is the number of columns of
+    //! the matrix.
+    bool operator==(RowView const& that) const;
+
+    //! \brief Inequality operator.
+    //!
+    //! This function returns \c true if `*this` is not equal to \p that; and
+    //! \c false otherwise.
+    //!
+    //! \param that  the matrix or row view for comparison.
+    //!
+    //! \returns The negation of `operator==(that)`.
+    //!
+    //! \complexity
+    //! see operator==
+    bool operator!=(StaticMatrix const& that) const;
+
+    //! \brief Inequality operator.
+    //!
+    //! This function returns \c true if `*this` is not equal to \p that; and
+    //! \c false otherwise.
+    //!
+    //! \param that  the matrix or row view for comparison.
+    //!
+    //! \returns The negation of `operator==(that)`.
+    //!
+    //! \complexity
+    //! see operator==
+    bool operator!=(RowView const& that) const;
+
+    //! \brief Less than operator.
+    //!
+    //! This operator defines a total order on the set of matrices of the
+    //! same type, the details of which is implementation specific.
+    //!
+    //! \param that  the matrix for comparison.
+    //!
+    //! \returns `true` if `*this` is less than `that` and `false` if it is
+    //! not.
+    //!
+    //! \complexity
+    //! At worst \f$O(mn)\f$ where \f$m\f$ is number_of_rows
+    //! and \f$n\f$ is number_of_cols
+    bool operator<(StaticMatrix const& that) const;
+
+    //! \brief Less than operator.
+    //!
+    //! \param that  the row view for comparison.
+    //!
+    //! \returns `true` if `*this` is less than `that`, and `false`
+    //! otherwise. In particular, if `*this` has more than one row, then
+    //! `false` is returned.
+    //!
+    //! \complexity
+    //! At worst \f$O(n)\f$ where \f$n\f$ is \ref number_of_cols
+    bool operator<(RowView const& that) const;
+
+    //! \brief Greater than operator.
+    //!
+    //! This operator defines a total order on the set of matrices of the same
+    //! type, the details of which is implementation specific.
+    //!
+    //! \param that  the matrix for comparison.
+    //! \returns `true` if `*this` is less than `that` and `false` if it is
+    //! not.
+    //!
+    //! \complexity
+    //! At worst \f$O(mn)\f$ where \f$m\f$ is \ref number_of_rows
+    //! and \f$m\f$ is \ref number_of_cols
+    bool operator>(StaticMatrix const& that) const;
+
+    //! \brief Get the coordinates of an iterator.
+    //!
+    //! This function returns a pair containing the row and columns
+    //! corresponding to an const_iterator pointing into a matrix.
+    //!
+    //! \param it the iterator
+    //! \returns A value of type `std::pair<scalar_type, scalar_type>`.
+    //!
+    //! \complexity  Constant
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    std::pair<scalar_type, scalar_type> coords(const_iterator it) const;
+
+    //! \brief Returns the number of rows of the matrix.
+    //!
+    //! This function returns the number of rows of the matrix.
+    //!
+    //! \returns A value of type `size_t`.
+    //!
+    //! \complexity
+    //! Constant
+    //!
+    //! \exceptions
+    //! \noexcept
+    size_t number_of_rows();
+
+    //! \brief Returns the number of columns of the matrix.
+    //!
+    //! This function returns the number of columns of the matrix.
+    //!
+    //! \returns A value of type `size_t`.
+    //!
+    //! \complexity
+    //! Constant
+    //!
+    //! \exceptions
+    //! \noexcept
+    size_t number_of_cols();
+
+    //! \brief Returns the sum of two matrices.
+    //!
+    //! This function returns the sum of two StaticMatrix objects.
+    //!
+    //! \param that  the matrix to add to `this`.
+    //!
+    //! \returns A value of type `StaticMatrix`.
+    //!
+    //! \complexity
+    //! \f$O(mn)\f$ where \f$m\f$ is \ref number_of_rows
+    //! and \f$m\f$ \ref number_of_cols
+    //!
+    //! \warning
+    //! The matrices must be of the same dimensions, although this is not
+    //! verified.
+    StaticMatrix operator+(StaticMatrix const& that);
+
+    //! \brief Add a matrix to another matrix in-place.
+    //!
+    //! \param that  the matrix to add to `this`.
+    //!
+    //! \complexity
+    //! \f$O(mn)\f$ where \f$m\f$ is \ref number_of_rows and \f$m\f$ is \ref
+    //! number_of_cols
+    //!
+    //! \warning
+    //! The matrices must be of the same dimensions, although this is not
+    //! verified by the implementation.
+    void operator+=(StaticMatrix const& that);
+
+    //! \brief Add a row to another row in-place.
+    //!
+    //! This function adds the row represented by a RowView to another row
+    //! in-place.
+    //!
+    //! \param that  the matrix to add.
+    //!
+    //! \complexity
+    //! \f$O(mn)\f$ where \f$m\f$ is \ref number_of_rows and \f$m\f$
+    //! is \ref number_of_cols
+    //!
+    //! \warning
+    //! This function only works if `this` has a single row, i.e. the
+    //! template parameter `R` is `1`, but no checks are performed to ensure
+    //! this is the case.
+    void operator+=(RowView const& that);
+
+    //! \brief Adds a scalar to every entry of the matrix in-place.
+    //!
+    //! This function adds a scalar to every entry of the matrix in-place.
+    //!
+    //! \param a  the Scalar to add to `this`.
+    //!
+    //! \complexity
+    //! \f$O(mn)\f$ where \f$m\f$ is \ref number_of_rows and \f$m\f$ is \ref
+    //! number_of_cols
+    void operator+=(Scalar a);
+
+    //! \brief Returns the product of two matrices.
+    //!
+    //! This function returns the product of two matrices.
+    //!
+    //! \param that the matrix to multiply by `this`.
+    //!
+    //! \returns A value of type `StaticMatrix`.
+    //!
+    //! \complexity
+    //! \f$O(mn)\f$ where \f$m\f$ \ref number_of_rows and \f$m\f$ \ref
+    //! number_of_cols.
+    //!
+    //! \warning
+    //! The matrices must be of the same dimensions, although this is not
+    //! verified.
+    StaticMatrix operator*(StaticMatrix const& that);
+
+    //! \brief Multiplies every entry of a matrix by a scalar in-place.
+    //!
+    //! This function multiplies every entry of a matrix by a scalar in-place.
+    //!
+    //! \param a the scalar to multiply every entry by.
+    //!
+    //! \complexity
+    //! \f$O(mn)\f$ where \f$m\f$ is \ref number_of_rows
+    //! and \f$m\f$ is \ref number_of_cols.
+    void operator*=(scalar_type a);
+
+    //! \brief Multiplies \p x and \p y and stores the result in `this`.
+    //!
+    //! This function redefines `this` to be the product of \p x and \p y. This
+    //! is in-place multiplication to avoid allocation of memory for products
+    //! which do not need to be stored for future use.
+    //!
+    //! \param A  the first matrix to multiply
+    //! \param B  the second matrix to multiply
+    //!
+    //! \complexity
+    //! \f$O(n ^ 3)\f$ where \f$n\f$ is \ref number_of_rows or \ref
+    //! number_of_cols.
+    //!
+    //! \warning
+    //! This function only applies to matrices with the same number of rows
+    //! and columns but this isn't verified.
+    void product_inplace_no_checks(StaticMatrix const& x,
+                                   StaticMatrix const& y);
+
+    //! \brief Returns a view into a row.
+    //!
+    //! This function returns a \ref RowView into the row with index \p i.
+    //!
+    //! \param i  the index of the row
+    //!
+    //! \returns  A value of type RowView.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    //! \complexity
+    //! Constant
+    // TODO should be row_no_checks
+    RowView row(size_t i) const;
+
+    //! \brief Add row views for every row in the matrix to a container.
+    //!
+    //! This function adds a \ref RowView for each row in the matrix to the
+    //! container \p x.
+    //!
+    //! \tparam T the type of the container.
+    //! \param x  a container.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    //! \complexity
+    //! \f$O(m)\f$ where \f$m\f$ is the template parameter `R`.
+    template <typename T>
+    void rows(T& x) const;
+
+    //! \brief Swaps the contents of `*this` with the contents of \p that.
+    //!
+    //! This function swaps the contents of `*this` with the contents of \p
+    //! that.
+    //!
+    //! \param that  the matrix to swap contents with.
+    //!
+    //! \complexity
+    //! Constant
+    //!
+    //! \exceptions
+    //! \noexcept
+    void swap(StaticMatrix& that) noexcept;
+
+    //! \brief Transpose a matrix in-place.
+    //!
+    //! This function transpose a matrix object in-place.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    //! \complexity
+    //! \f$O(mn)\f$ where \f$m\f$ is the template parameter `R` and
+    //! \f$n\f$ is the template parameter `C`.
+    //!
+    //! \warning
+    //! This only works when the template parameters `R` and `C` are equal
+    //! (i.e. for square matrices), but this is not verified.
+    void transpose() noexcept;  // TODO -> transpose_no_checks
+#endif                          // PARSED_BY_DOXYGEN
 
    private:
     ////////////////////////////////////////////////////////////////////////
@@ -1646,7 +2186,7 @@ namespace libsemigroups {
     //! Call operator returning the multiplication identity \c true of
     //! the boolean semiring.
     //!
-    //! \returns the value \c true.
+    //! \returns The value \c true.
     //!
     //! \exceptions
     //! \noexcept
@@ -1669,7 +2209,7 @@ namespace libsemigroups {
     //! Call operator returning the additive identity \c false of
     //! the boolean semiring.
     //!
-    //! \returns the value \c false.
+    //! \returns The value \c false.
     //!
     //! \exceptions
     //! \noexcept
@@ -1818,7 +2358,7 @@ namespace libsemigroups {
   //! \tparam Scalar TODO
   //!
   //! This is a stateless struct with a single call operator of signature:
-  //! `Scalar operator()(Scalar const x, Scalar const y) const noexcept`
+  //! `Scalar operator()(Scalar x, Scalar y) const noexcept`
   //! which returns the usual sum `x + y` of `x` and `y`; representing
   //! addition in the integer semiring.
   template <typename Scalar>
@@ -1834,7 +2374,7 @@ namespace libsemigroups {
   //! \brief Function object for multiplication in the ring of integers.
   //!
   //! This is a stateless struct with a single call operator of signature:
-  //! `Scalar operator()(Scalar const x, Scalar const y) const noexcept`
+  //! `Scalar operator()(Scalar x, Scalar y) const noexcept`
   //! which returns the usual product `x * y` of `x` and `y`;
   //! representing multiplication in the integer semiring.
   template <typename Scalar>
@@ -1940,7 +2480,11 @@ namespace libsemigroups {
   //! This function can be used to validate that a matrix contains values in the
   //! underlying semiring. This is always \c true for \ref IntMat objects.
   template <size_t R, size_t C, typename Scalar>
-  void validate(IntMat<R, C, Scalar> const&) {}
+  void validate(StaticIntMat<R, C, Scalar> const&) {}
+
+  //! \copydoc validate(StaticIntMat<R, C, Scalar> const&)
+  template <typename Scalar>
+  void validate(DynamicIntMat<Scalar> const&) {}
 
   ////////////////////////////////////////////////////////////////////////
   // Max-plus matrices
@@ -1985,8 +2529,8 @@ namespace libsemigroups {
   //!    x\oplus y =
   //!    \begin{cases}
   //!    \max\{x, y\}   & \text{if } x \neq -\infty\text{ and }y \neq -\infty
-  //!    \\
-  //!    -\infty & \text{if } x = -\infty \text{ or }y = -\infty; \\
+  //!    \\ \mbox{}
+  //!    -\infty & \text{if } x = -\infty \text{ or }y = -\infty;
   //!    \end{cases}
   //! \f]
   //!
@@ -2028,7 +2572,7 @@ namespace libsemigroups {
   //!     x\otimes y =
   //!     \begin{cases}
   //!     x + y   & \text{if } x \neq -\infty\text{ and }y \neq -\infty \\
-  //!     -\infty & \text{if } x = -\infty \text{ or }y = -\infty; \\
+  //!     -\infty & \text{if } x = -\infty \text{ or }y = -\infty;
   //!     \end{cases}
   //!  \f]
   //!  representing multiplication in the max-plus semiring.
@@ -2234,7 +2778,7 @@ namespace libsemigroups {
   //! \brief Function object for multiplication in the min-plus semiring.
   //!
   //! This is a stateless struct with a single call operator of signature:
-  //! `Scalar operator()(Scalar const x, Scalar const y) const noexcept`
+  //! `Scalar operator()(Scalar x, Scalar y) const noexcept`
   //! that returns \f$x \otimes y\f$ which is defined by
   //! \f[
   //!     x\otimes y =
@@ -3878,8 +4422,10 @@ namespace libsemigroups {
       // Arithmetic operators - in-place
       ////////////////////////////////////////////////////////////////////////
 
-      void product_inplace(ProjMaxPlusMat const& A, ProjMaxPlusMat const& B) {
-        _underlying_mat.product_inplace(A._underlying_mat, B._underlying_mat);
+      void product_inplace_no_checks(ProjMaxPlusMat const& A,
+                                     ProjMaxPlusMat const& B) {
+        _underlying_mat.product_inplace_no_checks(A._underlying_mat,
+                                                  B._underlying_mat);
         normalize(true);  // force normalize
       }
 
@@ -4188,11 +4734,11 @@ namespace libsemigroups {
 
       Mat tmp(x.number_of_rows(), x.number_of_cols());
       while (e > 1) {
-        tmp.product_inplace(y, y);
+        tmp.product_inplace_no_checks(y, y);
         std::swap(y, tmp);
         e /= 2;
         if (e % 2 == 1) {
-          tmp.product_inplace(z, y);
+          tmp.product_inplace_no_checks(z, y);
           std::swap(z, tmp);
         }
       }
@@ -4635,10 +5181,9 @@ namespace libsemigroups {
   template <typename T>
   struct Product<T, std::enable_if_t<IsMatrix<T>>> {
     inline void operator()(T& xy, T const& x, T const& y, size_t = 0) const {
-      xy.product_inplace(x, y);
+      xy.product_inplace_no_checks(x, y);
     }
   };
-
 }  // namespace libsemigroups
 
 namespace std {

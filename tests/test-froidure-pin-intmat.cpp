@@ -99,7 +99,7 @@ namespace libsemigroups {
       REQUIRE(S.position(x) == UNDEFINED);
       REQUIRE(!S.contains(x));
 
-      x.product_inplace(S.generator(1), S.generator(1));
+      x.product_inplace_no_checks(S.generator(1), S.generator(1));
       REQUIRE(S.position(x) == 4);
       REQUIRE(S.contains(x));
 

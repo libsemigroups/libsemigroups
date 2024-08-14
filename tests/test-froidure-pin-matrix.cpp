@@ -53,7 +53,7 @@ namespace libsemigroups {
       Mat x({{-2, 2}, {-1, 0}});
       REQUIRE(S.position(x) == UNDEFINED);
       REQUIRE(!S.contains(x));
-      x.product_inplace(S.generator(1), S.generator(1));
+      x.product_inplace_no_checks(S.generator(1), S.generator(1));
       REQUIRE(S.position(x) == 5);
       REQUIRE(S.contains(x));
 
@@ -96,7 +96,7 @@ namespace libsemigroups {
       auto x = Mat({{-2, 2}, {-1, 0}});
       REQUIRE(S.position(x) == UNDEFINED);
       REQUIRE(!S.contains(x));
-      x.product_inplace(S.generator(0), S.generator(0));
+      x.product_inplace_no_checks(S.generator(0), S.generator(0));
       REQUIRE(S.position(x) == 1);
       REQUIRE(S.contains(x));
     }
@@ -145,7 +145,7 @@ namespace libsemigroups {
       auto x = Mat::make(sr, {{2, 2, 0}, {1, 0, 0}, {0, 0, 0}});
       REQUIRE(S.position(x) == UNDEFINED);
       REQUIRE(!S.contains(x));
-      x.product_inplace(S.generator(0), S.generator(0));
+      x.product_inplace_no_checks(S.generator(0), S.generator(0));
       REQUIRE(S.position(x) == 2);
       REQUIRE(S.contains(x));
     }
@@ -171,7 +171,7 @@ namespace libsemigroups {
       auto x = Mat::make(sr, {{2, 2, 0}, {1, 0, 0}, {0, 0, 0}});
       REQUIRE(S.position(x) == UNDEFINED);
       REQUIRE(!S.contains(x));
-      x.product_inplace(S.generator(1), S.generator(0));
+      x.product_inplace_no_checks(S.generator(1), S.generator(0));
       REQUIRE(S.position(x) == 4);
       REQUIRE(S.contains(x));
     }
