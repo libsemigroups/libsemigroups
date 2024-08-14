@@ -17,7 +17,6 @@
 //
 
 // TODO(0): document the adapters
-// TODO(0): make -> to_matrix
 // TODO(1) tpp file
 // TODO(1): constexpr
 
@@ -267,35 +266,6 @@ namespace libsemigroups {
       explicit MatrixCommon(RowView const& rv) : MatrixCommon() {
         resize(1, rv.size());
         std::copy(rv.cbegin(), rv.cend(), _container.begin());
-      }
-
-      // TODO(0) make -> to_matrix
-      static Subclass make(
-          std::initializer_list<std::initializer_list<scalar_type>> const& il) {
-        validate_args(il);
-        Subclass m(il);
-        validate(m);
-        return m;
-      }
-
-      // TODO(0) make -> to_matrix
-      static Subclass make(std::initializer_list<scalar_type> const& il) {
-        Subclass m(il);
-        validate(m);
-        return m;
-      }
-
-      // TODO(0) make -> to_matrix
-      static Subclass make(
-          void const*,
-          std::initializer_list<std::initializer_list<scalar_type>> const& il) {
-        return make(il);
-      }
-
-      // TODO(0) make -> to_matrix
-      static Subclass make(void const*,
-                           std::initializer_list<scalar_type> const& il) {
-        return make(il);
       }
 
       ~MatrixCommon() = default;
@@ -587,31 +557,9 @@ namespace libsemigroups {
         return os;
       }
 
-     private:
-      template <typename T>
-      static void validate_args(T const& m) {
-        if (m.size() <= 1) {
-          return;
-        }
-        uint64_t const C  = m.begin()->size();
-        auto           it = std::find_if_not(
-            m.begin() + 1, m.end(), [&C](typename T::const_reference r) {
-              return r.size() == C;
-            });
-        if (it != m.end()) {
-          LIBSEMIGROUPS_EXCEPTION("invalid argument, expected every item to "
-                                  "have length {}, found {} in entry {}",
-                                  C,
-                                  it->size(),
-                                  std::distance(m.begin(), it));
-        }
-      }
-
-      static void validate_args(
-          std::initializer_list<std::initializer_list<scalar_type>> m) {
-        validate_args<
-            std::initializer_list<std::initializer_list<scalar_type>>>(m);
-      }
+      ////////////////////////////////////////////////////////////////////////
+      // Validation
+      ////////////////////////////////////////////////////////////////////////
 
      private:
       ////////////////////////////////////////////////////////////////////////
@@ -864,6 +812,33 @@ namespace libsemigroups {
      private:
       iterator _begin;
     };
+
+    template <typename Container>
+    void throw_if_any_row_wrong_size(Container const& m) {
+      if (m.size() <= 1) {
+        return;
+      }
+      uint64_t const C  = m.begin()->size();
+      auto           it = std::find_if_not(
+          m.begin() + 1, m.end(), [&C](typename Container::const_reference r) {
+            return r.size() == C;
+          });
+      if (it != m.end()) {
+        LIBSEMIGROUPS_EXCEPTION("invalid argument, expected every item to "
+                                "have length {}, found {} in entry {}",
+                                C,
+                                it->size(),
+                                std::distance(m.begin(), it));
+      }
+    }
+
+    template <typename Scalar>
+    void throw_if_any_row_wrong_size(
+        std::initializer_list<std::initializer_list<Scalar>> m) {
+      throw_if_any_row_wrong_size<
+          std::initializer_list<std::initializer_list<Scalar>>>(m);
+    }
+
   }  // namespace detail
 
   ////////////////////////////////////////////////////////////////////////
@@ -1931,28 +1906,6 @@ namespace libsemigroups {
           MatrixCommon(rv),
           _semiring(rv._matrix->semiring()) {}
 
-    static DynamicMatrix
-    make(Semiring const*                                                 sr,
-         std::initializer_list<std::initializer_list<scalar_type>> const il) {
-      DynamicMatrix m(sr, il);
-      validate(m);
-      return m;
-    }
-
-    static DynamicMatrix make(Semiring const*                             sr,
-                              std::vector<std::vector<scalar_type>> const v) {
-      DynamicMatrix m(sr, v);
-      validate(m);
-      return m;
-    }
-
-    static DynamicMatrix make(Semiring const*                          sr,
-                              std::initializer_list<scalar_type> const il) {
-      DynamicMatrix m(sr, il);
-      validate(m);
-      return m;
-    }
-
     // No static DynamicMatrix::identity(size_t n) because we need a semiring!
     static DynamicMatrix identity(Semiring const* sr, size_t n) {
       DynamicMatrix x(sr, n, n);
@@ -2054,11 +2007,13 @@ namespace libsemigroups {
     template <typename Mat>
     void semiring_validate(Mat const& m) {
       if (IsMatWithSemiring<Mat> && m.semiring() == nullptr) {
-        LIBSEMIGROUPS_EXCEPTION("the matrix pointer to semiring is nullptr!")
+        LIBSEMIGROUPS_EXCEPTION(
+            "the matrix's pointer to a semiring is nullptr!")
       }
     }
   }  // namespace detail
 
+  // TODO(0) move to matrix namespace
   template <typename Mat>
   auto matrix_threshold(Mat const&) noexcept
       -> std::enable_if_t<!detail::IsTruncMat<Mat>, typename Mat::scalar_type> {
@@ -4278,6 +4233,8 @@ namespace libsemigroups {
       using iterator       = typename T::iterator;
       using const_iterator = typename T::const_iterator;
 
+      using underlying_matrix_type = T;
+
       using RowView = typename T::RowView;
 
       // Note that Rows are never normalised, and that's why we use the
@@ -4316,18 +4273,6 @@ namespace libsemigroups {
           std::initializer_list<std::initializer_list<scalar_type>> const& m)
           : ProjMaxPlusMat(
                 std::vector<std::vector<scalar_type>>(m.begin(), m.end())) {}
-
-      static ProjMaxPlusMat make(
-          std::initializer_list<std::initializer_list<scalar_type>> const& il) {
-        auto result = ProjMaxPlusMat(T::make(il));
-        return result;
-      }
-
-      static ProjMaxPlusMat make(
-          void const*,
-          std::initializer_list<std::initializer_list<scalar_type>> const& il) {
-        return make(il);
-      }
 
       ~ProjMaxPlusMat() = default;
 
@@ -5074,6 +5019,65 @@ namespace libsemigroups {
     }
 
   }  // namespace matrix
+
+  template <typename Mat,
+            typename
+            = std::enable_if_t<IsMatrix<Mat> && !IsMatWithSemiring<Mat>>>
+  Mat to_matrix(std::initializer_list<
+                std::initializer_list<typename Mat::scalar_type>> const& il) {
+    detail::throw_if_any_row_wrong_size(il);
+    Mat m(il);
+    validate(m);
+    return m;
+  }
+
+  template <typename Mat,
+            typename
+            = std::enable_if_t<IsMatrix<Mat> && !IsMatWithSemiring<Mat>>>
+  Mat to_matrix(std::initializer_list<typename Mat::scalar_type> const& il) {
+    Mat m(il);
+    validate(m);
+    return m;
+  }
+
+  template <typename Mat,
+            typename Semiring,
+            typename = std::enable_if_t<IsMatrix<Mat>>>
+  Mat to_matrix(
+      Semiring const* sr,  // TODO to reference
+      std::initializer_list<
+          std::initializer_list<typename Mat::scalar_type>> const& il) {
+    Mat m(sr, il);
+    validate(m);
+    return m;
+  }
+
+  template <typename Mat,
+            typename Semiring,
+            typename = std::enable_if_t<IsMatrix<Mat>>>
+  Mat to_matrix(Semiring const*                                            sr,
+                std::vector<std::vector<typename Mat::scalar_type>> const& v) {
+    Mat m(sr, v);
+    validate(m);
+    return m;
+  }
+
+  template <typename Mat,
+            typename Semiring,
+            typename = std::enable_if_t<IsMatrix<Mat>>>
+  Mat to_matrix(Semiring const*                                         sr,
+                std::initializer_list<typename Mat::scalar_type> const& il) {
+    Mat m(sr, il);
+    validate(m);
+    return m;
+  }
+
+  template <size_t R, size_t C, typename Scalar>
+  ProjMaxPlusMat<R, C, Scalar>
+  to_matrix(std::initializer_list<std::initializer_list<Scalar>> const& il) {
+    return ProjMaxPlusMat<R, C, Scalar>(
+        to_matrix<ProjMaxPlusMat<R, C, Scalar>::underlying_matrix_type>(il));
+  }
 
   ////////////////////////////////////////////////////////////////////////
   // Printing etc...
