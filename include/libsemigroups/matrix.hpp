@@ -2049,26 +2049,29 @@ namespace libsemigroups {
     }
   }  // namespace detail
 
-  // TODO(0) move to matrix namespace
-  template <typename Mat>
-  auto matrix_threshold(Mat const&) noexcept
-      -> std::enable_if_t<!detail::IsTruncMat<Mat>, typename Mat::scalar_type> {
-    return UNDEFINED;
-  }
+  namespace matrix {
+    // TODO(0) move to matrix namespace
+    template <typename Mat>
+    auto threshold(Mat const&) noexcept
+        -> std::enable_if_t<!detail::IsTruncMat<Mat>,
+                            typename Mat::scalar_type> {
+      return UNDEFINED;
+    }
 
-  template <typename Mat>
-  auto matrix_threshold(Mat const&) noexcept
-      -> std::enable_if_t<detail::IsTruncMat<Mat> && !IsMatWithSemiring<Mat>,
-                          typename Mat::scalar_type> {
-    return detail::IsTruncMatHelper<Mat>::threshold;
-  }
+    template <typename Mat>
+    auto threshold(Mat const&) noexcept
+        -> std::enable_if_t<detail::IsTruncMat<Mat> && !IsMatWithSemiring<Mat>,
+                            typename Mat::scalar_type> {
+      return detail::IsTruncMatHelper<Mat>::threshold;
+    }
 
-  template <typename Mat>
-  auto matrix_threshold(Mat const& x) noexcept
-      -> std::enable_if_t<detail::IsTruncMat<Mat> && IsMatWithSemiring<Mat>,
-                          typename Mat::scalar_type> {
-    return x.semiring()->threshold();
-  }
+    template <typename Mat>
+    auto threshold(Mat const& x) noexcept
+        -> std::enable_if_t<detail::IsTruncMat<Mat> && IsMatWithSemiring<Mat>,
+                            typename Mat::scalar_type> {
+      return x.semiring()->threshold();
+    }
+  }  // namespace matrix
 
   ////////////////////////////////////////////////////////////////////////
   // Boolean matrices - compile time semiring arithmetic
@@ -3293,7 +3296,7 @@ namespace libsemigroups {
     detail::semiring_validate(m);
 
     using scalar_type   = typename Mat::scalar_type;
-    scalar_type const t = matrix_threshold(m);
+    scalar_type const t = matrix::threshold(m);
     auto it = std::find_if_not(m.cbegin(), m.cend(), [t](scalar_type x) {
       return x == NEGATIVE_INFINITY || (0 <= x && x <= t);
     });
@@ -3708,7 +3711,7 @@ namespace libsemigroups {
     detail::semiring_validate(m);
 
     using scalar_type   = typename Mat::scalar_type;
-    scalar_type const t = matrix_threshold(m);
+    scalar_type const t = matrix::threshold(m);
     auto it = std::find_if_not(m.cbegin(), m.cend(), [t](scalar_type x) {
       return x == POSITIVE_INFINITY || (0 <= x && x <= t);
     });
@@ -4247,7 +4250,7 @@ namespace libsemigroups {
     detail::semiring_validate(m);
 
     using scalar_type   = typename Mat::scalar_type;
-    scalar_type const t = matrix_threshold(m);
+    scalar_type const t = matrix::threshold(m);
     scalar_type const p = matrix::period(m);
     auto it = std::find_if_not(m.cbegin(), m.cend(), [t, p](scalar_type x) {
       return (0 <= x && x < p + t);
@@ -4918,13 +4921,13 @@ namespace libsemigroups {
         if (r1 == 0 || views[r1] != views[r1 - 1]) {
           std::fill(tmp1.begin(), tmp1.end(), tmp1.scalar_zero());
           for (size_t r2 = 0; r2 < r1; ++r2) {
-            scalar_type max_scalar = matrix_threshold(tmp1);
+            scalar_type max_scalar = matrix::threshold(tmp1);
             for (size_t c = 0; c < tmp1.number_of_cols(); ++c) {
               if (views[r2][c] == tmp1.scalar_zero()) {
                 continue;
               }
               if (views[r1][c] >= views[r2][c]) {
-                if (views[r1][c] != matrix_threshold(tmp1)) {
+                if (views[r1][c] != matrix::threshold(tmp1)) {
                   max_scalar
                       = std::min(max_scalar, views[r1][c] - views[r2][c]);
                 }
