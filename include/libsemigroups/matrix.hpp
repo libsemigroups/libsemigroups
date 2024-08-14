@@ -90,40 +90,18 @@ namespace libsemigroups {
   //! * \ref dynamicmatrix-run
   //! * \ref StaticMatrix
   //! * \ref variable-templates
-  //
-  // TODO(0) incorporate
-  //
-  // Row views
-  // ---------
-  //
-  // A row view is a lightweight representation of a row of a matrix.  The
-  // following row view classes are provided:
-  //
-  // .. toctree::
-  //    :maxdepth: 1
-  //
-  //    dynamicrowview
-  //    staticrowview
-  //
-  //
-  // Helpers
-  // -------
-  //
-  // The namespace matrix_helpers contains a number of helper
-  // functions for certain types of matrices:
-  //
-  // .. toctree::
-  //    :maxdepth: 1
-  //
-  //    helpers/pow
-  //    helpers/rows
-  //    helpers/row_basis
-  //    helpers/row_space_size
-  //    helpers/bitset_rows
-  //    helpers/bitset_row_basis
-  //
+  //!
+  //! # Row views
+  //!
+  //! A row view is a lightweight representation of a row of a matrix.  The
+  //! following row view classes are provided:
+  //!
+  //! * \ref dynamicrowview
+  //! * \ref staticrowview
+  //!
+  // TODO(0) incorporate this in the appropriate place
   // Adapters
-  // ---------------
+  // --------
   //
   // There are various specialisations of the adapters described on `this
   // page<Adapters>` for the matrices described on this page:
@@ -219,6 +197,7 @@ namespace libsemigroups {
       // MatrixCommon - Container functions - protected
       ////////////////////////////////////////////////////////////////////////
 
+      // TODO(1) use constexpr-if, not SFINAE
       template <typename SFINAE = container_type>
       auto resize(size_t r, size_t c)
           -> std::enable_if_t<
@@ -290,6 +269,7 @@ namespace libsemigroups {
         std::copy(rv.cbegin(), rv.cend(), _container.begin());
       }
 
+      // TODO(0) make -> to_matrix
       static Subclass make(
           std::initializer_list<std::initializer_list<scalar_type>> const& il) {
         validate_args(il);
@@ -298,26 +278,31 @@ namespace libsemigroups {
         return m;
       }
 
+      // TODO(0) make -> to_matrix
       static Subclass make(std::initializer_list<scalar_type> const& il) {
         Subclass m(il);
         validate(m);
         return m;
       }
 
+      // TODO(0) make -> to_matrix
       static Subclass make(
           void const*,
           std::initializer_list<std::initializer_list<scalar_type>> const& il) {
         return make(il);
       }
 
+      // TODO(0) make -> to_matrix
       static Subclass make(void const*,
                            std::initializer_list<scalar_type> const& il) {
         return make(il);
       }
 
-      virtual ~MatrixCommon() = default;
+      ~MatrixCommon() = default;
 
       // not noexcept because mem allocate is required
+      // TODO(0) identity -> one, hmmmm, this won't work because there's
+      // already a mem fn "one", what do?
       Subclass identity() const {
         size_t const n = number_of_rows();
         Subclass     x(semiring(), n, n);
@@ -647,7 +632,7 @@ namespace libsemigroups {
       MatrixDynamicDim(size_t r, size_t c)
           : _number_of_cols(c), _number_of_rows(r) {}
 
-      virtual ~MatrixDynamicDim() = default;
+      ~MatrixDynamicDim() = default;
 
       void swap(MatrixDynamicDim& that) noexcept {
         std::swap(_number_of_cols, that._number_of_cols);
@@ -1304,7 +1289,7 @@ namespace libsemigroups {
 
     ~StaticMatrix() = default;
 
-    //! TODO
+    //! TODO identity -> one
     static StaticMatrix identity(size_t n = 0) {
       static_assert(C == R, "cannot create non-square identity matrix");
       // If specified the value of n must equal R or otherwise weirdness will
@@ -1329,7 +1314,7 @@ namespace libsemigroups {
       return x;
     }
 
-    //! TODO
+    //! TODO identity -> one
     static StaticMatrix identity(void const* ptr, size_t n = 0) {
       (void) ptr;
       LIBSEMIGROUPS_ASSERT(ptr == nullptr);
@@ -3279,8 +3264,6 @@ namespace libsemigroups {
   //! not.
   //!
   //! \tparam T the type to check.
-  // TODO maybe remove this, and the others, they seem to only be used for
-  // validate below, where they aren't necessary
   template <typename T>
   static constexpr bool IsMaxPlusTruncMat
       = detail::IsMaxPlusTruncMatHelper<T>::value;
@@ -3302,7 +3285,6 @@ namespace libsemigroups {
   //! underlying semiring.
   //!
   //! \throws LibsemigroupsException if TODO(0)
-  // TODO(0) replace with validate(MinPlusMat<R, C, Mat> const&);
   // TODO(1) to tpp
   template <typename Mat>
   auto validate(Mat const& m) -> std::enable_if_t<IsMaxPlusTruncMat<Mat>> {
@@ -3503,7 +3485,7 @@ namespace libsemigroups {
     //!
     //! \exceptions
     //! \noexcept
-    // TODO These mem fns (one and zero) aren't needed
+    // TODO These mem fns (one and zero) aren't needed?
     // TODO constexpr?
     Scalar zero() const noexcept {
       return POSITIVE_INFINITY;
@@ -3698,8 +3680,6 @@ namespace libsemigroups {
   //! not.
   //!
   //! \tparam T the type to check.
-  // TODO maybe remove this, and the others, they seem to only be used for
-  // validate below, where they aren't necessary
   template <typename T>
   static constexpr bool IsMinPlusTruncMat
       = detail::IsMinPlusTruncMatHelper<T>::value;
@@ -3721,7 +3701,6 @@ namespace libsemigroups {
   //! underlying semiring.
   //!
   //! \throws LibsemigroupsException if TODO(0)
-  // TODO(0) replace with validate(MinPlusMat<R, C, Mat> const&);
   // TODO(1) to tpp
   template <typename Mat>
   auto validate(Mat const& m) -> std::enable_if_t<IsMinPlusTruncMat<Mat>> {
@@ -4237,6 +4216,7 @@ namespace libsemigroups {
       return P;
     }
 
+    // TODO doc
     template <size_t T, size_t P, typename Scalar>
     constexpr Scalar
     period(DynamicNTPMatWithoutSemiring<T, P, Scalar> const&) noexcept {
@@ -4258,7 +4238,6 @@ namespace libsemigroups {
   //! underlying semiring.
   //!
   //! \throws LibsemigroupsException if TODO(0)
-  // TODO remove trailing return type
   template <typename Mat>
   auto validate(Mat const& m) -> std::enable_if_t<IsNTPMat<Mat>> {
     // Check that the semiring pointer isn't the nullptr if it shouldn't be
