@@ -73,7 +73,7 @@ namespace libsemigroups {
     template <typename Mat>
     void test001() {
       auto             rg = ReportGuard(REPORT);
-      auto             id = Mat::identity(3);
+      auto             id = Mat::one(3);
       FroidurePin<Mat> S;
       S.add_generator(id);
 

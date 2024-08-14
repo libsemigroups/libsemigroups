@@ -271,9 +271,7 @@ namespace libsemigroups {
       ~MatrixCommon() = default;
 
       // not noexcept because mem allocate is required
-      // TODO(0) identity -> one, hmmmm, this won't work because there's
-      // already a mem fn "one", what do?
-      Subclass identity() const {
+      Subclass one() const {
         size_t const n = number_of_rows();
         Subclass     x(semiring(), n, n);
         std::fill(x.begin(), x.end(), scalar_zero());
@@ -1264,9 +1262,9 @@ namespace libsemigroups {
 
     ~StaticMatrix() = default;
 
-    //! TODO identity -> one
-    static StaticMatrix identity(size_t n = 0) {
-      static_assert(C == R, "cannot create non-square identity matrix");
+    //! TODO one -> one
+    static StaticMatrix one(size_t n = 0) {
+      static_assert(C == R, "cannot create non-square one matrix");
       // If specified the value of n must equal R or otherwise weirdness will
       // ensue...
       LIBSEMIGROUPS_ASSERT(n == 0 || n == R);
@@ -1289,12 +1287,12 @@ namespace libsemigroups {
       return x;
     }
 
-    //! TODO identity -> one
-    static StaticMatrix identity(void const* ptr, size_t n = 0) {
+    //! TODO one -> one
+    static StaticMatrix one(void const* ptr, size_t n = 0) {
       (void) ptr;
       LIBSEMIGROUPS_ASSERT(ptr == nullptr);
       LIBSEMIGROUPS_ASSERT(n == 0 || n == R);
-      return identity(n);
+      return one(n);
     }
 
     ////////////////////////////////////////////////////////////////////////
@@ -1809,13 +1807,13 @@ namespace libsemigroups {
 
     ~DynamicMatrix();
 
-    static DynamicMatrix identity(void const* ptr, size_t n) {
+    static DynamicMatrix one(void const* ptr, size_t n) {
       (void) ptr;
       LIBSEMIGROUPS_ASSERT(ptr == nullptr);
-      return identity(n);
+      return one(n);
     }
 
-    static DynamicMatrix identity(size_t n) {
+    static DynamicMatrix one(size_t n) {
       DynamicMatrix x(n, n);
       std::fill(x.begin(), x.end(), ZeroOp()());
       for (size_t r = 0; r < n; ++r) {
@@ -1825,9 +1823,9 @@ namespace libsemigroups {
     }
 
     using MatrixCommon::begin;
-    using MatrixCommon::identity;
     using MatrixCommon::number_of_cols;
     using MatrixCommon::number_of_rows;
+    using MatrixCommon::one;
     using MatrixCommon::resize;
 
     void swap(DynamicMatrix& that) noexcept {
@@ -1906,8 +1904,8 @@ namespace libsemigroups {
           MatrixCommon(rv),
           _semiring(rv._matrix->semiring()) {}
 
-    // No static DynamicMatrix::identity(size_t n) because we need a semiring!
-    static DynamicMatrix identity(Semiring const* sr, size_t n) {
+    // No static DynamicMatrix::one(size_t n) because we need a semiring!
+    static DynamicMatrix one(Semiring const* sr, size_t n) {
       DynamicMatrix x(sr, n, n);
       std::fill(x.begin(), x.end(), x.scalar_zero());
       for (size_t r = 0; r < n; ++r) {
@@ -1919,9 +1917,9 @@ namespace libsemigroups {
     ~DynamicMatrix();
 
     using MatrixCommon::begin;
-    using MatrixCommon::identity;
     using MatrixCommon::number_of_cols;
     using MatrixCommon::number_of_rows;
+    using MatrixCommon::one;
     using MatrixCommon::resize;
 
     void swap(DynamicMatrix& that) noexcept {
@@ -4276,13 +4274,13 @@ namespace libsemigroups {
 
       ~ProjMaxPlusMat() = default;
 
-      ProjMaxPlusMat identity() const {
-        auto result = ProjMaxPlusMat(_underlying_mat.identity());
+      ProjMaxPlusMat one() const {
+        auto result = ProjMaxPlusMat(_underlying_mat.one());
         return result;
       }
 
-      static ProjMaxPlusMat identity(size_t n) {
-        return ProjMaxPlusMat(T::identity(n));
+      static ProjMaxPlusMat one(size_t n) {
+        return ProjMaxPlusMat(T::one(n));
       }
 
       ////////////////////////////////////////////////////////////////////////
@@ -4647,14 +4645,14 @@ namespace libsemigroups {
       }
 
       if (e == 0) {
-        return x.identity();
+        return x.one();
       }
 
       auto y = Mat(x);
       if (e == 1) {
         return y;
       }
-      auto z = (e % 2 == 0 ? x.identity() : y);
+      auto z = (e % 2 == 0 ? x.one() : y);
 
       Mat tmp(x.number_of_rows(), x.number_of_cols());
       while (e > 1) {
@@ -5157,7 +5155,7 @@ namespace libsemigroups {
   template <typename T>
   struct One<T, std::enable_if_t<IsMatrix<T>>> {
     inline T operator()(T const& x) const {
-      return x.identity();
+      return x.one();
     }
   };
 

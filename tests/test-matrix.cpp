@@ -244,7 +244,7 @@ namespace libsemigroups {
         REQUIRE(r.number_of_rows() == 1);
         REQUIRE(r == Row({true, true}));
 
-        auto E = Mat::identity(2);
+        auto E = Mat::one(2);
         REQUIRE(E.number_of_rows() == 2);
         REQUIRE(E.number_of_cols() == 2);
         auto viewse = matrix::rows(E);
@@ -284,7 +284,7 @@ namespace libsemigroups {
       z.product_inplace_no_checks(y, x);
       REQUIRE(y == z);
       REQUIRE(!(y < z));
-      auto id = x.identity();
+      auto id = x.one();
       z.product_inplace_no_checks(id, x);
       REQUIRE(z == x);
       z.product_inplace_no_checks(x, id);
@@ -335,8 +335,8 @@ namespace libsemigroups {
       REQUIRE(r[0] == Row(sr, {1, 0, 2}));
       REQUIRE(r[1] == Row(sr, {1, 1, 0}));
       REQUIRE(r[2] == Row(sr, {2, 1, 1}));
-      REQUIRE(m * Mat::identity(sr, 3) == m);
-      REQUIRE(Mat::identity(sr, 3) * m == m);
+      REQUIRE(m * Mat::one(sr, 3) == m);
+      REQUIRE(Mat::one(sr, 3) * m == m);
     }
 
     template <typename Mat>
@@ -453,7 +453,7 @@ namespace libsemigroups {
       REQUIRE(y == expected);
 
       REQUIRE(x < y);
-      auto id = x.identity();
+      auto id = x.one();
       y.product_inplace_no_checks(id, x);
       REQUIRE(y == x);
       y.product_inplace_no_checks(x, id);
@@ -498,7 +498,7 @@ namespace libsemigroups {
       }
       {
         Mat m(sr, {{1, 1}, {0, 0}});
-        m      = m.identity();
+        m      = m.one();
         auto r = matrix::row_basis(m);
         REQUIRE(r.size() == 2);
         REQUIRE(std::vector<scalar_type>(r[0].cbegin(), r[0].cend())
@@ -551,8 +551,8 @@ namespace libsemigroups {
       expected.push_back({0, 1, 0, 1});
       tropical_max_plus_row_basis<4, 5>(expected);
       REQUIRE(expected.size() == 4);
-      REQUIRE(m * Mat::identity(sr, 4) == m);
-      REQUIRE(Mat::identity(sr, 4) * m == m);
+      REQUIRE(m * Mat::one(sr, 4) == m);
+      REQUIRE(Mat::one(sr, 4) * m == m);
     }
 
     template <typename Mat>
@@ -572,14 +572,14 @@ namespace libsemigroups {
       REQUIRE(y == expected);
 
       REQUIRE(x < y);
-      auto id = x.identity();
+      auto id = x.one();
       y.product_inplace_no_checks(id, x);
       REQUIRE(y == x);
       y.product_inplace_no_checks(x, id);
       REQUIRE(y == x);
       REQUIRE(Hash<Mat>()(y) != 0);
-      REQUIRE(x * Mat::identity(sr, 3) == x);
-      REQUIRE(Mat::identity(sr, 3) * x == x);
+      REQUIRE(x * Mat::one(sr, 3) == x);
+      REQUIRE(Mat::one(sr, 3) * x == x);
     }
 
     ////////////////////////////////////////////////////////////////////////
@@ -606,7 +606,7 @@ namespace libsemigroups {
         REQUIRE(Degree<Mat>()(y) == 3);
         REQUIRE(Complexity<Mat>()(x) == 27);
         REQUIRE(Complexity<Mat>()(y) == 27);
-        auto id = x.identity();
+        auto id = x.one();
         y.product_inplace_no_checks(id, x);
         REQUIRE(y == x);
         y.product_inplace_no_checks(x, id);
@@ -625,7 +625,7 @@ namespace libsemigroups {
         REQUIRE(y == expected);
 
         REQUIRE(x < y);
-        auto id = x.identity();
+        auto id = x.one();
         y.product_inplace_no_checks(id, x);
         REQUIRE(y == x);
         y.product_inplace_no_checks(x, id);
@@ -657,7 +657,7 @@ namespace libsemigroups {
       REQUIRE(Degree<Mat>()(y) == 3);
       REQUIRE(Complexity<Mat>()(x) == 27);
       REQUIRE(Complexity<Mat>()(y) == 27);
-      auto id = x.identity();
+      auto id = x.one();
       y.product_inplace_no_checks(id, x);
       REQUIRE(y == x);
       y.product_inplace_no_checks(x, id);
@@ -690,7 +690,7 @@ namespace libsemigroups {
         REQUIRE(Degree<Mat>()(y) == 3);
         REQUIRE(Complexity<Mat>()(x) == 27);
         REQUIRE(Complexity<Mat>()(y) == 27);
-        auto id = x.identity();
+        auto id = x.one();
         y.product_inplace_no_checks(id, x);
         REQUIRE(y == x);
         y.product_inplace_no_checks(x, id);
@@ -712,7 +712,7 @@ namespace libsemigroups {
         REQUIRE(Degree<Mat>()(y) == 3);
         REQUIRE(Complexity<Mat>()(x) == 27);
         REQUIRE(Complexity<Mat>()(y) == 27);
-        auto id = x.identity();
+        auto id = x.one();
         y.product_inplace_no_checks(id, x);
         REQUIRE(y == x);
         y.product_inplace_no_checks(x, id);
@@ -744,7 +744,7 @@ namespace libsemigroups {
       REQUIRE(Degree<Mat>()(y) == 3);
       REQUIRE(Complexity<Mat>()(x) == 27);
       REQUIRE(Complexity<Mat>()(y) == 27);
-      auto id = x.identity();
+      auto id = x.one();
       y.product_inplace_no_checks(id, x);
       REQUIRE(y == x);
       y.product_inplace_no_checks(x, id);
@@ -753,8 +753,8 @@ namespace libsemigroups {
       REQUIRE_THROWS_AS(
           to_matrix<Mat>(sr, {{-22, 21, 0}, {10, 0, 0}, {1, 32, 1}}),
           LibsemigroupsException);
-      REQUIRE(x * Mat::identity(sr, 3) == x);
-      REQUIRE(Mat::identity(sr, 3) * x == x);
+      REQUIRE(x * Mat::one(sr, 3) == x);
+      REQUIRE(Mat::one(sr, 3) * x == x);
     }
 
     ////////////////////////////////////////////////////////////////////////
@@ -787,7 +787,7 @@ namespace libsemigroups {
       REQUIRE(Degree<Mat>()(y) == 3);
       REQUIRE(Complexity<Mat>()(x) == 27);
       REQUIRE(Complexity<Mat>()(y) == 27);
-      auto id = x.identity();
+      auto id = x.one();
       y.product_inplace_no_checks(id, x);
       REQUIRE(y == x);
       y.product_inplace_no_checks(x, id);
@@ -821,7 +821,7 @@ namespace libsemigroups {
 
       Mat tt;
       REQUIRE(tt != zz);
-      REQUIRE(Mat::identity(3)
+      REQUIRE(Mat::one(3)
               == Mat({{0, NEGATIVE_INFINITY, NEGATIVE_INFINITY},
                       {NEGATIVE_INFINITY, 0, NEGATIVE_INFINITY},
                       {NEGATIVE_INFINITY, NEGATIVE_INFINITY, 0}}));
@@ -844,7 +844,7 @@ namespace libsemigroups {
       REQUIRE_THROWS_AS(matrix::pow(x, -100), LibsemigroupsException);
       REQUIRE(matrix::pow(x, 1)
               == Mat({{-4, 0, -2}, {-3, -2, -2}, {-1, -5, -1}}));
-      REQUIRE(matrix::pow(x, 0) == Mat::identity(3));
+      REQUIRE(matrix::pow(x, 0) == Mat::one(3));
     }
 
   }  // namespace
@@ -901,7 +901,7 @@ namespace libsemigroups {
     AB.product_inplace_no_checks(A, B);
     REQUIRE(AB == B);
 
-    REQUIRE(A.identity() == BMat<2>({{true, false}, {false, true}}));
+    REQUIRE(A.one() == BMat<2>({{true, false}, {false, true}}));
 
     BMat<> CD(2, 2);
     BMat<> C(2, 2);
@@ -912,7 +912,7 @@ namespace libsemigroups {
     C(1, 1) = true;
     CD.product_inplace_no_checks(C, D);
     REQUIRE(CD == D);
-    REQUIRE(D.identity() == BMat<>({{true, false}, {false, true}}));
+    REQUIRE(D.one() == BMat<>({{true, false}, {false, true}}));
   }
 
   LIBSEMIGROUPS_TEST_CASE("Matrix", "004", "BMat<3>", "[quick]") {
