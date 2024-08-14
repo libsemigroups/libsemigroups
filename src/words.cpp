@@ -389,9 +389,10 @@ namespace libsemigroups {
       for (letter_type const& l : input) {
         if (_alphabet_map.find(l) == _alphabet_map.cend()) {
           LIBSEMIGROUPS_EXCEPTION(
-              "the 2nd argument (input string) contains the letter \'{}\' that "
-              "does not belong to the alphabet!",
-              l);
+              "invalid letter \'{}\' in the 2nd argument (input word), "
+              "expected letters in the range  [0, {})!",
+              l,
+              _alphabet_map.size());
         }
       }
     }

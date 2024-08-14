@@ -927,38 +927,7 @@ namespace libsemigroups {
 
    private:
     template <typename InputRange>
-    struct Range {
-      using output_type = word_type;
-
-      static constexpr bool is_finite     = rx::is_finite_v<InputRange>;
-      static constexpr bool is_idempotent = rx::is_idempotent_v<InputRange>;
-
-      InputRange    _input;
-      ToWord const* _to_word;
-
-      explicit Range(InputRange const& input, ToWord const& t_wrd) noexcept
-          : _input(input), _to_word(&t_wrd) {}
-
-      explicit Range(InputRange&& input, ToWord const& t_wrd) noexcept
-          : _input(std::move(input)), _to_word(&t_wrd) {}
-
-      // Not noexcept because ToWord()() isn't
-      [[nodiscard]] output_type get() const {
-        return _to_word->operator()(_input.get());
-      }
-
-      constexpr void next() noexcept {
-        _input.next();
-      }
-
-      [[nodiscard]] constexpr bool at_end() const noexcept {
-        return _input.at_end();
-      }
-
-      [[nodiscard]] constexpr size_t size_hint() const noexcept {
-        return _input.size_hint();
-      }
-    };
+    struct Range;
 
    public:
     //! \brief Call operator for combining with other range objects.
@@ -988,6 +957,46 @@ namespace libsemigroups {
 
    private:
     std::array<letter_type, 256> _lookup;
+  };
+
+  template <typename InputRange>
+  struct ToWord::Range {
+    using output_type = word_type;
+
+    static constexpr bool is_finite     = rx::is_finite_v<InputRange>;
+    static constexpr bool is_idempotent = rx::is_idempotent_v<InputRange>;
+
+    InputRange _input;
+    ToWord     _to_word;
+
+    explicit Range(InputRange const& input, ToWord const& t_wrd)
+        : _input(input), _to_word(t_wrd) {}
+
+    explicit Range(InputRange&& input, ToWord const& t_wrd)
+        : _input(std::move(input)), _to_word(t_wrd) {}
+
+    explicit Range(InputRange const& input, ToWord&& t_wrd)
+        : _input(input), _to_word(std::move(t_wrd)) {}
+
+    explicit Range(InputRange&& input, ToWord&& t_wrd)
+        : _input(std::move(input)), _to_word(std::move(t_wrd)) {}
+
+    // Not noexcept because ToWord()() isn't
+    [[nodiscard]] output_type get() const {
+      return _to_word.operator()(_input.get());
+    }
+
+    constexpr void next() noexcept {
+      _input.next();
+    }
+
+    [[nodiscard]] constexpr bool at_end() const noexcept {
+      return _input.at_end();
+    }
+
+    [[nodiscard]] constexpr size_t size_hint() const noexcept {
+      return _input.size_hint();
+    }
   };
 
   ////////////////////////////////////////////////////////////////////////
@@ -1038,7 +1047,7 @@ namespace libsemigroups {
     //! \brief Default constructor.
     //!
     //! Constructs an empty object with no alphabet set.
-    ToString() noexcept : _alphabet_map() {
+    ToString() : _alphabet_map() {
       init();
     }
 
@@ -1212,38 +1221,7 @@ namespace libsemigroups {
 
    private:
     template <typename InputRange>
-    struct Range {
-      using output_type = std::string;
-
-      static constexpr bool is_finite     = rx::is_finite_v<InputRange>;
-      static constexpr bool is_idempotent = rx::is_idempotent_v<InputRange>;
-
-      InputRange      _input;
-      ToString const* _to_string;
-
-      explicit Range(InputRange const& input, ToString const& t_str)
-          : _input(input), _to_string(new ToString(t_str)) {}
-
-      explicit Range(InputRange&& input, ToString const& t_str) noexcept
-          : _input(std::move(input)), _to_string(new ToString(t_str)) {}
-
-      // Not noexcept because ToString()() isn't
-      [[nodiscard]] output_type get() const {
-        return _to_string->operator()(_input.get());
-      }
-
-      constexpr void next() noexcept {
-        _input.next();
-      }
-
-      [[nodiscard]] constexpr bool at_end() const noexcept {
-        return _input.at_end();
-      }
-
-      [[nodiscard]] constexpr size_t size_hint() const noexcept {
-        return _input.size_hint();
-      }
-    };
+    struct Range;
 
    public:
     //! \brief Call operator for combining with other range objects.
@@ -1270,7 +1248,50 @@ namespace libsemigroups {
     }
 
    private:
+    // We could use std::vector<char> (or similar) here, but an
+    // unordered_ordered hap has been used instead to allow for potential future
+    // conversions between different types.
     std::unordered_map<letter_type, char> _alphabet_map;
+  };
+
+  template <typename InputRange>
+  struct ToString::Range {
+    using output_type = std::string;
+
+    static constexpr bool is_finite     = rx::is_finite_v<InputRange>;
+    static constexpr bool is_idempotent = rx::is_idempotent_v<InputRange>;
+
+    InputRange _input;
+    ToString   _to_string;
+
+    Range(InputRange const& input, ToString const& t_str)
+        : _input(input), _to_string(t_str) {}
+
+    Range(InputRange&& input, ToString const& t_str)
+        : _input(std::move(input)), _to_string(t_str) {}
+
+    Range(InputRange const& input, ToString&& t_str)
+        : _input(input), _to_string(std::move(t_str)) {}
+
+    Range(InputRange&& input, ToString&& t_str)
+        : _input(std::move(input)), _to_string(std::move(t_str)) {}
+
+    // Not noexcept because ToString()() isn't
+    [[nodiscard]] output_type get() const {
+      return _to_string(_input.get());
+    }
+
+    constexpr void next() noexcept {
+      _input.next();
+    }
+
+    [[nodiscard]] constexpr bool at_end() const noexcept {
+      return _input.at_end();
+    }
+
+    [[nodiscard]] constexpr size_t size_hint() const noexcept {
+      return _input.size_hint();
+    }
   };
 
   ////////////////////////////////////////////////////////////////////////
@@ -1410,7 +1431,7 @@ namespace libsemigroups {
     //!
     //! \warning If at_end() returns \c true, then the return value of this
     //! function could be anything.
-    output_type get() const noexcept {
+    output_type get() const {
       init_current();
       return _current;
     }
