@@ -502,7 +502,7 @@ namespace libsemigroups {
 
       // noexcept because swap is noexcept, and so too are number_of_rows and
       // number_of_cols
-      void transpose() noexcept {
+      void transpose_no_checks() noexcept {
         LIBSEMIGROUPS_ASSERT(number_of_rows() == number_of_cols());
         if (number_of_rows() == 0) {
           return;
@@ -515,11 +515,26 @@ namespace libsemigroups {
         }
       }
 
+      void transpose() {
+        if (number_of_rows() != number_of_cols()) {
+          LIBSEMIGROUPS_EXCEPTION(
+              "expected non-square matrices cannot be transposed");
+        }
+        transpose_no_checks();
+      }
+
       ////////////////////////////////////////////////////////////////////////
       // Rows
       ////////////////////////////////////////////////////////////////////////
 
       // not noexcept because there's an allocation
+      RowView row_no_checks(size_t i) const {
+        auto& container = const_cast<Container&>(_container);
+        return RowView(static_cast<Subclass const*>(this),
+                       container.begin() + i * number_of_cols(),
+                       number_of_cols());
+      }
+
       RowView row(size_t i) const {
         if (i >= number_of_rows()) {
           LIBSEMIGROUPS_EXCEPTION(
@@ -528,10 +543,7 @@ namespace libsemigroups {
               number_of_rows(),
               i);
         }
-        auto& container = const_cast<Container&>(_container);
-        return RowView(static_cast<Subclass const*>(this),
-                       container.begin() + i * number_of_cols(),
-                       number_of_cols());
+        return row_no_checks(i);
       }
 
       // not noexcept because there's an allocation
@@ -1656,14 +1668,27 @@ namespace libsemigroups {
     //!
     //! \param i  the index of the row
     //!
-    //! \returns  A value of type RowView.
+    //! \returns  A value of type \ref RowView.
     //!
     //! \exceptions
     //! \no_libsemigroups_except
     //!
     //! \complexity
     //! Constant
-    // TODO(0) should be row_no_checks
+    //!
+    //! \warning No checks are made on the argument \p i.
+    RowView row_no_checks(size_t i) const;
+
+    //! \brief Returns a view into a row.
+    //!
+    //! This function returns a \ref RowView into the row with index \p i.
+    //!
+    //! \param i the index of the row
+    //!
+    //! \returns A value of type \ref RowView.
+    //!
+    //! \throws LibsemigroupsException if \p i is greater than or equal
+    //! to \ref number_of_rows.
     RowView row(size_t i) const;
 
     //! \brief Add row views for every row in the matrix to a container.
@@ -1707,11 +1732,25 @@ namespace libsemigroups {
     //! \f$O(mn)\f$ where \f$m\f$ is the template parameter `R` and
     //! \f$n\f$ is the template parameter `C`.
     //!
+    //! \throws LibsemigroupsException if the matrix isn't square.
+    void transpose();
+
+    //! \brief Transpose a matrix in-place.
+    //!
+    //! This function transpose a matrix object in-place.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    //! \complexity
+    //! \f$O(mn)\f$ where \f$m\f$ is the template parameter `R` and
+    //! \f$n\f$ is the template parameter `C`.
+    //!
     //! \warning
     //! This only works when the template parameters `R` and `C` are equal
     //! (i.e. for square matrices), but this is not verified.
-    void transpose() noexcept;  // TODO(0) -> transpose_no_checks
-#endif                          // PARSED_BY_DOXYGEN
+    void transpose_no_checks();
+#endif  // PARSED_BY_DOXYGEN
 
    private:
     ////////////////////////////////////////////////////////////////////////
