@@ -56,16 +56,18 @@ namespace libsemigroups {
   //! representations for every type of matrix:
   //!
   //! 1. those whose dimension and arithmetic operations can be defined at
-  //!    compile time: \ref stat_stat_mat_group;
+  //!    compile time: \ref StaticMatrix;
   //! 2. those whose arithmetic operation can be defined at compile time but
   //!    whose dimensions can be set at run time: \ref
-  //!    dyn_stat_mat_group;
+  //!    DynamicMatrixStaticArith
+  //!    "DynamicMatrix (with compile-time arithmetic)";
   //! 3. those whose arithmetic operations and dimensions can be set at run
-  //!    time: \ref dyn_dyn_mat_group.
+  //!    time: \ref DynamicMatrixDynamicArith
+  //!    "DynamicMatrix (with run-time arithmetic)".
   //!
   //! It's unlikely that you will want to use the classes described on this
   //! page directly, but rather through the aliases described on the other
-  //! matrix pages (such as, for example, BMat).
+  //! matrix pages (such as, for example, \ref BMat).
   //!
   //! # Over specific semirings
   //!
@@ -86,10 +88,11 @@ namespace libsemigroups {
   //! The following general matrix classes are provided which can be used to
   //! define matrices over arbitrary semirings:
   //!
-  //! * \ref dyn_stat_mat_group
-  //! * \ref dyn_dyn_mat_group
-  //! * \ref stat_stat_mat_group
-  //! * \ref template_var_mat_group
+  //! * \ref DynamicMatrixStaticArith
+  //! "Dynamic matrices (with compile-time arithmetic)"
+  //! * \ref DynamicMatrixDynamicArith
+  //! "Dynamic matrices (with run-time arithmetic)"
+  //! * \ref StaticMatrix
   //!
   //! # Row views
   //!
@@ -139,6 +142,18 @@ namespace libsemigroups {
     };
   }  // namespace detail
 
+  //! \ingroup matrix_group
+  //!
+  //! \brief Helper variable template.
+  //!
+  //! This variable has value `true` if the template parameter `T` is
+  //! derived from any of \ref DynamicMatrixStaticArith
+  //! "DynamicMatrix (with compile-time arithmetic)",
+  //! \ref DynamicMatrixDynamicArith
+  //! "DynamicMatrix (with run-time arithmetic)",
+  //! or StaticMatrix; and `false` otherwise.
+  //!
+  //! \tparam T the type to check.
   template <typename T>
   constexpr bool IsMatrix = detail::IsMatrixHelper<T>::value;
 
@@ -1031,15 +1046,6 @@ namespace libsemigroups {
   // StaticMatrix with compile time semiring arithmetic
   ////////////////////////////////////////////////////////////////////////
 
-  // TODO remove this group there's only one thing in it
-  //! \defgroup stat_stat_mat_group Static matrices
-  //!
-  //! This page contains links to classes and functions for StaticMatrix
-  //! instances in ``libsemigroups``. These are matrices whose dimensions and
-  //! arithmetic are defined at compile time.
-
-  //! \ingroup stat_stat_mat_group
-  //!
   //! \brief Static matrix class
   //!
   //! Defined in ``matrix.hpp``.
@@ -1770,13 +1776,7 @@ namespace libsemigroups {
   // DynamicMatrix with compile time semiring arithmetic
   ////////////////////////////////////////////////////////////////////////
 
-  //! \defgroup dyn_stat_mat_group Dynamic matrices (compile time arithmetic)
-  //!
-  //! This page contains links to classes and functions for DynamicMatrix
-  //! instances in ``libsemigroups``. These are matrices whose arithmetic is
-  //! defined at compile time, but dimensions are defined at run-time.
-
-  //! \ingroup dyn_stat_mat_group
+  //! \anchor DynamicMatrixStaticArith
   //!
   //! \brief Class for matrices with compile time arithmetic and run-time
   //! dimensions.
@@ -2152,12 +2152,7 @@ namespace libsemigroups {
   // DynamicMatrix with runtime semiring arithmetic
   ////////////////////////////////////////////////////////////////////////
 
-  //! \defgroup dyn_dyn_mat_group Dynamic matrices (with run time arithmetic)
-  //!
-  //! This page contains links to classes and functions for matrices over
-  //! semirings whose arithmetic and dimensions are defined at run-time.
-
-  //! \ingroup dyn_dyn_mat_group
+  //! \anchor DynamicMatrixDynamicArith
   //!
   //! \brief Class for matrices with run-time arithmetic and dimensions.
   //!
@@ -2542,12 +2537,36 @@ namespace libsemigroups {
     struct IsTruncMatHelper : std::false_type {};
   }  // namespace detail
 
+  //! \brief Helper variable template.
+  //!
+  //! \ingroup matrix_group
+  //!
+  //! This variable has value `true` if the template parameter `T` is
+  //! StaticMatrix; and `false` otherwise.
+  //!
+  //! \tparam T the type to check.
   template <typename T>
   constexpr bool IsStaticMatrix = detail::IsStaticMatrixHelper<T>::value;
 
+  //! \ingroup matrix_group
+  //!
+  //! \brief Helper variable template.
+  //!
+  //! This variable has value ``true`` if the template parameter ``T`` is
+  //! :cpp:any:`DynamicMatrix`; and ``false`` otherwise.
+  //!
+  //! \tparam T the type to check.
   template <typename T>
   constexpr bool IsDynamicMatrix = IsMatrix<T> && !IsStaticMatrix<T>;
 
+  //! \ingroup matrix_group
+  //!
+  //! \brief Helper variable template.
+  //!
+  //! This variable has value `true` if the template parameter \p T is
+  //! DynamicMatrix<Semiring, Scalar>; and `false` otherwise.
+  //!
+  //! \tparam T the type to check.
   template <typename T>
   static constexpr bool IsMatWithSemiring
       = detail::IsMatWithSemiringHelper<T>::value;
@@ -5329,9 +5348,28 @@ namespace libsemigroups {
     // Matrix helpers - bitset_row_basis
     ////////////////////////////////////////////////////////////////////////
 
+    //! \brief Appends a basis for the space spanned by some bitsets to a
+    //! container.
+    //!
+    //! Appends a basis for the space spanned by the bitsets in \p rows to
+    //! the container \p result.
+    //!
+    //! \tparam Mat a type such that \ref IsBMat<Mat> is `true`.
+    //!
+    //! \tparam Container a container type with `Container::value_type` being
+    //! `BitSet<M>` or `std::bitset<M>` for some `M`.
+    //!
+    //! \param rows   container of spanning rows represented by bit sets.
+    //! \param result  container for the resulting row basis
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    //! \complexity
+    //! \f$O(r ^ 2 c)\f$ where \f$r\f$ is the size of `rows` and
+    //! \f$c\f$ is the size of each bitset in `rows`.
     // This works with std::vector and StaticVector1, with value_type equal
     // to std::bitset and BitSet.
-    //! TODO(0) doc
     template <typename Mat, typename Container>
     void bitset_row_basis(Container&& rows, std::decay_t<Container>& result) {
       using value_type = typename std::decay_t<Container>::value_type;
@@ -5364,7 +5402,27 @@ namespace libsemigroups {
       }
     }
 
-    //! TODO(0) doc
+    //! \brief Returns a basis for the space spanned by some bit sets.
+    //!
+    //! Returns a basis for the space spanned by the bit sets in \p rows.
+    //!
+    //! \tparam Mat a type such that \ref IsBMat<Mat> is \c true.
+    //!
+    //! \tparam Container a container type such that `Container::value_type` is
+    //! `BitSet<M>` or `std::bitset<M>` for some `M`.
+    //!
+    //! \param rows container of spanning rows represented by bit sets.
+    //!
+    //! \returns
+    //! A container of type `std::decay_t<Container>` containing the row
+    //! basis consisting of bit sets.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    //! \complexity
+    //! \f$O(r ^ 2 c)\f$ where \f$r\f$ is the size of \p rows and
+    //! \f$c\f$ is the size of each bitset in \p rows.
     template <typename Mat, typename Container>
     std::decay_t<Container> bitset_row_basis(Container&& rows) {
       using value_type = typename std::decay_t<Container>::value_type;
@@ -5426,7 +5484,31 @@ namespace libsemigroups {
       return bitset_rows<Mat, M, M>(std::move(rows(x)));
     }
 
-    //! TODO(0) doc
+    //! \brief Returns a basis for the space spanned by the rows of the boolean
+    //! matrix.
+    //!
+    //! This function returns a basis for the space spanned by the rows of the
+    //! boolean matrix \p x.
+    //!
+    //! \tparam Mat a type such that IsBMat<Mat> is `true`.
+    //!
+    //! \tparam M an upper bound for the dimensions of the returned container.
+    //! If \ref IsStaticMatrix<Mat> is `true`, then \p M is the number of rows
+    //! (or columns) in the square matrix `x`. Otherwise, if
+    //! IsDynamicMatrix<Mat> is `true`, then \p M is BitSet<1>::max_size().
+    //!
+    //! \param x  the boolean matrix.
+    //!
+    //! \returns
+    //! A container of type `detail::StaticVector1<BitSet<M>, M>>`
+    //! containing the row basis of `x` consisting of bitsets.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    //! \complexity
+    //! \f$O(r ^ 2 c)\f$ where \f$r\f$ is the number of rows in \p x and
+    //! \f$c\f$ is the number of columns in \p x.
     template <typename Mat, size_t M = detail::BitSetCapacity<Mat>::value>
     detail::StaticVector1<BitSet<M>, M> bitset_row_basis(Mat const& x) {
       static_assert(IsBMat<Mat>, "IsBMat<Mat> must be true!");
@@ -5437,7 +5519,27 @@ namespace libsemigroups {
       return result;
     }
 
-    //! TODO(0) doc
+    //! \brief Appends a basis for the rowspace of a boolean matrix to a
+    //! container.
+    //!
+    //! This function appends a basis for the rowspace of the boolean matrix \p
+    //! x to the container \p result.
+    //!
+    //! \tparam Mat a type such that \ref IsBMat<Mat> is \c true.
+    //!
+    //! \tparam Container a container type with `Container::value_type` equal
+    //! to `BitSet<M>` or `std::bitset<M>` for some \p M.
+    //!
+    //! \param x  the boolean matrix.
+    //!
+    //! \param result  container for the resulting rowbasis.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    //! \complexity
+    //! \f$O(r ^ 2 c)\f$ where \f$r\f$ is the number of rows in \p x
+    //! and \f$c\f$ is the number of columns in \p x.
     template <typename Mat, typename Container>
     void bitset_row_basis(Mat const& x, Container& result) {
       using value_type = typename Container::value_type;
@@ -5453,7 +5555,7 @@ namespace libsemigroups {
     // Matrix helpers - row_basis - MaxPlusTruncMat
     ////////////////////////////////////////////////////////////////////////
 
-    //! TODO(0) doc
+    //! TODO(0) doc HERE
     template <typename Mat, typename Container>
     auto row_basis(Container&& views, std::decay_t<Container>& result)
         -> std::enable_if_t<IsMaxPlusTruncMat<Mat>> {
