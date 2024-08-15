@@ -56,12 +56,12 @@ namespace libsemigroups {
   //! representations for every type of matrix:
   //!
   //! 1. those whose dimension and arithmetic operations can be defined at
-  //!    compile time: \ref staticmatrix_group.
+  //!    compile time: \ref stat_stat_mat_group;
   //! 2. those whose arithmetic operation can be defined at compile time but
   //!    whose dimensions can be set at run time: \ref
-  //!    dynamicmatrix_staticarith_group
+  //!    dyn_stat_mat_group;
   //! 3. those whose arithmetic operations and dimensions can be set at run
-  //!    time: \ref dynamicmatrix_dynamicarith_group
+  //!    time: \ref dyn_dyn_mat_group.
   //!
   //! It's unlikely that you will want to use the classes described on this
   //! page directly, but rather through the aliases described on the other
@@ -86,10 +86,10 @@ namespace libsemigroups {
   //! The following general matrix classes are provided which can be used to
   //! define matrices over arbitrary semirings:
   //!
-  //! * \ref dynamicmatrix_staticarith_group
-  //! * \ref dynamicmatrix-run
-  //! * \ref staticmatrix_group
-  //! * \ref variable-templates
+  //! * \ref dyn_stat_mat_group
+  //! * \ref dyn_dyn_mat_group
+  //! * \ref stat_stat_mat_group
+  //! * \ref template_var_mat_group
   //!
   //! # Row views
   //!
@@ -1031,13 +1031,14 @@ namespace libsemigroups {
   // StaticMatrix with compile time semiring arithmetic
   ////////////////////////////////////////////////////////////////////////
 
-  //! \defgroup staticmatrix_group Static matrices
+  // TODO remove this group there's only one thing in it
+  //! \defgroup stat_stat_mat_group Static matrices
   //!
   //! This page contains links to classes and functions for StaticMatrix
   //! instances in ``libsemigroups``. These are matrices whose dimensions and
   //! arithmetic are defined at compile time.
 
-  //! \ingroup staticmatrix_group
+  //! \ingroup stat_stat_mat_group
   //!
   //! \brief Static matrix class
   //!
@@ -1606,7 +1607,7 @@ namespace libsemigroups {
     //! \returns The product of the two matrices.
     //!
     //! \complexity
-    //! \f$O(mn)\f$ where \f$m\f$ \ref number_of_rows and \f$m\f$ \ref
+    //! \f$O(mn)\f$ where \f$m\f$ is \ref number_of_rows and \f$m\f$ is \ref
     //! number_of_cols.
     //!
     //! \warning
@@ -1769,16 +1770,17 @@ namespace libsemigroups {
   // DynamicMatrix with compile time semiring arithmetic
   ////////////////////////////////////////////////////////////////////////
 
-  // clang-format off
-  // NOLINTNEXTLINE
-  //! \defgroup dynamicmatrix_staticarith_group Dynamic matrices (compile time arithmetic)
+  //! \defgroup dyn_stat_mat_group Dynamic matrices (compile time arithmetic)
   //!
   //! This page contains links to classes and functions for DynamicMatrix
   //! instances in ``libsemigroups``. These are matrices whose arithmetic is
   //! defined at compile time, but dimensions are defined at run-time.
-  // clang-format on
 
-  //! \ingroup dynamicmatrix_staticarith_group
+  //! \ingroup dyn_stat_mat_group
+  //!
+  //! \brief Class for matrices with compile time arithmetic and run-time
+  //! dimensions.
+  //!
   //! Defined in ``matrix.hpp``.
   //!
   //! This is a class for matrices where the arithmetic operations in the
@@ -1853,15 +1855,15 @@ namespace libsemigroups {
     //! Alias for the template parameter \p ZeroOp.
     using Zero = ZeroOp;
 
+    //! Alias for the template parameter \p OneOp.
+    using One = OneOp;
+
     //! \brief Alias for the semiring type (``void``).
     //!
     //! The type of the semiring over which the matrix is defined is ``void``
     //! because there's no semiring object, the arithmetic is defined by the
     //! template parameters.
     using semiring_type = void;
-
-    //! Alias for the template parameter \p OneOp.
-    using One = OneOp;
 
     //! \brief Default constructor.
     //!
@@ -2130,17 +2132,7 @@ namespace libsemigroups {
     using MatrixCommon::resize;
 #endif  // PARSED_BY_DOXYGEN
 
-    //! \brief Swaps the contents of one matrix with another.
-    //!
-    //! Swaps the contents of one matrix with another.
-    //!
-    //! \param that the matrix to swap contents with
-    //!
-    //! \complexity
-    //! Constant
-    //!
-    //! \exceptions
-    //! \noexcept
+    //! \copydoc StaticMatrix::swap
     void swap(DynamicMatrix& that) noexcept {
       static_cast<MatrixDynamicDim&>(*this).swap(
           static_cast<MatrixDynamicDim&>(that));
@@ -2160,6 +2152,46 @@ namespace libsemigroups {
   // DynamicMatrix with runtime semiring arithmetic
   ////////////////////////////////////////////////////////////////////////
 
+  //! \defgroup dyn_dyn_mat_group Dynamic matrices (with run time arithmetic)
+  //!
+  //! This page contains links to classes and functions for matrices over
+  //! semirings whose arithmetic and dimensions are defined at run-time.
+
+  //! \ingroup dyn_dyn_mat_group
+  //!
+  //! \brief Class for matrices with run-time arithmetic and dimensions.
+  //!
+  //! Defined in ``matrix.hpp``.
+  //!
+  //! This is a class for matrices where both the arithmetic operations in
+  //! the underlying semiring and the dimensions of the matrix can be set at
+  //! run time.
+  //!
+  //! \tparam Semiring the type of a semiring object which defines the semiring
+  //! arithmetic (see requirements below).
+  //!
+  //! \tparam Scalar the type of the entries in the matrices (the type of
+  //! elements in the underlying semiring)
+  //!
+  //! \note
+  //! Certain member functions only work for square matrices and some only
+  //! work for rows.
+  //!
+  //! ## Semiring requirements
+  //!
+  //! The template parameter Semiring must have the following
+  //! member functions:
+  //! * `scalar_type scalar_zero()` that returns the multiplicative zero scalar
+  //! in the semiring
+  //! * `scalar_type scalar_one()` that returns the multiplicative identity
+  //! scalar in the semiring
+  //! * `scalar_type plus(scalar_type x, scalar_type y)` that returns the sum
+  //! in the semiring of the scalars `x` and `y`.
+  //! * `scalar_type prod(scalar_type x, scalar_type y)` that returns the
+  //! product in the semiring of the scalars `x` and `y`.
+  //!
+  //! See, for example, \ref MaxPlusTruncSemiring.
+  // TODO update to prod_no_checks, plus_no_checks
   template <typename Semiring, typename Scalar>
   class DynamicMatrix<Semiring, Scalar>
       : public detail::MatrixDynamicDim<Scalar>,
@@ -2175,51 +2207,158 @@ namespace libsemigroups {
     using MatrixDynamicDim = ::libsemigroups::detail::MatrixDynamicDim<Scalar>;
 
    public:
-    using scalar_type      = typename MatrixCommon::scalar_type;
+    //! \copydoc StaticMatrix::scalar_type
+    using scalar_type = typename MatrixCommon::scalar_type;
+    //! \copydoc StaticMatrix::scalar_reference
     using scalar_reference = typename MatrixCommon::scalar_reference;
+    //! \copydoc StaticMatrix::scalar_const_reference
     using scalar_const_reference =
         typename MatrixCommon::scalar_const_reference;
 
-    using Row     = DynamicMatrix;
+    //! \copydoc StaticMatrix::Row
+    using Row = DynamicMatrix;
+
+    //! \copydoc StaticMatrix::RowView
     using RowView = DynamicRowView<Semiring, Scalar>;
     friend RowView;
 
-    DynamicMatrix()                                = delete;
-    DynamicMatrix(DynamicMatrix const&)            = default;
-    DynamicMatrix(DynamicMatrix&&)                 = default;
-    DynamicMatrix& operator=(DynamicMatrix const&) = default;
-    DynamicMatrix& operator=(DynamicMatrix&&)      = default;
+    //! \brief Alias for the template paramater Semiring.
+    using semiring_type = Semiring;
 
+    //! \brief Deleted.
+    //!
+    //! The default constructor for this variant of `DynamicMatrix` is deleted
+    //! because a valid semiring object is required to define the arithmetic at
+    //! run-time.
+    DynamicMatrix() = delete;
+
+    //! \copydoc StaticMatrix::StaticMatrix(StaticMatrix const&)
+    DynamicMatrix(DynamicMatrix const&) = default;
+
+    //! \copydoc StaticMatrix::StaticMatrix(StaticMatrix&&)
+    DynamicMatrix(DynamicMatrix&&) = default;
+
+    //! \copydoc StaticMatrix::operator=(StaticMatrix const&)
+    DynamicMatrix& operator=(DynamicMatrix const&) = default;
+
+    //! \copydoc StaticMatrix::operator=(StaticMatrix&&)
+    DynamicMatrix& operator=(DynamicMatrix&&) = default;
+
+    //! \brief Construct a matrix over a given semiring with given dimensions.
+    //!
+    //! Construct a matrix over the semiring `semiring` with the given
+    //! dimensions.
+    //!
+    //! \param semiring  a pointer to const semiring object
+    //! \param r  the number of rows in the matrix being constructed
+    //! \param c  the number of columns in the matrix being constructed
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    //! \complexity
+    //! Constant
     DynamicMatrix(Semiring const* semiring, size_t r, size_t c)
         : MatrixDynamicDim(r, c), MatrixCommon(), _semiring(semiring) {
       resize(number_of_rows(), number_of_cols());
     }
 
-    explicit DynamicMatrix(Semiring const*                           semiring,
-                           std::initializer_list<scalar_type> const& c)
-        : MatrixDynamicDim(1, c.size()), MatrixCommon(c), _semiring(semiring) {}
-
+    //! \brief Construct a matrix over a given semiring (std::initializer_list
+    //! of std::initializer_list).
+    //!
+    //! This function constructs a matrix over a given semiring from an
+    //! std::initializer_list of the rows (std::initializer_list).
+    //!
+    //! \param semiring  a pointer to const semiring object.
+    //! \param rows  the values to be copied into the matrix.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    //! \complexity
+    //! \f$O(mn)\f$ where \f$m\f$ is \ref number_of_rows and \f$n\f$ is \ref
+    //! number_of_cols.
     explicit DynamicMatrix(
         Semiring const* semiring,
-        std::initializer_list<std::initializer_list<scalar_type>> const& m)
-        : MatrixDynamicDim(m.size(), m.begin()->size()),
-          MatrixCommon(m),
+        std::initializer_list<std::initializer_list<scalar_type>> const& rows)
+        : MatrixDynamicDim(rows.size(), rows.begin()->size()),
+          MatrixCommon(rows),
           _semiring(semiring) {}
 
+    //! \brief Construct a matrix over a given semiring (std::vector
+    //! of std::vector).
+    //!
+    //! This function constructs a matrix over a given semiring from an
+    //! std::vector of the rows (std::vector).
+    //!
+    //! \param semiring  a pointer to const semiring object.
+    //! \param rows  the values to be copied into the matrix.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    //! \complexity
+    //! \f$O(mn)\f$ where \f$m\f$ is \ref number_of_rows and \f$n\f$ is \ref
+    //! number_of_cols.
     explicit DynamicMatrix(Semiring const* semiring,
-                           std::vector<std::vector<scalar_type>> const& m)
-        : MatrixDynamicDim(m.size(), (m.empty() ? 0 : m.begin()->size())),
-          MatrixCommon(m),
+                           std::vector<std::vector<scalar_type>> const& rows)
+        : MatrixDynamicDim(rows.size(),
+                           (rows.empty() ? 0 : rows.begin()->size())),
+          MatrixCommon(rows),
           _semiring(semiring) {}
 
+    //! \brief Construct a row over a given semiring (std::initializer_list).
+    //!
+    //! Construct a row over a given semiring from a std::initializer_list of
+    //! the entries.
+    //!
+    //! \param semiring a pointer to const Semiring object
+    //! \param row the values to be copied into the row
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    //! \complexity
+    //! \f$O(mn)\f$ where \f$m\f$ is \ref number_of_cols.
+    explicit DynamicMatrix(Semiring const*                           semiring,
+                           std::initializer_list<scalar_type> const& row)
+        : MatrixDynamicDim(1, row.size()),
+          MatrixCommon(row),
+          _semiring(semiring) {}
+
+    //! \brief Construct a row over a given semiring (\ref RowView).
+    //!
+    //! Construct a row over a given semiring from a \ref RowView.
+    //!
+    //! \param rv  the row view.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    //! \complexity
+    //! \f$O(n)\f$ where \f$n\f$ is the size of the row being constructed.
     explicit DynamicMatrix(RowView const& rv)
         : MatrixDynamicDim(1, rv.size()),
           MatrixCommon(rv),
           _semiring(rv._matrix->semiring()) {}
 
+    //! \brief Construct the \f$n \times n\f$ identity matrix.
+    //!
+    //! Construct the \f$n \times n\f$ identity matrix.
+    //!
+    //! \param semiring the semiring
+    //! \param n the dimension
+    //!
+    //! \returns The \f$n \times n\f$ identity matrix over \p semiring.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    //! \complexity
+    //! \f$O(n ^ 2)\f$.
     // No static DynamicMatrix::one(size_t n) because we need a semiring!
-    static DynamicMatrix one(Semiring const* sr, size_t n) {
-      DynamicMatrix x(sr, n, n);
+    static DynamicMatrix one(Semiring const* semiring, size_t n) {
+      DynamicMatrix x(semiring, n, n);
       std::fill(x.begin(), x.end(), x.scalar_zero());
       for (size_t r = 0; r < n; ++r) {
         x(r, r) = x.scalar_one();
@@ -2229,12 +2368,115 @@ namespace libsemigroups {
 
     ~DynamicMatrix();
 
+#ifdef PARSED_BY_DOXYGEN
+
+    //! \copydoc StaticMatrix::operator()(size_t, size_t)
+    scalar_reference operator()(size_t r, size_t c);
+
+    //! \copydoc StaticMatrix::operator()(size_t, size_t) const
+    scalar_const_reference operator()(size_t r, size_t c) const;
+
+    //! \copydoc StaticMatrix::begin()
+    iterator begin() noexcept;
+
+    //! \copydoc StaticMatrix::end()
+    iterator end() noexcept;
+
+    //! \copydoc StaticMatrix::cbegin()
+    const_iterator cbegin() noexcept;
+
+    //! \copydoc StaticMatrix::cend()
+    const_iterator cend() noexcept;
+
+    //! \copydoc StaticMatrix::operator==
+    bool operator==(DynamicMatrix const& that) const;
+
+    //! \copydoc StaticMatrix::operator==
+    bool operator==(RowView const& that) const;
+
+    //! \copydoc StaticMatrix::operator!=
+    bool operator!=(DynamicMatrix const& that) const;
+
+    //! \copydoc StaticMatrix::operator!=
+    bool operator!=(RowView const& that) const;
+
+    //! \copydoc StaticMatrix::operator<
+    bool operator<(DynamicMatrix const& that) const;
+
+    //! \copydoc StaticMatrix::operator<
+    bool operator<(RowView const& that) const;
+
+    //! \copydoc StaticMatrix::operator>
+    bool operator>(DynamicMatrix const& that) const;
+
+    //! \copydoc StaticMatrix::coords
+    std::pair<scalar_type, scalar_type> coords(const_iterator it) const;
+
+    //! \copydoc StaticMatrix::number_of_rows
+    size_t number_of_rows() const noexcept;
+
+    //! \copydoc StaticMatrix::number_of_cols
+    size_t number_of_cols() const noexcept;
+
+    //! \copydoc StaticMatrix::operator+
+    DynamicMatrix operator+(DynamicMatrix const& that);
+
+    //! \copydoc StaticMatrix::operator+=
+    void operator+=(DynamicMatrix const& that);
+
+    //! \copydoc StaticMatrix::operator+=
+    void operator+=(RowView const& that);
+
+    //! \copydoc StaticMatrix::operator+=(Scalar)
+    void operator+=(Scalar a);
+
+    //! \copydoc StaticMatrix::operator*
+    DynamicMatrix operator*(DynamicMatrix const& that);
+
+    //! \copydoc StaticMatrix::operator*=
+    void operator*=(scalar_type a);
+
+    //! \copydoc StaticMatrix::product_inplace_no_checks
+    void product_inplace_no_checks(DynamicMatrix const& x,
+                                   DynamicMatrix const& y);
+
+    //! \brief Returns the underlying semiring.
+    //!
+    //! Returns a const pointer to the underlying semiring (if any).
+    //!
+    //! \returns  A value of type `Semiring const*`.
+    //!
+    //! \exceptions
+    //! \noexcept
+    //!
+    //! \complexity
+    //! Constant
+    Semiring const* semiring() const noexcept;
+
+    //! \copydoc StaticMatrix::row_no_checks
+    RowView row_no_checks(size_t i) const;
+
+    //! \copydoc StaticMatrix::row
+    RowView row(size_t i) const;
+
+    //! \copydoc StaticMatrix::rows
+    template <typename T>
+    void rows(T& x) const;
+
+    //! \copydoc StaticMatrix::transpose_no_checks
+    void transpose_no_checks();
+
+    //! \copydoc StaticMatrix::transpose
+    void transpose();
+#else
     using MatrixCommon::begin;
     using MatrixCommon::number_of_cols;
     using MatrixCommon::number_of_rows;
     using MatrixCommon::one;
     using MatrixCommon::resize;
+#endif  // PARSED_BY_DOXYGEN
 
+    //! \copydoc StaticMatrix::swap
     void swap(DynamicMatrix& that) noexcept {
       static_cast<MatrixDynamicDim&>(*this).swap(
           static_cast<MatrixDynamicDim&>(that));
@@ -3010,12 +3252,11 @@ namespace libsemigroups {
   //! The default value of `N` is `0`.
   //!
   //! The alias \ref MinPlusMatAlias "MinPlusMat" is either \ref StaticMatrix,
-  //! \ref dynamicmatrix_staticarith_group, or \ref
-  //! dynamicmatrix_dynamicarith_grou please refer to the documentation of these
-  //! class templates for more details. The only substantial difference in the
-  //! interface of StaticMatrix and DynamicMatrix is that the former can be
-  //! default constructed and the latter should be constructed using the
-  //! dimensions.
+  //! \ref dyn_stat_mat_group, or \ref dyn_dyn_mat_group please refer to the
+  //! documentation of these class templates for more details. The only
+  //! substantial difference in the interface of StaticMatrix and DynamicMatrix
+  //! is that the former can be default constructed and the latter should be
+  //! constructed using the dimensions.
   //!
   //! \par Example
   //!
@@ -4871,7 +5112,7 @@ namespace libsemigroups {
   //!
   //! There are two types of such matrices those whose dimension is known at
   //! compile-time, and those where it is not.  Both types can be accessed via
-  //! the alias template \ref ProjMaxPlusMat: if `R` or `C` has value
+  //! the alias template \ref ProjMaxPlusMat : if `R` or `C` has value
   //! `0`, then the dimensions can be set at run time, otherwise `R` and `C` are
   //! the dimensions.  The default value of `R` is `0`, `C` is `R`, and `Scalar`
   //! is `int`.
@@ -5385,17 +5626,18 @@ namespace libsemigroups {
 
   }  // namespace matrix
 
-  //! \ingroup staticmatrix_group
+  //! \ingroup matrix_group
   //!
   //! \brief Validates the arguments, constructs a matrix and validates it.
   //!
   //! Validates the arguments, constructs a matrix and validates it.
   //!
-  //! \param il the values to be copied into the matrix.
+  //! \tparam TODO
+  //! \param rows the values to be copied into the matrix.
   //! \returns The constructed matrix if valid.
   //!
   //! \throws
-  //! LibsemigroupsException if `il` does not represent a
+  //! LibsemigroupsException if `rows` does not represent a
   //! matrix of the correct dimensions.
   //!
   //! \throws
@@ -5405,25 +5647,28 @@ namespace libsemigroups {
   //! \complexity
   //! \f$O(mn)\f$ where \f$m\f$ is the number of rows and
   //! \f$n\f$ is the number of columns of the matrix.
+  //!
+  // TODO fix the doc of this and the next function to reflect that they work
+  // for static or dynamic without semiring
   template <typename Mat,
             typename
             = std::enable_if_t<IsMatrix<Mat> && !IsMatWithSemiring<Mat>>>
   Mat to_matrix(std::initializer_list<
-                std::initializer_list<typename Mat::scalar_type>> const& il) {
-    detail::throw_if_any_row_wrong_size(il);
-    Mat m(il);
+                std::initializer_list<typename Mat::scalar_type>> const& rows) {
+    detail::throw_if_any_row_wrong_size(rows);
+    Mat m(rows);
     validate(m);
     return m;
   }
 
-  //! \ingroup staticmatrix_group
+  //! \ingroup matrix_group
   //!
   //! \brief Constructs a row and validates it.
   //!
   //! This function constructs a row from a std::initializer_list and then
   //! calls \ref validate.
-  //!
-  //! \param il the values to be copied into the row.
+  //! \tparam TODO
+  //! \param row the values to be copied into the row.
   //!
   //! \returns the constructed row if valid.
   //!
@@ -5440,44 +5685,115 @@ namespace libsemigroups {
   template <typename Mat,
             typename
             = std::enable_if_t<IsMatrix<Mat> && !IsMatWithSemiring<Mat>>>
-  Mat to_matrix(std::initializer_list<typename Mat::scalar_type> const& il) {
-    Mat m(il);
+  Mat to_matrix(std::initializer_list<typename Mat::scalar_type> const& row) {
+    Mat m(row);
     validate(m);
     return m;
   }
 
+  //! \ingroup matrix_group
+  //!
+  //! \brief Constructs a matrix (from std::initializer_list) and validates it.
+  //!
+  //! Validates the arguments, constructs a matrix and validates it.
+  //!
+  //! \tparam Mat the type of the matrix being constructed (must satisfy
+  //! \ref IsMatrix).
+  //! \tparam Semiring the type of the semiring where arithmetic is performed.
+  //! \param semiring  a pointer to const semiring object
+  //! \param rows  the values to be copied into the matrix.
+  //! \returns The constructed matrix.
+  //!
+  //! \throws
+  //! LibsemigroupsException if `rows` does not represent a
+  //! matrix of the correct dimensions.
+  //!
+  //! \throws
+  //! LibsemigroupsException if the constructed matrix
+  //! contains values that do not belong to the underlying semiring.
+  //!
+  //! \complexity
+  //! \f$O(mn)\f$ where \f$m\f$ is the number of rows and
+  //! \f$n\f$ is the number of columns of the matrix.
   template <typename Mat,
             typename Semiring,
             typename = std::enable_if_t<IsMatrix<Mat>>>
   Mat to_matrix(
-      Semiring const* sr,  // TODO to reference
+      Semiring const* semiring,  // TODO to reference
       std::initializer_list<
-          std::initializer_list<typename Mat::scalar_type>> const& il) {
-    Mat m(sr, il);
+          std::initializer_list<typename Mat::scalar_type>> const& rows) {
+    Mat m(semiring, rows);
     validate(m);
     return m;
   }
 
+  //! \ingroup matrix_group
+  //!
+  //! \brief Constructs a matrix (from std::vector of std::vector) and validates
+  //! it.
+  //!
+  //! Validates the arguments, constructs a matrix, and validates it.
+  //!
+  //! \tparam Mat the type of the matrix being constructed (must satisfy
+  //! \ref IsMatrix).
+  //!
+  //! \tparam Semiring the type of the semiring where arithmetic is performed.
+  //!
+  //! \param semiring  a pointer to const semiring object.
+  //!
+  //! \param rows  the rows to be copied into the matrix.
+  //!
+  //! \returns The constructed matrix.
+  //!
+  //! \throws
+  //! LibsemigroupsException if \p rows does not represent a
+  //! matrix of the correct dimensions.
+  //!
+  //! \throws
+  //! LibsemigroupsException if the constructed matrix
+  //! contains values that do not belong to the underlying semiring.
+  //!
+  //! \complexity
+  //! \f$O(mn)\f$ where \f$m\f$ is the number of rows and
+  //! \f$n\f$ is the number of columns of the matrix.
   template <typename Mat,
             typename Semiring,
             typename = std::enable_if_t<IsMatrix<Mat>>>
-  Mat to_matrix(Semiring const*                                            sr,
-                std::vector<std::vector<typename Mat::scalar_type>> const& v) {
-    Mat m(sr, v);
+  Mat to_matrix(
+      Semiring const*                                            semiring,
+      std::vector<std::vector<typename Mat::scalar_type>> const& rows) {
+    Mat m(semiring, rows);
     validate(m);
     return m;
   }
 
+  //! Constructs a row and validates it.
+  //!
+  //! \tparam Semiring the type of the semiring where arithmetic is performed.
+  //!
+  //! \param semiring  a pointer to const semiring object.
+  //!
+  //! \param row  the values to be copied into the row.
+  //!
+  //! \returns  the constructed row if valid.
+  //!
+  //! \throws
+  //! LibsemigroupsException if the constructed row contains
+  //! values that do not belong to the underlying semiring.
+  //!
+  //! \complexity
+  //! \f$O(n)\f$ where \f$n\f$ is the number of columns of the matrix.
   template <typename Mat,
             typename Semiring,
             typename = std::enable_if_t<IsMatrix<Mat>>>
-  Mat to_matrix(Semiring const*                                         sr,
-                std::initializer_list<typename Mat::scalar_type> const& il) {
-    Mat m(sr, il);
+  Mat to_matrix(Semiring const* semiring,
+                std::initializer_list<typename Mat::scalar_type> const& row) {
+    Mat m(semiring, row);
     validate(m);
     return m;
   }
 
+  // TODO doc
   template <size_t R, size_t C, typename Scalar>
   ProjMaxPlusMat<R, C, Scalar>
   to_matrix(std::initializer_list<std::initializer_list<Scalar>> const& il) {
