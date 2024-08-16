@@ -17,6 +17,7 @@
 //
 
 // TODO(0): document the adapters
+// TODO(0): check "Defined in" is everywhere it should be
 // TODO(1) tpp file
 // TODO(1): constexpr
 
@@ -89,18 +90,21 @@ namespace libsemigroups {
   //! define matrices over arbitrary semirings:
   //!
   //! * \ref DynamicMatrixStaticArith
-  //! "Dynamic matrices (with compile-time arithmetic)"
+  //! "DynamicMatrix (with compile-time arithmetic)"
   //! * \ref DynamicMatrixDynamicArith
-  //! "Dynamic matrices (with run-time arithmetic)"
+  //! "DynamicMatrix (with run-time arithmetic)"
   //! * \ref StaticMatrix
   //!
   //! # Row views
   //!
-  //! A row view is a lightweight representation of a row of a matrix.  The
+  //! A row view is a lightweight representation of a row of a matrix. The
   //! following row view classes are provided:
   //!
-  //! * \ref dynamicrowview
-  //! * \ref staticrowview
+  //! * \ref DynamicRowViewStaticArith
+  //! "DynamicRowView (compile-time arithmetic)
+  //! * \ref DynamicRowViewDynamicArith
+  //! "DynamicRowView (run-time arithmetic)
+  //! * \ref StaticRowView
   //!
   // TODO(0) incorporate this in the appropriate place
   // Adapters
@@ -803,6 +807,7 @@ namespace libsemigroups {
 
       template <typename U>
       bool operator==(U const& that) const {
+        // TODO(1) static assert that U is Row or RowView
         return std::equal(begin(), end(), that.begin());
       }
 
@@ -894,7 +899,6 @@ namespace libsemigroups {
 
   ////////////////////////////////////////////////////////////////////////
   ////////////////////////////////////////////////////////////////////////
-  // RowViews - classes for cheaply storing iterators to rows
   ////////////////////////////////////////////////////////////////////////
   ////////////////////////////////////////////////////////////////////////
 
@@ -902,6 +906,40 @@ namespace libsemigroups {
   // StaticRowViews - static arithmetic
   ////////////////////////////////////////////////////////////////////////
 
+  //! Defined in ``matrix.hpp``.
+  //!
+  //! This is a class for views into a row of a matrix over a semiring. An
+  //! instance of this class provides access to the elements in a row of a
+  //! matrix and is cheap to create and copy. Addition, scalar multiplication,
+  //! and other standard vector operations are defined for row views.
+  //!
+  //! This class is the type of row views into a :cpp:any:`StaticMatrix`; see
+  //! the documentation for :cpp:any:`StaticMatrix` for further details.
+  //!
+  //! \warning
+  //! If the underlying matrix is destroyed, then any row views for that matrix
+  //! are invalidated.
+  //!
+  //! \tparam PlusOp a stateless type with a call operator of signature
+  //! `scalar_type operator()(scalar_type, scalar_type)` implementing the
+  //! addition of the semiring.
+  //!
+  //! \tparam ProdOp a stateless type with a call operator of signature
+  //! `scalar_type operator()(scalar_type, scalar_type)` implementing the
+  //! multiplication of the semiring.
+  //!
+  //! \tparam ZeroOp a stateless type with a call operator of signature
+  //! `scalar_type operator()()` returning the zero of the semiring (the
+  //! additive identity element).
+  //!
+  //! \tparam OneOp a stateless type with a call operator of signature
+  //! `scalar_type operator()()` returning the one of the semiring (the
+  //! multiplicative identity element).
+  //!
+  //! \tparam C  the number of columns of the underlying matrix.
+  //!
+  //! \tparam Scalar the type of the entries in the matrices (the type of
+  //! elements in the underlying semiring).
   template <typename PlusOp,
             typename ProdOp,
             typename ZeroOp,
@@ -925,14 +963,47 @@ namespace libsemigroups {
         StaticMatrix<PlusOp, ProdOp, ZeroOp, OneOp, R, C, Scalar>;
 
    public:
+    //! \copydoc StaticMatrix::const_iterator
+    using const_iterator = typename RowViewCommon::const_iterator;
+
+    //! \copydoc StaticMatrix::const_iterator
+    using iterator = typename RowViewCommon::iterator;
+
+    //! \copydoc StaticMatrix::scalar_type
     using scalar_type = Scalar;
 
-    using detail::RowViewCommon<
-        StaticMatrix_<1>,
-        StaticRowView<PlusOp, ProdOp, ZeroOp, OneOp, C, Scalar>>::RowViewCommon;
+    //! \copydoc StaticMatrix::scalar_reference
+    using scalar_reference = typename RowViewCommon::scalar_reference;
 
-    StaticRowView() = default;  // gcc-6 seems to require this
+    //! \copydoc StaticMatrix::scalar_const_reference
+    using scalar_const_reference =
+        typename RowViewCommon::scalar_const_reference;
 
+    //! Alias for the type of the underlying matrix.
+    using matrix_type = typename RowViewCommon::matrix_type;
+
+    //! Alias for the type of a row in the underlying matrix.
+    using Row = typename matrix_type::Row;
+
+    //! \copydoc StaticMatrix::StaticMatrix()
+    StaticRowView() = default;
+
+    //! \copydoc StaticMatrix::StaticMatrix(StaticMatrix const&)
+    StaticRowView(StaticRowView const&) = default;
+
+    //! \copydoc StaticMatrix::StaticMatrix(StaticMatrix&&)
+    StaticRowView(StaticRowView&&) = default;
+
+    //! \copydoc StaticMatrix::operator=(StaticMatrix const&)
+    StaticRowView& operator=(StaticRowView const&) = default;
+
+    //! \copydoc StaticMatrix::operator=(StaticMatrix&&)
+    StaticRowView& operator=(StaticRowView&&) = default;
+
+#ifndef PARSED_BY_DOXYGEN
+    using RowViewCommon::RowViewCommon;
+
+    // TODO(2) This constructor should be private
     template <size_t R>
     StaticRowView(StaticMatrix_<R> const*,
                   typename RowViewCommon::iterator it,
@@ -940,6 +1011,283 @@ namespace libsemigroups {
         : RowViewCommon(it) {}
 
     using RowViewCommon::size;
+#else
+    //! \brief Construct a row view from a \ref Row.
+    //!
+    //! This function constructs a row view from a \ref Row.
+    //!
+    //! \param r  the row.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    //! \complexity
+    //! Constant.
+    explicit StaticRowView(Row const& r);
+
+    //! \brief Returns the size of the row.
+    //!
+    //! Returns the size of the underlying row which equals the template
+    //! parameter \p C.
+    //!
+    //! \returns  The size of the row.
+    //!
+    //! \exceptions
+    //! \noexcept
+    //!
+    //! \complexity
+    //! Constant
+    static constexpr size_t size() const noexcept;
+
+    //! \brief Returns a iterator pointing at the first entry.
+    //!
+    //! This function returns a (random access) iterator pointing at the first
+    //! entry in the row.
+    //!
+    //! \returns  A value of type \ref iterator.
+    //!
+    //! \complexity
+    //! Constant
+    //!
+    //! \exceptions
+    //! \noexcept
+    iterator begin() noexcept;
+
+    //! \brief Returns a iterator pointing one beyond the last entry of the row.
+    //!
+    //! This function returns a (random access) iterator pointing at one beyond
+    //! the last entry in the row.
+    //!
+    //! \returns  A value of type \ref iterator.
+    //!
+    //! \complexity
+    //! Constant
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    iterator end();
+
+    //! \brief Returns a const iterator pointing at the first entry.
+    //!
+    //! This function returns a const (random access) iterator pointing at the
+    //! first entry in the row.
+    //!
+    //! \returns  A value of type \ref const_iterator.
+    //!
+    //! \complexity
+    //! Constant
+    //!
+    //! \exceptions
+    //! \noexcept
+    const_iterator cbegin() const noexcept;
+
+    //! \brief Returns a const iterator pointing one beyond the last entry of
+    //! the row.
+    //!
+    //! This function returns a (random access) const iterator pointing at one
+    //! beyond the last entry in the row.
+    //!
+    //! \returns  A value of type \ref iterator.
+    //!
+    //! \complexity
+    //! Constant
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    iterator cend();
+
+    //! \brief Returns a reference to the specified entry of the row.
+    //!
+    //! This function returns a reference to the specified entry of the
+    //! row.
+    //!
+    //! \param i  the index of the entry.
+    //!
+    //! \returns  A value of type \ref scalar_reference.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    //! \complexity
+    //! Constant
+    //!
+    //! \warning
+    //! No checks on the validity of the parameter \p i is performed.
+    scalar_reference operator()(size_t i);
+
+    //! \brief Returns a const reference to the specified entry of the row.
+    //!
+    //! This function returns a const reference to the specified entry of the
+    //! row.
+    //!
+    //! \param i  the index of the entry.
+    //!
+    //! \returns  A value of type \ref scalar_const_reference.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    //! \complexity
+    //! Constant
+    //!
+    //! \warning
+    //! No checks on the validity of the parameter \p i is performed.
+    scalar_const_reference operator()(size_t i) const;
+
+    //! \copydoc operator()(size_t)
+    scalar_reference operator[](size_t i);
+
+    //! \copydoc operator()(size_t) const
+    scalar_const_reference operator[](size_t i) const;
+
+    //! \brief Equality operator.
+    //!
+    //! Equality operator.
+    //!
+    //! \tparam U  either \ref Row, \ref StaticRowView, or \ref DynamicRowView
+    //! \param that  \ref Row, \ref StaticRowView, or \ref DynamicRowView object
+    //! for comparison.
+    //!
+    //! \returns
+    //! Returns `true` if the first \ref size entries of \p that
+    //! equal the entries of `this`, and `false` if not.
+    //!
+    //! \complexity
+    //! At worst \f$O(n)\f$ where \f$n\f$ is the size of the row view.
+    template <typename U>
+    bool operator==(U const& that) const;
+
+    //! \brief Inequality operator.
+    //!
+    //! Inequality operator.
+    //!
+    //! \tparam U  either \ref Row, \ref StaticRowView, or \ref DynamicRowView
+    //! \param that  \ref Row, \ref StaticRowView, or \ref DynamicRowView object
+    //! for comparison.
+    //!
+    //! \returns
+    //! Returns `true` if the first \ref size entries of \p that
+    //! do not equal the entries of `this`, and `false` otherwise.
+    //!
+    //! \complexity
+    //! At worst \f$O(n)\f$ where \f$n\f$ is the size of the row view.
+    template <typename U>
+    bool operator!=(U const& that) const;
+
+    //! \brief Lexicographical comparison of rows.
+    //!
+    //! Lexicographical comparison of rows.
+    //!
+    //! \tparam U  either \ref Row, \ref StaticRowView, or \ref DynamicRowView
+    //! \param that \ref Row, \ref StaticRowView, or \ref DynamicRowView object
+    //! for comparison.
+    //!
+    //! \returns
+    //! Returns `true` if `this` is lex less than that `that` and
+    //! `false` otherwise.
+    //!
+    //! \complexity
+    //! At worst \f$O(n)\f$ where \f$n\f$ is the size of the row view.
+    template <typename U>
+    bool operator<(U const& that) const;
+
+    //! \brief Lexicographical comparison of rows.
+    //!
+    //! Lexicographical comparison of rows.
+    //!
+    //! \tparam U  either \ref Row, \ref StaticRowView, or \ref DynamicRowView
+    //! \param that \ref Row, \ref StaticRowView, or \ref DynamicRowView object
+    //! for comparison.
+    //!
+    //! \returns
+    //! Returns `true` if `this` is lex greater than that `that` and
+    //! `false` otherwise.
+    //!
+    //! \complexity
+    //! At worst \f$O(n)\f$ where \f$n\f$ is the \ref size of the row view.
+    template <typename U>
+    bool operator<(U const& that) const;
+
+    //! \brief Sum row views.
+    //!
+    //! This function sums a row view with another row view and returns a newly
+    //! allocated \ref Row.
+    //!
+    //! \param that  the row view to add.
+    //! \returns  A \ref Row containing the sum.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    //! \complexity
+    //! \f$O(m)\f$ where \f$m\f$ is \ref size.
+    //!
+    //! \warning
+    //! The two row views must be of the same size, although this is not
+    //! verified by the implementation.
+    Row operator+(StaticRowView const& that);
+
+    //! \brief Sums a row view with another row view in-place.
+    //!
+    //! This function redefines a RowView object to be the sum of itself and \p
+    //! that.
+    //!
+    //! \param that  the row view to add.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    //! \complexity
+    //! \f$O(m)\f$ where \f$m\f$ is \ref size.
+    //!
+    //! \warning
+    //! The two row views must be of the same size, although this is not
+    //! verified by the implementation.
+    void operator+=(StaticRowView const& that);
+
+    //! \brief Adds a scalar to every entry of a row in-place.
+    //!
+    //! This function adds a scalar to every entry of the row in-place.
+    //!
+    //! \param a the scalar to add.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    //! \complexity
+    //! \f$O(m)\f$ where \f$m\f$ is \ref size.
+    void operator+=(scalar_type a);
+
+    //! \brief Multiplies every entry of the row by a scalar.
+    //!
+    //! This function multiplies every entry of the row by a scalar.
+    //!
+    //! \param a the scalar.
+    //!
+    //! \returns
+    //! A value of type \ref Row containing the original row multiplied by the
+    //! scalar \p a.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    //! \complexity
+    //! \f$O(m)\f$ where \f$m\f$ is \ref size.
+    Row operator*(scalar_type a) const;
+
+    //! \brief Multiplies every entry of the row by a scalar in-place.
+    //!
+    //! This function multiplies every entry of the row by a scalar in-place.
+    //!
+    //! \param a  the scalar to multiply by.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    //! \complexity
+    //! \f$O(m)\f$ where \f$m\f$ is \ref size.
+    void operator*=(scalar_type a);
+#endif
 
    private:
     static constexpr size_t length_impl() noexcept {
@@ -954,6 +1302,43 @@ namespace libsemigroups {
   template <typename... Args>
   class DynamicRowView;
 
+  //! \anchor DynamicRowViewStaticArith
+  //!
+  //! \brief Row view class for \ref DynamicMatrixStaticArith
+  //! "DynamicMatrix (compile-time arithmetic)".
+  //!
+  //! Defined in ``matrix.hpp``.
+  //!
+  //! This class is the type of row views into a \ref DynamicMatrixStaticArith
+  //! "DynamicMatrix (with compile-time arithmetic)" with the same template
+  //! parameters.
+  //!
+  //! An instance of this class provides access to the elements in a row of a
+  //! matrix and is cheap to create and copy. Addition, scalar multiplication,
+  //! and other usual vector operations are defined for row views.
+  //!
+  //! \warning
+  //! If the underlying matrix is destroyed, then any row views for that
+  //! matrix are invalidated.
+  //!
+  //! \tparam PlusOp a stateless type with a call operator of signature
+  //! `scalar_type operator()(scalar_type, scalar_type)` implementing the
+  //! addition of the semiring
+  //!
+  //! \tparam ProdOp a stateless type with a call operator of signature
+  //! `scalar_type operator()(scalar_type, scalar_type)` implementing the
+  //! multiplication of the semiring
+  //!
+  //! \tparam ZeroOp a stateless type with a call operator of signature
+  //! `scalar_type operator()()` returning the zero of the semiring (the
+  //! additive identity element)
+  //!
+  //! \tparam OneOp a stateless type with a call operator of signature
+  //! `scalar_type operator()()` returning the one of the semiring (the
+  //! multiplicative identity element)
+  //!
+  //! \tparam Scalar the type of the entries in the matrices (the type of
+  //! elements in the underlying semiring)
   template <typename PlusOp,
             typename ProdOp,
             typename ZeroOp,
@@ -973,19 +1358,114 @@ namespace libsemigroups {
     friend RowViewCommon;
 
    public:
+    //! \copydoc StaticMatrix::const_iterator
+    using const_iterator = typename RowViewCommon::const_iterator;
+
+    //! \copydoc StaticMatrix::const_iterator
     using iterator = typename RowViewCommon::iterator;
-    using Row      = typename DynamicMatrix_::Row;
 
-    using detail::RowViewCommon<
-        DynamicMatrix<PlusOp, ProdOp, ZeroOp, OneOp, Scalar>,
-        DynamicRowView<PlusOp, ProdOp, ZeroOp, OneOp, Scalar>>::RowViewCommon;
+    //! \copydoc StaticMatrix::scalar_type
+    using scalar_type = Scalar;
 
+    //! \copydoc StaticMatrix::scalar_reference
+    using scalar_reference = typename RowViewCommon::scalar_reference;
+
+    //! \copydoc StaticMatrix::scalar_const_reference
+    using scalar_const_reference =
+        typename RowViewCommon::scalar_const_reference;
+
+    //! Alias for the type of the underlying matrix.
+    using matrix_type = typename RowViewCommon::matrix_type;
+
+    //! Alias for the type of a row in the underlying matrix.
+    using Row = typename matrix_type::Row;
+
+    //! \copydoc StaticMatrix::StaticMatrix()
     DynamicRowView() = default;
+
+    //! \copydoc StaticMatrix::StaticMatrix(StaticMatrix const&)
+    DynamicRowView(DynamicRowView const&) = default;
+
+    //! \copydoc StaticMatrix::StaticMatrix(StaticMatrix&&)
+    DynamicRowView(DynamicRowView&&) = default;
+
+    //! \copydoc StaticMatrix::operator=(StaticMatrix const&)
+    DynamicRowView& operator=(DynamicRowView const&) = default;
+
+    //! \copydoc StaticMatrix::operator=(StaticMatrix&&)
+    DynamicRowView& operator=(DynamicRowView&&) = default;
+
+    //! \copydoc StaticRowView::StaticRowView(Row const&)
+    explicit DynamicRowView(Row const& r)
+        : RowViewCommon(r), _length(r.number_of_cols()) {}
+
+#ifndef PARSED_BY_DOXYGEN
+    using RowViewCommon::RowViewCommon;
+
+    // TODO(2) This constructor should be private
     DynamicRowView(DynamicMatrix_ const*, iterator const& it, size_t N)
         : RowViewCommon(it), _length(N) {}
 
-    explicit DynamicRowView(Row const& r)
-        : RowViewCommon(r), _length(r.number_of_cols()) {}
+    using RowViewCommon::size;
+#else
+    //! \copydoc StaticRowView::size
+    size_t size() const noexcept;
+
+    //! \copydoc StaticRowView::begin
+    iterator begin() noexcept;
+
+    //! \copydoc StaticRowView::end
+    iterator end();
+
+    //! \copydoc StaticRowView::cbegin
+    const_iterator cbegin() const noexcept;
+
+    //! \copydoc StaticRowView::cend
+    iterator cend();
+
+    //! \copydoc StaticRowView::operator()(size_t)
+    scalar_reference operator()(size_t i);
+
+    //! \copydoc StaticRowView::operator()(size_t) const
+    scalar_const_reference operator()(size_t i) const;
+
+    //! \copydoc StaticRowView::operator[](size_t)
+    scalar_reference operator[](size_t i);
+
+    //! \copydoc StaticRowView::operator[](size_t) const
+    scalar_const_reference operator[](size_t i) const;
+
+    //! \copydoc StaticRowView::operator==
+    template <typename U>
+    bool operator==(U const& that) const;
+
+    //! \copydoc StaticRowView::operator!=
+    template <typename U>
+    bool operator!=(U const& that) const;
+
+    //! \copydoc StaticRowView::operator<
+    template <typename U>
+    bool operator<(U const& that) const;
+
+    //! \copydoc StaticRowView::operator<
+    template <typename U>
+    bool operator<(U const& that) const;
+
+    //! \copydoc StaticRowView::operator+
+    Row operator+(DynamicRowView const& that);
+
+    //! \copydoc StaticRowView::operator+=(StaticRowView const&)
+    void operator+=(DynamicRowView const& that);
+
+    //! \copydoc StaticRowView::operator+=(scalar_type)
+    void operator+=(scalar_type a);
+
+    //! \copydoc StaticRowView::operator*(scalar_type) const
+    Row operator*(scalar_type a) const;
+
+    //! \copydoc StaticRowView::operator*=(scalar_type)
+    void operator*=(scalar_type a);
+#endif  // PARSED_BY_DOXYGEN
 
    private:
     size_t length_impl() const noexcept {
@@ -998,6 +1478,26 @@ namespace libsemigroups {
   // DynamicRowViews - dynamic arithmetic
   ////////////////////////////////////////////////////////////////////////
 
+  //! \anchor DynamicRowViewDynamicArith
+  //!
+  //! \brief Row view class for \ref DynamicMatrixDynamicArith
+  //! "DynamicMatrix (run-time arithmetic)".
+  //!
+  //! Defined in ``matrix.hpp``.
+  //!
+  //! This class is the type of row views into a \ref
+  //! DynamicMatrixDynamicArith "DynamicMatrix (run-time arithmetic)".
+  //!
+  //! \warning
+  //! If the underlying matrix is destroyed, then any row views for that
+  //! matrix are invalidated.
+  //!
+  //! \tparam Semiring the type of a semiring object which defines the semiring
+  //! arithmetic (see requirements in \ref DynamicMatrixDynamicArith
+  //! "DynamicMatrix (run-time arithmetic)".
+  //!
+  //! \tparam Scalar the type of the entries in the matrices (the type of
+  //! elements in the underlying semiring).
   template <typename Semiring, typename Scalar>
   class DynamicRowView<Semiring, Scalar>
       : public detail::RowViewCommon<DynamicMatrix<Semiring, Scalar>,
@@ -1011,20 +1511,113 @@ namespace libsemigroups {
     friend RowViewCommon;
 
    public:
-    using scalar_type = typename DynamicMatrix_::scalar_type;
-    using iterator    = typename RowViewCommon::iterator;
-    using Row         = typename DynamicMatrix_::Row;
+    //! \copydoc StaticMatrix::const_iterator
+    using const_iterator = typename RowViewCommon::const_iterator;
 
-    using detail::RowViewCommon<
-        DynamicMatrix<Semiring, Scalar>,
-        DynamicRowView<Semiring, Scalar>>::RowViewCommon;
+    //! \copydoc StaticMatrix::const_iterator
+    using iterator = typename RowViewCommon::iterator;
 
+    //! \copydoc StaticMatrix::scalar_type
+    using scalar_type = Scalar;
+
+    //! \copydoc StaticMatrix::scalar_reference
+    using scalar_reference = typename RowViewCommon::scalar_reference;
+
+    //! \copydoc StaticMatrix::scalar_const_reference
+    using scalar_const_reference =
+        typename RowViewCommon::scalar_const_reference;
+
+    //! Alias for the type of the underlying matrix.
+    using matrix_type = typename RowViewCommon::matrix_type;
+
+    //! Alias for the type of a row in the underlying matrix.
+    using Row = typename matrix_type::Row;
+
+    //! \copydoc StaticMatrix::StaticMatrix()
     DynamicRowView() = default;
 
+    //! \copydoc StaticMatrix::StaticMatrix(StaticMatrix const&)
+    DynamicRowView(DynamicRowView const&) = default;
+
+    //! \copydoc StaticMatrix::StaticMatrix(StaticMatrix&&)
+    DynamicRowView(DynamicRowView&&) = default;
+
+    //! \copydoc StaticMatrix::operator=(StaticMatrix const&)
+    DynamicRowView& operator=(DynamicRowView const&) = default;
+
+    //! \copydoc StaticMatrix::operator=(StaticMatrix&&)
+    DynamicRowView& operator=(DynamicRowView&&) = default;
+
+    //! \copydoc DynamicRowView::DynamicRowView(Row const&)
+    explicit DynamicRowView(Row const& r) : RowViewCommon(r), _matrix(&r) {}
+
+#ifndef PARSED_BY_DOXYGEN
+    using RowViewCommon::RowViewCommon;
+
+    // TODO(2) This constructor should be private
     DynamicRowView(DynamicMatrix_ const* mat, iterator const& it, size_t)
         : RowViewCommon(it), _matrix(mat) {}
 
-    explicit DynamicRowView(Row const& r) : RowViewCommon(r), _matrix(&r) {}
+    using RowViewCommon::size;
+#else
+    //! \copydoc StaticRowView::size
+    size_t size() const noexcept;
+
+    //! \copydoc StaticRowView::begin
+    iterator begin() noexcept;
+
+    //! \copydoc StaticRowView::end
+    iterator end();
+
+    //! \copydoc StaticRowView::cbegin
+    const_iterator cbegin() const noexcept;
+
+    //! \copydoc StaticRowView::cend
+    iterator cend();
+
+    //! \copydoc StaticRowView::operator()(size_t)
+    scalar_reference operator()(size_t i);
+
+    //! \copydoc StaticRowView::operator()(size_t) const
+    scalar_const_reference operator()(size_t i) const;
+
+    //! \copydoc StaticRowView::operator[](size_t)
+    scalar_reference operator[](size_t i);
+
+    //! \copydoc StaticRowView::operator[](size_t) const
+    scalar_const_reference operator[](size_t i) const;
+
+    //! \copydoc StaticRowView::operator==
+    template <typename U>
+    bool operator==(U const& that) const;
+
+    //! \copydoc StaticRowView::operator!=
+    template <typename U>
+    bool operator!=(U const& that) const;
+
+    //! \copydoc StaticRowView::operator<
+    template <typename U>
+    bool operator<(U const& that) const;
+
+    //! \copydoc StaticRowView::operator<
+    template <typename U>
+    bool operator<(U const& that) const;
+
+    //! \copydoc StaticRowView::operator+
+    Row operator+(DynamicRowView const& that);
+
+    //! \copydoc StaticRowView::operator+=(StaticRowView const&)
+    void operator+=(DynamicRowView const& that);
+
+    //! \copydoc StaticRowView::operator+=(scalar_type)
+    void operator+=(scalar_type a);
+
+    //! \copydoc StaticRowView::operator*(scalar_type) const
+    Row operator*(scalar_type a) const;
+
+    //! \copydoc StaticRowView::operator*=(scalar_type)
+    void operator*=(scalar_type a);
+#endif
 
    private:
     size_t length_impl() const noexcept {
@@ -2596,6 +3189,16 @@ namespace libsemigroups {
     }
   }  // namespace detail
 
+  //! \ingroup matrix_group
+  //!
+  //! \brief Namespace for helper functions for matrices.
+  //!
+  //! Defined in ``matrix.hpp``.
+  //!
+  //! This namespace contains various helper functions for the various matrix
+  //! classes in ``libsemigroups``. These functions could have been member
+  //! functions of the matrix classes but they only use public member functions,
+  //! and so they are declared as free functions instead.
   namespace matrix {
     //! \brief Returns the threshold of a matrix.
     //!
@@ -2608,9 +3211,8 @@ namespace libsemigroups {
     //!
     //! \exceptions
     //! \noexcept
-    // TODO constexpr
     template <typename Mat>
-    auto threshold(Mat const&) noexcept
+    constexpr auto threshold(Mat const&) noexcept
         -> std::enable_if_t<!detail::IsTruncMat<Mat>,
                             typename Mat::scalar_type> {
       return UNDEFINED;
@@ -2627,9 +3229,8 @@ namespace libsemigroups {
     //!
     //! \exceptions
     //! \noexcept
-    // TODO constexpr
     template <typename Mat>
-    auto threshold(Mat const&) noexcept
+    constexpr auto threshold(Mat const&) noexcept
         -> std::enable_if_t<detail::IsTruncMat<Mat> && !IsMatWithSemiring<Mat>,
                             typename Mat::scalar_type> {
       return detail::IsTruncMatHelper<Mat>::threshold;
@@ -2859,36 +3460,36 @@ namespace libsemigroups {
   template <typename T>
   static constexpr bool IsBMat = detail::IsBMatHelper<T>::value;
 
-  //! \ingroup bmat_group
-  //!
-  //! \brief Validate that a boolean matrix is valid.
-  //!
-  //! \tparam Mat the type of \p m, must satisfy \ref IsBMat<Mat>.
-  //!
-  //! \param m the boolean matrix to validate.
-  //!
-  //! This function can be used to validate that a matrix contains values in the
-  //! underlying semiring.
-  //!
-  //! \throws LibsemigroupsException if any of the entries in the matrix are
-  //! not \c 0 or \1. The values in a boolean matrix are of type \c int, but a
-  //! matrix shouldn't contain values except \c 0 and \1.
-  // TODO to namespace matrix
-  template <typename Mat>
-  auto validate(Mat const& m) -> std::enable_if_t<IsBMat<Mat>> {
-    using scalar_type = typename Mat::scalar_type;
-    auto it           = std::find_if_not(
-        m.cbegin(), m.cend(), [](scalar_type x) { return x == 0 || x == 1; });
-    if (it != m.cend()) {
-      size_t r, c;
-      std::tie(r, c) = m.coords(it);
-      LIBSEMIGROUPS_EXCEPTION(
-          "invalid entry, expected 0 or 1 but found {} in entry ({}, {})",
-          *it,
-          r,
-          c);
+  namespace matrix {
+    //! \ingroup bmat_group
+    //!
+    //! \brief Check the entries in a boolean matrix are valid.
+    //!
+    //! \tparam Mat the type of \p m, must satisfy \ref IsBMat<Mat>.
+    //!
+    //! \param m the boolean matrix to validate.
+    //!
+    //! This function can be used to validate that a matrix contains values in
+    //! the underlying semiring.
+    //!
+    //! \throws LibsemigroupsException if any of the entries in the matrix are
+    //! not \c 0 or \c 1. The values in a boolean matrix are of type \c int, but
+    //! a matrix shouldn't contain values except \c 0 and \c 1.
+    template <typename Mat>
+    std::enable_if_t<IsBMat<Mat>> throw_if_bad_entry(Mat const& m) {
+      using scalar_type = typename Mat::scalar_type;
+      auto it           = std::find_if_not(
+          m.cbegin(), m.cend(), [](scalar_type x) { return x == 0 || x == 1; });
+      if (it != m.cend()) {
+        auto [r, c] = m.coords(it);
+        LIBSEMIGROUPS_EXCEPTION(
+            "invalid entry, expected 0 or 1 but found {} in entry ({}, {})",
+            *it,
+            r,
+            c);
+      }
     }
-  }
+  }  // namespace matrix
 
   ////////////////////////////////////////////////////////////////////////
   // Integer matrices - compile time semiring arithmetic
@@ -3083,41 +3684,44 @@ namespace libsemigroups {
                                     DynamicIntMat<Scalar>,
                                     StaticIntMat<R, C, Scalar>>;
 
-  //! \ingroup intmat_group
-  //!
-  //! \brief Validate that an integer matrix is valid.
-  //!
-  //! This function throws an exception if the entries of an integer matrix are
-  //! not valid. There is no way for them to be not valid, and so no exception
-  //! is ever thrown by this function, it exists for the sake of completeness.
-  //!
-  //! \tparam R the number of rows of the matrix.
-  //!
-  //! \tparam C the number of columns of the matrix.
-  //!
-  //! \tparam Scalar the type of the entries in the matrix.
-  //!
-  //! \exceptions
-  //! \noexcept
-  // TODO to namespace matrix
-  template <size_t R, size_t C, typename Scalar>
-  void validate(StaticIntMat<R, C, Scalar> const&) noexcept {}
+  namespace matrix {
+    //! \ingroup intmat_group
+    //!
+    //! \brief Validate that an integer matrix is valid.
+    //!
+    //! This function throws an exception if the entries of an integer matrix
+    //! are not valid. There is no way for them to be not valid, and so no
+    //! exception is ever thrown by this function, it exists for the sake of
+    //! completeness.
+    //!
+    //! \tparam R the number of rows of the matrix.
+    //!
+    //! \tparam C the number of columns of the matrix.
+    //!
+    //! \tparam Scalar the type of the entries in the matrix.
+    //!
+    //! \exceptions
+    //! \noexcept
+    template <size_t R, size_t C, typename Scalar>
+    constexpr void
+    throw_if_bad_entry(StaticIntMat<R, C, Scalar> const&) noexcept {}
 
-  //! \ingroup intmat_group
-  //!
-  //! \brief Validate that an integer matrix is valid.
-  //!
-  //! This function throws an exception if the entries of an integer matrix are
-  //! not valid. There is no way for them to be not valid, and so no exception
-  //! is ever thrown by this function, it exists for the sake of completeness.
-  //!
-  //! \tparam Scalar the type of the entries in the matrix.
-  //!
-  //! \exceptions
-  //! \noexcept
-  // TODO to namespace matrix
-  template <typename Scalar>
-  void validate(DynamicIntMat<Scalar> const&) noexcept {}
+    //! \ingroup intmat_group
+    //!
+    //! \brief Validate that an integer matrix is valid.
+    //!
+    //! This function throws an exception if the entries of an integer matrix
+    //! are not valid. There is no way for them to be not valid, and so no
+    //! exception is ever thrown by this function, it exists for the sake of
+    //! completeness.
+    //!
+    //! \tparam Scalar the type of the entries in the matrix.
+    //!
+    //! \exceptions
+    //! \noexcept
+    template <typename Scalar>
+    constexpr void throw_if_bad_entry(DynamicIntMat<Scalar> const&) noexcept {}
+  }  // namespace matrix
 
   ////////////////////////////////////////////////////////////////////////
   // Max-plus matrices
@@ -3318,37 +3922,42 @@ namespace libsemigroups {
                                         DynamicMaxPlusMat<Scalar>,
                                         StaticMaxPlusMat<R, C, Scalar>>;
 
-  //! \ingroup maxplusmat_group
-  //!
-  //! \brief Validate that a max-plus matrix is valid.
-  //!
-  //! This function can be used to validate that a matrix contains values in the
-  //! underlying semiring. This is always \c true for \ref MaxPlusMat objects.
-  //!
-  //! \tparam R the number of rows of the matrix.
-  //!
-  //! \tparam C the number of columns of the matrix.
-  //!
-  //! \tparam Scalar the type of the entries in the matrix.
-  //!
-  //! \exceptions
-  //! \noexcept
-  template <size_t R, size_t C, typename Scalar>
-  void validate(StaticMaxPlusMat<R, C, Scalar> const&) noexcept {}
+  namespace matrix {
+    //! \ingroup maxplusmat_group
+    //!
+    //! \brief Validate that a max-plus matrix is valid.
+    //!
+    //! This function can be used to validate that a matrix contains values in
+    //! the underlying semiring. This is always \c true for \ref MaxPlusMat
+    //! objects.
+    //!
+    //! \tparam R the number of rows of the matrix.
+    //!
+    //! \tparam C the number of columns of the matrix.
+    //!
+    //! \tparam Scalar the type of the entries in the matrix.
+    //!
+    //! \exceptions
+    //! \noexcept
+    template <size_t R, size_t C, typename Scalar>
+    constexpr void
+    throw_if_bad_entry(StaticMaxPlusMat<R, C, Scalar> const&) noexcept {}
 
-  //! \ingroup maxplusmat_group
-  //!
-  //! \brief Validate that a max-plus matrix is valid.
-  //!
-  //! This function can be used to validate that a matrix contains values in the
-  //! underlying semiring. This is always \c true for \ref MaxPlusMat objects.
-  //!
-  //! \tparam Scalar the type of the entries in the matrix.
-  //!
-  //! \exceptions
-  //! \noexcept
-  template <typename Scalar>
-  void validate(DynamicMaxPlusMat<Scalar> const&) {}
+    //! \ingroup maxplusmat_group
+    //!
+    //! \brief Validate that a max-plus matrix is valid.
+    //!
+    //! This function can be used to validate that a matrix contains values in
+    //! the underlying semiring. This is always \c true for \ref MaxPlusMat
+    //! objects.
+    //!
+    //! \tparam Scalar the type of the entries in the matrix.
+    //!
+    //! \exceptions
+    //! \noexcept
+    template <typename Scalar>
+    constexpr void throw_if_bad_entry(DynamicMaxPlusMat<Scalar> const&) {}
+  }  // namespace matrix
 
   ////////////////////////////////////////////////////////////////////////
   // Min-plus matrices
@@ -3551,18 +4160,21 @@ namespace libsemigroups {
                                         DynamicMinPlusMat<Scalar>,
                                         StaticMinPlusMat<R, C, Scalar>>;
 
-  //! \ingroup minplusmat_group
-  //!
-  //! \brief Validate that a min-plus matrix is valid.
-  //!
-  //! This function can be used to validate that a matrix contains values in the
-  //! underlying semiring. This is always \c true for \ref MinPlusMat objects.
-  template <typename Scalar>
-  void validate(DynamicMinPlusMat<Scalar> const&) {}
+  namespace matrix {
+    //! \ingroup minplusmat_group
+    //!
+    //! \brief Validate that a min-plus matrix is valid.
+    //!
+    //! This function can be used to validate that a matrix contains values in
+    //! the underlying semiring. This is always \c true for \ref MinPlusMat
+    //! objects.
+    template <typename Scalar>
+    constexpr void throw_if_bad_entry(DynamicMinPlusMat<Scalar> const&) {}
 
-  //! \copydoc validate(DynamicMinPlusMat<Scalar> const&)
-  template <size_t R, size_t C, typename Scalar>
-  void validate(StaticMinPlusMat<R, C, Scalar> const&) {}
+    //! \copydoc throw_if_bad_entry(DynamicMinPlusMat<Scalar> const&)
+    template <size_t R, size_t C, typename Scalar>
+    constexpr void throw_if_bad_entry(StaticMinPlusMat<R, C, Scalar> const&) {}
+  }  // namespace matrix
 
   ////////////////////////////////////////////////////////////////////////
   // Max-plus matrices with threshold
@@ -3592,7 +4204,7 @@ namespace libsemigroups {
   //! then the dimension can be set at run time.  The default value of \c T is
   //! \c 0, \c R is \c 0, and of \c C is \c R.
   //!
-  //! The alias \ref MaxPlusTruncMax is either
+  //! The alias \ref MaxPlusTruncMat is either
   //! StaticMatrix or DynamicMatrix, please refer to the
   //! documentation of these class templates for more details. The only
   //! substantial difference in the interface of StaticMatrix and
@@ -3949,44 +4561,47 @@ namespace libsemigroups {
     };
   }  // namespace detail
 
-  //! \ingroup maxplustruncmat_group
-  //!
-  //! \brief Validate that a truncated max-plus matrix is valid.
-  //!
-  //! This function can be used to validate that a matrix contains values in the
-  //! underlying semiring.
-  //!
-  //! \tparam Mat the type of \p m, must satisfy \ref IsMaxPlusTruncMat<Mat>.
-  //!
-  //! \param m the matrix to validate.
-  //!
-  //! \throws LibsemigroupsException if any entry in the matrix is not in the
-  //! set \f$\{0, 1, \ldots, t, -\infty\}\f$ where \f$t\f$ is the threshold of
-  //! the matrix or if the underlying semiring is not defined (only applies to
-  //! matrices with run time arithmetic).
-  template <typename Mat>
-  auto validate(Mat const& m) -> std::enable_if_t<IsMaxPlusTruncMat<Mat>> {
-    // TODO(1) to tpp
-    // Check that the semiring pointer isn't the nullptr if it shouldn't be
-    detail::semiring_validate(m);
+  namespace matrix {
+    //! \ingroup maxplustruncmat_group
+    //!
+    //! \brief Validate that a truncated max-plus matrix is valid.
+    //!
+    //! This function can be used to validate that a matrix contains values in
+    //! the underlying semiring.
+    //!
+    //! \tparam Mat the type of \p m, must satisfy \ref
+    //! IsMaxPlusTruncMat<Mat>.
+    //!
+    //! \param m the matrix to validate.
+    //!
+    //! \throws LibsemigroupsException if any entry in the matrix is not in the
+    //! set \f$\{0, 1, \ldots, t, -\infty\}\f$ where \f$t\f$ is the threshold of
+    //! the matrix or if the underlying semiring is not defined (only applies to
+    //! matrices with run time arithmetic).
+    template <typename Mat>
+    std::enable_if_t<IsMaxPlusTruncMat<Mat>> throw_if_bad_entry(Mat const& m) {
+      // TODO(1) to tpp
+      // Check that the semiring pointer isn't the nullptr if it shouldn't be
+      detail::semiring_validate(m);
 
-    using scalar_type   = typename Mat::scalar_type;
-    scalar_type const t = matrix::threshold(m);
-    auto it = std::find_if_not(m.cbegin(), m.cend(), [t](scalar_type x) {
-      return x == NEGATIVE_INFINITY || (0 <= x && x <= t);
-    });
-    if (it != m.cend()) {
-      auto [r, c] = m.coords(it);
-      LIBSEMIGROUPS_EXCEPTION("invalid entry, expected values in [0, {}] "
-                              "{} {{-{}}} but found {} in entry ({}, {})",
-                              t,
-                              u8"\u222A",
-                              u8"\u221E",
-                              *it,
-                              r,
-                              c);
+      using scalar_type   = typename Mat::scalar_type;
+      scalar_type const t = matrix::threshold(m);
+      auto it = std::find_if_not(m.cbegin(), m.cend(), [t](scalar_type x) {
+        return x == NEGATIVE_INFINITY || (0 <= x && x <= t);
+      });
+      if (it != m.cend()) {
+        auto [r, c] = m.coords(it);
+        LIBSEMIGROUPS_EXCEPTION("invalid entry, expected values in [0, {}] "
+                                "{} {{-{}}} but found {} in entry ({}, {})",
+                                t,
+                                u8"\u222A",
+                                u8"\u221E",
+                                *it,
+                                r,
+                                c);
+      }
     }
-  }
+  }  // namespace matrix
 
   ////////////////////////////////////////////////////////////////////////
   // Min-plus matrices with threshold
@@ -4011,10 +4626,10 @@ namespace libsemigroups {
   //!    to be defined a run time.
   //!
   //! All three of these types can be accessed via the alias template \ref
-  //! MinPlusTruncMat: if \c T has value \c 0, then the threshold can be set at
-  //! run time, and if \c R or \c C is \c 0, then the dimension can be set at
-  //! run time. The default value of \c T is \c 0, \c R is \c 0, and of \c C is
-  //! \c R.
+  //! MinPlusTruncMat<T, P, R, C, Scalar> if \c T has value \c 0, then the
+  //! threshold can be set at run time, and if \c R or \c C is \c 0, then the
+  //! dimension can be set at run time. The default value of \c T is \c 0, \c R
+  //! is \c 0, and of \c C is \c R.
   //!
   //! The alias \ref MinPlusTruncMat is either StaticMatrix or DynamicMatrix,
   //! please refer to the documentation of these class templates for more
@@ -4369,41 +4984,49 @@ namespace libsemigroups {
     };
   }  // namespace detail
 
-  //! \ingroup minplustruncmat_group
-  //!
-  //! \brief Validate that a truncated min-plus matrix is valid.
-  //!
-  //! This function can be used to validate that a matrix contains values in the
-  //! underlying semiring.
-  //!
-  //! \throws LibsemigroupsException if any entry in the matrix is not in the
-  //! set \f$\{0, 1, \ldots, t, \infty\}\f$ where \f$t\f$ is the threshold of
-  //! the matrix or if the underlying semiring is not defined (only applies to
-  //! matrices with run time arithmetic).
-  // TODO(1) to tpp
-  template <typename Mat>
-  auto validate(Mat const& m) -> std::enable_if_t<IsMinPlusTruncMat<Mat>> {
-    // Check that the semiring pointer isn't the nullptr if it shouldn't be
-    detail::semiring_validate(m);
+  // TODO check paramaters are documented for all validate functions
+  namespace matrix {
+    //! \ingroup minplustruncmat_group
+    //!
+    //! \brief Validate that a truncated min-plus matrix is valid.
+    //!
+    //! This function can be used to validate that a matrix contains values in
+    //! the underlying semiring.
+    //!
+    //! \tparam Mat the type of the matrix \p m (must satisfy
+    //! \ref IsMinPlusTruncMat<Mat>).
+    //!
+    //! \param m the matrix to validate.
+    //!
+    //! \throws LibsemigroupsException if any entry in the matrix is not in the
+    //! set \f$\{0, 1, \ldots, t, \infty\}\f$ where \f$t\f$ is the threshold of
+    //! the matrix or if the underlying semiring is not defined (only applies to
+    //! matrices with run time arithmetic).
+    // TODO(1) to tpp
+    template <typename Mat>
+    std::enable_if_t<IsMinPlusTruncMat<Mat>> throw_if_bad_entry(Mat const& m) {
+      // Check that the semiring pointer isn't the nullptr if it shouldn't be
+      detail::semiring_validate(m);
 
-    using scalar_type   = typename Mat::scalar_type;
-    scalar_type const t = matrix::threshold(m);
-    auto it = std::find_if_not(m.cbegin(), m.cend(), [t](scalar_type x) {
-      return x == POSITIVE_INFINITY || (0 <= x && x <= t);
-    });
-    if (it != m.cend()) {
-      uint64_t r, c;
-      std::tie(r, c) = m.coords(it);
-      LIBSEMIGROUPS_EXCEPTION("invalid entry, expected values in [0, {}] "
-                              "{} {{{}}} but found {} in entry ({}, {})",
-                              t,
-                              u8"\u222A",
-                              u8"\u221E",
-                              *it,
-                              r,
-                              c);
+      using scalar_type   = typename Mat::scalar_type;
+      scalar_type const t = matrix::threshold(m);
+      auto it = std::find_if_not(m.cbegin(), m.cend(), [t](scalar_type x) {
+        return x == POSITIVE_INFINITY || (0 <= x && x <= t);
+      });
+      if (it != m.cend()) {
+        uint64_t r, c;
+        std::tie(r, c) = m.coords(it);
+        LIBSEMIGROUPS_EXCEPTION("invalid entry, expected values in [0, {}] "
+                                "{} {{{}}} but found {} in entry ({}, {})",
+                                t,
+                                u8"\u222A",
+                                u8"\u221E",
+                                *it,
+                                r,
+                                c);
+      }
     }
-  }
+  }  // namespace matrix
 
   ////////////////////////////////////////////////////////////////////////
   // NTP matrices
@@ -4957,39 +5580,46 @@ namespace libsemigroups {
     }
   }  // namespace matrix
 
-  //! \ingroup ntpmat_group
-  //!
-  //! \brief Validate that an ntp matrix is valid.
-  //!
-  //! This function can be used to validate that a matrix contains values in the
-  //! underlying semiring.
-  //!
-  //! \throws LibsemigroupsException if any entry in the matrix is not in the
-  //! set \f$\{0, 1, \ldots, t + p - 1\}\f$ where \f$t\f$ is the threshold, and
-  //! \f$p\f$ the period, of the matrix or if the underlying semiring is not
-  //! defined (only applies to matrices with run time arithmetic).
-  template <typename Mat>
-  auto validate(Mat const& m) -> std::enable_if_t<IsNTPMat<Mat>> {
-    // Check that the semiring pointer isn't the nullptr if it shouldn't be
-    detail::semiring_validate(m);
+  namespace matrix {
+    //! \ingroup ntpmat_group
+    //!
+    //! \brief Check that the entries in an ntp matrix are valid.
+    //!
+    //! This function can be used to validate that a matrix contains values in
+    //! the underlying semiring.
+    //!
+    //! \tparam Mat the type of the matrix \p m (must satisfy
+    //! \ref IsNTPMat<Mat>).
+    //!
+    //! \param m the matrix to check.
+    //!
+    //! \throws LibsemigroupsException if any entry in the matrix is not in the
+    //! set \f$\{0, 1, \ldots, t + p - 1\}\f$ where \f$t\f$ is the threshold,
+    //! and \f$p\f$ the period, of the matrix or if the underlying semiring is
+    //! not defined (only applies to matrices with run time arithmetic).
+    template <typename Mat>
+    std::enable_if_t<IsNTPMat<Mat>> throw_if_bad_entry(Mat const& m) {
+      // Check that the semiring pointer isn't the nullptr if it shouldn't be
+      detail::semiring_validate(m);
 
-    using scalar_type   = typename Mat::scalar_type;
-    scalar_type const t = matrix::threshold(m);
-    scalar_type const p = matrix::period(m);
-    auto it = std::find_if_not(m.cbegin(), m.cend(), [t, p](scalar_type x) {
-      return (0 <= x && x < p + t);
-    });
-    if (it != m.cend()) {
-      uint64_t r, c;
-      std::tie(r, c) = m.coords(it);
-      LIBSEMIGROUPS_EXCEPTION("invalid entry, expected values in [0, {}) but "
-                              "found {} in entry ({}, {})",
-                              p + t,
-                              *it,
-                              r,
-                              c);
+      using scalar_type   = typename Mat::scalar_type;
+      scalar_type const t = matrix::threshold(m);
+      scalar_type const p = matrix::period(m);
+      auto it = std::find_if_not(m.cbegin(), m.cend(), [t, p](scalar_type x) {
+        return (0 <= x && x < p + t);
+      });
+      if (it != m.cend()) {
+        uint64_t r, c;
+        std::tie(r, c) = m.coords(it);
+        LIBSEMIGROUPS_EXCEPTION("invalid entry, expected values in [0, {}) but "
+                                "found {} in entry ({}, {})",
+                                p + t,
+                                *it,
+                                r,
+                                c);
+      }
     }
-  }  // namespace libsemigroups
+  }  // namespace matrix
 
   ////////////////////////////////////////////////////////////////////////
   // Projective max-plus matrices
@@ -5385,24 +6015,23 @@ namespace libsemigroups {
   static constexpr bool IsProjMaxPlusMat
       = detail::IsProjMaxPlusMatHelper<T>::value;
 
-  // \ingroup projmaxplus_group
-  //! TODO(0) doc
-  template <typename Mat>
-  auto validate(Mat const& m) -> std::enable_if_t<IsProjMaxPlusMat<Mat>> {
-    validate(m.underlying_matrix());
-  }
-
-  //! \ingroup matrix_group
-  //!
-  //! \brief Namespace for helper functions for matrices.
-  //!
-  //! Defined in ``matrix.hpp``.
-  //!
-  //! This namespace contains various helper functions for the various matrix
-  //! classes in ``libsemigroups``. These functions could have been member
-  //! functions of the matrix classes but they only use public member functions,
-  //! and so they are declared as free functions instead.
   namespace matrix {
+    // \ingroup projmaxplus_group
+    //! \brief Check that the entries in a projective max-plus matrix are
+    //! valid.
+    //!
+    //! This function can be used to validate that a matrix contains values in
+    //! the underlying semiring. This is always \c true for \ref MaxPlusMat
+    //! objects.
+    //!
+    //! \tparam Mat the type of the matrix \p m (must satisfy \ref
+    //! IsProjMaxPlusMat<Mat>).
+    //!
+    //! \exceptions
+    //! \noexcept
+    template <typename Mat>
+    constexpr std::enable_if_t<IsProjMaxPlusMat<Mat>>
+    throw_if_bad_entry(Mat const&) noexcept {}
 
     ////////////////////////////////////////////////////////////////////////
     // Matrix helpers - pow
@@ -5478,6 +6107,59 @@ namespace libsemigroups {
         }
       }
       return z;
+    }
+
+    ////////////////////////////////////////////////////////////////////////
+    // Matrix helpers - rows
+    ////////////////////////////////////////////////////////////////////////
+
+    //! \brief Returns a std::vector of row views into the rows of a dynamic
+    //! matrix.
+    //!
+    //! Returns a std::vector of row views into the rows of the dynamic
+    //! matrix \p x.
+    //!
+    //! \tparam Mat the type of \p x, must satisfy \ref IsDynamicMatrix<Mat>.
+    //!
+    //! \param x the matrix.
+    //!
+    //! \returns A std::vector of `Mat::RowView` of size `x.number_of_rows()`.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    //! \complexity
+    //! \f$O(m)\f$ where \f$m\f$ is the number of rows in the matrix \p x.
+    template <typename Mat, typename = std::enable_if_t<IsDynamicMatrix<Mat>>>
+    std::vector<typename Mat::RowView> rows(Mat const& x) {
+      std::vector<typename Mat::RowView> container;
+      x.rows(container);
+      return container;
+    }
+
+    //! \brief Returns a static vector of row views into the rows of a static
+    //! matrix.
+    //!
+    //! Returns a static vector of row views into the rows of the static
+    //! matrix \p x.
+    //!
+    //! \tparam Mat the type of \p x, must satisfy \ref IsStaticMatrix<Mat>.
+    //!
+    //! \param x the matrix.
+    //!
+    //! \returns A static vector of `Mat::RowView` of size `x.number_of_rows()`.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    //! \complexity
+    //! \f$O(m)\f$ where \f$m\f$ is the number of rows in the matrix \p x.
+    template <typename Mat, typename = std::enable_if_t<IsStaticMatrix<Mat>>>
+    detail::StaticVector1<typename Mat::RowView, Mat::nr_rows>
+    rows(Mat const& x) {
+      detail::StaticVector1<typename Mat::RowView, Mat::nr_rows> container;
+      x.rows(container);
+      return container;
     }
 
     ////////////////////////////////////////////////////////////////////////
@@ -5743,59 +6425,6 @@ namespace libsemigroups {
       std::decay_t<Container> result;
       bitset_row_basis<Mat>(std::forward<Container>(rows), result);
       return result;
-    }
-
-    ////////////////////////////////////////////////////////////////////////
-    // Matrix helpers - rows
-    ////////////////////////////////////////////////////////////////////////
-
-    //! \brief Returns a std::vector of row views into the rows of a dynamic
-    //! matrix.
-    //!
-    //! Returns a std::vector of row views into the rows of the dynamic
-    //! matrix \p x.
-    //!
-    //! \tparam Mat the type of \p x, must satisfy \ref IsDynamicMatrix<Mat>.
-    //!
-    //! \param x the matrix.
-    //!
-    //! \returns A std::vector of `Mat::RowView` of size `x.number_of_rows()`.
-    //!
-    //! \exceptions
-    //! \no_libsemigroups_except
-    //!
-    //! \complexity
-    //! \f$O(m)\f$ where \f$m\f$ is the number of rows in the matrix \p x.
-    template <typename Mat, typename = std::enable_if_t<IsDynamicMatrix<Mat>>>
-    std::vector<typename Mat::RowView> rows(Mat const& x) {
-      std::vector<typename Mat::RowView> container;
-      x.rows(container);
-      return container;
-    }
-
-    //! \brief Returns a static vector of row views into the rows of a static
-    //! matrix.
-    //!
-    //! Returns a static vector of row views into the rows of the static
-    //! matrix \p x.
-    //!
-    //! \tparam Mat the type of \p x, must satisfy \ref IsStaticMatrix<Mat>.
-    //!
-    //! \param x the matrix.
-    //!
-    //! \returns A static vector of `Mat::RowView` of size `x.number_of_rows()`.
-    //!
-    //! \exceptions
-    //! \no_libsemigroups_except
-    //!
-    //! \complexity
-    //! \f$O(m)\f$ where \f$m\f$ is the number of rows in the matrix \p x.
-    template <typename Mat, typename = std::enable_if_t<IsStaticMatrix<Mat>>>
-    detail::StaticVector1<typename Mat::RowView, Mat::nr_rows>
-    rows(Mat const& x) {
-      detail::StaticVector1<typename Mat::RowView, Mat::nr_rows> container;
-      x.rows(container);
-      return container;
     }
 
     //! \brief Returns a basis for the space spanned by the rows of the boolean
@@ -6180,7 +6809,6 @@ namespace libsemigroups {
   //! \complexity
   //! \f$O(mn)\f$ where \f$m\f$ is the number of rows and
   //! \f$n\f$ is the number of columns of the matrix.
-  //!
   template <typename Mat,
             typename
             = std::enable_if_t<IsMatrix<Mat> && !IsMatWithSemiring<Mat>>>
@@ -6188,7 +6816,7 @@ namespace libsemigroups {
                 std::initializer_list<typename Mat::scalar_type>> const& rows) {
     detail::throw_if_any_row_wrong_size(rows);
     Mat m(rows);
-    validate(m);
+    matrix::throw_if_bad_entry(m);
     return m;
   }
 
@@ -6221,7 +6849,7 @@ namespace libsemigroups {
             = std::enable_if_t<IsMatrix<Mat> && !IsMatWithSemiring<Mat>>>
   Mat to_matrix(std::initializer_list<typename Mat::scalar_type> const& row) {
     Mat m(row);
-    validate(m);
+    matrix::throw_if_bad_entry(m);
     return m;
   }
 
@@ -6261,7 +6889,7 @@ namespace libsemigroups {
       std::initializer_list<
           std::initializer_list<typename Mat::scalar_type>> const& rows) {
     Mat m(semiring, rows);
-    validate(m);
+    matrix::throw_if_bad_entry(m);
     return m;
   }
 
@@ -6301,7 +6929,7 @@ namespace libsemigroups {
       Semiring const*                                            semiring,
       std::vector<std::vector<typename Mat::scalar_type>> const& rows) {
     Mat m(semiring, rows);
-    validate(m);
+    matrix::throw_if_bad_entry(m);
     return m;
   }
 
@@ -6331,7 +6959,7 @@ namespace libsemigroups {
   Mat to_matrix(Semiring const* semiring,
                 std::initializer_list<typename Mat::scalar_type> const& row) {
     Mat m(semiring, row);
-    validate(m);
+    matrix::throw_if_bad_entry(m);
     return m;
   }
 
