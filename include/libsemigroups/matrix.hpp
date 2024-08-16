@@ -1322,8 +1322,7 @@ namespace libsemigroups {
       }
       return x;
     }
-#endif
-#ifndef PARSED_BY_DOXYGEN
+
     static StaticMatrix one(void const* ptr, size_t n = 0) {
       (void) ptr;
       LIBSEMIGROUPS_ASSERT(ptr == nullptr);
@@ -1757,6 +1756,9 @@ namespace libsemigroups {
     //! This only works when the template parameters `R` and `C` are
     //! equal (i.e. for square matrices).
     static StaticMatrix one() const;
+#else
+    using MatrixCommon::number_of_cols;
+    using MatrixCommon::number_of_rows;
 #endif  // PARSED_BY_DOXYGEN
 
    private:
