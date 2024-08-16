@@ -40,14 +40,12 @@
 namespace libsemigroups {
   //! \defgroup adapters_bmat_group Adapters for BMat
   //!
-  //! \ingroup adapters_group
-  //!
-  //! \brief Documentation for the specialization of adapters that allow
-  //! \ref BMat types to be used in the algorithms of ``libsemigroups``.
-  //!
   //! This page contains the documentation of the functionality in
   //! ``libsemigroups`` that adapts \ref BMat types for use with the
   //! algorithms in ``libsemigroups``.
+  //!
+  //! Further adapters for \ref BMat8 and other matrix objects are available
+  //! \ref adapters_bmat8_group "here" and \ref adapters_matrix_group "here".
   //!
   //! @{
   ////////////////////////////////////////////////////////////////////////

@@ -16,7 +16,6 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-// TODO(0): document the adapters
 // TODO(0): check "Defined in" is everywhere it should be
 // TODO(1) tpp file
 // TODO(1): constexpr
@@ -70,7 +69,7 @@ namespace libsemigroups {
   //! page directly, but rather through the aliases described on the other
   //! matrix pages (such as, for example, \ref BMat).
   //!
-  //! # Over specific semirings
+  //! ## Over specific semirings
   //!
   //! The following matrix classes are provided which define matrices over some
   //! specific semirings:
@@ -84,7 +83,7 @@ namespace libsemigroups {
   //! * \ref ntpmat_group
   //! * \ref projmaxplus_group
   //!
-  //! # Over arbitrary semirings
+  //! ## Over arbitrary semirings
   //!
   //! The following general matrix classes are provided which can be used to
   //! define matrices over arbitrary semirings:
@@ -95,7 +94,7 @@ namespace libsemigroups {
   //! "DynamicMatrix (with run-time arithmetic)"
   //! * \ref StaticMatrix
   //!
-  //! # Row views
+  //! ## Row views
   //!
   //! A row view is a lightweight representation of a row of a matrix. The
   //! following row view classes are provided:
@@ -105,6 +104,15 @@ namespace libsemigroups {
   //! * \ref DynamicRowViewDynamicArith
   //! "DynamicRowView (run-time arithmetic)
   //! * \ref StaticRowView
+  //!
+  //! ## Adapters
+  //!
+  //! There are various specialisations of the adapters described on
+  //! \ref adapters_group "this page" for the matrices described on this page:
+  //!
+  //! * \ref adapters_matrix_group
+  //! * \ref adapters_bmat_group
+  //! * \ref adapters_bmat8_group
 
   ////////////////////////////////////////////////////////////////////////
   // Detail
@@ -3287,12 +3295,15 @@ namespace libsemigroups {
   //! DynamicMatrix is that the former can be default constructed and the latter
   //! should be constructed using the dimensions.
   //!
-  //! \par Example
+  //! Adapters for \ref BMat objects are documented \ref adapters_bmat_group
+  //! "here".
   //!
+  //! \par Example
   //! \code
-  //!    BMat<3> m;       // default construct an uninitialized 3 x 3 static
-  //!    matrix BMat<>  m(4, 4); // construct an uninitialized 4 x 4 dynamic
-  //!    matrix
+  //! // default construct an uninitialized 3 x 3 static matrix
+  //! BMat<3> m;
+  //! // construct an uninitialized 4 x 4 dynamic matrix
+  //! BMat<> m(4, 4);
   //! \endcode
 
   //! \ingroup bmat_group
@@ -7067,8 +7078,6 @@ namespace libsemigroups {
 
   //! \defgroup adapters_matrix_group Adapters for matrices
   //!
-  //! \ingroup adapters_group
-  //!
   //! \brief Documentation for specialization of adapters for matrices
   //! satisfying \ref IsMatrix.
   //!
@@ -7076,8 +7085,9 @@ namespace libsemigroups {
   //! ``libsemigroups`` that adapts  objects satisfying \ref IsMatrix for use
   //! with the main algorithms in ``libsemigroups``.
   //!
-  //! Other adapters for boolean matrices are available \ref adapters_bmat_group
-  //! "here". TODO
+  //! Other adapters specifically for \ref BMat objects are available \ref
+  //! adapters_bmat_group "here" and for \ref BMat8 objects \ref
+  //! adapters_bmat8_group "here".
 
   //! \ingroup adapters_matrix_group
   //!

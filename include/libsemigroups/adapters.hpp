@@ -39,28 +39,52 @@ namespace libsemigroups {
   //! use with the algorithms in `libsemigroups`. There are explicit
   //! implementations for relevant element types from `libsemigroups` and
   //! `HPCombi`.
+  //!
+  //! ## No default implementation
+  //!
+  //! The following adapters have no default implementation for arbitrary types:
+  //!
+  //! * \ref Complexity
+  //! * \ref Degree
+  //! * \ref ImageLeftAction
+  //! * \ref ImageRightAction
+  //! * \ref IncreaseDegree
+  //! * \ref Inverse
+  //! * \ref Lambda
+  //! * \ref LambdaValue
+  //! * \ref One
+  //! * \ref Product
+  //! * \ref Rho
+  //! * \ref RhoValue
+  //!
+  //! ## Default implementation
+  //!
+  //! The following adapters do have a default implementation for arbitrary
+  //! types:
+  //!
+  //! * \ref EqualTo
+  //! * \ref Hash
+  //! * \ref Less
+  //! * \ref OnTuples
+  //! * \ref OnSets
+  //! * \ref RankState
+  //! * \ref Swap
+  //!
+  //! ## Explicit specializations
+  //!
+  //! The following explicit specializations of some of the adapters listed
+  //! above are implemented in ``libsemigroups`` for the following types:
+  //!
+  //! * \ref adapters_matrix_group
+  //!   * \ref adapters_bmat_group
+  //!   * \ref adapters_bmat8_group
+  //! * \ref adapters_hpcombi_group
 
   // This is not technically an adapter but put here for lack of a better place
   struct Noop {
     template <typename... Args>
     constexpr void operator()(Args...) const noexcept {}
   };
-
-  // clang-format off
-  //! \defgroup adapters_no_default_group Adapters with no default implementation // NOLINT
-  //!
-  //! \ingroup adapters_group
-  //!
-  //! \brief Documentation for the adapters, with no default implementation for
-  //! arbitrary types, that would allow user-defined types to be used in the
-  //! algorithms of `libsemigroups`.
-  //!
-  //! This section contains the documentation for the adapters, with no default
-  //! implementation for arbitrary types, that would allow user-defined types to
-  //! be used in the algorithms of `libsemigroups`.
-  //!
-  //! @{
-  // clang-format on
 
   //! \brief Adapter for the complexity of multiplication.
   //!
@@ -368,22 +392,6 @@ namespace libsemigroups {
   //! \endcode
   template <typename Element, typename Point, typename = void>
   struct ImageRightAction;
-
-  //! @}
-
-  //! \defgroup adapters_with_default_group Adapters with default implementation
-  //!
-  //! \ingroup adapters_group
-  //!
-  //! \brief Documentation for the adapters, with default implementation for
-  //! arbitrary types, that would allow user-defined types to be used in the
-  //! algorithms of `libsemigroups`.
-  //!
-  //! This section contains the documentation for the adapters, with default
-  //! implementation for arbitrary types, that would allow user-defined types to
-  //! be used in the algorithms of `libsemigroups`.
-  //!
-  //! @{
 
   //! \brief Adapter for testing equality.
   //!

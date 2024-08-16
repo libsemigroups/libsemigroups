@@ -44,11 +44,6 @@ namespace libsemigroups {
 
   //! \defgroup adapters_hpcombi_group Adapters for HPCombi
   //!
-  //! \ingroup adapters_group
-  //!
-  //! \brief Documentation for the specialization of adapters that allow the
-  //! types in `HPCombi` to be used in the algorithms of `libsemigroups`.
-  //!
   //! This page contains the documentation of the functionality in
   //! `libsemigroups` that adapts the types in `HPCombi` for use with the
   //! algorithms in libsemigroups. The functionality in this section is only
