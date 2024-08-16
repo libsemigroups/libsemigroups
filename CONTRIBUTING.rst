@@ -65,7 +65,9 @@ Some more conventions:
     classes in ``libsemigroups``, such as, for example
     `to_human_readable_repr`
   - other functions with prefix `to_` such as `to_blocks`, `to_word_graph` etc,
-    to avoid the repetition in `blocks::to_blocks`, etc
+    to avoid the repetition in `blocks::to_blocks`, or other functions where
+    the namespace would belong to the function name (like
+    `words::number_of_words`).
 
 Debugging and valgrinding
 -------------------------
