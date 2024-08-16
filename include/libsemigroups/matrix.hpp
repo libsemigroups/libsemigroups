@@ -7280,6 +7280,73 @@ namespace libsemigroups {
     return os;
   }
 
+  template <typename Mat>
+  auto to_human_readable_repr(Mat const&         x,
+                              std::string const& prefix,
+                              std::string const& braces    = "{}",
+                              size_t             max_width = 72)
+      -> std::enable_if_t<IsMatrix<Mat>, std::string> {
+    if (braces.size() != 2) {
+      LIBSEMIGROUPS_EXCEPTION(
+          "the 2nd argument (braces) must have size 2, found {}",
+          braces.size());
+    }
+    auto lbrace = braces[0], rbrace = braces[1];
+
+    size_t const R = x.number_of_rows();
+    size_t const C = x.number_of_cols();
+
+    std::string         rindent;
+    std::vector<size_t> col_widths(C, 0);
+    for (size_t r = 0; r < R; ++r) {
+      for (size_t c = 0; c < C; ++c) {
+        auto   item = x(r, c);
+        size_t val  = std::to_string(item).size();
+        if (item == POSITIVE_INFINITY || item == NEGATIVE_INFINITY) {
+          val = 2;
+        }
+        if (val > col_widths[c]) {
+          col_widths[c] = val;
+        }
+      }
+    }
+    auto col_width   = *std::max_element(col_widths.begin(), col_widths.end());
+    auto total_width = col_width * C + prefix.size() + 1;
+    if (total_width > max_width) {
+      // TODO, make col_width 0, if still too wide then do:
+      // <mxn prefix>
+    }
+
+    std::string result = fmt::format("{}", prefix);
+    if (R != 0 && C != 0) {
+      result += lbrace;
+      std::string csep = "";
+      for (size_t r = 0; r < R; ++r) {
+        result += fmt::format("{}{}", rindent, lbrace);
+        rindent          = std::string(prefix.size() + 1, ' ');
+        std::string csep = "";
+        for (size_t c = 0; c < C; ++c) {
+          auto        val = x(r, c);
+          std::string str = std::to_string(val);
+          if (val == POSITIVE_INFINITY) {
+            str = "+\u221e";
+          } else if (val == NEGATIVE_INFINITY) {
+            str = "-\u221e";
+          }
+          result += fmt::format("{}{:>{}}", csep, str, col_width);
+          csep = ", ";
+        }
+        result += fmt::format("{}", rbrace);
+        if (r != R - 1) {
+          result += ",\n";
+        }
+      }
+      result += rbrace;
+    }
+    result += ")";
+    return result;
+  }
+
   ////////////////////////////////////////////////////////////////////////
   // Adapters
   ////////////////////////////////////////////////////////////////////////
@@ -7292,8 +7359,8 @@ namespace libsemigroups {
   //! Defined in ``matrix.hpp``.
   //!
   //! This page contains the documentation of the functionality in
-  //! ``libsemigroups`` that adapts  objects satisfying \ref IsMatrix for use
-  //! with the main algorithms in ``libsemigroups``.
+  //! ``libsemigroups`` that adapts  objects satisfying \ref IsMatrix for
+  //! use with the main algorithms in ``libsemigroups``.
   //!
   //! Other adapters specifically for \ref BMat objects are available \ref
   //! adapters_bmat_group "here" and for \ref BMat8 objects \ref
@@ -7305,8 +7372,8 @@ namespace libsemigroups {
   //!
   //! Defined in ``matrix.hpp``.
   //!
-  //! Specialization of the adapter \ref Complexity for types \p Mat satisfying
-  //! \ref IsMatrix<Mat>.
+  //! Specialization of the adapter \ref Complexity for types \p Mat
+  //! satisfying \ref IsMatrix<Mat>.
   //!
   //! \tparam  Mat the type of matrices.
   template <typename Mat>
@@ -7399,8 +7466,9 @@ namespace libsemigroups {
   //! \tparam Mat the type of matrices.
   //!
   //! \warning
-  //! It is not possible to increase the degree of any of the types satisfying
-  //! \ref IsMatrix, and as such the call operator of this type does nothing.
+  //! It is not possible to increase the degree of any of the types
+  //! satisfying \ref IsMatrix, and as such the call operator of this type
+  //! does nothing.
   template <typename Mat>
   struct IncreaseDegree<Mat, std::enable_if_t<IsMatrix<Mat>>> {
     //! \brief Call operator.
@@ -7460,8 +7528,8 @@ namespace libsemigroups {
   struct Product<Mat, std::enable_if_t<IsMatrix<Mat>>> {
     //! \brief Call operator.
     //!
-    //! This function replaces the value of \p xy by the product of the matrices
-    //! \p x and \p y.
+    //! This function replaces the value of \p xy by the product of the
+    //! matrices \p x and \p y.
     //!
     //! \param xy  a reference to a matrix of type \p Mat.
     //! \param x  a const reference to a matrix of type \p Mat.

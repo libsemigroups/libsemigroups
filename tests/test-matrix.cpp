@@ -1258,4 +1258,29 @@ namespace libsemigroups {
     REQUIRE_NOTHROW(BMatFastest<3>({{0, 1}, {0, 1}}));
   }
 
+  LIBSEMIGROUPS_TEST_CASE("Matrix",
+                          "046",
+                          "to_human_readable_repr",
+                          "[quick][matrix]") {
+    BMat<3> x({{0, 1}, {0, 1}});
+    REQUIRE(to_human_readable_repr(x, "BMat<3>(")
+            == "BMat<3>({{0, 1, 0},\n"
+               "         {1, 0, 0},\n"
+               "         {0, 0, 0}})");
+    MinPlusMat<> y({{-2, 2, 0}, {-1, 0, 0}, {1, -3, POSITIVE_INFINITY}});
+    REQUIRE(to_human_readable_repr(y, "MinPlusMat<>(")
+            == "MinPlusMat<>({{-2,  2,  0},\n"
+               "              {-1,  0,  0},\n"
+               "              { 1, -3, +∞}})");
+    REQUIRE(to_human_readable_repr(y, "Matrix(MatrixKind.MaxPlusMat, ", "[]")
+            == "Matrix(MatrixKind.MaxPlusMat, [[-2,  2,  0],\n"
+               "                               [-1,  0,  0],\n"
+               "                               [ 1, -3, +∞]])");
+    y = MinPlusMat<>({{-2, 2, 0}, {-1, 0, 0}, {1, -3, 666666}});
+    REQUIRE(to_human_readable_repr(y, "MinPlusMat<>(")
+            == "MinPlusMat<>({{    -2,      2,      0},\n"
+               "              {    -1,      0,      0},\n"
+               "              {     1,     -3, 666666}})");
+  }
+
 }  // namespace libsemigroups
