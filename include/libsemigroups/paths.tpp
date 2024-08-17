@@ -98,7 +98,7 @@ namespace libsemigroups {
           break;
         }
         total += add;
-        tmp.product_inplace(acc, am);
+        tmp.product_inplace_no_checks(acc, am);
         tmp.swap(acc);
       }
 #endif
@@ -171,7 +171,7 @@ namespace libsemigroups {
           break;
         }
         total += add;
-        tmp.product_inplace(acc, am);
+        tmp.product_inplace_no_checks(acc, am);
         tmp.swap(acc);
       }
 #endif
