@@ -2834,7 +2834,7 @@ namespace libsemigroups {
     using RowView = DynamicRowView<Semiring, Scalar>;
     friend RowView;
 
-    //! \brief Alias for the template paramater Semiring.
+    //! \brief Alias for the template parameter Semiring.
     using semiring_type = Semiring;
 
     //! \brief Deleted.
@@ -5653,7 +5653,7 @@ namespace libsemigroups {
     //!
     //! Defined in ``matrix.hpp``.
     //!
-    //! This function returns the template paramater \p P of a static ntp
+    //! This function returns the template parameter \p P of a static ntp
     //! matrix.
     //!
     //! \tparam T  the threshold.
@@ -5679,7 +5679,7 @@ namespace libsemigroups {
     //!
     //! Defined in ``matrix.hpp``.
     //!
-    //! This function returns the template paramater \p P of a dynamic ntp
+    //! This function returns the template parameter \p P of a dynamic ntp
     //! matrix.
     //!
     //! \tparam T  the threshold.
