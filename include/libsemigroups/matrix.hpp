@@ -211,16 +211,14 @@ namespace libsemigroups {
 
       // TODO(1) use constexpr-if, not SFINAE
       template <typename SFINAE = container_type>
-      auto resize(size_t r, size_t c)
-          -> std::enable_if_t<
-              std::is_same<SFINAE, std::vector<scalar_type>>::value> {
+      auto resize(size_t r, size_t c) -> std::enable_if_t<
+          std::is_same<SFINAE, std::vector<scalar_type>>::value> {
         _container.resize(r * c);
       }
 
       template <typename SFINAE = container_type>
-      auto resize(size_t, size_t)
-          -> std::enable_if_t<
-              !std::is_same<SFINAE, std::vector<scalar_type>>::value> {}
+      auto resize(size_t, size_t) -> std::enable_if_t<
+          !std::is_same<SFINAE, std::vector<scalar_type>>::value> {}
 
      public:
       ////////////////////////////////////////////////////////////////////////
@@ -1368,8 +1366,8 @@ namespace libsemigroups {
    private:
     using DynamicMatrix_ = DynamicMatrix<PlusOp, ProdOp, ZeroOp, OneOp, Scalar>;
     using RowViewCommon  = detail::RowViewCommon<
-         DynamicMatrix_,
-         DynamicRowView<PlusOp, ProdOp, ZeroOp, OneOp, Scalar>>;
+        DynamicMatrix_,
+        DynamicRowView<PlusOp, ProdOp, ZeroOp, OneOp, Scalar>>;
     friend RowViewCommon;
 
    public:
@@ -2443,9 +2441,9 @@ namespace libsemigroups {
             MatrixStaticArithmetic<PlusOp, ProdOp, ZeroOp, OneOp, Scalar> {
     using MatrixDynamicDim = ::libsemigroups::detail::MatrixDynamicDim<Scalar>;
     using MatrixCommon     = ::libsemigroups::detail::MatrixCommon<
-            std::vector<Scalar>,
-            DynamicMatrix<PlusOp, ProdOp, ZeroOp, OneOp, Scalar>,
-            DynamicRowView<PlusOp, ProdOp, ZeroOp, OneOp, Scalar>>;
+        std::vector<Scalar>,
+        DynamicMatrix<PlusOp, ProdOp, ZeroOp, OneOp, Scalar>,
+        DynamicRowView<PlusOp, ProdOp, ZeroOp, OneOp, Scalar>>;
     friend MatrixCommon;
 
    public:
@@ -3561,11 +3559,11 @@ namespace libsemigroups {
   //!
   //! \par Example
   //! \code
-  // clang-format off
-  //! IntMat<3> m;       // default construct an uninitialized 3 x 3 static matrix
-  //! IntMat<>  m(4, 4); // construct an uninitialized 4 x 4 dynamic matrix
+  //! // default construct an uninitialized 3 x 3 static matrix
+  //! IntMat<3> m;
+  //! // construct an uninitialized 4 x 4 dynamic matrix
+  //! IntMat<>  m(4, 4);
   //! \endcode
-  // clang-format on
 
   //! \ingroup intmat_group
   //!
@@ -5820,7 +5818,7 @@ namespace libsemigroups {
       ProjMaxPlusMat(
           std::initializer_list<std::initializer_list<scalar_type>> const& m)
           : ProjMaxPlusMat(
-                std::vector<std::vector<scalar_type>>(m.begin(), m.end())) {}
+              std::vector<std::vector<scalar_type>>(m.begin(), m.end())) {}
 
       ~ProjMaxPlusMat() = default;
 
@@ -7280,15 +7278,17 @@ namespace libsemigroups {
     return os;
   }
 
+  //! TODO(0) doc
   template <typename Mat>
   auto to_human_readable_repr(Mat const&         x,
                               std::string const& prefix,
-                              std::string const& braces    = "{}",
-                              size_t             max_width = 72)
+                              std::string const& short_name = "",
+                              std::string const& braces     = "{}",
+                              size_t             max_width  = 72)
       -> std::enable_if_t<IsMatrix<Mat>, std::string> {
     if (braces.size() != 2) {
       LIBSEMIGROUPS_EXCEPTION(
-          "the 2nd argument (braces) must have size 2, found {}",
+          "the 3rd argument (braces) must have size 2, found {}",
           braces.size());
     }
     auto lbrace = braces[0], rbrace = braces[1];
@@ -7313,8 +7313,13 @@ namespace libsemigroups {
     auto col_width   = *std::max_element(col_widths.begin(), col_widths.end());
     auto total_width = col_width * C + prefix.size() + 1;
     if (total_width > max_width) {
-      // TODO, make col_width 0, if still too wide then do:
-      // <mxn prefix>
+      if (std::accumulate(
+              col_widths.begin(), col_widths.end(), prefix.size() + 1)
+          > max_width) {
+        return fmt::format(
+            "<{}x{} {}>", x.number_of_rows(), x.number_of_cols(), short_name);
+      }
+      col_width = 0;
     }
 
     std::string result = fmt::format("{}", prefix);

@@ -518,7 +518,7 @@ namespace libsemigroups {
       using Row         = typename Mat::Row;
 
       auto m  = to_matrix<Mat>(sr,
-                               {{2, 2, 0, 1},
+                              {{2, 2, 0, 1},
                                 {0, 0, 1, 3},
                                 {1, NEGATIVE_INFINITY, 0, 0},
                                 {0, 1, 0, 1}});
@@ -1259,7 +1259,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Matrix",
-                          "046",
+                          "047",
                           "to_human_readable_repr",
                           "[quick][matrix]") {
     BMat<3> x({{0, 1}, {0, 1}});
@@ -1272,15 +1272,24 @@ namespace libsemigroups {
             == "MinPlusMat<>({{-2,  2,  0},\n"
                "              {-1,  0,  0},\n"
                "              { 1, -3, +∞}})");
-    REQUIRE(to_human_readable_repr(y, "Matrix(MatrixKind.MaxPlusMat, ", "[]")
-            == "Matrix(MatrixKind.MaxPlusMat, [[-2,  2,  0],\n"
-               "                               [-1,  0,  0],\n"
-               "                               [ 1, -3, +∞]])");
+    REQUIRE(
+        to_human_readable_repr(y, "Matrix(MatrixKind.MaxPlusMat, ", "", "[]")
+        == "Matrix(MatrixKind.MaxPlusMat, [[-2,  2,  0],\n"
+           "                               [-1,  0,  0],\n"
+           "                               [ 1, -3, +∞]])");
     y = MinPlusMat<>({{-2, 2, 0}, {-1, 0, 0}, {1, -3, 666666}});
     REQUIRE(to_human_readable_repr(y, "MinPlusMat<>(")
             == "MinPlusMat<>({{    -2,      2,      0},\n"
                "              {    -1,      0,      0},\n"
                "              {     1,     -3, 666666}})");
+
+    REQUIRE(to_human_readable_repr(y, "MinPlusMat<>(", "", "{}", 28)
+            == "MinPlusMat<>({{-2, 2, 0},\n"
+               "              {-1, 0, 0},\n"
+               "              {1, -3, 666666}})");
+    REQUIRE(
+        to_human_readable_repr(y, "MinPlusMat<>(", "max-plus matrix", "{}", 20)
+        == "<3x3 max-plus matrix>");
   }
 
 }  // namespace libsemigroups
