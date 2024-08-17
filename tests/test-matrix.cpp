@@ -518,7 +518,7 @@ namespace libsemigroups {
       using Row         = typename Mat::Row;
 
       auto m  = to_matrix<Mat>(sr,
-                              {{2, 2, 0, 1},
+                               {{2, 2, 0, 1},
                                 {0, 0, 1, 3},
                                 {1, NEGATIVE_INFINITY, 0, 0},
                                 {0, 1, 0, 1}});
@@ -1262,7 +1262,7 @@ namespace libsemigroups {
                           "047",
                           "to_human_readable_repr",
                           "[quick][matrix]") {
-    BMat<3> x({{0, 1}, {0, 1}});
+    BMat<3> x({{0, 1, 0}, {0, 1, 0}, {0, 0, 0}});
     REQUIRE(to_human_readable_repr(x, "BMat<3>(")
             == "BMat<3>({{0, 1, 0},\n"
                "         {1, 0, 0},\n"

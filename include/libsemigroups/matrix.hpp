@@ -3738,6 +3738,19 @@ namespace libsemigroups {
   using IntMat = std::conditional_t<R == 0 || C == 0,
                                     DynamicIntMat<Scalar>,
                                     StaticIntMat<R, C, Scalar>>;
+  namespace detail {
+    template <typename T>
+    struct IsIntMatHelper : std::false_type {};
+
+    template <size_t R, size_t C, typename Scalar>
+    struct IsIntMatHelper<StaticIntMat<R, C, Scalar>> : std::true_type {};
+
+    template <typename Scalar>
+    struct IsIntMatHelper<DynamicIntMat<Scalar>> : std::true_type {};
+  }  // namespace detail
+
+  template <typename T>
+  static constexpr bool IsIntMat = detail::IsIntMatHelper<T>::value;
 
   namespace matrix {
     //! \ingroup intmat_group

@@ -1638,8 +1638,8 @@ namespace libsemigroups {
   //! \complexity
   //! Linear in \c f.degree().
   template <typename T>
-  [[nodiscard]] auto
-  one(T const& f) -> std::enable_if_t<IsDerivedFromPTransf<T>, T> {
+  [[nodiscard]] auto one(T const& f)
+      -> std::enable_if_t<IsDerivedFromPTransf<T>, T> {
     return T::one(f.degree());
   }
 
