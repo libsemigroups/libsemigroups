@@ -1265,7 +1265,7 @@ namespace libsemigroups {
     BMat<3> x({{0, 1, 0}, {0, 1, 0}, {0, 0, 0}});
     REQUIRE(to_human_readable_repr(x, "BMat<3>(")
             == "BMat<3>({{0, 1, 0},\n"
-               "         {1, 0, 0},\n"
+               "         {0, 1, 0},\n"
                "         {0, 0, 0}})");
     MinPlusMat<> y({{-2, 2, 0}, {-1, 0, 0}, {1, -3, POSITIVE_INFINITY}});
     REQUIRE(to_human_readable_repr(y, "MinPlusMat<>(")
