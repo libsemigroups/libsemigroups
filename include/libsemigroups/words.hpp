@@ -298,10 +298,10 @@ namespace libsemigroups {
   //! \par Example
   //! \code
   //! WordRange words;
-  //! words.order(Order::shortlex) // words in shortlex order
-  //!      .alphabet_size(2)   // on 2 letters
-  //!      .min(1)                 // of length in the range from 1
-  //!      .max(5);                // to 5
+  //! words.order(Order::shortlex)  // words in shortlex order
+  //!      .alphabet_size(2)        // on 2 letters
+  //!      .min(1)                  // of length in the range from 1
+  //!      .max(5);                 // to 5
   //! \endcode
   class WordRange {
    public:
@@ -417,7 +417,7 @@ namespace libsemigroups {
     //! * first() equal to the empty word;
     //! * last() equal to the empty word;
     //! * upper_bound() equal to \c 0;
-    //! * letters() equal to \c 0.
+    //! * alphabet_size() equal to \c 0.
     WordRange() {
       init();
     }
@@ -490,9 +490,9 @@ namespace libsemigroups {
     //!
     //! Sets the first word in a WordRange object to be \p frst. This function
     //! performs no checks on its arguments. If \p frst contains letters greater
-    //! than letters(), then the WordRange object will be empty. Similarly, if
-    //! first() is greater than last() with respect to order(), then the object
-    //! will be empty.
+    //! than alphabet_size(), then the WordRange object will be empty.
+    //! Similarly, if first() is greater than last() with respect to order(),
+    //! then the object will be empty.
     //!
     //! \param frst the first word.
     //!
@@ -523,7 +523,8 @@ namespace libsemigroups {
     //!
     //! Sets one past the last word in a WordRange object to be \p lst. This
     //! function performs no checks on its arguments. If \p lst contains
-    //! letters greater than letters(), then the WordRange object will be empty.
+    //! letters greater than alphabet_size(), then the WordRange object will be
+    //! empty.
     //!
     //! \param lst the first word.
     //!
@@ -958,7 +959,7 @@ namespace libsemigroups {
     //! \par Example
     //! \code
     //!  StringRange strings;
-    //!  strings.letters("ab").first("a").last("bbbb");
+    //!  strings.alphabet("ab").first("a").last("bbbb");
     //!  auto words = (strings | ToWord("ba"));
     //!  // contains the words
     //!  // {1_w,    0_w,    11_w,   10_w,   01_w,   00_w,   111_w,
@@ -1574,7 +1575,7 @@ namespace libsemigroups {
     //! * first() equal to the empty string;
     //! * last() equal to the empty string;
     //! * upper_bound() equal to \c 0;
-    //! * letters() equal to \c 0.
+    //! * alphabet() equal to \c 0.
     StringRange() {
       init();
     }
@@ -1664,8 +1665,8 @@ namespace libsemigroups {
     //!
     //! Sets one past the last string in a StringRange object to be \p lst. This
     //! function performs no checks on its arguments. If \p lst contains
-    //! letters greater than letters(), then the StringRange object will be
-    //! empty.
+    //! letters greater than alphabet_size(), then the StringRange object will
+    //! be empty.
     //!
     //! \param lst the first string.
     //!
@@ -1930,7 +1931,7 @@ namespace libsemigroups {
   //! using namespace words;
   //! pow("a", 5)            \\ same as "aaaaa"
   //! 01_w + 2               \\ same as 012_w
-  //! 01_w + 01_w            \\ same as 0110_w
+  //! 01_w + 01_w            \\ same as 0101_w
   //! prod(0123_w, 0, 16, 3) \\ same as 032103_w
   //! \endcode
   namespace words {
@@ -2097,6 +2098,7 @@ namespace libsemigroups {
     //!
     //! \par Examples
     //! \code
+    //! using namespace words;
     //! word_type w = 012345_w
     //! prod(w, 0, 5, 2)         // {0, 2, 4}
     //! prod(w, 1, 9, 2)         // {1, 3, 5, 1}

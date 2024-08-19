@@ -1354,4 +1354,89 @@ namespace libsemigroups {
     REQUIRE(to_string_3.alphabet() == "BAaC1");
   }
 
+  LIBSEMIGROUPS_TEST_CASE("WordRange", "044", "doxygen examples", "[quick]") {
+    // cbegin_wilo
+    {
+      REQUIRE(std::vector<word_type>(cbegin_wilo(2, 3, {0}, {1, 1, 1}),
+                                     cend_wilo(2, 3, {0}, {1, 1, 1}))
+              == std::vector<word_type>(
+                  {{0}, {0, 0}, {0, 1}, {1}, {1, 0}, {1, 1}}));
+    }
+    // cbegin_wislo
+    {
+      REQUIRE(std::vector<word_type>(cbegin_wislo(2, {0}, {0, 0, 0}),
+                                     cend_wislo(2, {0}, {0, 0, 0}))
+              == std::vector<word_type>(
+                  {{0}, {1}, {0, 0}, {0, 1}, {1, 0}, {1, 1}}));
+    }
+    // ToWord
+    {
+      ToWord toword("bac");
+      REQUIRE(toword("bac") == word_type({0, 1, 2}));
+      REQUIRE(toword("bababbbcbc")
+              == word_type({0, 1, 0, 1, 0, 0, 0, 2, 0, 2}));
+
+      toword.init();
+      REQUIRE(toword("bac") == word_type({1, 0, 2}));
+    }
+    // ToWord combinator
+    {
+      StringRange strings;
+      strings.alphabet("ab").first("a").last("bbbb");
+      auto words = (strings | ToWord("ba"));
+      REQUIRE((words | to_vector())
+              == std::vector<word_type>({1_w,    0_w,    11_w,   10_w,   01_w,
+                                         00_w,   111_w,  110_w,  101_w,  100_w,
+                                         011_w,  010_w,  001_w,  000_w,  1111_w,
+                                         1110_w, 1101_w, 1100_w, 1011_w, 1010_w,
+                                         1001_w, 1000_w, 0111_w, 0110_w, 0101_w,
+                                         0100_w, 0011_w, 0010_w, 0001_w}));
+    }
+    // ToString
+    {
+      ToString tostring("bac");
+      REQUIRE(tostring(word_type({1, 0, 2})) == "abc");
+      REQUIRE(tostring(word_type({0, 1, 1, 0, 1, 1, 0, 2})) == "baabaabc");
+
+      tostring.init();
+      REQUIRE(tostring(word_type({1, 0, 2})) == "bac");
+    }
+    // ToString combinator
+    {
+      WordRange words;
+      words.alphabet_size(1).min(0).max(10);
+
+      auto strings = (words | ToString("a"));
+      REQUIRE((strings | to_vector())
+              == std::vector<std::string>({"",
+                                           "a",
+                                           "aa",
+                                           "aaa",
+                                           "aaaa",
+                                           "aaaaa",
+                                           "aaaaaa",
+                                           "aaaaaaa",
+                                           "aaaaaaaa",
+                                           "aaaaaaaaa"}));
+    }
+    // Literals
+    {
+      REQUIRE(012_w == word_type({0, 1, 2}));
+      REQUIRE("abc"_w == word_type({0, 1, 2}));
+      REQUIRE("(ab)^3"_p == "ababab");
+    }
+    {
+      using namespace words;
+      REQUIRE(pow("a", 5) == "aaaaa");
+      REQUIRE(01_w + 2 == 012_w);
+      REQUIRE(01_w + 01_w == 0101_w);
+      REQUIRE(prod(0123_w, 0, 16, 3) == 032103_w);
+
+      word_type w = 012345_w;
+      REQUIRE(prod(w, 0, 5, 2) == word_type({0, 2, 4}));
+      REQUIRE(prod(w, 1, 9, 2) == word_type({1, 3, 5, 1}));
+      REQUIRE(prod("abcde", 4, 1, -1) == "edc");
+      REQUIRE(prod({"aba", "xyz"}, 0, 4, 1) == "abaxyzabaxyz");
+    }
+  }
 }  // namespace libsemigroups
