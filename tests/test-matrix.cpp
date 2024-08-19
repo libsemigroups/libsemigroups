@@ -1290,6 +1290,9 @@ namespace libsemigroups {
     REQUIRE(
         to_human_readable_repr(y, "MinPlusMat<>(", "max-plus matrix", "{}", 20)
         == "<3x3 max-plus matrix>");
+    MinPlusTruncSemiring<> const* sr = new MinPlusTruncSemiring<>(5);
+    MinPlusTruncMat<> z(sr, {{0, 2, 0}, {1, 0, 0}, {1, 3, POSITIVE_INFINITY}});
+    REQUIRE(to_human_readable_repr(z, "MinPlusTruncMat<>(") == "");
   }
 
 }  // namespace libsemigroups

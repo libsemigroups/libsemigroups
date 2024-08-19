@@ -18,6 +18,7 @@
 
 // TODO(1) tpp file
 // TODO(1) put the detail stuff into detail/matrix-common.hpp
+// TODO(0) add comment about not catching overflows to doc
 
 #ifndef LIBSEMIGROUPS_MATRIX_HPP_
 #define LIBSEMIGROUPS_MATRIX_HPP_
@@ -491,13 +492,11 @@ namespace libsemigroups {
         RowView(*static_cast<Subclass const*>(this)) += that;
       }
 
-      // TODO(2) uncomment and test (this works, just not tested or used
-      // for anything, so because time is short commenting out for now)
-      // void operator+=(scalar_type a) {
-      //   for (auto it = _container.begin(); it < _container.end(); ++it) {
-      //     *it = plus(*it, a);
-      //   }
-      // }
+      void operator+=(scalar_type a) {
+        for (auto it = _container.begin(); it < _container.end(); ++it) {
+          *it = plus(*it, a);
+        }
+      }
 
       // TODO(2) implement operator*=(Subclass const&)
 
@@ -3836,6 +3835,8 @@ namespace libsemigroups {
     //!
     //! \exceptions
     //! \noexcept
+    // TODO throw if POSITIVE_INFINITY or NEGATIVE_INFINITY is an entry to avoid
+    // confusion in the pybindings
     template <size_t R, size_t C, typename Scalar>
     constexpr void
     throw_if_bad_entry(StaticIntMat<R, C, Scalar> const&) noexcept {}
@@ -4070,6 +4071,21 @@ namespace libsemigroups {
                                         DynamicMaxPlusMat<Scalar>,
                                         StaticMaxPlusMat<R, C, Scalar>>;
 
+  namespace detail {
+    template <typename T>
+    struct IsMaxPlusMatHelper : std::false_type {};
+
+    template <size_t R, size_t C, typename Scalar>
+    struct IsMaxPlusMatHelper<StaticMaxPlusMat<R, C, Scalar>> : std::true_type {
+    };
+
+    template <typename Scalar>
+    struct IsMaxPlusMatHelper<DynamicMaxPlusMat<Scalar>> : std::true_type {};
+  }  // namespace detail
+
+  template <typename T>
+  static constexpr bool IsMaxPlusMat = detail::IsMaxPlusMatHelper<T>::value;
+
   namespace matrix {
     //! \ingroup maxplusmat_group
     //!
@@ -4078,37 +4094,30 @@ namespace libsemigroups {
     //! Defined in ``matrix.hpp``.
     //!
     //! This function can be used to validate that a matrix contains values in
-    //! the underlying semiring. This is always \c true for \ref MaxPlusMat
-    //! objects.
+    //! the underlying semiring.
     //!
-    //! \tparam R the number of rows of the matrix.
+    //! \tparam Mat the type of the matrix, must satisfy \ref IsMaxPlusMat.
     //!
-    //! \tparam C the number of columns of the matrix.
+    //! \param x the matrix to check.
     //!
-    //! \tparam Scalar the type of the entries in the matrix.
-    //!
-    //! \exceptions
-    //! \noexcept
-    template <size_t R, size_t C, typename Scalar>
-    constexpr void
-    throw_if_bad_entry(StaticMaxPlusMat<R, C, Scalar> const&) noexcept {}
-
-    //! \ingroup maxplusmat_group
-    //!
-    //! \brief Validate that a max-plus matrix is valid.
-    //!
-    //! Defined in ``matrix.hpp``.
-    //!
-    //! This function can be used to validate that a matrix contains values in
-    //! the underlying semiring. This is always \c true for \ref MaxPlusMat
-    //! objects.
-    //!
-    //! \tparam Scalar the type of the entries in the matrix.
-    //!
-    //! \exceptions
-    //! \noexcept
-    template <typename Scalar>
-    constexpr void throw_if_bad_entry(DynamicMaxPlusMat<Scalar> const&) {}
+    //! \throws LibsemigroupsException if \p x contains \ref POSITIVE_INFINITY.
+    template <typename Mat>
+    auto
+    throw_if_bad_entry(Mat const& x) -> std::enable_if_t<IsMaxPlusMat<Mat>> {
+      using scalar_type = typename Mat::scalar_type;
+      auto it = std::find_if(x.cbegin(), x.cend(), [](scalar_type val) {
+        return val == POSITIVE_INFINITY;
+      });
+      if (it != x.cend()) {
+        auto [r, c] = x.coords(it);
+        LIBSEMIGROUPS_EXCEPTION(
+            "invalid entry, expected entries to be integers or -{0}, "
+            "but found +{0} in entry ({1}, {2})",
+            u8"\u221E",
+            r,
+            c);
+      }
+    }
   }  // namespace matrix
 
   ////////////////////////////////////////////////////////////////////////
@@ -4121,15 +4130,15 @@ namespace libsemigroups {
   //!
   //! This page describes the functionality for \f$n \times n\f$  matrices
   //! over the min-plus semiring for arbitrary dimension \f$n\f$. There are
-  //! two types of such matrices those whose dimension is known at compile-time,
-  //! and those where it is not.  Both types can be accessed via the alias
-  //! template \ref MinPlusMatAlias "MinPlusMat": if \c N has value \c 0, then
-  //! the dimensions can be set at run time, otherwise \c N is the dimension.
-  //! The default value of \c N is \c 0.
+  //! two types of such matrices those whose dimension is known at
+  //! compile-time, and those where it is not.  Both types can be accessed via
+  //! the alias template \ref MinPlusMatAlias "MinPlusMat": if \c N has value
+  //! \c 0, then the dimensions can be set at run time, otherwise \c N is the
+  //! dimension. The default value of \c N is \c 0.
   //!
   //! The alias \ref MinPlusMatAlias "MinPlusMat" is either \ref StaticMatrix,
-  //! \ref DynamicMatrixStaticArith "DynamicMatrix (compile-time arithmetic), or
-  //! \ref DynamicMatrixDynamicArith "DynamicMatrix (run-time arithmetic)"
+  //! \ref DynamicMatrixStaticArith "DynamicMatrix (compile-time arithmetic),
+  //! or \ref DynamicMatrixDynamicArith "DynamicMatrix (run-time arithmetic)"
   //! please refer to the documentation of these class templates for more
   //! details. The only substantial difference in the interface of static and
   //! dynamic matrices is that the former can be default constructed and the
@@ -4172,7 +4181,8 @@ namespace libsemigroups {
                   "MinPlus requires a signed integer type as parameter!");
     //! \brief Call operator for addition.
     //!
-    //! This function returns the sum of its arguments in the min-plus semiring.
+    //! This function returns the sum of its arguments in the min-plus
+    //! semiring.
     //!
     //! \param x the first value.
     //! \param y the second value.
@@ -4237,8 +4247,8 @@ namespace libsemigroups {
 
   //! \ingroup minplusmat_group
   //!
-  //! \brief Function object for returning the additive identity of the min-plus
-  //! semiring.
+  //! \brief Function object for returning the additive identity of the
+  //! min-plus semiring.
   //!
   //! Defined in ``matrix.hpp``.
   //!
@@ -4315,14 +4325,29 @@ namespace libsemigroups {
   //! \tparam R the number of rows.  A value of \c 0 indicates that the value
   //! will be set at run time (default: \c 0).
   //!
-  //! \tparam C the number of columns.  A value of \c 0 indicates that the value
-  //! will be set at run time (default: \c R).
+  //! \tparam C the number of columns.  A value of \c 0 indicates that the
+  //! value will be set at run time (default: \c R).
   //!
   //! \tparam Scalar the type of the entries in the matrix (default: `int`).
   template <size_t R = 0, size_t C = R, typename Scalar = int>
   using MinPlusMat = std::conditional_t<R == 0 || C == 0,
                                         DynamicMinPlusMat<Scalar>,
                                         StaticMinPlusMat<R, C, Scalar>>;
+
+  namespace detail {
+    template <typename T>
+    struct IsMinPlusMatHelper : std::false_type {};
+
+    template <size_t R, size_t C, typename Scalar>
+    struct IsMinPlusMatHelper<StaticMinPlusMat<R, C, Scalar>> : std::true_type {
+    };
+
+    template <typename Scalar>
+    struct IsMinPlusMatHelper<DynamicMinPlusMat<Scalar>> : std::true_type {};
+  }  // namespace detail
+
+  template <typename T>
+  static constexpr bool IsMinPlusMat = detail::IsMinPlusMatHelper<T>::value;
 
   namespace matrix {
     //! \ingroup minplusmat_group
@@ -4332,14 +4357,30 @@ namespace libsemigroups {
     //! Defined in ``matrix.hpp``.
     //!
     //! This function can be used to validate that a matrix contains values in
-    //! the underlying semiring. This is always \c true for \ref MinPlusMat
-    //! objects.
-    template <typename Scalar>
-    constexpr void throw_if_bad_entry(DynamicMinPlusMat<Scalar> const&) {}
-
-    //! \copydoc throw_if_bad_entry(DynamicMinPlusMat<Scalar> const&)
-    template <size_t R, size_t C, typename Scalar>
-    constexpr void throw_if_bad_entry(StaticMinPlusMat<R, C, Scalar> const&) {}
+    //! the underlying semiring.
+    //!
+    //! \tparam Mat the type of the matrix, must satisfy \ref IsMinPlusMat.
+    //!
+    //! \param x the matrix to check.
+    //!
+    //! \throws LibsemigroupsException if \p x contains \ref NEGATIVE_INFINITY.
+    template <typename Mat>
+    auto
+    throw_if_bad_entry(Mat const& x) -> std::enable_if_t<IsMinPlusMat<Mat>> {
+      using scalar_type = typename Mat::scalar_type;
+      auto it = std::find_if(x.cbegin(), x.cend(), [](scalar_type val) {
+        return val == NEGATIVE_INFINITY;
+      });
+      if (it != x.cend()) {
+        auto [r, c] = x.coords(it);
+        LIBSEMIGROUPS_EXCEPTION(
+            "invalid entry, expected entries to be integers or +{0}, "
+            "but found -{0} in entry ({1}, {2})",
+            u8"\u221E",
+            r,
+            c);
+      }
+    }
   }  // namespace matrix
 
   ////////////////////////////////////////////////////////////////////////
@@ -4358,7 +4399,8 @@ namespace libsemigroups {
   //! There are three types of such matrices where:
   //!
   //! 1. the dimension is known at compile-time;
-  //! 2. the dimension is to be defined a run time but the arithmetic operations
+  //! 2. the dimension is to be defined a run time but the arithmetic
+  //! operations
   //!    are known at compile-time (i.e. the value of \f$t\f$ is known at
   //!    compile time)
   //! 3. both the dimension and the arithmetic operations (i.e. \f$t\f$) are
@@ -4392,7 +4434,8 @@ namespace libsemigroups {
 
   //! \ingroup maxplustruncmat_group
   //!
-  //! \brief Function object for multiplication in truncated max-plus semirings.
+  //! \brief Function object for multiplication in truncated max-plus
+  //! semirings.
   //!
   //! Defined in ``matrix.hpp``.
   //!
@@ -4448,8 +4491,8 @@ namespace libsemigroups {
   //!
   //! Defined in ``matrix.hpp``.
   //!
-  //! This class represents the **truncated max-plus semiring** consists of the
-  //! integers \f$\{0, \ldots , t\}\f$ for some value \f$t\f$ (called the
+  //! This class represents the **truncated max-plus semiring** consists of
+  //! the integers \f$\{0, \ldots , t\}\f$ for some value \f$t\f$ (called the
   //! **threshold** of the semiring) and \f$-\infty\f$. Instances of this
   //! class can be used to define the value of the threshold \f$t\f$ at run
   //! time.
@@ -4576,7 +4619,8 @@ namespace libsemigroups {
     //! \f[
     //!   x\oplus y =
     //!   \begin{cases}
-    //!     \max\{x, y\}   & \text{if } x \neq -\infty\text{ and }y \neq -\infty
+    //!     \max\{x, y\}   & \text{if } x \neq -\infty\text{ and }y \neq
+    //!     -\infty
     //!     \\
     //!     -\infty & \text{if } x = -\infty \text{ or }y = -\infty; \\
     //!   \end{cases}
@@ -4608,8 +4652,8 @@ namespace libsemigroups {
 
     //! \brief Get the threshold.
     //!
-    //! Returns the threshold value used to construct \ref MaxPlusTruncSemiring
-    //! instance.
+    //! Returns the threshold value used to construct \ref
+    //! MaxPlusTruncSemiring instance.
     //!
     //! \returns A value of type `Scalar`.
     //!
@@ -4674,14 +4718,14 @@ namespace libsemigroups {
   //!
   //! Alias template for truncated max-plus matrices.
   //!
-  //! \tparam T the threshold. A value of \c 0 indicates that the value will be
-  //! set at run time (default: \c 0).
+  //! \tparam T the threshold. A value of \c 0 indicates that the value will
+  //! be set at run time (default: \c 0).
   //!
   //! \tparam R the number of rows.  A value of \c 0 indicates that the value
   //! will be set at run time (default: \c 0).
   //!
-  //! \tparam C the number of columns.  A value of \c 0 indicates that the value
-  //! will be set at run time (default: \c R).
+  //! \tparam C the number of columns.  A value of \c 0 indicates that the
+  //! value will be set at run time (default: \c R).
   //!
   //! \tparam Scalar the type of the entries in the matrix (default: `int`).
   template <size_t T = 0, size_t R = 0, size_t C = R, typename Scalar = int>
@@ -4721,9 +4765,9 @@ namespace libsemigroups {
   //!
   //! Defined in ``matrix.hpp``.
   //!
-  //! This variable has value \c true if the template parameter \c T is the same
-  //! as \ref MaxPlusTruncMat for some template parameters; and \c false if it
-  //! is not.
+  //! This variable has value \c true if the template parameter \c T is the
+  //! same as \ref MaxPlusTruncMat for some template parameters; and \c false
+  //! if it is not.
   //!
   //! \tparam T the type to check.
   template <typename T>
@@ -4754,10 +4798,10 @@ namespace libsemigroups {
     //!
     //! \param m the matrix to validate.
     //!
-    //! \throws LibsemigroupsException if any entry in the matrix is not in the
-    //! set \f$\{0, 1, \ldots, t, -\infty\}\f$ where \f$t\f$ is the threshold of
-    //! the matrix or if the underlying semiring is not defined (only applies to
-    //! matrices with run time arithmetic).
+    //! \throws LibsemigroupsException if any entry in the matrix is not in
+    //! the set \f$\{0, 1, \ldots, t, -\infty\}\f$ where \f$t\f$ is the
+    //! threshold of the matrix or if the underlying semiring is not defined
+    //! (only applies to matrices with run time arithmetic).
     template <typename Mat>
     std::enable_if_t<IsMaxPlusTruncMat<Mat>> throw_if_bad_entry(Mat const& m) {
       // TODO(1) to tpp
@@ -4799,7 +4843,8 @@ namespace libsemigroups {
   //! There are three types of such matrices where:
   //!
   //! 1. the dimension is known at compile-time;
-  //! 2. the dimension is to be defined a run time but the arithmetic operations
+  //! 2. the dimension is to be defined a run time but the arithmetic
+  //! operations
   //!    are known at compile-time (i.e. the value of \f$t\f$ is known at
   //!    compile time)
   //! 3. both the dimension and the arithmetic operations (i.e. \f$t\f$) are
@@ -4808,14 +4853,14 @@ namespace libsemigroups {
   //! All three of these types can be accessed via the alias template \ref
   //! MinPlusTruncMat<T, P, R, C, Scalar> if \c T has value \c 0, then the
   //! threshold can be set at run time, and if \c R or \c C is \c 0, then the
-  //! dimension can be set at run time. The default value of \c T is \c 0, \c R
-  //! is \c 0, and of \c C is \c R.
+  //! dimension can be set at run time. The default value of \c T is \c 0, \c
+  //! R is \c 0, and of \c C is \c R.
   //!
   //! The alias \ref MinPlusTruncMat is either StaticMatrix or DynamicMatrix,
   //! please refer to the documentation of these class templates for more
-  //! details. The only substantial difference in the interface of StaticMatrix
-  //! and DynamicMatrix is that the former can be default constructed and the
-  //! latter should be constructed using the dimensions.
+  //! details. The only substantial difference in the interface of
+  //! StaticMatrix and DynamicMatrix is that the former can be default
+  //! constructed and the latter should be constructed using the dimensions.
   //!
   //! \par Example
   //! \code
@@ -4832,7 +4877,8 @@ namespace libsemigroups {
 
   //! \ingroup minplustruncmat_group
   //!
-  //! \brief Function object for multiplication in min-plus truncated semirings.
+  //! \brief Function object for multiplication in min-plus truncated
+  //! semirings.
   //!
   //! Defined in ``matrix.hpp``.
   //!
@@ -4885,8 +4931,8 @@ namespace libsemigroups {
   //!
   //! Defined in ``matrix.hpp``.
   //!
-  //! This class represents the **min-plus truncated semiring** consists of the
-  //! integers \f$\{0, \ldots , t\}\f$ for some value \f$t\f$ (called the
+  //! This class represents the **min-plus truncated semiring** consists of
+  //! the integers \f$\{0, \ldots , t\}\f$ for some value \f$t\f$ (called the
   //! **threshold** of the semiring) and \f$\infty\f$. Instances of this class
   //! can be used to define the value of the threshold \f$t\f$ at run time.
   //!
@@ -5011,7 +5057,8 @@ namespace libsemigroups {
     //! \f[
     //!   x\oplus y =
     //!   \begin{cases}
-    //!   \min\{x, y\}   & \text{if } x \neq \infty\text{ and }y \neq \infty \\
+    //!   \min\{x, y\}   & \text{if } x \neq \infty\text{ and }y \neq \infty
+    //!   \\
     //!   \infty & \text{if } x = \infty \text{ or }y = \infty; \\
     //!   \end{cases}
     //! \f]
@@ -5043,8 +5090,8 @@ namespace libsemigroups {
 
     //! \brief Get the threshold.
     //!
-    //! Returns the threshold value used to construct \ref MinPlusTruncSemiring
-    //! instance.
+    //! Returns the threshold value used to construct \ref
+    //! MinPlusTruncSemiring instance.
     //!
     //! \returns A value of type `Scalar`.
     //!
@@ -5110,14 +5157,14 @@ namespace libsemigroups {
   //!
   //! Alias template for truncated min-plus matrices.
   //!
-  //! \tparam T the threshold. A value of \c 0 indicates that the value will be
-  //! set at run time (default: \c 0).
+  //! \tparam T the threshold. A value of \c 0 indicates that the value will
+  //! be set at run time (default: \c 0).
   //!
   //! \tparam R the number of rows.  A value of \c 0 indicates that the value
   //! will be set at run time (default: \c 0).
   //!
-  //! \tparam C the number of columns.  A value of \c 0 indicates that the value
-  //! will be set at run time (default: \c R).
+  //! \tparam C the number of columns.  A value of \c 0 indicates that the
+  //! value will be set at run time (default: \c R).
   //!
   //! \tparam Scalar the type of the entries in the matrix (default: `int`).
   template <size_t T = 0, size_t R = 0, size_t C = R, typename Scalar = int>
@@ -5157,9 +5204,9 @@ namespace libsemigroups {
   //!
   //! Defined in ``matrix.hpp``.
   //!
-  //! This variable has value \c true if the template parameter \c T is the same
-  //! as \ref MinPlusTruncMat for some template parameters; and \c false if it
-  //! is not.
+  //! This variable has value \c true if the template parameter \c T is the
+  //! same as \ref MinPlusTruncMat for some template parameters; and \c false
+  //! if it is not.
   //!
   //! \tparam T the type to check.
   template <typename T>
@@ -5190,10 +5237,10 @@ namespace libsemigroups {
     //!
     //! \param m the matrix to validate.
     //!
-    //! \throws LibsemigroupsException if any entry in the matrix is not in the
-    //! set \f$\{0, 1, \ldots, t, \infty\}\f$ where \f$t\f$ is the threshold of
-    //! the matrix or if the underlying semiring is not defined (only applies to
-    //! matrices with run time arithmetic).
+    //! \throws LibsemigroupsException if any entry in the matrix is not in
+    //! the set \f$\{0, 1, \ldots, t, \infty\}\f$ where \f$t\f$ is the
+    //! threshold of the matrix or if the underlying semiring is not defined
+    //! (only applies to matrices with run time arithmetic).
     // TODO(1) to tpp
     template <typename Mat>
     std::enable_if_t<IsMinPlusTruncMat<Mat>> throw_if_bad_entry(Mat const& m) {
@@ -5224,7 +5271,8 @@ namespace libsemigroups {
   // NTP matrices
   ////////////////////////////////////////////////////////////////////////
 
-  //! \defgroup ntpmat_group Matrices over the natural numbers over (t = t + p)
+  //! \defgroup ntpmat_group Matrices over the natural numbers over (t = t +
+  //! p)
   //!
   //! Defined in ``matrix.hpp``.
   //!
@@ -5242,7 +5290,8 @@ namespace libsemigroups {
   //! There are three types of such matrices where:
   //!
   //! 1. the dimension is known at compile-time;
-  //! 2. the dimension is to be defined a run time but the arithmetic operations
+  //! 2. the dimension is to be defined a run time but the arithmetic
+  //! operations
   //!    are known at compile-time (i.e. the values of \f$t\f$ and \f$p\f$
   //!    are known at compile time)
   //! 3. both the dimension and the arithmetic operations (i.e. \f$t\f$ and
@@ -5250,9 +5299,9 @@ namespace libsemigroups {
   //!
   //! All three of these types can be accessed via the alias template \ref
   //! NTPMat<T, P, R, C, Scalar> if \c T and \c P have value \c 0, then the
-  //! threshold and period can be set at run time, and if \c R or \c C is \c 0,
-  //! then the dimension can be set at run time.  The default values of \c T, \c
-  //! P, and \c R are \c 0, and the default value of \c C is \c R.
+  //! threshold and period can be set at run time, and if \c R or \c C is \c
+  //! 0, then the dimension can be set at run time.  The default values of \c
+  //! T, \c P, and \c R are \c 0, and the default value of \c C is \c R.
   //!
   //! The alias \ref NTPMat is one of StaticMatrix, \ref
   //! DynamicMatrixStaticArith "DynamicMatrix (compile-time arithmetic)", or
@@ -5453,8 +5502,8 @@ namespace libsemigroups {
 
     //! \brief Get the multiplicative identity.
     //!
-    //! This function returns \f$1\f$; representing the multiplicative identity
-    //! of the quotient of the semiring of natural numbers.
+    //! This function returns \f$1\f$; representing the multiplicative
+    //! identity of the quotient of the semiring of natural numbers.
     //!
     //! \returns The multiplicative identity in an ntp semiring (the
     //! value \c 0).
@@ -5467,8 +5516,8 @@ namespace libsemigroups {
 
     //! \brief Get the additive identity.
     //!
-    //! This function returns \f$0\f$ representing the additive identity of the
-    //! quotient of the semiring of natural numbers.
+    //! This function returns \f$0\f$ representing the additive identity of
+    //! the quotient of the semiring of natural numbers.
     //!
     //! \returns A value of type `Scalar`.
     //!
@@ -5653,17 +5702,18 @@ namespace libsemigroups {
   //! that
   //!   the value will be set at run time (default: \c 0).
   //!
-  //! \tparam P the period. If both \c T and \c P are \c 0, this indicates that
-  //! the
+  //! \tparam P the period. If both \c T and \c P are \c 0, this indicates
+  //! that the
   //!   value will be set at run time (default: \c 0).
   //!
   //! \tparam R the number of rows.  A value of \c 0 indicates that the value
   //! will be set at run time (default: \c 0).
   //!
-  //! \tparam C the number of columns.  A value of \c 0 indicates that the value
-  //! will be set at run time (default: \c R).
+  //! \tparam C the number of columns.  A value of \c 0 indicates that the
+  //! value will be set at run time (default: \c R).
   //!
-  //! \tparam Scalar the type of the entries in the matrix (default: `size_t`).
+  //! \tparam Scalar the type of the entries in the matrix (default:
+  //! `size_t`).
   template <size_t T        = 0,
             size_t P        = 0,
             size_t R        = 0,
@@ -5706,9 +5756,9 @@ namespace libsemigroups {
   //!
   //! Defined in ``matrix.hpp``.
   //!
-  //! This variable has value \c true if the template parameter \c U is the same
-  //! as \ref NTPMat<T, P, R, C, Scalar> for some values of \c T, \c P, \c R, \c
-  //! C, and `Scalar`; and \c false if it is not.
+  //! This variable has value \c true if the template parameter \c U is the
+  //! same as \ref NTPMat<T, P, R, C, Scalar> for some values of \c T, \c P,
+  //! \c R, \c C, and `Scalar`; and \c false if it is not.
   //!
   //! \tparam U the type to check.
   template <typename U>
@@ -5811,10 +5861,11 @@ namespace libsemigroups {
     //!
     //! \param m the matrix to check.
     //!
-    //! \throws LibsemigroupsException if any entry in the matrix is not in the
-    //! set \f$\{0, 1, \ldots, t + p - 1\}\f$ where \f$t\f$ is the threshold,
-    //! and \f$p\f$ the period, of the matrix or if the underlying semiring is
-    //! not defined (only applies to matrices with run time arithmetic).
+    //! \throws LibsemigroupsException if any entry in the matrix is not in
+    //! the set \f$\{0, 1, \ldots, t + p - 1\}\f$ where \f$t\f$ is the
+    //! threshold, and \f$p\f$ the period, of the matrix or if the underlying
+    //! semiring is not defined (only applies to matrices with run time
+    //! arithmetic).
     template <typename Mat>
     std::enable_if_t<IsNTPMat<Mat>> throw_if_bad_entry(Mat const& m) {
       // Check that the semiring pointer isn't the nullptr if it shouldn't be
@@ -5887,6 +5938,13 @@ namespace libsemigroups {
       ProjMaxPlusMat(size_t r, size_t c)
           : _is_normalized(false), _underlying_mat(r, c) {}
 
+      // TODO other missing constructors
+      ProjMaxPlusMat(
+          typename underlying_matrix_type::semiring_type const* semiring,
+          size_t                                                r,
+          size_t                                                c)
+          : _is_normalized(false), _underlying_mat(semiring, r, c) {}
+
       explicit ProjMaxPlusMat(std::vector<std::vector<scalar_type>> const& m)
           : _is_normalized(false), _underlying_mat(m) {
         normalize();
@@ -5947,9 +6005,19 @@ namespace libsemigroups {
         return _underlying_mat(r, c);
       }
 
+      scalar_reference at(size_t r, size_t c) {
+        matrix::throw_if_bad_coords(*this, r, c);
+        return this->operator()(r, c);
+      }
+
       scalar_const_reference operator()(size_t r, size_t c) const {
         normalize();
         return _underlying_mat(r, c);
+      }
+
+      scalar_const_reference at(size_t r, size_t c) const {
+        matrix::throw_if_bad_coords(*this, r, c);
+        return this->operator()(r, c);
       }
 
       size_t number_of_rows() const noexcept {
@@ -5983,6 +6051,11 @@ namespace libsemigroups {
 
       void operator*=(scalar_type a) {
         _underlying_mat *= a;
+        normalize(true);  // force normalize
+      }
+
+      void operator+=(scalar_type a) {
+        _underlying_mat += a;
         normalize(true);  // force normalize
       }
 
@@ -6134,17 +6207,17 @@ namespace libsemigroups {
   //! There are two types of such matrices those whose dimension is known at
   //! compile-time, and those where it is not.  Both types can be accessed via
   //! the alias template \ref ProjMaxPlusMat : if \c R or \c C has value
-  //! \c 0, then the dimensions can be set at run time, otherwise \c R and \c C
-  //! are the dimensions.  The default value of \c R is \c 0, \c C is \c R, and
-  //! `Scalar` is `int`.
+  //! \c 0, then the dimensions can be set at run time, otherwise \c R and \c
+  //! C are the dimensions.  The default value of \c R is \c 0, \c C is \c R,
+  //! and `Scalar` is `int`.
   //!
   //! Matrices in both these classes are modified when constructed to be in a
   //! normal form which is obtained by subtracting the maximum finite entry in
   //! the matrix from the every finite entry.
   //!
   //! The alias \ref ProjMaxPlusMat is neither StaticMatrix nor DynamicMatrix,
-  //! but has the same interface as each of these types. Every instance of \ref
-  //! ProjMaxPlusMat wraps a \ref MaxPlusMat.
+  //! but has the same interface as each of these types. Every instance of
+  //! \ref ProjMaxPlusMat wraps a \ref MaxPlusMat.
   //!
   //! \note
   //! The types RowView and Row are the same as those
@@ -6154,9 +6227,9 @@ namespace libsemigroups {
   //! correspond to the normalised entries of the matrix.
   //!
   //! Please refer to the documentation of these class templates for more
-  //! details. The only substantial difference in the interface of StaticMatrix
-  //! and DynamicMatrix is that the former can be default constructed and the
-  //! latter should be constructed using the dimensions.
+  //! details. The only substantial difference in the interface of
+  //! StaticMatrix and DynamicMatrix is that the former can be default
+  //! constructed and the latter should be constructed using the dimensions.
   //!
   //! \par Example
   //! \code
@@ -6208,8 +6281,8 @@ namespace libsemigroups {
   //! \tparam R the number of rows.  A value of \c 0 indicates that the value
   //! will be set at run time (default: \c 0).
   //!
-  //! \tparam C the number of columns.  A value of \c 0 indicates that the value
-  //! will be set at run time (default: \c R).
+  //! \tparam C the number of columns.  A value of \c 0 indicates that the
+  //! value will be set at run time (default: \c R).
   //!
   //! \tparam Scalar The type of the entries in the matrix (default: `int`).
   template <size_t R = 0, size_t C = R, typename Scalar = int>
@@ -6236,9 +6309,9 @@ namespace libsemigroups {
   //!
   //! Defined in ``matrix.hpp``.
   //!
-  //! This variable has value \c true if the template parameter \c T is the same
-  //! as \ref ProjMaxPlusMat<R, C, Scalar> for some values of \c R, \c C, and \c
-  //! Scalar; and \c false if it is not.
+  //! This variable has value \c true if the template parameter \c T is the
+  //! same as \ref ProjMaxPlusMat<R, C, Scalar> for some values of \c R, \c C,
+  //! and \c Scalar; and \c false if it is not.
   //!
   //! \tparam T the type to check.
   template <typename T>
@@ -6298,7 +6371,8 @@ namespace libsemigroups {
     //! \par Example
     //!
     //! \code
-    //! auto x == ProjMaxPlusMat<>::make({{-2, 2, 0}, {-1, 0, 0}, {1, -3, 1}}));
+    //! auto x == ProjMaxPlusMat<>::make({{-2, 2, 0}, {-1, 0, 0}, {1, -3,
+    //! 1}}));
     //! // returns {{-1, 0, -1}, {-2, -1, -2}, {-1, 0, -1}}
     //! matrix::pow(x, 100);
     //! \endcode
@@ -6314,10 +6388,13 @@ namespace libsemigroups {
               "negative exponent, expected value >= 0, found {}", e);
         }
       }
-      if (x.number_of_cols() != x.number_of_rows()) {
-        LIBSEMIGROUPS_EXCEPTION("expected a square matrix, found {}x{}",
-                                x.number_of_rows(),
-                                x.number_of_cols());
+
+      throw_if_not_square(x);
+
+      typename Mat::semiring_type const* sr = nullptr;
+
+      if constexpr (IsMatWithSemiring<Mat>) {
+        sr = x.semiring();
       }
 
       if (e == 0) {
@@ -6330,7 +6407,7 @@ namespace libsemigroups {
       }
       auto z = (e % 2 == 0 ? x.one() : y);
 
-      Mat tmp(x.number_of_rows(), x.number_of_cols());
+      Mat tmp(sr, x.number_of_rows(), x.number_of_cols());
       while (e > 1) {
         tmp.product_inplace_no_checks(y, y);
         std::swap(y, tmp);
@@ -6385,7 +6462,8 @@ namespace libsemigroups {
     //!
     //! \param x the matrix.
     //!
-    //! \returns A static vector of `Mat::RowView` of size `x.number_of_rows()`.
+    //! \returns A static vector of `Mat::RowView` of size
+    //! `x.number_of_rows()`.
     //!
     //! \exceptions
     //! \no_libsemigroups_except
@@ -6427,8 +6505,8 @@ namespace libsemigroups {
     //! `std::vector` or `detail::StaticVector1`.
     //!
     //! \param views   a container of `Mat::RowView` or `std::vector<bool>`.
-    //! \param result  a static vector of bit sets to contain the resulting bit
-    //! sets.
+    //! \param result  a static vector of bit sets to contain the resulting
+    //! bit sets.
     //!
     //! \exceptions
     //! \no_libsemigroups_except
@@ -6463,14 +6541,14 @@ namespace libsemigroups {
     //!
     //! Defined in ``matrix.hpp``.
     //!
-    //! This function converts the container of row views \p views of a boolean
-    //! matrix to bit sets, and return them.
+    //! This function converts the container of row views \p views of a
+    //! boolean matrix to bit sets, and return them.
     //!
     //! \tparam Mat the type of matrix. This must be a type so that
     //! IsBMat<Mat> is \c true.
     //!
-    //! \tparam R an upper bound for the number of rows in \p views. This value
-    //! must be at most BitSet<1>::max_size().
+    //! \tparam R an upper bound for the number of rows in \p views. This
+    //! value must be at most BitSet<1>::max_size().
     //!
     //! \tparam C an upper bound for the number of columns in each row
     //! represented in \p views. This value must be at most
@@ -6519,8 +6597,8 @@ namespace libsemigroups {
     //! Computes the rows of the matrix \p x as bit sets and
     //! appends them to \p result.
     //!
-    //! \tparam Mat the type of matrix. This must be a type so that IsBMat<Mat>
-    //! is \c true.
+    //! \tparam Mat the type of matrix. This must be a type so that
+    //! IsBMat<Mat> is \c true.
     //!
     //! \tparam R an upper bound for the number of rows in `views`. This value
     //! must be at most BitSet<1>::max_size().
@@ -6537,8 +6615,8 @@ namespace libsemigroups {
     //! \no_libsemigroups_except
     //!
     //! \complexity
-    //! \f$O(mn)\f$ where \f$m\f$ is the number of rows in \p x and and \f$n\f$
-    //! is the number of columns in \p x.
+    //! \f$O(mn)\f$ where \f$m\f$ is the number of rows in \p x and and
+    //! \f$n\f$ is the number of columns in \p x.
     template <typename Mat, size_t R, size_t C>
     void bitset_rows(Mat const&                           x,
                      detail::StaticVector1<BitSet<C>, R>& result) {
@@ -6648,8 +6726,8 @@ namespace libsemigroups {
     //!
     //! \tparam Mat a type such that \ref IsBMat<Mat> is \c true.
     //!
-    //! \tparam Container a container type such that `Container::value_type` is
-    //! `BitSet<M>` or `std::bitset<M>` for some \c M.
+    //! \tparam Container a container type such that `Container::value_type`
+    //! is `BitSet<M>` or `std::bitset<M>` for some \c M.
     //!
     //! \param rows container of spanning rows represented by bit sets.
     //!
@@ -6677,8 +6755,8 @@ namespace libsemigroups {
       return result;
     }
 
-    //! \brief Returns a basis for the space spanned by the rows of the boolean
-    //! matrix.
+    //! \brief Returns a basis for the space spanned by the rows of the
+    //! boolean matrix.
     //!
     //! Defined in ``matrix.hpp``.
     //!
@@ -6688,8 +6766,8 @@ namespace libsemigroups {
     //! \tparam Mat a type such that IsBMat<Mat> is \c true.
     //!
     //! \tparam M an upper bound for the dimensions of the returned container.
-    //! If \ref IsStaticMatrix<Mat> is \c true, then \p M is the number of rows
-    //! (or columns) in the square matrix \p x. Otherwise, if
+    //! If \ref IsStaticMatrix<Mat> is \c true, then \p M is the number of
+    //! rows (or columns) in the square matrix \p x. Otherwise, if
     //! IsDynamicMatrix<Mat> is \c true, then \p M is BitSet<1>::max_size().
     //!
     //! \param x  the boolean matrix.
@@ -6719,8 +6797,8 @@ namespace libsemigroups {
     //!
     //! Defined in ``matrix.hpp``.
     //!
-    //! This function appends a basis for the rowspace of the boolean matrix \p
-    //! x to the container \p result.
+    //! This function appends a basis for the rowspace of the boolean matrix
+    //! \p x to the container \p result.
     //!
     //! \tparam Mat a type such that \ref IsBMat<Mat> is \c true.
     //!
@@ -6763,9 +6841,9 @@ namespace libsemigroups {
     //! \tparam Mat a type satisfying \ref IsMaxPlusTruncMat<Mat> or
     //! \ref IsBMat<Mat>.
     //!
-    //! \tparam Container a container type (such as `std::vector`, for example).
-    //! The `Container::value_type` must be `Mat::RowView`, or if `Mat` is
-    //! \ref BMat<N> for some \c N, then  `Container::value_type` can
+    //! \tparam Container a container type (such as `std::vector`, for
+    //! example). The `Container::value_type` must be `Mat::RowView`, or if
+    //! `Mat` is \ref BMat<N> for some \c N, then  `Container::value_type` can
     //! additionally be `BitSet<M>` or `std::bitset<M>` where \c M is
     //! greater than or equal to \c N.
     //!
@@ -6930,8 +7008,8 @@ namespace libsemigroups {
     //!
     //! Defined in ``matrix.hpp``.
     //!
-    //! This function returns a row space basis of the dynamic matrix \p x as a
-    //! std::vector of row views.
+    //! This function returns a row space basis of the dynamic matrix \p x as
+    //! a std::vector of row views.
     //!
     //! \tparam Mat a type satisfying IsDynamicMatrix<Mat>.
     //!
@@ -7156,7 +7234,8 @@ namespace libsemigroups {
 
   //! \ingroup matrix_group
   //!
-  //! \brief Constructs a matrix (from std::initializer_list) and validates it.
+  //! \brief Constructs a matrix (from std::initializer_list) and validates
+  //! it.
   //!
   //! Defined in ``matrix.hpp``.
   //!
@@ -7198,8 +7277,8 @@ namespace libsemigroups {
 
   //! \ingroup matrix_group
   //!
-  //! \brief Constructs a matrix (from std::vector of std::vector) and validates
-  //! it.
+  //! \brief Constructs a matrix (from std::vector of std::vector) and
+  //! validates it.
   //!
   //! Defined in ``matrix.hpp``.
   //!
@@ -7295,8 +7374,8 @@ namespace libsemigroups {
   //! not belong to the underlying semiring.
   //!
   //! \complexity
-  //! \f$O(mn)\f$ where \f$m\f$ is the number of rows and \f$n\f$ is the number
-  //! of columns of the matrix.
+  //! \f$O(mn)\f$ where \f$m\f$ is the number of rows and \f$n\f$ is the
+  //! number of columns of the matrix.
   template <size_t R, size_t C, typename Scalar>
   ProjMaxPlusMat<R, C, Scalar>
   to_matrix(std::initializer_list<std::initializer_list<Scalar>> const& rows) {
@@ -7344,7 +7423,8 @@ namespace libsemigroups {
   //! This function inserts a human readable representation of a matrix into
   //! the string stream \p os.
   //!
-  //! \tparam Mat the type of the argument \p x, must satisfy \ref IsMatrix<Mat>
+  //! \tparam Mat the type of the argument \p x, must satisfy \ref
+  //! IsMatrix<Mat>
   //!
   //! \param os the string stream.
   //!
