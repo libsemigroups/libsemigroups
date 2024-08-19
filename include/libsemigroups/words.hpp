@@ -1028,7 +1028,8 @@ namespace libsemigroups {
                  - std::numeric_limits<typename Word::value_type>::min()) {
       LIBSEMIGROUPS_EXCEPTION(
           "expected the argument to be in the range [0, {}), found {}",
-          std::numeric_limits<typename Word::value_type>::max(),
+          std::numeric_limits<typename Word::value_type>::max()
+              - std::numeric_limits<typename Word::value_type>::min(),
           i);
     }
     if constexpr (!std::is_same_v<Word, std::string>) {
