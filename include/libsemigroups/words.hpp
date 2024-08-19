@@ -55,6 +55,10 @@ namespace libsemigroups {
 
   enum class Order : uint8_t;  // forward decl
 
+  namespace detail {
+    std::string const& chars_in_human_readable_order();
+  }
+
   ////////////////////////////////////////////////////////////////////////
   // Words
   ////////////////////////////////////////////////////////////////////////
@@ -839,6 +843,23 @@ namespace libsemigroups {
       return _lookup.back() == 0;
     }
 
+    //! \brief Return the alphabet used for conversion.
+    //!
+    //! This function returns a std::string corresponding to the ordered-set
+    //! alphabet \f$\{a_0, a_1, \dots a_{n-1}\}\f$ that the initialised ToWord
+    //! object will use to convert from std::string to \ref word_type.
+    //! Specifically, \f$a_i \mapsto i\f$ where \f$a_i\f$ will correspond to a
+    //! letter in a std::string, and \f$i\f$ is a \ref letter_type.
+    //!
+    //! If this function returns the empty string, then conversion will be
+    //! performed using \ref human_readable_letter.
+    //!
+    //! \returns A value of type std::string.
+    //!
+    //! \exception
+    //! \no_libsemigroups_except.
+    [[nodiscard]] std::string alphabet() const;
+
     //! \brief Convert a string to a word_type.
     //!
     //! This function converts its second argument \p input into a word_type and
@@ -1001,10 +1022,6 @@ namespace libsemigroups {
   // Words -> Strings
   ////////////////////////////////////////////////////////////////////////
 
-  namespace detail {
-    std::string const& chars_in_human_readable_order();
-  }
-
   //! \ingroup words_group
   //! \brief Returns a character by index in human readable order.
   //!
@@ -1154,6 +1171,23 @@ namespace libsemigroups {
     [[nodiscard]] bool empty() const noexcept {
       return _alphabet_map.empty();
     }
+
+    //! \brief Return the alphabet used for conversion.
+    //!
+    //! This function returns a std::string corresponding to the ordered-set
+    //! alphabet \f$\{a_0, a_1, \dots a_{n-1}\}\f$ that the initialised ToWord
+    //! object will use to convert from a \ref word_type to a std::string.
+    //! Specifically, \f$i\mapsto a_i\f$ where \f$i\f$ will correspond to a
+    //! letter in a word_type, and \f$a_i\f$ is a \c char.
+    //!
+    //! If this function returns the empty string, then conversion will be
+    //! performed using \ref human_readable_index.
+    //!
+    //! \returns A value of type std::string.
+    //!
+    //! \exception
+    //! \no_libsemigroups_except.
+    [[nodiscard]] std::string alphabet() const;
 
     //! \brief Convert a \ref word_type to a std::string.
     //!

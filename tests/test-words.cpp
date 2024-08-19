@@ -1329,4 +1329,29 @@ namespace libsemigroups {
     REQUIRE(words.count() == 0);
     REQUIRE((words | to_vector()) == std::vector<word_type>({}));
   }
+
+  LIBSEMIGROUPS_TEST_CASE("ToWord", "042", "alphabet", "[quick]") {
+    ToWord to_word("BAaC1");
+    REQUIRE(to_word.alphabet() == "BAaC1");
+
+    ToWord to_word_2(to_word);
+    REQUIRE(to_word_2.alphabet() == "BAaC1");
+
+    ToWord to_word_3(std::move(to_word_2));
+    REQUIRE(to_word.alphabet() == "BAaC1");
+    REQUIRE(to_word_3.alphabet() == "BAaC1");
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("ToString", "043", "alphabet", "[quick]") {
+    ToString to_string("BAaC1");
+    REQUIRE(to_string.alphabet() == "BAaC1");
+
+    ToString to_string_2(to_string);
+    REQUIRE(to_string_2.alphabet() == "BAaC1");
+
+    ToString to_string_3(std::move(to_string_2));
+    REQUIRE(to_string.alphabet() == "BAaC1");
+    REQUIRE(to_string_3.alphabet() == "BAaC1");
+  }
+
 }  // namespace libsemigroups

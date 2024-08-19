@@ -47,6 +47,36 @@
 
 namespace libsemigroups {
 
+  namespace detail {
+    std::string const& chars_in_human_readable_order() {
+      // Choose visible characters a-zA-Z0-9 first before anything else
+      // The ascii ranges for these characters are: [97, 123), [65, 91),
+      // [48, 58) so the remaining range of chars that are appended to the end
+      // after these chars are [0,48), [58, 65), [91, 97), [123, 255)
+      static std::string letters
+          = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+      static bool first_call = true;
+      if (first_call) {
+        letters.resize(255);
+        std::iota(
+            letters.begin() + 62, letters.begin() + 110, static_cast<char>(0));
+        std::iota(letters.begin() + 110,
+                  letters.begin() + 117,
+                  static_cast<char>(58));
+        std::iota(letters.begin() + 117,
+                  letters.begin() + 123,
+                  static_cast<char>(91));
+        std::iota(letters.begin() + 123, letters.end(), static_cast<char>(123));
+        first_call = false;
+        LIBSEMIGROUPS_ASSERT(letters.size()
+                             == std::numeric_limits<char>::max()
+                                    - std::numeric_limits<char>::min());
+        LIBSEMIGROUPS_ASSERT(letters.end() == letters.begin() + 255);
+      }
+      return letters;
+    }
+  }  // namespace detail
+
   ////////////////////////////////////////////////////////////////////////
   // 1. WordRange
   ////////////////////////////////////////////////////////////////////////
@@ -204,36 +234,6 @@ namespace libsemigroups {
   // 2. Strings -> Words
   ////////////////////////////////////////////////////////////////////////
 
-  namespace detail {
-    std::string const& chars_in_human_readable_order() {
-      // Choose visible characters a-zA-Z0-9 first before anything else
-      // The ascii ranges for these characters are: [97, 123), [65, 91),
-      // [48, 58) so the remaining range of chars that are appended to the end
-      // after these chars are [0,48), [58, 65), [91, 97), [123, 255)
-      static std::string letters
-          = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-      static bool first_call = true;
-      if (first_call) {
-        letters.resize(255);
-        std::iota(
-            letters.begin() + 62, letters.begin() + 110, static_cast<char>(0));
-        std::iota(letters.begin() + 110,
-                  letters.begin() + 117,
-                  static_cast<char>(58));
-        std::iota(letters.begin() + 117,
-                  letters.begin() + 123,
-                  static_cast<char>(91));
-        std::iota(letters.begin() + 123, letters.end(), static_cast<char>(123));
-        first_call = false;
-        LIBSEMIGROUPS_ASSERT(letters.size()
-                             == std::numeric_limits<char>::max()
-                                    - std::numeric_limits<char>::min());
-        LIBSEMIGROUPS_ASSERT(letters.end() == letters.begin() + 255);
-      }
-      return letters;
-    }
-  }  // namespace detail
-
   ToWord::ToWord(ToWord const&)            = default;
   ToWord::ToWord(ToWord&&)                 = default;
   ToWord& ToWord::operator=(ToWord const&) = default;
@@ -300,6 +300,31 @@ namespace libsemigroups {
     return *this;
   }
 
+  [[nodiscard]] std::string ToWord::alphabet() const {
+    std::string           output;
+    std::array<char, 256> inverse_lookup;
+    letter_type           current;
+    letter_type           largest = 0;
+
+    for (auto letter : detail::chars_in_human_readable_order()) {
+      // FIXME: When chars are negative, this is bad. This check just ignores
+      // those cases, but it probably shouldn't.
+      if (letter < 0) {
+        continue;
+      }
+      current = _lookup[letter];
+      if (current != UNDEFINED) {
+        inverse_lookup[current] = letter;
+        largest                 = std::max(largest, current);
+      }
+    }
+    for (size_t i = 0; i <= largest; ++i) {
+      output.push_back(inverse_lookup[i]);
+    }
+
+    return output;
+  }
+
   void ToWord::call_no_checks(word_type&         output,
                               std::string const& input) const {
     // Empty alphabet implies conversion should use human_readable_index
@@ -355,6 +380,22 @@ namespace libsemigroups {
       }
     }
     return *this;
+  }
+
+  [[nodiscard]] std::string ToString::alphabet() const {
+    if (empty()) {
+      return "";
+    }
+
+    std::string output;
+    letter_type current(0);
+
+    while (_alphabet_map.find(current) != _alphabet_map.end()) {
+      output.push_back(_alphabet_map.at(current));
+      ++current;
+    }
+
+    return output;
   }
 
   void ToString::call_no_checks(std::string&     output,
