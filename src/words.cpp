@@ -387,6 +387,23 @@ namespace libsemigroups {
   // 4. StringRange
   ////////////////////////////////////////////////////////////////////////
 
+  namespace detail {
+    // This is not in an unnamed namespace because it is used by random_strings.
+    // The random_strings return type is particularly nasty, and random_strings
+    // should therefore probably remain an `auto inline` function defined in the
+    // hpp file.
+    void throw_if_random_string_should_throw(std::string const& alphabet,
+                                             size_t             min,
+                                             size_t             max) {
+      if (min >= max) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "the 2nd argument (min) must be less than the 3rd argument (max)");
+      } else if (alphabet.empty() && min != 0) {
+        LIBSEMIGROUPS_EXCEPTION("expected non-empty 1st argument (alphabet)");
+      }
+    }
+  }  // namespace detail
+
   std::string random_string(std::string const& alphabet, size_t length) {
     static std::random_device       rd;
     static std::mt19937             generator(rd());
@@ -405,12 +422,7 @@ namespace libsemigroups {
   std::string random_string(std::string const& alphabet,
                             size_t             min,
                             size_t             max) {
-    if (min >= max) {
-      LIBSEMIGROUPS_EXCEPTION(
-          "the 2nd argument (min) must be less than the 3rd argument (max)");
-    } else if (alphabet.empty() && min != 0) {
-      LIBSEMIGROUPS_EXCEPTION("expected non-empty 1st argument (alphabet)");
-    }
+    detail::throw_if_random_string_should_throw(alphabet, min, max);
     if (max == min + 1) {
       return random_string(alphabet, min);
     }

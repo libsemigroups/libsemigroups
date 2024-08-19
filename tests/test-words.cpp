@@ -1157,6 +1157,17 @@ namespace libsemigroups {
     REQUIRE(
         std::all_of(w.begin(), w.end(), [](auto const& x) { return x < 3; }));
     REQUIRE_THROWS_AS(random_word(10, 0), LibsemigroupsException);
+
+    REQUIRE_THROWS_AS(random_string("", 5, 6), LibsemigroupsException);
+    REQUIRE_THROWS_AS(random_string("abc", 6, 6), LibsemigroupsException);
+    REQUIRE_THROWS_AS(random_strings("", 10, 5, 6), LibsemigroupsException);
+    REQUIRE_THROWS_AS(random_strings("abc", 10, 6, 6), LibsemigroupsException);
+    auto s = random_strings("abc", 100, 3, 5);
+    REQUIRE((s | rx::count()) == 100);
+    auto result = s | rx::all_of([](auto const& str) {
+                    return str.size() >= 3 && str.size() < 5;
+                  });
+    REQUIRE(result);
   }
 
   LIBSEMIGROUPS_TEST_CASE("human_readable_index", "037", "", "[quick]") {

@@ -1318,6 +1318,12 @@ namespace libsemigroups {
   // StringRange
   ////////////////////////////////////////////////////////////////////////
 
+  namespace detail {
+    void throw_if_random_string_should_throw(std::string const& alphabet,
+                                             size_t             min,
+                                             size_t             max);
+  }  // namespace detail
+
   //! \ingroup words_group
   //! \brief Returns a random string.
   //!
@@ -1377,7 +1383,13 @@ namespace libsemigroups {
                              size_t             number,
                              size_t             min,
                              size_t             max) {
-    return rx::generate([&] { return random_string(alphabet, min, max); })
+    detail::throw_if_random_string_should_throw(alphabet, min, max);
+
+    // Lambda must capture by copy, as the lambda will exist outside the scope
+    // of this function once the range is returned.
+    return rx::generate([alphabet, min, max] {
+             return random_string(alphabet, min, max);
+           })
            | rx::take(number);
   }
 
