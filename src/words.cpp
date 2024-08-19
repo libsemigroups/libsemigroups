@@ -56,6 +56,11 @@ namespace libsemigroups {
       LIBSEMIGROUPS_ASSERT(r != 1);  // to avoid division by 0
       return a * ((1 - std::pow(r, n)) / (1 - static_cast<float>(r)));
     }
+
+    bool word_in_language(size_t n, word_type const& w) {
+      return std::all_of(
+          w.cbegin(), w.cend(), [&](letter_type x) { return x < n; });
+    }
   }  // namespace
 
   uint64_t number_of_words(size_t n, size_t min, size_t max) {
@@ -86,7 +91,8 @@ namespace libsemigroups {
                                           size_t      upper_bound,
                                           word_type&& first,
                                           word_type&& last) {
-    if (!lexicographical_compare(
+    if (!word_in_language(n, first)
+        || !lexicographical_compare(
             first.cbegin(), first.cend(), last.cbegin(), last.cend())) {
       return cend_wilo(n, upper_bound, std::move(first), std::move(last));
     }
@@ -121,7 +127,8 @@ namespace libsemigroups {
   detail::const_wislo_iterator cbegin_wislo(size_t      n,
                                             word_type&& first,
                                             word_type&& last) {
-    if (!shortlex_compare(
+    if (!word_in_language(n, first)
+        || !shortlex_compare(
             first.cbegin(), first.cend(), last.cbegin(), last.cend())) {
       return cend_wislo(n, std::move(first), std::move(last));
     }

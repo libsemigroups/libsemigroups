@@ -1313,4 +1313,20 @@ namespace libsemigroups {
                  "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaa");
     }
   }
+
+  LIBSEMIGROUPS_TEST_CASE("WordRange", "041", "empty iterator", "[quick]") {
+    using words::pow;
+
+    WordRange words;
+    words.alphabet_size(1).first("01"_w).last("11"_w);
+    REQUIRE(words.at_end());
+    REQUIRE(words.count() == 0);
+    REQUIRE((words | to_vector()) == std::vector<word_type>({}));
+
+    words.init();
+    words.alphabet_size(0).min(2).max(5);
+    REQUIRE(words.at_end());
+    REQUIRE(words.count() == 0);
+    REQUIRE((words | to_vector()) == std::vector<word_type>({}));
+  }
 }  // namespace libsemigroups
