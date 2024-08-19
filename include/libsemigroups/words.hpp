@@ -925,11 +925,9 @@ namespace libsemigroups {
       return output;
     }
 
-   private:
     template <typename InputRange>
     struct Range;
 
-   public:
     //! \brief Call operator for combining with other range objects.
     //!
     //! A custom combinator for rx::ranges to convert the output of a
@@ -1242,11 +1240,9 @@ namespace libsemigroups {
       return output;
     }
 
-   private:
     template <typename InputRange>
     struct Range;
 
-   public:
     //! \brief Call operator for combining with other range objects.
     //!
     //! A custom combinator for rx::ranges to convert the output of a WordRange
