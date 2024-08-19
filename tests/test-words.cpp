@@ -130,7 +130,7 @@ namespace libsemigroups {
     WordRange words;
     words.first(first).last(last);
     REQUIRE(words.count() == 0);
-    words.number_of_letters(2);
+    words.alphabet_size(2);
     REQUIRE(words.count() == 14);
   }
 
@@ -485,7 +485,7 @@ namespace libsemigroups {
 
     WordRange words;
     words.order(Order::lex)
-        .number_of_letters(n)
+        .alphabet_size(n)
         .upper_bound(m + 1)
         .min(1)
         .max(m + 1);
@@ -525,13 +525,13 @@ namespace libsemigroups {
     REQUIRE(move.first() == 0_w);
     REQUIRE(move.last() == pow(0_w, 28));
     REQUIRE(move.count() == 25);
-    REQUIRE(move.number_of_letters() == 2);
+    REQUIRE(move.alphabet_size() == 2);
 
     WordRange more;
     REQUIRE(more.at_end());
     REQUIRE_NOTHROW(more.next());
     REQUIRE(more.get() == ""_w);
-    REQUIRE(more.number_of_letters() == 0);
+    REQUIRE(more.alphabet_size() == 0);
     REQUIRE(more.order() == Order::shortlex);
     REQUIRE(more.is_finite);
     REQUIRE(more.is_idempotent);
@@ -540,14 +540,14 @@ namespace libsemigroups {
     REQUIRE(equal(more, move.init()));
 
     WordRange swap;
-    swap.number_of_letters(3).first("abc"_w).last("abcbcbcbcb"_w);
+    swap.alphabet_size(3).first("abc"_w).last("abcbcbcbcb"_w);
     std::swap(swap, more);
     REQUIRE(equal(move, swap));
     REQUIRE(swap.upper_bound() == move.upper_bound());
     REQUIRE(swap.first() == move.first());
     REQUIRE(swap.last() == move.last());
     REQUIRE(swap.count() == move.count());
-    REQUIRE(swap.number_of_letters() == move.number_of_letters());
+    REQUIRE(swap.alphabet_size() == move.alphabet_size());
   }
 
   LIBSEMIGROUPS_TEST_CASE("StringRange",
@@ -723,7 +723,7 @@ namespace libsemigroups {
                           "shortlex | alphabet = a | min = 0 | max = 10",
                           "[shortlex][quick]") {
     WordRange words;
-    words.number_of_letters(1).min(0).max(10);
+    words.alphabet_size(1).min(0).max(10);
 
     auto w = (words | ToString("a"));
     REQUIRE((w | count()) == 10);
@@ -1233,7 +1233,7 @@ namespace libsemigroups {
     using words::pow;
 
     WordRange words;
-    words.number_of_letters(2).first(0_w).last(pow(1_w, 3));
+    words.alphabet_size(2).first(0_w).last(pow(1_w, 3));
 
     REQUIRE((words | ToString("ba") | to_vector())
             == std::vector<std::string>({"b",
@@ -1294,7 +1294,7 @@ namespace libsemigroups {
                                          "yxy",
                                          "yyx"}));
     using words::pow;
-    words.number_of_letters(10).first(pow(0_w, 100)).last(pow(1_w, 1'000));
+    words.alphabet_size(10).first(pow(0_w, 100)).last(pow(1_w, 1'000));
     for (auto const& s :
          words | ToString("abcdefghij") | skip_n(1'000) | take(1)) {
       REQUIRE(s

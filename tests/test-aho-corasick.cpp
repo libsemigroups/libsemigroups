@@ -47,7 +47,7 @@ namespace libsemigroups {
     AhoCorasick ac;
 
     WordRange words;
-    words.number_of_letters(2).min(4).max(5);
+    words.alphabet_size(2).min(4).max(5);
     for (auto const& w : words) {
       aho_corasick::add_word(ac, w);
     }
@@ -205,7 +205,7 @@ namespace libsemigroups {
     REQUIRE(ac.number_of_nodes() == 1);
 
     WordRange words;
-    words.number_of_letters(2).min(4).max(5);
+    words.alphabet_size(2).min(4).max(5);
     for (auto const& w : words) {
       aho_corasick::add_word(ac, w);
     }
@@ -270,7 +270,7 @@ namespace libsemigroups {
     AhoCorasick ac;
 
     WordRange words;
-    words.number_of_letters(2).min(4).max(5);
+    words.alphabet_size(2).min(4).max(5);
     for (auto const& w : words) {
       aho_corasick::add_word(ac, w);
     }
@@ -303,7 +303,7 @@ namespace libsemigroups {
     AhoCorasick ac;
 
     WordRange words;
-    words.number_of_letters(2).min(4).max(5);
+    words.alphabet_size(2).min(4).max(5);
     for (auto const& w : words) {
       aho_corasick::add_word(ac, w);
     }

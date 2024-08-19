@@ -150,11 +150,11 @@ namespace libsemigroups {
     if (!_current_valid) {
       _current_valid = true;
       if (_order == Order::shortlex) {
-        _current = cbegin_wislo(_number_of_letters, _first, _last);
-        _end     = cend_wislo(_number_of_letters, _first, _last);
+        _current = cbegin_wislo(_alphabet_size, _first, _last);
+        _end     = cend_wislo(_alphabet_size, _first, _last);
       } else if (_order == Order::lex) {
-        _current = cbegin_wilo(_number_of_letters, _upper_bound, _first, _last);
-        _end     = cend_wilo(_number_of_letters, _upper_bound, _first, _last);
+        _current = cbegin_wilo(_alphabet_size, _upper_bound, _first, _last);
+        _end     = cend_wilo(_alphabet_size, _upper_bound, _first, _last);
       }
     }
   }
@@ -168,12 +168,12 @@ namespace libsemigroups {
   }
 
   WordRange& WordRange::init() {
-    _number_of_letters = 0;
-    _current_valid     = false;
-    _first             = {};
-    _last              = {};
-    _order             = Order::shortlex;
-    _upper_bound       = 0;  // does nothing if _order is shortlex
+    _alphabet_size = 0;
+    _current_valid = false;
+    _first         = {};
+    _last          = {};
+    _order         = Order::shortlex;
+    _upper_bound   = 0;  // does nothing if _order is shortlex
     return *this;
   }
 
@@ -441,7 +441,7 @@ namespace libsemigroups {
     // rest should remain unchanged.
     _to_word.init(x);
     _to_string.init(x);
-    _word_range.number_of_letters(x.size());
+    _word_range.alphabet_size(x.size());
     _current_valid = _word_range.valid();
     _letters       = x;
     return *this;

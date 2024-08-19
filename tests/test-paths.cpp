@@ -343,7 +343,7 @@ namespace libsemigroups {
     WordRange w;
 
     auto expected2
-        = (w.number_of_letters(2).min(0).max(N) | filter([&wg](auto const& ww) {
+        = (w.alphabet_size(2).min(0).max(N) | filter([&wg](auto const& ww) {
              return word_graph::follow_path(wg, 0, ww) == 4;
            }));
     REQUIRE((expected2 | count()) == 131'062);
@@ -500,7 +500,7 @@ namespace libsemigroups {
 
     WordRange w;
     expected
-        = (w.number_of_letters(2).min(0).max(N) | filter([&wg](auto const& ww) {
+        = (w.alphabet_size(2).min(0).max(N) | filter([&wg](auto const& ww) {
              return word_graph::follow_path(wg, 0, ww) == 4;
            })
            | to_vector());

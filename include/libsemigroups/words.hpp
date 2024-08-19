@@ -285,7 +285,7 @@ namespace libsemigroups {
   //! The order and range of the words in a WordRange instance can be set using
   //! the member functions:
   //! * \ref order
-  //! * \ref number_of_letters
+  //! * \ref alphabet_size
   //! * \ref min
   //! * \ref max
   //! * \ref first
@@ -295,7 +295,7 @@ namespace libsemigroups {
   //! \code
   //! WordRange words;
   //! words.order(Order::shortlex) // words in shortlex order
-  //!      .number_of_letters(2)   // on 2 letters
+  //!      .alphabet_size(2)   // on 2 letters
   //!      .min(1)                 // of length in the range from 1
   //!      .max(5);                // to 5
   //! \endcode
@@ -311,7 +311,7 @@ namespace libsemigroups {
     using const_iterator = std::variant<detail::const_wilo_iterator,
                                         detail::const_wislo_iterator>;
 
-    size_type              _number_of_letters;
+    size_type              _alphabet_size;
     mutable const_iterator _current;
     mutable const_iterator _end;
     mutable bool           _current_valid;
@@ -376,7 +376,7 @@ namespace libsemigroups {
     //! \exception
     //! \noexcept
     [[nodiscard]] size_t size_hint() const noexcept {
-      return number_of_words(_number_of_letters, _first.size(), _last.size());
+      return number_of_words(_alphabet_size, _first.size(), _last.size());
       // This is only the actual size if _order is shortlex
     }
 
@@ -464,9 +464,9 @@ namespace libsemigroups {
     //!
     //! \exception
     //! \noexcept
-    WordRange& number_of_letters(size_type n) noexcept {
-      _current_valid &= (n == _number_of_letters);
-      _number_of_letters = n;
+    WordRange& alphabet_size(size_type n) noexcept {
+      _current_valid &= (n == _alphabet_size);
+      _alphabet_size = n;
       return *this;
     }
 
@@ -478,8 +478,8 @@ namespace libsemigroups {
     //!
     //! \exception
     //! \noexcept
-    [[nodiscard]] size_type number_of_letters() const noexcept {
-      return _number_of_letters;
+    [[nodiscard]] size_type alphabet_size() const noexcept {
+      return _alphabet_size;
     }
 
     //! \brief Set the first word in the range.
@@ -684,7 +684,7 @@ namespace libsemigroups {
     //! Other than by calling \ref next, the value returned by \ref get may be
     //! altered by a call to one of the following:
     //! * \ref order(Order)
-    //! * \ref number_of_letters(size_type)
+    //! * \ref alphabet_size(size_type)
     //! * \ref min(size_type)
     //! * \ref max(size_type)
     //! * \ref first(word_type const&)
@@ -1256,7 +1256,7 @@ namespace libsemigroups {
     //! \par Example
     //! \code
     //! WordRange words;
-    //! words.number_of_letters(1).min(0).max(10);
+    //! words.alphabet_size(1).min(0).max(10);
     //!
     //! auto strings = (words | ToString("a"));
     //! // Contains the strings

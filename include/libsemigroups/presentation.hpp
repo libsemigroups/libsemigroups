@@ -205,6 +205,7 @@ namespace libsemigroups {
     //! * \ref validate_alphabet
     //! * \ref validate_rules
     //! * \ref validate
+    // TODO Rename alphabet_size
     Presentation& alphabet(size_type n);
 
     //! \brief Set the alphabet const reference.
