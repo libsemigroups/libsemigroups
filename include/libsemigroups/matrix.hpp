@@ -69,6 +69,10 @@ namespace libsemigroups {
   //! page directly, but rather through the aliases described on the other
   //! matrix pages (such as, for example, \ref BMat).
   //!
+  //! \warning All of the matrices in ``libsemigroups`` have entries that are
+  //! integer types, and the code does not currently attempt to detect
+  //! overflows.
+  //!
   //! ## Over specific semirings
   //!
   //! The following matrix classes are provided which define matrices over some
@@ -1326,6 +1330,8 @@ namespace libsemigroups {
     //! \warning
     //! The two row views must be of the same size, although this is not
     //! verified by the implementation.
+    //!
+    //! \warning This function does not try to detect integer overflows.
     Row operator+(StaticRowView const& that);
 
     //! \brief Sums a row view with another row view in-place.
@@ -1344,6 +1350,8 @@ namespace libsemigroups {
     //! \warning
     //! The two row views must be of the same size, although this is not
     //! verified by the implementation.
+    //!
+    //! \warning This function does not try to detect integer overflows.
     void operator+=(StaticRowView const& that);
 
     //! \brief Adds a scalar to every entry of a row in-place.
@@ -1357,6 +1365,8 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! \f$O(m)\f$ where \f$m\f$ is \ref size.
+    //!
+    //! \warning This function does not try to detect integer overflows.
     void operator+=(scalar_type a);
 
     //! \brief Multiplies every entry of the row by a scalar.
@@ -1374,6 +1384,8 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! \f$O(m)\f$ where \f$m\f$ is \ref size.
+    //!
+    //! \warning This function does not try to detect integer overflows.
     Row operator*(scalar_type a) const;
 
     //! \brief Multiplies every entry of the row by a scalar in-place.
@@ -1387,6 +1399,8 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! \f$O(m)\f$ where \f$m\f$ is \ref size.
+    //!
+    //! \warning This function does not try to detect integer overflows.
     void operator*=(scalar_type a);
 #endif
 
@@ -2265,6 +2279,8 @@ namespace libsemigroups {
     //! \warning
     //! The matrices must be of the same dimensions, although this is not
     //! verified.
+    //!
+    //! \warning This function does not try to detect integer overflows.
     StaticMatrix operator+(StaticMatrix const& that);
 
     //! \brief Add a matrix to another matrix in-place.
@@ -2281,6 +2297,8 @@ namespace libsemigroups {
     //! \warning
     //! The matrices must be of the same dimensions, although this is not
     //! checked.
+    //!
+    //! \warning This function does not try to detect integer overflows.
     void operator+=(StaticMatrix const& that);
 
     //! \copydoc operator+=
@@ -2295,6 +2313,8 @@ namespace libsemigroups {
     //! \complexity
     //! \f$O(mn)\f$ where \f$m\f$ is \ref number_of_rows and \f$m\f$ is \ref
     //! number_of_cols
+    //!
+    //! \warning This function does not try to detect integer overflows.
     void operator+=(scalar_type a);
 
     //! \brief Returns the product of two matrices.
@@ -2312,6 +2332,8 @@ namespace libsemigroups {
     //! \warning
     //! The matrices must be of the same dimensions, although this is not
     //! verified.
+    //!
+    //! \warning This function does not try to detect integer overflows.
     StaticMatrix operator*(StaticMatrix const& that);
 
     //! \brief Multiplies every entry of a matrix by a scalar in-place.
@@ -2323,6 +2345,8 @@ namespace libsemigroups {
     //! \complexity
     //! \f$O(mn)\f$ where \f$m\f$ is \ref number_of_rows
     //! and \f$m\f$ is \ref number_of_cols.
+    //!
+    //! \warning This function does not try to detect integer overflows.
     void operator*=(scalar_type a);
 
     //! \brief Multiplies \p x and \p y and stores the result in `this`.
@@ -5982,8 +6006,10 @@ namespace libsemigroups {
         std::tie(r, c) = m.coords(it);
 
         std::string it_repr;
-        if (*it == NEGATIVE_INFINITY) {
-          it_repr = u8"-\u221E";
+        if constexpr (std::is_signed_v<scalar_type>) {
+          if (*it == NEGATIVE_INFINITY) {
+            it_repr = u8"-\u221E";
+          }
         } else if (*it == POSITIVE_INFINITY) {
           it_repr = u8"+\u221E";
         } else {
@@ -7318,6 +7344,7 @@ namespace libsemigroups {
   }  // namespace matrix
 
   // TODO(0) doc
+  //! \warning This function does not try to detect integer overflows.
   template <typename Mat>
   auto operator+(typename Mat::scalar_type a,
                  Mat const& x) -> std::enable_if_t<IsMatrix<Mat>, Mat> {
@@ -7325,6 +7352,7 @@ namespace libsemigroups {
   }
 
   // TODO(0) doc
+  //! \warning This function does not try to detect integer overflows.
   template <typename Mat>
   auto operator*(typename Mat::scalar_type a,
                  Mat const& x) -> std::enable_if_t<IsMatrix<Mat>, Mat> {
