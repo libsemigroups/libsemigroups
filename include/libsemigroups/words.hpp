@@ -98,12 +98,12 @@ namespace libsemigroups {
   //!
   //! \param n the number of letters in the alphabet.
   //! \param min the minimum length of a word.
-  //! \param max the maximum length of a word.
+  //! \param max one greater than the maximum length of a word.
   //!
   //! \returns
   //! A value of type \c uint64_t.
   //!
-  //! \exception
+  //! \exceptions
   //! \no_libsemigroups_except
   //!
   //! \warning If the number of words exceeds 2 ^ 64 - 1, then the return value
@@ -146,7 +146,7 @@ namespace libsemigroups {
   //!
   //! \returns An iterator pointing to \p first.
   //!
-  //! \exception
+  //! \exceptions
   //! \no_libsemigroups_except
   //!
   //! \note
@@ -221,7 +221,7 @@ namespace libsemigroups {
   //!
   //! \returns An iterator pointing to \p first.
   //!
-  //! \exception
+  //! \exceptions
   //! \no_libsemigroups_except
   //!
   //! \warning
@@ -333,7 +333,7 @@ namespace libsemigroups {
     //!
     //! \returns A value of type \ref output_type.
     //!
-    //! \exception
+    //! \exceptions
     //! \noexcept
     //!
     //! \warning If at_end() returns \c true, then the return value of this
@@ -348,7 +348,7 @@ namespace libsemigroups {
     //!
     //! Advances a WordRange object to the next value (if any).
     //!
-    //! \exception
+    //! \exceptions
     //! \noexcept
     //!
     //! \sa \ref at_end
@@ -362,7 +362,7 @@ namespace libsemigroups {
     //! Returns \c true if a WordRange object is exhausted, and \c false if not.
     //! \returns A value of type \c bool.
     //!
-    //! \exception
+    //! \exceptions
     //! \noexcept
     [[nodiscard]] bool at_end() const noexcept {
       set_iterator();
@@ -377,7 +377,7 @@ namespace libsemigroups {
     //!
     //! \returns A value of type \c size_t.
     //!
-    //! \exception
+    //! \exceptions
     //! \noexcept
     [[nodiscard]] size_t size_hint() const noexcept {
       return number_of_words(_alphabet_size, _first.size(), _last.size());
@@ -393,7 +393,7 @@ namespace libsemigroups {
     //!
     //! \returns A value of type \c size_t.
     //!
-    //! \exception
+    //! \exceptions
     //! \noexcept
     [[nodiscard]] size_t count() const noexcept;
 
@@ -429,7 +429,7 @@ namespace libsemigroups {
     //!
     //! \returns A reference to \c *this.
     //!
-    //! \exception
+    //! \exceptions
     //! \no_libsemigroups_except
     WordRange& init();
 
@@ -466,7 +466,7 @@ namespace libsemigroups {
     //!
     //! \returns A reference to \c *this.
     //!
-    //! \exception
+    //! \exceptions
     //! \noexcept
     WordRange& alphabet_size(size_type n) noexcept {
       _current_valid &= (n == _alphabet_size);
@@ -480,7 +480,7 @@ namespace libsemigroups {
     //!
     //! \returns A value of type \ref size_type.
     //!
-    //! \exception
+    //! \exceptions
     //! \noexcept
     [[nodiscard]] size_type alphabet_size() const noexcept {
       return _alphabet_size;
@@ -511,7 +511,7 @@ namespace libsemigroups {
     //!
     //! \returns A const reference to a \ref word_type.
     //!
-    //! \exception
+    //! \exceptions
     //! \noexcept
     //!
     //! \sa \ref min
@@ -543,7 +543,7 @@ namespace libsemigroups {
     //!
     //! \returns A const reference to a \ref word_type.
     //!
-    //! \exception
+    //! \exceptions
     //! \noexcept
     //!
     //! \sa \ref max
@@ -569,7 +569,7 @@ namespace libsemigroups {
     //!
     //! \returns A value of type \ref Order.
     //!
-    //! \exception
+    //! \exceptions
     //! \noexcept
     [[nodiscard]] Order order() const noexcept {
       return _order;
@@ -584,7 +584,7 @@ namespace libsemigroups {
     //!
     //! \returns A reference to \c *this.
     //!
-    //! \exception
+    //! \exceptions
     //! \no_libsemigroups_except
     WordRange& upper_bound(size_type n) {
       _current_valid &= (n == _upper_bound);
@@ -599,7 +599,7 @@ namespace libsemigroups {
     //!
     //! \returns A value of type \ref size_type.
     //!
-    //! \exception
+    //! \exceptions
     //! \noexcept
     [[nodiscard]] size_type upper_bound() const noexcept {
       return _upper_bound;
@@ -614,7 +614,7 @@ namespace libsemigroups {
     //!
     //! \returns A reference to \c *this.
     //!
-    //! \exception
+    //! \exceptions
     //! \no_libsemigroups_except
     WordRange& min(size_type val) {
       first(word_type(val, 0));
@@ -634,7 +634,7 @@ namespace libsemigroups {
     //!
     //! \returns A reference to \c *this.
     //!
-    //! \exception
+    //! \exceptions
     //! \no_libsemigroups_except
     WordRange& max(size_type val) {
       last(word_type(val, 0));
@@ -649,7 +649,7 @@ namespace libsemigroups {
     //!
     //! \returns An input iterator.
     //!
-    //! \exception
+    //! \exceptions
     //! \noexcept
     //!
     //! \note The return type of \ref end might be different from the return
@@ -669,7 +669,7 @@ namespace libsemigroups {
     //!
     //! \returns An input iterator.
     //!
-    //! \exception
+    //! \exceptions
     //! \noexcept
     //!
     //! \note The return type of \ref end might be different from the return
@@ -777,7 +777,7 @@ namespace libsemigroups {
     //!
     //! \returns A reference to \c *this.
     //!
-    //! \exception
+    //! \exceptions
     //! \no_libsemigroups_except
     //!
     //! \sa ToWord()
@@ -820,7 +820,7 @@ namespace libsemigroups {
     //!
     //! \returns A value of type \c bool.
     //!
-    //! \exception
+    //! \exceptions
     //! \no_libsemigroups_except
     [[nodiscard]] bool empty() const {
       return _alphabet_map.empty();
@@ -839,7 +839,7 @@ namespace libsemigroups {
     //!
     //! \returns A value of type std::string.
     //!
-    //! \exception
+    //! \exceptions
     //! \no_libsemigroups_except.
     [[nodiscard]] std::string alphabet() const;
 
@@ -1068,7 +1068,7 @@ namespace libsemigroups {
     //!
     //! \returns A reference to \c *this.
     //!
-    //! \exception
+    //! \exceptions
     //! \noexcept
     //!
     //! \sa ToString()
@@ -1111,7 +1111,7 @@ namespace libsemigroups {
     //!
     //! \returns A value of type \c bool.
     //!
-    //! \exception
+    //! \exceptions
     //! \noexcept
     [[nodiscard]] bool empty() const noexcept {
       return _alphabet_map.empty();
@@ -1130,7 +1130,7 @@ namespace libsemigroups {
     //!
     //! \returns A value of type std::string.
     //!
-    //! \exception
+    //! \exceptions
     //! \no_libsemigroups_except.
     [[nodiscard]] std::string alphabet() const;
 
@@ -1313,7 +1313,7 @@ namespace libsemigroups {
   //!
   //! \returns A random string, value of `std::string`.
   //!
-  //! \exception
+  //! \exceptions
   //! \no_libsemigroups_except
   //!
   //! \sa \ref random_word
@@ -1437,7 +1437,7 @@ namespace libsemigroups {
     //!
     //! \returns A value of type \ref output_type.
     //!
-    //! \exception
+    //! \exceptions
     //! \noexcept
     //!
     //! \warning If at_end() returns \c true, then the return value of this
@@ -1451,7 +1451,7 @@ namespace libsemigroups {
     //!
     //! Advances a StringRange object to the next value (if any).
     //!
-    //! \exception
+    //! \exceptions
     //! \noexcept
     //!
     //! \sa \ref at_end
@@ -1467,7 +1467,7 @@ namespace libsemigroups {
     //!
     //! \returns A value of type \c bool.
     //!
-    //! \exception
+    //! \exceptions
     //! \noexcept
     bool at_end() const noexcept {
       return _word_range.at_end();
@@ -1481,7 +1481,7 @@ namespace libsemigroups {
     //!
     //! \returns A value of type \c size_t.
     //!
-    //! \exception
+    //! \exceptions
     //! \noexcept
     size_t size_hint() const noexcept {
       return _word_range.size_hint();
@@ -1496,7 +1496,7 @@ namespace libsemigroups {
     //!
     //! \returns A value of type \c size_t.
     //!
-    //! \exception
+    //! \exceptions
     //! \noexcept
     size_t count() const noexcept {
       return _word_range.count();
@@ -1531,7 +1531,7 @@ namespace libsemigroups {
     //!
     //! \returns A reference to \c *this.
     //!
-    //! \exception
+    //! \exceptions
     //! \no_libsemigroups_except
     StringRange& init();
 
@@ -1567,7 +1567,7 @@ namespace libsemigroups {
     //!
     //! \returns A value of type \ref std::string.
     //!
-    //! \exception
+    //! \exceptions
     //! \noexcept
     [[nodiscard]] std::string const& alphabet() const noexcept {
       return _letters;
@@ -1597,7 +1597,7 @@ namespace libsemigroups {
     //!
     //! \returns A \ref std::string by value.
     //!
-    //! \exception
+    //! \exceptions
     //! \noexcept
     //!
     //! \sa \ref min
@@ -1632,7 +1632,7 @@ namespace libsemigroups {
     //!
     //! \returns A \ref std::string by value.
     //!
-    //! \exception
+    //! \exceptions
     //! \noexcept
     //!
     //! \sa \ref max
@@ -1662,7 +1662,7 @@ namespace libsemigroups {
     //!
     //! \returns A value of type \ref Order.
     //!
-    //! \exception
+    //! \exceptions
     //! \noexcept
     [[nodiscard]] Order order() const noexcept {
       return _word_range.order();
@@ -1677,7 +1677,7 @@ namespace libsemigroups {
     //!
     //! \returns A reference to \c *this.
     //!
-    //! \exception
+    //! \exceptions
     //! \no_libsemigroups_except
     StringRange& upper_bound(size_type n) {
       _word_range.upper_bound(n);
@@ -1692,7 +1692,7 @@ namespace libsemigroups {
     //!
     //! \returns A value of type \ref size_type.
     //!
-    //! \exception
+    //! \exceptions
     //! \noexcept
     [[nodiscard]] size_type upper_bound() const noexcept {
       return _word_range.upper_bound();
@@ -1707,7 +1707,7 @@ namespace libsemigroups {
     //!
     //! \returns A reference to \c *this.
     //!
-    //! \exception
+    //! \exceptions
     //! \no_libsemigroups_except
     StringRange& min(size_type val) {
       _word_range.min(val);
@@ -1728,7 +1728,7 @@ namespace libsemigroups {
     //!
     //! \returns A reference to \c *this.
     //!
-    //! \exception
+    //! \exceptions
     //! \no_libsemigroups_except
     StringRange& max(size_type val) {
       _word_range.max(val);
@@ -1744,7 +1744,7 @@ namespace libsemigroups {
     //!
     //! \returns An input iterator.
     //!
-    //! \exception
+    //! \exceptions
     //! \noexcept
     //!
     //! \note The return type of \ref end might be different from the return
@@ -1764,7 +1764,7 @@ namespace libsemigroups {
     //!
     //! \returns An input iterator.
     //!
-    //! \exception
+    //! \exceptions
     //! \noexcept
     //!
     //! \note The return type of \ref end might be different from the return
@@ -1791,9 +1791,9 @@ namespace libsemigroups {
   //! in a compact form.
   //! \par Example
   //! \code
-  //! 012_w      \\ same as word_type({0, 1, 2})
-  //! "abc"_w    \\ also same as word_type({0, 1, 2})
-  //! "(ab)^3"_p \\ same as "ababab"
+  //! 012_w      // same as word_type({0, 1, 2})
+  //! "abc"_w    // also same as word_type({0, 1, 2})
+  //! "(ab)^3"_p // same as "ababab"
   //! \endcode
   namespace literals {
     //! \anchor literal_operator_w
@@ -1873,10 +1873,10 @@ namespace libsemigroups {
   //! \par Example
   //! \code
   //! using namespace words;
-  //! pow("a", 5)            \\ same as "aaaaa"
-  //! 01_w + 2               \\ same as 012_w
-  //! 01_w + 01_w            \\ same as 0101_w
-  //! prod(0123_w, 0, 16, 3) \\ same as 032103_w
+  //! pow("a", 5)            // same as "aaaaa"
+  //! 01_w + 2               // same as 012_w
+  //! 01_w + 01_w            // same as 0101_w
+  //! prod(0123_w, 0, 16, 3) // same as 032103_w
   //! \endcode
   namespace words {
 
@@ -1891,7 +1891,7 @@ namespace libsemigroups {
     //!
     //! \returns A value of type \ref letter_type.
     //!
-    //! \exception
+    //! \exceptions
     //! \no_libsemigroups_except
     //!
     //! \sa human_readable_letter
@@ -1948,7 +1948,7 @@ namespace libsemigroups {
     //!
     //! \returns A \ref word_type.
     //!
-    //! \exception
+    //! \exceptions
     //! \no_libsemigroups_except
     static inline word_type operator+(word_type const& u, word_type const& w) {
       word_type result(u);
@@ -1984,7 +1984,7 @@ namespace libsemigroups {
     //! \param u a word.
     //! \param v a word.
     //!
-    //! \exception
+    //! \exceptions
     //! \no_libsemigroups_except
     //!
     //! \sa \ref operator_plus "operator+"
@@ -2019,7 +2019,7 @@ namespace libsemigroups {
     //! \param w the word.
     //! \param n the power.
     //!
-    //! \exception
+    //! \exceptions
     //! \no_libsemigroups_except
     template <typename Word>
     void pow_inplace(Word& w, size_t n);
@@ -2037,7 +2037,7 @@ namespace libsemigroups {
     //!
     //! \returns A Word
     //!
-    //! \exception
+    //! \exceptions
     //! \no_libsemigroups_except
     template <typename Word>
     Word pow(Word const& x, size_t n) {
@@ -2098,9 +2098,9 @@ namespace libsemigroups {
     //! \code
     //! using namespace words;
     //! word_type w = 012345_w
-    //! prod(w, 0, 5, 2)         // {0, 2, 4}
-    //! prod(w, 1, 9, 2)         // {1, 3, 5, 1}
-    //! prod("abcde", 4, 1, -1)  // "edc"
+    //! prod(w, 0, 5, 2)              // {0, 2, 4}
+    //! prod(w, 1, 9, 2)              // {1, 3, 5, 1}
+    //! prod("abcde", 4, 1, -1)       // "edc"
     //! prod({"aba", "xyz"}, 0, 4, 1) // "abaxyzabaxyz"
     //! \endcode
     template <typename Container, typename Word = Container>
