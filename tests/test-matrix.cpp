@@ -1296,6 +1296,7 @@ namespace libsemigroups {
             == "MinPlusTruncMat<>({{ 0,  2,  0},\n"
                "                   { 1,  0,  0},\n"
                "                   { 1,  3, +∞}})");
+    delete sr;
   }
 
 }  // namespace libsemigroups
