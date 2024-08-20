@@ -18,7 +18,7 @@
 
 // TODO(1) tpp file
 // TODO(1) put the detail stuff into detail/matrix-common.hpp
-// TODO(0) add comment about not catching overflows to doc
+// TODO(1) there're no complete set of init methods for matrices
 
 #ifndef LIBSEMIGROUPS_MATRIX_HPP_
 #define LIBSEMIGROUPS_MATRIX_HPP_
@@ -161,7 +161,17 @@ namespace libsemigroups {
 
   namespace matrix {
 
-    // TODO(doc)
+    //! \brief Throws if a matrix is not square.
+    //!
+    //! This function throws a LibsemigroupsException if the matrix \p x is not
+    //! square.
+    //!
+    //! \tparam Mat the type of the argument, must satisfy \ref IsMatrix<Mat>.
+    //!
+    //! \param x the matrix to check.
+    //!
+    //! \throws LibsemigroupsException if the number of rows in \p x does not
+    //! equal the number of columns.
     template <typename Mat>
     auto throw_if_not_square(Mat const& x) -> std::enable_if_t<IsMatrix<Mat>> {
       if (x.number_of_rows() != x.number_of_cols()) {
@@ -171,7 +181,19 @@ namespace libsemigroups {
       }
     }
 
-    // TODO(doc)
+    //! \brief Throws if two matrices do not have the same dimensions.
+    //!
+    //! This function throws a LibsemigroupsException if the matrices \p x and
+    //! \p y do not have equal dimensions.
+    //!
+    //! \tparam Mat the type of the arguments, must satisfy \ref IsMatrix<Mat>.
+    //!
+    //! \param x the first matrix to check.
+    //! \param y the second matrix to check.
+    //!
+    //! \throws LibsemigroupsException if the number of rows in \p x does not
+    //! equal the number of rows of \p y; or the number of columns of \p x does
+    //! not equal the number of columns of \p y.
     template <typename Mat>
     auto throw_if_bad_dim(Mat const& x,
                           Mat const& y) -> std::enable_if_t<IsMatrix<Mat>> {
@@ -187,7 +209,20 @@ namespace libsemigroups {
       }
     }
 
-    // TODO(doc)
+    //! \brief Throws the arguments do not index an entry of a matrix.
+    //!
+    //! This function throws a LibsemigroupsException if \p r is not less than
+    //! the number of rows of \p x; or if \p c is not less than the number of
+    //! columns of \p x.
+    //!
+    //! \tparam Mat the type of the arguments, must satisfy \ref IsMatrix<Mat>.
+    //!
+    //! \param x the matrix.
+    //! \param r the row index.
+    //! \param c the column index.
+    //!
+    //! \throws LibsemigroupsException if `(r, c)` does not index an entry in
+    //! the matrix \p x.
     template <typename Mat>
     auto throw_if_bad_coords(Mat const& x,
                              size_t     r,
@@ -2007,7 +2042,7 @@ namespace libsemigroups {
     ~StaticMatrix() = default;
 
 #ifndef PARSED_BY_DOXYGEN
-    static StaticMatrix one(size_t n = 0) {
+    static StaticMatrix one(size_t n) {
       static_assert(C == R, "cannot create non-square identity matrix");
       // If specified the value of n must equal R or otherwise weirdness will
       // ensue...
@@ -2063,6 +2098,24 @@ namespace libsemigroups {
     //!    performed.
     scalar_reference operator()(size_t r, size_t c);
 
+    //! \brief Returns a reference to the specified entry of the matrix.
+    //!
+    //! Returns a reference to the specified entry of the matrix.
+    //!
+    //! \param r  the index of the row of the entry.
+    //! \param c  the index of the column of the entry.
+    //!
+    //! \returns  A value of type \ref scalar_reference.
+    //!
+    //! \exceptions
+    //!   this function guarantees not to throw a LibsemigroupsException.
+    //!
+    //! \complexity
+    //!   Constant
+    //!
+    //! \throws LibsemigroupsException if \p r or \p c is out of bounds.
+    scalar_reference at(size_t r, size_t c);
+
     //! \brief Returns a const reference to the specified entry of the matrix.
     //!
     //! Returns a const reference to the specified entry of the matrix.
@@ -2083,12 +2136,30 @@ namespace libsemigroups {
     //! performed.
     scalar_const_reference operator()(size_t r, size_t c) const;
 
+    //! \brief Returns a const reference to the specified entry of the matrix.
+    //!
+    //! Returns a const reference to the specified entry of the matrix.
+    //!
+    //! \param r  the index of the row of the entry.
+    //! \param c  the index of the column of the entry.
+    //!
+    //! \returns  A value of type \ref scalar_const_reference.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    //! \complexity
+    //! Constant
+    //!
+    //! \throws LibsemigroupsException if \p r or \p c is out of bounds.
+    scalar_const_reference at(size_t r, size_t c) const;
+
     //! \brief Returns an iterator pointing at the first entry.
     //!
     //! This function returns a random access iterator point at the first entry
     //! of the matrix.
     //!
-    //! \returns A value of type \ref iterator.
+    //! \returns A value of type \ref StaticMatrix::iterator "iterator".
     //!
     //! \complexity
     //! Constant
@@ -2104,7 +2175,7 @@ namespace libsemigroups {
     //! \brief Returns an iterator pointing one beyond the last entry in the
     //! matrix.
     //!
-    //! \returns A value of type \ref iterator.
+    //! \returns A value of type \ref StaticMatrix::iterator "iterator".
     //!
     //! \complexity
     //! Constant
@@ -2122,7 +2193,8 @@ namespace libsemigroups {
     //! This function returns a const (random access) iterator pointing at the
     //! first entry in the matrix.
     //!
-    //! \returns  A value of type \ref const_iterator.
+    //! \returns  A value of type \ref StaticMatrix::const_iterator
+    //! "const_iterator".
     //!
     //! \complexity
     //! Constant
@@ -2141,7 +2213,8 @@ namespace libsemigroups {
     //! This function returns a const (random access) iterator pointing one
     //! passed the last entry of the matrix.
     //!
-    //! \returns A value of type \ref const_iterator.
+    //! \returns  A value of type \ref StaticMatrix::const_iterator
+    //! "const_iterator".
     //!
     //! \complexity
     //! Constant
@@ -2474,18 +2547,60 @@ namespace libsemigroups {
     //! This only works when the template parameters \c R and \c C are
     //! equal (i.e. for square matrices).
     static StaticMatrix one() const;
+
+    // TODO(doc)
+    size_t hash_value() const;
+
+    // TODO(0) doc
+    bool operator<=(T const& that) const;
+
+    // TODO(0) doc
+    bool operator>=(T const& that) const;
+
+    // TODO(0) doc
+    StaticMatrix operator*(scalar_type);
+    // TODO(0) doc
+    StaticMatrix operator+(scalar_type);
+
+    // TODO(0) doc
+    scalar_type scalar_zero() const noexcept;
+    // TODO(0) doc
+    scalar_type scalar_one() const noexcept;
+    // TODO(0) doc
+    semiring_type const* semiring() const noexcept;
+
 #else
-    // TODO(0) complete this list, same for dynamic matrices
-    using MatrixCommon::operator();
+    using MatrixCommon::at;
     using MatrixCommon::begin;
     using MatrixCommon::cbegin;
     using MatrixCommon::cend;
+    using MatrixCommon::coords;
     using MatrixCommon::end;
+    using MatrixCommon::hash_value;  // TODO(0)
     using MatrixCommon::number_of_cols;
     using MatrixCommon::number_of_rows;
+    using MatrixCommon::one;
+    using MatrixCommon::operator();
     using MatrixCommon::operator==;
+    using MatrixCommon::operator<;
+    using MatrixCommon::operator<=;  // TODO(0)
+    using MatrixCommon::operator>;
+    using MatrixCommon::operator>=;  // TODO(0)
     using MatrixCommon::operator!=;
+    using MatrixCommon::operator*=;
+    using MatrixCommon::operator+=;
+    using MatrixCommon::operator*;  // TODO(0)
+    using MatrixCommon::operator+;  // TODO(0)
+    using MatrixCommon::product_inplace_no_checks;
+    using MatrixCommon::row;
+    using MatrixCommon::row_no_checks;
+    using MatrixCommon::rows;
+    using MatrixCommon::scalar_one;   // TODO(0)
+    using MatrixCommon::scalar_zero;  // TODO(0)
+    using MatrixCommon::semiring;     // TODO(0)
     using MatrixCommon::swap;
+    using MatrixCommon::transpose;
+    using MatrixCommon::transpose_no_checks;
 #endif  // PARSED_BY_DOXYGEN
 
    private:
@@ -2855,10 +2970,37 @@ namespace libsemigroups {
     //! \copydoc StaticMatrix::transpose
     void transpose();
 #else
+    using MatrixCommon::at;
+    using MatrixCommon::begin;
+    using MatrixCommon::cbegin;
+    using MatrixCommon::cend;
+    using MatrixCommon::coords;
+    using MatrixCommon::end;
+    using MatrixCommon::hash_value;
     using MatrixCommon::number_of_cols;
     using MatrixCommon::number_of_rows;
     using MatrixCommon::one;
-    using MatrixCommon::resize;
+    using MatrixCommon::operator();
+    using MatrixCommon::operator==;
+    using MatrixCommon::operator<;
+    using MatrixCommon::operator<=;
+    using MatrixCommon::operator>;
+    using MatrixCommon::operator>=;
+    using MatrixCommon::operator!=;
+    using MatrixCommon::operator*=;
+    using MatrixCommon::operator+=;
+    using MatrixCommon::operator*;
+    using MatrixCommon::operator+;
+    using MatrixCommon::product_inplace_no_checks;
+    using MatrixCommon::row;
+    using MatrixCommon::row_no_checks;
+    using MatrixCommon::rows;
+    using MatrixCommon::scalar_one;
+    using MatrixCommon::scalar_zero;
+    using MatrixCommon::semiring;
+    using MatrixCommon::swap;
+    using MatrixCommon::transpose;
+    using MatrixCommon::transpose_no_checks;
 #endif  // PARSED_BY_DOXYGEN
 
     //! \copydoc StaticMatrix::swap
@@ -2867,6 +3009,9 @@ namespace libsemigroups {
           static_cast<MatrixDynamicDim&>(that));
       static_cast<MatrixCommon&>(*this).swap(static_cast<MatrixCommon&>(that));
     }
+
+   private:
+    using MatrixCommon::resize;
   };
 
   template <typename PlusOp,
@@ -3192,13 +3337,39 @@ namespace libsemigroups {
 
     //! \copydoc StaticMatrix::transpose
     void transpose();
-    // TODO(0) doc at
+    // TODO(0) add missing doc from above
 #else
+    using MatrixCommon::at;
     using MatrixCommon::begin;
+    using MatrixCommon::cbegin;
+    using MatrixCommon::cend;
+    using MatrixCommon::coords;
+    using MatrixCommon::end;
+    using MatrixCommon::hash_value;
     using MatrixCommon::number_of_cols;
     using MatrixCommon::number_of_rows;
     using MatrixCommon::one;
-    using MatrixCommon::resize;
+    using MatrixCommon::operator();
+    using MatrixCommon::operator==;
+    using MatrixCommon::operator<;
+    using MatrixCommon::operator<=;
+    using MatrixCommon::operator>;
+    using MatrixCommon::operator>=;
+    using MatrixCommon::operator!=;
+    using MatrixCommon::operator*=;
+    using MatrixCommon::operator+=;
+    using MatrixCommon::operator*;
+    using MatrixCommon::operator+;
+    using MatrixCommon::product_inplace_no_checks;
+    using MatrixCommon::row;
+    using MatrixCommon::row_no_checks;
+    using MatrixCommon::rows;
+    using MatrixCommon::scalar_one;
+    using MatrixCommon::scalar_zero;
+    using MatrixCommon::semiring;
+    using MatrixCommon::swap;
+    using MatrixCommon::transpose;
+    using MatrixCommon::transpose_no_checks;
 #endif  // PARSED_BY_DOXYGEN
 
     //! \copydoc StaticMatrix::swap
@@ -3210,6 +3381,8 @@ namespace libsemigroups {
     }
 
    private:
+    using MatrixCommon::resize;
+
     scalar_type plus_impl(scalar_type x, scalar_type y) const noexcept {
       return _semiring->plus(x, y);
     }
@@ -3872,6 +4045,7 @@ namespace libsemigroups {
     struct IsIntMatHelper<DynamicIntMat<Scalar>> : std::true_type {};
   }  // namespace detail
 
+  //! TODO(0) doc
   template <typename T>
   static constexpr bool IsIntMat = detail::IsIntMatHelper<T>::value;
 
@@ -4150,6 +4324,7 @@ namespace libsemigroups {
     struct IsMaxPlusMatHelper<DynamicMaxPlusMat<Scalar>> : std::true_type {};
   }  // namespace detail
 
+  //! TODO(0) doc
   template <typename T>
   static constexpr bool IsMaxPlusMat = detail::IsMaxPlusMatHelper<T>::value;
 
@@ -4423,6 +4598,7 @@ namespace libsemigroups {
     struct IsMinPlusMatHelper<DynamicMinPlusMat<Scalar>> : std::true_type {};
   }  // namespace detail
 
+  //! TODO(0) doc
   template <typename T>
   static constexpr bool IsMinPlusMat = detail::IsMinPlusMatHelper<T>::value;
 
@@ -4442,8 +4618,7 @@ namespace libsemigroups {
     //!
     //! \throws LibsemigroupsException if \p x contains \ref NEGATIVE_INFINITY.
     template <typename Mat>
-    auto
-    throw_if_bad_entry(Mat const& x) -> std::enable_if_t<IsMinPlusMat<Mat>> {
+    std::enable_if_t<IsMinPlusMat<Mat>> throw_if_bad_entry(Mat const& x) {
       using scalar_type = typename Mat::scalar_type;
       auto it = std::find_if(x.cbegin(), x.cend(), [](scalar_type val) {
         return val == NEGATIVE_INFINITY;
@@ -4902,7 +5077,7 @@ namespace libsemigroups {
       });
       if (it != m.cend()) {
         auto [r, c] = m.coords(it);
-        // TODO update to be \{0, ..., t, infty\} i.e. don't use union
+        // TODO(0) update to be \{0, ..., t, infty\} i.e. don't use union
         LIBSEMIGROUPS_EXCEPTION("invalid entry, expected values in [0, {}] "
                                 "{} {{-{}}} but found {} in entry ({}, {})",
                                 t,
@@ -6512,25 +6687,21 @@ namespace libsemigroups {
     //! Defined in ``matrix.hpp``.
     //!
     //! This function can be used to validate that a matrix contains values in
-    //! the underlying semiring. This is always \c true for \ref MaxPlusMat
-    //! objects.
+    //! the underlying semiring.
     //!
     //! \tparam Mat the type of the parameter (must satisfy \ref
     //! IsProjMaxPlusMat<Mat>).
-    //!
-    //! \exceptions
-    //! \noexcept
     template <typename Mat>
     constexpr std::enable_if_t<IsProjMaxPlusMat<Mat>>
-    throw_if_bad_entry(Mat const&) noexcept {
-      // TODO impl
+    throw_if_bad_entry(Mat const& x) {
+      throw_if_bad_entry(x.underlying_matrix());
     }
 
-    // TODO doc
+    // TODO(0) doc
     template <typename Mat>
     constexpr std::enable_if_t<IsProjMaxPlusMat<Mat>>
-    throw_if_bad_entry(Mat const&, typename Mat::scalar_type) noexcept {
-      // TODO impl
+    throw_if_bad_entry(Mat const& x, typename Mat::scalar_type val) {
+      throw_if_bad_entry(x.underlying_matrix(), val);
     }
 
     ////////////////////////////////////////////////////////////////////////
@@ -7361,11 +7532,11 @@ namespace libsemigroups {
 
   //! \ingroup matrix_group
   //!
-  //! \brief Validates the arguments, constructs a matrix and validates it.
+  //! \brief Validates the arguments, constructs a matrix, and validates it.
   //!
   //! Defined in ``matrix.hpp``.
   //!
-  //! Validates the arguments, constructs a matrix and validates it.
+  //! Validates the arguments, constructs a matrix, and validates it.
   //!
   //! \tparam Mat the type of matrix being constructed, must satisfy
   //! \ref IsMatrix<Mat> and not \ref IsMatWithSemiring<Mat>.
@@ -7384,7 +7555,6 @@ namespace libsemigroups {
   //! \complexity
   //! \f$O(mn)\f$ where \f$m\f$ is the number of rows and
   //! \f$n\f$ is the number of columns of the matrix.
-  // TODO(0) update doc
   template <typename Mat,
             typename
             = std::enable_if_t<IsMatrix<Mat> && !IsMatWithSemiring<Mat>>>
@@ -7396,7 +7566,31 @@ namespace libsemigroups {
     return m;
   }
 
-  // TODO(0) doc
+  //! \ingroup matrix_group
+  //!
+  //! \brief Validates the arguments, constructs a matrix, and validates it.
+  //!
+  //! Defined in ``matrix.hpp``.
+  //!
+  //! Validates the arguments, constructs a matrix, and validates it.
+  //!
+  //! \tparam Mat the type of matrix being constructed, must satisfy
+  //! \ref IsMatrix<Mat> and not \ref IsMatWithSemiring<Mat>.
+  //!
+  //! \param rows the values to be copied into the matrix.
+  //! \returns The constructed matrix if valid.
+  //!
+  //! \throws
+  //! LibsemigroupsException if `rows` does not represent a
+  //! matrix of the correct dimensions.
+  //!
+  //! \throws
+  //! LibsemigroupsException if the constructed matrix
+  //! contains values that do not belong to the underlying semiring.
+  //!
+  //! \complexity
+  //! \f$O(mn)\f$ where \f$m\f$ is the number of rows and
+  //! \f$n\f$ is the number of columns of the matrix.
   template <typename Mat,
             typename
             = std::enable_if_t<IsMatrix<Mat> && !IsMatWithSemiring<Mat>>>
