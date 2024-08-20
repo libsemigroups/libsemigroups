@@ -2411,8 +2411,8 @@ namespace libsemigroups {
     section_Cr_style(tc);
 
     REQUIRE(tc.number_of_classes() == 24);
-    REQUIRE(human_readable_letter<>(0) == 'a');
-    REQUIRE(human_readable_index('a') == 0);
+    REQUIRE(words::human_readable_letter<>(0) == 'a');
+    REQUIRE(words::human_readable_index('a') == 0);
     REQUIRE(todd_coxeter::normal_form(tc, "aaaaaaaaaaaaaaaaaaa"_w) == "a"_w);
     auto S = to_froidure_pin(tc);
     REQUIRE(to_knuth_bendix(twosided, S).confluent());

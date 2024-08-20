@@ -712,24 +712,6 @@ namespace libsemigroups {
   ////////////////////////////////////////////////////////////////////////
 
   //! \ingroup words_group
-  //! \brief Returns the index of a character in human readable order.
-  //!
-  //! Defined in `words.hpp`.
-  //!
-  //! This function is the inverse of \ref human_readable_letter, see the
-  //! documentation of that function for more details.
-  //!
-  //! \param c character whose index is sought.
-  //!
-  //! \returns A value of type \ref letter_type.
-  //!
-  //! \exception
-  //! \no_libsemigroups_except
-  //!
-  //! \sa human_readable_letter
-  [[nodiscard]] letter_type human_readable_index(char c);
-
-  //! \ingroup words_group
   //! \brief Class for converting strings to \ref word_type with specified
   //! alphabet.
   //!
@@ -738,7 +720,8 @@ namespace libsemigroups {
   //! An instance of this class is used to convert from std::string to \ref
   //! word_type. The characters in the string are converted to integers
   //! according to their position in alphabet used to construct a ToWord
-  //! instance if one is provided, or using \ref human_readable_index otherwise.
+  //! instance if one is provided, or using \ref words::human_readable_index
+  //! otherwise.
   //!
   //! \par Example
   //! \code
@@ -852,7 +835,7 @@ namespace libsemigroups {
     //! letter in a std::string, and \f$i\f$ is a \ref letter_type.
     //!
     //! If this function returns the empty string, then conversion will be
-    //! performed using \ref human_readable_letter.
+    //! performed using \ref words::human_readable_letter.
     //!
     //! \returns A value of type std::string.
     //!
@@ -865,8 +848,8 @@ namespace libsemigroups {
     //! This function converts its second argument \p input into a word_type and
     //! stores the result in the first argument \p output. The characters of \p
     //! input are converted using the alphabet used to construct the object or
-    //! set via init(), or with \ref human_readable_index if \ref empty returns
-    //! `true`.
+    //! set via init(), or with \ref words::human_readable_index if \ref empty
+    //! returns `true`.
     //!
     //! The contents of the first argument \p output, if any, is removed.
     //!
@@ -887,7 +870,7 @@ namespace libsemigroups {
     //! This function converts its argument \p input into a word_type. The
     //! characters of \p input are converted using the alphabet used to
     //! construct the object or set via init(), or with \ref
-    //! human_readable_index if \ref empty returns `true`.
+    //! words::human_readable_index if \ref empty returns `true`.
     //!
     //! \param input the string to convert.
     //!
@@ -909,8 +892,8 @@ namespace libsemigroups {
     //! This function converts its second argument \p input into a word_type and
     //! stores the result in the first argument \p output. The characters of \p
     //! input are converted using the alphabet used to construct the object or
-    //! set via init(), or with \ref human_readable_index if \ref empty returns
-    //! `true`.
+    //! set via init(), or with \ref words::human_readable_index if \ref empty
+    //! returns `true`.
     //!
     //! The contents of the first argument \p output, if any, is removed.
     //!
@@ -930,7 +913,7 @@ namespace libsemigroups {
     //! This function converts its argument \p input into a word_type The
     //! characters of \p input are converted using the alphabet used to
     //! construct the object or set via init(), or with \ref
-    //! human_readable_index if \ref empty returns `true`.
+    //! words::human_readable_index if \ref empty returns `true`.
     //!
     //! \param input the string to convert.
     //!
@@ -1023,44 +1006,6 @@ namespace libsemigroups {
   ////////////////////////////////////////////////////////////////////////
 
   //! \ingroup words_group
-  //! \brief Returns a character by index in human readable order.
-  //!
-  //! This function exists to map the numbers \c 0 to \c 254 to the possible
-  //! values of a \c char, in such a way that the first characters are \c
-  //! a-zA-Z0-9. The ascii ranges for these characters are: \f$[97, 123)\f$,
-  //! \f$[65, 91)\f$, \f$[48, 58)\f$ so the remaining range of chars that are
-  //! appended to the end after these chars are \f$[0,48)\f$, \f$[58, 65)\f$,
-  //! \f$[91, 97)\f$, \f$[123, 255)\f$.
-  //!
-  //! This function is the inverse of \ref human_readable_index.
-  //!
-  //! \param i the index of the character.
-  //!
-  //! \returns A value of type \c char.
-  //!
-  //! \throws LibsemigroupsException if \p i exceeds the number of characters.
-  template <typename Word = std::string>
-  typename Word::value_type human_readable_letter(size_t i) {
-    if (i >= std::numeric_limits<typename Word::value_type>::max()
-                 - std::numeric_limits<typename Word::value_type>::min()) {
-      LIBSEMIGROUPS_EXCEPTION(
-          "expected the argument to be in the range [0, {}), found {}",
-          std::numeric_limits<typename Word::value_type>::max()
-              - std::numeric_limits<typename Word::value_type>::min(),
-          i);
-    }
-    if constexpr (!std::is_same_v<Word, std::string>) {
-      return static_cast<typename Word::value_type>(i);
-    } else {
-      // Choose visible characters a-zA-Z0-9 first before anything else
-      // The ascii ranges for these characters are: [97, 123), [65, 91),
-      // [48, 58) so the remaining range of chars that are appended to the end
-      // after these chars are [0,48), [58, 65), [91, 97), [123, 255)
-      return detail::chars_in_human_readable_order()[i];
-    }
-  }
-
-  //! \ingroup words_group
   //! \brief Class for converting \ref word_type into std::string with specified
   //! alphabet.
   //!
@@ -1069,7 +1014,7 @@ namespace libsemigroups {
   //! An instance of this class is used to convert from \ref word_type to
   //! std::string. The letters in the word are converted to characters
   //! according to their position in alphabet used to construct a ToString
-  //! instance if one is provided, or using \ref human_readable_letter
+  //! instance if one is provided, or using \ref words::human_readable_letter
   //! otherwise.
   //!
   //! \par Example
@@ -1181,7 +1126,7 @@ namespace libsemigroups {
     //! letter in a word_type, and \f$a_i\f$ is a \c char.
     //!
     //! If this function returns the empty string, then conversion will be
-    //! performed using \ref human_readable_index.
+    //! performed using \ref words::human_readable_index.
     //!
     //! \returns A value of type std::string.
     //!
@@ -1194,8 +1139,8 @@ namespace libsemigroups {
     //! This function converts its second argument \p input into a std::string
     //! and stores the result in the first argument \p output. The characters of
     //! \p input are converted using the alphabet used to construct the object
-    //! or set via init(), or with \ref human_readable_letter if \ref empty
-    //! returns `true`.
+    //! or set via init(), or with \ref words::human_readable_letter if \ref
+    //! empty returns `true`.
     //!
     //! The contents of the first argument \p output, if any, is removed.
     //!
@@ -1216,7 +1161,7 @@ namespace libsemigroups {
     //! This function converts its argument \p input into a std::string. The
     //! characters of \p input are converted using the alphabet used to
     //! construct the object or set via init(), or with \ref
-    //! human_readable_letter if \ref empty returns `true`.
+    //! words::human_readable_letter if \ref empty returns `true`.
     //!
     //! \param input the \ref word_type to convert.
     //!
@@ -1238,8 +1183,8 @@ namespace libsemigroups {
     //! This function converts its second argument \p input into a std::string
     //! and stores the result in the first argument \p output. The characters of
     //! \p input are converted using the alphabet used to construct the object
-    //! or set via init(), or with \ref human_readable_letter if \ref empty
-    //! returns `true`.
+    //! or set via init(), or with \ref words::human_readable_letter if \ref
+    //! empty returns `true`.
     //!
     //! The contents of the first argument \p output, if any, is removed.
     //!
@@ -1259,7 +1204,7 @@ namespace libsemigroups {
     //! This function converts its argument \p input into a std::string. The
     //! characters of \p input are converted using the alphabet used to
     //! construct the object or set via init(), or with \ref
-    //! human_readable_letter if \ref empty returns `true`.
+    //! words::human_readable_letter if \ref empty returns `true`.
     //!
     //! \param input the string to convert.
     //!
@@ -1934,6 +1879,60 @@ namespace libsemigroups {
   //! prod(0123_w, 0, 16, 3) \\ same as 032103_w
   //! \endcode
   namespace words {
+
+    //! \brief Returns the index of a character in human readable order.
+    //!
+    //! Defined in `words.hpp`.
+    //!
+    //! This function is the inverse of \ref words::human_readable_letter, see
+    //! the documentation of that function for more details.
+    //!
+    //! \param c character whose index is sought.
+    //!
+    //! \returns A value of type \ref letter_type.
+    //!
+    //! \exception
+    //! \no_libsemigroups_except
+    //!
+    //! \sa human_readable_letter
+    [[nodiscard]] letter_type human_readable_index(char c);
+
+    //! \brief Returns a character by index in human readable order.
+    //!
+    //! This function exists to map the numbers \c 0 to \c 254 to the possible
+    //! values of a \c char, in such a way that the first characters are \c
+    //! a-zA-Z0-9. The ascii ranges for these characters are: \f$[97, 123)\f$,
+    //! \f$[65, 91)\f$, \f$[48, 58)\f$ so the remaining range of chars that are
+    //! appended to the end after these chars are \f$[0,48)\f$, \f$[58, 65)\f$,
+    //! \f$[91, 97)\f$, \f$[123, 255)\f$.
+    //!
+    //! This function is the inverse of \ref words::human_readable_index.
+    //!
+    //! \param i the index of the character.
+    //!
+    //! \returns A value of type \c char.
+    //!
+    //! \throws LibsemigroupsException if \p i exceeds the number of characters.
+    template <typename Word = std::string>
+    typename Word::value_type human_readable_letter(size_t i) {
+      if (i >= std::numeric_limits<typename Word::value_type>::max()
+                   - std::numeric_limits<typename Word::value_type>::min()) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "expected the argument to be in the range [0, {}), found {}",
+            std::numeric_limits<typename Word::value_type>::max()
+                - std::numeric_limits<typename Word::value_type>::min(),
+            i);
+      }
+      if constexpr (!std::is_same_v<Word, std::string>) {
+        return static_cast<typename Word::value_type>(i);
+      } else {
+        // Choose visible characters a-zA-Z0-9 first before anything else
+        // The ascii ranges for these characters are: [97, 123), [65, 91),
+        // [48, 58) so the remaining range of chars that are appended to the end
+        // after these chars are [0,48), [58, 65), [91, 97), [123, 255)
+        return detail::chars_in_human_readable_order()[i];
+      }
+    }
 
     ////////////////////////////////////////////////////////////////////////
     // operator+

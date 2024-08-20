@@ -1171,12 +1171,13 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("human_readable_index", "037", "", "[quick]") {
+    using words::human_readable_letter;
     std::array<uint8_t, 255> result;
     std::iota(result.begin(), result.end(), 0);
     auto expected = result;
 
     std::for_each(result.begin(), result.end(), [](auto& val) {
-      val = human_readable_index(val);
+      val = words::human_readable_index(val);
     });
     std::for_each(result.begin(), result.end(), [](auto& val) {
       val = human_readable_letter<>(val);
@@ -1187,7 +1188,7 @@ namespace libsemigroups {
       val = human_readable_letter<>(val);
     });
     std::for_each(result.begin(), result.end(), [](auto& val) {
-      val = human_readable_index(val);
+      val = words::human_readable_index(val);
     });
     REQUIRE(result == expected);
 

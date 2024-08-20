@@ -25,7 +25,9 @@ namespace libsemigroups {
     Presentation<WordOutput> p;
     p.alphabet(fp.number_of_generators());
     WordOutput lhs, rhs;
-    auto f = [](auto val) { return human_readable_letter<WordOutput>(val); };
+    auto       f = [](auto val) {
+      return words::human_readable_letter<WordOutput>(val);
+    };
 
     for (auto it = fp.cbegin_rules(); it != fp.cend_rules(); ++it) {
       lhs.resize(it->first.size());
@@ -75,7 +77,7 @@ namespace libsemigroups {
       -> std::enable_if_t<!std::is_same_v<WordOutput, WordInput>,
                           Presentation<WordOutput>> {
     return to_presentation<WordOutput>(p, [&p](auto val) {
-      return human_readable_letter<WordOutput>(p.index(val));
+      return words::human_readable_letter<WordOutput>(p.index(val));
     });
   }
 
@@ -116,7 +118,7 @@ namespace libsemigroups {
       -> std::enable_if_t<!std::is_same_v<WordOutput, WordInput>,
                           InversePresentation<WordOutput>> {
     return to_inverse_presentation<WordOutput>(ip, [&ip](auto val) {
-      return human_readable_letter<WordOutput>(ip.index(val));
+      return words::human_readable_letter<WordOutput>(ip.index(val));
     });
   }
 }  // namespace libsemigroups

@@ -77,7 +77,7 @@ namespace libsemigroups {
         std::string out;
         std::string sep = "";
         for (auto it = w.cbegin(); it < w.cend(); ++it) {
-          out += sep + human_readable_letter<>(*it);
+          out += sep + words::human_readable_letter<>(*it);
           sep = " * ";
         }
         return out;
@@ -92,7 +92,8 @@ namespace libsemigroups {
 
       std::string sep = "";
       for (auto it = p.alphabet().cbegin(); it != p.alphabet().cend(); ++it) {
-        out += fmt::format("{}\"{}\"", sep, human_readable_letter<>(*it));
+        out += fmt::format(
+            "{}\"{}\"", sep, words::human_readable_letter<>(*it));
         sep = ", ";
       }
       out += ");\n";

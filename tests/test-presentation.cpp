@@ -399,6 +399,7 @@ namespace libsemigroups {
 
     template <typename W>
     void check_remove_generator() {
+      using words::human_readable_letter;
       Presentation<W> p;
       p.alphabet(10);
       p.remove_generator_no_checks(human_readable_letter<W>(4));
@@ -1465,6 +1466,7 @@ namespace libsemigroups {
                           "022",
                           "helpers reduce_complements",
                           "[quick][presentation]") {
+    using words::human_readable_letter;
     auto rg = ReportGuard(false);
     check_reduce_complements<word_type>();
     check_reduce_complements<StaticVector1<uint16_t, 10>>();
@@ -1775,6 +1777,7 @@ namespace libsemigroups {
                           "043",
                           "letter",
                           "[quick][presentation]") {
+    using words::human_readable_letter;
     Presentation<std::vector<uint16_t>> p;
     REQUIRE_THROWS_AS(human_readable_letter<std::vector<uint16_t>>(65536),
                       LibsemigroupsException);
@@ -1809,6 +1812,7 @@ namespace libsemigroups {
                           "045",
                           "first_unused_letter/letter",
                           "[quick][presentation]") {
+    using words::human_readable_letter;
     Presentation<std::string> p;
     p.alphabet("ab");
 

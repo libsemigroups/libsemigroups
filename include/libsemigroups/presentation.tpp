@@ -88,7 +88,8 @@ namespace libsemigroups {
                               n);
     }
     word_type lphbt(n, 0);
-    std::iota(lphbt.begin(), lphbt.end(), human_readable_letter<Word>(0));
+    std::iota(
+        lphbt.begin(), lphbt.end(), words::human_readable_letter<Word>(0));
 
     return alphabet(lphbt);
   }
@@ -641,13 +642,13 @@ namespace libsemigroups {
 
       for (auto& rule : p.rules) {
         std::for_each(rule.begin(), rule.end(), [&p](letter_type& x) {
-          x = human_readable_letter<Word>(p.index(x));
+          x = words::human_readable_letter<Word>(p.index(x));
         });
       }
       Word A(p.alphabet().size(), 0);
 
       for (size_t i = 0; i < p.alphabet().size(); ++i) {
-        A[i] = human_readable_letter<Word>(i);
+        A[i] = words::human_readable_letter<Word>(i);
       }
       p.alphabet(std::move(A));
 #ifdef LIBSEMIGROUPS_DEBUG
@@ -790,7 +791,7 @@ namespace libsemigroups {
 
       letter_type x;
       for (size_type i = 0; i < max_letter; ++i) {
-        x = human_readable_letter<Word>(i);
+        x = words::human_readable_letter<Word>(i);
         if (!p.in_alphabet(x)) {
           break;
         }
@@ -916,7 +917,9 @@ namespace libsemigroups {
       for (auto const& x : p.alphabet()) {
         if (x != other) {
           replace_subword(
-              p, {x}, {human_readable_letter<Word>(non_trivial_scc[index])});
+              p,
+              {x},
+              {words::human_readable_letter<Word>(non_trivial_scc[index])});
         }
       }
       p.alphabet_from_rules();

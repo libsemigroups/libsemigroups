@@ -77,6 +77,31 @@ namespace libsemigroups {
     }
   }  // namespace detail
 
+  namespace words {
+    size_t human_readable_index(char c) {
+      static bool first_call = true;
+      // It might be preferable to use an array here but char is sometimes
+      // signed and so chars[i] can be negative in the loop below.
+      static std::unordered_map<Presentation<std::string>::letter_type,
+                                Presentation<word_type>::letter_type>
+          map;
+      if (first_call) {
+        first_call        = false;
+        auto const& chars = detail::chars_in_human_readable_order();
+        for (letter_type i = 0; i < chars.size(); ++i) {
+          map.emplace(chars[i], i);
+        }
+      }
+      LIBSEMIGROUPS_ASSERT(map.size() == 255);
+
+      auto it = map.find(c);
+      // There are only 255 chars and so it shouldn't be possible that <c> is
+      // not in the map.
+      LIBSEMIGROUPS_ASSERT(it != map.cend());
+      return it->second;
+    }
+  }  // namespace words
+
   ////////////////////////////////////////////////////////////////////////
   // 1. WordRange
   ////////////////////////////////////////////////////////////////////////
@@ -240,29 +265,6 @@ namespace libsemigroups {
   ToWord& ToWord::operator=(ToWord&&)      = default;
   ToWord::~ToWord()                        = default;
 
-  size_t human_readable_index(char c) {
-    static bool first_call = true;
-    // It might be preferable to use an array here but char is sometimes
-    // signed and so chars[i] can be negative in the loop below.
-    static std::unordered_map<Presentation<std::string>::letter_type,
-                              Presentation<word_type>::letter_type>
-        map;
-    if (first_call) {
-      first_call        = false;
-      auto const& chars = detail::chars_in_human_readable_order();
-      for (letter_type i = 0; i < chars.size(); ++i) {
-        map.emplace(chars[i], i);
-      }
-    }
-    LIBSEMIGROUPS_ASSERT(map.size() == 255);
-
-    auto it = map.find(c);
-    // There are only 255 chars and so it shouldn't be possible that <c> is
-    // not in the map.
-    LIBSEMIGROUPS_ASSERT(it != map.cend());
-    return it->second;
-  }
-
   ToWord& ToWord::init(std::string const& alphabet) {
     if (alphabet.size() > 256) {
       LIBSEMIGROUPS_EXCEPTION(
@@ -302,7 +304,7 @@ namespace libsemigroups {
     if (empty()) {
       output.resize(input.size(), 0);
       std::transform(input.cbegin(), input.cend(), output.begin(), [](char c) {
-        return human_readable_index(c);
+        return words::human_readable_index(c);
       });
     } else {  // Non-empty alphabet implies conversion should use the alphabet.
       output.clear();
@@ -376,10 +378,10 @@ namespace libsemigroups {
     // Empty alphabet implies conversion should use human_readable_index
     if (empty()) {
       output.resize(input.size(), 0);
-      std::transform(input.cbegin(),
-                     input.cend(),
-                     output.begin(),
-                     [](letter_type c) { return human_readable_letter<>(c); });
+      std::transform(
+          input.cbegin(), input.cend(), output.begin(), [](letter_type c) {
+            return words::human_readable_letter<>(c);
+          });
     } else {  // Non-empty alphabet implies conversion should use the alphabet.
       output.clear();
       output.reserve(input.size());
@@ -510,7 +512,7 @@ namespace libsemigroups {
                                     "digits in 0123456789, found {}",
                                     w[i]);
           }
-          result.push_back(human_readable_index(w[i]));
+          result.push_back(words::human_readable_index(w[i]));
         } else {
           LIBSEMIGROUPS_EXCEPTION(
               "the argument contains the character \'{}\', expected only "
