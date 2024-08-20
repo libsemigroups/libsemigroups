@@ -168,8 +168,8 @@ namespace libsemigroups {
     }
 
     template <typename Mat>
-    auto throw_if_bad_dim(Mat const& x, Mat const& y)
-        -> std::enable_if_t<IsMatrix<Mat>> {
+    auto throw_if_bad_dim(Mat const& x,
+                          Mat const& y) -> std::enable_if_t<IsMatrix<Mat>> {
       if (x.number_of_rows() != y.number_of_rows()
           || x.number_of_cols() != y.number_of_cols()) {
         LIBSEMIGROUPS_EXCEPTION(
@@ -183,8 +183,9 @@ namespace libsemigroups {
     }
 
     template <typename Mat>
-    auto throw_if_bad_coords(Mat const& x, size_t r, size_t c)
-        -> std::enable_if_t<IsMatrix<Mat>> {
+    auto throw_if_bad_coords(Mat const& x,
+                             size_t     r,
+                             size_t     c) -> std::enable_if_t<IsMatrix<Mat>> {
       if (r >= x.number_of_rows()) {
         LIBSEMIGROUPS_EXCEPTION("invalid row index in ({}, {}), expected "
                                 "values in [0, {}) x [0, {})",
@@ -263,14 +264,16 @@ namespace libsemigroups {
 
       // TODO(1) use constexpr-if, not SFINAE
       template <typename SFINAE = container_type>
-      auto resize(size_t r, size_t c) -> std::enable_if_t<
-          std::is_same<SFINAE, std::vector<scalar_type>>::value> {
+      auto resize(size_t r, size_t c)
+          -> std::enable_if_t<
+              std::is_same<SFINAE, std::vector<scalar_type>>::value> {
         _container.resize(r * c);
       }
 
       template <typename SFINAE = container_type>
-      auto resize(size_t, size_t) -> std::enable_if_t<
-          !std::is_same<SFINAE, std::vector<scalar_type>>::value> {}
+      auto resize(size_t, size_t)
+          -> std::enable_if_t<
+              !std::is_same<SFINAE, std::vector<scalar_type>>::value> {}
 
      public:
       ////////////////////////////////////////////////////////////////////////
@@ -375,13 +378,29 @@ namespace libsemigroups {
       // not noexcept because operator== isn't
       template <typename T>
       bool operator!=(T const& that) const {
+        static_assert(IsMatrix<T> || std::is_same_v<T, RowView>);
         return !(*this == that);
       }
 
       // not noexcept because operator< isn't
       template <typename T>
       bool operator>(T const& that) const {
+        static_assert(IsMatrix<T> || std::is_same_v<T, RowView>);
         return that < *this;
+      }
+
+      // not noexcept because operator< isn't
+      template <typename T>
+      bool operator>=(T const& that) const {
+        static_assert(IsMatrix<T> || std::is_same_v<T, RowView>);
+        return that < *this || that == *this;
+      }
+
+      // not noexcept because operator< isn't
+      template <typename T>
+      bool operator<=(T const& that) const {
+        static_assert(IsMatrix<T> || std::is_same_v<T, RowView>);
+        return *this < that || that == *this;
       }
 
       ////////////////////////////////////////////////////////////////////////
@@ -516,8 +535,17 @@ namespace libsemigroups {
         return result;
       }
 
-      // TODO(2) implement operator*(Scalar)
-      // TODO(2) implement operator+(Scalar)
+      Subclass operator*(scalar_type a) const {
+        Subclass result(*static_cast<Subclass const*>(this));
+        result *= a;
+        return result;
+      }
+
+      Subclass operator+(scalar_type a) const {
+        Subclass result(*static_cast<Subclass const*>(this));
+        result += a;
+        return result;
+      }
 
       ////////////////////////////////////////////////////////////////////////
       // Iterators
@@ -1424,8 +1452,8 @@ namespace libsemigroups {
    private:
     using DynamicMatrix_ = DynamicMatrix<PlusOp, ProdOp, ZeroOp, OneOp, Scalar>;
     using RowViewCommon  = detail::RowViewCommon<
-        DynamicMatrix_,
-        DynamicRowView<PlusOp, ProdOp, ZeroOp, OneOp, Scalar>>;
+         DynamicMatrix_,
+         DynamicRowView<PlusOp, ProdOp, ZeroOp, OneOp, Scalar>>;
     friend RowViewCommon;
 
    public:
@@ -2499,9 +2527,9 @@ namespace libsemigroups {
             MatrixStaticArithmetic<PlusOp, ProdOp, ZeroOp, OneOp, Scalar> {
     using MatrixDynamicDim = ::libsemigroups::detail::MatrixDynamicDim<Scalar>;
     using MatrixCommon     = ::libsemigroups::detail::MatrixCommon<
-        std::vector<Scalar>,
-        DynamicMatrix<PlusOp, ProdOp, ZeroOp, OneOp, Scalar>,
-        DynamicRowView<PlusOp, ProdOp, ZeroOp, OneOp, Scalar>>;
+            std::vector<Scalar>,
+            DynamicMatrix<PlusOp, ProdOp, ZeroOp, OneOp, Scalar>,
+            DynamicRowView<PlusOp, ProdOp, ZeroOp, OneOp, Scalar>>;
     friend MatrixCommon;
 
    public:
@@ -3832,8 +3860,8 @@ namespace libsemigroups {
     //!
     //! \exceptions
     //! \noexcept
-    // TODO throw if POSITIVE_INFINITY or NEGATIVE_INFINITY is an entry to avoid
-    // confusion in the pybindings
+    // TODO(0) throw if POSITIVE_INFINITY or NEGATIVE_INFINITY is an entry to
+    // avoid confusion in the pybindings
     template <size_t R, size_t C, typename Scalar>
     constexpr void
     throw_if_bad_entry(StaticIntMat<R, C, Scalar> const&) noexcept {}
@@ -4099,8 +4127,8 @@ namespace libsemigroups {
     //!
     //! \throws LibsemigroupsException if \p x contains \ref POSITIVE_INFINITY.
     template <typename Mat>
-    auto throw_if_bad_entry(Mat const& x)
-        -> std::enable_if_t<IsMaxPlusMat<Mat>> {
+    auto
+    throw_if_bad_entry(Mat const& x) -> std::enable_if_t<IsMaxPlusMat<Mat>> {
       using scalar_type = typename Mat::scalar_type;
       auto it = std::find_if(x.cbegin(), x.cend(), [](scalar_type val) {
         return val == POSITIVE_INFINITY;
@@ -4362,8 +4390,8 @@ namespace libsemigroups {
     //!
     //! \throws LibsemigroupsException if \p x contains \ref NEGATIVE_INFINITY.
     template <typename Mat>
-    auto throw_if_bad_entry(Mat const& x)
-        -> std::enable_if_t<IsMinPlusMat<Mat>> {
+    auto
+    throw_if_bad_entry(Mat const& x) -> std::enable_if_t<IsMinPlusMat<Mat>> {
       using scalar_type = typename Mat::scalar_type;
       auto it = std::find_if(x.cbegin(), x.cend(), [](scalar_type val) {
         return val == NEGATIVE_INFINITY;
@@ -5935,7 +5963,7 @@ namespace libsemigroups {
       ProjMaxPlusMat(size_t r, size_t c)
           : _is_normalized(false), _underlying_mat(r, c) {}
 
-      // TODO other missing constructors
+      // TODO(0) other missing constructors
       ProjMaxPlusMat(
           typename underlying_matrix_type::semiring_type const* semiring,
           size_t                                                r,
@@ -5950,7 +5978,7 @@ namespace libsemigroups {
       ProjMaxPlusMat(
           std::initializer_list<std::initializer_list<scalar_type>> const& m)
           : ProjMaxPlusMat(
-              std::vector<std::vector<scalar_type>>(m.begin(), m.end())) {}
+                std::vector<std::vector<scalar_type>>(m.begin(), m.end())) {}
 
       ~ProjMaxPlusMat() = default;
 
@@ -5967,32 +5995,47 @@ namespace libsemigroups {
       // Comparison operators
       ////////////////////////////////////////////////////////////////////////
 
+      // TODO template
       bool operator==(ProjMaxPlusMat const& that) const {
         normalize();
         that.normalize();
         return _underlying_mat == that._underlying_mat;
       }
 
+      // TODO template
       bool operator!=(ProjMaxPlusMat const& that) const {
         return !(_underlying_mat == that._underlying_mat);
       }
 
+      // TODO template
       bool operator<(ProjMaxPlusMat const& that) const {
         normalize();
         that.normalize();
         return _underlying_mat < that._underlying_mat;
       }
 
+      // TODO template
       bool operator>(ProjMaxPlusMat const& that) const {
         return that < *this;
+      }
+
+      template <typename Thing>
+      bool operator>=(Thing const& that) const {
+        static_assert(IsMatrix<Thing> || std::is_same_v<Thing, RowView>);
+        return that < *this || that == *this;
+      }
+
+      // not noexcept because operator< isn't
+      template <typename Thing>
+      bool operator<=(Thing const& that) const {
+        static_assert(IsMatrix<Thing> || std::is_same_v<Thing, RowView>);
+        return *this < that || that == *this;
       }
 
       ////////////////////////////////////////////////////////////////////////
       // Attributes
       ////////////////////////////////////////////////////////////////////////
 
-      // The following is commented out because it can't be used safely,
-      // i.e. when is the matrix normalised again? scalar_reference
       scalar_reference operator()(size_t r, size_t c) {
         // to ensure the returned value is normalised
         normalize();
@@ -6054,6 +6097,18 @@ namespace libsemigroups {
       void operator+=(scalar_type a) {
         _underlying_mat += a;
         normalize(true);  // force normalize
+      }
+
+      ProjMaxPlusMat operator*(scalar_type a) const {
+        ProjMaxPlusMat result(*this);
+        result *= a;
+        return result;
+      }
+
+      ProjMaxPlusMat operator+(scalar_type a) const {
+        ProjMaxPlusMat result(*this);
+        result += a;
+        return result;
       }
 
       ////////////////////////////////////////////////////////////////////////
@@ -7145,6 +7200,20 @@ namespace libsemigroups {
 
   }  // namespace matrix
 
+  // TODO(0) doc
+  template <typename Mat>
+  auto operator+(typename Mat::scalar_type a,
+                 Mat const& x) -> std::enable_if_t<IsMatrix<Mat>, Mat> {
+    return x + a;
+  }
+
+  // TODO(0) doc
+  template <typename Mat>
+  auto operator*(typename Mat::scalar_type a,
+                 Mat const& x) -> std::enable_if_t<IsMatrix<Mat>, Mat> {
+    return x * a;
+  }
+
   //! \ingroup matrix_group
   //!
   //! \brief Validates the arguments, constructs a matrix and validates it.
@@ -7182,7 +7251,7 @@ namespace libsemigroups {
     return m;
   }
 
-  // TODO doc
+  // TODO(0) doc
   template <typename Mat,
             typename
             = std::enable_if_t<IsMatrix<Mat> && !IsMatWithSemiring<Mat>>>
@@ -7227,7 +7296,7 @@ namespace libsemigroups {
     matrix::throw_if_bad_entry(m);
     return m;
   }
-  // TODO vector version of above
+  // TODO(0) vector version of above
 
   //! \ingroup matrix_group
   //!
@@ -7391,8 +7460,8 @@ namespace libsemigroups {
   //! This function inserts a human readable representation of a row view into
   //! the string stream \p os.
   //!
-  // \tparam S TODO(1)
-  // \tparam T TODO(1)
+  // \tparam S TODO(0)
+  // \tparam T TODO(0)
   //!
   //! \param os the string stream.
   //! \param x the row view.
