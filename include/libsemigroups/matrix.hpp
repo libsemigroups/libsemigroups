@@ -195,8 +195,8 @@ namespace libsemigroups {
     //! equal the number of rows of \p y; or the number of columns of \p x does
     //! not equal the number of columns of \p y.
     template <typename Mat>
-    auto throw_if_bad_dim(Mat const& x,
-                          Mat const& y) -> std::enable_if_t<IsMatrix<Mat>> {
+    auto throw_if_bad_dim(Mat const& x, Mat const& y)
+        -> std::enable_if_t<IsMatrix<Mat>> {
       if (x.number_of_rows() != y.number_of_rows()
           || x.number_of_cols() != y.number_of_cols()) {
         LIBSEMIGROUPS_EXCEPTION(
@@ -224,9 +224,8 @@ namespace libsemigroups {
     //! \throws LibsemigroupsException if `(r, c)` does not index an entry in
     //! the matrix \p x.
     template <typename Mat>
-    auto throw_if_bad_coords(Mat const& x,
-                             size_t     r,
-                             size_t     c) -> std::enable_if_t<IsMatrix<Mat>> {
+    auto throw_if_bad_coords(Mat const& x, size_t r, size_t c)
+        -> std::enable_if_t<IsMatrix<Mat>> {
       if (r >= x.number_of_rows()) {
         LIBSEMIGROUPS_EXCEPTION("invalid row index in ({}, {}), expected "
                                 "values in [0, {}) x [0, {})",
@@ -305,16 +304,14 @@ namespace libsemigroups {
 
       // TODO(1) use constexpr-if, not SFINAE
       template <typename SFINAE = container_type>
-      auto resize(size_t r, size_t c)
-          -> std::enable_if_t<
-              std::is_same<SFINAE, std::vector<scalar_type>>::value> {
+      auto resize(size_t r, size_t c) -> std::enable_if_t<
+          std::is_same<SFINAE, std::vector<scalar_type>>::value> {
         _container.resize(r * c);
       }
 
       template <typename SFINAE = container_type>
-      auto resize(size_t, size_t)
-          -> std::enable_if_t<
-              !std::is_same<SFINAE, std::vector<scalar_type>>::value> {}
+      auto resize(size_t, size_t) -> std::enable_if_t<
+          !std::is_same<SFINAE, std::vector<scalar_type>>::value> {}
 
      public:
       ////////////////////////////////////////////////////////////////////////
@@ -1503,8 +1500,8 @@ namespace libsemigroups {
    private:
     using DynamicMatrix_ = DynamicMatrix<PlusOp, ProdOp, ZeroOp, OneOp, Scalar>;
     using RowViewCommon  = detail::RowViewCommon<
-         DynamicMatrix_,
-         DynamicRowView<PlusOp, ProdOp, ZeroOp, OneOp, Scalar>>;
+        DynamicMatrix_,
+        DynamicRowView<PlusOp, ProdOp, ZeroOp, OneOp, Scalar>>;
     friend RowViewCommon;
 
    public:
@@ -2582,9 +2579,9 @@ namespace libsemigroups {
     using MatrixCommon::one;
     using MatrixCommon::operator();
     using MatrixCommon::operator==;
-    using MatrixCommon::operator<;
+    using MatrixCommon::operator<;   // NOLINT(whitespace/operators)
     using MatrixCommon::operator<=;  // TODO(0)
-    using MatrixCommon::operator>;
+    using MatrixCommon::operator>;   // NOLINT(whitespace/operators)
     using MatrixCommon::operator>=;  // TODO(0)
     using MatrixCommon::operator!=;
     using MatrixCommon::operator*=;
@@ -2668,9 +2665,9 @@ namespace libsemigroups {
             MatrixStaticArithmetic<PlusOp, ProdOp, ZeroOp, OneOp, Scalar> {
     using MatrixDynamicDim = ::libsemigroups::detail::MatrixDynamicDim<Scalar>;
     using MatrixCommon     = ::libsemigroups::detail::MatrixCommon<
-            std::vector<Scalar>,
-            DynamicMatrix<PlusOp, ProdOp, ZeroOp, OneOp, Scalar>,
-            DynamicRowView<PlusOp, ProdOp, ZeroOp, OneOp, Scalar>>;
+        std::vector<Scalar>,
+        DynamicMatrix<PlusOp, ProdOp, ZeroOp, OneOp, Scalar>,
+        DynamicRowView<PlusOp, ProdOp, ZeroOp, OneOp, Scalar>>;
     friend MatrixCommon;
 
    public:
@@ -2982,9 +2979,9 @@ namespace libsemigroups {
     using MatrixCommon::one;
     using MatrixCommon::operator();
     using MatrixCommon::operator==;
-    using MatrixCommon::operator<;
+    using MatrixCommon::operator<;  // NOLINT(whitespace/operators)
     using MatrixCommon::operator<=;
-    using MatrixCommon::operator>;
+    using MatrixCommon::operator>;  // NOLINT(whitespace/operators)
     using MatrixCommon::operator>=;
     using MatrixCommon::operator!=;
     using MatrixCommon::operator*=;
@@ -3096,7 +3093,7 @@ namespace libsemigroups {
 
     //! \brief Deleted.
     //!
-    //! The default constructor for this variant of `DynamicMatrix` is deleted
+    //! The default constructor for this variant of DynamicMatrix is deleted
     //! because a valid semiring object is required to define the arithmetic at
     //! run-time.
     DynamicMatrix() = delete;
@@ -3351,9 +3348,9 @@ namespace libsemigroups {
     using MatrixCommon::one;
     using MatrixCommon::operator();
     using MatrixCommon::operator==;
-    using MatrixCommon::operator<;
+    using MatrixCommon::operator<;  // NOLINT(whitespace/operators)
     using MatrixCommon::operator<=;
-    using MatrixCommon::operator>;
+    using MatrixCommon::operator>;  // NOLINT(whitespace/operators)
     using MatrixCommon::operator>=;
     using MatrixCommon::operator!=;
     using MatrixCommon::operator*=;
@@ -3582,11 +3579,13 @@ namespace libsemigroups {
   //! dimensions are \c R and \c C. The default value of \c R is \c 0 and of
   //! \c C is \c R.
   //!
-  //! The alias `BMat<R, C>` is either StaticMatrix or DynamicMatrix, please
-  //! refer to the documentation of these class templates for more details. The
-  //! only substantial difference in the interface of StaticMatrix and
-  //! DynamicMatrix is that the former can be default constructed and the latter
-  //! should be constructed using the dimensions.
+  //! The alias `BMat<R, C>` is either StaticMatrix, \ref
+  //! DynamicMatrixStaticArith "DynamicMatrix (compile-time arithmetic)", or
+  //! \ref DynamicMatrixDynamicArith "DynamicMatrix (run-time arithmetic)",
+  //! please refer to the documentation of these class templates for more
+  //! details. The only substantial difference in the interface of static
+  //! and dynamic is that the former can be default constructed and the
+  //! latter should be constructed using the dimensions.
   //!
   //! Adapters for \ref BMat objects are documented \ref adapters_bmat_group
   //! "here".
@@ -3847,11 +3846,13 @@ namespace libsemigroups {
   //! can be set at run time, otherwise \c R and \c C are the dimension. The
   //! default value of \c R is \c 0, and of \c C is \c R.
   //!
-  //! The alias \ref IntMat is either StaticMatrix or DynamicMatrix, please
-  //! refer to the documentation of these class templates for more details. The
-  //! only substantial difference in the interface of StaticMatrix and
-  //! DynamicMatrix is that the former can be default constructed and the latter
-  //! should be constructed using the dimensions.
+  //! The alias \ref IntMat is either StaticMatrix, \ref
+  //! DynamicMatrixStaticArith "DynamicMatrix (compile-time arithmetic)", or
+  //! \ref DynamicMatrixDynamicArith "DynamicMatrix (run-time arithmetic)",
+  //! please refer to the documentation of these class templates for more
+  //! details. The only substantial difference in the interface of static
+  //! and dynamic is that the former can be default constructed and the
+  //! latter should be constructed using the dimensions.
   //!
   //! \par Example
   //! \code
@@ -4116,11 +4117,13 @@ namespace libsemigroups {
   //! run time, otherwise \c N is the dimension. The default value of \c N is \c
   //! 0.
   //!
-  //! The alias \ref MaxPlusMat is either StaticMatrix or DynamicMatrix, please
-  //! refer to the documentation of these class templates for more details. The
-  //! only substantial difference in the interface of StaticMatrix and
-  //! DynamicMatrix is that the former can be default constructed and the latter
-  //! should be constructed using the dimensions.
+  //! The alias \ref MaxPlusMat is either StaticMatrix, \ref
+  //! DynamicMatrixStaticArith "DynamicMatrix (compile-time arithmetic)", or
+  //! \ref DynamicMatrixDynamicArith "DynamicMatrix (run-time arithmetic)",
+  //! please refer to the documentation of these class templates for more
+  //! details. The only substantial difference in the interface of static
+  //! and dynamic matrices is that the former can be default constructed and the
+  //! latter should be constructed using the dimensions.
   //!
   //! \par Example
   //! \code
@@ -4344,8 +4347,8 @@ namespace libsemigroups {
     //!
     //! \throws LibsemigroupsException if \p x contains \ref POSITIVE_INFINITY.
     template <typename Mat>
-    auto
-    throw_if_bad_entry(Mat const& x) -> std::enable_if_t<IsMaxPlusMat<Mat>> {
+    auto throw_if_bad_entry(Mat const& x)
+        -> std::enable_if_t<IsMaxPlusMat<Mat>> {
       using scalar_type = typename Mat::scalar_type;
       auto it = std::find_if(x.cbegin(), x.cend(), [](scalar_type val) {
         return val == POSITIVE_INFINITY;
@@ -4675,11 +4678,12 @@ namespace libsemigroups {
   //! \c 0, \c R is \c 0, and of \c C is \c R.
   //!
   //! The alias \ref MaxPlusTruncMat is either
-  //! StaticMatrix or DynamicMatrix, please refer to the
-  //! documentation of these class templates for more details. The only
-  //! substantial difference in the interface of StaticMatrix and
-  //! DynamicMatrix is that the former can be default constructed and
-  //! the latter should be constructed using the dimensions.
+  //! StaticMatrix, \ref DynamicMatrixStaticArith "DynamicMatrix (compile-time
+  //! arithmetic)", or \ref DynamicMatrixDynamicArith "DynamicMatrix (run-time
+  //! arithmetic)", please refer to the documentation of these class templates
+  //! for more details. The only substantial difference in the interface of
+  //! static and dynamic matrices is that the former can be default
+  //! constructed and the latter should be constructed using the dimensions.
   //!
   //! \par Example
   //! \code
@@ -5135,11 +5139,13 @@ namespace libsemigroups {
   //! dimension can be set at run time. The default value of \c T is \c 0, \c
   //! R is \c 0, and of \c C is \c R.
   //!
-  //! The alias \ref MinPlusTruncMat is either StaticMatrix or DynamicMatrix,
+  //! The alias \ref MinPlusTruncMat is either StaticMatrix, \ref
+  //! DynamicMatrixStaticArith "DynamicMatrix (compile-time arithmetic)", or
+  //! \ref DynamicMatrixDynamicArith "DynamicMatrix (run-time arithmetic)",
   //! please refer to the documentation of these class templates for more
-  //! details. The only substantial difference in the interface of
-  //! StaticMatrix and DynamicMatrix is that the former can be default
-  //! constructed and the latter should be constructed using the dimensions.
+  //! details. The only substantial difference in the interface of static
+  //! and dynamic matrices is that the former can be default constructed and the
+  //! latter should be constructed using the dimensions.
   //!
   //! \par Example
   //! \code
@@ -6287,7 +6293,7 @@ namespace libsemigroups {
       ProjMaxPlusMat(
           std::initializer_list<std::initializer_list<scalar_type>> const& m)
           : ProjMaxPlusMat(
-                std::vector<std::vector<scalar_type>>(m.begin(), m.end())) {}
+              std::vector<std::vector<scalar_type>>(m.begin(), m.end())) {}
 
       ~ProjMaxPlusMat() = default;
 
@@ -6576,7 +6582,7 @@ namespace libsemigroups {
   //! normal form which is obtained by subtracting the maximum finite entry in
   //! the matrix from the every finite entry.
   //!
-  //! The alias \ref ProjMaxPlusMat is neither StaticMatrix nor DynamicMatrix,
+  //! A \ref ProjMaxPlusMat is neither a `StaticMatrix` nor a `DynamicMatrix`,
   //! but has the same interface as each of these types. Every instance of
   //! \ref ProjMaxPlusMat wraps a \ref MaxPlusMat.
   //!
@@ -6589,7 +6595,7 @@ namespace libsemigroups {
   //!
   //! Please refer to the documentation of these class templates for more
   //! details. The only substantial difference in the interface of
-  //! StaticMatrix and DynamicMatrix is that the former can be default
+  //! static and dynamic matrices is that the former can be default
   //! constructed and the latter should be constructed using the dimensions.
   //!
   //! \par Example
@@ -7517,16 +7523,16 @@ namespace libsemigroups {
   // TODO(0) doc
   //! \warning This function does not try to detect integer overflows.
   template <typename Mat>
-  auto operator+(typename Mat::scalar_type a,
-                 Mat const& x) -> std::enable_if_t<IsMatrix<Mat>, Mat> {
+  auto operator+(typename Mat::scalar_type a, Mat const& x)
+      -> std::enable_if_t<IsMatrix<Mat>, Mat> {
     return x + a;
   }
 
   // TODO(0) doc
   //! \warning This function does not try to detect integer overflows.
   template <typename Mat>
-  auto operator*(typename Mat::scalar_type a,
-                 Mat const& x) -> std::enable_if_t<IsMatrix<Mat>, Mat> {
+  auto operator*(typename Mat::scalar_type a, Mat const& x)
+      -> std::enable_if_t<IsMatrix<Mat>, Mat> {
     return x * a;
   }
 
