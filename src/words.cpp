@@ -263,19 +263,6 @@ namespace libsemigroups {
     return it->second;
   }
 
-  // void to_word(std::string_view s, word_type& w) {
-  //   w.resize(s.size(), 0);
-  //   std::transform(s.cbegin(), s.cend(), w.begin(), [](char c) {
-  //     return human_readable_index(c);
-  //   });
-  // }
-
-  // word_type to_word(std::string_view s) {
-  //   word_type w;
-  //   to_word(s, w);
-  //   return w;
-  // }
-
   ToWord& ToWord::init(std::string const& alphabet) {
     if (alphabet.size() > 256) {
       LIBSEMIGROUPS_EXCEPTION(
