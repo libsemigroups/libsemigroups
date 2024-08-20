@@ -518,7 +518,7 @@ namespace libsemigroups {
       using Row         = typename Mat::Row;
 
       auto m  = to_matrix<Mat>(sr,
-                               {{2, 2, 0, 1},
+                              {{2, 2, 0, 1},
                                 {0, 0, 1, 3},
                                 {1, NEGATIVE_INFINITY, 0, 0},
                                 {0, 1, 0, 1}});
