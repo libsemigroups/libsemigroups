@@ -167,6 +167,7 @@ namespace libsemigroups {
       }
     }
 
+    // TODO(doc)
     template <typename Mat>
     auto throw_if_bad_dim(Mat const& x,
                           Mat const& y) -> std::enable_if_t<IsMatrix<Mat>> {
@@ -182,6 +183,7 @@ namespace libsemigroups {
       }
     }
 
+    // TODO(doc)
     template <typename Mat>
     auto throw_if_bad_coords(Mat const& x,
                              size_t     r,
@@ -3621,6 +3623,15 @@ namespace libsemigroups {
             c);
       }
     }
+
+    template <typename Mat>
+    std::enable_if_t<IsBMat<Mat>>
+    throw_if_bad_entry(Mat const&, typename Mat::scalar_type val) {
+      if (val != 0 && val != 1) {
+        LIBSEMIGROUPS_EXCEPTION("invalid entry, expected 0 or 1 but found {}",
+                                val);
+      }
+    }
   }  // namespace matrix
 
   ////////////////////////////////////////////////////////////////////////
@@ -3883,6 +3894,13 @@ namespace libsemigroups {
     //! \noexcept
     template <typename Scalar>
     constexpr void throw_if_bad_entry(DynamicIntMat<Scalar> const&) noexcept {}
+
+    template <typename Mat>
+    std::enable_if_t<IsIntMat<Mat>>
+    throw_if_bad_entry(Mat const&, typename Mat::scalar_type) {
+      // TODO impl
+    }
+
   }  // namespace matrix
 
   ////////////////////////////////////////////////////////////////////////
@@ -4141,6 +4159,16 @@ namespace libsemigroups {
             u8"\u221E",
             r,
             c);
+      }
+    }
+
+    template <typename Mat>
+    std::enable_if_t<IsMaxPlusMat<Mat>>
+    throw_if_bad_entry(Mat const&, typename Mat::scalar_type val) {
+      if (val == POSITIVE_INFINITY) {
+        LIBSEMIGROUPS_EXCEPTION("invalid entry, expected entries to be "
+                                "integers or -{0} but found +{0}",
+                                u8"\u221E");
       }
     }
   }  // namespace matrix
@@ -4404,6 +4432,16 @@ namespace libsemigroups {
             u8"\u221E",
             r,
             c);
+      }
+    }
+
+    template <typename Mat>
+    std::enable_if_t<IsMinPlusMat<Mat>>
+    throw_if_bad_entry(Mat const&, typename Mat::scalar_type val) {
+      if (val == NEGATIVE_INFINITY) {
+        LIBSEMIGROUPS_EXCEPTION("invalid entry, expected entries to be "
+                                "integers of +{0} but found -{0}",
+                                val);
       }
     }
   }  // namespace matrix
@@ -4840,6 +4878,7 @@ namespace libsemigroups {
       });
       if (it != m.cend()) {
         auto [r, c] = m.coords(it);
+        // TODO update to be \{0, ..., t, infty\} i.e. don't use union
         LIBSEMIGROUPS_EXCEPTION("invalid entry, expected values in [0, {}] "
                                 "{} {{-{}}} but found {} in entry ({}, {})",
                                 t,
@@ -4848,6 +4887,22 @@ namespace libsemigroups {
                                 *it,
                                 r,
                                 c);
+      }
+    }
+    template <typename Mat>
+    std::enable_if_t<IsMaxPlusTruncMat<Mat>>
+    throw_if_bad_entry(Mat const& m, typename Mat::scalar_type val) {
+      using scalar_type   = typename Mat::scalar_type;
+      scalar_type const t = matrix::threshold(m);
+      if (val == POSITIVE_INFINITY || 0 > val || val > t) {
+        std::string val_repr
+            = val == POSITIVE_INFINITY ? u8"+\u221E" : std::to_string(val);
+        LIBSEMIGROUPS_EXCEPTION("invalid entry, expected values in [0, {}] "
+                                "{} {{-{}}} but found {}",
+                                t,
+                                u8"\u222A",
+                                u8"\u221E",
+                                val_repr);
       }
     }
   }  // namespace matrix
@@ -5280,14 +5335,34 @@ namespace libsemigroups {
       if (it != m.cend()) {
         uint64_t r, c;
         std::tie(r, c) = m.coords(it);
+        std::string it_repr
+            = *it == NEGATIVE_INFINITY ? u8"-\u221E" : std::to_string(*it);
+
         LIBSEMIGROUPS_EXCEPTION("invalid entry, expected values in [0, {}] "
-                                "{} {{{}}} but found {} in entry ({}, {})",
+                                "{} {{+{}}} but found {} in entry ({}, {})",
                                 t,
                                 u8"\u222A",
                                 u8"\u221E",
-                                *it,
+                                it_repr,
                                 r,
                                 c);
+      }
+    }
+
+    template <typename Mat>
+    std::enable_if_t<IsMinPlusTruncMat<Mat>>
+    throw_if_bad_entry(Mat const& m, typename Mat::scalar_type val) {
+      using scalar_type   = typename Mat::scalar_type;
+      scalar_type const t = matrix::threshold(m);
+      if (!(val == POSITIVE_INFINITY || (0 <= val && val <= t))) {
+        std::string val_repr
+            = val == NEGATIVE_INFINITY ? u8"-\u221E" : std::to_string(val);
+        LIBSEMIGROUPS_EXCEPTION("invalid entry, expected values in [0, {}] "
+                                "{} {{+{}}} but found {}",
+                                t,
+                                u8"\u222A",
+                                u8"\u221E",
+                                val_repr);
       }
     }
   }  // namespace matrix
@@ -5905,12 +5980,45 @@ namespace libsemigroups {
       if (it != m.cend()) {
         uint64_t r, c;
         std::tie(r, c) = m.coords(it);
+
+        std::string it_repr;
+        if (*it == NEGATIVE_INFINITY) {
+          it_repr = u8"-\u221E";
+        } else if (*it == POSITIVE_INFINITY) {
+          it_repr = u8"+\u221E";
+        } else {
+          it_repr = std::to_string(*it);
+        }
+
         LIBSEMIGROUPS_EXCEPTION("invalid entry, expected values in [0, {}) but "
                                 "found {} in entry ({}, {})",
                                 p + t,
-                                *it,
+                                it_repr,
                                 r,
                                 c);
+      }
+    }
+
+    template <typename Mat>
+    std::enable_if_t<IsNTPMat<Mat>>
+    throw_if_bad_entry(Mat const& m, typename Mat::scalar_type val) {
+      detail::semiring_validate(m);
+      using scalar_type   = typename Mat::scalar_type;
+      scalar_type const t = matrix::threshold(m);
+      scalar_type const p = matrix::period(m);
+      if (val < 0 || val >= p + t) {
+        std::string val_repr;
+        if (val == NEGATIVE_INFINITY) {
+          val_repr = u8"-\u221E";
+        } else if (val == POSITIVE_INFINITY) {
+          val_repr = u8"+\u221E";
+        } else {
+          val_repr = std::to_string(val);
+        }
+        LIBSEMIGROUPS_EXCEPTION("invalid entry, expected values in [0, {}) "
+                                " but found {}",
+                                p + t,
+                                val_repr);
       }
     }
   }  // namespace matrix
@@ -6388,7 +6496,16 @@ namespace libsemigroups {
     //! \noexcept
     template <typename Mat>
     constexpr std::enable_if_t<IsProjMaxPlusMat<Mat>>
-    throw_if_bad_entry(Mat const&) noexcept {}
+    throw_if_bad_entry(Mat const&) noexcept {
+      // TODO impl
+    }
+
+    // TODO doc
+    template <typename Mat>
+    constexpr std::enable_if_t<IsProjMaxPlusMat<Mat>>
+    throw_if_bad_entry(Mat const&, typename Mat::scalar_type) noexcept {
+      // TODO impl
+    }
 
     ////////////////////////////////////////////////////////////////////////
     // Matrix helpers - pow
