@@ -757,7 +757,7 @@ namespace libsemigroups {
     //!
     //! Constructs an empty object with no alphabet set.
     // Not noexcept because std::array::fill isn't
-    ToWord() : _lookup() {
+    ToWord() : _alphabet_map() {
       init();
     }
 
@@ -799,8 +799,7 @@ namespace libsemigroups {
     //!
     //! \sa ToWord()
     ToWord& init() {
-      _lookup.fill(UNDEFINED);
-      _lookup.back() = 0;
+      _alphabet_map.clear();
       return *this;
     }
 
@@ -812,7 +811,7 @@ namespace libsemigroups {
     //!
     //! \throws LibsemigroupsException if there are repeated letters in
     //! \p alphabet.
-    explicit ToWord(std::string const& alphabet) : _lookup() {
+    explicit ToWord(std::string const& alphabet) : _alphabet_map() {
       init(alphabet);
     }
 
@@ -841,7 +840,7 @@ namespace libsemigroups {
     //! \exception
     //! \no_libsemigroups_except
     [[nodiscard]] bool empty() const {
-      return _lookup.back() == 0;
+      return _alphabet_map.empty();
     }
 
     //! \brief Return the alphabet used for conversion.
@@ -976,7 +975,7 @@ namespace libsemigroups {
     }
 
    private:
-    std::array<letter_type, 256> _lookup;
+    std::unordered_map<char, letter_type> _alphabet_map;
   };
 
   template <typename InputRange>

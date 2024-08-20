@@ -277,51 +277,35 @@ namespace libsemigroups {
   // }
 
   ToWord& ToWord::init(std::string const& alphabet) {
-    if (alphabet.size() >= 256) {
-      LIBSEMIGROUPS_EXCEPTION("The argument (alphabet) is too big, expected at "
-                              "most 256, found {}",
-                              alphabet.size());
+    if (alphabet.size() > 256) {
+      LIBSEMIGROUPS_EXCEPTION(
+          "The argument (alphabet) is too big, expected at most 256, found {}",
+          alphabet.size());
     }
-    auto _old_lookup = _lookup;
+    auto _old_alphabet_map = _alphabet_map;
     init();
-    _lookup.back() = alphabet.size();
+    LIBSEMIGROUPS_ASSERT(_alphabet_map.empty());
     for (letter_type l = 0; l < alphabet.size(); ++l) {
-      LIBSEMIGROUPS_ASSERT(static_cast<size_t>(alphabet[l]) < _lookup.size());
-      // FIXME I think this has the same issue as human_readable_index, that
-      // chars can be negative, and so this will be bad!
-      if (_lookup[alphabet[l]] != UNDEFINED) {
-        _lookup = _old_lookup;  // strong exception guarantee
-        LIBSEMIGROUPS_EXCEPTION(
-            "The argument (alphabet) contains \'{}\' more than once!",
-            alphabet[l]);
+      auto it = _alphabet_map.emplace(alphabet[l], l);
+      if (!it.second) {
+        // Strong exception guarantee
+        std::swap(_old_alphabet_map, _alphabet_map);
+        LIBSEMIGROUPS_EXCEPTION("invalid alphabet {}, duplicate letter {}!",
+                                detail::to_printable(alphabet),
+                                detail::to_printable(alphabet[l]));
       }
-      _lookup[alphabet[l]] = l;
     }
     return *this;
   }
 
   [[nodiscard]] std::string ToWord::alphabet() const {
-    std::string           output;
-    std::array<char, 256> inverse_lookup;
-    letter_type           current;
-    letter_type           largest = 0;
-
-    for (auto letter : detail::chars_in_human_readable_order()) {
-      // FIXME: When chars are negative, this is bad. This check just ignores
-      // those cases, but it probably shouldn't.
-      if (letter < 0) {
-        continue;
-      }
-      current = _lookup[letter];
-      if (current != UNDEFINED) {
-        inverse_lookup[current] = letter;
-        largest                 = std::max(largest, current);
-      }
+    if (empty()) {
+      return "";
     }
-    for (size_t i = 0; i <= largest; ++i) {
-      output.push_back(inverse_lookup[i]);
+    std::string output(_alphabet_map.size(), '\0');
+    for (auto it : _alphabet_map) {
+      output[it.second] = it.first;
     }
-
     return output;
   }
 
@@ -337,7 +321,7 @@ namespace libsemigroups {
       output.clear();
       output.reserve(input.size());
       for (auto const& c : input) {
-        output.push_back(_lookup[c]);
+        output.push_back(_alphabet_map.at(c));
       }
     }
   }
@@ -345,11 +329,12 @@ namespace libsemigroups {
   void ToWord::operator()(word_type& output, std::string const& input) const {
     if (!empty()) {
       for (auto const& c : input) {
-        if (_lookup[c] == UNDEFINED) {
+        if (_alphabet_map.find(c) == _alphabet_map.cend()) {
           LIBSEMIGROUPS_EXCEPTION(
-              "the 2nd argument (input string) contains the letter \'{}\' that "
-              "does not belong to the alphabet!",
-              c);
+              "invalid letter \'{}\' in the 2nd argument (input word), "
+              "expected letters in the alphabet \"{}\"!",
+              c,
+              detail::to_printable(alphabet()));
         }
       }
     }
@@ -367,6 +352,11 @@ namespace libsemigroups {
   ToString::~ToString()                          = default;
 
   ToString& ToString::init(std::string const& alphabet) {
+    if (alphabet.size() > 256) {
+      LIBSEMIGROUPS_EXCEPTION(
+          "The argument (alphabet) is too big, expected at most 256, found {}",
+          alphabet.size());
+    }
     auto _old_alphabet_map = _alphabet_map;
     init();
     LIBSEMIGROUPS_ASSERT(_alphabet_map.empty());
@@ -387,14 +377,10 @@ namespace libsemigroups {
       return "";
     }
 
-    std::string output;
-    letter_type current(0);
-
-    while (_alphabet_map.find(current) != _alphabet_map.end()) {
-      output.push_back(_alphabet_map.at(current));
-      ++current;
+    std::string output(_alphabet_map.size(), '\0');
+    for (auto it : _alphabet_map) {
+      output[it.first] = it.second;
     }
-
     return output;
   }
 

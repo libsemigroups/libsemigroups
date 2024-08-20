@@ -1340,6 +1340,14 @@ namespace libsemigroups {
     ToWord to_word_3(std::move(to_word_2));
     REQUIRE(to_word.alphabet() == "BAaC1");
     REQUIRE(to_word_3.alphabet() == "BAaC1");
+
+    std::string big_alphabet(256, '\0');
+    std::iota(big_alphabet.begin(), big_alphabet.end(), 0);
+    ToWord big_converter(big_alphabet);
+    REQUIRE(big_converter.alphabet() == big_alphabet);
+    big_converter.init(detail::chars_in_human_readable_order());
+    REQUIRE(big_converter.alphabet()
+            == detail::chars_in_human_readable_order());
   }
 
   LIBSEMIGROUPS_TEST_CASE("ToString", "043", "alphabet", "[quick]") {
@@ -1352,6 +1360,14 @@ namespace libsemigroups {
     ToString to_string_3(std::move(to_string_2));
     REQUIRE(to_string.alphabet() == "BAaC1");
     REQUIRE(to_string_3.alphabet() == "BAaC1");
+
+    std::string big_alphabet(256, '\0');
+    std::iota(big_alphabet.begin(), big_alphabet.end(), 0);
+    ToString big_converter(big_alphabet);
+    REQUIRE(big_converter.alphabet() == big_alphabet);
+    big_converter.init(detail::chars_in_human_readable_order());
+    REQUIRE(big_converter.alphabet()
+            == detail::chars_in_human_readable_order());
   }
 
   LIBSEMIGROUPS_TEST_CASE("WordRange", "044", "doxygen examples", "[quick]") {
