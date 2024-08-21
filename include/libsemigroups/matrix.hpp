@@ -23,16 +23,23 @@
 #ifndef LIBSEMIGROUPS_MATRIX_HPP_
 #define LIBSEMIGROUPS_MATRIX_HPP_
 
-#include <algorithm>      // for min
-#include <array>          // for array
-#include <bitset>         // for bitset
-#include <cstddef>        // for size_t
-#include <iosfwd>         // for ostringstream
-#include <numeric>        // for inner_product
-#include <type_traits>    // for false_type, is_signed, true_type
-#include <unordered_map>  // for unordered_map
-#include <unordered_set>  // for unordered_set
-#include <vector>         // for vector
+#include <algorithm>         // for min
+#include <array>             // for array
+#include <bitset>            // for bitset
+#include <cstddef>           // for size_t
+#include <cstdint>           // for uint64_t
+#include <initializer_list>  // for initializer_list
+#include <iosfwd>            // for ostringstream
+#include <iterator>          // for distance
+#include <numeric>           // for inner_product
+#include <ostream>           // for operator<<, basic_ostream
+#include <string>            // for string
+#include <tuple>             // for tie
+#include <type_traits>       // for false_type, is_signed, true_type
+#include <unordered_map>     // for unordered_map
+#include <unordered_set>     // for unordered_set
+#include <utility>           // for forward, make_pair, pair
+#include <vector>            // for vector
 
 #include "adapters.hpp"   // for Degree
 #include "bitset.hpp"     // for BitSet
