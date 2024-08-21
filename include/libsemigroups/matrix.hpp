@@ -3972,7 +3972,7 @@ namespace libsemigroups {
 
     //! \ingroup bmat_group
     //!
-    //! \brief Check an entriy in a boolean matrix is valid.
+    //! \brief Check an entry in a boolean matrix is valid.
     //!
     //! Defined in ``matrix.hpp``.
     //!
