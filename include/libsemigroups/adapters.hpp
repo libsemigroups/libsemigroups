@@ -75,9 +75,9 @@ namespace libsemigroups {
   //! The following explicit specializations of some of the adapters listed
   //! above are implemented in ``libsemigroups`` for the following types:
   //!
+  //! * \ref adapters_bmat_group
+  //! * \ref adapters_bmat8_group
   //! * \ref adapters_matrix_group
-  //!   * \ref adapters_bmat_group
-  //!   * \ref adapters_bmat8_group
   //! * \ref adapters_hpcombi_group
 
   // This is not technically an adapter but put here for lack of a better place

@@ -8278,7 +8278,7 @@ namespace libsemigroups {
   // Adapters
   ////////////////////////////////////////////////////////////////////////
 
-  //! \defgroup adapters_matrix_group Adapters for matrices
+  //! \defgroup adapters_matrix_group Adapters for other matrices
   //!
   //! \brief Documentation for specialization of adapters for matrices
   //! satisfying \ref IsMatrix.
