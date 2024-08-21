@@ -21,9 +21,6 @@
 // TODO(later):
 // * exception safety!
 // * expose iterators to relevant things in D-classes, in particular elements
-// * tpp file
-// TODO(now):
-// * rename _NC mem fns
 
 #ifndef LIBSEMIGROUPS_KONIECZNY_HPP_
 #define LIBSEMIGROUPS_KONIECZNY_HPP_
@@ -344,9 +341,6 @@ namespace libsemigroups {
     //! This is the standard constructor for a Konieczny instance with
     //! unspecified generators.
     //!
-    //! \parameters
-    //! (None)
-    //!
     //! \exceptions
     //! \no_libsemigroups_except
     //!
@@ -383,9 +377,6 @@ namespace libsemigroups {
 
     //! Initialise a Konieczny instance to its default state (or an
     //! indistinguishable one).
-    //!
-    //! \parameters
-    //! (None)
     //!
     //! \exceptions
     //! \no_libsemigroups_except
@@ -454,9 +445,6 @@ namespace libsemigroups {
     //! Note that there may be duplicate generators, and so \c this may have
     //! more generators than unique generators.
     //!
-    //! \parameters
-    //! (None)
-    //!
     //! \returns A value of type \c size_t.
     //!
     //! \exceptions
@@ -501,9 +489,6 @@ namespace libsemigroups {
 
     //! Returns the number of \f$\mathscr{D}\f$-classes.
     //!
-    //! \parameters
-    //! (None)
-    //!
     //! \returns
     //! A value of type \c size_t.
     //!
@@ -519,9 +504,6 @@ namespace libsemigroups {
 
     //! Returns the current number of \f$\mathscr{D}\f$-classes.
     //!
-    //! \parameters
-    //! (None)
-    //!
     //! \returns
     //! A value of type \c size_t.
     //!
@@ -534,9 +516,6 @@ namespace libsemigroups {
     }
 
     //! Returns the number of regular \f$\mathscr{D}\f$-classes.
-    //!
-    //! \parameters
-    //! (None)
     //!
     //! \returns
     //! A value of type \c size_t.
@@ -553,9 +532,6 @@ namespace libsemigroups {
 
     //! Returns the current number of regular \f$\mathscr{D}\f$-classes
     //!
-    //! \parameters
-    //! (None)
-    //!
     //! \returns
     //! A value of type \c size_t.
     //!
@@ -569,9 +545,6 @@ namespace libsemigroups {
     }
 
     //! Returns the number of \f$\mathscr{L}\f$-classes.
-    //!
-    //! \parameters
-    //! (None)
     //!
     //! \returns
     //! A value of type \c size_t.
@@ -587,9 +560,6 @@ namespace libsemigroups {
     }
 
     //! Returns the current number of \f$\mathscr{L}\f$-classes.
-    //!
-    //! \parameters
-    //! (None)
     //!
     //! \returns
     //! A value of type \c size_t.
@@ -609,9 +579,6 @@ namespace libsemigroups {
 
     //! Returns the number of regular \f$\mathscr{L}\f$-classes.
     //!
-    //! \parameters
-    //! (None)
-    //!
     //! \returns
     //! A value of type \c size_t.
     //!
@@ -626,9 +593,6 @@ namespace libsemigroups {
     }
 
     //! Returns the current number of regular \f$\mathscr{L}\f$-classes.
-    //!
-    //! \parameters
-    //! (None)
     //!
     //! \returns
     //! A value of type \c size_t.
@@ -648,9 +612,6 @@ namespace libsemigroups {
 
     //! Returns the number of \f$\mathscr{R}\f$-classes.
     //!
-    //! \parameters
-    //! (None)
-    //!
     //! \returns
     //! A value of type \c size_t.
     //!
@@ -665,9 +626,6 @@ namespace libsemigroups {
     }
 
     //! Returns the current number of regular \f$\mathscr{R}\f$-classes.
-    //!
-    //! \parameters
-    //! (None)
     //!
     //! \returns
     //! A value of type \c size_t.
@@ -687,9 +645,6 @@ namespace libsemigroups {
 
     //! Returns the number of regular \f$\mathscr{R}\f$-classes.
     //!
-    //! \parameters
-    //! (None)
-    //!
     //! \returns
     //! A value of type \c size_t.
     //!
@@ -704,9 +659,6 @@ namespace libsemigroups {
     }
 
     //! Returns the current number of regular \f$\mathscr{R}\f$-classes.
-    //!
-    //! \parameters
-    //! (None)
     //!
     //! \returns
     //! A value of type \c size_t.
@@ -726,9 +678,6 @@ namespace libsemigroups {
 
     //! Returns the number of \f$\mathscr{H}\f$-classes.
     //!
-    //! \parameters
-    //! (None)
-    //!
     //! \returns
     //! A value of type \c size_t.
     //!
@@ -743,9 +692,6 @@ namespace libsemigroups {
     }
 
     //! Returns the current number of \f$\mathscr{H}\f$-classes.
-    //!
-    //! \parameters
-    //! (None)
     //!
     //! \returns
     //! A value of type \c size_t.
@@ -765,9 +711,6 @@ namespace libsemigroups {
 
     //! Returns the number of idempotents.
     //!
-    //! \parameters
-    //! (None)
-    //!
     //! \returns
     //! A value of type \c size_t.
     //!
@@ -782,9 +725,6 @@ namespace libsemigroups {
     }
 
     //! Returns the current number of idempotents.
-    //!
-    //! \parameters
-    //! (None)
     //!
     //! \returns
     //! A value of type \c size_t.
@@ -804,9 +744,6 @@ namespace libsemigroups {
 
     //! Returns the number of regular elements.
     //!
-    //! \parameters
-    //! (None)
-    //!
     //! \returns
     //! A value of type \c size_t.
     //!
@@ -821,9 +758,6 @@ namespace libsemigroups {
     }
 
     //! Returns the current number of regular elements.
-    //!
-    //! \parameters
-    //! (None)
     //!
     //! \returns
     //! A value of type \c size_t.
@@ -842,9 +776,6 @@ namespace libsemigroups {
 
     //! Returns the size.
     //!
-    //! \parameters
-    //! (None)
-    //!
     //! \returns
     //! A value of type \c size_t.
     //!
@@ -861,9 +792,6 @@ namespace libsemigroups {
     }
 
     //! Returns the current size.
-    //!
-    //! \parameters
-    //! (None)
     //!
     //! \returns
     //! A value of type \c size_t.
@@ -886,9 +814,6 @@ namespace libsemigroups {
     //!
     //! All elements of a Konieczny must have the same degree, as computed by
     //! an instance of Degree; this function returns that degree.
-    //!
-    //! \parameters
-    //! (None)
     //!
     //! \returns
     //! A value of type \c size_t.
@@ -955,7 +880,8 @@ namespace libsemigroups {
     //! This function triggers the computation of the orbits of the Lambda and
     //! Rho values, if they are not already known.
     bool is_regular_element(const_reference x) {
-      return contains(x) && is_regular_element_NC(this->to_internal_const(x));
+      return contains(x)
+             && is_regular_element_no_checks(this->to_internal_const(x));
     }
 
     //! Add a copy of an element to the generators.
@@ -964,8 +890,6 @@ namespace libsemigroups {
     //! multiple times.
     //!
     //! \param gen the generator to add.
-    //!
-    //! \returns (None)
     //!
     //! \throws LibsemigroupsException if any of the following hold:
     //! * the degree of \p x is incompatible with the existing degree
@@ -983,8 +907,6 @@ namespace libsemigroups {
     //!
     //! \param coll the collection of generators to add.
     //!
-    //! \returns (None)
-    //!
     //! \throws LibsemigroupsException if any of the following hold:
     //! * the degree of \p x is incompatible with the existing degree.
     //! * \ref started returns \c true
@@ -1000,8 +922,6 @@ namespace libsemigroups {
     //! See \ref add_generator for a detailed description.
     //!
     //! \param coll the collection of generators to add.
-    //!
-    //! \returns (None)
     //!
     //! \throws LibsemigroupsException if any of the following hold:
     //! * the degree of \p x is incompatible with the existing degree.
@@ -1028,9 +948,6 @@ namespace libsemigroups {
     //! may be invalidated by any call to a non-const member function of the
     //! Konieczny class.
     //!
-    //! \parameters
-    //! (None)
-    //!
     //! \returns
     //! A value of type \c const_iterator.
     //!
@@ -1047,9 +964,6 @@ namespace libsemigroups {
     //! This  function does not trigger any enumeration; the iterator returned
     //! may be invalidated by any call to a non-const member function of the
     //! Konieczny class.
-    //!
-    //! \parameters
-    //! (None)
     //!
     //! \returns
     //! A value of type \c const_iterator.
@@ -1082,9 +996,6 @@ namespace libsemigroups {
     //! may be invalidated by any call to a non-const member function of the
     //! Konieczny class.
     //!
-    //! \parameters
-    //! (None)
-    //!
     //! \returns
     //! A value of type \c const_d_class_iterator.
     //!
@@ -1107,9 +1018,6 @@ namespace libsemigroups {
     //! This  function does not trigger any enumeration; the iterator returned
     //! may be invalidated by any call to a non-const member function of the
     //! Konieczny class.
-    //!
-    //! \parameters
-    //! (None)
     //!
     //! \returns
     //! A value of type \c const_d_class_iterator.
@@ -1136,9 +1044,6 @@ namespace libsemigroups {
     //! This  function does not trigger any enumeration; the iterator returned
     //! may be invalidated by any call to a non-const member function of the
     //! Konieczny class.
-    //!
-    //! \parameters
-    //! (None)
     //!
     //! \returns
     //! A value of type \c const_d_class_iterator.
@@ -1170,9 +1075,6 @@ namespace libsemigroups {
     //! may be invalidated by any call to a non-const member function of the
     //! Konieczny class.
     //!
-    //! \parameters
-    //! (None)
-    //!
     //! \returns
     //! A value of type \c const_d_class_iterator.
     //!
@@ -1197,22 +1099,20 @@ namespace libsemigroups {
     ////////////////////////////////////////////////////////////////////////
 
     // assumes its argument has valid lambda/rho values
-    bool is_regular_element_NC(internal_const_reference x,
-                               lambda_orb_index_type    lpos = UNDEFINED,
-                               rho_orb_index_type       rpos = UNDEFINED) {
+    bool is_regular_element_no_checks(internal_const_reference x,
+                                      lambda_orb_index_type    lpos = UNDEFINED,
+                                      rho_orb_index_type rpos = UNDEFINED) {
       LIBSEMIGROUPS_ASSERT(_lambda_orb.finished() && _rho_orb.finished());
       lpos = lpos != UNDEFINED ? lpos : get_lpos(x);
       rpos = rpos != UNDEFINED ? rpos : get_rpos(x);
       return get_lambda_group_index(x, lpos, rpos) != UNDEFINED;
     }
 
-    // TODO use this func
     lambda_orb_index_type get_lpos(internal_const_reference x) const {
       Lambda()(_tmp_lambda_value1, this->to_external_const(x));
       return _lambda_orb.position(_tmp_lambda_value1);
     }
 
-    // TODO use this func
     rho_orb_index_type get_rpos(internal_const_reference x) const {
       Rho()(_tmp_rho_value1, this->to_external_const(x));
       return _rho_orb.position(_tmp_rho_value1);
@@ -1263,7 +1163,7 @@ namespace libsemigroups {
                         rho_orb_index_type       rpos = UNDEFINED) const;
 
     // pass full_check = true to use the contains method of the D-classes
-    // instead of the contains_NC
+    // instead of the contains_no_checks
     D_class_index_type get_containing_D_class(internal_const_reference x,
                                               bool const full_check = false);
 

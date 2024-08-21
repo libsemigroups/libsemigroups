@@ -185,7 +185,7 @@ namespace libsemigroups {
 
   template <typename Element, typename Traits>
   void Konieczny<Element, Traits>::make_idem(internal_reference x) {
-    LIBSEMIGROUPS_ASSERT(is_regular_element_NC(x));
+    LIBSEMIGROUPS_ASSERT(is_regular_element_no_checks(x));
     PoolGuard             cg1(_element_pool);
     internal_element_type tmp1 = cg1.get();
 
@@ -295,7 +295,7 @@ namespace libsemigroups {
                 return *l_D_it;
               }
             } else {
-              if (_D_classes[*l_D_it]->contains_NC(x, lpos, rpos)) {
+              if (_D_classes[*l_D_it]->contains_no_checks(x, lpos, rpos)) {
                 return *l_D_it;
               }
             }
@@ -402,7 +402,7 @@ namespace libsemigroups {
       internal_reference x = rep_info._elt;
       size_t rnk = InternalRank()(_rank_state, this->to_external_const(x));
       _ranks.insert(rnk);
-      if (is_regular_element_NC(x, rep_info._lambda_idx, rep_info._rho_idx)) {
+      if (is_regular_element_no_checks(x, rep_info._lambda_idx, rep_info._rho_idx)) {
         _reg_reps[rnk].push_back(std::move(rep_info));
       } else {
         _nonregular_reps[rnk].push_back(std::move(rep_info));
@@ -414,7 +414,7 @@ namespace libsemigroups {
     // class
     bool flag = false;
     for (internal_const_element_type x : _gens) {
-      if (_D_classes[0]->contains_NC(x)) {
+      if (_D_classes[0]->contains_no_checks(x)) {
         if (flag) {
           _adjoined_identity_contained = true;
           break;
@@ -656,7 +656,7 @@ namespace libsemigroups {
           rank_type          rnk
               = InternalRank()(_rank_state, this->to_external_const(x));
           _ranks.insert(rnk);
-          if (is_regular_element_NC(
+          if (is_regular_element_no_checks(
                   x, rep_info2._lambda_idx, rep_info2._rho_idx)) {
             LIBSEMIGROUPS_ASSERT(rnk < mx_rank);
             _reg_reps[rnk].push_back(std::move(rep_info2));
@@ -669,7 +669,7 @@ namespace libsemigroups {
 
         tmp_next.clear();
         for (auto& rep_info2 : next_reps) {
-          if (_D_classes.back()->contains_NC(
+          if (_D_classes.back()->contains_no_checks(
                   rep_info2._elt, rep_info2._lambda_idx, rep_info2._rho_idx)) {
             _D_rels.back().push_back(rep_info2._D_idx);
             this->internal_free(rep_info2._elt);
@@ -775,7 +775,7 @@ namespace libsemigroups {
           _tmp_internal_vec(),
           _tmp_lambda_value(OneParamLambda()(this->to_external_const(rep))),
           _tmp_rho_value(OneParamRho()(this->to_external_const(rep))) {
-      _is_regular_D_class = _parent->is_regular_element_NC(rep);
+      _is_regular_D_class = _parent->is_regular_element_no_checks(rep);
     }
 #endif  // NOT_PARSED_BY_DOXYGEN
 
@@ -1009,7 +1009,7 @@ namespace libsemigroups {
       return _right_mults_inv[i];
     }
 
-    internal_element_type H_class_NC(size_t i) const {
+    internal_element_type H_class_no_checks(size_t i) const {
       return _H_class[i];
     }
 
@@ -1041,7 +1041,7 @@ namespace libsemigroups {
     // This member function involved computing most of the frame for
     // \c this, if it is not already known.
     // TODO rename
-    bool contains_NC(internal_const_reference x) {
+    bool contains_no_checks(internal_const_reference x) {
       Lambda()(_tmp_lambda_value, this->to_external_const(x));
       LIBSEMIGROUPS_ASSERT(
           this->parent()->_lambda_orb.position(_tmp_lambda_value) != UNDEFINED);
@@ -1049,7 +1049,7 @@ namespace libsemigroups {
       Rho()(_tmp_rho_value, this->to_external_const(x));
       LIBSEMIGROUPS_ASSERT(this->parent()->_rho_orb.position(_tmp_rho_value)
                            != UNDEFINED);
-      return contains_NC(
+      return contains_no_checks(
           x,
           this->parent()->_lambda_orb.position(_tmp_lambda_value),
           this->parent()->_rho_orb.position(_tmp_rho_value));
@@ -1062,16 +1062,16 @@ namespace libsemigroups {
     // function returns whether \p x is an element of the
     // \f$\mathscr{D}\f$-class represented by \c this. If \p x is not an
     // element of the semigroup, then the behaviour is undefined. This
-    // overload of DClass::contains_NC is provided in order to avoid
+    // overload of DClass::contains_no_checks is provided in order to avoid
     // recalculating the rank of \p x when it is already known. This member
     // function involves computing most of the frame for \c this, if it is not
     // already known.
     //
     // TODO rename
-    bool contains_NC(internal_const_reference x, size_t rank) {
+    bool contains_no_checks(internal_const_reference x, size_t rank) {
       LIBSEMIGROUPS_ASSERT(this->parent()->InternalRank()(_rank_state, x)
                            == rank);
-      return (rank == _rank && contains_NC(x));
+      return (rank == _rank && contains_no_checks(x));
     }
 
     // Returns whether the element \p x belongs to this
@@ -1081,18 +1081,18 @@ namespace libsemigroups {
     // function returns whether \p x is an element of the
     // \f$\mathscr{D}\f$-class represented by \c this. If \p x is not an
     // element of the semigroup, then the behaviour is undefined. This
-    // overload of DClass::contains_NC is provided in order to avoid
+    // overload of DClass::contains_no_checks is provided in order to avoid
     // recalculating the rank, lambda value, and rho value of \p x when they
     // are already known. This member function involves computing most of the
     // frame for \c this, if it is not already known.
     // TODO rename
-    bool contains_NC(internal_const_reference x,
+    bool contains_no_checks(internal_const_reference x,
                      size_t                   rank,
                      lambda_orb_index_type    lpos,
                      rho_orb_index_type       rpos) {
       LIBSEMIGROUPS_ASSERT(this->parent()->InternalRank()(_rank_state, x)
                            == rank);
-      return (rank == _rank && contains_NC(x, lpos, rpos));
+      return (rank == _rank && contains_no_checks(x, lpos, rpos));
     }
 
     // Returns whether the element \p x belongs to this
@@ -1102,12 +1102,12 @@ namespace libsemigroups {
     // function returns whether \p x is an element of the
     // \f$\mathscr{D}\f$-class represented by \c this. If \p x is not an
     // element of the semigroup, then the behaviour is undefined. This
-    // overload of DClass::contains_NC is provided in order to avoid
+    // overload of DClass::contains_no_checks is provided in order to avoid
     // recalculating the lambda value and rho value of \p x  when they are
     // already known. This member function involves computing most of the
     // frame for \c this, if it is not already known.
     // TODO rename
-    virtual bool contains_NC(internal_const_reference x,
+    virtual bool contains_no_checks(internal_const_reference x,
                              lambda_orb_index_type    lpos,
                              rho_orb_index_type       rpos)
         = 0;
@@ -1121,15 +1121,15 @@ namespace libsemigroups {
     // DClass - accessor member functions - protected
     ////////////////////////////////////////////////////////////////////////
 
-    size_t number_of_left_reps_NC() const noexcept {
+    size_t number_of_left_reps_no_checks() const noexcept {
       return _left_reps.size();
     }
 
-    size_t number_of_right_reps_NC() const noexcept {
+    size_t number_of_right_reps_no_checks() const noexcept {
       return _right_reps.size();
     }
 
-    size_t size_H_class_NC() const noexcept {
+    size_t size_H_class_no_checks() const noexcept {
       return _H_class.size();
     }
 
@@ -1432,7 +1432,7 @@ namespace libsemigroups {
             Rho()(_tmp_rho_value, this->to_external_const(tmp));
             rho_orb_index_type rpos
                 = _parent->_rho_orb.position(_tmp_rho_value);
-            if (!contains_NC(tmp, lpos, rpos)) {
+            if (!contains_no_checks(tmp, lpos, rpos)) {
               if (_tmp_internal_set.find(tmp) == _tmp_internal_set.end()) {
                 internal_element_type x = this->internal_copy(tmp);
                 _tmp_internal_set.insert(x);
@@ -1459,7 +1459,7 @@ namespace libsemigroups {
             Lambda()(_tmp_lambda_value, this->to_external_const(tmp));
             lambda_orb_index_type lpos
                 = _parent->_lambda_orb.position(_tmp_lambda_value);
-            if (!contains_NC(tmp, lpos, rpos)) {
+            if (!contains_no_checks(tmp, lpos, rpos)) {
               if (_tmp_internal_set.find(tmp) == _tmp_internal_set.end()) {
                 internal_element_type x = this->internal_copy(tmp);
                 _tmp_internal_set.insert(x);
@@ -1591,7 +1591,7 @@ namespace libsemigroups {
           _rho_index_positions(),
           _right_idem_reps(),
           _right_indices_computed(false) {
-      if (!parent->is_regular_element_NC(rep)) {
+      if (!parent->is_regular_element_no_checks(rep)) {
         LIBSEMIGROUPS_EXCEPTION("the representative given should be regular");
       }
       parent->make_idem(this->unsafe_rep());
@@ -1673,10 +1673,10 @@ namespace libsemigroups {
     ////////////////////////////////////////////////////////////////////////
     // RegularDClass - containment - private
     ////////////////////////////////////////////////////////////////////////
-    using DClass::contains_NC;
+    using DClass::contains_no_checks;
 
-    // \copydoc DClass::contains_NC
-    bool contains_NC(internal_const_reference x,
+    // \copydoc DClass::contains_no_checks
+    bool contains_no_checks(internal_const_reference x,
                      lambda_orb_index_type    lpos,
                      rho_orb_index_type       rpos) override {
       // the next line is to suppress compiler warnings
@@ -2040,10 +2040,10 @@ namespace libsemigroups {
       PoolGuard cg(this->parent()->element_pool());
       auto      tmp = cg.get();
 
-      for (size_t i = 0; i < this->size_H_class_NC(); ++i) {
+      for (size_t i = 0; i < this->size_H_class_no_checks(); ++i) {
         for (internal_const_reference g : _H_gens) {
           Product()(this->to_external(tmp),
-                    this->to_external_const(this->H_class_NC(i)),
+                    this->to_external_const(this->H_class_no_checks(i)),
                     this->to_external_const(g));
           if (this->internal_set().find(tmp) == this->internal_set().end()) {
             internal_element_type x = this->internal_copy(tmp);
@@ -2193,7 +2193,7 @@ namespace libsemigroups {
           _right_idem_H_class(),
           _right_idem_right_reps(),
           _right_indices_computed(false) {
-      if (parent->is_regular_element_NC(rep)) {
+      if (parent->is_regular_element_no_checks(rep)) {
         LIBSEMIGROUPS_EXCEPTION("NonRegularDClass: the representative "
                                 "given should not be idempotent");
       }
@@ -2220,14 +2220,14 @@ namespace libsemigroups {
     bool contains(const_reference       x,
                   lambda_orb_index_type lpos,
                   rho_orb_index_type    rpos) override {
-      return contains_NC(this->to_internal_const(x), lpos, rpos);
+      return contains_no_checks(this->to_internal_const(x), lpos, rpos);
     }
 
     ////////////////////////////////////////////////////////////////////////
     // NonRegularDClass - member functions - private
     ////////////////////////////////////////////////////////////////////////
-    using DClass::contains_NC;
-    bool contains_NC(internal_const_reference x,
+    using DClass::contains_no_checks;
+    bool contains_no_checks(internal_const_reference x,
                      lambda_orb_index_type    lpos,
                      rho_orb_index_type       rpos) override {
       if (_lambda_index_positions.find(lpos) == _lambda_index_positions.end()) {
@@ -2325,8 +2325,8 @@ namespace libsemigroups {
       LIBSEMIGROUPS_ASSERT(_right_idem_class != NULL);
       _idems_above_computed = true;
 #ifdef LIBSEMIGROUPS_DEBUG
-      LIBSEMIGROUPS_ASSERT(_left_idem_class->contains_NC(_left_idem_above));
-      LIBSEMIGROUPS_ASSERT(_right_idem_class->contains_NC(_right_idem_above));
+      LIBSEMIGROUPS_ASSERT(_left_idem_class->contains_no_checks(_left_idem_above));
+      LIBSEMIGROUPS_ASSERT(_right_idem_class->contains_no_checks(_right_idem_above));
       LIBSEMIGROUPS_ASSERT(left_found && right_found);
       Product()(this->to_external(tmp),
                 this->rep(),
@@ -2571,7 +2571,7 @@ namespace libsemigroups {
                     lpos, std::vector<left_indices_index_type>());
               }
               _lambda_index_positions[lpos].push_back(
-                  this->number_of_left_reps_NC());
+                  this->number_of_left_reps_no_checks());
 
               // push_left_rep and push_left_mult use tmp_element and
               // tmp_element2
@@ -2663,7 +2663,7 @@ namespace libsemigroups {
                     rpos, std::vector<right_indices_index_type>());
               }
               _rho_index_positions[rpos].push_back(
-                  this->number_of_right_reps_NC());
+                  this->number_of_right_reps_no_checks());
               this->push_right_rep(tmp4);
               this->push_right_mult(tmp3);
 
