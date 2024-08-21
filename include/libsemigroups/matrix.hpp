@@ -42,6 +42,7 @@
 #include "exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
 
 #include "detail/containers.hpp"  // for StaticVector1
+#include "detail/formatters.hpp"  // for formatter of POSITIVE_INFINITY ...
 #include "detail/string.hpp"      // for detail::to_string
 
 namespace libsemigroups {
@@ -3113,7 +3114,7 @@ namespace libsemigroups {
     using MatrixCommon::scalar_one;
     using MatrixCommon::scalar_zero;
     using MatrixCommon::semiring;
-    using MatrixCommon::swap;
+    // using MatrixCommon::swap; don't want this, see below
     using MatrixCommon::transpose;
     using MatrixCommon::transpose_no_checks;
 #endif  // PARSED_BY_DOXYGEN
@@ -3175,7 +3176,6 @@ namespace libsemigroups {
   //! returns the product in the semiring of the scalars \c x and \c y.
   //!
   //! See, for example, \ref MaxPlusTruncSemiring.
-  // TODO(0) update to prod_no_checks, plus_no_checks
   template <typename Semiring, typename Scalar>
   class DynamicMatrix<Semiring, Scalar>
       : public detail::MatrixDynamicDim<Scalar>,
@@ -3492,7 +3492,7 @@ namespace libsemigroups {
     using MatrixCommon::scalar_one;
     using MatrixCommon::scalar_zero;
     using MatrixCommon::semiring;
-    using MatrixCommon::swap;
+    // using MatrixCommon::swap; // Don't want this use the one below.
     using MatrixCommon::transpose;
     using MatrixCommon::transpose_no_checks;
 #endif  // PARSED_BY_DOXYGEN
@@ -3918,7 +3918,30 @@ namespace libsemigroups {
   template <typename T>
   static constexpr bool IsBMat = detail::IsBMatHelper<T>::value;
 
+  namespace detail {
+    // This function is required for exceptions and to_human_readable_repr, so
+    // that if we encounter an entry of a matrix (Scalar type), then it can be
+    // printed correctly. If we just did fmt::format("{}", val) and val ==
+    // POSITIVE_INFINITY, but the type of val is, say, size_t, then this
+    // wouldn't use the formatter for PositiveInfinity.
+    template <typename Scalar>
+    std::string entry_repr(Scalar a) {
+      static_assert(std::is_integral_v<Scalar>);
+
+      if constexpr (std::is_signed_v<Scalar>) {
+        if (a == NEGATIVE_INFINITY) {
+          return u8"-\u221E";
+        }
+      }
+      if (a == static_cast<Scalar>(POSITIVE_INFINITY)) {
+        return u8"+\u221E";
+      }
+      return fmt::format("{}", a);
+    }
+  }  // namespace detail
+
   namespace matrix {
+
     //! \ingroup bmat_group
     //!
     //! \brief Check the entries in a boolean matrix are valid.
@@ -3944,7 +3967,7 @@ namespace libsemigroups {
         auto [r, c] = m.coords(it);
         LIBSEMIGROUPS_EXCEPTION(
             "invalid entry, expected 0 or 1 but found {} in entry ({}, {})",
-            *it,
+            detail::entry_repr(*it),
             r,
             c);
       }
@@ -3955,7 +3978,7 @@ namespace libsemigroups {
     throw_if_bad_entry(Mat const&, typename Mat::scalar_type val) {
       if (val != 0 && val != 1) {
         LIBSEMIGROUPS_EXCEPTION("invalid entry, expected 0 or 1 but found {}",
-                                val);
+                                detail::entry_repr(val));
       }
     }
   }  // namespace matrix
@@ -4197,48 +4220,41 @@ namespace libsemigroups {
     //! Defined in ``matrix.hpp``.
     //!
     //! This function throws an exception if the entries of an integer matrix
-    //! are not valid. There is no way for them to be not valid, and so no
-    //! exception is ever thrown by this function, it exists for the sake of
-    //! completeness.
+    //! are not valid, which is if and only if any of the entries equal \ref
+    //! POSITIVE_INFINITY or \ref NEGATIVE_INFINITY.
     //!
-    //! \tparam R the number of rows of the matrix.
+    //! \tparam Mat the type of the argument \p x, must satisfy \ref
+    //! IsMatrix<Mat>.
     //!
-    //! \tparam C the number of columns of the matrix.
-    //!
-    //! \tparam Scalar the type of the entries in the matrix.
-    //!
-    //! \exceptions
-    //! \noexcept
-    // TODO(0) throw if POSITIVE_INFINITY or NEGATIVE_INFINITY is an entry to
-    // avoid confusion in the pybindings
-    template <size_t R, size_t C, typename Scalar>
-    constexpr void
-    throw_if_bad_entry(StaticIntMat<R, C, Scalar> const&) noexcept {}
-
-    //! \ingroup intmat_group
-    //!
-    //! \brief Validate that an integer matrix is valid.
-    //!
-    //! Defined in ``matrix.hpp``.
-    //!
-    //! This function throws an exception if the entries of an integer matrix
-    //! are not valid. There is no way for them to be not valid, and so no
-    //! exception is ever thrown by this function, it exists for the sake of
-    //! completeness.
-    //!
-    //! \tparam Scalar the type of the entries in the matrix.
-    //!
-    //! \exceptions
-    //! \noexcept
-    template <typename Scalar>
-    constexpr void throw_if_bad_entry(DynamicIntMat<Scalar> const&) noexcept {}
-
+    //! \param x the matrix to check.
     template <typename Mat>
-    std::enable_if_t<IsIntMat<Mat>>
-    throw_if_bad_entry(Mat const&, typename Mat::scalar_type) {
-      // TODO impl
+    constexpr std::enable_if_t<IsIntMat<Mat>> throw_if_bad_entry(Mat const& x) {
+      using scalar_type = typename Mat::scalar_type;
+      auto it = std::find_if(x.cbegin(), x.cend(), [](scalar_type val) {
+        return val == POSITIVE_INFINITY || val == NEGATIVE_INFINITY;
+      });
+      if (it != x.cend()) {
+        auto [r, c] = x.coords(it);
+        LIBSEMIGROUPS_EXCEPTION(
+            "invalid entry, expected entries to be integers, "
+            "but found {} in entry ({}, {})",
+            detail::entry_repr(*it),
+            r,
+            c);
+      }
     }
 
+    // TODO(0) doc
+    template <typename Mat>
+    std::enable_if_t<IsIntMat<Mat>>
+    throw_if_bad_entry(Mat const&, typename Mat::scalar_type val) {
+      if (val == POSITIVE_INFINITY || val == NEGATIVE_INFINITY) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "invalid entry, expected entries to be integers, "
+            "but found {}",
+            detail::entry_repr(val));
+      }
+    }
   }  // namespace matrix
 
   ////////////////////////////////////////////////////////////////////////
@@ -4504,9 +4520,10 @@ namespace libsemigroups {
       if (it != x.cend()) {
         auto [r, c] = x.coords(it);
         LIBSEMIGROUPS_EXCEPTION(
-            "invalid entry, expected entries to be integers or -{0}, "
-            "but found +{0} in entry ({1}, {2})",
-            u8"\u221E",
+            "invalid entry, expected entries to be integers or {}, "
+            "but found {} in entry ({}, {})",
+            NEGATIVE_INFINITY,
+            POSITIVE_INFINITY,
             r,
             c);
       }
@@ -4517,8 +4534,9 @@ namespace libsemigroups {
     throw_if_bad_entry(Mat const&, typename Mat::scalar_type val) {
       if (val == POSITIVE_INFINITY) {
         LIBSEMIGROUPS_EXCEPTION("invalid entry, expected entries to be "
-                                "integers or -{0} but found +{0}",
-                                u8"\u221E");
+                                "integers or {} but found {}",
+                                NEGATIVE_INFINITY,
+                                POSITIVE_INFINITY);
       }
     }
   }  // namespace matrix
@@ -4786,9 +4804,10 @@ namespace libsemigroups {
       if (it != x.cend()) {
         auto [r, c] = x.coords(it);
         LIBSEMIGROUPS_EXCEPTION(
-            "invalid entry, expected entries to be integers or +{0}, "
-            "but found -{0} in entry ({1}, {2})",
-            u8"\u221E",
+            "invalid entry, expected entries to be integers or {}, "
+            "but found {} in entry ({}, {})",
+            POSITIVE_INFINITY,
+            NEGATIVE_INFINITY,
             r,
             c);
       }
@@ -4799,8 +4818,9 @@ namespace libsemigroups {
     throw_if_bad_entry(Mat const&, typename Mat::scalar_type val) {
       if (val == NEGATIVE_INFINITY) {
         LIBSEMIGROUPS_EXCEPTION("invalid entry, expected entries to be "
-                                "integers of +{0} but found -{0}",
-                                val);
+                                "integers or {} but found {}",
+                                POSITIVE_INFINITY,
+                                NEGATIVE_INFINITY);
       }
     }
   }  // namespace matrix
@@ -5238,31 +5258,30 @@ namespace libsemigroups {
       });
       if (it != m.cend()) {
         auto [r, c] = m.coords(it);
-        // TODO(0) update to be \{0, ..., t, infty\} i.e. don't use union
-        LIBSEMIGROUPS_EXCEPTION("invalid entry, expected values in [0, {}] "
-                                "{} {{-{}}} but found {} in entry ({}, {})",
-                                t,
-                                u8"\u222A",
-                                u8"\u221E",
-                                *it,
-                                r,
-                                c);
+        LIBSEMIGROUPS_EXCEPTION(
+            "invalid entry, expected values in {{0, 1, ..., {}, {}}} "
+            "but found {} in entry ({}, {})",
+            t,
+            NEGATIVE_INFINITY,
+            detail::entry_repr(*it),
+            r,
+            c);
       }
     }
+
+    // TODO(0) doc
     template <typename Mat>
     std::enable_if_t<IsMaxPlusTruncMat<Mat>>
     throw_if_bad_entry(Mat const& m, typename Mat::scalar_type val) {
       using scalar_type   = typename Mat::scalar_type;
       scalar_type const t = matrix::threshold(m);
       if (val == POSITIVE_INFINITY || 0 > val || val > t) {
-        std::string val_repr
-            = val == POSITIVE_INFINITY ? u8"+\u221E" : std::to_string(val);
-        LIBSEMIGROUPS_EXCEPTION("invalid entry, expected values in [0, {}] "
-                                "{} {{-{}}} but found {}",
-                                t,
-                                u8"\u222A",
-                                u8"\u221E",
-                                val_repr);
+        LIBSEMIGROUPS_EXCEPTION(
+            "invalid entry, expected values in {{0, 1, ..., {}, -{}}} "
+            "but found {}",
+            t,
+            NEGATIVE_INFINITY,
+            detail::entry_repr(val));
       }
     }
   }  // namespace matrix
@@ -5697,34 +5716,31 @@ namespace libsemigroups {
       if (it != m.cend()) {
         uint64_t r, c;
         std::tie(r, c) = m.coords(it);
-        std::string it_repr
-            = *it == NEGATIVE_INFINITY ? u8"-\u221E" : std::to_string(*it);
 
-        LIBSEMIGROUPS_EXCEPTION("invalid entry, expected values in [0, {}] "
-                                "{} {{+{}}} but found {} in entry ({}, {})",
-                                t,
-                                u8"\u222A",
-                                u8"\u221E",
-                                it_repr,
-                                r,
-                                c);
+        LIBSEMIGROUPS_EXCEPTION(
+            "invalid entry, expected values in {{0, 1, ..., {}, {}}} "
+            "but found {} in entry ({}, {})",
+            t,
+            u8"\u221E",
+            detail::entry_repr(*it),
+            r,
+            c);
       }
     }
 
+    // TODO(0) doc
     template <typename Mat>
     std::enable_if_t<IsMinPlusTruncMat<Mat>>
     throw_if_bad_entry(Mat const& m, typename Mat::scalar_type val) {
       using scalar_type   = typename Mat::scalar_type;
       scalar_type const t = matrix::threshold(m);
       if (!(val == POSITIVE_INFINITY || (0 <= val && val <= t))) {
-        std::string val_repr
-            = val == NEGATIVE_INFINITY ? u8"-\u221E" : std::to_string(val);
-        LIBSEMIGROUPS_EXCEPTION("invalid entry, expected values in [0, {}] "
-                                "{} {{+{}}} but found {}",
-                                t,
-                                u8"\u222A",
-                                u8"\u221E",
-                                val_repr);
+        LIBSEMIGROUPS_EXCEPTION(
+            "invalid entry, expected values in {{0, 1, ..., {}, {}}} "
+            "but found {}",
+            t,
+            u8"\u221E",
+            detail::entry_repr(val));
       }
     }
   }  // namespace matrix
@@ -6016,7 +6032,6 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! Constant.
-    // TODO(0) should be _no_checks, also for the other Semirings
     Scalar product_no_checks(Scalar x, Scalar y) const noexcept {
       LIBSEMIGROUPS_ASSERT(x >= 0 && x <= _period + _threshold - 1);
       LIBSEMIGROUPS_ASSERT(y >= 0 && y <= _period + _threshold - 1);
@@ -6047,7 +6062,6 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! Constant.
-    // TODO(0) should be _no_checks, also for the other Semirings
     Scalar plus_no_checks(Scalar x, Scalar y) const noexcept {
       LIBSEMIGROUPS_ASSERT(x >= 0 && x <= _period + _threshold - 1);
       LIBSEMIGROUPS_ASSERT(y >= 0 && y <= _period + _threshold - 1);
@@ -6343,23 +6357,13 @@ namespace libsemigroups {
         uint64_t r, c;
         std::tie(r, c) = m.coords(it);
 
-        std::string it_repr;
-        if constexpr (std::is_signed_v<scalar_type>) {
-          if (*it == NEGATIVE_INFINITY) {
-            it_repr = u8"-\u221E";
-          }
-        } else if (*it == POSITIVE_INFINITY) {
-          it_repr = u8"+\u221E";
-        } else {
-          it_repr = std::to_string(*it);
-        }
-
-        LIBSEMIGROUPS_EXCEPTION("invalid entry, expected values in [0, {}) but "
-                                "found {} in entry ({}, {})",
-                                p + t,
-                                it_repr,
-                                r,
-                                c);
+        LIBSEMIGROUPS_EXCEPTION(
+            "invalid entry, expected values in {{0, 1, ..., {}}}, but "
+            "found {} in entry ({}, {})",
+            p + t,
+            detail::entry_repr(*it),
+            r,
+            c);
       }
     }
 
@@ -6371,18 +6375,11 @@ namespace libsemigroups {
       scalar_type const t = matrix::threshold(m);
       scalar_type const p = matrix::period(m);
       if (val < 0 || val >= p + t) {
-        std::string val_repr;
-        if (val == NEGATIVE_INFINITY) {
-          val_repr = u8"-\u221E";
-        } else if (val == POSITIVE_INFINITY) {
-          val_repr = u8"+\u221E";
-        } else {
-          val_repr = std::to_string(val);
-        }
-        LIBSEMIGROUPS_EXCEPTION("invalid entry, expected values in [0, {}) "
-                                " but found {}",
-                                p + t,
-                                val_repr);
+        LIBSEMIGROUPS_EXCEPTION(
+            "invalid entry, expected values in {{0, 1, ..., {}}}, but "
+            "found {}",
+            p + t,
+            detail::entry_repr(val));
       }
     }
   }  // namespace matrix
@@ -6435,7 +6432,7 @@ namespace libsemigroups {
       ProjMaxPlusMat(size_t r, size_t c)
           : _is_normalized(false), _underlying_mat(r, c) {}
 
-      // TODO(0) other missing constructors
+      // TODO(1) other missing constructors
       ProjMaxPlusMat(
           typename underlying_matrix_type::semiring_type const* semiring,
           size_t                                                r,
@@ -6854,6 +6851,8 @@ namespace libsemigroups {
     //!
     //! \tparam Mat the type of the parameter (must satisfy \ref
     //! IsProjMaxPlusMat<Mat>).
+    //!
+    //! \param x the matrix to check.
     template <typename Mat>
     constexpr std::enable_if_t<IsProjMaxPlusMat<Mat>>
     throw_if_bad_entry(Mat const& x) {
@@ -7798,7 +7797,7 @@ namespace libsemigroups {
     matrix::throw_if_bad_entry(m);
     return m;
   }
-  // TODO(0) vector version of above
+  // TODO(1) vector version of above
 
   //! \ingroup matrix_group
   //!
@@ -7835,7 +7834,7 @@ namespace libsemigroups {
             typename Semiring,
             typename = std::enable_if_t<IsMatrix<Mat>>>
   Mat to_matrix(
-      Semiring const* semiring,  // TODO(1) pass by reference
+      Semiring const* semiring,  // TODO(0) pass by reference
       std::initializer_list<
           std::initializer_list<typename Mat::scalar_type>> const& rows) {
     Mat m(semiring, rows);
@@ -8020,7 +8019,20 @@ namespace libsemigroups {
     return os;
   }
 
-  //! TODO(0) doc
+  //! \ingroup matrix_group
+  //!
+  //! \brief Returns a human readable representation of a matrix.
+  //!
+  //! This function returns a human readable representation of a matrix.
+  //!
+  //! \tparam Mat the type of the matrix, must satisfy \ref IsMatrix<Mat>.
+  //!
+  //! \param x the matrix.
+  //! \param prefix the prefix for the returned string.
+  //! \param short_name the short name of the type of matrix (default: "").
+  //! \param braces the braces to use to delineate rows (default: "{}")
+  //!
+  //! \throws LibsemigroupsException if \p braces does not have size \c 2.
   template <typename Mat>
   auto to_human_readable_repr(Mat const&         x,
                               std::string const& prefix,
@@ -8030,41 +8042,43 @@ namespace libsemigroups {
       -> std::enable_if_t<IsMatrix<Mat>, std::string> {
     if (braces.size() != 2) {
       LIBSEMIGROUPS_EXCEPTION(
-          "the 3rd argument (braces) must have size 2, found {}",
+          "the 4th argument (braces) must have size 2, found {}",
           braces.size());
     }
-    auto lbrace = braces[0], rbrace = braces[1];
 
     size_t const R = x.number_of_rows();
     size_t const C = x.number_of_cols();
 
-    std::string         rindent;
-    std::vector<size_t> col_widths(C, 0);
+    std::vector<size_t> max_col_widths(C, 0);
+    std::vector<size_t> row_widths(C, prefix.size() + 1);
     for (size_t r = 0; r < R; ++r) {
       for (size_t c = 0; c < C; ++c) {
-        auto   item = x(r, c);
-        size_t val  = std::to_string(item).size();
-        if (item == POSITIVE_INFINITY || item == NEGATIVE_INFINITY) {
-          val = 2;
-        }
-        if (val > col_widths[c]) {
-          col_widths[c] = val;
+        size_t width
+            = detail::unicode_string_length(detail::entry_repr(x(r, c)));
+        row_widths[r] += width;
+        if (width > max_col_widths[c]) {
+          max_col_widths[c] = width;
         }
       }
     }
-    auto col_width   = *std::max_element(col_widths.begin(), col_widths.end());
-    auto total_width = col_width * C + prefix.size() + 1;
+    auto col_width
+        = *std::max_element(max_col_widths.begin(), max_col_widths.end());
+    // The total width if we pad the entries according to the widest column.
+    auto const total_width = col_width * C + prefix.size() + 1;
     if (total_width > max_width) {
-      if (std::accumulate(
-              col_widths.begin(), col_widths.end(), prefix.size() + 1)
-          > max_width) {
+      // Padding according to the widest column is too wide!
+      if (*std::max_element(row_widths.begin(), row_widths.end()) > max_width) {
+        // If the widest row is too wide, then use the short name
         return fmt::format(
             "<{}x{} {}>", x.number_of_rows(), x.number_of_cols(), short_name);
       }
+      // If the widest row is not too wide, then just don't pad the entries
       col_width = 0;
     }
 
     std::string result = fmt::format("{}", prefix);
+    std::string rindent;
+    auto const  lbrace = braces[0], rbrace = braces[1];
     if (R != 0 && C != 0) {
       result += lbrace;
       std::string csep = "";
@@ -8073,14 +8087,8 @@ namespace libsemigroups {
         rindent          = std::string(prefix.size() + 1, ' ');
         std::string csep = "";
         for (size_t c = 0; c < C; ++c) {
-          auto        val = x(r, c);
-          std::string str = std::to_string(val);
-          if (val == POSITIVE_INFINITY) {
-            str = "+\u221e";
-          } else if (val == NEGATIVE_INFINITY) {
-            str = "-\u221e";
-          }
-          result += fmt::format("{}{:>{}}", csep, str, col_width);
+          result += fmt::format(
+              "{}{:>{}}", csep, detail::entry_repr(x(r, c)), col_width);
           csep = ", ";
         }
         result += fmt::format("{}", rbrace);
