@@ -195,8 +195,8 @@ namespace libsemigroups {
     //! equal the number of rows of \p y; or the number of columns of \p x does
     //! not equal the number of columns of \p y.
     template <typename Mat>
-    auto throw_if_bad_dim(Mat const& x, Mat const& y)
-        -> std::enable_if_t<IsMatrix<Mat>> {
+    auto throw_if_bad_dim(Mat const& x,
+                          Mat const& y) -> std::enable_if_t<IsMatrix<Mat>> {
       if (x.number_of_rows() != y.number_of_rows()
           || x.number_of_cols() != y.number_of_cols()) {
         LIBSEMIGROUPS_EXCEPTION(
@@ -224,8 +224,9 @@ namespace libsemigroups {
     //! \throws LibsemigroupsException if `(r, c)` does not index an entry in
     //! the matrix \p x.
     template <typename Mat>
-    auto throw_if_bad_coords(Mat const& x, size_t r, size_t c)
-        -> std::enable_if_t<IsMatrix<Mat>> {
+    auto throw_if_bad_coords(Mat const& x,
+                             size_t     r,
+                             size_t     c) -> std::enable_if_t<IsMatrix<Mat>> {
       if (r >= x.number_of_rows()) {
         LIBSEMIGROUPS_EXCEPTION("invalid row index in ({}, {}), expected "
                                 "values in [0, {}) x [0, {})",
@@ -289,12 +290,13 @@ namespace libsemigroups {
       // MatrixCommon - Semiring arithmetic - private
       ////////////////////////////////////////////////////////////////////////
 
-      scalar_type plus(scalar_type x, scalar_type y) const noexcept {
-        return static_cast<Subclass const*>(this)->plus_impl(y, x);
+      scalar_type plus_no_checks(scalar_type x, scalar_type y) const noexcept {
+        return static_cast<Subclass const*>(this)->plus_no_checks_impl(y, x);
       }
 
-      scalar_type prod(scalar_type x, scalar_type y) const noexcept {
-        return static_cast<Subclass const*>(this)->prod_impl(y, x);
+      scalar_type product_no_checks(scalar_type x,
+                                    scalar_type y) const noexcept {
+        return static_cast<Subclass const*>(this)->product_no_checks_impl(y, x);
       }
 
      protected:
@@ -304,14 +306,16 @@ namespace libsemigroups {
 
       // TODO(1) use constexpr-if, not SFINAE
       template <typename SFINAE = container_type>
-      auto resize(size_t r, size_t c) -> std::enable_if_t<
-          std::is_same<SFINAE, std::vector<scalar_type>>::value> {
+      auto resize(size_t r, size_t c)
+          -> std::enable_if_t<
+              std::is_same<SFINAE, std::vector<scalar_type>>::value> {
         _container.resize(r * c);
       }
 
       template <typename SFINAE = container_type>
-      auto resize(size_t, size_t) -> std::enable_if_t<
-          !std::is_same<SFINAE, std::vector<scalar_type>>::value> {}
+      auto resize(size_t, size_t)
+          -> std::enable_if_t<
+              !std::is_same<SFINAE, std::vector<scalar_type>>::value> {}
 
      public:
       ////////////////////////////////////////////////////////////////////////
@@ -516,10 +520,10 @@ namespace libsemigroups {
                 tmp.begin(),
                 scalar_zero(),
                 [this](scalar_type x, scalar_type y) {
-                  return this->plus(x, y);
+                  return this->plus_no_checks(x, y);
                 },
                 [this](scalar_type x, scalar_type y) {
-                  return this->prod(x, y);
+                  return this->product_no_checks(x, y);
                 });
           }
         }
@@ -528,7 +532,7 @@ namespace libsemigroups {
       // not noexcept because iterator increment isn't
       void operator*=(scalar_type a) {
         for (auto it = _container.begin(); it < _container.end(); ++it) {
-          *it = prod(*it, a);
+          *it = product_no_checks(*it, a);
         }
       }
 
@@ -537,7 +541,7 @@ namespace libsemigroups {
         LIBSEMIGROUPS_ASSERT(that.number_of_rows() == number_of_rows());
         LIBSEMIGROUPS_ASSERT(that.number_of_cols() == number_of_cols());
         for (size_t i = 0; i < _container.size(); ++i) {
-          _container[i] = plus(_container[i], that._container[i]);
+          _container[i] = plus_no_checks(_container[i], that._container[i]);
         }
       }
 
@@ -548,7 +552,7 @@ namespace libsemigroups {
 
       void operator+=(scalar_type a) {
         for (auto it = _container.begin(); it < _container.end(); ++it) {
-          *it = plus(*it, a);
+          *it = plus_no_checks(*it, a);
         }
       }
 
@@ -759,13 +763,13 @@ namespace libsemigroups {
       // private or protected
       using scalar_type = Scalar;
 
-      static constexpr scalar_type plus_impl(scalar_type x,
-                                             scalar_type y) noexcept {
+      static constexpr scalar_type plus_no_checks_impl(scalar_type x,
+                                                       scalar_type y) noexcept {
         return PlusOp()(x, y);
       }
 
-      static constexpr scalar_type prod_impl(scalar_type x,
-                                             scalar_type y) noexcept {
+      static constexpr scalar_type
+      product_no_checks_impl(scalar_type x, scalar_type y) noexcept {
         return ProdOp()(x, y);
       }
 
@@ -808,12 +812,13 @@ namespace libsemigroups {
       }
 
      private:
-      scalar_type plus(scalar_type x, scalar_type y) const noexcept {
-        return static_cast<Subclass const*>(this)->plus_impl(y, x);
+      scalar_type plus_no_checks(scalar_type x, scalar_type y) const noexcept {
+        return static_cast<Subclass const*>(this)->plus_no_checks_impl(y, x);
       }
 
-      scalar_type prod(scalar_type x, scalar_type y) const noexcept {
-        return static_cast<Subclass const*>(this)->prod_impl(y, x);
+      scalar_type product_no_checks(scalar_type x,
+                                    scalar_type y) const noexcept {
+        return static_cast<Subclass const*>(this)->product_no_checks_impl(y, x);
       }
 
      public:
@@ -884,21 +889,21 @@ namespace libsemigroups {
       void operator+=(RowViewCommon const& x) {
         auto& this_ = *this;
         for (size_t i = 0; i < size(); ++i) {
-          this_[i] = plus(this_[i], x[i]);
+          this_[i] = plus_no_checks(this_[i], x[i]);
         }
       }
 
       // not noexcept because iterator arithmeic isn't
       void operator+=(scalar_type a) {
         for (auto& x : *this) {
-          x = plus(x, a);
+          x = plus_no_checks(x, a);
         }
       }
 
       // not noexcept because iterator arithmeic isn't
       void operator*=(scalar_type a) {
         for (auto& x : *this) {
-          x = prod(x, a);
+          x = product_no_checks(x, a);
         }
       }
 
@@ -1302,18 +1307,17 @@ namespace libsemigroups {
     //!
     //! Lexicographical comparison of rows.
     //!
-    //! \tparam U  either \ref Row, \ref StaticRowView,
-    //! \ref DynamicRowViewStaticArith
-    //! "DynamicRowView (compile-time arithmetic)", or \ref
-    //! DynamicRowViewDynamicArith "DynamicRowView (run-time arithmetic)" \param
-    //! that \ref Row, \ref StaticRowView,
-    //! \ref DynamicRowViewStaticArith
-    //! "DynamicRowView (compile-time arithmetic)", or \ref
-    //! DynamicRowViewDynamicArith "DynamicRowView (run-time arithmetic)" object
-    //! for comparison.
+    //! \tparam U  either \ref Row, \ref StaticRowView, \ref
+    //! DynamicRowViewStaticArith "DynamicRowView (compile-time arithmetic)", or
+    //! \ref DynamicRowViewDynamicArith "DynamicRowView (run-time arithmetic)".
+    //!
+    //! \param that \ref Row, \ref StaticRowView, \ref
+    //! DynamicRowViewStaticArith "DynamicRowView (compile-time arithmetic)", or
+    //! \ref DynamicRowViewDynamicArith "DynamicRowView (run-time arithmetic)"
+    //! object for comparison.
     //!
     //! \returns
-    //! Returns \c true if `this` is lex less than that `that` and
+    //! Returns \c true if `*this` is lex less than that `that` and
     //! \c false otherwise.
     //!
     //! \complexity
@@ -1363,7 +1367,7 @@ namespace libsemigroups {
     //! The two row views must be of the same size, although this is not
     //! verified by the implementation.
     //!
-    //! \warning This function does not try to detect integer overflows.
+    //! \warning This function does not detect overflows of \ref scalar_type.
     Row operator+(StaticRowView const& that);
 
     //! \brief Sums a row view with another row view in-place.
@@ -1383,7 +1387,7 @@ namespace libsemigroups {
     //! The two row views must be of the same size, although this is not
     //! verified by the implementation.
     //!
-    //! \warning This function does not try to detect integer overflows.
+    //! \warning This function does not detect overflows of \ref scalar_type.
     void operator+=(StaticRowView const& that);
 
     //! \brief Adds a scalar to every entry of a row in-place.
@@ -1398,7 +1402,7 @@ namespace libsemigroups {
     //! \complexity
     //! \f$O(m)\f$ where \f$m\f$ is \ref size.
     //!
-    //! \warning This function does not try to detect integer overflows.
+    //! \warning This function does not detect overflows of \ref scalar_type.
     void operator+=(scalar_type a);
 
     //! \brief Multiplies every entry of the row by a scalar.
@@ -1417,7 +1421,7 @@ namespace libsemigroups {
     //! \complexity
     //! \f$O(m)\f$ where \f$m\f$ is \ref size.
     //!
-    //! \warning This function does not try to detect integer overflows.
+    //! \warning This function does not detect overflows of \ref scalar_type.
     Row operator*(scalar_type a) const;
 
     //! \brief Multiplies every entry of the row by a scalar in-place.
@@ -1432,7 +1436,7 @@ namespace libsemigroups {
     //! \complexity
     //! \f$O(m)\f$ where \f$m\f$ is \ref size.
     //!
-    //! \warning This function does not try to detect integer overflows.
+    //! \warning This function does not detect overflows of \ref scalar_type.
     void operator*=(scalar_type a);
 #endif
 
@@ -1500,8 +1504,8 @@ namespace libsemigroups {
    private:
     using DynamicMatrix_ = DynamicMatrix<PlusOp, ProdOp, ZeroOp, OneOp, Scalar>;
     using RowViewCommon  = detail::RowViewCommon<
-        DynamicMatrix_,
-        DynamicRowView<PlusOp, ProdOp, ZeroOp, OneOp, Scalar>>;
+         DynamicMatrix_,
+         DynamicRowView<PlusOp, ProdOp, ZeroOp, OneOp, Scalar>>;
     friend RowViewCommon;
 
    public:
@@ -1771,12 +1775,14 @@ namespace libsemigroups {
       return _matrix->number_of_cols();
     }
 
-    scalar_type plus_impl(scalar_type x, scalar_type y) const noexcept {
-      return _matrix->plus_impl(x, y);
+    scalar_type plus_no_checks_impl(scalar_type x,
+                                    scalar_type y) const noexcept {
+      return _matrix->plus_no_checks_impl(x, y);
     }
 
-    scalar_type prod_impl(scalar_type x, scalar_type y) const noexcept {
-      return _matrix->prod_impl(x, y);
+    scalar_type product_no_checks_impl(scalar_type x,
+                                       scalar_type y) const noexcept {
+      return _matrix->product_no_checks_impl(x, y);
     }
 
     DynamicMatrix_ const* _matrix;
@@ -2040,7 +2046,6 @@ namespace libsemigroups {
 
 #ifndef PARSED_BY_DOXYGEN
     static StaticMatrix one(size_t n) {
-      static_assert(C == R, "cannot create non-square identity matrix");
       // If specified the value of n must equal R or otherwise weirdness will
       // ensue...
       LIBSEMIGROUPS_ASSERT(n == 0 || n == R);
@@ -2051,9 +2056,9 @@ namespace libsemigroups {
       // wrong and the value R is optimized away somehow, meaning that the
       // values on the diagonal aren't actually set. This only occurs when
       // libsemigroups is compiled with -O2 or higher.
-      size_t volatile m = R;
+      size_t volatile const m = R;
 #else
-      size_t m = R;
+      size_t const m = R;
 #endif
       StaticMatrix x(m, m);
       std::fill(x.begin(), x.end(), ZeroOp()());
@@ -2261,7 +2266,7 @@ namespace libsemigroups {
     //! \brief Less than operator.
     //!
     //! This operator defines a total order on the set of matrices of the
-    //! same type, the details of which is implementation specific.
+    //! same type.
     //!
     //! \param that the matrix or row view for comparison.
     //!
@@ -2279,7 +2284,7 @@ namespace libsemigroups {
     //! \brief Greater than operator.
     //!
     //! This operator defines a total order on the set of matrices of the same
-    //! type, the details of which is implementation specific.
+    //! type.
     //!
     //! \param that  the matrix for comparison.
     //!
@@ -2350,7 +2355,7 @@ namespace libsemigroups {
     //! The matrices must be of the same dimensions, although this is not
     //! verified.
     //!
-    //! \warning This function does not try to detect integer overflows.
+    //! \warning This function does not detect overflows of \ref scalar_type.
     StaticMatrix operator+(StaticMatrix const& that);
 
     //! \brief Add a matrix to another matrix in-place.
@@ -2368,7 +2373,7 @@ namespace libsemigroups {
     //! The matrices must be of the same dimensions, although this is not
     //! checked.
     //!
-    //! \warning This function does not try to detect integer overflows.
+    //! \warning This function does not detect overflows of \ref scalar_type.
     void operator+=(StaticMatrix const& that);
 
     //! \copydoc operator+=
@@ -2384,7 +2389,7 @@ namespace libsemigroups {
     //! \f$O(mn)\f$ where \f$m\f$ is \ref number_of_rows and \f$m\f$ is \ref
     //! number_of_cols
     //!
-    //! \warning This function does not try to detect integer overflows.
+    //! \warning This function does not detect overflows of \ref scalar_type.
     void operator+=(scalar_type a);
 
     //! \brief Returns the product of two matrices.
@@ -2403,7 +2408,7 @@ namespace libsemigroups {
     //! The matrices must be of the same dimensions, although this is not
     //! verified.
     //!
-    //! \warning This function does not try to detect integer overflows.
+    //! \warning This function does not detect overflows of \ref scalar_type.
     StaticMatrix operator*(StaticMatrix const& that);
 
     //! \brief Multiplies every entry of a matrix by a scalar in-place.
@@ -2416,7 +2421,7 @@ namespace libsemigroups {
     //! \f$O(mn)\f$ where \f$m\f$ is \ref number_of_rows
     //! and \f$m\f$ is \ref number_of_cols.
     //!
-    //! \warning This function does not try to detect integer overflows.
+    //! \warning This function does not detect overflows of \ref scalar_type.
     void operator*=(scalar_type a);
 
     //! \brief Multiplies \p x and \p y and stores the result in `this`.
@@ -2442,7 +2447,7 @@ namespace libsemigroups {
     //!
     //! This function returns a \ref RowView into the row with index \p i.
     //!
-    //! \param i  the index of the row
+    //! \param i  the index of the row.
     //!
     //! \returns  A value of type \ref RowView.
     //!
@@ -2459,7 +2464,7 @@ namespace libsemigroups {
     //!
     //! This function returns a \ref RowView into the row with index \p i.
     //!
-    //! \param i the index of the row
+    //! \param i the index of the row.
     //!
     //! \returns A value of type \ref RowView.
     //!
@@ -2529,41 +2534,130 @@ namespace libsemigroups {
 
     //! \brief Returns an identity matrix.
     //!
-    //! This function returns an \c R times \c C identity matrix.
+    //! This function returns an \c R times \c R identity matrix.
     //!
-    //! \returns  The identity matrix with `R = C` rows and columns.
+    //! \returns  The identity matrix with \c R rows and \c R columns.
     //!
     //! \exceptions
     //! \no_libsemigroups_except
     //!
     //! \complexity
-    //! \f$O(n ^ 2)\f$ where \f$n\f$ is the template parameter \c R
-    //! and \c C.
-    //!
-    //! \warning
-    //! This only works when the template parameters \c R and \c C are
-    //! equal (i.e. for square matrices).
+    //! \f$O(n ^ 2)\f$ where \f$n\f$ is the template parameter \c R.
     static StaticMatrix one() const;
 
-    // TODO(doc)
+    //! \brief Return a hash value of a matrix.
+    //!
+    //! This function returns a hash value for a matrix. The return value is
+    //! recomputed every time this function is called.
+    //!
+    //! \returns A hash value for a \c this.
+    //!
+    //! \exceptions
+    //! \noexcept
+    //!
+    //! \complexity
+    //! \f$O(mn)\f$ where \f$m\f$ is the \ref number_of_rows and \f$n\f$ is
+    //! \ref number_of_cols.
     size_t hash_value() const;
 
-    // TODO(0) doc
-    bool operator<=(T const& that) const;
+    //! \brief Less than or equal operator.
+    //!
+    //! This operator defines a total order on the set of matrices of the
+    //! same type.
+    //!
+    //! \tparam U the type of the argument \p that.
+    //! \param that the matrix or row view for comparison.
+    //!
+    //! \returns \c true if `*this` is less than or equal to \p that  and \c
+    //! false if it is not.
+    //!
+    //! \complexity
+    //! At worst \f$O(mn)\f$ where \f$m\f$ is \ref number_of_rows
+    //! and \f$n\f$ is \ref number_of_cols.
+    template <typename U>
+    bool operator<=(U const& that) const;
 
-    // TODO(0) doc
-    bool operator>=(T const& that) const;
+    //! \brief Greater than or equal operator.
+    //!
+    //! This operator defines a total order on the set of matrices of the
+    //! same type.
+    //!
+    //! \tparam U the type of the argument \p that.
+    //! \param that the matrix or row view for comparison.
+    //!
+    //! \returns \c true if `*this` is greater than or equal to \p that  and \c
+    //! false if it is not.
+    //!
+    //! \complexity
+    //! At worst \f$O(mn)\f$ where \f$m\f$ is \ref number_of_rows
+    //! and \f$n\f$ is \ref number_of_cols.
+    template <typename U>
+    bool operator>=(U const& that) const;
 
-    // TODO(0) doc
-    StaticMatrix operator*(scalar_type);
-    // TODO(0) doc
-    StaticMatrix operator+(scalar_type);
+    //! \brief Multiply a matrix by a scalar.
+    //!
+    //! This function returns the product of the matrix `*this` and the scalar
+    //! \p a.
+    //!
+    //! \param a the scalar to add.
+    //! \returns  The product of `*this` and \p a.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    //! \warning This function does not detect overflows in \ref scalar_type.
+    StaticMatrix operator*(scalar_type a);
 
-    // TODO(0) doc
+    //! \brief Add a scalar to a matrix.
+    //!
+    //! This function returns the sum of the matrix `*this` and the scalar
+    //! \p a.
+    //!
+    //! \param a the scalar to add.
+    //! \returns  The sum of `*this` and \p a.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    //! \warning This function does not detect overflows in \ref
+    //! scalar_type.
+    StaticMatrix operator+(scalar_type a);
+
+    //! Returns the additive identity of the underlying semiring.
+    //!
+    //! This function returns the additive identity of the underlying
+    //! semiring of a matrix.
+    //!
+    //! \returns The additive identity of the semiring, a \ref
+    //! scalar_type.
+    //!
+    //! \exceptions
+    //! \noexcept
     scalar_type scalar_zero() const noexcept;
-    // TODO(0) doc
+
+    //! Returns the multiplicative identity of the underlying semiring.
+    //!
+    //! This function returns the multiplicative identity of the underlying
+    //! semiring of a matrix.
+    //!
+    //! \returns The multiplicative identity of the semiring, a \ref
+    //! scalar_type.
+    //!
+    //! \exceptions
+    //! \noexcept
     scalar_type scalar_one() const noexcept;
-    // TODO(0) doc
+
+    //! \brief Returns the underlying semiring.
+    //!
+    //! Returns a const pointer to the underlying semiring (if any).
+    //!
+    //! \returns  A value of type `Semiring const*`.
+    //!
+    //! \exceptions
+    //! \noexcept
+    //!
+    //! \complexity
+    //! Constant
     semiring_type const* semiring() const noexcept;
 
 #else
@@ -2573,28 +2667,28 @@ namespace libsemigroups {
     using MatrixCommon::cend;
     using MatrixCommon::coords;
     using MatrixCommon::end;
-    using MatrixCommon::hash_value;  // TODO(0)
+    using MatrixCommon::hash_value;
     using MatrixCommon::number_of_cols;
     using MatrixCommon::number_of_rows;
     using MatrixCommon::one;
     using MatrixCommon::operator();
     using MatrixCommon::operator==;
-    using MatrixCommon::operator<;   // NOLINT(whitespace/operators)
-    using MatrixCommon::operator<=;  // TODO(0)
-    using MatrixCommon::operator>;   // NOLINT(whitespace/operators)
-    using MatrixCommon::operator>=;  // TODO(0)
+    using MatrixCommon::operator<;  // NOLINT(whitespace/operators)
+    using MatrixCommon::operator<=;
+    using MatrixCommon::operator>;  // NOLINT(whitespace/operators)
+    using MatrixCommon::operator>=;
     using MatrixCommon::operator!=;
     using MatrixCommon::operator*=;
     using MatrixCommon::operator+=;
-    using MatrixCommon::operator*;  // TODO(0)
-    using MatrixCommon::operator+;  // TODO(0)
+    using MatrixCommon::operator*;
+    using MatrixCommon::operator+;
     using MatrixCommon::product_inplace_no_checks;
     using MatrixCommon::row;
     using MatrixCommon::row_no_checks;
     using MatrixCommon::rows;
-    using MatrixCommon::scalar_one;   // TODO(0)
-    using MatrixCommon::scalar_zero;  // TODO(0)
-    using MatrixCommon::semiring;     // TODO(0)
+    using MatrixCommon::scalar_one;
+    using MatrixCommon::scalar_zero;
+    using MatrixCommon::semiring;
     using MatrixCommon::swap;
     using MatrixCommon::transpose;
     using MatrixCommon::transpose_no_checks;
@@ -2665,9 +2759,9 @@ namespace libsemigroups {
             MatrixStaticArithmetic<PlusOp, ProdOp, ZeroOp, OneOp, Scalar> {
     using MatrixDynamicDim = ::libsemigroups::detail::MatrixDynamicDim<Scalar>;
     using MatrixCommon     = ::libsemigroups::detail::MatrixCommon<
-        std::vector<Scalar>,
-        DynamicMatrix<PlusOp, ProdOp, ZeroOp, OneOp, Scalar>,
-        DynamicRowView<PlusOp, ProdOp, ZeroOp, OneOp, Scalar>>;
+            std::vector<Scalar>,
+            DynamicMatrix<PlusOp, ProdOp, ZeroOp, OneOp, Scalar>,
+            DynamicRowView<PlusOp, ProdOp, ZeroOp, OneOp, Scalar>>;
     friend MatrixCommon;
 
    public:
@@ -2735,8 +2829,8 @@ namespace libsemigroups {
     //!
     //! This function constructs a matrix with the given dimensions.
     //!
-    //! \param r the number of rows in the matrix being constructed
-    //! \param c the number of columns in the matrix being constructed
+    //! \param r the number of rows.
+    //! \param c the number of columns.
     //!
     //! \exceptions
     //! \no_libsemigroups_except
@@ -2863,7 +2957,7 @@ namespace libsemigroups {
     //!
     //! Construct the \f$n \times n\f$ identity matrix.
     //!
-    //! \param n the dimension
+    //! \param n the dimension.
     //! \returns The \f$n \times n\f$ identity matrix.
     //!
     //! \exceptions
@@ -2966,6 +3060,30 @@ namespace libsemigroups {
 
     //! \copydoc StaticMatrix::transpose
     void transpose();
+
+    //! \copydoc StaticMatrix::hash_value
+    size_t hash_value() const;
+
+    //! \copydoc StaticMatrix::operator<=
+    bool operator<=(T const& that) const;
+
+    //! \copydoc StaticMatrix::operator>=
+    bool operator>=(T const& that) const;
+
+    //! \copydoc StaticMatrix::operator*(scalar_type)
+    StaticMatrix operator*(scalar_type a);
+
+    //! \copydoc StaticMatrix::operator+(scalar_type)
+    StaticMatrix operator+(scalar_type a);
+
+    //! \copydoc StaticMatrix::scalar_zero
+    scalar_type scalar_zero() const noexcept;
+
+    //! \copydoc StaticMatrix::scalar_one
+    scalar_type scalar_one() const noexcept;
+
+    //! \copydoc StaticMatrix::semiring
+    semiring_type const* semiring() const noexcept;
 #else
     using MatrixCommon::at;
     using MatrixCommon::begin;
@@ -3051,10 +3169,10 @@ namespace libsemigroups {
   //! in the semiring
   //! * `scalar_type scalar_one()` that returns the multiplicative identity
   //! scalar in the semiring
-  //! * `scalar_type plus(scalar_type x, scalar_type y)` that returns the sum
-  //! in the semiring of the scalars \c x and \c y.
-  //! * `scalar_type prod(scalar_type x, scalar_type y)` that returns the
-  //! product in the semiring of the scalars \c x and \c y.
+  //! * `scalar_type plus_no_checks(scalar_type x, scalar_type y)` that returns
+  //! the sum in the semiring of the scalars \c x and \c y.
+  //! * `scalar_type product_no_checks(scalar_type x, scalar_type y)` that
+  //! returns the product in the semiring of the scalars \c x and \c y.
   //!
   //! See, for example, \ref MaxPlusTruncSemiring.
   // TODO(0) update to prod_no_checks, plus_no_checks
@@ -3115,9 +3233,9 @@ namespace libsemigroups {
     //! Construct a matrix over the semiring `semiring` with the given
     //! dimensions.
     //!
-    //! \param semiring  a pointer to const semiring object
-    //! \param r  the number of rows in the matrix being constructed
-    //! \param c  the number of columns in the matrix being constructed
+    //! \param semiring  a pointer to const semiring object.
+    //! \param r  the number of rows in the matrix being constructed.
+    //! \param c  the number of columns in the matrix being constructed.
     //!
     //! \exceptions
     //! \no_libsemigroups_except
@@ -3178,8 +3296,8 @@ namespace libsemigroups {
     //! Construct a row over a given semiring from a std::initializer_list of
     //! the entries.
     //!
-    //! \param semiring a pointer to const Semiring object
-    //! \param row the values to be copied into the row
+    //! \param semiring a pointer to const Semiring object.
+    //! \param row the values to be copied into the row.
     //!
     //! \exceptions
     //! \no_libsemigroups_except
@@ -3212,8 +3330,8 @@ namespace libsemigroups {
     //!
     //! Construct the \f$n \times n\f$ identity matrix.
     //!
-    //! \param semiring the semiring
-    //! \param n the dimension
+    //! \param semiring the semiring.
+    //! \param n the dimension.
     //!
     //! \returns The \f$n \times n\f$ identity matrix over \p semiring.
     //!
@@ -3306,19 +3424,6 @@ namespace libsemigroups {
     void product_inplace_no_checks(DynamicMatrix const& x,
                                    DynamicMatrix const& y);
 
-    //! \brief Returns the underlying semiring.
-    //!
-    //! Returns a const pointer to the underlying semiring (if any).
-    //!
-    //! \returns  A value of type `Semiring const*`.
-    //!
-    //! \exceptions
-    //! \noexcept
-    //!
-    //! \complexity
-    //! Constant
-    Semiring const* semiring() const noexcept;
-
     //! \copydoc StaticMatrix::row_no_checks
     RowView row_no_checks(size_t i) const;
 
@@ -3334,7 +3439,30 @@ namespace libsemigroups {
 
     //! \copydoc StaticMatrix::transpose
     void transpose();
-    // TODO(0) add missing doc from above
+
+    //! \copydoc StaticMatrix::hash_value
+    size_t hash_value() const;
+
+    //! \copydoc StaticMatrix::operator<=
+    bool operator<=(T const& that) const;
+
+    //! \copydoc StaticMatrix::operator>=
+    bool operator>=(T const& that) const;
+
+    //! \copydoc StaticMatrix::operator*(scalar_type)
+    StaticMatrix operator*(scalar_type a);
+
+    //! \copydoc StaticMatrix::operator+(scalar_type)
+    StaticMatrix operator+(scalar_type a);
+
+    //! \copydoc StaticMatrix::scalar_zero
+    scalar_type scalar_zero() const noexcept;
+
+    //! \copydoc StaticMatrix::scalar_one
+    scalar_type scalar_one() const noexcept;
+
+    //! \copydoc StaticMatrix::semiring
+    semiring_type const* semiring() const noexcept;
 #else
     using MatrixCommon::at;
     using MatrixCommon::begin;
@@ -3380,12 +3508,14 @@ namespace libsemigroups {
    private:
     using MatrixCommon::resize;
 
-    scalar_type plus_impl(scalar_type x, scalar_type y) const noexcept {
-      return _semiring->plus(x, y);
+    scalar_type plus_no_checks_impl(scalar_type x,
+                                    scalar_type y) const noexcept {
+      return _semiring->plus_no_checks(x, y);
     }
 
-    scalar_type prod_impl(scalar_type x, scalar_type y) const noexcept {
-      return _semiring->prod(x, y);
+    scalar_type product_no_checks_impl(scalar_type x,
+                                       scalar_type y) const noexcept {
+      return _semiring->product_no_checks(x, y);
     }
 
     scalar_type one_impl() const noexcept {
@@ -4046,7 +4176,16 @@ namespace libsemigroups {
     struct IsIntMatHelper<DynamicIntMat<Scalar>> : std::true_type {};
   }  // namespace detail
 
-  //! TODO(0) doc
+  //! \ingroup matrix_group
+  //!
+  //! \brief Helper variable template.
+  //!
+  //! Defined in ``matrix.hpp``.
+  //!
+  //! This variable has value \c true if the template parameter \c T is
+  //! \ref IntMat; and \c false otherwise.
+  //!
+  //! \tparam T the type to check.
   template <typename T>
   static constexpr bool IsIntMat = detail::IsIntMatHelper<T>::value;
 
@@ -4327,7 +4466,16 @@ namespace libsemigroups {
     struct IsMaxPlusMatHelper<DynamicMaxPlusMat<Scalar>> : std::true_type {};
   }  // namespace detail
 
-  //! TODO(0) doc
+  //! \ingroup matrix_group
+  //!
+  //! \brief Helper variable template.
+  //!
+  //! Defined in ``matrix.hpp``.
+  //!
+  //! This variable has value \c true if the template parameter \c T is
+  //! \ref MaxPlusMat; and \c false otherwise.
+  //!
+  //! \tparam T the type to check.
   template <typename T>
   static constexpr bool IsMaxPlusMat = detail::IsMaxPlusMatHelper<T>::value;
 
@@ -4347,8 +4495,8 @@ namespace libsemigroups {
     //!
     //! \throws LibsemigroupsException if \p x contains \ref POSITIVE_INFINITY.
     template <typename Mat>
-    auto throw_if_bad_entry(Mat const& x)
-        -> std::enable_if_t<IsMaxPlusMat<Mat>> {
+    auto
+    throw_if_bad_entry(Mat const& x) -> std::enable_if_t<IsMaxPlusMat<Mat>> {
       using scalar_type = typename Mat::scalar_type;
       auto it = std::find_if(x.cbegin(), x.cend(), [](scalar_type val) {
         return val == POSITIVE_INFINITY;
@@ -4601,7 +4749,16 @@ namespace libsemigroups {
     struct IsMinPlusMatHelper<DynamicMinPlusMat<Scalar>> : std::true_type {};
   }  // namespace detail
 
-  //! TODO(0) doc
+  //! \ingroup matrix_group
+  //!
+  //! \brief Helper variable template.
+  //!
+  //! Defined in ``matrix.hpp``.
+  //!
+  //! This variable has value \c true if the template parameter \c T is
+  //! \ref MinPlusMat; and \c false otherwise.
+  //!
+  //! \tparam T the type to check.
   template <typename T>
   static constexpr bool IsMinPlusMat = detail::IsMinPlusMatHelper<T>::value;
 
@@ -4868,7 +5025,7 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! Constant.
-    Scalar prod(Scalar x, Scalar y) const noexcept {
+    Scalar product_no_checks(Scalar x, Scalar y) const noexcept {
       LIBSEMIGROUPS_ASSERT((x >= 0 && x <= _threshold)
                            || x == NEGATIVE_INFINITY);
       LIBSEMIGROUPS_ASSERT((y >= 0 && y <= _threshold)
@@ -4903,7 +5060,7 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! Constant.
-    Scalar plus(Scalar x, Scalar y) const noexcept {
+    Scalar plus_no_checks(Scalar x, Scalar y) const noexcept {
       LIBSEMIGROUPS_ASSERT((x >= 0 && x <= _threshold)
                            || x == NEGATIVE_INFINITY);
       LIBSEMIGROUPS_ASSERT((y >= 0 && y <= _threshold)
@@ -5315,8 +5472,8 @@ namespace libsemigroups {
     //! where \f$t\f$ is the threshold; representing multiplication in the
     //! quotient of the min-plus semiring.
     //!
-    //! \param x scalar
-    //! \param y scalar
+    //! \param x scalar.
+    //! \param y scalar.
     //!
     //! \returns A value of type `Scalar`.
     //!
@@ -5325,7 +5482,7 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! Constant.
-    Scalar prod(Scalar x, Scalar y) const noexcept {
+    Scalar product_no_checks(Scalar x, Scalar y) const noexcept {
       LIBSEMIGROUPS_ASSERT((x >= 0 && x <= _threshold)
                            || x == POSITIVE_INFINITY);
       LIBSEMIGROUPS_ASSERT((y >= 0 && y <= _threshold)
@@ -5360,7 +5517,7 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! Constant.
-    Scalar plus(Scalar x, Scalar y) const noexcept {
+    Scalar plus_no_checks(Scalar x, Scalar y) const noexcept {
       LIBSEMIGROUPS_ASSERT((x >= 0 && x <= _threshold)
                            || x == POSITIVE_INFINITY);
       LIBSEMIGROUPS_ASSERT((y >= 0 && y <= _threshold)
@@ -5860,7 +6017,7 @@ namespace libsemigroups {
     //! \complexity
     //! Constant.
     // TODO(0) should be _no_checks, also for the other Semirings
-    Scalar prod(Scalar x, Scalar y) const noexcept {
+    Scalar product_no_checks(Scalar x, Scalar y) const noexcept {
       LIBSEMIGROUPS_ASSERT(x >= 0 && x <= _period + _threshold - 1);
       LIBSEMIGROUPS_ASSERT(y >= 0 && y <= _period + _threshold - 1);
       return detail::thresholdperiod(x * y, _threshold, _period);
@@ -5891,7 +6048,7 @@ namespace libsemigroups {
     //! \complexity
     //! Constant.
     // TODO(0) should be _no_checks, also for the other Semirings
-    Scalar plus(Scalar x, Scalar y) const noexcept {
+    Scalar plus_no_checks(Scalar x, Scalar y) const noexcept {
       LIBSEMIGROUPS_ASSERT(x >= 0 && x <= _period + _threshold - 1);
       LIBSEMIGROUPS_ASSERT(y >= 0 && y <= _period + _threshold - 1);
       return detail::thresholdperiod(x + y, _threshold, _period);
@@ -6293,7 +6450,7 @@ namespace libsemigroups {
       ProjMaxPlusMat(
           std::initializer_list<std::initializer_list<scalar_type>> const& m)
           : ProjMaxPlusMat(
-              std::vector<std::vector<scalar_type>>(m.begin(), m.end())) {}
+                std::vector<std::vector<scalar_type>>(m.begin(), m.end())) {}
 
       ~ProjMaxPlusMat() = default;
 
@@ -6725,9 +6882,9 @@ namespace libsemigroups {
     //! \tparam Mat the type of the matrix \p x, must satisfy \ref
     //! IsMatrix<Mat>.
     //!
-    //! \param x  the matrix  (must have equal number of rows and columns)
+    //! \param x  the matrix  (must have equal number of rows and columns).
     //!
-    //! \param e  the exponent (must be \f$\geq 0\f$)
+    //! \param e  the exponent (must be \f$\geq 0\f$).
     //!
     //! \returns The matrix \p x to the power \p e.
     //!
@@ -7048,7 +7205,7 @@ namespace libsemigroups {
     //! `BitSet<M>` or `std::bitset<M>` for some \c M.
     //!
     //! \param rows   container of spanning rows represented by bit sets.
-    //! \param result  container for the resulting row basis
+    //! \param result  container for the resulting row basis.
     //!
     //! \exceptions
     //! \no_libsemigroups_except
@@ -7219,8 +7376,8 @@ namespace libsemigroups {
     //! additionally be `BitSet<M>` or `std::bitset<M>` where \c M is
     //! greater than or equal to \c N.
     //!
-    //! \param views   container of spanning row views or bit sets
-    //! \param result  container for the resulting row basis
+    //! \param views   container of spanning row views or bit sets.
+    //! \param result  container for the resulting row basis.
     //!
     //! \exceptions
     //! This function guarantees not to throw a
@@ -7521,18 +7678,18 @@ namespace libsemigroups {
   }  // namespace matrix
 
   // TODO(0) doc
-  //! \warning This function does not try to detect integer overflows.
+  //! \warning This function does not detect overflows of `Mat::scalar_type`.
   template <typename Mat>
-  auto operator+(typename Mat::scalar_type a, Mat const& x)
-      -> std::enable_if_t<IsMatrix<Mat>, Mat> {
+  auto operator+(typename Mat::scalar_type a,
+                 Mat const& x) -> std::enable_if_t<IsMatrix<Mat>, Mat> {
     return x + a;
   }
 
   // TODO(0) doc
-  //! \warning This function does not try to detect integer overflows.
+  //! \warning This function does not detect overflows of `Mat::scalar_type`.
   template <typename Mat>
-  auto operator*(typename Mat::scalar_type a, Mat const& x)
-      -> std::enable_if_t<IsMatrix<Mat>, Mat> {
+  auto operator*(typename Mat::scalar_type a,
+                 Mat const& x) -> std::enable_if_t<IsMatrix<Mat>, Mat> {
     return x * a;
   }
 
@@ -7657,7 +7814,7 @@ namespace libsemigroups {
   //!
   //! \tparam Semiring the type of the semiring where arithmetic is performed.
   //!
-  //! \param semiring  a pointer to const semiring object
+  //! \param semiring  a pointer to const semiring object.
   //!
   //! \param rows  the values to be copied into the matrix.
   //!
@@ -8086,19 +8243,15 @@ namespace libsemigroups {
     //!
     //! Returns the identity matrix.
     //!
-    //! \param x  a matrix of type p Mat.
-    //! \returns  A matrix of type p Mat.
+    //! \param x  a matrix of type \p Mat.
+    //! \returns  The identity matrix of type \p Mat.
     //!
     //! \exceptions
-    //!
     //! \no_libsemigroups_except
     //!
     //! \complexity
     //! \f$O(m ^ 2)\f$ where \f$m\f$ is the number of rows of the
     //! matrix \p x.
-    //!
-    //! \warning
-    //! This function only works for square matrices.
     inline Mat operator()(Mat const& x) const {
       return x.one();
     }
