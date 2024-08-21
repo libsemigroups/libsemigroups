@@ -255,6 +255,13 @@ namespace libsemigroups {
     return *this;
   }
 
+  [[nodiscard]] std::string to_human_readable_repr(WordRange const& wr) {
+    return fmt::format("<WordRange between {} and {} with letters in [0, {})>",
+                       wr.first(),
+                       wr.last(),
+                       wr.alphabet_size());
+  }
+
   ////////////////////////////////////////////////////////////////////////
   // 2. Strings -> Words
   ////////////////////////////////////////////////////////////////////////
@@ -480,6 +487,14 @@ namespace libsemigroups {
     _current_valid = _word_range.valid();
     _letters       = x;
     return *this;
+  }
+
+  [[nodiscard]] std::string to_human_readable_repr(StringRange const& sr) {
+    return fmt::format(
+        "<StringRange between \"{}\" and \"{}\" with letters in \"{}\">",
+        sr.first(),
+        sr.last(),
+        sr.alphabet());
   }
 
   ////////////////////////////////////////////////////////////////////////

@@ -1456,4 +1456,44 @@ namespace libsemigroups {
       REQUIRE(prod({"aba", "xyz"}, 0, 4, 1) == "abaxyzabaxyz");
     }
   }
+
+  LIBSEMIGROUPS_TEST_CASE("WordRange",
+                          "045",
+                          "to_human_readable_repr",
+                          "[quick]") {
+    WordRange wr;
+    wr.min(3).max(5).alphabet_size(4);
+    REQUIRE(to_human_readable_repr(wr)
+            == "<WordRange between [0, 0, 0] and [0, 0, 0, 0, 0] with letters "
+               "in [0, 4)>");
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("ToWord",
+                          "046",
+                          "to_human_readable_repr",
+                          "[quick]") {
+    ToWord to_word("BAc2w");
+    REQUIRE(to_human_readable_repr(to_word)
+            == "<ToWord object with alphabet \"BAc2w\">");
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("StringRange",
+                          "046",
+                          "to_human_readable_repr",
+                          "[quick]") {
+    StringRange sr;
+    sr.min(3).max(5).alphabet("bcd");
+    REQUIRE(to_human_readable_repr(sr)
+            == "<StringRange between \"bbb\" and \"bbbbb\" with letters in "
+               "\"bcd\">");
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("ToString",
+                          "047",
+                          "to_human_readable_repr",
+                          "[quick]") {
+    ToString to_string("BAc2w");
+    REQUIRE(to_human_readable_repr(to_string)
+            == "<ToString object with alphabet \"BAc2w\">");
+  }
 }  // namespace libsemigroups

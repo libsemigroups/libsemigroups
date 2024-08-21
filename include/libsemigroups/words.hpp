@@ -707,6 +707,18 @@ namespace libsemigroups {
     }
   };
 
+  //! \ingroup words_group
+  //!
+  //! \brief Return a human readable representation of a WordRange object.
+  //!
+  //! Return a human readable representation of a WordRange object.
+  //!
+  //! \param wr the WordRange object.
+  //!
+  //! \exceptions
+  //! \no_libsemigroups_except
+  [[nodiscard]] std::string to_human_readable_repr(WordRange const& wr);
+
   ////////////////////////////////////////////////////////////////////////
   // Strings -> Words
   ////////////////////////////////////////////////////////////////////////
@@ -1001,6 +1013,20 @@ namespace libsemigroups {
     }
   };
 
+  //! \ingroup words_group
+  //!
+  //! \brief Return a human readable representation of a ToWord object.
+  //!
+  //! Return a human readable representation of a ToWord object.
+  //!
+  //! \param twrd the ToWord object.
+  //!
+  //! \exceptions
+  //! \no_libsemigroups_except
+  [[nodiscard]] inline std::string to_human_readable_repr(ToWord const& twrd) {
+    return fmt::format("<ToWord object with alphabet \"{}\">", twrd.alphabet());
+  }
+
   ////////////////////////////////////////////////////////////////////////
   // Words -> Strings
   ////////////////////////////////////////////////////////////////////////
@@ -1292,6 +1318,22 @@ namespace libsemigroups {
       return _input.size_hint();
     }
   };
+
+  //! \ingroup words_group
+  //!
+  //! \brief Return a human readable representation of a ToString object.
+  //!
+  //! Return a human readable representation of a ToString object.
+  //!
+  //! \param tstr the ToString object.
+  //!
+  //! \exceptions
+  //! \no_libsemigroups_except
+  [[nodiscard]] inline std::string
+  to_human_readable_repr(ToString const& tstr) {
+    return fmt::format("<ToString object with alphabet \"{}\">",
+                       tstr.alphabet());
+  }
 
   ////////////////////////////////////////////////////////////////////////
   // StringRange
@@ -1776,6 +1818,18 @@ namespace libsemigroups {
       return rx::end(*this);
     }
   };
+
+  //! \ingroup words_group
+  //!
+  //! \brief Return a human readable representation of a StringRange object.
+  //!
+  //! Return a human readable representation of a StringRange object.
+  //!
+  //! \param sr the StringRange object.
+  //!
+  //! \exceptions
+  //! \no_libsemigroups_except
+  [[nodiscard]] std::string to_human_readable_repr(StringRange const& sr);
 
   ////////////////////////////////////////////////////////////////////////
   // Literals
