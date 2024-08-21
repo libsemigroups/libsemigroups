@@ -196,8 +196,8 @@ namespace libsemigroups {
     //! equal the number of rows of \p y; or the number of columns of \p x does
     //! not equal the number of columns of \p y.
     template <typename Mat>
-    auto throw_if_bad_dim(Mat const& x, Mat const& y)
-        -> std::enable_if_t<IsMatrix<Mat>> {
+    auto throw_if_bad_dim(Mat const& x,
+                          Mat const& y) -> std::enable_if_t<IsMatrix<Mat>> {
       if (x.number_of_rows() != y.number_of_rows()
           || x.number_of_cols() != y.number_of_cols()) {
         LIBSEMIGROUPS_EXCEPTION(
@@ -225,8 +225,9 @@ namespace libsemigroups {
     //! \throws LibsemigroupsException if `(r, c)` does not index an entry in
     //! the matrix \p x.
     template <typename Mat>
-    auto throw_if_bad_coords(Mat const& x, size_t r, size_t c)
-        -> std::enable_if_t<IsMatrix<Mat>> {
+    auto throw_if_bad_coords(Mat const& x,
+                             size_t     r,
+                             size_t     c) -> std::enable_if_t<IsMatrix<Mat>> {
       if (r >= x.number_of_rows()) {
         LIBSEMIGROUPS_EXCEPTION("invalid row index in ({}, {}), expected "
                                 "values in [0, {}) x [0, {})",
@@ -306,14 +307,16 @@ namespace libsemigroups {
 
       // TODO(1) use constexpr-if, not SFINAE
       template <typename SFINAE = container_type>
-      auto resize(size_t r, size_t c) -> std::enable_if_t<
-          std::is_same<SFINAE, std::vector<scalar_type>>::value> {
+      auto resize(size_t r, size_t c)
+          -> std::enable_if_t<
+              std::is_same<SFINAE, std::vector<scalar_type>>::value> {
         _container.resize(r * c);
       }
 
       template <typename SFINAE = container_type>
-      auto resize(size_t, size_t) -> std::enable_if_t<
-          !std::is_same<SFINAE, std::vector<scalar_type>>::value> {}
+      auto resize(size_t, size_t)
+          -> std::enable_if_t<
+              !std::is_same<SFINAE, std::vector<scalar_type>>::value> {}
 
      public:
       ////////////////////////////////////////////////////////////////////////
@@ -1502,8 +1505,8 @@ namespace libsemigroups {
    private:
     using DynamicMatrix_ = DynamicMatrix<PlusOp, ProdOp, ZeroOp, OneOp, Scalar>;
     using RowViewCommon  = detail::RowViewCommon<
-        DynamicMatrix_,
-        DynamicRowView<PlusOp, ProdOp, ZeroOp, OneOp, Scalar>>;
+         DynamicMatrix_,
+         DynamicRowView<PlusOp, ProdOp, ZeroOp, OneOp, Scalar>>;
     friend RowViewCommon;
 
    public:
@@ -2757,9 +2760,9 @@ namespace libsemigroups {
             MatrixStaticArithmetic<PlusOp, ProdOp, ZeroOp, OneOp, Scalar> {
     using MatrixDynamicDim = ::libsemigroups::detail::MatrixDynamicDim<Scalar>;
     using MatrixCommon     = ::libsemigroups::detail::MatrixCommon<
-        std::vector<Scalar>,
-        DynamicMatrix<PlusOp, ProdOp, ZeroOp, OneOp, Scalar>,
-        DynamicRowView<PlusOp, ProdOp, ZeroOp, OneOp, Scalar>>;
+            std::vector<Scalar>,
+            DynamicMatrix<PlusOp, ProdOp, ZeroOp, OneOp, Scalar>,
+            DynamicRowView<PlusOp, ProdOp, ZeroOp, OneOp, Scalar>>;
     friend MatrixCommon;
 
    public:
@@ -4377,7 +4380,8 @@ namespace libsemigroups {
   //!  \f[
   //!     x\otimes y =
   //!     \begin{cases}
-  //!     x + y   & \text{if } x \neq -\infty\text{ and }y \neq -\infty \\
+  //!     x + y   & \text{if } x \neq -\infty\text{ and }y \neq -\infty
+  //!     \\ \mbox{}
   //!     -\infty & \text{if } x = -\infty \text{ or }y = -\infty;
   //!     \end{cases}
   //!  \f]
@@ -4539,8 +4543,8 @@ namespace libsemigroups {
     //!
     //! \throws LibsemigroupsException if \p x contains \ref POSITIVE_INFINITY.
     template <typename Mat>
-    auto throw_if_bad_entry(Mat const& x)
-        -> std::enable_if_t<IsMaxPlusMat<Mat>> {
+    auto
+    throw_if_bad_entry(Mat const& x) -> std::enable_if_t<IsMaxPlusMat<Mat>> {
       using scalar_type = typename Mat::scalar_type;
       auto it = std::find_if(x.cbegin(), x.cend(), [](scalar_type val) {
         return val == POSITIVE_INFINITY;
@@ -4628,8 +4632,9 @@ namespace libsemigroups {
   //! \f[
   //!    x\oplus y =
   //!    \begin{cases}
-  //!    \min\{x, y\}   & \text{if } x \neq \infty\text{ and }y \neq \infty \\
-  //!    \infty & \text{if } x = \infty \text{ or }y = \infty; \\
+  //!    \min\{x, y\}   & \text{if } x \neq \infty\text{ and }y \neq \infty
+  //!    \\ \mbox{}
+  //!    \infty & \text{if } x = \infty \text{ or }y = \infty;
   //!    \end{cases}
   //! \f]
   //! representing addition in the min-plus semiring.
@@ -4676,8 +4681,8 @@ namespace libsemigroups {
   //! \f[
   //!     x\otimes y =
   //!     \begin{cases}
-  //!     x + y  & \text{if } x \neq \infty\text{ and }y \neq \infty \\
-  //!     \infty & \text{if } x = \infty \text{ or }y = \infty; \\
+  //!     x + y  & \text{if } x \neq \infty\text{ and }y \neq \infty \\ \mbox{}
+  //!     \infty & \text{if } x = \infty \text{ or }y = \infty;
   //!     \end{cases}
   //! \f]
   //!  representing multiplication in the min-plus semiring.
@@ -4945,7 +4950,7 @@ namespace libsemigroups {
   //!    x\otimes y =
   //!    \begin{cases}
   //!    \min\{x + y, T\}   & \text{if } x \neq -\infty\text{ and }y \neq
-  //!    -\infty \\
+  //!    -\infty \\ \mbox{}
   //!    -\infty & \text{if } x = -\infty \text{ or }y = -\infty;
   //!    \end{cases}
   //! \f]
@@ -5084,8 +5089,8 @@ namespace libsemigroups {
     //!    x\otimes y =
     //!    \begin{cases}
     //!    \min\{x + y, t\}   & \text{if } x \neq -\infty\text{ and }y \neq
-    //!    -\infty \\
-    //!    -\infty & \text{if } x = -\infty \text{ or }y = -\infty; \\
+    //!    -\infty \\ \mbox{}
+    //!    -\infty & \text{if } x = -\infty \text{ or }y = -\infty;
     //!    \end{cases}
     //! \f]
     //! where \f$t\f$ is the threshold; representing multiplication in the
@@ -5120,8 +5125,8 @@ namespace libsemigroups {
     //!   \begin{cases}
     //!     \max\{x, y\}   & \text{if } x \neq -\infty\text{ and }y \neq
     //!     -\infty
-    //!     \\
-    //!     -\infty & \text{if } x = -\infty \text{ or }y = -\infty; \\
+    //!     \\ \mbox{}
+    //!     -\infty & \text{if } x = -\infty \text{ or }y = -\infty;
     //!   \end{cases}
     //! \f]
     //! representing addition in the max-plus semiring (and its quotient).
@@ -5424,8 +5429,8 @@ namespace libsemigroups {
   //!    x\otimes y =
   //!    \begin{cases}
   //!    \min\{x + y, T\}   & \text{if } x \neq \infty\text{ and }y \neq
-  //!    \infty \\
-  //!    \infty & \text{if } x = \infty \text{ or }y = \infty; \\
+  //!    \infty \\ \mbox
+  //!    \infty & \text{if } x = \infty \text{ or }y = \infty;
   //!    \end{cases}
   //! \f]
   //! representing multiplication in the quotient of the min-plus semiring
@@ -5558,8 +5563,8 @@ namespace libsemigroups {
     //!    x\otimes y =
     //!    \begin{cases}
     //!    \min\{x + y, t\}   & \text{if } x \neq \infty\text{ and }y \neq
-    //!    \infty \\
-    //!    \infty & \text{if } x = \infty \text{ or }y = \infty; \\
+    //!    \infty \\ \mbox{}
+    //!    \infty & \text{if } x = \infty \text{ or }y = \infty;
     //!    \end{cases}
     //! \f]
     //! where \f$t\f$ is the threshold; representing multiplication in the
@@ -5593,8 +5598,8 @@ namespace libsemigroups {
     //!   x\oplus y =
     //!   \begin{cases}
     //!   \min\{x, y\}   & \text{if } x \neq \infty\text{ and }y \neq \infty
-    //!   \\
-    //!   \infty & \text{if } x = \infty \text{ or }y = \infty; \\
+    //!   \\ \mbox{}
+    //!   \infty & \text{if } x = \infty \text{ or }y = \infty;
     //!   \end{cases}
     //! \f]
     //! representing addition in the min-plus truncated semiring (and its
@@ -5930,7 +5935,7 @@ namespace libsemigroups {
   //! \f[
   //!    x\oplus y =
   //!    \begin{cases}
-  //!    x + y & \text{if } x + y \leq T \\
+  //!    x + y & \text{if } x + y \leq T \\ \mbox{}
   //!    T + ((x + y) - T \pmod{P}) & \text{if } x + y > T
   //!    \end{cases}
   //! \f]
@@ -5972,7 +5977,7 @@ namespace libsemigroups {
   //! \f[
   //!   x\otimes y =
   //!   \begin{cases}
-  //!   xy & \text{if } xy \leq T \\
+  //!   xy & \text{if } xy \leq T \\ \mbox{}
   //!   T + ((xy - T) \pmod{P}) & \text{if } xy > T
   //!   \end{cases}
   //! \f]
@@ -6108,7 +6113,7 @@ namespace libsemigroups {
     //! \f[
     //!   x\otimes y =
     //!   \begin{cases}
-    //!   xy & \text{if } xy \leq t \\
+    //!   xy & \text{if } xy \leq t \\ \mbox{}
     //!   t + ((xy - t)\pmod{p}) & \text{if } xy > t
     //!   \end{cases}
     //! \f]
@@ -6138,7 +6143,7 @@ namespace libsemigroups {
     //! \f[
     //!   x\oplus y =
     //!   \begin{cases}
-    //!   x + y                      & \text{if } x + y \leq t \\
+    //!   x + y                      & \text{if } x + y \leq t \\ \mbox{}
     //!   t + ((x + y - t) \pmod{p}) & \text{if } x + y > t
     //!   \end{cases}
     //! \f]
@@ -6562,7 +6567,7 @@ namespace libsemigroups {
       ProjMaxPlusMat(
           std::initializer_list<std::initializer_list<scalar_type>> const& m)
           : ProjMaxPlusMat(
-              std::vector<std::vector<scalar_type>>(m.begin(), m.end())) {}
+                std::vector<std::vector<scalar_type>>(m.begin(), m.end())) {}
 
       ~ProjMaxPlusMat() = default;
 
@@ -7831,8 +7836,8 @@ namespace libsemigroups {
   //!
   //! \warning This function does not detect overflows of `Mat::scalar_type`.
   template <typename Mat>
-  auto operator+(typename Mat::scalar_type a, Mat const& x)
-      -> std::enable_if_t<IsMatrix<Mat>, Mat> {
+  auto operator+(typename Mat::scalar_type a,
+                 Mat const& x) -> std::enable_if_t<IsMatrix<Mat>, Mat> {
     return x + a;
   }
 
@@ -7856,8 +7861,8 @@ namespace libsemigroups {
   //!
   //! \warning This function does not detect overflows of `Mat::scalar_type`.
   template <typename Mat>
-  auto operator*(typename Mat::scalar_type a, Mat const& x)
-      -> std::enable_if_t<IsMatrix<Mat>, Mat> {
+  auto operator*(typename Mat::scalar_type a,
+                 Mat const& x) -> std::enable_if_t<IsMatrix<Mat>, Mat> {
     return x * a;
   }
 
