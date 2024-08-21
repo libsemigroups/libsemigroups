@@ -127,12 +127,12 @@ namespace libsemigroups {
       // NodeManager but the RuleIterators returned by them are invalidated by
       // any changes to the graph, such as those made by
       // felsch_graph::make_compatible.
-      felsch_graph::make_compatible<DoNotRegisterDefs>(
+      detail::felsch_graph::make_compatible<detail::DoNotRegisterDefs>(
           *this, current, current + 1, first, last, incompat, prefdefs);
       // Using NoPreferredDefs is just a (more or less) arbitrary
       // choice, could allow the other choices here too (which works,
       // but didn't seem to be very useful).
-      process_coincidences<DoNotRegisterDefs>();
+      process_coincidences<detail::DoNotRegisterDefs>();
       current = NodeManager<node_type>::next_active_node(current);
       // if (stop_early && t > std::chrono::seconds(1)) {
       // TODO setting for this
@@ -633,13 +633,15 @@ namespace libsemigroups {
     auto const id    = word_graph().initial_node();
     if (save() || strategy() == options::strategy::felsch) {
       for (auto it = first; it < last; it += 2) {
-        _word_graph.push_definition_hlt<RegisterDefs>(id, *it, *(it + 1));
-        _word_graph.process_coincidences<RegisterDefs>();
+        _word_graph.push_definition_hlt<detail::RegisterDefs>(
+            id, *it, *(it + 1));
+        _word_graph.process_coincidences<detail::RegisterDefs>();
       }
     } else {
       for (auto it = first; it < last; it += 2) {
-        _word_graph.push_definition_hlt<DoNotRegisterDefs>(id, *it, *(it + 1));
-        _word_graph.process_coincidences<DoNotRegisterDefs>();
+        _word_graph.push_definition_hlt<detail::DoNotRegisterDefs>(
+            id, *it, *(it + 1));
+        _word_graph.process_coincidences<detail::DoNotRegisterDefs>();
       }
     }
     if (strategy() == options::strategy::felsch && use_relations_in_extra()) {
@@ -647,8 +649,9 @@ namespace libsemigroups {
       last  = presentation().rules.cend();
 
       for (auto it = first; it < last; it += 2) {
-        _word_graph.push_definition_hlt<RegisterDefs>(id, *it, *(it + 1));
-        _word_graph.process_coincidences<RegisterDefs>();
+        _word_graph.push_definition_hlt<detail::RegisterDefs>(
+            id, *it, *(it + 1));
+        _word_graph.process_coincidences<detail::RegisterDefs>();
       }
     }
 
@@ -701,7 +704,7 @@ namespace libsemigroups {
     while (current != _word_graph.first_free_node() && !stopped()) {
       for (letter_type a = 0; a < n; ++a) {
         if (_word_graph.target_no_checks(current, a) == UNDEFINED) {
-          _word_graph.set_target_no_checks<RegisterDefs>(
+          _word_graph.set_target_no_checks<detail::RegisterDefs>(
               current, a, _word_graph.new_node());
           _word_graph.process_definitions();
         }
@@ -721,13 +724,13 @@ namespace libsemigroups {
     while (current != _word_graph.first_free_node() && !stopped()) {
       if (!save()) {
         for (auto it = first; it < last; it += 2) {
-          _word_graph.push_definition_hlt<DoNotRegisterDefs>(
+          _word_graph.push_definition_hlt<detail::DoNotRegisterDefs>(
               current, *it, *(it + 1));
-          _word_graph.process_coincidences<DoNotRegisterDefs>();
+          _word_graph.process_coincidences<detail::DoNotRegisterDefs>();
         }
       } else {
         for (auto it = first; it < last; it += 2) {
-          _word_graph.push_definition_hlt<RegisterDefs>(
+          _word_graph.push_definition_hlt<detail::RegisterDefs>(
               current, *it, *(it + 1));
           _word_graph.process_definitions();
         }
@@ -952,7 +955,7 @@ namespace libsemigroups {
             auto&     wg
                 = const_cast<ToddCoxeter::digraph_type&>(copy.word_graph());
             wg.merge_nodes_no_checks(c1, c2);
-            wg.process_coincidences<RegisterDefs>();
+            wg.process_coincidences<detail::RegisterDefs>();
             wg.process_definitions();
             copy.run_for(try_for);
           }

@@ -74,7 +74,6 @@
 
 #include "debug.hpp"            // for LIBSEMIGROUPS_ASSERT
 #include "exception.hpp"        // for LIBSEMIGROUPS_EXCEPTION
-#include "felsch-graph.hpp"     // for FelschGraph
 #include "knuth-bendix.hpp"     // for KnuthBendix
 #include "presentation.hpp"     // for Presentation, Presentati...
 #include "to-presentation.hpp"  // for to_presentation
@@ -84,7 +83,8 @@
 
 #include "matrix.hpp"
 
-#include "detail/iterator.hpp"  // for detail/default_postfix_increment
+#include "detail/felsch-graph.hpp"  // for FelschGraph
+#include "detail/iterator.hpp"      // for detail/default_postfix_increment
 #include "detail/rewriters.hpp"
 
 #include "rx/ranges.hpp"
@@ -1381,7 +1381,7 @@ namespace libsemigroups {
     friend class sims::const_cgp_iterator;
 
     using felsch_graph_type
-        = FelschGraph<word_type, node_type, std::vector<Definition>>;
+        = detail::FelschGraph<word_type, node_type, std::vector<Definition>>;
 
    public:
     //! Default constructor

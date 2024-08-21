@@ -29,21 +29,21 @@
 #define LIBSEMIGROUPS_TODD_COXETER_HPP_
 
 #include "cong-intf.hpp"
-#include "detail/node-managed-graph.hpp"  // for Digraph
-#include "exception.hpp"                  // for LIBSEMIGROUPS_EXCEPTION
-#include "felsch-graph.hpp"               // for FelschGraph
-#include "obvinf.hpp"                     // for is_obviously_infinite
-#include "order.hpp"                      // for order
+#include "exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
+#include "obvinf.hpp"     // for is_obviously_infinite
+#include "order.hpp"      // for order
 #include "paths.hpp"
 #include "presentation.hpp"     // for Presentation
 #include "to-presentation.hpp"  // for make
 #include "types.hpp"            // for word_type
 
-#include "detail/report.hpp"  // for LIBSEMIGROUPS_EXCEPTION
+#include "detail/felsch-graph.hpp"        // for FelschGraph
+#include "detail/node-managed-graph.hpp"  // for Digraph
+#include "detail/report.hpp"              // for LIBSEMIGROUPS_EXCEPTION
 
 namespace libsemigroups {
   class ToddCoxeter : public CongruenceInterface,
-                      public FelschGraphSettings<ToddCoxeter> {
+                      public detail::FelschGraphSettings<ToddCoxeter> {
     using FelschGraphSettings_ = FelschGraphSettings<ToddCoxeter>;
 
    public:
@@ -182,8 +182,9 @@ namespace libsemigroups {
     };  // Definitions
 
     class Digraph : public detail::NodeManagedGraph<
-                        FelschGraph<word_type, uint32_t, Definitions>> {
-      using FelschGraph_      = FelschGraph<word_type, uint32_t, Definitions>;
+                        detail::FelschGraph<word_type, uint32_t, Definitions>> {
+      using FelschGraph_
+          = detail::FelschGraph<word_type, uint32_t, Definitions>;
       using NodeManagedGraph_ = NodeManagedGraph<FelschGraph_>;
 
      public:

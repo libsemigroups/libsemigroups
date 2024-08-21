@@ -57,7 +57,7 @@ namespace libsemigroups {
         auto inverse_target = target_no_checks(to, ll);
         if (inverse_target != UNDEFINED && inverse_target != from) {
           merge_nodes_no_checks(from, inverse_target);
-          process_coincidences<DoNotRegisterDefs>();
+          process_coincidences<detail::DoNotRegisterDefs>();
           return;
         }
         WordGraphWithSources::set_target_no_checks(to, ll, from);
@@ -276,7 +276,8 @@ namespace libsemigroups {
             } else if (u_end != v_end) {
               did_def = true;
               _word_graph.merge_nodes_no_checks(u_end, v_end);
-              _word_graph.template process_coincidences<DoNotRegisterDefs>();
+              _word_graph
+                  .template process_coincidences<detail::DoNotRegisterDefs>();
             }
             --it;
           } else {
@@ -302,7 +303,8 @@ namespace libsemigroups {
               } else if (u_end != v_end) {
                 did_def = true;
                 _word_graph.merge_nodes_no_checks(u_end, v_end);
-                _word_graph.template process_coincidences<DoNotRegisterDefs>();
+                _word_graph
+                    .template process_coincidences<detail::DoNotRegisterDefs>();
               }
             } else {
               --it;

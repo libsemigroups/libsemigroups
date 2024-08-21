@@ -64,9 +64,10 @@
 #include <utility>  // for pair
 #include <vector>   // for vector
 
-#include "config.hpp"  // for LIBSEMIGROUPS_EIGEN_ENABLED
-#include "ranges.hpp"  // for word_type etc
-#include "types.hpp"   // for word_type etc
+#include "config.hpp"      // for LIBSEMIGROUPS_EIGEN_ENABLED
+#include "ranges.hpp"      // for word_type etc
+#include "types.hpp"       // for word_type etc
+#include "word-graph.hpp"  // for is_acyclic
 
 #include "detail/eigen.hpp"
 #include "detail/rewriters.hpp"  // for RewriteTrie
