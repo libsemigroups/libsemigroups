@@ -26,19 +26,19 @@
 #include <utility>      // for forward
 #include <vector>       // for vector
 
-#include "constants.hpp"                // for PositiveInfinity
-#include "dot.hpp"                      // for Dot
-#include "paths.hpp"                    // for const_pislo_iterator etc
-#include "presentation.hpp"             // for Presentation
-#include "runner.hpp"                   // for Runner
-#include "to-presentation.hpp"          // for make
-#include "types.hpp"                    // for word_type
-#include "word-graph-with-sources.hpp"  // for DigraphWithSources
-#include "word-graph.hpp"               // for WordGraph, Act...
+#include "constants.hpp"        // for PositiveInfinity
+#include "dot.hpp"              // for Dot
+#include "paths.hpp"            // for const_pislo_iterator etc
+#include "presentation.hpp"     // for Presentation
+#include "runner.hpp"           // for Runner
+#include "to-presentation.hpp"  // for make
+#include "types.hpp"            // for word_type
+#include "word-graph.hpp"       // for WordGraph, Act...
 
-#include "detail/int-range.hpp"           // for IntegralRange<>::v...
-#include "detail/node-managed-graph.hpp"  // for NodeManagedGraph
-#include "detail/stl.hpp"                 // for IsStdSharedPtr
+#include "detail/int-range.hpp"                // for IntegralRange<>::v...
+#include "detail/node-managed-graph.hpp"       // for NodeManagedGraph
+#include "detail/stl.hpp"                      // for IsStdSharedPtr
+#include "detail/word-graph-with-sources.hpp"  // for DigraphWithSources
 
 // TODO
 // * iwyu

@@ -106,8 +106,6 @@ pkginclude_HEADERS += include/libsemigroups/ukkonen.hpp
 pkginclude_HEADERS += include/libsemigroups/ukkonen.tpp
 pkginclude_HEADERS += include/libsemigroups/word-graph.hpp
 pkginclude_HEADERS += include/libsemigroups/word-graph.tpp
-pkginclude_HEADERS += include/libsemigroups/word-graph-with-sources.hpp
-pkginclude_HEADERS += include/libsemigroups/word-graph-with-sources.tpp
 pkginclude_HEADERS += include/libsemigroups/words.hpp
 
 detailincludedir = $(includedir)/libsemigroups/detail
@@ -142,6 +140,8 @@ detailinclude_HEADERS += include/libsemigroups/detail/string.hpp
 detailinclude_HEADERS += include/libsemigroups/detail/tce.hpp
 detailinclude_HEADERS += include/libsemigroups/detail/timer.hpp
 detailinclude_HEADERS += include/libsemigroups/detail/uf.hpp
+detailinclude_HEADERS += include/libsemigroups/detail/word-graph-with-sources.hpp
+detailinclude_HEADERS += include/libsemigroups/detail/word-graph-with-sources.tpp
 
 magicenumincludedir = $(includedir)/libsemigroups/magic_enum
 magicenuminclude_HEADERS = extern/magic_enum/magic_enum.hpp
