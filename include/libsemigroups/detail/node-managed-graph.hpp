@@ -37,13 +37,13 @@
 #include <utility>      // for pair
 #include <vector>       // for vector
 
-#include "libsemigroups/felsch-graph.hpp"
 #include "libsemigroups/presentation.hpp"  // for Presentation, Presentation<>:...
 #include "libsemigroups/runner.hpp"
 #include "libsemigroups/types.hpp"                    // for word_type
 #include "libsemigroups/word-graph-with-sources.hpp"  // for WordGraphWithSources
 #include "libsemigroups/word-graph.hpp"               // for WordGraph
 
+#include "felsch-graph.hpp"
 #include "node-manager.hpp"  // for NodeManager
 #include "report.hpp"        // for REPORT_DEFAULT
 #include "timer.hpp"         // for Timer

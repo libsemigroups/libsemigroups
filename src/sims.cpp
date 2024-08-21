@@ -39,7 +39,6 @@
 #include "libsemigroups/constants.hpp"        // for operator!=, ope...
 #include "libsemigroups/debug.hpp"            // for LIBSEMIGROUPS_A...
 #include "libsemigroups/exception.hpp"        // for LIBSEMIGROUPS_E...
-#include "libsemigroups/felsch-graph.hpp"     // for FelschGraph
 #include "libsemigroups/froidure-pin.hpp"     // for FroidurePin
 #include "libsemigroups/presentation.hpp"     // for Presentation
 #include "libsemigroups/to-froidure-pin.hpp"  // for to_word_graph
@@ -47,10 +46,11 @@
 #include "libsemigroups/types.hpp"            // for congruence_kind
 #include "libsemigroups/word-graph.hpp"       // for follow_path_no_...
 
-#include "libsemigroups/detail/report.hpp"  // for report_default
-#include "libsemigroups/detail/stl.hpp"     // for JoinThreads
-#include "libsemigroups/detail/string.hpp"  // for group_digits
-#include "libsemigroups/detail/timer.hpp"   // for Timer
+#include "libsemigroups/detail/felsch-graph.hpp"  // for FelschGraph
+#include "libsemigroups/detail/report.hpp"        // for report_default
+#include "libsemigroups/detail/stl.hpp"           // for JoinThreads
+#include "libsemigroups/detail/string.hpp"        // for group_digits
+#include "libsemigroups/detail/timer.hpp"         // for Timer
 
 namespace libsemigroups {
 
@@ -1158,7 +1158,7 @@ namespace libsemigroups {
     // That the graph is compatible at 0 with include is checked in
     // Sims1::iterator_base::try_define.
     if (num_nodes > 1
-        && (!felsch_graph::make_compatible<RegisterDefs>(
+        && (!detail::felsch_graph::make_compatible<detail::RegisterDefs>(
                 _felsch_graph, 1, num_nodes, first, last)
             || !_felsch_graph.process_definitions(start))) {
       // Seems to be important to check include() first then
@@ -1190,7 +1190,7 @@ namespace libsemigroups {
       auto first = _2_sided_include->begin(current.num_edges);
       auto last  = _2_sided_include->end(current.num_edges);
       start      = _felsch_graph.definitions().size();
-      if (!felsch_graph::make_compatible<RegisterDefs>(
+      if (!detail::felsch_graph::make_compatible<detail::RegisterDefs>(
               _felsch_graph,
               0,
               _felsch_graph.number_of_active_nodes(),

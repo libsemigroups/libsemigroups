@@ -300,7 +300,7 @@ namespace libsemigroups {
       size_t const N = _word_graph.number_of_nodes_active();
       _word_graph.disjoint_union_inplace(y._word_graph);
       _word_graph.merge_nodes_no_checks(accept_state(), y.initial_state() + N);
-      _word_graph.template process_coincidences<DoNotRegisterDefs>();
+      _word_graph.template process_coincidences<detail::DoNotRegisterDefs>();
       _accept_state = UNDEFINED;
       _finished     = false;
       _word.insert(_word.end(), y._word.cbegin(), y._word.cend());
