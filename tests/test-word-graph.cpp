@@ -657,31 +657,31 @@ namespace libsemigroups {
     REQUIRE(word_graph::is_strictly_cyclic(ad));
   }
 
-  LIBSEMIGROUPS_TEST_CASE("WordGraph", "046", "HopcroftKarp x 1", "[quick]") {
+  LIBSEMIGROUPS_TEST_CASE("WordGraph", "046", "Joiner x 1", "[quick]") {
     WordGraph<size_t> x(
         to_word_graph<size_t>(3, {{0, 1, 2}, {0, 1, 2}, {0, 1, 2}}));
     WordGraph<size_t> y = x;
 
-    HopcroftKarp joiner;
+    Joiner join;
 
     WordGraph<size_t> xy;
-    joiner.join(xy, x, y);
+    join(xy, x, y);
     REQUIRE(xy == x);
-    joiner.join(xy, y, x);
+    join(xy, y, x);
     REQUIRE(xy == x);
-    REQUIRE(joiner.join(x, y) == x);
-    REQUIRE(joiner.join(y, x) == x);
+    REQUIRE(join(x, y) == x);
+    REQUIRE(join(y, x) == x);
 
-    WordGraphMeeter meeter;
-    meeter.meet(xy, x, y);
+    Meeter meet;
+    meet(xy, x, y);
     REQUIRE(xy == x);
     REQUIRE(xy == y);
 
     y.set_target_no_checks(0, 0, 10);
-    REQUIRE_THROWS_AS(joiner.join(x, y), LibsemigroupsException);
+    REQUIRE_THROWS_AS(join(x, y), LibsemigroupsException);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("WordGraph", "050", "HopcroftKarp x 2", "[quick]") {
+  LIBSEMIGROUPS_TEST_CASE("WordGraph", "050", "Joiner x 2", "[quick]") {
     WordGraph<size_t> x(
         to_word_graph<size_t>(3, {{1, 1, 1}, {2, 2, 2}, {2, 2, 2}}));
 
@@ -690,18 +690,15 @@ namespace libsemigroups {
 
     WordGraph<size_t> xy;
 
-    HopcroftKarp joiner;
-    xy = joiner.join(x, y);
+    Joiner join;
+    xy = join(x, y);
     REQUIRE(x != y);
     REQUIRE(xy == to_word_graph<size_t>(2, {{1, 1, 1}, {1, 1, 1}}));
-    REQUIRE(joiner.is_subrelation(x, xy));
-    REQUIRE(joiner.is_subrelation(y, xy));
+    REQUIRE(join.is_subrelation(x, xy));
+    REQUIRE(join.is_subrelation(y, xy));
   }
 
-  LIBSEMIGROUPS_TEST_CASE("WordGraph",
-                          "036",
-                          "WordGraphMeeter x 1",
-                          "[quick]") {
+  LIBSEMIGROUPS_TEST_CASE("WordGraph", "036", "Meeter x 1", "[quick]") {
     // These word graphs were taken from the lattice of 2-sided congruences
     // of the free semigroup with 2 generators.
     WordGraph<size_t> x(to_word_graph<size_t>(3, {{1, 2}, {1, 1}, {2, 2}}));
@@ -709,41 +706,38 @@ namespace libsemigroups {
 
     WordGraph<size_t> xy;
 
-    WordGraphMeeter meeter;
-    meeter.meet(xy, x, y);
+    Meeter meet;
+    meet(xy, x, y);
 
     REQUIRE(xy == to_word_graph<size_t>(4, {{1, 2}, {1, 1}, {3, 3}, {3, 3}}));
 
     y = to_word_graph<size_t>(3, {{1, 2}, {2, 2}, {2, 2}});
 
-    meeter.meet(xy, x, y);
+    meet(xy, x, y);
     REQUIRE(xy == to_word_graph<size_t>(4, {{1, 2}, {3, 3}, {2, 2}, {3, 3}}));
 
     word_graph::standardize(xy);
     REQUIRE(xy == to_word_graph<size_t>(4, {{1, 2}, {3, 3}, {2, 2}, {3, 3}}));
 
     x = xy;
-    meeter.meet(xy, x, y);
+    meet(xy, x, y);
     REQUIRE(xy == to_word_graph<size_t>(4, {{1, 2}, {3, 3}, {2, 2}, {3, 3}}));
   }
 
-  LIBSEMIGROUPS_TEST_CASE("WordGraph",
-                          "037",
-                          "WordGraphMeeter x 2",
-                          "[quick]") {
+  LIBSEMIGROUPS_TEST_CASE("WordGraph", "037", "Meeter x 2", "[quick]") {
     auto x = to_word_graph<size_t>(5, {{1, 0}, {1, 2}, {1, 2}});
     auto y = to_word_graph<size_t>(5, {{0, 1}, {0, 1}});
     REQUIRE(word_graph::number_of_nodes_reachable_from(x, 0) == 3);
     REQUIRE(word_graph::number_of_nodes_reachable_from(y, 0) == 2);
 
-    WordGraphMeeter meeter;
-    auto            xy = meeter.meet(x, y);
+    Meeter meet;
+    auto   xy = meet(x, y);
     REQUIRE(xy == to_word_graph<size_t>(4, {{1, 2}, {1, 3}, {1, 2}, {1, 3}}));
     word_graph::standardize(xy);
     REQUIRE(xy == to_word_graph<size_t>(4, {{1, 2}, {1, 3}, {1, 2}, {1, 3}}));
 
-    HopcroftKarp joiner;
-    joiner.join(xy, x, y);
+    Joiner join;
+    join(xy, x, y);
     REQUIRE(xy == to_word_graph<size_t>(1, {{0, 0}}));
   }
 }  // namespace libsemigroups

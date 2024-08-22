@@ -1619,13 +1619,109 @@ namespace libsemigroups {
   WordGraph<Node> to_word_graph(size_t num_nodes_reachable_from_root,
                                 std::vector<std::vector<Node>> const& v);
 
-  namespace word_graph::detail {
-    template <typename Node1, typename Node2>
-    void throw_if_bad_args(WordGraph<Node1> const& x,
-                           Node2                   xroot,
-                           WordGraph<Node1> const& y,
-                           Node2                   yroot);
-  }  // namespace word_graph::detail
+  namespace detail {
+    template <typename Subclass>
+    class JoinerMeeterCommon {
+     private:
+      template <typename Node1, typename Node2>
+      void throw_if_bad_args(WordGraph<Node1> const& x,
+                             Node2                   xroot,
+                             WordGraph<Node1> const& y,
+                             Node2                   yroot);
+
+     public:
+      // TODO(doc)
+      template <typename Node>
+      void call_no_checks(WordGraph<Node>&       xy,
+                          WordGraph<Node> const& x,
+                          Node                   xroot,
+                          WordGraph<Node> const& y,
+                          Node                   yroot);
+
+      template <typename Node>
+      void call_no_checks(WordGraph<Node>&       xy,
+                          WordGraph<Node> const& x,
+                          WordGraph<Node> const& y) {
+        return call_no_checks(
+            xy, x, static_cast<Node>(0), y, static_cast<Node>(0));
+      }
+
+      template <typename Node, typename... Args>
+      auto call_no_checks(WordGraph<Node> const& x, Args&&... args)
+          -> std::enable_if_t<sizeof...(Args) % 2 == 1, WordGraph<Node>> {
+        // The versions of this function changing the 1st argument in-place
+        // always have an odd number of arguments, so we check that it's even
+        // here (the argument x and an odd number of further arguments).
+        WordGraph<Node> xy;
+        call_no_checks(xy, x, std::forward<Args>(args)...);
+        return xy;
+      }
+
+      // There's no operator() with the number of nodes reachable from the roots
+      // as arguments (7 args in total) because we'd have to check that they
+      // were valid, and the only way to do this is to recompute them.
+
+      // TODO(doc)
+      template <typename Node>
+      void operator()(WordGraph<Node>&       xy,
+                      WordGraph<Node> const& x,
+                      Node                   xroot,
+                      WordGraph<Node> const& y,
+                      Node                   yroot) {
+        throw_if_bad_args(x, xroot, y, yroot);
+        call_no_checks(xy, x, xroot, y, yroot);
+      }
+
+      template <typename Node>
+      void operator()(WordGraph<Node>&       xy,
+                      WordGraph<Node> const& x,
+                      WordGraph<Node> const& y) {
+        return operator()(xy, x, static_cast<Node>(0), y, static_cast<Node>(0));
+      }
+
+      template <typename Node, typename... Args>
+      auto operator()(WordGraph<Node> const& x, Args&&... args)
+          -> std::enable_if_t<sizeof...(Args) % 2 == 1, WordGraph<Node>> {
+        // The versions of this function changing the 1st argument in-place
+        // always have an odd number of arguments, so we check that it's even
+        // here (the argument x and an odd number of further arguments).
+        WordGraph<Node> xy;
+        operator()(xy, x, std::forward<Args>(args)...);
+        return xy;
+      }
+
+      template <typename Node1, typename Node2>
+      bool is_subrelation_no_checks(WordGraph<Node1> const& x,
+                                    Node2                   xroot,
+                                    WordGraph<Node1> const& y,
+                                    Node2                   yroot);
+
+      template <typename Node>
+      bool is_subrelation_no_checks(WordGraph<Node> const& x,
+                                    WordGraph<Node> const& y) {
+        return is_subrelation_no_checks(
+            x, static_cast<Node>(0), y, static_cast<Node>(0));
+      }
+
+      // There's no subrelation with the number of nodes reachable from the
+      // roots as arguments (6 args in total) because we'd have to check that
+      // they were valid, and the only way to do this is to recompute them.
+
+      template <typename Node1, typename Node2>
+      bool is_subrelation(WordGraph<Node1> const& x,
+                          Node2                   xroot,
+                          WordGraph<Node1> const& y,
+                          Node2                   yroot) {
+        throw_if_bad_args(x, xroot, y, yroot);
+        return is_subrelation_no_checks(x, xroot, y, yroot);
+      }
+
+      template <typename Node>
+      bool is_subrelation(WordGraph<Node> const& x, WordGraph<Node> const& y) {
+        return is_subrelation(x, static_cast<Node>(0), y, static_cast<Node>(0));
+      }
+    };  // JoinerMeeterCommon
+  }  // namespace detail
 
   //! \ingroup word_graph_group
   //! TODO(doc)
@@ -1633,7 +1729,8 @@ namespace libsemigroups {
   // specify the types of the nodes when constructing one of these objects.
   // Instead every member function has a template parameter Node, which is
   // deduced from the argument.
-  class HopcroftKarp {
+  // TODO rename Joiner
+  class Joiner : public detail::JoinerMeeterCommon<Joiner> {
    private:
     detail::Duf<>                             _uf;
     std::stack<std::pair<uint64_t, uint64_t>> _stck;
@@ -1657,32 +1754,32 @@ namespace libsemigroups {
     //! \brief Default constructor.
     //!
     //! Default constructor.
-    HopcroftKarp() = default;
+    Joiner() = default;
 
     //! \brief Default copy constructor.
     //!
     //! Default copy constructor.
-    HopcroftKarp(HopcroftKarp const&) = default;
+    Joiner(Joiner const&) = default;
 
     //! \brief Default move constructor.
     //!
     //! Default move constructor.
-    HopcroftKarp(HopcroftKarp&&) = default;
+    Joiner(Joiner&&) = default;
 
     //! \brief Default copy assignment operator.
     //!
     //! Default copy assignment operator.
-    HopcroftKarp& operator=(HopcroftKarp const&) = default;
+    Joiner& operator=(Joiner const&) = default;
 
     //! \brief Default move assignment operator.
     //!
     //! Default move assignment operator.
-    HopcroftKarp& operator=(HopcroftKarp&&) = default;
+    Joiner& operator=(Joiner&&) = default;
 
-    ~HopcroftKarp() = default;
+    ~Joiner() = default;
 
     template <typename Node>
-    void join_no_checks(WordGraph<Node>&       xy,
+    void call_no_checks(WordGraph<Node>&       xy,
                         WordGraph<Node> const& x,
                         size_t                 xnum_nodes_reachable_from_root,
                         Node                   xroot,
@@ -1690,112 +1787,23 @@ namespace libsemigroups {
                         size_t                 ynum_nodes_reachable_from_root,
                         Node                   yroot);
 
-    // TODO(doc)
-    template <typename Node>
-    void join_no_checks(WordGraph<Node>&       xy,
-                        WordGraph<Node> const& x,
-                        Node                   xroot,
-                        WordGraph<Node> const& y,
-                        Node                   yroot);
-
-    template <typename Node>
-    void join_no_checks(WordGraph<Node>&       xy,
-                        WordGraph<Node> const& x,
-                        WordGraph<Node> const& y) {
-      return join_no_checks(
-          xy, x, static_cast<Node>(0), y, static_cast<Node>(0));
-    }
-
-    template <typename Node, typename... Args>
-    auto join_no_checks(WordGraph<Node> const& x, Args&&... args)
-        -> std::enable_if_t<sizeof...(Args) % 2 == 1, WordGraph<Node>> {
-      // The versions of this function changing the 1st argument in-place
-      // always have an odd number of arguments, so we check that it's even
-      // here (the argument x and an odd number of further arguments).
-      WordGraph<Node> xy;
-      join_no_checks(xy, x, std::forward<Args>(args)...);
-      return xy;
-    }
-
-    // There's no join with the number of nodes reachable from the roots
-    // as arguments (7 args in total) because we'd have to check that they
-    // were valid, and the only way to do this is to recompute them.
-
-    // TODO(doc)
-    template <typename Node>
-    void join(WordGraph<Node>&       xy,
-              WordGraph<Node> const& x,
-              Node                   xroot,
-              WordGraph<Node> const& y,
-              Node                   yroot) {
-      word_graph::detail::throw_if_bad_args(x, xroot, y, yroot);
-      join_no_checks(xy, x, xroot, y, yroot);
-    }
-
-    template <typename Node>
-    void join(WordGraph<Node>&       xy,
-              WordGraph<Node> const& x,
-              WordGraph<Node> const& y) {
-      return join(xy, x, static_cast<Node>(0), y, static_cast<Node>(0));
-    }
-
-    template <typename Node, typename... Args>
-    auto join(WordGraph<Node> const& x, Args&&... args)
-        -> std::enable_if_t<sizeof...(Args) % 2 == 1, WordGraph<Node>> {
-      // The versions of this function changing the 1st argument in-place
-      // always have an odd number of arguments, so we check that it's even
-      // here (the argument x and an odd number of further arguments).
-      WordGraph<Node> xy;
-      join(xy, x, std::forward<Args>(args)...);
-      return xy;
-    }
-
     // is x a subrelation of y?
     // TODO(doc)
     // TODO move to tpp
     template <typename Node1, typename Node2>
-    bool is_subrelation_no_checks(WordGraph<Node1> const& x,
-                                  size_t xnum_nodes_reachable_from_root,
-                                  Node2  xroot,
-                                  WordGraph<Node1> const& y,
-                                  size_t ynum_nodes_reachable_from_root,
-                                  Node2  yroot);
-
-    template <typename Node1, typename Node2>
-    bool is_subrelation_no_checks(WordGraph<Node1> const& x,
-                                  Node2                   xroot,
-                                  WordGraph<Node1> const& y,
-                                  Node2                   yroot);
-
-    template <typename Node>
-    bool is_subrelation_no_checks(WordGraph<Node> const& x,
-                                  WordGraph<Node> const& y) {
-      return is_subrelation_no_checks(
-          x, static_cast<Node>(0), y, static_cast<Node>(0));
-    }
-
-    // There's no subrelation with the number of nodes reachable from the
-    // roots as arguments (6 args in total) because we'd have to check that
-    // they were valid, and the only way to do this is to recompute them.
-
-    template <typename Node1, typename Node2>
-    bool is_subrelation(WordGraph<Node1> const& x,
-                        Node2                   xroot,
-                        WordGraph<Node1> const& y,
-                        Node2                   yroot) {
-      word_graph::detail::throw_if_bad_args(x, xroot, y, yroot);
-      return is_subrelation_no_checks(x, xroot, y, yroot);
-    }
-
-    template <typename Node>
-    bool is_subrelation(WordGraph<Node> const& x, WordGraph<Node> const& y) {
-      return is_subrelation(x, static_cast<Node>(0), y, static_cast<Node>(0));
-    }
-  };  // HopcroftKarp
+    [[nodiscard]] bool
+    is_subrelation_no_checks(WordGraph<Node1> const& x,
+                             size_t xnum_nodes_reachable_from_root,
+                             Node2  xroot,
+                             WordGraph<Node1> const& y,
+                             size_t ynum_nodes_reachable_from_root,
+                             Node2  yroot);
+  };  // Joiner
 
   //! \ingroup word_graph_group
   // Class for forming the meet of two word graphs
-  class WordGraphMeeter {
+  // TODO rename meeter
+  class Meeter : public detail::JoinerMeeterCommon<Meeter> {
    private:
     using node_type = std::pair<uint64_t, uint64_t>;
 
@@ -1807,34 +1815,33 @@ namespace libsemigroups {
     //! \brief Default constructor.
     //!
     //! Default constructor.
-    WordGraphMeeter() = default;
+    Meeter() = default;
 
     //! \brief Default copy constructor.
     //!
     //! Default copy constructor.
-    WordGraphMeeter(WordGraphMeeter const&) = default;
+    Meeter(Meeter const&) = default;
 
     //! \brief Default move constructor.
     //!
     //! Default move constructor.
-    WordGraphMeeter(WordGraphMeeter&&) = default;
+    Meeter(Meeter&&) = default;
 
     //! \brief Default copy assignment operator.
     //!
     //! Default copy assignment operator.
-    WordGraphMeeter& operator=(WordGraphMeeter const&) = default;
+    Meeter& operator=(Meeter const&) = default;
 
     //! \brief Default move assignment operator.
     //!
     //! Default move assignment operator.
-    WordGraphMeeter& operator=(WordGraphMeeter&&) = default;
+    Meeter& operator=(Meeter&&) = default;
 
-    ~WordGraphMeeter() = default;
+    ~Meeter() = default;
 
     // TODO(doc)
-    // TODO move to tpp
     template <typename Node>
-    void meet_no_checks(WordGraph<Node>&       xy,
+    void call_no_checks(WordGraph<Node>&       xy,
                         WordGraph<Node> const& x,
                         size_t                 xnum_nodes_reachable_from_root,
                         Node                   xroot,
@@ -1842,78 +1849,27 @@ namespace libsemigroups {
                         size_t                 ynum_nodes_reachable_from_root,
                         Node                   yroot);
 
-    template <typename Node>
-    void meet_no_checks(WordGraph<Node>&       xy,
-                        WordGraph<Node> const& x,
-                        Node                   xroot,
-                        WordGraph<Node> const& y,
-                        Node                   yroot);
-
-    template <typename Node>
-    void meet_no_checks(WordGraph<Node>&       xy,
-                        WordGraph<Node> const& x,
-                        WordGraph<Node> const& y) {
-      return meet_no_checks(
-          xy, x, static_cast<Node>(0), y, static_cast<Node>(0));
-    }
-
-    template <typename Node, typename... Args>
-    auto meet_no_checks(WordGraph<Node> const& x, Args&&... args)
-        -> std::enable_if_t<sizeof...(Args) % 2 == 1, WordGraph<Node>> {
-      // The versions of this function changing the 1st argument in-place
-      // always have an odd number of arguments, so we check that it's even
-      // here (the argument x and an odd number of further arguments).
-      WordGraph<Node> xy;
-      meet_no_checks(xy, x, std::forward<Args>(args)...);
-      return xy;
-    }
-
-    template <typename Node>
-    void meet(WordGraph<Node>&       xy,
-              WordGraph<Node> const& x,
-              Node                   xroot,
-              WordGraph<Node> const& y,
-              Node                   yroot) {
-      word_graph::detail::throw_if_bad_args(x, xroot, y, yroot);
-      meet_no_checks(xy, x, xroot, y, yroot);
-    }
-
-    template <typename Node>
-    void meet(WordGraph<Node>&       xy,
-              WordGraph<Node> const& x,
-              WordGraph<Node> const& y) {
-      return meet(xy, x, static_cast<Node>(0), y, static_cast<Node>(0));
-    }
-
-    template <typename Node, typename... Args>
-    auto meet(WordGraph<Node> const& x, Args&&... args)
-        -> std::enable_if_t<sizeof...(Args) % 2 == 1, WordGraph<Node>> {
-      // The versions of this function changing the 1st argument in-place
-      // always have an odd number of arguments, so we check that it's even
-      // here (the argument x and an odd number of further arguments).
-      WordGraph<Node> xy;
-      meet(xy, x, std::forward<Args>(args)...);
-      return xy;
-    }
-
     // is x a subrelation of y
-    //    [[nodiscard]] bool is_subrelation_no_checks() {
-    //      // If _x is a subrelation of _y, then the meet of _x and _y must
-    //      be
-    //      // _x.
-    //      before_meet();
-    //      if (_y_num_nodes_reachable_from_root
-    //          >= _x_num_nodes_reachable_from_root) {
-    //        return false;
-    //      }
-    //      auto xy = get();
-    //      // FIXME the following only works if _x_root == 0 == _y_root
-    //      return xy.number_of_nodes() == _x_num_nodes_reachable_from_root
-    //             && word_graph::equal_to(*_x,
-    //                                     xy,
-    //                                     static_cast<Node>(0),
-    //                                     static_cast<Node>(xy.number_of_nodes()));
-    //    }
+    // TODO to tpp
+    template <typename Node1, typename Node2>
+    bool is_subrelation_no_checks(WordGraph<Node1> const& x,
+                                  size_t xnum_nodes_reachable_from_root,
+                                  Node2  xroot,
+                                  WordGraph<Node1> const& y,
+                                  size_t ynum_nodes_reachable_from_root,
+                                  Node2  yroot) {
+      // If x is a subrelation of y, then the meet of x and y must be x.
+      if (ynum_nodes_reachable_from_root >= xnum_nodes_reachable_from_root) {
+        return false;
+      }
+      auto xy = call_no_checks(x,
+                               xnum_nodes_reachable_from_root,
+                               xroot,
+                               y,
+                               ynum_nodes_reachable_from_root,
+                               yroot);
+      return xy.number_of_nodes() == xnum_nodes_reachable_from_root;
+    }
   };
 
   // TODO(0) to tpp
