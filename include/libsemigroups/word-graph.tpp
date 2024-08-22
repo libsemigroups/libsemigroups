@@ -19,10 +19,11 @@
 // This file contains an implementation of word graphs (which are basically
 // deterministic automata without initial or accept states).
 
-// TODO re-order the file as per hpp
+// TODO(0) re-order the file as per hpp
 
 #include "libsemigroups/exception.hpp"
 #include "libsemigroups/word-graph.hpp"
+
 namespace libsemigroups {
   //////////////////////////////////////////////////////////////////////////////
   // Helper namespace
@@ -139,7 +140,7 @@ namespace libsemigroups {
 
         size_t max_t = number_of_nodes_reachable_from(wg, 0) - 1;
 
-        // TODO move this out of here and use it in the other standardize
+        // TODO(1) move this out of here and use it in the other standardize
         // functions
         auto swap_if_necessary = [&wg, &f, &p, &q](node_type const   ss,
                                                    node_type&        tt,
@@ -665,7 +666,7 @@ namespace libsemigroups {
       Node1              next_preorder_num = 0;
       std::vector<Node1> postorder(N, N);
       Node1              next_postorder_num = 0;
-      // TODO(later) there should be a better way of doing this
+      // TODO(1) there should be a better way of doing this
       for (auto n : wg.nodes()) {
         if (!is_reachable(wg, n, static_cast<Node1>(target))) {
           preorder[n] = N + 1;
@@ -690,7 +691,7 @@ namespace libsemigroups {
         if (seen[m] == 0) {
           stck.emplace(m, 0);
           if (!detail::topological_sort(wg, stck, seen, order)) {
-            // digraph is not acyclic and so there's no topological order for
+            // graph is not acyclic and so there's no topological order for
             // the nodes.
             LIBSEMIGROUPS_ASSERT(order.empty());
             return order;
@@ -917,7 +918,7 @@ namespace libsemigroups {
   template <typename Node>
   template <typename OtherNode>
   WordGraph<Node>& WordGraph<Node>::init(WordGraph<OtherNode> const& wg) {
-    // TODO same as the constructor above adjust UNDEFINED from OtherNode ->
+    // TODO(0) same as the constructor above adjust UNDEFINED from OtherNode ->
     // Node
     init(wg.number_of_nodes(), wg.out_degree());
     _dynamic_array_2 = wg._dynamic_array_2;
@@ -1063,7 +1064,7 @@ namespace libsemigroups {
     }
   }
 
-  // TODO improve
+  // TODO(1) improve
   template <typename Node>
   template <typename Iterator, typename>
   void WordGraph<Node>::induced_subgraph_no_checks(Iterator first,
@@ -1074,7 +1075,7 @@ namespace libsemigroups {
     //   return;
     // }
 
-    // TODO do this without allocation
+    // TODO(1) do this without allocation
     WordGraph<Node>        copy(N, out_degree());
     std::vector<node_type> old_to_new(number_of_nodes(),
                                       static_cast<node_type>(UNDEFINED));
@@ -1101,8 +1102,8 @@ namespace libsemigroups {
   template <typename Node>
   void WordGraph<Node>::set_target(node_type m, label_type lbl, node_type n) {
     word_graph::validate_node(*this, m);
-    word_graph::validate_node(*this, n);
     word_graph::validate_label(*this, lbl);
+    word_graph::validate_node(*this, n);
     set_target_no_checks(m, lbl, n);
   }
 
@@ -1219,7 +1220,8 @@ namespace libsemigroups {
     os << "}";
     return os;
   }
-  // TODO refactor to use vectors api, not initializer_list
+
+  // TODO(1) refactor to use vectors api, not initializer_list
   template <typename Node>
   WordGraph<Node> to_word_graph(size_t                                num_nodes,
                                 std::vector<std::vector<Node>> const& edges) {
