@@ -646,6 +646,10 @@ namespace libsemigroups {
                                        11_w,
                                        110_w,
                                        111_w}));
+    // FIXME: The below segfaults, since "a" and "b" are not in the alphabet,
+    // and to_vector can't catch the error.
+    // REQUIRE_THROWS_AS((strings | ToWord("cd") | to_vector()),
+    //                   LibsemigroupsException);
     REQUIRE(is_sorted(strings, LexicographicalCompare()));
 
     strings.alphabet("ba").first("b").last("aaaaa");

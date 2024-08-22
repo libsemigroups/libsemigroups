@@ -526,7 +526,7 @@ namespace libsemigroups {
     //! letters greater than alphabet_size(), then the WordRange object will be
     //! empty.
     //!
-    //! \param lst the first word.
+    //! \param lst one past the last word.
     //!
     //! \returns A reference to \c *this.
     //!
@@ -539,7 +539,7 @@ namespace libsemigroups {
 
     //! \brief The current one past the last word in the range.
     //!
-    //! Returns the last word in a WordRange object.
+    //! Returns one past the last word in a WordRange object.
     //!
     //! \returns A const reference to a \ref word_type.
     //!
@@ -833,21 +833,21 @@ namespace libsemigroups {
     //! \returns A value of type \c bool.
     //!
     //! \exceptions
-    //! \no_libsemigroups_except
-    [[nodiscard]] bool empty() const {
+    //! \noexcept
+    [[nodiscard]] bool empty() const noexcept {
       return _alphabet_map.empty();
     }
 
     //! \brief Return the alphabet used for conversion.
     //!
     //! This function returns a std::string corresponding to the ordered-set
-    //! alphabet \f$\{a_0, a_1, \dots a_{n-1}\}\f$ that the initialised ToWord
+    //! alphabet \f$\{a_0, a_1, \dots, a_{n-1}\}\f$ that the initialised ToWord
     //! object will use to convert from std::string to \ref word_type.
     //! Specifically, \f$a_i \mapsto i\f$ where \f$a_i\f$ will correspond to a
     //! letter in a std::string, and \f$i\f$ is a \ref letter_type.
     //!
     //! If this function returns the empty string, then conversion will be
-    //! performed using \ref words::human_readable_letter.
+    //! performed using \ref words::human_readable_index.
     //!
     //! \returns A value of type std::string.
     //!
@@ -1120,7 +1120,7 @@ namespace libsemigroups {
     //! This function puts a ToString object back into the same state as if it
     //! had been newly constructed from \p alphabet.
     //!
-    //! \param alphabet the alphabet
+    //! \param alphabet the alphabet.
     //!
     //! \returns A reference to \c *this.
     //!
@@ -1146,7 +1146,7 @@ namespace libsemigroups {
     //! \brief Return the alphabet used for conversion.
     //!
     //! This function returns a std::string corresponding to the ordered-set
-    //! alphabet \f$\{a_0, a_1, \dots a_{n-1}\}\f$ that the initialised ToWord
+    //! alphabet \f$\{a_0, a_1, \dots a_{n-1}\}\f$ that the initialised ToString
     //! object will use to convert from a \ref word_type to a std::string.
     //! Specifically, \f$i\mapsto a_i\f$ where \f$i\f$ will correspond to a
     //! letter in a word_type, and \f$a_i\f$ is a \c char.
@@ -1218,7 +1218,7 @@ namespace libsemigroups {
     //! \param input the string to convert.
     //!
     //! \throw LibsemigroupsException if the alphabet used to define an instance
-    //! of ToWord is not empty and \p input contains letters that do not
+    //! of ToString is not empty and \p input contains letters that do not
     //! correspond to letters of the alphabet.
     //!
     //! \sa
@@ -1235,7 +1235,7 @@ namespace libsemigroups {
     //! \param input the string to convert.
     //!
     //! \throw LibsemigroupsException if the alphabet used to define an instance
-    //! of ToWord is not empty and \p input contains letters that do not
+    //! of ToString is not empty and \p input contains letters that do not
     //! correspond to letters of the alphabet.
     //!
     //! \sa
@@ -1561,7 +1561,7 @@ namespace libsemigroups {
     //! * first() equal to the empty string;
     //! * last() equal to the empty string;
     //! * upper_bound() equal to \c 0;
-    //! * alphabet() equal to \c 0.
+    //! * alphabet() equal to ``""``.
     StringRange() {
       init();
     }
@@ -1649,19 +1649,20 @@ namespace libsemigroups {
 
     //! \brief Set one past the last string in the range.
     //!
-    //! Sets one past the last string in a StringRange object to be \p lst. This
-    //! function performs no checks on its arguments. If \p lst contains
-    //! letters greater than alphabet_size(), then the StringRange object will
-    //! be empty.
+    //! Sets one past the last string in a StringRange object to be \p lst.
     //!
-    //! \param lst the first string.
+    //! \param lst one past the last string.
     //!
     //! \returns A reference to \c *this.
     //!
+    //! \throws LibsemigroupsException if \p lst constains letters not belonging
+    //! to alphabet().
+    //!
     //! \sa \ref max
     //!
-    //! \note Unlike WordRange::last, this function will throw if \p lst
-    //! contains letters not belonging to alphabet().
+    //! \note The behaviour of this function is not exactly the same as
+    //! ``WordRange::last(word_type const&)``. That function will not throw if a
+    //! word contains letters not in the alphabet.
     StringRange& last(std::string const& lst) {
       _word_range.last(_to_word(lst));
       _current_valid &= _word_range.valid();
@@ -1670,7 +1671,7 @@ namespace libsemigroups {
 
     //! \brief The current one past the last string in the range.
     //!
-    //! Returns the last string in a StringRange object.
+    //! Returns one past the last string in a StringRange object.
     //!
     //! \returns A \ref std::string by value.
     //!
@@ -1763,8 +1764,10 @@ namespace libsemigroups {
 
     //! \brief Set one past the last string in the range by length.
     //!
-    //! Sets one past the last string in a StringRange object to be `pow("a",
-    //! val)` (the string consisting of \p val letters equal to \c "a").
+    //! Sets one past the last string in a StringRange object to be
+    //! \f$\alpha^n\f$ where \f$\alpha\f$ is the first letter of
+    //! ``alphabet()`` (or ``"a"`` if the alphabet is empty) and
+    //! \f$n\f$ corresponds to \p val.
     //!
     //! \param val the exponent.
     //!
@@ -1885,11 +1888,11 @@ namespace libsemigroups {
     word_type operator"" _w(const char* w);
 
     //! \anchor literal_operator_p
-    //! \brief Literal for defining \ref word_type by parsing an algebraic
+    //! \brief Literal for defining std::string by parsing an algebraic
     //! expression.
     //!
-    //! This operator provides a convenient concise means of constructing a \ref
-    //! word_type from an algebraic expression.
+    //! This operator provides a convenient concise means of constructing a
+    //! std::string from an algebraic expression.
     //! For example, \c "((ab)^3cc)^2"_p equals
     //! \c "abababccabababcc" and \c "a^0"_p equals the empty string \c "".
     //!
@@ -2089,7 +2092,7 @@ namespace libsemigroups {
     //! \param x the word to power.
     //! \param n the power.
     //!
-    //! \returns A Word
+    //! \returns A Word.
     //!
     //! \exceptions
     //! \no_libsemigroups_except
