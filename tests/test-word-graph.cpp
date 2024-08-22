@@ -672,14 +672,13 @@ namespace libsemigroups {
     REQUIRE(joiner.join(x, y) == x);
     REQUIRE(joiner.join(y, x) == x);
 
+    WordGraphMeeter meeter;
+    meeter.meet(xy, x, y);
+    REQUIRE(xy == x);
+    REQUIRE(xy == y);
+
     y.set_target_no_checks(0, 0, 10);
-
     REQUIRE_THROWS_AS(joiner.join(x, y), LibsemigroupsException);
-
-    //    WordGraphMeeter meet(x);
-    //    meet.with(y).get(xy);
-    //    REQUIRE(xy == x);
-    //    REQUIRE(xy == y);
   }
 
   LIBSEMIGROUPS_TEST_CASE("WordGraph", "050", "HopcroftKarp x 2", "[quick]") {
@@ -699,58 +698,52 @@ namespace libsemigroups {
     REQUIRE(joiner.is_subrelation(y, xy));
   }
 
-  // LIBSEMIGROUPS_TEST_CASE("WordGraph",
-  //                         "036",
-  //                         "WordGraphMeeter x 1",
-  //                         "[quick]") {
-  //   // These word graphs were taken from the lattice of 2-sided congruences
-  //   of
-  //   // the free semigroup with 2 generators.
-  //   WordGraph<size_t> x(to_word_graph<size_t>(3, {{1, 2}, {1, 1}, {2, 2}}));
-  //   x.number_of_active_nodes(x.number_of_nodes());
+  LIBSEMIGROUPS_TEST_CASE("WordGraph",
+                          "036",
+                          "WordGraphMeeter x 1",
+                          "[quick]") {
+    // These word graphs were taken from the lattice of 2-sided congruences
+    // of the free semigroup with 2 generators.
+    WordGraph<size_t> x(to_word_graph<size_t>(3, {{1, 2}, {1, 1}, {2, 2}}));
+    WordGraph<size_t> y(to_word_graph<size_t>(3, {{1, 2}, {1, 1}, {1, 1}}));
 
-  //   WordGraph<size_t> y(to_word_graph<size_t>(3, {{1, 2}, {1, 1}, {1, 1}}));
-  //   y.number_of_active_nodes(y.number_of_nodes());
+    WordGraph<size_t> xy;
 
-  //   WordGraph<size_t> xy;
+    WordGraphMeeter meeter;
+    meeter.meet(xy, x, y);
 
-  //   WordGraphMeeter meet(x);
-  //   meet.with(y).get(xy);
+    REQUIRE(xy == to_word_graph<size_t>(4, {{1, 2}, {1, 1}, {3, 3}, {3, 3}}));
 
-  //   REQUIRE(xy == to_word_graph<size_t>(4, {{1, 2}, {1, 1}, {3, 3}, {3,
-  //   3}}));
+    y = to_word_graph<size_t>(3, {{1, 2}, {2, 2}, {2, 2}});
 
-  //   y = to_word_graph<size_t>(3, {{1, 2}, {2, 2}, {2, 2}});
-  //   y.number_of_active_nodes(y.number_of_nodes());
+    meeter.meet(xy, x, y);
+    REQUIRE(xy == to_word_graph<size_t>(4, {{1, 2}, {3, 3}, {2, 2}, {3, 3}}));
 
-  //   meet.with(x).with(y).get(xy);
-  //   REQUIRE(xy == to_word_graph<size_t>(4, {{1, 2}, {3, 3}, {2, 2}, {3,
-  //   3}})); word_graph::standardize(xy); REQUIRE(xy ==
-  //   to_word_graph<size_t>(4, {{1, 2}, {3, 3}, {2, 2}, {3, 3}}));
+    word_graph::standardize(xy);
+    REQUIRE(xy == to_word_graph<size_t>(4, {{1, 2}, {3, 3}, {2, 2}, {3, 3}}));
 
-  //   x = xy;
-  //   meet.with(x).with(y).get(xy);
-  //   REQUIRE(xy == to_word_graph<size_t>(4, {{1, 2}, {3, 3}, {2, 2}, {3,
-  //   3}}));
-  // }
+    x = xy;
+    meeter.meet(xy, x, y);
+    REQUIRE(xy == to_word_graph<size_t>(4, {{1, 2}, {3, 3}, {2, 2}, {3, 3}}));
+  }
 
-  // LIBSEMIGROUPS_TEST_CASE("WordGraph",
-  //                         "037",
-  //                         "WordGraphMeeter x 2",
-  //                         "[quick]") {
-  //   auto x = to_word_graph<size_t>(5, {{1, 0}, {1, 2}, {1, 2}});
-  //   x.number_of_active_nodes(3);
-  //   auto y = to_word_graph<size_t>(5, {{0, 1}, {0, 1}});
-  //   y.number_of_active_nodes(2);
+  LIBSEMIGROUPS_TEST_CASE("WordGraph",
+                          "037",
+                          "WordGraphMeeter x 2",
+                          "[quick]") {
+    auto x = to_word_graph<size_t>(5, {{1, 0}, {1, 2}, {1, 2}});
+    auto y = to_word_graph<size_t>(5, {{0, 1}, {0, 1}});
+    REQUIRE(word_graph::number_of_nodes_reachable_from(x, 0) == 3);
+    REQUIRE(word_graph::number_of_nodes_reachable_from(y, 0) == 2);
 
-  //   WordGraphMeeter meeter(x);
-  //   auto            xy = meeter.with(y).get();
-  //   REQUIRE(xy == to_word_graph<size_t>(4, {{1, 2}, {1, 3}, {1, 2}, {1,
-  //   3}})); word_graph::standardize(xy); REQUIRE(xy ==
-  //   to_word_graph<size_t>(4, {{1, 2}, {1, 3}, {1, 2}, {1, 3}}));
+    WordGraphMeeter meeter;
+    auto            xy = meeter.meet(x, y);
+    REQUIRE(xy == to_word_graph<size_t>(4, {{1, 2}, {1, 3}, {1, 2}, {1, 3}}));
+    word_graph::standardize(xy);
+    REQUIRE(xy == to_word_graph<size_t>(4, {{1, 2}, {1, 3}, {1, 2}, {1, 3}}));
 
-  //   HopcroftKarp joiner;
-  //   joiner.join(xy, x, y);
-  //   REQUIRE(xy == to_word_graph<size_t>(1, {{0, 0}}));
-  // }
+    HopcroftKarp joiner;
+    joiner.join(xy, x, y);
+    REQUIRE(xy == to_word_graph<size_t>(1, {{0, 0}}));
+  }
 }  // namespace libsemigroups
