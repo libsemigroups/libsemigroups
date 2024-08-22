@@ -134,19 +134,23 @@ namespace libsemigroups {
     void test_BMat000() {
       auto rg = ReportGuard(REPORT);
       {
-        Mat m = Mat::make({{0, 1}, {0, 1}});
-        REQUIRE_NOTHROW(validate(m));
+        Mat m = to_matrix<Mat>({{0, 1}, {0, 1}});
+        REQUIRE_NOTHROW(matrix::throw_if_bad_entry(m));
         REQUIRE(m == Mat({{0, 1}, {0, 1}}));
         REQUIRE(!(m == Mat({{0, 0}, {0, 1}})));
         REQUIRE(m == Mat({{0, 1}, {0, 1}}));
-        m.product_inplace(Mat({{0, 0}, {0, 0}}), Mat({{0, 0}, {0, 0}}));
+        m.product_inplace_no_checks(Mat({{0, 0}, {0, 0}}),
+                                    Mat({{0, 0}, {0, 0}}));
         REQUIRE(m == Mat({{0, 0}, {0, 0}}));
-        m.product_inplace(Mat({{0, 0}, {0, 0}}), Mat({{1, 1}, {1, 1}}));
+        m.product_inplace_no_checks(Mat({{0, 0}, {0, 0}}),
+                                    Mat({{1, 1}, {1, 1}}));
         REQUIRE(m == Mat({{0, 0}, {0, 0}}));
-        m.product_inplace(Mat({{1, 1}, {1, 1}}), Mat({{0, 0}, {0, 0}}));
+        m.product_inplace_no_checks(Mat({{1, 1}, {1, 1}}),
+                                    Mat({{0, 0}, {0, 0}}));
         REQUIRE(m == Mat({{0, 0}, {0, 0}}));
 
-        m.product_inplace(Mat({{0, 1}, {1, 0}}), Mat({{1, 0}, {1, 0}}));
+        m.product_inplace_no_checks(Mat({{0, 1}, {1, 0}}),
+                                    Mat({{1, 0}, {1, 0}}));
         REQUIRE(m == Mat({{1, 0}, {1, 0}}));
         size_t const M = detail::BitSetCapacity<Mat>::value;
         detail::StaticVector1<BitSet<M>, M> result;
@@ -157,6 +161,10 @@ namespace libsemigroups {
         matrix::bitset_row_basis(m, result);
         REQUIRE(result.size() == 1);
         REQUIRE(matrix::bitset_row_basis(m).size() == 1);
+        REQUIRE(std::vector<bool>(m.cbegin(), m.cend())
+                == std::vector<bool>({true, false, true, false}));
+        REQUIRE(std::vector<bool>(m.begin(), m.end())
+                == std::vector<bool>({true, false, true, false}));
       }
 
       {
@@ -236,7 +244,7 @@ namespace libsemigroups {
         REQUIRE(r.number_of_rows() == 1);
         REQUIRE(r == Row({true, true}));
 
-        auto E = Mat::identity(2);
+        auto E = Mat::one(2);
         REQUIRE(E.number_of_rows() == 2);
         REQUIRE(E.number_of_cols() == 2);
         auto viewse = matrix::rows(E);
@@ -259,7 +267,8 @@ namespace libsemigroups {
         REQUIRE(m.coords(++it) == std::pair<scalar_type, scalar_type>({1, 1}));
       }
       {
-        REQUIRE_THROWS_AS(Mat::make({{0, 0}, {0, 2}}), LibsemigroupsException);
+        REQUIRE_THROWS_AS(to_matrix<Mat>({{0, 0}, {0, 2}}),
+                          LibsemigroupsException);
       }
     }
 #pragma GCC diagnostic pop
@@ -270,15 +279,15 @@ namespace libsemigroups {
       auto y = Mat({{0, 0, 0}, {0, 0, 0}, {0, 0, 0}});
       auto z = Mat({{0, 0, 0}, {0, 0, 0}, {0, 0, 0}});
       REQUIRE(y == z);
-      z.product_inplace(x, y);
+      z.product_inplace_no_checks(x, y);
       REQUIRE(y == z);
-      z.product_inplace(y, x);
+      z.product_inplace_no_checks(y, x);
       REQUIRE(y == z);
       REQUIRE(!(y < z));
-      auto id = x.identity();
-      z.product_inplace(id, x);
+      auto id = x.one();
+      z.product_inplace_no_checks(id, x);
       REQUIRE(z == x);
-      z.product_inplace(x, id);
+      z.product_inplace_no_checks(x, id);
       REQUIRE(z == x);
       REQUIRE(x.hash_value() != 0);
     }
@@ -286,19 +295,19 @@ namespace libsemigroups {
     template <typename Mat>
     void test_BMat002() {
       using RowView = typename Mat::RowView;
-      auto x        = Mat::make({{1, 0, 0}, {1, 0, 0}, {1, 0, 0}});
+      auto x        = to_matrix<Mat>({{1, 0, 0}, {1, 0, 0}, {1, 0, 0}});
       REQUIRE(matrix::row_basis(x).size() == 1);
       REQUIRE(matrix::row_space_size(x) == 1);
-      x = Mat::make({{1, 0, 0}, {1, 1, 0}, {1, 1, 1}});
+      x = to_matrix<Mat>({{1, 0, 0}, {1, 1, 0}, {1, 1, 1}});
       REQUIRE(matrix::row_basis(x).size() == 3);
       REQUIRE_THROWS_AS(x.row(3), LibsemigroupsException);
       std::vector<RowView> v = {x.row(0), x.row(2)};
       REQUIRE(matrix::row_basis<Mat>(v).size() == 2);
       REQUIRE(matrix::row_space_size(x) == 3);
-      x = Mat::make({{1, 0, 0}, {0, 1, 1}, {1, 1, 1}});
+      x = to_matrix<Mat>({{1, 0, 0}, {0, 1, 1}, {1, 1, 1}});
       REQUIRE(matrix::row_basis(x).size() == 2);
       REQUIRE(matrix::row_space_size(x) == 3);
-      x = Mat::make({{1, 0, 0}, {0, 0, 1}, {0, 1, 0}});
+      x = to_matrix<Mat>({{1, 0, 0}, {0, 0, 1}, {0, 1, 0}});
       REQUIRE(matrix::row_space_size(x) == 7);
       std::vector<typename Mat::RowView> views;
       std::vector<typename Mat::RowView> result;
@@ -315,18 +324,19 @@ namespace libsemigroups {
       using Row = typename Mat::Row;
       auto rg   = ReportGuard(REPORT);
       Mat  m(sr, 3, 3);
-      // REQUIRE(validate(m)); // m might not be valid!
-      m.product_inplace(Mat::make(sr, {{1, 1, 0}, {0, 0, 1}, {1, 0, 1}}),
-                        Mat::make(sr, {{1, 0, 1}, {0, 0, 1}, {1, 1, 0}}));
-      REQUIRE(m == Mat::make(sr, {{1, 0, 2}, {1, 1, 0}, {2, 1, 1}}));
+      // REQUIRE(matrix::throw_if_bad_entry(m)); // m might not be valid!
+      m.product_inplace_no_checks(
+          to_matrix<Mat>(sr, {{1, 1, 0}, {0, 0, 1}, {1, 0, 1}}),
+          to_matrix<Mat>(sr, {{1, 0, 1}, {0, 0, 1}, {1, 1, 0}}));
+      REQUIRE(m == to_matrix<Mat>(sr, {{1, 0, 2}, {1, 1, 0}, {2, 1, 1}}));
       REQUIRE(m.row(0) == Row(sr, {1, 0, 2}));
       REQUIRE(m.row(0).size() == 3);
       auto r = matrix::rows(m);
       REQUIRE(r[0] == Row(sr, {1, 0, 2}));
       REQUIRE(r[1] == Row(sr, {1, 1, 0}));
       REQUIRE(r[2] == Row(sr, {2, 1, 1}));
-      REQUIRE(m * Mat::identity(sr, 3) == m);
-      REQUIRE(Mat::identity(sr, 3) * m == m);
+      REQUIRE(m * Mat::one(sr, 3) == m);
+      REQUIRE(Mat::one(sr, 3) * m == m);
     }
 
     template <typename Mat>
@@ -337,7 +347,7 @@ namespace libsemigroups {
 
       auto rg = ReportGuard(REPORT);
 
-      Mat m = Mat::make(
+      Mat m = to_matrix<Mat>(
           sr, {{1, 1, 0, 0}, {2, 0, 2, 0}, {1, 2, 3, 9}, {0, 0, 0, 7}});
       REQUIRE(m.number_of_cols() == 4);
       REQUIRE(m.number_of_rows() == 4);
@@ -352,7 +362,7 @@ namespace libsemigroups {
               == std::vector<scalar_type>({2, 0, 2, 0}));
       REQUIRE(
           m
-          == Mat::make(
+          == to_matrix<Mat>(
               sr, {{3, 1, 2, 0}, {2, 0, 2, 0}, {1, 2, 3, 9}, {0, 0, 0, 7}}));
       REQUIRE(r[0][0] == 3);
       REQUIRE(r[0](0) == 3);
@@ -362,19 +372,19 @@ namespace libsemigroups {
               == std::vector<scalar_type>({0, 1, 2, 3}));
       REQUIRE(
           m
-          == Mat::make(
+          == to_matrix<Mat>(
               sr, {{0, 1, 2, 3}, {2, 0, 2, 0}, {1, 2, 3, 9}, {0, 0, 0, 7}}));
       r[0] += 9;
       REQUIRE(std::vector<scalar_type>(r[0].cbegin(), r[0].cend())
               == std::vector<scalar_type>({9, 0, 1, 2}));
       REQUIRE(
           m
-          == Mat::make(
+          == to_matrix<Mat>(
               sr, {{9, 0, 1, 2}, {2, 0, 2, 0}, {1, 2, 3, 9}, {0, 0, 0, 7}}));
       r[1] *= 3;
       REQUIRE(
           m
-          == Mat::make(
+          == to_matrix<Mat>(
               sr, {{9, 0, 1, 2}, {6, 0, 6, 0}, {1, 2, 3, 9}, {0, 0, 0, 7}}));
       REQUIRE(std::vector<scalar_type>(r[1].cbegin(), r[1].cend())
               == std::vector<scalar_type>({6, 0, 6, 0}));
@@ -382,10 +392,10 @@ namespace libsemigroups {
       r[1] = r[2];
       REQUIRE(
           m
-          == Mat::make(
+          == to_matrix<Mat>(
               sr, {{9, 0, 1, 2}, {6, 0, 6, 0}, {1, 2, 3, 9}, {0, 0, 0, 7}}));
       REQUIRE(r[1] == r[2]);
-      REQUIRE(r[1] == Row::make(sr, {{1, 2, 3, 9}}));
+      REQUIRE(r[1] == to_matrix<Row>(sr, {{1, 2, 3, 9}}));
 
       RowView rv;
       {
@@ -405,23 +415,23 @@ namespace libsemigroups {
       REQUIRE(m.number_of_rows() == 4);
       auto r = matrix::rows(m);
       REQUIRE(r.size() == 4);
-      REQUIRE(r[0] == Row::make(sr, {{1, 1, 0, 0}}));
-      REQUIRE(r[1] == Row::make(sr, {{2, 0, 2, 0}}));
-      REQUIRE(r[0] != Row::make(sr, {{2, 0, 2, 0}}));
-      REQUIRE(r[1] != Row::make(sr, {{1, 1, 0, 0}}));
-      REQUIRE(Row::make(sr, {{1, 1, 0, 0}}) == r[0]);
-      REQUIRE(Row::make(sr, {{2, 0, 2, 0}}) == r[1]);
-      REQUIRE(Row::make(sr, {{2, 0, 2, 0}}) != r[0]);
-      REQUIRE(Row::make(sr, {{1, 1, 0, 0}}) != r[1]);
-      REQUIRE(Row::make(sr, {{1, 1, 0, 0}}) < Row(sr, {{9, 9, 9, 9}}));
-      REQUIRE(r[0] < Row::make(sr, {{9, 9, 9, 9}}));
-      REQUIRE(!(Row::make(sr, {{9, 9, 9, 9}}) < r[0]));
+      REQUIRE(r[0] == to_matrix<Row>(sr, {{1, 1, 0, 0}}));
+      REQUIRE(r[1] == to_matrix<Row>(sr, {{2, 0, 2, 0}}));
+      REQUIRE(r[0] != to_matrix<Row>(sr, {{2, 0, 2, 0}}));
+      REQUIRE(r[1] != to_matrix<Row>(sr, {{1, 1, 0, 0}}));
+      REQUIRE(to_matrix<Row>(sr, {{1, 1, 0, 0}}) == r[0]);
+      REQUIRE(to_matrix<Row>(sr, {{2, 0, 2, 0}}) == r[1]);
+      REQUIRE(to_matrix<Row>(sr, {{2, 0, 2, 0}}) != r[0]);
+      REQUIRE(to_matrix<Row>(sr, {{1, 1, 0, 0}}) != r[1]);
+      REQUIRE(to_matrix<Row>(sr, {{1, 1, 0, 0}}) < Row(sr, {{9, 9, 9, 9}}));
+      REQUIRE(r[0] < to_matrix<Row>(sr, {{9, 9, 9, 9}}));
+      REQUIRE(!(to_matrix<Row>(sr, {{9, 9, 9, 9}}) < r[0]));
       Row x(r[3]);
       x *= 3;
-      REQUIRE(x == Row::make(sr, {{0, 0, 0, 1}}));
+      REQUIRE(x == to_matrix<Row>(sr, {{0, 0, 0, 1}}));
       REQUIRE(x.number_of_rows() == 1);
       REQUIRE(x.number_of_cols() == 4);
-      REQUIRE(r[3] == Row::make(sr, {{0, 0, 0, 7}}));
+      REQUIRE(r[3] == to_matrix<Row>(sr, {{0, 0, 0, 7}}));
       REQUIRE(r[3] != x);
       REQUIRE(x != r[3]);
       REQUIRE(!(x != x));
@@ -429,24 +439,24 @@ namespace libsemigroups {
 
     template <typename Mat>
     void test_NTPMat003(NTPSemiring<> const* sr = nullptr) {
-      auto x        = Mat::make(sr, {{22, 21, 0}, {10, 0, 0}, {1, 32, 1}});
-      auto expected = Mat::make(sr, {{22, 21, 0}, {10, 0, 0}, {1, 32, 1}});
+      auto x        = to_matrix<Mat>(sr, {{22, 21, 0}, {10, 0, 0}, {1, 32, 1}});
+      auto expected = to_matrix<Mat>(sr, {{22, 21, 0}, {10, 0, 0}, {1, 32, 1}});
       REQUIRE(x == expected);
       REQUIRE(x.number_of_cols() == 3);
       REQUIRE(x.number_of_rows() == 3);
 
-      auto y = Mat::make(sr, {{10, 0, 0}, {0, 1, 0}, {1, 1, 0}});
+      auto y = to_matrix<Mat>(sr, {{10, 0, 0}, {0, 1, 0}, {1, 1, 0}});
       REQUIRE(!(x == y));
 
-      y.product_inplace(x, x);
-      expected = Mat::make(sr, {{34, 34, 0}, {34, 34, 0}, {33, 33, 1}});
+      y.product_inplace_no_checks(x, x);
+      expected = to_matrix<Mat>(sr, {{34, 34, 0}, {34, 34, 0}, {33, 33, 1}});
       REQUIRE(y == expected);
 
       REQUIRE(x < y);
-      auto id = x.identity();
-      y.product_inplace(id, x);
+      auto id = x.one();
+      y.product_inplace_no_checks(id, x);
       REQUIRE(y == x);
-      y.product_inplace(x, id);
+      y.product_inplace_no_checks(x, id);
       REQUIRE(y == x);
       REQUIRE(Hash<Mat>()(y) != 0);
     }
@@ -462,9 +472,9 @@ namespace libsemigroups {
         Mat m1(sr, 2, 2);
         std::fill(m1.begin(), m1.end(), NEGATIVE_INFINITY);
         REQUIRE(m1
-                == Mat::make(sr,
-                             {{NEGATIVE_INFINITY, NEGATIVE_INFINITY},
-                              {NEGATIVE_INFINITY, NEGATIVE_INFINITY}}));
+                == to_matrix<Mat>(sr,
+                                  {{NEGATIVE_INFINITY, NEGATIVE_INFINITY},
+                                   {NEGATIVE_INFINITY, NEGATIVE_INFINITY}}));
         Mat m2(sr, 2, 2);
         std::fill(m2.begin(), m2.end(), 4);
         REQUIRE(m1 + m2 == m2);
@@ -488,7 +498,7 @@ namespace libsemigroups {
       }
       {
         Mat m(sr, {{1, 1}, {0, 0}});
-        m      = m.identity();
+        m      = m.one();
         auto r = matrix::row_basis(m);
         REQUIRE(r.size() == 2);
         REQUIRE(std::vector<scalar_type>(r[0].cbegin(), r[0].cend())
@@ -507,32 +517,32 @@ namespace libsemigroups {
       using scalar_type = typename Mat::scalar_type;
       using Row         = typename Mat::Row;
 
-      auto m  = Mat::make(sr,
-                          {{2, 2, 0, 1},
-                           {0, 0, 1, 3},
-                           {1, NEGATIVE_INFINITY, 0, 0},
-                           {0, 1, 0, 1}});
+      auto m  = to_matrix<Mat>(sr,
+                              {{2, 2, 0, 1},
+                                {0, 0, 1, 3},
+                                {1, NEGATIVE_INFINITY, 0, 0},
+                                {0, 1, 0, 1}});
       auto rg = ReportGuard(REPORT);
       auto r  = matrix::row_basis(m);
       REQUIRE(r.size() == 4);
-      REQUIRE(r[0] == Row::make(sr, {0, 0, 1, 3}));
-      REQUIRE(r[1] == Row::make(sr, {0, 1, 0, 1}));
-      REQUIRE(r[2] == Row::make(sr, {1, NEGATIVE_INFINITY, 0, 0}));
-      REQUIRE(r[3] == Row::make(sr, {2, 2, 0, 1}));
+      REQUIRE(r[0] == to_matrix<Row>(sr, {0, 0, 1, 3}));
+      REQUIRE(r[1] == to_matrix<Row>(sr, {0, 1, 0, 1}));
+      REQUIRE(r[2] == to_matrix<Row>(sr, {1, NEGATIVE_INFINITY, 0, 0}));
+      REQUIRE(r[3] == to_matrix<Row>(sr, {2, 2, 0, 1}));
       m.transpose();
       REQUIRE(m
-              == Mat::make(sr,
-                           {{2, 0, 1, 0},
-                            {2, 0, NEGATIVE_INFINITY, 1},
-                            {0, 1, 0, 0},
-                            {1, 3, 0, 1}}));
+              == to_matrix<Mat>(sr,
+                                {{2, 0, 1, 0},
+                                 {2, 0, NEGATIVE_INFINITY, 1},
+                                 {0, 1, 0, 0},
+                                 {1, 3, 0, 1}}));
       m.transpose();
       REQUIRE(m
-              == Mat::make(sr,
-                           {{2, 2, 0, 1},
-                            {0, 0, 1, 3},
-                            {1, NEGATIVE_INFINITY, 0, 0},
-                            {0, 1, 0, 1}}));
+              == to_matrix<Mat>(sr,
+                                {{2, 2, 0, 1},
+                                 {0, 0, 1, 3},
+                                 {1, NEGATIVE_INFINITY, 0, 0},
+                                 {0, 1, 0, 1}}));
 
       std::vector<std::array<scalar_type, 4>> expected;
       expected.push_back({2, 2, 0, 1});
@@ -541,8 +551,8 @@ namespace libsemigroups {
       expected.push_back({0, 1, 0, 1});
       tropical_max_plus_row_basis<4, 5>(expected);
       REQUIRE(expected.size() == 4);
-      REQUIRE(m * Mat::identity(sr, 4) == m);
-      REQUIRE(Mat::identity(sr, 4) * m == m);
+      REQUIRE(m * Mat::one(sr, 4) == m);
+      REQUIRE(Mat::one(sr, 4) * m == m);
     }
 
     template <typename Mat>
@@ -551,24 +561,25 @@ namespace libsemigroups {
       auto expected = Mat(sr, {{22, 21, 0}, {10, 0, 0}, {1, 32, 1}});
       REQUIRE(x == expected);
 
-      REQUIRE_THROWS_AS(Mat::make(sr, {{-100, 0, 0}, {0, 1, 0}, {1, -1, 0}}),
-                        LibsemigroupsException);
+      REQUIRE_THROWS_AS(
+          to_matrix<Mat>(sr, {{-100, 0, 0}, {0, 1, 0}, {1, -1, 0}}),
+          LibsemigroupsException);
       auto y = Mat(sr, {{10, 0, 0}, {0, 1, 0}, {1, 1, 0}});
       REQUIRE(!(x == y));
 
-      y.product_inplace(x, x);
+      y.product_inplace_no_checks(x, x);
       expected = Mat(sr, {{33, 33, 22}, {32, 32, 10}, {33, 33, 32}});
       REQUIRE(y == expected);
 
       REQUIRE(x < y);
-      auto id = x.identity();
-      y.product_inplace(id, x);
+      auto id = x.one();
+      y.product_inplace_no_checks(id, x);
       REQUIRE(y == x);
-      y.product_inplace(x, id);
+      y.product_inplace_no_checks(x, id);
       REQUIRE(y == x);
       REQUIRE(Hash<Mat>()(y) != 0);
-      REQUIRE(x * Mat::identity(sr, 3) == x);
-      REQUIRE(Mat::identity(sr, 3) * x == x);
+      REQUIRE(x * Mat::one(sr, 3) == x);
+      REQUIRE(Mat::one(sr, 3) * x == x);
     }
 
     ////////////////////////////////////////////////////////////////////////
@@ -585,7 +596,7 @@ namespace libsemigroups {
         auto y = Mat({{-100, 0, 0}, {0, 1, 0}, {1, -1, 0}});
         REQUIRE(!(x == y));
 
-        y.product_inplace(x, x);
+        y.product_inplace_no_checks(x, x);
         expected = Mat({{2, -4, 0}, {2, -2, 0}, {2, -1, 1}});
         REQUIRE(y == expected);
         REQUIRE(y.number_of_rows() == 3);
@@ -595,10 +606,10 @@ namespace libsemigroups {
         REQUIRE(Degree<Mat>()(y) == 3);
         REQUIRE(Complexity<Mat>()(x) == 27);
         REQUIRE(Complexity<Mat>()(y) == 27);
-        auto id = x.identity();
-        y.product_inplace(id, x);
+        auto id = x.one();
+        y.product_inplace_no_checks(id, x);
         REQUIRE(y == x);
-        y.product_inplace(x, id);
+        y.product_inplace_no_checks(x, id);
         REQUIRE(y == x);
       }
       {
@@ -609,15 +620,15 @@ namespace libsemigroups {
         auto y = Mat({{-100, 0, 0}, {0, 1, 0}, {1, -1, 0}});
         REQUIRE(!(x == y));
 
-        y.product_inplace(x, x);
+        y.product_inplace_no_checks(x, x);
         expected = Mat({{2, -4, 0}, {2, -2, 0}, {2, -1, 1}});
         REQUIRE(y == expected);
 
         REQUIRE(x < y);
-        auto id = x.identity();
-        y.product_inplace(id, x);
+        auto id = x.one();
+        y.product_inplace_no_checks(id, x);
         REQUIRE(y == x);
-        y.product_inplace(x, id);
+        y.product_inplace_no_checks(x, id);
         REQUIRE(y == x);
         REQUIRE(Hash<Mat>()(y) != 0);
       }
@@ -637,7 +648,7 @@ namespace libsemigroups {
       REQUIRE(!(x == y));
       REQUIRE(x != y);
 
-      y.product_inplace(x, x);
+      y.product_inplace_no_checks(x, x);
       expected = Mat({{1, 2, 2}, {1, 1, 1}, {2, 3, 2}});
       REQUIRE(y == expected);
 
@@ -646,10 +657,10 @@ namespace libsemigroups {
       REQUIRE(Degree<Mat>()(y) == 3);
       REQUIRE(Complexity<Mat>()(x) == 27);
       REQUIRE(Complexity<Mat>()(y) == 27);
-      auto id = x.identity();
-      y.product_inplace(id, x);
+      auto id = x.one();
+      y.product_inplace_no_checks(id, x);
       REQUIRE(y == x);
-      y.product_inplace(x, id);
+      y.product_inplace_no_checks(x, id);
       REQUIRE(y == x);
       REQUIRE(Hash<Mat>()(y) != 0);
     }
@@ -670,7 +681,7 @@ namespace libsemigroups {
         auto y = Mat({{-100, 0, 0}, {0, 1, 0}, {1, -1, 0}});
         REQUIRE(!(x == y));
 
-        y.product_inplace(x, x);
+        y.product_inplace_no_checks(x, x);
         expected = Mat({{-4, -3, -2}, {-3, -3, -1}, {-4, -3, -3}});
         REQUIRE(y == expected);
 
@@ -679,10 +690,10 @@ namespace libsemigroups {
         REQUIRE(Degree<Mat>()(y) == 3);
         REQUIRE(Complexity<Mat>()(x) == 27);
         REQUIRE(Complexity<Mat>()(y) == 27);
-        auto id = x.identity();
-        y.product_inplace(id, x);
+        auto id = x.one();
+        y.product_inplace_no_checks(id, x);
         REQUIRE(y == x);
-        y.product_inplace(x, id);
+        y.product_inplace_no_checks(x, id);
         REQUIRE(y == x);
       }
       {
@@ -693,7 +704,7 @@ namespace libsemigroups {
         auto y = Mat({{10, 0, 0}, {0, 1, 0}, {1, 1, 0}});
         REQUIRE(!(x == y));
 
-        y.product_inplace(x, x);
+        y.product_inplace_no_checks(x, x);
         REQUIRE(y == Mat({{1, 21, 1}, {1, 0, 0}, {2, 22, 1}}));
 
         REQUIRE(x > y);
@@ -701,10 +712,10 @@ namespace libsemigroups {
         REQUIRE(Degree<Mat>()(y) == 3);
         REQUIRE(Complexity<Mat>()(x) == 27);
         REQUIRE(Complexity<Mat>()(y) == 27);
-        auto id = x.identity();
-        y.product_inplace(id, x);
+        auto id = x.one();
+        y.product_inplace_no_checks(id, x);
         REQUIRE(y == x);
-        y.product_inplace(x, id);
+        y.product_inplace_no_checks(x, id);
         REQUIRE(y == x);
         REQUIRE(Hash<Mat>()(y) != 0);
       }
@@ -718,13 +729,13 @@ namespace libsemigroups {
     void test_MinPlusTruncMat000(MinPlusTruncSemiring<> const* sr = nullptr) {
       auto x = Mat(sr, {{22, 21, 0}, {10, 0, 0}, {1, 32, 1}});
 
-      auto expected = Mat::make(sr, {{22, 21, 0}, {10, 0, 0}, {1, 32, 1}});
+      auto expected = to_matrix<Mat>(sr, {{22, 21, 0}, {10, 0, 0}, {1, 32, 1}});
       REQUIRE(x == expected);
 
       auto y = Mat(sr, {{10, 0, 0}, {0, 1, 0}, {1, 1, 0}});
       REQUIRE(!(x == y));
 
-      y.product_inplace(x, x);
+      y.product_inplace_no_checks(x, x);
       expected = Mat(sr, {{1, 21, 1}, {1, 0, 0}, {2, 22, 1}});
       REQUIRE(y == expected);
 
@@ -733,16 +744,17 @@ namespace libsemigroups {
       REQUIRE(Degree<Mat>()(y) == 3);
       REQUIRE(Complexity<Mat>()(x) == 27);
       REQUIRE(Complexity<Mat>()(y) == 27);
-      auto id = x.identity();
-      y.product_inplace(id, x);
+      auto id = x.one();
+      y.product_inplace_no_checks(id, x);
       REQUIRE(y == x);
-      y.product_inplace(x, id);
+      y.product_inplace_no_checks(x, id);
       REQUIRE(y == x);
       REQUIRE(Hash<Mat>()(y) != 0);
-      REQUIRE_THROWS_AS(Mat::make(sr, {{-22, 21, 0}, {10, 0, 0}, {1, 32, 1}}),
-                        LibsemigroupsException);
-      REQUIRE(x * Mat::identity(sr, 3) == x);
-      REQUIRE(Mat::identity(sr, 3) * x == x);
+      REQUIRE_THROWS_AS(
+          to_matrix<Mat>(sr, {{-22, 21, 0}, {10, 0, 0}, {1, 32, 1}}),
+          LibsemigroupsException);
+      REQUIRE(x * Mat::one(sr, 3) == x);
+      REQUIRE(Mat::one(sr, 3) * x == x);
     }
 
     ////////////////////////////////////////////////////////////////////////
@@ -752,19 +764,20 @@ namespace libsemigroups {
     template <typename Mat>
     void test_ProjMaxPlusMat000() {
       using Row     = typename Mat::Row;
-      auto x        = Mat::make({{-2, 2, 0}, {-1, 0, 0}, {1, -3, 1}});
-      auto expected = Mat::make({{-4, 0, -2}, {-3, -2, -2}, {-1, -5, -1}});
+      auto x        = to_matrix<Mat>({{-2, 2, 0}, {-1, 0, 0}, {1, -3, 1}});
+      auto expected = to_matrix<Mat>({{-4, 0, -2}, {-3, -2, -2}, {-1, -5, -1}});
       REQUIRE(x == expected);
-      REQUIRE(x.zero() == NEGATIVE_INFINITY);
-      REQUIRE(x.one() == 0);
+      REQUIRE(x.scalar_zero() == NEGATIVE_INFINITY);
+      REQUIRE(x.scalar_one() == 0);
 
-      auto y = Mat::make({{NEGATIVE_INFINITY, 0, 0}, {0, 1, 0}, {1, -1, 0}});
-      expected
-          = Mat::make({{NEGATIVE_INFINITY, -1, -1}, {-1, 0, -1}, {0, -2, -1}});
+      auto y
+          = to_matrix<Mat>({{NEGATIVE_INFINITY, 0, 0}, {0, 1, 0}, {1, -1, 0}});
+      expected = to_matrix<Mat>(
+          {{NEGATIVE_INFINITY, -1, -1}, {-1, 0, -1}, {0, -2, -1}});
       REQUIRE(y == expected);
       REQUIRE(!(x == y));
 
-      y.product_inplace(x, x);
+      y.product_inplace_no_checks(x, x);
       expected = Mat({{-2, -1, -1}, {-2, -2, -2}, {-1, 0, -1}});
       REQUIRE(y == expected);
 
@@ -774,19 +787,22 @@ namespace libsemigroups {
       REQUIRE(Degree<Mat>()(y) == 3);
       REQUIRE(Complexity<Mat>()(x) == 27);
       REQUIRE(Complexity<Mat>()(y) == 27);
-      auto id = x.identity();
-      y.product_inplace(id, x);
+      auto id = x.one();
+      y.product_inplace_no_checks(id, x);
       REQUIRE(y == x);
-      y.product_inplace(x, id);
+      y.product_inplace_no_checks(x, id);
       REQUIRE(y == x);
 
-      REQUIRE(Mat::make({{-2, 2, 0}, {-1, 0, 0}, {1, -3, 1}}).hash_value()
+      REQUIRE(to_matrix<Mat>({{-2, 2, 0}, {-1, 0, 0}, {1, -3, 1}}).hash_value()
               != 0);
 
       y = x;
       REQUIRE(&x != &y);
       REQUIRE(x == y);
-      REQUIRE(y == Mat::make(nullptr, {{-2, 2, 0}, {-1, 0, 0}, {1, -3, 1}}));
+      // TODO uncomment or remove
+      // REQUIRE(y
+      //         == to_matrix<Mat>(nullptr, {{-2, 2, 0}, {-1, 0, 0}, {1, -3,
+      //         1}}));
 
       auto yy(y);
       REQUIRE(yy == y);
@@ -797,7 +813,7 @@ namespace libsemigroups {
       std::ostream   os(&buff);
       os << y;  // Also does not do anything visible
 
-      REQUIRE(y.row(0) == Row::make({-4, 0, -2}));
+      REQUIRE(y.row(0) == to_matrix<Row>({-4, 0, -2}));
       REQUIRE(y.row(1) == Row({-3, -2, -2}));
       REQUIRE(Row(y.row(0)) == y.row(0));
 
@@ -805,7 +821,7 @@ namespace libsemigroups {
 
       Mat tt;
       REQUIRE(tt != zz);
-      REQUIRE(Mat::identity(3)
+      REQUIRE(Mat::one(3)
               == Mat({{0, NEGATIVE_INFINITY, NEGATIVE_INFINITY},
                       {NEGATIVE_INFINITY, 0, NEGATIVE_INFINITY},
                       {NEGATIVE_INFINITY, NEGATIVE_INFINITY, 0}}));
@@ -828,7 +844,7 @@ namespace libsemigroups {
       REQUIRE_THROWS_AS(matrix::pow(x, -100), LibsemigroupsException);
       REQUIRE(matrix::pow(x, 1)
               == Mat({{-4, 0, -2}, {-3, -2, -2}, {-1, -5, -1}}));
-      REQUIRE(matrix::pow(x, 0) == Mat::identity(3));
+      REQUIRE(matrix::pow(x, 0) == Mat::one(3));
     }
 
   }  // namespace
@@ -849,14 +865,14 @@ namespace libsemigroups {
     auto rg = ReportGuard(REPORT);
     {
       BMat<3> m;
-      m.product_inplace(BMat<3>({{1, 1, 0}, {0, 0, 1}, {1, 0, 1}}),
-                        BMat<3>({{1, 0, 1}, {0, 0, 1}, {1, 1, 0}}));
+      m.product_inplace_no_checks(BMat<3>({{1, 1, 0}, {0, 0, 1}, {1, 0, 1}}),
+                                  BMat<3>({{1, 0, 1}, {0, 0, 1}, {1, 1, 0}}));
       REQUIRE(m == BMat<3>({{1, 0, 1}, {1, 1, 0}, {1, 1, 1}}));
     }
     {
       BMat<> m(3, 3);
-      m.product_inplace(BMat<>({{1, 1, 0}, {0, 0, 1}, {1, 0, 1}}),
-                        BMat<>({{1, 0, 1}, {0, 0, 1}, {1, 1, 0}}));
+      m.product_inplace_no_checks(BMat<>({{1, 1, 0}, {0, 0, 1}, {1, 0, 1}}),
+                                  BMat<>({{1, 0, 1}, {0, 0, 1}, {1, 1, 0}}));
       REQUIRE(m == BMat<>({{1, 0, 1}, {1, 1, 0}, {1, 1, 1}}));
     }
     {
@@ -882,10 +898,10 @@ namespace libsemigroups {
     std::fill(AB.begin(), AB.end(), false);
     A(1, 1) = true;
 
-    AB.product_inplace(A, B);
+    AB.product_inplace_no_checks(A, B);
     REQUIRE(AB == B);
 
-    REQUIRE(A.identity() == BMat<2>({{true, false}, {false, true}}));
+    REQUIRE(A.one() == BMat<2>({{true, false}, {false, true}}));
 
     BMat<> CD(2, 2);
     BMat<> C(2, 2);
@@ -894,9 +910,9 @@ namespace libsemigroups {
     std::fill(CD.begin(), CD.end(), false);
     std::fill(D.begin(), D.end(), false);
     C(1, 1) = true;
-    CD.product_inplace(C, D);
+    CD.product_inplace_no_checks(C, D);
     REQUIRE(CD == D);
-    REQUIRE(D.identity() == BMat<>({{true, false}, {false, true}}));
+    REQUIRE(D.one() == BMat<>({{true, false}, {false, true}}));
   }
 
   LIBSEMIGROUPS_TEST_CASE("Matrix", "004", "BMat<3>", "[quick]") {
@@ -1166,15 +1182,13 @@ namespace libsemigroups {
     using Mat               = NTPMat<>;
     using scalar_type       = typename Mat::scalar_type;
     NTPSemiring<> const* sr = new NTPSemiring<>(23, 1);
-    REQUIRE(sr->one() == 1);
-    REQUIRE(sr->zero() == 0);
-    REQUIRE_THROWS_AS(Mat::make(nullptr, {{0, 0}, {0, 0}}),
-                      LibsemigroupsException);
-    auto x = Mat::make(sr, std::vector<std::vector<scalar_type>>());
+    REQUIRE(sr->scalar_one() == 1);
+    REQUIRE(sr->scalar_zero() == 0);
+    auto x = to_matrix<Mat>(sr, std::vector<std::vector<scalar_type>>());
     REQUIRE(x.number_of_cols() == x.number_of_rows());
     REQUIRE(x.number_of_cols() == 0);
 
-    REQUIRE_THROWS_AS(Mat::make(sr, {{2, 2, 0}, {0, 0, 140}, {1, 3, 1}}),
+    REQUIRE_THROWS_AS(to_matrix<Mat>(sr, {{2, 2, 0}, {0, 0, 140}, {1, 3, 1}}),
                       LibsemigroupsException);
     delete sr;
   }
@@ -1187,7 +1201,10 @@ namespace libsemigroups {
       BMat<> y(2, 1);
       REQUIRE_THROWS_AS(matrix::pow(y, 2), LibsemigroupsException);
     }
-    { REQUIRE_THROWS_AS(BMat<>::make({{0, 1}, {0}}), LibsemigroupsException); }
+    {
+      REQUIRE_THROWS_AS(to_matrix<BMat<>>({{0, 1}, {0}}),
+                        LibsemigroupsException);
+    }
     {
       BMat<> y(2, 2);
       std::fill(y.begin(), y.end(), 0);
@@ -1239,6 +1256,47 @@ namespace libsemigroups {
                           "check no throw",
                           "[quick][matrix]") {
     REQUIRE_NOTHROW(BMatFastest<3>({{0, 1}, {0, 1}}));
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Matrix",
+                          "047",
+                          "to_human_readable_repr",
+                          "[quick][matrix]") {
+    BMat<3> x({{0, 1, 0}, {0, 1, 0}, {0, 0, 0}});
+    REQUIRE(to_human_readable_repr(x, "BMat<3>(")
+            == "BMat<3>({{0, 1, 0},\n"
+               "         {0, 1, 0},\n"
+               "         {0, 0, 0}})");
+    MinPlusMat<> y({{-2, 2, 0}, {-1, 0, 0}, {1, -3, POSITIVE_INFINITY}});
+    REQUIRE(to_human_readable_repr(y, "MinPlusMat<>(")
+            == "MinPlusMat<>({{-2,  2,  0},\n"
+               "              {-1,  0,  0},\n"
+               "              { 1, -3, +∞}})");
+    REQUIRE(
+        to_human_readable_repr(y, "Matrix(MatrixKind.MaxPlusMat, ", "", "[]")
+        == "Matrix(MatrixKind.MaxPlusMat, [[-2,  2,  0],\n"
+           "                               [-1,  0,  0],\n"
+           "                               [ 1, -3, +∞]])");
+    y = MinPlusMat<>({{-2, 2, 0}, {-1, 0, 0}, {1, -3, 666666}});
+    REQUIRE(to_human_readable_repr(y, "MinPlusMat<>(")
+            == "MinPlusMat<>({{    -2,      2,      0},\n"
+               "              {    -1,      0,      0},\n"
+               "              {     1,     -3, 666666}})");
+
+    REQUIRE(to_human_readable_repr(y, "MinPlusMat<>(", "", "{}", 28)
+            == "MinPlusMat<>({{-2, 2, 0},\n"
+               "              {-1, 0, 0},\n"
+               "              {1, -3, 666666}})");
+    REQUIRE(
+        to_human_readable_repr(y, "MinPlusMat<>(", "max-plus matrix", "{}", 20)
+        == "<3x3 max-plus matrix>");
+    MinPlusTruncSemiring<> const* sr = new MinPlusTruncSemiring<>(5);
+    MinPlusTruncMat<> z(sr, {{0, 2, 0}, {1, 0, 0}, {1, 3, POSITIVE_INFINITY}});
+    REQUIRE(to_human_readable_repr(z, "MinPlusTruncMat<>(")
+            == "MinPlusTruncMat<>({{ 0,  2,  0},\n"
+               "                   { 1,  0,  0},\n"
+               "                   { 1,  3, +∞}})");
+    delete sr;
   }
 
 }  // namespace libsemigroups

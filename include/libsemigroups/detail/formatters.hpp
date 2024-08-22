@@ -23,7 +23,8 @@
 
 #include <magic_enum/magic_enum.hpp>
 
-#include "containers.hpp"
+#include "libsemigroups/constants.hpp"
+
 #include "fmt.hpp"
 #include "string.hpp"
 #include "timer.hpp"
@@ -44,6 +45,26 @@ struct fmt::formatter<libsemigroups::detail::Timer>
   template <typename FormatContext>
   auto format(libsemigroups::detail::Timer const& v, FormatContext& ctx) const {
     return formatter<string_view>::format(v.string(), ctx);
+  }
+};
+
+template <>
+struct fmt::formatter<libsemigroups::PositiveInfinity>
+    : fmt::formatter<std::string> {
+  template <typename FormatContext>
+  auto constexpr format(libsemigroups::PositiveInfinity const&,
+                        FormatContext& ctx) const {
+    return formatter<string_view>::format(u8"+\u221E", ctx);
+  }
+};
+
+template <>
+struct fmt::formatter<libsemigroups::NegativeInfinity>
+    : fmt::formatter<std::string> {
+  template <typename FormatContext>
+  auto constexpr format(libsemigroups::NegativeInfinity const&,
+                        FormatContext& ctx) const {
+    return formatter<string_view>::format(u8"-\u221E", ctx);
   }
 };
 

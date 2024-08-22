@@ -33,8 +33,8 @@ namespace libsemigroups {
     void test000() {
       auto             rg = ReportGuard(REPORT);
       FroidurePin<Mat> S;
-      S.add_generator(Mat::make({{0, -4}, {-4, -1}}));
-      S.add_generator(Mat::make({{0, -3}, {-3, -1}}));
+      S.add_generator(to_matrix<Mat>({{0, -4}, {-4, -1}}));
+      S.add_generator(to_matrix<Mat>({{0, -3}, {-3, -1}}));
 
       REQUIRE(S.size() == 26);
       REQUIRE(S.degree() == 2);
@@ -53,7 +53,7 @@ namespace libsemigroups {
       Mat x({{-2, 2}, {-1, 0}});
       REQUIRE(S.position(x) == UNDEFINED);
       REQUIRE(!S.contains(x));
-      x.product_inplace(S.generator(1), S.generator(1));
+      x.product_inplace_no_checks(S.generator(1), S.generator(1));
       REQUIRE(S.position(x) == 5);
       REQUIRE(S.contains(x));
 
@@ -81,7 +81,7 @@ namespace libsemigroups {
     void test004() {
       auto             rg = ReportGuard(REPORT);
       FroidurePin<Mat> S;
-      S.add_generator(Mat::make({{1, 0}, {0, POSITIVE_INFINITY}}));
+      S.add_generator(to_matrix<Mat>({{1, 0}, {0, POSITIVE_INFINITY}}));
 
       REQUIRE(S.size() == 3);
       REQUIRE(S.degree() == 2);
@@ -96,7 +96,7 @@ namespace libsemigroups {
       auto x = Mat({{-2, 2}, {-1, 0}});
       REQUIRE(S.position(x) == UNDEFINED);
       REQUIRE(!S.contains(x));
-      x.product_inplace(S.generator(0), S.generator(0));
+      x.product_inplace_no_checks(S.generator(0), S.generator(0));
       REQUIRE(S.position(x) == 1);
       REQUIRE(S.contains(x));
     }
@@ -106,8 +106,9 @@ namespace libsemigroups {
     void test005(MaxPlusTruncSemiring<> const* sr = nullptr) {
       auto             rg = ReportGuard(REPORT);
       FroidurePin<Mat> S;
-      S.add_generator(Mat::make(sr, {{22, 21, 0}, {10, 0, 0}, {1, 32, 1}}));
-      S.add_generator(Mat::make(sr, {{0, 0, 0}, {0, 1, 0}, {1, 1, 0}}));
+      S.add_generator(
+          to_matrix<Mat>(sr, {{22, 21, 0}, {10, 0, 0}, {1, 32, 1}}));
+      S.add_generator(to_matrix<Mat>(sr, {{0, 0, 0}, {0, 1, 0}, {1, 1, 0}}));
 
       REQUIRE(S.size() == 119);
       REQUIRE(S.degree() == 3);
@@ -119,7 +120,7 @@ namespace libsemigroups {
       REQUIRE(S.position(S.generator(0)) == 0);
       REQUIRE(S.contains(S.generator(0)));
 
-      // auto x = Mat::make(sr, {{2, 2}, {1, 0}});
+      // auto x = to_matrix<Mat>(sr, {{2, 2}, {1, 0}});
       // REQUIRE(S.position(x) == UNDEFINED);
       // REQUIRE(!S.contains(x));
     }
@@ -129,8 +130,8 @@ namespace libsemigroups {
     void test006(MinPlusTruncSemiring<> const* sr = nullptr) {
       auto             rg = ReportGuard(REPORT);
       FroidurePin<Mat> S;
-      S.add_generator(Mat::make(sr, {{2, 1, 0}, {10, 0, 0}, {1, 2, 1}}));
-      S.add_generator(Mat::make(sr, {{10, 0, 0}, {0, 1, 0}, {1, 1, 0}}));
+      S.add_generator(to_matrix<Mat>(sr, {{2, 1, 0}, {10, 0, 0}, {1, 2, 1}}));
+      S.add_generator(to_matrix<Mat>(sr, {{10, 0, 0}, {0, 1, 0}, {1, 1, 0}}));
 
       REQUIRE(S.size() == 1039);
       REQUIRE(S.degree() == 3);
@@ -142,10 +143,10 @@ namespace libsemigroups {
       REQUIRE(S.position(S.generator(0)) == 0);
       REQUIRE(S.contains(S.generator(0)));
 
-      auto x = Mat::make(sr, {{2, 2, 0}, {1, 0, 0}, {0, 0, 0}});
+      auto x = to_matrix<Mat>(sr, {{2, 2, 0}, {1, 0, 0}, {0, 0, 0}});
       REQUIRE(S.position(x) == UNDEFINED);
       REQUIRE(!S.contains(x));
-      x.product_inplace(S.generator(0), S.generator(0));
+      x.product_inplace_no_checks(S.generator(0), S.generator(0));
       REQUIRE(S.position(x) == 2);
       REQUIRE(S.contains(x));
     }
@@ -155,8 +156,8 @@ namespace libsemigroups {
     void test007(NTPSemiring<> const* sr = nullptr) {
       auto             rg = ReportGuard(REPORT);
       FroidurePin<Mat> S;
-      S.add_generator(Mat::make(sr, {{2, 1, 0}, {10, 0, 0}, {1, 2, 1}}));
-      S.add_generator(Mat::make(sr, {{10, 0, 0}, {0, 1, 0}, {1, 1, 0}}));
+      S.add_generator(to_matrix<Mat>(sr, {{2, 1, 0}, {10, 0, 0}, {1, 2, 1}}));
+      S.add_generator(to_matrix<Mat>(sr, {{10, 0, 0}, {0, 1, 0}, {1, 1, 0}}));
 
       REQUIRE(S.size() == 86);
       REQUIRE(S.degree() == 3);
@@ -168,10 +169,10 @@ namespace libsemigroups {
       REQUIRE(S.position(S.generator(0)) == 0);
       REQUIRE(S.contains(S.generator(0)));
 
-      auto x = Mat::make(sr, {{2, 2, 0}, {1, 0, 0}, {0, 0, 0}});
+      auto x = to_matrix<Mat>(sr, {{2, 2, 0}, {1, 0, 0}, {0, 0, 0}});
       REQUIRE(S.position(x) == UNDEFINED);
       REQUIRE(!S.contains(x));
-      x.product_inplace(S.generator(1), S.generator(0));
+      x.product_inplace_no_checks(S.generator(1), S.generator(0));
       REQUIRE(S.position(x) == 4);
       REQUIRE(S.contains(x));
     }

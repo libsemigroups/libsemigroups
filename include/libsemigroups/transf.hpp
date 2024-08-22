@@ -52,7 +52,7 @@
 #include "hpcombi.hpp"    // for HPCombi::Transf16
 #include "types.hpp"      // for SmallestInteger
 
-#include "detail/stl.hpp"  // for is_specialization_of_v
+#include "detail/stl.hpp"  // for is_array_v
 
 namespace libsemigroups {
   //! \defgroup elements_group Elements

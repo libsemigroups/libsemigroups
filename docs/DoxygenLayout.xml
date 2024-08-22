@@ -5,15 +5,74 @@
 
   <!-- Navigation index tabs for HTML output -->
   <navindex>
-    <tab type="mainpage" visible="yes" title=""/>
+    <tab type="mainpage" visible="yes" title="" />
     <tab type="user" visible="yes" url="_HEADING_" title="Installation and Changelog" />
     <tab type="user" visible="yes" url="@ref md_install" title="Install" />
     <tab type="user" visible="yes" url="_HEADING_" title="Data structures" />
-    <tab type="usergroup" visible="yes" url="@ref adapters_group" title="Adapters"/>
-    <tab type="usergroup" visible="yes" url="@ref elements_group" title="Elements" >
+    <tab type="usergroup" visible="yes" url="@ref adapters_group" title="Adapters">
+      <tab type="usergroup" visible="yes" url="[none]" title="No default implementation">
+        <tab type="user" visible="yes" url="@ref libsemigroups::Complexity" title="Complexity" />
+        <tab type="user" visible="yes" url="@ref libsemigroups::Degree" title="Degree" />
+        <tab type="user" visible="yes" url="@ref libsemigroups::ImageLeftAction"
+          title="ImageLeftAction" />
+        <tab type="user" visible="yes" url="@ref libsemigroups::ImageRightAction"
+          title="ImageRightAction" />
+        <tab type="user" visible="yes" url="@ref libsemigroups::IncreaseDegree"
+          title="IncreaseDegree" />
+        <tab type="user" visible="yes" url="@ref libsemigroups::Inverse" title="Inverse" />
+        <tab type="user" visible="yes" url="@ref libsemigroups::Lambda" title="Lambda" />
+        <tab type="user" visible="yes" url="@ref libsemigroups::LambdaValue" title="LambdaValue" />
+        <tab type="user" visible="yes" url="@ref libsemigroups::One" title="One" />
+        <tab type="user" visible="yes" url="@ref libsemigroups::Product" title="Product" />
+        <tab type="user" visible="yes" url="@ref libsemigroups::Rho" title="Rho" />
+        <tab type="user" visible="yes" url="@ref libsemigroups::RhoValue" title="RhoValue" />
+      </tab>
+      <tab type="usergroup" visible="yes" url="[none]" title="Default implementation">
+        <tab type="user" visible="yes" url="@ref libsemigroups::EqualTo" title="EqualTo" />
+        <tab type="user" visible="yes" url="@ref libsemigroups::Hash" title="Hash" />
+        <tab type="user" visible="yes" url="@ref libsemigroups::Less" title="Less" />
+        <tab type="user" visible="yes" url="@ref libsemigroups::OnTuples" title="OnTuples" />
+        <tab type="user" visible="yes" url="@ref libsemigroups::OnSets" title="OnSets" />
+        <tab type="user" visible="yes" url="@ref libsemigroups::RankState" title="RankState" />
+        <tab type="user" visible="yes" url="@ref libsemigroups::Swap" title="Swap" />
+      </tab>
+      <tab type="user" visible="yes" url="@ref adapters_bmat_group" title="Adapters for BMat" />
+      <tab type="user" visible="yes" url="@ref adapters_bmat8_group" title="Adapters for BMat8" />
+      <tab type="user" visible="yes" url="@ref adapters_matrix_group"
+        title="Adapters for other matrices" />
+      <tab type="user" visible="yes" url="@ref adapters_hpcombi_group" title="Adapters for HPCombi" />
+    </tab>
+    <tab type="usergroup" visible="yes" url="@ref elements_group" title="Elements">
       <tab type="user" visible="yes" url="@ref bipart_group" title="Bipartitions" />
-      <tab type="usergroup" visible="yes" url="@ref matrix_group" title="Matrix" >
-        <tab type="user" visible="yes" url="@ref bmat8_group" title="BMat8" />
+      <tab type="usergroup" visible="yes" url="@ref matrix_group" title="Matrices">
+        <tab type="usergroup" visible="yes" url="[none]" title="Over specific semirings">
+          <tab type="user" visible="yes" url="@ref bmat_index_group" title="Boolean matrices" />
+          <tab type="user" visible="yes" url="@ref intmat_group" title="Integer matrices" />
+          <tab type="user" visible="yes" url="@ref maxplusmat_group" title="Max-plus matrices" />
+          <tab type="user" visible="yes" url="@ref minplusmat_group" title="Min-plus matrices" />
+          <tab type="user" visible="yes" url="@ref maxplustruncmat_group"
+            title="Truncated max-plus matrices" />
+          <tab type="user" visible="yes" url="@ref minplustruncmat_group"
+            title="Truncated min-plus matrices" />
+          <tab type="user" visible="yes" url="@ref ntpmat_group" title="Matrices over ℕ/(t = t + p)" />
+          <tab type="user" visible="yes" url="@ref projmaxplus_group"
+            title="Projective max-plus matrices" />
+        </tab>
+        <tab type="usergroup" visible="yes" url="[none]" title="Over arbitrary semirings">
+          <tab type="user" visible="yes" url="@ref DynamicMatrixStaticArith"
+            title="DynamicMatrix (compile-time)" />
+          <tab type="user" visible="yes" url="@ref DynamicMatrixDynamicArith"
+            title="DynamicMatrix (run-time)" />
+          <tab type="user" visible="yes" url="@ref StaticMatric" title="StaticMatrix" />
+        </tab>
+        <tab type="usergroup" visible="yes" url="[none]" title="Row views">
+          <tab type="user" visible="yes" url="@ref DynamicRowViewStaticArith"
+            title="DynamicRowView (compile-time)" />
+          <tab type="user" visible="yes" url="@ref DynamicRowViewDynamicArith"
+            title="DynamicRowView (run-time)" />
+          <tab type="user" visible="yes" url="@ref libsemigroups::StaticRowView"
+            title="StaticRowView" />
+        </tab>
       </tab>
       <tab type="user" visible="yes" url="@ref transf_group" title="Transformations" />
     </tab>
@@ -74,7 +133,7 @@
     <tab type="user" visible="yes" url="@ref citelist" title="Bibliography" />
     <tab type="user" visible="yes" url="_HEADING_" title="Further info" />
     <tab type="user" url="https://github.com/libsemigroups/libsemigroups" title="GitHub"/>
-    
+
     <!--
     <tab type="pages" visible="no" title="" intro=""/>
     <tab type="namespaces" visible="no" title="">

@@ -21,12 +21,13 @@
 #ifndef LIBSEMIGROUPS_DETAIL_REPORT_HPP_
 #define LIBSEMIGROUPS_DETAIL_REPORT_HPP_
 
-#include <chrono>   // for std::chrono
-#include <cstddef>  // for size_t
-#include <mutex>    // for mutex, lock_guard
-#include <string>   // for string
-#include <thread>   // for get_id, thread, thread::id
-#include <utility>  // for pair
+#include <chrono>      // for std::chrono
+#include <cstddef>     // for size_t
+#include <functional>  // for std::function
+#include <mutex>       // for mutex, lock_guard
+#include <string>      // for string
+#include <thread>      // for get_id, thread, thread::id
+#include <utility>     // for pair
 
 #include "fmt.hpp"         // for fmtlib includes
 #include "formatters.hpp"  // for custom formatters

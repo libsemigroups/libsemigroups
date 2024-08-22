@@ -136,7 +136,7 @@ namespace libsemigroups {
       REQUIRE(S.contains(S.generator(1)));
 
       Mat y({{0, 0, 0}, {0, 0, 0}, {0, 0, 0}});
-      y.product_inplace(S.generator(0), S.generator(0));
+      y.product_inplace_no_checks(S.generator(0), S.generator(0));
       REQUIRE(S.position(y) == 2);
       REQUIRE(S.contains(y));
       REQUIRE(S.fast_product(1, 2) == 1);

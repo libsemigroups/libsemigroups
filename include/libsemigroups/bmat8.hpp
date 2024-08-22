@@ -39,21 +39,14 @@
 #include "debug.hpp"     // for LIBSEMIGROUPS_ASSERT
 
 namespace libsemigroups {
-  //! \defgroup matrix_group Matrix
-  //!
-  //! This page contains links to the documentation of the functionality in
-  //! libsemigroups for matrices.
-  //!
-  //! * \ref bmat_group
-  //!   * \ref bmat8_group
-  //!
 
-  //! \defgroup bmat_group Boolean matrices
+  //! \defgroup bmat_index_group Boolean matrices
   //!
   //! This page contains links to the documentation of the functionality in
   //! libsemigroups for boolean matrices.
   //!
   //! * \ref bmat8_group
+  //! * \ref bmat_group
   //!
   //! # Boolean matrix helpers
   //!
@@ -67,6 +60,9 @@ namespace libsemigroups {
   //! representation of boolean matrices of dimension at most \f$8\f$.
   //!
   //! For boolean matrices of higher dimensions see \ref BMat.
+  //!
+  //! Adapters for \ref BMat8 objects are documented \ref adapters_bmat8_group
+  //! "here".
 
   //! \ingroup bmat8_group
   //!
@@ -985,7 +981,16 @@ namespace std {
 }  // namespace std
 
 namespace libsemigroups {
-  //! \ingroup bmat8_group
+  //! \defgroup adapters_bmat8_group Adapters for BMat8
+  //!
+  //! This page contains links to the specific specialisations for some of the
+  //! adapters on \ref adapters_group "this page" for \ref BMat8.
+  //!
+  //! Other adapters specifically for \ref BMat objects and \ref matrix_group
+  //! "matrices" over other semirings are available \ref adapters_bmat_group
+  //! "here" and \ref adapters_matrix_group "here".
+
+  //! \ingroup adapters_bmat8_group
   //! \brief Specialization of the adapter Complexity for instances of BMat8.
   //!
   //! \copydoc Complexity
@@ -998,7 +1003,8 @@ namespace libsemigroups {
     }
   };
 
-  //! \ingroup bmat8_group
+  //! \ingroup adapters_bmat8_group
+  //!
   //! \brief Specialization of the adapter Degree for instances of BMat8.
   //!
   //! \copydoc Degree.
@@ -1011,7 +1017,8 @@ namespace libsemigroups {
     }
   };
 
-  //! \ingroup bmat8_group
+  //! \ingroup adapters_bmat8_group
+  //!
   //! \brief Specialization of the adapter IncreaseDegree for instances of
   //! BMat8.
   //!
@@ -1022,7 +1029,8 @@ namespace libsemigroups {
     inline void operator()(BMat8 const&, size_t) const noexcept {}
   };
 
-  //! \ingroup bmat8_group
+  //! \ingroup adapters_bmat8_group
+  //!
   //! \brief Specialization of the adapter One for instances of BMat8.
   //!
   //! \copydoc One.
@@ -1038,7 +1046,8 @@ namespace libsemigroups {
     }
   };
 
-  //! \ingroup bmat8_group
+  //! \ingroup adapters_bmat8_group
+  //!
   //! \brief Specialization of the adapter Product for instances of BMat8.
   //!
   //! \copydoc Product.
@@ -1053,7 +1062,8 @@ namespace libsemigroups {
     }
   };
 
-  //! \ingroup bmat8_group
+  //! \ingroup adapters_bmat8_group
+  //!
   //! \brief Specialization of the adapter ImageRightAction for instances of
   //! BMat8.
   //!
@@ -1069,7 +1079,8 @@ namespace libsemigroups {
     }
   };
 
-  //! \ingroup bmat8_group
+  //! \ingroup adapters_bmat8_group
+  //!
   //! \brief Specialization of the adapter ImageLeftAction for instances of
   //! BMat8.
   //!
@@ -1085,7 +1096,8 @@ namespace libsemigroups {
     }
   };
 
-  //! \ingroup bmat8_group
+  //! \ingroup adapters_bmat8_group
+  //!
   //! \brief Specialization of the adapter Inverse for instances of BMat8.
   //!
   //! \copydoc Inverse.
@@ -1098,7 +1110,8 @@ namespace libsemigroups {
     }
   };
 
-  //! \ingroup bmat8_group
+  //! \ingroup adapters_bmat8_group
+  //!
   //! \brief Specialization of the adapter LambdaValue for instances of BMat8.
   //!
   //! \copydoc LambdaValue
@@ -1109,7 +1122,8 @@ namespace libsemigroups {
     using type = BMat8;
   };
 
-  //! \ingroup bmat8_group
+  //! \ingroup adapters_bmat8_group
+  //!
   //! \brief Specialization of the adapter RhoValue for instances of BMat8.
   //!
   //! \copydoc RhoValue
@@ -1120,7 +1134,8 @@ namespace libsemigroups {
     using type = BMat8;
   };
 
-  //! \ingroup bmat8_group
+  //! \ingroup adapters_bmat8_group
+  //!
   //! \brief Specialization of the adapter Lambda for instances of BMat8.
   //!
   //! \copydoc Lambda
@@ -1134,7 +1149,8 @@ namespace libsemigroups {
     }
   };
 
-  //! \ingroup bmat8_group
+  //! \ingroup adapters_bmat8_group
+  //!
   //! \brief Specialization of the adapter Rho for instances of BMat8.
   //! \copydoc Rho
   template <>
@@ -1147,7 +1163,8 @@ namespace libsemigroups {
     }
   };
 
-  //! \ingroup bmat8_group
+  //! \ingroup adapters_bmat8_group
+  //!
   //! \brief Specialization of the adapter Rank for instances of BMat8.
   //!
   //! \copydoc Rank.

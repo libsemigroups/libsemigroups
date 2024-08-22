@@ -2924,7 +2924,7 @@ namespace libsemigroups {
       BMat<> zero(n, n);
       auto   acc = zero;
       while (mat2 != zero) {
-        mat3.product_inplace(mat2, mat1);
+        mat3.product_inplace_no_checks(mat2, mat1);
         std::swap(mat3, mat2);
         acc += mat2;
       }
