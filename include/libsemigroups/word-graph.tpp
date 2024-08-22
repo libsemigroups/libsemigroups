@@ -21,6 +21,7 @@
 
 // TODO re-order the file as per hpp
 
+#include "libsemigroups/exception.hpp"
 namespace libsemigroups {
   //////////////////////////////////////////////////////////////////////////////
   // Helper namespace
@@ -354,13 +355,34 @@ namespace libsemigroups {
 
     //! No doc
     // not noexcept because it throws an exception!
-    template <typename Node>
-    void validate_node(WordGraph<Node> const& wg, Node v) {
-      if (v >= wg.number_of_nodes()) {
+    // Two node types so we can use this function with literal integers in the
+    // tests.
+    template <typename Node1, typename Node2>
+    void validate_node(WordGraph<Node1> const& wg, Node2 v) {
+      // TODO(0) check that Node2 is compatible with wg.number_of_nodes(), i.e.
+      // doesn't overflow or whatever
+      if (static_cast<Node1>(v) >= wg.number_of_nodes()) {
         LIBSEMIGROUPS_EXCEPTION("node value out of bounds, expected value "
                                 "in the range [0, {}), got {}",
                                 wg.number_of_nodes(),
                                 v);
+      }
+    }
+
+    template <typename Node>
+    void throw_if_any_target_out_of_bounds(WordGraph<Node> const& wg) {
+      for (auto s : wg.nodes()) {
+        for (auto [a, t] : wg.labels_and_targets_no_checks(s)) {
+          if (t != UNDEFINED && t >= wg.number_of_nodes()) {
+            LIBSEMIGROUPS_EXCEPTION(
+                "target out of bounds, the edge with source {} and label {} "
+                "has target {}, but expected value in the range [0, {})",
+                s,
+                a,
+                t,
+                wg.number_of_nodes());
+          }
+        }
       }
     }
 
