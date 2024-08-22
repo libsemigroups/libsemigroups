@@ -22,9 +22,11 @@
 namespace libsemigroups {
 
   template <typename P>
-  class Stephen<P>::StephenGraph
-      : public detail::NodeManagedGraph<WordGraphWithSources<uint32_t>> {
-    using BaseGraph = WordGraphWithSources<uint32_t>;
+  class Stephen<P>::StephenGraph : public detail::NodeManagedGraph<
+                                       detail::WordGraphWithSources<uint32_t>> {
+    // TODO(0) both of these aliases aren't required.
+    using BaseGraph            = detail::WordGraphWithSources<uint32_t>;
+    using WordGraphWithSources = BaseGraph;
 
    public:
     using node_type = typename BaseGraph::node_type;

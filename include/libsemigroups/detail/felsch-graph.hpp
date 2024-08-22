@@ -36,9 +36,9 @@
 #include "libsemigroups/adapters.hpp"      // for Noop
 #include "libsemigroups/debug.hpp"         // for LIBSEMIGROUPS_ASSERT
 #include "libsemigroups/presentation.hpp"  // for Presentation
-#include "libsemigroups/word-graph-with-sources.hpp"  // for WordGraphWithSources
 
-#include "felsch-tree.hpp"  // for FelschTree
+#include "felsch-tree.hpp"              // for FelschTree
+#include "word-graph-with-sources.hpp"  // for WordGraphWithSources
 
 namespace libsemigroups {
 
