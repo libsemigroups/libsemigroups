@@ -5852,8 +5852,7 @@ namespace libsemigroups {
   // NTP matrices
   ////////////////////////////////////////////////////////////////////////
 
-  //! \defgroup ntpmat_group Matrices over the natural numbers over (t = t +
-  //! p)
+  //! \defgroup ntpmat_group Matrices over the natural numbers mod (t = t + p)
   //!
   //! Defined in ``matrix.hpp``.
   //!
@@ -5872,9 +5871,8 @@ namespace libsemigroups {
   //!
   //! 1. the dimension is known at compile-time;
   //! 2. the dimension is to be defined a run time but the arithmetic
-  //! operations
-  //!    are known at compile-time (i.e. the values of \f$t\f$ and \f$p\f$
-  //!    are known at compile time)
+  //!    operations are known at compile-time (i.e. the values of
+  //!    \f$t\f$ and \f$p\f$ are known at compile time)
   //! 3. both the dimension and the arithmetic operations (i.e. \f$t\f$ and
   //!    \f$p\f$) are to be defined a run time.
   //!
