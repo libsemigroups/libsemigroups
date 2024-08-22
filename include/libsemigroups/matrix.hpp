@@ -8207,7 +8207,7 @@ namespace libsemigroups {
   //! \param x the matrix.
   //! \param prefix the prefix for the returned string.
   //! \param short_name the short name of the type of matrix (default: `""`).
-  //! \param braces the braces to use to delineate rows (default: `"{}"`)
+  //! \param braces the braces to use to delineate rows (default: `"{}"`).
   //! \param max_width the maximum width of the returned representation
   //! (default: \c 72).
   //!
