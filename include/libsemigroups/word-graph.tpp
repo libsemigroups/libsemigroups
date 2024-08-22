@@ -22,6 +22,7 @@
 // TODO re-order the file as per hpp
 
 #include "libsemigroups/exception.hpp"
+#include "libsemigroups/word-graph.hpp"
 namespace libsemigroups {
   //////////////////////////////////////////////////////////////////////////////
   // Helper namespace
@@ -1218,17 +1219,16 @@ namespace libsemigroups {
     os << "}";
     return os;
   }
-
-  // TODO: Refactor to use vectors
+  // TODO refactor to use vectors api, not initializer_list
   template <typename Node>
   WordGraph<Node> to_word_graph(size_t                                num_nodes,
-                                std::vector<std::vector<Node>> const& il) {
-    WordGraph<Node> result(num_nodes, il.begin()->size());
-    for (size_t i = 0; i < il.size(); ++i) {
-      for (size_t j = 0; j < (il.begin() + i)->size(); ++j) {
-        auto val = *((il.begin() + i)->begin() + j);
+                                std::vector<std::vector<Node>> const& edges) {
+    WordGraph<Node> result(num_nodes, edges.begin()->size());
+    for (size_t i = 0; i < edges.size(); ++i) {
+      for (size_t j = 0; j < (edges.begin() + i)->size(); ++j) {
+        auto val = *((edges.begin() + i)->begin() + j);
         if (val != UNDEFINED) {
-          result.set_target(i, j, *((il.begin() + i)->begin() + j));
+          result.set_target(i, j, *((edges.begin() + i)->begin() + j));
         }
       }
     }
@@ -1241,4 +1241,163 @@ namespace libsemigroups {
     return to_word_graph<Node>(num_nodes, std::vector<std::vector<Node>>(il));
   }
 
+  template <typename Node>
+  [[nodiscard]] Node
+  HopcroftKarp::find(WordGraph<Node> const& x,
+                     size_t                 xnum_nodes_reachable_from_root,
+                     WordGraph<Node> const& y,
+                     uint64_t               n,
+                     typename WordGraph<Node>::label_type a) const {
+    // Check which word graph q1 and q2 belong to. nodes with labels
+    // from 0 to Nx correspond to nodes in x; above Nx corresponds to
+    // y.
+    if (n < xnum_nodes_reachable_from_root) {
+      return _uf.find(x.target_no_checks(n, a));
+    } else {
+      return _uf.find(y.target_no_checks(n - xnum_nodes_reachable_from_root, a)
+                      + xnum_nodes_reachable_from_root);
+    }
+  }
+
+  template <typename Node>
+  void HopcroftKarp::run(WordGraph<Node> const& x,
+                         size_t                 xnum_nodes_reachable_from_root,
+                         Node                   xroot,
+                         WordGraph<Node> const& y,
+                         size_t                 ynum_nodes_reachable_from_root,
+                         Node                   yroot) {
+    using label_type = typename WordGraph<Node>::label_type;
+    auto const M     = x.out_degree();
+    _uf.init(xnum_nodes_reachable_from_root + ynum_nodes_reachable_from_root);
+    _uf.unite(xroot, yroot + xnum_nodes_reachable_from_root);
+
+    LIBSEMIGROUPS_ASSERT(_stck.empty());
+    // 0 .. x.number_of_nodes() - 1, x.number_of_nodes()  ..
+    //   x.number_of_nodes() + y.number_of_nodes() -1
+    _stck.emplace(xroot, yroot + xnum_nodes_reachable_from_root);
+
+    // Traverse x and y, uniting the target nodes at each stage
+    while (!_stck.empty()) {
+      auto [qx, qy] = _stck.top();
+      _stck.pop();
+      for (label_type a = 0; a < M; ++a) {
+        Node rx = find(x, xnum_nodes_reachable_from_root, y, qx, a);
+        Node ry = find(x, xnum_nodes_reachable_from_root, y, qy, a);
+        if (rx != ry) {
+          _uf.unite(rx, ry);
+          _stck.emplace(rx, ry);
+        }
+      }
+    }
+  }
+  template <typename Node1, typename Node2>
+  void HopcroftKarp::throw_if_bad_args(WordGraph<Node1> const& x,
+                                       Node2                   xroot,
+                                       WordGraph<Node1> const& y,
+                                       Node2                   yroot) const {
+    word_graph::validate_node(x, xroot);
+    word_graph::validate_node(y, yroot);
+    if (x.out_degree() != y.out_degree()) {
+      LIBSEMIGROUPS_EXCEPTION(
+          "the 2nd and 4th arguments (word graphs) must have the same "
+          "out-degree, found out-degrees {} and {}",
+          x.out_degree(),
+          y.out_degree());
+    }
+    // the following checks must be performed since join_no_checks, uses
+    // target_no_checks, and if the target is out of bound, then this will
+    // crash.
+    word_graph::throw_if_any_target_out_of_bounds(x);
+    word_graph::throw_if_any_target_out_of_bounds(y);
+  }
+
+  template <typename Node1, typename Node2>
+  bool
+  HopcroftKarp::is_subrelation_no_checks(WordGraph<Node1> const& x,
+                                         size_t xnum_nodes_reachable_from_root,
+                                         Node2  xroot,
+                                         WordGraph<Node1> const& y,
+                                         size_t ynum_nodes_reachable_from_root,
+                                         Node2  yroot) {
+    if (ynum_nodes_reachable_from_root >= xnum_nodes_reachable_from_root) {
+      return false;
+    }  // TODO(0) static_assert that it's ok to cast Node2 -> Node1
+    run(x,
+        xnum_nodes_reachable_from_root,
+        static_cast<Node1>(xroot),
+        y,
+        ynum_nodes_reachable_from_root,
+        static_cast<Node1>(yroot));
+    // if x is contained in y, then the join of x and y must be y, and
+    // hence we just check that the number of nodes in the quotient equals
+    // that of y.
+    // TODO(2) We could just stop early in "run" if we find that
+    // we are trying to merge two nodes of x also.
+    return _uf.number_of_blocks() == ynum_nodes_reachable_from_root;
+  }
+
+  template <typename Node1, typename Node2>
+  bool HopcroftKarp::is_subrelation_no_checks(WordGraph<Node1> const& x,
+                                              Node2                   xroot,
+                                              WordGraph<Node1> const& y,
+                                              Node2                   yroot) {
+    return is_subrelation_no_checks(
+        x,
+        word_graph::number_of_nodes_reachable_from(x, xroot),
+        xroot,
+        y,
+        word_graph::number_of_nodes_reachable_from(y, yroot),
+        yroot);
+  }
+
+  template <typename Node>
+  void HopcroftKarp::join_no_checks(WordGraph<Node>&       xy,
+                                    WordGraph<Node> const& x,
+                                    size_t xnum_nodes_reachable_from_root,
+                                    Node   xroot,
+                                    WordGraph<Node> const& y,
+                                    size_t ynum_nodes_reachable_from_root,
+                                    Node   yroot) {
+    if (xnum_nodes_reachable_from_root > ynum_nodes_reachable_from_root) {
+      join_no_checks(xy,
+                     y,
+                     ynum_nodes_reachable_from_root,
+                     yroot,
+                     x,
+                     xnum_nodes_reachable_from_root,
+                     xroot);
+      return;
+    }
+    run(x,
+        xnum_nodes_reachable_from_root,
+        xroot,
+        y,
+        xnum_nodes_reachable_from_root,
+        yroot);
+    _uf.normalize();
+
+    xy.init(_uf.number_of_blocks(), x.out_degree());
+    for (Node s = 0; s < xnum_nodes_reachable_from_root; ++s) {
+      for (auto [a, t] : x.labels_and_targets_no_checks(s)) {
+        xy.set_target_no_checks(_uf.find(s), a, _uf.find(t));
+      }
+    }
+  }
+
+  template <typename Node>
+  void HopcroftKarp::join_no_checks(WordGraph<Node>&       xy,
+                                    WordGraph<Node> const& x,
+                                    Node                   xroot,
+                                    WordGraph<Node> const& y,
+                                    Node                   yroot) {
+    // TODO(1) could be improved by reusing the data used by
+    // number_of_nodes_reachable_from.
+    join_no_checks(xy,
+                   x,
+                   word_graph::number_of_nodes_reachable_from(x, xroot),
+                   xroot,
+                   y,
+                   word_graph::number_of_nodes_reachable_from(y, yroot),
+                   yroot);
+  }
 }  // namespace libsemigroups

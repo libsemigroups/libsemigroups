@@ -662,19 +662,19 @@ namespace libsemigroups {
         to_word_graph<size_t>(3, {{0, 1, 2}, {0, 1, 2}, {0, 1, 2}}));
     WordGraph<size_t> y = x;
 
-    HopcroftKarp join;
+    HopcroftKarp joiner;
 
     WordGraph<size_t> xy;
-    join(xy, x, y);
+    joiner.join(xy, x, y);
     REQUIRE(xy == x);
-    join(xy, y, x);
+    joiner.join(xy, y, x);
     REQUIRE(xy == x);
-    REQUIRE(join(x, y) == x);
-    REQUIRE(join(y, x) == x);
+    REQUIRE(joiner.join(x, y) == x);
+    REQUIRE(joiner.join(y, x) == x);
 
     y.set_target_no_checks(0, 0, 10);
 
-    REQUIRE_THROWS_AS(join(x, y), LibsemigroupsException);
+    REQUIRE_THROWS_AS(joiner.join(x, y), LibsemigroupsException);
 
     //    WordGraphMeeter meet(x);
     //    meet.with(y).get(xy);
@@ -691,12 +691,12 @@ namespace libsemigroups {
 
     WordGraph<size_t> xy;
 
-    HopcroftKarp join;
-    xy = join(x, y);
+    HopcroftKarp joiner;
+    xy = joiner.join(x, y);
     REQUIRE(x != y);
     REQUIRE(xy == to_word_graph<size_t>(2, {{1, 1, 1}, {1, 1, 1}}));
-    REQUIRE(join.is_subrelation(x, xy));
-    REQUIRE(join.is_subrelation(y, xy));
+    REQUIRE(joiner.is_subrelation(x, xy));
+    REQUIRE(joiner.is_subrelation(y, xy));
   }
 
   // LIBSEMIGROUPS_TEST_CASE("WordGraph",
