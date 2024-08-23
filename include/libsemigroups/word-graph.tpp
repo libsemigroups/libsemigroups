@@ -403,9 +403,6 @@ namespace libsemigroups {
 
     template <typename Graph>
     std::pair<bool, Forest> standardize(Graph& wg, Order val) {
-      static_assert(
-          std::is_base_of<WordGraphBase, Graph>::value,
-          "the template parameter Graph must be derived from WordGraphBase");
       Forest f;
       bool   result = standardize(wg, f, val);
       return std::make_pair(result, f);
@@ -413,9 +410,6 @@ namespace libsemigroups {
 
     template <typename Graph>
     bool standardize(Graph& wg, Forest& f, Order val) {
-      static_assert(std::is_base_of_v<WordGraphBase, Graph>,
-                    "the template parameter Graph must be "
-                    "derived from WordGraphBase");
       if (!f.empty()) {
         f.init();
       }

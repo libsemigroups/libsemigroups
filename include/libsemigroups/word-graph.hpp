@@ -270,9 +270,6 @@ namespace libsemigroups {
     //!
     //! \param nr the number of nodes to add.
     //!
-    //! \returns
-    //! (None)
-    //!
     //! \exceptions
     //! \no_libsemigroups_except
     //! \strong_guarantee
@@ -288,9 +285,6 @@ namespace libsemigroups {
     //! Adds to the out-degree.
     //!
     //! \param nr the number of new out-edges for every node.
-    //!
-    //! \returns
-    //! (None)
     //!
     //! \exceptions
     //! \no_libsemigroups_except
@@ -308,8 +302,6 @@ namespace libsemigroups {
     //! Restrict the word graph to its first \p n nodes.
     //!
     //! \param n the number of nodes
-    //!
-    //! \returns (None)
     //!
     //! \exceptions
     //! \no_libsemigroups_except
@@ -339,9 +331,6 @@ namespace libsemigroups {
     //! \param lbl the label of the edge from \p m to \p n
     //! \param n the range node
     //!
-    //! \returns
-    //! (None)
-    //!
     //! \throws LibsemigroupsException if \p i, \p j, or \p lbl is
     //! not valid.
     //! \strong_guarantee
@@ -350,6 +339,7 @@ namespace libsemigroups {
     //! Constant.
     // Not noexcept because validate_node/label aren't
     // TODO(0) delete set_
+    // return *this by reference.
     void set_target(node_type m, label_type lbl, node_type n);
 
     //! Add an edge from one node to another with a given label.
@@ -357,9 +347,6 @@ namespace libsemigroups {
     //! \param i the source node
     //! \param j the range node
     //! \param lbl the label of the edge from \p i to \p j
-    //!
-    //! \returns
-    //! (None)
     //!
     //! \exceptions
     //! \no_libsemigroups_except
@@ -379,9 +366,6 @@ namespace libsemigroups {
     //! \param i the source node
     //! \param lbl the label of the edge from \p i
     //!
-    //! \returns
-    //! (None)
-    //!
     //! \exceptions
     //! \no_libsemigroups_except
     //!
@@ -397,9 +381,6 @@ namespace libsemigroups {
 
     //! Remove all of the edges in the word graph.
     //!
-    //! \returns
-    //! (None)
-    //!
     //! \exceptions
     //! \no_libsemigroups_except
     //!
@@ -407,8 +388,6 @@ namespace libsemigroups {
     //! \f$O(mn)\f$ where \p m is the number of nodes and \p n is the
     //! out-degree.
     //!
-    //! \par Parameters
-    //! (None)
     void inline remove_all_targets() {
       std::fill(_dynamic_array_2.begin(), _dynamic_array_2.end(), UNDEFINED);
     }
@@ -426,8 +405,6 @@ namespace libsemigroups {
     //! \param m the number of nodes
     //! \param n the out-degree
     //!
-    //! \returns
-    //! (None)
     //!
     //! \exceptions
     //! \no_libsemigroups_except
@@ -449,9 +426,6 @@ namespace libsemigroups {
     //! \param u the first node
     //! \param v the second node
     //! \param a the label
-    //!
-    //! \returns
-    //! (None)
     //!
     //! \exceptions
     //! \no_libsemigroups_except
@@ -612,8 +586,6 @@ namespace libsemigroups {
     //! \complexity
     //! Constant.
     //!
-    //! \par Parameters
-    //! (None)
     [[nodiscard]] size_type inline number_of_nodes() const noexcept {
       return _nr_nodes;
     }
@@ -640,8 +612,6 @@ namespace libsemigroups {
     //! \complexity
     //! \f$O(mn)\f$ where \c m is number_of_nodes() and \c n is out_degree().
     //!
-    //! \par Parameters
-    //! (None)
     // Not noexcept because std::count isn't
     [[nodiscard]] size_type number_of_edges() const;
 
@@ -669,9 +639,6 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! Constant.
-    //!
-    //! \par Parameters
-    //! (None)
     [[nodiscard]] size_type out_degree() const noexcept {
       return _degree;
     }
@@ -688,8 +655,6 @@ namespace libsemigroups {
     //! \complexity
     //! Constant.
     //!
-    //! \par Parameters
-    //! (None)
     const_iterator_nodes cbegin_nodes() const noexcept {
       return detail::IntRange<node_type>(0, number_of_nodes()).cbegin();
     }
@@ -716,8 +681,6 @@ namespace libsemigroups {
     //! \complexity
     //! Constant.
     //!
-    //! \par Parameters
-    //! (None)
     const_reverse_iterator_nodes crbegin_nodes() const noexcept {
       return detail::IntRange<node_type>(0, number_of_nodes()).crbegin();
     }
@@ -734,8 +697,6 @@ namespace libsemigroups {
     //! \complexity
     //! Constant.
     //!
-    //! \par Parameters
-    //! (None)
     const_reverse_iterator_nodes crend_nodes() const noexcept {
       return detail::IntRange<node_type>(0, number_of_nodes()).crend();
     }
@@ -752,8 +713,6 @@ namespace libsemigroups {
     //! \complexity
     //! Constant.
     //!
-    //! \par Parameters
-    //! (None)
     const_iterator_nodes cend_nodes() const noexcept {
       return detail::IntRange<node_type>(0, number_of_nodes()).cend();
     }
@@ -1398,8 +1357,6 @@ namespace libsemigroups {
     //! \complexity
     //! \f$O(mn)\f$ where \c m is number_of_nodes() and \c n is out_degree().
     //!
-    //! \par Parameters
-    //! (None)
     template <typename Node>
     bool is_complete(WordGraph<Node> const& wg) noexcept {
       return wg.number_of_edges() == wg.number_of_nodes() * wg.out_degree();
@@ -1432,9 +1389,6 @@ namespace libsemigroups {
     //! \param first a const iterator to nodes of \p wg
     //! \param last a const iterator to nodes of \p wg
     //!
-    //! \returns
-    //! (None)
-    //!
     //! \exceptions
     //! \no_libsemigroups_except
     //!
@@ -1454,9 +1408,6 @@ namespace libsemigroups {
     //!
     //! \param wg the WordGraph object to add a cycle to.
     //! \param N the length of the cycle and number of new nodes to add.
-    //!
-    //! \returns
-    //! (None)
     //!
     //! \exceptions
     //! \no_libsemigroups_except
