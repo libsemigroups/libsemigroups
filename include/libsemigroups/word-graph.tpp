@@ -897,25 +897,31 @@ namespace libsemigroups {
   template <typename OtherNode>
   WordGraph<Node>::WordGraph(WordGraph<OtherNode> const& wg)
       : WordGraph(wg.number_of_nodes(), wg.out_degree()) {
-    _dynamic_array_2 = wg._dynamic_array_2;
-    if (_dynamic_array_2.default_value() == static_cast<OtherNode>(UNDEFINED)) {
-      _dynamic_array_2.set_default_value(static_cast<Node>(UNDEFINED));
-    }
-    std::for_each(
-        _dynamic_array_2.begin(), _dynamic_array_2.end(), [](auto& val) {
-          if (val == static_cast<OtherNode>(UNDEFINED)) {
-            val = static_cast<Node>(UNDEFINED);
-          }
-        });
+    static_assert(sizeof(OtherNode) <= sizeof(Node));
+    init(wg);
   }
 
   template <typename Node>
   template <typename OtherNode>
   WordGraph<Node>& WordGraph<Node>::init(WordGraph<OtherNode> const& wg) {
-    // TODO(0) same as the constructor above adjust UNDEFINED from OtherNode ->
-    // Node
-    init(wg.number_of_nodes(), wg.out_degree());
-    _dynamic_array_2 = wg._dynamic_array_2;
+    static_assert(sizeof(OtherNode) <= sizeof(Node));
+    if (wg._dynamic_array_2.default_value()
+        == static_cast<OtherNode>(UNDEFINED)) {
+      _dynamic_array_2.set_default_value(static_cast<Node>(UNDEFINED));
+    }
+    _degree           = wg.out_degree();
+    _nr_nodes         = wg.number_of_nodes();
+    _num_active_nodes = 0;
+    _dynamic_array_2.reshape(wg.out_degree(), wg.number_of_nodes());
+    std::transform(wg._dynamic_array_2.cbegin(),
+                   wg._dynamic_array_2.cend(),
+                   _dynamic_array_2.begin(),
+                   [](auto const& val) {
+                     if (val == static_cast<OtherNode>(UNDEFINED)) {
+                       return static_cast<Node>(UNDEFINED);
+                     }
+                     return static_cast<Node>(val);
+                   });
     return *this;
   }
 

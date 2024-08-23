@@ -175,7 +175,7 @@ namespace libsemigroups {
     //! Default copy constructor
     WordGraph(WordGraph const&);
 
-    // TODO(0) other versions from OtherNode
+    // TODO(1) other versions from OtherNode
     template <typename OtherNode>
     WordGraph(WordGraph<OtherNode> const&);
 
@@ -1599,7 +1599,8 @@ namespace libsemigroups {
         // always have an odd number of arguments, so we check that it's even
         // here (the argument x and an odd number of further arguments).
         WordGraph<Node> xy;
-        call_no_checks(xy, x, std::forward<Args>(args)...);
+        static_cast<Subclass&>(*this).call_no_checks(
+            xy, x, std::forward<Args>(args)...);
         return xy;
       }
 
@@ -1743,6 +1744,10 @@ namespace libsemigroups {
                              WordGraph<Node1> const& y,
                              size_t ynum_nodes_reachable_from_root,
                              Node2  yroot);
+    using detail::JoinerMeeterCommon<Joiner>::call_no_checks;
+    using detail::JoinerMeeterCommon<Joiner>::operator();
+    using detail::JoinerMeeterCommon<Joiner>::is_subrelation_no_checks;
+    using detail::JoinerMeeterCommon<Joiner>::is_subrelation;
   };  // Joiner
 
   //! \ingroup word_graph_group
@@ -1814,6 +1819,11 @@ namespace libsemigroups {
                                yroot);
       return xy.number_of_nodes() == xnum_nodes_reachable_from_root;
     }
+
+    using detail::JoinerMeeterCommon<Meeter>::call_no_checks;
+    using detail::JoinerMeeterCommon<Meeter>::operator();
+    using detail::JoinerMeeterCommon<Meeter>::is_subrelation_no_checks;
+    using detail::JoinerMeeterCommon<Meeter>::is_subrelation;
   };
 
   // TODO(0) to tpp

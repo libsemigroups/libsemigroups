@@ -169,19 +169,29 @@ namespace libsemigroups {
     template <typename Iterator>
     void check_meets_and_joins(Iterator first, Iterator last) {
       using WordGraph_ = std::decay_t<decltype(*first)>;
-      std::vector<WordGraph_>                         graphs(first, last);
-      size_t const                                    n = graphs.size();
-      HopcroftKarp                                    joiner;
-      WordGraphMeeter<typename WordGraph_::node_type> meeter;
+      std::vector<WordGraph_> graphs(first, last);
+      size_t const            n = graphs.size();
+      Joiner                  joiner;
+      Meeter                  meeter;
+      WordGraph_              tmp;
       for (size_t i = 0; i < n; ++i) {
         for (size_t j = 0; j < n; ++j) {
-          meeter.with(graphs[i]).with(graphs[j]);
-          REQUIRE(std::tuple(
-                      meeter.is_subrelation_no_checks(), graphs[i], graphs[j])
-                  == std::tuple(
-                      joiner.is_subrelation_no_checks(graphs[i], graphs[j]),
-                      graphs[i],
-                      graphs[j]));
+          REQUIRE(std::tuple(meeter.is_subrelation(graphs[i], graphs[j]),
+                             graphs[i],
+                             graphs[j])
+                  == std::tuple(joiner.is_subrelation(graphs[i], graphs[j]),
+                                graphs[i],
+                                graphs[j]));
+          // FIXME the below doesn't seem to work, but JDM expected it to
+          // joiner(tmp, graphs[i], graphs[j]);
+          // REQUIRE(meeter.is_subrelation(graphs[j], tmp));
+          // REQUIRE(meeter.is_subrelation(graphs[i], tmp));
+          // REQUIRE(joiner.is_subrelation(graphs[j], tmp));
+          // REQUIRE(joiner.is_subrelation(graphs[i], tmp));
+          // REQUIRE(meeter.is_subrelation(tmp, graphs[j]));
+          // REQUIRE(meeter.is_subrelation(tmp, graphs[i]));
+          // REQUIRE(joiner.is_subrelation(tmp, graphs[j]));
+          // REQUIRE(joiner.is_subrelation(tmp, graphs[i]));
         }
       }
     }
