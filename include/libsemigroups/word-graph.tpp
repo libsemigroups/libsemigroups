@@ -748,10 +748,8 @@ namespace libsemigroups {
     }
 
     template <typename Node1, typename Node2>
-    std::unordered_set<Node1> nodes_reachable_from(WordGraph<Node1> const& wg,
-                                                   Node2 source) {
-      throw_if_node_out_of_bounds(wg, static_cast<Node1>(source));
-
+    std::unordered_set<Node1>
+    nodes_reachable_from_no_checks(WordGraph<Node1> const& wg, Node2 source) {
       std::unordered_set<Node1> seen;
       std::stack<Node1>         stack;
       stack.push(source);
@@ -768,6 +766,16 @@ namespace libsemigroups {
         }
       }
       return seen;
+    }
+
+    template <typename Node1, typename Node2>
+    std::unordered_set<Node1> nodes_reachable_from(WordGraph<Node1> const& wg,
+                                                   Node2 source) {
+      throw_if_node_out_of_bounds(wg, static_cast<Node1>(source));
+      // If we don't do the check below, it might be that some of the returned
+      // nodes don't belong to the graph.
+      throw_if_any_target_out_of_bounds(wg);
+      return nodes_reachable_from_no_checks(wg, source);
     }
 
     template <typename Node1, typename Node2, typename Iterator>

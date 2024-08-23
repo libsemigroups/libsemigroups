@@ -971,26 +971,37 @@ namespace libsemigroups {
 
     // TODO(doc)
     // TODO(1) tests
-    // TODO(0) version where std::unordered_set is passed by reference
+    // TODO(1) version where std::unordered_set is passed by reference, or make
+    // this a class that stores its stack and unordered_set, not clear why we'd
+    // single out the unordered_set to be passed by reference.
     // TODO(2) version which is an iterator i.e. returns an iterator or range
     // object that allows use to step through the nodes reachable from a given
     // node
-    // TODO(0) nodiscard
     template <typename Node1, typename Node2>
     [[nodiscard]] std::unordered_set<Node1>
     nodes_reachable_from(WordGraph<Node1> const& wg, Node2 source);
+
+    template <typename Node1, typename Node2>
+    [[nodiscard]] std::unordered_set<Node1>
+    nodes_reachable_from_no_checks(WordGraph<Node1> const& wg, Node2 source);
+
     // TODO(doc)
     // TODO(1) tests
-    // TODO(0) nodiscard
     template <typename Node1, typename Node2>
     [[nodiscard]] size_t
     number_of_nodes_reachable_from(WordGraph<Node1> const& wg, Node2 source) {
       return nodes_reachable_from(wg, source).size();
     }
 
+    template <typename Node1, typename Node2>
+    [[nodiscard]] size_t
+    number_of_nodes_reachable_from_no_checks(WordGraph<Node1> const& wg,
+                                             Node2                   source) {
+      return nodes_reachable_from_no_checks(wg, source).size();
+    }
+
     // TODO(doc)
     //! TODO
-    // TODO(0) nodiscard
     template <typename Node1, typename Node2, typename Iterator>
     [[nodiscard]] Node1 follow_path(WordGraph<Node1> const& wg,
                                     Node2                   from,
@@ -1016,7 +1027,6 @@ namespace libsemigroups {
     //! Linear in the length of \p path.
     // TODO(later) example
     // not noexcept because WordGraph::target isn't
-    // TODO(0) nodiscard
     template <typename Node1, typename Node2>
     [[nodiscard]] Node1 follow_path(WordGraph<Node1> const& wg,
                                     Node2                   from,
@@ -1045,7 +1055,6 @@ namespace libsemigroups {
     //!
     //! \warning
     //! No checks on the arguments of this function are performed.
-    // TODO(0) nodiscard
     template <typename Node1, typename Node2, typename Iterator>
     [[nodiscard]] Node1 follow_path_no_checks(WordGraph<Node1> const& wg,
                                               Node2                   from,
@@ -1074,7 +1083,6 @@ namespace libsemigroups {
     //!
     //! \warning
     //! No checks on the arguments of this function are performed.
-    // TODO(0) nodiscard
     template <typename Node1, typename Node2>
     [[nodiscard]] Node1 follow_path_no_checks(WordGraph<Node1> const& wg,
                                               Node2                   from,
@@ -1103,7 +1111,6 @@ namespace libsemigroups {
     //!
     //! \warning
     //! No checks on the arguments of this function are performed.
-    // TODO(0) nodiscard
     template <typename Node1, typename Node2, typename Iterator>
     [[nodiscard]] std::pair<Node1, Iterator>
     last_node_on_path_no_checks(WordGraph<Node1> const& wg,
@@ -1136,7 +1143,6 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! At worst the distance from \p first to \p last.
-    // TODO(0) nodiscard
     template <typename Node1, typename Node2, typename Iterator>
     [[nodiscard]] std::pair<Node1, Iterator>
     last_node_on_path(WordGraph<Node1> const& wg,
@@ -1168,7 +1174,6 @@ namespace libsemigroups {
     //! WordGraph \p wg and \f$n\f$ is the number of edges. Note that for
     //! WordGraph objects the number of edges is always at most \f$mk\f$
     //! where \f$k\f$ is the WordGraph::out_degree.
-    // TODO(0) nodiscard
     template <typename Node>
     [[nodiscard]] std::vector<Node> topological_sort(WordGraph<Node> const& wg);
 
@@ -1198,7 +1203,6 @@ namespace libsemigroups {
     //! At worst \f$O(m + n)\f$ where \f$m\f$ is the number of nodes in the
     //! subword graph of those nodes reachable from \p source
     //! and \f$n\f$ is the number of edges.
-    // TODO(0) nodiscard
     template <typename Node1, typename Node2>
     [[nodiscard]] std::vector<Node1>
     topological_sort(WordGraph<Node1> const& wg, Node2 source);
@@ -1240,7 +1244,6 @@ namespace libsemigroups {
     //! word_graph::is_acyclic(wg); // returns false
     //! \endcode
     // Not noexcept because detail::is_acyclic isn't
-    // TODO(0) nodiscard
     template <typename Node>
     [[nodiscard]] bool is_acyclic(WordGraph<Node> const& wg);
 
@@ -1284,12 +1287,10 @@ namespace libsemigroups {
     //! word_graph::is_acyclic(wg, 3); // returns true
     //! \endcode
     // Not noexcept because detail::is_acyclic isn't
-    // TODO(0) nodiscard
     template <typename Node1, typename Node2>
     [[nodiscard]] bool is_acyclic(WordGraph<Node1> const& wg, Node2 source);
 
     //! TODO(doc)
-    // TODO(0) nodiscard
     template <typename Node1, typename Node2>
     [[nodiscard]] bool is_acyclic(WordGraph<Node1> const& wg,
                                   Node2                   source,
@@ -1335,7 +1336,6 @@ namespace libsemigroups {
     //! word_graph::is_reachable(wg, 2, 3); // returns true
     //! word_graph::is_reachable(wg, 3, 2); // returns false
     //! \endcode
-    // TODO(0) nodiscard
     template <typename Node1, typename Node2>
     [[nodiscard]] bool is_reachable(WordGraph<Node1> const& wg,
                                     Node2                   source,
@@ -1373,7 +1373,6 @@ namespace libsemigroups {
     //!     5, {{0, 0}, {1, 1}, {2}, {3, 3}});
     //! word_graph::is_connected(wg);  // returns false
     //! \endcode
-    // TODO(0) nodiscard
     template <typename Node>
     [[nodiscard]] bool is_connected(WordGraph<Node> const& wg);
 
@@ -1409,12 +1408,10 @@ namespace libsemigroups {
     //!     5, {{0, 0}, {1, 1}, {2}, {3, 3}});
     //! word_graph::is_strictly_cyclic(wg);  // returns false
     //! \endcode
-    // TODO(0) nodiscard
     template <typename Node>
     [[nodiscard]] bool is_strictly_cyclic(WordGraph<Node> const& wg);
 
     // TODO(doc)
-    // TODO(0) nodiscard
     template <typename Node, typename Iterator1, typename Iterator2>
     [[nodiscard]] bool is_complete(WordGraph<Node> const& wg,
                                    Iterator1              first_node,
@@ -1432,7 +1429,6 @@ namespace libsemigroups {
     //! \complexity
     //! \f$O(mn)\f$ where \c m is number_of_nodes() and \c n is out_degree().
     //!
-    // TODO(0) nodiscard
     template <typename Node>
     [[nodiscard]] bool is_complete(WordGraph<Node> const& wg) noexcept {
       return wg.number_of_edges() == wg.number_of_nodes() * wg.out_degree();
@@ -1440,7 +1436,6 @@ namespace libsemigroups {
 
     // TODO(doc)
     // TODO(1) range versions
-    // TODO(0) nodiscard
     template <typename Node,
               typename Iterator1,
               typename Iterator2,
@@ -1514,28 +1509,20 @@ namespace libsemigroups {
 
     //!
     //! TODO(doc)
-    // TODO(0) nodiscard
     template <typename Node>
     [[nodiscard]] Dot dot(WordGraph<Node> const& wg);
 
     //! TODO(doc)
     // TODO(0) to tpp
-    // TODO(0) equal_to_no_checks
     template <typename Node>
-    [[nodiscard]] bool equal_to(WordGraph<Node> const& x,
-                                WordGraph<Node> const& y,
-                                Node                   first,
-                                Node                   last) {
+    [[nodiscard]] bool equal_to_no_checks(WordGraph<Node> const& x,
+                                          WordGraph<Node> const& y,
+                                          Node                   first,
+                                          Node                   last) {
       using label_type = typename WordGraph<Node>::label_type;
-
       if (x.out_degree() != y.out_degree()) {
         return false;
       }
-
-      throw_if_node_out_of_bounds(x, first);
-      throw_if_node_out_of_bounds(x, last - 1);
-      throw_if_node_out_of_bounds(y, first);
-      throw_if_node_out_of_bounds(y, last - 1);
 
       for (auto n = first; n != last; ++n) {
         for (label_type a = 0; a < x.out_degree(); ++a) {
@@ -1547,11 +1534,24 @@ namespace libsemigroups {
       return true;
     }
 
-    //!
     // TODO(0) to tpp
-    // TODO(0) _no_checks version (this might be it?)
+    template <typename Node>
+    [[nodiscard]] bool equal_to(WordGraph<Node> const& x,
+                                WordGraph<Node> const& y,
+                                Node                   first,
+                                Node                   last) {
+      throw_if_node_out_of_bounds(x, first);
+      throw_if_node_out_of_bounds(x, last - 1);
+      throw_if_node_out_of_bounds(y, first);
+      throw_if_node_out_of_bounds(y, last - 1);
+      return equal_to_no_checks(x, y, first, last);
+    }
+
+    // TODO(0) to tpp
     template <typename Node1, typename Node2>
-    void spanning_tree(WordGraph<Node1> const& wg, Node2 root, Forest& f) {
+    void spanning_tree_no_checks(WordGraph<Node1> const& wg,
+                                 Node2                   root,
+                                 Forest&                 f) {
       using node_type = typename WordGraph<Node1>::node_type;
       f.init(1);
 
@@ -1564,9 +1564,8 @@ namespace libsemigroups {
             if (t >= f.number_of_nodes()) {
               f.add_nodes(t - f.number_of_nodes() + 1);
             }
-            if (f.parent(t) == UNDEFINED) {
-              // TODO(0) parent_no_checks?
-              f.set_parent_and_label(t, s, a);
+            if (f.parent_no_checks(t) == UNDEFINED) {
+              f.set_parent_and_label_no_checks(t, s, a);
               queue.push(t);
             }
           }
@@ -1575,13 +1574,32 @@ namespace libsemigroups {
       } while (!queue.empty());
     }
 
+    // TODO(0) to tpp
+    template <typename Node1, typename Node2>
+    void spanning_tree(WordGraph<Node1> const& wg, Node2 root, Forest& f) {
+      throw_if_node_out_of_bounds(wg, root);
+      // TODO(1) be better to put a version of spanning_tree_no_checks into the
+      // detail namespace that has a template parameter CheckTarget that checks
+      // that the target isn't out of bounds in this can, and does nothing in
+      // the nochecks case.
+      auto reachable = nodes_reachable_from_no_checks(wg, root);
+      throw_if_any_target_out_of_bounds(wg, reachable.begin(), reachable.end());
+      return spanning_tree_no_checks(wg, root, f);
+    }
+
     //! TODO(doc)
-    // TODO(0) no_checks version
-    // // TODO(0) nodiscard
     template <typename Node1, typename Node2>
     [[nodiscard]] Forest spanning_tree(WordGraph<Node1> const& wg, Node2 root) {
       Forest f;
       spanning_tree(wg, root, f);
+      return f;
+    }
+
+    template <typename Node1, typename Node2>
+    [[nodiscard]] Forest spanning_tree_no_checks(WordGraph<Node1> const& wg,
+                                                 Node2                   root) {
+      Forest f;
+      spanning_tree_no_checks(wg, root, f);
       return f;
     }
   }  // namespace word_graph
@@ -1596,8 +1614,9 @@ namespace libsemigroups {
   //! This function outputs the word graph \p wg to the stream \p os.
   //! The word graph is represented by the out-neighbours of each node ordered
   //! according to their labels. The symbol `-` is used to denote that an
-  //! edge is not defined. For example, the word graph with 1 nodes, out-degree
-  //! 2, and a single loop labelled 1 from node 0 to 0 is represented as
+  //! edge is not defined. For example, the word graph with 1 nodes,
+  //! out-degree 2, and a single loop labelled 1 from node 0 to 0 is
+  //! represented as
   //! `{{-, 0}}`.
   //!
   //! \param os the ostream
@@ -1638,14 +1657,13 @@ namespace libsemigroups {
   //! // Construct an word graph with 5 nodes and 10 edges (7 specified)
   //! to_word_graph<uint8_t>(5, {{0, 0}, {1, 1}, {2}, {3, 3}});
   //! \endcode
-  // TODO(0) nodiscard
   template <typename Node>
   [[nodiscard]] WordGraph<Node>
   to_word_graph(size_t num_nodes_reachable_from_root,
                 std::initializer_list<std::vector<Node>> il);
 
-  // TODO(0) nodiscard
   //! \ingroup word_graph_group
+  //! TODO(doc)
   template <typename Node>
   [[nodiscard]] WordGraph<Node>
   to_word_graph(size_t num_nodes_reachable_from_root,
@@ -1677,7 +1695,6 @@ namespace libsemigroups {
             xy, x, static_cast<Node>(0), y, static_cast<Node>(0));
       }
 
-      // TODO(0) nodiscard
       template <typename Node, typename... Args>
       [[nodiscard]] auto call_no_checks(WordGraph<Node> const& x,
                                         Args&&... args)
@@ -1691,9 +1708,9 @@ namespace libsemigroups {
         return xy;
       }
 
-      // There's no operator() with the number of nodes reachable from the roots
-      // as arguments (7 args in total) because we'd have to check that they
-      // were valid, and the only way to do this is to recompute them.
+      // There's no operator() with the number of nodes reachable from the
+      // roots as arguments (7 args in total) because we'd have to check that
+      // they were valid, and the only way to do this is to recompute them.
 
       // TODO(doc)
       template <typename Node>
@@ -1713,7 +1730,6 @@ namespace libsemigroups {
         return operator()(xy, x, static_cast<Node>(0), y, static_cast<Node>(0));
       }
 
-      // TODO(0) nodiscard
       template <typename Node, typename... Args>
       [[nodiscard]] auto operator()(WordGraph<Node> const& x, Args&&... args)
           -> std::enable_if_t<sizeof...(Args) % 2 == 1, WordGraph<Node>> {
@@ -1888,7 +1904,6 @@ namespace libsemigroups {
 
     // is x a subrelation of y
     // TODO(0) to tpp
-    // TODO(0) nodiscard
     template <typename Node1, typename Node2>
     [[nodiscard]] bool
     is_subrelation_no_checks(WordGraph<Node1> const& x,
@@ -1917,7 +1932,6 @@ namespace libsemigroups {
   };
 
   // TODO(0) to tpp
-  // TODO(0) nodiscard
   template <typename Node>
   [[nodiscard]] std::string to_human_readable_repr(WordGraph<Node> const& wg) {
     // TODO(2) could be more elaborate, include complete, etc
