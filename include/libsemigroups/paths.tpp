@@ -300,7 +300,7 @@ namespace libsemigroups {
     // Don't allow selecting the algorithm because we check
     // acyclicity anyway.
     // TODO(2): could use algorithm::dfs in some cases.
-    word_graph::validate_node(wg, static_cast<Node1>(source));
+    word_graph::throw_if_node_out_of_bounds(wg, static_cast<Node1>(source));
     auto topo = word_graph::topological_sort(wg, source);
     if (topo.empty()) {
       // Can't topologically sort, so the subdigraph induced by the nodes
@@ -362,7 +362,7 @@ namespace libsemigroups {
                            size_t                  min,
                            size_t                  max,
                            paths::algorithm        lgrthm) {
-    word_graph::validate_node(wg, static_cast<Node1>(source));
+    word_graph::throw_if_node_out_of_bounds(wg, static_cast<Node1>(source));
 
     switch (lgrthm) {
       case paths::algorithm::dfs:
@@ -411,8 +411,8 @@ namespace libsemigroups {
                            size_t                  min,
                            size_t                  max,
                            paths::algorithm        lgrthm) {
-    word_graph::validate_node(wg, static_cast<Node1>(source));
-    word_graph::validate_node(wg, static_cast<Node1>(target));
+    word_graph::throw_if_node_out_of_bounds(wg, static_cast<Node1>(source));
+    word_graph::throw_if_node_out_of_bounds(wg, static_cast<Node1>(target));
 
     switch (lgrthm) {
       case paths::algorithm::dfs:

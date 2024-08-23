@@ -333,7 +333,7 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! Constant.
-    // Not noexcept because validate_node/label aren't
+    // Not noexcept because throw_if_node_out_of_bounds/label aren't
     // return *this by reference.
     WordGraph& target(node_type m, label_type lbl, node_type n);
 
@@ -481,7 +481,7 @@ namespace libsemigroups {
     //!
     //! \exception LibsemigroupsException if \p v or \p lbl is not
     //! valid.
-    // Not noexcept because validate_node/label aren't
+    // Not noexcept because throw_if_node_out_of_bounds/label aren't
     [[nodiscard]] node_type target(node_type v, label_type lbl) const;
 
     //! Get the range of the edge with given source node and label.
@@ -728,7 +728,7 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! Constant.
-    // Not noexcept because validate_node isn't
+    // Not noexcept because throw_if_node_out_of_bounds isn't
     [[nodiscard]] const_iterator_targets cbegin_targets(node_type i) const;
 
     //! Returns a random access iterator pointing at the first target of a
@@ -767,7 +767,7 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! Constant.
-    // Not noexcept because validate_node isn't
+    // Not noexcept because throw_if_node_out_of_bounds isn't
     [[nodiscard]] const_iterator_targets cend_targets(node_type i) const;
 
     //! Returns a random access iterator pointing one-past-the-last target of
@@ -934,7 +934,7 @@ namespace libsemigroups {
     // TODO(0) rename -> throw_if_node_out_of_bounds
     // not noexcept because it throws an exception!
     template <typename Node1, typename Node2>
-    void validate_node(WordGraph<Node1> const& wg, Node2 v);
+    void throw_if_node_out_of_bounds(WordGraph<Node1> const& wg, Node2 v);
 
     //! TODO(doc)
     // TODO(0) add throw_if_any_target_out_of_bounds(wg, node);
@@ -1536,10 +1536,10 @@ namespace libsemigroups {
         return false;
       }
 
-      validate_node(x, first);
-      validate_node(x, last - 1);
-      validate_node(y, first);
-      validate_node(y, last - 1);
+      throw_if_node_out_of_bounds(x, first);
+      throw_if_node_out_of_bounds(x, last - 1);
+      throw_if_node_out_of_bounds(y, first);
+      throw_if_node_out_of_bounds(y, last - 1);
 
       for (auto n = first; n != last; ++n) {
         for (label_type a = 0; a < x.out_degree(); ++a) {

@@ -360,7 +360,7 @@ namespace libsemigroups {
     // Two node types so we can use this function with literal integers in the
     // tests.
     template <typename Node1, typename Node2>
-    void validate_node(WordGraph<Node1> const& wg, Node2 v) {
+    void throw_if_node_out_of_bounds(WordGraph<Node1> const& wg, Node2 v) {
       // TODO(0) check that Node2 is compatible with wg.number_of_nodes(), i.e.
       // doesn't overflow or whatever
       if (static_cast<Node1>(v) >= wg.number_of_nodes()) {
@@ -573,8 +573,8 @@ namespace libsemigroups {
     template <typename Node1, typename Node2>
     bool is_reachable(WordGraph<Node1> const& wg, Node2 source, Node2 target) {
       using label_type = typename WordGraph<Node1>::label_type;
-      validate_node(wg, static_cast<Node1>(source));
-      validate_node(wg, static_cast<Node1>(target));
+      throw_if_node_out_of_bounds(wg, static_cast<Node1>(source));
+      throw_if_node_out_of_bounds(wg, static_cast<Node1>(target));
       if (source == target) {
         return true;
       }
@@ -643,7 +643,7 @@ namespace libsemigroups {
 
     template <typename Node1, typename Node2>
     bool is_acyclic(WordGraph<Node1> const& wg, Node2 source) {
-      validate_node(wg, static_cast<Node1>(source));
+      throw_if_node_out_of_bounds(wg, static_cast<Node1>(source));
       auto const        N = wg.number_of_nodes();
       std::stack<Node1> stck;
       stck.push(source);
@@ -657,8 +657,8 @@ namespace libsemigroups {
 
     template <typename Node1, typename Node2>
     bool is_acyclic(WordGraph<Node1> const& wg, Node2 source, Node2 target) {
-      validate_node(wg, static_cast<Node1>(source));
-      validate_node(wg, static_cast<Node1>(target));
+      throw_if_node_out_of_bounds(wg, static_cast<Node1>(source));
+      throw_if_node_out_of_bounds(wg, static_cast<Node1>(target));
       if (!is_reachable(wg, source, target)) {
         return true;
       }
@@ -749,7 +749,7 @@ namespace libsemigroups {
     template <typename Node1, typename Node2>
     std::unordered_set<Node1> nodes_reachable_from(WordGraph<Node1> const& wg,
                                                    Node2 source) {
-      validate_node(wg, static_cast<Node1>(source));
+      throw_if_node_out_of_bounds(wg, static_cast<Node1>(source));
 
       std::unordered_set<Node1> seen;
       std::stack<Node1>         stack;
@@ -1077,9 +1077,9 @@ namespace libsemigroups {
 
   template <typename Node>
   WordGraph<Node>& WordGraph<Node>::induced_subgraph(Node first, Node last) {
-    word_graph::validate_node(first);
+    word_graph::throw_if_node_out_of_bounds(first);
     if (last != number_of_nodes()) {
-      word_graph::validate_node(last);
+      word_graph::throw_if_node_out_of_bounds(last);
     }
     return induced_subgraph_no_checks(first, last);
   }
@@ -1119,8 +1119,9 @@ namespace libsemigroups {
   template <typename Iterator, typename>
   WordGraph<Node>& WordGraph<Node>::induced_subgraph(Iterator first,
                                                      Iterator last) {
-    std::for_each(
-        first, last, [this](auto n) { word_graph::validate_node(*this, n); });
+    std::for_each(first, last, [this](auto n) {
+      word_graph::throw_if_node_out_of_bounds(*this, n);
+    });
     for (auto it = first; it != last; ++it) {
       auto s = *it;
       for (auto [a, t] : labels_and_targets_no_checks(s)) {
@@ -1141,9 +1142,9 @@ namespace libsemigroups {
   WordGraph<Node>& WordGraph<Node>::target(node_type  m,
                                            label_type lbl,
                                            node_type  n) {
-    word_graph::validate_node(*this, m);
+    word_graph::throw_if_node_out_of_bounds(*this, m);
     word_graph::validate_label(*this, lbl);
-    word_graph::validate_node(*this, n);
+    word_graph::throw_if_node_out_of_bounds(*this, n);
     target_no_checks(m, lbl, n);
     return *this;
   }
@@ -1166,7 +1167,7 @@ namespace libsemigroups {
   template <typename Node>
   std::pair<Node, typename WordGraph<Node>::label_type>
   WordGraph<Node>::next_label_and_target(node_type s, label_type a) const {
-    word_graph::validate_node(*this, s);
+    word_graph::throw_if_node_out_of_bounds(*this, s);
     return next_label_and_target_no_checks(s, a);
   }
 
@@ -1180,7 +1181,7 @@ namespace libsemigroups {
 
   template <typename Node>
   size_t WordGraph<Node>::number_of_edges(node_type n) const {
-    word_graph::validate_node(*this, n);
+    word_graph::throw_if_node_out_of_bounds(*this, n);
     return number_of_edges_no_checks(n);
   }
 
@@ -1194,7 +1195,7 @@ namespace libsemigroups {
 
   template <typename Node>
   WordGraph<Node>& WordGraph<Node>::remove_target(node_type s, label_type a) {
-    word_graph::validate_node(*this, s);
+    word_graph::throw_if_node_out_of_bounds(*this, s);
     word_graph::validate_label(*this, a);
     return remove_target_no_checks(s, a);
   }
@@ -1230,15 +1231,15 @@ namespace libsemigroups {
   WordGraph<Node>& WordGraph<Node>::swap_targets(node_type  u,
                                                  node_type  v,
                                                  label_type a) {
-    word_graph::validate_node(*this, u);
-    word_graph::validate_node(*this, v);
+    word_graph::throw_if_node_out_of_bounds(*this, u);
+    word_graph::throw_if_node_out_of_bounds(*this, v);
     word_graph::validate_label(*this, a);
     return swap_targets_no_checks(u, v, a);
   }
 
   template <typename Node>
   Node WordGraph<Node>::target(node_type v, label_type lbl) const {
-    word_graph::validate_node(*this, v);
+    word_graph::throw_if_node_out_of_bounds(*this, v);
     word_graph::validate_label(*this, lbl);
     return _dynamic_array_2.get(v, lbl);
   }
@@ -1246,27 +1247,27 @@ namespace libsemigroups {
   template <typename Node>
   typename WordGraph<Node>::const_iterator_targets
   WordGraph<Node>::cbegin_targets(node_type i) const {
-    word_graph::validate_node(*this, i);
+    word_graph::throw_if_node_out_of_bounds(*this, i);
     return cbegin_targets_no_checks(i);
   }
 
   template <typename Node>
   typename WordGraph<Node>::const_iterator_targets
   WordGraph<Node>::cend_targets(node_type i) const {
-    word_graph::validate_node(*this, i);
+    word_graph::throw_if_node_out_of_bounds(*this, i);
     return cend_targets_no_checks(i);
   }
 
   template <typename Node>
   rx::iterator_range<typename WordGraph<Node>::const_iterator_targets>
   WordGraph<Node>::targets(node_type n) const {
-    word_graph::validate_node(*this, n);
+    word_graph::throw_if_node_out_of_bounds(*this, n);
     return targets_no_checks(n);
   }
 
   template <typename Node>
   auto WordGraph<Node>::labels_and_targets(node_type n) const {
-    word_graph::validate_node(*this, n);
+    word_graph::throw_if_node_out_of_bounds(*this, n);
     return labels_and_targets_no_checks(n);
   }
 
@@ -1324,8 +1325,8 @@ namespace libsemigroups {
                                                     Node2 xroot,
                                                     WordGraph<Node1> const& y,
                                                     Node2 yroot) {
-      word_graph::validate_node(x, xroot);
-      word_graph::validate_node(y, yroot);
+      word_graph::throw_if_node_out_of_bounds(x, xroot);
+      word_graph::throw_if_node_out_of_bounds(y, yroot);
       if (x.out_degree() != y.out_degree()) {
         LIBSEMIGROUPS_EXCEPTION(
             "the 2nd and 4th arguments (word graphs) must have the same "
