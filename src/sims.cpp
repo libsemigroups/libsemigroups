@@ -642,11 +642,12 @@ namespace libsemigroups {
       auto first = _sims1or2->cbegin_long_rules();
       auto last  = _sims1or2->presentation().rules.cend();
 
-      bool result = word_graph::is_compatible_no_checks(_felsch_graph,
-                                              _felsch_graph.cbegin_nodes(),
-                                              _felsch_graph.cbegin_nodes() + M,
-                                              first,
-                                              last);
+      bool result = word_graph::is_compatible_no_checks(
+          _felsch_graph,
+          _felsch_graph.cbegin_nodes(),
+          _felsch_graph.cbegin_nodes() + M,
+          first,
+          last);
       if (result) {
         // stats.count_now is atomic so this is ok
         ++stats.count_now;

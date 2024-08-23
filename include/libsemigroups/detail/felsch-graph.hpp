@@ -435,7 +435,7 @@ namespace libsemigroups {
       }
 
     }  // namespace felsch_graph
-  }  // namespace detail
+  }    // namespace detail
 }  // namespace libsemigroups
 
 #include "felsch-graph.tpp"

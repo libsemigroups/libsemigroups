@@ -467,10 +467,9 @@ namespace libsemigroups {
       for (enumerate_index_type i = 0; i != _pos; ++i) {
         generator_index_type b = _final[_enumerate_order[i]];
         for (generator_index_type j = 0; j != number_of_generators(); ++j) {
-          _left.target_no_checks(
-              _enumerate_order[i],
-              j,
-              _right.target_no_checks(_letter_to_pos[j], b));
+          _left.target_no_checks(_enumerate_order[i],
+                                 j,
+                                 _right.target_no_checks(_letter_to_pos[j], b));
         }
       }
       _wordlen++;

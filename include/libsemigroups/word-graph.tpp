@@ -453,10 +453,10 @@ namespace libsemigroups {
               typename Iterator2,
               typename Iterator3>
     bool is_compatible_no_checks(WordGraph<Node> const& wg,
-                       Iterator1              first_node,
-                       Iterator2              last_node,
-                       Iterator3              first_rule,
-                       Iterator3              last_rule) {
+                                 Iterator1              first_node,
+                                 Iterator2              last_node,
+                                 Iterator3              first_rule,
+                                 Iterator3              last_rule) {
       for (auto nit = first_node; nit != last_node; ++nit) {
         for (auto rit = first_rule; rit < last_rule; ++rit) {
           auto l = word_graph::follow_path_no_checks(
@@ -480,10 +480,10 @@ namespace libsemigroups {
 
     template <typename Node, typename Iterator1, typename Iterator2>
     bool is_compatible_no_checks(WordGraph<Node> const& wg,
-                       Iterator1              first_node,
-                       Iterator2              last_node,
-                       word_type const&       lhs,
-                       word_type const&       rhs) {
+                                 Iterator1              first_node,
+                                 Iterator2              last_node,
+                                 word_type const&       lhs,
+                                 word_type const&       rhs) {
       for (auto nit = first_node; nit != last_node; ++nit) {
         auto l = word_graph::follow_path_no_checks(
             wg, *nit, lhs.cbegin(), lhs.cend());
