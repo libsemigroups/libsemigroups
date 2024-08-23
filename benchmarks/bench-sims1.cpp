@@ -247,9 +247,9 @@ namespace libsemigroups {
       Sims1 C;
 
       WordRange lhs;
-      lhs.number_of_letters(num_letters).min(1).max(word_len);
+      lhs.alphabet_size(num_letters).min(1).max(word_len);
       WordRange rhs;
-      rhs.number_of_letters(num_letters);
+      rhs.alphabet_size(num_letters);
 
       for (auto const& l : lhs) {
         rhs.first(l).max(word_len);
