@@ -31,22 +31,22 @@
 #define NOT_PARSED_BY_DOXYGEN
 #endif
 
-#include <array>             // for array
 #include <cstddef>           // for size_t
 #include <cstdint>           // for uint64_t, uint8_t
 #include <initializer_list>  // for initializer_list
-#include <iterator>          // for distance
+#include <limits>            // for numeric_limits
 #include <string>            // for basic_string
+#include <string_view>       // for string_view
+#include <type_traits>       // for enable_if_t
 #include <unordered_map>     // for vector, operator==
 #include <utility>           // for forward
 #include <variant>           // for visit, operator==
 #include <vector>            // for vector, operator==
 
-#include "constants.hpp"  // for UNDEFINED
+#include "debug.hpp"      // for LIBSEMIGROUPS_ASSERT
 #include "exception.hpp"  // for LibsemigroupsException
 #include "types.hpp"      // for word_type
 
-#include "detail/iterator.hpp"        // for default_postfix_increment
 #include "detail/word-iterators.hpp"  // for const_wilo_iterator
 
 #include "ranges.hpp"  // for begin, end

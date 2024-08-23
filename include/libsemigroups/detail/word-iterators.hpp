@@ -21,7 +21,8 @@
 #ifndef LIBSEMIGROUPS_DETAIL_WORD_ITERATORS_HPP_
 #define LIBSEMIGROUPS_DETAIL_WORD_ITERATORS_HPP_
 
-#include <vector>
+#include <iterator>  // for forward_iterator_tag
+#include <vector>    // for vector, vector<>::const_pointer
 
 #include "iterator.hpp"             // for default_postfix_increment
 #include "libsemigroups/types.hpp"  // for word_type
