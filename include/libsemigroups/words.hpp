@@ -855,6 +855,21 @@ namespace libsemigroups {
     //! \no_libsemigroups_except.
     [[nodiscard]] std::string alphabet() const;
 
+    //! Check if the current ToWord instance can convert a specified letter.
+    //!
+    //! This function returns \c true if \p c can can be converted to a \ref
+    //! letter_type using this ToWord instance, and \c false otherwise.
+    //!
+    //! \param c the char to check the convertibility of.
+    //!
+    //! \returns A value of type bool.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    [[nodiscard]] bool can_convert_letter(char const& c) const {
+      return _alphabet_map.count(c) == 1;
+    }
+
     //! \brief Convert a string to a word_type.
     //!
     //! This function converts its second argument \p input into a word_type and
@@ -1159,6 +1174,21 @@ namespace libsemigroups {
     //! \exceptions
     //! \no_libsemigroups_except.
     [[nodiscard]] std::string alphabet() const;
+
+    //! Check if the current ToString instance can convert a specified letter.
+    //!
+    //! This function returns \c true if \p l can can be converted to a ``char``
+    //! using this ToString instance, and \c false otherwise.
+    //!
+    //! \param l the letter to check the convertibility of.
+    //!
+    //! \returns A value of type bool.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    [[nodiscard]] bool can_convert_letter(letter_type const& l) const {
+      return _alphabet_map.count(l) == 1;
+    }
 
     //! \brief Convert a \ref word_type to a std::string.
     //!
