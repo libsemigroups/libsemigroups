@@ -847,7 +847,7 @@ namespace libsemigroups {
                           "[quick]") {
     size_t const n  = 400;
     auto         wg = WordGraph<size_t>::random(n, 20, n, std::mt19937());
-    word_graph::add_cycle(wg, wg.cbegin_nodes(), wg.cend_nodes());
+    word_graph::add_cycle_no_checks(wg, wg.cbegin_nodes(), wg.cend_nodes());
     REQUIRE(!word_graph::is_acyclic(wg));
     REQUIRE(!word_graph::is_complete(wg));
     REQUIRE(number_of_paths_algorithm(wg, 0, 0, 16) == paths::algorithm::dfs);
