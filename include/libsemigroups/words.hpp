@@ -1655,7 +1655,7 @@ namespace libsemigroups {
     //!
     //! \returns A reference to \c *this.
     //!
-    //! \throws LibsemigroupsException if \p lst constains letters not belonging
+    //! \throws LibsemigroupsException if \p lst contains letters not belonging
     //! to alphabet().
     //!
     //! \sa \ref max
