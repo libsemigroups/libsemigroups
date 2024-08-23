@@ -538,7 +538,6 @@ namespace libsemigroups {
     //! \warning This function is unsafe because it is not verified that the
     //! parameter \p v represents a node of \c this.
     // Not noexcept because DynamicArray2::get is not
-    // TODO(0) swap output order
     [[nodiscard]] std::pair<label_type, node_type>
         next_label_and_target_no_checks(node_type, label_type) const;
 
@@ -572,7 +571,6 @@ namespace libsemigroups {
     //!
     //! \sa next_label_and_target_no_checks.
     // Not noexcept because next_label_and_target_no_checks is not
-    // TODO(0) swap output order
     [[nodiscard]] std::pair<label_type, node_type>
     next_label_and_target(node_type v, label_type i) const;
 
@@ -828,7 +826,7 @@ namespace libsemigroups {
     //! This function performs no checks whatsoever and will result in a
     //! corrupted word graph if there are any edges from the nodes \f$0, \ldots,
     //! n - 1\f$ to nodes larger than \f$n - 1\f$.
-    // TODO(0) update doc, ignores targets outside the range [first, last)
+    // TODO(0) update doc
     WordGraph& induced_subgraph_no_checks(node_type first, node_type last);
 
     // TODO(doc)
@@ -875,32 +873,29 @@ namespace libsemigroups {
       return disjoint_union_inplace_no_checks(that);
     }
 
-    // TODO(0) return reference to this
     // TODO(doc)
     // TODO(0) move to tpp
-    // TODO(0) move to helper namespace
-    void permute_nodes_no_checks(std::vector<node_type> const& p,
-                                 std::vector<node_type> const& q,
-                                 size_t                        m) {
+    // requires access to apply_row_permutation so can't be helper
+    WordGraph& permute_nodes_no_checks(std::vector<node_type> const& p,
+                                       std::vector<node_type> const& q,
+                                       size_t                        m) {
       // p : new -> old, q = p ^ -1: old -> new
-      node_type c = 0;
-      while (c < m) {
-        for (auto x : WordGraph<Node>::labels()) {
-          node_type i = WordGraph<Node>::target_no_checks(p[c], x);
-          WordGraph<Node>::target_no_checks(
-              p[c], x, (i == UNDEFINED ? i : q[i]));
+      node_type i = 0;
+      while (i < m) {
+        for (auto [a, t] : labels_and_targets_no_checks(p[i])) {
+          target_no_checks(p[i], a, (t == UNDEFINED ? t : q[t]));
         }
-        c++;
+        i++;
       }
       // Permute the rows themselves
       apply_row_permutation(p);
+      return *this;
     }
 
-    // TODO(0) return reference to this
-    // TODO(0) move to helper namespace
-    void permute_nodes_no_checks(std::vector<node_type> const& p,
-                                 std::vector<node_type> const& q) {
-      permute_nodes_no_checks(p, q, p.size());
+    // TODO(doc)
+    WordGraph& permute_nodes_no_checks(std::vector<node_type> const& p,
+                                       std::vector<node_type> const& q) {
+      return permute_nodes_no_checks(p, q, p.size());
     }
 
    protected:
@@ -933,11 +928,11 @@ namespace libsemigroups {
     // WordGraph - helper functions - validation
     //////////////////////////////////////////////////////////////////////////
 
-    // not noexcept because it throws an exception!
     //! \brief Blurb
     //!
     //! This function
     // TODO(0) rename -> throw_if_node_out_of_bounds
+    // not noexcept because it throws an exception!
     template <typename Node1, typename Node2>
     void validate_node(WordGraph<Node1> const& wg, Node2 v);
 
@@ -971,7 +966,6 @@ namespace libsemigroups {
 #endif
 
     // TODO(doc)
-    // TODO(0) nodiscard
     template <typename Node>
     [[nodiscard]] auto adjacency_matrix(WordGraph<Node> const& wg);
 
