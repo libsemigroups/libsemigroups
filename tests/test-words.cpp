@@ -646,10 +646,6 @@ namespace libsemigroups {
                                        11_w,
                                        110_w,
                                        111_w}));
-    // FIXME: The below segfaults, since "a" and "b" are not in the alphabet,
-    // and to_vector can't catch the error.
-    // REQUIRE_THROWS_AS((strings | ToWord("cd") | to_vector()),
-    //                   LibsemigroupsException);
     REQUIRE(is_sorted(strings, LexicographicalCompare()));
 
     strings.alphabet("ba").first("b").last("aaaaa");
@@ -879,7 +875,7 @@ namespace libsemigroups {
     REQUIRE(*(++it) == *(++it2));
   }
 
-  LIBSEMIGROUPS_TEST_CASE("StringRange", "036", "code coverage", "[words]") {
+  LIBSEMIGROUPS_TEST_CASE("StringRange", "030", "code coverage", "[words]") {
     using words::pow;
 
     size_t const m = 27;
@@ -961,7 +957,7 @@ namespace libsemigroups {
     }
   }
 
-  LIBSEMIGROUPS_TEST_CASE("WordRange", "030", "parsing", "[shortlex][quick]") {
+  LIBSEMIGROUPS_TEST_CASE("WordRange", "031", "parsing", "[shortlex][quick]") {
     REQUIRE("cd(ab)^2ef"_p == "cdababef");
     REQUIRE("cd((ab)^2)^4ef"_p == "cdababababababababef");
     REQUIRE("cd((ab)^2)^4(ef)^2"_p == "cdababababababababefef");
@@ -1017,7 +1013,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("WordRange",
-                          "031",
+                          "032",
                           "operator+",
                           "[quick][word_functions]") {
     using namespace literals;
@@ -1036,7 +1032,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("WordRange",
-                          "032",
+                          "033",
                           "operator+=",
                           "[quick][word_functions]") {
     using namespace literals;
@@ -1060,7 +1056,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("WordRange",
-                          "033",
+                          "034",
                           "pow",
                           "[quick][word_functions]") {
     using namespace literals;
@@ -1078,7 +1074,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("WordRange",
-                          "034",
+                          "035",
                           "pow_inplace",
                           "[quick][word_functions][no-coverage][no-valgrind]") {
     using namespace literals;
@@ -1111,7 +1107,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("WordRange",
-                          "035",
+                          "036",
                           "prod",
                           "[quick][word_functions]") {
     using namespace literals;
@@ -1155,7 +1151,7 @@ namespace libsemigroups {
     REQUIRE(prod("aba", 4) == "abaa");
   }
 
-  LIBSEMIGROUPS_TEST_CASE("random_word", "036", "", "[quick]") {
+  LIBSEMIGROUPS_TEST_CASE("random_word", "037", "", "[quick]") {
     auto w = random_word(10, 3);
     REQUIRE(w.size() == 10);
     REQUIRE(
@@ -1174,9 +1170,16 @@ namespace libsemigroups {
     REQUIRE(result);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("human_readable_index", "037", "", "[quick]") {
+  LIBSEMIGROUPS_TEST_CASE("human_readable_index",
+                          "038",
+                          "check all chars",
+                          "[quick]") {
+    using words::human_readable_index;
     using words::human_readable_letter;
-    std::array<uint8_t, 255> result;
+    std::array<uint8_t,
+               1 + std::numeric_limits<char>::max()
+                   - std::numeric_limits<char>::min()>
+        result;
     std::iota(result.begin(), result.end(), 0);
     auto expected = result;
 
@@ -1195,17 +1198,15 @@ namespace libsemigroups {
       val = words::human_readable_index(val);
     });
     REQUIRE(result == expected);
-
-    REQUIRE_THROWS_AS(human_readable_letter<>(1'000), LibsemigroupsException);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("to_word", "038", "", "[quick]") {
+  LIBSEMIGROUPS_TEST_CASE("to_word", "039", "", "[quick]") {
     ToWord to_word;
     REQUIRE(to_word("abc") == 012_w);
     REQUIRE(to_word("ABC") == word_type({26, 27, 28}));
   }
 
-  LIBSEMIGROUPS_TEST_CASE("ToWord", "039", "code coverage", "[quick]") {
+  LIBSEMIGROUPS_TEST_CASE("ToWord", "040", "code coverage", "[quick]") {
     StringRange strings;
     strings.alphabet("ab").first("a").last("bbbb");
 
@@ -1245,7 +1246,7 @@ namespace libsemigroups {
                  0101_w, 0100_w, 0011_w, 0010_w, 0001_w}));
   }
 
-  LIBSEMIGROUPS_TEST_CASE("ToString", "040", "code coverage", "[quick]") {
+  LIBSEMIGROUPS_TEST_CASE("ToString", "041", "code coverage", "[quick]") {
     using words::pow;
 
     WordRange words;
@@ -1319,7 +1320,7 @@ namespace libsemigroups {
     }
   }
 
-  LIBSEMIGROUPS_TEST_CASE("WordRange", "041", "empty iterator", "[quick]") {
+  LIBSEMIGROUPS_TEST_CASE("WordRange", "042", "empty iterator", "[quick]") {
     using words::pow;
 
     WordRange words;
@@ -1335,7 +1336,7 @@ namespace libsemigroups {
     REQUIRE((words | to_vector()) == std::vector<word_type>({}));
   }
 
-  LIBSEMIGROUPS_TEST_CASE("ToWord", "042", "alphabet", "[quick]") {
+  LIBSEMIGROUPS_TEST_CASE("ToWord", "043", "alphabet", "[quick]") {
     ToWord to_word("BAaC1");
     REQUIRE(to_word.alphabet() == "BAaC1");
 
@@ -1355,7 +1356,7 @@ namespace libsemigroups {
             == detail::chars_in_human_readable_order());
   }
 
-  LIBSEMIGROUPS_TEST_CASE("ToString", "043", "alphabet", "[quick]") {
+  LIBSEMIGROUPS_TEST_CASE("ToString", "044", "alphabet", "[quick]") {
     ToString to_string("BAaC1");
     REQUIRE(to_string.alphabet() == "BAaC1");
 
@@ -1375,7 +1376,7 @@ namespace libsemigroups {
             == detail::chars_in_human_readable_order());
   }
 
-  LIBSEMIGROUPS_TEST_CASE("WordRange", "044", "doxygen examples", "[quick]") {
+  LIBSEMIGROUPS_TEST_CASE("WordRange", "045", "doxygen examples", "[quick]") {
     // cbegin_wilo
     {
       REQUIRE(std::vector<word_type>(cbegin_wilo(2, 3, {0}, {1, 1, 1}),
@@ -1462,7 +1463,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("WordRange",
-                          "045",
+                          "046",
                           "to_human_readable_repr",
                           "[quick]") {
     WordRange wr;
@@ -1473,7 +1474,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("ToWord",
-                          "046",
+                          "047",
                           "to_human_readable_repr",
                           "[quick]") {
     ToWord to_word("BAc2w");
@@ -1482,7 +1483,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("StringRange",
-                          "046",
+                          "048",
                           "to_human_readable_repr",
                           "[quick]") {
     StringRange sr;
@@ -1493,7 +1494,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("ToString",
-                          "047",
+                          "049",
                           "to_human_readable_repr",
                           "[quick]") {
     ToString to_string("BAc2w");

@@ -1835,14 +1835,14 @@ namespace libsemigroups {
       REQUIRE(letters[i] == human_readable_letter<>(i));
       REQUIRE(set.insert(letters[i]).second);
     }
-    for (size_t i = letters.size(); i < 255; ++i) {
+    for (size_t i = letters.size(); i < 256; ++i) {
       REQUIRE(set.insert(human_readable_letter<>(i)).second);
     }
-    REQUIRE_THROWS_AS(human_readable_letter<>(255), LibsemigroupsException);
-    p.alphabet(255);
+    REQUIRE_THROWS_AS(human_readable_letter<>(256), LibsemigroupsException);
+    p.alphabet(256);
     REQUIRE_THROWS_AS(presentation::first_unused_letter(p),
                       LibsemigroupsException);
-    REQUIRE_THROWS_AS(p.alphabet(256), LibsemigroupsException);
+    REQUIRE_THROWS_AS(p.alphabet(257), LibsemigroupsException);
   }
 
   LIBSEMIGROUPS_TEST_CASE("Presentation",
@@ -2660,8 +2660,8 @@ namespace libsemigroups {
                               "invalid letter (char with value) -109, valid "
                               "letters are (char values) [0, 1]");
       }
-      REQUIRE_EXCEPTION_MSG(p.alphabet(256),
-                            "expected a value in the range [0, 256) found 256");
+      REQUIRE_EXCEPTION_MSG(
+          p.alphabet(257), "expected a value in the range [0, 257), found 257");
       REQUIRE_EXCEPTION_MSG(p.alphabet("aba"),
                             "invalid alphabet \"aba\", duplicate letter 'a'!");
       REQUIRE_EXCEPTION_MSG(p.alphabet({0, 1, 0}),
@@ -2694,8 +2694,8 @@ namespace libsemigroups {
                             "invalid letter 99, valid letters are [0, 1]");
       REQUIRE_EXCEPTION_MSG(p.validate_letter(109),
                             "invalid letter 109, valid letters are [0, 1]");
-      REQUIRE_EXCEPTION_MSG(p.alphabet(256),
-                            "expected a value in the range [0, 256) found 256");
+      REQUIRE_EXCEPTION_MSG(
+          p.alphabet(257), "expected a value in the range [0, 257), found 257");
       REQUIRE(p.alphabet().size() == 2);
       REQUIRE_EXCEPTION_MSG(std::ignore = p.letter(3),
                             "expected a value in [0, 2), found 3");

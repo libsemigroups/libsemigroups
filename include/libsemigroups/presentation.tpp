@@ -80,12 +80,20 @@ namespace libsemigroups {
 
   template <typename Word>
   Presentation<Word>& Presentation<Word>::alphabet(size_type n) {
-    if (n > std::numeric_limits<letter_type>::max()
-                - std::numeric_limits<letter_type>::min()) {
-      LIBSEMIGROUPS_EXCEPTION("expected a value in the range [0, {}) found {}",
-                              std::numeric_limits<letter_type>::max()
-                                  - std::numeric_limits<letter_type>::min() + 1,
-                              n);
+    // This checks that there are enough distinct Word::value_types to construct
+    // an alphabet of size n. If the size of Word::value_type is the same as the
+    // size of size_t, then one cannot specify the size of an alphabet large
+    // enough for which there are not enough distinct letters to be contained
+    // within it.
+    if constexpr (sizeof(typename Word::value_type) < sizeof(size_t)) {
+      if (n > 1 + std::numeric_limits<letter_type>::max()
+                  - std::numeric_limits<letter_type>::min()) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "expected a value in the range [0, {}), found {}",
+            std::numeric_limits<letter_type>::max()
+                - std::numeric_limits<letter_type>::min() + 2,
+            n);
+      }
     }
     word_type lphbt(n, 0);
     std::iota(
@@ -781,12 +789,24 @@ namespace libsemigroups {
           = static_cast<size_type>(std::numeric_limits<letter_type>::max()
                                    - std::numeric_limits<letter_type>::min());
 
-      if (p.alphabet().size() == max_letter) {
-        LIBSEMIGROUPS_EXCEPTION(
-            "the alphabet of the 1st argument already has the maximum size "
-            "of {}, there are no unused generators",
-            std::numeric_limits<letter_type>::max()
-                - std::numeric_limits<letter_type>::min());
+      // If the size of letter_type is the same as the size of size_t, then the
+      // largest possible alphabet [0, max] has size one larger than max. To
+      // prevent alphabet.size() overflowing, we don't allow this.
+      if constexpr (sizeof(letter_type) >= sizeof(size_type)) {
+        if (p.alphabet().size() == max_letter) {
+          LIBSEMIGROUPS_EXCEPTION(
+              "the alphabet of the 1st argument already has the maximum size "
+              "of {}, there are no unused generators",
+              max_letter);
+        }
+      } else {
+        if (p.alphabet().size() == max_letter + 1) {
+          LIBSEMIGROUPS_EXCEPTION(
+              "the alphabet of the 1st argument already has the maximum size "
+              "of {}, there are no unused generators",
+              std::numeric_limits<letter_type>::max()
+                  - std::numeric_limits<letter_type>::min());
+        }
       }
 
       letter_type x;

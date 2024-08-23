@@ -1956,12 +1956,12 @@ namespace libsemigroups {
 
     //! \brief Returns a character by index in human readable order.
     //!
-    //! This function exists to map the numbers \c 0 to \c 254 to the possible
+    //! This function exists to map the numbers \c 0 to \c 255 to the possible
     //! values of a \c char, in such a way that the first characters are \c
     //! a-zA-Z0-9. The ascii ranges for these characters are: \f$[97, 123)\f$,
     //! \f$[65, 91)\f$, \f$[48, 58)\f$ so the remaining range of chars that are
     //! appended to the end after these chars are \f$[0,48)\f$, \f$[58, 65)\f$,
-    //! \f$[91, 97)\f$, \f$[123, 255)\f$.
+    //! \f$[91, 97)\f$, \f$[123, 255]\f$.
     //!
     //! This function is the inverse of \ref words::human_readable_index.
     //!
@@ -1972,13 +1972,19 @@ namespace libsemigroups {
     //! \throws LibsemigroupsException if \p i exceeds the number of characters.
     template <typename Word = std::string>
     typename Word::value_type human_readable_letter(size_t i) {
-      if (i >= std::numeric_limits<typename Word::value_type>::max()
-                   - std::numeric_limits<typename Word::value_type>::min()) {
-        LIBSEMIGROUPS_EXCEPTION(
-            "expected the argument to be in the range [0, {}), found {}",
-            std::numeric_limits<typename Word::value_type>::max()
-                - std::numeric_limits<typename Word::value_type>::min(),
-            i);
+      // This check ensures that i is not too large to be converted to a
+      // Word::value_type. This is check is only needed if the number of
+      // distinct Word::value objects is less than the number of distinct size_t
+      // objects.
+      if constexpr (sizeof(typename Word::value_type) < sizeof(size_t)) {
+        if (i > std::numeric_limits<typename Word::value_type>::max()
+                    - std::numeric_limits<typename Word::value_type>::min()) {
+          LIBSEMIGROUPS_EXCEPTION(
+              "expected the argument to be in the range [0, {}), found {}",
+              1 + std::numeric_limits<typename Word::value_type>::max()
+                  - std::numeric_limits<typename Word::value_type>::min(),
+              i);
+        }
       }
       if constexpr (!std::is_same_v<Word, std::string>) {
         return static_cast<typename Word::value_type>(i);
@@ -1986,7 +1992,7 @@ namespace libsemigroups {
         // Choose visible characters a-zA-Z0-9 first before anything else
         // The ascii ranges for these characters are: [97, 123), [65, 91),
         // [48, 58) so the remaining range of chars that are appended to the end
-        // after these chars are [0,48), [58, 65), [91, 97), [123, 255)
+        // after these chars are [0,48), [58, 65), [91, 97), [123, 255]
         return detail::chars_in_human_readable_order()[i];
       }
     }
@@ -2290,6 +2296,8 @@ namespace libsemigroups {
                  && elts.size() == 0) {
         LIBSEMIGROUPS_EXCEPTION("the 1st argument must not be empty if the "
                                 "given range is not empty");
+        // TODO Is int signed? Should this also contain
+        // std::numeric_limits<int>::min?
       } else if (elts.size() > std::numeric_limits<int>::max()) {
         LIBSEMIGROUPS_EXCEPTION(
             "the 1st argument must have size less than or equal to {}",

@@ -52,12 +52,12 @@ namespace libsemigroups {
       // Choose visible characters a-zA-Z0-9 first before anything else
       // The ascii ranges for these characters are: [97, 123), [65, 91),
       // [48, 58) so the remaining range of chars that are appended to the end
-      // after these chars are [0,48), [58, 65), [91, 97), [123, 255)
+      // after these chars are [0,48), [58, 65), [91, 97), [123, 255]
       static std::string letters
           = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
       static bool first_call = true;
       if (first_call) {
-        letters.resize(255);
+        letters.resize(256);
         std::iota(
             letters.begin() + 62, letters.begin() + 110, static_cast<char>(0));
         std::iota(letters.begin() + 110,
@@ -69,9 +69,9 @@ namespace libsemigroups {
         std::iota(letters.begin() + 123, letters.end(), static_cast<char>(123));
         first_call = false;
         LIBSEMIGROUPS_ASSERT(letters.size()
-                             == std::numeric_limits<char>::max()
+                             == 1 + std::numeric_limits<char>::max()
                                     - std::numeric_limits<char>::min());
-        LIBSEMIGROUPS_ASSERT(letters.end() == letters.begin() + 255);
+        LIBSEMIGROUPS_ASSERT(letters.end() == letters.begin() + 256);
       }
       return letters;
     }
@@ -92,10 +92,10 @@ namespace libsemigroups {
           map.emplace(chars[i], i);
         }
       }
-      LIBSEMIGROUPS_ASSERT(map.size() == 255);
+      LIBSEMIGROUPS_ASSERT(map.size() == 256);
 
       auto it = map.find(c);
-      // There are only 255 chars and so it shouldn't be possible that <c> is
+      // There are only 256 chars and so it shouldn't be possible that <c> is
       // not in the map.
       LIBSEMIGROUPS_ASSERT(it != map.cend());
       return it->second;

@@ -778,6 +778,10 @@ namespace libsemigroups {
   template <typename Rewriter, typename ReductionOrder>
   typename detail::internal_char_type
   KnuthBendix<Rewriter, ReductionOrder>::uint_to_internal_char(size_t a) {
+    // TODO What is this check for?
+    // TODO should this be
+    // std::numeric_limits<detail::internal_char_type>::max() -
+    // std::numeric_limits<detail::internal_char_type>::min()?
     LIBSEMIGROUPS_ASSERT(
         a <= size_t(std::numeric_limits<detail::internal_char_type>::max()));
 #ifdef LIBSEMIGROUPS_DEBUG
@@ -793,12 +797,15 @@ namespace libsemigroups {
   template <typename Rewriter, typename ReductionOrder>
   typename detail::internal_string_type
   KnuthBendix<Rewriter, ReductionOrder>::uint_to_internal_string(size_t i) {
+    // TODO What is this check for?
+    // TODO should this be
+    // std::numeric_limits<detail::internal_char_type>::max() -
+    // std::numeric_limits<detail::internal_char_type>::min()?
     LIBSEMIGROUPS_ASSERT(
         i <= size_t(std::numeric_limits<detail::internal_char_type>::max()));
     return detail::internal_string_type({uint_to_internal_char(i)});
   }
 
-  // TODO (later) replace with ToWord somehow?
   template <typename Rewriter, typename ReductionOrder>
   word_type KnuthBendix<Rewriter, ReductionOrder>::internal_string_to_word(
       detail::internal_string_type const& s) {

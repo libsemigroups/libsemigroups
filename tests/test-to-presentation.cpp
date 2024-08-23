@@ -384,9 +384,9 @@ namespace libsemigroups {
         StaticVector1<uint8_t, 6>>();
 
     Presentation<std::vector<uint16_t>> p;
-    p.alphabet(32767);
-    REQUIRE_NOTHROW(to_inverse_presentation(p));
     p.alphabet(32768);
+    REQUIRE_NOTHROW(to_inverse_presentation(p));
+    p.alphabet(32769);
     REQUIRE_THROWS(to_inverse_presentation(p));
   }
 
