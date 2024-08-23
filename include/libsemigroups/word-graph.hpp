@@ -1304,12 +1304,40 @@ namespace libsemigroups {
     //! \brief Check if a word graph is compatible with some relations at a
     //! range of nodes.
     //!
-    //! This function returns \c true if the word graph \p wg is compatible with
-    //! the relations in the range \p first_rule to \p last_rule at every node
-    //! in the range from \p first_node to \p last_node.
-    //! This means that the paths with given sources that are labelled by one
-    //! side of a relation leads to the same node as the path labelled by the
-    //! other side of the relation.
+    //! This function returns \c true if the word graph \p wg is compatible
+    //! with the relations in the range \p first_rule to \p last_rule at every
+    //! node in the range from \p first_node to \p last_node. This means that
+    //! the paths with given sources that are labelled by one side of a relation
+    //! leads to the same node as the path labelled by the other side of the
+    //! relation.
+    //!
+    //! \tparam Node the type used as the template parameter for the WordGraph
+    //! \p wg.
+    //!
+    //! \tparam Iterator1 the type of \p first_node.
+    //!
+    //! \tparam Iterator2 the type of \p last_node.
+    //!
+    //! \tparam Iterator3 the type of \p first_rule and \p last_rule.
+    //!
+    //! \param wg the word graph.
+    //!
+    //! \param first_node iterator pointing at the first node.
+    //!
+    //! \param last_node iterator pointing at one beyond the last node.
+    //!
+    //! \param first_rule iterator pointing to the first rule.
+    //!
+    //! \param last_rule iterator pointing one beyond the last rule.
+    //!
+    //! \return Whether or not the word graph is compatible with the given rules
+    //! at each one of the given nodes.
+    //!
+    //! \warning
+    //! No checks on the arguments of this function are performed.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
     template <typename Node,
               typename Iterator1,
               typename Iterator2,
@@ -1319,6 +1347,16 @@ namespace libsemigroups {
                                                Iterator2 last_node,
                                                Iterator3 first_rule,
                                                Iterator3 last_rule);
+    // HERE
+    template <typename Node,
+              typename Iterator1,
+              typename Iterator2,
+              typename Iterator3>
+    [[nodiscard]] bool is_compatible(WordGraph<Node> const& wg,
+                                     Iterator1              first_node,
+                                     Iterator2              last_node,
+                                     Iterator3              first_rule,
+                                     Iterator3              last_rule);
 
     //////////////////////////////////////////////////////////////////////////
     // FRONTIER
@@ -1330,6 +1368,12 @@ namespace libsemigroups {
     // not noexcept because it throws an exception!
     template <typename Node1, typename Node2>
     void throw_if_node_out_of_bounds(WordGraph<Node1> const& wg, Node2 v);
+
+    //! TODO(doc)
+    template <typename Node, typename Iterator>
+    void throw_if_node_out_of_bounds(WordGraph<Node> const& wg,
+                                     Iterator               first,
+                                     Iterator               last);
 
     //! TODO(doc)
     template <typename Node>
@@ -1346,6 +1390,10 @@ namespace libsemigroups {
     template <typename Node>
     void throw_if_label_out_of_bounds(WordGraph<Node> const&               wg,
                                       typename WordGraph<Node>::label_type lbl);
+
+    template <typename Node>
+    void throw_if_label_out_of_bounds(WordGraph<Node> const& wg,
+                                      word_type const&       word);
 
 #ifdef LIBSEMIGROUPS_EIGEN_ENABLED
     static Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic>
@@ -1812,7 +1860,7 @@ namespace libsemigroups {
         // always have an odd number of arguments, so we check that it's even
         // here (the argument x and an odd number of further arguments).
         WordGraph<Node> xy;
-                        operator()(xy, x, std::forward<Args>(args)...);
+        operator()(xy, x, std::forward<Args>(args)...);
         return xy;
       }
 
@@ -1847,7 +1895,7 @@ namespace libsemigroups {
         return is_subrelation(x, static_cast<Node>(0), y, static_cast<Node>(0));
       }
     };  // JoinerMeeterCommon
-  }     // namespace detail
+  }  // namespace detail
 
   //! \ingroup word_graph_group
   //! TODO(doc)

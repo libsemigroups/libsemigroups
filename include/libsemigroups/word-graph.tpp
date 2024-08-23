@@ -370,6 +370,15 @@ namespace libsemigroups {
       }
     }
 
+    template <typename Node, typename Iterator>
+    void throw_if_node_out_of_bounds(WordGraph<Node> const& wg,
+                                     Iterator               first,
+                                     Iterator               last) {
+      std::for_each(first, last, [&wg](auto n) {
+        word_graph::throw_if_node_out_of_bounds(wg, n);
+      });
+    }
+
     template <typename Node>
     void throw_if_any_target_out_of_bounds(WordGraph<Node> const& wg) {
       throw_if_any_target_out_of_bounds(wg, wg.cbegin_nodes(), wg.cend_nodes());
@@ -406,6 +415,23 @@ namespace libsemigroups {
                                 wg.out_degree(),
                                 lbl);
       }
+    }
+
+    template <typename Node>
+    void throw_if_label_out_of_bounds(WordGraph<Node> const& wg,
+                                      word_type const&       word) {
+      std::for_each(word.cbegin(), word.cend(), [&wg](letter_type a) {
+        throw_if_label_out_of_bounds(wg, a);
+      });
+    }
+
+    template <typename Node, typename Container>
+    void throw_if_label_out_of_bounds(WordGraph<Node> const& wg,
+                                      Container const&       rules) {
+      static_assert(std::is_same_v<Container::value_type, word_type>);
+
+      std::for_each(rules.cbegin(), rules.cend(), [&wg](word_type const& w) {
+        throw_if_label_out_of_bounds(wg, w); };
     }
 
     template <typename Graph>
@@ -476,6 +502,22 @@ namespace libsemigroups {
         }
       }
       return true;
+    }
+
+    template <typename Node,
+              typename Iterator1,
+              typename Iterator2,
+              typename Iterator3>
+    [[nodiscard]] bool is_compatible(WordGraph<Node> const& wg,
+                                     Iterator1              first_node,
+                                     Iterator2              last_node,
+                                     Iterator3              first_rule,
+                                     Iterator3              last_rule) {
+      throw_if_node_out_of_bounds(wg, first_node, last_node);
+      // TODO(1) be better to use follow_path in is_compatible_no_checks
+      throw_if_label_out_of_bounds(wg, first_rule, last_rule);
+      return is_compatible_no_checks(
+          wg, first_node, last_node, first_rule, last_rule);
     }
 
     template <typename Node, typename Iterator1, typename Iterator2>
