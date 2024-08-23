@@ -298,7 +298,7 @@ namespace libsemigroups {
       // FIXME _word_graph has two mem fns number_nodes_active (in NodeManager)
       // and number_active_nodes (in WordGraph), this is super confusing!
       size_t const N = _word_graph.number_of_nodes_active();
-      _word_graph.disjoint_union_inplace(y._word_graph);
+      _word_graph.disjoint_union_inplace_no_checks(y._word_graph);
       _word_graph.merge_nodes_no_checks(accept_state(), y.initial_state() + N);
       _word_graph.template process_coincidences<detail::DoNotRegisterDefs>();
       _accept_state = UNDEFINED;

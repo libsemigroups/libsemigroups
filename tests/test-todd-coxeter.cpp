@@ -773,11 +773,11 @@ namespace libsemigroups {
 
     REQUIRE(tc.generating_pairs()[0] == 010001100_w);
     auto const& d = tc.word_graph();
-    word_graph::is_compatible(d,
-                              d.cbegin_active_nodes(),
-                              d.cend_active_nodes(),
-                              tc.generating_pairs().cbegin(),
-                              tc.generating_pairs().cend());
+    REQUIRE(word_graph::is_compatible(d,
+                                      d.cbegin_active_nodes(),
+                                      d.cend_active_nodes(),
+                                      tc.generating_pairs().cbegin(),
+                                      tc.generating_pairs().cend()));
     REQUIRE(tc.number_of_classes() == 21);
     REQUIRE(tc.number_of_classes() == 21);
 
@@ -4515,7 +4515,7 @@ namespace libsemigroups {
       presentation::add_rule(p, pow({a}, 3), {a});
     }
     using words::operator+;
-    WordRange    words;
+    WordRange words;
     words.alphabet_size(n).min(0).max(8);
 
     for (size_t a = 0; a < n - 1; ++a) {

@@ -140,9 +140,9 @@ namespace libsemigroups {
     for (size_t k = 0; k < 10; ++k) {
       wg.add_nodes(j);
       for (size_t i = k * j; i < (k + 1) * j - 1; ++i) {
-        wg.set_target(i, 0, i + 1);
+        wg.target(i, 0, i + 1);
       }
-      wg.set_target((k + 1) * j - 1, 0, k * j);
+      wg.target((k + 1) * j - 1, 0, k * j);
     }
 
     Gabow scc(wg);
@@ -195,7 +195,7 @@ namespace libsemigroups {
   //
   //      for (size_t i = 0; i < k; ++i) {
   //        for (size_t j = 0; j < k; ++j) {
-  //          graph.set_target(i,  j,  j);
+  //          graph.target(i,  j,  j);
   //        }
   //      }
   //
@@ -220,9 +220,9 @@ namespace libsemigroups {
   //     for (size_t k = 0; k < 6; ++k) {
   //       graph.add_nodes(j);
   //       for (size_t i = k * j; i < (k + 1) * j - 1; ++i) {
-  //         graph.set_target(i,  0,  i + 1);
+  //         graph.target(i,  0,  i + 1);
   //       }
-  //       graph.set_target((k + 1) * j - 1,  0,  k * j);
+  //       graph.target((k + 1) * j - 1,  0,  k * j);
   //     }
 
   //     for (size_t i = 0; i < graph.number_of_nodes(); ++i) {

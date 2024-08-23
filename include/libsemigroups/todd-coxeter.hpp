@@ -201,7 +201,7 @@ namespace libsemigroups {
         return *this;
       }
 
-      using FelschGraph_::set_target_no_checks;
+      using FelschGraph_::target_no_checks;
       using NodeManagedGraph_::NodeManagedGraph;
 
       Digraph& init(Presentation<word_type> const& p);

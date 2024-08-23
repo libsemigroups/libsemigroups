@@ -233,9 +233,21 @@ namespace libsemigroups {
             _vec.cbegin(), _vec.cend(), that.cbegin(), that.cend());
       }
 
+      bool operator>(DynamicArray2<T, A> const& that) const {
+        return that < *this;
+      }
+
       // Not noexcept, since operator== can throw
       bool operator!=(DynamicArray2<T, A> const& that) const {
         return !operator==(that);
+      }
+
+      bool operator<=(DynamicArray2<T, A> const& that) const {
+        return *this < that || *this == that;
+      }
+
+      bool operator>=(DynamicArray2<T, A> const& that) const {
+        return *this > that || *this == that;
       }
 
       bool empty() const noexcept {
@@ -318,11 +330,11 @@ namespace libsemigroups {
       // Throws if the assignment operator of T throws
       void shrink_rows_to(size_type n) {
         if (n < _nr_rows) {
-          shrink_rows_to(0, n);
+          shrink_rows_to_no_checks(0, n);
         }
       }
 
-      void shrink_rows_to(size_type first, size_type last) {
+      void shrink_rows_to_no_checks(size_type first, size_type last) {
         LIBSEMIGROUPS_ASSERT(first <= last);
         LIBSEMIGROUPS_ASSERT(first <= _nr_rows);
         LIBSEMIGROUPS_ASSERT(last <= _nr_rows);

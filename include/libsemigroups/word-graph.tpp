@@ -293,7 +293,7 @@ namespace libsemigroups {
         e       = 0;
         do {
         rise:
-          std::tie(n, e) = wg.next_target_no_checks(m, e);
+          std::tie(e, n) = wg.next_label_and_target_no_checks(m, e);
           if (n != UNDEFINED) {
             if (seen[n] == 0) {
               // never saw this node before, so dive
@@ -373,7 +373,15 @@ namespace libsemigroups {
 
     template <typename Node>
     void throw_if_any_target_out_of_bounds(WordGraph<Node> const& wg) {
-      for (auto s : wg.nodes()) {
+      throw_if_any_target_out_of_bounds(wg, wg.cbegin_nodes(), wg.cend_nodes());
+    }
+
+    template <typename Node, typename Iterator>
+    void throw_if_any_target_out_of_bounds(WordGraph<Node> const& wg,
+                                           Iterator               first,
+                                           Iterator               last) {
+      for (auto it = first; it != last; ++it) {
+        auto s = *it;
         for (auto [a, t] : wg.labels_and_targets_no_checks(s)) {
           if (t != UNDEFINED && t >= wg.number_of_nodes()) {
             LIBSEMIGROUPS_EXCEPTION(
@@ -434,9 +442,9 @@ namespace libsemigroups {
     template <typename Node, typename Iterator>
     void add_cycle(WordGraph<Node>& wg, Iterator first, Iterator last) {
       for (auto it = first; it < last - 1; ++it) {
-        wg.set_target(*it, 0, *(it + 1));
+        wg.target(*it, 0, *(it + 1));
       }
-      wg.set_target(*(last - 1), 0, *first);
+      wg.target(*(last - 1), 0, *first);
     }
 
     template <typename Node,
@@ -579,7 +587,8 @@ namespace libsemigroups {
 
       do {
         Node1 node;
-        std::tie(node, edge) = wg.next_target_no_checks(nodes.top(), edge);
+        std::tie(edge, node)
+            = wg.next_label_and_target_no_checks(nodes.top(), edge);
         if (node == static_cast<Node1>(target)) {
           return true;
         } else if (node != UNDEFINED) {
@@ -1054,26 +1063,32 @@ namespace libsemigroups {
   }
 
   template <typename Node>
-  void WordGraph<Node>::induced_subgraph_no_checks(Node first, Node last) {
+  WordGraph<Node>& WordGraph<Node>::induced_subgraph_no_checks(Node first,
+                                                               Node last) {
     _nr_nodes = last - first;
-    _dynamic_array_2.shrink_rows_to(first, last);
+    _dynamic_array_2.shrink_rows_to_no_checks(first, last);
     if (first != 0) {
       std::for_each(_dynamic_array_2.begin(),
                     _dynamic_array_2.end(),
-                    [&first](node_type& x) { x -= first; });
+                    [first](node_type& x) { x -= first; });
     }
+    return *this;
   }
 
-  // TODO(1) improve
+  template <typename Node>
+  WordGraph<Node>& WordGraph<Node>::induced_subgraph(Node first, Node last) {
+    word_graph::validate_node(first);
+    if (last != number_of_nodes()) {
+      word_graph::validate_node(last);
+    }
+    return induced_subgraph_no_checks(first, last);
+  }
+
   template <typename Node>
   template <typename Iterator, typename>
-  void WordGraph<Node>::induced_subgraph_no_checks(Iterator first,
-                                                   Iterator last) {
+  WordGraph<Node>& WordGraph<Node>::induced_subgraph_no_checks(Iterator first,
+                                                               Iterator last) {
     size_t const N = std::distance(first, last);
-    // if (*last == *first + N) {
-    //   induced_subgraph_no_checks(*first, *last);
-    //   return;
-    // }
 
     // TODO(1) do this without allocation
     WordGraph<Node>        copy(N, out_degree());
@@ -1081,52 +1096,78 @@ namespace libsemigroups {
                                       static_cast<node_type>(UNDEFINED));
     node_type              next = 0;
 
-    for (auto nit = first; nit != last; ++nit) {
-      if (old_to_new[*nit] == UNDEFINED) {
-        old_to_new[*nit] = next;
+    for (auto n = first; n != last; ++n) {
+      if (old_to_new[*n] == UNDEFINED) {
+        old_to_new[*n] = next;
         next++;
       }
-      for (auto [a, t] : rx::enumerate(targets_no_checks(*nit))) {
+      for (auto [a, t] : labels_and_targets_no_checks(*n)) {
         if (t != UNDEFINED) {
           if (old_to_new[t] == UNDEFINED) {
             old_to_new[t] = next;
             next++;
           }
-          copy.set_target_no_checks(old_to_new[*nit], a, old_to_new[t]);
+          copy.target_no_checks(old_to_new[*n], a, old_to_new[t]);
         }
       }
     }
     std::swap(*this, copy);
+    return *this;
   }
 
   template <typename Node>
-  void WordGraph<Node>::set_target(node_type m, label_type lbl, node_type n) {
+  template <typename Iterator, typename>
+  WordGraph<Node>& WordGraph<Node>::induced_subgraph(Iterator first,
+                                                     Iterator last) {
+    std::for_each(
+        first, last, [this](auto n) { word_graph::validate_node(*this, n); });
+    for (auto it = first; it != last; ++it) {
+      auto s = *it;
+      for (auto [a, t] : labels_and_targets_no_checks(s)) {
+        if (t != UNDEFINED && std::find(first, last, t) == last) {
+          LIBSEMIGROUPS_EXCEPTION(
+              "target out of bounds, the edge with source {} and label {} "
+              "has target {}, which does not belong to the specified range",
+              s,
+              a,
+              t);
+        }
+      }
+    }
+    return induced_subgraph_no_checks(first, last);
+  }
+
+  template <typename Node>
+  WordGraph<Node>& WordGraph<Node>::target(node_type  m,
+                                           label_type lbl,
+                                           node_type  n) {
     word_graph::validate_node(*this, m);
     word_graph::validate_label(*this, lbl);
     word_graph::validate_node(*this, n);
-    set_target_no_checks(m, lbl, n);
+    target_no_checks(m, lbl, n);
+    return *this;
   }
 
   template <typename Node>
-  std::pair<Node, typename WordGraph<Node>::label_type>
-  WordGraph<Node>::next_target_no_checks(
-      Node                                 v,
-      typename WordGraph<Node>::label_type i) const {
-    while (i < out_degree()) {
-      node_type u = _dynamic_array_2.get(v, i);
-      if (u != UNDEFINED) {
-        return std::make_pair(u, i);
+  std::pair<typename WordGraph<Node>::label_type, Node>
+  WordGraph<Node>::next_label_and_target_no_checks(
+      Node                                 s,
+      typename WordGraph<Node>::label_type a) const {
+    while (a < out_degree()) {
+      node_type t = _dynamic_array_2.get(s, a);
+      if (t != UNDEFINED) {
+        return std::make_pair(a, t);
       }
-      i++;
+      a++;
     }
     return std::make_pair(UNDEFINED, UNDEFINED);
   }
 
   template <typename Node>
   std::pair<Node, typename WordGraph<Node>::label_type>
-  WordGraph<Node>::next_target(node_type v, label_type i) const {
-    word_graph::validate_node(*this, v);
-    return next_target_no_checks(v, i);
+  WordGraph<Node>::next_label_and_target(node_type s, label_type a) const {
+    word_graph::validate_node(*this, s);
+    return next_label_and_target_no_checks(s, a);
   }
 
   template <typename Node>
@@ -1140,6 +1181,11 @@ namespace libsemigroups {
   template <typename Node>
   size_t WordGraph<Node>::number_of_edges(node_type n) const {
     word_graph::validate_node(*this, n);
+    return number_of_edges_no_checks(n);
+  }
+
+  template <typename Node>
+  size_t WordGraph<Node>::number_of_edges_no_checks(node_type n) const {
     return out_degree()
            - std::count(_dynamic_array_2.cbegin_row(n),
                         _dynamic_array_2.cend_row(n),
@@ -1147,28 +1193,47 @@ namespace libsemigroups {
   }
 
   template <typename Node>
-  void WordGraph<Node>::remove_label_no_checks(label_type lbl) {
+  WordGraph<Node>& WordGraph<Node>::remove_target(node_type s, label_type a) {
+    word_graph::validate_node(*this, s);
+    word_graph::validate_label(*this, a);
+    return remove_target_no_checks(s, a);
+  }
+
+  template <typename Node>
+  WordGraph<Node>& WordGraph<Node>::remove_label_no_checks(label_type lbl) {
     if (lbl == _degree - 1) {
       _degree--;
     } else {
       _dynamic_array_2.erase_column(lbl);
     }
+    return *this;
   }
 
   template <typename Node>
-  void WordGraph<Node>::remove_label(label_type lbl) {
+  WordGraph<Node>& WordGraph<Node>::remove_label(label_type lbl) {
     word_graph::validate_label(*this, lbl);
-    remove_label_no_checks(lbl);
+    return remove_label_no_checks(lbl);
   }
 
   template <typename Node>
-  void WordGraph<Node>::reserve(size_type m, size_type n) const {
+  WordGraph<Node>& WordGraph<Node>::reserve(size_type m, size_type n) {
     if (n > _dynamic_array_2.number_of_cols()) {
       _dynamic_array_2.add_cols(n - _dynamic_array_2.number_of_cols());
     }
     if (m > _dynamic_array_2.number_of_rows()) {
       _dynamic_array_2.add_rows(m - _dynamic_array_2.number_of_rows());
     }
+    return *this;
+  }
+
+  template <typename Node>
+  WordGraph<Node>& WordGraph<Node>::swap_targets(node_type  u,
+                                                 node_type  v,
+                                                 label_type a) {
+    word_graph::validate_node(*this, u);
+    word_graph::validate_node(*this, v);
+    word_graph::validate_label(*this, a);
+    return swap_targets_no_checks(u, v, a);
   }
 
   template <typename Node>
@@ -1197,6 +1262,12 @@ namespace libsemigroups {
   WordGraph<Node>::targets(node_type n) const {
     word_graph::validate_node(*this, n);
     return targets_no_checks(n);
+  }
+
+  template <typename Node>
+  auto WordGraph<Node>::labels_and_targets(node_type n) const {
+    word_graph::validate_node(*this, n);
+    return labels_and_targets_no_checks(n);
   }
 
   //////////////////////////////////////////////////////////////////////////////
@@ -1230,7 +1301,7 @@ namespace libsemigroups {
       for (size_t j = 0; j < (edges.begin() + i)->size(); ++j) {
         auto val = *((edges.begin() + i)->begin() + j);
         if (val != UNDEFINED) {
-          result.set_target(i, j, *((edges.begin() + i)->begin() + j));
+          result.target(i, j, *((edges.begin() + i)->begin() + j));
         }
       }
     }
@@ -1390,7 +1461,7 @@ namespace libsemigroups {
     xy.init(_uf.number_of_blocks(), x.out_degree());
     for (Node s = 0; s < xnum_nodes_reachable_from_root; ++s) {
       for (auto [a, t] : x.labels_and_targets_no_checks(s)) {
-        xy.set_target_no_checks(_uf.find(s), a, _uf.find(t));
+        xy.target_no_checks(_uf.find(s), a, _uf.find(t));
       }
     }
   }
@@ -1453,7 +1524,7 @@ namespace libsemigroups {
                              y.target_no_checks(source.second, a));
           auto [it, inserted] = _lookup.emplace(target, next);
 
-          xy.set_target_no_checks(xy_source, a, it->second);
+          xy.target_no_checks(xy_source, a, it->second);
           if (inserted) {
             next++;
             _todo_new.push_back(std::move(target));

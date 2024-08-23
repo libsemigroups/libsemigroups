@@ -45,11 +45,14 @@ namespace libsemigroups {
       return *this;
     }
 
-    void set_target_no_checks(presentation_type const& p,
-                              node_type                from,
-                              label_type               letter,
-                              node_type                to) {
-      WordGraphWithSources::set_target_no_checks(from, letter, to);
+    using WordGraph<node_type>::target;
+    using WordGraph<node_type>::target_no_checks;
+
+    void target_no_checks(presentation_type const& p,
+                          node_type                from,
+                          label_type               letter,
+                          node_type                to) {
+      WordGraphWithSources::target_no_checks(from, letter, to);
       if constexpr (IsInversePresentation<presentation_type>) {
         // convert l (which is an index)
         // -> actual letter
@@ -62,7 +65,7 @@ namespace libsemigroups {
           process_coincidences<detail::DoNotRegisterDefs>();
           return;
         }
-        WordGraphWithSources::set_target_no_checks(to, ll, from);
+        WordGraphWithSources::target_no_checks(to, ll, from);
       }
     }
 
@@ -83,7 +86,7 @@ namespace libsemigroups {
         node_type d = target_no_checks(c, *it);
         if (d == UNDEFINED) {
           d = new_node();
-          StephenGraph::set_target_no_checks(p, c, *it, d);
+          StephenGraph::target_no_checks(p, c, *it, d);
           result = true;
         }
         c = d;
@@ -91,7 +94,7 @@ namespace libsemigroups {
       return std::make_pair(result, c);
     }
 
-    void disjoint_union_inplace(StephenGraph const& that) {
+    void disjoint_union_inplace_no_checks(StephenGraph const& that) {
       // TODO throw exception if that.labels() != this->labels()
       // TODO the following requires that this and that are standardized
       // and that this and that are run to the end
@@ -104,7 +107,7 @@ namespace libsemigroups {
         for (auto a : that.labels()) {
           auto m = that.target_no_checks(n, a);
           if (m != UNDEFINED) {
-            BaseGraph::set_target_no_checks(n + N, a, m + N);
+            BaseGraph::target_no_checks(n + N, a, m + N);
           }
         }
       }
@@ -273,7 +276,7 @@ namespace libsemigroups {
             if (v_end == UNDEFINED) {
               LIBSEMIGROUPS_ASSERT(!it->empty());
               did_def = true;
-              _word_graph.set_target_no_checks(
+              _word_graph.target_no_checks(
                   presentation(), c, it->back(), u_end);
             } else if (u_end != v_end) {
               did_def = true;
@@ -300,7 +303,7 @@ namespace libsemigroups {
               if (u_end == UNDEFINED) {
                 LIBSEMIGROUPS_ASSERT(!it->empty());
                 did_def = true;
-                _word_graph.set_target_no_checks(
+                _word_graph.target_no_checks(
                     presentation(), c, it->back(), v_end);
               } else if (u_end != v_end) {
                 did_def = true;

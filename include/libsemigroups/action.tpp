@@ -231,11 +231,11 @@ namespace libsemigroups {
           auto it = _map.find(_tmp_point);
           if (it == _map.end()) {
             _graph.add_nodes(1);
-            _graph.set_target(i, j, _orb.size());
+            _graph.target(i, j, _orb.size());
             _orb.push_back(this->internal_copy(_tmp_point));
             _map.emplace(_orb.back(), _orb.size() - 1);
           } else {
-            _graph.set_target(i, j, (*it).second);
+            _graph.target(i, j, (*it).second);
           }
         }
       }
@@ -253,11 +253,11 @@ namespace libsemigroups {
         auto it = _map.find(_tmp_point);
         if (it == _map.end()) {
           _graph.add_nodes(1);
-          _graph.set_target(_pos, j, _orb.size());
+          _graph.target(_pos, j, _orb.size());
           _orb.push_back(this->internal_copy(_tmp_point));
           _map.emplace(_orb.back(), _orb.size() - 1);
         } else {
-          _graph.set_target(_pos, j, (*it).second);
+          _graph.target(_pos, j, (*it).second);
         }
       }
       if (report()) {

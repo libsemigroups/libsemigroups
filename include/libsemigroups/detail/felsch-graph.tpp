@@ -187,7 +187,7 @@ namespace libsemigroups {
 
     template <typename Word, typename Node, typename Definitions>
     template <bool RegDefs>
-    void FelschGraph<Word, Node, Definitions>::set_target_no_checks(
+    void FelschGraph<Word, Node, Definitions>::target_no_checks(
         node_type  c,
         label_type x,
         node_type  d) noexcept {
@@ -197,7 +197,7 @@ namespace libsemigroups {
       if constexpr (RegDefs) {
         _definitions.emplace_back(c, x);
       }
-      WordGraphWithSources<Node>::set_target_no_checks(c, x, d);
+      WordGraphWithSources<Node>::target_no_checks(c, x, d);
     }
 
     template <typename Word, typename Node, typename Definitions>
@@ -233,10 +233,10 @@ namespace libsemigroups {
 
       if (xa == UNDEFINED && yb != UNDEFINED) {
         LIBSEMIGROUPS_ASSERT(a < out_degree());
-        set_target_no_checks<RegDefs>(x, a, yb);
+        target_no_checks<RegDefs>(x, a, yb);
       } else if (xa != UNDEFINED && yb == UNDEFINED) {
         LIBSEMIGROUPS_ASSERT(b < out_degree());
-        set_target_no_checks<RegDefs>(y, b, xa);
+        target_no_checks<RegDefs>(y, b, xa);
       } else if (xa != UNDEFINED && yb != UNDEFINED && xa != yb) {
         return incompat(xa, yb);
       } else if (xa == UNDEFINED && yb == UNDEFINED) {

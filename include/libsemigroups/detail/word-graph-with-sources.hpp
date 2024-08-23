@@ -95,14 +95,24 @@ namespace libsemigroups {
 
       // the template is for uniformity of interface with FelschGraph
       template <bool = true>
-      void set_target_no_checks(node_type  c,
-                                label_type x,
-                                node_type  d) noexcept {
+      void target_no_checks(node_type c, label_type x, node_type d) noexcept {
         LIBSEMIGROUPS_ASSERT(c < number_of_nodes());
         LIBSEMIGROUPS_ASSERT(x < out_degree());
         LIBSEMIGROUPS_ASSERT(d < number_of_nodes());
-        WordGraph<node_type>::set_target_no_checks(c, x, d);
+        WordGraph<node_type>::target_no_checks(c, x, d);
         add_source_no_checks(d, x, c);
+      }
+
+      // Can't use using WordGraph<node_type>::target here because it doesn't
+      // work (compiles but run time error, probably confusing the function
+      // above with the WordGraph<node_type> function of the same name
+      [[nodiscard]] node_type target(node_type v, label_type lbl) const {
+        return WordGraph<node_type>::target(v, lbl);
+      }
+
+      [[nodiscard]] node_type target_no_checks(node_type  v,
+                                               label_type lbl) const {
+        return WordGraph<node_type>::target_no_checks(v, lbl);
       }
 
       void remove_target_no_checks(node_type c, label_type x) noexcept {
@@ -188,13 +198,13 @@ namespace libsemigroups {
       // }
 
       // TODO to cpp/tpp file
-      void disjoint_union_inplace(WordGraph<Node> const& that) {
+      void disjoint_union_inplace_no_checks(WordGraph<Node> const& that) {
         size_t N = number_of_nodes();
         add_nodes(that.number_of_nodes());
         for (auto s : that.nodes()) {
           for (auto [a, t] : that.labels_and_targets_no_checks(s)) {
             if (t != UNDEFINED) {
-              set_target_no_checks(s + N, a, t + N);
+              target_no_checks(s + N, a, t + N);
             }
           }
         }

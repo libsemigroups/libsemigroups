@@ -38,7 +38,7 @@ namespace libsemigroups {
 
     for (Node i = old_nodes; i < digraph.number_of_nodes(); ++i) {
       for (Node j = old_nodes; j < digraph.number_of_nodes(); ++j) {
-        digraph.set_target(i, j - old_nodes, j);
+        digraph.target(i, j - old_nodes, j);
       }
     }
   }
@@ -55,14 +55,14 @@ namespace libsemigroups {
     WordGraph<Node> ad;
     ad.add_nodes(std::pow(2, number_of_levels) - 1);
     ad.add_to_out_degree(2);
-    ad.set_target(0, 0, 1);
-    ad.set_target(0, 1, 2);
+    ad.target(0, 0, 1);
+    ad.target(0, 1, 2);
 
     for (size_t i = 2; i <= number_of_levels; ++i) {
       Node counter = std::pow(2, i - 1) - 1;
       for (Node j = std::pow(2, i - 2) - 1; j < std::pow(2, i - 1) - 1; ++j) {
-        ad.set_target(j, 0, counter++);
-        ad.set_target(j, 1, counter++);
+        ad.target(j, 0, counter++);
+        ad.target(j, 1, counter++);
       }
     }
     return ad;

@@ -145,7 +145,7 @@ namespace libsemigroups {
       for (; it < last; ++it) {
         LIBSEMIGROUPS_ASSERT(target_no_checks(c, *it) == UNDEFINED);
         node_type d = new_node();
-        BaseGraph::template set_target_no_checks<RegisterDefs>(c, *it, d);
+        BaseGraph::template target_no_checks<RegisterDefs>(c, *it, d);
         result = true;
         c      = d;
       }
@@ -219,7 +219,7 @@ namespace libsemigroups {
             if (v != UNDEFINED) {
               node_type const u = target_no_checks(min, i);
               if (u == UNDEFINED) {
-                WordGraph<node_type>::set_target_no_checks(min, i, v);
+                WordGraph<node_type>::target_no_checks(min, i, v);
               } else if (u != v) {
                 _coinc.emplace(u, v);
               }
@@ -248,7 +248,7 @@ namespace libsemigroups {
               if constexpr (RegisterDefs) {
                 this->definitions().emplace_back(c, x);
               }
-              WordGraph<node_type>::set_target_no_checks(c, x, d);
+              WordGraph<node_type>::target_no_checks(c, x, d);
             }
             // Must re-add the source, even if we don't need to reset
             // the target or stack the deduction

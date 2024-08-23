@@ -581,7 +581,7 @@ namespace libsemigroups {
       // WordGraph
       size_type start = _felsch_graph.definitions().size();
 
-      _felsch_graph.set_target_no_checks(
+      _felsch_graph.target_no_checks(
           current.source, current.generator, current.target);
 
       auto first = _sims1or2->include().cbegin();
@@ -1378,7 +1378,7 @@ namespace libsemigroups {
                 = _reconstructed_word_graph.target_no_checks(_source, _gen);
             LIBSEMIGROUPS_ASSERT(target1 != UNDEFINED);
             if (target2 == UNDEFINED) {
-              _reconstructed_word_graph.set_target_no_checks(
+              _reconstructed_word_graph.target_no_checks(
                   _source, _gen, target1);
               if (_tree.parent_no_checks(target1) == UNDEFINED
                   && target1 > _source) {
