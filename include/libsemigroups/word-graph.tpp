@@ -19,7 +19,7 @@
 // This file contains an implementation of word graphs (which are basically
 // deterministic automata without initial or accept states).
 
-// TODO(0) re-order the file as per hpp
+// TODO(0) re-order to be in alphabetical order
 
 #include "libsemigroups/exception.hpp"
 #include "libsemigroups/word-graph.hpp"
@@ -355,14 +355,13 @@ namespace libsemigroups {
 #endif
     }  // namespace detail
 
-    //! No doc
     // not noexcept because it throws an exception!
     // Two node types so we can use this function with literal integers in the
     // tests.
     template <typename Node1, typename Node2>
     void throw_if_node_out_of_bounds(WordGraph<Node1> const& wg, Node2 v) {
-      // TODO(0) check that Node2 is compatible with wg.number_of_nodes(), i.e.
-      // doesn't overflow or whatever
+      static_assert(sizeof(Node2) <= sizeof(Node1));
+
       if (static_cast<Node1>(v) >= wg.number_of_nodes()) {
         LIBSEMIGROUPS_EXCEPTION("node value out of bounds, expected value "
                                 "in the range [0, {}), got {}",
@@ -396,7 +395,6 @@ namespace libsemigroups {
       }
     }
 
-    //! No doc
     // not noexcept because it throws an exception!
     template <typename Node>
     void
@@ -1401,8 +1399,6 @@ namespace libsemigroups {
     return to_word_graph<Node>(num_nodes, std::vector<std::vector<Node>>(il));
   }
 
-  namespace word_graph::detail {}  // namespace word_graph::detail
-
   namespace detail {
     template <typename Subclass>
     template <typename Node1, typename Node2>
@@ -1564,7 +1560,8 @@ namespace libsemigroups {
 
     if (ynum_nodes_reachable_from_root >= xnum_nodes_reachable_from_root) {
       return false;
-    }  // TODO(0) static_assert that it's ok to cast Node2 -> Node1
+    }
+
     run(x,
         xnum_nodes_reachable_from_root,
         static_cast<Node1>(xroot),
@@ -1625,4 +1622,87 @@ namespace libsemigroups {
     xy.induced_subgraph_no_checks(0, next);
   }
 
+  template <typename Node1, typename Node2>
+  [[nodiscard]] bool
+  Meeter::is_subrelation_no_checks(WordGraph<Node1> const& x,
+
+                                   size_t xnum_nodes_reachable_from_root,
+                                   Node2  xroot,
+                                   WordGraph<Node1> const& y,
+                                   size_t ynum_nodes_reachable_from_root,
+                                   Node2  yroot) {
+    // If x is a subrelation of y, then the meet of x and y must be x.
+    if (ynum_nodes_reachable_from_root >= xnum_nodes_reachable_from_root) {
+      return false;
+    }
+    auto xy = call_no_checks(x,
+                             xnum_nodes_reachable_from_root,
+                             xroot,
+                             y,
+                             ynum_nodes_reachable_from_root,
+                             yroot);
+    return xy.number_of_nodes() == xnum_nodes_reachable_from_root;
+  }
+
+  template <typename Node1, typename Node2>
+  void spanning_tree_no_checks(WordGraph<Node1> const& wg,
+                               Node2                   root,
+                               Forest&                 f) {
+    using node_type = typename WordGraph<Node1>::node_type;
+    f.init(1);
+
+    std::queue<node_type> queue;
+    queue.push(static_cast<node_type>(root));
+    do {
+      node_type s = queue.front();
+      for (auto [a, t] : wg.labels_and_targets_no_checks(s)) {
+        if (t != UNDEFINED && t != static_cast<node_type>(root)) {
+          if (t >= f.number_of_nodes()) {
+            f.add_nodes(t - f.number_of_nodes() + 1);
+          }
+          if (f.parent_no_checks(t) == UNDEFINED) {
+            f.set_parent_and_label_no_checks(t, s, a);
+            queue.push(t);
+          }
+        }
+      }
+      queue.pop();
+    } while (!queue.empty());
+  }
+
+  template <typename Node1, typename Node2>
+  void spanning_tree(WordGraph<Node1> const& wg, Node2 root, Forest& f) {
+    throw_if_node_out_of_bounds(wg, root);
+    // TODO(1) be better to put a version of spanning_tree_no_checks into the
+    // detail namespace that has a template parameter CheckTarget that checks
+    // that the target isn't out of bounds in this can, and does nothing in
+    // the nochecks case.
+    auto reachable = nodes_reachable_from_no_checks(wg, root);
+    throw_if_any_target_out_of_bounds(wg, reachable.begin(), reachable.end());
+    return spanning_tree_no_checks(wg, root, f);
+  }
+
+  template <typename Node1, typename Node2>
+  [[nodiscard]] Forest spanning_tree(WordGraph<Node1> const& wg, Node2 root) {
+    Forest f;
+    spanning_tree(wg, root, f);
+    return f;
+  }
+
+  template <typename Node1, typename Node2>
+  [[nodiscard]] Forest spanning_tree_no_checks(WordGraph<Node1> const& wg,
+                                               Node2                   root) {
+    Forest f;
+    spanning_tree_no_checks(wg, root, f);
+    return f;
+  }
+
+  template <typename Node>
+  [[nodiscard]] std::string to_human_readable_repr(WordGraph<Node> const& wg) {
+    // TODO(2) could be more elaborate, include complete, etc
+    return fmt::format("<WordGraph with {} nodes, {} edges, & out-degree {}>",
+                       wg.number_of_nodes(),
+                       wg.number_of_edges(),
+                       wg.out_degree());
+  }
 }  // namespace libsemigroups
