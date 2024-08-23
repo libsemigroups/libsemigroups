@@ -931,18 +931,15 @@ namespace libsemigroups {
     //! \brief Blurb
     //!
     //! This function
-    // TODO(0) rename -> throw_if_node_out_of_bounds
     // not noexcept because it throws an exception!
     template <typename Node1, typename Node2>
     void throw_if_node_out_of_bounds(WordGraph<Node1> const& wg, Node2 v);
 
     //! TODO(doc)
-    // TODO(0) add throw_if_any_target_out_of_bounds(wg, node);
     template <typename Node>
     void throw_if_any_target_out_of_bounds(WordGraph<Node> const& wg);
 
     //! TODO(doc)
-    // TODO(0) add throw_if_any_target_out_of_bounds(wg, node);
     template <typename Node, typename Iterator>
     void throw_if_any_target_out_of_bounds(WordGraph<Node> const& wg,
                                            Iterator               first,
@@ -950,10 +947,9 @@ namespace libsemigroups {
 
     //! TODO(doc)
     // not noexcept because it throws an exception!
-    // TODO(0) rename -> throw_if_label_out_of_bounds
     template <typename Node>
-    void validate_label(WordGraph<Node> const&               wg,
-                        typename WordGraph<Node>::label_type lbl);
+    void throw_if_label_out_of_bounds(WordGraph<Node> const&               wg,
+                                      typename WordGraph<Node>::label_type lbl);
 
     //////////////////////////////////////////////////////////////////////////
     // WordGraph - helper functions - attributes

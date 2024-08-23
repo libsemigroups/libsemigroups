@@ -399,8 +399,9 @@ namespace libsemigroups {
     //! No doc
     // not noexcept because it throws an exception!
     template <typename Node>
-    void validate_label(WordGraph<Node> const&               wg,
-                        typename WordGraph<Node>::label_type lbl) {
+    void
+    throw_if_label_out_of_bounds(WordGraph<Node> const&               wg,
+                                 typename WordGraph<Node>::label_type lbl) {
       if (lbl >= wg.out_degree()) {
         LIBSEMIGROUPS_EXCEPTION("label value out of bounds, expected value in "
                                 "the range [0, {}), got {}",
@@ -1143,7 +1144,7 @@ namespace libsemigroups {
                                            label_type lbl,
                                            node_type  n) {
     word_graph::throw_if_node_out_of_bounds(*this, m);
-    word_graph::validate_label(*this, lbl);
+    word_graph::throw_if_label_out_of_bounds(*this, lbl);
     word_graph::throw_if_node_out_of_bounds(*this, n);
     target_no_checks(m, lbl, n);
     return *this;
@@ -1196,7 +1197,7 @@ namespace libsemigroups {
   template <typename Node>
   WordGraph<Node>& WordGraph<Node>::remove_target(node_type s, label_type a) {
     word_graph::throw_if_node_out_of_bounds(*this, s);
-    word_graph::validate_label(*this, a);
+    word_graph::throw_if_label_out_of_bounds(*this, a);
     return remove_target_no_checks(s, a);
   }
 
@@ -1212,7 +1213,7 @@ namespace libsemigroups {
 
   template <typename Node>
   WordGraph<Node>& WordGraph<Node>::remove_label(label_type lbl) {
-    word_graph::validate_label(*this, lbl);
+    word_graph::throw_if_label_out_of_bounds(*this, lbl);
     return remove_label_no_checks(lbl);
   }
 
@@ -1233,14 +1234,14 @@ namespace libsemigroups {
                                                  label_type a) {
     word_graph::throw_if_node_out_of_bounds(*this, u);
     word_graph::throw_if_node_out_of_bounds(*this, v);
-    word_graph::validate_label(*this, a);
+    word_graph::throw_if_label_out_of_bounds(*this, a);
     return swap_targets_no_checks(u, v, a);
   }
 
   template <typename Node>
   Node WordGraph<Node>::target(node_type v, label_type lbl) const {
     word_graph::throw_if_node_out_of_bounds(*this, v);
-    word_graph::validate_label(*this, lbl);
+    word_graph::throw_if_label_out_of_bounds(*this, lbl);
     return _dynamic_array_2.get(v, lbl);
   }
 

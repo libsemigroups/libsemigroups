@@ -577,10 +577,10 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("WordGraph",
                           "030",
-                          "validate_label | 20 node path",
+                          "throw_if_label_out_of_bounds | 20 node path",
                           "[quick]") {
     WordGraph<size_t> wg = path(20);
-    REQUIRE_THROWS_AS(word_graph::validate_label(wg, 10),
+    REQUIRE_THROWS_AS(word_graph::throw_if_label_out_of_bounds(wg, 10),
                       LibsemigroupsException);
   }
 
