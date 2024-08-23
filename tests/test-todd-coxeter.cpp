@@ -157,7 +157,7 @@ namespace libsemigroups {
       auto const& d = tc.word_graph();
       REQUIRE(word_graph::is_complete(
           d, d.cbegin_active_nodes(), d.cend_active_nodes()));
-      REQUIRE(word_graph::is_compatible(d,
+      REQUIRE(word_graph::is_compatible_no_checks(d,
                                         d.cbegin_active_nodes(),
                                         d.cend_active_nodes(),
                                         p.rules.cbegin(),
@@ -165,7 +165,7 @@ namespace libsemigroups {
       tc.shrink_to_fit();
       REQUIRE(word_graph::is_complete(
           d, d.cbegin_active_nodes(), d.cend_active_nodes()));
-      REQUIRE(word_graph::is_compatible(d,
+      REQUIRE(word_graph::is_compatible_no_checks(d,
                                         d.cbegin_active_nodes(),
                                         d.cend_active_nodes(),
                                         p.rules.cbegin(),
@@ -773,7 +773,7 @@ namespace libsemigroups {
 
     REQUIRE(tc.generating_pairs()[0] == 010001100_w);
     auto const& d = tc.word_graph();
-    REQUIRE(word_graph::is_compatible(d,
+    REQUIRE(word_graph::is_compatible_no_checks(d,
                                       d.cbegin_active_nodes(),
                                       d.cend_active_nodes(),
                                       tc.generating_pairs().cbegin(),
@@ -1610,7 +1610,7 @@ namespace libsemigroups {
     auto const& d = tc.word_graph();
     REQUIRE(!word_graph::is_complete(
         d, d.cbegin_active_nodes(), d.cend_active_nodes()));
-    REQUIRE(word_graph::is_compatible(d,
+    REQUIRE(word_graph::is_compatible_no_checks(d,
                                       d.cbegin_active_nodes(),
                                       d.cend_active_nodes(),
                                       p.rules.cbegin(),
@@ -1620,7 +1620,7 @@ namespace libsemigroups {
             == std::vector<word_type>({0_w}));
     REQUIRE(word_graph::is_complete(
         d, d.cbegin_active_nodes(), d.cend_active_nodes()));
-    REQUIRE(word_graph::is_compatible(d,
+    REQUIRE(word_graph::is_compatible_no_checks(d,
                                       d.cbegin_active_nodes(),
                                       d.cend_active_nodes(),
                                       p.rules.cbegin(),
@@ -1635,7 +1635,7 @@ namespace libsemigroups {
     auto const& dd = copy.word_graph();
     REQUIRE(word_graph::is_complete(
         dd, dd.cbegin_active_nodes(), dd.cend_active_nodes()));
-    REQUIRE(word_graph::is_compatible(dd,
+    REQUIRE(word_graph::is_compatible_no_checks(dd,
                                       dd.cbegin_active_nodes(),
                                       dd.cend_active_nodes(),
                                       p.rules.cbegin(),
@@ -1712,7 +1712,7 @@ namespace libsemigroups {
     tc.init(twosided, p);
 
     auto const& d = tc.word_graph();
-    REQUIRE(word_graph::is_compatible(d,
+    REQUIRE(word_graph::is_compatible_no_checks(d,
                                       d.cbegin_active_nodes(),
                                       d.cend_active_nodes(),
                                       p.rules.cbegin(),

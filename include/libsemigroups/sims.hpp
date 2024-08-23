@@ -2354,7 +2354,7 @@ namespace libsemigroups {
       auto       last  = wg.cbegin_nodes() + N;
 
       if (!word_graph::is_complete(wg, first, last)
-          || !word_graph::is_compatible(
+          || !word_graph::is_compatible_no_checks(
               wg, first, last, p.rules.cbegin(), p.rules.cend())) {
         return false;
       }
@@ -2413,7 +2413,7 @@ namespace libsemigroups {
       auto       last  = wg.cbegin_nodes() + N;
 
       for (auto const& rule : right_generating_pairs(p, wg)) {
-        if (!word_graph::is_compatible(
+        if (!word_graph::is_compatible_no_checks(
                 wg, first, last, rule.first, rule.second)) {
           return false;
         }

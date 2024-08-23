@@ -1315,11 +1315,12 @@ namespace libsemigroups {
               typename Iterator1,
               typename Iterator2,
               typename Iterator3>
-    [[nodiscard]] bool is_compatible(WordGraph<Node> const& wg,
-                                     Iterator1              first_node,
-                                     Iterator2              last_node,
-                                     Iterator3              first_rule,
-                                     Iterator3              last_rule);
+    [[nodiscard]] bool is_compatible_no_checks(WordGraph<Node> const& wg,
+                                               Iterator1 first_node,
+                                               Iterator2 last_node,
+                                               Iterator3 first_rule,
+                                               Iterator3 last_rule);
+
     //////////////////////////////////////////////////////////////////////////
     // FRONTIER
     //////////////////////////////////////////////////////////////////////////

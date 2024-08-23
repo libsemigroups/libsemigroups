@@ -1374,7 +1374,7 @@ namespace libsemigroups {
 
     REQUIRE(T.number_of_long_rules() == 0);
     T.for_each(3, [&](auto const& wg) {
-      num += word_graph::is_compatible(wg,
+      num += word_graph::is_compatible_no_checks(wg,
                                        wg.cbegin_nodes(),
                                        wg.cbegin_nodes()
                                            + wg.number_of_active_nodes(),
@@ -1390,7 +1390,7 @@ namespace libsemigroups {
     REQUIRE(rules.size() == 18);
     S.for_each(3, [&](auto const& wg) {
       REQUIRE(wg.out_degree() == 6);
-      num += word_graph::is_compatible(wg,
+      num += word_graph::is_compatible_no_checks(wg,
                                        wg.cbegin_nodes(),
                                        wg.cbegin_nodes()
                                            + wg.number_of_active_nodes(),
@@ -1411,7 +1411,7 @@ namespace libsemigroups {
     REQUIRE(S.number_of_congruences(3) == 14);
     S.for_each(3, [&](auto const& wg) {
       REQUIRE(wg.out_degree() == 6);
-      num += word_graph::is_compatible(wg,
+      num += word_graph::is_compatible_no_checks(wg,
                                        wg.cbegin_nodes(),
                                        wg.cend_nodes(),
                                        rules.cbegin(),
@@ -3929,7 +3929,7 @@ namespace libsemigroups {
     // // REQUIRE(pp.rules == std::vector<word_type>());
     // for (auto it = pp.rules.cbegin(); it < pp.rules.cend(); it += 2) {
     //   fmt::print("i = {}\n", i);
-    //   REQUIRE(word_graph::is_compatible(wg_found,
+    //   REQUIRE(word_graph::is_compatible_no_checks(wg_found,
     //                                     wg_found.cbegin_nodes(),
     //                                     wg_found.cbegin_nodes() + 4,
     //                                     it,
