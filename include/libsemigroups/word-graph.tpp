@@ -882,6 +882,38 @@ namespace libsemigroups {
       return result;
     }
 
+    template <typename Node>
+    [[nodiscard]] bool equal_to_no_checks(WordGraph<Node> const& x,
+                                          WordGraph<Node> const& y,
+                                          Node                   first,
+                                          Node                   last) {
+      using label_type = typename WordGraph<Node>::label_type;
+      if (x.out_degree() != y.out_degree()) {
+        return false;
+      }
+
+      for (auto n = first; n != last; ++n) {
+        for (label_type a = 0; a < x.out_degree(); ++a) {
+          if (x.target_no_checks(n, a) != y.target_no_checks(n, a)) {
+            return false;
+          }
+        }
+      }
+      return true;
+    }
+
+    template <typename Node>
+    [[nodiscard]] bool equal_to(WordGraph<Node> const& x,
+                                WordGraph<Node> const& y,
+                                Node                   first,
+                                Node                   last) {
+      throw_if_node_out_of_bounds(x, first);
+      throw_if_node_out_of_bounds(x, last - 1);
+      throw_if_node_out_of_bounds(y, first);
+      throw_if_node_out_of_bounds(y, last - 1);
+      return equal_to_no_checks(x, y, first, last);
+    }
+
   }  // namespace word_graph
 
   //////////////////////////////////////////////////////////////////////////////
@@ -1172,6 +1204,24 @@ namespace libsemigroups {
                               out_degree());
     }
     return disjoint_union_inplace_no_checks(that);
+  }
+
+  template <typename Node>
+  WordGraph<Node>&
+  WordGraph<Node>::permute_nodes_no_checks(std::vector<node_type> const& p,
+                                           std::vector<node_type> const& q,
+                                           size_t                        m) {
+    // p : new -> old, q = p ^ -1: old -> new
+    node_type i = 0;
+    while (i < m) {
+      for (auto [a, t] : labels_and_targets_no_checks(p[i])) {
+        target_no_checks(p[i], a, (t == UNDEFINED ? t : q[t]));
+      }
+      i++;
+    }
+    // Permute the rows themselves
+    apply_row_permutation(p);
+    return *this;
   }
 
   template <typename Node>
@@ -1510,6 +1560,8 @@ namespace libsemigroups {
                                         WordGraph<Node1> const& y,
                                         size_t ynum_nodes_reachable_from_root,
                                         Node2  yroot) {
+    static_assert(sizeof(Node2) <= sizeof(Node1));
+
     if (ynum_nodes_reachable_from_root >= xnum_nodes_reachable_from_root) {
       return false;
     }  // TODO(0) static_assert that it's ok to cast Node2 -> Node1

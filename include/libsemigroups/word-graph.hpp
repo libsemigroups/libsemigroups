@@ -853,23 +853,10 @@ namespace libsemigroups {
     WordGraph& disjoint_union_inplace(WordGraph<Node> const& that);
 
     // TODO(doc)
-    // TODO(0) move to tpp
     // requires access to apply_row_permutation so can't be helper
     WordGraph& permute_nodes_no_checks(std::vector<node_type> const& p,
                                        std::vector<node_type> const& q,
-                                       size_t                        m) {
-      // p : new -> old, q = p ^ -1: old -> new
-      node_type i = 0;
-      while (i < m) {
-        for (auto [a, t] : labels_and_targets_no_checks(p[i])) {
-          target_no_checks(p[i], a, (t == UNDEFINED ? t : q[t]));
-        }
-        i++;
-      }
-      // Permute the rows themselves
-      apply_row_permutation(p);
-      return *this;
-    }
+                                       size_t                        m);
 
     // TODO(doc)
     WordGraph& permute_nodes_no_checks(std::vector<node_type> const& p,
@@ -1492,39 +1479,18 @@ namespace libsemigroups {
     [[nodiscard]] Dot dot(WordGraph<Node> const& wg);
 
     //! TODO(doc)
-    // TODO(0) to tpp
     template <typename Node>
     [[nodiscard]] bool equal_to_no_checks(WordGraph<Node> const& x,
                                           WordGraph<Node> const& y,
                                           Node                   first,
-                                          Node                   last) {
-      using label_type = typename WordGraph<Node>::label_type;
-      if (x.out_degree() != y.out_degree()) {
-        return false;
-      }
+                                          Node                   last);
 
-      for (auto n = first; n != last; ++n) {
-        for (label_type a = 0; a < x.out_degree(); ++a) {
-          if (x.target_no_checks(n, a) != y.target_no_checks(n, a)) {
-            return false;
-          }
-        }
-      }
-      return true;
-    }
-
-    // TODO(0) to tpp
+    //! TODO(doc)
     template <typename Node>
     [[nodiscard]] bool equal_to(WordGraph<Node> const& x,
                                 WordGraph<Node> const& y,
                                 Node                   first,
-                                Node                   last) {
-      throw_if_node_out_of_bounds(x, first);
-      throw_if_node_out_of_bounds(x, last - 1);
-      throw_if_node_out_of_bounds(y, first);
-      throw_if_node_out_of_bounds(y, last - 1);
-      return equal_to_no_checks(x, y, first, last);
-    }
+                                Node                   last);
 
     // TODO(0) to tpp
     template <typename Node1, typename Node2>
