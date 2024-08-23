@@ -1148,6 +1148,33 @@ namespace libsemigroups {
   }
 
   template <typename Node>
+  WordGraph<Node>& WordGraph<Node>::disjoint_union_inplace_no_checks(
+      WordGraph<Node> const& that) {
+    if (that.number_of_nodes() == 0) {
+      return;
+    }
+    size_t old_num_nodes = number_of_nodes();
+    _dynamic_array_2.append(that._dynamic_array_2);
+    auto first = _dynamic_array_2.begin_row(old_num_nodes);
+    auto last  = _dynamic_array_2.cend();
+    std::for_each(
+        first, last, [old_num_nodes](node_type& n) { n += old_num_nodes; });
+    return *this;
+  }
+
+  template <typename Node>
+  WordGraph<Node>&
+  WordGraph<Node>::disjoint_union_inplace(WordGraph<Node> const& that) {
+    if (out_degree() != that.out_degree()) {
+      LIBSEMIGROUPS_EXCEPTION("expected word graphs with equal out-degrees "
+                              "but found {} != {}",
+                              that.out_degree(),
+                              out_degree());
+    }
+    return disjoint_union_inplace_no_checks(that);
+  }
+
+  template <typename Node>
   WordGraph<Node>& WordGraph<Node>::target(node_type  m,
                                            label_type lbl,
                                            node_type  n) {

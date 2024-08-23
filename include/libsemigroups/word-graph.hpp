@@ -848,30 +848,9 @@ namespace libsemigroups {
               typename = std::enable_if_t<detail::IsIterator<Iterator>::value>>
     WordGraph& induced_subgraph(Iterator first, Iterator last);
 
-    // TODO(0) to tpp
-    WordGraph& disjoint_union_inplace_no_checks(WordGraph<Node> const& that) {
-      if (that.number_of_nodes() == 0) {
-        return;
-      }
-      size_t old_num_nodes = number_of_nodes();
-      _dynamic_array_2.append(that._dynamic_array_2);
-      auto first = _dynamic_array_2.begin_row(old_num_nodes);
-      auto last  = _dynamic_array_2.cend();
-      std::for_each(
-          first, last, [old_num_nodes](node_type& n) { n += old_num_nodes; });
-      return *this;
-    }
+    WordGraph& disjoint_union_inplace_no_checks(WordGraph<Node> const& that);
 
-    // TODO(0) to tpp
-    WordGraph& disjoint_union_inplace(WordGraph<Node> const& that) {
-      if (out_degree() != that.out_degree()) {
-        LIBSEMIGROUPS_EXCEPTION("expected word graphs with equal out-degrees "
-                                "but found {} != {}",
-                                that.out_degree(),
-                                out_degree());
-      }
-      return disjoint_union_inplace_no_checks(that);
-    }
+    WordGraph& disjoint_union_inplace(WordGraph<Node> const& that);
 
     // TODO(doc)
     // TODO(0) move to tpp
