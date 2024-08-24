@@ -1495,7 +1495,7 @@ namespace libsemigroups {
     //! \brief Check if a word graph is connected.
     //!
     //! This function returns \c true if the word graph \p wg is connected and
-    //! \c false if it is not. A word graph is connected if for every pair of
+    //! \c false if it is not. A word graph is *connected* if for every pair of
     //! nodes \c s and \c t in the graph there exists a sequence \f$u_0 = s,
     //! \ldots, u_{n}= t\f$ for some \f$n\in \mathbb{N}\f$ such that for every
     //! \f$i\f$ there exists a label \c a such that \f$(u_i, a, u_{i + 1})\f$ or
@@ -1520,7 +1520,7 @@ namespace libsemigroups {
     //! \brief Check if a word graph is connected.
     //!
     //! This function returns \c true if the word graph \p wg is connected and
-    //! \c false if it is not. A word graph is connected if for every pair of
+    //! \c false if it is not. A word graph is *connected* if for every pair of
     //! nodes \c s and \c t in the graph there exists a sequence \f$u_0 = s,
     //! \ldots, u_{n}= t\f$ for some \f$n\in \mathbb{N}\f$ such that for every
     //! \f$i\f$ there exists a label \c a such that \f$(u_i, a, u_{i + 1})\f$ or
@@ -1540,6 +1540,173 @@ namespace libsemigroups {
     // can't construct word graphs there that contain bad targets.
     template <typename Node>
     [[nodiscard]] bool is_connected(WordGraph<Node> const& wg);
+
+    //! \brief Check if there is a path from one node to another.
+    //!
+    //! This function returns \c true if there is a path from the node \p source
+    //! to the node \p target in the word graph \p wg.
+    //!
+    //! \tparam Node1 the type of the nodes in the WordGraph.
+    //!
+    //! \tparam Node 2 the types of \p source and \p target (must
+    //! satisfy `sizeof(Node2) <= sizeof(Node1)`).
+    //!
+    //! \param wg the WordGraph object to check.
+    //! \param source the source node.
+    //! \param target the source node.
+    //!
+    //! \returns
+    //! Whether or not the node \p target is reachable from the node \p source
+    //! in the word graph \p wg.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    //! \par Complexity
+    //! \f$O(m + n)\f$ where \f$m\f$ is the number of nodes in the
+    //! WordGraph \p wg and \f$n\f$ is the number of edges. Note that for
+    //! WordGraph objects the number of edges is always at most \f$mk\f$
+    //! where \f$k\f$ is the WordGraph::out_degree.
+    //!
+    //! \note
+    //! If \p source and \p target are equal, then, by convention, we consider
+    //! \p target to be reachable from \p source, via the empty path.
+    //!
+    //! \warning No checks are performed on the arguments.
+    //!
+    //! \par Example
+    //! \code
+    //! WordGraph<size_t> wg;
+    //! wg.add_nodes(4);
+    //! wg.add_to_out_degree(1);
+    //! wg.target(0, 1, 0);
+    //! wg.target(1, 0, 0);
+    //! wg.target(2, 3, 0);
+    //! word_graph::is_reachable_no_checks(wg, 0, 1); // returns true
+    //! word_graph::is_reachable_no_checks(wg, 1, 0); // returns true
+    //! word_graph::is_reachable_no_checks(wg, 1, 2); // returns false
+    //! word_graph::is_reachable_no_checks(wg, 2, 3); // returns true
+    //! word_graph::is_reachable_no_checks(wg, 3, 2); // returns false
+    //! \endcode
+    template <typename Node1, typename Node2>
+    [[nodiscard]] bool is_reachable_no_checks(WordGraph<Node1> const& wg,
+                                              Node2                   source,
+                                              Node2                   target);
+
+    //! \brief Check if there is a path from one node to another.
+    //!
+    //! This function returns \c true if there is a path from the node \p source
+    //! to the node \p target in the word graph \p wg.
+    //!
+    //! \tparam Node1 the type of the nodes in the WordGraph.
+    //!
+    //! \tparam Node 2 the types of \p source and \p target (must
+    //! satisfy `sizeof(Node2) <= sizeof(Node1)`).
+    //!
+    //! \param wg the WordGraph object to check.
+    //! \param source the source node.
+    //! \param target the source node.
+    //!
+    //! \returns
+    //! Whether or not the node \p target is reachable from the node \p source
+    //! in the word graph \p wg.
+    //!
+    //! \throws LibsemigroupsException if \p source or \p target is out of
+    //! bounds.
+    //! \throws LibsemigroupsException if any target in \p wg is out of bounds.
+    //!
+    //! \par Complexity
+    //! \f$O(m + n)\f$ where \f$m\f$ is the number of nodes in the
+    //! WordGraph \p wg and \f$n\f$ is the number of edges. Note that for
+    //! WordGraph objects the number of edges is always at most \f$mk\f$
+    //! where \f$k\f$ is the \ref out_degree.
+    //!
+    //! \note
+    //! If \p source and \p target are equal, then, by convention, we consider
+    //! \p target to be reachable from \p source, via the empty path.
+    // TODO(0) in the python bindings use the no_checks version after checking
+    // that the source and target are ok, because we can't create a word graph
+    // with bad targets there, so no point checking that.
+    template <typename Node1, typename Node2>
+    [[nodiscard]] bool is_reachable(WordGraph<Node1> const& wg,
+                                    Node2                   source,
+                                    Node2                   target);
+
+    //! \brief Check if every node is reachable from some node.
+    //!
+    //! This function returns \c true if there exists a node in \p wg from
+    //! which every other node is reachable; and \c false otherwise.
+    //! A word graph is *strictly cyclic* if there exists a node \f$v\f$ from
+    //! which every node is reachable (including \f$v\f$). There must be a
+    //! path of length at least \f$1\f$ from the original node \f$v\f$ to
+    //! itself (i.e. \f$v\f$ is not considered to be reachable from itself by
+    //! default).
+    //!
+    //! \tparam Node the type used as the template parameter for the
+    //! WordGraph.
+    //!
+    //! \param wg the WordGraph object to check.
+    //!
+    //! \returns
+    //! A value of type `bool`.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    //! \par Complexity
+    //! \f$O(m + n)\f$ where \f$m\f$ is the number of nodes in the
+    //! WordGraph \p wg and \f$n\f$ is the number of edges. Note that for
+    //! WordGraph objects the number of edges is always at most \f$mk\f$
+    //! where \f$k\f$ is the WordGraph::out_degree.
+    //!
+    //! \warning This function does not check its arguments. In particular, if
+    //! \p wg has any targets that are out of bounds, then bad things will
+    //! happen.
+    //!
+    //! \par Example
+    //! \code
+    //! auto wg = to_word_graph<uint8_t>(
+    //!     5, {{0, 0}, {1, 1}, {2}, {3, 3}});
+    //! word_graph::is_strictly_cyclic(wg);  // returns false
+    //! \endcode
+    // TODO(0) again use the no_checks version in the python bindings.
+    template <typename Node>
+    [[nodiscard]] bool is_strictly_cyclic_no_checks(WordGraph<Node> const& wg);
+
+    //! \brief Check if every node is reachable from some node.
+    //!
+    //! This function returns \c true if there exists a node in \p wg from
+    //! which every other node is reachable; and \c false otherwise.
+    //! A word graph is *strictly cyclic* if there exists a node \f$v\f$ from
+    //! which every node is reachable (including \f$v\f$). There must be a
+    //! path of length at least \f$1\f$ from the original node \f$v\f$ to
+    //! itself (i.e. \f$v\f$ is not considered to be reachable from itself by
+    //! default).
+    //!
+    //! \tparam Node the type used as the template parameter for the
+    //! WordGraph.
+    //!
+    //! \param wg the WordGraph object to check.
+    //!
+    //! \returns
+    //! A value of type `bool`.
+    //!
+    //! \throws LibsemigroupsException if any target in \p wg is out of bounds.
+    //!
+    //! \par Complexity
+    //! \f$O(m + n)\f$ where \f$m\f$ is the number of nodes in the
+    //! WordGraph \p wg and \f$n\f$ is the number of edges. Note that for
+    //! WordGraph objects the number of edges is always at most \f$mk\f$
+    //! where \f$k\f$ is the WordGraph::out_degree.
+    //!
+    //! \par Example
+    //! \code
+    //! auto wg = to_word_graph<uint8_t>(
+    //!     5, {{0, 0}, {1, 1}, {2}, {3, 3}});
+    //! word_graph::is_strictly_cyclic(wg);  // returns false
+    //! \endcode
+    template <typename Node>
+    [[nodiscard]] bool is_strictly_cyclic_no_checks(WordGraph<Node> const& wg);
 
     //////////////////////////////////////////////////////////////////////////
     // FRONTIER
@@ -1739,121 +1906,6 @@ namespace libsemigroups {
     //////////////////////////////////////////////////////////////////////////
     // WordGraph - helper functions - properties
     //////////////////////////////////////////////////////////////////////////
-
-    //!
-    //! Check if there is a path from one node to another.
-    //!
-    //! \tparam T the type used as the template parameter for the
-    //! WordGraph.
-    //!
-    //! \param wg the WordGraph object to check.
-    //! \param source the source node.
-    //! \param target the source node.
-    //!
-    //! \returns
-    //! A value of type `bool`.
-    //!
-    //! \exceptions
-    //! \no_libsemigroups_except
-    //!
-    //! \par Complexity
-    //! \f$O(m + n)\f$ where \f$m\f$ is the number of nodes in the
-    //! WordGraph \p wg and \f$n\f$ is the number of edges. Note that for
-    //! WordGraph objects the number of edges is always at most \f$mk\f$
-    //! where \f$k\f$ is the WordGraph::out_degree.
-    //!
-    //! \note
-    //! If \p source and \p target are equal, then, by convention, we consider
-    //! \p target to be reachable from \p source, via the empty path.
-    //!
-    //! \par Example
-    //! \code
-    //! WordGraph<size_t> wg;
-    //! wg.add_nodes(4);
-    //! wg.add_to_out_degree(1);
-    //! wg.target(0, 1, 0);
-    //! wg.target(1, 0, 0);
-    //! wg.target(2, 3, 0);
-    //! word_graph::is_reachable(wg, 0, 1); // returns true
-    //! word_graph::is_reachable(wg, 1, 0); // returns true
-    //! word_graph::is_reachable(wg, 1, 2); // returns false
-    //! word_graph::is_reachable(wg, 2, 3); // returns true
-    //! word_graph::is_reachable(wg, 3, 2); // returns false
-    //! \endcode
-    template <typename Node1, typename Node2>
-    [[nodiscard]] bool is_reachable(WordGraph<Node1> const& wg,
-                                    Node2                   source,
-                                    Node2                   target);
-
-    //!
-    //! Check if a word graph is connected.
-    //!
-    //! \tparam T the type used as the template parameter for the
-    //! WordGraph.
-    //!
-    //! \param wg the WordGraph object to check.
-    //!
-    //! \returns
-    //! A value of type `bool`.
-    //!
-    //! \exceptions
-    //! \no_libsemigroups_except
-    //!
-    //! \par Complexity
-    //! \f$O(m + n)\f$ where \f$m\f$ is the number of nodes in the
-    //! WordGraph \p wg and \f$n\f$ is the number of edges. Note that for
-    //! WordGraph objects the number of edges is always at most \f$mk\f$
-    //! where \f$k\f$ is the WordGraph::out_degree.
-    //!
-    //! A word graph is *connected* if for every pair of nodes \f$u\f$ and
-    //! \f$v\f$ there exists a sequence \f$u_0 := u, \ldots, u_{n - 1} := v\f$
-    //! such that either  \f$(u_i, u_{i + 1})\f$ or \f$(u_{i + 1}, u_i)\f$ is
-    //! an edge. Note that \f$u\f$ and \f$v\f$ can be equal, and the sequence
-    //! above can be of length \f$0\f$.
-    //!
-    //! \par Example
-    //! \code
-    //! auto wg = to_word_graph<uint8_t>(
-    //!     5, {{0, 0}, {1, 1}, {2}, {3, 3}});
-    //! word_graph::is_connected(wg);  // returns false
-    //! \endcode
-    template <typename Node>
-    [[nodiscard]] bool is_connected(WordGraph<Node> const& wg);
-
-    //!
-    //! Check if a word graph is strictly cyclic.
-    //!
-    //! \tparam T the type used as the template parameter for the
-    //! WordGraph.
-    //!
-    //! \param wg the WordGraph object to check.
-    //!
-    //! \returns
-    //! A value of type `bool`.
-    //!
-    //! \exceptions
-    //! \no_libsemigroups_except
-    //!
-    //! \par Complexity
-    //! \f$O(m + n)\f$ where \f$m\f$ is the number of nodes in the
-    //! WordGraph \p wg and \f$n\f$ is the number of edges. Note that for
-    //! WordGraph objects the number of edges is always at most \f$mk\f$
-    //! where \f$k\f$ is the WordGraph::out_degree.
-    //!
-    //! A word graph is *strictly cyclic* if there exists a node \f$v\f$ from
-    //! which every node is reachable (including \f$v\f$). There must be a
-    //! path of length at least \f$1\f$ from the original node \f$v\f$ to
-    //! itself (i.e. \f$v\f$ is not considered to be reachable from itself by
-    //! default).
-    //!
-    //! \par Example
-    //! \code
-    //! auto wg = to_word_graph<uint8_t>(
-    //!     5, {{0, 0}, {1, 1}, {2}, {3, 3}});
-    //! word_graph::is_strictly_cyclic(wg);  // returns false
-    //! \endcode
-    template <typename Node>
-    [[nodiscard]] bool is_strictly_cyclic(WordGraph<Node> const& wg);
 
     //////////////////////////////////////////////////////////////////////////
     // WordGraph - helper functions - modifiers

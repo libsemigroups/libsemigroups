@@ -592,7 +592,7 @@ namespace libsemigroups {
     }
 
     template <typename Node>
-    bool is_strictly_cyclic(WordGraph<Node> const& wg) {
+    bool is_strictly_cyclic_no_checks(WordGraph<Node> const& wg) {
       using node_type = typename WordGraph<Node>::node_type;
       auto const N    = wg.number_of_nodes();
 
@@ -626,12 +626,18 @@ namespace libsemigroups {
       return false;
     }
 
+    template <typename Node>
+    bool is_strictly_cyclic(WordGraph<Node> const& wg) {
+      throw_if_any_target_out_of_bounds(wg);
+      return is_strictly_cyclic_no_checks(wg);
+    }
+
     template <typename Node1, typename Node2>
-    bool is_reachable(WordGraph<Node1> const& wg, Node2 source, Node2 target) {
+    bool is_reachable_no_checks(WordGraph<Node1> const& wg,
+                                Node2                   source,
+                                Node2                   target) {
       static_assert(sizeof(Node2) <= sizeof(Node1));
       using label_type = typename WordGraph<Node1>::label_type;
-      throw_if_node_out_of_bounds(wg, static_cast<Node1>(source));
-      throw_if_node_out_of_bounds(wg, static_cast<Node1>(target));
       if (source == target) {
         return true;
       }
@@ -668,6 +674,17 @@ namespace libsemigroups {
         }
       } while (!nodes.empty());
       return false;
+    }
+
+    template <typename Node1, typename Node2>
+    bool is_reachable(WordGraph<Node1> const& wg, Node2 source, Node2 target) {
+      static_assert(sizeof(Node2) <= sizeof(Node1));
+      throw_if_node_out_of_bounds(wg, static_cast<Node1>(source));
+      throw_if_node_out_of_bounds(wg, static_cast<Node1>(target));
+      // TODO(1) again this is inefficient, we could just check if the targets
+      // are within bounds in the dfs in the no_checks version of the function.
+      throw_if_any_target_out_of_bounds(wg);
+      return is_reachable_no_checks(wg, source, target);
     }
 
     template <typename Node>
