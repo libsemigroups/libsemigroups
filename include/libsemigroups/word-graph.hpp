@@ -1347,7 +1347,49 @@ namespace libsemigroups {
                                                Iterator2 last_node,
                                                Iterator3 first_rule,
                                                Iterator3 last_rule);
-    // HERE
+
+    //! \brief Check if a word graph is compatible with some relations at a
+    //! range of nodes.
+    //!
+    //! This function returns \c true if the word graph \p wg is compatible
+    //! with the relations in the range \p first_rule to \p last_rule at every
+    //! node in the range from \p first_node to \p last_node. This means that
+    //! the paths with given sources that are labelled by one side of a relation
+    //! leads to the same node as the path labelled by the other side of the
+    //! relation.
+    //!
+    //! \tparam Node the type used as the template parameter for the WordGraph
+    //! \p wg.
+    //!
+    //! \tparam Iterator1 the type of \p first_node.
+    //!
+    //! \tparam Iterator2 the type of \p last_node.
+    //!
+    //! \tparam Iterator3 the type of \p first_rule and \p last_rule.
+    //!
+    //! \param wg the word graph.
+    //!
+    //! \param first_node iterator pointing at the first node.
+    //!
+    //! \param last_node iterator pointing at one beyond the last node.
+    //!
+    //! \param first_rule iterator pointing to the first rule.
+    //!
+    //! \param last_rule iterator pointing one beyond the last rule.
+    //!
+    //! \return Whether or not the word graph is compatible with the given rules
+    //! at each one of the given nodes.
+    //!
+    //! \warning
+    //! No checks on the arguments of this function are performed.
+    //!
+    //! \throws LibsemigroupsException if any of the nodes in the range between
+    //! \p first_node and \p last_node does not belong to \p wg (i.e. is greater
+    //! than or equal to WordGraph::number_of_nodes).
+    //!
+    //! \throws LibsemigroupsException if any of the rules in the range between
+    //! \p first_rule and \p last_rule contains an invalid label (i.e. one
+    //! greater than or equal to WordGraph::out_degree).
     template <typename Node,
               typename Iterator1,
               typename Iterator2,
@@ -1357,6 +1399,147 @@ namespace libsemigroups {
                                      Iterator2              last_node,
                                      Iterator3              first_rule,
                                      Iterator3              last_rule);
+
+    //! \brief Check if every node in a range has exactly \ref out_degree
+    //! out-edges.
+    //!
+    //! This function returns \c true if every node in the range defined by \p
+    //! first_node and \p last_node is complete, meaning that every such node is
+    //! the source of an edge with every possible label.
+    //!
+    //! \tparam Node the type of the nodes in the word graph.
+    //!
+    //! \tparam Iterator1 the type of \p first_node.
+    //!
+    //! \tparam Iterator2 the type of \p last_node.
+    //!
+    //! \param wg the word graph.
+    //!
+    //! \param first_node iterator pointing to the first node in the range.
+    //!
+    //! \param last_node iterator pointing one beyond the last node in the
+    //! range.
+    //!
+    //! \returns
+    //! Whether or not the word graph is complete on the given range of nodes.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    //! \complexity
+    //! \f$O(mn)\f$ where \c m is the number of nodes in the range and \c n is
+    //! out_degree().
+    //!
+    //! \warning No checks are performed on the arguments.
+    template <typename Node, typename Iterator1, typename Iterator2>
+    [[nodiscard]] bool is_complete_no_checks(WordGraph<Node> const& wg,
+                                             Iterator1              first_node,
+                                             Iterator2              last_node);
+
+    //! \brief Check if every node in a range has exactly \ref out_degree
+    //! out-edges.
+    //!
+    //! This function returns \c true if every node in the range defined by \p
+    //! first_node and \p last_node is complete, meaning that
+    //! every such node is the source of an edge with every possible label.
+    //!
+    //! \tparam Node the type of the nodes in the word graph.
+    //!
+    //! \tparam Iterator1 the type of \p first_node.
+    //!
+    //! \tparam Iterator2 the type of \p last_node.
+    //!
+    //! \param wg the word graph.
+    //!
+    //! \param first_node iterator pointing to the first node in the range.
+    //!
+    //! \param last_node iterator pointing one beyond the last node in the
+    //! range.
+    //!
+    //! \returns Whether or not the word graph is complete on the given
+    //! range of nodes.
+    //!
+    //! \complexity
+    //! \f$O(mn)\f$ where \c m is the number of nodes in the range and \c n is
+    //! out_degree().
+    //!
+    //! \throws LibsemigroupsException if any item in the range defined by \p
+    //! first_node and \p last_node is not a node of \p wg.
+    template <typename Node, typename Iterator1, typename Iterator2>
+    [[nodiscard]] bool is_complete(WordGraph<Node> const& wg,
+                                   Iterator1              first_node,
+                                   Iterator2              last_node);
+
+    //! \brief Check if every node has exactly \ref out_degree out-edges.
+    //!
+    //! This function returns \c true if a WordGraph is complete, meaning that
+    //! every node is the source of an edge with every possible label.
+    //!
+    //! \tparam Node the type of the nodes in the word graph.
+    //!
+    //! \param wg the word graph.
+    //!
+    //! \returns
+    //! Whether or not the word graph is complete.
+    //!
+    //! \exceptions
+    //! \noexcept
+    //!
+    //! \complexity
+    //! \f$O(mn)\f$ where \c m is number_of_nodes() and \c n is out_degree().
+    template <typename Node>
+    [[nodiscard]] bool is_complete(WordGraph<Node> const& wg) noexcept {
+      return wg.number_of_edges() == wg.number_of_nodes() * wg.out_degree();
+    }
+
+    //! \brief Check if a word graph is connected.
+    //!
+    //! This function returns \c true if the word graph \p wg is connected and
+    //! \c false if it is not. A word graph is connected if for every pair of
+    //! nodes \c s and \c t in the graph there exists a sequence \f$u_0 = s,
+    //! \ldots, u_{n}= t\f$ for some \f$n\in \mathbb{N}\f$ such that for every
+    //! \f$i\f$ there exists a label \c a such that \f$(u_i, a, u_{i + 1})\f$ or
+    //! \f$(u_{i + 1}, a, u_i)\f$ is an edge in the graph.
+    //!
+    //! \tparam Node the type of the nodes in the word graph.
+    //!
+    //! \param wg the word graph.
+    //!
+    //! \returns
+    //! Whether or not the word graph is connected.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    //! \warning
+    //! The function does not check it arguments. In particular, if any target
+    //! in \p wg is out of bounds, then bad things will happen.
+    template <typename Node>
+    [[nodiscard]] bool is_connected_no_checks(WordGraph<Node> const& wg);
+
+    //! \brief Check if a word graph is connected.
+    //!
+    //! This function returns \c true if the word graph \p wg is connected and
+    //! \c false if it is not. A word graph is connected if for every pair of
+    //! nodes \c s and \c t in the graph there exists a sequence \f$u_0 = s,
+    //! \ldots, u_{n}= t\f$ for some \f$n\in \mathbb{N}\f$ such that for every
+    //! \f$i\f$ there exists a label \c a such that \f$(u_i, a, u_{i + 1})\f$ or
+    //! \f$(u_{i + 1}, a, u_i)\f$ is an edge in the graph.
+    //!
+    //! \tparam Node the type of the nodes in the word graph.
+    //!
+    //! \param wg the word graph.
+    //!
+    //! \returns
+    //! Whether or not the word graph is connected.
+    //!
+    //! \throws LibsemigroupsException if any target in \p wg is out of bounds,
+    //! i.e. if any target \c t is not equal to \ref UNDEFINED and not in the
+    //! nodes of \p wg.
+    // TODO(0) in the python bindings use the no_checks  versions because we
+    // can't construct word graphs there that contain bad targets.
+    template <typename Node>
+    [[nodiscard]] bool is_connected(WordGraph<Node> const& wg);
 
     //////////////////////////////////////////////////////////////////////////
     // FRONTIER
@@ -1671,29 +1854,6 @@ namespace libsemigroups {
     //! \endcode
     template <typename Node>
     [[nodiscard]] bool is_strictly_cyclic(WordGraph<Node> const& wg);
-
-    // TODO(doc)
-    template <typename Node, typename Iterator1, typename Iterator2>
-    [[nodiscard]] bool is_complete(WordGraph<Node> const& wg,
-                                   Iterator1              first_node,
-                                   Iterator2              last_node);
-
-    //!
-    //! Check every node has exactly out_degree() out-edges.
-    //!
-    //! \returns
-    //! A \c bool.
-    //!
-    //! \exceptions
-    //! \noexcept
-    //!
-    //! \complexity
-    //! \f$O(mn)\f$ where \c m is number_of_nodes() and \c n is out_degree().
-    //!
-    template <typename Node>
-    [[nodiscard]] bool is_complete(WordGraph<Node> const& wg) noexcept {
-      return wg.number_of_edges() == wg.number_of_nodes() * wg.out_degree();
-    }
 
     //////////////////////////////////////////////////////////////////////////
     // WordGraph - helper functions - modifiers

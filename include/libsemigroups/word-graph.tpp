@@ -370,13 +370,13 @@ namespace libsemigroups {
       }
     }
 
-    template <typename Node, typename Iterator>
+    template <typename Node, typename Iterator1, typename Iterator2>
     void throw_if_node_out_of_bounds(WordGraph<Node> const& wg,
-                                     Iterator               first,
-                                     Iterator               last) {
-      std::for_each(first, last, [&wg](auto n) {
-        word_graph::throw_if_node_out_of_bounds(wg, n);
-      });
+                                     Iterator1              first,
+                                     Iterator2              last) {
+      for (auto it = first; it != last; ++it) {
+        word_graph::throw_if_node_out_of_bounds(wg, *it);
+      }
     }
 
     template <typename Node>
@@ -426,12 +426,11 @@ namespace libsemigroups {
     }
 
     template <typename Node, typename Container>
-    void throw_if_label_out_of_bounds(WordGraph<Node> const& wg,
-                                      Container const&       rules) {
-      static_assert(std::is_same_v<Container::value_type, word_type>);
-
+    void throw_if_label_out_of_bounds(WordGraph<Node> const&        wg,
+                                      std::vector<word_type> const& rules) {
       std::for_each(rules.cbegin(), rules.cend(), [&wg](word_type const& w) {
-        throw_if_label_out_of_bounds(wg, w); };
+        throw_if_label_out_of_bounds(wg, w);
+      });
     }
 
     template <typename Graph>
@@ -545,9 +544,9 @@ namespace libsemigroups {
     }
 
     template <typename Node, typename Iterator1, typename Iterator2>
-    bool is_complete(WordGraph<Node> const& wg,
-                     Iterator1              first_node,
-                     Iterator2              last_node) {
+    bool is_complete_no_checks(WordGraph<Node> const& wg,
+                               Iterator1              first_node,
+                               Iterator2              last_node) {
       using label_type = typename WordGraph<Node>::label_type;
       size_t const n   = wg.out_degree();
       for (auto it = first_node; it != last_node; ++it) {
@@ -558,6 +557,38 @@ namespace libsemigroups {
         }
       }
       return true;
+    }
+
+    template <typename Node, typename Iterator1, typename Iterator2>
+    bool is_complete(WordGraph<Node> const& wg,
+                     Iterator1              first_node,
+                     Iterator2              last_node) {
+      throw_if_node_out_of_bounds(wg, first_node, last_node);
+      return is_complete_no_checks(wg, first_node, last_node);
+    }
+
+    template <typename Node>
+    bool is_connected_no_checks(WordGraph<Node> const& wg) {
+      auto const N = wg.number_of_nodes();
+      if (N == 0) {
+        return true;
+      }
+
+      ::libsemigroups::detail::Duf<> uf(N);
+      for (auto s : wg.nodes()) {
+        for (auto t : wg.targets_no_checks(s)) {
+          if (t != UNDEFINED) {
+            uf.unite(s, t);
+          }
+        }
+      }
+      return uf.number_of_blocks() == 1;
+    }
+
+    template <typename Node>
+    bool is_connected(WordGraph<Node> const& wg) {
+      throw_if_any_target_out_of_bounds(wg);
+      return is_connected_no_checks(wg);
     }
 
     template <typename Node>
@@ -593,24 +624,6 @@ namespace libsemigroups {
         std::fill(seen.begin(), seen.end(), false);
       }
       return false;
-    }
-
-    template <typename Node>
-    bool is_connected(WordGraph<Node> const& wg) {
-      auto const N = wg.number_of_nodes();
-      if (N == 0) {
-        return true;
-      }
-
-      ::libsemigroups::detail::Duf<> uf(N);
-      for (auto s : wg.nodes()) {
-        for (auto t : wg.targets_no_checks(s)) {
-          if (t != UNDEFINED) {
-            uf.unite(s, t);
-          }
-        }
-      }
-      return uf.number_of_blocks() == 1;
     }
 
     template <typename Node1, typename Node2>
