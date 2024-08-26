@@ -899,7 +899,7 @@ namespace libsemigroups {
       "fpsemi-examples",
       "118",
       "full_transformation_monoid(5) Mitchell + Whyte index 1",
-      "[fpsemi-examples][quick]") {
+      "[fpsemi-examples]") {
     auto   rg = ReportGuard(REPORT);
     size_t n  = 5;
 
