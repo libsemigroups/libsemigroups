@@ -1210,7 +1210,9 @@ namespace libsemigroups {
       return p;
     }
 
-    Presentation<word_type> full_transformation_monoid(size_t n, author val) {
+    Presentation<word_type> full_transformation_monoid(size_t n,
+                                                       author val,
+                                                       size_t index) {
       if (val != author::Aizenstat && val != author::Iwahori
           && val != author::Mitchell + author::Whyte) {
         LIBSEMIGROUPS_EXCEPTION(
@@ -1225,8 +1227,21 @@ namespace libsemigroups {
       } else if (n < 2 && val == author::Mitchell + author::Whyte) {
         LIBSEMIGROUPS_EXCEPTION(
             "the 1st argument must be at least 2 when the 2nd argument is "
-            "author::Mitchell + author::Whyte found {}",
+            "author::Mitchell + author::Whyte, found {}",
             val);
+      } else if (index > 1) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "the 3rd argument (index) must be either 0 or 1, found {}", index);
+      }
+
+      else if (index != 0 && val != author::Mitchell + author::Whyte) {
+        LIBSEMIGROUPS_EXCEPTION("the 3rd argument (index) must be 0 when the "
+                                "2nd argument (author) is "
+                                " author::Mitchell + author::Whyte, found {}",
+                                index);
+      } else if (index == 1 && n % 2 == 0) {
+        LIBSEMIGROUPS_EXCEPTION("the 1st argument (degree) must be odd when "
+                                "the 3rd argument (index) is 1");
       }
 
       Presentation<word_type> p;
@@ -1275,37 +1290,71 @@ namespace libsemigroups {
           presentation::add_rule_no_checks(p, 2121_w, 2_w);
           presentation::add_rule_no_checks(p, pow(0102_w, 3) + 010_w, 20102_w);
         } else {
+          // n >= 4
           p = symmetric_group(n, author::Carmichael);
-          // From Theorem 1.5 of arXiv:2406.19294
+          if (index == 0) {
+            // From Theorem 1.5 of arXiv:2406.19294
 
-          // Relation T1
-          presentation::add_rule_no_checks(p, {n - 1, 1, n - 1, 1}, {n - 1});
+            // Relation T1
+            presentation::add_rule_no_checks(p, {n - 1, 1, n - 1, 1}, {n - 1});
 
-          // Relation T3
-          presentation::add_rule_no_checks(
-              p, {1, 2, 1, n - 1}, {n - 1, 1, 2, 1});
+            // Relation T3
+            presentation::add_rule_no_checks(
+                p, {1, 2, 1, n - 1}, {n - 1, 1, 2, 1});
 
-          // Relation T7
-          presentation::add_rule_no_checks(
-              p,
-              {n - 2, 0, 1, 0, n - 1, n - 2, 0, 1, 0, n - 1},
-              {n - 1, n - 2, 0, 1, 0, n - 1, n - 2, 0, 1, 0});
+            // Relation T7
+            presentation::add_rule_no_checks(
+                p,
+                {n - 2, 0, 1, 0, n - 1, n - 2, 0, 1, 0, n - 1},
+                {n - 1, n - 2, 0, 1, 0, n - 1, n - 2, 0, 1, 0});
 
-          // Relation T8
-          std::vector<size_t> gens(n - 1);  // list of generators to use prod on
-          std::iota(gens.begin(), gens.end(), 0);
-          presentation::add_rule_no_checks(
-              p,
-              prod(gens, 1, n - 1, 1) + word_type({1, 0, n - 1}),
-              word_type({n - 1}) + prod(gens, 1, n - 1, 1) + word_type({1}));
+            // Relation T8
+            std::vector<size_t> gens(n
+                                     - 1);  // list of generators to use prod on
+            std::iota(gens.begin(), gens.end(), 0);
+            presentation::add_rule_no_checks(
+                p,
+                prod(gens, 1, n - 1, 1) + word_type({1, 0, n - 1}),
+                word_type({n - 1}) + prod(gens, 1, n - 1, 1) + word_type({1}));
 
-          // Relation T9
-          presentation::add_rule_no_checks(
-              p,
-              {0, 1, 0, n - 1, 0, 1, 0, n - 1, 0, 1, 0, n - 1, 0, 1, 0},
-              {n - 1, 0, 1, 0, n - 1});
+            // Relation T9
+            presentation::add_rule_no_checks(
+                p,
+                {0, 1, 0, n - 1, 0, 1, 0, n - 1, 0, 1, 0, n - 1, 0, 1, 0},
+                {n - 1, 0, 1, 0, n - 1});
+          } else {
+            // index == 1
+
+            // Relation T7
+            presentation::add_rule_no_checks(
+                p,
+                {n - 2, 0, 1, 0, n - 1, n - 2, 0, 1, 0, n - 1},
+                {n - 1, n - 2, 0, 1, 0, n - 1, n - 2, 0, 1, 0});
+
+            // Relation T9
+            presentation::add_rule_no_checks(
+                p,
+                {0, 1, 0, n - 1, 0, 1, 0, n - 1, 0, 1, 0, n - 1, 0, 1, 0},
+                {n - 1, 0, 1, 0, n - 1});
+
+            // Relation T10
+            presentation::add_rule_no_checks(
+                p, {1, 2, 1, n - 1, 1, 2, 1}, {n - 1, 1, n - 1, 1});
+
+            // Relation T8
+            std::vector<size_t> gens(n
+                                     - 1);  // list of generators to use prod on
+            std::iota(gens.begin(), gens.end(), 0);
+            presentation::add_rule_no_checks(
+                p,
+                word_type({1}) + prod(gens, n - 2, 0, -1)
+                    + word_type({n - 1, 1}) + prod(gens, 1, n - 1, 1)
+                    + word_type({1}),
+                {0, n - 1, 1, n - 1, 1});
+          }
         }
       }
+
       p.alphabet_from_rules();
       p.contains_empty_word(true);
       return p;

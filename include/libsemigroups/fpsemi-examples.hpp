@@ -396,6 +396,10 @@ namespace libsemigroups {
     //! [10.1007/978-1-84800-281-4][])
     //! * `author::Mitchell + author::Whyte` (see Theorem 1.5 of
     //! [10.48550/arXiv.2406.19294][])
+    //!    * `index = 0` for the presentation with five non-symmetric-group
+    //!    relations
+    //!    * `index = 1` for the presentation with four non-symmetric-group
+    //!    relations, valid for odd degree
     //!
     //! The default for `val` is `author::Mitchell + author::Whyte`.
     //!
@@ -412,7 +416,8 @@ namespace libsemigroups {
     //! [10.48550/arXiv.2406.19294]: https://doi.org/10.48550/arXiv.2406.19294
     [[nodiscard]] Presentation<word_type>
     full_transformation_monoid(size_t n,
-                               author val = author::Mitchell + author::Whyte);
+                               author val   = author::Mitchell + author::Whyte,
+                               size_t index = 0);
 
     //! A presentation for the partial transformation monoid.
     //!
