@@ -144,17 +144,7 @@
     <tab type="user" visible="yes" url="_HEADING_" title="Bibliography" />
     <tab type="user" visible="yes" url="@ref citelist" title="Bibliography" />
     <tab type="user" visible="yes" url="_HEADING_" title="Further info" />
-    <
-    <
-    <
-    <
-    <
-    <
-    < HEAD
     <tab type="user" url="https://github.com/libsemigroups/libsemigroups" title="GitHub" />
-    =======
-    <tab type="user" url="https://github.com/libsemigroups/libsemigroups" title="GitHub" />
-    >>>>>>> dafaea9c (Add more doc)
 
     <!--
     <tab type="pages" visible="no" title="" intro=""/>

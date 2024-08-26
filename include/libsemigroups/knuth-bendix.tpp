@@ -778,7 +778,8 @@ namespace libsemigroups {
   template <typename Rewriter, typename ReductionOrder>
   typename detail::internal_char_type
   KnuthBendix<Rewriter, ReductionOrder>::uint_to_internal_char(size_t a) {
-    // TODO What is this check for?
+    // Ensure that the input value doesn't overflow the internal char type,
+    // seems legit to me
     // TODO should this be
     // std::numeric_limits<detail::internal_char_type>::max() -
     // std::numeric_limits<detail::internal_char_type>::min()?
