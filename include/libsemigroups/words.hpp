@@ -722,7 +722,8 @@ namespace libsemigroups {
   //!
   //! \exceptions
   //! \no_libsemigroups_except
-  [[nodiscard]] std::string to_human_readable_repr(WordRange const& wr);
+  [[nodiscard]] std::string to_human_readable_repr(WordRange const& wr,
+                                                   size_t max_width = 72);
 
   ////////////////////////////////////////////////////////////////////////
   // Strings -> Words
@@ -1867,7 +1868,8 @@ namespace libsemigroups {
   //!
   //! \exceptions
   //! \no_libsemigroups_except
-  [[nodiscard]] std::string to_human_readable_repr(StringRange const& sr);
+  [[nodiscard]] std::string to_human_readable_repr(StringRange const& sr,
+                                                   size_t max_width = 72);
 
   ////////////////////////////////////////////////////////////////////////
   // Literals

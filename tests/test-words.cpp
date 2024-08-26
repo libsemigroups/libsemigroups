@@ -1467,10 +1467,14 @@ namespace libsemigroups {
                           "to_human_readable_repr",
                           "[quick]") {
     WordRange wr;
-    wr.min(3).max(5).alphabet_size(4);
+    wr.min(0).max(1).alphabet_size(4);
+    REQUIRE(to_human_readable_repr(wr, 120)
+            == "<WordRange of length 1 between [] and [0] with letters in "
+               "[0, 4) in shortlex order>");
+    wr.max(10);
     REQUIRE(to_human_readable_repr(wr)
-            == "<WordRange between [0, 0, 0] and [0, 0, 0, 0, 0] with letters "
-               "in [0, 4)>");
+            == "<WordRange of length 349525 with letters in [0, 4) in shortlex "
+               "order>");
   }
 
   LIBSEMIGROUPS_TEST_CASE("ToWord",
@@ -1488,9 +1492,13 @@ namespace libsemigroups {
                           "[quick]") {
     StringRange sr;
     sr.min(3).max(5).alphabet("bcd");
+    REQUIRE(to_human_readable_repr(sr, 120)
+            == "<StringRange of length 108 between \"bbb\" and \"bbbbb\" with "
+               "letters in "
+               "\"bcd\" in shortlex order>");
+    sr.max(40);
     REQUIRE(to_human_readable_repr(sr)
-            == "<StringRange between \"bbb\" and \"bbbbb\" with letters in "
-               "\"bcd\">");
+            == "<StringRange of length 6078832729528464371 in shortlex order>");
   }
 
   LIBSEMIGROUPS_TEST_CASE("ToString",

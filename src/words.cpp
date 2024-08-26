@@ -257,11 +257,43 @@ namespace libsemigroups {
     return *this;
   }
 
-  [[nodiscard]] std::string to_human_readable_repr(WordRange const& wr) {
-    return fmt::format("<WordRange between {} and {} with letters in [0, {})>",
-                       wr.first(),
-                       wr.last(),
-                       wr.alphabet_size());
+  [[nodiscard]] std::string to_human_readable_repr(WordRange const& wr,
+                                                   size_t           max_width) {
+    word_type   first = wr.first();
+    word_type   last  = wr.last();
+    std::string order = (wr.order() == Order::lex) ? "lex" : "shortlex";
+    size_t      count = wr.count();
+    std::string out;
+
+    bool print_short = false;
+
+    if (first.size() > max_width || last.size() > max_width) {
+      print_short = true;
+    }
+
+    if (!print_short) {
+      out = fmt::format("<WordRange of length {} between {} and {} with "
+                        "letters in [0, {}) in {} order>",
+                        count,
+                        first,
+                        last,
+                        wr.alphabet_size(),
+                        order);
+    }
+
+    if (out.size() > max_width) {
+      print_short = true;
+    }
+
+    if (print_short) {
+      out = fmt::format(
+          "<WordRange of length {} with letters in [0, {}) in {} order>",
+          count,
+          wr.alphabet_size(),
+          order);
+    }
+
+    return out;
   }
 
   ////////////////////////////////////////////////////////////////////////
@@ -491,12 +523,42 @@ namespace libsemigroups {
     return *this;
   }
 
-  [[nodiscard]] std::string to_human_readable_repr(StringRange const& sr) {
-    return fmt::format(
-        "<StringRange between \"{}\" and \"{}\" with letters in \"{}\">",
-        sr.first(),
-        sr.last(),
-        sr.alphabet());
+  [[nodiscard]] std::string to_human_readable_repr(StringRange const& sr,
+                                                   size_t max_width) {
+    std::string first    = sr.first();
+    std::string last     = sr.last();
+    std::string alphabet = sr.alphabet();
+    std::string order    = (sr.order() == Order::lex) ? "lex" : "shortlex";
+    size_t      count    = sr.count();
+    std::string out;
+
+    bool print_short = false;
+
+    if (first.size() > max_width || last.size() > max_width
+        || alphabet.size() > max_width) {
+      print_short = true;
+    }
+
+    if (!print_short) {
+      out = fmt::format(
+          "<StringRange of length {} between \"{}\" and \"{}\" with letters "
+          "in \"{}\" in {} order>",
+          count,
+          first,
+          last,
+          alphabet,
+          order);
+    }
+
+    if (out.size() > max_width) {
+      print_short = true;
+    }
+
+    if (print_short) {
+      out = fmt::format("<StringRange of length {} in {} order>", count, order);
+    }
+
+    return out;
   }
 
   ////////////////////////////////////////////////////////////////////////
