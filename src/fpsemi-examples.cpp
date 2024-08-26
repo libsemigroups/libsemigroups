@@ -1232,9 +1232,7 @@ namespace libsemigroups {
       } else if (index > 1) {
         LIBSEMIGROUPS_EXCEPTION(
             "the 3rd argument (index) must be either 0 or 1, found {}", index);
-      }
-
-      else if (index != 0 && val != author::Mitchell + author::Whyte) {
+      } else if (index != 0 && val != author::Mitchell + author::Whyte) {
         LIBSEMIGROUPS_EXCEPTION("the 3rd argument (index) must be 0 when the "
                                 "2nd argument (author) is "
                                 " author::Mitchell + author::Whyte, found {}",

@@ -230,7 +230,9 @@ namespace libsemigroups {
     REQUIRE_THROWS_AS(full_transformation_monoid(3, author::Iwahori),
                       LibsemigroupsException);
     REQUIRE_THROWS_AS(full_transformation_monoid(1), LibsemigroupsException);
-    REQUIRE_THROWS_AS(full_transformation_monoid(6, author::Mitchell + author::Whyte, 1);
+    REQUIRE_THROWS_AS(
+        full_transformation_monoid(6, author::Mitchell + author::Whyte, 1),
+        LibsemigroupsException);
   }
 
   LIBSEMIGROUPS_TEST_CASE("fpsemi-examples",
