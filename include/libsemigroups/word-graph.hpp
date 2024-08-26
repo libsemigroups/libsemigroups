@@ -1705,6 +1705,7 @@ namespace libsemigroups {
     //!     5, {{0, 0}, {1, 1}, {2}, {3, 3}});
     //! word_graph::is_strictly_cyclic(wg);  // returns false
     //! \endcode
+    // TODO(0) should return the node that everything is reachable from
     template <typename Node>
     [[nodiscard]] bool is_strictly_cyclic_no_checks(WordGraph<Node> const& wg);
 
