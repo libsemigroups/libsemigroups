@@ -1345,9 +1345,8 @@ namespace libsemigroups {
             std::iota(gens.begin(), gens.end(), 0);
             presentation::add_rule_no_checks(
                 p,
-                word_type({1}) + prod(gens, n - 2, 0, -1)
-                    + word_type({n - 1}) + prod(gens, 1, n - 1, 1)
-                    + word_type({1}),
+                word_type({1}) + prod(gens, n - 2, 0, -1) + word_type({n - 1})
+                    + prod(gens, 1, n - 1, 1) + word_type({1}),
                 {0, n - 1, 1, n - 1, 1});
           }
         }
