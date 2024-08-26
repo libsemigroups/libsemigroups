@@ -323,6 +323,7 @@ namespace libsemigroups {
     word_type              _last;
     Order                  _order;
     size_type              _upper_bound;
+    mutable size_type      _visited;
 
     void set_iterator() const;
 
@@ -354,6 +355,9 @@ namespace libsemigroups {
     //! \sa \ref at_end
     void next() noexcept {
       set_iterator();
+      if (!at_end()) {
+        ++_visited;
+      }
       std::visit([](auto& it) { ++it; }, _current);
     }
 
@@ -380,7 +384,8 @@ namespace libsemigroups {
     //! \exceptions
     //! \noexcept
     [[nodiscard]] size_t size_hint() const noexcept {
-      return number_of_words(_alphabet_size, _first.size(), _last.size());
+      return number_of_words(_alphabet_size, _first.size(), _last.size())
+             - _visited;
       // This is only the actual size if _order is shortlex
     }
 

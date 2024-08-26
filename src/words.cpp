@@ -211,6 +211,7 @@ namespace libsemigroups {
   void WordRange::set_iterator() const {
     if (!_current_valid) {
       _current_valid = true;
+      _visited       = 0;
       if (_order == Order::shortlex) {
         _current = cbegin_wislo(_alphabet_size, _first, _last);
         _end     = cend_wislo(_alphabet_size, _first, _last);
@@ -236,6 +237,7 @@ namespace libsemigroups {
     _last          = {};
     _order         = Order::shortlex;
     _upper_bound   = 0;  // does nothing if _order is shortlex
+    _visited       = 0;
     return *this;
   }
 
