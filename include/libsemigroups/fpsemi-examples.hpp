@@ -397,7 +397,7 @@ namespace libsemigroups {
     //! * `author::Mitchell + author::Whyte` (see Theorem 1.5 of
     //! [10.48550/arXiv.2406.19294][])
     //!
-    //! The default for `val` is `author::Iwahori`.
+    //! The default for `val` is `author::Mitchell + author::Whyte`.
     //!
     //! \param n the degree of the full transformation monoid
     //! \param val the author of the presentation
@@ -411,7 +411,8 @@ namespace libsemigroups {
     //! [10.1007/978-1-84800-281-4]: https://doi.org/10.1007/978-1-84800-281-4
     //! [10.48550/arXiv.2406.19294]: https://doi.org/10.48550/arXiv.2406.19294
     [[nodiscard]] Presentation<word_type>
-    full_transformation_monoid(size_t n, author val = author::Iwahori);
+    full_transformation_monoid(size_t n,
+                               author val = author::Mitchell + author::Whyte);
 
     //! A presentation for the partial transformation monoid.
     //!
@@ -424,7 +425,7 @@ namespace libsemigroups {
     //! * `author::Mitchell + author::Whyte`  (See Theorem 1.5 of
     //! [10.48550/arXiv.2406.19294])
     //!
-    //! The default for `val` is `author::Sutov`.
+    //! The default for `val` is `author::Mitchell + author::Whyte`.
     //!
     //! \param n the degree of the partial transformation monoid
     //! \param val the author of the presentation
@@ -436,8 +437,9 @@ namespace libsemigroups {
     //!
     //! [10.1007/978-1-84800-281-4]: https://doi.org/10.1007/978-1-84800-281-4
     //! [10.48550/arXiv.2406.19294]: https://doi.org/10.48550/arXiv.2406.19294
-    [[nodiscard]] Presentation<word_type>
-    partial_transformation_monoid(size_t n, author val = author::Sutov);
+    [[nodiscard]] Presentation<word_type> partial_transformation_monoid(
+        size_t n,
+        author val = author::Mitchell + author::Whyte);
 
     //! A presentation for the symmetric inverse monoid.
     //!
@@ -458,7 +460,7 @@ namespace libsemigroups {
     // Maybe should be Solomon:
     // https://www.sciencedirect.com/science/article/pii/S0021869303005933/pdf
     //!
-    //! The default value for `val` is `author::Sutov`.
+    //! The default value for `val` is `author::Mitchell + author::Whyte`.
     //!
     //! \param n the degree of the symmetric inverse monoid
     //! \param val the author of the presentation
@@ -471,7 +473,8 @@ namespace libsemigroups {
     //! [10.1007/978-1-84800-281-4]: https://doi.org/10.1007/978-1-84800-281-4
     //! [10.48550/arXiv.2406.19294]: https://doi.org/10.48550/arXiv.2406.19294
     [[nodiscard]] Presentation<word_type>
-    symmetric_inverse_monoid(size_t n, author val = author::Sutov);
+    symmetric_inverse_monoid(size_t n,
+                             author val = author::Mitchell + author::Whyte);
 
     //! A presentation for the Chinese monoid.
     //!

@@ -95,11 +95,12 @@ namespace libsemigroups {
     REQUIRE(symmetric_group(4) == symmetric_group(4, author::Carmichael));
     REQUIRE(alternating_group(4) == alternating_group(4, author::Moore));
     REQUIRE(full_transformation_monoid(4)
-            == full_transformation_monoid(4, author::Iwahori));
-    REQUIRE(partial_transformation_monoid(4)
-            == partial_transformation_monoid(4, author::Sutov));
+            == full_transformation_monoid(4, author::Mitchell + author::Whyte));
+    REQUIRE(
+        partial_transformation_monoid(4)
+        == partial_transformation_monoid(4, author::Mitchell + author::Whyte));
     REQUIRE(symmetric_inverse_monoid(4)
-            == symmetric_inverse_monoid(4, author::Sutov));
+            == symmetric_inverse_monoid(4, author::Mitchell + author::Whyte));
     REQUIRE(dual_symmetric_inverse_monoid(4)
             == dual_symmetric_inverse_monoid(
                 4, author::Easdown + author::East + author::FitzGerald));
@@ -220,6 +221,7 @@ namespace libsemigroups {
     auto rg = ReportGuard(REPORT);
     REQUIRE_THROWS_AS(full_transformation_monoid(3, author::Iwahori),
                       LibsemigroupsException);
+    REQUIRE_THROWS_AS(full_transformation_monoid(1), LibsemigroupsException);
   }
 
   LIBSEMIGROUPS_TEST_CASE("fpsemi-examples",
@@ -238,6 +240,7 @@ namespace libsemigroups {
     auto rg = ReportGuard(REPORT);
     REQUIRE_THROWS_AS(partial_transformation_monoid(3, author::Sutov),
                       LibsemigroupsException);
+    REQUIRE_THROWS_AS(partial_transformation_monoid(1), LibsemigroupsException);
   }
 
   LIBSEMIGROUPS_TEST_CASE("fpsemi-examples",
