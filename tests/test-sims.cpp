@@ -3121,7 +3121,7 @@ namespace libsemigroups {
                           "2-sided T_4",
                           "[quick][sims2][no-valgrind][no-coverage]") {
     auto  rg = ReportGuard(false);
-    Sims2 S(fpsemigroup::full_transformation_monoid(4));
+    Sims2 S(fpsemigroup::full_transformation_monoid(4, author::Iwahori));
 
     REQUIRE(S.number_of_congruences(256) == 11);  // Verified with GAP
     // sims::dot_poset("example-093-T-4-2-sided", S.cbegin(256), S.cend(256));
