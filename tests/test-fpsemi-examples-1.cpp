@@ -913,7 +913,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("fpsemi-examples",
                           "113",
                           "full_transformation_monoid(6) Mitchell + Whyte",
-                          "[fpsemi-examples][quick]") {
+                          "[fpsemi-examples]") {
     auto   rg = ReportGuard(REPORT);
     size_t n  = 6;
 
