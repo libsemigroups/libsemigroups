@@ -580,7 +580,7 @@ namespace libsemigroups {
     void validate_word(word_type const& w) const override {
       ToString    to_string(presentation().alphabet());
       std::string s = to_string(w);
-      return presentation().validate_word(s.cbegin(), s.cend());
+      presentation().validate_word(s.cbegin(), s.cend());
     }
 
     //! \brief Return the presentation defined by the rewriting system
