@@ -142,6 +142,7 @@ detailinclude_HEADERS += include/libsemigroups/detail/timer.hpp
 detailinclude_HEADERS += include/libsemigroups/detail/uf.hpp
 detailinclude_HEADERS += include/libsemigroups/detail/word-graph-with-sources.hpp
 detailinclude_HEADERS += include/libsemigroups/detail/word-graph-with-sources.tpp
+detailinclude_HEADERS += include/libsemigroups/detail/word-iterators.hpp
 
 magicenumincludedir = $(includedir)/libsemigroups/magic_enum
 magicenuminclude_HEADERS = extern/magic_enum/magic_enum.hpp
@@ -661,6 +662,7 @@ libsemigroups_la_SOURCES += src/detail/race.cpp
 libsemigroups_la_SOURCES += src/detail/report.cpp
 libsemigroups_la_SOURCES += src/detail/string.cpp
 libsemigroups_la_SOURCES += src/detail/timer.cpp
+libsemigroups_la_SOURCES += src/detail/word-iterators.cpp
 
 libsemigroups_la_CPPFLAGS = $(AM_CPPFLAGS)
 libsemigroups_la_CXXFLAGS = $(AM_CXXFLAGS)

@@ -205,6 +205,7 @@ namespace libsemigroups {
     //! * \ref validate_alphabet
     //! * \ref validate_rules
     //! * \ref validate
+    // TODO Rename alphabet_size
     Presentation& alphabet(size_type n);
 
     //! \brief Set the alphabet const reference.
@@ -1676,27 +1677,6 @@ namespace libsemigroups {
     template <typename Word>
     void remove_redundant_generators(Presentation<Word>& p);
 
-    //! \brief Return a possible letter by index.
-    //!
-    //! This function returns the \f$i\f$-th letter in the alphabet consisting
-    //! of all possible letters of type Presentation<Word>::letter_type. This
-    //! function exists so that visible ASCII characters occur before
-    //! invisible ones, so that when manipulating presentations over
-    //! `std::string`s the human readable characters are used before
-    //! non-readable ones.
-    //!
-    //! \tparam Word the type of the words in the presentation to get letters
-    //! for.
-    //! \param i the index of the letter to find.
-    //!
-    //! \returns A `letter_type`.
-    //!
-    //! \throws LibsemigroupsException if `i` exceeds the number of letters in
-    //! supported by `letter_type`.
-    // TODO(later) move to words.*pp
-    template <typename Word>
-    typename Presentation<Word>::letter_type human_readable_letter(size_t i);
-
     //! \brief Return the first letter **not** in the alphabet of a
     //! presentation.
     //!
@@ -2333,93 +2313,6 @@ namespace libsemigroups {
                   InversePresentation<Word> const& rhop) {
     return !(lhop == rhop);
   }
-
-  //! \ingroup presentations_group
-  //! \brief Convert a string to a word_type.
-  //!
-  //! This function converts its second argument \p input into a \ref word_type
-  //! and stores the result in the third argument \p output. The characters of
-  //! \p input are converted using `p.index()`, so that each letter
-  //! is mapped to the corresponding index in `p.alphabet()`.
-  //!
-  //! The content of the third argument \p output, if any, is removed.
-  //!
-  //! \param p the presentation whose alphabet will be used to convert.
-  //! \param input the string to convert.
-  //! \param output word to hold the result.
-  //!
-  //! \throws LibsemigroupsException if any letter in \p input is not contained
-  //! in `p.alphabet()`.
-  //!
-  //! \sa
-  //! * \ref Presentation::index
-  // TODO(later) could do a no_check version
-  void to_word(Presentation<std::string> const& p,
-               std::string const&               input,
-               word_type&                       output);
-
-  //! \ingroup presentations_group
-  //! \brief Convert a string to a word_type.
-  //!
-  //! This function converts its second argument \p input into a \ref word_type
-  //! and returns this result. The characters of \p input are converted using
-  //! `p.index()`, so that each letter is mapped to the corresponding index in
-  //! `p.alphabet()`.
-  //!
-  //! \param p the presentation whose alphabet will be used to convert.
-  //! \param input the string to convert.
-  //!
-  //! \throws LibsemigroupsException if any letter in \p input is not contained
-  //! in `p.alphabet()`.
-  //!
-  //! \sa
-  //! * \ref Presentation::index
-  // TODO(later) could do a no_check version
-  [[nodiscard]] word_type to_word(Presentation<std::string> const& p,
-                                  std::string const&               input);
-
-  //! \ingroup presentations_group
-  //! \brief Convert a word_type to a string.
-  //!
-  //! This function converts its second argument \p input into a `string`
-  //! and stores the result in the third argument \p output. The indices in
-  //! \p input are converted using `p.letter()`, so that each index
-  //! is mapped to the corresponding letter.
-  //!
-  //! The content of the third argument \p output, if any, is removed.
-  //!
-  //! \param p the presentation whose alphabet will be used to convert.
-  //! \param input the \ref word_type to convert.
-  //! \param output the `string` to hold the result.
-  //!
-  //! \throws LibsemigroupsException if any index in \p input is not in the
-  //! range `[0, p.alphabet().size())`
-  //!
-  //! \sa
-  //! * \ref Presentation::letter
-  // TODO(later) could do a no_check version
-  void to_string(Presentation<std::string> const& p,
-                 word_type const&                 input,
-                 std::string&                     output);
-
-  //! \ingroup presentations_group
-  //! \brief Convert a word_type to a string.
-  //!
-  //! This function converts its second argument \p input into a `string`
-  //! and returns this result. The indices in \p input are converted using
-  //! `p.letter()`, so that each index is mapped to the corresponding letter.
-  //!
-  //! \param p the presentation whose alphabet will be used to convert.
-  //! \param input the \ref word_type to convert.
-  //!
-  //! \throws LibsemigroupsException if any index in \p input is not in the
-  //! range `[0, p.alphabet().size())`
-  //!
-  //! \sa
-  //! * \ref Presentation::letter
-  // TODO(later) could do a no check version
-  std::string to_string(Presentation<std::string> const& p,
-                        word_type const&                 input);
 
   //! \ingroup presentations_group
   //!

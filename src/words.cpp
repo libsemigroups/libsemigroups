@@ -42,18 +42,79 @@
 #include "libsemigroups/ranges.hpp"        // for count, operator|
 #include "libsemigroups/types.hpp"         // for word_type
 
-#include "libsemigroups/detail/formatters.hpp"  // for magic_enum formatting
+#include "libsemigroups/detail/formatters.hpp"      // for magic_enum formatting
+#include "libsemigroups/detail/word-iterators.hpp"  // for const_wilo_iterator
 
 namespace libsemigroups {
 
+  namespace detail {
+    std::string const& chars_in_human_readable_order() {
+      // Choose visible characters a-zA-Z0-9 first before anything else
+      // The ascii ranges for these characters are: [97, 123), [65, 91),
+      // [48, 58) so the remaining range of chars that are appended to the end
+      // after these chars are [0,48), [58, 65), [91, 97), [123, 255]
+      static std::string letters
+          = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+      static bool first_call = true;
+      if (first_call) {
+        letters.resize(256);
+        std::iota(
+            letters.begin() + 62, letters.begin() + 110, static_cast<char>(0));
+        std::iota(letters.begin() + 110,
+                  letters.begin() + 117,
+                  static_cast<char>(58));
+        std::iota(letters.begin() + 117,
+                  letters.begin() + 123,
+                  static_cast<char>(91));
+        std::iota(letters.begin() + 123, letters.end(), static_cast<char>(123));
+        first_call = false;
+        LIBSEMIGROUPS_ASSERT(letters.size()
+                             == 1 + std::numeric_limits<char>::max()
+                                    - std::numeric_limits<char>::min());
+        LIBSEMIGROUPS_ASSERT(letters.end() == letters.begin() + 256);
+      }
+      return letters;
+    }
+  }  // namespace detail
+
+  namespace words {
+    size_t human_readable_index(char c) {
+      static bool first_call = true;
+      // It might be preferable to use an array here but char is sometimes
+      // signed and so chars[i] can be negative in the loop below.
+      static std::unordered_map<Presentation<std::string>::letter_type,
+                                Presentation<word_type>::letter_type>
+          map;
+      if (first_call) {
+        first_call        = false;
+        auto const& chars = detail::chars_in_human_readable_order();
+        for (letter_type i = 0; i < chars.size(); ++i) {
+          map.emplace(chars[i], i);
+        }
+      }
+      LIBSEMIGROUPS_ASSERT(map.size() == 256);
+
+      auto it = map.find(c);
+      // There are only 256 chars and so it shouldn't be possible that <c> is
+      // not in the map.
+      LIBSEMIGROUPS_ASSERT(it != map.cend());
+      return it->second;
+    }
+  }  // namespace words
+
   ////////////////////////////////////////////////////////////////////////
-  // 1. Words
+  // 1. WordRange
   ////////////////////////////////////////////////////////////////////////
 
   namespace {
     uint64_t geometric_progression(size_t n, size_t a, size_t r) {
       LIBSEMIGROUPS_ASSERT(r != 1);  // to avoid division by 0
       return a * ((1 - std::pow(r, n)) / (1 - static_cast<float>(r)));
+    }
+
+    bool word_in_language(size_t n, word_type const& w) {
+      return std::all_of(
+          w.cbegin(), w.cend(), [&](letter_type x) { return x < n; });
     }
   }  // namespace
 
@@ -81,203 +142,87 @@ namespace libsemigroups {
     return out;
   }
 
-  const_wilo_iterator::const_wilo_iterator() noexcept = default;
-  const_wilo_iterator::const_wilo_iterator(const_wilo_iterator const&)
-      = default;
-  const_wilo_iterator::const_wilo_iterator(const_wilo_iterator&&) noexcept
-      = default;
-  const_wilo_iterator&
-  const_wilo_iterator::operator=(const_wilo_iterator const&)
-      = default;
-  const_wilo_iterator&
-  const_wilo_iterator::operator=(const_wilo_iterator&&) noexcept
-      = default;
-  const_wilo_iterator::~const_wilo_iterator() = default;
-
-  const_wilo_iterator::const_wilo_iterator(size_type   n,
-                                           size_type   upper_bound,
-                                           word_type&& first,
-                                           word_type&& last)
-      : _current(std::move(first)),
-        _index(),
-        _letter(0),
-        _upper_bound(upper_bound - 1),
-        _last(std::move(last)),
-        _number_letters(n) {
-    _index = (_current == _last ? UNDEFINED : size_type(0));
-  }
-
-  const_wilo_iterator const& const_wilo_iterator::operator++() noexcept {
-    if (_index != UNDEFINED) {
-      ++_index;
-    begin:
-      if (_current.size() < _upper_bound && _letter != _number_letters) {
-        _current.push_back(_letter);
-        _letter = 0;
-        if (lexicographical_compare(_current, _last)) {
-          return *this;
-        }
-      } else if (!_current.empty()) {
-        _letter = ++_current.back();
-        _current.pop_back();
-        goto begin;
-      }
-      _index = UNDEFINED;
-    }
-    return *this;
-  }
-
-  void const_wilo_iterator::swap(const_wilo_iterator& that) noexcept {
-    std::swap(_letter, that._letter);
-    std::swap(_index, that._index);
-    std::swap(_upper_bound, that._upper_bound);
-    std::swap(_last, that._last);
-    std::swap(_number_letters, that._number_letters);
-    _current.swap(that._current);
-  }
-
-  // Assert that the forward iterator requirements are met
-  static_assert(std::is_default_constructible<const_wilo_iterator>::value,
-                "forward iterator requires default-constructible");
-  static_assert(std::is_copy_constructible<const_wilo_iterator>::value,
-                "forward iterator requires copy-constructible");
-  static_assert(std::is_copy_assignable<const_wilo_iterator>::value,
-                "forward iterator requires copy-assignable");
-  static_assert(std::is_destructible<const_wilo_iterator>::value,
-                "forward iterator requires destructible");
-
-  const_wilo_iterator cbegin_wilo(size_t      n,
-                                  size_t      upper_bound,
-                                  word_type&& first,
-                                  word_type&& last) {
-    if (!lexicographical_compare(
+  detail::const_wilo_iterator cbegin_wilo(size_t      n,
+                                          size_t      upper_bound,
+                                          word_type&& first,
+                                          word_type&& last) {
+    if (!word_in_language(n, first)
+        || !lexicographical_compare(
             first.cbegin(), first.cend(), last.cbegin(), last.cend())) {
       return cend_wilo(n, upper_bound, std::move(first), std::move(last));
     }
     if (first.size() >= upper_bound) {
-      return ++const_wilo_iterator(
+      return ++detail::const_wilo_iterator(
           n, upper_bound, std::move(first), std::move(last));
     }
-    return const_wilo_iterator(
+    return detail::const_wilo_iterator(
         n, upper_bound, std::move(first), std::move(last));
   }
 
-  const_wilo_iterator cbegin_wilo(size_t           n,
-                                  size_t           upper_bound,
-                                  word_type const& first,
-                                  word_type const& last) {
+  detail::const_wilo_iterator cbegin_wilo(size_t           n,
+                                          size_t           upper_bound,
+                                          word_type const& first,
+                                          word_type const& last) {
     return cbegin_wilo(n, upper_bound, word_type(first), word_type(last));
   }
 
-  const_wilo_iterator
+  detail::const_wilo_iterator
   cend_wilo(size_t n, size_t upper_bound, word_type&&, word_type&& last) {
-    return const_wilo_iterator(
+    return detail::const_wilo_iterator(
         n, upper_bound, word_type(last), std::move(last));
   }
 
-  const_wilo_iterator cend_wilo(size_t n,
-                                size_t upper_bound,
-                                word_type const&,
-                                word_type const& last) {
+  detail::const_wilo_iterator cend_wilo(size_t n,
+                                        size_t upper_bound,
+                                        word_type const&,
+                                        word_type const& last) {
     return cend_wilo(n, upper_bound, word_type(), word_type(last));
   }
 
-  const_wislo_iterator::const_wislo_iterator() noexcept = default;
-  const_wislo_iterator::const_wislo_iterator(const_wislo_iterator const&)
-      = default;
-  const_wislo_iterator::const_wislo_iterator(const_wislo_iterator&&) noexcept
-      = default;
-  const_wislo_iterator&
-  const_wislo_iterator::operator=(const_wislo_iterator const&)
-      = default;
-  const_wislo_iterator&
-  const_wislo_iterator::operator=(const_wislo_iterator&&) noexcept
-      = default;
-  const_wislo_iterator::~const_wislo_iterator() = default;
-
-  const_wislo_iterator::const_wislo_iterator(size_type   n,
-                                             word_type&& first,
-                                             word_type&& last)
-      : _current(std::move(first)),
-        _index(),
-        _last(std::move(last)),
-        _number_letters(n) {
-    _current.reserve(last.size());
-    _index = (_current == _last ? UNDEFINED : size_t(0));
-  }
-
-  const_wislo_iterator const& const_wislo_iterator::operator++() noexcept {
-    if (_index != UNDEFINED) {
-      ++_index;
-      size_t n = _current.size();
-      while (!_current.empty() && ++_current.back() == _number_letters) {
-        _current.pop_back();
-      }
-      _current.resize((_current.empty() ? n + 1 : n), 0);
-      if (!shortlex_compare(_current, _last)) {
-        _index = UNDEFINED;
-      }
-    }
-    return *this;
-  }
-
-  void const_wislo_iterator::swap(const_wislo_iterator& that) noexcept {
-    std::swap(_current, that._current);
-    std::swap(_index, that._index);
-    std::swap(_last, that._last);
-    std::swap(_number_letters, that._number_letters);
-  }
-
-  // Assert that the forward iterator requirements are met
-  static_assert(std::is_default_constructible<const_wislo_iterator>::value,
-                "forward iterator requires default-constructible");
-  static_assert(std::is_copy_constructible<const_wislo_iterator>::value,
-                "forward iterator requires copy-constructible");
-  static_assert(std::is_copy_assignable<const_wislo_iterator>::value,
-                "forward iterator requires copy-assignable");
-  static_assert(std::is_destructible<const_wislo_iterator>::value,
-                "forward iterator requires destructible");
-
-  const_wislo_iterator cbegin_wislo(size_t      n,
-                                    word_type&& first,
-                                    word_type&& last) {
-    if (!shortlex_compare(
+  detail::const_wislo_iterator cbegin_wislo(size_t      n,
+                                            word_type&& first,
+                                            word_type&& last) {
+    if (!word_in_language(n, first)
+        || !shortlex_compare(
             first.cbegin(), first.cend(), last.cbegin(), last.cend())) {
       return cend_wislo(n, std::move(first), std::move(last));
     }
-    return const_wislo_iterator(n, std::move(first), std::move(last));
+    return detail::const_wislo_iterator(n, std::move(first), std::move(last));
   }
 
-  const_wislo_iterator cbegin_wislo(size_t           n,
-                                    word_type const& first,
-                                    word_type const& last) {
+  detail::const_wislo_iterator cbegin_wislo(size_t           n,
+                                            word_type const& first,
+                                            word_type const& last) {
     return cbegin_wislo(n, word_type(first), word_type(last));
   }
 
-  const_wislo_iterator cend_wislo(size_t n, word_type&&, word_type&& last) {
-    return const_wislo_iterator(n, word_type(last), std::move(last));
+  detail::const_wislo_iterator cend_wislo(size_t n,
+                                          word_type&&,
+                                          word_type&& last) {
+    return detail::const_wislo_iterator(n, word_type(last), std::move(last));
   }
 
-  const_wislo_iterator cend_wislo(size_t n,
-                                  word_type const&,
-                                  word_type const& last) {
+  detail::const_wislo_iterator cend_wislo(size_t n,
+                                          word_type const&,
+                                          word_type const& last) {
     return cend_wislo(n, word_type(), word_type(last));
   }
 
-  void Words::set_iterator() const {
+  void WordRange::set_iterator() const {
     if (!_current_valid) {
       _current_valid = true;
+      _visited       = 0;
       if (_order == Order::shortlex) {
-        _current = cbegin_wislo(_number_of_letters, _first, _last);
-        _end     = cend_wislo(_number_of_letters, _first, _last);
+        _current = cbegin_wislo(_alphabet_size, _first, _last);
+        _end     = cend_wislo(_alphabet_size, _first, _last);
       } else if (_order == Order::lex) {
-        _current = cbegin_wilo(_number_of_letters, _upper_bound, _first, _last);
-        _end     = cend_wilo(_number_of_letters, _upper_bound, _first, _last);
+        _current = cbegin_wilo(_alphabet_size, _upper_bound, _first, _last);
+        _end     = cend_wilo(_alphabet_size, _upper_bound, _first, _last);
       }
     }
   }
 
-  size_t Words::count() const noexcept {
+  size_t WordRange::count() const noexcept {
     if (_order == Order::shortlex) {
       return size_hint();
     } else {
@@ -285,23 +230,24 @@ namespace libsemigroups {
     }
   }
 
-  Words& Words::init() {
-    _number_of_letters = 0;
-    _current_valid     = false;
-    _first             = {};
-    _last              = {};
-    _order             = Order::shortlex;
-    _upper_bound       = 0;  // does nothing if _order is shortlex
+  WordRange& WordRange::init() {
+    _alphabet_size = 0;
+    _current_valid = false;
+    _first         = {};
+    _last          = {};
+    _order         = Order::shortlex;
+    _upper_bound   = 0;  // does nothing if _order is shortlex
+    _visited       = 0;
     return *this;
   }
 
-  Words::Words(Words const&)            = default;
-  Words::Words(Words&&)                 = default;
-  Words& Words::operator=(Words const&) = default;
-  Words& Words::operator=(Words&&)      = default;
-  Words::~Words()                       = default;
+  WordRange::WordRange(WordRange const&)            = default;
+  WordRange::WordRange(WordRange&&)                 = default;
+  WordRange& WordRange::operator=(WordRange const&) = default;
+  WordRange& WordRange::operator=(WordRange&&)      = default;
+  WordRange::~WordRange()                           = default;
 
-  Words& Words::order(Order val) {
+  WordRange& WordRange::order(Order val) {
     if (val != Order::shortlex && val != Order::lex) {
       LIBSEMIGROUPS_EXCEPTION(
           "the argument must be Order::shortlex or Order::lex, found {}", val);
@@ -311,165 +257,308 @@ namespace libsemigroups {
     return *this;
   }
 
+  [[nodiscard]] std::string to_human_readable_repr(WordRange const& wr,
+                                                   size_t           max_width) {
+    word_type   first = wr.first();
+    word_type   last  = wr.last();
+    std::string order = (wr.order() == Order::lex) ? "lex" : "shortlex";
+    size_t      count = wr.count();
+    std::string out;
+
+    bool print_short = false;
+
+    if (first.size() > max_width || last.size() > max_width) {
+      print_short = true;
+    }
+
+    if (!print_short) {
+      out = fmt::format("<WordRange of length {} between {} and {} with "
+                        "letters in [0, {}) in {} order>",
+                        count,
+                        first,
+                        last,
+                        wr.alphabet_size(),
+                        order);
+    }
+
+    if (out.size() > max_width) {
+      print_short = true;
+    }
+
+    if (print_short) {
+      out = fmt::format(
+          "<WordRange of length {} with letters in [0, {}) in {} order>",
+          count,
+          wr.alphabet_size(),
+          order);
+    }
+
+    return out;
+  }
+
   ////////////////////////////////////////////////////////////////////////
   // 2. Strings -> Words
   ////////////////////////////////////////////////////////////////////////
 
-  namespace {
-    std::string const& chars_in_human_readable_order() {
-      // Choose visible characters a-zA-Z0-9 first before anything else
-      // The ascii ranges for these characters are: [97, 123), [65, 91),
-      // [48, 58) so the remaining range of chars that are appended to the end
-      // after these chars are [0,48), [58, 65), [91, 97), [123, 255)
-      static std::string letters
-          = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-      static bool first_call = true;
-      if (first_call) {
-        letters.resize(255);
-        std::iota(
-            letters.begin() + 62, letters.begin() + 110, static_cast<char>(0));
-        std::iota(letters.begin() + 110,
-                  letters.begin() + 117,
-                  static_cast<char>(58));
-        std::iota(letters.begin() + 117,
-                  letters.begin() + 123,
-                  static_cast<char>(91));
-        std::iota(letters.begin() + 123, letters.end(), static_cast<char>(123));
-        first_call = false;
-        LIBSEMIGROUPS_ASSERT(letters.size()
-                             == std::numeric_limits<char>::max()
-                                    - std::numeric_limits<char>::min());
-        LIBSEMIGROUPS_ASSERT(letters.end() == letters.begin() + 255);
-      }
-      return letters;
-    }
-  }  // namespace
-
-  size_t human_readable_index(char c) {
-    static bool first_call = true;
-    // It might be preferable to use an array here but char is sometimes
-    // signed and so chars[i] can be negative in the loop below.
-    static std::unordered_map<Presentation<std::string>::letter_type,
-                              Presentation<word_type>::letter_type>
-        map;
-    if (first_call) {
-      first_call        = false;
-      auto const& chars = chars_in_human_readable_order();
-      for (letter_type i = 0; i < chars.size(); ++i) {
-        map.emplace(chars[i], i);
-      }
-    }
-    LIBSEMIGROUPS_ASSERT(map.size() == 255);
-
-    auto it = map.find(c);
-    // There are only 255 chars and so it shouldn't be possible that <c> is
-    // not in the map.
-    LIBSEMIGROUPS_ASSERT(it != map.cend());
-    return it->second;
-  }
-
-  void to_word(std::string_view s, word_type& w) {
-    w.resize(s.size(), 0);
-    std::transform(s.cbegin(), s.cend(), w.begin(), [](char c) {
-      return human_readable_index(c);
-    });
-  }
-
-  word_type to_word(std::string_view s) {
-    word_type w;
-    to_word(s, w);
-    return w;
-  }
+  ToWord::ToWord(ToWord const&)            = default;
+  ToWord::ToWord(ToWord&&)                 = default;
+  ToWord& ToWord::operator=(ToWord const&) = default;
+  ToWord& ToWord::operator=(ToWord&&)      = default;
+  ToWord::~ToWord()                        = default;
 
   ToWord& ToWord::init(std::string const& alphabet) {
-    if (alphabet.size() >= 256) {
-      LIBSEMIGROUPS_EXCEPTION("The argument (alphabet) is too big, expected at "
-                              "most 256, found {}",
-                              alphabet.size());
+    if (alphabet.size() > 256) {
+      LIBSEMIGROUPS_EXCEPTION(
+          "The argument (alphabet) is too big, expected at most 256, found {}",
+          alphabet.size());
     }
-    auto _old_lookup = _lookup;
+    auto _old_alphabet_map = _alphabet_map;
     init();
-    _lookup.back() = alphabet.size();
+    LIBSEMIGROUPS_ASSERT(_alphabet_map.empty());
     for (letter_type l = 0; l < alphabet.size(); ++l) {
-      LIBSEMIGROUPS_ASSERT(static_cast<size_t>(alphabet[l]) < _lookup.size());
-      // FIXME I think this has the same issue as human_readable_index, that
-      // chars can be negative, and so this will be bad!
-      if (_lookup[alphabet[l]] != UNDEFINED) {
-        _lookup = _old_lookup;  // strong exception guarantee
-        LIBSEMIGROUPS_EXCEPTION(
-            "The argument (alphabet) contains \'{}\' more than once!",
-            alphabet[l]);
+      auto it = _alphabet_map.emplace(alphabet[l], l);
+      if (!it.second) {
+        // Strong exception guarantee
+        std::swap(_old_alphabet_map, _alphabet_map);
+        LIBSEMIGROUPS_EXCEPTION("invalid alphabet {}, duplicate letter {}!",
+                                detail::to_printable(alphabet),
+                                detail::to_printable(alphabet[l]));
       }
-      _lookup[alphabet[l]] = l;
     }
     return *this;
   }
 
-  void ToWord::operator()(std::string const& input, word_type& output) const {
-    output.clear();
-    output.reserve(input.size());
-    for (auto const& c : input) {
-      if (_lookup[c] == UNDEFINED) {
-        LIBSEMIGROUPS_EXCEPTION(
-            "the 1st argument (input string) contains the letter \'{}\' that "
-            "does not belong to the alphabet!",
-            c);
+  [[nodiscard]] std::string ToWord::alphabet() const {
+    if (empty()) {
+      return "";
+    }
+    std::string output(_alphabet_map.size(), '\0');
+    for (auto it : _alphabet_map) {
+      output[it.second] = it.first;
+    }
+    return output;
+  }
+
+  void ToWord::call_no_checks(word_type&         output,
+                              std::string const& input) const {
+    // Empty alphabet implies conversion should use human_readable_index
+    if (empty()) {
+      output.resize(input.size(), 0);
+      std::transform(input.cbegin(), input.cend(), output.begin(), [](char c) {
+        return words::human_readable_index(c);
+      });
+    } else {  // Non-empty alphabet implies conversion should use the alphabet.
+      output.clear();
+      output.reserve(input.size());
+      for (auto const& c : input) {
+        output.push_back(_alphabet_map.at(c));
       }
-      output.push_back(_lookup[c]);
     }
   }
 
-  word_type ToWord::operator()(std::string const& input) const {
-    word_type output;
-              operator()(input, output);
-    return output;
+  void ToWord::operator()(word_type& output, std::string const& input) const {
+    if (!empty()) {
+      for (auto const& c : input) {
+        if (_alphabet_map.find(c) == _alphabet_map.cend()) {
+          LIBSEMIGROUPS_EXCEPTION(
+              "invalid letter \'{}\' in the 2nd argument (input word), "
+              "expected letters in the alphabet {}!",
+              c,
+              detail::to_printable(alphabet()));
+        }
+      }
+    }
+    call_no_checks(output, input);
   }
 
   ////////////////////////////////////////////////////////////////////////
   // 3. Words -> Strings
   ////////////////////////////////////////////////////////////////////////
 
-  char human_readable_char(size_t i) {
-    using letter_type_ = typename Presentation<std::string>::letter_type;
-    // Choose visible characters a-zA-Z0-9 first before anything else
-    // The ascii ranges for these characters are: [97, 123), [65, 91),
-    // [48, 58) so the remaining range of chars that are appended to the end
-    // after these chars are [0,48), [58, 65), [91, 97), [123, 255)
-    if (i >= std::numeric_limits<letter_type_>::max()
-                 - std::numeric_limits<letter_type_>::min()) {
-      LIBSEMIGROUPS_EXCEPTION("expected a value in the range [0, {}) found {}",
-                              std::numeric_limits<letter_type>::max()
-                                  - std::numeric_limits<letter_type>::min(),
-                              i);
+  ToString::ToString(ToString const&)            = default;
+  ToString::ToString(ToString&&)                 = default;
+  ToString& ToString::operator=(ToString const&) = default;
+  ToString& ToString::operator=(ToString&&)      = default;
+  ToString::~ToString()                          = default;
+
+  ToString& ToString::init(std::string const& alphabet) {
+    if (alphabet.size() > 256) {
+      LIBSEMIGROUPS_EXCEPTION(
+          "The argument (alphabet) is too big, expected at most 256, found {}",
+          alphabet.size());
     }
-    return chars_in_human_readable_order()[i];
+    auto _old_alphabet_map = _alphabet_map;
+    init();
+    LIBSEMIGROUPS_ASSERT(_alphabet_map.empty());
+    for (letter_type i = 0; i < alphabet.size(); ++i) {
+      auto it = _alphabet_map.emplace(i, alphabet[i]);
+      if (!it.second) {
+        std::swap(_old_alphabet_map, _alphabet_map);
+        LIBSEMIGROUPS_EXCEPTION("invalid alphabet {}, duplicate letter {}!",
+                                detail::to_printable(alphabet),
+                                detail::to_printable(alphabet[i]));
+      }
+    }
+    return *this;
+  }
+
+  [[nodiscard]] std::string ToString::alphabet() const {
+    if (empty()) {
+      return "";
+    }
+
+    std::string output(_alphabet_map.size(), '\0');
+    for (auto it : _alphabet_map) {
+      output[it.first] = it.second;
+    }
+    return output;
+  }
+
+  void ToString::call_no_checks(std::string&     output,
+                                word_type const& input) const {
+    // Empty alphabet implies conversion should use human_readable_index
+    if (empty()) {
+      output.resize(input.size(), 0);
+      std::transform(
+          input.cbegin(), input.cend(), output.begin(), [](letter_type c) {
+            return words::human_readable_letter<>(c);
+          });
+    } else {  // Non-empty alphabet implies conversion should use the alphabet.
+      output.clear();
+      output.reserve(input.size());
+      for (letter_type const& l : input) {
+        output.push_back(_alphabet_map.at(l));
+      }
+    }
+  }
+
+  void ToString::operator()(std::string& output, word_type const& input) const {
+    if (!empty()) {
+      for (letter_type const& l : input) {
+        if (_alphabet_map.find(l) == _alphabet_map.cend()) {
+          LIBSEMIGROUPS_EXCEPTION(
+              "invalid letter \'{}\' in the 2nd argument (input word), "
+              "expected letters in the range  [0, {})!",
+              l,
+              _alphabet_map.size());
+        }
+      }
+    }
+    call_no_checks(output, input);
   }
 
   ////////////////////////////////////////////////////////////////////////
-  // 4. Strings
+  // 4. StringRange
   ////////////////////////////////////////////////////////////////////////
 
-  Strings& Strings::init() {
+  namespace detail {
+    // This is not in an unnamed namespace because it is used by random_strings.
+    // The random_strings return type is particularly nasty, and random_strings
+    // should therefore probably remain an `auto inline` function defined in the
+    // hpp file.
+    void throw_if_random_string_should_throw(std::string const& alphabet,
+                                             size_t             min,
+                                             size_t             max) {
+      if (min >= max) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "the 2nd argument (min) must be less than the 3rd argument (max)");
+      } else if (alphabet.empty() && min != 0) {
+        LIBSEMIGROUPS_EXCEPTION("expected non-empty 1st argument (alphabet)");
+      }
+    }
+  }  // namespace detail
+
+  std::string random_string(std::string const& alphabet, size_t length) {
+    static std::random_device       rd;
+    static std::mt19937             generator(rd());
+    std::uniform_int_distribution<> distribution(0, alphabet.size() - 1);
+
+    std::string result;
+
+    for (size_t i = 0; i < length; ++i) {
+      result += alphabet[distribution(generator)];
+    }
+
+    return result;
+  }
+
+  // Random string with random length in the range [min, max) over <alphabet>
+  std::string random_string(std::string const& alphabet,
+                            size_t             min,
+                            size_t             max) {
+    detail::throw_if_random_string_should_throw(alphabet, min, max);
+    if (max == min + 1) {
+      return random_string(alphabet, min);
+    }
+    static std::random_device       rd;
+    static std::mt19937             generator(rd());
+    std::uniform_int_distribution<> distribution(min, max - 1);
+    return random_string(alphabet, distribution(generator));
+  }
+
+  StringRange& StringRange::init() {
     _current.clear();
     _current_valid = false;
     _letters.clear();
     _to_word.init();
-    _words.init();
+    _to_string.init();
+    _word_range.init();
     return *this;
   }
 
-  Strings::Strings(Strings const&)            = default;
-  Strings::Strings(Strings&&)                 = default;
-  Strings& Strings::operator=(Strings const&) = default;
-  Strings& Strings::operator=(Strings&&)      = default;
-  Strings::~Strings()                         = default;
+  StringRange::StringRange(StringRange const&)            = default;
+  StringRange::StringRange(StringRange&&)                 = default;
+  StringRange& StringRange::operator=(StringRange const&) = default;
+  StringRange& StringRange::operator=(StringRange&&)      = default;
+  StringRange::~StringRange()                             = default;
 
-  Strings& Strings::alphabet(std::string const& x) {
-    _current_valid = false;
-    _words.number_of_letters(x.size());
-    _letters = x;
+  StringRange& StringRange::alphabet(std::string const& x) {
+    // Need to do this _to_word.init(x) first, because if this throws then the
+    // rest should remain unchanged.
     _to_word.init(x);
+    _to_string.init(x);
+    _word_range.alphabet_size(x.size());
+    _current_valid = _word_range.valid();
+    _letters       = x;
     return *this;
+  }
+
+  [[nodiscard]] std::string to_human_readable_repr(StringRange const& sr,
+                                                   size_t max_width) {
+    std::string first    = sr.first();
+    std::string last     = sr.last();
+    std::string alphabet = sr.alphabet();
+    std::string order    = (sr.order() == Order::lex) ? "lex" : "shortlex";
+    size_t      count    = sr.count();
+    std::string out;
+
+    bool print_short = false;
+
+    if (first.size() > max_width || last.size() > max_width
+        || alphabet.size() > max_width) {
+      print_short = true;
+    }
+
+    if (!print_short) {
+      out = fmt::format(
+          "<StringRange of length {} between \"{}\" and \"{}\" with letters "
+          "in \"{}\" in {} order>",
+          count,
+          first,
+          last,
+          alphabet,
+          order);
+    }
+
+    if (out.size() > max_width) {
+      print_short = true;
+    }
+
+    if (print_short) {
+      out = fmt::format("<StringRange of length {} in {} order>", count, order);
+    }
+
+    return out;
   }
 
   ////////////////////////////////////////////////////////////////////////
@@ -502,7 +591,7 @@ namespace libsemigroups {
                                     "digits in 0123456789, found {}",
                                     w[i]);
           }
-          result.push_back(human_readable_index(w[i]));
+          result.push_back(words::human_readable_index(w[i]));
         } else {
           LIBSEMIGROUPS_EXCEPTION(
               "the argument contains the character \'{}\', expected only "

@@ -246,10 +246,10 @@ namespace libsemigroups {
       p.alphabet(num_letters);
       Sims1 C;
 
-      Words lhs;
-      lhs.number_of_letters(num_letters).min(1).max(word_len);
-      Words rhs;
-      rhs.number_of_letters(num_letters);
+      WordRange lhs;
+      lhs.alphabet_size(num_letters).min(1).max(word_len);
+      WordRange rhs;
+      rhs.alphabet_size(num_letters);
 
       for (auto const& l : lhs) {
         rhs.first(l).max(word_len);

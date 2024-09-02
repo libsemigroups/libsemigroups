@@ -55,7 +55,7 @@
 #include "libsemigroups/paths.hpp"            // for Paths
 #include "libsemigroups/presentation.hpp"     // for add_rule, Presentation
 #include "libsemigroups/word-graph.hpp"       // for WordGraph
-#include "libsemigroups/words.hpp"            // for Inner, Strings, to_str...
+#include "libsemigroups/words.hpp"  // for Inner, StringRange, to_str...
 
 #include "libsemigroups/detail/report.hpp"  // for ReportGuard
 #include "libsemigroups/detail/stl.hpp"     // for apply_permutation
@@ -140,7 +140,7 @@ namespace libsemigroups {
     REQUIRE(kb.number_of_active_rules() == 8);
     REQUIRE(kb.number_of_classes() == 3);
     auto nf = knuth_bendix::normal_forms(kb);
-    REQUIRE((nf | ToStrings(p.alphabet()) | to_vector())
+    REQUIRE((nf | ToString(p.alphabet()) | to_vector())
             == std::vector<std::string>({"", "a", "A"}));
   }
 
@@ -218,7 +218,7 @@ namespace libsemigroups {
     std::sort(ntc[0].begin(), ntc[0].end(), ShortLexCompare());
 
     REQUIRE(ntc[0]
-            == (knuth_bendix::normal_forms(kb) | ToStrings(p.alphabet())
+            == (knuth_bendix::normal_forms(kb) | ToString(p.alphabet())
                 | rx::sort(ShortLexCompare()) | rx::to_vector()));
   }
 
@@ -501,7 +501,7 @@ namespace libsemigroups {
     REQUIRE(kb.normal_form("aabbaabbaabbaabb") == "bbbbbbbb");
     REQUIRE(kb.normal_form("aabbaabbaabbaabbaabb") == "aabbbbbbbbbb");
     auto nf = knuth_bendix::normal_forms(kb).min(1);
-    REQUIRE((nf | ToStrings(p.alphabet()) | to_vector())
+    REQUIRE((nf | ToString(p.alphabet()) | to_vector())
             == std::vector<std::string>({"a",
                                          "b",
                                          "aa",
@@ -606,11 +606,11 @@ namespace libsemigroups {
                      KNUTH_BENDIX_TYPES) {
     auto rg = ReportGuard(false);
 
-    Strings lhss;
+    StringRange lhss;
     lhss.alphabet("ab").min(1).max(11);
     REQUIRE((lhss | count()) == 2'046);
 
-    Strings rhss;
+    StringRange rhss;
     rhss.alphabet("ab").max(11);
 
     size_t total_c4 = 0;
@@ -707,8 +707,8 @@ namespace libsemigroups {
       presentation::add_rule(p, "bcbc", "");
 
       for (size_t i = 1; i < 3; ++i) {
-        auto lhs = detail::random_string(lphbt, 100);
-        auto rhs = detail::random_string(lphbt, 100);
+        auto lhs = random_string(lphbt, 100);
+        auto rhs = random_string(lphbt, 100);
         presentation::add_rule(p, lhs, rhs);
         std::cout << "trying rule " << lhs << " -> " << rhs << std::endl;
       }

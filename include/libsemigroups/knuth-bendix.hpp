@@ -578,8 +578,9 @@ namespace libsemigroups {
     //!
     //! \sa Presentation::validate_word.
     void validate_word(word_type const& w) const override {
-      std::string s = to_string(presentation(), w);
-      return presentation().validate_word(s.cbegin(), s.cend());
+      ToString    to_string(presentation().alphabet());
+      std::string s = to_string(w);
+      presentation().validate_word(s.cbegin(), s.cend());
     }
 
     //! \brief Return the presentation defined by the rewriting system
@@ -894,8 +895,8 @@ namespace libsemigroups {
     // TODO add perf warning
     [[nodiscard]] bool contains(word_type const& u,
                                 word_type const& v) override {
-      return equal_to(to_string(presentation(), u),
-                      to_string(presentation(), v));
+      ToString to_string(presentation().alphabet());
+      return equal_to(to_string(u), to_string(v));
     }
 
     // REVIEW can this be copied given the params are a different type?

@@ -305,7 +305,8 @@ namespace libsemigroups {
                         letter_type>) {
         _presentation.validate_word(w.cbegin(), w.cend());
       } else {
-        value_type ww = to_string(presentation(), w);
+        ToString   to_string(_presentation.alphabet());
+        value_type ww = to_string(w);
         _presentation.validate_word(ww.cbegin(), ww.cend());
       }
     }

@@ -191,8 +191,8 @@ namespace libsemigroups {
         size_t const m = tc.number_of_classes();
         size_t const n = tc.presentation().alphabet().size();
 
-        Words words;
-        words.number_of_letters(n).min(1).max(m + 1);
+        WordRange words;
+        words.alphabet_size(n).min(1).max(m + 1);
 
         std::unordered_map<node_type, word_type> map;
         for (auto const& w : words) {
@@ -222,9 +222,9 @@ namespace libsemigroups {
         size_t const m = tc.number_of_classes();
         size_t const n = tc.presentation().alphabet().size();
 
-        Words words;
+        WordRange words;
         words.order(Order::lex)
-            .number_of_letters(n)
+            .alphabet_size(n)
             .upper_bound(m + 1)
             .min(1)
             .max(m + 1);
@@ -2411,8 +2411,8 @@ namespace libsemigroups {
     section_Cr_style(tc);
 
     REQUIRE(tc.number_of_classes() == 24);
-    REQUIRE(human_readable_char(0) == 'a');
-    REQUIRE(human_readable_index('a') == 0);
+    REQUIRE(words::human_readable_letter<>(0) == 'a');
+    REQUIRE(words::human_readable_index('a') == 0);
     REQUIRE(todd_coxeter::normal_form(tc, "aaaaaaaaaaaaaaaaaaa"_w) == "a"_w);
     auto S = to_froidure_pin(tc);
     REQUIRE(to_knuth_bendix(twosided, S).confluent());
@@ -3324,9 +3324,10 @@ namespace libsemigroups {
     presentation::add_rule(p, "accAABab", "");
 
     ToddCoxeter H(right, p);
-    H.add_pair(to_word(p, "bc"), ""_w);
-    H.add_pair(to_word(p, "ABAAbcabC"), ""_w);
-    H.add_pair(to_word(p, "AcccacBcA"), ""_w);
+    ToWord      to_word(p.alphabet());
+    H.add_pair(to_word("bc"), ""_w);
+    H.add_pair(to_word("ABAAbcabC"), ""_w);
+    H.add_pair(to_word("AcccacBcA"), ""_w);
     H.large_collapse(10'000)
         .strategy(options::strategy::hlt)
         .lookahead_extent(options::lookahead_extent::partial);
@@ -3912,7 +3913,8 @@ namespace libsemigroups {
 
     SECTION("custom HLT") {
       ToddCoxeter tc(right, p);
-      tc.add_pair(to_word(p, "xy"), ""_w);
+      ToWord      to_word(p.alphabet());
+      tc.add_pair(to_word("xy"), ""_w);
       tc.strategy(options::strategy::hlt)
           .lookahead_extent(options::lookahead_extent::partial)
           .lookahead_style(options::lookahead_style::hlt)
@@ -3927,7 +3929,8 @@ namespace libsemigroups {
       presentation::replace_word_with_new_generator(p, "axY");
       REQUIRE(presentation::length(p) == 140);
       ToddCoxeter tc(right, p);
-      tc.add_pair(to_word(p, "xy"), ""_w);
+      ToWord      to_word(p.alphabet());
+      tc.add_pair(to_word("xy"), ""_w);
       tc.strategy(options::strategy::felsch);
       REQUIRE(tc.number_of_classes() == 10'644'480);
     }
@@ -3965,7 +3968,8 @@ namespace libsemigroups {
     REQUIRE(presentation::length(p) == 367);
 
     ToddCoxeter tc(right, p);
-    tc.add_pair(to_word(p, "xy"), ""_w);
+    ToWord      to_word(p.alphabet());
+    tc.add_pair(to_word("xy"), ""_w);
     tc.lookahead_style(options::lookahead_style::felsch)
         .lookahead_extent(options::lookahead_extent::partial)
         .strategy(options::strategy::hlt)
@@ -4155,7 +4159,7 @@ namespace libsemigroups {
       if (n < 3)
         continue;
 
-      //      REQUIRE((todd_coxeter::normal_forms(tc) | ToStrings("abc") |
+      //      REQUIRE((todd_coxeter::normal_forms(tc) | ToString("abc") |
       //      to_vector())
       //              == std::vector<std::string>());
     }
@@ -4214,7 +4218,7 @@ namespace libsemigroups {
     // };
 
     // std::for_each(ws.begin(), ws.end(), involution);
-    // REQUIRE((iterator_range(ws.begin(), ws.end()) | ToStrings("abcde")
+    // REQUIRE((iterator_range(ws.begin(), ws.end()) | ToString("abcde")
     //          | to_vector())
     //         == std::vector<std::string>());
 
@@ -4259,7 +4263,7 @@ namespace libsemigroups {
     //          | transform(convert) | to_vector())
     //         == std::vector<std::string>());
 
-    REQUIRE((todd_coxeter::normal_forms(tc) | ToStrings("abcd") | to_vector())
+    REQUIRE((todd_coxeter::normal_forms(tc) | ToString("abcd") | to_vector())
             == std::vector<std::string>());
   }
 
@@ -4416,7 +4420,7 @@ namespace libsemigroups {
       // REQUIRE(partition(tc, possible3.cbegin(), possible3.cend())
       //         == std::vector<std::vector<word_type>>());
       // REQUIRE(todd_coxeter::normal_form(tc, 3413401234_w) == ""_w);
-      // REQUIRE((todd_coxeter::normal_forms(tc) | ToStrings("abcd")
+      // REQUIRE((todd_coxeter::normal_forms(tc) | ToString("abcd")
       //          | to_vector())
       //         == std::vector<std::string>());
     }
@@ -4511,8 +4515,8 @@ namespace libsemigroups {
       presentation::add_rule(p, pow({a}, 3), {a});
     }
     using words::operator+;
-    Words        words;
-    words.number_of_letters(n).min(0).max(8);
+    WordRange    words;
+    words.alphabet_size(n).min(0).max(8);
 
     for (size_t a = 0; a < n - 1; ++a) {
       for (size_t b = a; b < n - 1; ++b) {
@@ -4571,11 +4575,12 @@ namespace libsemigroups {
 
     p.alphabet_from_rules();
 
-    auto q = to_presentation<std::string>(p);
+    auto     q = to_presentation<std::string>(p);
+    ToString to_string(q.alphabet());
 
     REQUIRE(knuth_bendix::try_equal_to(q,
-                                       to_string(q, 1217_w),
-                                       to_string(q, 7121_w),
+                                       to_string(1217_w),
+                                       to_string(7121_w),
                                        std::chrono::milliseconds(10))
             == tril::TRUE);
 

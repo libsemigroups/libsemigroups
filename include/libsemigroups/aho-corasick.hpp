@@ -727,6 +727,7 @@ namespace libsemigroups {
   //!
   //! \exception
   //! \no_libsemigroups_except
+  // TODO (now) rename this to_human_readable_repr
   std::string to_string(AhoCorasick& ac);
 
   //! \ingroup aho_corasick_group

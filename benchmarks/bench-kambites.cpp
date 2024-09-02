@@ -28,13 +28,12 @@
 
 #include "libsemigroups/kambites.hpp"      // for Kambites
 #include "libsemigroups/knuth-bendix.hpp"  // for KnuthBendix
-#include "libsemigroups/words.hpp"         // for Strings
+#include "libsemigroups/ranges.hpp"        // for operator|, to_vector
+#include "libsemigroups/words.hpp"         // for StringRange
 
 namespace libsemigroups {
   using detail::MultiStringView;
   using detail::power_string;
-  using detail::random_string;
-  using detail::random_strings;
 
   namespace {
     std::string zip(std::vector<std::string> const& x,
@@ -197,7 +196,7 @@ namespace libsemigroups {
       Kambites<T> k;
       k.set_alphabet("ab");
       k.add_rule(lhs, rhs);
-      auto random = random_strings("ab", N, 0, 4 * N + 4);
+      auto random = random_strings("ab", N, 0, 4 * N + 4) | rx::to_vector();
       auto u      = zip(random_sequence(lhs, rhs, N), random);
       auto v      = zip(random_sequence(lhs, rhs, N), random);
       REQUIRE(k.small_overlap_class() >= 4);
@@ -221,15 +220,15 @@ namespace libsemigroups {
   namespace {
     template <typename T>
     auto c4_check_2_gen_1_rel_all(size_t len) {
-      Strings lhs;
-      lhs.letters("ab").min(len).max(len + 1);
+      StringRange lhs;
+      lhs.alphabet("ab").min(len).max(len + 1);
 
       rx::advance_by(lhs, lhs.count() - 1);
       auto last = lhs.get();
-      lhs.init().letters("ab").min(len).max(len + 1);
+      lhs.init().alphabet("ab").min(len).max(len + 1);
 
-      Strings rhs;
-      rhs.letters("ab").min(1).max(len);
+      StringRange rhs;
+      rhs.alphabet("ab").min(1).max(len);
 
       uint64_t total_c4     = 0;
       uint64_t total        = 0;
@@ -497,7 +496,7 @@ namespace libsemigroups {
                                                         size_t             N) {
       std::vector<std::string> results;
       for (size_t i = 0; i < num; ++i) {
-        auto random = random_strings("ab", N, 0, 4 * N + 4);
+        auto random = random_strings("ab", N, 0, 4 * N + 4) | rx::to_vector();
         results.push_back(zip(random_sequence(lhs, rhs, N), random));
         results.push_back(zip(random_sequence(lhs, rhs, N), random));
       }
@@ -510,7 +509,8 @@ namespace libsemigroups {
                                                  size_t N) {
       // Weird looking range here so that the length of the words is approx.
       // the same as from the pseudo_random_sample_words
-      return random_strings("ab", 2 * num, 0, 4 * N * N + 7 * N + 4);
+      return random_strings("ab", 2 * num, 0, 4 * N * N + 7 * N + 4)
+             | rx::to_vector();
     }
 
     template <typename WordSampler>

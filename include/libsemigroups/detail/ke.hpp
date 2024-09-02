@@ -37,6 +37,7 @@
 #include "libsemigroups/order.hpp"         // for shortlex_compare
 #include "libsemigroups/presentation.hpp"  // for to_word
 #include "libsemigroups/types.hpp"         // for word_type, tril
+#include "libsemigroups/words.hpp"         // for ToWord, ToString
 
 namespace libsemigroups {
   namespace detail {
@@ -83,7 +84,8 @@ namespace libsemigroups {
       }
 
       word_type to_word(Kambites<Word> const& k) const {
-        return ::libsemigroups::to_word(k.presentation(), _value);
+        ToWord to_word(k.presentation().alphabet());
+        return to_word(_value);
       }
 
       template <typename SFINAE = std::string>

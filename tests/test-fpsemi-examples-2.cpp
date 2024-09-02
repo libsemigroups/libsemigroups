@@ -195,8 +195,9 @@ namespace libsemigroups {
     word_type                               letters = {0, 1, 2};
     std::unordered_map<std::string, size_t> map;
     size_t                                  next = 0;
+    ToString to_string(kb.presentation().alphabet());
     do {
-      auto s = to_string(kb.presentation().alphabet(), letters);
+      auto s = to_string(letters);
       next += map.emplace(kb.normal_form(s), next).second;
     } while (std::next_permutation(letters.begin(), letters.end()));
     REQUIRE(map.size() == 4);

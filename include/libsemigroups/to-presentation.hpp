@@ -108,10 +108,8 @@ namespace libsemigroups {
   //!
   //! If the alphabet of of \p p is \f$\{a_0, a_1, \dots a_{n-1}\}\f$, then the
   //! conversion from `Presentation<WordInput>::letter_type` to
-  //! `Presentation<WordOutput>::letter_type` is either:
-  //!   * \f$a_i \mapsto\f$ `human_readable_char(size_t i)` if `WordOutput` is
-  //!   `std::string`; or
-  //!   * \f$a_i \mapsto\f$ `i` otherwise.
+  //! `Presentation<WordOutput>::letter_type` is \f$a_i \mapsto\f$
+  //! `human_readable_letter<WordOutput>(size_t i)`.
   //!
   //! \tparam WordOutput the type of the words in the returned presentation.
   //! \tparam WordInput the type of the words in the input presentation.
@@ -215,10 +213,8 @@ namespace libsemigroups {
   //!
   //! If the alphabet of of \p ip is \f$\{a_0, a_1, \dots a_{n-1}\}\f$, then the
   //! conversion from `InversePresentation<WordInput>::letter_type` to
-  //! `InversePresentation<WordOutput>::letter_type` is either:
-  //!   * \f$a_i \mapsto\f$ `human_readable_char(size_t i)` if `WordOutput` is
-  //!   `std::string`; or
-  //!   * \f$a_i \mapsto\f$ `i` otherwise.
+  //! `InversePresentation<WordOutput>::letter_type` is \f$a_i \mapsto\f$
+  //! `human_readable_letter<WordOutput>(size_t i)`.
   //!
   //! \tparam WordOutput the type of the words in the returned inverse
   //! presentation.

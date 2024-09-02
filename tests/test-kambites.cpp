@@ -46,7 +46,6 @@ namespace libsemigroups {
 
   constexpr bool REPORT = false;
   using detail::MultiStringView;
-  using detail::random_string;
 
   namespace {
 
@@ -149,21 +148,22 @@ namespace libsemigroups {
     presentation::add_rule(p, "ef", "dg");
 
     Kambites<T> k(p);
+    ToWord      to_word(p.alphabet());
 
     REQUIRE(k.contains("abcd", "aaaeaa"));
     REQUIRE(k.contains("ef", "dg"));
     REQUIRE(k.contains("aaaaaef", "aaaaadg"));
     REQUIRE(k.contains("efababa", "dgababa"));
-    REQUIRE(k.contains(to_word(p, "abcd"), to_word(p, "aaaeaa")));
-    REQUIRE(k.contains(to_word(p, "ef"), to_word(p, "dg")));
-    REQUIRE(k.contains(to_word(p, "aaaaaef"), to_word(p, "aaaaadg")));
-    REQUIRE(k.contains(to_word(p, "efababa"), to_word(p, "dgababa")));
+    REQUIRE(k.contains(to_word("abcd"), to_word("aaaeaa")));
+    REQUIRE(k.contains(to_word("ef"), to_word("dg")));
+    REQUIRE(k.contains(to_word("aaaaaef"), to_word("aaaaadg")));
+    REQUIRE(k.contains(to_word("efababa"), to_word("dgababa")));
 
     auto s = to_froidure_pin(k);
     s.enumerate(100);
     REQUIRE(s.current_size() == 8'205);
 
-    Strings strings;
+    StringRange strings;
     strings.alphabet(p.alphabet()).min(1).max(4);
     REQUIRE(strings.count() == 399);
     REQUIRE(non_trivial_classes(k, strings)
@@ -538,7 +538,7 @@ namespace libsemigroups {
     REQUIRE(k.number_of_classes() == POSITIVE_INFINITY);
     REQUIRE(number_of_words(3, 4, 16) == 21'523'320);
 
-    Strings s;
+    StringRange s;
     s.alphabet("cab").first("aabc").last("aaabc");
     REQUIRE((s | count()) == 162);
 
@@ -758,9 +758,9 @@ namespace libsemigroups {
 
     REQUIRE(k.number_of_classes() == POSITIVE_INFINITY);
 
-    Strings lhs;
+    StringRange lhs;
     lhs.alphabet("abcdefghijkl").first("a").last("bgdk");
-    Strings rhs = lhs;
+    StringRange rhs = lhs;
 
     REQUIRE((lhs | count()) == 4'522);
     size_t N = 4'522;
@@ -956,7 +956,7 @@ namespace libsemigroups {
 
     Kambites<T> k(p);
 
-    Strings s;
+    StringRange s;
     s.alphabet("abcd").first("a").last("aaaa");
     REQUIRE((s | all_of([&k](auto& w) { return k.normal_form(w) == w; })));
 
@@ -1383,7 +1383,7 @@ namespace libsemigroups {
     REQUIRE(k.contains("adbbbd", "aaabc"));
     REQUIRE(number_of_words(4, 4, 6) == 1280);
 
-    Strings s;
+    StringRange s;
     s.alphabet("abcd").first("aaaa").last("aaaaaa");
     REQUIRE(
         (s | filter([&k](auto& w) { return k.contains("acba", w); }) | count())
@@ -1426,7 +1426,7 @@ namespace libsemigroups {
     REQUIRE(k.contains(k.normal_form("acbacba"), "aabcabc"));
     REQUIRE(k.contains("aabcabc", k.normal_form("acbacba")));
 
-    Strings s;
+    StringRange s;
     s.alphabet("abcd").first("aaaa").last("aaaaaa");
 
     REQUIRE(
@@ -1463,7 +1463,7 @@ namespace libsemigroups {
     REQUIRE(k.contains(k.normal_form("bceacdabcd"), "aeebbcaeebbc"));
     REQUIRE(k.contains("aeebbcaeebbc", k.normal_form("bceacdabcd")));
 
-    Strings s;
+    StringRange s;
     s.alphabet("abcd").first("aaaa").last("aaaaaa");
 
     REQUIRE(
@@ -1646,9 +1646,9 @@ namespace libsemigroups {
 
   template <typename T>
   auto count_2_gen_1_rel(size_t min, size_t max) {
-    Strings x;
+    StringRange x;
     x.alphabet("ab").min(min).max(max);
-    Strings y = x;
+    StringRange y = x;
 
     uint64_t total_c4 = 0;
     uint64_t total    = 0;
@@ -2596,6 +2596,8 @@ namespace libsemigroups {
 
     Presentation<std::string> p;
     p.alphabet("abcdefg");
+    ToWord to_word(p.alphabet());
+
     presentation::add_rule(p, "abcd", "aaaeaa");
     presentation::add_rule(p, "ef", "dg");
 
@@ -2609,7 +2611,7 @@ namespace libsemigroups {
     presentation::add_rule(p, "abcd", "aaaeaa");
     presentation::add_rule(p, "ef", "dg");
 
-    REQUIRE_THROWS_AS(kk.add_pair(to_word(p, "abababab"), to_word(p, "aba")),
+    REQUIRE_THROWS_AS(kk.add_pair(to_word("abababab"), to_word("aba")),
                       LibsemigroupsException);
 
     kk.init(std::move(p));
@@ -2617,13 +2619,13 @@ namespace libsemigroups {
     REQUIRE(kk.presentation().alphabet() == "abcdefg");
 
     p.alphabet("abcdefg");
-    kk.add_pair(to_word(p, "abababab"), to_word(p, "aba"));
+    kk.add_pair(to_word("abababab"), to_word("aba"));
     REQUIRE(kk.small_overlap_class() == 1);
 
     Presentation<word_type> pp;
     pp.alphabet(7);
-    presentation::add_rule(pp, to_word(p, "abcd"), to_word(p, "aaaeaa"));
-    presentation::add_rule(pp, to_word(p, "ef"), to_word(p, "dg"));
+    presentation::add_rule(pp, to_word("abcd"), to_word("aaaeaa"));
+    presentation::add_rule(pp, to_word("ef"), to_word("dg"));
 
     kk.init(pp);
     REQUIRE(kk.generating_pairs().empty());

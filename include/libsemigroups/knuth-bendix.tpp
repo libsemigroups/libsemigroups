@@ -522,11 +522,13 @@ namespace libsemigroups {
 
     _gen_pairs_initted = true;
 
-    auto& p     = _presentation;
-    auto  pairs = (generating_pairs() | rx::transform([&p](auto const& w) {
-                    return to_string(p, w);
-                  }))
-                 | rx::in_groups_of_exactly(2);
+    auto&    p = _presentation;
+    ToString to_string(p.alphabet());
+    auto     pairs
+        = (generating_pairs() | rx::transform([&to_string](auto const& w) {
+             return to_string(w);
+           }))
+          | rx::in_groups_of_exactly(2);
 
     if (kind() != congruence_kind::twosided && (pairs | rx::count()) != 0) {
       p.alphabet(p.alphabet() + presentation::first_unused_letter(p));
@@ -776,6 +778,11 @@ namespace libsemigroups {
   template <typename Rewriter, typename ReductionOrder>
   typename detail::internal_char_type
   KnuthBendix<Rewriter, ReductionOrder>::uint_to_internal_char(size_t a) {
+    // Ensure that the input value doesn't overflow the internal char type,
+    // seems legit to me
+    // TODO should this be
+    // std::numeric_limits<detail::internal_char_type>::max() -
+    // std::numeric_limits<detail::internal_char_type>::min()?
     LIBSEMIGROUPS_ASSERT(
         a <= size_t(std::numeric_limits<detail::internal_char_type>::max()));
 #ifdef LIBSEMIGROUPS_DEBUG
@@ -791,6 +798,10 @@ namespace libsemigroups {
   template <typename Rewriter, typename ReductionOrder>
   typename detail::internal_string_type
   KnuthBendix<Rewriter, ReductionOrder>::uint_to_internal_string(size_t i) {
+    // TODO What is this check for?
+    // TODO should this be
+    // std::numeric_limits<detail::internal_char_type>::max() -
+    // std::numeric_limits<detail::internal_char_type>::min()?
     LIBSEMIGROUPS_ASSERT(
         i <= size_t(std::numeric_limits<detail::internal_char_type>::max()));
     return detail::internal_string_type({uint_to_internal_char(i)});
@@ -1124,7 +1135,7 @@ namespace libsemigroups {
                                            .second
                                        != path.cend();
                               })
-                            | ToStrings(kb2.presentation().alphabet())));
+                            | ToString(kb2.presentation().alphabet())));
       // The check in the next loop could be put into the lambda passed to
       // filter above, but then we'd have to convert `path` to a string, and
       // then discard the string, so better to do it here. Note that the

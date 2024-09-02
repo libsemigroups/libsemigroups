@@ -757,9 +757,10 @@ namespace libsemigroups {
     presentation::add_rule(p, "acbbACb", "e");
     presentation::add_rule(p, "ABabccc", "e");
 
-    Sims1 S;
-    S.presentation(p).include(to_word(p, "a"), to_word(p, "A"));
-    S.presentation(p).include(to_word(p, "a"), to_word(p, "b"));
+    Sims1  S;
+    ToWord to_word(p.alphabet());
+    S.presentation(p).include(to_word("a"), to_word("A"));
+    S.presentation(p).include(to_word("a"), to_word("b"));
     REQUIRE(S.number_of_congruences(3) == 2);
 
     check_include(S.presentation(), S.include(), 3);

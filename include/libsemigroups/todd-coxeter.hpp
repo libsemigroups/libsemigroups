@@ -1027,6 +1027,7 @@ namespace libsemigroups {
       q.alphabet(p.alphabet());
       q.contains_empty_word(p.contains_empty_word());
       ToddCoxeter tc(twosided);
+      ToWord      to_word(p.alphabet());
 
       for (auto omit = p.rules.crbegin(); omit != p.rules.crend(); omit += 2) {
         q.rules.clear();
@@ -1034,8 +1035,8 @@ namespace libsemigroups {
         q.rules.insert(q.rules.end(), omit + 2, p.rules.crend());
         tc.init(twosided, q);
         tc.run_for(t);
-        if (tc.word_to_class_index(to_word(p, *omit))
-            == tc.word_to_class_index(to_word(p, *(omit + 1)))) {
+        if (tc.word_to_class_index(to_word(*omit))
+            == tc.word_to_class_index(to_word(*(omit + 1)))) {
           return (omit + 1).base() - 1;
         }
       }
