@@ -1496,9 +1496,9 @@ namespace libsemigroups {
             == "<StringRange of length 108 between \"bbb\" and \"bbbbb\" with "
                "letters in "
                "\"bcd\" in shortlex order>");
-    sr.max(40);
+    sr.max(20);
     REQUIRE(to_human_readable_repr(sr)
-            == "<StringRange of length 6078832729528464371 in shortlex order>");
+            == "<StringRange of length 1743392187 in shortlex order>");
   }
 
   LIBSEMIGROUPS_TEST_CASE("ToString",
