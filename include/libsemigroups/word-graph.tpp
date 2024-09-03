@@ -22,6 +22,7 @@
 // TODO(1) re-order to be in alphabetical order
 
 #include "libsemigroups/exception.hpp"
+#include "libsemigroups/matrix.hpp"
 #include "libsemigroups/word-graph.hpp"
 
 namespace libsemigroups {
@@ -1219,6 +1220,18 @@ namespace libsemigroups {
     if (last != number_of_nodes()) {
       word_graph::throw_if_node_out_of_bounds(last);
     }
+
+    for (node_type s = first; s < last; ++s) {
+      for (auto [a, t] : labels_and_targets_no_checks(s)) {
+        if ((t >= last || t < first) && t != UNDEFINED) {
+          LIBSEMIGROUPS_EXCEPTION("node value out of bounds, expected value "
+                                  "in the range [{}, {}), got {}",
+                                  first,
+                                  last,
+                                  t);
+        }
+      }
+    }
     return induced_subgraph_no_checks(first, last);
   }
 
@@ -1519,6 +1532,7 @@ namespace libsemigroups {
       // the following checks must be performed since call_no_checks, uses
       // target_no_checks, and if the target is out of bound, then this will
       // crash.
+      // TODO(0) check if these checks are really required
       word_graph::throw_if_any_target_out_of_bounds(x);
       word_graph::throw_if_any_target_out_of_bounds(y);
     }
