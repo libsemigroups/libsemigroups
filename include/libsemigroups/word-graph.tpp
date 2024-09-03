@@ -19,17 +19,28 @@
 // This file contains an implementation of word graphs (which are basically
 // deterministic automata without initial or accept states).
 
-// TODO(0) re-order to be in alphabetical order
+// TODO(1) re-order to be in alphabetical order
 
 #include "libsemigroups/exception.hpp"
 #include "libsemigroups/word-graph.hpp"
 
 namespace libsemigroups {
+
   //////////////////////////////////////////////////////////////////////////////
   // Helper namespace
   //////////////////////////////////////////////////////////////////////////////
 
   namespace word_graph {
+
+#if defined(LIBSEMIGROUPS_EIGEN_ENABLED) && !defined(PARSED_BY_DOXYGEN)
+    static inline Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic>
+    pow(Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> const& x,
+        size_t                                                       e) {
+      using Mat = Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic>;
+      return Eigen::MatrixPower<Mat>(x)(e);
+    }
+#endif
+
     namespace detail {
       template <typename Graph>
       bool shortlex_standardize(Graph& wg, Forest& f) {
@@ -52,7 +63,7 @@ namespace libsemigroups {
         for (node_type s = 0; s <= t; ++s) {
           for (letter_type x = 0; x < n; ++x) {
             node_type r = wg.target_no_checks(p[s], x);
-            if (r != UNDEFINED) {
+            if (r < n) {
               r = q[r];  // new
               if (r > t) {
                 t++;
@@ -94,7 +105,7 @@ namespace libsemigroups {
         // Perform a DFS through wg
         while (s <= t) {
           node_type r = wg.target_no_checks(p[s], x);
-          if (r != UNDEFINED) {
+          if (r < n) {
             r = q[r];  // new
             if (r > t) {
               t++;
@@ -142,12 +153,12 @@ namespace libsemigroups {
 
         // TODO(1) move this out of here and use it in the other standardize
         // functions
-        auto swap_if_necessary = [&wg, &f, &p, &q](node_type const   ss,
-                                                   node_type&        tt,
-                                                   letter_type const x) {
+        auto swap_if_necessary = [&wg, &f, &p, &q, &n](node_type const   ss,
+                                                       node_type&        tt,
+                                                       letter_type const x) {
           node_type r      = wg.target_no_checks(p[ss], x);
           bool      result = false;
-          if (r != UNDEFINED) {
+          if (r < n) {
             r = q[r];  // new
             if (r > tt) {
               tt++;
@@ -390,7 +401,7 @@ namespace libsemigroups {
                                            Iterator               last) {
       for (auto it = first; it != last; ++it) {
         auto s = *it;
-        for (auto [a, t] : wg.labels_and_targets_no_checks(s)) {
+        for (auto [a, t] : wg.labels_and_targets(s)) {
           if (t != UNDEFINED && t >= wg.number_of_nodes()) {
             LIBSEMIGROUPS_EXCEPTION(
                 "target out of bounds, the edge with source {} and label {} "
@@ -798,15 +809,6 @@ namespace libsemigroups {
       return order;
     }
 
-#ifdef LIBSEMIGROUPS_EIGEN_ENABLED
-    static inline Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic>
-    pow(Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> const& x,
-        size_t                                                       e) {
-      using Mat = Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic>;
-      return Eigen::MatrixPower<Mat>(x)(e);
-    }
-#endif
-
     template <typename Node>
     auto adjacency_matrix(WordGraph<Node> const& wg) {
       using Mat = typename WordGraph<Node>::adjacency_matrix_type;
@@ -831,12 +833,14 @@ namespace libsemigroups {
       std::stack<Node1>         stack;
       stack.push(source);
 
+      size_t const N = wg.number_of_nodes();
+
       while (!stack.empty()) {
         Node1 n = stack.top();
         stack.pop();
         if (seen.insert(n).second) {
           for (auto t : wg.targets_no_checks(n)) {
-            if (t != UNDEFINED) {
+            if (t < N) {
               stack.push(t);
             }
           }
@@ -850,9 +854,8 @@ namespace libsemigroups {
                                                    Node2 source) {
       static_assert(sizeof(Node2) <= sizeof(Node1));
       throw_if_node_out_of_bounds(wg, static_cast<Node1>(source));
-      // If we don't do the check below, it might be that some of the returned
-      // nodes don't belong to the graph.
-      throw_if_any_target_out_of_bounds(wg);
+      // TODO check if there aren't other places where we don't need to check
+      // if any targets are out of bounds first.
       return nodes_reachable_from_no_checks(wg, source);
     }
 
@@ -918,6 +921,8 @@ namespace libsemigroups {
                                                  Node2                   from,
                                                  Iterator                first,
                                                  Iterator                last) {
+      throw_if_node_out_of_bounds(wg, from);
+
       static_assert(sizeof(Node2) <= sizeof(Node1));
       auto         it   = first;
       Node1        prev = from;
@@ -946,6 +951,15 @@ namespace libsemigroups {
                       word_type const&        w) {
       static_assert(sizeof(Node2) <= sizeof(Node1));
       return last_node_on_path(wg, from, w.cbegin(), w.cend());
+    }
+
+    template <typename Node1, typename Node2>
+    std::pair<Node1, word_type::const_iterator>
+    last_node_on_path_no_checks(WordGraph<Node1> const& wg,
+                                Node2                   from,
+                                word_type const&        w) {
+      static_assert(sizeof(Node2) <= sizeof(Node1));
+      return last_node_on_path_no_checks(wg, from, w.cbegin(), w.cend());
     }
 
     template <typename Node>
@@ -1740,13 +1754,14 @@ namespace libsemigroups {
       static_assert(sizeof(Node2) <= sizeof(Node1));
       using node_type = typename WordGraph<Node1>::node_type;
       f.init(1);
+      size_t const N = wg.out_degree();
 
       std::queue<node_type> queue;
       queue.push(static_cast<node_type>(root));
       do {
         node_type s = queue.front();
         for (auto [a, t] : wg.labels_and_targets_no_checks(s)) {
-          if (t != UNDEFINED && t != static_cast<node_type>(root)) {
+          if (t < N && t != static_cast<node_type>(root)) {
             if (t >= f.number_of_nodes()) {
               f.add_nodes(t - f.number_of_nodes() + 1);
             }
@@ -1764,12 +1779,6 @@ namespace libsemigroups {
     void spanning_tree(WordGraph<Node1> const& wg, Node2 root, Forest& f) {
       static_assert(sizeof(Node2) <= sizeof(Node1));
       throw_if_node_out_of_bounds(wg, root);
-      // TODO(1) be better to put a version of spanning_tree_no_checks into the
-      // detail namespace that has a template parameter CheckTarget that checks
-      // that the target isn't out of bounds in this can, and does nothing in
-      // the nochecks case.
-      auto reachable = nodes_reachable_from_no_checks(wg, root);
-      throw_if_any_target_out_of_bounds(wg, reachable.begin(), reachable.end());
       return spanning_tree_no_checks(wg, root, f);
     }
 

@@ -95,6 +95,9 @@
     <tab type="user" visible="yes" url="@ref dot_group" title="Visualisation" />
     <tab type="usergroup" visible="yes" url="@ref word_graph_group" title="Word graphs">
       <tab type="user" visible="yes" url="@ref libsemigroups::Forest" title="Forest" />
+      <tab type="user" visible="yes" url="@ref gabow_group" title="Gabow" />
+      <tab type="user" visible="yes" url="@ref libsemigroups::Joiner" title="Joiner" />
+      <tab type="user" visible="yes" url="@ref libsemigroups::Meeter" title="Meeter" />
       <tab type="user" visible="yes" url="@ref paths_group" title="Paths" />
       <tab type="user" visible="yes" url="@ref libsemigroups::WordGraph" title="WordGraph" />
       <tab type="user" visible="yes" url="@ref libsemigroups::word_graph" title="WordGraph helpers" />
@@ -123,7 +126,6 @@
       <tab type="user" visible="yes" url="@ref libsemigroups::RightAction" title="RightAction" />
     </tab>
     <tab type="user" visible="yes" url="@ref aho_corasick_group" title="Aho Corasick" />
-    <tab type="user" visible="yes" url="@ref gabow_group" title="Gabow" />
     <tab type="usergroup" visible="yes" url="@ref congruences_group" title="Congruences">
       <tab type="usergroup" visible="yes" url="group__congruences__group.html#nested-classes"
         title="Classes">
