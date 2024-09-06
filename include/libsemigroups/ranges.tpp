@@ -34,7 +34,7 @@ namespace libsemigroups {
     static std::mt19937       gen(rd());
 
     if (!_val_set) {
-      std::uniform_int_distribution<size_t> dist(0, _input | rx::count());
+      std::uniform_int_distribution<size_t> dist(0, (_input | rx::count()) - 1);
       _val     = (_input | rx::skip_n(dist(gen)) | rx::take(1)).get();
       _val_set = true;
     }
