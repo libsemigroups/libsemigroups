@@ -830,7 +830,8 @@ namespace libsemigroups {
     // lex,
     // Normal forms are the recursive-path least word belonging to a given
     // congruence class.
-    recursive bool standardize(Order val);
+    // recursive
+    bool standardize(Order val);
 
     node_type word_to_class_index(word_type const& w) {
       validate_word(w);
