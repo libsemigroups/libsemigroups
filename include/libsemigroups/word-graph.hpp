@@ -824,6 +824,7 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! Constant.
+    // TODO(0) consider removing this
     const_iterator_nodes cbegin_nodes() const noexcept {
       return detail::IntRange<node_type>(0, number_of_nodes()).cbegin();
     }
