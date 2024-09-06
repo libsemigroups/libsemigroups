@@ -814,7 +814,23 @@ namespace libsemigroups {
     void shrink_to_fit();
 
     // Returns true if anything changed
-    bool standardize(Order val);
+    // TODO: The documentation for Order used to contain a description of what
+    // each order means with respect to this function. However, the Order enum
+    // is now used in other places, so those descriptions should be written here
+    // instead. That documentation is placed here for reference:
+    //! No standardization has been done.
+    // none = 0,
+    // Normal forms are the short-lex least word belonging to a given
+    // congruence class.
+    // shortlex,
+    // The congruence classes are ordered lexicographically by their
+    // normal form. The normal forms themselves are essentially arbitrary
+    // because there is not necessarily a lexicographically least word in
+    // every class.
+    // lex,
+    // Normal forms are the recursive-path least word belonging to a given
+    // congruence class.
+    recursive bool standardize(Order val);
 
     node_type word_to_class_index(word_type const& w) {
       validate_word(w);

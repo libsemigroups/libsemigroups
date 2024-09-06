@@ -76,6 +76,7 @@
       </tab>
       <tab type="user" visible="yes" url="@ref transf_group" title="Transformations" />
     </tab>
+    <tab type="user" visible="yes" url="@ref orders_group" title="Orders" />
     <tab type="usergroup" visible="yes" url="@ref presentations_group" title="Presentations">
       <tab type="user" visible="yes" url="@ref libsemigroups::Presentation"
         title="Presentation class" />
