@@ -78,7 +78,7 @@ namespace libsemigroups {
   //! various of the data structures and algorithms in ``libsemigroups``:
   //!
   //! * \ref dot(AhoCorasick&)
-  //! * \ref dot(WordGraph<Node> const& wg)
+  //! * \ref word_graph::dot(WordGraph<Node> const& wg)
   //!
   //! [DOT]: https://www.graphviz.org/doc/info/lang.html
   //! [Graphviz]: https://www.graphviz.org

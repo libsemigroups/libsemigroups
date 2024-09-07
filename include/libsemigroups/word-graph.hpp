@@ -217,7 +217,11 @@ namespace libsemigroups {
 
     ~WordGraph();
 
-    //! Construct a random word graph from number of nodes and out-degree.
+    //! \brief Construct a random word graph from number of nodes and
+    //! out-degree.
+    //!
+    //! This function constructs a random word graph with \p number_of_nodes
+    //! nodes and out-degree \p out_degree.
     //!
     //! \param number_of_nodes the number of nodes.
     //! \param out_degree the out-degree of every node.
@@ -236,12 +240,15 @@ namespace libsemigroups {
                             std::mt19937 mt
                             = std::mt19937(std::random_device()()));
 
-    //! Construct a random word graph from number of nodes, edges, and
+    //! \brief Construct a random word graph from number of nodes, edges, and
     //! out-degree.
+    //!
+    //! This function constructs a random word graph with \p number_of_nodes
+    //! nodes, out-degree \p out_degree, and \p number_of_edges edges.
     //!
     //! \param number_of_nodes the number of nodes.
     //! \param out_degree the out-degree of every node.
-    //! \param number_of_edges TODO.
+    //! \param number_of_edges the number of edges in the graph.
     //! \param mt a std::mt19937 used as a random source (defaults to:
     //! std::mt19937(std::random_device()())).
     //!
@@ -260,12 +267,16 @@ namespace libsemigroups {
                             std::mt19937 mt
                             = std::mt19937(std::random_device()()));
 
-    //! Construct a random acyclic word graph from number of nodes, edges, and
-    //! out-degree.
+    //! \brief Construct a random acyclic word graph from number of nodes,
+    //! edges, and out-degree.
+    //!
+    //! This function constructs a random acyclic word graph with \p
+    //! number_of_nodes nodes, out-degree \p out_degree, and \p number_of_edges
+    //! edges.
     //!
     //! \param number_of_nodes the number of nodes.
     //! \param out_degree the out-degree of every node.
-    //! \param number_of_edges TODO
+    //! \param number_of_edges the number of edges.
     //! \param mt a std::mt19937 used as a random source (defaults to:
     //! std::mt19937(std::random_device()())).
     //!
@@ -273,9 +284,9 @@ namespace libsemigroups {
     //! * \p number_of_nodes is less than \c 2
     //! * \p out_degree is less than \c 2
     //! * \p number_of_edges exceeds the product of \p number_of_nodes and \p
-    //! out_degree
+    //!   out_degree
     //! * \p number_of_edges exceeds the product of \p number_of_nodes and \p
-    //! number_of_nodes - 1 divided by 2.
+    //!   number_of_nodes - 1 divided by 2.
     //!
     //! \par Complexity
     //! At least \f$O(mn)\f$ where \p m is the number of nodes, and \p n is the
@@ -286,15 +297,14 @@ namespace libsemigroups {
                                     std::mt19937 mt
                                     = std::mt19937(std::random_device()()));
 
-    //! Ensures that the word graph has capacity for a given number of nodes,
-    //! and out-degree.
+    //! \brief Ensures that the word graph has capacity for a given number of
+    //! nodes, and out-degree.
     //!
-    //! \note
-    //! Does not modify number_of_nodes() or out_degree().
+    //!  This function ensures that the word graph has capacity for \p m nodes
+    //!  and \p n labels.
     //!
     //! \param m the number of nodes.
     //! \param n the out-degree.
-    //!
     //!
     //! \exceptions
     //! \no_libsemigroups_except
@@ -305,6 +315,9 @@ namespace libsemigroups {
     //!
     //! \iterator_validity
     //! \iterator_invalid
+    //!
+    //! \note
+    //! Does not modify number_of_nodes() or out_degree().
     // Not noexcept because DynamicArray2::add_cols isn't.
     WordGraph& reserve(size_type m, size_type n);
 
@@ -351,27 +364,29 @@ namespace libsemigroups {
     // Not noexcept because DynamicArray2::add_cols isn't.
     WordGraph& add_to_out_degree(size_type nr);
 
-    //! Add an edge from one node to another with a given label.
+    //! \brief Add an edge from one node to another with a given label.
     //!
-    //! If \p i and \p j are nodes in \c this, and \p lbl is in the range `[0,
-    //! out_degree())`, then this function adds an edge from \p i to \p j
-    //! labelled \p lbl.
+    //! If \p s and \p t are nodes in \c this, and \p a is in the range `[0,
+    //! out_degree())`, then this function adds an edge from \p a to \p b
+    //! labelled \p a.
     //!
-    //! \param m the source node.
-    //! \param lbl the label of the edge from \p m to \p n.
-    //! \param n the range node.
+    //! \param s the source node.
+    //! \param a the label of the edge.
+    //! \param t the range node.
     //!
-    //! \throws LibsemigroupsException if \p i, \p j, or \p lbl is
-    //! not valid.
+    //! \throws LibsemigroupsException if \p s, \p a, or \p t is not valid.
     //! \strong_guarantee
     //!
     //! \complexity
     //! Constant.
     // Not noexcept because throw_if_node_out_of_bounds/label aren't
     // return *this by reference.
-    WordGraph& target(node_type m, label_type lbl, node_type n);
+    WordGraph& target(node_type s, label_type a, node_type t);
 
-    //! Add an edge from one node to another with a given label.
+    //! \brief Add an edge from one node to another with a given label.
+    //!
+    //! This function adds an edge from the node \p s to the node \p t with
+    //! label \p a.
     //!
     //! \param s the source node.
     //! \param a the label of the edge from \p s to \p t.
@@ -455,7 +470,10 @@ namespace libsemigroups {
     //! it assumed that \p a is not out of range.
     WordGraph& remove_label_no_checks(label_type a);
 
-    //! Remove all of the edges in the word graph.
+    //! \brief Remove all of the edges in the word graph.
+    //!
+    //! Set every target of every source with every possible label to \ref
+    //! UNDEFINED.
     //!
     //! \exceptions
     //! \no_libsemigroups_except
@@ -463,7 +481,6 @@ namespace libsemigroups {
     //! \complexity
     //! \f$O(mn)\f$ where \p m is the number of nodes and \p n is the
     //! out-degree.
-    //!
     inline WordGraph& remove_all_targets() {
       std::fill(_dynamic_array_2.begin(), _dynamic_array_2.end(), UNDEFINED);
       return *this;
@@ -651,14 +668,17 @@ namespace libsemigroups {
     // Not noexcept because throw_if_node_out_of_bounds/label aren't
     [[nodiscard]] node_type target(node_type source, label_type a) const;
 
-    //! Get the range of the edge with given source node and label.
+    //! \brief Get the target of the edge with given source node and label.
     //!
-    //! \param v the node.
-    //! \param lbl the label.
+    //! This function returns the the target of the edge with source node \p s
+    //! and label \p a.
+    //!
+    //! \param s the node.
+    //! \param a the label.
     //!
     //! \returns
-    //! Returns the node adjacent to \p v via the edge labelled \p lbl, or
-    //! libsemigroups::UNDEFINED; both are values of type \ref node_type.
+    //! Returns the node adjacent to \p s via the edge labelled \p a, or
+    //! \ref UNDEFINED; both are values of type \ref node_type.
     //!
     //! \complexity
     //! Constant.
@@ -666,33 +686,29 @@ namespace libsemigroups {
     //! \exceptions
     //! \no_libsemigroups_except
     //!
-    //! \warning This function is unsafe because it does not verify \p v or \p
-    //! lbl is valid.
+    //! \warning This function does not verify \p s or \p a is valid.
     // Not noexcept because DynamicArray2::get is not
-    [[nodiscard]] node_type inline target_no_checks(node_type  v,
-                                                    label_type lbl) const {
-      return _dynamic_array_2.get(v, lbl);
+    [[nodiscard]] node_type inline target_no_checks(node_type  s,
+                                                    label_type a) const {
+      return _dynamic_array_2.get(s, a);
     }
 
-    //! Get the next target of a node that doesn't equal
-    //! libsemigroups::UNDEFINED.
+    //! \brief Get the next target of an edge incident to a given node that
+    //! doesn't equal \ref UNDEFINED.
     //!
-    //! If `target(v, i)` equals libsemigroups::UNDEFINED for every value in
-    //! the range \f$[i, n)\f$, where \f$n\f$ is the return value of
-    //! out_degree() then \c x.first and \c x.second equal
-    //! libsemigroups::UNDEFINED.
+    //! This function returns the next target of an edge with label greater
+    //! than or equal to \p a that is incident to the node \p s.
     //!
     //! \param s the source node.
     //! \param a the label.
     //!
     //! \returns
-    //! Returns a std::pair
-    //! \c x where:
-    //! 1. \c x.first is adjacent to \p v via an edge labelled
-    //!    \c x.second;
-    //! 2. \c x.second is the minimum value in the range \f$[i, n)\f$ such that
-    //!    `target(v, x.second)` is not equal to libsemigroups::UNDEFINED
-    //!    where \f$n\f$ is the return value of out_degree(); and
+    //! Returns a std::pair \c x where:
+    //! 1. \c x.first is adjacent to \p s via an edge labelled \c x.second;
+    //! 2. \c x.second is the minimum value in the range \f$[a, n)\f$ such that
+    //!    `target(s, x.second)` is not equal to \ref UNDEFINED (where \f$n\f$
+    //!    is the return value of \ref out_degree); and
+    //! If no such value exists, then `{UNDEFINED, UNDEFINED}` is returned.
     //!
     //! \complexity
     //! At worst \f$O(n)\f$ where \f$n\f$ equals out_degree().
@@ -702,49 +718,53 @@ namespace libsemigroups {
     //!
     //! \sa next_label_and_target.
     //!
-    //! \warning This function is unsafe because it is not verified that the
-    //! parameter \p v represents a node of \c this.
+    //! \warning This function does not check its arguments, in particular it is
+    //! not verified that the parameter \p s represents a node of \c this, or
+    //! that \p a is a valid label.
     // Not noexcept because DynamicArray2::get is not
     [[nodiscard]] std::pair<label_type, node_type>
     next_label_and_target_no_checks(node_type s, label_type a) const;
 
-    //! Get the next target of a node that doesn't equal
-    //! libsemigroups::UNDEFINED.
+    //! \brief Get the next target of an edge incident to a given node that
+    //! doesn't equal \ref UNDEFINED.
     //!
-    //! If `target(v, i)` equals libsemigroups::UNDEFINED for every value in
-    //! the range \f$[i, n)\f$, where \f$n\f$ is the return value of
-    //! out_degree() then \c x.first and \c x.second equal
-    //! libsemigroups::UNDEFINED.
+    //! This function returns the next target of an edge with label greater
+    //! than or equal to \p a that is incident to the node \p s.
     //!
-    //! \param v the node.
-    //! \param i the label.
+    //! If `target(s, b)` equals \ref UNDEFINED for every value \c b in the
+    //! range \f$[a, n)\f$, where \f$n\f$ is the return value of out_degree()
+    //! then \c x.first and \c x.second equal \ref UNDEFINED.
+    //!
+    //! \param s the node.
+    //! \param a the label.
     //!
     //! \returns
     //! Returns a std::pair
     //! \c x where:
-    //! 1. \c x.first is adjacent to \p v via an edge labelled
+    //! 1. \c x.first is adjacent to \p s via an edge labelled
     //!    \c x.second; and
-    //! 2. \c x.second is the minimum value in the range \f$[i, n)\f$ such that
-    //!    `target(v, x.second)` is not equal to libsemigroups::UNDEFINED
+    //! 2. \c x.second is the minimum value in the range \f$[a, n)\f$ such that
+    //!    `target(s, x.second)` is not equal to \ref UNDEFINED
     //!    where \f$n\f$ is the return value of out_degree();
-    //!
     //! If no such value exists, then `{UNDEFINED, UNDEFINED}` is returned.
     //!
     //! \complexity
     //! At worst \f$O(n)\f$ where \f$n\f$ equals out_degree().
     //!
-    //! \throws LibsemigroupsException if \p v does not represent a node in \c
-    //! this.
+    //! \throws LibsemigroupsException if \p s does not represent a node in \c
+    //! this, or \p a is not a valid edge label.
     //!
     //! \sa next_label_and_target_no_checks.
     // Not noexcept because next_label_and_target_no_checks is not
     [[nodiscard]] std::pair<label_type, node_type>
-    next_label_and_target(node_type v, label_type i) const;
+    next_label_and_target(node_type s, label_type a) const;
 
-    //! Returns the number of nodes.
+    //! \brief Returns the number of nodes.
+    //!
+    //! This function returns the number of nodes in the word graph.
     //!
     //! \returns
-    //! The number of nodes, a value of type \c Node.
+    //! The number of nodes in the word graph.
     //!
     //! \exceptions
     //! \noexcept
@@ -766,40 +786,61 @@ namespace libsemigroups {
     }
 #endif
 
-    //! Returns the number of edges.
+    //! \brief Returns the number of edges.
+    //!
+    //! This function returns the total number of edges (i.e. values \c s and \c
+    //! a such that `target(s, a)` is not UNDEFINED) in the word graph.
     //!
     //! \returns
-    //! The total number of edges, a value of type \c size_t.
+    //! The total number of edges, a value of type \c size_type.
     //!
     //! \exceptions
     //! \no_libsemigroups_except
     //!
     //! \complexity
     //! \f$O(mn)\f$ where \c m is number_of_nodes() and \c n is out_degree().
-    //!
     // Not noexcept because std::count isn't
     [[nodiscard]] size_type number_of_edges() const;
 
-    //! Returns the number of edges with given source node.
+    //! \brief Returns the number of edges with given source node.
     //!
-    //! \param n the node.
+    //! This function returns the number of edges incident to the given source
+    //! node \p s.
+    //!
+    //! \param s the node.
     //!
     //! \returns
-    //! A value of type \c size_t.
+    //! A value of type \c size_type.
     //!
-    //! \throws LibsemigroupsException if \p n is not a node.
+    //! \throws LibsemigroupsException if \p s is not a node.
     //!
     //! \complexity
     //! \f$O(n)\f$ where \c n is out_degree().
-    [[nodiscard]] size_type number_of_edges(node_type n) const;
+    [[nodiscard]] size_type number_of_edges(node_type s) const;
 
-    //! TODO(doc)
-    [[nodiscard]] size_type number_of_edges_no_checks(node_type n) const;
-
-    //! Returns the out-degree.
+    //! \brief Returns the number of edges with given source node.
+    //!
+    //! This function returns the number of edges incident to the given source
+    //! node \p s.
+    //!
+    //! \param s the node.
     //!
     //! \returns
-    //! The number of out-edges of every node, a value of type \c Node.
+    //! A value of type \c size_type.
+    //!
+    //! \warning No checks are performed that the argument \p s is actually a
+    //! node in the word graph.
+    //!
+    //! \complexity
+    //! \f$O(n)\f$ where \c n is out_degree().
+    [[nodiscard]] size_type number_of_edges_no_checks(node_type s) const;
+
+    //! \brief Returns the out-degree.
+    //!
+    //! This function returns the number of edge labels in the word graph.
+    //!
+    //! \returns
+    //! The number of edge labels, a value of type \c size_type.
     //!
     //! \exceptions
     //! \noexcept
@@ -829,6 +870,156 @@ namespace libsemigroups {
       return detail::IntRange<node_type>(0, number_of_nodes()).cbegin();
     }
 
+    //! \brief Returns a random access iterator pointing at the last node of the
+    //! word graph.
+    //!
+    //! This function returns a random access iterator pointing at the last node
+    //! of the word graph.
+    //!
+    //! \returns
+    //! An \ref const_reverse_iterator_nodes.
+    //!
+    //! \exceptions
+    //! \noexcept
+    //!
+    //! \complexity
+    //! Constant.
+    [[nodiscard]] const_reverse_iterator_nodes crbegin_nodes() const noexcept {
+      return detail::IntRange<node_type>(0, number_of_nodes()).crbegin();
+    }
+
+    //! \brief Returns a random access iterator pointing one-past-the-first node
+    //! of the word graph.
+    //!
+    //! This function returns a random access iterator pointing one before the
+    //! first node of the word graph.
+    //!
+    //! \returns
+    //! An \ref const_reverse_iterator_nodes.
+    //!
+    //! \exceptions
+    //! \noexcept
+    //!
+    //! \complexity
+    //! Constant.
+    [[nodiscard]] const_reverse_iterator_nodes crend_nodes() const noexcept {
+      return detail::IntRange<node_type>(0, number_of_nodes()).crend();
+    }
+
+    //! \brief Returns a random access iterator pointing one-past-the-last node
+    //! of the word graph.
+    //!
+    //! This function returns a random access iterator pointing one beyond the
+    //! last node in the word graph.
+    //!
+    //! \returns
+    //! An \ref const_iterator_nodes.
+    //!
+    //! \exceptions
+    //! \noexcept
+    //!
+    //! \complexity
+    //! Constant.
+    [[nodiscard]] const_iterator_nodes cend_nodes() const noexcept {
+      return detail::IntRange<node_type>(0, number_of_nodes()).cend();
+    }
+
+    //! \brief Returns a random access iterator pointing at the target of
+    //! the edge with label \p 0 incident to a given node.
+    //!
+    //! This function returns a random access iterator pointing at the
+    //! target of the edge with label \c 0 incident to the source node \p
+    //! source. This target might equal \ref UNDEFINED.
+    //!
+    //! \param source the source node in the word graph.
+    //!
+    //! \returns
+    //! A \ref const_iterator_targets.
+    //!
+    //! \throws LibsemigroupsException if \p source is out of range (i.e.
+    //! greater than or equal to \ref number_of_nodes).
+    //!
+    //! \complexity
+    //! Constant.
+    // Not noexcept because throw_if_node_out_of_bounds isn't
+    [[nodiscard]] const_iterator_targets cbegin_targets(node_type source) const;
+
+    //! \brief Returns a random access iterator pointing at the target of
+    //! the edge with label \p 0 incident to a given node.
+    //!
+    //! This function returns a random access iterator pointing at the
+    //! target of the edge with label \c 0 incident to the source node \p
+    //! source. This target might equal \ref UNDEFINED.
+    //!
+    //! \param source a node in the word graph.
+    //!
+    //! \returns
+    //! A \ref const_iterator_targets.
+    //!
+    //! \exceptions
+    //! \noexcept
+    //!
+    //! \complexity
+    //! Constant.
+    //!
+    //! \warning
+    //! No checks whatsoever on the validity of the arguments are performed.
+    //!
+    //! \sa
+    //! \ref cbegin_targets.
+    [[nodiscard]] const_iterator_targets
+    cbegin_targets_no_checks(node_type source) const noexcept {
+      return _dynamic_array_2.cbegin_row(source);
+    }
+
+    //! \brief Returns a random access iterator pointing one beyond the target
+    //! of the edge with label `out_degree() - 1` incident to a given node.
+    //!
+    //! This function returns a random access iterator pointing one beyond the
+    //! target of the edge with label `out_degree() - 1` incident to the source
+    //! node \p source. This target might equal \ref UNDEFINED.
+    //!
+    //! \param source a node in the word graph.
+    //!
+    //! \returns
+    //! A \ref const_iterator_targets.
+    //!
+    //! \throws LibsemigroupsException if \p source is out of range (i.e.
+    //! greater than or equal to \ref number_of_nodes).
+    //!
+    //! \complexity
+    //! Constant.
+    // Not noexcept because throw_if_node_out_of_bounds isn't
+    [[nodiscard]] const_iterator_targets cend_targets(node_type source) const;
+
+    //! \brief Returns a random access iterator pointing one beyond the target
+    //! of the edge with label `out_degree() - 1` incident to a given node.
+    //!
+    //! This function returns a random access iterator pointing one beyond the
+    //! target of the edge with label `out_degree() - 1` incident to the source
+    //! node \p source. This target might equal \ref UNDEFINED.
+    //!
+    //! \param source a node in the word graph.
+    //!
+    //! \returns
+    //! A \ref const_iterator_targets.
+    //!
+    //! \exceptions
+    //! \noexcept
+    //!
+    //! \complexity
+    //! Constant.
+    //!
+    //! \warning
+    //! No checks whatsoever on the validity of the arguments are performed.
+    //!
+    //! \sa
+    //! \ref cend_targets.
+    [[nodiscard]] const_iterator_targets
+    cend_targets_no_checks(node_type source) const noexcept {
+      return _dynamic_array_2.cbegin_row(source) + _degree;
+    }
+
     //! \brief Returns a range object containing all nodes in a word graph.
     //!
     //! This function returns a range object containing all the nodes in a
@@ -854,131 +1045,6 @@ namespace libsemigroups {
     //! \noexcept
     [[nodiscard]] auto labels() const noexcept {
       return rx::seq<label_type>() | rx::take(out_degree());
-    }
-
-    //! Returns a random access iterator pointing at the last node of the
-    //! word graph.
-    //!
-    //! \returns
-    //! An \ref const_reverse_iterator_nodes.
-    //!
-    //! \exceptions
-    //! \noexcept
-    //!
-    //! \complexity
-    //! Constant.
-    [[nodiscard]] const_reverse_iterator_nodes crbegin_nodes() const noexcept {
-      return detail::IntRange<node_type>(0, number_of_nodes()).crbegin();
-    }
-
-    //! Returns a random access iterator pointing one-past-the-first node of
-    //! the word graph.
-    //!
-    //! \returns
-    //! An \ref const_reverse_iterator_nodes.
-    //!
-    //! \exceptions
-    //! \noexcept
-    //!
-    //! \complexity
-    //! Constant.
-    //!
-    [[nodiscard]] const_reverse_iterator_nodes crend_nodes() const noexcept {
-      return detail::IntRange<node_type>(0, number_of_nodes()).crend();
-    }
-
-    //! Returns a random access iterator pointing one-past-the-last node of the
-    //! word graph.
-    //!
-    //! \returns
-    //! An \ref const_iterator_nodes.
-    //!
-    //! \exceptions
-    //! \noexcept
-    //!
-    //! \complexity
-    //! Constant.
-    //!
-    [[nodiscard]] const_iterator_nodes cend_nodes() const noexcept {
-      return detail::IntRange<node_type>(0, number_of_nodes()).cend();
-    }
-
-    //! Returns a random access iterator pointing at the first target of a
-    //! node.
-    //!
-    //! \param i a node in the word graph.
-    //!
-    //! \returns
-    //! A \ref const_iterator_targets.
-    //!
-    //! \throws LibsemigroupsException if \p i is not valid.
-    //!
-    //! \complexity
-    //! Constant.
-    // Not noexcept because throw_if_node_out_of_bounds isn't
-    [[nodiscard]] const_iterator_targets cbegin_targets(node_type i) const;
-
-    //! Returns a random access iterator pointing at the first target of a
-    //! node.
-    //!
-    //! \param i a node in the word graph.
-    //!
-    //! \returns
-    //! A \ref const_iterator_targets.
-    //!
-    //! \exceptions
-    //! \noexcept
-    //!
-    //! \complexity
-    //! Constant.
-    //!
-    //! \warning
-    //! No checks whatsoever on the validity of the arguments are performed.
-    //!
-    //! \sa
-    //! \ref cbegin_targets.
-    [[nodiscard]] const_iterator_targets
-    cbegin_targets_no_checks(node_type i) const noexcept {
-      return _dynamic_array_2.cbegin_row(i);
-    }
-
-    //! Returns a random access iterator pointing one-past-the-last target of
-    //! a node.
-    //!
-    //! \param i a node in the word graph.
-    //!
-    //! \returns
-    //! A \ref const_iterator_targets.
-    //!
-    //! \throws LibsemigroupsException if \p i is not valid.
-    //!
-    //! \complexity
-    //! Constant.
-    // Not noexcept because throw_if_node_out_of_bounds isn't
-    [[nodiscard]] const_iterator_targets cend_targets(node_type i) const;
-
-    //! Returns a random access iterator pointing one-past-the-last target of
-    //! a node.
-    //!
-    //! \param i a node in the word graph.
-    //!
-    //! \returns
-    //! A \ref const_iterator_targets.
-    //!
-    //! \exceptions
-    //! \noexcept
-    //!
-    //! \complexity
-    //! Constant.
-    //!
-    //! \warning
-    //! No checks whatsoever on the validity of the arguments are performed.
-    //!
-    //! \sa
-    //! \ref cend_targets.
-    [[nodiscard]] const_iterator_targets
-    cend_targets_no_checks(node_type i) const noexcept {
-      return _dynamic_array_2.cbegin_row(i) + _degree;
     }
 
     //! \brief Returns a range object containing all the targets of edges with
@@ -2702,7 +2768,7 @@ namespace libsemigroups {
         // always have an odd number of arguments, so we check that it's even
         // here (the argument x and an odd number of further arguments).
         WordGraph<Node> xy;
-        operator()(xy, x, std::forward<Args>(args)...);
+                        operator()(xy, x, std::forward<Args>(args)...);
         return xy;
       }
 
@@ -2737,7 +2803,7 @@ namespace libsemigroups {
         return is_subrelation(x, static_cast<Node>(0), y, static_cast<Node>(0));
       }
     };  // JoinerMeeterCommon
-  }  // namespace detail
+  }     // namespace detail
 
   //! \ingroup word_graph_group
   //! \brief Class for taking joins of word graphs.
@@ -2824,7 +2890,7 @@ namespace libsemigroups {
     //! \param y the second word graph to join/meet.
     //!
     //! \param ynum_nodes_reachable_from_root the number of nodes reachable in
-    //! \p y from the node \p yroot
+    //! \p y from the node \p yroot.
     //!
     //! \param yroot the node to use as a root in \p y.
     //!
