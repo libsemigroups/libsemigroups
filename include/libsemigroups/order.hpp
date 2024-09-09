@@ -38,7 +38,6 @@ namespace libsemigroups {
   //!
   //! @{
 
-  //! \ingroup orders_group
   //! \brief The possible orderings of words and strings.
   //!
   //! The values in this enum can be used as the arguments for functions such as
@@ -143,8 +142,6 @@ namespace libsemigroups {
   //! This only exists to be used as a template parameter, and has no
   //! advantages over using std::lexicographical_compare otherwise.
   //!
-  //! \tparam T the type of the objects to be compared.
-  //!
   //! \sa
   //! std::lexicographical_compare.
   struct LexicographicalCompare {
@@ -236,7 +233,6 @@ namespace libsemigroups {
   //! ordering.
   //!
   //! \tparam T the type of iterators to the first object to be compared.
-  //! \tparam S the type of iterators to the second object to be compared.
   //!
   //! \param first1 beginning iterator of first object for comparison.
   //! \param last1 ending iterator of first object for comparison.
@@ -267,13 +263,11 @@ namespace libsemigroups {
   //!                   (first1, last1, first2, last2));
   //! }
   //! \endcode
-  template <typename T,
-            typename S,
-            typename = std::enable_if_t<!rx::is_input_or_sink_v<T>>>
+  template <typename T, typename = std::enable_if_t<!rx::is_input_or_sink_v<T>>>
   bool shortlex_compare(T const& first1,
                         T const& last1,
-                        S const& first2,
-                        S const& last2) {
+                        T const& first2,
+                        T const& last2) {
     return (last1 - first1) < (last2 - first2)
            || ((last1 - first1) == (last2 - first2)
                && std::lexicographical_compare(first1, last1, first2, last2));
@@ -347,8 +341,6 @@ namespace libsemigroups {
     return shortlex_compare(x->cbegin(), x->cend(), y->cbegin(), y->cend());
   }
 
-  // TODO(now) should the \tparam below be removed since this isn't a struct
-  // template?
   //! \brief A stateless struct with binary call operator using \ref
   //! shortlex_compare.
   //!
@@ -358,8 +350,6 @@ namespace libsemigroups {
   //!
   //! This only exists to be used as a template parameter, and has no
   //! advantages over using \ref shortlex_compare otherwise.
-  //!
-  //! \tparam T the type of the objects to be compared.
   //!
   //! \sa
   //! shortlex_compare(T const, T const, S const, S const)
@@ -407,7 +397,6 @@ namespace libsemigroups {
   //! is based on the source code of \cite Holt2018aa.
   //!
   //! \tparam T the type of iterators to the first object to be compared.
-  //! \tparam S the type of iterators to the second object to be compared.
   //!
   //! \param first1 beginning iterator of first object for comparison.
   //! \param last1 ending iterator of first object for comparison.
@@ -424,11 +413,11 @@ namespace libsemigroups {
   //! \warning
   //! This function has significantly worse performance than all
   //! the variants of \ref shortlex_compare and std::lexicographical_compare.
-  template <typename T, typename S>
+  template <typename T, typename = std::enable_if_t<!rx::is_input_or_sink_v<T>>>
   bool recursive_path_compare(T const& first1,
                               T        last1,
-                              S const& first2,
-                              S        last2) noexcept {
+                              T const& first2,
+                              T        last2) noexcept {
     bool lastmoved = false;
     --last1;
     --last2;
@@ -481,7 +470,7 @@ namespace libsemigroups {
   //!
   //! \sa
   //! \ref recursive_path_compare(T const&, T, S const&, S)
-  template <typename T>
+  template <typename T, typename = std::enable_if_t<!rx::is_input_or_sink_v<T>>>
   bool recursive_path_compare(T const& x, T const& y) noexcept {
     return recursive_path_compare(x.cbegin(), x.cend(), y.cbegin(), y.cend());
   }
@@ -530,8 +519,6 @@ namespace libsemigroups {
   //! This only exists to be used as a template parameter, and has no
   //! advantages over using \ref recursive_path_compare otherwise.
   //!
-  //! \tparam T the type of the objects to be compared.
-  //!
   //! \sa
   //! \ref recursive_path_compare(T const&, T, S const&, S).
   struct RecursivePathCompare {
@@ -552,8 +539,8 @@ namespace libsemigroups {
     //! \exceptions
     //! \noexcept
     template <typename T>
-    bool operator()(T const& x, T const& y) noexcept {
-      return recursive_path_compare(x.cbegin(), x.cend(), y.cbegin(), y.cend());
+    bool operator()(T const& x, T const& y) const noexcept {
+      return recursive_path_compare(x, y);
     }
   };
 
