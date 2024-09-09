@@ -1216,9 +1216,9 @@ namespace libsemigroups {
 
   template <typename Node>
   WordGraph<Node>& WordGraph<Node>::induced_subgraph(Node first, Node last) {
-    word_graph::throw_if_node_out_of_bounds(first);
+    word_graph::throw_if_node_out_of_bounds(*this, first);
     if (last != number_of_nodes()) {
-      word_graph::throw_if_node_out_of_bounds(last);
+      word_graph::throw_if_node_out_of_bounds(*this, last);
     }
 
     for (node_type s = first; s < last; ++s) {
@@ -1293,12 +1293,12 @@ namespace libsemigroups {
   WordGraph<Node>& WordGraph<Node>::disjoint_union_inplace_no_checks(
       WordGraph<Node> const& that) {
     if (that.number_of_nodes() == 0) {
-      return;
+      return *this;
     }
     size_t old_num_nodes = number_of_nodes();
     _dynamic_array_2.append(that._dynamic_array_2);
     auto first = _dynamic_array_2.begin_row(old_num_nodes);
-    auto last  = _dynamic_array_2.cend();
+    auto last  = _dynamic_array_2.end();
     std::for_each(
         first, last, [old_num_nodes](node_type& n) { n += old_num_nodes; });
     return *this;
