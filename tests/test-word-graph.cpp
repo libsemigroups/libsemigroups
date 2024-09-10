@@ -741,4 +741,20 @@ namespace libsemigroups {
     join(xy, x, y);
     REQUIRE(xy == to_word_graph<size_t>(1, {{0, 0}}));
   }
+
+  LIBSEMIGROUPS_TEST_CASE("WordGraph", "038", "Joiner incomplete", "[quick]") {
+    WordGraph<uint32_t> wg(0, 1);
+    word_graph::add_cycle(wg, 5);
+    wg.remove_target(0, 0);
+    Joiner join;
+    REQUIRE(join(wg, wg) == to_word_graph<uint32_t>(1, {{UNDEFINED}}));
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("WordGraph", "039", "Meeter incomplete", "[quick]") {
+    WordGraph<uint32_t> wg(0, 1);
+    word_graph::add_cycle(wg, 5);
+    wg.remove_target(0, 0);
+    Meeter meet;
+    REQUIRE(meet(wg, wg) == to_word_graph<uint32_t>(1, {{UNDEFINED}}));
+  }
 }  // namespace libsemigroups

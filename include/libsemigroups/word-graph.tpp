@@ -74,6 +74,8 @@ namespace libsemigroups {
                   std::swap(q[p[t]], q[p[r]]);
                   result = true;
                 }
+                // FIXME this doesn't do anything if no standarization is taking
+                // place
                 f.set_parent_and_label_no_checks(t, (s == t ? r : s), x);
               }
             }
@@ -432,7 +434,14 @@ namespace libsemigroups {
     template <typename Node>
     void throw_if_label_out_of_bounds(WordGraph<Node> const& wg,
                                       word_type const&       word) {
-      std::for_each(word.cbegin(), word.cend(), [&wg](letter_type a) {
+      throw_if_label_out_of_bounds(wg, word.cbegin(), word.cend());
+    }
+
+    template <typename Node, typename Iterator>
+    void throw_if_label_out_of_bounds(WordGraph<Node> const& wg,
+                                      Iterator               first,
+                                      Iterator               last) {
+      std::for_each(first, last, [&wg](letter_type a) {
         throw_if_label_out_of_bounds(wg, a);
       });
     }
@@ -518,7 +527,8 @@ namespace libsemigroups {
     template <typename Node,
               typename Iterator1,
               typename Iterator2,
-              typename Iterator3>
+              typename Iterator3,
+              typename>
     [[nodiscard]] bool is_compatible(WordGraph<Node> const& wg,
                                      Iterator1              first_node,
                                      Iterator2              last_node,
@@ -553,6 +563,19 @@ namespace libsemigroups {
         }
       }
       return true;
+    }
+
+    template <typename Node, typename Iterator1, typename Iterator2>
+    bool is_compatible(WordGraph<Node> const& wg,
+                       Iterator1              first_node,
+                       Iterator2              last_node,
+                       word_type const&       lhs,
+                       word_type const&       rhs) {
+      throw_if_node_out_of_bounds(wg, first_node, last_node);
+      // TODO(1) be better to use follow_path in is_compatible_no_checks
+      throw_if_label_out_of_bounds(wg, lhs);
+      throw_if_label_out_of_bounds(wg, rhs);
+      return is_compatible_no_checks(wg, first_node, last_node, lhs, rhs);
     }
 
     template <typename Node, typename Iterator1, typename Iterator2>
@@ -1588,12 +1611,20 @@ namespace libsemigroups {
     // Check which word graph q1 and q2 belong to. nodes with labels
     // from 0 to Nx correspond to nodes in x; above Nx corresponds to
     // y.
+    Node           na;
+    constexpr Node undef = static_cast<Node>(UNDEFINED);
     if (n < xnum_nodes_reachable_from_root) {
-      return _uf.find(x.target_no_checks(n, a));
+      na = x.target_no_checks(n, a);
+      if (na != undef) {
+        na = _uf.find(na);
+      }
     } else {
-      return _uf.find(y.target_no_checks(n - xnum_nodes_reachable_from_root, a)
-                      + xnum_nodes_reachable_from_root);
+      na = y.target_no_checks(n - xnum_nodes_reachable_from_root, a);
+      if (na != undef) {
+        na = _uf.find(na + xnum_nodes_reachable_from_root);
+      }
     }
+    return na;
   }
 
   template <typename Node>
@@ -1603,8 +1634,9 @@ namespace libsemigroups {
                    WordGraph<Node> const& y,
                    size_t                 ynum_nodes_reachable_from_root,
                    Node                   yroot) {
-    using label_type = typename WordGraph<Node>::label_type;
-    auto const M     = x.out_degree();
+    using label_type     = typename WordGraph<Node>::label_type;
+    constexpr Node undef = static_cast<Node>(UNDEFINED);
+    auto const     M     = x.out_degree();
     _uf.init(xnum_nodes_reachable_from_root + ynum_nodes_reachable_from_root);
     _uf.unite(xroot, yroot + xnum_nodes_reachable_from_root);
 
@@ -1622,7 +1654,7 @@ namespace libsemigroups {
       for (label_type a = 0; a < M; ++a) {
         Node rx = find(x, xnum_nodes_reachable_from_root, y, qx, a);
         Node ry = find(x, xnum_nodes_reachable_from_root, y, qy, a);
-        if (rx != ry) {
+        if (rx != ry && rx != undef && ry != undef) {
           _uf.unite(rx, ry);
           _stck.emplace(rx, ry);
         }
@@ -1659,7 +1691,9 @@ namespace libsemigroups {
     xy.init(_uf.number_of_blocks(), x.out_degree());
     for (Node s = 0; s < xnum_nodes_reachable_from_root; ++s) {
       for (auto [a, t] : x.labels_and_targets_no_checks(s)) {
-        xy.target_no_checks(_uf.find(s), a, _uf.find(t));
+        if (t != static_cast<Node>(UNDEFINED)) {
+          xy.target_no_checks(_uf.find(s), a, _uf.find(t));
+        }
       }
     }
   }
@@ -1721,14 +1755,18 @@ namespace libsemigroups {
       for (auto const& source : _todo) {
         auto xy_source = _lookup[source];
         for (size_t a = 0; a < N; ++a) {
-          target              = std::pair(x.target_no_checks(source.first, a),
-                             y.target_no_checks(source.second, a));
-          auto [it, inserted] = _lookup.emplace(target, next);
+          auto xa = x.target_no_checks(source.first, a);
+          auto ya = y.target_no_checks(source.second, a);
+          if (xa != UNDEFINED && ya != UNDEFINED) {
+            target              = std::pair(x.target_no_checks(source.first, a),
+                               y.target_no_checks(source.second, a));
+            auto [it, inserted] = _lookup.emplace(target, next);
 
-          xy.target_no_checks(xy_source, a, it->second);
-          if (inserted) {
-            next++;
-            _todo_new.push_back(std::move(target));
+            xy.target_no_checks(xy_source, a, it->second);
+            if (inserted) {
+              next++;
+              _todo_new.push_back(std::move(target));
+            }
           }
         }
       }
@@ -1768,7 +1806,7 @@ namespace libsemigroups {
       static_assert(sizeof(Node2) <= sizeof(Node1));
       using node_type = typename WordGraph<Node1>::node_type;
       f.init(1);
-      size_t const N = wg.out_degree();
+      size_t const N = wg.number_of_nodes();
 
       std::queue<node_type> queue;
       queue.push(static_cast<node_type>(root));
