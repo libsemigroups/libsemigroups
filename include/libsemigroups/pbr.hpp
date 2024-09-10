@@ -199,7 +199,7 @@ namespace libsemigroups {
     //!
     //! \exceptions
     //! \no_libsemigroups_except
-    PBR identity() const;
+    PBR one() const;
 
     //! Returns the identity PBR with specified degree.
     //!
@@ -215,7 +215,7 @@ namespace libsemigroups {
     //!
     //! \exceptions
     //! \no_libsemigroups_except
-    static PBR identity(size_t n);
+    static PBR one(size_t n);
 
     //! Multiply two PBR objects and store the product in \c this.
     //!
@@ -472,7 +472,7 @@ namespace libsemigroups {
     }
 
     PBR operator()(size_t N = 0) const {
-      return PBR::identity(N);
+      return PBR::one(N);
     }
   };
 

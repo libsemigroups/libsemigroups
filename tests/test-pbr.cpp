@@ -250,17 +250,17 @@ namespace libsemigroups {
     os << x;  // doesn't do anything visible
   }
 
-  LIBSEMIGROUPS_TEST_CASE("PBR", "009", "identity", "[quick][pbr]") {
+  LIBSEMIGROUPS_TEST_CASE("PBR", "009", "one", "[quick][pbr]") {
     PBR x({{3, 5},
            {0, 1, 2, 3, 4, 5},
            {0, 2, 3, 4, 5},
            {0, 1, 2, 3, 5},
            {0, 2, 5},
            {1, 2, 3, 4, 5}});
-    REQUIRE(x == x * x.identity());
-    REQUIRE(x == x.identity() * x);
-    REQUIRE(x == x * PBR::identity(3));
-    REQUIRE(x == PBR::identity(3) * x);
+    REQUIRE(x == x * x.one());
+    REQUIRE(x == x.one() * x);
+    REQUIRE(x == x * PBR::one(3));
+    REQUIRE(x == PBR::one(3) * x);
   }
 
   LIBSEMIGROUPS_TEST_CASE("PBR", "010", "adapters", "[quick][pbr]") {

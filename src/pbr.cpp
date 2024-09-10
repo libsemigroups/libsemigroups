@@ -246,7 +246,7 @@ namespace libsemigroups {
     return _vector.size() / 2;
   }
 
-  PBR PBR::identity() const {
+  PBR PBR::one() const {
     std::vector<std::vector<uint32_t>> adj;
     size_t                             n = this->degree();
     adj.reserve(2 * n);
@@ -260,7 +260,7 @@ namespace libsemigroups {
     return PBR(adj);
   }
 
-  PBR PBR::identity(size_t n) {
+  PBR PBR::one(size_t n) {
     std::vector<std::vector<uint32_t>> adj;
     adj.reserve(2 * n);
     for (uint32_t i = 0; i < 2 * n; i++) {
