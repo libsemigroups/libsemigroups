@@ -571,7 +571,10 @@ namespace libsemigroups {
         }
 
         void destroy_long() {
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wmaybe-uninitialized"
           _long.~Long();
+#pragma GCC diagnostic pop
         }
 
         Short _short;
