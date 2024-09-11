@@ -98,8 +98,7 @@ namespace libsemigroups {
                           "068",
                           "plactic_monoid(3)",
                           "[fpsemi-examples][quick]") {
-    using rule_type = KnuthBendix<>::rule_type;
-    auto rg         = ReportGuard(false);
+    auto rg = ReportGuard(false);
     REQUIRE(plactic_monoid(3).rules
             == std::vector<word_type>({102_w,
                                        120_w,
@@ -156,6 +155,7 @@ namespace libsemigroups {
     REQUIRE(kb.presentation().alphabet() == "abc");
     REQUIRE(is_obviously_infinite(kb));
     kb.run();
+    // using rule_type = KnuthBendix<>::rule_type;
     // REQUIRE((kb.active_rules() | to_vector())
     //         == std::vector<rule_type>({{"bca", "bac"},
     //                                    {"cab", "acb"},

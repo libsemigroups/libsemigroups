@@ -1785,7 +1785,6 @@ namespace libsemigroups {
     REQUIRE(human_readable_letter<>(0) == 'a');
     REQUIRE(human_readable_letter<>(10) == 'k');
 
-    detail::IntRange          ir(0, 255);
     Presentation<std::string> q;
 
     Presentation<word_type> r;
