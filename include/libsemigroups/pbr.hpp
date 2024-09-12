@@ -114,7 +114,8 @@ namespace libsemigroups {
     //! performed.
     //!
     //! \sa libsemigroups::validate(PBR const&) and
-    //! make(initializer_list_type<int32_t>, initializer_list_type<int32_t>)
+    //! libsemigroups::to_pbr(initializer_list_type<int32_t>,
+    //! initializer_list_type<int32_t>)
     PBR(initializer_list_type<int32_t> left,
         initializer_list_type<int32_t> right);
 
@@ -122,53 +123,6 @@ namespace libsemigroups {
     //! \copydoc PBR(initializer_list_type<int32_t>, initializer_list_type<int32_t>) <!-- NOLINT(whitespace/line_length) -->
     // clang-format on
     PBR(vector_type<int32_t> left, vector_type<int32_t> right);
-
-    //! Construct and validate.
-    //!
-    //! \tparam T the types of the arguments
-    //!
-    //! \param args the arguments to forward to the constructor.
-    //!
-    //! \returns
-    //! A PBR constructed from \p args and validated.
-    //!
-    //! \throws LibsemigroupsException if libsemigroups::validate(PBR const&)
-    //! throws when called with the constructed PBR.
-    template <typename... T>
-    static PBR make(T... args) {
-      // TODO(later) validate_args
-      PBR result(std::forward<T>(args)...);
-      validate(result);
-      return result;
-    }
-
-    //! Construct and validate.
-    //!
-    //! \param args the arguments to forward to the constructor.
-    //!
-    //! \returns
-    //! A PBR constructed from \p args and validated.
-    //!
-    //! \throws LibsemigroupsException if libsemigroups::validate(PBR const&)
-    //! throws when called with the constructed PBR.
-    static PBR make(initializer_list_type<uint32_t> args) {
-      return make<decltype(args)>(args);
-    }
-
-    //! Construct and validate.
-    //!
-    //! \param left the 1st argument to forward to the constructor.
-    //! \param right the 2nd argument to forward to the constructor.
-    //!
-    //! \returns
-    //! A PBR constructed from \p args and validated.
-    //!
-    //! \throws LibsemigroupsException if libsemigroups::validate(PBR const&)
-    //! throws when called with the constructed PBR.
-    static PBR make(initializer_list_type<int32_t> left,
-                    initializer_list_type<int32_t> right) {
-      return make<decltype(left), decltype(right)>(left, right);
-    }
 
     //! Returns the degree of a PBR.
     //!
@@ -335,6 +289,53 @@ namespace libsemigroups {
    private:
     std::vector<std::vector<uint32_t>> _vector;
   };
+
+  //! Construct and validate a \ref PBR.
+  //!
+  //! \tparam T the types of the arguments
+  //!
+  //! \param args the arguments to forward to the \ref PBR constructor.
+  //!
+  //! \returns
+  //! A PBR constructed from \p args and validated.
+  //!
+  //! \throws LibsemigroupsException if libsemigroups::validate(PBR const&)
+  //! throws when called with the constructed PBR.
+  template <typename... T>
+  static PBR to_pbr(T... args) {
+    // TODO(later) validate_args
+    PBR result(std::forward<T>(args)...);
+    validate(result);
+    return result;
+  }
+
+  //! Construct and validate a \ref PBR.
+  //!
+  //! \param args the arguments to forward to the constructor.
+  //!
+  //! \returns
+  //! A PBR constructed from \p args and validated.
+  //!
+  //! \throws LibsemigroupsException if libsemigroups::validate(PBR const&)
+  //! throws when called with the constructed PBR.
+  static PBR to_pbr(PBR::initializer_list_type<uint32_t> args) {
+    return to_pbr<decltype(args)>(args);
+  }
+
+  //! Construct and validate a \ref PBR.
+  //!
+  //! \param left the 1st argument to forward to the constructor.
+  //! \param right the 2nd argument to forward to the constructor.
+  //!
+  //! \returns
+  //! A PBR constructed from \p args and validated.
+  //!
+  //! \throws LibsemigroupsException if libsemigroups::validate(PBR const&)
+  //! throws when called with the constructed PBR.
+  static PBR to_pbr(PBR::initializer_list_type<int32_t> left,
+                    PBR::initializer_list_type<int32_t> right) {
+    return to_pbr<decltype(left), decltype(right)>(left, right);
+  }
 
   //! Validate a PBR.
   //!

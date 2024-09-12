@@ -54,8 +54,8 @@ namespace libsemigroups {
               || x > static_cast<int32_t>(n)) {
             LIBSEMIGROUPS_EXCEPTION(
                 "value out of bounds in the 1st argument, expected values in "
-                "[%d, -1] or [1, %d] but found %d",
-                -n,
+                "[-{}, -1] or [1, {}] but found {}",
+                n,
                 n,
                 x);
           }
