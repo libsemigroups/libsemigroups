@@ -31,14 +31,21 @@
 #include "adapters.hpp"  // for Hash
 
 namespace libsemigroups {
+  // The below forward declarations are done so that pbr::validate can be a
+  // friend of PBR. This is required so that validate can access the size of the
+  // private member _vector. An alternative would be to remove these forward
+  // decls and friends, and instead make a PBR member function that returns the
+  // required size.
+  class PBR;
+  namespace pbr {
+    void validate(PBR const& x);
+  }  // namespace pbr
 
-  //! Class for partitioned binary relations (PBR).
-  //!
   //! Partitioned binary relations (PBRs) are a generalisation of bipartitions,
   //! which were introduced by
   //! [Martin and Mazorchuk](https://arxiv.org/abs/1102.0862).
   class PBR {
-    friend void validate(PBR const& x);
+    friend void pbr::validate(PBR const& x);
 
    public:
     //! Type of constructor argument.
@@ -114,7 +121,7 @@ namespace libsemigroups {
     //! performed.
     //!
     //! \sa libsemigroups::validate(PBR const&) and
-    //! libsemigroups::to_pbr(initializer_list_type<int32_t>,
+    //! libsemigroups::to_pbr_no_checks(initializer_list_type<int32_t>,
     //! initializer_list_type<int32_t>)
     PBR(initializer_list_type<int32_t> left,
         initializer_list_type<int32_t> right);
@@ -154,22 +161,6 @@ namespace libsemigroups {
     //! \exceptions
     //! \no_libsemigroups_except
     PBR one() const;
-
-    //! Returns the identity PBR with specified degree.
-    //!
-    //! This function returns a new PBR with degree equal to \p n where every
-    //! value is adjacent to its negative. Equivalently, \f$i\f$ is adjacent
-    //! \f$i + n\f$ and vice versa for every \f$i\f$ less than the degree
-    //! \f$n\f$.
-    //!
-    //! \param n the degree.
-    //!
-    //! \returns
-    //! A PBR.
-    //!
-    //! \exceptions
-    //! \no_libsemigroups_except
-    static PBR one(size_t n);
 
     //! Multiply two PBR objects and store the product in \c this.
     //!
@@ -290,6 +281,46 @@ namespace libsemigroups {
     std::vector<std::vector<uint32_t>> _vector;
   };
 
+  namespace pbr {
+    //! Returns the identity PBR with specified degree.
+    //!
+    //! This function returns a new PBR with degree equal to \p n where every
+    //! value is adjacent to its negative. Equivalently, \f$i\f$ is adjacent
+    //! \f$i + n\f$ and vice versa for every \f$i\f$ less than the degree
+    //! \f$n\f$.
+    //!
+    //! \param n the degree.
+    //!
+    //! \returns
+    //! A PBR.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    PBR one(size_t n);
+
+    // TODO(later) analogue of bipartition::underlying_partition?
+
+    //! Validate a PBR.
+    //!
+    //! This function throws a LibsemigroupsException if
+    //! the argument \p x is not valid.
+    //!
+    //! \param x the PBR to validate.
+    //!
+    //! \returns
+    //! (None)
+    //!
+    //! \throws LibsemigroupsException if any of the following hold:
+    //! * \p x does not describe a binary relation on an even number of points;
+    //! * \p x has a point related to a point that is greater than degree()
+    //! * a list of points related to a point is not sorted.
+    //!
+    //! \complexity
+    //! Linear in the PBR::degree of \p x.
+    void validate(PBR const& x);
+
+  }  // namespace pbr
+
   //! Construct and validate a \ref PBR.
   //!
   //! \tparam T the types of the arguments
@@ -302,10 +333,10 @@ namespace libsemigroups {
   //! \throws LibsemigroupsException if libsemigroups::validate(PBR const&)
   //! throws when called with the constructed PBR.
   template <typename... T>
-  static PBR to_pbr(T... args) {
+  static PBR to_pbr_no_checks(T... args) {
     // TODO(later) validate_args
     PBR result(std::forward<T>(args)...);
-    validate(result);
+    pbr::validate(result);
     return result;
   }
 
@@ -318,8 +349,8 @@ namespace libsemigroups {
   //!
   //! \throws LibsemigroupsException if libsemigroups::validate(PBR const&)
   //! throws when called with the constructed PBR.
-  static PBR to_pbr(PBR::initializer_list_type<uint32_t> args) {
-    return to_pbr<decltype(args)>(args);
+  static PBR to_pbr_no_checks(PBR::initializer_list_type<uint32_t> args) {
+    return to_pbr_no_checks<decltype(args)>(args);
   }
 
   //! Construct and validate a \ref PBR.
@@ -332,29 +363,10 @@ namespace libsemigroups {
   //!
   //! \throws LibsemigroupsException if libsemigroups::validate(PBR const&)
   //! throws when called with the constructed PBR.
-  static PBR to_pbr(PBR::initializer_list_type<int32_t> left,
-                    PBR::initializer_list_type<int32_t> right) {
-    return to_pbr<decltype(left), decltype(right)>(left, right);
+  static PBR to_pbr_no_checks(PBR::initializer_list_type<int32_t> left,
+                              PBR::initializer_list_type<int32_t> right) {
+    return to_pbr_no_checks<decltype(left), decltype(right)>(left, right);
   }
-
-  //! Validate a PBR.
-  //!
-  //! This function throws a LibsemigroupsException if
-  //! the argument \p x is not valid.
-  //!
-  //! \param x the PBR to validate.
-  //!
-  //! \returns
-  //! (None)
-  //!
-  //! \throws LibsemigroupsException if any of the following hold:
-  //! * \p x does not describe a binary relation on an even number of points;
-  //! * \p x has a point related to a point that is greater than degree()
-  //! * a list of points related to a point is not sorted.
-  //!
-  //! \complexity
-  //! Linear in the PBR::degree of \p x.
-  void validate(PBR const& x);
 
   //! Multiply two PBRs.
   //!
@@ -473,7 +485,7 @@ namespace libsemigroups {
     }
 
     PBR operator()(size_t N = 0) const {
-      return PBR::one(N);
+      return pbr::one(N);
     }
   };
 

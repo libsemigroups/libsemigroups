@@ -165,7 +165,20 @@ namespace libsemigroups {
     return xy;
   }
 
-  void validate(PBR const& x) {
+  PBR pbr::one(size_t n) {
+    std::vector<std::vector<uint32_t>> adj;
+    adj.reserve(2 * n);
+    for (uint32_t i = 0; i < 2 * n; i++) {
+      adj.push_back(std::vector<uint32_t>());
+    }
+    for (uint32_t i = 0; i < n; i++) {
+      adj[i].push_back(i + n);
+      adj[i + n].push_back(i);
+    }
+    return PBR(adj);
+  }
+
+  void pbr::validate(PBR const& x) {
     size_t n = x._vector.size();
     if (n % 2 == 1) {
       LIBSEMIGROUPS_EXCEPTION("expected argument of even length");
@@ -181,7 +194,7 @@ namespace libsemigroups {
       }
     }
     for (size_t u = 0; u < n; ++u) {
-      if (!std::is_sorted(x._vector.at(u).cbegin(), x._vector.at(u).cend())) {
+      if (!std::is_sorted(x[u].cbegin(), x[u].cend())) {
         LIBSEMIGROUPS_EXCEPTION("the adjacencies of vertex {} are unsorted",
                                 detail::to_string(u));
       }
@@ -247,30 +260,7 @@ namespace libsemigroups {
   }
 
   PBR PBR::one() const {
-    std::vector<std::vector<uint32_t>> adj;
-    size_t                             n = this->degree();
-    adj.reserve(2 * n);
-    for (uint32_t i = 0; i < 2 * n; i++) {
-      adj.push_back(std::vector<uint32_t>());
-    }
-    for (uint32_t i = 0; i < n; i++) {
-      adj[i].push_back(i + n);
-      adj[i + n].push_back(i);
-    }
-    return PBR(adj);
-  }
-
-  PBR PBR::one(size_t n) {
-    std::vector<std::vector<uint32_t>> adj;
-    adj.reserve(2 * n);
-    for (uint32_t i = 0; i < 2 * n; i++) {
-      adj.push_back(std::vector<uint32_t>());
-    }
-    for (uint32_t i = 0; i < n; i++) {
-      adj[i].push_back(i + n);
-      adj[i + n].push_back(i);
-    }
-    return PBR(adj);
+    return pbr::one(this->degree());
   }
 
   void PBR::product_inplace(PBR const& xx, PBR const& yy, size_t thread_id) {
