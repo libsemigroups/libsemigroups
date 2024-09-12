@@ -201,6 +201,13 @@ namespace libsemigroups {
     }
   }
 
+  [[nodiscard]] std::string to_human_readable_repr(PBR const& x) {
+    // TODO(2) allow different braces
+    // TODO(now) Make this better, probably by including some data from
+    // x._vector
+    return fmt::format("<PBR of degree {}>", x.degree());
+  }
+
   ////////////////////////////////////////////////////////////////////////
   // Partitioned binary relations (PBRs)
   ////////////////////////////////////////////////////////////////////////

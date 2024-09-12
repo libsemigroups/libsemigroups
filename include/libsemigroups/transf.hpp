@@ -61,8 +61,9 @@ namespace libsemigroups {
   //! `libsemigroups` for defining elements of semigroups and monoids.
   //!
   //! * \ref bipart_group
-  //! * \ref transf_group
   //! * \ref matrix_group
+  //! * \ref pbr_group
+  //! * \ref transf_group
 
   namespace detail {
     //! Empty base class for polymorphism.

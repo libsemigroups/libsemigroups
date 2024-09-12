@@ -778,7 +778,7 @@ namespace libsemigroups {
   //! used in the GAP package [Semigroups package for
   //! GAP](https://semigroups.github.io/Semigroups/).
   //!
-  //! \sa libsemigroups::validate(Bipartition const&).
+  //! \sa bipartition::validate(Bipartition const&).
   // TODO(2) add more explanation to the doc here
   class Bipartition {
    private:
