@@ -161,7 +161,7 @@ namespace libsemigroups {
 
   PBR operator*(PBR const& x, PBR const& y) {
     PBR xy(x.degree());
-    xy.product_inplace(x, y);
+    xy.product_inplace_no_checks(x, y);
     return xy;
   }
 
@@ -263,7 +263,9 @@ namespace libsemigroups {
     return pbr::one(this->degree());
   }
 
-  void PBR::product_inplace(PBR const& xx, PBR const& yy, size_t thread_id) {
+  void PBR::product_inplace_no_checks(PBR const& xx,
+                                      PBR const& yy,
+                                      size_t     thread_id) {
     LIBSEMIGROUPS_ASSERT(xx.degree() == yy.degree());
     LIBSEMIGROUPS_ASSERT(xx.degree() == this->degree());
     LIBSEMIGROUPS_ASSERT(&xx != this && &yy != this);

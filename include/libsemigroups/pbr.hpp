@@ -184,7 +184,11 @@ namespace libsemigroups {
     //! \warning
     //! No checks are made on whether or not the parameters are compatible. If
     //! \p x and \p y have different degrees, then bad things will happen.
-    void product_inplace(PBR const& x, PBR const& y, size_t thread_id = 0);
+    void product_inplace_no_checks(PBR const& x,
+                                   PBR const& y,
+                                   size_t     thread_id = 0);
+
+    // TODO(later) product_inplace with checks
 
     //! Check equality.
     //!
