@@ -2863,7 +2863,7 @@ namespace libsemigroups {
   //! This class exists for its call operators which can be used to find the
   //! join of two word graphs with the same WordGraph::out_degree. This class
   //! implements the Hopcroft-Karp algorithm \cite Hop71 for computing a
-  //! finite state automata recognising the union of the langauges accepted by
+  //! finite state automata recognising the union of the languages accepted by
   //! two given automata.
   //!
   //! The input word graphs need not be complete, and the root nodes can also
@@ -2985,6 +2985,8 @@ namespace libsemigroups {
     //! \p y from the node \p yroot.
     //!
     //! \param yroot the node to use as an initial state in \p y.
+    //!
+    //! \returns Whether or not \p x is a subrelation of \p y.
     //!
     //! \warning
     //! No checks whatsoever on the validity of the arguments are performed.
@@ -3177,6 +3179,8 @@ namespace libsemigroups {
     //!
     //! \param yroot the node to use as an initial state in \p y.
     //!
+    //! \returns Whether or not \p x is a subrelation of \p y.
+    //!
     //! \warning
     //! No checks whatsoever on the validity of the arguments are performed.
     // Is x a subrelation of y?
@@ -3203,6 +3207,8 @@ namespace libsemigroups {
     //!
     //! \param y the word graph whose language we are checking might be a
     //! superset.
+    //!
+    //! \returns Whether or not \p x is a subrelation of \p y.
     //!
     //! \warning
     //! No checks whatsoever on the validity of the arguments are performed.
@@ -3236,6 +3242,8 @@ namespace libsemigroups {
     //!
     //! \param yroot the node to use as an initial state in \p y.
     //!
+    //! \returns Whether or not \p x is a subrelation of \p y.
+    //!
     //! \throws LibsemigroupsException if any of the following hold:
     //! * \p xroot isn't a node in \p x;
     //! * \p yroot isn't a node in \p y;
@@ -3264,6 +3272,8 @@ namespace libsemigroups {
     //! \param y the word graph whose language we are checking might be a
     //! superset.
     //!
+    //! \returns Whether or not \p x is a subrelation of \p y.
+    //!
     //! \throws LibsemigroupsException if any of the following hold:
     //! * \p x has no nodes;
     //! * \p y has no nodes;
@@ -3286,7 +3296,7 @@ namespace libsemigroups {
   //! This class exists for its call operators which can be used to find the
   //! meet of two word graphs with the same WordGraph::out_degree. This class
   //! implements the same algorithm as that used for computing a
-  //! finite state automata recognising the intersection of the langauges
+  //! finite state automata recognising the intersection of the languages
   //! accepted by two given automata.
   //!
   //! The input word graphs need not be complete, and the root nodes can also
