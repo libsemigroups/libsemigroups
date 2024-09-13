@@ -34,27 +34,21 @@
 namespace libsemigroups {
 
   namespace {
-    std::vector<std::vector<uint32_t>>
-    process_left_right(std::vector<std::vector<int32_t>> const& left,
-                       std::vector<std::vector<int32_t>> const& right) {
-      size_t                             n = left.size();
-      std::vector<std::vector<uint32_t>> out;
-      std::vector<uint32_t>              v;
+    void process_side(std::vector<std::vector<uint32_t>>&      out,
+                      std::vector<std::vector<int32_t>> const& side,
+                      std::string                              position) {
+      std::vector<uint32_t> v;
+      size_t                n = side.size();
 
-      if (n != right.size()) {
-        LIBSEMIGROUPS_EXCEPTION("the two vectors must have the same length");
-      }
-      if (n > 0x40000000) {
-        LIBSEMIGROUPS_EXCEPTION("too many points!");
-      }
-      for (std::vector<int32_t> vec : left) {
-        v = std::vector<uint32_t>();
+      for (std::vector<int32_t> const& vec : side) {
+        v.clear();
         for (int32_t x : vec) {
           if (x == 0 || x < -static_cast<int32_t>(n)
               || x > static_cast<int32_t>(n)) {
             LIBSEMIGROUPS_EXCEPTION(
-                "value out of bounds in the 1st argument, expected values in "
+                "value out of bounds in the {} argument, expected values in "
                 "[-{}, -1] or [1, {}] but found {}",
+                position,
                 n,
                 n,
                 x);
@@ -73,29 +67,23 @@ namespace libsemigroups {
         }
         out.push_back(v);
       }
-      for (std::vector<int32_t> vec : right) {
-        v = std::vector<uint32_t>();
-        for (int32_t x : vec) {
-          if (x == 0 || x < -static_cast<int32_t>(n)
-              || x > static_cast<int32_t>(n)) {
-            LIBSEMIGROUPS_EXCEPTION(
-                "value out of bounds in the 1st argument, expected values in "
-                "[%d, -1] or [1, %d] but found %d",
-                -n,
-                n,
-                x);
-          }
-          if (x > 0) {
-            v.push_back(static_cast<uint32_t>(x - 1));
-          }
-        }
-        for (auto it = vec.rbegin(); it < vec.rend(); ++it) {
-          if (*it < 0) {
-            v.push_back(static_cast<uint32_t>(n - *it - 1));
-          }
-        }
-        out.push_back(v);
+    }
+
+    std::vector<std::vector<uint32_t>>
+    process_left_right(std::vector<std::vector<int32_t>> const& left,
+                       std::vector<std::vector<int32_t>> const& right) {
+      size_t                             n = left.size();
+      std::vector<std::vector<uint32_t>> out;
+
+      if (n != right.size()) {
+        LIBSEMIGROUPS_EXCEPTION("the two vectors must have the same length");
       }
+      if (n > 0x40000000) {
+        LIBSEMIGROUPS_EXCEPTION("too many points!");
+      }
+
+      process_side(out, left, std::string("1st"));
+      process_side(out, right, std::string("2nd"));
       return out;
     }
 

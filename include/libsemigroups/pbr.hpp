@@ -191,6 +191,7 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! Constant.
+    // TODO: rename number_of_points
     size_t size() const noexcept;
 
     //! \brief Returns the identity PBR with degree degree().
