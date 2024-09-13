@@ -398,7 +398,7 @@ namespace libsemigroups {
   //! No checks are performed on the validity of \p args prior to the
   //! construction of the PBR object.
   template <typename... T>
-  inline PBR to_pbr_no_checks(T... args) {
+  PBR to_pbr_no_checks(T... args) {
     // TODO(later) validate_args
     PBR result(std::forward<T>(args)...);
     pbr::validate(result);
