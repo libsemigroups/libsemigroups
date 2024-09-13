@@ -153,7 +153,7 @@ namespace libsemigroups {
     //! performed.
     //!
     //! \sa \ref pbr::throw_if_invalid(PBR const&) and
-    //! \ref libsemigroups::to_pbr_no_checks(initializer_list_type<int32_t>,
+    //! \ref libsemigroups::to_pbr(initializer_list_type<int32_t>,
     //! initializer_list_type<int32_t>)
     PBR(initializer_list_type<int32_t> left,
         initializer_list_type<int32_t> right);
@@ -457,7 +457,7 @@ namespace libsemigroups {
   //! No checks are performed on the validity of \p args prior to the
   //! construction of the PBR object.
   template <typename... T>
-  PBR to_pbr_no_checks(T... args) {
+  PBR to_pbr(T... args) {
     // TODO(later) validate_args
     PBR result(std::forward<T>(args)...);
     pbr::throw_if_invalid(result);
@@ -482,8 +482,8 @@ namespace libsemigroups {
   //! \warning
   //! No checks are performed on the validity of \p args prior to the
   //! construction of the PBR object.
-  inline PBR to_pbr_no_checks(PBR::initializer_list_type<uint32_t> args) {
-    return to_pbr_no_checks<decltype(args)>(args);
+  inline PBR to_pbr(PBR::initializer_list_type<uint32_t> args) {
+    return to_pbr<decltype(args)>(args);
   }
 
   //! \brief Construct and validate a \ref PBR.
@@ -506,10 +506,13 @@ namespace libsemigroups {
   //! \warning
   //! No checks are performed on the validity of \p left or \p right prior to
   //! the construction of the PBR object.
-  inline PBR to_pbr_no_checks(PBR::initializer_list_type<int32_t> left,
-                              PBR::initializer_list_type<int32_t> right) {
-    return to_pbr_no_checks<decltype(left), decltype(right)>(left, right);
-  }
+  PBR to_pbr(PBR::initializer_list_type<int32_t> left,
+             PBR::initializer_list_type<int32_t> right);
+
+  // clang-format off
+  //! \copydoc to_pbr(initializer_list_type<int32_t>, initializer_list_type<int32_t>) <!-- NOLINT(whitespace/line_length) -->
+  // clang-format on
+  PBR to_pbr(PBR::vector_type<int32_t> left, PBR::vector_type<int32_t> right);
 
   //! \brief Return a human readable representation of a PBR.
   //!

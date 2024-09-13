@@ -34,14 +34,10 @@
 namespace libsemigroups {
 
   namespace {
-    void process_side(std::vector<std::vector<uint32_t>>&      out,
-                      std::vector<std::vector<int32_t>> const& side,
-                      std::string                              position) {
-      std::vector<uint32_t> v;
-      size_t                n = side.size();
-
+    void throw_if_invalid_side(PBR::vector_type<int32_t> side,
+                               std::string               position) {
+      size_t n = side.size();
       for (std::vector<int32_t> const& vec : side) {
-        v.clear();
         for (int32_t x : vec) {
           if (x == 0 || x < -static_cast<int32_t>(n)
               || x > static_cast<int32_t>(n)) {
@@ -53,6 +49,44 @@ namespace libsemigroups {
                 n,
                 x);
           }
+        }
+      }
+    }
+
+    void throw_if_invalid_left_right(PBR::vector_type<int32_t> left,
+                                     PBR::vector_type<int32_t> right) {
+      size_t n = left.size();
+
+      if (n != right.size()) {
+        LIBSEMIGROUPS_EXCEPTION("the two vectors must have the same length");
+      }
+      if (n > 0x40000000) {
+        LIBSEMIGROUPS_EXCEPTION("too many points!");
+      }
+
+      throw_if_invalid_side(left, std::string("1st"));
+      throw_if_invalid_side(right, std::string("2nd"));
+    }
+
+    std::vector<std::vector<int32_t>>
+    sorted_side(PBR::vector_type<int32_t> side) {
+      std::vector<std::vector<int32_t>> out(side);
+      for (std::vector<int32_t>& vec : out) {
+        if (!std::is_sorted(vec.cbegin(), vec.cend())) {
+          std::sort(vec.begin(), vec.end());
+        }
+      }
+      return out;
+    }
+
+    void process_side_no_checks(std::vector<std::vector<uint32_t>>& out,
+                                PBR::vector_type<int32_t>           side) {
+      std::vector<uint32_t> v;
+      size_t                n = side.size();
+
+      for (std::vector<int32_t> const& vec : side) {
+        v.clear();
+        for (int32_t x : vec) {
           if (x > 0) {
             v.push_back(static_cast<uint32_t>(x - 1));
           }
@@ -70,21 +104,21 @@ namespace libsemigroups {
     }
 
     std::vector<std::vector<uint32_t>>
-    process_left_right(std::vector<std::vector<int32_t>> const& left,
-                       std::vector<std::vector<int32_t>> const& right) {
-      size_t                             n = left.size();
+    process_left_right_no_checks(PBR::vector_type<int32_t> left,
+                                 PBR::vector_type<int32_t> right) {
       std::vector<std::vector<uint32_t>> out;
-
-      if (n != right.size()) {
-        LIBSEMIGROUPS_EXCEPTION("the two vectors must have the same length");
-      }
-      if (n > 0x40000000) {
-        LIBSEMIGROUPS_EXCEPTION("too many points!");
-      }
-
-      process_side(out, left, std::string("1st"));
-      process_side(out, right, std::string("2nd"));
+      process_side_no_checks(out, left);
+      process_side_no_checks(out, right);
       return out;
+    }
+
+    std::vector<std::vector<uint32_t>>
+    process_left_right(PBR::vector_type<int32_t> left,
+                       PBR::vector_type<int32_t> right) {
+      throw_if_invalid_left_right(left, right);
+      PBR::vector_type<int32_t> sorted_left(sorted_side(left));
+      PBR::vector_type<int32_t> sorted_right(sorted_side(right));
+      return process_left_right_no_checks(sorted_left, sorted_right);
     }
 
     void unite_rows(detail::DynamicArray2<bool>& out,
@@ -198,6 +232,15 @@ namespace libsemigroups {
     }
   }
 
+  PBR to_pbr(PBR::initializer_list_type<int32_t> left,
+             PBR::initializer_list_type<int32_t> right) {
+    return PBR(process_left_right(left, right));
+  }
+
+  PBR to_pbr(PBR::vector_type<int32_t> left, PBR::vector_type<int32_t> right) {
+    return PBR(process_left_right(left, right));
+  }
+
   [[nodiscard]] std::string to_human_readable_repr(PBR const& x) {
     // TODO(2) allow different braces
     // TODO(now) Make this better, probably by including some data from
@@ -220,11 +263,11 @@ namespace libsemigroups {
 
   PBR::PBR(std::initializer_list<std::vector<int32_t>> const& left,
            std::initializer_list<std::vector<int32_t>> const& right)
-      : PBR(process_left_right(left, right)) {}
+      : PBR(process_left_right_no_checks(left, right)) {}
 
   PBR::PBR(std::vector<std::vector<int32_t>> const& left,
            std::vector<std::vector<int32_t>> const& right)
-      : PBR(process_left_right(left, right)) {}
+      : PBR(process_left_right_no_checks(left, right)) {}
 
   std::ostringstream& operator<<(std::ostringstream& os, PBR const& pbr) {
     if (pbr.degree() == 0) {
