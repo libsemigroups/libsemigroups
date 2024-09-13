@@ -252,21 +252,19 @@ namespace libsemigroups {
   // Partitioned binary relations (PBRs)
   ////////////////////////////////////////////////////////////////////////
 
-  PBR::PBR(std::vector<std::vector<uint32_t>> const& vec) : _vector(vec) {}
+  PBR::PBR(PBR::vector_type<uint32_t> vec) : _vector(vec) {}
 
-  PBR::PBR(std::initializer_list<std::vector<uint32_t>> const& vec)
-      : _vector(vec) {}
+  PBR::PBR(PBR::initializer_list_type<uint32_t> vec) : _vector(vec) {}
 
   PBR::PBR(size_t degree)
       : PBR(std::vector<std::vector<uint32_t>>(degree * 2,
                                                std::vector<uint32_t>())) {}
 
-  PBR::PBR(std::initializer_list<std::vector<int32_t>> const& left,
-           std::initializer_list<std::vector<int32_t>> const& right)
+  PBR::PBR(PBR::initializer_list_type<int32_t> left,
+           PBR::initializer_list_type<int32_t> right)
       : PBR(process_left_right_no_checks(left, right)) {}
 
-  PBR::PBR(std::vector<std::vector<int32_t>> const& left,
-           std::vector<std::vector<int32_t>> const& right)
+  PBR::PBR(PBR::vector_type<int32_t> left, PBR::vector_type<int32_t> right)
       : PBR(process_left_right_no_checks(left, right)) {}
 
   std::ostringstream& operator<<(std::ostringstream& os, PBR const& pbr) {
