@@ -30,18 +30,10 @@
 #include <utility>           // for forward
 #include <vector>            // for vector, operator<, operator==, allocator
 
-#include "adapters.hpp"  // for Hash
+#include "adapters.hpp"                 // for Hash
+#include "libsemigroups/exception.hpp"  // for LIBSEMIGROUPS_E...
 
 namespace libsemigroups {
-  // The below forward declarations are done so that pbr::validate can be a
-  // friend of PBR. This is required so that validate can access the size of the
-  // private member _vector. An alternative would be to remove these forward
-  // decls and friends, and instead make a PBR member function that returns the
-  // required size.
-  class PBR;
-  namespace pbr {
-    void validate(PBR const& x);
-  }  // namespace pbr
 
   //! \defgroup pbr_group Partitioned binary relations (PBRs)
   //!
@@ -66,10 +58,8 @@ namespace libsemigroups {
   //! bipartitions, and were introduced by Martin and Mazorchuk in
   //! \cite Martin2011aa.
   //!
-  //! \sa pbr::validate(PBR const&).
+  //! \sa pbr::throw_if_invalid(PBR const&).
   class PBR {
-    friend void pbr::validate(PBR const& x);
-
    public:
     //! \brief Type of constructor argument.
     //!
@@ -125,7 +115,7 @@ namespace libsemigroups {
     //! \warning
     //! No checks whatsoever on the validity of \p x are performed.
     //!
-    //! \sa \ref pbr::validate(PBR const&)
+    //! \sa \ref pbr::throw_if_invalid(PBR const&)
     explicit PBR(vector_type<uint32_t> x);
 
     //! \copydoc PBR(vector_type<uint32_t>)
@@ -162,7 +152,7 @@ namespace libsemigroups {
     //! No checks whatsoever on the validity of \p left or \p right are
     //! performed.
     //!
-    //! \sa \ref pbr::validate(PBR const&) and
+    //! \sa \ref pbr::throw_if_invalid(PBR const&) and
     //! \ref libsemigroups::to_pbr_no_checks(initializer_list_type<int32_t>,
     //! initializer_list_type<int32_t>)
     PBR(initializer_list_type<int32_t> left,
@@ -187,6 +177,21 @@ namespace libsemigroups {
     //! \complexity
     //! Constant.
     size_t degree() const noexcept;
+
+    //! \brief Returns the size of a PBR.
+    //!
+    //! Returns the size of a PBR, where the *size* of a PBR is the number of
+    //! points in the PBR.
+    //!
+    //! \returns
+    //! A value of type \c size_t.
+    //!
+    //! \exceptions
+    //! \noexcept
+    //!
+    //! \complexity
+    //! Constant.
+    size_t size() const noexcept;
 
     //! \brief Returns the identity PBR with degree degree().
     //!
@@ -359,21 +364,74 @@ namespace libsemigroups {
 
     // TODO(later) analogue of bipartition::underlying_partition?
 
-    //! \brief Validate a PBR.
+    //! \brief Throws if a PBR has an odd number of points.
     //!
-    //! This function throws a LibsemigroupsException if the argument \p x is
-    //! not valid.
+    //! This function throws a LibsemigroupsException if the argument \p x does
+    //! not describe a binary relation on an even number of points.
     //!
     //! \param x the PBR to validate.
     //!
-    //! \throws LibsemigroupsException if any of the following hold:
+    //! \throws LibsemigroupsException \p x does not describe a binary relation
+    //! on an even number of points.
+    //!
+    //! \complexity
+    //! Constant.
+    void throw_if_not_even_length(PBR const& x);
+
+    //! \brief Throws if a PBR has a point related to a point that is greater
+    //! than degree().
+    //!
+    //! This function throws a LibsemigroupsException if the argument \p x has a
+    //! point related to a point that is greater than \ref PBR::degree().
+    //!
+    //! \param x the PBR to validate.
+    //!
+    //! \throws LibsemigroupsException if \p x has a point related to a point
+    //! that is greater than degree().
+    //!
+    //! \complexity
+    //! Linear in the PBR::degree of \p x.
+    void throw_if_entry_out_of_bounds(PBR const& x);
+
+    //! \brief Throws if a PBR has a list of points related to a point that is
+    //! not sorted.
+    //!
+    //! This function throws a LibsemigroupsException if the argument \p x has a
+    //! list of points related to a point that is not sorted.
+    //!
+    //! \param x the PBR to validate.
+    //!
+    //! \throws LibsemigroupsException if \p x has a list of points related to a
+    //! point that is not sorted.
+    //!
+    //! \complexity
+    //! Linear in the PBR::degree of \p x.
+    void throw_if_adjacencies_unsorted(PBR const& x);
+
+    //! \brief Throws if a PBR is invalid.
+    //!
+    //! This function throws a LibsemigroupsException if the argument \p x is
+    //! not a valid PBR.
+    //!
+    //! \param x the PBR to validate.
+    //!
+    //! \throws LibsemigroupsException if any of the following throw:
     //! * \p x does not describe a binary relation on an even number of points;
-    //! * \p x has a point related to a point that is greater than degree()
+    //! * \p x has a point related to a point that is greater than degree();
     //! * a list of points related to a point is not sorted.
     //!
     //! \complexity
     //! Linear in the PBR::degree x.
-    void validate(PBR const& x);
+    //!
+    //! \sa
+    //! * \ref throw_if_not_even_length(PBR const&);
+    //! * \ref throw_if_entry_out_of_bounds(PBR const&);
+    //! * \ref throw_if_adjacencies_unsorted(PBR const&).
+    void inline throw_if_invalid(PBR const& x) {
+      throw_if_not_even_length(x);
+      throw_if_entry_out_of_bounds(x);
+      throw_if_adjacencies_unsorted(x);
+    }
 
   }  // namespace pbr
 
@@ -388,8 +446,8 @@ namespace libsemigroups {
   //! \returns
   //! A PBR constructed from \p args and validated.
   //!
-  //! \throws LibsemigroupsException if libsemigroups::validate(PBR const&)
-  //! throws when called with the constructed PBR.
+  //! \throws LibsemigroupsException if libsemigroups::throw_if_invalid(PBR
+  //! const&) throws when called with the constructed PBR.
   //!
   //! \sa
   //! \ref libsemigroups::PBR().
@@ -401,7 +459,7 @@ namespace libsemigroups {
   PBR to_pbr_no_checks(T... args) {
     // TODO(later) validate_args
     PBR result(std::forward<T>(args)...);
-    pbr::validate(result);
+    pbr::throw_if_invalid(result);
     return result;
   }
 
@@ -414,8 +472,8 @@ namespace libsemigroups {
   //! \returns
   //! A PBR constructed from \p args and validated.
   //!
-  //! \throws LibsemigroupsException if libsemigroups::validate(PBR const&)
-  //! throws when called with the constructed PBR.
+  //! \throws LibsemigroupsException if libsemigroups::throw_if_invalid(PBR
+  //! const&) throws when called with the constructed PBR.
   //!
   //! \sa
   //! \ref libsemigroups::PBR(initializer_list_type<uint32_t>).
@@ -437,8 +495,8 @@ namespace libsemigroups {
   //! \returns
   //! A PBR constructed from \p args and validated.
   //!
-  //! \throws LibsemigroupsException if libsemigroups::validate(PBR const&)
-  //! throws when called with the constructed PBR.
+  //! \throws LibsemigroupsException if libsemigroups::throw_if_invalid(PBR
+  //! const&) throws when called with the constructed PBR.
   //!
   //! \sa
   //! \ref libsemigroups::PBR(initializer_list_type<uint32_t>,
