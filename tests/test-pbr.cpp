@@ -260,8 +260,8 @@ namespace libsemigroups {
            {0, 1, 2, 3, 5},
            {0, 2, 5},
            {1, 2, 3, 4, 5}});
-    REQUIRE(x == x * x.one());
-    REQUIRE(x == x.one() * x);
+    REQUIRE(x == x * pbr::one(x));
+    REQUIRE(x == pbr::one(x) * x);
     REQUIRE(x == x * pbr::one(3));
     REQUIRE(x == pbr::one(3) * x);
   }

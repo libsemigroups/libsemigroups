@@ -200,6 +200,10 @@ namespace libsemigroups {
     return PBR(adj);
   }
 
+  PBR pbr::one(PBR const& x) {
+    return pbr::one(x.degree());
+  }
+
   void pbr::throw_if_not_even_length(PBR const& x) {
     size_t n(x.number_of_points());
     if (n % 2 == 1) {
@@ -306,10 +310,6 @@ namespace libsemigroups {
 
   size_t PBR::number_of_points() const noexcept {
     return _vector.size();
-  }
-
-  PBR PBR::one() const {
-    return pbr::one(this->degree());
   }
 
   void PBR::product_inplace_no_checks(PBR const& xx,

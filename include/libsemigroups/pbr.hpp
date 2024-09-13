@@ -192,23 +192,6 @@ namespace libsemigroups {
     //! Constant.
     size_t number_of_points() const noexcept;
 
-    //! \brief Returns the identity PBR with degree degree().
-    //!
-    //! This member function returns a new \ref PBR with degree equal to the
-    //! degree of \c this, where every value is adjacent to its negative.
-    //! Equivalently, \f$i\f$ is adjacent \f$i + n\f$ and vice versa for every
-    //! \f$i\f$ less than the degree \f$n\f$.
-    //!
-    //! \returns
-    //! A PBR.
-    //!
-    //! \exceptions
-    //! \no_libsemigroups_except
-    //!
-    //! \sa
-    //! \ref pbr::one
-    PBR one() const;
-
     //! \brief Multiply two PBR objects and store the product in \c this.
     //!
     //! Replaces the contents of \c this by the product of \p x and \p y.
@@ -359,7 +342,29 @@ namespace libsemigroups {
     //!
     //! \exceptions
     //! \no_libsemigroups_except
+    //!
+    //! \sa
+    //! \ref one(PBR const&)
     PBR one(size_t n);
+
+    //! \brief Returns the identity PBR with degree ``x.degree()``.
+    //!
+    //! This member function returns a new \ref PBR with degree equal to the
+    //! degree of \p x, where every value is adjacent to its negative.
+    //! Equivalently, \f$i\f$ is adjacent \f$i + n\f$ and vice versa for every
+    //! \f$i\f$ less than the degree \f$n\f$.
+    //!
+    //! \param x A PBR.
+    //!
+    //! \returns
+    //! A PBR.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    //! \sa
+    //! \ref one(size_t)
+    PBR one(PBR const& x);
 
     // TODO(later) analogue of bipartition::underlying_partition?
 
@@ -734,7 +739,7 @@ namespace libsemigroups {
     //! \sa
     //! \ref pbr::one
     PBR operator()(PBR const& x) const {
-      return x.one();
+      return pbr::one(x);
     }
 
     //! \brief Returns the identity PBR with specified degree.
