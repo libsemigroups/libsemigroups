@@ -178,10 +178,9 @@ namespace libsemigroups {
     //! Constant.
     size_t degree() const noexcept;
 
-    //! \brief Returns the size of a PBR.
+    //! \brief Returns the number of points of a PBR.
     //!
-    //! Returns the size of a PBR, where the *size* of a PBR is the number of
-    //! points in the PBR.
+    //! Returns the number of points of a PBR.
     //!
     //! \returns
     //! A value of type \c size_t.
@@ -191,8 +190,7 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! Constant.
-    // TODO: rename number_of_points
-    size_t size() const noexcept;
+    size_t number_of_points() const noexcept;
 
     //! \brief Returns the identity PBR with degree degree().
     //!

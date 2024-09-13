@@ -201,7 +201,7 @@ namespace libsemigroups {
   }
 
   void pbr::throw_if_not_even_length(PBR const& x) {
-    size_t n(x.size());
+    size_t n(x.number_of_points());
     if (n % 2 == 1) {
       LIBSEMIGROUPS_EXCEPTION("expected argument of even length, found {}",
                               detail::to_string(n));
@@ -209,7 +209,7 @@ namespace libsemigroups {
   }
 
   void pbr::throw_if_entry_out_of_bounds(PBR const& x) {
-    size_t n(x.size());
+    size_t n(x.number_of_points());
     for (size_t u = 0; u < n; ++u) {
       for (auto const& v : x[u]) {
         if (v >= n) {
@@ -223,7 +223,7 @@ namespace libsemigroups {
   }
 
   void pbr::throw_if_adjacencies_unsorted(PBR const& x) {
-    size_t n(x.size());
+    size_t n(x.number_of_points());
     for (size_t u = 0; u < n; ++u) {
       if (!std::is_sorted(x[u].cbegin(), x[u].cend())) {
         LIBSEMIGROUPS_EXCEPTION("the adjacencies of vertex {} are unsorted",
@@ -304,7 +304,7 @@ namespace libsemigroups {
     return _vector.size() / 2;
   }
 
-  size_t PBR::size() const noexcept {
+  size_t PBR::number_of_points() const noexcept {
     return _vector.size();
   }
 
