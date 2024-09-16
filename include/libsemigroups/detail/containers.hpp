@@ -694,6 +694,14 @@ namespace libsemigroups {
         return iterator(this, _vec.end());
       }
 
+      const_iterator begin() const noexcept {
+        return const_iterator(this, _vec.begin());
+      }
+
+      const_iterator end() const noexcept {
+        return const_iterator(this, _vec.end());
+      }
+
       const_iterator cbegin() const noexcept {
         return const_iterator(this, _vec.cbegin());
       }
@@ -1182,6 +1190,19 @@ namespace std {
     operator()(libsemigroups::detail::StaticVector1<T, N> const& sv) const {
       size_t seed = 0;
       for (T const& x : sv) {
+        seed ^= std::hash<T>()(x) + 0x9e3779b97f4a7c16 + (seed << 6)
+                + (seed >> 2);
+      }
+      return seed;
+    }
+  };
+
+  template <typename T, typename A>
+  struct hash<libsemigroups::detail::DynamicArray2<T, A>> {
+    size_t
+    operator()(libsemigroups::detail::DynamicArray2<T, A> const& da) const {
+      size_t seed = 0;
+      for (T const& x : da) {
         seed ^= std::hash<T>()(x) + 0x9e3779b97f4a7c16 + (seed << 6)
                 + (seed >> 2);
       }

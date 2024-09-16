@@ -64,7 +64,7 @@ namespace libsemigroups {
         for (node_type s = 0; s <= t; ++s) {
           for (letter_type x = 0; x < n; ++x) {
             node_type r = wg.target_no_checks(p[s], x);
-            if (r < n) {
+            if (r < wg.number_of_nodes()) {
               r = q[r];  // new
               if (r > t) {
                 t++;
@@ -74,8 +74,6 @@ namespace libsemigroups {
                   std::swap(q[p[t]], q[p[r]]);
                   result = true;
                 }
-                // FIXME this doesn't do anything if no standarization is taking
-                // place
                 f.set_parent_and_label_no_checks(t, (s == t ? r : s), x);
               }
             }
@@ -108,7 +106,7 @@ namespace libsemigroups {
         // Perform a DFS through wg
         while (s <= t) {
           node_type r = wg.target_no_checks(p[s], x);
-          if (r < n) {
+          if (r < wg.number_of_nodes()) {
             r = q[r];  // new
             if (r > t) {
               t++;
@@ -156,12 +154,12 @@ namespace libsemigroups {
 
         // TODO(1) move this out of here and use it in the other standardize
         // functions
-        auto swap_if_necessary = [&wg, &f, &p, &q, &n](node_type const   ss,
-                                                       node_type&        tt,
-                                                       letter_type const x) {
+        auto swap_if_necessary = [&wg, &f, &p, &q](node_type const   ss,
+                                                   node_type&        tt,
+                                                   letter_type const x) {
           node_type r      = wg.target_no_checks(p[ss], x);
           bool      result = false;
-          if (r < n) {
+          if (r < wg.number_of_nodes()) {
             r = q[r];  // new
             if (r > tt) {
               tt++;
@@ -503,42 +501,13 @@ namespace libsemigroups {
                                  Iterator2              last_node,
                                  Iterator3              first_rule,
                                  Iterator3              last_rule) {
-      for (auto nit = first_node; nit != last_node; ++nit) {
-        for (auto rit = first_rule; rit < last_rule; ++rit) {
-          auto l = word_graph::follow_path_no_checks(
-              wg, *nit, rit->cbegin(), rit->cend());
-          ++rit;
-          if (l == UNDEFINED) {
-            continue;
-          }
-          auto r = word_graph::follow_path_no_checks(
-              wg, *nit, rit->cbegin(), rit->cend());
-          if (r == UNDEFINED) {
-            continue;
-          }
-          if (l != r) {
-            return false;
-          }
+      for (auto rit = first_rule; rit < last_rule; rit += 2) {
+        if (!is_compatible_no_checks(
+                wg, first_node, last_node, *rit, *(rit + 1))) {
+          return false;
         }
       }
       return true;
-    }
-
-    template <typename Node,
-              typename Iterator1,
-              typename Iterator2,
-              typename Iterator3,
-              typename>
-    [[nodiscard]] bool is_compatible(WordGraph<Node> const& wg,
-                                     Iterator1              first_node,
-                                     Iterator2              last_node,
-                                     Iterator3              first_rule,
-                                     Iterator3              last_rule) {
-      throw_if_node_out_of_bounds(wg, first_node, last_node);
-      // TODO(1) be better to use follow_path in is_compatible_no_checks
-      throw_if_label_out_of_bounds(wg, first_rule, last_rule);
-      return is_compatible_no_checks(
-          wg, first_node, last_node, first_rule, last_rule);
     }
 
     template <typename Node, typename Iterator1, typename Iterator2>
@@ -578,6 +547,24 @@ namespace libsemigroups {
       return is_compatible_no_checks(wg, first_node, last_node, lhs, rhs);
     }
 
+    template <typename Node,
+              typename Iterator1,
+              typename Iterator2,
+              typename Iterator3>
+    [[nodiscard]] bool is_compatible(WordGraph<Node> const& wg,
+                                     Iterator1              first_node,
+                                     Iterator2              last_node,
+                                     Iterator3              first_rule,
+                                     Iterator3              last_rule) {
+      for (auto rit = first_rule; rit < last_rule; rit += 2) {
+        if (!is_compatible(wg, first_node, last_node, *rit, *(rit + 1))) {
+          return false;
+        }
+      }
+      return true;
+    }
+
+    // TODO remove _no_checks
     template <typename Node, typename Iterator1, typename Iterator2>
     bool is_complete_no_checks(WordGraph<Node> const& wg,
                                Iterator1              first_node,
@@ -603,7 +590,7 @@ namespace libsemigroups {
     }
 
     template <typename Node>
-    bool is_connected_no_checks(WordGraph<Node> const& wg) {
+    bool is_connected(WordGraph<Node> const& wg) {
       auto const N = wg.number_of_nodes();
       if (N == 0) {
         return true;
@@ -612,7 +599,7 @@ namespace libsemigroups {
       ::libsemigroups::detail::Duf<> uf(N);
       for (auto s : wg.nodes()) {
         for (auto t : wg.targets_no_checks(s)) {
-          if (t != UNDEFINED) {
+          if (t < N) {
             uf.unite(s, t);
           }
         }
@@ -621,13 +608,7 @@ namespace libsemigroups {
     }
 
     template <typename Node>
-    bool is_connected(WordGraph<Node> const& wg) {
-      throw_if_any_target_out_of_bounds(wg);
-      return is_connected_no_checks(wg);
-    }
-
-    template <typename Node>
-    bool is_strictly_cyclic_no_checks(WordGraph<Node> const& wg) {
+    bool is_strictly_cyclic(WordGraph<Node> const& wg) {
       using node_type = typename WordGraph<Node>::node_type;
       auto const N    = wg.number_of_nodes();
 
@@ -650,7 +631,7 @@ namespace libsemigroups {
               return true;
             }
             for (auto t : wg.targets_no_checks(n)) {
-              if (t != UNDEFINED) {
+              if (t < N) {
                 stack.push(t);
               }
             }
@@ -659,12 +640,6 @@ namespace libsemigroups {
         std::fill(seen.begin(), seen.end(), false);
       }
       return false;
-    }
-
-    template <typename Node>
-    bool is_strictly_cyclic(WordGraph<Node> const& wg) {
-      throw_if_any_target_out_of_bounds(wg);
-      return is_strictly_cyclic_no_checks(wg);
     }
 
     template <typename Node1, typename Node2>
@@ -683,13 +658,15 @@ namespace libsemigroups {
       nodes.push(source);
       seen[source] = true;
 
+      size_t const N = wg.number_of_nodes();
+
       do {
         Node1 node;
         std::tie(edge, node)
             = wg.next_label_and_target_no_checks(nodes.top(), edge);
         if (node == static_cast<Node1>(target)) {
           return true;
-        } else if (node != UNDEFINED) {
+        } else if (node < N) {
           if (!seen[node]) {
             // dive, dive, dive!!
             seen[node] = true;
@@ -716,9 +693,6 @@ namespace libsemigroups {
       static_assert(sizeof(Node2) <= sizeof(Node1));
       throw_if_node_out_of_bounds(wg, static_cast<Node1>(source));
       throw_if_node_out_of_bounds(wg, static_cast<Node1>(target));
-      // TODO(1) again this is inefficient, we could just check if the targets
-      // are within bounds in the dfs in the no_checks version of the function.
-      throw_if_any_target_out_of_bounds(wg);
       return is_reachable_no_checks(wg, source, target);
     }
 
@@ -888,15 +862,24 @@ namespace libsemigroups {
                       Node2                   from,
                       Iterator                first,
                       Iterator                last) {
+      static_assert(sizeof(Node1) <= sizeof(size_t));
       static_assert(sizeof(Node2) <= sizeof(Node1));
+
+      throw_if_node_out_of_bounds(wg, from);
+
       if constexpr (::libsemigroups::detail::HasLessEqual<Iterator,
                                                           Iterator>::value) {
         if (last <= first) {
           return from;
         }
       }
-      for (auto it = first; it != last && from != UNDEFINED; ++it) {
+      size_t const N = wg.number_of_nodes();
+
+      for (auto it = first; it != last && static_cast<size_t>(from) < N; ++it) {
         from = wg.target(from, *it);
+      }
+      if (static_cast<size_t>(from) >= N) {
+        return UNDEFINED;
       }
       return from;
     }
@@ -906,6 +889,7 @@ namespace libsemigroups {
                                 Node2                   from,
                                 Iterator                first,
                                 Iterator                last) noexcept {
+      static_assert(sizeof(Node1) <= sizeof(size_t));
       static_assert(sizeof(Node2) <= sizeof(Node1));
       if constexpr (::libsemigroups::detail::HasLessEqual<Iterator,
                                                           Iterator>::value) {
@@ -913,8 +897,12 @@ namespace libsemigroups {
           return from;
         }
       }
-      for (auto it = first; it != last && from != UNDEFINED; ++it) {
+      size_t const N = wg.number_of_nodes();
+      for (auto it = first; it != last && static_cast<size_t>(from) < N; ++it) {
         from = wg.target_no_checks(from, *it);
+      }
+      if (static_cast<size_t>(from) >= N) {
+        return UNDEFINED;
       }
       return from;
     }
@@ -1117,90 +1105,6 @@ namespace libsemigroups {
     std::generate(g._dynamic_array_2.begin(),
                   g._dynamic_array_2.end(),
                   [&dist, &mt]() { return dist(mt); });
-    return g;
-  }
-
-  template <typename Node>
-  WordGraph<Node> WordGraph<Node>::random(size_type    number_of_nodes,
-                                          size_type    out_degree,
-                                          size_type    number_of_edges,
-                                          std::mt19937 mt) {
-    if (number_of_nodes < 2) {
-      LIBSEMIGROUPS_EXCEPTION("the 1st parameter `number_of_nodes` must be "
-                              "at least 2, found {}",
-                              number_of_nodes);
-    } else if (out_degree < 2) {
-      LIBSEMIGROUPS_EXCEPTION("the 2nd parameter `number_of_edges` must be "
-                              "at least 2, found {}",
-                              out_degree);
-    } else if (number_of_edges > number_of_nodes * out_degree) {
-      LIBSEMIGROUPS_EXCEPTION("the 3rd parameter `number_of_edges` must be at "
-                              "most {}, but found {}",
-                              number_of_nodes * out_degree,
-                              number_of_edges);
-    }
-    std::uniform_int_distribution<Node> source(0, number_of_nodes - 1);
-    std::uniform_int_distribution<Node> target(0, number_of_nodes - 1);
-    std::uniform_int_distribution<Node> label(0, out_degree - 1);
-
-    WordGraph<Node> g(number_of_nodes, out_degree);
-    size_t          edges_to_add = number_of_edges;
-    size_t          old_nr_edges = 0;
-    do {
-      for (size_t i = 0; i < edges_to_add; ++i) {
-        g._dynamic_array_2.set(source(mt), label(mt), target(mt));
-      }
-      size_t new_nr_edges = g.number_of_edges();
-      edges_to_add -= (new_nr_edges - old_nr_edges);
-      old_nr_edges = new_nr_edges;
-    } while (edges_to_add != 0);
-    return g;
-  }
-
-  template <typename Node>
-  WordGraph<Node> WordGraph<Node>::random_acyclic(size_type    number_of_nodes,
-                                                  size_type    out_degree,
-                                                  size_type    number_of_edges,
-                                                  std::mt19937 mt) {
-    if (number_of_nodes < 2) {
-      LIBSEMIGROUPS_EXCEPTION("the 1st parameter `number_of_nodes` must be "
-                              "at least 2, found {}",
-                              number_of_nodes);
-    } else if (out_degree < 2) {
-      LIBSEMIGROUPS_EXCEPTION("the 2nd parameter `number_of_edges` must be "
-                              "at least 2, found {}",
-                              out_degree);
-    }
-    size_t max_edges = std::min(number_of_nodes * out_degree,
-                                number_of_nodes * (number_of_nodes - 1) / 2);
-
-    if (number_of_edges > max_edges) {
-      LIBSEMIGROUPS_EXCEPTION(
-          "the 3rd parameter `number_of_edges` must be at most {}, but "
-          "found {}",
-          static_cast<uint64_t>(max_edges),
-          static_cast<uint64_t>(number_of_edges));
-    }
-    std::uniform_int_distribution<Node> source(0, number_of_nodes - 1);
-    std::uniform_int_distribution<Node> label(0, out_degree - 1);
-
-    WordGraph<Node> g(number_of_nodes, out_degree);
-    size_t          edges_to_add = number_of_edges;
-    size_t          old_nr_edges = 0;
-    do {
-      for (size_t i = 0; i < edges_to_add; ++i) {
-        auto v = source(mt);
-        if (v != number_of_nodes - 1) {
-          g._dynamic_array_2.set(v,
-                                 label(mt),
-                                 std::uniform_int_distribution<Node>(
-                                     v + 1, number_of_nodes - 1)(mt));
-        }
-      }
-      size_t new_nr_edges = g.number_of_edges();
-      edges_to_add -= (new_nr_edges - old_nr_edges);
-      old_nr_edges = new_nr_edges;
-    } while (edges_to_add != 0);
     return g;
   }
 
@@ -1496,19 +1400,7 @@ namespace libsemigroups {
 
   template <typename Node>
   std::ostream& operator<<(std::ostream& os, WordGraph<Node> const& wg) {
-    os << "{";
-    std::string sep_n;
-    for (auto n : wg.nodes()) {
-      std::string sep_e;
-      os << sep_n << "{";
-      for (auto e : wg.targets_no_checks(n)) {
-        os << sep_e << (e == UNDEFINED ? "-" : std::to_string(e));
-        sep_e = ", ";
-      }
-      os << "}";
-      sep_n = ", ";
-    }
-    os << "}";
+    os << to_input_string(wg, "{", "{}", "}");
     return os;
   }
 
@@ -1552,10 +1444,10 @@ namespace libsemigroups {
             x.out_degree(),
             y.out_degree());
       }
-      // the following checks must be performed since call_no_checks, uses
-      // target_no_checks, and if the target is out of bound, then this will
-      // crash.
-      // TODO(0) check if these checks are really required
+      // The following checks are really required because of the internal
+      // implementational details. Basically if x has a target that's out of
+      // bounds, then this might be confused for a node in y, and lead to
+      // incorrect answers. So best just check this here.
       word_graph::throw_if_any_target_out_of_bounds(x);
       word_graph::throw_if_any_target_out_of_bounds(y);
     }
@@ -1799,6 +1691,76 @@ namespace libsemigroups {
   }
 
   namespace word_graph {
+    template <typename Node>
+    WordGraph<Node> random_acyclic(size_t       number_of_nodes,
+                                   size_t       out_degree,
+                                   std::mt19937 mt) {
+      if (number_of_nodes < 2) {
+        LIBSEMIGROUPS_EXCEPTION("the 1st parameter `number_of_nodes` must be "
+                                "at least 2, found {}",
+                                number_of_nodes);
+      } else if (out_degree < 2) {
+        LIBSEMIGROUPS_EXCEPTION("the 2nd parameter `out_degree` must be "
+                                "at least 2, found {}",
+                                out_degree);
+      }
+
+      using size_type  = typename WordGraph<Node>::size_type;
+      using node_type  = typename WordGraph<Node>::node_type;
+      using label_type = typename WordGraph<Node>::label_type;
+
+      static std::uniform_int_distribution<Node> label(0, out_degree - 1);
+      static std::uniform_int_distribution<Node> source(0, number_of_nodes - 1);
+      static std::uniform_int_distribution<Node> target(0, number_of_nodes - 2);
+
+      std::vector<size_type> in_degrees(number_of_nodes, 0);
+      std::fill(in_degrees.begin() + 1, in_degrees.end(), 1);
+
+      // Start with a word graph where every node is reachable from 0
+      WordGraph<Node> wg(0, out_degree);
+      word_graph::add_cycle(wg, number_of_nodes);
+      wg.remove_target(number_of_nodes - 1, 0);
+
+      // Is this a good choice?
+      size_type T = std::max((number_of_nodes * (number_of_nodes - 1)) / 2,
+                             24 * number_of_nodes);
+
+      // TODO(1) use the is_acyclic in the detail namespace to avoid
+      // repeatedly allocating memory in the calls to is_acyclic
+
+      for (size_type i = 0; i < T; ++i) {
+        node_type const  p = source(mt);
+        label_type const a = label(mt);
+        node_type        q = target(mt);
+        if (q >= p) {
+          q++;
+        }
+        node_type r = wg.target_no_checks(p, a);
+        if (r == UNDEFINED) {
+          wg.target(p, a, q);
+          in_degrees[q]++;
+          if (word_graph::is_acyclic(wg)) {
+            continue;
+          }
+          wg.remove_target_no_checks(p, a);
+          in_degrees[q]--;
+        } else if (r == q) {
+          if (in_degrees[q] >= 2) {
+            wg.remove_target_no_checks(p, a);
+            in_degrees[q]--;
+          }
+        } else {
+          if (in_degrees[r] >= 2) {
+            wg.target_no_checks(p, a, q);
+            if (!word_graph::is_acyclic(wg)) {
+              wg.target_no_checks(p, a, r);
+            }
+          }
+        }
+      }
+      return wg;
+    }
+
     template <typename Node1, typename Node2>
     void spanning_tree_no_checks(WordGraph<Node1> const& wg,
                                  Node2                   root,
