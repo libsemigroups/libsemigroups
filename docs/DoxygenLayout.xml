@@ -41,6 +41,7 @@
       <tab type="user" visible="yes" url="@ref adapters_matrix_group"
         title="Adapters for other matrices" />
       <tab type="user" visible="yes" url="@ref adapters_hpcombi_group" title="Adapters for HPCombi" />
+      <tab type="user" visible="yes" url="@ref adapters_pbr_group" title="Adapters for PBR" />
     </tab>
     <tab type="usergroup" visible="yes" url="@ref elements_group" title="Elements">
       <tab type="user" visible="yes" url="@ref bipart_group" title="Bipartitions" />
@@ -74,6 +75,8 @@
             title="StaticRowView" />
         </tab>
       </tab>
+      <tab type="user" visible="yes" url="@ref pbr_group"
+        title="Partitioned binary relations (PBRs)" />
       <tab type="user" visible="yes" url="@ref transf_group" title="Transformations" />
     </tab>
     <tab type="user" visible="yes" url="@ref orders_group" title="Orders" />

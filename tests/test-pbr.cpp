@@ -64,7 +64,7 @@ namespace libsemigroups {
     REQUIRE(y == yy);
     REQUIRE(x.degree() == 3);
 
-    z.product_inplace(x, y);
+    z.product_inplace_no_checks(x, y);
 
     PBR expected({{0, 1, 2, 3, 4, 5},
                   {0, 1, 2, 3, 4, 5},
@@ -95,7 +95,7 @@ namespace libsemigroups {
            {2, 3, 4, 5},
            {2, 3, 4, 5},
            {1, 2, 4}});
-    z.product_inplace(x, y);
+    z.product_inplace_no_checks(x, y);
 
     PBR expected({{0, 1, 2, 3, 4, 5},
                   {0, 1, 2, 3, 4, 5},
@@ -126,7 +126,7 @@ namespace libsemigroups {
            {1, 2, 3, 4, 5},
            {},
            {6}});
-    x.product_inplace(y, y);
+    x.product_inplace_no_checks(y, y);
     PBR expected({{0, 1, 2, 3, 4, 5},
                   {0, 1, 2, 3, 4, 5},
                   {0, 1, 2, 3, 4, 5},
@@ -141,7 +141,7 @@ namespace libsemigroups {
     x = PBR({{}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {7}});
     y = PBR({{}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {7}});
 
-    x.product_inplace(y, y);
+    x.product_inplace_no_checks(y, y);
     expected = PBR(
         {{}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {7}});
     REQUIRE(x == expected);
@@ -155,14 +155,16 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("PBR", "005", "delete/copy", "[quick][pbr]") {
-    PBR x = PBR::make({{1}, {4}, {3}, {1}, {0, 2}, {0, 3, 4, 5}});
+    PBR x = to_pbr({{1}, {4}, {3}, {1}, {0, 2}, {0, 3, 4, 5}});
     PBR y(x);
+    REQUIRE(x == y);
     PBR z({{1}, {4}, {3}, {1}, {0, 2}, {0, 3, 4, 5}});
     REQUIRE(y == z);
     PBR yy(y);
     REQUIRE(yy == y);
     PBR zz(yy);
     PBR a({{1}, {4}, {3}, {1}, {0, 2}, {0, 3, 4, 5}});
+    REQUIRE(z == a);
     REQUIRE(zz == a);
     PBR tt(std::move(zz));
     REQUIRE(tt == a);
@@ -171,38 +173,39 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("PBR", "006", "exceptions", "[quick][pbr]") {
-    REQUIRE_THROWS_AS(PBR::make({{1}, {4}, {3}, {10}, {0, 2}, {0, 3, 4, 5}}),
+    REQUIRE_THROWS_AS(to_pbr({{1}, {4}, {3}, {10}, {0, 2}, {0, 3, 4, 5}}),
                       LibsemigroupsException);
-    REQUIRE_THROWS_AS(PBR::make({{4}, {3}, {0}, {0, 2}, {0, 3, 4, 5}}),
+    REQUIRE_THROWS_AS(to_pbr({{4}, {3}, {0}, {0, 2}, {0, 3, 4, 5}}),
                       LibsemigroupsException);
 
     REQUIRE_NOTHROW(PBR({{-3, -1}, {-3, -2, -1, 1, 2, 3}, {-3, -2, -1, 1, 3}},
                         {{-3, -1, 1, 2, 3}, {-3, 1, 3}, {-3, -2, -1, 2, 3}}));
+    REQUIRE_NOTHROW(
+        to_pbr({{-3, -1}, {-3, -2, -1, 1, 2, 3}, {-3, -2, -1, 1, 3}},
+               {{-3, -1, 1, 2, 3}, {-3, 1, 3}, {-3, -2, -1, 2, 3}}));
 
     REQUIRE_NOTHROW(PBR({{}, {}}));
 
     REQUIRE_THROWS_AS(
-        PBR::make({{-4, -1}, {-3, -2, -1, 1, 2, 3}, {-3, -2, -1, 1, 3}},
-                  {{-3, -1, 1, 2, 3}, {-3, 1, 3}, {-3, -2, -1, 2, 3}}),
+        to_pbr({{-4, -1}, {-3, -2, -1, 1, 2, 3}, {-3, -2, -1, 1, 3}},
+               {{-3, -1, 1, 2, 3}, {-3, 1, 3}, {-3, -2, -1, 2, 3}}),
         LibsemigroupsException);
 
     REQUIRE_THROWS_AS(
-        PBR::make({{-4, -1}, {-3, -2, -1, 1, 2, 3}, {-3, -2, -1, 1, 3}},
-                  {{-3, -1, 1, 2, 3}, {-3, 1, 3}, {-3, -2, -1, 2, 3}}),
+        to_pbr({{-4, -1}, {-3, -2, -1, 1, 2, 3}, {-3, -2, -1, 1, 3}},
+               {{-3, -1, 1, 2, 3}, {-3, 1, 3}, {-3, -2, -1, 2, 3}}),
         LibsemigroupsException);
 
     REQUIRE_THROWS_AS(
-        PBR::make(
-            {{-4, -1}, {-3, -2, -1, 1, 2, 3}, {-3, -2, -1, 1, 3}},
-            {{-3, -1, 1, 2, 3}, {-3, 1, 3}, {-3, -2, -1, 2, 3}, {-1, -2}}),
+        to_pbr({{-4, -1}, {-3, -2, -1, 1, 2, 3}, {-3, -2, -1, 1, 3}},
+               {{-3, -1, 1, 2, 3}, {-3, 1, 3}, {-3, -2, -1, 2, 3}, {-1, -2}}),
         LibsemigroupsException);
     REQUIRE_THROWS_AS(
-        PBR::make({{-3, -1, 1, 2, 3}, {-3, 1, 3}, {-3, -2, -1, 2, 3}},
-                  {{-4, -1}, {-3, -2, -1, 1, 2, 3}, {-3, -2, -1, 1, 3}}),
+        to_pbr({{-3, -1, 1, 2, 3}, {-3, 1, 3}, {-3, -2, -1, 2, 3}},
+               {{-4, -1}, {-3, -2, -1, 1, 2, 3}, {-3, -2, -1, 1, 3}}),
         LibsemigroupsException);
 
-    REQUIRE_THROWS_AS(PBR::make({{}, {2}, {1}, {3, 0}}),
-                      LibsemigroupsException);
+    REQUIRE_THROWS_AS(to_pbr({{}, {2}, {1}, {3, 0}}), LibsemigroupsException);
   }
 
   LIBSEMIGROUPS_TEST_CASE("PBR", "007", "operators", "[quick][pbr]") {
@@ -250,21 +253,31 @@ namespace libsemigroups {
     os << x;  // doesn't do anything visible
   }
 
-  LIBSEMIGROUPS_TEST_CASE("PBR", "009", "identity", "[quick][pbr]") {
+  LIBSEMIGROUPS_TEST_CASE("PBR", "009", "one", "[quick][pbr]") {
     PBR x({{3, 5},
            {0, 1, 2, 3, 4, 5},
            {0, 2, 3, 4, 5},
            {0, 1, 2, 3, 5},
            {0, 2, 5},
            {1, 2, 3, 4, 5}});
-    REQUIRE(x == x * x.identity());
-    REQUIRE(x == x.identity() * x);
-    REQUIRE(x == x * PBR::identity(3));
-    REQUIRE(x == PBR::identity(3) * x);
+    REQUIRE(x == x * pbr::one(x));
+    REQUIRE(x == pbr::one(x) * x);
+    REQUIRE(x == x * pbr::one(3));
+    REQUIRE(x == pbr::one(3) * x);
   }
 
   LIBSEMIGROUPS_TEST_CASE("PBR", "010", "adapters", "[quick][pbr]") {
     PBR x({});
     REQUIRE_NOTHROW(IncreaseDegree<PBR>()(x, 0));
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("PBR", "011", "to_pbr", "[quick][pbr]") {
+    PBR x({{-1, 1}, {2}}, {{-2, 1}, {-1, 2}});
+    pbr::throw_if_invalid(x);
+    REQUIRE(to_pbr({}) == PBR({}));
+    REQUIRE(to_pbr({{1, 2}, {0, 3}, {2, 3}, {1}})
+            == PBR({{1, 2}, {0, 3}, {2, 3}, {1}}));
+    REQUIRE(to_pbr({{-1, 1}, {2}}, {{-2, 1}, {-1, 2}})
+            == PBR({{-1, 1}, {2}}, {{-2, 1}, {-1, 2}}));
   }
 }  // namespace libsemigroups
