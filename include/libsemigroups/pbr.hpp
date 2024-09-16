@@ -419,7 +419,7 @@ namespace libsemigroups {
     //!
     //! \param x the PBR to validate.
     //!
-    //! \throws LibsemigroupsException if any of the following throw:
+    //! \throws LibsemigroupsException if any of the following occur:
     //! * \p x does not describe a binary relation on an even number of points;
     //! * \p x has a point related to a point that is greater than degree();
     //! * a list of points related to a point is not sorted.
