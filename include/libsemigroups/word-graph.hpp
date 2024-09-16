@@ -1207,7 +1207,7 @@ namespace libsemigroups {
 
     size_type _degree;
     size_type _nr_nodes;
-    // TODO(later) remove when WordGraphView is implemented
+    // TODO(1) remove when WordGraphView is implemented
     size_type                           _num_active_nodes;
     mutable detail::DynamicArray2<Node> _dynamic_array_2;
   };
@@ -1433,7 +1433,7 @@ namespace libsemigroups {
     //!
     //! \par Complexity
     //! Linear in the length of \p path.
-    // TODO(later) example
+    // TODO(2) example
     // not noexcept because WordGraph::target isn't
     template <typename Node1, typename Node2>
     [[nodiscard]] Node1 follow_path(WordGraph<Node1> const& wg,
@@ -2524,7 +2524,7 @@ namespace libsemigroups {
     void throw_if_label_out_of_bounds(WordGraph<Node> const& wg,
                                       word_type const&       word);
 
-    // TODO(doc)
+    // TODO(0): doc
     template <typename Node, typename Iterator>
     void throw_if_label_out_of_bounds(WordGraph<Node> const& wg,
                                       Iterator               first,
@@ -2684,7 +2684,7 @@ namespace libsemigroups {
                 std::initializer_list<std::vector<Node>> targets);
 
   //! \ingroup word_graph_group
-  //! TODO(doc)
+  //! TODO(0): doc
   template <typename Node>
   [[nodiscard]] WordGraph<Node>
   to_word_graph(size_t num_nodes, std::vector<std::vector<Node>> const& v);
@@ -2756,7 +2756,7 @@ namespace libsemigroups {
         // always have an odd number of arguments, so we check that it's even
         // here (the argument x and an odd number of further arguments).
         WordGraph<Node> xy;
-        operator()(xy, x, std::forward<Args>(args)...);
+                        operator()(xy, x, std::forward<Args>(args)...);
         return xy;
       }
 
@@ -2791,7 +2791,7 @@ namespace libsemigroups {
         return is_subrelation(x, static_cast<Node>(0), y, static_cast<Node>(0));
       }
     };  // JoinerMeeterCommon
-  }  // namespace detail
+  }     // namespace detail
 
   //! \ingroup word_graph_group
   //! \brief Class for taking joins of word graphs.
@@ -3421,22 +3421,22 @@ namespace libsemigroups {
   template <typename Node>
   [[nodiscard]] std::string to_human_readable_repr(WordGraph<Node> const& wg);
 
-  // TODO to cpp
-  // TODO doc
+  // TODO(0) to cpp
+  // TODO(0) doc
   [[nodiscard]] static inline std::string
   to_human_readable_repr(Meeter const&) {
     return "<Meeter of word graphs>";
   }
 
-  // TODO to cpp
-  // TODO doc
+  // TODO(0) to cpp
+  // TODO(0) doc
   [[nodiscard]] static inline std::string
   to_human_readable_repr(Joiner const&) {
     return "<Joiner of word graphs>";
   }
 
-  // TODO to tpp
-  // TODO doc
+  // TODO(0) to tpp
+  // TODO(0) doc
   template <typename Node>
   [[nodiscard]] std::string to_input_string(WordGraph<Node> const& wg,
                                             std::string const&     prefix = "",
