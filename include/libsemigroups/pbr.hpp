@@ -214,7 +214,30 @@ namespace libsemigroups {
                                    PBR const& y,
                                    size_t     thread_id = 0);
 
-    // TODO(later) product_inplace with checks
+    //! \brief Multiply two PBR objects and store the product in \c this.
+    //!
+    //! Replaces the contents of \c this by the product of \p x and \p y.
+    //!
+    //! The parameter \p thread_id is required since some temporary storage is
+    //! required to find the product of \p x and \p y.  Note that if different
+    //! threads call this member function with the same value of \p thread_id
+    //! then bad things will happen.
+    //!
+    //! \param x a PBR.
+    //! \param y a PBR.
+    //! \param thread_id the index of the calling thread (defaults to \c 0).
+    //!
+    //! \throws LibsemigroupsException if:
+    //!   * the \ref degree() of \p x is not the same as the \ref degree() of \p
+    //!   y;
+    //!   * the \ref degree() of `*this` is not the same as the \ref degree() of
+    //!   \p x;
+    //!   * one if the addresses `&x` and `&y` is the same as that of `this`; or
+    //!   * either \p x or \p y are invalid.
+    //!
+    //! \sa
+    //! \ref pbr::throw_if_invalid.
+    void product_inplace(PBR const& x, PBR const& y, size_t thread_id = 0);
 
     //! \brief Compare two PBRs for equality.
     //!

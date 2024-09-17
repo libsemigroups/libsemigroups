@@ -415,6 +415,31 @@ namespace libsemigroups {
     }
   }
 
+  void PBR::product_inplace(PBR const& xx, PBR const& yy, size_t thread_id) {
+    if (xx.degree() != yy.degree()) {
+      LIBSEMIGROUPS_EXCEPTION(
+          "the degree of the first argument ({}) is not equal to the degree "
+          "of the second argument ({})",
+          xx.degree(),
+          yy.degree());
+    }
+    if (xx.degree() != this->degree()) {
+      LIBSEMIGROUPS_EXCEPTION(
+          "the degree of the this ({}) is not equal to the degree "
+          "of the first argument ({})",
+          this->degree(),
+          xx.degree());
+    }
+    if (&xx == this || &yy == this) {
+      LIBSEMIGROUPS_EXCEPTION(
+          "the address of this is the same as that of one of the arguments, "
+          "expected this to be distinct from the arguments");
+    }
+    pbr::throw_if_invalid(xx);
+    pbr::throw_if_invalid(yy);
+    this->product_inplace_no_checks(xx, yy, thread_id);
+  }
+
   std::vector<uint32_t>& PBR::at(size_t i) {
     if (i >= this->number_of_points()) {
       LIBSEMIGROUPS_EXCEPTION(
