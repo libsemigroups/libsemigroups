@@ -2637,7 +2637,7 @@ namespace libsemigroups {
                           "meaningful exception messages",
                           "[quick][presentation]") {
     using literals::operator""_w;
-    auto rg = ReportGuard(false);
+    auto            rg = ReportGuard(false);
 
     {
       Presentation<std::string> p;
@@ -2713,7 +2713,7 @@ namespace libsemigroups {
                           "056",
                           "add_generator (std::string)",
                           "[quick][presentation]") {
-    auto rg = ReportGuard(false);
+    auto            rg = ReportGuard(false);
     using literals::operator""_w;
 
     {
