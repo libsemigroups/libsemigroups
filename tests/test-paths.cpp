@@ -850,7 +850,10 @@ namespace libsemigroups {
     auto         wg = WordGraph<size_t>::random(n, 20, std::mt19937());
     word_graph::add_cycle_no_checks(wg, wg.cbegin_nodes(), wg.cend_nodes());
     REQUIRE(!word_graph::is_acyclic(wg));
-    REQUIRE(number_of_paths(wg, 0, 0, 16) != 0);
+    REQUIRE(word_graph::is_reachable(wg, 1, 0));
+    REQUIRE(word_graph::is_reachable(wg, 0, 1));
+    REQUIRE(word_graph::is_reachable(wg, 0, 0));
+    REQUIRE(number_of_paths(wg, 0, 0, 401) != 0);
   }
 
   LIBSEMIGROUPS_TEST_CASE("Paths",
