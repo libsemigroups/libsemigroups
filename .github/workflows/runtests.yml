@@ -19,16 +19,13 @@ jobs:
            with:
              update_packager_index: false
              install_ccache: true
-         - name: "Install dependencies . . ."
-           run: |
-                sudo apt-get --yes update
-                sudo apt-get install -y ccache
          - name: "Configure . . ."
            run: |
-                mkdir -p m4 && ./autogen.sh && ./configure
+                mkdir -p m4
+                ./autogen.sh 
+                ./configure CXX="$CXX" CXXFLAGS="$CXXFLAGS"
          - name: "Build libsemigroups . . ."
-           run: |
-                ccache -z && make -j4 && ccache -s
+           run: make -j4
          - name: "Build bench_all . . ."
            run: |
                 make bench_all -j4
@@ -48,66 +45,74 @@ jobs:
          - name: "Configure . . ."
            run: |
                 mkdir -p m4
-                ./autogen.sh 
+                ./autogen.sh
                 ./configure CXX="$CXX" CXXFLAGS="$CXXFLAGS" --disable-hpcombi
          - name: "Build libsemigroups . . ."
-           run: |
-                ccache -z && make -j4 && ccache -s
+           run: make -j4
          - name: "Build test_all . . ."
-           run: |
-                ccache -z && make test_all -j4 && ccache -s
+           run: make test_all -j4
          - name: "Run the quick and standard tests . . ."
            run: |
                 ./test_all "[quick],[standard]"
    config-options:
       timeout-minutes: 45
       runs-on: ubuntu-latest
+      env:
+        CXX: "ccache g++"
+        CXXFLAGS: "-fdiagnostics-color"
       steps:
          - uses: actions/checkout@v3
-         - name: "Install other dependencies . . ."
-           run: |
-                sudo apt-get --yes update
-                sudo apt-get install -y ccache
+         - name: "Setup ccache . . ."
+           uses: Chocobo1/setup-ccache-action@v1
+           with:
+             update_packager_index: false
+             install_ccache: true
          - name: "Run ./autogen.sh . . ."
            run: |
                 ./autogen.sh
          - name: "Test flag: --enable-debug"
            run: |
-                ./configure --enable-debug
+                ./configure CXX="$CXX" CXXFLAGS="$CXXFLAGS" --enable-debug
                 make test_all -j4 || exit 1
                 ./test_all "[quick]"
          - name: "Test flag: --disable-hpcombi"
            run: |
-                ./configure --disable-hpcombi
+                ./configure CXX="$CXX" CXXFLAGS="$CXXFLAGS" --disable-hpcombi
                 make test_all -j4 || exit 1
                 ./test_all "[quick]"
          - name: "Test flag: --disable-popcnt --disable-clzll"
            run: |
-                ./configure --disable-popcnt --disable-clzll
-                make test_bitset -j4|| exit 1
+                ./configure CXX="$CXX" CXXFLAGS="$CXXFLAGS" --disable-popcnt --disable-clzll
+                make test_bitset -j4 || exit 1
                 ./test_bitset "[quick]"
    config-external-deps:
       timeout-minutes: 45
       runs-on: ubuntu-latest
       env:
+        CXX: "ccache g++"
+        CXXFLAGS: "-fdiagnostics-color"
         PKG_CONFIG_PATH: "/home/runner/micromamba-root/envs/libsemigroups/lib/pkgconfig:/home/runner/micromamba-root/envs/libsemigroups/share/pkgconfig/"
         LD_LIBRARY_PATH: "/home/runner/micromamba-root/envs/libsemigroups/lib"
       steps:
         - uses: actions/checkout@v3
+        - name: "Setup ccache . . ."
+          uses: Chocobo1/setup-ccache-action@v1
+          with:
+            update_packager_index: false
+            install_ccache: true
         - name: "Install conda environment from environment.yml . . ."
           uses: mamba-org/provision-with-micromamba@main
         - name: "Run ./autogen.sh . . ."
-          run: |
-            ./autogen.sh
+          run: ./autogen.sh
         - name: "Test flag: --with-external-fmt"
           run: |
-            ./configure --with-external-fmt
+            ./configure CXX="$CXX" CXXFLAGS="$CXXFLAGS" --with-external-fmt
             make test_all -j4 || exit 1
             ./test_all "[quick]"
         - name: "Test flag: --with-external-eigen"
           run: |
             make clean
-            ./configure --with-external-eigen
+            ./configure CXX="$CXX" CXXFLAGS="$CXXFLAGS" --with-external-eigen
             make test_obvinf -j4 || exit 1
             make test_word_graph -j4 || exit 1
             ./test_obvinf "[quick]"
@@ -115,7 +120,7 @@ jobs:
         - name: "Test flag: --disable-eigen"
           run: |
             make clean
-            ./configure --disable-eigen
+            ./configure CXX="$CXX" CXXFLAGS="$CXXFLAGS" --disable-eigen
             make test_obvinf -j4 || exit 1
             make test_word_graph -j4 || exit 1
             make test_cong -j4 || exit 1
@@ -125,20 +130,20 @@ jobs:
    coverage:
       timeout-minutes: 60
       runs-on: ubuntu-latest
+      env:
+        CXX: "ccache g++"
+        CXXFLAGS: "-fdiagnostics-color"
       steps:
-         - name: "Restore cache . . ."
-           uses: actions/cache@v3
-           with:
-              path: /home/runner/.ccache
-              key: ccache:${{ matrix.os }}:${{ matrix.compiler }}:${{ matrix.modules }}-modules:${{ github.ref }}:${{ github.sha }}
-              restore-keys: |
-                ccache:${{ matrix.os }}:${{ matrix.compiler }}:${{ matrix.modules }}-modules:${{ github.ref }}
-                ccache:${{ matrix.os }}:${{ matrix.compiler }}:${{ matrix.modules }}-modules
          - uses: actions/checkout@v3
+         - name: "Setup ccache . . ."
+           uses: Chocobo1/setup-ccache-action@v1
+           with:
+             update_packager_index: false
+             install_ccache: true
          - name: "Install dependencies . . ."
            run: |
                 sudo apt-get --yes update
-                sudo apt-get install -y lcov ccache
+                sudo apt-get install -y lcov
          - name: "Run quick tests . . ."
            run: |
                 sudo ln -sf /usr/bin/gcov-9 /usr/bin/gcov
@@ -162,24 +167,18 @@ jobs:
          CXXFLAGS: "-fdiagnostics-color"
       steps:
          - uses: actions/checkout@v3
-         - name: "Restore cache . . ."
-           uses: actions/cache@v3
+         - name: "Setup ccache . . ."
+           uses: Chocobo1/setup-ccache-action@v1
            with:
-              path: /home/runner/.ccache
-              key: ccache:${{ matrix.os }}:${{ matrix.compiler }}:${{ matrix.modules }}-modules:${{ github.ref }}:${{ github.sha }}
-              restore-keys: |
-                ccache:${{ matrix.os }}:${{ matrix.compiler }}:${{ matrix.modules }}-modules:${{ github.ref }}
-                ccache:${{ matrix.os }}:${{ matrix.compiler }}:${{ matrix.modules }}-modules
-         - name: "Install dependencies . . ."
-           run: |
-                sudo apt-get --yes update
-                sudo apt-get install -y ccache
+             update_packager_index: false
+             install_ccache: true
          - name: "Configure . . ."
            run: |
-                mkdir -p m4 && ./autogen.sh && ./configure
+            mkdir -p m4 
+            ./autogen.sh 
+            ./configure CXX="$CXX" CXXFLAGS="$CXXFLAGS"
          - name: "make distcheck . . ."
-           run: |
-                make distcheck -j4
+           run: make distcheck -j4
    doc:
       timeout-minutes: 10
       runs-on: ubuntu-latest
@@ -205,7 +204,7 @@ jobs:
            run: |
                 echo "Doxygen version: "
                 doxygen --version
-                make doc 
+                make doc
               # echo TODO(0) actually check that the doc can be built ok
               # ( ! (grep "WARNING:" make-doc-sphinx.log | grep -v "WARNING: bibtex citations changed, rerun sphinx" | grep -v "WARNING: Could not lex literal_block") )
    macosx:
@@ -228,17 +227,14 @@ jobs:
          - name: "Configure . . ."
            run: |
                 mkdir -p m4
-                ./autogen.sh 
+                ./autogen.sh
                 ./configure CXX="$CXX" CXXFLAGS="$CXXFLAGS" --disable-hpcombi --disable-backward
          - name: "Build libsemigroups . . ."
-           run: |
-                ccache -z && make -j4 && ccache -s
+           run: make -j4 
          - name: "Build test_all . . ."
-           run: |
-                ccache -z && make test_all -j4 && ccache -s
+           run: make test_all -j4
          - name: "Run the quick tests . . ."
-           run: |
-                ./test_all "[quick]"
+           run:  ./test_all "[quick]"
    valgrind:
       timeout-minutes: 60
       runs-on: ubuntu-latest
@@ -247,28 +243,23 @@ jobs:
         CXXFLAGS: "-fdiagnostics-color"
       steps:
          - uses: actions/checkout@v3
-         - name: "Restore cache . . ."
-           uses: actions/cache@v3
+         - name: "Setup ccache . . ."
+           uses: Chocobo1/setup-ccache-action@v1
            with:
-              path: /home/runner/.ccache
-              key: ccache:${{ matrix.os }}:${{ matrix.compiler }}:${{ matrix.modules }}-modules:${{ github.ref }}:${{ github.sha }}
-              restore-keys: |
-                ccache:${{ matrix.os }}:${{ matrix.compiler }}:${{ matrix.modules }}-modules:${{ github.ref }}
-                ccache:${{ matrix.os }}:${{ matrix.compiler }}:${{ matrix.modules }}-modules
+             update_packager_index: false
+             install_ccache: true
          - name: "Install dependencies . . ."
            run: |
                 sudo apt-get --yes update
-                sudo apt-get install -y ccache expect libc6-dbg libtool-bin valgrind
+                sudo apt-get install -y expect libc6-dbg libtool-bin valgrind
          - name: "Configure . . ."
            run: |
                 mkdir -p m4 && ./autogen.sh
-                ./configure --enable-debug --disable-hpcombi
+                ./configure CXX="$CXX" CXXFLAGS="$CXXFLAGS" --enable-debug --disable-hpcombi
          - name: "Build libsemigroups . . ."
-           run: |
-                ccache -z && make -j4 && ccache -s
+           run: make -j4
          - name: "Build test_all . . ."
-           run: |
-                ccache -z && make test_all -j4 && ccache -s
+           run: make test_all -j4 
          - name: "Run tests with valgrind . . ."
            run: |
                 valgrind --version
