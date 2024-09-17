@@ -702,7 +702,7 @@ EXTRA_DIST += benchmarks/examples/generators.hpp
 ## For testing . . .
 
 CHECK_PROG    = ./test_all$(EXEEXT)
-CHECK_FLAGS1  = --use-colour yes --order lex --abort
+CHECK_FLAGS1  = --order lex --abort
 CHECK_FLAGS2  = [quick]
 
 check_PROGRAMS =  test_all

@@ -22,5 +22,5 @@ jobs:
       uses: jidicula/clang-format-action@v4.11.0
       with:
         clang-format-version: '15'
-        exclude-regex: '(tests\/catch.hpp|benchmarks\/catch.hpp)'
+        exclude-regex: '(tests\/catch_*.*pp|benchmarks\/catch_*.*pp)'
         check-path: ${{ matrix.path }}
