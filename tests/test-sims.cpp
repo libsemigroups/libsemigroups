@@ -316,7 +316,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("Sims1",
                           "002",
                           "ToddCoxeter failing example (word_type)",
-                          "[quick][low-index][no-valgrind[no-valgrind]]") {
+                          "[quick][low-index][no-valgrind]") {
     auto                    rg = ReportGuard(false);
     Presentation<word_type> p;
     p.contains_empty_word(false);
