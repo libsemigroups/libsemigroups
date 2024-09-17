@@ -1,0 +1,66 @@
+name: "Downstream"
+on:
+  workflow_dispatch:
+  pull_request:
+  push:
+    branches:
+      - "main"
+      - "stable-*.*"
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  python:
+      env:
+         CC: "ccache gcc"
+         CXX: "ccache g++"
+         # The CXXFLAGS below must be set to -O0 because o/w this CI job fails 
+         # with a library loading issue (related to fmt). The flag -O3 is set 
+         # in libsemigroups/Makefile.am, and removing that also resolves this
+         # issue. JDM also tried with -O1/2 and this didn't work either. 
+         CXXFLAGS: "-fdiagnostics-color -O0"
+         CONFIG_FLAGS: "--disable-hpcombi --disable-popcnt --disable-clzll"
+         URL: "https://github.com/libsemigroups/libsemigroups_pybind11.git"
+         LD_LIBRARY_PATH: "/usr/local/lib/"
+      name: libsemigroups_pybind11 / v1 branch
+      runs-on: ubuntu-latest
+      steps:
+          - name: "Checkout libsemigroups"
+            uses: actions/checkout@v3
+          - name: "Install git + autotools"
+            run: |
+              sudo apt-get --yes update
+              sudo apt-get install git --yes
+              sudo apt-get install pkg-config m4 libtool automake autoconf --yes
+              sudo apt-get install libtool-bin --yes
+          - name: "Setup ccache . . ."
+            uses: Chocobo1/setup-ccache-action@v1
+            with:
+              update_packager_index: false
+              install_ccache: true
+          - name: "Configure libsemigroups . . ."
+            run: | 
+              mkdir -p m4
+              ./autogen.sh
+              ./configure CXX="$CXX" CXXFLAGS="$CXXFLAGS" $CONFIG_FLAGS
+          - name: "Build libsemigroups . . ."
+            run: sudo make install -j4
+          - name: "Clone libsemigroups_pybind11 . . ."
+            run: git clone "$URL" --depth 1 --branch v1
+          - name: "Install prerequisites for libsemigroups_pybind11 . . ."
+            run: |
+              cd libsemigroups_pybind11
+              sudo apt-get --yes update
+              sudo apt-get install python3 --yes
+              sudo apt-get install python3-pip --yes
+              sudo -H pip3 install -r requirements.txt
+          - name: "Building libsemigroups_pybind11 . . ."
+            run: |
+              cd libsemigroups_pybind11
+              sudo -H pip3 install .
+          - name: "Running libsemigroups_pybind11 tests. . ."
+            run: |
+              cd libsemigroups_pybind11
+              make check
