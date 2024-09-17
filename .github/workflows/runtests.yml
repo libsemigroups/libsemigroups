@@ -173,7 +173,7 @@ jobs:
            run: |
                 sudo ln -sf /usr/bin/gcov-9 /usr/bin/gcov
                 export GCOV=/usr/bin/gcov-9
-                etc/test-code-coverage.sh test_all "[quick]"
+                etc/test-code-coverage.sh test_all "[quick][exclude:no-valgrind][exclude:no-coverage]"
          - name: "Uploading to Codecov . . ."
            uses: codecov/codecov-action@v4
            with:
