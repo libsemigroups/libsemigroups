@@ -31,7 +31,7 @@ namespace libsemigroups {
   struct LibsemigroupsException;
 
   LIBSEMIGROUPS_TEST_CASE("PBR",
-                          "001",
+                          "000",
                           "universal product with convenience constructor",
                           "[quick][pbr]") {
     std::vector<std::vector<int32_t>> const left
@@ -75,7 +75,7 @@ namespace libsemigroups {
     REQUIRE(z == expected);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("PBR", "002", "universal product", "[quick][pbr]") {
+  LIBSEMIGROUPS_TEST_CASE("PBR", "001", "universal product", "[quick][pbr]") {
     PBR x({{3, 5},
            {0, 1, 2, 3, 4, 5},
            {0, 2, 3, 4, 5},
@@ -107,7 +107,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("PBR",
-                          "003",
+                          "002",
                           "product [bigger than previous]",
                           "[quick][pbr]") {
     PBR x({{3, 5},
@@ -147,14 +147,14 @@ namespace libsemigroups {
     REQUIRE(x == expected);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("PBR", "004", "hash", "[quick][pbr][no-valgrind]") {
+  LIBSEMIGROUPS_TEST_CASE("PBR", "003", "hash", "[quick][pbr][no-valgrind]") {
     PBR x({{1}, {4}, {3}, {1}, {0, 2}, {0, 3, 4, 5}});
     for (size_t i = 0; i < 1000000; i++) {
       x.hash_value();
     }
   }
 
-  LIBSEMIGROUPS_TEST_CASE("PBR", "005", "delete/copy", "[quick][pbr]") {
+  LIBSEMIGROUPS_TEST_CASE("PBR", "004", "delete/copy", "[quick][pbr]") {
     PBR x = to_pbr({{1}, {4}, {3}, {1}, {0, 2}, {0, 3, 4, 5}});
     PBR y(x);
     REQUIRE(x == y);
@@ -172,7 +172,7 @@ namespace libsemigroups {
     REQUIRE(tt == z);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("PBR", "006", "exceptions", "[quick][pbr]") {
+  LIBSEMIGROUPS_TEST_CASE("PBR", "005", "exceptions", "[quick][pbr]") {
     REQUIRE_THROWS_AS(to_pbr({{1}, {4}, {3}, {10}, {0, 2}, {0, 3, 4, 5}}),
                       LibsemigroupsException);
     REQUIRE_THROWS_AS(to_pbr({{4}, {3}, {0}, {0, 2}, {0, 3, 4, 5}}),
