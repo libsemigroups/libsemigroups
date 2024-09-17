@@ -415,4 +415,24 @@ namespace libsemigroups {
     }
   }
 
+  std::vector<uint32_t>& PBR::at(size_t i) {
+    if (i >= this->number_of_points()) {
+      LIBSEMIGROUPS_EXCEPTION(
+          "index out of range, expected values in [0, {}) but found {}",
+          this->number_of_points(),
+          i);
+    }
+    return this->operator[](i);
+  }
+
+  std::vector<uint32_t> const& PBR::at(size_t i) const {
+    if (i >= this->number_of_points()) {
+      LIBSEMIGROUPS_EXCEPTION(
+          "index out of range, expected values in [0, {}) but found {}",
+          this->number_of_points(),
+          i);
+    }
+    return this->operator[](i);
+  }
+
 }  // namespace libsemigroups

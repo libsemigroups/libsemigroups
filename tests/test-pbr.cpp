@@ -215,6 +215,12 @@ namespace libsemigroups {
            {0, 1, 2, 3, 5},
            {0, 2, 5},
            {1, 2, 3, 4, 5}});
+    REQUIRE(x[0] == std::vector<uint32_t>({3, 5}));
+    REQUIRE(x[5] == std::vector<uint32_t>({1, 2, 3, 4, 5}));
+    REQUIRE(x[0] == x.at(0));
+    REQUIRE(x[5] == x.at(5));
+    REQUIRE_THROWS(x.at(6));
+
     PBR y({{0, 3, 4, 5},
            {2, 4, 5},
            {1, 2, 5},
