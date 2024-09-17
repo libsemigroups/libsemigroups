@@ -30,8 +30,7 @@
 #include <utility>           // for forward
 #include <vector>            // for vector, operator<, operator==, allocator
 
-#include "adapters.hpp"                 // for Hash
-#include "libsemigroups/exception.hpp"  // for LIBSEMIGROUPS_E...
+#include "adapters.hpp"  // for Hash
 
 namespace libsemigroups {
 
@@ -288,6 +287,38 @@ namespace libsemigroups {
       return _vector[i];
     }
 
+    //! \brief Returns a reference to the points adjacent to a given point, with
+    //! bounds checking.
+    //!
+    //! Returns a reference to the points adjacent to a given point, with bounds
+    //! checking.
+    //!
+    //! \param i the point.
+    //!
+    //! \returns A value reference to a `std::vector<uint32_t>`.
+    //!
+    //! \throws std::out_of_range if \p i > \ref number_of_points().
+    //!
+    //! \complexity
+    //! Constant.
+    std::vector<uint32_t>& at(size_t i);
+
+    //! \brief Returns a const reference to the points adjacent to a given
+    //! point, with bounds checking.
+    //!
+    //! Returns a const reference to the points adjacent to a given point, with
+    //! bounds checking.
+    //!
+    //! \param i the point.
+    //!
+    //! \returns A value const reference to a `std::vector<uint32_t>`.
+    //!
+    //! \throws std::out_of_range if \p i > \ref number_of_points().
+    //!
+    //! \complexity
+    //! Constant.
+    std::vector<uint32_t> const& at(size_t i) const;
+
     //! \brief Returns a hash value for a PBR.
     //!
     //! Returns a hash value for a PBR.
@@ -513,7 +544,7 @@ namespace libsemigroups {
              PBR::initializer_list_type<int32_t> right);
 
   // clang-format off
-  //! \copydoc to_pbr(initializer_list_type<int32_t>, initializer_list_type<int32_t>) <!-- NOLINT(whitespace/line_length) -->
+  //! \copydoc to_pbr(PBR::initializer_list_type<int32_t>, PBR::initializer_list_type<int32_t>) <!-- NOLINT(whitespace/line_length) -->
   // clang-format on
   PBR to_pbr(PBR::vector_type<int32_t> left, PBR::vector_type<int32_t> right);
 
