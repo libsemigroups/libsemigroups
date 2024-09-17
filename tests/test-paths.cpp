@@ -60,11 +60,12 @@ namespace libsemigroups {
   struct LibsemigroupsException;  // forward decl
 
   namespace {
-    void add_chain(WordGraph<size_t>& digraph, size_t n) {
-      size_t old_nodes = digraph.number_of_nodes();
-      digraph.add_nodes(n);
-      for (size_t i = old_nodes; i < digraph.number_of_nodes() - 1; ++i) {
-        digraph.target(i, 0, i + 1);
+    // TODO add to word_graph helper namespace
+    void add_chain(WordGraph<size_t>& word_graph, size_t n) {
+      size_t old_nodes = word_graph.number_of_nodes();
+      word_graph.add_nodes(n);
+      for (size_t i = old_nodes; i < word_graph.number_of_nodes() - 1; ++i) {
+        word_graph.target(i, 0, i + 1);
       }
     }
 
@@ -660,7 +661,7 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("Paths",
                           "011",
-                          "number_of_paths acyclic digraph",
+                          "number_of_paths acyclic word graph",
                           "[quick][no-valgrind]") {
     auto wg = to_word_graph<size_t>(
         8, {{3, 2, 3}, {7}, {1}, {1, 5}, {6}, {}, {3, 7}});
@@ -843,20 +844,18 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("Paths",
                           "014",
-                          "number_of_paths 400 node random digraph",
+                          "number_of_paths 400 node random word graph",
                           "[quick]") {
     size_t const n  = 400;
-    auto         wg = WordGraph<size_t>::random(n, 20, n, std::mt19937());
+    auto         wg = WordGraph<size_t>::random(n, 20, std::mt19937());
     word_graph::add_cycle_no_checks(wg, wg.cbegin_nodes(), wg.cend_nodes());
     REQUIRE(!word_graph::is_acyclic(wg));
-    REQUIRE(!word_graph::is_complete(wg));
-    REQUIRE(number_of_paths_algorithm(wg, 0, 0, 16) == paths::algorithm::dfs);
     REQUIRE(number_of_paths(wg, 0, 0, 16) != 0);
   }
 
   LIBSEMIGROUPS_TEST_CASE("Paths",
                           "015",
-                          "number_of_paths 10 node acyclic digraph",
+                          "number_of_paths 10 node acyclic word graph",
                           "[quick]") {
     // size_t const n  = 10;
     // auto wg = WordGraph<size_t>::random_acyclic(n, 20, n,
@@ -890,7 +889,7 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("Paths",
                           "016",
-                          "number_of_paths node digraph",
+                          "number_of_paths node word graph",
                           "[quick][no-valgrind]") {
     size_t const n = 10;
     // auto         wg = WordGraph<size_t>::random(n, 20, 200,

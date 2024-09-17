@@ -615,7 +615,7 @@ namespace libsemigroups {
     //! \no_libsemigroups_except
     //!
     //! \complexity
-    //! Linear in \ref number of nodes times \ref out_degree.
+    //! Linear in \ref number_of_nodes times \ref out_degree.
     // not noexcept because Hash<T>::operator() isn't
     [[nodiscard]] size_t hash_value() const {
       return std::hash<decltype(_dynamic_array_2)>()(_dynamic_array_2);
@@ -2524,7 +2524,21 @@ namespace libsemigroups {
     void throw_if_label_out_of_bounds(WordGraph<Node> const& wg,
                                       word_type const&       word);
 
-    // TODO(0): doc
+    //! \brief Throws if a label is out of bounds.
+    //!
+    //! This function throws if any of the letters in the word defined by \p
+    //! first and \p last is out of bounds, i.e. if they are greater than or
+    //! equal to `wg.out_degree()`.
+    //!
+    //! \tparam Node the type of the nodes in \p wg.
+    //! \tparam Iterator the type of the arguments \p first and \p last.
+    //!
+    //! \param wg the word graph.
+    //! \param first iterator pointing at the first letter to check.
+    //! \param last iterator pointing one beyond the last letter to check.
+    //!
+    //! \throws LibsemigroupsException if any value in the word word defined by
+    //! \p first and \p last is out of bounds.
     template <typename Node, typename Iterator>
     void throw_if_label_out_of_bounds(WordGraph<Node> const& wg,
                                       Iterator               first,
@@ -2652,17 +2666,17 @@ namespace libsemigroups {
   std::ostream& operator<<(std::ostream& os, WordGraph<Node> const& wg);
 
   //! \ingroup word_graph_group
-  //! Constructs a word graph from a number of nodes and an \c
-  //! initializer_list.
+  //!
+  //! \brief Constructs a word graph from a number of nodes and targets.
   //!
   //! This function constructs a word graph from its arguments whose
-  //! out-degree is specified by the length of the first \c initializer_list
+  //! out-degree is specified by the length of the first item
   //! in the 2nd parameter.
   //!
   //! \tparam Node the type of the nodes of the word graph.
   //!
   //! \param num_nodes the number of nodes in the word graph.
-  //! \param targets the out-targets of the word graph.
+  //! \param targets the targets of the word graph.
   //!
   //! \returns A value of type WordGraph.
   //!
@@ -2671,23 +2685,28 @@ namespace libsemigroups {
   //!
   //! \complexity
   //! \f$O(mn)\f$ where \f$m\f$ is the length of \p targets and \f$n\f$ is the
-  //! parameter \p num_nodes_reachable_from_root.
+  //! parameter \p num_nodes.
   //!
   //! \par Example
   //! \code
   //! // Construct a word graph with 5 nodes and 10 edges (7 specified)
   //! to_word_graph<uint8_t>(5, {{0, 0}, {1, 1}, {2}, {3, 3}});
   //! \endcode
+  // Passing the 2nd parameter "targets" by value disambiguates it from the
+  // other to_word_graph.
   template <typename Node>
   [[nodiscard]] WordGraph<Node>
   to_word_graph(size_t                                   num_nodes,
                 std::initializer_list<std::vector<Node>> targets);
 
   //! \ingroup word_graph_group
-  //! TODO(0): doc
+  //!
+  //! \copydoc to_word_graph(size_t,
+  //! std::initializer_list<std::vector<Node>> const&)
   template <typename Node>
   [[nodiscard]] WordGraph<Node>
-  to_word_graph(size_t num_nodes, std::vector<std::vector<Node>> const& v);
+  to_word_graph(size_t                                num_nodes,
+                std::vector<std::vector<Node>> const& targets);
 
   namespace detail {
     template <typename Subclass>
@@ -3421,45 +3440,63 @@ namespace libsemigroups {
   template <typename Node>
   [[nodiscard]] std::string to_human_readable_repr(WordGraph<Node> const& wg);
 
-  // TODO(0) to cpp
-  // TODO(0) doc
+  //! \ingroup word_graph_group
+  //!
+  //! \brief Return a human readable representation of a Meeter object.
+  //!
+  //! Return a human readable representation of a Meeter object.
+  //!
+  //! \param meet the Meeter object.
+  //!
+  //! \exceptions
+  //! \no_libsemigroups_except
   [[nodiscard]] static inline std::string
-  to_human_readable_repr(Meeter const&) {
+  to_human_readable_repr(Meeter const& meet) {
+    (void) meet;
     return "<Meeter of word graphs>";
   }
 
-  // TODO(0) to cpp
-  // TODO(0) doc
+  //! \ingroup word_graph_group
+  //!
+  //! \brief Return a human readable representation of a Joiner object.
+  //!
+  //! Return a human readable representation of a Joiner object.
+  //!
+  //! \param join the Joiner object.
+  //!
+  //! \exceptions
+  //! \no_libsemigroups_except
   [[nodiscard]] static inline std::string
-  to_human_readable_repr(Joiner const&) {
+  to_human_readable_repr(Joiner const& join) {
+    (void) join;
     return "<Joiner of word graphs>";
   }
 
   // TODO(0) to tpp
-  // TODO(0) doc
+  //! \ingroup word_graph_group
+  //!
+  //! \brief Return a string that can be used to recreate a word graph.
+  //!
+  //! This function returns a std::string containing the input required to
+  //! construct a copy of the argument \p wg.
+  //!
+  //! \tparam Node the type of the nodes of \p wg.
+  //! \param wg the word graph.
+  //! \param prefix a prefix for the returned string (defaults to an empty
+  //! string).
+  //! \param braces the braces to use in the string (defaults to `"{}"`).
+  //! \param suffix a suffix for the returned string (defaults to an empty
+  //! string).
+  //!
+  //! \returns A string containing the input required to recreate \p wg.
+  //!
+  //! \throws LibsemigroupsException if the argument \p braces is not of length
+  //! \c 2.
   template <typename Node>
   [[nodiscard]] std::string to_input_string(WordGraph<Node> const& wg,
                                             std::string const&     prefix = "",
                                             std::string const& braces = "{}",
-                                            std::string const& suffix = "") {
-    std::string out, sep;
-
-    for (auto s : wg.nodes()) {
-      auto first = wg.cbegin_targets(s), last = wg.cend_targets(s);
-      out += fmt::format(
-          "{}{}{}{}", sep, braces[0], fmt::join(first, last, ", "), braces[1]);
-      sep = ", ";
-    }
-
-    return fmt::format("{}{}, {}{}{}{}",
-                       prefix,
-                       wg.number_of_nodes(),
-                       braces[0],
-                       out,
-                       braces[1],
-                       suffix);
-  }
-
+                                            std::string const& suffix = "");
 }  // namespace libsemigroups
 
 #include "word-graph.tpp"

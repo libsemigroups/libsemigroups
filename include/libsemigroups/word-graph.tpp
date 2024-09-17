@@ -564,7 +564,6 @@ namespace libsemigroups {
       return true;
     }
 
-    // TODO remove _no_checks
     template <typename Node, typename Iterator1, typename Iterator2>
     bool is_complete_no_checks(WordGraph<Node> const& wg,
                                Iterator1              first_node,
@@ -852,8 +851,6 @@ namespace libsemigroups {
                                                    Node2 source) {
       static_assert(sizeof(Node2) <= sizeof(Node1));
       throw_if_node_out_of_bounds(wg, static_cast<Node1>(source));
-      // TODO check if there aren't other places where we don't need to check
-      // if any targets are out of bounds first.
       return nodes_reachable_from_no_checks(wg, source);
     }
 
@@ -1821,5 +1818,33 @@ namespace libsemigroups {
                        wg.number_of_nodes(),
                        wg.number_of_edges(),
                        wg.out_degree());
+  }
+
+  template <typename Node>
+  [[nodiscard]] std::string to_input_string(WordGraph<Node> const& wg,
+                                            std::string const&     prefix,
+                                            std::string const&     braces,
+                                            std::string const&     suffix) {
+    if (braces.size() != 2) {
+      LIBSEMIGROUPS_EXCEPTION(
+          "the 3rd argument (braces) must have length 2, but found {}",
+          braces.size());
+    }
+    std::string out, sep;
+
+    for (auto s : wg.nodes()) {
+      auto first = wg.cbegin_targets(s), last = wg.cend_targets(s);
+      out += fmt::format(
+          "{}{}{}{}", sep, braces[0], fmt::join(first, last, ", "), braces[1]);
+      sep = ", ";
+    }
+
+    return fmt::format("{}{}, {}{}{}{}",
+                       prefix,
+                       wg.number_of_nodes(),
+                       braces[0],
+                       out,
+                       braces[1],
+                       suffix);
   }
 }  // namespace libsemigroups

@@ -313,8 +313,12 @@ namespace libsemigroups {
       for (size_t N = 10; N < 20; N += 5) {
         for (size_t nr_edges = 0; nr_edges <= detail::magic_number(M) * M;
              nr_edges += 500) {
-          auto ad = WordGraph<size_t>::random(M, N, nr_edges);
-          word_graph::add_cycle(ad, ad.cbegin_nodes(), ad.cend_nodes());
+          // TODO for v3 we remove the nr_edges parameter from
+          // WordGraph::random, andso this benchmark doesn't really make sense
+          // any more
+          auto ad = WordGraph<size_t>::random(M, N);
+          word_graph::add_cycle_no_checks(
+              ad, ad.cbegin_nodes(), ad.cend_nodes());
           std::string m = std::to_string(ad.number_of_edges());
           size_t      w = source(mt);
           uint64_t    expected
