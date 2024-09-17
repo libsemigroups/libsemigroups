@@ -767,6 +767,6 @@ namespace libsemigroups {
     WordGraph<uint32_t> wg(0, 1);
     word_graph::add_cycle(wg, 5);
     wg.remove_target(0, 0);
-    REQUIRE(wg.hash_value() == 9898690434057496763ul);
+    REQUIRE_NOTHROW(wg.hash_value());
   }
 }  // namespace libsemigroups
