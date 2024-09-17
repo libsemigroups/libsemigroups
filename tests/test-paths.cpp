@@ -29,7 +29,7 @@
 #include <utility>        // for swap
 #include <vector>         // for vector, operator==
 
-#include "catch.hpp"  // for operator""_catch_sr
+#include "catch_amalgamated.hpp"  // for operator""_catch_sr
 #include "libsemigroups/bipart.hpp"
 #include "test-main.hpp"               // for LIBSEMIGROUPS_TEST_CASE
 #include "word-graph-test-common.hpp"  // for binary_tree

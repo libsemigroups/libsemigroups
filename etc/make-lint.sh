@@ -12,8 +12,8 @@ find include/libsemigroups/detail/*.hpp -type f -exec cpplint --repository='incl
 find include/libsemigroups/detail/*.tpp -type f -exec cpplint --repository='include' --extensions='tpp' {} \; | tee -a lint.log
 find src/*.cpp -type f -exec cpplint --repository='include' {} \; | tee -a lint.log
 find src/detail/*.cpp -type f -exec cpplint --repository='include' {} \; | tee -a lint.log
-find tests/*.hpp -type f ! -iname "catch.hpp" -exec cpplint --repository='..' {} \; | tee -a lint.log
-find tests/*.cpp -type f -exec cpplint --repository='include' {} \; | tee -a lint.log
+find tests/*.hpp -type f ! -iname "catch_*" -exec cpplint --repository='..' {} \; | tee -a lint.log
+find tests/*.cpp -type f ! -iname "catch_*" -exec cpplint --repository='include' {} \; | tee -a lint.log
 find benchmarks/*.hpp -type f ! -iname "catch.hpp" -exec cpplint --repository='..' {} \; | tee -a lint.log
 find benchmarks/*.cpp -type f -exec cpplint --repository='include' {} \; | tee -a lint.log
 find benchmarks/examples/*.hpp -type f -exec cpplint --repository='..' {} \; | tee -a lint.log

@@ -687,12 +687,13 @@ EXTRA_DIST += etc/make-format.sh
 EXTRA_DIST += etc/make-lint.sh
 EXTRA_DIST += etc/version-number.sh
 EXTRA_DIST += extern/HPCombi/HPCOMBI_VERSION
-EXTRA_DIST += tests/catch.hpp
+EXTRA_DIST += tests/catch_amalgamated.hpp
 EXTRA_DIST += tests/bmat-data.hpp
 EXTRA_DIST += tests/test-main.hpp
 EXTRA_DIST += tests/word-graph-test-common.hpp
 EXTRA_DIST += benchmarks/bench-main.hpp
-EXTRA_DIST += benchmarks/catch.hpp
+## TODO replace catch.hpp -> catch_amalgamated.hpp
+EXTRA_DIST += benchmarks/catch.hpp 
 EXTRA_DIST += benchmarks/uf-old.hpp
 EXTRA_DIST += benchmarks/examples/common.hpp
 EXTRA_DIST += benchmarks/examples/cong-intf.hpp
@@ -791,6 +792,7 @@ LDADD = libsemigroups.la
 ## takes a serious amount of time.
 
 test_all_SOURCES =  tests/bmat-data.cpp
+test_all_SOURCES += tests/catch_amalgamated.cpp
 test_all_SOURCES += tests/test-action.cpp
 test_all_SOURCES += tests/test-aho-corasick.cpp
 test_all_SOURCES += tests/test-bipart.cpp
@@ -865,84 +867,110 @@ test_all_SOURCES += tests/test-words.cpp
 
 test_action_SOURCES =  tests/test-action.cpp
 test_action_SOURCES += tests/test-main.cpp
+test_action_SOURCES += tests/catch_amalgamated.cpp
 
 test_aho_corasick_SOURCES =  tests/test-aho-corasick.cpp
 test_aho_corasick_SOURCES += tests/test-main.cpp
+test_aho_corasick_SOURCES += tests/catch_amalgamated.cpp
 
 test_bipart_SOURCES =  tests/test-bipart.cpp
 test_bipart_SOURCES += tests/test-main.cpp
+test_bipart_SOURCES += tests/catch_amalgamated.cpp
 
 test_bitset_SOURCES =  tests/test-bitset.cpp
 test_bitset_SOURCES += tests/test-main.cpp
+test_bitset_SOURCES += tests/catch_amalgamated.cpp
 
 test_bmat8_SOURCES =  tests/test-bmat8.cpp
 test_bmat8_SOURCES += tests/test-main.cpp
+test_bmat8_SOURCES += tests/catch_amalgamated.cpp
 
 test_cong_intf_SOURCES =  tests/test-cong-intf.cpp
 test_cong_intf_SOURCES += tests/test-main.cpp
+test_cong_intf_SOURCES += tests/catch_amalgamated.cpp
 
 test_cong_SOURCES =  tests/test-cong.cpp
 test_cong_SOURCES += tests/test-main.cpp
+test_cong_SOURCES += tests/catch_amalgamated.cpp
 
 test_constants_SOURCES =  tests/test-constants.cpp
 test_constants_SOURCES += tests/test-main.cpp
+test_constants_SOURCES += tests/catch_amalgamated.cpp
 
 test_containers_SOURCES =  tests/test-containers.cpp
 test_containers_SOURCES += tests/test-main.cpp
+test_containers_SOURCES += tests/catch_amalgamated.cpp
 
 test_cutting_SOURCES =  tests/test-cutting.cpp
 test_cutting_SOURCES += tests/test-main.cpp
+test_cutting_SOURCES += tests/catch_amalgamated.cpp
 
 test_forest_SOURCES =  tests/test-forest.cpp
 test_forest_SOURCES += tests/test-main.cpp
+test_forest_SOURCES += tests/catch_amalgamated.cpp
 
 test_felsch_tree_SOURCES =  tests/test-felsch-tree.cpp
 test_felsch_tree_SOURCES += tests/test-main.cpp
+test_felsch_tree_SOURCES += tests/catch_amalgamated.cpp
 
 test_fpsemi_examples_SOURCES =  tests/test-fpsemi-examples-1.cpp
 test_fpsemi_examples_SOURCES += tests/test-fpsemi-examples-2.cpp
 test_fpsemi_examples_SOURCES += tests/test-fpsemi-examples-3.cpp
 test_fpsemi_examples_SOURCES += tests/test-main.cpp
+test_fpsemi_examples_SOURCES += tests/catch_amalgamated.cpp
 
 test_freeband_SOURCES =  tests/test-freeband.cpp
 test_freeband_SOURCES += tests/test-main.cpp
+test_freeband_SOURCES += tests/catch_amalgamated.cpp
 
 test_froidure_pin_bipart_SOURCES =  tests/test-froidure-pin-bipart.cpp
 test_froidure_pin_bipart_SOURCES += tests/test-main.cpp
+test_froidure_pin_bipart_SOURCES += tests/catch_amalgamated.cpp
 
 test_froidure_pin_bmat8_SOURCES =  tests/test-froidure-pin-bmat8.cpp
 test_froidure_pin_bmat8_SOURCES += tests/test-main.cpp
+test_froidure_pin_bmat8_SOURCES += tests/catch_amalgamated.cpp
 
 test_froidure_pin_bmat_SOURCES =  tests/test-froidure-pin-bmat.cpp
 test_froidure_pin_bmat_SOURCES += tests/bmat-data.cpp
 test_froidure_pin_bmat_SOURCES += tests/test-main.cpp
+test_froidure_pin_bmat_SOURCES += tests/catch_amalgamated.cpp
 
 test_froidure_pin_integers_SOURCES =  tests/test-froidure-pin-integers.cpp
 test_froidure_pin_integers_SOURCES += tests/test-main.cpp
+test_froidure_pin_integers_SOURCES += tests/catch_amalgamated.cpp
 
 test_froidure_pin_intmat_SOURCES =  tests/test-froidure-pin-intmat.cpp
 test_froidure_pin_intmat_SOURCES += tests/test-main.cpp
+test_froidure_pin_intmat_SOURCES += tests/catch_amalgamated.cpp
 
 test_froidure_pin_intpairs_SOURCES =  tests/test-froidure-pin-intpairs.cpp
 test_froidure_pin_intpairs_SOURCES += tests/test-main.cpp
+test_froidure_pin_intpairs_SOURCES += tests/catch_amalgamated.cpp
 
 test_froidure_pin_matrix_SOURCES =  tests/test-froidure-pin-matrix.cpp
 test_froidure_pin_matrix_SOURCES += tests/test-main.cpp
+test_froidure_pin_matrix_SOURCES += tests/catch_amalgamated.cpp
 
 test_froidure_pin_pbr_SOURCES =  tests/test-froidure-pin-pbr.cpp
 test_froidure_pin_pbr_SOURCES += tests/test-main.cpp
+test_froidure_pin_pbr_SOURCES += tests/catch_amalgamated.cpp
 
 test_froidure_pin_pperm_SOURCES =  tests/test-froidure-pin-pperm.cpp
 test_froidure_pin_pperm_SOURCES += tests/test-main.cpp
+test_froidure_pin_pperm_SOURCES += tests/catch_amalgamated.cpp
 
 test_froidure_pin_projmaxplus_SOURCES =  tests/test-froidure-pin-projmaxplus.cpp
 test_froidure_pin_projmaxplus_SOURCES += tests/test-main.cpp
+test_froidure_pin_projmaxplus_SOURCES += tests/catch_amalgamated.cpp
 
 test_froidure_pin_transf_SOURCES =  tests/test-froidure-pin-transf.cpp
 test_froidure_pin_transf_SOURCES += tests/test-main.cpp
+test_froidure_pin_transf_SOURCES += tests/catch_amalgamated.cpp
 
 test_froidure_pin_maxplustrunc_SOURCES =  tests/test-froidure-pin-maxplustrunc.cpp
 test_froidure_pin_maxplustrunc_SOURCES += tests/test-main.cpp
+test_froidure_pin_maxplustrunc_SOURCES += tests/catch_amalgamated.cpp
 
 test_froidure_pin_SOURCES =  tests/test-main.cpp
 test_froidure_pin_SOURCES += tests/test-froidure-pin-bipart.cpp
@@ -958,20 +986,27 @@ test_froidure_pin_SOURCES += tests/test-froidure-pin-pperm.cpp
 test_froidure_pin_SOURCES += tests/test-froidure-pin-projmaxplus.cpp
 test_froidure_pin_SOURCES += tests/test-froidure-pin-transf.cpp
 test_froidure_pin_SOURCES += tests/test-froidure-pin-maxplustrunc.cpp
+test_froidure_pin_SOURCES += tests/catch_amalgamated.cpp
 
 test_gabow_SOURCES =  tests/test-gabow.cpp
 test_gabow_SOURCES += tests/test-main.cpp
+test_gabow_SOURCES += tests/catch_amalgamated.cpp
 
 test_hpcombi_SOURCES =  tests/test-hpcombi.cpp
 test_hpcombi_SOURCES += tests/test-main.cpp
+test_hpcombi_SOURCES += tests/catch_amalgamated.cpp
 
 test_iterator_SOURCES =  tests/test-iterator.cpp
 test_iterator_SOURCES += tests/test-main.cpp
+test_iterator_SOURCES += tests/catch_amalgamated.cpp
 
 test_kambites_SOURCES =  tests/test-kambites.cpp
 test_kambites_SOURCES += tests/test-main.cpp
+test_kambites_SOURCES += tests/catch_amalgamated.cpp
 
+# TODO what happened to the KBE tests?
 test_kbe_SOURCES = tests/test-main.cpp
+test_kbe_SOURCES += tests/catch_amalgamated.cpp
 
 test_knuth_bendix_SOURCES =  tests/test-knuth-bendix-1.cpp
 test_knuth_bendix_SOURCES += tests/test-knuth-bendix-2.cpp
@@ -980,6 +1015,7 @@ test_knuth_bendix_SOURCES += tests/test-knuth-bendix-4.cpp
 test_knuth_bendix_SOURCES += tests/test-knuth-bendix-5.cpp
 test_knuth_bendix_SOURCES += tests/test-knuth-bendix-6.cpp
 test_knuth_bendix_SOURCES += tests/test-main.cpp
+test_knuth_bendix_SOURCES += tests/catch_amalgamated.cpp
 
 test_konieczny_SOURCES =  tests/test-konieczny-bmat8-1.cpp
 test_konieczny_SOURCES += tests/test-konieczny-bmat8-2.cpp
@@ -989,84 +1025,111 @@ test_konieczny_SOURCES += tests/test-konieczny-bmat.cpp
 test_konieczny_SOURCES += tests/test-konieczny-pperm.cpp
 test_konieczny_SOURCES += tests/bmat-data.cpp
 test_konieczny_SOURCES += tests/test-main.cpp
+test_konieczny_SOURCES += tests/catch_amalgamated.cpp
 
 test_matrix_SOURCES =  tests/test-matrix.cpp
 test_matrix_SOURCES += tests/test-main.cpp
+test_matrix_SOURCES += tests/catch_amalgamated.cpp
 
 test_multi_string_view_SOURCES =  tests/test-multi-string-view.cpp
 test_multi_string_view_SOURCES += tests/test-main.cpp
+test_multi_string_view_SOURCES += tests/catch_amalgamated.cpp
 
 test_obvinf_SOURCES =  tests/test-obvinf.cpp
 test_obvinf_SOURCES += tests/test-main.cpp
+test_obvinf_SOURCES += tests/catch_amalgamated.cpp
 
 test_order_SOURCES =  tests/test-order.cpp
 test_order_SOURCES += tests/test-main.cpp
+test_order_SOURCES += tests/catch_amalgamated.cpp
 
 test_paths_SOURCES =  tests/test-paths.cpp
 test_paths_SOURCES += tests/test-main.cpp
+test_paths_SOURCES += tests/catch_amalgamated.cpp
 
 test_pbr_SOURCES =  tests/test-pbr.cpp
 test_pbr_SOURCES += tests/test-main.cpp
+test_pbr_SOURCES += tests/catch_amalgamated.cpp
 
 test_pool_SOURCES =  tests/test-pool.cpp
 test_pool_SOURCES += tests/test-main.cpp
+test_pool_SOURCES += tests/catch_amalgamated.cpp
 
 test_presentation_SOURCES =  tests/test-presentation.cpp
 test_presentation_SOURCES += tests/test-main.cpp
+test_presentation_SOURCES += tests/catch_amalgamated.cpp
 
 test_race_SOURCES =  tests/test-race.cpp
 test_race_SOURCES += tests/test-main.cpp
+test_race_SOURCES += tests/catch_amalgamated.cpp
 
 test_ranges_SOURCES =  tests/test-ranges.cpp
 test_ranges_SOURCES += tests/test-main.cpp
+test_ranges_SOURCES += tests/catch_amalgamated.cpp
 
 test_rewriters_SOURCES = tests/test-rewriters.cpp
 test_rewriters_SOURCES += tests/test-main.cpp
+test_rewriters_SOURCES += tests/catch_amalgamated.cpp
 
 test_runner_SOURCES =  tests/test-runner.cpp
 test_runner_SOURCES += tests/test-main.cpp
+test_runner_SOURCES += tests/catch_amalgamated.cpp
 
 test_schreier_sims_SOURCES =  tests/test-schreier-sims.cpp
 test_schreier_sims_SOURCES += tests/test-main.cpp
+test_schreier_sims_SOURCES += tests/catch_amalgamated.cpp
 
 test_sims_SOURCES =  tests/test-sims.cpp
 test_sims_SOURCES += tests/test-main.cpp
+test_sims_SOURCES += tests/catch_amalgamated.cpp
 
 test_stephen_SOURCES =  tests/test-stephen.cpp
 test_stephen_SOURCES += tests/test-main.cpp
+test_stephen_SOURCES += tests/catch_amalgamated.cpp
 
 test_string_SOURCES =  tests/test-string.cpp
 test_string_SOURCES += tests/test-main.cpp
+test_string_SOURCES += tests/catch_amalgamated.cpp
 
 test_timer_SOURCES =  tests/test-timer.cpp
 test_timer_SOURCES += tests/test-main.cpp
+test_timer_SOURCES += tests/catch_amalgamated.cpp
 
 test_to_froidure_pin_SOURCES =  tests/test-to-froidure-pin.cpp
 test_to_froidure_pin_SOURCES += tests/test-main.cpp
+test_to_froidure_pin_SOURCES += tests/catch_amalgamated.cpp
 
 test_to_presentation_SOURCES =  tests/test-to-presentation.cpp
 test_to_presentation_SOURCES += tests/test-main.cpp
+test_to_presentation_SOURCES += tests/catch_amalgamated.cpp
 
 test_todd_coxeter_SOURCES =  tests/test-todd-coxeter.cpp
 test_todd_coxeter_SOURCES += tests/test-main.cpp
+test_todd_coxeter_SOURCES += tests/catch_amalgamated.cpp
 
 test_transf_SOURCES =  tests/test-transf.cpp
 test_transf_SOURCES += tests/test-main.cpp
+test_transf_SOURCES += tests/catch_amalgamated.cpp
 
 test_types_SOURCES =  tests/test-types.cpp
 test_types_SOURCES += tests/test-main.cpp
+test_types_SOURCES += tests/catch_amalgamated.cpp
 
 test_uf_SOURCES =  tests/test-uf.cpp
 test_uf_SOURCES += tests/test-main.cpp
+test_uf_SOURCES += tests/catch_amalgamated.cpp
 
 test_ukkonen_SOURCES =  tests/test-ukkonen.cpp
 test_ukkonen_SOURCES += tests/test-main.cpp
+test_ukkonen_SOURCES += tests/catch_amalgamated.cpp
 
 test_word_graph_SOURCES =  tests/test-word-graph.cpp
 test_word_graph_SOURCES += tests/test-main.cpp
+test_word_graph_SOURCES += tests/catch_amalgamated.cpp
 
 test_words_SOURCES =  tests/test-words.cpp
 test_words_SOURCES += tests/test-main.cpp
+test_words_SOURCES += tests/catch_amalgamated.cpp
 
 bench_all_SOURCES =  benchmarks/examples/cong-intf.cpp
 bench_all_SOURCES += benchmarks/examples/generators.cpp

@@ -17,8 +17,8 @@
 
 #include <fstream>
 
-#include "catch.hpp"      // for AssertionHandler, ope...
-#include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
+#include "catch_amalgamated.hpp"  // for AssertionHandler, ope...
+#include "test-main.hpp"          // for LIBSEMIGROUPS_TEST_CASE
 
 #include "libsemigroups/aho-corasick.hpp"      // for dot
 #include "libsemigroups/detail/rewriters.hpp"  // for RewriteTrie

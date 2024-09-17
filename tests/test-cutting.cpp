@@ -21,8 +21,8 @@
 // * examples from Stephen's thesis (Theorem 5.17)
 // *
 
-#include "catch.hpp"      // for REQUIRE, REQUIRE_THROWS_AS, REQUI...
-#include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
+#include "catch_amalgamated.hpp"  // for REQUIRE, REQUIRE_THROWS_AS, REQUI...
+#include "test-main.hpp"          // for LIBSEMIGROUPS_TEST_CASE
 
 #include "libsemigroups/cutting.hpp"
 #include "libsemigroups/detail/string.hpp"

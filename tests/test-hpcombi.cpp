@@ -23,7 +23,7 @@
 #ifdef LIBSEMIGROUPS_HPCOMBI_ENABLED
 #include <cstddef>  // for size_t
 
-#include "catch.hpp"                       // for REQUIRE
+#include "catch_amalgamated.hpp"           // for REQUIRE
 #include "libsemigroups/froidure-pin.hpp"  // for FroidurePin
 #include "libsemigroups/hpcombi.hpp"       // for PTransf16, ...
 #include "libsemigroups/transf.hpp"        // for Transf<>

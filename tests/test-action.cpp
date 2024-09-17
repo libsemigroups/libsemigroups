@@ -32,8 +32,8 @@
 #include "libsemigroups/detail/containers.hpp"  // for StaticVector1
 #include "libsemigroups/detail/report.hpp"      // for ReportGuard
 
-#include "catch.hpp"      // for REQUIRE, REQUIRE_THROWS_AS, REQUI...
-#include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE_V3
+#include "catch_amalgamated.hpp"  // for REQUIRE, REQUIRE_THROWS_AS, REQUI...
+#include "test-main.hpp"          // for LIBSEMIGROUPS_TEST_CASE_V3
 
 namespace libsemigroups {
   using namespace rx;

@@ -34,8 +34,8 @@
 #include <utility>      // for move
 #include <vector>       // for vector, operator==
 
-#include "catch.hpp"      // for REQUIRE, REQUIRE_THROWS_AS, REQUI...
-#include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
+#include "catch_amalgamated.hpp"  // for REQUIRE, REQUIRE_THROWS_AS, REQUI...
+#include "test-main.hpp"          // for LIBSEMIGROUPS_TEST_CASE
 
 #include "libsemigroups/constants.hpp"        // for UNDEFINED
 #include "libsemigroups/exception.hpp"        // for LibsemigroupsExcep...

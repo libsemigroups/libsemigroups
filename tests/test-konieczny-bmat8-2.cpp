@@ -20,8 +20,8 @@
 #include <cstddef>    // for size_t
 #include <vector>     // for vector
 
-#include "catch.hpp"      // for REQUIRE
-#include "test-main.hpp"  // for LIBSEMIGROUPS_TEST...
+#include "catch_amalgamated.hpp"  // for REQUIRE
+#include "test-main.hpp"          // for LIBSEMIGROUPS_TEST...
 
 #include "libsemigroups/bmat-fastest.hpp"  // for BMatFastest
 #include "libsemigroups/bmat8.hpp"         // for BMat8

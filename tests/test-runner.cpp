@@ -21,8 +21,8 @@
 #include <chrono>
 #include <cstddef>  // for size_t
 
-#include "catch.hpp"      // for REQUIRE, REQUIRE_NOTHROW
-#include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
+#include "catch_amalgamated.hpp"  // for REQUIRE, REQUIRE_NOTHROW
+#include "test-main.hpp"          // for LIBSEMIGROUPS_TEST_CASE
 
 #include "libsemigroups/runner.hpp"  // for Runner
 

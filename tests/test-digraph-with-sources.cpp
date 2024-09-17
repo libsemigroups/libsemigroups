@@ -23,7 +23,7 @@
 #include <unordered_set>  // for unordered_set
 #include <vector>         // for vector
 
-#include "catch.hpp"  // for REQUIRE, REQUIRE_THROWS_AS, REQUI...
+#include "catch_amalgamated.hpp"  // for REQUIRE, REQUIRE_THROWS_AS, REQUI...
 #include "libsemigroups/digraph-helper.hpp"        // for follow_path
 #include "libsemigroups/digraph-with-sources.hpp"  // for DigraphWithSources
 #include "libsemigroups/digraph.hpp"               // for ActionDigraph

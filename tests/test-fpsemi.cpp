@@ -18,8 +18,8 @@
 
 // The purpose of this file is to provide unit tests for the FpSemigroup class.
 
-#include "catch.hpp"      // for REQUIRE
-#include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
+#include "catch_amalgamated.hpp"  // for REQUIRE
+#include "test-main.hpp"          // for LIBSEMIGROUPS_TEST_CASE
 
 #include "libsemigroups/detail/report.hpp"      // for ReportGuard
 #include "libsemigroups/fpsemi-examples.hpp"    // for RennerTypeDMonoid

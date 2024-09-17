@@ -21,8 +21,8 @@
 #include <utility>    // for pair
 #include <vector>     // for vector
 
-#include "catch.hpp"      // for REQUIRE, REQUIRE_THROWS_AS
-#include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
+#include "catch_amalgamated.hpp"  // for REQUIRE, REQUIRE_THROWS_AS
+#include "test-main.hpp"          // for LIBSEMIGROUPS_TEST_CASE
 
 #include "libsemigroups/constants.hpp"  // for operator==, POSITIVE_INFINITY
 #include "libsemigroups/exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION

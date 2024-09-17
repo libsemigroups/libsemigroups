@@ -22,8 +22,8 @@
 
 #include <cstddef>  // for size_t
 
-#include "catch.hpp"      // for StringRef, SourceLineInfo
-#include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
+#include "catch_amalgamated.hpp"  // for StringRef, SourceLineInfo
+#include "test-main.hpp"          // for LIBSEMIGROUPS_TEST_CASE
 
 #include "libsemigroups/fpsemi-examples.hpp"  // for not_symmetric_group
 #include "libsemigroups/sims.hpp"             // for Sims1

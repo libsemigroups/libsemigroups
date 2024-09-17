@@ -20,7 +20,7 @@
 
 #include <iostream>
 
-#include "catch.hpp"  // for REQUIRE, REQUIRE_THROWS_AS, REQUI...
+#include "catch_amalgamated.hpp"  // for REQUIRE, REQUIRE_THROWS_AS, REQUI...
 #include "test-main.hpp"
 
 #include "libsemigroups/obvinf.hpp"

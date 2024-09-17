@@ -24,8 +24,8 @@
 
 #define CATCH_CONFIG_ENABLE_PAIR_STRINGMAKER
 
-#include "catch.hpp"      // for REQUIRE, REQUIRE_THROWS_AS, REQUIRE_NOTHROW
-#include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
+#include "catch_amalgamated.hpp"  // for REQUIRE, REQUIRE_THROWS_AS, REQUIRE_NOTHROW
+#include "test-main.hpp"          // for LIBSEMIGROUPS_TEST_CASE
 
 #include "libsemigroups/adapters.hpp"       // for Complexity, Degree
 #include "libsemigroups/bmat-fastest.hpp"   // for BMatFastest

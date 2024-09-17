@@ -17,8 +17,8 @@
 
 #include <cstddef>  // for size_t
 
-#include "catch.hpp"      // for REQUIRE
-#include "test-main.hpp"  // FOR LIBSEMIGROUPS_TEST_CASE
+#include "catch_amalgamated.hpp"  // for REQUIRE
+#include "test-main.hpp"          // FOR LIBSEMIGROUPS_TEST_CASE
 
 #include "libsemigroups/bmat-fastest.hpp"  // for BMatFastest
 #include "libsemigroups/bmat8.hpp"         // for BMat8

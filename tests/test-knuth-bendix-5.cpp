@@ -41,8 +41,8 @@
 #include <unordered_map>  // for operator!=, operator==
 #include <vector>         // for vector, operator==
 
-#include "catch.hpp"      // for AssertionHandler, ope...
-#include "test-main.hpp"  // for TEMPLATE_TEST_CASE
+#include "catch_amalgamated.hpp"  // for AssertionHandler, ope...
+#include "test-main.hpp"          // for TEMPLATE_TEST_CASE
 
 #include "libsemigroups/constants.hpp"        // for operator!=, operator==
 #include "libsemigroups/exception.hpp"        // for LibsemigroupsException
