@@ -16,8 +16,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include "catch.hpp"      // for REQUIRE etc
-#include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
+#include "catch_amalgamated.hpp"  // for REQUIRE etc
+#include "test-main.hpp"          // for LIBSEMIGROUPS_TEST_CASE
 
 #include "libsemigroups/order.hpp"  // for words
 #include "libsemigroups/types.hpp"  // for word_type

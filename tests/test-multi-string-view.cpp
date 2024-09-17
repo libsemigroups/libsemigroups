@@ -18,8 +18,8 @@
 // TODO(later)
 // - Write tests for maximum_common_suffix
 
-#include "catch.hpp"      // for REQUIRE, REQUIRE_NOTHROW, REQUIRE_THROWS_AS
-#include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
+#include "catch_amalgamated.hpp"  // for REQUIRE, REQUIRE_NOTHROW, REQUIRE_THROWS_AS
+#include "test-main.hpp"          // for LIBSEMIGROUPS_TEST_CASE
 
 #include <cstddef>      // for size_t
 #include <cstdint>      // for int64_t, uint64_t

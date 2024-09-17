@@ -16,8 +16,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include "catch.hpp"      // for TEST_CASE
-#include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
+#include "catch_amalgamated.hpp"  // for TEST_CASE
+#include "test-main.hpp"          // for LIBSEMIGROUPS_TEST_CASE
 
 #include "libsemigroups/bmat-fastest.hpp"     // for BMatFastest
 #include "libsemigroups/bmat8.hpp"            // for BMat8

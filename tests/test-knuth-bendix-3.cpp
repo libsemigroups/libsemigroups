@@ -38,8 +38,8 @@
 #include <utility>  // for move
 #include <vector>   // for vector, operator==
 
-#include "catch.hpp"      // for operator""_catch_sr
-#include "test-main.hpp"  // for  TEMPLATE_TEST_CASE
+#include "catch_amalgamated.hpp"  // for operator""_catch_sr
+#include "test-main.hpp"          // for  TEMPLATE_TEST_CASE
 
 #include "libsemigroups/constants.hpp"        // for operator==, PositiveIn...
 #include "libsemigroups/exception.hpp"        // for LibsemigroupsException

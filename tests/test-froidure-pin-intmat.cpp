@@ -19,8 +19,8 @@
 #include <cstddef>  // for size_t
 #include <cstdint>  // for int64_t
 
-#include "catch.hpp"      // for REQUIRE, REQUIRE_THROWS_AS
-#include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
+#include "catch_amalgamated.hpp"  // for REQUIRE, REQUIRE_THROWS_AS
+#include "test-main.hpp"          // for LIBSEMIGROUPS_TEST_CASE
 
 #include "libsemigroups/constants.hpp"     // for UNDEFINED
 #include "libsemigroups/froidure-pin.hpp"  // for FroidurePin

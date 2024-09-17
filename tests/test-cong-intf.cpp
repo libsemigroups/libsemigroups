@@ -17,8 +17,8 @@
 
 // The purpose of this file is to test the CongruenceInterface class.
 
-#include "catch.hpp"      // for REQUIRE
-#include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
+#include "catch_amalgamated.hpp"  // for REQUIRE
+#include "test-main.hpp"          // for LIBSEMIGROUPS_TEST_CASE
 
 #include "libsemigroups/cong.hpp"    // for Congruence
 #include "libsemigroups/transf.hpp"  // for Transf<>

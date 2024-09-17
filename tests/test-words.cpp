@@ -16,13 +16,13 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include <algorithm>  // for find, is_sorted, sort
-#include <cstddef>    // for size_t
-#include <iterator>   // for distance
-#include <utility>    // for swap
-#include <vector>     // for vector
-                      //
-#include "catch.hpp"  // for REQUIRE etc
+#include <algorithm>              // for find, is_sorted, sort
+#include <cstddef>                // for size_t
+#include <iterator>               // for distance
+#include <utility>                // for swap
+#include <vector>                 // for vector
+                                  //
+#include "catch_amalgamated.hpp"  // for REQUIRE etc
 #include "libsemigroups/exception.hpp"
 #include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 

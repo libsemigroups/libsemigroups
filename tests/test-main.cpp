@@ -28,14 +28,14 @@
 #include <string>     // for char_traits, allocator, hash
 #include <vector>     // for vector
 
-#include "catch.hpp"  // for Colour, Colour::Code::BrightRed, CATCH_REGISTER...
+#include "catch_amalgamated.hpp"  // for Colour, Colour::Code::BrightRed, CATCH_REGISTER...
 
 #include "libsemigroups/detail/fmt.hpp"
 #include "libsemigroups/detail/string.hpp"  // for to_string, unicode_string_length
 #include "libsemigroups/detail/timer.hpp"  // for Timer
 
-struct LibsemigroupsListener : Catch::TestEventListenerBase {
-  using TestEventListenerBase::TestEventListenerBase;  // inherit constructor
+struct LibsemigroupsListener : Catch::EventListenerBase {
+  using EventListenerBase::EventListenerBase;  // inherit constructor
 
   void extreme_test_divider(std::string_view sv) const {
     using libsemigroups::detail::unicode_string_length;
@@ -60,11 +60,11 @@ struct LibsemigroupsListener : Catch::TestEventListenerBase {
 
   std::string_view test_number(Catch::TestCaseInfo const& testInfo) {
     for (auto const& tag : testInfo.tags) {
-      if (tag.size() == 3
-          && std::all_of(tag.cbegin(), tag.cend(), [](auto const& c) {
-               return std::isdigit(c);
-             })) {
-        _test_number = tag;
+      if (tag.original.size() == 3
+          && std::all_of(tag.original.begin(),
+                         tag.original.end(),
+                         [](auto const& c) { return std::isdigit(c); })) {
+        _test_number = std::string(tag.original);
         return _test_number;
       }
     }
@@ -103,10 +103,13 @@ struct LibsemigroupsListener : Catch::TestEventListenerBase {
 
     return std::find_if(testInfo.tags.cbegin(),
                         testInfo.tags.cend(),
-                        [&tag](std::string t) -> bool {
-                          std::transform(
-                              t.begin(), t.end(), t.begin(), ::tolower);
-                          return t == tag;
+                        [&tag](Catch::Tag const& t) -> bool {
+                          auto t_copy = std::string(t.original);
+                          std::transform(t_copy.begin(),
+                                         t_copy.end(),
+                                         t_copy.begin(),
+                                         ::tolower);
+                          return t_copy == tag;
                         })
            != testInfo.tags.cend();
   }

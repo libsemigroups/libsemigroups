@@ -25,8 +25,8 @@
 #include <utility>           // for swap
 #include <vector>            // for vector
 
-#include "catch.hpp"      // for REQUIRE
-#include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
+#include "catch_amalgamated.hpp"  // for REQUIRE
+#include "test-main.hpp"          // for LIBSEMIGROUPS_TEST_CASE
 
 #include "libsemigroups/detail/containers.hpp"  // for DynamicArray2, DynamicArray...
 
@@ -1133,7 +1133,7 @@ namespace libsemigroups {
     LIBSEMIGROUPS_TEST_CASE("DynamicArray2",
                             "030",
                             "iterator operator->",
-                            "[containers][quick][30") {
+                            "[containers][quick][30]") {
       DynamicArray2<DynamicArray2<bool>> rv
           = DynamicArray2<DynamicArray2<bool>>(13, 13, DynamicArray2<bool>());
       {

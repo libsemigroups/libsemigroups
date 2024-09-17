@@ -23,8 +23,8 @@
 #include <numeric>  // for iota
 #include <vector>   // vector
 
-#include "catch.hpp"      // for REQUIRE
-#include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
+#include "catch_amalgamated.hpp"  // for REQUIRE
+#include "test-main.hpp"          // for LIBSEMIGROUPS_TEST_CASE
 
 #include "libsemigroups/detail/uf.hpp"  // Duf + Suf
 

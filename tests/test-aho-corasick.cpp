@@ -21,8 +21,8 @@
 #include "libsemigroups/exception.hpp"     // for LibsemigroupsException
 #include "libsemigroups/types.hpp"         // for word_type
 
-#include "catch.hpp"      // for REQUIRE, REQUIRE_THROWS_AS, REQUI...
-#include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
+#include "catch_amalgamated.hpp"  // for REQUIRE, REQUIRE_THROWS_AS, REQUI...
+#include "test-main.hpp"          // for LIBSEMIGROUPS_TEST_CASE
 
 namespace libsemigroups {
   using namespace literals;

@@ -30,8 +30,8 @@
 #include <utility>        // for pair
 #include <vector>         // for vector, operator==
 
-#include "catch.hpp"      // for StringRef, SourceLineInfo
-#include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
+#include "catch_amalgamated.hpp"  // for StringRef, SourceLineInfo
+#include "test-main.hpp"          // for LIBSEMIGROUPS_TEST_CASE
 
 #include "libsemigroups/constants.hpp"        // for operator==, operator!=
 #include "libsemigroups/fpsemi-examples.hpp"  // for not_renner_type_D_monoid

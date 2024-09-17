@@ -23,7 +23,7 @@
 //
 // #include <cstddef>
 //
-// #include "catch.hpp"      // for REQUIRE, SECTION, ...
+// #include "catch_amalgamated.hpp"      // for REQUIRE, SECTION, ...
 // #include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 //
 // #include "libsemigroups/cong-pair.hpp"     // for FpSemigroupByPairs

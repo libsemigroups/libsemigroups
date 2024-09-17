@@ -16,8 +16,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include "catch.hpp"      // for TEST_CASE
-#include "test-main.hpp"  // LIBSEMIGROUPS_TEST_CASE
+#include "catch_amalgamated.hpp"  // for TEST_CASE
+#include "test-main.hpp"          // LIBSEMIGROUPS_TEST_CASE
 
 #include "libsemigroups/config.hpp"  // for LIBSEMIGROUPS_SIZEOF_VO...
 #include "libsemigroups/types.hpp"   // for SmallestInteger, Smalle...
