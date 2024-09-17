@@ -856,7 +856,7 @@ namespace libsemigroups {
   }
 
   TEMPLATE_TEST_CASE("non-trivial congruence on an infinite fp semigroup ",
-                     "[021][quick][knuth-bendix]",
+                     "[021][quick][knuth-bendix][no-valgrind]",
                      KNUTH_BENDIX_TYPES) {
     auto                    rg = ReportGuard(false);
     Presentation<word_type> p;

@@ -516,7 +516,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("WordGraph",
                           "026",
                           "is_reachable | 100 node path",
-                          "[quick]") {
+                          "[quick][no-valgrind]") {
     WordGraph<size_t> ad;
     size_t const      n = 100;
     ad.add_nodes(n);
@@ -535,7 +535,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("WordGraph",
                           "027",
                           "is_reachable | 100 node cycle",
-                          "[quick]") {
+                          "[quick][no-valgrind]") {
     WordGraph<size_t> ad;
     ad.add_to_out_degree(1);
     word_graph::add_cycle(ad, 100);
@@ -637,7 +637,10 @@ namespace libsemigroups {
     REQUIRE(word_graph::is_connected(ad));
   }
 
-  LIBSEMIGROUPS_TEST_CASE("WordGraph", "035", "is_strictly_cyclic", "[quick]") {
+  LIBSEMIGROUPS_TEST_CASE("WordGraph",
+                          "035",
+                          "is_strictly_cyclic",
+                          "[quick][no-valgrind]") {
     auto ad = to_word_graph<size_t>(5, {{0, 0}, {1, 1}, {2}, {3, 3}});
     REQUIRE(!word_graph::is_strictly_cyclic(ad));
     ad = path(1'000);

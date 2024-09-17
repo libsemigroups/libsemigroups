@@ -154,7 +154,7 @@ namespace libsemigroups {
 
   // trivial group - BHN presentation
   TEMPLATE_TEST_CASE("(from kbmag/standalone/kb_data/degen4a)",
-                     "[032][quick][knuth-bendix][kbmag][shortlex]",
+                     "[032][quick][knuth-bendix][kbmag][shortlex][no-valgrind]",
                      KNUTH_BENDIX_TYPES) {
     auto rg = ReportGuard(false);
 
@@ -242,7 +242,7 @@ namespace libsemigroups {
 
   //  3-fold cover of A_6
   TEMPLATE_TEST_CASE("(from kbmag/standalone/kb_data/3a6)",
-                     "[034][quick][knuth-bendix][kbmag][shortlex]",
+                     "[034][quick][knuth-bendix][kbmag][shortlex][no-valgrind]",
                      KNUTH_BENDIX_TYPES) {
     auto rg = ReportGuard(false);
 
@@ -1372,7 +1372,7 @@ namespace libsemigroups {
   }
 
   TEMPLATE_TEST_CASE("1-relation hard case x 2",
-                     "[062][quick][knuth-bendix]",
+                     "[062][quick][knuth-bendix][no-valgrind]",
                      KNUTH_BENDIX_TYPES) {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
@@ -1469,7 +1469,7 @@ namespace libsemigroups {
   }
 
   TEMPLATE_TEST_CASE("Chinese monoid",
-                     "[064][knuth-bendix][quick]",
+                     "[064][knuth-bendix][quick][no-valgrind]",
                      KNUTH_BENDIX_TYPES) {
     auto rg = ReportGuard(false);
     // fmt::print(bg(fmt::color::white) | fg(fmt::color::black),
@@ -1530,7 +1530,7 @@ namespace libsemigroups {
   }
 
   TEMPLATE_TEST_CASE("sigma sylvester monoid",
-                     "[067][todd-coxeter][quick]",
+                     "[067][todd-coxeter][quick][no-valgrind]",
                      KNUTH_BENDIX_TYPES) {
     using namespace literals;
     auto                    rg = ReportGuard(false);

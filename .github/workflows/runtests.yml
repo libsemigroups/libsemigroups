@@ -6,6 +6,31 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+   gcc:
+      timeout-minutes: 60
+      runs-on: ubuntu-latest
+      env:
+        CXX: "ccache g++"
+        CXXFLAGS: "-fdiagnostics-color -O2 -g"
+      steps:
+         - uses: actions/checkout@v3
+         - name: "Setup ccache . . ."
+           uses: Chocobo1/setup-ccache-action@v1
+           with:
+             update_packager_index: false
+             install_ccache: true
+         - name: "Configure . . ."
+           run: |
+                mkdir -p m4
+                ./autogen.sh 
+                ./configure CXX="$CXX" CXXFLAGS="$CXXFLAGS" --disable-hpcombi
+         - name: "Build libsemigroups . . ."
+           run: make -j4
+         - name: "Build test_all . . ."
+           run: make test_all -j4
+         - name: "Run the quick and standard tests . . ."
+           run: ./test_all "[quick],[standard]"
+
    benchmark:
       timeout-minutes: 10
       runs-on: ubuntu-latest
@@ -148,7 +173,7 @@ jobs:
            run: |
                 sudo ln -sf /usr/bin/gcov-9 /usr/bin/gcov
                 export GCOV=/usr/bin/gcov-9
-                etc/test-code-coverage.sh test_all "[quick]"
+                etc/test-code-coverage.sh test_all "[quick][exclude:no-valgrind][exclude:no-coverage]"
          - name: "Uploading to Codecov . . ."
            uses: codecov/codecov-action@v4
            with:

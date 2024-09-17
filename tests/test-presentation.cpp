@@ -1581,7 +1581,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("Presentation",
                           "028",
                           "helpers redundant_rule",
-                          "[quick][presentation]") {
+                          "[quick][presentation][no-valgrind]") {
     auto rg = ReportGuard(false);
     check_redundant_rule<word_type>();
     check_redundant_rule<StaticVector1<uint16_t, 10>>();

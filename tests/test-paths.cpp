@@ -471,7 +471,7 @@ namespace libsemigroups {
                 {{01_w, 1_w}, {11_w, 1_w}, {00000_w, 00_w}}));
   }
 
-  LIBSEMIGROUPS_TEST_CASE("Paths", "006", "#5", "[quick]") {
+  LIBSEMIGROUPS_TEST_CASE("Paths", "006", "#5", "[quick][no-valgrind]") {
     using namespace rx;
     auto wg = to_word_graph<size_t>(
         6, {{1, 2}, {3, 4}, {4, 2}, {1, 5}, {5, 4}, {4, 5}});
@@ -661,7 +661,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("Paths",
                           "011",
                           "number_of_paths acyclic digraph",
-                          "[quick]") {
+                          "[quick][no-valgrind]") {
     auto wg = to_word_graph<size_t>(
         8, {{3, 2, 3}, {7}, {1}, {1, 5}, {6}, {}, {3, 7}});
 
@@ -891,7 +891,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("Paths",
                           "016",
                           "number_of_paths node digraph",
-                          "[quick]") {
+                          "[quick][no-valgrind]") {
     size_t const n = 10;
     // auto         wg = WordGraph<size_t>::random(n, 20, 200,
     // std::mt19937());
@@ -940,7 +940,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("Paths",
                           "017",
                           "number_of_paths (matrix)",
-                          "[quick]") {
+                          "[quick][no-valgrind]") {
     // REQUIRE(detail::magic_number(6) * 6 == 14.634);
     // auto wg = WordGraph<size_t>::random(6, 3, 15, std::mt19937());
     // std::cout << word_graph::detail::to_string(wg);

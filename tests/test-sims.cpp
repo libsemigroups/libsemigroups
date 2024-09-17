@@ -273,7 +273,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("Sims1",
                           "001",
                           "fp example 2",
-                          "[quick][low-index]") {
+                          "[quick][low-index][no-valgrind]") {
     auto                    rg = ReportGuard(false);
     Presentation<word_type> p;
     p.contains_empty_word(true);
@@ -316,7 +316,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("Sims1",
                           "002",
                           "ToddCoxeter failing example (word_type)",
-                          "[quick][low-index]") {
+                          "[quick][low-index][no-valgrind]") {
     auto                    rg = ReportGuard(false);
     Presentation<word_type> p;
     p.contains_empty_word(false);
@@ -409,7 +409,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("Sims1",
                           "004",
                           "partition_monoid(2) right",
-                          "[quick][low-index]") {
+                          "[quick][low-index][no-valgrind]") {
     auto                    rg = ReportGuard(false);
     Presentation<word_type> p;
     p.contains_empty_word(false);
@@ -478,7 +478,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("Sims1",
                           "006",
                           "full_transformation_monoid(3) right",
-                          "[quick][low-index]") {
+                          "[quick][low-index][no-valgrind]") {
     auto                   rg = ReportGuard(false);
     FroidurePin<Transf<3>> S({Transf<3>::make({1, 2, 0}),
                               Transf<3>::make({1, 0, 2}),
@@ -498,7 +498,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("Sims1",
                           "007",
                           "full_transformation_monoid(3) left",
-                          "[quick][low-index]") {
+                          "[quick][low-index][no-valgrind]") {
     auto                   rg = ReportGuard(false);
     FroidurePin<Transf<3>> S(
         {Transf<3>({1, 2, 0}), Transf<3>({1, 0, 2}), Transf<3>({0, 1, 0})});
@@ -573,7 +573,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("Sims1",
                           "011",
                           "symmetric_inverse_monoid(3)",
-                          "[quick][low-index]") {
+                          "[quick][low-index][no-valgrind]") {
     auto rg = ReportGuard(false);
     auto p  = symmetric_inverse_monoid(3, author::Gay);
     presentation::reverse(p);
@@ -1149,7 +1149,7 @@ namespace libsemigroups {
       "Sims1",
       "027",
       "from https://mathoverflow.net/questions/423541/ (semigroup)",
-      "[quick][sims1]") {
+      "[quick][sims1][no-valgrind]") {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.contains_empty_word(false);
@@ -1167,7 +1167,7 @@ namespace libsemigroups {
       "Sims1",
       "028",
       "from https://mathoverflow.net/questions/423541/ (monoid)",
-      "[quick][sims1]") {
+      "[quick][sims1][no-valgrind]") {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.contains_empty_word(true);
@@ -1249,7 +1249,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("Sims1",
                           "032",
                           "presentation with empty word",
-                          "[quick][sims1]") {
+                          "[quick][sims1][no-valgrind]") {
     auto                    rg = ReportGuard(false);
     Presentation<word_type> p;
     p.contains_empty_word(true);
@@ -1584,7 +1584,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("Sims1",
                           "040",
                           "TransitiveGroup(10, 32) - minimal rep",
-                          "[quick][sims1]") {
+                          "[quick][sims1][no-valgrind]") {
     auto                    rg = ReportGuard(false);
     Presentation<word_type> p;
     p.contains_empty_word(true);
@@ -2330,7 +2330,10 @@ namespace libsemigroups {
     // we have N = 3 inputs.
   }
 
-  LIBSEMIGROUPS_TEST_CASE("Sims1", "068", "RepOrc", "[quick][low-index]") {
+  LIBSEMIGROUPS_TEST_CASE("Sims1",
+                          "068",
+                          "RepOrc",
+                          "[quick][low-index][no-valgrind]") {
     auto rg = ReportGuard(false);
 
     auto p = temperley_lieb_monoid(9);
@@ -2697,7 +2700,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("Sims1",
                           "080",
                           "fibonacci_group(2, 9) x 1",
-                          "[quick]") {
+                          "[quick][no-valgrind]") {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("abcdefghiABCDEFGHI");
@@ -3131,7 +3134,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("Sims2",
                           "094",
                           "2-sided T_4 Iwahori presentation",
-                          "[quick][sims2][low-index]") {
+                          "[quick][sims2][low-index][no-valgrind]") {
     auto  rg = ReportGuard(false);
     Sims2 S(fpsemigroup::full_transformation_monoid(
         4, fpsemigroup::author::Iwahori));
@@ -3200,7 +3203,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("Sims2",
                           "099",
                           "2-sided (2,3,7) triangle group",
-                          "[quick][sims2][low-index]") {
+                          "[quick][sims2][low-index][no-valgrind]") {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.contains_empty_word(true);
@@ -3239,7 +3242,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("Sims2",
                           "101",
                           "2-sided Catalan monoid n=4",
-                          "[quick][sims2][low-index]") {
+                          "[quick][sims2][low-index][no-valgrind]") {
     auto                   rg = ReportGuard(false);
     FroidurePin<Transf<4>> S;
     S.add_generator(Transf<4>::make({0, 1, 2, 3}));
@@ -3617,7 +3620,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("Sims2",
                           "111",
                           "2-sided congruence-free monoid n=3",
-                          "[quick][sims2]") {
+                          "[quick][sims2][no-valgrind]") {
     auto rg = ReportGuard(false);
     // Presentation taken from
     // Al-Kharousi, F., Cain, A.J., Maltcev, V. et al.
@@ -3650,7 +3653,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("Sims2",
                           "112",
                           "2-sided congruence-free monoid n=8",
-                          "[quick][sims2]") {
+                          "[quick][sims2][no-valgrind]") {
     auto rg = ReportGuard(false);
     // Presentation taken from
     // Al-Kharousi, F., Cain, A.J., Maltcev, V. et al.
@@ -3688,7 +3691,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("Sims2",
                           "113",
                           "2-sided bicyclic monoid",
-                          "[quick][sims2]") {
+                          "[quick][sims2][no-valgrind]") {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("ab");
@@ -3704,7 +3707,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("Sims2",
                           "114",
                           "2-sided 2-generated free commutative monoid",
-                          "[quick][sims2]") {
+                          "[quick][sims2][no-valgrind]") {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("ab");
@@ -3848,7 +3851,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("Sims2",
                           "119",
                           "2-sided ideals Jura's example",
-                          "[quick][sims1]") {
+                          "[quick][sims1][no-valgrind]") {
     Presentation<std::string> p;
     p.alphabet("ab");
     p.contains_empty_word(false);

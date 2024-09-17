@@ -413,7 +413,7 @@ namespace libsemigroups {
   }
 
   TEMPLATE_TEST_CASE("automatic left congruence!!!",
-                     "[128][quick][knuth-bendix]",
+                     "[128][quick][knuth-bendix][no-valgrind]",
                      KNUTH_BENDIX_TYPES) {
     using words::operator+;
 

@@ -2968,7 +2968,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("SchreierSims",
                           "037",
                           "alternating perm. group (degree 17)",
-                          "[quick][schreier-sims]") {
+                          "[quick][schreier-sims][no-valgrind]") {
     auto             rg = ReportGuard(false);
     SchreierSims<17> S;
     S.init();
@@ -3260,7 +3260,7 @@ namespace libsemigroups {
       "SchreierSims",
       "043",
       "transversal_element and inverse_transversal_element test",
-      "[quick][schreier-sims]") {
+      "[quick][schreier-sims][no-valgrind]") {
     auto             rg = ReportGuard(false);
     SchreierSims<64> S;
     using Perm   = typename decltype(S)::element_type;
@@ -3878,7 +3878,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("SchreierSims",
                           "062",
                           "2^6:(S_3 x GL(3, 2)) and 2.6:Alt(7) intersection",
-                          "[quick][schreier-sims][intersection]") {
+                          "[quick][schreier-sims][intersection][no-valgrind]") {
     auto             rg = ReportGuard(false);
     SchreierSims<64> S, T, U;
     using Perm = SchreierSims<64>::element_type;
@@ -4037,7 +4037,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("SchreierSims",
                           "064",
                           "PSL(2, 127) and AGL(1, 2^7) intersection",
-                          "[quick][schreier-sims][intersection]") {
+                          "[quick][schreier-sims][intersection][no-valgrind]") {
     auto              rg = ReportGuard(false);
     SchreierSims<128> S, T, U;
     using Perm = SchreierSims<128>::element_type;

@@ -133,7 +133,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("to_froidure_pin<KE>",
                           "002",
                           "from Kambites (code cov)",
-                          "[quick][make]") {
+                          "[quick][make][no-valgrind]") {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("abcdefg");

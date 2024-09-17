@@ -322,7 +322,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("WordRange",
                           "012",
                           "letters: 3, min: 0, max: 10",
-                          "[wilo][quick]") {
+                          "[wilo][quick][no-valgrind]") {
     word_type first = {};
     word_type last(10, 2);
     auto      w = std::vector<word_type>(cbegin_wilo(3, 10, first, last),

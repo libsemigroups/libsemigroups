@@ -147,7 +147,7 @@ namespace libsemigroups {
     REQUIRE(x == expected);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("PBR", "004", "hash", "[quick][pbr]") {
+  LIBSEMIGROUPS_TEST_CASE("PBR", "004", "hash", "[quick][pbr][no-valgrind]") {
     PBR x({{1}, {4}, {3}, {1}, {0, 2}, {0, 3, 4, 5}});
     for (size_t i = 0; i < 1000000; i++) {
       x.hash_value();

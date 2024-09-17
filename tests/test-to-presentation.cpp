@@ -377,7 +377,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("to_inverse_presentation",
                           "007",
                           "inverse presentation from presentation",
-                          "[quick][to_presentation]") {
+                          "[quick][to_presentation][no-valgrind]") {
     check_to_inverse_presentation_from_presentation<std::string>();
     check_to_inverse_presentation_from_presentation<word_type>();
     check_to_inverse_presentation_from_presentation<

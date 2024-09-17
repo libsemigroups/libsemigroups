@@ -239,7 +239,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("Stephen",
                           "002",
                           "full transf monoid",
-                          "[quick][stephen]") {
+                          "[quick][stephen][no-valgrind]") {
     using namespace fpsemigroup;
     auto   rg = ReportGuard(true);
     size_t n  = 5;
@@ -1194,7 +1194,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("Stephen",
                           "044",
                           "inverse presentation -- operator==",
-                          "[stephen][quick]") {
+                          "[stephen][quick][no-valgrind]") {
     ReportGuard rg(false);
     ToddCoxeter tc;
     {
@@ -1268,7 +1268,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("Stephen",
                           "046",
                           "non-inverse presentation -- operator==",
-                          "[stephen][quick]") {
+                          "[stephen][quick][no-valgrind]") {
     ReportGuard rg(false);
     auto        p = fpsemigroup::symmetric_inverse_monoid(4);
 

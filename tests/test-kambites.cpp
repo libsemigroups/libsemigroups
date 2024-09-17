@@ -187,14 +187,14 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("Kambites",
                           "000",
                           "MT test 4 (std::string)",
-                          "[quick][kambites]") {
+                          "[quick][kambites][no-valgrind]") {
     test_case_mt_4<std::string>();
   }
 
   LIBSEMIGROUPS_TEST_CASE("Kambites",
                           "001",
                           "MT test 4 (MultiStringView)",
-                          "[quick][kambites]") {
+                          "[quick][kambites][no-valgrind]") {
     test_case_mt_4<detail::MultiStringView>();
   }
 
@@ -509,7 +509,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("Kambites",
                           "008",
                           "KnuthBendix 055 (std::string)",
-                          "[quick][kambites]") {
+                          "[quick][kambites][no-valgrind]") {
     test_case_knuth_bendix_055<std::string>();
   }
 
@@ -642,7 +642,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("Kambites",
                           "013",
                           "smalloverlap/gap/test.gi:49 (std::string)",
-                          "[quick][kambites]") {
+                          "[quick][kambites][no-valgrind]") {
     test_case_gap_smalloverlap_49<std::string>();
   }
 
@@ -1675,7 +1675,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("Kambites",
                           "069",
                           "almost all 2-generated 1-relation monoids are C(4)",
-                          "[quick][kambites]") {
+                          "[quick][kambites][no-valgrind]") {
     auto x = count_2_gen_1_rel<std::string>(1, 7);
     REQUIRE(x.first == 1);
     REQUIRE(x.second == 7'875);
@@ -2536,7 +2536,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("Kambites",
                           "077",
                           "code coverage",
-                          "[quick][kambites]") {
+                          "[quick][kambites][no-valgrind]") {
     Presentation<word_type> p;
     p.alphabet(4);
     presentation::add_rule(
@@ -2563,7 +2563,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("Kambites",
                           "078",
                           "large number of rules",
-                          "[quick][kambites]") {
+                          "[quick][kambites][no-valgrind]") {
     FroidurePin<LeastTransf<6>> S({LeastTransf<6>({1, 2, 3, 4, 5, 0}),
                                    LeastTransf<6>({1, 0, 2, 3, 4, 5}),
                                    LeastTransf<6>({0, 1, 2, 3, 4, 0})});
