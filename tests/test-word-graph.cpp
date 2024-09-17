@@ -312,7 +312,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("WordGraph", "016", "operator<<", "[quick]") {
-    WordGraph<size_t> wg;
+    WordGraph<uint64_t> wg;
     wg.add_nodes(3);
     wg.add_to_out_degree(2);
     wg.target(0, 0, 1);
@@ -593,7 +593,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("WordGraph", "032", "to_string", "[quick]") {
-    WordGraph<size_t> wg = path(6);
+    WordGraph<uint64_t> wg = path(6);
     REQUIRE(detail::to_string(wg)
             == "{6, {{1}, {2}, {3}, {4}, {5}, {18446744073709551615}}}");
   }
