@@ -1872,7 +1872,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                           "047",
                           "uniform_block_bijection_monoid(3) (FitzGerald) ",
-                          "[todd-coxeter][quick]") {
+                          "[todd-coxeter][quick][no-valgrind]") {
     using fpsemigroup::author;
     using fpsemigroup::uniform_block_bijection_monoid;
 
@@ -2216,7 +2216,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                           "113",
                           "symmetric_inverse_monoid(5, Sutov)",
-                          "[todd-coxeter][quick]") {
+                          "[todd-coxeter][quick][no-valgrind]") {
     using fpsemigroup::author;
     using fpsemigroup::symmetric_inverse_monoid;
 
@@ -4515,7 +4515,7 @@ namespace libsemigroups {
       presentation::add_rule(p, pow({a}, 3), {a});
     }
     using words::operator+;
-    WordRange    words;
+    WordRange words;
     words.alphabet_size(n).min(0).max(8);
 
     for (size_t a = 0; a < n - 1; ++a) {

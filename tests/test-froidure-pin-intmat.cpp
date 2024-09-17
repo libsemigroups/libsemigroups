@@ -246,7 +246,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("FroidurePin<IntMat>",
                           "038",
                           "exception: prefix, suffix, first_letter",
-                          "[quick][froidure-pin][element]") {
+                          "[quick][froidure-pin][element][no-valgrind]") {
     test010<IntMat<2>>();
     test010<IntMat<>>();
   }

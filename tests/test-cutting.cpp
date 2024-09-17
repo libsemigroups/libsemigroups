@@ -67,7 +67,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("Cutting",
                           "002",
                           "step_hen Stephen test case 004",
-                          "[cutting][quick]") {
+                          "[cutting][quick][no-valgrind]") {
     ToWord                         to_word("xyzXYZ");
     InversePresentation<word_type> p;
     p.alphabet(to_word("xyzXYZ"));
@@ -87,7 +87,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("Cutting",
                           "003",
                           "symmetric_inverse_semigroup",
-                          "[cutting][quick]") {
+                          "[cutting][quick][no-valgrind]") {
     auto p = to_inverse_presentation(fpsemigroup::symmetric_inverse_monoid(4));
     REQUIRE(p.alphabet() == 01234567_w);
     REQUIRE(p.inverses() == 45670123_w);
@@ -128,7 +128,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("Cutting",
                           "005",
                           "dual_symmetric_inverse_monoid",
-                          "[cutting][quick]") {
+                          "[cutting][quick][no-valgrind]") {
     auto p = to_inverse_presentation(
         fpsemigroup::dual_symmetric_inverse_monoid(4));
     REQUIRE(p.contains_empty_word());

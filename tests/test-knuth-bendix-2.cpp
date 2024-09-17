@@ -154,7 +154,7 @@ namespace libsemigroups {
 
   // trivial group - BHN presentation
   TEMPLATE_TEST_CASE("(from kbmag/standalone/kb_data/degen4a)",
-                     "[032][quick][knuth-bendix][kbmag][shortlex]",
+                     "[032][quick][knuth-bendix][kbmag][shortlex][no-valgrind]",
                      KNUTH_BENDIX_TYPES) {
     auto rg = ReportGuard(false);
 
@@ -242,7 +242,7 @@ namespace libsemigroups {
 
   //  3-fold cover of A_6
   TEMPLATE_TEST_CASE("(from kbmag/standalone/kb_data/3a6)",
-                     "[034][quick][knuth-bendix][kbmag][shortlex]",
+                     "[034][quick][knuth-bendix][kbmag][shortlex][no-valgrind]",
                      KNUTH_BENDIX_TYPES) {
     auto rg = ReportGuard(false);
 
@@ -1372,7 +1372,7 @@ namespace libsemigroups {
   }
 
   TEMPLATE_TEST_CASE("1-relation hard case x 2",
-                     "[062][quick][knuth-bendix]",
+                     "[062][quick][knuth-bendix][no-valgrind]",
                      KNUTH_BENDIX_TYPES) {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
@@ -1469,7 +1469,7 @@ namespace libsemigroups {
   }
 
   TEMPLATE_TEST_CASE("Chinese monoid",
-                     "[064][knuth-bendix][quick]",
+                     "[064][knuth-bendix][quick][no-valgrind]",
                      KNUTH_BENDIX_TYPES) {
     auto rg = ReportGuard(false);
     // fmt::print(bg(fmt::color::white) | fg(fmt::color::black),
@@ -1530,7 +1530,7 @@ namespace libsemigroups {
   }
 
   TEMPLATE_TEST_CASE("sigma sylvester monoid",
-                     "[067][todd-coxeter][quick]",
+                     "[067][todd-coxeter][quick][no-valgrind]",
                      KNUTH_BENDIX_TYPES) {
     using namespace literals;
     auto                    rg = ReportGuard(false);
@@ -1667,7 +1667,7 @@ namespace libsemigroups {
   TEMPLATE_TEST_CASE("Reinis MFE",
                      "[027][todd-coxeter][quick]",
                      KNUTH_BENDIX_TYPES) {
-    using literals::        operator""_w;
+    using literals::operator""_w;
     Presentation<word_type> p;
     p.alphabet(2);
     presentation::add_rule(p, "000"_w, "11"_w);
@@ -1702,7 +1702,7 @@ namespace libsemigroups {
     p.alphabet(2);
     presentation::add_idempotent_rules_no_checks(p, 01_w);
     using words::operator+;
-    WordRange    words;
+    WordRange words;
     words.alphabet_size(2).min(0).max(3);
     size_t n = 2;
     for (size_t a = 0; a < n - 1; ++a) {

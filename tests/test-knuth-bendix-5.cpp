@@ -238,11 +238,10 @@ namespace libsemigroups {
     auto ntc = (iterator_range(pp.begin(), pp.end())
                 | filter([](auto const& val) { return val.size() > 1; })
                 | transform([](auto& val) {
-                    std::for_each(
-                        val.begin(), val.end(), [](auto& w) -> auto& {
-                          w.erase(w.begin());
-                          return w;
-                        });
+                    std::for_each(val.begin(), val.end(), [](auto& w) -> auto& {
+                      w.erase(w.begin());
+                      return w;
+                    });
                     return val;
                   }));
 
@@ -413,7 +412,7 @@ namespace libsemigroups {
   }
 
   TEMPLATE_TEST_CASE("automatic left congruence!!!",
-                     "[128][quick][knuth-bendix]",
+                     "[128][quick][knuth-bendix][no-valgrind]",
                      KNUTH_BENDIX_TYPES) {
     using words::operator+;
 

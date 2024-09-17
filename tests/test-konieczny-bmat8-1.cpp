@@ -100,7 +100,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("Konieczny",
                           "011",
                           "regular D-class 02",
-                          "[quick][bmat8]") {
+                          "[quick][bmat8][no-valgrind]") {
     auto                     rg = ReportGuard(REPORT);
     const std::vector<BMat8> gens
         = {BMat8({{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}),

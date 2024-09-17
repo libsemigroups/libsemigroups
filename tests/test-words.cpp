@@ -322,7 +322,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("WordRange",
                           "012",
                           "letters: 3, min: 0, max: 10",
-                          "[wilo][quick]") {
+                          "[wilo][quick][no-valgrind]") {
     word_type first = {};
     word_type last(10, 2);
     auto      w = std::vector<word_type>(cbegin_wilo(3, 10, first, last),
@@ -506,7 +506,7 @@ namespace libsemigroups {
     REQUIRE_THROWS_AS(words.order(Order::recursive), LibsemigroupsException);
 
     WordRange copy;
-    copy.     operator=(words);
+    copy.operator=(words);
     REQUIRE(copy.get() == 00_w);
     copy.next();
     REQUIRE(copy.get() == 000_w);
@@ -519,7 +519,7 @@ namespace libsemigroups {
     REQUIRE(copy.count() == 25);
 
     WordRange move;
-    move.     operator=(std::move(words));
+    move.operator=(std::move(words));
     REQUIRE(equal(copy, move));
     REQUIRE(move.upper_bound() == 28);
     REQUIRE(move.first() == 0_w);
@@ -901,7 +901,7 @@ namespace libsemigroups {
     REQUIRE_THROWS_AS(strings.order(Order::recursive), LibsemigroupsException);
 
     StringRange copy;
-    copy.       operator=(strings);
+    copy.operator=(strings);
     REQUIRE(copy.get() == "aa");
     copy.next();
     REQUIRE(copy.get() == "aaa");
@@ -914,7 +914,7 @@ namespace libsemigroups {
     REQUIRE(copy.count() == 25);
 
     StringRange move;
-    move.       operator=(std::move(strings));
+    move.operator=(std::move(strings));
     REQUIRE(equal(copy, move));
     REQUIRE(move.upper_bound() == 28);
     REQUIRE(move.first() == "a");
@@ -1018,8 +1018,8 @@ namespace libsemigroups {
                           "[quick][word_functions]") {
     using namespace literals;
     using words::operator+;
-    word_type    w = 01_w;
-    word_type    v = 2_w;
+    word_type w = 01_w;
+    word_type v = 2_w;
     REQUIRE((w + v) == 012_w);
     REQUIRE((w + v + w) == 01201_w);
 
@@ -1037,8 +1037,8 @@ namespace libsemigroups {
                           "[quick][word_functions]") {
     using namespace literals;
     using words::operator+=;
-    word_type    w = 123_w;
-    word_type    v = 345_w;
+    word_type w = 123_w;
+    word_type v = 345_w;
     w += v;
     REQUIRE(w == 123345_w);
     word_type t = word_type({});

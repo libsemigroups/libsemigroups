@@ -642,7 +642,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("fpsemi-examples",
                           "034",
                           "uniform_block_bijection_monoid(5)",
-                          "[fpsemi-examples][quick]") {
+                          "[fpsemi-examples][quick][no-valgrind]") {
     auto   rg = ReportGuard(REPORT);
     size_t n  = 5;
     auto   p  = uniform_block_bijection_monoid(n, author::FitzGerald);
@@ -683,7 +683,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("fpsemi-examples",
                           "038",
                           "orientation_preserving_reversing_monoid(5)",
-                          "[fpsemi-examples][quick]") {
+                          "[fpsemi-examples][quick][no-valgrind]") {
     auto        rg = ReportGuard(REPORT);
     size_t      n  = 5;
     ToddCoxeter tc(congruence_kind::twosided,
@@ -756,7 +756,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("fpsemi-examples",
                           "044",
                           "symmetric_group(6) Carmichael",
-                          "[fpsemi-examples][quick]") {
+                          "[fpsemi-examples][quick][no-valgrind]") {
     auto        rg = ReportGuard(REPORT);
     size_t      n  = 6;
     ToddCoxeter tc(congruence_kind::twosided,
@@ -767,7 +767,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("fpsemi-examples",
                           "045",
                           "symmetric_group(6) Moore index 0",
-                          "[fpsemi-examples][quick]") {
+                          "[fpsemi-examples][quick][no-valgrind]") {
     auto   rg = ReportGuard(REPORT);
     size_t n  = 6;
 
@@ -779,7 +779,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("fpsemi-examples",
                           "046",
                           "symmetric_group(7) Moore index 1",
-                          "[fpsemi-examples][quick]") {
+                          "[fpsemi-examples][quick][no-valgrind]") {
     auto        rg = ReportGuard(REPORT);
     size_t      n  = 7;
     ToddCoxeter tc(congruence_kind::twosided,
@@ -839,7 +839,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("fpsemi-examples",
                           "049",
                           "full_transformation_monoid(5) Iwahori",
-                          "[fpsemi-examples][quick]") {
+                          "[fpsemi-examples][quick][no-valgrind]") {
     auto   rg = ReportGuard(REPORT);
     size_t n  = 5;
 
@@ -851,7 +851,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("fpsemi-examples",
                           "050",
                           "partial_transformation_monoid(5) Sutov",
-                          "[fpsemi-examples][quick]") {
+                          "[fpsemi-examples][quick][no-valgrind]") {
     auto        rg = ReportGuard(REPORT);
     size_t      n  = 5;
     ToddCoxeter tc(congruence_kind::twosided,
@@ -938,7 +938,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("fpsemi-examples",
                           "058",
                           "cyclic_inverse_monoid(8) Fernandes index 1",
-                          "[fpsemi-examples][quick]") {
+                          "[fpsemi-examples][quick][no-valgrind]") {
     auto        rg = ReportGuard(REPORT);
     size_t      n  = 8;
     ToddCoxeter tc(congruence_kind::twosided,
@@ -1051,7 +1051,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("fpsemi-examples",
                           "072",
                           "partial_brauer_monoid(4)",
-                          "[fpsemi-examples][quick]") {
+                          "[fpsemi-examples][quick][no-valgrind]") {
     auto   rg = ReportGuard(REPORT);
     size_t n  = 4;
 

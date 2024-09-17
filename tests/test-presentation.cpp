@@ -1581,7 +1581,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("Presentation",
                           "028",
                           "helpers redundant_rule",
-                          "[quick][presentation]") {
+                          "[quick][presentation][no-valgrind]") {
     auto rg = ReportGuard(false);
     check_redundant_rule<word_type>();
     check_redundant_rule<StaticVector1<uint16_t, 10>>();
@@ -2637,7 +2637,7 @@ namespace libsemigroups {
                           "meaningful exception messages",
                           "[quick][presentation]") {
     using literals::operator""_w;
-    auto            rg = ReportGuard(false);
+    auto rg = ReportGuard(false);
 
     {
       Presentation<std::string> p;
@@ -2713,7 +2713,7 @@ namespace libsemigroups {
                           "056",
                           "add_generator (std::string)",
                           "[quick][presentation]") {
-    auto            rg = ReportGuard(false);
+    auto rg = ReportGuard(false);
     using literals::operator""_w;
 
     {

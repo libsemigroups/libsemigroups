@@ -995,7 +995,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("Congruence",
                           "035",
                           "stellar_monoid S4",
-                          "[quick][cong]") {
+                          "[quick][cong][no-valgrind]") {
     auto                    rg = ReportGuard(false);
     Presentation<word_type> p  = zero_rook_monoid(4);
 
@@ -1172,7 +1172,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("Congruence",
                           "042",
                           "const_contains",
-                          "[quick][cong]") {
+                          "[quick][cong][no-valgrind]") {
     auto                    rg = ReportGuard(false);
     Presentation<word_type> p;
     p.alphabet(2);

@@ -237,7 +237,10 @@ namespace libsemigroups {
   //   }
   // }
 
-  LIBSEMIGROUPS_TEST_CASE("Gabow", "009", "large cycle", "[quick][gabow]") {
+  LIBSEMIGROUPS_TEST_CASE("Gabow",
+                          "009",
+                          "large cycle",
+                          "[quick][gabow][no-valgrind]") {
     WordGraph<size_t> wg;
     wg.add_to_out_degree(1);
     word_graph::add_cycle(wg, 100000);
