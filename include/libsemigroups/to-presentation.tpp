@@ -108,7 +108,15 @@ namespace libsemigroups {
     presentation::normalize_alphabet(result);
     result.alphabet(2 * result.alphabet().size());
     auto invs = result.alphabet();
+
+    // The below pragma exists to suppress the false-positive warnings produced
+    // by g++ 13.2.0
+#pragma GCC diagnostic push
+#if defined(__GNUC__) && !defined(__clang__)
+#pragma GCC diagnostic ignored "-Wstringop-overflow"
+#endif
     std::rotate(invs.begin(), invs.begin() + invs.size() / 2, invs.end());
+#pragma GCC diagnostic pop
     result.inverses_no_checks(std::move(invs));
     return result;
   }

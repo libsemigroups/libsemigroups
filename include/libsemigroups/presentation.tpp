@@ -96,9 +96,20 @@ namespace libsemigroups {
       }
     }
     word_type lphbt(n, 0);
+
+    // The below assertions exist to insure that we are not badly assigning
+    // values. The subsequent pragmas exist to suppress the false-positive
+    // warnings produced by g++ 13.2.0
+    static_assert(
+        std::is_same_v<std::decay_t<decltype(*lphbt.begin())>,
+                       decltype(words::human_readable_letter<Word>(0))>);
+#pragma GCC diagnostic push
+#if defined(__GNUC__) && !defined(__clang__)
+#pragma GCC diagnostic ignored "-Wstringop-overflow"
+#endif
     std::iota(
         lphbt.begin(), lphbt.end(), words::human_readable_letter<Word>(0));
-
+#pragma GCC diagnostic pop
     return alphabet(lphbt);
   }
 
@@ -655,9 +666,21 @@ namespace libsemigroups {
       }
       Word A(p.alphabet().size(), 0);
 
+      // The below assertion exists to insure that we are not badly assigning
+      // values. The subsequent pragmas exist to suppress the false-positive
+      // warnings produced by g++ 13.2.0
+      static_assert(
+          std::is_same_v<typename Word::value_type,
+                         decltype(words::human_readable_letter<Word>(0))>);
+
+#pragma GCC diagnostic push
+#if defined(__GNUC__) && !defined(__clang__)
+#pragma GCC diagnostic ignored "-Wstringop-overflow"
+#endif
       for (size_t i = 0; i < p.alphabet().size(); ++i) {
         A[i] = words::human_readable_letter<Word>(i);
       }
+#pragma GCC diagnostic pop
       p.alphabet(std::move(A));
 #ifdef LIBSEMIGROUPS_DEBUG
       p.validate();
