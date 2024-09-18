@@ -853,9 +853,6 @@ namespace libsemigroups {
     REQUIRE(word_graph::is_reachable(wg, 1, 0));
     REQUIRE(word_graph::is_reachable(wg, 0, 1));
     REQUIRE(word_graph::is_reachable(wg, 0, 0));
-    // FIXME in some of the CI the following test fails, when I don't think it
-    // should,
-    // maybe better to not use a random graph here
     REQUIRE(number_of_paths(wg, 0, 0, 401) != 0);
   }
 

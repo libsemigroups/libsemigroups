@@ -150,7 +150,7 @@ namespace libsemigroups {
     explicit WordGraph(size_type m = 0, size_type n = 0);
 
     //! \brief Re-initialize the word graph to have \p m nodes and out-degree \p
-    //! n
+    //! n.
     //!
     //! This function puts a word graph into the state that it would have been
     //! in if it had just been newly constructed with the same parameters \p m
@@ -165,7 +165,7 @@ namespace libsemigroups {
     //! \no_libsemigroups_except
     //!
     //! \par Complexity
-    //! \f$O(MN)\f$ where \f$M\f$ is the number of nodes, and \f$N\f$ is the
+    //! \f$O(mn)\f$ where \f$m\f$ is the number of nodes, and \f$n\f$ is the
     //! out-degree of the word graph.
     WordGraph& init(size_type m = 0, size_type n = 0);
 
@@ -2699,10 +2699,11 @@ namespace libsemigroups {
   to_word_graph(size_t                                   num_nodes,
                 std::initializer_list<std::vector<Node>> targets);
 
+  // clang-format off
   //! \ingroup word_graph_group
   //!
-  //! \copydoc to_word_graph(size_t,
-  //! std::initializer_list<std::vector<Node>> const&)
+  //! \copydoc to_word_graph(size_t, std::initializer_list<std::vector<Node>> const&)  // NOLINT(whitespace/line_length)
+  // clang-format on
   template <typename Node>
   [[nodiscard]] WordGraph<Node>
   to_word_graph(size_t                                num_nodes,
@@ -2775,7 +2776,7 @@ namespace libsemigroups {
         // always have an odd number of arguments, so we check that it's even
         // here (the argument x and an odd number of further arguments).
         WordGraph<Node> xy;
-                        operator()(xy, x, std::forward<Args>(args)...);
+        operator()(xy, x, std::forward<Args>(args)...);
         return xy;
       }
 
@@ -2810,7 +2811,7 @@ namespace libsemigroups {
         return is_subrelation(x, static_cast<Node>(0), y, static_cast<Node>(0));
       }
     };  // JoinerMeeterCommon
-  }     // namespace detail
+  }  // namespace detail
 
   //! \ingroup word_graph_group
   //! \brief Class for taking joins of word graphs.
@@ -3431,7 +3432,7 @@ namespace libsemigroups {
   //!
   //! Return a human readable representation of a WordGraph object.
   //!
-  //! \tparam Node the type of the nodes in the underlying WordGraph
+  //! \tparam Node the type of the nodes in the underlying WordGraph.
   //!
   //! \param wg the WordGraph object.
   //!
