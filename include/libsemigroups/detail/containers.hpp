@@ -233,9 +233,21 @@ namespace libsemigroups {
             _vec.cbegin(), _vec.cend(), that.cbegin(), that.cend());
       }
 
+      bool operator>(DynamicArray2<T, A> const& that) const {
+        return that < *this;
+      }
+
       // Not noexcept, since operator== can throw
       bool operator!=(DynamicArray2<T, A> const& that) const {
         return !operator==(that);
+      }
+
+      bool operator<=(DynamicArray2<T, A> const& that) const {
+        return *this < that || *this == that;
+      }
+
+      bool operator>=(DynamicArray2<T, A> const& that) const {
+        return *this > that || *this == that;
       }
 
       bool empty() const noexcept {
@@ -318,11 +330,11 @@ namespace libsemigroups {
       // Throws if the assignment operator of T throws
       void shrink_rows_to(size_type n) {
         if (n < _nr_rows) {
-          shrink_rows_to(0, n);
+          shrink_rows_to_no_checks(0, n);
         }
       }
 
-      void shrink_rows_to(size_type first, size_type last) {
+      void shrink_rows_to_no_checks(size_type first, size_type last) {
         LIBSEMIGROUPS_ASSERT(first <= last);
         LIBSEMIGROUPS_ASSERT(first <= _nr_rows);
         LIBSEMIGROUPS_ASSERT(last <= _nr_rows);
@@ -680,6 +692,14 @@ namespace libsemigroups {
 
       iterator end() noexcept {
         return iterator(this, _vec.end());
+      }
+
+      const_iterator begin() const noexcept {
+        return const_iterator(this, _vec.begin());
+      }
+
+      const_iterator end() const noexcept {
+        return const_iterator(this, _vec.end());
       }
 
       const_iterator cbegin() const noexcept {
@@ -1170,6 +1190,19 @@ namespace std {
     operator()(libsemigroups::detail::StaticVector1<T, N> const& sv) const {
       size_t seed = 0;
       for (T const& x : sv) {
+        seed ^= std::hash<T>()(x) + 0x9e3779b97f4a7c16 + (seed << 6)
+                + (seed >> 2);
+      }
+      return seed;
+    }
+  };
+
+  template <typename T, typename A>
+  struct hash<libsemigroups::detail::DynamicArray2<T, A>> {
+    size_t
+    operator()(libsemigroups::detail::DynamicArray2<T, A> const& da) const {
+      size_t seed = 0;
+      for (T const& x : da) {
         seed ^= std::hash<T>()(x) + 0x9e3779b97f4a7c16 + (seed << 6)
                 + (seed >> 2);
       }

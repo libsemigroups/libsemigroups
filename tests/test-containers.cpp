@@ -1540,7 +1540,7 @@ namespace libsemigroups {
       REQUIRE(da.number_of_rows() == 2);
       REQUIRE(da.number_of_cols() == 2);
       REQUIRE(da == DynamicArray2<size_t>({{0, 1}, {2, 3}}));
-      da.shrink_rows_to(1, 2);
+      da.shrink_rows_to_no_checks(1, 2);
       REQUIRE(da.number_of_rows() == 1);
       REQUIRE(da.number_of_cols() == 2);
       REQUIRE(da == DynamicArray2<size_t>({{2, 3}}));
@@ -1553,7 +1553,7 @@ namespace libsemigroups {
       REQUIRE(da
               == DynamicArray2<size_t>(
                   {{2, 3, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}}));
-      da.shrink_rows_to(1, 4);
+      da.shrink_rows_to_no_checks(1, 4);
       REQUIRE(
           da
           == DynamicArray2<size_t>({{0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}}));
@@ -1561,7 +1561,7 @@ namespace libsemigroups {
       REQUIRE(
           da
           == DynamicArray2<size_t>({{0, 0, 0, 0}, {0, 0, 0, 0}, {0, 3, 0, 0}}));
-      da.shrink_rows_to(1, 3);
+      da.shrink_rows_to_no_checks(1, 3);
       REQUIRE(da == DynamicArray2<size_t>({{0, 0, 0, 0}, {0, 3, 0, 0}}));
     }
 

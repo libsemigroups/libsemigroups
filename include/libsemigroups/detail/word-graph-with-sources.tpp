@@ -94,8 +94,8 @@ namespace libsemigroups {
       LIBSEMIGROUPS_ASSERT(last <= number_of_nodes());
       LIBSEMIGROUPS_ASSERT(first <= last);
       WordGraph<Node>::induced_subgraph_no_checks(first, last);
-      _preim_init.shrink_rows_to(first, last);
-      _preim_next.shrink_rows_to(first, last);
+      _preim_init.shrink_rows_to_no_checks(first, last);
+      _preim_next.shrink_rows_to_no_checks(first, last);
       if (first != 0) {
         std::for_each(_preim_init.begin(),
                       _preim_init.end(),
@@ -118,7 +118,7 @@ namespace libsemigroups {
       while (c < m) {
         for (auto x : WordGraph<Node>::labels()) {
           node_type i = WordGraph<Node>::target_no_checks(p[c], x);
-          WordGraph<Node>::set_target_no_checks(
+          WordGraph<Node>::target_no_checks(
               p[c], x, (i == UNDEFINED ? i : q[i]));
           i = _preim_init.get(p[c], x);
           _preim_init.set(p[c], x, (i == UNDEFINED ? i : q[i]));
@@ -208,7 +208,7 @@ namespace libsemigroups {
         while (v != UNDEFINED) {
           auto w = next_source_no_checks(v, i);
           if (WordGraph<Node>::target_no_checks(v, i) != min) {
-            set_target_no_checks(v, i, min);
+            target_no_checks(v, i, min);
             new_edge(v, i);
           }
           v = w;
@@ -222,7 +222,7 @@ namespace libsemigroups {
           node_type u = WordGraph<Node>::target_no_checks(min, i);
           if (u == UNDEFINED) {
             if (WordGraph<Node>::target_no_checks(min, i) != min) {
-              set_target_no_checks(min, i, v);
+              target_no_checks(min, i, v);
               new_edge(min, i);
             }
           } else if (u != v) {
@@ -299,7 +299,7 @@ namespace libsemigroups {
         for (auto x : WordGraph<Node>::labels()) {
           auto cx = WordGraph<node_type>::target_no_checks(c, x);
           if (cx != UNDEFINED) {
-            set_target_no_checks(c, x, cx);
+            target_no_checks(c, x, cx);
           }
         }
       }
@@ -340,7 +340,7 @@ namespace libsemigroups {
       node_type e = _preim_init.get(c, x);
       while (e != UNDEFINED) {
         LIBSEMIGROUPS_ASSERT(WordGraph<Node>::target_no_checks(e, x) == c);
-        WordGraph<Node>::set_target_no_checks(e, x, d);
+        WordGraph<Node>::target_no_checks(e, x, d);
         e = _preim_next.get(e, x);
       }
     }

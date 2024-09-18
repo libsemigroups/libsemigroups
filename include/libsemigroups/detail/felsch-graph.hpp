@@ -124,6 +124,7 @@ namespace libsemigroups {
       ////////////////////////////////////////////////////////////////////////
       // FelschGraph - aliases - private
       ////////////////////////////////////////////////////////////////////////
+
       using FelschGraph_          = FelschGraph<Word, Node, Definitions>;
       using FelschGraphSettings_  = FelschGraphSettings<FelschGraph_>;
       using WordGraphWithSources_ = WordGraphWithSources<Node>;
@@ -253,9 +254,10 @@ namespace libsemigroups {
       ////////////////////////////////////////////////////////////////////////
 
       template <bool RegDefs = true>
-      void set_target_no_checks(node_type  c,
-                                label_type x,
-                                node_type  d) noexcept;
+      void target_no_checks(node_type c, label_type x, node_type d) noexcept;
+
+      using WordGraphWithSources_::target;
+      using WordGraphWithSources_::target_no_checks;
 
       void reduce_number_of_edges_to(size_type n);
 

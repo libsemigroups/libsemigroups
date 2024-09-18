@@ -124,7 +124,7 @@ namespace libsemigroups {
                                  Node2                   source,
                                  size_t                  min = 0,
                                  size_t max = POSITIVE_INFINITY) {
-    word_graph::validate_node(wg, static_cast<Node1>(source));
+    word_graph::throw_if_node_out_of_bounds(wg, static_cast<Node1>(source));
     return detail::const_pilo_iterator<Node1>(&wg, source, min, max);
   }
 
@@ -196,7 +196,7 @@ namespace libsemigroups {
                                   Node2                   source,
                                   size_t                  min = 0,
                                   size_t max = POSITIVE_INFINITY) {
-    word_graph::validate_node(wg, static_cast<Node1>(source));
+    word_graph::throw_if_node_out_of_bounds(wg, static_cast<Node1>(source));
     return detail::const_pislo_iterator<Node1>(&wg, source, min, max);
   }
 
@@ -852,7 +852,7 @@ namespace libsemigroups {
     //! \note Changing the value of the source node resets the Paths object to
     //! point at the first word in the specified range.
     Paths& source(node_type n) {
-      word_graph::validate_node(word_graph(), n);
+      word_graph::throw_if_node_out_of_bounds(word_graph(), n);
       return source_no_checks(n);
     }
 
@@ -912,7 +912,7 @@ namespace libsemigroups {
     //! point at the first word in the specified range.
     Paths& target(node_type n) {
       if (n != UNDEFINED) {
-        word_graph::validate_node(word_graph(), n);
+        word_graph::throw_if_node_out_of_bounds(word_graph(), n);
       }
       return target_no_checks(n);
     }

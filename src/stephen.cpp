@@ -162,7 +162,7 @@ namespace libsemigroups {
             if (v_end == UNDEFINED) {
               LIBSEMIGROUPS_ASSERT(!it->empty());
               did_def = true;
-              _word_graph.set_target_no_checks(c, it->back(), u_end);
+              _word_graph.target_no_checks(c, it->back(), u_end);
             } else if (u_end != v_end) {
               did_def = true;
               _word_graph.merge_nodes_no_checks(u_end, v_end);
@@ -186,7 +186,7 @@ namespace libsemigroups {
               }
               u_end = _word_graph.target_no_checks(c, it->back());
               LIBSEMIGROUPS_ASSERT(u_end == UNDEFINED);
-              _word_graph.set_target_no_checks(c, it->back(), v_end);
+              _word_graph.target_no_checks(c, it->back(), v_end);
               did_def = true;
             } else {
               --it;
@@ -292,7 +292,7 @@ namespace libsemigroups {
               node_type v_end = _word_graph.target_no_checks(c, it->back());
               if (v_end == UNDEFINED) {
                 did_def = true;
-                _word_graph.set_target_no_checks(c, it->back(), u_end);
+                _word_graph.target_no_checks(c, it->back(), u_end);
               } else if (u_end != v_end) {
                 did_def = true;
                 _word_graph.merge_nodes_no_checks(u_end, v_end);
@@ -311,7 +311,7 @@ namespace libsemigroups {
                         .second;
                 u_end = _word_graph.target_no_checks(c, it->back());
                 LIBSEMIGROUPS_ASSERT(u_end == UNDEFINED);
-                _word_graph.set_target_no_checks(c, it->back(), v_end);
+                _word_graph.target_no_checks(c, it->back(), v_end);
                 did_def = true;
               } else {
                 --it;

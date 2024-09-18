@@ -692,7 +692,7 @@ namespace libsemigroups {
           auto s  = p.first + uint_to_internal_string(i);
           auto it = prefixes.find(s);
           if (it != prefixes.end()) {
-            _gilman_graph.set_target(p.second, i, it->second);
+            _gilman_graph.target(p.second, i, it->second);
           } else {
             auto t = s;
             _rewriter.rewrite(t);
@@ -701,7 +701,7 @@ namespace libsemigroups {
                 s  = std::string(s.begin() + 1, s.end());
                 it = prefixes.find(s);
                 if (it != prefixes.end()) {
-                  _gilman_graph.set_target(p.second, i, it->second);
+                  _gilman_graph.target(p.second, i, it->second);
                   break;
                 }
               }
@@ -1117,7 +1117,7 @@ namespace libsemigroups {
           for (auto e : ad.labels()) {
             auto ve = g2.target_no_checks(v, e);
             if (ve != UNDEFINED && can_reach[ve]) {
-              ad.set_target_no_checks(v, e, ve);
+              ad.target_no_checks(v, e, ve);
             }
           }
         }

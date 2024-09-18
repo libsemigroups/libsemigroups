@@ -169,19 +169,29 @@ namespace libsemigroups {
     template <typename Iterator>
     void check_meets_and_joins(Iterator first, Iterator last) {
       using WordGraph_ = std::decay_t<decltype(*first)>;
-      std::vector<WordGraph_>                         graphs(first, last);
-      size_t const                                    n = graphs.size();
-      HopcroftKarp                                    joiner;
-      WordGraphMeeter<typename WordGraph_::node_type> meeter;
+      std::vector<WordGraph_> graphs(first, last);
+      size_t const            n = graphs.size();
+      Joiner                  joiner;
+      Meeter                  meeter;
+      WordGraph_              tmp;
       for (size_t i = 0; i < n; ++i) {
         for (size_t j = 0; j < n; ++j) {
-          meeter.with(graphs[i]).with(graphs[j]);
-          REQUIRE(std::tuple(
-                      meeter.is_subrelation_no_checks(), graphs[i], graphs[j])
-                  == std::tuple(
-                      joiner.is_subrelation_no_checks(graphs[i], graphs[j]),
-                      graphs[i],
-                      graphs[j]));
+          REQUIRE(std::tuple(meeter.is_subrelation(graphs[i], graphs[j]),
+                             graphs[i],
+                             graphs[j])
+                  == std::tuple(joiner.is_subrelation(graphs[i], graphs[j]),
+                                graphs[i],
+                                graphs[j]));
+          // FIXME the below doesn't seem to work, but JDM expected it to
+          // joiner(tmp, graphs[i], graphs[j]);
+          // REQUIRE(meeter.is_subrelation(graphs[j], tmp));
+          // REQUIRE(meeter.is_subrelation(graphs[i], tmp));
+          // REQUIRE(joiner.is_subrelation(graphs[j], tmp));
+          // REQUIRE(joiner.is_subrelation(graphs[i], tmp));
+          // REQUIRE(meeter.is_subrelation(tmp, graphs[j]));
+          // REQUIRE(meeter.is_subrelation(tmp, graphs[i]));
+          // REQUIRE(joiner.is_subrelation(tmp, graphs[j]));
+          // REQUIRE(joiner.is_subrelation(tmp, graphs[i]));
         }
       }
     }
@@ -1364,12 +1374,12 @@ namespace libsemigroups {
 
     REQUIRE(T.number_of_long_rules() == 0);
     T.for_each(3, [&](auto const& wg) {
-      num += word_graph::is_compatible(wg,
-                                       wg.cbegin_nodes(),
-                                       wg.cbegin_nodes()
-                                           + wg.number_of_active_nodes(),
-                                       p.rules.cbegin(),
-                                       p.rules.cend());
+      num += word_graph::is_compatible_no_checks(
+          wg,
+          wg.cbegin_nodes(),
+          wg.cbegin_nodes() + wg.number_of_active_nodes(),
+          p.rules.cbegin(),
+          p.rules.cend());
     });
     REQUIRE(num == 14);  // 14 is the correct value
 
@@ -1380,12 +1390,12 @@ namespace libsemigroups {
     REQUIRE(rules.size() == 18);
     S.for_each(3, [&](auto const& wg) {
       REQUIRE(wg.out_degree() == 6);
-      num += word_graph::is_compatible(wg,
-                                       wg.cbegin_nodes(),
-                                       wg.cbegin_nodes()
-                                           + wg.number_of_active_nodes(),
-                                       rules.cbegin(),
-                                       S.cbegin_long_rules())
+      num += word_graph::is_compatible_no_checks(
+                 wg,
+                 wg.cbegin_nodes(),
+                 wg.cbegin_nodes() + wg.number_of_active_nodes(),
+                 rules.cbegin(),
+                 S.cbegin_long_rules())
              && word_graph::is_complete(wg,
                                         wg.cbegin_nodes(),
                                         wg.cbegin_nodes()
@@ -1401,11 +1411,11 @@ namespace libsemigroups {
     REQUIRE(S.number_of_congruences(3) == 14);
     S.for_each(3, [&](auto const& wg) {
       REQUIRE(wg.out_degree() == 6);
-      num += word_graph::is_compatible(wg,
-                                       wg.cbegin_nodes(),
-                                       wg.cend_nodes(),
-                                       rules.cbegin(),
-                                       S.cbegin_long_rules())
+      num += word_graph::is_compatible_no_checks(wg,
+                                                 wg.cbegin_nodes(),
+                                                 wg.cend_nodes(),
+                                                 rules.cbegin(),
+                                                 S.cbegin_long_rules())
              && word_graph::is_complete(wg,
                                         wg.cbegin_nodes(),
                                         wg.cbegin_nodes()
@@ -3919,7 +3929,7 @@ namespace libsemigroups {
     // // REQUIRE(pp.rules == std::vector<word_type>());
     // for (auto it = pp.rules.cbegin(); it < pp.rules.cend(); it += 2) {
     //   fmt::print("i = {}\n", i);
-    //   REQUIRE(word_graph::is_compatible(wg_found,
+    //   REQUIRE(word_graph::is_compatible_no_checks(wg_found,
     //                                     wg_found.cbegin_nodes(),
     //                                     wg_found.cbegin_nodes() + 4,
     //                                     it,

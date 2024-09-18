@@ -60,7 +60,8 @@ namespace libsemigroups {
     label_type edge = 0;
 
     while (!node.empty()) {
-      std::tie(next, edge) = ad.next_target_no_checks(node.back(), edge);
+      std::tie(edge, next)
+          = ad.next_label_and_target_no_checks(node.back(), edge);
       if (next != UNDEFINED && path.size() < max - 1) {
         node.push_back(next);
         path.push_back(edge);
@@ -105,7 +106,8 @@ namespace libsemigroups {
     label_type edge = 0;
 
     while (!node.empty()) {
-      std::tie(next, edge) = ad.next_target_no_checks(node.back(), edge);
+      std::tie(edge, next)
+          = ad.next_label_and_target_no_checks(node.back(), edge);
       if (next != UNDEFINED && path.size() < max - 1) {
         node.push_back(next);
         path.push_back(edge);
@@ -139,13 +141,13 @@ namespace libsemigroups {
          ++i) {
       node_type  n;
       label_type a   = 0;
-      std::tie(n, a) = ad.next_target_no_checks(out.second[i], a);
+      std::tie(a, n) = ad.next_label_and_target_no_checks(out.second[i], a);
       while (n != UNDEFINED) {
         word_type next(out.first[i]);
         next.push_back(a);
         out.first.push_back(std::move(next));
         out.second.push_back(n);
-        std::tie(n, a) = ad.next_target_no_checks(out.second[i], ++a);
+        std::tie(a, n) = ad.next_label_and_target_no_checks(out.second[i], ++a);
       }
     }
     return out;
@@ -156,18 +158,18 @@ namespace libsemigroups {
     ad.add_nodes(6);
     ad.add_to_out_degree(2);
 
-    ad.set_target(0, 0, 1);
-    ad.set_target(0, 1, 2);
-    ad.set_target(1, 0, 3);
-    ad.set_target(1, 1, 4);
-    ad.set_target(2, 0, 4);
-    ad.set_target(2, 1, 2);
-    ad.set_target(3, 0, 1);
-    ad.set_target(3, 1, 5);
-    ad.set_target(4, 0, 5);
-    ad.set_target(4, 1, 4);
-    ad.set_target(5, 0, 4);
-    ad.set_target(5, 1, 5);
+    ad.target(0, 0, 1);
+    ad.target(0, 1, 2);
+    ad.target(1, 0, 3);
+    ad.target(1, 1, 4);
+    ad.target(2, 0, 4);
+    ad.target(2, 1, 2);
+    ad.target(3, 0, 1);
+    ad.target(3, 1, 5);
+    ad.target(4, 0, 5);
+    ad.target(4, 1, 4);
+    ad.target(5, 0, 4);
+    ad.target(5, 1, 5);
     return ad;
   }
 
@@ -311,8 +313,12 @@ namespace libsemigroups {
       for (size_t N = 10; N < 20; N += 5) {
         for (size_t nr_edges = 0; nr_edges <= detail::magic_number(M) * M;
              nr_edges += 500) {
-          auto ad = WordGraph<size_t>::random(M, N, nr_edges);
-          word_graph::add_cycle(ad, ad.cbegin_nodes(), ad.cend_nodes());
+          // TODO for v3 we remove the nr_edges parameter from
+          // WordGraph::random, andso this benchmark doesn't really make sense
+          // any more
+          auto ad = WordGraph<size_t>::random(M, N);
+          word_graph::add_cycle_no_checks(
+              ad, ad.cbegin_nodes(), ad.cend_nodes());
           std::string m = std::to_string(ad.number_of_edges());
           size_t      w = source(mt);
           uint64_t    expected

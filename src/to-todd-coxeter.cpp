@@ -49,12 +49,12 @@ namespace libsemigroups {
     WordGraph<node_type> tc_arg(ad->number_of_nodes() + 1, ad->out_degree());
 
     for (label_type a = 0; a < tc_arg.out_degree(); ++a) {
-      tc_arg.set_target_no_checks(0, a, fp.current_position(a) + 1);
+      tc_arg.target_no_checks(0, a, fp.current_position(a) + 1);
     }
 
     for (node_type n = 0; n < tc_arg.number_of_nodes() - 1; ++n) {
       for (label_type a = 0; a < tc_arg.out_degree(); ++a) {
-        tc_arg.set_target_no_checks(n + 1, a, ad->target_no_checks(n, a) + 1);
+        tc_arg.target_no_checks(n + 1, a, ad->target_no_checks(n, a) + 1);
       }
     }
     return ToddCoxeter(knd, std::move(tc_arg));

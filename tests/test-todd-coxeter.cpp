@@ -157,19 +157,19 @@ namespace libsemigroups {
       auto const& d = tc.word_graph();
       REQUIRE(word_graph::is_complete(
           d, d.cbegin_active_nodes(), d.cend_active_nodes()));
-      REQUIRE(word_graph::is_compatible(d,
-                                        d.cbegin_active_nodes(),
-                                        d.cend_active_nodes(),
-                                        p.rules.cbegin(),
-                                        p.rules.cend()));
+      REQUIRE(word_graph::is_compatible_no_checks(d,
+                                                  d.cbegin_active_nodes(),
+                                                  d.cend_active_nodes(),
+                                                  p.rules.cbegin(),
+                                                  p.rules.cend()));
       tc.shrink_to_fit();
       REQUIRE(word_graph::is_complete(
           d, d.cbegin_active_nodes(), d.cend_active_nodes()));
-      REQUIRE(word_graph::is_compatible(d,
-                                        d.cbegin_active_nodes(),
-                                        d.cend_active_nodes(),
-                                        p.rules.cbegin(),
-                                        p.rules.cend()));
+      REQUIRE(word_graph::is_compatible_no_checks(d,
+                                                  d.cbegin_active_nodes(),
+                                                  d.cend_active_nodes(),
+                                                  p.rules.cbegin(),
+                                                  p.rules.cend()));
     }
 
     void check_standardize(ToddCoxeter& tc) {
@@ -773,11 +773,11 @@ namespace libsemigroups {
 
     REQUIRE(tc.generating_pairs()[0] == 010001100_w);
     auto const& d = tc.word_graph();
-    word_graph::is_compatible(d,
-                              d.cbegin_active_nodes(),
-                              d.cend_active_nodes(),
-                              tc.generating_pairs().cbegin(),
-                              tc.generating_pairs().cend());
+    REQUIRE(word_graph::is_compatible_no_checks(d,
+                                                d.cbegin_active_nodes(),
+                                                d.cend_active_nodes(),
+                                                tc.generating_pairs().cbegin(),
+                                                tc.generating_pairs().cend()));
     REQUIRE(tc.number_of_classes() == 21);
     REQUIRE(tc.number_of_classes() == 21);
 
@@ -1610,21 +1610,21 @@ namespace libsemigroups {
     auto const& d = tc.word_graph();
     REQUIRE(!word_graph::is_complete(
         d, d.cbegin_active_nodes(), d.cend_active_nodes()));
-    REQUIRE(word_graph::is_compatible(d,
-                                      d.cbegin_active_nodes(),
-                                      d.cend_active_nodes(),
-                                      p.rules.cbegin(),
-                                      p.rules.cend()));
+    REQUIRE(word_graph::is_compatible_no_checks(d,
+                                                d.cbegin_active_nodes(),
+                                                d.cend_active_nodes(),
+                                                p.rules.cbegin(),
+                                                p.rules.cend()));
     REQUIRE(tc.number_of_classes() == 1);
     REQUIRE((todd_coxeter::normal_forms(tc) | to_vector())
             == std::vector<word_type>({0_w}));
     REQUIRE(word_graph::is_complete(
         d, d.cbegin_active_nodes(), d.cend_active_nodes()));
-    REQUIRE(word_graph::is_compatible(d,
-                                      d.cbegin_active_nodes(),
-                                      d.cend_active_nodes(),
-                                      p.rules.cbegin(),
-                                      p.rules.cend()));
+    REQUIRE(word_graph::is_compatible_no_checks(d,
+                                                d.cbegin_active_nodes(),
+                                                d.cend_active_nodes(),
+                                                p.rules.cbegin(),
+                                                p.rules.cend()));
 
     ToddCoxeter copy(tc);
     REQUIRE(copy.presentation().rules == p.rules);
@@ -1635,11 +1635,11 @@ namespace libsemigroups {
     auto const& dd = copy.word_graph();
     REQUIRE(word_graph::is_complete(
         dd, dd.cbegin_active_nodes(), dd.cend_active_nodes()));
-    REQUIRE(word_graph::is_compatible(dd,
-                                      dd.cbegin_active_nodes(),
-                                      dd.cend_active_nodes(),
-                                      p.rules.cbegin(),
-                                      p.rules.cend()));
+    REQUIRE(word_graph::is_compatible_no_checks(dd,
+                                                dd.cbegin_active_nodes(),
+                                                dd.cend_active_nodes(),
+                                                p.rules.cbegin(),
+                                                p.rules.cend()));
     REQUIRE(tc.word_graph() == copy.word_graph());
   }
 
@@ -1712,11 +1712,11 @@ namespace libsemigroups {
     tc.init(twosided, p);
 
     auto const& d = tc.word_graph();
-    REQUIRE(word_graph::is_compatible(d,
-                                      d.cbegin_active_nodes(),
-                                      d.cend_active_nodes(),
-                                      p.rules.cbegin(),
-                                      p.rules.cend()));
+    REQUIRE(word_graph::is_compatible_no_checks(d,
+                                                d.cbegin_active_nodes(),
+                                                d.cend_active_nodes(),
+                                                p.rules.cbegin(),
+                                                p.rules.cend()));
     tc.strategy(options::strategy::CR);
     size_t x = 0;
     REQUIRE_THROWS_AS(tc.run_until([&x] { return x > 4; }),

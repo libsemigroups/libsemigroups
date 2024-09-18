@@ -60,11 +60,12 @@ namespace libsemigroups {
   struct LibsemigroupsException;  // forward decl
 
   namespace {
-    void add_chain(WordGraph<size_t>& digraph, size_t n) {
-      size_t old_nodes = digraph.number_of_nodes();
-      digraph.add_nodes(n);
-      for (size_t i = old_nodes; i < digraph.number_of_nodes() - 1; ++i) {
-        digraph.set_target(i, 0, i + 1);
+    // TODO add to word_graph helper namespace
+    void add_chain(WordGraph<size_t>& word_graph, size_t n) {
+      size_t old_nodes = word_graph.number_of_nodes();
+      word_graph.add_nodes(n);
+      for (size_t i = old_nodes; i < word_graph.number_of_nodes() - 1; ++i) {
+        word_graph.target(i, 0, i + 1);
       }
     }
 
@@ -81,7 +82,7 @@ namespace libsemigroups {
     wg.add_nodes(n);
     wg.add_to_out_degree(2);
     for (size_t i = 0; i < n - 1; ++i) {
-      wg.set_target(i, i % 2, i + 1);
+      wg.target(i, i % 2, i + 1);
     }
 
     Paths p(wg);
@@ -386,8 +387,8 @@ namespace libsemigroups {
     REQUIRE(wg.number_of_nodes() == 10);
     REQUIRE(wg.number_of_edges() == 18);
     // FIXME Probably an uint32_t(UNDEFINED) versus size_t(UNDEFINED) issue
-    wg.set_target(S.size(), 0, 0);
-    wg.set_target(S.size(), 1, 1);
+    wg.target(S.size(), 0, 0);
+    wg.target(S.size(), 1, 1);
 
     REQUIRE(wg.number_of_edges() == 20);
     REQUIRE(word_graph::number_of_nodes_reachable_from(wg, S.size()) == 10);
@@ -660,7 +661,7 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("Paths",
                           "011",
-                          "number_of_paths acyclic digraph",
+                          "number_of_paths acyclic word graph",
                           "[quick][no-valgrind]") {
     auto wg = to_word_graph<size_t>(
         8, {{3, 2, 3}, {7}, {1}, {1, 5}, {6}, {}, {3, 7}});
@@ -831,7 +832,7 @@ namespace libsemigroups {
     REQUIRE(number_of_paths(wg, 0) == std::pow(2, n) - 1);
 
     // The following tests for code coverage
-    wg.set_target(19, 0, 0);
+    wg.target(19, 0, 0);
     REQUIRE(
         number_of_paths(wg, 0, 0, 0, POSITIVE_INFINITY, paths::algorithm::dfs)
         == POSITIVE_INFINITY);
@@ -843,20 +844,21 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("Paths",
                           "014",
-                          "number_of_paths 400 node random digraph",
+                          "number_of_paths 400 node cycle word graph",
                           "[quick]") {
-    size_t const n  = 400;
-    auto         wg = WordGraph<size_t>::random(n, 20, n, std::mt19937());
-    word_graph::add_cycle(wg, wg.cbegin_nodes(), wg.cend_nodes());
+    size_t const      n = 400;
+    WordGraph<size_t> wg(n, 1);
+    word_graph::add_cycle_no_checks(wg, wg.cbegin_nodes(), wg.cend_nodes());
     REQUIRE(!word_graph::is_acyclic(wg));
-    REQUIRE(!word_graph::is_complete(wg));
-    REQUIRE(number_of_paths_algorithm(wg, 0, 0, 16) == paths::algorithm::dfs);
-    REQUIRE(number_of_paths(wg, 0, 0, 16) != 0);
+    REQUIRE(word_graph::is_reachable(wg, 1, 0));
+    REQUIRE(word_graph::is_reachable(wg, 0, 1));
+    REQUIRE(word_graph::is_reachable(wg, 0, 0));
+    REQUIRE(number_of_paths(wg, 0, 0, 401) != 0);
   }
 
   LIBSEMIGROUPS_TEST_CASE("Paths",
                           "015",
-                          "number_of_paths 10 node acyclic digraph",
+                          "number_of_paths 10 node acyclic word graph",
                           "[quick]") {
     // size_t const n  = 10;
     // auto wg = WordGraph<size_t>::random_acyclic(n, 20, n,
@@ -866,16 +868,16 @@ namespace libsemigroups {
     WordGraph<size_t> wg;
     wg.add_nodes(10);
     wg.add_to_out_degree(20);
-    wg.set_target(0, 5, 7);
-    wg.set_target(0, 7, 5);
-    wg.set_target(1, 14, 9);
-    wg.set_target(1, 17, 5);
-    wg.set_target(3, 5, 8);
-    wg.set_target(5, 1, 8);
-    wg.set_target(6, 14, 8);
-    wg.set_target(7, 10, 8);
-    wg.set_target(8, 12, 9);
-    wg.set_target(8, 13, 9);
+    wg.target(0, 5, 7);
+    wg.target(0, 7, 5);
+    wg.target(1, 14, 9);
+    wg.target(1, 17, 5);
+    wg.target(3, 5, 8);
+    wg.target(5, 1, 8);
+    wg.target(6, 14, 8);
+    wg.target(7, 10, 8);
+    wg.target(8, 12, 9);
+    wg.target(8, 13, 9);
 
     REQUIRE(word_graph::is_acyclic(wg));
     REQUIRE(!word_graph::is_complete(wg));
@@ -890,7 +892,7 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("Paths",
                           "016",
-                          "number_of_paths node digraph",
+                          "number_of_paths node word graph",
                           "[quick][no-valgrind]") {
     size_t const n = 10;
     // auto         wg = WordGraph<size_t>::random(n, 20, 200,
@@ -924,7 +926,7 @@ namespace libsemigroups {
     REQUIRE(number_of_paths(wg, 0) == 1023);
 
     word_graph::add_cycle(wg, n);
-    wg.set_target(0, 0, n + 1);
+    wg.target(0, 0, n + 1);
     REQUIRE(!word_graph::is_acyclic(wg));
     REQUIRE(!word_graph::is_complete(wg));
     REQUIRE(number_of_paths(wg, 1) == 511);
@@ -1009,8 +1011,8 @@ namespace libsemigroups {
     WordGraph<size_t> wg;
     wg.add_nodes(2);
     wg.add_to_out_degree(2);
-    wg.set_target(0, 0, 1);
-    wg.set_target(1, 0, 0);
+    wg.target(0, 0, 1);
+    wg.target(1, 0, 0);
 
     REQUIRE(number_of_paths(
                 wg, 0, 1, 0, POSITIVE_INFINITY, paths::algorithm::matrix)
@@ -1025,8 +1027,8 @@ namespace libsemigroups {
     WordGraph<size_t> wg;
     wg.add_nodes(2);
     wg.add_to_out_degree(2);
-    wg.set_target(0, 0, 1);
-    wg.set_target(1, 0, 0);
+    wg.target(0, 0, 1);
+    wg.target(1, 0, 0);
     Paths p(wg);
     REQUIRE_THROWS_AS(p.throw_if_source_undefined(), LibsemigroupsException);
     REQUIRE(p.source() == UNDEFINED);
@@ -1036,8 +1038,8 @@ namespace libsemigroups {
     WordGraph<size_t> wg;
     wg.add_nodes(2);
     wg.add_to_out_degree(2);
-    wg.set_target(0, 0, 1);
-    wg.set_target(1, 0, 0);
+    wg.target(0, 0, 1);
+    wg.target(1, 0, 0);
     Paths p(wg);
     REQUIRE(p.target() == UNDEFINED);
     REQUIRE(to_human_readable_repr(p)
@@ -1071,8 +1073,8 @@ namespace libsemigroups {
     WordGraph<size_t> wg;
     wg.add_nodes(2);
     wg.add_to_out_degree(2);
-    wg.set_target(0, 0, 1);
-    wg.set_target(1, 0, 0);
+    wg.target(0, 0, 1);
+    wg.target(1, 0, 0);
     ReversiblePaths p(wg);
     REQUIRE(p.target() == UNDEFINED);
     REQUIRE(to_human_readable_repr(p)

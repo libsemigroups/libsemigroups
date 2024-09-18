@@ -151,14 +151,14 @@ namespace libsemigroups {
           for (size_t j = 0; j < _stephens.size(); ++j) {
             if (stephen::is_left_factor(_stephens[j], word)) {
               if (stephen::is_left_factor(tmp, _stephens[j].word())) {
-                _graph.set_target_no_checks(i, letter, j);
+                _graph.target_no_checks(i, letter, j);
                 old = true;
                 break;
               }
             }
           }
           if (!old) {
-            _graph.set_target_no_checks(i, letter, _stephens.size());
+            _graph.target_no_checks(i, letter, _stephens.size());
             _stephens.push_back(tmp);
           }
         }
