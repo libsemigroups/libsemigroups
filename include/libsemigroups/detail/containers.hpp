@@ -866,8 +866,18 @@ namespace libsemigroups {
 
       // Not noexcept because std::array::operator[] isn't
       void push_back(T x) {
+        // The below assertions exist to insure that we are not badly assigning
+        // values. The subsequent pragmas exist to suppress the false-positive
+        // warnings produced by g++ 13.2.0
         LIBSEMIGROUPS_ASSERT(_size < N);
+        LIBSEMIGROUPS_ASSERT(_array.size() == N);
+        static_assert(std::is_same_v<typename decltype(_array)::value_type, T>);
+#pragma GCC diagnostic push
+#if defined(__GNUC__) && !defined(__clang__)
+#pragma GCC diagnostic ignored "-Wstringop-overflow"
+#endif
         _array[_size] = x;
+#pragma GCC diagnostic pop
         _size++;
       }
 

@@ -642,19 +642,20 @@ namespace libsemigroups {
     bool set_iterator_no_checks() const;
 
     // The following init function is private to avoid the case of constructing
-    // a Paths object without setting _word_graph
+    // a Paths object without setting _word_graph. The subsequent default
+    // constructor is protected and still needed (instead of deleting it) to
+    // avoid problems with having uninitialised std::variants with copy
+    // constructors.
+
     Paths& init();
+
+   protected:
+    Paths() = default;
 
    public:
     ////////////////////////////////////////////////////////////////////////
     // Constructors + initialization
     ////////////////////////////////////////////////////////////////////////
-
-    //! \brief Deleted.
-    //!
-    //! Deleted. To avoid the situation where the underlying WordGraph is not
-    //! defined, it is not possible to default construct a Paths object.
-    Paths() = delete;
 
     //! \brief Default copy constructor.
     //!
@@ -688,7 +689,7 @@ namespace libsemigroups {
     //! \warning The Paths object only holds a reference to the underlying
     //! WordGraph \p wg, and so \p wg must outlive any Paths object constructed
     //! from it.
-    explicit Paths(WordGraph<Node> const& wg) {
+    explicit Paths(WordGraph<Node> const& wg) : Paths() {
       init(wg);
     }
 
@@ -1128,6 +1129,8 @@ namespace libsemigroups {
 
     // Private so that we cannot create one of these without the word graph
     // known.
+    ReversiblePaths() = default;
+
     ReversiblePaths& init() {
       _reverse = false;
       return *this;
@@ -1144,9 +1147,6 @@ namespace libsemigroups {
     static constexpr bool is_finite     = Paths<Node>::is_finite;
     static constexpr bool is_idempotent = Paths<Node>::is_idempotent;
 
-    //! \copydoc Paths::Paths()
-    ReversiblePaths() = delete;
-
     //! \copydoc Paths::Paths(Paths const&)
     ReversiblePaths(ReversiblePaths const&) = default;
 
@@ -1160,7 +1160,8 @@ namespace libsemigroups {
     ReversiblePaths& operator=(ReversiblePaths&&) = default;
 
     //! \copydoc Paths::Paths(WordGraph<Node> const&)
-    explicit ReversiblePaths(WordGraph<Node> const& wg) : Paths<Node>(wg) {
+    explicit ReversiblePaths(WordGraph<Node> const& wg) : ReversiblePaths() {
+      Paths<Node>::init(wg);
       init();
     }
 

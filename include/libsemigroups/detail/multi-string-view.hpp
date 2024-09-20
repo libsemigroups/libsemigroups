@@ -571,7 +571,12 @@ namespace libsemigroups {
         }
 
         void destroy_long() {
+#pragma GCC diagnostic push
+#if defined(__GNUC__) && !defined(__clang__)
+#pragma GCC diagnostic ignored "-Wmaybe-uninitialized"
+#endif
           _long.~Long();
+#pragma GCC diagnostic pop
         }
 
         Short _short;

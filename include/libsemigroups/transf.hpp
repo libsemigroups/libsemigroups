@@ -217,13 +217,23 @@ namespace libsemigroups {
     template <typename Iterator>
     explicit PTransfBase(Iterator first, Iterator last) : PTransfBase() {
       using OtherScalar = typename std::iterator_traits<Iterator>::value_type;
+      // The below assertions exist to insure that we are not badly assigning
+      // values. The subsequent pragmas exist to suppress the false-positive
+      // warnings produced by g++ 13.2.0
       static_assert(
           std::is_same_v<OtherScalar, Undefined>
               || std::is_convertible_v<OtherScalar, point_type>,
           "the template parameter Iterator must have "
           "value_type \"Undefined\" or convertible to \"point_type\"!");
+      static_assert(std::is_same_v<std::decay_t<decltype(*_container.begin())>,
+                                   point_type>);
       resize(_container, std::distance(first, last));
+#pragma GCC diagnostic push
+#if defined(__GNUC__) && !defined(__clang__)
+#pragma GCC diagnostic ignored "-Wstringop-overflow"
+#endif
       std::copy(first, last, _container.begin());
+#pragma GCC diagnostic pop
     }
 
     //! \copydoc PTransfBase::PTransfBase(Container const&)
