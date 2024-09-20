@@ -125,19 +125,19 @@ namespace libsemigroups {
     IsObviouslyInfinite() = default;
 
    public:
-    //! Alias for std::vector<word_type>::const_iterator.
+    //! Alias for `std::vector<word_type>::const_iterator`.
     using const_iterator_word_type =
         typename std::vector<word_type>::const_iterator;
 
-    //! \brief Alias for std::vector< std::pair<std::string,
-    //! std::string>>::const_iterator.
+    //! \brief Alias for `std::vector< std::pair<std::string,
+    //! std::string>>::const_iterator`.
     //!
-    //! Alias for std::vector< std::pair<std::string,
-    //! std::string>>::const_iterator.
+    //! Alias for `std::vector< std::pair<std::string,
+    //! std::string>>::const_iterator`.
     using const_iterator_pair_string = typename std::vector<
         std::pair<std::string, std::string>>::const_iterator;
 
-    //! Alias for std::vector<std::string>::const_iterator.
+    //! Alias for `std::vector<std::string>::const_iterator`.
     using const_iterator_string =
         typename std::vector<std::string>::const_iterator;
 
@@ -423,6 +423,9 @@ namespace libsemigroups {
   //! semigroup or monoid.
   //!
   //! \throws LibsemigroupsException If the presentation \p p is not valid.
+  //!
+  //! \note If this function returns \c false, it is still possible that the
+  //! finitely presented semigroup or monoid defined by \p p is infinite.
   template <>
   bool is_obviously_infinite(Presentation<std::string> const& p);
 
@@ -492,7 +495,7 @@ namespace libsemigroups {
   //! monoid defined by a Kambites object is obviously infinite.
   //!
   //! \note If this function returns \c false, it is still possible that the
-  //! finitely presented semigroup or monoid defined by \p k$ is infinite.
+  //! finitely presented semigroup or monoid defined by \p k is infinite.
   template <typename Word>
   bool is_obviously_infinite(Kambites<Word>& k) {
     if (k.finished() && k.small_overlap_class() >= 3) {
