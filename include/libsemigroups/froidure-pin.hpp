@@ -63,7 +63,10 @@ namespace libsemigroups {
     using type = void;
   };
 
+  //! \ingroup froidure_pin_group
+  //!
   //! Defined in ``froidure-pin.hpp``.
+  //!
   //!
   //! This is a traits class for use with FroidurePin.
   //!
@@ -297,7 +300,7 @@ namespace libsemigroups {
    private:
     template <typename T>
     static constexpr bool IsState
-        = ((!std::is_void_v<T>) &&std::is_same_v<state_type, T>);
+        = ((!std::is_void_v<T>) && std::is_same_v<state_type, T>);
 
     struct InternalEqualTo : private detail::BruidhinnTraits<Element> {
       bool operator()(internal_const_reference x,
@@ -339,9 +342,6 @@ namespace libsemigroups {
     //! Default constructor.
     //!
     //! Constructs a FroidurePin instance with no generators.
-    //!
-    //! \parameters
-    //! (None)
     //!
     //! \sa add_generator and add_generators.
     FroidurePin();
@@ -471,9 +471,6 @@ namespace libsemigroups {
 
     //! Returns the number of generators.
     //!
-    //! \parameters
-    //! (None)
-    //!
     //! \returns A value of type \c size_t.
     //!
     //! \exceptions
@@ -552,9 +549,6 @@ namespace libsemigroups {
 
     //! Returns the number of idempotents.
     //!
-    //! \parameters
-    //! (None)
-    //!
     //! \returns
     //! A value of type \c size_t.
     //!
@@ -591,9 +585,6 @@ namespace libsemigroups {
     //! run  function, and consequently every other function too.
     //!
     //! \param val the number of elements to reserve space for.
-    //!
-    //! \returns
-    //! (None)
     //!
     //! \exceptions
     //! \no_libsemigroups_except
@@ -747,9 +738,6 @@ namespace libsemigroups {
     //! these elements is finite or infinite. On the other hand, for other
     //! types, such as transformation, the semigroup is always finite.
     //!
-    //! \parameters
-    //! (None)
-    //!
     //! \returns
     //! A value of type \ref tril.
     //!
@@ -789,8 +777,6 @@ namespace libsemigroups {
     //!
     //! \param x the generator to add.
     //!
-    //! \returns (None)
-    //!
     //! \throws LibsemigroupsException if any of the following hold:
     //! * immutable() returns \c true
     //! * the degree of \p x is incompatible with the existing degree.
@@ -805,8 +791,6 @@ namespace libsemigroups {
     //!
     //! \param coll the collection of generators to add.
     //!
-    //! \returns (None)
-    //!
     //! \throws LibsemigroupsException if any of the following hold:
     //! * immutable() returns \c true
     //! * the degree of \p x is incompatible with the existing degree.
@@ -818,8 +802,6 @@ namespace libsemigroups {
     //! See \ref add_generator for a detailed description.
     //!
     //! \param coll the collection of generators to add.
-    //!
-    //! \returns (None)
     //!
     //! \throws LibsemigroupsException if any of the following hold:
     //! * immutable() returns \c true
@@ -834,8 +816,6 @@ namespace libsemigroups {
     //!
     //! \param first iterator pointing to the first generator to add.
     //! \param last iterator pointing one past the last generator to add.
-    //!
-    //! \returns (None)
     //!
     //! \throws LibsemigroupsException if any of the following hold:
     //! * immutable() returns \c true
@@ -886,9 +866,6 @@ namespace libsemigroups {
     //!
     //! \param coll the collection of generator to add.
     //!
-    //! \returns
-    //! (None)
-    //!
     //! \throws LibsemigroupsException if \ref add_generator throws.
     template <typename T>
     void closure(T const& coll);
@@ -921,9 +898,6 @@ namespace libsemigroups {
 
     //! Returns a \shared_ptr to the state (if any).
     //!
-    //! \parameters
-    //! (None)
-    //!
     //! \returns
     //! \shared_ptr to \ref state_type.
     //!
@@ -949,8 +923,8 @@ namespace libsemigroups {
 
     void expand(size_type);
     void is_one(internal_const_element_type x, element_index_type) noexcept(
-        std::is_nothrow_default_constructible_v<InternalEqualTo>&& noexcept(
-            std::declval<InternalEqualTo>()(x, x)));
+        std::is_nothrow_default_constructible_v<InternalEqualTo>
+        && noexcept(std::declval<InternalEqualTo>()(x, x)));
 
     void copy_generators_from_elements(size_t);
     void closure_update(element_index_type,
@@ -1072,9 +1046,6 @@ namespace libsemigroups {
     //! iterators may be invalidated by any call to a non-const function of the
     //! FroidurePin class.
     //!
-    //! \parameters
-    //! (None)
-    //!
     //! \returns A value of type \ref const_iterator.
     //!
     //! \exceptions
@@ -1093,9 +1064,6 @@ namespace libsemigroups {
     //! iterators may be invalidated by any call to a non-const function of the
     //! FroidurePin class.
     //!
-    //! \parameters
-    //! (None)
-    //!
     //! \returns A value of type \ref const_iterator.
     //!
     //! \exceptions
@@ -1113,8 +1081,6 @@ namespace libsemigroups {
     //! iterators may be invalidated by any call to a non-const function of the
     //! FroidurePin class.
     //!
-    //! \parameters
-    //! (None)
     //!
     //! \returns A value of type \ref const_iterator.
     //!
@@ -1133,9 +1099,6 @@ namespace libsemigroups {
     //! iterators may be invalidated by any call to a non-const function of the
     //! FroidurePin class.
     //!
-    //! \parameters
-    //! (None)
-    //!
     //! \returns A value of type \ref const_iterator.
     //!
     //! \exceptions
@@ -1152,9 +1115,6 @@ namespace libsemigroups {
     //! This function does not trigger any enumeration, and the returned
     //! iterators may be invalidated by any call to a non-const function of the
     //! FroidurePin class.
-    //!
-    //! \parameters
-    //! (None)
     //!
     //! \returns A value of type \ref const_reverse_iterator.
     //!
@@ -1174,9 +1134,6 @@ namespace libsemigroups {
     //! iterators may be invalidated by any call to a non-const function of the
     //! FroidurePin class.
     //!
-    //! \parameters
-    //! (None)
-    //!
     //! \returns A value of type \ref const_reverse_iterator.
     //!
     //! \exceptions
@@ -1191,9 +1148,6 @@ namespace libsemigroups {
     //! Returns a const iterator pointing to the first element (sorted by
     //! Less).
     //!
-    //! \parameters
-    //! (None)
-    //!
     //! \returns A value of type \ref const_iterator_sorted.
     //!
     //! \exceptions
@@ -1204,9 +1158,6 @@ namespace libsemigroups {
 
     //! Returns a const iterator pointing one past the last element (sorted by
     //! Less).
-    //!
-    //! \parameters
-    //! (None)
     //!
     //! \returns A value of type \ref const_iterator_sorted.
     //!
@@ -1219,9 +1170,6 @@ namespace libsemigroups {
     //! Returns a const iterator pointing to the last element (sorted by
     //! \ref Less).
     //!
-    //! \parameters
-    //! (None)
-    //!
     //! \returns A value of type \ref const_reverse_iterator_sorted.
     //!
     //! \exceptions
@@ -1232,9 +1180,6 @@ namespace libsemigroups {
 
     //! Returns a const reverse iterator pointing one before the first
     //! element (sorted by Less).
-    //!
-    //! \parameters
-    //! (None)
     //!
     //! \returns A value of type \ref const_reverse_iterator_sorted.
     //!
@@ -1250,9 +1195,6 @@ namespace libsemigroups {
     //! idempotent in the semigroup (if it exists), and every subsequent
     //! increment points to the next idempotent.
     //!
-    //! \parameters
-    //! (None)
-    //!
     //! \returns A value of type \ref const_iterator_idempotents.
     //!
     //! \exceptions
@@ -1262,9 +1204,6 @@ namespace libsemigroups {
     const_iterator_idempotents cbegin_idempotents();
 
     //! Returns a const iterator pointing one past the last idempotent.
-    //!
-    //! \parameters
-    //! (None)
     //!
     //! \returns A value of type \ref const_iterator_idempotents.
     //!
