@@ -41,29 +41,58 @@ namespace libsemigroups {
 
   FroidurePinBase::FroidurePinBase()
       : Runner(),
-        _degree(UNDEFINED),
+        _degree(),
         _duplicate_gens(),
         _enumerate_order(),
         _final(),
         _first(),
-        _found_one(false),
-        _idempotents_found(false),
+        _found_one(),
+        _idempotents_found(),
         _is_idempotent(),
         _left(),
         _length(),
-        _lenindex({0, 0}),
+        _lenindex(),
         _letter_to_pos(),
-        _nr(0),
-        _nr_products(0),
-        _nr_rules(0),
-        _pos(0),
-        _pos_one(0),
+        _nr(),
+        _nr_products(),
+        _nr_rules(),
+        _pos(),
+        _pos_one(),
         _prefix(),
         _reduced(),
         _right(),
         _suffix(),
-        // (length of the current word) - 1
-        _wordlen(0) {}
+        _wordlen() {
+    init();
+  }
+
+  FroidurePinBase& FroidurePinBase::init() {
+    Runner::init();
+    _degree = UNDEFINED;
+    _duplicate_gens.clear();
+    _enumerate_order.clear();
+    _final.clear();
+    _first.clear();
+    _found_one         = false;
+    _idempotents_found = false;
+    _is_idempotent.clear();
+    _left.init();
+    _length.clear();
+    _lenindex = {0, 0};
+    _letter_to_pos.clear();
+    _nr          = 0;
+    _nr_products = 0;
+    _nr_rules    = 0;
+    _pos         = 0;
+    _pos_one     = 0;
+    _prefix.clear();
+    _reduced.clear();
+    _right.init();
+    _suffix.clear();
+    // (length of the current word) - 1
+    _wordlen = 0;
+    return *this;
+  }
 
   FroidurePinBase::FroidurePinBase(FroidurePinBase const& S)
       : Runner(S),
@@ -80,7 +109,7 @@ namespace libsemigroups {
         _lenindex(S._lenindex),
         _letter_to_pos(S._letter_to_pos),
         _nr(S._nr),
-        _nr_products(0),
+        _nr_products(0),  // TODO what's the rationale for this being 0
         _nr_rules(S._nr_rules),
         _pos(S._pos),
         _pos_one(S._pos_one),
@@ -89,6 +118,33 @@ namespace libsemigroups {
         _right(S._right),
         _suffix(S._suffix),
         _wordlen(S._wordlen) {}
+
+  FroidurePinBase& FroidurePinBase::operator=(FroidurePinBase const& S) {
+    Runner::operator=(S);
+    _degree = UNDEFINED;  // _degree must be UNDEFINED until !_gens.empty=)
+    _duplicate_gens    = S._duplicate_gens;
+    _enumerate_order   = S._enumerate_order;
+    _final             = S._final;
+    _first             = S._first;
+    _found_one         = S._found_one;
+    _idempotents_found = S._idempotents_found;
+    _is_idempotent     = S._is_idempotent;
+    _left              = S._left;
+    _length            = S._length;
+    _lenindex          = S._lenindex;
+    _letter_to_pos     = S._letter_to_pos;
+    _nr                = S._nr;
+    _nr_products       = 0;  // TODO what's the rationale for this being 0
+    _nr_rules          = S._nr_rules;
+    _pos               = S._pos;
+    _pos_one           = S._pos_one;
+    _prefix            = S._prefix;
+    _reduced           = S._reduced;
+    _right             = S._right;
+    _suffix            = S._suffix;
+    _wordlen           = S._wordlen;
+    return *this;
+  }
 
   FroidurePinBase::~FroidurePinBase() = default;
 
@@ -192,6 +248,7 @@ namespace libsemigroups {
     validate_element_index(j);
 
     if (current_length(i) <= current_length(j)) {
+      // TODO use word_graph::follow_path_no_checks
       while (i != UNDEFINED) {
         j = _left.target_no_checks(j, _final[i]);
         i = _prefix[i];
@@ -220,9 +277,9 @@ namespace libsemigroups {
   }
 
   size_t FroidurePinBase::number_of_elements_of_length(size_t i) const {
-    // _lenindex[i - 1] is the element_index_type where words of length i begin
-    // so _lenindex[i] - _lenindex[i - 1]) is the number of words of length
-    // i.
+    // _lenindex[i - 1] is the element_index_type where words of length i
+    // begin so _lenindex[i] - _lenindex[i - 1]) is the number of words of
+    // length i.
     if (i == 0 || i > _lenindex.size()) {
       return 0;
     } else if (i == _lenindex.size()) {
