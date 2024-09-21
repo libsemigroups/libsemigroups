@@ -120,6 +120,8 @@ namespace libsemigroups {
     using Swap = ::libsemigroups::Swap<element_type>;
   };
 
+  //! \ingroup froidure_pin_group
+  //!
   //! Defined in ``froidure-pin.hpp``.
   //!
   //! The class template FroidurePin implements the Froidure-Pin algorithm as
@@ -384,9 +386,11 @@ namespace libsemigroups {
         : FroidurePin(std::make_shared<state_type>(stt)) {}
 
     //! Deleted.
+    // TODO undelete
     FroidurePin& operator=(FroidurePin const&) = delete;
 
     //! Deleted.
+    // TODO undelete
     FroidurePin& operator=(FroidurePin&&) = delete;
 
     //! Construct from generators.
@@ -453,6 +457,8 @@ namespace libsemigroups {
     //! number of generators.
     //!
     //! \sa \ref current_position.
+    // TODO helper
+    // TODO rename to_element
     element_type word_to_element(word_type const& w) const;
 
     //! Check equality of words in the generators.
@@ -467,6 +473,7 @@ namespace libsemigroups {
     //!
     //! \throws LibsemigroupsException if \p w contains an value exceeding
     //! \ref number_of_generators.
+    // TODO delete
     bool equal_to(word_type const& x, word_type const& y) const;
 
     //! Returns the number of generators.
@@ -544,6 +551,7 @@ namespace libsemigroups {
     //!
     //! \throws LibsemigroupsException if the values \p i and \p j are greater
     //! than or equal to \ref current_size.
+    // TODO no_checks version
     element_index_type fast_product(element_index_type i,
                                     element_index_type j) const;
 
@@ -704,6 +712,7 @@ namespace libsemigroups {
     //!
     //! \note This function may trigger a (partial) enumeration.
     word_type minimal_factorisation(const_reference x);
+    // TODO version taking word_type by reference also
 
 #ifdef NOT_PARSED_BY_DOXYGEN
     // The following are required, they are documented in FroidurePinBase.
@@ -727,6 +736,7 @@ namespace libsemigroups {
     //!
     //! \note This function may trigger a (partial) enumeration.
     word_type factorisation(const_reference x);
+    // TODO version taking word_type by reference also
 
     //! Check finiteness.
     //!
@@ -840,10 +850,12 @@ namespace libsemigroups {
     //!
     //! \throws LibsemigroupsException if the copy constructor or \ref
     //! add_generators throws.
+    // TODO delete
     template <typename T>
     FroidurePin copy_add_generators(T const& coll) const;
 
     //! \copydoc copy_add_generators(T const&) const
+    // TODO delete
     FroidurePin copy_add_generators(std::initializer_list<element_type> coll);
 
     //! Add non-redundant generators in collection.
@@ -1125,6 +1137,7 @@ namespace libsemigroups {
     //! Constant.
     //!
     //! \sa \ref crend.
+    // TODO remove
     const_reverse_iterator crbegin() const;
 
     //! Returns a const reverse iterator pointing one before the first
@@ -1143,6 +1156,7 @@ namespace libsemigroups {
     //! Constant.
     //!
     //! \sa \ref crbegin.
+    // TODO remove
     const_reverse_iterator crend() const;
 
     //! Returns a const iterator pointing to the first element (sorted by
@@ -1176,6 +1190,7 @@ namespace libsemigroups {
     //! \no_libsemigroups_except
     //!
     //! \note This function triggers a full enumeration.
+    // TODO remove
     const_reverse_iterator_sorted crbegin_sorted();
 
     //! Returns a const reverse iterator pointing one before the first
@@ -1187,6 +1202,7 @@ namespace libsemigroups {
     //! \no_libsemigroups_except
     //!
     //! \note This function triggers a full enumeration.
+    // TODO remove
     const_reverse_iterator_sorted crend_sorted();
 
     //! Returns a const iterator pointing at the first idempotent.
