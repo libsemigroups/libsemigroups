@@ -101,15 +101,19 @@ namespace libsemigroups {
     ////////////////////////////////////////////////////////////////////////
     // FroidurePin - data members - private
     ////////////////////////////////////////////////////////////////////////
+
     struct Settings {
       Settings() noexcept
           : _batch_size(8'192),
             _concurrency_threshold(823'543),
             _max_threads(std::thread::hardware_concurrency()),
             _immutable(false) {}
-      Settings(Settings const&) noexcept = default;
-      Settings(Settings&&) noexcept      = default;
-      ~Settings()                        = default;
+      Settings(Settings const&) noexcept            = default;
+      Settings(Settings&&) noexcept                 = default;
+      Settings& operator=(Settings const&) noexcept = default;
+      Settings& operator=(Settings&&) noexcept      = default;
+
+      ~Settings() = default;
       size_t _batch_size;
       size_t _concurrency_threshold;
       size_t _max_threads;
@@ -148,17 +152,20 @@ namespace libsemigroups {
     //! Default constructor.
     FroidurePinBase();
 
+    // TODO doc
+    FroidurePinBase& init();
+
     //! Copy constructor.
     FroidurePinBase(FroidurePinBase const& S);
 
     //! Default move constructor.
     FroidurePinBase(FroidurePinBase&& other) = default;
 
-    //! Deleted.
-    FroidurePinBase& operator=(FroidurePinBase const&) = delete;
+    //! Copy assignment operator.
+    FroidurePinBase& operator=(FroidurePinBase const&);
 
-    //! Deleted.
-    FroidurePinBase& operator=(FroidurePinBase&&) = delete;
+    //! Move assignment operator.
+    FroidurePinBase& operator=(FroidurePinBase&&) = default;
 
     virtual ~FroidurePinBase();
 
