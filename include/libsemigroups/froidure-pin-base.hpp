@@ -83,6 +83,7 @@ namespace libsemigroups {
     // this type of integer.
     using size_type = uint32_t;
 
+    //! TODO(doc)
     using generator_index_type = size_type;
 
     //! Type for the index of an element.
@@ -176,10 +177,9 @@ namespace libsemigroups {
     //! Set a new value for the batch size.
     //!
     //! The *batch size* is the number of new elements to be found by any call
-    //! to \ref run.
-    //! This is used by, for example, FroidurePin::position so that it is
-    //! possible to find the position of an element after only partially
-    //! enumerating the semigroup.
+    //! to \ref run. This is used by, for example, FroidurePin::position so
+    //! that it is possible to find the position of an element after only
+    //! partially enumerating the semigroup.
     //!
     //! The default value of the batch size is `8192`.
     //!
@@ -233,6 +233,7 @@ namespace libsemigroups {
     //!
     //! \sa
     //! max_threads().
+    // TODO remove
     FroidurePinBase& max_threads(size_t number_of_threads) noexcept;
 
     //! Returns the current value of the maximum number of threads.
@@ -248,6 +249,7 @@ namespace libsemigroups {
     //!
     //! \sa
     //! max_threads(size_t).
+    // TODO remove
     [[nodiscard]] size_t max_threads() const noexcept;
 
     //! Set the threshold for concurrency to be used by member functions.
@@ -272,6 +274,7 @@ namespace libsemigroups {
     //!
     //! \sa
     //! concurrency_threshold().
+    // TODO remove
     FroidurePinBase& concurrency_threshold(size_t thrshld) noexcept;
 
     //! Returns the current value of the concurrency threshold.
@@ -287,6 +290,7 @@ namespace libsemigroups {
     //!
     //! \sa
     //! concurrency_threshold(size_t).
+    // TODO remove
     [[nodiscard]] size_t concurrency_threshold() const noexcept;
 
     //! Set immutability.
@@ -312,6 +316,7 @@ namespace libsemigroups {
     //!
     //! \sa
     //! immutable().
+    // TODO delete
     FroidurePinBase& immutable(bool val) noexcept;
 
     //! Returns the current immutability.
@@ -327,6 +332,7 @@ namespace libsemigroups {
     //!
     //! \sa
     //! immutable(bool).
+    // TODO delete
     [[nodiscard]] bool immutable() const noexcept;
 
     ////////////////////////////////////////////////////////////////////////
@@ -371,11 +377,11 @@ namespace libsemigroups {
     //! \f$O(n)\f$ where \f$n\f$ is the length of the word \p w.
     //!
     //! \sa FroidurePin::word_to_element.
-    // TODO(later) -> helper
+    // TODO(0) -> helper
     [[nodiscard]] element_index_type current_position(word_type const& w) const;
 
     //! \copydoc current_position(word_type const&) const
-    // TODO(later) -> helper
+    // TODO(0) -> helper
     [[nodiscard]] element_index_type
     current_position(std::initializer_list<size_t> const& w) const {
       word_type ww = w;
@@ -477,6 +483,11 @@ namespace libsemigroups {
       return _nr_rules;
     }
 
+    // TODO doc
+    element_index_type prefix_no_checks(element_index_type pos) const {
+      return _prefix[pos];
+    }
+
     //! Returns the position of the longest proper prefix.
     //!
     //! Returns the position of the prefix of the element \c x in position
@@ -493,7 +504,12 @@ namespace libsemigroups {
     //! Constant.
     element_index_type prefix(element_index_type pos) const {
       validate_element_index(pos);
-      return _prefix[pos];
+      return prefix_no_checks(pos);
+    }
+
+    [[nodiscard]] element_index_type
+    suffix_no_checls(element_index_type pos) const {
+      return _suffix[pos];
     }
 
     //! Returns the position of the longest proper suffix.
@@ -512,7 +528,7 @@ namespace libsemigroups {
     //! Constant.
     [[nodiscard]] element_index_type suffix(element_index_type pos) const {
       validate_element_index(pos);
-      return _suffix[pos];
+      return suffix(pos);
     }
 
     //! Returns the first letter of the element with specified index.
@@ -541,6 +557,8 @@ namespace libsemigroups {
       return _first[pos];
     }
 
+    // TODO first_letter_no_checks
+
     //! Returns the last letter of the element with specified index.
     //!
     //! This function returns the final letter of the element in position
@@ -566,6 +584,7 @@ namespace libsemigroups {
       validate_element_index(pos);
       return _final[pos];
     }
+    // TODO final_letter_no_checks
 
     //! Returns the length of the short-lex least word.
     //!
@@ -581,6 +600,7 @@ namespace libsemigroups {
     //!
     //! \sa
     //! \ref length.
+    // TODO no checks version
     [[nodiscard]] size_t current_length(element_index_type pos) const {
       validate_element_index(pos);
       return _length[pos];
@@ -601,6 +621,7 @@ namespace libsemigroups {
     //! \sa
     //! \ref current_length.
     // TODO(later) helper
+    // TODO no checks version
     [[nodiscard]] size_t length(element_index_type pos) {
       if (pos >= _nr) {
         run();
@@ -629,6 +650,7 @@ namespace libsemigroups {
     //! \f$O(n)\f$ where \f$n\f$ is the minimum of the lengths of
     //! `minimal_factorisation(i)` and `minimal_factorisation(j)`.
     // TODO(later) helper
+    // TODO no checks version
     [[nodiscard]] element_index_type
     product_by_reduction(element_index_type i, element_index_type j) const;
 
@@ -663,6 +685,9 @@ namespace libsemigroups {
     //! this, and \f$n\f$ is the return value of
     //! FroidurePin::number_of_generators.
     [[nodiscard]] bool is_monoid() {
+      if (_found_one) {
+        return true;
+      }
       run();
       return _found_one;
     }
@@ -773,6 +798,7 @@ namespace libsemigroups {
     //! At worst \f$O(mn)\f$ where \f$m\f$ equals \p pos and \f$n\f$ is the
     //! return value of FroidurePin::number_of_generators.
     // TODO(later) helper
+    // TODO no checks version
     [[nodiscard]] word_type minimal_factorisation(element_index_type pos) {
       word_type word;
       minimal_factorisation(word, pos);
@@ -794,6 +820,7 @@ namespace libsemigroups {
     //! \complexity
     //! Constant.
     // TODO(later) helper
+    // TODO no checks version
     void minimal_factorisation(word_type& word, element_index_type pos) const {
       validate_element_index(pos);
       private_minimal_factorisation(word, pos);
@@ -825,6 +852,7 @@ namespace libsemigroups {
     //! At worst \f$O(mn)\f$ where \f$m\f$ equals \p pos and \f$n\f$ is the
     //! return value of FroidurePin::number_of_generators.
     // TODO(later) helper
+    // TODO no checks version
     void factorisation(word_type& word, element_index_type pos) {
       minimal_factorisation(word, pos);
     }
@@ -851,6 +879,7 @@ namespace libsemigroups {
     //! At worst \f$O(mn)\f$ where \f$m\f$ equals \p pos and \f$n\f$ is the
     //! return value of FroidurePin::number_of_generators.
     // TODO(later) helper
+    // TODO no checks version
     [[nodiscard]] word_type factorisation(element_index_type pos) {
       return minimal_factorisation(pos);
     }
@@ -1265,6 +1294,7 @@ namespace libsemigroups {
     void partial_copy(FroidurePinBase const& S);
 
     // TODO should be minimal_factorisation_no_checks
+    // TODO helper
     void private_minimal_factorisation(word_type&         word,
                                        element_index_type pos) const {
       word.clear();
@@ -1278,7 +1308,9 @@ namespace libsemigroups {
     // FroidurePin - validation member functions - private
     ////////////////////////////////////////////////////////////////////////
 
+    // TODO rename
     void validate_element_index(element_index_type i) const;
+    // TODO rename
     void validate_letter_index(generator_index_type i) const;
   };
 }  // namespace libsemigroups
