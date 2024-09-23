@@ -788,7 +788,6 @@ namespace libsemigroups {
     //! \param x the generator to add.
     //!
     //! \throws LibsemigroupsException if any of the following hold:
-    //! * immutable() returns \c true
     //! * the degree of \p x is incompatible with the existing degree.
     void add_generator(const_reference x);
 
@@ -802,7 +801,6 @@ namespace libsemigroups {
     //! \param coll the collection of generators to add.
     //!
     //! \throws LibsemigroupsException if any of the following hold:
-    //! * immutable() returns \c true
     //! * the degree of \p x is incompatible with the existing degree.
     template <typename T>
     void add_generators(T const& coll);
@@ -814,7 +812,6 @@ namespace libsemigroups {
     //! \param coll the collection of generators to add.
     //!
     //! \throws LibsemigroupsException if any of the following hold:
-    //! * immutable() returns \c true
     //! * the degree of \p x is incompatible with the existing degree.
     void add_generators(std::initializer_list<const_element_type> coll);
 
@@ -828,7 +825,6 @@ namespace libsemigroups {
     //! \param last iterator pointing one past the last generator to add.
     //!
     //! \throws LibsemigroupsException if any of the following hold:
-    //! * immutable() returns \c true
     //! * the degree of \p x is incompatible with the existing degree.
     template <typename T>
     void add_generators(T const& first, T const& last);
