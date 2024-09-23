@@ -174,13 +174,16 @@ namespace libsemigroups {
       }
       for (size_t i = 0; i < T.size(); ++i) {
         for (size_t j = 0; j < T.size(); ++j) {
-          REQUIRE_NOTHROW(T.product_by_reduction(i, j));
-          REQUIRE_THROWS_AS(T.product_by_reduction(i + T.size(), j),
-                            LibsemigroupsException);
-          REQUIRE_THROWS_AS(T.product_by_reduction(i, j + T.size()),
-                            LibsemigroupsException);
-          REQUIRE_THROWS_AS(T.product_by_reduction(i + T.size(), j + T.size()),
-                            LibsemigroupsException);
+          REQUIRE_NOTHROW(froidure_pin::product_by_reduction(T, i, j));
+          REQUIRE_THROWS_AS(
+              froidure_pin::product_by_reduction(T, i + T.size(), j),
+              LibsemigroupsException);
+          REQUIRE_THROWS_AS(
+              froidure_pin::product_by_reduction(T, i, j + T.size()),
+              LibsemigroupsException);
+          REQUIRE_THROWS_AS(
+              froidure_pin::product_by_reduction(T, i + T.size(), j + T.size()),
+              LibsemigroupsException);
         }
       }
       for (size_t i = 0; i < T.size(); ++i) {
