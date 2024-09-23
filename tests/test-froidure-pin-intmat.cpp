@@ -116,7 +116,7 @@ namespace libsemigroups {
       FroidurePin<Mat> T;
       T.add_generator(Mat({{0, 0}, {0, 1}}));
       T.add_generator(Mat({{0, 1}, {-1, 0}}));
-      REQUIRE_THROWS_AS(T.current_position({}), LibsemigroupsException);
+      REQUIRE(T.current_position({}) == UNDEFINED);
       REQUIRE_NOTHROW(T.current_position({0, 0, 1, 1}));
       REQUIRE(T.current_position({0, 0, 1, 1}) == UNDEFINED);
       auto w = T.word_to_element({0, 0, 1, 1});
@@ -136,7 +136,7 @@ namespace libsemigroups {
       T.add_generator(Mat({{0, 0}, {0, 1}}));
       T.add_generator(Mat({{0, 1}, {-1, 0}}));
 
-      REQUIRE_THROWS_AS(T.word_to_element({}), LibsemigroupsException);
+      REQUIRE(T.word_to_element({}) == Mat::one(2));
       REQUIRE_THROWS_AS(T.word_to_element({0, 0, 1, 2}),
                         LibsemigroupsException);
 

@@ -220,19 +220,27 @@ namespace libsemigroups {
   // FroidurePinBase - member functions - public
   ////////////////////////////////////////////////////////////////////////
 
-  // TODO no_check version
+  element_index_type
+  FroidurePinBase::current_position_no_checks(word_type const& w) const {
+    if (w.size() == 0) {
+      if (_found_one) {
+        return _pos_one;
+      } else {
+        return UNDEFINED;
+      }
+    }
+    element_index_type s = current_position_no_checks(w[0]);
+    return word_graph::follow_path_no_checks(
+        current_right_cayley_graph(), s, w.cbegin() + 1, w.cend());
+  }
+
   element_index_type
   FroidurePinBase::current_position(word_type const& w) const {
     // w is a word in the generators (i.e. a vector of letter_type's)
-    if (w.size() == 0) {
-      LIBSEMIGROUPS_EXCEPTION("expected a non-empty word, found empty word");
-    }
     for (auto x : w) {
       throw_if_generator_index_out_of_range(x);
     }
-    element_index_type s = current_position(w[0]);
-    return word_graph::follow_path_no_checks(
-        current_right_cayley_graph(), s, w.cbegin() + 1, w.cend());
+    return current_position_no_checks(w);
   }
 
   void FroidurePinBase::current_minimal_factorisation_no_checks(
