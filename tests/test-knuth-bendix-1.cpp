@@ -452,8 +452,7 @@ namespace libsemigroups {
     auto fp = to_froidure_pin(kb);
     fp.enumerate(100);
 
-    auto expected
-        = iterator_range(fp.cbegin_normal_forms(), fp.cend_normal_forms());
+    auto expected = fp.current_normal_forms();
 
     Paths paths(ad);
     paths.source(0).min(1).max(fp.current_max_word_length() + 1);
@@ -590,7 +589,7 @@ namespace libsemigroups {
   TEMPLATE_TEST_CASE("redundant_rule (word_type)",
                      "[014][quick][knuth-bendix]",
                      KNUTH_BENDIX_TYPES) {
-    using literals::        operator""_w;
+    using literals::operator""_w;
     auto                    rg = ReportGuard(false);
     Presentation<word_type> p;
     p.alphabet(3);
@@ -681,7 +680,7 @@ namespace libsemigroups {
                      "[016][quick][knuth-bendix]",
                      KNUTH_BENDIX_TYPES) {
     using literals::operator""_w;
-    auto            rg = ReportGuard(false);
+    auto rg = ReportGuard(false);
 
     Presentation<std::string> p;
     p.contains_empty_word(true);
