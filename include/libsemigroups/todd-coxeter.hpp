@@ -291,6 +291,7 @@ namespace libsemigroups {
     }
 
     // init version?
+    // TODO why does this exist?
     template <typename Node>
     ToddCoxeter(congruence_kind                knd,
                 Presentation<word_type> const& p,
@@ -298,6 +299,7 @@ namespace libsemigroups {
       init(knd, p, ad);
     }
 
+    // TODO why does this exist?
     template <typename Node>
     ToddCoxeter& init(congruence_kind                knd,
                       Presentation<word_type> const& p,
