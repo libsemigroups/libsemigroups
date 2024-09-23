@@ -394,15 +394,28 @@ namespace libsemigroups {
     //! \f$O(n)\f$ where \f$n\f$ is the length of the word \p w.
     //!
     //! \sa FroidurePin::word_to_element.
-    // TODO(0) -> helper
+    // This is not a helper because the function
+    // FroidurePin::current_position(const_reference) requires access to the
+    // private members.
     [[nodiscard]] element_index_type current_position(word_type const& w) const;
 
     //! \brief \copydoc current_position(word_type const&) const
-    // TODO(0) -> helper
+    // This is not a helper because the function
+    // FroidurePin::current_position(const_reference) requires access to the
+    // private members.
     [[nodiscard]] element_index_type
     current_position(std::initializer_list<size_t> const& w) const {
       word_type ww = w;
       return current_position(ww);
+    }
+
+    // TODO(0) current_position_no_checks for word_type + initializer_list
+
+    // TODO(0) doc
+    [[nodiscard]] element_index_type
+    current_position_no_checks(generator_index_type i) const {
+      LIBSEMIGROUPS_ASSERT(i < _letter_to_pos.size());
+      return _letter_to_pos[i];
     }
 
     //! \brief Returns the position in of the generator with specified index.
@@ -427,7 +440,7 @@ namespace libsemigroups {
     [[nodiscard]] element_index_type
     current_position(generator_index_type i) const {
       throw_if_generator_index_out_of_range(i);
-      return _letter_to_pos[i];
+      return current_position_no_checks(i);
     }
 
     // TODO(later) analogues of the current_position mem fns for position
@@ -653,8 +666,8 @@ namespace libsemigroups {
     //!
     //! \sa
     //! \ref current_length.
-    // TODO(later) helper
-    // TODO no checks version
+    // This function could be a helper, but current_length cannot be, so keeping
+    // this as a mem fn.
     [[nodiscard]] size_t length(element_index_type pos) {
       if (pos >= current_size()) {
         run();
@@ -663,7 +676,8 @@ namespace libsemigroups {
     }
 
     // TODO doc
-    // TODO(later) helper
+    // This function could be a helper, but current_length cannot be, so keeping
+    // this as a mem fn.
     [[nodiscard]] size_t length_no_checks(element_index_type pos) {
       if (pos >= current_size()) {
         run();
