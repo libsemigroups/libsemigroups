@@ -410,16 +410,11 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin<Transf<>>",
                           "080",
-                          "multithread number_of_idempotents",
+                          "number_of_idempotents",
                           "[quick][froidure-pin][transformation][transf]") {
     auto                  rg = ReportGuard(REPORT);
     FroidurePin<Transf<>> S({Transf<>({1, 7, 2, 6, 0, 0, 1, 2}),
                              Transf<>({2, 4, 6, 1, 4, 5, 2, 7})});
-    S.max_threads(2).concurrency_threshold(0);
-    REQUIRE(S.max_threads()
-            == std::min(static_cast<unsigned int>(2),
-                        std::thread::hardware_concurrency()));
-    REQUIRE(S.concurrency_threshold() == 0);
     REQUIRE(S.number_of_idempotents() == 72);
   }
 
@@ -901,8 +896,6 @@ namespace libsemigroups {
     S.add_generator(Transf<>({5, 1, 2, 3, 4, 5}));
     S.add_generator(Transf<>({1, 1, 2, 3, 4, 5}));
 
-    S.max_threads(1000);
-
     size_t nr = 0;
     for (size_t i = 0; i < S.size(); i++) {
       if (S.is_idempotent(i)) {
@@ -922,7 +915,6 @@ namespace libsemigroups {
     S.add_generator(Transf<>({1, 2, 3, 4, 5, 6, 0}));
     S.add_generator(Transf<>({1, 0, 2, 3, 4, 5, 6}));
     S.add_generator(Transf<>({0, 1, 2, 3, 4, 5, 0}));
-    S.max_threads(2);
 
     size_t nr = 0;
 
