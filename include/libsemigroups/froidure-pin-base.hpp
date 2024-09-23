@@ -815,7 +815,6 @@ namespace libsemigroups {
     //! return value of FroidurePin::number_of_generators.
     // This function could be a helper, but
     // FroidurePin::minimal_factorisation(const_reference) isn't so keeping.
-    // TODO no checks version
     void factorisation(word_type& word, element_index_type pos) {
       minimal_factorisation(word, pos);
     }
@@ -892,7 +891,6 @@ namespace libsemigroups {
 
       // None of the constructors are noexcept because the corresponding
       // constructors for std::vector aren't (until C++17).
-      // TODO add noexcept, in particular this class doesn't wrap any vectors!
       const_rule_iterator() noexcept                           = default;
       const_rule_iterator(const_rule_iterator const&) noexcept = default;
       const_rule_iterator(const_rule_iterator&&) noexcept      = default;
@@ -1029,9 +1027,13 @@ namespace libsemigroups {
     //! //  {{3, 3}, {3}}}
     //! \endcode
     // clang-format on
-    // TODO rename cbegin_current_rules() and impl cbegin_rules that performs
-    // full enum first.
-    [[nodiscard]] const_rule_iterator cbegin_rules() const {
+    [[nodiscard]] const_rule_iterator cbegin_current_rules() const {
+      return const_rule_iterator(this, UNDEFINED, 0);
+    }
+
+    // TODO doc
+    [[nodiscard]] const_rule_iterator cbegin_rules() {
+      run();
       return const_rule_iterator(this, UNDEFINED, 0);
     }
 
@@ -1101,7 +1103,12 @@ namespace libsemigroups {
     //! //  {{3, 3}, {3}}}
     //! \endcode
     // clang-format on
-    [[nodiscard]] const_rule_iterator cend_rules() const {
+    [[nodiscard]] const_rule_iterator cend_current_rules() const {
+      return const_rule_iterator(this, current_size(), 0);
+    }
+
+    [[nodiscard]] const_rule_iterator cend_rules() {
+      run();
       return const_rule_iterator(this, current_size(), 0);
     }
 
@@ -1241,14 +1248,19 @@ namespace libsemigroups {
       }
     };
 
+    // TODO rules + current_rules
+
+    // TODO cbegin_current_normal_forms
     [[nodiscard]] const_normal_form_iterator cbegin_normal_forms() const {
       return const_normal_form_iterator(this, 0);
     }
 
+    // TODO cbegin_current_normal_forms
     [[nodiscard]] const_normal_form_iterator cend_normal_forms() const {
       return const_normal_form_iterator(this, current_size());
     }
 
+    // TODO current_normal_forms
     [[nodiscard]] auto normal_forms() const {
       return rx::iterator_range(cbegin_normal_forms(), cend_normal_forms());
     }

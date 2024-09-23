@@ -106,9 +106,10 @@ namespace libsemigroups {
       REQUIRE(S.fast_product(S.position(x), S.position(x)) == S.position(x));
     }
 
-    void test_rules_iterator(FroidurePin<Transf<>>& S) {
+    void test_current_rules_iterator(FroidurePin<Transf<>>& S) {
       size_t nr = 0;
-      for (auto it = S.cbegin_rules(); it != S.cend_rules(); ++it) {
+      for (auto it = S.cbegin_current_rules(); it != S.cend_current_rules();
+           ++it) {
         REQUIRE(S.current_position(it->first)
                 == S.current_position(it->second));
         nr++;
@@ -1788,15 +1789,15 @@ namespace libsemigroups {
     S.add_generator(Transf<>({5, 1, 2, 3, 4, 5}));
     S.add_generator(Transf<>({1, 1, 2, 3, 4, 5}));
     // No rules, because not enumerated
-    REQUIRE(S.cbegin_rules() == S.cend_rules());
+    REQUIRE(S.cbegin_current_rules() == S.cend_current_rules());
     S.run_until([&S]() { return S.current_number_of_rules() >= 2; });
     REQUIRE(!S.finished());
-    {  // test cbegin_rules, cend_rules on partially enumerated S
-      auto it = S.cbegin_rules();
+    {  // test cbegin_current_rules, cend_rules on partially enumerated S
+      auto it = S.cbegin_current_rules();
       REQUIRE(*it == relation_type({0, 0}, {0}));
       ++it;
       REQUIRE(*it == relation_type({0, 1}, {1}));
-      test_rules_iterator(S);
+      test_current_rules_iterator(S);
       REQUIRE(!S.finished());
       REQUIRE(S.current_number_of_rules() == 15);
     }
@@ -1805,13 +1806,13 @@ namespace libsemigroups {
     REQUIRE(S.finished());
     REQUIRE(S.number_of_rules() == 2459);
     {
-      auto it = S.cbegin_rules();
+      auto it = S.cbegin_current_rules();
       REQUIRE(*it == relation_type({0, 0}, {0}));
       ++it;
       REQUIRE(*it == relation_type({0, 1}, {1}));
 
-      test_rules_iterator(S);
-      test_rules_iterator(S);
+      test_current_rules_iterator(S);
+      test_current_rules_iterator(S);
     }
   }
 
@@ -1901,11 +1902,11 @@ namespace libsemigroups {
     REQUIRE(T.current_number_of_rules() == S.current_number_of_rules());
     REQUIRE(!T.finished());
 
-    test_rules_iterator(T);
-    test_rules_iterator(T);
+    test_current_rules_iterator(T);
+    test_current_rules_iterator(T);
     T.run();
     REQUIRE(T.finished());
-    test_rules_iterator(T);
+    test_current_rules_iterator(T);
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin<Transf<>>",
@@ -1926,13 +1927,13 @@ namespace libsemigroups {
     auto T(S);
     REQUIRE(T.current_number_of_rules() == S.current_number_of_rules());
 
-    test_rules_iterator(T);
-    test_rules_iterator(T);
+    test_current_rules_iterator(T);
+    test_current_rules_iterator(T);
 
     T.run();
     REQUIRE(T.finished());
     REQUIRE(T.number_of_rules() == S.number_of_rules());
-    test_rules_iterator(T);
+    test_current_rules_iterator(T);
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin<Transf<>>",
@@ -1954,13 +1955,13 @@ namespace libsemigroups {
 
     REQUIRE(T.current_number_of_rules() == S.current_number_of_rules());
 
-    test_rules_iterator(T);
-    test_rules_iterator(T);
+    test_current_rules_iterator(T);
+    test_current_rules_iterator(T);
 
     T.run();
     REQUIRE(T.finished());
     REQUIRE(T.number_of_rules() == S.number_of_rules());
-    test_rules_iterator(T);
+    test_current_rules_iterator(T);
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin<Transf<>>",
@@ -1984,10 +1985,10 @@ namespace libsemigroups {
 
     REQUIRE(!T.finished());
     REQUIRE(T.current_number_of_rules() == 2418);
-    test_rules_iterator(T);
+    test_current_rules_iterator(T);
     REQUIRE(!T.finished());
     REQUIRE(T.current_number_of_rules() == 2418);
-    test_rules_iterator(T);
+    test_current_rules_iterator(T);
     REQUIRE(T.current_number_of_rules() == 2418);
   }
 
@@ -2012,9 +2013,9 @@ namespace libsemigroups {
     REQUIRE(coll[0] == T.generator(3));
     REQUIRE(coll[1] == T.generator(4));
 
-    test_rules_iterator(T);
+    test_current_rules_iterator(T);
     REQUIRE(T.number_of_rules() == 2459);
-    test_rules_iterator(T);
+    test_current_rules_iterator(T);
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin<Transf<>>",
@@ -2037,7 +2038,7 @@ namespace libsemigroups {
         = {Transf<>({5, 1, 2, 3, 4, 5}), Transf<>({1, 1, 2, 3, 4, 5})};
 
     FroidurePin<Transf<>> T = S.copy_closure(coll);
-    test_rules_iterator(T);
+    test_current_rules_iterator(T);
   }
 
   LIBSEMIGROUPS_TEST_CASE(
@@ -2063,9 +2064,9 @@ namespace libsemigroups {
 
     FroidurePin<Transf<>> T = S.copy_add_generators(coll);
 
-    test_rules_iterator(T);
+    test_current_rules_iterator(T);
     REQUIRE(T.number_of_rules() == 2459);
-    test_rules_iterator(T);
+    test_current_rules_iterator(T);
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin<Transf<>>",
@@ -2088,9 +2089,9 @@ namespace libsemigroups {
 
     FroidurePin<Transf<>> T = S.copy_closure(coll);
 
-    test_rules_iterator(T);
+    test_current_rules_iterator(T);
     REQUIRE(T.number_of_rules() == 2459);
-    test_rules_iterator(T);
+    test_current_rules_iterator(T);
   }
 
   LIBSEMIGROUPS_TEST_CASE(
@@ -2114,9 +2115,9 @@ namespace libsemigroups {
 
     FroidurePin<Transf<>> T = S.copy_add_generators(coll);
 
-    test_rules_iterator(T);
+    test_current_rules_iterator(T);
     REQUIRE(T.number_of_rules() == 2459);
-    test_rules_iterator(T);
+    test_current_rules_iterator(T);
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin<Transf<>>",
