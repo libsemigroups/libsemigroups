@@ -617,8 +617,6 @@ namespace libsemigroups {
     //! FroidurePin::number_of_generators.
     [[nodiscard]] cayley_graph_type const& right_cayley_graph() {
       run();
-      _right.induced_subgraph_no_checks(0, size());  // TODO(now) Why's this
-                                                     // necessary?
       return _right;
     }
 
@@ -641,9 +639,6 @@ namespace libsemigroups {
     //! FroidurePin::number_of_generators.
     [[nodiscard]] cayley_graph_type const& left_cayley_graph() {
       run();
-      _left.induced_subgraph_no_checks(
-          0,
-          size());  // TODO(now) Why's this necessary?
       return _left;
     }
 
