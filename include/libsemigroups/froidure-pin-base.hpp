@@ -96,6 +96,7 @@ namespace libsemigroups {
     // FroidurePin - data members - private
     ////////////////////////////////////////////////////////////////////////
 
+#ifndef PARSED_BY_DOXYGEN
     // This now only contains a single data member, which might make it a bit
     // redundant.
     struct Settings {
@@ -108,6 +109,7 @@ namespace libsemigroups {
 
       size_t _batch_size;
     } _settings;
+#endif
 
     size_t _degree;
     std::vector<std::pair<generator_index_type, generator_index_type>>
@@ -247,10 +249,6 @@ namespace libsemigroups {
     //! is performed, and \ref UNDEFINED is returned if the position of the
     //! element corresponding to \p w cannot be determined.
     //!
-    //! This is equivalent to finding the product \c x of the
-    //! generators FroidurePin::generator(\c w[i]) and then calling
-    //! FroidurePin::current_position with argument \c x.
-    //!
     //! \param w a word in the generators.
     //!
     //! \returns
@@ -288,7 +286,8 @@ namespace libsemigroups {
     //! particular, if any of the letters in \p w is out of range, then bad
     //! things will happen.
     //!
-    //! \complexity \f$O(n)\f$ where \f$n\f$ is the length of the word \p w.
+    //! \complexity
+    //! \f$O(n)\f$ where \f$n\f$ is the length of the word \p w.
     //!
     //! \sa FroidurePin::word_to_element.
     [[nodiscard]] element_index_type
@@ -1024,10 +1023,6 @@ namespace libsemigroups {
     //! \param word the \ref word_type to contain the result.
     //! \param pos the index of the element whose factorisation is sought.
     //!
-    //! \returns
-    //! The short-lex least word in the generators equal to the element with
-    //! index \p pos.
-    //!
     //! \exceptions
     //! \no_libsemigroups_except
     //!
@@ -1267,8 +1262,8 @@ namespace libsemigroups {
     //! object. If you want to obtain the complete set of rules, then
     //! use \ref cbegin_rules instead.
     //!
-    //! \returns An iterator of type FroidurePinBase::const_rule_iterator
-    //! pointing to a \ref relation_type.
+    //! \returns An iterator of type \ref const_rule_iterator pointing to a
+    //! \ref relation_type.
     //!
     //! \exceptions
     //! \no_libsemigroups_except
@@ -1336,8 +1331,8 @@ namespace libsemigroups {
     //! obtain a (possibly incomplete) set of rules without triggering a full
     //! enumeration, then use \ref cbegin_current_rules instead.
     //!
-    //! \returns An iterator of type FroidurePinBase::const_rule_iterator
-    //! pointing to a \ref relation_type.
+    //! \returns An iterator of type \ref const_rule_iterator pointing to a
+    //! \ref relation_type.
     //!
     //! \exceptions
     //! \no_libsemigroups_except
@@ -1366,8 +1361,8 @@ namespace libsemigroups {
     //! you want to obtain the complete set of rules, then use \ref cend_rules
     //! instead.
     //!
-    //! \returns An iterator of type FroidurePinBase::const_rule_iterator
-    //! pointing to a \ref relation_type.
+    //! \returns An iterator of type \ref const_rule_iterator pointing to a
+    //! \ref relation_type.
     //!
     //! \exceptions
     //! \no_libsemigroups_except
@@ -1707,7 +1702,7 @@ namespace libsemigroups {
     //! instance (if any).
     //!
     //! This function performs a full enumeration of the FroidurePin. If you
-    //! want to obtain the current set of rules without triggering an
+    //! want to obtain the current set of normal forms without triggering an
     //! enumeration, then use \ref cbegin_current_normal_forms instead.
     //!
     //! \returns An iterator of type \ref const_normal_form_iterator
@@ -1801,7 +1796,6 @@ namespace libsemigroups {
   //!
   //! TODO
   namespace froidure_pin {
-    using element_index_type = typename FroidurePinBase::element_index_type;
 
     //! \brief Compute a product using the Cayley graph.
     //!
@@ -1825,10 +1819,11 @@ namespace libsemigroups {
     //! \complexity
     //! \f$O(n)\f$ where \f$n\f$ is the minimum of the lengths of
     //! `minimal_factorisation(i)` and `minimal_factorisation(j)`.
-    [[nodiscard]] element_index_type
-    product_by_reduction_no_checks(FroidurePinBase const& fpb,
-                                   element_index_type     i,
-                                   element_index_type     j);
+    [[nodiscard]] FroidurePinBase::element_index_type
+    product_by_reduction_no_checks(
+        FroidurePinBase const&                       fpb,
+        typename FroidurePinBase::element_index_type i,
+        typename FroidurePinBase::element_index_type j);
 
     //! \brief Compute a product using the Cayley graph.
     //!
@@ -1851,10 +1846,10 @@ namespace libsemigroups {
     //! \complexity
     //! \f$O(n)\f$ where \f$n\f$ is the minimum of the lengths of
     //! `minimal_factorisation(i)` and `minimal_factorisation(j)`.
-    [[nodiscard]] element_index_type
-    product_by_reduction(FroidurePinBase const& fpb,
-                         element_index_type     i,
-                         element_index_type     j);
+    [[nodiscard]] typename FroidurePinBase::element_index_type
+    product_by_reduction(FroidurePinBase const&                       fpb,
+                         typename FroidurePinBase::element_index_type i,
+                         typename FroidurePinBase::element_index_type j);
   }  // namespace froidure_pin
 }  // namespace libsemigroups
 #endif  // LIBSEMIGROUPS_FROIDURE_PIN_BASE_HPP_
