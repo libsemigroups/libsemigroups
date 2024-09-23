@@ -1140,69 +1140,11 @@ namespace libsemigroups {
     // length (threshold_length + 1) begin
     LIBSEMIGROUPS_ASSERT(_nr >= _lenindex.at(threshold_length));
     total_load += cmplxty * (_nr - _lenindex.at(threshold_length));
-    size_t const N = max_threads();
-    LIBSEMIGROUPS_ASSERT(N != 0);
 
-    if (N == 1 || size() < concurrency_threshold()) {
-      // Use only 1 thread
-      idempotents(0, _nr, threshold_index, _idempotents);
-    } else {
-      // Use > 1 threads
-      size_t                            mean_load = total_load / N;
-      size_t                            len       = 1;
-      std::vector<enumerate_index_type> first(N, 0);
-      std::vector<enumerate_index_type> last(N, _nr);
-      std::vector<std::vector<internal_idempotent_pair>> tmp(
-          N, std::vector<internal_idempotent_pair>());
-      std::vector<std::thread> threads;
-      detail::reset_thread_ids();
-
-      for (size_t i = 0; i < N - 1; i++) {
-        size_t thread_load = 0;
-        last[i]            = first[i];
-        while (thread_load < mean_load && last[i] < threshold_index) {
-          if (last[i] >= _lenindex[len]) {
-            ++len;
-          }
-          thread_load += len;
-          ++last[i];
-        }
-        while (thread_load < mean_load) {
-          thread_load += cmplxty;
-          ++last[i];
-        }
-        total_load -= thread_load;
-        first[i + 1] = last[i];
-
-        threads.emplace_back(&FroidurePin::idempotents,
-                             this,
-                             first[i],
-                             last[i],
-                             threshold_index,
-                             std::ref(tmp[i]));
-      }
-
-      threads.emplace_back(&FroidurePin::idempotents,
-                           this,
-                           first[N - 1],
-                           last[N - 1],
-                           threshold_index,
-                           std::ref(tmp[N - 1]));
-
-      size_t number_of_idempotents = 0;
-      for (size_t i = 0; i < N; i++) {
-        threads[i].join();
-        number_of_idempotents += tmp[i].size();
-      }
-      _idempotents.reserve(number_of_idempotents);
-      for (size_t i = 0; i < N; i++) {
-        std::copy(
-            tmp[i].begin(), tmp[i].end(), std::back_inserter(_idempotents));
-      }
-    }
+    // Use only 1 thread
+    idempotents(0, _nr, threshold_index, _idempotents);
     auto       run_time = detail::string_time(delta(start_time()));
-    auto const num_idem
-        = fmt::format(detail::group_digits(_idempotents.size()));
+    auto const num_idem = detail::group_digits(_idempotents.size());
     report_default(
         "FroidurePin: found {} idempotents in {}\n", num_idem, run_time);
   }

@@ -307,32 +307,6 @@ namespace libsemigroups {
     return _settings._batch_size;
   }
 
-  // TODO to hpp
-  FroidurePinBase&
-  FroidurePinBase::max_threads(size_t number_of_threads) noexcept {
-    unsigned int n = static_cast<unsigned int>(
-        number_of_threads == 0 ? 1 : number_of_threads);
-    _settings._max_threads = std::min(n, std::thread::hardware_concurrency());
-    return *this;
-  }
-
-  // TODO to hpp
-  size_t FroidurePinBase::max_threads() const noexcept {
-    return _settings._max_threads;
-  }
-
-  // TODO to hpp
-  FroidurePinBase&
-  FroidurePinBase::concurrency_threshold(size_t thrshld) noexcept {
-    _settings._concurrency_threshold = thrshld;
-    return *this;
-  }
-
-  // TODO to hpp
-  size_t FroidurePinBase::concurrency_threshold() const noexcept {
-    return _settings._concurrency_threshold;
-  }
-
   void FroidurePinBase::throw_if_element_index_out_of_range(
       element_index_type i) const {
     if (i >= _nr) {

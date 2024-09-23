@@ -99,10 +99,7 @@ namespace libsemigroups {
     ////////////////////////////////////////////////////////////////////////
 
     struct Settings {
-      Settings() noexcept
-          : _batch_size(8'192),
-            _concurrency_threshold(823'543),
-            _max_threads(std::thread::hardware_concurrency()) {}
+      Settings() noexcept : _batch_size(8'192) {}
       Settings(Settings const&) noexcept            = default;
       Settings(Settings&&) noexcept                 = default;
       Settings& operator=(Settings const&) noexcept = default;
@@ -110,8 +107,6 @@ namespace libsemigroups {
 
       ~Settings() = default;
       size_t _batch_size;
-      size_t _concurrency_threshold;
-      size_t _max_threads;
     } _settings;
 
     size_t _degree;
@@ -222,87 +217,6 @@ namespace libsemigroups {
     //! \sa This is the minimum number of elements enumerated in any call to
     //! \ref run, see batch_size(size_t).
     [[nodiscard]] size_t batch_size() const noexcept;
-
-    //! \brief Set the maximum number of threads.
-    //!
-    //! This member function sets the maximum number of threads to be used by
-    //! any member function of a FroidurePin object. The number of threads is
-    //! limited to the maximum of 1 and the minimum of \p number_of_threads and
-    //! the number of threads supported by the hardware.
-    //!
-    //! The default value is `std::thread::hardware_concurrency()`.
-    //!
-    //! \param number_of_threads the maximum number of threads to use.
-    //!
-    //! \returns A reference to \c this.
-    //!
-    //! \exceptions
-    //! \noexcept
-    //!
-    //! \complexity
-    //! Constant.
-    //!
-    //! \sa
-    //! max_threads().
-    // TODO remove
-    FroidurePinBase& max_threads(size_t number_of_threads) noexcept;
-
-    //! \brief Returns the current value of the maximum number of threads.
-    //!
-    //! \returns
-    //! A `size_t`.
-    //!
-    //! \exceptions
-    //! \noexcept
-    //!
-    //! \complexity
-    //! Constant.
-    //!
-    //! \sa
-    //! max_threads(size_t).
-    // TODO remove
-    [[nodiscard]] size_t max_threads() const noexcept;
-
-    //! \brief Set the threshold for concurrency to be used by member functions.
-    //!
-    //! This member function sets the threshold such that if size()
-    //! exceeds this value, then the following functions may use a concurrent
-    //! implementation:
-    //!
-    //! * \ref FroidurePin::number_of_idempotents
-    //!
-    //! The default value is `823543`.
-    //!
-    //! \param thrshld the new threshold.
-    //!
-    //! \returns A reference to \c this.
-    //!
-    //! \exceptions
-    //! \noexcept
-    //!
-    //! \complexity
-    //! Constant.
-    //!
-    //! \sa
-    //! concurrency_threshold().
-    // TODO remove
-    FroidurePinBase& concurrency_threshold(size_t thrshld) noexcept;
-
-    //! \brief Returns the current value of the concurrency threshold.
-    //!
-    //! \returns
-    //! A `size_t`.
-    //!
-    //! \exceptions
-    //! \noexcept
-    //!
-    //! \complexity
-    //! Constant.
-    //!
-    //! \sa
-    //! concurrency_threshold(size_t).
-    // TODO remove
-    [[nodiscard]] size_t concurrency_threshold() const noexcept;
 
     ////////////////////////////////////////////////////////////////////////
     // FroidurePinBase - pure virtual member functions - public
