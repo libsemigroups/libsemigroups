@@ -31,6 +31,7 @@
 #include "libsemigroups/detail/containers.hpp"  // for DynamicArray2
 #include "libsemigroups/detail/report.hpp"      // for REPORT_DEFAULT, Reporter
 #include "libsemigroups/detail/string.hpp"      // for group_digits
+#include "libsemigroups/word-graph.hpp"
 
 namespace libsemigroups {
   using element_index_type = FroidurePinBase::element_index_type;
@@ -219,6 +220,7 @@ namespace libsemigroups {
   // FroidurePinBase - member functions - public
   ////////////////////////////////////////////////////////////////////////
 
+  // TODO no_check version
   element_index_type
   FroidurePinBase::current_position(word_type const& w) const {
     // w is a word in the generators (i.e. a vector of letter_type's)
@@ -228,17 +230,9 @@ namespace libsemigroups {
     for (auto x : w) {
       throw_if_generator_index_out_of_range(x);
     }
-    // TODO(now) use word_graph::follow_path instead
-    element_index_type out = _letter_to_pos[w[0]];
-    size_t const       n   = _right.number_of_nodes();
-    auto               it  = w.cbegin() + 1;
-    while (it < w.cend() && out < n) {
-      out = _right.target_no_checks(out, *it++);
-    }
-    if (out < n) {
-      return out;
-    }
-    return UNDEFINED;
+    element_index_type s = current_position(w[0]);
+    return word_graph::follow_path_no_checks(
+        current_right_cayley_graph(), s, w.cbegin() + 1, w.cend());
   }
 
   element_index_type
