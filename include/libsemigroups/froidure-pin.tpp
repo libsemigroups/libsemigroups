@@ -180,6 +180,14 @@ namespace libsemigroups {
       // Return a copy
       return this->external_copy(this->to_external_const(_elements[pos]));
     }
+
+    if (w.empty()) {
+      if (!_gens.empty()) {
+        return One()(this->to_external_const(_gens[0]));
+      } else {
+        LIBSEMIGROUPS_EXCEPTION("TODO(0)");
+      }
+    }
     // current_position is always known for generators (i.e. when w.size() ==
     // 1), and current_position verifies that w is valid.
     LIBSEMIGROUPS_ASSERT(w.size() > 1);

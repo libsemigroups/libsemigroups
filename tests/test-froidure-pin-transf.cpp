@@ -160,7 +160,7 @@ namespace libsemigroups {
                                   Transf<>({1, 1, 2, 3, 4, 5})};
     FroidurePin<Transf<>> U(gens);
 
-    REQUIRE_THROWS_AS(U.current_position({}), LibsemigroupsException);
+    REQUIRE(U.current_position({}) == 0);
     REQUIRE_NOTHROW(U.current_position({0, 0, 1, 2}));
     REQUIRE_THROWS_AS(U.current_position({5}), LibsemigroupsException);
   }
@@ -177,7 +177,7 @@ namespace libsemigroups {
                                   Transf<>({1, 1, 2, 3, 4, 5})};
     FroidurePin<Transf<>> U(gens);
 
-    REQUIRE_THROWS_AS(U.word_to_element({}), LibsemigroupsException);
+    REQUIRE(U.word_to_element({}) == gens[0]);
     REQUIRE_THROWS_AS(U.word_to_element({5}), LibsemigroupsException);
 
     Transf<> u = U.word_to_element({0, 0, 1, 2});
@@ -2435,7 +2435,7 @@ namespace libsemigroups {
     U.add_generator(Transf<>({5, 1, 2, 3, 4, 5}));
     U.add_generator(Transf<>({1, 1, 2, 3, 4, 5}));
 
-    REQUIRE_THROWS_AS(U.current_position({}), LibsemigroupsException);
+    REQUIRE(U.current_position({}) == 0);
     REQUIRE_NOTHROW(U.current_position({0, 0, 1, 2}));
     REQUIRE_THROWS_AS(U.current_position({5}), LibsemigroupsException);
   }
@@ -2451,7 +2451,7 @@ namespace libsemigroups {
     U.add_generator(Transf<>({5, 1, 2, 3, 4, 5}));
     U.add_generator(Transf<>({1, 1, 2, 3, 4, 5}));
 
-    REQUIRE_THROWS_AS(U.word_to_element({}), LibsemigroupsException);
+    REQUIRE(U.word_to_element({}) == U.generator(0));
     REQUIRE_THROWS_AS(U.word_to_element({5}), LibsemigroupsException);
 
     REQUIRE(U.word_to_element({0, 0, 1, 2})
