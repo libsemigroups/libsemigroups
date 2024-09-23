@@ -94,7 +94,7 @@ namespace libsemigroups {
   //! \brief Type for a word over the generators of a semigroup.
   using word_type = std::vector<letter_type>;
 
-  //! \brief Type for a pair of word_type (a *relation*) of a semigroup.
+  //! \brief Type for a pair of \ref word_type (a *relation*) of a semigroup.
   using relation_type = std::pair<word_type, word_type>;
 
   //! @}

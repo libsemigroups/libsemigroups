@@ -285,13 +285,13 @@ TAB_SIZE = 4
 
 ALIASES = exceptions="\par Exceptions"
 ALIASES += noexcept="This function is `noexcept` and is guaranteed never to throw."
+ALIASES += complexity="\par Complexity"
 ALIASES += no_libsemigroups_except="This function guarantees not to throw a \ref LibsemigroupsException."
 ALIASES += no_libsemigroups_except_detail="This function guarantees not to throw a \ref libsemigroups::LibsemigroupsException."
 ALIASES += strong_guarantee="If an exception is thrown, \c this is guaranteed not to be modified (strong exception guarantee)."
 ALIASES += basic_guarantee="If an exception is thrown, \c this might be modified but is guaranteed to be in a valid state (basic exception guarantee)."
 ALIASES += iterator_validity="\par Iterator validity"
 ALIASES += iterator_invalid="This function modifies the object defined by \p this, any iterators, pointers or references pointing into \c this may be invalidated by a call to this function."
-ALIASES += complexity="\par Complexity"
 ALIASES += parameters="\par Parameters"
 
 # Set the OPTIMIZE_OUTPUT_FOR_C tag to YES if your project consists of C sources
