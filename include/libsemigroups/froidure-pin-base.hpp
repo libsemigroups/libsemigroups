@@ -1,6 +1,6 @@
 //
 // libsemigroups - C++ library for semigroups and monoids
-// Copyright (C) 2019 James D. Mitchell
+// Copyright (C) 2019-2024 James D. Mitchell
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -27,9 +27,6 @@
 #include <cstdint>           // for uint32_t
 #include <initializer_list>  // for initializer_list
 #include <iterator>          // for forward_iterator_tag
-#include <iterator>          // for forward_iterator...
-#include <thread>            // for thread::hardware_concurrency
-#include <thread>            // for thread
 #include <type_traits>       // for is_copy_assignable
 #include <utility>           // for swap
 #include <vector>            // for vector, allocator
@@ -98,14 +95,16 @@ namespace libsemigroups {
     // FroidurePin - data members - private
     ////////////////////////////////////////////////////////////////////////
 
+    // This now only contains a single data member, which might make it a bit
+    // redundant.
     struct Settings {
       Settings() noexcept : _batch_size(8'192) {}
       Settings(Settings const&) noexcept            = default;
       Settings(Settings&&) noexcept                 = default;
       Settings& operator=(Settings const&) noexcept = default;
       Settings& operator=(Settings&&) noexcept      = default;
+      ~Settings()                                   = default;
 
-      ~Settings() = default;
       size_t _batch_size;
     } _settings;
 
@@ -201,7 +200,10 @@ namespace libsemigroups {
     //!
     //! \sa
     //! batch_size().
-    FroidurePinBase& batch_size(size_t batch_size) noexcept;
+    FroidurePinBase& batch_size(size_t batch_size) noexcept {
+      _settings._batch_size = batch_size;
+      return *this;
+    }
 
     //! \brief Returns the current value of the batch size.
     //!
@@ -216,7 +218,9 @@ namespace libsemigroups {
     //!
     //! \sa This is the minimum number of elements enumerated in any call to
     //! \ref run, see batch_size(size_t).
-    [[nodiscard]] size_t batch_size() const noexcept;
+    [[nodiscard]] size_t batch_size() const noexcept {
+      return _settings._batch_size;
+    }
 
     ////////////////////////////////////////////////////////////////////////
     // FroidurePinBase - pure virtual member functions - public
@@ -541,26 +545,15 @@ namespace libsemigroups {
     //! \ref current_length.
     // This function could be a helper, but current_length cannot be, so keeping
     // this as a mem fn.
-    // TODO to cpp
-    [[nodiscard]] size_t length(element_index_type pos) {
-      if (pos >= current_size()) {
-        run();
-      }
-      return current_length(pos);
-    }
+    [[nodiscard]] size_t length(element_index_type pos);
 
     // TODO doc
     // This function could be a helper, but current_length cannot be, so keeping
     // this as a mem fn.
-    // TODO to cpp
-    [[nodiscard]] size_t length_no_checks(element_index_type pos) {
-      if (pos >= current_size()) {
-        run();
-      }
-      return current_length_no_checks(pos);
-    }
+    [[nodiscard]] size_t length_no_checks(element_index_type pos);
 
-    //! \brief Returns the size.
+    //! \brief Returns the size of the semigroup represented by a FroidurePin
+    //! instance.
     //!
     //! \returns
     //! A value of type `size_t`.
@@ -590,14 +583,7 @@ namespace libsemigroups {
     //! At worst \f$O(|S|n)\f$ where \f$S\f$ is the semigroup represented by \c
     //! this, and \f$n\f$ is the return value of
     //! FroidurePin::number_of_generators.
-    // TODO to cpp
-    [[nodiscard]] bool is_monoid() {
-      if (_found_one) {
-        return true;
-      }
-      run();
-      return _found_one;
-    }
+    [[nodiscard]] bool is_monoid();
 
     //! \brief Returns the total number of relations in the presentation.
     //!
@@ -1006,7 +992,6 @@ namespace libsemigroups {
     //! //  {{3, 3}, {3}}}
     //! \endcode
     // clang-format on
-    // TODO(later) delete
     // TODO rename cbegin_current_rules() and impl cbegin_rules that performs
     // full enum first.
     [[nodiscard]] const_rule_iterator cbegin_rules() const {
@@ -1079,7 +1064,6 @@ namespace libsemigroups {
     //! //  {{3, 3}, {3}}}
     //! \endcode
     // clang-format on
-    // TODO(later) delete
     [[nodiscard]] const_rule_iterator cend_rules() const {
       return const_rule_iterator(this, current_size(), 0);
     }

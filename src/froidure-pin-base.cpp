@@ -235,6 +235,16 @@ namespace libsemigroups {
         current_right_cayley_graph(), s, w.cbegin() + 1, w.cend());
   }
 
+  void FroidurePinBase::current_minimal_factorisation_no_checks(
+      word_type&         word,
+      element_index_type pos) const {
+    word.clear();
+    while (pos != UNDEFINED) {
+      word.push_back(first_letter_no_checks(pos));
+      pos = suffix_no_checks(pos);
+    }
+  }
+
   void FroidurePinBase::enumerate(size_t limit) {
     if (finished() || limit <= current_size()) {
       return;
@@ -248,14 +258,26 @@ namespace libsemigroups {
     run_until([this, &limit]() -> bool { return current_size() >= limit; });
   }
 
-  void FroidurePinBase::current_minimal_factorisation_no_checks(
-      word_type&         word,
-      element_index_type pos) const {
-    word.clear();
-    while (pos != UNDEFINED) {
-      word.push_back(first_letter_no_checks(pos));
-      pos = suffix_no_checks(pos);
+  [[nodiscard]] bool FroidurePinBase::is_monoid() {
+    if (_found_one) {
+      return true;
     }
+    run();
+    return _found_one;
+  }
+
+  size_t FroidurePinBase::length_no_checks(element_index_type pos) {
+    if (pos >= current_size()) {
+      run();
+    }
+    return current_length_no_checks(pos);
+  }
+
+  size_t FroidurePinBase::length(element_index_type pos) {
+    if (pos >= current_size()) {
+      run();
+    }
+    return current_length(pos);
   }
 
   void FroidurePinBase::minimal_factorisation(word_type&         word,
@@ -295,17 +317,6 @@ namespace libsemigroups {
   ////////////////////////////////////////////////////////////////////////
   // FroidurePinBase - settings - public
   ////////////////////////////////////////////////////////////////////////
-
-  // TODO(now) to hpp
-  FroidurePinBase& FroidurePinBase::batch_size(size_t batch_size) noexcept {
-    _settings._batch_size = batch_size;
-    return *this;
-  }
-
-  // TODO to hpp
-  size_t FroidurePinBase::batch_size() const noexcept {
-    return _settings._batch_size;
-  }
 
   void FroidurePinBase::throw_if_element_index_out_of_range(
       element_index_type i) const {
