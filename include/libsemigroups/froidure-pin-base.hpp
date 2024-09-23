@@ -48,6 +48,9 @@ namespace libsemigroups {
 
   //! \ingroup froidure_pin_group
   //!
+  //!  \brief Base class for FroidurePin containing non-element specific data
+  //!  and member functions.
+  //!
   //! Defined in ``froidure-pin-base.hpp``.
   //!
   //! FroidurePinBase is an abstract base class for the class template
@@ -64,23 +67,25 @@ namespace libsemigroups {
     friend class FroidurePin;
 
    public:
-    //! Unsigned integer type.
+    //! Alias for the type of the size of the enumerated semigroup.
     // It should be possible to change this type and everything will just work,
     // provided the size of the semigroup is less than the maximum value of
     // this type of integer.
     using size_type = uint32_t;
 
+    //! \brief Alias for the index of a generator.
+    //!
     //! Alias for \ref size_type used to indicate that an unsigned integer
     //! should be the index of a generator.
     using generator_index_type = size_type;
 
-    //! \brief Type for the index of an element.
+    //! \brief Alias for the index of an element.
     //!
     //! The size of the semigroup being enumerated must be at most \c
     //! std::numeric_limits<element_index_type>::max()
     using element_index_type = size_type;
 
-    //! \brief Type for a left or right Cayley graph.
+    //! \brief Alias for the types of the left and right Cayley graphs.
     using cayley_graph_type = WordGraph<element_index_type>;
 
    private:
@@ -188,7 +193,7 @@ namespace libsemigroups {
     //!
     //! \returns A reference to \c this.
     //!
-    //! \exceptions
+    //! \exception
     //! \noexcept
     //!
     //! \complexity
@@ -869,6 +874,9 @@ namespace libsemigroups {
     [[nodiscard]] size_t number_of_elements_of_length(size_t len) const;
 
     //! \brief Return type of \ref cbegin_rules and \ref cend_rules.
+    //!
+    //! This nested class is the return type of \ref cbegin_rules, \ref
+    //! cbegin_current_rules, \ref cend_rules, and \ref cend_current_rules.
     class const_rule_iterator {
 #ifndef PARSED_BY_DOXYGEN
 
@@ -1027,6 +1035,7 @@ namespace libsemigroups {
     }
 
     // TODO doc
+    //! TODO
     [[nodiscard]] const_rule_iterator cbegin_rules() {
       run();
       return const_rule_iterator(this, UNDEFINED, 0);
@@ -1102,6 +1111,7 @@ namespace libsemigroups {
       return const_rule_iterator(this, current_size(), 0);
     }
 
+    //! TODO
     [[nodiscard]] const_rule_iterator cend_rules() {
       run();
       return const_rule_iterator(this, current_size(), 0);
