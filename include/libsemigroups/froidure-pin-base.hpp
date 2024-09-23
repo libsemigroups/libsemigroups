@@ -16,9 +16,6 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-// TODO
-// * no_checks versions of mem + helper fns
-
 #ifndef LIBSEMIGROUPS_FROIDURE_PIN_BASE_HPP_
 #define LIBSEMIGROUPS_FROIDURE_PIN_BASE_HPP_
 
@@ -27,7 +24,6 @@
 #include <cstdint>           // for uint32_t
 #include <initializer_list>  // for initializer_list
 #include <iterator>          // for forward_iterator_tag
-#include <type_traits>       // for is_copy_assignable
 #include <utility>           // for swap
 #include <vector>            // for vector, allocator
 
@@ -779,10 +775,10 @@ namespace libsemigroups {
     }
 
     // Here's a little summary of the functions for factorisation:
-    // [ ] current_factorisation_no_checks(2 args)
-    // [ ] current_factorisation_no_checks(1 arg)
-    // [ ] current_factorisation(2 args)
-    // [ ] current_factorisation(1 arg)
+    // [ ] current_factorisation_no_checks(2 args) TODO
+    // [ ] current_factorisation_no_checks(1 arg) TODO
+    // [ ] current_factorisation(2 args) TODO
+    // [ ] current_factorisation(1 arg) TODO
     // [x] factorisation(2 args)
     // [x] factorisation(1 arg)
     // [ ] ~~factorisation_no_checks(2 args)~~ NONSENSICAL
@@ -842,7 +838,6 @@ namespace libsemigroups {
     //! return value of FroidurePin::number_of_generators.
     // This function could be a helper, but
     // FroidurePin::minimal_factorisation(const_reference) isn't so keeping.
-    // TODO no checks version
     [[nodiscard]] word_type factorisation(element_index_type pos) {
       return minimal_factorisation(pos);
     }
@@ -1112,6 +1107,16 @@ namespace libsemigroups {
       return const_rule_iterator(this, current_size(), 0);
     }
 
+    // TODO(doc)
+    [[nodiscard]] auto current_rules() const {
+      return rx::iterator_range(cbegin_current_rules(), cend_current_rules());
+    }
+
+    // TODO(doc)
+    [[nodiscard]] auto rules() {
+      return rx::iterator_range(cbegin_rules(), cend_rules());
+    }
+
     // TODO(later) it'd be more efficient to have this be a forward
     // iterator only (i.e. as is done in the GAP version of FroidurePin)
     class const_normal_form_iterator {
@@ -1248,20 +1253,37 @@ namespace libsemigroups {
       }
     };
 
-    // TODO rules + current_rules
-
-    // TODO cbegin_current_normal_forms
-    [[nodiscard]] const_normal_form_iterator cbegin_normal_forms() const {
+    // TODO(doc)
+    [[nodiscard]] const_normal_form_iterator
+    cbegin_current_normal_forms() const {
       return const_normal_form_iterator(this, 0);
     }
 
-    // TODO cbegin_current_normal_forms
-    [[nodiscard]] const_normal_form_iterator cend_normal_forms() const {
+    // TODO(doc)
+    [[nodiscard]] const_normal_form_iterator cend_current_normal_forms() const {
       return const_normal_form_iterator(this, current_size());
     }
 
-    // TODO current_normal_forms
-    [[nodiscard]] auto normal_forms() const {
+    // TODO(doc)
+    [[nodiscard]] auto current_normal_forms() const {
+      return rx::iterator_range(cbegin_current_normal_forms(),
+                                cend_current_normal_forms());
+    }
+
+    // TODO(doc)
+    [[nodiscard]] const_normal_form_iterator cbegin_normal_forms() {
+      run();
+      return const_normal_form_iterator(this, 0);
+    }
+
+    // TODO(doc)
+    [[nodiscard]] const_normal_form_iterator cend_normal_forms() {
+      run();
+      return const_normal_form_iterator(this, size());
+    }
+
+    // TODO(doc)
+    [[nodiscard]] auto normal_forms() {
       return rx::iterator_range(cbegin_normal_forms(), cend_normal_forms());
     }
 
@@ -1311,7 +1333,6 @@ namespace libsemigroups {
     //! \complexity
     //! \f$O(n)\f$ where \f$n\f$ is the minimum of the lengths of
     //! `minimal_factorisation(i)` and `minimal_factorisation(j)`.
-    // TODO no checks version
     [[nodiscard]] element_index_type
     product_by_reduction(FroidurePinBase const& fpb,
                          element_index_type     i,
