@@ -804,10 +804,6 @@ namespace libsemigroups {
 
   template <typename Element, typename Traits>
   void FroidurePin<Element, Traits>::add_generator(const_reference x) {
-    if (immutable()) {
-      LIBSEMIGROUPS_EXCEPTION("cannot add generators, the FroidurePin instance "
-                              "has been set to immutable");
-    }
     validate_element(x);
     if (_pos == 0) {
       add_generators_before_start(&x, &x + 1);
@@ -820,10 +816,6 @@ namespace libsemigroups {
   template <typename T>
   void FroidurePin<Element, Traits>::add_generators(T const& first,
                                                     T const& last) {
-    if (immutable()) {
-      LIBSEMIGROUPS_EXCEPTION("cannot add generators, the FroidurePin instance "
-                              "has been set to immutable");
-    }
     validate_element_collection(first, last);
     if (_pos == 0) {
       add_generators_before_start(first, last);

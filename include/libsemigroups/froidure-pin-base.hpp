@@ -102,8 +102,7 @@ namespace libsemigroups {
       Settings() noexcept
           : _batch_size(8'192),
             _concurrency_threshold(823'543),
-            _max_threads(std::thread::hardware_concurrency()),
-            _immutable(false) {}
+            _max_threads(std::thread::hardware_concurrency()) {}
       Settings(Settings const&) noexcept            = default;
       Settings(Settings&&) noexcept                 = default;
       Settings& operator=(Settings const&) noexcept = default;
@@ -113,7 +112,6 @@ namespace libsemigroups {
       size_t _batch_size;
       size_t _concurrency_threshold;
       size_t _max_threads;
-      bool   _immutable;
     } _settings;
 
     size_t _degree;
@@ -305,48 +303,6 @@ namespace libsemigroups {
     //! concurrency_threshold(size_t).
     // TODO remove
     [[nodiscard]] size_t concurrency_threshold() const noexcept;
-
-    //! \brief Set immutability.
-    //!
-    //! Prevent further changes to the mathematical semigroup represented by an
-    //! instance of FroidurePinBase.
-    //!
-    //! This member function prevents certain member functions from being
-    //! applied to a FroidurePinBase, such as FroidurePin::add_generators,
-    //! if they would change the mathematical object represented by \c this.
-    //!
-    //! The default value is **false**.
-    //!
-    //! \param val the new value.
-    //!
-    //! \returns A reference to \c this.
-    //!
-    //! \exceptions
-    //! \noexcept
-    //!
-    //! \complexity
-    //! Constant.
-    //!
-    //! \sa
-    //! immutable().
-    // TODO delete
-    FroidurePinBase& immutable(bool val) noexcept;
-
-    //! \brief Returns the current immutability.
-    //!
-    //! \returns
-    //! A `bool`.
-    //!
-    //! \exceptions
-    //! \noexcept
-    //!
-    //! \complexity
-    //! Constant.
-    //!
-    //! \sa
-    //! immutable(bool).
-    // TODO delete
-    [[nodiscard]] bool immutable() const noexcept;
 
     ////////////////////////////////////////////////////////////////////////
     // FroidurePinBase - pure virtual member functions - public

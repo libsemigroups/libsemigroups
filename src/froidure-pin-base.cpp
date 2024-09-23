@@ -333,17 +333,6 @@ namespace libsemigroups {
     return _settings._concurrency_threshold;
   }
 
-  // TODO to hpp
-  FroidurePinBase& FroidurePinBase::immutable(bool val) noexcept {
-    _settings._immutable = val;
-    return *this;
-  }
-
-  // TODO to hpp
-  bool FroidurePinBase::immutable() const noexcept {
-    return _settings._immutable;
-  }
-
   void FroidurePinBase::throw_if_element_index_out_of_range(
       element_index_type i) const {
     if (i >= _nr) {
