@@ -235,32 +235,6 @@ namespace libsemigroups {
         current_right_cayley_graph(), s, w.cbegin() + 1, w.cend());
   }
 
-  element_index_type
-  FroidurePinBase::product_by_reduction_no_checks(element_index_type i,
-                                                  element_index_type j) const {
-    if (current_length(i) <= current_length(j)) {
-      while (i != UNDEFINED) {
-        j = current_left_cayley_graph().target_no_checks(j, _final[i]);
-        i = prefix_no_checks(i);
-      }
-      return j;
-    } else {
-      while (j != UNDEFINED) {
-        i = current_right_cayley_graph().target_no_checks(i, _first[j]);
-        j = suffix_no_checks(j);
-      }
-      return i;
-    }
-  }
-
-  element_index_type
-  FroidurePinBase::product_by_reduction(element_index_type i,
-                                        element_index_type j) const {
-    throw_if_element_index_out_of_range(i);
-    throw_if_element_index_out_of_range(j);
-    return product_by_reduction_no_checks(i, j);
-  }
-
   void FroidurePinBase::enumerate(size_t limit) {
     if (finished() || limit <= current_size()) {
       return;
@@ -272,6 +246,25 @@ namespace libsemigroups {
     report_default("FroidurePin: enumerating until ~{} elements are found\n",
                    detail::group_digits(limit));
     run_until([this, &limit]() -> bool { return current_size() >= limit; });
+  }
+
+  void FroidurePinBase::current_minimal_factorisation_no_checks(
+      word_type&         word,
+      element_index_type pos) const {
+    word.clear();
+    while (pos != UNDEFINED) {
+      word.push_back(first_letter_no_checks(pos));
+      pos = suffix_no_checks(pos);
+    }
+  }
+
+  void FroidurePinBase::minimal_factorisation(word_type&         word,
+                                              element_index_type pos) {
+    if (pos >= current_size() && !finished()) {
+      enumerate(pos + 1);
+    }
+    throw_if_element_index_out_of_range(pos);
+    current_minimal_factorisation_no_checks(word, pos);
   }
 
   size_t FroidurePinBase::number_of_elements_of_length(size_t i) const {
@@ -437,10 +430,44 @@ namespace libsemigroups {
         _relation.first  = word_type({_current[0]});
         _relation.second = word_type({_current[1]});
       } else {
-        _froidure_pin->minimal_factorisation(_relation.first, _current[0]);
+        _froidure_pin->current_minimal_factorisation_no_checks(_relation.first,
+                                                               _current[0]);
         _relation.first.push_back(_current[1]);
-        _froidure_pin->minimal_factorisation(_relation.second, _current[2]);
+        _froidure_pin->current_minimal_factorisation_no_checks(_relation.second,
+                                                               _current[2]);
       }
     }
   }
+
+  namespace froidure_pin {
+    element_index_type
+    product_by_reduction_no_checks(FroidurePinBase const& fpb,
+                                   element_index_type     i,
+                                   element_index_type     j) {
+      if (fpb.current_length(i) <= fpb.current_length(j)) {
+        while (i != UNDEFINED) {
+          j = fpb.current_left_cayley_graph().target_no_checks(
+              j, fpb.final_letter_no_checks(i));
+          i = fpb.prefix_no_checks(i);
+        }
+        return j;
+      } else {
+        while (j != UNDEFINED) {
+          i = fpb.current_right_cayley_graph().target_no_checks(
+              i, fpb.first_letter_no_checks(j));
+          j = fpb.suffix_no_checks(j);
+        }
+        return i;
+      }
+    }
+
+    element_index_type product_by_reduction(FroidurePinBase const& fpb,
+                                            element_index_type     i,
+                                            element_index_type     j) {
+      fpb.throw_if_element_index_out_of_range(i);
+      fpb.throw_if_element_index_out_of_range(j);
+      return product_by_reduction_no_checks(fpb, i, j);
+    }
+
+  }  // namespace froidure_pin
 }  // namespace libsemigroups

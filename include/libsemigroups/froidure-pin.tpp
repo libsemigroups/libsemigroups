@@ -246,6 +246,7 @@ namespace libsemigroups {
     return (it == _map.end() ? UNDEFINED : it->second);
   }
 
+  // TODO no_checks version
   template <typename Element, typename Traits>
   FroidurePinBase::element_index_type
   FroidurePin<Element, Traits>::fast_product(element_index_type i,
@@ -254,7 +255,7 @@ namespace libsemigroups {
     throw_if_element_index_out_of_range(j);
     auto const n = 2 * Complexity()(this->to_external_const(_tmp_product));
     if (current_length(i) < n || current_length(j) < n) {
-      return product_by_reduction(i, j);
+      return froidure_pin::product_by_reduction(*this, i, j);
     } else {
       internal_product(this->to_external(_tmp_product),
                        this->to_external_const(_elements[i]),

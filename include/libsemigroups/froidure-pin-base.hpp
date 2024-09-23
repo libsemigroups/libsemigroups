@@ -17,34 +17,30 @@
 //
 
 // TODO
-// * reduce api  (i.e. move things to helper namespace)
 // * no_checks versions of mem + helper fns
 
 #ifndef LIBSEMIGROUPS_FROIDURE_PIN_BASE_HPP_
 #define LIBSEMIGROUPS_FROIDURE_PIN_BASE_HPP_
 
-#include <cstddef>   // for size_t
-#include <iterator>  // for forward_iterator_tag
-#include <thread>    // for thread::hardware_concurrency
-
 #include <array>             // for array
 #include <cstddef>           // for size_t
 #include <cstdint>           // for uint32_t
 #include <initializer_list>  // for initializer_list
+#include <iterator>          // for forward_iterator_tag
 #include <iterator>          // for forward_iterator...
+#include <thread>            // for thread::hardware_concurrency
 #include <thread>            // for thread
 #include <type_traits>       // for is_copy_assignable
 #include <utility>           // for swap
 #include <vector>            // for vector, allocator
 
 #include "constants.hpp"   // for UNDEFINED
+#include "ranges.hpp"      // for iterator_range
 #include "runner.hpp"      // for Runner
 #include "types.hpp"       // for word_type, generator_index_type, tril
 #include "word-graph.hpp"  // for WordGraph
 
 #include "detail/containers.hpp"  // for DynamicArray2
-
-#include "ranges.hpp"  // for iterator_range
 
 namespace libsemigroups {
   //! \defgroup froidure_pin_group Froidure-Pin
@@ -516,6 +512,7 @@ namespace libsemigroups {
 
     // TODO doc
     element_index_type prefix_no_checks(element_index_type pos) const {
+      LIBSEMIGROUPS_ASSERT(pos < _prefix.size());
       return _prefix[pos];
     }
 
@@ -540,6 +537,7 @@ namespace libsemigroups {
 
     [[nodiscard]] element_index_type
     suffix_no_checks(element_index_type pos) const {
+      LIBSEMIGROUPS_ASSERT(pos < _suffix.size());
       return _suffix[pos];
     }
 
@@ -565,6 +563,7 @@ namespace libsemigroups {
     // TODO (doc)
     [[nodiscard]] generator_index_type
     first_letter_no_checks(element_index_type pos) const {
+      LIBSEMIGROUPS_ASSERT(pos < _first.size());
       return _first[pos];
     }
 
@@ -594,9 +593,9 @@ namespace libsemigroups {
       return first_letter_no_checks(pos);
     }
 
+    // TODO (doc)
     [[nodiscard]] generator_index_type
     final_letter_no_checks(element_index_type pos) const {
-      // TODO more of these
       LIBSEMIGROUPS_ASSERT(pos < _final.size());
       return _final[pos];
     }
@@ -607,10 +606,6 @@ namespace libsemigroups {
     //! \p pos of the semigroup, which is the index of the generator
     //! corresponding to the final letter of the element.
     //!
-    //! \note
-    //! Note that `FroidurePin::generator(first_letter(pos))` is
-    //! only equal to `FroidurePin::at(first_letter(pos))` if
-    //! there are no duplicate generators.
     //!
     //! \param pos the position
     //!
@@ -621,6 +616,14 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! Constant.
+    //!
+    //! \note
+    //! Note that `FroidurePin::generator(first_letter(pos))` is
+    //! only equal to `FroidurePin::at(first_letter(pos))` if
+    //! there are no duplicate generators.
+    //!
+    //! \note No enumeration is triggered by calling this function.
+    // TODO more notes like the above
     [[nodiscard]] generator_index_type
     final_letter(element_index_type pos) const {
       throw_if_element_index_out_of_range(pos);
@@ -668,6 +671,7 @@ namespace libsemigroups {
     //! \ref current_length.
     // This function could be a helper, but current_length cannot be, so keeping
     // this as a mem fn.
+    // TODO to cpp
     [[nodiscard]] size_t length(element_index_type pos) {
       if (pos >= current_size()) {
         run();
@@ -678,43 +682,13 @@ namespace libsemigroups {
     // TODO doc
     // This function could be a helper, but current_length cannot be, so keeping
     // this as a mem fn.
+    // TODO to cpp
     [[nodiscard]] size_t length_no_checks(element_index_type pos) {
       if (pos >= current_size()) {
         run();
       }
       return current_length_no_checks(pos);
     }
-
-    // TODO doc
-    // TODO(later) helper
-    [[nodiscard]] element_index_type
-    product_by_reduction_no_checks(element_index_type i,
-                                   element_index_type j) const;
-
-    //! \brief Compute a product using the Cayley graph.
-    //!
-    //! This function finds the product of `at(i)` and `at(j)` by following the
-    //! path in the right Cayley graph from \p i labelled by the word
-    //! `minimal_factorisation(j)` or, if `minimal_factorisation(i)` is
-    //! shorter, by following the path in the left Cayley graph from \p j
-    //! labelled by `minimal_factorisation(i)`.
-    //!
-    //! \param i the first index of an element
-    //! \param j the second index of an element
-    //!
-    //! \returns
-    //! A value of type \ref element_index_type.
-    //!
-    //! \throws LibsemigroupsException if \p i or \p j is greater than or equal
-    //! to \ref current_size.
-    //!
-    //! \complexity
-    //! \f$O(n)\f$ where \f$n\f$ is the minimum of the lengths of
-    //! `minimal_factorisation(i)` and `minimal_factorisation(j)`.
-    // TODO(later) helper
-    // TODO no checks version
-    [[nodiscard]] element_index_type
-    product_by_reduction(element_index_type i, element_index_type j) const;
 
     //! \brief Returns the size.
     //!
@@ -746,6 +720,7 @@ namespace libsemigroups {
     //! At worst \f$O(|S|n)\f$ where \f$S\f$ is the semigroup represented by \c
     //! this, and \f$n\f$ is the return value of
     //! FroidurePin::number_of_generators.
+    // TODO to cpp
     [[nodiscard]] bool is_monoid() {
       if (_found_one) {
         return true;
@@ -822,6 +797,10 @@ namespace libsemigroups {
       return _left;
     }
 
+    // TODO doc
+    void current_minimal_factorisation_no_checks(word_type&         word,
+                                                 element_index_type pos) const;
+
     //! \brief Obtain a short-lex least word representing an element given by
     //! index.
     //!
@@ -845,14 +824,31 @@ namespace libsemigroups {
     //! \complexity
     //! At worst \f$O(mn)\f$ where \f$m\f$ equals \p pos and \f$n\f$ is the
     //! return value of FroidurePin::number_of_generators.
-    // TODO(later) helper
-    // TODO to tpp
-    void minimal_factorisation(word_type& word, element_index_type pos) {
-      if (pos >= current_size() && !finished()) {
-        enumerate(pos + 1);
-      }
+    // This function could be a helper, but
+    // FroidurePin::minimal_factorisation(const_reference) isn't so keeping.
+    void minimal_factorisation(word_type& word, element_index_type pos);
+
+    //! \brief Obtain a short-lex least word representing an element given by
+    //! index.
+    //!
+    //! Changes \p word in-place to contain a minimal word with respect to the
+    //! short-lex ordering in the generators equal to the \p pos element of
+    //! the semigroup. No further enumeration is performed.
+    //!
+    //! \param word the word to clear and change in-place
+    //! \param pos the index of the element whose factorisation is sought
+    //!
+    //! \throws LibsemigroupsException if \p pos is greater than or equal to
+    //! current_size().
+    //!
+    //! \complexity
+    //! Constant.
+    // This function could be a helper, but
+    // FroidurePin::minimal_factorisation(const_reference) isn't so keeping.
+    void current_minimal_factorisation(word_type&         word,
+                                       element_index_type pos) const {
       throw_if_element_index_out_of_range(pos);
-      minimal_factorisation_no_checks(word, pos);
+      current_minimal_factorisation_no_checks(word, pos);
     }
 
     //! \brief Returns a short-lex least word representing an element given by
@@ -873,49 +869,30 @@ namespace libsemigroups {
     //! \complexity
     //! At worst \f$O(mn)\f$ where \f$m\f$ equals \p pos and \f$n\f$ is the
     //! return value of FroidurePin::number_of_generators.
-    // TODO(later) helper
     // TODO no checks version
+    // This function could be a helper, but
+    // FroidurePin::minimal_factorisation(const_reference) isn't so keeping.
     [[nodiscard]] word_type minimal_factorisation(element_index_type pos) {
       word_type word;
       minimal_factorisation(word, pos);
       return word;
     }
 
-    // TODO helper
-    // TODO doc
-    void minimal_factorisation_no_checks(word_type&         word,
-                                         element_index_type pos) const {
-      word.clear();
-      while (pos != UNDEFINED) {
-        word.push_back(first_letter_no_checks(pos));
-        pos = suffix_no_checks(pos);
-      }
-    }
-
-    //! \brief Obtain a short-lex least word representing an element given by
-    //! index.
-    //!
-    //! Changes \p word in-place to contain a minimal word with respect to the
-    //! short-lex ordering in the generators equal to the \p pos element of
-    //! the semigroup. No further enumeration is performed.
-    //!
-    //! \param word the word to clear and change in-place
-    //! \param pos the index of the element whose factorisation is sought
-    //!
-    //! \throws LibsemigroupsException if \p pos is greater than or equal to
-    //! current_size().
-    //!
-    //! \complexity
-    //! Constant.
-    // TODO(later) helper
-    void minimal_factorisation(word_type& word, element_index_type pos) const {
-      throw_if_element_index_out_of_range(pos);
-      minimal_factorisation_no_checks(word, pos);
+    // This function could be a helper, but
+    // FroidurePin::minimal_factorisation(const_reference) isn't so keeping.
+    [[nodiscard]] word_type
+    current_minimal_factorisation(element_index_type pos) const {
+      word_type word;
+      current_minimal_factorisation(word, pos);
+      return word;
     }
 
     // TODO(doc)
-    void factorisation_no_checks(word_type& word, element_index_type pos) {
-      minimal_factorisation_no_checks(word, pos);
+    // This function could be a helper, but
+    // FroidurePin::minimal_factorisation(const_reference) isn't so keeping.
+    void current_factorisation_no_checks(word_type&         word,
+                                         element_index_type pos) const {
+      current_minimal_factorisation_no_checks(word, pos);
     }
 
     //! \brief Obtain a word representing an element given by index.
@@ -943,7 +920,8 @@ namespace libsemigroups {
     //! \complexity
     //! At worst \f$O(mn)\f$ where \f$m\f$ equals \p pos and \f$n\f$ is the
     //! return value of FroidurePin::number_of_generators.
-    // TODO(later) helper
+    // This function could be a helper, but
+    // FroidurePin::minimal_factorisation(const_reference) isn't so keeping.
     // TODO no checks version
     void factorisation(word_type& word, element_index_type pos) {
       minimal_factorisation(word, pos);
@@ -970,7 +948,8 @@ namespace libsemigroups {
     //! \complexity
     //! At worst \f$O(mn)\f$ where \f$m\f$ equals \p pos and \f$n\f$ is the
     //! return value of FroidurePin::number_of_generators.
-    // TODO(later) helper
+    // This function could be a helper, but
+    // FroidurePin::minimal_factorisation(const_reference) isn't so keeping.
     // TODO no checks version
     [[nodiscard]] word_type factorisation(element_index_type pos) {
       return minimal_factorisation(pos);
@@ -1003,7 +982,6 @@ namespace libsemigroups {
     [[nodiscard]] size_t number_of_elements_of_length(size_t len) const;
 
     //! \brief Return type of \ref cbegin_rules and \ref cend_rules.
-    // TODO(later) delete
     class const_rule_iterator {
 #ifndef PARSED_BY_DOXYGEN
 
@@ -1368,7 +1346,7 @@ namespace libsemigroups {
 
      private:
       void populate_word() const {
-        _froidure_pin->minimal_factorisation(_word, _pos);
+        _froidure_pin->current_minimal_factorisation_no_checks(_word, _pos);
       }
     };
 
@@ -1384,18 +1362,57 @@ namespace libsemigroups {
       return rx::iterator_range(cbegin_normal_forms(), cend_normal_forms());
     }
 
+    ////////////////////////////////////////////////////////////////////////
+    // FroidurePin - validation member functions - public
+    ////////////////////////////////////////////////////////////////////////
+
+    void throw_if_element_index_out_of_range(element_index_type i) const;
+    void throw_if_generator_index_out_of_range(generator_index_type i) const;
+
    private:
     ////////////////////////////////////////////////////////////////////////
     // FroidurePin - member functions - private
     ////////////////////////////////////////////////////////////////////////
     void partial_copy(FroidurePinBase const& S);
+  };  // class FroidurePinBase
 
-    ////////////////////////////////////////////////////////////////////////
-    // FroidurePin - validation member functions - private
-    ////////////////////////////////////////////////////////////////////////
+  //! \ingroup froidure_pin_group
+  //!
+  //! TODO
+  namespace froidure_pin {
+    using element_index_type = typename FroidurePinBase::element_index_type;
 
-    void throw_if_element_index_out_of_range(element_index_type i) const;
-    void throw_if_generator_index_out_of_range(generator_index_type i) const;
-  };
+    // TODO doc
+    [[nodiscard]] element_index_type
+    product_by_reduction_no_checks(FroidurePinBase const& fpb,
+                                   element_index_type     i,
+                                   element_index_type     j);
+
+    //! \brief Compute a product using the Cayley graph.
+    //!
+    //! This function finds the product of `at(i)` and `at(j)` by following the
+    //! path in the right Cayley graph from \p i labelled by the word
+    //! `minimal_factorisation(j)` or, if `minimal_factorisation(i)` is
+    //! shorter, by following the path in the left Cayley graph from \p j
+    //! labelled by `minimal_factorisation(i)`.
+    //!
+    //! \param i the first index of an element
+    //! \param j the second index of an element
+    //!
+    //! \returns
+    //! A value of type \ref element_index_type.
+    //!
+    //! \throws LibsemigroupsException if \p i or \p j is greater than or equal
+    //! to \ref current_size.
+    //!
+    //! \complexity
+    //! \f$O(n)\f$ where \f$n\f$ is the minimum of the lengths of
+    //! `minimal_factorisation(i)` and `minimal_factorisation(j)`.
+    // TODO no checks version
+    [[nodiscard]] element_index_type
+    product_by_reduction(FroidurePinBase const& fpb,
+                         element_index_type     i,
+                         element_index_type     j);
+  }  // namespace froidure_pin
 }  // namespace libsemigroups
 #endif  // LIBSEMIGROUPS_FROIDURE_PIN_BASE_HPP_

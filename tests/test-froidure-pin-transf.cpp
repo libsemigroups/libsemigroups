@@ -307,13 +307,16 @@ namespace libsemigroups {
 
     for (size_t i = 0; i < U.size(); ++i) {
       for (size_t j = 0; j < U.size(); ++j) {
-        REQUIRE_NOTHROW(U.product_by_reduction(i, j));
-        REQUIRE_THROWS_AS(U.product_by_reduction(i + U.size(), j),
-                          LibsemigroupsException);
-        REQUIRE_THROWS_AS(U.product_by_reduction(i, j + U.size()),
-                          LibsemigroupsException);
-        REQUIRE_THROWS_AS(U.product_by_reduction(i + U.size(), j + U.size()),
-                          LibsemigroupsException);
+        REQUIRE_NOTHROW(froidure_pin::product_by_reduction(U, i, j));
+        REQUIRE_THROWS_AS(
+            froidure_pin::product_by_reduction(U, i + U.size(), j),
+            LibsemigroupsException);
+        REQUIRE_THROWS_AS(
+            froidure_pin::product_by_reduction(U, i, j + U.size()),
+            LibsemigroupsException);
+        REQUIRE_THROWS_AS(
+            froidure_pin::product_by_reduction(U, i + U.size(), j + U.size()),
+            LibsemigroupsException);
       }
     }
   }
@@ -645,9 +648,11 @@ namespace libsemigroups {
     REQUIRE(S.suffix(6377) == 5149);
     REQUIRE(S.fast_product(S.prefix(6377), S.final_letter(6377)) == 6377);
     REQUIRE(S.fast_product(S.first_letter(6377), S.suffix(6377)) == 6377);
-    REQUIRE(S.product_by_reduction(S.prefix(6377), S.final_letter(6377))
+    REQUIRE(froidure_pin::product_by_reduction(
+                S, S.prefix(6377), S.final_letter(6377))
             == 6377);
-    REQUIRE(S.product_by_reduction(S.first_letter(6377), S.suffix(6377))
+    REQUIRE(froidure_pin::product_by_reduction(
+                S, S.first_letter(6377), S.suffix(6377))
             == 6377);
 
     REQUIRE(S.first_letter(2103) == 3);
@@ -656,9 +661,11 @@ namespace libsemigroups {
     REQUIRE(S.suffix(2103) == 860);
     REQUIRE(S.fast_product(S.prefix(2103), S.final_letter(2103)) == 2103);
     REQUIRE(S.fast_product(S.first_letter(2103), S.suffix(2103)) == 2103);
-    REQUIRE(S.product_by_reduction(S.prefix(2103), S.final_letter(2103))
+    REQUIRE(froidure_pin::product_by_reduction(
+                S, S.prefix(2103), S.final_letter(2103))
             == 2103);
-    REQUIRE(S.product_by_reduction(S.first_letter(2103), S.suffix(2103))
+    REQUIRE(froidure_pin::product_by_reduction(
+                S, S.first_letter(2103), S.suffix(2103))
             == 2103);
 
     REQUIRE(S.first_letter(3407) == 2);
@@ -667,9 +674,11 @@ namespace libsemigroups {
     REQUIRE(S.suffix(3407) == 2115);
     REQUIRE(S.fast_product(S.prefix(3407), S.final_letter(3407)) == 3407);
     REQUIRE(S.fast_product(S.first_letter(3407), S.suffix(3407)) == 3407);
-    REQUIRE(S.product_by_reduction(S.prefix(3407), S.final_letter(3407))
+    REQUIRE(froidure_pin::product_by_reduction(
+                S, S.prefix(3407), S.final_letter(3407))
             == 3407);
-    REQUIRE(S.product_by_reduction(S.first_letter(3407), S.suffix(3407))
+    REQUIRE(froidure_pin::product_by_reduction(
+                S, S.first_letter(3407), S.suffix(3407))
             == 3407);
 
     REQUIRE(S.first_letter(4245) == 2);
@@ -678,9 +687,11 @@ namespace libsemigroups {
     REQUIRE(S.suffix(4245) == 2319);
     REQUIRE(S.fast_product(S.prefix(4225), S.final_letter(4225)) == 4225);
     REQUIRE(S.fast_product(S.first_letter(4225), S.suffix(4225)) == 4225);
-    REQUIRE(S.product_by_reduction(S.prefix(4225), S.final_letter(4225))
+    REQUIRE(froidure_pin::product_by_reduction(
+                S, S.prefix(4225), S.final_letter(4225))
             == 4225);
-    REQUIRE(S.product_by_reduction(S.first_letter(4225), S.suffix(4225))
+    REQUIRE(froidure_pin::product_by_reduction(
+                S, S.first_letter(4225), S.suffix(4225))
             == 4225);
 
     REQUIRE(S.first_letter(3683) == 4);
@@ -689,9 +700,11 @@ namespace libsemigroups {
     REQUIRE(S.suffix(3683) == 1685);
     REQUIRE(S.fast_product(S.prefix(3683), S.final_letter(3683)) == 3683);
     REQUIRE(S.fast_product(S.first_letter(3683), S.suffix(3683)) == 3683);
-    REQUIRE(S.product_by_reduction(S.prefix(3683), S.final_letter(3683))
+    REQUIRE(froidure_pin::product_by_reduction(
+                S, S.prefix(3683), S.final_letter(3683))
             == 3683);
-    REQUIRE(S.product_by_reduction(S.first_letter(3683), S.suffix(3683))
+    REQUIRE(froidure_pin::product_by_reduction(
+                S, S.first_letter(3683), S.suffix(3683))
             == 3683);
 
     REQUIRE(S.first_letter(0) == 0);
@@ -705,9 +718,11 @@ namespace libsemigroups {
     REQUIRE(S.suffix(7775) == 7768);
     REQUIRE(S.fast_product(S.prefix(7775), S.final_letter(7775)) == 7775);
     REQUIRE(S.fast_product(S.first_letter(7775), S.suffix(7775)) == 7775);
-    REQUIRE(S.product_by_reduction(S.prefix(7775), S.final_letter(7775))
+    REQUIRE(froidure_pin::product_by_reduction(
+                S, S.prefix(7775), S.final_letter(7775))
             == 7775);
-    REQUIRE(S.product_by_reduction(S.first_letter(7775), S.suffix(7775))
+    REQUIRE(froidure_pin::product_by_reduction(
+                S, S.first_letter(7775), S.suffix(7775))
             == 7775);
   }
 
