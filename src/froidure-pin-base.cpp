@@ -226,7 +226,7 @@ namespace libsemigroups {
       LIBSEMIGROUPS_EXCEPTION("expected a non-empty word, found empty word");
     }
     for (auto x : w) {
-      validate_letter_index(x);
+      throw_if_generator_index_out_of_range(x);
     }
     // TODO(now) use word_graph::follow_path instead
     element_index_type out = _letter_to_pos[w[0]];
@@ -242,25 +242,29 @@ namespace libsemigroups {
   }
 
   element_index_type
-  FroidurePinBase::product_by_reduction(element_index_type i,
-                                        element_index_type j) const {
-    validate_element_index(i);
-    validate_element_index(j);
-
+  FroidurePinBase::product_by_reduction_no_checks(element_index_type i,
+                                                  element_index_type j) const {
     if (current_length(i) <= current_length(j)) {
-      // TODO use word_graph::follow_path_no_checks
       while (i != UNDEFINED) {
-        j = _left.target_no_checks(j, _final[i]);
-        i = _prefix[i];
+        j = current_left_cayley_graph().target_no_checks(j, _final[i]);
+        i = prefix_no_checks(i);
       }
       return j;
     } else {
       while (j != UNDEFINED) {
-        i = _right.target_no_checks(i, _first[j]);
-        j = _suffix[j];
+        i = current_right_cayley_graph().target_no_checks(i, _first[j]);
+        j = suffix_no_checks(j);
       }
       return i;
     }
+  }
+
+  element_index_type
+  FroidurePinBase::product_by_reduction(element_index_type i,
+                                        element_index_type j) const {
+    throw_if_element_index_out_of_range(i);
+    throw_if_element_index_out_of_range(j);
+    return product_by_reduction_no_checks(i, j);
   }
 
   void FroidurePinBase::enumerate(size_t limit) {
@@ -353,7 +357,8 @@ namespace libsemigroups {
     return _settings._immutable;
   }
 
-  void FroidurePinBase::validate_element_index(element_index_type i) const {
+  void FroidurePinBase::throw_if_element_index_out_of_range(
+      element_index_type i) const {
     if (i >= _nr) {
       LIBSEMIGROUPS_EXCEPTION(
           "element index out of bounds, expected value in [0, {}), got {}",
@@ -362,7 +367,8 @@ namespace libsemigroups {
     }
   }
 
-  void FroidurePinBase::validate_letter_index(generator_index_type i) const {
+  void FroidurePinBase::throw_if_generator_index_out_of_range(
+      generator_index_type i) const {
     if (i >= number_of_generators()) {
       LIBSEMIGROUPS_EXCEPTION(
           "generator index out of bounds, expected value in [0, {}), got {}",
