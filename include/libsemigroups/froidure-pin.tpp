@@ -231,7 +231,7 @@ namespace libsemigroups {
   template <typename Element, typename Traits>
   typename FroidurePin<Element, Traits>::const_reference
   FroidurePin<Element, Traits>::generator(generator_index_type pos) const {
-    validate_letter_index(pos);
+    throw_if_generator_index_out_of_range(pos);
     return this->to_external_const(_gens[pos]);
   }
 
@@ -250,8 +250,8 @@ namespace libsemigroups {
   FroidurePinBase::element_index_type
   FroidurePin<Element, Traits>::fast_product(element_index_type i,
                                              element_index_type j) const {
-    validate_element_index(i);
-    validate_element_index(j);
+    throw_if_element_index_out_of_range(i);
+    throw_if_element_index_out_of_range(j);
     auto const n = 2 * Complexity()(this->to_external_const(_tmp_product));
     if (current_length(i) < n || current_length(j) < n) {
       return product_by_reduction(i, j);
@@ -275,7 +275,7 @@ namespace libsemigroups {
     init_idempotents();
     // only validate pos after init_idempotents, because we don't know if it's
     // valid until then
-    validate_element_index(pos);
+    throw_if_element_index_out_of_range(pos);
     return _is_idempotent[pos];
   }
 
