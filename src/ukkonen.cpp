@@ -1,6 +1,6 @@
 //
 // libsemigroups - C++ library for semigroups and monoids
-// Copyright (C) 2021-2023 James D. Mitchell + Maria Tsalakou
+// Copyright (C) 2021-2024 James D. Mitchell + Maria Tsalakou
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -136,10 +136,6 @@ namespace libsemigroups {
       result += word_length(i) * multiplicity(i);
     }
     return result;
-  }
-
-  size_t Ukkonen::multiplicity(word_index_type i) const {
-    return _multiplicity[i];
   }
 
   // TODO(later) could do some more caching here, i.e. only check the children

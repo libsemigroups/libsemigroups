@@ -80,7 +80,8 @@ namespace libsemigroups {
   }
 
   template <typename Iterator>
-  void Ukkonen::validate_word(Iterator first, Iterator last) const {
+  void Ukkonen::throw_if_not_unique_letters(Iterator first,
+                                            Iterator last) const {
     auto it = std::find_if(
         first, last, [this](letter_type l) { return is_unique_letter(l); });
 
