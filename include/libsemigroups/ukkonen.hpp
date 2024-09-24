@@ -1,6 +1,6 @@
 //
 // libsemigroups - C++ library for semigroups and monoids
-// Copyright (C) 2021-23 James D. Mitchell + Maria Tsalakou
+// Copyright (C) 2021-2024 James D. Mitchell + Maria Tsalakou
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -329,9 +329,10 @@ namespace libsemigroups {
     //! word corresponding to \p first and \p last is equal to any of the
     //! existing unique letters.
     //!
-    //! \throws LibsemigroupsException if `validate_word(first, last)` throws.
+    //! \throws LibsemigroupsException if `throw_if_not_unique_letters(first,
+    //! last)` throws.
     void add_word(const_iterator first, const_iterator last) {
-      validate_word(first, last);
+      throw_if_not_unique_letters(first, last);
       add_word_no_checks(first, last);
     }
 
@@ -342,7 +343,8 @@ namespace libsemigroups {
 
     //! See \ref add_word_no_checks(const_iterator, const_iterator)
     //!
-    //! \throws LibsemigroupsException if `validate_word(w)` throws.
+    //! \throws LibsemigroupsException if `throw_if_not_unique_letters(w)`
+    //! throws.
     void add_word(word_type const& w) {
       add_word(w.cbegin(), w.cend());
     }
@@ -369,7 +371,8 @@ namespace libsemigroups {
 
     //! See \ref add_word_no_checks(const_iterator, const_iterator)
     //!
-    //! \throws LibsemigroupsException if `validate_word(first, last)` throws.
+    //! \throws LibsemigroupsException if `throw_if_not_unique_letters(first,
+    //! last)` throws.
     template <typename Iterator>
     void add_word(Iterator first, Iterator last) {
       // TODO(later) it'd be better to just convert the values pointed at by the
@@ -380,7 +383,8 @@ namespace libsemigroups {
 
     //! See \ref add_word_no_checks(const_iterator, const_iterator)
     //!
-    //! \throws LibsemigroupsException if `validate_word(w)` throws.
+    //! \throws LibsemigroupsException if `throw_if_not_unique_letters(w)`
+    //! throws.
     template <typename Word>
     void add_word(Word const& w) {
       add_word(w.cbegin(), w.cend());
@@ -388,8 +392,8 @@ namespace libsemigroups {
 
     //! See \ref add_word_no_checks(const_iterator, const_iterator)
     //!
-    //! \throws LibsemigroupsException if `Ukkonen::validate_word(w, w +
-    //! std::strlen(w))` throws.
+    //! \throws LibsemigroupsException if
+    //! `Ukkonen::throw_if_not_unique_letters(w, w + std::strlen(w))` throws.
     void add_word(char const* w) {
       add_word(w, w + std::strlen(w));
     }
@@ -561,6 +565,25 @@ namespace libsemigroups {
       return _word.cend();
     }
 
+    //! Returns the index of the word corresponding to a node
+    //!
+    //! This function returns the least non-negative integer `i` such that the
+    //! node \p n corresponds to the `i`-th word added to the suffix tree.
+    //!
+    //! \param n the node
+    //!
+    //! \returns A value of type `word_index_type`.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    //! \complexity
+    //! Constant.
+    word_index_type word_index_no_checks(Node const& n) const {
+      LIBSEMIGROUPS_ASSERT(n.parent != UNDEFINED);
+      return word_index(n.r - 1);
+    }
+
     //! Returns the index of the word corresponding to a node.
     //!
     //! This function returns the least non-negative integer `i` such that the
@@ -576,8 +599,11 @@ namespace libsemigroups {
     //! \complexity
     //! Constant.
     word_index_type word_index(Node const& n) const {
-      LIBSEMIGROUPS_ASSERT(n.parent != UNDEFINED);
-      return word_index(n.r - 1);
+      if (n.parent == UNDEFINED) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "expected the parent of the parameter to not be UNDEFINED");
+      }
+      return word_index_no_checks(n.r - 1);
     }
 
     //! Returns the index of the word corresponding to a position.
@@ -599,10 +625,36 @@ namespace libsemigroups {
     //! \warning This function does no checks on its arguments whatsoever. In
     //! particular, if \p i is greater than \ref length_of_words + \ref
     //! number_of_distinct_words, then bad things will happen.
-    word_index_type word_index(index_type i) const {
+    word_index_type word_index_no_checks(index_type i) const {
       LIBSEMIGROUPS_ASSERT(i < _word.size());
       return _word_index_lookup[i];
     }
+
+    //! Returns the index of the word corresponding to a position.
+    //!
+    //! This function returns the least non-negative integer \c j such that the
+    //! `Ukkonen::begin() + i` points to a character in the `j`-th word added
+    //! to the suffix tree.
+    //!
+    //! \param i the position.
+    //!
+    //! \returns A value of type `word_index_type`.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    //! \complexity
+    //! Constant.
+    word_index_type word_index(index_type i) const {
+      if (i >= _word.size()) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "expected the parameter to be in the range [0, {}), found {}",
+            _word.size(),
+            i);
+      }
+      return word_index_no_checks(i);
+    }
+
     //! Returns the distance of a node from the root.
     //!
     //! \param n the node
@@ -647,7 +699,33 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! Constant.
-    size_t multiplicity(word_index_type i) const;
+    size_t multiplicity_no_checks(word_index_type i) const {
+      return _multiplicity[i];
+    }
+
+    //! Returns the multiplicity of a word by index.
+    //!
+    //! This function returns the number of times that the word corresponding to
+    //! the index \p i was added to the suffix tree.
+    //!
+    //! \param i the node
+    //!
+    //! \returns A value of type `size_t`.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    //! \complexity
+    //! Constant.
+    size_t multiplicity(word_index_type i) const {
+      if (i >= _multiplicity.size()) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "expected the parameter to be in the range [0, {}), found {}",
+            _multiplicity.size(),
+            i);
+      }
+      return multiplicity_no_checks(i);
+    }
 
     //! Returns the unique letter added to the end of a word in the suffix tree.
     //!
@@ -720,10 +798,11 @@ namespace libsemigroups {
     // and UNDEFINED if not.
     //! See \ref index_no_checks
     //!
-    //! \throws LibsemigroupsException if `validate_word(first, last)` throws.
+    //! \throws LibsemigroupsException if `throw_if_not_unique_letters(first,
+    //! last)` throws.
     template <typename Iterator>
     word_index_type index(Iterator first, Iterator last) const {
-      validate_word(first, last);
+      throw_if_not_unique_letters(first, last);
       return index_no_checks(first, last);
     }
 
@@ -759,10 +838,11 @@ namespace libsemigroups {
 
     //! See \ref traverse_no_checks.
     //!
-    //! \throws LibsemigroupsException if `validate_word(first, last)` throws.
+    //! \throws LibsemigroupsException if `throw_if_not_unique_letters(first,
+    //! last)` throws.
     template <typename Iterator>
     Iterator traverse(State& st, Iterator first, Iterator last) const {
-      validate_word(first, last);
+      throw_if_not_unique_letters(first, last);
       return traverse_no_checks(st, first, last);
     }
 
@@ -800,10 +880,11 @@ namespace libsemigroups {
 
     //! See \ref traverse_no_checks.
     //!
-    //! \throws LibsemigroupsException if `validate_word(first, last)` throws.
+    //! \throws LibsemigroupsException if `throw_if_not_unique_letters(first,
+    //! last)` throws.
     template <typename Iterator>
     std::pair<State, Iterator> traverse(Iterator first, Iterator last) const {
-      validate_word(first, last);
+      throw_if_not_unique_letters(first, last);
       return traverse_no_checks(first, last);
     }
 
@@ -811,7 +892,7 @@ namespace libsemigroups {
     // Ukkonen - validation - public
     ////////////////////////////////////////////////////////////////////////
 
-    //! Validate the word `[first, last)`.
+    //! Throw if the word `[first, last)` does not contain
     //!
     //! This function throws an exception if the word corresponding to \p first
     //! and \p last contains a letter equal to any of the unique letters added
@@ -829,13 +910,13 @@ namespace libsemigroups {
     //! \complexity
     //! Linear in the distance from \p first to \p last.
     template <typename Iterator>
-    void validate_word(Iterator first, Iterator last) const;
+    void throw_if_not_unique_letters(Iterator first, Iterator last) const;
 
     //! Validate a word.
     //!
-    //! See \ref validate_word
-    void validate_word(word_type const& w) const {
-      validate_word(w.cbegin(), w.cend());
+    //! See \ref throw_if_not_unique_letters
+    void throw_if_not_unique_letters(word_type const& w) const {
+      throw_if_not_unique_letters(w.cbegin(), w.cend());
     }
 
    private:
@@ -920,14 +1001,15 @@ namespace libsemigroups {
 
     //! See `add_words_no_checks(Ukkonen&, Iterator, Iterator)`
     //!
-    //! \throws LibsemigroupsException if `validate_word(w)` throws for any `w`
-    //! in \p words.
+    //! \throws LibsemigroupsException if `throw_if_not_unique_letters(w)`
+    //! throws for any `w` in \p words.
     void add_words(Ukkonen& u, std::vector<word_type> const& words);
 
     //! See `add_words_no_checks(Ukkonen&, Iterator, Iterator)`
     //!
-    //! \throws LibsemigroupsException if `Ukkonen::validate_word(w)` throws for
-    //! any `w` in `[first, last)`.
+    //! \throws LibsemigroupsException if
+    //! `Ukkonen::throw_if_not_unique_letters(w)` throws for any `w` in `[first,
+    //! last)`.
     template <typename Iterator1, typename Iterator2>
     void add_words(Ukkonen& u, Iterator1 first, Iterator2 last) {
       for (auto it = first; it != last; ++it) {
@@ -937,7 +1019,8 @@ namespace libsemigroups {
 
     //! See \ref Ukkonen::traverse_no_checks.
     //!
-    //! \throws LibsemigroupsException if `Ukkonen::validate_word(w)` throws.
+    //! \throws LibsemigroupsException if
+    //! `Ukkonen::throw_if_not_unique_letters(w)` throws.
     // TODO other versions
     inline auto traverse(Ukkonen const& u, word_type const& w) {
       return u.traverse(w.cbegin(), w.cend());
@@ -987,18 +1070,18 @@ namespace libsemigroups {
 
     //! See `is_subword_no_checks(Ukkonen const&, Iterator, Iterator)`
     //!
-    //! \throws LibsemigroupsException if `Ukkonen::validate_word(first, last)`
-    //! throws.
+    //! \throws LibsemigroupsException if
+    //! `Ukkonen::throw_if_not_unique_letters(first, last)` throws.
     template <typename Iterator>
     bool is_subword(Ukkonen const& u, Iterator first, Iterator last) {
-      u.validate_word(first, last);
+      u.throw_if_not_unique_letters(first, last);
       return is_subword_no_checks(u, first, last);
     }
 
     //! See `is_subword_no_checks(Ukkonen const&, Iterator, Iterator)`
     //!
-    //! \throws LibsemigroupsException if `Ukkonen::validate_word(w)`
-    //! throws.
+    //! \throws LibsemigroupsException if
+    //! `Ukkonen::throw_if_not_unique_letters(w)` throws.
     template <typename Word>
     bool is_subword(Ukkonen const& u, Word const& w) {
       return is_subword(u, w.cbegin(), w.cend());
@@ -1006,16 +1089,16 @@ namespace libsemigroups {
 
     //! See `is_subword_no_checks(Ukkonen const&, Iterator, Iterator)`
     //!
-    //! \throws LibsemigroupsException if `Ukkonen::validate_word(w, w +
-    //! std::strlen(w))` throws.
+    //! \throws LibsemigroupsException if
+    //! `Ukkonen::throw_if_not_unique_letters(w, w + std::strlen(w))` throws.
     inline bool is_subword(Ukkonen const& u, char const* w) {
       return is_subword(u, w, w + std::strlen(w));
     }
 
     //! See `is_subword_no_checks(Ukkonen const&, Iterator, Iterator)`
     //!
-    //! \throws LibsemigroupsException if `Ukkonen::validate_word(w)`
-    //! throws.
+    //! \throws LibsemigroupsException if
+    //! `Ukkonen::throw_if_not_unique_letters(w)` throws.
     inline bool is_subword(Ukkonen const& u, word_type const& w) {
       return is_subword(u, w.cbegin(), w.cend());
     }
@@ -1066,18 +1149,18 @@ namespace libsemigroups {
 
     //! See `is_suffix_no_checks(Ukkonen const&, Iterator, Iterator)`
     //!
-    //! \throws LibsemigroupsException if `Ukkonen::validate_word(first, last)`
-    //! throws.
+    //! \throws LibsemigroupsException if
+    //! `Ukkonen::throw_if_not_unique_letters(first, last)` throws.
     template <typename Iterator>
     bool is_suffix(Ukkonen const& u, Iterator first, Iterator last) {
-      u.validate_word(first, last);
+      u.throw_if_not_unique_letters(first, last);
       return is_suffix_no_checks(u, first, last);
     }
 
     //! See `is_suffix_no_checks(Ukkonen const&, Iterator, Iterator)`
     //!
-    //! \throws LibsemigroupsException if `Ukkonen::validate_word(w)`
-    //! throws.
+    //! \throws LibsemigroupsException if
+    //! `Ukkonen::throw_if_not_unique_letters(w)` throws.
     template <typename Word>
     bool is_suffix(Ukkonen const& u, Word const& w) {
       return is_suffix(u, w.cbegin(), w.cend());
@@ -1085,8 +1168,8 @@ namespace libsemigroups {
 
     //! See `is_suffix_no_checks(Ukkonen const&, Iterator, Iterator)`
     //!
-    //! \throws LibsemigroupsException if `Ukkonen::validate_word(w)`
-    //! throws.
+    //! \throws LibsemigroupsException if
+    //! `Ukkonen::throw_if_not_unique_letters(w)` throws.
     // This function is required so that we can use initialiser list, as an
     // argument to is_suffix
     inline bool is_suffix(Ukkonen const& u, word_type const& w) {
@@ -1095,8 +1178,8 @@ namespace libsemigroups {
 
     //! See `is_suffix_no_checks(Ukkonen const&, Iterator, Iterator)`
     //!
-    //! \throws LibsemigroupsException if `Ukkonen::validate_word(w, w +
-    //! std::strlen(w))` throws.
+    //! \throws LibsemigroupsException if
+    //! `Ukkonen::throw_if_not_unique_letters(w, w + std::strlen(w))` throws.
     inline bool is_suffix(Ukkonen const& u, char const* w) {
       return is_suffix(u, w, w + std::strlen(w));
     }
@@ -1153,20 +1236,20 @@ namespace libsemigroups {
 
     //! See `maximal_piece_prefix_no_checks(Ukkonen const&, Iterator, Iterator)`
     //!
-    //! \throws LibsemigroupsException if `Ukkonen::validate_word(first, last)`
-    //! throws.
+    //! \throws LibsemigroupsException if
+    //! `Ukkonen::throw_if_not_unique_letters(first, last)` throws.
     template <typename Iterator>
     Iterator maximal_piece_prefix(Ukkonen const& u,
                                   Iterator       first,
                                   Iterator       last) {
-      u.validate_word(first, last);
+      u.throw_if_not_unique_letters(first, last);
       return maximal_piece_prefix_no_checks(u, first, last);
     }
 
     //! See `maximal_piece_prefix_no_checks(Ukkonen const&, Iterator, Iterator)`
     //!
-    //! \throws LibsemigroupsException if `Ukkonen::validate_word(w)`
-    //! throws.
+    //! \throws LibsemigroupsException if
+    //! `Ukkonen::throw_if_not_unique_letters(w)` throws.
     template <typename Word>
     typename Word::const_iterator maximal_piece_prefix(Ukkonen const& u,
                                                        Word const&    w) {
@@ -1175,8 +1258,8 @@ namespace libsemigroups {
 
     //! See `maximal_piece_prefix_no_checks(Ukkonen const&, Iterator, Iterator)`
     //!
-    //! \throws LibsemigroupsException if `Ukkonen::validate_word(w)`
-    //! throws.
+    //! \throws LibsemigroupsException if
+    //! `Ukkonen::throw_if_not_unique_letters(w)` throws.
     inline typename word_type::const_iterator
     maximal_piece_prefix(Ukkonen const& u, word_type const& w) {
       return maximal_piece_prefix(u, w.cbegin(), w.cend());
@@ -1184,8 +1267,8 @@ namespace libsemigroups {
 
     //! See `maximal_piece_prefix_no_checks(Ukkonen const&, Iterator, Iterator)`
     //!
-    //! \throws LibsemigroupsException if `Ukkonen::validate_word(w, w +
-    //! std::strlen(w))` throws.
+    //! \throws LibsemigroupsException if
+    //! `Ukkonen::throw_if_not_unique_letters(w, w + std::strlen(w))` throws.
     inline char const* maximal_piece_prefix(Ukkonen const& u, char const* w) {
       return maximal_piece_prefix(u, w, w + std::strlen(w));
     }
@@ -1244,8 +1327,8 @@ namespace libsemigroups {
 
     //! See `maximal_piece_prefix_no_checks(Ukkonen const&, Iterator, Iterator)`
     //!
-    //! \throws LibsemigroupsException if `Ukkonen::validate_word(first, last)`
-    //! throws.
+    //! \throws LibsemigroupsException if
+    //! `Ukkonen::throw_if_not_unique_letters(first, last)` throws.
     template <typename Iterator>
     size_t length_maximal_piece_prefix(Ukkonen const& u,
                                        Iterator       first,
@@ -1255,8 +1338,8 @@ namespace libsemigroups {
 
     //! See `maximal_piece_prefix_no_checks(Ukkonen const&, Iterator, Iterator)`
     //!
-    //! \throws LibsemigroupsException if `Ukkonen::validate_word(w)`
-    //! throws.
+    //! \throws LibsemigroupsException if
+    //! `Ukkonen::throw_if_not_unique_letters(w)` throws.
     template <typename Word>
     size_t length_maximal_piece_prefix(Ukkonen const& u, Word const& w) {
       return length_maximal_piece_prefix(u, w.cbegin(), w.cend());
@@ -1264,8 +1347,8 @@ namespace libsemigroups {
 
     //! See `maximal_piece_prefix_no_checks(Ukkonen const&, Iterator, Iterator)`
     //!
-    //! \throws LibsemigroupsException if `Ukkonen::validate_word(w)`
-    //! throws.
+    //! \throws LibsemigroupsException if
+    //! `Ukkonen::throw_if_not_unique_letters(w)` throws.
     inline size_t length_maximal_piece_prefix(Ukkonen const&   u,
                                               word_type const& w) {
       return length_maximal_piece_prefix(u, w.cbegin(), w.cend());
@@ -1273,8 +1356,8 @@ namespace libsemigroups {
 
     //! See `maximal_piece_prefix_no_checks(Ukkonen const&, Iterator, Iterator)`
     //!
-    //! \throws LibsemigroupsException if `Ukkonen::validate_word(w, w +
-    //! std::strlen(w))` throws.
+    //! \throws LibsemigroupsException if
+    //! `Ukkonen::throw_if_not_unique_letters(w, w + std::strlen(w))` throws.
     inline size_t length_maximal_piece_prefix(Ukkonen const& u, char const* w) {
       return length_maximal_piece_prefix(u, w, w + std::strlen(w));
     }
@@ -1327,8 +1410,8 @@ namespace libsemigroups {
 
     //! See `is_piece_no_checks(Ukkonen const&, Iterator, Iterator)`
     //!
-    //! \throws LibsemigroupsException if `Ukkonen::validate_word(first, last)`
-    //! throws.
+    //! \throws LibsemigroupsException if
+    //! `Ukkonen::throw_if_not_unique_letters(first, last)` throws.
     template <typename Iterator>
     bool is_piece(Ukkonen const& u, Iterator first, Iterator last) {
       return maximal_piece_prefix(u, first, last) == last;
@@ -1336,8 +1419,8 @@ namespace libsemigroups {
 
     //! See `is_piece_no_checks(Ukkonen const&, Iterator, Iterator)`
     //!
-    //! \throws LibsemigroupsException if `Ukkonen::validate_word(w)`
-    //! throws.
+    //! \throws LibsemigroupsException if
+    //! `Ukkonen::throw_if_not_unique_letters(w)` throws.
     template <typename Word>
     bool is_piece(Ukkonen const& u, Word const& w) {
       return is_piece(u, w.cbegin(), w.cend());
@@ -1345,16 +1428,16 @@ namespace libsemigroups {
 
     //! See `is_piece_no_checks(Ukkonen const&, Iterator, Iterator)`
     //!
-    //! \throws LibsemigroupsException if `Ukkonen::validate_word(w)`
-    //! throws.
+    //! \throws LibsemigroupsException if
+    //! `Ukkonen::throw_if_not_unique_letters(w)` throws.
     inline bool is_piece(Ukkonen const& u, word_type const& w) {
       return is_piece(u, w.cbegin(), w.cend());
     }
 
     //! See `is_piece_no_checks(Ukkonen const&, Iterator, Iterator)`
     //!
-    //! \throws LibsemigroupsException if `Ukkonen::validate_word(w, w +
-    //! std::strlen(w))` throws.
+    //! \throws LibsemigroupsException if
+    //! `Ukkonen::throw_if_not_unique_letters(w, w + std::strlen(w))` throws.
     inline bool is_piece(Ukkonen const& u, char const* w) {
       return is_piece(u, w, w + std::strlen(w));
     }
@@ -1413,20 +1496,20 @@ namespace libsemigroups {
 
     //! See `maximal_piece_suffix_no_checks(Ukkonen const&, Iterator, Iterator)`
     //!
-    //! \throws LibsemigroupsException if `Ukkonen::validate_word(first, last)`
-    //! throws.
+    //! \throws LibsemigroupsException if
+    //! `Ukkonen::throw_if_not_unique_letters(first, last)` throws.
     template <typename Iterator>
     Iterator maximal_piece_suffix(Ukkonen const& u,
                                   Iterator       first,
                                   Iterator       last) {
-      u.validate_word(first, last);
+      u.throw_if_not_unique_letters(first, last);
       return maximal_piece_suffix_no_checks(u, first, last);
     }
 
     //! See `maximal_piece_suffix_no_checks(Ukkonen const&, Iterator, Iterator)`
     //!
-    //! \throws LibsemigroupsException if `Ukkonen::validate_word(w)`
-    //! throws.
+    //! \throws LibsemigroupsException if
+    //! `Ukkonen::throw_if_not_unique_letters(w)` throws.
     template <typename Word>
     typename Word::const_iterator maximal_piece_suffix(Ukkonen const& u,
                                                        Word const&    w) {
@@ -1435,8 +1518,8 @@ namespace libsemigroups {
 
     //! See `maximal_piece_suffix_no_checks(Ukkonen const&, Iterator, Iterator)`
     //!
-    //! \throws LibsemigroupsException if `Ukkonen::validate_word(w)`
-    //! throws.
+    //! \throws LibsemigroupsException if
+    //! `Ukkonen::throw_if_not_unique_letters(w)` throws.
     inline typename word_type::const_iterator
     maximal_piece_suffix(Ukkonen const& u, word_type const& w) {
       return maximal_piece_suffix(u, w.cbegin(), w.cend());
@@ -1444,8 +1527,8 @@ namespace libsemigroups {
 
     //! See `maximal_piece_suffix_no_checks(Ukkonen const&, Iterator, Iterator)`
     //!
-    //! \throws LibsemigroupsException if `Ukkonen::validate_word(w, w +
-    //! std::strlen(w))` throws.
+    //! \throws LibsemigroupsException if
+    //! `Ukkonen::throw_if_not_unique_letters(w, w + std::strlen(w))` throws.
     inline char const* maximal_piece_suffix(Ukkonen const& u, char const* w) {
       return maximal_piece_suffix(u, w, w + std::strlen(w));
     }
@@ -1508,8 +1591,8 @@ namespace libsemigroups {
     //! See `length_maximal_piece_suffix_no_checks(Ukkonen const&, Iterator,
     //! Iterator)`
     //!
-    //! \throws LibsemigroupsException if `Ukkonen::validate_word(first, last)`
-    //! throws.
+    //! \throws LibsemigroupsException if
+    //! `Ukkonen::throw_if_not_unique_letters(first, last)` throws.
     template <typename Iterator>
     size_t length_maximal_piece_suffix(Ukkonen const& u,
                                        Iterator       first,
@@ -1520,8 +1603,8 @@ namespace libsemigroups {
     //! See `length_maximal_piece_suffix_no_checks(Ukkonen const&, Iterator,
     //! Iterator)`
     //!
-    //! \throws LibsemigroupsException if `Ukkonen::validate_word(w)`
-    //! throws.
+    //! \throws LibsemigroupsException if
+    //! `Ukkonen::throw_if_not_unique_letters(w)` throws.
     template <typename Word>
     size_t length_maximal_piece_suffix(Ukkonen const& u, Word const& w) {
       return length_maximal_piece_suffix(u, w.cbegin(), w.cend());
@@ -1530,8 +1613,8 @@ namespace libsemigroups {
     //! See `length_maximal_piece_suffix_no_checks(Ukkonen const&, Iterator,
     //! Iterator)`
     //!
-    //! \throws LibsemigroupsException if `Ukkonen::validate_word(w)`
-    //! throws.
+    //! \throws LibsemigroupsException if
+    //! `Ukkonen::throw_if_not_unique_letters(w)` throws.
     inline size_t length_maximal_piece_suffix(Ukkonen const&   u,
                                               word_type const& w) {
       return length_maximal_piece_suffix(u, w.cbegin(), w.cend());
@@ -1540,8 +1623,8 @@ namespace libsemigroups {
     //! See `length_maximal_piece_suffix_no_checks(Ukkonen const&, Iterator,
     //! Iterator)`
     //!
-    //! \throws LibsemigroupsException if `Ukkonen::validate_word(w, w +
-    //! std::strlen(w))` throws.
+    //! \throws LibsemigroupsException if
+    //! `Ukkonen::throw_if_not_unique_letters(w, w + std::strlen(w))` throws.
     inline size_t length_maximal_piece_suffix(Ukkonen const& u, char const* w) {
       return length_maximal_piece_suffix(u, w, w + std::strlen(w));
     }
@@ -1599,19 +1682,19 @@ namespace libsemigroups {
     //! See `number_of_pieces_no_checks(Ukkonen const&, Iterator,
     //! Iterator)`
     //!
-    //! \throws LibsemigroupsException if `Ukkonen::validate_word(first, last)`
-    //! throws.
+    //! \throws LibsemigroupsException if
+    //! `Ukkonen::throw_if_not_unique_letters(first, last)` throws.
     template <typename Iterator>
     size_t number_of_pieces(Ukkonen const& u, Iterator first, Iterator last) {
-      u.validate_word(first, last);
+      u.throw_if_not_unique_letters(first, last);
       return number_of_pieces_no_checks(u, first, last);
     }
 
     //! See `number_of_pieces_no_checks(Ukkonen const&, Iterator,
     //! Iterator)`
     //!
-    //! \throws LibsemigroupsException if `Ukkonen::validate_word(w)`
-    //! throws.
+    //! \throws LibsemigroupsException if
+    //! `Ukkonen::throw_if_not_unique_letters(w)` throws.
     template <typename Word>
     size_t number_of_pieces(Ukkonen const& u, Word const& w) {
       return number_of_pieces(u, w.cbegin(), w.cend());
@@ -1620,8 +1703,8 @@ namespace libsemigroups {
     //! See `number_of_pieces_no_checks(Ukkonen const&, Iterator,
     //! Iterator)`
     //!
-    //! \throws LibsemigroupsException if `Ukkonen::validate_word(w)`
-    //! throws.
+    //! \throws LibsemigroupsException if
+    //! `Ukkonen::throw_if_not_unique_letters(w)` throws.
     inline size_t number_of_pieces(Ukkonen const& u, word_type const& w) {
       return number_of_pieces(u, w.cbegin(), w.cend());
     }
@@ -1629,8 +1712,8 @@ namespace libsemigroups {
     //! See `number_of_pieces_no_checks(Ukkonen const&, Iterator,
     //! Iterator)`
     //!
-    //! \throws LibsemigroupsException if `Ukkonen::validate_word(w, w +
-    //! std::strlen(w))` throws.
+    //! \throws LibsemigroupsException if
+    //! `Ukkonen::throw_if_not_unique_letters(w, w + std::strlen(w))` throws.
     inline size_t number_of_pieces(Ukkonen const& u, char const* w) {
       return number_of_pieces(u, w, w + std::strlen(w));
     }
@@ -1694,41 +1777,41 @@ namespace libsemigroups {
 
     //! See `pieces_no_checks(Ukkonen const&, Iterator, Iterator)`.
     //!
-    //! \throws LibsemigroupsException if `Ukkonen::validate_word(first, last)`
-    //! throws.
+    //! \throws LibsemigroupsException if
+    //! `Ukkonen::throw_if_not_unique_letters(first, last)` throws.
     template <typename Iterator>
     std::vector<Iterator> pieces(Ukkonen const& u,
                                  Iterator       first,
                                  Iterator       last) {
-      u.validate_word(first, last);
+      u.throw_if_not_unique_letters(first, last);
       return pieces_no_checks(u, first, last);
     }
 
     //! See `pieces_no_checks(Ukkonen const&, Iterator, Iterator)`.
     //!
-    //! \throws LibsemigroupsException if `Ukkonen::validate_word(w)`
-    //! throws.
+    //! \throws LibsemigroupsException if
+    //! `Ukkonen::throw_if_not_unique_letters(w)` throws.
     template <typename Word>
     std::vector<Word> pieces(Ukkonen const& u, Word const& w) {
-      u.validate_word(w.cbegin(), w.cend());
+      u.throw_if_not_unique_letters(w.cbegin(), w.cend());
       return pieces_no_checks(u, w);
     }
 
     //! See `pieces_no_checks(Ukkonen const&, Iterator, Iterator)`.
     //!
-    //! \throws LibsemigroupsException if `Ukkonen::validate_word(w)`
-    //! throws.
+    //! \throws LibsemigroupsException if
+    //! `Ukkonen::throw_if_not_unique_letters(w)` throws.
     inline std::vector<word_type> pieces(Ukkonen const& u, word_type const& w) {
-      u.validate_word(w);
+      u.throw_if_not_unique_letters(w);
       return pieces_no_checks(u, w);
     }
 
     //! See `pieces_no_checks(Ukkonen const&, Iterator, Iterator)`.
     //!
-    //! \throws LibsemigroupsException if `Ukkonen::validate_word(w, w +
-    //! std::strlen(w))` throws.
+    //! \throws LibsemigroupsException if
+    //! `Ukkonen::throw_if_not_unique_letters(w, w + std::strlen(w))` throws.
     inline std::vector<std::string> pieces(Ukkonen const& u, char const* w) {
-      u.validate_word(w, w + std::strlen(w));
+      u.throw_if_not_unique_letters(w, w + std::strlen(w));
       return pieces_no_checks(u, w);
     }
 
@@ -1744,6 +1827,7 @@ namespace libsemigroups {
     //! than 24.
     //!
     //! [GraphViz]: https://graphviz.org
+    // TODO make this a return a Dot object instead
     std::string dot(Ukkonen const& u);
 
     //! Perform a depth first search in a suffix tree.
