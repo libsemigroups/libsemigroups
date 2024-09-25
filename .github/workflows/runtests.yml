@@ -126,7 +126,9 @@ jobs:
             update_packager_index: false
             install_ccache: true
         - name: "Install conda environment from environment.yml . . ."
-          uses: mamba-org/provision-with-micromamba@main
+          uses: mamba-org/setup-micromamba@v1
+          with: 
+            environment-file: environment.yml
         - name: "Run ./autogen.sh . . ."
           run: ./autogen.sh
         - name: "Test flag: --with-external-fmt"
