@@ -116,8 +116,8 @@ jobs:
       env:
         CXX: "ccache g++"
         CXXFLAGS: "-fdiagnostics-color"
-        PKG_CONFIG_PATH: "/home/runner/micromamba-root/envs/libsemigroups/lib/pkgconfig:/home/runner/micromamba-root/envs/libsemigroups/share/pkgconfig/"
-        LD_LIBRARY_PATH: "/home/runner/micromamba-root/envs/libsemigroups/lib"
+        PKG_CONFIG_PATH: "/home/runner/micromamba/envs/libsemigroups/lib/pkgconfig:/home/runner/micromamba/envs/libsemigroups/share/pkgconfig/"
+        LD_LIBRARY_PATH: "/home/runner/micromamba/envs/libsemigroups/lib"
       steps:
         - uses: actions/checkout@v3
         - name: "Setup ccache . . ."
