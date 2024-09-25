@@ -4,7 +4,7 @@ import os
 from os import listdir
 from os.path import isfile, splitext
 
-being_warn_col = "\033[93m"
+begin_warn_col = "\033[93m"
 end_warn_col = "\033[0m"
 
 
@@ -64,7 +64,7 @@ def process_file(f):
                 highest_level = level
                 break
             print(
-                f"{being_warn_col}Warning: {command} is not in the correct place in docstring at {file}:{line_no+1}{end_warn_col}"
+                f"{begin_warn_col}Warning: {command} is not in the correct place in docstring at {file}:{line_no+1}{end_warn_col}"
             )
 
 
