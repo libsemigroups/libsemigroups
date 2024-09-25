@@ -20,17 +20,15 @@
 
 #include "libsemigroups/ukkonen.hpp"
 
-#include <algorithm>  // for lower_bound, sort, max
+#include <algorithm>  // for copy, max, fill_n, fill
 #include <array>      // for array
-#include <cstddef>    // for size_t
-#include <cstdint>    // for uint64_t
 #include <numeric>    // for accumulate
-#include <string>     // for operator+, char_traits, to_st...
+#include <string>     // for operator+, allocator, bas...
 
-#include "libsemigroups/constants.hpp"  // for UNDEFINED
+#include "libsemigroups/constants.hpp"  // for Max, UNDEFINED, operator!=
 #include "libsemigroups/debug.hpp"      // for LIBSEMIGROUPS_ASSERT
 #include "libsemigroups/exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
-#include "libsemigroups/types.hpp"      // for word_type
+#include "libsemigroups/types.hpp"      // for word_type, letter_type
 
 #include "libsemigroups/detail/string.hpp"  // for to_string
 
