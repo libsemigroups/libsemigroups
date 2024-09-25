@@ -33,23 +33,22 @@
 #define NOT_PARSED_BY_DOXYGEN
 #endif
 
-#include <algorithm>  // for equal, find_if
-#include <cstddef>    // for size_t
-#include <cstdint>    // for uint64_t
-#include <cstring>    // for strlen
-#include <iterator>   // for operator+
-#include <map>        // for map
+#include <algorithm>  // for find_if, copy, max
+#include <cstring>    // for size_t, strlen
+#include <iterator>   // for distance
+#include <map>        // for operator!=, map, _Rb_tree_iterator
 #include <numeric>    // for accumulate
 #include <stack>      // for stack
-#include <string>     // for string
+#include <string>     // for allocator, string, basic_string
 #include <utility>    // for pair, make_pair
 #include <vector>     // for vector
 
-#include "constants.hpp"  // for Undefined, UNDE...
+#include "constants.hpp"  // for operator==, operator!=, Max, UNDEFINED
 #include "debug.hpp"      // for LIBSEMIGROUPS_ASSERT
 #include "exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
-#include "types.hpp"      // for word_type, lett..
+#include "types.hpp"      // for word_type, letter_type
 
+#include "detail/fmt.hpp"     // for format, format_string
 #include "detail/string.hpp"  // for maximum_common_prefix
 
 namespace libsemigroups {
