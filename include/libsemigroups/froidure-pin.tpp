@@ -215,7 +215,7 @@ namespace libsemigroups {
 
     if (!w.empty()) {
       // current_position is always known for generators (i.e. when w.size()
-      // == 1), and current_position verifies that w is valid.
+      // == 1), so w.size() > 1 should be true here
       LIBSEMIGROUPS_ASSERT(w.size() > 1);
       element_type tmp
           = this->external_copy(this->to_external_const(_tmp_product));
@@ -276,13 +276,11 @@ namespace libsemigroups {
     return (it == _map.end() ? UNDEFINED : it->second);
   }
 
-  // TODO no_checks version
   template <typename Element, typename Traits>
   FroidurePinBase::element_index_type
-  FroidurePin<Element, Traits>::fast_product(element_index_type i,
-                                             element_index_type j) const {
-    throw_if_element_index_out_of_range(i);
-    throw_if_element_index_out_of_range(j);
+  FroidurePin<Element, Traits>::fast_product_no_checks(
+      element_index_type i,
+      element_index_type j) const {
     auto const n = 2 * Complexity()(this->to_external_const(_tmp_product));
     if (current_length(i) < n || current_length(j) < n) {
       return froidure_pin::product_by_reduction(*this, i, j);
@@ -302,11 +300,9 @@ namespace libsemigroups {
   }
 
   template <typename Element, typename Traits>
-  bool FroidurePin<Element, Traits>::is_idempotent(element_index_type pos) {
+  bool FroidurePin<Element, Traits>::is_idempotent_no_checks(
+      element_index_type pos) {
     init_idempotents();
-    // only validate pos after init_idempotents, because we don't know if
-    // it's valid until then
-    throw_if_element_index_out_of_range(pos);
     return _is_idempotent[pos];
   }
 

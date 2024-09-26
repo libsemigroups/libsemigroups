@@ -472,6 +472,7 @@ namespace libsemigroups {
     //! made.
     const_reference to_element_no_checks(word_type const& w) const;
 
+    // TODO doc
     const_reference to_element(word_type const& w) const {
       throw_if_any_generator_index_out_of_range(w);
       return to_element_no_checks(w);
@@ -544,6 +545,10 @@ namespace libsemigroups {
     using FroidurePinBase::current_position;
 #endif
 
+    // TODO doc
+    element_index_type fast_product_no_checks(element_index_type i,
+                                              element_index_type j) const;
+
     //! \brief Multiply elements via their indices.
     //!
     //! Returns the position of the product of the element with index \p i and
@@ -574,9 +579,12 @@ namespace libsemigroups {
     //!
     //! \throws LibsemigroupsException if the values \p i and \p j are greater
     //! than or equal to \ref current_size.
-    // TODO no_checks version
     element_index_type fast_product(element_index_type i,
-                                    element_index_type j) const;
+                                    element_index_type j) const {
+      throw_if_element_index_out_of_range(i);
+      throw_if_element_index_out_of_range(j);
+      return fast_product_no_checks(i, j);
+    }
 
     //! \brief Returns the number of idempotents.
     //!
@@ -589,6 +597,8 @@ namespace libsemigroups {
     //! \note
     //! This function triggers a full enumeration.
     size_t number_of_idempotents();
+
+    bool is_idempotent_no_checks(element_index_type i);
 
     //! \brief Check if an element is an idempotent via its index.
     //!
@@ -606,7 +616,11 @@ namespace libsemigroups {
     //! \note
     //! This function triggers a full enumeration.
     // TODO no_checks version
-    bool is_idempotent(element_index_type i);
+    bool is_idempotent(element_index_type i) {
+      run();
+      throw_if_element_index_out_of_range(i);
+      return is_idempotent_no_checks(i);
+    }
 
     //! \brief Requests the given capacity for elements.
     //!
