@@ -54,7 +54,7 @@ namespace libsemigroups {
       pos++;
     }
 
-    S.add_generators({PPerm<>({0, 1, 2}, {3, 4, 5}, 6)});
+    froidure_pin::add_generators(S, {PPerm<>({0, 1, 2}, {3, 4, 5}, 6)});
     REQUIRE(S.size() == 396);
     S.closure({PPerm<>({0, 1, 2}, {3, 4, 5}, 6)});
     REQUIRE(S.size() == 396);
@@ -140,8 +140,10 @@ namespace libsemigroups {
         = {PPerm<>({0, 1, 2, 3, 5, 6, 9}, {2, 7, 5, 1, 4, 3, 9}, 11),
            PPerm<>({2, 5, 1}, {6, 0, 3}, 12)};
 
-    REQUIRE_NOTHROW(U.add_generators(additional_gens_2_1));
-    REQUIRE_THROWS_AS(U.add_generators(additional_gens_2_2),
+    REQUIRE_NOTHROW(froidure_pin::add_generators(U, additional_gens_2_1));
+    REQUIRE_NOTHROW(
+        froidure_pin::add_generators(U, std::move(additional_gens_2_1)));
+    REQUIRE_THROWS_AS(froidure_pin::add_generators(U, additional_gens_2_2),
                       LibsemigroupsException);
   }
 }  // namespace libsemigroups

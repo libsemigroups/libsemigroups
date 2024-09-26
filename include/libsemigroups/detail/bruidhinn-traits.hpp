@@ -97,6 +97,11 @@ namespace libsemigroups {
         return new value_type(*x);
       }
 
+      // inline internal_rvalue_reference
+      // internal_copy(internal_rvalue_reference x) const {
+      //   return std::move(x);
+      // }
+
       inline value_type external_copy(const_reference x) const {
         return x;
       }
