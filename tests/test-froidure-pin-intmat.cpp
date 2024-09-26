@@ -119,14 +119,14 @@ namespace libsemigroups {
       REQUIRE(T.current_position({}) == UNDEFINED);
       REQUIRE_NOTHROW(T.current_position({0, 0, 1, 1}));
       REQUIRE(T.current_position({0, 0, 1, 1}) == UNDEFINED);
-      auto w = T.word_to_element({0, 0, 1, 1});
+      auto w = T.to_element({0, 0, 1, 1});
       REQUIRE(T.current_position(w) == UNDEFINED);
       REQUIRE_THROWS_AS(T.current_position({0, 0, 1, 2}),
                         LibsemigroupsException);
 
       REQUIRE(T.size() == 13);
       REQUIRE(T.current_position({0, 0, 1, 1}) == 6);
-      w = T.word_to_element({0, 0, 1, 1});
+      w = T.to_element({0, 0, 1, 1});
       REQUIRE(T.current_position(w) == 6);
     }
 
@@ -136,11 +136,11 @@ namespace libsemigroups {
       T.add_generator(Mat({{0, 0}, {0, 1}}));
       T.add_generator(Mat({{0, 1}, {-1, 0}}));
 
-      REQUIRE(T.word_to_element({}) == Mat::one(2));
-      REQUIRE_THROWS_AS(T.word_to_element({0, 0, 1, 2}),
+      REQUIRE(T.to_element({}) == Mat::one(2));
+      REQUIRE_THROWS_AS(T.to_element({0, 0, 1, 2}),
                         LibsemigroupsException);
 
-      auto t = T.word_to_element({0, 0, 1, 1});
+      auto t = T.to_element({0, 0, 1, 1});
       REQUIRE(t
               == T.generator(0) * T.generator(0) * T.generator(1)
                      * T.generator(1));
@@ -240,7 +240,7 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin<IntMat>",
                           "037",
-                          "exception: word_to_element",
+                          "exception: to_element",
                           "[quick][froidure-pin][element]") {
     test009<IntMat<2>>();
     test009<IntMat<>>();

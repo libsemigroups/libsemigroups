@@ -204,60 +204,51 @@ namespace libsemigroups {
   ////////////////////////////////////////////////////////////////////////
 
   template <typename Element, typename Traits>
-  typename FroidurePin<Element, Traits>::element_type
-  FroidurePin<Element, Traits>::word_to_element(word_type const& w) const {
-    element_index_type pos = current_position(w);
+  typename FroidurePin<Element, Traits>::const_reference
+  FroidurePin<Element, Traits>::to_element_no_checks(word_type const& w) const {
+    element_index_type pos = current_position_no_checks(w);
     if (pos != UNDEFINED) {
-      // Return a copy
-      return this->external_copy(this->to_external_const(_elements[pos]));
+      return this->to_external_const(_elements[pos]);
     }
 
-    if (w.empty()) {
-      if (!_gens.empty()) {
-        return One()(this->to_external_const(_gens[0]));
-      } else {
-        LIBSEMIGROUPS_EXCEPTION("TODO(0)");
+    _tmp_product = this->to_internal(One()(this->to_external_const(_gens[0])));
+
+    if (!w.empty()) {
+      // current_position is always known for generators (i.e. when w.size()
+      // == 1), and current_position verifies that w is valid.
+      LIBSEMIGROUPS_ASSERT(w.size() > 1);
+      element_type tmp
+          = this->external_copy(this->to_external_const(_tmp_product));
+
+      auto* state_ptr = _state.get();
+      for (auto it = w.begin(); it < w.end(); ++it) {
+        LIBSEMIGROUPS_ASSERT(*it < number_of_generators());
+        internal_product(tmp,
+                         this->to_external_const(_tmp_product),
+                         this->to_external_const(_gens[*it]),
+                         state_ptr);
+        Swap()(this->to_external(_tmp_product), tmp);
       }
+      this->external_free(tmp);
     }
-    // current_position is always known for generators (i.e. when w.size()
-    // == 1), and current_position verifies that w is valid.
-    LIBSEMIGROUPS_ASSERT(w.size() > 1);
-    LIBSEMIGROUPS_ASSERT(w[0] < number_of_generators()
-                         && w[1] < number_of_generators());
-    element_type prod
-        = this->external_copy(this->to_external_const(_tmp_product));
-
-    auto* state_ptr = _state.get();
-    internal_product(prod,
-                     this->to_external_const(_gens[w[0]]),
-                     this->to_external_const(_gens[w[1]]),
-                     state_ptr);
-    for (auto it = w.begin() + 2; it < w.end(); ++it) {
-      LIBSEMIGROUPS_ASSERT(*it < number_of_generators());
-      Swap()(this->to_external(_tmp_product), prod);
-      internal_product(prod,
-                       this->to_external_const(_tmp_product),
-                       this->to_external_const(_gens[*it]),
-                       state_ptr);
-    }
-    return prod;
+    return this->to_external_const(_tmp_product);
   }
 
   template <typename Element, typename Traits>
-  bool FroidurePin<Element, Traits>::equal_to(word_type const& u,
-                                              word_type const& v) const {
-    element_index_type u_pos = current_position(u);  // validates u
-    element_index_type v_pos = current_position(v);  // validates v
+  bool
+  FroidurePin<Element, Traits>::equal_to_no_checks(word_type const& u,
+                                                   word_type const& v) const {
+    element_index_type u_pos = current_position_no_checks(u);
+    element_index_type v_pos = current_position_no_checks(v);
     if (finished() || (u_pos != UNDEFINED && v_pos != UNDEFINED)) {
-      LIBSEMIGROUPS_ASSERT(u_pos != UNDEFINED);
-      LIBSEMIGROUPS_ASSERT(v_pos != UNDEFINED);
       return u_pos == v_pos;
     } else {
-      element_type uu  = word_to_element(u);
-      element_type vv  = word_to_element(v);
-      auto         res = (uu == vv);
+      element_type uu = to_element_no_checks(u);
+      // to_element_no_checks returns a reference to _tmp_product, so we must
+      // copy it first time around, but not the second (next line)
+      const_reference vv  = to_element_no_checks(v);
+      auto            res = (uu == vv);
       this->external_free(uu);
-      this->external_free(vv);
       return res;
     }
   }

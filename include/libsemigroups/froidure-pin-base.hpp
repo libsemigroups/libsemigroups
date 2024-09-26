@@ -260,7 +260,7 @@ namespace libsemigroups {
     //! \complexity
     //! \f$O(n)\f$ where \f$n\f$ is the length of the word \p w.
     //!
-    //! \sa FroidurePin::word_to_element.
+    //! \sa FroidurePin::to_element.
     // This is not a helper because the function
     // FroidurePin::current_position(const_reference) requires access to the
     // private members.
@@ -289,7 +289,7 @@ namespace libsemigroups {
     //! particular, if any of the letters in \p w is out of range, then bad
     //! things will happen.
     //!
-    //! \sa FroidurePin::word_to_element.
+    //! \sa FroidurePin::to_element.
     [[nodiscard]] element_index_type
     current_position_no_checks(word_type const& w) const;
 
@@ -329,7 +329,7 @@ namespace libsemigroups {
     //! particular, if there is no generator with index \p i, then bad
     //! things will happen.
     //!
-    //! \sa FroidurePin::word_to_element.
+    //! \sa FroidurePin::to_element.
     [[nodiscard]] element_index_type
     current_position_no_checks(generator_index_type i) const {
       LIBSEMIGROUPS_ASSERT(i < _letter_to_pos.size());
@@ -1781,6 +1781,9 @@ namespace libsemigroups {
     //! \throws LibsemigroupsException if \p i exceeds
     //! FroidurePin::number_of_generators.
     void throw_if_generator_index_out_of_range(generator_index_type i) const;
+
+    // TODO doc
+    void throw_if_any_generator_index_out_of_range(word_type const& i) const;
 
    private:
     ////////////////////////////////////////////////////////////////////////

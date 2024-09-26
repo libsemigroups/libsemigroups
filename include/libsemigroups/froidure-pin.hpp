@@ -466,10 +466,16 @@ namespace libsemigroups {
     //! number of generators.
     //!
     //! \sa \ref current_position.
-    // TODO helper
-    // TODO rename to_element
-    // TODO no_checks version
-    element_type word_to_element(word_type const& w) const;
+    //!
+    //! The returned reference is only valid until the next function that
+    //! triggers an enumeration is called, or another call to this function is
+    //! made.
+    const_reference to_element_no_checks(word_type const& w) const;
+
+    const_reference to_element(word_type const& w) const {
+      throw_if_any_generator_index_out_of_range(w);
+      return to_element_no_checks(w);
+    }
 
     //! \brief Check equality of words in the generators.
     //!
@@ -483,9 +489,14 @@ namespace libsemigroups {
     //!
     //! \throws LibsemigroupsException if \p w contains an value exceeding
     //! \ref number_of_generators.
-    // TODO delete or helper
-    // TODO no_checks version
-    bool equal_to(word_type const& x, word_type const& y) const;
+    bool equal_to_no_checks(word_type const& x, word_type const& y) const;
+
+    // TODO doc
+    bool equal_to(word_type const& x, word_type const& y) const {
+      throw_if_any_generator_index_out_of_range(x);
+      throw_if_any_generator_index_out_of_range(y);
+      return equal_to(x, y);
+    }
 
     //! \brief Returns the number of generators.
     //!

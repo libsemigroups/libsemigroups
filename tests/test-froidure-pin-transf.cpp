@@ -169,7 +169,7 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin<Transf<>>",
                           "068",
-                          "exception word_to_element",
+                          "exception to_element",
                           "[quick][froidure-pin][transformation][transf]") {
     auto                  rg   = ReportGuard(REPORT);
     std::vector<Transf<>> gens = {Transf<>({0, 1, 2, 3, 4, 5}),
@@ -179,10 +179,10 @@ namespace libsemigroups {
                                   Transf<>({1, 1, 2, 3, 4, 5})};
     auto                  U    = to_froidure_pin(gens);
 
-    REQUIRE(U.word_to_element({}) == gens[0]);
-    REQUIRE_THROWS_AS(U.word_to_element({5}), LibsemigroupsException);
+    REQUIRE(U.to_element({}) == gens[0]);
+    REQUIRE_THROWS_AS(U.to_element({5}), LibsemigroupsException);
 
-    Transf<> u = U.word_to_element({0, 0, 1, 2});
+    Transf<> u = U.to_element({0, 0, 1, 2});
     REQUIRE(u
             == Transf<>({0, 1, 2, 3, 4, 5}) * Transf<>({0, 1, 2, 3, 4, 5})
                    * Transf<>({1, 0, 2, 3, 4, 5})
@@ -2461,7 +2461,7 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin<Transf<>>",
                           "139",
-                          "exception: word_to_element",
+                          "exception: to_element",
                           "[quick][froidure-pin][transf]") {
     FroidurePin<Transf<>> U;
     U.add_generator(Transf<>({0, 1, 2, 3, 4, 5}));
@@ -2470,10 +2470,10 @@ namespace libsemigroups {
     U.add_generator(Transf<>({5, 1, 2, 3, 4, 5}));
     U.add_generator(Transf<>({1, 1, 2, 3, 4, 5}));
 
-    REQUIRE(U.word_to_element({}) == U.generator(0));
-    REQUIRE_THROWS_AS(U.word_to_element({5}), LibsemigroupsException);
+    REQUIRE(U.to_element({}) == U.generator(0));
+    REQUIRE_THROWS_AS(U.to_element({5}), LibsemigroupsException);
 
-    REQUIRE(U.word_to_element({0, 0, 1, 2})
+    REQUIRE(U.to_element({0, 0, 1, 2})
             == U.generator(0) * U.generator(0) * U.generator(1)
                    * U.generator(2));
   }

@@ -237,9 +237,7 @@ namespace libsemigroups {
   element_index_type
   FroidurePinBase::current_position(word_type const& w) const {
     // w is a word in the generators (i.e. a vector of letter_type's)
-    for (auto x : w) {
-      throw_if_generator_index_out_of_range(x);
-    }
+    throw_if_any_generator_index_out_of_range(w);
     return current_position_no_checks(w);
   }
 
@@ -343,6 +341,13 @@ namespace libsemigroups {
           "generator index out of bounds, expected value in [0, {}), got {}",
           number_of_generators(),
           i);
+    }
+  }
+
+  void FroidurePinBase::throw_if_any_generator_index_out_of_range(
+      word_type const& w) const {
+    for (auto a : w) {
+      throw_if_generator_index_out_of_range(a);
     }
   }
 

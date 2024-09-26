@@ -68,7 +68,7 @@ namespace libsemigroups {
     REQUIRE(S.size() == 63904);
     REQUIRE(S.number_of_idempotents() == 2360);
     REQUIRE(S.current_position({0, 1, 2, 0, 1, 2}) == 378);
-    REQUIRE(S.word_to_element({0, 1, 2, 0, 1, 2})
+    REQUIRE(S.to_element({0, 1, 2, 0, 1, 2})
             == BMat8({{1, 0, 0, 1}, {0, 1, 0, 0}, {1, 0, 1, 0}, {0, 0, 1, 0}}));
     REQUIRE(S.current_max_word_length() == 21);
     REQUIRE(S.degree() == 8);
@@ -207,7 +207,7 @@ namespace libsemigroups {
     REQUIRE(T.size() == 63904);
     REQUIRE(T.number_of_idempotents() == 2360);
     REQUIRE(T.current_position({0, 1, 2, 0, 1, 2}) == 378);
-    REQUIRE(T.word_to_element({0, 1, 2, 0, 1, 2})
+    REQUIRE(T.to_element({0, 1, 2, 0, 1, 2})
             == BMat8({{1, 0, 0, 1}, {0, 1, 0, 0}, {1, 0, 1, 0}, {0, 0, 1, 0}}));
     REQUIRE(T.current_max_word_length() == 21);
     REQUIRE(T.degree() == 8);
@@ -236,7 +236,7 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
                           "017",
-                          "(BMat8) exception word_to_element",
+                          "(BMat8) exception to_element",
                           "[quick][froidure-pin][bmat8]") {
     std::vector<BMat8> gens
         = {BMat8({{0, 1, 0, 0}, {1, 0, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}),
@@ -246,10 +246,10 @@ namespace libsemigroups {
     auto S = to_froidure_pin(gens);
 
     REQUIRE(!S.is_monoid());
-    REQUIRE(S.word_to_element({}) == One<BMat8>()(gens[0]));
-    REQUIRE_NOTHROW(S.word_to_element({0}));
-    REQUIRE_NOTHROW(S.word_to_element({0, 3, 0, 3, 1}));
-    REQUIRE_THROWS_AS(S.word_to_element({0, 1, 0, 4}), LibsemigroupsException);
+    REQUIRE(S.to_element({}) == One<BMat8>()(gens[0]));
+    REQUIRE_NOTHROW(S.to_element({0}));
+    REQUIRE_NOTHROW(S.to_element({0, 3, 0, 3, 1}));
+    REQUIRE_THROWS_AS(S.to_element({0, 1, 0, 4}), LibsemigroupsException);
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
