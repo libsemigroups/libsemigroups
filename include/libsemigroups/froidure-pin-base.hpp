@@ -82,7 +82,7 @@ namespace libsemigroups {
     //! \brief Alias for the index of an element.
     //!
     //! The size of the semigroup being enumerated must be at most \c
-    //! std::numeric_limits<element_index_type>::max()
+    //! std::numeric_limits<element_index_type>::max().
     using element_index_type = size_type;
 
     //! \brief Alias for the types of the left and right Cayley graphs.
@@ -1266,7 +1266,7 @@ namespace libsemigroups {
     //! \no_libsemigroups_except
     //!
     //! \complexity
-    //! Constant
+    //! Constant.
     //!
     //! \iterator_validity
     //! The iterators returned by this function are valid until the underlying
@@ -1335,7 +1335,7 @@ namespace libsemigroups {
     //! \no_libsemigroups_except
     //!
     //! \complexity
-    //! Constant
+    //! Constant.
     //!
     //! \iterator_validity
     //! The iterators returned by this function are valid until the underlying
@@ -1365,7 +1365,7 @@ namespace libsemigroups {
     //! \no_libsemigroups_except
     //!
     //! \complexity
-    //! Constant
+    //! Constant.
     //!
     //! \iterator_validity
     //! The iterators returned by this function are valid until the underlying
@@ -1435,7 +1435,7 @@ namespace libsemigroups {
     //! \no_libsemigroups_except
     //!
     //! \complexity
-    //! Constant
+    //! Constant.
     //!
     //! \iterator_validity
     //! The iterators returned by this function are valid until the underlying
@@ -1461,7 +1461,7 @@ namespace libsemigroups {
     //! \no_libsemigroups_except
     //!
     //! \complexity
-    //! Constant
+    //! Constant.
     [[nodiscard]] auto current_rules() const {
       return rx::iterator_range(cbegin_current_rules(), cend_current_rules());
     }
@@ -1472,7 +1472,7 @@ namespace libsemigroups {
     //! semigroup that have been enumerated so far. Calling this function
     //! triggers a full enumeration.
     //!
-    //! \returns A range object containing all of the rules
+    //! \returns A range object containing all of the rules.
     //!
     //! \exceptions
     //! \no_libsemigroups_except
@@ -1686,7 +1686,7 @@ namespace libsemigroups {
     //! \no_libsemigroups_except
     //!
     //! \complexity
-    //! Constant
+    //! Constant.
     [[nodiscard]] auto current_normal_forms() const {
       return rx::iterator_range(cbegin_current_normal_forms(),
                                 cend_current_normal_forms());
@@ -1752,7 +1752,7 @@ namespace libsemigroups {
     //! \no_libsemigroups_except
     //!
     //! \complexity
-    //! Constant
+    //! Constant.
     [[nodiscard]] auto normal_forms() {
       return rx::iterator_range(cbegin_normal_forms(), cend_normal_forms());
     }
