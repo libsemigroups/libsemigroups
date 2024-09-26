@@ -26,7 +26,7 @@
 #include <chrono>            // for high_resolution_clock
 #include <cstddef>           // for size_t
 #include <initializer_list>  // for initializer_list
-#include <iterator>          // for reverse_iterator TODO required?
+#include <iterator>          // for make_move_iterator
 #include <memory>            // for shared_ptr, make_shared
 #include <mutex>             // for mutex
 #include <type_traits>       // for is_const, remove_pointer
@@ -201,6 +201,8 @@ namespace libsemigroups {
         typename detail::BruidhinnTraits<Element>::internal_const_value_type;
     using internal_const_reference =
         typename detail::BruidhinnTraits<Element>::internal_const_reference;
+    using internal_idempotent_pair
+        = std::pair<internal_element_type, element_index_type>;
 
     static_assert(
         std::is_const_v<internal_const_element_type>
@@ -221,6 +223,25 @@ namespace libsemigroups {
     // _elements (element_index_type) from those that refer to positions in
     // _enumerate_order (enumerate_index_type).
     using enumerate_index_type = FroidurePinBase::enumerate_index_type;
+
+    struct InternalEqualTo : private detail::BruidhinnTraits<Element> {
+      bool operator()(internal_const_reference x,
+                      internal_const_reference y) const {
+        return EqualTo()(this->to_external_const(x),
+                         this->to_external_const(y));
+      }
+    };
+
+    struct InternalHash : private detail::BruidhinnTraits<Element> {
+      size_t operator()(internal_const_reference x) const {
+        return Hash()(this->to_external_const(x));
+      }
+    };
+
+    using map_type = std::unordered_map<internal_const_element_type,
+                                        element_index_type,
+                                        InternalHash,
+                                        InternalEqualTo>;
 
    public:
     ////////////////////////////////////////////////////////////////////////
@@ -294,24 +315,19 @@ namespace libsemigroups {
     static constexpr bool IsState
         = ((!std::is_void_v<T>) && std::is_same_v<state_type, T>);
 
-    struct InternalEqualTo : private detail::BruidhinnTraits<Element> {
-      bool operator()(internal_const_reference x,
-                      internal_const_reference y) const {
-        return EqualTo()(this->to_external_const(x),
-                         this->to_external_const(y));
-      }
-    };
+    ////////////////////////////////////////////////////////////////////////
+    // FroidurePin - data - private
+    ////////////////////////////////////////////////////////////////////////
 
-    struct InternalHash : private detail::BruidhinnTraits<Element> {
-      size_t operator()(internal_const_reference x) const {
-        return Hash()(this->to_external_const(x));
-      }
-    };
-
-    using map_type = std::unordered_map<internal_const_element_type,
-                                        element_index_type,
-                                        InternalHash,
-                                        InternalEqualTo>;
+    std::vector<internal_element_type>    _elements;
+    std::vector<internal_element_type>    _gens;
+    internal_element_type                 _id;
+    std::vector<internal_idempotent_pair> _idempotents;
+    map_type                              _map;
+    mutable std::mutex                    _mtx;
+    std::vector<std::pair<internal_element_type, element_index_type>> _sorted;
+    std::shared_ptr<state_type>                                       _state;
+    mutable internal_element_type _tmp_product;
 
     void internal_product(reference       xy,
                           const_reference x,
@@ -341,7 +357,7 @@ namespace libsemigroups {
     // TODO doc
     FroidurePin& init();
 
-    //! \brief Construct from \shared_ptr to state.
+    //! \brief Construct from std::shared_ptr to state.
     //!
     //! This function allows the construction of a FroidurePin instance with
     //! stated given by the parameter \p stt. This constructor only exists if
@@ -353,11 +369,17 @@ namespace libsemigroups {
     //!
     //! \exceptions
     //! \no_libsemigroups_except
-    template <typename T, typename = std::enable_if_t<IsState<T>>>
-    explicit FroidurePin(std::shared_ptr<T> stt) : FroidurePin() {
+    template <typename State, typename = std::enable_if_t<IsState<State>>>
+    explicit FroidurePin(std::shared_ptr<State> stt) : FroidurePin() {
       _state = stt;
     }
-    // TODO init
+
+    // TODO doc
+    template <typename State, typename = std::enable_if_t<IsState<State>>>
+    FroidurePin& init(std::shared_ptr<State> stt) {
+      init();
+      _state = stt;
+    }
 
     //! \brief Construct from const reference to state.
     //!
@@ -375,10 +397,15 @@ namespace libsemigroups {
     //! \warning
     //! The parameter \p stt is copied, which might be expensive, use
     //! a \shared_ptr to avoid the copy.
-    template <typename T, typename = std::enable_if_t<IsState<T>>>
-    explicit FroidurePin(T const& stt)
+    template <typename State, typename = std::enable_if_t<IsState<State>>>
+    explicit FroidurePin(State const& stt)
         : FroidurePin(std::make_shared<state_type>(stt)) {}
-    // TODO init
+
+    //! TODO(doc)
+    template <typename State, typename = std::enable_if_t<IsState<State>>>
+    FroidurePin& init(State const& stt) {
+      return init(std::make_shared<state_type>(stt));
+    }
 
     //! TODO(doc)
     FroidurePin& operator=(FroidurePin const&);
@@ -386,32 +413,19 @@ namespace libsemigroups {
     //! TODO(doc)
     FroidurePin& operator=(FroidurePin&&) = default;
 
-    //! \brief Construct from generators.
-    //!
-    //! This function constructs a FroidurePin instance generated by the
-    //! specified container of generators.  There can be duplicate generators
-    //! and although they do not count as distinct elements, they do count as
-    //! distinct generators.  In other words, the generators are precisely (a
-    //! copy of) \p gens in the same order they occur in \p gens.
-    //!
-    //! \param gens the generators.
-    //!
-    //! \throws LibsemigroupsException if any of the following hold:
-    //! * \p gens is empty;
-    //! * Degree`{}(x) != `Degree`{}(y)` for some \c x and \c y in
-    //! \p gens.
-    explicit FroidurePin(std::vector<element_type> const& gens);
-    // TODO init
+    //! TODO(doc)
+    template <typename Iterator1, typename Iterator2>
+    FroidurePin(Iterator1 first, Iterator2 last);
 
-    //! \copydoc FroidurePin(std::vector<element_type> const& gens)
-    explicit FroidurePin(std::initializer_list<element_type> gens);
-    // TODO init
+    //! TODO(doc)
+    template <typename Iterator1, typename Iterator2>
+    FroidurePin& init(Iterator1 first, Iterator2 last);
 
     //! \brief Copy constructor.
     //!
     //! Constructs a new FroidurePin which is an exact copy of \p that. No
     //! enumeration is triggered for either \p that or of the newly constructed
-    //! semigroup.
+    //! FroidurePin object.
     //!
     //! \param that the FroidurePin to copy.
     //!
@@ -957,9 +971,6 @@ namespace libsemigroups {
     // FroidurePin - initialisation member functions - private
     ////////////////////////////////////////////////////////////////////////
 
-    using internal_idempotent_pair
-        = std::pair<internal_element_type, element_index_type>;
-
     void init_sorted();
     void init_idempotents();
     void idempotents(enumerate_index_type,
@@ -1138,21 +1149,62 @@ namespace libsemigroups {
     void report_progress();
 
     bool finished_impl() const override;
-
-    ////////////////////////////////////////////////////////////////////////
-    // FroidurePin - data - private
-    ////////////////////////////////////////////////////////////////////////
-
-    std::vector<internal_element_type>    _elements;
-    std::vector<internal_element_type>    _gens;
-    internal_element_type                 _id;
-    std::vector<internal_idempotent_pair> _idempotents;
-    map_type                              _map;
-    mutable std::mutex                    _mtx;
-    std::vector<std::pair<internal_element_type, element_index_type>> _sorted;
-    std::shared_ptr<state_type>                                       _state;
-    mutable internal_element_type _tmp_product;
   };
+
+  template <typename Iterator1, typename Iterator2>
+  FroidurePin(Iterator1, Iterator2)
+      -> FroidurePin<std::decay_t<decltype(*std::declval<Iterator1>())>>;
+
+  namespace froidure_pin {
+
+    // TODO move iterator version for rvalue reference to Container
+
+    // TODO helper
+    // explicit FroidurePin(std::initializer_list<element_type> gens)
+    //     : FroidurePin(std::begin(gens), std::end(gens)) {}
+
+    // TODO(doc)
+    // TODO helper
+    template <typename Element, typename Traits, typename Container>
+    FroidurePin<Element, Traits>& init(FroidurePin<Element, Traits>& fp,
+                                       Container const&              gens) {
+      return fp.init(std::begin(gens), std::end(gens));
+    }
+
+  }  // namespace froidure_pin
+
+  //! \brief Construct from generators.
+  //!
+  //! This function constructs a FroidurePin instance generated by the
+  //! specified container of generators.  There can be duplicate generators
+  //! and although they do not count as distinct elements, they do count as
+  //! distinct generators.  In other words, the generators are precisely (a
+  //! copy of) \p gens in the same order they occur in \p gens.
+  //!
+  //! \param gens the generators.
+  //!
+  //! \throws LibsemigroupsException if any of the following hold:
+  //! * \p gens is empty;
+  //! * Degree`{}(x) != `Degree`{}(y)` for some \c x and \c y in
+  //! \p gens.
+  // TODO helper
+  template <typename Container>
+  FroidurePin<typename Container::value_type>
+  to_froidure_pin(Container const& gens) {
+    return FroidurePin(std::begin(gens), std::end(gens));
+  }
+
+  template <typename Container>
+  FroidurePin<typename Container::value_type>
+  to_froidure_pin(Container&& gens) {
+    return FroidurePin(std::make_move_iterator(std::begin(gens)),
+                       std::make_move_iterator(std::end(gens)));
+  }
+
+  template <typename Element>
+  FroidurePin<Element> to_froidure_pin(std::initializer_list<Element> gens) {
+    return FroidurePin(std::begin(gens), std::end(gens));
+  }
 }  // namespace libsemigroups
 
 #include "froidure-pin.tpp"

@@ -56,7 +56,8 @@ namespace libsemigroups {
                                   {2, 3, 4, 5},
                                   {2, 3, 4, 5},
                                   {1, 2, 4}})};
-    FroidurePin<PBR> S(gens);
+
+    auto S = to_froidure_pin(gens);
 
     S.reserve(4);
 

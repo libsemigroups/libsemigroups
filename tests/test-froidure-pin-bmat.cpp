@@ -151,7 +151,7 @@ namespace libsemigroups {
              Mat({{0, 0, 0, 0}, {0, 1, 0, 1}, {1, 1, 1, 0}, {1, 0, 0, 1}}),
              Mat({{0, 0, 0, 1}, {0, 0, 1, 0}, {1, 0, 0, 1}, {1, 1, 0, 0}})};
 
-      FroidurePin<Mat> S(gens);
+      auto S = to_froidure_pin(gens);
       REQUIRE(S.size() == 415);
     }
 

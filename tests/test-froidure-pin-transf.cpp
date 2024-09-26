@@ -84,7 +84,7 @@ namespace libsemigroups {
     void test001() {
       auto           rg = ReportGuard(REPORT);
       std::vector<T> gens1;
-      REQUIRE_NOTHROW(FroidurePin<T>(gens1));
+      REQUIRE_NOTHROW(to_froidure_pin(gens1));
     }
 
     template <typename T>
@@ -160,7 +160,7 @@ namespace libsemigroups {
                                   Transf<>({4, 0, 1, 2, 3, 5}),
                                   Transf<>({5, 1, 2, 3, 4, 5}),
                                   Transf<>({1, 1, 2, 3, 4, 5})};
-    FroidurePin<Transf<>> U(gens);
+    auto                  U    = to_froidure_pin(gens);
 
     REQUIRE(U.current_position({}) == 0);
     REQUIRE_NOTHROW(U.current_position({0, 0, 1, 2}));
@@ -177,7 +177,7 @@ namespace libsemigroups {
                                   Transf<>({4, 0, 1, 2, 3, 5}),
                                   Transf<>({5, 1, 2, 3, 4, 5}),
                                   Transf<>({1, 1, 2, 3, 4, 5})};
-    FroidurePin<Transf<>> U(gens);
+    auto                  U    = to_froidure_pin(gens);
 
     REQUIRE(U.word_to_element({}) == gens[0]);
     REQUIRE_THROWS_AS(U.word_to_element({5}), LibsemigroupsException);
@@ -205,7 +205,7 @@ namespace libsemigroups {
         }
         gens.push_back(Transf<>(trans));
       }
-      FroidurePin<Transf<>> S(gens);
+      auto S = to_froidure_pin(gens);
 
       for (size_t j = 0; j < i; ++j) {
         REQUIRE_NOTHROW(S.generator(j));
@@ -213,6 +213,7 @@ namespace libsemigroups {
       REQUIRE_THROWS_AS(S.generator(i), LibsemigroupsException);
     }
   }
+
   // FIXME not sure that this isn't much slower than it used to be
   LIBSEMIGROUPS_TEST_CASE("FroidurePin<Transf<>>",
                           "070",
@@ -222,7 +223,7 @@ namespace libsemigroups {
     std::vector<Transf<>> gens = {Transf<>({1, 0, 2, 3, 4, 5}),
                                   Transf<>({4, 0, 1, 2, 3, 5}),
                                   Transf<>({1, 1, 2, 3, 4, 5})};
-    FroidurePin<Transf<>> U(gens);
+    auto                  U    = to_froidure_pin(gens);
 
     for (size_t i = 0; i < U.size(); ++i) {
       REQUIRE_NOTHROW(U.prefix(i));
@@ -241,7 +242,7 @@ namespace libsemigroups {
                                   Transf<>({4, 0, 1, 2, 3, 5}),
                                   Transf<>({5, 1, 2, 3, 4, 5}),
                                   Transf<>({1, 1, 2, 3, 4, 5})};
-    FroidurePin<Transf<>> U(gens);
+    auto                  U    = to_froidure_pin(std::move(gens));
     REQUIRE(U.size() == 7'776);
 
     for (size_t i = 0; i < U.size(); ++i) {
@@ -258,7 +259,7 @@ namespace libsemigroups {
     std::vector<Transf<>> gens = {Transf<>({0, 1, 2, 3, 4, 5}),
                                   Transf<>({5, 1, 2, 3, 4, 5}),
                                   Transf<>({1, 1, 2, 3, 4, 5})};
-    FroidurePin<Transf<>> U(gens);
+    auto                  U    = to_froidure_pin(gens);
 
     for (size_t i = 0; i < U.size(); ++i) {
       REQUIRE_NOTHROW(U.first_letter(i));
@@ -274,7 +275,7 @@ namespace libsemigroups {
     std::vector<Transf<>> gens = {Transf<>({0, 1, 2, 3, 4, 5}),
                                   Transf<>({5, 1, 2, 3, 4, 5}),
                                   Transf<>({1, 1, 2, 3, 4, 5})};
-    FroidurePin<Transf<>> U(gens);
+    auto                  U    = to_froidure_pin(gens);
 
     for (size_t i = 0; i < U.size(); ++i) {
       REQUIRE_NOTHROW(U.final_letter(i));
@@ -290,7 +291,7 @@ namespace libsemigroups {
     std::vector<Transf<>> gens = {Transf<>({0, 1, 2, 3, 4, 5}),
                                   Transf<>({5, 1, 2, 3, 4, 5}),
                                   Transf<>({1, 1, 2, 3, 4, 5})};
-    FroidurePin<Transf<>> U(gens);
+    auto                  U    = to_froidure_pin(gens);
 
     for (size_t i = 0; i < U.size(); ++i) {
       REQUIRE_NOTHROW(U.current_length(i));
@@ -305,7 +306,7 @@ namespace libsemigroups {
     auto                  rg = ReportGuard(REPORT);
     std::vector<Transf<>> gens
         = {Transf<>({0, 1, 2, 3}), Transf<>({3, 1, 1, 2})};
-    FroidurePin<Transf<>> U(gens);
+    auto U = to_froidure_pin(gens);
 
     for (size_t i = 0; i < U.size(); ++i) {
       for (size_t j = 0; j < U.size(); ++j) {
@@ -330,7 +331,7 @@ namespace libsemigroups {
     auto                  rg = ReportGuard(REPORT);
     std::vector<Transf<>> gens
         = {Transf<>({0, 1, 2, 3}), Transf<>({3, 1, 1, 2})};
-    FroidurePin<Transf<>> U(gens);
+    auto U = to_froidure_pin(gens);
 
     for (size_t i = 0; i < U.size(); ++i) {
       for (size_t j = 0; j < U.size(); ++j) {
@@ -361,7 +362,7 @@ namespace libsemigroups {
         }
         gens.push_back(Transf<>(trans));
       }
-      FroidurePin<Transf<>> S(gens);
+      auto S = to_froidure_pin(gens);
 
       for (size_t j = 0; j < i; ++j) {
         REQUIRE_NOTHROW(S.current_position(j));
@@ -379,7 +380,7 @@ namespace libsemigroups {
                                   Transf<>({5, 1, 3, 3, 2, 5}),
                                   Transf<>({2, 1, 2, 3, 4, 4}),
                                   Transf<>({5, 5, 2, 1, 1, 2})};
-    FroidurePin<Transf<>> S(gens);
+    auto                  S    = to_froidure_pin(gens);
 
     // S has size 441
     for (size_t i = 0; i < 441; ++i) {
@@ -397,7 +398,7 @@ namespace libsemigroups {
     auto                  rg   = ReportGuard(REPORT);
     std::vector<Transf<>> gens = {Transf<>({1, 7, 2, 6, 0, 0, 1, 2}),
                                   Transf<>({2, 4, 6, 1, 4, 5, 2, 7})};
-    FroidurePin<Transf<>> T(gens);
+    auto                  T    = to_froidure_pin(gens);
 
     std::vector<Transf<>> additional_gens_1 = {
         Transf<>({1, 2, 2, 2, 1, 1, 3, 4}), Transf<>({1, 2, 1, 3, 1, 4, 1, 5})};
@@ -415,8 +416,9 @@ namespace libsemigroups {
                           "number_of_idempotents",
                           "[quick][froidure-pin][transformation][transf]") {
     auto                  rg = ReportGuard(REPORT);
-    FroidurePin<Transf<>> S({Transf<>({1, 7, 2, 6, 0, 0, 1, 2}),
-                             Transf<>({2, 4, 6, 1, 4, 5, 2, 7})});
+    FroidurePin<Transf<>> S
+        = to_froidure_pin({Transf<>({1, 7, 2, 6, 0, 0, 1, 2}),
+                           Transf<>({2, 4, 6, 1, 4, 5, 2, 7})});
     REQUIRE(S.number_of_idempotents() == 72);
   }
 
@@ -2248,7 +2250,7 @@ namespace libsemigroups {
 
     REQUIRE(T.size() == 119);
 
-    FroidurePin<Transf<>> S({T.generator(0), T.generator(0)});
+    FroidurePin<Transf<>> S = to_froidure_pin({T.generator(0), T.generator(0)});
 
     S.add_generators({});
     S.add_generators({T.generator(0)});
@@ -2436,8 +2438,8 @@ namespace libsemigroups {
                           "137",
                           "exception: generators of different degrees",
                           "[quick][froidure-pin][transf]") {
-    REQUIRE_THROWS_AS(FroidurePin<Transf<>>({Transf<>({0, 1, 2, 3, 4, 5}),
-                                             Transf<>({0, 1, 2, 3, 4, 5, 5})}),
+    REQUIRE_THROWS_AS(to_froidure_pin({Transf<>({0, 1, 2, 3, 4, 5}),
+                                       Transf<>({0, 1, 2, 3, 4, 5, 5})}),
                       LibsemigroupsException);
   }
 
@@ -2490,7 +2492,7 @@ namespace libsemigroups {
         }
         gens.push_back(Transf<>(trans));
       }
-      FroidurePin<Transf<>> S(gens);
+      auto S = to_froidure_pin(gens);
 
       for (size_t j = 0; j < i; ++j) {
         REQUIRE_NOTHROW(S.current_position(j));

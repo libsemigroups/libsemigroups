@@ -16,6 +16,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
+#include "libsemigroups/to-froidure-pin.hpp"
 #define CATCH_CONFIG_ENABLE_PAIR_STRINGMAKER
 
 #include <cstddef>  // for size_t
@@ -47,7 +48,7 @@ namespace libsemigroups {
            BMat8({{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {1, 0, 0, 1}}),
            BMat8({{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 0}})};
 
-    FroidurePin<BMat8> S(gens);
+    auto S = to_froidure_pin(gens);
 
     REQUIRE(S.current_max_word_length() == 1);
     REQUIRE(!S.finished());
@@ -230,7 +231,7 @@ namespace libsemigroups {
                           "[quick][froidure-pin][bmat8]") {
     std::vector<BMat8> gens;
 
-    REQUIRE_NOTHROW(FroidurePin<BMat8>(gens));
+    REQUIRE_NOTHROW(to_froidure_pin(gens));
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
@@ -242,7 +243,7 @@ namespace libsemigroups {
            BMat8({{0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}, {1, 0, 0, 0}}),
            BMat8({{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {1, 0, 0, 1}}),
            BMat8({{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 0}})};
-    FroidurePin<BMat8> S(gens);
+    auto S = to_froidure_pin(gens);
 
     REQUIRE(!S.is_monoid());
     REQUIRE(S.word_to_element({}) == One<BMat8>()(gens[0]));
@@ -259,7 +260,8 @@ namespace libsemigroups {
         = {BMat8({{0, 1, 0, 0}, {1, 0, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}),
            BMat8({{0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}, {1, 0, 0, 0}}),
            BMat8({{1, 1, 0, 0}, {1, 0, 1, 0}, {0, 1, 1, 1}, {0, 1, 1, 1}})};
-    FroidurePin<BMat8> S(gens);
+    auto S = to_froidure_pin(gens);
+    ;
 
     for (size_t i = 0; i < S.size(); ++i) {
       REQUIRE_NOTHROW(S.prefix(i));
@@ -275,7 +277,8 @@ namespace libsemigroups {
         = {BMat8({{0, 1, 0, 0}, {1, 0, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}),
            BMat8({{0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}, {1, 0, 0, 0}}),
            BMat8({{1, 1, 0, 0}, {1, 0, 1, 0}, {0, 1, 1, 1}, {0, 1, 1, 1}})};
-    FroidurePin<BMat8> S(gens);
+    auto S = to_froidure_pin(gens);
+    ;
     // TODO(0) there are no tests in here!
   }
 
@@ -287,7 +290,8 @@ namespace libsemigroups {
         = {BMat8({{0, 1, 0, 0}, {1, 0, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}),
            BMat8({{0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}, {1, 0, 0, 0}}),
            BMat8({{1, 1, 0, 0}, {1, 0, 1, 0}, {0, 1, 1, 1}, {0, 1, 1, 1}})};
-    FroidurePin<BMat8> S(gens);
+    auto S = to_froidure_pin(gens);
+    ;
 
     for (size_t i = 0; i < S.size(); ++i) {
       REQUIRE_NOTHROW(S.first_letter(i));
@@ -303,7 +307,8 @@ namespace libsemigroups {
         = {BMat8({{0, 1, 0, 0}, {1, 0, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}),
            BMat8({{0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}, {1, 0, 0, 0}}),
            BMat8({{1, 1, 0, 0}, {1, 0, 1, 0}, {0, 1, 1, 1}, {0, 1, 1, 1}})};
-    FroidurePin<BMat8> S(gens);
+    auto S = to_froidure_pin(gens);
+    ;
     // TODO(0) there are no tests in here!
   }
 
@@ -315,7 +320,8 @@ namespace libsemigroups {
         = {BMat8({{0, 1, 0, 0}, {1, 0, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}),
            BMat8({{0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}, {1, 0, 0, 0}}),
            BMat8({{1, 1, 0, 0}, {1, 0, 1, 0}, {0, 1, 1, 1}, {0, 1, 1, 1}})};
-    FroidurePin<BMat8> S(gens);
+    auto S = to_froidure_pin(gens);
+    ;
 
     for (size_t i = 0; i < S.size(); ++i) {
       REQUIRE_NOTHROW(S.current_length(i));
@@ -330,7 +336,8 @@ namespace libsemigroups {
     std::vector<BMat8> gens
         = {BMat8({{0, 1, 0, 0}, {1, 0, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}),
            BMat8({{1, 1, 0, 0}, {1, 0, 1, 0}, {0, 1, 1, 1}, {0, 1, 1, 1}})};
-    FroidurePin<BMat8> S(gens);
+    auto S = to_froidure_pin(gens);
+    ;
 
     for (size_t i = 1; i < S.size(); ++i) {
       for (size_t j = 1; j < S.size(); ++j) {
@@ -355,7 +362,8 @@ namespace libsemigroups {
     std::vector<BMat8> gens
         = {BMat8({{0, 1, 0, 0}, {1, 0, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}),
            BMat8({{1, 1, 0, 0}, {1, 0, 1, 0}, {0, 1, 1, 1}, {0, 1, 1, 1}})};
-    FroidurePin<BMat8> S(gens);
+    auto S = to_froidure_pin(gens);
+    ;
 
     for (size_t i = 1; i < S.size(); ++i) {
       for (size_t j = 1; j < S.size(); ++j) {
@@ -379,7 +387,8 @@ namespace libsemigroups {
            BMat8({{0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}, {1, 0, 0, 0}}),
            BMat8({{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {1, 0, 0, 1}}),
            BMat8({{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 0}})};
-    FroidurePin<BMat8> S(gens);
+    auto S = to_froidure_pin(gens);
+    ;
 
     // S has size 63904
     for (size_t i = 0; i < 63904; ++i) {
@@ -400,7 +409,8 @@ namespace libsemigroups {
            BMat8({{0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}, {1, 0, 0, 0}}),
            BMat8({{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {1, 0, 0, 1}}),
            BMat8({{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 0}})};
-    FroidurePin<BMat8> S(gens);
+    auto S = to_froidure_pin(gens);
+
     SECTION("fully enumerated") {
       REQUIRE(S.size() == 63904);
       FroidurePin<BMat8> T(S);  // copy
