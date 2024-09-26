@@ -302,7 +302,7 @@ namespace libsemigroups {
    private:
     template <typename T>
     static constexpr bool IsState
-        = ((!std::is_void_v<T>) && std::is_same_v<state_type, T>);
+        = ((!std::is_void_v<T>) &&std::is_same_v<state_type, T>);
 
     struct InternalEqualTo : private detail::BruidhinnTraits<Element> {
       bool operator()(internal_const_reference x,
@@ -931,8 +931,8 @@ namespace libsemigroups {
 
     void expand(size_type);
     void is_one(internal_const_element_type x, element_index_type) noexcept(
-        std::is_nothrow_default_constructible_v<InternalEqualTo>
-        && noexcept(std::declval<InternalEqualTo>()(x, x)));
+        std::is_nothrow_default_constructible_v<InternalEqualTo>&& noexcept(
+            std::declval<InternalEqualTo>()(x, x)));
 
     void copy_generators_from_elements(size_t);
     void closure_update(element_index_type,

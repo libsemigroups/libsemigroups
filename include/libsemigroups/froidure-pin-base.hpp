@@ -1179,14 +1179,11 @@ namespace libsemigroups {
       using value_type        = relation_type;
       using iterator_category = std::forward_iterator_tag;
 
-      // None of the constructors are noexcept because the corresponding
-      // constructors for std::vector aren't (until C++17).
-      const_rule_iterator() noexcept                           = default;
-      const_rule_iterator(const_rule_iterator const&) noexcept = default;
-      const_rule_iterator(const_rule_iterator&&) noexcept      = default;
-      const_rule_iterator& operator=(const_rule_iterator const&) noexcept
-          = default;
-      const_rule_iterator& operator=(const_rule_iterator&&) noexcept = default;
+      const_rule_iterator()                                      = default;
+      const_rule_iterator(const_rule_iterator const&)            = default;
+      const_rule_iterator(const_rule_iterator&&)                 = default;
+      const_rule_iterator& operator=(const_rule_iterator const&) = default;
+      const_rule_iterator& operator=(const_rule_iterator&&)      = default;
 
       const_rule_iterator(FroidurePinBase const* ptr,
                           enumerate_index_type   pos,

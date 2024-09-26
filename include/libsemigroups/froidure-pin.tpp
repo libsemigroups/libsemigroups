@@ -936,11 +936,10 @@ namespace libsemigroups {
   // Check if an element is the identity, x should be in the position pos
   // of _elements.
   template <typename Element, typename Traits>
-  void FroidurePin<Element, Traits>::is_one(
-      internal_const_element_type x,
-      element_index_type
-          pos) noexcept(std::is_nothrow_default_constructible_v<InternalEqualTo>
-                        && noexcept(std::declval<InternalEqualTo>()(x, x))) {
+  void FroidurePin<Element, Traits>::
+      is_one(internal_const_element_type x, element_index_type pos) noexcept(
+          std::is_nothrow_default_constructible_v<InternalEqualTo>&& noexcept(
+              std::declval<InternalEqualTo>()(x, x))) {
     if (!_found_one && InternalEqualTo()(x, _id)) {
       _pos_one   = pos;
       _found_one = true;
