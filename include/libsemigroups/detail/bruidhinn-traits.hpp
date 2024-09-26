@@ -213,7 +213,7 @@ namespace libsemigroups {
       }
 
       inline value_type external_copy(const_reference x) const {
-        // ODO(later) figure out the right way to do this
+        // TODO(later) figure out the right way to do this
         return x->heap_copy();
       }
 

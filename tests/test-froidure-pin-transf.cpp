@@ -1408,6 +1408,10 @@ namespace libsemigroups {
     REQUIRE(T.number_of_rules() == 2459);
     REQUIRE(T.started());
     REQUIRE(T.finished());
+
+    T.init();
+    REQUIRE(T.current_size() == 0);
+    REQUIRE(T.number_of_generators() == 0);
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin<Transf<>>",

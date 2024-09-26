@@ -38,9 +38,22 @@ namespace libsemigroups {
         _map(),
         _mtx(),
         _sorted(),
-        _state(nullptr),
+        _state(),
         _tmp_product() {
+    init();
+  }
+
+  template <typename Element, typename Traits>
+  FroidurePin<Element, Traits>& FroidurePin<Element, Traits>::init() {
+    FroidurePinBase::init();
+    _elements.clear();
+    _gens.clear();
+    _map.clear();
+    _idempotents.clear();
+    _sorted.clear();
+    _state       = nullptr;
     _nr_products = 0;
+    return *this;
   }
 
   template <typename Element, typename Traits>
@@ -59,15 +72,20 @@ namespace libsemigroups {
 
   template <typename Element, typename Traits>
   FroidurePin<Element, Traits>::FroidurePin(FroidurePin const& S)
-      : detail::BruidhinnTraits<Element>(),
-        FroidurePinBase(S),
-        _elements(),
-        _gens(),
-        _id(),
-        _idempotents(S._idempotents),
-        _sorted(),  // TODO(later) S this if set
-        _state(S._state) {
+      : FroidurePin() {
+    *this = S;
+  }
+
+  template <typename Element, typename Traits>
+  FroidurePin<Element, Traits>& FroidurePin<Element, Traits>::operator=(
+      FroidurePin<Element, Traits> const& S) {
+    FroidurePinBase::operator=(S);
+    _elements.clear();
     _elements.reserve(_nr);
+    _gens.clear();
+    _idempotents = S._idempotents;
+    _sorted.clear();
+    _state = S._state;
 
     element_index_type i = 0;
     for (internal_const_reference x : S._elements) {
@@ -79,6 +97,7 @@ namespace libsemigroups {
       copy_generators_from_elements(S.number_of_generators());
       init_degree(this->to_external_const(_gens[0]));
     }
+    return *this;
   }
 
   template <typename Element, typename Traits>
@@ -355,10 +374,10 @@ namespace libsemigroups {
   FroidurePin<Element, Traits>::at(element_index_type pos) {
     enumerate(pos + 1);
     if (pos >= current_size()) {
-      LIBSEMIGROUPS_EXCEPTION(
-          "element index out of range, expected value in range [0, {}), got {}",
-          current_size(),
-          pos);
+      LIBSEMIGROUPS_EXCEPTION("element index out of range, expected value in "
+                              "range [0, {}), got {}",
+                              current_size(),
+                              pos);
     }
     return this->to_external_const(_elements.at(pos));
   }
@@ -375,10 +394,10 @@ namespace libsemigroups {
   FroidurePin<Element, Traits>::sorted_at(element_index_type pos) {
     init_sorted();
     if (pos >= size()) {
-      LIBSEMIGROUPS_EXCEPTION(
-          "element index out of range, expected value in range [0, {}), got {}",
-          size(),
-          pos);
+      LIBSEMIGROUPS_EXCEPTION("element index out of range, expected value in "
+                              "range [0, {}), got {}",
+                              size(),
+                              pos);
     }
     return this->to_external_const(_sorted.at(pos).first);
   }
@@ -656,8 +675,8 @@ namespace libsemigroups {
         _prefix.push_back(UNDEFINED);
         _suffix.push_back(UNDEFINED);
         _nr++;
-        // TODO(later) _prefix.push_back(_nr) and get rid of _letter_to_pos, and
-        // the extra clause in the run member function!
+        // TODO(later) _prefix.push_back(_nr) and get rid of _letter_to_pos,
+        // and the extra clause in the run member function!
       } else if (!started()
                  || _letter_to_pos[_first[it->second]] == it->second) {
         // duplicate generator

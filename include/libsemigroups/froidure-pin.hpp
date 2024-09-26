@@ -338,6 +338,9 @@ namespace libsemigroups {
     //! \sa add_generator and add_generators.
     FroidurePin();
 
+    // TODO doc
+    FroidurePin& init();
+
     //! \brief Construct from \shared_ptr to state.
     //!
     //! This function allows the construction of a FroidurePin instance with
@@ -377,13 +380,11 @@ namespace libsemigroups {
         : FroidurePin(std::make_shared<state_type>(stt)) {}
     // TODO init
 
-    //! \brief Deleted.
-    // TODO undelete
-    FroidurePin& operator=(FroidurePin const&) = delete;
+    //! TODO(doc)
+    FroidurePin& operator=(FroidurePin const&);
 
-    //! \brief Deleted.
-    // TODO undelete
-    FroidurePin& operator=(FroidurePin&&) = delete;
+    //! TODO(doc)
+    FroidurePin& operator=(FroidurePin&&) = default;
 
     //! \brief Construct from generators.
     //!
