@@ -69,13 +69,12 @@ namespace libsemigroups {
       REQUIRE(S.position(*it) == pos);
       pos++;
     }
-    froidure_pin::add_generators(S,
-                                 {PBR({{3, 4, 5},
-                                       {2, 4, 5},
-                                       {1, 2, 4},
-                                       {0, 3, 5},
-                                       {1, 2, 3, 5},
-                                       {1, 2, 3}})});
+    S.add_generators({PBR({{3, 4, 5},
+                           {2, 4, 5},
+                           {1, 2, 4},
+                           {0, 3, 5},
+                           {1, 2, 3, 5},
+                           {1, 2, 3}})});
     REQUIRE(S.size() == 6);
     S.closure({PBR({{3, 4, 5},
                     {2, 4, 5},
