@@ -9,17 +9,18 @@ end_warn_col = "\033[0m"
 
 
 def all_cpp_files(start):
-    files = set()
+    files = []
 
     def dive(path):
         for entry in listdir(path):
             candidate = os.path.join(path, entry)
             if isfile(candidate) and splitext(entry)[1] == ".hpp":
-                files.add(candidate)
+                files.append(candidate)
             elif not isfile(candidate):
                 dive(candidate)
 
     dive(start)
+    files.sort()
     return files
 
 

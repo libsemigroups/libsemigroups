@@ -161,12 +161,12 @@ namespace libsemigroups {
     //! \complexity
     //! Constant
     //!
+    //! \note The value of \p gen can be arbitrary, and so this argument is
+    //! never checked.
+    //!
     //! \warning No checks are performed on the arguments of this function. In
     //! particular, if \p node or \p parent is greater than or equal to \ref
     //! number_of_nodes, then bad things may happen.
-    //!
-    //! \note The value of \p gen can be arbitrary, and so this argument is
-    //! never checked.
     Forest& set_parent_and_label_no_checks(node_type  node,
                                            node_type  parent,
                                            label_type gen) {
@@ -180,9 +180,6 @@ namespace libsemigroups {
     //! This function sets the parent of \p node to be \p parent, and the
     //! associated edge-label to be \p gen.
     //!
-    //! \note The value of \p gen can be arbitrary, and so this argument is
-    //! never checked.
-    //!
     //! \param node   the node whose parent and label to set.
     //! \param parent the parent node.
     //! \param gen    the label of the edge from \p parent to \p node.
@@ -194,6 +191,9 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! Constant
+    //!
+    //! \note The value of \p gen can be arbitrary, and so this argument is
+    //! never checked.
     // not noexcept because std::vector::operator[] isn't.
     Forest& set_parent_and_label(node_type  node,
                                  node_type  parent,

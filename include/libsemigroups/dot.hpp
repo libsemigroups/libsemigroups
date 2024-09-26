@@ -322,10 +322,10 @@ namespace libsemigroups {
     //! represented graph.
     //!
     //! \returns A range object.
-    // TODO(0) add a reference to the ranges page when it exists
     //!
     //! \exceptions
     //! \noexcept
+    // TODO(0) add a reference to the ranges page when it exists
     auto nodes() noexcept {
       return rx::iterator_range(_nodes.begin(), _nodes.end())
              | rx::transform([](auto& pair) -> Node& { return pair.second; });
@@ -337,10 +337,10 @@ namespace libsemigroups {
     //! represented graph.
     //!
     //! \returns A range object.
-    // TODO(0) add a reference to the ranges page when it exists
     //!
     //! \exceptions
     //! \noexcept
+    // TODO(0) add a reference to the ranges page when it exists
     auto nodes() const noexcept {
       return rx::iterator_range(_nodes.begin(), _nodes.end())
              | rx::transform(

@@ -544,12 +544,12 @@ namespace libsemigroups {
     //!
     //! \returns The size of the action, a value of type \c size_t.
     //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
     //! \complexity
     //! The time complexity is \f$O(mn)\f$ where \f$m\f$ is the total number of
     //! points in the orbit and \f$n\f$ is the number of generators.
-    //!
-    //! \exceptions
-    //! \no_libsemigroups_except
     [[nodiscard]] size_t size() {
       run();
       return _orb.size();
@@ -562,11 +562,11 @@ namespace libsemigroups {
     //! \returns
     //! A value of type \c size_t.
     //!
-    //! \complexity
-    //! Constant.
-    //!
     //! \exceptions
     //! \noexcept
+    //!
+    //! \complexity
+    //! Constant.
     [[nodiscard]] size_t current_size() const noexcept {
       return _orb.size();
     }
@@ -580,11 +580,11 @@ namespace libsemigroups {
     //! \returns
     //! A const iterator to the first point.
     //!
-    //! \complexity
-    //! Constant.
-    //!
     //! \exceptions
     //! \noexcept
+    //!
+    //! \complexity
+    //! Constant.
     [[nodiscard]] const_iterator cbegin() const noexcept {
       return const_iterator(_orb.cbegin());
     }
@@ -599,15 +599,15 @@ namespace libsemigroups {
     //!
     //! Returns a range object containing the current points in the
     //! action.
-    // TODO(1) add a reference to the ranges page when it exists
     //!
     //! \returns A range object.
     //!
-    //! \complexity
-    //! Constant.
-    //!
     //! \exceptions
     //! \noexcept
+    //!
+    //! \complexity
+    //! Constant.
+    // TODO(1) add a reference to the ranges page when it exists
     [[nodiscard]] auto range() const noexcept {
       return rx::iterator_range(_orb.cbegin(), _orb.cend())
              | rx::transform([this](auto const& pt) {
@@ -625,11 +625,11 @@ namespace libsemigroups {
     //! \returns
     //! A const iterator to one past the end.
     //!
-    //! \complexity
-    //! Constant.
-    //!
     //! \exceptions
     //! \noexcept
+    //!
+    //! \complexity
+    //! Constant.
     [[nodiscard]] const_iterator cend() const noexcept {
       return const_iterator(_orb.cend());
     }
@@ -652,11 +652,11 @@ namespace libsemigroups {
     //! \returns
     //! A value of type \c bool.
     //!
-    //! \complexity
-    //! Constant.
-    //!
     //! \exceptions
     //! \noexcept
+    //!
+    //! \complexity
+    //! Constant.
     [[nodiscard]] bool cache_scc_multipliers() const noexcept {
       return _options._cache_scc_multipliers;
     }
@@ -672,11 +672,11 @@ namespace libsemigroups {
     //! \returns
     //! A reference to `*this`.
     //!
-    //! \complexity
-    //! Constant.
-    //!
     //! \exceptions
     //! \noexcept
+    //!
+    //! \complexity
+    //! Constant.
     Action& cache_scc_multipliers(bool val) noexcept {
       _options._cache_scc_multipliers = val;
       return *this;
@@ -693,13 +693,13 @@ namespace libsemigroups {
     //!
     //! \returns An element of type \ref element_type.
     //!
+    //! \throws LibsemigroupsException if there are no generators yet added
+    //! or the index \p pos is out of range.
+    //!
     //! \complexity
     //! At most \f$O(mn)\f$ where \f$m\f$ is the complexity of multiplying
     //! elements of type \ref element_type and \f$n\f$ is the size of the fully
     //! enumerated orbit.
-    //!
-    //! \throws LibsemigroupsException if there are no generators yet added
-    //! or the index \p pos is out of range.
     [[nodiscard]] element_type multiplier_from_scc_root(index_type pos) {
       return multiplier_private<true>(
           _multipliers_from_scc_root, _scc.spanning_forest(), pos);
@@ -716,13 +716,13 @@ namespace libsemigroups {
     //!
     //! \returns An element of type \ref element_type.
     //!
+    //! \throws LibsemigroupsException if there are no generators yet added
+    //! or the index \p pos is out of range.
+    //!
     //! \complexity
     //! At most \f$O(mn)\f$ where \f$m\f$ is the complexity of multiplying
     //! elements of type \ref element_type and \f$n\f$ is the size of the fully
     //! enumerated orbit.
-    //!
-    //! \throws LibsemigroupsException if there are no generators yet added
-    //! or the index \p pos is out of range.
     [[nodiscard]] element_type multiplier_to_scc_root(index_type pos) {
       return multiplier_private<false>(
           _multipliers_to_scc_root, _scc.reverse_spanning_forest(), pos);
@@ -738,13 +738,13 @@ namespace libsemigroups {
     //!
     //! \returns A value of type \ref const_reference_point_type.
     //!
+    //! \throws LibsemigroupsException if the point \p x does not belong to
+    //! the action.
+    //!
     //! \complexity
     //! At most \f$O(mn)\f$ where \f$m\f$ is the complexity of multiplying
     //! elements of type \ref element_type and \f$n\f$ is the size of the fully
     //! enumerated orbit.
-    //!
-    //! \throws LibsemigroupsException if the point \p x does not belong to
-    //! the action.
     [[nodiscard]] const_reference_point_type
     root_of_scc(const_reference_point_type x) {
       // TODO(2) this could be a helper
@@ -762,12 +762,12 @@ namespace libsemigroups {
     //!
     //! \returns A value of type \ref const_reference_point_type.
     //!
+    //! \throws LibsemigroupsException if the index \p pos is out of range.
+    //!
     //! \complexity
     //! At most \f$O(mn)\f$ where \f$m\f$ is the complexity of multiplying
     //! elements of type \ref element_type and \f$n\f$ is the size of the fully
     //! enumerated orbit.
-    //!
-    //! \throws LibsemigroupsException if the index \p pos is out of range.
     [[nodiscard]] const_reference_point_type root_of_scc(index_type pos) {
       return this->to_external_const(_orb[_scc.root_of(pos)]);
     }
@@ -776,13 +776,13 @@ namespace libsemigroups {
     //!
     //! \returns A const reference to a WordGraph<uint32_t>.
     //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
     //! \complexity
     //! At most \f$O(mn)\f$ where \f$m\f$ is the complexity of multiplying
     //! elements of type \ref element_type and \f$n\f$ is the size of the fully
     //! enumerated orbit.
-    //!
-    //! \exceptions
-    //! \no_libsemigroups_except
     [[nodiscard]] WordGraph<uint32_t> const& word_graph() {
       run();
       return _graph;
@@ -796,13 +796,13 @@ namespace libsemigroups {
     //!
     //! \returns A const reference to a Gabow object.
     //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
     //! \complexity
     //! At most \f$O(mn)\f$ where \f$m\f$ is the complexity of multiplying
     //! elements of type \ref element_type and \f$n\f$ is the size of the fully
     //! enumerated orbit.
-    //!
-    //! \exceptions
-    //! \no_libsemigroups_except
     [[nodiscard]] Gabow<uint32_t> const& scc() {
       run();
       return _scc;

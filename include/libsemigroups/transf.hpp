@@ -553,11 +553,11 @@ namespace libsemigroups {
     //! \returns
     //! A const iterator to the first image value.
     //!
-    //! \complexity
-    //! Constant.
-    //!
     //! \exceptions
     //! \noexcept
+    //!
+    //! \complexity
+    //! Constant.
     [[nodiscard]] const_iterator cbegin() const noexcept {
       return _container.cbegin();
     }
@@ -568,11 +568,11 @@ namespace libsemigroups {
     //! \returns
     //! A const iterator pointing one past the last image value.
     //!
-    //! \complexity
-    //! Constant.
-    //!
     //! \exceptions
     //! \noexcept
+    //!
+    //! \complexity
+    //! Constant.
     [[nodiscard]] const_iterator cend() const noexcept {
       return _container.cend();
     }
@@ -593,11 +593,11 @@ namespace libsemigroups {
     //! \returns
     //! An iterator to the first image value.
     //!
-    //! \complexity
-    //! Constant.
-    //!
     //! \exceptions
     //! \noexcept
+    //!
+    //! \complexity
+    //! Constant.
     [[nodiscard]] iterator begin() noexcept {
       return _container.begin();
     }
@@ -608,11 +608,11 @@ namespace libsemigroups {
     //! \returns
     //! An iterator pointing one past the last image value.
     //!
-    //! \complexity
-    //! Constant.
-    //!
     //! \exceptions
     //! \noexcept
+    //!
+    //! \complexity
+    //! Constant.
     [[nodiscard]] iterator end() noexcept {
       return _container.end();
     }
@@ -1264,14 +1264,14 @@ namespace libsemigroups {
     //! \param ran the range
     //! \param M the degree
     //!
-    //! \complexity
-    //! Linear in the size of \p dom.
-    //!
     //! \throws LibsemigroupsException if any of the following fail to hold:
     //! * the value \p M is not compatible with the template parameter \p N
     //! * \p dom and \p ran do not have the same size
     //! * any value in \p dom or \p ran is greater than \p M
     //! * there are repeated entries in \p dom or \p ran.
+    //!
+    //! \complexity
+    //! Linear in the size of \p dom.
     template <typename OtherScalar>
     [[nodiscard]] static PPerm make(std::vector<OtherScalar> const& dom,
                                     std::vector<OtherScalar> const& ran,
@@ -1968,11 +1968,11 @@ namespace libsemigroups {
     //! \param res the container for the result.
     //! \param x the transf.
     //!
-    //! \complexity
-    //! Linear in `x.degree()`.
-    //!
     //! \exceptions
     //! \no_libsemigroups_except
+    //!
+    //! \complexity
+    //! Linear in `x.degree()`.
     // not noexcept because std::vector::resize isn't (although
     // StaticVector1::resize is).
     void operator()(T& res, Transf<N, Scalar> const& x) const;
@@ -1990,10 +1990,10 @@ namespace libsemigroups {
     //! \returns
     //! A value of type \c size_t.
     //!
-    //! \complexity
+    //! \exceptions
     //! See Transf::rank.
     //!
-    //! \exceptions
+    //! \complexity
     //! See Transf::rank.
     [[nodiscard]] size_t operator()(Transf<N, Scalar> const& x) const {
       return x.rank();

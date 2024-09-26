@@ -392,10 +392,10 @@ namespace libsemigroups {
     //!
     //! \returns A reference to `*this`.
     //!
+    //! \throws LibsemigroupsException if \p s or \p a is out of range.
+    //!
     //! \complexity
     //! Constant.
-    //!
-    //! \throws LibsemigroupsException if \p s or \p a is out of range.
     WordGraph& remove_target(node_type s, label_type a);
 
     //! \brief Removes a given label from the word graph.
@@ -480,10 +480,10 @@ namespace libsemigroups {
     //!
     //! \returns A reference to `*this`.
     //!
+    //! \throws LibsemigroupsException if \p m, \p n, or \p a are out of range.
+    //!
     //! \complexity
     //! Constant
-    //!
-    //! \throws LibsemigroupsException if \p m, \p n, or \p a are out of range.
     WordGraph& swap_targets(node_type m, node_type n, label_type a);
 
     //! \brief Check if two word graphs are equal.
@@ -657,11 +657,11 @@ namespace libsemigroups {
     //! Returns the node adjacent to \p s via the edge labelled \p a, or
     //! \ref UNDEFINED; both are values of type \ref node_type.
     //!
-    //! \complexity
-    //! Constant.
-    //!
     //! \exceptions
     //! \no_libsemigroups_except
+    //!
+    //! \complexity
+    //! Constant.
     //!
     //! \warning This function does not verify \p s or \p a is valid.
     // Not noexcept because DynamicArray2::get is not
@@ -687,17 +687,17 @@ namespace libsemigroups {
     //!    is the return value of \ref out_degree); and
     //! If no such value exists, then `{UNDEFINED, UNDEFINED}` is returned.
     //!
-    //! \complexity
-    //! At worst \f$O(n)\f$ where \f$n\f$ equals out_degree().
-    //!
     //! \exceptions
     //! \no_libsemigroups_except
     //!
-    //! \sa next_label_and_target.
+    //! \complexity
+    //! At worst \f$O(n)\f$ where \f$n\f$ equals out_degree().
     //!
     //! \warning This function does not check its arguments, in particular it is
     //! not verified that the parameter \p s represents a node of \c this, or
     //! that \p a is a valid label.
+    //!
+    //! \sa next_label_and_target.
     // Not noexcept because DynamicArray2::get is not
     [[nodiscard]] std::pair<label_type, node_type>
     next_label_and_target_no_checks(node_type s, label_type a) const;
@@ -725,11 +725,11 @@ namespace libsemigroups {
     //!    where \f$n\f$ is the return value of out_degree();
     //! If no such value exists, then `{UNDEFINED, UNDEFINED}` is returned.
     //!
-    //! \complexity
-    //! At worst \f$O(n)\f$ where \f$n\f$ equals out_degree().
-    //!
     //! \throws LibsemigroupsException if \p s does not represent a node in \c
     //! this, or \p a is not a valid edge label.
+    //!
+    //! \complexity
+    //! At worst \f$O(n)\f$ where \f$n\f$ equals out_degree().
     //!
     //! \sa next_label_and_target_no_checks.
     // Not noexcept because next_label_and_target_no_checks is not
@@ -805,11 +805,11 @@ namespace libsemigroups {
     //! \returns
     //! A value of type \c size_type.
     //!
-    //! \warning No checks are performed that the argument \p s is actually a
-    //! node in the word graph.
-    //!
     //! \complexity
     //! \f$O(n)\f$ where \c n is out_degree().
+    //!
+    //! \warning No checks are performed that the argument \p s is actually a
+    //! node in the word graph.
     [[nodiscard]] size_type number_of_edges_no_checks(node_type s) const;
 
     //! \brief Returns the out-degree.
@@ -1661,13 +1661,13 @@ namespace libsemigroups {
     //! \return Whether or not the word graph is compatible with the given rules
     //! at each one of the given nodes.
     //!
-    //! \warning
-    //! No checks on the arguments of this function are performed.
-    //!
     //! \exceptions
     //! \no_libsemigroups_except
     //!
     //! \note This function ignores out of bound targets in \p wg (if any).
+    //!
+    //! \warning
+    //! No checks on the arguments of this function are performed.
     template <typename Node,
               typename Iterator1,
               typename Iterator2,
@@ -1759,9 +1759,9 @@ namespace libsemigroups {
     //! \return Whether or not the word graph is compatible with the given rules
     //! at each one of the given nodes.
     //!
-    //! \warning This function does not check that its arguments are valid.
-    //!
     //! \note This function ignores out of bound targets in \p wg (if any).
+    //!
+    //! \warning This function does not check that its arguments are valid.
     template <typename Node, typename Iterator1, typename Iterator2>
     bool is_compatible_no_checks(WordGraph<Node> const& wg,
                                  Iterator1              first_node,
@@ -1870,12 +1870,12 @@ namespace libsemigroups {
     //! \returns Whether or not the word graph is complete on the given
     //! range of nodes.
     //!
+    //! \throws LibsemigroupsException if any item in the range defined by \p
+    //! first_node and \p last_node is not a node of \p wg.
+    //!
     //! \complexity
     //! \f$O(mn)\f$ where \c m is the number of nodes in the range and \c n is
     //! out_degree().
-    //!
-    //! \throws LibsemigroupsException if any item in the range defined by \p
-    //! first_node and \p last_node is not a node of \p wg.
     template <typename Node, typename Iterator1, typename Iterator2>
     [[nodiscard]] bool is_complete(WordGraph<Node> const& wg,
                                    Iterator1              first_node,
@@ -2098,9 +2098,9 @@ namespace libsemigroups {
     //! \param first iterator into a word.
     //! \param last iterator into a word.
     //!
-    //! \throws LibsemigroupsException if \p source is out of bounds.
-    //!
     //! \returns A pair consisting of WordGraph::node_type and \p S.
+    //!
+    //! \throws LibsemigroupsException if \p source is out of bounds.
     //!
     //! \complexity
     //! At worst the distance from \p first to \p last.
@@ -2342,11 +2342,11 @@ namespace libsemigroups {
     //! \param root the source node.
     //! \param f the Forest object to hold the result.
     //!
-    //! \note If any target of any edge in the word graph \p wg that is out of
-    //! bounds, then this is ignored by this function.
-    //!
     //! \throws LibsemigroupsException if \p root is out of bounds, i.e.
     //! greater than or equal to WordGraph::number_of_nodes.
+    //!
+    //! \note If any target of any edge in the word graph \p wg that is out of
+    //! bounds, then this is ignored by this function.
     template <typename Node1, typename Node2>
     void spanning_tree(WordGraph<Node1> const& wg, Node2 root, Forest& f);
 
@@ -2388,11 +2388,11 @@ namespace libsemigroups {
     //!
     //! \returns A Forest object containing a spanning tree.
     //!
-    //! \note If any target of any edge in the word graph \p wg that is out of
-    //! bounds, then this is ignored by this function.
-    //!
     //! \throws LibsemigroupsException if \p root is out of bounds, i.e.
     //! greater than or equal to WordGraph::number_of_nodes.
+    //!
+    //! \note If any target of any edge in the word graph \p wg that is out of
+    //! bounds, then this is ignored by this function.
     template <typename Node1, typename Node2>
     [[nodiscard]] Forest spanning_tree(WordGraph<Node1> const& wg, Node2 root);
 

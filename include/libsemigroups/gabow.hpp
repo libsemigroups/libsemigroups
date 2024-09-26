@@ -115,12 +115,12 @@ namespace libsemigroups {
     //!
     //! This function constructs a Gabow object from the WordGraph \p wg.
     //!
+    //! \note This function does not trigger the computation of the strongly
+    //! connected components.
+    //!
     //! \warning The Gabow object only holds a reference to the underlying
     //! WordGraph \p wg, and so that object must outlive the corresponding Gabow
     //! object.
-    //!
-    //! \note This function does not trigger the computation of the strongly
-    //! connected components.
     explicit Gabow(WordGraph<node_type> const& wg) {
       init(wg);
     }
@@ -135,12 +135,12 @@ namespace libsemigroups {
     //! \exceptions
     //! \no_libsemigroups_except
     //!
+    //! \note This function does not trigger the computation of the strongly
+    //! connected components.
+    //!
     //! \warning The Gabow object only holds a reference to the underlying
     //! WordGraph \p wg, and so that object must outlive the corresponding Gabow
     //! object.
-    //!
-    //! \note This function does not trigger the computation of the strongly
-    //! connected components.
     Gabow& init(WordGraph<node_type> const& wg);
 
     //! \brief Get the id of a strongly connected component of a node.
@@ -155,11 +155,11 @@ namespace libsemigroups {
     //! \exceptions
     //! \no_libsemigroups_except
     //!
-    //! \warning This function does not check that its argument \p n is actually
-    //! a node of the underlying word graph.
-    //!
     //! \note This function triggers the computation of the strongly connected
     //! components (if they are not already known).
+    //!
+    //! \warning This function does not check that its argument \p n is actually
+    //! a node of the underlying word graph.
     [[nodiscard]] size_type id_no_checks(node_type n) const {
       run();
       return _id[n];
@@ -246,10 +246,10 @@ namespace libsemigroups {
     //! \exceptions
     //! \no_libsemigroups_except
     //!
-    //! \warning This function does not check that its argument \p i.
-    //!
     //! \note This function triggers the computation of the strongly connected
     //! components (if they are not already known).
+    //!
+    //! \warning This function does not check that its argument \p i.
     //!
     //! \sa \ref component_of_no_checks to obtain the strongly connected
     //! component of a node.
@@ -267,11 +267,11 @@ namespace libsemigroups {
     //! \returns
     //! A `size_t`.
     //!
-    //! \note This function triggers the computation of the strongly connected
-    //! components (if they are not already known).
-    //!
     //! \exceptions
     //! \no_libsemigroups_except
+    //!
+    //! \note This function triggers the computation of the strongly connected
+    //! components (if they are not already known).
     [[nodiscard]] size_t number_of_components() const {
       run();
       return _comps.size();
@@ -331,17 +331,17 @@ namespace libsemigroups {
     //!
     //! \param n the node.
     //!
-    //! \exceptions
-    //! \no_libsemigroups_except
-    //!
     //! \returns
     //! The root of the strongly connected component containing the node \p n,
     //! a value of \ref WordGraph::node_type.
     //!
-    //! \warning This function does not check that its argument \p n.
+    //! \exceptions
+    //! \no_libsemigroups_except
     //!
     //! \note This function triggers the computation of the strongly connected
     //! components (if they are not already known).
+    //!
+    //! \warning This function does not check that its argument \p n.
     [[nodiscard]] node_type root_of_no_checks(node_type n) const {
       return component_of_no_checks(n)[0];
     }
@@ -380,15 +380,15 @@ namespace libsemigroups {
     //!
     //! \param n the node.
     //!
+    //! \returns A vector of node_type.
+    //!
     //! \exceptions
     //! \no_libsemigroups_except
     //!
-    //! \returns A vector of node_type.
-    //!
-    //! \warning This function does not check that its argument \p n.
-    //!
     //! \note This function triggers the computation of the strongly connected
     //! components (if they are not already known).
+    //!
+    //! \warning This function does not check that its argument \p n.
     [[nodiscard]] std::vector<node_type> const&
     component_of_no_checks(node_type n) const {
       run();

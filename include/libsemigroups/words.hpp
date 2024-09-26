@@ -1659,10 +1659,10 @@ namespace libsemigroups {
     //!
     //! \returns A reference to \c *this.
     //!
-    //! \sa \ref min
-    //!
     //! \note Unlike WordRange::first, this function will throw if \p frst
     //! contains letters not belonging to alphabet().
+    //!
+    //! \sa \ref min
     StringRange& first(std::string const& frst) {
       _word_range.first(_to_word(frst));
       _current_valid &= _word_range.valid();
@@ -1694,11 +1694,11 @@ namespace libsemigroups {
     //! \throws LibsemigroupsException if \p lst contains letters not belonging
     //! to alphabet().
     //!
-    //! \sa \ref max
-    //!
     //! \note The behaviour of this function is not exactly the same as
     //! ``WordRange::last(word_type const&)``. That function will not throw if a
     //! word contains letters not in the alphabet.
+    //!
+    //! \sa \ref max
     StringRange& last(std::string const& lst) {
       _word_range.last(_to_word(lst));
       _current_valid &= _word_range.valid();

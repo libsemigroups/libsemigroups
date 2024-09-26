@@ -507,12 +507,12 @@ namespace libsemigroups {
   //! \throws LibsemigroupsException if libsemigroups::throw_if_invalid(PBR
   //! const&) throws when called with the constructed PBR.
   //!
-  //! \sa
-  //! \ref libsemigroups::PBR().
-  //!
   //! \warning
   //! No checks are performed on the validity of \p args prior to the
   //! construction of the PBR object.
+  //!
+  //! \sa
+  //! \ref libsemigroups::PBR().
   template <typename... T>
   PBR to_pbr(T... args) {
     // TODO(later) validate_args
@@ -533,12 +533,12 @@ namespace libsemigroups {
   //! \throws LibsemigroupsException if libsemigroups::throw_if_invalid(PBR
   //! const&) throws when called with the constructed PBR.
   //!
-  //! \sa
-  //! \ref libsemigroups::PBR(initializer_list_type<uint32_t>).
-  //!
   //! \warning
   //! No checks are performed on the validity of \p args prior to the
   //! construction of the PBR object.
+  //!
+  //! \sa
+  //! \ref libsemigroups::PBR(initializer_list_type<uint32_t>).
   inline PBR to_pbr(PBR::initializer_list_type<uint32_t> args) {
     return to_pbr<decltype(args)>(args);
   }
@@ -556,13 +556,13 @@ namespace libsemigroups {
   //! \throws LibsemigroupsException if libsemigroups::throw_if_invalid(PBR
   //! const&) throws when called with the constructed PBR.
   //!
-  //! \sa
-  //! \ref libsemigroups::PBR(initializer_list_type<uint32_t>,
-  //! initializer_list_type<uint32_t>).
-  //!
   //! \warning
   //! No checks are performed on the validity of \p left or \p right prior to
   //! the construction of the PBR object.
+  //!
+  //! \sa
+  //! \ref libsemigroups::PBR(initializer_list_type<uint32_t>,
+  //! initializer_list_type<uint32_t>).
   PBR to_pbr(PBR::initializer_list_type<int32_t> left,
              PBR::initializer_list_type<int32_t> right);
 
