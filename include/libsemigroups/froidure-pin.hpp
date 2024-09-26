@@ -46,6 +46,8 @@
 #include "detail/report.hpp"            // for report_default
 #include "detail/stl.hpp"               // for EqualTo, Hash
 
+#include "rx/ranges.hpp"  // for iterator_range
+
 //! \brief Namespace for everything in the libsemigroups library.
 namespace libsemigroups {
 
@@ -616,7 +618,6 @@ namespace libsemigroups {
     //!
     //! \note
     //! This function triggers a full enumeration.
-    // TODO no_checks version
     bool is_idempotent(element_index_type i) {
       run();
       throw_if_element_index_out_of_range(i);
@@ -1172,12 +1173,32 @@ namespace libsemigroups {
     //! \note This function triggers a full enumeration.
     const_iterator_idempotents cend_idempotents();
 
-    // TODO the following range objects:
-    //  * idempotents
-    //  * current_idempotents
-    //  * sorted_elements
-    //  * current_elements
-    //  * elements
+    // TODO doc
+    auto current_idempotents() {
+      return rx::iterator_range(cbegin_idempotents(), cend_idempotents());
+    }
+
+    // TODO doc
+    auto idempotents() {
+      run();
+      return current_idempotents();
+    }
+
+    // TODO doc
+    auto sorted_elements() {
+      return rx::iterator_range(cbegin_sorted(), cend_sorted());
+    }
+
+    // TODO doc
+    auto current_elements() {
+      return rx::iterator_range(cbegin(), cend());
+    }
+
+    // TODO doc
+    auto elements() {
+      run();
+      return current_elements();
+    }
 
    private:
     void run_impl() override;
@@ -1193,17 +1214,26 @@ namespace libsemigroups {
 
   namespace froidure_pin {
 
-    // TODO move iterator version for rvalue reference to Container
-
-    // TODO helper
-    // explicit FroidurePin(std::initializer_list<element_type> gens)
-    //     : FroidurePin(std::begin(gens), std::end(gens)) {}
+    // TODO(doc)
+    template <typename Container>
+    FroidurePin<typename Container::value_type>&
+    init(FroidurePin<typename Container::value_type>& fp,
+         Container const&                             gens) {
+      return fp.init(std::begin(gens), std::end(gens));
+    }
 
     // TODO(doc)
-    // TODO helper
-    template <typename Element, typename Traits, typename Container>
-    FroidurePin<Element, Traits>& init(FroidurePin<Element, Traits>& fp,
-                                       Container const&              gens) {
+    template <typename Container>
+    FroidurePin<typename Container::value_type>&
+    init(FroidurePin<typename Container::value_type>& fp, Container&& gens) {
+      return fp.init(std::make_move_iterator(std::begin(gens)),
+                     std::make_move_iterator(std::end(gens)));
+    }
+
+    // TODO(doc)
+    template <typename Element>
+    FroidurePin<Element> init(FroidurePin<Element>&          fp,
+                              std::initializer_list<Element> gens) {
       return fp.init(std::begin(gens), std::end(gens));
     }
 
