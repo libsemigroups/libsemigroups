@@ -116,7 +116,7 @@ namespace libsemigroups {
       FroidurePin<Mat> T;
       T.add_generator(Mat({{0, 0}, {0, 1}}));
       T.add_generator(Mat({{0, 1}, {-1, 0}}));
-      REQUIRE_THROWS_AS(T.current_position({}), LibsemigroupsException);
+      REQUIRE(T.current_position({}) == UNDEFINED);
       REQUIRE_NOTHROW(T.current_position({0, 0, 1, 1}));
       REQUIRE(T.current_position({0, 0, 1, 1}) == UNDEFINED);
       auto w = T.word_to_element({0, 0, 1, 1});
@@ -136,7 +136,7 @@ namespace libsemigroups {
       T.add_generator(Mat({{0, 0}, {0, 1}}));
       T.add_generator(Mat({{0, 1}, {-1, 0}}));
 
-      REQUIRE_THROWS_AS(T.word_to_element({}), LibsemigroupsException);
+      REQUIRE(T.word_to_element({}) == Mat::one(2));
       REQUIRE_THROWS_AS(T.word_to_element({0, 0, 1, 2}),
                         LibsemigroupsException);
 
@@ -174,13 +174,16 @@ namespace libsemigroups {
       }
       for (size_t i = 0; i < T.size(); ++i) {
         for (size_t j = 0; j < T.size(); ++j) {
-          REQUIRE_NOTHROW(T.product_by_reduction(i, j));
-          REQUIRE_THROWS_AS(T.product_by_reduction(i + T.size(), j),
-                            LibsemigroupsException);
-          REQUIRE_THROWS_AS(T.product_by_reduction(i, j + T.size()),
-                            LibsemigroupsException);
-          REQUIRE_THROWS_AS(T.product_by_reduction(i + T.size(), j + T.size()),
-                            LibsemigroupsException);
+          REQUIRE_NOTHROW(froidure_pin::product_by_reduction(T, i, j));
+          REQUIRE_THROWS_AS(
+              froidure_pin::product_by_reduction(T, i + T.size(), j),
+              LibsemigroupsException);
+          REQUIRE_THROWS_AS(
+              froidure_pin::product_by_reduction(T, i, j + T.size()),
+              LibsemigroupsException);
+          REQUIRE_THROWS_AS(
+              froidure_pin::product_by_reduction(T, i + T.size(), j + T.size()),
+              LibsemigroupsException);
         }
       }
       for (size_t i = 0; i < T.size(); ++i) {

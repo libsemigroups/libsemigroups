@@ -100,7 +100,7 @@ namespace libsemigroups {
     REQUIRE(S.current_length(63903) == 21);
     REQUIRE(S.length(7) == 2);
     REQUIRE(S.length(63903) == 21);
-    REQUIRE(S.product_by_reduction(0, 3) == 7);
+    REQUIRE(froidure_pin::product_by_reduction(S, 0, 3) == 7);
     REQUIRE(S.fast_product(0, 3) == 7);
     REQUIRE(S.current_position(0) == 0);
     REQUIRE(S.current_position(1) == 1);
@@ -244,7 +244,8 @@ namespace libsemigroups {
            BMat8({{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 0}})};
     FroidurePin<BMat8> S(gens);
 
-    REQUIRE_THROWS_AS(S.word_to_element({}), LibsemigroupsException);
+    REQUIRE(!S.is_monoid());
+    REQUIRE(S.word_to_element({}) == One<BMat8>()(gens[0]));
     REQUIRE_NOTHROW(S.word_to_element({0}));
     REQUIRE_NOTHROW(S.word_to_element({0, 3, 0, 3, 1}));
     REQUIRE_THROWS_AS(S.word_to_element({0, 1, 0, 4}), LibsemigroupsException);
@@ -333,13 +334,16 @@ namespace libsemigroups {
 
     for (size_t i = 1; i < S.size(); ++i) {
       for (size_t j = 1; j < S.size(); ++j) {
-        REQUIRE_NOTHROW(S.product_by_reduction(i, j));
-        REQUIRE_THROWS_AS(S.product_by_reduction(i + S.size(), j),
-                          LibsemigroupsException);
-        REQUIRE_THROWS_AS(S.product_by_reduction(i, j + S.size()),
-                          LibsemigroupsException);
-        REQUIRE_THROWS_AS(S.product_by_reduction(i + S.size(), j + S.size()),
-                          LibsemigroupsException);
+        REQUIRE_NOTHROW(froidure_pin::product_by_reduction(S, i, j));
+        REQUIRE_THROWS_AS(
+            froidure_pin::product_by_reduction(S, i + S.size(), j),
+            LibsemigroupsException);
+        REQUIRE_THROWS_AS(
+            froidure_pin::product_by_reduction(S, i, j + S.size()),
+            LibsemigroupsException);
+        REQUIRE_THROWS_AS(
+            froidure_pin::product_by_reduction(S, i + S.size(), j + S.size()),
+            LibsemigroupsException);
       }
     }
   }
