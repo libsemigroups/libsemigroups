@@ -120,15 +120,13 @@ namespace libsemigroups {
   //! Defined in ``froidure-pin.hpp``.
   //!
   //! The class template FroidurePin implements the Froidure-Pin algorithm as
-  //! described in the article "Algorithms for computing finite semigroups"
-  //! by Veronique Froidure and Jean-Eric Pin; see [this] for more details.
-  // TODO cite
-  //! A FroidurePin instance is defined by a generating set, and the main
-  //! function is \ref run, which implements the
-  //! [Froidure-Pin Algorithm].  If \ref run is invoked and
-  //! \ref finished returns \c true, then the size, the left and right
-  //! Cayley graphs are determined, and a confluent terminating presentation
-  //! for the semigroup is known.
+  //! described in the article \cite Froidure1997aa by Veronique Froidure and
+  //! Jean-Eric Pin. A FroidurePin instance is defined by a generating set, and
+  //! the main function is \ref run, which implements the Froidure-Pin
+  //! Algorithm. If \ref run is invoked and \ref finished returns \c true, then
+  //! the size \ref size, the left and right Cayley graphs \ref
+  //! left_cayley_graph and \ref right_cayley_graph are determined, and a
+  //! confluent terminating presentation \ref rules for the semigroup is known.
   //!
   //! \tparam Element the type of the elements in the represented
   //! semigroup
@@ -137,9 +135,6 @@ namespace libsemigroups {
   //! implementation (defaults to FroidurePinTraits).
   //!
   //! \sa FroidurePinTraits and FroidurePinBase.
-  //!
-  //! [this]: https://www.irif.fr/~jep/PDF/Rio.pdf
-  //! [Froidure-Pin Algorithm]: https://www.irif.fr/~jep/PDF/Rio.pdf
   //!
   //! \par Example
   //! \code
