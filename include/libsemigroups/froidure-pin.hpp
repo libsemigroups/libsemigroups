@@ -354,6 +354,7 @@ namespace libsemigroups {
     explicit FroidurePin(std::shared_ptr<T> stt) : FroidurePin() {
       _state = stt;
     }
+    // TODO init
 
     //! \brief Construct from const reference to state.
     //!
@@ -374,6 +375,7 @@ namespace libsemigroups {
     template <typename T, typename = std::enable_if_t<IsState<T>>>
     explicit FroidurePin(T const& stt)
         : FroidurePin(std::make_shared<state_type>(stt)) {}
+    // TODO init
 
     //! \brief Deleted.
     // TODO undelete
@@ -398,9 +400,11 @@ namespace libsemigroups {
     //! * Degree`{}(x) != `Degree`{}(y)` for some \c x and \c y in
     //! \p gens.
     explicit FroidurePin(std::vector<element_type> const& gens);
+    // TODO init
 
     //! \copydoc FroidurePin(std::vector<element_type> const& gens)
     explicit FroidurePin(std::initializer_list<element_type> gens);
+    // TODO init
 
     //! \brief Copy constructor.
     //!
@@ -449,6 +453,7 @@ namespace libsemigroups {
     //! \sa \ref current_position.
     // TODO helper
     // TODO rename to_element
+    // TODO no_checks version
     element_type word_to_element(word_type const& w) const;
 
     //! \brief Check equality of words in the generators.
@@ -464,6 +469,7 @@ namespace libsemigroups {
     //! \throws LibsemigroupsException if \p w contains an value exceeding
     //! \ref number_of_generators.
     // TODO delete or helper
+    // TODO no_checks version
     bool equal_to(word_type const& x, word_type const& y) const;
 
     //! \brief Returns the number of generators.
@@ -486,6 +492,7 @@ namespace libsemigroups {
     //!
     //! \note
     //! Note that `generator(i)` is in general not in position \p i.
+    // TODO no_checks version
     const_reference generator(generator_index_type i) const;
 
     //! \brief Find the position of an element with no enumeration.
@@ -572,6 +579,7 @@ namespace libsemigroups {
     //!
     //! \note
     //! This function triggers a full enumeration.
+    // TODO no_checks version
     bool is_idempotent(element_index_type i);
 
     //! \brief Requests the given capacity for elements.
@@ -646,6 +654,7 @@ namespace libsemigroups {
     //!
     //! \exceptions
     //! \no_libsemigroups_except
+    // TODO no_checks version
     element_index_type position_to_sorted_position(element_index_type i);
 
     //! \brief Access element specified by index with bound checks.
@@ -685,6 +694,7 @@ namespace libsemigroups {
     //!
     //! \throws LibsemigroupsException if \p i is greater than or equal to the
     //! return value of size().
+    // TODO no_checks version
     const_reference sorted_at(element_index_type i);
 
     //! \brief Factorise an element as a word in the generators.
