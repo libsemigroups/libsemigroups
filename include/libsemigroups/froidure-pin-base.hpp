@@ -282,12 +282,12 @@ namespace libsemigroups {
     //! The index of the element corresponding to the word \p w, or \ref
     //! UNDEFINED if there is no such element.
     //!
+    //! \complexity
+    //! \f$O(n)\f$ where \f$n\f$ is the length of the word \p w.
+    //!
     //! \warning This function does not check its argument is valid. In
     //! particular, if any of the letters in \p w is out of range, then bad
     //! things will happen.
-    //!
-    //! \complexity
-    //! \f$O(n)\f$ where \f$n\f$ is the length of the word \p w.
     //!
     //! \sa FroidurePin::word_to_element.
     [[nodiscard]] element_index_type
@@ -323,11 +323,11 @@ namespace libsemigroups {
     //! \returns
     //! The position of the generator with index \p i.
     //!
+    //! \complexity Constant.
+    //!
     //! \warning This function does not check its argument is valid. In
     //! particular, if there is no generator with index \p i, then bad
     //! things will happen.
-    //!
-    //! \complexity Constant.
     //!
     //! \sa FroidurePin::word_to_element.
     [[nodiscard]] element_index_type
@@ -441,12 +441,12 @@ namespace libsemigroups {
     //!
     //! \returns A value of type \c element_index_type.
     //!
+    //! \complexity
+    //! Constant.
+    //!
     //! \warning No checks are made that the argument \p pos is valid. In
     //! particular, if \p pos is greater than or equal to \ref current_size,
     //! then bad things will happen.
-    //!
-    //! \complexity
-    //! Constant.
     element_index_type prefix_no_checks(element_index_type pos) const {
       LIBSEMIGROUPS_ASSERT(pos < _prefix.size());
       return _prefix[pos];
@@ -480,12 +480,12 @@ namespace libsemigroups {
     //!
     //! \returns A value of type \c element_index_type.
     //!
+    //! \complexity
+    //! Constant.
+    //!
     //! \warning No checks are made that the argument \p pos is valid. In
     //! particular, if \p pos is greater than or equal to \ref current_size,
     //! then bad things will happen.
-    //!
-    //! \complexity
-    //! Constant.
     [[nodiscard]] element_index_type
     suffix_no_checks(element_index_type pos) const {
       LIBSEMIGROUPS_ASSERT(pos < _suffix.size());
@@ -519,21 +519,21 @@ namespace libsemigroups {
     //!
     //! This function does not trigger an enumeration.
     //!
+    //! \param pos the position.
+    //!
+    //! \returns A value of type \c generator_index_type.
+    //!
+    //! \complexity
+    //! Constant.
+    //!
     //! \note
     //! Note that `FroidurePin::generator(first_letter(pos))` is
     //! only equal to `FroidurePin::at(first_letter(pos))` if
     //! there are no duplicate generators.
     //!
-    //! \param pos the position.
-    //!
-    //! \returns A value of type \c generator_index_type.
-    //!
     //! \warning No checks are made that the argument \p pos is valid. In
     //! particular, if \p pos is greater than or equal to \ref current_size,
     //! then bad things will happen.
-    //!
-    //! \complexity
-    //! Constant.
     [[nodiscard]] generator_index_type
     first_letter_no_checks(element_index_type pos) const {
       LIBSEMIGROUPS_ASSERT(pos < _first.size());
@@ -546,11 +546,6 @@ namespace libsemigroups {
     //! \p pos of the semigroup, which is the index of the generator
     //! corresponding to the first letter of the element.
     //!
-    //! \note
-    //! Note that `FroidurePin::generator(first_letter(pos))` is
-    //! only equal to `FroidurePin::at(first_letter(pos))` if
-    //! there are no duplicate generators.
-    //!
     //! \param pos the position.
     //!
     //! \returns A value of type \c generator_index_type.
@@ -560,6 +555,11 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! Constant.
+    //!
+    //! \note
+    //! Note that `FroidurePin::generator(first_letter(pos))` is
+    //! only equal to `FroidurePin::at(first_letter(pos))` if
+    //! there are no duplicate generators.
     [[nodiscard]] generator_index_type
     first_letter(element_index_type pos) const {
       throw_if_element_index_out_of_range(pos);
@@ -574,21 +574,21 @@ namespace libsemigroups {
     //!
     //! This function does not trigger an enumeration.
     //!
+    //! \param pos the position.
+    //!
+    //! \returns A value of type \c generator_index_type.
+    //!
+    //! \complexity
+    //! Constant.
+    //!
     //! \note
     //! Note that `FroidurePin::generator(first_letter(pos))` is
     //! only equal to `FroidurePin::at(first_letter(pos))` if
     //! there are no duplicate generators.
     //!
-    //! \param pos the position.
-    //!
-    //! \returns A value of type \c generator_index_type.
-    //!
     //! \warning No checks are made that the argument \p pos is valid. In
     //! particular, if \p pos is greater than or equal to \ref current_size,
     //! then bad things will happen.
-    //!
-    //! \complexity
-    //! Constant.
     [[nodiscard]] generator_index_type
     final_letter_no_checks(element_index_type pos) const {
       LIBSEMIGROUPS_ASSERT(pos < _final.size());
@@ -638,11 +638,11 @@ namespace libsemigroups {
     //! \complexity
     //! Constant.
     //!
-    //! \sa
-    //! \ref length.
-    //!
     //! \warning This function does not check that \p pos is valid. In
     //! particular, if `pos > current_size()`, then bad things will happen.
+    //!
+    //! \sa
+    //! \ref length.
     [[nodiscard]] size_t
     current_length_no_checks(element_index_type pos) const {
       LIBSEMIGROUPS_ASSERT(pos < _length.size());
@@ -698,12 +698,12 @@ namespace libsemigroups {
     //!
     //! \returns The length of the element with index \p pos.
     //!
+    //! \complexity
+    //! Constant.
+    //!
     //! \warning This function does not check that \p pos is valid. In
     //! particular, if \p pos is greater than or equal to \ref size, then bad
     //! things will happen.
-    //!
-    //! \complexity
-    //! Constant.
     //!
     //! \sa
     //! \ref current_length.
@@ -849,14 +849,14 @@ namespace libsemigroups {
     //! \param word the word to clear and change in-place.
     //! \param pos the index of the element whose factorisation is sought.
     //!
-    //! \warning This function does not check that \p pos is valid. In
-    //! particular, if `pos > current_size()`, then bad things will happen.
-    //!
     //! \throws LibsemigroupsException if \p pos is greater than or equal to
     //! \ref current_size.
     //!
     //! \complexity
     //! Constant.
+    //!
+    //! \warning This function does not check that \p pos is valid. In
+    //! particular, if `pos > current_size()`, then bad things will happen.
     // This function could be a helper, but
     // FroidurePin::minimal_factorisation(const_reference) isn't so keeping.
     void current_minimal_factorisation_no_checks(word_type&         word,
@@ -875,12 +875,12 @@ namespace libsemigroups {
     //! \returns
     //! A value of type `word_type`.
     //!
-    //! \warning This function does not check that \p pos is valid. In
-    //! particular, if `pos > current_size()`, then bad things will happen.
-    //!
     //! \complexity
     //! At worst \f$O(mn)\f$ where \f$m\f$ equals \p pos and \f$n\f$ is the
     //! return value of FroidurePin::number_of_generators.
+    //!
+    //! \warning This function does not check that \p pos is valid. In
+    //! particular, if `pos > current_size()`, then bad things will happen.
     // Notes:
     // 1. This function could be a helper, but
     //    FroidurePin::minimal_factorisation(const_reference) isn't so keeping.
@@ -1809,13 +1809,13 @@ namespace libsemigroups {
     //! \returns
     //! A value of type \ref FroidurePinBase::element_index_type.
     //!
-    //! \warning This function does not check its arguments. In particular,
-    //! if \p i or \p j is greater than or equal
-    //! to FroidurePinBase::current_size, then bad things will happen.
-    //!
     //! \complexity
     //! \f$O(n)\f$ where \f$n\f$ is the minimum of the lengths of
     //! `minimal_factorisation(i)` and `minimal_factorisation(j)`.
+    //!
+    //! \warning This function does not check its arguments. In particular,
+    //! if \p i or \p j is greater than or equal
+    //! to FroidurePinBase::current_size, then bad things will happen.
     [[nodiscard]] FroidurePinBase::element_index_type
     product_by_reduction_no_checks(
         FroidurePinBase const&                       fpb,
