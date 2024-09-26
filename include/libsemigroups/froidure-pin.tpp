@@ -353,13 +353,12 @@ namespace libsemigroups {
   template <typename Element, typename Traits>
   FroidurePinBase::element_index_type
   FroidurePin<Element, Traits>::sorted_position(const_reference x) {
-    return position_to_sorted_position(position(x));
+    return to_sorted_position(position(x));
   }
 
   template <typename Element, typename Traits>
   FroidurePinBase::element_index_type
-  FroidurePin<Element, Traits>::position_to_sorted_position(
-      element_index_type pos) {
+  FroidurePin<Element, Traits>::to_sorted_position(element_index_type pos) {
     run();
     if (pos >= _nr) {
       return UNDEFINED;
@@ -390,31 +389,51 @@ namespace libsemigroups {
 
   template <typename Element, typename Traits>
   typename FroidurePin<Element, Traits>::const_reference
-  FroidurePin<Element, Traits>::sorted_at(element_index_type pos) {
+  FroidurePin<Element, Traits>::sorted_at_no_checks(element_index_type pos) {
     init_sorted();
+    return this->to_external_const(_sorted.at(pos).first);
+  }
+
+  template <typename Element, typename Traits>
+  typename FroidurePin<Element, Traits>::const_reference
+  FroidurePin<Element, Traits>::sorted_at(element_index_type pos) {
     if (pos >= size()) {
       LIBSEMIGROUPS_EXCEPTION("element index out of range, expected value in "
                               "range [0, {}), got {}",
                               size(),
                               pos);
     }
-    return this->to_external_const(_sorted.at(pos).first);
+    return sorted_at_no_checks(pos);
   }
 
   template <typename Element, typename Traits>
   word_type
   FroidurePin<Element, Traits>::minimal_factorisation(const_reference x) {
-    element_index_type pos = this->position(x);
+    word_type w;
+    minimal_factorisation(w, x);
+    return w;
+  }
+
+  template <typename Element, typename Traits>
+  void FroidurePin<Element, Traits>::minimal_factorisation(word_type&      w,
+                                                           const_reference x) {
+    element_index_type pos = position(x);
     if (pos == UNDEFINED) {
       LIBSEMIGROUPS_EXCEPTION(
           "the argument is not an element of the semigroup");
     }
-    return minimal_factorisation(pos);
+    return minimal_factorisation(w, pos);
   }
 
   template <typename Element, typename Traits>
   word_type FroidurePin<Element, Traits>::factorisation(const_reference x) {
     return minimal_factorisation(x);
+  }
+
+  template <typename Element, typename Traits>
+  void FroidurePin<Element, Traits>::factorisation(word_type&      w,
+                                                   const_reference x) {
+    return minimal_factorisation(w, x);
   }
 
   template <typename Element, typename Traits>

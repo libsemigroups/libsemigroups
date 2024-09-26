@@ -1041,14 +1041,14 @@ namespace libsemigroups {
     REQUIRE(S.finished());
 
     REQUIRE(S.sorted_position(S.at(1024)) == 6810);
-    REQUIRE(S.position_to_sorted_position(1024) == 6810);
+    REQUIRE(S.to_sorted_position(1024) == 6810);
 
     REQUIRE(S.sorted_at(6810) == S.at(1024));
     REQUIRE(S.sorted_at(6810) == S.at(1024));
 
     REQUIRE(S.sorted_position(Transf<>({5, 1, 5, 5, 2, 5})) == 6908);
     REQUIRE(
-        S.position_to_sorted_position(S.position(Transf<>({5, 1, 5, 5, 2, 5})))
+        S.to_sorted_position(S.position(Transf<>({5, 1, 5, 5, 2, 5})))
         == 6908);
     REQUIRE(S.sorted_at(6908) == Transf<>({5, 1, 5, 5, 2, 5}));
     REQUIRE(S.sorted_at(6908)
@@ -1058,7 +1058,7 @@ namespace libsemigroups {
 
     REQUIRE_THROWS_AS(S.sorted_at(100000), LibsemigroupsException);
     REQUIRE_THROWS_AS(S.at(100000), LibsemigroupsException);
-    REQUIRE(S.position_to_sorted_position(100000) == UNDEFINED);
+    REQUIRE(S.to_sorted_position(100000) == UNDEFINED);
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin<Transf<>>",
@@ -1290,7 +1290,7 @@ namespace libsemigroups {
     size_t pos = 0;
     for (auto it = S.cbegin_sorted(); it < S.cend_sorted(); it++) {
       REQUIRE(S.sorted_position(*it) == pos);
-      REQUIRE(S.position_to_sorted_position(S.position(*it)) == pos);
+      REQUIRE(S.to_sorted_position(S.position(*it)) == pos);
       pos++;
     }
     REQUIRE(pos == S.size());
@@ -1298,7 +1298,7 @@ namespace libsemigroups {
     pos = 0;
     for (auto it = S.cbegin_sorted(); it < S.cend_sorted(); ++it) {
       REQUIRE(S.sorted_position(*it) == pos);
-      REQUIRE(S.position_to_sorted_position(S.position(*it)) == pos);
+      REQUIRE(S.to_sorted_position(S.position(*it)) == pos);
       pos++;
     }
     REQUIRE(pos == S.size());
@@ -1309,7 +1309,7 @@ namespace libsemigroups {
     for (auto it = first; it < last; it++) {
       pos--;
       REQUIRE(S.sorted_position(*it) == pos);
-      REQUIRE(S.position_to_sorted_position(S.position(*it)) == pos);
+      REQUIRE(S.to_sorted_position(S.position(*it)) == pos);
     }
     REQUIRE(pos == 0);
 
@@ -1317,7 +1317,7 @@ namespace libsemigroups {
     for (auto it = first; it < last; ++it) {
       pos--;
       REQUIRE(S.sorted_position(*it) == pos);
-      REQUIRE(S.position_to_sorted_position(S.position(*it)) == pos);
+      REQUIRE(S.to_sorted_position(S.position(*it)) == pos);
     }
     REQUIRE(pos == 0);
   }

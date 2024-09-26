@@ -135,9 +135,9 @@ namespace libsemigroups {
     REQUIRE(S.sorted_position(S.generator(0)) == 18185);
     REQUIRE(S.sorted_position(S.generator(3)) == 33066);
     REQUIRE(S.sorted_position(S.generator(0) * S.generator(3)) == 18184);
-    REQUIRE(S.position_to_sorted_position(0) == 18185);
-    REQUIRE(S.position_to_sorted_position(3) == 33066);
-    REQUIRE(S.position_to_sorted_position(7) == 18184);
+    REQUIRE(S.to_sorted_position(0) == 18185);
+    REQUIRE(S.to_sorted_position(3) == 33066);
+    REQUIRE(S.to_sorted_position(7) == 18184);
 
     REQUIRE(S.at(7) == S.generator(0) * S.generator(3));
     REQUIRE(S[7] == S[0] * S[3]);

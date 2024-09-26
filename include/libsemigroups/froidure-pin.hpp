@@ -694,8 +694,8 @@ namespace libsemigroups {
     //!
     //! \exceptions
     //! \no_libsemigroups_except
-    // TODO no_checks version
-    element_index_type position_to_sorted_position(element_index_type i);
+    // There's no no-checks version of this, there can't be.
+    element_index_type to_sorted_position(element_index_type i);
 
     //! \brief Access element specified by index with bound checks.
     //!
@@ -734,8 +734,10 @@ namespace libsemigroups {
     //!
     //! \throws LibsemigroupsException if \p i is greater than or equal to the
     //! return value of size().
-    // TODO no_checks version
     const_reference sorted_at(element_index_type i);
+
+    // TODO doc
+    const_reference sorted_at_no_checks(element_index_type i);
 
     //! \brief Factorise an element as a word in the generators.
     //!
@@ -752,7 +754,9 @@ namespace libsemigroups {
     //!
     //! \note This function may trigger a (partial) enumeration.
     word_type minimal_factorisation(const_reference x);
-    // TODO version taking word_type by reference also
+
+    // TODO doc
+    void minimal_factorisation(word_type& w, const_reference x);
 
 #ifndef PARSED_BY_DOXYGEN
     // The following are required, they are documented in FroidurePinBase.
@@ -776,7 +780,9 @@ namespace libsemigroups {
     //!
     //! \note This function may trigger a (partial) enumeration.
     word_type factorisation(const_reference x);
-    // TODO version taking word_type by reference also
+
+    // TODO doc
+    void factorisation(word_type& w, const_reference x);
 
     //! \brief Check finiteness.
     //!
