@@ -19,7 +19,8 @@
 #include <algorithm>  // for min
 #include <cstddef>    // for size_t
 #include <cstdint>    // for uint_fast8_t, uint16_t
-#include <vector>     // for vector
+#include <iterator>
+#include <vector>  // for vector
 
 #include "catch_amalgamated.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 #include "test-main.hpp"
@@ -1160,14 +1161,16 @@ namespace libsemigroups {
     S.add_generator(Transf<>({1, 1, 2, 3, 4, 5}));
 
     REQUIRE(S.current_size() == 5);
-    size_t size = S.current_size();
-    for (auto it = S.crbegin(); it < S.crend(); it++) {
+    size_t size  = S.current_size();
+    auto   first = std::make_reverse_iterator(S.cend());
+    auto   last  = std::make_reverse_iterator(S.cbegin());
+    for (auto it = first; it < last; it++) {
       size--;
       REQUIRE(S.contains(*it));
     }
     REQUIRE(size == 0);
 
-    for (auto it = S.crbegin(); it < S.crend(); ++it) {
+    for (auto it = first; it < last; ++it) {
       size++;
       REQUIRE(S.contains(*it));
     }
@@ -1177,15 +1180,18 @@ namespace libsemigroups {
     S.batch_size(1024);
     S.enumerate(1000);
     REQUIRE(S.current_size() < 7776);
+    // Iterators invalidated
+    first = std::make_reverse_iterator(S.cend());
+    last  = std::make_reverse_iterator(S.cbegin());
 
     size = S.current_size();
-    for (auto it = S.crbegin(); it < S.crend(); it++) {
+    for (auto it = first; it < last; it++) {
       size--;
       REQUIRE(S.contains(*it));
     }
     REQUIRE(size == 0);
 
-    for (auto it = S.crbegin(); it < S.crend(); ++it) {
+    for (auto it = first; it < last; ++it) {
       size++;
       REQUIRE(S.contains(*it));
     }
@@ -1194,13 +1200,16 @@ namespace libsemigroups {
 
     REQUIRE(S.size() == 7776);
     size = S.size();
-    for (auto it = S.crbegin(); it < S.crend(); it++) {
+    // Iterators invalidated
+    first = std::make_reverse_iterator(S.cend());
+    last  = std::make_reverse_iterator(S.cbegin());
+    for (auto it = first; it < last; it++) {
       size--;
       REQUIRE(S.contains(*it));
     }
     REQUIRE(size == 0);
 
-    for (auto it = S.crbegin(); it < S.crend(); ++it) {
+    for (auto it = first; it < last; ++it) {
       size++;
       REQUIRE(S.contains(*it));
     }
@@ -1292,7 +1301,10 @@ namespace libsemigroups {
     }
     REQUIRE(pos == S.size());
 
-    for (auto it = S.crbegin_sorted(); it < S.crend_sorted(); it++) {
+    auto first = std::make_reverse_iterator(S.cend_sorted());
+    auto last  = std::make_reverse_iterator(S.cbegin_sorted());
+
+    for (auto it = first; it < last; it++) {
       pos--;
       REQUIRE(S.sorted_position(*it) == pos);
       REQUIRE(S.position_to_sorted_position(S.position(*it)) == pos);
@@ -1300,7 +1312,7 @@ namespace libsemigroups {
     REQUIRE(pos == 0);
 
     pos = S.size();
-    for (auto it = S.crbegin_sorted(); it < S.crend_sorted(); ++it) {
+    for (auto it = first; it < last; ++it) {
       pos--;
       REQUIRE(S.sorted_position(*it) == pos);
       REQUIRE(S.position_to_sorted_position(S.position(*it)) == pos);

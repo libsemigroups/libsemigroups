@@ -936,10 +936,11 @@ namespace libsemigroups {
   // Check if an element is the identity, x should be in the position pos
   // of _elements.
   template <typename Element, typename Traits>
-  void FroidurePin<Element, Traits>::
-      is_one(internal_const_element_type x, element_index_type pos) noexcept(
-          std::is_nothrow_default_constructible_v<InternalEqualTo>&& noexcept(
-              std::declval<InternalEqualTo>()(x, x))) {
+  void FroidurePin<Element, Traits>::is_one(
+      internal_const_element_type x,
+      element_index_type
+          pos) noexcept(std::is_nothrow_default_constructible_v<InternalEqualTo>
+                        && noexcept(std::declval<InternalEqualTo>()(x, x))) {
     if (!_found_one && InternalEqualTo()(x, _id)) {
       _pos_one   = pos;
       _found_one = true;
@@ -1244,18 +1245,6 @@ namespace libsemigroups {
   }
 
   template <typename Element, typename Traits>
-  typename FroidurePin<Element, Traits>::const_reverse_iterator
-  FroidurePin<Element, Traits>::crbegin() const {
-    return const_reverse_iterator(cend());
-  }
-
-  template <typename Element, typename Traits>
-  typename FroidurePin<Element, Traits>::const_reverse_iterator
-  FroidurePin<Element, Traits>::crend() const {
-    return const_reverse_iterator(cbegin());
-  }
-
-  template <typename Element, typename Traits>
   typename FroidurePin<Element, Traits>::const_iterator_sorted
   FroidurePin<Element, Traits>::cbegin_sorted() {
     init_sorted();
@@ -1267,20 +1256,6 @@ namespace libsemigroups {
   FroidurePin<Element, Traits>::cend_sorted() {
     init_sorted();
     return const_iterator_pair_first(_sorted.cend());
-  }
-
-  template <typename Element, typename Traits>
-  typename FroidurePin<Element, Traits>::const_reverse_iterator_sorted
-  FroidurePin<Element, Traits>::crbegin_sorted() {
-    init_sorted();
-    return const_reverse_iterator_pair_first(cend_sorted());
-  }
-
-  template <typename Element, typename Traits>
-  typename FroidurePin<Element, Traits>::const_reverse_iterator_sorted
-  FroidurePin<Element, Traits>::crend_sorted() {
-    init_sorted();
-    return const_reverse_iterator_pair_first(cbegin_sorted());
   }
 
   template <typename Element, typename Traits>

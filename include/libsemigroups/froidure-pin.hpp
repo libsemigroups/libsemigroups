@@ -26,7 +26,7 @@
 #include <chrono>            // for high_resolution_clock
 #include <cstddef>           // for size_t
 #include <initializer_list>  // for initializer_list
-#include <iterator>          // for reverse_iterator
+#include <iterator>          // for reverse_iterator TODO required?
 #include <memory>            // for shared_ptr, make_shared
 #include <mutex>             // for mutex
 #include <type_traits>       // for is_const, remove_pointer
@@ -979,12 +979,6 @@ namespace libsemigroups {
     using const_iterator_pair_first
         = detail::ConstIteratorStateless<IteratorPairFirstTraits>;
 
-    // A type for const reverse iterators through (element_type,
-    // element_index_type) pairs of this.
-    // TODO delete
-    using const_reverse_iterator_pair_first
-        = std::reverse_iterator<const_iterator_pair_first>;
-
    public:
     ////////////////////////////////////////////////////////////////////////
     // FroidurePin - iterators - public
@@ -998,28 +992,11 @@ namespace libsemigroups {
         = detail::BruidhinnConstIterator<element_type,
                                          std::vector<internal_element_type>>;
 
-    //! \brief Return type of \ref crbegin and \ref crend.
-    //!
-    //! A type for const random access iterators through the elements, in
-    //! the reverse order of enumeration.
-    //!
-    //! \sa const_iterator.
-    // TODO delete
-    using const_reverse_iterator = std::reverse_iterator<const_iterator>;
-
     //! \brief Return type of \ref cbegin_sorted and \ref cend_sorted.
     //!
     //! A type for const random access iterators through the elements, sorted
     //! according to Less.
     using const_iterator_sorted = const_iterator_pair_first;
-
-    //! \brief Return type of \ref crbegin_sorted and \ref crend_sorted.
-    //!
-    //! A type for const random access iterators through the elements,
-    //! sorted according to Less.
-    //!
-    //! \sa const_iterator_sorted.
-    using const_reverse_iterator_sorted = const_reverse_iterator_pair_first;
 
     //! \brief Return type of \ref cbegin_idempotents and \ref cend_idempotents.
     //!
@@ -1101,44 +1078,6 @@ namespace libsemigroups {
     //! \sa \ref cend.
     const_iterator end() const;
 
-    //! \brief Returns a const reverse iterator pointing to the last known
-    //! element.
-    //!
-    //! This function does not trigger any enumeration, and the returned
-    //! iterators may be invalidated by any call to a non-const function of the
-    //! FroidurePin class.
-    //!
-    //! \returns A value of type \ref const_reverse_iterator.
-    //!
-    //! \exceptions
-    //! \no_libsemigroups_except
-    //!
-    //! \complexity
-    //! Constant.
-    //!
-    //! \sa \ref crend.
-    // TODO remove
-    const_reverse_iterator crbegin() const;
-
-    //! \brief Returns a const reverse iterator pointing one before the first
-    //! element.
-    //!
-    //! This function does not trigger any enumeration, and the returned
-    //! iterators may be invalidated by any call to a non-const function of the
-    //! FroidurePin class.
-    //!
-    //! \returns A value of type \ref const_reverse_iterator.
-    //!
-    //! \exceptions
-    //! \no_libsemigroups_except
-    //!
-    //! \complexity
-    //! Constant.
-    //!
-    //! \sa \ref crbegin.
-    // TODO remove
-    const_reverse_iterator crend() const;
-
     //! \brief Returns a const iterator pointing to the first element (sorted by
     //! Less).
     //!
@@ -1160,30 +1099,6 @@ namespace libsemigroups {
     //!
     //! \note This function triggers a full enumeration.
     const_iterator_sorted cend_sorted();
-
-    //! \brief Returns a const iterator pointing to the last element (sorted by
-    //! \ref Less).
-    //!
-    //! \returns A value of type \ref const_reverse_iterator_sorted.
-    //!
-    //! \exceptions
-    //! \no_libsemigroups_except
-    //!
-    //! \note This function triggers a full enumeration.
-    // TODO remove
-    const_reverse_iterator_sorted crbegin_sorted();
-
-    //! \brief Returns a const reverse iterator pointing one before the first
-    //! element (sorted by Less).
-    //!
-    //! \returns A value of type \ref const_reverse_iterator_sorted.
-    //!
-    //! \exceptions
-    //! \no_libsemigroups_except
-    //!
-    //! \note This function triggers a full enumeration.
-    // TODO remove
-    const_reverse_iterator_sorted crend_sorted();
 
     //! \brief Returns a const iterator pointing at the first idempotent.
     //!
