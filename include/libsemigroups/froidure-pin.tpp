@@ -66,7 +66,7 @@ namespace libsemigroups {
     static_assert(
         std::is_same_v<std::decay_t<decltype(*std::declval<Iterator2>())>,
                        element_type>);
-    validate_element_collection(first, last);
+    throw_if_bad_degree(first, last);
     add_generators_before_start(first, last);
   }
 
@@ -77,7 +77,7 @@ namespace libsemigroups {
     static_assert(std::is_same_v<typename Iterator1::value_type, element_type>);
     static_assert(std::is_same_v<typename Iterator2::value_type, element_type>);
     init();
-    validate_element_collection(first, last);
+    throw_if_bad_degree(first, last);
     add_generators_before_start(first, last);
     return *this;
   }
@@ -260,9 +260,16 @@ namespace libsemigroups {
 
   template <typename Element, typename Traits>
   typename FroidurePin<Element, Traits>::const_reference
+  FroidurePin<Element, Traits>::generator_no_checks(
+      generator_index_type pos) const {
+    return this->to_external_const(_gens[pos]);
+  }
+
+  template <typename Element, typename Traits>
+  typename FroidurePin<Element, Traits>::const_reference
   FroidurePin<Element, Traits>::generator(generator_index_type pos) const {
     throw_if_generator_index_out_of_range(pos);
-    return this->to_external_const(_gens[pos]);
+    return generator_no_checks(pos);
   }
 
   template <typename Element, typename Traits>
@@ -622,7 +629,8 @@ namespace libsemigroups {
   }
 
   template <typename Element, typename Traits>
-  void FroidurePin<Element, Traits>::validate_element(const_reference x) const {
+  void
+  FroidurePin<Element, Traits>::throw_if_bad_degree(const_reference x) const {
     size_t const n = Degree()(x);
     if (degree() != UNDEFINED && n != degree()) {
       LIBSEMIGROUPS_EXCEPTION(
@@ -631,10 +639,9 @@ namespace libsemigroups {
   }
 
   template <typename Element, typename Traits>
-  template <typename T>
-  void FroidurePin<Element, Traits>::validate_element_collection(
-      T const& first,
-      T const& last) const {
+  template <typename Iterator>
+  void FroidurePin<Element, Traits>::throw_if_bad_degree(Iterator first,
+                                                         Iterator last) const {
     if (degree() == UNDEFINED && std::distance(first, last) != 0) {
       auto const n = Degree()(*first);
       for (auto it = first + 1; it < last; ++it) {
@@ -646,7 +653,7 @@ namespace libsemigroups {
       }
     } else {
       for (auto it = first; it < last; ++it) {
-        validate_element(*it);
+        throw_if_bad_degree(*it);
       }
     }
   }
@@ -849,7 +856,7 @@ namespace libsemigroups {
 
   template <typename Element, typename Traits>
   void FroidurePin<Element, Traits>::add_generator(const_reference x) {
-    validate_element(x);
+    throw_if_bad_degree(x);
     if (_pos == 0) {
       add_generators_before_start(&x, &x + 1);
     } else {
@@ -861,7 +868,7 @@ namespace libsemigroups {
   template <typename T>
   void FroidurePin<Element, Traits>::add_generators(T const& first,
                                                     T const& last) {
-    validate_element_collection(first, last);
+    throw_if_bad_degree(first, last);
     if (_pos == 0) {
       add_generators_before_start(first, last);
     } else {

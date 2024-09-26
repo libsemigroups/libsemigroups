@@ -19,11 +19,12 @@
 // TODO(later)
 // * the todos in the file
 // * no_checks versions of mem + helper fns
+// * check for no_checks opportunities for functions calling
+// throw_if_bad_degree
 
 #ifndef LIBSEMIGROUPS_FROIDURE_PIN_HPP_
 #define LIBSEMIGROUPS_FROIDURE_PIN_HPP_
 
-#include <chrono>            // for high_resolution_clock
 #include <cstddef>           // for size_t
 #include <initializer_list>  // for initializer_list
 #include <iterator>          // for make_move_iterator
@@ -41,11 +42,9 @@
 #include "types.hpp"              // for letter_type, word_type
 
 #include "detail/bruidhinn-traits.hpp"  // for detail::BruidhinnTraits
-#include "detail/containers.hpp"        // for DynamicArray2
 #include "detail/iterator.hpp"          // for ConstIteratorStateless
-#include "detail/report.hpp"            // for REPORT
+#include "detail/report.hpp"            // for report_default
 #include "detail/stl.hpp"               // for EqualTo, Hash
-#include "detail/timer.hpp"             // for detail::Timer
 
 //! \brief Namespace for everything in the libsemigroups library.
 namespace libsemigroups {
@@ -519,8 +518,10 @@ namespace libsemigroups {
     //!
     //! \note
     //! Note that `generator(i)` is in general not in position \p i.
-    // TODO no_checks version
     const_reference generator(generator_index_type i) const;
+
+    // TODO doc
+    const_reference generator_no_checks(generator_index_type i) const;
 
     //! \brief Find the position of an element with no enumeration.
     //!
@@ -836,6 +837,7 @@ namespace libsemigroups {
     //! \throws LibsemigroupsException if any of the following hold:
     //! * the degree of \p x is incompatible with the existing degree.
     void add_generator(const_reference x);
+    // TODO update add_generators like the constructors were
 
     //! \brief Add collection of generators via const reference.
     //!
@@ -873,6 +875,8 @@ namespace libsemigroups {
     //! \throws LibsemigroupsException if any of the following hold:
     //! * the degree of \p x is incompatible with the existing degree.
     template <typename T>
+    // TODO remove const&
+    // TODO T -> Iterator
     void add_generators(T const& first, T const& last);
 
     //! \brief Copy and add a collection of generators.
@@ -892,6 +896,7 @@ namespace libsemigroups {
     //!
     //! \throws LibsemigroupsException if the copy constructor or \ref
     //! add_generators throws.
+    // TODO update copy_add_generators like the constructors were
     template <typename T>
     FroidurePin copy_add_generators(T const& coll) const;
 
@@ -919,6 +924,7 @@ namespace libsemigroups {
     //! \param coll the collection of generator to add.
     //!
     //! \throws LibsemigroupsException if \ref add_generator throws.
+    // TODO update closure like the constructors were
     template <typename T>
     void closure(T const& coll);
 
@@ -942,6 +948,7 @@ namespace libsemigroups {
     //!
     //! \throws LibsemigroupsException if the copy constructor or \ref
     //! add_generators throws.
+    // TODO update like the constructors were
     template <typename T>
     FroidurePin copy_closure(T const& coll);
 
@@ -964,12 +971,10 @@ namespace libsemigroups {
     // FroidurePin - validation member functions - private
     ////////////////////////////////////////////////////////////////////////
 
-    // TODO rename
-    void validate_element(const_reference) const;
+    void throw_if_bad_degree(const_reference) const;
 
-    // TODO rename
-    template <typename T>
-    void validate_element_collection(T const&, T const&) const;
+    template <typename Iterator>
+    void throw_if_bad_degree(Iterator, Iterator) const;
 
     ////////////////////////////////////////////////////////////////////////
     // FroidurePin - enumeration member functions - private
