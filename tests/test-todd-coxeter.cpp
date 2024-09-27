@@ -512,7 +512,7 @@ namespace libsemigroups {
                           "[no-valgrind][todd-coxeter][quick][no-coverage]") {
     auto rg = ReportGuard(false);
 
-    FroidurePin<BMat8> S(
+    FroidurePin<BMat8> S = to_froidure_pin(
         {BMat8({{0, 1, 0, 0}, {1, 0, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}),
          BMat8({{0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}, {1, 0, 0, 0}}),
          BMat8({{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {1, 0, 0, 1}}),
@@ -578,7 +578,8 @@ namespace libsemigroups {
     auto rg = ReportGuard(false);
 
     using Transf = LeastTransf<5>;
-    FroidurePin<Transf> S({Transf({1, 3, 4, 2, 3}), Transf({3, 2, 1, 3, 3})});
+    FroidurePin<Transf> S
+        = to_froidure_pin({Transf({1, 3, 4, 2, 3}), Transf({3, 2, 1, 3, 3})});
 
     REQUIRE(S.size() == 88);
 
@@ -749,7 +750,7 @@ namespace libsemigroups {
                           "2-sided cong. trans. semigroup",
                           "[todd-coxeter][quick]") {
     auto rg = ReportGuard(false);
-    auto S  = FroidurePin<Transf<>>(
+    auto S  = to_froidure_pin(
         {Transf<>({1, 3, 4, 2, 3}), Transf<>({3, 2, 1, 3, 3})});
 
     REQUIRE(S.size() == 88);
@@ -816,7 +817,7 @@ namespace libsemigroups {
                           "left congruence on transformation semigroup",
                           "[todd-coxeter][quick]") {
     auto rg = ReportGuard(false);
-    auto S  = FroidurePin<Transf<>>(
+    auto S  = to_froidure_pin(
         {Transf<>({1, 3, 4, 2, 3}), Transf<>({3, 2, 1, 3, 3})});
 
     REQUIRE(S.size() == 88);
@@ -862,7 +863,7 @@ namespace libsemigroups {
                           "right cong. trans. semigroup",
                           "[todd-coxeter][quick]") {
     auto rg = ReportGuard(false);
-    auto S  = FroidurePin<Transf<>>(
+    auto S  = to_froidure_pin(
         {Transf<>({1, 3, 4, 2, 3}), Transf<>({3, 2, 1, 3, 3})});
 
     REQUIRE(S.size() == 88);
@@ -1515,7 +1516,8 @@ namespace libsemigroups {
                           "[todd-coxeter][quick]") {
     auto rg      = ReportGuard(false);
     using Transf = LeastTransf<5>;
-    FroidurePin<Transf> S({Transf({1, 3, 4, 2, 3}), Transf({3, 2, 1, 3, 3})});
+    auto S
+        = to_froidure_pin({Transf({1, 3, 4, 2, 3}), Transf({3, 2, 1, 3, 3})});
     REQUIRE(S.size() == 88);
     REQUIRE(S.number_of_rules() == 18);
     auto tc = to_todd_coxeter(twosided, S);  // use Cayley graph
@@ -2468,7 +2470,8 @@ namespace libsemigroups {
 
     using Transf = LeastTransf<5>;
 
-    FroidurePin<Transf> S({Transf({1, 3, 4, 2, 3}), Transf({3, 2, 1, 3, 3})});
+    auto S
+        = to_froidure_pin({Transf({1, 3, 4, 2, 3}), Transf({3, 2, 1, 3, 3})});
     REQUIRE(S.size() == 88);
     REQUIRE(S.number_of_rules() == 18);
 
@@ -4515,7 +4518,7 @@ namespace libsemigroups {
       presentation::add_rule(p, pow({a}, 3), {a});
     }
     using words::operator+;
-    WordRange    words;
+    WordRange words;
     words.alphabet_size(n).min(0).max(8);
 
     for (size_t a = 0; a < n - 1; ++a) {

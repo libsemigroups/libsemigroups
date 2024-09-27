@@ -409,8 +409,7 @@ namespace libsemigroups {
     REQUIRE_NOTHROW(froidure_pin::add_generators(T, additional_gens_1));
     REQUIRE_THROWS_AS(froidure_pin::add_generators(T, additional_gens_2),
                       LibsemigroupsException);
-    REQUIRE(T.number_of_generators() == 5);
-    // TODO(later) should be 4 if strong exception guarantee
+    REQUIRE(T.number_of_generators() == 4);
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin<Transf<>>",

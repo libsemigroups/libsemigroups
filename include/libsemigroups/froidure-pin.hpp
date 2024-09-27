@@ -265,6 +265,9 @@ namespace libsemigroups {
     using const_reference =
         typename detail::BruidhinnTraits<Element>::const_reference;
 
+    using rvalue_reference =
+        typename detail::BruidhinnTraits<Element>::rvalue_reference;
+
     //! Type of element references.
     using reference = typename detail::BruidhinnTraits<Element>::reference;
 
@@ -808,6 +811,9 @@ namespace libsemigroups {
       return tril::TRUE;
     }
 
+    template <typename Iterator>
+    void add_generators(Iterator first, Iterator last);
+
     //! \brief Add a copy of an element to the generators.
     //!
     //! This  function can be used to add new generators to an existing
@@ -837,48 +843,14 @@ namespace libsemigroups {
     //!
     //! \throws LibsemigroupsException if any of the following hold:
     //! * the degree of \p x is incompatible with the existing degree.
+    // TODO no_checks version
+    // TODO doc
     void add_generator(const_reference x);
-    // TODO update add_generators like the constructors were
 
-    //! \brief Add collection of generators via const reference.
-    //!
-    //! See \ref add_generator for a detailed description.
-    //!
-    //! \tparam T the type of the container for generators to add (must be a
-    //! non-pointer type).
-    //!
-    //! \param coll the collection of generators to add.
-    //!
-    //! \throws LibsemigroupsException if any of the following hold:
-    //! * the degree of \p x is incompatible with the existing degree.
-    template <typename T>
-    void add_generators(T const& coll);
-
-    //! \brief Add collection of generators via initializer list.
-    //!
-    //! See \ref add_generator for a detailed description.
-    //!
-    //! \param coll the collection of generators to add.
-    //!
-    //! \throws LibsemigroupsException if any of the following hold:
-    //! * the degree of \p x is incompatible with the existing degree.
-    void add_generators(std::initializer_list<const_element_type> coll);
-
-    //! \brief Add collection of generators via iterators.
-    //!
-    //! See \ref add_generator for a detailed description.
-    //!
-    //! \tparam the type of an iterator pointing to an \ref element_type.
-    //!
-    //! \param first iterator pointing to the first generator to add.
-    //! \param last iterator pointing one past the last generator to add.
-    //!
-    //! \throws LibsemigroupsException if any of the following hold:
-    //! * the degree of \p x is incompatible with the existing degree.
-    template <typename T>
-    // TODO remove const&
-    // TODO T -> Iterator
-    void add_generators(T const& first, T const& last);
+    // TODO make the following work
+    // TODO no_checks version
+    // TODO doc
+    void add_generator(rvalue_reference x);
 
     //! \brief Copy and add a collection of generators.
     //!
@@ -906,14 +878,14 @@ namespace libsemigroups {
 
     //! \brief Add non-redundant generators in collection.
     //!
-    //! Add copies of the non-redundant generators in \p coll to the generators
-    //! of \c this.
+    //! Add copies of the non-redundant generators in \p coll to the
+    //! generators of \c this.
     //!
     //! This  function differs from \ref add_generators in that it
     //! tries to add the new generators one by one, and only adds those
     //! generators that are not products of existing generators (including any
-    //! new generators from \p coll that were added before). The generators are
-    //! added in the order they occur in \p coll.
+    //! new generators from \p coll that were added before). The generators
+    //! are added in the order they occur in \p coll.
     //!
     //! This function changes \c this in-place, thereby invalidating
     //! some previously computed information, such as the left or
@@ -998,9 +970,13 @@ namespace libsemigroups {
 
     void init_degree(const_reference);
 
+    // TODO T -> Iterator
+    // TODO remove const&
     template <typename T>
     void add_generators_before_start(T const&, T const&);
 
+    // TODO T -> Iterator
+    // TODO remove const&
     template <typename T>
     void add_generators_after_start(T const&, T const&);
 
@@ -1047,7 +1023,8 @@ namespace libsemigroups {
     //! according to Less.
     using const_iterator_sorted = const_iterator_pair_first;
 
-    //! \brief Return type of \ref cbegin_idempotents and \ref cend_idempotents.
+    //! \brief Return type of \ref cbegin_idempotents and \ref
+    //! cend_idempotents.
     //!
     //! A type for const random access iterators through the idempotents, in
     //! order of generation (short-lex order).
@@ -1059,8 +1036,8 @@ namespace libsemigroups {
     //! by discovery).
     //!
     //! This function does not trigger any enumeration, and the returned
-    //! iterators may be invalidated by any call to a non-const function of the
-    //! FroidurePin class.
+    //! iterators may be invalidated by any call to a non-const function of
+    //! the FroidurePin class.
     //!
     //! \returns A value of type \ref const_iterator.
     //!
@@ -1077,8 +1054,8 @@ namespace libsemigroups {
     //! by discovery).
     //!
     //! This function does not trigger any enumeration, and the returned
-    //! iterators may be invalidated by any call to a non-const function of the
-    //! FroidurePin class.
+    //! iterators may be invalidated by any call to a non-const function of
+    //! the FroidurePin class.
     //!
     //! \returns A value of type \ref const_iterator.
     //!
@@ -1095,8 +1072,8 @@ namespace libsemigroups {
     //! element.
     //!
     //! This function does not trigger any enumeration, and the returned
-    //! iterators may be invalidated by any call to a non-const function of the
-    //! FroidurePin class.
+    //! iterators may be invalidated by any call to a non-const function of
+    //! the FroidurePin class.
     //!
     //! \returns A value of type \ref const_iterator.
     //!
@@ -1113,8 +1090,8 @@ namespace libsemigroups {
     //! element.
     //!
     //! This function does not trigger any enumeration, and the returned
-    //! iterators may be invalidated by any call to a non-const function of the
-    //! FroidurePin class.
+    //! iterators may be invalidated by any call to a non-const function of
+    //! the FroidurePin class.
     //!
     //! \returns A value of type \ref const_iterator.
     //!
@@ -1127,8 +1104,8 @@ namespace libsemigroups {
     //! \sa \ref cend.
     const_iterator end() const;
 
-    //! \brief Returns a const iterator pointing to the first element (sorted by
-    //! Less).
+    //! \brief Returns a const iterator pointing to the first element (sorted
+    //! by Less).
     //!
     //! \returns A value of type \ref const_iterator_sorted.
     //!
@@ -1235,6 +1212,63 @@ namespace libsemigroups {
     FroidurePin<Element> init(FroidurePin<Element>&          fp,
                               std::initializer_list<Element> gens) {
       return fp.init(std::begin(gens), std::end(gens));
+    }
+
+    //! \brief Add collection of generators via iterators.
+    //!
+    //! See \ref add_generator for a detailed description.
+    //!
+    //! \tparam the type of an iterator pointing to an \ref element_type.
+    //!
+    //! \param first iterator pointing to the first generator to add.
+    //! \param last iterator pointing one past the last generator to add.
+    //!
+    //! \throws LibsemigroupsException if any of the following hold:
+    //! * the degree of \p x is incompatible with the existing degree.
+    // template <typename Element, typename Iterator1, typename Iterator2>
+    // void add_generators(FroidurePin<Element>& fp,
+    //                     Iterator1             first,
+    //                     Iterator2             last) {
+    //   for (auto it = first; it != last; ++it) {
+    //     fp.add_generator(*it);
+    //   }
+    // }
+
+    //! \brief Add collection of generators via const reference.
+    //!
+    //! See \ref add_generator for a detailed description.
+    //!
+    //! \tparam T the type of the container for generators to add (must be a
+    //! non-pointer type).
+    //!
+    //! \param coll the collection of generators to add.
+    //!
+    //! \throws LibsemigroupsException if any of the following hold:
+    //! * the degree of \p x is incompatible with the existing degree.
+    template <typename Element, typename Container>
+    void add_generators(FroidurePin<Element>& fp, Container const& coll) {
+      fp.add_generators(std::begin(coll), std::end(coll));
+    }
+
+    // TODO doc
+    template <typename Element, typename Container>
+    void add_generators(FroidurePin<Element>& fp, Container&& coll) {
+      fp.add_generators(std::make_move_iterator(std::begin(coll)),
+                        std::make_move_iterator(std::end(coll)));
+    }
+
+    //! \brief Add collection of generators via initializer list.
+    //!
+    //! See \ref add_generator for a detailed description.
+    //!
+    //! \param coll the collection of generators to add.
+    //!
+    //! \throws LibsemigroupsException if any of the following hold:
+    //! * the degree of \p x is incompatible with the existing degree.
+    template <typename Element>
+    void add_generators(FroidurePin<Element>&          fp,
+                        std::initializer_list<Element> coll) {
+      fp.add_generators(std::begin(coll), std::end(coll));
     }
 
   }  // namespace froidure_pin

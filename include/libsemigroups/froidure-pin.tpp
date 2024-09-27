@@ -684,6 +684,8 @@ namespace libsemigroups {
       if (it == _map.end()) {
         // new generator
         number_of_new_elements++;
+        // TODO double check that this does the correct thing if *it_coll is a
+        // rvalue reference
         _gens.push_back(this->internal_copy(this->to_internal_const(*it_coll)));
         generator_index_type const n = _gens.size() - 1;
 
@@ -855,19 +857,9 @@ namespace libsemigroups {
   }
 
   template <typename Element, typename Traits>
-  void FroidurePin<Element, Traits>::add_generator(const_reference x) {
-    throw_if_bad_degree(x);
-    if (_pos == 0) {
-      add_generators_before_start(&x, &x + 1);
-    } else {
-      add_generators_after_start(&x, &x + 1);
-    }
-  }
-
-  template <typename Element, typename Traits>
-  template <typename T>
-  void FroidurePin<Element, Traits>::add_generators(T const& first,
-                                                    T const& last) {
+  template <typename Iterator>
+  void FroidurePin<Element, Traits>::add_generators(Iterator first,
+                                                    Iterator last) {
     throw_if_bad_degree(first, last);
     if (_pos == 0) {
       add_generators_before_start(first, last);
@@ -877,17 +869,16 @@ namespace libsemigroups {
   }
 
   template <typename Element, typename Traits>
-  template <typename T>
-  void FroidurePin<Element, Traits>::add_generators(T const& coll) {
-    static_assert(!std::is_pointer_v<T>,
-                  "the template parameter T must not be a pointer");
-    add_generators(coll.begin(), coll.end());
+  void FroidurePin<Element, Traits>::add_generator(const_reference x) {
+    add_generators(&x, &x + 1);
   }
 
+  // TODO make this work
   template <typename Element, typename Traits>
-  void FroidurePin<Element, Traits>::add_generators(
-      std::initializer_list<const_element_type> coll) {
-    add_generators<std::initializer_list<const_element_type>>(coll);
+  void FroidurePin<Element, Traits>::add_generator(rvalue_reference x) {
+    auto first = std::make_move_iterator(&x);
+    auto last  = std::make_move_iterator(&x + 1);
+    add_generators(first, last);
   }
 
   template <typename Element, typename Traits>
@@ -902,7 +893,10 @@ namespace libsemigroups {
     } else {
       // Partially copy
       FroidurePin out(*this, &coll);
-      out.add_generators(coll);
+      // Replacing  the following with repeated calls to add_generator results
+      // in a corrupted object. This is probably due to the incomplete data in
+      // the FroidurePin "out" at this stage.
+      out.add_generators(coll.cbegin(), coll.cend());
       return out;
     }
   }
