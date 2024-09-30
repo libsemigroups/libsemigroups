@@ -65,7 +65,7 @@ def process_file(f):
                 highest_level = level
                 break
             print(
-                f"{begin_warn_col}Warning: {command} is not in the correct place in docstring at {file}:{line_no+1}{end_warn_col}"
+                f"{begin_warn_col}warning: {command} is not in the correct place in docstring at {file}:{line_no+1}{end_warn_col}"
             )
 
 
