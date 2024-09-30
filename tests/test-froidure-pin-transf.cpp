@@ -1437,7 +1437,7 @@ namespace libsemigroups {
                                   Transf<>({5, 1, 2, 3, 4, 5}),
                                   Transf<>({1, 1, 2, 3, 4, 5})};
 
-    FroidurePin<Transf<>> T = S.copy_closure(coll);
+    FroidurePin<Transf<>> T = froidure_pin::copy_closure(S, coll);
 
     REQUIRE(T.started());
     REQUIRE(!T.finished());
@@ -1453,7 +1453,8 @@ namespace libsemigroups {
     REQUIRE(T.number_of_idempotents() == 537);
     REQUIRE(T.number_of_rules() == 2459);
 
-    FroidurePin<Transf<>> U = T.copy_closure({Transf<>({6, 0, 1, 2, 3, 5, 6})});
+    FroidurePin<Transf<>> U
+        = froidure_pin::copy_closure(T, {Transf<>({6, 0, 1, 2, 3, 5, 6})});
 
     REQUIRE(U.started());
     REQUIRE(U.finished());
@@ -1464,7 +1465,7 @@ namespace libsemigroups {
     REQUIRE(U.number_of_idempotents() == 1358);
     REQUIRE(U.number_of_rules() == 7901);
 
-    FroidurePin<Transf<>> V = U.copy_closure({});
+    FroidurePin<Transf<>> V = froidure_pin::copy_closure(U, {});
 
     REQUIRE(&V != &U);
     REQUIRE(V.started());
@@ -1600,7 +1601,7 @@ namespace libsemigroups {
     REQUIRE(S.current_max_word_length() == 7);
 
     auto coll = {Transf<>({5, 1, 2, 3, 4, 5}), Transf<>({1, 1, 2, 3, 4, 5})};
-    FroidurePin<Transf<>> T = S.copy_closure(coll);
+    FroidurePin<Transf<>> T = froidure_pin::copy_closure(S, coll);
 
     REQUIRE(Transf<>({5, 1, 2, 3, 4, 5}) == T.generator(3));
     REQUIRE(Transf<>({1, 1, 2, 3, 4, 5}) == T.generator(4));
@@ -1707,8 +1708,8 @@ namespace libsemigroups {
     REQUIRE(S.current_number_of_rules() == 25);
     REQUIRE(S.current_max_word_length() == 11);
 
-    FroidurePin<Transf<>> T = S.copy_closure(
-        {Transf<>({5, 1, 2, 3, 4, 5}), Transf<>({1, 1, 2, 3, 4, 5})});
+    FroidurePin<Transf<>> T = froidure_pin::copy_closure(
+        S, {Transf<>({5, 1, 2, 3, 4, 5}), Transf<>({1, 1, 2, 3, 4, 5})});
 
     REQUIRE(Transf<>({5, 1, 2, 3, 4, 5}) == T.generator(3));
     REQUIRE(Transf<>({1, 1, 2, 3, 4, 5}) == T.generator(4));
@@ -1862,7 +1863,7 @@ namespace libsemigroups {
                                   Transf<>({1, 0, 2, 3, 4, 5}),
                                   Transf<>({1, 1, 2, 3, 4, 5})};
 
-    FroidurePin<Transf<>> T = S.copy_closure(coll);
+    FroidurePin<Transf<>> T = froidure_pin::copy_closure(S, coll);
 
     REQUIRE(T.size() == 7776);
     REQUIRE(T.finished());
@@ -1995,8 +1996,8 @@ namespace libsemigroups {
     REQUIRE(!S.started());
     REQUIRE(!S.finished());
 
-    FroidurePin<Transf<>> T = S.copy_closure(
-        {Transf<>({5, 1, 2, 3, 4, 5}), Transf<>({1, 1, 2, 3, 4, 5})});
+    FroidurePin<Transf<>> T = froidure_pin::copy_closure(
+        S, {Transf<>({5, 1, 2, 3, 4, 5}), Transf<>({1, 1, 2, 3, 4, 5})});
 
     REQUIRE(Transf<>({5, 1, 2, 3, 4, 5}) == T.generator(3));
     REQUIRE(Transf<>({1, 1, 2, 3, 4, 5}) == T.generator(4));
@@ -2055,7 +2056,7 @@ namespace libsemigroups {
     std::vector<Transf<>> coll
         = {Transf<>({5, 1, 2, 3, 4, 5}), Transf<>({1, 1, 2, 3, 4, 5})};
 
-    FroidurePin<Transf<>> T = S.copy_closure(coll);
+    FroidurePin<Transf<>> T = froidure_pin::copy_closure(S, coll);
     test_current_rules_iterator(T);
   }
 
@@ -2105,7 +2106,7 @@ namespace libsemigroups {
     std::vector<Transf<>> coll
         = {Transf<>({5, 1, 2, 3, 4, 5}), Transf<>({1, 1, 2, 3, 4, 5})};
 
-    FroidurePin<Transf<>> T = S.copy_closure(coll);
+    FroidurePin<Transf<>> T = froidure_pin::copy_closure(S, coll);
 
     test_current_rules_iterator(T);
     REQUIRE(T.number_of_rules() == 2459);

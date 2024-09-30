@@ -369,7 +369,7 @@ namespace libsemigroups {
     //! some shared state to define their multiplication, such as, for example
     //! an instance of KnuthBendix or ToddCoxeter.
     //!
-    //! \param stt a \shared_ptr to a state object.
+    //! \param stt a std::shared_ptr to a state object.
     //!
     //! \exceptions
     //! \no_libsemigroups_except
@@ -400,7 +400,7 @@ namespace libsemigroups {
     //!
     //! \warning
     //! The parameter \p stt is copied, which might be expensive, use
-    //! a \shared_ptr to avoid the copy.
+    //! a std::shared_ptr to avoid the copy.
     template <typename State, typename = std::enable_if_t<IsState<State>>>
     explicit FroidurePin(State const& stt)
         : FroidurePin(std::make_shared<state_type>(stt)) {}
@@ -961,17 +961,23 @@ namespace libsemigroups {
     //!
     //! \throws LibsemigroupsException if the copy constructor or \ref
     //! add_generators throws.
-    // TODO update like the constructors were
-    template <typename T>
-    FroidurePin copy_closure(T const& coll);
+    // TODO Iterator1, Iterator2
+    template <typename Iterator>
+    FroidurePin copy_closure_no_checks(Iterator first, Iterator last);
 
-    //! \copydoc copy_closure(T const&)
-    FroidurePin copy_closure(std::initializer_list<element_type> coll);
+    // TODO(doc)
+    // TODO Iterator1, Iterator2
+    template <typename Iterator>
+    FroidurePin copy_closure(Iterator first, Iterator last) {
+      throw_if_degree_too_small(first, last);
+      throw_if_inconsistent_degree(first, last);
+      return copy_closure_no_checks(first, last);
+    }
 
-    //! \brief Returns a \shared_ptr to the state (if any).
+    //! \brief Returns a std::shared_ptr to the state (if any).
     //!
     //! \returns
-    //! \shared_ptr to \ref state_type.
+    //! std::shared_ptr to \ref state_type.
     //!
     //! \exceptions
     //! \no_libsemigroups_except
@@ -1330,6 +1336,19 @@ namespace libsemigroups {
       return fp.closure(std::begin(coll), std::end(coll));
     }
 
+    template <typename Container>
+    FroidurePin<typename Container::value_type>
+    copy_closure(FroidurePin<typename Container::value_type>& fp,
+                 Container const&                             coll) {
+      return fp.copy_closure(std::begin(coll), std::end(coll));
+    }
+
+    // TODO(doc)
+    template <typename Element>
+    FroidurePin<Element> copy_closure(FroidurePin<Element>&          fp,
+                                      std::initializer_list<Element> coll) {
+      return fp.copy_closure(std::begin(coll), std::end(coll));
+    }
   }  // namespace froidure_pin
 
   //! \brief Construct from generators.

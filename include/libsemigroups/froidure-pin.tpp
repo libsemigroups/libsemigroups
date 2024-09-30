@@ -952,7 +952,7 @@ namespace libsemigroups {
       // Replacing  the following with repeated calls to add_generator results
       // in a corrupted object. This is probably due to the incomplete data in
       // the FroidurePin "out" at this stage.
-      out.add_generators(first, last);
+      out.add_generators_no_checks(first, last);
       return out;
     }
   }
@@ -967,38 +967,33 @@ namespace libsemigroups {
                        element_type>);
     for (auto it = first; it != last; ++it) {
       if (!contains(*it)) {
-        add_generator(*it);
+        add_generator_no_checks(*it);
       }
     }
     return *this;
   }
 
   template <typename Element, typename Traits>
-  template <typename Collection>
+  template <typename Iterator>
   FroidurePin<Element, Traits>
-  FroidurePin<Element, Traits>::copy_closure(Collection const& coll) {
-    static_assert(!std::is_pointer_v<Collection>,
-                  "the template parameter Collection should not be a pointer");
-    if (coll.size() == 0) {
+  FroidurePin<Element, Traits>::copy_closure_no_checks(Iterator first,
+                                                       Iterator last) {
+    static_assert(
+        std::is_same_v<std::decay_t<decltype(*std::declval<Iterator>())>,
+                       element_type>);
+    if (first == last) {
       return FroidurePin(*this);
     } else {
       // The next line is required so that when we call the closure member
       // function on out, the partial copy contains enough information to
-      // all membership testing without a call to run (which will fail
+      // do all membership testing without a call to run (which will fail
       // because the partial copy does not contain enough data to run run).
       this->run();
       // Partially copy
-      FroidurePin out(*this, coll[0]);
-      out.closure(std::begin(coll), std::end(coll));
+      FroidurePin out(*this, *first);
+      out.closure_no_checks(first, last);
       return out;
     }
-  }
-
-  // TODO(later) shouldn't element_type -> const_element_type??
-  template <typename Element, typename Traits>
-  FroidurePin<Element, Traits> FroidurePin<Element, Traits>::copy_closure(
-      std::initializer_list<element_type> coll) {
-    return copy_closure(std::vector<element_type>(coll));
   }
 
   ////////////////////////////////////////////////////////////////////////
