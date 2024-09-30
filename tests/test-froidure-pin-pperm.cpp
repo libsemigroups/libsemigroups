@@ -56,7 +56,7 @@ namespace libsemigroups {
 
     froidure_pin::add_generators(S, {PPerm<>({0, 1, 2}, {3, 4, 5}, 6)});
     REQUIRE(S.size() == 396);
-    S.closure({PPerm<>({0, 1, 2}, {3, 4, 5}, 6)});
+    froidure_pin::closure(S, {PPerm<>({0, 1, 2}, {3, 4, 5}, 6)});
     REQUIRE(S.size() == 396);
     REQUIRE(
         S.minimal_factorisation(PPerm<>({0, 1, 2}, {3, 4, 5}, 6)

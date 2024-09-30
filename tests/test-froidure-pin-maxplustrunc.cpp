@@ -130,7 +130,7 @@ namespace libsemigroups {
     }
     S.add_generator(Mat({{1, 1}, {0, 2}}));
     REQUIRE(S.size() == 73);
-    S.closure({Mat({{1, 1}, {0, 2}})});
+    froidure_pin::closure(S, {Mat({{1, 1}, {0, 2}})});
     REQUIRE(S.size() == 73);
     REQUIRE(
         S.minimal_factorisation(Mat({{1, 1}, {0, 2}}) * Mat({{2, 1}, {4, 0}}))

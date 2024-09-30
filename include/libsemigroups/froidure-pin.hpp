@@ -890,10 +890,13 @@ namespace libsemigroups {
     //!
     //! \throws LibsemigroupsException if the copy constructor or \ref
     //! add_generators throws.
+    // TODO Iterator1, Iterator2
     template <typename Iterator>
     FroidurePin copy_add_generators_no_checks(Iterator first,
                                               Iterator last) const;
 
+    // TODO(doc)
+    // TODO Iterator1, Iterator2
     template <typename Iterator>
     FroidurePin copy_add_generators(Iterator first, Iterator last) const {
       throw_if_degree_too_small(first, last);
@@ -925,12 +928,21 @@ namespace libsemigroups {
     //! \param coll the collection of generator to add.
     //!
     //! \throws LibsemigroupsException if \ref add_generator throws.
-    // TODO update closure like the constructors were
-    template <typename T>
-    void closure(T const& coll);
+    // TODO Iterator1, Iterator2
+    template <typename Iterator>
+    FroidurePin& closure_no_checks(Iterator first, Iterator last);
 
-    //! \copydoc closure(T const&)
-    void closure(std::initializer_list<const_element_type> coll);
+    // TODO(doc)
+    // TODO Iterator1, Iterator2
+    template <typename Iterator>
+    FroidurePin& closure(Iterator first, Iterator last) {
+      throw_if_degree_too_small(first, last);
+      throw_if_inconsistent_degree(first, last);
+      return closure_no_checks(first, last);
+    }
+
+    // TODO(1) closure(const_reference)
+    // TODO(1) closure_no_checks(const_reference)
 
     //! \brief Copy and add non-redundant generators.
     //!
@@ -1287,6 +1299,7 @@ namespace libsemigroups {
       return fp.add_generators(std::begin(coll), std::end(coll));
     }
 
+    // TODO(doc)
     template <typename Container>
     FroidurePin<typename Container::value_type>
     copy_add_generators(FroidurePin<typename Container::value_type> const& fp,
@@ -1294,11 +1307,27 @@ namespace libsemigroups {
       return fp.copy_add_generators(std::begin(coll), std::end(coll));
     }
 
+    // TODO(doc)
     template <typename Element>
     FroidurePin<Element>
     copy_add_generators(FroidurePin<Element> const&    fp,
                         std::initializer_list<Element> coll) {
       return fp.copy_add_generators(std::begin(coll), std::end(coll));
+    }
+
+    // TODO(doc)
+    template <typename Container>
+    FroidurePin<typename Container::value_type>&
+    closure(FroidurePin<typename Container::value_type>& fp,
+            Container const&                             coll) {
+      return fp.closure(std::begin(coll), std::end(coll));
+    }
+
+    // TODO(doc)
+    template <typename Element>
+    FroidurePin<Element>& closure(FroidurePin<Element>&          fp,
+                                  std::initializer_list<Element> coll) {
+      return fp.closure(std::begin(coll), std::end(coll));
     }
 
   }  // namespace froidure_pin

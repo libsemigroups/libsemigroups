@@ -958,25 +958,19 @@ namespace libsemigroups {
   }
 
   template <typename Element, typename Traits>
-  template <typename Collection>
-  void FroidurePin<Element, Traits>::closure(Collection const& coll) {
-    static_assert(!std::is_pointer_v<Collection>,
-                  "Collection should not be a pointer");
-    if (coll.size() == 0) {
-      return;
-    } else {
-      for (const_reference x : coll) {
-        if (!contains(x)) {
-          add_generator(x);
-        }
+  template <typename Iterator>
+  FroidurePin<Element, Traits>&
+  FroidurePin<Element, Traits>::closure_no_checks(Iterator first,
+                                                  Iterator last) {
+    static_assert(
+        std::is_same_v<std::decay_t<decltype(*std::declval<Iterator>())>,
+                       element_type>);
+    for (auto it = first; it != last; ++it) {
+      if (!contains(*it)) {
+        add_generator(*it);
       }
     }
-  }
-
-  template <typename Element, typename Traits>
-  void FroidurePin<Element, Traits>::closure(
-      std::initializer_list<const_element_type> coll) {
-    closure<std::initializer_list<const_element_type>>(coll);
+    return *this;
   }
 
   template <typename Element, typename Traits>
@@ -995,7 +989,7 @@ namespace libsemigroups {
       this->run();
       // Partially copy
       FroidurePin out(*this, coll[0]);
-      out.closure(coll);
+      out.closure(std::begin(coll), std::end(coll));
       return out;
     }
   }

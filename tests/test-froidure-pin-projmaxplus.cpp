@@ -52,7 +52,7 @@ namespace libsemigroups {
 
       froidure_pin::add_generators(S, {Mat({{1, 0, 0}, {1, 0, 1}, {0, 1, 0}})});
       REQUIRE(S.size() == 223);
-      S.closure({Mat({{1, 0, 0}, {1, 0, 1}, {0, 1, 0}})});
+      froidure_pin::closure(S, {Mat({{1, 0, 0}, {1, 0, 1}, {0, 1, 0}})});
       REQUIRE(S.size() == 223);
       REQUIRE(S.minimal_factorisation(Mat({{1, 0, 0}, {1, 0, 1}, {0, 1, 0}})
                                       * Mat({{0, 1, 2}, {3, 4, 1}, {2, 1, 1}}))

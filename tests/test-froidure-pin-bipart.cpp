@@ -61,8 +61,8 @@ namespace libsemigroups {
         {0, 1, 2, 1, 1, 3, 1, 4, 2, 3, 1, 0, 3, 2, 3, 5, 4, 1, 3, 0}));
 
     REQUIRE(S.size() == 21);
-    S.closure({Bipartition(
-        {0, 1, 2, 1, 1, 3, 1, 4, 2, 3, 1, 0, 3, 2, 3, 5, 4, 1, 3, 0})});
+    froidure_pin::closure(S, {Bipartition({0, 1, 2, 1, 1, 3, 1, 4, 2, 3,
+                                           1, 0, 3, 2, 3, 5, 4, 1, 3, 0})});
     REQUIRE(S.size() == 21);
     REQUIRE(
         S.minimal_factorisation(Bipartition({0, 1, 2, 1, 0, 2, 1, 0, 2, 2,
@@ -120,8 +120,8 @@ namespace libsemigroups {
         {0, 1, 2, 1, 1, 3, 1, 4, 2, 3, 1, 0, 3, 2, 3, 5, 4, 1, 3, 0}));
 
     REQUIRE(S.size() == 21);
-    S.closure({Bipartition(
-        {0, 1, 2, 1, 1, 3, 1, 4, 2, 3, 1, 0, 3, 2, 3, 5, 4, 1, 3, 0})});
+    froidure_pin::closure(S, {Bipartition({0, 1, 2, 1, 1, 3, 1, 4, 2, 3,
+                                           1, 0, 3, 2, 3, 5, 4, 1, 3, 0})});
     REQUIRE(S.size() == 21);
     REQUIRE(
         S.minimal_factorisation(Bipartition({0, 1, 2, 1, 0, 2, 1, 0, 2, 2,

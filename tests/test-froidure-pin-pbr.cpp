@@ -77,12 +77,13 @@ namespace libsemigroups {
                                        {1, 2, 3, 5},
                                        {1, 2, 3}})});
     REQUIRE(S.size() == 6);
-    S.closure({PBR({{3, 4, 5},
-                    {2, 4, 5},
-                    {1, 2, 4},
-                    {0, 3, 5},
-                    {1, 2, 3, 5},
-                    {1, 2, 3}})});
+    froidure_pin::closure(S,
+                          {PBR({{3, 4, 5},
+                                {2, 4, 5},
+                                {1, 2, 4},
+                                {0, 3, 5},
+                                {1, 2, 3, 5},
+                                {1, 2, 3}})});
     REQUIRE(S.size() == 6);
     REQUIRE(S.minimal_factorisation(PBR({{3, 5},
                                          {0, 1, 2, 3, 4, 5},

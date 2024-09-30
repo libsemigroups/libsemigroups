@@ -60,7 +60,7 @@ namespace libsemigroups {
 
       froidure_pin::add_generators(S, {T({7, 1, 2, 6, 7, 4, 1, 5})});
       REQUIRE(S.size() == 826713);
-      S.closure({T({7, 1, 2, 6, 7, 4, 1, 5})});
+      froidure_pin::closure(S, {T({7, 1, 2, 6, 7, 4, 1, 5})});
       REQUIRE(S.size() == 826713);
       REQUIRE(S.minimal_factorisation(T({7, 1, 2, 6, 7, 4, 1, 5})
                                       * T({2, 4, 6, 1, 4, 5, 2, 7}))
@@ -2295,35 +2295,35 @@ namespace libsemigroups {
     REQUIRE(S.size() == 1);
     REQUIRE(S.number_of_generators() == 2);
 
-    S.closure({});
+    froidure_pin::closure(S, {});
     REQUIRE(S.size() == 1);
     REQUIRE(S.number_of_generators() == 2);
 
-    S.closure({S.generator(0)});
+    froidure_pin::closure(S, {S.generator(0)});
     REQUIRE(S.size() == 1);
     REQUIRE(S.number_of_generators() == 2);
 
-    S.closure({Transf<>({0, 1, 2, 3, 4, 5})});
+    froidure_pin::closure(S, {Transf<>({0, 1, 2, 3, 4, 5})});
     REQUIRE(S.size() == 2);
     REQUIRE(S.number_of_generators() == 3);
 
-    S.closure({Transf<>({0, 1, 3, 5, 5, 4})});
+    froidure_pin::closure(S, {Transf<>({0, 1, 3, 5, 5, 4})});
     REQUIRE(S.size() == 7);
     REQUIRE(S.number_of_generators() == 4);
 
-    S.closure({Transf<>({1, 0, 2, 4, 4, 5})});
+    froidure_pin::closure(S, {Transf<>({1, 0, 2, 4, 4, 5})});
     REQUIRE(S.size() == 18);
     REQUIRE(S.number_of_generators() == 5);
 
-    S.closure({Transf<>({4, 3, 3, 1, 0, 5})});
+    froidure_pin::closure(S, {Transf<>({4, 3, 3, 1, 0, 5})});
     REQUIRE(S.size() == 87);
     REQUIRE(S.number_of_generators() == 6);
 
-    S.closure({Transf<>({4, 3, 5, 1, 0, 5})});
+    froidure_pin::closure(S, {Transf<>({4, 3, 5, 1, 0, 5})});
     REQUIRE(S.size() == 97);
     REQUIRE(S.number_of_generators() == 7);
 
-    S.closure({Transf<>({5, 5, 2, 3, 4, 0})});
+    froidure_pin::closure(S, {Transf<>({5, 5, 2, 3, 4, 0})});
     REQUIRE(S.size() == 119);
     REQUIRE(S.number_of_generators() == 8);
   }
@@ -2347,7 +2347,7 @@ namespace libsemigroups {
 
     S.add_generator(gens[0]);
 
-    S.closure(gens);
+    froidure_pin::closure(S, gens);
     REQUIRE(S.size() == 27);
     REQUIRE(S.number_of_generators() == 10);
   }
