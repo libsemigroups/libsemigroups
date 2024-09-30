@@ -1167,7 +1167,7 @@ namespace libsemigroups {
     //! throws.
     //!
     //!\sa \ref Ukkonen::throw_if_not_unique_letters.
-    //! // TODO(later) Add other overloads.
+    // TODO(later) Add other overloads.
     inline auto traverse(Ukkonen const& u, word_type const& w) {
       return u.traverse(w.cbegin(), w.cend());
     }
