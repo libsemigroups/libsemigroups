@@ -75,12 +75,17 @@ namespace libsemigroups {
         return &x;
       }
 
+      inline internal_const_value_type
+      to_internal_const(rvalue_reference x) const {
+        return new value_type(std::move(x));
+      }
+
       inline internal_value_type to_internal(reference x) const {
         return &x;
       }
 
       inline internal_value_type to_internal(rvalue_reference x) const {
-        return new value_type(x);
+        return new value_type(std::move(x));
       }
 
       inline const_reference
@@ -97,13 +102,20 @@ namespace libsemigroups {
         return new value_type(*x);
       }
 
-      // inline internal_rvalue_reference
-      // internal_copy(internal_rvalue_reference x) const {
-      //   return std::move(x);
-      // }
+      inline internal_value_type to_internal_copy(const_reference x) const {
+        return new value_type(x);
+      }
+
+      inline internal_value_type to_internal_copy(rvalue_reference x) const {
+        return new value_type(std::move(x));
+      }
 
       inline value_type external_copy(const_reference x) const {
         return x;
+      }
+
+      inline rvalue_reference external_copy(rvalue_reference x) const {
+        return std::move(x);
       }
 
       inline void internal_free(internal_value_type x) const {
@@ -165,9 +177,22 @@ namespace libsemigroups {
         return internal_value_type(x);
       }
 
-      inline value_type external_copy(const_reference x) const {
-        return value_type(x);
+      inline internal_value_type to_internal_copy(const_reference x) const {
+        return internal_value_type(x);
       }
+
+      inline internal_value_type to_internal_copy(rvalue_reference x) const {
+        return internal_value_type(std::move(x));
+      }
+
+      inline value_type external_copy(const_reference x) const {
+        return x;
+      }
+
+      inline rvalue_reference external_copy(rvalue_reference x) const {
+        return std::move(x);
+      }
+
       inline void internal_free(internal_value_type) const {}
       inline void external_free(value_type) const {}
     };

@@ -26,6 +26,7 @@
 #include "libsemigroups/froidure-pin.hpp"  // for FroidurePin
 #include "libsemigroups/matrix.hpp"        // for IntMat
 
+// TOODO
 namespace libsemigroups {
   // Forward declaration
   struct LibsemigroupsException;
@@ -137,8 +138,7 @@ namespace libsemigroups {
       T.add_generator(Mat({{0, 1}, {-1, 0}}));
 
       REQUIRE(T.to_element({}) == Mat::one(2));
-      REQUIRE_THROWS_AS(T.to_element({0, 0, 1, 2}),
-                        LibsemigroupsException);
+      REQUIRE_THROWS_AS(T.to_element({0, 0, 1, 2}), LibsemigroupsException);
 
       auto t = T.to_element({0, 0, 1, 1});
       REQUIRE(t

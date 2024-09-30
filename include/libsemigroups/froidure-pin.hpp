@@ -447,7 +447,7 @@ namespace libsemigroups {
     // FroidurePin - constructor - private
     ////////////////////////////////////////////////////////////////////////
 
-    FroidurePin(FroidurePin const&, std::vector<element_type> const*);
+    FroidurePin(FroidurePin const&, const_reference);
 
    public:
     ////////////////////////////////////////////////////////////////////////
@@ -639,6 +639,7 @@ namespace libsemigroups {
     //!
     //! \exceptions
     //! \no_libsemigroups_except
+    // TODO return reference to this
     void reserve(size_t val);
 
     //! \brief Test membership of an element.
@@ -811,8 +812,28 @@ namespace libsemigroups {
       return tril::TRUE;
     }
 
+    //! \brief Add collection of generators via iterators.
+    //!
+    //! See \ref add_generator for a detailed description.
+    //!
+    //! \tparam the type of an iterator pointing to an \ref element_type.
+    //!
+    //! \param first iterator pointing to the first generator to add.
+    //! \param last iterator pointing one past the last generator to add.
+    //!
+    //! \throws LibsemigroupsException if any of the following hold:
+    //! * the degree of \p x is incompatible with the existing degree.
     template <typename Iterator>
-    void add_generators(Iterator first, Iterator last);
+    // TODO should be Iterator1 + Iterator2
+    FroidurePin& add_generators_no_checks(Iterator first, Iterator last);
+
+    // TODO doc
+    // TODO should be Iterator1 + Iterator2
+    template <typename Iterator>
+    FroidurePin& add_generators(Iterator first, Iterator last);
+
+    // TODO doc
+    FroidurePin& add_generator_no_checks(const_reference x);
 
     //! \brief Add a copy of an element to the generators.
     //!
@@ -845,12 +866,12 @@ namespace libsemigroups {
     //! * the degree of \p x is incompatible with the existing degree.
     // TODO no_checks version
     // TODO doc
-    void add_generator(const_reference x);
+    FroidurePin& add_generator(const_reference x);
 
     // TODO make the following work
     // TODO no_checks version
     // TODO doc
-    void add_generator(rvalue_reference x);
+    // void add_generator(rvalue_reference x);
 
     //! \brief Copy and add a collection of generators.
     //!
@@ -869,12 +890,19 @@ namespace libsemigroups {
     //!
     //! \throws LibsemigroupsException if the copy constructor or \ref
     //! add_generators throws.
-    // TODO update copy_add_generators like the constructors were
-    template <typename T>
-    FroidurePin copy_add_generators(T const& coll) const;
+    template <typename Iterator>
+    FroidurePin copy_add_generators_no_checks(Iterator first,
+                                              Iterator last) const;
 
-    //! \copydoc copy_add_generators(T const&) const
-    FroidurePin copy_add_generators(std::initializer_list<element_type> coll);
+    template <typename Iterator>
+    FroidurePin copy_add_generators(Iterator first, Iterator last) const {
+      throw_if_degree_too_small(first, last);
+      throw_if_inconsistent_degree(first, last);
+      return copy_add_generators_no_checks(first, last);
+    }
+
+    // TODO(1) copy_add_generator
+    // TODO(1) copy_add_generators_no_checks
 
     //! \brief Add non-redundant generators in collection.
     //!
@@ -949,6 +977,12 @@ namespace libsemigroups {
     template <typename Iterator>
     void throw_if_bad_degree(Iterator, Iterator) const;
 
+    template <typename Iterator>
+    void throw_if_degree_too_small(Iterator, Iterator) const;
+
+    template <typename Iterator>
+    void throw_if_inconsistent_degree(Iterator, Iterator) const;
+
     ////////////////////////////////////////////////////////////////////////
     // FroidurePin - enumeration member functions - private
     ////////////////////////////////////////////////////////////////////////
@@ -970,15 +1004,11 @@ namespace libsemigroups {
 
     void init_degree(const_reference);
 
-    // TODO T -> Iterator
-    // TODO remove const&
-    template <typename T>
-    void add_generators_before_start(T const&, T const&);
+    template <typename Iterator>
+    void add_generators_before_start(Iterator, Iterator);
 
-    // TODO T -> Iterator
-    // TODO remove const&
-    template <typename T>
-    void add_generators_after_start(T const&, T const&);
+    template <typename Iterator>
+    void add_generators_after_start(Iterator, Iterator);
 
     ////////////////////////////////////////////////////////////////////////
     // FroidurePin - initialisation member functions - private
@@ -1200,12 +1230,12 @@ namespace libsemigroups {
     }
 
     // TODO(doc)
-    template <typename Container>
-    FroidurePin<typename Container::value_type>&
-    init(FroidurePin<typename Container::value_type>& fp, Container&& gens) {
-      return fp.init(std::make_move_iterator(std::begin(gens)),
-                     std::make_move_iterator(std::end(gens)));
-    }
+    // template <typename Container>
+    // FroidurePin<typename Container::value_type>&
+    // init(FroidurePin<typename Container::value_type>& fp, Container&& gens) {
+    //   return fp.init(std::make_move_iterator(std::begin(gens)),
+    //                  std::make_move_iterator(std::end(gens)));
+    // }
 
     // TODO(doc)
     template <typename Element>
@@ -1213,26 +1243,6 @@ namespace libsemigroups {
                               std::initializer_list<Element> gens) {
       return fp.init(std::begin(gens), std::end(gens));
     }
-
-    //! \brief Add collection of generators via iterators.
-    //!
-    //! See \ref add_generator for a detailed description.
-    //!
-    //! \tparam the type of an iterator pointing to an \ref element_type.
-    //!
-    //! \param first iterator pointing to the first generator to add.
-    //! \param last iterator pointing one past the last generator to add.
-    //!
-    //! \throws LibsemigroupsException if any of the following hold:
-    //! * the degree of \p x is incompatible with the existing degree.
-    // template <typename Element, typename Iterator1, typename Iterator2>
-    // void add_generators(FroidurePin<Element>& fp,
-    //                     Iterator1             first,
-    //                     Iterator2             last) {
-    //   for (auto it = first; it != last; ++it) {
-    //     fp.add_generator(*it);
-    //   }
-    // }
 
     //! \brief Add collection of generators via const reference.
     //!
@@ -1245,17 +1255,23 @@ namespace libsemigroups {
     //!
     //! \throws LibsemigroupsException if any of the following hold:
     //! * the degree of \p x is incompatible with the existing degree.
-    template <typename Element, typename Container>
-    void add_generators(FroidurePin<Element>& fp, Container const& coll) {
-      fp.add_generators(std::begin(coll), std::end(coll));
+    template <typename Container>
+    FroidurePin<typename Container::value_type>&
+    add_generators(FroidurePin<typename Container::value_type>& fp,
+                   Container const&                             coll) {
+      return fp.add_generators(std::begin(coll), std::end(coll));
     }
 
     // TODO doc
-    template <typename Element, typename Container>
-    void add_generators(FroidurePin<Element>& fp, Container&& coll) {
-      fp.add_generators(std::make_move_iterator(std::begin(coll)),
-                        std::make_move_iterator(std::end(coll)));
-    }
+    // template <typename Container>
+    // FroidurePin<typename Container::value_type>&
+    // add_generators(FroidurePin<typename Container::value_type>& fp,
+    //                Container&&                                  coll) {
+    //   // Note that this currently doesn't do anything different than the
+    //   // function above.
+    //   return fp.add_generators(std::make_move_iterator(std::begin(coll)),
+    //                            std::make_move_iterator(std::end(coll)));
+    // }
 
     //! \brief Add collection of generators via initializer list.
     //!
@@ -1266,9 +1282,23 @@ namespace libsemigroups {
     //! \throws LibsemigroupsException if any of the following hold:
     //! * the degree of \p x is incompatible with the existing degree.
     template <typename Element>
-    void add_generators(FroidurePin<Element>&          fp,
+    FroidurePin<Element>& add_generators(FroidurePin<Element>&          fp,
+                                         std::initializer_list<Element> coll) {
+      return fp.add_generators(std::begin(coll), std::end(coll));
+    }
+
+    template <typename Container>
+    FroidurePin<typename Container::value_type>
+    copy_add_generators(FroidurePin<typename Container::value_type> const& fp,
+                        Container const& coll) {
+      return fp.copy_add_generators(std::begin(coll), std::end(coll));
+    }
+
+    template <typename Element>
+    FroidurePin<Element>
+    copy_add_generators(FroidurePin<Element> const&    fp,
                         std::initializer_list<Element> coll) {
-      fp.add_generators(std::begin(coll), std::end(coll));
+      return fp.copy_add_generators(std::begin(coll), std::end(coll));
     }
 
   }  // namespace froidure_pin
@@ -1287,19 +1317,18 @@ namespace libsemigroups {
   //! * \p gens is empty;
   //! * Degree`{}(x) != `Degree`{}(y)` for some \c x and \c y in
   //! \p gens.
-  // TODO helper
   template <typename Container>
   FroidurePin<typename Container::value_type>
   to_froidure_pin(Container const& gens) {
     return FroidurePin(std::begin(gens), std::end(gens));
   }
 
-  template <typename Container>
-  FroidurePin<typename Container::value_type>
-  to_froidure_pin(Container&& gens) {
-    return FroidurePin(std::make_move_iterator(std::begin(gens)),
-                       std::make_move_iterator(std::end(gens)));
-  }
+  // template <typename Container>
+  // FroidurePin<typename Container::value_type>
+  // to_froidure_pin(Container&& gens) {
+  //   return FroidurePin(std::make_move_iterator(std::begin(gens)),
+  //                      std::make_move_iterator(std::end(gens)));
+  // }
 
   template <typename Element>
   FroidurePin<Element> to_froidure_pin(std::initializer_list<Element> gens) {

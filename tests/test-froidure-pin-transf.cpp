@@ -1498,7 +1498,7 @@ namespace libsemigroups {
                                   Transf<>({5, 1, 2, 3, 4, 5}),
                                   Transf<>({1, 1, 2, 3, 4, 5})};
 
-    FroidurePin<Transf<>> T = S.copy_add_generators(coll);
+    FroidurePin<Transf<>> T = froidure_pin::copy_add_generators(S, coll);
 
     REQUIRE(!T.started());
     REQUIRE(!T.finished());
@@ -1514,8 +1514,8 @@ namespace libsemigroups {
     REQUIRE(T.number_of_idempotents() == 537);
     REQUIRE(T.number_of_rules() == 2459);
 
-    FroidurePin<Transf<>> U
-        = T.copy_add_generators({Transf<>({6, 0, 1, 2, 3, 5, 6})});
+    FroidurePin<Transf<>> U = froidure_pin::copy_add_generators(
+        T, {Transf<>({6, 0, 1, 2, 3, 5, 6})});
 
     REQUIRE(U.number_of_generators() == 6);
     REQUIRE(U.degree() == 7);
@@ -1525,7 +1525,7 @@ namespace libsemigroups {
     REQUIRE(U.number_of_rules() == 7901);
     REQUIRE(U.finished());
 
-    FroidurePin<Transf<>> V = U.copy_add_generators({});
+    FroidurePin<Transf<>> V = froidure_pin::copy_add_generators(U, {});
 
     REQUIRE(&V != &U);
     REQUIRE(V.started());
@@ -1640,7 +1640,7 @@ namespace libsemigroups {
     REQUIRE(S.current_max_word_length() == 7);
 
     auto coll = {Transf<>({5, 1, 2, 3, 4, 5}), Transf<>({1, 1, 2, 3, 4, 5})};
-    FroidurePin<Transf<>> T = S.copy_add_generators(coll);
+    FroidurePin<Transf<>> T = froidure_pin::copy_add_generators(S, coll);
 
     REQUIRE(Transf<>({5, 1, 2, 3, 4, 5}) == T.generator(3));
     REQUIRE(Transf<>({1, 1, 2, 3, 4, 5}) == T.generator(4));
@@ -1746,8 +1746,8 @@ namespace libsemigroups {
     REQUIRE(S.current_number_of_rules() == 25);
     REQUIRE(S.current_max_word_length() == 11);
 
-    FroidurePin<Transf<>> T = S.copy_add_generators(
-        {Transf<>({5, 1, 2, 3, 4, 5}), Transf<>({1, 1, 2, 3, 4, 5})});
+    FroidurePin<Transf<>> T = froidure_pin::copy_add_generators(
+        S, {Transf<>({5, 1, 2, 3, 4, 5}), Transf<>({1, 1, 2, 3, 4, 5})});
 
     REQUIRE(Transf<>({5, 1, 2, 3, 4, 5}) == T.generator(3));
     REQUIRE(Transf<>({1, 1, 2, 3, 4, 5}) == T.generator(4));
@@ -1897,7 +1897,7 @@ namespace libsemigroups {
                                   Transf<>({1, 0, 2, 3, 4, 5}),
                                   Transf<>({1, 1, 2, 3, 4, 5})};
 
-    FroidurePin<Transf<>> T = S.copy_add_generators(coll);
+    FroidurePin<Transf<>> T = froidure_pin::copy_add_generators(S, coll);
 
     REQUIRE(T.size() == 7776);
     REQUIRE(T.finished());
@@ -2027,7 +2027,7 @@ namespace libsemigroups {
     std::vector<Transf<>> coll
         = {Transf<>({5, 1, 2, 3, 4, 5}), Transf<>({1, 1, 2, 3, 4, 5})};
 
-    FroidurePin<Transf<>> T = S.copy_add_generators(coll);
+    FroidurePin<Transf<>> T = froidure_pin::copy_add_generators(S, coll);
     REQUIRE(coll[0] == T.generator(3));
     REQUIRE(coll[1] == T.generator(4));
 
@@ -2080,7 +2080,7 @@ namespace libsemigroups {
     std::vector<Transf<>> coll
         = {Transf<>({5, 1, 2, 3, 4, 5}), Transf<>({1, 1, 2, 3, 4, 5})};
 
-    FroidurePin<Transf<>> T = S.copy_add_generators(coll);
+    FroidurePin<Transf<>> T = froidure_pin::copy_add_generators(S, coll);
 
     test_current_rules_iterator(T);
     REQUIRE(T.number_of_rules() == 2459);
@@ -2131,7 +2131,7 @@ namespace libsemigroups {
     std::vector<Transf<>> coll
         = {Transf<>({5, 1, 2, 3, 4, 5}), Transf<>({1, 1, 2, 3, 4, 5})};
 
-    FroidurePin<Transf<>> T = S.copy_add_generators(coll);
+    FroidurePin<Transf<>> T = froidure_pin::copy_add_generators(S, coll);
 
     test_current_rules_iterator(T);
     REQUIRE(T.number_of_rules() == 2459);

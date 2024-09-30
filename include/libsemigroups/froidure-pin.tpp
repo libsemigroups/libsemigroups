@@ -74,8 +74,12 @@ namespace libsemigroups {
   template <typename Iterator1, typename Iterator2>
   FroidurePin<Element, Traits>&
   FroidurePin<Element, Traits>::init(Iterator1 first, Iterator2 last) {
-    static_assert(std::is_same_v<typename Iterator1::value_type, element_type>);
-    static_assert(std::is_same_v<typename Iterator2::value_type, element_type>);
+    static_assert(
+        std::is_same_v<std::decay_t<decltype(*std::declval<Iterator1>())>,
+                       element_type>);
+    static_assert(
+        std::is_same_v<std::decay_t<decltype(*std::declval<Iterator2>())>,
+                       element_type>);
     init();
     throw_if_bad_degree(first, last);
     add_generators_before_start(first, last);
@@ -152,34 +156,25 @@ namespace libsemigroups {
   //
   // <add_generators> or <closure> should usually be called after this.
   template <typename Element, typename Traits>
-  FroidurePin<Element, Traits>::FroidurePin(
-      FroidurePin const&               S,
-      std::vector<element_type> const* coll)
+  FroidurePin<Element, Traits>::FroidurePin(FroidurePin const& S,
+                                            const_reference    rep)
       : FroidurePin() {
     _idempotents = S._idempotents;
     _state       = S._state;
     LIBSEMIGROUPS_ASSERT(S._lenindex.size() > 1);
-    LIBSEMIGROUPS_ASSERT(!coll->empty());
-    LIBSEMIGROUPS_ASSERT(Degree()(coll->at(0)) >= S.degree());
+    LIBSEMIGROUPS_ASSERT(Degree()(rep) >= S.degree());
     partial_copy(S);
 
-#ifdef LIBSEMIGROUPS_DEBUG
-    size_t N = Degree()(coll->at(0));
-    LIBSEMIGROUPS_ASSERT(
-        std::all_of(coll->cbegin(), coll->cend(), [&N](auto const& val) {
-          return Degree()(val) == N;
-        }));
-#endif
     _elements.reserve(S._nr);
 
-    size_t deg_plus = Degree()(coll->at(0)) - S.degree();
+    size_t deg_plus = Degree()(rep) - S.degree();
     if (deg_plus != 0) {
       _degree += deg_plus;
       _found_one = false;
       _pos_one   = 0;
     }
 
-    _id          = this->to_internal(One()(coll->at(0)));
+    _id          = this->to_internal(One()(rep));
     _tmp_product = this->internal_copy(_id);
 
     _map.reserve(S._nr);
@@ -659,6 +654,39 @@ namespace libsemigroups {
   }
 
   template <typename Element, typename Traits>
+  template <typename Iterator>
+  void
+  FroidurePin<Element, Traits>::throw_if_degree_too_small(Iterator first,
+                                                          Iterator last) const {
+    if (first != last) {
+      for (auto it = first; it < last; ++it) {
+        auto m = Degree()(*it);
+        if (m < degree()) {
+          LIBSEMIGROUPS_EXCEPTION(
+              "invalid element degree, expected {}, but found {}", degree(), m);
+        }
+      }
+    }
+  }
+
+  template <typename Element, typename Traits>
+  template <typename Iterator>
+  void FroidurePin<Element, Traits>::throw_if_inconsistent_degree(
+      Iterator first,
+      Iterator last) const {
+    if (first != last) {
+      auto n = Degree()(*first);
+      for (auto it = first; it != last; ++it) {
+        auto m = Degree()(*it);
+        if (m != n) {
+          LIBSEMIGROUPS_EXCEPTION(
+              "invalid element degree, expected {}, but found {}", n, m);
+        }
+      }
+    }
+  }
+
+  template <typename Element, typename Traits>
   void FroidurePin<Element, Traits>::init_degree(const_reference x) {
     if (_degree == UNDEFINED) {
       _degree      = Degree()(x);
@@ -668,10 +696,13 @@ namespace libsemigroups {
   }
 
   template <typename Element, typename Traits>
-  template <typename T>
+  template <typename Iterator>
   void
-  FroidurePin<Element, Traits>::add_generators_before_start(T const& first,
-                                                            T const& last) {
+  FroidurePin<Element, Traits>::add_generators_before_start(Iterator first,
+                                                            Iterator last) {
+    // TODO if Iterator is std::move_iterator, then first and last are not
+    // valid after the next line (the values they point at are moved
+    // into std::distance for some reason).
     size_t const m = std::distance(first, last);
     if (m != 0) {
       init_degree(*first);
@@ -684,9 +715,14 @@ namespace libsemigroups {
       if (it == _map.end()) {
         // new generator
         number_of_new_elements++;
-        // TODO double check that this does the correct thing if *it_coll is a
-        // rvalue reference
-        _gens.push_back(this->internal_copy(this->to_internal_const(*it_coll)));
+        // The following does not do the correct thing when *it_coll is a
+        // rvalue reference. The problem is that for the types where it matters
+        // (non-trivial, big objects) to_internal_const just takes the address,
+        // then internal_copy takes a copy by dereferencing the pointer
+        // obtained from to_internal_const. That dereferenced pointer is then
+        // forwarded as an lvalue reference, which means the copy constructor,
+        // not the move constructor is called.
+        _gens.push_back(this->to_internal_copy(*it_coll));
         generator_index_type const n = _gens.size() - 1;
 
         is_one(_gens.back(), _nr);
@@ -712,7 +748,7 @@ namespace libsemigroups {
         _letter_to_pos.push_back(it->second);
         _nr_rules++;
         _duplicate_gens.emplace_back(_gens.size(), _first[it->second]);
-        _gens.push_back(this->internal_copy(this->to_internal_const(*it_coll)));
+        _gens.push_back(this->to_internal_copy(*it_coll));
       } else {
         // x is an old element that will now be a generator
         _gens.push_back(_elements[it->second]);
@@ -735,9 +771,9 @@ namespace libsemigroups {
   }
 
   template <typename Element, typename Traits>
-  template <typename T>
-  void FroidurePin<Element, Traits>::add_generators_after_start(T const& first,
-                                                                T const& last) {
+  template <typename Iterator>
+  void FroidurePin<Element, Traits>::add_generators_after_start(Iterator first,
+                                                                Iterator last) {
     reset_start_time();
     auto const tid = detail::this_threads_id();
 
@@ -858,55 +894,67 @@ namespace libsemigroups {
 
   template <typename Element, typename Traits>
   template <typename Iterator>
-  void FroidurePin<Element, Traits>::add_generators(Iterator first,
-                                                    Iterator last) {
-    throw_if_bad_degree(first, last);
+  FroidurePin<Element, Traits>&
+  FroidurePin<Element, Traits>::add_generators_no_checks(Iterator first,
+                                                         Iterator last) {
+    // TODO static_assert
     if (_pos == 0) {
       add_generators_before_start(first, last);
     } else {
       add_generators_after_start(first, last);
     }
+    return *this;
   }
 
   template <typename Element, typename Traits>
-  void FroidurePin<Element, Traits>::add_generator(const_reference x) {
-    add_generators(&x, &x + 1);
+  template <typename Iterator>
+  FroidurePin<Element, Traits>&
+  FroidurePin<Element, Traits>::add_generators(Iterator first, Iterator last) {
+    throw_if_bad_degree(first, last);
+    return add_generators_no_checks(first, last);
+  }
+
+  template <typename Element, typename Traits>
+  FroidurePin<Element, Traits>&
+  FroidurePin<Element, Traits>::add_generator_no_checks(const_reference x) {
+    return add_generators_no_checks(&x, &x + 1);
+  }
+
+  template <typename Element, typename Traits>
+  FroidurePin<Element, Traits>&
+  FroidurePin<Element, Traits>::add_generator(const_reference x) {
+    return add_generators(&x, &x + 1);
   }
 
   // TODO make this work
-  template <typename Element, typename Traits>
-  void FroidurePin<Element, Traits>::add_generator(rvalue_reference x) {
-    auto first = std::make_move_iterator(&x);
-    auto last  = std::make_move_iterator(&x + 1);
-    add_generators(first, last);
-  }
+  // template <typename Element, typename Traits>
+  // void FroidurePin<Element, Traits>::add_generator(rvalue_reference x) {
+  //   auto first = std::make_move_iterator(&x);
+  //   auto last  = std::make_move_iterator(&x + 1);
+  //   add_generators(first, last);
+  // }
 
   template <typename Element, typename Traits>
-  template <typename Collection>
+  template <typename Iterator>
   FroidurePin<Element, Traits>
-  FroidurePin<Element, Traits>::copy_add_generators(
-      Collection const& coll) const {
-    static_assert(!std::is_pointer_v<Collection>,
-                  "Collection should not be a pointer");
-    if (coll.size() == 0) {
+  FroidurePin<Element, Traits>::copy_add_generators_no_checks(
+      Iterator first,
+      Iterator last) const {
+    static_assert(
+        std::is_same_v<std::decay_t<decltype(*std::declval<Iterator>())>,
+                       element_type>);
+
+    if (first == last) {
       return FroidurePin(*this);
     } else {
       // Partially copy
-      FroidurePin out(*this, &coll);
+      FroidurePin out(*this, *first);
       // Replacing  the following with repeated calls to add_generator results
       // in a corrupted object. This is probably due to the incomplete data in
       // the FroidurePin "out" at this stage.
-      out.add_generators(coll.cbegin(), coll.cend());
+      out.add_generators(first, last);
       return out;
     }
-  }
-
-  // TODO(later) shouldn't element_type -> const_element_type??
-  template <typename Element, typename Traits>
-  FroidurePin<Element, Traits>
-  FroidurePin<Element, Traits>::copy_add_generators(
-      std::initializer_list<element_type> coll) {
-    return copy_add_generators(std::vector<element_type>(coll));
   }
 
   template <typename Element, typename Traits>
@@ -946,7 +994,7 @@ namespace libsemigroups {
       // because the partial copy does not contain enough data to run run).
       this->run();
       // Partially copy
-      FroidurePin out(*this, &coll);
+      FroidurePin out(*this, coll[0]);
       out.closure(coll);
       return out;
     }
@@ -1233,6 +1281,7 @@ namespace libsemigroups {
     }
 
     // Cannot use _tmp_product itself since there are multiple threads here!
+    // TODO not anymore
     internal_element_type tmp_product = this->internal_copy(_tmp_product);
     auto                  tid         = detail::this_threads_id();
     auto                  ptr         = _state.get();
