@@ -281,11 +281,11 @@ namespace libsemigroups {
       //! If the right-hand side is greater than the left-hand side of a rule,
       //! with regards to length-lexicographical order, then swap them.
       //!
-      //! \complexity
-      //! The same complexity as \ref shortlex_compare(T* const, T* const)
-      //!
       //! \exceptions
       //! Throws if \ref shortlex_compare(T* const, T* const) does.
+      //!
+      //! \complexity
+      //! The same complexity as \ref shortlex_compare(T* const, T* const)
       //!
       //! \sa
       //! shortlex_compare(T* const, T* const)

@@ -820,17 +820,17 @@ namespace libsemigroups {
     //!
     //! \returns A reference to `*this`.
     //!
-    //! \warning The source node must be defined for a Paths object
-    //! to be valid.
-    //!
-    //! \warning This function does not verify that the argument \p n is a node
-    //! in the underlying WordGraph (\ref word_graph).
-    //!
     //! \exceptions
     //! \noexcept
     //!
     //! \note Changing the value of the source node resets the Paths object to
     //! point at the first word in the specified range.
+    //!
+    //! \warning The source node must be defined for a Paths object
+    //! to be valid.
+    //!
+    //! \warning This function does not verify that the argument \p n is a node
+    //! in the underlying WordGraph (\ref word_graph).
     Paths& source_no_checks(node_type n) noexcept {
       return source_no_checks(this, n);
     }
@@ -844,14 +844,14 @@ namespace libsemigroups {
     //!
     //! \returns A reference to `*this`.
     //!
-    //! \warning It is necessary to set the source node using \ref source
-    //! before a Paths object is valid.
-    //!
     //! \throws LibsemigroupsException if \p n is not a node in the underlying
     //! WordGraph (\ref word_graph).
     //!
     //! \note Changing the value of the source node resets the Paths object to
     //! point at the first word in the specified range.
+    //!
+    //! \warning It is necessary to set the source node using \ref source
+    //! before a Paths object is valid.
     Paths& source(node_type n) {
       word_graph::throw_if_node_out_of_bounds(word_graph(), n);
       return source_no_checks(n);
@@ -885,11 +885,11 @@ namespace libsemigroups {
     //! \exceptions
     //! \noexcept
     //!
-    //! \warning This function does not verify that the argument \p n is a node
-    //! in the underlying WordGraph (\ref word_graph).
-    //!
     //! \note Changing the value of the target node resets the Paths object to
     //! point at the first word in the specified range.
+    //!
+    //! \warning This function does not verify that the argument \p n is a node
+    //! in the underlying WordGraph (\ref word_graph).
     Paths& target_no_checks(node_type n) noexcept {
       return target_no_checks(this, n);
     }

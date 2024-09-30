@@ -454,13 +454,14 @@ namespace libsemigroups {
     //! \exceptions
     //! \no_libsemigroups_except
     //!
+    //! \complexity
+    //! Average case: linear in the length of the alphabet, worst case:
+    //! quadratic in the length of the alphabet.
+    //!
     //! \warning This function does no checks on its arguments whatsoever. In
     //! particular, if the letter \p x is not a generator, then bad things will
     //! happen.
     //!
-    //! \complexity
-    //! Average case: linear in the length of the alphabet, worst case:
-    //! quadratic in the length of the alphabet.
     void remove_generator_no_checks(letter_type x);
 
     //! \brief Remove \p x as a generator.

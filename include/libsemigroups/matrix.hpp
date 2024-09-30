@@ -1038,10 +1038,6 @@ namespace libsemigroups {
   //! This class is the type of row views into a StaticMatrix; see
   //! the documentation for StaticMatrix for further details.
   //!
-  //! \warning
-  //! If the underlying matrix is destroyed, then any row views for that matrix
-  //! are invalidated.
-  //!
   //! \tparam PlusOp a stateless type with a call operator of signature
   //! `scalar_type operator()(scalar_type, scalar_type)` implementing the
   //! addition of the semiring.
@@ -1062,6 +1058,10 @@ namespace libsemigroups {
   //!
   //! \tparam Scalar the type of the entries in the matrices (the type of
   //! elements in the underlying semiring).
+  //!
+  //! \warning
+  //! If the underlying matrix is destroyed, then any row views for that matrix
+  //! are invalidated.
   template <typename PlusOp,
             typename ProdOp,
             typename ZeroOp,
@@ -1168,11 +1168,11 @@ namespace libsemigroups {
     //!
     //! \returns  A value of type \ref iterator.
     //!
-    //! \complexity
-    //! Constant
-    //!
     //! \exceptions
     //! \noexcept
+    //!
+    //! \complexity
+    //! Constant
     iterator begin() noexcept;
 
     //! \brief Returns a iterator pointing one beyond the last entry of the row.
@@ -1182,11 +1182,11 @@ namespace libsemigroups {
     //!
     //! \returns  A value of type \ref iterator.
     //!
-    //! \complexity
-    //! Constant
-    //!
     //! \exceptions
     //! \no_libsemigroups_except
+    //!
+    //! \complexity
+    //! Constant
     iterator end();
 
     //! \brief Returns a const iterator pointing at the first entry.
@@ -1196,11 +1196,11 @@ namespace libsemigroups {
     //!
     //! \returns  A value of type \ref const_iterator.
     //!
-    //! \complexity
-    //! Constant
-    //!
     //! \exceptions
     //! \noexcept
+    //!
+    //! \complexity
+    //! Constant
     const_iterator cbegin() const noexcept;
 
     //! \brief Returns a const iterator pointing one beyond the last entry of
@@ -1211,11 +1211,11 @@ namespace libsemigroups {
     //!
     //! \returns  A value of type \ref iterator.
     //!
-    //! \complexity
-    //! Constant
-    //!
     //! \exceptions
     //! \no_libsemigroups_except
+    //!
+    //! \complexity
+    //! Constant
     iterator cend();
 
     //! \brief Returns a reference to the specified entry of the row.
@@ -1473,10 +1473,6 @@ namespace libsemigroups {
   //! matrix and is cheap to create and copy. Addition, scalar multiplication,
   //! and other usual vector operations are defined for row views.
   //!
-  //! \warning
-  //! If the underlying matrix is destroyed, then any row views for that
-  //! matrix are invalidated.
-  //!
   //! \tparam PlusOp a stateless type with a call operator of signature
   //! `scalar_type operator()(scalar_type, scalar_type)` implementing the
   //! addition of the semiring
@@ -1495,6 +1491,10 @@ namespace libsemigroups {
   //!
   //! \tparam Scalar the type of the entries in the matrices (the type of
   //! elements in the underlying semiring)
+  //!
+  //! \warning
+  //! If the underlying matrix is destroyed, then any row views for that
+  //! matrix are invalidated.
   template <typename PlusOp,
             typename ProdOp,
             typename ZeroOp,
@@ -1644,16 +1644,16 @@ namespace libsemigroups {
   //! This class is the type of row views into a \ref
   //! DynamicMatrixDynamicArith "DynamicMatrix (run-time arithmetic)".
   //!
-  //! \warning
-  //! If the underlying matrix is destroyed, then any row views for that
-  //! matrix are invalidated.
-  //!
   //! \tparam Semiring the type of a semiring object which defines the semiring
   //! arithmetic (see requirements in \ref DynamicMatrixDynamicArith
   //! "DynamicMatrix (run-time arithmetic)".
   //!
   //! \tparam Scalar the type of the entries in the matrices (the type of
   //! elements in the underlying semiring).
+  //!
+  //! \warning
+  //! If the underlying matrix is destroyed, then any row views for that
+  //! matrix are invalidated.
   template <typename Semiring, typename Scalar>
   class DynamicRowView<Semiring, Scalar>
       : public detail::RowViewCommon<DynamicMatrix<Semiring, Scalar>,
@@ -2114,13 +2114,10 @@ namespace libsemigroups {
     //!
     //! \returns  A value of type \ref scalar_reference.
     //!
-    //! \exceptions
-    //!   this function guarantees not to throw a LibsemigroupsException.
+    //! \throws LibsemigroupsException if \p r or \p c is out of bounds.
     //!
     //! \complexity
     //!   Constant
-    //!
-    //! \throws LibsemigroupsException if \p r or \p c is out of bounds.
     scalar_reference at(size_t r, size_t c);
 
     //! \brief Returns a const reference to the specified entry of the matrix.
@@ -2152,13 +2149,10 @@ namespace libsemigroups {
     //!
     //! \returns  A value of type \ref scalar_const_reference.
     //!
-    //! \exceptions
-    //! \no_libsemigroups_except
+    //! \throws LibsemigroupsException if \p r or \p c is out of bounds.
     //!
     //! \complexity
     //! Constant
-    //!
-    //! \throws LibsemigroupsException if \p r or \p c is out of bounds.
     scalar_const_reference at(size_t r, size_t c) const;
 
     //! \brief Returns an iterator pointing at the first entry.
@@ -2168,11 +2162,11 @@ namespace libsemigroups {
     //!
     //! \returns A value of type \ref StaticMatrix::iterator "iterator".
     //!
-    //! \complexity
-    //! Constant
-    //!
     //! \exceptions
     //! \noexcept
+    //!
+    //! \complexity
+    //! Constant
     //!
     //! \warning
     //! The order in which entries in the matrix are iterated over is not
@@ -2184,11 +2178,11 @@ namespace libsemigroups {
     //!
     //! \returns A value of type \ref StaticMatrix::iterator "iterator".
     //!
-    //! \complexity
-    //! Constant
-    //!
     //! \exceptions
     //! \noexcept
+    //!
+    //! \complexity
+    //! Constant
     //!
     //! \warning
     //! The order in which entries in the matrix are iterated over is not
@@ -2203,11 +2197,11 @@ namespace libsemigroups {
     //! \returns  A value of type \ref StaticMatrix::const_iterator
     //! "const_iterator".
     //!
-    //! \complexity
-    //! Constant
-    //!
     //! \exceptions
     //! \noexcept
+    //!
+    //! \complexity
+    //! Constant
     //!
     //! \warning
     //!   The order in which entries in the matrix are iterated over is not
@@ -2223,11 +2217,11 @@ namespace libsemigroups {
     //! \returns  A value of type \ref StaticMatrix::const_iterator
     //! "const_iterator".
     //!
-    //! \complexity
-    //! Constant
-    //!
     //! \exceptions
     //! \noexcept
+    //!
+    //! \complexity
+    //! Constant
     //!
     //! \warning
     //! The order in which entries in the matrix are iterated over is not
@@ -2311,11 +2305,11 @@ namespace libsemigroups {
     //!
     //! \returns A value of type `std::pair<scalar_type, scalar_type>`.
     //!
-    //! \complexity
-    //! Constant
-    //!
     //! \exceptions
     //! \no_libsemigroups_except
+    //!
+    //! \complexity
+    //! Constant
     std::pair<scalar_type, scalar_type> coords(const_iterator it) const;
 
     //! \brief Returns the number of rows of the matrix.
@@ -2324,11 +2318,11 @@ namespace libsemigroups {
     //!
     //! \returns A value of type `size_t`.
     //!
-    //! \complexity
-    //! Constant
-    //!
     //! \exceptions
     //! \noexcept
+    //!
+    //! \complexity
+    //! Constant
     size_t number_of_rows() const noexcept;
 
     //! \brief Returns the number of columns of the matrix.
@@ -2337,11 +2331,11 @@ namespace libsemigroups {
     //!
     //! \returns A value of type `size_t`.
     //!
-    //! \complexity
-    //! Constant
-    //!
     //! \exceptions
     //! \noexcept
+    //!
+    //! \complexity
+    //! Constant
     size_t number_of_cols() const noexcept;
 
     //! \brief Returns the sum of two matrices.
@@ -2500,11 +2494,11 @@ namespace libsemigroups {
     //!
     //! \param that  the matrix to swap contents with.
     //!
-    //! \complexity
-    //! Constant
-    //!
     //! \exceptions
     //! \noexcept
+    //!
+    //! \complexity
+    //! Constant
     void swap(StaticMatrix& that) noexcept;
 
     //! \brief Transpose a matrix in-place.
@@ -2514,11 +2508,11 @@ namespace libsemigroups {
     //! \exceptions
     //! \no_libsemigroups_except
     //!
+    //! \throws LibsemigroupsException if the matrix isn't square.
+    //!
     //! \complexity
     //! \f$O(mn)\f$ where \f$m\f$ is \ref number_of_rows and
     //! \f$n\f$ is \ref number_of_cols.
-    //!
-    //! \throws LibsemigroupsException if the matrix isn't square.
     void transpose();
 
     //! \brief Transpose a matrix in-place.

@@ -140,10 +140,10 @@ namespace libsemigroups {
   //! Specialization of the Product adapter for subclasses of
   //! ``HPCombi::PTransf16``.
   //!
-  //! \sa Product.
-  //!
   //! \note ``HPCombi`` implements composition of functions from left to right,
   //! whereas ``libsemigroups`` assumes composition is right to left.
+  //!
+  //! \sa Product.
   template <typename TPTransf16Subclass>
   struct Product<TPTransf16Subclass,
                  std::enable_if_t<std::is_base_of_v<HPCombi::PTransf16,

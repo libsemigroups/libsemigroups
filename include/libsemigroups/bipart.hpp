@@ -868,9 +868,9 @@ namespace libsemigroups {
     //! * partition the set \f$\{-n, \ldots, -1, 1, \ldots, n\}\f$
     //! for some positive integer \f$n\f$.
     //!
-    //! \warning None of these conditions is checked by the constructor.
-    //!
     //! \param blocks the partition.
+    //!
+    //! \warning None of these conditions is checked by the constructor.
     //!
     //! \sa libsemigroups::validate(Bipartition const&).
     Bipartition(std::initializer_list<std::vector<int32_t>> const& blocks);
@@ -1170,11 +1170,11 @@ namespace libsemigroups {
     //! \param y the second bipartition to multiply
     //! \param thread_id the index of the calling thread (defaults to \c 0)
     //!
-    //! \complexity
-    //! Quadratic in `x.degree()`.
-    //!
     //! \exceptions
     //! \no_libsemigroups_except
+    //!
+    //! \complexity
+    //! Quadratic in `x.degree()`.
     //!
     //! \warning
     //! If different threads call this function concurrently with the same
@@ -1350,11 +1350,11 @@ namespace libsemigroups {
     //!
     //! \param n the number of blocks.
     //!
-    //! \complexity
-    //! Constant.
-    //!
     //! \exceptions
     //! \noexcept
+    //!
+    //! \complexity
+    //! Constant.
     void set_number_of_blocks(size_t n) noexcept;
 
     //! \brief Set the number of left blocks.
@@ -1364,11 +1364,11 @@ namespace libsemigroups {
     //!
     //! \param n the number of blocks.
     //!
-    //! \complexity
-    //! Constant.
-    //!
     //! \exceptions
     //! \noexcept
+    //!
+    //! \complexity
+    //! Constant.
     void set_number_of_left_blocks(size_t n) noexcept;
 
     //! \brief Set the rank.
@@ -1378,11 +1378,11 @@ namespace libsemigroups {
     //!
     //! \param n the rank.
     //!
-    //! \complexity
-    //! Constant.
-    //!
     //! \exceptions
     //! \noexcept
+    //!
+    //! \complexity
+    //! Constant.
     void set_rank(size_t n) noexcept;
 
     //! \brief Return a const iterator pointing to the first transverse

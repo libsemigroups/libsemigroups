@@ -1,6 +1,8 @@
 #!/bin/bash
 set -e
 
+echo "Checking doc order . . ."
+./etc/check_doc_order.py
 mkdir -p docs/build
 cd docs/
 echo "doxygen --version"

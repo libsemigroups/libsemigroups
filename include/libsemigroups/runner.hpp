@@ -151,12 +151,12 @@ namespace libsemigroups {
     //! \returns
     //! A value of type \c bool.
     //!
-    //! \sa report_every(std::chrono::nanoseconds) and report_every(Time).
+    //! \note This function is thread-safe.
     //!
     //! \warning This function can be somewhat expensive, and so you should
     //! avoid invoking it too often.
     //!
-    //! \note This function is thread-safe.
+    //! \sa report_every(std::chrono::nanoseconds) and report_every(Time).
     // not noexcept because operator- for time_points can throw.
     // TODO(later) remove? Used by Action
     [[nodiscard]] inline bool report() const {
@@ -180,16 +180,16 @@ namespace libsemigroups {
     //!
     //! \param val the amount of time (in nanoseconds) between reports.
     //!
-    //! \exceptions
-    //! \noexcept
-    //!
     //! \returns
     //! A reference to \c this.
     //!
-    //! \sa
-    //! report_every(Time)
+    //! \exceptions
+    //! \noexcept
     //!
     //! \note This function is not thread-safe.
+    //!
+    //! \sa
+    //! report_every(Time)
     Reporter& report_every(nanoseconds val) noexcept {
       _last_report          = std::chrono::high_resolution_clock::now();
       _report_time_interval = val;
@@ -207,11 +207,11 @@ namespace libsemigroups {
     //!
     //! \param t the amount of time (in \c Time) between reports.
     //!
-    //! \exceptions
-    //! \noexcept
-    //!
     //! \returns
     //! A reference to \c this.
+    //!
+    //! \exceptions
+    //! \noexcept
     //!
     //! \note This function is not thread-safe.
     template <typename Time>
@@ -221,11 +221,11 @@ namespace libsemigroups {
 
     //! \brief Get the minimum elapsed time between reports.
     //!
-    //! \exceptions
-    //! \noexcept
-    //!
     //! \returns
     //! The number of nanoseconds between reports.
+    //!
+    //! \exceptions
+    //! \noexcept
     //!
     //! \note This function is thread-safe.
     [[nodiscard]] nanoseconds report_every() const noexcept {
@@ -238,10 +238,10 @@ namespace libsemigroups {
     //!  which is also the time of construction of a Reporter instance if
     //!  reset_start_time() is not explicitly called.
     //!
+    //! \returns The time point representing the start time.
+    //!
     //! \exceptions
     //! \noexcept
-    //!
-    //! \returns The time point representing the start time.
     //!
     //! \note This function is thread-safe.
     [[nodiscard]] time_point start_time() const noexcept {
@@ -269,10 +269,10 @@ namespace libsemigroups {
     //! * report_every(); or
     //! * report().
     //!
+    //! \returns A \ref time_point.
+    //!
     //! \exceptions
     //! \noexcept
-    //!
-    //! \returns A \ref time_point.
     //!
     //! \note This function is thread-safe.
     [[nodiscard]] time_point last_report() const noexcept {
@@ -320,10 +320,10 @@ namespace libsemigroups {
     //! (set via report_prefix(std::string const&)), which is typically
     //! the name of the algorithm being run at the outmost level.
     //!
+    //! \returns A const reference to the prefix string.
+    //!
     //! \exceptions
     //! \noexcept
-    //!
-    //! \returns A const reference to the prefix string.
     //!
     //! \note This function is thread-safe.
     [[nodiscard]] std::string const& report_prefix() const noexcept {
@@ -552,11 +552,11 @@ namespace libsemigroups {
     //! Returns \c true if run() has started to run (it can be running or
     //! not).
     //!
-    //! \exceptions
-    //! \noexcept
-    //!
     //! \returns
     //! A \c bool.
+    //!
+    //! \exceptions
+    //! \noexcept
     //!
     //! \sa finished()
     [[nodiscard]] bool started() const noexcept {
@@ -568,11 +568,11 @@ namespace libsemigroups {
     //! Returns \c true if run() is in the process of running and \c false it is
     //! not.
     //!
-    //! \exceptions
-    //! \noexcept
-    //!
     //! \returns
     //! A \c bool.
+    //!
+    //! \exceptions
+    //! \noexcept
     //!
     //! \sa finished()
     [[nodiscard]] bool running() const noexcept {
@@ -694,14 +694,14 @@ namespace libsemigroups {
     //!
     //! Returns the current state of the Runner as given by \ref state.
     //!
+    //! \returns
+    //! A value of type \c state.
+    //!
     //! \exceptions
     //! \noexcept
     //!
     //! \complexity
     //! Constant.
-    //!
-    //! \returns
-    //! A value of type \c state.
     [[nodiscard]] state current_state() const noexcept {
       return _state;
     }

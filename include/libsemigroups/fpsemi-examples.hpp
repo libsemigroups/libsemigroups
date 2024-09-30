@@ -202,7 +202,7 @@ namespace libsemigroups {
     //! Returns a monoid presentation defining
     //! the monoid of orientation preserving or reversing mappings on a finite
     //! chain of order `n`, as described in [10.1007/s10012-000-0001-1][].
-    //
+    //!
     //! \param n the order of the chain
     //!
     //! \returns A `std::vector<relation_type>`

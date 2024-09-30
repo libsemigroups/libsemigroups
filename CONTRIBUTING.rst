@@ -69,6 +69,18 @@ Some more conventions:
     the namespace would belong to the function name (like
     `words::number_of_words`).
 
+* The documentation for each function may contain the following section
+  indicators in the following order:
+  #. ``\tparam``
+  #. ``\param``
+  #. ``\return``
+  #. ``\exceptions`` or ``\throws``
+  #. ``\complexity``
+  #. ``\note``
+  #. ``\warning``
+  #. ``\sa``
+  This can be checked by running ``etc/check_doc_order.py``.
+
 Debugging and valgrinding
 -------------------------
 
