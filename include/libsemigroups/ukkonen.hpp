@@ -45,6 +45,7 @@
 
 #include "constants.hpp"  // for operator==, operator!=, Max, UNDEFINED
 #include "debug.hpp"      // for LIBSEMIGROUPS_ASSERT
+#include "dot.hpp"        // for Dot
 #include "exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
 #include "types.hpp"      // for word_type, letter_type
 
@@ -2230,23 +2231,19 @@ namespace libsemigroups {
       return pieces_no_checks(u, w);
     }
 
-    //! \brief Returns a string containing a [GraphViz][] representation of a
-    //! suffix tree.
+    //! \brief Returns a \ref Dot object representing a suffix tree.
     //!
-    //! \brief Returns a string containing a [GraphViz][] representation of a
-    //! suffix tree.
+    //! This function returns a \ref Dot object representing the suffix tree
+    //! defined by \p u.
     //!
     //! \param u the Ukkonen object.
     //!
-    //! \returns A value of type `std::string`.
+    //! \returns A \ref Dot object.
     //!
     //! \throws LibsemigroupsException if \p u does not contain any words.
     //! \throws LibsemigroupsException if the number of words in \p u is greater
     //! than 24.
-    //!
-    //! [GraphViz]: https://graphviz.org
-    // TODO make this a return a Dot object instead
-    std::string dot(Ukkonen const& u);
+    [[nodiscard]] Dot dot(Ukkonen const& u);
 
     //! \brief Perform a depth first search in a suffix tree.
     //!

@@ -27,6 +27,7 @@
 
 #include "libsemigroups/constants.hpp"  // for Max, UNDEFINED, operator!=
 #include "libsemigroups/debug.hpp"      // for LIBSEMIGROUPS_ASSERT
+#include "libsemigroups/dot.hpp"        // for Dot
 #include "libsemigroups/exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
 #include "libsemigroups/types.hpp"      // for word_type, letter_type
 
@@ -349,7 +350,7 @@ namespace libsemigroups {
       }
     }  // namespace
 
-    std::string dot(Ukkonen const& u) {
+    [[nodiscard]] Dot dot(Ukkonen const& u) {
       if (u.number_of_distinct_words() == 0) {
         LIBSEMIGROUPS_EXCEPTION("expected at least 1 word, found 0");
       }
@@ -555,26 +556,33 @@ namespace libsemigroups {
                                 u.number_of_distinct_words());
       }
       LIBSEMIGROUPS_ASSERT(colors.size() == 24);
-      std::string  result = "digraph {\nordering=\"out\"\n";
-      auto const&  nodes  = u.nodes();
-      size_t const n      = u.number_of_distinct_words();
+      Dot result;
+      result.name("Ukkonen").kind(Dot::Kind::digraph);
+      auto const&              nodes = u.nodes();
+      size_t const             n     = u.number_of_distinct_words();
+      Ukkonen::word_index_type color_index;
+
       for (size_t i = 0; i < nodes.size(); ++i) {
-        auto color_index = (i == 0 ? 0 : u.word_index(nodes[i]));
+        color_index = (i == 0 ? 0 : u.word_index(nodes[i]));
         LIBSEMIGROUPS_ASSERT(color_index < colors[n].size());
-        result += std::to_string(i) + "[shape=box, width=.5, color=\""
-                  + colors[n][color_index] + "\"]\n";
+        result.add_node(i)
+            .add_attr("shape", "box")
+            .add_attr("width", ".5")
+            .add_attr("color", colors[n][color_index]);
+      }
+      for (size_t i = 0; i < nodes.size(); ++i) {
         for (auto const& child : nodes[i].children) {
           auto const& l = nodes[child.second].l;
           auto const& r = nodes[child.second].r;
           LIBSEMIGROUPS_ASSERT(color_index < colors[n].size());
           color_index = u.word_index(nodes[child.second]);
-          result += std::to_string(i) + "->" + std::to_string(child.second)
-                    + "[color=\"" + colors[n][color_index] + "\" label=\"["
-                    + std::to_string(l) + "," + std::to_string(r)
-                    + ")=" + dot_word(u, nodes[child.second]) + "\"]\n";
+          result.add_edge(i, child.second)
+              .add_attr("color", colors[n][color_index])
+              .add_attr("label",
+                        std::to_string(l) + "," + std::to_string(r)
+                            + ")=" + dot_word(u, nodes[child.second]));
         }
       }
-      result += "}\n";
       return result;
     }
 
