@@ -2308,6 +2308,16 @@ namespace libsemigroups {
     }  // namespace detail
   }    // namespace ukkonen
 
+  //! \brief Return a human readable representation of an Ukkonen object.
+  //!
+  //! Return a human readable representation of an Ukkonen object.
+  //!
+  //! \param u the Ukkonen object.
+  //!
+  //! \returns A value of type std::string
+  //!
+  //! \exceptions
+  //! \no_libsemigroups_except
   [[nodiscard]] inline std::string to_human_readable_repr(Ukkonen const& u) {
     return fmt::format("<Ukkonen with {} distinct words>",
                        u.number_of_distinct_words());
