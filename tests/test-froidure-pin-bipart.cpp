@@ -45,7 +45,6 @@ namespace libsemigroups {
                {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0})};
 
     FroidurePin<Bipartition> S = to_froidure_pin(gens);
-
     S.reserve(10);
 
     REQUIRE(S.size() == 10);

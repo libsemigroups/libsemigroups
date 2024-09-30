@@ -16,12 +16,6 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-// TODO(later)
-// * the todos in the file
-// * no_checks versions of mem + helper fns
-// * check for no_checks opportunities for functions calling
-// throw_if_bad_degree
-
 #ifndef LIBSEMIGROUPS_FROIDURE_PIN_HPP_
 #define LIBSEMIGROUPS_FROIDURE_PIN_HPP_
 
@@ -423,7 +417,14 @@ namespace libsemigroups {
 
     //! TODO(doc)
     template <typename Iterator1, typename Iterator2>
-    FroidurePin& init(Iterator1 first, Iterator2 last);
+    FroidurePin& init_no_checks(Iterator1 first, Iterator2 last);
+
+    //! TODO(doc)
+    template <typename Iterator1, typename Iterator2>
+    FroidurePin& init(Iterator1 first, Iterator2 last) {
+      throw_if_bad_degree(first, last);
+      return init_no_checks(first, last);
+    }
 
     //! \brief Copy constructor.
     //!
@@ -871,7 +872,7 @@ namespace libsemigroups {
     // TODO make the following work
     // TODO no_checks version
     // TODO doc
-    // void add_generator(rvalue_reference x);
+    // FroidurePin add_generator(rvalue_reference x);
 
     //! \brief Copy and add a collection of generators.
     //!
@@ -985,6 +986,9 @@ namespace libsemigroups {
       return _state;
     }
 
+    template <typename Iterator>
+    static void throw_if_inconsistent_degree(Iterator, Iterator);
+
    private:
     ////////////////////////////////////////////////////////////////////////
     // FroidurePin - validation member functions - private
@@ -997,9 +1001,6 @@ namespace libsemigroups {
 
     template <typename Iterator>
     void throw_if_degree_too_small(Iterator, Iterator) const;
-
-    template <typename Iterator>
-    void throw_if_inconsistent_degree(Iterator, Iterator) const;
 
     ////////////////////////////////////////////////////////////////////////
     // FroidurePin - enumeration member functions - private
@@ -1255,6 +1256,7 @@ namespace libsemigroups {
     //                  std::make_move_iterator(std::end(gens)));
     // }
 
+    // TODO no_checks version
     // TODO(doc)
     template <typename Element>
     FroidurePin<Element> init(FroidurePin<Element>&          fp,
@@ -1273,6 +1275,7 @@ namespace libsemigroups {
     //!
     //! \throws LibsemigroupsException if any of the following hold:
     //! * the degree of \p x is incompatible with the existing degree.
+    // TODO no_checks version
     template <typename Container>
     FroidurePin<typename Container::value_type>&
     add_generators(FroidurePin<typename Container::value_type>& fp,
@@ -1299,6 +1302,7 @@ namespace libsemigroups {
     //!
     //! \throws LibsemigroupsException if any of the following hold:
     //! * the degree of \p x is incompatible with the existing degree.
+    // TODO no_checks version
     template <typename Element>
     FroidurePin<Element>& add_generators(FroidurePin<Element>&          fp,
                                          std::initializer_list<Element> coll) {
@@ -1306,6 +1310,7 @@ namespace libsemigroups {
     }
 
     // TODO(doc)
+    // TODO no_checks version
     template <typename Container>
     FroidurePin<typename Container::value_type>
     copy_add_generators(FroidurePin<typename Container::value_type> const& fp,
@@ -1314,6 +1319,7 @@ namespace libsemigroups {
     }
 
     // TODO(doc)
+    // TODO no_checks version
     template <typename Element>
     FroidurePin<Element>
     copy_add_generators(FroidurePin<Element> const&    fp,
@@ -1322,6 +1328,7 @@ namespace libsemigroups {
     }
 
     // TODO(doc)
+    // TODO no_checks version
     template <typename Container>
     FroidurePin<typename Container::value_type>&
     closure(FroidurePin<typename Container::value_type>& fp,
@@ -1330,12 +1337,14 @@ namespace libsemigroups {
     }
 
     // TODO(doc)
+    // TODO no_checks version
     template <typename Element>
     FroidurePin<Element>& closure(FroidurePin<Element>&          fp,
                                   std::initializer_list<Element> coll) {
       return fp.closure(std::begin(coll), std::end(coll));
     }
 
+    // TODO no_checks version
     template <typename Container>
     FroidurePin<typename Container::value_type>
     copy_closure(FroidurePin<typename Container::value_type>& fp,
@@ -1344,6 +1353,7 @@ namespace libsemigroups {
     }
 
     // TODO(doc)
+    // TODO no_checks version
     template <typename Element>
     FroidurePin<Element> copy_closure(FroidurePin<Element>&          fp,
                                       std::initializer_list<Element> coll) {
@@ -1365,9 +1375,12 @@ namespace libsemigroups {
   //! * \p gens is empty;
   //! * Degree`{}(x) != `Degree`{}(y)` for some \c x and \c y in
   //! \p gens.
+  // TODO no_checks version
   template <typename Container>
   FroidurePin<typename Container::value_type>
   to_froidure_pin(Container const& gens) {
+    FroidurePin<typename Container::value_type>::throw_if_inconsistent_degree(
+        std::begin(gens), std::end(gens));
     return FroidurePin(std::begin(gens), std::end(gens));
   }
 
@@ -1378,8 +1391,11 @@ namespace libsemigroups {
   //                      std::make_move_iterator(std::end(gens)));
   // }
 
+  // TODO no_checks version
   template <typename Element>
   FroidurePin<Element> to_froidure_pin(std::initializer_list<Element> gens) {
+    FroidurePin<Element>::throw_if_inconsistent_degree(std::begin(gens),
+                                                       std::end(gens));
     return FroidurePin(std::begin(gens), std::end(gens));
   }
 }  // namespace libsemigroups

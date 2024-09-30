@@ -60,20 +60,14 @@ namespace libsemigroups {
   template <typename Iterator1, typename Iterator2>
   FroidurePin<Element, Traits>::FroidurePin(Iterator1 first, Iterator2 last)
       : FroidurePin() {
-    static_assert(
-        std::is_same_v<std::decay_t<decltype(*std::declval<Iterator1>())>,
-                       element_type>);
-    static_assert(
-        std::is_same_v<std::decay_t<decltype(*std::declval<Iterator2>())>,
-                       element_type>);
-    throw_if_bad_degree(first, last);
-    add_generators_before_start(first, last);
+    init_no_checks(first, last);
   }
 
   template <typename Element, typename Traits>
   template <typename Iterator1, typename Iterator2>
   FroidurePin<Element, Traits>&
-  FroidurePin<Element, Traits>::init(Iterator1 first, Iterator2 last) {
+  FroidurePin<Element, Traits>::init_no_checks(Iterator1 first,
+                                               Iterator2 last) {
     static_assert(
         std::is_same_v<std::decay_t<decltype(*std::declval<Iterator1>())>,
                        element_type>);
@@ -81,7 +75,6 @@ namespace libsemigroups {
         std::is_same_v<std::decay_t<decltype(*std::declval<Iterator2>())>,
                        element_type>);
     init();
-    throw_if_bad_degree(first, last);
     add_generators_before_start(first, last);
     return *this;
   }
@@ -637,15 +630,8 @@ namespace libsemigroups {
   template <typename Iterator>
   void FroidurePin<Element, Traits>::throw_if_bad_degree(Iterator first,
                                                          Iterator last) const {
-    if (degree() == UNDEFINED && std::distance(first, last) != 0) {
-      auto const n = Degree()(*first);
-      for (auto it = first + 1; it < last; ++it) {
-        auto const m = Degree()(*it);
-        if (m != n) {
-          LIBSEMIGROUPS_EXCEPTION(
-              "invalid element degree, expected {}, but found {}", m, n);
-        }
-      }
+    if (degree() == UNDEFINED && first != last) {
+      throw_if_inconsistent_degree(first, last);
     } else {
       for (auto it = first; it < last; ++it) {
         throw_if_bad_degree(*it);
@@ -671,9 +657,9 @@ namespace libsemigroups {
 
   template <typename Element, typename Traits>
   template <typename Iterator>
-  void FroidurePin<Element, Traits>::throw_if_inconsistent_degree(
-      Iterator first,
-      Iterator last) const {
+  void
+  FroidurePin<Element, Traits>::throw_if_inconsistent_degree(Iterator first,
+                                                             Iterator last) {
     if (first != last) {
       auto n = Degree()(*first);
       for (auto it = first; it != last; ++it) {
