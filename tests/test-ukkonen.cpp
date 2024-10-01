@@ -391,7 +391,7 @@ namespace libsemigroups {
     Ukkonen t;
     ukkonen::add_word(t, 004000_w);
 
-    auto s = ukkonen::traverse(t, {});
+    auto s = ukkonen::traverse(t, word_type({}));
     REQUIRE(s.first.v == 0);
     REQUIRE(s.first.pos == 0);
 
