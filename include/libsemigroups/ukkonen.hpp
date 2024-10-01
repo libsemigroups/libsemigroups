@@ -434,86 +434,6 @@ namespace libsemigroups {
       add_word_no_checks(first, last);
     }
 
-    //! \brief \copybrief add_word_no_checks(const_iterator, const_iterator)
-    //!
-    //! See \ref add_word_no_checks(const_iterator, const_iterator).
-    void add_word_no_checks(word_type const& w) {
-      add_word_no_checks(w.cbegin(), w.cend());
-    }
-
-    //! \brief \copybrief add_word_no_checks(const_iterator, const_iterator)
-    //!
-    //! See \ref add_word_no_checks(const_iterator, const_iterator).
-    //!
-    //! \throws LibsemigroupsException if `throw_if_not_unique_letters(w)`
-    //! throws.
-    void add_word(word_type const& w) {
-      add_word(w.cbegin(), w.cend());
-    }
-
-    //! \brief \copybrief add_word_no_checks(const_iterator, const_iterator)
-    //!
-    //! See \ref add_word_no_checks(const_iterator, const_iterator).
-    template <typename Iterator>
-    void add_word_no_checks(Iterator first, Iterator last) {
-      // TODO(later) it'd be better to just convert the values pointed at by the
-      // iterators, than to allocate a word_type here, but this is currently a
-      // bit tricky to set up
-      add_word_no_checks(word_type(first, last));
-    }
-
-    //! \brief \copybrief add_word_no_checks(const_iterator, const_iterator)
-    //!
-    //! See \ref add_word_no_checks(const_iterator, const_iterator).
-    template <typename Word>
-    void add_word_no_checks(Word const& w) {
-      add_word_no_checks(w.cbegin(), w.cend());
-    }
-
-    //! \brief \copybrief add_word_no_checks(const_iterator, const_iterator)
-    //!
-    //! See \ref add_word_no_checks(const_iterator, const_iterator).
-    void add_word_no_checks(char const* w) {
-      add_word_no_checks(w, w + std::strlen(w));
-    }
-
-    //! \brief \copybrief add_word_no_checks(const_iterator, const_iterator)
-    //!
-    //! See \ref add_word_no_checks(const_iterator, const_iterator).
-    //!
-    //! \throws LibsemigroupsException if `throw_if_not_unique_letters(first,
-    //! last)` throws.
-    template <typename Iterator>
-    void add_word(Iterator first, Iterator last) {
-      // TODO(later) it'd be better to just convert the values pointed at by the
-      // iterators, than to allocate a word_type here, but this is currently a
-      // bit tricky to set up
-      add_word(word_type(first, last));
-    }
-
-    //! \brief \copybrief add_word_no_checks(const_iterator, const_iterator)
-    //!
-    //! See \ref add_word_no_checks(const_iterator, const_iterator).
-    //!
-    //! \throws LibsemigroupsException if `throw_if_not_unique_letters(w)`
-    //! throws.
-    template <typename Word>
-    void add_word(Word const& w) {
-      add_word(w.cbegin(), w.cend());
-    }
-
-    //! \brief \copybrief add_word_no_checks(const_iterator, const_iterator)
-    //!
-    //! See \ref add_word_no_checks(const_iterator, const_iterator).
-    //!
-    //! \throws LibsemigroupsException if `u.throw_if_not_unique_letters(w, w +
-    //! std::strlen(w))` throws.
-    //!
-    //!\sa \ref throw_if_not_unique_letters.
-    void add_word(char const* w) {
-      add_word(w, w + std::strlen(w));
-    }
-
     ////////////////////////////////////////////////////////////////////////
     // Ukkonen - attributes - public
     ////////////////////////////////////////////////////////////////////////
@@ -1096,6 +1016,92 @@ namespace libsemigroups {
   //!
   //! This namespace contains helper functions for the Ukkonen class.
   namespace ukkonen {
+    //! \brief \copybrief Ukkonen.add_word_no_checks
+    //!
+    //! See \ref Ukkonen.add_word_no_checks.
+    inline void add_word_no_checks(Ukkonen& u, word_type const& w) {
+      u.add_word_no_checks(w.cbegin(), w.cend());
+    }
+
+    //! \brief \copybrief Ukkonen.add_word_no_checks
+    //!
+    //! See \ref Ukkonen.add_word_no_checks.
+    template <typename Iterator>
+    void add_word_no_checks(Ukkonen& u, Iterator first, Iterator last) {
+      // TODO(later) it'd be better to just convert the values pointed at by the
+      // iterators, than to allocate a word_type here, but this is currently a
+      // bit tricky to set up
+      add_word_no_checks(u, word_type(first, last));
+    }
+
+    //! \brief \copybrief Ukkonen.add_word_no_checks
+    //!
+    //! See \ref Ukkonen.add_word_no_checks.
+    template <typename Word>
+    void add_word_no_checks(Ukkonen& u, Word const& w) {
+      add_word_no_checks(u, w.cbegin(), w.cend());
+    }
+
+    //! \brief \copybrief Ukkonen.add_word_no_checks
+    //!
+    //! See \ref Ukkonen.add_word_no_checks.
+    inline void add_word_no_checks(Ukkonen& u, char const* w) {
+      add_word_no_checks(u, w, w + std::strlen(w));
+    }
+
+    //! \brief \copybrief Ukkonen.add_word_no_checks
+    //!
+    //! See \ref Ukkonen.add_word_no_checks.
+    //!
+    //! \throws LibsemigroupsException if `throw_if_not_unique_letters(w)`
+    //! throws.
+    //!
+    //! \sa \ref Ukkonen.throw_if_not_unique_letters.
+    inline void add_word(Ukkonen& u, word_type const& w) {
+      u.add_word(w.cbegin(), w.cend());
+    }
+
+    //! \brief \copybrief Ukkonen.add_word_no_checks
+    //!
+    //! See \ref Ukkonen.add_word_no_checks.
+    //!
+    //! \throws LibsemigroupsException if `throw_if_not_unique_letters(first,
+    //! last)` throws.
+    //!
+    //! \sa \ref Ukkonen.throw_if_not_unique_letters.
+    template <typename Iterator>
+    void add_word(Ukkonen& u, Iterator first, Iterator last) {
+      // TODO(later) it'd be better to just convert the values pointed at by the
+      // iterators, than to allocate a word_type here, but this is currently a
+      // bit tricky to set up
+      add_word(u, word_type(first, last));
+    }
+
+    //! \brief \copybrief Ukkonen.add_word_no_checks
+    //!
+    //! See \ref Ukkonen.add_word_no_checks.
+    //!
+    //! \throws LibsemigroupsException if `throw_if_not_unique_letters(w)`
+    //! throws.
+    //!
+    //! \sa \ref Ukkonen.throw_if_not_unique_letters.
+    template <typename Word>
+    void add_word(Ukkonen& u, Word const& w) {
+      add_word(u, w.cbegin(), w.cend());
+    }
+
+    //! \brief \copybrief Ukkonen.add_word_no_checks
+    //!
+    //! See \ref Ukkonen.add_word_no_checks.
+    //!
+    //! \throws LibsemigroupsException if `u.throw_if_not_unique_letters(w, w +
+    //! std::strlen(w))` throws.
+    //!
+    //! \sa \ref Ukkonen.throw_if_not_unique_letters.
+    inline void add_word(Ukkonen& u, char const* w) {
+      add_word(u, w, w + std::strlen(w));
+    }
+
     //! \brief Add all words in a std::vector to a Ukkonen object.
     //!
     //! Add all words in a std::vector to a Ukkonen object.
@@ -1131,7 +1137,7 @@ namespace libsemigroups {
     template <typename Iterator1, typename Iterator2>
     void add_words_no_checks(Ukkonen& u, Iterator1 first, Iterator2 last) {
       for (auto it = first; it != last; ++it) {
-        u.add_word_no_checks(*it);
+        add_word_no_checks(u, *it);
       }
     }
 
@@ -1156,7 +1162,7 @@ namespace libsemigroups {
     template <typename Iterator1, typename Iterator2>
     void add_words(Ukkonen& u, Iterator1 first, Iterator2 last) {
       for (auto it = first; it != last; ++it) {
-        u.add_word(*it);
+        add_word(u, *it);
       }
     }
 
