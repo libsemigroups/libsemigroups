@@ -298,13 +298,13 @@ namespace libsemigroups {
   namespace ukkonen {
     void add_words_no_checks(Ukkonen& st, std::vector<word_type> const& words) {
       for (auto const& word : words) {
-        st.add_word_no_checks(word);
+        add_word_no_checks(st, word);
       }
     }
 
     void add_words(Ukkonen& st, std::vector<word_type> const& words) {
       for (auto const& word : words) {
-        st.add_word(word);
+        add_word(st, word);
       }
     }
 
@@ -579,7 +579,7 @@ namespace libsemigroups {
           result.add_edge(i, child.second)
               .add_attr("color", colors[n][color_index])
               .add_attr("label",
-                        std::to_string(l) + "," + std::to_string(r)
+                        "[" + std::to_string(l) + "," + std::to_string(r)
                             + ")=" + dot_word(u, nodes[child.second]));
         }
       }
