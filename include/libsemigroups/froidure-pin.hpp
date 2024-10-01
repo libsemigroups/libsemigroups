@@ -16,6 +16,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
+// TODO nodiscard
+
 #ifndef LIBSEMIGROUPS_FROIDURE_PIN_HPP_
 #define LIBSEMIGROUPS_FROIDURE_PIN_HPP_
 
@@ -865,13 +867,10 @@ namespace libsemigroups {
     //!
     //! \throws LibsemigroupsException if any of the following hold:
     //! * the degree of \p x is incompatible with the existing degree.
-    // TODO no_checks version
     // TODO doc
     FroidurePin& add_generator(const_reference x);
 
-    // TODO make the following work
-    // TODO no_checks version
-    // TODO doc
+    // TODO(1) make the following work
     // FroidurePin add_generator(rvalue_reference x);
 
     //! \brief Copy and add a collection of generators.
@@ -974,6 +973,9 @@ namespace libsemigroups {
       throw_if_inconsistent_degree(first, last);
       return copy_closure_no_checks(first, last);
     }
+
+    // TODO(1) copy_closure(const_reference)
+    // TODO(1) copy_closure_no_checks(const_reference)
 
     //! \brief Returns a std::shared_ptr to the state (if any).
     //!
@@ -1241,6 +1243,7 @@ namespace libsemigroups {
   namespace froidure_pin {
 
     // TODO(doc)
+    // TODO no checks version
     template <typename Container>
     FroidurePin<typename Container::value_type>&
     init(FroidurePin<typename Container::value_type>& fp,
@@ -1248,7 +1251,7 @@ namespace libsemigroups {
       return fp.init(std::begin(gens), std::end(gens));
     }
 
-    // TODO(doc)
+    // TODO(1) make the following work
     // template <typename Container>
     // FroidurePin<typename Container::value_type>&
     // init(FroidurePin<typename Container::value_type>& fp, Container&& gens) {
@@ -1283,7 +1286,7 @@ namespace libsemigroups {
       return fp.add_generators(std::begin(coll), std::end(coll));
     }
 
-    // TODO doc
+    // TODO(1) make the following work
     // template <typename Container>
     // FroidurePin<typename Container::value_type>&
     // add_generators(FroidurePin<typename Container::value_type>& fp,
@@ -1384,6 +1387,7 @@ namespace libsemigroups {
     return FroidurePin(std::begin(gens), std::end(gens));
   }
 
+  // TODO(1) make the following work
   // template <typename Container>
   // FroidurePin<typename Container::value_type>
   // to_froidure_pin(Container&& gens) {
