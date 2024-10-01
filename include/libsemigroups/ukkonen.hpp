@@ -1166,17 +1166,122 @@ namespace libsemigroups {
       }
     }
 
-    //! \brief \copybrief Ukkonen::traverse_no_checks
+    //! \brief \copybrief Ukkonen::traverse_no_checks(Iterator, Iterator) const
     //!
-    //! See \ref Ukkonen::traverse_no_checks.
+    //! See \ref Ukkonen::traverse_no_checks(Iterator, Iterator) const.
+    template <typename Word>
+    auto traverse_no_checks(Ukkonen const& u, Word const& w) {
+      return u.traverse_no_checks(w.cbegin(), w.cend());
+    }
+
+    //! \brief \copybrief Ukkonen::traverse_no_checks(Iterator, Iterator) const
     //!
-    //! \throws LibsemigroupsException if `u.throw_if_not_unique_letters(w)`
-    //! throws.
+    //! See \ref Ukkonen::traverse_no_checks(Iterator, Iterator) const.
+    inline auto traverse_no_checks(Ukkonen const& u, word_type const& w) {
+      return u.traverse_no_checks(w.cbegin(), w.cend());
+    }
+
+    //! \brief \copybrief Ukkonen::traverse_no_checks(Iterator, Iterator) const
+    //!
+    //! See \ref Ukkonen::traverse_no_checks(Iterator, Iterator) const.
+    inline auto traverse_no_checks(Ukkonen const& u, char const* w) {
+      return u.traverse_no_checks(w, w + std::strlen(w));
+    }
+
+    //! \brief \copybrief Ukkonen::traverse_no_checks(Iterator, Iterator) const
+    //!
+    //! See \ref Ukkonen::traverse_no_checks(Iterator, Iterator) const.
+    //!
+    //! \throws LibsemigroupsException if
+    //! `u.throw_if_not_unique_letters(w.cbegin(),  w.cend())` throws.
     //!
     //!\sa \ref Ukkonen::throw_if_not_unique_letters.
-    // TODO(later) Add other overloads.
+    template <typename Word>
+    auto traverse(Ukkonen const& u, Word const& w) {
+      return u.traverse(w.cbegin(), w.cend());
+    }
+
+    //! \brief \copybrief Ukkonen::traverse_no_checks(Iterator, Iterator) const
+    //!
+    //! See \ref Ukkonen::traverse_no_checks(Iterator, Iterator) const.
+    //!
+    //! \throws LibsemigroupsException if
+    //! `u.throw_if_not_unique_letters(w.cbegin(),  w.cend())` throws.
+    //!
+    //!\sa \ref Ukkonen::throw_if_not_unique_letters.
     inline auto traverse(Ukkonen const& u, word_type const& w) {
       return u.traverse(w.cbegin(), w.cend());
+    }
+
+    //! \brief \copybrief Ukkonen::traverse_no_checks(Iterator, Iterator) const
+    //!
+    //! See \ref Ukkonen::traverse_no_checks(Iterator, Iterator) const.
+    //!
+    //! \throws LibsemigroupsException if `u.throw_if_not_unique_letters(w,  w +
+    //! std::strlen(w))` throws.
+    //!
+    //!\sa \ref Ukkonen::throw_if_not_unique_letters.
+    inline auto traverse(Ukkonen const& u, char const* w) {
+      return u.traverse(w, w + std::strlen(w));
+    }
+
+    //! \brief \copybrief Ukkonen::traverse_no_checks(Ukkonen::State&, Iterator, Iterator) const
+    //!
+    //! See \ref Ukkonen::traverse_no_checks(Ukkonen::State&, Iterator, Iterator) const.
+    template <typename Word>
+    auto traverse_no_checks(Ukkonen::State& st, Ukkonen const& u, Word const& w) {
+      return u.traverse_no_checks(st, w.cbegin(), w.cend());
+    }
+
+    //! \brief \copybrief Ukkonen::traverse_no_checks(Ukkonen::State&, Iterator, Iterator) const
+    //!
+    //! See \ref Ukkonen::traverse_no_checks(Ukkonen::State&, Iterator, Iterator) const.
+    inline auto traverse_no_checks(Ukkonen::State& st, Ukkonen const& u, word_type const& w) {
+      return u.traverse_no_checks(st, w.cbegin(), w.cend());
+    }
+
+    //! \brief \copybrief Ukkonen::traverse_no_checks(Ukkonen::State&, Iterator, Iterator) const
+    //!
+    //! See \ref Ukkonen::traverse_no_checks(Ukkonen::State&, Iterator, Iterator) const.
+    inline auto traverse_no_checks(Ukkonen::State& st, Ukkonen const& u, char const* w) {
+      return u.traverse_no_checks(st, w, w + std::strlen(w));
+    }
+
+    //! \brief \copybrief Ukkonen::traverse_no_checks(Ukkonen::State&, Iterator, Iterator) const
+    //!
+    //! See \ref Ukkonen::traverse_no_checks(Ukkonen::State&, Iterator, Iterator) const.
+    //!
+    //! \throws LibsemigroupsException if
+    //! `u.throw_if_not_unique_letters(w.cbegin(),  w.cend())` throws.
+    //!
+    //!\sa \ref Ukkonen::throw_if_not_unique_letters.
+    template <typename Word>
+    auto traverse(Ukkonen::State& st, Ukkonen const& u, Word const& w) {
+      return u.traverse(st, w.cbegin(), w.cend());
+    }
+
+    //! \brief \copybrief Ukkonen::traverse_no_checks(Ukkonen::State&, Iterator, Iterator) const
+    //!
+    //! See \ref Ukkonen::traverse_no_checks(Ukkonen::State&, Iterator, Iterator) const.
+    //!
+    //! \throws LibsemigroupsException if
+    //! `u.throw_if_not_unique_letters(w.cbegin(),  w.cend())` throws.
+    //!
+    //!\sa \ref Ukkonen::throw_if_not_unique_letters.
+    inline auto traverse(Ukkonen::State& st, Ukkonen const& u, word_type const& w) {
+      return u.traverse(st, w.cbegin(), w.cend());
+    }
+
+    //! \brief \copybrief Ukkonen::traverse_no_checks(Ukkonen::State&, Iterator, Iterator) const
+    //!
+    //! See \ref Ukkonen::traverse_no_checks(Ukkonen::State&, Iterator, Iterator) const.
+    //!
+    //! \throws LibsemigroupsException if `u.throw_if_not_unique_letters(w,  w +
+    //! std::strlen(w))` throws.
+    //!
+    //!\sa \ref Ukkonen::throw_if_not_unique_letters.
+    inline auto traverse(Ukkonen::State& st, Ukkonen const& u, char const* w) {
+      return u.traverse(st, w, w + std::strlen(w));
     }
 
     //! \brief Check if a word is a subword of any word in a suffix tree.
