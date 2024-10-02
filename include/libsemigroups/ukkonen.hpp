@@ -637,8 +637,7 @@ namespace libsemigroups {
     //!
     //! \returns A value of type `word_index_type`.
     //!
-    //! \exceptions
-    //! \no_libsemigroups_except
+    //! \throws LibsemigroupsException if ``n.parent == UNDEFINED``
     //!
     //! \complexity
     //! Constant.
@@ -684,8 +683,8 @@ namespace libsemigroups {
     //!
     //! \returns A value of type `word_index_type`.
     //!
-    //! \exceptions
-    //! \no_libsemigroups_except
+    //! \throws LibsemigroupsException if \p i is greater than
+    //! ``length_of_distinct_words() + number_of_distinct_words()``
     //!
     //! \complexity
     //! Constant.
@@ -711,7 +710,7 @@ namespace libsemigroups {
     //! \no_libsemigroups_except
     //!
     //! \complexity
-    //! At worst the distance of the node \p n from the root.
+    //! At worst linear in the distance of the node \p n from the root.
     size_t distance_from_root(Node const& n) const;
 
     //! \brief Check if a state corresponds to a suffix.
@@ -726,9 +725,6 @@ namespace libsemigroups {
     //!
     //! \exceptions
     //! \no_libsemigroups_except
-    //!
-    //! \complexity
-    //! At worst the distance of the node \p n from the root.
     word_index_type is_suffix(State const& st) const;
 
     //! \brief Returns the multiplicity of a word by index.
@@ -2368,7 +2364,7 @@ namespace libsemigroups {
     //!
     //! Internally, all words added to the suffix tree are stored as a single
     //! string delimited by unique letters. The edge labels present in this \ref
-    //! Dot object correspond intervals of letters in that delimited string.
+    //! Dot object correspond to intervals of letters in that delimited string.
     //!
     //! \param u the Ukkonen object.
     //!
