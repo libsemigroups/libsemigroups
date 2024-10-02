@@ -816,7 +816,7 @@ namespace libsemigroups {
     //!
     //! If the word corresponding to \p first and \p last is one of the words
     //! that the suffix tree contains (the words added to the suffix tree via
-    //! `add_word` or `add_word_no_checks`, then this function returns the
+    //! `add_word` or `add_word_no_checks`), then this function returns the
     //! index of that word. If the word corresponding to \p first and \p last
     //! is not one of the words that the suffix tree represents, then \ref
     //! UNDEFINED is returned.
@@ -1429,7 +1429,6 @@ namespace libsemigroups {
     //! \complexity
     //! Linear in the distance between `first` and `last`.
     //!
-    //!
     //! \warning This function does no checks on its arguments whatsoever. In
     //! particular, if the word corresponding to \p first and \p last contains
     //! any of the unique letters appended to the end of any existing word in
@@ -1649,10 +1648,10 @@ namespace libsemigroups {
     //! \brief Find the length of the maximal prefix of a word occurring in two
     //! different places in a word in a suffix tree.
     //!
-    //! Returns length of the maximal length prefix of the word corresponding
-    //! to \p first and \p last that occurs in at least \f$2\f$ different
-    //! (possibly overlapping) places in the words contained in \p u. If no
-    //! such prefix exists, then `0` is returned.
+    //! Returns the length of the maximal length prefix of the word
+    //! corresponding to \p first and \p last that occurs in at least \f$2\f$
+    //! different (possibly overlapping) places in the words contained in \p u.
+    //! If no such prefix exists, then `0` is returned.
     //!
     //! \tparam Iterator the type of the 2nd and 3rd parameters.
     //! \param u the Ukkonen object.
@@ -2002,10 +2001,10 @@ namespace libsemigroups {
     //! \brief Find the length of the maximal suffix of a word occurring in two
     //! different places in a word in a suffix tree.
     //!
-    //! Returns length of the maximal length prefix of the word corresponding
-    //! to \p first and \p last that occurs in at least \f$2\f$ different
-    //! (possibly overlapping) places in the words contained in \p u. If no
-    //! such prefix exists, then `0` is returned.
+    //! Returns the length of the maximal length prefix of the word
+    //! corresponding to \p first and \p last that occurs in at least \f$2\f$
+    //! different (possibly overlapping) places in the words contained in \p u.
+    //! If no such prefix exists, then `0` is returned.
     //!
     //! \tparam Iterator the type of the 2nd and 3rd parameters.
     //! \param u the Ukkonen object.
@@ -2366,6 +2365,10 @@ namespace libsemigroups {
     //!
     //! This function returns a \ref Dot object representing the suffix tree
     //! defined by \p u.
+    //!
+    //! Internally, all words added to the suffix tree are stored as a single
+    //! string delimited by unique letters. The edge labels present in this \ref
+    //! Dot object correspond intervals of letters in that delimited string.
     //!
     //! \param u the Ukkonen object.
     //!
