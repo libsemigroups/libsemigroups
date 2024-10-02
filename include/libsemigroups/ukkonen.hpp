@@ -2454,6 +2454,44 @@ namespace libsemigroups {
                        u.number_of_distinct_words());
   }
 
+  //! \brief Return a human readable representation of an Ukkonen::State object.
+  //!
+  //! Return a human readable representation of an Ukkonen::State object.
+  //!
+  //! \param st the Ukkonen::State object.
+  //!
+  //! \returns A value of type std::string
+  //!
+  //! \exceptions
+  //! \no_libsemigroups_except
+  [[nodiscard]] inline std::string
+  to_human_readable_repr(Ukkonen::State const& st,
+                         std::string const&    sep = "::") {
+    return fmt::format(
+        "<Ukkonen{}State with pos = {} and v = {}>", sep, st.pos, st.v);
+  }
+
+  //! \brief Return a human readable representation of an Ukkonen::Node object.
+  //!
+  //! Return a human readable representation of an Ukkonen::Node object.
+  //!
+  //! \param node the Ukkonen::Node object.
+  //!
+  //! \returns A value of type std::string
+  //!
+  //! \exceptions
+  //! \no_libsemigroups_except
+  [[nodiscard]] inline std::string
+  to_human_readable_repr(Ukkonen::Node const& node,
+                         std::string const&   sep = "::") {
+    return fmt::format(
+        "<Ukkonen{}Node with {} children and parent edge label [{}, {})>",
+        sep,
+        node.children.size(),
+        node.l,
+        node.r);
+  }
+
   //! @}
 
 }  // namespace libsemigroups
