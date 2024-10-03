@@ -84,8 +84,8 @@ namespace libsemigroups {
   TEMPLATE_TEST_CASE("transformation semigroup (size 4)",
                      "[120][quick][knuth-bendix]",
                      KNUTH_BENDIX_TYPES) {
-    auto                  rg = ReportGuard(false);
-    FroidurePin<Transf<>> S({Transf<>({1, 0}), Transf<>({0, 0})});
+    auto rg = ReportGuard(false);
+    auto S  = to_froidure_pin({Transf<>({1, 0}), Transf<>({0, 0})});
     REQUIRE(S.size() == 4);
     REQUIRE(S.number_of_rules() == 4);
 
@@ -158,8 +158,8 @@ namespace libsemigroups {
   TEMPLATE_TEST_CASE("internal_string_to_word x 2",
                      "[124][quick]",
                      KNUTH_BENDIX_TYPES) {
-    auto                  rg = ReportGuard(false);
-    FroidurePin<Transf<>> S(
+    auto rg = ReportGuard(false);
+    auto S  = to_froidure_pin(
         {Transf<>({1, 3, 4, 2, 3}), Transf<>({3, 2, 1, 3, 3})});
 
     REQUIRE(S.size() == 88);
@@ -178,7 +178,7 @@ namespace libsemigroups {
     using words::operator+;
 
     auto rg = ReportGuard(false);
-    auto S  = FroidurePin<Transf<>>(
+    auto S  = to_froidure_pin(
         {Transf<>({1, 3, 4, 2, 3}), Transf<>({3, 2, 1, 3, 3})});
 
     REQUIRE(S.size() == 88);
@@ -238,11 +238,10 @@ namespace libsemigroups {
     auto ntc = (iterator_range(pp.begin(), pp.end())
                 | filter([](auto const& val) { return val.size() > 1; })
                 | transform([](auto& val) {
-                    std::for_each(
-                        val.begin(), val.end(), [](auto& w) -> auto& {
-                          w.erase(w.begin());
-                          return w;
-                        });
+                    std::for_each(val.begin(), val.end(), [](auto& w) -> auto& {
+                      w.erase(w.begin());
+                      return w;
+                    });
                     return val;
                   }));
 
@@ -268,7 +267,7 @@ namespace libsemigroups {
     using words::operator+;
 
     auto rg = ReportGuard(false);
-    auto S  = FroidurePin<Transf<>>(
+    auto S  = to_froidure_pin(
         {Transf<>({1, 3, 4, 2, 3}), Transf<>({3, 2, 1, 3, 3})});
 
     REQUIRE(S.size() == 88);
@@ -359,7 +358,7 @@ namespace libsemigroups {
     using words::operator+;
 
     auto rg = ReportGuard(false);
-    auto S  = FroidurePin<Transf<>>(
+    auto S  = to_froidure_pin(
         {Transf<>({1, 3, 4, 2, 3}), Transf<>({3, 2, 1, 3, 3})});
 
     REQUIRE(S.size() == 88);
@@ -418,7 +417,7 @@ namespace libsemigroups {
     using words::operator+;
 
     auto rg = ReportGuard(false);
-    auto S  = FroidurePin<Transf<>>(
+    auto S  = to_froidure_pin(
         {Transf<>({1, 3, 4, 2, 3}), Transf<>({3, 2, 1, 3, 3})});
 
     REQUIRE(S.size() == 88);

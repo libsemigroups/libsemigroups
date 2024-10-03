@@ -2564,9 +2564,9 @@ namespace libsemigroups {
                           "078",
                           "large number of rules",
                           "[quick][kambites][no-valgrind]") {
-    FroidurePin<LeastTransf<6>> S({LeastTransf<6>({1, 2, 3, 4, 5, 0}),
-                                   LeastTransf<6>({1, 0, 2, 3, 4, 5}),
-                                   LeastTransf<6>({0, 1, 2, 3, 4, 0})});
+    auto S = to_froidure_pin({LeastTransf<6>({1, 2, 3, 4, 5, 0}),
+                              LeastTransf<6>({1, 0, 2, 3, 4, 5}),
+                              LeastTransf<6>({0, 1, 2, 3, 4, 0})});
     REQUIRE(S.size() == 46'656);
     auto     p = to_presentation<word_type>(S);
     Kambites k(p);

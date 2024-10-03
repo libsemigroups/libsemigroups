@@ -497,7 +497,7 @@ namespace libsemigroups {
 
     // Test copy constructor
     auto T = to_froidure_pin(kb);
-    auto S = T.copy_closure({T.generator(0)});
+    auto S = froidure_pin::copy_closure(T, {T.generator(0)});
 
     REQUIRE(S.size() == 336);
     // 5 because S is generated as semigroup by 5 generators, while p is a
@@ -589,7 +589,7 @@ namespace libsemigroups {
   TEMPLATE_TEST_CASE("redundant_rule (word_type)",
                      "[014][quick][knuth-bendix]",
                      KNUTH_BENDIX_TYPES) {
-    using literals::        operator""_w;
+    using literals::operator""_w;
     auto                    rg = ReportGuard(false);
     Presentation<word_type> p;
     p.alphabet(3);
@@ -680,7 +680,7 @@ namespace libsemigroups {
                      "[016][quick][knuth-bendix]",
                      KNUTH_BENDIX_TYPES) {
     using literals::operator""_w;
-    auto            rg = ReportGuard(false);
+    auto rg = ReportGuard(false);
 
     Presentation<std::string> p;
     p.contains_empty_word(true);

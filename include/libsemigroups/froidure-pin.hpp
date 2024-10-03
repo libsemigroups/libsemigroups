@@ -16,8 +16,6 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-// TODO nodiscard
-
 #ifndef LIBSEMIGROUPS_FROIDURE_PIN_HPP_
 #define LIBSEMIGROUPS_FROIDURE_PIN_HPP_
 
@@ -222,15 +220,15 @@ namespace libsemigroups {
     using enumerate_index_type = FroidurePinBase::enumerate_index_type;
 
     struct InternalEqualTo : private detail::BruidhinnTraits<Element> {
-      bool operator()(internal_const_reference x,
-                      internal_const_reference y) const {
+      [[nodiscard]] bool operator()(internal_const_reference x,
+                                    internal_const_reference y) const {
         return EqualTo()(this->to_external_const(x),
                          this->to_external_const(y));
       }
     };
 
     struct InternalHash : private detail::BruidhinnTraits<Element> {
-      size_t operator()(internal_const_reference x) const {
+      [[nodiscard]] size_t operator()(internal_const_reference x) const {
         return Hash()(this->to_external_const(x));
       }
     };
@@ -470,10 +468,11 @@ namespace libsemigroups {
     //! The returned reference is only valid until the next function that
     //! triggers an enumeration is called, or another call to this function is
     //! made.
-    const_reference to_element_no_checks(word_type const& w) const;
+    [[nodiscard]] const_reference
+    to_element_no_checks(word_type const& w) const;
 
     // TODO doc
-    const_reference to_element(word_type const& w) const {
+    [[nodiscard]] const_reference to_element(word_type const& w) const {
       throw_if_any_generator_index_out_of_range(w);
       return to_element_no_checks(w);
     }
@@ -490,10 +489,11 @@ namespace libsemigroups {
     //!
     //! \throws LibsemigroupsException if \p w contains an value exceeding
     //! \ref number_of_generators.
-    bool equal_to_no_checks(word_type const& x, word_type const& y) const;
+    [[nodiscard]] bool equal_to_no_checks(word_type const& x,
+                                          word_type const& y) const;
 
     // TODO doc
-    bool equal_to(word_type const& x, word_type const& y) const {
+    [[nodiscard]] bool equal_to(word_type const& x, word_type const& y) const {
       throw_if_any_generator_index_out_of_range(x);
       throw_if_any_generator_index_out_of_range(y);
       return equal_to(x, y);
@@ -505,7 +505,7 @@ namespace libsemigroups {
     //!
     //! \exceptions
     //! \noexcept
-    size_t number_of_generators() const noexcept override;
+    [[nodiscard]] size_t number_of_generators() const noexcept override;
 
     //! \brief Returns the generator with specified index.
     //!
@@ -519,10 +519,11 @@ namespace libsemigroups {
     //!
     //! \note
     //! Note that `generator(i)` is in general not in position \p i.
-    const_reference generator(generator_index_type i) const;
+    [[nodiscard]] const_reference generator(generator_index_type i) const;
 
     // TODO doc
-    const_reference generator_no_checks(generator_index_type i) const;
+    [[nodiscard]] const_reference
+    generator_no_checks(generator_index_type i) const;
 
     //! \brief Find the position of an element with no enumeration.
     //!
@@ -541,15 +542,15 @@ namespace libsemigroups {
     //! \no_libsemigroups_except
     //!
     //! \sa \ref position and \ref sorted_position.
-    element_index_type current_position(const_reference x) const;
+    [[nodiscard]] element_index_type current_position(const_reference x) const;
 
 #ifndef PARSED_BY_DOXYGEN
     using FroidurePinBase::current_position;
 #endif
 
     // TODO doc
-    element_index_type fast_product_no_checks(element_index_type i,
-                                              element_index_type j) const;
+    [[nodiscard]] element_index_type
+    fast_product_no_checks(element_index_type i, element_index_type j) const;
 
     //! \brief Multiply elements via their indices.
     //!
@@ -581,8 +582,8 @@ namespace libsemigroups {
     //!
     //! \throws LibsemigroupsException if the values \p i and \p j are greater
     //! than or equal to \ref current_size.
-    element_index_type fast_product(element_index_type i,
-                                    element_index_type j) const {
+    [[nodiscard]] element_index_type fast_product(element_index_type i,
+                                                  element_index_type j) const {
       throw_if_element_index_out_of_range(i);
       throw_if_element_index_out_of_range(j);
       return fast_product_no_checks(i, j);
@@ -598,9 +599,9 @@ namespace libsemigroups {
     //!
     //! \note
     //! This function triggers a full enumeration.
-    size_t number_of_idempotents();
+    [[nodiscard]] size_t number_of_idempotents();
 
-    bool is_idempotent_no_checks(element_index_type i);
+    [[nodiscard]] bool is_idempotent_no_checks(element_index_type i);
 
     //! \brief Check if an element is an idempotent via its index.
     //!
@@ -617,7 +618,7 @@ namespace libsemigroups {
     //!
     //! \note
     //! This function triggers a full enumeration.
-    bool is_idempotent(element_index_type i) {
+    [[nodiscard]] bool is_idempotent(element_index_type i) {
       run();
       throw_if_element_index_out_of_range(i);
       return is_idempotent_no_checks(i);
@@ -650,7 +651,7 @@ namespace libsemigroups {
     //! \no_libsemigroups_except
     //!
     //! \note This function may trigger a (partial) enumeration.
-    bool contains(const_reference x);
+    [[nodiscard]] bool contains(const_reference x);
 
     //! \brief Find the position of an element with enumeration if necessary.
     //!
@@ -665,7 +666,7 @@ namespace libsemigroups {
     //! \no_libsemigroups_except
     //!
     //! \sa \ref current_position and \ref sorted_position.
-    element_index_type position(const_reference x);
+    [[nodiscard]] element_index_type position(const_reference x);
 
     //! \brief Returns the sorted index of an element.
     //!
@@ -681,7 +682,7 @@ namespace libsemigroups {
     //! \no_libsemigroups_except
     //!
     //! \sa \ref current_position and \ref position.
-    element_index_type sorted_position(const_reference x);
+    [[nodiscard]] element_index_type sorted_position(const_reference x);
 
     //! \brief Returns the sorted index of an element via its index.
     //!
@@ -696,7 +697,7 @@ namespace libsemigroups {
     //! \exceptions
     //! \no_libsemigroups_except
     // There's no no-checks version of this, there can't be.
-    element_index_type to_sorted_position(element_index_type i);
+    [[nodiscard]] element_index_type to_sorted_position(element_index_type i);
 
     //! \brief Access element specified by index with bound checks.
     //!
@@ -709,7 +710,7 @@ namespace libsemigroups {
     //!
     //! \throws LibsemigroupsException if \p i is greater than or equal to the
     //! return value of size().
-    const_reference at(element_index_type i);
+    [[nodiscard]] const_reference at(element_index_type i);
 
     //! \brief Access element specified by index.
     //!
@@ -735,10 +736,10 @@ namespace libsemigroups {
     //!
     //! \throws LibsemigroupsException if \p i is greater than or equal to the
     //! return value of size().
-    const_reference sorted_at(element_index_type i);
+    [[nodiscard]] const_reference sorted_at(element_index_type i);
 
     // TODO doc
-    const_reference sorted_at_no_checks(element_index_type i);
+    [[nodiscard]] const_reference sorted_at_no_checks(element_index_type i);
 
     //! \brief Factorise an element as a word in the generators.
     //!
@@ -754,7 +755,7 @@ namespace libsemigroups {
     //! \sa minimal_factorisation(element_index_type).
     //!
     //! \note This function may trigger a (partial) enumeration.
-    word_type minimal_factorisation(const_reference x);
+    [[nodiscard]] word_type minimal_factorisation(const_reference x);
 
     // TODO doc
     void minimal_factorisation(word_type& w, const_reference x);
@@ -780,7 +781,7 @@ namespace libsemigroups {
     //! \throws LibsemigroupsException if \p x does not belong to \c this.
     //!
     //! \note This function may trigger a (partial) enumeration.
-    word_type factorisation(const_reference x);
+    [[nodiscard]] word_type factorisation(const_reference x);
 
     // TODO doc
     void factorisation(word_type& w, const_reference x);
@@ -803,7 +804,7 @@ namespace libsemigroups {
     //!
     //! \note
     //! No enumeration is triggered by calls to this function.
-    tril is_finite() const override {
+    [[nodiscard]] tril is_finite() const override {
       return tril::TRUE;
     }
 
@@ -881,12 +882,13 @@ namespace libsemigroups {
     //! \throws LibsemigroupsException if the copy constructor or \ref
     //! add_generators throws.
     template <typename Iterator1, typename Iterator2>
-    FroidurePin copy_add_generators_no_checks(Iterator1 first,
-                                              Iterator2 last) const;
+    [[nodiscard]] FroidurePin
+    copy_add_generators_no_checks(Iterator1 first, Iterator2 last) const;
 
     // TODO(doc)
     template <typename Iterator1, typename Iterator2>
-    FroidurePin copy_add_generators(Iterator1 first, Iterator2 last) const {
+    [[nodiscard]] FroidurePin copy_add_generators(Iterator1 first,
+                                                  Iterator2 last) const {
       throw_if_degree_too_small(first, last);
       throw_if_inconsistent_degree(first, last);
       return copy_add_generators_no_checks(first, last);
@@ -948,11 +950,12 @@ namespace libsemigroups {
     //! \throws LibsemigroupsException if the copy constructor or \ref
     //! add_generators throws.
     template <typename Iterator1, typename Iterator2>
-    FroidurePin copy_closure_no_checks(Iterator1 first, Iterator2 last);
+    [[nodiscard]] FroidurePin copy_closure_no_checks(Iterator1 first,
+                                                     Iterator2 last);
 
     // TODO(doc)
     template <typename Iterator1, typename Iterator2>
-    FroidurePin copy_closure(Iterator1 first, Iterator2 last) {
+    [[nodiscard]] FroidurePin copy_closure(Iterator1 first, Iterator2 last) {
       throw_if_degree_too_small(first, last);
       throw_if_inconsistent_degree(first, last);
       return copy_closure_no_checks(first, last);
@@ -1083,7 +1086,7 @@ namespace libsemigroups {
     //! Constant.
     //!
     //! \sa \ref begin.
-    const_iterator cbegin() const;
+    [[nodiscard]] const_iterator cbegin() const;
 
     //! \brief Returns a const iterator pointing to the first element (ordered
     //! by discovery).
@@ -1101,7 +1104,7 @@ namespace libsemigroups {
     //! Constant.
     //!
     //! \sa \ref cbegin.
-    const_iterator begin() const;
+    [[nodiscard]] const_iterator begin() const;
 
     //! \brief Returns a const iterator pointing to one past the last known
     //! element.
@@ -1119,7 +1122,7 @@ namespace libsemigroups {
     //! Constant.
     //!
     //! \sa \ref end.
-    const_iterator cend() const;
+    [[nodiscard]] const_iterator cend() const;
 
     //! \brief Returns a const iterator pointing one past the last known
     //! element.
@@ -1137,7 +1140,7 @@ namespace libsemigroups {
     //! Constant.
     //!
     //! \sa \ref cend.
-    const_iterator end() const;
+    [[nodiscard]] const_iterator end() const;
 
     //! \brief Returns a const iterator pointing to the first element (sorted
     //! by Less).
@@ -1148,7 +1151,7 @@ namespace libsemigroups {
     //! \no_libsemigroups_except
     //!
     //! \note This function triggers a full enumeration.
-    const_iterator_sorted cbegin_sorted();
+    [[nodiscard]] const_iterator_sorted cbegin_sorted();
 
     //! \brief Returns a const iterator pointing one past the last element
     //! (sorted by Less).
@@ -1159,7 +1162,7 @@ namespace libsemigroups {
     //! \no_libsemigroups_except
     //!
     //! \note This function triggers a full enumeration.
-    const_iterator_sorted cend_sorted();
+    [[nodiscard]] const_iterator_sorted cend_sorted();
 
     //! \brief Returns a const iterator pointing at the first idempotent.
     //!
@@ -1173,7 +1176,7 @@ namespace libsemigroups {
     //! \no_libsemigroups_except
     //!
     //! \note This function triggers a full enumeration.
-    const_iterator_idempotents cbegin_idempotents();
+    [[nodiscard]] const_iterator_idempotents cbegin_idempotents();
 
     //! \brief Returns a const iterator pointing one past the last idempotent.
     //!
@@ -1183,31 +1186,31 @@ namespace libsemigroups {
     //! \no_libsemigroups_except
     //!
     //! \note This function triggers a full enumeration.
-    const_iterator_idempotents cend_idempotents();
+    [[nodiscard]] const_iterator_idempotents cend_idempotents();
 
     // TODO doc
-    auto current_idempotents() {
+    [[nodiscard]] auto current_idempotents() {
       return rx::iterator_range(cbegin_idempotents(), cend_idempotents());
     }
 
     // TODO doc
-    auto idempotents() {
+    [[nodiscard]] auto idempotents() {
       run();
       return current_idempotents();
     }
 
     // TODO doc
-    auto sorted_elements() {
+    [[nodiscard]] auto sorted_elements() {
       return rx::iterator_range(cbegin_sorted(), cend_sorted());
     }
 
     // TODO doc
-    auto current_elements() {
+    [[nodiscard]] auto current_elements() {
       return rx::iterator_range(cbegin(), cend());
     }
 
     // TODO doc
-    auto elements() {
+    [[nodiscard]] auto elements() {
       run();
       return current_elements();
     }
@@ -1244,8 +1247,8 @@ namespace libsemigroups {
 
     // TODO(doc)
     template <typename Element>
-    FroidurePin<Element> init(FroidurePin<Element>&          fp,
-                              std::initializer_list<Element> gens) {
+    [[nodiscard]] FroidurePin<Element>
+    init(FroidurePin<Element>& fp, std::initializer_list<Element> gens) {
       return fp.init(std::begin(gens), std::end(gens));
     }
 
@@ -1308,14 +1311,15 @@ namespace libsemigroups {
 
     // TODO(doc)
     template <typename Container>
-    FroidurePin<typename Container::value_type>
+    [[nodiscard]] FroidurePin<typename Container::value_type>
     copy_add_generators(FroidurePin<typename Container::value_type> const& fp,
                         Container const& coll) {
       return fp.copy_add_generators(std::begin(coll), std::end(coll));
     }
 
     template <typename Container>
-    FroidurePin<typename Container::value_type> copy_add_generators_no_checks(
+    [[nodiscard]] FroidurePin<typename Container::value_type>
+    copy_add_generators_no_checks(
         FroidurePin<typename Container::value_type> const& fp,
         Container const&                                   coll) {
       return fp.copy_add_generators_no_checks(std::begin(coll), std::end(coll));
@@ -1323,14 +1327,14 @@ namespace libsemigroups {
 
     // TODO(doc)
     template <typename Element>
-    FroidurePin<Element>
+    [[nodiscard]] FroidurePin<Element>
     copy_add_generators(FroidurePin<Element> const&    fp,
                         std::initializer_list<Element> coll) {
       return fp.copy_add_generators(std::begin(coll), std::end(coll));
     }
 
     template <typename Element>
-    FroidurePin<Element>
+    [[nodiscard]] FroidurePin<Element>
     copy_add_generators_no_checks(FroidurePin<Element> const&    fp,
                                   std::initializer_list<Element> coll) {
       return fp.copy_add_generators_no_checks(std::begin(coll), std::end(coll));
@@ -1366,14 +1370,14 @@ namespace libsemigroups {
     }
 
     template <typename Container>
-    FroidurePin<typename Container::value_type>
+    [[nodiscard]] FroidurePin<typename Container::value_type>
     copy_closure(FroidurePin<typename Container::value_type>& fp,
                  Container const&                             coll) {
       return fp.copy_closure(std::begin(coll), std::end(coll));
     }
 
     template <typename Container>
-    FroidurePin<typename Container::value_type>
+    [[nodiscard]] FroidurePin<typename Container::value_type>
     copy_closure_no_checks(FroidurePin<typename Container::value_type>& fp,
                            Container const&                             coll) {
       return fp.copy_closure_no_checks(std::begin(coll), std::end(coll));
@@ -1381,13 +1385,14 @@ namespace libsemigroups {
 
     // TODO(doc)
     template <typename Element>
-    FroidurePin<Element> copy_closure(FroidurePin<Element>&          fp,
-                                      std::initializer_list<Element> coll) {
+    [[nodiscard]] FroidurePin<Element>
+    copy_closure(FroidurePin<Element>&          fp,
+                 std::initializer_list<Element> coll) {
       return fp.copy_closure(std::begin(coll), std::end(coll));
     }
 
     template <typename Element>
-    FroidurePin<Element>
+    [[nodiscard]] FroidurePin<Element>
     copy_closure_no_checks(FroidurePin<Element>&          fp,
                            std::initializer_list<Element> coll) {
       return fp.copy_closure(std::begin(coll), std::end(coll));
@@ -1409,7 +1414,7 @@ namespace libsemigroups {
   //! * Degree`{}(x) != `Degree`{}(y)` for some \c x and \c y in
   //! \p gens.
   template <typename Container>
-  FroidurePin<typename Container::value_type>
+  [[nodiscard]] FroidurePin<typename Container::value_type>
   to_froidure_pin(Container const& gens) {
     FroidurePin<typename Container::value_type>::throw_if_inconsistent_degree(
         std::begin(gens), std::end(gens));
@@ -1425,19 +1430,23 @@ namespace libsemigroups {
   // }
 
   template <typename Element>
-  FroidurePin<Element> to_froidure_pin(std::initializer_list<Element> gens) {
+  [[nodiscard]] FroidurePin<Element>
+  to_froidure_pin(std::initializer_list<Element> gens) {
     FroidurePin<Element>::throw_if_inconsistent_degree(std::begin(gens),
                                                        std::end(gens));
     return FroidurePin(std::begin(gens), std::end(gens));
   }
 
-  // TODO(0) version with iterators
-  // template <typename Element>
-  // FroidurePin<Element> to_froidure_pin(std::initializer_list<Element> gens) {
-  //   FroidurePin<Element>::throw_if_inconsistent_degree(std::begin(gens),
-  //                                                      std::end(gens));
-  //   return FroidurePin(std::begin(gens), std::end(gens));
-  // }
+  template <typename Iterator1, typename Iterator2>
+  [[nodiscard]] FroidurePin<std::decay_t<decltype(*std::declval<Iterator1>())>>
+  to_froidure_pin(Iterator1 first, Iterator2 last) {
+    using Element = std::decay_t<decltype(*std::declval<Iterator1>())>;
+    static_assert(
+        std::is_same_v<std::decay_t<decltype(*std::declval<Iterator2>())>,
+                       Element>);
+    FroidurePin<Element>::throw_if_inconsistent_degree(first, last);
+    return FroidurePin(first, last);
+  }
 }  // namespace libsemigroups
 
 #include "froidure-pin.tpp"
