@@ -302,7 +302,8 @@ namespace libsemigroups {
   }
 
   template <typename Element, typename Traits>
-  void FroidurePin<Element, Traits>::reserve(size_t n) {
+  FroidurePin<Element, Traits>&
+  FroidurePin<Element, Traits>::reserve(size_t n) {
     // Since the FroidurePin we are enumerating is bounded in size by the
     // maximum value of an element_index_t, we cast the argument here to
     // this integer type.
@@ -318,6 +319,7 @@ namespace libsemigroups {
     _reduced.reserve(nn);
     _right.reserve(nn, _right.out_degree());
     _suffix.reserve(nn);
+    return *this;
   }
 
   template <typename Element, typename Traits>

@@ -643,7 +643,7 @@ namespace libsemigroups {
     //! \exceptions
     //! \no_libsemigroups_except
     // TODO return reference to this
-    void reserve(size_t val);
+    FroidurePin& reserve(size_t val);
 
     //! \brief Test membership of an element.
     //!
