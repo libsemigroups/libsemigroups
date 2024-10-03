@@ -60,14 +60,13 @@ namespace libsemigroups {
   template <typename Iterator1, typename Iterator2>
   FroidurePin<Element, Traits>::FroidurePin(Iterator1 first, Iterator2 last)
       : FroidurePin() {
-    init_no_checks(first, last);
+    init(first, last);
   }
 
   template <typename Element, typename Traits>
   template <typename Iterator1, typename Iterator2>
   FroidurePin<Element, Traits>&
-  FroidurePin<Element, Traits>::init_no_checks(Iterator1 first,
-                                               Iterator2 last) {
+  FroidurePin<Element, Traits>::init(Iterator1 first, Iterator2 last) {
     static_assert(
         std::is_same_v<std::decay_t<decltype(*std::declval<Iterator1>())>,
                        element_type>);

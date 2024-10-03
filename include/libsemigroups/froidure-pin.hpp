@@ -419,14 +419,7 @@ namespace libsemigroups {
 
     //! TODO(doc)
     template <typename Iterator1, typename Iterator2>
-    FroidurePin& init_no_checks(Iterator1 first, Iterator2 last);
-
-    //! TODO(doc)
-    template <typename Iterator1, typename Iterator2>
-    FroidurePin& init(Iterator1 first, Iterator2 last) {
-      throw_if_bad_degree(first, last);
-      return init_no_checks(first, last);
-    }
+    FroidurePin& init(Iterator1 first, Iterator2 last);
 
     //! \brief Copy constructor.
     //!
@@ -642,7 +635,6 @@ namespace libsemigroups {
     //!
     //! \exceptions
     //! \no_libsemigroups_except
-    // TODO return reference to this
     FroidurePin& reserve(size_t val);
 
     //! \brief Test membership of an element.
@@ -1312,6 +1304,13 @@ namespace libsemigroups {
       return fp.add_generators(std::begin(coll), std::end(coll));
     }
 
+    template <typename Element>
+    FroidurePin<Element>&
+    add_generators_no_checks(FroidurePin<Element>&          fp,
+                             std::initializer_list<Element> coll) {
+      return fp.add_generators_no_checks(std::begin(coll), std::end(coll));
+    }
+
     // TODO(doc)
     // TODO no_checks version
     template <typename Container>
@@ -1319,6 +1318,13 @@ namespace libsemigroups {
     copy_add_generators(FroidurePin<typename Container::value_type> const& fp,
                         Container const& coll) {
       return fp.copy_add_generators(std::begin(coll), std::end(coll));
+    }
+
+    template <typename Container>
+    FroidurePin<typename Container::value_type> copy_add_generators_no_checks(
+        FroidurePin<typename Container::value_type> const& fp,
+        Container const&                                   coll) {
+      return fp.copy_add_generators_no_checks(std::begin(coll), std::end(coll));
     }
 
     // TODO(doc)
@@ -1330,6 +1336,13 @@ namespace libsemigroups {
       return fp.copy_add_generators(std::begin(coll), std::end(coll));
     }
 
+    template <typename Element>
+    FroidurePin<Element>
+    copy_add_generators_no_checks(FroidurePin<Element> const&    fp,
+                                  std::initializer_list<Element> coll) {
+      return fp.copy_add_generators_no_checks(std::begin(coll), std::end(coll));
+    }
+
     // TODO(doc)
     // TODO no_checks version
     template <typename Container>
@@ -1337,6 +1350,13 @@ namespace libsemigroups {
     closure(FroidurePin<typename Container::value_type>& fp,
             Container const&                             coll) {
       return fp.closure(std::begin(coll), std::end(coll));
+    }
+
+    template <typename Container>
+    FroidurePin<typename Container::value_type>&
+    closure_no_checks(FroidurePin<typename Container::value_type>& fp,
+                      Container const&                             coll) {
+      return fp.closure_no_checks(std::begin(coll), std::end(coll));
     }
 
     // TODO(doc)
@@ -1347,6 +1367,13 @@ namespace libsemigroups {
       return fp.closure(std::begin(coll), std::end(coll));
     }
 
+    template <typename Element>
+    FroidurePin<Element>&
+    closure_no_checks(FroidurePin<Element>&          fp,
+                      std::initializer_list<Element> coll) {
+      return fp.closure_no_checks(std::begin(coll), std::end(coll));
+    }
+
     // TODO no_checks version
     template <typename Container>
     FroidurePin<typename Container::value_type>
@@ -1355,11 +1382,24 @@ namespace libsemigroups {
       return fp.copy_closure(std::begin(coll), std::end(coll));
     }
 
+    template <typename Container>
+    FroidurePin<typename Container::value_type>
+    copy_closure_no_checks(FroidurePin<typename Container::value_type>& fp,
+                           Container const&                             coll) {
+      return fp.copy_closure_no_checks(std::begin(coll), std::end(coll));
+    }
+
     // TODO(doc)
-    // TODO no_checks version
     template <typename Element>
     FroidurePin<Element> copy_closure(FroidurePin<Element>&          fp,
                                       std::initializer_list<Element> coll) {
+      return fp.copy_closure(std::begin(coll), std::end(coll));
+    }
+
+    template <typename Element>
+    FroidurePin<Element>
+    copy_closure_no_checks(FroidurePin<Element>&          fp,
+                           std::initializer_list<Element> coll) {
       return fp.copy_closure(std::begin(coll), std::end(coll));
     }
   }  // namespace froidure_pin
@@ -1378,7 +1418,6 @@ namespace libsemigroups {
   //! * \p gens is empty;
   //! * Degree`{}(x) != `Degree`{}(y)` for some \c x and \c y in
   //! \p gens.
-  // TODO no_checks version
   template <typename Container>
   FroidurePin<typename Container::value_type>
   to_froidure_pin(Container const& gens) {
@@ -1402,6 +1441,14 @@ namespace libsemigroups {
                                                        std::end(gens));
     return FroidurePin(std::begin(gens), std::end(gens));
   }
+
+  // TODO version with iterators
+  // template <typename Element>
+  // FroidurePin<Element> to_froidure_pin(std::initializer_list<Element> gens) {
+  //   FroidurePin<Element>::throw_if_inconsistent_degree(std::begin(gens),
+  //                                                      std::end(gens));
+  //   return FroidurePin(std::begin(gens), std::end(gens));
+  // }
 }  // namespace libsemigroups
 
 #include "froidure-pin.tpp"
