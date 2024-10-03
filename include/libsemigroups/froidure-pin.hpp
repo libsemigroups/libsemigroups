@@ -818,9 +818,8 @@ namespace libsemigroups {
     //!
     //! \throws LibsemigroupsException if any of the following hold:
     //! * the degree of \p x is incompatible with the existing degree.
-    template <typename Iterator>
-    // TODO should be Iterator1 + Iterator2
-    FroidurePin& add_generators_no_checks(Iterator first, Iterator last);
+    template <typename Iterator1, typename Iterator2>
+    FroidurePin& add_generators_no_checks(Iterator1 first, Iterator2 last);
 
     // TODO doc
     // TODO should be Iterator1 + Iterator2

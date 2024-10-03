@@ -880,11 +880,16 @@ namespace libsemigroups {
   }
 
   template <typename Element, typename Traits>
-  template <typename Iterator>
+  template <typename Iterator1, typename Iterator2>
   FroidurePin<Element, Traits>&
-  FroidurePin<Element, Traits>::add_generators_no_checks(Iterator first,
-                                                         Iterator last) {
-    // TODO static_assert
+  FroidurePin<Element, Traits>::add_generators_no_checks(Iterator1 first,
+                                                         Iterator2 last) {
+    static_assert(
+        std::is_same_v<std::decay_t<decltype(*std::declval<Iterator1>())>,
+                       element_type>);
+    static_assert(
+        std::is_same_v<std::decay_t<decltype(*std::declval<Iterator2>())>,
+                       element_type>);
     if (_pos == 0) {
       add_generators_before_start(first, last);
     } else {
