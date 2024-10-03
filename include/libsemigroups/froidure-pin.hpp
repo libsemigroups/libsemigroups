@@ -822,9 +822,8 @@ namespace libsemigroups {
     FroidurePin& add_generators_no_checks(Iterator1 first, Iterator2 last);
 
     // TODO doc
-    // TODO should be Iterator1 + Iterator2
-    template <typename Iterator>
-    FroidurePin& add_generators(Iterator first, Iterator last);
+    template <typename Iterator1, typename Iterator2>
+    FroidurePin& add_generators(Iterator1 first, Iterator2 last);
 
     // TODO doc
     FroidurePin& add_generator_no_checks(const_reference x);

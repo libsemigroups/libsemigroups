@@ -899,9 +899,10 @@ namespace libsemigroups {
   }
 
   template <typename Element, typename Traits>
-  template <typename Iterator>
+  template <typename Iterator1, typename Iterator2>
   FroidurePin<Element, Traits>&
-  FroidurePin<Element, Traits>::add_generators(Iterator first, Iterator last) {
+  FroidurePin<Element, Traits>::add_generators(Iterator1 first,
+                                               Iterator2 last) {
     throw_if_bad_degree(first, last);
     return add_generators_no_checks(first, last);
   }
