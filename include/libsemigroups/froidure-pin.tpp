@@ -628,25 +628,25 @@ namespace libsemigroups {
   }
 
   template <typename Element, typename Traits>
-  template <typename Iterator>
-  void FroidurePin<Element, Traits>::throw_if_bad_degree(Iterator first,
-                                                         Iterator last) const {
+  template <typename Iterator1, typename Iterator2>
+  void FroidurePin<Element, Traits>::throw_if_bad_degree(Iterator1 first,
+                                                         Iterator2 last) const {
     if (degree() == UNDEFINED && first != last) {
       throw_if_inconsistent_degree(first, last);
     } else {
-      for (auto it = first; it < last; ++it) {
+      for (auto it = first; it != last; ++it) {
         throw_if_bad_degree(*it);
       }
     }
   }
 
   template <typename Element, typename Traits>
-  template <typename Iterator>
-  void
-  FroidurePin<Element, Traits>::throw_if_degree_too_small(Iterator first,
-                                                          Iterator last) const {
+  template <typename Iterator1, typename Iterator2>
+  void FroidurePin<Element, Traits>::throw_if_degree_too_small(
+      Iterator1 first,
+      Iterator2 last) const {
     if (first != last) {
-      for (auto it = first; it < last; ++it) {
+      for (auto it = first; it != last; ++it) {
         auto m = Degree()(*it);
         if (m < degree()) {
           LIBSEMIGROUPS_EXCEPTION(
@@ -657,10 +657,10 @@ namespace libsemigroups {
   }
 
   template <typename Element, typename Traits>
-  template <typename Iterator>
+  template <typename Iterator1, typename Iterator2>
   void
-  FroidurePin<Element, Traits>::throw_if_inconsistent_degree(Iterator first,
-                                                             Iterator last) {
+  FroidurePin<Element, Traits>::throw_if_inconsistent_degree(Iterator1 first,
+                                                             Iterator2 last) {
     if (first != last) {
       auto n = Degree()(*first);
       for (auto it = first; it != last; ++it) {
@@ -683,11 +683,11 @@ namespace libsemigroups {
   }
 
   template <typename Element, typename Traits>
-  template <typename Iterator>
+  template <typename Iterator1, typename Iterator2>
   void
-  FroidurePin<Element, Traits>::add_generators_before_start(Iterator first,
-                                                            Iterator last) {
-    // TODO if Iterator is std::move_iterator, then first and last are not
+  FroidurePin<Element, Traits>::add_generators_before_start(Iterator1 first,
+                                                            Iterator2 last) {
+    // TODO(1) if Iterator is std::move_iterator, then first and last are not
     // valid after the next line (the values they point at are moved
     // into std::distance for some reason).
     size_t const m = std::distance(first, last);
@@ -758,9 +758,10 @@ namespace libsemigroups {
   }
 
   template <typename Element, typename Traits>
-  template <typename Iterator>
-  void FroidurePin<Element, Traits>::add_generators_after_start(Iterator first,
-                                                                Iterator last) {
+  template <typename Iterator1, typename Iterator2>
+  void
+  FroidurePin<Element, Traits>::add_generators_after_start(Iterator1 first,
+                                                           Iterator2 last) {
     reset_start_time();
     auto const tid = detail::this_threads_id();
 
@@ -928,13 +929,16 @@ namespace libsemigroups {
   // }
 
   template <typename Element, typename Traits>
-  template <typename Iterator>
+  template <typename Iterator1, typename Iterator2>
   FroidurePin<Element, Traits>
   FroidurePin<Element, Traits>::copy_add_generators_no_checks(
-      Iterator first,
-      Iterator last) const {
+      Iterator1 first,
+      Iterator2 last) const {
     static_assert(
-        std::is_same_v<std::decay_t<decltype(*std::declval<Iterator>())>,
+        std::is_same_v<std::decay_t<decltype(*std::declval<Iterator1>())>,
+                       element_type>);
+    static_assert(
+        std::is_same_v<std::decay_t<decltype(*std::declval<Iterator2>())>,
                        element_type>);
 
     if (first == last) {
@@ -951,12 +955,15 @@ namespace libsemigroups {
   }
 
   template <typename Element, typename Traits>
-  template <typename Iterator>
+  template <typename Iterator1, typename Iterator2>
   FroidurePin<Element, Traits>&
-  FroidurePin<Element, Traits>::closure_no_checks(Iterator first,
-                                                  Iterator last) {
+  FroidurePin<Element, Traits>::closure_no_checks(Iterator1 first,
+                                                  Iterator2 last) {
     static_assert(
-        std::is_same_v<std::decay_t<decltype(*std::declval<Iterator>())>,
+        std::is_same_v<std::decay_t<decltype(*std::declval<Iterator1>())>,
+                       element_type>);
+    static_assert(
+        std::is_same_v<std::decay_t<decltype(*std::declval<Iterator2>())>,
                        element_type>);
     for (auto it = first; it != last; ++it) {
       if (!contains(*it)) {
@@ -967,12 +974,15 @@ namespace libsemigroups {
   }
 
   template <typename Element, typename Traits>
-  template <typename Iterator>
+  template <typename Iterator1, typename Iterator2>
   FroidurePin<Element, Traits>
-  FroidurePin<Element, Traits>::copy_closure_no_checks(Iterator first,
-                                                       Iterator last) {
+  FroidurePin<Element, Traits>::copy_closure_no_checks(Iterator1 first,
+                                                       Iterator2 last) {
     static_assert(
-        std::is_same_v<std::decay_t<decltype(*std::declval<Iterator>())>,
+        std::is_same_v<std::decay_t<decltype(*std::declval<Iterator1>())>,
+                       element_type>);
+    static_assert(
+        std::is_same_v<std::decay_t<decltype(*std::declval<Iterator2>())>,
                        element_type>);
     if (first == last) {
       return FroidurePin(*this);
