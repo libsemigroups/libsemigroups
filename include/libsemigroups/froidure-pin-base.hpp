@@ -1794,20 +1794,21 @@ namespace libsemigroups {
 
   //! \ingroup froidure_pin_group
   //!
-  //! TODO
+  //! \brief This namespace contains helper functions for the FroidurePin class
+  //! template.
   namespace froidure_pin {
 
     //! \brief Compute a product using the Cayley graph.
     //!
     //! This function finds the product of `fpb.at(i)` and `fpb.at(j)` by
     //! following the path in the right Cayley graph from \p i labelled by the
-    //! word `minimal_factorisation(j)` or, if `minimal_factorisation(i)` is
-    //! shorter, by following the path in the left Cayley graph from \p j
-    //! labelled by `minimal_factorisation(i)`.
+    //! word `fpb.minimal_factorisation(j)` or, if
+    //! `fpb.minimal_factorisation(i)` is shorter, by following the path in the
+    //! left Cayley graph from \p j labelled by `fpb.minimal_factorisation(i)`.
     //!
     //! \param fpb the FroidurePinBase object.
-    //! \param i the first index of an element.
-    //! \param j the second index of an element.
+    //! \param i the index of an element.
+    //! \param j another index of an element.
     //!
     //! \returns
     //! A value of type \ref FroidurePinBase::element_index_type.
@@ -1827,15 +1828,15 @@ namespace libsemigroups {
 
     //! \brief Compute a product using the Cayley graph.
     //!
-    //! This function finds the product of `at(i)` and `at(j)` by following the
-    //! path in the right Cayley graph from \p i labelled by the word
-    //! `minimal_factorisation(j)` or, if `minimal_factorisation(i)` is
-    //! shorter, by following the path in the left Cayley graph from \p j
-    //! labelled by `minimal_factorisation(i)`.
+    //! This function finds the product of `fpb.at(i)` and `fpb.at(j)` by
+    //! following the path in the right Cayley graph from \p i labelled by the
+    //! word `fpb.minimal_factorisation(j)` or, if
+    //! `fpb.minimal_factorisation(i)` is shorter, by following the path in the
+    //! left Cayley graph from \p j labelled by `fpb.minimal_factorisation(i)`.
     //!
     //! \param fpb the FroidurePinBase object.
-    //! \param i the first index of an element.
-    //! \param j the second index of an element.
+    //! \param i the index of an element.
+    //! \param j another index of an element.
     //!
     //! \returns
     //! A value of type \ref FroidurePinBase::element_index_type.
