@@ -41,6 +41,9 @@ namespace libsemigroups {
       FroidurePin<Mat> S;
       S.add_generator(Mat({{0, 1}, {0, -1}}));
       S.add_generator(Mat({{0, 1}, {2, 0}}));
+      REQUIRE(to_human_readable_repr(S)
+              == "<partially enumerated FroidurePin with 2 generators, 2 "
+                 "elements, Cayley graph ⌀ 1, & 0 rules>");
 
       REQUIRE(Mat({{0, 1}, {0, -1}}) * Mat({{0, 1}, {2, 0}})
                   * Mat({{0, 1}, {2, 0}})
@@ -64,6 +67,9 @@ namespace libsemigroups {
       }
       S.enumerate(1000000);
       REQUIRE(S.current_size() == 631);
+      REQUIRE(to_human_readable_repr(S)
+              == "<fully enumerated FroidurePin with 2 generators, 631 "
+                 "elements, Cayley graph ⌀ 128, & 7 rules>");
       REQUIRE(
           S.minimal_factorisation(Mat({{0, 1}, {0, -1}}) * Mat({{0, 1}, {2, 0}})
                                   * Mat({{0, 1}, {2, 0}}))

@@ -33,7 +33,8 @@
 #include "debug.hpp"              // for LIBSEMIGROUPS_ASSERT
 #include "exception.hpp"          // for LIBSEMIGROUPS_EXCEPTION
 #include "froidure-pin-base.hpp"  // for FroidurePinBase, FroidurePinBase::s...
-#include "types.hpp"              // for letter_type, word_type
+#include "libsemigroups/gabow.hpp"
+#include "types.hpp"  // for letter_type, word_type
 
 #include "detail/bruidhinn-traits.hpp"  // for detail::BruidhinnTraits
 #include "detail/iterator.hpp"          // for ConstIteratorStateless
@@ -2112,6 +2113,11 @@ namespace libsemigroups {
     FroidurePin<Element>::throw_if_inconsistent_degree(first, last);
     return FroidurePin(first, last);
   }
+
+  template <typename Element, typename Traits>
+  [[nodiscard]] std::string
+  to_human_readable_repr(FroidurePin<Element, Traits> const& fp);
+
 }  // namespace libsemigroups
 
 #include "froidure-pin.tpp"

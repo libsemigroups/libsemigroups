@@ -687,7 +687,7 @@ namespace libsemigroups {
   void
   FroidurePin<Element, Traits>::add_generators_before_start(Iterator1 first,
                                                             Iterator2 last) {
-    if (first == last) {
+    if (first != last) {
       init_degree(*first);
     }
 
@@ -1389,5 +1389,20 @@ namespace libsemigroups {
     using Deref     = DerefPairFirst;
     using AddressOf = AddressOfPairFirst;
   };
+
+  template <typename Element, typename Traits>
+  [[nodiscard]] std::string
+  to_human_readable_repr(FroidurePin<Element, Traits> const& fp) {
+    return fmt::format("<{} enumerated FroidurePin with {} generator{}, {} "
+                       "element{}, Cayley graph \u2300 {}, & {} rule{}>",
+                       fp.finished() ? "fully" : "partially",
+                       fp.number_of_generators(),
+                       fp.number_of_generators() == 1 ? "" : "s",
+                       fp.current_size(),
+                       fp.current_size() == 1 ? "" : "s",
+                       fp.current_max_word_length(),
+                       fp.current_number_of_rules(),
+                       fp.current_number_of_rules() == 1 ? "" : "s");
+  }
 
 }  // namespace libsemigroups
