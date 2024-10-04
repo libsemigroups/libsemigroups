@@ -481,6 +481,8 @@ namespace libsemigroups {
   //!
   //! \param g the Gabow object.
   //!
+  //! \returns A string containing a human readable representation of \p g.
+  //!
   //! \exceptions
   //! \no_libsemigroups_except
   template <typename Node>

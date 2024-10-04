@@ -1494,6 +1494,10 @@ namespace libsemigroups {
     bool finished_impl() const override;
   };
 
+  //! \ingroup froidure_pin_group
+  //!
+  //! Deduction guide for constructing FroidurePin<Element> where \c Element is
+  //! the type pointed to by \c Iterator1 and \c Iterator2.
   template <typename Iterator1, typename Iterator2>
   FroidurePin(Iterator1, Iterator2)
       -> FroidurePin<std::decay_t<decltype(*std::declval<Iterator1>())>>;
@@ -2114,6 +2118,24 @@ namespace libsemigroups {
     return FroidurePin(first, last);
   }
 
+  //! \ingroup froidure_pin_group
+  //!
+  //! \brief Return a human readable representation of a FroidurePin object.
+  //!
+  //! Return a human readable representation of a FroidurePin object.
+  //!
+  //! \tparam Element the type of the elements in the represented
+  //! semigroup.
+  //!
+  //! \tparam Traits a traits class holding various adapters used by the
+  //! implementation.
+  //!
+  //! \param fp the FroidurePin object.
+  //!
+  //! \returns A string containing a human readable representation of \p fp.
+  //!
+  //! \exceptions
+  //! \no_libsemigroups_except
   template <typename Element, typename Traits>
   [[nodiscard]] std::string
   to_human_readable_repr(FroidurePin<Element, Traits> const& fp);
