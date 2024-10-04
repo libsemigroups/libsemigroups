@@ -64,9 +64,10 @@ def process_file(f):
             if level >= highest_level:
                 highest_level = level
                 break
-            print(
-                f"{begin_warn_col}warning: {command} is not in the correct place in docstring at {file}:{line_no+1}{end_warn_col}"
-            )
+            if in_doc:
+                print(
+                    f"{begin_warn_col}warning: {command} is not in the correct place in docstring at {file}:{line_no+1}{end_warn_col}"
+                )
 
 
 print("Checking docstring order in .hpp files . . .")
