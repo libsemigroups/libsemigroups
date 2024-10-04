@@ -59,9 +59,11 @@ namespace libsemigroups {
       Kassabov   = 16'384,
       Lubotzky   = 32'768,
       Miller     = 65'536,
-      Moore      = 131'072,
-      Moser      = 262'144,
-      Sutov      = 524'288,
+      Mitchell   = 131'072,
+      Moore      = 262'144,
+      Moser      = 524'288,
+      Sutov      = 1'048'576,
+      Whyte      = 2'097'152
     };
 
     //! This operator can be used arbitrarily to combine author values (see \ref
@@ -73,7 +75,7 @@ namespace libsemigroups {
 
     //! A presentation for the stellar monoid.
     //!
-    //! Returns a monoid presentation defining
+
     //! the stellar monoid with `l` generators, as in Theorem 4.39 of
     //! [10.48550/arXiv.1910.11740][].
     //!
@@ -392,8 +394,14 @@ namespace libsemigroups {
     //! [http://hdl.handle.net/10023/2821][])
     //! * `author::Iwahori` (see Theorem 9.3.1 of
     //! [10.1007/978-1-84800-281-4][])
+    //! * `author::Mitchell + author::Whyte` (see Theorem 1.5 of
+    //! [10.48550/arXiv.2406.19294][])
+    //!    * `index = 0` for the presentation with five non-symmetric-group
+    //!    relations
+    //!    * `index = 1` for the presentation with four non-symmetric-group
+    //!    relations, valid for odd degree
     //!
-    //! The default for `val` is `author::Iwahori`.
+    //! The default for `val` is `author::Mitchell + author::Whyte`.
     //!
     //! \param n the degree of the full transformation monoid
     //! \param val the author of the presentation
@@ -405,8 +413,11 @@ namespace libsemigroups {
     //!
     //! [http://hdl.handle.net/10023/2821]: http://hdl.handle.net/10023/2821
     //! [10.1007/978-1-84800-281-4]: https://doi.org/10.1007/978-1-84800-281-4
+    //! [10.48550/arXiv.2406.19294]: https://doi.org/10.48550/arXiv.2406.19294
     [[nodiscard]] Presentation<word_type>
-    full_transformation_monoid(size_t n, author val = author::Iwahori);
+    full_transformation_monoid(size_t n,
+                               author val   = author::Mitchell + author::Whyte,
+                               size_t index = 0);
 
     //! A presentation for the partial transformation monoid.
     //!
@@ -416,8 +427,10 @@ namespace libsemigroups {
     //! * `author::Machine`
     //! * `author::Sutov` (see Theorem 9.4.1 of
     //! [10.1007/978-1-84800-281-4][])
+    //! * `author::Mitchell + author::Whyte`  (See Theorem 1.5 of
+    //! [10.48550/arXiv.2406.19294])
     //!
-    //! The default for `val` is `author::Sutov`.
+    //! The default for `val` is `author::Mitchell + author::Whyte`.
     //!
     //! \param n the degree of the partial transformation monoid
     //! \param val the author of the presentation
@@ -428,8 +441,10 @@ namespace libsemigroups {
     //! order of author)
     //!
     //! [10.1007/978-1-84800-281-4]: https://doi.org/10.1007/978-1-84800-281-4
-    [[nodiscard]] Presentation<word_type>
-    partial_transformation_monoid(size_t n, author val = author::Sutov);
+    //! [10.48550/arXiv.2406.19294]: https://doi.org/10.48550/arXiv.2406.19294
+    [[nodiscard]] Presentation<word_type> partial_transformation_monoid(
+        size_t n,
+        author val = author::Mitchell + author::Whyte);
 
     //! A presentation for the symmetric inverse monoid.
     //!
@@ -438,17 +453,11 @@ namespace libsemigroups {
     //! presentation which is returned. The options are:
     //! * `author::Sutov` (see Theorem 9.2.2 of
     //! [10.1007/978-1-84800-281-4][])
-
-    // When val == author::Gay, this is just a presentation for the symmetric
-    // inverse monoid, a slightly modified version from Solomon (so that
-    // contains the Coxeter+Moser presentation for the symmetric group),
-    // Example 7.1.2 in Joel gay's thesis (JDM the presentation in Example 7.1.2
-    // seems to have 2n - 1 generators whereas this function returns a monoid on
-    // n generators. TODO ask Florent again if this reference is correct
-    // Maybe should be Solomon:
-    // https://www.sciencedirect.com/science/article/pii/S0021869303005933/pdf
+    //! * `author::Mitchell + author::Whyte` (see Theorem 1.4 of
+    //! [10.48550/arXiv.2406.19294][])
     //!
-    //! The default for `val` is the only option above.
+    //!
+    //! The default value for `val` is `author::Mitchell + author::Whyte`.
     //!
     //! \param n the degree of the symmetric inverse monoid
     //! \param val the author of the presentation
@@ -459,8 +468,19 @@ namespace libsemigroups {
     //! order of author)
     //!
     //! [10.1007/978-1-84800-281-4]: https://doi.org/10.1007/978-1-84800-281-4
+    //! [10.48550/arXiv.2406.19294]: https://doi.org/10.48550/arXiv.2406.19294
+    //
+    // When val == author::Gay, this is just a presentation for the symmetric
+    // inverse monoid, a slightly modified version from Solomon (so that
+    // contains the Coxeter+Moser presentation for the symmetric group),
+    // Example 7.1.2 in Joel gay's thesis (JDM the presentation in Example 7.1.2
+    // seems to have 2n - 1 generators whereas this function returns a monoid on
+    // n generators. TODO ask Florent again if this reference is correct
+    // Maybe should be Solomon:
+    // https://www.sciencedirect.com/science/article/pii/S0021869303005933/pdf
     [[nodiscard]] Presentation<word_type>
-    symmetric_inverse_monoid(size_t n, author val = author::Sutov);
+    symmetric_inverse_monoid(size_t n,
+                             author val = author::Mitchell + author::Whyte);
 
     //! A presentation for the Chinese monoid.
     //!
