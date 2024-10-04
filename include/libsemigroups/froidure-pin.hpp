@@ -620,11 +620,11 @@ namespace libsemigroups {
     //! \returns
     //! The generator with given index.
     //!
-    //! \warning This function does not check its arguments. In particular it is
-    //! assumed that \p i is less than \ref number_of_generators.
-    //!
     //! \note
     //! Note that `generator(j)` is in general not in position \p j.
+    //!
+    //! \warning This function does not check its arguments. In particular it is
+    //! assumed that \p i is less than \ref number_of_generators.
     [[nodiscard]] const_reference
     generator_no_checks(generator_index_type i) const;
 
@@ -896,9 +896,9 @@ namespace libsemigroups {
     //!
     //! \throws LibsemigroupsException if \p x does not belong to \c this.
     //!
-    //! \sa minimal_factorisation(element_index_type).
-    //!
     //! \note This function may trigger a (partial) enumeration.
+    //!
+    //! \sa minimal_factorisation(element_index_type).
     [[nodiscard]] word_type minimal_factorisation(const_reference x);
 
     //! \brief Modify a word in-place to contain a minimal factorisation (in the
