@@ -1,6 +1,6 @@
 //
 // libsemigroups - C++ library for semigroups and monoids
-// Copyright (C) 2021-2023 James D. Mitchell + Maria Tsalakou
+// Copyright (C) 2021-2024 James D. Mitchell + Maria Tsalakou
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -20,17 +20,16 @@
 
 #include "libsemigroups/ukkonen.hpp"
 
-#include <algorithm>  // for lower_bound, sort, max
+#include <algorithm>  // for copy, max, fill_n, fill
 #include <array>      // for array
-#include <cstddef>    // for size_t
-#include <cstdint>    // for uint64_t
 #include <numeric>    // for accumulate
-#include <string>     // for operator+, char_traits, to_st...
+#include <string>     // for operator+, allocator, bas...
 
-#include "libsemigroups/constants.hpp"  // for UNDEFINED
+#include "libsemigroups/constants.hpp"  // for Max, UNDEFINED, operator!=
 #include "libsemigroups/debug.hpp"      // for LIBSEMIGROUPS_ASSERT
+#include "libsemigroups/dot.hpp"        // for Dot
 #include "libsemigroups/exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
-#include "libsemigroups/types.hpp"      // for word_type
+#include "libsemigroups/types.hpp"      // for word_type, letter_type
 
 #include "libsemigroups/detail/string.hpp"  // for to_string
 
@@ -136,10 +135,6 @@ namespace libsemigroups {
       result += word_length(i) * multiplicity(i);
     }
     return result;
-  }
-
-  size_t Ukkonen::multiplicity(word_index_type i) const {
-    return _multiplicity[i];
   }
 
   // TODO(later) could do some more caching here, i.e. only check the children
@@ -303,13 +298,13 @@ namespace libsemigroups {
   namespace ukkonen {
     void add_words_no_checks(Ukkonen& st, std::vector<word_type> const& words) {
       for (auto const& word : words) {
-        st.add_word_no_checks(word);
+        add_word_no_checks(st, word);
       }
     }
 
     void add_words(Ukkonen& st, std::vector<word_type> const& words) {
       for (auto const& word : words) {
-        st.add_word(word);
+        add_word(st, word);
       }
     }
 
@@ -355,7 +350,7 @@ namespace libsemigroups {
       }
     }  // namespace
 
-    std::string dot(Ukkonen const& u) {
+    [[nodiscard]] Dot dot(Ukkonen const& u) {
       if (u.number_of_distinct_words() == 0) {
         LIBSEMIGROUPS_EXCEPTION("expected at least 1 word, found 0");
       }
@@ -561,26 +556,33 @@ namespace libsemigroups {
                                 u.number_of_distinct_words());
       }
       LIBSEMIGROUPS_ASSERT(colors.size() == 24);
-      std::string  result = "digraph {\nordering=\"out\"\n";
-      auto const&  nodes  = u.nodes();
-      size_t const n      = u.number_of_distinct_words();
+      Dot result;
+      result.name("Ukkonen").kind(Dot::Kind::digraph);
+      auto const&              nodes = u.nodes();
+      size_t const             n     = u.number_of_distinct_words();
+      Ukkonen::word_index_type color_index;
+
       for (size_t i = 0; i < nodes.size(); ++i) {
-        auto color_index = (i == 0 ? 0 : u.word_index(nodes[i]));
+        color_index = (i == 0 ? 0 : u.word_index(nodes[i]));
         LIBSEMIGROUPS_ASSERT(color_index < colors[n].size());
-        result += std::to_string(i) + "[shape=box, width=.5, color=\""
-                  + colors[n][color_index] + "\"]\n";
+        result.add_node(i)
+            .add_attr("shape", "box")
+            .add_attr("width", ".5")
+            .add_attr("color", colors[n][color_index]);
+      }
+      for (size_t i = 0; i < nodes.size(); ++i) {
         for (auto const& child : nodes[i].children) {
           auto const& l = nodes[child.second].l;
           auto const& r = nodes[child.second].r;
           LIBSEMIGROUPS_ASSERT(color_index < colors[n].size());
           color_index = u.word_index(nodes[child.second]);
-          result += std::to_string(i) + "->" + std::to_string(child.second)
-                    + "[color=\"" + colors[n][color_index] + "\" label=\"["
-                    + std::to_string(l) + "," + std::to_string(r)
-                    + ")=" + dot_word(u, nodes[child.second]) + "\"]\n";
+          result.add_edge(i, child.second)
+              .add_attr("color", colors[n][color_index])
+              .add_attr("label",
+                        "[" + std::to_string(l) + "," + std::to_string(r)
+                            + ")=" + dot_word(u, nodes[child.second]));
         }
       }
-      result += "}\n";
       return result;
     }
 
