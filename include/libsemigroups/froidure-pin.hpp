@@ -353,7 +353,15 @@ namespace libsemigroups {
     //! \sa add_generator and add_generators.
     FroidurePin();
 
-    // TODO doc
+    //! \brief Reinitialize a FroidurePin object.
+    //!
+    //! This function re-initializes a FroidurePin object so that it is in
+    //! the same state as if it had just been default constructed.
+    //!
+    //! \returns A reference to `*this`.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
     FroidurePin& init();
 
     //! \brief Construct from std::shared_ptr to state.
@@ -373,7 +381,17 @@ namespace libsemigroups {
       _state = stt;
     }
 
-    // TODO doc
+    //! \brief Reinitialize a FroidurePin object from state.
+    //!
+    //! This function re-initializes a FroidurePin object so that it is in
+    //! the same state as if it had just been constructed from \p stt.
+    //!
+    //! \param stt  a std::shared_ptr to the state (if any).
+    //!
+    //! \returns A reference to `*this`.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
     template <typename State, typename = std::enable_if_t<IsState<State>>>
     FroidurePin& init(std::shared_ptr<State> stt) {
       init();
@@ -400,16 +418,26 @@ namespace libsemigroups {
     explicit FroidurePin(State const& stt)
         : FroidurePin(std::make_shared<state_type>(stt)) {}
 
-    //! TODO(doc)
+    //! \brief Reinitialize a FroidurePin object from state.
+    //!
+    //! This function re-initializes a FroidurePin object so that it is in
+    //! the same state as if it had just been constructed from \p stt.
+    //!
+    //! \param stt  a const reference to the state (if any).
+    //!
+    //! \returns A reference to `*this`.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
     template <typename State, typename = std::enable_if_t<IsState<State>>>
     FroidurePin& init(State const& stt) {
       return init(std::make_shared<state_type>(stt));
     }
 
-    //! TODO(doc)
+    //! Copy assignment operator.
     FroidurePin& operator=(FroidurePin const&);
 
-    //! TODO(doc)
+    //! Default move assignment operator.
     FroidurePin& operator=(FroidurePin&&) = default;
 
     //! \brief Construct from a range of generators given by iterators.
@@ -429,7 +457,22 @@ namespace libsemigroups {
     template <typename Iterator1, typename Iterator2>
     FroidurePin(Iterator1 first, Iterator2 last);
 
-    //! TODO(doc)
+    //! \brief Reinitialize a FroidurePin object from a range of generators
+    //! given by iterators.
+    //!
+    //! This function re-initializes a FroidurePin object so that it is in
+    //! the same state as if it had just been constructed from \p first and \p
+    //! last.
+    //!
+    //! \tparam Iterator1 the type of the first parameter.
+    //! \tparam Iterator2 the type of the second parameter.
+    //!
+    //! \param first iterator pointing at the first generator to add.
+    //! \param last iterator pointing one beyond the last generator to add.
+    //!
+    //! \warning This function does not check its arguments. In particular, it
+    //! is assumed that the generators pointed to by \p first and \p last all
+    //! have the same degree.
     template <typename Iterator1, typename Iterator2>
     FroidurePin& init(Iterator1 first, Iterator2 last);
 
@@ -464,10 +507,28 @@ namespace libsemigroups {
 
     //! \brief Convert a word in the generators to an element.
     //!
-    //! This  function returns a copy of the element obtained
-    //! by evaluating \p w.  A copy is returned instead of a reference, because
-    //! the element corresponding to \p w may not yet have been
-    //! enumerated.
+    //! This  function returns a reference to the element obtained by
+    //! evaluating \p w. The returned reference may only valid until the next
+    //! function that triggers an enumeration is called, or another call to this
+    //! function is made.
+    //!
+    //! \param w the word in the generators to evaluate.
+    //!
+    //! \returns A copy of the element represented by the word \p w.
+    //!
+    //! \warning This function does not check its arguments, and it is assumed
+    //! that the values in \p w are less than \ref number_of_generators.
+    //!
+    //! \sa \ref current_position.
+    [[nodiscard]] const_reference
+    to_element_no_checks(word_type const& w) const;
+
+    //! \brief Convert a word in the generators to an element.
+    //!
+    //! This  function returns a reference to the element obtained by
+    //! evaluating \p w. The returned reference may only valid until the next
+    //! function that triggers an enumeration is called, or another call to this
+    //! function is made.
     //!
     //! \param w the word in the generators to evaluate.
     //!
@@ -478,14 +539,6 @@ namespace libsemigroups {
     //! number of generators.
     //!
     //! \sa \ref current_position.
-    //!
-    //! The returned reference is only valid until the next function that
-    //! triggers an enumeration is called, or another call to this function is
-    //! made.
-    [[nodiscard]] const_reference
-    to_element_no_checks(word_type const& w) const;
-
-    // TODO doc
     [[nodiscard]] const_reference to_element(word_type const& w) const {
       throw_if_any_generator_index_out_of_range(w);
       return to_element_no_checks(w);
@@ -494,19 +547,33 @@ namespace libsemigroups {
     //! \brief Check equality of words in the generators.
     //!
     //! Returns \c true if the parameters represent the same element
-    //! and \c false otherwise.
+    //! and \c false otherwise. No enumeration is triggered by calls to this
+    //! function.
     //!
-    //! \param x the first word for comparison
-    //! \param y the second word for comparison
+    //! \param x the first word for comparison.
+    //! \param y the second word for comparison.
+    //!
+    //! \returns A value of type \c bool.
+    //!
+    //! \warning This function does not check its arguments. In particular, it
+    //! is assumed that every value in \p x and \p y belongs in the range from
+    //! \c 0 to \ref number_of_generators (non-inclusive).
+    [[nodiscard]] bool equal_to_no_checks(word_type const& x,
+                                          word_type const& y) const;
+
+    //! \brief Check equality of words in the generators.
+    //!
+    //! Returns \c true if the parameters represent the same element
+    //! and \c false otherwise. No enumeration is triggered by calls to this
+    //! function.
+    //!
+    //! \param x the first word for comparison.
+    //! \param y the second word for comparison.
     //!
     //! \returns A value of type \c bool.
     //!
     //! \throws LibsemigroupsException if \p w contains an value exceeding
     //! \ref number_of_generators.
-    [[nodiscard]] bool equal_to_no_checks(word_type const& x,
-                                          word_type const& y) const;
-
-    // TODO doc
     [[nodiscard]] bool equal_to(word_type const& x, word_type const& y) const {
       throw_if_any_generator_index_out_of_range(x);
       throw_if_any_generator_index_out_of_range(y);
@@ -523,19 +590,40 @@ namespace libsemigroups {
 
     //! \brief Returns the generator with specified index.
     //!
+    //! This function returns the generator with index \p i, where the order is
+    //! that in which the generators were added at construction, or via \ref
+    //! init, \ref add_generator, \ref add_generators, \ref closure, \ref
+    //! copy_closure, or \ref copy_add_generators.
+    //!
     //! \param i the index of a generator.
     //!
     //! \returns
-    //! A value of type \ref const_reference.
+    //! The generator with given index.
     //!
     //! \throws LibsemigroupsException if \p i is greater than or equal to \ref
     //! number_of_generators().
     //!
     //! \note
-    //! Note that `generator(i)` is in general not in position \p i.
+    //! Note that `generator(j)` is in general not in position \p j.
     [[nodiscard]] const_reference generator(generator_index_type i) const;
 
-    // TODO doc
+    //! \brief Returns the generator with specified index.
+    //!
+    //! This function returns the generator with index \p i, where the order is
+    //! that in which the generators were added at construction, or via \ref
+    //! init, \ref add_generator, \ref add_generators, \ref closure, \ref
+    //! copy_closure, or \ref copy_add_generators.
+    //!
+    //! \param i the index of a generator.
+    //!
+    //! \returns
+    //! The generator with given index.
+    //!
+    //! \warning This function does not check its arguments. In particular it is
+    //! assumed that \p i is less than \ref number_of_generators.
+    //!
+    //! \note
+    //! Note that `generator(j)` is in general not in position \p j.
     [[nodiscard]] const_reference
     generator_no_checks(generator_index_type i) const;
 
@@ -562,10 +650,6 @@ namespace libsemigroups {
     using FroidurePinBase::current_position;
 #endif
 
-    // TODO doc
-    [[nodiscard]] element_index_type
-    fast_product_no_checks(element_index_type i, element_index_type j) const;
-
     //! \brief Multiply elements via their indices.
     //!
     //! Returns the position of the product of the element with index \p i and
@@ -574,12 +658,12 @@ namespace libsemigroups {
     //! This function either:
     //!
     //! * follows the path in the right or left Cayley graph from \p i to \p j,
-    //!   whichever is shorter using \ref product_by_reduction; or
+    //!   whichever is shorter using \ref froidure_pin::product_by_reduction; or
     //!
     //! * multiplies the elements in positions \p i and \p j together;
     //!
-    //! whichever is better. The  function used is determined by comparing
-    //! the output of the call operator of Complexity and the
+    //! whichever is better. The option used is determined by comparing
+    //! the output of the call operator of the \ref Complexity adapter and the
     //! \ref current_length of \p i and \p j.
     //!
     //! For example, if the complexity of the multiplication is linear and \c
@@ -588,11 +672,26 @@ namespace libsemigroups {
     //! length 100 and 1131, then it is better to just multiply the
     //! transformations together.
     //!
-    //! \param i the index of the first element to multiply
-    //! \param j the index of the second element to multiply
+    //! \param i the index of the first element to multiply.
+    //! \param j the index of the second element to multiply.
     //!
     //! \returns
-    //! A value of type \c element_index_type.
+    //! The index of the product.
+    //!
+    //! \warning The arguments of this function are not checked. In particular,
+    //! it is assumed that both \p i and \p j are less than \ref current_size.
+    [[nodiscard]] element_index_type
+    fast_product_no_checks(element_index_type i, element_index_type j) const;
+
+    //! \brief Multiply elements via their indices.
+    //!
+    //!  See \ref fast_product_no_checks for a full description.
+    //!
+    //! \param i the index of the first element to multiply.
+    //! \param j the index of the second element to multiply.
+    //!
+    //! \returns
+    //! The index of the product.
     //!
     //! \throws LibsemigroupsException if the values \p i and \p j are greater
     //! than or equal to \ref current_size.
@@ -605,8 +704,11 @@ namespace libsemigroups {
 
     //! \brief Returns the number of idempotents.
     //!
+    //! This function returns the number of idempotents in the semigroup
+    //! represented by a \p FroidurePin instance.
+    //!
     //! \returns
-    //! A value of type \c size_t.
+    //! The number of idempotents..
     //!
     //! \exceptions
     //! \no_libsemigroups_except
@@ -615,6 +717,22 @@ namespace libsemigroups {
     //! This function triggers a full enumeration.
     [[nodiscard]] size_t number_of_idempotents();
 
+    //! \brief Check if an element is an idempotent via its index.
+    //!
+    //! Returns \c true if the element in position \p i is an idempotent
+    //! and \c false if it is not.
+    //!
+    //! \param i the index of the element.
+    //!
+    //! \returns
+    //! A value of type \c bool.
+    //!
+    //! \throws LibsemigroupsException if \p i is greater than or equal to the
+    //! size of \c this.
+    //!
+    //! \note
+    //! This function triggers a full enumeration.
+    // TODO(1) improve this it doesn't need to trigger a full enum.
     [[nodiscard]] bool is_idempotent_no_checks(element_index_type i);
 
     //! \brief Check if an element is an idempotent via its index.
@@ -622,7 +740,7 @@ namespace libsemigroups {
     //! Returns \c true if the element in position \p i is an idempotent
     //! and \c false if it is not.
     //!
-    //! \param i the index of the element
+    //! \param i the index of the element.
     //!
     //! \returns
     //! A value of type \c bool.
@@ -703,7 +821,7 @@ namespace libsemigroups {
     //! Returns the position of the element with index \p i when the elements
     //! are sorted using Less, or \ref UNDEFINED if \p i is greater than size().
     //!
-    //! \param i the index of the element
+    //! \param i the index of the element.
     //!
     //! \returns
     //! A value of type \ref element_index_type.
@@ -752,10 +870,21 @@ namespace libsemigroups {
     //! return value of size().
     [[nodiscard]] const_reference sorted_at(element_index_type i);
 
-    // TODO doc
+    //! \brief Access element specified by sorted index with bound checks.
+    //!
+    //! This function triggers a full enumeration, and the parameter \p i
+    //! is the index when the elements are sorted by Less.
+    //!
+    //! \param i the sorted index of the element to access.
+    //!
+    //! \returns The element with index \p i (if any).
+    //!
+    //! \warning This function does not check its arguments. In particular, it
+    //! assumes that \p i is less than \ref size.
     [[nodiscard]] const_reference sorted_at_no_checks(element_index_type i);
 
-    //! \brief Factorise an element as a word in the generators.
+    //! \brief Returns a word containing a minimal factorisation (in the
+    //! generators) of an element.
     //!
     //! Returns the short-lex minimum word (if any) in the generators that
     //! evaluates to \p x.
@@ -771,7 +900,18 @@ namespace libsemigroups {
     //! \note This function may trigger a (partial) enumeration.
     [[nodiscard]] word_type minimal_factorisation(const_reference x);
 
-    // TODO doc
+    //! \brief Modify a word in-place to contain a minimal factorisation (in the
+    //! generators) of an element.
+    //!
+    //! Returns the short-lex minimum word (if any) in the generators that
+    //! evaluates to \p x.
+    //!
+    //! \param w the word_type to contain the factorisation.
+    //! \param x a const reference to a possible element to factorise.
+    //!
+    //! \throws LibsemigroupsException if \p x does not belong to \c this.
+    //!
+    //! \note This function may trigger a (partial) enumeration.
     void minimal_factorisation(word_type& w, const_reference x);
 
 #ifndef PARSED_BY_DOXYGEN
@@ -782,9 +922,13 @@ namespace libsemigroups {
     using FroidurePinBase::minimal_factorisation;
 #endif
 
-    //! \brief Factorise an element as a word in the generators.
+    //! \brief Returns a word containing a factorisation (in the generators) of
+    //! an element.
     //!
-    //! The key difference between this  function and
+    //! This function returns a word in the generators that equals the given
+    //! element \p x.
+    //!
+    //! The key difference between this function and
     //! \ref minimal_factorisation(const_reference x), is that the
     //! resulting factorisation may not be minimal.
     //!
@@ -797,7 +941,19 @@ namespace libsemigroups {
     //! \note This function may trigger a (partial) enumeration.
     [[nodiscard]] word_type factorisation(const_reference x);
 
-    // TODO doc
+    //! \brief Modify a word in-place to contain a factorisation (in the
+    //! generators) of an element.
+    //!
+    //! The key difference between this function and
+    //! \ref minimal_factorisation(word_type&, const_reference x), is that the
+    //! resulting factorisation may not be minimal.
+    //!
+    //! \param w the word_type to contain the factorisation.
+    //! \param x a const reference to a possible element to factorise.
+    //!
+    //! \throws LibsemigroupsException if \p x does not belong to \c this.
+    //!
+    //! \note This function may trigger a (partial) enumeration.
     void factorisation(word_type& w, const_reference x);
 
     //! \brief Check finiteness.
@@ -903,6 +1059,11 @@ namespace libsemigroups {
     //! semigroup but just not be known to belong). If \p coll is empty, then
     //! the semigroup is left unchanged. The order the generators is added is
     //! also the order they occur in the parameter \p coll.
+    //!
+    //! There can be duplicate generators and although they do not count as
+    //! distinct elements, they do count as distinct generators.  In other
+    //! words, the generators are precisely (a copy of) \p gens in the same
+    //! order they occur in \p gens.
     //!
     //! The FroidurePin instance is returned in a state where all of the
     //! previously enumerated elements which had been multiplied by all of the
@@ -1096,9 +1257,23 @@ namespace libsemigroups {
       return _state;
     }
 
-    // TODO(doc)
+    //! \brief Throws if the degrees of elements in a given range are not all
+    //! equal.
+    //!
+    //! This function throws a LibsemigroupsException if the elements in
+    //! the range defined by the iterators \p first and \p last do not all have
+    //! the same degree.
+    //!
+    //! \tparam Iterator1 the type of the first parameter.
+    //! \tparam Iterator2 the type of the second parameter.
+    //!
+    //! \param first iterator pointing at the first generator to add.
+    //! \param last iterator pointing one beyond the last generator to add.
+    //!
+    //! \throws LibsemigroupsException if the elements in the range defined by
+    //! \p first and \p last do not all have the same degree.
     template <typename Iterator1, typename Iterator2>
-    static void throw_if_inconsistent_degree(Iterator1, Iterator2);
+    static void throw_if_inconsistent_degree(Iterator1 first, Iterator2 last);
 
    private:
     ////////////////////////////////////////////////////////////////////////
@@ -1309,33 +1484,6 @@ namespace libsemigroups {
     //!
     //! \note This function triggers a full enumeration.
     [[nodiscard]] const_iterator_idempotents cend_idempotents();
-
-    // TODO doc
-    [[nodiscard]] auto current_idempotents() {
-      return rx::iterator_range(cbegin_idempotents(), cend_idempotents());
-    }
-
-    // TODO doc
-    [[nodiscard]] auto idempotents() {
-      run();
-      return current_idempotents();
-    }
-
-    // TODO doc
-    [[nodiscard]] auto sorted_elements() {
-      return rx::iterator_range(cbegin_sorted(), cend_sorted());
-    }
-
-    // TODO doc HERE
-    [[nodiscard]] auto current_elements() {
-      return rx::iterator_range(cbegin(), cend());
-    }
-
-    // TODO doc
-    [[nodiscard]] auto elements() {
-      run();
-      return current_elements();
-    }
 
    private:
     void run_impl() override;
@@ -1737,22 +1885,159 @@ namespace libsemigroups {
                            std::initializer_list<Element> coll) {
       return fp.copy_closure(std::begin(coll), std::end(coll));
     }
+
+    // TODO(1) implement the next function
+    // \brief Returns a range object containing the so-far enumerated
+    // idempotents.
+    //
+    // This function returns a range object containing the so-far enumerated
+    // idempotents. No enumeration of \p fp is triggered by calls to this
+    // function.
+    //
+    // See TODO for more details about range objects.
+    //
+    // \tparam Element the type of the elements in the represented
+    // semigroup
+    //
+    // \tparam Traits a traits class holding various adapters used by the
+    // implementation (defaults to FroidurePinTraits).
+    //
+    // \param fp the FroidurePin instance.
+    //
+    // \returns A range object.
+    //
+    // is_idempotent_no_checks current performs a full enum. so this doesn't
+    // work.
+    //
+    // template <typename Element, typename Traits>
+    // [[nodiscard]] auto
+    // current_idempotents(FroidurePin<Element, Traits> const& fp) {
+    //   return rx::iterator_range(fp.cbegin(), fp.cend())
+    //          | rx::filter([&fp](auto const& x) {
+    //              return fp.is_idempotent_no_checks(fp.current_position(x));
+    //            });
+    // }
+
+    //! \brief Returns a range object containing all of the idempotents.
+    //!
+    //! This function returns a range object wrapping
+    //! FroidurePin::cbegin_idempotents and FroidurePin::cend_idempotents, after
+    //! fully enumerating \p fp.
+    //!
+    //! See \ref ranges_group for more details about range objects.
+    //!
+    //! \tparam Element the type of the elements in the represented
+    //! semigroup
+    //!
+    //! \tparam Traits a traits class holding various adapters used by the
+    //! implementation (defaults to FroidurePinTraits).
+    //!
+    //! \param fp the FroidurePin instance.
+    //!
+    //! \returns A range object.
+    template <typename Element, typename Traits>
+    [[nodiscard]] auto idempotents(FroidurePin<Element, Traits>& fp) {
+      fp.run();
+      return current_idempotents(fp);
+    }
+
+    //! \brief Returns a range object containing all of the elements.
+    //!
+    //! This function returns a range object wrapping
+    //! FroidurePin::cbegin_sorted and FroidurePin::cend_sorted, after fully
+    //! enumerating \p fp.
+    //!
+    //! See \ref ranges_group for more details about range objects.
+    //!
+    //! \tparam Element the type of the elements in the represented
+    //! semigroup
+    //!
+    //! \tparam Traits a traits class holding various adapters used by the
+    //! implementation (defaults to FroidurePinTraits).
+    //!
+    //! \param fp the FroidurePin instance.
+    //!
+    //! \returns A range object.
+    template <typename Element, typename Traits>
+    [[nodiscard]] auto sorted_elements(FroidurePin<Element, Traits>& fp) {
+      return rx::iterator_range(fp.cbegin_sorted(), fp.cend_sorted());
+    }
+
+    // TODO(1) current_sorted_elements
+
+    //! \brief Returns a range object containing the so-far enumerated
+    //! elements.
+    //!
+    //! This function returns a range object wrapping FroidurePin::cbegin and
+    //! FroidurePin::cend, i.e. containing the so-far enumerated elements.
+    //!
+    //! See \ref ranges_group for more details about range objects.
+    //!
+    //! \tparam Element the type of the elements in the represented
+    //! semigroup
+    //!
+    //! \tparam Traits a traits class holding various adapters used by the
+    //! implementation (defaults to FroidurePinTraits).
+    //!
+    //! \param fp the FroidurePin instance.
+    //!
+    //! \returns A range object.
+    template <typename Element, typename Traits>
+    [[nodiscard]] auto
+    current_elements(FroidurePin<Element, Traits> const& fp) {
+      return rx::iterator_range(fp.cbegin(), fp.cend());
+    }
+
+    //! \brief Returns a range object containing all of the elements.
+    //!
+    //! This function returns a range object wrapping FroidurePin::cbegin and
+    //! FroidurePin::cend, after fully enumerating \p fp.
+    //!
+    //! See \ref ranges_group for more details about range objects.
+    //!
+    //! \tparam Element the type of the elements in the represented
+    //! semigroup
+    //!
+    //! \tparam Traits a traits class holding various adapters used by the
+    //! implementation (defaults to FroidurePinTraits).
+    //!
+    //! \param fp the FroidurePin instance.
+    //!
+    //! \returns A range object.
+    template <typename Element, typename Traits>
+    [[nodiscard]] auto elements(FroidurePin<Element, Traits>& fp) {
+      fp.run();
+      return fp.current_elements();
+    }
   }  // namespace froidure_pin
 
-  //! \brief Construct from generators.
+  //! \defgroup converter_group Converters
   //!
-  //! This function constructs a FroidurePin instance generated by the
-  //! specified container of generators.  There can be duplicate generators
-  //! and although they do not count as distinct elements, they do count as
-  //! distinct generators.  In other words, the generators are precisely (a
-  //! copy of) \p gens in the same order they occur in \p gens.
+  //! This page contains the documentation for the functions in
+  //! ``libsemigroups`` for converting one type of object to another.
+  //!
+  //!  * \ref to_froidure_pin_group
+  //!
+  //!  TODO add details + links
+
+  //! \defgroup to_froidure_pin_group to_froidure_pin
+  //!
+  //! This page contains the documentation for the function \ref to_froidure_pin
+  //! in ``libsemigroups`` for converting objects to FroidurePin instances.
+
+  //! \ingroup to_froidure_pin_group
+  //!
+  //! \brief Construct a FroidurePin iinstance from container of generators.
+  //!
+  //! This function can be used to construct a FroidurePin instance from a
+  //! container of generators after first verifying that the
+  //! proposed generators all have equal degree.
+  //!
   //!
   //! \param gens the generators.
   //!
-  //! \throws LibsemigroupsException if any of the following hold:
-  //! * \p gens is empty;
-  //! * Degree`{}(x) != `Degree`{}(y)` for some \c x and \c y in
-  //! \p gens.
+  //! \throw LibsemigroupsException if `Degree()(x) != Degree(y)` for any \c x
+  //! and \c y in \p gens.
   template <typename Container>
   [[nodiscard]] FroidurePin<typename Container::value_type>
   to_froidure_pin(Container const& gens) {
@@ -1769,6 +2054,25 @@ namespace libsemigroups {
   //                      std::make_move_iterator(std::end(gens)));
   // }
 
+  //! \ingroup to_froidure_pin_group
+  //!
+  //! \brief Construct a FroidurePin instance from std::initializer_list of
+  //! generators.
+  //!
+  //! This function can be used to construct a FroidurePin instance from a
+  //! std::initializer_list of generators after first verifying that the
+  //! proposed generators all have equal degree. See \ref
+  //! FroidurePin::add_generator for more details.
+  //!
+  //! \tparam Element the type of the elements in the FroidurePin instance.
+  //!
+  //! \param gens the std::initializer_list of generators.
+  //!
+  //! \returns A newly constructed FroidurePin instance with generators equal to
+  //! \p gens.
+  //!
+  //! \throw LibsemigroupsException if `Degree()(x) != Degree(y)` for any \c x
+  //! and \c y in \p gens.
   template <typename Element>
   [[nodiscard]] FroidurePin<Element>
   to_froidure_pin(std::initializer_list<Element> gens) {
@@ -1777,6 +2081,27 @@ namespace libsemigroups {
     return FroidurePin(std::begin(gens), std::end(gens));
   }
 
+  //! \ingroup to_froidure_pin_group
+  //!
+  //! \brief Construct a FroidurePin instance from range of elements given by
+  //! iterators.
+  //!
+  //! This function can be used to construct a FroidurePin instance from a the
+  //! range of generators given by the iterators \p first and \p last, after
+  //! first verifying that the proposed generators all have equal degree. See
+  //! \ref FroidurePin::add_generator for more details.
+  //!
+  //! \tparam Iterator1 the type of the first parameter.
+  //! \tparam Iterator2 the type of the second parameter.
+  //!
+  //! \param first iterator pointing at the first generator to add.
+  //! \param last iterator pointing one beyond the last generator to add.
+  //!
+  //! \returns A newly constructed FroidurePin instance with generators given
+  //! by \p first and \p last.
+  //!
+  //! \throw LibsemigroupsException if `Degree()(x) != Degree(y)` for any of
+  //! the proposed generators \c x and \c y.
   template <typename Iterator1, typename Iterator2>
   [[nodiscard]] FroidurePin<std::decay_t<decltype(*std::declval<Iterator1>())>>
   to_froidure_pin(Iterator1 first, Iterator2 last) {

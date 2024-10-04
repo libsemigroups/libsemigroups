@@ -687,15 +687,15 @@ namespace libsemigroups {
   void
   FroidurePin<Element, Traits>::add_generators_before_start(Iterator1 first,
                                                             Iterator2 last) {
-    // TODO(1) if Iterator is std::move_iterator, then first and last are not
-    // valid after the next line (the values they point at are moved
-    // into std::distance for some reason).
-    size_t const m = std::distance(first, last);
-    if (m != 0) {
+    if (first == last) {
       init_degree(*first);
     }
 
-    size_t number_of_new_elements = 0;
+    // TODO(1) if Iterator is std::move_iterator, then first and last are not
+    // valid after the next line (the values they point at are moved
+    // into std::distance for some reason).
+    size_t const m                      = std::distance(first, last);
+    size_t       number_of_new_elements = 0;
 
     for (auto it_coll = first; it_coll < last; ++it_coll) {
       auto it = _map.find(this->to_internal_const(*it_coll));
