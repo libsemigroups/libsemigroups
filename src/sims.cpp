@@ -76,7 +76,7 @@ namespace libsemigroups {
     return *this;
   }
 
-  SimsStats& SimsStats::init_from(SimsStats const& that) {
+  SimsStats& SimsStats::init(SimsStats const& that) {
     count_last         = that.count_last.load();
     count_now          = that.count_now.load();
     max_pending        = that.max_pending.load();
@@ -92,6 +92,7 @@ namespace libsemigroups {
   template <typename Subclass>
   SimsSettings<Subclass>::SimsSettings()
       : _exclude(),
+        _exclude_pruner_index(UNDEFINED),
         _idle_thread_restarts(64),
         _include(),
         _longs_begin(),
@@ -105,29 +106,19 @@ namespace libsemigroups {
   template <typename Subclass>
   Subclass& SimsSettings<Subclass>::init() {
     _exclude.clear();
+    _exclude_pruner_index = UNDEFINED;
     _idle_thread_restarts = 64;
     _include.clear();
-    _longs_begin = _presentation.rules.cend();
     _num_threads = 1;
     _presentation.init();
     _pruners.clear();
-    auto pruner = [this](auto const& wg) {
-      auto      first = _exclude.cbegin();
-      auto      last  = _exclude.cend();
-      node_type root  = 0;
 
-      for (auto it = first; it != last; it += 2) {
-        auto l = word_graph::follow_path_no_checks(wg, root, *it);
-        if (l != UNDEFINED) {
-          auto r = word_graph::follow_path_no_checks(wg, root, *(it + 1));
-          if (l == r) {
-            return false;
-          }
-        }
-      }
-      return true;
-    };
-    add_pruner(pruner);
+    // Need to set after presentation is initialized to avoid out of bound
+    // access.
+    _longs_begin = _presentation.rules.cend();
+
+    _stats.init();
+
     return static_cast<Subclass&>(*this);
   }
 
@@ -159,6 +150,11 @@ namespace libsemigroups {
       LIBSEMIGROUPS_EXCEPTION(
           "the argument (number of threads) must be non-zero");
     }
+
+    if ((std::thread::hardware_concurrency() > 0)
+        && (val > std::thread::hardware_concurrency())) {
+      val = std::thread::hardware_concurrency();
+    }
     _num_threads = val;
     return static_cast<Subclass&>(*this);
   }
@@ -187,6 +183,34 @@ namespace libsemigroups {
     }
     _idle_thread_restarts = val;
     return static_cast<Subclass&>(*this);
+  }
+
+  template <typename Subclass>
+  size_t SimsSettings<Subclass>::add_exclude_pruner() {
+    if (_exclude_pruner_index != UNDEFINED) {
+      return _exclude_pruner_index;
+    }
+    auto pruner = [this](auto const& wg) {
+      auto      first = _exclude.cbegin();
+      auto      last  = _exclude.cend();
+      node_type root  = 0;
+
+      for (auto it = first; it != last; it += 2) {
+        auto l = word_graph::follow_path_no_checks(wg, root, *it);
+        if (l != UNDEFINED) {
+          auto r = word_graph::follow_path_no_checks(wg, root, *(it + 1));
+          if (l == r) {
+            return false;
+          }
+        }
+      }
+      return true;
+    };
+    // NOTE:: setting _exclude_pruner_index here depends on the implementation
+    // of add_pruner, if that changes bad things may happen.
+    _exclude_pruner_index = _pruners.size();
+    add_pruner(pruner);
+    return _exclude_pruner_index;
   }
 
   template <typename Subclass>
@@ -901,6 +925,8 @@ namespace libsemigroups {
                           that._pending.cend());
     }
 
+    // TODO(0) expand to longer comment about thread sanitizer warnings and how
+    // we can gleefully ignore them
     template <typename Sims1or2>
     bool SimsBase<Sims1or2>::thread_iterator::try_steal(thread_iterator& that) {
       std::lock_guard<std::mutex> lock(iterator_base::_mtx);
@@ -1002,6 +1028,9 @@ namespace libsemigroups {
         _done = true;
         throw;
       }
+      // TODO(2) Implement a ThreadIdGuard so that thread ids are automatically
+      // reset after they exit scope.
+      detail::reset_thread_ids();
     }
 
     ////////////////////////////////////////////////////////////////////////
@@ -1031,7 +1060,7 @@ namespace libsemigroups {
     ~RuleContainer() = default;
 
     void resize(size_t m) {
-      // TODO should we use resize?
+      // TODO(0) should we use resize?
       _used_slots.assign(m, UNDEFINED);
       if (m > 0) {
         _used_slots[0] = 0;
@@ -1096,7 +1125,7 @@ namespace libsemigroups {
         // protected
         _2_sided_include(new RuleContainer()),
         _2_sided_words() {
-    // TODO could be slightly less space allocated here
+    // TODO(2) could be slightly less space allocated here
     size_t const m = SimsBase::IteratorBase::maximum_number_of_classes();
     Presentation<word_type> const& p = this->_felsch_graph.presentation();
     _2_sided_include->resize(2 * m * p.alphabet().size());
@@ -1112,7 +1141,7 @@ namespace libsemigroups {
         _2_sided_words(that._2_sided_words) {}
 
   Sims2::iterator_base::iterator_base(Sims2::iterator_base&& that)
-      : SimsBase::IteratorBase(std::move(that)),  // TODO std::move correct?
+      : SimsBase::IteratorBase(std::move(that)),  // TODO(0) std::move correct?
         _2_sided_include(std::move(that._2_sided_include)),
         _2_sided_words(std::move(that._2_sided_words)) {}
 
@@ -1127,7 +1156,8 @@ namespace libsemigroups {
 
   typename Sims2::iterator_base&
   Sims2::iterator_base::operator=(Sims2::iterator_base&& that) {
-    SimsBase::IteratorBase::operator=(std::move(that));  // TODO std::move ok?
+    SimsBase::IteratorBase::operator=(
+        std::move(that));  // TODO(0) std::move ok?
     _2_sided_include = std::move(that._2_sided_include);
     _2_sided_words   = std::move(that._2_sided_words);
     return *this;
@@ -1304,7 +1334,7 @@ namespace libsemigroups {
   // doesn't construct a FroidurePin object for these). So, it seems to be
   // best to just search through the digraphs with [1, 57) nodes once.
   //
-  // TODO(later) perhaps find minimal 2-sided congruences first (or try to)
+  // TODO(2)(later) perhaps find minimal 2-sided congruences first (or try to)
   // and then run MinimalRepOrc for right congruences excluding all the
   // generating pairs from the minimal 2-sided congruences. Also with this
   // approach FroidurePin wouldn't be required in RepOrc. This might not work,
@@ -1428,5 +1458,112 @@ namespace libsemigroups {
     const_cgp_iterator::~const_cgp_iterator() = default;
 
   }  // namespace sims
+
+  [[nodiscard]] std::string to_human_readable_repr(SimsStats const&) {
+    return fmt::format("<SimsStats object>");
+  }
+
+  namespace helper {
+
+    template <typename Subclass>
+    [[nodiscard]] std::string
+    sims_to_human_readable_repr_helper(SimsSettings<Subclass> const& x,
+                                       std::string extra_text) {
+      std::string result    = "";
+      bool        needs_and = false;
+
+      result += fmt::format("object over {} with",
+                            to_human_readable_repr(x.presentation()));
+      std::string comma = (x.pruners().empty()
+                           || (x.pruners().size() == 1 && !x.exclude().empty()))
+                                  && extra_text.empty()
+                              ? ""
+                              : ",";
+      if ((x.include().size() > 0) && (x.exclude().size() > 0)) {
+        result += fmt::format(" {} include and {} exclude pairs{}",
+                              x.include().size() / 2,
+                              x.exclude().size() / 2,
+                              comma);
+        needs_and = true;
+      } else if (x.include().size() > 0) {
+        result += fmt::format(" {} include pair{}{}",
+                              x.include().size() / 2,
+                              x.include().size() / 2 == 1 ? "" : "s",
+                              comma);
+        needs_and = true;
+      } else if (x.exclude().size() > 0) {
+        result += fmt::format(" {} exclude pair{}{}",
+                              x.exclude().size() / 2,
+                              x.exclude().size() / 2 == 1 ? "" : "s",
+                              comma);
+        needs_and = true;
+      }
+
+      result += extra_text;
+      if (extra_text.size()) {
+        needs_and = true;
+      }
+
+      if (x.pruners().size() > 1
+          || (x.exclude().empty() && !x.pruners().empty())) {
+        result += fmt::format(" {} pruner{}",
+                              x.exclude().size() == 0 ? x.pruners().size()
+                                                      : x.pruners().size() - 1,
+                              x.pruners().size() == 1 ? "" : "s");
+        needs_and = true;
+      }
+      result += needs_and ? " and" : "";
+      result += fmt::format(" {} thread{}",
+                            x.number_of_threads(),
+                            x.number_of_threads() == 1 ? "" : "s");
+      return result;
+    }
+
+  }  // namespace helper
+
+  // template <typename Subclass>
+  // [[nodiscard]] std::string
+  // to_human_readable_repr(SimsSettings<Subclass> const& x) {
+  //   return fmt::format("<SimsSettings {}>",
+  //                      helper::sims_to_human_readable_repr_helper(x, ""));
+  // }
+
+  [[nodiscard]] std::string to_human_readable_repr(Sims1 const& x) {
+    return fmt::format("<Sims1 {}>",
+                       helper::sims_to_human_readable_repr_helper(x, ""));
+  }
+
+  [[nodiscard]] std::string to_human_readable_repr(Sims2 const& x) {
+    return fmt::format("<Sims2 {}>",
+                       helper::sims_to_human_readable_repr_helper(x, ""));
+  }
+
+  [[nodiscard]] std::string to_human_readable_repr(RepOrc const& x) {
+    return fmt::format("<RepOrc {}>",
+                       helper::sims_to_human_readable_repr_helper(
+                           x,
+                           fmt::format(" node bounds [{}, {}), target size {}",
+                                       x.min_nodes(),
+                                       x.max_nodes(),
+                                       x.target_size())));
+  }
+
+  [[nodiscard]] std::string to_human_readable_repr(MinimalRepOrc const& x) {
+    return fmt::format("<MinimalRepOrc {}>",
+                       helper::sims_to_human_readable_repr_helper(
+                           x, fmt::format(" target size {}", x.target_size())));
+  }
+
+  [[nodiscard]] std::string to_human_readable_repr(SimsRefinerIdeals const& x) {
+    return fmt::format("<SimsRefinerIdeals object over presentation {}>",
+                       to_human_readable_repr(x.presentation()));
+  }
+
+  [[nodiscard]] std::string
+  to_human_readable_repr(SimsRefinerFaithful const& x) {
+    return fmt::format("<SimsRefinerFaithful object with {} forbidden pair{}>",
+                       x.forbid().size() / 2,
+                       x.forbid().size() / 2 == 1 ? "" : "s");
+  }
 
 }  // namespace libsemigroups

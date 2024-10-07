@@ -20,7 +20,7 @@
 // congruence" algorithm for 1-sided or 2-sided congruences of semigroups and
 // monoids.
 
-// TODO:
+// TODO(0):
 // * review the function aliases, and remove them if they are unnecessary
 // * doc
 // * iwyu
@@ -30,8 +30,8 @@
 // * python bindings
 // * gap bindings
 
-// TODO(later):
-// * use Pruno in RepOrc + MinimalRepOrc
+// TODO(2) (later):
+// * use SimsRefinerFaithful in RepOrc + MinimalRepOrc
 // * a version which allows specifying the word_graph to Sims1 too
 // * implement maximum_2_sided_congruence_contained to compute the kernel of the
 //   associated homomorphism, which is the largest 2-sided congruence contained
@@ -40,7 +40,7 @@
 //   first (by using generating pairs), and then to try and find a right
 //   congruence not containing any of the minimal 2-sided congruences.
 //
-// TODO(far future):
+// TODO(3) (far future):
 // * Figure out a way of making refining functions possible. A refining function
 // differs from a pruner in that it is also allowed to modify the word graph.
 // * Implement one and two sided compatibility checking as refiners, following
@@ -65,10 +65,13 @@
 // #include <filesystem>  // for path, create_directories, temp_directory_path
 #include <functional>  // for function
 #include <iterator>    // for forward_iterator_tag
-#include <mutex>       // for mutex
-#include <string>      // for operator+, basic_string
-#include <utility>     // for move
-#include <vector>      // for vector
+#include <libsemigroups/detail/report.hpp>
+#include <libsemigroups/knuth-bendix.hpp>
+#include <mutex>   // for mutex
+#include <string>  // for operator+, basic_string
+#include <thread>
+#include <utility>  // for move
+#include <vector>   // for vector
 
 #include <fstream>
 
@@ -119,7 +122,7 @@ namespace libsemigroups {
     //!
     //! \sa \ref stats_check_point
     //! \sa \ref count_now
-    // TODO(0) might be better to have a mutex here and just lock it in
+    // TODO(2) might be better to have a mutex here and just lock it in
     // check_point below
     std::atomic_uint64_t count_last;
 
@@ -183,6 +186,22 @@ namespace libsemigroups {
     //! \no_libsemigroups_except
     SimsStats();
 
+    //! \brief Reinitialize an existing SimsStats object.
+    //!
+    //! This function puts a SimsStats object back into the same state as if
+    //! it had been newly default constructed.
+    //!
+    //! \parameters (None)
+    //!
+    //! \returns A reference to \c this.
+    //!
+    //! \exception
+    //! \no_libsemigroups_except
+    SimsStats& init() {
+      stats_zero();
+      return *this;
+    }
+
     //! Copy constructor.
     //!
     //! Returns a SimsStats object that is a copy of \p that. The state
@@ -194,7 +213,7 @@ namespace libsemigroups {
     //! \exceptions
     //! \no_libsemigroups_except
     SimsStats(SimsStats const& that) : SimsStats() {
-      init_from(that);
+      init(that);
     }
 
     //! Copy assignment operator.
@@ -208,7 +227,7 @@ namespace libsemigroups {
     //! \exceptions
     //! \no_libsemigroups_except
     SimsStats& operator=(SimsStats const& that) {
-      return init_from(that);
+      return init(that);
     }
 
     //! Move constructor.
@@ -222,7 +241,7 @@ namespace libsemigroups {
     //! \exceptions
     //! \no_libsemigroups_except
     SimsStats(SimsStats&& that) : SimsStats() {
-      init_from(that);
+      init(that);
     }
 
     //! Move assignment operator.
@@ -236,8 +255,11 @@ namespace libsemigroups {
     //! \exceptions
     //! \no_libsemigroups_except
     SimsStats& operator=(SimsStats&& that) {
-      return init_from(that);
+      return init(that);
     }
+
+    //! Initialize from SimsStats.
+    SimsStats& init(SimsStats const& that);
 
     //! \brief Set all statistics to zero.
     //!
@@ -264,9 +286,6 @@ namespace libsemigroups {
       total_pending_last = total_pending_now.load();
       return *this;
     }
-
-   private:
-    SimsStats& init_from(SimsStats const& that);
   };
 
   //! \ingroup congruences_group
@@ -307,6 +326,7 @@ namespace libsemigroups {
 
    private:
     std::vector<word_type>                 _exclude;
+    size_t                                 _exclude_pruner_index;
     size_t                                 _idle_thread_restarts;
     std::vector<word_type>                 _include;
     std::vector<word_type>::const_iterator _longs_begin;
@@ -345,7 +365,7 @@ namespace libsemigroups {
     //!
     //! \exception
     //! \no_libsemigroups_except
-    // TODO(tests)
+    // TODO(0) (tests)
     Subclass& init();
 
     //! Copy constructor.
@@ -423,7 +443,7 @@ namespace libsemigroups {
     //! Sims1, Sims2, RepOrc, and MinimalRepOrc, which are currently:
     //! * \ref presentation
     //! * \ref long_rules
-    // TODO change above to an actual function that exists, or add such a
+    // TODO(1) change above to an actual function that exists, or add such a
     // function
     //! * \ref number_of_threads
     //!
@@ -452,9 +472,9 @@ namespace libsemigroups {
     //!
     //! \throws LibsemigroupsException if the argument \p val is 0.
     //!
-    //! \warning If \p val exceeds `std::thread::hardware_concurrency()`, then
-    //! this is likely to have a negative impact on the performance of the
-    //! algorithms implemented by Sims1 or Sims2.
+    //! \note The value of \p val is capped at
+    //! `std::thread::hardware_concurrency()`. Trying to set a higher value is
+    //! equivalent to setting `std::thread::hardware_concurrency()`.
     Subclass& number_of_threads(size_t val);
 
     //! \brief Get the number of threads.
@@ -496,7 +516,7 @@ namespace libsemigroups {
     //!
     //! \throws LibsemigroupsException if the alphabet of `p` is non-empty and
     //! not equal to that of \ref long_rules or \ref presentation.
-    // TODO review the previous exception
+    // TODO(1) review the previous exception
     //!
     //! \throws LibsemigroupsException if `p` has 0-generators and 0-relations.
     template <typename Word>
@@ -666,11 +686,15 @@ namespace libsemigroups {
     //! \noexcept
     //!
     //! \sa \ref pruners
+    //!
+    //! \warning When running the Sims low-index backtrack with multiple
+    //! threads, each added pruner must be guaranteed thread safe. Failing to do
+    //! so could cause bad things to happen.
     template <typename Func>
     Subclass& add_pruner(Func&& func) {
       _pruners.emplace_back(func);
-      // TODO could return an iterator to the inserted func in case we want to
-      // remove it again
+      // TODO(2) could return an iterator to the inserted func in case we want
+      // to remove it again
       return static_cast<Subclass&>(*this);
     }
 
@@ -681,7 +705,15 @@ namespace libsemigroups {
     //! \exceptions
     //! \no_libsemigroups_except
     Subclass& clear_pruners() {
-      _pruners.clear();
+      if (_exclude_pruner_index == UNDEFINED) {
+        _pruners.clear();
+      } else {
+        LIBSEMIGROUPS_ASSERT(_exclude_pruner_index < _pruners.size());
+        _pruners.erase(_pruners.cbegin(),
+                       _pruners.cbegin() + _exclude_pruner_index);
+        _exclude_pruner_index = 0;
+        _pruners.erase(_pruners.cbegin() + 1, _pruners.cend());
+      }
       return static_cast<Subclass&>(*this);
     }
 
@@ -768,6 +800,9 @@ namespace libsemigroups {
     //! underlying semigroup (defined by the presentation returned by \ref
     //! presentation) represented by the relations returned by \ref include.
     //!
+    //! \tparam Container the type of the argument, an container of
+    //! word_type objects.
+    //!
     //! \param c A container of rules to be included.
     //!
     //! \returns A reference to \c this.
@@ -781,7 +816,7 @@ namespace libsemigroups {
     //! \warning
     //! This function replaces all previously set `include` pairs with
     //! those found in \p c.
-    // TODO move to helper namespace
+    // TODO(1) move to helper namespace
     template <typename Container>
     Subclass& include(Container const& c) {
       include(std::begin(c), std::end(c));
@@ -850,10 +885,11 @@ namespace libsemigroups {
     //! \warning
     //! This function replaces all previously set `exclude` pairs with
     //! those found in `[first, last)`.
-    // TODO maybe should add instead of replacing similar to exclude of r pair?
-    // Replaces current exclude with [first, last)
+    // TODO(1) maybe should add instead of replacing similar to exclude of r
+    // pair? Replaces current exclude with [first, last)
     template <typename Iterator>
     Subclass& exclude(Iterator first, Iterator last) {
+      add_exclude_pruner();
       return include_exclude(first, last, _exclude);
     }
 
@@ -869,6 +905,7 @@ namespace libsemigroups {
     //!
     //! \sa \ref exclude
     Subclass& exclude(word_type const& lhs, word_type const& rhs) {
+      add_exclude_pruner();
       return include_exclude(lhs, rhs, _exclude);
     }
 
@@ -885,6 +922,9 @@ namespace libsemigroups {
     //! \brief Define a set of pairs that should be included in every
     //! congruence.
     //!
+    //! \tparam Container the type of the argument, an container of
+    //! word_type objects.
+    //!
     //! \param c A container of rules to be excluded.
     //!
     //! \returns A reference to \c this.
@@ -898,7 +938,7 @@ namespace libsemigroups {
     //! \warning
     //! This function replaces all previously set `exclude` pairs with
     //! those found in \p c.
-    // TODO move to helper namespace
+    // TODO(1) move to helper namespace
     template <typename Container>
     Subclass& exclude(Container const& c) {
       exclude(std::begin(c), std::end(c));
@@ -912,12 +952,15 @@ namespace libsemigroups {
     //! \exceptions
     //! \no_libsemigroups_except
     Subclass& clear_exclude() {
-      // TODO remove the pruner
-      _exclude.clear();
+      if (_exclude_pruner_index != UNDEFINED) {
+        _exclude.clear();
+        _pruners.erase(_pruners.cbegin() + _exclude_pruner_index);
+        _exclude_pruner_index = UNDEFINED;
+      }
       return static_cast<Subclass&>(*this);
     }
 
-    // TODO(later) ranges version of include/exclude?
+    // TODO(2) (later) ranges version of include/exclude?
 
     //! \brief Get the current stats object.
     //!
@@ -968,7 +1011,6 @@ namespace libsemigroups {
     //!
     //! \throws LibsemigroupsException if the argument \p val is 0.
     // Number of times an idle thread will attempt to restart before yielding.
-    // TODO doc
     Subclass& idle_thread_restarts(size_t val);
 
    protected:
@@ -978,9 +1020,6 @@ namespace libsemigroups {
     }
 
    private:
-    template <typename OtherSubclass>
-    SimsSettings& init_from(SimsSettings<OtherSubclass> const& that);
-
     template <typename Iterator>
     Subclass& include_exclude(Iterator                first,
                               Iterator                last,
@@ -989,6 +1028,8 @@ namespace libsemigroups {
     Subclass& include_exclude(word_type const&        lhs,
                               word_type const&        rhs,
                               std::vector<word_type>& include_or_exclude);
+
+    size_t add_exclude_pruner();
   };
 
   ////////////////////////////////////////////////////////////////////////
@@ -1086,7 +1127,7 @@ namespace libsemigroups {
       // We use WordGraph, even though the iterators produced by this class
       // hold FelschGraph's, none of the features of FelschGraph are useful
       // for the output, only for the implementation
-      // TODO use SimsSettings::word_graph_type
+      // TODO(1) use SimsSettings::word_graph_type
       using word_graph_type = WordGraph<uint32_t>;
 
       //! Type for the nodes in the associated WordGraph objects.
@@ -1121,7 +1162,7 @@ namespace libsemigroups {
 
        protected:
         using PendingDef = typename Sims1or2::PendingDef;
-        // TODO(Sims1) ensure that _felsch_graph's settings are
+        // TODO(1) (Sims1) ensure that _felsch_graph's settings are
         // properly initialised
         using Definition = std::pair<node_type, label_type>;
 
@@ -1308,7 +1349,7 @@ namespace libsemigroups {
 
       uint64_t number_of_congruences(size_type n) const;
     };  // SimsBase
-  }     // namespace detail
+  }  // namespace detail
 
   namespace sims {
     class const_cgp_iterator;
@@ -1385,10 +1426,9 @@ namespace libsemigroups {
 
    public:
     //! Default constructor
-    // TODO(doc)
     Sims1() = default;
 
-    // TODO(doc)
+    // TODO(0) (doc)
     using SimsBase::init;
 
     //! \brief Construct from a presentation.
@@ -1406,8 +1446,9 @@ namespace libsemigroups {
     //! \throws LibsemigroupsException if `p` is not valid
     //! \throws LibsemigroupsException if `p` has 0-generators and 0-relations.
     //!
-    //! \tparam Word the type of the words in the presentation \p p
-    //! \param p the presentation
+    //! \tparam Word the type of the words in the presentation \p p .
+    //!
+    //! \param p the presentation.
     //!
     //! \sa presentation
     //! \sa init
@@ -1434,7 +1475,7 @@ namespace libsemigroups {
     //! Default move assignment operator.
     Sims1& operator=(Sims1&&) = default;
 
-    // No doc
+    //! No doc
     ~Sims1() = default;
 
     //! \brief Reinitialize an existing Sims1 object.
@@ -1442,8 +1483,9 @@ namespace libsemigroups {
     //! This function puts an object back into the same state as if it had
     //! been newly constructed from the presentation \p p.
     //!
-    //! \tparam Word the type of the words in the presentation \p p
-    //! \param p the presentation
+    //! \tparam Word the type of the words in the presentation \p p .
+    //!
+    //! \param p the presentation.
     //!
     //! \returns A reference to \c *this.
     //!
@@ -1462,7 +1504,7 @@ namespace libsemigroups {
       presentation(p);
       return *this;
     }
-    // TODO init from rvalue reference presentation
+    // TODO(0) init from rvalue reference presentation
 
 #ifdef PARSED_BY_DOXYGEN
     //! \brief Returns the number of one-sided congruences with up to a given
@@ -1582,7 +1624,7 @@ namespace libsemigroups {
     //! significantly cheaper than postfix incrementing \c it++.
     //!
     //! \sa cend
-    // TODO(Sims1) it'd be good to remove node 0 to avoid confusion. This
+    // TODO(2) (Sims1) it'd be good to remove node 0 to avoid confusion. This
     // seems complicated however, and so isn't done at present.
     [[nodiscard]] iterator cbegin(size_type n) const;
 
@@ -1734,7 +1776,7 @@ namespace libsemigroups {
       std::vector<word_type>         _2_sided_words;
 
      protected:
-      // TODO delete after ensuring that compilation with GCC works
+      // TODO(0) delete after ensuring that compilation with GCC works
       // using SimsBase::IteratorBase::init;
       // using SimsBase::IteratorBase::try_pop;
 
@@ -1758,7 +1800,7 @@ namespace libsemigroups {
       iterator_base& operator=(iterator_base&& that);
       ~iterator_base();
 
-      // TODO delete after ensuring that compilation with GCC works
+      // TODO(0) delete after ensuring that compilation with GCC works
       // using SimsBase::IteratorBase::operator==;
       // using SimsBase::IteratorBase::operator!=;
       // using SimsBase::IteratorBase::operator*;
@@ -1769,7 +1811,7 @@ namespace libsemigroups {
 
       using SimsBase::IteratorBase::stats;
     };  // class iterator_base
-  };    // Sims2
+  };  // Sims2
 
   //! \ingroup congruences_group
   //!
@@ -1801,7 +1843,18 @@ namespace libsemigroups {
     RepOrc() : _min(), _max(), _size() {
       init();
     }
-    // TODO(doc)
+
+    //! \brief Reinitialize an existing RepOrc object.
+    //!
+    //! This function puts a RepOrc object back into the same state as if
+    //! it had been newly default constructed.
+    //!
+    //! \parameters (None)
+    //!
+    //! \returns A reference to \c this.
+    //!
+    //! \exception
+    //! \no_libsemigroups_except
     RepOrc& init();
 
     //! \brief Construct from Sims1, Sims2 or MinimalRepOrc.
@@ -1823,7 +1876,20 @@ namespace libsemigroups {
       SimsSettings<RepOrc>::init(s);
     }
 
-    // TODO(doc)
+    //! \brief Initialize an existing RepOrc object from Sims1, Sims2 or
+    //! MinimalRepOrc.
+    //!
+    //! This function reinitializes a RepOrc instance with
+    //! the same SimsSettings as \p s .
+    //!
+    //! \tparam S the type of the argument \p s (which is
+    //! derived from `SimsSettings<S>`).
+    //!
+    //! \param s the Sims1, Sims2 or MinimalRepOrc whose settings
+    //! should be used.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
     template <typename OtherSubclass>
     RepOrc& init(SimsSettings<OtherSubclass> const& s) {
       SimsSettings<RepOrc>::init(s);
@@ -1890,7 +1956,7 @@ namespace libsemigroups {
 
     //! \brief Set the target size.
     //!
-    //! This function sets the target size, i.e. the desired size of the
+    //! This function sets the target size, i.e. the size of the
     //! transformation semigroup corresponding to the WordGraph returned by the
     //! function \ref word_graph.
     //!
@@ -1908,7 +1974,7 @@ namespace libsemigroups {
     //! \brief Get the current target size.
     //!
     //! This function returns the current value for the target size, i.e. the
-    //! desired size of the transformation semigroup corresponding to the
+    //! size of the transformation semigroup corresponding to the
     //! WordGraph returned by the function \ref word_graph.
     //!
     //! \returns A value of type `size_t`.
@@ -1940,8 +2006,7 @@ namespace libsemigroups {
     //! \c 1, then the value returned by this function is non-deterministic, and
     //! may vary even for the same parameters.
     //!
-    //! \tparam T the type of the nodes in the returned word graph. \param
-    //! (None) this function has no parameters.
+    //! \param (None) this function has no parameters.
     //!
     //! \returns A value of type `WordGraph`.
     //!
@@ -1973,9 +2038,21 @@ namespace libsemigroups {
     using SimsSettings<MinimalRepOrc>::stats;
 
     //! Default constructor
-    MinimalRepOrc() = default;
+    MinimalRepOrc() : _size() {
+      init();
+    }
 
-    // TODO(doc)
+    //! \brief Reinitialize an existing MinimalRepOrc object.
+    //!
+    //! This function puts a MinimalRepOrc object back into the same state as if
+    //! it had been newly default constructed.
+    //!
+    //! \parameters (None)
+    //!
+    //! \returns A reference to \c this.
+    //!
+    //! \exception
+    //! \no_libsemigroups_except
     MinimalRepOrc& init() {
       _size = 0;
       return *this;
@@ -2051,42 +2128,6 @@ namespace libsemigroups {
     [[nodiscard]] Sims1::word_graph_type word_graph() const;
   };
 
-  // This struct provides an alternative way of doing MinimalRepOrc, when the
-  // generating pairs of the minimal 2-sided congruences are known. These pairs
-  // should be added to forbid, and then your Pruno instance should be passed to
-  // a Sims1 object via add_pruner.
-  // TODO: probably rename this to describe functionality better
-  // TODO: Probably change interface to be consistent with Ideal finding
-  struct Pruno {
-    std::vector<word_type> forbid;
-    // TODO to cpp
-    bool operator()(Sims1::word_graph_type const& wg) {
-      auto first = forbid.cbegin(), last = forbid.cend();
-      // TODO use 1 felsch tree per excluded pairs, and use it to check if
-      // paths containing newly added edges, lead to the same place
-      for (auto it = first; it != last; it += 2) {
-        bool this_rule_compatible = true;
-        for (uint32_t n = 0; n < wg.number_of_active_nodes(); ++n) {
-          auto l = word_graph::follow_path_no_checks(wg, n, *it);
-          if (l != UNDEFINED) {
-            auto r = word_graph::follow_path_no_checks(wg, n, *(it + 1));
-            if (r == UNDEFINED || (r != UNDEFINED && l != r)) {
-              this_rule_compatible = false;
-              break;
-            }
-          } else {
-            this_rule_compatible = false;
-            break;
-          }
-        }
-        if (this_rule_compatible) {
-          return false;
-        }
-      }
-      return true;
-    }
-  };
-
   namespace sims {
     class const_cgp_iterator;
 
@@ -2106,7 +2147,7 @@ namespace libsemigroups {
     // Right Congruence Generating Pairs (rcgp)
     class const_rcgp_iterator {
      public:
-      // TODO(doc)
+      // TODO(0) (doc)
       using size_type = typename std::vector<relation_type>::size_type;
       using difference_type =
           typename std::vector<relation_type>::difference_type;
@@ -2180,7 +2221,7 @@ namespace libsemigroups {
                                                 WordGraph<Node> const&);
 
      public:
-      // TODO add noexcept?
+      // TODO(0) add noexcept?
       // NOTE(RC): Not sure if noexcept, initializing the _tree field of type
       // Forest allocates memory
       //! Default constructor
@@ -2283,7 +2324,7 @@ namespace libsemigroups {
 
       //! No doc
       // prefix
-      // TODO to cpp file
+      // TODO(1) to cpp file
       const_cgp_iterator const& operator++() {
         size_type start = _reconstructed_word_graph.definitions().size();
         const_rcgp_iterator::operator++();
@@ -2488,7 +2529,7 @@ namespace libsemigroups {
     cbegin_right_generating_pairs(Presentation<word_type> const& p,
                                   WordGraph<Node> const&         wg) {
       validate_right_congruence(p, wg);
-      return cbegin_right_generating_pairs(p, wg);
+      return cbegin_right_generating_pairs_no_checks(p, wg);
     }
 
     //! \ingroup congruences_group
@@ -2865,7 +2906,7 @@ namespace libsemigroups {
           auto wy = tree.path_to_root(y);
           std::reverse(wy.begin(), wy.end());
           auto copy = wg;
-          // TODO avoid the copy here
+          // TODO(2) avoid the copy here
           copy.induced_subgraph_no_checks(static_cast<Node>(0),
                                           wg.number_of_active_nodes());
           tc.init(tc.kind(), p, copy).add_pair(wx, wy);
@@ -3056,6 +3097,138 @@ namespace libsemigroups {
   //! \ingroup congruences_group
   //!
   //! \brief For pruning the search tree when looking for congruences arising
+  //! from right or two-sided congruences representing faithful actions.
+  //!
+  //! Defined in ``sims.hpp``.
+  //!
+  //! This class provides a pruner for pruning the search tree when looking for
+  //! right congruences representing faithful actions. A right congruence
+  //! represents a faithful action if and only if it does not contain any
+  //! non-trivial two-sided congruence. Equivalently, a word graph of a right
+  //! congruence represents a faithful action if and only if there is no
+  //! nontrivial pair of words \f$(u, v)\f$ such that every vertex of the word
+  //! graph is compatible with \f$(u, v)\f$.
+  //!
+  //! \sa \ref SimsSettings::pruners
+  //! \sa \ref SimsSettings::add_pruner
+  // This struct provides an alternative way of doing MinimalRepOrc, when the
+  // generating pairs of the minimal 2-sided congruences are known. These pairs
+  // should be added to forbid, and then your SimsRefinerFaithful instance
+  // should be passed to a Sims1 object via add_pruner.
+  class SimsRefinerFaithful {
+   private:
+    std::vector<word_type> _forbid;
+
+   public:
+    //! Default constructor.
+    explicit SimsRefinerFaithful() : _forbid() {}
+
+    //! \brief Reinitialize an existing SimsRefinerFaithful object.
+    //!
+    //! This function puts an object back into the same state as if it had
+    //! been newly default constructed.
+    //!
+    //! \returns A reference to \c *this.
+    SimsRefinerFaithful& init() {
+      _forbid.clear();
+      return *this;
+    }
+
+    //! \brief Construct from set of forbidden pairs.
+    //!
+    //! Constructs a SimsRefinerFaithful pruner with respect to the set of
+    //! forbidden relations in \p forbid.
+    //!
+    //! If \p forbid contains no trivial pairs (i.e. pairs of words that are
+    //! equal in the underlying semigroup or monoid), then all word graphs
+    //! rejected by SimsRefinerFaithful are guaranteed to not be extendable to a
+    //! word graph representing a faithful congruence. Otherwise, the pruner
+    //! will incorrectly reject all word graphs.
+    //!
+    //! If in addition \p forbid is a set of relations
+    //! containing all minimal congruence generating pairs of a given semigroup
+    //! or monoid, then SimsRefinerFaithful will also correctly determine if a
+    //! complete word graph represents a faithful congruence. Otherwise, the
+    //! complete word graphs accepted by SimsRefinerFaithful are not guaranteed
+    //! to be faithful and must be checked by some other means.
+    //!
+    //! \warning
+    //! This method does not verify if \p forbid contains trivial pairs or not.
+    // TODO(2): Construct from std::vector<std::string>
+    // TODO(2): Template constructor on typename Word
+    explicit SimsRefinerFaithful(std::vector<word_type> const& forbid)
+        : _forbid(forbid) {}
+
+    //! \brief Reinitialize an existing SimsRefinerFaithful object from a set of
+    //! forbidden pairs.
+    //!
+    //! This function puts an object back into the same state as if it had
+    //! been newly constructed from set of forbidden pairs \p forbid.
+    //!
+    //! \returns A reference to \c *this.
+    //!
+    //! \warning
+    //! This method does not verify if \p forbid contains trivial pairs or not.
+    SimsRefinerFaithful& init(std::vector<word_type> const& forbid) {
+      _forbid.clear();
+      _forbid = forbid;
+      return *this;
+    }
+
+    //! \brief Get the forbidden pairs defining the refiner.
+    //!
+    //! \anchor forbid
+    //! Returns a const reference to the current forbidden pairs.
+    //!
+    //! This function returns the defining forbidden pairs of a
+    //! SimsRefinerFaithful instance.
+    //!
+    //! \returns A const reference to `std::vector<word_type>`.
+    //!
+    //! \exceptions
+    //! \noexcept
+    [[nodiscard]] std::vector<word_type> const& forbid() const noexcept {
+      return _forbid;
+    }
+
+    //! \brief Check if a word graph can be extended to one defining a faithful
+    //! congruence.
+    //!
+    //! Returns `false` if there is no way of adding edges and nodes to \par wg
+    //! which will result in a word graph defining a faithful congruence.
+    //! Otherwise returns `true`.
+    //!
+    // TODO(1) to cpp
+    bool operator()(Sims1::word_graph_type const& wg) {
+      auto first = _forbid.cbegin(), last = _forbid.cend();
+      // TODO(2) use 1 felsch tree per excluded pairs, and use it to check if
+      // paths containing newly added edges, lead to the same place
+      for (auto it = first; it != last; it += 2) {
+        bool this_rule_compatible = true;
+        for (uint32_t n = 0; n < wg.number_of_active_nodes(); ++n) {
+          auto l = word_graph::follow_path_no_checks(wg, n, *it);
+          if (l != UNDEFINED) {
+            auto r = word_graph::follow_path_no_checks(wg, n, *(it + 1));
+            if (r == UNDEFINED || (r != UNDEFINED && l != r)) {
+              this_rule_compatible = false;
+              break;
+            }
+          } else {
+            this_rule_compatible = false;
+            break;
+          }
+        }
+        if (this_rule_compatible) {
+          return false;
+        }
+      }
+      return true;
+    }
+  };
+
+  //! \ingroup congruences_group
+  //!
+  //! \brief For pruning the search tree when looking for congruences arising
   //! from right or two-sided ideals.
   //!
   //! Defined in ``sims.hpp``.
@@ -3067,11 +3240,33 @@ namespace libsemigroups {
   //! \sa \ref SimsSettings::add_pruner
   class SimsRefinerIdeals {
    private:
-    using node_type = uint32_t;
-    KnuthBendix<> _knuth_bendix;
+    using node_type    = uint32_t;
+    using KnuthBendix_ = KnuthBendix<>;
+    std::vector<KnuthBendix_> _knuth_bendices;
 
    public:
-    //! \brief Default constructor.
+    //! Default constructor.
+    explicit SimsRefinerIdeals()
+        : _knuth_bendices(std::thread::hardware_concurrency() + 1,
+                          KnuthBendix_(congruence_kind::twosided)) {
+      init();
+    }
+
+    //! \brief Reinitialize an existing SimsRefinerIdeals object.
+    //!
+    //! This function puts an object back into the same state as if it had
+    //! been newly default constructed.
+    //!
+    //! \returns A reference to \c *this.
+    SimsRefinerIdeals& init() {
+      _knuth_bendices[0].init(congruence_kind::twosided).run();
+      std::fill(_knuth_bendices.begin() + 1,
+                _knuth_bendices.end(),
+                _knuth_bendices[0]);
+      return *this;
+    }
+
+    //! \brief Construct from presentation.
     //!
     //! Constructs a SimsRefinerIdeals pruner for the semigroup or monoid
     //! defined by \p p.
@@ -3080,14 +3275,60 @@ namespace libsemigroups {
     //! This method assumes that KnuthBendix terminates on the input
     //! presentation \p p. If this is not the case then th pruner may not
     //! terminate on certain inputs.
-    explicit SimsRefinerIdeals(Presentation<std::string> const& p)
-        : _knuth_bendix(congruence_kind::twosided, p) {}
+    template <typename Word>
+    explicit SimsRefinerIdeals(Presentation<Word> const& p)
+        : _knuth_bendices(std::thread::hardware_concurrency() + 1,
+                          KnuthBendix_(congruence_kind::twosided)) {
+      init(p);
+    }
 
-    //! \copydoc SimsRefinerIdeals::SimsRefinerIdeals(Presentation<std::string>
-    //! const&)
-    explicit SimsRefinerIdeals(Presentation<word_type> const& p)
-        : _knuth_bendix(congruence_kind::twosided,
-                        to_presentation<std::string>(p)) {}
+    //! \brief Reinitialize an existing SimsRefinerIdeals object from a
+    //! presentation.
+    //!
+    //! This function puts an object back into the same state as if it had
+    //! been newly constructed from the presentation \p p.
+    //!
+    //! \returns A reference to \c *this.
+    //!
+    //! \throws LibsemigroupsException if `p` is not valid
+    //! \throws LibsemigroupsException if `p` has 0-generators and 0-relations.
+    //!
+    //! \warning This function has no exception guarantee, the object will be
+    //! in the same state as if it was default constructed if an exception is
+    //! thrown.
+    //!
+    //! \warning
+    //! This method assumes that KnuthBendix terminates on the input
+    //! presentation \p p. If this is not the case then th pruner may not
+    //! terminate on certain inputs.
+    //!
+    //! \sa presentation(Presentation<std::string> const&)
+    template <typename Word>
+    SimsRefinerIdeals& init(Presentation<Word> const& p) {
+      _knuth_bendices[0].init(congruence_kind::twosided, p).run();
+      std::fill(_knuth_bendices.begin() + 1,
+                _knuth_bendices.end(),
+                _knuth_bendices[0]);
+      return *this;
+    }
+
+    //! \brief Get the presentation over which the refiner is defined.
+    //!
+    //! \anchor presentation
+    //! Returns a const reference to the current relations of the underlying
+    //! presentation.
+    //!
+    //! This function returns the defining presentation of a SimsRefinerIdeals
+    //! instance.
+    //!
+    //! \returns A const reference to `Presentation<std::string>`.
+    //!
+    //! \exceptions
+    //! \noexcept
+    [[nodiscard]] Presentation<std::string> const&
+    presentation() const noexcept {
+      return _knuth_bendices[0].presentation();
+    }
 
     //! \brief Check if a word graph can be extended to one defining a Rees
     //! congruence.
@@ -3101,15 +3342,22 @@ namespace libsemigroups {
     //! presentation that was used to construct the SimsRefinerIdeals object. If
     //! this is not the case then th pruner may not terminate on certain inputs.
     bool operator()(Sims1::word_graph_type const& wg) {
+      // TODO(2) Make knuth bendix thread safe to use here without the bodge
       using sims::right_generating_pairs_no_checks;
-      _knuth_bendix.run();
 
       node_type sink = UNDEFINED;
 
+      LIBSEMIGROUPS_ASSERT(detail::this_threads_id()
+                           < std::thread::hardware_concurrency() + 1);
+      // TODO(1) change this to be const& when we have const_contains for knuth
+      // bendix
+      auto& kb = _knuth_bendices[detail::this_threads_id()];
       for (auto const& p : right_generating_pairs_no_checks(wg)) {
         auto const& u = p.first;
         auto const& v = p.second;
-        if (!_knuth_bendix.contains(u, v)) {
+        // TODO(1) change this to be const_contains for knuth
+        // bendix when we have it
+        if (!kb.contains(u, v)) {
           auto beta
               = word_graph::follow_path_no_checks(wg, 0, u.cbegin(), u.cend());
           if (sink == UNDEFINED) {
@@ -3135,14 +3383,94 @@ namespace libsemigroups {
       }
       return true;
     }
-
-    // TODO
-    // Check if the incoming word graph has any generating pairs (via the
-    // functionality below) that are not equal in the underlying semigroup.
-    // Require us to store either a KnuthBendix or Kambites object in this
-    // using a presentation (also requires that the word problem is decidable
-    // in the underlying semigroup).
   };
+
+  //! \ingroup congruence_group
+  //!
+  //! \brief Return a human readable representation of a SimsStats object.
+  //!
+  //! Return a human readable representation of a SimsStats object.
+  //!
+  //! \param x the SimsStats object.
+  //!
+  //! \exceptions
+  //! \no_libsemigroups_except
+  [[nodiscard]] std::string to_human_readable_repr(SimsStats const& x);
+
+  //! \ingroup congruence_group
+  //!
+  //! \brief Return a human readable representation of a Sims1 object.
+  //!
+  //! Return a human readable representation of a Sims1 object.
+  //!
+  //! \param x the Sims1 object.
+  //!
+  //! \exceptions
+  //! \no_libsemigroups_except
+  [[nodiscard]] std::string to_human_readable_repr(Sims1 const& x);
+
+  //! \ingroup congruence_group
+  //!
+  //! \brief Return a human readable representation of a Sims2 object.
+  //!
+  //! Return a human readable representation of a Sims2 object.
+  //!
+  //! \param x the Sims2 object.
+  //!
+  //! \exceptions
+  //! \no_libsemigroups_except
+  [[nodiscard]] std::string to_human_readable_repr(Sims2 const& x);
+
+  //! \ingroup congruence_group
+  //!
+  //! \brief Return a human readable representation of a RepOrc object.
+  //!
+  //! Return a human readable representation of a RepOrc object.
+  //!
+  //! \param x the RepOrc object.
+  //!
+  //! \exceptions
+  //! \no_libsemigroups_except
+  [[nodiscard]] std::string to_human_readable_repr(RepOrc const& x);
+
+  //! \ingroup congruence_group
+  //!
+  //! \brief Return a human readable representation of a MinimalRepOrc object.
+  //!
+  //! Return a human readable representation of a MinimalRepOrc object.
+  //!
+  //! \param x the MinimalRepOrc object.
+  //!
+  //! \exceptions
+  //! \no_libsemigroups_except
+  [[nodiscard]] std::string to_human_readable_repr(MinimalRepOrc const& x);
+
+  //! \ingroup congruence_group
+  //!
+  //! \brief Return a human readable representation of a SimsRefinerIdeals
+  //! object.
+  //!
+  //! Return a human readable representation of a SimsRefinerIdeals object.
+  //!
+  //! \param x the SimsRefinerIdeals object.
+  //!
+  //! \exceptions
+  //! \no_libsemigroups_except
+  [[nodiscard]] std::string to_human_readable_repr(SimsRefinerIdeals const& x);
+
+  //! \ingroup congruence_group
+  //!
+  //! \brief Return a human readable representation of a SimsRefinerFaithful
+  //! object.
+  //!
+  //! Return a human readable representation of a SimsRefinerFaithful object.
+  //!
+  //! \param x the SimsRefinerIdeals object.
+  //!
+  //! \exceptions
+  //! \no_libsemigroups_except
+  [[nodiscard]] std::string
+  to_human_readable_repr(SimsRefinerFaithful const& x);
 
 }  // namespace libsemigroups
 #endif  // LIBSEMIGROUPS_SIMS_HPP_
