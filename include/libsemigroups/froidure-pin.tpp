@@ -709,7 +709,7 @@ namespace libsemigroups {
         // obtained from to_internal_const. That dereferenced pointer is then
         // forwarded as an lvalue reference, which means the copy constructor,
         // not the move constructor is called.
-        _gens.push_back(this->to_internal_copy(*it_coll));
+        _gens.push_back(this->internal_copy(this->to_internal_const(*it_coll)));
         generator_index_type const n = _gens.size() - 1;
 
         is_one(_gens.back(), _nr);
@@ -735,7 +735,7 @@ namespace libsemigroups {
         _letter_to_pos.push_back(it->second);
         _nr_rules++;
         _duplicate_gens.emplace_back(_gens.size(), _first[it->second]);
-        _gens.push_back(this->to_internal_copy(*it_coll));
+        _gens.push_back(this->internal_copy(this->to_internal_const(*it_coll)));
       } else {
         // x is an old element that will now be a generator
         _gens.push_back(_elements[it->second]);

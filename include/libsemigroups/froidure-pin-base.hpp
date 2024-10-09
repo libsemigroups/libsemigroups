@@ -266,6 +266,12 @@ namespace libsemigroups {
     // private members.
     [[nodiscard]] element_index_type current_position(word_type const& w) const;
 
+    // TODO(doc)
+    [[nodiscard]] element_index_type position(word_type const& w) {
+      run();
+      return current_position(w);
+    }
+
     //! \brief Returns the position corresponding to a word.
     //!
     //! Returns the position in the semigroup corresponding to the element
@@ -293,10 +299,16 @@ namespace libsemigroups {
     [[nodiscard]] element_index_type
     current_position_no_checks(word_type const& w) const;
 
+    [[nodiscard]] element_index_type position_no_checks(word_type const& w) {
+      run();
+      return current_position_no_checks(w);
+    }
+
     //! \copydoc current_position(word_type const&) const
     // This is not a helper because the function
     // FroidurePin::current_position(const_reference) requires access to the
     // private members.
+    // TODO(0) helper?
     [[nodiscard]] element_index_type
     current_position(std::initializer_list<size_t> const& w) const {
       word_type ww = w;
@@ -304,11 +316,15 @@ namespace libsemigroups {
     }
 
     //! \copydoc current_position_no_checks(word_type const&) const
+    // TODO(0) helper?
     [[nodiscard]] element_index_type
     current_position_no_checks(std::initializer_list<size_t> const& w) const {
       word_type ww = w;
       return current_position_no_checks(ww);
     }
+
+    // TODO(0) position(initializer_list)
+    // TODO(0) position_no_checks(initializer_list)
 
     //! \brief Returns the position corresponding to a generator.
     //!

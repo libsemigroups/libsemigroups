@@ -515,7 +515,7 @@ namespace libsemigroups {
     //!
     //! \param w the word in the generators to evaluate.
     //!
-    //! \returns A copy of the element represented by the word \p w.
+    //! \returns A const reference to the element represented by the word \p w.
     //!
     //! \warning This function does not check its arguments, and it is assumed
     //! that the values in \p w are less than \ref number_of_generators.
@@ -547,9 +547,9 @@ namespace libsemigroups {
 
     //! \brief Check equality of words in the generators.
     //!
-    //! Returns \c true if the parameters represent the same element
-    //! and \c false otherwise. No enumeration is triggered by calls to this
-    //! function.
+    //! This function returns \c true if the parameters represent the same
+    //! element and \c false otherwise. No enumeration is triggered by calls to
+    //! this function.
     //!
     //! \param x the first word for comparison.
     //! \param y the second word for comparison.
@@ -564,9 +564,9 @@ namespace libsemigroups {
 
     //! \brief Check equality of words in the generators.
     //!
-    //! Returns \c true if the parameters represent the same element
-    //! and \c false otherwise. No enumeration is triggered by calls to this
-    //! function.
+    //! This function returns \c true if the parameters represent the same
+    //! element and \c false otherwise. No enumeration is triggered by calls to
+    //! this function.
     //!
     //! \param x the first word for comparison.
     //! \param y the second word for comparison.
@@ -578,7 +578,7 @@ namespace libsemigroups {
     [[nodiscard]] bool equal_to(word_type const& x, word_type const& y) const {
       throw_if_any_generator_index_out_of_range(x);
       throw_if_any_generator_index_out_of_range(y);
-      return equal_to(x, y);
+      return equal_to_no_checks(x, y);
     }
 
     //! \brief Returns the number of generators.
@@ -630,12 +630,12 @@ namespace libsemigroups {
 
     //! \brief Find the position of an element with no enumeration.
     //!
-    //! Returns the position of the element \p x in the semigroup if it is
-    //! already known to belong to the semigroup or \ref UNDEFINED.  This
-    //! function finds the position of the element \p x if it is already known
-    //! to belong to \c this, and \ref UNDEFINED if not. If \c this is not yet
-    //! fully enumerated, then this  function may return \ref UNDEFINED when \p
-    //! x does belong to \c this.
+    //! This function returns the position of the element \p x in the semigroup
+    //! if it is already known to belong to the semigroup or \ref UNDEFINED.
+    //! This function finds the position of the element \p x if it is already
+    //! known to belong to \c this, and \ref UNDEFINED if not. If \c this is not
+    //! yet fully enumerated, then this  function may return \ref UNDEFINED when
+    //! \p x does belong to \c this.
     //!
     //! \param x a const reference to a possible element.
     //!
@@ -653,8 +653,8 @@ namespace libsemigroups {
 
     //! \brief Multiply elements via their indices.
     //!
-    //! Returns the position of the product of the element with index \p i and
-    //! the element with index \p j.
+    //! This function returns the position of the product of the element with
+    //! index \p i and the element with index \p j.
     //!
     //! This function either:
     //!
@@ -720,8 +720,8 @@ namespace libsemigroups {
 
     //! \brief Check if an element is an idempotent via its index.
     //!
-    //! Returns \c true if the element in position \p i is an idempotent
-    //! and \c false if it is not.
+    //! This function returns \c true if the element in position \p i is an
+    //! idempotent and \c false if it is not.
     //!
     //! \param i the index of the element.
     //!
@@ -738,8 +738,8 @@ namespace libsemigroups {
 
     //! \brief Check if an element is an idempotent via its index.
     //!
-    //! Returns \c true if the element in position \p i is an idempotent
-    //! and \c false if it is not.
+    //! This function returns \c true if the element in position \p i is an
+    //! idempotent and \c false if it is not.
     //!
     //! \param i the index of the element.
     //!
@@ -767,14 +767,16 @@ namespace libsemigroups {
     //!
     //! \param val the number of elements to reserve space for.
     //!
+    //! \returns A reference to `*this`.
+    //!
     //! \exceptions
     //! \no_libsemigroups_except
     FroidurePin& reserve(size_t val);
 
     //! \brief Test membership of an element.
     //!
-    //! Returns \c true if \p x belongs to \c this and \c false if it does
-    //! not.
+    //! This function returns \c true if \p x belongs to \c this and \c false if
+    //! it does not.
     //!
     //! \param x a const reference to a possible element.
     //!
@@ -788,8 +790,8 @@ namespace libsemigroups {
 
     //! \brief Find the position of an element with enumeration if necessary.
     //!
-    //! Returns the position of \p x in \c this, or \ref UNDEFINED if \p x is
-    //! not an element of \c this.
+    //! This function returns the position of \p x in \c this, or \ref UNDEFINED
+    //! if \p x is not an element of \c this.
     //!
     //! \param x a const reference to a possible element.
     //!
@@ -803,9 +805,9 @@ namespace libsemigroups {
 
     //! \brief Returns the sorted index of an element.
     //!
-    //! Returns the position of \p x in the elements of \c this when they are
-    //! sorted by Less,  or \ref UNDEFINED if \p x is not an element of \c
-    //! this.
+    //! This function returns the position of \p x in the elements of \c this
+    //! when they are sorted by Less,  or \ref UNDEFINED if \p x is not an
+    //! element of \c this.
     //!
     //! \param x a const reference to a possible element.
     //!
@@ -819,8 +821,9 @@ namespace libsemigroups {
 
     //! \brief Returns the sorted index of an element via its index.
     //!
-    //! Returns the position of the element with index \p i when the elements
-    //! are sorted using Less, or \ref UNDEFINED if \p i is greater than size().
+    //! This function returns the position of the element with index \p i when
+    //! the elements are sorted using Less, or \ref UNDEFINED if \p i is greater
+    //! than size().
     //!
     //! \param i the index of the element.
     //!
@@ -887,12 +890,12 @@ namespace libsemigroups {
     //! \brief Returns a word containing a minimal factorisation (in the
     //! generators) of an element.
     //!
-    //! Returns the short-lex minimum word (if any) in the generators that
-    //! evaluates to \p x.
+    //! This function returns the short-lex minimum word (if any) in the
+    //! generators that evaluates to \p x.
     //!
     //! \param x a const reference to a possible element to factorise.
     //!
-    //! \returns Returns a \ref word_type which evaluates to \p x.
+    //! \returns A \ref word_type which evaluates to \p x.
     //!
     //! \throws LibsemigroupsException if \p x does not belong to \c this.
     //!
@@ -904,8 +907,8 @@ namespace libsemigroups {
     //! \brief Modify a word in-place to contain a minimal factorisation (in the
     //! generators) of an element.
     //!
-    //! Returns the short-lex minimum word (if any) in the generators that
-    //! evaluates to \p x.
+    //! This function returns the short-lex minimum word (if any) in the
+    //! generators that evaluates to \p x.
     //!
     //! \param w the word_type to contain the factorisation.
     //! \param x a const reference to a possible element to factorise.
@@ -935,7 +938,7 @@ namespace libsemigroups {
     //!
     //! \param x a const reference to a possible element to factorise.
     //!
-    //! \returns Returns a \ref word_type which evaluates to \p x.
+    //! \returns A \ref word_type which evaluates to \p x.
     //!
     //! \throws LibsemigroupsException if \p x does not belong to \c this.
     //!
@@ -959,8 +962,9 @@ namespace libsemigroups {
 
     //! \brief Check finiteness.
     //!
-    //! Returns tril::TRUE if the semigroup represented by \c this is finite,
-    //! tril::FALSE if it is infinite, and tril::unknown if it is not known.
+    //! This function returns tril::TRUE if the semigroup represented by \c this
+    //! is finite, tril::FALSE if it is infinite, and tril::unknown if it is not
+    //! known.
     //!
     //! For some types of elements, such as matrices over the integers, for
     //! example, it is undecidable, in general, if the semigroup generated by
