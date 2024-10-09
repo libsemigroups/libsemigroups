@@ -300,6 +300,24 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! Constant
+    bool add_generator_no_checks(const_element_reference x);
+
+    //! Add a generator.
+    //!
+    //! This functions adds the argument \p x as a new generator if and only if
+    //! \p x is not already an element of the group represented by the
+    //! Schreier-Sims object.
+    //!
+    //! \param x a const reference to the generator to add.
+    //!
+    //! \returns
+    //! \c true if \p x is added as a generator and \c false if it is not.
+    //!
+    //! \throws LibsemigroupsException if the degree of \p x is not equal to
+    //! the first template parameter \c N.
+    //!
+    //! \complexity
+    //! Constant
     bool add_generator(const_element_reference x);
 
     //! Get a generator.
@@ -322,6 +340,21 @@ namespace libsemigroups {
     generator_no_checks(index_type index) const {
       return strong_generator_no_checks(0, index);
     }
+
+    //! The number of generators.
+    //!
+    //! \returns
+    //! The number of generators, a value of \c size_t.
+    //!
+    //! \exceptions
+    //! \noexcept
+    //!
+    //! \complexity
+    //! Constant.
+    //!
+    //! \parameters
+    //! (None)
+    [[nodiscard]] size_t number_of_generators_no_checks() const noexcept;
 
     //! The number of generators.
     //!
@@ -418,7 +451,8 @@ namespace libsemigroups {
     // TODO(doc)
     // Not noexcept because std::array::operator[] isn't
     [[nodiscard]] const_element_reference
-    inversal_element_no_checks(index_type depth, point_type pt) const {
+    inverse_transversal_element_no_checks(index_type depth,
+                                          point_type pt) const {
       return this->to_external_const(_inversal[depth][pt]);
     }
 

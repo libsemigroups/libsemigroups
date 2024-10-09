@@ -101,6 +101,17 @@ namespace libsemigroups {
   }
 
   template <size_t N, typename Point, typename Element, typename Traits>
+  bool SchreierSims<N, Point, Element, Traits>::add_generator_no_checks(
+      const_element_reference x) {
+    if (contains(x)) {
+      return false;
+    }
+    _finished = false;
+    _strong_gens.push_back(0, this->internal_copy(this->to_internal_const(x)));
+    return true;
+  }
+
+  template <size_t N, typename Point, typename Element, typename Traits>
   bool SchreierSims<N, Point, Element, Traits>::add_generator(
       const_element_reference x) {
     throw_if_bad_degree(x);
@@ -117,13 +128,20 @@ namespace libsemigroups {
   }
 
   template <size_t N, typename Point, typename Element, typename Traits>
-  size_t SchreierSims<N, Point, Element, Traits>::number_of_generators()
+  size_t
+  SchreierSims<N, Point, Element, Traits>::number_of_generators_no_checks()
       const noexcept {
     if (_base_size == 0) {
       return 0;
     }
-    LIBSEMIGROUPS_ASSERT(!_strong_gens.empty());
     return number_of_strong_generators_no_checks(0);
+  }
+
+  template <size_t N, typename Point, typename Element, typename Traits>
+  size_t SchreierSims<N, Point, Element, Traits>::number_of_generators()
+      const noexcept {
+    throw_if_bad_depth(0);
+    return number_of_generators_no_checks();
   }
 
   template <size_t N, typename Point, typename Element, typename Traits>
@@ -160,7 +178,7 @@ namespace libsemigroups {
     throw_if_bad_depth(depth);
     throw_if_point_gt_degree(pt);
     throw_if_point_not_in_orbit(depth, pt);
-    return inversal_element_no_checks(depth, pt);
+    return inverse_transversal_element_no_checks(depth, pt);
   }
 
   template <size_t N, typename Point, typename Element, typename Traits>
