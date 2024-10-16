@@ -67,7 +67,7 @@
             title="DynamicMatrix (compile-time)" />
           <tab type="user" visible="yes" url="@ref DynamicMatrixDynamicArith"
             title="DynamicMatrix (run-time)" />
-          <tab type="user" visible="yes" url="@ref StaticMatric" title="StaticMatrix" />
+          <tab type="user" visible="yes" url="@ref libsemigroups::StaticMatrix" title="StaticMatrix" />
         </tab>
         <tab type="usergroup" visible="yes" url="[none]" title="Row views">
           <tab type="user" visible="yes" url="@ref DynamicRowViewStaticArith"
