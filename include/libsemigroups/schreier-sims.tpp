@@ -119,29 +119,16 @@ namespace libsemigroups {
       LIBSEMIGROUPS_EXCEPTION("there are already the maximum number {} of "
                               "generators, cannot add any more!",
                               _strong_gens.size(0));
-    } else if (contains(x)) {
-      return false;
     }
-    _finished = false;
-    _strong_gens.push_back(0, this->internal_copy(this->to_internal_const(x)));
-    return true;
+    return add_generator_no_checks(x);
   }
 
   template <size_t N, typename Point, typename Element, typename Traits>
-  size_t
-  SchreierSims<N, Point, Element, Traits>::number_of_generators_no_checks()
-      const noexcept {
+  size_t SchreierSims<N, Point, Element, Traits>::number_of_generators() const {
     if (_base_size == 0) {
       return 0;
     }
     return number_of_strong_generators_no_checks(0);
-  }
-
-  template <size_t N, typename Point, typename Element, typename Traits>
-  size_t SchreierSims<N, Point, Element, Traits>::number_of_generators()
-      const noexcept {
-    throw_if_bad_depth(0);
-    return number_of_generators_no_checks();
   }
 
   template <size_t N, typename Point, typename Element, typename Traits>
