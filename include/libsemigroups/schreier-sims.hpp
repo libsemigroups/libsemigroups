@@ -16,23 +16,6 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-// This file contains a declaration of the Schreier-Sims algorithm, as
-// described in Section 4.4.2 of:
-//
-// D. Holt (with B. Eick and E. O'Brien), Handbook of computational group
-// theory, CRC Press, 2004.
-//
-// and as implemented in the kernel module of the Digraphs package for GAP in
-// C:
-//
-// https://github.com/digraphs/Digraphs/blob/master/src/schreier-sims.c
-//
-// by Wilf A. Wilson.
-//
-// It also contains the declaration of a backtrack search for computing
-// the intersection of two permutations given by Schreier-Sims algorithm by
-// Reinis Cirpons.
-
 // TODO(later)
 //
 // 0. check use of:
@@ -79,6 +62,25 @@
 
 namespace libsemigroups {
 
+  //! \defgroup schreier_sims_group Schreier-Sims
+  //!
+  //! This page contains documentation for the \c libsemigroups implementation
+  //! of the Schreier-Sims algorithm, as described in Section 4.4.2 of
+  //! \cite Holt2005aa and as implemented in the kernel module of the Digraphs
+  //! package \cite DeBeule2024aa for GAP in C:
+  //!
+  //! https://github.com/digraphs/Digraphs/blob/master/src/schreier-sims.c
+  //!
+  //! by Wilf A. Wilson.
+  //!
+  //! It also contains the documentation of a backtrack search for computing
+  //! the intersection of two permutations given by the Schreier-Sims algorithm
+  //! by Reinis Cirpons.
+  //!
+  //! @{
+
+  //! \brief Traits class for use with the class template \ref SchreierSims.
+  //!
   //! Defined in ``schreier-sims.hpp``.
   //!
   //! This is a traits class for use with the class template SchreierSims.
@@ -94,13 +96,15 @@ namespace libsemigroups {
   //! \c Point.
   template <size_t N, typename Point, typename Element>
   struct SchreierSimsTraits {
+    //! \brief The type of indices to be used by a SchreierSims instance.
+    //!
     //! The type of indices to be used by a SchreierSims instance.
     using index_type = size_t;
 
     //! Type of the object containing all points acted on.
     using domain_type = detail::IntRange<Point>;
 
-    //! Type of the points acted on.
+    //! \brief Type of the points acted on.
     //!
     //! The type of the points acted on by the group represented by \c this,
     //! which is the same as the template parameter \c Point.
@@ -794,6 +798,8 @@ namespace libsemigroups {
                       SchreierSims<N>& S2);
   }  // namespace schreier_sims
 }  // namespace libsemigroups
+
+//! @}
 
 #include "schreier-sims.tpp"
 
