@@ -601,7 +601,7 @@ namespace libsemigroups {
     //!
     //! \exceptions
     //! \no_libsemigroups_except
-    [[nodiscard]] const_element_reference identity() const
+    [[nodiscard]] const_element_reference one() const
         noexcept(noexcept(this->to_external_const(_one))) {
       return this->to_external_const(_one);
     }

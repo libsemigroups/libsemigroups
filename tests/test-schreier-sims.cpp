@@ -324,7 +324,7 @@ namespace libsemigroups {
     REQUIRE(S.generator(0) == Perm({0, 2, 4, 6, 7, 3, 8, 1, 5}));
 
     REQUIRE(S.size() == 8);
-    REQUIRE(S.sift(S.generator(0)) == S.identity());
+    REQUIRE(S.sift(S.generator(0)) == S.one());
     REQUIRE(S.contains(S.generator(0)));
     REQUIRE(S.contains(S.generator(1)));
     REQUIRE(S.contains(Perm({0, 6, 3, 7, 5, 1, 4, 8, 2})));
