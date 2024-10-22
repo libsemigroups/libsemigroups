@@ -88,7 +88,7 @@ namespace libsemigroups {
       // Constructor: takes a reference to a byte and the index of the bit in
       // that byte
       constexpr BitRef(uint64_t& data, size_t index) noexcept
-          : _data(data), _mask(uint64_t(1) << (63 - index)) {}
+          : _data(data), _mask(static_cast<uint64_t>(1) << (63 - index)) {}
 
       // Assignment operator to allow setting the bit through the proxy
       constexpr BitRef& operator=(bool val) noexcept {

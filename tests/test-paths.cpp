@@ -996,7 +996,8 @@ namespace libsemigroups {
         LibsemigroupsException);
 
     p.source(1).target(1).min(0).max(10);
-    REQUIRE(number_of_paths(wg, 1, 1, 0, 10) == uint64_t((p | count())));
+    REQUIRE(number_of_paths(wg, 1, 1, 0, 10)
+            == static_cast<uint64_t>((p | count())));
 
     auto checker2 = [&wg](word_type const& w) {
       return w.size() < 10 && word_graph::follow_path(wg, 1, w) == 1;
