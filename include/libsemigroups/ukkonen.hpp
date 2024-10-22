@@ -2455,6 +2455,8 @@ namespace libsemigroups {
   //! Return a human readable representation of an Ukkonen::State object.
   //!
   //! \param st the Ukkonen::State object.
+  //! \param sep the string used to separate "Ukkonen" and "State" in the output
+  //! (defaults to "::").
   //!
   //! \returns A value of type std::string
   //!
@@ -2472,6 +2474,8 @@ namespace libsemigroups {
   //! Return a human readable representation of an Ukkonen::Node object.
   //!
   //! \param node the Ukkonen::Node object.
+  //! \param sep the string used to separate "Ukkonen" and "Node" in the output
+  //! (defaults to "::").
   //!
   //! \returns A value of type std::string
   //!
