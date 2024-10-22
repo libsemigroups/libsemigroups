@@ -830,7 +830,7 @@ namespace libsemigroups {
 
   void ToddCoxeter::report_next_lookahead(size_t old_value) const {
     static const std::string pad(8, ' ');
-    int64_t                  diff = int64_t(lookahead_next()) - old_value;
+    int64_t diff = static_cast<int64_t>(lookahead_next()) - old_value;
     report_default("ToddCoxeter: next lookahead at {} | {:>12} (nodes)  "
                    "| {:>12} (diff)\n",
                    pad,

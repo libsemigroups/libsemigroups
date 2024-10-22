@@ -676,7 +676,7 @@ namespace libsemigroups {
     BMat8 zero(0);
     REQUIRE(BMat8({{0, 0}, {0, 0}}) == zero);
     REQUIRE(BMat8({{0, 0}, {0, 1}}) != zero);
-    REQUIRE(BMat8({{0, 0}, {0, 1}}) == BMat8(uint64_t(1) << 54));
+    REQUIRE(BMat8({{0, 0}, {0, 1}}) == BMat8(static_cast<uint64_t>(1) << 54));
 
     REQUIRE_THROWS_AS(BMat8({{0, 0}}), LibsemigroupsException);
     REQUIRE_THROWS_AS(BMat8({{0, 1}}), LibsemigroupsException);

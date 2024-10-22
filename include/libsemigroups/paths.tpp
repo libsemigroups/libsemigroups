@@ -93,7 +93,7 @@ namespace libsemigroups {
       for (size_t i = min; i < max; ++i) {
         uint64_t add = std::accumulate(acc.cbegin() + source * N,
                                        acc.cbegin() + source * N + N,
-                                       uint64_t(0));
+                                       static_cast<uint64_t>(0));
         if (add == 0) {
           break;
         }
@@ -223,7 +223,7 @@ namespace libsemigroups {
       return std::accumulate(number_paths.cbegin_row(source) + min,
                              number_paths.cbegin_row(source)
                                  + std::min(topo.size(), max),
-                             uint64_t(0));
+                             static_cast<uint64_t>(0));
     }
 
     template <typename Node1, typename Node2>
@@ -290,7 +290,7 @@ namespace libsemigroups {
       return std::accumulate(number_paths.cbegin_row(source) + min,
                              number_paths.cbegin_row(source)
                                  + std::min(topo.size(), max),
-                             uint64_t(0));
+                             static_cast<uint64_t>(0));
     }
 
   }  // namespace detail

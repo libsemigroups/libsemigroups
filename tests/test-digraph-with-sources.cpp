@@ -1854,9 +1854,10 @@ namespace libsemigroups {
     REQUIRE(ad.number_of_paths(1, 1, 0, 10) == 1404);
     REQUIRE_THROWS_AS(ad.number_of_paths(1, 1, 0, 10, algorithm::trivial),
                       LibsemigroupsException);
-    REQUIRE(ad.number_of_paths(1, 1, 0, 10)
-            == uint64_t(std::distance(ad.cbegin_pstilo(1, 1, 0, 10),
-                                      ad.cend_pstilo())));
+    REQUIRE(
+        ad.number_of_paths(1, 1, 0, 10)
+        == static_cast<uint64_t>(
+            (std::distance(ad.cbegin_pstilo(1, 1, 0, 10)), ad.cend_pstilo())));
 
     auto checker2 = [&ad](word_type const& w) {
       return w.size() < 10 && action_digraph_helper::follow_path(ad, 1, w) == 1;
