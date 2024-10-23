@@ -590,6 +590,7 @@ namespace libsemigroups {
                      "[014][quick][knuth-bendix]",
                      KNUTH_BENDIX_TYPES) {
     using literals::operator""_w;
+
     auto                    rg = ReportGuard(false);
     Presentation<word_type> p;
     p.alphabet(3);
@@ -680,6 +681,7 @@ namespace libsemigroups {
                      "[016][quick][knuth-bendix]",
                      KNUTH_BENDIX_TYPES) {
     using literals::operator""_w;
+
     auto rg = ReportGuard(false);
 
     Presentation<std::string> p;
