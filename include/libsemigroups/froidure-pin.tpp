@@ -198,26 +198,36 @@ namespace libsemigroups {
       return this->to_external_const(_elements[pos]);
     }
 
-    _tmp_product = this->to_internal(One()(this->to_external_const(_gens[0])));
+    if (w.empty()) {
+      _tmp_product
+          = this->to_internal(One()(this->to_external_const(_gens[0])));
 
-    if (!w.empty()) {
-      // current_position is always known for generators (i.e. when w.size()
-      // == 1), so w.size() > 1 should be true here
-      LIBSEMIGROUPS_ASSERT(w.size() > 1);
-      element_type tmp
-          = this->external_copy(this->to_external_const(_tmp_product));
-
-      auto* state_ptr = _state.get();
-      for (auto it = w.begin(); it < w.end(); ++it) {
-        LIBSEMIGROUPS_ASSERT(*it < number_of_generators());
-        internal_product(tmp,
-                         this->to_external_const(_tmp_product),
-                         this->to_external_const(_gens[*it]),
-                         state_ptr);
-        Swap()(this->to_external(_tmp_product), tmp);
-      }
-      this->external_free(tmp);
+      return this->to_external_const(_tmp_product);
     }
+
+    // current_position is always known for generators (i.e. when w.size()
+    // == 1), so w.size() > 1 should be true here
+    LIBSEMIGROUPS_ASSERT(w.size() > 1);
+
+    element_type prod
+        = this->external_copy(this->to_external_const(_tmp_product));
+
+    auto* state_ptr = _state.get();
+    internal_product(prod,
+                     this->to_external_const(_gens[w[0]]),
+                     this->to_external_const(_gens[w[1]]),
+                     state_ptr);
+    for (auto it = w.begin() + 2; it < w.end(); ++it) {
+      LIBSEMIGROUPS_ASSERT(*it < number_of_generators());
+      Swap()(this->to_external(_tmp_product), prod);
+      internal_product(prod,
+                       this->to_external_const(_tmp_product),
+                       this->to_external_const(_gens[*it]),
+                       state_ptr);
+    }
+    Swap()(this->to_external(_tmp_product), prod);
+    this->external_free(prod);
+
     return this->to_external_const(_tmp_product);
   }
 
