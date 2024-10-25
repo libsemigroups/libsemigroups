@@ -211,10 +211,8 @@ namespace libsemigroups {
     // Consider the empty case separately to avoid the unnecessary
     // multiplication by the identity.
     if (w.empty()) {
-      _tmp_product
-          = this->to_internal(One()(this->to_external_const(_gens[0])));
-
-      return this->to_external_const(_tmp_product);
+      LIBSEMIGROUPS_ASSERT(degree() != UNDEFINED);
+      return this->to_external_const(_id);
     }
 
     // current_position is always known for generators (i.e. when w.size()

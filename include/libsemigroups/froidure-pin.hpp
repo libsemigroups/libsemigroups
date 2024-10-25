@@ -313,7 +313,7 @@ namespace libsemigroups {
    private:
     template <typename T>
     static constexpr bool IsState
-        = ((!std::is_void_v<T>) &&std::is_same_v<state_type, T>);
+        = ((!std::is_void_v<T>) && std::is_same_v<state_type, T>);
 
     ////////////////////////////////////////////////////////////////////////
     // FroidurePin - data - private
@@ -544,6 +544,7 @@ namespace libsemigroups {
     //! \sa \ref current_position.
     [[nodiscard]] const_reference to_element(word_type const& w) const {
       throw_if_any_generator_index_out_of_range(w);
+      // TODO throw if there are no generators and w is empty
       return to_element_no_checks(w);
     }
 
@@ -1301,8 +1302,8 @@ namespace libsemigroups {
 
     void expand(size_type);
     void is_one(internal_const_element_type x, element_index_type) noexcept(
-        std::is_nothrow_default_constructible_v<InternalEqualTo>&& noexcept(
-            std::declval<InternalEqualTo>()(x, x)));
+        std::is_nothrow_default_constructible_v<InternalEqualTo>
+        && noexcept(std::declval<InternalEqualTo>()(x, x)));
 
     void copy_generators_from_elements(size_t);
     void closure_update(element_index_type,
