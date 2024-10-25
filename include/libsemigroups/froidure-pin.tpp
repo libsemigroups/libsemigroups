@@ -45,6 +45,7 @@ namespace libsemigroups {
 
   template <typename Element, typename Traits>
   FroidurePin<Element, Traits>& FroidurePin<Element, Traits>::init() {
+    free_data();
     FroidurePinBase::init();
     _elements.clear();
     _gens.clear();
@@ -88,6 +89,7 @@ namespace libsemigroups {
   FroidurePin<Element, Traits>& FroidurePin<Element, Traits>::operator=(
       FroidurePin<Element, Traits> const& S) {
     FroidurePinBase::operator=(S);
+    free_data();
     _elements.clear();
     _elements.reserve(_nr);
     _gens.clear();
@@ -109,7 +111,7 @@ namespace libsemigroups {
   }
 
   template <typename Element, typename Traits>
-  FroidurePin<Element, Traits>::~FroidurePin() {
+  void FroidurePin<Element, Traits>::free_data() {
     if (_degree != UNDEFINED) {
       this->internal_free(_tmp_product);
       this->internal_free(_id);
@@ -122,6 +124,11 @@ namespace libsemigroups {
     for (auto& x : _elements) {
       this->internal_free(x);
     }
+  }
+
+  template <typename Element, typename Traits>
+  FroidurePin<Element, Traits>::~FroidurePin() {
+    free_data();
   }
 
   ////////////////////////////////////////////////////////////////////////
@@ -692,6 +699,7 @@ namespace libsemigroups {
       _id          = this->to_internal(One()(x));
       _tmp_product = this->to_internal(One()(x));
     }
+    LIBSEMIGROUPS_ASSERT(Degree()(x) == _degree);
   }
 
   template <typename Element, typename Traits>
