@@ -115,7 +115,6 @@ namespace libsemigroups {
   template <typename Element, typename Traits>
   void FroidurePin<Element, Traits>::free_data() {
     if (_degree != UNDEFINED) {
-      _degree = UNDEFINED;  // TODO(0) required?
       this->internal_free(_tmp_product);
       this->internal_free(_id);
     }
