@@ -33,8 +33,7 @@
 #include "debug.hpp"              // for LIBSEMIGROUPS_ASSERT
 #include "exception.hpp"          // for LIBSEMIGROUPS_EXCEPTION
 #include "froidure-pin-base.hpp"  // for FroidurePinBase, FroidurePinBase::s...
-#include "libsemigroups/gabow.hpp"
-#include "types.hpp"  // for letter_type, word_type
+#include "types.hpp"              // for letter_type, word_type
 
 #include "detail/bruidhinn-traits.hpp"  // for detail::BruidhinnTraits
 #include "detail/iterator.hpp"          // for ConstIteratorStateless
@@ -521,7 +520,8 @@ namespace libsemigroups {
     //!
     //! \warning This function does not check its arguments, and it is assumed
     //! that the values in \p w are less than \ref number_of_generators.
-    //!
+    // TODO(0) if w is empty but the one isn't in *this, then this shouldn't
+    // return _one but does, so we should mention this here too
     //! \sa \ref current_position.
     [[nodiscard]] const_reference
     to_element_no_checks(word_type const& w) const;
@@ -542,14 +542,24 @@ namespace libsemigroups {
     //! number of generators.
     //!
     //! \sa \ref current_position.
+    // TODO(0) to tpp
+    // TODO(0) no trigger note in the doc
     [[nodiscard]] const_reference to_element(word_type const& w) const {
       // If !w.empty() && number_of_generators() == 0, then
       // throw_if_any_generator_index_out_of_range will throw.
       throw_if_any_generator_index_out_of_range(w);
-      if (number_of_generators() == 0 && w.empty()) {
-        // Hence this function throws if number_of_generators() == 0.
-        LIBSEMIGROUPS_EXCEPTION("cannot convert the empty word to an element "
-                                "when no generators are defined")
+      if (w.empty()) {
+        if (number_of_generators() == 0) {
+          // Hence this function throws if number_of_generators() == 0.
+          LIBSEMIGROUPS_EXCEPTION("cannot convert the empty word to an element "
+                                  "when no generators are defined");
+        }
+        if (!contains_one_no_run()) {
+          LIBSEMIGROUPS_EXCEPTION(
+              "cannot convert the empty word to an element, the identity is "
+              "not {}an element of the semigroup",
+              finished() ? "" : "known to be ");
+        }
       }
       return to_element_no_checks(w);
     }

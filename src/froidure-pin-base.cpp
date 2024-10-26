@@ -110,7 +110,7 @@ namespace libsemigroups {
         _lenindex(S._lenindex),
         _letter_to_pos(S._letter_to_pos),
         _nr(S._nr),
-        _nr_products(0),  // TODO what's the rationale for this being 0
+        _nr_products(0),  // TODO(1) what's the rationale for this being 0
         _nr_rules(S._nr_rules),
         _pos(S._pos),
         _pos_one(S._pos_one),
@@ -135,7 +135,7 @@ namespace libsemigroups {
     _lenindex          = S._lenindex;
     _letter_to_pos     = S._letter_to_pos;
     _nr                = S._nr;
-    _nr_products       = 0;  // TODO what's the rationale for this being 0
+    _nr_products       = 0;  // TODO(1) what's the rationale for this being 0
     _nr_rules          = S._nr_rules;
     _pos               = S._pos;
     _pos_one           = S._pos_one;
@@ -264,6 +264,7 @@ namespace libsemigroups {
     run_until([this, &limit]() -> bool { return current_size() >= limit; });
   }
 
+  // TODO rename to contains_one
   [[nodiscard]] bool FroidurePinBase::is_monoid() {
     if (_found_one) {
       return true;

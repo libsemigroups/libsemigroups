@@ -266,7 +266,10 @@ namespace libsemigroups {
     // private members.
     [[nodiscard]] element_index_type current_position(word_type const& w) const;
 
-    // TODO(doc)
+    // TODO(0) doc
+    // TODO(0) change this to accept iterators (and all other functions
+    // accepting word_types, move the functions for word_types and init_lists to
+    // helper space)
     [[nodiscard]] element_index_type position(word_type const& w) {
       run();
       return current_position(w);
@@ -323,8 +326,8 @@ namespace libsemigroups {
       return current_position_no_checks(ww);
     }
 
-    // TODO(0) position(initializer_list)
-    // TODO(0) position_no_checks(initializer_list)
+    // TODO(1) position(initializer_list)
+    // TODO(1) position_no_checks(initializer_list)
 
     //! \brief Returns the position corresponding to a generator.
     //!
@@ -376,8 +379,6 @@ namespace libsemigroups {
       throw_if_generator_index_out_of_range(i);
       return current_position_no_checks(i);
     }
-
-    // TODO(later) analogues of the current_position mem fns for position
 
     //! \brief Returns the maximum length of a word in the generators so far
     //! computed.
@@ -633,7 +634,7 @@ namespace libsemigroups {
     //! there are no duplicate generators.
     //!
     //! \note No enumeration is triggered by calling this function.
-    // TODO more notes like the above
+    // TODO(0) more notes like the above
     [[nodiscard]] generator_index_type
     final_letter(element_index_type pos) const {
       throw_if_element_index_out_of_range(pos);
@@ -759,6 +760,10 @@ namespace libsemigroups {
     //! this, and \f$n\f$ is the return value of
     //! FroidurePin::number_of_generators.
     [[nodiscard]] bool is_monoid();
+
+    [[nodiscard]] bool contains_one_no_run() const noexcept {
+      return _found_one;
+    }
 
     //! \brief Returns the total number of relations in the presentation.
     //!
@@ -1052,10 +1057,10 @@ namespace libsemigroups {
     }
 
     // Here's a little summary of the functions for factorisation:
-    // [ ] current_factorisation_no_checks(2 args) TODO
-    // [ ] current_factorisation_no_checks(1 arg) TODO
-    // [ ] current_factorisation(2 args) TODO
-    // [ ] current_factorisation(1 arg) TODO
+    // [ ] current_factorisation_no_checks(2 args) TODO(1)
+    // [ ] current_factorisation_no_checks(1 arg) TODO(1)
+    // [ ] current_factorisation(2 args) TODO(1)
+    // [ ] current_factorisation(1 arg) TODO(1)
     // [x] factorisation(2 args)
     // [x] factorisation(1 arg)
     // [ ] ~~factorisation_no_checks(2 args)~~ NONSENSICAL
@@ -1798,7 +1803,7 @@ namespace libsemigroups {
     //! FroidurePin::number_of_generators.
     void throw_if_generator_index_out_of_range(generator_index_type i) const;
 
-    // TODO doc
+    // TODO(0) doc
     void throw_if_any_generator_index_out_of_range(word_type const& i) const;
 
    private:

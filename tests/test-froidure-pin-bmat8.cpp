@@ -246,7 +246,7 @@ namespace libsemigroups {
     auto S = to_froidure_pin(gens);
 
     REQUIRE(!S.is_monoid());
-    REQUIRE(S.to_element({}) == One<BMat8>()(gens[0]));
+    REQUIRE_THROWS_AS(S.to_element({}), LibsemigroupsException);
     REQUIRE_NOTHROW(S.to_element({0}));
     REQUIRE_NOTHROW(S.to_element({0, 3, 0, 3, 1}));
     REQUIRE_THROWS_AS(S.to_element({0, 1, 0, 4}), LibsemigroupsException);

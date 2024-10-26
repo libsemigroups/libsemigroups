@@ -210,7 +210,11 @@ namespace libsemigroups {
     // Consider the empty case separately to avoid the unnecessary
     // multiplication by the identity.
     if (w.empty()) {
+      // The next line asserts we can't get here without _id being allocated.
       LIBSEMIGROUPS_ASSERT(degree() != UNDEFINED);
+      // The next line asserts that _id actually is an element, if not, then we
+      // shouldn't be calling this function with the empty word.
+      LIBSEMIGROUPS_ASSERT(contains_one_no_run());
       return this->to_external_const(_id);
     }
 

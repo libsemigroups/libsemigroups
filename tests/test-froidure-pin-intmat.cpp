@@ -143,7 +143,7 @@ namespace libsemigroups {
       T.add_generator(Mat({{0, 0}, {0, 1}}));
       T.add_generator(Mat({{0, 1}, {-1, 0}}));
 
-      REQUIRE(T.to_element({}) == Mat::one(2));
+      REQUIRE_THROWS_AS(T.to_element({}), LibsemigroupsException);
       REQUIRE_THROWS_AS(T.to_element({0, 0, 1, 2}), LibsemigroupsException);
 
       auto t = T.to_element({0, 0, 1, 1});
