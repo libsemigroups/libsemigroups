@@ -543,8 +543,14 @@ namespace libsemigroups {
     //!
     //! \sa \ref current_position.
     [[nodiscard]] const_reference to_element(word_type const& w) const {
+      // If !w.empty() && number_of_generators() == 0, then
+      // throw_if_any_generator_index_out_of_range will throw.
       throw_if_any_generator_index_out_of_range(w);
-      // TODO throw if there are no generators and w is empty
+      if (number_of_generators() == 0 && w.empty()) {
+        // Hence this function throws if number_of_generators() == 0.
+        LIBSEMIGROUPS_EXCEPTION("cannot convert the empty word to an element "
+                                "when no generators are defined")
+      }
       return to_element_no_checks(w);
     }
 
@@ -1906,7 +1912,7 @@ namespace libsemigroups {
     // idempotents. No enumeration of \p fp is triggered by calls to this
     // function.
     //
-    // See TODO for more details about range objects.
+    // See TODO(1) for more details about range objects.
     //
     // \tparam Element the type of the elements in the represented
     // semigroup
@@ -2030,7 +2036,7 @@ namespace libsemigroups {
   //!
   //!  * \ref to_froidure_pin_group
   //!
-  //!  TODO add details + links
+  //  TODO(1) add details + links
 
   //! \defgroup to_froidure_pin_group to_froidure_pin
   //!
