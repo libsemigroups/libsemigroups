@@ -49,7 +49,7 @@ namespace libsemigroups {
     WordGraph<node_type> tc_arg(ad->number_of_nodes() + 1, ad->out_degree());
 
     for (label_type a = 0; a < tc_arg.out_degree(); ++a) {
-      tc_arg.target_no_checks(0, a, fp.current_position(a) + 1);
+      tc_arg.target_no_checks(0, a, fp.position_of_generator_no_checks(a) + 1);
     }
 
     for (node_type n = 0; n < tc_arg.number_of_nodes() - 1; ++n) {

@@ -366,9 +366,9 @@ namespace libsemigroups {
       auto S = to_froidure_pin(gens);
 
       for (size_t j = 0; j < i; ++j) {
-        REQUIRE_NOTHROW(S.current_position(j));
+        REQUIRE_NOTHROW(S.position_of_generator(j));
       }
-      REQUIRE_THROWS_AS(S.current_position(i), LibsemigroupsException);
+      REQUIRE_THROWS_AS(S.position_of_generator(i), LibsemigroupsException);
     }
   }
 
@@ -739,11 +739,11 @@ namespace libsemigroups {
     S.add_generator(Transf<>({5, 1, 2, 3, 4, 5}));
     S.add_generator(Transf<>({1, 1, 2, 3, 4, 5}));
 
-    REQUIRE(S.current_position(0) == 0);
-    REQUIRE(S.current_position(1) == 1);
-    REQUIRE(S.current_position(2) == 2);
-    REQUIRE(S.current_position(3) == 3);
-    REQUIRE(S.current_position(4) == 4);
+    REQUIRE(S.position_of_generator(0) == 0);
+    REQUIRE(S.position_of_generator(1) == 1);
+    REQUIRE(S.position_of_generator(2) == 2);
+    REQUIRE(S.position_of_generator(3) == 3);
+    REQUIRE(S.position_of_generator(4) == 4);
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin<Transf<>>",
@@ -785,13 +785,13 @@ namespace libsemigroups {
     S.add_generator(Transf<>({1, 0, 2, 3, 4, 5}));
     S.add_generator(Transf<>({1, 1, 2, 3, 4, 5}));
 
-    REQUIRE(S.current_position(0) == 0);
-    REQUIRE(S.current_position(1) == 1);
-    REQUIRE(S.current_position(2) == 1);
-    REQUIRE(S.current_position(3) == 1);
-    REQUIRE(S.current_position(4) == 1);
-    REQUIRE(S.current_position(10) == 1);
-    REQUIRE(S.current_position(12) == 3);
+    REQUIRE(S.position_of_generator(0) == 0);
+    REQUIRE(S.position_of_generator(1) == 1);
+    REQUIRE(S.position_of_generator(2) == 1);
+    REQUIRE(S.position_of_generator(3) == 1);
+    REQUIRE(S.position_of_generator(4) == 1);
+    REQUIRE(S.position_of_generator(10) == 1);
+    REQUIRE(S.position_of_generator(12) == 3);
 
     REQUIRE(S.size() == 7776);
     REQUIRE(S.degree() == 6);
@@ -842,11 +842,11 @@ namespace libsemigroups {
     REQUIRE(S.number_of_generators() == 5);
     REQUIRE(S.number_of_rules() == 2459);
 
-    REQUIRE(S.current_position(0) == 0);
-    REQUIRE(S.current_position(1) == 1);
-    REQUIRE(S.current_position(2) == 2);
-    REQUIRE(S.current_position(3) == 120);
-    REQUIRE(S.current_position(4) == 1546);
+    REQUIRE(S.position_of_generator(0) == 0);
+    REQUIRE(S.position_of_generator(1) == 1);
+    REQUIRE(S.position_of_generator(2) == 2);
+    REQUIRE(S.position_of_generator(3) == 120);
+    REQUIRE(S.position_of_generator(4) == 1546);
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin<Transf<>>",
@@ -2194,16 +2194,16 @@ namespace libsemigroups {
     REQUIRE(S.number_of_generators() == 10);
     REQUIRE(S.number_of_rules() == 267);
 
-    REQUIRE(S.current_position(0) == 0);
-    REQUIRE(S.current_position(1) == 0);
-    REQUIRE(S.current_position(2) == 0);
-    REQUIRE(S.current_position(3) == 1);
-    REQUIRE(S.current_position(4) == 2);
-    REQUIRE(S.current_position(5) == 7);
-    REQUIRE(S.current_position(6) == 18);
-    REQUIRE(S.current_position(7) == 87);
-    REQUIRE(S.current_position(8) == 97);
-    REQUIRE(S.current_position(9) == 21);
+    REQUIRE(S.position_of_generator(0) == 0);
+    REQUIRE(S.position_of_generator(1) == 0);
+    REQUIRE(S.position_of_generator(2) == 0);
+    REQUIRE(S.position_of_generator(3) == 1);
+    REQUIRE(S.position_of_generator(4) == 2);
+    REQUIRE(S.position_of_generator(5) == 7);
+    REQUIRE(S.position_of_generator(6) == 18);
+    REQUIRE(S.position_of_generator(7) == 87);
+    REQUIRE(S.position_of_generator(8) == 97);
+    REQUIRE(S.position_of_generator(9) == 21);
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin<Transf<>>",
@@ -2267,9 +2267,9 @@ namespace libsemigroups {
     froidure_pin::add_generators(
         S, {T.generator(3), T.generator(4), T.generator(5)});
     REQUIRE(S.number_of_generators() == 8);
-    REQUIRE(S.current_position(5) == 7);
-    REQUIRE(S.current_position(6) == 8);
-    REQUIRE(S.current_position(7) == 9);
+    REQUIRE(S.position_of_generator(5) == 7);
+    REQUIRE(S.position_of_generator(6) == 8);
+    REQUIRE(S.position_of_generator(7) == 9);
     REQUIRE(S.current_size() == 55);
 
     S.add_generator(S.at(44));
@@ -2501,11 +2501,11 @@ namespace libsemigroups {
       auto S = to_froidure_pin(gens);
 
       for (size_t j = 0; j < i; ++j) {
-        REQUIRE_NOTHROW(S.current_position(j));
+        REQUIRE_NOTHROW(S.position_of_generator(j));
         REQUIRE_NOTHROW(S.generator(j));
       }
       REQUIRE_THROWS_AS(S.generator(i), LibsemigroupsException);
-      REQUIRE_THROWS_AS(S.current_position(i), LibsemigroupsException);
+      REQUIRE_THROWS_AS(S.position_of_generator(i), LibsemigroupsException);
     }
   }
 

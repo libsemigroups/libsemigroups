@@ -250,7 +250,7 @@ namespace libsemigroups {
           return UNDEFINED;
         }
       }
-      element_index_type s = current_position_no_checks(*first);
+      element_index_type s = position_of_generator_no_checks(*first);
       return word_graph::follow_path_no_checks(
           current_right_cayley_graph(), s, first + 1, last);
     }
@@ -297,7 +297,7 @@ namespace libsemigroups {
     //! \sa FroidurePin::to_element.
     // TODO(0) add this into current_position_no_checks
     [[nodiscard]] element_index_type
-    current_position_no_checks(generator_index_type i) const {
+    position_of_generator_no_checks(generator_index_type i) const {
       LIBSEMIGROUPS_ASSERT(i < _letter_to_pos.size());
       return _letter_to_pos[i];
     }
@@ -322,9 +322,9 @@ namespace libsemigroups {
     //! \complexity
     //! Constant.
     [[nodiscard]] element_index_type
-    current_position(generator_index_type i) const {
+    position_of_generator(generator_index_type i) const {
       throw_if_generator_index_out_of_range(i);
-      return current_position_no_checks(i);
+      return position_of_generator_no_checks(i);
     }
 
     //! \brief Returns the maximum length of a word in the generators so far

@@ -103,10 +103,10 @@ namespace libsemigroups {
     REQUIRE(S.length(63903) == 21);
     REQUIRE(froidure_pin::product_by_reduction(S, 0, 3) == 7);
     REQUIRE(S.fast_product(0, 3) == 7);
-    REQUIRE(S.current_position(0) == 0);
-    REQUIRE(S.current_position(1) == 1);
-    REQUIRE(S.current_position(2) == 2);
-    REQUIRE(S.current_position(3) == 3);
+    REQUIRE(S.position_of_generator(0) == 0);
+    REQUIRE(S.position_of_generator(1) == 1);
+    REQUIRE(S.position_of_generator(2) == 2);
+    REQUIRE(S.position_of_generator(3) == 3);
     REQUIRE(!S.is_idempotent(0));
     REQUIRE(S.is_idempotent(3));
     REQUIRE(!S.is_idempotent(7));
