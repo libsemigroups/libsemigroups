@@ -942,11 +942,16 @@ namespace libsemigroups {
     }
   };
 
+  //! \ingroup schreier_sims_group
+  //! \brief Namespace for SchreierSims helper functions.
+  //!
+  //! This namespace contains helper functions for the SchreierSims class.
   namespace schreier_sims {
 
-    //! Find the intersection of two permutation groups.
+    //! \brief Find the intersection of two permutation groups.
     //!
-    //! Modifies the first parameter \p T to be the Schreier-Sims object
+    //! This function finds the intersection of two permutation groups. It
+    //! modifies the first parameter \p T to be the Schreier-Sims object
     //! corresponding to the intersection of \p S1 and \p S2.
     //!
     //! \tparam N the largest point not fixed by the permutations in the
@@ -957,9 +962,7 @@ namespace libsemigroups {
     //! \param S2 the second group of the intersection.
     //!
     //! \throws LibsemigroupsException if \p T is not empty.
-    //!
     // TODO(later) example
-
     // TODO (from RC):
     // 1. Implement orbit refinement heuristic for intersection.
     // 2. Make the Screier-Sims object during runtime, since we compute the
@@ -969,7 +972,6 @@ namespace libsemigroups {
     //
     // TODO (from JDM):
     // * use the no_checks mem fns of SchreierSims now that they exist
-
     template <size_t N>
     void intersection(SchreierSims<N>& T,
                       SchreierSims<N>& S1,
