@@ -312,7 +312,7 @@ namespace libsemigroups {
    private:
     template <typename T>
     static constexpr bool IsState
-        = ((!std::is_void_v<T>) &&std::is_same_v<state_type, T>);
+        = ((!std::is_void_v<T>) && std::is_same_v<state_type, T>);
 
     ////////////////////////////////////////////////////////////////////////
     // FroidurePin - data - private
@@ -519,10 +519,18 @@ namespace libsemigroups {
     //! \returns A const reference to the element represented by the word \p w.
     //!
     //! \warning This function does not check its arguments, and it is assumed
-    //! that the values in \p w are less than \ref number_of_generators.
-    // TODO(0) if w is empty but the one isn't in *this, then this shouldn't
-    // return _one but does, so we should mention this here too
+    //! that the values in \p w are less than \ref number_of_generators; and
+    //! if \p w is empty it is assumed that \ref contains_one_no_run returns \c
+    //! true (although nothing bad will happen if this doesn't hold, except that
+    //! this function will return the identity element even though it might not
+    //! be an element of the semigroup).
+    //!
     //! \sa \ref current_position.
+    // TODO(0) no trigger note in the doc
+    // template <typename Iterator1, typename Iterator2>
+    // [[nodiscard]] const_reference to_element_no_checks(Iterator1 first,
+    //                                                    Iterator2 last) const;
+
     [[nodiscard]] const_reference
     to_element_no_checks(word_type const& w) const;
 
@@ -547,7 +555,7 @@ namespace libsemigroups {
     [[nodiscard]] const_reference to_element(word_type const& w) const {
       // If !w.empty() && number_of_generators() == 0, then
       // throw_if_any_generator_index_out_of_range will throw.
-      throw_if_any_generator_index_out_of_range(w);
+      throw_if_any_generator_index_out_of_range(std::begin(w), std::end(w));
       if (w.empty()) {
         if (number_of_generators() == 0) {
           // Hence this function throws if number_of_generators() == 0.
@@ -1318,8 +1326,8 @@ namespace libsemigroups {
 
     void expand(size_type);
     void is_one(internal_const_element_type x, element_index_type) noexcept(
-        std::is_nothrow_default_constructible_v<InternalEqualTo>&& noexcept(
-            std::declval<InternalEqualTo>()(x, x)));
+        std::is_nothrow_default_constructible_v<InternalEqualTo>
+        && noexcept(std::declval<InternalEqualTo>()(x, x)));
 
     void copy_generators_from_elements(size_t);
     void closure_update(element_index_type,

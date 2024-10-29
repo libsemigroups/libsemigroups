@@ -26,7 +26,6 @@
 #include "libsemigroups/froidure-pin.hpp"  // for FroidurePin
 #include "libsemigroups/matrix.hpp"        // for IntMat
 
-// TOODO
 namespace libsemigroups {
   // Forward declaration
   struct LibsemigroupsException;
@@ -123,16 +122,16 @@ namespace libsemigroups {
       FroidurePin<Mat> T;
       T.add_generator(Mat({{0, 0}, {0, 1}}));
       T.add_generator(Mat({{0, 1}, {-1, 0}}));
-      REQUIRE(T.current_position({}) == UNDEFINED);
-      REQUIRE_NOTHROW(T.current_position({0, 0, 1, 1}));
-      REQUIRE(T.current_position({0, 0, 1, 1}) == UNDEFINED);
+      REQUIRE(froidure_pin::current_position(T, {}) == UNDEFINED);
+      REQUIRE_NOTHROW(froidure_pin::current_position(T, {0, 0, 1, 1}));
+      REQUIRE(froidure_pin::current_position(T, {0, 0, 1, 1}) == UNDEFINED);
       auto w = T.to_element({0, 0, 1, 1});
       REQUIRE(T.current_position(w) == UNDEFINED);
-      REQUIRE_THROWS_AS(T.current_position({0, 0, 1, 2}),
+      REQUIRE_THROWS_AS(froidure_pin::current_position(T, {0, 0, 1, 2}),
                         LibsemigroupsException);
 
       REQUIRE(T.size() == 13);
-      REQUIRE(T.current_position({0, 0, 1, 1}) == 6);
+      REQUIRE(froidure_pin::current_position(T, {0, 0, 1, 1}) == 6);
       w = T.to_element({0, 0, 1, 1});
       REQUIRE(T.current_position(w) == 6);
     }

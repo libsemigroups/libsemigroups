@@ -111,8 +111,8 @@ namespace libsemigroups {
       size_t nr = 0;
       for (auto it = S.cbegin_current_rules(); it != S.cend_current_rules();
            ++it) {
-        REQUIRE(S.current_position(it->first)
-                == S.current_position(it->second));
+        REQUIRE(froidure_pin::current_position(S, it->first)
+                == froidure_pin::current_position(S, it->second));
         nr++;
       }
       REQUIRE(nr == S.current_number_of_rules());
@@ -162,9 +162,10 @@ namespace libsemigroups {
                                   Transf<>({1, 1, 2, 3, 4, 5})};
     auto                  U    = to_froidure_pin(gens);
 
-    REQUIRE(U.current_position({}) == 0);
-    REQUIRE_NOTHROW(U.current_position({0, 0, 1, 2}));
-    REQUIRE_THROWS_AS(U.current_position({5}), LibsemigroupsException);
+    REQUIRE(froidure_pin::current_position(U, {}) == 0);
+    REQUIRE_NOTHROW(froidure_pin::current_position(U, {0, 0, 1, 2}));
+    REQUIRE_THROWS_AS(froidure_pin::current_position(U, {5}),
+                      LibsemigroupsException);
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin<Transf<>>",
@@ -624,7 +625,7 @@ namespace libsemigroups {
     word_type result;
     for (size_t i = 0; i < S.size(); i++) {
       S.factorisation(result, i);
-      REQUIRE(S.current_position(result) == i);
+      REQUIRE(froidure_pin::current_position(S, result) == i);
     }
   }
 
@@ -1284,7 +1285,9 @@ namespace libsemigroups {
     S.add_generator(Transf<>({1, 1, 2, 3, 4, 5}));
 
     // Calling cbegin/cend_sorted fully enumerates the semigroup
-    { auto it = S.cbegin_sorted(); }
+    {
+      auto it = S.cbegin_sorted();
+    }
     REQUIRE(S.finished());
 
     size_t pos = 0;
@@ -2456,9 +2459,10 @@ namespace libsemigroups {
     U.add_generator(Transf<>({5, 1, 2, 3, 4, 5}));
     U.add_generator(Transf<>({1, 1, 2, 3, 4, 5}));
 
-    REQUIRE(U.current_position({}) == 0);
-    REQUIRE_NOTHROW(U.current_position({0, 0, 1, 2}));
-    REQUIRE_THROWS_AS(U.current_position({5}), LibsemigroupsException);
+    REQUIRE(froidure_pin::current_position(U, {}) == 0);
+    REQUIRE_NOTHROW(froidure_pin::current_position(U, {0, 0, 1, 2}));
+    REQUIRE_THROWS_AS(froidure_pin::current_position(U, std::vector{5}),
+                      LibsemigroupsException);
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin<Transf<>>",

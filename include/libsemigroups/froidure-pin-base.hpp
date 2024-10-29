@@ -239,95 +239,41 @@ namespace libsemigroups {
     // FroidurePinBase - member functions - public
     ////////////////////////////////////////////////////////////////////////
 
-    //! \brief Returns the position corresponding to a word.
-    //!
-    //! Returns the position in the semigroup corresponding to the element
-    //! represented by the word \p w.
-    //!
-    //! This function returns the position corresponding to the element
-    //! obtained by evaluating the word in the generators \p w. No enumeration
-    //! is performed, and \ref UNDEFINED is returned if the position of the
-    //! element corresponding to \p w cannot be determined.
-    //!
-    //! \param w a word in the generators.
-    //!
-    //! \returns
-    //! A value of type `element_index_type` or \ref UNDEFINED.
-    //!
-    //! \throws LibsemigroupsException if \p w contains an value exceeding
-    //! FroidurePin::number_of_generators.
-    //!
-    //! \complexity
-    //! \f$O(n)\f$ where \f$n\f$ is the length of the word \p w.
-    //!
-    //! \sa FroidurePin::to_element.
-    // This is not a helper because the function
-    // FroidurePin::current_position(const_reference) requires access to the
-    // private members.
-    [[nodiscard]] element_index_type current_position(word_type const& w) const;
+    // TODO(0) out of line
+    template <typename Iterator1, typename Iterator2>
+    [[nodiscard]] element_index_type
+    current_position_no_checks(Iterator1 first, Iterator2 last) const {
+      if (first == last) {
+        if (_found_one) {
+          return _pos_one;
+        } else {
+          return UNDEFINED;
+        }
+      }
+      element_index_type s = current_position_no_checks(*first);
+      return word_graph::follow_path_no_checks(
+          current_right_cayley_graph(), s, first + 1, last);
+    }
 
-    // TODO(0) doc
-    // TODO(0) change this to accept iterators (and all other functions
-    // accepting word_types, move the functions for word_types and init_lists to
-    // helper space)
-    [[nodiscard]] element_index_type position(word_type const& w) {
+    template <typename Iterator1, typename Iterator2>
+    [[nodiscard]] element_index_type current_position(Iterator1 first,
+                                                      Iterator2 last) const {
+      throw_if_any_generator_index_out_of_range(first, last);
+      return current_position_no_checks(first, last);
+    }
+
+    template <typename Iterator1, typename Iterator2>
+    [[nodiscard]] element_index_type position_no_checks(Iterator1 first,
+                                                        Iterator2 last) {
       run();
-      return current_position(w);
+      return current_position_no_checks(first, last);
     }
 
-    //! \brief Returns the position corresponding to a word.
-    //!
-    //! Returns the position in the semigroup corresponding to the element
-    //! represented by the word \p w.
-    //!
-    //! This function returns the position in the FroidurePinBase object of the
-    //! element corresponding to the word in the generators \p w. No enumeration
-    //! is performed, and \ref UNDEFINED is returned if the position of the
-    //! element corresponding to \p w cannot be determined.
-    //!
-    //! \param w a word in the generators.
-    //!
-    //! \returns
-    //! The index of the element corresponding to the word \p w, or \ref
-    //! UNDEFINED if there is no such element.
-    //!
-    //! \complexity
-    //! \f$O(n)\f$ where \f$n\f$ is the length of the word \p w.
-    //!
-    //! \warning This function does not check its argument is valid. In
-    //! particular, if any of the letters in \p w is out of range, then bad
-    //! things will happen.
-    //!
-    //! \sa FroidurePin::to_element.
-    [[nodiscard]] element_index_type
-    current_position_no_checks(word_type const& w) const;
-
-    [[nodiscard]] element_index_type position_no_checks(word_type const& w) {
+    template <typename Iterator1, typename Iterator2>
+    [[nodiscard]] element_index_type position(Iterator1 first, Iterator2 last) {
       run();
-      return current_position_no_checks(w);
+      return current_position(first, last);
     }
-
-    //! \copydoc current_position(word_type const&) const
-    // This is not a helper because the function
-    // FroidurePin::current_position(const_reference) requires access to the
-    // private members.
-    // TODO(0) helper?
-    [[nodiscard]] element_index_type
-    current_position(std::initializer_list<size_t> const& w) const {
-      word_type ww = w;
-      return current_position(ww);
-    }
-
-    //! \copydoc current_position_no_checks(word_type const&) const
-    // TODO(0) helper?
-    [[nodiscard]] element_index_type
-    current_position_no_checks(std::initializer_list<size_t> const& w) const {
-      word_type ww = w;
-      return current_position_no_checks(ww);
-    }
-
-    // TODO(1) position(initializer_list)
-    // TODO(1) position_no_checks(initializer_list)
 
     //! \brief Returns the position corresponding to a generator.
     //!
@@ -349,6 +295,7 @@ namespace libsemigroups {
     //! things will happen.
     //!
     //! \sa FroidurePin::to_element.
+    // TODO(0) add this into current_position_no_checks
     [[nodiscard]] element_index_type
     current_position_no_checks(generator_index_type i) const {
       LIBSEMIGROUPS_ASSERT(i < _letter_to_pos.size());
@@ -1804,7 +1751,13 @@ namespace libsemigroups {
     void throw_if_generator_index_out_of_range(generator_index_type i) const;
 
     // TODO(0) doc
-    void throw_if_any_generator_index_out_of_range(word_type const& i) const;
+    template <typename Iterator1, typename Iterator2>
+    void throw_if_any_generator_index_out_of_range(Iterator1 first,
+                                                   Iterator2 last) const {
+      for (auto it = first; it != last; ++it) {
+        throw_if_generator_index_out_of_range(*it);
+      }
+    }
 
    private:
     ////////////////////////////////////////////////////////////////////////
@@ -1818,6 +1771,107 @@ namespace libsemigroups {
   //! \brief This namespace contains helper functions for the FroidurePin class
   //! template.
   namespace froidure_pin {
+    //! \brief Returns the position corresponding to a word.
+    //!
+    //! Returns the position in the semigroup corresponding to the element
+    //! represented by the word \p w.
+    //!
+    //! This function returns the position in the FroidurePinBase object of the
+    //! element corresponding to the word in the generators \p w. No enumeration
+    //! is performed, and \ref UNDEFINED is returned if the position of the
+    //! element corresponding to \p w cannot be determined.
+    //!
+    //! \param w a word in the generators.
+    //!
+    //! \returns
+    //! The index of the element corresponding to the word \p w, or \ref
+    //! UNDEFINED if there is no such element.
+    //!
+    //! \complexity
+    //! \f$O(n)\f$ where \f$n\f$ is the length of the word \p w.
+    //!
+    //! \warning This function does not check its argument is valid. In
+    //! particular, if any of the letters in \p w is out of range, then bad
+    //! things will happen.
+    //!
+    //! \sa FroidurePin::to_element.
+    // TODO update doc
+    template <typename Thing>
+    [[nodiscard]] FroidurePinBase::element_index_type
+    current_position_no_checks(FroidurePinBase const& fpb, Thing const& w) {
+      return fpb.current_position_no_checks(std::begin(w), std::end(w));
+    }
+
+    [[nodiscard]] static inline FroidurePinBase::element_index_type
+    current_position_no_checks(FroidurePinBase const&            fpb,
+                               std::initializer_list<int> const& w) {
+      return current_position_no_checks<std::initializer_list<int>>(fpb, w);
+    }
+
+    //! \brief Returns the position corresponding to a word.
+    //!
+    //! Returns the position in the semigroup corresponding to the element
+    //! represented by the word \p w.
+    //!
+    //! This function returns the position corresponding to the element
+    //! obtained by evaluating the word in the generators \p w. No enumeration
+    //! is performed, and \ref UNDEFINED is returned if the position of the
+    //! element corresponding to \p w cannot be determined.
+    //!
+    //! \param w a word in the generators.
+    //!
+    //! \returns
+    //! A value of type `element_index_type` or \ref UNDEFINED.
+    //!
+    //! \throws LibsemigroupsException if \p w contains an value exceeding
+    //! FroidurePin::number_of_generators.
+    //!
+    //! \complexity
+    //! \f$O(n)\f$ where \f$n\f$ is the length of the word \p w.
+    //!
+    //! \sa FroidurePin::to_element.
+    // This is not a helper because the function
+    // FroidurePin::current_position(const_reference) requires access to the
+    // private members.
+    template <typename Thing>
+    [[nodiscard]] FroidurePinBase::element_index_type
+    current_position(FroidurePinBase const& fpb, Thing const& w) {
+      return fpb.current_position(std::begin(w), std::end(w));
+    }
+
+    // TODO(0) doc
+    [[nodiscard]] static inline FroidurePinBase::element_index_type
+    current_position(FroidurePinBase const&            fpb,
+                     std::initializer_list<int> const& w) {
+      return current_position<std::initializer_list<int>>(fpb, w);
+    }
+
+    // TODO(0) doc
+    template <typename Thing>
+    [[nodiscard]] FroidurePinBase::element_index_type
+    position_no_checks(FroidurePinBase& fpb, Thing const& w) {
+      return fpb.position_no_checks(std::begin(w), std::end(w));
+    }
+
+    // TODO(0) doc
+    [[nodiscard]] static inline FroidurePinBase::element_index_type
+    position_no_checks(FroidurePinBase&                  fpb,
+                       std::initializer_list<int> const& w) {
+      return position_no_checks<std::initializer_list<int>>(fpb, w);
+    }
+
+    // TODO(0) doc
+    template <typename Thing>
+    [[nodiscard]] FroidurePinBase::element_index_type
+    position(FroidurePinBase& fpb, Thing const& w) {
+      return fpb.position(std::begin(w), std::end(w));
+    }
+
+    // TODO(0) doc
+    [[nodiscard]] static inline FroidurePinBase::element_index_type
+    position(FroidurePinBase& fpb, std::initializer_list<int> const& w) {
+      return position<std::initializer_list<int>>(fpb, w);
+    }
 
     //! \brief Compute a product using the Cayley graph.
     //!
