@@ -68,9 +68,11 @@ namespace libsemigroups {
           S, {Mat({{1, 0, 0, 1}, {0, 1, 0, 1}, {0, 0, 1, 1}, {1, 1, 1, 0}})});
       REQUIRE(S.size() == 29);
       REQUIRE(
-          S.minimal_factorisation(
+          froidure_pin::minimal_factorisation(
+              S,
               Mat({{1, 0, 0, 1}, {0, 1, 0, 1}, {0, 0, 1, 1}, {1, 1, 1, 0}})
-              * Mat({{0, 1, 0, 1}, {1, 0, 0, 0}, {0, 1, 1, 1}, {0, 1, 1, 0}}))
+                  * Mat(
+                      {{0, 1, 0, 1}, {1, 0, 0, 0}, {0, 1, 1, 1}, {0, 1, 1, 0}}))
           == word_type({3, 0}));
       REQUIRE(froidure_pin::minimal_factorisation(S, 28) == word_type({3, 0}));
       REQUIRE(
@@ -207,10 +209,11 @@ namespace libsemigroups {
         {TestType({{1, 0, 0, 1}, {0, 1, 0, 1}, {0, 0, 1, 1}, {1, 1, 1, 0}})});
     REQUIRE(S.size() == 29);
     REQUIRE(
-        S.minimal_factorisation(
+        froidure_pin::minimal_factorisation(
+            S,
             TestType({{1, 0, 0, 1}, {0, 1, 0, 1}, {0, 0, 1, 1}, {1, 1, 1, 0}})
-            * TestType(
-                {{0, 1, 0, 1}, {1, 0, 0, 0}, {0, 1, 1, 1}, {0, 1, 1, 0}}))
+                * TestType(
+                    {{0, 1, 0, 1}, {1, 0, 0, 0}, {0, 1, 1, 1}, {0, 1, 1, 0}}))
         == word_type({3, 0}));
     REQUIRE(froidure_pin::minimal_factorisation(S, 28) == word_type({3, 0}));
     REQUIRE(

@@ -30,29 +30,31 @@ namespace libsemigroups {
     class MultiStringView;  // forward decl
   }
 
-  template <>
-  word_type FroidurePin<
-      detail::KE<std::string>,
-      FroidurePinTraits<detail::KE<std::string>, Kambites<std::string>>>::
-      factorisation(detail::KE<std::string> const& x) {
-    return x.to_word(*state());
-  }
-
-  template <>
-  word_type FroidurePin<detail::KE<detail::MultiStringView>,
-                        FroidurePinTraits<detail::KE<detail::MultiStringView>,
-                                          Kambites<detail::MultiStringView>>>::
-      factorisation(detail::KE<detail::MultiStringView> const& x) {
-    return x.to_word(*state());
-  }
-
-  template <>
-  word_type
-  FroidurePin<detail::KE<word_type>,
-              FroidurePinTraits<detail::KE<word_type>, Kambites<word_type>>>::
-      factorisation(detail::KE<word_type> const& x) {
-    return x.to_word(*state());
-  }
+  // TODO(0) uncomment
+  //  template <>
+  //  word_type FroidurePin<
+  //      detail::KE<std::string>,
+  //      FroidurePinTraits<detail::KE<std::string>, Kambites<std::string>>>::
+  //      factorisation(detail::KE<std::string> const& x) {
+  //    return x.to_word(*state());
+  //  }
+  //
+  //  template <>
+  //  word_type FroidurePin<detail::KE<detail::MultiStringView>,
+  //                        FroidurePinTraits<detail::KE<detail::MultiStringView>,
+  //                                          Kambites<detail::MultiStringView>>>::
+  //      factorisation(detail::KE<detail::MultiStringView> const& x) {
+  //    return x.to_word(*state());
+  //  }
+  //
+  //  template <>
+  //  word_type
+  //  FroidurePin<detail::KE<word_type>,
+  //              FroidurePinTraits<detail::KE<word_type>,
+  //              Kambites<word_type>>>::
+  //      factorisation(detail::KE<word_type> const& x) {
+  //    return x.to_word(*state());
+  //  }
 
   template <>
   tril

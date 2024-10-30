@@ -362,36 +362,6 @@ namespace libsemigroups {
   }
 
   template <typename Element, typename Traits>
-  word_type
-  FroidurePin<Element, Traits>::minimal_factorisation(const_reference x) {
-    word_type w;
-    minimal_factorisation(w, x);
-    return w;
-  }
-
-  template <typename Element, typename Traits>
-  void FroidurePin<Element, Traits>::minimal_factorisation(word_type&      w,
-                                                           const_reference x) {
-    element_index_type pos = position(x);
-    if (pos == UNDEFINED) {
-      LIBSEMIGROUPS_EXCEPTION(
-          "the argument is not an element of the semigroup");
-    }
-    current_minimal_factorisation_no_checks(std::back_inserter(w), pos);
-  }
-
-  template <typename Element, typename Traits>
-  word_type FroidurePin<Element, Traits>::factorisation(const_reference x) {
-    return minimal_factorisation(x);
-  }
-
-  template <typename Element, typename Traits>
-  void FroidurePin<Element, Traits>::factorisation(word_type&      w,
-                                                   const_reference x) {
-    return minimal_factorisation(w, x);
-  }
-
-  template <typename Element, typename Traits>
   void FroidurePin<Element, Traits>::report_progress() {
     using detail::group_digits;
     using detail::string_time;
@@ -685,7 +655,7 @@ namespace libsemigroups {
         _prefix.push_back(UNDEFINED);
         _suffix.push_back(UNDEFINED);
         _nr++;
-        // TODO(later) _prefix.push_back(_nr) and get rid of _letter_to_pos,
+        // TODO(1) _prefix.push_back(_nr) and get rid of _letter_to_pos,
         // and the extra clause in the run member function!
       } else if (!started()
                  || _letter_to_pos[_first[it->second]] == it->second) {
@@ -812,7 +782,7 @@ namespace libsemigroups {
           for (enumerate_index_type i = 0; i < _pos; i++) {
             size_t b = _final[_enumerate_order[i]];
             for (generator_index_type j = 0; j < number_of_generators(); j++) {
-              // TODO(JDM) reuse old info here!
+              // TODO(2) reuse old info here!
               _left.target_no_checks(
                   _enumerate_order[i],
                   j,
@@ -824,7 +794,7 @@ namespace libsemigroups {
             element_index_type   p = _prefix[_enumerate_order[i]];
             generator_index_type b = _final[_enumerate_order[i]];
             for (generator_index_type j = 0; j < number_of_generators(); j++) {
-              // TODO(JDM) reuse old info here!
+              // TODO(2) reuse old info here!
               _left.target_no_checks(
                   _enumerate_order[i],
                   j,
@@ -880,7 +850,7 @@ namespace libsemigroups {
     return add_generators(&x, &x + 1);
   }
 
-  // TODO make this work
+  // TODO(1) make this work
   // template <typename Element, typename Traits>
   // void FroidurePin<Element, Traits>::add_generator(rvalue_reference x) {
   //   auto first = std::make_move_iterator(&x);
@@ -1216,7 +1186,7 @@ namespace libsemigroups {
         element_index_type i = k, j = k;
         while (j != UNDEFINED) {
           i = _right.target_no_checks(i, _first[j]);
-          // TODO(later) improve this if R/L-classes are known to stop
+          // TODO(1) improve this if R/L-classes are known to stop
           // performing the product if we fall out of the R/L-class of the
           // initial element.
           j = _suffix[j];
@@ -1233,7 +1203,7 @@ namespace libsemigroups {
     }
 
     // Cannot use _tmp_product itself since there are multiple threads here!
-    // TODO not anymore
+    // TODO(0) not anymore
     internal_element_type tmp_product = this->internal_copy(_tmp_product);
     auto                  tid         = detail::this_threads_id();
     auto                  ptr         = _state.get();
@@ -1364,5 +1334,47 @@ namespace libsemigroups {
                        fp.current_number_of_rules(),
                        fp.current_number_of_rules() == 1 ? "" : "s");
   }
+
+  namespace froidure_pin {
+
+    template <typename Element, typename Traits, typename Word>
+    Word minimal_factorisation(
+        FroidurePin<Element, Traits>&                          fp,
+        typename FroidurePin<Element, Traits>::const_reference x) {
+      Word w;
+      minimal_factorisation(fp, w, x);
+      return w;
+    }
+
+    template <typename Element, typename Traits, typename Word>
+    void minimal_factorisation(
+        FroidurePin<Element, Traits>&                          fp,
+        Word&                                                  w,
+        typename FroidurePin<Element, Traits>::const_reference x) {
+      auto pos = fp.position(x);
+      if (pos == UNDEFINED) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "the argument is not an element of the semigroup");
+      }
+      w.clear();
+      fp.current_minimal_factorisation_no_checks(std::back_inserter(w), pos);
+    }
+
+    template <typename Element, typename Traits, typename Word>
+    Word
+    factorisation(FroidurePin<Element, Traits>&                          fp,
+                  typename FroidurePin<Element, Traits>::const_reference x) {
+      return minimal_factorisation(fp, x);
+    }
+
+    template <typename Element, typename Traits, typename Word>
+    void
+    factorisation(FroidurePin<Element, Traits>&                          fp,
+                  Word&                                                  w,
+                  typename FroidurePin<Element, Traits>::const_reference x) {
+      return minimal_factorisation(fp, w, x);
+    }
+
+  }  // namespace froidure_pin
 
 }  // namespace libsemigroups

@@ -157,15 +157,17 @@ namespace libsemigroups {
     REQUIRE(w == word_type({0, 1, 2, 0, 1, 2}));
     REQUIRE(S.current_length(378) == 6);
 
-    REQUIRE(S.minimal_factorisation(S.at(378))
+    REQUIRE(froidure_pin::minimal_factorisation(S, S.at(378))
             == word_type({0, 1, 2, 0, 1, 2}));
 
-    REQUIRE_THROWS_AS(S.minimal_factorisation(BMat8({{1, 0, 0, 1, 1},
-                                                     {0, 1, 0, 0, 1},
-                                                     {1, 0, 1, 0, 1},
-                                                     {0, 0, 1, 0, 1},
-                                                     {0, 0, 0, 0, 0}})),
-                      LibsemigroupsException);
+    REQUIRE_THROWS_AS(
+        froidure_pin::minimal_factorisation(S,
+                                            BMat8({{1, 0, 0, 1, 1},
+                                                   {0, 1, 0, 0, 1},
+                                                   {1, 0, 1, 0, 1},
+                                                   {0, 0, 1, 0, 1},
+                                                   {0, 0, 0, 0, 0}})),
+        LibsemigroupsException);
 
     REQUIRE_THROWS_AS(froidure_pin::minimal_factorisation(S, 1000000),
                       LibsemigroupsException);
@@ -175,13 +177,15 @@ namespace libsemigroups {
     REQUIRE(w == word_type({0, 1, 2, 0, 1, 2}));
     REQUIRE(S.current_length(378) == 6);
 
-    REQUIRE(S.factorisation(S.at(378)) == word_type({0, 1, 2, 0, 1, 2}));
+    REQUIRE(froidure_pin::factorisation(S, S.at(378))
+            == word_type({0, 1, 2, 0, 1, 2}));
 
-    REQUIRE_THROWS_AS(S.factorisation(BMat8({{1, 0, 0, 1, 1},
-                                             {0, 1, 0, 0, 1},
-                                             {1, 0, 1, 0, 1},
-                                             {0, 0, 1, 0, 1},
-                                             {0, 0, 0, 0, 0}})),
+    REQUIRE_THROWS_AS(froidure_pin::factorisation(S,
+                                                  BMat8({{1, 0, 0, 1, 1},
+                                                         {0, 1, 0, 0, 1},
+                                                         {1, 0, 1, 0, 1},
+                                                         {0, 0, 1, 0, 1},
+                                                         {0, 0, 0, 0, 0}})),
                       LibsemigroupsException);
 
     REQUIRE_THROWS_AS(froidure_pin::factorisation(S, 1000000),

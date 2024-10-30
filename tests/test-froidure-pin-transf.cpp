@@ -62,8 +62,8 @@ namespace libsemigroups {
       REQUIRE(S.size() == 826713);
       froidure_pin::closure(S, {T({7, 1, 2, 6, 7, 4, 1, 5})});
       REQUIRE(S.size() == 826713);
-      REQUIRE(S.minimal_factorisation(T({7, 1, 2, 6, 7, 4, 1, 5})
-                                      * T({2, 4, 6, 1, 4, 5, 2, 7}))
+      REQUIRE(froidure_pin::minimal_factorisation(
+                  S, T({7, 1, 2, 6, 7, 4, 1, 5}) * T({2, 4, 6, 1, 4, 5, 2, 7}))
               == word_type({8, 1}));
       REQUIRE(froidure_pin::minimal_factorisation(S, 10) == word_type({0, 2}));
       REQUIRE(S.at(10) == T({0, 4, 7, 2, 3, 4, 0, 6}));
@@ -2398,12 +2398,14 @@ namespace libsemigroups {
     FroidurePin<Transf<>> S;
     S.add_generator(Transf<>({1, 1, 4, 5, 4, 5}));
 
-    REQUIRE(S.minimal_factorisation(S.generator(0)) == word_type({0}));
+    REQUIRE(froidure_pin::minimal_factorisation(S, S.generator(0))
+            == word_type({0}));
 
-    REQUIRE(S.factorisation(S.generator(0)) == word_type({0}));
+    REQUIRE(froidure_pin::factorisation(S, S.generator(0)) == word_type({0}));
 
-    REQUIRE_THROWS_AS(S.minimal_factorisation(Transf<>({4, 1, 4, 1, 4, 5})),
-                      LibsemigroupsException);
+    REQUIRE_THROWS_AS(
+        froidure_pin::minimal_factorisation(S, Transf<>({4, 1, 4, 1, 4, 5})),
+        LibsemigroupsException);
 
     REQUIRE_THROWS_AS(froidure_pin::minimal_factorisation(S, 10000000),
                       LibsemigroupsException);

@@ -65,14 +65,15 @@ namespace libsemigroups {
     froidure_pin::closure(S, {Bipartition({0, 1, 2, 1, 1, 3, 1, 4, 2, 3,
                                            1, 0, 3, 2, 3, 5, 4, 1, 3, 0})});
     REQUIRE(S.size() == 21);
-    REQUIRE(
-        S.minimal_factorisation(Bipartition({0, 1, 2, 1, 0, 2, 1, 0, 2, 2,
-                                             0, 0, 2, 0, 3, 4, 4, 1, 3, 0})
-                                * Bipartition({0, 1, 2, 1, 1, 3, 1, 4, 2, 3,
-                                               1, 0, 3, 2, 3, 5, 4, 1, 3, 0})
-                                * Bipartition({0, 1, 1, 1, 1, 2, 3, 2, 4, 5,
-                                               5, 2, 4, 2, 1, 1, 1, 2, 3, 2}))
-        == 031_w);
+    REQUIRE(froidure_pin::minimal_factorisation(
+                S,
+                Bipartition({0, 1, 2, 1, 0, 2, 1, 0, 2, 2,
+                             0, 0, 2, 0, 3, 4, 4, 1, 3, 0})
+                    * Bipartition({0, 1, 2, 1, 1, 3, 1, 4, 2, 3,
+                                   1, 0, 3, 2, 3, 5, 4, 1, 3, 0})
+                    * Bipartition({0, 1, 1, 1, 1, 2, 3, 2, 4, 5,
+                                   5, 2, 4, 2, 1, 1, 1, 2, 3, 2}))
+            == 031_w);
     REQUIRE(froidure_pin::minimal_factorisation(S, 11) == 03_w);
     REQUIRE(S.at(11)
             == Bipartition(
@@ -124,14 +125,15 @@ namespace libsemigroups {
     froidure_pin::closure(S, {Bipartition({0, 1, 2, 1, 1, 3, 1, 4, 2, 3,
                                            1, 0, 3, 2, 3, 5, 4, 1, 3, 0})});
     REQUIRE(S.size() == 21);
-    REQUIRE(
-        S.minimal_factorisation(Bipartition({0, 1, 2, 1, 0, 2, 1, 0, 2, 2,
-                                             0, 0, 2, 0, 3, 4, 4, 1, 3, 0})
-                                * Bipartition({0, 1, 2, 1, 1, 3, 1, 4, 2, 3,
-                                               1, 0, 3, 2, 3, 5, 4, 1, 3, 0})
-                                * Bipartition({0, 1, 1, 1, 1, 2, 3, 2, 4, 5,
-                                               5, 2, 4, 2, 1, 1, 1, 2, 3, 2}))
-        == 031_w);
+    REQUIRE(froidure_pin::minimal_factorisation(
+                S,
+                Bipartition({0, 1, 2, 1, 0, 2, 1, 0, 2, 2,
+                             0, 0, 2, 0, 3, 4, 4, 1, 3, 0})
+                    * Bipartition({0, 1, 2, 1, 1, 3, 1, 4, 2, 3,
+                                   1, 0, 3, 2, 3, 5, 4, 1, 3, 0})
+                    * Bipartition({0, 1, 1, 1, 1, 2, 3, 2, 4, 5,
+                                   5, 2, 4, 2, 1, 1, 1, 2, 3, 2}))
+            == 031_w);
     REQUIRE(froidure_pin::minimal_factorisation(S, 11) == 03_w);
     REQUIRE(S.at(11)
             == Bipartition(

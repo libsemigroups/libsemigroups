@@ -132,9 +132,9 @@ namespace libsemigroups {
     REQUIRE(S.size() == 73);
     froidure_pin::closure(S, {Mat({{1, 1}, {0, 2}})});
     REQUIRE(S.size() == 73);
-    REQUIRE(
-        S.minimal_factorisation(Mat({{1, 1}, {0, 2}}) * Mat({{2, 1}, {4, 0}}))
-        == word_type({2, 1}));
+    REQUIRE(froidure_pin::minimal_factorisation(
+                S, Mat({{1, 1}, {0, 2}}) * Mat({{2, 1}, {4, 0}}))
+            == word_type({2, 1}));
     REQUIRE(froidure_pin::minimal_factorisation(S, 52)
             == word_type({0, 2, 2, 1}));
     REQUIRE(S.at(52) == Mat({{9, 7}, {9, 5}}));

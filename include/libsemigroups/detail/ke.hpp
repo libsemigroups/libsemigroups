@@ -157,30 +157,32 @@ namespace libsemigroups {
                     size_t) {
       using value_type = typename detail::KE<Word>::value_type;
       using words::operator+=;
-      value_type   w(x.value());  // string_type
+      value_type w(x.value());  // string_type
       w += y.value();
       xy = detail::KE<Word>(*k, w);
     }
   };
 
 #ifndef PARSED_BY_DOXYGEN
-  template <>
-  word_type FroidurePin<
-      detail::KE<std::string>,
-      FroidurePinTraits<detail::KE<std::string>, Kambites<std::string>>>::
-      factorisation(detail::KE<std::string> const& x);
+  // TODO(0) uncomment
+  // template <>
+  // word_type FroidurePin<
+  //     detail::KE<std::string>,
+  //     FroidurePinTraits<detail::KE<std::string>, Kambites<std::string>>>::
+  //     factorisation(detail::KE<std::string> const& x);
 
-  template <>
-  word_type FroidurePin<detail::KE<detail::MultiStringView>,
-                        FroidurePinTraits<detail::KE<detail::MultiStringView>,
-                                          Kambites<detail::MultiStringView>>>::
-      factorisation(detail::KE<detail::MultiStringView> const& x);
+  // template <>
+  // word_type FroidurePin<detail::KE<detail::MultiStringView>,
+  //                       FroidurePinTraits<detail::KE<detail::MultiStringView>,
+  //                                         Kambites<detail::MultiStringView>>>::
+  //     factorisation(detail::KE<detail::MultiStringView> const& x);
 
-  template <>
-  word_type
-  FroidurePin<detail::KE<word_type>,
-              FroidurePinTraits<detail::KE<word_type>, Kambites<word_type>>>::
-      factorisation(detail::KE<word_type> const& x);
+  // template <>
+  // word_type
+  // FroidurePin<detail::KE<word_type>,
+  //             FroidurePinTraits<detail::KE<word_type>,
+  //             Kambites<word_type>>>::
+  //     factorisation(detail::KE<word_type> const& x);
 
   template <>
   tril FroidurePin<detail::KE<std::string>,

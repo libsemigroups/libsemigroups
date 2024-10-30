@@ -69,10 +69,11 @@ namespace libsemigroups {
       REQUIRE(to_human_readable_repr(S)
               == "<fully enumerated FroidurePin with 2 generators, 631 "
                  "elements, Cayley graph ⌀ 128, & 7 rules>");
-      REQUIRE(
-          S.minimal_factorisation(Mat({{0, 1}, {0, -1}}) * Mat({{0, 1}, {2, 0}})
-                                  * Mat({{0, 1}, {2, 0}}))
-          == word_type({0, 1, 0}));
+      REQUIRE(froidure_pin::minimal_factorisation(S,
+                                                  Mat({{0, 1}, {0, -1}})
+                                                      * Mat({{0, 1}, {2, 0}})
+                                                      * Mat({{0, 1}, {2, 0}}))
+              == word_type({0, 1, 0}));
       REQUIRE(froidure_pin::minimal_factorisation(S, 52)
               == word_type({0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1}));
       REQUIRE(S.at(52) == Mat({{64, 0}, {-64, 0}}));

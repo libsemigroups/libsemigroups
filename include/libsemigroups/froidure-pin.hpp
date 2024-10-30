@@ -984,39 +984,6 @@ namespace libsemigroups {
     //! assumes that \p i is less than \ref size.
     [[nodiscard]] const_reference sorted_at_no_checks(element_index_type i);
 
-    //! \brief Returns a word containing a minimal factorisation (in the
-    //! generators) of an element.
-    //!
-    //! This function returns the short-lex minimum word (if any) in the
-    //! generators that evaluates to \p x.
-    //!
-    //! \param x a const reference to a possible element to factorise.
-    //!
-    //! \returns A \ref word_type which evaluates to \p x.
-    //!
-    //! \throws LibsemigroupsException if \p x does not belong to \c this.
-    //!
-    //! \note This function may trigger a (partial) enumeration.
-    //!
-    //! \sa minimal_factorisation(element_index_type).
-    // TODO(0) to helper
-    [[nodiscard]] word_type minimal_factorisation(const_reference x);
-
-    //! \brief Modify a word in-place to contain a minimal factorisation (in the
-    //! generators) of an element.
-    //!
-    //! This function returns the short-lex minimum word (if any) in the
-    //! generators that evaluates to \p x.
-    //!
-    //! \param w the word_type to contain the factorisation.
-    //! \param x a const reference to a possible element to factorise.
-    //!
-    //! \throws LibsemigroupsException if \p x does not belong to \c this.
-    //!
-    //! \note This function may trigger a (partial) enumeration.
-    // TODO(0) to helper
-    void minimal_factorisation(word_type& w, const_reference x);
-
 #ifndef PARSED_BY_DOXYGEN
     // The following are required, they are documented in FroidurePinBase.
     // Sphinx/doxygen get confused by this, so we don't allow Doxygen to parse
@@ -1024,42 +991,6 @@ namespace libsemigroups {
     using FroidurePinBase::factorisation;
     using FroidurePinBase::minimal_factorisation;
 #endif
-
-    //! \brief Returns a word containing a factorisation (in the generators) of
-    //! an element.
-    //!
-    //! This function returns a word in the generators that equals the given
-    //! element \p x.
-    //!
-    //! The key difference between this function and
-    //! \ref minimal_factorisation(const_reference x), is that the
-    //! resulting factorisation may not be minimal.
-    //!
-    //! \param x a const reference to a possible element to factorise.
-    //!
-    //! \returns A \ref word_type which evaluates to \p x.
-    //!
-    //! \throws LibsemigroupsException if \p x does not belong to \c this.
-    //!
-    //! \note This function may trigger a (partial) enumeration.
-    // TODO(0) to helper
-    [[nodiscard]] word_type factorisation(const_reference x);
-
-    //! \brief Modify a word in-place to contain a factorisation (in the
-    //! generators) of an element.
-    //!
-    //! The key difference between this function and
-    //! \ref minimal_factorisation(word_type&, const_reference x), is that the
-    //! resulting factorisation may not be minimal.
-    //!
-    //! \param w the word_type to contain the factorisation.
-    //! \param x a const reference to a possible element to factorise.
-    //!
-    //! \throws LibsemigroupsException if \p x does not belong to \c this.
-    //!
-    //! \note This function may trigger a (partial) enumeration.
-    // TODO(0) to helper
-    void factorisation(word_type& w, const_reference x);
 
     //! \brief Check finiteness.
     //!
@@ -2205,6 +2136,85 @@ namespace libsemigroups {
           std::begin(x), std::end(x), std::begin(y), std::end(y));
     }
 
+    //! \brief Returns a word containing a minimal factorisation (in the
+    //! generators) of an element.
+    //!
+    //! This function returns the short-lex minimum word (if any) in the
+    //! generators that evaluates to \p x.
+    //!
+    //! \param x a const reference to a possible element to factorise.
+    //!
+    //! \returns A \ref word_type which evaluates to \p x.
+    //!
+    //! \throws LibsemigroupsException if \p x does not belong to \c this.
+    //!
+    //! \note This function may trigger a (partial) enumeration.
+    //!
+    //! \sa minimal_factorisation(element_index_type).
+    template <typename Element, typename Traits, typename Word = word_type>
+    [[nodiscard]] Word minimal_factorisation(
+        FroidurePin<Element, Traits>&                          fp,
+        typename FroidurePin<Element, Traits>::const_reference x);
+
+    //! \brief Modify a word in-place to contain a minimal factorisation (in the
+    //! generators) of an element.
+    //!
+    //! This function returns the short-lex minimum word (if any) in the
+    //! generators that evaluates to \p x.
+    //!
+    //! \param w the word_type to contain the factorisation.
+    //! \param x a const reference to a possible element to factorise.
+    //!
+    //! \throws LibsemigroupsException if \p x does not belong to \c this.
+    //!
+    //! \note This function may trigger a (partial) enumeration.
+    template <typename Element, typename Traits, typename Word>
+    void minimal_factorisation(
+        FroidurePin<Element, Traits>&                          fp,
+        Word&                                                  w,
+        typename FroidurePin<Element, Traits>::const_reference x);
+
+    //! \brief Returns a word containing a factorisation (in the generators) of
+    //! an element.
+    //!
+    //! This function returns a word in the generators that equals the given
+    //! element \p x.
+    //!
+    //! The key difference between this function and
+    //! \ref minimal_factorisation(const_reference x), is that the
+    //! resulting factorisation may not be minimal.
+    //!
+    //! \param x a const reference to a possible element to factorise.
+    //!
+    //! \returns A \ref word_type which evaluates to \p x.
+    //!
+    //! \throws LibsemigroupsException if \p x does not belong to \c this.
+    //!
+    //! \note This function may trigger a (partial) enumeration.
+    template <typename Element, typename Traits, typename Word = word_type>
+    [[nodiscard]] Word
+    factorisation(FroidurePin<Element, Traits>&                          fp,
+                  typename FroidurePin<Element, Traits>::const_reference x);
+
+    //! \brief Modify a word in-place to contain a factorisation (in the
+    //! generators) of an element.
+    //!
+    //! The key difference between this function and
+    //! \ref minimal_factorisation(word_type&, const_reference x), is that the
+    //! resulting factorisation may not be minimal.
+    //!
+    //! \param w the word_type to contain the factorisation.
+    //! \param x a const reference to a possible element to factorise.
+    //!
+    //! \throws LibsemigroupsException if \p x does not belong to \c this.
+    //!
+    //! \note This function may trigger a (partial) enumeration.
+    template <typename Element, typename Traits, typename Word>
+    void
+    factorisation(FroidurePin<Element, Traits>&                          fp,
+                  Word&                                                  w,
+                  typename FroidurePin<Element, Traits>::const_reference x);
+
   }  // namespace froidure_pin
 
   //! \defgroup converter_group Converters
@@ -2218,8 +2228,9 @@ namespace libsemigroups {
 
   //! \defgroup to_froidure_pin_group to_froidure_pin
   //!
-  //! This page contains the documentation for the function \ref to_froidure_pin
-  //! in ``libsemigroups`` for converting objects to FroidurePin instances.
+  //! This page contains the documentation for the function \ref
+  //! to_froidure_pin in ``libsemigroups`` for converting objects to
+  //! FroidurePin instances.
 
   //! \ingroup to_froidure_pin_group
   //!
@@ -2264,7 +2275,8 @@ namespace libsemigroups {
   //!
   //! \param gens the std::initializer_list of generators.
   //!
-  //! \returns A newly constructed FroidurePin instance with generators equal to
+  //! \returns A newly constructed FroidurePin instance with generators equal
+  //! to
   //! \p gens.
   //!
   //! \throw LibsemigroupsException if `Degree()(x) != Degree(y)` for any \c x

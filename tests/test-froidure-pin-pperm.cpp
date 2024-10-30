@@ -58,10 +58,11 @@ namespace libsemigroups {
     REQUIRE(S.size() == 396);
     froidure_pin::closure(S, {PPerm<>({0, 1, 2}, {3, 4, 5}, 6)});
     REQUIRE(S.size() == 396);
-    REQUIRE(
-        S.minimal_factorisation(PPerm<>({0, 1, 2}, {3, 4, 5}, 6)
-                                * PPerm<>({0, 2, 3, 4, 5}, {5, 2, 3, 0, 1}, 6))
-        == word_type({3, 2}));
+    REQUIRE(froidure_pin::minimal_factorisation(
+                S,
+                PPerm<>({0, 1, 2}, {3, 4, 5}, 6)
+                    * PPerm<>({0, 2, 3, 4, 5}, {5, 2, 3, 0, 1}, 6))
+            == word_type({3, 2}));
     REQUIRE(froidure_pin::minimal_factorisation(S, 10) == word_type({2, 1}));
     REQUIRE(S.at(10) == PPerm<>({2, 3, 5}, {5, 2, 0}, 6));
     REQUIRE_THROWS_AS(froidure_pin::minimal_factorisation(S, 1000000000),

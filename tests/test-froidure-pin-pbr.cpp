@@ -85,18 +85,19 @@ namespace libsemigroups {
                                 {1, 2, 3, 5},
                                 {1, 2, 3}})});
     REQUIRE(S.size() == 6);
-    REQUIRE(S.minimal_factorisation(PBR({{3, 5},
-                                         {0, 1, 2, 3, 4, 5},
-                                         {0, 2, 3, 4, 5},
-                                         {0, 1, 2, 3, 5},
-                                         {0, 2, 5},
-                                         {1, 2, 3, 4, 5}})
-                                    * PBR({{3, 4, 5},
-                                           {2, 4, 5},
-                                           {1, 2, 4},
-                                           {0, 3, 5},
-                                           {1, 2, 3, 5},
-                                           {1, 2, 3}}))
+    REQUIRE(froidure_pin::minimal_factorisation(S,
+                                                PBR({{3, 5},
+                                                     {0, 1, 2, 3, 4, 5},
+                                                     {0, 2, 3, 4, 5},
+                                                     {0, 1, 2, 3, 5},
+                                                     {0, 2, 5},
+                                                     {1, 2, 3, 4, 5}})
+                                                    * PBR({{3, 4, 5},
+                                                           {2, 4, 5},
+                                                           {1, 2, 4},
+                                                           {0, 3, 5},
+                                                           {1, 2, 3, 5},
+                                                           {1, 2, 3}}))
             == word_type({0, 0}));
     REQUIRE(froidure_pin::minimal_factorisation(S, 5) == word_type({3, 3}));
     REQUIRE(S.at(5)
