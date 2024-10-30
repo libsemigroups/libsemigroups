@@ -627,4 +627,60 @@ namespace libsemigroups {
       T.run();
     }
   }  // namespace schreier_sims
+
+  template <size_t N>
+  [[nodiscard]] std::string to_human_readable_repr(SchreierSims<N> const& S,
+                                                   size_t max_width) {
+    size_t      base_size     = S.base_size();
+    size_t      nr_generators = S.number_of_generators();
+    std::string base_string;
+    std::string out;
+
+    // 3 * base_size is a lower bound on the length of the base as a string in
+    // the form "(X, X, X, X)".
+    if (base_size == 0) {
+      base_string = "()";
+    } else if (3 * base_size < max_width) {
+      base_string = "(";
+      for (size_t i = 0; i < base_size - 1; ++i) {
+        base_string.append(std::to_string(S.base_no_checks(i)) + ", ");
+      }
+      base_string.append(std::to_string(S.base_no_checks(base_size - 1)) + ")");
+    }
+
+    if (S.finished()) {
+      size_t size = const_cast<SchreierSims<N>&>(S).size();
+
+      out = fmt::format("<SchreierSims with {} generator{}, base {} & size {}>",
+                        nr_generators,
+                        nr_generators == 1 ? "" : "s",
+                        base_string,
+                        size);
+
+      if (out.length() > max_width) {
+        out = fmt::format(
+            "<SchreierSims with {} generator{}, base size {} & size {}>",
+            nr_generators,
+            nr_generators == 1 ? "" : "s",
+            base_size,
+            size);
+      }
+      return out;
+    }
+
+    out = fmt::format(
+        "<partially enumerated SchreierSims with {} generator{} & base {}>",
+        nr_generators,
+        nr_generators == 1 ? "" : "s",
+        base_string);
+
+    if (out.length() > max_width) {
+      out = fmt::format("<partially enumerated SchreierSims with {} "
+                        "generator{} & base size {}>",
+                        nr_generators,
+                        nr_generators == 1 ? "" : "s",
+                        base_size);
+    }
+    return out;
+  }
 }  // namespace libsemigroups

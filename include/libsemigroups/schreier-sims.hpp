@@ -313,7 +313,8 @@ namespace libsemigroups {
     //!
     //! This functions adds the argument \p x as a new generator if and only if
     //! \p x is not already an element of the group represented by the
-    //! Schreier-Sims object.
+    //! Schreier-Sims object. For example, the identity element is never added
+    //! as a generator.
     //!
     //! \param x a const reference to the generator to add.
     //!
@@ -977,6 +978,24 @@ namespace libsemigroups {
                       SchreierSims<N>& S1,
                       SchreierSims<N>& S2);
   }  // namespace schreier_sims
+
+  //! \ingroup schreier_sims_group
+  //!
+  //! \brief Returns a human readable representation of a SchreierSims object.
+  //!
+  //! This function returns a human readable representation of a SchreierSims
+  //! object.
+  //!
+  //! \tparam N the largest point not fixed by the permutations in the
+  //! permutation groups.
+  //!
+  //! \param S the SchreierSims object.
+  //! \param braces the braces to use to delineate rows (default: `"{}"`).
+  //! \param max_width the maximum width of the returned representation
+  //! (default: \c 72).
+  template <size_t N>
+  [[nodiscard]] std::string to_human_readable_repr(SchreierSims<N> const& S,
+                                                   size_t max_width = 72);
 }  // namespace libsemigroups
 
 #include "schreier-sims.tpp"

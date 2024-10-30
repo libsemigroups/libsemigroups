@@ -68,6 +68,9 @@ namespace libsemigroups {
     REQUIRE(S.sift(Perm({1, 0})) == Perm({1, 0}));
     REQUIRE(!S.contains(Perm({1, 0})));
     REQUIRE(S.contains(Perm({0, 1})));
+    REQUIRE(
+        to_human_readable_repr(S)
+        == "<partially enumerated SchreierSims with 0 generators & base ()>");
   }
 
   LIBSEMIGROUPS_TEST_CASE("SchreierSims",
@@ -111,7 +114,11 @@ namespace libsemigroups {
     using Perm = decltype(S)::element_type;
     S.add_generator(Perm({1, 0, 2, 3, 4}));
     S.add_generator(Perm({1, 2, 3, 4, 0}));
+    REQUIRE(S.number_of_generators() == 2);
     REQUIRE(S.size() == 120);
+    REQUIRE(
+        to_human_readable_repr(S)
+        == "<SchreierSims with 2 generators, base (0, 1, 2, 3) & size 120>");
   }
 
   LIBSEMIGROUPS_TEST_CASE("SchreierSims",
@@ -134,6 +141,8 @@ namespace libsemigroups {
     T.add_generator(Perm({1, 2, 3, 4, 5, 6, 7, 0}));
     REQUIRE(S.size() == 40'320);
     REQUIRE(T.size() == 40'320);
+    REQUIRE(to_human_readable_repr(S)
+            == "<SchreierSims with 2 generators, base size 7 & size 40320>");
 
     decltype(T) U(T);
     REQUIRE(U.finished());
@@ -220,6 +229,9 @@ namespace libsemigroups {
         Perm({1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 0, 15}));
     S.add_generator(
         Perm({0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 14, 15, 13}));
+    REQUIRE(to_human_readable_repr(S)
+            == "<partially enumerated SchreierSims with 3 generators & base "
+               "size 13>");
     REQUIRE(S.size() == static_cast<uint64_t>(10461394944000));
     REQUIRE(S.contains(
         Perm({0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 14, 15, 13})));
