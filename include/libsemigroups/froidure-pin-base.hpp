@@ -240,22 +240,12 @@ namespace libsemigroups {
     // FroidurePinBase - member functions - public
     ////////////////////////////////////////////////////////////////////////
 
-    // TODO(0) out of line
+    // TODO(0) doc
     template <typename Iterator1, typename Iterator2>
     [[nodiscard]] element_index_type
-    current_position_no_checks(Iterator1 first, Iterator2 last) const {
-      if (first == last) {
-        if (_found_one) {
-          return _pos_one;
-        } else {
-          return UNDEFINED;
-        }
-      }
-      element_index_type s = position_of_generator_no_checks(*first);
-      return word_graph::follow_path_no_checks(
-          current_right_cayley_graph(), s, first + 1, last);
-    }
+    current_position_no_checks(Iterator1 first, Iterator2 last) const;
 
+    // TODO(0) doc
     template <typename Iterator1, typename Iterator2>
     [[nodiscard]] element_index_type current_position(Iterator1 first,
                                                       Iterator2 last) const {
@@ -263,6 +253,7 @@ namespace libsemigroups {
       return current_position_no_checks(first, last);
     }
 
+    // TODO(0) doc
     template <typename Iterator1, typename Iterator2>
     [[nodiscard]] element_index_type position_no_checks(Iterator1 first,
                                                         Iterator2 last) {
@@ -270,6 +261,7 @@ namespace libsemigroups {
       return current_position_no_checks(first, last);
     }
 
+    // TODO(0) doc
     template <typename Iterator1, typename Iterator2>
     [[nodiscard]] element_index_type position(Iterator1 first, Iterator2 last) {
       run();
@@ -1660,6 +1652,22 @@ namespace libsemigroups {
     ////////////////////////////////////////////////////////////////////////
     void partial_copy(FroidurePinBase const& S);
   };  // class FroidurePinBase
+
+  template <typename Iterator1, typename Iterator2>
+  [[nodiscard]] FroidurePinBase::element_index_type
+  FroidurePinBase::current_position_no_checks(Iterator1 first,
+                                              Iterator2 last) const {
+    if (first == last) {
+      if (_found_one) {
+        return _pos_one;
+      } else {
+        return UNDEFINED;
+      }
+    }
+    element_index_type s = position_of_generator_no_checks(*first);
+    return word_graph::follow_path_no_checks(
+        current_right_cayley_graph(), s, first + 1, last);
+  }
 
   //! \ingroup froidure_pin_group
   //!
