@@ -526,7 +526,10 @@ namespace libsemigroups {
     //! be an element of the semigroup).
     //!
     //! \sa \ref current_position.
-    // TODO(0) no trigger note in the doc
+    //!
+    //! \note
+    //! This function triggers a full enumeration.
+    // TODO(0) no trigger notes everywhere in the doc
     // TODO(0) update the doc
     template <typename Iterator1, typename Iterator2>
     [[nodiscard]] const_reference to_element_no_checks(Iterator1 first,
@@ -576,23 +579,7 @@ namespace libsemigroups {
     [[nodiscard]] bool equal_to_no_checks(Iterator1 first1,
                                           Iterator2 last1,
                                           Iterator3 first2,
-                                          Iterator4 last2) const {
-      element_index_type u_pos = current_position_no_checks(first1, last1);
-      element_index_type v_pos = current_position_no_checks(first2, last2);
-      if (finished() || (u_pos != UNDEFINED && v_pos != UNDEFINED)) {
-        return u_pos == v_pos;
-      }
-      if (std::equal(first1, last1, first2, last2)) {
-        return true;
-      }
-      element_type uu = to_element_no_checks(first1, last1);
-      // to_element_no_checks returns a reference to _tmp_product, so we must
-      // copy it first time around, but not the second (next line)
-      const_reference vv  = to_element_no_checks(first2, last2);
-      auto            res = (uu == vv);
-      this->external_free(uu);
-      return res;
-    }
+                                          Iterator4 last2) const;
 
     //! \brief Check equality of words in the generators.
     //!
