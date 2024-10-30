@@ -593,7 +593,7 @@ namespace libsemigroups {
     S.batch_size(1024);
 
     word_type result;
-    S.factorisation(result, 5537);
+    froidure_pin::factorisation(S, result, 5537);
     word_type expected = {1, 2, 2, 2, 3, 2, 4, 1, 2, 2, 3};
     REQUIRE(result == expected);
     REQUIRE(S.current_length(5537) == 11);
@@ -624,7 +624,8 @@ namespace libsemigroups {
 
     word_type result;
     for (size_t i = 0; i < S.size(); i++) {
-      S.factorisation(result, i);
+      result.clear();
+      froidure_pin::factorisation(S, result, i);
       REQUIRE(froidure_pin::current_position(S, result) == i);
     }
   }
@@ -2365,7 +2366,7 @@ namespace libsemigroups {
     S.add_generator(Transf<>({1, 1, 4, 5, 4, 5}));
     S.add_generator(Transf<>({2, 3, 2, 3, 5, 5}));
 
-    REQUIRE(S.factorisation(2) == word_type({0, 1}));
+    REQUIRE(froidure_pin::factorisation(S, 2) == word_type({0, 1}));
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin<Transf<>>",

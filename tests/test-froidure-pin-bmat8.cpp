@@ -171,7 +171,7 @@ namespace libsemigroups {
                       LibsemigroupsException);
 
     w.clear();
-    S.factorisation(w, 378);
+    froidure_pin::factorisation(S, w, 378);
     REQUIRE(w == word_type({0, 1, 2, 0, 1, 2}));
     REQUIRE(S.current_length(378) == 6);
 
@@ -184,7 +184,8 @@ namespace libsemigroups {
                                              {0, 0, 0, 0, 0}})),
                       LibsemigroupsException);
 
-    REQUIRE_THROWS_AS(S.factorisation(1000000), LibsemigroupsException);
+    REQUIRE_THROWS_AS(froidure_pin::factorisation(S, 1000000),
+                      LibsemigroupsException);
 
     auto it = S.cbegin_rules();
     REQUIRE(*it == relation_type({2, 2}, {2}));

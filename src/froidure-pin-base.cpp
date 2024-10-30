@@ -256,10 +256,6 @@ namespace libsemigroups {
     return current_length(pos);
   }
 
-  word_type FroidurePinBase::factorisation(element_index_type pos) {
-    return froidure_pin::minimal_factorisation(*this, pos);
-  }
-
   size_t FroidurePinBase::number_of_elements_of_length(size_t i) const {
     // _lenindex[i - 1] is the element_index_type where words of length i
     // begin so _lenindex[i] - _lenindex[i - 1]) is the number of words of
