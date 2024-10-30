@@ -395,7 +395,7 @@ namespace libsemigroups {
     cong.add_pair(0_w, 1_w);
 
     REQUIRE(cong.number_of_classes() == 4);
-    REQUIRE(!to_froidure_pin(cong)->is_monoid());
+    REQUIRE(!to_froidure_pin(cong)->contains_one());
   }
 
   LIBSEMIGROUPS_TEST_CASE("Congruence",

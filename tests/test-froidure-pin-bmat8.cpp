@@ -251,7 +251,7 @@ namespace libsemigroups {
            BMat8({{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 0}})};
     auto S = to_froidure_pin(gens);
 
-    REQUIRE(!S.is_monoid());
+    REQUIRE(!S.contains_one());
     REQUIRE_THROWS_AS(froidure_pin::to_element(S, {}), LibsemigroupsException);
     REQUIRE_NOTHROW(froidure_pin::to_element(S, {0}));
     REQUIRE_NOTHROW(froidure_pin::to_element(S, {0, 3, 0, 3, 1}));

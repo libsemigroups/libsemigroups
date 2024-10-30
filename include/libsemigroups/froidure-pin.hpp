@@ -520,10 +520,10 @@ namespace libsemigroups {
     //!
     //! \warning This function does not check its arguments, and it is assumed
     //! that the values in \p w are less than \ref number_of_generators; and
-    //! if \p w is empty it is assumed that \ref contains_one_no_run returns \c
-    //! true (although nothing bad will happen if this doesn't hold, except that
-    //! this function will return the identity element even though it might not
-    //! be an element of the semigroup).
+    //! if \p w is empty it is assumed that \ref currently_contains_one returns
+    //! \c true (although nothing bad will happen if this doesn't hold, except
+    //! that this function will return the identity element even though it might
+    //! not be an element of the semigroup).
     //!
     //! \sa \ref current_position.
     //!
@@ -1994,10 +1994,10 @@ namespace libsemigroups {
     //!
     //! \warning This function does not check its arguments, and it is assumed
     //! that the values in \p w are less than \ref number_of_generators; and
-    //! if \p w is empty it is assumed that \ref contains_one_no_run returns \c
-    //! true (although nothing bad will happen if this doesn't hold, except that
-    //! this function will return the identity element even though it might not
-    //! be an element of the semigroup).
+    //! if \p w is empty it is assumed that \ref currently_contains_one returns
+    //! \c true (although nothing bad will happen if this doesn't hold, except
+    //! that this function will return the identity element even though it might
+    //! not be an element of the semigroup).
     //!
     //! \sa \ref current_position.
     // TODO(0) update doc

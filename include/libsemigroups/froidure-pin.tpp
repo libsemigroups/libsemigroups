@@ -216,8 +216,8 @@ namespace libsemigroups {
       LIBSEMIGROUPS_ASSERT(degree() != UNDEFINED);
       // The next line asserts that _id actually is an element, if not, then
       // we shouldn't be calling this function with the empty word.
-      LIBSEMIGROUPS_ASSERT(contains_one_no_run());
-      // TODO(0) contains_one_no_run -> currently_contains_one
+      LIBSEMIGROUPS_ASSERT(currently_contains_one());
+      // TODO(0) currently_contains_one -> currently_contains_one
       return this->to_external_const(_id);
     }
 
@@ -257,7 +257,7 @@ namespace libsemigroups {
         LIBSEMIGROUPS_EXCEPTION("cannot convert the empty word to an element "
                                 "when no generators are defined");
       }
-      if (!contains_one_no_run()) {
+      if (!currently_contains_one()) {
         LIBSEMIGROUPS_EXCEPTION(
             "cannot convert the empty word to an element, the identity is "
             "not {}an element of the semigroup",

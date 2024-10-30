@@ -234,7 +234,7 @@ namespace libsemigroups {
   }
 
   // TODO(0) rename to contains_one
-  [[nodiscard]] bool FroidurePinBase::is_monoid() {
+  [[nodiscard]] bool FroidurePinBase::contains_one() {
     if (_found_one) {
       return true;
     }

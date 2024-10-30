@@ -240,12 +240,68 @@ namespace libsemigroups {
     // FroidurePinBase - member functions - public
     ////////////////////////////////////////////////////////////////////////
 
-    // TODO(0) doc
+    //! \brief Returns the position corresponding to a word.
+    //!
+    //! This function returns the position in a FroidurePin instance
+    //! corresponding to the word in the generators given by the iterators \p
+    //! first and \p last. No enumeration is performed, and \ref UNDEFINED is
+    //! returned if the word does not currently correspond to an element.
+    //!
+    //! \tparam Iterator1 type of the first argument.
+    //! \tparam Iterator2 type of the second argument.
+    //!
+    //! \param first iterator pointing at the first letter in the word.
+    //! \param last iterator pointing one beyond the last letter in the word.
+    //!
+    //! \returns
+    //! The index of the element corresponding to the word given by \p first
+    //! and \p last, or \ref UNDEFINED if there is no such element.
+    //!
+    //! \complexity
+    //! \f$O(n)\f$ where \f$n\f$ is the length of the distance from \p first to
+    //! \p last.
+    //!
+    //! \warning This function does not check its argument is valid. In
+    //! particular, if any of the letters (pointed at by iterators in the range
+    //! from \p first to \p last) is out of range, then bad things will happen.
+    //!
+    //! \sa FroidurePin::to_element
+    //! \sa FroidurePin::current_position
+    //! \sa FroidurePin::position_no_checks
+    //! \sa FroidurePin::position
     template <typename Iterator1, typename Iterator2>
     [[nodiscard]] element_index_type
     current_position_no_checks(Iterator1 first, Iterator2 last) const;
 
-    // TODO(0) doc
+    //! \brief Returns the position corresponding to a word.
+    //!
+    //! This function returns the position in a FroidurePin instance
+    //! corresponding to the word in the generators given by \p first and \p
+    //! last. No enumeration is performed, and \ref UNDEFINED is returned if the
+    //! word does not currently correspond to an element.
+    //!
+    //! \tparam Iterator1 type of the first argument.
+    //! \tparam Iterator2 type of the second argument.
+    //!
+    //! \param first iterator pointing at the first letter in the word.
+    //! \param last iterator pointing one beyond the last letter in the word.
+    //!
+    //! \returns
+    //! The index of the element corresponding to the word given by \p first
+    //! and \p last, or \ref UNDEFINED if there is no such element.
+    //!
+    //! \throws LibsemigroupsException if any of the letters (pointed at by
+    //! iterators in the range from \p first to \p last) is out of range
+    //! (exceeds FroidurePin::number_of_generators).
+    //!
+    //! \complexity
+    //! \f$O(n)\f$ where \f$n\f$ is the length of the distance from \p first to
+    //! \p last.
+    //!
+    //! \sa FroidurePin::to_element
+    //! \sa FroidurePin::current_position_no_checks
+    //! \sa FroidurePin::position_no_checks
+    //! \sa FroidurePin::position
     template <typename Iterator1, typename Iterator2>
     [[nodiscard]] element_index_type current_position(Iterator1 first,
                                                       Iterator2 last) const {
@@ -253,7 +309,34 @@ namespace libsemigroups {
       return current_position_no_checks(first, last);
     }
 
-    // TODO(0) doc
+    //! \brief Returns the position corresponding to a word.
+    //!
+    //! This function returns the position in a FroidurePin instance
+    //! corresponding to the word in the generators given by the iterators \p
+    //! first and \p last. This function triggers a full enumeration.
+    //!
+    //! \tparam Iterator1 type of the first argument.
+    //! \tparam Iterator2 type of the second argument.
+    //!
+    //! \param first iterator pointing at the first letter in the word.
+    //! \param last iterator pointing one beyond the last letter in the word.
+    //!
+    //! \returns
+    //! The index of the element corresponding to the word given by \p first
+    //! and \p last.
+    //!
+    //! \complexity
+    //! \f$O(n)\f$ where \f$n\f$ is the length of the distance from \p first to
+    //! \p last.
+    //!
+    //! \warning This function does not check its argument is valid. In
+    //! particular, if any of the letters (pointed at by iterators in the range
+    //! from \p first to \p last) is out of range, then bad things will happen.
+    //!
+    //! \sa FroidurePin::to_element
+    //! \sa FroidurePin::current_position_no_checks
+    //! \sa FroidurePin::current_position
+    //! \sa FroidurePin::position
     template <typename Iterator1, typename Iterator2>
     [[nodiscard]] element_index_type position_no_checks(Iterator1 first,
                                                         Iterator2 last) {
@@ -261,42 +344,44 @@ namespace libsemigroups {
       return current_position_no_checks(first, last);
     }
 
-    // TODO(0) doc
+    //! \brief Returns the position corresponding to a word.
+    //!
+    //! This function returns the position in a FroidurePin instance
+    //! corresponding to the word in the generators given by \p first and \p
+    //! last. This function triggers a full enumeration.
+    //!
+    //! \tparam Iterator1 type of the first argument.
+    //! \tparam Iterator2 type of the second argument.
+    //!
+    //! \param first iterator pointing at the first letter in the word.
+    //! \param last iterator pointing one beyond the last letter in the word.
+    //!
+    //! \returns
+    //! The index of the element corresponding to the word given by \p first
+    //! and \p last, or \ref UNDEFINED if there is no such element.
+    //!
+    //! \throws LibsemigroupsException if any of the letters (pointed at by
+    //! iterators in the range from \p first to \p last) is out of range
+    //! (exceeds FroidurePin::number_of_generators).
+    //!
+    //! \complexity
+    //! \f$O(n)\f$ where \f$n\f$ is the length of the distance from \p first to
+    //! \p last.
+    //!
+    //! \sa FroidurePin::to_element
+    //! \sa FroidurePin::current_position
+    //! \sa FroidurePin::current_position_no_checks
+    //! \sa FroidurePin::position_no_checks
+    //! \sa FroidurePin::position
     template <typename Iterator1, typename Iterator2>
     [[nodiscard]] element_index_type position(Iterator1 first, Iterator2 last) {
       run();
       return current_position(first, last);
     }
 
-    //! \brief Returns the position corresponding to a generator.
+    //! \brief Returns the position of the generator with specified index.
     //!
-    //! Returns the position in the semigroup corresponding to the generator
-    //! with index \p i.
-    //!
-    //! This function returns the position in the FroidurePinBase object of the
-    //! element corresponding to the generator with index \p i.
-    //!
-    //! \param i the index of the generator.
-    //!
-    //! \returns
-    //! The position of the generator with index \p i.
-    //!
-    //! \complexity Constant.
-    //!
-    //! \warning This function does not check its argument is valid. In
-    //! particular, if there is no generator with index \p i, then bad
-    //! things will happen.
-    //!
-    //! \sa FroidurePin::to_element.
-    [[nodiscard]] element_index_type
-    position_of_generator_no_checks(generator_index_type i) const {
-      LIBSEMIGROUPS_ASSERT(i < _letter_to_pos.size());
-      return _letter_to_pos[i];
-    }
-
-    //! \brief Returns the position in of the generator with specified index.
-    //!
-    //! In many cases \p current_position(i) will equal \p i, examples
+    //! In many cases \p position_of_generator(i) will equal \p i, examples
     //! of when this will not be the case are:
     //!
     //! * there are duplicate generators;
@@ -304,9 +389,35 @@ namespace libsemigroups {
     //! * FroidurePin::add_generators was called after the semigroup was already
     //! partially enumerated.
     //!
-    //! \param i the index of the generators.
+    //! \param i the index of the generator.
     //!
-    //! \returns A value of type \ref element_index_type.
+    //! \returns The position of the \p i-th generator.
+    //!
+    //! \complexity
+    //! Constant.
+    //!
+    //! \warning This function does not check its argument is valid. In
+    //! particular, if there is no generator with index \p i, then bad
+    //! things will happen.
+    [[nodiscard]] element_index_type
+    position_of_generator_no_checks(generator_index_type i) const {
+      LIBSEMIGROUPS_ASSERT(i < _letter_to_pos.size());
+      return _letter_to_pos[i];
+    }
+
+    //! \brief Returns the position of the generator with specified index.
+    //!
+    //! In many cases \p position_of_generator(i) will equal \p i, examples
+    //! of when this will not be the case are:
+    //!
+    //! * there are duplicate generators;
+    //!
+    //! * FroidurePin::add_generators was called after the semigroup was already
+    //! partially enumerated.
+    //!
+    //! \param i the index of the generator.
+    //!
+    //! \returns The position of the \p i-th generator.
     //!
     //! \throws LibsemigroupsException if \p i is greater than or equal to
     //! FroidurePin::number_of_generators.
@@ -698,9 +809,9 @@ namespace libsemigroups {
     //! At worst \f$O(|S|n)\f$ where \f$S\f$ is the semigroup represented by \c
     //! this, and \f$n\f$ is the return value of
     //! FroidurePin::number_of_generators.
-    [[nodiscard]] bool is_monoid();
+    [[nodiscard]] bool contains_one();
 
-    [[nodiscard]] bool contains_one_no_run() const noexcept {
+    [[nodiscard]] bool currently_contains_one() const noexcept {
       return _found_one;
     }
 
