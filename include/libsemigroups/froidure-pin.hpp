@@ -548,30 +548,11 @@ namespace libsemigroups {
     //! number of generators.
     //!
     //! \sa \ref current_position.
-    // TODO(0) to tpp
     // TODO(0) no trigger note in the doc
     // TODO(0) update the doc
     template <typename Iterator1, typename Iterator2>
     [[nodiscard]] const_reference to_element(Iterator1 first,
-                                             Iterator2 last) const {
-      // If !w.empty() && number_of_generators() == 0, then
-      // throw_if_any_generator_index_out_of_range will throw . . .
-      throw_if_any_generator_index_out_of_range(first, last);
-      if (first == last) {
-        if (number_of_generators() == 0) {
-          // . . . hence this function throws if number_of_generators() == 0.
-          LIBSEMIGROUPS_EXCEPTION("cannot convert the empty word to an element "
-                                  "when no generators are defined");
-        }
-        if (!contains_one_no_run()) {
-          LIBSEMIGROUPS_EXCEPTION(
-              "cannot convert the empty word to an element, the identity is "
-              "not {}an element of the semigroup",
-              finished() ? "" : "known to be ");
-        }
-      }
-      return to_element_no_checks(first, last);
-    }
+                                             Iterator2 last) const;
 
     //! \brief Check equality of words in the generators.
     //!

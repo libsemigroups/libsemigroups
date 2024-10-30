@@ -244,6 +244,30 @@ namespace libsemigroups {
   }
 
   template <typename Element, typename Traits>
+  template <typename Iterator1, typename Iterator2>
+  typename FroidurePin<Element, Traits>::const_reference
+  FroidurePin<Element, Traits>::to_element(Iterator1 first,
+                                           Iterator2 last) const {
+    // If !w.empty() && number_of_generators() == 0, then
+    // throw_if_any_generator_index_out_of_range will throw . . .
+    throw_if_any_generator_index_out_of_range(first, last);
+    if (first == last) {
+      if (number_of_generators() == 0) {
+        // . . . hence this function throws if number_of_generators() == 0.
+        LIBSEMIGROUPS_EXCEPTION("cannot convert the empty word to an element "
+                                "when no generators are defined");
+      }
+      if (!contains_one_no_run()) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "cannot convert the empty word to an element, the identity is "
+            "not {}an element of the semigroup",
+            finished() ? "" : "known to be ");
+      }
+    }
+    return to_element_no_checks(first, last);
+  }
+
+  template <typename Element, typename Traits>
   size_t FroidurePin<Element, Traits>::number_of_generators() const noexcept {
     return _gens.size();
   }
