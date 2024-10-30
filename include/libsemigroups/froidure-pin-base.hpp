@@ -1486,6 +1486,7 @@ namespace libsemigroups {
 
      private:
       void populate_word() const {
+        _word.clear();
         _froidure_pin->current_minimal_factorisation_no_checks(
             std::back_inserter(_word), _pos);
       }

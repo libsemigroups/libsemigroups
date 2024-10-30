@@ -763,41 +763,41 @@ namespace libsemigroups {
       REQUIRE(cong.number_of_classes() == 3);
       REQUIRE(cong.contains({1}, {0}));
 
-      // TODO(0) uncomment!
-      //       auto ntc = congruence::non_trivial_classes(cong,
-      //       S.normal_forms()); REQUIRE(ntc.size() == 3);
-      //       REQUIRE(ntc[0].size()
-      //       == 12); REQUIRE(ntc[1].size() == 63'880); REQUIRE(ntc[2].size()
-      //       == 12); REQUIRE(ntc[0]
-      //               == std::vector<word_type>({0_w,
-      //                                          1_w,
-      //                                          010_w,
-      //                                          011_w,
-      //                                          101_w,
-      //                                          110_w,
-      //                                          111_w,
-      //                                          01011_w,
-      //                                          01101_w,
-      //                                          10110_w,
-      //                                          10111_w,
-      //                                          11011_w}));
-      //     }
-      //     {
-      //       auto       S = to_froidure_pin({gens[0], gens[2], gens[3]});
-      //       Congruence cong(twosided, S);
-      //       cong.add_pair({1}, {0});
-      //
-      //       REQUIRE(cong.number_of_classes() == 2);
-      //       REQUIRE(cong.contains({1}, {0}));
-      //
-      //       auto ntc = congruence::non_trivial_classes(cong,
-      //       S.normal_forms()); REQUIRE(ntc.size() == 2);
-      //       REQUIRE(ntc[0].size()
-      //       == 8); REQUIRE(ntc[1].size() == 8);
-      //
-      //       REQUIRE(ntc[0]
-      //               == std::vector<word_type>(
-      //                   {0_w, 1_w, 00_w, 01_w, 10_w, 010_w, 101_w, 0101_w}));
+      auto ntc = congruence::non_trivial_classes(cong, S.normal_forms());
+      REQUIRE(ntc.size() == 3);
+      REQUIRE(ntc[0].size() == 12);
+      REQUIRE(ntc[1].size() == 63'880);
+      REQUIRE(ntc[2].size() == 12);
+      REQUIRE(ntc[0]
+              == std::vector<word_type>({0_w,
+                                         1_w,
+                                         010_w,
+                                         011_w,
+                                         101_w,
+                                         110_w,
+                                         111_w,
+                                         01011_w,
+                                         01101_w,
+                                         10110_w,
+                                         10111_w,
+                                         11011_w}));
+    }
+    {
+      auto       S = to_froidure_pin({gens[0], gens[2], gens[3]});
+      Congruence cong(twosided, S);
+      cong.add_pair({1}, {0});
+
+      REQUIRE(cong.number_of_classes() == 2);
+      REQUIRE(cong.contains({1}, {0}));
+
+      auto ntc = congruence::non_trivial_classes(cong, S.normal_forms());
+      REQUIRE(ntc.size() == 2);
+      REQUIRE(ntc[0].size() == 8);
+      REQUIRE(ntc[1].size() == 8);
+
+      REQUIRE(ntc[0]
+              == std::vector<word_type>(
+                  {0_w, 1_w, 00_w, 01_w, 10_w, 010_w, 101_w, 0101_w}));
     }
 #ifdef LIBSEMIGROUPS_HPCOMBI_ENABLED
 #pragma GCC diagnostic pop
