@@ -200,27 +200,6 @@ namespace libsemigroups {
   ////////////////////////////////////////////////////////////////////////
 
   template <typename Element, typename Traits>
-  bool
-  FroidurePin<Element, Traits>::equal_to_no_checks(word_type const& u,
-                                                   word_type const& v) const {
-    element_index_type u_pos
-        = current_position_no_checks(std::begin(u), std::end(u));
-    element_index_type v_pos
-        = current_position_no_checks(std::begin(v), std::end(v));
-    if (finished() || (u_pos != UNDEFINED && v_pos != UNDEFINED)) {
-      return u_pos == v_pos;
-    } else {
-      element_type uu = to_element_no_checks(u);
-      // to_element_no_checks returns a reference to _tmp_product, so we must
-      // copy it first time around, but not the second (next line)
-      const_reference vv  = to_element_no_checks(v);
-      auto            res = (uu == vv);
-      this->external_free(uu);
-      return res;
-    }
-  }
-
-  template <typename Element, typename Traits>
   size_t FroidurePin<Element, Traits>::number_of_generators() const noexcept {
     return _gens.size();
   }

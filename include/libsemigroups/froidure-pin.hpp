@@ -625,9 +625,31 @@ namespace libsemigroups {
     //! \warning This function does not check its arguments. In particular, it
     //! is assumed that every value in \p x and \p y belongs in the range from
     //! \c 0 to \ref number_of_generators (non-inclusive).
-    // TODO(0) replace with iterators
-    [[nodiscard]] bool equal_to_no_checks(word_type const& x,
-                                          word_type const& y) const;
+    // TODO(0) update the doc
+    template <typename Iterator1,
+              typename Iterator2,
+              typename Iterator3,
+              typename Iterator4>
+    [[nodiscard]] bool equal_to_no_checks(Iterator1 first1,
+                                          Iterator2 last1,
+                                          Iterator3 first2,
+                                          Iterator4 last2) const {
+      element_index_type u_pos = current_position_no_checks(first1, last1);
+      element_index_type v_pos = current_position_no_checks(first2, last2);
+      if (finished() || (u_pos != UNDEFINED && v_pos != UNDEFINED)) {
+        return u_pos == v_pos;
+      }
+      if (std::equal(first1, last1, first2, last2)) {
+        return true;
+      }
+      element_type uu = to_element_no_checks(first1, last1);
+      // to_element_no_checks returns a reference to _tmp_product, so we must
+      // copy it first time around, but not the second (next line)
+      const_reference vv  = to_element_no_checks(first2, last2);
+      auto            res = (uu == vv);
+      this->external_free(uu);
+      return res;
+    }
 
     //! \brief Check equality of words in the generators.
     //!
@@ -642,11 +664,18 @@ namespace libsemigroups {
     //!
     //! \throws LibsemigroupsException if \p w contains an value exceeding
     //! \ref number_of_generators.
-    // TODO(0) replace with iterators
-    [[nodiscard]] bool equal_to(word_type const& x, word_type const& y) const {
-      throw_if_any_generator_index_out_of_range(std::begin(x), std::end(x));
-      throw_if_any_generator_index_out_of_range(std::begin(y), std::end(y));
-      return equal_to_no_checks(x, y);
+    // TODO(0) update doc
+    template <typename Iterator1,
+              typename Iterator2,
+              typename Iterator3,
+              typename Iterator4>
+    [[nodiscard]] bool equal_to(Iterator1 first1,
+                                Iterator2 last1,
+                                Iterator3 first2,
+                                Iterator4 last2) const {
+      throw_if_any_generator_index_out_of_range(first1, last1);
+      throw_if_any_generator_index_out_of_range(first2, last2);
+      return equal_to_no_checks(first1, last1, first2, last2);
     }
 
     //! \brief Returns the number of generators.
@@ -2156,6 +2185,24 @@ namespace libsemigroups {
     to_element(FroidurePin<Element, Traits> const& fp,
                std::initializer_list<T> const&     w) {
       return to_element<Element, Traits, std::initializer_list<T>>(fp, w);
+    }
+
+    // TODO(0) doc
+    template <typename Element, typename Traits, typename Word>
+    [[nodiscard]] bool equal_to_no_checks(FroidurePin<Element, Traits> fp,
+                                          Word const&                  x,
+                                          Word const&                  y) {
+      return fp.equal_to_no_checks(
+          std::begin(x), std::end(x), std::begin(y), std::end(y));
+    }
+
+    // TODO(0) doc
+    template <typename Element, typename Traits, typename Word>
+    [[nodiscard]] bool equal_to(FroidurePin<Element, Traits> fp,
+                                word_type const&             x,
+                                word_type const&             y) {
+      return fp.equal_to(
+          std::begin(x), std::end(x), std::begin(y), std::end(y));
     }
 
   }  // namespace froidure_pin
