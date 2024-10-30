@@ -1852,11 +1852,12 @@ namespace libsemigroups {
     }
 
     // TODO(0) doc
-    static inline void current_minimal_factorisation_no_checks(
+    template <typename Word = word_type>
+    void current_minimal_factorisation_no_checks(
         FroidurePinBase const&              fpb,
-        word_type&                          word,
+        Word&                               word,
         FroidurePinBase::element_index_type pos) {
-      word.clear();  // TODO(0) remove this, and make this a template
+      word.clear();  // TODO(0) remove this (makes the functions more flexible)
       fpb.current_minimal_factorisation_no_checks(std::back_inserter(word),
                                                   pos);
     }
@@ -1881,21 +1882,22 @@ namespace libsemigroups {
     //! \warning This function does not check that \p pos is valid. In
     //! particular, if `pos > current_size()`, then bad things will happen.
     // TODO(0) update doc
-    [[nodiscard]] static inline word_type
-    current_minimal_factorisation_no_checks(
+    template <typename Word = word_type>
+    [[nodiscard]] Word current_minimal_factorisation_no_checks(
         FroidurePinBase const&              fpb,
         FroidurePinBase::element_index_type pos) {
-      word_type word;
+      Word word;
       current_minimal_factorisation_no_checks(fpb, word, pos);
       return word;
     }
 
     // TODO(0) doc
-    static inline void
+    template <typename Word = word_type>
+    void
     current_minimal_factorisation(FroidurePinBase const&              fpb,
-                                  word_type&                          word,
+                                  Word&                               word,
                                   FroidurePinBase::element_index_type pos) {
-      word.clear();
+      word.clear();  // TODO(0) remove
       fpb.current_minimal_factorisation(std::back_inserter(word), pos);
     }
 
@@ -1918,10 +1920,11 @@ namespace libsemigroups {
     //! At worst \f$O(mn)\f$ where \f$m\f$ equals \p pos and \f$n\f$ is the
     //! return value of FroidurePin::number_of_generators.
     // TODO(0) update doc
-    [[nodiscard]] static inline word_type
+    template <typename Word = word_type>
+    [[nodiscard]] Word
     current_minimal_factorisation(FroidurePinBase const&              fpb,
                                   FroidurePinBase::element_index_type pos) {
-      word_type word;
+      Word word;
       current_minimal_factorisation(fpb, word, pos);
       return word;
     }
@@ -1931,11 +1934,11 @@ namespace libsemigroups {
     // * There's no no_check version of this function because it doesn't make
     //   sense (see the impl of minimal_factorisation(word_type&,
     //   FroidurePinBase::element_index_type);
-    static inline void
-    minimal_factorisation(FroidurePinBase&                    fpb,
-                          word_type&                          word,
-                          FroidurePinBase::element_index_type pos) {
-      word.clear();
+    template <typename Word = word_type>
+    void minimal_factorisation(FroidurePinBase&                    fpb,
+                               Word&                               word,
+                               FroidurePinBase::element_index_type pos) {
+      word.clear();  // TODO(0) remove
       fpb.minimal_factorisation(std::back_inserter(word), pos);
     }
 
@@ -1962,10 +1965,11 @@ namespace libsemigroups {
     //   sense (see the impl of minimal_factorisation(word_type&,
     //   FroidurePinBase::element_index_type);
     // TODO(0) update doc
-    [[nodiscard]] static inline word_type
+    template <typename Word = word_type>
+    [[nodiscard]] Word
     minimal_factorisation(FroidurePinBase&                    fpb,
                           FroidurePinBase::element_index_type pos) {
-      word_type word;
+      Word word;
       minimal_factorisation(fpb, word, pos);
       return word;
     }
