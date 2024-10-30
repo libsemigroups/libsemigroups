@@ -2167,7 +2167,7 @@ namespace libsemigroups {
   //!
   //!  * \ref to_froidure_pin_group
   //!
-  //  TODO(1) add details + links
+  // TODO(1) add details + links
 
   //! \defgroup to_froidure_pin_group to_froidure_pin
   //!

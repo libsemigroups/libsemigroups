@@ -1027,6 +1027,7 @@ namespace libsemigroups {
     //! cbegin_current_rules, \ref cend_rules, and \ref cend_current_rules.
     class const_rule_iterator {
 #ifndef PARSED_BY_DOXYGEN
+
      public:
       using size_type = typename std::vector<relation_type>::size_type;
       using difference_type =

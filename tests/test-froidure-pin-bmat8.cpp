@@ -264,7 +264,6 @@ namespace libsemigroups {
            BMat8({{0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}, {1, 0, 0, 0}}),
            BMat8({{1, 1, 0, 0}, {1, 0, 1, 0}, {0, 1, 1, 1}, {0, 1, 1, 1}})};
     auto S = to_froidure_pin(gens);
-    ;
 
     for (size_t i = 0; i < S.size(); ++i) {
       REQUIRE_NOTHROW(S.prefix(i));
@@ -281,7 +280,6 @@ namespace libsemigroups {
            BMat8({{0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}, {1, 0, 0, 0}}),
            BMat8({{1, 1, 0, 0}, {1, 0, 1, 0}, {0, 1, 1, 1}, {0, 1, 1, 1}})};
     auto S = to_froidure_pin(gens);
-    ;
     // TODO(0) there are no tests in here!
   }
 
@@ -294,7 +292,6 @@ namespace libsemigroups {
            BMat8({{0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}, {1, 0, 0, 0}}),
            BMat8({{1, 1, 0, 0}, {1, 0, 1, 0}, {0, 1, 1, 1}, {0, 1, 1, 1}})};
     auto S = to_froidure_pin(gens);
-    ;
 
     for (size_t i = 0; i < S.size(); ++i) {
       REQUIRE_NOTHROW(S.first_letter(i));
@@ -324,7 +321,6 @@ namespace libsemigroups {
            BMat8({{0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}, {1, 0, 0, 0}}),
            BMat8({{1, 1, 0, 0}, {1, 0, 1, 0}, {0, 1, 1, 1}, {0, 1, 1, 1}})};
     auto S = to_froidure_pin(gens);
-    ;
 
     for (size_t i = 0; i < S.size(); ++i) {
       REQUIRE_NOTHROW(S.current_length(i));
@@ -340,7 +336,6 @@ namespace libsemigroups {
         = {BMat8({{0, 1, 0, 0}, {1, 0, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}),
            BMat8({{1, 1, 0, 0}, {1, 0, 1, 0}, {0, 1, 1, 1}, {0, 1, 1, 1}})};
     auto S = to_froidure_pin(gens);
-    ;
 
     for (size_t i = 1; i < S.size(); ++i) {
       for (size_t j = 1; j < S.size(); ++j) {
@@ -366,7 +361,6 @@ namespace libsemigroups {
         = {BMat8({{0, 1, 0, 0}, {1, 0, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}),
            BMat8({{1, 1, 0, 0}, {1, 0, 1, 0}, {0, 1, 1, 1}, {0, 1, 1, 1}})};
     auto S = to_froidure_pin(gens);
-    ;
 
     for (size_t i = 1; i < S.size(); ++i) {
       for (size_t j = 1; j < S.size(); ++j) {
@@ -391,7 +385,6 @@ namespace libsemigroups {
            BMat8({{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {1, 0, 0, 1}}),
            BMat8({{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 0}})};
     auto S = to_froidure_pin(gens);
-    ;
 
     // S has size 63904
     for (size_t i = 0; i < 63904; ++i) {
