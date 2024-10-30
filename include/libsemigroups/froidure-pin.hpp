@@ -527,12 +527,73 @@ namespace libsemigroups {
     //!
     //! \sa \ref current_position.
     // TODO(0) no trigger note in the doc
-    // TODO(0) replace with iterators + change the word_type version to a helper
-    // template <typename Iterator1, typename Iterator2>
-    // [[nodiscard]] const_reference to_element_no_checks(Iterator1 first,
-    //                                                    Iterator2 last) const;
+    // TODO(0) update the doc
+    template <typename Iterator1, typename Iterator2>
+    [[nodiscard]] const_reference to_element_no_checks(Iterator1 first,
+                                                       Iterator2 last) const {
+      element_index_type pos = current_position_no_checks(first, last);
+      if (pos != UNDEFINED) {
+        return this->to_external_const(_elements[pos]);
+      }
+
+      // Consider the empty case separately to avoid the unnecessary
+      // multiplication by the identity.
+      if (first == last) {
+        // The next line asserts we can't get here without _id being allocated.
+        LIBSEMIGROUPS_ASSERT(degree() != UNDEFINED);
+        // The next line asserts that _id actually is an element, if not, then
+        // we shouldn't be calling this function with the empty word.
+        LIBSEMIGROUPS_ASSERT(contains_one_no_run());
+        // TODO(0) contains_one_no_run -> currently_contains_one
+        return this->to_external_const(_id);
+      }
+
+      // current_position is always known for generators (i.e. when w.size()
+      // == 1), so w.size() > 1 should be true here
+      LIBSEMIGROUPS_ASSERT(std::distance(first, last) > 1);
+
+      element_type prod  // TODO(1) remove allocation here
+          = this->external_copy(this->to_external_const(_id));
+
+      auto* state_ptr = _state.get();
+      for (auto it = first; it != last; ++it) {
+        LIBSEMIGROUPS_ASSERT(*it < number_of_generators());
+        Swap()(this->to_external(_tmp_product), prod);
+        internal_product(prod,
+                         this->to_external_const(_tmp_product),
+                         this->to_external_const(_gens[*it]),
+                         state_ptr);
+      }
+      Swap()(this->to_external(_tmp_product), prod);
+      this->external_free(prod);
+
+      return this->to_external_const(_tmp_product);
+    }
+
+    //! \brief Convert a word in the generators to an element.
+    //!
+    //! This  function returns a reference to the element obtained by
+    //! evaluating \p w. The returned reference may only valid until the next
+    //! function that triggers an enumeration is called, or another call to this
+    //! function is made.
+    //!
+    //! \param w the word in the generators to evaluate.
+    //!
+    //! \returns A const reference to the element represented by the word \p w.
+    //!
+    //! \warning This function does not check its arguments, and it is assumed
+    //! that the values in \p w are less than \ref number_of_generators; and
+    //! if \p w is empty it is assumed that \ref contains_one_no_run returns \c
+    //! true (although nothing bad will happen if this doesn't hold, except that
+    //! this function will return the identity element even though it might not
+    //! be an element of the semigroup).
+    //!
+    //! \sa \ref current_position.
+    // TODO(0) to helper
     [[nodiscard]] const_reference
-    to_element_no_checks(word_type const& w) const;
+    to_element_no_checks(word_type const& w) const {
+      return to_element_no_checks(std::begin(w), std::end(w));
+    }
 
     //! \brief Convert a word in the generators to an element.
     //!
@@ -552,13 +613,16 @@ namespace libsemigroups {
     //! \sa \ref current_position.
     // TODO(0) to tpp
     // TODO(0) no trigger note in the doc
-    [[nodiscard]] const_reference to_element(word_type const& w) const {
+    // TODO(0) update the doc
+    template <typename Iterator1, typename Iterator2>
+    [[nodiscard]] const_reference to_element(Iterator1 first,
+                                             Iterator2 last) const {
       // If !w.empty() && number_of_generators() == 0, then
-      // throw_if_any_generator_index_out_of_range will throw.
-      throw_if_any_generator_index_out_of_range(std::begin(w), std::end(w));
-      if (w.empty()) {
+      // throw_if_any_generator_index_out_of_range will throw . . .
+      throw_if_any_generator_index_out_of_range(first, last);
+      if (first == last) {
         if (number_of_generators() == 0) {
-          // Hence this function throws if number_of_generators() == 0.
+          // . . . hence this function throws if number_of_generators() == 0.
           LIBSEMIGROUPS_EXCEPTION("cannot convert the empty word to an element "
                                   "when no generators are defined");
         }
@@ -569,7 +633,28 @@ namespace libsemigroups {
               finished() ? "" : "known to be ");
         }
       }
-      return to_element_no_checks(w);
+      return to_element_no_checks(first, last);
+    }
+
+    //! \brief Convert a word in the generators to an element.
+    //!
+    //! This  function returns a reference to the element obtained by
+    //! evaluating \p w. The returned reference may only valid until the next
+    //! function that triggers an enumeration is called, or another call to this
+    //! function is made.
+    //!
+    //! \param w the word in the generators to evaluate.
+    //!
+    //! \returns A copy of the element represented by the word \p w.
+    //!
+    //! \throws LibsemigroupsException if \p w is not a valid word in the
+    //! generators, i.e. if it contains a value greater than or equal to the
+    //! number of generators.
+    //!
+    //! \sa \ref current_position.
+    // TODO(0) to helper
+    [[nodiscard]] const_reference to_element(word_type const& w) const {
+      return to_element(std::begin(w), std::end(w));
     }
 
     //! \brief Check equality of words in the generators.

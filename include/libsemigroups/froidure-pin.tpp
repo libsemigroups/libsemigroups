@@ -200,51 +200,6 @@ namespace libsemigroups {
   ////////////////////////////////////////////////////////////////////////
 
   template <typename Element, typename Traits>
-  typename FroidurePin<Element, Traits>::const_reference
-  FroidurePin<Element, Traits>::to_element_no_checks(word_type const& w) const {
-    element_index_type pos = froidure_pin::current_position_no_checks(*this, w);
-    if (pos != UNDEFINED) {
-      return this->to_external_const(_elements[pos]);
-    }
-
-    // Consider the empty case separately to avoid the unnecessary
-    // multiplication by the identity.
-    if (w.empty()) {
-      // The next line asserts we can't get here without _id being allocated.
-      LIBSEMIGROUPS_ASSERT(degree() != UNDEFINED);
-      // The next line asserts that _id actually is an element, if not, then we
-      // shouldn't be calling this function with the empty word.
-      LIBSEMIGROUPS_ASSERT(contains_one_no_run());
-      return this->to_external_const(_id);
-    }
-
-    // current_position is always known for generators (i.e. when w.size()
-    // == 1), so w.size() > 1 should be true here
-    LIBSEMIGROUPS_ASSERT(w.size() > 1);
-
-    element_type prod
-        = this->external_copy(this->to_external_const(_tmp_product));
-
-    auto* state_ptr = _state.get();
-    internal_product(prod,
-                     this->to_external_const(_gens[w[0]]),
-                     this->to_external_const(_gens[w[1]]),
-                     state_ptr);
-    for (auto it = w.begin() + 2; it < w.end(); ++it) {
-      LIBSEMIGROUPS_ASSERT(*it < number_of_generators());
-      Swap()(this->to_external(_tmp_product), prod);
-      internal_product(prod,
-                       this->to_external_const(_tmp_product),
-                       this->to_external_const(_gens[*it]),
-                       state_ptr);
-    }
-    Swap()(this->to_external(_tmp_product), prod);
-    this->external_free(prod);
-
-    return this->to_external_const(_tmp_product);
-  }
-
-  template <typename Element, typename Traits>
   bool
   FroidurePin<Element, Traits>::equal_to_no_checks(word_type const& u,
                                                    word_type const& v) const {
