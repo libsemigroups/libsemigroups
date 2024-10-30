@@ -441,7 +441,7 @@ namespace libsemigroups {
       LIBSEMIGROUPS_EXCEPTION(
           "the argument is not an element of the semigroup");
     }
-    minimal_factorisation(std::back_inserter(w), pos);
+    current_minimal_factorisation_no_checks(std::back_inserter(w), pos);
   }
 
   template <typename Element, typename Traits>

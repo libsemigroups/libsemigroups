@@ -20,7 +20,7 @@
 #include <vector>   // for vector
 
 #include "catch_amalgamated.hpp"  // for REQUIRE, AssertionHandler, REQUIRE_THROWS_AS
-#include "test-main.hpp"          // for LIBSEMIGROUPS_TEST_CASE
+#include "test-main.hpp"          // for LIBSEMIGROUPS_TEST_CASE_V3
 
 #include "libsemigroups/froidure-pin.hpp"  // for FroidurePin
 #include "libsemigroups/pbr.hpp"           // for PBR
@@ -33,10 +33,10 @@ namespace libsemigroups {
 
   constexpr bool REPORT = false;
 
-  LIBSEMIGROUPS_TEST_CASE("FroidurePin<PBR>",
-                          "056",
-                          "example 1",
-                          "[quick][froidure-pin][pbr]") {
+  LIBSEMIGROUPS_TEST_CASE_V3("FroidurePin<PBR>",
+                             "056",
+                             "example 1",
+                             "[quick][froidure-pin][pbr]") {
     auto             rg   = ReportGuard(REPORT);
     std::vector<PBR> gens = {PBR({{3, 5},
                                   {0, 1, 2, 3, 4, 5},
@@ -125,10 +125,10 @@ namespace libsemigroups {
     }
   }
 
-  LIBSEMIGROUPS_TEST_CASE("FroidurePin<PBR>",
-                          "057",
-                          "example 2",
-                          "[quick][froidure-pin][pbr]") {
+  LIBSEMIGROUPS_TEST_CASE_V3("FroidurePin<PBR>",
+                             "057",
+                             "example 2",
+                             "[quick][froidure-pin][pbr]") {
     auto rg = ReportGuard(REPORT);
 
     FroidurePin<PBR> S;

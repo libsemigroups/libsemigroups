@@ -826,8 +826,6 @@ namespace libsemigroups {
     //!
     //! \warning This function does not check that \p pos is valid. In
     //! particular, if `pos > current_size()`, then bad things will happen.
-    // This function could be a helper, but
-    // FroidurePin::minimal_factorisation(const_reference) isn't so keeping.
     // TODO(0) update the doc
     template <typename Iterator>
     void current_minimal_factorisation_no_checks(Iterator           d_first,
@@ -884,8 +882,6 @@ namespace libsemigroups {
     //! \complexity
     //! At worst \f$O(mn)\f$ where \f$m\f$ equals \p pos and \f$n\f$ is the
     //! return value of FroidurePin::number_of_generators.
-    // 1. This function could be a helper, but
-    //    FroidurePin::minimal_factorisation(const_reference) isn't so keeping.
     // 2. There's no no_check version of this function because it doesn't make
     //    sense (see the impl of minimal_factorisation(word_type&,
     //    element_index_type);

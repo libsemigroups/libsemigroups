@@ -19,7 +19,7 @@
 #include <cstddef>  // for size_t
 
 #include "catch_amalgamated.hpp"  // for REQUIRE
-#include "test-main.hpp"          // for LIBSEMIGROUPS_TEST_CASE
+#include "test-main.hpp"          // for LIBSEMIGROUPS_TEST_CASE_V3
 
 #include "libsemigroups/froidure-pin.hpp"  // for FroidurePin
 #include "libsemigroups/matrix.hpp"        // for ProjMaxPlusMat
@@ -93,18 +93,18 @@ namespace libsemigroups {
     }
   }  // namespace
 
-  LIBSEMIGROUPS_TEST_CASE("FroidurePin",
-                          "061",
-                          "projective max plus matrix",
-                          "[quick][froidure-pin][projmaxplus]") {
+  LIBSEMIGROUPS_TEST_CASE_V3("FroidurePin",
+                             "061",
+                             "projective max plus matrix",
+                             "[quick][froidure-pin][projmaxplus]") {
     test000<ProjMaxPlusMat<3>>();
     test000<ProjMaxPlusMat<>>();
   }
 
-  LIBSEMIGROUPS_TEST_CASE("FroidurePin",
-                          "062",
-                          "projective max plus matrix",
-                          "[quick][froidure-pin][element]") {
+  LIBSEMIGROUPS_TEST_CASE_V3("FroidurePin",
+                             "062",
+                             "projective max plus matrix",
+                             "[quick][froidure-pin][element]") {
     test001<ProjMaxPlusMat<3>>();
     test001<ProjMaxPlusMat<>>();
   }

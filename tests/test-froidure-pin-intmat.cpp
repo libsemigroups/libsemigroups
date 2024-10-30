@@ -20,7 +20,7 @@
 #include <cstdint>  // for int64_t
 
 #include "catch_amalgamated.hpp"  // for REQUIRE, REQUIRE_THROWS_AS
-#include "test-main.hpp"          // for LIBSEMIGROUPS_TEST_CASE
+#include "test-main.hpp"          // for LIBSEMIGROUPS_TEST_CASE_V3
 
 #include "libsemigroups/constants.hpp"     // for UNDEFINED
 #include "libsemigroups/froidure-pin.hpp"  // for FroidurePin
@@ -205,56 +205,56 @@ namespace libsemigroups {
     }
   }  // namespace
 
-  LIBSEMIGROUPS_TEST_CASE("FroidurePin<IntMat<2, int64_t>>",
-                          "032",
-                          "Example 000",
-                          "[quick][froidure-pin][intmat]") {
+  LIBSEMIGROUPS_TEST_CASE_V3("FroidurePin<IntMat<2, int64_t>>",
+                             "032",
+                             "Example 000",
+                             "[quick][froidure-pin][intmat]") {
     // FIXME this test seemingly causes undefined behaviour (multiplication of
     // signed integers that overflows)
     test_IntMat000<IntMat<2, 2, int64_t>>();  // Static
   }
 
-  LIBSEMIGROUPS_TEST_CASE("FroidurePin<IntMat<0, int64_t>>",
-                          "033",
-                          "Example 000",
-                          "[quick][froidure-pin][intmat]") {
+  LIBSEMIGROUPS_TEST_CASE_V3("FroidurePin<IntMat<0, int64_t>>",
+                             "033",
+                             "Example 000",
+                             "[quick][froidure-pin][intmat]") {
     test_IntMat000<IntMat<0, 0, int64_t>>();
   }
 
-  LIBSEMIGROUPS_TEST_CASE("FroidurePin<IntMat<2, int64_t>>",
-                          "034",
-                          "Example 001",
-                          "[quick][froidure-pin][intmat]") {
+  LIBSEMIGROUPS_TEST_CASE_V3("FroidurePin<IntMat<2, int64_t>>",
+                             "034",
+                             "Example 001",
+                             "[quick][froidure-pin][intmat]") {
     test_IntMat001<IntMat<2, 2, int64_t>>();  // Static
   }
 
-  LIBSEMIGROUPS_TEST_CASE("FroidurePin<IntMat<0, int64_t>>",
-                          "035",
-                          "Example 001",
-                          "[quick][froidure-pin][intmat]") {
+  LIBSEMIGROUPS_TEST_CASE_V3("FroidurePin<IntMat<0, int64_t>>",
+                             "035",
+                             "Example 001",
+                             "[quick][froidure-pin][intmat]") {
     test_IntMat001<IntMat<0, 0, int64_t>>();  // Static
   }
 
-  LIBSEMIGROUPS_TEST_CASE("FroidurePin<IntMat>",
-                          "036",
-                          "exception: current_position",
-                          "[quick][froidure-pin][element]") {
+  LIBSEMIGROUPS_TEST_CASE_V3("FroidurePin<IntMat>",
+                             "036",
+                             "exception: current_position",
+                             "[quick][froidure-pin][element]") {
     test008<IntMat<2>>();
     test008<IntMat<>>();
   }
 
-  LIBSEMIGROUPS_TEST_CASE("FroidurePin<IntMat>",
-                          "037",
-                          "exception: to_element",
-                          "[quick][froidure-pin][element]") {
+  LIBSEMIGROUPS_TEST_CASE_V3("FroidurePin<IntMat>",
+                             "037",
+                             "exception: to_element",
+                             "[quick][froidure-pin][element]") {
     test009<IntMat<2>>();
     test009<IntMat<>>();
   }
 
-  LIBSEMIGROUPS_TEST_CASE("FroidurePin<IntMat>",
-                          "038",
-                          "exception: prefix, suffix, first_letter",
-                          "[quick][froidure-pin][element][no-valgrind]") {
+  LIBSEMIGROUPS_TEST_CASE_V3("FroidurePin<IntMat>",
+                             "038",
+                             "exception: prefix, suffix, first_letter",
+                             "[quick][froidure-pin][element][no-valgrind]") {
     test010<IntMat<2>>();
     test010<IntMat<>>();
   }

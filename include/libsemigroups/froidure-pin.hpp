@@ -527,7 +527,7 @@ namespace libsemigroups {
     //!
     //! \sa \ref current_position.
     // TODO(0) no trigger note in the doc
-    // TODO(0) replace with iterators
+    // TODO(0) replace with iterators + change the word_type version to a helper
     // template <typename Iterator1, typename Iterator2>
     // [[nodiscard]] const_reference to_element_no_checks(Iterator1 first,
     //                                                    Iterator2 last) const;
@@ -931,6 +931,7 @@ namespace libsemigroups {
     //! \note This function may trigger a (partial) enumeration.
     //!
     //! \sa minimal_factorisation(element_index_type).
+    // TODO(0) to helper
     [[nodiscard]] word_type minimal_factorisation(const_reference x);
 
     //! \brief Modify a word in-place to contain a minimal factorisation (in the
@@ -945,6 +946,7 @@ namespace libsemigroups {
     //! \throws LibsemigroupsException if \p x does not belong to \c this.
     //!
     //! \note This function may trigger a (partial) enumeration.
+    // TODO(0) to helper
     void minimal_factorisation(word_type& w, const_reference x);
 
 #ifndef PARSED_BY_DOXYGEN
@@ -972,6 +974,7 @@ namespace libsemigroups {
     //! \throws LibsemigroupsException if \p x does not belong to \c this.
     //!
     //! \note This function may trigger a (partial) enumeration.
+    // TODO(0) to helper
     [[nodiscard]] word_type factorisation(const_reference x);
 
     //! \brief Modify a word in-place to contain a factorisation (in the
@@ -987,6 +990,7 @@ namespace libsemigroups {
     //! \throws LibsemigroupsException if \p x does not belong to \c this.
     //!
     //! \note This function may trigger a (partial) enumeration.
+    // TODO(0) to helper
     void factorisation(word_type& w, const_reference x);
 
     //! \brief Check finiteness.

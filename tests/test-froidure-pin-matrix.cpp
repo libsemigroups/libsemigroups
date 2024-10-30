@@ -17,7 +17,7 @@
 //
 
 #include "catch_amalgamated.hpp"  // REQUIRE
-#include "test-main.hpp"          // for LIBSEMIGROUPS_TEST_CASE
+#include "test-main.hpp"          // for LIBSEMIGROUPS_TEST_CASE_V3
 
 #include "libsemigroups/constants.hpp"     // for UNDEFINED
 #include "libsemigroups/froidure-pin.hpp"  // for FroidurePin
@@ -178,114 +178,114 @@ namespace libsemigroups {
     }
   }  // namespace
 
-  LIBSEMIGROUPS_TEST_CASE("FroidurePin<MaxPlusMat<2>>",
-                          "040",
-                          "Example 000",
-                          "[quick][froidure-pin][matrix]") {
+  LIBSEMIGROUPS_TEST_CASE_V3("FroidurePin<MaxPlusMat<2>>",
+                             "040",
+                             "Example 000",
+                             "[quick][froidure-pin][matrix]") {
     test000<MaxPlusMat<2>>();
   }
 
-  LIBSEMIGROUPS_TEST_CASE("FroidurePin<MaxPlusMat<>>",
-                          "041",
-                          "Example 000",
-                          "[quick][froidure-pin][matrix]") {
+  LIBSEMIGROUPS_TEST_CASE_V3("FroidurePin<MaxPlusMat<>>",
+                             "041",
+                             "Example 000",
+                             "[quick][froidure-pin][matrix]") {
     test000<MaxPlusMat<>>();
   }
 
-  LIBSEMIGROUPS_TEST_CASE("FroidurePin<NTPMat<0, 6, 3>>",
-                          "042",
-                          "Example 001",
-                          "[extreme][froidure-pin][matrix]") {
+  LIBSEMIGROUPS_TEST_CASE_V3("FroidurePin<NTPMat<0, 6, 3>>",
+                             "042",
+                             "Example 001",
+                             "[extreme][froidure-pin][matrix]") {
     test001<NTPMat<0, 6, 3>>();
   }
 
-  LIBSEMIGROUPS_TEST_CASE("FroidurePin<NTPMat<0, 6>>",
-                          "043",
-                          "Example 001",
-                          "[extreme][froidure-pin][matrix]") {
+  LIBSEMIGROUPS_TEST_CASE_V3("FroidurePin<NTPMat<0, 6>>",
+                             "043",
+                             "Example 001",
+                             "[extreme][froidure-pin][matrix]") {
     test001<NTPMat<0, 6>>();
   }
 
   // TODO(later) Example 001 with a semiring
 
-  LIBSEMIGROUPS_TEST_CASE("FroidurePin<MinPlusMat<2>>",
-                          "044",
-                          "Example 004",
-                          "[quick][froidure-pin][matrix]") {
+  LIBSEMIGROUPS_TEST_CASE_V3("FroidurePin<MinPlusMat<2>>",
+                             "044",
+                             "Example 004",
+                             "[quick][froidure-pin][matrix]") {
     test004<MinPlusMat<2>>();
   }
 
-  LIBSEMIGROUPS_TEST_CASE("FroidurePin<MinPlusMat<>>",
-                          "045",
-                          "Example 004",
-                          "[quick][froidure-pin][matrix]") {
+  LIBSEMIGROUPS_TEST_CASE_V3("FroidurePin<MinPlusMat<>>",
+                             "045",
+                             "Example 004",
+                             "[quick][froidure-pin][matrix]") {
     test004<MinPlusMat<>>();
   }
 
-  LIBSEMIGROUPS_TEST_CASE("FroidurePin<MaxPlusTruncMat<33, 3>>",
-                          "046",
-                          "Example 005",
-                          "[quick][froidure-pin][matrix]") {
+  LIBSEMIGROUPS_TEST_CASE_V3("FroidurePin<MaxPlusTruncMat<33, 3>>",
+                             "046",
+                             "Example 005",
+                             "[quick][froidure-pin][matrix]") {
     test005<MaxPlusTruncMat<33, 3>>();
   }
 
-  LIBSEMIGROUPS_TEST_CASE("FroidurePin<MaxPlusTruncMat<33>>",
-                          "047",
-                          "Example 005",
-                          "[quick][froidure-pin][matrix]") {
+  LIBSEMIGROUPS_TEST_CASE_V3("FroidurePin<MaxPlusTruncMat<33>>",
+                             "047",
+                             "Example 005",
+                             "[quick][froidure-pin][matrix]") {
     test005<MaxPlusTruncMat<33>>();
   }
 
-  LIBSEMIGROUPS_TEST_CASE("FroidurePin<MaxPlusTruncMat<>>",
-                          "048",
-                          "Example 005",
-                          "[quick][froidure-pin][matrix]") {
+  LIBSEMIGROUPS_TEST_CASE_V3("FroidurePin<MaxPlusTruncMat<>>",
+                             "048",
+                             "Example 005",
+                             "[quick][froidure-pin][matrix]") {
     MaxPlusTruncSemiring<> const* sr = new MaxPlusTruncSemiring<>(33);
     test005<MaxPlusTruncMat<>>(sr);
     delete sr;
   }
 
-  LIBSEMIGROUPS_TEST_CASE("FroidurePin<MinPlusTruncMat<11, 3>>",
-                          "049",
-                          "Example 006",
-                          "[quick][froidure-pin][matrix]") {
+  LIBSEMIGROUPS_TEST_CASE_V3("FroidurePin<MinPlusTruncMat<11, 3>>",
+                             "049",
+                             "Example 006",
+                             "[quick][froidure-pin][matrix]") {
     test006<MinPlusTruncMat<11, 3>>();
   }
 
-  LIBSEMIGROUPS_TEST_CASE("FroidurePin<MinPlusTruncMat<11>>",
-                          "050",
-                          "Example 006",
-                          "[quick][froidure-pin][matrix]") {
+  LIBSEMIGROUPS_TEST_CASE_V3("FroidurePin<MinPlusTruncMat<11>>",
+                             "050",
+                             "Example 006",
+                             "[quick][froidure-pin][matrix]") {
     test006<MinPlusTruncMat<11>>();
   }
 
-  LIBSEMIGROUPS_TEST_CASE("FroidurePin<MinPlusTruncMat<>>",
-                          "051",
-                          "Example 006",
-                          "[quick][froidure-pin][matrix]") {
+  LIBSEMIGROUPS_TEST_CASE_V3("FroidurePin<MinPlusTruncMat<>>",
+                             "051",
+                             "Example 006",
+                             "[quick][froidure-pin][matrix]") {
     MinPlusTruncSemiring<> const* sr = new MinPlusTruncSemiring<>(11);
     test006<MinPlusTruncMat<>>(sr);
     delete sr;
   }
 
-  LIBSEMIGROUPS_TEST_CASE("FroidurePin<NTPMat<11, 3, 3>>",
-                          "052",
-                          "Example 007",
-                          "[quick][froidure-pin][matrix]") {
+  LIBSEMIGROUPS_TEST_CASE_V3("FroidurePin<NTPMat<11, 3, 3>>",
+                             "052",
+                             "Example 007",
+                             "[quick][froidure-pin][matrix]") {
     test007<NTPMat<11, 3, 3>>();
   }
 
-  LIBSEMIGROUPS_TEST_CASE("FroidurePin<NTPMat<11, 3>>",
-                          "053",
-                          "Example 007",
-                          "[quick][froidure-pin][matrix]") {
+  LIBSEMIGROUPS_TEST_CASE_V3("FroidurePin<NTPMat<11, 3>>",
+                             "053",
+                             "Example 007",
+                             "[quick][froidure-pin][matrix]") {
     test007<NTPMat<11, 3>>();
   }
 
-  LIBSEMIGROUPS_TEST_CASE("FroidurePin<NTPMat<>>",
-                          "054",
-                          "Example 007",
-                          "[quick][froidure-pin][matrix]") {
+  LIBSEMIGROUPS_TEST_CASE_V3("FroidurePin<NTPMat<>>",
+                             "054",
+                             "Example 007",
+                             "[quick][froidure-pin][matrix]") {
     NTPSemiring<> const* sr = new NTPSemiring<>(11, 3);
     test007<NTPMat<>>(sr);
     delete sr;
