@@ -2050,18 +2050,19 @@ namespace libsemigroups {
 
     // TODO(0) doc
     template <typename Element, typename Traits, typename Word>
-    [[nodiscard]] bool equal_to_no_checks(FroidurePin<Element, Traits> fp,
-                                          Word const&                  x,
-                                          Word const&                  y) {
+    [[nodiscard]] bool
+    equal_to_no_checks(FroidurePin<Element, Traits> const& fp,
+                       Word const&                         x,
+                       Word const&                         y) {
       return fp.equal_to_no_checks(
           std::begin(x), std::end(x), std::begin(y), std::end(y));
     }
 
     // TODO(0) doc
     template <typename Element, typename Traits, typename Word>
-    [[nodiscard]] bool equal_to(FroidurePin<Element, Traits> fp,
-                                word_type const&             x,
-                                word_type const&             y) {
+    [[nodiscard]] bool equal_to(FroidurePin<Element, Traits> const& fp,
+                                Word const&                         x,
+                                Word const&                         y) {
       return fp.equal_to(
           std::begin(x), std::end(x), std::begin(y), std::end(y));
     }
