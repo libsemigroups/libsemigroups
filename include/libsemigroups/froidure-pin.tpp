@@ -200,6 +200,50 @@ namespace libsemigroups {
   ////////////////////////////////////////////////////////////////////////
 
   template <typename Element, typename Traits>
+  template <typename Iterator1, typename Iterator2>
+  typename FroidurePin<Element, Traits>::const_reference
+  FroidurePin<Element, Traits>::to_element_no_checks(Iterator1 first,
+                                                     Iterator2 last) const {
+    element_index_type pos = current_position_no_checks(first, last);
+    if (pos != UNDEFINED) {
+      return this->to_external_const(_elements[pos]);
+    }
+
+    // Consider the empty case separately to avoid the unnecessary
+    // multiplication by the identity.
+    if (first == last) {
+      // The next line asserts we can't get here without _id being allocated.
+      LIBSEMIGROUPS_ASSERT(degree() != UNDEFINED);
+      // The next line asserts that _id actually is an element, if not, then
+      // we shouldn't be calling this function with the empty word.
+      LIBSEMIGROUPS_ASSERT(contains_one_no_run());
+      // TODO(0) contains_one_no_run -> currently_contains_one
+      return this->to_external_const(_id);
+    }
+
+    // current_position is always known for generators (i.e. when w.size()
+    // == 1), so w.size() > 1 should be true here
+    LIBSEMIGROUPS_ASSERT(std::distance(first, last) > 1);
+
+    element_type prod  // TODO(1) remove allocation here
+        = this->external_copy(this->to_external_const(_id));
+
+    auto* state_ptr = _state.get();
+    for (auto it = first; it != last; ++it) {
+      LIBSEMIGROUPS_ASSERT(*it < number_of_generators());
+      Swap()(this->to_external(_tmp_product), prod);
+      internal_product(prod,
+                       this->to_external_const(_tmp_product),
+                       this->to_external_const(_gens[*it]),
+                       state_ptr);
+    }
+    Swap()(this->to_external(_tmp_product), prod);
+    this->external_free(prod);
+
+    return this->to_external_const(_tmp_product);
+  }
+
+  template <typename Element, typename Traits>
   size_t FroidurePin<Element, Traits>::number_of_generators() const noexcept {
     return _gens.size();
   }
