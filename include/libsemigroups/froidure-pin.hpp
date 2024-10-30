@@ -527,10 +527,10 @@ namespace libsemigroups {
     //!
     //! \sa \ref current_position.
     // TODO(0) no trigger note in the doc
+    // TODO(0) replace with iterators
     // template <typename Iterator1, typename Iterator2>
     // [[nodiscard]] const_reference to_element_no_checks(Iterator1 first,
     //                                                    Iterator2 last) const;
-
     [[nodiscard]] const_reference
     to_element_no_checks(word_type const& w) const;
 
@@ -586,6 +586,7 @@ namespace libsemigroups {
     //! \warning This function does not check its arguments. In particular, it
     //! is assumed that every value in \p x and \p y belongs in the range from
     //! \c 0 to \ref number_of_generators (non-inclusive).
+    // TODO(0) replace with iterators
     [[nodiscard]] bool equal_to_no_checks(word_type const& x,
                                           word_type const& y) const;
 
@@ -602,6 +603,7 @@ namespace libsemigroups {
     //!
     //! \throws LibsemigroupsException if \p w contains an value exceeding
     //! \ref number_of_generators.
+    // TODO(0) replace with iterators
     [[nodiscard]] bool equal_to(word_type const& x, word_type const& y) const {
       throw_if_any_generator_index_out_of_range(x);
       throw_if_any_generator_index_out_of_range(y);

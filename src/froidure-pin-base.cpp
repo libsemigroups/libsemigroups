@@ -220,16 +220,6 @@ namespace libsemigroups {
   // FroidurePinBase - member functions - public
   ////////////////////////////////////////////////////////////////////////
 
-  void FroidurePinBase::current_minimal_factorisation_no_checks(
-      word_type&         word,
-      element_index_type pos) const {
-    word.clear();
-    while (pos != UNDEFINED) {
-      word.push_back(first_letter_no_checks(pos));
-      pos = suffix_no_checks(pos);
-    }
-  }
-
   void FroidurePinBase::enumerate(size_t limit) {
     if (finished() || limit <= current_size()) {
       return;
@@ -243,7 +233,7 @@ namespace libsemigroups {
     run_until([this, &limit]() -> bool { return current_size() >= limit; });
   }
 
-  // TODO rename to contains_one
+  // TODO(0) rename to contains_one
   [[nodiscard]] bool FroidurePinBase::is_monoid() {
     if (_found_one) {
       return true;
@@ -264,15 +254,6 @@ namespace libsemigroups {
       run();
     }
     return current_length(pos);
-  }
-
-  void FroidurePinBase::minimal_factorisation(word_type&         word,
-                                              element_index_type pos) {
-    if (pos >= current_size() && !finished()) {
-      enumerate(pos + 1);
-    }
-    throw_if_element_index_out_of_range(pos);
-    current_minimal_factorisation_no_checks(word, pos);
   }
 
   size_t FroidurePinBase::number_of_elements_of_length(size_t i) const {

@@ -806,6 +806,7 @@ namespace libsemigroups {
     // [x] minimal_factorisation(1 arg)
     // [ ] ~~minimal_factorisation_no_checks(2 args)~~ NONSENSICLE
     // [ ] ~~minimal_factorisation_no_checks(1 arg)~~ NONSENSICLE
+    // TODO(0) move this
 
     //! \brief Modify a word to contain the short-lex least word representing an
     //! element given by index.
@@ -827,39 +828,14 @@ namespace libsemigroups {
     //! particular, if `pos > current_size()`, then bad things will happen.
     // This function could be a helper, but
     // FroidurePin::minimal_factorisation(const_reference) isn't so keeping.
-    void current_minimal_factorisation_no_checks(word_type&         word,
-                                                 element_index_type pos) const;
-
-    //! \brief Returns a short-lex least word representing an element given by
-    //! index.
-    //!
-    //! This is the same as the two-argument member function for
-    //! \ref minimal_factorisation, but it returns a \ref word_type by value
-    //! instead of modifying its first argument in-place. No enumeration is
-    //! triggered by calling this function.
-    //!
-    //! \param pos the index of the element whose factorisation is sought.
-    //!
-    //! \returns
-    //! A value of type `word_type`.
-    //!
-    //! \complexity
-    //! At worst \f$O(mn)\f$ where \f$m\f$ equals \p pos and \f$n\f$ is the
-    //! return value of FroidurePin::number_of_generators.
-    //!
-    //! \warning This function does not check that \p pos is valid. In
-    //! particular, if `pos > current_size()`, then bad things will happen.
-    // Notes:
-    // 1. This function could be a helper, but
-    //    FroidurePin::minimal_factorisation(const_reference) isn't so keeping.
-    // 2. There's no no_check version of this function because it doesn't make
-    //    sense (see the impl of minimal_factorisation(word_type&,
-    //    element_index_type);
-    word_type
-    current_minimal_factorisation_no_checks(element_index_type pos) const {
-      word_type word;
-      current_minimal_factorisation_no_checks(word, pos);
-      return word;
+    // TODO(0) update the doc
+    template <typename Iterator>
+    void current_minimal_factorisation_no_checks(Iterator           d_first,
+                                                 element_index_type pos) const {
+      while (pos != UNDEFINED) {
+        *d_first = first_letter_no_checks(pos);
+        pos      = suffix_no_checks(pos);
+      }
     }
 
     //! \brief Modify a word to contain the short-lex least word representing an
@@ -877,45 +853,12 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! Constant.
-    // This function could be a helper, but
-    // FroidurePin::minimal_factorisation(const_reference) isn't so keeping.
-    void current_minimal_factorisation(word_type&         word,
+    // TODO(0) update the doc
+    template <typename Iterator>
+    void current_minimal_factorisation(Iterator           d_first,
                                        element_index_type pos) const {
       throw_if_element_index_out_of_range(pos);
-      current_minimal_factorisation_no_checks(word, pos);
-    }
-
-    //! \brief Returns a short-lex least word representing an element given by
-    //! index.
-    //!
-    //! This is the same as the two-argument member function for
-    //! \ref current_minimal_factorisation, but it returns a \ref word_type by
-    //! value instead of modifying its first argument in-place. No enumeration
-    //! is triggered by calling this function.
-    //!
-    //! \param pos the index of the element whose factorisation is sought.
-    //!
-    //! \returns
-    //! A value of type `word_type`.
-    //!
-    //! \throws LibsemigroupsException if \p pos is out of range.
-    //!
-    //! \complexity
-    //! At worst \f$O(mn)\f$ where \f$m\f$ equals \p pos and \f$n\f$ is the
-    //! return value of FroidurePin::number_of_generators.
-    // Notes:
-    // 1. This function could be a helper, but
-    //    FroidurePin::minimal_factorisation(const_reference) isn't so keeping.
-    // 2. There's no no_check version of this function because it doesn't make
-    //    sense (see the impl of minimal_factorisation(word_type&,
-    //    element_index_type);
-    // This function could be a helper, but
-    // FroidurePin::minimal_factorisation(const_reference) isn't so keeping.
-    [[nodiscard]] word_type
-    current_minimal_factorisation(element_index_type pos) const {
-      word_type word;
-      current_minimal_factorisation(word, pos);
-      return word;
+      current_minimal_factorisation_no_checks(d_first, pos);
     }
 
     //! \brief Modify a word to contain the short-lex least word representing an
@@ -946,7 +889,102 @@ namespace libsemigroups {
     // 2. There's no no_check version of this function because it doesn't make
     //    sense (see the impl of minimal_factorisation(word_type&,
     //    element_index_type);
-    void minimal_factorisation(word_type& word, element_index_type pos);
+    // TODO(0) Update the doc
+    template <typename Iterator>
+    void minimal_factorisation(Iterator d_first, element_index_type pos) {
+      if (pos >= current_size() && !finished()) {
+        enumerate(pos + 1);
+      }
+      throw_if_element_index_out_of_range(pos);
+      current_minimal_factorisation_no_checks(d_first, pos);
+    }
+
+    // TODO(0) to helper
+    void current_minimal_factorisation(word_type&         word,
+                                       element_index_type pos) const {
+      throw_if_element_index_out_of_range(pos);
+      current_minimal_factorisation_no_checks(word, pos);
+    }
+
+    // TODO to helper
+    void current_minimal_factorisation_no_checks(word_type&         word,
+                                                 element_index_type pos) const {
+      word.clear();
+      current_minimal_factorisation_no_checks(std::back_inserter(word), pos);
+    }
+
+    //! \brief Returns a short-lex least word representing an element given by
+    //! index.
+    //!
+    //! This is the same as the two-argument member function for
+    //! \ref minimal_factorisation, but it returns a \ref word_type by value
+    //! instead of modifying its first argument in-place. No enumeration is
+    //! triggered by calling this function.
+    //!
+    //! \param pos the index of the element whose factorisation is sought.
+    //!
+    //! \returns
+    //! A value of type `word_type`.
+    //!
+    //! \complexity
+    //! At worst \f$O(mn)\f$ where \f$m\f$ equals \p pos and \f$n\f$ is the
+    //! return value of FroidurePin::number_of_generators.
+    //!
+    //! \warning This function does not check that \p pos is valid. In
+    //! particular, if `pos > current_size()`, then bad things will happen.
+    // Notes:
+    // 1. This function could be a helper, but
+    //    FroidurePin::minimal_factorisation(const_reference) isn't so keeping.
+    // 2. There's no no_check version of this function because it doesn't make
+    //    sense (see the impl of minimal_factorisation(word_type&,
+    //    element_index_type);
+    //  TODO to helper
+    word_type
+    current_minimal_factorisation_no_checks(element_index_type pos) const {
+      word_type word;
+      current_minimal_factorisation_no_checks(word, pos);
+      return word;
+    }
+
+    //! \brief Returns a short-lex least word representing an element given by
+    //! index.
+    //!
+    //! This is the same as the two-argument member function for
+    //! \ref current_minimal_factorisation, but it returns a \ref word_type by
+    //! value instead of modifying its first argument in-place. No enumeration
+    //! is triggered by calling this function.
+    //!
+    //! \param pos the index of the element whose factorisation is sought.
+    //!
+    //! \returns
+    //! A value of type `word_type`.
+    //!
+    //! \throws LibsemigroupsException if \p pos is out of range.
+    //!
+    //! \complexity
+    //! At worst \f$O(mn)\f$ where \f$m\f$ equals \p pos and \f$n\f$ is the
+    //! return value of FroidurePin::number_of_generators.
+    // Notes:
+    // 1. This function could be a helper, but
+    //    FroidurePin::minimal_factorisation(const_reference) isn't so keeping.
+    // 2. There's no no_check version of this function because it doesn't make
+    //    sense (see the impl of minimal_factorisation(word_type&,
+    //    element_index_type);
+    // This function could be a helper, but
+    // FroidurePin::minimal_factorisation(const_reference) isn't so keeping.
+    // TODO(0) to helper
+    [[nodiscard]] word_type
+    current_minimal_factorisation(element_index_type pos) const {
+      word_type word;
+      current_minimal_factorisation(word, pos);
+      return word;
+    }
+
+    // TODO(0) to helper
+    void minimal_factorisation(word_type& word, element_index_type pos) {
+      word.clear();
+      minimal_factorisation(std::back_inserter(word), pos);
+    }
 
     //! \brief Returns a short-lex least word representing an element given by
     //! index.
@@ -972,6 +1010,7 @@ namespace libsemigroups {
     // 2. There's no no_check version of this function because it doesn't make
     //    sense (see the impl of minimal_factorisation(word_type&,
     //    element_index_type);
+    // TODO(0) to helper
     [[nodiscard]] word_type minimal_factorisation(element_index_type pos) {
       word_type word;
       minimal_factorisation(word, pos);
@@ -998,12 +1037,13 @@ namespace libsemigroups {
     //! \f$O(m)\f$ where \f$m\f$ is the length of the returned word.
     // This function could be a helper, but
     // FroidurePin::minimal_factorisation(const_reference) isn't so keeping.
+    // TODO(0) to helper
     void current_factorisation_no_checks(word_type&         word,
                                          element_index_type pos) const {
       current_minimal_factorisation_no_checks(word, pos);
     }
 
-    // Here's a little summary of the functions for factorisation:
+    // Here's a little summary of the functions for (non-minimal) factorisation:
     // [ ] current_factorisation_no_checks(2 args) TODO(1)
     // [ ] current_factorisation_no_checks(1 arg) TODO(1)
     // [ ] current_factorisation(2 args) TODO(1)
@@ -1012,6 +1052,7 @@ namespace libsemigroups {
     // [x] factorisation(1 arg)
     // [ ] ~~factorisation_no_checks(2 args)~~ NONSENSICAL
     // [ ] ~~factorisation_no_checks(1 arg)~~  NONSENSICAL
+    // TODO move this
 
     //! \brief Obtain a word representing an element given by index.
     //!
@@ -1040,6 +1081,7 @@ namespace libsemigroups {
     //! return value of FroidurePin::number_of_generators.
     // This function could be a helper, but
     // FroidurePin::minimal_factorisation(const_reference) isn't so keeping.
+    // TODO(0) to helper
     void factorisation(word_type& word, element_index_type pos) {
       minimal_factorisation(word, pos);
     }
@@ -1067,6 +1109,7 @@ namespace libsemigroups {
     //! return value of FroidurePin::number_of_generators.
     // This function could be a helper, but
     // FroidurePin::minimal_factorisation(const_reference) isn't so keeping.
+    // TODO(0) to helper
     [[nodiscard]] word_type factorisation(element_index_type pos) {
       return minimal_factorisation(pos);
     }
