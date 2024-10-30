@@ -98,7 +98,7 @@ namespace libsemigroups {
                                            {1, 2, 3, 5},
                                            {1, 2, 3}}))
             == word_type({0, 0}));
-    REQUIRE(S.minimal_factorisation(5) == word_type({3, 3}));
+    REQUIRE(froidure_pin::minimal_factorisation(S, 5) == word_type({3, 3}));
     REQUIRE(S.at(5)
             == PBR({{3, 4, 5},
                     {2, 4, 5},
@@ -112,7 +112,7 @@ namespace libsemigroups {
                           {0, 3, 5},
                           {1, 2, 3, 5},
                           {1, 2, 3}}));
-    REQUIRE_THROWS_AS(S.minimal_factorisation(1000000000),
+    REQUIRE_THROWS_AS(froidure_pin::minimal_factorisation(S, 1000000000),
                       LibsemigroupsException);
     pos = 0;
     for (auto it = S.cbegin_idempotents(); it < S.cend_idempotents(); ++it) {

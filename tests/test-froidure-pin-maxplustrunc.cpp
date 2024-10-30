@@ -135,9 +135,10 @@ namespace libsemigroups {
     REQUIRE(
         S.minimal_factorisation(Mat({{1, 1}, {0, 2}}) * Mat({{2, 1}, {4, 0}}))
         == word_type({2, 1}));
-    REQUIRE(S.minimal_factorisation(52) == word_type({0, 2, 2, 1}));
+    REQUIRE(froidure_pin::minimal_factorisation(S, 52)
+            == word_type({0, 2, 2, 1}));
     REQUIRE(S.at(52) == Mat({{9, 7}, {9, 5}}));
-    REQUIRE_THROWS_AS(S.minimal_factorisation(1000000000),
+    REQUIRE_THROWS_AS(froidure_pin::minimal_factorisation(S, 1000000000),
                       LibsemigroupsException);
     pos = 0;
     for (auto it = S.cbegin_idempotents(); it < S.cend_idempotents(); ++it) {

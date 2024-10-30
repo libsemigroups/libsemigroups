@@ -73,10 +73,10 @@ namespace libsemigroups {
           S.minimal_factorisation(Mat({{0, 1}, {0, -1}}) * Mat({{0, 1}, {2, 0}})
                                   * Mat({{0, 1}, {2, 0}}))
           == word_type({0, 1, 0}));
-      REQUIRE(S.minimal_factorisation(52)
+      REQUIRE(froidure_pin::minimal_factorisation(S, 52)
               == word_type({0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1}));
       REQUIRE(S.at(52) == Mat({{64, 0}, {-64, 0}}));
-      REQUIRE_THROWS_AS(S.minimal_factorisation(1000000000),
+      REQUIRE_THROWS_AS(froidure_pin::minimal_factorisation(S, 1000000000),
                         LibsemigroupsException);
     }
 

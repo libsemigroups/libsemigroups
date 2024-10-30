@@ -153,7 +153,7 @@ namespace libsemigroups {
     REQUIRE(S.left_cayley_graph().target(0, 3) == 7);
 
     word_type w;
-    S.minimal_factorisation(w, 378);
+    froidure_pin::minimal_factorisation(S, w, 378);
     REQUIRE(w == word_type({0, 1, 2, 0, 1, 2}));
     REQUIRE(S.current_length(378) == 6);
 
@@ -167,7 +167,8 @@ namespace libsemigroups {
                                                      {0, 0, 0, 0, 0}})),
                       LibsemigroupsException);
 
-    REQUIRE_THROWS_AS(S.minimal_factorisation(1000000), LibsemigroupsException);
+    REQUIRE_THROWS_AS(froidure_pin::minimal_factorisation(S, 1000000),
+                      LibsemigroupsException);
 
     w.clear();
     S.factorisation(w, 378);

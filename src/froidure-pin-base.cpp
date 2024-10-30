@@ -256,6 +256,10 @@ namespace libsemigroups {
     return current_length(pos);
   }
 
+  word_type FroidurePinBase::factorisation(element_index_type pos) {
+    return froidure_pin::minimal_factorisation(*this, pos);
+  }
+
   size_t FroidurePinBase::number_of_elements_of_length(size_t i) const {
     // _lenindex[i - 1] is the element_index_type where words of length i
     // begin so _lenindex[i] - _lenindex[i - 1]) is the number of words of
@@ -371,11 +375,13 @@ namespace libsemigroups {
         _relation.first  = word_type({_current[0]});
         _relation.second = word_type({_current[1]});
       } else {
-        _froidure_pin->current_minimal_factorisation_no_checks(_relation.first,
-                                                               _current[0]);
+        _relation.first.clear();
+        _froidure_pin->current_minimal_factorisation_no_checks(
+            std::back_inserter(_relation.first), _current[0]);
         _relation.first.push_back(_current[1]);
-        _froidure_pin->current_minimal_factorisation_no_checks(_relation.second,
-                                                               _current[2]);
+        _relation.second.clear();
+        _froidure_pin->current_minimal_factorisation_no_checks(
+            std::back_inserter(_relation.second), _current[2]);
       }
     }
   }

@@ -72,13 +72,13 @@ namespace libsemigroups {
               Mat({{1, 0, 0, 1}, {0, 1, 0, 1}, {0, 0, 1, 1}, {1, 1, 1, 0}})
               * Mat({{0, 1, 0, 1}, {1, 0, 0, 0}, {0, 1, 1, 1}, {0, 1, 1, 0}}))
           == word_type({3, 0}));
-      REQUIRE(S.minimal_factorisation(28) == word_type({3, 0}));
+      REQUIRE(froidure_pin::minimal_factorisation(S, 28) == word_type({3, 0}));
       REQUIRE(
           S.at(28)
           == Mat({{1, 0, 0, 1}, {0, 1, 0, 1}, {0, 0, 1, 1}, {1, 1, 1, 0}})
                  * Mat(
                      {{0, 1, 0, 1}, {1, 0, 0, 0}, {0, 1, 1, 1}, {0, 1, 1, 0}}));
-      REQUIRE_THROWS_AS(S.minimal_factorisation(1000000000),
+      REQUIRE_THROWS_AS(froidure_pin::minimal_factorisation(S, 1000000000),
                         LibsemigroupsException);
       pos = 0;
       for (auto it = S.cbegin_idempotents(); it < S.cend_idempotents(); ++it) {
