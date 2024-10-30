@@ -644,8 +644,8 @@ namespace libsemigroups {
     //! \ref number_of_generators.
     // TODO(0) replace with iterators
     [[nodiscard]] bool equal_to(word_type const& x, word_type const& y) const {
-      throw_if_any_generator_index_out_of_range(x);
-      throw_if_any_generator_index_out_of_range(y);
+      throw_if_any_generator_index_out_of_range(std::begin(x), std::end(x));
+      throw_if_any_generator_index_out_of_range(std::begin(y), std::end(y));
       return equal_to_no_checks(x, y);
     }
 
