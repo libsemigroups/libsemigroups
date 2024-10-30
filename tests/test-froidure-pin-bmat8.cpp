@@ -68,7 +68,7 @@ namespace libsemigroups {
     REQUIRE(S.size() == 63904);
     REQUIRE(S.number_of_idempotents() == 2360);
     REQUIRE(froidure_pin::current_position(S, {0, 1, 2, 0, 1, 2}) == 378);
-    REQUIRE(S.to_element({0, 1, 2, 0, 1, 2})
+    REQUIRE(froidure_pin::to_element(S, {0, 1, 2, 0, 1, 2})
             == BMat8({{1, 0, 0, 1}, {0, 1, 0, 0}, {1, 0, 1, 0}, {0, 0, 1, 0}}));
     REQUIRE(S.current_max_word_length() == 21);
     REQUIRE(S.degree() == 8);
@@ -209,7 +209,7 @@ namespace libsemigroups {
     REQUIRE(T.size() == 63904);
     REQUIRE(T.number_of_idempotents() == 2360);
     REQUIRE(froidure_pin::current_position(T, {0, 1, 2, 0, 1, 2}) == 378);
-    REQUIRE(T.to_element({0, 1, 2, 0, 1, 2})
+    REQUIRE(froidure_pin::to_element(T, {0, 1, 2, 0, 1, 2})
             == BMat8({{1, 0, 0, 1}, {0, 1, 0, 0}, {1, 0, 1, 0}, {0, 0, 1, 0}}));
     REQUIRE(T.current_max_word_length() == 21);
     REQUIRE(T.degree() == 8);
@@ -248,10 +248,11 @@ namespace libsemigroups {
     auto S = to_froidure_pin(gens);
 
     REQUIRE(!S.is_monoid());
-    REQUIRE_THROWS_AS(S.to_element({}), LibsemigroupsException);
-    REQUIRE_NOTHROW(S.to_element({0}));
-    REQUIRE_NOTHROW(S.to_element({0, 3, 0, 3, 1}));
-    REQUIRE_THROWS_AS(S.to_element({0, 1, 0, 4}), LibsemigroupsException);
+    REQUIRE_THROWS_AS(froidure_pin::to_element(S, {}), LibsemigroupsException);
+    REQUIRE_NOTHROW(froidure_pin::to_element(S, {0}));
+    REQUIRE_NOTHROW(froidure_pin::to_element(S, {0, 3, 0, 3, 1}));
+    REQUIRE_THROWS_AS(froidure_pin::to_element(S, {0, 1, 0, 4}),
+                      LibsemigroupsException);
   }
 
   LIBSEMIGROUPS_TEST_CASE_V3("FroidurePin",

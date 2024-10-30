@@ -125,14 +125,14 @@ namespace libsemigroups {
       REQUIRE(froidure_pin::current_position(T, {}) == UNDEFINED);
       REQUIRE_NOTHROW(froidure_pin::current_position(T, {0, 0, 1, 1}));
       REQUIRE(froidure_pin::current_position(T, {0, 0, 1, 1}) == UNDEFINED);
-      auto w = T.to_element({0, 0, 1, 1});
+      auto w = froidure_pin::to_element(T, {0, 0, 1, 1});
       REQUIRE(T.current_position(w) == UNDEFINED);
       REQUIRE_THROWS_AS(froidure_pin::current_position(T, {0, 0, 1, 2}),
                         LibsemigroupsException);
 
       REQUIRE(T.size() == 13);
       REQUIRE(froidure_pin::current_position(T, {0, 0, 1, 1}) == 6);
-      w = T.to_element({0, 0, 1, 1});
+      w = froidure_pin::to_element(T, {0, 0, 1, 1});
       REQUIRE(T.current_position(w) == 6);
     }
 
@@ -142,10 +142,12 @@ namespace libsemigroups {
       T.add_generator(Mat({{0, 0}, {0, 1}}));
       T.add_generator(Mat({{0, 1}, {-1, 0}}));
 
-      REQUIRE_THROWS_AS(T.to_element({}), LibsemigroupsException);
-      REQUIRE_THROWS_AS(T.to_element({0, 0, 1, 2}), LibsemigroupsException);
+      REQUIRE_THROWS_AS(froidure_pin::to_element(T, {}),
+                        LibsemigroupsException);
+      REQUIRE_THROWS_AS(froidure_pin::to_element(T, {0, 0, 1, 2}),
+                        LibsemigroupsException);
 
-      auto t = T.to_element({0, 0, 1, 1});
+      auto t = froidure_pin::to_element(T, {0, 0, 1, 1});
       REQUIRE(t
               == T.generator(0) * T.generator(0) * T.generator(1)
                      * T.generator(1));

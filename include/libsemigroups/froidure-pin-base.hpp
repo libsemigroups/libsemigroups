@@ -1748,6 +1748,7 @@ namespace libsemigroups {
     //!
     //! \sa FroidurePin::to_element.
     // TODO update doc
+    // TODO Thing -> Word
     template <typename Thing>
     [[nodiscard]] FroidurePinBase::element_index_type
     current_position_no_checks(FroidurePinBase const& fpb, Thing const& w) {

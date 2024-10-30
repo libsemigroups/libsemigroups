@@ -579,31 +579,6 @@ namespace libsemigroups {
     //!
     //! \param w the word in the generators to evaluate.
     //!
-    //! \returns A const reference to the element represented by the word \p w.
-    //!
-    //! \warning This function does not check its arguments, and it is assumed
-    //! that the values in \p w are less than \ref number_of_generators; and
-    //! if \p w is empty it is assumed that \ref contains_one_no_run returns \c
-    //! true (although nothing bad will happen if this doesn't hold, except that
-    //! this function will return the identity element even though it might not
-    //! be an element of the semigroup).
-    //!
-    //! \sa \ref current_position.
-    // TODO(0) to helper
-    [[nodiscard]] const_reference
-    to_element_no_checks(word_type const& w) const {
-      return to_element_no_checks(std::begin(w), std::end(w));
-    }
-
-    //! \brief Convert a word in the generators to an element.
-    //!
-    //! This  function returns a reference to the element obtained by
-    //! evaluating \p w. The returned reference may only valid until the next
-    //! function that triggers an enumeration is called, or another call to this
-    //! function is made.
-    //!
-    //! \param w the word in the generators to evaluate.
-    //!
     //! \returns A copy of the element represented by the word \p w.
     //!
     //! \throws LibsemigroupsException if \p w is not a valid word in the
@@ -634,27 +609,6 @@ namespace libsemigroups {
         }
       }
       return to_element_no_checks(first, last);
-    }
-
-    //! \brief Convert a word in the generators to an element.
-    //!
-    //! This  function returns a reference to the element obtained by
-    //! evaluating \p w. The returned reference may only valid until the next
-    //! function that triggers an enumeration is called, or another call to this
-    //! function is made.
-    //!
-    //! \param w the word in the generators to evaluate.
-    //!
-    //! \returns A copy of the element represented by the word \p w.
-    //!
-    //! \throws LibsemigroupsException if \p w is not a valid word in the
-    //! generators, i.e. if it contains a value greater than or equal to the
-    //! number of generators.
-    //!
-    //! \sa \ref current_position.
-    // TODO(0) to helper
-    [[nodiscard]] const_reference to_element(word_type const& w) const {
-      return to_element(std::begin(w), std::end(w));
     }
 
     //! \brief Check equality of words in the generators.
@@ -2136,6 +2090,74 @@ namespace libsemigroups {
       fp.run();
       return fp.current_elements();
     }
+
+    //! \brief Convert a word in the generators to an element.
+    //!
+    //! This  function returns a reference to the element obtained by
+    //! evaluating \p w. The returned reference may only valid until the next
+    //! function that triggers an enumeration is called, or another call to this
+    //! function is made.
+    //!
+    //! \param w the word in the generators to evaluate.
+    //!
+    //! \returns A const reference to the element represented by the word \p w.
+    //!
+    //! \warning This function does not check its arguments, and it is assumed
+    //! that the values in \p w are less than \ref number_of_generators; and
+    //! if \p w is empty it is assumed that \ref contains_one_no_run returns \c
+    //! true (although nothing bad will happen if this doesn't hold, except that
+    //! this function will return the identity element even though it might not
+    //! be an element of the semigroup).
+    //!
+    //! \sa \ref current_position.
+    // TODO(0) update doc
+    template <typename Element, typename Traits, typename Word>
+    [[nodiscard]] typename FroidurePin<Element, Traits>::const_reference
+    to_element_no_checks(FroidurePin<Element, Traits> const& fp,
+                         Word const&                         w) {
+      return fp.to_element_no_checks(std::begin(w), std::end(w));
+    }
+
+    // TODO(0) doc
+    template <typename Element, typename Traits, typename T = size_t>
+    [[nodiscard]] typename FroidurePin<Element, Traits>::const_reference
+    to_element_no_checks(FroidurePin<Element, Traits> const& fp,
+                         std::initializer_list<T> const&     w) {
+      return to_element_no_checks<Element, Traits, std::initializer_list<T>>(fp,
+                                                                             w);
+    }
+
+    //! \brief Convert a word in the generators to an element.
+    //!
+    //! This  function returns a reference to the element obtained by
+    //! evaluating \p w. The returned reference may only valid until the next
+    //! function that triggers an enumeration is called, or another call to this
+    //! function is made.
+    //!
+    //! \param w the word in the generators to evaluate.
+    //!
+    //! \returns A copy of the element represented by the word \p w.
+    //!
+    //! \throws LibsemigroupsException if \p w is not a valid word in the
+    //! generators, i.e. if it contains a value greater than or equal to the
+    //! number of generators.
+    //!
+    //! \sa \ref current_position.
+    // TODO(0) update doc
+    template <typename Element, typename Traits, typename Word>
+    [[nodiscard]] typename FroidurePin<Element, Traits>::const_reference
+    to_element(FroidurePin<Element, Traits> const& fp, Word const& w) {
+      return fp.to_element(std::begin(w), std::end(w));
+    }
+
+    // TODO(0) doc
+    template <typename Element, typename Traits, typename T = size_t>
+    [[nodiscard]] typename FroidurePin<Element, Traits>::const_reference
+    to_element(FroidurePin<Element, Traits> const& fp,
+               std::initializer_list<T> const&     w) {
+      return to_element<Element, Traits, std::initializer_list<T>>(fp, w);
+    }
+
   }  // namespace froidure_pin
 
   //! \defgroup converter_group Converters
