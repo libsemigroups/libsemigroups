@@ -89,7 +89,7 @@ namespace libsemigroups {
 
   }  // namespace detail
 
-  // TODO uncomment and/or move to cpp file, and implement for other types of
+  // TODO(0) uncomment and/or move to cpp file, and implement for other types of
   // KnuthBendix also
   // template <> word_type
   // FroidurePin<detail::KBE<KnuthBendix<>>>::factorisation(

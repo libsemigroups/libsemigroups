@@ -544,9 +544,9 @@ namespace libsemigroups {
 
     auto T = to_froidure_pin(tc);
     REQUIRE(T.size() == 3);
-    REQUIRE(tc.class_index_to_word(0) == T.factorisation(0));
-    REQUIRE(tc.class_index_to_word(1) == T.factorisation(1));
-    REQUIRE(tc.class_index_to_word(2) == T.factorisation(2));
+    REQUIRE(tc.class_index_to_word(0) == froidure_pin::factorisation(T, 0));
+    REQUIRE(tc.class_index_to_word(1) == froidure_pin::factorisation(T, 1));
+    REQUIRE(tc.class_index_to_word(2) == froidure_pin::factorisation(T, 2));
 
     REQUIRE(tc.class_index_to_word(0) == 0_w);
     REQUIRE(tc.class_index_to_word(1) == 2_w);
@@ -909,10 +909,10 @@ namespace libsemigroups {
     std::sort(sizes.begin(), sizes.end());
     REQUIRE(sizes == std::vector<size_t>({3, 5, 5, 7}));
     word_type w3, w4, w5, w6;
-    S.factorisation(w3, S.position(Transf<>({1, 3, 3, 3, 3})));
-    S.factorisation(w4, S.position(Transf<>({4, 2, 4, 4, 2})));
-    S.factorisation(w5, S.position(Transf<>({2, 4, 2, 2, 2})));
-    S.factorisation(w6, S.position(Transf<>({2, 3, 3, 3, 3})));
+    froidure_pin::factorisation(S, w3, S.position(Transf<>({1, 3, 3, 3, 3})));
+    froidure_pin::factorisation(S, w4, S.position(Transf<>({4, 2, 4, 4, 2})));
+    froidure_pin::factorisation(S, w5, S.position(Transf<>({2, 4, 2, 2, 2})));
+    froidure_pin::factorisation(S, w6, S.position(Transf<>({2, 3, 3, 3, 3})));
     REQUIRE(tc.word_to_class_index(w3) != tc.word_to_class_index(w4));
     REQUIRE(tc.word_to_class_index(w5) == tc.word_to_class_index(w6));
   }
@@ -932,8 +932,10 @@ namespace libsemigroups {
 
     ToddCoxeter tc = to_todd_coxeter(twosided, S);  // use the Cayley graph
 
-    word_type w1 = S.factorisation(S.position(Transf<>({3, 4, 4, 4, 4})));
-    word_type w2 = S.factorisation(S.position(Transf<>({3, 1, 3, 3, 3})));
+    word_type w1
+        = froidure_pin::factorisation(S, S.position(Transf<>({3, 4, 4, 4, 4})));
+    word_type w2
+        = froidure_pin::factorisation(S, S.position(Transf<>({3, 1, 3, 3, 3})));
 
     tc.add_pair(w1, w2);
 
@@ -946,8 +948,10 @@ namespace libsemigroups {
 
     REQUIRE(tc.number_of_classes() == 21);
     REQUIRE(tc.number_of_classes() == 21);
-    word_type w3 = S.factorisation(S.position(Transf<>({1, 3, 1, 3, 3})));
-    word_type w4 = S.factorisation(S.position(Transf<>({4, 2, 4, 4, 2})));
+    word_type w3
+        = froidure_pin::factorisation(S, S.position(Transf<>({1, 3, 1, 3, 3})));
+    word_type w4
+        = froidure_pin::factorisation(S, S.position(Transf<>({4, 2, 4, 4, 2})));
     REQUIRE(tc.word_to_class_index(w3) == tc.word_to_class_index(w4));
   }
 
@@ -4518,7 +4522,7 @@ namespace libsemigroups {
       presentation::add_rule(p, pow({a}, 3), {a});
     }
     using words::operator+;
-    WordRange    words;
+    WordRange words;
     words.alphabet_size(n).min(0).max(8);
 
     for (size_t a = 0; a < n - 1; ++a) {

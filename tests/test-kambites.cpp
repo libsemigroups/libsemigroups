@@ -2555,7 +2555,7 @@ namespace libsemigroups {
 
     using element_type = typename decltype(to_froidure_pin(k))::element_type;
     auto s             = to_froidure_pin(k);
-    REQUIRE(s.minimal_factorisation(100) == 0100_w);
+    REQUIRE(froidure_pin::minimal_factorisation(s, 100) == 0100_w);
     REQUIRE(s.position(element_type(k, 0100_w)) == 100);
     REQUIRE(s.current_size() == 8196);
   }
