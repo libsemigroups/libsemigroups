@@ -1295,27 +1295,23 @@ namespace libsemigroups {
       return;
     }
 
-    // Cannot use _tmp_product itself since there are multiple threads here!
-    // TODO(0) not anymore
-    internal_element_type tmp_product = this->internal_copy(_tmp_product);
-    auto                  tid         = detail::this_threads_id();
-    auto                  ptr         = _state.get();
+    auto tid = detail::this_threads_id();
+    auto ptr = _state.get();
 
     for (; pos < last; pos++) {
       element_index_type k = _enumerate_order[pos];
       if (_is_idempotent[k] == 0) {
-        internal_product(this->to_external(tmp_product),
+        internal_product(this->to_external(_tmp_product),
                          this->to_external(_elements[k]),
                          this->to_external(_elements[k]),
                          ptr,
                          tid);
-        if (InternalEqualTo()(tmp_product, _elements[k])) {
+        if (InternalEqualTo()(_tmp_product, _elements[k])) {
           idempotents.emplace_back(_elements[k], k);
           _is_idempotent[k] = 1;
         }
       }
     }
-    this->internal_free(tmp_product);
   }
 
   ////////////////////////////////////////////////////////////////////////
