@@ -410,16 +410,16 @@ namespace libsemigroups {
     REQUIRE(S.size() == 88);
     REQUIRE(S.number_of_rules() == 18);
 
-    word_type w1 = S.factorisation(Transf({3, 4, 4, 4, 4}));
-    word_type w2 = S.factorisation(Transf({3, 4, 4, 4, 4}));
+    word_type w1 = froidure_pin::factorisation(S, Transf({3, 4, 4, 4, 4}));
+    word_type w2 = froidure_pin::factorisation(S, Transf({3, 4, 4, 4, 4}));
 
     Congruence cong(twosided, S);
-    cong.add_pair(S.factorisation(Transf({3, 4, 4, 4, 4})),
-                  S.factorisation(Transf({3, 1, 3, 3, 3})));
+    cong.add_pair(froidure_pin::factorisation(S, Transf({3, 4, 4, 4, 4})),
+                  froidure_pin::factorisation(S, Transf({3, 1, 3, 3, 3})));
     REQUIRE(cong.number_of_classes() == 21);
 
-    word_type u = S.factorisation(Transf({1, 3, 1, 3, 3}));
-    word_type v = S.factorisation(Transf({4, 2, 4, 4, 2}));
+    word_type u = froidure_pin::factorisation(S, Transf({1, 3, 1, 3, 3}));
+    word_type v = froidure_pin::factorisation(S, Transf({4, 2, 4, 4, 2}));
     REQUIRE(cong.contains(u, v));
     REQUIRE(cong.contains(u, v));
   }
@@ -763,7 +763,8 @@ namespace libsemigroups {
       REQUIRE(cong.number_of_classes() == 3);
       REQUIRE(cong.contains({1}, {0}));
 
-      auto ntc = congruence::non_trivial_classes(cong, S.normal_forms());
+      auto ntc = congruence::non_trivial_classes(cong,
+                                                 froidure_pin::normal_forms(S));
       REQUIRE(ntc.size() == 3);
       REQUIRE(ntc[0].size() == 12);
       REQUIRE(ntc[1].size() == 63'880);
@@ -790,7 +791,8 @@ namespace libsemigroups {
       REQUIRE(cong.number_of_classes() == 2);
       REQUIRE(cong.contains({1}, {0}));
 
-      auto ntc = congruence::non_trivial_classes(cong, S.normal_forms());
+      auto ntc = congruence::non_trivial_classes(cong,
+                                                 froidure_pin::normal_forms(S));
       REQUIRE(ntc.size() == 2);
       REQUIRE(ntc[0].size() == 8);
       REQUIRE(ntc[1].size() == 8);
@@ -826,8 +828,8 @@ namespace libsemigroups {
     REQUIRE(cong.number_of_classes() == 69);
     REQUIRE(cong.number_of_classes() == 69);
 
-    word_type w3 = S.factorisation(Transf<>({1, 3, 1, 3, 3}));
-    word_type w4 = S.factorisation(Transf<>({4, 2, 4, 4, 2}));
+    word_type w3 = froidure_pin::factorisation(S, Transf<>({1, 3, 1, 3, 3}));
+    word_type w4 = froidure_pin::factorisation(S, Transf<>({4, 2, 4, 4, 2}));
     REQUIRE(!cong.contains(w3, w4));
     REQUIRE(cong.contains(w3, 00101_w));
     REQUIRE(cong.contains(100101_w, 0010001_w));
@@ -855,8 +857,8 @@ namespace libsemigroups {
     REQUIRE(cong.number_of_classes() == 72);
     REQUIRE(cong.number_of_classes() == 72);
 
-    word_type w3 = S.factorisation(Transf<>({1, 3, 1, 3, 3}));
-    word_type w4 = S.factorisation(Transf<>({4, 2, 4, 4, 2}));
+    word_type w3 = froidure_pin::factorisation(S, Transf<>({1, 3, 1, 3, 3}));
+    word_type w4 = froidure_pin::factorisation(S, Transf<>({4, 2, 4, 4, 2}));
     REQUIRE(!cong.contains(w3, w4));
     REQUIRE(!cong.contains(w3, 00101_w));
     REQUIRE(!cong.contains(100101_w, 0010001_w));

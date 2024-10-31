@@ -452,7 +452,7 @@ namespace libsemigroups {
     auto fp = to_froidure_pin(kb);
     fp.enumerate(100);
 
-    auto expected = fp.current_normal_forms();
+    auto expected = froidure_pin::current_normal_forms(fp);
 
     Paths paths(ad);
     paths.source(0).min(1).max(fp.current_max_word_length() + 1);

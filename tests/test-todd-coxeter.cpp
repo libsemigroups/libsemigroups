@@ -587,8 +587,8 @@ namespace libsemigroups {
     auto tc = to_todd_coxeter(twosided, S);
     REQUIRE(tc.word_graph().number_of_nodes() == 89);
 
-    tc.add_pair(S.factorisation(Transf({3, 4, 4, 4, 4})),
-                S.factorisation(Transf({3, 1, 3, 3, 3})));
+    tc.add_pair(froidure_pin::factorisation(S, Transf({3, 4, 4, 4, 4})),
+                froidure_pin::factorisation(S, Transf({3, 1, 3, 3, 3})));
     REQUIRE(!tc.finished());
     tc.shrink_to_fit();  // does nothing
     REQUIRE(!tc.finished());
@@ -757,10 +757,12 @@ namespace libsemigroups {
     REQUIRE(S.number_of_rules() == 18);
 
     auto tc = to_todd_coxeter(twosided, S);
-    REQUIRE(S.factorisation(Transf<>({3, 4, 4, 4, 4})) == 010001100_w);
-    REQUIRE(S.factorisation(Transf<>({3, 1, 3, 3, 3})) == 10001_w);
-    tc.add_pair(S.factorisation(Transf<>({3, 4, 4, 4, 4})),
-                S.factorisation(Transf<>({3, 1, 3, 3, 3})));
+    REQUIRE(froidure_pin::factorisation(S, Transf<>({3, 4, 4, 4, 4}))
+            == 010001100_w);
+    REQUIRE(froidure_pin::factorisation(S, Transf<>({3, 1, 3, 3, 3}))
+            == 10001_w);
+    tc.add_pair(froidure_pin::factorisation(S, Transf<>({3, 4, 4, 4, 4})),
+                froidure_pin::factorisation(S, Transf<>({3, 1, 3, 3, 3})));
 
     section_felsch(tc);
     section_hlt(tc);
@@ -782,9 +784,10 @@ namespace libsemigroups {
     REQUIRE(tc.number_of_classes() == 21);
     REQUIRE(tc.number_of_classes() == 21);
 
-    REQUIRE(
-        tc.word_to_class_index(S.factorisation(Transf<>({1, 3, 1, 3, 3})))
-        == tc.word_to_class_index(S.factorisation(Transf<>({4, 2, 4, 4, 2}))));
+    REQUIRE(tc.word_to_class_index(
+                froidure_pin::factorisation(S, Transf<>({1, 3, 1, 3, 3})))
+            == tc.word_to_class_index(
+                froidure_pin::factorisation(S, Transf<>({4, 2, 4, 4, 2}))));
 
     tc.standardize(Order::shortlex);
 
@@ -825,8 +828,8 @@ namespace libsemigroups {
 
     // FIXME seg faults if we don't convert S -> Presentation first
     ToddCoxeter tc(left, to_presentation<word_type>(S));
-    tc.add_pair(S.factorisation(Transf<>({3, 4, 4, 4, 4})),
-                S.factorisation(Transf<>({3, 1, 3, 3, 3})));
+    tc.add_pair(froidure_pin::factorisation(S, Transf<>({3, 4, 4, 4, 4})),
+                froidure_pin::factorisation(S, Transf<>({3, 1, 3, 3, 3})));
 
     section_felsch(tc);
     section_hlt(tc);
@@ -835,9 +838,10 @@ namespace libsemigroups {
     section_CR_style(tc);
     section_Cr_style(tc);
 
-    REQUIRE(
-        tc.word_to_class_index(S.factorisation(Transf<>({1, 3, 1, 3, 3})))
-        != tc.word_to_class_index(S.factorisation(Transf<>({4, 2, 4, 4, 2}))));
+    REQUIRE(tc.word_to_class_index(
+                froidure_pin::factorisation(S, Transf<>({1, 3, 1, 3, 3})))
+            != tc.word_to_class_index(
+                froidure_pin::factorisation(S, Transf<>({4, 2, 4, 4, 2}))));
 
     REQUIRE(tc.number_of_classes() == 69);
     REQUIRE(tc.number_of_classes() == 69);
@@ -871,8 +875,8 @@ namespace libsemigroups {
 
     // FIXME seg faults if we don't convert S -> Presentation first
     ToddCoxeter tc(right, to_presentation<word_type>(S));
-    tc.add_pair(S.factorisation(Transf<>({3, 4, 4, 4, 4})),
-                S.factorisation(Transf<>({3, 1, 3, 3, 3})));
+    tc.add_pair(froidure_pin::factorisation(S, Transf<>({3, 4, 4, 4, 4})),
+                froidure_pin::factorisation(S, Transf<>({3, 1, 3, 3, 3})));
 
     section_felsch(tc);
     section_hlt(tc);
@@ -884,19 +888,23 @@ namespace libsemigroups {
     REQUIRE(tc.number_of_classes() == 72);
     REQUIRE(tc.number_of_classes() == 72);
 
-    REQUIRE(
-        tc.word_to_class_index(S.factorisation(Transf<>({1, 3, 1, 3, 3})))
-        != tc.word_to_class_index(S.factorisation(Transf<>({4, 2, 4, 4, 2}))));
+    REQUIRE(tc.word_to_class_index(
+                froidure_pin::factorisation(S, Transf<>({1, 3, 1, 3, 3})))
+            != tc.word_to_class_index(
+                froidure_pin::factorisation(S, Transf<>({4, 2, 4, 4, 2}))));
 
-    REQUIRE(
-        tc.word_to_class_index(S.factorisation(Transf<>({1, 3, 3, 3, 3})))
-        != tc.word_to_class_index(S.factorisation(Transf<>({4, 2, 4, 4, 2}))));
-    REQUIRE(
-        tc.word_to_class_index(S.factorisation(Transf<>({2, 4, 2, 2, 2})))
-        == tc.word_to_class_index(S.factorisation(Transf<>({2, 3, 3, 3, 3}))));
-    REQUIRE(
-        tc.word_to_class_index(S.factorisation(Transf<>({1, 3, 3, 3, 3})))
-        != tc.word_to_class_index(S.factorisation(Transf<>({2, 3, 3, 3, 3}))));
+    REQUIRE(tc.word_to_class_index(
+                froidure_pin::factorisation(S, Transf<>({1, 3, 3, 3, 3})))
+            != tc.word_to_class_index(
+                froidure_pin::factorisation(S, Transf<>({4, 2, 4, 4, 2}))));
+    REQUIRE(tc.word_to_class_index(
+                froidure_pin::factorisation(S, Transf<>({2, 4, 2, 2, 2})))
+            == tc.word_to_class_index(
+                froidure_pin::factorisation(S, Transf<>({2, 3, 3, 3, 3}))));
+    REQUIRE(tc.word_to_class_index(
+                froidure_pin::factorisation(S, Transf<>({1, 3, 3, 3, 3})))
+            != tc.word_to_class_index(
+                froidure_pin::factorisation(S, Transf<>({2, 3, 3, 3, 3}))));
 
     auto ntc = non_trivial_classes(
         tc, S.cbegin_normal_forms(), S.cend_normal_forms());
@@ -2479,10 +2487,10 @@ namespace libsemigroups {
     REQUIRE(S.size() == 88);
     REQUIRE(S.number_of_rules() == 18);
 
-    word_type w1 = S.factorisation(Transf({3, 4, 4, 4, 4}));
-    word_type w2 = S.factorisation(Transf({3, 1, 3, 3, 3}));
-    word_type w3 = S.factorisation(Transf({1, 3, 1, 3, 3}));
-    word_type w4 = S.factorisation(Transf({4, 2, 4, 4, 2}));
+    word_type w1 = froidure_pin::factorisation(S, Transf({3, 4, 4, 4, 4}));
+    word_type w2 = froidure_pin::factorisation(S, Transf({3, 1, 3, 3, 3}));
+    word_type w3 = froidure_pin::factorisation(S, Transf({1, 3, 1, 3, 3}));
+    word_type w4 = froidure_pin::factorisation(S, Transf({4, 2, 4, 4, 2}));
 
     auto p = to_presentation<word_type>(S);
     {
