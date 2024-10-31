@@ -188,7 +188,7 @@ namespace libsemigroups {
     //! The *batch size* is the number of new elements to be found by any call
     //! to \ref run. This is used by, for example, FroidurePin::position so
     //! that it is possible to find the position of an element after only
-    //! partially enumerating the semigroup.
+    //! partially enumerating the elements of a FrodiurePin instance.
     //!
     //! The default value of the batch size is `8192`.
     //!
@@ -394,8 +394,8 @@ namespace libsemigroups {
     //!
     //! * there are duplicate generators;
     //!
-    //! * FroidurePin::add_generators was called after the semigroup was already
-    //! partially enumerated.
+    //! * FroidurePin::add_generators was called after a FroidurePinBase
+    //! object was already partially enumerated.
     //!
     //! \param i the index of the generator.
     //!
@@ -422,8 +422,8 @@ namespace libsemigroups {
     //!
     //! * there are duplicate generators;
     //!
-    //! * FroidurePin::add_generators was called after the semigroup was already
-    //! partially enumerated.
+    //! * FroidurePin::add_generators was called after a FroidurePinBase
+    //! object was already partially enumerated.
     //!
     //! \param i the index of the generator.
     //!
@@ -446,10 +446,10 @@ namespace libsemigroups {
     //! \brief Returns the maximum length of a word in the generators so far
     //! computed.
     //!
-    //! Every element of the semigroup can be expressed as the short-lex least
-    //! product of the generators that equals that element.  This function
-    //! returns the length of the longest short-lex least word in the
-    //! generators that has so far been enumerated.
+    //! Every element can be expressed as the short-lex least product of the
+    //! generators that equals that element.  This function returns the length
+    //! of the longest short-lex least word in the generators that has so far
+    //! been enumerated.
     //!
     //! \returns
     //! A value of type \c size_t.
@@ -485,7 +485,7 @@ namespace libsemigroups {
 
     //! \brief Returns the number of elements so far enumerated.
     //!
-    //! This is only the actual size of the semigroup if the semigroup is fully
+    //! This is only the actual size if the FroidurePinBase object is fully
     //! enumerated.
     //!
     //! \returns
@@ -503,14 +503,14 @@ namespace libsemigroups {
       return _nr;
     }
 
-    //! \brief Returns the number of relations that have been found so far.
+    //! \brief Returns the number of rules that have been found so far.
     //!
-    //! This is only guaranteed to be the actual number of relations in a
-    //! presentation defining the semigroup if the semigroup is fully
+    //! This is only guaranteed to be the actual number of rules in a
+    //! presentation defining the FroidurePinBase object if it is fully
     //! enumerated.
     //!
     //! \returns
-    //! A value of type \c size_t.
+    //! The number of rules found so far.
     //!
     //! \exceptions
     //! \noexcept
@@ -546,7 +546,7 @@ namespace libsemigroups {
     //! \brief Returns the position of the longest proper prefix.
     //!
     //! Returns the position of the prefix of the element \c x in position
-    //! \p pos (of the semigroup) of length one less than the length of \c x.
+    //! \p pos of length one less than the length of \c x.
     //!
     //! \param pos the position.
     //!
@@ -567,7 +567,7 @@ namespace libsemigroups {
     //! \brief Returns the position of the longest proper suffix.
     //!
     //! Returns the position of the suffix of the element \c x in position
-    //! \p pos (of the semigroup) of length one less than the length of \c x.
+    //! \p pos of length one less than the length of \c x.
     //!
     //! \param pos the position.
     //!
@@ -590,7 +590,7 @@ namespace libsemigroups {
     //! \brief Returns the position of the longest proper suffix.
     //!
     //! Returns the position of the suffix of the element \c x in position
-    //! \p pos (of the semigroup) of length one less than the length of \c x.
+    //! \p pos of length one less than the length of \c x.
     //!
     //! \param pos the position.
     //!
@@ -611,9 +611,9 @@ namespace libsemigroups {
 
     //! \brief Returns the first letter of the element with specified index.
     //!
-    //! This function returns the first letter of the element in position
-    //! \p pos of the semigroup, which is the index of the generator
-    //! corresponding to the first letter of the element.
+    //! This function returns the first letter of the element in position \p
+    //! pos, which is the index of the generator corresponding to the first
+    //! letter of the element.
     //!
     //! This function does not trigger an enumeration.
     //!
@@ -642,9 +642,9 @@ namespace libsemigroups {
 
     //! \brief Returns the first letter of the element with specified index.
     //!
-    //! This function returns the first letter of the element in position
-    //! \p pos of the semigroup, which is the index of the generator
-    //! corresponding to the first letter of the element.
+    //! This function returns the first letter of the element in position \p
+    //! pos, which is the index of the generator corresponding to the first
+    //! letter of the element.
     //!
     //! \param pos the position.
     //!
@@ -672,7 +672,7 @@ namespace libsemigroups {
     //! \brief Returns the first letter of the element with specified index.
     //!
     //! This function returns the first letter of the element in position
-    //! \p pos of the semigroup, which is the index of the generator
+    //! \p pos, which is the index of the generator
     //! corresponding to the first letter of the element.
     //!
     //! This function does not trigger an enumeration.
@@ -703,9 +703,9 @@ namespace libsemigroups {
 
     //! \brief Returns the last letter of the element with specified index.
     //!
-    //! This function returns the final letter of the element in position
-    //! \p pos of the semigroup, which is the index of the generator
-    //! corresponding to the final letter of the element.
+    //! This function returns the final letter of the element in position \p
+    //! pos, which is the index of the generator corresponding to the final
+    //! letter of the element.
     //!
     //! \param pos the position.
     //!
@@ -822,18 +822,20 @@ namespace libsemigroups {
     // this as a mem fn.
     [[nodiscard]] size_t length_no_checks(element_index_type pos);
 
-    //! \brief Returns the size of the semigroup represented by a FroidurePin
-    //! instance.
+    //! \brief Returns the size of a FroidurePin instance.
+    //!
+    //! This function fully enumerates the FroidurePin instance and then returns
+    //! the number of elements.
     //!
     //! \returns
-    //! A value of type `size_t`.
+    //! The size.
     //!
     //! \exceptions
     //! \no_libsemigroups_except
     //!
     //! \complexity
-    //! At worst \f$O(|S|n)\f$ where \f$S\f$ is the semigroup represented by \c
-    //! this, and \f$n\f$ is the return value of
+    //! At worst \f$O(|S|n)\f$ where \f$S\f$ is the semigroup represented by a
+    //! FroidurePinBase instance, and \f$n\f$ is
     //! FroidurePin::number_of_generators.
     //!
     //! \note This function triggers a full enumeration.
@@ -854,8 +856,8 @@ namespace libsemigroups {
     //! \no_libsemigroups_except
     //!
     //! \complexity
-    //! At worst \f$O(|S|n)\f$ where \f$S\f$ is the semigroup represented by \c
-    //! this, and \f$n\f$ is the return value of
+    //! At worst \f$O(|S|n)\f$ where \f$S\f$ is the semigroup represented by a
+    //! FroidurePinBase instance, and \f$n\f$ is
     //! FroidurePin::number_of_generators.
     //!
     //! \note This function triggers a full enumeration.
@@ -876,8 +878,8 @@ namespace libsemigroups {
     //! \no_libsemigroups_except
     //!
     //! \complexity
-    //! At worst \f$O(|S|n)\f$ where \f$S\f$ is the semigroup represented by \c
-    //! this, and \f$n\f$ is the return value of
+    //! At worst \f$O(|S|n)\f$ where \f$S\f$ is the semigroup represented by a
+    //! FroidurePinBase instance, and \f$n\f$ is
     //! FroidurePin::number_of_generators.
     //!
     //! \note
@@ -971,8 +973,8 @@ namespace libsemigroups {
     //! \no_libsemigroups_except
     //!
     //! \complexity
-    //! At worst \f$O(|S|n)\f$ where \f$S\f$ is the semigroup represented by \c
-    //! this, and \f$n\f$ is the return value of
+    //! At worst \f$O(|S|n)\f$ where \f$S\f$ is the semigroup represented by
+    //! the FroidurePinBase instance, and \f$n\f$ is
     //! FroidurePin::number_of_generators.
     //!
     //! \note This function does not trigger any enumeration.
@@ -1103,7 +1105,7 @@ namespace libsemigroups {
     //!
     //! \warning This function does not check its arguments. In particular, it
     //! is assumed that \p pos is less than \ref current_size.
-    // TODO(0) check that all _no_checks functions have this warning
+    // TODO(1) check that all _no_checks functions have this warning
     template <typename Iterator>
     void current_factorisation_no_checks(Iterator           d_first,
                                          element_index_type pos) const {
@@ -1143,20 +1145,20 @@ namespace libsemigroups {
     //! \brief Enumerate until at least a specified number of elements are
     //! found.
     //!
-    //! If the semigroup is already fully enumerated, or the number of elements
-    //! previously enumerated exceeds \p limit, then calling this
-    //! function does nothing. Otherwise, \ref run attempts to find at least
-    //! the maximum of \p limit and \ref batch_size elements of the
-    //! semigroup.
+    //! If an FroidurePinBase instance is already fully enumerated, or the
+    //! number of elements previously enumerated exceeds \p limit, then calling
+    //! this function does nothing. Otherwise, \ref run attempts to find at
+    //! least the maximum of \p limit and \ref batch_size additional elements of
+    //! the semigroup.
     //!
-    //! \param limit the limit for \ref current_size.
+    //! \param limit the approximate limit for \ref current_size.
     //!
     //! \exceptions
     //! \no_libsemigroups_except
     //!
     //! \complexity
-    //! At worst \f$O(mn)\f$ where \f$m\f$ equals \p limit and \f$n\f$ is the
-    //! return value of FroidurePin::number_of_generators.
+    //! At worst \f$O(mn)\f$ where \f$m\f$ equals \p limit and \f$n\f$ is
+    //! FroidurePin::number_of_generators.
     void enumerate(size_t limit);
 
     //! \brief Returns the number of elements so far enumerated with length in a
@@ -1364,9 +1366,9 @@ namespace libsemigroups {
     //!
     //! Returns a forward iterator pointing to the first rule in a confluent
     //! terminating rewriting system defining a semigroup isomorphic to the
-    //! one defined by \c this.
+    //! one defined by a FroidurePinBase instance.
     //!
-    //! This function fully enumerate the FroidurePin object. If you want to
+    //! This function fully enumerate the FroidurePinBase object. If you want to
     //! obtain a (possibly incomplete) set of rules without triggering a full
     //! enumeration, then use \ref cbegin_current_rules instead.
     //!
@@ -1493,46 +1495,6 @@ namespace libsemigroups {
     [[nodiscard]] const_rule_iterator cend_rules() {
       run();
       return const_rule_iterator(this, current_size(), 0);
-    }
-
-    //! \brief Returns a range object containing the so-far enumerated
-    //! rules.
-    //!
-    //! This function returns a range object containing the rules of the
-    //! semigroup that have been enumerated so far. Calling this function does
-    //! not trigger any enumeration.
-    //!
-    //! \returns A range object containing the rules that have been enumerated
-    //! so far.
-    //!
-    //! \exceptions
-    //! \no_libsemigroups_except
-    //!
-    //! \complexity
-    //! Constant.
-    //!
-    //! \note This function does not trigger any enumeration.
-    [[nodiscard]] auto current_rules() const {
-      return rx::iterator_range(cbegin_current_rules(), cend_current_rules());
-    }
-
-    //! \brief Returns a range object containing all of the rules.
-    //!
-    //! This function returns a range object containing all of the rules of the
-    //! semigroup that have been enumerated so far. Calling this function
-    //! triggers a full enumeration.
-    //!
-    //! \returns A range object containing all of the rules.
-    //!
-    //! \exceptions
-    //! \no_libsemigroups_except
-    //!
-    //! \complexity
-    //! The same as \ref enumerate.
-    //!
-    //! \note This function triggers a full enumeration.
-    [[nodiscard]] auto rules() {
-      return rx::iterator_range(cbegin_rules(), cend_rules());
     }
 
     // TODO(later) it'd be more efficient to have this be a forward
@@ -1729,28 +1691,6 @@ namespace libsemigroups {
       return const_normal_form_iterator(this, current_size());
     }
 
-    //! \brief Returns a range object containing normal forms for the so-far
-    //! enumerated elements.
-    //!
-    //! This function returns a range object containing normal forms for the
-    //! elements of the semigroup that have been enumerated so far. Calling this
-    //! function does not trigger any enumeration.
-    //!
-    //! \returns The normal forms that have been enumerated so far.
-    //!
-    //! \exceptions
-    //! \no_libsemigroups_except
-    //!
-    //! \complexity
-    //! Constant.
-    //!
-    //! \note This function does not trigger any enumeration.
-    // TODO(0) helper?
-    [[nodiscard]] auto current_normal_forms() const {
-      return rx::iterator_range(cbegin_current_normal_forms(),
-                                cend_current_normal_forms());
-    }
-
     //! \brief Returns an iterator pointing at the first normal form (if any).
     //!
     //! This function returns an iterator pointing at the normal form of the
@@ -1767,7 +1707,8 @@ namespace libsemigroups {
     //! \exceptions
     //! \no_libsemigroups_except
     //!
-    //! \complexity Same as \ref enumerate.
+    //! \complexity
+    //! Same as FroidurePinBase::enumerate.
     //!
     //! \note This function triggers a full enumeration.
     [[nodiscard]] const_normal_form_iterator cbegin_normal_forms() {
@@ -1799,27 +1740,6 @@ namespace libsemigroups {
     [[nodiscard]] const_normal_form_iterator cend_normal_forms() {
       run();
       return const_normal_form_iterator(this, size());
-    }
-
-    //! \brief Returns a range object containing normal forms for all the
-    //! elements.
-    //!
-    //! This function returns a range object containing normal forms for all of
-    //! the elements of the semigroup. Calling this function triggers a full
-    //! enumeration.
-    //!
-    //! \returns A range object containing the normal forms.
-    //!
-    //! \exceptions
-    //! \no_libsemigroups_except
-    //!
-    //! \complexity
-    //! Constant.
-    //!
-    //! \note This function triggers a full enumeration.
-    // TODO(0) helper?
-    [[nodiscard]] auto normal_forms() {
-      return rx::iterator_range(cbegin_normal_forms(), cend_normal_forms());
     }
 
     ////////////////////////////////////////////////////////////////////////
@@ -2395,6 +2315,93 @@ namespace libsemigroups {
     [[nodiscard]] Word factorisation(FroidurePinBase&                    fpb,
                                      FroidurePinBase::element_index_type pos) {
       return minimal_factorisation<Word>(fpb, pos);
+    }
+
+    //! \brief Returns a range object containing normal forms for the so-far
+    //! enumerated elements.
+    //!
+    //! This function returns a range object containing normal forms for the
+    //! elements of \p fpb that have been enumerated so far.
+    //!
+    //! \param fpb the FroidurePinBase object.
+    //!
+    //! \returns The normal forms that have been enumerated so far.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    //! \note This function does not trigger any enumeration.
+    // TODO(1) complexity?
+    [[nodiscard]] static inline auto
+    current_normal_forms(FroidurePinBase const& fpb) {
+      return rx::iterator_range(fpb.cbegin_current_normal_forms(),
+                                fpb.cend_current_normal_forms());
+    }
+
+    //! \brief Returns a range object containing normal forms for all the
+    //! elements.
+    //!
+    //! This function returns a range object containing normal forms for all of
+    //! the elements of the semigroup. Calling this function triggers a full
+    //! enumeration.
+    //!
+    //! \param fpb the FroidurePinBase object.
+    //!
+    //! \returns A range object containing the normal forms.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    //! \complexity
+    //! The same as FroidurePinBase::enumerate.
+    //!
+    //! \note This function triggers a full enumeration.
+    [[nodiscard]] static inline auto normal_forms(FroidurePinBase& fpb) {
+      return rx::iterator_range(fpb.cbegin_normal_forms(),
+                                fpb.cend_normal_forms());
+    }
+
+    //! \brief Returns a range object containing the so-far enumerated
+    //! rules.
+    //!
+    //! This function returns a range object containing the rules of the
+    //! semigroup that have been enumerated so far. Calling this function does
+    //! not trigger any enumeration.
+    //!
+    //! \param fpb the FroidurePinBase object.
+    //!
+    //! \returns A range object containing the rules that have been enumerated
+    //! so far.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    //! \note This function does not trigger any enumeration.
+    // TODO(1) complexity?
+    [[nodiscard]] static inline auto current_rules(FroidurePinBase const& fpb) {
+      return rx::iterator_range(fpb.cbegin_current_rules(),
+                                fpb.cend_current_rules());
+    }
+
+    //! \brief Returns a range object containing all of the rules.
+    //!
+    //! This function returns a range object containing all of the rules of the
+    //! semigroup that have been enumerated so far. Calling this function
+    //! triggers a full enumeration.
+    //!
+    //! \param fpb the FroidurePinBase object.
+    //!
+    //! \returns A range object containing all of the rules.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    //! \complexity
+    //! The same as FroidurePinBase::enumerate.
+    //!
+    //! \note This function triggers a full enumeration.
+    [[nodiscard]] static inline auto rules(FroidurePinBase& fpb) {
+      return rx::iterator_range(fpb.cbegin_rules(), fpb.cend_rules());
     }
 
   }  // namespace froidure_pin
