@@ -157,7 +157,7 @@ namespace libsemigroups {
                     size_t) {
       using value_type = typename detail::KE<Word>::value_type;
       using words::operator+=;
-      value_type w(x.value());  // string_type
+      value_type   w(x.value());  // string_type
       w += y.value();
       xy = detail::KE<Word>(*k, w);
     }

@@ -242,10 +242,11 @@ namespace libsemigroups {
     auto ntc = (iterator_range(pp.begin(), pp.end())
                 | filter([](auto const& val) { return val.size() > 1; })
                 | transform([](auto& val) {
-                    std::for_each(val.begin(), val.end(), [](auto& w) -> auto& {
-                      w.erase(w.begin());
-                      return w;
-                    });
+                    std::for_each(
+                        val.begin(), val.end(), [](auto& w) -> auto& {
+                          w.erase(w.begin());
+                          return w;
+                        });
                     return val;
                   }));
 

@@ -1288,9 +1288,7 @@ namespace libsemigroups {
     S.add_generator(Transf<>({1, 1, 2, 3, 4, 5}));
 
     // Calling cbegin/cend_sorted fully enumerates the semigroup
-    {
-      auto it = S.cbegin_sorted();
-    }
+    { auto it = S.cbegin_sorted(); }
     REQUIRE(S.finished());
 
     size_t pos = 0;
