@@ -233,7 +233,6 @@ namespace libsemigroups {
     run_until([this, &limit]() -> bool { return current_size() >= limit; });
   }
 
-  // TODO(0) rename to contains_one
   [[nodiscard]] bool FroidurePinBase::contains_one() {
     if (_found_one) {
       return true;
