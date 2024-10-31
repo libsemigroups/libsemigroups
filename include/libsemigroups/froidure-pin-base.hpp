@@ -269,6 +269,9 @@ namespace libsemigroups {
     //! \sa FroidurePin::current_position
     //! \sa FroidurePin::position_no_checks
     //! \sa FroidurePin::position
+    //!
+    //! \note
+    //! This function does not trigger any enumeration.
     template <typename Iterator1, typename Iterator2>
     [[nodiscard]] element_index_type
     current_position_no_checks(Iterator1 first, Iterator2 last) const;
@@ -302,6 +305,9 @@ namespace libsemigroups {
     //! \sa FroidurePin::current_position_no_checks
     //! \sa FroidurePin::position_no_checks
     //! \sa FroidurePin::position
+    //!
+    //! \note
+    //! This function does not trigger any enumeration.
     template <typename Iterator1, typename Iterator2>
     [[nodiscard]] element_index_type current_position(Iterator1 first,
                                                       Iterator2 last) const {
@@ -337,6 +343,8 @@ namespace libsemigroups {
     //! \sa FroidurePin::current_position_no_checks
     //! \sa FroidurePin::current_position
     //! \sa FroidurePin::position
+    //!
+    //! \note This function triggers a full enumeration.
     template <typename Iterator1, typename Iterator2>
     [[nodiscard]] element_index_type position_no_checks(Iterator1 first,
                                                         Iterator2 last) {
@@ -373,6 +381,8 @@ namespace libsemigroups {
     //! \sa FroidurePin::current_position_no_checks
     //! \sa FroidurePin::position_no_checks
     //! \sa FroidurePin::position
+    //!
+    //! \note This function triggers a full enumeration.
     template <typename Iterator1, typename Iterator2>
     [[nodiscard]] element_index_type position(Iterator1 first, Iterator2 last) {
       run();
@@ -399,6 +409,9 @@ namespace libsemigroups {
     //! \warning This function does not check its argument is valid. In
     //! particular, if there is no generator with index \p i, then bad
     //! things will happen.
+    //!
+    //! \note
+    //! This function does not trigger any enumeration.
     [[nodiscard]] element_index_type
     position_of_generator_no_checks(generator_index_type i) const {
       LIBSEMIGROUPS_ASSERT(i < _letter_to_pos.size());
@@ -424,6 +437,9 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! Constant.
+    //!
+    //! \note
+    //! This function does not trigger any enumeration.
     [[nodiscard]] element_index_type
     position_of_generator(generator_index_type i) const {
       throw_if_generator_index_out_of_range(i);
@@ -446,6 +462,9 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! Constant.
+    //!
+    //! \note
+    //! This function does not trigger any enumeration.
     [[nodiscard]] size_t current_max_word_length() const noexcept {
       return _length[_enumerate_order.back()];
     }
@@ -460,6 +479,9 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! Constant.
+    //!
+    //! \note
+    //! This function does not trigger any enumeration.
     [[nodiscard]] size_t degree() const noexcept {
       return _degree;
     }
@@ -477,6 +499,9 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! Constant.
+    //!
+    //! \note
+    //! This function does not trigger any enumeration.
     [[nodiscard]] size_t current_size() const noexcept {
       return _nr;
     }
@@ -514,6 +539,9 @@ namespace libsemigroups {
     //! \warning No checks are made that the argument \p pos is valid. In
     //! particular, if \p pos is greater than or equal to \ref current_size,
     //! then bad things will happen.
+    //!
+    //! \note
+    //! This function does not trigger any enumeration.
     element_index_type prefix_no_checks(element_index_type pos) const {
       LIBSEMIGROUPS_ASSERT(pos < _prefix.size());
       return _prefix[pos];
@@ -533,6 +561,9 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! Constant.
+    //!
+    //! \note
+    //! This function does not trigger any enumeration.
     element_index_type prefix(element_index_type pos) const {
       throw_if_element_index_out_of_range(pos);
       return prefix_no_checks(pos);
@@ -553,6 +584,9 @@ namespace libsemigroups {
     //! \warning No checks are made that the argument \p pos is valid. In
     //! particular, if \p pos is greater than or equal to \ref current_size,
     //! then bad things will happen.
+    //!
+    //! \note
+    //! This function does not trigger any enumeration.
     [[nodiscard]] element_index_type
     suffix_no_checks(element_index_type pos) const {
       LIBSEMIGROUPS_ASSERT(pos < _suffix.size());
@@ -573,6 +607,9 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! Constant.
+    //!
+    //! \note
+    //! This function does not trigger any enumeration.
     [[nodiscard]] element_index_type suffix(element_index_type pos) const {
       throw_if_element_index_out_of_range(pos);
       return suffix_no_checks(pos);
@@ -601,6 +638,9 @@ namespace libsemigroups {
     //! \warning No checks are made that the argument \p pos is valid. In
     //! particular, if \p pos is greater than or equal to \ref current_size,
     //! then bad things will happen.
+    //!
+    //! \note
+    //! This function does not trigger any enumeration.
     [[nodiscard]] generator_index_type
     first_letter_no_checks(element_index_type pos) const {
       LIBSEMIGROUPS_ASSERT(pos < _first.size());
@@ -627,6 +667,9 @@ namespace libsemigroups {
     //! Note that `FroidurePin::generator(first_letter(pos))` is
     //! only equal to `FroidurePin::at(first_letter(pos))` if
     //! there are no duplicate generators.
+    //!
+    //! \note
+    //! This function does not trigger any enumeration.
     [[nodiscard]] generator_index_type
     first_letter(element_index_type pos) const {
       throw_if_element_index_out_of_range(pos);
@@ -656,6 +699,9 @@ namespace libsemigroups {
     //! \warning No checks are made that the argument \p pos is valid. In
     //! particular, if \p pos is greater than or equal to \ref current_size,
     //! then bad things will happen.
+    //!
+    //! \note
+    //! This function does not trigger any enumeration.
     [[nodiscard]] generator_index_type
     final_letter_no_checks(element_index_type pos) const {
       LIBSEMIGROUPS_ASSERT(pos < _final.size());
@@ -683,8 +729,8 @@ namespace libsemigroups {
     //! only equal to `FroidurePin::at(first_letter(pos))` if
     //! there are no duplicate generators.
     //!
-    //! \note No enumeration is triggered by calling this function.
-    // TODO(0) more notes like the above
+    //! \note
+    //! This function does not trigger any enumeration.
     [[nodiscard]] generator_index_type
     final_letter(element_index_type pos) const {
       throw_if_element_index_out_of_range(pos);
@@ -710,6 +756,9 @@ namespace libsemigroups {
     //!
     //! \sa
     //! \ref length.
+    //!
+    //! \note
+    //! This function does not trigger any enumeration.
     [[nodiscard]] size_t
     current_length_no_checks(element_index_type pos) const {
       LIBSEMIGROUPS_ASSERT(pos < _length.size());
@@ -734,6 +783,9 @@ namespace libsemigroups {
     //!
     //! \sa
     //! \ref length.
+    //!
+    //! \note
+    //! This function does not trigger any enumeration.
     [[nodiscard]] size_t current_length(element_index_type pos) const {
       throw_if_element_index_out_of_range(pos);
       return current_length_no_checks(pos);
@@ -754,6 +806,8 @@ namespace libsemigroups {
     //!
     //! \sa
     //! \ref current_length.
+    //!
+    //! \note This function triggers a full enumeration.
     // This function could be a helper, but current_length cannot be, so keeping
     // this as a mem fn.
     [[nodiscard]] size_t length(element_index_type pos);
@@ -774,6 +828,8 @@ namespace libsemigroups {
     //!
     //! \sa
     //! \ref current_length.
+    //!
+    //! \note This function triggers a full enumeration.
     // This function could be a helper, but current_length cannot be, so keeping
     // this as a mem fn.
     [[nodiscard]] size_t length_no_checks(element_index_type pos);
@@ -791,6 +847,8 @@ namespace libsemigroups {
     //! At worst \f$O(|S|n)\f$ where \f$S\f$ is the semigroup represented by \c
     //! this, and \f$n\f$ is the return value of
     //! FroidurePin::number_of_generators.
+    //!
+    //! \note This function triggers a full enumeration.
     [[nodiscard]] size_t size() {
       run();
       return current_size();
@@ -809,8 +867,12 @@ namespace libsemigroups {
     //! At worst \f$O(|S|n)\f$ where \f$S\f$ is the semigroup represented by \c
     //! this, and \f$n\f$ is the return value of
     //! FroidurePin::number_of_generators.
+    //! \note This function triggers a full enumeration.
     [[nodiscard]] bool contains_one();
 
+    // TODO(0) doc
+    //! \note
+    //! This function does not trigger any enumeration.
     [[nodiscard]] bool currently_contains_one() const noexcept {
       return _found_one;
     }
@@ -829,6 +891,8 @@ namespace libsemigroups {
     //! FroidurePin::number_of_generators.
     //!
     //! \sa \ref cbegin_rules and \ref cend_rules.
+    //!
+    //! \note This function triggers a full enumeration.
     [[nodiscard]] size_t number_of_rules() {
       run();
       return _nr_rules;
@@ -845,6 +909,8 @@ namespace libsemigroups {
     //! At worst \f$O(|S|n)\f$ where \f$S\f$ is the semigroup represented by \c
     //! this, and \f$n\f$ is the return value of
     //! FroidurePin::number_of_generators.
+    //!
+    //! \note This function triggers a full enumeration.
     [[nodiscard]] cayley_graph_type const& right_cayley_graph() {
       run();
       return _right;
@@ -862,6 +928,8 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! Constant.
+    //!
+    //! \note This function does not trigger any enumeration.
     [[nodiscard]] cayley_graph_type const&
     current_right_cayley_graph() const noexcept {
       return _right;
@@ -879,6 +947,8 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! Constant.
+    //!
+    //! \note This function triggers a full enumeration.
     [[nodiscard]] cayley_graph_type const& left_cayley_graph() {
       run();
       return _left;
@@ -895,6 +965,8 @@ namespace libsemigroups {
     //! At worst \f$O(|S|n)\f$ where \f$S\f$ is the semigroup represented by \c
     //! this, and \f$n\f$ is the return value of
     //! FroidurePin::number_of_generators.
+    //!
+    //! \note This function does not trigger any enumeration.
     [[nodiscard]] cayley_graph_type const&
     current_left_cayley_graph() const noexcept {
       return _left;
@@ -929,6 +1001,8 @@ namespace libsemigroups {
     //!
     //! \warning This function does not check that \p pos is valid. In
     //! particular, if `pos > current_size()`, then bad things will happen.
+    //!
+    //! \note This function does not trigger any enumeration.
     // TODO(0) update the doc
     template <typename Iterator>
     void current_minimal_factorisation_no_checks(Iterator           d_first,
@@ -954,6 +1028,8 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! Constant.
+    //!
+    //! \note This function does not trigger any enumeration.
     // TODO(0) update the doc
     template <typename Iterator>
     void current_minimal_factorisation(Iterator           d_first,
@@ -989,6 +1065,8 @@ namespace libsemigroups {
     //    sense (see the impl of minimal_factorisation(word_type&,
     //    element_index_type);
     // TODO(0) Update the doc
+    //
+    //! \note This function triggers a full enumeration.
     template <typename Iterator>
     void minimal_factorisation(Iterator d_first, element_index_type pos) {
       if (pos >= current_size() && !finished()) {
@@ -1027,6 +1105,8 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! \f$O(m)\f$ where \f$m\f$ is the length of the returned word.
+    //!
+    //! \note This function does not trigger any enumeration.
     // TODO(0) update doc
     template <typename Iterator>
     void current_factorisation_no_checks(Iterator           d_first,
@@ -1059,6 +1139,8 @@ namespace libsemigroups {
     //! \complexity
     //! At worst \f$O(mn)\f$ where \f$m\f$ equals \p pos and \f$n\f$ is the
     //! return value of FroidurePin::number_of_generators.
+    //!
+    //! \note This function triggers a full enumeration.
     // This function could be a helper, but
     // FroidurePin::minimal_factorisation(const_reference) isn't so keeping.
     // TODO(0) update doc
@@ -1103,6 +1185,8 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! Constant.
+    //!
+    //! \note This function does not trigger any enumeration.
     [[nodiscard]] size_t number_of_elements_of_length(size_t min,
                                                       size_t max) const;
 
@@ -1122,6 +1206,8 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! Constant.
+    //!
+    //! \note This function does not trigger any enumeration.
     [[nodiscard]] size_t number_of_elements_of_length(size_t len) const;
 
     //! \brief Return type of \ref cbegin_rules and \ref cend_rules.
@@ -1277,6 +1363,7 @@ namespace libsemigroups {
     //! //  {{3, 2}, {2}},
     //! //  {{3, 3}, {3}}}
     //! \endcode
+    //! \note This function does not trigger any enumeration.
     // clang-format on
     [[nodiscard]] const_rule_iterator cbegin_current_rules() const {
       return const_rule_iterator(this, UNDEFINED, 0);
@@ -1306,6 +1393,8 @@ namespace libsemigroups {
     //! FroidurePin instance is deleted.
     //!
     //! \sa cend_rules
+    //!
+    //! \note This function triggers a full enumeration.
     [[nodiscard]] const_rule_iterator cbegin_rules() {
       run();
       return const_rule_iterator(this, UNDEFINED, 0);
@@ -1336,6 +1425,8 @@ namespace libsemigroups {
     //! FroidurePin instance is deleted.
     //!
     //! \sa cbegin_rules
+    //!
+    //! \note This function does not trigger any enumeration.
     //!
     // clang-format off
     //! \par Example
@@ -1406,6 +1497,8 @@ namespace libsemigroups {
     //! FroidurePin instance is deleted.
     //!
     //! \sa cbegin_rules
+    //!
+    //! \note This function triggers a full enumeration.
     [[nodiscard]] const_rule_iterator cend_rules() {
       run();
       return const_rule_iterator(this, current_size(), 0);
@@ -1426,6 +1519,8 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! Constant.
+    //!
+    //! \note This function does not trigger any enumeration.
     [[nodiscard]] auto current_rules() const {
       return rx::iterator_range(cbegin_current_rules(), cend_current_rules());
     }
@@ -1443,6 +1538,8 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! The same as \ref enumerate.
+    //!
+    //! \note This function triggers a full enumeration.
     [[nodiscard]] auto rules() {
       return rx::iterator_range(cbegin_rules(), cend_rules());
     }
@@ -1611,6 +1708,7 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! Constant.
+    //! \note This function does not trigger any enumeration.
     [[nodiscard]] const_normal_form_iterator
     cbegin_current_normal_forms() const {
       return const_normal_form_iterator(this, 0);
@@ -1635,6 +1733,7 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! Constant.
+    //! \note This function does not trigger any enumeration.
     [[nodiscard]] const_normal_form_iterator cend_current_normal_forms() const {
       return const_normal_form_iterator(this, current_size());
     }
@@ -1653,6 +1752,7 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! Constant.
+    //! \note This function does not trigger any enumeration.
     [[nodiscard]] auto current_normal_forms() const {
       return rx::iterator_range(cbegin_current_normal_forms(),
                                 cend_current_normal_forms());
@@ -1676,6 +1776,7 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! Same as \ref enumerate.
+    //! \note This function triggers a full enumeration.
     [[nodiscard]] const_normal_form_iterator cbegin_normal_forms() {
       run();
       return const_normal_form_iterator(this, 0);
@@ -1700,6 +1801,7 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! Constant.
+    //! \note This function triggers a full enumeration.
     [[nodiscard]] const_normal_form_iterator cend_normal_forms() {
       run();
       return const_normal_form_iterator(this, size());
@@ -1719,6 +1821,7 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! Constant.
+    //! \note This function triggers a full enumeration.
     [[nodiscard]] auto normal_forms() {
       return rx::iterator_range(cbegin_normal_forms(), cend_normal_forms());
     }
@@ -1759,10 +1862,14 @@ namespace libsemigroups {
 
    private:
     ////////////////////////////////////////////////////////////////////////
-    // FroidurePin - member functions - private
+    // FroidurePinBase - member functions - private
     ////////////////////////////////////////////////////////////////////////
     void partial_copy(FroidurePinBase const& S);
   };  // class FroidurePinBase
+
+  ////////////////////////////////////////////////////////////////////////
+  // Implementations of mem fn templates for FroidurePinBase
+  ////////////////////////////////////////////////////////////////////////
 
   template <typename Iterator1, typename Iterator2>
   [[nodiscard]] FroidurePinBase::element_index_type
@@ -1807,6 +1914,7 @@ namespace libsemigroups {
     //! \warning This function does not check its arguments. In particular,
     //! if \p i or \p j is greater than or equal
     //! to FroidurePinBase::current_size, then bad things will happen.
+    //! \note This function does not trigger any enumeration.
     [[nodiscard]] FroidurePinBase::element_index_type
     product_by_reduction_no_checks(
         FroidurePinBase const&                       fpb,
@@ -1834,6 +1942,8 @@ namespace libsemigroups {
     //! \complexity
     //! \f$O(n)\f$ where \f$n\f$ is the minimum of the lengths of
     //! `minimal_factorisation(i)` and `minimal_factorisation(j)`.
+    //!
+    //! \note This function does not trigger any enumeration.
     [[nodiscard]] typename FroidurePinBase::element_index_type
     product_by_reduction(FroidurePinBase const&                       fpb,
                          typename FroidurePinBase::element_index_type i,
@@ -1867,6 +1977,7 @@ namespace libsemigroups {
     //! things will happen.
     //!
     //! \sa FroidurePin::to_element.
+    //! \note This function does not trigger any enumeration.
     // TODO update doc
     // TODO Thing -> Word
     template <typename Thing>
@@ -1875,6 +1986,7 @@ namespace libsemigroups {
       return fpb.current_position_no_checks(std::begin(w), std::end(w));
     }
 
+    //! \note This function does not trigger any enumeration.
     [[nodiscard]] static inline FroidurePinBase::element_index_type
     current_position_no_checks(FroidurePinBase const&            fpb,
                                std::initializer_list<int> const& w) {
@@ -1903,6 +2015,7 @@ namespace libsemigroups {
     //! \f$O(n)\f$ where \f$n\f$ is the length of the word \p w.
     //!
     //! \sa FroidurePin::to_element.
+    //! \note This function does not trigger any enumeration.
     // This is not a helper because the function
     // FroidurePin::current_position(const_reference) requires access to the
     // private members.
@@ -1912,6 +2025,7 @@ namespace libsemigroups {
       return fpb.current_position(std::begin(w), std::end(w));
     }
 
+    //! \note This function does not trigger any enumeration.
     // TODO(0) doc
     [[nodiscard]] static inline FroidurePinBase::element_index_type
     current_position(FroidurePinBase const&            fpb,
@@ -1919,6 +2033,7 @@ namespace libsemigroups {
       return current_position<std::initializer_list<int>>(fpb, w);
     }
 
+    //! \note This function triggers a full enumeration.
     // TODO(0) doc
     template <typename Thing>
     [[nodiscard]] FroidurePinBase::element_index_type
@@ -1926,6 +2041,7 @@ namespace libsemigroups {
       return fpb.position_no_checks(std::begin(w), std::end(w));
     }
 
+    //! \note This function triggers a full enumeration.
     // TODO(0) doc
     [[nodiscard]] static inline FroidurePinBase::element_index_type
     position_no_checks(FroidurePinBase&                  fpb,
@@ -1934,6 +2050,7 @@ namespace libsemigroups {
     }
 
     // TODO(0) doc
+    //! \note This function triggers a full enumeration.
     template <typename Thing>
     [[nodiscard]] FroidurePinBase::element_index_type
     position(FroidurePinBase& fpb, Thing const& w) {
@@ -1941,6 +2058,7 @@ namespace libsemigroups {
     }
 
     // TODO(0) doc
+    //! \note This function triggers a full enumeration.
     [[nodiscard]] static inline FroidurePinBase::element_index_type
     position(FroidurePinBase& fpb, std::initializer_list<int> const& w) {
       return position<std::initializer_list<int>>(fpb, w);
@@ -1950,6 +2068,7 @@ namespace libsemigroups {
     // Minimal factorisation helper functions
     ////////////////////////////////////////////////////////////////////////
     // TODO(0) doc
+    //! \note This function does not trigger any enumeration.
     template <typename Word>
     void current_minimal_factorisation_no_checks(
         FroidurePinBase const&              fpb,
@@ -1979,6 +2098,8 @@ namespace libsemigroups {
     //!
     //! \warning This function does not check that \p pos is valid. In
     //! particular, if `pos > current_size()`, then bad things will happen.
+    //!
+    //! \note This function does not trigger any enumeration.
     // TODO(0) update doc
     template <typename Word = word_type>
     [[nodiscard]] Word current_minimal_factorisation_no_checks(
@@ -1989,6 +2110,7 @@ namespace libsemigroups {
       return word;
     }
 
+    //! \note This function does not trigger any enumeration.
     // TODO(0) doc
     template <typename Word>
     void
@@ -2017,6 +2139,7 @@ namespace libsemigroups {
     //! \complexity
     //! At worst \f$O(mn)\f$ where \f$m\f$ equals \p pos and \f$n\f$ is the
     //! return value of FroidurePin::number_of_generators.
+    //! \note This function does not trigger any enumeration.
     // TODO(0) update doc
     template <typename Word = word_type>
     [[nodiscard]] Word
@@ -2027,6 +2150,7 @@ namespace libsemigroups {
       return word;
     }
 
+    //! \note This function triggers a full enumeration.
     // TODO(0) doc
     // Notes:
     // * There's no no_check version of this function because it doesn't make
@@ -2058,6 +2182,7 @@ namespace libsemigroups {
     //! \complexity
     //! At worst \f$O(mn)\f$ where \f$m\f$ equals \p pos and \f$n\f$ is the
     //! return value of FroidurePin::number_of_generators.
+    //! \note This function may trigger a full enumeration.
     // Notes:
     // * There's no no_check version of this function because it doesn't make
     //   sense (see the impl of minimal_factorisation(word_type&,
@@ -2076,6 +2201,7 @@ namespace libsemigroups {
     // (Non-minimal) factorisation helper functions
     ////////////////////////////////////////////////////////////////////////
     // TODO(0) doc
+    //! \note This function does not trigger any enumeration.
     template <typename Word>
     void
     current_factorisation_no_checks(FroidurePinBase const&              fpb,
@@ -2084,6 +2210,7 @@ namespace libsemigroups {
       return current_minimal_factorisation_no_checks<Word>(fpb, word, pos);
     }
 
+    //! \note This function may trigger a full enumeration.
     // TODO(0) doc
     template <typename Word>
     void factorisation(FroidurePinBase&                    fpb,
@@ -2113,6 +2240,8 @@ namespace libsemigroups {
     //! \complexity
     //! At worst \f$O(mn)\f$ where \f$m\f$ equals \p pos and \f$n\f$ is the
     //! return value of FroidurePin::number_of_generators.
+    //!
+    //! \note This function may trigger a full enumeration.
     // This function could be a helper, but
     // FroidurePin::minimal_factorisation(const_reference) isn't so keeping.
     // TODO(0) update doc

@@ -518,6 +518,9 @@ namespace libsemigroups {
     //!
     //! \returns A const reference to the element represented by the word \p w.
     //!
+    //! \note
+    //! This function does not trigger any enumeration.
+    //!
     //! \warning This function does not check its arguments, and it is assumed
     //! that the values in \p w are less than \ref number_of_generators; and
     //! if \p w is empty it is assumed that \ref currently_contains_one returns
@@ -526,9 +529,6 @@ namespace libsemigroups {
     //! not be an element of the semigroup).
     //!
     //! \sa \ref current_position.
-    //!
-    //! \note
-    //! This function triggers a full enumeration.
     // TODO(0) no trigger notes everywhere in the doc
     // TODO(0) update the doc
     template <typename Iterator1, typename Iterator2>
@@ -550,6 +550,9 @@ namespace libsemigroups {
     //! generators, i.e. if it contains a value greater than or equal to the
     //! number of generators.
     //!
+    //! \note
+    //! This function does not trigger any enumeration.
+    //!
     //! \sa \ref current_position.
     // TODO(0) no trigger note in the doc
     // TODO(0) update the doc
@@ -567,6 +570,9 @@ namespace libsemigroups {
     //! \param y the second word for comparison.
     //!
     //! \returns A value of type \c bool.
+    //!
+    //! \note
+    //! This function does not trigger any enumeration.
     //!
     //! \warning This function does not check its arguments. In particular, it
     //! is assumed that every value in \p x and \p y belongs in the range from
@@ -594,6 +600,9 @@ namespace libsemigroups {
     //!
     //! \throws LibsemigroupsException if \p w contains an value exceeding
     //! \ref number_of_generators.
+    //!
+    //! \note
+    //! This function does not trigger any enumeration.
     // TODO(0) update doc
     template <typename Iterator1,
               typename Iterator2,
@@ -610,10 +619,15 @@ namespace libsemigroups {
 
     //! \brief Returns the number of generators.
     //!
-    //! \returns A value of type \c size_t.
+    //! This function returns the number of generators.
+    //!
+    //! \returns The number of generators.
     //!
     //! \exceptions
     //! \noexcept
+    //!
+    //! \note
+    //! This function does not trigger any enumeration.
     [[nodiscard]] size_t number_of_generators() const noexcept override;
 
     //! \brief Returns the generator with specified index.
@@ -633,6 +647,9 @@ namespace libsemigroups {
     //!
     //! \note
     //! Note that `generator(j)` is in general not in position \p j.
+    //!
+    //! \note
+    //! This function does not trigger any enumeration.
     [[nodiscard]] const_reference generator(generator_index_type i) const;
 
     //! \brief Returns the generator with specified index.
@@ -649,6 +666,9 @@ namespace libsemigroups {
     //!
     //! \note
     //! Note that `generator(j)` is in general not in position \p j.
+    //!
+    //! \note
+    //! This function does not trigger any enumeration.
     //!
     //! \warning This function does not check its arguments. In particular it is
     //! assumed that \p i is less than \ref number_of_generators.
@@ -670,6 +690,9 @@ namespace libsemigroups {
     //!
     //! \exceptions
     //! \no_libsemigroups_except
+    //!
+    //! \note
+    //! This function does not trigger any enumeration.
     //!
     //! \sa \ref position and \ref sorted_position.
     [[nodiscard]] element_index_type current_position(const_reference x) const;
@@ -706,6 +729,9 @@ namespace libsemigroups {
     //! \returns
     //! The index of the product.
     //!
+    //! \note
+    //! This function does not trigger any enumeration.
+    //!
     //! \warning The arguments of this function are not checked. In particular,
     //! it is assumed that both \p i and \p j are less than \ref current_size.
     [[nodiscard]] element_index_type
@@ -723,6 +749,9 @@ namespace libsemigroups {
     //!
     //! \throws LibsemigroupsException if the values \p i and \p j are greater
     //! than or equal to \ref current_size.
+    //!
+    //! \note
+    //! This function does not trigger any enumeration.
     [[nodiscard]] element_index_type fast_product(element_index_type i,
                                                   element_index_type j) const {
       throw_if_element_index_out_of_range(i);
@@ -798,6 +827,9 @@ namespace libsemigroups {
     //!
     //! \exceptions
     //! \no_libsemigroups_except
+    //!
+    //! \note
+    //! This function does not trigger any enumeration.
     FroidurePin& reserve(size_t val);
 
     //! \brief Test membership of an element.
@@ -828,6 +860,9 @@ namespace libsemigroups {
     //! \no_libsemigroups_except
     //!
     //! \sa \ref current_position and \ref sorted_position.
+    //!
+    //! \note
+    //! This function triggers a full enumeration.
     [[nodiscard]] element_index_type position(const_reference x);
 
     //! \brief Returns the sorted index of an element.
@@ -842,6 +877,9 @@ namespace libsemigroups {
     //!
     //! \exceptions
     //! \no_libsemigroups_except
+    //!
+    //! \note
+    //! This function triggers a full enumeration.
     //!
     //! \sa \ref current_position and \ref position.
     [[nodiscard]] element_index_type sorted_position(const_reference x);
@@ -859,6 +897,9 @@ namespace libsemigroups {
     //!
     //! \exceptions
     //! \no_libsemigroups_except
+    //!
+    //! \note
+    //! This function triggers a full enumeration.
     // There's no no-checks version of this, there can't be.
     [[nodiscard]] element_index_type to_sorted_position(element_index_type i);
 
@@ -873,6 +914,9 @@ namespace libsemigroups {
     //!
     //! \throws LibsemigroupsException if \p i is greater than or equal to the
     //! return value of size().
+    //!
+    //! \note
+    //! This function triggers a full enumeration.
     [[nodiscard]] const_reference at(element_index_type i);
 
     //! \brief Access element specified by index.
@@ -886,6 +930,9 @@ namespace libsemigroups {
     //!
     //! \exceptions
     //! \no_libsemigroups_except
+    //!
+    //! \note
+    //! This function does not trigger any enumeration.
     const_reference operator[](element_index_type i) const;
 
     //! \brief Access element specified by sorted index with bound checks.
@@ -899,6 +946,9 @@ namespace libsemigroups {
     //!
     //! \throws LibsemigroupsException if \p i is greater than or equal to the
     //! return value of size().
+    //!
+    //! \note
+    //! This function triggers a full enumeration.
     [[nodiscard]] const_reference sorted_at(element_index_type i);
 
     //! \brief Access element specified by sorted index with bound checks.
@@ -912,6 +962,9 @@ namespace libsemigroups {
     //!
     //! \warning This function does not check its arguments. In particular, it
     //! assumes that \p i is less than \ref size.
+    //!
+    //! \note
+    //! This function triggers a full enumeration.
     [[nodiscard]] const_reference sorted_at_no_checks(element_index_type i);
 
 #ifndef PARSED_BY_DOXYGEN
@@ -958,6 +1011,11 @@ namespace libsemigroups {
     //! \warning This function does not check its arguments. In particular, it
     //! is assumed that the generators pointed to by \p first and \p last all
     //! have the same degree.
+    //!
+    //! \note
+    //! This function triggers a (possibly partial) enumeration if and only if
+    //! it is called on an already partially enumerated FroidurePin instance
+    //! (i.e. if \ref started returns \c true).
     template <typename Iterator1, typename Iterator2>
     FroidurePin& add_generators_no_checks(Iterator1 first, Iterator2 last);
 
@@ -972,6 +1030,11 @@ namespace libsemigroups {
     //!
     //! \throws LibsemigroupsException if any of the degree of \p x is
     //! incompatible with the existing degree.
+    //!
+    //! \note
+    //! This function triggers a (possibly partial) enumeration if and only if
+    //! it is called on an already partially enumerated FroidurePin instance
+    //! (i.e. if \ref started returns \c true).
     template <typename Iterator1, typename Iterator2>
     FroidurePin& add_generators(Iterator1 first, Iterator2 last);
 
@@ -1007,6 +1070,11 @@ namespace libsemigroups {
     //! \warning This function does not check its argument. In particular, it
     //! is assumed that the element \p x has the same degree as any existing
     //! generators.
+    //!
+    //! \note
+    //! This function triggers a (possibly partial) enumeration if and only if
+    //! it is called on an already partially enumerated FroidurePin instance
+    //! (i.e. if \ref started returns \c true).
     FroidurePin& add_generator_no_checks(const_reference x);
 
     //! \brief Add a copy of an element to the generators.
@@ -1043,6 +1111,11 @@ namespace libsemigroups {
     //!
     //! \throws LibsemigroupsException if the degree of \p x is incompatible
     //! with the existing degree (if any).
+    //!
+    //! \note
+    //! This function triggers a (possibly partial) enumeration if and only if
+    //! it is called on an already partially enumerated FroidurePin instance
+    //! (i.e. if \ref started returns \c true).
     FroidurePin& add_generator(const_reference x);
 
     // TODO(1) make the following work
@@ -1065,6 +1138,10 @@ namespace libsemigroups {
     //! generators of \c this and the elements in the range from \p first to \p
     //! last.
     //!
+    //! \note
+    //! This function does not trigger any enumeration of the object it is
+    //! called on, it might trigger a (possibly partial) enumeration of the
+    //! returned copy (see \ref add_generators for details).
     template <typename Iterator1, typename Iterator2>
     [[nodiscard]] FroidurePin
     copy_add_generators_no_checks(Iterator1 first, Iterator2 last) const;
@@ -1088,6 +1165,11 @@ namespace libsemigroups {
     //!
     //! \throws LibsemigroupsException if the elements pointed to by \p
     //! first and \p last do not all have the same degree.
+    //!
+    //! \note
+    //! This function does not trigger any enumeration of the object it is
+    //! called on, it might trigger a (possibly partial) enumeration of the
+    //! returned copy (see \ref add_generators for details).
     template <typename Iterator1, typename Iterator2>
     [[nodiscard]] FroidurePin copy_add_generators(Iterator1 first,
                                                   Iterator2 last) const {
@@ -1125,6 +1207,10 @@ namespace libsemigroups {
     //! \warning This function does not check its arguments. In particular, it
     //! is assumed that the elements pointed to by \p first and \p last all
     //! have the same degree.
+    //!
+    //! \note
+    //! This function triggers at least a partial enumeration of the
+    //! FroidurePin instance on which it is called.
     template <typename Iterator1, typename Iterator2>
     FroidurePin& closure_no_checks(Iterator1 first, Iterator2 last);
 
@@ -1146,6 +1232,10 @@ namespace libsemigroups {
     //!
     //! \throws LibsemigroupsException if the elements pointed to by \p
     //! first and \p last do not all have the same degree.
+    //!
+    //! \note
+    //! This function triggers at least a partial enumeration of the
+    //! FroidurePin instance on which it is called.
     template <typename Iterator1, typename Iterator2>
     FroidurePin& closure(Iterator1 first, Iterator2 last) {
       throw_if_degree_too_small(first, last);
@@ -1176,6 +1266,10 @@ namespace libsemigroups {
     //! \warning This function does not check its arguments. In particular, it
     //! is assumed that the generators pointed to by \p first and \p last all
     //! have the same degree.
+    //!
+    //! \note
+    //! This function may trigger an enumeration of the FroidurePin instance on
+    //! which it is called, and the returned copy.
     template <typename Iterator1, typename Iterator2>
     [[nodiscard]] FroidurePin copy_closure_no_checks(Iterator1 first,
                                                      Iterator2 last);
@@ -1203,6 +1297,10 @@ namespace libsemigroups {
     //!
     //! \throws LibsemigroupsException if the elements pointed to by \p
     //! first and \p last do not all have the same degree.
+    //!
+    //! \note
+    //! This function may trigger an enumeration of the FroidurePin instance on
+    //! which it is called, and the returned copy.
     template <typename Iterator1, typename Iterator2>
     [[nodiscard]] FroidurePin copy_closure(Iterator1 first, Iterator2 last) {
       throw_if_degree_too_small(first, last);
@@ -1350,6 +1448,9 @@ namespace libsemigroups {
     //! Constant.
     //!
     //! \sa \ref begin.
+    //!
+    //! \note
+    //! This function does not trigger any enumeration.
     [[nodiscard]] const_iterator cbegin() const;
 
     //! \brief Returns a const iterator pointing to the first element (ordered
@@ -1368,6 +1469,9 @@ namespace libsemigroups {
     //! Constant.
     //!
     //! \sa \ref cbegin.
+    //!
+    //! \note
+    //! This function does not trigger any enumeration.
     [[nodiscard]] const_iterator begin() const;
 
     //! \brief Returns a const iterator pointing to one past the last known
@@ -1386,6 +1490,9 @@ namespace libsemigroups {
     //! Constant.
     //!
     //! \sa \ref end.
+    //!
+    //! \note
+    //! This function does not trigger any enumeration.
     [[nodiscard]] const_iterator cend() const;
 
     //! \brief Returns a const iterator pointing one past the last known
@@ -1404,6 +1511,9 @@ namespace libsemigroups {
     //! Constant.
     //!
     //! \sa \ref cend.
+    //!
+    //! \note
+    //! This function does not trigger any enumeration.
     [[nodiscard]] const_iterator end() const;
 
     //! \brief Returns a const iterator pointing to the first element (sorted
@@ -1414,7 +1524,8 @@ namespace libsemigroups {
     //! \exceptions
     //! \no_libsemigroups_except
     //!
-    //! \note This function triggers a full enumeration.
+    //! \note
+    //! This function triggers a full enumeration.
     [[nodiscard]] const_iterator_sorted cbegin_sorted();
 
     //! \brief Returns a const iterator pointing one past the last element
@@ -1512,7 +1623,7 @@ namespace libsemigroups {
 
     //! \brief Add collection of generators from container.
     //!
-    //! See \ref FroidurePin::add_generator for a detailed description.
+    //! See \ref FroidurePin::add_generators for a detailed description.
     //!
     //! \tparam Container the type of the container for generators to add.
     //!
@@ -1906,6 +2017,8 @@ namespace libsemigroups {
     //! \param fp the FroidurePin instance.
     //!
     //! \returns A range object.
+    //!
+    //! \note This function triggers a full enumeration.
     template <typename Element, typename Traits>
     [[nodiscard]] auto idempotents(FroidurePin<Element, Traits>& fp) {
       fp.run();
@@ -1929,6 +2042,8 @@ namespace libsemigroups {
     //! \param fp the FroidurePin instance.
     //!
     //! \returns A range object.
+    //!
+    //! \note This function triggers a full enumeration.
     template <typename Element, typename Traits>
     [[nodiscard]] auto sorted_elements(FroidurePin<Element, Traits>& fp) {
       return rx::iterator_range(fp.cbegin_sorted(), fp.cend_sorted());
@@ -1953,6 +2068,9 @@ namespace libsemigroups {
     //! \param fp the FroidurePin instance.
     //!
     //! \returns A range object.
+    //!
+    //! \note
+    //! This function does not trigger any enumeration.
     template <typename Element, typename Traits>
     [[nodiscard]] auto
     current_elements(FroidurePin<Element, Traits> const& fp) {
@@ -1975,6 +2093,8 @@ namespace libsemigroups {
     //! \param fp the FroidurePin instance.
     //!
     //! \returns A range object.
+    //!
+    //! \note This function triggers a full enumeration.
     template <typename Element, typename Traits>
     [[nodiscard]] auto elements(FroidurePin<Element, Traits>& fp) {
       fp.run();
@@ -2000,6 +2120,9 @@ namespace libsemigroups {
     //! not be an element of the semigroup).
     //!
     //! \sa \ref current_position.
+    //!
+    //! \note
+    //! This function does not trigger any enumeration.
     // TODO(0) update doc
     template <typename Element, typename Traits, typename Word>
     [[nodiscard]] typename FroidurePin<Element, Traits>::const_reference
@@ -2009,6 +2132,8 @@ namespace libsemigroups {
     }
 
     // TODO(0) doc
+    //! \note
+    //! This function does not trigger any enumeration.
     template <typename Element, typename Traits, typename T = size_t>
     [[nodiscard]] typename FroidurePin<Element, Traits>::const_reference
     to_element_no_checks(FroidurePin<Element, Traits> const& fp,
@@ -2033,6 +2158,9 @@ namespace libsemigroups {
     //! number of generators.
     //!
     //! \sa \ref current_position.
+    //!
+    //! \note
+    //! This function does not trigger any enumeration.
     // TODO(0) update doc
     template <typename Element, typename Traits, typename Word>
     [[nodiscard]] typename FroidurePin<Element, Traits>::const_reference
@@ -2040,6 +2168,8 @@ namespace libsemigroups {
       return fp.to_element(std::begin(w), std::end(w));
     }
 
+    //! \note
+    //! This function does not trigger any enumeration.
     // TODO(0) doc
     template <typename Element, typename Traits, typename T = size_t>
     [[nodiscard]] typename FroidurePin<Element, Traits>::const_reference
@@ -2048,6 +2178,8 @@ namespace libsemigroups {
       return to_element<Element, Traits, std::initializer_list<T>>(fp, w);
     }
 
+    //! \note
+    //! This function does not trigger any enumeration.
     // TODO(0) doc
     template <typename Element, typename Traits, typename Word>
     [[nodiscard]] bool
@@ -2058,6 +2190,8 @@ namespace libsemigroups {
           std::begin(x), std::end(x), std::begin(y), std::end(y));
     }
 
+    //! \note
+    //! This function does not trigger any enumeration.
     // TODO(0) doc
     template <typename Element, typename Traits, typename Word>
     [[nodiscard]] bool equal_to(FroidurePin<Element, Traits> const& fp,
@@ -2082,6 +2216,8 @@ namespace libsemigroups {
     //! \note This function may trigger a (partial) enumeration.
     //!
     //! \sa minimal_factorisation(element_index_type).
+    //!
+    //! \note This function may trigger a (partial) enumeration.
     template <typename Element, typename Traits, typename Word = word_type>
     [[nodiscard]] Word minimal_factorisation(
         FroidurePin<Element, Traits>&                          fp,
