@@ -217,7 +217,6 @@ namespace libsemigroups {
       // The next line asserts that _id actually is an element, if not, then
       // we shouldn't be calling this function with the empty word.
       LIBSEMIGROUPS_ASSERT(currently_contains_one());
-      // TODO(0) currently_contains_one -> currently_contains_one
       return this->to_external_const(_id);
     }
 
