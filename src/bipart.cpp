@@ -150,13 +150,22 @@ namespace libsemigroups {
 
   }  // namespace blocks
 
-  [[nodiscard]] std::string to_human_readable_repr(Blocks const& x) {
-    // TODO(2) allow different braces
+  // TODO(0) update!
+  [[nodiscard]] std::string to_human_readable_repr(Blocks const&    x,
+                                                   std::string_view braces) {
+    if (braces.size() != 2) {
+      LIBSEMIGROUPS_EXCEPTION("the 2nd argument (braces) must have length 2, "
+                              "but found {} of length {}",
+                              braces,
+                              braces.size());
+    }
     if (x.degree() < 32) {
       try {
         blocks::validate(x);
-        return fmt::format("Blocks([{}])",
-                           fmt::join(blocks::underlying_partition(x), ", "));
+        return fmt::format("Blocks({}{}{})",
+                           braces[0],
+                           fmt::join(blocks::underlying_partition(x), ", "),
+                           braces[1]);
       } catch (LibsemigroupsException const&) {
         // Do nothing
       }
@@ -347,16 +356,27 @@ namespace libsemigroups {
     return to_bipartition<std::initializer_list<std::vector<int32_t>>>(cont);
   }
 
-  [[nodiscard]] std::string to_human_readable_repr(Bipartition const& x) {
-    // TODO(2) allow different braces
+  [[nodiscard]] std::string to_human_readable_repr(Bipartition const& x,
+                                                   std::string_view   braces,
+                                                   size_t max_width) {
+    if (braces.size() != 2) {
+      LIBSEMIGROUPS_EXCEPTION("the 2nd argument (braces) must have length 2, "
+                              "but found {} of length {}",
+                              braces,
+                              braces.size());
+    }
     if (x.degree() < 32) {
-      try {
-        bipartition::validate(x);
-        return fmt::format(
-            "Bipartition([{}])",
-            fmt::join(bipartition::underlying_partition(x), ", "));
-      } catch (LibsemigroupsException const&) {
-        // Do nothing
+      std::string part_str;
+      std::string sep;
+      for (auto const& part : bipartition::underlying_partition(x)) {
+        part_str += fmt::format(
+            "{}{}{}{}", sep, braces[0], fmt::join(part, ", "), braces[1]);
+        sep = ", ";
+      }
+      part_str
+          = fmt::format("Bipartition({}{}{})", braces[0], part_str, braces[1]);
+      if (part_str.size() < max_width) {
+        return part_str;
       }
     }
     return fmt::format("<bipartition of degree {} with {} blocks and rank {}>",

@@ -31,6 +31,7 @@
 #include <cstdint>           // for uint32_t, int32_t
 #include <cstdlib>           // for abs
 #include <initializer_list>  // for initializer_list
+#include <string_view>       // for string_view
 #include <type_traits>       // for decay_t, false_type, is_signed, true_type
 #include <unordered_set>     // for unordered_set
 #include <vector>            // for vector
@@ -762,7 +763,9 @@ namespace libsemigroups {
   //!
   //! \exceptions
   //! \no_libsemigroups_except
-  [[nodiscard]] std::string to_human_readable_repr(Blocks const& x);
+  [[nodiscard]] std::string to_human_readable_repr(Blocks const&    x,
+                                                   std::string_view braces
+                                                   = "{}");
 
   //! \ingroup bipart_group
   //!
@@ -1475,7 +1478,10 @@ namespace libsemigroups {
   //!
   //! \exceptions
   //! \no_libsemigroups_except
-  [[nodiscard]] std::string to_human_readable_repr(Bipartition const& x);
+  [[nodiscard]] std::string to_human_readable_repr(Bipartition const& x,
+                                                   std::string_view   braces
+                                                   = "{}",
+                                                   size_t max_width = 72);
 
   //! \ingroup bipart_group
   //!

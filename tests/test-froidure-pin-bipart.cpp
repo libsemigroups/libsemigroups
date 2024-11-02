@@ -26,7 +26,7 @@
 #include "libsemigroups/froidure-pin.hpp"  // for FroidurePin
 
 namespace libsemigroups {
-  using namespace literals;
+  using namespace literals;  // for operator""_w
 
   // Forward declaration
   struct LibsemigroupsException;
@@ -38,59 +38,59 @@ namespace libsemigroups {
                              "small example 1",
                              "[quick][froidure-pin][bipartition][bipart]") {
     auto                     rg = ReportGuard(REPORT);
-    std::vector<Bipartition> gens
-        = {Bipartition(
-               {0, 1, 2, 1, 0, 2, 1, 0, 2, 2, 0, 0, 2, 0, 3, 4, 4, 1, 3, 0}),
-           Bipartition(
-               {0, 1, 1, 1, 1, 2, 3, 2, 4, 5, 5, 2, 4, 2, 1, 1, 1, 2, 3, 2}),
-           Bipartition(
-               {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0})};
+    FroidurePin<Bipartition> S  = to_froidure_pin(
+        {to_bipartition({{1, 5, 8, -1, -2, -4, -10},
+                          {2, 4, 7, -8},
+                          {3, 6, 9, 10, -3},
+                          {-5, -9},
+                          {-6, -7}}),
+          to_bipartition({{1},
+                          {2, 3, 4, 5, -5, -6, -7},
+                          {6, 8, -2, -4, -8, -10},
+                          {7, -9},
+                          {9, -3},
+                          {10, -1}}),
+          to_bipartition({{1,  2,  3,  4,  5,  6,  7,  8,  9,  10,
+                           -1, -2, -3, -4, -5, -6, -7, -8, -9, -10}})});
 
-    FroidurePin<Bipartition> S = to_froidure_pin(gens);
     S.reserve(10);
 
     REQUIRE(S.size() == 10);
     REQUIRE(S.number_of_idempotents() == 6);
 
     size_t pos = 0;
-    for (auto it = S.cbegin(); it < S.cend(); ++it) {
-      REQUIRE(S.position(*it) == pos);
+    for (auto const& x : froidure_pin::elements(S)) {
+      REQUIRE(S.position(x) == pos);
       pos++;
     }
 
-    S.add_generator(Bipartition(
-        {0, 1, 2, 1, 1, 3, 1, 4, 2, 3, 1, 0, 3, 2, 3, 5, 4, 1, 3, 0}));
-
+    auto x = to_bipartition({{1, -2, -10},
+                             {2, 4, 5, 7, -1, -8},
+                             {3, 9, -4},
+                             {6, 10, -3, -5, -9},
+                             {8, -7},
+                             {-6}});
+    S.add_generator(x);
+    REQUIRE(S.number_of_generators() == 4);
     REQUIRE(S.size() == 21);
-    froidure_pin::closure(S, {Bipartition({0, 1, 2, 1, 1, 3, 1, 4, 2, 3,
-                                           1, 0, 3, 2, 3, 5, 4, 1, 3, 0})});
+    froidure_pin::closure(S, {x});
+    REQUIRE(S.number_of_generators() == 4);
     REQUIRE(S.size() == 21);
     REQUIRE(froidure_pin::minimal_factorisation(
-                S,
-                Bipartition({0, 1, 2, 1, 0, 2, 1, 0, 2, 2,
-                             0, 0, 2, 0, 3, 4, 4, 1, 3, 0})
-                    * Bipartition({0, 1, 2, 1, 1, 3, 1, 4, 2, 3,
-                                   1, 0, 3, 2, 3, 5, 4, 1, 3, 0})
-                    * Bipartition({0, 1, 1, 1, 1, 2, 3, 2, 4, 5,
-                                   5, 2, 4, 2, 1, 1, 1, 2, 3, 2}))
+                S, S.generator(0) * S.generator(3) * S.generator(1))
             == 031_w);
     REQUIRE(froidure_pin::minimal_factorisation(S, 11) == 03_w);
-    REQUIRE(S.at(11)
-            == Bipartition(
-                   {0, 1, 2, 1, 0, 2, 1, 0, 2, 2, 0, 0, 2, 0, 3, 4, 4, 1, 3, 0})
-                   * Bipartition({0, 1, 2, 1, 1, 3, 1, 4, 2, 3,
-                                  1, 0, 3, 2, 3, 5, 4, 1, 3, 0}));
-    REQUIRE_THROWS_AS(froidure_pin::minimal_factorisation(S, 1000000000),
+    REQUIRE(S.at(11) == S.generator(0) * S.generator(3));
+    REQUIRE_THROWS_AS(froidure_pin::minimal_factorisation(S, 1'000'000'000),
                       LibsemigroupsException);
     pos = 0;
-    for (auto it = S.cbegin_idempotents(); it < S.cend_idempotents(); ++it) {
-      REQUIRE(*it * *it == *it);
-      pos++;
-    }
+    std::for_each(
+        S.cbegin_idempotents(), S.cend_idempotents(), [&pos](auto const& x) {
+          REQUIRE(x * x == x);
+          ++pos;
+        });
     REQUIRE(pos == S.number_of_idempotents());
-    for (auto it = S.cbegin_sorted() + 1; it < S.cend_sorted(); ++it) {
-      REQUIRE(*(it - 1) < *it);
-    }
+    REQUIRE(std::is_sorted(S.cbegin_sorted(), S.cend_sorted()));
   }
 
   LIBSEMIGROUPS_TEST_CASE_V3("FroidurePin<Bipartition>",
@@ -113,8 +113,8 @@ namespace libsemigroups {
     REQUIRE(S.number_of_idempotents() == 6);
 
     size_t pos = 0;
-    for (auto it = S.cbegin(); it < S.cend(); ++it) {
-      REQUIRE(S.position(*it) == pos);
+    for (auto const& x : froidure_pin::elements(S)) {
+      REQUIRE(S.position(x) == pos);
       pos++;
     }
 
@@ -140,11 +140,11 @@ namespace libsemigroups {
                    {0, 1, 2, 1, 0, 2, 1, 0, 2, 2, 0, 0, 2, 0, 3, 4, 4, 1, 3, 0})
                    * Bipartition({0, 1, 2, 1, 1, 3, 1, 4, 2, 3,
                                   1, 0, 3, 2, 3, 5, 4, 1, 3, 0}));
-    REQUIRE_THROWS_AS(froidure_pin::minimal_factorisation(S, 1000000000),
+    REQUIRE_THROWS_AS(froidure_pin::minimal_factorisation(S, 1'000'000'000),
                       LibsemigroupsException);
     pos = 0;
-    for (auto it = S.cbegin_idempotents(); it < S.cend_idempotents(); ++it) {
-      REQUIRE(*it * *it == *it);
+    for (auto const& x : froidure_pin::idempotents(S)) {
+      REQUIRE(x * x == x);
       pos++;
     }
     REQUIRE(pos == S.number_of_idempotents());
@@ -206,9 +206,9 @@ namespace libsemigroups {
     S.add_generator(Bipartition({0, 1, 2, 3, 4, 5, 1, 0, 2, 3, 4, 5}));
     S.add_generator(Bipartition({0, 1, 2, 3, 4, 5, 6, 1, 2, 3, 4, 5}));
     S.add_generator(Bipartition({0, 0, 1, 2, 3, 4, 0, 0, 1, 2, 3, 4}));
-    S.reserve(4213597);
-    REQUIRE(S.size() == 4213597);
-    REQUIRE(S.number_of_idempotents() == 541254);
+    S.reserve(4'213'597);
+    REQUIRE(S.size() == 4'213'597);
+    REQUIRE(S.number_of_idempotents() == 541'254);
   }
 
   LIBSEMIGROUPS_TEST_CASE_V3("FroidurePin<Bipartition>",
@@ -223,13 +223,10 @@ namespace libsemigroups {
     S.add_generator(Bipartition(
         {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}));
 
-    // T has size 10
-    for (size_t i = 0; i < 10; ++i) {
+    for (size_t i = 0; i < S.size(); ++i) {
       REQUIRE_NOTHROW(S.is_idempotent(i));
     }
-    for (size_t i = 0; i < 20; ++i) {
-      REQUIRE_THROWS_AS(S.is_idempotent(10 + i), LibsemigroupsException);
-    }
+    REQUIRE_THROWS_AS(S.is_idempotent(10), LibsemigroupsException);
   }
 
 }  // namespace libsemigroups
