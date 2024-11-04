@@ -1543,6 +1543,9 @@ namespace libsemigroups {
     //! \brief Returns a const iterator pointing to the first element (sorted
     //! by Less).
     //!
+    //! This function returns a const iterator pointing to the first element 
+    //! (sorted by Less).
+    //!
     //! \returns A value of type \ref const_iterator_sorted.
     //!
     //! \exceptions
@@ -1554,6 +1557,9 @@ namespace libsemigroups {
 
     //! \brief Returns a const iterator pointing one past the last element
     //! (sorted by Less).
+    //!
+    //! This function returns a const iterator pointing one past the last
+    //! element (sorted by Less).
     //!
     //! \returns A value of type \ref const_iterator_sorted.
     //!
@@ -1578,6 +1584,9 @@ namespace libsemigroups {
     [[nodiscard]] const_iterator_idempotents cbegin_idempotents();
 
     //! \brief Returns a const iterator pointing one past the last idempotent.
+    //!
+    //! This function returns a const iterator pointing one past the last
+    //! idempotent.
     //!
     //! \returns A value of type \ref const_iterator_idempotents.
     //!
