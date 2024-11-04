@@ -29,7 +29,7 @@ namespace libsemigroups {
   using node_type = typename ToddCoxeter::node_type;
 
   ////////////////////////////////////////////////////////////////////////
-  // Graph
+  // ToddCoxeter::Graph
   ////////////////////////////////////////////////////////////////////////
 
   ToddCoxeter::Graph&
@@ -951,7 +951,7 @@ namespace libsemigroups {
             node_type c1 = random_active_node(copy.word_graph());
             node_type c2 = random_active_node(copy.word_graph());
             auto&     wg
-                = const_cast<ToddCoxeter::digraph_type&>(copy.word_graph());
+                = const_cast<ToddCoxeter::word_graph_type&>(copy.word_graph());
             wg.merge_nodes_no_checks(c1, c2);
             wg.process_coincidences<detail::RegisterDefs>();
             wg.process_definitions();

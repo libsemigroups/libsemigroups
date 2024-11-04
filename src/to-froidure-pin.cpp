@@ -25,7 +25,7 @@ namespace libsemigroups {
   using TCE = detail::TCE;
 
   FroidurePin<TCE> to_froidure_pin(ToddCoxeter& tc) {
-    using digraph_type = typename ToddCoxeter::digraph_type;
+    using word_graph_type = typename ToddCoxeter::word_graph_type;
 
     if (tc.kind() != congruence_kind::twosided) {
       LIBSEMIGROUPS_EXCEPTION(
@@ -36,7 +36,7 @@ namespace libsemigroups {
     tc.run();
     tc.shrink_to_fit();
     // Ensure class indices and letters are equal!
-    auto         wg = std::make_shared<digraph_type>(tc.word_graph());
+    auto         wg = std::make_shared<word_graph_type>(tc.word_graph());
     size_t const n  = tc.word_graph().out_degree();
     size_t       m  = n;
     for (letter_type a = 0; a < m;) {

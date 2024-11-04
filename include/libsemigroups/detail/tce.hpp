@@ -43,8 +43,8 @@ namespace libsemigroups {
 
     class TCE {
      public:
-      using node_type    = typename ToddCoxeter::node_type;
-      using digraph_type = typename ToddCoxeter::digraph_type;
+      using node_type       = typename ToddCoxeter::node_type;
+      using word_graph_type = typename ToddCoxeter::word_graph_type;
 
       TCE() noexcept                      = default;
       TCE(TCE const&) noexcept            = default;
@@ -138,10 +138,10 @@ namespace libsemigroups {
 
   template <>
   struct Product<detail::TCE> {
-    void operator()(detail::TCE&               xy,
-                    detail::TCE const&         x,
-                    detail::TCE const&         y,
-                    detail::TCE::digraph_type* t,
+    void operator()(detail::TCE&                  xy,
+                    detail::TCE const&            x,
+                    detail::TCE const&            y,
+                    detail::TCE::word_graph_type* t,
                     size_t = 0) const {
       // y- 1, x????
       xy = detail::TCE(t->target_no_checks(x, y - 1));
@@ -150,7 +150,7 @@ namespace libsemigroups {
 
   template <>
   struct FroidurePinState<detail::TCE> {
-    using type = typename ToddCoxeter::digraph_type;
+    using type = typename ToddCoxeter::word_graph_type;
   };
 }  // namespace libsemigroups
 

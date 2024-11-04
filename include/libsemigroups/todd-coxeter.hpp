@@ -23,7 +23,8 @@
 // * re-implement SettingsGuard (push_settings and pop_settings)
 // * re-implement reserve
 // * remove preferred_defs from FelschGraph etc (except where they are really
-// needed)
+// needed)?
+// * re-add report why stopped
 
 #ifndef LIBSEMIGROUPS_TODD_COXETER_HPP_
 #define LIBSEMIGROUPS_TODD_COXETER_HPP_
@@ -48,9 +49,12 @@ namespace libsemigroups {
     using FelschGraphSettings_ = FelschGraphSettings<ToddCoxeter>;
 
    public:
-    using node_type  = typename WordGraph<uint32_t>::node_type;
+    // TODO(0) doc
+    using node_type = typename WordGraph<uint32_t>::node_type;
+    // TODO(0) doc
     using label_type = typename WordGraph<uint32_t>::label_type;
 
+    // TODO(0) doc
     template <typename T>
     void report_every(T val) {
       CongruenceInterface::report_every(val);
@@ -63,7 +67,9 @@ namespace libsemigroups {
     struct options : public FelschGraphSettings_::options {
       // TODO(0) doc
       enum class strategy {
+        // TODO(0) doc
         hlt,
+        // TODO(0) doc
         felsch,
         //! This strategy is meant to mimic the
         //! [ACE](https://staff.itee.uq.edu.au/havas/) strategy of the same
@@ -124,6 +130,8 @@ namespace libsemigroups {
     };
 
    private:
+    // TODO(0) move to cpp when we re-add settings stack, and use the top of
+    // the settings stack instead of _settings
     struct Settings {
       bool                      use_relations_in_extra = false;
       options::lookahead_style  lookahead_style = options::lookahead_style::hlt;
@@ -241,6 +249,7 @@ namespace libsemigroups {
     // ToddCoxeter - data - private
     ////////////////////////////////////////////////////////////////////////
 
+    // TODO(0) reimpl
     // std::stack<Settings*>                _setting_stack;
     bool     _finished;
     Forest   _forest;
@@ -249,44 +258,60 @@ namespace libsemigroups {
     Graph    _word_graph;
 
    public:
-    using digraph_type = Graph;
+    // TODO(0) use this everywhere
+    using word_graph_type = Graph;
 
     ////////////////////////////////////////////////////////////////////////
     // ToddCoxeter - constructors + initializers - public
     ////////////////////////////////////////////////////////////////////////
 
+    // TODO(0) doc
     ToddCoxeter();
+    // TODO(0) doc
     ToddCoxeter& init();
 
-    ToddCoxeter(ToddCoxeter const& that)       = default;
-    ToddCoxeter(ToddCoxeter&&)                 = default;
+    // TODO(0) doc
+    ToddCoxeter(ToddCoxeter const& that) = default;
+    // TODO(0) doc
+    ToddCoxeter(ToddCoxeter&&) = default;
+    // TODO(0) doc
     ToddCoxeter& operator=(ToddCoxeter const&) = default;
-    ToddCoxeter& operator=(ToddCoxeter&&)      = default;
+    // TODO(0) doc
+    ToddCoxeter& operator=(ToddCoxeter&&) = default;
 
     ~ToddCoxeter();
 
+    // TODO(0) doc
     explicit ToddCoxeter(congruence_kind knd);
+    // TODO(0) doc
     ToddCoxeter& init(congruence_kind knd);
 
+    // TODO(0) doc
     ToddCoxeter(congruence_kind knd, Presentation<word_type>&& p);
+    // TODO(0) doc
     ToddCoxeter& init(congruence_kind knd, Presentation<word_type>&& p);
 
+    // TODO(0) doc
     ToddCoxeter(congruence_kind knd, Presentation<word_type> const& p);
+    // TODO(0) doc
     ToddCoxeter& init(congruence_kind knd, Presentation<word_type> const& p);
 
     // This is a constructor and not a helper so that everything that takes a
     // presentation has the same constructors, regardless of what they use
     // inside.
+    // TODO(0) doc
     template <typename Word>
     ToddCoxeter(congruence_kind knd, Presentation<Word> const& p)
         : ToddCoxeter(knd, to_presentation<word_type>(p)) {}
 
+    // TODO(0) doc
     template <typename Word>
     ToddCoxeter& init(congruence_kind knd, Presentation<Word> const& p) {
       init(knd, to_presentation<word_type>(p));
       return *this;
     }
 
+    // TODO(0) doc
     template <typename Node>
     ToddCoxeter(congruence_kind knd, WordGraph<Node> const& ad)
         : ToddCoxeter(knd) {
@@ -295,6 +320,7 @@ namespace libsemigroups {
       _word_graph.report_prefix("ToddCoxeter");
     }
 
+    // TODO(0) doc
     template <typename Node>
     ToddCoxeter& init(congruence_kind knd, WordGraph<Node> const& ad) {
       init(knd);
@@ -303,34 +329,17 @@ namespace libsemigroups {
       return *this;
     }
 
-    // init version?
-    // TODO(0) why does this exist?
-    template <typename Node>
-    ToddCoxeter(congruence_kind                knd,
-                Presentation<word_type> const& p,
-                WordGraph<Node> const&         ad) {
-      init(knd, p, ad);
-    }
-
-    // TODO(0) why does this exist?
-    template <typename Node>
-    ToddCoxeter& init(congruence_kind                knd,
-                      Presentation<word_type> const& p,
-                      WordGraph<Node> const&         ad) {
-      init(knd, p);
-      _word_graph = ad;
-      _word_graph.presentation(p);
-      _word_graph.report_prefix("ToddCoxeter");
-      return *this;
-    }
-
+    // TODO(0) doc
     ToddCoxeter(congruence_kind knd, ToddCoxeter const& tc);
+    // TODO(0) doc
     ToddCoxeter& init(congruence_kind knd, ToddCoxeter const& tc);
 
     ////////////////////////////////////////////////////////////////////////
     // CongruenceInterface - pure virtual - public
     ////////////////////////////////////////////////////////////////////////
 
+    // TODO(0) doc
+    // TODO(0) change to iterators
     [[nodiscard]] bool contains(word_type const& lhs,
                                 word_type const& rhs) override;
 
@@ -779,29 +788,36 @@ namespace libsemigroups {
     // ToddCoxeter - accessors - public
     ////////////////////////////////////////////////////////////////////////
 
+    // TODO(0) doc
     Presentation<word_type> const& presentation() const noexcept {
       return _word_graph.presentation();
     }
 
+    // TODO(0) doc
     Graph const& word_graph() const noexcept {
       return _word_graph;
     }
 
+    // TODO(0) doc
     Forest const& spanning_tree() const noexcept {
       return _forest;
     }
 
+    // TODO(0) doc
     inline Order standardization_order() const noexcept {
       return _standardized;
     }
 
+    // TODO(0) doc
     bool is_standardized(Order val) const;
+    // TODO(0) doc
     bool is_standardized() const;
 
     ////////////////////////////////////////////////////////////////////////
     // ToddCoxeter - modifiers - public
     ////////////////////////////////////////////////////////////////////////
 
+    // TODO(0) doc
     void shrink_to_fit();
 
     // Returns true if anything changed
@@ -824,11 +840,18 @@ namespace libsemigroups {
     // recursive
     bool standardize(Order val);
 
+    // TODO(0) doc
+    // TODO(0) rename class_index
+    // TODO(0) use iterators not word_type
     node_type word_to_class_index(word_type const& w) {
       validate_word(w);
       return word_to_class_index_impl(w);
     }
 
+    // TODO(0) doc
+    // TODO(0) rename to_word
+    // TODO(0) use iterators not word_type
+    // TODO(0) to cpp file
     word_type class_index_to_word(node_type i) {
       if (i >= number_of_classes()) {
         LIBSEMIGROUPS_EXCEPTION("invalid class index, expected a value in "
@@ -839,6 +862,10 @@ namespace libsemigroups {
       return class_index_to_word_impl(i);
     }
 
+    // TODO(0) doc
+    // TODO(0) rename current_contains or currently_contains
+    // TODO(0) use iterators not word_type
+    // TODO(0) to cpp file
     tril const_contains(word_type const& u, word_type const& v) const {
       if (u == v) {
         return tril::TRUE;
@@ -865,6 +892,8 @@ namespace libsemigroups {
     // stop_early indicates that if too few nodes are killed in 1 second, then
     // the lookahead aborts, this should not happen if we are doing a final
     // lookahead because we skipped some deductions
+    // TODO(0) doc
+    // TODO(0) change to taking a function
     void perform_lookahead(bool stop_early);
 
    private:
@@ -930,11 +959,14 @@ namespace libsemigroups {
   namespace todd_coxeter {
     using node_type = typename ToddCoxeter::node_type;
 
+    // TODO(0) doc
     inline auto class_of(ToddCoxeter& tc, node_type n) {
       size_t const offset = (tc.presentation().contains_empty_word() ? 0 : 1);
       return Paths(tc.word_graph()).source(0).target(n + offset);
     }
 
+    // TODO(0) doc
+    // TODO(0) iterator version
     inline auto class_of(ToddCoxeter& tc, word_type const& w) {
       return class_of(tc, tc.word_to_class_index(w));
     }
@@ -958,16 +990,20 @@ namespace libsemigroups {
                  [&tc](auto i) { return tc.class_index_to_word(i); });
     }
 
+    // TODO(0) doc
     inline word_type normal_form(ToddCoxeter& tc, word_type const& w) {
       return tc.class_index_to_word(tc.word_to_class_index(w));
     }
 
+    // TODO(0) doc
     std::vector<std::vector<word_type>> non_trivial_classes(ToddCoxeter& tc1,
                                                             ToddCoxeter& tc2);
 
+    // TODO(0) doc
     uint64_t number_of_idempotents(ToddCoxeter& tc);
 
-    // TODO range version
+    // TODO(0) doc
+    // TODO(1) range version
     template <typename Iterator>
     std::pair<Iterator, Iterator> first_equivalent_pair(ToddCoxeter& tc,
                                                         Iterator     first,
@@ -983,6 +1019,7 @@ namespace libsemigroups {
       return std::pair(last, last);
     }
 
+    // TODO(0) doc
     template <typename Iterator>
     bool is_traversal(ToddCoxeter& tc, Iterator first, Iterator last) {
       return first_equivalent_pair(tc, first, last) == std::pair(last, last);
@@ -1015,7 +1052,7 @@ namespace libsemigroups {
     //! \param threshold the threshold (see description).
     //!
     //! \returns A value of type \ref tril
-    // TODO redo the doc
+    // TODO(0) redo the doc
     tril is_non_trivial(ToddCoxeter&              tc,
                         size_t                    tries = 10,
                         std::chrono::milliseconds try_for
@@ -1023,6 +1060,8 @@ namespace libsemigroups {
                         float threshold = 0.99);
 
     // FIXME run_for seems to not function properly here.
+    // TODO(0) doc
+    // TODO(0) out of line this
     template <typename Word, typename Time>
     [[nodiscard]] auto redundant_rule(Presentation<Word> const& p, Time t) {
       constexpr static congruence_kind twosided = congruence_kind::twosided;
@@ -1050,6 +1089,10 @@ namespace libsemigroups {
 
   }  // namespace todd_coxeter
 
+  // TODO(0) to_human_readable_repr
+
+  // TODO(0) doc
+  // TODO(0) out of line
   template <typename Range,
             typename = std::enable_if_t<rx::is_input_or_sink_v<Range>>>
   std::vector<std::vector<word_type>> partition(ToddCoxeter& tc, Range r) {

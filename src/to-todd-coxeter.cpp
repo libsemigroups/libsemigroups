@@ -34,8 +34,8 @@
 namespace libsemigroups {
 
   ToddCoxeter to_todd_coxeter(congruence_kind knd, FroidurePinBase& fp) {
-    using node_type         = typename ToddCoxeter::digraph_type::node_type;
-    using label_type        = typename ToddCoxeter::digraph_type::label_type;
+    using node_type         = typename ToddCoxeter::word_graph_type::node_type;
+    using label_type        = typename ToddCoxeter::word_graph_type::label_type;
     using cayley_graph_type = typename FroidurePinBase::cayley_graph_type;
 
     cayley_graph_type const* ad;
