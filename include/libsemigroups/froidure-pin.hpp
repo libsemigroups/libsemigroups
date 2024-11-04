@@ -1543,7 +1543,7 @@ namespace libsemigroups {
     //! \brief Returns a const iterator pointing to the first element (sorted
     //! by Less).
     //!
-    //! This function returns a const iterator pointing to the first element 
+    //! This function returns a const iterator pointing to the first element
     //! (sorted by Less).
     //!
     //! \returns A value of type \ref const_iterator_sorted.
