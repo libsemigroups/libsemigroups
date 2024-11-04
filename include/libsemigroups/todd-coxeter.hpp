@@ -130,13 +130,14 @@ namespace libsemigroups {
 
    private:
     struct Settings;
+
+    class SettingsGuard;
+    friend class SettingsGuard;
+
     // This function has prefix tc_ because there's already a settings function
     // in a base class
     Settings&       tc_settings();
     Settings const& tc_settings() const;
-
-    class SettingsGuard;
-    friend class SettingsGuard;
 
     class Definitions {
       using Definition = std::pair<node_type, label_type>;

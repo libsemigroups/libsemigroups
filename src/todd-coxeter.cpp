@@ -28,6 +28,12 @@
 
 namespace libsemigroups {
 
+  using node_type = typename ToddCoxeter::node_type;
+
+  ////////////////////////////////////////////////////////////////////////
+  // ToddCoxeter::Settings
+  ////////////////////////////////////////////////////////////////////////
+
   struct ToddCoxeter::Settings {
     size_t                    def_max;
     options::def_policy       def_policy;
@@ -84,7 +90,22 @@ namespace libsemigroups {
       use_relations_in_extra     = false;
       return *this;
     }
-  };
+  };  // class ToddCoxeter::Settings
+
+  ToddCoxeter::Settings& ToddCoxeter::tc_settings() {
+    LIBSEMIGROUPS_ASSERT(!_setting_stack.empty());
+    return *_setting_stack.back();
+  }
+
+  ToddCoxeter::Settings const& ToddCoxeter::tc_settings() const {
+    LIBSEMIGROUPS_ASSERT(!_setting_stack.empty());
+    return *_setting_stack.back();
+  }
+
+  ////////////////////////////////////////////////////////////////////////
+  // ToddCoxeter::SettingsGuard
+  ////////////////////////////////////////////////////////////////////////
+
   class ToddCoxeter::SettingsGuard {
     ToddCoxeter* _tc;
 
@@ -96,19 +117,7 @@ namespace libsemigroups {
       _tc->_setting_stack.pop_back();
       LIBSEMIGROUPS_ASSERT(!_tc->_setting_stack.empty());
     }
-  };
-
-  using node_type = typename ToddCoxeter::node_type;
-
-  ToddCoxeter::Settings& ToddCoxeter::tc_settings() {
-    LIBSEMIGROUPS_ASSERT(!_setting_stack.empty());
-    return *_setting_stack.back();
-  }
-
-  ToddCoxeter::Settings const& ToddCoxeter::tc_settings() const {
-    LIBSEMIGROUPS_ASSERT(!_setting_stack.empty());
-    return *_setting_stack.back();
-  }
+  };  // class ToddCoxeter::SettingsGuard
 
   ////////////////////////////////////////////////////////////////////////
   // ToddCoxeter::Graph
@@ -235,7 +244,7 @@ namespace libsemigroups {
   }
 
   ////////////////////////////////////////////////////////////////////////
-  // Definitions
+  // ToddCoxeter::Definitions
   ////////////////////////////////////////////////////////////////////////
 
   void ToddCoxeter::Definitions::emplace_back(node_type c, label_type x) {
@@ -243,7 +252,7 @@ namespace libsemigroups {
 
     if (_tc == nullptr  // this can be the case if for example we're
                         // in the FelschGraph constructor from
-                        // WordGraph, in that case we any want
+                        // WordGraph, in that case we always want
                         // all of the definitions
         || _tc->def_policy() == def_policy::unlimited
         || _definitions.size() < _tc->def_max()) {
