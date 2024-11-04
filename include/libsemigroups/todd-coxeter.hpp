@@ -209,14 +209,14 @@ namespace libsemigroups {
 
       void process_definitions();
 
-      // TODO noexcept specification correct?
+      // TODO(0) noexcept specification correct?
       template <bool RegDefs>
       void push_definition_hlt(node_type const& c,
                                word_type const& u,
                                word_type const& v) noexcept;
 
-      // TODO don't think this needs to be a member function at all so, we can
-      // move the declaration in to the cpp file
+      // TODO(0) don't think this needs to be a member function at all so, we
+      // can move the declaration in to the cpp file
       template <typename Iterator>
       size_t make_compatible(node_type& current,
                              Iterator   first,
@@ -291,7 +291,7 @@ namespace libsemigroups {
     }
 
     // init version?
-    // TODO why does this exist?
+    // TODO(0) why does this exist?
     template <typename Node>
     ToddCoxeter(congruence_kind                knd,
                 Presentation<word_type> const& p,
@@ -299,7 +299,7 @@ namespace libsemigroups {
       init(knd, p, ad);
     }
 
-    // TODO why does this exist?
+    // TODO(0) why does this exist?
     template <typename Node>
     ToddCoxeter& init(congruence_kind                knd,
                       Presentation<word_type> const& p,
@@ -321,7 +321,7 @@ namespace libsemigroups {
     [[nodiscard]] bool contains(word_type const& lhs,
                                 word_type const& rhs) override;
 
-    // TODO  remove since it falls right through
+    // TODO(0)  remove since it falls right through
     [[nodiscard]] uint64_t number_of_classes() override {
       return number_of_classes_impl();
     }
@@ -447,7 +447,7 @@ namespace libsemigroups {
       return *this;
     }
 
-    // TODO doc
+    // TODO(0) doc
     ToddCoxeter& lookahead_extent(options::lookahead_extent val) noexcept {
       _settings.lookahead_extent = val;
       return *this;
@@ -466,7 +466,7 @@ namespace libsemigroups {
       return _settings.lookahead_style;
     }
 
-    // TODO doc
+    // TODO(0) doc
     [[nodiscard]] options::lookahead_extent lookahead_extent() const noexcept {
       return _settings.lookahead_extent;
     }
@@ -816,11 +816,11 @@ namespace libsemigroups {
     void shrink_to_fit();
 
     // Returns true if anything changed
-    // TODO: The documentation for Order used to contain a description of what
-    // each order means with respect to this function. However, the Order enum
-    // is now used in other places, so those descriptions should be written here
-    // instead. That documentation is placed here for reference:
-    //! No standardization has been done.
+    // TODO:(0) The documentation for Order used to contain a description of
+    // what each order means with respect to this function. However, the Order
+    // enum is now used in other places, so those descriptions should be written
+    // here instead. That documentation is placed here for reference:
+    // No standardization has been done.
     // none = 0,
     // Normal forms are the short-lex least word belonging to a given
     // congruence class.
@@ -895,7 +895,7 @@ namespace libsemigroups {
     // CongruenceInterface - pure virtual member functions - private
     ////////////////////////////////////////////////////////////////////////
 
-    // TODO all of these should be public and called _no_checks
+    // TODO(0) all of these should be public and called _no_checks
     word_type class_index_to_word_impl(node_type i);
 
     uint64_t number_of_classes_impl();
@@ -965,7 +965,7 @@ namespace libsemigroups {
     //!
     //! \exceptions
     //! \no_libsemigroups_except
-    // TODO(refactor): redo the doc
+    // TODO(0): redo the doc
     inline auto normal_forms(ToddCoxeter& tc) {
       return rx::seq() | rx::take(tc.number_of_classes())
              | rx::transform(

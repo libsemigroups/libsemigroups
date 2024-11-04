@@ -36,7 +36,7 @@ namespace libsemigroups {
   ToddCoxeter::Digraph::init(Presentation<word_type> const& p) {
     NodeManager<node_type>::clear();
     FelschGraph_::init(p);
-    // FIXME shouldn't add nodes here because then there'll be more than
+    // FIXME(0) shouldn't add nodes here because then there'll be more than
     // there should be (i.e. NodeManager and FelschGraph_ will have
     // different numbers of nodes
     FelschGraph_::add_nodes(NodeManager<node_type>::node_capacity());
@@ -47,7 +47,7 @@ namespace libsemigroups {
   ToddCoxeter::Digraph::init(Presentation<word_type>&& p) {
     NodeManager<node_type>::clear();
     FelschGraph_::init(std::move(p));
-    // FIXME shouldn't add nodes here because then there'll be more than
+    // FIXME(0) shouldn't add nodes here because then there'll be more than
     // there should be (i.e. NodeManager and FelschGraph_ will have
     // different numbers of nodes
     FelschGraph_::add_nodes(NodeManager<node_type>::node_capacity());
@@ -121,7 +121,7 @@ namespace libsemigroups {
     CollectCoincidences                    incompat(_coinc);
     typename FelschGraph_::NoPreferredDefs prefdefs;
     while (current != NodeManager<node_type>::first_free_node()) {
-      // TODO(later) when we have an RuleIterator into the active nodes, we
+      // TODO(1) when we have an RuleIterator into the active nodes, we
       // should remove the while loop, and use that in make_compatible
       // instead. At present there is a cbegin/cend_active_nodes in
       // NodeManager but the RuleIterators returned by them are invalidated by
@@ -135,7 +135,7 @@ namespace libsemigroups {
       process_coincidences<detail::DoNotRegisterDefs>();
       current = NodeManager<node_type>::next_active_node(current);
       // if (stop_early && t > std::chrono::seconds(1)) {
-      // TODO setting for this
+      // TODO(0) stop_early should be a function
       //  size_t killed_last_second
       //      = number_of_nodes_killed() - stats().prev_nodes_killed;
       //  if (killed_last_second < number_of_nodes_active() / 100) {
@@ -205,7 +205,7 @@ namespace libsemigroups {
   // ToddCoxeter - constructors + initializers - public
   ////////////////////////////////////////////////////////////////////////
 
-  // TODO remove overlap between these, and ensure that thye really work
+  // TODO(0) remove overlap between these, and ensure that they really work
 
   ToddCoxeter::ToddCoxeter()
       : CongruenceInterface(),
@@ -279,7 +279,7 @@ namespace libsemigroups {
         _settings(),
         _standardized(Order::none),
         _word_graph() {
-    p.validate();  // TODO this is probably missing all over the place here
+    p.validate();  // TODO(0) this is probably missing all over the place here
     if (knd == congruence_kind::left) {
       Presentation<word_type> pp(p);
       presentation::reverse(pp);
@@ -464,14 +464,14 @@ namespace libsemigroups {
   }
 
   bool ToddCoxeter::is_standardized(Order val) const {
-    // TODO this is probably not always valid
+    // TODO(0) this is probably not always valid
     return val == _standardized
            && _forest.number_of_nodes()
                   == word_graph().number_of_nodes_active();
   }
 
   bool ToddCoxeter::is_standardized() const {
-    // TODO this is probably not always valid, i.e. if we are standardized,
+    // TODO(0) this is probably not always valid, i.e. if we are standardized,
     // then grow, then collapse, but end up with the same number of nodes
     // again.
     return _standardized != Order::none
@@ -538,7 +538,7 @@ namespace libsemigroups {
     if (reporting_enabled()
         && (!running_for()
             || report_every() >= std::chrono::milliseconds(1'500))) {
-      // TODO report_strategy
+      // TODO(0) report_strategy
       auto msg = fmt::format("{:+<90}\n", "");
       msg += fmt_default("ToddCoxeter: Using {} strategy . . .\n", strategy());
       msg += fmt::format("{:+<90}\n", "");
@@ -679,11 +679,10 @@ namespace libsemigroups {
         if (d.number_of_nodes_active() != lower_bound()
             || !word_graph::is_complete(
                 d, d.cbegin_active_nodes(), d.cend_active_nodes())) {
-          // TODO uncomment
+          // TODO(0) uncomment
           // push_settings();
           lookahead_extent(options::lookahead_extent::full);
           lookahead_style(options::lookahead_style::hlt);
-          // TODO this doesn't do
           perform_lookahead(DoNotStopEarly);
           // pop_settings();
           // }
