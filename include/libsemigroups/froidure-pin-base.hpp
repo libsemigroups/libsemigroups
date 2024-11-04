@@ -468,6 +468,8 @@ namespace libsemigroups {
 
     //! \brief Returns the degree of any and all elements.
     //!
+    //! This function returns the degree of any and all elements.
+    //!
     //! \returns
     //! A value of type \c size_t.
     //!
@@ -783,6 +785,9 @@ namespace libsemigroups {
     //! \brief Returns the length of the short-lex least word equal to the
     //! element with given index.
     //!
+    //! This function returns the length of the short-lex least word equal to
+    //! the element with given index.
+    //!
     //! \param pos the position.
     //!
     //! \returns The length of the element with index \p pos.
@@ -803,6 +808,9 @@ namespace libsemigroups {
 
     //! \brief Returns the length of the short-lex least word equal to the
     //! element with given index.
+    //!
+    //! This function returns the length of the short-lex least word equal to
+    //! the element with given index.
     //!
     //! \param pos the position.
     //!
@@ -890,6 +898,8 @@ namespace libsemigroups {
 
     //! \brief Returns the total number of relations in the presentation.
     //!
+    //! This function returns the total number of relations in the presentation.
+    //!
     //! \returns
     //! A value of type `size_t`.
     //!
@@ -910,6 +920,8 @@ namespace libsemigroups {
     }
 
     //! \brief Returns a const reference to the right Cayley graph.
+    //!
+    //! This function returns a const reference to the right Cayley graph.
     //!
     //! \returns A const reference to \ref cayley_graph_type.
     //!
@@ -966,6 +978,8 @@ namespace libsemigroups {
     }
 
     //! \brief Returns a const reference to the left Cayley graph.
+    //!
+    //! This function returns a const reference to the left Cayley graph.
     //!
     //! \returns The (possibly partially enumerated) left Cayley graph.
     //!
