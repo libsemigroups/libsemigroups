@@ -33,12 +33,12 @@ namespace libsemigroups {
 
   constexpr bool REPORT = false;
 
-  LIBSEMIGROUPS_TEST_CASE_V3("FroidurePin<Bipartition>",
+  LIBSEMIGROUPS_TEST_CASE_V3("FroidurePin",
                              "000",
-                             "small example 1",
+                             "small example 1 .................. Bipartition",
                              "[quick][froidure-pin][bipartition][bipart]") {
-    auto                     rg = ReportGuard(REPORT);
-    FroidurePin<Bipartition> S  = to_froidure_pin(
+    auto        rg = ReportGuard(REPORT);
+    FroidurePin S  = to_froidure_pin(
         {to_bipartition({{1, 5, 8, -1, -2, -4, -10},
                           {2, 4, 7, -8},
                           {3, 6, 9, 10, -3},
@@ -93,9 +93,9 @@ namespace libsemigroups {
     REQUIRE(std::is_sorted(S.cbegin_sorted(), S.cend_sorted()));
   }
 
-  LIBSEMIGROUPS_TEST_CASE_V3("FroidurePin<Bipartition>",
+  LIBSEMIGROUPS_TEST_CASE_V3("FroidurePin",
                              "001",
-                             "default constructed",
+                             "default constructed .............. Bipartition",
                              "[quick][froidure-pin][bipartition][bipart]") {
     auto rg = ReportGuard(REPORT);
 
@@ -153,9 +153,9 @@ namespace libsemigroups {
     }
   }
 
-  LIBSEMIGROUPS_TEST_CASE_V3("FroidurePin<Bipartition>",
+  LIBSEMIGROUPS_TEST_CASE_V3("FroidurePin",
                              "002",
-                             "small example 2",
+                             "small example 2 - Bipartition",
                              "[quick][froidure-pin][element]") {
     auto                     rg = ReportGuard(REPORT);
     FroidurePin<Bipartition> S;
@@ -196,9 +196,9 @@ namespace libsemigroups {
     REQUIRE(S.contains(y));
   }
 
-  LIBSEMIGROUPS_TEST_CASE_V3("FroidurePin<Bipartition>",
+  LIBSEMIGROUPS_TEST_CASE_V3("FroidurePin",
                              "003",
-                             "number of idempotents",
+                             "number of idempotents - Bipartition",
                              "[extreme][froidure-pin][element]") {
     auto                     rg = ReportGuard();
     FroidurePin<Bipartition> S;
@@ -211,9 +211,9 @@ namespace libsemigroups {
     REQUIRE(S.number_of_idempotents() == 541'254);
   }
 
-  LIBSEMIGROUPS_TEST_CASE_V3("FroidurePin<Bipartition>",
+  LIBSEMIGROUPS_TEST_CASE_V3("FroidurePin",
                              "004",
-                             "exception: is_idempotent",
+                             "exception: is_idempotent - Bipartition",
                              "[quick][froidure-pin][element]") {
     FroidurePin<Bipartition> S;
     S.add_generator(Bipartition(

@@ -27,95 +27,17 @@
 #include "libsemigroups/matrix.hpp"        // for IntMat
 
 namespace libsemigroups {
+  using namespace literals;  // for operator""_w
+
   // Forward declaration
   struct LibsemigroupsException;
 
   constexpr bool REPORT = false;
 
   namespace {
-    template <typename Mat>
-    void test_IntMat000() {
-      auto rg = ReportGuard(REPORT);
-
-      FroidurePin<Mat> S;
-      S.add_generator(Mat({{0, 1}, {0, -1}}));
-      S.add_generator(Mat({{0, 1}, {2, 0}}));
-      REQUIRE(to_human_readable_repr(S)
-              == "<partially enumerated FroidurePin with 2 generators, 2 "
-                 "elements, Cayley graph ⌀ 1, & 0 rules>");
-
-      REQUIRE(Mat({{0, 1}, {0, -1}}) * Mat({{0, 1}, {2, 0}})
-                  * Mat({{0, 1}, {2, 0}})
-              == S.generator(0) * S.generator(1) * S.generator(0));
-      REQUIRE(to_matrix<Mat>({{64, 0}, {-64, 0}})
-              == S.generator(0) * S.generator(1) * S.generator(0)
-                     * S.generator(1) * S.generator(0) * S.generator(1)
-                     * S.generator(0) * S.generator(1) * S.generator(0)
-                     * S.generator(1) * S.generator(0) * S.generator(1));
-
-      S.reserve(10000);
-
-      S.enumerate(10000);
-      REQUIRE(S.finished());
-      REQUIRE(S.current_size() == 631);
-      size_t pos = 0;
-
-      for (auto it = S.cbegin(); it < S.cend(); ++it) {
-        REQUIRE(S.position(*it) == pos);
-        pos++;
-      }
-      S.enumerate(1000000);
-      REQUIRE(S.current_size() == 631);
-      REQUIRE(to_human_readable_repr(S)
-              == "<fully enumerated FroidurePin with 2 generators, 631 "
-                 "elements, Cayley graph ⌀ 128, & 7 rules>");
-      REQUIRE(froidure_pin::minimal_factorisation(S,
-                                                  Mat({{0, 1}, {0, -1}})
-                                                      * Mat({{0, 1}, {2, 0}})
-                                                      * Mat({{0, 1}, {2, 0}}))
-              == word_type({0, 1, 0}));
-      REQUIRE(froidure_pin::minimal_factorisation(S, 52)
-              == word_type({0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1}));
-      REQUIRE(S.at(52) == Mat({{64, 0}, {-64, 0}}));
-      REQUIRE_THROWS_AS(froidure_pin::minimal_factorisation(S, 1000000000),
-                        LibsemigroupsException);
-    }
 
     template <typename Mat>
-    void test_IntMat001() {
-      auto             rg = ReportGuard(REPORT);
-      FroidurePin<Mat> S;
-      S.add_generator(Mat({{0, 0}, {0, 1}}));
-      S.add_generator(Mat({{0, 1}, {-1, 0}}));
-
-      REQUIRE(S.size() == 13);
-      REQUIRE(S.degree() == 2);
-      REQUIRE(S.number_of_idempotents() == 4);
-      REQUIRE(S.number_of_generators() == 2);
-      REQUIRE(S.number_of_rules() == 6);
-      REQUIRE(S[0] == S.generator(0));
-      REQUIRE(S[1] == S.generator(1));
-
-      REQUIRE(S.position(S.generator(0)) == 0);
-      REQUIRE(S.contains(S.generator(0)));
-
-      REQUIRE(S.position(S.generator(1)) == 1);
-      REQUIRE(S.contains(S.generator(1)));
-
-      Mat x({{-2, 2}, {-1, 0}});
-      REQUIRE(S.position(x) == UNDEFINED);
-      REQUIRE(!S.contains(x));
-
-      x.product_inplace_no_checks(S.generator(1), S.generator(1));
-      REQUIRE(S.position(x) == 4);
-      REQUIRE(S.contains(x));
-
-      // x = new MatrixOverSemiring<int64_t>({{-2, 2, 0}, {-1, 0, 0}, {0, 0,
-      // 0}},
-      //                                    sr);
-      // REQUIRE(S.position(x) == UNDEFINED);
-      // REQUIRE(!S.contains(x));
-    }
+    void test_IntMat001() {}
 
     // IntMat
     template <typename Mat>
@@ -124,16 +46,16 @@ namespace libsemigroups {
       T.add_generator(Mat({{0, 0}, {0, 1}}));
       T.add_generator(Mat({{0, 1}, {-1, 0}}));
       REQUIRE(froidure_pin::current_position(T, {}) == UNDEFINED);
-      REQUIRE_NOTHROW(froidure_pin::current_position(T, {0, 0, 1, 1}));
-      REQUIRE(froidure_pin::current_position(T, {0, 0, 1, 1}) == UNDEFINED);
-      auto w = froidure_pin::to_element(T, {0, 0, 1, 1});
+      REQUIRE_NOTHROW(froidure_pin::current_position(T, 0011_w));
+      REQUIRE(froidure_pin::current_position(T, 0011_w) == UNDEFINED);
+      auto w = froidure_pin::to_element(T, 0011_w);
       REQUIRE(T.current_position(w) == UNDEFINED);
-      REQUIRE_THROWS_AS(froidure_pin::current_position(T, {0, 0, 1, 2}),
+      REQUIRE_THROWS_AS(froidure_pin::current_position(T, 0012_w),
                         LibsemigroupsException);
 
       REQUIRE(T.size() == 13);
-      REQUIRE(froidure_pin::current_position(T, {0, 0, 1, 1}) == 6);
-      w = froidure_pin::to_element(T, {0, 0, 1, 1});
+      REQUIRE(froidure_pin::current_position(T, 0011_w) == 6);
+      w = froidure_pin::to_element(T, 0011_w);
       REQUIRE(T.current_position(w) == 6);
     }
 
@@ -208,34 +130,87 @@ namespace libsemigroups {
     }
   }  // namespace
 
-  LIBSEMIGROUPS_TEST_CASE_V3("FroidurePin<IntMat<2, int64_t>>",
-                             "032",
-                             "Example 000",
-                             "[quick][froidure-pin][intmat]") {
+  TEMPLATE_TEST_CASE("FroidurePin: Example 000",
+                     "[032][quick][froidure-pin][intmat]",
+                     (IntMat<0, 0, int64_t>),
+                     (IntMat<2, 2, int64_t>) ) {
     // FIXME this test seemingly causes undefined behaviour (multiplication of
     // signed integers that overflows)
-    test_IntMat000<IntMat<2, 2, int64_t>>();  // Static
+    auto rg = ReportGuard(REPORT);
+
+    FroidurePin<TestType> S;
+    S.add_generator(TestType({{0, 1}, {0, -1}}));
+    S.add_generator(TestType({{0, 1}, {2, 0}}));
+    REQUIRE(to_human_readable_repr(S)
+            == "<partially enumerated FroidurePin with 2 generators, 2 "
+               "elements, Cayley graph ⌀ 1, & 0 rules>");
+
+    REQUIRE(TestType({{0, 1}, {0, -1}}) * TestType({{0, 1}, {2, 0}})
+                * TestType({{0, 1}, {2, 0}})
+            == S.generator(0) * S.generator(1) * S.generator(0));
+    REQUIRE(to_matrix<TestType>({{64, 0}, {-64, 0}})
+            == S.generator(0) * S.generator(1) * S.generator(0) * S.generator(1)
+                   * S.generator(0) * S.generator(1) * S.generator(0)
+                   * S.generator(1) * S.generator(0) * S.generator(1)
+                   * S.generator(0) * S.generator(1));
+
+    S.reserve(10'000);
+
+    S.enumerate(10'000);
+    REQUIRE(S.finished());
+    REQUIRE(S.current_size() == 631);
+    size_t pos = 0;
+
+    for (auto it = S.cbegin(); it < S.cend(); ++it) {
+      REQUIRE(S.position(*it) == pos);
+      pos++;
+    }
+    S.enumerate(1'000'000);
+    REQUIRE(S.current_size() == 631);
+    REQUIRE(to_human_readable_repr(S)
+            == "<fully enumerated FroidurePin with 2 generators, 631 "
+               "elements, Cayley graph ⌀ 128, & 7 rules>");
+    REQUIRE(froidure_pin::minimal_factorisation(
+                S,
+                TestType({{0, 1}, {0, -1}}) * TestType({{0, 1}, {2, 0}})
+                    * TestType({{0, 1}, {2, 0}}))
+            == 010_w);
+    REQUIRE(froidure_pin::minimal_factorisation(S, 52) == 010101010101_w);
+    REQUIRE(S.at(52) == TestType({{64, 0}, {-64, 0}}));
+    REQUIRE_THROWS_AS(froidure_pin::minimal_factorisation(S, 1'000'000'000),
+                      LibsemigroupsException);
   }
 
-  LIBSEMIGROUPS_TEST_CASE_V3("FroidurePin<IntMat<0, int64_t>>",
-                             "033",
-                             "Example 000",
-                             "[quick][froidure-pin][intmat]") {
-    test_IntMat000<IntMat<0, 0, int64_t>>();
-  }
+  TEMPLATE_TEST_CASE("FroidurePin: Example 001",
+                     "[034][quick][froidure-pin][intmat]",
+                     (IntMat<0, 0, int64_t>),
+                     (IntMat<2, 2, int64_t>) ) {
+    auto                  rg = ReportGuard(REPORT);
+    FroidurePin<TestType> S;
+    S.add_generator(TestType({{0, 0}, {0, 1}}));
+    S.add_generator(TestType({{0, 1}, {-1, 0}}));
 
-  LIBSEMIGROUPS_TEST_CASE_V3("FroidurePin<IntMat<2, int64_t>>",
-                             "034",
-                             "Example 001",
-                             "[quick][froidure-pin][intmat]") {
-    test_IntMat001<IntMat<2, 2, int64_t>>();  // Static
-  }
+    REQUIRE(S.size() == 13);
+    REQUIRE(S.degree() == 2);
+    REQUIRE(S.number_of_idempotents() == 4);
+    REQUIRE(S.number_of_generators() == 2);
+    REQUIRE(S.number_of_rules() == 6);
+    REQUIRE(S[0] == S.generator(0));
+    REQUIRE(S[1] == S.generator(1));
 
-  LIBSEMIGROUPS_TEST_CASE_V3("FroidurePin<IntMat<0, int64_t>>",
-                             "035",
-                             "Example 001",
-                             "[quick][froidure-pin][intmat]") {
-    test_IntMat001<IntMat<0, 0, int64_t>>();  // Static
+    REQUIRE(S.position(S.generator(0)) == 0);
+    REQUIRE(S.contains(S.generator(0)));
+
+    REQUIRE(S.position(S.generator(1)) == 1);
+    REQUIRE(S.contains(S.generator(1)));
+
+    TestType x({{-2, 2}, {-1, 0}});
+    REQUIRE(S.position(x) == UNDEFINED);
+    REQUIRE(!S.contains(x));
+
+    x.product_inplace_no_checks(S.generator(1), S.generator(1));
+    REQUIRE(S.position(x) == 4);
+    REQUIRE(S.contains(x));
   }
 
   LIBSEMIGROUPS_TEST_CASE_V3("FroidurePin<IntMat>",
