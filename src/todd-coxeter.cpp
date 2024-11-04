@@ -318,10 +318,7 @@ namespace libsemigroups {
       _setting_stack.back()->init();
     }
     _standardized = Order::none;
-    // This is where we pass through from settings to the
-    // _word_graph.definitions
-    _word_graph.definitions().init(this);
-    _word_graph.report_prefix("ToddCoxeter");
+    copy_settings_into_graph();
     return *this;
   }
 
@@ -346,86 +343,29 @@ namespace libsemigroups {
     return *this;
   }
 
-  ToddCoxeter::ToddCoxeter(congruence_kind knd) : ToddCoxeter() {
-    LIBSEMIGROUPS_ASSERT(!_setting_stack.empty());
-    init(knd);
-  }
-
-  ToddCoxeter& ToddCoxeter::init(congruence_kind knd) {
-    CongruenceInterface::init(knd);
-    _finished = false;
-    _forest.init();
-    LIBSEMIGROUPS_ASSERT(!_setting_stack.empty());
-    _setting_stack.erase(_setting_stack.begin() + 1, _setting_stack.end());
-    _setting_stack.back()->init();
-    _standardized = Order::none;
-    _word_graph.definitions().init(this);
-    _word_graph.report_prefix("ToddCoxeter");
-    return *this;
-  }
-
   ToddCoxeter::ToddCoxeter(congruence_kind knd, Presentation<word_type>&& p)
-      : CongruenceInterface(knd),
-        _finished(false),
-        _forest(),
-        _setting_stack(),
-        _standardized(Order::none),
-        _word_graph() {
-    _setting_stack.push_back(std::make_unique<Settings>());
-    if (knd == congruence_kind::left) {
-      presentation::reverse(p);
-    }
-    _word_graph.init(std::move(p));
-    _word_graph.definitions().init(this);
-    _word_graph.report_prefix("ToddCoxeter");
+      : ToddCoxeter() {
+    init(knd, std::move(p));
   }
 
   ToddCoxeter& ToddCoxeter::init(congruence_kind           knd,
                                  Presentation<word_type>&& p) {
-    init(knd);
+    CongruenceInterface::init(knd);
     if (knd == congruence_kind::left) {
       presentation::reverse(p);
     }
     _word_graph.init(std::move(p));
-    _word_graph.definitions().init(this);
-    _word_graph.report_prefix("ToddCoxeter");
+    copy_settings_into_graph();
     return *this;
   }
 
   ToddCoxeter::ToddCoxeter(congruence_kind                knd,
                            Presentation<word_type> const& p)
-      : CongruenceInterface(knd),
-        _finished(false),
-        _forest(),
-        _setting_stack(),
-        _standardized(Order::none),
-        _word_graph() {
-    p.validate();  // TODO(0) this is probably missing all over the place here
-    _setting_stack.push_back(std::make_unique<Settings>());
-    if (knd == congruence_kind::left) {
-      Presentation<word_type> pp(p);
-      presentation::reverse(pp);
-      _word_graph.init(std::move(pp));
-    } else {
-      _word_graph.init(p);
-    }
-    _word_graph.definitions().init(this);
-    _word_graph.report_prefix("ToddCoxeter");
-  }
+      : ToddCoxeter(knd, Presentation<word_type>(p)) {}
 
   ToddCoxeter& ToddCoxeter::init(congruence_kind                knd,
                                  Presentation<word_type> const& p) {
-    init(knd);
-    if (knd == congruence_kind::left) {
-      Presentation<word_type> pp(p);
-      presentation::reverse(pp);
-      _word_graph.init(std::move(pp));
-    } else {
-      _word_graph.init(p);
-    }
-    _word_graph.definitions().init(this);
-    _word_graph.report_prefix("ToddCoxeter");
-    return *this;
+    return init(knd, Presentation<word_type>(p));
   }
 
   ToddCoxeter::ToddCoxeter(congruence_kind knd, ToddCoxeter const& tc)
@@ -434,7 +374,6 @@ namespace libsemigroups {
   }
 
   ToddCoxeter& ToddCoxeter::init(congruence_kind knd, ToddCoxeter const& tc) {
-    init(knd);
     if (tc.kind() != congruence_kind::twosided && knd != tc.kind()) {
       LIBSEMIGROUPS_EXCEPTION(
           "incompatible types of congruence, found ({} / {}) but only (left "
@@ -442,7 +381,10 @@ namespace libsemigroups {
           tc.kind(),
           knd);
     }
+    CongruenceInterface::init(knd);
     _word_graph.init(tc.presentation());
+    copy_settings_into_graph();  // TODO shouldn't there be one of these prior
+                                 // to every run?
     auto& rules = _word_graph.presentation().rules;
     rules.insert(rules.end(),
                  tc.generating_pairs().cbegin(),
@@ -450,8 +392,6 @@ namespace libsemigroups {
     if (kind() == congruence_kind::left && tc.kind() != congruence_kind::left) {
       presentation::reverse(_word_graph.presentation());
     }
-    _word_graph.definitions().init(this);
-    _word_graph.report_prefix("ToddCoxeter");
     return *this;
   }
 

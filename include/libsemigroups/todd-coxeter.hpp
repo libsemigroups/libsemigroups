@@ -244,10 +244,12 @@ namespace libsemigroups {
     Order                                  _standardized;
     Graph                                  _word_graph;
 
-    // TODO(0) remove
-    explicit ToddCoxeter(congruence_kind knd);
-    // TODO(0) remove
-    ToddCoxeter& init(congruence_kind knd);
+    void copy_settings_into_graph() {
+      // This is where we pass through from settings to the
+      // _word_graph.definitions
+      _word_graph.definitions().init(this);
+      _word_graph.report_prefix("ToddCoxeter");
+    }
 
    public:
     // TODO(0) use this everywhere
@@ -290,19 +292,19 @@ namespace libsemigroups {
 
     // TODO(0) doc
     template <typename Node>
-    ToddCoxeter(congruence_kind knd, WordGraph<Node> const& ad)
-        : ToddCoxeter(knd) {
-      _word_graph = ad;
-      _word_graph.presentation().alphabet(ad.out_degree());
-      _word_graph.report_prefix("ToddCoxeter");
+    ToddCoxeter(congruence_kind knd, WordGraph<Node> const& wg)
+        : ToddCoxeter() {
+      init(knd, wg);
     }
 
     // TODO(0) doc
     template <typename Node>
-    ToddCoxeter& init(congruence_kind knd, WordGraph<Node> const& ad) {
-      init(knd);
-      _word_graph = ad;
-      _word_graph.presentation().alphabet(ad.out_degree());
+    ToddCoxeter& init(congruence_kind knd, WordGraph<Node> const& wg) {
+      CongruenceInterface::init(knd);
+      _word_graph = wg;
+      _word_graph.presentation().alphabet(wg.out_degree());
+      _word_graph.definitions().init(this);
+      _word_graph.report_prefix("ToddCoxeter");
       return *this;
     }
     // TODO(0) doc
@@ -316,16 +318,16 @@ namespace libsemigroups {
     template <typename Node>
     ToddCoxeter(congruence_kind                knd,
                 Presentation<word_type> const& p,
-                WordGraph<Node> const&         ad) {
-      init(knd, p, ad);
+                WordGraph<Node> const&         wg) {
+      init(knd, p, wg);
     }
 
     template <typename Node>
     ToddCoxeter& init(congruence_kind                knd,
                       Presentation<word_type> const& p,
-                      WordGraph<Node> const&         ad) {
+                      WordGraph<Node> const&         wg) {
       init(knd, p);
-      _word_graph = ad;
+      _word_graph = wg;
       _word_graph.presentation(p);
       _word_graph.report_prefix("ToddCoxeter");
       return *this;
