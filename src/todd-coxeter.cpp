@@ -350,6 +350,7 @@ namespace libsemigroups {
 
   ToddCoxeter& ToddCoxeter::init(congruence_kind           knd,
                                  Presentation<word_type>&& p) {
+    init();
     CongruenceInterface::init(knd);
     if (knd == congruence_kind::left) {
       presentation::reverse(p);
