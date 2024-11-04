@@ -29,19 +29,20 @@
 #define LIBSEMIGROUPS_TODD_COXETER_HPP_
 
 #include "cong-intf.hpp"
-#include "exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
-#include "obvinf.hpp"     // for is_obviously_infinite
-#include "order.hpp"      // for order
-#include "paths.hpp"
+#include "exception.hpp"        // for LIBSEMIGROUPS_EXCEPTION
+#include "obvinf.hpp"           // for is_obviously_infinite
+#include "order.hpp"            // for order
+#include "paths.hpp"            // for Paths
 #include "presentation.hpp"     // for Presentation
-#include "to-presentation.hpp"  // for make
+#include "to-presentation.hpp"  // for to_presentation
 #include "types.hpp"            // for word_type
 
 #include "detail/felsch-graph.hpp"        // for FelschGraph
-#include "detail/node-managed-graph.hpp"  // for Digraph
+#include "detail/node-managed-graph.hpp"  // for NodeManagedGraph
 #include "detail/report.hpp"              // for LIBSEMIGROUPS_EXCEPTION
 
 namespace libsemigroups {
+  // TODO(0) doc
   class ToddCoxeter : public CongruenceInterface,
                       public detail::FelschGraphSettings<ToddCoxeter> {
     using FelschGraphSettings_ = FelschGraphSettings<ToddCoxeter>;
@@ -58,7 +59,9 @@ namespace libsemigroups {
 
     using Reporter::report_every;
 
+    // TODO(0) doc
     struct options : public FelschGraphSettings_::options {
+      // TODO(0) doc
       enum class strategy {
         hlt,
         felsch,
@@ -90,8 +93,14 @@ namespace libsemigroups {
         //! new nodes are defined, and then the HLT strategy is run.
         Rc
       };
+
+      // TODO(0) doc
       enum class lookahead_extent { full, partial };
+
+      // TODO(0) doc
       enum class lookahead_style { hlt, felsch };
+
+      // TODO(0) doc
       enum class def_policy : uint8_t {
         //! Do not put newly generated definitions in the stack if the stack
         //! already has size max_definitions().
@@ -144,12 +153,14 @@ namespace libsemigroups {
 
      public:
       Definitions() : _any_skipped(false), _definitions(), _tc(nullptr) {}
+      // TODO(0) init()
 
       Definitions(Definitions const&)                 = default;
       Definitions(Definitions&&)                      = default;
       Definitions& operator=(Definitions const& that) = default;
       Definitions& operator=(Definitions&&)           = default;
 
+      // TODO(0) corresponding constructor
       void init(ToddCoxeter const* tc) {
         _any_skipped = false;
         _definitions.clear();
@@ -181,8 +192,8 @@ namespace libsemigroups {
       }
     };  // Definitions
 
-    class Digraph : public detail::NodeManagedGraph<
-                        detail::FelschGraph<word_type, uint32_t, Definitions>> {
+    class Graph : public detail::NodeManagedGraph<
+                      detail::FelschGraph<word_type, uint32_t, Definitions>> {
       using FelschGraph_
           = detail::FelschGraph<word_type, uint32_t, Definitions>;
       using NodeManagedGraph_ = NodeManagedGraph<FelschGraph_>;
@@ -190,13 +201,14 @@ namespace libsemigroups {
      public:
       using node_type = typename NodeManagedGraph_::node_type;
 
-      Digraph()                          = default;
-      Digraph(Digraph const&)            = default;
-      Digraph(Digraph&&)                 = default;
-      Digraph& operator=(Digraph const&) = default;
-      Digraph& operator=(Digraph&&)      = default;
+      Graph()                        = default;
+      Graph(Graph const&)            = default;
+      Graph(Graph&&)                 = default;
+      Graph& operator=(Graph const&) = default;
+      Graph& operator=(Graph&&)      = default;
+      // TODO(0) init()
 
-      Digraph& operator=(WordGraph<node_type> const& wg) {
+      Graph& operator=(WordGraph<node_type> const& wg) {
         NodeManagedGraph_::operator=(wg);
         return *this;
       }
@@ -204,8 +216,9 @@ namespace libsemigroups {
       using FelschGraph_::target_no_checks;
       using NodeManagedGraph_::NodeManagedGraph;
 
-      Digraph& init(Presentation<word_type> const& p);
-      Digraph& init(Presentation<word_type>&& p);
+      // TODO(0) corresponding constructors
+      Graph& init(Presentation<word_type> const& p);
+      Graph& init(Presentation<word_type>&& p);
 
       void process_definitions();
 
@@ -233,10 +246,10 @@ namespace libsemigroups {
     Forest   _forest;
     Settings _settings;
     Order    _standardized;
-    Digraph  _word_graph;
+    Graph    _word_graph;
 
    public:
-    using digraph_type = Digraph;
+    using digraph_type = Graph;
 
     ////////////////////////////////////////////////////////////////////////
     // ToddCoxeter - constructors + initializers - public
@@ -353,9 +366,6 @@ namespace libsemigroups {
 
     //! The current value of the definition policy setting.
     //!
-    //! \parameters
-    //! (None)
-    //!
     //! \returns The current value of the setting, a value of type
     //! ``options::definitions``.
     //!
@@ -388,9 +398,6 @@ namespace libsemigroups {
     //! The current value of the setting for the maximum number of
     //! definitions.
     //!
-    //! \parameters
-    //! (None)
-    //!
     //! \returns The current value of the setting, a value of type
     //! ``size_t``.
     //!
@@ -416,9 +423,6 @@ namespace libsemigroups {
     ToddCoxeter& strategy(options::strategy val);
 
     //! The current strategy for enumeration.
-    //!
-    //! \parameters
-    //! (None)
     //!
     //! \returns The current strategy, a value of type options::strategy.
     //!
@@ -454,9 +458,6 @@ namespace libsemigroups {
     }
 
     //! The current value of the setting for lookaheads.
-    //!
-    //! \parameters
-    //! (None)
     //!
     //! \returns A value of type options::lookahead.
     //!
@@ -642,9 +643,6 @@ namespace libsemigroups {
 
     //! The current value of the setting for using relations.
     //!
-    //! \parameters
-    //! (None)
-    //!
     //! \returns The current value of the setting, a value of type ``bool``.
     //!
     //! \exceptions
@@ -717,9 +715,6 @@ namespace libsemigroups {
 
     //! The current value of the large collapse setting.
     //!
-    //! \parameters
-    //! (None)
-    //!
     //! \returns The current value of the setting, a value of type
     //! ``size_t``.
     //!
@@ -745,9 +740,6 @@ namespace libsemigroups {
     ToddCoxeter& f_defs(size_t val);
 
     //! The current value of the f_defs setting.
-    //!
-    //! \parameters
-    //! (None)
     //!
     //! \returns The current value of the setting, a value of type
     //! ``size_t``.
@@ -776,9 +768,6 @@ namespace libsemigroups {
 
     //! The current value of the hlt_defs setting.
     //!
-    //! \parameters
-    //! (None)
-    //!
     //! \returns The current value of the setting, a value of type
     //! ``size_t``.
     //!
@@ -794,7 +783,7 @@ namespace libsemigroups {
       return _word_graph.presentation();
     }
 
-    Digraph const& word_graph() const noexcept {
+    Graph const& word_graph() const noexcept {
       return _word_graph;
     }
 
@@ -957,9 +946,6 @@ namespace libsemigroups {
     //! class of the congruence represented by an instance of ToddCoxeter.
     //! The order of the classes, and the normal form, that is returned are
     //! controlled by standardize(Order).
-    //!
-    //! \parameters
-    //! (None)
     //!
     //! \returns A value of type \ref normal_form_iterator.
     //!

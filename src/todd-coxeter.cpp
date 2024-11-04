@@ -29,11 +29,11 @@ namespace libsemigroups {
   using node_type = typename ToddCoxeter::node_type;
 
   ////////////////////////////////////////////////////////////////////////
-  // Digraph
+  // Graph
   ////////////////////////////////////////////////////////////////////////
 
-  ToddCoxeter::Digraph&
-  ToddCoxeter::Digraph::init(Presentation<word_type> const& p) {
+  ToddCoxeter::Graph&
+  ToddCoxeter::Graph::init(Presentation<word_type> const& p) {
     NodeManager<node_type>::clear();
     FelschGraph_::init(p);
     // FIXME(0) shouldn't add nodes here because then there'll be more than
@@ -43,8 +43,7 @@ namespace libsemigroups {
     return *this;
   }
 
-  ToddCoxeter::Digraph&
-  ToddCoxeter::Digraph::init(Presentation<word_type>&& p) {
+  ToddCoxeter::Graph& ToddCoxeter::Graph::init(Presentation<word_type>&& p) {
     NodeManager<node_type>::clear();
     FelschGraph_::init(std::move(p));
     // FIXME(0) shouldn't add nodes here because then there'll be more than
@@ -54,7 +53,7 @@ namespace libsemigroups {
     return *this;
   }
 
-  void ToddCoxeter::Digraph::process_definitions() {
+  void ToddCoxeter::Graph::process_definitions() {
     CollectCoincidences incompat(_coinc);
     NoPreferredDefs     pref_defs;
 
@@ -72,9 +71,9 @@ namespace libsemigroups {
   }
 
   template <bool RegDefs>
-  void ToddCoxeter::Digraph::push_definition_hlt(node_type const& c,
-                                                 word_type const& u,
-                                                 word_type const& v) noexcept {
+  void ToddCoxeter::Graph::push_definition_hlt(node_type const& c,
+                                               word_type const& u,
+                                               word_type const& v) noexcept {
     LIBSEMIGROUPS_ASSERT(NodeManager<node_type>::is_active_node(c));
 
     node_type   x, y;
@@ -111,10 +110,10 @@ namespace libsemigroups {
   }
 
   template <typename RuleIterator>
-  size_t ToddCoxeter::Digraph::make_compatible(node_type&   current,
-                                               RuleIterator first,
-                                               RuleIterator last,
-                                               bool         stop_early) {
+  size_t ToddCoxeter::Graph::make_compatible(node_type&   current,
+                                             RuleIterator first,
+                                             RuleIterator last,
+                                             bool         stop_early) {
     detail::Timer t;
     size_t const  old_number_of_killed
         = NodeManager<node_type>::number_of_nodes_killed();
