@@ -28,9 +28,18 @@
 
 namespace libsemigroups {
 
-  namespace {
-    struct SettingsGuard {};
-  }  // namespace
+  class ToddCoxeter::SettingsGuard {
+    ToddCoxeter* _tc;
+
+   public:
+    SettingsGuard(ToddCoxeter* tc) : _tc(tc) {
+      _tc->_setting_stack.push_back(std::make_unique<Settings>());
+    }
+    ~SettingsGuard() {
+      _tc->_setting_stack.pop_back();
+      LIBSEMIGROUPS_ASSERT(!_tc->_setting_stack.empty());
+    }
+  };
 
   using node_type = typename ToddCoxeter::node_type;
 
@@ -770,13 +779,10 @@ namespace libsemigroups {
         if (d.number_of_nodes_active() != lower_bound()
             || !word_graph::is_complete(
                 d, d.cbegin_active_nodes(), d.cend_active_nodes())) {
-          // TODO(0) uncomment
-          // pushtc_settings()();
+          SettingsGuard guard(this);
           lookahead_extent(options::lookahead_extent::full);
           lookahead_style(options::lookahead_style::hlt);
           perform_lookahead(DoNotStopEarly);
-          // poptc_settings()();
-          // }
         }
       }
       _word_graph.report_progress_from_thread();
@@ -837,8 +843,8 @@ namespace libsemigroups {
   }
 
   void ToddCoxeter::CR_style() {
-    size_t N = presentation::length(presentation());
-    // pushtc_settings()();
+    SettingsGuard guard(this);
+    size_t        N = presentation::length(presentation());
     while (!finished()) {
       strategy(options::strategy::felsch);
       auto M = _word_graph.number_of_nodes_active();
@@ -857,11 +863,11 @@ namespace libsemigroups {
     lookahead_extent(options::lookahead_extent::full);
     lookahead_style(options::lookahead_style::hlt);
     perform_lookahead(DoNotStopEarly);
-    // poptc_settings()();
   }
 
   void ToddCoxeter::R_over_C_style() {
-    // pushtc_settings()();
+    SettingsGuard guard(this);
+
     strategy(options::strategy::hlt);
     run_until([this]() -> bool {
       return word_graph().number_of_nodes_active() >= lookahead_next();
@@ -869,11 +875,11 @@ namespace libsemigroups {
     lookahead_extent(options::lookahead_extent::full);
     perform_lookahead(StopEarly);
     CR_style();
-    // poptc_settings()();
   }
 
   void ToddCoxeter::Cr_style() {
-    // pushtc_settings()();
+    SettingsGuard guard(this);
+
     strategy(options::strategy::felsch);
     auto M = word_graph().number_of_nodes_active();
     run_until([this, &M]() -> bool {
@@ -890,11 +896,11 @@ namespace libsemigroups {
     lookahead_extent(options::lookahead_extent::full);
     lookahead_style(options::lookahead_style::hlt);
     perform_lookahead(DoNotStopEarly);
-    // poptc_settings()();
   }
 
   void ToddCoxeter::Rc_style() {
-    // pushtc_settings()();
+    SettingsGuard guard(this);
+
     strategy(options::strategy::hlt);
     auto   M = word_graph().number_of_nodes_active();
     size_t N = presentation::length(presentation());
@@ -911,7 +917,6 @@ namespace libsemigroups {
     lookahead_extent(options::lookahead_extent::full);
     lookahead_style(options::lookahead_style::hlt);
     perform_lookahead(DoNotStopEarly);
-    // poptc_settings()();
   }
 
   ////////////////////////////////////////////////////////////////////////

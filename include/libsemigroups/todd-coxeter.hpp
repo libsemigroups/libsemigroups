@@ -20,7 +20,6 @@
 // algorithm for semigroups and monoids.
 //
 // TODO:
-// * re-implement SettingsGuard (push_settings and pop_settings)
 // * re-implement reserve
 // * remove preferred_defs from FelschGraph etc (except where they are really
 // needed)?
@@ -188,8 +187,13 @@ namespace libsemigroups {
       }
     };
 
+    // This function has prefix tc_ because there's already a settings function
+    // in a base class
     Settings&       tc_settings();
     Settings const& tc_settings() const;
+
+    class SettingsGuard;
+    friend class SettingsGuard;
 
     class Definitions {
       using Definition = std::pair<node_type, label_type>;
