@@ -28,6 +28,63 @@
 
 namespace libsemigroups {
 
+  struct ToddCoxeter::Settings {
+    size_t                    def_max;
+    options::def_policy       def_policy;
+    size_t                    hlt_defs;
+    size_t                    f_defs;
+    options::lookahead_extent lookahead_extent;
+    float                     lookahead_growth_factor;
+    size_t                    lookahead_growth_threshold;
+    size_t                    lookahead_min;
+    size_t                    lookahead_next;
+    options::lookahead_style  lookahead_style;
+    size_t                    lower_bound;
+    bool                      save;
+    options::strategy         strategy;
+    bool                      use_relations_in_extra;
+
+    Settings()
+        : def_max(),
+          def_policy(),
+          hlt_defs(),
+          f_defs(),
+          lookahead_extent(),
+          lookahead_growth_factor(),
+          lookahead_growth_threshold(),
+          lookahead_min(),
+          lookahead_next(),
+          lookahead_style(),
+          lower_bound(),
+          save(),
+          strategy(),
+          use_relations_in_extra() {
+      init();
+    }
+
+    Settings(Settings const&)            = default;
+    Settings(Settings&&)                 = default;
+    Settings& operator=(Settings const&) = default;
+    Settings& operator=(Settings&&)      = default;
+
+    Settings& init() {
+      def_max                    = 2'000;
+      def_policy                 = options::def_policy::no_stack_if_no_space;
+      hlt_defs                   = 200'000;
+      f_defs                     = 100'000;
+      lookahead_extent           = options::lookahead_extent::partial;
+      lookahead_growth_factor    = 2.0;
+      lookahead_growth_threshold = 4;
+      lower_bound                = UNDEFINED;
+      lookahead_min              = 10'000;
+      lookahead_next             = 5'000'000;
+      lookahead_style            = options::lookahead_style::hlt;
+      save                       = false;
+      strategy                   = options::strategy::hlt;
+      use_relations_in_extra     = false;
+      return *this;
+    }
+  };
   class ToddCoxeter::SettingsGuard {
     ToddCoxeter* _tc;
 
@@ -269,6 +326,14 @@ namespace libsemigroups {
       _setting_stack.push_back(std::make_unique<Settings>(*uptr));
     }
   }
+
+  ToddCoxeter::ToddCoxeter(ToddCoxeter&& that)
+      : CongruenceInterface(that),
+        _finished(std::move(that._finished)),
+        _forest(std::move(that._forest)),
+        _setting_stack(std::move(that._setting_stack)),
+        _standardized(std::move(that._standardized)),
+        _word_graph(std::move(that._word_graph)) {}
 
   ToddCoxeter& ToddCoxeter::operator=(ToddCoxeter const& that) {
     CongruenceInterface::operator=(that);
