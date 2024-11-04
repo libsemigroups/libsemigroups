@@ -352,37 +352,8 @@ namespace libsemigroups {
     // ToddCoxeter - settings - public
     ////////////////////////////////////////////////////////////////////////
 
-    //! Specify how to handle definitions.
-    //!
-    //! This function can be used to specify how to handle definitions. For
-    //! details see options::definitions.
-    //!
-    //! The default value of this setting is
-    //! ``options::definitions::no_stack_if_no_space |
-    //! options::definitions::v2``.
-    //!
-    //! \param val the policy to use.
-    //!
-    //! \returns A reference to `*this`.
-    //!
-    //! \throws LibsemigroupsException if \p val is not valid (i.e. if for
-    //! example ``options::definitions::v1 & options::definitions::v2`` returns
-    //! ``true``).
-    ToddCoxeter& def_policy(options::def_policy val) {
-      _settings.def_policy = val;
-      return *this;
-    }
-
-    //! The current value of the definition policy setting.
-    //!
-    //! \returns The current value of the setting, a value of type
-    //! ``options::definitions``.
-    //!
-    //! \exceptions
-    //! \noexcept
-    [[nodiscard]] options::def_policy def_policy() const noexcept {
-      return _settings.def_policy;
-    }
+    using FelschGraphSettings_::def_version;
+    using FelschGraphSettings_::settings;
 
     //! The maximum number of definitions in the stack.
     //!
@@ -399,10 +370,7 @@ namespace libsemigroups {
     //!
     //! \exceptions
     //! \noexcept
-    ToddCoxeter& def_max(size_t val) noexcept {
-      _settings.def_max = val;
-      return *this;
-    }
+    ToddCoxeter& def_max(size_t val) noexcept;
 
     //! The current value of the setting for the maximum number of
     //! definitions.
@@ -412,136 +380,135 @@ namespace libsemigroups {
     //!
     //! \exceptions
     //! \noexcept
-    [[nodiscard]] size_t def_max() const noexcept {
-      return _settings.def_max;
-    }
+    [[nodiscard]] size_t def_max() const noexcept;
 
-    using FelschGraphSettings_::def_version;
-    using FelschGraphSettings_::settings;
-
-    //! Specify the strategy.
+    //! Specify how to handle definitions.
     //!
-    //! The strategy used during the enumeration can be specified using
-    //! this function.
+    //! This function can be used to specify how to handle definitions. For
+    //! details see options::definitions.
     //!
-    //! The default value is options::strategy::hlt.
+    //! The default value of this setting is
+    //! ``options::definitions::no_stack_if_no_space |
+    //! options::definitions::v2``.
     //!
-    //! \param val value indicating which strategy to use
-    //!
-    //! \returns A reference to `*this`.
-    ToddCoxeter& strategy(options::strategy val);
-
-    //! The current strategy for enumeration.
-    //!
-    //! \returns The current strategy, a value of type options::strategy.
-    //!
-    //! \exceptions
-    //! \noexcept
-    [[nodiscard]] options::strategy strategy() const noexcept;
-
-    //! Set the style of lookahead to use in HLT.
-    //!
-    //! If the strategy is not HLT, then the value of this setting is
-    //! ignored.
-    //!
-    //! The default value is options::lookahead::partial |
-    //! options::lookahead::hlt. The other
-    //! possible value are documented in options::lookahead.
-    //!
-    //! \param val value indicating whether to perform a full or partial
-    //! lookahead in HLT or Felsch style.
+    //! \param val the policy to use.
     //!
     //! \returns A reference to `*this`.
     //!
+    //! \throws LibsemigroupsException if \p val is not valid (i.e. if for
+    //! example ``options::definitions::v1 & options::definitions::v2`` returns
+    //! ``true``).
+    ToddCoxeter& def_policy(options::def_policy val);
+
+    //! The current value of the definition policy setting.
+    //!
+    //! \returns The current value of the setting, a value of type
+    //! ``options::definitions``.
+    //!
     //! \exceptions
     //! \noexcept
-    ToddCoxeter& lookahead_style(options::lookahead_style val) noexcept {
-      _settings.lookahead_style = val;
-      return *this;
-    }
+    [[nodiscard]] options::def_policy def_policy() const noexcept;
+
+    //! The approx number of Felsch style definitions in
+    //! [ACE](https://staff.itee.uq.edu.au/havas/) strategies.
+    //!
+    //! If the strategy being used is any of those mimicking
+    //! [ACE](https://staff.itee.uq.edu.au/havas/), then the value of this
+    //! setting is used to determine the number of nodes defined in any Felsch
+    //! phase of the strategy.
+    //!
+    //! The default value of this setting is \c 100'000.
+    //!
+    //! \param val the value to use.
+    //!
+    //! \returns A reference to `*this`.
+    //!
+    //! \throws LibsemigroupsException if \p val is \c 0.
+    ToddCoxeter& f_defs(size_t val);
+
+    //! The current value of the f_defs setting.
+    //!
+    //! \returns The current value of the setting, a value of type
+    //! ``size_t``.
+    //!
+    //! \exceptions
+    //! \noexcept
+    [[nodiscard]] size_t f_defs() const noexcept;
+
+    //! The approx number of HLT style definitions in
+    //! [ACE](https://staff.itee.uq.edu.au/havas/) strategies.
+    //!
+    //! If the strategy being used is any of those mimicking
+    //! [ACE](https://staff.itee.uq.edu.au/havas/), then the value of this
+    //! setting is used to determine the number of nodes defined in any HLT
+    //! phase of the strategy.
+    //!
+    //! The default value of this setting is \c 200'000.
+    //!
+    //! \param val the value to use.
+    //!
+    //! \returns A reference to `*this`.
+    //!
+    //! \throws LibsemigroupsException if \p val is less than
+    //! length_of_generating_pairs().
+    ToddCoxeter& hlt_defs(size_t val);
+
+    //! The current value of the hlt_defs setting.
+    //!
+    //! \returns The current value of the setting, a value of type
+    //! ``size_t``.
+    //!
+    //! \exceptions
+    //! \noexcept
+    [[nodiscard]] size_t hlt_defs() const noexcept;
+
+    //! Specify what should be considered a large collapse.
+    //!
+    //! By default when processing coincidences nodes are merged in the word
+    //! graph one pair at a time, and the in-neighbours of the surviving node
+    //! are updated at the same time. If the number of coincidences is
+    //! large, then it might be that a pair of nodes are merged at one step,
+    //! then the surviving node is merged with another node at a future step,
+    //! and this may happen many many times. This results in the
+    //! in-neighbours of the surviving nodes being repeatedly traversed,
+    //! which can result in a significant performance penalty.
+    //! It can be beneficial to stop updating the in-neighbours as nodes are
+    //! merged, and to just rebuild the entire in-neighbours data structure
+    //! by traversing the entire word graph after all coincidences have been
+    //! processed. This is beneficial if the number of surviving nodes is
+    //! relatively small in comparison to the number of nodes merged.
+    //! The purpose of this setting is to specify what should be
+    //! considered a \"large\" collapse, or more precisely, what number of
+    //! coincidences in the stack will trigger a change from updating the
+    //! in-neighbours one-by-one to traversing the entire graph once after
+    //! all coincidences have been processed.
+    //!
+    //! The default value of this setting is \c 100'000.
+    //!
+    //! \param val the value to use.
+    //!
+    //! \returns A reference to `*this`.
+    //!
+    //! \exceptions
+    //! \noexcept
+    // TODO(0) remove?
+    ToddCoxeter& large_collapse(size_t val) noexcept;
+
+    //! The current value of the large collapse setting.
+    //!
+    //! \returns The current value of the setting, a value of type
+    //! ``size_t``.
+    //!
+    //! \exceptions
+    //! \noexcept
+    // TODO(0) remove?
+    [[nodiscard]] size_t large_collapse() const noexcept;
 
     // TODO(0) doc
-    ToddCoxeter& lookahead_extent(options::lookahead_extent val) noexcept {
-      _settings.lookahead_extent = val;
-      return *this;
-    }
-
-    //! The current value of the setting for lookaheads.
-    //!
-    //! \returns A value of type options::lookahead.
-    //!
-    //! \exceptions
-    //! \noexcept
-    [[nodiscard]] options::lookahead_style lookahead_style() const noexcept {
-      return _settings.lookahead_style;
-    }
+    ToddCoxeter& lookahead_extent(options::lookahead_extent val) noexcept;
 
     // TODO(0) doc
-    [[nodiscard]] options::lookahead_extent lookahead_extent() const noexcept {
-      return _settings.lookahead_extent;
-    }
-
-    //! Set the threshold that will trigger a lookahead in HLT.
-    //!
-    //! If the number of cosets active exceeds the value set by this
-    //! function, then a lookahead, of the type set using the function
-    //! \ref lookahead, is triggered. This only applies when using
-    //! the HLT strategy.
-    //!
-    //! The default value is 5 million.
-    //!
-    //! \param val value indicating the initial threshold.
-    //!
-    //! \returns A reference to `*this`.
-    //!
-    //! \exceptions
-    //! \noexcept
-    ToddCoxeter& lookahead_next(size_t val) noexcept;
-
-    //! The current value of the next lookahead setting.
-    //!
-    //! \parameters
-    //! None
-    //!
-    //! \returns A value of type `size_t`.
-    //!
-    //! \exceptions
-    //! \noexcept
-    //!
-    //! \sa lookahead_next(size_t)
-    [[nodiscard]] size_t lookahead_next() const noexcept;
-
-    //! Set the minimum value of lookahead_next().
-    //!
-    //! After a lookahead is performed the value of lookahead_next() is
-    //! modified depending on the outcome of the current lookahead. If the
-    //! return value of lookahead_next() is too small or too large, then the
-    //! value is adjusted according to lookahead_growth_factor() and
-    //! lookahead_growth_threshold(). This setting specified the minimum
-    //! possible value for lookahead_next().
-    //!
-    //! The default value is \c 10'000.
-    //!
-    //! \param val value indicating the minimum value of lookahead_next().
-    //!
-    //! \returns A reference to `*this`.
-    //!
-    //! \exceptions
-    //! \noexcept
-    ToddCoxeter& lookahead_min(size_t val) noexcept;
-
-    //! The current value of the minimum lookahead setting.
-    //!
-    //! \parameters
-    //! None
-    //!
-    //! \returns A value of type `size_t`.
-    //!
-    //! \exceptions
-    //! \noexcept
-    //!
-    //! \sa lookahead_min(size_t)
-    [[nodiscard]] size_t lookahead_min() const noexcept;
+    [[nodiscard]] options::lookahead_extent lookahead_extent() const noexcept;
 
     //! Set the lookahead growth factor.
     //!
@@ -607,56 +574,93 @@ namespace libsemigroups {
     //! \sa lookahead_growth_threshold()
     [[nodiscard]] size_t lookahead_growth_threshold() const noexcept;
 
-    //! Process deductions during HLT.
+    //! Set the minimum value of lookahead_next().
     //!
-    //! If the argument of this function is \c true and the HLT strategy is
-    //! being used, then deductions are processed during the enumeration.
+    //! After a lookahead is performed the value of lookahead_next() is
+    //! modified depending on the outcome of the current lookahead. If the
+    //! return value of lookahead_next() is too small or too large, then the
+    //! value is adjusted according to lookahead_growth_factor() and
+    //! lookahead_growth_threshold(). This setting specified the minimum
+    //! possible value for lookahead_next().
     //!
-    //! The default value is \c false.
+    //! The default value is \c 10'000.
     //!
-    //! \param val value indicating whether or not to process deductions.
+    //! \param val value indicating the minimum value of lookahead_next().
     //!
     //! \returns A reference to `*this`.
-    ToddCoxeter& save(bool val);
+    //!
+    //! \exceptions
+    //! \noexcept
+    ToddCoxeter& lookahead_min(size_t val) noexcept;
 
-    //! The current value of save setting.
+    //! The current value of the minimum lookahead setting.
     //!
     //! \parameters
     //! None
     //!
-    //! \returns A value of type `bool`.
+    //! \returns A value of type `size_t`.
     //!
     //! \exceptions
     //! \noexcept
     //!
-    //! \sa save(bool)
-    [[nodiscard]] bool save() const noexcept;
+    //! \sa lookahead_min(size_t)
+    [[nodiscard]] size_t lookahead_min() const noexcept;
 
-    //! Perform an HLT-style push of the defining relations at the identity.
+    //! Set the threshold that will trigger a lookahead in HLT.
     //!
-    //! If a ToddCoxeter instance is defined over a finitely presented
-    //! semigroup and the Felsch strategy is being used, it can be useful
-    //! to follow all the paths from the identity labelled by the underlying
-    //! relations of the semigroup (if any). The setting specifies whether or
-    //! not to do this.
+    //! If the number of cosets active exceeds the value set by this
+    //! function, then a lookahead, of the type set using the function
+    //! \ref lookahead, is triggered. This only applies when using
+    //! the HLT strategy.
     //!
-    //! The default value of this setting is \c false.
+    //! The default value is 5 million.
     //!
-    //! \param val the boolean value.
+    //! \param val value indicating the initial threshold.
     //!
     //! \returns A reference to `*this`.
     //!
     //! \exceptions
     //! \noexcept
-    ToddCoxeter& use_relations_in_extra(bool val) noexcept;
+    ToddCoxeter& lookahead_next(size_t val) noexcept;
 
-    //! The current value of the setting for using relations.
+    //! The current value of the next lookahead setting.
     //!
-    //! \returns The current value of the setting, a value of type ``bool``.
+    //! \parameters
+    //! None
+    //!
+    //! \returns A value of type `size_t`.
     //!
     //! \exceptions
     //! \noexcept
-    [[nodiscard]] bool use_relations_in_extra() const noexcept;
+    //!
+    //! \sa lookahead_next(size_t)
+    [[nodiscard]] size_t lookahead_next() const noexcept;
+
+    //! Set the style of lookahead to use in HLT.
+    //!
+    //! If the strategy is not HLT, then the value of this setting is
+    //! ignored.
+    //!
+    //! The default value is options::lookahead::partial |
+    //! options::lookahead::hlt. The other
+    //! possible value are documented in options::lookahead.
+    //!
+    //! \param val value indicating whether to perform a full or partial
+    //! lookahead in HLT or Felsch style.
+    //!
+    //! \returns A reference to `*this`.
+    //!
+    //! \exceptions
+    //! \noexcept
+    ToddCoxeter& lookahead_style(options::lookahead_style val) noexcept;
+
+    //! The current value of the setting for lookaheads.
+    //!
+    //! \returns A value of type options::lookahead.
+    //!
+    //! \exceptions
+    //! \noexcept
+    [[nodiscard]] options::lookahead_style lookahead_style() const noexcept;
 
     //! Specify minimum number of classes that may trigger early stop.
     //!
@@ -691,98 +695,76 @@ namespace libsemigroups {
     //! \sa lower_bound(size_t)
     [[nodiscard]] size_t lower_bound() const noexcept;
 
-    //! Specify what should be considered a large collapse.
+    //! Process deductions during HLT.
     //!
-    //! By default when processing coincidences nodes are merged in the word
-    //! graph one pair at a time, and the in-neighbours of the surviving node
-    //! are updated at the same time. If the number of coincidences is
-    //! large, then it might be that a pair of nodes are merged at one step,
-    //! then the surviving node is merged with another node at a future step,
-    //! and this may happen many many times. This results in the
-    //! in-neighbours of the surviving nodes being repeatedly traversed,
-    //! which can result in a significant performance penalty.
-    //! It can be beneficial to stop updating the in-neighbours as nodes are
-    //! merged, and to just rebuild the entire in-neighbours data structure
-    //! by traversing the entire word graph after all coincidences have been
-    //! processed. This is beneficial if the number of surviving nodes is
-    //! relatively small in comparison to the number of nodes merged.
-    //! The purpose of this setting is to specify what should be
-    //! considered a \"large\" collapse, or more precisely, what number of
-    //! coincidences in the stack will trigger a change from updating the
-    //! in-neighbours one-by-one to traversing the entire graph once after
-    //! all coincidences have been processed.
+    //! If the argument of this function is \c true and the HLT strategy is
+    //! being used, then deductions are processed during the enumeration.
     //!
-    //! The default value of this setting is \c 100'000.
+    //! The default value is \c false.
     //!
-    //! \param val the value to use.
+    //! \param val value indicating whether or not to process deductions.
+    //!
+    //! \returns A reference to `*this`.
+    ToddCoxeter& save(bool val);
+
+    //! The current value of save setting.
+    //!
+    //! \parameters
+    //! None
+    //!
+    //! \returns A value of type `bool`.
+    //!
+    //! \exceptions
+    //! \noexcept
+    //!
+    //! \sa save(bool)
+    [[nodiscard]] bool save() const noexcept;
+
+    //! Specify the strategy.
+    //!
+    //! The strategy used during the enumeration can be specified using
+    //! this function.
+    //!
+    //! The default value is options::strategy::hlt.
+    //!
+    //! \param val value indicating which strategy to use
+    //!
+    //! \returns A reference to `*this`.
+    ToddCoxeter& strategy(options::strategy val);
+
+    //! The current strategy for enumeration.
+    //!
+    //! \returns The current strategy, a value of type options::strategy.
+    //!
+    //! \exceptions
+    //! \noexcept
+    [[nodiscard]] options::strategy strategy() const noexcept;
+
+    //! Perform an HLT-style push of the defining relations at the identity.
+    //!
+    //! If a ToddCoxeter instance is defined over a finitely presented
+    //! semigroup and the Felsch strategy is being used, it can be useful
+    //! to follow all the paths from the identity labelled by the underlying
+    //! relations of the semigroup (if any). The setting specifies whether or
+    //! not to do this.
+    //!
+    //! The default value of this setting is \c false.
+    //!
+    //! \param val the boolean value.
     //!
     //! \returns A reference to `*this`.
     //!
     //! \exceptions
     //! \noexcept
-    ToddCoxeter& large_collapse(size_t val) noexcept;
+    ToddCoxeter& use_relations_in_extra(bool val) noexcept;
 
-    //! The current value of the large collapse setting.
+    //! The current value of the setting for using relations.
     //!
-    //! \returns The current value of the setting, a value of type
-    //! ``size_t``.
+    //! \returns The current value of the setting, a value of type ``bool``.
     //!
     //! \exceptions
     //! \noexcept
-    [[nodiscard]] size_t large_collapse() const noexcept;
-
-    //! The approx number of Felsch style definitions in
-    //! [ACE](https://staff.itee.uq.edu.au/havas/) strategies.
-    //!
-    //! If the strategy being used is any of those mimicking
-    //! [ACE](https://staff.itee.uq.edu.au/havas/), then the value of this
-    //! setting is used to determine the number of nodes defined in any Felsch
-    //! phase of the strategy.
-    //!
-    //! The default value of this setting is \c 100'000.
-    //!
-    //! \param val the value to use.
-    //!
-    //! \returns A reference to `*this`.
-    //!
-    //! \throws LibsemigroupsException if \p val is \c 0.
-    ToddCoxeter& f_defs(size_t val);
-
-    //! The current value of the f_defs setting.
-    //!
-    //! \returns The current value of the setting, a value of type
-    //! ``size_t``.
-    //!
-    //! \exceptions
-    //! \noexcept
-    [[nodiscard]] size_t f_defs() const noexcept;
-
-    //! The approx number of HLT style definitions in
-    //! [ACE](https://staff.itee.uq.edu.au/havas/) strategies.
-    //!
-    //! If the strategy being used is any of those mimicking
-    //! [ACE](https://staff.itee.uq.edu.au/havas/), then the value of this
-    //! setting is used to determine the number of nodes defined in any HLT
-    //! phase of the strategy.
-    //!
-    //! The default value of this setting is \c 200'000.
-    //!
-    //! \param val the value to use.
-    //!
-    //! \returns A reference to `*this`.
-    //!
-    //! \throws LibsemigroupsException if \p val is less than
-    //! length_of_generating_pairs().
-    ToddCoxeter& hlt_defs(size_t val);
-
-    //! The current value of the hlt_defs setting.
-    //!
-    //! \returns The current value of the setting, a value of type
-    //! ``size_t``.
-    //!
-    //! \exceptions
-    //! \noexcept
-    [[nodiscard]] size_t hlt_defs() const noexcept;
+    [[nodiscard]] bool use_relations_in_extra() const noexcept;
 
     ////////////////////////////////////////////////////////////////////////
     // ToddCoxeter - accessors - public

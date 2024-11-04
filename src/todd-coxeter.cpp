@@ -26,6 +26,11 @@
 #include "libsemigroups/detail/report.hpp"
 
 namespace libsemigroups {
+
+  namespace {
+    struct SettingsGuard {};
+  }  // namespace
+
   using node_type = typename ToddCoxeter::node_type;
 
   ////////////////////////////////////////////////////////////////////////
@@ -337,13 +342,22 @@ namespace libsemigroups {
   // ToddCoxeter - settings - public
   ////////////////////////////////////////////////////////////////////////
 
-  ToddCoxeter& ToddCoxeter::strategy(options::strategy x) {
-    _settings.strategy = x;
+  ToddCoxeter& ToddCoxeter::def_max(size_t val) noexcept {
+    _settings.def_max = val;
     return *this;
   }
 
-  ToddCoxeter::options::strategy ToddCoxeter::strategy() const noexcept {
-    return _settings.strategy;
+  size_t ToddCoxeter::def_max() const noexcept {
+    return _settings.def_max;
+  }
+
+  ToddCoxeter& ToddCoxeter::def_policy(options::def_policy val) {
+    _settings.def_policy = val;
+    return *this;
+  }
+
+  ToddCoxeter::options::def_policy ToddCoxeter::def_policy() const noexcept {
+    return _settings.def_policy;
   }
 
   ToddCoxeter& ToddCoxeter::lookahead_next(size_t n) noexcept {
@@ -385,6 +399,28 @@ namespace libsemigroups {
     return _settings.lookahead_growth_threshold;
   }
 
+  ToddCoxeter&
+  ToddCoxeter::lookahead_style(options::lookahead_style val) noexcept {
+    _settings.lookahead_style = val;
+    return *this;
+  }
+
+  ToddCoxeter&
+  ToddCoxeter::lookahead_extent(options::lookahead_extent val) noexcept {
+    _settings.lookahead_extent = val;
+    return *this;
+  }
+
+  ToddCoxeter::options::lookahead_style
+  ToddCoxeter::lookahead_style() const noexcept {
+    return _settings.lookahead_style;
+  }
+
+  ToddCoxeter::options::lookahead_extent
+  ToddCoxeter::lookahead_extent() const noexcept {
+    return _settings.lookahead_extent;
+  }
+
   ToddCoxeter& ToddCoxeter::save(bool x) {
     _settings.save = x;
     return *this;
@@ -392,6 +428,15 @@ namespace libsemigroups {
 
   bool ToddCoxeter::save() const noexcept {
     return _settings.save;
+  }
+
+  ToddCoxeter& ToddCoxeter::strategy(options::strategy x) {
+    _settings.strategy = x;
+    return *this;
+  }
+
+  ToddCoxeter::options::strategy ToddCoxeter::strategy() const noexcept {
+    return _settings.strategy;
   }
 
   ToddCoxeter& ToddCoxeter::use_relations_in_extra(bool val) noexcept {
