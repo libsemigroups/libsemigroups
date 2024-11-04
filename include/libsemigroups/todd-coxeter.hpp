@@ -130,26 +130,66 @@ namespace libsemigroups {
     };
 
    private:
-    // TODO(0) move to cpp when we re-add settings stack, and use the top of
-    // the settings stack instead of _settings
     struct Settings {
-      bool                      use_relations_in_extra = false;
-      options::lookahead_style  lookahead_style = options::lookahead_style::hlt;
-      options::lookahead_extent lookahead_extent
-          = options::lookahead_extent::partial;
-      float               lookahead_growth_factor    = 2.0;
-      size_t              lookahead_growth_threshold = 4;
-      size_t              lower_bound                = UNDEFINED;
-      size_t              lookahead_min              = 10'000;
-      size_t              lookahead_next             = 5'000'000;
-      bool                save                       = false;
-      options::strategy   strategy                   = options::strategy::hlt;
-      size_t              def_max                    = 2'000;
-      options::def_policy def_policy
-          = options::def_policy::no_stack_if_no_space;
-      size_t hlt_defs = 200'000;
-      size_t f_defs   = 100'000;
+      size_t                    def_max;
+      options::def_policy       def_policy;
+      size_t                    hlt_defs;
+      size_t                    f_defs;
+      options::lookahead_extent lookahead_extent;
+      float                     lookahead_growth_factor;
+      size_t                    lookahead_growth_threshold;
+      size_t                    lookahead_min;
+      size_t                    lookahead_next;
+      options::lookahead_style  lookahead_style;
+      size_t                    lower_bound;
+      bool                      save;
+      options::strategy         strategy;
+      bool                      use_relations_in_extra;
+
+      Settings()
+          : def_max(),
+            def_policy(),
+            hlt_defs(),
+            f_defs(),
+            lookahead_extent(),
+            lookahead_growth_factor(),
+            lookahead_growth_threshold(),
+            lookahead_min(),
+            lookahead_next(),
+            lookahead_style(),
+            lower_bound(),
+            save(),
+            strategy(),
+            use_relations_in_extra() {
+        init();
+      }
+
+      Settings(Settings const&)            = default;
+      Settings(Settings&&)                 = default;
+      Settings& operator=(Settings const&) = default;
+      Settings& operator=(Settings&&)      = default;
+
+      Settings& init() {
+        def_max                    = 2'000;
+        def_policy                 = options::def_policy::no_stack_if_no_space;
+        hlt_defs                   = 200'000;
+        f_defs                     = 100'000;
+        lookahead_extent           = options::lookahead_extent::partial;
+        lookahead_growth_factor    = 2.0;
+        lookahead_growth_threshold = 4;
+        lower_bound                = UNDEFINED;
+        lookahead_min              = 10'000;
+        lookahead_next             = 5'000'000;
+        lookahead_style            = options::lookahead_style::hlt;
+        save                       = false;
+        strategy                   = options::strategy::hlt;
+        use_relations_in_extra     = false;
+        return *this;
+      }
     };
+
+    Settings&       tc_settings();
+    Settings const& tc_settings() const;
 
     class Definitions {
       using Definition = std::pair<node_type, label_type>;
@@ -249,13 +289,11 @@ namespace libsemigroups {
     // ToddCoxeter - data - private
     ////////////////////////////////////////////////////////////////////////
 
-    // TODO(0) reimpl
-    // std::stack<Settings*>                _setting_stack;
-    bool     _finished;
-    Forest   _forest;
-    Settings _settings;
-    Order    _standardized;
-    Graph    _word_graph;
+    bool                                   _finished;
+    Forest                                 _forest;
+    std::vector<std::unique_ptr<Settings>> _setting_stack;
+    Order                                  _standardized;
+    Graph                                  _word_graph;
 
    public:
     // TODO(0) use this everywhere
@@ -271,11 +309,12 @@ namespace libsemigroups {
     ToddCoxeter& init();
 
     // TODO(0) doc
-    ToddCoxeter(ToddCoxeter const& that) = default;
+    ToddCoxeter(ToddCoxeter const& that);
+
     // TODO(0) doc
     ToddCoxeter(ToddCoxeter&&) = default;
     // TODO(0) doc
-    ToddCoxeter& operator=(ToddCoxeter const&) = default;
+    ToddCoxeter& operator=(ToddCoxeter const&);
     // TODO(0) doc
     ToddCoxeter& operator=(ToddCoxeter&&) = default;
 
