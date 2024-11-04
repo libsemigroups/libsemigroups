@@ -299,26 +299,27 @@ namespace libsemigroups {
 
   ToddCoxeter::ToddCoxeter()
       : CongruenceInterface(),
-        _finished(false),
+        _finished(),
         _forest(),
         _setting_stack(),
-        _standardized(Order::none),
+        _standardized(),
         _word_graph() {
-    _setting_stack.push_back(std::make_unique<Settings>());
-    // This is where we pass through from tc_settings() to the
-    // _word_graph.definitions
-    _word_graph.definitions().init(this);
-    _word_graph.report_prefix("ToddCoxeter");
+    init();
   }
 
   ToddCoxeter& ToddCoxeter::init() {
     CongruenceInterface::init();
     _finished = false;
     _forest.init();
-    LIBSEMIGROUPS_ASSERT(!_setting_stack.empty());
-    _setting_stack.erase(_setting_stack.begin() + 1, _setting_stack.end());
-    _setting_stack.back()->init();
+    if (_setting_stack.empty()) {
+      _setting_stack.push_back(std::make_unique<Settings>());
+    } else {
+      _setting_stack.erase(_setting_stack.begin() + 1, _setting_stack.end());
+      _setting_stack.back()->init();
+    }
     _standardized = Order::none;
+    // This is where we pass through from settings to the
+    // _word_graph.definitions
     _word_graph.definitions().init(this);
     _word_graph.report_prefix("ToddCoxeter");
     return *this;
