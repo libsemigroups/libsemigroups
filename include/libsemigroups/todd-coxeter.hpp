@@ -54,6 +54,7 @@ namespace libsemigroups {
     using label_type = typename WordGraph<uint32_t>::label_type;
 
     // TODO(0) doc
+    // TODO(0) move to settings section below
     template <typename T>
     void report_every(T val) {
       CongruenceInterface::report_every(val);
@@ -243,6 +244,11 @@ namespace libsemigroups {
     Order                                  _standardized;
     Graph                                  _word_graph;
 
+    // TODO(0) remove
+    explicit ToddCoxeter(congruence_kind knd);
+    // TODO(0) remove
+    ToddCoxeter& init(congruence_kind knd);
+
    public:
     // TODO(0) use this everywhere
     using word_graph_type = Graph;
@@ -266,39 +272,21 @@ namespace libsemigroups {
     ToddCoxeter& operator=(ToddCoxeter const&);
 
     // TODO(0) doc
-    ToddCoxeter& operator=(ToddCoxeter&&) = default;
+    ToddCoxeter& operator=(ToddCoxeter&&);
 
     ~ToddCoxeter();
 
     // TODO(0) doc
-    explicit ToddCoxeter(congruence_kind knd);
-    // TODO(0) doc
-    ToddCoxeter& init(congruence_kind knd);
-
-    // TODO(0) doc
     ToddCoxeter(congruence_kind knd, Presentation<word_type>&& p);
+
     // TODO(0) doc
     ToddCoxeter& init(congruence_kind knd, Presentation<word_type>&& p);
 
     // TODO(0) doc
     ToddCoxeter(congruence_kind knd, Presentation<word_type> const& p);
+
     // TODO(0) doc
     ToddCoxeter& init(congruence_kind knd, Presentation<word_type> const& p);
-
-    // This is a constructor and not a helper so that everything that takes a
-    // presentation has the same constructors, regardless of what they use
-    // inside.
-    // TODO(0) doc
-    template <typename Word>
-    ToddCoxeter(congruence_kind knd, Presentation<Word> const& p)
-        : ToddCoxeter(knd, to_presentation<word_type>(p)) {}
-
-    // TODO(0) doc
-    template <typename Word>
-    ToddCoxeter& init(congruence_kind knd, Presentation<Word> const& p) {
-      init(knd, to_presentation<word_type>(p));
-      return *this;
-    }
 
     // TODO(0) doc
     template <typename Node>
@@ -317,11 +305,46 @@ namespace libsemigroups {
       _word_graph.presentation().alphabet(ad.out_degree());
       return *this;
     }
-
     // TODO(0) doc
     ToddCoxeter(congruence_kind knd, ToddCoxeter const& tc);
     // TODO(0) doc
     ToddCoxeter& init(congruence_kind knd, ToddCoxeter const& tc);
+
+    // Used in Sims
+    // TODO(0) could this and the next function be removed, and replaced with
+    // something else?
+    template <typename Node>
+    ToddCoxeter(congruence_kind                knd,
+                Presentation<word_type> const& p,
+                WordGraph<Node> const&         ad) {
+      init(knd, p, ad);
+    }
+
+    template <typename Node>
+    ToddCoxeter& init(congruence_kind                knd,
+                      Presentation<word_type> const& p,
+                      WordGraph<Node> const&         ad) {
+      init(knd, p);
+      _word_graph = ad;
+      _word_graph.presentation(p);
+      _word_graph.report_prefix("ToddCoxeter");
+      return *this;
+    }
+
+    // This is a constructor and not a helper so that everything that takes a
+    // presentation has the same constructors, regardless of what they use
+    // inside.
+    // TODO(0) doc
+    template <typename Word>
+    ToddCoxeter(congruence_kind knd, Presentation<Word> const& p)
+        : ToddCoxeter(knd, to_presentation<word_type>(p)) {}
+
+    // TODO(0) doc
+    template <typename Word>
+    ToddCoxeter& init(congruence_kind knd, Presentation<Word> const& p) {
+      init(knd, to_presentation<word_type>(p));
+      return *this;
+    }
 
     ////////////////////////////////////////////////////////////////////////
     // CongruenceInterface - pure virtual - public
@@ -1041,7 +1064,7 @@ namespace libsemigroups {
       Presentation<Word> q;
       q.alphabet(p.alphabet());
       q.contains_empty_word(p.contains_empty_word());
-      ToddCoxeter tc(twosided);
+      ToddCoxeter tc;
       ToWord      to_word(p.alphabet());
 
       for (auto omit = p.rules.crbegin(); omit != p.rules.crend(); omit += 2) {

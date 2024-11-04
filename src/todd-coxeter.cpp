@@ -337,13 +337,9 @@ namespace libsemigroups {
     }
   }
 
-  ToddCoxeter::ToddCoxeter(ToddCoxeter&& that)
-      : CongruenceInterface(that),
-        _finished(std::move(that._finished)),
-        _forest(std::move(that._forest)),
-        _setting_stack(std::move(that._setting_stack)),
-        _standardized(std::move(that._standardized)),
-        _word_graph(std::move(that._word_graph)) {}
+  ToddCoxeter::ToddCoxeter(ToddCoxeter&& that) = default;
+
+  ToddCoxeter& ToddCoxeter::operator=(ToddCoxeter&&) = default;
 
   ToddCoxeter& ToddCoxeter::operator=(ToddCoxeter const& that) {
     CongruenceInterface::operator=(that);
