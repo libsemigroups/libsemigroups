@@ -125,7 +125,7 @@ namespace libsemigroups {
   //! semigroup is known.
   //!
   //! \tparam Element the type of the elements in the represented
-  //! semigroup
+  //! semigroup.
   //!
   //! \tparam Traits a traits class holding various adapters used by the
   //! implementation (defaults to FroidurePinTraits).
@@ -2033,7 +2033,7 @@ namespace libsemigroups {
     //! See \ref ranges_group for more details about range objects.
     //!
     //! \tparam Element the type of the elements in the represented
-    //! semigroup
+    //! semigroup.
     //!
     //! \tparam Traits a traits class holding various adapters used by the
     //! implementation (defaults to FroidurePinTraits).
@@ -2058,7 +2058,7 @@ namespace libsemigroups {
     //! See \ref ranges_group for more details about range objects.
     //!
     //! \tparam Element the type of the elements in the represented
-    //! semigroup
+    //! semigroup.
     //!
     //! \tparam Traits a traits class holding various adapters used by the
     //! implementation (defaults to FroidurePinTraits).
@@ -2084,7 +2084,7 @@ namespace libsemigroups {
     //! See \ref ranges_group for more details about range objects.
     //!
     //! \tparam Element the type of the elements in the represented
-    //! semigroup
+    //! semigroup.
     //!
     //! \tparam Traits a traits class holding various adapters used by the
     //! implementation (defaults to FroidurePinTraits).
@@ -2109,7 +2109,7 @@ namespace libsemigroups {
     //! See \ref ranges_group for more details about range objects.
     //!
     //! \tparam Element the type of the elements in the represented
-    //! semigroup
+    //! semigroup.
     //!
     //! \tparam Traits a traits class holding various adapters used by the
     //! implementation (defaults to FroidurePinTraits).
@@ -2439,8 +2439,7 @@ namespace libsemigroups {
   //! \param gens the std::initializer_list of generators.
   //!
   //! \returns A newly constructed FroidurePin instance with generators equal
-  //! to
-  //! \p gens.
+  //! to \p gens.
   //!
   //! \throw LibsemigroupsException if `Degree()(x) != Degree(y)` for any \c x
   //! and \c y in \p gens.
