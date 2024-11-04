@@ -64,7 +64,7 @@ namespace libsemigroups {
     REQUIRE(blocks::underlying_partition(b2)
             == std::vector<std::vector<int32_t>>({{-1, -5}, {2, 4}, {-3, -6}}));
     REQUIRE(to_human_readable_repr(b2)
-            == "Blocks([[-1, -5], [2, 4], [-3, -6]])");
+            == "Blocks({[-1, -5], [2, 4], [-3, -6]})");
   }
 
   LIBSEMIGROUPS_TEST_CASE_V3("Blocks", "002", "non-empty blocks", "[quick]") {
@@ -268,8 +268,7 @@ namespace libsemigroups {
                  {-6, -7}}));
     REQUIRE(Bipartition(bipartition::underlying_partition(x)) == x);
     REQUIRE(to_human_readable_repr(x)
-            == "Bipartition([[1], [2, 3, 4, 5, 6, 7, 8, 9, -1, -2, -3, -4, -8, "
-               "-10], [10], [-5, -9], [-6, -7]])");
+            == "<bipartition of degree 10 with 5 blocks and rank 1>");
   }
 
   LIBSEMIGROUPS_TEST_CASE_V3("Bipartition",
