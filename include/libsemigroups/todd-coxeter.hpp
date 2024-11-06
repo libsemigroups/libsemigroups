@@ -349,15 +349,6 @@ namespace libsemigroups {
     }
 
     ////////////////////////////////////////////////////////////////////////
-    // CongruenceInterface - pure virtual - public
-    ////////////////////////////////////////////////////////////////////////
-
-    // TODO(0)  remove since it falls right through
-    [[nodiscard]] uint64_t number_of_classes() override {
-      return number_of_classes_impl();
-    }
-
-    ////////////////////////////////////////////////////////////////////////
     // ToddCoxeter - settings - public
     ////////////////////////////////////////////////////////////////////////
 
@@ -767,11 +758,13 @@ namespace libsemigroups {
     }
 
     // TODO(0) doc
+    // TODO(0) rename current_word_graph
     Graph const& word_graph() const noexcept {
       return _word_graph;
     }
 
     // TODO(0) doc
+    // TODO(0) rename current_spanning_tree
     Forest const& spanning_tree() const noexcept {
       return _forest;
     }
@@ -817,6 +810,15 @@ namespace libsemigroups {
     ////////////////////////////////////////////////////////////////////////
     // ToddCoxeter - interface requirements
     ////////////////////////////////////////////////////////////////////////
+
+    [[nodiscard]] uint64_t number_of_classes() override {  // TODO(0) to cpp
+      if (is_obviously_infinite(*this)) {
+        return POSITIVE_INFINITY;
+      }
+      run();
+      size_t const offset = (presentation().contains_empty_word() ? 0 : 1);
+      return _word_graph.number_of_nodes_active() - offset;
+    }
 
     // TODO(0) doc
     template <typename Iterator1, typename Iterator2>
@@ -987,13 +989,6 @@ namespace libsemigroups {
       return _finished;
     }
 
-    ////////////////////////////////////////////////////////////////////////
-    // CongruenceInterface - pure virtual member functions - private
-    ////////////////////////////////////////////////////////////////////////
-
-    uint64_t number_of_classes_impl();
-
-    // TODO(rename)
     template <typename Iterator1, typename Iterator2>
     void validate_word(Iterator1 first, Iterator2 last) const {
       presentation().validate_word(first, last);
@@ -1134,7 +1129,7 @@ namespace libsemigroups {
     }
 
     // TODO(0) doc
-    // TODO(0) iterator version
+    // TODO(0) iterator version + template this
     inline auto class_of(ToddCoxeter& tc, word_type const& w) {
       return class_of(tc, class_index(tc, w));
     }
@@ -1153,6 +1148,7 @@ namespace libsemigroups {
     //! \no_libsemigroups_except
     // TODO(0): redo the doc
     inline auto normal_forms(ToddCoxeter& tc) {
+      // TODO(0) avoid allocations here
       return rx::seq() | rx::take(tc.number_of_classes())
              | rx::transform(
                  [&tc](auto i) { return class_rep_no_checks(tc, i); });
@@ -1258,8 +1254,6 @@ namespace libsemigroups {
 
   }  // namespace todd_coxeter
 
-  // TODO(0) to_human_readable_repr
-
   // TODO(0) doc
   // TODO(0) out of line
   template <typename Range,
@@ -1298,6 +1292,7 @@ namespace libsemigroups {
     }
     return result;
   }
+  // TODO(0) to_human_readable_repr
 
 }  // namespace libsemigroups
 #endif  // LIBSEMIGROUPS_TODD_COXETER_HPP_

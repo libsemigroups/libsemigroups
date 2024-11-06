@@ -109,6 +109,7 @@ namespace libsemigroups {
       return true;
     }
 
+    // TODO(0) replace with iterators
     virtual void validate_word(word_type const& w) const = 0;
 
     //! The handedness of the congruence (left, right, or 2-sided).

@@ -647,23 +647,9 @@ namespace libsemigroups {
     finalise_run();
   }
 
-  ////////////////////////////////////////////////////////////////////////
-  // CongruenceInterface - pure virtual member functions - private
-  ////////////////////////////////////////////////////////////////////////
-
-  uint64_t ToddCoxeter::number_of_classes_impl() {
-    if (is_obviously_infinite(*this)) {
-      return POSITIVE_INFINITY;
-    }
-    run();
-    size_t const offset = (presentation().contains_empty_word() ? 0 : 1);
-    return _word_graph.number_of_nodes_active() - offset;
-  }
-
   void ToddCoxeter::validate_word(word_type const& w) const {
     validate_word(w.cbegin(), w.cend());
   }
-
   ////////////////////////////////////////////////////////////////////////
   // ToddCoxeter - main strategies - private
   ////////////////////////////////////////////////////////////////////////
