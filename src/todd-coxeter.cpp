@@ -557,6 +557,30 @@ namespace libsemigroups {
   // ToddCoxeter - accessors - public
   ////////////////////////////////////////////////////////////////////////
 
+  tril ToddCoxeter::const_contains(word_type const& u,
+                                   word_type const& v) const {
+    if (u == v) {
+      return tril::TRUE;
+    }
+    node_type uu, vv;
+    try {
+      uu = todd_coxeter::current_class_index(*this, u);
+      vv = todd_coxeter::current_class_index(*this, v);
+    } catch (LibsemigroupsException const& e) {
+      report_default("ignoring exception:\n%s", e.what());
+      return tril::unknown;
+    }
+    if (uu == UNDEFINED || vv == UNDEFINED) {
+      return tril::unknown;
+    } else if (uu == vv) {
+      return tril::TRUE;
+    } else if (finished()) {
+      return tril::FALSE;
+    } else {
+      return tril::unknown;
+    }
+  }
+
   bool ToddCoxeter::contains(word_type const& lhs, word_type const& rhs) {
     validate_word(lhs);
     validate_word(rhs);
@@ -565,8 +589,8 @@ namespace libsemigroups {
       return lhs == rhs;
     }
     return lhs == rhs
-           || todd_coxeter::index(*this, lhs)
-                  == todd_coxeter::index(*this, rhs);
+           || todd_coxeter::class_index(*this, lhs)
+                  == todd_coxeter::class_index(*this, rhs);
   }
 
   bool ToddCoxeter::is_standardized(Order val) const {
@@ -687,33 +711,6 @@ namespace libsemigroups {
     run();
     size_t const offset = (presentation().contains_empty_word() ? 0 : 1);
     return _word_graph.number_of_nodes_active() - offset;
-  }
-
-  node_type ToddCoxeter::word_to_class_index_impl(word_type const& w) {
-    run();
-    LIBSEMIGROUPS_ASSERT(finished());
-    if (!is_standardized()) {
-      standardize(Order::shortlex);
-    }
-    return const_word_to_class_index(w);
-    // c is in the range 1, ..., number_of_cosets_active() because 0
-    // represents the identity coset, and does not correspond to an element,
-    // unless presentation().contains_empty_word()
-  }
-
-  node_type ToddCoxeter::const_word_to_class_index(word_type const& w) const {
-    validate_word(w);
-    node_type c = _word_graph.initial_node();
-
-    if (kind() != congruence_kind::left) {
-      c = word_graph::follow_path_no_checks(
-          _word_graph, c, w.cbegin(), w.cend());
-    } else {
-      c = word_graph::follow_path_no_checks(
-          _word_graph, c, w.crbegin(), w.crend());
-    }
-    size_t const offset = (presentation().contains_empty_word() ? 0 : 1);
-    return (c == UNDEFINED ? UNDEFINED : static_cast<node_type>(c - offset));
   }
 
   void ToddCoxeter::validate_word(word_type const& w) const {
@@ -1082,7 +1079,7 @@ namespace libsemigroups {
                tmp.clear();
                tmp.insert(tmp.end(), w.cbegin(), w.cend());
                tmp.insert(tmp.end(), w.cbegin(), w.cend());
-               return todd_coxeter::index(tc, tmp) == i++;
+               return todd_coxeter::class_index(tc, tmp) == i++;
              })
              | rx::count();
     }

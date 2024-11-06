@@ -346,7 +346,19 @@ namespace libsemigroups {
     //! \param i the node.
     //!
     //! \warning No checks are performed on the arguments of this function.
+    // TODO(0) to helper
     void path_to_root_no_checks(word_type& w, node_type i) const;
+
+    template <typename Iterator>
+    Iterator path_to_root_no_checks(Iterator d_first, node_type i) const {
+      auto it = d_first;
+      for (; parent_no_checks(i) != UNDEFINED; ++it) {
+        *it = label_no_checks(i);
+        LIBSEMIGROUPS_ASSERT(i != parent_no_checks(i));
+        i = parent_no_checks(i);
+      }
+      return it;
+    }
 
     //! \brief Returns a word containing the labels of the edges on the path
     //! from a root node to \p i.
@@ -359,6 +371,7 @@ namespace libsemigroups {
     //! \returns The word labelling the path from a root node to \p i.
     //!
     //! \warning No checks are performed on the arguments of this function.
+    // TODO(0) to helper
     [[nodiscard]] word_type path_to_root_no_checks(node_type i) const {
       word_type w;
       path_to_root_no_checks(w, i);
