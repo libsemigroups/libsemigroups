@@ -60,25 +60,25 @@ namespace libsemigroups {
       file.close();
     }
 
-    struct NormalForms {
-      template <typename Iterator>
-      NormalForms(ToddCoxeter& tc, Iterator first, Iterator last)
-          : _map(), _tc(tc) {
-        for (auto it = first; it != last; ++it) {
-          bool inserted = _map.emplace(tc.word_to_class_index(*it), *it).second;
-          if (!inserted) {
-            LIBSEMIGROUPS_EXCEPTION("shouldn't happen");
-          }
-        }
-      }
+    // struct NormalForms {
+    //   template <typename Iterator>
+    //   NormalForms(ToddCoxeter& tc, Iterator first, Iterator last)
+    //       : _map(), _tc(tc) {
+    //     for (auto it = first; it != last; ++it) {
+    //       bool inserted = _map.emplace(todd_coxeter::index(tc, *it),
+    //       *it).second; if (!inserted) {
+    //         LIBSEMIGROUPS_EXCEPTION("shouldn't happen");
+    //       }
+    //     }
+    //   }
 
-      word_type const& operator()(word_type const& w) {
-        return _map.find(_tc.word_to_class_index(w))->second;
-      }
+    //   word_type const& operator()(word_type const& w) {
+    //     return _map.find(todd_coxeter::index(_tc, w))->second;
+    //   }
 
-      std::unordered_map<ToddCoxeter::node_type, word_type> _map;
-      ToddCoxeter&                                          _tc;
-    };
+    //   std::unordered_map<ToddCoxeter::node_type, word_type> _map;
+    //   ToddCoxeter&                                          _tc;
+    // };
 
   }  // namespace
 
@@ -263,7 +263,7 @@ namespace libsemigroups {
 
     void check_word_to_class_index(ToddCoxeter& tc) {
       for (size_t i = 0; i < tc.number_of_classes(); ++i) {
-        REQUIRE(tc.word_to_class_index(tc.class_index_to_word(i)) == i);
+        REQUIRE(todd_coxeter::index(tc, tc.class_index_to_word(i)) == i);
       }
     }
 
@@ -329,7 +329,7 @@ namespace libsemigroups {
              })));
 
     REQUIRE((c | all_of([&tc](auto const& w) {
-               return tc.word_to_class_index(w) == 1;
+               return todd_coxeter::index(tc, w) == 1;
              })));
     check_normal_forms(tc, tc.number_of_classes());
   }
@@ -357,11 +357,11 @@ namespace libsemigroups {
     REQUIRE(tc.number_of_classes() == 5);
     REQUIRE(tc.finished());
 
-    REQUIRE(tc.word_to_class_index(001_w) == tc.word_to_class_index(00001_w));
-    REQUIRE(tc.word_to_class_index(011001_w)
-            == tc.word_to_class_index(00001_w));
+    REQUIRE(todd_coxeter::index(tc, 001_w) == todd_coxeter::index(tc, 00001_w));
+    REQUIRE(todd_coxeter::index(tc, 011001_w)
+            == todd_coxeter::index(tc, 00001_w));
 
-    REQUIRE(tc.word_to_class_index(000_w) != tc.word_to_class_index(1_w));
+    REQUIRE(todd_coxeter::index(tc, 000_w) != todd_coxeter::index(tc, 1_w));
 
     tc.standardize(Order::shortlex);
     REQUIRE(tc.class_index_to_word(0) == 0_w);
@@ -376,14 +376,14 @@ namespace libsemigroups {
     REQUIRE(tc.class_index_to_word(1) == 00_w);
     REQUIRE(tc.class_index_to_word(2) == 001_w);
     REQUIRE(tc.class_index_to_word(3) == 0010_w);
-    REQUIRE(tc.word_to_class_index(0001_w) == 3);
+    REQUIRE(todd_coxeter::index(tc, 0001_w) == 3);
     REQUIRE(tc.class_index_to_word(4) == 1_w);
-    REQUIRE(tc.word_to_class_index(tc.class_index_to_word(0)) == 0);
-    REQUIRE(tc.word_to_class_index(tc.class_index_to_word(1)) == 1);
-    REQUIRE(tc.word_to_class_index(tc.class_index_to_word(2)) == 2);
-    REQUIRE(tc.word_to_class_index(tc.class_index_to_word(3)) == 3);
-    REQUIRE(tc.word_to_class_index(tc.class_index_to_word(4)) == 4);
-    REQUIRE(tc.word_to_class_index(01_w) == 3);
+    REQUIRE(todd_coxeter::index(tc, tc.class_index_to_word(0)) == 0);
+    REQUIRE(todd_coxeter::index(tc, tc.class_index_to_word(1)) == 1);
+    REQUIRE(todd_coxeter::index(tc, tc.class_index_to_word(2)) == 2);
+    REQUIRE(todd_coxeter::index(tc, tc.class_index_to_word(3)) == 3);
+    REQUIRE(todd_coxeter::index(tc, tc.class_index_to_word(4)) == 4);
+    REQUIRE(todd_coxeter::index(tc, 01_w) == 3);
     REQUIRE(LexicographicalCompare()(001_w, 01_w));
 
     REQUIRE(
@@ -393,11 +393,11 @@ namespace libsemigroups {
     REQUIRE(tc.is_standardized(Order::shortlex));
     REQUIRE((todd_coxeter::normal_forms(tc) | to_vector())
             == std::vector<word_type>({0_w, 1_w, 00_w, 01_w, 001_w}));
-    REQUIRE(tc.word_to_class_index(tc.class_index_to_word(0)) == 0);
-    REQUIRE(tc.word_to_class_index(tc.class_index_to_word(1)) == 1);
-    REQUIRE(tc.word_to_class_index(tc.class_index_to_word(2)) == 2);
-    REQUIRE(tc.word_to_class_index(tc.class_index_to_word(3)) == 3);
-    REQUIRE(tc.word_to_class_index(tc.class_index_to_word(4)) == 4);
+    REQUIRE(todd_coxeter::index(tc, tc.class_index_to_word(0)) == 0);
+    REQUIRE(todd_coxeter::index(tc, tc.class_index_to_word(1)) == 1);
+    REQUIRE(todd_coxeter::index(tc, tc.class_index_to_word(2)) == 2);
+    REQUIRE(todd_coxeter::index(tc, tc.class_index_to_word(3)) == 3);
+    REQUIRE(todd_coxeter::index(tc, tc.class_index_to_word(4)) == 4);
     REQUIRE(is_sorted(todd_coxeter::normal_forms(tc), ShortLexCompare()));
 
     auto nf = todd_coxeter::normal_forms(tc) | to_vector();
@@ -481,7 +481,7 @@ namespace libsemigroups {
     REQUIRE(tc.is_standardized());
     REQUIRE(tc.is_standardized(Order::lex));
     for (size_t c = 0; c < tc.number_of_classes(); ++c) {
-      REQUIRE(tc.word_to_class_index(tc.class_index_to_word(c)) == c);
+      REQUIRE(todd_coxeter::index(tc, tc.class_index_to_word(c)) == c);
     }
     REQUIRE(
         is_sorted(todd_coxeter::normal_forms(tc), LexicographicalCompare{}));
@@ -498,7 +498,7 @@ namespace libsemigroups {
                                        0121212121_w}));
     tc.standardize(Order::shortlex);
     for (size_t c = 0; c < tc.number_of_classes(); ++c) {
-      REQUIRE(tc.word_to_class_index(tc.class_index_to_word(c)) == c);
+      REQUIRE(todd_coxeter::index(tc, tc.class_index_to_word(c)) == c);
     }
     REQUIRE(is_sorted(todd_coxeter::normal_forms(tc), ShortLexCompare{}));
     REQUIRE((todd_coxeter::normal_forms(tc) | take(10) | to_vector())
@@ -512,7 +512,7 @@ namespace libsemigroups {
                           "[no-valgrind][todd-coxeter][quick][no-coverage]") {
     auto rg = ReportGuard(false);
 
-    FroidurePin<BMat8> S = to_froidure_pin(
+    FroidurePin<BMat8> S(
         {BMat8({{0, 1, 0, 0}, {1, 0, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}),
          BMat8({{0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}, {1, 0, 0, 0}}),
          BMat8({{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {1, 0, 0, 1}}),
@@ -551,17 +551,17 @@ namespace libsemigroups {
     REQUIRE(tc.class_index_to_word(0) == 0_w);
     REQUIRE(tc.class_index_to_word(1) == 2_w);
     REQUIRE(tc.class_index_to_word(2) == 00_w);
-    REQUIRE(tc.word_to_class_index(tc.class_index_to_word(0)) == 0);
-    REQUIRE(tc.word_to_class_index(tc.class_index_to_word(1)) == 1);
-    REQUIRE(tc.word_to_class_index(tc.class_index_to_word(2)) == 2);
+    REQUIRE(todd_coxeter::index(tc, tc.class_index_to_word(0)) == 0);
+    REQUIRE(todd_coxeter::index(tc, tc.class_index_to_word(1)) == 1);
+    REQUIRE(todd_coxeter::index(tc, tc.class_index_to_word(2)) == 2);
 
     tc.standardize(Order::lex);
     REQUIRE(tc.class_index_to_word(0) == 0_w);
     REQUIRE(tc.class_index_to_word(1) == 00_w);
     REQUIRE(tc.class_index_to_word(2) == 002_w);
-    REQUIRE(tc.word_to_class_index(tc.class_index_to_word(0)) == 0);
-    REQUIRE(tc.word_to_class_index(tc.class_index_to_word(1)) == 1);
-    REQUIRE(tc.word_to_class_index(tc.class_index_to_word(2)) == 2);
+    REQUIRE(todd_coxeter::index(tc, tc.class_index_to_word(0)) == 0);
+    REQUIRE(todd_coxeter::index(tc, tc.class_index_to_word(1)) == 1);
+    REQUIRE(todd_coxeter::index(tc, tc.class_index_to_word(2)) == 2);
 
     tc.standardize(Order::shortlex);
     REQUIRE(tc.class_index_to_word(0) == 0_w);
@@ -578,8 +578,7 @@ namespace libsemigroups {
     auto rg = ReportGuard(false);
 
     using Transf = LeastTransf<5>;
-    FroidurePin<Transf> S
-        = to_froidure_pin({Transf({1, 3, 4, 2, 3}), Transf({3, 2, 1, 3, 3})});
+    FroidurePin<Transf> S({Transf({1, 3, 4, 2, 3}), Transf({3, 2, 1, 3, 3})});
 
     REQUIRE(S.size() == 88);
 
@@ -616,7 +615,7 @@ namespace libsemigroups {
     REQUIRE(std::unique(w.begin(), w.end()) == w.end());
     REQUIRE(std::is_sorted(w.cbegin(), w.cend(), RecursivePathCompare{}));
     REQUIRE((todd_coxeter::normal_forms(tc) | all_of([&tc](auto const& u) {
-               return tc.class_index_to_word(tc.word_to_class_index(u)) == u;
+               return tc.class_index_to_word(todd_coxeter::index(tc, u)) == u;
              })));
     check_normal_forms(tc, tc.number_of_classes());
   }
@@ -700,11 +699,13 @@ namespace libsemigroups {
       section_Cr_style(tc);
 
       REQUIRE(!tc.is_standardized());
-      REQUIRE(tc.word_to_class_index(001_w) == tc.word_to_class_index(00001_w));
-      REQUIRE(tc.word_to_class_index(011001_w)
-              == tc.word_to_class_index(00001_w));
-      REQUIRE(tc.word_to_class_index(1_w) != tc.word_to_class_index(0000_w));
-      REQUIRE(tc.word_to_class_index(000_w) != tc.word_to_class_index(0000_w));
+      REQUIRE(todd_coxeter::index(tc, 001_w)
+              == todd_coxeter::index(tc, 00001_w));
+      REQUIRE(todd_coxeter::index(tc, 011001_w)
+              == todd_coxeter::index(tc, 00001_w));
+      REQUIRE(todd_coxeter::index(tc, 1_w) != todd_coxeter::index(tc, 0000_w));
+      REQUIRE(todd_coxeter::index(tc, 000_w)
+              != todd_coxeter::index(tc, 0000_w));
       tc.standardize(Order::shortlex);
       REQUIRE(tc.is_standardized());
       check_standardize(tc);
@@ -734,11 +735,11 @@ namespace libsemigroups {
     section_CR_style(tc);
     section_Cr_style(tc);
 
-    REQUIRE(tc.word_to_class_index(001_w) == tc.word_to_class_index(00001_w));
-    REQUIRE(tc.word_to_class_index(011001_w)
-            == tc.word_to_class_index(00001_w));
-    REQUIRE(tc.word_to_class_index(000_w) != tc.word_to_class_index(1_w));
-    REQUIRE(tc.word_to_class_index(0000_w) < tc.number_of_classes());
+    REQUIRE(todd_coxeter::index(tc, 001_w) == todd_coxeter::index(tc, 00001_w));
+    REQUIRE(todd_coxeter::index(tc, 011001_w)
+            == todd_coxeter::index(tc, 00001_w));
+    REQUIRE(todd_coxeter::index(tc, 000_w) != todd_coxeter::index(tc, 1_w));
+    REQUIRE(todd_coxeter::index(tc, 0000_w) < tc.number_of_classes());
     tc.standardize(Order::shortlex);
     check_standardize(tc);
     check_complete_compatible(tc);
@@ -750,7 +751,7 @@ namespace libsemigroups {
                           "2-sided cong. trans. semigroup",
                           "[todd-coxeter][quick]") {
     auto rg = ReportGuard(false);
-    auto S  = to_froidure_pin(
+    auto S  = FroidurePin<Transf<>>(
         {Transf<>({1, 3, 4, 2, 3}), Transf<>({3, 2, 1, 3, 3})});
 
     REQUIRE(S.size() == 88);
@@ -784,10 +785,10 @@ namespace libsemigroups {
     REQUIRE(tc.number_of_classes() == 21);
     REQUIRE(tc.number_of_classes() == 21);
 
-    REQUIRE(tc.word_to_class_index(
-                froidure_pin::factorisation(S, Transf<>({1, 3, 1, 3, 3})))
-            == tc.word_to_class_index(
-                froidure_pin::factorisation(S, Transf<>({4, 2, 4, 4, 2}))));
+    REQUIRE(todd_coxeter::index(
+                tc, froidure_pin::factorisation(S, Transf<>({1, 3, 1, 3, 3})))
+            == todd_coxeter::index(
+                tc, froidure_pin::factorisation(S, Transf<>({4, 2, 4, 4, 2}))));
 
     tc.standardize(Order::shortlex);
 
@@ -820,7 +821,7 @@ namespace libsemigroups {
                           "left congruence on transformation semigroup",
                           "[todd-coxeter][quick]") {
     auto rg = ReportGuard(false);
-    auto S  = to_froidure_pin(
+    auto S  = FroidurePin<Transf<>>(
         {Transf<>({1, 3, 4, 2, 3}), Transf<>({3, 2, 1, 3, 3})});
 
     REQUIRE(S.size() == 88);
@@ -838,10 +839,10 @@ namespace libsemigroups {
     section_CR_style(tc);
     section_Cr_style(tc);
 
-    REQUIRE(tc.word_to_class_index(
-                froidure_pin::factorisation(S, Transf<>({1, 3, 1, 3, 3})))
-            != tc.word_to_class_index(
-                froidure_pin::factorisation(S, Transf<>({4, 2, 4, 4, 2}))));
+    REQUIRE(todd_coxeter::index(
+                tc, froidure_pin::factorisation(S, Transf<>({1, 3, 1, 3, 3})))
+            != todd_coxeter::index(
+                tc, froidure_pin::factorisation(S, Transf<>({4, 2, 4, 4, 2}))));
 
     REQUIRE(tc.number_of_classes() == 69);
     REQUIRE(tc.number_of_classes() == 69);
@@ -867,7 +868,7 @@ namespace libsemigroups {
                           "right cong. trans. semigroup",
                           "[todd-coxeter][quick]") {
     auto rg = ReportGuard(false);
-    auto S  = to_froidure_pin(
+    auto S  = FroidurePin<Transf<>>(
         {Transf<>({1, 3, 4, 2, 3}), Transf<>({3, 2, 1, 3, 3})});
 
     REQUIRE(S.size() == 88);
@@ -888,23 +889,23 @@ namespace libsemigroups {
     REQUIRE(tc.number_of_classes() == 72);
     REQUIRE(tc.number_of_classes() == 72);
 
-    REQUIRE(tc.word_to_class_index(
-                froidure_pin::factorisation(S, Transf<>({1, 3, 1, 3, 3})))
-            != tc.word_to_class_index(
-                froidure_pin::factorisation(S, Transf<>({4, 2, 4, 4, 2}))));
+    REQUIRE(todd_coxeter::index(
+                tc, froidure_pin::factorisation(S, Transf<>({1, 3, 1, 3, 3})))
+            != todd_coxeter::index(
+                tc, froidure_pin::factorisation(S, Transf<>({4, 2, 4, 4, 2}))));
 
-    REQUIRE(tc.word_to_class_index(
-                froidure_pin::factorisation(S, Transf<>({1, 3, 3, 3, 3})))
-            != tc.word_to_class_index(
-                froidure_pin::factorisation(S, Transf<>({4, 2, 4, 4, 2}))));
-    REQUIRE(tc.word_to_class_index(
-                froidure_pin::factorisation(S, Transf<>({2, 4, 2, 2, 2})))
-            == tc.word_to_class_index(
-                froidure_pin::factorisation(S, Transf<>({2, 3, 3, 3, 3}))));
-    REQUIRE(tc.word_to_class_index(
-                froidure_pin::factorisation(S, Transf<>({1, 3, 3, 3, 3})))
-            != tc.word_to_class_index(
-                froidure_pin::factorisation(S, Transf<>({2, 3, 3, 3, 3}))));
+    REQUIRE(todd_coxeter::index(
+                tc, froidure_pin::factorisation(S, Transf<>({1, 3, 3, 3, 3})))
+            != todd_coxeter::index(
+                tc, froidure_pin::factorisation(S, Transf<>({4, 2, 4, 4, 2}))));
+    REQUIRE(todd_coxeter::index(
+                tc, froidure_pin::factorisation(S, Transf<>({2, 4, 2, 2, 2})))
+            == todd_coxeter::index(
+                tc, froidure_pin::factorisation(S, Transf<>({2, 3, 3, 3, 3}))));
+    REQUIRE(todd_coxeter::index(
+                tc, froidure_pin::factorisation(S, Transf<>({1, 3, 3, 3, 3})))
+            != todd_coxeter::index(
+                tc, froidure_pin::factorisation(S, Transf<>({2, 3, 3, 3, 3}))));
 
     auto ntc = non_trivial_classes(
         tc, S.cbegin_normal_forms(), S.cend_normal_forms());
@@ -921,8 +922,8 @@ namespace libsemigroups {
     froidure_pin::factorisation(S, w4, S.position(Transf<>({4, 2, 4, 4, 2})));
     froidure_pin::factorisation(S, w5, S.position(Transf<>({2, 4, 2, 2, 2})));
     froidure_pin::factorisation(S, w6, S.position(Transf<>({2, 3, 3, 3, 3})));
-    REQUIRE(tc.word_to_class_index(w3) != tc.word_to_class_index(w4));
-    REQUIRE(tc.word_to_class_index(w5) == tc.word_to_class_index(w6));
+    REQUIRE(todd_coxeter::index(tc, w3) != todd_coxeter::index(tc, w4));
+    REQUIRE(todd_coxeter::index(tc, w5) == todd_coxeter::index(tc, w6));
   }
 
   LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
@@ -960,7 +961,7 @@ namespace libsemigroups {
         = froidure_pin::factorisation(S, S.position(Transf<>({1, 3, 1, 3, 3})));
     word_type w4
         = froidure_pin::factorisation(S, S.position(Transf<>({4, 2, 4, 4, 2})));
-    REQUIRE(tc.word_to_class_index(w3) == tc.word_to_class_index(w4));
+    REQUIRE(todd_coxeter::index(tc, w3) == todd_coxeter::index(tc, w4));
   }
 
   LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
@@ -988,7 +989,7 @@ namespace libsemigroups {
     section_Cr_style(tc);
 
     REQUIRE(tc.number_of_classes() == 6);
-    REQUIRE(tc.word_to_class_index({1}) == tc.word_to_class_index({2}));
+    REQUIRE(todd_coxeter::index(tc, {1}) == todd_coxeter::index(tc, {2}));
   }
 
   LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
@@ -1030,7 +1031,7 @@ namespace libsemigroups {
     section_Cr_style(tc);
 
     REQUIRE(tc.number_of_classes() == 16);
-    REQUIRE(tc.word_to_class_index({2}) == tc.word_to_class_index({3}));
+    REQUIRE(todd_coxeter::index(tc, {2}) == todd_coxeter::index(tc, {3}));
   }
 
   LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
@@ -1100,14 +1101,14 @@ namespace libsemigroups {
     section_Cr_style(tc);
 
     REQUIRE(tc.number_of_classes() == 16);
-    REQUIRE(tc.word_to_class_index({0}) == tc.word_to_class_index({5}));
-    REQUIRE(tc.word_to_class_index({0}) == tc.word_to_class_index({10}));
-    REQUIRE(tc.word_to_class_index({1}) == tc.word_to_class_index({2}));
-    REQUIRE(tc.word_to_class_index({1}) == tc.word_to_class_index({7}));
-    REQUIRE(tc.word_to_class_index({3}) == tc.word_to_class_index({4}));
-    REQUIRE(tc.word_to_class_index({3}) == tc.word_to_class_index({6}));
-    REQUIRE(tc.word_to_class_index({3}) == tc.word_to_class_index({8}));
-    REQUIRE(tc.word_to_class_index({3}) == tc.word_to_class_index({9}));
+    REQUIRE(todd_coxeter::index(tc, {0}) == todd_coxeter::index(tc, {5}));
+    REQUIRE(todd_coxeter::index(tc, {0}) == todd_coxeter::index(tc, {10}));
+    REQUIRE(todd_coxeter::index(tc, {1}) == todd_coxeter::index(tc, {2}));
+    REQUIRE(todd_coxeter::index(tc, {1}) == todd_coxeter::index(tc, {7}));
+    REQUIRE(todd_coxeter::index(tc, {3}) == todd_coxeter::index(tc, {4}));
+    REQUIRE(todd_coxeter::index(tc, {3}) == todd_coxeter::index(tc, {6}));
+    REQUIRE(todd_coxeter::index(tc, {3}) == todd_coxeter::index(tc, {8}));
+    REQUIRE(todd_coxeter::index(tc, {3}) == todd_coxeter::index(tc, {9}));
   }
 
   LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
@@ -1528,8 +1529,7 @@ namespace libsemigroups {
                           "[todd-coxeter][quick]") {
     auto rg      = ReportGuard(false);
     using Transf = LeastTransf<5>;
-    auto S
-        = to_froidure_pin({Transf({1, 3, 4, 2, 3}), Transf({3, 2, 1, 3, 3})});
+    FroidurePin<Transf> S({Transf({1, 3, 4, 2, 3}), Transf({3, 2, 1, 3, 3})});
     REQUIRE(S.size() == 88);
     REQUIRE(S.number_of_rules() == 18);
     auto tc = to_todd_coxeter(twosided, S);  // use Cayley graph
@@ -2482,8 +2482,7 @@ namespace libsemigroups {
 
     using Transf = LeastTransf<5>;
 
-    auto S
-        = to_froidure_pin({Transf({1, 3, 4, 2, 3}), Transf({3, 2, 1, 3, 3})});
+    FroidurePin<Transf> S({Transf({1, 3, 4, 2, 3}), Transf({3, 2, 1, 3, 3})});
     REQUIRE(S.size() == 88);
     REQUIRE(S.number_of_rules() == 18);
 
@@ -4530,7 +4529,7 @@ namespace libsemigroups {
       presentation::add_rule(p, pow({a}, 3), {a});
     }
     using words::operator+;
-    WordRange    words;
+    WordRange words;
     words.alphabet_size(n).min(0).max(8);
 
     for (size_t a = 0; a < n - 1; ++a) {
@@ -4855,4 +4854,91 @@ namespace libsemigroups {
     REQUIRE(tc.number_of_classes() == 20'160);
   }
 
+  LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
+                          "119",
+                          "full transf. monoid 6 (maybe)",
+                          "[todd-coxeter][extreme]") {
+    ReportGuard             rg(true);
+    Presentation<word_type> p;
+    p.contains_empty_word(true);
+
+    p.rules = {00_w,
+               {},
+               11_w,
+               {},
+               22_w,
+               {},
+               33_w,
+               {},
+               44_w,
+               {},
+               010101_w,
+               {},
+               121212_w,
+               {},
+               232323_w,
+               {},
+               343434_w,
+               {},
+               404040_w,
+               {},
+               01020102_w,
+               {},
+               01030103_w,
+               {},
+               01040104_w,
+               {},
+               12101210_w,
+               {},
+               12131213_w,
+               {},
+               12141214_w,
+               {},
+               23202320_w,
+               {},
+               23212321_w,
+               {},
+               23242324_w,
+               {},
+               34303430_w,
+               {},
+               34313431_w,
+               {},
+               34323432_w,
+               {},
+               40414041_w,
+               {},
+               40424042_w,
+               {},
+               40434043_w,
+               {},
+               5401054010_w,
+               4010540105_w,
+               010501050105010_w,
+               50105_w,
+               1215121_w,
+               5151_w,
+               14321512341_w,
+               05_w};
+    p.alphabet_from_rules();
+    p.validate();
+    presentation::change_alphabet(p, 501234_w);
+
+    ToddCoxeter tc(twosided, p);
+    REQUIRE(tc.number_of_classes() == 46'656);
+
+    auto S = to_froidure_pin(tc);
+    REQUIRE((S.rules() | rx::count()) == 17'785);
+    auto kb = to_knuth_bendix(twosided, S);
+    auto q  = kb.presentation();
+    REQUIRE(q.alphabet() == "abcdef");
+    REQUIRE(kb.rewrite("af") == "f");
+
+    for (auto const& [l, r] : S.rules()) {
+      if (l == 05_w && r == 5_w) {
+        fmt::print("af=f is a rule!\n");
+        break;
+      }
+    }
+  }
 }  // namespace libsemigroups

@@ -806,6 +806,7 @@ namespace libsemigroups {
 
     // TODO(0) doc
     bool is_standardized(Order val) const;
+
     // TODO(0) doc
     bool is_standardized() const;
 
@@ -836,12 +837,51 @@ namespace libsemigroups {
     // recursive
     bool standardize(Order val);
 
+    ////////////////////////////////////////////////////////////////////////
+    // ToddCoxeter - interface requirements
+    ////////////////////////////////////////////////////////////////////////
+
     // TODO(0) doc
-    // TODO(0) rename class_index
-    // TODO(0) use iterators not word_type
-    node_type word_to_class_index(word_type const& w) {
-      validate_word(w);
-      return word_to_class_index_impl(w);
+    template <typename Iterator1, typename Iterator2>
+    node_type current_index_no_checks(Iterator1 first, Iterator2 last) const {
+      node_type c = _word_graph.initial_node();
+
+      if (kind() != congruence_kind::left) {
+        c = word_graph::follow_path_no_checks(_word_graph, c, first, last);
+      } else {
+        c = word_graph::follow_path_no_checks(
+            _word_graph,
+            c,
+            std::make_reverse_iterator(last),
+            std::make_reverse_iterator(first));
+      }
+      size_t const offset = (presentation().contains_empty_word() ? 0 : 1);
+      return (c == UNDEFINED ? UNDEFINED : static_cast<node_type>(c - offset));
+    }
+
+    template <typename Iterator1, typename Iterator2>
+    node_type current_index(Iterator1 first, Iterator2 last) const {
+      validate_word(first, last);
+      return current_index_no_checks(first, last);
+    }
+
+    template <typename Iterator1, typename Iterator2>
+    node_type index_no_checks(Iterator1 first, Iterator2 last) {
+      run();
+      LIBSEMIGROUPS_ASSERT(finished());
+      if (!is_standardized()) {
+        standardize(Order::shortlex);
+      }
+      // c is in the range 1, ..., number_of_cosets_active() because 0
+      // represents the identity coset, and does not correspond to an element,
+      // unless presentation().contains_empty_word()
+      return current_index_no_checks(first, last);
+    }
+
+    template <typename Iterator1, typename Iterator2>
+    node_type index(Iterator1 first, Iterator2 last) {
+      validate_word(first, last);
+      return index_no_checks(first, last);
     }
 
     // TODO(0) doc
@@ -918,6 +958,11 @@ namespace libsemigroups {
 
     node_type const_word_to_class_index(word_type const& w) const;
 
+    // TODO(rename)
+    template <typename Iterator1, typename Iterator2>
+    void validate_word(Iterator1 first, Iterator2 last) const {
+      presentation().validate_word(first, last);
+    }
     void validate_word(word_type const& w) const override;
 
     ////////////////////////////////////////////////////////////////////////
@@ -955,6 +1000,46 @@ namespace libsemigroups {
   namespace todd_coxeter {
     using node_type = typename ToddCoxeter::node_type;
 
+    ////////////////////////////////////////////////////////////////////////
+    // Interface helpers
+    ////////////////////////////////////////////////////////////////////////
+
+    // TODO(0) doc
+    template <typename Word>
+    node_type current_index_no_checks(ToddCoxeter const& tc, Word const& w) {
+      return tc.current_index_no_checks(std::begin(w), std::end(w));
+    }
+
+    // TODO(0) doc
+    template <typename Word>
+    node_type current_index(ToddCoxeter const& tc, Word const& w) {
+      return tc.current_index(std::begin(w), std::end(w));
+    }
+
+    // TODO(0) doc
+    template <typename Word>
+    node_type index_no_checks(ToddCoxeter& tc, Word const& w) {
+      return tc.index_no_checks(std::begin(w), std::end(w));
+    }
+
+    // TODO(0) doc
+    template <typename Word>
+    node_type index(ToddCoxeter& tc, Word const& w) {
+      return tc.index(std::begin(w), std::end(w));
+    }
+
+    // TODO(0) doc
+    template <typename Int>
+    node_type index(ToddCoxeter& tc, std::initializer_list<Int> const& w) {
+      return index<std::initializer_list<Int>>(tc, w);
+    }
+
+    // TODO(0) x3 more of these
+
+    ////////////////////////////////////////////////////////////////////////
+    // Other helpers
+    ////////////////////////////////////////////////////////////////////////
+
     // TODO(0) doc
     inline auto class_of(ToddCoxeter& tc, node_type n) {
       size_t const offset = (tc.presentation().contains_empty_word() ? 0 : 1);
@@ -964,7 +1049,7 @@ namespace libsemigroups {
     // TODO(0) doc
     // TODO(0) iterator version
     inline auto class_of(ToddCoxeter& tc, word_type const& w) {
-      return class_of(tc, tc.word_to_class_index(w));
+      return class_of(tc, index(tc, w));
     }
 
     //! Returns a \ref normal_form_iterator pointing at the first normal
@@ -988,7 +1073,7 @@ namespace libsemigroups {
 
     // TODO(0) doc
     inline word_type normal_form(ToddCoxeter& tc, word_type const& w) {
-      return tc.class_index_to_word(tc.word_to_class_index(w));
+      return tc.class_index_to_word(todd_coxeter::index(tc, w));
     }
 
     // TODO(0) doc
@@ -1007,7 +1092,7 @@ namespace libsemigroups {
       std::unordered_map<ToddCoxeter::node_type, Iterator> map;
       size_t                                               index = 0;
       for (auto it = first; it != last; ++it, ++index) {
-        auto [map_it, inserted] = map.emplace(tc.word_to_class_index(*it), it);
+        auto [map_it, inserted] = map.emplace(todd_coxeter::index(tc, *it), it);
         if (!inserted) {
           return std::pair(map_it->second, it);
         }
@@ -1075,8 +1160,8 @@ namespace libsemigroups {
         q.rules.insert(q.rules.end(), omit + 2, p.rules.crend());
         tc.init(twosided, q);
         tc.run_for(t);
-        if (tc.word_to_class_index(to_word(*omit))
-            == tc.word_to_class_index(to_word(*(omit + 1)))) {
+        if (todd_coxeter::index(tc, to_word(*omit))
+            == todd_coxeter::index(tc, to_word(*(omit + 1)))) {
           return (omit + 1).base() - 1;
         }
       }
@@ -1112,7 +1197,7 @@ namespace libsemigroups {
 
     while (!r.at_end()) {
       auto       next  = r.get();
-      auto const index = tc.word_to_class_index(next);
+      auto const index = todd_coxeter::index(tc, next);
       if (index >= lookup.size()) {
         lookup.resize(index + 1, UNDEFINED);
       }

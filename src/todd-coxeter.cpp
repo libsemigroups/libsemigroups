@@ -564,7 +564,9 @@ namespace libsemigroups {
         && word_graph().number_of_nodes_active() == 1) {
       return lhs == rhs;
     }
-    return lhs == rhs || word_to_class_index(lhs) == word_to_class_index(rhs);
+    return lhs == rhs
+           || todd_coxeter::index(*this, lhs)
+                  == todd_coxeter::index(*this, rhs);
   }
 
   bool ToddCoxeter::is_standardized(Order val) const {
@@ -715,7 +717,7 @@ namespace libsemigroups {
   }
 
   void ToddCoxeter::validate_word(word_type const& w) const {
-    presentation().validate_word(w.cbegin(), w.cend());
+    validate_word(w.cbegin(), w.cend());
   }
 
   ////////////////////////////////////////////////////////////////////////
@@ -760,7 +762,7 @@ namespace libsemigroups {
     }
 
     if (kind() == congruence_kind::twosided && !generating_pairs().empty()) {
-      // TODO(later) avoid copy of presentation here, if possible
+      // TODO(0) avoid copy of presentation here, if possible
       Presentation<word_type> p = presentation();
       if (p.alphabet().size() != _word_graph.out_degree()) {
         LIBSEMIGROUPS_ASSERT(p.alphabet().size() == 0);
@@ -1080,7 +1082,7 @@ namespace libsemigroups {
                tmp.clear();
                tmp.insert(tmp.end(), w.cbegin(), w.cend());
                tmp.insert(tmp.end(), w.cbegin(), w.cend());
-               return tc.word_to_class_index(tmp) == i++;
+               return todd_coxeter::index(tc, tmp) == i++;
              })
              | rx::count();
     }
