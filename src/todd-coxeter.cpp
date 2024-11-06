@@ -557,25 +557,6 @@ namespace libsemigroups {
   // ToddCoxeter - accessors - public
   ////////////////////////////////////////////////////////////////////////
 
-  tril ToddCoxeter::const_contains(word_type const& u,
-                                   word_type const& v) const {
-    return currently_contains(
-        std::begin(u), std::end(u), std::begin(v), std::end(v));
-  }
-
-  bool ToddCoxeter::contains(word_type const& u, word_type const& v) {
-    return contains(std::begin(u), std::end(u), std::begin(v), std::end(v));
-    // validate_word(lhs);
-    // validate_word(rhs);
-    // if (presentation().rules.empty() && generating_pairs().empty()
-    //     && word_graph().number_of_nodes_active() == 1) {
-    //   return lhs == rhs;
-    // }
-    // return lhs == rhs
-    //        || todd_coxeter::class_index(*this, lhs)
-    //               == todd_coxeter::class_index(*this, rhs);
-  }
-
   bool ToddCoxeter::is_standardized(Order val) const {
     // TODO(0) this is probably not always valid
     return val == _standardized

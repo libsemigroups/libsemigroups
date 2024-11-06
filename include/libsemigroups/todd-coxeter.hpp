@@ -352,11 +352,6 @@ namespace libsemigroups {
     // CongruenceInterface - pure virtual - public
     ////////////////////////////////////////////////////////////////////////
 
-    // TODO(0) doc
-    // TODO(0) change to iterators
-    [[nodiscard]] bool contains(word_type const& lhs,
-                                word_type const& rhs) override;
-
     // TODO(0)  remove since it falls right through
     [[nodiscard]] uint64_t number_of_classes() override {
       return number_of_classes_impl();
@@ -544,9 +539,6 @@ namespace libsemigroups {
 
     //! The current value of the lookahead growth factor.
     //!
-    //! \parameters
-    //! None
-    //!
     //! \returns A value of type `float`.
     //!
     //! \exceptions
@@ -577,9 +569,6 @@ namespace libsemigroups {
 
     //! The current value of the lookahead growth threshold.
     //!
-    //! \parameters
-    //! None
-    //!
     //! \returns A value of type `size_t`.
     //!
     //! \exceptions
@@ -609,9 +598,6 @@ namespace libsemigroups {
 
     //! The current value of the minimum lookahead setting.
     //!
-    //! \parameters
-    //! None
-    //!
     //! \returns A value of type `size_t`.
     //!
     //! \exceptions
@@ -638,9 +624,6 @@ namespace libsemigroups {
     ToddCoxeter& lookahead_next(size_t val) noexcept;
 
     //! The current value of the next lookahead setting.
-    //!
-    //! \parameters
-    //! None
     //!
     //! \returns A value of type `size_t`.
     //!
@@ -698,9 +681,6 @@ namespace libsemigroups {
 
     //! The current value of the lower bound setting.
     //!
-    //! \parameters
-    //! None
-    //!
     //! \returns A value of type `size_t`.
     //!
     //! \exceptions
@@ -722,9 +702,6 @@ namespace libsemigroups {
     ToddCoxeter& save(bool val);
 
     //! The current value of save setting.
-    //!
-    //! \parameters
-    //! None
     //!
     //! \returns A value of type `bool`.
     //!
@@ -990,11 +967,6 @@ namespace libsemigroups {
     // OLD
     ////////////////////////////////////////////////////////////////////////
 
-    // TODO(0) doc
-    // TODO(0) rename current_contains or currently_contains
-    // TODO(0) use iterators not word_type
-    tril const_contains(word_type const& u, word_type const& v) const;
-
     // stop_early indicates that if too few nodes are killed in 1 second, then
     // the lookahead aborts, this should not happen if we are doing a final
     // lookahead because we skipped some deductions
@@ -1121,6 +1093,34 @@ namespace libsemigroups {
         std::reverse(std::begin(result), std::end(result));
       }
       return result;
+    }
+
+    template <typename Word>
+    tril currently_contains_no_checks(ToddCoxeter const& tc,
+                                      Word const&        u,
+                                      Word const&        v) {
+      return tc.currently_contains_no_checks(
+          std::begin(u), std::end(u), std::begin(v), std::end(v));
+    }
+
+    template <typename Word>
+    tril currently_contains(ToddCoxeter const& tc,
+                            Word const&        u,
+                            Word const&        v) {
+      return tc.currently_contains(
+          std::begin(u), std::end(u), std::begin(v), std::end(v));
+    }
+
+    template <typename Word>
+    bool contains_no_checks(ToddCoxeter& tc, Word const& u, Word const& v) {
+      return tc.contains_no_checks(
+          std::begin(u), std::end(u), std::begin(v), std::end(v));
+    }
+
+    template <typename Word>
+    bool contains(ToddCoxeter& tc, Word const& u, Word const& v) {
+      return tc.contains(
+          std::begin(u), std::end(u), std::begin(v), std::end(v));
     }
 
     ////////////////////////////////////////////////////////////////////////

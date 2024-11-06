@@ -257,7 +257,7 @@ namespace libsemigroups {
     void check_contains(ToddCoxeter& tc) {
       auto const& p = tc.presentation();
       for (auto it = p.rules.cbegin(); it < p.rules.cend(); it += 2) {
-        REQUIRE(tc.contains(*it, *(it + 1)));
+        REQUIRE(todd_coxeter::contains(tc, *it, *(it + 1)));
       }
     }
 
@@ -545,7 +545,7 @@ namespace libsemigroups {
     check_standardize(tc);
 
     REQUIRE(tc.number_of_classes() == 3);
-    REQUIRE(tc.contains(0_w, 1_w));
+    REQUIRE(todd_coxeter::contains(tc, 0_w, 1_w));
 
     auto T = to_froidure_pin(tc);
     REQUIRE(T.size() == 3);
@@ -872,7 +872,7 @@ namespace libsemigroups {
               1000101_w, 01000101_w, 001000100_w, 001000101_w, 010001100_w}}));
     REQUIRE(
         std::all_of(ntc[0].cbegin(), ntc[0].cend(), [&ntc, &tc](auto const& w) {
-          return tc.contains(w, ntc[0][0]);
+          return todd_coxeter::contains(tc, w, ntc[0][0]);
         }));
   }
 
@@ -1184,8 +1184,8 @@ namespace libsemigroups {
     section_Rc_style(tc);
     section_R_over_C_style(tc);
 
-    REQUIRE(tc.contains(00_w, 00_w));
-    REQUIRE(!tc.contains(00_w, 0_w));
+    REQUIRE(todd_coxeter::contains(tc, 00_w, 00_w));
+    REQUIRE(!todd_coxeter::contains(tc, 00_w, 0_w));
   }
 
   LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
@@ -1313,7 +1313,7 @@ namespace libsemigroups {
       REQUIRE_THROWS_AS(ToddCoxeter(twosided, tc1), LibsemigroupsException);
 
       ToddCoxeter tc2(knd, tc1);
-      REQUIRE(!tc1.contains(0_w, 1_w));
+      REQUIRE(!todd_coxeter::contains(tc1, 0_w, 1_w));
       tc2.add_pair(0_w, 1_w);
 
       section_felsch(tc2);
@@ -2532,7 +2532,7 @@ namespace libsemigroups {
 
       REQUIRE(tc1.number_of_classes() == 21);
       REQUIRE(tc1.number_of_classes() == to_froidure_pin(tc1).size());
-      REQUIRE(tc1.contains(w3, w4));
+      REQUIRE(todd_coxeter::contains(tc1, w3, w4));
       REQUIRE(todd_coxeter::normal_form(tc1, w3)
               == todd_coxeter::normal_form(tc1, w4));
     }
@@ -2549,7 +2549,7 @@ namespace libsemigroups {
 
       REQUIRE(tc2.number_of_classes() == 21);
       REQUIRE(tc2.number_of_classes() == to_froidure_pin(tc2).size());
-      REQUIRE(tc2.contains(w3, w4));
+      REQUIRE(todd_coxeter::contains(tc2, w3, w4));
       REQUIRE(todd_coxeter::normal_form(tc2, w3)
               == todd_coxeter::normal_form(tc2, w4));
     }
@@ -3819,10 +3819,10 @@ namespace libsemigroups {
 
     REQUIRE(tc.number_of_classes() == 7'920);
 
-    REQUIRE(tc.contains(00_w, {}));
-    REQUIRE(!tc.contains(11_w, {}));
-    REQUIRE(!tc.contains(111_w, {}));
-    REQUIRE(tc.contains(1111_w, {}));
+    REQUIRE(todd_coxeter::contains(tc, 00_w, {}));
+    REQUIRE(!todd_coxeter::contains(tc, 11_w, {}));
+    REQUIRE(!todd_coxeter::contains(tc, 111_w, {}));
+    REQUIRE(todd_coxeter::contains(tc, 1111_w, {}));
 
     REQUIRE(todd_coxeter::class_rep(tc, 0) == ""_w);
 
@@ -4360,8 +4360,8 @@ namespace libsemigroups {
       //         2120012_w, 2212200122_w, 211200112_w, 221122001122_w};
       //  auto pair = todd_coxeter::first_equivalent_pair(
       //      tc, possible1.cbegin(), possible1.cend());
-      //  REQUIRE(!tc.contains(2012_w, 20122_w));
-      //  REQUIRE(!tc.contains(2012_w, 22012_w));
+      //  REQUIRE(!todd_coxeter::contains(tc, 2012_w, 20122_w));
+      //  REQUIRE(!todd_coxeter::contains(tc, 2012_w, 22012_w));
       //  REQUIRE(*pair.first == 2012_w);
       //  REQUIRE(*pair.second == 220122_w);
 
@@ -4484,7 +4484,7 @@ namespace libsemigroups {
     }
     // REQUIRE(p.rules == std::vector<word_type>());
     ToddCoxeter tc(twosided, p);
-    REQUIRE(tc.contains(30011222_w, 32200112_w));
+    REQUIRE(todd_coxeter::contains(tc, 30011222_w, 32200112_w));
 
     // NormalForms nf(tc, words.begin(), words.end());
     // REQUIRE(std::all_of(words.begin(), words.end(), [&nf](auto const& w) {

@@ -104,9 +104,10 @@ namespace libsemigroups {
     //! (None)
     [[nodiscard]] virtual uint64_t number_of_classes() = 0;
 
-    // TODO(0)
-    [[nodiscard]] virtual bool contains(word_type const& u, word_type const& v)
-        = 0;
+    // TODO(0) replace with iterators
+    [[nodiscard]] virtual bool contains(word_type const&, word_type const&) {
+      return true;
+    }
 
     virtual void validate_word(word_type const& w) const = 0;
 
@@ -119,9 +120,6 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! Constant.
-    //!
-    //! \par Parameters
-    //! (None)
     [[nodiscard]] congruence_kind kind() const noexcept {
       return _type;
     }
