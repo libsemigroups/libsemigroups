@@ -887,52 +887,108 @@ namespace libsemigroups {
 
     // TODO(1) maybe do current version, not clear that it is meaningful
     // though.
-    // template <typename Iterator>
-    // Iterator rep_no_checks(Iterator d_first, node_type i) {
-    //   run();
-    //   LIBSEMIGROUPS_ASSERT(finished());
-    //   if (!is_standardized()) {
-    //     standardize(Order::shortlex);
-    //   }
+    // Note that the output of this needs to be reversed if and only if kind()
+    // != left.
+    template <typename Iterator>
+    Iterator class_rep_no_checks(Iterator d_first, node_type i) {
+      run();
+      LIBSEMIGROUPS_ASSERT(finished());
+      if (!is_standardized()) {
+        standardize(Order::shortlex);
+      }
 
-    //   if (!presentation().contains_empty_word()) {
-    //     ++i;
-    //   }
+      if (!presentation().contains_empty_word()) {
+        ++i;
+      }
 
-    //   Iterator d_last = _forest.path_to_root(d_first, i);
-    //   if (kind() != congruence_kind::left) {
-    //     std::reverse(d_first, d_last);
-    //   }
-    //   return d_last;
-    // }
+      return _forest.path_to_root_no_checks(d_first, i);
+      // This doesn't compile with the call to std::reverse below
+      // if (kind() != congruence_kind::left) {
+      //   std::reverse(d_first, d_last);
+      // }
+    }
 
-    // template <typename Iterator>
-    // Iterator rep(Iterator d_first, node_type i) {
-    //   if (i >= nr_classes()) {
-    //     LIBSEMIGROUPS_EXCEPTION("invalid class index, expected a value in "
-    //                             "the range [0, {}), found {}",
-    //                             number_of_classes(),
-    //                             i);
-    //   }
-    //   return rep_no_checks(d_first, i);
-    // }
-
-    ////////////////////////////////////////////////////////////////////////
-    // OLD
-    ////////////////////////////////////////////////////////////////////////
-    // TODO(0) doc
-    // TODO(0) rename class_rep
-    // TODO(0) to cpp file
-    // TODO(0) to helper
-    word_type class_index_to_word(node_type i) {
+    template <typename Iterator>
+    Iterator class_rep(Iterator d_first, node_type i) {
       if (i >= number_of_classes()) {
         LIBSEMIGROUPS_EXCEPTION("invalid class index, expected a value in "
                                 "the range [0, {}), found {}",
                                 number_of_classes(),
                                 i);
       }
-      return class_index_to_word_impl(i);
+      return class_rep_no_checks(d_first, i);
     }
+
+    template <typename Iterator1,
+              typename Iterator2,
+              typename Iterator3,
+              typename Iterator4>
+    tril currently_contains_no_checks(Iterator1 first1,
+                                      Iterator2 last1,
+                                      Iterator3 first2,
+                                      Iterator4 last2) const {
+      if (std::equal(first1, last1, first2, last2)) {
+        return tril::TRUE;
+      }
+      auto i1 = current_class_index_no_checks(first1, last1);
+      auto i2 = current_class_index_no_checks(first2, last2);
+      if (i1 == UNDEFINED || i2 == UNDEFINED) {
+        return tril::unknown;
+      } else if (i1 == i2) {
+        return tril::TRUE;
+      } else if (finished()) {
+        return tril::FALSE;
+      } else {
+        return tril::unknown;
+      }
+    }
+
+    template <typename Iterator1,
+              typename Iterator2,
+              typename Iterator3,
+              typename Iterator4>
+    tril currently_contains(Iterator1 first1,
+                            Iterator2 last1,
+                            Iterator3 first2,
+                            Iterator4 last2) const {
+      validate_word(first1, last1);
+      validate_word(first2, last2);
+      return currently_contains_no_checks(first1, last1, first2, last2);
+    }
+
+    template <typename Iterator1,
+              typename Iterator2,
+              typename Iterator3,
+              typename Iterator4>
+    bool contains_no_checks(Iterator1 first1,
+                            Iterator2 last1,
+                            Iterator3 first2,
+                            Iterator4 last2) {
+      if (presentation().rules.empty() && generating_pairs().empty()
+          && word_graph().number_of_nodes_active() == 1) {
+        return std::equal(first1, last1, first2, last2);
+      }
+      return std::equal(first1, last1, first2, last2)
+             || class_index_no_checks(first1, last1)
+                    == class_index_no_checks(first2, last2);
+    }
+
+    template <typename Iterator1,
+              typename Iterator2,
+              typename Iterator3,
+              typename Iterator4>
+    bool contains(Iterator1 first1,
+                  Iterator2 last1,
+                  Iterator3 first2,
+                  Iterator4 last2) {
+      validate_word(first1, last1);
+      validate_word(first2, last2);
+      return contains_no_checks(first1, last1, first2, last2);
+    }
+
+    ////////////////////////////////////////////////////////////////////////
+    // OLD
+    ////////////////////////////////////////////////////////////////////////
 
     // TODO(0) doc
     // TODO(0) rename current_contains or currently_contains
@@ -962,9 +1018,6 @@ namespace libsemigroups {
     ////////////////////////////////////////////////////////////////////////
     // CongruenceInterface - pure virtual member functions - private
     ////////////////////////////////////////////////////////////////////////
-
-    // TODO(0) all of these should be public and called _no_checks
-    word_type class_index_to_word_impl(node_type i);
 
     uint64_t number_of_classes_impl();
 
@@ -1046,7 +1099,29 @@ namespace libsemigroups {
       return class_index<std::initializer_list<Int>>(tc, w);
     }
 
-    // TODO(0) x3 more of these
+    // TODO(0) x3 more of class_index
+
+    // TODO(0) doc
+    template <typename Word = word_type>
+    Word class_rep_no_checks(ToddCoxeter& tc, node_type i) {
+      Word result;
+      tc.class_rep_no_checks(std::back_inserter(result), i);
+      if (tc.kind() != congruence_kind::left) {
+        std::reverse(std::begin(result), std::end(result));
+      }
+      return result;
+    }
+
+    // TODO(0) doc
+    template <typename Word = word_type>
+    Word class_rep(ToddCoxeter& tc, node_type i) {
+      Word result;
+      tc.class_rep(std::back_inserter(result), i);
+      if (tc.kind() != congruence_kind::left) {
+        std::reverse(std::begin(result), std::end(result));
+      }
+      return result;
+    }
 
     ////////////////////////////////////////////////////////////////////////
     // Other helpers
@@ -1080,12 +1155,12 @@ namespace libsemigroups {
     inline auto normal_forms(ToddCoxeter& tc) {
       return rx::seq() | rx::take(tc.number_of_classes())
              | rx::transform(
-                 [&tc](auto i) { return tc.class_index_to_word(i); });
+                 [&tc](auto i) { return class_rep_no_checks(tc, i); });
     }
 
     // TODO(0) doc
     inline word_type normal_form(ToddCoxeter& tc, word_type const& w) {
-      return tc.class_index_to_word(class_index(tc, w));
+      return class_rep(tc, class_index(tc, w));
     }
 
     // TODO(0) doc

@@ -559,38 +559,21 @@ namespace libsemigroups {
 
   tril ToddCoxeter::const_contains(word_type const& u,
                                    word_type const& v) const {
-    if (u == v) {
-      return tril::TRUE;
-    }
-    node_type uu, vv;
-    try {
-      uu = todd_coxeter::current_class_index(*this, u);
-      vv = todd_coxeter::current_class_index(*this, v);
-    } catch (LibsemigroupsException const& e) {
-      report_default("ignoring exception:\n%s", e.what());
-      return tril::unknown;
-    }
-    if (uu == UNDEFINED || vv == UNDEFINED) {
-      return tril::unknown;
-    } else if (uu == vv) {
-      return tril::TRUE;
-    } else if (finished()) {
-      return tril::FALSE;
-    } else {
-      return tril::unknown;
-    }
+    return currently_contains(
+        std::begin(u), std::end(u), std::begin(v), std::end(v));
   }
 
-  bool ToddCoxeter::contains(word_type const& lhs, word_type const& rhs) {
-    validate_word(lhs);
-    validate_word(rhs);
-    if (presentation().rules.empty() && generating_pairs().empty()
-        && word_graph().number_of_nodes_active() == 1) {
-      return lhs == rhs;
-    }
-    return lhs == rhs
-           || todd_coxeter::class_index(*this, lhs)
-                  == todd_coxeter::class_index(*this, rhs);
+  bool ToddCoxeter::contains(word_type const& u, word_type const& v) {
+    return contains(std::begin(u), std::end(u), std::begin(v), std::end(v));
+    // validate_word(lhs);
+    // validate_word(rhs);
+    // if (presentation().rules.empty() && generating_pairs().empty()
+    //     && word_graph().number_of_nodes_active() == 1) {
+    //   return lhs == rhs;
+    // }
+    // return lhs == rhs
+    //        || todd_coxeter::class_index(*this, lhs)
+    //               == todd_coxeter::class_index(*this, rhs);
   }
 
   bool ToddCoxeter::is_standardized(Order val) const {
@@ -686,23 +669,6 @@ namespace libsemigroups {
   ////////////////////////////////////////////////////////////////////////
   // CongruenceInterface - pure virtual member functions - private
   ////////////////////////////////////////////////////////////////////////
-
-  word_type ToddCoxeter::class_index_to_word_impl(node_type i) {
-    run();
-    LIBSEMIGROUPS_ASSERT(finished());
-    if (!is_standardized()) {
-      standardize(Order::shortlex);
-    }
-    if (!presentation().contains_empty_word()) {
-      ++i;
-    }
-
-    word_type w = _forest.path_to_root(i);
-    if (kind() != congruence_kind::left) {
-      std::reverse(w.begin(), w.end());
-    }
-    return w;
-  }
 
   uint64_t ToddCoxeter::number_of_classes_impl() {
     if (is_obviously_infinite(*this)) {
