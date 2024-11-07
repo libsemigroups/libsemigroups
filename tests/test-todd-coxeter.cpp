@@ -154,7 +154,8 @@ namespace libsemigroups {
     void check_complete_compatible(ToddCoxeter& tc) {
       auto const& p = tc.presentation();
       tc.run();
-      auto const& d = tc.word_graph();
+      // TODO(0) remove tc.run() and use word_graph in the line below
+      auto const& d = tc.current_word_graph();
       REQUIRE(word_graph::is_complete(
           d, d.cbegin_active_nodes(), d.cend_active_nodes()));
       REQUIRE(word_graph::is_compatible_no_checks(d,
@@ -196,7 +197,7 @@ namespace libsemigroups {
 
         std::unordered_map<node_type, word_type> map;
         for (auto const& w : words) {
-          node_type t = follow_path_no_checks(tc.word_graph(), 0, w);
+          node_type t = follow_path_no_checks(tc.current_word_graph(), 0, w);
           REQUIRE(t != UNDEFINED);
           if (t != 0) {
             auto ww = w;
@@ -232,8 +233,8 @@ namespace libsemigroups {
         std::unordered_map<node_type, word_type> map;
 
         for (auto const& w : words) {
-          node_type t
-              = word_graph::follow_path_no_checks(tc.word_graph(), 0, w);
+          node_type t = word_graph::follow_path_no_checks(
+              tc.current_word_graph(), 0, w);
           if (t != 0) {
             auto ww = w;
             if (tc.kind() == congruence_kind::left) {
@@ -592,7 +593,7 @@ namespace libsemigroups {
 
     // Construct from Cayley graph of S
     auto tc = to_todd_coxeter(twosided, S);
-    REQUIRE(tc.word_graph().number_of_nodes() == 89);
+    REQUIRE(tc.current_word_graph().number_of_nodes() == 89);
 
     tc.add_pair(froidure_pin::factorisation(S, Transf({3, 4, 4, 4, 4})),
                 froidure_pin::factorisation(S, Transf({3, 1, 3, 3, 3})));
@@ -789,7 +790,7 @@ namespace libsemigroups {
     check_standardize(tc);
 
     REQUIRE(tc.generating_pairs()[0] == 010001100_w);
-    auto const& d = tc.word_graph();
+    auto const& d = tc.current_word_graph();
     REQUIRE(word_graph::is_compatible_no_checks(d,
                                                 d.cbegin_active_nodes(),
                                                 d.cend_active_nodes(),
@@ -1330,7 +1331,7 @@ namespace libsemigroups {
       ToddCoxeter tc3(knd, p);
       REQUIRE(tc3.number_of_classes() == 1);
       tc3.shrink_to_fit();
-      REQUIRE(tc3.word_graph() == tc2.word_graph());
+      REQUIRE(tc3.current_word_graph() == tc2.current_word_graph());
     }
   }
 
@@ -1648,7 +1649,7 @@ namespace libsemigroups {
     ToddCoxeter tc(twosided, p);
     tc.strategy(options::strategy::felsch);
     REQUIRE(tc.strategy() == options::strategy::felsch);
-    auto const& d = tc.word_graph();
+    auto const& d = tc.current_word_graph();
     REQUIRE(!word_graph::is_complete(
         d, d.cbegin_active_nodes(), d.cend_active_nodes()));
     REQUIRE(word_graph::is_compatible_no_checks(d,
@@ -1673,7 +1674,7 @@ namespace libsemigroups {
     REQUIRE(copy.finished());
     REQUIRE(copy.number_of_classes() == 1);
 
-    auto const& dd = copy.word_graph();
+    auto const& dd = copy.current_word_graph();
     REQUIRE(word_graph::is_complete(
         dd, dd.cbegin_active_nodes(), dd.cend_active_nodes()));
     REQUIRE(word_graph::is_compatible_no_checks(dd,
@@ -1681,7 +1682,7 @@ namespace libsemigroups {
                                                 dd.cend_active_nodes(),
                                                 p.rules.cbegin(),
                                                 p.rules.cend()));
-    REQUIRE(tc.word_graph() == copy.word_graph());
+    REQUIRE(tc.current_word_graph() == copy.current_word_graph());
   }
 
   LIBSEMIGROUPS_TEST_CASE(
@@ -1752,7 +1753,7 @@ namespace libsemigroups {
 
     tc.init(twosided, p);
 
-    auto const& d = tc.word_graph();
+    auto const& d = tc.current_word_graph();
     REQUIRE(word_graph::is_compatible_no_checks(d,
                                                 d.cbegin_active_nodes(),
                                                 d.cend_active_nodes(),
@@ -1775,7 +1776,7 @@ namespace libsemigroups {
         .large_collapse(1);
     REQUIRE_THROWS_AS(tc.lookahead_growth_factor(0.1), LibsemigroupsException);
 
-    REQUIRE(tc.word_graph().felsch_tree().height() == 6);
+    REQUIRE(tc.current_word_graph().felsch_tree().height() == 6);
     REQUIRE(tc.number_of_classes() == 5);
     REQUIRE(todd_coxeter::class_of(tc, 0).count() == 1);
     REQUIRE(todd_coxeter::class_of(tc, 1).count() == 1);
@@ -1783,7 +1784,7 @@ namespace libsemigroups {
     REQUIRE(todd_coxeter::class_of(tc, 3).count() == POSITIVE_INFINITY);
     REQUIRE(todd_coxeter::class_of(tc, 4).count() == POSITIVE_INFINITY);
     REQUIRE(!tc.is_standardized());
-    REQUIRE(tc.word_graph().felsch_tree().number_of_nodes() == 7);
+    REQUIRE(tc.current_word_graph().felsch_tree().number_of_nodes() == 7);
 
     ToddCoxeter tc2(left, tc);
     tc2.add_pair(00_w, 0_w);
@@ -2295,6 +2296,7 @@ namespace libsemigroups {
     REQUIRE(tc.number_of_classes() == 7'776);
   }
 
+  // stop_early in lookahead really helps in this example
   LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                           "115",
                           "full_transformation_monoid(7, Iwahori)",
@@ -2705,7 +2707,7 @@ namespace libsemigroups {
 
     ToddCoxeter tc(twosided, p);
     // tc.run_until([&tc]() -> bool {
-    //   return tc.word_graph().number_of_nodes() >= 10'000;
+    //   return tc.current_word_graph().number_of_nodes() >= 10'000;
     // });
     // tc.lookahead_next(100'000);
     REQUIRE(!tc.finished());

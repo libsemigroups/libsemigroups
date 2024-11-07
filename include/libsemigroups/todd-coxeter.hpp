@@ -185,7 +185,7 @@ namespace libsemigroups {
 
      private:
       bool is_active_node(node_type n) const noexcept {
-        return _tc->word_graph().is_active_node(n);
+        return _tc->current_word_graph().is_active_node(n);
       }
     };  // Definitions
 
@@ -490,7 +490,6 @@ namespace libsemigroups {
     //!
     //! \exceptions
     //! \noexcept
-    // TODO(0) remove?
     ToddCoxeter& large_collapse(size_t val) noexcept;
 
     //! The current value of the large collapse setting.
@@ -500,7 +499,6 @@ namespace libsemigroups {
     //!
     //! \exceptions
     //! \noexcept
-    // TODO(0) remove?
     [[nodiscard]] size_t large_collapse() const noexcept;
 
     // TODO(0) doc
@@ -765,14 +763,12 @@ namespace libsemigroups {
     }
 
     // TODO(0) doc
-    // TODO(0) rename current_word_graph
-    Graph const& word_graph() const noexcept {
+    Graph const& current_word_graph() const noexcept {
       return _word_graph;
     }
 
     // TODO(0) doc
-    // TODO(0) rename current_spanning_tree
-    Forest const& spanning_tree() const noexcept {
+    Forest const& current_spanning_tree() const noexcept {
       return _forest;
     }
 
@@ -951,7 +947,7 @@ namespace libsemigroups {
                             Iterator3 first2,
                             Iterator4 last2) {
       if (presentation().rules.empty() && generating_pairs().empty()
-          && word_graph().number_of_nodes_active() == 1) {
+          && current_word_graph().number_of_nodes_active() == 1) {
         return std::equal(first1, last1, first2, last2);
       }
       return std::equal(first1, last1, first2, last2)
@@ -1129,7 +1125,8 @@ namespace libsemigroups {
     // TODO(0) doc
     inline auto class_of(ToddCoxeter& tc, node_type n) {
       size_t const offset = (tc.presentation().contains_empty_word() ? 0 : 1);
-      return Paths(tc.word_graph()).source(0).target(n + offset);
+      // TODO(0) change to tc.word_graph()
+      return Paths(tc.current_word_graph()).source(0).target(n + offset);
     }
 
     // TODO(0) doc

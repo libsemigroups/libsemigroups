@@ -36,9 +36,9 @@ namespace libsemigroups {
     tc.run();
     tc.shrink_to_fit();
     // Ensure class indices and letters are equal!
-    auto         wg = std::make_shared<word_graph_type>(tc.word_graph());
-    size_t const n  = tc.word_graph().out_degree();
-    size_t       m  = n;
+    auto wg        = std::make_shared<word_graph_type>(tc.current_word_graph());
+    size_t const n = tc.current_word_graph().out_degree();
+    size_t       m = n;
     for (letter_type a = 0; a < m;) {
       if (wg->target_no_checks(0, a) != a + 1) {
         wg->remove_label(a);
@@ -52,7 +52,7 @@ namespace libsemigroups {
     for (size_t i = 0; i < n; ++i) {
       // We use _word_graph.target_no_checks instead of just i, because there
       // might be more generators than cosets.
-      result.add_generator(TCE(tc.word_graph().target_no_checks(0, i)));
+      result.add_generator(TCE(tc.current_word_graph().target_no_checks(0, i)));
     }
     return result;
   }

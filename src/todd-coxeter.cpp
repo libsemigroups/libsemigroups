@@ -597,7 +597,7 @@ namespace libsemigroups {
     // TODO(0) this is probably not always valid
     return val == _standardized
            && _forest.number_of_nodes()
-                  == word_graph().number_of_nodes_active();
+                  == current_word_graph().number_of_nodes_active();
   }
 
   bool ToddCoxeter::is_standardized() const {
@@ -606,7 +606,7 @@ namespace libsemigroups {
     // again.
     return _standardized != Order::none
            && _forest.number_of_nodes()
-                  == word_graph().number_of_nodes_active();
+                  == current_word_graph().number_of_nodes_active();
   }
 
   ////////////////////////////////////////////////////////////////////////
@@ -702,7 +702,7 @@ namespace libsemigroups {
     _word_graph.stats_check_point();
     auto       first = generating_pairs().cbegin();
     auto       last  = generating_pairs().cend();
-    auto const id    = word_graph().initial_node();
+    auto const id    = current_word_graph().initial_node();
     if (save() || strategy() == options::strategy::felsch) {
       for (auto it = first; it < last; it += 2) {
         _word_graph.push_definition_hlt<detail::RegisterDefs>(
@@ -747,7 +747,7 @@ namespace libsemigroups {
   void ToddCoxeter::finalise_run() {
     if (!stopped()) {
       if (_word_graph.definitions().any_skipped()) {
-        auto const& d = word_graph();
+        auto const& d = current_word_graph();
         if (d.number_of_nodes_active() != lower_bound()
             || !word_graph::is_complete(
                 d, d.cbegin_active_nodes(), d.cend_active_nodes())) {
@@ -821,7 +821,7 @@ namespace libsemigroups {
       strategy(options::strategy::felsch);
       auto M = _word_graph.number_of_nodes_active();
       run_until([this, &M]() -> bool {
-        return word_graph().number_of_nodes_active() >= M + f_defs();
+        return current_word_graph().number_of_nodes_active() >= M + f_defs();
       });
       if (finished()) {
         break;
@@ -829,7 +829,8 @@ namespace libsemigroups {
       strategy(options::strategy::hlt);
       M = _word_graph.number_of_nodes_active();
       run_until([this, &M, &N]() -> bool {
-        return word_graph().number_of_nodes_active() >= M + (hlt_defs() / N);
+        return current_word_graph().number_of_nodes_active()
+               >= M + (hlt_defs() / N);
       });
     }
     lookahead_extent(options::lookahead_extent::full);
@@ -842,7 +843,7 @@ namespace libsemigroups {
 
     strategy(options::strategy::hlt);
     run_until([this]() -> bool {
-      return word_graph().number_of_nodes_active() >= lookahead_next();
+      return current_word_graph().number_of_nodes_active() >= lookahead_next();
     });
     lookahead_extent(options::lookahead_extent::full);
     perform_lookahead(StopEarly);
@@ -853,15 +854,16 @@ namespace libsemigroups {
     SettingsGuard guard(this);
 
     strategy(options::strategy::felsch);
-    auto M = word_graph().number_of_nodes_active();
+    auto M = current_word_graph().number_of_nodes_active();
     run_until([this, &M]() -> bool {
-      return word_graph().number_of_nodes_active() >= M + f_defs();
+      return current_word_graph().number_of_nodes_active() >= M + f_defs();
     });
     strategy(options::strategy::hlt);
-    M        = word_graph().number_of_nodes_active();
+    M        = current_word_graph().number_of_nodes_active();
     size_t N = presentation::length(presentation());
     run_until([this, &M, &N]() -> bool {
-      return word_graph().number_of_nodes_active() >= (hlt_defs() / N) + M;
+      return current_word_graph().number_of_nodes_active()
+             >= (hlt_defs() / N) + M;
     });
     strategy(options::strategy::felsch);
     run();
@@ -874,15 +876,16 @@ namespace libsemigroups {
     SettingsGuard guard(this);
 
     strategy(options::strategy::hlt);
-    auto   M = word_graph().number_of_nodes_active();
+    auto   M = current_word_graph().number_of_nodes_active();
     size_t N = presentation::length(presentation());
     run_until([this, &M, &N]() -> bool {
-      return word_graph().number_of_nodes_active() >= (hlt_defs() / N) + M;
+      return current_word_graph().number_of_nodes_active()
+             >= (hlt_defs() / N) + M;
     });
     strategy(options::strategy::felsch);
-    M = word_graph().number_of_nodes_active();
+    M = current_word_graph().number_of_nodes_active();
     run_until([this, &M]() -> bool {
-      return word_graph().number_of_nodes_active() >= f_defs() + M;
+      return current_word_graph().number_of_nodes_active() >= f_defs() + M;
     });
     strategy(options::strategy::hlt);
     run();
@@ -1016,13 +1019,14 @@ namespace libsemigroups {
         copy.save(true);
         while (!copy.finished()) {
           copy.run_for(try_for);
-          size_t limit = copy.word_graph().number_of_nodes_active();
-          while (copy.word_graph().number_of_nodes_active() >= threshold * limit
+          size_t limit = copy.current_word_graph().number_of_nodes_active();
+          while (copy.current_word_graph().number_of_nodes_active()
+                     >= threshold * limit
                  && !copy.finished()) {
-            node_type c1 = random_active_node(copy.word_graph());
-            node_type c2 = random_active_node(copy.word_graph());
-            auto&     wg
-                = const_cast<ToddCoxeter::word_graph_type&>(copy.word_graph());
+            node_type c1 = random_active_node(copy.current_word_graph());
+            node_type c2 = random_active_node(copy.current_word_graph());
+            auto&     wg = const_cast<ToddCoxeter::word_graph_type&>(
+                copy.current_word_graph());
             wg.merge_nodes_no_checks(c1, c2);
             wg.process_coincidences<detail::RegisterDefs>();
             wg.process_definitions();
