@@ -153,6 +153,7 @@
     <tab type="user" visible="yes" url="@ref froidure_pin_group" title="Froidure-Pin" />
     <tab type="user" visible="yes" url="@ref freeband_group" title="Radoszewski-Rytter" />
     <tab type="user" visible="yes" url="@ref schreier_sims_group" title="Schreier-Sims" />
+    <tab type="user" visible="yes" url="@ref todd_coxeter_group" title="Todd-Coxeter" />
     <tab type="user" visible="yes" url="@ref ukkonen_group" title="Ukkonen" />
     <tab type="user" visible="yes" url="_HEADING_" title="Bibliography" />
     <tab type="user" visible="yes" url="@ref citelist" title="Bibliography" />

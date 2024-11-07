@@ -42,9 +42,88 @@
 #include "detail/report.hpp"              // for LIBSEMIGROUPS_EXCEPTION
 
 namespace libsemigroups {
-  // TODO(0) doc
+  //! Defined in ``todd-coxeter.hpp``.
+  //!
+  //! This class contains an implementation of the Todd-Coxeter
+  //! algorithm for computing left, right, and 2-sided congruences on
+  //! a semigroup or monoid. The purpose of this algorithm is to find the
+  //! WordGraph of the action of a semigroup or monoid on the classes of a
+  //! congruence; see \cite Coleman2022aa for more details.
+  //!
+  //! In this documentation we use the term "congruence enumeration" to mean the
+  //! execution of (any version of) the Todd-Coxeter algorithm.
+  //! Some of the features of this class were inspired by similar features in
+  //! [ACE](https://staff.itee.uq.edu.au/havas/) by George Havas and Colin
+  //! Ramsay.
+  //!
+  //! \sa congruence_kind and tril.
+  //!
+  //! \par Example 1
+  //! \code
+  //! Presentation<word_type> p;
+  //! p.alphabet(2);
+  //! presentation::add_rule(p, 00_w, 0_w);
+  //! presentation::add_rule(p, 0_w, 1_w);
+  //! ToddCoxeter tc(congruence_kind::left, p);
+  //! tc.strategy(options::strategy::felsch);
+  //! tc.number_of_classes();
+  //! tc.contains(0000_w, 00_w);
+  //! tc.class_index(0000_w);
+  //! \endcode
+  //!
+  //! \par Example 2
+  //! \code
+  //! Presentation<word_type> p;
+  //! p.alphabet(4);
+  //! presentation::add_rule(p, 00_w, 0_w);
+  //! presentation::add_rule(p, 10_w, 1_w);
+  //! presentation::add_rule(p, 01_w, 1_w);
+  //! presentation::add_rule(p, 20_w, 2_w);
+  //! presentation::add_rule(p, 02_w, 2_w);
+  //! presentation::add_rule(p, 30_w, 3_w);
+  //! presentation::add_rule(p, 03_w, 3_w);
+  //! presentation::add_rule(p, 11_w, 0_w);
+  //! presentation::add_rule(p, 23_w, 0_w);
+  //! presentation::add_rule(p, 222_w, 0_w);
+  //! presentation::add_rule(p, 12121212121212_w, 0_w);
+  //! presentation::add_rule(p, 12131213121312131213121312131213_w, 0_w);
+  //! ToddCoxeter tc(congruence_kind::twosided, p);
+  //! tc.strategy(options::strategy::hlt)
+  //!    .lookahead_extent(options::lookahead_extent::partial)
+  //!    .save(false);
+  //! tc.number_of_classes()  // 10'752
+  //! tc.complete();          // true
+  //! tc.compatible();        // true
+  //! todd_coxeter::number_of_idempotents(tc); // 1
+  //! tc.standardize(order::recursive);
+  //! std::vector<word_type>(tc.cbegin_normal_forms(),
+  //!                        tc.cbegin_normal_forms() + 10);
+  //! // {0_w,
+  //! //  1_w,
+  //! //  2_w,
+  //! //  21_w,
+  //! //  12_w,
+  //! //  121_w,
+  //! //  22_w,
+  //! //  221_w,
+  //! //  212_w,
+  //! //  2121_w};
+  //! tc.standardize(order::lex);
+  //! std::vector<word_type>(tc.cbegin_normal_forms(),
+  //!                        tc.cbegin_normal_forms() + 10);
+  //! // {0_w,
+  //! //  01_w,
+  //! //  012_w,
+  //! //  0121_w,
+  //! //  01212_w,
+  //! //  012121_w,
+  //! //  0121212_w,
+  //! //  01212121_w,
+  //! //  012121212_w,
+  //! //  0121212121_w};
+  //! \endcode
   class ToddCoxeter : public CongruenceInterface,
-                      public detail::FelschGraphSettings<ToddCoxeter> {
+                      public detail::FelschGraphSettings<> {
     using FelschGraphSettings_ = FelschGraphSettings<ToddCoxeter>;
 
    public:
