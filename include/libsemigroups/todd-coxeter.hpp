@@ -19,11 +19,11 @@
 // This file contains a declaration of a class for performing the Todd-Coxeter
 // algorithm for semigroups and monoids.
 //
-// TODO:
+// TODO: (1)
 // * re-implement reserve
 // * remove preferred_defs from FelschGraph etc (except where they are really
 // needed)?
-// * re-add report why stopped
+// * TODO(0) re-add report why stopped
 
 #ifndef LIBSEMIGROUPS_TODD_COXETER_HPP_
 #define LIBSEMIGROUPS_TODD_COXETER_HPP_
@@ -219,14 +219,11 @@ namespace libsemigroups {
 
       void process_definitions();
 
-      // TODO(0) noexcept specification correct?
       template <bool RegDefs>
       void push_definition_hlt(node_type const& c,
                                word_type const& u,
-                               word_type const& v) noexcept;
+                               word_type const& v);
 
-      // TODO(0) don't think this needs to be a member function at all so, we
-      // can move the declaration in to the cpp file
       template <typename Iterator>
       size_t make_compatible(node_type& current,
                              Iterator   first,
@@ -965,10 +962,6 @@ namespace libsemigroups {
       return contains_no_checks(first1, last1, first2, last2);
     }
 
-    ////////////////////////////////////////////////////////////////////////
-    // OLD
-    ////////////////////////////////////////////////////////////////////////
-
     // stop_early indicates that if too few nodes are killed in 1 second, then
     // the lookahead aborts, this should not happen if we are doing a final
     // lookahead because we skipped some deductions
@@ -993,6 +986,7 @@ namespace libsemigroups {
     void validate_word(Iterator1 first, Iterator2 last) const {
       presentation().validate_word(first, last);
     }
+
     void validate_word(word_type const& w) const override;
 
     ////////////////////////////////////////////////////////////////////////
@@ -1154,12 +1148,14 @@ namespace libsemigroups {
                  [&tc](auto i) { return class_rep_no_checks(tc, i); });
     }
 
+    // TODO(0) iterator version + template this
     // TODO(0) doc
     inline word_type normal_form(ToddCoxeter& tc, word_type const& w) {
       return class_rep(tc, class_index(tc, w));
     }
 
     // TODO(0) doc
+    // TODO(0) template <word_type>
     std::vector<std::vector<word_type>> non_trivial_classes(ToddCoxeter& tc1,
                                                             ToddCoxeter& tc2);
 

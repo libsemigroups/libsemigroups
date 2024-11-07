@@ -197,6 +197,7 @@ namespace libsemigroups {
     return result;
   }
 
+  // TODO(0) remove word_type, template
   template <typename Thing,
             typename Iterator1,
             typename Iterator2,
@@ -208,6 +209,7 @@ namespace libsemigroups {
     return partition(ci, rx::iterator_range(first, last));
   }
 
+  // TODO(0) remove word_type, template
   template <typename Thing,
             typename Iterator1,
             typename Iterator2,

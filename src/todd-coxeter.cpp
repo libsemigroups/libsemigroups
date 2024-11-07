@@ -164,7 +164,7 @@ namespace libsemigroups {
   template <bool RegDefs>
   void ToddCoxeter::Graph::push_definition_hlt(node_type const& c,
                                                word_type const& u,
-                                               word_type const& v) noexcept {
+                                               word_type const& v) {
     LIBSEMIGROUPS_ASSERT(NodeManager<node_type>::is_active_node(c));
 
     node_type   x, y;
