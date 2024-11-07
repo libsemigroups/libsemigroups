@@ -225,10 +225,12 @@ namespace libsemigroups {
                                word_type const& v);
 
       template <typename Iterator>
-      size_t make_compatible(node_type& current,
-                             Iterator   first,
-                             Iterator   last,
-                             bool       stop_early);
+      size_t make_compatible(node_type&               current,
+                             Iterator                 first,
+                             Iterator                 last,
+                             bool                     stop_early,
+                             std::chrono::nanoseconds stop_early_interval,
+                             float                    stop_early_ratio);
     };
 
     ////////////////////////////////////////////////////////////////////////
@@ -620,6 +622,14 @@ namespace libsemigroups {
     //!
     //! \sa lookahead_next(size_t)
     [[nodiscard]] size_t lookahead_next() const noexcept;
+
+    // Throws if val >= 1 or < 0
+    ToddCoxeter& lookahead_stop_early_ratio(float val);
+    float        lookahead_stop_early_ratio() const noexcept;
+
+    ToddCoxeter&
+    lookahead_stop_early_interval(std::chrono::nanoseconds val) noexcept;
+    std::chrono::nanoseconds lookahead_stop_early_interval() const noexcept;
 
     //! Set the style of lookahead to use in HLT.
     //!

@@ -44,6 +44,8 @@ namespace libsemigroups {
     size_t                    lookahead_growth_threshold;
     size_t                    lookahead_min;
     size_t                    lookahead_next;
+    std::chrono::nanoseconds  lookahead_stop_early_interval;
+    float                     lookahead_stop_early_ratio;
     options::lookahead_style  lookahead_style;
     size_t                    lower_bound;
     bool                      save;
@@ -60,6 +62,8 @@ namespace libsemigroups {
           lookahead_growth_threshold(),
           lookahead_min(),
           lookahead_next(),
+          lookahead_stop_early_interval(),
+          lookahead_stop_early_ratio(),
           lookahead_style(),
           lower_bound(),
           save(),
@@ -74,20 +78,23 @@ namespace libsemigroups {
     Settings& operator=(Settings&&)      = default;
 
     Settings& init() {
-      def_max                    = 2'000;
-      def_policy                 = options::def_policy::no_stack_if_no_space;
-      hlt_defs                   = 200'000;
-      f_defs                     = 100'000;
-      lookahead_extent           = options::lookahead_extent::partial;
-      lookahead_growth_factor    = 2.0;
-      lookahead_growth_threshold = 4;
-      lower_bound                = UNDEFINED;
-      lookahead_min              = 10'000;
-      lookahead_next             = 5'000'000;
-      lookahead_style            = options::lookahead_style::hlt;
-      save                       = false;
-      strategy                   = options::strategy::hlt;
-      use_relations_in_extra     = false;
+      def_max                       = 2'000;
+      def_policy                    = options::def_policy::no_stack_if_no_space;
+      hlt_defs                      = 200'000;
+      f_defs                        = 100'000;
+      lookahead_extent              = options::lookahead_extent::partial;
+      lookahead_growth_factor       = 2.0;
+      lookahead_growth_threshold    = 4;
+      lower_bound                   = UNDEFINED;
+      lookahead_min                 = 10'000;
+      lookahead_next                = 5'000'000;
+      lookahead_stop_early_interval = std::chrono::seconds(1);
+      lookahead_stop_early_ratio    = 0.01;
+      lookahead_style               = options::lookahead_style::hlt;
+
+      save                   = false;
+      strategy               = options::strategy::hlt;
+      use_relations_in_extra = false;
       return *this;
     }
   };  // class ToddCoxeter::Settings
@@ -201,15 +208,20 @@ namespace libsemigroups {
   }
 
   template <typename RuleIterator>
-  size_t ToddCoxeter::Graph::make_compatible(node_type&   current,
-                                             RuleIterator first,
-                                             RuleIterator last,
-                                             bool         stop_early) {
+  size_t ToddCoxeter::Graph::make_compatible(
+      node_type&               current,
+      RuleIterator             first,
+      RuleIterator             last,
+      bool                     stop_early,
+      std::chrono::nanoseconds stop_early_interval,
+      float                    stop_early_ratio) {
     detail::Timer t;
     size_t const  old_number_of_killed
         = NodeManager<node_type>::number_of_nodes_killed();
     CollectCoincidences                    incompat(_coinc);
     typename FelschGraph_::NoPreferredDefs prefdefs;
+
+    size_t killed_at_prev_interval = old_number_of_killed;
     while (current != NodeManager<node_type>::first_free_node()) {
       // TODO(1) when we have an RuleIterator into the active nodes, we
       // should remove the while loop, and use that in make_compatible
@@ -224,20 +236,23 @@ namespace libsemigroups {
       // but didn't seem to be very useful).
       process_coincidences<detail::DoNotRegisterDefs>();
       current = NodeManager<node_type>::next_active_node(current);
-      // if (stop_early && t > std::chrono::seconds(1)) {
-      // TODO(0) stop_early should be a function
-      //  size_t killed_last_second
-      //      = number_of_nodes_killed() - stats().prev_nodes_killed;
-      //  if (killed_last_second < number_of_nodes_active() / 100) {
-      //    report_default("ToddCoxeter: too few nodes killed, expected >= "
-      //                   "{}, found {}, aborting lookahead . . .\n",
-      //                   number_of_nodes_active() / 100
-      //                   killed_last_second);
-      //    report_no_prefix("{:-<93}\n", "");
-      //    break;
-      //  }
-      // report_active_nodes();
-      //}
+      if (stop_early && t > stop_early_interval) {
+        size_t killed_last_interval
+            = number_of_nodes_killed() - killed_at_prev_interval;
+        killed_at_prev_interval = number_of_nodes_killed();
+        if (killed_last_interval
+            < number_of_nodes_active() * stop_early_ratio) {
+          report_no_prefix("{:-<90}\n", "");
+          report_default(
+              "ToddCoxeter: too few nodes killed in last {}, expected >= "
+              "{}, found {}, aborting lookahead . . .\n",
+              stop_early_interval,
+              static_cast<size_t>(number_of_nodes_active() * stop_early_ratio),
+              killed_last_interval);
+          report_no_prefix("{:-<90}\n", "");
+          break;
+        }
+      }
     }
     return NodeManager<node_type>::number_of_nodes_killed()
            - old_number_of_killed;
@@ -457,6 +472,27 @@ namespace libsemigroups {
 
   size_t ToddCoxeter::lookahead_growth_threshold() const noexcept {
     return tc_settings().lookahead_growth_threshold;
+  }
+
+  ToddCoxeter& ToddCoxeter::lookahead_stop_early_ratio(float val) {
+    // TODO throw if val < 0 or >= 1.0
+    tc_settings().lookahead_stop_early_ratio = val;
+    return *this;
+  }
+
+  float ToddCoxeter::lookahead_stop_early_ratio() const noexcept {
+    return tc_settings().lookahead_stop_early_ratio;
+  }
+
+  ToddCoxeter& ToddCoxeter::lookahead_stop_early_interval(
+      std::chrono::nanoseconds val) noexcept {
+    tc_settings().lookahead_stop_early_interval = val;
+    return *this;
+  }
+
+  std::chrono::nanoseconds
+  ToddCoxeter::lookahead_stop_early_interval() const noexcept {
+    return tc_settings().lookahead_stop_early_interval;
   }
 
   ToddCoxeter&
@@ -938,7 +974,9 @@ namespace libsemigroups {
     _word_graph.make_compatible(_word_graph.lookahead_cursor(),
                                 presentation().rules.cbegin(),
                                 presentation().rules.cend(),
-                                stop_early);
+                                stop_early,
+                                lookahead_stop_early_interval(),
+                                lookahead_stop_early_ratio());
     return _word_graph.number_of_nodes_killed() - old_number_of_killed;
   }
 
