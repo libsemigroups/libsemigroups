@@ -310,8 +310,6 @@ namespace libsemigroups {
   // ToddCoxeter - constructors + initializers - public
   ////////////////////////////////////////////////////////////////////////
 
-  // TODO(0) remove overlap between these, and ensure that they really work
-
   ToddCoxeter::ToddCoxeter()
       : CongruenceInterface(),
         _finished(),
@@ -674,7 +672,8 @@ namespace libsemigroups {
       msg += fmt::format("{:+<90}\n", "");
       report_no_prefix(msg);
 
-      detail::Ticker t([this]() { _word_graph.report_progress_from_thread(); });
+      detail::Ticker t(
+          [this]() { current_word_graph().report_progress_from_thread(); });
       really_run_impl();
     } else {
       really_run_impl();

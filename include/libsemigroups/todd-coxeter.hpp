@@ -22,7 +22,7 @@
 // TODO: (1)
 // * re-implement reserve
 // * remove preferred_defs from FelschGraph etc (except where they are really
-// needed)?
+// needed)? Or possibly reintroduce PrefDefs here
 // * TODO(0) re-add report why stopped
 
 #ifndef LIBSEMIGROUPS_TODD_COXETER_HPP_
@@ -767,9 +767,25 @@ namespace libsemigroups {
       return _word_graph;
     }
 
+    // TODO(0) to cpp
+    Graph const& word_graph() {
+      run();
+      LIBSEMIGROUPS_ASSERT(finished());
+      shrink_to_fit();
+      return current_word_graph();
+    }
+
     // TODO(0) doc
     Forest const& current_spanning_tree() const noexcept {
       return _forest;
+    }
+
+    // TODO(0) to cpp
+    Forest const& spanning_tree() {
+      run();
+      LIBSEMIGROUPS_ASSERT(finished());
+      shrink_to_fit();
+      return current_spanning_tree();
     }
 
     // TODO(0) doc
@@ -820,20 +836,21 @@ namespace libsemigroups {
       }
       run();
       size_t const offset = (presentation().contains_empty_word() ? 0 : 1);
-      return _word_graph.number_of_nodes_active() - offset;
+      return current_word_graph().number_of_nodes_active() - offset;
     }
 
     // TODO(0) doc
     template <typename Iterator1, typename Iterator2>
     node_type current_class_index_no_checks(Iterator1 first,
                                             Iterator2 last) const {
-      node_type c = _word_graph.initial_node();
+      node_type c = current_word_graph().initial_node();
 
       if (kind() != congruence_kind::left) {
-        c = word_graph::follow_path_no_checks(_word_graph, c, first, last);
+        c = word_graph::follow_path_no_checks(
+            current_word_graph(), c, first, last);
       } else {
         c = word_graph::follow_path_no_checks(
-            _word_graph,
+            current_word_graph(),
             c,
             std::make_reverse_iterator(last),
             std::make_reverse_iterator(first));
@@ -972,7 +989,6 @@ namespace libsemigroups {
     // the lookahead aborts, this should not happen if we are doing a final
     // lookahead because we skipped some deductions
     // TODO(0) doc
-    // TODO(0) change to taking a function
     void perform_lookahead(bool stop_early);
 
    private:
@@ -1125,7 +1141,7 @@ namespace libsemigroups {
     // TODO(0) doc
     inline auto class_of(ToddCoxeter& tc, node_type n) {
       size_t const offset = (tc.presentation().contains_empty_word() ? 0 : 1);
-      // TODO(0) change to tc.word_graph()
+      tc.run();
       return Paths(tc.current_word_graph()).source(0).target(n + offset);
     }
 
