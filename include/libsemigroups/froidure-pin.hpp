@@ -1604,7 +1604,7 @@ namespace libsemigroups {
     bool finished_impl() const override;
   };
 
-  //! \ingroup froidure_pin_group
+  //! \relates FroidurePin
   //!
   //! Deduction guide for constructing FroidurePin<Element> where \c Element is
   //! the type pointed to by \c Iterator1 and \c Iterator2.
