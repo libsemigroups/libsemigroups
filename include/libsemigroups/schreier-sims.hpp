@@ -731,9 +731,9 @@ namespace libsemigroups {
       return sift_no_checks(x);
     }
 
-    //! \brief Test membership of an element (const).
+    //! \brief Test membership of an element without running.
     //!
-    //! Test membership of an element (const).
+    //! Test membership of an element without running.
     //!
     //! \param x a const reference to the possible element.
     //!
@@ -749,8 +749,10 @@ namespace libsemigroups {
     // isn't true, because we either run to the end or haven't done anything at
     // all.
     // not noexcept because sift_no_checks isn't
-    [[nodiscard]] bool const_contains(const_element_reference x) const;
+    [[nodiscard]] bool contains_no_run(const_element_reference x) const;
 
+    //! \brief Test membership of an element.
+    //!
     //! Test membership of an element.
     //!
     //! \param x a const reference to the possible element.

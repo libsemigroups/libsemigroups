@@ -183,7 +183,7 @@ namespace libsemigroups {
   }
 
   template <size_t N, typename Point, typename Element, typename Traits>
-  bool SchreierSims<N, Point, Element, Traits>::const_contains(
+  bool SchreierSims<N, Point, Element, Traits>::contains_no_run(
       const_element_reference x) const {
     if (!is_valid_degree(Degree()(x))) {
       return false;
@@ -197,7 +197,7 @@ namespace libsemigroups {
   SchreierSims<N, Point, Element, Traits>::contains(const_element_reference x) {
     if (is_valid_degree(Degree()(x))) {
       run();
-      return const_contains(x);
+      return contains_no_run(x);
     } else {
       return false;
     }
