@@ -79,7 +79,7 @@ namespace libsemigroups {
   //! tc.strategy(options::strategy::felsch);
   //! tc.number_of_classes();
   //! tc.contains(0000_w, 00_w);
-  //! tc.class_index(0000_w);
+  //! tc.node_of(0000_w);
   //! \endcode
   //!
   //! \par Example 2
@@ -1086,8 +1086,7 @@ namespace libsemigroups {
     // TODO(0) doc
     // TODO(0) private?
     template <typename Iterator1, typename Iterator2>
-    node_type current_class_index_no_checks(Iterator1 first,
-                                            Iterator2 last) const {
+    node_type current_node_of_no_checks(Iterator1 first, Iterator2 last) const {
       node_type c = current_word_graph().initial_node();
 
       if (kind() != congruence_kind::left) {
@@ -1106,14 +1105,14 @@ namespace libsemigroups {
 
     // TODO(0) private?
     template <typename Iterator1, typename Iterator2>
-    node_type current_class_index(Iterator1 first, Iterator2 last) const {
+    node_type current_node_of(Iterator1 first, Iterator2 last) const {
       validate_word(first, last);
-      return current_class_index_no_checks(first, last);
+      return current_node_of_no_checks(first, last);
     }
 
     // TODO(0) private?
     template <typename Iterator1, typename Iterator2>
-    node_type class_index_no_checks(Iterator1 first, Iterator2 last) {
+    node_type node_of_no_checks(Iterator1 first, Iterator2 last) {
       run();
       LIBSEMIGROUPS_ASSERT(finished());
       if (!is_standardized()) {
@@ -1122,20 +1121,20 @@ namespace libsemigroups {
       // c is in the range 1, ..., number_of_cosets_active() because 0
       // represents the identity coset, and does not correspond to an element,
       // unless presentation().contains_empty_word()
-      return current_class_index_no_checks(first, last);
+      return current_node_of_no_checks(first, last);
     }
 
     // TODO(0) private?
     template <typename Iterator1, typename Iterator2>
-    node_type class_index(Iterator1 first, Iterator2 last) {
+    node_type node_of(Iterator1 first, Iterator2 last) {
       validate_word(first, last);
-      return class_index_no_checks(first, last);
+      return node_of_no_checks(first, last);
     }
 
     // TODO(0) private?
     template <typename OutputIterator>
-    OutputIterator current_class_rep_no_checks(OutputIterator d_first,
-                                               node_type      i) {
+    OutputIterator current_word_of_no_checks(OutputIterator d_first,
+                                             node_type      i) {
       if (!is_standardized()) {
         standardize(Order::shortlex);
       }
@@ -1151,7 +1150,7 @@ namespace libsemigroups {
     }
 
     template <typename OutputIterator>
-    OutputIterator current_class_rep(OutputIterator d_first, node_type i) {
+    OutputIterator current_word_of(OutputIterator d_first, node_type i) {
       size_t const offset = (presentation().contains_empty_word() ? 0 : 1);
       if (i >= _word_graph.number_of_nodes_active() - offset) {
         LIBSEMIGROUPS_EXCEPTION("invalid class index, expected a value in "
@@ -1159,25 +1158,25 @@ namespace libsemigroups {
                                 _word_graph.number_of_nodes_active() - offset,
                                 i);
       }
-      return current_class_rep_no_checks(d_first, i);
+      return current_word_of_no_checks(d_first, i);
     }
 
     // Note that the output of this needs to be reversed if and only if kind()
     // != left.
     // TODO(0) private?
     template <typename Iterator>
-    Iterator class_rep_no_checks(Iterator d_first, node_type i) {
+    Iterator word_of_no_checks(Iterator d_first, node_type i) {
       run();
       LIBSEMIGROUPS_ASSERT(finished());
-      return current_class_rep_no_checks(d_first, i);
+      return current_word_of_no_checks(d_first, i);
     }
 
     // TODO(0) private?
     template <typename Iterator>
-    Iterator class_rep(Iterator d_first, node_type i) {
+    Iterator word_of(Iterator d_first, node_type i) {
       run();
       LIBSEMIGROUPS_ASSERT(finished());
-      return current_class_rep(d_first, i);
+      return current_word_of(d_first, i);
     }
 
     ////////////////////////////////////////////////////////////////////////
@@ -1205,8 +1204,8 @@ namespace libsemigroups {
       if (std::equal(first1, last1, first2, last2)) {
         return tril::TRUE;
       }
-      auto i1 = current_class_index_no_checks(first1, last1);
-      auto i2 = current_class_index_no_checks(first2, last2);
+      auto i1 = current_node_of_no_checks(first1, last1);
+      auto i2 = current_node_of_no_checks(first2, last2);
       if (i1 == UNDEFINED || i2 == UNDEFINED) {
         return tril::unknown;
       } else if (i1 == i2) {
@@ -1244,8 +1243,8 @@ namespace libsemigroups {
         return std::equal(first1, last1, first2, last2);
       }
       return std::equal(first1, last1, first2, last2)
-             || class_index_no_checks(first1, last1)
-                    == class_index_no_checks(first2, last2);
+             || node_of_no_checks(first1, last1)
+                    == node_of_no_checks(first2, last2);
     }
 
     template <typename Iterator1,
@@ -1265,15 +1264,15 @@ namespace libsemigroups {
     OutputIterator reduce_no_run_no_checks(OutputIterator d_first,
                                            Iterator1      first,
                                            Iterator2      last) {
-      return current_class_rep_no_checks(
-          d_first, current_class_index_no_checks(first, last));
+      return current_word_of_no_checks(d_first,
+                                       current_node_of_no_checks(first, last));
     }
 
     template <typename OutputIterator, typename Iterator1, typename Iterator2>
     OutputIterator reduce_no_run(OutputIterator d_first,
                                  Iterator1      first,
                                  Iterator2      last) {
-      return current_class_rep(d_first, current_class_index(first, last));
+      return current_word_of(d_first, current_node_of(first, last));
     }
 
     template <typename OutputIterator,
@@ -1282,7 +1281,7 @@ namespace libsemigroups {
     OutputIterator reduce_no_checks(OutputIterator d_first,
                                     InputIterator1 first,
                                     InputIterator2 last) {
-      return class_rep_no_checks(d_first, class_index_no_checks(first, last));
+      return word_of_no_checks(d_first, node_of_no_checks(first, last));
     }
 
     template <typename OutputIterator,
@@ -1291,7 +1290,7 @@ namespace libsemigroups {
     OutputIterator reduce(OutputIterator d_first,
                           InputIterator1 first,
                           InputIterator2 last) {
-      return class_rep(d_first, class_index(first, last));
+      return word_of(d_first, node_of(first, last));
     }
 
     // stop_early indicates that if too few nodes are killed in 1 second, then
@@ -1356,65 +1355,86 @@ namespace libsemigroups {
     using node_type = typename ToddCoxeter::node_type;
 
     ////////////////////////////////////////////////////////////////////////
+    // ToddCoxeter specific helpers
+    ////////////////////////////////////////////////////////////////////////
+    // TODO(0) doc
+    template <typename Word>
+    node_type current_node_of_no_checks(ToddCoxeter const& tc, Word const& w) {
+      return tc.current_node_of_no_checks(std::begin(w), std::end(w));
+    }
+
+    // TODO(0) doc
+    template <typename Word>
+    node_type current_node_of(ToddCoxeter const& tc, Word const& w) {
+      return tc.current_node_of(std::begin(w), std::end(w));
+    }
+
+    // TODO(0) doc
+    template <typename Word>
+    node_type node_of_no_checks(ToddCoxeter& tc, Word const& w) {
+      return tc.node_of_no_checks(std::begin(w), std::end(w));
+    }
+
+    // TODO(0) doc
+    template <typename Word>
+    node_type node_of(ToddCoxeter& tc, Word const& w) {
+      return tc.node_of(std::begin(w), std::end(w));
+    }
+
+    // TODO(0) doc
+    template <typename Int = size_t>
+    node_type current_node_of_no_checks(ToddCoxeter&                      tc,
+                                        std::initializer_list<Int> const& w) {
+      return node_of<std::initializer_list<Int>>(tc, w);
+    }
+
+    // TODO(0) doc
+    template <typename Int = size_t>
+    node_type current_node_of(ToddCoxeter&                      tc,
+                              std::initializer_list<Int> const& w) {
+      return current_node_of<std::initializer_list<Int>>(tc, w);
+    }
+
+    // TODO(0) doc
+    template <typename Int = size_t>
+    node_type node_of_no_checks(ToddCoxeter&                      tc,
+                                std::initializer_list<Int> const& w) {
+      return node_of<std::initializer_list<Int>>(tc, w);
+    }
+
+    // TODO(0) doc
+    template <typename Int = size_t>
+    node_type node_of(ToddCoxeter& tc, std::initializer_list<Int> const& w) {
+      return node_of<std::initializer_list<Int>>(tc, w);
+    }
+
+    // TODO(0) doc
+    template <typename Word = word_type>
+    Word word_of_no_checks(ToddCoxeter& tc, node_type i) {
+      Word result;
+      tc.word_of_no_checks(std::back_inserter(result), i);
+      if (tc.kind() != congruence_kind::left) {
+        std::reverse(std::begin(result), std::end(result));
+      }
+      return result;
+    }
+
+    // TODO(0) doc
+    template <typename Word = word_type>
+    Word word_of(ToddCoxeter& tc, node_type i) {
+      Word result;
+      tc.word_of(std::back_inserter(result), i);
+      if (tc.kind() != congruence_kind::left) {
+        std::reverse(std::begin(result), std::end(result));
+      }
+      return result;
+    }
+
+    ////////////////////////////////////////////////////////////////////////
     // Interface helpers
     ////////////////////////////////////////////////////////////////////////
 
     // TODO(0) doc
-    template <typename Word>
-    node_type current_class_index_no_checks(ToddCoxeter const& tc,
-                                            Word const&        w) {
-      return tc.current_class_index_no_checks(std::begin(w), std::end(w));
-    }
-
-    // TODO(0) doc
-    template <typename Word>
-    node_type current_class_index(ToddCoxeter const& tc, Word const& w) {
-      return tc.current_class_index(std::begin(w), std::end(w));
-    }
-
-    // TODO(0) doc
-    template <typename Word>
-    node_type class_index_no_checks(ToddCoxeter& tc, Word const& w) {
-      return tc.class_index_no_checks(std::begin(w), std::end(w));
-    }
-
-    // TODO(0) doc
-    template <typename Word>
-    node_type class_index(ToddCoxeter& tc, Word const& w) {
-      return tc.class_index(std::begin(w), std::end(w));
-    }
-
-    // TODO(0) doc
-    template <typename Int>
-    node_type class_index(ToddCoxeter&                      tc,
-                          std::initializer_list<Int> const& w) {
-      return class_index<std::initializer_list<Int>>(tc, w);
-    }
-
-    // TODO(0) x3 more of class_index
-
-    // TODO(0) doc
-    template <typename Word = word_type>
-    Word class_rep_no_checks(ToddCoxeter& tc, node_type i) {
-      Word result;
-      tc.class_rep_no_checks(std::back_inserter(result), i);
-      if (tc.kind() != congruence_kind::left) {
-        std::reverse(std::begin(result), std::end(result));
-      }
-      return result;
-    }
-
-    // TODO(0) doc
-    template <typename Word = word_type>
-    Word class_rep(ToddCoxeter& tc, node_type i) {
-      Word result;
-      tc.class_rep(std::back_inserter(result), i);
-      if (tc.kind() != congruence_kind::left) {
-        std::reverse(std::begin(result), std::end(result));
-      }
-      return result;
-    }
-
     template <typename Word>
     tril currently_contains_no_checks(ToddCoxeter const& tc,
                                       Word const&        u,
@@ -1423,6 +1443,7 @@ namespace libsemigroups {
           std::begin(u), std::end(u), std::begin(v), std::end(v));
     }
 
+    // TODO(0) doc
     template <typename Word>
     tril currently_contains(ToddCoxeter const& tc,
                             Word const&        u,
@@ -1431,16 +1452,124 @@ namespace libsemigroups {
           std::begin(u), std::end(u), std::begin(v), std::end(v));
     }
 
+    // TODO(0) doc
     template <typename Word>
     bool contains_no_checks(ToddCoxeter& tc, Word const& u, Word const& v) {
       return tc.contains_no_checks(
           std::begin(u), std::end(u), std::begin(v), std::end(v));
     }
 
+    // TODO(0) doc
     template <typename Word>
     bool contains(ToddCoxeter& tc, Word const& u, Word const& v) {
       return tc.contains(
           std::begin(u), std::end(u), std::begin(v), std::end(v));
+    }
+
+    // TODO(0) doc
+    template <typename Int = size_t>
+    tril currently_contains_no_checks(ToddCoxeter const&                tc,
+                                      std::initializer_list<Int> const& u,
+                                      std::initializer_list<Int> const& v) {
+      return currently_contains_no_checks<std::initializer_list<Int>>(tc, u, v);
+    }
+
+    // TODO(0) doc
+    template <typename Int = size_t>
+    tril currently_contains(ToddCoxeter const&                tc,
+                            std::initializer_list<Int> const& u,
+                            std::initializer_list<Int> const& v) {
+      return currently_contains<std::initializer_list<Int>>(tc, u, v);
+    }
+
+    // TODO(0) doc
+    template <typename Int = size_t>
+    bool contains_no_checks(ToddCoxeter&                      tc,
+                            std::initializer_list<Int> const& u,
+                            std::initializer_list<Int> const& v) {
+      return contains_no_checks<std::initializer_list<Int>>(tc, u, v);
+    }
+
+    // TODO(0) doc
+    template <typename Int = size_t>
+    bool contains(ToddCoxeter&                      tc,
+                  std::initializer_list<Int> const& u,
+                  std::initializer_list<Int> const& v) {
+      return contains<std::initializer_list<Int>>(tc, u, v);
+    }
+
+    // TODO(0) doc
+    template <typename InputWord, typename OutputWord = InputWord>
+    OutputWord reduce_no_run_no_checks(ToddCoxeter& tc, InputWord const& w) {
+      OutputWord result;
+      tc.reduce_no_run_no_checks(
+          std::back_inserter(result), std::begin(w), std::end(w));
+      if (tc.kind() != congruence_kind::left) {
+        std::reverse(std::begin(result), std::end(result));
+      }
+      return result;
+    }
+
+    // TODO(0) doc
+    template <typename InputWord, typename OutputWord = InputWord>
+    OutputWord reduce_no_run(ToddCoxeter& tc, InputWord const& w) {
+      OutputWord result;
+      tc.reduce_no_run(std::back_inserter(result), std::begin(w), std::end(w));
+      if (tc.kind() != congruence_kind::left) {
+        std::reverse(std::begin(result), std::end(result));
+      }
+      return result;
+    }
+
+    // TODO(0) doc
+    template <typename InputWord, typename OutputWord = InputWord>
+    OutputWord reduce_no_checks(ToddCoxeter& tc, InputWord const& w) {
+      OutputWord result;
+      tc.reduce_no_checks(
+          std::back_inserter(result), std::begin(w), std::end(w));
+      if (tc.kind() != congruence_kind::left) {
+        std::reverse(std::begin(result), std::end(result));
+      }
+      return result;
+    }
+
+    // TODO(0) doc
+    template <typename InputWord, typename OutputWord = InputWord>
+    OutputWord reduce(ToddCoxeter& tc, InputWord const& w) {
+      OutputWord result;
+      tc.reduce(std::back_inserter(result), std::begin(w), std::end(w));
+      if (tc.kind() != congruence_kind::left) {
+        std::reverse(std::begin(result), std::end(result));
+      }
+      return result;
+    }
+
+    // TODO(0) doc
+    template <typename Int = size_t>
+    auto reduce_no_run_no_checks(ToddCoxeter&                      tc,
+                                 std::initializer_list<Int> const& w) {
+      return reduce_no_run_no_checks<std::initializer_list<Int>,
+                                     std::vector<Int>>(tc, w);
+    }
+
+    // TODO(0) doc
+    template <typename Int = size_t>
+    auto reduce_no_run(ToddCoxeter& tc, std::initializer_list<Int> const& w) {
+      return reduce_no_run<std::initializer_list<Int>, std::vector<Int>>(tc, w);
+    }
+
+    // TODO(0) doc
+    template <typename Int = size_t>
+    auto reduce_no_checks(ToddCoxeter&                      tc,
+                          std::initializer_list<Int> const& w) {
+      return reduce_no_checks<std::initializer_list<Int>, std::vector<Int>>(tc,
+                                                                            w);
+    }
+
+    // TODO(0) doc
+    template <typename Int = size_t>
+    auto reduce(ToddCoxeter& tc, std::initializer_list<Int> const& w) {
+      return reduce<std::initializer_list<Int>, std::vector<Int>>(tc, w);
     }
 
     ////////////////////////////////////////////////////////////////////////
@@ -1458,7 +1587,7 @@ namespace libsemigroups {
     // TODO(0) doc
     // TODO(0) iterator version + template this
     inline auto class_of(ToddCoxeter& tc, word_type const& w) {
-      return class_of(tc, class_index(tc, w));
+      return class_of(tc, node_of(tc, w));
     }
 
     //! Returns a \ref normal_form_iterator pointing at the first normal
@@ -1478,14 +1607,7 @@ namespace libsemigroups {
       // TODO(0) avoid allocations here
       return rx::seq() | rx::take(tc.number_of_classes())
              | rx::transform(
-                 [&tc](auto i) { return class_rep_no_checks(tc, i); });
-    }
-
-    // TODO(0) iterator version + template this
-    // TODO(0) doc
-    // TODO(0) remove
-    inline word_type normal_form(ToddCoxeter& tc, word_type const& w) {
-      return class_rep(tc, class_index(tc, w));
+                 [&tc](auto i) { return word_of_no_checks(tc, i); });
     }
 
     // TODO(0) doc
@@ -1508,7 +1630,7 @@ namespace libsemigroups {
       size_t                                               index = 0;
       for (auto it = first; it != last; ++it, ++index) {
         auto [map_it, inserted]
-            = map.emplace(todd_coxeter::class_index(tc, *it), it);
+            = map.emplace(todd_coxeter::node_of(tc, *it), it);
         if (!inserted) {
           return std::pair(map_it->second, it);
         }
@@ -1576,8 +1698,8 @@ namespace libsemigroups {
         q.rules.insert(q.rules.end(), omit + 2, p.rules.crend());
         tc.init(twosided, q);
         tc.run_for(t);
-        if (todd_coxeter::class_index(tc, to_word(*omit))
-            == todd_coxeter::class_index(tc, to_word(*(omit + 1)))) {
+        if (todd_coxeter::node_of(tc, to_word(*omit))
+            == todd_coxeter::node_of(tc, to_word(*(omit + 1)))) {
           return (omit + 1).base() - 1;
         }
       }
@@ -1611,7 +1733,7 @@ namespace libsemigroups {
 
     while (!r.at_end()) {
       auto       next  = r.get();
-      auto const index = todd_coxeter::class_index(tc, next);
+      auto const index = todd_coxeter::node_of(tc, next);
       if (index >= lookup.size()) {
         lookup.resize(index + 1, UNDEFINED);
       }
