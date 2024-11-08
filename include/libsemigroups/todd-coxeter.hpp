@@ -1083,6 +1083,7 @@ namespace libsemigroups {
     bool standardize(Order val);
 
     // TODO(0) doc
+    // TODO(0) private?
     template <typename Iterator1, typename Iterator2>
     node_type current_class_index_no_checks(Iterator1 first,
                                             Iterator2 last) const {
@@ -1102,12 +1103,14 @@ namespace libsemigroups {
       return (c == UNDEFINED ? UNDEFINED : static_cast<node_type>(c - offset));
     }
 
+    // TODO(0) private?
     template <typename Iterator1, typename Iterator2>
     node_type current_class_index(Iterator1 first, Iterator2 last) const {
       validate_word(first, last);
       return current_class_index_no_checks(first, last);
     }
 
+    // TODO(0) private?
     template <typename Iterator1, typename Iterator2>
     node_type class_index_no_checks(Iterator1 first, Iterator2 last) {
       run();
@@ -1121,24 +1124,20 @@ namespace libsemigroups {
       return current_class_index_no_checks(first, last);
     }
 
+    // TODO(0) private?
     template <typename Iterator1, typename Iterator2>
     node_type class_index(Iterator1 first, Iterator2 last) {
       validate_word(first, last);
       return class_index_no_checks(first, last);
     }
 
-    // TODO(1) maybe do current version, not clear that it is meaningful
-    // though.
-    // Note that the output of this needs to be reversed if and only if kind()
-    // != left.
-    template <typename Iterator>
-    Iterator class_rep_no_checks(Iterator d_first, node_type i) {
-      run();
-      LIBSEMIGROUPS_ASSERT(finished());
+    // TODO(0) private?
+    template <typename OutputIterator>
+    OutputIterator current_class_rep_no_checks(OutputIterator d_first,
+                                               node_type      i) {
       if (!is_standardized()) {
         standardize(Order::shortlex);
       }
-
       if (!presentation().contains_empty_word()) {
         ++i;
       }
@@ -1150,15 +1149,34 @@ namespace libsemigroups {
       // }
     }
 
-    template <typename Iterator>
-    Iterator class_rep(Iterator d_first, node_type i) {
-      if (i >= number_of_classes()) {
+    template <typename OutputIterator>
+    OutputIterator current_class_rep(OutputIterator d_first, node_type i) {
+      size_t const offset = (presentation().contains_empty_word() ? 0 : 1);
+      if (i >= _word_graph.number_of_nodes_active() - offset) {
         LIBSEMIGROUPS_EXCEPTION("invalid class index, expected a value in "
                                 "the range [0, {}), found {}",
-                                number_of_classes(),
+                                _word_graph.number_of_nodes_active() - offset,
                                 i);
       }
-      return class_rep_no_checks(d_first, i);
+      return current_class_rep_no_checks(d_first, i);
+    }
+
+    // Note that the output of this needs to be reversed if and only if kind()
+    // != left.
+    // TODO(0) private?
+    template <typename Iterator>
+    Iterator class_rep_no_checks(Iterator d_first, node_type i) {
+      run();
+      LIBSEMIGROUPS_ASSERT(finished());
+      return current_class_rep_no_checks(d_first, i);
+    }
+
+    // TODO(0) private?
+    template <typename Iterator>
+    Iterator class_rep(Iterator d_first, node_type i) {
+      run();
+      LIBSEMIGROUPS_ASSERT(finished());
+      return current_class_rep(d_first, i);
     }
 
     ////////////////////////////////////////////////////////////////////////
@@ -1240,6 +1258,39 @@ namespace libsemigroups {
       validate_word(first1, last1);
       validate_word(first2, last2);
       return contains_no_checks(first1, last1, first2, last2);
+    }
+
+    template <typename OutputIterator, typename Iterator1, typename Iterator2>
+    OutputIterator reduce_no_run_no_checks(OutputIterator d_first,
+                                           Iterator1      first,
+                                           Iterator2      last) {
+      return current_class_rep_no_checks(
+          d_first, current_class_index_no_checks(first, last));
+    }
+
+    template <typename OutputIterator, typename Iterator1, typename Iterator2>
+    OutputIterator reduce_no_run(OutputIterator d_first,
+                                 Iterator1      first,
+                                 Iterator2      last) {
+      return current_class_rep(d_first, current_class_index(first, last));
+    }
+
+    template <typename OutputIterator,
+              typename InputIterator1,
+              typename InputIterator2>
+    OutputIterator reduce_no_checks(OutputIterator d_first,
+                                    InputIterator1 first,
+                                    InputIterator2 last) {
+      return class_rep_no_checks(d_first, class_index_no_checks(first, last));
+    }
+
+    template <typename OutputIterator,
+              typename InputIterator1,
+              typename InputIterator2>
+    OutputIterator reduce(OutputIterator d_first,
+                          InputIterator1 first,
+                          InputIterator2 last) {
+      return class_rep(d_first, class_index(first, last));
     }
 
     // stop_early indicates that if too few nodes are killed in 1 second, then
@@ -1396,6 +1447,7 @@ namespace libsemigroups {
     ////////////////////////////////////////////////////////////////////////
 
     // TODO(0) doc
+    // TODO(0) remove
     inline auto class_of(ToddCoxeter& tc, node_type n) {
       size_t const offset = (tc.presentation().contains_empty_word() ? 0 : 1);
       tc.run();
@@ -1430,6 +1482,7 @@ namespace libsemigroups {
 
     // TODO(0) iterator version + template this
     // TODO(0) doc
+    // TODO(0) remove
     inline word_type normal_form(ToddCoxeter& tc, word_type const& w) {
       return class_rep(tc, class_index(tc, w));
     }
