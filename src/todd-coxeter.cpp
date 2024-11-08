@@ -1054,7 +1054,7 @@ namespace libsemigroups {
                tmp.clear();
                tmp.insert(tmp.end(), w.cbegin(), w.cend());
                tmp.insert(tmp.end(), w.cbegin(), w.cend());
-               return todd_coxeter::node_of(tc, tmp) == i++;
+               return todd_coxeter::index_of(tc, tmp) == i++;
              })
              | rx::count();
     }
