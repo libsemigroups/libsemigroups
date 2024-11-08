@@ -313,7 +313,7 @@ namespace libsemigroups {
    private:
     template <typename T>
     static constexpr bool IsState
-        = ((!std::is_void_v<T>) &&std::is_same_v<state_type, T>);
+        = ((!std::is_void_v<T>) && std::is_same_v<state_type, T>);
 
     ////////////////////////////////////////////////////////////////////////
     // FroidurePin - data - private
@@ -1383,8 +1383,8 @@ namespace libsemigroups {
 
     void expand(size_type);
     void is_one(internal_const_element_type x, element_index_type) noexcept(
-        std::is_nothrow_default_constructible_v<InternalEqualTo>&& noexcept(
-            std::declval<InternalEqualTo>()(x, x)));
+        std::is_nothrow_default_constructible_v<InternalEqualTo>
+        && noexcept(std::declval<InternalEqualTo>()(x, x)));
 
     void copy_generators_from_elements(size_t);
     void closure_update(element_index_type,
@@ -1606,8 +1606,8 @@ namespace libsemigroups {
 
   //! \relates FroidurePin
   //!
-  //! Deduction guide for constructing FroidurePin<Element> where \c Element is
-  //! the type pointed to by \c Iterator1 and \c Iterator2.
+  //! Deduction guide for constructing `FroidurePin<Element>` where \c Element
+  //! is the type pointed to by \c Iterator1 and \c Iterator2.
   template <typename Iterator1, typename Iterator2>
   FroidurePin(Iterator1, Iterator2)
       -> FroidurePin<std::decay_t<decltype(*std::declval<Iterator1>())>>;
@@ -2492,7 +2492,7 @@ namespace libsemigroups {
     return FroidurePin(first, last);
   }
 
-  //! \ingroup froidure_pin_group
+  //! \relates FroidurePin
   //!
   //! \brief Return a human readable representation of a FroidurePin object.
   //!

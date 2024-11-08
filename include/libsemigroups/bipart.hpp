@@ -757,15 +757,25 @@ namespace libsemigroups {
   //!
   //! \brief Return a human readable representation of a blocks object.
   //!
-  //! Return a human readable representation of a blocks object.
+  //! Return a human readable representation (std::string) of a Blocks object.
+  //! The braces to be used in the returns string can be specified using the
+  //! argument \p braces. By default the returned string can be used to
+  //! reconstruct the bipartition \p x. If the width of this returned string
+  //! would be greater than \p max_width, then an abbreviated string is returned
+  //! instead.
   //!
   //! \param x the Blocks object.
+  //! \param braces the braces to use in the returned string (default: `"{}"`).
+  //! \param max_width the maximum width of the returned string (default: \c
+  //! 72).
   //!
-  //! \exceptions
-  //! \no_libsemigroups_except
+  //! \returns A std::string representation of \p x.
+  //!
+  //! \throws LibsemigroupsException if \p braces does not have length \c 2.
   [[nodiscard]] std::string to_human_readable_repr(Blocks const&    x,
                                                    std::string_view braces
-                                                   = "{}");
+                                                   = "{}",
+                                                   size_t max_width = 72);
 
   //! \ingroup bipart_group
   //!
@@ -1472,12 +1482,21 @@ namespace libsemigroups {
   //!
   //! \brief Return a human readable representation of a bipartition.
   //!
-  //! Return a human readable representation of a bipartition.
+  //! Return a human readable representation (std::string) of a bipartition.
+  //! The braces to be used in the returns string can be specified using the
+  //! argument \p braces. By default the returned string can be used to
+  //! reconstruct the bipartition \p x. If the width of this returned string
+  //! would be greater than \p max_width, then an abbreviated string is returned
+  //! instead.
   //!
   //! \param x the Bipartition object.
+  //! \param braces the braces to use in the returned string (default: `"{}"`).
+  //! \param max_width the maximum width of the returned string (default: \c
+  //! 72).
   //!
-  //! \exceptions
-  //! \no_libsemigroups_except
+  //! \returns A std::string representation of \p x.
+  //!
+  //! \throws LibsemigroupsException if \p braces does not have length \c 2.
   [[nodiscard]] std::string to_human_readable_repr(Bipartition const& x,
                                                    std::string_view   braces
                                                    = "{}",

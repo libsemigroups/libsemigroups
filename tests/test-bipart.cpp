@@ -64,7 +64,7 @@ namespace libsemigroups {
     REQUIRE(blocks::underlying_partition(b2)
             == std::vector<std::vector<int32_t>>({{-1, -5}, {2, 4}, {-3, -6}}));
     REQUIRE(to_human_readable_repr(b2)
-            == "Blocks({[-1, -5], [2, 4], [-3, -6]})");
+            == "Blocks({{-1, -5}, {2, 4}, {-3, -6}})");
   }
 
   LIBSEMIGROUPS_TEST_CASE_V3("Blocks", "002", "non-empty blocks", "[quick]") {
