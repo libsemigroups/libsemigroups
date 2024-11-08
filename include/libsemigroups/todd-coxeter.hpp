@@ -42,13 +42,24 @@
 #include "detail/report.hpp"              // for LIBSEMIGROUPS_EXCEPTION
 
 namespace libsemigroups {
+  //! \defgroup todd_coxeter_group Todd-Coxeter
+  //!
+  //! This page contains documentation related to the implementation of the
+  //! Todd-Coxeter algorithm \cite Coleman2022aa in ``libsemigroups``.
+  //!
+  //! The purpose of this algorithm is to find the WordGraph of the action of a
+  //! semigroup or monoid on the classes of a left, right, or 2-sided
+  //! congruence; see \cite Coleman2022aa for more details.
+
+  //! \ingroup todd_coxeter_group
+  //!
+  //! \brief Class containing an implementation of the Todd-Coxeter Algorithm.
+  //!
   //! Defined in ``todd-coxeter.hpp``.
   //!
   //! This class contains an implementation of the Todd-Coxeter
   //! algorithm for computing left, right, and 2-sided congruences on
-  //! a semigroup or monoid. The purpose of this algorithm is to find the
-  //! WordGraph of the action of a semigroup or monoid on the classes of a
-  //! congruence; see \cite Coleman2022aa for more details.
+  //! a semigroup or monoid.
   //!
   //! In this documentation we use the term "congruence enumeration" to mean the
   //! execution of (any version of) the Todd-Coxeter algorithm.
@@ -127,29 +138,40 @@ namespace libsemigroups {
     using FelschGraphSettings_ = FelschGraphSettings<ToddCoxeter>;
 
    public:
-    // TODO(0) doc
+    //! The type of the nodes in the word graph.
     using node_type = typename WordGraph<uint32_t>::node_type;
-    // TODO(0) doc
+
+    //! The type of the edge-labels in the word graph.
     using label_type = typename WordGraph<uint32_t>::label_type;
 
-    // TODO(0) doc
-    // TODO(0) move to settings section below
-    template <typename T>
-    void report_every(T val) {
-      CongruenceInterface::report_every(val);
-      _word_graph.report_every(val);
-    }
-
-    using Reporter::report_every;
-
-    // TODO(0) doc
+    // TODO(0) look at Ukkonen::Node for how to doc this properly
+    //! \brief Struct containing various options that can be used to control the
+    //! behaviour of Todd-Coxeter.
+    //!
+    //! This struct containing various options that can be used to control the
+    //! behaviour of Todd-Coxeter.
     struct options : public FelschGraphSettings_::options {
-      // TODO(0) doc
+      //! \brief Enum class containing various strategies.
+      //!
+      //! The values in this enum can be passed to the member function \ref
+      //! strategy to define the strategy to be used when performing a
+      //! congruence enumeration.
+      //!
+      //! Several of the strategies mimic
+      //! [ACE](https://staff.itee.uq.edu.au/havas/) strategies of the same
+      //! name. The [ACE](https://staff.itee.uq.edu.au/havas/) strategy \"R*\"
+      //! is equivalent to \c strategy(options::strategy::hlt).save(true).
       enum class strategy {
-        // TODO(0) doc
+        //! This value indicates that the HLT (Hazelgrove-Leech-Trotter)
+        //! strategy should be used. This is analogous to
+        //! [ACE](https://staff.itee.uq.edu.au/havas/)'s R-style.
         hlt,
-        // TODO(0) doc
+
+        //! This value indicates that the Felsch strategy should be used.
+        //! This is analogous to [ACE](https://staff.itee.uq.edu.au/havas/)'s
+        //! C-style.
         felsch,
+
         //! This strategy is meant to mimic the
         //! [ACE](https://staff.itee.uq.edu.au/havas/) strategy of the same
         //! name. The Felsch is run until at least f_defs() nodes are
@@ -157,12 +179,14 @@ namespace libsemigroups {
         //! divided by length_of_generating_pairs() nodes have been defined.
         //! These steps are repeated until the enumeration terminates.
         CR,
+
         //! This strategy is meant to mimic the
         //! [ACE](https://staff.itee.uq.edu.au/havas/) strategy R/C. The HLT
         //! strategy is run until the first lookahead is triggered (when
         //! number_of_cosets_active() is at least next_lookhead()). A full
         //! lookahead is then performed, and then the CR strategy is used.
         R_over_C,
+
         //! This strategy is meant to mimic the
         //! [ACE](https://staff.itee.uq.edu.au/havas/) strategy Cr. The Felsch
         //! strategy is run until at least f_defs() new nodes have been
@@ -170,6 +194,7 @@ namespace libsemigroups {
         //! divided by length_of_generating_pairs() new nodes are defined,
         //! and then the Felsch strategy is run.
         Cr,
+
         //! This strategy is meant to mimic the
         //! [ACE](https://staff.itee.uq.edu.au/havas/) strategy Rc. The HLT
         //! strategy is run until at least hlt_defs() divided by
@@ -179,26 +204,81 @@ namespace libsemigroups {
         Rc
       };
 
-      // TODO(0) doc
-      enum class lookahead_extent { full, partial };
+      //! \brief Enum class for specifying the extent of any lookahead
+      //! performed.
+      //!
+      //! The values in this enum can be used as the argument for
+      //! \ref lookahead_extent to specify the extent of any lookahead that
+      //! should be performed.
+      enum class lookahead_extent {
+        //! Perform a full lookahead from every node in the word graph.
+        //! Full lookaheads are therefore sometimes slower but may
+        //! detect more coincidences than a partial lookahead.
+        full,
+        //! Perform a partial lookahead starting from the current node in the
+        //! word graph. Partial lookaheads are sometimes faster but may not
+        //! detect as many coincidences as a full lookahead.
+        partial
+      };
 
-      // TODO(0) doc
-      enum class lookahead_style { hlt, felsch };
+      //! \brief Enum class for specifying the style of any lookahead
+      //! performed.
+      //!
+      //! The values in this enum can be used as the argument for
+      //! \ref lookahead_style to specify the style of any lookahead that
+      //! should be performed.
+      enum class lookahead_style {
+        //! The lookahead will be done in HLT style by following the paths
+        //! labelled by every relation from every node in the range
+        //! specified by lookahead_extent::full or lookahead_extent::partial.
+        hlt,
 
-      // TODO(0) doc
+        //! The lookahead will be done in Felsch style where every edge is
+        //! considered in every path labelled by a relation in which it
+        //! occurs.
+        felsch
+      };
+
+      //! \brief Enum class containing values for specifying how to handle edge
+      //! definitions.
+      //!
+      //! The values in this enum can be used as the argument for
+      //! \ref def_policy.
+      //!
+      //! For our purposes, a *definition* is a recently defined edge in the
+      //! word graph that we are attempting to construct in an instance of
+      //! ToddCoxeter. The values in this enum influence how these
+      //! definitions are stored and processed.
+      //!
+      //! For every definition held in the definition stack, a depth first
+      //! search through the Felsch tree of the generating pairs is
+      //! performed. The aim is to only follow paths from nodes in the word
+      //! graph labelled by generating pairs that actually pass through the
+      //! edge described by a definition.
+      //!
+      // TODO(0) delete or use
+      // There are two versions of this
+      // represented by the values options::definitions::v1 and
+      // options::definitions::v2. The first version is simpler, but may
+      // involve following the same path that leads nowhere multiple times.
+      // The second version is more complex, and attempts to avoid following
+      // the same path multiple times if it is found to lead nowhere once.
+      //!
+      //! The values in this enum represent what to do if the number of
+      //! definitions in the stack exceeds the value \ref def_max.
       enum class def_policy : uint8_t {
         //! Do not put newly generated definitions in the stack if the stack
-        //! already has size max_definitions().
+        //! already has size \ref def_max.
         no_stack_if_no_space,
-        //! If the definition stack has size max_definitions() and a new
+        //! If the definition stack has size \ref def_max and a new
         //! definition is generated, then definitions with dead source node are
         //! are popped from the top of the stack (if any).
         purge_from_top,
-        //! If the definition stack has size max_definitions() and a new
+        //! If the definition stack has size \ref def_max and a new
         //! definition is generated, then definitions with dead source node are
         //! are popped from the entire of the stack (if any).
         purge_all,
-        //! If the definition stack has size max_definitions() and a new
+        //! If the definition stack has size \ref def_max and a new
         //! definition is generated, then all definitions in the stack are
         //! discarded.
         discard_all_if_no_space,
@@ -282,7 +362,7 @@ namespace libsemigroups {
       Graph(Graph&&)                 = default;
       Graph& operator=(Graph const&) = default;
       Graph& operator=(Graph&&)      = default;
-      // TODO(0) init()
+      // TODO(1) init()
 
       Graph& operator=(WordGraph<node_type> const& wg) {
         NodeManagedGraph_::operator=(wg);
@@ -292,7 +372,7 @@ namespace libsemigroups {
       using FelschGraph_::target_no_checks;
       using NodeManagedGraph_::NodeManagedGraph;
 
-      // TODO(0) corresponding constructors
+      // TODO(1) corresponding constructors
       Graph& init(Presentation<word_type> const& p);
       Graph& init(Presentation<word_type>&& p);
 
@@ -330,52 +410,118 @@ namespace libsemigroups {
     }
 
    public:
-    // TODO(0) use this everywhere
+    //! The type of the underlying WordGraph.
     using word_graph_type = Graph;
 
     ////////////////////////////////////////////////////////////////////////
     // ToddCoxeter - constructors + initializers - public
     ////////////////////////////////////////////////////////////////////////
 
-    // TODO(0) doc
+    //! Default constructor.
     ToddCoxeter();
-    // TODO(0) doc
+
+    //! \brief Re-initialize a ToddCoxeter instance.
+    //!
+    //! This function puts a ToddCoxeter instance back into the state that it
+    //! would have been in if it had just been newly default constructed.
+    //!
+    //! \returns A reference to `*this`.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
     ToddCoxeter& init();
 
-    // TODO(0) doc
+    //! Copy constructor.
     ToddCoxeter(ToddCoxeter const& that);
 
-    // TODO(0) doc
+    //! Move constructor.
     ToddCoxeter(ToddCoxeter&&);
 
-    // TODO(0) doc
+    //! Copy assignment operator.
     ToddCoxeter& operator=(ToddCoxeter const&);
 
-    // TODO(0) doc
+    //! Move assignment operator.
     ToddCoxeter& operator=(ToddCoxeter&&);
 
     ~ToddCoxeter();
 
-    // TODO(0) doc
+    //! \brief Construct from \ref congruence_kind and \ref
+    //! Presentation<word_type>.
+    //!
+    //! This function constructs a ToddCoxeter instance representing a
+    //! congruence of kind \p knd over the semigroup or monoid defined by the
+    //! presentation \p p.
+    //!
+    //! \param knd the kind (left, right, or twosided) of the congruence.
+    //! \param p the presentation.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    // TODO(0) a to_todd_coxeter variant that throws if p is not valid
     ToddCoxeter(congruence_kind knd, Presentation<word_type>&& p);
 
-    // TODO(0) doc
+    //! \brief Re-initialize a ToddCoxeter instance.
+    //!
+    //! This function puts a ToddCoxeter instance back into the state that it
+    //! would have been in if it had just been newly constructed from \p knd
+    //! and \p p.
+    //!
+    //! \param knd the kind (left, right, or twosided) of the congruence.
+    //! \param p the presentation.
+    //!
+    //! \returns A reference to `*this`.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    // TODO(0) a to_todd_coxeter variant that throws if p is not valid
     ToddCoxeter& init(congruence_kind knd, Presentation<word_type>&& p);
 
-    // TODO(0) doc
+    //! \copydoc ToddCoxeter(congruence_kind, Presentation<word_type>&&)
+    // TODO(0) a to_todd_coxeter variant that throws if p is not valid
     ToddCoxeter(congruence_kind knd, Presentation<word_type> const& p);
 
-    // TODO(0) doc
+    //! \copydoc init(congruence_kind, Presentation<word_type>&&)
+    // TODO(0) a to_todd_coxeter variant that throws if p is not valid
     ToddCoxeter& init(congruence_kind knd, Presentation<word_type> const& p);
 
-    // TODO(0) doc
+    //! \brief Construct from \ref congruence_kind and \ref WordGraph.
+    //!
+    //! This function constructs a ToddCoxeter instance representing a
+    //! congruence of kind \p knd over the WordGraph \p wg. The ToddCoxeter
+    //! instance constructed in this way represents a quotient of the word graph
+    //! \p wg. If \p wg happens to be the left or right Cayley graph of a
+    //! semigroup or monoid, then the ToddCoxeter instance will represent a
+    //! quotient of that semigroup.
+    //!
+    //! \tparam Node the type of the nodes in the 2nd argument.
+    //!
+    //! \param knd the kind (left, right, or twosided) of the congruence.
+    //! \param wg the word graph.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
     template <typename Node>
     ToddCoxeter(congruence_kind knd, WordGraph<Node> const& wg)
         : ToddCoxeter() {
       init(knd, wg);
     }
 
-    // TODO(0) doc
+    //! \brief Re-initialize a ToddCoxeter instance.
+    //!
+    //! This function puts a ToddCoxeter instance back into the state that it
+    //! would have been in if it had just been newly constructed from \p knd
+    //! and \p wg.
+    //!
+    //! \tparam Node the type of the nodes in the 2nd argument.
+    //!
+    //! \param knd the kind (left, right, or twosided) of the congruence.
+    //! \param wg the word graph.
+    //!
+    //! \returns A reference to `*this`.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    // TODO(0) out of line
     template <typename Node>
     ToddCoxeter& init(congruence_kind knd, WordGraph<Node> const& wg) {
       CongruenceInterface::init(knd);
@@ -384,9 +530,25 @@ namespace libsemigroups {
       _word_graph.definitions().init(this);
       _word_graph.report_prefix("ToddCoxeter");
       return *this;
-    }
-    // TODO(0) doc
+    }  // HERE
+
+    //! \brief Construct from \ref congruence_kind and \ref ToddCoxeter.
+    //!
+    //! This function constructs a ToddCoxeter instance representing a
+    //! congruence of kind \p knd over the ToddCoxeter instance \p tc. The
+    //! ToddCoxeter instance constructed in this way represents a quotient of
+    //! the word graph represented by \p tc.
+    //!
+    //! \param knd the kind (left, right, or twosided) of the congruence.
+    //! \param tc the ToddCoxeter instance.
+    //!
+    //! \throw LibsemigroupsException if the arguments \p knd and \p tc are not
+    //! compatible. If the first item is `tc.kind()` and the second is the
+    //! parameter \p knd, then compatible arguments are (right, right), (left,
+    //! left), (two-sided, left), (two-sided, right), and (two-sided,
+    //! two-sided).
     ToddCoxeter(congruence_kind knd, ToddCoxeter const& tc);
+
     // TODO(0) doc
     ToddCoxeter& init(congruence_kind knd, ToddCoxeter const& tc);
 
@@ -430,8 +592,16 @@ namespace libsemigroups {
     // ToddCoxeter - settings - public
     ////////////////////////////////////////////////////////////////////////
 
+    // TODO(0) doc
+    template <typename T>
+    void report_every(T val) {
+      CongruenceInterface::report_every(val);
+      _word_graph.report_every(val);
+    }
+
     using FelschGraphSettings_::def_version;
     using FelschGraphSettings_::settings;
+    using Reporter::report_every;
 
     //! The maximum number of definitions in the stack.
     //!
@@ -842,12 +1012,12 @@ namespace libsemigroups {
     }
 
     // TODO(0) doc
-    Graph const& current_word_graph() const noexcept {
+    word_graph_type const& current_word_graph() const noexcept {
       return _word_graph;
     }
 
     // TODO(0) to cpp
-    Graph const& word_graph() {
+    word_graph_type const& word_graph() {
       run();
       LIBSEMIGROUPS_ASSERT(finished());
       shrink_to_fit();
@@ -1258,10 +1428,12 @@ namespace libsemigroups {
 
     // TODO(0) doc
     // TODO(0) template <word_type>
+    // TODO(0) remove?
     std::vector<std::vector<word_type>> non_trivial_classes(ToddCoxeter& tc1,
                                                             ToddCoxeter& tc2);
 
     // TODO(0) doc
+    // TODO(0) remove?
     uint64_t number_of_idempotents(ToddCoxeter& tc);
 
     // TODO(0) doc
