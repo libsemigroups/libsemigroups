@@ -1728,7 +1728,7 @@ namespace libsemigroups {
     p = to_presentation<word_type>(kb);
 
     auto S = to_froidure_pin(kb);
-    REQUIRE(S.is_monoid());
+    REQUIRE(S.contains_one());
     REQUIRE(S.size() == kb.number_of_classes());
     REQUIRE(S.number_of_idempotents() == 5);
     REQUIRE(kb.number_of_classes() == 6);

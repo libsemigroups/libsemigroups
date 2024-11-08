@@ -181,11 +181,13 @@ struct LibsemigroupsListener : Catch::EventListenerBase {
   void testCaseEnded(Catch::TestCaseStats const&) override {
     if (test_category() != "extreme") {
       fmt::print("\n");
-    } else {
-      extreme_test_divider("END - "
-                           + libsemigroups::detail::string_time(
-                               std::chrono::nanoseconds(_test_time)));
     }
+    // TODO(0) not sure if this is required or not
+    // else {
+    //  extreme_test_divider("END - "
+    //                       + libsemigroups::detail::string_time(
+    //                           std::chrono::nanoseconds(_test_time)));
+    // }
   }
 
   void testRunEnded(Catch::TestRunStats const&) override {

@@ -110,7 +110,7 @@ namespace libsemigroups {
         _lenindex(S._lenindex),
         _letter_to_pos(S._letter_to_pos),
         _nr(S._nr),
-        _nr_products(0),  // TODO what's the rationale for this being 0
+        _nr_products(0),  // TODO(1) what's the rationale for this being 0
         _nr_rules(S._nr_rules),
         _pos(S._pos),
         _pos_one(S._pos_one),
@@ -135,7 +135,7 @@ namespace libsemigroups {
     _lenindex          = S._lenindex;
     _letter_to_pos     = S._letter_to_pos;
     _nr                = S._nr;
-    _nr_products       = 0;  // TODO what's the rationale for this being 0
+    _nr_products       = 0;  // TODO(1) what's the rationale for this being 0
     _nr_rules          = S._nr_rules;
     _pos               = S._pos;
     _pos_one           = S._pos_one;
@@ -220,39 +220,6 @@ namespace libsemigroups {
   // FroidurePinBase - member functions - public
   ////////////////////////////////////////////////////////////////////////
 
-  element_index_type
-  FroidurePinBase::current_position_no_checks(word_type const& w) const {
-    if (w.size() == 0) {
-      if (_found_one) {
-        return _pos_one;
-      } else {
-        return UNDEFINED;
-      }
-    }
-    element_index_type s = current_position_no_checks(w[0]);
-    return word_graph::follow_path_no_checks(
-        current_right_cayley_graph(), s, w.cbegin() + 1, w.cend());
-  }
-
-  element_index_type
-  FroidurePinBase::current_position(word_type const& w) const {
-    // w is a word in the generators (i.e. a vector of letter_type's)
-    for (auto x : w) {
-      throw_if_generator_index_out_of_range(x);
-    }
-    return current_position_no_checks(w);
-  }
-
-  void FroidurePinBase::current_minimal_factorisation_no_checks(
-      word_type&         word,
-      element_index_type pos) const {
-    word.clear();
-    while (pos != UNDEFINED) {
-      word.push_back(first_letter_no_checks(pos));
-      pos = suffix_no_checks(pos);
-    }
-  }
-
   void FroidurePinBase::enumerate(size_t limit) {
     if (finished() || limit <= current_size()) {
       return;
@@ -266,7 +233,7 @@ namespace libsemigroups {
     run_until([this, &limit]() -> bool { return current_size() >= limit; });
   }
 
-  [[nodiscard]] bool FroidurePinBase::is_monoid() {
+  [[nodiscard]] bool FroidurePinBase::contains_one() {
     if (_found_one) {
       return true;
     }
@@ -286,15 +253,6 @@ namespace libsemigroups {
       run();
     }
     return current_length(pos);
-  }
-
-  void FroidurePinBase::minimal_factorisation(word_type&         word,
-                                              element_index_type pos) {
-    if (pos >= current_size() && !finished()) {
-      enumerate(pos + 1);
-    }
-    throw_if_element_index_out_of_range(pos);
-    current_minimal_factorisation_no_checks(word, pos);
   }
 
   size_t FroidurePinBase::number_of_elements_of_length(size_t i) const {
@@ -412,11 +370,13 @@ namespace libsemigroups {
         _relation.first  = word_type({_current[0]});
         _relation.second = word_type({_current[1]});
       } else {
-        _froidure_pin->current_minimal_factorisation_no_checks(_relation.first,
-                                                               _current[0]);
+        _relation.first.clear();
+        _froidure_pin->current_minimal_factorisation_no_checks(
+            std::back_inserter(_relation.first), _current[0]);
         _relation.first.push_back(_current[1]);
-        _froidure_pin->current_minimal_factorisation_no_checks(_relation.second,
-                                                               _current[2]);
+        _relation.second.clear();
+        _froidure_pin->current_minimal_factorisation_no_checks(
+            std::back_inserter(_relation.second), _current[2]);
       }
     }
   }

@@ -222,10 +222,10 @@ namespace libsemigroups {
                           "[quick][cong][no-valgrind]") {
     auto rg      = ReportGuard(false);
     using Transf = LeastTransf<8>;
-    FroidurePin<Transf> S({Transf({7, 3, 5, 3, 4, 2, 7, 7}),
-                           Transf({1, 2, 4, 4, 7, 3, 0, 7}),
-                           Transf({0, 6, 4, 2, 2, 6, 6, 4}),
-                           Transf({3, 6, 3, 4, 0, 6, 0, 7})});
+    auto S       = to_froidure_pin({Transf({7, 3, 5, 3, 4, 2, 7, 7}),
+                                    Transf({1, 2, 4, 4, 7, 3, 0, 7}),
+                                    Transf({0, 6, 4, 2, 2, 6, 6, 4}),
+                                    Transf({3, 6, 3, 4, 0, 6, 0, 7})});
 
     REQUIRE(S.size() == 11804);
     REQUIRE(S.number_of_rules() == 2460);
@@ -255,18 +255,18 @@ namespace libsemigroups {
                           "011",
                           "congruence on full PBR monoid on 2 points",
                           "[extreme][cong]") {
-    auto             rg = ReportGuard(true);
-    FroidurePin<PBR> S({PBR({{2}, {3}, {0}, {1}}),
-                        PBR({{}, {2}, {1}, {0, 3}}),
-                        PBR({{0, 3}, {2}, {1}, {}}),
-                        PBR({{1, 2}, {3}, {0}, {1}}),
-                        PBR({{2}, {3}, {0}, {1, 3}}),
-                        PBR({{3}, {1}, {0}, {1}}),
-                        PBR({{3}, {2}, {0}, {0, 1}}),
-                        PBR({{3}, {2}, {0}, {1}}),
-                        PBR({{3}, {2}, {0}, {3}}),
-                        PBR({{3}, {2}, {1}, {0}}),
-                        PBR({{3}, {2, 3}, {0}, {1}})});
+    auto rg = ReportGuard(true);
+    auto S  = to_froidure_pin({PBR({{2}, {3}, {0}, {1}}),
+                               PBR({{}, {2}, {1}, {0, 3}}),
+                               PBR({{0, 3}, {2}, {1}, {}}),
+                               PBR({{1, 2}, {3}, {0}, {1}}),
+                               PBR({{2}, {3}, {0}, {1, 3}}),
+                               PBR({{3}, {1}, {0}, {1}}),
+                               PBR({{3}, {2}, {0}, {0, 1}}),
+                               PBR({{3}, {2}, {0}, {1}}),
+                               PBR({{3}, {2}, {0}, {3}}),
+                               PBR({{3}, {2}, {1}, {0}}),
+                               PBR({{3}, {2, 3}, {0}, {1}})});
 
     // REQUIRE(S.size() == 65536);
     // REQUIRE(S.number_of_rules() == 45416);
@@ -296,16 +296,16 @@ namespace libsemigroups {
                           "[quick][cong][no-valgrind]") {
     auto rg = ReportGuard(false);
 
-    FroidurePin<LeastPPerm<6>> S(
-        {LeastPPerm<6>({0, 1, 2}, {4, 0, 1}, 6),
-         LeastPPerm<6>({0, 1, 2, 3, 5}, {2, 5, 3, 0, 4}, 6),
-         LeastPPerm<6>({0, 1, 2, 3}, {5, 0, 3, 1}, 6),
-         LeastPPerm<6>({0, 2, 5}, {3, 4, 1}, 6),
-         LeastPPerm<6>({0, 2, 5}, {0, 2, 5}, 6),
-         LeastPPerm<6>({0, 1, 4}, {1, 2, 0}, 6),
-         LeastPPerm<6>({0, 2, 3, 4, 5}, {3, 0, 2, 5, 1}, 6),
-         LeastPPerm<6>({0, 1, 3, 5}, {1, 3, 2, 0}, 6),
-         LeastPPerm<6>({1, 3, 4}, {5, 0, 2}, 6)});
+    auto S
+        = to_froidure_pin({LeastPPerm<6>({0, 1, 2}, {4, 0, 1}, 6),
+                           LeastPPerm<6>({0, 1, 2, 3, 5}, {2, 5, 3, 0, 4}, 6),
+                           LeastPPerm<6>({0, 1, 2, 3}, {5, 0, 3, 1}, 6),
+                           LeastPPerm<6>({0, 2, 5}, {3, 4, 1}, 6),
+                           LeastPPerm<6>({0, 2, 5}, {0, 2, 5}, 6),
+                           LeastPPerm<6>({0, 1, 4}, {1, 2, 0}, 6),
+                           LeastPPerm<6>({0, 2, 3, 4, 5}, {3, 0, 2, 5, 1}, 6),
+                           LeastPPerm<6>({0, 1, 3, 5}, {1, 3, 2, 0}, 6),
+                           LeastPPerm<6>({1, 3, 4}, {5, 0, 2}, 6)});
 
     // REQUIRE(S.size() == 712);
     // REQUIRE(S.number_of_rules() == 1121);
@@ -395,7 +395,7 @@ namespace libsemigroups {
     cong.add_pair(0_w, 1_w);
 
     REQUIRE(cong.number_of_classes() == 4);
-    REQUIRE(!to_froidure_pin(cong)->is_monoid());
+    REQUIRE(!to_froidure_pin(cong)->contains_one());
   }
 
   LIBSEMIGROUPS_TEST_CASE("Congruence",
@@ -404,21 +404,22 @@ namespace libsemigroups {
                           "[quick][cong]") {
     auto rg      = ReportGuard(false);
     using Transf = LeastTransf<5>;
-    FroidurePin<Transf> S({Transf({1, 3, 4, 2, 3}), Transf({3, 2, 1, 3, 3})});
+    auto S
+        = to_froidure_pin({Transf({1, 3, 4, 2, 3}), Transf({3, 2, 1, 3, 3})});
 
     REQUIRE(S.size() == 88);
     REQUIRE(S.number_of_rules() == 18);
 
-    word_type w1 = S.factorisation(Transf({3, 4, 4, 4, 4}));
-    word_type w2 = S.factorisation(Transf({3, 4, 4, 4, 4}));
+    word_type w1 = froidure_pin::factorisation(S, Transf({3, 4, 4, 4, 4}));
+    word_type w2 = froidure_pin::factorisation(S, Transf({3, 4, 4, 4, 4}));
 
     Congruence cong(twosided, S);
-    cong.add_pair(S.factorisation(Transf({3, 4, 4, 4, 4})),
-                  S.factorisation(Transf({3, 1, 3, 3, 3})));
+    cong.add_pair(froidure_pin::factorisation(S, Transf({3, 4, 4, 4, 4})),
+                  froidure_pin::factorisation(S, Transf({3, 1, 3, 3, 3})));
     REQUIRE(cong.number_of_classes() == 21);
 
-    word_type u = S.factorisation(Transf({1, 3, 1, 3, 3}));
-    word_type v = S.factorisation(Transf({4, 2, 4, 4, 2}));
+    word_type u = froidure_pin::factorisation(S, Transf({1, 3, 1, 3, 3}));
+    word_type v = froidure_pin::factorisation(S, Transf({4, 2, 4, 4, 2}));
     REQUIRE(cong.contains(u, v));
     REQUIRE(cong.contains(u, v));
   }
@@ -521,11 +522,11 @@ namespace libsemigroups {
                           "[quick][cong]") {
     auto rg      = ReportGuard(false);
     using Transf = LeastTransf<8>;
-    FroidurePin<Transf> S({Transf({7, 3, 5, 3, 4, 2, 7, 7}),
-                           Transf({7, 3, 5, 3, 4, 2, 7, 7}),
-                           Transf({7, 3, 5, 3, 4, 2, 7, 7}),
-                           Transf({3, 6, 3, 4, 0, 6, 0, 7})});
-    Congruence          cong(twosided, S);
+    auto       S = to_froidure_pin({Transf({7, 3, 5, 3, 4, 2, 7, 7}),
+                                    Transf({7, 3, 5, 3, 4, 2, 7, 7}),
+                                    Transf({7, 3, 5, 3, 4, 2, 7, 7}),
+                                    Transf({3, 6, 3, 4, 0, 6, 0, 7})});
+    Congruence cong(twosided, S);
     REQUIRE(cong.number_of_classes() == S.size());
   }
 
@@ -579,11 +580,11 @@ namespace libsemigroups {
                           "[quick][cong][no-valgrind]") {
     auto rg      = ReportGuard(false);
     using Transf = LeastTransf<8>;
-    FroidurePin<Transf> S({Transf({0, 1, 2, 3, 4, 5, 6, 7}),
-                           Transf({1, 2, 3, 4, 5, 0, 6, 7}),
-                           Transf({1, 0, 2, 3, 4, 5, 6, 7}),
-                           Transf({0, 1, 2, 3, 4, 0, 6, 7}),
-                           Transf({0, 1, 2, 3, 4, 5, 7, 6})});
+    auto S       = to_froidure_pin({Transf({0, 1, 2, 3, 4, 5, 6, 7}),
+                                    Transf({1, 2, 3, 4, 5, 0, 6, 7}),
+                                    Transf({1, 0, 2, 3, 4, 5, 6, 7}),
+                                    Transf({0, 1, 2, 3, 4, 0, 6, 7}),
+                                    Transf({0, 1, 2, 3, 4, 5, 7, 6})});
 
     REQUIRE(S.size() == 93'312);
     std::vector<Transf> elms = {Transf({0, 0, 0, 0, 0, 0, 7, 6}),
@@ -608,8 +609,8 @@ namespace libsemigroups {
     Congruence cong(right, S);
     word_type  w1, w2;
     for (size_t i = 0; i < elms.size(); i += 2) {
-      S.factorisation(w1, S.position(elms[i]));
-      S.factorisation(w2, S.position(elms[i + 1]));
+      froidure_pin::factorisation(S, w1, S.position(elms[i]));
+      froidure_pin::factorisation(S, w2, S.position(elms[i + 1]));
       cong.add_pair(w1, w2);
     }
     REQUIRE(cong.number_of_classes() == 1);
@@ -726,7 +727,7 @@ namespace libsemigroups {
     }
 
     using Transf = LeastTransf<3>;
-    FroidurePin<Transf> p({Transf({0, 1, 0}), Transf({0, 1, 2})});
+    auto p       = to_froidure_pin({Transf({0, 1, 0}), Transf({0, 1, 2})});
     REQUIRE(p.size() == 2);
     {
       Congruence cong(twosided, p);
@@ -754,7 +755,7 @@ namespace libsemigroups {
            BMat({{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {1, 0, 0, 1}}),
            BMat({{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 0}})};
     {
-      FroidurePin<BMat> S(gens);
+      auto S = to_froidure_pin(gens);
 
       Congruence cong(twosided, S);
       cong.add_pair({1}, {0});
@@ -762,7 +763,8 @@ namespace libsemigroups {
       REQUIRE(cong.number_of_classes() == 3);
       REQUIRE(cong.contains({1}, {0}));
 
-      auto ntc = congruence::non_trivial_classes(cong, S.normal_forms());
+      auto ntc = congruence::non_trivial_classes(cong,
+                                                 froidure_pin::normal_forms(S));
       REQUIRE(ntc.size() == 3);
       REQUIRE(ntc[0].size() == 12);
       REQUIRE(ntc[1].size() == 63'880);
@@ -782,14 +784,15 @@ namespace libsemigroups {
                                          11011_w}));
     }
     {
-      FroidurePin<BMat> S({gens[0], gens[2], gens[3]});
-      Congruence        cong(twosided, S);
+      auto       S = to_froidure_pin({gens[0], gens[2], gens[3]});
+      Congruence cong(twosided, S);
       cong.add_pair({1}, {0});
 
       REQUIRE(cong.number_of_classes() == 2);
       REQUIRE(cong.contains({1}, {0}));
 
-      auto ntc = congruence::non_trivial_classes(cong, S.normal_forms());
+      auto ntc = congruence::non_trivial_classes(cong,
+                                                 froidure_pin::normal_forms(S));
       REQUIRE(ntc.size() == 2);
       REQUIRE(ntc[0].size() == 8);
       REQUIRE(ntc[1].size() == 8);
@@ -825,8 +828,8 @@ namespace libsemigroups {
     REQUIRE(cong.number_of_classes() == 69);
     REQUIRE(cong.number_of_classes() == 69);
 
-    word_type w3 = S.factorisation(Transf<>({1, 3, 1, 3, 3}));
-    word_type w4 = S.factorisation(Transf<>({4, 2, 4, 4, 2}));
+    word_type w3 = froidure_pin::factorisation(S, Transf<>({1, 3, 1, 3, 3}));
+    word_type w4 = froidure_pin::factorisation(S, Transf<>({4, 2, 4, 4, 2}));
     REQUIRE(!cong.contains(w3, w4));
     REQUIRE(cong.contains(w3, 00101_w));
     REQUIRE(cong.contains(100101_w, 0010001_w));
@@ -854,8 +857,8 @@ namespace libsemigroups {
     REQUIRE(cong.number_of_classes() == 72);
     REQUIRE(cong.number_of_classes() == 72);
 
-    word_type w3 = S.factorisation(Transf<>({1, 3, 1, 3, 3}));
-    word_type w4 = S.factorisation(Transf<>({4, 2, 4, 4, 2}));
+    word_type w3 = froidure_pin::factorisation(S, Transf<>({1, 3, 1, 3, 3}));
+    word_type w4 = froidure_pin::factorisation(S, Transf<>({4, 2, 4, 4, 2}));
     REQUIRE(!cong.contains(w3, w4));
     REQUIRE(!cong.contains(w3, 00101_w));
     REQUIRE(!cong.contains(100101_w, 0010001_w));
@@ -879,18 +882,18 @@ namespace libsemigroups {
     REQUIRE(S.number_of_rules() == 18);
     REQUIRE(S.degree() == 5);
     word_type w1, w2;
-    S.factorisation(w1, S.position(Transf<>({3, 4, 4, 4, 4})));
-    S.factorisation(w2, S.position(Transf<>({3, 1, 3, 3, 3})));
+    froidure_pin::factorisation(S, w1, S.position(Transf<>({3, 4, 4, 4, 4})));
+    froidure_pin::factorisation(S, w2, S.position(Transf<>({3, 1, 3, 3, 3})));
     Congruence cong(right, S);
     cong.add_pair(w1, w2);
 
     REQUIRE(cong.number_of_classes() == 72);
     REQUIRE(cong.number_of_classes() == 72);
     word_type w3, w4, w5, w6;
-    S.factorisation(w3, S.position(Transf<>({1, 3, 3, 3, 3})));
-    S.factorisation(w4, S.position(Transf<>({4, 2, 4, 4, 2})));
-    S.factorisation(w5, S.position(Transf<>({2, 3, 2, 2, 2})));
-    S.factorisation(w6, S.position(Transf<>({2, 3, 3, 3, 3})));
+    froidure_pin::factorisation(S, w3, S.position(Transf<>({1, 3, 3, 3, 3})));
+    froidure_pin::factorisation(S, w4, S.position(Transf<>({4, 2, 4, 4, 2})));
+    froidure_pin::factorisation(S, w5, S.position(Transf<>({2, 3, 2, 2, 2})));
+    froidure_pin::factorisation(S, w6, S.position(Transf<>({2, 3, 3, 3, 3})));
     REQUIRE(!cong.contains(w3, w4));
     REQUIRE(cong.contains(w5, w6));
     REQUIRE(!cong.contains(w3, w6));

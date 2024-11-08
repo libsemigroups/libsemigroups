@@ -31,6 +31,7 @@
 #include <cstdint>           // for uint32_t, int32_t
 #include <cstdlib>           // for abs
 #include <initializer_list>  // for initializer_list
+#include <string_view>       // for string_view
 #include <type_traits>       // for decay_t, false_type, is_signed, true_type
 #include <unordered_set>     // for unordered_set
 #include <vector>            // for vector
@@ -756,13 +757,25 @@ namespace libsemigroups {
   //!
   //! \brief Return a human readable representation of a blocks object.
   //!
-  //! Return a human readable representation of a blocks object.
+  //! Return a human readable representation (std::string) of a Blocks object.
+  //! The braces to be used in the returns string can be specified using the
+  //! argument \p braces. By default the returned string can be used to
+  //! reconstruct the bipartition \p x. If the width of this returned string
+  //! would be greater than \p max_width, then an abbreviated string is returned
+  //! instead.
   //!
   //! \param x the Blocks object.
+  //! \param braces the braces to use in the returned string (default: `"{}"`).
+  //! \param max_width the maximum width of the returned string (default: \c
+  //! 72).
   //!
-  //! \exceptions
-  //! \no_libsemigroups_except
-  [[nodiscard]] std::string to_human_readable_repr(Blocks const& x);
+  //! \returns A std::string representation of \p x.
+  //!
+  //! \throws LibsemigroupsException if \p braces does not have length \c 2.
+  [[nodiscard]] std::string to_human_readable_repr(Blocks const&    x,
+                                                   std::string_view braces
+                                                   = "{}",
+                                                   size_t max_width = 72);
 
   //! \ingroup bipart_group
   //!
@@ -1469,13 +1482,25 @@ namespace libsemigroups {
   //!
   //! \brief Return a human readable representation of a bipartition.
   //!
-  //! Return a human readable representation of a bipartition.
+  //! Return a human readable representation (std::string) of a bipartition.
+  //! The braces to be used in the returns string can be specified using the
+  //! argument \p braces. By default the returned string can be used to
+  //! reconstruct the bipartition \p x. If the width of this returned string
+  //! would be greater than \p max_width, then an abbreviated string is returned
+  //! instead.
   //!
   //! \param x the Bipartition object.
+  //! \param braces the braces to use in the returned string (default: `"{}"`).
+  //! \param max_width the maximum width of the returned string (default: \c
+  //! 72).
   //!
-  //! \exceptions
-  //! \no_libsemigroups_except
-  [[nodiscard]] std::string to_human_readable_repr(Bipartition const& x);
+  //! \returns A std::string representation of \p x.
+  //!
+  //! \throws LibsemigroupsException if \p braces does not have length \c 2.
+  [[nodiscard]] std::string to_human_readable_repr(Bipartition const& x,
+                                                   std::string_view   braces
+                                                   = "{}",
+                                                   size_t max_width = 72);
 
   //! \ingroup bipart_group
   //!

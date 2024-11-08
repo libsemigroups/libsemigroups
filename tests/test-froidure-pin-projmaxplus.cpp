@@ -19,7 +19,7 @@
 #include <cstddef>  // for size_t
 
 #include "catch_amalgamated.hpp"  // for REQUIRE
-#include "test-main.hpp"          // for LIBSEMIGROUPS_TEST_CASE
+#include "test-main.hpp"          // for LIBSEMIGROUPS_TEST_CASE_V3
 
 #include "libsemigroups/froidure-pin.hpp"  // for FroidurePin
 #include "libsemigroups/matrix.hpp"        // for ProjMaxPlusMat
@@ -50,14 +50,16 @@ namespace libsemigroups {
         pos++;
       }
 
-      S.add_generators({Mat({{1, 0, 0}, {1, 0, 1}, {0, 1, 0}})});
+      froidure_pin::add_generators(S, {Mat({{1, 0, 0}, {1, 0, 1}, {0, 1, 0}})});
       REQUIRE(S.size() == 223);
-      S.closure({Mat({{1, 0, 0}, {1, 0, 1}, {0, 1, 0}})});
+      froidure_pin::closure(S, {Mat({{1, 0, 0}, {1, 0, 1}, {0, 1, 0}})});
       REQUIRE(S.size() == 223);
-      REQUIRE(S.minimal_factorisation(Mat({{1, 0, 0}, {1, 0, 1}, {0, 1, 0}})
-                                      * Mat({{0, 1, 2}, {3, 4, 1}, {2, 1, 1}}))
+      REQUIRE(froidure_pin::minimal_factorisation(
+                  S,
+                  Mat({{1, 0, 0}, {1, 0, 1}, {0, 1, 0}})
+                      * Mat({{0, 1, 2}, {3, 4, 1}, {2, 1, 1}}))
               == word_type({3, 0}));
-      REQUIRE_THROWS_AS(S.minimal_factorisation(1000000000),
+      REQUIRE_THROWS_AS(froidure_pin::minimal_factorisation(S, 1000000000),
                         LibsemigroupsException);
       pos = 0;
       for (auto it = S.cbegin_idempotents(); it < S.cend_idempotents(); ++it) {
@@ -93,18 +95,18 @@ namespace libsemigroups {
     }
   }  // namespace
 
-  LIBSEMIGROUPS_TEST_CASE("FroidurePin",
-                          "061",
-                          "projective max plus matrix",
-                          "[quick][froidure-pin][projmaxplus]") {
+  LIBSEMIGROUPS_TEST_CASE_V3("FroidurePin",
+                             "061",
+                             "projective max plus matrix",
+                             "[quick][froidure-pin][projmaxplus]") {
     test000<ProjMaxPlusMat<3>>();
     test000<ProjMaxPlusMat<>>();
   }
 
-  LIBSEMIGROUPS_TEST_CASE("FroidurePin",
-                          "062",
-                          "projective max plus matrix",
-                          "[quick][froidure-pin][element]") {
+  LIBSEMIGROUPS_TEST_CASE_V3("FroidurePin",
+                             "062",
+                             "projective max plus matrix",
+                             "[quick][froidure-pin][element]") {
     test001<ProjMaxPlusMat<3>>();
     test001<ProjMaxPlusMat<>>();
   }

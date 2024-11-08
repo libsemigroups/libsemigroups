@@ -22,7 +22,7 @@
 #include <vector>   // for vector
 
 #include "catch_amalgamated.hpp"  // for  REQUIRE
-#include "test-main.hpp"          // for LIBSEMIGROUPS_TEST_CASE
+#include "test-main.hpp"          // for LIBSEMIGROUPS_TEST_CASE_V3
 
 #include "libsemigroups/debug.hpp"         // for LIBSEMIGROUPS_ASSERT
 #include "libsemigroups/froidure-pin.hpp"  // for FroidurePin
@@ -107,10 +107,10 @@ namespace libsemigroups {
 
   constexpr bool REPORT = false;
 
-  LIBSEMIGROUPS_TEST_CASE("FroidurePin",
-                          "055",
-                          "(tropical max-plus semiring matrices)",
-                          "[quick][froidure-pin][tropmaxplus]") {
+  LIBSEMIGROUPS_TEST_CASE_V3("FroidurePin",
+                             "055",
+                             "(tropical max-plus semiring matrices)",
+                             "[quick][froidure-pin][tropmaxplus]") {
     auto rg = ReportGuard(REPORT);
     // threshold 9, 2 x 2
     using Mat = MaxPlusTruncMat<9, 2>;
@@ -130,14 +130,15 @@ namespace libsemigroups {
     }
     S.add_generator(Mat({{1, 1}, {0, 2}}));
     REQUIRE(S.size() == 73);
-    S.closure({Mat({{1, 1}, {0, 2}})});
+    froidure_pin::closure(S, {Mat({{1, 1}, {0, 2}})});
     REQUIRE(S.size() == 73);
-    REQUIRE(
-        S.minimal_factorisation(Mat({{1, 1}, {0, 2}}) * Mat({{2, 1}, {4, 0}}))
-        == word_type({2, 1}));
-    REQUIRE(S.minimal_factorisation(52) == word_type({0, 2, 2, 1}));
+    REQUIRE(froidure_pin::minimal_factorisation(
+                S, Mat({{1, 1}, {0, 2}}) * Mat({{2, 1}, {4, 0}}))
+            == word_type({2, 1}));
+    REQUIRE(froidure_pin::minimal_factorisation(S, 52)
+            == word_type({0, 2, 2, 1}));
     REQUIRE(S.at(52) == Mat({{9, 7}, {9, 5}}));
-    REQUIRE_THROWS_AS(S.minimal_factorisation(1000000000),
+    REQUIRE_THROWS_AS(froidure_pin::minimal_factorisation(S, 1000000000),
                       LibsemigroupsException);
     pos = 0;
     for (auto it = S.cbegin_idempotents(); it < S.cend_idempotents(); ++it) {

@@ -21,7 +21,7 @@
 #include <vector>   // for vector
 
 #include "catch_amalgamated.hpp"  // for REQUIRE
-#include "test-main.hpp"          // for LIBSEMIGROUPS_TEST_CASE
+#include "test-main.hpp"          // for LIBSEMIGROUPS_TEST_CASE_V3
 
 #include "libsemigroups/froidure-pin.hpp"  // for FroidurePin
 #include "libsemigroups/transf.hpp"        // for PPerm
@@ -32,10 +32,10 @@ namespace libsemigroups {
 
   constexpr bool REPORT = false;
 
-  LIBSEMIGROUPS_TEST_CASE("FroidurePin<PPerm<>>",
-                          "058",
-                          "",
-                          "[quick][froidure-pin][pperm]") {
+  LIBSEMIGROUPS_TEST_CASE_V3("FroidurePin<PPerm<>>",
+                             "058",
+                             "",
+                             "[quick][froidure-pin][pperm]") {
     auto rg = ReportGuard(REPORT);
 
     FroidurePin<PPerm<>> S;
@@ -54,17 +54,18 @@ namespace libsemigroups {
       pos++;
     }
 
-    S.add_generators({PPerm<>({0, 1, 2}, {3, 4, 5}, 6)});
+    froidure_pin::add_generators(S, {PPerm<>({0, 1, 2}, {3, 4, 5}, 6)});
     REQUIRE(S.size() == 396);
-    S.closure({PPerm<>({0, 1, 2}, {3, 4, 5}, 6)});
+    froidure_pin::closure(S, {PPerm<>({0, 1, 2}, {3, 4, 5}, 6)});
     REQUIRE(S.size() == 396);
-    REQUIRE(
-        S.minimal_factorisation(PPerm<>({0, 1, 2}, {3, 4, 5}, 6)
-                                * PPerm<>({0, 2, 3, 4, 5}, {5, 2, 3, 0, 1}, 6))
-        == word_type({3, 2}));
-    REQUIRE(S.minimal_factorisation(10) == word_type({2, 1}));
+    REQUIRE(froidure_pin::minimal_factorisation(
+                S,
+                PPerm<>({0, 1, 2}, {3, 4, 5}, 6)
+                    * PPerm<>({0, 2, 3, 4, 5}, {5, 2, 3, 0, 1}, 6))
+            == word_type({3, 2}));
+    REQUIRE(froidure_pin::minimal_factorisation(S, 10) == word_type({2, 1}));
     REQUIRE(S.at(10) == PPerm<>({2, 3, 5}, {5, 2, 0}, 6));
-    REQUIRE_THROWS_AS(S.minimal_factorisation(1000000000),
+    REQUIRE_THROWS_AS(froidure_pin::minimal_factorisation(S, 1000000000),
                       LibsemigroupsException);
     pos = 0;
     for (auto it = S.cbegin_idempotents(); it < S.cend_idempotents(); ++it) {
@@ -77,10 +78,10 @@ namespace libsemigroups {
     }
   }
 
-  LIBSEMIGROUPS_TEST_CASE("FroidurePin<PPerm<>>",
-                          "059",
-                          "",
-                          "[quick][froidure-pin][pperm]") {
+  LIBSEMIGROUPS_TEST_CASE_V3("FroidurePin<PPerm<>>",
+                             "059",
+                             "",
+                             "[quick][froidure-pin][pperm]") {
     auto                 rg = ReportGuard(REPORT);
     FroidurePin<PPerm<>> S;
     S.add_generator(PPerm<>({0, 1, 2, 3, 5, 6, 9}, {9, 7, 3, 5, 4, 2, 1}, 11));
@@ -119,10 +120,10 @@ namespace libsemigroups {
     REQUIRE(y == S[2]);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("FroidurePin<PPerm<>>",
-                          "060",
-                          "exceptions: add_generator(s)",
-                          "[quick][froidure-pin][pperm]") {
+  LIBSEMIGROUPS_TEST_CASE_V3("FroidurePin<PPerm<>>",
+                             "060",
+                             "exceptions: add_generator(s)",
+                             "[quick][froidure-pin][pperm]") {
     FroidurePin<PPerm<>> S;
     S.add_generator(PPerm<>({0, 1, 2, 3, 5, 6, 9}, {9, 7, 3, 5, 4, 2, 1}, 10));
 
@@ -140,8 +141,10 @@ namespace libsemigroups {
         = {PPerm<>({0, 1, 2, 3, 5, 6, 9}, {2, 7, 5, 1, 4, 3, 9}, 11),
            PPerm<>({2, 5, 1}, {6, 0, 3}, 12)};
 
-    REQUIRE_NOTHROW(U.add_generators(additional_gens_2_1));
-    REQUIRE_THROWS_AS(U.add_generators(additional_gens_2_2),
+    REQUIRE_NOTHROW(froidure_pin::add_generators(U, additional_gens_2_1));
+    REQUIRE_NOTHROW(
+        froidure_pin::add_generators(U, std::move(additional_gens_2_1)));
+    REQUIRE_THROWS_AS(froidure_pin::add_generators(U, additional_gens_2_2),
                       LibsemigroupsException);
   }
 }  // namespace libsemigroups

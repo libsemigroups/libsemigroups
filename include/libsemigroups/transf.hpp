@@ -2015,6 +2015,8 @@ namespace libsemigroups {
     void operator()(PPerm<N, Scalar>&       res,
                     PPerm<N, Scalar> const& pt,
                     PPerm<N, Scalar> const& x) const noexcept {
+      LIBSEMIGROUPS_ASSERT(res.degree() == pt.degree());
+      LIBSEMIGROUPS_ASSERT(res.degree() == x.degree());
       res.product_inplace(pt, x);
       res = right_one(res);
     }

@@ -20,7 +20,7 @@
 #include <vector>   // for vector
 
 #include "catch_amalgamated.hpp"  // for REQUIRE, AssertionHandler, REQUIRE_THROWS_AS
-#include "test-main.hpp"          // for LIBSEMIGROUPS_TEST_CASE
+#include "test-main.hpp"          // for LIBSEMIGROUPS_TEST_CASE_V3
 
 #include "libsemigroups/froidure-pin.hpp"  // for FroidurePin
 #include "libsemigroups/pbr.hpp"           // for PBR
@@ -33,10 +33,10 @@ namespace libsemigroups {
 
   constexpr bool REPORT = false;
 
-  LIBSEMIGROUPS_TEST_CASE("FroidurePin<PBR>",
-                          "056",
-                          "example 1",
-                          "[quick][froidure-pin][pbr]") {
+  LIBSEMIGROUPS_TEST_CASE_V3("FroidurePin<PBR>",
+                             "056",
+                             "example 1",
+                             "[quick][froidure-pin][pbr]") {
     auto             rg   = ReportGuard(REPORT);
     std::vector<PBR> gens = {PBR({{3, 5},
                                   {0, 1, 2, 3, 4, 5},
@@ -56,7 +56,8 @@ namespace libsemigroups {
                                   {2, 3, 4, 5},
                                   {2, 3, 4, 5},
                                   {1, 2, 4}})};
-    FroidurePin<PBR> S(gens);
+
+    auto S = to_froidure_pin(gens);
 
     S.reserve(4);
 
@@ -68,34 +69,37 @@ namespace libsemigroups {
       REQUIRE(S.position(*it) == pos);
       pos++;
     }
-    S.add_generators({PBR({{3, 4, 5},
-                           {2, 4, 5},
-                           {1, 2, 4},
-                           {0, 3, 5},
-                           {1, 2, 3, 5},
-                           {1, 2, 3}})});
+    froidure_pin::add_generators(S,
+                                 {PBR({{3, 4, 5},
+                                       {2, 4, 5},
+                                       {1, 2, 4},
+                                       {0, 3, 5},
+                                       {1, 2, 3, 5},
+                                       {1, 2, 3}})});
     REQUIRE(S.size() == 6);
-    S.closure({PBR({{3, 4, 5},
-                    {2, 4, 5},
-                    {1, 2, 4},
-                    {0, 3, 5},
-                    {1, 2, 3, 5},
-                    {1, 2, 3}})});
+    froidure_pin::closure(S,
+                          {PBR({{3, 4, 5},
+                                {2, 4, 5},
+                                {1, 2, 4},
+                                {0, 3, 5},
+                                {1, 2, 3, 5},
+                                {1, 2, 3}})});
     REQUIRE(S.size() == 6);
-    REQUIRE(S.minimal_factorisation(PBR({{3, 5},
-                                         {0, 1, 2, 3, 4, 5},
-                                         {0, 2, 3, 4, 5},
-                                         {0, 1, 2, 3, 5},
-                                         {0, 2, 5},
-                                         {1, 2, 3, 4, 5}})
-                                    * PBR({{3, 4, 5},
-                                           {2, 4, 5},
-                                           {1, 2, 4},
-                                           {0, 3, 5},
-                                           {1, 2, 3, 5},
-                                           {1, 2, 3}}))
+    REQUIRE(froidure_pin::minimal_factorisation(S,
+                                                PBR({{3, 5},
+                                                     {0, 1, 2, 3, 4, 5},
+                                                     {0, 2, 3, 4, 5},
+                                                     {0, 1, 2, 3, 5},
+                                                     {0, 2, 5},
+                                                     {1, 2, 3, 4, 5}})
+                                                    * PBR({{3, 4, 5},
+                                                           {2, 4, 5},
+                                                           {1, 2, 4},
+                                                           {0, 3, 5},
+                                                           {1, 2, 3, 5},
+                                                           {1, 2, 3}}))
             == word_type({0, 0}));
-    REQUIRE(S.minimal_factorisation(5) == word_type({3, 3}));
+    REQUIRE(froidure_pin::minimal_factorisation(S, 5) == word_type({3, 3}));
     REQUIRE(S.at(5)
             == PBR({{3, 4, 5},
                     {2, 4, 5},
@@ -109,7 +113,7 @@ namespace libsemigroups {
                           {0, 3, 5},
                           {1, 2, 3, 5},
                           {1, 2, 3}}));
-    REQUIRE_THROWS_AS(S.minimal_factorisation(1000000000),
+    REQUIRE_THROWS_AS(froidure_pin::minimal_factorisation(S, 1000000000),
                       LibsemigroupsException);
     pos = 0;
     for (auto it = S.cbegin_idempotents(); it < S.cend_idempotents(); ++it) {
@@ -122,10 +126,10 @@ namespace libsemigroups {
     }
   }
 
-  LIBSEMIGROUPS_TEST_CASE("FroidurePin<PBR>",
-                          "057",
-                          "example 2",
-                          "[quick][froidure-pin][pbr]") {
+  LIBSEMIGROUPS_TEST_CASE_V3("FroidurePin<PBR>",
+                             "057",
+                             "example 2",
+                             "[quick][froidure-pin][pbr]") {
     auto rg = ReportGuard(REPORT);
 
     FroidurePin<PBR> S;

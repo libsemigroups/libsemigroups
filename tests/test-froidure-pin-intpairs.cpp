@@ -19,7 +19,7 @@
 #include <cstddef>      // for size_t
 #include <type_traits>  // for integral_constant<>::value
 
-#include "catch_amalgamated.hpp"  // for LIBSEMIGROUPS_TEST_CASE
+#include "catch_amalgamated.hpp"  // for LIBSEMIGROUPS_TEST_CASE_V3
 #include "test-main.hpp"
 
 #include "libsemigroups/adapters.hpp"      // for complexity etc
@@ -109,12 +109,13 @@ namespace std {
 namespace libsemigroups {
   static_assert(!std::is_trivial<IntPair>::value, "IntPair is not non-trivial");
 
-  LIBSEMIGROUPS_TEST_CASE("FroidurePin",
-                          "039",
-                          "(pairs of integers) non-trivial user type",
-                          "[quick][froidure-pin][intpairs][108]") {
+  LIBSEMIGROUPS_TEST_CASE_V3("FroidurePin",
+                             "039",
+                             "(pairs of integers) non-trivial user type",
+                             "[quick][froidure-pin][intpairs][108]") {
     auto                 rg = ReportGuard(REPORT);
-    FroidurePin<IntPair> S({IntPair(1, 1)});
+    FroidurePin<IntPair> S;
+    S.add_generator(IntPair(1, 1));
     REQUIRE(S.size() == 1);
     REQUIRE(S.number_of_idempotents() == 1);
   }

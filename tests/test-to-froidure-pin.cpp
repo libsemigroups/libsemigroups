@@ -87,29 +87,29 @@ namespace libsemigroups {
       REQUIRE(s[32].to_word(k) == 34_w);
       REQUIRE(s[64].to_word(k) == 012_w);
 
-      REQUIRE(s.factorisation(s[0]) == 0_w);
-      REQUIRE(s.factorisation(s[1]) == 1_w);
-      REQUIRE(s.factorisation(s[2]) == 2_w);
-      REQUIRE(s.factorisation(s[4]) == 4_w);
-      REQUIRE(s.factorisation(s[8]) == 01_w);
-      REQUIRE(s.factorisation(s[16]) == 12_w);
-      REQUIRE(s.factorisation(s[32]) == 34_w);
-      REQUIRE(s.factorisation(s[64]) == 012_w);
+      REQUIRE(froidure_pin::factorisation(s, s[0]) == 0_w);
+      REQUIRE(froidure_pin::factorisation(s, s[1]) == 1_w);
+      REQUIRE(froidure_pin::factorisation(s, s[2]) == 2_w);
+      REQUIRE(froidure_pin::factorisation(s, s[4]) == 4_w);
+      REQUIRE(froidure_pin::factorisation(s, s[8]) == 01_w);
+      REQUIRE(froidure_pin::factorisation(s, s[16]) == 12_w);
+      REQUIRE(froidure_pin::factorisation(s, s[32]) == 34_w);
+      REQUIRE(froidure_pin::factorisation(s, s[64]) == 012_w);
 
       REQUIRE(s[0] < s[1]);
 
       auto t = s[128];
       t      = s[64];
-      REQUIRE(s.factorisation(t) == 012_w);
+      REQUIRE(froidure_pin::factorisation(s, t) == 012_w);
       auto u = s[128];
       u.swap(t);
-      REQUIRE(s.factorisation(t) == 134_w);
-      REQUIRE(s.factorisation(u) == 012_w);
+      REQUIRE(froidure_pin::factorisation(s, t) == 134_w);
+      REQUIRE(froidure_pin::factorisation(s, u) == 012_w);
       t = std::move(u);
-      REQUIRE(s.factorisation(t) == 012_w);
+      REQUIRE(froidure_pin::factorisation(s, t) == 012_w);
 
       auto v(std::move(t));
-      REQUIRE(s.factorisation(v) == 012_w);
+      REQUIRE(froidure_pin::factorisation(s, v) == 012_w);
 
       if constexpr (!std::is_same_v<Word, word_type>) {
         REQUIRE(s[0].to_string() == "a");
@@ -213,7 +213,7 @@ namespace libsemigroups {
       REQUIRE(S.size() == 10'752);
       REQUIRE(S.number_of_idempotents() == 1);
       for (size_t c = 0; c < tc.number_of_classes(); ++c) {
-        REQUIRE(tc.class_index_to_word(c) == S.factorisation(c));
+        REQUIRE(tc.class_index_to_word(c) == froidure_pin::factorisation(S, c));
         REQUIRE(tc.word_to_class_index(tc.class_index_to_word(c)) == c);
       }
       REQUIRE(tc.finished());

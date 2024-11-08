@@ -84,8 +84,8 @@ namespace libsemigroups {
   TEMPLATE_TEST_CASE("transformation semigroup (size 4)",
                      "[120][quick][knuth-bendix]",
                      KNUTH_BENDIX_TYPES) {
-    auto                  rg = ReportGuard(false);
-    FroidurePin<Transf<>> S({Transf<>({1, 0}), Transf<>({0, 0})});
+    auto rg = ReportGuard(false);
+    auto S  = to_froidure_pin({Transf<>({1, 0}), Transf<>({0, 0})});
     REQUIRE(S.size() == 4);
     REQUIRE(S.number_of_rules() == 4);
 
@@ -158,8 +158,8 @@ namespace libsemigroups {
   TEMPLATE_TEST_CASE("internal_string_to_word x 2",
                      "[124][quick]",
                      KNUTH_BENDIX_TYPES) {
-    auto                  rg = ReportGuard(false);
-    FroidurePin<Transf<>> S(
+    auto rg = ReportGuard(false);
+    auto S  = to_froidure_pin(
         {Transf<>({1, 3, 4, 2, 3}), Transf<>({3, 2, 1, 3, 3})});
 
     REQUIRE(S.size() == 88);
@@ -178,7 +178,7 @@ namespace libsemigroups {
     using words::operator+;
 
     auto rg = ReportGuard(false);
-    auto S  = FroidurePin<Transf<>>(
+    auto S  = to_froidure_pin(
         {Transf<>({1, 3, 4, 2, 3}), Transf<>({3, 2, 1, 3, 3})});
 
     REQUIRE(S.size() == 88);
@@ -191,15 +191,15 @@ namespace libsemigroups {
 
     presentation::add_rule_no_checks(
         p,
-        2_w + S.factorisation(Transf<>({3, 4, 4, 4, 4})),
-        2_w + S.factorisation(Transf<>({3, 1, 3, 3, 3})));
+        2_w + froidure_pin::factorisation(S, Transf<>({3, 4, 4, 4, 4})),
+        2_w + froidure_pin::factorisation(S, Transf<>({3, 1, 3, 3, 3})));
 
     p.alphabet(3);
 
     TestType    kb2(twosided, p);
     auto const& q = kb2.presentation();
 
-    auto words = (S.normal_forms()
+    auto words = (froidure_pin::normal_forms(S)
                   | rx::transform([](word_type const& w) { return 2_w + w; })
                   | ToString(q.alphabet()));
     REQUIRE((words | rx::count()) == 88);
@@ -223,17 +223,21 @@ namespace libsemigroups {
     Paths paths(copy);
     REQUIRE(paths.min(1).source(source).count() == 72);
 
-    REQUIRE(!kb2.contains(2_w + S.factorisation(Transf<>({1, 3, 1, 3, 3})),
-                          2_w + S.factorisation(Transf<>({4, 2, 4, 4, 2}))));
+    REQUIRE(!kb2.contains(
+        2_w + froidure_pin::factorisation(S, Transf<>({1, 3, 1, 3, 3})),
+        2_w + froidure_pin::factorisation(S, Transf<>({4, 2, 4, 4, 2}))));
 
-    REQUIRE(!kb2.contains(2_w + S.factorisation(Transf<>({1, 3, 3, 3, 3})),
-                          2_w + S.factorisation(Transf<>({4, 2, 4, 4, 2}))));
+    REQUIRE(!kb2.contains(
+        2_w + froidure_pin::factorisation(S, Transf<>({1, 3, 3, 3, 3})),
+        2_w + froidure_pin::factorisation(S, Transf<>({4, 2, 4, 4, 2}))));
 
-    REQUIRE(kb2.contains(2_w + S.factorisation(Transf<>({2, 4, 2, 2, 2})),
-                         2_w + S.factorisation(Transf<>({2, 3, 3, 3, 3}))));
+    REQUIRE(kb2.contains(
+        2_w + froidure_pin::factorisation(S, Transf<>({2, 4, 2, 2, 2})),
+        2_w + froidure_pin::factorisation(S, Transf<>({2, 3, 3, 3, 3}))));
 
-    REQUIRE(!kb2.contains(2_w + S.factorisation(Transf<>({1, 3, 3, 3, 3})),
-                          2_w + S.factorisation(Transf<>({2, 3, 3, 3, 3}))));
+    REQUIRE(!kb2.contains(
+        2_w + froidure_pin::factorisation(S, Transf<>({1, 3, 3, 3, 3})),
+        2_w + froidure_pin::factorisation(S, Transf<>({2, 3, 3, 3, 3}))));
 
     auto ntc = (iterator_range(pp.begin(), pp.end())
                 | filter([](auto const& val) { return val.size() > 1; })
@@ -268,7 +272,7 @@ namespace libsemigroups {
     using words::operator+;
 
     auto rg = ReportGuard(false);
-    auto S  = FroidurePin<Transf<>>(
+    auto S  = to_froidure_pin(
         {Transf<>({1, 3, 4, 2, 3}), Transf<>({3, 2, 1, 3, 3})});
 
     REQUIRE(S.size() == 88);
@@ -288,23 +292,27 @@ namespace libsemigroups {
                  "aabaaabb", "aabaaab", "baabaaab", "aabaaab",  "aabaaabaaa",
                  "aabaaab"}));
 
-    kb.add_pair(S.factorisation(Transf<>({3, 4, 4, 4, 4})),
-                S.factorisation(Transf<>({3, 1, 3, 3, 3})));
+    kb.add_pair(froidure_pin::factorisation(S, Transf<>({3, 4, 4, 4, 4})),
+                froidure_pin::factorisation(S, Transf<>({3, 1, 3, 3, 3})));
     REQUIRE(knuth_bendix::normal_forms(kb).min(1).count() == 72);
 
     REQUIRE(kb.number_of_classes() == 72);
 
-    REQUIRE(!kb.contains(S.factorisation(Transf<>({1, 3, 1, 3, 3})),
-                         S.factorisation(Transf<>({4, 2, 4, 4, 2}))));
+    REQUIRE(!kb.contains(
+        froidure_pin::factorisation(S, Transf<>({1, 3, 1, 3, 3})),
+        froidure_pin::factorisation(S, Transf<>({4, 2, 4, 4, 2}))));
 
-    REQUIRE(!kb.contains(S.factorisation(Transf<>({1, 3, 3, 3, 3})),
-                         S.factorisation(Transf<>({4, 2, 4, 4, 2}))));
+    REQUIRE(!kb.contains(
+        froidure_pin::factorisation(S, Transf<>({1, 3, 3, 3, 3})),
+        froidure_pin::factorisation(S, Transf<>({4, 2, 4, 4, 2}))));
 
-    REQUIRE(kb.contains(S.factorisation(Transf<>({2, 4, 2, 2, 2})),
-                        S.factorisation(Transf<>({2, 3, 3, 3, 3}))));
+    REQUIRE(
+        kb.contains(froidure_pin::factorisation(S, Transf<>({2, 4, 2, 2, 2})),
+                    froidure_pin::factorisation(S, Transf<>({2, 3, 3, 3, 3}))));
 
-    REQUIRE(!kb.contains(S.factorisation(Transf<>({1, 3, 3, 3, 3})),
-                         S.factorisation(Transf<>({2, 3, 3, 3, 3}))));
+    REQUIRE(!kb.contains(
+        froidure_pin::factorisation(S, Transf<>({1, 3, 3, 3, 3})),
+        froidure_pin::factorisation(S, Transf<>({2, 3, 3, 3, 3}))));
 
     REQUIRE((knuth_bendix::normal_forms(kb).min(1) | count()) == 72);
     REQUIRE(!kb.presentation().contains_empty_word());
@@ -329,7 +337,8 @@ namespace libsemigroups {
 
     REQUIRE(kb.rewrite("baaabb") == "baaab");
 
-    auto nf = (S.normal_forms() | ToString(kb.presentation().alphabet()));
+    auto nf = (froidure_pin::normal_forms(S)
+               | ToString(kb.presentation().alphabet()));
     REQUIRE((nf | count()) == 88);
     auto pp = partition(kb, nf);
     REQUIRE(pp.size() == 72);
@@ -359,7 +368,7 @@ namespace libsemigroups {
     using words::operator+;
 
     auto rg = ReportGuard(false);
-    auto S  = FroidurePin<Transf<>>(
+    auto S  = to_froidure_pin(
         {Transf<>({1, 3, 4, 2, 3}), Transf<>({3, 2, 1, 3, 3})});
 
     REQUIRE(S.size() == 88);
@@ -375,9 +384,10 @@ namespace libsemigroups {
     ToString to_string;
     ToWord   to_word;
 
-    REQUIRE(to_string(S.factorisation(Transf<>({3, 4, 4, 4, 4})))
+    REQUIRE(to_string(froidure_pin::factorisation(S, Transf<>({3, 4, 4, 4, 4})))
             == "abaaabbaa");
-    REQUIRE(to_string(S.factorisation(Transf<>({3, 1, 3, 3, 3}))) == "baaab");
+    REQUIRE(to_string(froidure_pin::factorisation(S, Transf<>({3, 1, 3, 3, 3})))
+            == "baaab");
 
     kb.add_pair(to_word("caabbaaaba"), to_word("cbaaab"));
 
@@ -418,7 +428,7 @@ namespace libsemigroups {
     using words::operator+;
 
     auto rg = ReportGuard(false);
-    auto S  = FroidurePin<Transf<>>(
+    auto S  = to_froidure_pin(
         {Transf<>({1, 3, 4, 2, 3}), Transf<>({3, 2, 1, 3, 3})});
 
     REQUIRE(S.size() == 88);
@@ -429,8 +439,8 @@ namespace libsemigroups {
 
     TestType kb(left, p);
 
-    kb.add_pair(S.factorisation(Transf<>({3, 4, 4, 4, 4})),
-                S.factorisation(Transf<>({3, 1, 3, 3, 3})));
+    kb.add_pair(froidure_pin::factorisation(S, Transf<>({3, 4, 4, 4, 4})),
+                froidure_pin::factorisation(S, Transf<>({3, 1, 3, 3, 3})));
 
     kb.run();
 
@@ -469,8 +479,8 @@ namespace libsemigroups {
       return kb.normal_form(w) == w;
     }));
 
-    auto nf = S.normal_forms() | ToString(kb.presentation().alphabet())
-              | take(S.size());
+    auto nf = froidure_pin::normal_forms(S)
+              | ToString(kb.presentation().alphabet()) | take(S.size());
     auto result = kb.gilman_graph();
     // auto expected = to_word_graph<size_t>(
     //     45, {{1, 2},   {31, 9}, {43, 11}, {4, 5},  {},       {20, 21}, {7,
@@ -537,8 +547,8 @@ namespace libsemigroups {
     REQUIRE(knuth_bendix::is_reduced(kb));
 
     kb.init(right, p);
-    kb.add_pair(S.factorisation(Transf<>({3, 4, 4, 4, 4})),
-                S.factorisation(Transf<>({3, 1, 3, 3, 3})));
+    kb.add_pair(froidure_pin::factorisation(S, Transf<>({3, 4, 4, 4, 4})),
+                froidure_pin::factorisation(S, Transf<>({3, 1, 3, 3, 3})));
     REQUIRE(kb.number_of_classes() == 72);
     REQUIRE(kb.contains({1, 1, 1}, {1}));
     REQUIRE_THROWS_AS(kb.presentation(p), LibsemigroupsException);

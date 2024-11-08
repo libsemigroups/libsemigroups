@@ -2555,7 +2555,7 @@ namespace libsemigroups {
 
     using element_type = typename decltype(to_froidure_pin(k))::element_type;
     auto s             = to_froidure_pin(k);
-    REQUIRE(s.minimal_factorisation(100) == 0100_w);
+    REQUIRE(froidure_pin::minimal_factorisation(s, 100) == 0100_w);
     REQUIRE(s.position(element_type(k, 0100_w)) == 100);
     REQUIRE(s.current_size() == 8196);
   }
@@ -2564,9 +2564,9 @@ namespace libsemigroups {
                           "078",
                           "large number of rules",
                           "[quick][kambites][no-valgrind]") {
-    FroidurePin<LeastTransf<6>> S({LeastTransf<6>({1, 2, 3, 4, 5, 0}),
-                                   LeastTransf<6>({1, 0, 2, 3, 4, 5}),
-                                   LeastTransf<6>({0, 1, 2, 3, 4, 0})});
+    auto S = to_froidure_pin({LeastTransf<6>({1, 2, 3, 4, 5, 0}),
+                              LeastTransf<6>({1, 0, 2, 3, 4, 5}),
+                              LeastTransf<6>({0, 1, 2, 3, 4, 0})});
     REQUIRE(S.size() == 46'656);
     auto     p = to_presentation<word_type>(S);
     Kambites k(p);

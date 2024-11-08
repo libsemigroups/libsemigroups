@@ -20,7 +20,7 @@
 #include <cstdint>      // for uint8_t
 #include <type_traits>  // for enable_if, is_integral
 
-#include "catch_amalgamated.hpp"           // for LIBSEMIGROUPS_TEST_CASE
+#include "catch_amalgamated.hpp"           // for LIBSEMIGROUPS_TEST_CASE_V3
 #include "libsemigroups/adapters.hpp"      // for complexity etc
 #include "libsemigroups/debug.hpp"         // for LIBSEMIGROUPS_ASSERT
 #include "libsemigroups/froidure-pin.hpp"  // for FroidurePin<>::element_i...
@@ -79,21 +79,56 @@ namespace libsemigroups {
     }
   };
 
-  LIBSEMIGROUPS_TEST_CASE("FroidurePin",
-                          "031",
-                          "(integers)",
-                          "[quick][froidure-pin][integers]") {
+  LIBSEMIGROUPS_TEST_CASE_V3("FroidurePin",
+                             "031",
+                             "uint32_t/uint8_t",
+                             "[quick][froidure-pin][integers]") {
     auto                  rg = ReportGuard(REPORT);
-    FroidurePin<uint32_t> S({2});
+    FroidurePin<uint32_t> S;
+    S.add_generator(2);
     REQUIRE(S.size() == 32);
     REQUIRE(S.number_of_idempotents() == 1);
-    FroidurePin<uint32_t>::const_iterator it = S.cbegin();
-    REQUIRE(*it == 2);
+    REQUIRE(S[0] == 2);
+    REQUIRE((froidure_pin::elements(S) | rx::to_vector())
+            == std::vector<uint32_t>({2,
+                                      4,
+                                      8,
+                                      16,
+                                      32,
+                                      64,
+                                      128,
+                                      256,
+                                      512,
+                                      1'024,
+                                      2'048,
+                                      4'096,
+                                      8'192,
+                                      16'384,
+                                      32'768,
+                                      65'536,
+                                      131'072,
+                                      262'144,
+                                      524'288,
+                                      1'048'576,
+                                      2'097'152,
+                                      4'194'304,
+                                      8'388'608,
+                                      16'777'216,
+                                      33'554'432,
+                                      67'108'864,
+                                      134'217'728,
+                                      268'435'456,
+                                      536'870'912,
+                                      1'073'741'824,
+                                      2'147'483'648,
+                                      0}));
 
-    FroidurePin<uint8_t> T({2, 3});
+    FroidurePin<uint8_t> T;
+    T.add_generator(2);
+    T.add_generator(3);
     REQUIRE(T.size() == 130);
     REQUIRE(T.number_of_idempotents() == 2);
-    REQUIRE(*T.cbegin_idempotents() == 0);
-    REQUIRE(*T.cbegin_idempotents() + 1 == 1);
+    REQUIRE((froidure_pin::idempotents(T) | rx::to_vector())
+            == std::vector<uint8_t>({0, 1}));
   }
 }  // namespace libsemigroups

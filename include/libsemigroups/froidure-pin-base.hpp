@@ -36,6 +36,7 @@
 #include "detail/containers.hpp"  // for DynamicArray2
 
 namespace libsemigroups {
+
   //! \defgroup froidure_pin_group Froidure-Pin
   //!
   //! This page contains documentation related to the implementation of the
@@ -187,7 +188,7 @@ namespace libsemigroups {
     //! The *batch size* is the number of new elements to be found by any call
     //! to \ref run. This is used by, for example, FroidurePin::position so
     //! that it is possible to find the position of an element after only
-    //! partially enumerating the semigroup.
+    //! partially enumerating the elements of a FrodiurePin instance.
     //!
     //! The default value of the batch size is `8192`.
     //!
@@ -241,135 +242,214 @@ namespace libsemigroups {
 
     //! \brief Returns the position corresponding to a word.
     //!
-    //! Returns the position in the semigroup corresponding to the element
-    //! represented by the word \p w.
+    //! This function returns the position in a FroidurePin instance
+    //! corresponding to the word in the generators given by the iterators \p
+    //! first and \p last. No enumeration is performed, and \ref UNDEFINED is
+    //! returned if the word does not currently correspond to an element.
     //!
-    //! This function returns the position corresponding to the element
-    //! obtained by evaluating the word in the generators \p w. No enumeration
-    //! is performed, and \ref UNDEFINED is returned if the position of the
-    //! element corresponding to \p w cannot be determined.
+    //! \tparam Iterator1 type of the first argument.
+    //! \tparam Iterator2 type of the second argument.
     //!
-    //! \param w a word in the generators.
+    //! \param first iterator pointing at the first letter in the word.
+    //! \param last iterator pointing one beyond the last letter in the word.
     //!
     //! \returns
-    //! A value of type `element_index_type` or \ref UNDEFINED.
-    //!
-    //! \throws LibsemigroupsException if \p w contains an value exceeding
-    //! FroidurePin::number_of_generators.
+    //! The index of the element corresponding to the word given by \p first
+    //! and \p last, or \ref UNDEFINED if there is no such element.
     //!
     //! \complexity
-    //! \f$O(n)\f$ where \f$n\f$ is the length of the word \p w.
+    //! \f$O(n)\f$ where \f$n\f$ is the length of the distance from \p first to
+    //! \p last.
     //!
-    //! \sa FroidurePin::word_to_element.
-    // This is not a helper because the function
-    // FroidurePin::current_position(const_reference) requires access to the
-    // private members.
-    [[nodiscard]] element_index_type current_position(word_type const& w) const;
+    //! \note This function does not trigger any enumeration.
+    //!
+    //! \warning This function does not check its argument is valid. In
+    //! particular, if any of the letters (pointed at by iterators in the range
+    //! from \p first to \p last) is out of range, then bad things will happen.
+    //!
+    //! \sa FroidurePin::to_element
+    //! \sa FroidurePin::current_position
+    //! \sa FroidurePin::position_no_checks
+    //! \sa FroidurePin::position
+    template <typename Iterator1, typename Iterator2>
+    [[nodiscard]] element_index_type
+    current_position_no_checks(Iterator1 first, Iterator2 last) const;
 
     //! \brief Returns the position corresponding to a word.
     //!
-    //! Returns the position in the semigroup corresponding to the element
-    //! represented by the word \p w.
+    //! This function returns the position in a FroidurePin instance
+    //! corresponding to the word in the generators given by \p first and \p
+    //! last. No enumeration is performed, and \ref UNDEFINED is returned if the
+    //! word does not currently correspond to an element.
     //!
-    //! This function returns the position in the FroidurePinBase object of the
-    //! element corresponding to the word in the generators \p w. No enumeration
-    //! is performed, and \ref UNDEFINED is returned if the position of the
-    //! element corresponding to \p w cannot be determined.
+    //! \tparam Iterator1 type of the first argument.
+    //! \tparam Iterator2 type of the second argument.
     //!
-    //! \param w a word in the generators.
+    //! \param first iterator pointing at the first letter in the word.
+    //! \param last iterator pointing one beyond the last letter in the word.
     //!
     //! \returns
-    //! The index of the element corresponding to the word \p w, or \ref
-    //! UNDEFINED if there is no such element.
+    //! The index of the element corresponding to the word given by \p first
+    //! and \p last, or \ref UNDEFINED if there is no such element.
+    //!
+    //! \throws LibsemigroupsException if any of the letters (pointed at by
+    //! iterators in the range from \p first to \p last) is out of range
+    //! (exceeds FroidurePin::number_of_generators).
     //!
     //! \complexity
-    //! \f$O(n)\f$ where \f$n\f$ is the length of the word \p w.
+    //! \f$O(n)\f$ where \f$n\f$ is the length of the distance from \p first to
+    //! \p last.
     //!
-    //! \warning This function does not check its argument is valid. In
-    //! particular, if any of the letters in \p w is out of range, then bad
-    //! things will happen.
+    //! \note This function does not trigger any enumeration.
     //!
-    //! \sa FroidurePin::word_to_element.
-    [[nodiscard]] element_index_type
-    current_position_no_checks(word_type const& w) const;
-
-    //! \copydoc current_position(word_type const&) const
-    // This is not a helper because the function
-    // FroidurePin::current_position(const_reference) requires access to the
-    // private members.
-    [[nodiscard]] element_index_type
-    current_position(std::initializer_list<size_t> const& w) const {
-      word_type ww = w;
-      return current_position(ww);
+    //! \sa FroidurePin::to_element
+    //! \sa FroidurePin::current_position_no_checks
+    //! \sa FroidurePin::position_no_checks
+    //! \sa FroidurePin::position
+    template <typename Iterator1, typename Iterator2>
+    [[nodiscard]] element_index_type current_position(Iterator1 first,
+                                                      Iterator2 last) const {
+      throw_if_any_generator_index_out_of_range(first, last);
+      return current_position_no_checks(first, last);
     }
 
-    //! \copydoc current_position_no_checks(word_type const&) const
-    [[nodiscard]] element_index_type
-    current_position_no_checks(std::initializer_list<size_t> const& w) const {
-      word_type ww = w;
-      return current_position_no_checks(ww);
-    }
-
-    //! \brief Returns the position corresponding to a generator.
+    //! \brief Returns the position corresponding to a word.
     //!
-    //! Returns the position in the semigroup corresponding to the generator
-    //! with index \p i.
+    //! This function returns the position in a FroidurePin instance
+    //! corresponding to the word in the generators given by the iterators \p
+    //! first and \p last. This function triggers a full enumeration.
     //!
-    //! This function returns the position in the FroidurePinBase object of the
-    //! element corresponding to the generator with index \p i.
+    //! \tparam Iterator1 type of the first argument.
+    //! \tparam Iterator2 type of the second argument.
     //!
-    //! \param i the index of the generator.
+    //! \param first iterator pointing at the first letter in the word.
+    //! \param last iterator pointing one beyond the last letter in the word.
     //!
     //! \returns
-    //! The position of the generator with index \p i.
+    //! The index of the element corresponding to the word given by \p first
+    //! and \p last.
     //!
-    //! \complexity Constant.
+    //! \complexity
+    //! \f$O(n)\f$ where \f$n\f$ is the length of the distance from \p first to
+    //! \p last.
+    //!
+    //! \note This function triggers a full enumeration.
     //!
     //! \warning This function does not check its argument is valid. In
-    //! particular, if there is no generator with index \p i, then bad
-    //! things will happen.
+    //! particular, if any of the letters (pointed at by iterators in the range
+    //! from \p first to \p last) is out of range, then bad things will happen.
     //!
-    //! \sa FroidurePin::word_to_element.
-    [[nodiscard]] element_index_type
-    current_position_no_checks(generator_index_type i) const {
-      LIBSEMIGROUPS_ASSERT(i < _letter_to_pos.size());
-      return _letter_to_pos[i];
+    //! \sa FroidurePin::to_element
+    //! \sa FroidurePin::current_position_no_checks
+    //! \sa FroidurePin::current_position
+    //! \sa FroidurePin::position
+    template <typename Iterator1, typename Iterator2>
+    [[nodiscard]] element_index_type position_no_checks(Iterator1 first,
+                                                        Iterator2 last) {
+      run();
+      return current_position_no_checks(first, last);
     }
 
-    //! \brief Returns the position in of the generator with specified index.
+    //! \brief Returns the position corresponding to a word.
     //!
-    //! In many cases \p current_position(i) will equal \p i, examples
+    //! This function returns the position in a FroidurePin instance
+    //! corresponding to the word in the generators given by \p first and \p
+    //! last. This function triggers a full enumeration.
+    //!
+    //! \tparam Iterator1 type of the first argument.
+    //! \tparam Iterator2 type of the second argument.
+    //!
+    //! \param first iterator pointing at the first letter in the word.
+    //! \param last iterator pointing one beyond the last letter in the word.
+    //!
+    //! \returns
+    //! The index of the element corresponding to the word given by \p first
+    //! and \p last, or \ref UNDEFINED if there is no such element.
+    //!
+    //! \throws LibsemigroupsException if any of the letters (pointed at by
+    //! iterators in the range from \p first to \p last) is out of range
+    //! (exceeds FroidurePin::number_of_generators).
+    //!
+    //! \complexity
+    //! \f$O(n)\f$ where \f$n\f$ is the length of the distance from \p first to
+    //! \p last.
+    //!
+    //! \note This function triggers a full enumeration.
+    //!
+    //! \sa FroidurePin::to_element
+    //! \sa FroidurePin::current_position
+    //! \sa FroidurePin::current_position_no_checks
+    //! \sa FroidurePin::position_no_checks
+    //! \sa FroidurePin::position
+    template <typename Iterator1, typename Iterator2>
+    [[nodiscard]] element_index_type position(Iterator1 first, Iterator2 last) {
+      run();
+      return current_position(first, last);
+    }
+
+    //! \brief Returns the position of the generator with specified index.
+    //!
+    //! In many cases \p position_of_generator(i) will equal \p i, examples
     //! of when this will not be the case are:
     //!
     //! * there are duplicate generators;
     //!
-    //! * FroidurePin::add_generators was called after the semigroup was already
-    //! partially enumerated.
+    //! * FroidurePin::add_generators was called after a FroidurePinBase
+    //! object was already partially enumerated.
     //!
-    //! \param i the index of the generators.
+    //! \param i the index of the generator.
     //!
-    //! \returns A value of type \ref element_index_type.
+    //! \returns The position of the \p i-th generator.
+    //!
+    //! \complexity
+    //! Constant.
+    //!
+    //! \note This function does not trigger any enumeration.
+    //!
+    //! \warning This function does not check its argument is valid. In
+    //! particular, if there is no generator with index \p i, then bad
+    //! things will happen.
+    [[nodiscard]] element_index_type
+    position_of_generator_no_checks(generator_index_type i) const {
+      LIBSEMIGROUPS_ASSERT(i < _letter_to_pos.size());
+      return _letter_to_pos[i];
+    }
+
+    //! \brief Returns the position of the generator with specified index.
+    //!
+    //! In many cases \p position_of_generator(i) will equal \p i, examples
+    //! of when this will not be the case are:
+    //!
+    //! * there are duplicate generators;
+    //!
+    //! * FroidurePin::add_generators was called after a FroidurePinBase
+    //! object was already partially enumerated.
+    //!
+    //! \param i the index of the generator.
+    //!
+    //! \returns The position of the \p i-th generator.
     //!
     //! \throws LibsemigroupsException if \p i is greater than or equal to
     //! FroidurePin::number_of_generators.
     //!
     //! \complexity
     //! Constant.
+    //!
+    //! \note
+    //! This function does not trigger any enumeration.
     [[nodiscard]] element_index_type
-    current_position(generator_index_type i) const {
+    position_of_generator(generator_index_type i) const {
       throw_if_generator_index_out_of_range(i);
-      return current_position_no_checks(i);
+      return position_of_generator_no_checks(i);
     }
-
-    // TODO(later) analogues of the current_position mem fns for position
 
     //! \brief Returns the maximum length of a word in the generators so far
     //! computed.
     //!
-    //! Every element of the semigroup can be expressed as the short-lex least
-    //! product of the generators that equals that element.  This function
-    //! returns the length of the longest short-lex least word in the
-    //! generators that has so far been enumerated.
+    //! Every element can be expressed as the short-lex least product of the
+    //! generators that equals that element.  This function returns the length
+    //! of the longest short-lex least word in the generators that has so far
+    //! been enumerated.
     //!
     //! \returns
     //! A value of type \c size_t.
@@ -379,12 +459,17 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! Constant.
+    //!
+    //! \note
+    //! This function does not trigger any enumeration.
     [[nodiscard]] size_t current_max_word_length() const noexcept {
       return _length[_enumerate_order.back()];
     }
 
     //! \brief Returns the degree of any and all elements.
     //!
+    //! This function returns the degree of any and all elements.
+    //!
     //! \returns
     //! A value of type \c size_t.
     //!
@@ -393,13 +478,16 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! Constant.
+    //!
+    //! \note
+    //! This function does not trigger any enumeration.
     [[nodiscard]] size_t degree() const noexcept {
       return _degree;
     }
 
     //! \brief Returns the number of elements so far enumerated.
     //!
-    //! This is only the actual size of the semigroup if the semigroup is fully
+    //! This is only the actual size if the FroidurePinBase object is fully
     //! enumerated.
     //!
     //! \returns
@@ -410,18 +498,21 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! Constant.
+    //!
+    //! \note
+    //! This function does not trigger any enumeration.
     [[nodiscard]] size_t current_size() const noexcept {
       return _nr;
     }
 
-    //! \brief Returns the number of relations that have been found so far.
+    //! \brief Returns the number of rules that have been found so far.
     //!
-    //! This is only guaranteed to be the actual number of relations in a
-    //! presentation defining the semigroup if the semigroup is fully
+    //! This is only guaranteed to be the actual number of rules in a
+    //! presentation defining the FroidurePinBase object if it is fully
     //! enumerated.
     //!
     //! \returns
-    //! A value of type \c size_t.
+    //! The number of rules found so far.
     //!
     //! \exceptions
     //! \noexcept
@@ -444,6 +535,8 @@ namespace libsemigroups {
     //! \complexity
     //! Constant.
     //!
+    //! \note This function does not trigger any enumeration.
+    //!
     //! \warning No checks are made that the argument \p pos is valid. In
     //! particular, if \p pos is greater than or equal to \ref current_size,
     //! then bad things will happen.
@@ -455,7 +548,7 @@ namespace libsemigroups {
     //! \brief Returns the position of the longest proper prefix.
     //!
     //! Returns the position of the prefix of the element \c x in position
-    //! \p pos (of the semigroup) of length one less than the length of \c x.
+    //! \p pos of length one less than the length of \c x.
     //!
     //! \param pos the position.
     //!
@@ -466,6 +559,8 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! Constant.
+    //!
+    //! \note This function does not trigger any enumeration.
     element_index_type prefix(element_index_type pos) const {
       throw_if_element_index_out_of_range(pos);
       return prefix_no_checks(pos);
@@ -474,7 +569,7 @@ namespace libsemigroups {
     //! \brief Returns the position of the longest proper suffix.
     //!
     //! Returns the position of the suffix of the element \c x in position
-    //! \p pos (of the semigroup) of length one less than the length of \c x.
+    //! \p pos of length one less than the length of \c x.
     //!
     //! \param pos the position.
     //!
@@ -482,6 +577,8 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! Constant.
+    //!
+    //! \note This function does not trigger any enumeration.
     //!
     //! \warning No checks are made that the argument \p pos is valid. In
     //! particular, if \p pos is greater than or equal to \ref current_size,
@@ -495,7 +592,7 @@ namespace libsemigroups {
     //! \brief Returns the position of the longest proper suffix.
     //!
     //! Returns the position of the suffix of the element \c x in position
-    //! \p pos (of the semigroup) of length one less than the length of \c x.
+    //! \p pos of length one less than the length of \c x.
     //!
     //! \param pos the position.
     //!
@@ -506,6 +603,9 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! Constant.
+    //!
+    //! \note
+    //! This function does not trigger any enumeration.
     [[nodiscard]] element_index_type suffix(element_index_type pos) const {
       throw_if_element_index_out_of_range(pos);
       return suffix_no_checks(pos);
@@ -513,9 +613,9 @@ namespace libsemigroups {
 
     //! \brief Returns the first letter of the element with specified index.
     //!
-    //! This function returns the first letter of the element in position
-    //! \p pos of the semigroup, which is the index of the generator
-    //! corresponding to the first letter of the element.
+    //! This function returns the first letter of the element in position \p
+    //! pos, which is the index of the generator corresponding to the first
+    //! letter of the element.
     //!
     //! This function does not trigger an enumeration.
     //!
@@ -530,6 +630,8 @@ namespace libsemigroups {
     //! Note that `FroidurePin::generator(first_letter(pos))` is
     //! only equal to `FroidurePin::at(first_letter(pos))` if
     //! there are no duplicate generators.
+    //!
+    //! \note This function does not trigger any enumeration.
     //!
     //! \warning No checks are made that the argument \p pos is valid. In
     //! particular, if \p pos is greater than or equal to \ref current_size,
@@ -542,9 +644,9 @@ namespace libsemigroups {
 
     //! \brief Returns the first letter of the element with specified index.
     //!
-    //! This function returns the first letter of the element in position
-    //! \p pos of the semigroup, which is the index of the generator
-    //! corresponding to the first letter of the element.
+    //! This function returns the first letter of the element in position \p
+    //! pos, which is the index of the generator corresponding to the first
+    //! letter of the element.
     //!
     //! \param pos the position.
     //!
@@ -560,6 +662,9 @@ namespace libsemigroups {
     //! Note that `FroidurePin::generator(first_letter(pos))` is
     //! only equal to `FroidurePin::at(first_letter(pos))` if
     //! there are no duplicate generators.
+    //!
+    //! \note
+    //! This function does not trigger any enumeration.
     [[nodiscard]] generator_index_type
     first_letter(element_index_type pos) const {
       throw_if_element_index_out_of_range(pos);
@@ -569,7 +674,7 @@ namespace libsemigroups {
     //! \brief Returns the first letter of the element with specified index.
     //!
     //! This function returns the first letter of the element in position
-    //! \p pos of the semigroup, which is the index of the generator
+    //! \p pos, which is the index of the generator
     //! corresponding to the first letter of the element.
     //!
     //! This function does not trigger an enumeration.
@@ -586,9 +691,12 @@ namespace libsemigroups {
     //! only equal to `FroidurePin::at(first_letter(pos))` if
     //! there are no duplicate generators.
     //!
+    //! \note This function does not trigger any enumeration.
+    //!
     //! \warning No checks are made that the argument \p pos is valid. In
     //! particular, if \p pos is greater than or equal to \ref current_size,
     //! then bad things will happen.
+    //!
     [[nodiscard]] generator_index_type
     final_letter_no_checks(element_index_type pos) const {
       LIBSEMIGROUPS_ASSERT(pos < _final.size());
@@ -597,9 +705,9 @@ namespace libsemigroups {
 
     //! \brief Returns the last letter of the element with specified index.
     //!
-    //! This function returns the final letter of the element in position
-    //! \p pos of the semigroup, which is the index of the generator
-    //! corresponding to the final letter of the element.
+    //! This function returns the final letter of the element in position \p
+    //! pos, which is the index of the generator corresponding to the final
+    //! letter of the element.
     //!
     //! \param pos the position.
     //!
@@ -616,8 +724,8 @@ namespace libsemigroups {
     //! only equal to `FroidurePin::at(first_letter(pos))` if
     //! there are no duplicate generators.
     //!
-    //! \note No enumeration is triggered by calling this function.
-    // TODO more notes like the above
+    //! \note
+    //! This function does not trigger any enumeration.
     [[nodiscard]] generator_index_type
     final_letter(element_index_type pos) const {
       throw_if_element_index_out_of_range(pos);
@@ -638,11 +746,12 @@ namespace libsemigroups {
     //! \complexity
     //! Constant.
     //!
+    //! \note This function does not trigger any enumeration.
+    //!
     //! \warning This function does not check that \p pos is valid. In
     //! particular, if `pos > current_size()`, then bad things will happen.
     //!
-    //! \sa
-    //! \ref length.
+    //! \sa \ref length.
     [[nodiscard]] size_t
     current_length_no_checks(element_index_type pos) const {
       LIBSEMIGROUPS_ASSERT(pos < _length.size());
@@ -665,8 +774,9 @@ namespace libsemigroups {
     //! \complexity
     //! Constant.
     //!
-    //! \sa
-    //! \ref length.
+    //! \note This function does not trigger any enumeration.
+    //!
+    //! \sa \ref length.
     [[nodiscard]] size_t current_length(element_index_type pos) const {
       throw_if_element_index_out_of_range(pos);
       return current_length_no_checks(pos);
@@ -674,6 +784,9 @@ namespace libsemigroups {
 
     //! \brief Returns the length of the short-lex least word equal to the
     //! element with given index.
+    //!
+    //! This function returns the length of the short-lex least word equal to
+    //! the element with given index.
     //!
     //! \param pos the position.
     //!
@@ -685,6 +798,8 @@ namespace libsemigroups {
     //! \complexity
     //! Constant.
     //!
+    //! \note This function triggers a full enumeration.
+    //!
     //! \sa
     //! \ref current_length.
     // This function could be a helper, but current_length cannot be, so keeping
@@ -694,6 +809,9 @@ namespace libsemigroups {
     //! \brief Returns the length of the short-lex least word equal to the
     //! element with given index.
     //!
+    //! This function returns the length of the short-lex least word equal to
+    //! the element with given index.
+    //!
     //! \param pos the position.
     //!
     //! \returns The length of the element with index \p pos.
@@ -701,50 +819,86 @@ namespace libsemigroups {
     //! \complexity
     //! Constant.
     //!
+    //! \note This function triggers a full enumeration.
+    //!
     //! \warning This function does not check that \p pos is valid. In
     //! particular, if \p pos is greater than or equal to \ref size, then bad
     //! things will happen.
     //!
-    //! \sa
-    //! \ref current_length.
+    //! \sa \ref current_length.
     // This function could be a helper, but current_length cannot be, so keeping
     // this as a mem fn.
     [[nodiscard]] size_t length_no_checks(element_index_type pos);
 
-    //! \brief Returns the size of the semigroup represented by a FroidurePin
-    //! instance.
+    //! \brief Returns the size of a FroidurePin instance.
+    //!
+    //! This function fully enumerates the FroidurePin instance and then returns
+    //! the number of elements.
     //!
     //! \returns
-    //! A value of type `size_t`.
+    //! The size.
     //!
     //! \exceptions
     //! \no_libsemigroups_except
     //!
     //! \complexity
-    //! At worst \f$O(|S|n)\f$ where \f$S\f$ is the semigroup represented by \c
-    //! this, and \f$n\f$ is the return value of
+    //! At worst \f$O(|S|n)\f$ where \f$S\f$ is the semigroup represented by a
+    //! FroidurePinBase instance, and \f$n\f$ is
     //! FroidurePin::number_of_generators.
+    //!
+    //! \note This function triggers a full enumeration.
     [[nodiscard]] size_t size() {
       run();
       return current_size();
     }
 
-    //! \brief Check if the semigroup is a monoid.
+    //! \brief Check if the categorical multiplicative identity is an element.
+    //!
+    //! This function returns \c true if the return value of
+    //! FroidurePin::One() is an element of the FroidurePin instance.
     //!
     //! \returns
-    //! \c true if the semigroup represented by \c this contains
-    //! FroidurePin::One, and \c false if not.
+    //! Whether or not the multiplicative identity is an element.
     //!
     //! \exceptions
     //! \no_libsemigroups_except
     //!
     //! \complexity
-    //! At worst \f$O(|S|n)\f$ where \f$S\f$ is the semigroup represented by \c
-    //! this, and \f$n\f$ is the return value of
+    //! At worst \f$O(|S|n)\f$ where \f$S\f$ is the semigroup represented by a
+    //! FroidurePinBase instance, and \f$n\f$ is
     //! FroidurePin::number_of_generators.
-    [[nodiscard]] bool is_monoid();
+    //!
+    //! \note This function triggers a full enumeration.
+    [[nodiscard]] bool contains_one();
+
+    //! \brief Check if the categorical multiplicative identity is known to be
+    //! an element.
+    //!
+    //! This function returns \c true if the return value of
+    //! FroidurePin::One()() is already known to be an element of the
+    //! FroidurePin instance.
+    //!
+    //! \returns
+    //! Whether or not the multiplicative identity is already known to be an
+    //! element.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    //! \complexity
+    //! At worst \f$O(|S|n)\f$ where \f$S\f$ is the semigroup represented by a
+    //! FroidurePinBase instance, and \f$n\f$ is
+    //! FroidurePin::number_of_generators.
+    //!
+    //! \note
+    //! This function does not trigger any enumeration.
+    [[nodiscard]] bool currently_contains_one() const noexcept {
+      return _found_one;
+    }
 
     //! \brief Returns the total number of relations in the presentation.
+    //!
+    //! This function returns the total number of relations in the presentation.
     //!
     //! \returns
     //! A value of type `size_t`.
@@ -756,6 +910,8 @@ namespace libsemigroups {
     //! At worst \f$O(|S|n)\f$ where \f$S\f$ is the semigroup represented by \c
     //! this, and \f$n\f$ is the return value of
     //! FroidurePin::number_of_generators.
+    //!
+    //! \note This function triggers a full enumeration.
     //!
     //! \sa \ref cbegin_rules and \ref cend_rules.
     [[nodiscard]] size_t number_of_rules() {
@@ -764,6 +920,8 @@ namespace libsemigroups {
     }
 
     //! \brief Returns a const reference to the right Cayley graph.
+    //!
+    //! This function returns a const reference to the right Cayley graph.
     //!
     //! \returns A const reference to \ref cayley_graph_type.
     //!
@@ -774,6 +932,8 @@ namespace libsemigroups {
     //! At worst \f$O(|S|n)\f$ where \f$S\f$ is the semigroup represented by \c
     //! this, and \f$n\f$ is the return value of
     //! FroidurePin::number_of_generators.
+    //!
+    //! \note This function triggers a full enumeration.
     [[nodiscard]] cayley_graph_type const& right_cayley_graph() {
       run();
       return _right;
@@ -791,6 +951,8 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! Constant.
+    //!
+    //! \note This function does not trigger any enumeration.
     [[nodiscard]] cayley_graph_type const&
     current_right_cayley_graph() const noexcept {
       return _right;
@@ -808,6 +970,8 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! Constant.
+    //!
+    //! \note This function triggers a full enumeration.
     [[nodiscard]] cayley_graph_type const& left_cayley_graph() {
       run();
       return _left;
@@ -815,15 +979,19 @@ namespace libsemigroups {
 
     //! \brief Returns a const reference to the left Cayley graph.
     //!
+    //! This function returns a const reference to the left Cayley graph.
+    //!
     //! \returns The (possibly partially enumerated) left Cayley graph.
     //!
     //! \exceptions
     //! \no_libsemigroups_except
     //!
     //! \complexity
-    //! At worst \f$O(|S|n)\f$ where \f$S\f$ is the semigroup represented by \c
-    //! this, and \f$n\f$ is the return value of
+    //! At worst \f$O(|S|n)\f$ where \f$S\f$ is the semigroup represented by
+    //! the FroidurePinBase instance, and \f$n\f$ is
     //! FroidurePin::number_of_generators.
+    //!
+    //! \note This function does not trigger any enumeration.
     [[nodiscard]] cayley_graph_type const&
     current_left_cayley_graph() const noexcept {
       return _left;
@@ -831,22 +999,48 @@ namespace libsemigroups {
 
     // Here's a little summary of the functions for minimal_factorisation:
     // [x] current_minimal_factorisation_no_checks(2 args)
-    // [x] current_minimal_factorisation_no_checks(1 arg)
     // [x] current_minimal_factorisation(2 args)
-    // [x] current_minimal_factorisation(1 arg)
     // [x] minimal_factorisation(2 args)
-    // [x] minimal_factorisation(1 arg)
-    // [ ] ~~minimal_factorisation_no_checks(2 args)~~ NONSENSICLE
-    // [ ] ~~minimal_factorisation_no_checks(1 arg)~~ NONSENSICLE
 
-    //! \brief Modify a word to contain the short-lex least word representing an
+    //! \brief Output to an iterator the short-lex least word representing an
     //! element given by index.
     //!
-    //! Changes \p word in-place to contain a minimal word with respect to the
-    //! short-lex ordering in the generators equal to the \p pos element of
-    //! the semigroup. No further enumeration is performed.
+    //! This function computes a minimal word with respect to the short-lex
+    //! ordering (of the generators) equal to the element in position \p pos and
+    //! stores the result in the output range starting from \p d_first.
     //!
-    //! \param word the word to clear and change in-place.
+    //! \tparam Iterator the type of the first argument (an output iterator).
+    //!
+    //! \param d_first output iterator for the result.
+    //! \param pos the index of the element whose factorisation is sought.
+    //!
+    //! \complexity
+    //! Constant.
+    //!
+    //! \note This function does not trigger any enumeration.
+    //!
+    //! \warning This function does not check that \p pos is valid. In
+    //! particular, if `pos > current_size()`, then bad things will happen.
+    template <typename Iterator>
+    void current_minimal_factorisation_no_checks(Iterator           d_first,
+                                                 element_index_type pos) const {
+      LIBSEMIGROUPS_ASSERT(pos < current_size());
+      while (pos != UNDEFINED) {
+        *d_first = first_letter_no_checks(pos);
+        pos      = suffix_no_checks(pos);
+      }
+    }
+
+    //! \brief Output to an iterator the short-lex least word representing an
+    //! element given by index.
+    //!
+    //! This function computes a minimal word with respect to the short-lex
+    //! ordering (of the generators) equal to the element in position \p pos and
+    //! stores the result in the output range starting from \p d_first.
+    //!
+    //! \tparam Iterator the type of the first argument (an output iterator).
+    //!
+    //! \param d_first output iterator for the result.
     //! \param pos the index of the element whose factorisation is sought.
     //!
     //! \throws LibsemigroupsException if \p pos is greater than or equal to
@@ -855,116 +1049,24 @@ namespace libsemigroups {
     //! \complexity
     //! Constant.
     //!
-    //! \warning This function does not check that \p pos is valid. In
-    //! particular, if `pos > current_size()`, then bad things will happen.
-    // This function could be a helper, but
-    // FroidurePin::minimal_factorisation(const_reference) isn't so keeping.
-    void current_minimal_factorisation_no_checks(word_type&         word,
-                                                 element_index_type pos) const;
-
-    //! \brief Returns a short-lex least word representing an element given by
-    //! index.
-    //!
-    //! This is the same as the two-argument member function for
-    //! \ref minimal_factorisation, but it returns a \ref word_type by value
-    //! instead of modifying its first argument in-place. No enumeration is
-    //! triggered by calling this function.
-    //!
-    //! \param pos the index of the element whose factorisation is sought.
-    //!
-    //! \returns
-    //! A value of type `word_type`.
-    //!
-    //! \complexity
-    //! At worst \f$O(mn)\f$ where \f$m\f$ equals \p pos and \f$n\f$ is the
-    //! return value of FroidurePin::number_of_generators.
-    //!
-    //! \warning This function does not check that \p pos is valid. In
-    //! particular, if `pos > current_size()`, then bad things will happen.
-    // Notes:
-    // 1. This function could be a helper, but
-    //    FroidurePin::minimal_factorisation(const_reference) isn't so keeping.
-    // 2. There's no no_check version of this function because it doesn't make
-    //    sense (see the impl of minimal_factorisation(word_type&,
-    //    element_index_type);
-    word_type
-    current_minimal_factorisation_no_checks(element_index_type pos) const {
-      word_type word;
-      current_minimal_factorisation_no_checks(word, pos);
-      return word;
-    }
-
-    //! \brief Modify a word to contain the short-lex least word representing an
-    //! element given by index.
-    //!
-    //! Changes \p word in-place to contain a minimal word with respect to the
-    //! short-lex ordering in the generators equal to the \p pos element of
-    //! the semigroup. No further enumeration is performed.
-    //!
-    //! \param word the word to clear and change in-place.
-    //! \param pos the index of the element whose factorisation is sought.
-    //!
-    //! \throws LibsemigroupsException if \p pos is greater than or equal to
-    //! current_size().
-    //!
-    //! \complexity
-    //! Constant.
-    // This function could be a helper, but
-    // FroidurePin::minimal_factorisation(const_reference) isn't so keeping.
-    void current_minimal_factorisation(word_type&         word,
+    //! \note This function does not trigger any enumeration.
+    template <typename Iterator>
+    void current_minimal_factorisation(Iterator           d_first,
                                        element_index_type pos) const {
       throw_if_element_index_out_of_range(pos);
-      current_minimal_factorisation_no_checks(word, pos);
+      current_minimal_factorisation_no_checks(d_first, pos);
     }
 
-    //! \brief Returns a short-lex least word representing an element given by
-    //! index.
-    //!
-    //! This is the same as the two-argument member function for
-    //! \ref current_minimal_factorisation, but it returns a \ref word_type by
-    //! value instead of modifying its first argument in-place. No enumeration
-    //! is triggered by calling this function.
-    //!
-    //! \param pos the index of the element whose factorisation is sought.
-    //!
-    //! \returns
-    //! A value of type `word_type`.
-    //!
-    //! \throws LibsemigroupsException if \p pos is out of range.
-    //!
-    //! \complexity
-    //! At worst \f$O(mn)\f$ where \f$m\f$ equals \p pos and \f$n\f$ is the
-    //! return value of FroidurePin::number_of_generators.
-    // Notes:
-    // 1. This function could be a helper, but
-    //    FroidurePin::minimal_factorisation(const_reference) isn't so keeping.
-    // 2. There's no no_check version of this function because it doesn't make
-    //    sense (see the impl of minimal_factorisation(word_type&,
-    //    element_index_type);
-    // This function could be a helper, but
-    // FroidurePin::minimal_factorisation(const_reference) isn't so keeping.
-    [[nodiscard]] word_type
-    current_minimal_factorisation(element_index_type pos) const {
-      word_type word;
-      current_minimal_factorisation(word, pos);
-      return word;
-    }
-
-    //! \brief Modify a word to contain the short-lex least word representing an
+    //! \brief Output to an iterator the short-lex least word representing an
     //! element given by index.
     //!
-    //! Changes \p word in-place to contain a minimal word with respect to the
-    //! short-lex ordering in the generators equal to the \p pos element of
-    //! the semigroup.
+    //! This function computes a minimal word with respect to the short-lex
+    //! ordering (of the generators) equal to the element in position \p pos and
+    //! stores the result in the output range starting from \p d_first.
     //!
-    //! If \p pos is less than the size of this semigroup, then this member
-    //! function changes its first parameter \p word in-place by first clearing
-    //! it and then to contain a minimal factorization of the element in
-    //! position \p pos of the semigroup with respect to the generators of the
-    //! semigroup.  This function enumerates the semigroup until at least the
-    //! \p pos element is known.
+    //! \tparam Iterator the type of the first argument (an output iterator).
     //!
-    //! \param word the word to clear and change in-place.
+    //! \param d_first output iterator for the result.
     //! \param pos the index of the element whose factorisation is sought.
     //!
     //! \throws LibsemigroupsException if \p pos is greater than or equal to
@@ -973,54 +1075,37 @@ namespace libsemigroups {
     //! \complexity
     //! At worst \f$O(mn)\f$ where \f$m\f$ equals \p pos and \f$n\f$ is the
     //! return value of FroidurePin::number_of_generators.
-    // 1. This function could be a helper, but
-    //    FroidurePin::minimal_factorisation(const_reference) isn't so keeping.
-    // 2. There's no no_check version of this function because it doesn't make
-    //    sense (see the impl of minimal_factorisation(word_type&,
-    //    element_index_type);
-    void minimal_factorisation(word_type& word, element_index_type pos);
-
-    //! \brief Returns a short-lex least word representing an element given by
-    //! index.
     //!
-    //! This is the same as the two-argument member function for
-    //! \ref minimal_factorisation, but it returns a \ref word_type by value
-    //! instead of modifying an argument in-place.
-    //!
-    //! \param pos the index of the element whose factorisation is sought.
-    //!
-    //! \returns
-    //! A value of type `word_type`.
-    //!
-    //! \throws LibsemigroupsException if \p pos is greater than or equal to
-    //! size().
-    //!
-    //! \complexity
-    //! At worst \f$O(mn)\f$ where \f$m\f$ equals \p pos and \f$n\f$ is the
-    //! return value of FroidurePin::number_of_generators.
-    // Notes:
-    // 1. This function could be a helper, but
-    //    FroidurePin::minimal_factorisation(const_reference) isn't so keeping.
-    // 2. There's no no_check version of this function because it doesn't make
-    //    sense (see the impl of minimal_factorisation(word_type&,
-    //    element_index_type);
-    [[nodiscard]] word_type minimal_factorisation(element_index_type pos) {
-      word_type word;
-      minimal_factorisation(word, pos);
-      return word;
+    //! \note This function triggers an enumeration until it is complete or at
+    //! least \p pos elements are found.
+    //
+    // Note: There's no no_check version of this function because it doesn't
+    // make sense (see the impl of minimal_factorisation(word_type&,
+    // element_index_type)
+    template <typename Iterator>
+    void minimal_factorisation(Iterator d_first, element_index_type pos) {
+      if (pos >= current_size() && !finished()) {
+        enumerate(pos + 1);
+      }
+      throw_if_element_index_out_of_range(pos);
+      current_minimal_factorisation_no_checks(d_first, pos);
     }
 
-    //! \brief Returns the short-lex least word representing an element given by
-    //! index (no enumeration).
+    // Here's a little summary of the functions for (non-minimal) factorisation:
+    // [x] current_factorisation_no_checks(2 args)
+    // [ ] current_factorisation(2 args) TODO(1)
+    // [x] factorisation(2 args)
+
+    //! \brief Output to an iterator a word representing an element given by
+    //! index.
     //!
-    //! This function changes its argument \p word in-place to contain the
-    //! short-lex least word representing the element of the semigroup with
-    //! index \p pos.
+    //! This function computes a (not necessarily minimal) word (in the
+    //! generators) equal to the element in position \p pos and stores the
+    //! result in the output range starting from \p d_first.
     //!
-    //! This function does not trigger any enumeration, and does not check that
-    //! the argument \p pos is valid.
+    //! \tparam Iterator the type of the first argument (an output iterator).
     //!
-    //! \param word the \ref word_type to contain the result.
+    //! \param d_first output iterator for the result.
     //! \param pos the index of the element whose factorisation is sought.
     //!
     //! \exceptions
@@ -1028,98 +1113,66 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! \f$O(m)\f$ where \f$m\f$ is the length of the returned word.
-    // This function could be a helper, but
-    // FroidurePin::minimal_factorisation(const_reference) isn't so keeping.
-    void current_factorisation_no_checks(word_type&         word,
+    //!
+    //! \note This function triggers an enumeration until it is complete or at
+    //! least \p pos elements are found.
+    //!
+    //! \warning This function does not check its arguments. In particular, it
+    //! is assumed that \p pos is less than \ref current_size.
+    // TODO(1) check that all _no_checks functions have this warning
+    template <typename Iterator>
+    void current_factorisation_no_checks(Iterator           d_first,
                                          element_index_type pos) const {
-      current_minimal_factorisation_no_checks(word, pos);
+      current_minimal_factorisation_no_checks(d_first, pos);
     }
 
-    // Here's a little summary of the functions for factorisation:
-    // [ ] current_factorisation_no_checks(2 args) TODO
-    // [ ] current_factorisation_no_checks(1 arg) TODO
-    // [ ] current_factorisation(2 args) TODO
-    // [ ] current_factorisation(1 arg) TODO
-    // [x] factorisation(2 args)
-    // [x] factorisation(1 arg)
-    // [ ] ~~factorisation_no_checks(2 args)~~ NONSENSICAL
-    // [ ] ~~factorisation_no_checks(1 arg)~~  NONSENSICAL
-
-    //! \brief Obtain a word representing an element given by index.
+    //! \brief Output to an iterator a word representing an element given by
+    //! index.
     //!
-    //! Changes \p word in-place to contain a word in the generators equal to
-    //! the \p pos element of the semigroup.
+    //! This function computes a (not necessarily minimal) word (in the
+    //! generators) equal to the element in position \p pos and stores the
+    //! result in the output range starting from \p d_first.
     //!
-    //! If \p pos is less than the size of this semigroup, then this member
-    //! function changes its first parameter \p word in-place by first clearing
-    //! it and then setting it to contain a factorization of the element in
-    //! position \p pos of the semigroup with respect to the generators of the
-    //! semigroup.  This function enumerates the semigroup until at least the
-    //! element with index \p pos is known.
+    //! \tparam Iterator the type of the first argument (an output iterator).
     //!
-    //! The key difference between this function and
-    //! minimal_factorisation(element_index_type) is that the resulting
-    //! factorisation may not be minimal.
-    //!
-    //! \param word the word to contain the result.
-    //! \param pos the index of the element.
-    //!
-    //! \throws LibsemigroupsException if \p pos is greater than or equal to
-    //! size().
-    //!
-    //! \complexity
-    //! At worst \f$O(mn)\f$ where \f$m\f$ equals \p pos and \f$n\f$ is the
-    //! return value of FroidurePin::number_of_generators.
-    // This function could be a helper, but
-    // FroidurePin::minimal_factorisation(const_reference) isn't so keeping.
-    void factorisation(word_type& word, element_index_type pos) {
-      minimal_factorisation(word, pos);
-    }
-
-    //! \brief Returns a word representing an element given by index.
-    //!
-    //! This is the same as the two-argument member function for
-    //! \ref factorisation, but it returns a \ref word_type by value
-    //! instead of modifying an argument in-place.
-    //!
-    //! The key difference between this function and
-    //! minimal_factorisation(element_index_type) is that the resulting
-    //! factorisation may not be minimal.
-    //!
+    //! \param d_first output iterator for the result.
     //! \param pos the index of the element whose factorisation is sought.
     //!
-    //! \returns
-    //! A value of type `word_type`.
-    //!
     //! \throws LibsemigroupsException if \p pos is greater than or equal to
-    //! size().
+    //! \ref size.
     //!
     //! \complexity
     //! At worst \f$O(mn)\f$ where \f$m\f$ equals \p pos and \f$n\f$ is the
     //! return value of FroidurePin::number_of_generators.
-    // This function could be a helper, but
-    // FroidurePin::minimal_factorisation(const_reference) isn't so keeping.
-    [[nodiscard]] word_type factorisation(element_index_type pos) {
-      return minimal_factorisation(pos);
+    //!
+    //! \note This function triggers an enumeration until it is complete or at
+    //! least \p pos elements are found.
+    //
+    // Note: There's no no_check version of this function because it doesn't
+    // make sense (see the impl of minimal_factorisation(word_type&,
+    // element_index_type)
+    template <typename Iterator>
+    void factorisation(Iterator d_first, element_index_type pos) {
+      minimal_factorisation(d_first, pos);
     }
 
     //! \brief Enumerate until at least a specified number of elements are
     //! found.
     //!
-    //! If the semigroup is already fully enumerated, or the number of elements
-    //! previously enumerated exceeds \p limit, then calling this
-    //! function does nothing. Otherwise, \ref run attempts to find at least
-    //! the maximum of \p limit and \ref batch_size elements of the
-    //! semigroup.
+    //! If an FroidurePinBase instance is already fully enumerated, or the
+    //! number of elements previously enumerated exceeds \p limit, then calling
+    //! this function does nothing. Otherwise, \ref run attempts to find at
+    //! least the maximum of \p limit and \ref batch_size additional elements of
+    //! the semigroup.
     //!
-    //! \param limit the limit for \ref current_size.
+    //! \param limit the approximate limit for \ref current_size.
     //!
     //! \exceptions
     //! \no_libsemigroups_except
     //!
     //! \complexity
-    //! At worst \f$O(mn)\f$ where \f$m\f$ equals \p limit and \f$n\f$ is the
-    //! return value of FroidurePin::number_of_generators.
+    //! At worst \f$O(mn)\f$ where \f$m\f$ equals \p limit and \f$n\f$ is
+    //! FroidurePin::number_of_generators.
     void enumerate(size_t limit);
 
     //! \brief Returns the number of elements so far enumerated with length in a
@@ -1139,6 +1192,8 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! Constant.
+    //!
+    //! \note This function does not trigger any enumeration.
     [[nodiscard]] size_t number_of_elements_of_length(size_t min,
                                                       size_t max) const;
 
@@ -1158,6 +1213,8 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! Constant.
+    //!
+    //! \note This function does not trigger any enumeration.
     [[nodiscard]] size_t number_of_elements_of_length(size_t len) const;
 
     //! \brief Return type of \ref cbegin_rules and \ref cend_rules.
@@ -1313,6 +1370,7 @@ namespace libsemigroups {
     //! //  {{3, 2}, {2}},
     //! //  {{3, 3}, {3}}}
     //! \endcode
+    //! \note This function does not trigger any enumeration.
     // clang-format on
     [[nodiscard]] const_rule_iterator cbegin_current_rules() const {
       return const_rule_iterator(this, UNDEFINED, 0);
@@ -1322,9 +1380,9 @@ namespace libsemigroups {
     //!
     //! Returns a forward iterator pointing to the first rule in a confluent
     //! terminating rewriting system defining a semigroup isomorphic to the
-    //! one defined by \c this.
+    //! one defined by a FroidurePinBase instance.
     //!
-    //! This function fully enumerate the FroidurePin object. If you want to
+    //! This function fully enumerate the FroidurePinBase object. If you want to
     //! obtain a (possibly incomplete) set of rules without triggering a full
     //! enumeration, then use \ref cbegin_current_rules instead.
     //!
@@ -1340,6 +1398,8 @@ namespace libsemigroups {
     //! \iterator_validity
     //! The iterators returned by this function are valid until the underlying
     //! FroidurePin instance is deleted.
+    //!
+    //! \note This function triggers a full enumeration.
     //!
     //! \sa cend_rules
     [[nodiscard]] const_rule_iterator cbegin_rules() {
@@ -1370,6 +1430,8 @@ namespace libsemigroups {
     //! \iterator_validity
     //! The iterators returned by this function are valid until the underlying
     //! FroidurePin instance is deleted.
+    //!
+    //! \note This function does not trigger any enumeration.
     //!
     //! \sa cbegin_rules
     //!
@@ -1441,46 +1503,12 @@ namespace libsemigroups {
     //! The iterators returned by this function are valid until the underlying
     //! FroidurePin instance is deleted.
     //!
+    //! \note This function triggers a full enumeration.
+    //!
     //! \sa cbegin_rules
     [[nodiscard]] const_rule_iterator cend_rules() {
       run();
       return const_rule_iterator(this, current_size(), 0);
-    }
-
-    //! \brief Returns a range object containing the so-far enumerated
-    //! rules.
-    //!
-    //! This function returns a range object containing the rules of the
-    //! semigroup that have been enumerated so far. Calling this function does
-    //! not trigger any enumeration.
-    //!
-    //! \returns A range object containing the rules that have been enumerated
-    //! so far.
-    //!
-    //! \exceptions
-    //! \no_libsemigroups_except
-    //!
-    //! \complexity
-    //! Constant.
-    [[nodiscard]] auto current_rules() const {
-      return rx::iterator_range(cbegin_current_rules(), cend_current_rules());
-    }
-
-    //! \brief Returns a range object containing all of the rules.
-    //!
-    //! This function returns a range object containing all of the rules of the
-    //! semigroup that have been enumerated so far. Calling this function
-    //! triggers a full enumeration.
-    //!
-    //! \returns A range object containing all of the rules.
-    //!
-    //! \exceptions
-    //! \no_libsemigroups_except
-    //!
-    //! \complexity
-    //! The same as \ref enumerate.
-    [[nodiscard]] auto rules() {
-      return rx::iterator_range(cbegin_rules(), cend_rules());
     }
 
     // TODO(later) it'd be more efficient to have this be a forward
@@ -1622,7 +1650,9 @@ namespace libsemigroups {
 
      private:
       void populate_word() const {
-        _froidure_pin->current_minimal_factorisation_no_checks(_word, _pos);
+        _word.clear();
+        _froidure_pin->current_minimal_factorisation_no_checks(
+            std::back_inserter(_word), _pos);
       }
 #endif  // PARSED_BY_DOXYGEN not defined
     };
@@ -1645,6 +1675,7 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! Constant.
+    //! \note This function does not trigger any enumeration.
     [[nodiscard]] const_normal_form_iterator
     cbegin_current_normal_forms() const {
       return const_normal_form_iterator(this, 0);
@@ -1669,27 +1700,9 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! Constant.
+    //! \note This function does not trigger any enumeration.
     [[nodiscard]] const_normal_form_iterator cend_current_normal_forms() const {
       return const_normal_form_iterator(this, current_size());
-    }
-
-    //! \brief Returns a range object containing normal forms for the so-far
-    //! enumerated elements.
-    //!
-    //! This function returns a range object containing normal forms for the
-    //! elements of the semigroup that have been enumerated so far. Calling this
-    //! function does not trigger any enumeration.
-    //!
-    //! \returns The normal forms that have been enumerated so far.
-    //!
-    //! \exceptions
-    //! \no_libsemigroups_except
-    //!
-    //! \complexity
-    //! Constant.
-    [[nodiscard]] auto current_normal_forms() const {
-      return rx::iterator_range(cbegin_current_normal_forms(),
-                                cend_current_normal_forms());
     }
 
     //! \brief Returns an iterator pointing at the first normal form (if any).
@@ -1709,7 +1722,9 @@ namespace libsemigroups {
     //! \no_libsemigroups_except
     //!
     //! \complexity
-    //! Same as \ref enumerate.
+    //! Same as FroidurePinBase::enumerate.
+    //!
+    //! \note This function triggers a full enumeration.
     [[nodiscard]] const_normal_form_iterator cbegin_normal_forms() {
       run();
       return const_normal_form_iterator(this, 0);
@@ -1734,27 +1749,11 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! Constant.
+    //!
+    //! \note This function triggers a full enumeration.
     [[nodiscard]] const_normal_form_iterator cend_normal_forms() {
       run();
       return const_normal_form_iterator(this, size());
-    }
-
-    //! \brief Returns a range object containing normal forms for all the
-    //! elements.
-    //!
-    //! This function returns a range object containing normal forms for all of
-    //! the elements of the semigroup. Calling this function triggers a full
-    //! enumeration.
-    //!
-    //! \returns A range object containing the normal forms.
-    //!
-    //! \exceptions
-    //! \no_libsemigroups_except
-    //!
-    //! \complexity
-    //! Constant.
-    [[nodiscard]] auto normal_forms() {
-      return rx::iterator_range(cbegin_normal_forms(), cend_normal_forms());
     }
 
     ////////////////////////////////////////////////////////////////////////
@@ -1782,29 +1781,72 @@ namespace libsemigroups {
     //! FroidurePin::number_of_generators.
     void throw_if_generator_index_out_of_range(generator_index_type i) const;
 
+    //! \brief Throw an exception if any generator index is out of range.
+    //!
+    //! This function throws an exception if any index pointed at by an
+    //! iterator in the range between \p first and \p last is greater than
+    //! FroidurePin::number_of_generators.
+    //!
+    //! \tparam Iterator1 the type of the first argument.
+    //! \tparam Iterator2 the type of the second argument.
+    //!
+    //! \param first iterator pointing at the first index.
+    //! \param last iterating pointing one beyond the last index.
+    //!
+    //! \throws LibsemigroupsException if any index pointed at by an iterator
+    //! in the range from \p first to \p last exceeds
+    //! FroidurePin::number_of_generators.
+    template <typename Iterator1, typename Iterator2>
+    void throw_if_any_generator_index_out_of_range(Iterator1 first,
+                                                   Iterator2 last) const {
+      for (auto it = first; it != last; ++it) {
+        throw_if_generator_index_out_of_range(*it);
+      }
+    }
+
    private:
     ////////////////////////////////////////////////////////////////////////
-    // FroidurePin - member functions - private
+    // FroidurePinBase - member functions - private
     ////////////////////////////////////////////////////////////////////////
     void partial_copy(FroidurePinBase const& S);
   };  // class FroidurePinBase
 
+  ////////////////////////////////////////////////////////////////////////
+  // Implementations of mem fn templates for FroidurePinBase
+  ////////////////////////////////////////////////////////////////////////
+
+  template <typename Iterator1, typename Iterator2>
+  [[nodiscard]] FroidurePinBase::element_index_type
+  FroidurePinBase::current_position_no_checks(Iterator1 first,
+                                              Iterator2 last) const {
+    if (first == last) {
+      if (_found_one) {
+        return _pos_one;
+      } else {
+        return UNDEFINED;
+      }
+    }
+    element_index_type s = position_of_generator_no_checks(*first);
+    return word_graph::follow_path_no_checks(
+        current_right_cayley_graph(), s, first + 1, last);
+  }
+
   //! \ingroup froidure_pin_group
   //!
-  //! TODO
+  //! \brief This namespace contains helper functions for the FroidurePin class
+  //! template.
   namespace froidure_pin {
-
     //! \brief Compute a product using the Cayley graph.
     //!
     //! This function finds the product of `fpb.at(i)` and `fpb.at(j)` by
     //! following the path in the right Cayley graph from \p i labelled by the
-    //! word `minimal_factorisation(j)` or, if `minimal_factorisation(i)` is
-    //! shorter, by following the path in the left Cayley graph from \p j
-    //! labelled by `minimal_factorisation(i)`.
+    //! word `fpb.minimal_factorisation(j)` or, if
+    //! `fpb.minimal_factorisation(i)` is shorter, by following the path in the
+    //! left Cayley graph from \p j labelled by `fpb.minimal_factorisation(i)`.
     //!
     //! \param fpb the FroidurePinBase object.
-    //! \param i the first index of an element.
-    //! \param j the second index of an element.
+    //! \param i the index of an element.
+    //! \param j another index of an element.
     //!
     //! \returns
     //! A value of type \ref FroidurePinBase::element_index_type.
@@ -1812,6 +1854,8 @@ namespace libsemigroups {
     //! \complexity
     //! \f$O(n)\f$ where \f$n\f$ is the minimum of the lengths of
     //! `minimal_factorisation(i)` and `minimal_factorisation(j)`.
+    //!
+    //! \note This function does not trigger any enumeration.
     //!
     //! \warning This function does not check its arguments. In particular,
     //! if \p i or \p j is greater than or equal
@@ -1824,15 +1868,15 @@ namespace libsemigroups {
 
     //! \brief Compute a product using the Cayley graph.
     //!
-    //! This function finds the product of `at(i)` and `at(j)` by following the
-    //! path in the right Cayley graph from \p i labelled by the word
-    //! `minimal_factorisation(j)` or, if `minimal_factorisation(i)` is
-    //! shorter, by following the path in the left Cayley graph from \p j
-    //! labelled by `minimal_factorisation(i)`.
+    //! This function finds the product of `fpb.at(i)` and `fpb.at(j)` by
+    //! following the path in the right Cayley graph from \p i labelled by the
+    //! word `fpb.minimal_factorisation(j)` or, if
+    //! `fpb.minimal_factorisation(i)` is shorter, by following the path in the
+    //! left Cayley graph from \p j labelled by `fpb.minimal_factorisation(i)`.
     //!
     //! \param fpb the FroidurePinBase object.
-    //! \param i the first index of an element.
-    //! \param j the second index of an element.
+    //! \param i the index of an element.
+    //! \param j another index of an element.
     //!
     //! \returns
     //! A value of type \ref FroidurePinBase::element_index_type.
@@ -1843,10 +1887,537 @@ namespace libsemigroups {
     //! \complexity
     //! \f$O(n)\f$ where \f$n\f$ is the minimum of the lengths of
     //! `minimal_factorisation(i)` and `minimal_factorisation(j)`.
+    //!
+    //! \note This function does not trigger any enumeration.
     [[nodiscard]] typename FroidurePinBase::element_index_type
     product_by_reduction(FroidurePinBase const&                       fpb,
                          typename FroidurePinBase::element_index_type i,
                          typename FroidurePinBase::element_index_type j);
+
+    ////////////////////////////////////////////////////////////////////////
+    // Position helper functions
+    ////////////////////////////////////////////////////////////////////////
+
+    //! \brief Returns the position corresponding to a word.
+    //!
+    //! This function returns the position of the element corresponding to the
+    //! word \p w; \ref UNDEFINED is returned if the position of the
+    //! element corresponding to \p w cannot be determined.
+    //!
+    //! \tparam Word the type of the argument.
+    //!
+    //! \param fpb the FroidurePinBase instance.
+    //! \param w a word in the generators.
+    //!
+    //! \returns
+    //! The index of the element corresponding to the word \p w, or \ref
+    //! UNDEFINED if there is no such element.
+    //!
+    //! \complexity
+    //! \f$O(n)\f$ where \f$n\f$ is the length of the word \p w.
+    //!
+    //! \note This function does not trigger any enumeration.
+    //!
+    //! \warning This function does not check its argument is valid. In
+    //! particular, it is assumed that every item in \p w is strictly less than
+    //! \ref FroidurePinBase::current_size.
+    //!
+    //! \sa FroidurePin::to_element.
+    template <typename Word>
+    [[nodiscard]] FroidurePinBase::element_index_type
+    current_position_no_checks(FroidurePinBase const& fpb, Word const& w) {
+      return fpb.current_position_no_checks(std::begin(w), std::end(w));
+    }
+
+    //! \copydoc current_position_no_checks(FroidurePinBase const&, Word const&)
+    [[nodiscard]] static inline FroidurePinBase::element_index_type
+    current_position_no_checks(FroidurePinBase const&            fpb,
+                               std::initializer_list<int> const& w) {
+      return current_position_no_checks<std::initializer_list<int>>(fpb, w);
+    }
+
+    //! \brief Returns the position corresponding to a word.
+    //!
+    //! This function returns the position of the element corresponding to the
+    //! word \p w.
+    //!
+    //! \tparam Word the type of the argument.
+    //!
+    //! \param fpb the FroidurePinBase instance.
+    //! \param w a word in the generators.
+    //!
+    //! \returns
+    //! The index of the element corresponding to the word \p w.
+    //!
+    //! \throws LibsemigroupsException if \p w does not consist of values
+    //! strictly less than FroidurePin::number_of_generators.
+    //!
+    //! \complexity
+    //! \f$O(n)\f$ where \f$n\f$ is the length of the word \p w.
+    //!
+    //! \note This function does not trigger any enumeration.
+    //!
+    //! \sa FroidurePin::to_element.
+    template <typename Word>
+    [[nodiscard]] FroidurePinBase::element_index_type
+    current_position(FroidurePinBase const& fpb, Word const& w) {
+      return fpb.current_position(std::begin(w), std::end(w));
+    }
+
+    //! \copydoc current_position(FroidurePinBase const&, Word const&)
+    [[nodiscard]] static inline FroidurePinBase::element_index_type
+    current_position(FroidurePinBase const&            fpb,
+                     std::initializer_list<int> const& w) {
+      return current_position<std::initializer_list<int>>(fpb, w);
+    }
+
+    //! \brief Returns the position corresponding to a word.
+    //!
+    //! This function returns the position of the element corresponding to the
+    //! word \p w.
+    //!
+    //! \tparam Word the type of the argument.
+    //!
+    //! \param fpb the FroidurePinBase instance.
+    //! \param w a word in the generators.
+    //!
+    //! \returns
+    //! The index of the element corresponding to the word \p w.
+    //!
+    //! \complexity
+    //! \f$O(n)\f$ where \f$n\f$ is the length of the word \p w.
+    //!
+    //! \note This function triggers a full enumeration.
+    //!
+    //! \warning This function does not check its argument is valid. In
+    //! particular, it is assumed that every item in \p w is strictly less than
+    //! \ref FroidurePinBase::current_size.
+    //!
+    //! \sa FroidurePin::to_element.
+    template <typename Word>
+    [[nodiscard]] FroidurePinBase::element_index_type
+    position_no_checks(FroidurePinBase& fpb, Word const& w) {
+      return fpb.position_no_checks(std::begin(w), std::end(w));
+    }
+
+    //! \copydoc position_no_checks(FroidurePinBase&, Word const&)
+    [[nodiscard]] static inline FroidurePinBase::element_index_type
+    position_no_checks(FroidurePinBase&                  fpb,
+                       std::initializer_list<int> const& w) {
+      return position_no_checks<std::initializer_list<int>>(fpb, w);
+    }
+
+    //! \brief Returns the position corresponding to a word.
+    //!
+    //! This function returns the position of the element corresponding to the
+    //! word \p w.
+    //!
+    //! \tparam Word the type of the argument.
+    //!
+    //! \param fpb the FroidurePinBase instance.
+    //! \param w a word in the generators.
+    //!
+    //! \returns
+    //! The index of the element corresponding to the word \p w.
+    //!
+    //! \throws LibsemigroupsException if \p w does not consist of values
+    //! strictly less than FroidurePin::number_of_generators.
+    //!
+    //! \complexity
+    //! \f$O(n)\f$ where \f$n\f$ is the length of the word \p w.
+    //!
+    //! \note This function triggers a full enumeration.
+    //!
+    //! \sa FroidurePin::to_element.
+    template <typename Word>
+    [[nodiscard]] FroidurePinBase::element_index_type
+    position(FroidurePinBase& fpb, Word const& w) {
+      return fpb.position(std::begin(w), std::end(w));
+    }
+
+    //! \copydoc position(FroidurePinBase&, Word const&)
+    [[nodiscard]] static inline FroidurePinBase::element_index_type
+    position(FroidurePinBase& fpb, std::initializer_list<int> const& w) {
+      return position<std::initializer_list<int>>(fpb, w);
+    }
+
+    ////////////////////////////////////////////////////////////////////////
+    // Minimal factorisation helper functions
+    ////////////////////////////////////////////////////////////////////////
+
+    //! \brief Modify a word to contain the short-lex least word representing an
+    //! element given by index.
+    //!
+    //! This function changes \p word in-place to contain the short-lex minimal
+    //! word (in the generators) equal to the element in position \p pos.
+    //!
+    //! \tparam Word the type of the second argument.
+    //!
+    //! \param fpb the FroidurePinBase instance.
+    //! \param word the word to clear and change in-place.
+    //! \param pos the index of the element whose factorisation is sought.
+    //!
+    //! \complexity
+    //! Constant.
+    //!
+    //! \note This function does not trigger any enumeration.
+    //!
+    //! \warning This function does not check that \p pos is valid. In
+    //! particular, it is assumed that \p pos is strictly less than \ref
+    //! FroidurePinBase::current_size.
+    template <typename Word>
+    void current_minimal_factorisation_no_checks(
+        FroidurePinBase const&              fpb,
+        Word&                               word,
+        FroidurePinBase::element_index_type pos) {
+      // TODO(1) remove the clear (makes the functions more flexible), but will
+      // require care
+      word.clear();
+      fpb.current_minimal_factorisation_no_checks(std::back_inserter(word),
+                                                  pos);
+    }
+
+    //! \brief Returns the short-lex least word representing an element given by
+    //! index.
+    //!
+    //! This function is similar to the 3-argument version
+    //! \ref current_minimal_factorisation_no_checks, but it returns a \c
+    //! Word by value instead of modifying its argument in-place.
+    //!
+    //! \tparam Word the type of the returned word (defaults to \ref word_type).
+    //!
+    //! \param fpb the FroidurePinBase instance.
+    //! \param pos the index of the element whose factorisation is sought.
+    //!
+    //! \returns
+    //! A word containing the factorisation of the given element.
+    //!
+    //! \complexity
+    //! At worst \f$O(mn)\f$ where \f$m\f$ equals \p pos and \f$n\f$ is the
+    //! return value of FroidurePin::number_of_generators.
+    //!
+    //! \note This function does not trigger any enumeration.
+    //!
+    //! \warning This function does not check that \p pos is valid. In
+    //! particular, it is assumed that \p pos is strictly less than \ref
+    //! FroidurePinBase::current_size.
+    template <typename Word = word_type>
+    [[nodiscard]] Word current_minimal_factorisation_no_checks(
+        FroidurePinBase const&              fpb,
+        FroidurePinBase::element_index_type pos) {
+      Word word;
+      current_minimal_factorisation_no_checks(fpb, word, pos);
+      return word;
+    }
+
+    //! \brief Modify a word to contain the short-lex least word representing an
+    //! element given by index.
+    //!
+    //! This function changes \p word in-place to contain the short-lex minimal
+    //! word (in the generators) equal to the element in position \p pos.
+    //!
+    //! \tparam Word the type of the second argument.
+    //!
+    //! \param fpb the FroidurePinBase instance.
+    //! \param word the word to clear and change in-place.
+    //! \param pos the index of the element whose factorisation is sought.
+    //!
+    //! \throws LibsemigroupsException if \p pos is greater than or equal to
+    //! \ref FroidurePinBase::current_size.
+    //!
+    //! \complexity
+    //! Constant.
+    //!
+    //! \note This function does not trigger any enumeration.
+    template <typename Word>
+    void
+    current_minimal_factorisation(FroidurePinBase const&              fpb,
+                                  Word&                               word,
+                                  FroidurePinBase::element_index_type pos) {
+      // TODO(1) remove the clear (makes the functions more flexible), but will
+      // require care
+      word.clear();
+      fpb.current_minimal_factorisation(std::back_inserter(word), pos);
+    }
+
+    //! \brief Returns the short-lex least word representing an element given by
+    //! index.
+    //!
+    //! This function is similar to the 3-argument version
+    //! \ref current_minimal_factorisation, but it returns a \c
+    //! Word by value instead of modifying its argument in-place.
+    //!
+    //! \tparam Word the type of the returned word (defaults to \ref word_type).
+    //!
+    //! \param fpb the FroidurePinBase instance.
+    //! \param pos the index of the element whose factorisation is sought.
+    //!
+    //! \returns
+    //! A word containing the factorisation of the given element.
+    //!
+    //! \throws LibsemigroupsException if \p pos is greater than or equal to
+    //! \ref FroidurePinBase::current_size.
+    //!
+    //! \complexity
+    //! At worst \f$O(mn)\f$ where \f$m\f$ equals \p pos and \f$n\f$ is the
+    //! return value of FroidurePin::number_of_generators.
+    //!
+    //! \note This function does not trigger any enumeration.
+    template <typename Word = word_type>
+    [[nodiscard]] Word
+    current_minimal_factorisation(FroidurePinBase const&              fpb,
+                                  FroidurePinBase::element_index_type pos) {
+      Word word;
+      current_minimal_factorisation(fpb, word, pos);
+      return word;
+    }
+
+    //! \brief Modify a word to contain the short-lex least word representing an
+    //! element given by index.
+    //!
+    //! This function changes \p word in-place to contain the short-lex minimal
+    //! word (in the generators) equal to the element in position \p pos.
+    //!
+    //! \tparam Word the type of the second argument.
+    //!
+    //! \param fpb the FroidurePinBase instance.
+    //! \param word the word to clear and change in-place.
+    //! \param pos the index of the element whose factorisation is sought.
+    //!
+    //! \throws LibsemigroupsException if \p pos is greater than or equal to
+    //! \ref FroidurePinBase::current_size.
+    //!
+    //! \complexity
+    //! Constant.
+    //!
+    //! \note This function triggers an enumeration until it is complete or at
+    //! least \p pos elements are found.
+    // Note: there's no no_check version of this function because it doesn't
+    // make sense (see the impl of minimal_factorisation(word_type&,
+    // FroidurePinBase::element_index_type);
+    template <typename Word>
+    void minimal_factorisation(FroidurePinBase&                    fpb,
+                               Word&                               word,
+                               FroidurePinBase::element_index_type pos) {
+      // TODO(1) remove the clear (makes the functions more flexible), but will
+      // require care
+      word.clear();
+      fpb.minimal_factorisation(std::back_inserter(word), pos);
+    }
+
+    //! \brief Returns the short-lex least word representing an element given by
+    //! index.
+    //!
+    //! This is similar to the three-argument version for
+    //! \ref minimal_factorisation, but it returns a \c Word by value
+    //! instead of modifying an argument in-place.
+    //!
+    //! \tparam Word the type of the second argument.
+    //!
+    //! \param fpb the FroidurePinBase instance.
+    //! \param pos the index of the element whose factorisation is sought.
+    //!
+    //! \returns
+    //! A word containing the factorisation of the given element.
+    //!
+    //! \throws LibsemigroupsException if \p pos is greater than or equal to
+    //! size().
+    //!
+    //! \complexity
+    //! At worst \f$O(mn)\f$ where \f$m\f$ equals \p pos and \f$n\f$ is the
+    //! return value of FroidurePin::number_of_generators.
+    //!
+    //! \note This function triggers an enumeration until it is complete or at
+    //! least \p pos elements are found.
+    // Notes:
+    // * There's no no_check version of this function because it doesn't make
+    //   sense (see the impl of minimal_factorisation(word_type&,
+    //   FroidurePinBase::element_index_type);
+    template <typename Word = word_type>
+    [[nodiscard]] Word
+    minimal_factorisation(FroidurePinBase&                    fpb,
+                          FroidurePinBase::element_index_type pos) {
+      Word word;
+      minimal_factorisation(fpb, word, pos);
+      return word;
+    }
+
+    ////////////////////////////////////////////////////////////////////////
+    // (Non-minimal) factorisation helper functions
+    ////////////////////////////////////////////////////////////////////////
+
+    //! \brief Modify a word to contain a word representing an element given by
+    //! index.
+    //!
+    //! This function changes \p word in-place to contain a (maybe not minimal)
+    //! word (in the generators) equal to the element in position \p pos.
+    //!
+    //! \tparam Word the type of the second argument.
+    //!
+    //! \param fpb the FroidurePinBase instance.
+    //! \param word the word to clear and change in-place.
+    //! \param pos the index of the element whose factorisation is sought.
+    //!
+    //! \complexity
+    //! Constant.
+    //!
+    //! \note This function does not trigger any enumeration.
+    //!
+    //! \warning This function does not check that \p pos is valid. In
+    //! particular, it is assumed that \p pos is strictly less than \ref
+    //! FroidurePinBase::current_size.
+    template <typename Word>
+    void
+    current_factorisation_no_checks(FroidurePinBase const&              fpb,
+                                    Word&                               word,
+                                    FroidurePinBase::element_index_type pos) {
+      return current_minimal_factorisation_no_checks<Word>(fpb, word, pos);
+    }
+
+    //! \brief Modify a word to contain a word representing an
+    //! element given by index.
+    //!
+    //! This function changes \p word in-place to contain a word (in the
+    //! generators) equal to the element in position \p pos.
+    //!
+    //! \tparam Word the type of the second argument.
+    //!
+    //! \param fpb the FroidurePinBase instance.
+    //! \param word the word to clear and change in-place.
+    //! \param pos the index of the element whose factorisation is sought.
+    //!
+    //! \complexity
+    //! Constant.
+    //!
+    //! \note This function triggers an enumeration until it is complete or at
+    //! least \p pos elements are found.
+    //!
+    //! \warning This function does not check that \p pos is valid. In
+    //! particular, it is assumed that \p pos is strictly less than \ref
+    //! FroidurePinBase::current_size.
+    template <typename Word>
+    void factorisation(FroidurePinBase&                    fpb,
+                       Word&                               word,
+                       FroidurePinBase::element_index_type pos) {
+      return minimal_factorisation<Word>(fpb, word, pos);
+    }
+
+    //! \brief Returns a word representing an element given by index.
+    //!
+    //! This is similar to the three-argument version for
+    //! \ref minimal_factorisation, but it returns a \c Word by value
+    //! instead of modifying an argument in-place.
+    //!
+    //! \tparam Word the type of the second argument.
+    //!
+    //! \param fpb the FroidurePinBase instance.
+    //! \param pos the index of the element whose factorisation is sought.
+    //!
+    //! \returns
+    //! A word containing the factorisation of the given element.
+    //!
+    //! \throws LibsemigroupsException if \p pos is greater than or equal to
+    //! size().
+    //!
+    //! \complexity
+    //! At worst \f$O(mn)\f$ where \f$m\f$ equals \p pos and \f$n\f$ is the
+    //! return value of FroidurePin::number_of_generators.
+    //!
+    //! \note This function triggers an enumeration until it is complete or at
+    //! least \p pos elements are found.
+    template <typename Word = word_type>
+    [[nodiscard]] Word factorisation(FroidurePinBase&                    fpb,
+                                     FroidurePinBase::element_index_type pos) {
+      return minimal_factorisation<Word>(fpb, pos);
+    }
+
+    //! \brief Returns a range object containing normal forms for the so-far
+    //! enumerated elements.
+    //!
+    //! This function returns a range object containing normal forms for the
+    //! elements of \p fpb that have been enumerated so far.
+    //!
+    //! \param fpb the FroidurePinBase object.
+    //!
+    //! \returns The normal forms that have been enumerated so far.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    //! \note This function does not trigger any enumeration.
+    // TODO(1) complexity?
+    [[nodiscard]] static inline auto
+    current_normal_forms(FroidurePinBase const& fpb) {
+      return rx::iterator_range(fpb.cbegin_current_normal_forms(),
+                                fpb.cend_current_normal_forms());
+    }
+
+    //! \brief Returns a range object containing normal forms for all the
+    //! elements.
+    //!
+    //! This function returns a range object containing normal forms for all of
+    //! the elements of the semigroup. Calling this function triggers a full
+    //! enumeration.
+    //!
+    //! \param fpb the FroidurePinBase object.
+    //!
+    //! \returns A range object containing the normal forms.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    //! \complexity
+    //! The same as FroidurePinBase::enumerate.
+    //!
+    //! \note This function triggers a full enumeration.
+    [[nodiscard]] static inline auto normal_forms(FroidurePinBase& fpb) {
+      return rx::iterator_range(fpb.cbegin_normal_forms(),
+                                fpb.cend_normal_forms());
+    }
+
+    //! \brief Returns a range object containing the so-far enumerated
+    //! rules.
+    //!
+    //! This function returns a range object containing the rules of the
+    //! semigroup that have been enumerated so far. Calling this function does
+    //! not trigger any enumeration.
+    //!
+    //! \param fpb the FroidurePinBase object.
+    //!
+    //! \returns A range object containing the rules that have been enumerated
+    //! so far.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    //! \note This function does not trigger any enumeration.
+    // TODO(1) complexity?
+    [[nodiscard]] static inline auto current_rules(FroidurePinBase const& fpb) {
+      return rx::iterator_range(fpb.cbegin_current_rules(),
+                                fpb.cend_current_rules());
+    }
+
+    //! \brief Returns a range object containing all of the rules.
+    //!
+    //! This function returns a range object containing all of the rules of the
+    //! semigroup that have been enumerated so far. Calling this function
+    //! triggers a full enumeration.
+    //!
+    //! \param fpb the FroidurePinBase object.
+    //!
+    //! \returns A range object containing all of the rules.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    //! \complexity
+    //! The same as FroidurePinBase::enumerate.
+    //!
+    //! \note This function triggers a full enumeration.
+    [[nodiscard]] static inline auto rules(FroidurePinBase& fpb) {
+      return rx::iterator_range(fpb.cbegin_rules(), fpb.cend_rules());
+    }
+
   }  // namespace froidure_pin
 }  // namespace libsemigroups
 #endif  // LIBSEMIGROUPS_FROIDURE_PIN_BASE_HPP_
