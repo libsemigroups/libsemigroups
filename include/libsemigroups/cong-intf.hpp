@@ -105,11 +105,6 @@ namespace libsemigroups {
     [[nodiscard]] virtual uint64_t number_of_classes() = 0;
 
     // TODO(0) replace with iterators
-    [[nodiscard]] virtual bool contains(word_type const&, word_type const&) {
-      return true;
-    }
-
-    // TODO(0) replace with iterators
     virtual void validate_word(word_type const& w) const = 0;
 
     //! The handedness of the congruence (left, right, or 2-sided).

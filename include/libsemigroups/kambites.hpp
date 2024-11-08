@@ -203,8 +203,7 @@ namespace libsemigroups {
     //! \throws LibsemigroupsException if the small overlap class is not at
     //! least \f$4\f$.
     // Not noexcept, throws
-    [[nodiscard]] bool contains(word_type const& u,
-                                word_type const& v) override;
+    [[nodiscard]] bool contains(word_type const& u, word_type const& v);
 
     // Note that the asymmetry between how contains and normal_form are
     // implemented is because contains is a pure virtual function. Without this

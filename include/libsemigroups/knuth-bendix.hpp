@@ -893,8 +893,7 @@ namespace libsemigroups {
     //!
     //! \sa \ref equal_to.
     // TODO add perf warning
-    [[nodiscard]] bool contains(word_type const& u,
-                                word_type const& v) override {
+    [[nodiscard]] bool contains(word_type const& u, word_type const& v) {
       ToString to_string(presentation().alphabet());
       return equal_to(to_string(u), to_string(v));
     }
@@ -967,7 +966,7 @@ namespace libsemigroups {
   std::ostream& operator<<(std::ostream&,
                            KnuthBendix<Rewriter, ReductionOrder> const&);
 
-  KnuthBendix(congruence_kind)->KnuthBendix<>;
+  KnuthBendix(congruence_kind) -> KnuthBendix<>;
 
   namespace knuth_bendix {
 

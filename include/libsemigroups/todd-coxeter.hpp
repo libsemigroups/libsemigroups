@@ -309,14 +309,14 @@ namespace libsemigroups {
 
      public:
       Definitions() : _any_skipped(false), _definitions(), _tc(nullptr) {}
-      // TODO(0) init()
+      // TODO(1) init()
 
       Definitions(Definitions const&)                 = default;
       Definitions(Definitions&&)                      = default;
       Definitions& operator=(Definitions const& that) = default;
       Definitions& operator=(Definitions&&)           = default;
 
-      // TODO(0) corresponding constructor
+      // TODO(1) corresponding constructor
       void init(ToddCoxeter const* tc) {
         _any_skipped = false;
         _definitions.clear();
@@ -500,6 +500,7 @@ namespace libsemigroups {
     //!
     //! \exceptions
     //! \no_libsemigroups_except
+    // TODO(0) a to_todd_coxeter variant that throws if p is not valid
     template <typename Node>
     ToddCoxeter(congruence_kind knd, WordGraph<Node> const& wg)
         : ToddCoxeter() {
@@ -522,6 +523,7 @@ namespace libsemigroups {
     //! \exceptions
     //! \no_libsemigroups_except
     // TODO(0) out of line
+    // TODO(0) a to_todd_coxeter variant that throws if p is not valid
     template <typename Node>
     ToddCoxeter& init(congruence_kind knd, WordGraph<Node> const& wg) {
       CongruenceInterface::init(knd);
@@ -547,9 +549,11 @@ namespace libsemigroups {
     //! parameter \p knd, then compatible arguments are (right, right), (left,
     //! left), (two-sided, left), (two-sided, right), and (two-sided,
     //! two-sided).
+    // TODO(0) a to_todd_coxeter variant that throws if p is not valid
     ToddCoxeter(congruence_kind knd, ToddCoxeter const& tc);
 
     // TODO(0) doc
+    // TODO(0) a to_todd_coxeter variant that throws if p is not valid
     ToddCoxeter& init(congruence_kind knd, ToddCoxeter const& tc);
 
     // Used in Sims
@@ -562,6 +566,7 @@ namespace libsemigroups {
       init(knd, p, wg);
     }
 
+    // TODO(0) a to_todd_coxeter variant that throws if p is not valid
     template <typename Node>
     ToddCoxeter& init(congruence_kind                knd,
                       Presentation<word_type> const& p,
@@ -577,11 +582,13 @@ namespace libsemigroups {
     // presentation has the same constructors, regardless of what they use
     // inside.
     // TODO(0) doc
+    // TODO(0) a to_todd_coxeter variant that throws if p is not valid
     template <typename Word>
     ToddCoxeter(congruence_kind knd, Presentation<Word> const& p)
         : ToddCoxeter(knd, to_presentation<word_type>(p)) {}
 
     // TODO(0) doc
+    // TODO(0) a to_todd_coxeter variant that throws if p is not valid
     template <typename Word>
     ToddCoxeter& init(congruence_kind knd, Presentation<Word> const& p) {
       init(knd, to_presentation<word_type>(p));
@@ -1075,19 +1082,6 @@ namespace libsemigroups {
     // recursive
     bool standardize(Order val);
 
-    ////////////////////////////////////////////////////////////////////////
-    // ToddCoxeter - interface requirements
-    ////////////////////////////////////////////////////////////////////////
-
-    [[nodiscard]] uint64_t number_of_classes() override {  // TODO(0) to cpp
-      if (is_obviously_infinite(*this)) {
-        return POSITIVE_INFINITY;
-      }
-      run();
-      size_t const offset = (presentation().contains_empty_word() ? 0 : 1);
-      return current_word_graph().number_of_nodes_active() - offset;
-    }
-
     // TODO(0) doc
     template <typename Iterator1, typename Iterator2>
     node_type current_class_index_no_checks(Iterator1 first,
@@ -1165,6 +1159,20 @@ namespace libsemigroups {
                                 i);
       }
       return class_rep_no_checks(d_first, i);
+    }
+
+    ////////////////////////////////////////////////////////////////////////
+    // ToddCoxeter - interface requirements
+    ////////////////////////////////////////////////////////////////////////
+
+    // TODO remove override
+    [[nodiscard]] uint64_t number_of_classes() override {  // TODO(0) to cpp
+      if (is_obviously_infinite(*this)) {
+        return POSITIVE_INFINITY;
+      }
+      run();
+      size_t const offset = (presentation().contains_empty_word() ? 0 : 1);
+      return current_word_graph().number_of_nodes_active() - offset;
     }
 
     template <typename Iterator1,

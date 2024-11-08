@@ -66,11 +66,13 @@ namespace libsemigroups {
   //! cong.number_of_classes(); // 3
   //! \endcode
   class Congruence : public CongruenceInterface {
+    enum class RunnerKind : size_t { TC = 0, KB = 1, K = 2 };
     /////////////////////////////////////////////////////////////////////////
     // Congruence - data - private
     /////////////////////////////////////////////////////////////////////////
-    detail::Race _race;
-    bool         _runners_initted;
+    detail::Race            _race;
+    bool                    _runners_initted;
+    std::vector<RunnerKind> _runner_kinds;
 
    public:
     //////////////////////////////////////////////////////////////////////////
@@ -195,11 +197,22 @@ namespace libsemigroups {
           ->number_of_classes();
     }
 
-    [[nodiscard]] bool contains(word_type const& u,
-                                word_type const& v) override {
+    [[nodiscard]] bool contains(word_type const& u, word_type const& v) {
       run();
-      return std::static_pointer_cast<CongruenceInterface>(_race.winner())
-          ->contains(u, v);
+      auto winner_kind = _runner_kinds[_race.winner_index()];
+      if (winner_kind == RunnerKind::TC) {
+        return std::static_pointer_cast<ToddCoxeter>(_race.winner())
+            ->contains(std::begin(u), std::end(u), std::begin(v), std::end(v));
+      } else if (winner_kind == RunnerKind::KB) {
+        // TODO(0) update!
+        return std::static_pointer_cast<KnuthBendix<>>(_race.winner())
+            ->contains(u, v);
+      } else {
+        LIBSEMIGROUPS_ASSERT(winner_kind == RunnerKind::K);
+        // TODO(0) update!
+        return std::static_pointer_cast<Kambites<word_type>>(_race.winner())
+            ->contains(u, v);
+      }
     }
 
     void validate_word(word_type const& w) const override {
@@ -301,6 +314,21 @@ namespace libsemigroups {
     }
 
    private:
+    void add_runner(std::shared_ptr<ToddCoxeter> ptr) {
+      _race.add_runner(ptr);
+      _runner_kinds.push_back(RunnerKind::TC);
+    }
+
+    void add_runner(std::shared_ptr<KnuthBendix<>> ptr) {
+      _race.add_runner(ptr);
+      _runner_kinds.push_back(RunnerKind::KB);
+    }
+
+    void add_runner(std::shared_ptr<Kambites<word_type>> ptr) {
+      _race.add_runner(ptr);  // TODO move?
+      _runner_kinds.push_back(RunnerKind::K);
+    }
+
     //////////////////////////////////////////////////////////////////////////
     // Congruence - member functions - private
     //////////////////////////////////////////////////////////////////////////
