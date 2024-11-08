@@ -40,6 +40,7 @@
 #include "detail/felsch-graph.hpp"        // for FelschGraph
 #include "detail/node-managed-graph.hpp"  // for NodeManagedGraph
 #include "detail/report.hpp"              // for LIBSEMIGROUPS_EXCEPTION
+#include <type_traits>
 
 namespace libsemigroups {
   //! \defgroup todd_coxeter_group Todd-Coxeter
@@ -1577,18 +1578,28 @@ namespace libsemigroups {
     ////////////////////////////////////////////////////////////////////////
 
     // TODO(0) doc
-    // TODO(0) remove
     inline auto class_of(ToddCoxeter& tc, node_type n) {
       size_t const offset = (tc.presentation().contains_empty_word() ? 0 : 1);
       tc.run();
+      // We call run and then current_word_graph, because the word
+      // graph does not need to be standardized for this to work.
       return Paths(tc.current_word_graph()).source(0).target(n + offset);
     }
 
     // TODO(0) doc
-    // TODO(0) iterator version + template this
-    inline auto class_of(ToddCoxeter& tc, word_type const& w) {
-      return class_of(tc, node_of(tc, w));
+    template <typename Iterator1, typename Iterator2>
+    auto class_of(ToddCoxeter& tc, Iterator1 first, Iterator2 last) {
+      return class_of(tc, tc.node_of(first, last));
     }
+
+    // TODO(0) doc
+    template <typename Word,
+              typename = std::enable_if_t<!std::is_integral_v<Word>>>
+    inline auto class_of(ToddCoxeter& tc, Word const& w) {
+      return class_of(tc, std::begin(w), std::end(w));
+    }
+
+    // TODO(0) class_of_no_checks
 
     //! Returns a \ref normal_form_iterator pointing at the first normal
     //! form.
