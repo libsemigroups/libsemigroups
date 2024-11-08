@@ -144,7 +144,8 @@ namespace libsemigroups {
     //! The type of the edge-labels in the word graph.
     using label_type = typename WordGraph<uint32_t>::label_type;
 
-    // TODO(0) look at Ukkonen::Node for how to doc this properly
+    //! \ingroup todd_coxeter_group
+    //!
     //! \brief Struct containing various options that can be used to control the
     //! behaviour of Todd-Coxeter.
     //!
