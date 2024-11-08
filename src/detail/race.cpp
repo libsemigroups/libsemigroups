@@ -36,7 +36,8 @@ namespace libsemigroups {
         : _max_threads(std::thread::hardware_concurrency()),
           _mtx(),
           _runners(),
-          _winner(nullptr) {}
+          _winner(nullptr),
+          _winner_index(UNDEFINED) {}
 
     Race::~Race() = default;
 
