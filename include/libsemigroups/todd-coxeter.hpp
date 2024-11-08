@@ -1587,9 +1587,26 @@ namespace libsemigroups {
     }
 
     // TODO(0) doc
+    inline auto class_of_no_checks(ToddCoxeter& tc, node_type n) {
+      size_t const offset = (tc.presentation().contains_empty_word() ? 0 : 1);
+      tc.run();
+      // We call run and then current_word_graph, because the word
+      // graph does not need to be standardized for this to work.
+      return Paths(tc.current_word_graph())
+          .source_no_checks(0)
+          .target_no_checks(n + offset);
+    }
+
+    // TODO(0) doc
     template <typename Iterator1, typename Iterator2>
     auto class_of(ToddCoxeter& tc, Iterator1 first, Iterator2 last) {
       return class_of(tc, tc.node_of(first, last));
+    }
+
+    // TODO(0) doc
+    template <typename Iterator1, typename Iterator2>
+    auto class_of_no_checks(ToddCoxeter& tc, Iterator1 first, Iterator2 last) {
+      return class_of_no_checks(tc, tc.node_of(first, last));
     }
 
     // TODO(0) doc
@@ -1599,7 +1616,25 @@ namespace libsemigroups {
       return class_of(tc, std::begin(w), std::end(w));
     }
 
-    // TODO(0) class_of_no_checks
+    // TODO(0) doc
+    template <typename Word,
+              typename = std::enable_if_t<!std::is_integral_v<Word>>>
+    inline auto class_of_no_checks(ToddCoxeter& tc, Word const& w) {
+      return class_of_no_checks(tc, std::begin(w), std::end(w));
+    }
+
+    // TODO(0) doc
+    template <typename Int = size_t>
+    inline auto class_of(ToddCoxeter& tc, std::initializer_list<Int> const& w) {
+      return class_of(tc, std::begin(w), std::end(w));
+    }
+
+    // TODO(0) doc
+    template <typename Int = size_t>
+    inline auto class_of_no_checks(ToddCoxeter&                      tc,
+                                   std::initializer_list<Int> const& w) {
+      return class_of_no_checks(tc, std::begin(w), std::end(w));
+    }
 
     //! Returns a \ref normal_form_iterator pointing at the first normal
     //! form.
@@ -1615,7 +1650,10 @@ namespace libsemigroups {
     //! \no_libsemigroups_except
     // TODO(0): redo the doc
     inline auto normal_forms(ToddCoxeter& tc) {
-      // TODO(0) avoid allocations here
+      // TODO(1) avoid allocations here.
+      // To do this we'll have to make a custom range object that stores a
+      // word_type _word that gets updated by calls to
+      // tc.word_of_no_checks(std::back_inserter(_word), i);
       return rx::seq() | rx::take(tc.number_of_classes())
              | rx::transform(
                  [&tc](auto i) { return word_of_no_checks(tc, i); });

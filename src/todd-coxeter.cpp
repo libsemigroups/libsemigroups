@@ -617,6 +617,7 @@ namespace libsemigroups {
     }
     standardize(Order::shortlex);
     _word_graph.erase_free_nodes();
+    // TODO(0) erase node 0 if !presentation().contains_empty_word()
     _word_graph.induced_subgraph_no_checks(
         0, _word_graph.number_of_nodes_active());
   }

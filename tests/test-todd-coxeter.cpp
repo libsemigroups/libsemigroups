@@ -1755,11 +1755,16 @@ namespace libsemigroups {
 
     REQUIRE(tc.current_word_graph().felsch_tree().height() == 6);
     REQUIRE(tc.number_of_classes() == 5);
+
     REQUIRE(todd_coxeter::class_of(tc, 0).count() == 1);
     REQUIRE(todd_coxeter::class_of(tc, 1).count() == 1);
     REQUIRE(todd_coxeter::class_of(tc, 2).count() == 1);
     REQUIRE(todd_coxeter::class_of(tc, 3).count() == POSITIVE_INFINITY);
     REQUIRE(todd_coxeter::class_of(tc, 4).count() == POSITIVE_INFINITY);
+    REQUIRE(!p.contains_empty_word());
+    REQUIRE_THROWS_AS(todd_coxeter::class_of(tc, ""_w), LibsemigroupsException);
+    REQUIRE_THROWS_AS(todd_coxeter::class_of(tc, {}), LibsemigroupsException);
+
     REQUIRE(!tc.is_standardized());
     REQUIRE(tc.current_word_graph().felsch_tree().number_of_nodes() == 7);
 
