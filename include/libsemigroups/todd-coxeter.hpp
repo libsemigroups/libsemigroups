@@ -134,7 +134,7 @@ namespace libsemigroups {
   //! //  0121212121_w};
   //! \endcode
   class ToddCoxeter : public CongruenceInterface,
-                      public detail::FelschGraphSettings<> {
+                      public detail::FelschGraphSettings<ToddCoxeter> {
     using FelschGraphSettings_ = FelschGraphSettings<ToddCoxeter>;
 
    public:
