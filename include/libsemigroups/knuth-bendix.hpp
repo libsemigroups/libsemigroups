@@ -857,7 +857,7 @@ namespace libsemigroups {
     //! worst \f$O(mn)\f$ where \f$m\f$ is the number of letters in the
     //! alphabet, and \f$n\f$ is the number of nodes in the \ref
     //! gilman_graph.
-    [[nodiscard]] uint64_t number_of_classes() override;
+    [[nodiscard]] uint64_t number_of_classes();
 
     //! \brief Check if two inputs are equivalent with respect to the system
     //!

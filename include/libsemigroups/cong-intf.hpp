@@ -32,7 +32,7 @@
 #include "ranges.hpp"  // for is_input_or_sink_v
 
 namespace libsemigroups {
-  class Congruence;  // forward decl
+  class Congruence;  // forward decl TODO(0) required?
 
   //! Defined in ``cong-intf.hpp``.
   //!
@@ -48,7 +48,7 @@ namespace libsemigroups {
     std::vector<word_type> _generating_pairs;
     congruence_kind        _type;
 
-    friend class ::libsemigroups::Congruence;
+    friend class ::libsemigroups::Congruence;  // TODO(0) required?
 
    public:
     ////////////////////////////////////////////////////////////////////////////
@@ -64,8 +64,9 @@ namespace libsemigroups {
     }
 
     //! Constructs a congruence of the specified type.
-    explicit CongruenceInterface(congruence_kind type)
-        : Runner(), _type(type) {}
+    explicit CongruenceInterface(congruence_kind type) : CongruenceInterface() {
+      init(type);
+    }
 
     CongruenceInterface& init(congruence_kind type) {
       init();
@@ -99,12 +100,8 @@ namespace libsemigroups {
     //! \warning The problem of determining the number of classes of a
     //! congruence over a finitely presented semigroup is undecidable in
     //! general, and this function may never terminate.
-    //!
-    //! \par Parameters
-    //! (None)
-    [[nodiscard]] virtual uint64_t number_of_classes() = 0;
 
-    // TODO(0) replace with iterators
+    // TODO(0) change to iterators
     virtual void validate_word(word_type const& w) const = 0;
 
     //! The handedness of the congruence (left, right, or 2-sided).

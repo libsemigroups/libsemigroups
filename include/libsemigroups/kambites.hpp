@@ -194,7 +194,7 @@ namespace libsemigroups {
     //! \throws LibsemigroupsException if the small overlap class is not at
     //! least \f$4\f$.
     // Not noexcept, throws
-    [[nodiscard]] uint64_t number_of_classes() override {
+    [[nodiscard]] uint64_t number_of_classes() {
       validate_small_overlap_class();
       return POSITIVE_INFINITY;
     }

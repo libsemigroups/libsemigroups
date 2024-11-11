@@ -1180,8 +1180,7 @@ namespace libsemigroups {
     // ToddCoxeter - interface requirements
     ////////////////////////////////////////////////////////////////////////
 
-    // TODO remove override
-    [[nodiscard]] uint64_t number_of_classes() override {  // TODO(0) to cpp
+    [[nodiscard]] uint64_t number_of_classes() {  // TODO(0) to cpp
       if (is_obviously_infinite(*this)) {
         return POSITIVE_INFINITY;
       }

@@ -191,12 +191,23 @@ namespace libsemigroups {
     // CongruenceInterface - pure virtual - public
     //////////////////////////////////////////////////////////////////////////
 
-    [[nodiscard]] uint64_t number_of_classes() override {
+    [[nodiscard]] uint64_t number_of_classes() {
       run();
-      return std::static_pointer_cast<CongruenceInterface>(_race.winner())
-          ->number_of_classes();
+      auto winner_kind = _runner_kinds[_race.winner_index()];
+      if (winner_kind == RunnerKind::TC) {
+        return std::static_pointer_cast<ToddCoxeter>(_race.winner())
+            ->number_of_classes();
+      } else if (winner_kind == RunnerKind::KB) {
+        return std::static_pointer_cast<KnuthBendix<>>(_race.winner())
+            ->number_of_classes();
+      } else {
+        LIBSEMIGROUPS_ASSERT(winner_kind == RunnerKind::K);
+        return std::static_pointer_cast<Kambites<word_type>>(_race.winner())
+            ->number_of_classes();
+      }
     }
 
+    // TODO(0) to cpp
     [[nodiscard]] bool contains(word_type const& u, word_type const& v) {
       run();
       auto winner_kind = _runner_kinds[_race.winner_index()];
