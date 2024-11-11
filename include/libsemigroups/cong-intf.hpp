@@ -84,8 +84,9 @@ namespace libsemigroups {
     virtual ~CongruenceInterface();
 
     ////////////////////////////////////////////////////////////////////////////
-    // CongruenceInterface - pure virtual - public
+    // CongruenceInterface - validation - public
     ////////////////////////////////////////////////////////////////////////////
+
     //! Compute the number of classes in the congruence.
     //!
     //! \returns The number of congruences classes of \c this if this number
@@ -107,11 +108,38 @@ namespace libsemigroups {
 
     template <typename Subclass, typename Iterator1, typename Iterator2>
     void throw_if_letter_out_of_bounds(Iterator1 first, Iterator2 last) const {
-      std::static_pointer_cast<Subclass>(this)->throw_if_letter_out_of_bounds(
-          first, last);
+      static_cast<Subclass const*>(this)->throw_if_letter_out_of_bounds(first,
+                                                                        last);
+    }
+
+    ////////////////////////////////////////////////////////////////////////////
+    // CongruenceInterface - generating pairs
+    ////////////////////////////////////////////////////////////////////////////
+
+    //! Returns a const iterator pointing to the first generating pair.
+    //!
+    //! \returns
+    //! A \ref const_iterator pointing to a \ref relation_type.
+    //!
+    //! \exceptions
+    //! \noexcept
+    //!
+    //! \complexity
+    //! Constant.
+    //!
+    //! \par Parameters
+    //! (None)
+    [[nodiscard]] size_t number_of_generating_pairs() const noexcept {
+      return _generating_pairs.size() / 2;
+    }
+
+    [[nodiscard]] std::vector<word_type> const&
+    generating_pairs() const noexcept {
+      return _generating_pairs;
     }
 
    protected:
+    // TODO(0) rename to add_generating_pair
     // TODO(0) should it be Subclass & ??
     template <typename Iterator1,
               typename Iterator2,
@@ -156,13 +184,15 @@ namespace libsemigroups {
                        Iterator3 first2,
                        Iterator4 last2) {
       throw_if_started();
-      std::static_pointer_cast<Subclass>(this)->throw_if_letter_out_of_bounds(
-          first1, last1);
-      std::static_pointer_cast<Subclass>(this)->throw_if_letter_out_of_bounds(
-          first2, last2);
+      throw_if_letter_out_of_bounds<Subclass>(first1, last1);
+      throw_if_letter_out_of_bounds<Subclass>(first2, last2);
       return static_cast<Subclass&>(
           add_pair_no_checks(first1, last1, first2, last2));
     }
+
+    ////////////////////////////////////////////////////////////////////////////
+    // CongruenceInterface - settings
+    ////////////////////////////////////////////////////////////////////////////
 
     //! The handedness of the congruence (left, right, or 2-sided).
     //!
@@ -183,63 +213,71 @@ namespace libsemigroups {
       return *this;
     }
 
-    // TODO(0) return CongruenceInterface&
-    // TODO(0) to helper
-    void add_pair_no_checks(word_type&& u, word_type&& v);
-    // TODO(0) to helper
-    void add_pair_no_checks(word_type const& u, word_type const& v) {
-      add_pair_no_checks(word_type(u), word_type(v));
-    }
-
-    // TODO(doc)
-    // TODO(0) to helper
-    void add_pair(word_type const& u, word_type const& v) {
-      //  return add_pair(std::begin(u), std::end(u), std::begin(v),
-      //  std::end(v));
-      add_pair(word_type(u), word_type(v));
-    }
-
-    // TODO(0) to helper
-    void add_pair(word_type&& u, word_type&& v) {
-      validate_word(u);
-      validate_word(v);
-      add_pair_no_checks(std::move(u), std::move(v));
-    }
-
-    //! Add a generating pair to the congruence.
-    //! \sa add_pair(word_type const&, word_type const&)
-    // TODO(0) to helper
-    void add_pair(std::initializer_list<letter_type> l,
-                  std::initializer_list<letter_type> r) {
-      add_pair(word_type(l), word_type(r));
-    }
-
-    //! Returns a const iterator pointing to the first generating pair.
-    //!
-    //! \returns
-    //! A \ref const_iterator pointing to a \ref relation_type.
-    //!
-    //! \exceptions
-    //! \noexcept
-    //!
-    //! \complexity
-    //! Constant.
-    //!
-    //! \par Parameters
-    //! (None)
-    [[nodiscard]] size_t number_of_generating_pairs() const noexcept {
-      return _generating_pairs.size() / 2;
-    }
-
-    [[nodiscard]] std::vector<word_type> const&
-    generating_pairs() const noexcept {
-      return _generating_pairs;
-    }
+    ////////////////////////////////////////////////////////////////////////////
+    // OLD
+    ////////////////////////////////////////////////////////////////////////////
 
    private:
     void throw_if_started() const;
+    // TODO delete
     void add_pair_no_checks_no_reverse(word_type const& u, word_type const& v);
   };
+
+  namespace congruence_interface {
+    // TODO(0) doc
+    // TODO template
+    inline CongruenceInterface& add_pair_no_checks(CongruenceInterface& ci,
+                                                   word_type&&          u,
+                                                   word_type&&          v) {
+      return ci.add_pair_no_checks(std::make_move_iterator(std::begin(u)),
+                                   std::make_move_iterator(std::end(u)),
+                                   std::make_move_iterator(std::begin(v)),
+                                   std::make_move_iterator(std::end(v)));
+    }
+
+    // TODO(0) doc
+    // TODO template
+    inline CongruenceInterface& add_pair_no_checks(CongruenceInterface& ci,
+                                                   word_type const&     u,
+                                                   word_type const&     v) {
+      return ci.add_pair_no_checks(
+          std::begin(u), std::end(u), std::begin(v), std::end(v));
+    }
+
+    // TODO(doc)
+    // TODO template
+    // TODO add assert that Subclass derives from CongruenceInterface
+    template <typename Subclass>
+    inline Subclass& add_pair(Subclass&        ci,
+                              word_type const& u,
+                              word_type const& v) {
+      return ci.add_pair(
+          std::begin(u), std::end(u), std::begin(v), std::end(v));
+    }
+
+    // TODO(doc)
+    // TODO template
+    template <typename Subclass>
+    inline Subclass& add_pair(Subclass& ci, word_type&& u, word_type&& v) {
+      return ci.add_pair(std::make_move_iterator(std::begin(u)),
+                         std::make_move_iterator(std::end(u)),
+                         std::make_move_iterator(std::begin(v)),
+                         std::make_move_iterator(std::end(v)));
+    }
+
+    //! Add a generating pair to the congruence.
+    //! \sa add_pair(CongruenceInterface& ci, word_type const&, word_type
+    //! const&)
+    // TODO(doc)
+    // CongruenceInterface& add_pair(CongruenceInterface&               ci,
+    //                               std::initializer_list<letter_type> l,
+    //                               std::initializer_list<letter_type> r) {
+    //   // TODO(0) no copy just call add_pair<std::initializer_list<Int>>(ci,
+    //   u,
+    //   // v)
+    //   return add_pair(ci, word_type(l), word_type(r));
+    // }
+  }  // namespace congruence_interface
 
   template <typename Thing,
             typename Range,

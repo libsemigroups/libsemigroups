@@ -598,6 +598,11 @@ namespace libsemigroups {
       return *this;
     }
 
+    template <typename Iterator1, typename Iterator2>
+    void throw_if_letter_out_of_bounds(Iterator1 first, Iterator2 last) const {
+      presentation().validate_word(first, last);
+    }
+
     ////////////////////////////////////////////////////////////////////////
     // ToddCoxeter - settings - public
     ////////////////////////////////////////////////////////////////////////
@@ -1195,7 +1200,7 @@ namespace libsemigroups {
     // ToddCoxeter - interface requirements - add_pair
     ////////////////////////////////////////////////////////////////////////
 
-    using CongruenceInterface::add_pair;  // TODO(0) remove this
+    using CongruenceInterface::add_pair_no_checks;
 
     template <typename Iterator1,
               typename Iterator2,
@@ -1343,11 +1348,6 @@ namespace libsemigroups {
       return _finished;
     }
 
-    template <typename Iterator1, typename Iterator2>
-    void throw_if_letter_out_of_bounds(Iterator1 first, Iterator2 last) const {
-      presentation().validate_word(first, last);
-    }
-
     // TODO rm
     void validate_word(word_type const& w) const override;
 
@@ -1385,6 +1385,13 @@ namespace libsemigroups {
 
   namespace todd_coxeter {
     using node_type = typename ToddCoxeter::node_type;
+
+    ////////////////////////////////////////////////////////////////////////
+    // ToddCoxeter add_generating_pairs helpers
+    ////////////////////////////////////////////////////////////////////////
+
+    using congruence_interface::add_pair;
+    using congruence_interface::add_pair_no_checks;
 
     ////////////////////////////////////////////////////////////////////////
     // ToddCoxeter specific helpers

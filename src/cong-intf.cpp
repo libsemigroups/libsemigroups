@@ -38,13 +38,6 @@ namespace libsemigroups {
     _generating_pairs.push_back(v);
   }
 
-  void CongruenceInterface::add_pair_no_checks(word_type&& u, word_type&& v) {
-    add_pair_no_checks(std::make_move_iterator(std::begin(u)),
-                       std::make_move_iterator(std::end(u)),
-                       std::make_move_iterator(std::begin(v)),
-                       std::make_move_iterator(std::end(v)));
-  }
-
   void CongruenceInterface::throw_if_started() const {
     if (started()) {
       LIBSEMIGROUPS_EXCEPTION(
