@@ -502,10 +502,11 @@ namespace libsemigroups {
     //!
     //! \exceptions
     //! \no_libsemigroups_except
-    // TODO(0) a to_todd_coxeter variant that throws if p is not valid
+    // TODO(0) a to_todd_coxeter variant that throws if wg is not valid
     template <typename Node>
     ToddCoxeter(congruence_kind knd, WordGraph<Node> const& wg)
         : ToddCoxeter() {
+      LIBSEMIGROUPS_ASSERT(!_setting_stack.empty());
       init(knd, wg);
     }
 
@@ -525,9 +526,10 @@ namespace libsemigroups {
     //! \exceptions
     //! \no_libsemigroups_except
     // TODO(0) out of line
-    // TODO(0) a to_todd_coxeter variant that throws if p is not valid
+    // TODO(0) a to_todd_coxeter variant that throws if wg is not valid
     template <typename Node>
     ToddCoxeter& init(congruence_kind knd, WordGraph<Node> const& wg) {
+      LIBSEMIGROUPS_ASSERT(!_setting_stack.empty());
       CongruenceInterface::init(knd);
       _word_graph = wg;
       _word_graph.presentation().alphabet(wg.out_degree());
@@ -551,11 +553,9 @@ namespace libsemigroups {
     //! parameter \p knd, then compatible arguments are (right, right), (left,
     //! left), (two-sided, left), (two-sided, right), and (two-sided,
     //! two-sided).
-    // TODO(0) a to_todd_coxeter variant that throws if p is not valid
     ToddCoxeter(congruence_kind knd, ToddCoxeter const& tc);
 
     // TODO(0) doc
-    // TODO(0) a to_todd_coxeter variant that throws if p is not valid
     ToddCoxeter& init(congruence_kind knd, ToddCoxeter const& tc);
 
     // Used in Sims

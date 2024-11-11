@@ -152,6 +152,9 @@ namespace libsemigroups {
   }
 
   void ToddCoxeter::Graph::process_definitions() {
+    if (presentation().rules.empty()) {
+      return;
+    }
     CollectCoincidences incompat(_coinc);
     NoPreferredDefs     pref_defs;
 
@@ -330,6 +333,7 @@ namespace libsemigroups {
       _setting_stack.erase(_setting_stack.begin() + 1, _setting_stack.end());
       _setting_stack.back()->init();
     }
+    LIBSEMIGROUPS_ASSERT(!_setting_stack.empty());
     _standardized = Order::none;
     copy_settings_into_graph();
     return *this;
@@ -337,13 +341,30 @@ namespace libsemigroups {
 
   ToddCoxeter::ToddCoxeter(ToddCoxeter const& that) : ToddCoxeter() {
     operator=(that);
+    LIBSEMIGROUPS_ASSERT(!_setting_stack.empty());
   }
 
-  ToddCoxeter::ToddCoxeter(ToddCoxeter&& that) = default;
+  ToddCoxeter::ToddCoxeter(ToddCoxeter&& that) : ToddCoxeter() {
+    operator=(std::move(that));
+  }
 
-  ToddCoxeter& ToddCoxeter::operator=(ToddCoxeter&&) = default;
+  ToddCoxeter& ToddCoxeter::operator=(ToddCoxeter&& that) {
+    LIBSEMIGROUPS_ASSERT(!that._setting_stack.empty());
+    CongruenceInterface::operator=(std::move(that));
+    _finished      = std::move(that._finished);
+    _forest        = std::move(that._forest);
+    _setting_stack = std::move(that._setting_stack);
+    _standardized  = std::move(that._standardized);
+    _word_graph    = std::move(that._word_graph);
+    // The next line is essential so that the _word_graph.definitions()._tc
+    // points at <this>.
+    _word_graph.definitions().init(this);
+    LIBSEMIGROUPS_ASSERT(!_setting_stack.empty());
+    return *this;
+  }
 
   ToddCoxeter& ToddCoxeter::operator=(ToddCoxeter const& that) {
+    LIBSEMIGROUPS_ASSERT(!that._setting_stack.empty());
     CongruenceInterface::operator=(that);
     _finished = that._finished;
     _forest   = that._forest;
@@ -358,6 +379,7 @@ namespace libsemigroups {
 
   ToddCoxeter::ToddCoxeter(congruence_kind knd, Presentation<word_type>&& p)
       : ToddCoxeter() {
+    LIBSEMIGROUPS_ASSERT(!_setting_stack.empty());
     init(knd, std::move(p));
   }
 
@@ -370,12 +392,15 @@ namespace libsemigroups {
     }
     _word_graph.init(std::move(p));
     copy_settings_into_graph();
+    LIBSEMIGROUPS_ASSERT(!_setting_stack.empty());
     return *this;
   }
 
   ToddCoxeter::ToddCoxeter(congruence_kind                knd,
                            Presentation<word_type> const& p)
-      : ToddCoxeter(knd, Presentation<word_type>(p)) {}
+      : ToddCoxeter(knd, Presentation<word_type>(p)) {
+    LIBSEMIGROUPS_ASSERT(!_setting_stack.empty());
+  }
 
   ToddCoxeter& ToddCoxeter::init(congruence_kind                knd,
                                  Presentation<word_type> const& p) {
@@ -385,6 +410,7 @@ namespace libsemigroups {
   ToddCoxeter::ToddCoxeter(congruence_kind knd, ToddCoxeter const& tc)
       : ToddCoxeter() {
     init(knd, tc);
+    LIBSEMIGROUPS_ASSERT(!_setting_stack.empty());
   }
 
   ToddCoxeter& ToddCoxeter::init(congruence_kind knd, ToddCoxeter const& tc) {
@@ -406,6 +432,8 @@ namespace libsemigroups {
     if (kind() == congruence_kind::left && tc.kind() != congruence_kind::left) {
       presentation::reverse(_word_graph.presentation());
     }
+    LIBSEMIGROUPS_ASSERT(!_setting_stack.empty());
+    // TODO(0) don't we need to reset the setting_stack here too?
     return *this;
   }
 

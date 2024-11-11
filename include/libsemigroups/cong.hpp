@@ -247,9 +247,6 @@ namespace libsemigroups {
     //! Returns the KnuthBendix instance used to compute the congruence (if
     //! any).
     //!
-    //! \parameters
-    //! (None)
-    //!
     //! \returns A std::shared_ptr to a KnuthBendix or \c nullptr.
     //!
     //! \exceptions
@@ -262,9 +259,6 @@ namespace libsemigroups {
 
     //! Checks if a KnuthBendix instance is being used to compute
     //! the congruence.
-    //!
-    //! \parameters
-    //! (None)
     //!
     //! \returns A value of type `bool`.
     //!
@@ -286,9 +280,6 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! Constant.
-    //!
-    //! \parameters
-    //! (None)
     [[nodiscard]] size_t max_threads() const noexcept {
       return _race.max_threads();
     }
@@ -315,12 +306,12 @@ namespace libsemigroups {
 
    private:
     void add_runner(std::shared_ptr<ToddCoxeter> ptr) {
-      _race.add_runner(ptr);
+      _race.add_runner(ptr);  // TODO move?
       _runner_kinds.push_back(RunnerKind::TC);
     }
 
     void add_runner(std::shared_ptr<KnuthBendix<>> ptr) {
-      _race.add_runner(ptr);
+      _race.add_runner(ptr);  // TODO move?
       _runner_kinds.push_back(RunnerKind::KB);
     }
 

@@ -44,7 +44,6 @@ namespace libsemigroups {
 
   namespace detail {
 
-    // TODO move to detail namespace?
     // This struct exists to avoid having to write typename before
     // options::def_policy etc everywhere below
     struct FelschGraphEnums {
@@ -61,7 +60,6 @@ namespace libsemigroups {
 
     // This class exists so that both FelschGraph and ToddCoxeter can use the
     // same settings/options without code duplication
-    // TODO move to detail namespace?
     template <typename Subclass>
     class FelschGraphSettings : public FelschGraphEnums {
      private:
@@ -435,7 +433,7 @@ namespace libsemigroups {
       }
 
     }  // namespace felsch_graph
-  }    // namespace detail
+  }  // namespace detail
 }  // namespace libsemigroups
 
 #include "felsch-graph.tpp"
