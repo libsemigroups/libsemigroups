@@ -245,19 +245,6 @@ namespace libsemigroups {
                          std::make_move_iterator(std::begin(v)),
                          std::make_move_iterator(std::end(v)));
     }
-
-    //! Add a generating pair to the congruence.
-    //! \sa add_pair(CongruenceInterface& ci, word_type const&, word_type
-    //! const&)
-    // TODO(doc)
-    // CongruenceInterface& add_pair(CongruenceInterface&               ci,
-    //                               std::initializer_list<letter_type> l,
-    //                               std::initializer_list<letter_type> r) {
-    //   // TODO(0) no copy just call add_pair<std::initializer_list<Int>>(ci,
-    //   u,
-    //   // v)
-    //   return add_pair(ci, word_type(l), word_type(r));
-    // }
   }  // namespace congruence_interface
 
   template <typename Thing,

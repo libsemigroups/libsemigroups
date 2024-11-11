@@ -189,6 +189,20 @@ namespace libsemigroups {
       return _presentation;
     }
 
+    using CongruenceInterface::add_pair_no_checks;
+
+    template <typename Iterator1,
+              typename Iterator2,
+              typename Iterator3,
+              typename Iterator4>
+    [[nodiscard]] Kambites& add_pair(Iterator1 first1,
+                                     Iterator2 last1,
+                                     Iterator3 first2,
+                                     Iterator4 last2) {
+      CongruenceInterface::add_pair<Kambites>(first1, last1, first2, last2);
+      return *this;
+    }
+
     //! \copydoc FpSemigroupInterface::size
     //!
     //! \throws LibsemigroupsException if the small overlap class is not at
@@ -308,6 +322,20 @@ namespace libsemigroups {
       } else {
         ToString   to_string(_presentation.alphabet());
         value_type ww = to_string(w);
+        _presentation.validate_word(ww.cbegin(), ww.cend());
+      }
+    }
+
+    template <typename Iterator1, typename Iterator2>
+    void throw_if_letter_out_of_bounds(Iterator1 first, Iterator2 last) const {
+      if constexpr (std::is_same_v<
+                        typename decltype(_presentation)::letter_type,
+                        typename Iterator1::value_type>) {
+        _presentation.validate_word(first, last);
+      } else {
+        ToString to_string(_presentation.alphabet());
+        // TODO improve!
+        value_type ww = to_string(word_type(first, last));
         _presentation.validate_word(ww.cbegin(), ww.cend());
       }
     }
@@ -517,6 +545,11 @@ namespace libsemigroups {
 
   template <typename Word>
   Kambites(Presentation<Word> const&) -> Kambites<Word>;
+
+  namespace kambites {
+    using congruence_interface::add_pair;
+    using congruence_interface::add_pair_no_checks;
+  }  // namespace kambites
 
   template <typename Range,
             typename Word1,

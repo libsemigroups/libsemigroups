@@ -2611,15 +2611,16 @@ namespace libsemigroups {
     presentation::add_rule(p, "abcd", "aaaeaa");
     presentation::add_rule(p, "ef", "dg");
 
-    REQUIRE_THROWS_AS(kk.add_pair(to_word("abababab"), to_word("aba")),
-                      LibsemigroupsException);
+    REQUIRE_THROWS_AS(
+        kambites::add_pair(kk, to_word("abababab"), to_word("aba")),
+        LibsemigroupsException);
 
     kk.init(std::move(p));
     REQUIRE(!kk.started());
     REQUIRE(kk.presentation().alphabet() == "abcdefg");
 
     p.alphabet("abcdefg");
-    kk.add_pair(to_word("abababab"), to_word("aba"));
+    kambites::add_pair(kk, to_word("abababab"), to_word("aba"));
     REQUIRE(kk.small_overlap_class() == 1);
 
     Presentation<word_type> pp;
@@ -2636,7 +2637,7 @@ namespace libsemigroups {
     REQUIRE(kkk.small_overlap_class() == 4);
 
     Kambites<word_type> k2;
-    REQUIRE_THROWS_AS(k2.add_pair(01011011101111_w, 0123_w),
+    REQUIRE_THROWS_AS(kambites::add_pair(k2, 01011011101111_w, 0123_w),
                       LibsemigroupsException);
   }
 

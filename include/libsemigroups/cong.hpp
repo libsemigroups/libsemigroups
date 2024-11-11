@@ -227,25 +227,39 @@ namespace libsemigroups {
       }
     }
 
-    // TODO(0) replace with iterators
     // TODO(0) out of line
-    void validate_word(word_type const& w) const {
+    template <typename Iterator1, typename Iterator2>
+    void throw_if_letter_out_of_bounds(Iterator1 first, Iterator2 last) const {
       if (!_race.empty()) {
         if (_runner_kinds[0] == RunnerKind::TC) {
           std::static_pointer_cast<ToddCoxeter>(*_race.begin())
-              ->throw_if_letter_out_of_bounds(std::begin(w), std::end(w));
+              ->throw_if_letter_out_of_bounds(first, last);
         } else if (_runner_kinds[0] == RunnerKind::KB) {
           std::static_pointer_cast<KnuthBendix<>>(*_race.begin())
-              ->validate_word(w);
+              ->throw_if_letter_out_of_bounds(first, last);
         } else {
           LIBSEMIGROUPS_ASSERT(winner_kind == RunnerKind::K);
-          // TODO(0) update!
           std::static_pointer_cast<Kambites<word_type>>(*_race.begin())
-              ->validate_word(w);
+              ->throw_if_letter_out_of_bounds(first, last);
         }
+        return;
       }
       LIBSEMIGROUPS_EXCEPTION(
           "No presentation has been set, so cannot validate the word!");
+    }
+
+    using CongruenceInterface::add_pair_no_checks;
+
+    template <typename Iterator1,
+              typename Iterator2,
+              typename Iterator3,
+              typename Iterator4>
+    [[nodiscard]] Congruence& add_pair(Iterator1 first1,
+                                       Iterator2 last1,
+                                       Iterator3 first2,
+                                       Iterator4 last2) {
+      CongruenceInterface::add_pair<Congruence>(first1, last1, first2, last2);
+      return *this;
     }
 
     //////////////////////////////////////////////////////////////////////////
@@ -360,6 +374,14 @@ namespace libsemigroups {
   };
 
   namespace congruence {
+
+    ////////////////////////////////////////////////////////////////////////
+    // Congruence add_generating_pairs helpers
+    ////////////////////////////////////////////////////////////////////////
+
+    using congruence_interface::add_pair;
+    using congruence_interface::add_pair_no_checks;
+
     // It would be possible to use typename Range::output_type instead of
     // word_type to make this agnostic to whether we're using strings or
     // word_type, but then it's not very clear what letters we should use for

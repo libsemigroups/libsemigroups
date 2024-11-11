@@ -242,11 +242,10 @@ namespace libsemigroups {
     auto ntc = (iterator_range(pp.begin(), pp.end())
                 | filter([](auto const& val) { return val.size() > 1; })
                 | transform([](auto& val) {
-                    std::for_each(
-                        val.begin(), val.end(), [](auto& w) -> auto& {
-                          w.erase(w.begin());
-                          return w;
-                        });
+                    std::for_each(val.begin(), val.end(), [](auto& w) -> auto& {
+                      w.erase(w.begin());
+                      return w;
+                    });
                     return val;
                   }));
 
@@ -292,8 +291,10 @@ namespace libsemigroups {
                  "aabaaabb", "aabaaab", "baabaaab", "aabaaab",  "aabaaabaaa",
                  "aabaaab"}));
 
-    kb.add_pair(froidure_pin::factorisation(S, Transf<>({3, 4, 4, 4, 4})),
-                froidure_pin::factorisation(S, Transf<>({3, 1, 3, 3, 3})));
+    knuth_bendix::add_pair(
+        kb,
+        froidure_pin::factorisation(S, Transf<>({3, 4, 4, 4, 4})),
+        froidure_pin::factorisation(S, Transf<>({3, 1, 3, 3, 3})));
     REQUIRE(knuth_bendix::normal_forms(kb).min(1).count() == 72);
 
     REQUIRE(kb.number_of_classes() == 72);
@@ -389,7 +390,7 @@ namespace libsemigroups {
     REQUIRE(to_string(froidure_pin::factorisation(S, Transf<>({3, 1, 3, 3, 3})))
             == "baaab");
 
-    kb.add_pair(to_word("caabbaaaba"), to_word("cbaaab"));
+    knuth_bendix::add_pair(kb, to_word("caabbaaaba"), to_word("cbaaab"));
 
     kb.run();
     REQUIRE(kb.number_of_active_rules() == 23);
@@ -439,8 +440,10 @@ namespace libsemigroups {
 
     TestType kb(left, p);
 
-    kb.add_pair(froidure_pin::factorisation(S, Transf<>({3, 4, 4, 4, 4})),
-                froidure_pin::factorisation(S, Transf<>({3, 1, 3, 3, 3})));
+    knuth_bendix::add_pair(
+        kb,
+        froidure_pin::factorisation(S, Transf<>({3, 4, 4, 4, 4})),
+        froidure_pin::factorisation(S, Transf<>({3, 1, 3, 3, 3})));
 
     kb.run();
 
@@ -547,8 +550,10 @@ namespace libsemigroups {
     REQUIRE(knuth_bendix::is_reduced(kb));
 
     kb.init(right, p);
-    kb.add_pair(froidure_pin::factorisation(S, Transf<>({3, 4, 4, 4, 4})),
-                froidure_pin::factorisation(S, Transf<>({3, 1, 3, 3, 3})));
+    knuth_bendix::add_pair(
+        kb,
+        froidure_pin::factorisation(S, Transf<>({3, 4, 4, 4, 4})),
+        froidure_pin::factorisation(S, Transf<>({3, 1, 3, 3, 3})));
     REQUIRE(kb.number_of_classes() == 72);
     REQUIRE(kb.contains({1, 1, 1}, {1}));
     REQUIRE_THROWS_AS(kb.presentation(p), LibsemigroupsException);
@@ -569,7 +574,7 @@ namespace libsemigroups {
     auto r = 10001_w;
 
     KnuthBendix kb(left, to_presentation<word_type>(S));
-    kb.add_pair(l, r);
+    knuth_bendix::add_pair(kb, l, r);
     REQUIRE(kb.number_of_classes() == 69);
     REQUIRE(kb.rewrite("baabab") == "aab");
     REQUIRE(kb.rewrite("aabaaab") == "aab");
