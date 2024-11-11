@@ -126,9 +126,6 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! Constant.
-    //!
-    //! \par Parameters
-    //! (None)
     [[nodiscard]] size_t number_of_generating_pairs() const noexcept {
       return _generating_pairs.size() / 2;
     }
@@ -207,6 +204,7 @@ namespace libsemigroups {
       return _type;
     }
 
+   protected:
     // TODO(0) make protected, shouldn't be able to change the kind arbitrarily
     CongruenceInterface& kind(congruence_kind knd) {
       _type = knd;
@@ -219,6 +217,7 @@ namespace libsemigroups {
 
    private:
     void throw_if_started() const;
+
     // TODO delete
     void add_pair_no_checks_no_reverse(word_type const& u, word_type const& v);
   };
@@ -501,8 +500,6 @@ namespace libsemigroups {
 //! \warning The problem of determining the return value of this function
 //! is undecidable in general, and this function may never terminate.
 //!
-//! \par Parameters
-//! (None)
 // TODO copy doc
 
 //! Returns a const iterator pointing one-past-the-end of the last
@@ -521,8 +518,6 @@ namespace libsemigroups {
 //! \warning The problem of determining the return value of this function
 //! is undecidable in general, and this function may never terminate.
 //!
-//! \par Parameters
-//! (None)
 // TODO copy doc
 
 // TODO copy doc?
@@ -539,8 +534,6 @@ namespace libsemigroups {
 //! \warning The problem of determining the return value of this function
 //! is undecidable in general, and this function may never terminate.
 //!
-//! \par Parameters
-//! (None)
 
 // TODO copy doc?
 //! Returns a semigroup represented as an instance of a derived class of
@@ -568,8 +561,6 @@ namespace libsemigroups {
 //! == true` and so certain of its member functions (those that change
 //! the underlying mathematical object) are disabled.
 //!
-//! \par Parameters
-//! (None)
 
 // TODO copy doc?
 //! Check if the quotient semigroup has been computed.
@@ -585,6 +576,3 @@ namespace libsemigroups {
 //!
 //! \complexity
 //! Constant.
-//!
-//! \par Parameters
-//! (None)
