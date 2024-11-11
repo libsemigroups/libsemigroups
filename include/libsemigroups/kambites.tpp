@@ -97,6 +97,20 @@ namespace libsemigroups {
   ////////////////////////////////////////////////////////////////////////
 
   template <typename Word>
+  template <typename Iterator1,
+            typename Iterator2,
+            typename Iterator3,
+            typename Iterator4>
+  [[nodiscard]] bool Kambites<Word>::contains_no_checks(Iterator1 first1,
+                                                        Iterator2 last1,
+                                                        Iterator3 first2,
+                                                        Iterator4 last2) {
+    _tmp_value1.assign(first1, last1);
+    _tmp_value2.assign(first2, last2);
+    return contains(_tmp_value1, _tmp_value2);
+  }
+
+  template <typename Word>
   bool Kambites<Word>::contains(word_type const& u, word_type const& v) {
     validate_small_overlap_class();
     // Words aren't validated, the below returns false if they contain
@@ -125,8 +139,8 @@ namespace libsemigroups {
   typename Kambites<Word>::value_type
   Kambites<Word>::normal_form(value_type const& w0) {
     validate_small_overlap_class();
-    using words:: operator+;
-    using words:: operator+=;
+    using words::operator+;
+    using words::operator+=;
     size_t        r = UNDEFINED;
     internal_type v, w(w0);
     while (!w.empty()) {
@@ -519,7 +533,7 @@ namespace libsemigroups {
                                          internal_type& v,
                                          internal_type& w) const {
     using words::operator+=;
-    size_t       i, j;
+    size_t i, j;
     std::tie(i, j) = clean_overlap_prefix_mod(w, w.size());
     if (j == UNDEFINED) {
       // line 39

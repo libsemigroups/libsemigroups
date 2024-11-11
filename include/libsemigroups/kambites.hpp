@@ -110,11 +110,11 @@ namespace libsemigroups {
     mutable Complements                _complements;
     mutable bool                       _have_class;
     mutable std::vector<RelationWords> _XYZ_data;
+    mutable value_type                 _tmp_value1, _tmp_value2;
 
     Presentation<value_type> _presentation;
     Ukkonen                  _suffix_tree;
 
-   private:
     using internal_type_iterator = typename internal_type::const_iterator;
 
    public:
@@ -189,6 +189,10 @@ namespace libsemigroups {
       return _presentation;
     }
 
+    ////////////////////////////////////////////////////////////////////////
+    // Interface requirements - add_pairs
+    ////////////////////////////////////////////////////////////////////////
+
     using CongruenceInterface::add_pair_no_checks;
 
     template <typename Iterator1,
@@ -203,8 +207,10 @@ namespace libsemigroups {
       return *this;
     }
 
-    //! \copydoc FpSemigroupInterface::size
-    //!
+    ////////////////////////////////////////////////////////////////////////
+    // Interface requirements - number_of_classes
+    ////////////////////////////////////////////////////////////////////////
+
     //! \throws LibsemigroupsException if the small overlap class is not at
     //! least \f$4\f$.
     // Not noexcept, throws
@@ -213,6 +219,59 @@ namespace libsemigroups {
       return POSITIVE_INFINITY;
     }
 
+    ////////////////////////////////////////////////////////////////////////
+    // Interface requirements - contains
+    ////////////////////////////////////////////////////////////////////////
+
+    // TODO(0) to tpp
+    template <typename Iterator1,
+              typename Iterator2,
+              typename Iterator3,
+              typename Iterator4>
+    [[nodiscard]] bool currently_contains_no_checks(Iterator1 first1,
+                                                    Iterator2 last1,
+                                                    Iterator3 first2,
+                                                    Iterator4 last2) const {
+      if (finished()) {
+        contains_no_checks(first1, last1, first2, last2);
+      }
+      return std::equal(first1, last1, first2, last2);
+    }
+
+    template <typename Iterator1,
+              typename Iterator2,
+              typename Iterator3,
+              typename Iterator4>
+    [[nodiscard]] tril currently_contains(Iterator1 first1,
+                                          Iterator2 last1,
+                                          Iterator3 first2,
+                                          Iterator4 last2) const {
+      throw_if_letter_out_of_bounds(first1, last1);
+      throw_if_letter_out_of_bounds(first2, last2);
+      return currently_contains_no_checks(first1, last1, first2, last2);
+    }
+
+    template <typename Iterator1,
+              typename Iterator2,
+              typename Iterator3,
+              typename Iterator4>
+    [[nodiscard]] bool contains(Iterator1 first1,
+                                Iterator2 last1,
+                                Iterator3 first2,
+                                Iterator4 last2) {
+      throw_if_letter_out_of_bounds(first1, last1);
+      throw_if_letter_out_of_bounds(first2, last2);
+      return contains_no_checks(first1, last1, first2, last2);
+    }
+
+    template <typename Iterator1,
+              typename Iterator2,
+              typename Iterator3,
+              typename Iterator4>
+    [[nodiscard]] bool contains_no_checks(Iterator1 first1,
+                                          Iterator2 last1,
+                                          Iterator3 first2,
+                                          Iterator4 last2);
     //!
     //! \throws LibsemigroupsException if the small overlap class is not at
     //! least \f$4\f$.

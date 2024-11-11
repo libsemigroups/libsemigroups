@@ -427,9 +427,6 @@ namespace libsemigroups {
     REQUIRE(cong.contains(u, v));
   }
 
-  // The next test behaves as expected but runs forever, since the
-  // number_of_classes method requires to know the size of the semigroup S, and
-  // we cannot currently work that out.
   LIBSEMIGROUPS_TEST_CASE("Congruence",
                           "018",
                           "infinite fp semigroup from GAP library",

@@ -134,6 +134,10 @@ namespace libsemigroups {
     }
 
    public:
+    ////////////////////////////////////////////////////////////////////////
+    // CongruenceInterface - add_pair
+    ////////////////////////////////////////////////////////////////////////
+
     // TODO(0) should it be Subclass & ??
     template <typename Iterator1,
               typename Iterator2,
@@ -167,6 +171,36 @@ namespace libsemigroups {
       throw_if_letter_out_of_bounds<Subclass>(first2, last2);
       return static_cast<Subclass&>(
           add_pair_no_checks(first1, last1, first2, last2));
+    }
+
+    ////////////////////////////////////////////////////////////////////////
+    // CongruenceInterface - contains
+    ////////////////////////////////////////////////////////////////////////
+
+    template <typename Iterator1,
+              typename Iterator2,
+              typename Iterator3,
+              typename Iterator4>
+    tril currently_contains(Iterator1 first1,
+                            Iterator2 last1,
+                            Iterator3 first2,
+                            Iterator4 last2) const {
+      throw_if_letter_out_of_bounds(first1, last1);
+      throw_if_letter_out_of_bounds(first2, last2);
+      return currently_contains_no_checks(first1, last1, first2, last2);
+    }
+
+    template <typename Iterator1,
+              typename Iterator2,
+              typename Iterator3,
+              typename Iterator4>
+    bool contains(Iterator1 first1,
+                  Iterator2 last1,
+                  Iterator3 first2,
+                  Iterator4 last2) {
+      throw_if_letter_out_of_bounds(first1, last1);
+      throw_if_letter_out_of_bounds(first2, last2);
+      return contains_no_checks(first1, last1, first2, last2);
     }
 
     ////////////////////////////////////////////////////////////////////////////

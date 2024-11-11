@@ -1274,19 +1274,6 @@ namespace libsemigroups {
               typename Iterator2,
               typename Iterator3,
               typename Iterator4>
-    tril currently_contains(Iterator1 first1,
-                            Iterator2 last1,
-                            Iterator3 first2,
-                            Iterator4 last2) const {
-      throw_if_letter_out_of_bounds(first1, last1);
-      throw_if_letter_out_of_bounds(first2, last2);
-      return currently_contains_no_checks(first1, last1, first2, last2);
-    }
-
-    template <typename Iterator1,
-              typename Iterator2,
-              typename Iterator3,
-              typename Iterator4>
     bool contains_no_checks(Iterator1 first1,
                             Iterator2 last1,
                             Iterator3 first2,
@@ -1298,6 +1285,19 @@ namespace libsemigroups {
       return std::equal(first1, last1, first2, last2)
              || index_of_no_checks(first1, last1)
                     == index_of_no_checks(first2, last2);
+    }
+
+    template <typename Iterator1,
+              typename Iterator2,
+              typename Iterator3,
+              typename Iterator4>
+    tril currently_contains(Iterator1 first1,
+                            Iterator2 last1,
+                            Iterator3 first2,
+                            Iterator4 last2) const {
+      throw_if_letter_out_of_bounds(first1, last1);
+      throw_if_letter_out_of_bounds(first2, last2);
+      return currently_contains_no_checks(first1, last1, first2, last2);
     }
 
     template <typename Iterator1,
