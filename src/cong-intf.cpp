@@ -39,14 +39,10 @@ namespace libsemigroups {
   }
 
   void CongruenceInterface::add_pair_no_checks(word_type&& u, word_type&& v) {
-    throw_if_started();
-    for (auto&& w : {u, v}) {
-      _generating_pairs.push_back(std::move(w));
-      if (kind() == congruence_kind::left) {
-        std::reverse(_generating_pairs.back().begin(),
-                     _generating_pairs.back().end());
-      }
-    }
+    add_pair_no_checks(std::make_move_iterator(std::begin(u)),
+                       std::make_move_iterator(std::end(u)),
+                       std::make_move_iterator(std::begin(v)),
+                       std::make_move_iterator(std::end(v)));
   }
 
   void CongruenceInterface::throw_if_started() const {

@@ -123,6 +123,7 @@ namespace libsemigroups {
                                                        Iterator4 last2) {
       _generating_pairs.emplace_back(first1, last1);
       _generating_pairs.emplace_back(first2, last2);
+      return *this;
     }
 
    public:
@@ -136,10 +137,11 @@ namespace libsemigroups {
                                             Iterator3 first2,
                                             Iterator4 last2) {
       if (kind() == congruence_kind::left) {
-        return add_pair_no_checks_no_reverse(std::make_reverse_iterator(first1),
-                                             std::make_reverse_iterator(last1),
-                                             std::make_reverse_iterator(first2),
-                                             std::make_reverse_iterator(last2));
+        return add_pair_no_checks_no_reverse(
+            std::make_reverse_iterator(last1),
+            std::make_reverse_iterator(first1),
+            std::make_reverse_iterator(last2),
+            std::make_reverse_iterator(first2));
       }
       return add_pair_no_checks_no_reverse(first1, last1, first2, last2);
     }
@@ -158,7 +160,8 @@ namespace libsemigroups {
           first1, last1);
       std::static_pointer_cast<Subclass>(this)->throw_if_letter_out_of_bounds(
           first2, last2);
-      return add_pair_no_checks(first1, last1, first2, last2);
+      return static_cast<Subclass&>(
+          add_pair_no_checks(first1, last1, first2, last2));
     }
 
     //! The handedness of the congruence (left, right, or 2-sided).
@@ -181,18 +184,22 @@ namespace libsemigroups {
     }
 
     // TODO(0) return CongruenceInterface&
+    // TODO(0) to helper
     void add_pair_no_checks(word_type&& u, word_type&& v);
+    // TODO(0) to helper
     void add_pair_no_checks(word_type const& u, word_type const& v) {
       add_pair_no_checks(word_type(u), word_type(v));
     }
 
     // TODO(doc)
+    // TODO(0) to helper
     void add_pair(word_type const& u, word_type const& v) {
-      validate_word(u);
-      validate_word(v);
-      add_pair_no_checks(word_type(u), word_type(v));
+      //  return add_pair(std::begin(u), std::end(u), std::begin(v),
+      //  std::end(v));
+      add_pair(word_type(u), word_type(v));
     }
 
+    // TODO(0) to helper
     void add_pair(word_type&& u, word_type&& v) {
       validate_word(u);
       validate_word(v);
@@ -201,6 +208,7 @@ namespace libsemigroups {
 
     //! Add a generating pair to the congruence.
     //! \sa add_pair(word_type const&, word_type const&)
+    // TODO(0) to helper
     void add_pair(std::initializer_list<letter_type> l,
                   std::initializer_list<letter_type> r) {
       add_pair(word_type(l), word_type(r));
