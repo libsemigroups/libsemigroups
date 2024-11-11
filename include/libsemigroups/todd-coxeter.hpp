@@ -1406,7 +1406,7 @@ namespace libsemigroups {
     using congruence_interface::add_pair_no_checks;
 
     ////////////////////////////////////////////////////////////////////////
-    // ToddCoxeter specific helpers
+    // ToddCoxeter specific helpers - word -> index
     ////////////////////////////////////////////////////////////////////////
     // TODO(0) doc
     template <typename Word>
@@ -1459,6 +1459,10 @@ namespace libsemigroups {
       return index_of<std::initializer_list<Int>>(tc, w);
     }
 
+    ////////////////////////////////////////////////////////////////////////
+    // ToddCoxeter specific helpers - index -> word
+    ////////////////////////////////////////////////////////////////////////
+
     // TODO(0) doc
     template <typename Word = word_type>
     Word word_of_no_checks(ToddCoxeter& tc, node_type i) {
@@ -1481,8 +1485,10 @@ namespace libsemigroups {
       return result;
     }
 
+    // TODO(0) current_word_of
+
     ////////////////////////////////////////////////////////////////////////
-    // Interface helpers
+    // Interface helpers - contains
     ////////////////////////////////////////////////////////////////////////
 
     // TODO(0) doc
@@ -1567,6 +1573,10 @@ namespace libsemigroups {
       return contains<std::initializer_list<Int>>(tc, u, v);
     }
 
+    ////////////////////////////////////////////////////////////////////////
+    // Interface helpers - reduce
+    ////////////////////////////////////////////////////////////////////////
+
     // TODO(0) doc
     template <typename InputWord, typename OutputWord = InputWord>
     OutputWord reduce_no_run_no_checks(ToddCoxeter& tc, InputWord const& w) {
@@ -1642,7 +1652,7 @@ namespace libsemigroups {
     }
 
     ////////////////////////////////////////////////////////////////////////
-    // Other helpers
+    // Interface helpers - class_of
     ////////////////////////////////////////////////////////////////////////
 
     // TODO(0) doc
@@ -1704,6 +1714,10 @@ namespace libsemigroups {
       return class_of_no_checks(tc, std::begin(w), std::end(w));
     }
 
+    ////////////////////////////////////////////////////////////////////////
+    // Interface helpers - normal_forms
+    ////////////////////////////////////////////////////////////////////////
+
     //! Returns a \ref normal_form_iterator pointing at the first normal
     //! form.
     //!
@@ -1727,6 +1741,10 @@ namespace libsemigroups {
                  [&tc](auto i) { return word_of_no_checks(tc, i); });
     }
 
+    ////////////////////////////////////////////////////////////////////////
+    // Interface helpers - non_trivial_classes
+    ////////////////////////////////////////////////////////////////////////
+
     // TODO(0) doc
     // TODO(0) template <word_type>
     // TODO(0) remove?
@@ -1737,6 +1755,9 @@ namespace libsemigroups {
     // TODO(0) remove?
     uint64_t number_of_idempotents(ToddCoxeter& tc);
 
+    ////////////////////////////////////////////////////////////////////////
+    // Interface helpers - first_equivalent_pair
+    ////////////////////////////////////////////////////////////////////////
     // TODO(0) doc
     // TODO(1) range version
     template <typename Iterator>
@@ -1755,11 +1776,18 @@ namespace libsemigroups {
       return std::pair(last, last);
     }
 
+    ////////////////////////////////////////////////////////////////////////
+    // Interface helpers - is_traversal
+    ////////////////////////////////////////////////////////////////////////
     // TODO(0) doc
     template <typename Iterator>
     bool is_traversal(ToddCoxeter& tc, Iterator first, Iterator last) {
       return first_equivalent_pair(tc, first, last) == std::pair(last, last);
     }
+
+    ////////////////////////////////////////////////////////////////////////
+    // Interface helpers - is_non_trivial
+    ////////////////////////////////////////////////////////////////////////
 
     //! Check if the congruence has more than one class.
     //!
@@ -1795,6 +1823,9 @@ namespace libsemigroups {
                         = std::chrono::milliseconds(100),
                         float threshold = 0.99);
 
+    ////////////////////////////////////////////////////////////////////////
+    // Interface helpers - redundant_rule
+    ////////////////////////////////////////////////////////////////////////
     // FIXME run_for seems to not function properly here.
     // TODO(0) doc
     // TODO(0) out of line this
@@ -1863,6 +1894,7 @@ namespace libsemigroups {
     }
     return result;
   }
+
   // TODO(0) to_human_readable_repr
 
 }  // namespace libsemigroups
