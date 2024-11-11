@@ -26,6 +26,8 @@
 
 #include "libsemigroups/detail/report.hpp"
 
+// TODO(0) rename _setting_stack -> _settings_stack
+
 namespace libsemigroups {
 
   using node_type = typename ToddCoxeter::node_type;
@@ -709,11 +711,6 @@ namespace libsemigroups {
     }
 
     finalise_run();
-  }
-
-  // TODO(0) rm
-  void ToddCoxeter::validate_word(word_type const& w) const {
-    throw_if_letter_out_of_bounds(w.cbegin(), w.cend());
   }
 
   ////////////////////////////////////////////////////////////////////////

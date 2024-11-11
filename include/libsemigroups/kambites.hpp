@@ -298,7 +298,9 @@ namespace libsemigroups {
     // Not noexcept, throws
     void validate_small_overlap_class();
 
-    void validate_word(word_type const& w) const override {
+   public:
+    // TODO(0) update to use iterators
+    void validate_word(word_type const& w) const {
       if constexpr (std::is_same_v<
                         typename decltype(_presentation)::letter_type,
                         letter_type>) {
@@ -310,6 +312,7 @@ namespace libsemigroups {
       }
     }
 
+   private:
     ////////////////////////////////////////////////////////////////////////
     // Kambites - XYZ functions - private
     ////////////////////////////////////////////////////////////////////////

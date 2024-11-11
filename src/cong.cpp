@@ -104,7 +104,10 @@ namespace libsemigroups {
         auto last  = generating_pairs().cend();
         for (auto it = first; it != last; it += 2) {
           std::static_pointer_cast<CongruenceInterface>(runner)
-              ->add_pair_no_checks_no_reverse(*it, *(it + 1));
+              ->add_pair_no_checks_no_reverse(std::begin(*it),
+                                              std::end(*it),
+                                              std::begin(*(it + 1)),
+                                              std::end(*(it + 1)));
         }
       }
     }

@@ -33,23 +33,24 @@
 #include "ranges.hpp"  // for is_input_or_sink_v
 
 namespace libsemigroups {
-  class Congruence;  // forward decl TODO(0) required?
+  class Congruence;
 
   //! Defined in ``cong-intf.hpp``.
   //!
   //! Every class for representing congruences in ``libsemigroups`` is derived
   //! from CongruenceInterface, which holds the member functions that are
-  //! common to all its derived classes. CongruenceInterface is an abstract
-  //! class.
+  //! common to all its derived classes.
   class CongruenceInterface : public Runner {
+    // Congruence has to be a friend so that we can call
+    // add_pair_no_checks_no_reverse from within Congruence on the other derived
+    // types of CongruenceInterface.
+    friend class Congruence;
     /////////////////////////////////////////////////////////////////////////
     // CongruenceInterface - data members - private
     /////////////////////////////////////////////////////////////////////////
 
     std::vector<word_type> _generating_pairs;
     congruence_kind        _type;
-
-    friend class ::libsemigroups::Congruence;  // TODO(0) required?
 
    public:
     ////////////////////////////////////////////////////////////////////////////
@@ -81,30 +82,11 @@ namespace libsemigroups {
     CongruenceInterface& operator=(CongruenceInterface const&) = default;
     CongruenceInterface& operator=(CongruenceInterface&&)      = default;
 
-    virtual ~CongruenceInterface();
+    ~CongruenceInterface();
 
     ////////////////////////////////////////////////////////////////////////////
     // CongruenceInterface - validation - public
     ////////////////////////////////////////////////////////////////////////////
-
-    //! Compute the number of classes in the congruence.
-    //!
-    //! \returns The number of congruences classes of \c this if this number
-    //! is finite, or \ref POSITIVE_INFINITY in some cases if \c this
-    //! number is not finite.
-    //!
-    //! \throws std::bad_alloc if the (possibly infinite) computation uses all
-    //! the available memory.
-    //!
-    //! \complexity
-    //! See warning.
-    //!
-    //! \warning The problem of determining the number of classes of a
-    //! congruence over a finitely presented semigroup is undecidable in
-    //! general, and this function may never terminate.
-
-    // TODO(0) change to iterators
-    virtual void validate_word(word_type const& w) const = 0;
 
     template <typename Subclass, typename Iterator1, typename Iterator2>
     void throw_if_letter_out_of_bounds(Iterator1 first, Iterator2 last) const {

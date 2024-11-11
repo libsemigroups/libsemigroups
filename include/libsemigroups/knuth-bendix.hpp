@@ -577,7 +577,8 @@ namespace libsemigroups {
     //! (None)
     //!
     //! \sa Presentation::validate_word.
-    void validate_word(word_type const& w) const override {
+    // TODO(0) update to use iterators
+    void validate_word(word_type const& w) const {
       ToString    to_string(presentation().alphabet());
       std::string s = to_string(w);
       presentation().validate_word(s.cbegin(), s.cend());

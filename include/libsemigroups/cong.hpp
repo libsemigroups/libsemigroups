@@ -207,7 +207,8 @@ namespace libsemigroups {
       }
     }
 
-    // TODO(0) to cpp
+    // TODO(0) replace with iterators
+    // TODO(0) out of line
     [[nodiscard]] bool contains(word_type const& u, word_type const& v) {
       run();
       auto winner_kind = _runner_kinds[_race.winner_index()];
@@ -226,11 +227,22 @@ namespace libsemigroups {
       }
     }
 
-    void validate_word(word_type const& w) const override {
+    // TODO(0) replace with iterators
+    // TODO(0) out of line
+    void validate_word(word_type const& w) const {
       if (!_race.empty()) {
-        std::static_pointer_cast<CongruenceInterface>(*_race.begin())
-            ->validate_word(w);
-        return;
+        if (_runner_kinds[0] == RunnerKind::TC) {
+          std::static_pointer_cast<ToddCoxeter>(*_race.begin())
+              ->throw_if_letter_out_of_bounds(std::begin(w), std::end(w));
+        } else if (_runner_kinds[0] == RunnerKind::KB) {
+          std::static_pointer_cast<KnuthBendix<>>(*_race.begin())
+              ->validate_word(w);
+        } else {
+          LIBSEMIGROUPS_ASSERT(winner_kind == RunnerKind::K);
+          // TODO(0) update!
+          std::static_pointer_cast<Kambites<word_type>>(*_race.begin())
+              ->validate_word(w);
+        }
       }
       LIBSEMIGROUPS_EXCEPTION(
           "No presentation has been set, so cannot validate the word!");

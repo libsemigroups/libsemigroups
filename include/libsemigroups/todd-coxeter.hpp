@@ -1218,6 +1218,21 @@ namespace libsemigroups {
     // ToddCoxeter - interface requirements - number_of_classes
     ////////////////////////////////////////////////////////////////////////
 
+    //! Compute the number of classes in the congruence.
+    //!
+    //! \returns The number of congruences classes of \c this if this number
+    //! is finite, or \ref POSITIVE_INFINITY in some cases if \c this
+    //! number is not finite.
+    //!
+    //! \throws std::bad_alloc if the (possibly infinite) computation uses all
+    //! the available memory.
+    //!
+    //! \complexity
+    //! See warning.
+    //!
+    //! \warning The problem of determining the number of classes of a
+    //! congruence over a finitely presented semigroup is undecidable in
+    //! general, and this function may never terminate.
     [[nodiscard]] uint64_t number_of_classes() {  // TODO(0) to cpp
       if (is_obviously_infinite(*this)) {
         return POSITIVE_INFINITY;
@@ -1347,9 +1362,6 @@ namespace libsemigroups {
     bool finished_impl() const override {
       return _finished;
     }
-
-    // TODO rm
-    void validate_word(word_type const& w) const override;
 
     ////////////////////////////////////////////////////////////////////////
     // ToddCoxeter - main strategies - private
