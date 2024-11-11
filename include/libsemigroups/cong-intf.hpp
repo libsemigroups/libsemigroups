@@ -104,6 +104,12 @@ namespace libsemigroups {
     // TODO(0) change to iterators
     virtual void validate_word(word_type const& w) const = 0;
 
+    template <typename Subclass, typename Iterator1, typename Iterator2>
+    void throw_if_letter_out_of_bounds(Iterator1 first, Iterator2 last) const {
+      std::static_pointer_cast<Subclass>(this)->throw_if_letter_out_of_bounds(
+          first, last);
+    }
+
     //! The handedness of the congruence (left, right, or 2-sided).
     //!
     //! \returns A \ref congruence_kind.

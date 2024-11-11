@@ -1108,7 +1108,7 @@ namespace libsemigroups {
 
     template <typename Iterator1, typename Iterator2>
     node_type current_index_of(Iterator1 first, Iterator2 last) const {
-      validate_word(first, last);
+      throw_if_letter_out_of_bounds(first, last);
       return current_index_of_no_checks(first, last);
     }
 
@@ -1127,7 +1127,7 @@ namespace libsemigroups {
 
     template <typename Iterator1, typename Iterator2>
     node_type index_of(Iterator1 first, Iterator2 last) {
-      validate_word(first, last);
+      throw_if_letter_out_of_bounds(first, last);
       return index_of_no_checks(first, last);
     }
 
@@ -1221,8 +1221,8 @@ namespace libsemigroups {
                             Iterator2 last1,
                             Iterator3 first2,
                             Iterator4 last2) const {
-      validate_word(first1, last1);
-      validate_word(first2, last2);
+      throw_if_letter_out_of_bounds(first1, last1);
+      throw_if_letter_out_of_bounds(first2, last2);
       return currently_contains_no_checks(first1, last1, first2, last2);
     }
 
@@ -1251,8 +1251,8 @@ namespace libsemigroups {
                   Iterator2 last1,
                   Iterator3 first2,
                   Iterator4 last2) {
-      validate_word(first1, last1);
-      validate_word(first2, last2);
+      throw_if_letter_out_of_bounds(first1, last1);
+      throw_if_letter_out_of_bounds(first2, last2);
       return contains_no_checks(first1, last1, first2, last2);
     }
 
@@ -1309,10 +1309,11 @@ namespace libsemigroups {
     }
 
     template <typename Iterator1, typename Iterator2>
-    void validate_word(Iterator1 first, Iterator2 last) const {
+    void throw_if_letter_out_of_bounds(Iterator1 first, Iterator2 last) const {
       presentation().validate_word(first, last);
     }
 
+    // TODO rm
     void validate_word(word_type const& w) const override;
 
     ////////////////////////////////////////////////////////////////////////

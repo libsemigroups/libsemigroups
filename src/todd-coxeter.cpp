@@ -711,9 +711,11 @@ namespace libsemigroups {
     finalise_run();
   }
 
+  // TODO(0) rm
   void ToddCoxeter::validate_word(word_type const& w) const {
-    validate_word(w.cbegin(), w.cend());
+    throw_if_letter_out_of_bounds(w.cbegin(), w.cend());
   }
+
   ////////////////////////////////////////////////////////////////////////
   // ToddCoxeter - main strategies - private
   ////////////////////////////////////////////////////////////////////////
