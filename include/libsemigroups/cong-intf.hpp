@@ -24,7 +24,8 @@
 #include <cstddef>           // for size_t
 #include <cstdint>           // for uint64_t
 #include <initializer_list>  // for initializer_list
-#include <vector>            // for vector, operator==, vector<>::const_iter...
+#include <iterator>
+#include <vector>  // for vector, operator==, vector<>::const_iter...
 
 #include "runner.hpp"  // for Runner
 #include "types.hpp"   // for word_type, relation_type, letter_type, tril
@@ -108,6 +109,56 @@ namespace libsemigroups {
     void throw_if_letter_out_of_bounds(Iterator1 first, Iterator2 last) const {
       std::static_pointer_cast<Subclass>(this)->throw_if_letter_out_of_bounds(
           first, last);
+    }
+
+   protected:
+    // TODO(0) should it be Subclass & ??
+    template <typename Iterator1,
+              typename Iterator2,
+              typename Iterator3,
+              typename Iterator4>
+    CongruenceInterface& add_pair_no_checks_no_reverse(Iterator1 first1,
+                                                       Iterator2 last1,
+                                                       Iterator3 first2,
+                                                       Iterator4 last2) {
+      _generating_pairs.emplace_back(first1, last1);
+      _generating_pairs.emplace_back(first2, last2);
+    }
+
+   public:
+    // TODO(0) should it be Subclass & ??
+    template <typename Iterator1,
+              typename Iterator2,
+              typename Iterator3,
+              typename Iterator4>
+    CongruenceInterface& add_pair_no_checks(Iterator1 first1,
+                                            Iterator2 last1,
+                                            Iterator3 first2,
+                                            Iterator4 last2) {
+      if (kind() == congruence_kind::left) {
+        return add_pair_no_checks_no_reverse(std::make_reverse_iterator(first1),
+                                             std::make_reverse_iterator(last1),
+                                             std::make_reverse_iterator(first2),
+                                             std::make_reverse_iterator(last2));
+      }
+      return add_pair_no_checks_no_reverse(first1, last1, first2, last2);
+    }
+
+    template <typename Subclass,
+              typename Iterator1,
+              typename Iterator2,
+              typename Iterator3,
+              typename Iterator4>
+    Subclass& add_pair(Iterator1 first1,
+                       Iterator2 last1,
+                       Iterator3 first2,
+                       Iterator4 last2) {
+      throw_if_started();
+      std::static_pointer_cast<Subclass>(this)->throw_if_letter_out_of_bounds(
+          first1, last1);
+      std::static_pointer_cast<Subclass>(this)->throw_if_letter_out_of_bounds(
+          first2, last2);
+      return add_pair_no_checks(first1, last1, first2, last2);
     }
 
     //! The handedness of the congruence (left, right, or 2-sided).

@@ -348,7 +348,7 @@ namespace libsemigroups {
       bool is_active_node(node_type n) const noexcept {
         return _tc->current_word_graph().is_active_node(n);
       }
-    };  // Definitions
+    };  // class Definitions
 
     class Graph : public detail::NodeManagedGraph<
                       detail::FelschGraph<word_type, uint32_t, Definitions>> {
@@ -392,7 +392,7 @@ namespace libsemigroups {
                              bool                     stop_early,
                              std::chrono::nanoseconds stop_early_interval,
                              float                    stop_early_ratio);
-    };
+    };  // class Graph
 
     ////////////////////////////////////////////////////////////////////////
     // ToddCoxeter - data - private
@@ -404,6 +404,7 @@ namespace libsemigroups {
     Order                                  _standardized;
     Graph                                  _word_graph;
 
+    // TODO(0) to cpp or maybe remove if not then use this!
     void copy_settings_into_graph() {
       // This is where we pass through from settings to the
       // _word_graph.definitions
@@ -1084,6 +1085,16 @@ namespace libsemigroups {
     // recursive
     bool standardize(Order val);
 
+    // stop_early indicates that if too few nodes are killed in 1 second, then
+    // the lookahead aborts, this should not happen if we are doing a final
+    // lookahead because we skipped some deductions
+    // TODO(0) doc
+    void perform_lookahead(bool stop_early);
+
+    ////////////////////////////////////////////////////////////////////////
+    // ToddCoxeter - word -> index - public
+    ////////////////////////////////////////////////////////////////////////
+
     // TODO(0) doc
     // NOTE THAT: the graph contains one more node than there are element if the
     // underlying presentation does not contain the empty word
@@ -1131,6 +1142,10 @@ namespace libsemigroups {
       return index_of_no_checks(first, last);
     }
 
+    ////////////////////////////////////////////////////////////////////////
+    // ToddCoxeter - index -> word - public
+    ////////////////////////////////////////////////////////////////////////
+
     template <typename OutputIterator>
     OutputIterator current_word_of_no_checks(OutputIterator d_first,
                                              node_type      i) {
@@ -1177,7 +1192,25 @@ namespace libsemigroups {
     }
 
     ////////////////////////////////////////////////////////////////////////
-    // ToddCoxeter - interface requirements
+    // ToddCoxeter - interface requirements - add_pair
+    ////////////////////////////////////////////////////////////////////////
+
+    using CongruenceInterface::add_pair;  // TODO(0) remove this
+
+    template <typename Iterator1,
+              typename Iterator2,
+              typename Iterator3,
+              typename Iterator4>
+    [[nodiscard]] ToddCoxeter& add_pair(Iterator1 first1,
+                                        Iterator2 last1,
+                                        Iterator3 first2,
+                                        Iterator4 last2) {
+      CongruenceInterface::add_pair<ToddCoxeter>(first1, last1, first2, last2);
+      return *this;
+    }
+
+    ////////////////////////////////////////////////////////////////////////
+    // ToddCoxeter - interface requirements - number_of_classes
     ////////////////////////////////////////////////////////////////////////
 
     [[nodiscard]] uint64_t number_of_classes() {  // TODO(0) to cpp
@@ -1188,6 +1221,10 @@ namespace libsemigroups {
       size_t const offset = (presentation().contains_empty_word() ? 0 : 1);
       return current_word_graph().number_of_nodes_active() - offset;
     }
+
+    ////////////////////////////////////////////////////////////////////////
+    // ToddCoxeter - interface requirements - contains
+    ////////////////////////////////////////////////////////////////////////
 
     template <typename Iterator1,
               typename Iterator2,
@@ -1256,6 +1293,10 @@ namespace libsemigroups {
       return contains_no_checks(first1, last1, first2, last2);
     }
 
+    ////////////////////////////////////////////////////////////////////////
+    // ToddCoxeter - interface requirements - reduce
+    ////////////////////////////////////////////////////////////////////////
+
     template <typename OutputIterator, typename Iterator1, typename Iterator2>
     OutputIterator reduce_no_run_no_checks(OutputIterator d_first,
                                            Iterator1      first,
@@ -1288,12 +1329,6 @@ namespace libsemigroups {
                           InputIterator2 last) {
       return word_of(d_first, index_of(first, last));
     }
-
-    // stop_early indicates that if too few nodes are killed in 1 second, then
-    // the lookahead aborts, this should not happen if we are doing a final
-    // lookahead because we skipped some deductions
-    // TODO(0) doc
-    void perform_lookahead(bool stop_early);
 
    private:
     ////////////////////////////////////////////////////////////////////////
@@ -1475,7 +1510,8 @@ namespace libsemigroups {
     //             | rx::transform([&to_word](char x) { return to_word(x); });
     //   return tc.contains(
     //       rx::begin(ur), rx::end(ur), rx::begin(vr), rx::end(vr));
-    //   // TODO(0) this currently doesn't work because, for example, std::equal
+    //   // TODO(0) this currently doesn't work because, for example,
+    //   std::equal
     //   // doesn't work for heterogeneous iterators :(
     // }
     // TODO(0) x3 more contains for string_views
