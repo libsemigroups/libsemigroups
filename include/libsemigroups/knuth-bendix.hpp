@@ -916,42 +916,33 @@ namespace libsemigroups {
     //! \copydoc FpSemigroupInterface::size TODO
     //! copy the doc
     //!
-    //! \note If \c this has been run until
-    //! finished, then this function can determine
-    //! the size of the semigroup represented by \c
-    //! this even if it is infinite. Moreover, the
-    //! complexity of this function is at worst
-    //! \f$O(mn)\f$ where \f$m\f$ is the number of
-    //! letters in the alphabet, and \f$n\f$ is the
-    //! number of nodes in the \ref gilman_graph.
+    //! \note If \c this has been run until finished, then this function can
+    //! determine the size of the semigroup represented by \c this even if it is
+    //! infinite. Moreover, the complexity of this function is at worst
+    //! \f$O(mn)\f$ where \f$m\f$ is the number of letters in the alphabet, and
+    //! \f$n\f$ is the number of nodes in the \ref gilman_graph.
     [[nodiscard]] uint64_t number_of_classes();
 
-    //! \brief Check if two inputs are equivalent
-    //! with respect to the system
+    //! \brief Check if two inputs are equivalent with respect to the system
     //!
-    //! By first testing \c string equivalence, then
-    //! by rewriting the inputs, then by running the
-    //! Knuth-Bendix algorithm and rewriting the
-    //! inputs with respect to the updated system
-    //! again, check if \p u and \p v are
+    //! By first testing \c string equivalence, then by rewriting the inputs,
+    //! then by running the Knuth-Bendix algorithm and rewriting the inputs with
+    //! respect to the updated system again, check if \p u and \p v are
     //! equivalent.
     //!
     //! \param u, v the words to test the
     //! equivalence of.
     //!
-    //! \returns \c true if \p u is equivalent to \p
-    //! v, and \c false otherwise.
+    //! \returns \c true if \p u is equivalent to \p v, and \c false otherwise.
     //!
-    //! \warning If the inputs don't rewrite to
-    //! equivalent words with the initial rewriting
-    //! rules, then the Knuth-Bendix algorithm is
-    //! run. This terminates when the rewriting
-    //! system is confluent, which may be never.
+    //! \warning If the inputs don't rewrite to equivalent words with the
+    //! initial rewriting rules, then the Knuth-Bendix algorithm is run. This
+    //! terminates when the rewriting system is confluent, which may be never.
     //!
     //! \sa run.
     // TODO rename contains
     // TODO do a no check version of this
-    // TODO version taking rvalue refs
+    // TODO version taking rvalue refs?
     [[nodiscard]] bool equal_to(std::string const& u, std::string const& v);
 
     // REVIEW Why does equal to take strings, but

@@ -484,14 +484,14 @@ namespace libsemigroups {
     REQUIRE(is_obviously_infinite(k));
 
     REQUIRE(kambites::contains(k, "dfabcdf", "dfabcdg"));
-    REQUIRE(k.normal_form("dfabcdg") == "dfabcdf");
+    REQUIRE(kambites::reduce(k, "dfabcdg") == "dfabcdf");
 
     REQUIRE(kambites::contains(k, "abcdf", "ceg"));
     REQUIRE(kambites::contains(k, "abcdf", "cef"));
     REQUIRE(kambites::contains(k, "dfabcdf", "dfabcdg"));
     REQUIRE(kambites::contains(k, "abcdf", "ceg"));
     REQUIRE(kambites::contains(k, "abcdf", "cef"));
-    REQUIRE(k.normal_form("abcdfceg") == "abcdfabcdf");
+    REQUIRE(kambites::reduce(k, "abcdfceg") == "abcdfabcdf");
     REQUIRE(kambites::contains(k, "abcdfceg", "abcdfabcdf"));
 
     REQUIRE(k.number_of_classes() == POSITIVE_INFINITY);
@@ -605,7 +605,7 @@ namespace libsemigroups {
     REQUIRE(kambites::contains(k, "cef", "abchd"));
 
     REQUIRE(k.number_of_classes() == POSITIVE_INFINITY);
-    REQUIRE(k.normal_form("hdfabce") == "dffababcd");
+    REQUIRE(kambites::reduce(k, "hdfabce") == "dffababcd");
     REQUIRE(kambites::contains(k, "hdfabce", "dffababcd"));
 
     auto s = to_froidure_pin(k);
@@ -676,7 +676,7 @@ namespace libsemigroups {
     // Test case (6)
     REQUIRE(kambites::contains(k, "afd", "bgd"));
     REQUIRE(kambites::contains(k, "bghcafhbgd", "afdafhafd"));
-    REQUIRE(k.normal_form("bghcafhbgd") == "afdafhafd");
+    REQUIRE(kambites::reduce(k, "bghcafhbgd") == "afdafhafd");
     auto s = to_froidure_pin(k);
     s.run_until([&s]() { return s.current_max_word_length() >= 6; });
     REQUIRE(s.number_of_elements_of_length(0, 6) == 34'819);
@@ -760,7 +760,7 @@ namespace libsemigroups {
 
     REQUIRE(kambites::contains(k, "afdj", "bgdj"));
     REQUIRE(kambites::contains(k, "afdj", "afdj"));
-    REQUIRE(k.normal_form("bfhk") == "afhl");
+    REQUIRE(kambites::reduce(k, "bfhk") == "afhl");
     REQUIRE(kambites::contains(k, "bfhk", "afhl"));
 
     REQUIRE(k.number_of_classes() == POSITIVE_INFINITY);
@@ -855,12 +855,14 @@ namespace libsemigroups {
 
     Kambites<T> k(p);
 
-    REQUIRE(k.normal_form("cdcdcabbbabbbabbcd") == "abbbadcabbbabbbabbcd");
+    REQUIRE(kambites::reduce(k, "cdcdcabbbabbbabbcd")
+            == "abbbadcabbbabbbabbcd");
     REQUIRE(kambites::contains(
-        k, k.normal_form("cdcdcabbbabbbabbcd"), "cdcdcabbbabbbabbcd"));
+        k, kambites::reduce(k, "cdcdcabbbabbbabbcd"), "cdcdcabbbabbbabbcd"));
     REQUIRE(kambites::contains(k, "abbbadcbbba", "cdabbbcdc"));
-    REQUIRE(kambites::contains(k, k.normal_form("cdabbbcdc"), "cdabbbcdc"));
-    REQUIRE(k.normal_form("cdabbbcdc") == "abbbadcbbba");
+    REQUIRE(
+        kambites::contains(k, kambites::reduce(k, "cdabbbcdc"), "cdabbbcdc"));
+    REQUIRE(kambites::reduce(k, "cdabbbcdc") == "abbbadcbbba");
   }
 
   LIBSEMIGROUPS_TEST_CASE("Kambites",
@@ -900,8 +902,8 @@ namespace libsemigroups {
     REQUIRE(kambites::contains(k, original, "cbaabcabcaabcaabccba"));
 
     REQUIRE(kambites::contains(k, expected, "cbaabcabcaabcaabccba"));
-    REQUIRE(kambites::contains(k, k.normal_form(original), original));
-    REQUIRE(k.normal_form(original) == expected);
+    REQUIRE(kambites::contains(k, kambites::reduce(k, original), original));
+    REQUIRE(kambites::reduce(k, original) == expected);
   }
 
   LIBSEMIGROUPS_TEST_CASE("Kambites",
@@ -934,8 +936,8 @@ namespace libsemigroups {
     REQUIRE(kambites::contains(k, original, expected));
     REQUIRE(kambites::contains(k, expected, original));
 
-    REQUIRE(k.normal_form(original) == expected);
-    REQUIRE(kambites::contains(k, k.normal_form(original), original));
+    REQUIRE(kambites::reduce(k, original) == expected);
+    REQUIRE(kambites::contains(k, kambites::reduce(k, original), original));
   }
 
   LIBSEMIGROUPS_TEST_CASE("Kambites",
@@ -965,25 +967,26 @@ namespace libsemigroups {
 
     StringRange s;
     s.alphabet("abcd").first("a").last("aaaa");
-    REQUIRE((s | all_of([&k](auto& w) { return k.normal_form(w) == w; })));
+    REQUIRE(
+        (s | all_of([&k](auto& w) { return kambites::reduce(k, w) == w; })));
 
     s.first("aaaa").last("aaaaa");
-    REQUIRE(
-        (s | filter([&k](auto& w) { return k.normal_form(w) != w; }) | count())
-        == 1);
+    REQUIRE((s | filter([&k](auto& w) { return kambites::reduce(k, w) != w; })
+             | count())
+            == 1);
 
     s.first("aaaaa").last("aaaaaa");
-    REQUIRE(
-        (s | filter([&k](auto& w) { return k.normal_form(w) != w; }) | count())
-        == 8);
+    REQUIRE((s | filter([&k](auto& w) { return kambites::reduce(k, w) != w; })
+             | count())
+            == 8);
     s.first("aaaaaa").last("aaaaaaa");
-    REQUIRE(
-        (s | filter([&k](auto& w) { return k.normal_form(w) != w; }) | count())
-        == 48);
+    REQUIRE((s | filter([&k](auto& w) { return kambites::reduce(k, w) != w; })
+             | count())
+            == 48);
 
     for (auto& w :
          std::vector<std::string>({"accaccabd", "accbaccad", "abcdbcacca"})) {
-      auto nf = k.normal_form(w);
+      auto nf = kambites::reduce(k, w);
       s.min(w.size()).last(nf);
       REQUIRE((s | all_of([&k, &nf](auto& u) {
                  return !kambites::contains(k, u, nf);
@@ -1095,7 +1098,8 @@ namespace libsemigroups {
     REQUIRE(ukkonen::number_of_pieces(k.ukkonen(), p.rules[1]) == 4);
 
     REQUIRE(k.small_overlap_class() == 4);
-    REQUIRE(k.normal_form("bbcabcdaccaccabcddd") == "bbcabcdaccaccabcddd");
+    REQUIRE(kambites::reduce(k, "bbcabcdaccaccabcddd")
+            == "bbcabcdaccaccabcddd");
     REQUIRE(
         kambites::contains(k, "bbcabcdaccaccabcddd", "bbcabcdaccaccabcddd"));
     k.run();
@@ -1111,7 +1115,8 @@ namespace libsemigroups {
     REQUIRE(ukkonen::number_of_pieces(l.ukkonen(), p.rules[1]) == 4);
 
     REQUIRE(l.small_overlap_class() == 4);
-    REQUIRE(l.normal_form("bbcabcdaccaccabcddd") == "bbcabcdaccaccabcddd");
+    REQUIRE(kambites::reduce(l, "bbcabcdaccaccabcddd")
+            == "bbcabcdaccaccabcddd");
     REQUIRE(
         kambites::contains(l, "bbcabcdaccaccabcddd", "bbcabcdaccaccabcddd"));
 
@@ -1147,7 +1152,7 @@ namespace libsemigroups {
 
     REQUIRE(k.small_overlap_class() == 4);
 
-    REQUIRE(k.normal_form("acbbbbc") == "aac");
+    REQUIRE(kambites::reduce(k, "acbbbbc") == "aac");
     REQUIRE(kambites::contains(k, "acbbbbc", "aac"));
   }
 
@@ -1176,10 +1181,11 @@ namespace libsemigroups {
     Kambites<T> k(p);
     REQUIRE(k.small_overlap_class() == 4);
 
-    REQUIRE(k.normal_form("bacbaccabccabcbacbac") == "bacbacbaccbaccbacbac");
+    REQUIRE(kambites::reduce(k, "bacbaccabccabcbacbac")
+            == "bacbacbaccbaccbacbac");
     REQUIRE(
         kambites::contains(k, "bacbaccabccabcbacbac", "bacbacbaccbaccbacbac"));
-    REQUIRE(k.normal_form("ccabcbaccab") == "cbaccbacbac");
+    REQUIRE(kambites::reduce(k, "ccabcbaccab") == "cbaccbacbac");
     REQUIRE(kambites::contains(k, "ccabcbaccab", "cbaccbacbac"));
   }
 
@@ -1210,7 +1216,7 @@ namespace libsemigroups {
     Kambites<T> k(p);
     REQUIRE(k.small_overlap_class() == POSITIVE_INFINITY);
 
-    REQUIRE(k.normal_form("bgdj") == "afdei");
+    REQUIRE(kambites::reduce(k, "bgdj") == "afdei");
     REQUIRE(kambites::contains(k, "bgdj", "afdei"));
   }
 
@@ -1239,7 +1245,7 @@ namespace libsemigroups {
     Kambites<T> k(p);
     REQUIRE(k.small_overlap_class() == 4);
 
-    REQUIRE(k.normal_form("dcbdcba") == "abcdbcd");
+    REQUIRE(kambites::reduce(k, "dcbdcba") == "abcdbcd");
     REQUIRE(kambites::contains(k, "dcbdcba", "abcdbcd"));
   }
 
@@ -1267,7 +1273,7 @@ namespace libsemigroups {
     Kambites<T> k(p);
     REQUIRE(k.small_overlap_class() == 4);
 
-    REQUIRE(k.normal_form("dcbabca") == "abcacbd");
+    REQUIRE(kambites::reduce(k, "dcbabca") == "abcacbd");
     REQUIRE(kambites::contains(k, "dcbabca", "abcacbd"));
   }
 
@@ -1298,7 +1304,7 @@ namespace libsemigroups {
     Kambites<T> k(p);
     REQUIRE(k.small_overlap_class() == 4);
 
-    REQUIRE(k.normal_form("dbbabcd") == "addacba");
+    REQUIRE(kambites::reduce(k, "dbbabcd") == "addacba");
     REQUIRE(kambites::contains(k, "dbbabcd", "addacba"));
   }
 
@@ -1328,7 +1334,7 @@ namespace libsemigroups {
     Kambites<T> k(p);
     REQUIRE(k.small_overlap_class() == 4);
 
-    REQUIRE(k.normal_form("accabcdgf") == "abcdbcdge");
+    REQUIRE(kambites::reduce(k, "accabcdgf") == "abcdbcdge");
     REQUIRE(kambites::contains(k, "accabcdgf", "abcdbcdge"));
   }
 
@@ -1361,7 +1367,7 @@ namespace libsemigroups {
     Kambites<T> k(p);
     REQUIRE(k.small_overlap_class() == 4);
 
-    REQUIRE(k.normal_form("abbbacdddddcddddddcdddddddcdddddddd")
+    REQUIRE(kambites::reduce(k, "abbbacdddddcddddddcdddddddcdddddddd")
             == "abbbacdcddcdddcdddd");
     REQUIRE(kambites::contains(
         k, "abbbacdddddcddddddcdddddddcdddddddd", "abbbacdcddcdddcdddd"));
@@ -1437,9 +1443,9 @@ namespace libsemigroups {
 
     Kambites<T> k(p);
     REQUIRE(kambites::contains(k, "acbacba", "aabcabc"));
-    REQUIRE(k.normal_form("acbacba") == "aabcabc");
-    REQUIRE(kambites::contains(k, k.normal_form("acbacba"), "aabcabc"));
-    REQUIRE(kambites::contains(k, "aabcabc", k.normal_form("acbacba")));
+    REQUIRE(kambites::reduce(k, "acbacba") == "aabcabc");
+    REQUIRE(kambites::contains(k, kambites::reduce(k, "acbacba"), "aabcabc"));
+    REQUIRE(kambites::contains(k, "aabcabc", kambites::reduce(k, "acbacba")));
 
     StringRange s;
     s.alphabet("abcd").first("aaaa").last("aaaaaa");
@@ -1475,9 +1481,11 @@ namespace libsemigroups {
     presentation::add_rule(p, "bceac", "aeebbc");
     presentation::add_rule(p, "aeebbc", "dabcd");
     Kambites<T> k(p);
-    REQUIRE(k.normal_form("bceacdabcd") == "aeebbcaeebbc");
-    REQUIRE(kambites::contains(k, k.normal_form("bceacdabcd"), "aeebbcaeebbc"));
-    REQUIRE(kambites::contains(k, "aeebbcaeebbc", k.normal_form("bceacdabcd")));
+    REQUIRE(kambites::reduce(k, "bceacdabcd") == "aeebbcaeebbc");
+    REQUIRE(kambites::contains(
+        k, kambites::reduce(k, "bceacdabcd"), "aeebbcaeebbc"));
+    REQUIRE(kambites::contains(
+        k, "aeebbcaeebbc", kambites::reduce(k, "bceacdabcd")));
 
     StringRange s;
     s.alphabet("abcd").first("aaaa").last("aaaaaa");
@@ -1514,14 +1522,14 @@ namespace libsemigroups {
     presentation::add_rule(p, "acba", "dbbd");
 
     Kambites<T> k(p);
-    REQUIRE(k.normal_form("bbacbcaaabcbbd") == "bbacbcaaabcbbd");
+    REQUIRE(kambites::reduce(k, "bbacbcaaabcbbd") == "bbacbcaaabcbbd");
     REQUIRE(kambites::contains(
-        k, k.normal_form("bbacbcaaabcbbd"), "bbacbcaaabcbbd"));
+        k, kambites::reduce(k, "bbacbcaaabcbbd"), "bbacbcaaabcbbd"));
     REQUIRE(kambites::contains(
-        k, "bbacbcaaabcbbd", k.normal_form("bbacbcaaabcbbd")));
-    REQUIRE(k.normal_form("acbacba") == "aabcabc");
-    REQUIRE(kambites::contains(k, k.normal_form("acbacba"), "aabcabc"));
-    REQUIRE(kambites::contains(k, "aabcabc", k.normal_form("acbacba")));
+        k, "bbacbcaaabcbbd", kambites::reduce(k, "bbacbcaaabcbbd")));
+    REQUIRE(kambites::reduce(k, "acbacba") == "aabcabc");
+    REQUIRE(kambites::contains(k, kambites::reduce(k, "acbacba"), "aabcabc"));
+    REQUIRE(kambites::contains(k, "aabcabc", kambites::reduce(k, "acbacba")));
   }
 
   LIBSEMIGROUPS_TEST_CASE("Kambites",
@@ -1577,8 +1585,8 @@ namespace libsemigroups {
     presentation::add_rule(p, "acba", "aabc");
     presentation::add_rule(p, "acba", "adbd");
     Kambites<T> k(p);
-    REQUIRE(k.normal_form("acbacba") == "aabcabc");
-    REQUIRE(kambites::contains(k, k.normal_form("acbacba"), "aabcabc"));
+    REQUIRE(kambites::reduce(k, "acbacba") == "aabcabc");
+    REQUIRE(kambites::contains(k, kambites::reduce(k, "acbacba"), "aabcabc"));
   }
 
   LIBSEMIGROUPS_TEST_CASE("Kambites",
@@ -2515,8 +2523,8 @@ namespace libsemigroups {
            "bbaabbaaaabbbabaababb"};
 
     for (auto const& w : words) {
-      REQUIRE(kambites::contains(k, k.normal_form(w), w));
-      REQUIRE(kambites::contains(k, w, k.normal_form(w)));
+      REQUIRE(kambites::contains(k, kambites::reduce(k, w), w));
+      REQUIRE(kambites::contains(k, w, kambites::reduce(k, w)));
     }
   }
 

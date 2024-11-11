@@ -59,10 +59,11 @@ namespace libsemigroups {
       KE& operator=(KE&&)      = default;
       ~KE()                    = default;
 
-      KE(Kambites<Word>& k, value_type const& w) : _value(k.normal_form(w)) {}
+      KE(Kambites<Word>& k, value_type const& w)
+          : _value(kambites::reduce_no_checks(k, w)) {}
 
-      KE(Kambites<Word>& k, value_type&& w)
-          : _value(k.normal_form(std::move(w))) {}
+      // KE(Kambites<Word>& k, value_type&& w)
+      //     : _value(kambites::reduce_no_checks(k, std::move(w))) {}
 
       KE(Kambites<Word>& k, letter_type a)
           : KE(k, value_type({k.presentation().letter_no_checks(a)})) {}
@@ -157,7 +158,7 @@ namespace libsemigroups {
                     size_t) {
       using value_type = typename detail::KE<Word>::value_type;
       using words::operator+=;
-      value_type   w(x.value());  // string_type
+      value_type w(x.value());  // string_type
       w += y.value();
       xy = detail::KE<Word>(*k, w);
     }

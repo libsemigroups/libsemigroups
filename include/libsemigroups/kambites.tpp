@@ -145,13 +145,13 @@ namespace libsemigroups {
   }
 
   template <typename Word>
-  typename Kambites<Word>::value_type
-  Kambites<Word>::normal_form(value_type const& w0) {
-    validate_small_overlap_class();
+  void Kambites<Word>::normal_form_no_checks(value_type&       result,
+                                             value_type const& w0) {
     using words::operator+;
     using words::operator+=;
     size_t        r = UNDEFINED;
-    internal_type v, w(w0);
+    internal_type w(w0);
+    internal_type v(result);
     while (!w.empty()) {
       if (r == UNDEFINED) {
         normal_form_inner(r, v, w);
@@ -203,17 +203,17 @@ namespace libsemigroups {
       std::swap(w, wp);
       r = s;
     }
-    return v;
+    result = v;
   }
 
   template <typename Word>
   template <typename SFINAE>
-  auto Kambites<Word>::normal_form(word_type const& w)
+  auto Kambites<Word>::normal_form_no_checks(value_type&      result,
+                                             word_type const& w)
       -> std::enable_if_t<!std::is_same_v<value_type, word_type>, SFINAE> {
-    // Words aren't validated, the below returns false if they contain
-    // letters not in the alphabet.
-    std::string uu = to_string(presentation(), w);
-    return to_word(presentation(), normal_form(uu));
+    std::string ww = to_string(presentation(), w);
+    normal_form_no_checks(result, ww);
+    return to_word(presentation(), result);
   }
 
   ////////////////////////////////////////////////////////////////////////

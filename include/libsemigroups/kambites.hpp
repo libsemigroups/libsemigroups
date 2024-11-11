@@ -228,7 +228,7 @@ namespace libsemigroups {
 
     // The Kambites class requires that input to contains to be actual objects
     // not iterators. This is different from KnuthBendix and ToddCoxeter.
-
+   private:  // TODO(0) move to better location
     // TODO(0) make private?
     [[nodiscard]] bool contains_no_checks(value_type const& u,
                                           value_type const& v);
@@ -241,6 +241,7 @@ namespace libsemigroups {
                                           word_type const& v)
         -> std::enable_if_t<!std::is_same_v<value_type, word_type>, SFINAE>;
 
+   public:
     // TODO(0) to tpp
     template <typename Iterator1,
               typename Iterator2,
@@ -298,16 +299,63 @@ namespace libsemigroups {
     // Interface requirements - reduce
     ////////////////////////////////////////////////////////////////////////
 
-    //! \copydoc FpSemigroupInterface::normal_form
-    //!
-    //! \throws LibsemigroupsException if the small overlap class is not at
-    //! least \f$4\f$.
-    // Not noexcept, lots of allocations
-    [[nodiscard]] value_type normal_form(value_type const& w);
+    // TODO(0) make private
+    void normal_form_no_checks(value_type& result, value_type const& w);
 
+    // TODO(0) make private
     template <typename SFINAE = word_type>
-    [[nodiscard]] auto normal_form(word_type const& w)
+    auto normal_form_no_checks(value_type& result, word_type const& w)
         -> std::enable_if_t<!std::is_same_v<value_type, word_type>, SFINAE>;
+
+    template <typename OutputIterator, typename Iterator1, typename Iterator2>
+    OutputIterator reduce_no_run_no_checks(OutputIterator d_first,
+                                           Iterator1      first,
+                                           Iterator2      last) {
+      // Does nothing
+      return std::copy(first, last, d_first);
+    }
+
+    template <typename OutputIterator, typename Iterator1, typename Iterator2>
+    OutputIterator reduce_no_run(OutputIterator d_first,
+                                 Iterator1      first,
+                                 Iterator2      last) {
+      throw_if_letter_out_of_bounds(first, last);
+      // Also does nothing
+      return reduce_no_run_no_checks(d_first, first, last);
+    }
+
+    template <typename OutputIterator,
+              typename InputIterator1,
+              typename InputIterator2>
+    OutputIterator reduce_no_checks(OutputIterator d_first,
+                                    InputIterator1 first,
+                                    InputIterator2 last) {
+      run();
+      _tmp_value2.clear();
+      if constexpr (std::is_same_v<
+                        typename decltype(_presentation)::letter_type,
+                        typename std::decay_t<
+                            decltype(*std::declval<InputIterator1>())>>) {
+        _tmp_value1.assign(first, last);
+      } else {
+        ToString to_string(_presentation.alphabet());
+        // TODO improve!
+        _tmp_value1 = to_string(word_type(first, last));
+      }
+      normal_form_no_checks(_tmp_value2, _tmp_value1);
+      return std::copy(std::begin(_tmp_value2), std::end(_tmp_value2), d_first);
+    }
+
+    template <typename OutputIterator,
+              typename InputIterator1,
+              typename InputIterator2>
+    OutputIterator reduce(OutputIterator d_first,
+                          InputIterator1 first,
+                          InputIterator2 last) {
+      throw_if_letter_out_of_bounds(first, last);
+      validate_small_overlap_class();
+      return reduce_no_checks(d_first, first, last);
+    }
 
     ////////////////////////////////////////////////////////////////////////
     // Kambites - member functions - public
@@ -721,6 +769,98 @@ namespace libsemigroups {
       return contains<std::initializer_list<Int>>(k, u, v);
     }
 
+    ////////////////////////////////////////////////////////////////////////
+    // Interface helpers - reduce
+    ////////////////////////////////////////////////////////////////////////
+
+    // TODO(0) doc
+    template <typename Word,
+              typename InputWord,
+              typename OutputWord = InputWord>
+    OutputWord reduce_no_run_no_checks(Kambites<Word>& k, InputWord const& w) {
+      OutputWord result;
+      k.reduce_no_run_no_checks(
+          std::back_inserter(result), std::begin(w), std::end(w));
+      if (k.kind() != congruence_kind::left) {
+        std::reverse(std::begin(result), std::end(result));
+      }
+      return result;
+    }
+
+    // TODO(0) doc
+    template <typename Word,
+              typename InputWord,
+              typename OutputWord = InputWord>
+    OutputWord reduce_no_run(Kambites<Word>& k, InputWord const& w) {
+      OutputWord result;
+      k.reduce_no_run(std::back_inserter(result), std::begin(w), std::end(w));
+      return result;
+    }
+
+    // TODO(0) doc
+    template <typename Word,
+              typename InputWord,
+              typename OutputWord = InputWord>
+    OutputWord reduce_no_checks(Kambites<Word>& k, InputWord const& w) {
+      OutputWord result;
+      k.reduce_no_checks(
+          std::back_inserter(result), std::begin(w), std::end(w));
+      return result;
+    }
+
+    // TODO(0) doc
+    template <typename Word,
+              typename InputWord,
+              typename OutputWord = InputWord>
+    OutputWord reduce(Kambites<Word>& k, InputWord const& w) {
+      OutputWord result;
+      k.reduce(std::back_inserter(result), std::begin(w), std::end(w));
+      return result;
+    }
+
+    template <typename Word, typename OutputWord = std::string>
+    OutputWord reduce(Kambites<Word>& k, std::string_view w) {
+      OutputWord result;
+      k.reduce(std::back_inserter(result), std::begin(w), std::end(w));
+      return result;
+    }
+
+    // TODO(0) add the missing functions string_view + char const* here
+    template <typename Word, typename OutputWord = std::string>
+    OutputWord reduce(Kambites<Word>& k, char const* w) {
+      OutputWord result;
+      k.reduce(std::back_inserter(result), w, w + std::strlen(w));
+      return result;
+    }
+
+    // TODO(0) doc
+    template <typename Word, typename Int = size_t>
+    auto reduce_no_run_no_checks(Kambites<Word>&                   k,
+                                 std::initializer_list<Int> const& w) {
+      return reduce_no_run_no_checks<std::initializer_list<Int>,
+                                     std::vector<Int>>(k, w);
+    }
+
+    // TODO(0) doc
+    template <typename Word, typename Int = size_t>
+    auto reduce_no_run(Kambites<Word>& k, std::initializer_list<Int> const& w) {
+      return reduce_no_run<std::initializer_list<Int>, std::vector<Int>>(k, w);
+    }
+
+    // TODO(0) doc
+    template <typename Word, typename Int = size_t>
+    auto reduce_no_checks(Kambites<Word>&                   k,
+                          std::initializer_list<Int> const& w) {
+      return reduce_no_checks<std::initializer_list<Int>, std::vector<Int>>(k,
+                                                                            w);
+    }
+
+    // TODO(0) doc
+    template <typename Word, typename Int = size_t>
+    auto reduce(Kambites<Word>& k, std::initializer_list<Int> const& w) {
+      return reduce<std::initializer_list<Int>, std::vector<Int>>(k, w);
+    }
+
   }  // namespace kambites
 
   template <typename Range,
@@ -745,7 +885,7 @@ namespace libsemigroups {
     while (!r.at_end()) {
       auto next = r.get();
       if (k.presentation().contains_empty_word() || !next.empty()) {
-        auto next_nf        = k.normal_form(next);
+        auto next_nf = kambites::reduce(k, next);  // TODO(0)reduce_no_checks?
         auto [it, inserted] = map.emplace(next_nf, index);
         if (inserted) {
           result.emplace_back();
