@@ -511,7 +511,7 @@ namespace libsemigroups {
                           "[no-valgrind][todd-coxeter][quick][no-coverage]") {
     auto rg = ReportGuard(false);
 
-    FroidurePin<BMat8> S(
+    FroidurePin<BMat8> S = to_froidure_pin(
         {BMat8({{0, 1, 0, 0}, {1, 0, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}),
          BMat8({{0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}, {1, 0, 0, 0}}),
          BMat8({{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {1, 0, 0, 1}}),
@@ -576,7 +576,8 @@ namespace libsemigroups {
     auto rg = ReportGuard(false);
 
     using Transf = LeastTransf<5>;
-    FroidurePin<Transf> S({Transf({1, 3, 4, 2, 3}), Transf({3, 2, 1, 3, 3})});
+    FroidurePin<Transf> S
+        = to_froidure_pin({Transf({1, 3, 4, 2, 3}), Transf({3, 2, 1, 3, 3})});
 
     REQUIRE(S.size() == 88);
 
@@ -747,7 +748,7 @@ namespace libsemigroups {
                           "2-sided cong. trans. semigroup",
                           "[todd-coxeter][quick]") {
     auto rg = ReportGuard(false);
-    auto S  = FroidurePin<Transf<>>(
+    auto S  = to_froidure_pin(
         {Transf<>({1, 3, 4, 2, 3}), Transf<>({3, 2, 1, 3, 3})});
 
     REQUIRE(S.size() == 88);
@@ -823,8 +824,11 @@ namespace libsemigroups {
       section_CR_style(tc);
       section_Cr_style(tc);
 
-      REQUIRE(index_of(tc, S.factorisation(Transf<>({1, 3, 1, 3, 3})))
-              != index_of(tc, S.factorisation(Transf<>({4, 2, 4, 4, 2}))));
+      REQUIRE(
+          index_of(tc,
+                   froidure_pin::factorisation(S, Transf<>({1, 3, 1, 3, 3})))
+          != index_of(
+              tc, froidure_pin::factorisation(S, Transf<>({4, 2, 4, 4, 2}))));
 
       REQUIRE(tc.number_of_classes() == 69);
       REQUIRE(tc.number_of_classes() == 69);
@@ -851,7 +855,7 @@ namespace libsemigroups {
                           "left congruence on transformation semigroup",
                           "[todd-coxeter][quick]") {
     auto rg = ReportGuard(false);
-    auto S  = FroidurePin<Transf<>>(
+    auto S  = to_froidure_pin(
         {Transf<>({1, 3, 4, 2, 3}), Transf<>({3, 2, 1, 3, 3})});
 
     REQUIRE(S.size() == 88);
@@ -859,32 +863,36 @@ namespace libsemigroups {
 
     SECTION("construction from presentation") {
       ToddCoxeter tc(left, to_presentation<word_type>(S));
-      todd_coxeter::add_pair(tc,
-                             S.factorisation(Transf<>({3, 4, 4, 4, 4})),
-                             S.factorisation(Transf<>({3, 1, 3, 3, 3})));
+      todd_coxeter::add_pair(
+          tc,
+          froidure_pin::factorisation(S, Transf<>({3, 4, 4, 4, 4})),
+          froidure_pin::factorisation(S, Transf<>({3, 1, 3, 3, 3})));
       test_case_010(tc, S);
     }
     SECTION("construction from Cayley graph") {
       auto tc = to_todd_coxeter(left, S);
-      todd_coxeter::add_pair(tc,
-                             S.factorisation(Transf<>({3, 4, 4, 4, 4})),
-                             S.factorisation(Transf<>({3, 1, 3, 3, 3})));
+      todd_coxeter::add_pair(
+          tc,
+          froidure_pin::factorisation(S, Transf<>({3, 4, 4, 4, 4})),
+          froidure_pin::factorisation(S, Transf<>({3, 1, 3, 3, 3})));
       test_case_010(tc, S);
     }
     SECTION("default construction + move from Cayley graph") {
       ToddCoxeter tc;
       tc = to_todd_coxeter(left, S);
-      todd_coxeter::add_pair(tc,
-                             S.factorisation(Transf<>({3, 4, 4, 4, 4})),
-                             S.factorisation(Transf<>({3, 1, 3, 3, 3})));
+      todd_coxeter::add_pair(
+          tc,
+          froidure_pin::factorisation(S, Transf<>({3, 4, 4, 4, 4})),
+          froidure_pin::factorisation(S, Transf<>({3, 1, 3, 3, 3})));
       test_case_010(tc, S);
     }
     SECTION("default construction + move from presentation") {
       ToddCoxeter tc;
       tc = ToddCoxeter(left, to_presentation<word_type>(S));
-      todd_coxeter::add_pair(tc,
-                             S.factorisation(Transf<>({3, 4, 4, 4, 4})),
-                             S.factorisation(Transf<>({3, 1, 3, 3, 3})));
+      todd_coxeter::add_pair(
+          tc,
+          froidure_pin::factorisation(S, Transf<>({3, 4, 4, 4, 4})),
+          froidure_pin::factorisation(S, Transf<>({3, 1, 3, 3, 3})));
       test_case_010(tc, S);
     }
   }
@@ -894,7 +902,7 @@ namespace libsemigroups {
                           "right cong. trans. semigroup",
                           "[todd-coxeter][quick]") {
     auto rg = ReportGuard(false);
-    auto S  = FroidurePin<Transf<>>(
+    auto S  = to_froidure_pin(
         {Transf<>({1, 3, 4, 2, 3}), Transf<>({3, 2, 1, 3, 3})});
 
     REQUIRE(S.size() == 88);
@@ -1559,7 +1567,8 @@ namespace libsemigroups {
                           "[todd-coxeter][quick]") {
     auto rg      = ReportGuard(false);
     using Transf = LeastTransf<5>;
-    FroidurePin<Transf> S({Transf({1, 3, 4, 2, 3}), Transf({3, 2, 1, 3, 3})});
+    FroidurePin<Transf> S
+        = to_froidure_pin({Transf({1, 3, 4, 2, 3}), Transf({3, 2, 1, 3, 3})});
     REQUIRE(S.size() == 88);
     REQUIRE(S.number_of_rules() == 18);
     auto tc = to_todd_coxeter(twosided, S);  // use Cayley graph
@@ -2525,7 +2534,8 @@ namespace libsemigroups {
 
     using Transf = LeastTransf<5>;
 
-    FroidurePin<Transf> S({Transf({1, 3, 4, 2, 3}), Transf({3, 2, 1, 3, 3})});
+    FroidurePin<Transf> S
+        = to_froidure_pin({Transf({1, 3, 4, 2, 3}), Transf({3, 2, 1, 3, 3})});
     REQUIRE(S.size() == 88);
     REQUIRE(S.number_of_rules() == 18);
 
@@ -4976,13 +4986,13 @@ namespace libsemigroups {
     REQUIRE(tc.number_of_classes() == 46'656);
 
     auto S = to_froidure_pin(tc);
-    REQUIRE((S.rules() | rx::count()) == 17'785);
+    REQUIRE((froidure_pin::rules(S) | rx::count()) == 17'785);
     auto kb = to_knuth_bendix(twosided, S);
     auto q  = kb.presentation();
     REQUIRE(q.alphabet() == "abcdef");
     REQUIRE(kb.rewrite("af") == "f");
 
-    for (auto const& [l, r] : S.rules()) {
+    for (auto const& [l, r] : froidure_pin::rules(S)) {
       if (l == 05_w && r == 5_w) {
         fmt::print("af=f is a rule!\n");
         break;

@@ -415,9 +415,10 @@ namespace libsemigroups {
     word_type w2 = froidure_pin::factorisation(S, Transf({3, 4, 4, 4, 4}));
 
     Congruence cong(twosided, S);
-    congruence::add_pair(cong,
-                         S.factorisation(Transf({3, 4, 4, 4, 4})),
-                         S.factorisation(Transf({3, 1, 3, 3, 3})));
+    congruence::add_pair(
+        cong,
+        froidure_pin::factorisation(S, Transf({3, 4, 4, 4, 4})),
+        froidure_pin::factorisation(S, Transf({3, 1, 3, 3, 3})));
     REQUIRE(cong.number_of_classes() == 21);
 
     word_type u = froidure_pin::factorisation(S, Transf({1, 3, 1, 3, 3}));
