@@ -56,6 +56,9 @@
 #include "detail/string.hpp"             // for is_prefix
 #include "detail/uf.hpp"                 // for Duf<>
 
+// TODO(0):
+// * nodiscard
+
 namespace libsemigroups {
 
   //! Defined in ``kambites.hpp``.
@@ -223,6 +226,21 @@ namespace libsemigroups {
     // Interface requirements - contains
     ////////////////////////////////////////////////////////////////////////
 
+    // The Kambites class requires that input to contains to be actual objects
+    // not iterators. This is different from KnuthBendix and ToddCoxeter.
+
+    // TODO(0) make private?
+    [[nodiscard]] bool contains_no_checks(value_type const& u,
+                                          value_type const& v);
+
+    //! \throws LibsemigroupsException if the small overlap class is not at
+    //! least \f$4\f$.
+    // TODO(0) make private?
+    template <typename SFINAE = bool>
+    [[nodiscard]] auto contains_no_checks(word_type const& u,
+                                          word_type const& v)
+        -> std::enable_if_t<!std::is_same_v<value_type, word_type>, SFINAE>;
+
     // TODO(0) to tpp
     template <typename Iterator1,
               typename Iterator2,
@@ -233,7 +251,8 @@ namespace libsemigroups {
                                                     Iterator3 first2,
                                                     Iterator4 last2) const {
       if (finished()) {
-        contains_no_checks(first1, last1, first2, last2);
+        const_cast<Kambites*>(this)->contains_no_checks(
+            first1, last1, first2, last2);
       }
       return std::equal(first1, last1, first2, last2);
     }
@@ -248,8 +267,18 @@ namespace libsemigroups {
                                           Iterator4 last2) const {
       throw_if_letter_out_of_bounds(first1, last1);
       throw_if_letter_out_of_bounds(first2, last2);
+
       return currently_contains_no_checks(first1, last1, first2, last2);
     }
+
+    template <typename Iterator1,
+              typename Iterator2,
+              typename Iterator3,
+              typename Iterator4>
+    [[nodiscard]] bool contains_no_checks(Iterator1 first1,
+                                          Iterator2 last1,
+                                          Iterator3 first2,
+                                          Iterator4 last2);
 
     template <typename Iterator1,
               typename Iterator2,
@@ -261,29 +290,13 @@ namespace libsemigroups {
                                 Iterator4 last2) {
       throw_if_letter_out_of_bounds(first1, last1);
       throw_if_letter_out_of_bounds(first2, last2);
+      validate_small_overlap_class();
       return contains_no_checks(first1, last1, first2, last2);
     }
 
-    template <typename Iterator1,
-              typename Iterator2,
-              typename Iterator3,
-              typename Iterator4>
-    [[nodiscard]] bool contains_no_checks(Iterator1 first1,
-                                          Iterator2 last1,
-                                          Iterator3 first2,
-                                          Iterator4 last2);
-    //!
-    //! \throws LibsemigroupsException if the small overlap class is not at
-    //! least \f$4\f$.
-    // Not noexcept, throws
-    [[nodiscard]] bool contains(word_type const& u, word_type const& v);
-
-    // Note that the asymmetry between how contains and normal_form are
-    // implemented is because contains is a pure virtual function. Without this
-    // restriction contains could be more simply implemented as normal_form is.
-    template <typename SFINAE = bool>
-    [[nodiscard]] auto contains(value_type const& u, value_type const& v)
-        -> std::enable_if_t<!std::is_same_v<value_type, word_type>, SFINAE>;
+    ////////////////////////////////////////////////////////////////////////
+    // Interface requirements - reduce
+    ////////////////////////////////////////////////////////////////////////
 
     //! \copydoc FpSemigroupInterface::normal_form
     //!
@@ -389,7 +402,8 @@ namespace libsemigroups {
     void throw_if_letter_out_of_bounds(Iterator1 first, Iterator2 last) const {
       if constexpr (std::is_same_v<
                         typename decltype(_presentation)::letter_type,
-                        typename Iterator1::value_type>) {
+                        typename std::decay_t<
+                            decltype(*std::declval<Iterator2>())>>) {
         _presentation.validate_word(first, last);
       } else {
         ToString to_string(_presentation.alphabet());
@@ -608,12 +622,112 @@ namespace libsemigroups {
   namespace kambites {
     using congruence_interface::add_pair;
     using congruence_interface::add_pair_no_checks;
+
+    ////////////////////////////////////////////////////////////////////////
+    // Interface helpers - contains
+    ////////////////////////////////////////////////////////////////////////
+    // TODO(0) ensure there are Word2, string_view, and char const* versions of
+    // these
+
+    // TODO(0) doc
+    template <typename Word1, typename Word2>
+    [[nodiscard]] tril currently_contains_no_checks(Kambites<Word1> const& k,
+                                                    Word2 const&           u,
+                                                    Word2 const&           v) {
+      return k.currently_contains_no_checks(
+          std::begin(u), std::end(u), std::begin(v), std::end(v));
+    }
+
+    // TODO(0) doc
+    template <typename Word1, typename Word2>
+    [[nodiscard]] tril currently_contains(Kambites<Word1> const& k,
+                                          Word2 const&           u,
+                                          Word2 const&           v) {
+      return k.currently_contains(
+          std::begin(u), std::end(u), std::begin(v), std::end(v));
+    }
+
+    template <typename Word>
+    [[nodiscard]] bool contains_no_checks(Kambites<Word>&  k,
+                                          std::string_view u,
+                                          std::string_view v) {
+      return k.contains_no_checks(
+          std::begin(u), std::end(u), std::begin(v), std::end(v));
+    }
+
+    // TODO(0) doc
+    template <typename Word1, typename Word2>
+    [[nodiscard]] bool contains_no_checks(Kambites<Word1>& k,
+                                          Word2 const&     u,
+                                          Word2 const&     v) {
+      return k.contains_no_checks(
+          std::begin(u), std::end(u), std::begin(v), std::end(v));
+    }
+
+    // JDM not sure why this is required in addition to the string_view one, but
+    // it is.
+    template <typename Word>
+    [[nodiscard]] bool contains(Kambites<Word>& k,
+                                char const*     u,
+                                char const*     v) {
+      return k.contains(u, u + std::strlen(u), v, v + std::strlen(v));
+    }
+
+    template <typename Word>
+    [[nodiscard]] bool contains(Kambites<Word>&  k,
+                                std::string_view u,
+                                std::string_view v) {
+      return k.contains(std::begin(u), std::end(u), std::begin(v), std::end(v));
+    }
+
+    // TODO(0) doc
+    template <typename Word1, typename Word2>
+    [[nodiscard]] bool contains(Kambites<Word1>& k,
+                                Word2 const&     u,
+                                Word2 const&     v) {
+      return k.contains(std::begin(u), std::end(u), std::begin(v), std::end(v));
+    }
+
+    // TODO(0) doc
+    template <typename Word1, typename Int = size_t>
+    [[nodiscard]] tril
+    currently_contains_no_checks(Kambites<Word1> const&            k,
+                                 std::initializer_list<Int> const& u,
+                                 std::initializer_list<Int> const& v) {
+      return currently_contains_no_checks<std::initializer_list<Int>>(k, u, v);
+    }
+
+    // TODO(0) doc
+    template <typename Word1, typename Int = size_t>
+    [[nodiscard]] tril currently_contains(Kambites<Word1> const&            k,
+                                          std::initializer_list<Int> const& u,
+                                          std::initializer_list<Int> const& v) {
+      return currently_contains<std::initializer_list<Int>>(k, u, v);
+    }
+
+    // TODO(0) doc
+    template <typename Word1, typename Int = size_t>
+    [[nodiscard]] bool contains_no_checks(Kambites<Word1>&                  k,
+                                          std::initializer_list<Int> const& u,
+                                          std::initializer_list<Int> const& v) {
+      return contains_no_checks<std::initializer_list<Int>>(k, u, v);
+    }
+
+    // TODO(0) doc
+    template <typename Word1, typename Int = size_t>
+    [[nodiscard]] bool contains(Kambites<Word1>&                  k,
+                                std::initializer_list<Int> const& u,
+                                std::initializer_list<Int> const& v) {
+      return contains<std::initializer_list<Int>>(k, u, v);
+    }
+
   }  // namespace kambites
 
   template <typename Range,
             typename Word1,
             typename Word2 = typename Kambites<Word1>::value_type>
-  std::vector<std::vector<Word2>> partition(Kambites<Word1>& k, Range r) {
+  [[nodiscard]] std::vector<std::vector<Word2>> partition(Kambites<Word1>& k,
+                                                          Range            r) {
     static_assert(
         std::is_same_v<std::decay_t<typename Range::output_type>, Word2>);
     using return_type = std::vector<std::vector<Word2>>;

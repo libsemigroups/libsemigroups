@@ -93,8 +93,33 @@ namespace libsemigroups {
   Kambites<Word>::~Kambites() = default;
 
   ////////////////////////////////////////////////////////////////////////
-  // CongruenceInterface - pure virtual functions impl - public
+  // Interface requirements - contains
   ////////////////////////////////////////////////////////////////////////
+
+  // The Kambites class requires that input to contains to be actual objects
+  // not iterators. This is different from KnuthBendix and ToddCoxeter.
+
+  template <typename Word>
+  bool Kambites<Word>::contains_no_checks(value_type const& u,
+                                          value_type const& v) {
+    run();
+    // Words aren't validated, the below returns false if they contain
+    // letters not in the alphabet.
+    return wp_prefix(internal_type(u), internal_type(v), internal_type());
+  }
+
+  template <typename Word>
+  template <typename SFINAE>
+  auto Kambites<Word>::contains_no_checks(word_type const& u,
+                                          word_type const& v)
+      -> std::enable_if_t<!std::is_same_v<value_type, word_type>, SFINAE> {
+    run();
+    // Words aren't validated, the below returns false if they contain
+    // letters not in the alphabet.
+    std::string uu = to_string(presentation(), u);
+    std::string vv = to_string(presentation(), v);
+    return wp_prefix(internal_type(uu), internal_type(vv), internal_type());
+  }
 
   template <typename Word>
   template <typename Iterator1,
@@ -105,34 +130,18 @@ namespace libsemigroups {
                                                         Iterator2 last1,
                                                         Iterator3 first2,
                                                         Iterator4 last2) {
-    _tmp_value1.assign(first1, last1);
-    _tmp_value2.assign(first2, last2);
-    return contains(_tmp_value1, _tmp_value2);
-  }
-
-  template <typename Word>
-  bool Kambites<Word>::contains(word_type const& u, word_type const& v) {
-    validate_small_overlap_class();
-    // Words aren't validated, the below returns false if they contain
-    // letters not in the alphabet.
-    if constexpr (std::is_same_v<internal_type, word_type>) {
-      return wp_prefix(internal_type(u), internal_type(v), internal_type());
+    if constexpr (std::is_same_v<typename decltype(_presentation)::letter_type,
+                                 typename std::decay_t<
+                                     decltype(*std::declval<Iterator2>())>>) {
+      _tmp_value1.assign(first1, last1);
+      _tmp_value2.assign(first2, last2);
     } else {
-      ToString    to_string(presentation().alphabet());
-      std::string uu = to_string(u);
-      std::string vv = to_string(v);
-      return wp_prefix(internal_type(uu), internal_type(vv), internal_type());
+      ToString to_string(_presentation.alphabet());
+      // TODO improve!
+      _tmp_value1 = to_string(word_type(first1, last1));
+      _tmp_value2 = to_string(word_type(first2, last2));
     }
-  }
-
-  template <typename Word>
-  template <typename SFINAE>
-  auto Kambites<Word>::contains(value_type const& u, value_type const& v)
-      -> std::enable_if_t<!std::is_same_v<value_type, word_type>, SFINAE> {
-    validate_small_overlap_class();
-    // Words aren't validated, the below returns false if they contain
-    // letters not in the alphabet.
-    return wp_prefix(internal_type(u), internal_type(v), internal_type());
+    return contains_no_checks(_tmp_value1, _tmp_value2);
   }
 
   template <typename Word>

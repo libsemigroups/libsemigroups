@@ -221,9 +221,8 @@ namespace libsemigroups {
             ->contains(u, v);
       } else {
         LIBSEMIGROUPS_ASSERT(winner_kind == RunnerKind::K);
-        // TODO(0) update!
         return std::static_pointer_cast<Kambites<word_type>>(_race.winner())
-            ->contains(u, v);
+            ->contains(std::begin(u), std::end(u), std::begin(v), std::end(v));
       }
     }
 
@@ -238,7 +237,7 @@ namespace libsemigroups {
           std::static_pointer_cast<KnuthBendix<>>(*_race.begin())
               ->throw_if_letter_out_of_bounds(first, last);
         } else {
-          LIBSEMIGROUPS_ASSERT(winner_kind == RunnerKind::K);
+          LIBSEMIGROUPS_ASSERT(_runner_kinds[0] == RunnerKind::K);
           std::static_pointer_cast<Kambites<word_type>>(*_race.begin())
               ->throw_if_letter_out_of_bounds(first, last);
         }
