@@ -32,6 +32,12 @@ namespace libsemigroups {
   // CongruenceInterface - non-pure virtual methods - private
   /////////////////////////////////////////////////////////////////////////
 
+  void CongruenceInterface::add_pair_no_checks_no_reverse(word_type const& u,
+                                                          word_type const& v) {
+    _generating_pairs.push_back(u);
+    _generating_pairs.push_back(v);
+  }
+
   void CongruenceInterface::add_pair_no_checks(word_type&& u, word_type&& v) {
     throw_if_started();
     for (auto&& w : {u, v}) {
@@ -50,9 +56,4 @@ namespace libsemigroups {
     }
   }
 
-  void CongruenceInterface::add_pair_no_checks_no_reverse(word_type const& u,
-                                                          word_type const& v) {
-    _generating_pairs.push_back(u);
-    _generating_pairs.push_back(v);
-  }
 }  // namespace libsemigroups

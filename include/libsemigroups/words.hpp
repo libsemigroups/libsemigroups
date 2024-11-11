@@ -341,8 +341,7 @@ namespace libsemigroups {
     //! function could be anything.
     [[nodiscard]] output_type get() const noexcept {
       set_iterator();
-      return std::visit(
-          [](auto& it) -> auto const& { return *it; }, _current);
+      return std::visit([](auto& it) -> auto const& { return *it; }, _current);
     }
 
     //! \brief Advance to the next value.
@@ -958,8 +957,16 @@ namespace libsemigroups {
     //! * \ref literals
     [[nodiscard]] word_type operator()(std::string const& input) const {
       word_type output;
-                operator()(output, input);
+      operator()(output, input);
       return output;
+    }
+
+    [[nodiscard]] letter_type operator()(char input) const {
+      // TODO improve this
+      word_type output;
+      // operator()(output, std::string_view(&input, 1));
+      operator()(output, std::string(input, 1));
+      return output[0];
     }
 
     template <typename InputRange>
@@ -1278,7 +1285,7 @@ namespace libsemigroups {
     //! * \ref literals
     [[nodiscard]] std::string operator()(word_type const& input) const {
       std::string output;
-                  operator()(output, input);
+      operator()(output, input);
       return output;
     }
 

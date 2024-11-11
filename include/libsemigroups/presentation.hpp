@@ -561,8 +561,8 @@ namespace libsemigroups {
     //! \complexity
     //! Worst case \f$O(mn)\f$ where \f$m\f$ is the length of the longest
     //! word, and \f$n\f$ is the size of the alphabet.
-    template <typename Iterator>
-    void validate_word(Iterator first, Iterator last) const;
+    template <typename Iterator1, typename Iterator2>
+    void validate_word(Iterator1 first, Iterator2 last) const;
 
     //! \brief Check if every rule consists only of letters belonging to the
     //! alphabet.

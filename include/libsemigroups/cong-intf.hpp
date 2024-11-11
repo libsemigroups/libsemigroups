@@ -117,6 +117,7 @@ namespace libsemigroups {
       return _type;
     }
 
+    // TODO(0) make protected, shouldn't be able to change the kind arbitrarily
     CongruenceInterface& kind(congruence_kind knd) {
       _type = knd;
       return *this;

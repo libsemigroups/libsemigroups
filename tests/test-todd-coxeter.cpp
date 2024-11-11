@@ -2791,6 +2791,11 @@ namespace libsemigroups {
 
     REQUIRE(tc.number_of_classes() == 14'911);
     REQUIRE(tc.finished());
+
+    ToWord to_word("abcd");
+
+    REQUIRE(contains(tc, to_word("dd"), to_word("a")));
+    REQUIRE(contains(tc, "dd"_w, "a"_w));
   }
 
   LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",

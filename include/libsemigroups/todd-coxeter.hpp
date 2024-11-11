@@ -1462,6 +1462,23 @@ namespace libsemigroups {
           std::begin(u), std::end(u), std::begin(v), std::end(v));
     }
 
+    // TODO to cpp
+    // TODO(0) doc
+    // inline bool contains(ToddCoxeter&     tc,
+    //                      std::string_view u,
+    //                      std::string_view v) {
+    //   ToWord to_word("abcd");  // FIXME need to get the alphabet from tc
+    //   auto   ur = rx::iterator_range(std::begin(u), std::end(u))
+    //             | rx::transform([&to_word](char x) { return to_word(x); });
+    //   auto vr = rx::iterator_range(std::begin(v), std::end(v))
+    //             | rx::transform([&to_word](char x) { return to_word(x); });
+    //   return tc.contains(
+    //       rx::begin(ur), rx::end(ur), rx::begin(vr), rx::end(vr));
+    //   // TODO(0) this currently doesn't work because, for example, std::equal
+    //   // doesn't work for heterogeneous iterators :(
+    // }
+    // TODO(0) x3 more contains for string_views
+
     // TODO(0) doc
     template <typename Int = size_t>
     tril currently_contains_no_checks(ToddCoxeter const&                tc,
