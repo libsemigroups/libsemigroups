@@ -809,7 +809,38 @@ namespace libsemigroups {
                   001000101_w, 010001000_w, 010001100_w}}));
   }
 
-  // TODO move to test-to-todd-coxeter.cpp
+  namespace {
+    void test_case_010(ToddCoxeter& tc, FroidurePin<Transf<>>& S) {
+      section_felsch(tc);
+      section_hlt(tc);
+      section_Rc_style(tc);
+      section_R_over_C_style(tc);
+      section_CR_style(tc);
+      section_Cr_style(tc);
+
+      REQUIRE(index_of(tc, S.factorisation(Transf<>({1, 3, 1, 3, 3})))
+              != index_of(tc, S.factorisation(Transf<>({4, 2, 4, 4, 2}))));
+
+      REQUIRE(tc.number_of_classes() == 69);
+      REQUIRE(tc.number_of_classes() == 69);
+      auto ntc = non_trivial_classes(
+          tc, S.cbegin_normal_forms(), S.cend_normal_forms());
+      REQUIRE(ntc.size() == 1);
+      REQUIRE(ntc[0].size() == 20);
+      REQUIRE(ntc
+              == decltype(ntc)(
+                  {{001_w,      101_w,       0001_w,      0101_w,
+                    1001_w,     00001_w,     00101_w,     10001_w,
+                    10101_w,    000101_w,    010001_w,    010101_w,
+                    100101_w,   0000101_w,   0010001_w,   1000101_w,
+                    01000101_w, 001000100_w, 001000101_w, 010001100_w}}));
+      REQUIRE(std::all_of(
+          ntc[0].cbegin(), ntc[0].cend(), [&ntc, &tc](auto const& w) {
+            return contains(tc, w, ntc[0][0]);
+          }));
+    }
+  }  // namespace
+
   LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                           "010",
                           "left congruence on transformation semigroup",
@@ -821,48 +852,32 @@ namespace libsemigroups {
     REQUIRE(S.size() == 88);
     REQUIRE(S.number_of_rules() == 18);
 
-    // FIXME next lines seg fault
-    // ToddCoxeter tc;
-    // tc = to_todd_coxeter(left, S);  // TODO(0) add test for this
-    // FIXME next lines seg fault
-    ToddCoxeter tc;
-    tc = ToddCoxeter(left, to_presentation<word_type>(S));
-    // WORKING
-    // - ToddCoxeter tc(left, to_presentation<word_type>(S));
-    //
-    // - auto tc = to_todd_coxeter(left, S); // TODO(0) add test for this
-    tc.add_pair(froidure_pin::factorisation(S, Transf<>({3, 4, 4, 4, 4})),
-                froidure_pin::factorisation(S, Transf<>({3, 1, 3, 3, 3})));
-
-    section_felsch(tc);
-    section_hlt(tc);
-    section_Rc_style(tc);
-    section_R_over_C_style(tc);
-    section_CR_style(tc);
-    section_Cr_style(tc);
-
-    REQUIRE(
-        index_of(tc, froidure_pin::factorisation(S, Transf<>({1, 3, 1, 3, 3})))
-        != index_of(tc,
-                    froidure_pin::factorisation(S, Transf<>({4, 2, 4, 4, 2}))));
-
-    REQUIRE(tc.number_of_classes() == 69);
-    REQUIRE(tc.number_of_classes() == 69);
-    auto ntc = non_trivial_classes(
-        tc, S.cbegin_normal_forms(), S.cend_normal_forms());
-    REQUIRE(ntc.size() == 1);
-    REQUIRE(ntc[0].size() == 20);
-    REQUIRE(
-        ntc
-        == decltype(ntc)(
-            {{001_w,     101_w,      0001_w,      0101_w,      1001_w,
-              00001_w,   00101_w,    10001_w,     10101_w,     000101_w,
-              010001_w,  010101_w,   100101_w,    0000101_w,   0010001_w,
-              1000101_w, 01000101_w, 001000100_w, 001000101_w, 010001100_w}}));
-    REQUIRE(
-        std::all_of(ntc[0].cbegin(), ntc[0].cend(), [&ntc, &tc](auto const& w) {
-          return contains(tc, w, ntc[0][0]);
-        }));
+    SECTION("construction from presentation") {
+      ToddCoxeter tc(left, to_presentation<word_type>(S));
+      tc.add_pair(S.factorisation(Transf<>({3, 4, 4, 4, 4})),
+                  S.factorisation(Transf<>({3, 1, 3, 3, 3})));
+      test_case_010(tc, S);
+    }
+    SECTION("construction from Cayley graph") {
+      auto tc = to_todd_coxeter(left, S);
+      tc.add_pair(S.factorisation(Transf<>({3, 4, 4, 4, 4})),
+                  S.factorisation(Transf<>({3, 1, 3, 3, 3})));
+      test_case_010(tc, S);
+    }
+    SECTION("default construction + move from Cayley graph") {
+      ToddCoxeter tc;
+      tc = to_todd_coxeter(left, S);
+      tc.add_pair(S.factorisation(Transf<>({3, 4, 4, 4, 4})),
+                  S.factorisation(Transf<>({3, 1, 3, 3, 3})));
+      test_case_010(tc, S);
+    }
+    SECTION("default construction + move from presentation") {
+      ToddCoxeter tc;
+      tc = ToddCoxeter(left, to_presentation<word_type>(S));
+      tc.add_pair(S.factorisation(Transf<>({3, 4, 4, 4, 4})),
+                  S.factorisation(Transf<>({3, 1, 3, 3, 3})));
+      test_case_010(tc, S);
+    }
   }
 
   LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
@@ -4228,10 +4243,10 @@ namespace libsemigroups {
     REQUIRE(reduce(tc, 13042564876_w) == 13042564786_w);
     REQUIRE(reduce(tc, 13042564877_w) == 1304256487_w);
     REQUIRE(reduce(tc, 13042564878_w) == 1304256487_w);
-    // std::vector<word_type> ws = {1230_w, 2031_w, 10231_w, 12032_w, 102132_w};
-    // std::vector<word_type> ws = {012_w, 021_w, 102_w, 120_w, 1021_w};
-    // std::vector<word_type> ws = {1203_w, 0123_w, 0213_w, 1023_w, 10213_w};
-    // std::vector<word_type> ws
+    // std::vector<word_type> ws = {1230_w, 2031_w, 10231_w, 12032_w,
+    // 102132_w}; std::vector<word_type> ws = {012_w, 021_w, 102_w, 120_w,
+    // 1021_w}; std::vector<word_type> ws = {1203_w, 0123_w, 0213_w, 1023_w,
+    // 10213_w}; std::vector<word_type> ws
     //     = {123043_w, 1203243_w, 203143_w, 1023143_w, 10213243_w};
 
     // auto involution = [&tc](word_type& w) {
@@ -4355,12 +4370,12 @@ namespace libsemigroups {
       //  //       == std::vector<std::vector<word_type>>());
 
       //  std::vector<word_type> possible2 = {
-      //      012_w,     0122_w,     0112_w,     01122_w,    0012_w,    00122_w,
-      //      00112_w,   001122_w,   2012_w,     22012_w,    20112_w, 220112_w,
-      //      20012_w,   220012_w,   200112_w,   2200112_w,  1012_w,    10122_w,
-      //      11012_w,   110122_w,   10012_w,    100122_w,   110012_w,
-      //      1100122_w, 12012_w,   122012_w,   112012_w,   1122012_w, 120012_w,
-      //      1220012_w, 1120012_w, 11220012_w, 212012_w,   2212012_w,
+      //      012_w,     0122_w,     0112_w,     01122_w,    0012_w, 00122_w,
+      //      00112_w,   001122_w,   2012_w,     22012_w,    20112_w,
+      //      220112_w, 20012_w,   220012_w,   200112_w,   2200112_w,  1012_w,
+      //      10122_w, 11012_w,   110122_w,   10012_w,    100122_w, 110012_w,
+      //      1100122_w, 12012_w,   122012_w,   112012_w,   1122012_w,
+      //      120012_w, 1220012_w, 1120012_w, 11220012_w, 212012_w, 2212012_w,
       //      2112012_w, 22112012_w, 2120012_w, 22120012_w, 21120012_w,
       //      221120012_w};
       //  REQUIRE(
@@ -4410,7 +4425,7 @@ namespace libsemigroups {
       //      31230123_w,     331230123_w,     312230123_w,     3312230123_w,
       //      311230123_w,    3311230123_w,    3112230123_w,    33112230123_w,
       //      312300123_w,    3312300123_w,    3122300123_w,    33122300123_w,
-      //      3112300123_w,   33112300123_w,   31122300123_w,   331122300123_w,
+      //      3112300123_w,   33112300123_w,   31122300123_w, 331122300123_w,
       //      2120123_w,      21201233_w,      22120123_w,      221201233_w,
       //      21120123_w,     211201233_w,     221120123_w,     2211201233_w,
       //      21200123_w,     212001233_w,     221200123_w,     2212001233_w,
@@ -4418,16 +4433,16 @@ namespace libsemigroups {
       //      21230123_w,     212330123_w,     221230123_w,     2212330123_w,
       //      211230123_w,    2112330123_w,    2211230123_w,    22112330123_w,
       //      212300123_w,    2123300123_w,    2212300123_w,    22123300123_w,
-      //      2112300123_w,   21123300123_w,   22112300123_w,   221123300123_w,
+      //      2112300123_w,   21123300123_w,   22112300123_w, 221123300123_w,
       //      231230123_w,    2331230123_w,    2231230123_w,    22331230123_w,
-      //      2311230123_w,   23311230123_w,   22311230123_w,   223311230123_w,
-      //      2312300123_w,   23312300123_w,   22312300123_w,   223312300123_w,
-      //      23112300123_w,  233112300123_w,  223112300123_w,  2233112300123_w,
-      //      3231230123_w,   33231230123_w,   32231230123_w,   332231230123_w,
-      //      32311230123_w,  332311230123_w,  322311230123_w,  3322311230123_w,
-      //      32312300123_w,  332312300123_w,  322312300123_w,  3322312300123_w,
-      //      323112300123_w, 3323112300123_w, 3223112300123_w,
-      //      33223112300123_w};
+      //      2311230123_w,   23311230123_w,   22311230123_w, 223311230123_w,
+      //      2312300123_w,   23312300123_w,   22312300123_w, 223312300123_w,
+      //      23112300123_w,  233112300123_w,  223112300123_w,
+      //      2233112300123_w, 3231230123_w,   33231230123_w,   32231230123_w,
+      //      332231230123_w, 32311230123_w,  332311230123_w,  322311230123_w,
+      //      3322311230123_w, 32312300123_w,  332312300123_w, 322312300123_w,
+      //      3322312300123_w, 323112300123_w, 3323112300123_w,
+      //      3223112300123_w, 33223112300123_w};
       //  REQUIRE(
       //      todd_coxeter::is_traversal(tc, possible3.cbegin(),
       //      possible3.cend()));
@@ -4440,7 +4455,8 @@ namespace libsemigroups {
       //      NormalForms nf(tc, possible4.begin(), possible4.end());
       //      REQUIRE(std::all_of(possible4.begin(),
       //                          possible4.end(),
-      //                          [&nf](auto const& w) { return nf(w) == w; }));
+      //                          [&nf](auto const& w) { return nf(w) == w;
+      //                          }));
       //
       // REQUIRE(partition(tc, possible3.cbegin(), possible3.cend())
       //         == std::vector<std::vector<word_type>>());
@@ -4480,7 +4496,8 @@ namespace libsemigroups {
     // for (auto i = 0; i < 4; ++i) {
     //   for (auto j = 0; j < 4; ++j) {
     //     for (auto k = 0; k < 4; ++k) {
-    //       result.push_back(nf(w + pow(0_w, i) + pow(1_w, j) + pow(2_w, k)));
+    //       result.push_back(nf(w + pow(0_w, i) + pow(1_w, j) + pow(2_w,
+    //       k)));
     //     }
     //   }
     // }
