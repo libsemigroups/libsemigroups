@@ -309,33 +309,23 @@ namespace libsemigroups {
     // TODO(0) replace with iterators
     // TODO(0) out of line
     [[nodiscard]] bool contains(word_type const& u, word_type const& v) {
-      run();
-      auto winner_kind = _runner_kinds[_race.winner_index()];
-      if (winner_kind == RunnerKind::TC) {
-        return std::static_pointer_cast<ToddCoxeter>(_race.winner())
-            ->contains(std::begin(u), std::end(u), std::begin(v), std::end(v));
-      } else if (winner_kind == RunnerKind::KB) {
-        return std::static_pointer_cast<KnuthBendix<>>(_race.winner())
-            ->contains(std::begin(u), std::end(u), std::begin(v), std::end(v));
-      } else {
-        LIBSEMIGROUPS_ASSERT(winner_kind == RunnerKind::K);
-        return std::static_pointer_cast<Kambites<word_type>>(_race.winner())
-            ->contains(std::begin(u), std::end(u), std::begin(v), std::end(v));
-      }
+      return contains(std::begin(u), std::end(u), std::begin(v), std::end(v));
     }
 
     // TODO(0) out of line
     template <typename Iterator1, typename Iterator2>
     void throw_if_letter_out_of_bounds(Iterator1 first, Iterator2 last) const {
       if (!_race.empty()) {
-        if (_runner_kinds[0] == RunnerKind::TC) {
+        size_t index = (finished() ? _race.winner_index() : 0);
+
+        if (_runner_kinds[index] == RunnerKind::TC) {
           std::static_pointer_cast<ToddCoxeter>(*_race.begin())
               ->throw_if_letter_out_of_bounds(first, last);
-        } else if (_runner_kinds[0] == RunnerKind::KB) {
+        } else if (_runner_kinds[index] == RunnerKind::KB) {
           std::static_pointer_cast<KnuthBendix<>>(*_race.begin())
               ->throw_if_letter_out_of_bounds(first, last);
         } else {
-          LIBSEMIGROUPS_ASSERT(_runner_kinds[0] == RunnerKind::K);
+          LIBSEMIGROUPS_ASSERT(_runner_kinds[index] == RunnerKind::K);
           std::static_pointer_cast<Kambites<word_type>>(*_race.begin())
               ->throw_if_letter_out_of_bounds(first, last);
         }

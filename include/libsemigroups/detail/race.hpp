@@ -127,8 +127,7 @@ namespace libsemigroups {
         return _winner;
       }
 
-      [[nodiscard]] size_t winner_index() {
-        run();
+      [[nodiscard]] size_t winner_index() const {
         return _winner_index;
       }
 
