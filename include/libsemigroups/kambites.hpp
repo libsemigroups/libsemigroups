@@ -451,7 +451,9 @@ namespace libsemigroups {
       if constexpr (std::is_same_v<
                         typename decltype(_presentation)::letter_type,
                         typename std::decay_t<
-                            decltype(*std::declval<Iterator2>())>>) {
+                            decltype(*std::declval<Iterator1>())>>) {
+        // TODO static assert that replacing Iterator1 by Iterator2 in the
+        // previous line, yields the same type
         _presentation.validate_word(first, last);
       } else {
         ToString to_string(_presentation.alphabet());

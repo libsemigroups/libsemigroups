@@ -107,30 +107,30 @@ namespace libsemigroups {
     REQUIRE(kb.confluent());
     REQUIRE(kb.number_of_active_rules() == 24);
 
-    REQUIRE(kb.equal_to("ab", "c"));
-    REQUIRE(kb.equal_to("bc", "d"));
-    REQUIRE(kb.equal_to("cd", "e"));
-    REQUIRE(kb.equal_to("de", "a"));
-    REQUIRE(kb.equal_to("ea", "b"));
-    REQUIRE(kb.equal_to("cc", "ad"));
-    REQUIRE(kb.equal_to("dd", "be"));
-    REQUIRE(kb.equal_to("ee", "ca"));
-    REQUIRE(kb.equal_to("ec", "bb"));
-    REQUIRE(kb.equal_to("db", "aa"));
-    REQUIRE(kb.equal_to("aac", "be"));
-    REQUIRE(kb.equal_to("bd", "aa"));
-    REQUIRE(kb.equal_to("bbe", "aad"));
-    REQUIRE(kb.equal_to("aaa", "e"));
-    REQUIRE(kb.equal_to("eb", "be"));
-    REQUIRE(kb.equal_to("ba", "c"));
-    REQUIRE(kb.equal_to("da", "ad"));
-    REQUIRE(kb.equal_to("ca", "ac"));
-    REQUIRE(kb.equal_to("ce", "bb"));
-    REQUIRE(kb.equal_to("cb", "d"));
-    REQUIRE(kb.equal_to("ed", "a"));
-    REQUIRE(kb.equal_to("dc", "e"));
-    REQUIRE(kb.equal_to("ae", "b"));
-    REQUIRE(kb.equal_to("bbb", "a"));
+    REQUIRE(knuth_bendix::contains(kb, "ab", "c"));
+    REQUIRE(knuth_bendix::contains(kb, "bc", "d"));
+    REQUIRE(knuth_bendix::contains(kb, "cd", "e"));
+    REQUIRE(knuth_bendix::contains(kb, "de", "a"));
+    REQUIRE(knuth_bendix::contains(kb, "ea", "b"));
+    REQUIRE(knuth_bendix::contains(kb, "cc", "ad"));
+    REQUIRE(knuth_bendix::contains(kb, "dd", "be"));
+    REQUIRE(knuth_bendix::contains(kb, "ee", "ca"));
+    REQUIRE(knuth_bendix::contains(kb, "ec", "bb"));
+    REQUIRE(knuth_bendix::contains(kb, "db", "aa"));
+    REQUIRE(knuth_bendix::contains(kb, "aac", "be"));
+    REQUIRE(knuth_bendix::contains(kb, "bd", "aa"));
+    REQUIRE(knuth_bendix::contains(kb, "bbe", "aad"));
+    REQUIRE(knuth_bendix::contains(kb, "aaa", "e"));
+    REQUIRE(knuth_bendix::contains(kb, "eb", "be"));
+    REQUIRE(knuth_bendix::contains(kb, "ba", "c"));
+    REQUIRE(knuth_bendix::contains(kb, "da", "ad"));
+    REQUIRE(knuth_bendix::contains(kb, "ca", "ac"));
+    REQUIRE(knuth_bendix::contains(kb, "ce", "bb"));
+    REQUIRE(knuth_bendix::contains(kb, "cb", "d"));
+    REQUIRE(knuth_bendix::contains(kb, "ed", "a"));
+    REQUIRE(knuth_bendix::contains(kb, "dc", "e"));
+    REQUIRE(knuth_bendix::contains(kb, "ae", "b"));
+    REQUIRE(knuth_bendix::contains(kb, "bbb", "a"));
 
     // REQUIRE(knuth_bendix::is_reduced(kb));
     REQUIRE(kb.rewrite("ca") == "ac");
@@ -175,9 +175,9 @@ namespace libsemigroups {
     REQUIRE(kb.confluent());
     REQUIRE(kb.number_of_active_rules() == 6);
 
-    REQUIRE(kb.equal_to("Aba", "bb"));
-    REQUIRE(kb.equal_to("Bcb", "cc"));
-    REQUIRE(kb.equal_to("Cac", "aa"));
+    REQUIRE(knuth_bendix::contains(kb, "Aba", "bb"));
+    REQUIRE(knuth_bendix::contains(kb, "Bcb", "cc"));
+    REQUIRE(knuth_bendix::contains(kb, "Cac", "aa"));
     REQUIRE((kb.active_rules() | sort(weird_cmp()) | to_vector())
             == std::vector<rule_type>({{"A", ""},
                                        {"B", ""},
@@ -208,7 +208,7 @@ namespace libsemigroups {
     REQUIRE(kb.confluent());
     REQUIRE(kb.number_of_active_rules() == 16);
 
-    REQUIRE(kb.equal_to("DCdc", "ABab"));
+    REQUIRE(knuth_bendix::contains(kb, "DCdc", "ABab"));
     REQUIRE((kb.active_rules() | sort(weird_cmp()) | to_vector())
             == std::vector<rule_type>({{"Aa", ""},
                                        {"Bb", ""},
@@ -264,17 +264,17 @@ namespace libsemigroups {
     REQUIRE(kb.confluent());
     REQUIRE(kb.number_of_active_rules() == 183);
 
-    REQUIRE(kb.equal_to("aaa", ""));
-    REQUIRE(kb.equal_to("bbb", ""));
-    REQUIRE(kb.equal_to("BaBaBaBaB", "aa"));
-    REQUIRE(kb.equal_to("bababa", "aabb"));
-    REQUIRE(kb.equal_to("ababab", "bbaa"));
-    REQUIRE(kb.equal_to("aabbaa", "babab"));
-    REQUIRE(kb.equal_to("bbaabb", "ababa"));
-    REQUIRE(kb.equal_to("bababbabab", "aabbabbaa"));
-    REQUIRE(kb.equal_to("ababaababa", "bbaabaabb"));
-    REQUIRE(kb.equal_to("bababbabaababa", "aabbabbaabaabb"));
-    REQUIRE(kb.equal_to("bbaabaabbabbaa", "ababaababbabab"));
+    REQUIRE(knuth_bendix::contains(kb, "aaa", ""));
+    REQUIRE(knuth_bendix::contains(kb, "bbb", ""));
+    REQUIRE(knuth_bendix::contains(kb, "BaBaBaBaB", "aa"));
+    REQUIRE(knuth_bendix::contains(kb, "bababa", "aabb"));
+    REQUIRE(knuth_bendix::contains(kb, "ababab", "bbaa"));
+    REQUIRE(knuth_bendix::contains(kb, "aabbaa", "babab"));
+    REQUIRE(knuth_bendix::contains(kb, "bbaabb", "ababa"));
+    REQUIRE(knuth_bendix::contains(kb, "bababbabab", "aabbabbaa"));
+    REQUIRE(knuth_bendix::contains(kb, "ababaababa", "bbaabaabb"));
+    REQUIRE(knuth_bendix::contains(kb, "bababbabaababa", "aabbabbaabaabb"));
+    REQUIRE(knuth_bendix::contains(kb, "bbaabaabbabbaa", "ababaababbabab"));
 
     REQUIRE(kb.number_of_classes() == 1080);
 
@@ -622,12 +622,12 @@ namespace libsemigroups {
     REQUIRE(kb.confluent());
     REQUIRE(kb.number_of_active_rules() == 6);
 
-    REQUIRE(kb.equal_to("bb", "B"));
-    REQUIRE(kb.equal_to("BaB", "aba"));
-    REQUIRE(kb.equal_to("Bb", "bB"));
-    REQUIRE(kb.equal_to("Baaba", "abaaB"));
-    REQUIRE(kb.equal_to("BabB", "abab"));
-    REQUIRE(kb.equal_to("Bababa", "ababaB"));
+    REQUIRE(knuth_bendix::contains(kb, "bb", "B"));
+    REQUIRE(knuth_bendix::contains(kb, "BaB", "aba"));
+    REQUIRE(knuth_bendix::contains(kb, "Bb", "bB"));
+    REQUIRE(knuth_bendix::contains(kb, "Baaba", "abaaB"));
+    REQUIRE(knuth_bendix::contains(kb, "BabB", "abab"));
+    REQUIRE(knuth_bendix::contains(kb, "Bababa", "ababaB"));
     REQUIRE((kb.active_rules() | sort(weird_cmp()) | to_vector())
             == std::vector<rule_type>({{{"Bb", "bB"},
                                         {"bb", "B"},
@@ -660,8 +660,8 @@ namespace libsemigroups {
     REQUIRE(kb.confluent());
     REQUIRE(kb.number_of_active_rules() == 2);
 
-    REQUIRE(kb.equal_to("b", ""));
-    REQUIRE(kb.equal_to("a", ""));
+    REQUIRE(knuth_bendix::contains(kb, "b", ""));
+    REQUIRE(knuth_bendix::contains(kb, "a", ""));
     REQUIRE((kb.active_rules() | sort(weird_cmp()) | to_vector())
             == std::vector<rule_type>({{"a", ""}, {"b", ""}}));
   }
@@ -705,7 +705,7 @@ namespace libsemigroups {
     REQUIRE(kb.confluent());
     REQUIRE(kb.number_of_active_rules() == 1);
 
-    REQUIRE(kb.equal_to("a", ""));
+    REQUIRE(knuth_bendix::contains(kb, "a", ""));
     REQUIRE((kb.active_rules() | sort(weird_cmp()) | to_vector())
             == std::vector<rule_type>({{"a", ""}}));
   }
@@ -732,30 +732,30 @@ namespace libsemigroups {
     REQUIRE(kb.confluent());
     REQUIRE(kb.number_of_active_rules() == 24);
 
-    REQUIRE(kb.equal_to("ab", "c"));
-    REQUIRE(kb.equal_to("bc", "d"));
-    REQUIRE(kb.equal_to("cd", "y"));
-    REQUIRE(kb.equal_to("dy", "a"));
-    REQUIRE(kb.equal_to("ya", "b"));
-    REQUIRE(kb.equal_to("cc", "ad"));
-    REQUIRE(kb.equal_to("dd", "by"));
-    REQUIRE(kb.equal_to("yy", "ac"));
-    REQUIRE(kb.equal_to("yc", "bb"));
-    REQUIRE(kb.equal_to("db", "aa"));
-    REQUIRE(kb.equal_to("aac", "by"));
-    REQUIRE(kb.equal_to("bd", "aa"));
-    REQUIRE(kb.equal_to("bby", "aad"));
-    REQUIRE(kb.equal_to("aaa", "y"));
-    REQUIRE(kb.equal_to("yb", "by"));
-    REQUIRE(kb.equal_to("ba", "c"));
-    REQUIRE(kb.equal_to("da", "ad"));
-    REQUIRE(kb.equal_to("ca", "ac"));
-    REQUIRE(kb.equal_to("cy", "bb"));
-    REQUIRE(kb.equal_to("cb", "d"));
-    REQUIRE(kb.equal_to("yd", "a"));
-    REQUIRE(kb.equal_to("dc", "y"));
-    REQUIRE(kb.equal_to("ay", "b"));
-    REQUIRE(kb.equal_to("bbb", "a"));
+    REQUIRE(knuth_bendix::contains(kb, "ab", "c"));
+    REQUIRE(knuth_bendix::contains(kb, "bc", "d"));
+    REQUIRE(knuth_bendix::contains(kb, "cd", "y"));
+    REQUIRE(knuth_bendix::contains(kb, "dy", "a"));
+    REQUIRE(knuth_bendix::contains(kb, "ya", "b"));
+    REQUIRE(knuth_bendix::contains(kb, "cc", "ad"));
+    REQUIRE(knuth_bendix::contains(kb, "dd", "by"));
+    REQUIRE(knuth_bendix::contains(kb, "yy", "ac"));
+    REQUIRE(knuth_bendix::contains(kb, "yc", "bb"));
+    REQUIRE(knuth_bendix::contains(kb, "db", "aa"));
+    REQUIRE(knuth_bendix::contains(kb, "aac", "by"));
+    REQUIRE(knuth_bendix::contains(kb, "bd", "aa"));
+    REQUIRE(knuth_bendix::contains(kb, "bby", "aad"));
+    REQUIRE(knuth_bendix::contains(kb, "aaa", "y"));
+    REQUIRE(knuth_bendix::contains(kb, "yb", "by"));
+    REQUIRE(knuth_bendix::contains(kb, "ba", "c"));
+    REQUIRE(knuth_bendix::contains(kb, "da", "ad"));
+    REQUIRE(knuth_bendix::contains(kb, "ca", "ac"));
+    REQUIRE(knuth_bendix::contains(kb, "cy", "bb"));
+    REQUIRE(knuth_bendix::contains(kb, "cb", "d"));
+    REQUIRE(knuth_bendix::contains(kb, "yd", "a"));
+    REQUIRE(knuth_bendix::contains(kb, "dc", "y"));
+    REQUIRE(knuth_bendix::contains(kb, "ay", "b"));
+    REQUIRE(knuth_bendix::contains(kb, "bbb", "a"));
     REQUIRE((kb.active_rules() | sort(weird_cmp()) | to_vector())
             == std::vector<rule_type>(
                 {{"ab", "c"},  {"ay", "b"},   {"ba", "c"},  {"bc", "d"},
@@ -871,20 +871,20 @@ namespace libsemigroups {
     REQUIRE(kb.confluent());
     REQUIRE(kb.number_of_active_rules() == 14);
 
-    REQUIRE(kb.equal_to("aaa", ""));
-    REQUIRE(kb.equal_to("Hb", "H"));
-    REQUIRE(kb.equal_to("HH", "H"));
-    REQUIRE(kb.equal_to("aH", "H"));
-    REQUIRE(kb.equal_to("bH", "H"));
-    REQUIRE(kb.equal_to("bab", "aa"));
-    REQUIRE(kb.equal_to("bbb", "aba"));
-    REQUIRE(kb.equal_to("Hab", "Haa"));
-    REQUIRE(kb.equal_to("abaab", "bbaa"));
-    REQUIRE(kb.equal_to("baaba", "aabb"));
-    REQUIRE(kb.equal_to("Haabb", "Haaba"));
-    REQUIRE(kb.equal_to("bbaabb", "abba"));
-    REQUIRE(kb.equal_to("aabbaa", "baab"));
-    REQUIRE(kb.equal_to("baabba", "abbaab"));
+    REQUIRE(knuth_bendix::contains(kb, "aaa", ""));
+    REQUIRE(knuth_bendix::contains(kb, "Hb", "H"));
+    REQUIRE(knuth_bendix::contains(kb, "HH", "H"));
+    REQUIRE(knuth_bendix::contains(kb, "aH", "H"));
+    REQUIRE(knuth_bendix::contains(kb, "bH", "H"));
+    REQUIRE(knuth_bendix::contains(kb, "bab", "aa"));
+    REQUIRE(knuth_bendix::contains(kb, "bbb", "aba"));
+    REQUIRE(knuth_bendix::contains(kb, "Hab", "Haa"));
+    REQUIRE(knuth_bendix::contains(kb, "abaab", "bbaa"));
+    REQUIRE(knuth_bendix::contains(kb, "baaba", "aabb"));
+    REQUIRE(knuth_bendix::contains(kb, "Haabb", "Haaba"));
+    REQUIRE(knuth_bendix::contains(kb, "bbaabb", "abba"));
+    REQUIRE(knuth_bendix::contains(kb, "aabbaa", "baab"));
+    REQUIRE(knuth_bendix::contains(kb, "baabba", "abbaab"));
     REQUIRE((kb.active_rules() | sort(weird_cmp()) | to_vector())
             == std::vector<rule_type>({{{"HH", "H"},
                                         {"Hb", "H"},
@@ -1280,16 +1280,22 @@ namespace libsemigroups {
     // kb.process_pending_rules();
     REQUIRE(kb.confluent());
     REQUIRE(kb.normal_form("CBACBAABCAABCACBACBA") == "CBACBACBAACBAACBACBA");
-    REQUIRE(kb.equal_to("CBAABCABCAABCAABCABC", "CBACBAABCAABCACBACBA"));
-    REQUIRE(kb.equal_to("CBAABCABCAABCAABCABC", "CBACBAABCAABCACBACBA"));
-    REQUIRE(kb.equal_to("AABCAABCCACAACBBCBCCACBBAABCBA",
-                        "ACBAACBACACAACBBCBCCACBBACBABA"));
-    REQUIRE(kb.equal_to("CACCBABACCBABACCAAAABCAABCBCAA",
-                        "CACCBABACCBABACCAAACBAACBABCAA"));
-    REQUIRE(kb.equal_to("CAAACAABCCBABCCBCCBCACABACBBAC",
-                        "CAAACACBACBABCCBCCBCACABACBBAC"));
-    REQUIRE(kb.equal_to("BABCACBACBCCCCCAACCAAABAABCBCC",
-                        "BABCACBACBCCCCCAACCAAABACBABCC"));
+    REQUIRE(knuth_bendix::contains(
+        kb, "CBAABCABCAABCAABCABC", "CBACBAABCAABCACBACBA"));
+    REQUIRE(knuth_bendix::contains(
+        kb, "CBAABCABCAABCAABCABC", "CBACBAABCAABCACBACBA"));
+    REQUIRE(knuth_bendix::contains(kb,
+                                   "AABCAABCCACAACBBCBCCACBBAABCBA",
+                                   "ACBAACBACACAACBBCBCCACBBACBABA"));
+    REQUIRE(knuth_bendix::contains(kb,
+                                   "CACCBABACCBABACCAAAABCAABCBCAA",
+                                   "CACCBABACCBABACCAAACBAACBABCAA"));
+    REQUIRE(knuth_bendix::contains(kb,
+                                   "CAAACAABCCBABCCBCCBCACABACBBAC",
+                                   "CAAACACBACBABCCBCCBCACABACBBAC"));
+    REQUIRE(knuth_bendix::contains(kb,
+                                   "BABCACBACBCCCCCAACCAAABAABCBCC",
+                                   "BABCACBACBCCCCCAACCAAABACBABCC"));
     REQUIRE(kb.number_of_classes() == POSITIVE_INFINITY);
   }
 
@@ -1421,7 +1427,7 @@ namespace libsemigroups {
     REQUIRE(kb.normal_form("cdc") == "cd");
     REQUIRE(kb.normal_form("cdd") == "cd");
     REQUIRE(kb.normal_form("dad") == "d");
-    REQUIRE(!kb.equal_to("bd", "db"));
+    REQUIRE(!knuth_bendix::contains(kb, "bd", "db"));
     REQUIRE(kb.normal_form("bd") == "bd");
     REQUIRE(kb.normal_form("db") == "db");
     REQUIRE(kb.normal_form("cbdcbd") == "cd");
@@ -1667,7 +1673,7 @@ namespace libsemigroups {
   TEMPLATE_TEST_CASE("Reinis MFE",
                      "[027][todd-coxeter][quick]",
                      KNUTH_BENDIX_TYPES) {
-    using literals::        operator""_w;
+    using literals::operator""_w;
     Presentation<word_type> p;
     p.alphabet(2);
     presentation::add_rule(p, "000"_w, "11"_w);
@@ -1702,7 +1708,7 @@ namespace libsemigroups {
     p.alphabet(2);
     presentation::add_idempotent_rules_no_checks(p, 01_w);
     using words::operator+;
-    WordRange    words;
+    WordRange words;
     words.alphabet_size(2).min(0).max(3);
     size_t n = 2;
     for (size_t a = 0; a < n - 1; ++a) {

@@ -318,35 +318,40 @@ namespace libsemigroups {
     }
 
     // TODO(0) doc
-    template <typename Subclass, typename Int = size_t>
+    template <typename Subclass,
+              typename Int = typename Subclass::my_letter_type>
     tril currently_contains_no_checks(Subclass const&                   ci,
                                       std::initializer_list<Int> const& u,
                                       std::initializer_list<Int> const& v) {
-      return currently_contains_no_checks<std::initializer_list<Int>>(ci, u, v);
+      return currently_contains_no_checks<Subclass, std::initializer_list<Int>>(
+          ci, u, v);
     }
 
     // TODO(0) doc
-    template <typename Subclass, typename Int = size_t>
+    template <typename Subclass,
+              typename Int = typename Subclass::my_letter_type>
     tril currently_contains(Subclass const&                   ci,
                             std::initializer_list<Int> const& u,
                             std::initializer_list<Int> const& v) {
-      return currently_contains<std::initializer_list<Int>>(ci, u, v);
+      return currently_contains<Subclass, std::initializer_list<Int>>(ci, u, v);
     }
 
     // TODO(0) doc
-    template <typename Subclass, typename Int = size_t>
+    template <typename Subclass,
+              typename Int = typename Subclass::my_letter_type>
     bool contains_no_checks(Subclass&                         ci,
                             std::initializer_list<Int> const& u,
                             std::initializer_list<Int> const& v) {
-      return contains_no_checks<std::initializer_list<Int>>(ci, u, v);
+      return contains_no_checks<Subclass, std::initializer_list<Int>>(ci, u, v);
     }
 
     // TODO(0) doc
-    template <typename Subclass, typename Int = size_t>
+    template <typename Subclass,
+              typename Int = typename Subclass::my_letter_type>
     bool contains(Subclass&                         ci,
                   std::initializer_list<Int> const& u,
                   std::initializer_list<Int> const& v) {
-      return contains<std::initializer_list<Int>>(ci, u, v);
+      return contains<Subclass, std::initializer_list<Int>>(ci, u, v);
     }
   }  // namespace congruence_interface
 

@@ -143,6 +143,8 @@ namespace libsemigroups {
     // KnuthBendix - types - public
     //////////////////////////////////////////////////////////////////////////
 
+    using my_letter_type = char;
+
     //! This type contains various enums for specifying certain options to a
     //! KnuthBendix instance.
     struct options {
@@ -422,16 +424,23 @@ namespace libsemigroups {
     // KnuthBendix - interface requirements - reduce
     ////////////////////////////////////////////////////////////////////////
 
+    // TODO(0) should be const
     template <typename OutputIterator,
               typename InputIterator1,
               typename InputIterator2>
     OutputIterator reduce_no_run_no_checks(OutputIterator d_first,
                                            InputIterator1 first,
-                                           InputIterator2 last) const {
+                                           InputIterator2 last) {
       // TODO(0) improve this to not require _tmp_element1
-      _tmp_element1.assign(first, last);
+      if constexpr (std::is_same_v<InputIterator1, char const*>) {
+        static_assert(std::is_same_v<InputIterator2, char const*>);
+        _tmp_element1.assign(first, std::distance(first, last));
+      } else {
+        _tmp_element1.assign(first, last);
+      }
       rewrite_inplace(_tmp_element1);
-      return std::copy(first, last, d_first);
+      return std::copy(
+          std::begin(_tmp_element1), std::end(_tmp_element1), d_first);
     }
 
     template <typename OutputIterator,
@@ -439,7 +448,7 @@ namespace libsemigroups {
               typename InputIterator2>
     OutputIterator reduce_no_run(OutputIterator d_first,
                                  InputIterator1 first,
-                                 InputIterator2 last) const {
+                                 InputIterator2 last) {
       throw_if_letter_out_of_bounds(first, last);
       return reduce_no_run_no_checks(d_first, first, last);
     }
@@ -730,7 +739,8 @@ namespace libsemigroups {
     void throw_if_letter_out_of_bounds(Iterator1 first, Iterator2 last) const {
       if constexpr (std::is_same_v<
                         typename decltype(_presentation)::letter_type,
-                        typename Iterator1::value_type>) {
+                        typename std::decay_t<
+                            decltype(*std::declval<Iterator1>())>>) {
         // TODO(0) static_assert that Iterator2::value_type ==
         // Iterator1::value_type
         presentation().validate_word(first, last);
@@ -1173,6 +1183,22 @@ namespace libsemigroups {
     using congruence_interface::contains_no_checks;
     using congruence_interface::currently_contains;
     using congruence_interface::currently_contains_no_checks;
+
+    // TODO(0) version of this goes to congruence_interface??
+    template <typename Rewriter, typename ReductionOrder>
+    [[nodiscard]] bool contains(KnuthBendix<Rewriter, ReductionOrder>& kb,
+                                std::string_view                       u,
+                                std::string_view                       v) {
+      return kb.contains(
+          std::begin(u), std::end(u), std::begin(v), std::end(v));
+    }
+
+    template <typename Rewriter, typename ReductionOrder>
+    [[nodiscard]] bool contains(KnuthBendix<Rewriter, ReductionOrder>& kb,
+                                char const*                            u,
+                                char const*                            v) {
+      return kb.contains(u, u + std::strlen(u), v, v + std::strlen(v));
+    }
 
     ////////////////////////////////////////////////////////////////////////
     // Interface helpers - to_human_readable_repr
