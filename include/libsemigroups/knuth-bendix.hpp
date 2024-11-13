@@ -138,10 +138,6 @@ namespace libsemigroups {
     struct AB_BC;
     struct MAX_AB_BC;
 
-    //////////////////////////////////////////////////////////////////////////
-    // KnuthBendix - friend declarations - private
-    //////////////////////////////////////////////////////////////////////////
-
    public:
     //////////////////////////////////////////////////////////////////////////
     // KnuthBendix - types - public
@@ -211,6 +207,8 @@ namespace libsemigroups {
     bool                      _internal_is_same_as_external;
     OverlapMeasure*           _overlap_measure;
     Presentation<std::string> _presentation;
+    std::string               _tmp_element1;
+    std::string               _tmp_element2;
 
    public:
     //////////////////////////////////////////////////////////////////////////
@@ -322,6 +320,10 @@ namespace libsemigroups {
     void init_from_presentation();
 
    public:
+    //////////////////////////////////////////////////////////////////////////
+    // KnuthBendix - interface requirements - add_pair
+    //////////////////////////////////////////////////////////////////////////
+
     using CongruenceInterface::add_pair_no_checks;
 
     template <typename Iterator1,
@@ -335,6 +337,133 @@ namespace libsemigroups {
       CongruenceInterface::add_pair<KnuthBendix>(first1, last1, first2, last2);
       return *this;
     }
+
+    ////////////////////////////////////////////////////////////////////////
+    // KnuthBendix - interface requirements - number_of_classes
+    ////////////////////////////////////////////////////////////////////////
+
+    //!
+    //! \note If \c this has been run until finished, then this function can
+    //! determine the size of the semigroup represented by \c this even if it is
+    //! infinite. Moreover, the complexity of this function is at worst
+    //! \f$O(mn)\f$ where \f$m\f$ is the number of letters in the alphabet, and
+    //! \f$n\f$ is the number of nodes in the \ref gilman_graph.
+    [[nodiscard]] uint64_t number_of_classes();
+
+    ////////////////////////////////////////////////////////////////////////
+    // KnuthBendix - interface requirements - contains
+    ////////////////////////////////////////////////////////////////////////
+
+    // TODO(0) should be const, isn't because rewrite_inplace isn't
+    template <typename Iterator1,
+              typename Iterator2,
+              typename Iterator3,
+              typename Iterator4>
+    tril currently_contains_no_checks(Iterator1 first1,
+                                      Iterator2 last1,
+                                      Iterator3 first2,
+                                      Iterator4 last2) {
+      if (std::equal(first1, last1, first2, last2)) {
+        return tril::TRUE;
+      }
+      // TODO(0) remove allocations here
+      std::string w1, w2;
+      reduce_no_run_no_checks(std::back_inserter(w1), first1, last1);
+      reduce_no_run_no_checks(std::back_inserter(w2), first2, last2);
+      if (w1 == w2) {
+        return tril::TRUE;
+
+      } else if (finished()) {
+        return tril::FALSE;
+      }
+      return tril::unknown;
+    }
+
+    // TODO(0) should be const, isn't because rewrite_inplace isn't
+    template <typename Iterator1,
+              typename Iterator2,
+              typename Iterator3,
+              typename Iterator4>
+    tril currently_contains(Iterator1 first1,
+                            Iterator2 last1,
+                            Iterator3 first2,
+                            Iterator4 last2) {
+      throw_if_letter_out_of_bounds(first1, last1);
+      throw_if_letter_out_of_bounds(first2, last2);
+      return currently_contains_no_checks(first1, last1, first2, last2);
+    }
+
+    template <typename Iterator1,
+              typename Iterator2,
+              typename Iterator3,
+              typename Iterator4>
+    bool contains_no_checks(Iterator1 first1,
+                            Iterator2 last1,
+                            Iterator3 first2,
+                            Iterator4 last2) {
+      run();
+      return currently_contains_no_checks(first1, last1, first2, last2)
+             == tril::TRUE;
+    }
+
+    template <typename Iterator1,
+              typename Iterator2,
+              typename Iterator3,
+              typename Iterator4>
+    bool contains(Iterator1 first1,
+                  Iterator2 last1,
+                  Iterator3 first2,
+                  Iterator4 last2) {
+      run();
+      return currently_contains(first1, last1, first2, last2) == tril::TRUE;
+    }
+
+    ////////////////////////////////////////////////////////////////////////
+    // KnuthBendix - interface requirements - reduce
+    ////////////////////////////////////////////////////////////////////////
+
+    template <typename OutputIterator,
+              typename InputIterator1,
+              typename InputIterator2>
+    OutputIterator reduce_no_run_no_checks(OutputIterator d_first,
+                                           InputIterator1 first,
+                                           InputIterator2 last) const {
+      // TODO(0) improve this to not require _tmp_element1
+      _tmp_element1.assign(first, last);
+      rewrite_inplace(_tmp_element1);
+      return std::copy(first, last, d_first);
+    }
+
+    template <typename OutputIterator,
+              typename InputIterator1,
+              typename InputIterator2>
+    OutputIterator reduce_no_run(OutputIterator d_first,
+                                 InputIterator1 first,
+                                 InputIterator2 last) const {
+      throw_if_letter_out_of_bounds(first, last);
+      return reduce_no_run_no_checks(d_first, first, last);
+    }
+
+    template <typename OutputIterator,
+              typename InputIterator1,
+              typename InputIterator2>
+    OutputIterator reduce_no_checks(OutputIterator d_first,
+                                    InputIterator1 first,
+                                    InputIterator2 last) {
+      run();
+      return reduce_no_run_no_checks(d_first, first, last);
+    }
+
+    template <typename OutputIterator,
+              typename InputIterator1,
+              typename InputIterator2>
+    OutputIterator reduce(OutputIterator d_first,
+                          InputIterator1 first,
+                          InputIterator2 last) {
+      run();
+      return reduce_no_run(d_first, first, last);
+    }
+
     //////////////////////////////////////////////////////////////////////////
     // KnuthBendix - setters for optional parameters - public
     //////////////////////////////////////////////////////////////////////////
@@ -913,16 +1042,6 @@ namespace libsemigroups {
     // KnuthBendix - attributes - public
     //////////////////////////////////////////////////////////////////////////
 
-    //! \copydoc FpSemigroupInterface::size TODO
-    //! copy the doc
-    //!
-    //! \note If \c this has been run until finished, then this function can
-    //! determine the size of the semigroup represented by \c this even if it is
-    //! infinite. Moreover, the complexity of this function is at worst
-    //! \f$O(mn)\f$ where \f$m\f$ is the number of letters in the alphabet, and
-    //! \f$n\f$ is the number of nodes in the \ref gilman_graph.
-    [[nodiscard]] uint64_t number_of_classes();
-
     //! \brief Check if two inputs are equivalent with respect to the system
     //!
     //! By first testing \c string equivalence, then by rewriting the inputs,
@@ -1040,8 +1159,24 @@ namespace libsemigroups {
   KnuthBendix(congruence_kind) -> KnuthBendix<>;
 
   namespace knuth_bendix {
+    ////////////////////////////////////////////////////////////////////////
+    // Interface helpers - add_pair
+    ////////////////////////////////////////////////////////////////////////
     using congruence_interface::add_pair;
     using congruence_interface::add_pair_no_checks;
+
+    ////////////////////////////////////////////////////////////////////////
+    // Interface helpers - contains
+    ////////////////////////////////////////////////////////////////////////
+
+    using congruence_interface::contains;
+    using congruence_interface::contains_no_checks;
+    using congruence_interface::currently_contains;
+    using congruence_interface::currently_contains_no_checks;
+
+    ////////////////////////////////////////////////////////////////////////
+    // Interface helpers - to_human_readable_repr
+    ////////////////////////////////////////////////////////////////////////
 
     // TODO What should the \param be?
     //! \brief Return a string representation of a KnuthBendix instance
@@ -1050,6 +1185,7 @@ namespace libsemigroups {
     //! size of the underlying alphabet and the number of active rules.
     //!
     //! \returns The representation, a value of type \c std::string
+    // TODO(0) rename to_human_readable_repr
     template <typename Rewriter, typename ReductionOrder>
     std::string repr(KnuthBendix<Rewriter, ReductionOrder>& kb) {
       using str = std::string;

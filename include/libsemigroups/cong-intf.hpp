@@ -239,6 +239,9 @@ namespace libsemigroups {
   };
 
   namespace congruence_interface {
+    ////////////////////////////////////////////////////////////////////////
+    // Interface helpers - add_pair
+    ////////////////////////////////////////////////////////////////////////
     // TODO(0) doc
     // TODO template
     inline CongruenceInterface& add_pair_no_checks(CongruenceInterface& ci,
@@ -278,6 +281,72 @@ namespace libsemigroups {
                          std::make_move_iterator(std::end(u)),
                          std::make_move_iterator(std::begin(v)),
                          std::make_move_iterator(std::end(v)));
+    }
+
+    ////////////////////////////////////////////////////////////////////////
+    // Interface helpers - contains
+    ////////////////////////////////////////////////////////////////////////
+
+    // TODO(0) doc
+    template <typename Subclass, typename Word>
+    tril currently_contains_no_checks(Subclass const& ci,
+                                      Word const&     u,
+                                      Word const&     v) {
+      return ci.currently_contains_no_checks(
+          std::begin(u), std::end(u), std::begin(v), std::end(v));
+    }
+
+    // TODO(0) doc
+    template <typename Subclass, typename Word>
+    tril currently_contains(Subclass const& ci, Word const& u, Word const& v) {
+      return ci.currently_contains(
+          std::begin(u), std::end(u), std::begin(v), std::end(v));
+    }
+
+    // TODO(0) doc
+    template <typename Subclass, typename Word>
+    bool contains_no_checks(Subclass& ci, Word const& u, Word const& v) {
+      return ci.contains_no_checks(
+          std::begin(u), std::end(u), std::begin(v), std::end(v));
+    }
+
+    // TODO(0) doc
+    template <typename Subclass, typename Word>
+    bool contains(Subclass& ci, Word const& u, Word const& v) {
+      return ci.contains(
+          std::begin(u), std::end(u), std::begin(v), std::end(v));
+    }
+
+    // TODO(0) doc
+    template <typename Subclass, typename Int = size_t>
+    tril currently_contains_no_checks(Subclass const&                   ci,
+                                      std::initializer_list<Int> const& u,
+                                      std::initializer_list<Int> const& v) {
+      return currently_contains_no_checks<std::initializer_list<Int>>(ci, u, v);
+    }
+
+    // TODO(0) doc
+    template <typename Subclass, typename Int = size_t>
+    tril currently_contains(Subclass const&                   ci,
+                            std::initializer_list<Int> const& u,
+                            std::initializer_list<Int> const& v) {
+      return currently_contains<std::initializer_list<Int>>(ci, u, v);
+    }
+
+    // TODO(0) doc
+    template <typename Subclass, typename Int = size_t>
+    bool contains_no_checks(Subclass&                         ci,
+                            std::initializer_list<Int> const& u,
+                            std::initializer_list<Int> const& v) {
+      return contains_no_checks<std::initializer_list<Int>>(ci, u, v);
+    }
+
+    // TODO(0) doc
+    template <typename Subclass, typename Int = size_t>
+    bool contains(Subclass&                         ci,
+                  std::initializer_list<Int> const& u,
+                  std::initializer_list<Int> const& v) {
+      return contains<std::initializer_list<Int>>(ci, u, v);
     }
   }  // namespace congruence_interface
 

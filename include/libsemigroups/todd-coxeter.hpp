@@ -1317,18 +1317,22 @@ namespace libsemigroups {
     // ToddCoxeter - interface requirements - reduce
     ////////////////////////////////////////////////////////////////////////
 
-    template <typename OutputIterator, typename Iterator1, typename Iterator2>
+    template <typename OutputIterator,
+              typename InputIterator1,
+              typename InputIterator2>
     OutputIterator reduce_no_run_no_checks(OutputIterator d_first,
-                                           Iterator1      first,
-                                           Iterator2      last) {
+                                           InputIterator1 first,
+                                           InputIterator2 last) {
       return current_word_of_no_checks(d_first,
                                        current_index_of_no_checks(first, last));
     }
 
-    template <typename OutputIterator, typename Iterator1, typename Iterator2>
+    template <typename OutputIterator,
+              typename InputIterator1,
+              typename InputIterator2>
     OutputIterator reduce_no_run(OutputIterator d_first,
-                                 Iterator1      first,
-                                 Iterator2      last) {
+                                 InputIterator1 first,
+                                 InputIterator2 last) {
       return current_word_of(d_first, current_index_of(first, last));
     }
 
@@ -1491,37 +1495,10 @@ namespace libsemigroups {
     // Interface helpers - contains
     ////////////////////////////////////////////////////////////////////////
 
-    // TODO(0) doc
-    template <typename Word>
-    tril currently_contains_no_checks(ToddCoxeter const& tc,
-                                      Word const&        u,
-                                      Word const&        v) {
-      return tc.currently_contains_no_checks(
-          std::begin(u), std::end(u), std::begin(v), std::end(v));
-    }
-
-    // TODO(0) doc
-    template <typename Word>
-    tril currently_contains(ToddCoxeter const& tc,
-                            Word const&        u,
-                            Word const&        v) {
-      return tc.currently_contains(
-          std::begin(u), std::end(u), std::begin(v), std::end(v));
-    }
-
-    // TODO(0) doc
-    template <typename Word>
-    bool contains_no_checks(ToddCoxeter& tc, Word const& u, Word const& v) {
-      return tc.contains_no_checks(
-          std::begin(u), std::end(u), std::begin(v), std::end(v));
-    }
-
-    // TODO(0) doc
-    template <typename Word>
-    bool contains(ToddCoxeter& tc, Word const& u, Word const& v) {
-      return tc.contains(
-          std::begin(u), std::end(u), std::begin(v), std::end(v));
-    }
+    using congruence_interface::contains;
+    using congruence_interface::contains_no_checks;
+    using congruence_interface::currently_contains;
+    using congruence_interface::currently_contains_no_checks;
 
     // TODO to cpp
     // TODO(0) doc
@@ -1540,38 +1517,6 @@ namespace libsemigroups {
     //   // doesn't work for heterogeneous iterators :(
     // }
     // TODO(0) x3 more contains for string_views
-
-    // TODO(0) doc
-    template <typename Int = size_t>
-    tril currently_contains_no_checks(ToddCoxeter const&                tc,
-                                      std::initializer_list<Int> const& u,
-                                      std::initializer_list<Int> const& v) {
-      return currently_contains_no_checks<std::initializer_list<Int>>(tc, u, v);
-    }
-
-    // TODO(0) doc
-    template <typename Int = size_t>
-    tril currently_contains(ToddCoxeter const&                tc,
-                            std::initializer_list<Int> const& u,
-                            std::initializer_list<Int> const& v) {
-      return currently_contains<std::initializer_list<Int>>(tc, u, v);
-    }
-
-    // TODO(0) doc
-    template <typename Int = size_t>
-    bool contains_no_checks(ToddCoxeter&                      tc,
-                            std::initializer_list<Int> const& u,
-                            std::initializer_list<Int> const& v) {
-      return contains_no_checks<std::initializer_list<Int>>(tc, u, v);
-    }
-
-    // TODO(0) doc
-    template <typename Int = size_t>
-    bool contains(ToddCoxeter&                      tc,
-                  std::initializer_list<Int> const& u,
-                  std::initializer_list<Int> const& v) {
-      return contains<std::initializer_list<Int>>(tc, u, v);
-    }
 
     ////////////////////////////////////////////////////////////////////////
     // Interface helpers - reduce
