@@ -766,23 +766,34 @@ namespace libsemigroups {
     // Check that rewrite to a non-pointer argument does not rewrite its
     // argument
     std::string w = "aaa";
-    REQUIRE(kb.rewrite(w) == "a");
+    REQUIRE(knuth_bendix::reduce_no_run(kb, w) == "a");
     REQUIRE(w == "aaa");
 
     // defining relations
-    REQUIRE(kb.rewrite("aaa") == kb.rewrite("a"));
-    REQUIRE(kb.rewrite("bbbbb") == kb.rewrite("b"));
-    REQUIRE(kb.rewrite("abbbabb") == kb.rewrite("bba"));
+    REQUIRE(knuth_bendix::reduce_no_run(kb, "aaa")
+            == knuth_bendix::reduce_no_run(kb, "a"));
+    REQUIRE(knuth_bendix::reduce_no_run(kb, "bbbbb")
+            == knuth_bendix::reduce_no_run(kb, "b"));
+    REQUIRE(knuth_bendix::reduce_no_run(kb, "abbbabb")
+            == knuth_bendix::reduce_no_run(kb, "bba"));
 
     // consequential relations (Chapter 11, Lemma 1.1 in NR)
-    REQUIRE(kb.rewrite("babbbb") == kb.rewrite("ba"));
-    REQUIRE(kb.rewrite("baabbbb") == kb.rewrite("baa"));
-    REQUIRE(kb.rewrite("aabbbbbbbbbba") == kb.rewrite("bbbbbbbbbba"));
-    REQUIRE(kb.rewrite("babbbbbbbbaa") == kb.rewrite("babbbbbbbb"));
-    REQUIRE(kb.rewrite("baabbbbbbaa") == kb.rewrite("baabbbbbb"));
-    REQUIRE(kb.rewrite("bbbbaabbbbaa") == kb.rewrite("bbbbaa"));
-    REQUIRE(kb.rewrite("bbbaa") == kb.rewrite("baabb"));
-    REQUIRE(kb.rewrite("abbbaabbba") == kb.rewrite("bbbbaa"));
+    REQUIRE(knuth_bendix::reduce_no_run(kb, "babbbb")
+            == knuth_bendix::reduce_no_run(kb, "ba"));
+    REQUIRE(knuth_bendix::reduce_no_run(kb, "baabbbb")
+            == knuth_bendix::reduce_no_run(kb, "baa"));
+    REQUIRE(knuth_bendix::reduce_no_run(kb, "aabbbbbbbbbba")
+            == knuth_bendix::reduce_no_run(kb, "bbbbbbbbbba"));
+    REQUIRE(knuth_bendix::reduce_no_run(kb, "babbbbbbbbaa")
+            == knuth_bendix::reduce_no_run(kb, "babbbbbbbb"));
+    REQUIRE(knuth_bendix::reduce_no_run(kb, "baabbbbbbaa")
+            == knuth_bendix::reduce_no_run(kb, "baabbbbbb"));
+    REQUIRE(knuth_bendix::reduce_no_run(kb, "bbbbaabbbbaa")
+            == knuth_bendix::reduce_no_run(kb, "bbbbaa"));
+    REQUIRE(knuth_bendix::reduce_no_run(kb, "bbbaa")
+            == knuth_bendix::reduce_no_run(kb, "baabb"));
+    REQUIRE(knuth_bendix::reduce_no_run(kb, "abbbaabbba")
+            == knuth_bendix::reduce_no_run(kb, "bbbbaa"));
 
     REQUIRE(kb.number_of_classes() == 86);
     REQUIRE(knuth_bendix::normal_forms(kb).min(1).max(POSITIVE_INFINITY).count()
@@ -810,19 +821,30 @@ namespace libsemigroups {
     REQUIRE(kb.number_of_classes() == 746);
 
     // defining relations
-    REQUIRE(kb.rewrite("aaa") == kb.rewrite("a"));
-    REQUIRE(kb.rewrite("bbbbbbbbb") == kb.rewrite("b"));
-    REQUIRE(kb.rewrite("abbbbbabb") == kb.rewrite("bba"));
+    REQUIRE(knuth_bendix::reduce_no_run(kb, "aaa")
+            == knuth_bendix::reduce_no_run(kb, "a"));
+    REQUIRE(knuth_bendix::reduce_no_run(kb, "bbbbbbbbb")
+            == knuth_bendix::reduce_no_run(kb, "b"));
+    REQUIRE(knuth_bendix::reduce_no_run(kb, "abbbbbabb")
+            == knuth_bendix::reduce_no_run(kb, "bba"));
 
     // consequential relations (Chapter 11, Lemma 1.1 in NR)
-    REQUIRE(kb.rewrite("babbbbbbbb") == kb.rewrite("ba"));
-    REQUIRE(kb.rewrite("baabbbbbbbb") == kb.rewrite("baa"));
-    REQUIRE(kb.rewrite("aabbbbbbbbbbbba") == kb.rewrite("bbbbbbbbbbbba"));
-    REQUIRE(kb.rewrite("babbbbbbbbbbaa") == kb.rewrite("babbbbbbbbbb"));
-    REQUIRE(kb.rewrite("baabbbbbbbbaa") == kb.rewrite("baabbbbbbbb"));
-    REQUIRE(kb.rewrite("bbbbbbbbaabbbbbbbbaa") == kb.rewrite("bbbbbbbbaa"));
-    REQUIRE(kb.rewrite("bbbaa") == kb.rewrite("baabb"));
-    REQUIRE(kb.rewrite("abbbbbaabbbbba") == kb.rewrite("bbbbbbbbaa"));
+    REQUIRE(knuth_bendix::reduce_no_run(kb, "babbbbbbbb")
+            == knuth_bendix::reduce_no_run(kb, "ba"));
+    REQUIRE(knuth_bendix::reduce_no_run(kb, "baabbbbbbbb")
+            == knuth_bendix::reduce_no_run(kb, "baa"));
+    REQUIRE(knuth_bendix::reduce_no_run(kb, "aabbbbbbbbbbbba")
+            == knuth_bendix::reduce_no_run(kb, "bbbbbbbbbbbba"));
+    REQUIRE(knuth_bendix::reduce_no_run(kb, "babbbbbbbbbbaa")
+            == knuth_bendix::reduce_no_run(kb, "babbbbbbbbbb"));
+    REQUIRE(knuth_bendix::reduce_no_run(kb, "baabbbbbbbbaa")
+            == knuth_bendix::reduce_no_run(kb, "baabbbbbbbb"));
+    REQUIRE(knuth_bendix::reduce_no_run(kb, "bbbbbbbbaabbbbbbbbaa")
+            == knuth_bendix::reduce_no_run(kb, "bbbbbbbbaa"));
+    REQUIRE(knuth_bendix::reduce_no_run(kb, "bbbaa")
+            == knuth_bendix::reduce_no_run(kb, "baabb"));
+    REQUIRE(knuth_bendix::reduce_no_run(kb, "abbbbbaabbbbba")
+            == knuth_bendix::reduce_no_run(kb, "bbbbbbbbaa"));
 
     REQUIRE(knuth_bendix::normal_forms(kb).min(1).max(POSITIVE_INFINITY).count()
             == 746);

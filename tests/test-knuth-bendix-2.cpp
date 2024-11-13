@@ -133,7 +133,7 @@ namespace libsemigroups {
     REQUIRE(knuth_bendix::contains(kb, "bbb", "a"));
 
     // REQUIRE(knuth_bendix::is_reduced(kb));
-    REQUIRE(kb.rewrite("ca") == "ac");
+    REQUIRE(knuth_bendix::reduce_no_run(kb, "ca") == "ac");
     REQUIRE((kb.active_rules() | sort(weird_cmp()) | to_vector())
             == std::vector<rule_type>(
                 {{"ab", "c"},  {"ae", "b"},   {"ba", "c"},  {"bc", "d"},

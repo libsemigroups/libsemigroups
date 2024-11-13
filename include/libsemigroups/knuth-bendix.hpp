@@ -145,6 +145,8 @@ namespace libsemigroups {
 
     using native_letter_type = char;
     using native_word_type   = std::string;
+    // TODO to_native_letter_type
+    // TODO to_native_word_type
 
     //////////////////////////////////////////////////////////////////////////
     // KnuthBendix - types - public
@@ -215,7 +217,6 @@ namespace libsemigroups {
     OverlapMeasure*           _overlap_measure;
     Presentation<std::string> _presentation;
     std::string               _tmp_element1;
-    std::string               _tmp_element2;
 
    public:
     //////////////////////////////////////////////////////////////////////////
@@ -478,6 +479,8 @@ namespace libsemigroups {
       return reduce_no_run(d_first, first, last);
     }
 
+    // TODO(0) implement reduce_inplace x4 if possible.
+
     //////////////////////////////////////////////////////////////////////////
     // KnuthBendix - setters for optional parameters - public
     //////////////////////////////////////////////////////////////////////////
@@ -522,9 +525,6 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! Constant.
-    //!
-    //! \param
-    //! (None)
     //!
     //! \sa \ref run and \ref process_pending_rules.
     [[nodiscard]] size_t batch_size() const noexcept {
@@ -574,8 +574,6 @@ namespace libsemigroups {
     //! \complexity
     //! Constant.
     //!
-    //! \param (None)
-    //!
     //! \sa \ref run.
     [[nodiscard]] size_t check_confluence_interval() const noexcept {
       return _settings.check_confluence_interval;
@@ -619,8 +617,6 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! Constant.
-    //!
-    //! \param (None)
     //!
     //! \sa \ref run.
     [[nodiscard]] size_t max_overlap() const noexcept {
@@ -669,8 +665,6 @@ namespace libsemigroups {
     //! \complexity
     //! Constant.
     //!
-    //! \param (None)
-    //!
     //! \sa \ref run.
     [[nodiscard]] size_t max_rules() const noexcept {
       return _settings.max_rules;
@@ -706,8 +700,6 @@ namespace libsemigroups {
     //! \complexity
     //! Constant.
     //!
-    //! \param (None)
-    //!
     //! \sa options::overlap.
     [[nodiscard]] typename options::overlap overlap_policy() const noexcept {
       return _settings.overlap_policy;
@@ -728,9 +720,6 @@ namespace libsemigroups {
     //! presentations alphabet.
     //!
     //! \param w word to validate.
-    //!
-    //! \returns
-    //! (None)
     //!
     //! \sa Presentation::validate_word.
     // TODO(0) remove
@@ -771,8 +760,6 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! Constant.
-    //!
-    //! \param (None)
     [[nodiscard]] Presentation<std::string> const&
     presentation() const noexcept {
       return _presentation;
@@ -825,9 +812,6 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! Constant.
-    //!
-    //! \param
-    //! (None)
     [[nodiscard]] size_t number_of_active_rules() noexcept;
 
     //! \brief Return the current number of inactive
@@ -846,8 +830,6 @@ namespace libsemigroups {
     //! \complexity
     //! Constant.
     //!
-    //! \param
-    //! (None)
     [[nodiscard]] size_t number_of_inactive_rules() const noexcept {
       return _rewriter.number_of_inactive_rules();
     }
@@ -872,9 +854,6 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! Constant.
-    //!
-    //! \param
-    //! (None)
     [[nodiscard]] size_t total_rules() const noexcept {
       return _rewriter.stats().total_rules;
     }
@@ -904,9 +883,6 @@ namespace libsemigroups {
     //! \complexity
     //! \f$O(n)\f$ where \f$n\f$ is the sum of the
     //! lengths of the words in rules of \p copy.
-    //!
-    //! \param
-    //! (None)
     [[nodiscard]] auto active_rules() {
       using rx::iterator_range;
       using rx::transform;
@@ -931,6 +907,9 @@ namespace libsemigroups {
                });
     }
 
+   private:
+    // TODO(0) move this to a more appropriate location in this file
+
     // TODO add note about empty active rules after
     // init and non-const-ness
     //! \brief Rewrite a word in-place.
@@ -951,9 +930,8 @@ namespace libsemigroups {
     // init and non-const-ness
     //! \brief Rewrite a word.
     //!
-    //! Rewrites a copy of the word \p w rewritten
-    //! according to the current rules in the
-    //! KnuthBendix instance.
+    //! Rewrites a copy of the word \p w rewritten according to the current
+    //! rules in the KnuthBendix instance.
     //!
     //! \param w the word to rewrite.
     //!
@@ -965,52 +943,40 @@ namespace libsemigroups {
       return w;
     }
 
+   public:
     //////////////////////////////////////////////////////////////////////////
     // KnuthBendix - main member functions - public
     //////////////////////////////////////////////////////////////////////////
 
-    //! \brief Check confluence of the current
-    //! rules.
+    //! \brief Check confluence of the current rules.
     //!
     //! Check confluence of the current rules.
     //!
-    //! \returns \c true if the KnuthBendix instance
-    //! is [confluent](https://w.wiki/9DA) and \c
-    //! false if it is not.
-    //!
-    //! \param
-    //! (None)
+    //! \returns \c true if the KnuthBendix instance is
+    //! [confluent](https://w.wiki/9DA) and \c false if it is not.
     [[nodiscard]] bool confluent() const;
 
-    //! \brief Check if the current system knows the
-    //! state of confluence of the current rules.
+    //! \brief Check if the current system knows the state of confluence of the
+    //! current rules.
     //!
-    //! Check if the current system knows the state
-    //! of confluence of the current rules.
+    //! Check if the current system knows the state of confluence of the
+    //! current rules.
     //!
-    //! \returns \c true if the confluence of the
-    //! rules in the KnuthBendix instance is known,
-    //! and \c false if it is not.
-    //!
-    //! \param
-    //! (None)
+    //! \returns \c true if the confluence of the rules in the KnuthBendix
+    //! instance is known, and \c false if it is not.
     [[nodiscard]] bool confluent_known() const noexcept;
 
-    // REVIEW None of these \sa's exist anymore.
-    // Should it be \ref number_of_classes and \ref
-    // normal_forms?
+    // REVIEW None of these \sa's exist anymore. Should it be \ref
+    // number_of_classes and \ref normal_forms?
     //! \brief Return the Gilman \ref WordGraph.
     //!
     //! Return the Gilman WordGraph of the system.
     //!
-    //! The Gilman WordGraph is a digraph where the
-    //! labels of the paths from the initial node
-    //! (corresponding to the empty word) correspond
-    //! to the shortlex normal forms of the
-    //! semigroup elements.
+    //! The Gilman WordGraph is a digraph where the labels of the paths from
+    //! the initial node (corresponding to the empty word) correspond to the
+    //! shortlex normal forms of the semigroup elements.
     //!
-    //! The semigroup is finite if the graph is
-    //! cyclic, and infinite otherwise.
+    //! The semigroup is finite if the graph is cyclic, and infinite otherwise.
     //!
     //! \returns A const reference to a \ref
     //! WordGraph.
@@ -1018,38 +984,26 @@ namespace libsemigroups {
     //! \exceptions
     //! \no_libsemigroups_except
     //!
-    //! \warning This will terminate when the
-    //! KnuthBendix instance is reduced and
-    //! confluent, which might be never.
+    //! \warning This will terminate when the KnuthBendix instance is reduced
+    //! and confluent, which might be never.
     //!
-    //! \sa \ref number_of_normal_forms,
-    //! \ref cbegin_normal_forms, and \ref
+    //! \sa \ref number_of_normal_forms, \ref cbegin_normal_forms, and \ref
     //! cend_normal_forms.
-    //!
-    //! \param
-    //! (None)
     WordGraph<uint32_t> const& gilman_graph();
 
     //! \brief Return the node labels of the Gilman
     //! \ref WordGraph
     //!
-    //! Return the node labels of the Gilman \ref
-    //! WordGraph, corresponding to the unique
-    //! prefixes of the left-hand sides of the rules
-    //! of the rewriting system.
+    //! Return the node labels of the Gilman \ref WordGraph, corresponding to
+    //! the unique prefixes of the left-hand sides of the rules of the rewriting
+    //! system.
     //!
-    //! \return The node labels of the Gilman \ref
-    //! WordGraph, a value of type
+    //! \return The node labels of the Gilman \ref WordGraph, a value of type
     //! \c std::vector<std::string>.
     //!
     //! \sa \ref gilman_graph.
-    //!
-    //! \param
-    //! (None)
     [[nodiscard]] std::vector<std::string> const& gilman_graph_node_labels() {
-      gilman_graph();  // to ensure that
-                       // gilman_graph is
-                       // initialised
+      gilman_graph();  // to ensure that gilman_graph is initialised
       return _gilman_graph_node_labels;
     }
 
@@ -1196,6 +1150,73 @@ namespace libsemigroups {
                                 char const*                            v) {
       return kb.contains(u, u + std::strlen(u), v, v + std::strlen(v));
     }
+    // TODO(0) 6x more contains functions for string_views + char const*
+
+    ////////////////////////////////////////////////////////////////////////
+    // Interface helpers - reduce
+    ////////////////////////////////////////////////////////////////////////
+
+    // TODO(0) version of this goes to congruence_interface??
+    // TODO(0) doc
+    template <typename Rewriter,
+              typename ReductionOrder,
+              typename InputWord,
+              typename OutputWord = InputWord>
+    OutputWord
+    reduce_no_run_no_checks(KnuthBendix<Rewriter, ReductionOrder>& kb,
+                            InputWord const&                       w) {
+      OutputWord result;
+      kb.reduce_no_run_no_checks(
+          std::back_inserter(result), std::begin(w), std::end(w));
+      return result;
+    }
+
+    // TODO(0) doc
+    template <typename Rewriter,
+              typename ReductionOrder,
+              typename InputWord,
+              typename OutputWord = InputWord>
+    OutputWord reduce_no_run(KnuthBendix<Rewriter, ReductionOrder>& kb,
+                             InputWord const&                       w) {
+      OutputWord result;
+      kb.reduce_no_run(std::back_inserter(result), std::begin(w), std::end(w));
+      return result;
+    }
+
+    template <typename Rewriter, typename ReductionOrder>
+    std::string reduce_no_run(KnuthBendix<Rewriter, ReductionOrder>& kb,
+                              char const*                            w) {
+      std::string result;
+      kb.reduce_no_run(std::back_inserter(result), w, w + std::strlen(w));
+      return result;
+    }  // TODO(0) other functions like this one
+
+    // TODO(0) doc
+    template <typename Rewriter,
+              typename ReductionOrder,
+              typename InputWord,
+              typename OutputWord = InputWord>
+    OutputWord reduce_no_checks(KnuthBendix<Rewriter, ReductionOrder>& kb,
+                                InputWord const&                       w) {
+      OutputWord result;
+      kb.reduce_no_checks(
+          std::back_inserter(result), std::begin(w), std::end(w));
+      return result;
+    }
+
+    // TODO(0) doc
+    template <typename Rewriter,
+              typename ReductionOrder,
+              typename InputWord,
+              typename OutputWord = InputWord>
+    OutputWord reduce(KnuthBendix<Rewriter, ReductionOrder>& kb,
+                      InputWord const&                       w) {
+      OutputWord result;
+      kb.reduce(std::back_inserter(result), std::begin(w), std::end(w));
+      return result;
+    }
+
+    // TODO(0) initializer list versions of the above
 
     ////////////////////////////////////////////////////////////////////////
     // Interface helpers - to_human_readable_repr
@@ -1237,9 +1258,6 @@ namespace libsemigroups {
     //! overlaps of a given length \f$n\f$ (according to the \ref
     //! options::overlap) before those overlaps of length \f$n + 1\f$.
     //!
-    //! \returns
-    //! (None)
-    //!
     //! \complexity
     //! See warning.
     //!
@@ -1247,8 +1265,6 @@ namespace libsemigroups {
     //! confluent, which might be never.
     //!
     //! \sa \ref run.
-    //!
-    //! \param (None)
     template <typename Rewriter, typename ReductionOrder>
     void by_overlap_length(KnuthBendix<Rewriter, ReductionOrder>&);
 
@@ -1346,7 +1362,8 @@ namespace libsemigroups {
         q.rules.insert(q.rules.end(), omit + 2, p.rules.crend());
         kb.init(twosided, q);
         kb.run_for(t);
-        if (kb.rewrite(*omit) == kb.rewrite(*(omit + 1))) {
+        // TODO no_checks
+        if (reduce_no_run(kb, *omit) == reduce_no_run(kb, *(omit + 1))) {
           return (omit + 1).base() - 1;
         }
       }
@@ -1393,6 +1410,7 @@ namespace libsemigroups {
                              T t = std::chrono::seconds(1)) {
       constexpr static congruence_kind twosided = congruence_kind::twosided;
 
+      // TODO validate lhs and rhs
       KnuthBendix         kb(twosided, p);
       std::string         lphbt = p.alphabet();
       std::vector<size_t> perm(lphbt.size(), 0);
@@ -1405,11 +1423,13 @@ namespace libsemigroups {
         p.validate();
 
         kb.init(twosided, p);
-        if (kb.rewrite(lhs) == kb.rewrite(rhs)) {
+        // TODO(0) no checks
+        if (reduce_no_run(kb, lhs) == reduce_no_run(kb, rhs)) {
           return tril::TRUE;
         }
         kb.run_for(t);
-        if (kb.rewrite(lhs) == kb.rewrite(rhs)) {
+        // TODO(0) no checks
+        if (reduce_no_run(kb, lhs) == reduce_no_run(kb, rhs)) {
           return tril::TRUE;
         } else if (kb.finished()) {
           return tril::FALSE;
@@ -1478,7 +1498,7 @@ namespace libsemigroups {
     while (!r.at_end()) {
       auto next = r.get();
       if (kb.presentation().contains_empty_word() || !next.empty()) {
-        auto next_nf        = kb.rewrite(next);
+        auto next_nf        = knuth_bendix::reduce(kb, next);
         auto [it, inserted] = map.emplace(next_nf, index);
         if (inserted) {
           result.emplace_back();

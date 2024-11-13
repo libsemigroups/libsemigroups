@@ -344,7 +344,7 @@ namespace libsemigroups {
                  "ababaaa",  "ababbaa", "baaabaa", "baabaaa", "baabbaa",
                  "aaaabaaa", "aaaabbaa"}));
 
-    REQUIRE(kb.rewrite("baaabb") == "baaab");
+    REQUIRE(knuth_bendix::reduce_no_run(kb, "baaabb") == "baaab");
 
     auto nf = (froidure_pin::normal_forms(S)
                | ToString(kb.presentation().alphabet()));
@@ -585,8 +585,8 @@ namespace libsemigroups {
     KnuthBendix kb(left, to_presentation<word_type>(S));
     knuth_bendix::add_pair(kb, l, r);
     REQUIRE(kb.number_of_classes() == 69);
-    REQUIRE(kb.rewrite("baabab") == "aab");
-    REQUIRE(kb.rewrite("aabaaab") == "aab");
+    REQUIRE(knuth_bendix::reduce_no_run(kb, "baabab") == "aab");
+    REQUIRE(knuth_bendix::reduce_no_run(kb, "aabaaab") == "aab");
     REQUIRE(knuth_bendix::contains(kb, "baabab", "aabaaab"));
   }
 }  // namespace libsemigroups
