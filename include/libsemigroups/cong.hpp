@@ -216,9 +216,8 @@ namespace libsemigroups {
         return std::static_pointer_cast<ToddCoxeter>(_race.winner())
             ->contains(std::begin(u), std::end(u), std::begin(v), std::end(v));
       } else if (winner_kind == RunnerKind::KB) {
-        // TODO(0) update!
         return std::static_pointer_cast<KnuthBendix<>>(_race.winner())
-            ->contains(u, v);
+            ->contains(std::begin(u), std::end(u), std::begin(v), std::end(v));
       } else {
         LIBSEMIGROUPS_ASSERT(winner_kind == RunnerKind::K);
         return std::static_pointer_cast<Kambites<word_type>>(_race.winner())

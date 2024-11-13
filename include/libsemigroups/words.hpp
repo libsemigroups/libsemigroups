@@ -1289,6 +1289,14 @@ namespace libsemigroups {
       return output;
     }
 
+    template <typename Int>
+    [[nodiscard]] std::string
+    operator()(std::initializer_list<Int> input) const {
+      // TODO(0) use iterators instead
+      word_type copy(input.begin(), input.end());
+      return operator()(copy);
+    }
+
     template <typename InputRange>
     struct Range;
 

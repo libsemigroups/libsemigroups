@@ -3109,7 +3109,7 @@ namespace libsemigroups {
       for (auto const& p : right_generating_pairs_no_checks(wg)) {
         auto const& u = p.first;
         auto const& v = p.second;
-        if (!_knuth_bendix.contains(u, v)) {
+        if (!knuth_bendix::contains(_knuth_bendix, u, v)) {
           auto beta
               = word_graph::follow_path_no_checks(wg, 0, u.cbegin(), u.cend());
           if (sink == UNDEFINED) {

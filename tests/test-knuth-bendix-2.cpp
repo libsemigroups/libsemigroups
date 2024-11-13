@@ -1680,7 +1680,7 @@ namespace libsemigroups {
     presentation::add_rule(p, "001"_w, "10"_w);
     KnuthBendix<> kb(congruence_kind::twosided, p);
 
-    REQUIRE(kb.contains("000"_w, "11"_w));
+    REQUIRE(knuth_bendix::contains(kb, "000"_w, "11"_w));
   }
 
   TEMPLATE_TEST_CASE("sigma sylvester monoid x 2",

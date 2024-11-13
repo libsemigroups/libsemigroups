@@ -1072,7 +1072,6 @@ namespace libsemigroups {
     // TODO rename contains
     // TODO do a no check version of this
     // TODO version taking rvalue refs?
-    [[nodiscard]] bool equal_to(std::string const& u, std::string const& v);
 
     // REVIEW Why does equal to take strings, but
     // this take words?
@@ -1091,18 +1090,10 @@ namespace libsemigroups {
     //!
     //! \sa \ref equal_to.
     // TODO add perf warning
-    [[nodiscard]] bool contains(word_type const& u, word_type const& v) {
-      ToString to_string(presentation().alphabet());
-      return equal_to(to_string(u), to_string(v));
-    }
 
     // REVIEW can this be copied given the params
     // are a different type?
     //! \copydoc contains
-    [[nodiscard]] bool contains(std::initializer_list<letter_type> u,
-                                std::initializer_list<letter_type> v) {
-      return contains(word_type(u), word_type(v));
-    }
 
     // No in-place version just use rewrite instead,
     // this only exists so that run is called.

@@ -29,6 +29,7 @@
 
 #include "runner.hpp"  // for Runner
 #include "types.hpp"   // for word_type, relation_type, letter_type, tril
+#include "words.hpp"   // for to_string
 
 #include "ranges.hpp"  // for is_input_or_sink_v
 
@@ -313,8 +314,18 @@ namespace libsemigroups {
     // TODO(0) doc
     template <typename Subclass, typename Word>
     bool contains(Subclass& ci, Word const& u, Word const& v) {
-      return ci.contains(
-          std::begin(u), std::end(u), std::begin(v), std::end(v));
+      if constexpr (std::is_same_v<typename Subclass::my_letter_type, char>
+                    && !std::is_same_v<typename Subclass::my_letter_type,
+                                       typename Word::value_type>) {
+        ToString to_string(ci.presentation().alphabet());
+        return contains(ci, to_string(u), to_string(v));
+        // TODO(0) the string -> word case
+        // TODO(0) it'd be better not to do this here, because we can't store
+        // the ToString object
+      } else {
+        return ci.contains(
+            std::begin(u), std::end(u), std::begin(v), std::end(v));
+      }
     }
 
     // TODO(0) doc

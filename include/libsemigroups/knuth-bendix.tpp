@@ -281,31 +281,32 @@ namespace libsemigroups {
     }
   }
 
-  template <typename Rewriter, typename ReductionOrder>
-  bool KnuthBendix<Rewriter, ReductionOrder>::equal_to(std::string const& u,
-                                                       std::string const& v) {
-    presentation().validate_word(u.cbegin(), u.cend());
-    presentation().validate_word(v.cbegin(), v.cend());
+  // template <typename Rewriter, typename ReductionOrder>
+  // bool KnuthBendix<Rewriter, ReductionOrder>::equal_to(std::string const& u,
+  //                                                      std::string const& v)
+  //                                                      {
+  //   presentation().validate_word(u.cbegin(), u.cend());
+  //   presentation().validate_word(v.cbegin(), v.cend());
 
-    if (u == v) {
-      return true;
-    }
+  //   if (u == v) {
+  //     return true;
+  //   }
 
-    auto uu = rewrite(u);
-    auto vv = rewrite(v);
+  //   auto uu = rewrite(u);
+  //   auto vv = rewrite(v);
 
-    if (uu == vv) {
-      return true;
-    } else if (finished()) {
-      return false;
-    }
+  //   if (uu == vv) {
+  //     return true;
+  //   } else if (finished()) {
+  //     return false;
+  //   }
 
-    run();
+  //   run();
 
-    rewrite_inplace(uu);
-    rewrite_inplace(vv);
-    return uu == vv;
-  }
+  //   rewrite_inplace(uu);
+  //   rewrite_inplace(vv);
+  //   return uu == vv;
+  // }
 
   template <typename Rewriter, typename ReductionOrder>
   std::string

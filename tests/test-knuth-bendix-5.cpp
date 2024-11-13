@@ -223,19 +223,23 @@ namespace libsemigroups {
     Paths paths(copy);
     REQUIRE(paths.min(1).source(source).count() == 72);
 
-    REQUIRE(!kb2.contains(
+    REQUIRE(!knuth_bendix::contains(
+        kb2,
         2_w + froidure_pin::factorisation(S, Transf<>({1, 3, 1, 3, 3})),
         2_w + froidure_pin::factorisation(S, Transf<>({4, 2, 4, 4, 2}))));
 
-    REQUIRE(!kb2.contains(
+    REQUIRE(!knuth_bendix::contains(
+        kb2,
         2_w + froidure_pin::factorisation(S, Transf<>({1, 3, 3, 3, 3})),
         2_w + froidure_pin::factorisation(S, Transf<>({4, 2, 4, 4, 2}))));
 
-    REQUIRE(kb2.contains(
+    REQUIRE(knuth_bendix::contains(
+        kb2,
         2_w + froidure_pin::factorisation(S, Transf<>({2, 4, 2, 2, 2})),
         2_w + froidure_pin::factorisation(S, Transf<>({2, 3, 3, 3, 3}))));
 
-    REQUIRE(!kb2.contains(
+    REQUIRE(!knuth_bendix::contains(
+        kb2,
         2_w + froidure_pin::factorisation(S, Transf<>({1, 3, 3, 3, 3})),
         2_w + froidure_pin::factorisation(S, Transf<>({2, 3, 3, 3, 3}))));
 
@@ -299,19 +303,23 @@ namespace libsemigroups {
 
     REQUIRE(kb.number_of_classes() == 72);
 
-    REQUIRE(!kb.contains(
+    REQUIRE(!knuth_bendix::contains(
+        kb,
         froidure_pin::factorisation(S, Transf<>({1, 3, 1, 3, 3})),
         froidure_pin::factorisation(S, Transf<>({4, 2, 4, 4, 2}))));
 
-    REQUIRE(!kb.contains(
+    REQUIRE(!knuth_bendix::contains(
+        kb,
         froidure_pin::factorisation(S, Transf<>({1, 3, 3, 3, 3})),
         froidure_pin::factorisation(S, Transf<>({4, 2, 4, 4, 2}))));
 
-    REQUIRE(
-        kb.contains(froidure_pin::factorisation(S, Transf<>({2, 4, 2, 2, 2})),
-                    froidure_pin::factorisation(S, Transf<>({2, 3, 3, 3, 3}))));
+    REQUIRE(knuth_bendix::contains(
+        kb,
+        froidure_pin::factorisation(S, Transf<>({2, 4, 2, 2, 2})),
+        froidure_pin::factorisation(S, Transf<>({2, 3, 3, 3, 3}))));
 
-    REQUIRE(!kb.contains(
+    REQUIRE(!knuth_bendix::contains(
+        kb,
         froidure_pin::factorisation(S, Transf<>({1, 3, 3, 3, 3})),
         froidure_pin::factorisation(S, Transf<>({2, 3, 3, 3, 3}))));
 
@@ -555,7 +563,8 @@ namespace libsemigroups {
         froidure_pin::factorisation(S, Transf<>({3, 4, 4, 4, 4})),
         froidure_pin::factorisation(S, Transf<>({3, 1, 3, 3, 3})));
     REQUIRE(kb.number_of_classes() == 72);
-    REQUIRE(kb.contains({1, 1, 1}, {1}));
+    REQUIRE(knuth_bendix::contains(kb, {1, 1, 1}, {1}));
+    // TODO(0) remove the setter presentation mem fn from KnuthBendix
     REQUIRE_THROWS_AS(kb.presentation(p), LibsemigroupsException);
   }
 
