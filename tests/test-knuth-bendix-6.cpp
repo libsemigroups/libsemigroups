@@ -79,8 +79,8 @@ namespace libsemigroups {
     REQUIRE(kb.normal_form(to_string(001_w)) == "aab");
     REQUIRE(kb.normal_form(to_string(00001_w)) == "aab");
     REQUIRE(kb.normal_form(to_string(011001_w)) == "aab");
-    REQUIRE(!kb.equal_to(to_string(000_w), to_string(1_w)));
-    REQUIRE(!kb.equal_to(to_string(0000_w), to_string(000_w)));
+    REQUIRE(!knuth_bendix::contains(kb, to_string(000_w), to_string(1_w)));
+    REQUIRE(!knuth_bendix::contains(kb, to_string(0000_w), to_string(000_w)));
   }
 
   TEMPLATE_TEST_CASE("free semigroup congruence (6 classes)",
@@ -111,7 +111,7 @@ namespace libsemigroups {
     ToString to_string;
 
     REQUIRE(kb.number_of_classes() == 6);
-    REQUIRE(kb.equal_to(to_string(1_w), to_string(2_w)));
+    REQUIRE(knuth_bendix::contains(kb, to_string(1_w), to_string(2_w)));
   }
 
   TEMPLATE_TEST_CASE("free semigroup congruence (16 classes)",
@@ -148,7 +148,7 @@ namespace libsemigroups {
 
     REQUIRE(kb.number_of_classes() == 16);
     REQUIRE(kb.number_of_active_rules() == 18);
-    REQUIRE(kb.equal_to(to_string(2_w), to_string(3_w)));
+    REQUIRE(knuth_bendix::contains(kb, to_string(2_w), to_string(3_w)));
   }
 
   TEMPLATE_TEST_CASE("free semigroup congruence (6 classes) x 2",
@@ -182,15 +182,15 @@ namespace libsemigroups {
     TestType kb(twosided, p);
     REQUIRE(kb.number_of_classes() == 16);
     ToString to_string;
-    REQUIRE(kb.equal_to(to_string({0}), to_string({5})));
-    REQUIRE(kb.equal_to(to_string({0}), to_string({5})));
-    REQUIRE(kb.equal_to(to_string({0}), to_string({10})));
-    REQUIRE(kb.equal_to(to_string({1}), to_string({2})));
-    REQUIRE(kb.equal_to(to_string({1}), to_string({7})));
-    REQUIRE(kb.equal_to(to_string({3}), to_string({4})));
-    REQUIRE(kb.equal_to(to_string({3}), to_string({6})));
-    REQUIRE(kb.equal_to(to_string({3}), to_string({8})));
-    REQUIRE(kb.equal_to(to_string({3}), to_string({9})));
+    REQUIRE(knuth_bendix::contains(kb, to_string({0}), to_string({5})));
+    REQUIRE(knuth_bendix::contains(kb, to_string({0}), to_string({5})));
+    REQUIRE(knuth_bendix::contains(kb, to_string({0}), to_string({10})));
+    REQUIRE(knuth_bendix::contains(kb, to_string({1}), to_string({2})));
+    REQUIRE(knuth_bendix::contains(kb, to_string({1}), to_string({7})));
+    REQUIRE(knuth_bendix::contains(kb, to_string({3}), to_string({4})));
+    REQUIRE(knuth_bendix::contains(kb, to_string({3}), to_string({6})));
+    REQUIRE(knuth_bendix::contains(kb, to_string({3}), to_string({8})));
+    REQUIRE(knuth_bendix::contains(kb, to_string({3}), to_string({9})));
   }
 
   TEMPLATE_TEST_CASE("free semigroup congruence (240 classes)",
@@ -343,7 +343,7 @@ namespace libsemigroups {
                      "[142][quick][knuth-bendix]",
                      KNUTH_BENDIX_TYPES) {
     using literals::operator""_w;
-    auto            rg = ReportGuard(false);
+    auto rg = ReportGuard(false);
 
     Presentation<word_type> p1;
     p1.contains_empty_word(true);

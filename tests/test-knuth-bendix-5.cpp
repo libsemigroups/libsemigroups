@@ -455,7 +455,7 @@ namespace libsemigroups {
     Paths paths1(copy);
     REQUIRE(paths1.min(1).source(0).count() == 69);
     REQUIRE(knuth_bendix::normal_forms(kb).min(1).count() == 69);
-    REQUIRE(!kb.equal_to("aaaabb", "abaaabaa"));
+    REQUIRE(!knuth_bendix::contains(kb, "aaaabb", "abaaabaa"));
 
     REQUIRE(kb.number_of_classes() == 69);
 
@@ -578,6 +578,6 @@ namespace libsemigroups {
     REQUIRE(kb.number_of_classes() == 69);
     REQUIRE(kb.rewrite("baabab") == "aab");
     REQUIRE(kb.rewrite("aabaaab") == "aab");
-    REQUIRE(kb.equal_to("baabab", "aabaaab"));
+    REQUIRE(knuth_bendix::contains(kb, "baabab", "aabaaab"));
   }
 }  // namespace libsemigroups
