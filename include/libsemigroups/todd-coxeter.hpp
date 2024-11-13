@@ -145,6 +145,13 @@ namespace libsemigroups {
     //! The type of the edge-labels in the word graph.
     using label_type = typename WordGraph<uint32_t>::label_type;
 
+    ////////////////////////////////////////////////////////////////////////
+    // Interface requirements - native-types
+    ////////////////////////////////////////////////////////////////////////
+
+    using native_letter_type = letter_type;
+    using native_word_type   = word_type;
+
     //! \ingroup todd_coxeter_group
     //!
     //! \brief Struct containing various options that can be used to control the

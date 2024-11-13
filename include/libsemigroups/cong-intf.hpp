@@ -314,8 +314,8 @@ namespace libsemigroups {
     // TODO(0) doc
     template <typename Subclass, typename Word>
     bool contains(Subclass& ci, Word const& u, Word const& v) {
-      if constexpr (std::is_same_v<typename Subclass::my_letter_type, char>
-                    && !std::is_same_v<typename Subclass::my_letter_type,
+      if constexpr (std::is_same_v<typename Subclass::native_letter_type, char>
+                    && !std::is_same_v<typename Subclass::native_letter_type,
                                        typename Word::value_type>) {
         ToString to_string(ci.presentation().alphabet());
         return contains(ci, to_string(u), to_string(v));
@@ -330,7 +330,7 @@ namespace libsemigroups {
 
     // TODO(0) doc
     template <typename Subclass,
-              typename Int = typename Subclass::my_letter_type>
+              typename Int = typename Subclass::native_letter_type>
     tril currently_contains_no_checks(Subclass const&                   ci,
                                       std::initializer_list<Int> const& u,
                                       std::initializer_list<Int> const& v) {
@@ -340,7 +340,7 @@ namespace libsemigroups {
 
     // TODO(0) doc
     template <typename Subclass,
-              typename Int = typename Subclass::my_letter_type>
+              typename Int = typename Subclass::native_letter_type>
     tril currently_contains(Subclass const&                   ci,
                             std::initializer_list<Int> const& u,
                             std::initializer_list<Int> const& v) {
@@ -349,7 +349,7 @@ namespace libsemigroups {
 
     // TODO(0) doc
     template <typename Subclass,
-              typename Int = typename Subclass::my_letter_type>
+              typename Int = typename Subclass::native_letter_type>
     bool contains_no_checks(Subclass&                         ci,
                             std::initializer_list<Int> const& u,
                             std::initializer_list<Int> const& v) {
@@ -358,7 +358,7 @@ namespace libsemigroups {
 
     // TODO(0) doc
     template <typename Subclass,
-              typename Int = typename Subclass::my_letter_type>
+              typename Int = typename Subclass::native_letter_type>
     bool contains(Subclass&                         ci,
                   std::initializer_list<Int> const& u,
                   std::initializer_list<Int> const& v) {

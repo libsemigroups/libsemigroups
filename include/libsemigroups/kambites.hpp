@@ -678,6 +678,7 @@ namespace libsemigroups {
     ////////////////////////////////////////////////////////////////////////
     // TODO(0) ensure there are Word2, string_view, and char const* versions of
     // these
+    // TODO(0) replace these with using congruence_interface::contains etc
 
     // TODO(0) doc
     template <typename Word1, typename Word2>
