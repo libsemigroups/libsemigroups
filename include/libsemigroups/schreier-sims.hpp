@@ -43,6 +43,7 @@
 #include <cstddef>        // for size_t
 #include <cstdint>        // for uint64_t
 #include <iterator>       // for distance
+#include <limits>         // for numeric_limits
 #include <memory>         // for make_unique
 #include <string>         // for operator+, basic_string
 #include <string_view>    // for string_view
@@ -58,6 +59,7 @@
 
 #include "detail/bruidhinn-traits.hpp"  // for BruidhinnTraits
 #include "detail/containers.hpp"        // for Array2, StaticTriVector2
+#include "detail/fmt.hpp"               // for format
 #include "detail/int-range.hpp"         // for IntRange
 
 namespace libsemigroups {
@@ -179,6 +181,9 @@ namespace libsemigroups {
         std::is_same<Element, typename Traits::element_type>::value,
         "incompatible element types, Traits::element_type and Element "
         "must be the same");
+    static_assert(N <= std::numeric_limits<Point>::max(),
+                  "the first template parameter N cannot be expressed as value "
+                  "of type equal to the second template parameter Point");
 
     using internal_element_type =
         typename detail::BruidhinnTraits<Element>::internal_value_type;
