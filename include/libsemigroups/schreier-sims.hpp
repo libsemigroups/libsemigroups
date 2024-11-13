@@ -749,7 +749,7 @@ namespace libsemigroups {
     // isn't true, because we either run to the end or haven't done anything at
     // all.
     // not noexcept because sift_no_checks isn't
-    [[nodiscard]] bool contains_no_run(const_element_reference x) const;
+    [[nodiscard]] bool currently_contains(const_element_reference x) const;
 
     //! \brief Test membership of an element.
     //!
@@ -975,10 +975,10 @@ namespace libsemigroups {
     //
     // TODO (from JDM):
     // * use the no_checks mem fns of SchreierSims now that they exist
-    template <size_t N>
-    void intersection(SchreierSims<N>& T,
-                      SchreierSims<N>& S1,
-                      SchreierSims<N>& S2);
+    template <size_t N, typename Point, typename Element, typename Traits>
+    void intersection(SchreierSims<N, Point, Element, Traits>& T,
+                      SchreierSims<N, Point, Element, Traits>& S1,
+                      SchreierSims<N, Point, Element, Traits>& S2);
   }  // namespace schreier_sims
 
   //! \ingroup schreier_sims_group
@@ -995,9 +995,10 @@ namespace libsemigroups {
   //! \param braces the braces to use to delineate rows (default: `"{}"`).
   //! \param max_width the maximum width of the returned representation
   //! (default: \c 72).
-  template <size_t N>
-  [[nodiscard]] std::string to_human_readable_repr(SchreierSims<N> const& S,
-                                                   size_t max_width = 72);
+  template <size_t N, typename Point, typename Element, typename Traits>
+  [[nodiscard]] std::string
+  to_human_readable_repr(SchreierSims<N, Point, Element, Traits> const& S,
+                         size_t max_width = 72);
 }  // namespace libsemigroups
 
 #include "schreier-sims.tpp"

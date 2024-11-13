@@ -183,7 +183,7 @@ namespace libsemigroups {
   }
 
   template <size_t N, typename Point, typename Element, typename Traits>
-  bool SchreierSims<N, Point, Element, Traits>::contains_no_run(
+  bool SchreierSims<N, Point, Element, Traits>::currently_contains(
       const_element_reference x) const {
     if (!is_valid_degree(Degree()(x))) {
       return false;
@@ -197,7 +197,7 @@ namespace libsemigroups {
   SchreierSims<N, Point, Element, Traits>::contains(const_element_reference x) {
     if (is_valid_degree(Degree()(x))) {
       run();
-      return contains_no_run(x);
+      return currently_contains(x);
     } else {
       return false;
     }
@@ -502,16 +502,18 @@ namespace libsemigroups {
   }
 
   namespace schreier_sims {
-    template <size_t N>
-    void intersection(SchreierSims<N>& T,
-                      SchreierSims<N>& S1,
-                      SchreierSims<N>& S2) {
+    template <size_t N, typename Point, typename Element, typename Traits>
+    void intersection(SchreierSims<N, Point, Element, Traits>& T,
+                      SchreierSims<N, Point, Element, Traits>& S1,
+                      SchreierSims<N, Point, Element, Traits>& S2) {
       // This might not be correct for general traits, i.e. only works for
       // permutations for now.
-      using point_type   = typename SchreierSims<N>::point_type;
-      using element_type = typename SchreierSims<N>::element_type;
-      using One          = typename SchreierSims<N>::One;
-      using Product      = typename SchreierSims<N>::Product;
+      using point_type =
+          typename SchreierSims<N, Point, Element, Traits>::point_type;
+      using element_type =
+          typename SchreierSims<N, Point, Element, Traits>::element_type;
+      using One     = typename SchreierSims<N, Point, Element, Traits>::One;
+      using Product = typename SchreierSims<N, Point, Element, Traits>::Product;
 
       if (!T.empty()) {
         LIBSEMIGROUPS_EXCEPTION("the parameter T must be empty");
@@ -538,7 +540,7 @@ namespace libsemigroups {
         base_size = N - 1;
       }
 
-      auto S2B = std::make_unique<SchreierSims<N>>();
+      auto S2B = std::make_unique<SchreierSims<N, Point, Element, Traits>>();
       for (size_t depth = 0; depth < base_size; ++depth) {
         S2B->add_base_point(S1.base(depth));
       }
@@ -628,9 +630,10 @@ namespace libsemigroups {
     }
   }  // namespace schreier_sims
 
-  template <size_t N>
-  [[nodiscard]] std::string to_human_readable_repr(SchreierSims<N> const& S,
-                                                   size_t max_width) {
+  template <size_t N, typename Point, typename Element, typename Traits>
+  [[nodiscard]] std::string
+  to_human_readable_repr(SchreierSims<N, Point, Element, Traits> const& S,
+                         size_t max_width) {
     size_t      base_size     = S.base_size();
     size_t      nr_generators = S.number_of_generators();
     std::string base_string;
