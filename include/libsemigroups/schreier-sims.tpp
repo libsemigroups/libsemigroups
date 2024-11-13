@@ -183,6 +183,19 @@ namespace libsemigroups {
   }
 
   template <size_t N, typename Point, typename Element, typename Traits>
+  uint64_t SchreierSims<N, Point, Element, Traits>::current_size() const {
+    // TODO(later) check if product overflows?
+    if (empty()) {
+      return 1;
+    }
+    uint64_t out = 1;
+    for (index_type i = 0; i < _base_size; i++) {
+      out *= _orbits.size(i);
+    }
+    return out;
+  }
+
+  template <size_t N, typename Point, typename Element, typename Traits>
   bool SchreierSims<N, Point, Element, Traits>::currently_contains(
       const_element_reference x) const {
     if (!is_valid_degree(Degree()(x))) {
@@ -652,7 +665,7 @@ namespace libsemigroups {
     }
 
     if (S.finished()) {
-      size_t size = const_cast<SchreierSims<N>&>(S).size();
+      size_t size = S.current_size();
 
       out = fmt::format("<SchreierSims with {} generator{}, base {} & size {}>",
                         nr_generators,

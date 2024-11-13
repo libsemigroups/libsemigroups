@@ -667,6 +667,8 @@ namespace libsemigroups {
     // not noexcept because run isn't
     [[nodiscard]] uint64_t size();
 
+    [[nodiscard]] uint64_t current_size() const;
+
     //! \brief Sift an element through the stabiliser chain in-place.
     //!
     //! Sift an element through the stabiliser chain in-place.
