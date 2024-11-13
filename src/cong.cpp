@@ -96,6 +96,22 @@ namespace libsemigroups {
     return *this;
   }
 
+  uint64_t Congruence::number_of_classes() {
+    run();
+    auto winner_kind = _runner_kinds[_race.winner_index()];
+    if (winner_kind == RunnerKind::TC) {
+      return std::static_pointer_cast<ToddCoxeter>(_race.winner())
+          ->number_of_classes();
+    } else if (winner_kind == RunnerKind::KB) {
+      return std::static_pointer_cast<KnuthBendix<>>(_race.winner())
+          ->number_of_classes();
+    } else {
+      LIBSEMIGROUPS_ASSERT(winner_kind == RunnerKind::K);
+      return std::static_pointer_cast<Kambites<word_type>>(_race.winner())
+          ->number_of_classes();
+    }
+  }
+
   void Congruence::init_runners() {
     if (!_runners_initted) {
       _runners_initted = true;

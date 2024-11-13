@@ -188,24 +188,123 @@ namespace libsemigroups {
     ~Congruence() = default;
 
     //////////////////////////////////////////////////////////////////////////
-    // CongruenceInterface - pure virtual - public
+    // Congruence - interface requirements - add_pair
     //////////////////////////////////////////////////////////////////////////
 
-    [[nodiscard]] uint64_t number_of_classes() {
+    using CongruenceInterface::add_pair_no_checks;
+
+    template <typename Iterator1,
+              typename Iterator2,
+              typename Iterator3,
+              typename Iterator4>
+    [[nodiscard]] Congruence& add_pair(Iterator1 first1,
+                                       Iterator2 last1,
+                                       Iterator3 first2,
+                                       Iterator4 last2) {
+      CongruenceInterface::add_pair<Congruence>(first1, last1, first2, last2);
+      return *this;
+    }
+
+    ////////////////////////////////////////////////////////////////////////
+    // Congruence - interface requirements - number_of_classes
+    ////////////////////////////////////////////////////////////////////////
+
+    [[nodiscard]] uint64_t number_of_classes();
+
+    ////////////////////////////////////////////////////////////////////////
+    // Congruence - interface requirements - contains
+    ////////////////////////////////////////////////////////////////////////
+
+    // TODO(0) out of line
+    template <typename Iterator1,
+              typename Iterator2,
+              typename Iterator3,
+              typename Iterator4>
+    [[nodiscard]] tril currently_contains_no_checks(Iterator1 first1,
+                                                    Iterator2 last1,
+                                                    Iterator3 first2,
+                                                    Iterator4 last2) const {
+      tril result = tril::unknown;
+      for (auto const& [i, runner] : rx::enumerate(_race)) {
+        if (_runner_kinds[i] == RunnerKind::TC) {
+          result = std::static_pointer_cast<ToddCoxeter>(runner)
+                       ->currently_contains_no_checks(
+                           first1, last1, first2, last2);
+        } else if (_runner_kinds[i] == RunnerKind::KB) {
+          result = std::static_pointer_cast<KnuthBendix<>>(runner)
+                       ->currently_contains_no_checks(
+                           first1, last1, first2, last2);
+        } else {
+          LIBSEMIGROUPS_ASSERT(_runner_kinds[i] == RunnerKind::K);
+          result = std::static_pointer_cast<Kambites<word_type>>(runner)
+                       ->currently_contains_no_checks(
+                           first1, last1, first2, last2);
+        }
+        if (result != tril::unknown) {
+          break;
+        }
+      }
+      return result;
+    }
+
+    // TODO(0) can this be included in CongruenceInterface if it's the same in
+    // every derived class?
+    template <typename Iterator1,
+              typename Iterator2,
+              typename Iterator3,
+              typename Iterator4>
+    [[nodiscard]] tril currently_contains(Iterator1 first1,
+                                          Iterator2 last1,
+                                          Iterator3 first2,
+                                          Iterator4 last2) const {
+      throw_if_letter_out_of_bounds(first1, last1);
+      throw_if_letter_out_of_bounds(first2, last2);
+      return currently_contains_no_checks(first1, last1, first2, last2);
+    }
+
+    // TODO(0) can this be included in CongruenceInterface if it's the same in
+    // every derived class?
+    template <typename Iterator1,
+              typename Iterator2,
+              typename Iterator3,
+              typename Iterator4>
+    [[nodiscard]] bool contains_no_checks(Iterator1 first1,
+                                          Iterator2 last1,
+                                          Iterator3 first2,
+                                          Iterator4 last2) {
       run();
       auto winner_kind = _runner_kinds[_race.winner_index()];
       if (winner_kind == RunnerKind::TC) {
         return std::static_pointer_cast<ToddCoxeter>(_race.winner())
-            ->number_of_classes();
+            ->contains_no_checks(first1, last1, first2, last2);
       } else if (winner_kind == RunnerKind::KB) {
         return std::static_pointer_cast<KnuthBendix<>>(_race.winner())
-            ->number_of_classes();
+            ->contains_no_checks(first1, last1, first2, last2);
       } else {
         LIBSEMIGROUPS_ASSERT(winner_kind == RunnerKind::K);
         return std::static_pointer_cast<Kambites<word_type>>(_race.winner())
-            ->number_of_classes();
+            ->contains_no_checks(first1, last1, first2, last2);
       }
     }
+
+    // TODO(0) can this be included in CongruenceInterface if it's the same in
+    // every derived class?
+    template <typename Iterator1,
+              typename Iterator2,
+              typename Iterator3,
+              typename Iterator4>
+    [[nodiscard]] bool contains(Iterator1 first1,
+                                Iterator2 last1,
+                                Iterator3 first2,
+                                Iterator4 last2) {
+      throw_if_letter_out_of_bounds(first1, last1);
+      throw_if_letter_out_of_bounds(first2, last2);
+      return contains_no_checks(first1, last1, first2, last2);
+    }
+
+    ////////////////////////////////////////////////////////////////////////
+    // OLD
+    ////////////////////////////////////////////////////////////////////////
 
     // TODO(0) replace with iterators
     // TODO(0) out of line
@@ -244,20 +343,6 @@ namespace libsemigroups {
       }
       LIBSEMIGROUPS_EXCEPTION(
           "No presentation has been set, so cannot validate the word!");
-    }
-
-    using CongruenceInterface::add_pair_no_checks;
-
-    template <typename Iterator1,
-              typename Iterator2,
-              typename Iterator3,
-              typename Iterator4>
-    [[nodiscard]] Congruence& add_pair(Iterator1 first1,
-                                       Iterator2 last1,
-                                       Iterator3 first2,
-                                       Iterator4 last2) {
-      CongruenceInterface::add_pair<Congruence>(first1, last1, first2, last2);
-      return *this;
     }
 
     //////////////////////////////////////////////////////////////////////////
