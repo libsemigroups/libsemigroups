@@ -79,10 +79,14 @@ namespace libsemigroups {
 
     //! The type of strings used by a Kambites instance.
     // TODO update doc
+    // TODO remove use native_word_type instead
     using value_type
         = std::conditional_t<std::is_same_v<Word, detail::MultiStringView>,
                              std::string,
                              Word>;
+
+    using native_word_type   = value_type;
+    using native_letter_type = typename native_word_type::value_type;
 
    private:
     //! The template parameter \p Word.
@@ -229,13 +233,11 @@ namespace libsemigroups {
     // The Kambites class requires that input to contains to be actual objects
     // not iterators. This is different from KnuthBendix and ToddCoxeter.
    private:  // TODO(0) move to better location
-    // TODO(0) make private?
     [[nodiscard]] bool contains_no_checks(value_type const& u,
                                           value_type const& v);
 
     //! \throws LibsemigroupsException if the small overlap class is not at
     //! least \f$4\f$.
-    // TODO(0) make private?
     template <typename SFINAE = bool>
     [[nodiscard]] auto contains_no_checks(word_type const& u,
                                           word_type const& v)
@@ -251,6 +253,10 @@ namespace libsemigroups {
                                                     Iterator2 last1,
                                                     Iterator3 first2,
                                                     Iterator4 last2) const {
+      using iterator_points_at = decltype(*std::declval<Iterator1>());
+      static_assert(
+          std::is_convertible_v<iterator_points_at, native_letter_type>);
+      // TODO(0) impl for non-native letter_types
       if (finished()) {
         const_cast<Kambites*>(this)->contains_no_checks(
             first1, last1, first2, last2);

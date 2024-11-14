@@ -371,6 +371,10 @@ namespace libsemigroups {
                                       Iterator2 last1,
                                       Iterator3 first2,
                                       Iterator4 last2) {
+      using iterator_points_at = decltype(*std::declval<Iterator1>());
+      static_assert(
+          std::is_convertible_v<iterator_points_at, native_letter_type>);
+      // TODO(0) impl for non-native letter types
       if (std::equal(first1, last1, first2, last2)) {
         return tril::TRUE;
       }
@@ -380,7 +384,6 @@ namespace libsemigroups {
       reduce_no_run_no_checks(std::back_inserter(w2), first2, last2);
       if (w1 == w2) {
         return tril::TRUE;
-
       } else if (finished()) {
         return tril::FALSE;
       }

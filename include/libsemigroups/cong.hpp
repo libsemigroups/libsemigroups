@@ -224,6 +224,8 @@ namespace libsemigroups {
                                                     Iterator2 last1,
                                                     Iterator3 first2,
                                                     Iterator4 last2) const {
+      //      using iterator_points_at = decltype(*std::declval<Iterator1>());
+
       tril result = tril::unknown;
       for (auto const& [i, runner] : rx::enumerate(_race)) {
         if (_runner_kinds[i] == RunnerKind::TC) {

@@ -2815,8 +2815,9 @@ namespace libsemigroups {
     REQUIRE(tc.finished());
 
     ToWord to_word("abcd");
-
-    REQUIRE(contains(tc, to_word("dd"), to_word("a")));
+    using std::literals::string_literals::operator""s;
+    REQUIRE(todd_coxeter::currently_contains_no_checks(tc, "dd", "a")
+            == tril::TRUE);
     REQUIRE(contains(tc, "dd"_w, "a"_w));
   }
 
@@ -4990,7 +4991,7 @@ namespace libsemigroups {
     auto kb = to_knuth_bendix(twosided, S);
     auto q  = kb.presentation();
     REQUIRE(q.alphabet() == "abcdef");
-    REQUIRE(kb.rewrite("af") == "f");
+    REQUIRE(knuth_bendix::reduce_no_run(kb, "af") == "f");
 
     for (auto const& [l, r] : froidure_pin::rules(S)) {
       if (l == 05_w && r == 5_w) {

@@ -963,10 +963,15 @@ namespace libsemigroups {
 
     [[nodiscard]] letter_type operator()(char input) const {
       // TODO improve this
+      // FIXME it also doesn't work
       word_type output;
       // operator()(output, std::string_view(&input, 1));
       operator()(output, std::string(input, 1));
       return output[0];
+    }
+
+    [[nodiscard]] letter_type call_no_checks(char input) const {
+      return _alphabet_map.find(input)->second;
     }
 
     template <typename InputRange>

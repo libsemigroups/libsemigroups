@@ -321,6 +321,7 @@ namespace libsemigroups {
         _forest(),
         _setting_stack(),
         _standardized(),
+        _to_word(),
         _word_graph() {
     init();
   }
@@ -335,6 +336,7 @@ namespace libsemigroups {
       _setting_stack.erase(_setting_stack.begin() + 1, _setting_stack.end());
       _setting_stack.back()->init();
     }
+    _to_word.init();
     LIBSEMIGROUPS_ASSERT(!_setting_stack.empty());
     _standardized = Order::none;
     copy_settings_into_graph();
@@ -357,6 +359,7 @@ namespace libsemigroups {
     _forest        = std::move(that._forest);
     _setting_stack = std::move(that._setting_stack);
     _standardized  = std::move(that._standardized);
+    _to_word       = std::move(that._to_word);
     _word_graph    = std::move(that._word_graph);
     // The next line is essential so that the _word_graph.definitions()._tc
     // points at <this>.
@@ -375,6 +378,7 @@ namespace libsemigroups {
       _setting_stack.push_back(std::make_unique<Settings>(*uptr));
     }
     _standardized = that._standardized;
+    _to_word      = that._to_word;
     _word_graph   = that._word_graph;
     return *this;
   }
@@ -425,8 +429,8 @@ namespace libsemigroups {
     }
     CongruenceInterface::init(knd);
     _word_graph.init(tc.presentation());
-    copy_settings_into_graph();  // TODO shouldn't there be one of these prior
-                                 // to every run?
+    _to_word = tc._to_word;
+    copy_settings_into_graph();
     auto& rules = _word_graph.presentation().rules;
     rules.insert(rules.end(),
                  tc.generating_pairs().cbegin(),

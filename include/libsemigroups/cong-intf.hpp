@@ -158,6 +158,7 @@ namespace libsemigroups {
       return add_pair_no_checks_no_reverse(first1, last1, first2, last2);
     }
 
+    // TODO(0)
     template <typename Subclass,
               typename Iterator1,
               typename Iterator2,
@@ -297,6 +298,14 @@ namespace libsemigroups {
           std::begin(u), std::end(u), std::begin(v), std::end(v));
     }
 
+    template <typename Subclass>
+    tril currently_contains_no_checks(Subclass&   ci,
+                                      char const* u,
+                                      char const* v) {
+      return ci.currently_contains_no_checks(
+          u, u + std::strlen(u), v, v + std::strlen(v));
+    }
+
     // TODO(0) doc
     template <typename Subclass, typename Word>
     tril currently_contains(Subclass const& ci, Word const& u, Word const& v) {
@@ -326,6 +335,11 @@ namespace libsemigroups {
         return ci.contains(
             std::begin(u), std::end(u), std::begin(v), std::end(v));
       }
+    }
+
+    template <typename Subclass>
+    bool contains(Subclass& ci, char const* u, char const* v) {
+      return ci.contains(u, u + std::strlen(u), v, v + std::strlen(v));
     }
 
     // TODO(0) doc
@@ -403,6 +417,49 @@ namespace libsemigroups {
                                                           Iterator2 last) {
     return non_trivial_classes(ci, rx::iterator_range(first, last));
   }
+
+  namespace detail {
+
+    template <typename Subclass>
+    struct ToStringIteratorTraits : ConstIteratorTraits<std::string> {
+      using internal_iterator_type =
+          typename ConstIteratorTraits<std::string>::internal_iterator_type;
+      using state_type        = Subclass*;
+      using value_type        = std::string;
+      using reference         = value_type&;
+      using const_reference   = value_type const&;
+      using const_pointer     = value_type const*;
+      using pointer           = value_type*;
+      using iterator_category = std::bidirectional_iterator_tag;
+
+      struct Deref {
+        value_type operator()(state_type                    state,
+                              internal_iterator_type const& it) const noexcept {
+          return state->presentation().letter(*it);
+        }
+      };
+    };
+
+    template <typename Subclass>
+    struct ToWordIteratorTraits : ConstIteratorTraits<word_type> {
+      using internal_iterator_type =
+          typename ConstIteratorTraits<word_type>::internal_iterator_type;
+      using state_type        = Subclass*;
+      using value_type        = word_type;
+      using reference         = value_type&;
+      using const_reference   = value_type const&;
+      using const_pointer     = value_type const*;
+      using pointer           = value_type*;
+      using iterator_category = std::bidirectional_iterator_tag;
+
+      struct Deref {
+        value_type operator()(state_type             state,
+                              internal_iterator_type it) const noexcept {
+          return state->presentation().index_no_checks(*it);
+        }
+      };
+    };
+  }  // namespace detail
 
 }  // namespace libsemigroups
 #endif  // LIBSEMIGROUPS_CONG_INTF_HPP_

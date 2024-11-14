@@ -360,6 +360,7 @@ namespace libsemigroups {
     if (!empty()) {
       for (auto const& c : input) {
         if (_alphabet_map.find(c) == _alphabet_map.cend()) {
+          // TODO improve this like in presentation
           LIBSEMIGROUPS_EXCEPTION(
               "invalid letter \'{}\' in the 2nd argument (input word), "
               "expected letters in the alphabet {}!",

@@ -29,7 +29,8 @@
 #define LIBSEMIGROUPS_TODD_COXETER_HPP_
 
 #include "cong-intf.hpp"
-#include "exception.hpp"        // for LIBSEMIGROUPS_EXCEPTION
+#include "exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
+#include "libsemigroups/detail/iterator.hpp"
 #include "obvinf.hpp"           // for is_obviously_infinite
 #include "order.hpp"            // for order
 #include "paths.hpp"            // for Paths
@@ -40,6 +41,7 @@
 #include "detail/felsch-graph.hpp"        // for FelschGraph
 #include "detail/node-managed-graph.hpp"  // for NodeManagedGraph
 #include "detail/report.hpp"              // for LIBSEMIGROUPS_EXCEPTION
+#include <cstddef>
 #include <type_traits>
 
 namespace libsemigroups {
@@ -401,6 +403,59 @@ namespace libsemigroups {
                              float                    stop_early_ratio);
     };  // class Graph
 
+    template <typename Iterator>
+    struct iterator_to_word {
+      using internal_iterator_type = Iterator;
+      using state_type             = ToddCoxeter const*;
+      using value_type             = letter_type;
+      using reference              = value_type&;
+      using const_reference        = value_type const&;
+      using const_pointer          = value_type const*;
+      using pointer                = value_type*;
+
+      using size_type         = size_t;
+      using difference_type   = std::ptrdiff_t;
+      using iterator_category = std::bidirectional_iterator_tag;
+
+      internal_iterator_type _it;
+      state_type             _state;
+      value_type             _val;
+
+      iterator_to_word(state_type stt, internal_iterator_type it)
+          : _it(it), _state(stt), _val() {}
+
+      reference operator*() {
+        _val = _state->_to_word.call_no_checks(*_it);
+        return _val;
+      }
+
+      bool operator==(iterator_to_word<Iterator> that) const noexcept {
+        return _it == that._it;
+      }
+
+      bool operator<=(iterator_to_word<Iterator> that) const noexcept {
+        return _it <= that._it;
+      }
+
+      bool operator>=(iterator_to_word<Iterator> that) const noexcept {
+        return _it >= that._it;
+      }
+
+      bool operator!=(iterator_to_word<Iterator> that) const noexcept {
+        return _it != that._it;
+      }
+
+      iterator_to_word& operator++() {
+        ++_it;
+        return *this;
+      }
+
+      iterator_to_word& operator--() {
+        --_it;
+        return *this;
+      }
+    };
+
     ////////////////////////////////////////////////////////////////////////
     // ToddCoxeter - data - private
     ////////////////////////////////////////////////////////////////////////
@@ -410,6 +465,7 @@ namespace libsemigroups {
     std::vector<std::unique_ptr<Settings>> _setting_stack;
     Order                                  _standardized;
     Graph                                  _word_graph;
+    ToWord                                 _to_word;
 
     // TODO(0) to cpp or maybe remove if not then use this!
     void copy_settings_into_graph() {
@@ -498,7 +554,8 @@ namespace libsemigroups {
     //!
     //! This function constructs a ToddCoxeter instance representing a
     //! congruence of kind \p knd over the WordGraph \p wg. The ToddCoxeter
-    //! instance constructed in this way represents a quotient of the word graph
+    //! instance constructed in this way represents a quotient of the word
+    //! graph
     //! \p wg. If \p wg happens to be the left or right Cayley graph of a
     //! semigroup or monoid, then the ToddCoxeter instance will represent a
     //! quotient of that semigroup.
@@ -556,8 +613,8 @@ namespace libsemigroups {
     //! \param knd the kind (left, right, or twosided) of the congruence.
     //! \param tc the ToddCoxeter instance.
     //!
-    //! \throw LibsemigroupsException if the arguments \p knd and \p tc are not
-    //! compatible. If the first item is `tc.kind()` and the second is the
+    //! \throw LibsemigroupsException if the arguments \p knd and \p tc are
+    //! not compatible. If the first item is `tc.kind()` and the second is the
     //! parameter \p knd, then compatible arguments are (right, right), (left,
     //! left), (two-sided, left), (two-sided, right), and (two-sided,
     //! two-sided).
@@ -595,13 +652,16 @@ namespace libsemigroups {
     // TODO(0) a to_todd_coxeter variant that throws if p is not valid
     template <typename Word>
     ToddCoxeter(congruence_kind knd, Presentation<Word> const& p)
-        : ToddCoxeter(knd, to_presentation<word_type>(p)) {}
+        : ToddCoxeter(knd, to_presentation<word_type>(p)) {
+      _to_word.init(p.alphabet());
+    }
 
     // TODO(0) doc
     // TODO(0) a to_todd_coxeter variant that throws if p is not valid
     template <typename Word>
     ToddCoxeter& init(congruence_kind knd, Presentation<Word> const& p) {
       init(knd, to_presentation<word_type>(p));
+      _to_word.init(p.alphabet());
       return *this;
     }
 
@@ -629,8 +689,8 @@ namespace libsemigroups {
     //!
     //! This setting specifies the maximum number of definitions that can be
     //! in the stack at any given time. What happens if there are the maximum
-    //! number of definitions in the stack and a new definition is generated is
-    //! governed by definition_policy().
+    //! number of definitions in the stack and a new definition is generated
+    //! is governed by definition_policy().
     //!
     //! The default value of this setting is \c 2'000.
     //!
@@ -666,7 +726,8 @@ namespace libsemigroups {
     //! \returns A reference to `*this`.
     //!
     //! \throws LibsemigroupsException if \p val is not valid (i.e. if for
-    //! example ``options::definitions::v1 & options::definitions::v2`` returns
+    //! example ``options::definitions::v1 & options::definitions::v2``
+    //! returns
     //! ``true``).
     ToddCoxeter& def_policy(options::def_policy val);
 
@@ -1080,8 +1141,8 @@ namespace libsemigroups {
     // Returns true if anything changed
     // TODO:(0) The documentation for Order used to contain a description of
     // what each order means with respect to this function. However, the Order
-    // enum is now used in other places, so those descriptions should be written
-    // here instead. That documentation is placed here for reference:
+    // enum is now used in other places, so those descriptions should be
+    // written here instead. That documentation is placed here for reference:
     // No standardization has been done.
     // none = 0,
     // Normal forms are the short-lex least word belonging to a given
@@ -1108,8 +1169,8 @@ namespace libsemigroups {
     ////////////////////////////////////////////////////////////////////////
 
     // TODO(0) doc
-    // NOTE THAT: the graph contains one more node than there are element if the
-    // underlying presentation does not contain the empty word
+    // NOTE THAT: the graph contains one more node than there are element if
+    // the underlying presentation does not contain the empty word
     template <typename Iterator1, typename Iterator2>
     node_type current_index_of_no_checks(Iterator1 first,
                                          Iterator2 last) const {
@@ -1261,19 +1322,30 @@ namespace libsemigroups {
                                       Iterator2 last1,
                                       Iterator3 first2,
                                       Iterator4 last2) const {
-      if (std::equal(first1, last1, first2, last2)) {
-        return tril::TRUE;
-      }
-      auto i1 = current_index_of_no_checks(first1, last1);
-      auto i2 = current_index_of_no_checks(first2, last2);
-      if (i1 == UNDEFINED || i2 == UNDEFINED) {
-        return tril::unknown;
-      } else if (i1 == i2) {
-        return tril::TRUE;
-      } else if (finished()) {
-        return tril::FALSE;
+      using iterator_points_at
+          = std::decay_t<decltype(*std::declval<Iterator1>())>;
+
+      if constexpr (std::is_same_v<iterator_points_at, native_letter_type>) {
+        if (std::equal(first1, last1, first2, last2)) {
+          return tril::TRUE;
+        }
+        auto i1 = current_index_of_no_checks(first1, last1);
+        auto i2 = current_index_of_no_checks(first2, last2);
+        if (i1 == UNDEFINED || i2 == UNDEFINED) {
+          return tril::unknown;
+        } else if (i1 == i2) {
+          return tril::TRUE;
+        } else if (finished()) {
+          return tril::FALSE;
+        } else {
+          return tril::unknown;
+        }
       } else {
-        return tril::unknown;
+        return currently_contains_no_checks(
+            iterator_to_word<Iterator1>(this, first1),
+            iterator_to_word<Iterator2>(this, last1),
+            iterator_to_word<Iterator3>(this, first2),
+            iterator_to_word<Iterator4>(this, last2));
       }
     }
 
