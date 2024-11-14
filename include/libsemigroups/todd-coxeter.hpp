@@ -609,9 +609,7 @@ namespace libsemigroups {
     //! \param knd the kind (left, right, or twosided) of the congruence.
     //! \param p the presentation.
     //!
-    //! \exceptions
-    //! \no_libsemigroups_except
-    // TODO(0) a to_todd_coxeter variant that throws if p is not valid
+    //! \throws LibsemigroupsException if \p is not valid.
     ToddCoxeter(congruence_kind knd, Presentation<word_type>&& p);
 
     //! \brief Re-initialize a ToddCoxeter instance.
@@ -625,17 +623,13 @@ namespace libsemigroups {
     //!
     //! \returns A reference to `*this`.
     //!
-    //! \exceptions
-    //! \no_libsemigroups_except
-    // TODO(0) a to_todd_coxeter variant that throws if p is not valid
+    //! \throws LibsemigroupsException if \p p is not valid.
     ToddCoxeter& init(congruence_kind knd, Presentation<word_type>&& p);
 
     //! \copydoc ToddCoxeter(congruence_kind, Presentation<word_type>&&)
-    // TODO(0) a to_todd_coxeter variant that throws if p is not valid
     ToddCoxeter(congruence_kind knd, Presentation<word_type> const& p);
 
     //! \copydoc init(congruence_kind, Presentation<word_type>&&)
-    // TODO(0) a to_todd_coxeter variant that throws if p is not valid
     ToddCoxeter& init(congruence_kind knd, Presentation<word_type> const& p);
 
     //! \brief Construct from \ref congruence_kind and \ref WordGraph.
@@ -656,6 +650,7 @@ namespace libsemigroups {
     //! \exceptions
     //! \no_libsemigroups_except
     // TODO(0) a to_todd_coxeter variant that throws if wg is not valid
+    // see below
     template <typename Node>
     ToddCoxeter(congruence_kind knd, WordGraph<Node> const& wg)
         : ToddCoxeter() {
@@ -680,17 +675,17 @@ namespace libsemigroups {
     //! \no_libsemigroups_except
     // TODO(0) out of line
     // TODO(0) a to_todd_coxeter variant that throws if wg is not valid
+    // i.e. any target is out of bounds
     template <typename Node>
     ToddCoxeter& init(congruence_kind knd, WordGraph<Node> const& wg) {
       LIBSEMIGROUPS_ASSERT(!_setting_stack.empty());
       CongruenceInterface::init(knd);
       _word_graph = wg;
       _word_graph.presentation().alphabet(wg.out_degree());
-      _word_graph.definitions().init(this);
-      _word_graph.report_prefix("ToddCoxeter");
+      copy_settings_into_graph();
       _input_presentation = _word_graph.presentation();
       return *this;
-    }  // HERE
+    }
 
     //! \brief Construct from \ref congruence_kind and \ref ToddCoxeter.
     //!
@@ -723,14 +718,15 @@ namespace libsemigroups {
     }
 
     // TODO(0) a to_todd_coxeter variant that throws if p is not valid
+    // TODO(0) out of line
     template <typename Node>
     ToddCoxeter& init(congruence_kind                knd,
                       Presentation<word_type> const& p,
                       WordGraph<Node> const&         wg) {
       init(knd, p);
       _word_graph = wg;
-      _word_graph.presentation(p);
-      _word_graph.report_prefix("ToddCoxeter");
+      _word_graph.presentation(p);  // TODO does this throw if p is invalid?
+      copy_settings_into_graph();
       return *this;
     }
 
@@ -738,23 +734,26 @@ namespace libsemigroups {
     // presentation has the same constructors, regardless of what they use
     // inside.
     // TODO(0) doc
-    // TODO(0) a to_todd_coxeter variant that throws if p is not valid
+    //! \throws LibsemigroupsException if \p p is not valid.
     template <typename Word>
     ToddCoxeter(congruence_kind knd, Presentation<Word> const& p)
         : ToddCoxeter(knd, to_presentation<word_type>(p)) {
+      // to_presentation throws if p isn't valid
       _input_presentation
           = to_presentation<word_type>(p, [](auto const& x) { return x; });
     }
 
+    //! \throws LibsemigroupsException if \p p is not valid.
     // TODO(0) doc
-    // TODO(0) a to_todd_coxeter variant that throws if p is not valid
     template <typename Word>
     ToddCoxeter& init(congruence_kind knd, Presentation<Word> const& p) {
+      // to_presentation throws if p isn't valid
       init(knd, to_presentation<word_type>(p));
       // TODO uncomment !_input_presentation.init(p);
       return *this;
     }
 
+    // TODO(0) doc
     template <typename Iterator1, typename Iterator2>
     void throw_if_letter_out_of_bounds(Iterator1 first, Iterator2 last) const {
       presentation().validate_word(first, last);
@@ -847,7 +846,6 @@ namespace libsemigroups {
                                       citow<Iterator2> last1,
                                       citow<Iterator3> first2,
                                       citow<Iterator4> last2) const {
-      // TODO(0) just use two overloads not constexpr
       if (std::equal(first1, last1, first2, last2)) {
         return tril::TRUE;
       }
@@ -1468,7 +1466,6 @@ namespace libsemigroups {
     // TODO(0) doc
     // NOTE THAT: the graph contains one more node than there are element if
     // the underlying presentation does not contain the empty word
-    // TODO(0) private
    private:
     template <typename Iterator1, typename Iterator2>
     node_type current_index_of_no_checks(citow<Iterator1> first,
@@ -1737,7 +1734,7 @@ namespace libsemigroups {
       return result;
     }
 
-    // TODO(0) current_word_of
+    // TODO(0) 2x current_word_of
 
     ////////////////////////////////////////////////////////////////////////
     // Interface helpers - contains
@@ -1831,6 +1828,8 @@ namespace libsemigroups {
       return reduce<std::string, std::string>(tc, w);
     }
 
+    // TODO(0) the other 3 reduce functions for char const*
+
     ////////////////////////////////////////////////////////////////////////
     // Interface helpers - class_of
     ////////////////////////////////////////////////////////////////////////
@@ -1864,7 +1863,7 @@ namespace libsemigroups {
     // TODO(0) doc
     template <typename Iterator1, typename Iterator2>
     auto class_of_no_checks(ToddCoxeter& tc, Iterator1 first, Iterator2 last) {
-      return class_of_no_checks(tc, tc.index_of(first, last));
+      return class_of_no_checks(tc, tc.index_of_no_checks(first, last));
     }
 
     // TODO(0) doc
@@ -1894,6 +1893,9 @@ namespace libsemigroups {
       return class_of_no_checks(tc, std::begin(w), std::end(w));
     }
 
+    // TODO(0) class_of (ToddCoxeter, char const*)
+    // TODO(0) class_of_no_checks (ToddCoxeter, char const*)
+
     ////////////////////////////////////////////////////////////////////////
     // Interface helpers - normal_forms
     ////////////////////////////////////////////////////////////////////////
@@ -1911,6 +1913,9 @@ namespace libsemigroups {
     //! \exceptions
     //! \no_libsemigroups_except
     // TODO(0): redo the doc
+    // TODO(0) note in the doc that the output is always word_type, and to use
+    // transform if that's not what's wanted; or add some sort of template here
+    // to specify the output type
     inline auto normal_forms(ToddCoxeter& tc) {
       // TODO(1) avoid allocations here.
       // To do this we'll have to make a custom range object that stores a
@@ -1928,6 +1933,7 @@ namespace libsemigroups {
     // TODO(0) doc
     // TODO(0) template <word_type>
     // TODO(0) remove?
+    // TODO(0) update as we did for partition below, or remove it
     std::vector<std::vector<word_type>> non_trivial_classes(ToddCoxeter& tc1,
                                                             ToddCoxeter& tc2);
 
@@ -2036,14 +2042,13 @@ namespace libsemigroups {
 
   }  // namespace todd_coxeter
 
+  // TODO move into todd_coxeter namespace
   // TODO(0) doc
   // TODO(0) out of line
   template <typename Range,
             typename = std::enable_if_t<rx::is_input_or_sink_v<Range>>>
   std::vector<std::vector<std::decay_t<typename Range::output_type>>>
   partition(ToddCoxeter& tc, Range r) {
-    // static_assert(
-    //    std::is_same_v<std::decay_t<typename Range::output_type>, word_type>);
     using return_type
         = std::vector<std::vector<std::decay_t<typename Range::output_type>>>;
 

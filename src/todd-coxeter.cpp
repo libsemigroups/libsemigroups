@@ -397,7 +397,7 @@ namespace libsemigroups {
       presentation::reverse(p);
     }
     _input_presentation = p;
-    presentation::normalize_alphabet(p);
+    presentation::normalize_alphabet(p);  // Throws if p is not valid
     _word_graph.init(std::move(p));
     copy_settings_into_graph();
     LIBSEMIGROUPS_ASSERT(!_setting_stack.empty());
