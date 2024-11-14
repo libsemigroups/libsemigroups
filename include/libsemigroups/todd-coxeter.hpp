@@ -1229,7 +1229,7 @@ namespace libsemigroups {
     ////////////////////////////////////////////////////////////////////////
 
     // TODO(0) doc
-    Presentation<word_type> const& internal_presentation() const noexcept {
+    Presentation<word_type> const& native_presentation() const noexcept {
       return _word_graph.presentation();
     }
 
@@ -1332,7 +1332,7 @@ namespace libsemigroups {
             std::make_reverse_iterator(first));
       }
       size_t const offset
-          = (internal_presentation().contains_empty_word() ? 0 : 1);
+          = (native_presentation().contains_empty_word() ? 0 : 1);
       return (c == UNDEFINED ? UNDEFINED : static_cast<node_type>(c - offset));
     }
 
@@ -1357,7 +1357,7 @@ namespace libsemigroups {
       }
       // c is in the range 1, ..., number_of_cosets_active() because 0
       // represents the identity coset, and does not correspond to an element,
-      // unless internal_presentation().contains_empty_word()
+      // unless native_presentation().contains_empty_word()
       return current_index_of_no_checks(first, last);
     }
 
@@ -1377,7 +1377,7 @@ namespace libsemigroups {
       if (!is_standardized()) {
         standardize(Order::shortlex);
       }
-      if (!internal_presentation().contains_empty_word()) {
+      if (!native_presentation().contains_empty_word()) {
         ++i;
       }
 
@@ -1398,7 +1398,7 @@ namespace libsemigroups {
     template <typename OutputIterator>
     OutputIterator current_word_of(OutputIterator d_first, node_type i) {
       size_t const offset
-          = (internal_presentation().contains_empty_word() ? 0 : 1);
+          = (native_presentation().contains_empty_word() ? 0 : 1);
       if (i >= _word_graph.number_of_nodes_active() - offset) {
         LIBSEMIGROUPS_EXCEPTION("invalid class index, expected a value in "
                                 "the range [0, {}), found {}",
@@ -1501,7 +1501,7 @@ namespace libsemigroups {
       }
       run();
       size_t const offset
-          = (internal_presentation().contains_empty_word() ? 0 : 1);
+          = (native_presentation().contains_empty_word() ? 0 : 1);
       return current_word_graph().number_of_nodes_active() - offset;
     }
 
@@ -1555,7 +1555,7 @@ namespace libsemigroups {
                             Iterator2 last1,
                             Iterator3 first2,
                             Iterator4 last2) {
-      if (internal_presentation().rules.empty() && generating_pairs().empty()
+      if (native_presentation().rules.empty() && generating_pairs().empty()
           && current_word_graph().number_of_nodes_active() == 1) {
         return std::equal(first1, last1, first2, last2);
       }
