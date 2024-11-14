@@ -164,10 +164,10 @@ namespace libsemigroups {
               typename Iterator2,
               typename Iterator3,
               typename Iterator4>
-    Subclass& add_pair(Iterator1 first1,
-                       Iterator2 last1,
-                       Iterator3 first2,
-                       Iterator4 last2) {
+    auto& add_pair(Iterator1 first1,
+                   Iterator2 last1,
+                   Iterator3 first2,
+                   Iterator4 last2) {
       throw_if_started();
       throw_if_letter_out_of_bounds<Subclass>(first1, last1);
       throw_if_letter_out_of_bounds<Subclass>(first2, last2);

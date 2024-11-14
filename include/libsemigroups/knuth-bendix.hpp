@@ -124,6 +124,135 @@ namespace libsemigroups {
     // KnuthBendix - nested subclasses - private
     ////////////////////////////////////////////////////////////////////////
 
+    // The following is a class for wrapping iterators. This is used by the
+    // member functions that accept iterators (that point at possibly non-native
+    // types) to convert the values pointed at into native types, and in the
+    // class itos, to allow assignment of these values too.
+    // CITOS = const_iterator_to_string
+    template <typename Iterator>
+    class citos {
+     protected:
+      Iterator           _it;
+      KnuthBendix const* _kb;
+
+     public:
+      using internal_iterator_type = Iterator;
+      using value_type             = char;
+      using reference              = value_type;
+      using const_reference        = value_type;
+      using const_pointer          = value_type const*;
+      using pointer                = value_type*;
+
+      using size_type         = size_t;
+      using difference_type   = std::ptrdiff_t;
+      using iterator_category = std::bidirectional_iterator_tag;
+
+      citos(KnuthBendix const* kb, Iterator it) : _it(it), _kb(kb) {}
+
+      reference operator*() const {
+        auto const& p = _kb->_input_presentation;
+        return p.letter_no_checks(p.index_no_checks(*_it));
+      }
+
+      // TODO operator-> ??
+
+      bool operator==(citos<Iterator> that) const noexcept {
+        return _it == that._it;
+      }
+
+      bool operator<=(citos<Iterator> that) const noexcept {
+        return _it <= that._it;
+      }
+
+      bool operator>=(citos<Iterator> that) const noexcept {
+        return _it >= that._it;
+      }
+
+      bool operator!=(citos<Iterator> that) const noexcept {
+        return _it != that._it;
+      }
+
+      citos& operator++() {
+        ++_it;
+        return *this;
+      }
+
+      citos& operator--() {
+        --_it;
+        return *this;
+      }
+
+      [[nodiscard]] Iterator get() const noexcept {
+        return _it;
+      }
+
+    };  // class citos
+
+    // itos only differs from citos in the dereference member function
+    // returning a (non-const) reference. A proxy is returned instead which
+    // permits assignment to an output iterator.
+    template <typename Iterator>
+    class itos : public citos<Iterator> {
+      // Proxy class for reference to the returned values
+      class proxy_ref {
+       private:
+        Iterator           _it;
+        KnuthBendix const* _kb;
+
+       public:
+        // Constructor from KnuthBendix and iterator
+        // that byte
+        proxy_ref(KnuthBendix const* kb, Iterator it) noexcept
+            : _it(it), _kb(kb) {}
+
+        // Assignment operator to allow setting the value via the proxy
+        Iterator operator=(char i) noexcept {
+          auto const& p = _kb->_input_presentation;
+          *_it          = p.letter_no_checks(i);  // TODO is this right?
+          return _it;
+        }
+
+        // Conversion operator to obtain the letter corresponding to the
+        // letter_type
+        [[nodiscard]] operator char() const noexcept {
+          auto const& p = _kb->_input_presentation;
+          return p.letter_no_checks(p.index_no_checks(*_it));
+        }
+      };  // class proxy_ref
+
+     public:
+      using internal_iterator_type = Iterator;
+      using value_type             = letter_type;
+      using reference              = proxy_ref;
+      using const_reference        = value_type;
+
+      // TODO use proxy for pointers too?
+      using const_pointer = value_type const*;
+      using pointer       = value_type*;
+
+      using size_type         = size_t;
+      using difference_type   = std::ptrdiff_t;
+      using iterator_category = std::bidirectional_iterator_tag;
+
+      using citos<Iterator>::citos;
+
+      reference operator*() {
+        return reference(this->_kb, this->_it);
+      }
+
+    };  // class itos
+
+    // Helpers for constructing citos + itos
+    template <typename Iterator>
+    citos<Iterator> make_citos(Iterator it) const {
+      return citos<Iterator>(this, it);
+    }
+
+    template <typename Iterator>
+    itos<Iterator> make_itos(Iterator it) const {
+      return itos<Iterator>(this, it);
+    }
+
     // Overlap measures
     struct OverlapMeasure {
       virtual size_t
@@ -143,10 +272,9 @@ namespace libsemigroups {
     // Interface requirements - native-types
     ////////////////////////////////////////////////////////////////////////
 
-    using native_letter_type = char;
-    using native_word_type   = std::string;
-    // TODO to_native_letter_type
-    // TODO to_native_word_type
+    using native_letter_type       = char;
+    using native_word_type         = std::string;
+    using native_presentation_type = Presentation<std::string>;
 
     //////////////////////////////////////////////////////////////////////////
     // KnuthBendix - types - public
@@ -189,7 +317,6 @@ namespace libsemigroups {
       typename options::overlap overlap_policy;
     } _settings;
 
-    // TODO remove mutable
     mutable struct Stats {
       using time_point = std::chrono::high_resolution_clock::time_point;
       Stats() noexcept;
@@ -213,6 +340,7 @@ namespace libsemigroups {
     bool                      _gen_pairs_initted;
     WordGraph<uint32_t>       _gilman_graph;
     std::vector<std::string>  _gilman_graph_node_labels;
+    Presentation<std::string> _input_presentation;
     bool                      _internal_is_same_as_external;
     OverlapMeasure*           _overlap_measure;
     Presentation<std::string> _presentation;
@@ -273,6 +401,9 @@ namespace libsemigroups {
     // TODO doc
     KnuthBendix(congruence_kind knd, Presentation<std::string> const& p)
         : KnuthBendix(knd) {
+      // TODO(0) static constexpr bool CallDefaultInit = true;
+      // TODO(0) static constexpr bool DontCallDefaultInit = false;
+      // and then use these instead of magic true and false values
       private_init(knd, p, false);  // false means don't call init, since we
                                     // just called it from KnuthBendix()
     }
@@ -305,7 +436,13 @@ namespace libsemigroups {
     // TODO doc
     template <typename Word>
     KnuthBendix& init(congruence_kind knd, Presentation<Word> const& p) {
+      // TODO(0) we copy the input presentation twice here once in init, and
+      // again in this function, better not duplicate
       init(knd, to_presentation<std::string>(p));
+      // the next line looks weird but we are usually taking in letter_types's
+      // and returning chars
+      _input_presentation
+          = to_presentation<std::string>(p, [](auto const& x) { return x; });
       return *this;
     }
 
@@ -313,6 +450,12 @@ namespace libsemigroups {
     template <typename Word>
     KnuthBendix& init(congruence_kind knd, Presentation<Word>&& p) {
       init(knd, to_presentation<std::string>(p));
+      // TODO(0) we copy the input presentation twice here once in init, and
+      // again in this function, better not duplicate
+      // the next line looks weird but we are usually taking in letter_types's
+      // and returning chars
+      _input_presentation
+          = to_presentation<std::string>(p, [](auto const& x) { return x; });
       return *this;
     }
 
@@ -327,11 +470,15 @@ namespace libsemigroups {
     void init_from_generating_pairs();
     void init_from_presentation();
 
-   public:
     //////////////////////////////////////////////////////////////////////////
     // KnuthBendix - interface requirements - add_pair
     //////////////////////////////////////////////////////////////////////////
 
+   public:
+    // NOTE THAT this is not the same as in ToddCoxeter, because the generating
+    // pairs contained in CongruenceInterface are word_types, and so we don't
+    // require any conversion here (since chars can be converted implicitly to
+    // letter_types)
     using CongruenceInterface::add_pair_no_checks;
 
     template <typename Iterator1,
@@ -734,20 +881,7 @@ namespace libsemigroups {
 
     template <typename Iterator1, typename Iterator2>
     void throw_if_letter_out_of_bounds(Iterator1 first, Iterator2 last) const {
-      if constexpr (std::is_same_v<
-                        typename decltype(_presentation)::letter_type,
-                        typename std::decay_t<
-                            decltype(*std::declval<Iterator1>())>>) {
-        // TODO(0) static_assert that Iterator2::value_type ==
-        // Iterator1::value_type
-        presentation().validate_word(first, last);
-      } else {
-        ToString to_string(_presentation.alphabet());
-        // TODO improve!
-        auto ww = to_string(word_type(first, last));
-        // TODO(0) add a call operator for to_string for iterators
-        _presentation.validate_word(ww.cbegin(), ww.cend());
-      }
+      presentation().validate_word(first, last);
     }
 
     //! \brief Return the presentation defined by the rewriting system
@@ -1312,6 +1446,7 @@ namespace libsemigroups {
       if (!kb.presentation().contains_empty_word()) {
         paths.next();
       }
+      // TODO update to return strings
       return paths;
     }
 

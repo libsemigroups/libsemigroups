@@ -155,6 +155,7 @@ namespace libsemigroups {
         _rewriter(),
         _gen_pairs_initted(),
         _gilman_graph(),
+        _input_presentation(),
         _internal_is_same_as_external(),
         _overlap_measure(),
         _presentation() {
@@ -172,8 +173,10 @@ namespace libsemigroups {
 
     _gen_pairs_initted = false;
     _gilman_graph.init(0, 0);
+    _input_presentation.init();
     _internal_is_same_as_external = false;
     _presentation.init();
+
     overlap_policy(_settings.overlap_policy);
     return *this;
   }
@@ -198,11 +201,14 @@ namespace libsemigroups {
   template <typename Rewriter, typename ReductionOrder>
   KnuthBendix<Rewriter, ReductionOrder>&
   KnuthBendix<Rewriter, ReductionOrder>::operator=(KnuthBendix const& that) {
+    // TODO(0) the operator should call the rvalue ref one above not the other
+    // way around
     Runner::operator=(that);
     _rewriter = that._rewriter;
 
     _settings                     = that._settings;
     _gilman_graph                 = that._gilman_graph;
+    _input_presentation           = that._input_presentation;
     _internal_is_same_as_external = that._internal_is_same_as_external;
     _presentation                 = that._presentation;
 
@@ -237,11 +243,15 @@ namespace libsemigroups {
       congruence_kind                  knd,
       Presentation<std::string> const& p,
       bool                             call_init) {
+    // TODO(0) avoid code dupl between this and the next private_init overload
+    // by simply copying the private_init(knd, Presentation<std::string>(p),
+    // call_init) which will call the next function anyway
     p.validate();
     if (call_init) {
       init(knd);
     }
-    _presentation = p;
+    _input_presentation = p;
+    _presentation       = p;
     init_from_presentation();
     return *this;
   }
@@ -256,7 +266,8 @@ namespace libsemigroups {
     if (call_init) {
       init(knd);
     }
-    _presentation = std::move(p);
+    _input_presentation = p;  // must be first, o/w boom!
+    _presentation       = std::move(p);
     init_from_presentation();
     return *this;
   }
@@ -520,28 +531,25 @@ namespace libsemigroups {
     if (_gen_pairs_initted) {
       return;
     }
-
     _gen_pairs_initted = true;
 
-    auto&    p = _presentation;
-    ToString to_string(p.alphabet());
-    auto     pairs
-        = (generating_pairs() | rx::transform([&to_string](auto const& w) {
-             return to_string(w);
-           }))
-          | rx::in_groups_of_exactly(2);
+    auto& p     = _presentation;
+    auto& pairs = generating_pairs();
 
-    if (kind() != congruence_kind::twosided && (pairs | rx::count()) != 0) {
+    if (kind() != congruence_kind::twosided && !pairs.empty()) {
       p.alphabet(p.alphabet() + presentation::first_unused_letter(p));
     }
-    for (auto&& x : pairs) {
-      auto lhs = x.get();
+
+    for (auto it = pairs.cbegin(); it != pairs.cend(); ++it) {
+      // it points at a word_type
+      p.rules.emplace_back(it->cbegin(), it->cend());
+      auto& lhs = p.rules.back();
       add_octo(lhs);
-      x.next();
-      auto rhs = x.get();
+      ++it;
+      p.rules.emplace_back(it->cbegin(), it->cend());
+      auto& rhs = p.rules.back();
       add_octo(rhs);
       add_rule_impl(lhs, rhs);
-      presentation::add_rule(p, lhs, rhs);
     }
   }
 
