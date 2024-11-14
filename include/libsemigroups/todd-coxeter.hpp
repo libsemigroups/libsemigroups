@@ -738,7 +738,10 @@ namespace libsemigroups {
     template <typename Word>
     ToddCoxeter(congruence_kind knd, Presentation<Word> const& p)
         : ToddCoxeter(knd, to_presentation<word_type>(p)) {
-      // to_presentation throws if p isn't valid
+      // to_presentation throws in the previous line if p isn't valid
+
+      // the next line looks weird but we are usually taking in char's and
+      // returning letter_types
       _input_presentation
           = to_presentation<word_type>(p, [](auto const& x) { return x; });
     }
@@ -749,7 +752,10 @@ namespace libsemigroups {
     ToddCoxeter& init(congruence_kind knd, Presentation<Word> const& p) {
       // to_presentation throws if p isn't valid
       init(knd, to_presentation<word_type>(p));
-      // TODO uncomment !_input_presentation.init(p);
+      // the next line looks weird but we are usually taking in char's and
+      // returning letter_types
+      _input_presentation
+          = to_presentation<word_type>(p, [](auto const& x) { return x; });
       return *this;
     }
 
