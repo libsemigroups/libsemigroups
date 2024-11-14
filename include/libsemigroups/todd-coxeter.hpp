@@ -44,6 +44,24 @@
 #include <cstddef>
 #include <type_traits>
 
+////////////////////////////////////////////////////////////////////////
+// This file is organised as follows:
+// 0.  ToddCoxeter - member types - public
+// 1.  ToddCoxeter - nested classes - private
+// 2.  ToddCoxeter - data members - private
+// 3.  ToddCoxeter - constructors + initializers - public
+// 4.  ToddCoxeter - interface requirements - add_pair
+// 5.  ToddCoxeter - interface requirements - number_of_classes
+// 6.  ToddCoxeter - interface requirements - contains
+// 7.  ToddCoxeter - interface requirements - reduce
+// 8.  ToddCoxeter - settings - public
+// 9.  ToddCoxeter - accessors - public
+// 10. ToddCoxeter - modifiers - public
+// 11. ToddCoxeter - word -> index
+// 12. ToddCoxeter - index -> word
+// 13. Runner      - pure virtual member functions - private
+// 14. ToddCoxeter - member functions - private
+
 namespace libsemigroups {
   //! \defgroup todd_coxeter_group Todd-Coxeter
   //!
@@ -141,6 +159,10 @@ namespace libsemigroups {
     using FelschGraphSettings_ = FelschGraphSettings<ToddCoxeter>;
 
    public:
+    ////////////////////////////////////////////////////////////////////////
+    // 0. ToddCoxeter - member types - public
+    ////////////////////////////////////////////////////////////////////////
+
     //! The type of the nodes in the word graph.
     using node_type = typename WordGraph<uint32_t>::node_type;
 
@@ -151,8 +173,10 @@ namespace libsemigroups {
     // Interface requirements - native-types
     ////////////////////////////////////////////////////////////////////////
 
-    using native_letter_type = letter_type;
-    using native_word_type   = word_type;
+    // TODO(0) comment on what these are
+    using native_letter_type       = letter_type;
+    using native_word_type         = word_type;
+    using native_presentation_type = Presentation<native_word_type>;
 
     //! \ingroup todd_coxeter_group
     //!
@@ -300,15 +324,14 @@ namespace libsemigroups {
     };
 
    private:
+    ////////////////////////////////////////////////////////////////////////
+    // 1. ToddCoxeter - nested classes - private
+    ////////////////////////////////////////////////////////////////////////
+
     struct Settings;
 
     class SettingsGuard;
     friend class SettingsGuard;
-
-    // This function has prefix tc_ because there's already a settings function
-    // in a base class
-    Settings&       tc_settings();
-    Settings const& tc_settings() const;
 
     class Definitions {
       using Definition = std::pair<node_type, label_type>;
@@ -403,126 +426,36 @@ namespace libsemigroups {
                              float                    stop_early_ratio);
     };  // class Graph
 
+    // The following is a class for wrapping iterators. This is used by the
+    // member functions that accept iterators (that point at possibly non-native
+    // types) to convert the values pointed at into native types, and in the
+    // class itow, to allow assignment of these values too.
+    // CITOW = const_iterator_to_word
     template <typename Iterator>
-    class itow {
-      // Proxy class for reference to the returned values
-      class proxy_ref {
-       private:
-        Iterator           _it;
-        ToddCoxeter const* _tc;
-
-       public:
-        // Constructor: takes a reference to a byte and the index of the bit in
-        // that byte
-        proxy_ref(ToddCoxeter const* tc, Iterator it) noexcept
-            : _it(it), _tc(tc) {}
-
-        // Assignment operator to allow setting the value via the proxy
-        Iterator operator=(letter_type i) noexcept {
-          *_it = _tc->_input_presentation.letter_no_checks(i);
-          return _it;
-        }
-
-        // Conversion operator to obtain the letter corresponding to the
-        // letter_type
-        [[nodiscard]] operator letter_type() const noexcept {
-          return _tc->_input_presentation.index_no_checks(*_it);
-        }
-      };
+    class citow {
+     protected:
+      Iterator           _it;
+      ToddCoxeter const* _tc;
 
      public:
       using internal_iterator_type = Iterator;
       using value_type             = letter_type;
-      using reference              = proxy_ref;
+      using reference              = letter_type;
       using const_reference        = value_type;
-
-      // TODO use proxy for pointers too?
-      using const_pointer = value_type const*;
-      using pointer       = value_type*;
+      using const_pointer          = value_type const*;
+      using pointer                = value_type*;
 
       using size_type         = size_t;
       using difference_type   = std::ptrdiff_t;
       using iterator_category = std::bidirectional_iterator_tag;
 
-     private:
-      internal_iterator_type _it;
-      ToddCoxeter const*     _state;
+      citow(ToddCoxeter const* tc, Iterator it) : _it(it), _tc(tc) {}
 
-     public:
-      itow(ToddCoxeter const* stt, internal_iterator_type it)
-          : _it(it), _state(stt) {}
-
-      reference operator*() {
-        return reference(_state, _it);
-      }
-
-      const_reference operator*() const {
-        return _state->_input_presentation.index_no_checks(*_it);
+      reference operator*() const {
+        return _tc->_input_presentation.index_no_checks(*_it);
       }
 
       // TODO operator-> ??
-
-      bool operator==(itow<Iterator> that) const noexcept {
-        return _it == that._it;
-      }
-
-      bool operator<=(itow<Iterator> that) const noexcept {
-        return _it <= that._it;
-      }
-
-      bool operator>=(itow<Iterator> that) const noexcept {
-        return _it >= that._it;
-      }
-
-      bool operator!=(itow<Iterator> that) const noexcept {
-        return _it != that._it;
-      }
-
-      itow& operator++() {
-        ++_it;
-        return *this;
-      }
-
-      itow& operator--() {
-        --_it;
-        return *this;
-      }
-
-      [[nodiscard]] Iterator get() const noexcept {
-        return _it;
-      }
-    };  // class itow
-
-    template <typename Iterator>
-    struct citow {
-      using internal_iterator_type = Iterator;
-      using value_type             = letter_type;
-      using reference              = value_type;
-      using const_reference        = value_type;
-
-      // TODO(1) use proxy for pointers too?
-      using const_pointer = value_type const*;
-      using pointer       = value_type*;
-
-      using size_type         = size_t;
-      using difference_type   = std::ptrdiff_t;
-      using iterator_category = std::bidirectional_iterator_tag;
-
-      internal_iterator_type _it;
-      ToddCoxeter const*     _tc;
-
-      citow(ToddCoxeter const* stt, internal_iterator_type it)
-          : _it(it), _tc(stt) {}
-
-      reference operator*() {
-        return _tc->_input_presentation.index_no_checks(*_it);
-      }
-
-      const_reference operator*() const {
-        return _tc->_input_presentation.index_no_checks(*_it);
-      }
-
-      // TODO(1) operator-> ?
 
       bool operator==(citow<Iterator> that) const noexcept {
         return _it == that._it;
@@ -549,8 +482,66 @@ namespace libsemigroups {
         --_it;
         return *this;
       }
+
+      [[nodiscard]] Iterator get() const noexcept {
+        return _it;
+      }
+
     };  // class citow
 
+    // itow only differs from citow in the dereference member function
+    // returning a (non-const) reference. A proxy is returned instead which
+    // permits assignment to an output iterator.
+    template <typename Iterator>
+    class itow : public citow<Iterator> {
+      // Proxy class for reference to the returned values
+      class proxy_ref {
+       private:
+        Iterator           _it;
+        ToddCoxeter const* _tc;
+
+       public:
+        // Constructor from ToddCoxeter and iterator
+        // that byte
+        proxy_ref(ToddCoxeter const* tc, Iterator it) noexcept
+            : _it(it), _tc(tc) {}
+
+        // Assignment operator to allow setting the value via the proxy
+        Iterator operator=(letter_type i) noexcept {
+          *_it = _tc->_input_presentation.letter_no_checks(i);
+          return _it;
+        }
+
+        // Conversion operator to obtain the letter corresponding to the
+        // letter_type
+        [[nodiscard]] operator letter_type() const noexcept {
+          return _tc->_input_presentation.index_no_checks(*_it);
+        }
+      };  // class proxy_ref
+
+     public:
+      using internal_iterator_type = Iterator;
+      using value_type             = letter_type;
+      using reference              = proxy_ref;
+      using const_reference        = value_type;
+
+      // TODO use proxy for pointers too?
+      using const_pointer = value_type const*;
+      using pointer       = value_type*;
+
+      using size_type         = size_t;
+      using difference_type   = std::ptrdiff_t;
+      using iterator_category = std::bidirectional_iterator_tag;
+
+      using citow<Iterator>::citow;
+
+      reference operator*() {
+        return reference(this->_tc, this->_it);
+      }
+
+    };  // class itow
+
+    // Helpers for constructing citow + itow
     template <typename Iterator>
     citow<Iterator> make_citow(Iterator it) const {
       return citow<Iterator>(this, it);
@@ -562,7 +553,7 @@ namespace libsemigroups {
     }
 
     ////////////////////////////////////////////////////////////////////////
-    // ToddCoxeter - data - private
+    // 2. ToddCoxeter - data members - private
     ////////////////////////////////////////////////////////////////////////
 
     Presentation<word_type>                _input_presentation;
@@ -572,20 +563,12 @@ namespace libsemigroups {
     Order                                  _standardized;
     Graph                                  _word_graph;
 
-    // TODO(0) to cpp or maybe remove if not then use this!
-    void copy_settings_into_graph() {
-      // This is where we pass through from settings to the
-      // _word_graph.definitions
-      _word_graph.definitions().init(this);
-      _word_graph.report_prefix("ToddCoxeter");
-    }
-
    public:
     //! The type of the underlying WordGraph.
     using word_graph_type = Graph;
 
     ////////////////////////////////////////////////////////////////////////
-    // ToddCoxeter - constructors + initializers - public
+    // 3. ToddCoxeter - constructors + initializers - public
     ////////////////////////////////////////////////////////////////////////
 
     //! Default constructor.
@@ -778,7 +761,209 @@ namespace libsemigroups {
     }
 
     ////////////////////////////////////////////////////////////////////////
-    // ToddCoxeter - settings - public
+    // 4. ToddCoxeter - interface requirements - add_pair
+    ////////////////////////////////////////////////////////////////////////
+
+    // using CongruenceInterface::add_pair_no_checks; TODO use or rm
+
+   private:
+    template <typename Iterator1,
+              typename Iterator2,
+              typename Iterator3,
+              typename Iterator4>
+    ToddCoxeter& add_pair_no_checks(citow<Iterator1> first1,
+                                    citow<Iterator2> last1,
+                                    citow<Iterator3> first2,
+                                    citow<Iterator4> last2) {
+      if (kind() == congruence_kind::left) {
+        add_pair_no_checks_no_reverse(std::make_reverse_iterator(last1),
+                                      std::make_reverse_iterator(first1),
+                                      std::make_reverse_iterator(last2),
+                                      std::make_reverse_iterator(first2));
+      } else {
+        add_pair_no_checks_no_reverse(first1, last1, first2, last2);
+      }
+      return *this;
+    }
+
+   public:
+    template <typename Iterator1,
+              typename Iterator2,
+              typename Iterator3,
+              typename Iterator4>
+    ToddCoxeter& add_pair_no_checks(Iterator1 first1,
+                                    Iterator2 last1,
+                                    Iterator3 first2,
+                                    Iterator4 last2) {
+      return add_pair_no_checks(make_citow(first1),
+                                make_citow(last1),
+                                make_citow(first2),
+                                make_citow(last2));
+    }
+
+    template <typename Iterator1,
+              typename Iterator2,
+              typename Iterator3,
+              typename Iterator4>
+    ToddCoxeter& add_pair(Iterator1 first1,
+                          Iterator2 last1,
+                          Iterator3 first2,
+                          Iterator4 last2) {
+      CongruenceInterface::add_pair<ToddCoxeter>(first1, last1, first2, last2);
+      return *this;
+    }
+
+    ////////////////////////////////////////////////////////////////////////
+    // 5. ToddCoxeter - interface requirements - number_of_classes
+    ////////////////////////////////////////////////////////////////////////
+
+    //! Compute the number of classes in the congruence.
+    //!
+    //! \returns The number of congruences classes of \c this if this number
+    //! is finite, or \ref POSITIVE_INFINITY in some cases if \c this
+    //! number is not finite.
+    //!
+    //! \throws std::bad_alloc if the (possibly infinite) computation uses all
+    //! the available memory.
+    //!
+    //! \complexity
+    //! See warning.
+    //!
+    //! \warning The problem of determining the number of classes of a
+    //! congruence over a finitely presented semigroup is undecidable in
+    //! general, and this function may never terminate.
+    [[nodiscard]] uint64_t number_of_classes();
+
+    ////////////////////////////////////////////////////////////////////////
+    // 6. ToddCoxeter - interface requirements - contains
+    ////////////////////////////////////////////////////////////////////////
+
+   private:
+    template <typename Iterator1,
+              typename Iterator2,
+              typename Iterator3,
+              typename Iterator4>
+    tril currently_contains_no_checks(citow<Iterator1> first1,
+                                      citow<Iterator2> last1,
+                                      citow<Iterator3> first2,
+                                      citow<Iterator4> last2) const {
+      // TODO(0) just use two overloads not constexpr
+      if (std::equal(first1, last1, first2, last2)) {
+        return tril::TRUE;
+      }
+      auto i1 = current_index_of_no_checks(first1, last1);
+      auto i2 = current_index_of_no_checks(first2, last2);
+      if (i1 == UNDEFINED || i2 == UNDEFINED) {
+        return tril::unknown;
+      } else if (i1 == i2) {
+        return tril::TRUE;
+      } else if (finished()) {
+        return tril::FALSE;
+      } else {
+        return tril::unknown;
+      }
+    }
+
+   public:
+    template <typename Iterator1,
+              typename Iterator2,
+              typename Iterator3,
+              typename Iterator4>
+    tril currently_contains_no_checks(Iterator1 first1,
+                                      Iterator2 last1,
+                                      Iterator3 first2,
+                                      Iterator4 last2) const {
+      return currently_contains_no_checks(make_citow(first1),
+                                          make_citow(last1),
+                                          make_citow(first2),
+                                          make_citow(last2));
+    }
+
+    template <typename Iterator1,
+              typename Iterator2,
+              typename Iterator3,
+              typename Iterator4>
+    bool contains_no_checks(Iterator1 first1,
+                            Iterator2 last1,
+                            Iterator3 first2,
+                            Iterator4 last2) {
+      if (native_presentation().rules.empty() && generating_pairs().empty()
+          && current_word_graph().number_of_nodes_active() == 1) {
+        return std::equal(first1, last1, first2, last2);
+      }
+      return currently_contains_no_checks(first1, last1, first2, last2)
+             == tril::TRUE;
+    }
+
+    template <typename Iterator1,
+              typename Iterator2,
+              typename Iterator3,
+              typename Iterator4>
+    tril currently_contains(Iterator1 first1,
+                            Iterator2 last1,
+                            Iterator3 first2,
+                            Iterator4 last2) const {
+      throw_if_letter_out_of_bounds(first1, last1);
+      throw_if_letter_out_of_bounds(first2, last2);
+      return currently_contains_no_checks(first1, last1, first2, last2);
+    }
+
+    template <typename Iterator1,
+              typename Iterator2,
+              typename Iterator3,
+              typename Iterator4>
+    bool contains(Iterator1 first1,
+                  Iterator2 last1,
+                  Iterator3 first2,
+                  Iterator4 last2) {
+      throw_if_letter_out_of_bounds(first1, last1);
+      throw_if_letter_out_of_bounds(first2, last2);
+      return contains_no_checks(first1, last1, first2, last2);
+    }
+
+    ////////////////////////////////////////////////////////////////////////
+    // 7. ToddCoxeter - interface requirements - reduce
+    ////////////////////////////////////////////////////////////////////////
+
+    template <typename OutputIterator,
+              typename InputIterator1,
+              typename InputIterator2>
+    OutputIterator reduce_no_run_no_checks(OutputIterator d_first,
+                                           InputIterator1 first,
+                                           InputIterator2 last) {
+      return current_word_of_no_checks(d_first,
+                                       current_index_of_no_checks(first, last));
+    }
+
+    template <typename OutputIterator,
+              typename InputIterator1,
+              typename InputIterator2>
+    OutputIterator reduce_no_run(OutputIterator d_first,
+                                 InputIterator1 first,
+                                 InputIterator2 last) {
+      return current_word_of(d_first, current_index_of(first, last));
+    }
+
+    template <typename OutputIterator,
+              typename InputIterator1,
+              typename InputIterator2>
+    OutputIterator reduce_no_checks(OutputIterator d_first,
+                                    InputIterator1 first,
+                                    InputIterator2 last) {
+      return word_of_no_checks(d_first, index_of_no_checks(first, last));
+    }
+
+    template <typename OutputIterator,
+              typename InputIterator1,
+              typename InputIterator2>
+    OutputIterator reduce(OutputIterator d_first,
+                          InputIterator1 first,
+                          InputIterator2 last) {
+      return word_of(d_first, index_of(first, last));
+    }
+
+    ////////////////////////////////////////////////////////////////////////
+    // 8. ToddCoxeter - settings - public
     ////////////////////////////////////////////////////////////////////////
 
     // TODO(0) doc
@@ -1193,7 +1378,7 @@ namespace libsemigroups {
     [[nodiscard]] bool use_relations_in_extra() const noexcept;
 
     ////////////////////////////////////////////////////////////////////////
-    // ToddCoxeter - accessors - public
+    // 9. ToddCoxeter - accessors - public
     ////////////////////////////////////////////////////////////////////////
 
     // TODO(0) doc
@@ -1244,7 +1429,7 @@ namespace libsemigroups {
     bool is_standardized() const;
 
     ////////////////////////////////////////////////////////////////////////
-    // ToddCoxeter - modifiers - public
+    // 10. ToddCoxeter - modifiers - public
     ////////////////////////////////////////////////////////////////////////
 
     // TODO(0) doc
@@ -1277,7 +1462,7 @@ namespace libsemigroups {
     void perform_lookahead(bool stop_early);
 
     ////////////////////////////////////////////////////////////////////////
-    // ToddCoxeter - word -> index
+    // 11. ToddCoxeter - word -> index
     ////////////////////////////////////////////////////////////////////////
 
     // TODO(0) doc
@@ -1338,7 +1523,7 @@ namespace libsemigroups {
     }
 
     ////////////////////////////////////////////////////////////////////////
-    // ToddCoxeter - index -> word
+    // 12. ToddCoxeter - index -> word
     ////////////////////////////////////////////////////////////////////////
 
    private:
@@ -1399,211 +1584,9 @@ namespace libsemigroups {
       return current_word_of(d_first, i);
     }
 
-    ////////////////////////////////////////////////////////////////////////
-    // ToddCoxeter - interface requirements - add_pair
-    ////////////////////////////////////////////////////////////////////////
-
-    // using CongruenceInterface::add_pair_no_checks;
-
-   private:
-    template <typename Iterator1,
-              typename Iterator2,
-              typename Iterator3,
-              typename Iterator4>
-    ToddCoxeter& add_pair_no_checks(citow<Iterator1> first1,
-                                    citow<Iterator2> last1,
-                                    citow<Iterator3> first2,
-                                    citow<Iterator4> last2) {
-      if (kind() == congruence_kind::left) {
-        add_pair_no_checks_no_reverse(std::make_reverse_iterator(last1),
-                                      std::make_reverse_iterator(first1),
-                                      std::make_reverse_iterator(last2),
-                                      std::make_reverse_iterator(first2));
-      } else {
-        add_pair_no_checks_no_reverse(first1, last1, first2, last2);
-      }
-      return *this;
-    }
-
-   public:
-    template <typename Iterator1,
-              typename Iterator2,
-              typename Iterator3,
-              typename Iterator4>
-    ToddCoxeter& add_pair_no_checks(Iterator1 first1,
-                                    Iterator2 last1,
-                                    Iterator3 first2,
-                                    Iterator4 last2) {
-      return add_pair_no_checks(make_citow(first1),
-                                make_citow(last1),
-                                make_citow(first2),
-                                make_citow(last2));
-    }
-
-    template <typename Iterator1,
-              typename Iterator2,
-              typename Iterator3,
-              typename Iterator4>
-    ToddCoxeter& add_pair(Iterator1 first1,
-                          Iterator2 last1,
-                          Iterator3 first2,
-                          Iterator4 last2) {
-      CongruenceInterface::add_pair<ToddCoxeter>(first1, last1, first2, last2);
-      return *this;
-    }
-
-    ////////////////////////////////////////////////////////////////////////
-    // ToddCoxeter - interface requirements - number_of_classes
-    ////////////////////////////////////////////////////////////////////////
-
-    //! Compute the number of classes in the congruence.
-    //!
-    //! \returns The number of congruences classes of \c this if this number
-    //! is finite, or \ref POSITIVE_INFINITY in some cases if \c this
-    //! number is not finite.
-    //!
-    //! \throws std::bad_alloc if the (possibly infinite) computation uses all
-    //! the available memory.
-    //!
-    //! \complexity
-    //! See warning.
-    //!
-    //! \warning The problem of determining the number of classes of a
-    //! congruence over a finitely presented semigroup is undecidable in
-    //! general, and this function may never terminate.
-    [[nodiscard]] uint64_t number_of_classes();
-
-    ////////////////////////////////////////////////////////////////////////
-    // ToddCoxeter - interface requirements - contains
-    ////////////////////////////////////////////////////////////////////////
-
-   private:
-    template <typename Iterator1,
-              typename Iterator2,
-              typename Iterator3,
-              typename Iterator4>
-    tril currently_contains_no_checks(citow<Iterator1> first1,
-                                      citow<Iterator2> last1,
-                                      citow<Iterator3> first2,
-                                      citow<Iterator4> last2) const {
-      // TODO(0) just use two overloads not constexpr
-      if (std::equal(first1, last1, first2, last2)) {
-        return tril::TRUE;
-      }
-      auto i1 = current_index_of_no_checks(first1, last1);
-      auto i2 = current_index_of_no_checks(first2, last2);
-      if (i1 == UNDEFINED || i2 == UNDEFINED) {
-        return tril::unknown;
-      } else if (i1 == i2) {
-        return tril::TRUE;
-      } else if (finished()) {
-        return tril::FALSE;
-      } else {
-        return tril::unknown;
-      }
-    }
-
-   public:
-    template <typename Iterator1,
-              typename Iterator2,
-              typename Iterator3,
-              typename Iterator4>
-    tril currently_contains_no_checks(Iterator1 first1,
-                                      Iterator2 last1,
-                                      Iterator3 first2,
-                                      Iterator4 last2) const {
-      return currently_contains_no_checks(make_citow(first1),
-                                          make_citow(last1),
-                                          make_citow(first2),
-                                          make_citow(last2));
-    }
-
-    template <typename Iterator1,
-              typename Iterator2,
-              typename Iterator3,
-              typename Iterator4>
-    bool contains_no_checks(Iterator1 first1,
-                            Iterator2 last1,
-                            Iterator3 first2,
-                            Iterator4 last2) {
-      if (native_presentation().rules.empty() && generating_pairs().empty()
-          && current_word_graph().number_of_nodes_active() == 1) {
-        return std::equal(first1, last1, first2, last2);
-      }
-      return currently_contains_no_checks(first1, last1, first2, last2)
-             == tril::TRUE;
-    }
-
-    template <typename Iterator1,
-              typename Iterator2,
-              typename Iterator3,
-              typename Iterator4>
-    tril currently_contains(Iterator1 first1,
-                            Iterator2 last1,
-                            Iterator3 first2,
-                            Iterator4 last2) const {
-      throw_if_letter_out_of_bounds(first1, last1);
-      throw_if_letter_out_of_bounds(first2, last2);
-      return currently_contains_no_checks(first1, last1, first2, last2);
-    }
-
-    template <typename Iterator1,
-              typename Iterator2,
-              typename Iterator3,
-              typename Iterator4>
-    bool contains(Iterator1 first1,
-                  Iterator2 last1,
-                  Iterator3 first2,
-                  Iterator4 last2) {
-      throw_if_letter_out_of_bounds(first1, last1);
-      throw_if_letter_out_of_bounds(first2, last2);
-      return contains_no_checks(first1, last1, first2, last2);
-    }
-
-    ////////////////////////////////////////////////////////////////////////
-    // ToddCoxeter - interface requirements - reduce
-    ////////////////////////////////////////////////////////////////////////
-
-    template <typename OutputIterator,
-              typename InputIterator1,
-              typename InputIterator2>
-    OutputIterator reduce_no_run_no_checks(OutputIterator d_first,
-                                           InputIterator1 first,
-                                           InputIterator2 last) {
-      return current_word_of_no_checks(d_first,
-                                       current_index_of_no_checks(first, last));
-    }
-
-    template <typename OutputIterator,
-              typename InputIterator1,
-              typename InputIterator2>
-    OutputIterator reduce_no_run(OutputIterator d_first,
-                                 InputIterator1 first,
-                                 InputIterator2 last) {
-      return current_word_of(d_first, current_index_of(first, last));
-    }
-
-    template <typename OutputIterator,
-              typename InputIterator1,
-              typename InputIterator2>
-    OutputIterator reduce_no_checks(OutputIterator d_first,
-                                    InputIterator1 first,
-                                    InputIterator2 last) {
-      return word_of_no_checks(d_first, index_of_no_checks(first, last));
-    }
-
-    template <typename OutputIterator,
-              typename InputIterator1,
-              typename InputIterator2>
-    OutputIterator reduce(OutputIterator d_first,
-                          InputIterator1 first,
-                          InputIterator2 last) {
-      return word_of(d_first, index_of(first, last));
-    }
-
    private:
     ////////////////////////////////////////////////////////////////////////
-    // Runner - pure virtual member functions - private
+    // 13. Runner - pure virtual member functions - private
     ////////////////////////////////////////////////////////////////////////
 
     void really_run_impl();
@@ -1613,6 +1596,17 @@ namespace libsemigroups {
     bool finished_impl() const override {
       return _finished;
     }
+
+    ////////////////////////////////////////////////////////////////////////
+    // 14. ToddCoxeter - member functions - private
+    ////////////////////////////////////////////////////////////////////////
+
+    void copy_settings_into_graph();
+
+    // This function has prefix tc_ because there's already a settings function
+    // in a base class
+    Settings&       tc_settings();
+    Settings const& tc_settings() const;
 
     ////////////////////////////////////////////////////////////////////////
     // ToddCoxeter - main strategies - private
@@ -1645,6 +1639,10 @@ namespace libsemigroups {
     size_t hlt_lookahead(bool stop_early);
     size_t felsch_lookahead();
   };
+
+  ////////////////////////////////////////////////////////////////////////
+  // ToddCoxeter helpers
+  ////////////////////////////////////////////////////////////////////////
 
   namespace todd_coxeter {
     using node_type = typename ToddCoxeter::node_type;
