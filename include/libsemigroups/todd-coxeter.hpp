@@ -403,9 +403,8 @@ namespace libsemigroups {
                              float                    stop_early_ratio);
     };  // class Graph
 
-    // TODO make this a class
     template <typename Iterator>
-    struct itow {
+    class itow {
       // Proxy class for reference to the returned values
       class proxy_ref {
        private:
@@ -431,6 +430,7 @@ namespace libsemigroups {
         }
       };
 
+     public:
       using internal_iterator_type = Iterator;
       using value_type             = letter_type;
       using reference              = proxy_ref;
@@ -444,9 +444,11 @@ namespace libsemigroups {
       using difference_type   = std::ptrdiff_t;
       using iterator_category = std::bidirectional_iterator_tag;
 
+     private:
       internal_iterator_type _it;
       ToddCoxeter const*     _state;
 
+     public:
       itow(ToddCoxeter const* stt, internal_iterator_type it)
           : _it(it), _state(stt) {}
 
@@ -489,7 +491,7 @@ namespace libsemigroups {
       [[nodiscard]] Iterator get() const noexcept {
         return _it;
       }
-    };
+    };  // class itow
 
     template <typename Iterator>
     struct citow {
@@ -547,7 +549,7 @@ namespace libsemigroups {
         --_it;
         return *this;
       }
-    };
+    };  // class citow
 
     template <typename Iterator>
     citow<Iterator> make_citow(Iterator it) const {
@@ -558,18 +560,6 @@ namespace libsemigroups {
     itow<Iterator> make_itow(Iterator it) const {
       return itow<Iterator>(this, it);
     }
-
-    template <typename Thing>
-    struct is_itow : std::false_type {};
-
-    template <typename Iterator>
-    struct is_itow<itow<Iterator>> : std::true_type {};
-
-    template <typename Thing>
-    struct is_citow : std::false_type {};
-
-    template <typename Iterator>
-    struct is_citow<citow<Iterator>> : std::true_type {};
 
     ////////////////////////////////////////////////////////////////////////
     // ToddCoxeter - data - private
