@@ -244,52 +244,74 @@ namespace libsemigroups {
     ////////////////////////////////////////////////////////////////////////
     // Interface helpers - add_pair
     ////////////////////////////////////////////////////////////////////////
+
     // TODO(0) doc
-    // TODO template
+    template <typename Word>
     inline CongruenceInterface& add_pair_no_checks(CongruenceInterface& ci,
-                                                   word_type&&          u,
-                                                   word_type&&          v) {
+                                                   Word const&          u,
+                                                   Word const&          v) {
+      return ci.add_pair_no_checks(
+          std::begin(u), std::end(u), std::begin(v), std::end(v));
+    }
+
+    // TODO(0) doc
+    template <typename Word>
+    inline CongruenceInterface& add_pair_no_checks(CongruenceInterface& ci,
+                                                   Word&&               u,
+                                                   Word&&               v) {
       return ci.add_pair_no_checks(std::make_move_iterator(std::begin(u)),
                                    std::make_move_iterator(std::end(u)),
                                    std::make_move_iterator(std::begin(v)),
                                    std::make_move_iterator(std::end(v)));
     }
 
-    // TODO(0) doc
-    // TODO template
-    inline CongruenceInterface& add_pair_no_checks(CongruenceInterface& ci,
-                                                   word_type const&     u,
-                                                   word_type const&     v) {
-      return ci.add_pair_no_checks(
-          std::begin(u), std::end(u), std::begin(v), std::end(v));
+    // TODO(doc)
+    template <typename Subclass, typename Int>
+    Subclass& add_pair_no_checks(Subclass&                         ci,
+                                 std::initializer_list<Int> const& u,
+                                 std::initializer_list<Int> const& v) {
+      return add_pair_no_checks<Subclass, std::vector<Int>>(ci, u, v);
     }
 
     // TODO(doc)
-    // TODO template
-    // TODO add assert that Subclass derives from CongruenceInterface
-    template <typename Subclass,
-              typename Word,
-              typename = std::enable_if_t<!std::is_array_v<Word>>>
-    // The enable_if is required because overload resolves to this function if u
-    // and v are char const* AND the lengths of u and v are the same.
+    inline CongruenceInterface& add_pair_no_checks(CongruenceInterface& ci,
+                                                   char const*          u,
+                                                   char const*          v) {
+      return ci.add_pair_no_checks(
+          u, u + std::strlen(u), v, v + std::strlen(v));
+    }
+
+    // TODO(doc)
+    template <typename Subclass, typename Word>
     Subclass& add_pair(Subclass& ci, Word const& u, Word const& v) {
+      static_assert(std::is_base_of_v<CongruenceInterface, Subclass>);
       return ci.add_pair(
           std::begin(u), std::end(u), std::begin(v), std::end(v));
     }
 
-    template <typename Subclass>
-    inline Subclass& add_pair(Subclass& ci, char const* u, char const* v) {
-      return ci.add_pair(u, u + std::strlen(u), v, v + std::strlen(v));
-    }
-
     // TODO(doc)
-    // TODO template
-    template <typename Subclass>
-    inline Subclass& add_pair(Subclass& ci, word_type&& u, word_type&& v) {
+    template <typename Subclass, typename Word>
+    inline Subclass& add_pair(Subclass& ci, Word&& u, Word&& v) {
+      static_assert(std::is_base_of_v<CongruenceInterface, Subclass>);
       return ci.add_pair(std::make_move_iterator(std::begin(u)),
                          std::make_move_iterator(std::end(u)),
                          std::make_move_iterator(std::begin(v)),
                          std::make_move_iterator(std::end(v)));
+    }
+
+    // TODO(doc)
+    template <typename Subclass, typename Int>
+    Subclass& add_pair(Subclass&                         ci,
+                       std::initializer_list<Int> const& u,
+                       std::initializer_list<Int> const& v) {
+      return add_pair<Subclass, std::vector<Int>>(ci, u, v);
+    }
+
+    // TODO(doc)
+    template <typename Subclass>
+    inline Subclass& add_pair(Subclass& ci, char const* u, char const* v) {
+      static_assert(std::is_base_of_v<CongruenceInterface, Subclass>);
+      return ci.add_pair(u, u + std::strlen(u), v, v + std::strlen(v));
     }
 
     ////////////////////////////////////////////////////////////////////////
