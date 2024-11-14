@@ -1487,6 +1487,33 @@ namespace libsemigroups {
     // ToddCoxeter - interface requirements - contains
     ////////////////////////////////////////////////////////////////////////
 
+   private:
+    template <typename Iterator1,
+              typename Iterator2,
+              typename Iterator3,
+              typename Iterator4>
+    tril currently_contains_no_checks(citow<Iterator1> first1,
+                                      citow<Iterator2> last1,
+                                      citow<Iterator3> first2,
+                                      citow<Iterator4> last2) const {
+      // TODO(0) just use two overloads not constexpr
+      if (std::equal(first1, last1, first2, last2)) {
+        return tril::TRUE;
+      }
+      auto i1 = current_index_of_no_checks(first1, last1);
+      auto i2 = current_index_of_no_checks(first2, last2);
+      if (i1 == UNDEFINED || i2 == UNDEFINED) {
+        return tril::unknown;
+      } else if (i1 == i2) {
+        return tril::TRUE;
+      } else if (finished()) {
+        return tril::FALSE;
+      } else {
+        return tril::unknown;
+      }
+    }
+
+   public:
     template <typename Iterator1,
               typename Iterator2,
               typename Iterator3,
@@ -1495,34 +1522,10 @@ namespace libsemigroups {
                                       Iterator2 last1,
                                       Iterator3 first2,
                                       Iterator4 last2) const {
-      using iterator_points_at
-          = std::decay_t<decltype(*std::declval<Iterator1>())>;
-      // TODO(0) handle the case when the things pointed at by the iterators are
-      // not all the same
-
-      if constexpr (std::is_same_v<iterator_points_at, native_letter_type>
-                    || is_citow<Iterator1>::value) {
-        // TODO(0) just use two overloads not constexpr
-        if (std::equal(first1, last1, first2, last2)) {
-          return tril::TRUE;
-        }
-        auto i1 = current_index_of_no_checks(first1, last1);
-        auto i2 = current_index_of_no_checks(first2, last2);
-        if (i1 == UNDEFINED || i2 == UNDEFINED) {
-          return tril::unknown;
-        } else if (i1 == i2) {
-          return tril::TRUE;
-        } else if (finished()) {
-          return tril::FALSE;
-        } else {
-          return tril::unknown;
-        }
-      } else {
-        return currently_contains_no_checks(make_citow(first1),
-                                            make_citow(last1),
-                                            make_citow(first2),
-                                            make_citow(last2));
-      }
+      return currently_contains_no_checks(make_citow(first1),
+                                          make_citow(last1),
+                                          make_citow(first2),
+                                          make_citow(last2));
     }
 
     template <typename Iterator1,
