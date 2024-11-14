@@ -69,6 +69,8 @@ namespace libsemigroups {
     presentation::add_rule(p, 0_w, 11_w);
 
     TestType kb(twosided, p);
+    // TODO(0) maybe we should not convert p -> human_readable string
+    // presentation, to avoid least astonishment below?
 
     REQUIRE(!kb.finished());
     REQUIRE(kb.number_of_classes() == 5);
@@ -76,9 +78,9 @@ namespace libsemigroups {
 
     ToString to_string;
 
-    REQUIRE(kb.normal_form(to_string(001_w)) == "aab");
-    REQUIRE(kb.normal_form(to_string(00001_w)) == "aab");
-    REQUIRE(kb.normal_form(to_string(011001_w)) == "aab");
+    REQUIRE(knuth_bendix::reduce(kb, to_string(001_w)) == "aab");
+    REQUIRE(knuth_bendix::reduce(kb, to_string(00001_w)) == "aab");
+    REQUIRE(knuth_bendix::reduce(kb, to_string(011001_w)) == "aab");
     REQUIRE(!knuth_bendix::contains(kb, to_string(000_w), to_string(1_w)));
     REQUIRE(!knuth_bendix::contains(kb, to_string(0000_w), to_string(000_w)));
   }

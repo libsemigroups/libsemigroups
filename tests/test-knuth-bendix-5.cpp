@@ -493,7 +493,7 @@ namespace libsemigroups {
                  "abaaabb",  "aaaabaaa", "baaabaaa", "abaaabaa", "aaaabbaa",
                  "baaabbaa", "aabaaaba", "abaaabba", "abaaabaaa"}));
     REQUIRE(std::all_of(nf1.begin(), nf1.end(), [&kb](auto& w) {
-      return kb.normal_form(w) == w;
+      return knuth_bendix::reduce(kb, w) == w;
     }));
 
     auto nf     = froidure_pin::normal_forms(S) | to_string | take(S.size());
@@ -510,7 +510,7 @@ namespace libsemigroups {
     //          {},       {44},    {}});
     // REQUIRE(result == expected);
 
-    REQUIRE(kb.normal_form("abaaaa") == "aba");
+    REQUIRE(knuth_bendix::reduce(kb, "abaaaa") == "aba");
 
     REQUIRE((nf | count()) == 88);
     auto pp = partition(kb, nf);
@@ -530,7 +530,7 @@ namespace libsemigroups {
               "baaabab", "abaaabab", "aabaaabaa", "aabaaabab", "abaaabbaa"}}));
 
     REQUIRE(std::all_of(ntc[0].begin(), ntc[0].end(), [&kb, &ntc](auto& w) {
-      return kb.normal_form(w) == ntc[0][0];
+      return knuth_bendix::reduce(kb, w) == ntc[0][0];
     }));
 
     REQUIRE((kb.active_rules() | count()) == 23);

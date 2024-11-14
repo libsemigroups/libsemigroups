@@ -202,7 +202,7 @@ namespace libsemigroups {
     REQUIRE(kb.confluent());
     REQUIRE(kb.number_of_active_rules() == 1'731);
     REQUIRE(kb.number_of_classes() == 7'920);
-    REQUIRE(kb.normal_form("") == "");
+    REQUIRE(knuth_bendix::reduce(kb, "") == "");
 
     presentation::add_rule(p, "a", "");
     presentation::add_rule(p, "a", "b");
@@ -495,11 +495,11 @@ namespace libsemigroups {
     kb.run();
     REQUIRE(kb.number_of_active_rules() == 7);
     REQUIRE(kb.number_of_classes() == size_t(std::pow(5, n)) + 4 * q - 5);
-    REQUIRE(kb.normal_form("aabb") == "aabb");
-    REQUIRE(kb.normal_form("aabbaabb") == "bbbb");
-    REQUIRE(kb.normal_form("aabbaabbaabb") == "aabbbbbb");
-    REQUIRE(kb.normal_form("aabbaabbaabbaabb") == "bbbbbbbb");
-    REQUIRE(kb.normal_form("aabbaabbaabbaabbaabb") == "aabbbbbbbbbb");
+    REQUIRE(knuth_bendix::reduce(kb, "aabb") == "aabb");
+    REQUIRE(knuth_bendix::reduce(kb, "aabbaabb") == "bbbb");
+    REQUIRE(knuth_bendix::reduce(kb, "aabbaabbaabb") == "aabbbbbb");
+    REQUIRE(knuth_bendix::reduce(kb, "aabbaabbaabbaabb") == "bbbbbbbb");
+    REQUIRE(knuth_bendix::reduce(kb, "aabbaabbaabbaabbaabb") == "aabbbbbbbbbb");
     auto nf = knuth_bendix::normal_forms(kb).min(1);
     REQUIRE((nf | ToString(p.alphabet()) | to_vector())
             == std::vector<std::string>({"a",

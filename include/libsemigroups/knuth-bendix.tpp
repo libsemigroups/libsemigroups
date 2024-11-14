@@ -293,39 +293,12 @@ namespace libsemigroups {
   }
 
   // template <typename Rewriter, typename ReductionOrder>
-  // bool KnuthBendix<Rewriter, ReductionOrder>::equal_to(std::string const& u,
-  //                                                      std::string const& v)
-  //                                                      {
-  //   presentation().validate_word(u.cbegin(), u.cend());
-  //   presentation().validate_word(v.cbegin(), v.cend());
-
-  //   if (u == v) {
-  //     return true;
-  //   }
-
-  //   auto uu = rewrite(u);
-  //   auto vv = rewrite(v);
-
-  //   if (uu == vv) {
-  //     return true;
-  //   } else if (finished()) {
-  //     return false;
-  //   }
-
+  // std::string
+  // KnuthBendix<Rewriter, ReductionOrder>::normal_form(std::string const& w) {
+  //   presentation().validate_word(w.cbegin(), w.cend());
   //   run();
-
-  //   rewrite_inplace(uu);
-  //   rewrite_inplace(vv);
-  //   return uu == vv;
+  //   return rewrite(w);
   // }
-
-  template <typename Rewriter, typename ReductionOrder>
-  std::string
-  KnuthBendix<Rewriter, ReductionOrder>::normal_form(std::string const& w) {
-    presentation().validate_word(w.cbegin(), w.cend());
-    run();
-    return rewrite(w);
-  }
 
   template <typename Rewriter, typename ReductionOrder>
   void KnuthBendix<Rewriter, ReductionOrder>::report_presentation(
@@ -1151,7 +1124,8 @@ namespace libsemigroups {
       // normal forms in `kb1` never contain an edge in g2 \ g1 and so we must
       // add in every normal form.
       for (auto& klass : ntc) {
-        klass.push_back(kb1.normal_form(klass[0]));
+        klass.push_back(reduce(kb1, klass[0]));
+        // TODO(0) use reduce_no_checks
       }
       return ntc;
     }

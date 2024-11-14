@@ -112,8 +112,8 @@ namespace libsemigroups {
 
     REQUIRE(kb.number_of_active_rules() == 4);
     REQUIRE(kb.confluent());
-    REQUIRE(kb.normal_form("ca") == "a");
-    REQUIRE(kb.normal_form("ac") == "a");
+    REQUIRE(knuth_bendix::reduce(kb, "ca") == "a");
+    REQUIRE(knuth_bendix::reduce(kb, "ac") == "a");
     REQUIRE(knuth_bendix::contains(kb, "ca", "a"));
     REQUIRE(knuth_bendix::contains(kb, "ac", "a"));
     REQUIRE(kb.number_of_classes() == POSITIVE_INFINITY);
@@ -232,9 +232,10 @@ namespace libsemigroups {
                 {"",     "0",    "1",    "00",   "01",   "10",   "11",
                  "001",  "010",  "011",  "100",  "101",  "110",  "0010",
                  "0011", "0100", "0101", "0110", "1001", "1011", "1101"}));
-    REQUIRE(
-        (nf.min(0).max(10) | ToString(p.alphabet())
-         | all_of([&kb](auto const& w) { return kb.normal_form(w) == w; })));
+    REQUIRE((nf.min(0).max(10) | ToString(p.alphabet())
+             | all_of([&kb](auto const& w) {
+                 return knuth_bendix::reduce(kb, w) == w;
+               })));
   }
 
   TEMPLATE_TEST_CASE("Example 5.1 in Sims (infinite)",
@@ -268,9 +269,10 @@ namespace libsemigroups {
                  "bcc",  "bdd",  "ccc",  "ddd",  "aaaa", "aaac", "aaad",
                  "aacc", "aadd", "accc", "addd", "bbbb", "bbbc", "bbbd",
                  "bbcc", "bbdd", "bccc", "bddd", "cccc", "dddd"}));
-    REQUIRE(
-        (nf.min(0).max(6) | ToString(p.alphabet())
-         | all_of([&kb](auto const& w) { return kb.normal_form(w) == w; })));
+    REQUIRE((nf.min(0).max(6) | ToString(p.alphabet())
+             | all_of([&kb](auto const& w) {
+                 return knuth_bendix::reduce(kb, w) == w;
+               })));
   }
 
   TEMPLATE_TEST_CASE("Example 5.1 in Sims (infinite) x 2",
@@ -301,9 +303,10 @@ namespace libsemigroups {
                  "bcc",  "bdd",  "ccc",  "ddd",  "aaaa", "aaac", "aaad",
                  "aacc", "aadd", "accc", "addd", "bbbb", "bbbc", "bbbd",
                  "bbcc", "bbdd", "bccc", "bddd", "cccc", "dddd"}));
-    REQUIRE(
-        (nf.min(0).max(6) | ToString(p.alphabet())
-         | all_of([&kb](auto const& w) { return kb.normal_form(w) == w; })));
+    REQUIRE((nf.min(0).max(6) | ToString(p.alphabet())
+             | all_of([&kb](auto const& w) {
+                 return knuth_bendix::reduce(kb, w) == w;
+               })));
   }
 
   TEMPLATE_TEST_CASE("Example 5.3 in Sims",
@@ -342,9 +345,10 @@ namespace libsemigroups {
                                          "bba",
                                          "babb",
                                          "bbab"}));
-    REQUIRE(
-        (nf.min(0).max(6) | ToString(p.alphabet())
-         | all_of([&kb](auto const& w) { return kb.normal_form(w) == w; })));
+    REQUIRE((nf.min(0).max(6) | ToString(p.alphabet())
+             | all_of([&kb](auto const& w) {
+                 return knuth_bendix::reduce(kb, w) == w;
+               })));
   }
 
   TEMPLATE_TEST_CASE("Example 5.4 in Sims",
@@ -408,8 +412,8 @@ namespace libsemigroups {
     kb.run();
     REQUIRE(kb.number_of_active_rules() == 40);
     REQUIRE(kb.confluent());
-    REQUIRE(kb.normal_form("cc") == "b");
-    REQUIRE(kb.normal_form("ccc") == "");
+    REQUIRE(knuth_bendix::reduce(kb, "cc") == "b");
+    REQUIRE(knuth_bendix::reduce(kb, "ccc") == "");
     REQUIRE(kb.number_of_classes() == 168);
 
     auto nf
@@ -634,7 +638,7 @@ namespace libsemigroups {
     REQUIRE(!kb1.finished());
     kb1.run();
     REQUIRE(kb1.confluent());
-    REQUIRE(kb1.normal_form("abababbdbcbdbabdbdb") == "bbbbbbddd");
+    REQUIRE(knuth_bendix::reduce(kb1, "abababbdbcbdbabdbdb") == "bbbbbbddd");
 
     kb1.init(twosided, p2);
     REQUIRE(!kb1.confluent());
@@ -653,19 +657,19 @@ namespace libsemigroups {
     REQUIRE(kb1.finished());
     REQUIRE(kb1.confluent());
     REQUIRE(kb1.confluent_known());
-    REQUIRE(kb1.normal_form("abababbdbcbdbabdbdb") == "bbbbbbddd");
+    REQUIRE(knuth_bendix::reduce(kb1, "abababbdbcbdbabdbdb") == "bbbbbbddd");
 
     TestType kb2(std::move(kb1));
     REQUIRE(kb2.confluent());
     REQUIRE(kb2.confluent_known());
     REQUIRE(kb2.finished());
-    REQUIRE(kb2.normal_form("abababbdbcbdbabdbdb") == "bbbbbbddd");
+    REQUIRE(knuth_bendix::reduce(kb2, "abababbdbcbdbabdbdb") == "bbbbbbddd");
 
     kb1 = std::move(kb2);
     REQUIRE(kb1.confluent());
     REQUIRE(kb1.confluent_known());
     REQUIRE(kb1.finished());
-    REQUIRE(kb1.normal_form("abababbdbcbdbabdbdb") == "bbbbbbddd");
+    REQUIRE(knuth_bendix::reduce(kb1, "abababbdbcbdbabdbdb") == "bbbbbbddd");
 
     kb1.init(twosided, std::move(p1));
     REQUIRE(!kb1.confluent());
@@ -674,7 +678,7 @@ namespace libsemigroups {
     REQUIRE(kb1.finished());
     REQUIRE(kb1.confluent());
     REQUIRE(kb1.confluent_known());
-    REQUIRE(kb1.normal_form("abababbdbcbdbabdbdb") == "bbbbbbddd");
+    REQUIRE(knuth_bendix::reduce(kb1, "abababbdbcbdbabdbdb") == "bbbbbbddd");
   }
 
   TEMPLATE_TEST_CASE("constructors/init for partially run",

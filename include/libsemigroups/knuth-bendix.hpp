@@ -124,135 +124,6 @@ namespace libsemigroups {
     // KnuthBendix - nested subclasses - private
     ////////////////////////////////////////////////////////////////////////
 
-    // The following is a class for wrapping iterators. This is used by the
-    // member functions that accept iterators (that point at possibly non-native
-    // types) to convert the values pointed at into native types, and in the
-    // class itos, to allow assignment of these values too.
-    // CITOS = const_iterator_to_string
-    template <typename Iterator>
-    class citos {
-     protected:
-      Iterator           _it;
-      KnuthBendix const* _kb;
-
-     public:
-      using internal_iterator_type = Iterator;
-      using value_type             = char;
-      using reference              = value_type;
-      using const_reference        = value_type;
-      using const_pointer          = value_type const*;
-      using pointer                = value_type*;
-
-      using size_type         = size_t;
-      using difference_type   = std::ptrdiff_t;
-      using iterator_category = std::bidirectional_iterator_tag;
-
-      citos(KnuthBendix const* kb, Iterator it) : _it(it), _kb(kb) {}
-
-      reference operator*() const {
-        auto const& p = _kb->_input_presentation;
-        return p.letter_no_checks(p.index_no_checks(*_it));
-      }
-
-      // TODO operator-> ??
-
-      bool operator==(citos<Iterator> that) const noexcept {
-        return _it == that._it;
-      }
-
-      bool operator<=(citos<Iterator> that) const noexcept {
-        return _it <= that._it;
-      }
-
-      bool operator>=(citos<Iterator> that) const noexcept {
-        return _it >= that._it;
-      }
-
-      bool operator!=(citos<Iterator> that) const noexcept {
-        return _it != that._it;
-      }
-
-      citos& operator++() {
-        ++_it;
-        return *this;
-      }
-
-      citos& operator--() {
-        --_it;
-        return *this;
-      }
-
-      [[nodiscard]] Iterator get() const noexcept {
-        return _it;
-      }
-
-    };  // class citos
-
-    // itos only differs from citos in the dereference member function
-    // returning a (non-const) reference. A proxy is returned instead which
-    // permits assignment to an output iterator.
-    template <typename Iterator>
-    class itos : public citos<Iterator> {
-      // Proxy class for reference to the returned values
-      class proxy_ref {
-       private:
-        Iterator           _it;
-        KnuthBendix const* _kb;
-
-       public:
-        // Constructor from KnuthBendix and iterator
-        // that byte
-        proxy_ref(KnuthBendix const* kb, Iterator it) noexcept
-            : _it(it), _kb(kb) {}
-
-        // Assignment operator to allow setting the value via the proxy
-        Iterator operator=(char i) noexcept {
-          auto const& p = _kb->_input_presentation;
-          *_it          = p.letter_no_checks(i);  // TODO is this right?
-          return _it;
-        }
-
-        // Conversion operator to obtain the letter corresponding to the
-        // letter_type
-        [[nodiscard]] operator char() const noexcept {
-          auto const& p = _kb->_input_presentation;
-          return p.letter_no_checks(p.index_no_checks(*_it));
-        }
-      };  // class proxy_ref
-
-     public:
-      using internal_iterator_type = Iterator;
-      using value_type             = letter_type;
-      using reference              = proxy_ref;
-      using const_reference        = value_type;
-
-      // TODO use proxy for pointers too?
-      using const_pointer = value_type const*;
-      using pointer       = value_type*;
-
-      using size_type         = size_t;
-      using difference_type   = std::ptrdiff_t;
-      using iterator_category = std::bidirectional_iterator_tag;
-
-      using citos<Iterator>::citos;
-
-      reference operator*() {
-        return reference(this->_kb, this->_it);
-      }
-
-    };  // class itos
-
-    // Helpers for constructing citos + itos
-    template <typename Iterator>
-    citos<Iterator> make_citos(Iterator it) const {
-      return citos<Iterator>(this, it);
-    }
-
-    template <typename Iterator>
-    itos<Iterator> make_itos(Iterator it) const {
-      return itos<Iterator>(this, it);
-    }
-
     // Overlap measures
     struct OverlapMeasure {
       virtual size_t
@@ -1194,7 +1065,7 @@ namespace libsemigroups {
     // No in-place version just use rewrite instead,
     // this only exists so that run is called.
     // TODO required?
-    [[nodiscard]] std::string normal_form(std::string const& w);
+    //   [[nodiscard]] std::string normal_form(std::string const& w);
 
    private:
     void report_presentation(Presentation<std::string> const&) const;
@@ -1353,7 +1224,16 @@ namespace libsemigroups {
       return result;
     }
 
+    template <typename Rewriter, typename ReductionOrder>
+    std::string reduce(KnuthBendix<Rewriter, ReductionOrder>& kb,
+                       char const*                            w) {
+      std::string result;
+      kb.reduce(std::back_inserter(result), w, w + std::strlen(w));
+      return result;
+    }
+
     // TODO(0) initializer list versions of the above
+    // TODO(0) char const* versions of the above
 
     ////////////////////////////////////////////////////////////////////////
     // Interface helpers - to_human_readable_repr

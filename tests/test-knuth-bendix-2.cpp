@@ -1279,7 +1279,8 @@ namespace libsemigroups {
     TestType kb(twosided, p);
     // kb.process_pending_rules();
     REQUIRE(kb.confluent());
-    REQUIRE(kb.normal_form("CBACBAABCAABCACBACBA") == "CBACBACBAACBAACBACBA");
+    REQUIRE(knuth_bendix::reduce(kb, "CBACBAABCAABCACBACBA")
+            == "CBACBACBAACBAACBACBA");
     REQUIRE(knuth_bendix::contains(
         kb, "CBAABCABCAABCAABCABC", "CBACBAABCAABCACBACBA"));
     REQUIRE(knuth_bendix::contains(
@@ -1419,18 +1420,18 @@ namespace libsemigroups {
                  "bcb", "b", "bcd", "cd", "cbc", "c", "cdb", "cd"}));
     TestType kb(congruence_kind::twosided, p);
     REQUIRE(kb.number_of_classes() == 24);
-    REQUIRE(kb.normal_form("dcb") == "cd");
-    REQUIRE(kb.normal_form("dca") == "cd");
-    REQUIRE(kb.normal_form("da") == "d");
-    REQUIRE(kb.normal_form("cda") == "cd");
-    REQUIRE(kb.normal_form("cdb") == "cd");
-    REQUIRE(kb.normal_form("cdc") == "cd");
-    REQUIRE(kb.normal_form("cdd") == "cd");
-    REQUIRE(kb.normal_form("dad") == "d");
+    REQUIRE(knuth_bendix::reduce(kb, "dcb") == "cd");
+    REQUIRE(knuth_bendix::reduce(kb, "dca") == "cd");
+    REQUIRE(knuth_bendix::reduce(kb, "da") == "d");
+    REQUIRE(knuth_bendix::reduce(kb, "cda") == "cd");
+    REQUIRE(knuth_bendix::reduce(kb, "cdb") == "cd");
+    REQUIRE(knuth_bendix::reduce(kb, "cdc") == "cd");
+    REQUIRE(knuth_bendix::reduce(kb, "cdd") == "cd");
+    REQUIRE(knuth_bendix::reduce(kb, "dad") == "d");
     REQUIRE(!knuth_bendix::contains(kb, "bd", "db"));
-    REQUIRE(kb.normal_form("bd") == "bd");
-    REQUIRE(kb.normal_form("db") == "db");
-    REQUIRE(kb.normal_form("cbdcbd") == "cd");
+    REQUIRE(knuth_bendix::reduce(kb, "bd") == "bd");
+    REQUIRE(knuth_bendix::reduce(kb, "db") == "db");
+    REQUIRE(knuth_bendix::reduce(kb, "cbdcbd") == "cd");
     REQUIRE((knuth_bendix::normal_forms(kb) | ToString("abcd") | to_vector())
             == std::vector<std::string>(
                 {"",    "a",   "b",   "c",   "d",    "ab",   "ac",   "ba",
@@ -1505,11 +1506,12 @@ namespace libsemigroups {
     TestType kb(congruence_kind::twosided, p);
     kb.run();
     // TODO implement knuth_bendix::idempotents
-    REQUIRE(
-        (knuth_bendix::normal_forms(kb) | ToString("ab")
-         | filter([&kb](auto const& w) { return kb.normal_form(w + w) == w; })
-         | to_vector())
-        == std::vector<std::string>({"", "a", "b", "ba"}));
+    REQUIRE((knuth_bendix::normal_forms(kb) | ToString("ab")
+             | filter([&kb](auto const& w) {
+                 return knuth_bendix::reduce(kb, w + w) == w;
+               })
+             | to_vector())
+            == std::vector<std::string>({"", "a", "b", "ba"}));
     REQUIRE((kb.active_rules() | sort(weird_cmp()) | to_vector())
             == std::vector<std::pair<std::string, std::string>>(
                 {{"aa", "a"}, {"bb", "b"}, {"aba", "ba"}, {"bab", "ba"}}));
@@ -1530,9 +1532,9 @@ namespace libsemigroups {
     presentation::add_idempotent_rules_no_checks(p, p.alphabet());
     TestType kb(twosided, p);
     kb.run();
-    REQUIRE(kb.normal_form("cbda") == "bcda");
-    REQUIRE(kb.normal_form("badc") == "badc");
-    REQUIRE(kb.normal_form("cadb") == "cadb");
+    REQUIRE(knuth_bendix::reduce(kb, "cbda") == "bcda");
+    REQUIRE(knuth_bendix::reduce(kb, "badc") == "badc");
+    REQUIRE(knuth_bendix::reduce(kb, "cadb") == "cadb");
   }
 
   TEMPLATE_TEST_CASE("sigma sylvester monoid",
