@@ -297,7 +297,10 @@ namespace libsemigroups {
     // TODO doc
     template <typename Word>
     explicit KnuthBendix(congruence_kind knd, Presentation<Word> const& p)
-        : KnuthBendix(knd, to_presentation<std::string>(p)) {}
+        : KnuthBendix(knd, to_presentation<std::string>(p, [](auto const& x) {
+                        return x;
+                      })) {}
+    // TODO(xxx) don't convert to human readable anywhere
 
     // TODO doc
     template <typename Word>
@@ -309,7 +312,8 @@ namespace libsemigroups {
     KnuthBendix& init(congruence_kind knd, Presentation<Word> const& p) {
       // TODO(0) we copy the input presentation twice here once in init, and
       // again in this function, better not duplicate
-      init(knd, to_presentation<std::string>(p));
+      init(knd,
+           to_presentation<std::string>(p, [](auto const& x) { return x; }));
       // the next line looks weird but we are usually taking in letter_types's
       // and returning chars
       _input_presentation
@@ -320,13 +324,13 @@ namespace libsemigroups {
     // TODO doc
     template <typename Word>
     KnuthBendix& init(congruence_kind knd, Presentation<Word>&& p) {
-      init(knd, to_presentation<std::string>(p));
+      init(knd,
+           to_presentation<std::string>(p, [](auto const& x) { return x; }));
       // TODO(0) we copy the input presentation twice here once in init, and
       // again in this function, better not duplicate
       // the next line looks weird but we are usually taking in letter_types's
       // and returning chars
-      _input_presentation
-          = to_presentation<std::string>(p, [](auto const& x) { return x; });
+      // TODO(xxx) delete _input_presentation everywhere
       return *this;
     }
 

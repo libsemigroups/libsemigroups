@@ -43,7 +43,7 @@
 #include "libsemigroups/fpsemi-examples.hpp"  // for partial_transformation...
 #include "libsemigroups/knuth-bendix.hpp"     // for KnuthBendix, normal_forms
 #include "libsemigroups/obvinf.hpp"           // for is_obviously_infinite
-#include "libsemigroups/presentation.hpp"     // for to_string, add_rule
+#include "libsemigroups/presentation.hpp"     // for add_rule
 #include "libsemigroups/to-froidure-pin.hpp"  // for to_froidure_pin
 #include "libsemigroups/types.hpp"            // for word_type
 #include "libsemigroups/words.hpp"            // for operator""_w
@@ -69,20 +69,16 @@ namespace libsemigroups {
     presentation::add_rule(p, 0_w, 11_w);
 
     TestType kb(twosided, p);
-    // TODO(0) maybe we should not convert p -> human_readable string
-    // presentation, to avoid least astonishment below?
 
     REQUIRE(!kb.finished());
     REQUIRE(kb.number_of_classes() == 5);
     REQUIRE(kb.finished());
 
-    ToString to_string;
-
-    REQUIRE(knuth_bendix::reduce(kb, to_string(001_w)) == "aab");
-    REQUIRE(knuth_bendix::reduce(kb, to_string(00001_w)) == "aab");
-    REQUIRE(knuth_bendix::reduce(kb, to_string(011001_w)) == "aab");
-    REQUIRE(!knuth_bendix::contains(kb, to_string(000_w), to_string(1_w)));
-    REQUIRE(!knuth_bendix::contains(kb, to_string(0000_w), to_string(000_w)));
+    REQUIRE(knuth_bendix::reduce(kb, 001_w) == 001_w);
+    REQUIRE(knuth_bendix::reduce(kb, 00001_w) == 001_w);
+    REQUIRE(knuth_bendix::reduce(kb, 011001_w) == 001_w);
+    REQUIRE(!knuth_bendix::contains(kb, 000_w, 1_w));
+    REQUIRE(!knuth_bendix::contains(kb, 0000_w, 000_w));
   }
 
   TEMPLATE_TEST_CASE("free semigroup congruence (6 classes)",
@@ -110,10 +106,10 @@ namespace libsemigroups {
 
     TestType kb(twosided, p);
 
-    ToString to_string;
-
     REQUIRE(kb.number_of_classes() == 6);
-    REQUIRE(knuth_bendix::contains(kb, to_string(1_w), to_string(2_w)));
+    REQUIRE(knuth_bendix::contains(kb, 1_w, 2_w));
+    // TODO(0) try constructing a KnuthBendix object from a presentation with
+    // more than 255 generators
   }
 
   TEMPLATE_TEST_CASE("free semigroup congruence (16 classes)",
@@ -123,34 +119,33 @@ namespace libsemigroups {
 
     Presentation<word_type> p;
     p.alphabet(4);
-    presentation::add_rule(p, {3}, {2});
-    presentation::add_rule(p, {0, 3}, {0, 2});
-    presentation::add_rule(p, {1, 1}, {1});
-    presentation::add_rule(p, {1, 3}, {1, 2});
-    presentation::add_rule(p, {2, 1}, {2});
-    presentation::add_rule(p, {2, 2}, {2});
-    presentation::add_rule(p, {2, 3}, {2});
-    presentation::add_rule(p, {0, 0, 0}, {0});
-    presentation::add_rule(p, {0, 0, 1}, {1});
-    presentation::add_rule(p, {0, 0, 2}, {2});
-    presentation::add_rule(p, {0, 1, 2}, {1, 2});
-    presentation::add_rule(p, {1, 0, 0}, {1});
-    presentation::add_rule(p, {1, 0, 2}, {0, 2});
-    presentation::add_rule(p, {2, 0, 0}, {2});
-    presentation::add_rule(p, {0, 1, 0, 1}, {1, 0, 1});
-    presentation::add_rule(p, {0, 2, 0, 2}, {2, 0, 2});
-    presentation::add_rule(p, {1, 0, 1, 0}, {1, 0, 1});
-    presentation::add_rule(p, {1, 2, 0, 1}, {1, 0, 1});
-    presentation::add_rule(p, {1, 2, 0, 2}, {2, 0, 2});
-    presentation::add_rule(p, {2, 0, 1, 0}, {2, 0, 1});
-    presentation::add_rule(p, {2, 0, 2, 0}, {2, 0, 2});
+    presentation::add_rule(p, 3_w, 2_w);
+    presentation::add_rule(p, 03_w, 02_w);
+    presentation::add_rule(p, 11_w, 1_w);
+    presentation::add_rule(p, 13_w, 12_w);
+    presentation::add_rule(p, 21_w, 2_w);
+    presentation::add_rule(p, 22_w, 2_w);
+    presentation::add_rule(p, 23_w, 2_w);
+    presentation::add_rule(p, 000_w, 0_w);
+    presentation::add_rule(p, 001_w, 1_w);
+    presentation::add_rule(p, 002_w, 2_w);
+    presentation::add_rule(p, 012_w, 12_w);
+    presentation::add_rule(p, 100_w, 1_w);
+    presentation::add_rule(p, 102_w, 02_w);
+    presentation::add_rule(p, 200_w, 2_w);
+    presentation::add_rule(p, 0101_w, 101_w);
+    presentation::add_rule(p, 0202_w, 202_w);
+    presentation::add_rule(p, 1010_w, 101_w);
+    presentation::add_rule(p, 1201_w, 101_w);
+    presentation::add_rule(p, 1202_w, 202_w);
+    presentation::add_rule(p, 2010_w, 201_w);
+    presentation::add_rule(p, 2020_w, 202_w);
 
     TestType kb(twosided, p);
-    ToString to_string;
 
     REQUIRE(kb.number_of_classes() == 16);
     REQUIRE(kb.number_of_active_rules() == 18);
-    REQUIRE(knuth_bendix::contains(kb, to_string(2_w), to_string(3_w)));
+    REQUIRE(knuth_bendix::contains(kb, 2_w, 3_w));
   }
 
   TEMPLATE_TEST_CASE("free semigroup congruence (6 classes) x 2",
@@ -183,16 +178,15 @@ namespace libsemigroups {
 
     TestType kb(twosided, p);
     REQUIRE(kb.number_of_classes() == 16);
-    ToString to_string;
-    REQUIRE(knuth_bendix::contains(kb, to_string({0}), to_string({5})));
-    REQUIRE(knuth_bendix::contains(kb, to_string({0}), to_string({5})));
-    REQUIRE(knuth_bendix::contains(kb, to_string({0}), to_string({10})));
-    REQUIRE(knuth_bendix::contains(kb, to_string({1}), to_string({2})));
-    REQUIRE(knuth_bendix::contains(kb, to_string({1}), to_string({7})));
-    REQUIRE(knuth_bendix::contains(kb, to_string({3}), to_string({4})));
-    REQUIRE(knuth_bendix::contains(kb, to_string({3}), to_string({6})));
-    REQUIRE(knuth_bendix::contains(kb, to_string({3}), to_string({8})));
-    REQUIRE(knuth_bendix::contains(kb, to_string({3}), to_string({9})));
+    REQUIRE(knuth_bendix::contains(kb, {0}, {5}));
+    REQUIRE(knuth_bendix::contains(kb, {0}, {5}));
+    REQUIRE(knuth_bendix::contains(kb, {0}, {10}));
+    REQUIRE(knuth_bendix::contains(kb, {1}, {2}));
+    REQUIRE(knuth_bendix::contains(kb, {1}, {7}));
+    REQUIRE(knuth_bendix::contains(kb, {3}, {4}));
+    REQUIRE(knuth_bendix::contains(kb, {3}, {6}));
+    REQUIRE(knuth_bendix::contains(kb, {3}, {8}));
+    REQUIRE(knuth_bendix::contains(kb, {3}, {9}));
   }
 
   TEMPLATE_TEST_CASE("free semigroup congruence (240 classes)",
