@@ -405,29 +405,29 @@ namespace libsemigroups {
 
     // TODO make this a class
     template <typename Iterator>
-    struct iterator_to_word {
+    struct itow {
       // Proxy class for reference to the returned values
       class proxy_ref {
        private:
-        letter_type&       _pointed_at;
+        Iterator           _it;
         ToddCoxeter const* _tc;
 
        public:
         // Constructor: takes a reference to a byte and the index of the bit in
         // that byte
-        proxy_ref(ToddCoxeter const* tc, letter_type& pointed_at) noexcept
-            : _pointed_at(pointed_at), _tc(tc) {}
+        proxy_ref(ToddCoxeter const* tc, Iterator it) noexcept
+            : _it(it), _tc(tc) {}
 
         // Assignment operator to allow setting the value via the proxy
-        letter_type& operator=(letter_type i) noexcept {
-          _pointed_at = _tc->_input_presentation.letter_no_checks(i);
-          return *this;
+        Iterator operator=(letter_type i) noexcept {
+          *_it = _tc->_input_presentation.letter_no_checks(i);
+          return _it;
         }
 
         // Conversion operator to obtain the letter corresponding to the
         // letter_type
         [[nodiscard]] operator letter_type() const noexcept {
-          return _tc->_input_presentation.index_no_checks(_pointed_at);
+          return _tc->_input_presentation.index_no_checks(*_it);
         }
       };
 
@@ -457,7 +457,8 @@ namespace libsemigroups {
       using state_type             = ToddCoxeter const*;
       using value_type             = letter_type;
       using reference              = proxy_ref;
-      using const_reference        = proxy_const_ref;
+      using const_reference        = proxy_const_ref;  // TODO just use
+                                                       // value_type?
 
       // TODO use proxy for pointers too?
       using const_pointer = value_type const*;
@@ -470,11 +471,10 @@ namespace libsemigroups {
       internal_iterator_type _it;
       state_type             _state;
 
-      iterator_to_word(state_type stt, internal_iterator_type it)
-          : _it(it), _state(stt) {}
+      itow(state_type stt, internal_iterator_type it) : _it(it), _state(stt) {}
 
       reference operator*() {
-        return reference(_state, *_it);
+        return reference(_state, _it);
       }
 
       const_reference operator*() const {
@@ -483,30 +483,34 @@ namespace libsemigroups {
 
       // TODO operator->
 
-      bool operator==(iterator_to_word<Iterator> that) const noexcept {
+      bool operator==(itow<Iterator> that) const noexcept {
         return _it == that._it;
       }
 
-      bool operator<=(iterator_to_word<Iterator> that) const noexcept {
+      bool operator<=(itow<Iterator> that) const noexcept {
         return _it <= that._it;
       }
 
-      bool operator>=(iterator_to_word<Iterator> that) const noexcept {
+      bool operator>=(itow<Iterator> that) const noexcept {
         return _it >= that._it;
       }
 
-      bool operator!=(iterator_to_word<Iterator> that) const noexcept {
+      bool operator!=(itow<Iterator> that) const noexcept {
         return _it != that._it;
       }
 
-      iterator_to_word& operator++() {
+      itow& operator++() {
         ++_it;
         return *this;
       }
 
-      iterator_to_word& operator--() {
+      itow& operator--() {
         --_it;
         return *this;
+      }
+
+      [[nodiscard]] Iterator get() const noexcept {
+        return _it;
       }
     };
     template <typename Iterator>
@@ -572,11 +576,16 @@ namespace libsemigroups {
       return citow<Iterator>(this, it);
     }
 
+    template <typename Iterator>
+    itow<Iterator> make_itow(Iterator it) const {
+      return itow<Iterator>(this, it);
+    }
+
     template <typename Thing>
-    struct is_iterator_to_word : std::false_type {};
+    struct is_itow : std::false_type {};
 
     template <typename Iterator>
-    struct is_iterator_to_word<iterator_to_word<Iterator>> : std::true_type {};
+    struct is_itow<itow<Iterator>> : std::true_type {};
 
     template <typename Thing>
     struct is_citow : std::false_type {};
@@ -1219,14 +1228,12 @@ namespace libsemigroups {
     // ToddCoxeter - accessors - public
     ////////////////////////////////////////////////////////////////////////
 
-   private:  // TODO(0) move to sensible location
     // TODO(0) doc
     Presentation<word_type> const& internal_presentation() const noexcept {
       return _word_graph.presentation();
     }
 
-   public:
-    // TODO rm
+    // TODO(0) doc
     Presentation<word_type> const& presentation() const noexcept {
       return _input_presentation;
     }
@@ -1365,8 +1372,8 @@ namespace libsemigroups {
     ////////////////////////////////////////////////////////////////////////
 
     template <typename OutputIterator>
-    OutputIterator current_word_of_no_checks(OutputIterator d_first,
-                                             node_type      i) {
+    itow<OutputIterator> current_word_of_no_checks(itow<OutputIterator> d_first,
+                                                   node_type            i) {
       if (!is_standardized()) {
         standardize(Order::shortlex);
       }
@@ -1375,10 +1382,17 @@ namespace libsemigroups {
       }
 
       return _forest.path_to_root_no_checks(d_first, i);
+      // TODO(0) maybe withdraw left congs altogether?
       // This doesn't compile with the call to std::reverse below
       // if (kind() != congruence_kind::left) {
       //   std::reverse(d_first, d_last);
       // }
+    }
+
+    template <typename OutputIterator>
+    OutputIterator current_word_of_no_checks(OutputIterator d_first,
+                                             node_type      i) {
+      return current_word_of_no_checks(make_itow(d_first), i).get();
     }
 
     template <typename OutputIterator>
@@ -1861,6 +1875,11 @@ namespace libsemigroups {
       return reduce<std::initializer_list<Int>, std::vector<Int>>(tc, w);
     }
 
+    inline auto reduce(ToddCoxeter& tc, char const* w) {
+      // TODO is this consistent?  Should the return type be word_type?
+      return reduce<std::string, std::string>(tc, w);
+    }
+
     ////////////////////////////////////////////////////////////////////////
     // Interface helpers - class_of
     ////////////////////////////////////////////////////////////////////////
@@ -2070,10 +2089,12 @@ namespace libsemigroups {
   // TODO(0) out of line
   template <typename Range,
             typename = std::enable_if_t<rx::is_input_or_sink_v<Range>>>
-  std::vector<std::vector<word_type>> partition(ToddCoxeter& tc, Range r) {
-    static_assert(
-        std::is_same_v<std::decay_t<typename Range::output_type>, word_type>);
-    using return_type = std::vector<std::vector<word_type>>;
+  std::vector<std::vector<std::decay_t<typename Range::output_type>>>
+  partition(ToddCoxeter& tc, Range r) {
+    // static_assert(
+    //    std::is_same_v<std::decay_t<typename Range::output_type>, word_type>);
+    using return_type
+        = std::vector<std::vector<std::decay_t<typename Range::output_type>>>;
 
     if (tc.number_of_classes() == POSITIVE_INFINITY) {
       LIBSEMIGROUPS_EXCEPTION(
