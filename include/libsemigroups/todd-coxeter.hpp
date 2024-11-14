@@ -403,15 +403,62 @@ namespace libsemigroups {
                              float                    stop_early_ratio);
     };  // class Graph
 
+    // TODO make this a class
     template <typename Iterator>
     struct iterator_to_word {
+      // Proxy class for reference to the returned values
+      class proxy_ref {
+       private:
+        char&              _pointed_at;
+        ToddCoxeter const* _tc;
+
+       public:
+        // Constructor: takes a reference to a byte and the index of the bit in
+        // that byte
+        proxy_ref(ToddCoxeter const* tc, char& pointed_at) noexcept
+            : _pointed_at(pointed_at), _tc(tc) {}
+
+        // Assignment operator to allow setting the value via the proxy
+        char& operator=(letter_type i) noexcept {
+          _pointed_at = _tc->_alt_presentation.letter_no_checks(i);
+          return *this;
+        }
+
+        // Conversion operator to obtain the letter corresponding to the char
+        [[nodiscard]] operator letter_type() const noexcept {
+          return _tc->_alt_presentation.index_no_checks(_pointed_at);
+        }
+      };
+
+      class proxy_const_ref {
+       private:
+        char const&        _pointed_at;
+        ToddCoxeter const* _tc;
+
+       public:
+        // Constructor: takes a reference to a byte and the index of the bit in
+        // that byte
+        proxy_const_ref(ToddCoxeter const* tc, char& pointed_at) noexcept
+            : _pointed_at(pointed_at), _tc(tc) {}
+
+        proxy_const_ref(ToddCoxeter const* tc, char const& pointed_at) noexcept
+            : _pointed_at(pointed_at), _tc(tc) {}
+
+        // Conversion operator to obtain the letter corresponding to the char
+        [[nodiscard]] operator letter_type() const noexcept {
+          return _tc->_alt_presentation.index_no_checks(_pointed_at);
+        }
+      };
+
       using internal_iterator_type = Iterator;
       using state_type             = ToddCoxeter const*;
       using value_type             = letter_type;
-      using reference              = value_type&;
-      using const_reference        = value_type const&;
-      using const_pointer          = value_type const*;
-      using pointer                = value_type*;
+      using reference              = proxy_ref;
+      using const_reference        = proxy_const_ref;
+
+      // TODO use proxy for pointers too?
+      using const_pointer = value_type const*;
+      using pointer       = value_type*;
 
       using size_type         = size_t;
       using difference_type   = std::ptrdiff_t;
@@ -419,15 +466,19 @@ namespace libsemigroups {
 
       internal_iterator_type _it;
       state_type             _state;
-      value_type             _val;
 
       iterator_to_word(state_type stt, internal_iterator_type it)
-          : _it(it), _state(stt), _val() {}
+          : _it(it), _state(stt) {}
 
       reference operator*() {
-        _val = _state->_to_word.call_no_checks(*_it);
-        return _val;
+        return reference(_state, *_it);
       }
+
+      const_reference operator*() const {
+        return const_reference(_state, *_it);
+      }
+
+      // TODO operator->
 
       bool operator==(iterator_to_word<Iterator> that) const noexcept {
         return _it == that._it;
@@ -455,17 +506,110 @@ namespace libsemigroups {
         return *this;
       }
     };
+    template <typename Iterator>
+    struct const_iterator_to_word {
+      class proxy_const_ref {
+       private:
+        char const&        _pointed_at;
+        ToddCoxeter const* _tc;
+
+       public:
+        // Constructor: takes a reference to a byte and the index of the bit in
+        // that byte
+        proxy_const_ref(ToddCoxeter const* tc, char& pointed_at) noexcept
+            : _pointed_at(pointed_at), _tc(tc) {}
+
+        proxy_const_ref(ToddCoxeter const* tc, char const& pointed_at) noexcept
+            : _pointed_at(pointed_at), _tc(tc) {}
+
+        // Conversion operator to obtain the letter corresponding to the char
+        [[nodiscard]] operator letter_type() const noexcept {
+          return _tc->_alt_presentation.index_no_checks(_pointed_at);
+        }
+      };
+
+      using internal_iterator_type = Iterator;
+      using state_type             = ToddCoxeter const*;
+      using value_type             = letter_type;
+      using reference              = proxy_const_ref;
+      using const_reference        = proxy_const_ref;
+
+      // TODO use proxy for pointers too?
+      using const_pointer = value_type const*;
+      using pointer       = value_type*;
+
+      using size_type         = size_t;
+      using difference_type   = std::ptrdiff_t;
+      using iterator_category = std::bidirectional_iterator_tag;
+
+      internal_iterator_type _it;
+      state_type             _state;
+
+      const_iterator_to_word(state_type stt, internal_iterator_type it)
+          : _it(it), _state(stt) {}
+
+      reference operator*() {
+        return reference(_state, *_it);
+      }
+
+      const_reference operator*() const {
+        return const_reference(_state, *_it);
+      }
+
+      // TODO operator->
+
+      bool operator==(const_iterator_to_word<Iterator> that) const noexcept {
+        return _it == that._it;
+      }
+
+      bool operator<=(const_iterator_to_word<Iterator> that) const noexcept {
+        return _it <= that._it;
+      }
+
+      bool operator>=(const_iterator_to_word<Iterator> that) const noexcept {
+        return _it >= that._it;
+      }
+
+      bool operator!=(const_iterator_to_word<Iterator> that) const noexcept {
+        return _it != that._it;
+      }
+
+      const_iterator_to_word& operator++() {
+        ++_it;
+        return *this;
+      }
+
+      const_iterator_to_word& operator--() {
+        --_it;
+        return *this;
+      }
+    };
+
+    template <typename Thing>
+    struct is_iterator_to_word : std::false_type {};
+
+    template <typename Iterator>
+    struct is_iterator_to_word<iterator_to_word<Iterator>> : std::true_type {};
+
+    template <typename Thing>
+    struct is_const_iterator_to_word : std::false_type {};
+
+    template <typename Iterator>
+    struct is_const_iterator_to_word<const_iterator_to_word<Iterator>>
+        : std::true_type {};
 
     ////////////////////////////////////////////////////////////////////////
     // ToddCoxeter - data - private
     ////////////////////////////////////////////////////////////////////////
 
+    // TODO using a std::string presentation here isn't at all generic.
+    // TODO make unique_ptr, to lower memory footprint, unless used
+    Presentation<std::string>              _alt_presentation;
     bool                                   _finished;
     Forest                                 _forest;
     std::vector<std::unique_ptr<Settings>> _setting_stack;
     Order                                  _standardized;
     Graph                                  _word_graph;
-    ToWord                                 _to_word;
 
     // TODO(0) to cpp or maybe remove if not then use this!
     void copy_settings_into_graph() {
@@ -653,7 +797,8 @@ namespace libsemigroups {
     template <typename Word>
     ToddCoxeter(congruence_kind knd, Presentation<Word> const& p)
         : ToddCoxeter(knd, to_presentation<word_type>(p)) {
-      _to_word.init(p.alphabet());
+      _alt_presentation.init();
+      _alt_presentation.alphabet(p.alphabet());
     }
 
     // TODO(0) doc
@@ -661,12 +806,16 @@ namespace libsemigroups {
     template <typename Word>
     ToddCoxeter& init(congruence_kind knd, Presentation<Word> const& p) {
       init(knd, to_presentation<word_type>(p));
-      _to_word.init(p.alphabet());
+      _alt_presentation.init();
+      _alt_presentation.alphabet(p.alphabet());
       return *this;
     }
 
     template <typename Iterator1, typename Iterator2>
     void throw_if_letter_out_of_bounds(Iterator1 first, Iterator2 last) const {
+      // TODO(0) update to use _alt_presentation if Iterator1/2 point at chars,
+      // TODO(0) throw if Iterator1/2 point at chars but _alt_presentation is
+      // empty
       presentation().validate_word(first, last);
     }
 
@@ -1169,6 +1318,7 @@ namespace libsemigroups {
     ////////////////////////////////////////////////////////////////////////
 
     // TODO(0) doc
+    // TODO(0) make work with iterators pointing at chars too
     // NOTE THAT: the graph contains one more node than there are element if
     // the underlying presentation does not contain the empty word
     template <typename Iterator1, typename Iterator2>
@@ -1324,8 +1474,11 @@ namespace libsemigroups {
                                       Iterator4 last2) const {
       using iterator_points_at
           = std::decay_t<decltype(*std::declval<Iterator1>())>;
+      // TODO(0) handle the case when the things pointed at by the iterators are
+      // not all the same
 
-      if constexpr (std::is_same_v<iterator_points_at, native_letter_type>) {
+      if constexpr (std::is_same_v<iterator_points_at, native_letter_type>
+                    || is_const_iterator_to_word<Iterator1>::value) {
         if (std::equal(first1, last1, first2, last2)) {
           return tril::TRUE;
         }
@@ -1342,10 +1495,10 @@ namespace libsemigroups {
         }
       } else {
         return currently_contains_no_checks(
-            iterator_to_word<Iterator1>(this, first1),
-            iterator_to_word<Iterator2>(this, last1),
-            iterator_to_word<Iterator3>(this, first2),
-            iterator_to_word<Iterator4>(this, last2));
+            const_iterator_to_word<Iterator1>(this, first1),
+            const_iterator_to_word<Iterator2>(this, last1),
+            const_iterator_to_word<Iterator3>(this, first2),
+            const_iterator_to_word<Iterator4>(this, last2));
       }
     }
 
@@ -1361,9 +1514,11 @@ namespace libsemigroups {
           && current_word_graph().number_of_nodes_active() == 1) {
         return std::equal(first1, last1, first2, last2);
       }
-      return std::equal(first1, last1, first2, last2)
-             || index_of_no_checks(first1, last1)
-                    == index_of_no_checks(first2, last2);
+      return currently_contains_no_checks(first1, last1, first2, last2)
+             == tril::TRUE;
+      // TODO(0) maybe it's better to do the next lines?
+      //  || index_of_no_checks(first1, last1)
+      //         == index_of_no_checks(first2, last2);
     }
 
     template <typename Iterator1,

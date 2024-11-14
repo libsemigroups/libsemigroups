@@ -2815,9 +2815,9 @@ namespace libsemigroups {
     REQUIRE(tc.finished());
 
     ToWord to_word("abcd");
-    using std::literals::string_literals::operator""s;
     REQUIRE(todd_coxeter::currently_contains_no_checks(tc, "dd", "a")
             == tril::TRUE);
+    REQUIRE(todd_coxeter::contains_no_checks(tc, "dd", "a"));
     REQUIRE(contains(tc, "dd"_w, "a"_w));
   }
 

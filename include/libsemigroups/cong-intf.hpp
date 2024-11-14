@@ -320,6 +320,12 @@ namespace libsemigroups {
           std::begin(u), std::end(u), std::begin(v), std::end(v));
     }
 
+    template <typename Subclass>
+    bool contains_no_checks(Subclass& ci, char const* u, char const* v) {
+      return ci.contains_no_checks(
+          u, u + std::strlen(u), v, v + std::strlen(v));
+    }
+
     // TODO(0) doc
     template <typename Subclass, typename Word>
     bool contains(Subclass& ci, Word const& u, Word const& v) {
