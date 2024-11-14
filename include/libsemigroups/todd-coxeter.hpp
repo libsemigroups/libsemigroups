@@ -1287,13 +1287,14 @@ namespace libsemigroups {
     void perform_lookahead(bool stop_early);
 
     ////////////////////////////////////////////////////////////////////////
-    // ToddCoxeter - word -> index - public
+    // ToddCoxeter - word -> index
     ////////////////////////////////////////////////////////////////////////
 
     // TODO(0) doc
     // NOTE THAT: the graph contains one more node than there are element if
     // the underlying presentation does not contain the empty word
     // TODO(0) private
+   private:
     template <typename Iterator1, typename Iterator2>
     node_type current_index_of_no_checks(citow<Iterator1> first,
                                          citow<Iterator2> last) const {
@@ -1314,6 +1315,7 @@ namespace libsemigroups {
       return (c == UNDEFINED ? UNDEFINED : static_cast<node_type>(c - offset));
     }
 
+   public:
     template <typename Iterator1, typename Iterator2>
     node_type current_index_of_no_checks(Iterator1 first,
                                          Iterator2 last) const {
@@ -1346,9 +1348,13 @@ namespace libsemigroups {
     }
 
     ////////////////////////////////////////////////////////////////////////
-    // ToddCoxeter - index -> word - public
+    // ToddCoxeter - index -> word
     ////////////////////////////////////////////////////////////////////////
 
+   private:
+    // TODO(2) maybe this isn't great, because we always wrap the incoming
+    // iterators, even the _input_presentation, and the native_presentation are
+    // identical, and the wrapping isn't necessary.
     template <typename OutputIterator>
     itow<OutputIterator> current_word_of_no_checks(itow<OutputIterator> d_first,
                                                    node_type            i) {
@@ -1367,6 +1373,7 @@ namespace libsemigroups {
       // }
     }
 
+   public:
     template <typename OutputIterator>
     OutputIterator current_word_of_no_checks(OutputIterator d_first,
                                              node_type      i) {
@@ -1408,21 +1415,7 @@ namespace libsemigroups {
 
     // using CongruenceInterface::add_pair_no_checks;
 
-    template <typename Iterator1,
-              typename Iterator2,
-              typename Iterator3,
-              typename Iterator4>
-    ToddCoxeter& add_pair_no_checks(Iterator1 first1,
-                                    Iterator2 last1,
-                                    Iterator3 first2,
-                                    Iterator4 last2) {
-      return add_pair_no_checks(make_citow(first1),
-                                make_citow(last1),
-                                make_citow(first2),
-                                make_citow(last2));
-    }
-
-    // TODO(0) privatise
+   private:
     template <typename Iterator1,
               typename Iterator2,
               typename Iterator3,
@@ -1440,6 +1433,21 @@ namespace libsemigroups {
         add_pair_no_checks_no_reverse(first1, last1, first2, last2);
       }
       return *this;
+    }
+
+   public:
+    template <typename Iterator1,
+              typename Iterator2,
+              typename Iterator3,
+              typename Iterator4>
+    ToddCoxeter& add_pair_no_checks(Iterator1 first1,
+                                    Iterator2 last1,
+                                    Iterator3 first2,
+                                    Iterator4 last2) {
+      return add_pair_no_checks(make_citow(first1),
+                                make_citow(last1),
+                                make_citow(first2),
+                                make_citow(last2));
     }
 
     template <typename Iterator1,
@@ -1473,15 +1481,7 @@ namespace libsemigroups {
     //! \warning The problem of determining the number of classes of a
     //! congruence over a finitely presented semigroup is undecidable in
     //! general, and this function may never terminate.
-    [[nodiscard]] uint64_t number_of_classes() {  // TODO(0) to cpp
-      if (is_obviously_infinite(*this)) {
-        return POSITIVE_INFINITY;
-      }
-      run();
-      size_t const offset
-          = (native_presentation().contains_empty_word() ? 0 : 1);
-      return current_word_graph().number_of_nodes_active() - offset;
-    }
+    [[nodiscard]] uint64_t number_of_classes();
 
     ////////////////////////////////////////////////////////////////////////
     // ToddCoxeter - interface requirements - contains
@@ -1539,9 +1539,6 @@ namespace libsemigroups {
       }
       return currently_contains_no_checks(first1, last1, first2, last2)
              == tril::TRUE;
-      // TODO(0) maybe it's better to do the next lines?
-      //  || index_of_no_checks(first1, last1)
-      //         == index_of_no_checks(first2, last2);
     }
 
     template <typename Iterator1,

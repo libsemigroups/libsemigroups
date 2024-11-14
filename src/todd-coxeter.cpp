@@ -450,6 +450,19 @@ namespace libsemigroups {
   ToddCoxeter::~ToddCoxeter() = default;
 
   ////////////////////////////////////////////////////////////////////////
+  // ToddCoxeter - Interface requirements
+  ////////////////////////////////////////////////////////////////////////
+
+  [[nodiscard]] uint64_t ToddCoxeter::number_of_classes() {
+    if (is_obviously_infinite(*this)) {
+      return POSITIVE_INFINITY;
+    }
+    run();
+    size_t const offset = (native_presentation().contains_empty_word() ? 0 : 1);
+    return current_word_graph().number_of_nodes_active() - offset;
+  }
+
+  ////////////////////////////////////////////////////////////////////////
   // ToddCoxeter - settings - public
   ////////////////////////////////////////////////////////////////////////
 
