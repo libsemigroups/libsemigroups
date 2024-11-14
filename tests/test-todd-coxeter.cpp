@@ -1424,8 +1424,10 @@ namespace libsemigroups {
     ToddCoxeter tc1(twosided, p);
     REQUIRE(tc1.number_of_classes() == 5);
     ToddCoxeter tc2(left, tc1);
-    todd_coxeter::add_pair(tc2, 0_w, 1_w);
+    todd_coxeter::add_pair(tc2, "a", "b");
     REQUIRE_THROWS_AS(todd_coxeter::add_pair(tc2, 0_w, 2_w),
+                      LibsemigroupsException);
+    REQUIRE_THROWS_AS(todd_coxeter::add_pair(tc2, "a", "c"),
                       LibsemigroupsException);
 
     section_hlt(tc2);
@@ -1471,17 +1473,17 @@ namespace libsemigroups {
     section_Cr_style(tc);
     section_Rc_style(tc);
 
-    todd_coxeter::add_pair(tc, {1}, {2});
+    todd_coxeter::add_pair(tc, "b", "B");
     REQUIRE(is_obviously_infinite(tc));
     REQUIRE(tc.number_of_classes() == POSITIVE_INFINITY);
     REQUIRE(tc.presentation().rules
-            == std::vector<word_type>({{1, 1}, {2}, {2, 0, 2}, {0, 1, 0}}));
-    REQUIRE(std::vector<word_type>(tc.generating_pairs().cbegin(),
-                                   tc.generating_pairs().cend())
-            == std::vector<word_type>({{1}, {2}}));
+            == std::vector<word_type>(
+                {{98, 98}, {66}, {66, 97, 66}, {97, 98, 97}}));
+    // TODO(0) the result of the next line should be {{98}, {66}}
+    REQUIRE(tc.generating_pairs() == std::vector<word_type>({{1}, {2}}));
     REQUIRE(!tc.finished());
     REQUIRE(!tc.started());
-    todd_coxeter::add_pair(tc, {1}, {0});
+    todd_coxeter::add_pair(tc, "b", "a");
     REQUIRE(!is_obviously_infinite(tc));
 
     REQUIRE(tc.number_of_classes() == 1);
@@ -1586,7 +1588,7 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                           "035",
-                          "congruence on FpSemigroup",
+                          "congruence over fp semigroup",
                           "[todd-coxeter][quick]") {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
@@ -1602,7 +1604,7 @@ namespace libsemigroups {
     presentation::add_rule(p, "bbaba", "bbaa");
 
     ToddCoxeter tc1(left, p);
-    todd_coxeter::add_pair(tc1, 0_w, 111_w);
+    todd_coxeter::add_pair(tc1, "a", "bbb");
     section_hlt(tc1);
     section_felsch(tc1);
     section_Rc_style(tc1);

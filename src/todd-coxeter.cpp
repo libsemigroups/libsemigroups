@@ -396,6 +396,8 @@ namespace libsemigroups {
     if (knd == congruence_kind::left) {
       presentation::reverse(p);
     }
+    _input_presentation = p;
+    // TODO(xxx) normalize the alphabet of p
     _word_graph.init(std::move(p));
     copy_settings_into_graph();
     LIBSEMIGROUPS_ASSERT(!_setting_stack.empty());
@@ -404,12 +406,14 @@ namespace libsemigroups {
 
   ToddCoxeter::ToddCoxeter(congruence_kind                knd,
                            Presentation<word_type> const& p)
+      // call the rval ref constructor
       : ToddCoxeter(knd, Presentation<word_type>(p)) {
     LIBSEMIGROUPS_ASSERT(!_setting_stack.empty());
   }
 
   ToddCoxeter& ToddCoxeter::init(congruence_kind                knd,
                                  Presentation<word_type> const& p) {
+    // call the rval ref init
     return init(knd, Presentation<word_type>(p));
   }
 
@@ -428,8 +432,8 @@ namespace libsemigroups {
           knd);
     }
     CongruenceInterface::init(knd);
-    _word_graph.init(tc.presentation());
-    _input_presentation = tc._input_presentation;
+    _word_graph.init(tc.internal_presentation());
+    _input_presentation = tc.presentation();
     copy_settings_into_graph();
     auto& rules = _word_graph.presentation().rules;
     rules.insert(rules.end(),
@@ -651,7 +655,6 @@ namespace libsemigroups {
     }
     standardize(Order::shortlex);
     _word_graph.erase_free_nodes();
-    // TODO(0) erase node 0 if !presentation().contains_empty_word()
     _word_graph.induced_subgraph_no_checks(
         0, _word_graph.number_of_nodes_active());
   }
@@ -748,8 +751,8 @@ namespace libsemigroups {
       }
     }
     if (strategy() == options::strategy::felsch && use_relations_in_extra()) {
-      first = presentation().rules.cbegin();
-      last  = presentation().rules.cend();
+      first = internal_presentation().rules.cbegin();
+      last  = internal_presentation().rules.cend();
 
       for (auto it = first; it < last; it += 2) {
         _word_graph.push_definition_hlt<detail::RegisterDefs>(
@@ -760,7 +763,7 @@ namespace libsemigroups {
 
     if (kind() == congruence_kind::twosided && !generating_pairs().empty()) {
       // TODO(0) avoid copy of presentation here, if possible
-      Presentation<word_type> p = presentation();
+      Presentation<word_type> p = internal_presentation();
       if (p.alphabet().size() != _word_graph.out_degree()) {
         LIBSEMIGROUPS_ASSERT(p.alphabet().size() == 0);
         p.alphabet(_word_graph.out_degree());
@@ -818,8 +821,8 @@ namespace libsemigroups {
   void ToddCoxeter::hlt() {
     auto& current    = _word_graph.cursor();
     current          = _word_graph.initial_node();
-    auto const first = presentation().rules.cbegin();
-    auto const last  = presentation().rules.cend();
+    auto const first = internal_presentation().rules.cbegin();
+    auto const last  = internal_presentation().rules.cend();
     while (current != _word_graph.first_free_node() && !stopped()) {
       if (!save()) {
         for (auto it = first; it < last; it += 2) {
@@ -847,7 +850,7 @@ namespace libsemigroups {
 
   void ToddCoxeter::CR_style() {
     SettingsGuard guard(this);
-    size_t        N = presentation::length(presentation());
+    size_t        N = presentation::length(internal_presentation());
     while (!finished()) {
       strategy(options::strategy::felsch);
       auto M = _word_graph.number_of_nodes_active();
@@ -891,7 +894,7 @@ namespace libsemigroups {
     });
     strategy(options::strategy::hlt);
     M        = current_word_graph().number_of_nodes_active();
-    size_t N = presentation::length(presentation());
+    size_t N = presentation::length(internal_presentation());
     run_until([this, &M, &N]() -> bool {
       return current_word_graph().number_of_nodes_active()
              >= (hlt_defs() / N) + M;
@@ -908,7 +911,7 @@ namespace libsemigroups {
 
     strategy(options::strategy::hlt);
     auto   M = current_word_graph().number_of_nodes_active();
-    size_t N = presentation::length(presentation());
+    size_t N = presentation::length(internal_presentation());
     run_until([this, &M, &N]() -> bool {
       return current_word_graph().number_of_nodes_active()
              >= (hlt_defs() / N) + M;
@@ -1006,8 +1009,8 @@ namespace libsemigroups {
   size_t ToddCoxeter::hlt_lookahead(bool stop_early) {
     size_t const old_number_of_killed = _word_graph.number_of_nodes_killed();
     _word_graph.make_compatible(_word_graph.lookahead_cursor(),
-                                presentation().rules.cbegin(),
-                                presentation().rules.cend(),
+                                internal_presentation().rules.cbegin(),
+                                internal_presentation().rules.cend(),
                                 stop_early,
                                 lookahead_stop_early_interval(),
                                 lookahead_stop_early_ratio());

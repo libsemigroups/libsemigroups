@@ -171,8 +171,8 @@ namespace libsemigroups {
       throw_if_started();
       throw_if_letter_out_of_bounds<Subclass>(first1, last1);
       throw_if_letter_out_of_bounds<Subclass>(first2, last2);
-      return static_cast<Subclass&>(
-          add_pair_no_checks(first1, last1, first2, last2));
+      return static_cast<Subclass&>(*this).add_pair_no_checks(
+          first1, last1, first2, last2);
     }
 
     ////////////////////////////////////////////////////////////////////////
@@ -267,12 +267,19 @@ namespace libsemigroups {
     // TODO(doc)
     // TODO template
     // TODO add assert that Subclass derives from CongruenceInterface
-    template <typename Subclass>
-    inline Subclass& add_pair(Subclass&        ci,
-                              word_type const& u,
-                              word_type const& v) {
+    template <typename Subclass,
+              typename Word,
+              typename = std::enable_if_t<!std::is_array_v<Word>>>
+    // The enable_if is required because overload resolves to this function if u
+    // and v are char const* AND the lengths of u and v are the same.
+    Subclass& add_pair(Subclass& ci, Word const& u, Word const& v) {
       return ci.add_pair(
           std::begin(u), std::end(u), std::begin(v), std::end(v));
+    }
+
+    template <typename Subclass>
+    inline Subclass& add_pair(Subclass& ci, char const* u, char const* v) {
+      return ci.add_pair(u, u + std::strlen(u), v, v + std::strlen(v));
     }
 
     // TODO(doc)

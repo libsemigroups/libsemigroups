@@ -409,22 +409,23 @@ namespace libsemigroups {
       // Proxy class for reference to the returned values
       class proxy_ref {
        private:
-        char&              _pointed_at;
+        letter_type&       _pointed_at;
         ToddCoxeter const* _tc;
 
        public:
         // Constructor: takes a reference to a byte and the index of the bit in
         // that byte
-        proxy_ref(ToddCoxeter const* tc, char& pointed_at) noexcept
+        proxy_ref(ToddCoxeter const* tc, letter_type& pointed_at) noexcept
             : _pointed_at(pointed_at), _tc(tc) {}
 
         // Assignment operator to allow setting the value via the proxy
-        char& operator=(letter_type i) noexcept {
+        letter_type& operator=(letter_type i) noexcept {
           _pointed_at = _tc->_input_presentation.letter_no_checks(i);
           return *this;
         }
 
-        // Conversion operator to obtain the letter corresponding to the char
+        // Conversion operator to obtain the letter corresponding to the
+        // letter_type
         [[nodiscard]] operator letter_type() const noexcept {
           return _tc->_input_presentation.index_no_checks(_pointed_at);
         }
@@ -432,19 +433,21 @@ namespace libsemigroups {
 
       class proxy_const_ref {
        private:
-        char const&        _pointed_at;
+        letter_type const& _pointed_at;
         ToddCoxeter const* _tc;
 
        public:
         // Constructor: takes a reference to a byte and the index of the bit in
         // that byte
-        proxy_const_ref(ToddCoxeter const* tc, char& pointed_at) noexcept
+        proxy_const_ref(ToddCoxeter const* tc, letter_type& pointed_at) noexcept
             : _pointed_at(pointed_at), _tc(tc) {}
 
-        proxy_const_ref(ToddCoxeter const* tc, char const& pointed_at) noexcept
+        proxy_const_ref(ToddCoxeter const* tc,
+                        letter_type const& pointed_at) noexcept
             : _pointed_at(pointed_at), _tc(tc) {}
 
-        // Conversion operator to obtain the letter corresponding to the char
+        // Conversion operator to obtain the letter corresponding to the
+        // letter_type
         [[nodiscard]] operator letter_type() const noexcept {
           return _tc->_input_presentation.index_no_checks(_pointed_at);
         }
@@ -507,32 +510,12 @@ namespace libsemigroups {
       }
     };
     template <typename Iterator>
-    struct const_iterator_to_word {
-      class proxy_const_ref {
-       private:
-        char const&        _pointed_at;
-        ToddCoxeter const* _tc;
-
-       public:
-        // Constructor: takes a reference to a byte and the index of the bit in
-        // that byte
-        proxy_const_ref(ToddCoxeter const* tc, char& pointed_at) noexcept
-            : _pointed_at(pointed_at), _tc(tc) {}
-
-        proxy_const_ref(ToddCoxeter const* tc, char const& pointed_at) noexcept
-            : _pointed_at(pointed_at), _tc(tc) {}
-
-        // Conversion operator to obtain the letter corresponding to the char
-        [[nodiscard]] operator letter_type() const noexcept {
-          return _tc->_input_presentation.index_no_checks(_pointed_at);
-        }
-      };
-
+    struct citow {
       using internal_iterator_type = Iterator;
       using state_type             = ToddCoxeter const*;
       using value_type             = letter_type;
-      using reference              = proxy_const_ref;
-      using const_reference        = proxy_const_ref;
+      using reference              = value_type;
+      using const_reference        = value_type;
 
       // TODO use proxy for pointers too?
       using const_pointer = value_type const*;
@@ -545,45 +528,49 @@ namespace libsemigroups {
       internal_iterator_type _it;
       state_type             _state;
 
-      const_iterator_to_word(state_type stt, internal_iterator_type it)
-          : _it(it), _state(stt) {}
+      citow(state_type stt, internal_iterator_type it) : _it(it), _state(stt) {}
 
       reference operator*() {
-        return reference(_state, *_it);
+        return _state->_input_presentation.index_no_checks(*_it);
       }
 
       const_reference operator*() const {
-        return const_reference(_state, *_it);
+        return _state->_input_presentation.index_no_checks(*_it);
       }
 
       // TODO operator->
 
-      bool operator==(const_iterator_to_word<Iterator> that) const noexcept {
+      bool operator==(citow<Iterator> that) const noexcept {
         return _it == that._it;
       }
 
-      bool operator<=(const_iterator_to_word<Iterator> that) const noexcept {
+      bool operator<=(citow<Iterator> that) const noexcept {
         return _it <= that._it;
       }
 
-      bool operator>=(const_iterator_to_word<Iterator> that) const noexcept {
+      bool operator>=(citow<Iterator> that) const noexcept {
         return _it >= that._it;
       }
 
-      bool operator!=(const_iterator_to_word<Iterator> that) const noexcept {
+      bool operator!=(citow<Iterator> that) const noexcept {
         return _it != that._it;
       }
 
-      const_iterator_to_word& operator++() {
+      citow& operator++() {
         ++_it;
         return *this;
       }
 
-      const_iterator_to_word& operator--() {
+      citow& operator--() {
         --_it;
         return *this;
       }
     };
+
+    template <typename Iterator>
+    citow<Iterator> make_citow(Iterator it) const {
+      return citow<Iterator>(this, it);
+    }
 
     template <typename Thing>
     struct is_iterator_to_word : std::false_type {};
@@ -592,11 +579,10 @@ namespace libsemigroups {
     struct is_iterator_to_word<iterator_to_word<Iterator>> : std::true_type {};
 
     template <typename Thing>
-    struct is_const_iterator_to_word : std::false_type {};
+    struct is_citow : std::false_type {};
 
     template <typename Iterator>
-    struct is_const_iterator_to_word<const_iterator_to_word<Iterator>>
-        : std::true_type {};
+    struct is_citow<citow<Iterator>> : std::true_type {};
 
     ////////////////////////////////////////////////////////////////////////
     // ToddCoxeter - data - private
@@ -742,6 +728,7 @@ namespace libsemigroups {
       _word_graph.presentation().alphabet(wg.out_degree());
       _word_graph.definitions().init(this);
       _word_graph.report_prefix("ToddCoxeter");
+      _input_presentation = _word_graph.presentation();
       return *this;
     }  // HERE
 
@@ -810,10 +797,6 @@ namespace libsemigroups {
 
     template <typename Iterator1, typename Iterator2>
     void throw_if_letter_out_of_bounds(Iterator1 first, Iterator2 last) const {
-      // TODO(0) update to use _input_presentation if Iterator1/2 point at
-      // chars,
-      // TODO(0) throw if Iterator1/2 point at chars but _input_presentation is
-      // empty
       presentation().validate_word(first, last);
     }
 
@@ -1236,14 +1219,15 @@ namespace libsemigroups {
     // ToddCoxeter - accessors - public
     ////////////////////////////////////////////////////////////////////////
 
+   private:  // TODO(0) move to sensible location
     // TODO(0) doc
-    Presentation<word_type> const& presentation() const noexcept {
-      // TODO change to _input_presentation
+    Presentation<word_type> const& internal_presentation() const noexcept {
       return _word_graph.presentation();
     }
 
+   public:
     // TODO rm
-    Presentation<word_type> const& input_presentation() const noexcept {
+    Presentation<word_type> const& presentation() const noexcept {
       return _input_presentation;
     }
 
@@ -1322,12 +1306,12 @@ namespace libsemigroups {
     ////////////////////////////////////////////////////////////////////////
 
     // TODO(0) doc
-    // TODO(0) make work with iterators pointing at chars too
     // NOTE THAT: the graph contains one more node than there are element if
     // the underlying presentation does not contain the empty word
+    // TODO(0) private
     template <typename Iterator1, typename Iterator2>
-    node_type current_index_of_no_checks(Iterator1 first,
-                                         Iterator2 last) const {
+    node_type current_index_of_no_checks(citow<Iterator1> first,
+                                         citow<Iterator2> last) const {
       node_type c = current_word_graph().initial_node();
 
       if (kind() != congruence_kind::left) {
@@ -1340,8 +1324,15 @@ namespace libsemigroups {
             std::make_reverse_iterator(last),
             std::make_reverse_iterator(first));
       }
-      size_t const offset = (presentation().contains_empty_word() ? 0 : 1);
+      size_t const offset
+          = (internal_presentation().contains_empty_word() ? 0 : 1);
       return (c == UNDEFINED ? UNDEFINED : static_cast<node_type>(c - offset));
+    }
+
+    template <typename Iterator1, typename Iterator2>
+    node_type current_index_of_no_checks(Iterator1 first,
+                                         Iterator2 last) const {
+      return current_index_of_no_checks(make_citow(first), make_citow(last));
     }
 
     template <typename Iterator1, typename Iterator2>
@@ -1359,7 +1350,7 @@ namespace libsemigroups {
       }
       // c is in the range 1, ..., number_of_cosets_active() because 0
       // represents the identity coset, and does not correspond to an element,
-      // unless presentation().contains_empty_word()
+      // unless internal_presentation().contains_empty_word()
       return current_index_of_no_checks(first, last);
     }
 
@@ -1379,7 +1370,7 @@ namespace libsemigroups {
       if (!is_standardized()) {
         standardize(Order::shortlex);
       }
-      if (!presentation().contains_empty_word()) {
+      if (!internal_presentation().contains_empty_word()) {
         ++i;
       }
 
@@ -1392,7 +1383,8 @@ namespace libsemigroups {
 
     template <typename OutputIterator>
     OutputIterator current_word_of(OutputIterator d_first, node_type i) {
-      size_t const offset = (presentation().contains_empty_word() ? 0 : 1);
+      size_t const offset
+          = (internal_presentation().contains_empty_word() ? 0 : 1);
       if (i >= _word_graph.number_of_nodes_active() - offset) {
         LIBSEMIGROUPS_EXCEPTION("invalid class index, expected a value in "
                                 "the range [0, {}), found {}",
@@ -1422,16 +1414,50 @@ namespace libsemigroups {
     // ToddCoxeter - interface requirements - add_pair
     ////////////////////////////////////////////////////////////////////////
 
-    using CongruenceInterface::add_pair_no_checks;
+    // using CongruenceInterface::add_pair_no_checks;
 
     template <typename Iterator1,
               typename Iterator2,
               typename Iterator3,
               typename Iterator4>
-    [[nodiscard]] ToddCoxeter& add_pair(Iterator1 first1,
-                                        Iterator2 last1,
-                                        Iterator3 first2,
-                                        Iterator4 last2) {
+    ToddCoxeter& add_pair_no_checks(Iterator1 first1,
+                                    Iterator2 last1,
+                                    Iterator3 first2,
+                                    Iterator4 last2) {
+      return add_pair_no_checks(make_citow(first1),
+                                make_citow(last1),
+                                make_citow(first2),
+                                make_citow(last2));
+    }
+
+    // TODO(0) privatise
+    template <typename Iterator1,
+              typename Iterator2,
+              typename Iterator3,
+              typename Iterator4>
+    ToddCoxeter& add_pair_no_checks(citow<Iterator1> first1,
+                                    citow<Iterator2> last1,
+                                    citow<Iterator3> first2,
+                                    citow<Iterator4> last2) {
+      if (kind() == congruence_kind::left) {
+        add_pair_no_checks_no_reverse(std::make_reverse_iterator(last1),
+                                      std::make_reverse_iterator(first1),
+                                      std::make_reverse_iterator(last2),
+                                      std::make_reverse_iterator(first2));
+      } else {
+        add_pair_no_checks_no_reverse(first1, last1, first2, last2);
+      }
+      return *this;
+    }
+
+    template <typename Iterator1,
+              typename Iterator2,
+              typename Iterator3,
+              typename Iterator4>
+    ToddCoxeter& add_pair(Iterator1 first1,
+                          Iterator2 last1,
+                          Iterator3 first2,
+                          Iterator4 last2) {
       CongruenceInterface::add_pair<ToddCoxeter>(first1, last1, first2, last2);
       return *this;
     }
@@ -1460,7 +1486,8 @@ namespace libsemigroups {
         return POSITIVE_INFINITY;
       }
       run();
-      size_t const offset = (presentation().contains_empty_word() ? 0 : 1);
+      size_t const offset
+          = (internal_presentation().contains_empty_word() ? 0 : 1);
       return current_word_graph().number_of_nodes_active() - offset;
     }
 
@@ -1482,7 +1509,8 @@ namespace libsemigroups {
       // not all the same
 
       if constexpr (std::is_same_v<iterator_points_at, native_letter_type>
-                    || is_const_iterator_to_word<Iterator1>::value) {
+                    || is_citow<Iterator1>::value) {
+        // TODO(0) just use two overloads not constexpr
         if (std::equal(first1, last1, first2, last2)) {
           return tril::TRUE;
         }
@@ -1498,11 +1526,10 @@ namespace libsemigroups {
           return tril::unknown;
         }
       } else {
-        return currently_contains_no_checks(
-            const_iterator_to_word<Iterator1>(this, first1),
-            const_iterator_to_word<Iterator2>(this, last1),
-            const_iterator_to_word<Iterator3>(this, first2),
-            const_iterator_to_word<Iterator4>(this, last2));
+        return currently_contains_no_checks(make_citow(first1),
+                                            make_citow(last1),
+                                            make_citow(first2),
+                                            make_citow(last2));
       }
     }
 
@@ -1514,7 +1541,7 @@ namespace libsemigroups {
                             Iterator2 last1,
                             Iterator3 first2,
                             Iterator4 last2) {
-      if (presentation().rules.empty() && generating_pairs().empty()
+      if (internal_presentation().rules.empty() && generating_pairs().empty()
           && current_word_graph().number_of_nodes_active() == 1) {
         return std::equal(first1, last1, first2, last2);
       }
