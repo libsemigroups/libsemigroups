@@ -2016,8 +2016,9 @@ namespace libsemigroups {
     presentation::normalize_alphabet(p);
 
     // This test case seg faults if we don't normalize_alphabet, but that's
-    // possibly expected because we don't verify that p is validate in
-    // the constructor.
+    // possibly expected because we don't verify that p is valid in
+    // the constructor. FIXME convert to a normalized alphabet presentation in
+    // the constructor
 
     // TODO(0) when implementing the to_todd_coxeter for kind,
     // presentation, throw if the alphabet isn't normalised
@@ -2790,6 +2791,9 @@ namespace libsemigroups {
                                          "cccc"}));
 
     ToddCoxeter tc(twosided, p);
+    // TODO(0) rm
+    // REQUIRE(tc.input_presentation().alphabet() == word_type({97, 98, 99,
+    // 100}));
 
     REQUIRE(!is_obviously_infinite(tc));
 

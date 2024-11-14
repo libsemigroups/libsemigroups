@@ -317,7 +317,7 @@ namespace libsemigroups {
 
   ToddCoxeter::ToddCoxeter()
       : CongruenceInterface(),
-        _alt_presentation(),
+        _input_presentation(),
         _finished(),
         _forest(),
         _setting_stack(),
@@ -336,7 +336,7 @@ namespace libsemigroups {
       _setting_stack.erase(_setting_stack.begin() + 1, _setting_stack.end());
       _setting_stack.back()->init();
     }
-    _alt_presentation.init();
+    _input_presentation.init();
     LIBSEMIGROUPS_ASSERT(!_setting_stack.empty());
     _standardized = Order::none;
     copy_settings_into_graph();
@@ -355,12 +355,12 @@ namespace libsemigroups {
   ToddCoxeter& ToddCoxeter::operator=(ToddCoxeter&& that) {
     LIBSEMIGROUPS_ASSERT(!that._setting_stack.empty());
     CongruenceInterface::operator=(std::move(that));
-    _finished         = std::move(that._finished);
-    _forest           = std::move(that._forest);
-    _setting_stack    = std::move(that._setting_stack);
-    _standardized     = std::move(that._standardized);
-    _alt_presentation = std::move(that._alt_presentation);
-    _word_graph       = std::move(that._word_graph);
+    _finished           = std::move(that._finished);
+    _forest             = std::move(that._forest);
+    _setting_stack      = std::move(that._setting_stack);
+    _standardized       = std::move(that._standardized);
+    _input_presentation = std::move(that._input_presentation);
+    _word_graph         = std::move(that._word_graph);
     // The next line is essential so that the _word_graph.definitions()._tc
     // points at <this>.
     _word_graph.definitions().init(this);
@@ -377,9 +377,9 @@ namespace libsemigroups {
     for (auto const& uptr : that._setting_stack) {
       _setting_stack.push_back(std::make_unique<Settings>(*uptr));
     }
-    _standardized     = that._standardized;
-    _alt_presentation = that._alt_presentation;
-    _word_graph       = that._word_graph;
+    _standardized       = that._standardized;
+    _input_presentation = that._input_presentation;
+    _word_graph         = that._word_graph;
     return *this;
   }
 
@@ -429,7 +429,7 @@ namespace libsemigroups {
     }
     CongruenceInterface::init(knd);
     _word_graph.init(tc.presentation());
-    _alt_presentation = tc._alt_presentation;
+    _input_presentation = tc._input_presentation;
     copy_settings_into_graph();
     auto& rules = _word_graph.presentation().rules;
     rules.insert(rules.end(),

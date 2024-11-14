@@ -420,13 +420,13 @@ namespace libsemigroups {
 
         // Assignment operator to allow setting the value via the proxy
         char& operator=(letter_type i) noexcept {
-          _pointed_at = _tc->_alt_presentation.letter_no_checks(i);
+          _pointed_at = _tc->_input_presentation.letter_no_checks(i);
           return *this;
         }
 
         // Conversion operator to obtain the letter corresponding to the char
         [[nodiscard]] operator letter_type() const noexcept {
-          return _tc->_alt_presentation.index_no_checks(_pointed_at);
+          return _tc->_input_presentation.index_no_checks(_pointed_at);
         }
       };
 
@@ -446,7 +446,7 @@ namespace libsemigroups {
 
         // Conversion operator to obtain the letter corresponding to the char
         [[nodiscard]] operator letter_type() const noexcept {
-          return _tc->_alt_presentation.index_no_checks(_pointed_at);
+          return _tc->_input_presentation.index_no_checks(_pointed_at);
         }
       };
 
@@ -524,7 +524,7 @@ namespace libsemigroups {
 
         // Conversion operator to obtain the letter corresponding to the char
         [[nodiscard]] operator letter_type() const noexcept {
-          return _tc->_alt_presentation.index_no_checks(_pointed_at);
+          return _tc->_input_presentation.index_no_checks(_pointed_at);
         }
       };
 
@@ -602,9 +602,7 @@ namespace libsemigroups {
     // ToddCoxeter - data - private
     ////////////////////////////////////////////////////////////////////////
 
-    // TODO using a std::string presentation here isn't at all generic.
-    // TODO make unique_ptr, to lower memory footprint, unless used
-    Presentation<std::string>              _alt_presentation;
+    Presentation<word_type>                _input_presentation;
     bool                                   _finished;
     Forest                                 _forest;
     std::vector<std::unique_ptr<Settings>> _setting_stack;
@@ -797,8 +795,8 @@ namespace libsemigroups {
     template <typename Word>
     ToddCoxeter(congruence_kind knd, Presentation<Word> const& p)
         : ToddCoxeter(knd, to_presentation<word_type>(p)) {
-      _alt_presentation.init();
-      _alt_presentation.alphabet(p.alphabet());
+      _input_presentation
+          = to_presentation<word_type>(p, [](auto const& x) { return x; });
     }
 
     // TODO(0) doc
@@ -806,15 +804,15 @@ namespace libsemigroups {
     template <typename Word>
     ToddCoxeter& init(congruence_kind knd, Presentation<Word> const& p) {
       init(knd, to_presentation<word_type>(p));
-      _alt_presentation.init();
-      _alt_presentation.alphabet(p.alphabet());
+      // TODO uncomment !_input_presentation.init(p);
       return *this;
     }
 
     template <typename Iterator1, typename Iterator2>
     void throw_if_letter_out_of_bounds(Iterator1 first, Iterator2 last) const {
-      // TODO(0) update to use _alt_presentation if Iterator1/2 point at chars,
-      // TODO(0) throw if Iterator1/2 point at chars but _alt_presentation is
+      // TODO(0) update to use _input_presentation if Iterator1/2 point at
+      // chars,
+      // TODO(0) throw if Iterator1/2 point at chars but _input_presentation is
       // empty
       presentation().validate_word(first, last);
     }
@@ -1240,7 +1238,13 @@ namespace libsemigroups {
 
     // TODO(0) doc
     Presentation<word_type> const& presentation() const noexcept {
+      // TODO change to _input_presentation
       return _word_graph.presentation();
+    }
+
+    // TODO rm
+    Presentation<word_type> const& input_presentation() const noexcept {
+      return _input_presentation;
     }
 
     // TODO(0) doc
