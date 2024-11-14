@@ -431,34 +431,10 @@ namespace libsemigroups {
         }
       };
 
-      class proxy_const_ref {
-       private:
-        letter_type const& _pointed_at;
-        ToddCoxeter const* _tc;
-
-       public:
-        // Constructor: takes a reference to a byte and the index of the bit in
-        // that byte
-        proxy_const_ref(ToddCoxeter const* tc, letter_type& pointed_at) noexcept
-            : _pointed_at(pointed_at), _tc(tc) {}
-
-        proxy_const_ref(ToddCoxeter const* tc,
-                        letter_type const& pointed_at) noexcept
-            : _pointed_at(pointed_at), _tc(tc) {}
-
-        // Conversion operator to obtain the letter corresponding to the
-        // letter_type
-        [[nodiscard]] operator letter_type() const noexcept {
-          return _tc->_input_presentation.index_no_checks(_pointed_at);
-        }
-      };
-
       using internal_iterator_type = Iterator;
-      using state_type             = ToddCoxeter const*;
       using value_type             = letter_type;
       using reference              = proxy_ref;
-      using const_reference        = proxy_const_ref;  // TODO just use
-                                                       // value_type?
+      using const_reference        = value_type;
 
       // TODO use proxy for pointers too?
       using const_pointer = value_type const*;
@@ -469,19 +445,20 @@ namespace libsemigroups {
       using iterator_category = std::bidirectional_iterator_tag;
 
       internal_iterator_type _it;
-      state_type             _state;
+      ToddCoxeter const*     _state;
 
-      itow(state_type stt, internal_iterator_type it) : _it(it), _state(stt) {}
+      itow(ToddCoxeter const* stt, internal_iterator_type it)
+          : _it(it), _state(stt) {}
 
       reference operator*() {
         return reference(_state, _it);
       }
 
       const_reference operator*() const {
-        return const_reference(_state, *_it);
+        return _state->_input_presentation.index_no_checks(*_it);
       }
 
-      // TODO operator->
+      // TODO operator-> ??
 
       bool operator==(itow<Iterator> that) const noexcept {
         return _it == that._it;
@@ -513,15 +490,15 @@ namespace libsemigroups {
         return _it;
       }
     };
+
     template <typename Iterator>
     struct citow {
       using internal_iterator_type = Iterator;
-      using state_type             = ToddCoxeter const*;
       using value_type             = letter_type;
       using reference              = value_type;
       using const_reference        = value_type;
 
-      // TODO use proxy for pointers too?
+      // TODO(1) use proxy for pointers too?
       using const_pointer = value_type const*;
       using pointer       = value_type*;
 
@@ -530,19 +507,20 @@ namespace libsemigroups {
       using iterator_category = std::bidirectional_iterator_tag;
 
       internal_iterator_type _it;
-      state_type             _state;
+      ToddCoxeter const*     _tc;
 
-      citow(state_type stt, internal_iterator_type it) : _it(it), _state(stt) {}
+      citow(ToddCoxeter const* stt, internal_iterator_type it)
+          : _it(it), _tc(stt) {}
 
       reference operator*() {
-        return _state->_input_presentation.index_no_checks(*_it);
+        return _tc->_input_presentation.index_no_checks(*_it);
       }
 
       const_reference operator*() const {
-        return _state->_input_presentation.index_no_checks(*_it);
+        return _tc->_input_presentation.index_no_checks(*_it);
       }
 
-      // TODO operator->
+      // TODO(1) operator-> ?
 
       bool operator==(citow<Iterator> that) const noexcept {
         return _it == that._it;
@@ -1691,6 +1669,7 @@ namespace libsemigroups {
     ////////////////////////////////////////////////////////////////////////
     // ToddCoxeter specific helpers - word -> index
     ////////////////////////////////////////////////////////////////////////
+
     // TODO(0) doc
     template <typename Word>
     node_type current_index_of_no_checks(ToddCoxeter const& tc, Word const& w) {
@@ -1742,6 +1721,8 @@ namespace libsemigroups {
       return index_of<std::initializer_list<Int>>(tc, w);
     }
 
+    // TODO(0) versions of these for char const*
+
     ////////////////////////////////////////////////////////////////////////
     // ToddCoxeter specific helpers - index -> word
     ////////////////////////////////////////////////////////////////////////
@@ -1778,24 +1759,6 @@ namespace libsemigroups {
     using congruence_interface::contains_no_checks;
     using congruence_interface::currently_contains;
     using congruence_interface::currently_contains_no_checks;
-
-    // TODO to cpp
-    // TODO(0) doc
-    // inline bool contains(ToddCoxeter&     tc,
-    //                      std::string_view u,
-    //                      std::string_view v) {
-    //   ToWord to_word("abcd");  // FIXME need to get the alphabet from tc
-    //   auto   ur = rx::iterator_range(std::begin(u), std::end(u))
-    //             | rx::transform([&to_word](char x) { return to_word(x); });
-    //   auto vr = rx::iterator_range(std::begin(v), std::end(v))
-    //             | rx::transform([&to_word](char x) { return to_word(x); });
-    //   return tc.contains(
-    //       rx::begin(ur), rx::end(ur), rx::begin(vr), rx::end(vr));
-    //   // TODO(0) this currently doesn't work because, for example,
-    //   std::equal
-    //   // doesn't work for heterogeneous iterators :(
-    // }
-    // TODO(0) x3 more contains for string_views
 
     ////////////////////////////////////////////////////////////////////////
     // Interface helpers - reduce
