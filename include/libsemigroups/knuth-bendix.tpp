@@ -155,7 +155,6 @@ namespace libsemigroups {
         _rewriter(),
         _gen_pairs_initted(),
         _gilman_graph(),
-        _input_presentation(),
         _internal_is_same_as_external(),
         _overlap_measure(),
         _presentation() {
@@ -173,7 +172,6 @@ namespace libsemigroups {
 
     _gen_pairs_initted = false;
     _gilman_graph.init(0, 0);
-    _input_presentation.init();
     _internal_is_same_as_external = false;
     _presentation.init();
 
@@ -208,7 +206,6 @@ namespace libsemigroups {
 
     _settings                     = that._settings;
     _gilman_graph                 = that._gilman_graph;
-    _input_presentation           = that._input_presentation;
     _internal_is_same_as_external = that._internal_is_same_as_external;
     _presentation                 = that._presentation;
 
@@ -250,8 +247,7 @@ namespace libsemigroups {
     if (call_init) {
       init(knd);
     }
-    _input_presentation = p;
-    _presentation       = p;
+    _presentation = p;
     init_from_presentation();
     return *this;
   }
@@ -266,8 +262,7 @@ namespace libsemigroups {
     if (call_init) {
       init(knd);
     }
-    _input_presentation = p;  // must be first, o/w boom!
-    _presentation       = std::move(p);
+    _presentation = std::move(p);
     init_from_presentation();
     return *this;
   }
@@ -971,11 +966,11 @@ namespace libsemigroups {
                                 kb1.presentation().alphabet());
       }
 
-      // We construct the WordGraph `ad` obtained by subtracting all of the
+      // We construct the WordGraph `wg` obtained by subtracting all of the
       // edges from the Gilman graph of kb1 from the Gilman graph of kb2. The
-      // non-trivial classes are finite if and only if `ad` is acyclic. It
-      // would be possible to do this without actually constructing `ad` but
-      // constructing `ad` is simpler, and so we do that for now.
+      // non-trivial classes are finite if and only if `wg` is acyclic. It
+      // would be possible to do this without actually constructing `wg` but
+      // constructing `wg` is simpler, and so we do that for now.
 
       auto g2 = kb2.gilman_graph();
       auto g1 = kb1.gilman_graph();
@@ -985,8 +980,7 @@ namespace libsemigroups {
 
       if (g2.number_of_nodes() < g1.number_of_nodes()) {
         LIBSEMIGROUPS_EXCEPTION(
-            "the Gilman digraph of the 1st argument must have at least as "
-            "many "
+            "the Gilman digraph of the 1st argument must have at least as many "
             "nodes as the Gilman digraph of the 2nd argument, found {} nodes "
             "and {} nodes",
             g2.number_of_nodes(),
@@ -1018,7 +1012,7 @@ namespace libsemigroups {
       }
 
       // We do a depth first search simultaneously for cycles, and edges E in
-      // g2 not in g1. Pre order forcycle detection, post order for "can we
+      // g2 not in g1. Pre order for cycle detection, post order for "can we
       // reach a node incident to an edge in E" and "number of paths through a
       // node is infinite"
       size_t const N = g2.number_of_nodes();
@@ -1092,20 +1086,20 @@ namespace libsemigroups {
 
       // Construct the "can_reach" subgraph of g2, could use a WordGraphView
       // here instead (but these don't yet exist) TODO(later)
-      WordGraph<size_t> ad(g2.number_of_nodes(), g2.out_degree());
+      WordGraph<size_t> wg(g2.number_of_nodes(), g2.out_degree());
 
-      for (auto v : ad.nodes()) {
+      for (auto v : wg.nodes()) {
         if (can_reach[v]) {
-          for (auto e : ad.labels()) {
+          for (auto e : wg.labels()) {
             auto ve = g2.target_no_checks(v, e);
             if (ve != UNDEFINED && can_reach[ve]) {
-              ad.target_no_checks(v, e, ve);
+              wg.target_no_checks(v, e, ve);
             }
           }
         }
       }
 
-      Paths paths(ad);
+      Paths paths(wg);
       // We only want those paths that pass through at least one of the edges
       // in g2 but not g1. Hence we require the `filter` in the next
       // expression.
@@ -1124,8 +1118,7 @@ namespace libsemigroups {
       // normal forms in `kb1` never contain an edge in g2 \ g1 and so we must
       // add in every normal form.
       for (auto& klass : ntc) {
-        klass.push_back(reduce(kb1, klass[0]));
-        // TODO(0) use reduce_no_checks
+        klass.push_back(reduce_no_checks(kb1, klass[0]));
       }
       return ntc;
     }

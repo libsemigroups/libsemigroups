@@ -834,30 +834,30 @@ namespace libsemigroups {
     auto                    rg = ReportGuard(false);
     Presentation<word_type> p;
     p.alphabet(4);
-    presentation::add_rule_no_checks(p, {0, 1}, {1, 0});
-    presentation::add_rule_no_checks(p, {0, 2}, {2, 0});
-    presentation::add_rule_no_checks(p, {0, 0}, {0});
-    presentation::add_rule_no_checks(p, {0, 2}, {0});
-    presentation::add_rule_no_checks(p, {2, 0}, {0});
-    presentation::add_rule_no_checks(p, {1, 2}, {2, 1});
-    presentation::add_rule_no_checks(p, {1, 1, 1}, {1});
-    presentation::add_rule_no_checks(p, {1, 2}, {1});
-    presentation::add_rule_no_checks(p, {2, 1}, {1});
-    presentation::add_rule_no_checks(p, {0, 3}, {0});
-    presentation::add_rule_no_checks(p, {3, 0}, {0});
-    presentation::add_rule_no_checks(p, {1, 3}, {1});
-    presentation::add_rule_no_checks(p, {3, 1}, {1});
-    presentation::add_rule_no_checks(p, {2, 3}, {2});
-    presentation::add_rule_no_checks(p, {3, 2}, {2});
+    presentation::add_rule_no_checks(p, 01_w, 10_w);
+    presentation::add_rule_no_checks(p, 02_w, 20_w);
+    presentation::add_rule_no_checks(p, 00_w, 0_w);
+    presentation::add_rule_no_checks(p, 02_w, 0_w);
+    presentation::add_rule_no_checks(p, 20_w, 0_w);
+    presentation::add_rule_no_checks(p, 12_w, 21_w);
+    presentation::add_rule_no_checks(p, 111_w, 1_w);
+    presentation::add_rule_no_checks(p, 12_w, 1_w);
+    presentation::add_rule_no_checks(p, 21_w, 1_w);
+    presentation::add_rule_no_checks(p, 03_w, 0_w);
+    presentation::add_rule_no_checks(p, 30_w, 0_w);
+    presentation::add_rule_no_checks(p, 13_w, 1_w);
+    presentation::add_rule_no_checks(p, 31_w, 1_w);
+    presentation::add_rule_no_checks(p, 23_w, 2_w);
+    presentation::add_rule_no_checks(p, 32_w, 2_w);
 
     TestType kb1(twosided, p);
 
-    presentation::add_rule_no_checks(p, {0}, {1});
+    presentation::add_rule_no_checks(p, 0_w, 1_w);
 
     TestType kb2(twosided, p);
     REQUIRE(knuth_bendix::non_trivial_classes(kb2, kb1)
             == std::vector<std::vector<std::string>>(
-                {{"b", "ab", "bb", "abb", "a"}}));
+                {{{1}, {0, 1}, {1, 1}, {0, 1, 1}, {0}}}));
   }
 
   TEMPLATE_TEST_CASE("non-trivial congruence on an infinite fp semigroup ",
@@ -923,12 +923,12 @@ namespace libsemigroups {
         equal((knuth_bendix::normal_forms(kb2) | rx::take(1000)),
               (normal_forms_from_word_graph(kb2, test_wg2) | rx::take(1000))));
 
-    REQUIRE(knuth_bendix::contains(kb2, "b", "c"));
+    REQUIRE(knuth_bendix::contains(kb2, 1_w, 2_w));
 
     auto ntc = knuth_bendix::non_trivial_classes(kb2, kb1);
     REQUIRE(ntc.size() == 1);
     REQUIRE(ntc[0].size() == 2);
-    REQUIRE(ntc == decltype(ntc)({{"c", "b"}}));
+    REQUIRE(ntc == decltype(ntc)({{{2}, {1}}}));
   }
 
   TEMPLATE_TEST_CASE("non-trivial congruence on an infinite fp semigroup",
@@ -967,10 +967,12 @@ namespace libsemigroups {
     presentation::add_rule_no_checks(p, 2_w, 3_w);
 
     TestType kb2(twosided, p);
-    auto     ntc = knuth_bendix::non_trivial_classes(kb2, kb1);
+    // TODO(0) be good to be able to specify the output type of
+    // non_trivial_classes
+    auto ntc = knuth_bendix::non_trivial_classes(kb2, kb1);
     REQUIRE(ntc.size() == 1);
     REQUIRE(ntc[0].size() == 3);
-    REQUIRE(ntc == decltype(ntc)({{"c", "d", "b"}}));
+    REQUIRE(ntc == decltype(ntc)({{{2}, {3}, {1}}}));
   }
 
   TEMPLATE_TEST_CASE("trivial congruence on a finite fp semigroup",
@@ -1029,11 +1031,33 @@ namespace libsemigroups {
 
     REQUIRE(ntc.size() == 1);
     REQUIRE(ntc[0].size() == 27);
-    std::vector<std::string> expected
-        = {"a",     "b",     "aa",    "ab",    "ba",     "bb",    "aaa",
-           "baa",   "aba",   "bab",   "abb",   "bba",    "bbb",   "baaa",
-           "abaa",  "bbaa",  "baba",  "abab",  "bbab",   "babb",  "bbaaa",
-           "babaa", "bbaba", "babab", "bbabb", "bbabaa", "bbabab"};
+    std::vector<std::string> expected = {{0},
+                                         {1},
+                                         {0, 0},
+                                         {0, 1},
+                                         {1, 0},
+                                         {1, 1},
+                                         {0, 0, 0},
+                                         {1, 0, 0},
+                                         {0, 1, 0},
+                                         {1, 0, 1},
+                                         {0, 1, 1},
+                                         {1, 1, 0},
+                                         {1, 1, 1},
+                                         {1, 0, 0, 0},
+                                         {0, 1, 0, 0},
+                                         {1, 1, 0, 0},
+                                         {1, 0, 1, 0},
+                                         {0, 1, 0, 1},
+                                         {1, 1, 0, 1},
+                                         {1, 0, 1, 1},
+                                         {1, 1, 0, 0, 0},
+                                         {1, 0, 1, 0, 0},
+                                         {1, 1, 0, 1, 0},
+                                         {1, 0, 1, 0, 1},
+                                         {1, 1, 0, 1, 1},
+                                         {1, 1, 0, 1, 0, 0},
+                                         {1, 1, 0, 1, 0, 1}};
     std::sort(expected.begin(), expected.end());
     std::sort(ntc[0].begin(), ntc[0].end());
     REQUIRE(ntc[0] == expected);
@@ -1061,6 +1085,7 @@ namespace libsemigroups {
     presentation::add_rule_no_checks(p, {0, 7}, {0, 1});
     presentation::add_rule_no_checks(p, {0, 8}, {0, 3});
     presentation::add_rule_no_checks(p, {0, 9}, {0, 3});
+
     presentation::add_rule_no_checks(p, {0, 10}, {0, 0});
     presentation::add_rule_no_checks(p, {1, 1}, {1});
     presentation::add_rule_no_checks(p, {1, 2}, {1});
@@ -1150,24 +1175,24 @@ namespace libsemigroups {
 
     auto ntc = knuth_bendix::non_trivial_classes(kb2, kb1);
 
-    std::vector<std::string> expected = {"b",
-                                         "d",
-                                         "ab",
-                                         "ad",
-                                         "ba",
-                                         "da",
-                                         "bd",
-                                         "aba",
-                                         "ada",
-                                         "bab",
-                                         "dab",
-                                         "dad",
-                                         "bda",
-                                         "adab"};
+    std::vector<std::string> expected = {{1},
+                                         {3},
+                                         {0, 1},
+                                         {0, 3},
+                                         {1, 0},
+                                         {3, 0},
+                                         {1, 3},
+                                         {0, 1, 0},
+                                         {0, 3, 0},
+                                         {1, 0, 1},
+                                         {3, 0, 1},
+                                         {3, 0, 3},
+                                         {1, 3, 0},
+                                         {0, 3, 0, 1}};
     std::sort(expected.begin(), expected.end());
     std::sort(ntc[0].begin(), ntc[0].end());
     REQUIRE(ntc[0] == expected);
-  }  // namespace libsemigroups
+  }
 
   TEMPLATE_TEST_CASE("non_trivial_classes exceptions",
                      "[026][quick][kbp]",

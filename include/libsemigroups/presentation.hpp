@@ -598,7 +598,13 @@ namespace libsemigroups {
     void try_set_alphabet(decltype(_alphabet_map)& alphabet_map,
                           word_type&               old_alphabet);
     void validate_alphabet(decltype(_alphabet_map)& alphabet_map) const;
-  };
+  };  // class Presentation
+
+  template <typename Word>
+  Presentation(Presentation<Word> const&) -> Presentation<Word>;
+
+  template <typename Word>
+  Presentation(Presentation<Word>&&) -> Presentation<Word>;
 
   //! \ingroup presentations_group
   //!

@@ -196,14 +196,12 @@ namespace libsemigroups {
 
     p.alphabet(3);
 
-    TestType    kb2(twosided, p);
-    auto const& q = kb2.presentation();
+    TestType kb2(twosided, p);
 
     auto words = (froidure_pin::normal_forms(S)
-                  | rx::transform([](word_type const& w) { return 2_w + w; })
-                  | ToString(q.alphabet()));
+                  | rx::transform([](word_type const& w) { return 2_w + w; }));
     REQUIRE((words | rx::count()) == 88);
-    REQUIRE((words | rx::take(4) | rx::to_vector())
+    REQUIRE((words | ToString("abc") | rx::take(4) | rx::to_vector())
             == std::vector<std::string>({"ca", "cb", "caa", "cab"}));
 
     kb2.run();
@@ -256,17 +254,17 @@ namespace libsemigroups {
     REQUIRE((ntc | count()) == 4);
     REQUIRE(
         (ntc | to_vector())
-        == std::vector<std::vector<std::string>>(
-            {{"baaab",
-              "baaabb",
-              "aabaaab",
-              "abaaaba",
-              "abaaabab",
-              "baaabaaa",
-              "abaaabbaa"},
-             {"abaaab", "baaabab", "aabaaabab"},
-             {"baaaba", "abaaabb", "baaabba", "aabaaaba", "abaaabaa"},
-             {"baaabaa", "abaaabba", "baaabbaa", "aabaaabaa", "abaaabaaa"}}));
+        == std::vector<std::vector<word_type>>(
+            {{10001_w,
+              100011_w,
+              0010001_w,
+              0100010_w,
+              01000101_w,
+              10001000_w,
+              010001100_w},
+             {010001_w, 1000101_w, 001000101_w},
+             {100010_w, 0100011_w, 1000110_w, 00100010_w, 01000100_w},
+             {1000100_w, 01000110_w, 10001100_w, 001000100_w, 010001000_w}}));
   }
 
   TEMPLATE_TEST_CASE("right congruence!!!",
@@ -283,8 +281,11 @@ namespace libsemigroups {
 
     auto p = to_presentation<word_type>(S);
 
-    TestType kb(right, p);
-    REQUIRE(kb.presentation().rules
+    TestType     kb(right, p);
+    Presentation q(kb.presentation());
+    presentation::change_alphabet(q, "ab");
+
+    REQUIRE(q.rules
             == std::vector<std::string>(
                 {"bbb",      "b",       "bbab",     "bab",      "aaaaa",
                  "aa",       "abaab",   "aaaab",    "baaaa",    "ba",
@@ -302,8 +303,7 @@ namespace libsemigroups {
         to_string(froidure_pin::factorisation(S, Transf<>({3, 1, 3, 3, 3}))));
 
     REQUIRE(kb.generating_pairs()
-            == std::vector<word_type>(
-                {{97, 98, 97, 97, 97, 98, 98, 97, 97}, {98, 97, 97, 97, 98}}));
+            == std::vector<word_type>({010001100_w, 10001_w}));
     REQUIRE(knuth_bendix::normal_forms(kb).min(1).count() == 72);
 
     REQUIRE(kb.number_of_classes() == 72);
@@ -330,26 +330,26 @@ namespace libsemigroups {
 
     REQUIRE((knuth_bendix::normal_forms(kb).min(1) | count()) == 72);
     REQUIRE(!kb.presentation().contains_empty_word());
-    REQUIRE((knuth_bendix::normal_forms(kb)
-             | ToString(kb.presentation().alphabet()) | to_vector())
-            == std::vector<std::string>(
-                {"a",        "b",       "aa",      "ab",      "ba",
-                 "bb",       "aaa",     "aab",     "aba",     "abb",
-                 "baa",      "bab",     "bba",     "aaaa",    "aaab",
-                 "aaba",     "aabb",    "abaa",    "abab",    "abba",
-                 "baaa",     "baab",    "baba",    "babb",    "bbaa",
-                 "aaaab",    "aaaba",   "aaabb",   "aabaa",   "aabab",
-                 "aabba",    "abaaa",   "ababa",   "ababb",   "abbaa",
-                 "baaab",    "baaba",   "baabb",   "babaa",   "babab",
-                 "babba",    "bbaaa",   "aaaaba",  "aaaabb",  "aaabaa",
-                 "aaabab",   "aaabba",  "aabaaa",  "aabbaa",  "abaaab",
-                 "ababaa",   "ababab",  "ababba",  "abbaaa",  "baaaba",
-                 "baabaa",   "baabab",  "baabba",  "babaaa",  "babbaa",
-                 "aaaabaa",  "aaaabab", "aaaabba", "aaabaaa", "aaabbaa",
-                 "ababaaa",  "ababbaa", "baaabaa", "baabaaa", "baabbaa",
-                 "aaaabaaa", "aaaabbaa"}));
+    REQUIRE(
+        (knuth_bendix::normal_forms(kb) | ToString(q.alphabet()) | to_vector())
+        == std::vector<std::string>(
+            {"a",        "b",       "aa",      "ab",      "ba",
+             "bb",       "aaa",     "aab",     "aba",     "abb",
+             "baa",      "bab",     "bba",     "aaaa",    "aaab",
+             "aaba",     "aabb",    "abaa",    "abab",    "abba",
+             "baaa",     "baab",    "baba",    "babb",    "bbaa",
+             "aaaab",    "aaaba",   "aaabb",   "aabaa",   "aabab",
+             "aabba",    "abaaa",   "ababa",   "ababb",   "abbaa",
+             "baaab",    "baaba",   "baabb",   "babaa",   "babab",
+             "babba",    "bbaaa",   "aaaaba",  "aaaabb",  "aaabaa",
+             "aaabab",   "aaabba",  "aabaaa",  "aabbaa",  "abaaab",
+             "ababaa",   "ababab",  "ababba",  "abbaaa",  "baaaba",
+             "baabaa",   "baabab",  "baabba",  "babaaa",  "babbaa",
+             "aaaabaa",  "aaaabab", "aaaabba", "aaabaaa", "aaabbaa",
+             "ababaaa",  "ababbaa", "baaabaa", "baabaaa", "baabbaa",
+             "aaaabaaa", "aaaabbaa"}));
 
-    REQUIRE(knuth_bendix::reduce_no_run(kb, "baaabb") == "baaab");
+    REQUIRE(knuth_bendix::reduce_no_run(kb, "100011"_w) == "10001"_w);
 
     auto nf = (froidure_pin::normal_forms(S)
                | ToString(kb.presentation().alphabet()));
@@ -361,19 +361,28 @@ namespace libsemigroups {
                 | filter([](auto const& val) { return val.size() > 1; }));
 
     REQUIRE((ntc | count()) == 4);
-    REQUIRE(
-        (ntc | to_vector())
-        == std::vector<std::vector<std::string>>(
-            {{"baaab",
-              "baaabb",
-              "aabaaab",
-              "abaaaba",
-              "abaaabab",
-              "baaabaaa",
-              "abaaabbaa"},
-             {"abaaab", "baaabab", "aabaaabab"},
-             {"baaaba", "abaaabb", "baaabba", "aabaaaba", "abaaabaa"},
-             {"baaabaa", "abaaabba", "baaabbaa", "aabaaabaa", "abaaabaaa"}}));
+    REQUIRE((ntc | to_vector())
+            == std::vector<std::vector<std::string>>(
+                {{{1, 0, 0, 0, 1},
+                  {1, 0, 0, 0, 1, 1},
+                  {0, 0, 1, 0, 0, 0, 1},
+                  {0, 1, 0, 0, 0, 1, 0},
+                  {0, 1, 0, 0, 0, 1, 0, 1},
+                  {1, 0, 0, 0, 1, 0, 0, 0},
+                  {0, 1, 0, 0, 0, 1, 1, 0, 0}},
+                 {{0, 1, 0, 0, 0, 1},
+                  {1, 0, 0, 0, 1, 0, 1},
+                  {0, 0, 1, 0, 0, 0, 1, 0, 1}},
+                 {{1, 0, 0, 0, 1, 0},
+                  {0, 1, 0, 0, 0, 1, 1},
+                  {1, 0, 0, 0, 1, 1, 0},
+                  {0, 0, 1, 0, 0, 0, 1, 0},
+                  {0, 1, 0, 0, 0, 1, 0, 0}},
+                 {{1, 0, 0, 0, 1, 0, 0},
+                  {0, 1, 0, 0, 0, 1, 1, 0},
+                  {1, 0, 0, 0, 1, 1, 0, 0},
+                  {0, 0, 1, 0, 0, 0, 1, 0, 0},
+                  {0, 1, 0, 0, 0, 1, 0, 0, 0}}}));
   }
 
   TEMPLATE_TEST_CASE("manual left congruence!!!",
@@ -388,12 +397,13 @@ namespace libsemigroups {
     REQUIRE(S.size() == 88);
     REQUIRE(S.number_of_rules() == 18);
 
-    auto p = to_presentation<word_type>(S);
+    auto p = to_presentation<std::string>(S);
     REQUIRE(!p.contains_empty_word());
+    REQUIRE(p.alphabet() == "ab");
 
     presentation::reverse(p);
     REQUIRE(!p.contains_empty_word());
-    p.alphabet(3);
+    p.alphabet("abc");
     TestType kb(twosided, p);
     ToString to_string;
     ToWord   to_word;
@@ -450,7 +460,7 @@ namespace libsemigroups {
     REQUIRE(S.size() == 88);
     REQUIRE(S.number_of_rules() == 18);
 
-    auto p = to_presentation<word_type>(S);
+    auto p = to_presentation<std::string>(S);
     REQUIRE(!p.contains_empty_word());
 
     TestType kb(left, p);
@@ -569,8 +579,6 @@ namespace libsemigroups {
         to_string(froidure_pin::factorisation(S, Transf<>({3, 1, 3, 3, 3}))));
     REQUIRE(kb.number_of_classes() == 72);
     REQUIRE(knuth_bendix::contains(kb, "bbb", "b"));
-    // TODO(0) remove the setter presentation mem fn from KnuthBendix
-    REQUIRE_THROWS_AS(kb.presentation(p), LibsemigroupsException);
   }
 
   LIBSEMIGROUPS_TEST_CASE(

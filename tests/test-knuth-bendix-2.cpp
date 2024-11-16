@@ -1497,6 +1497,9 @@ namespace libsemigroups {
   TEMPLATE_TEST_CASE("hypostylic",
                      "[065][todd-coxeter][quick]",
                      KNUTH_BENDIX_TYPES) {
+    using words::operator+;
+    using namespace literals;
+
     auto   rg = ReportGuard(false);
     size_t n  = 2;
     auto   p  = fpsemigroup::hypo_plactic_monoid(n);
@@ -1506,19 +1509,21 @@ namespace libsemigroups {
     TestType kb(congruence_kind::twosided, p);
     kb.run();
     // TODO implement knuth_bendix::idempotents
-    REQUIRE((knuth_bendix::normal_forms(kb) | ToString("ab")
-             | filter([&kb](auto const& w) {
-                 return knuth_bendix::reduce(kb, w + w) == w;
-               })
+    REQUIRE(kb.presentation().alphabet() == std::string({0, 1}));
+    REQUIRE((knuth_bendix::normal_forms(kb) | filter([&kb](auto const& w) {
+               return knuth_bendix::reduce(kb, w + w) == w;
+             })
              | to_vector())
-            == std::vector<std::string>({"", "a", "b", "ba"}));
+            == std::vector<word_type>({{}, 0_w, 1_w, 10_w}));
     REQUIRE((kb.active_rules() | sort(weird_cmp()) | to_vector())
             == std::vector<std::pair<std::string, std::string>>(
-                {{"aa", "a"}, {"bb", "b"}, {"aba", "ba"}, {"bab", "ba"}}));
+                {{{0, 0}, {0}},
+                 {{1, 1}, {1}},
+                 {{0, 1, 0}, {1, 0}},
+                 {{1, 0, 1}, {1, 0}}}));
     // The gilman_graph generated is isomorphic to the word_graph given, but not
-    // identical. Since the normal are correct (see above) the below check is
-    // omitted.
-    // REQUIRE(kb.gilman_graph()
+    // identical. Since the normal forms are correct (see above) the below check
+    // is omitted. REQUIRE(kb.gilman_graph()
     //         == to_word_graph<size_t>(5, {{1, 3}, {UNDEFINED, 2}, {}, {4}}));
   }
 
@@ -1530,8 +1535,10 @@ namespace libsemigroups {
     auto p  = fpsemigroup::chinese_monoid(n);
     p.contains_empty_word(true);
     presentation::add_idempotent_rules_no_checks(p, p.alphabet());
-    TestType kb(twosided, p);
+
+    TestType kb(twosided, to_presentation<std::string>(p));
     kb.run();
+
     REQUIRE(knuth_bendix::reduce(kb, "cbda") == "bcda");
     REQUIRE(knuth_bendix::reduce(kb, "badc") == "badc");
     REQUIRE(knuth_bendix::reduce(kb, "cadb") == "cadb");

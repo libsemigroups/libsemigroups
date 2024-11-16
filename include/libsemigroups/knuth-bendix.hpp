@@ -211,7 +211,6 @@ namespace libsemigroups {
     bool                      _gen_pairs_initted;
     WordGraph<uint32_t>       _gilman_graph;
     std::vector<std::string>  _gilman_graph_node_labels;
-    Presentation<std::string> _input_presentation;
     bool                      _internal_is_same_as_external;
     OverlapMeasure*           _overlap_measure;
     Presentation<std::string> _presentation;
@@ -314,10 +313,6 @@ namespace libsemigroups {
       // again in this function, better not duplicate
       init(knd,
            to_presentation<std::string>(p, [](auto const& x) { return x; }));
-      // the next line looks weird but we are usually taking in letter_types's
-      // and returning chars
-      _input_presentation
-          = to_presentation<std::string>(p, [](auto const& x) { return x; });
       return *this;
     }
 
@@ -326,11 +321,6 @@ namespace libsemigroups {
     KnuthBendix& init(congruence_kind knd, Presentation<Word>&& p) {
       init(knd,
            to_presentation<std::string>(p, [](auto const& x) { return x; }));
-      // TODO(0) we copy the input presentation twice here once in init, and
-      // again in this function, better not duplicate
-      // the next line looks weird but we are usually taking in letter_types's
-      // and returning chars
-      // TODO(xxx) delete _input_presentation everywhere
       return *this;
     }
 
@@ -1500,11 +1490,13 @@ namespace libsemigroups {
   // TODO Doc
   // TODO tpp file?
   template <typename Rewriter, typename ReductionOrder, typename Range>
-  [[nodiscard]] std::vector<std::vector<std::string>>
+  [[nodiscard]] std::vector<std::vector<typename Range::output_type>>
   partition(KnuthBendix<Rewriter, ReductionOrder>& kb, Range r) {
-    static_assert(
-        std::is_same_v<std::decay_t<typename Range::output_type>, std::string>);
-    using return_type = std::vector<std::vector<std::string>>;
+    // static_assert(
+    //     std::is_same_v<std::decay_t<typename Range::output_type>,
+    //     std::string>);
+    using output_type = typename Range::output_type;
+    using return_type = std::vector<std::vector<output_type>>;
     using rx::operator|;
 
     if (!r.is_finite) {
@@ -1514,7 +1506,7 @@ namespace libsemigroups {
 
     return_type result;
 
-    std::unordered_map<std::string, size_t> map;
+    std::unordered_map<output_type, size_t> map;
     size_t                                  index = 0;
 
     while (!r.at_end()) {
