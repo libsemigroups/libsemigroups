@@ -767,36 +767,6 @@ namespace libsemigroups {
       return _presentation;
     }
 
-    // TODO doc
-    // TODO required?
-    KnuthBendix& presentation(Presentation<std::string> const& p) {
-      throw_if_started();
-      return private_init(kind(), p, false);
-    }
-
-    // TODO doc
-    // TODO required?
-    KnuthBendix& presentation(Presentation<std::string>&& p) {
-      throw_if_started();
-      return private_init(kind(), std::move(p), false);
-    }
-
-    // TODO doc
-    // TODO required?
-    template <typename Word>
-    KnuthBendix& presentation(Presentation<Word> const& p) {
-      throw_if_started();
-      return private_init(kind(), to_presentation<std::string>(p), false);
-    }
-
-    // TODO doc
-    // TODO required?
-    template <typename Word>
-    KnuthBendix& presentation(Presentation<Word>&& p) {
-      throw_if_started();
-      return private_init(kind(), to_presentation<std::string>(p), false);
-    }
-
     // TODO add note about empty active rules after
     // init and non-const-ness
     //! \brief Return the current number of active
