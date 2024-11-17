@@ -318,8 +318,8 @@ namespace libsemigroups {
     //!
     //! This functions adds the argument \p x as a new generator if and only if
     //! \p x is not already an element of the group represented by the
-    //! Schreier-Sims object. For example, the identity element is never added
-    //! as a generator.
+    //! \ref SchreierSims object. For example, the identity element is never
+    //! added as a generator.
     //!
     //! \param x a const reference to the generator to add.
     //!
@@ -339,7 +339,7 @@ namespace libsemigroups {
     //!
     //! This functions adds the argument \p x as a new generator if and only if
     //! \p x is not already an element of the group represented by the
-    //! Schreier-Sims object.
+    //! \ref SchreierSims object.
     //!
     //! \param x a const reference to the generator to add.
     //!
@@ -359,7 +359,7 @@ namespace libsemigroups {
     //! Get a generator with a given index, having checked that the index is
     //! in bounds.
     //!
-    //! \param index the index of the generator we want.
+    //! \param index the index of the generator to return.
     //!
     //! \returns
     //! A const reference to the generator of \c this with index \p index.
@@ -377,7 +377,7 @@ namespace libsemigroups {
     //!
     //! Get a generator with a given index.
     //!
-    //! \param index the index of the generator we want.
+    //! \param index the index of the generator to return.
     //!
     //! \returns
     //! A const reference to the generator of \c this with index \p index.
@@ -456,7 +456,7 @@ namespace libsemigroups {
     //! Get a strong generator.
     //!
     //! \param depth the depth.
-    //! \param index the index of the generator we want.
+    //! \param index the index of the generator to return.
     //!
     //! \returns
     //! A const reference to the strong generator of \c this at depth \p depth
@@ -475,7 +475,7 @@ namespace libsemigroups {
     //! Get a strong generator.
     //!
     //! \param depth the depth.
-    //! \param index the index of the generator we want.
+    //! \param index the index of the generator to return.
     //!
     //! \returns
     //! A const reference to the strong generator of \c this at depth \p depth
@@ -667,6 +667,16 @@ namespace libsemigroups {
     // not noexcept because run isn't
     [[nodiscard]] uint64_t size();
 
+    //! \brief Returns the size of the group represented by this, without
+    //! running.
+    //!
+    //! Returns the size of the group represented by this without running the
+    //! algorithm.
+    //!
+    //! \returns the size, a value of \c uint64_t.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
     [[nodiscard]] uint64_t current_size() const;
 
     //! \brief Sift an element through the stabiliser chain in-place.
@@ -961,14 +971,14 @@ namespace libsemigroups {
     //! \brief Find the intersection of two permutation groups.
     //!
     //! This function finds the intersection of two permutation groups. It
-    //! modifies the first parameter \p T to be the Schreier-Sims object
+    //! modifies the first parameter \p T to be the \ref SchreierSims object
     //! corresponding to the intersection of \p S1 and \p S2.
     //!
     //! \tparam N the largest point not fixed by the permutations in the
     //! permutation groups.
     //!
-    //! \param T an empty Schreier-Sims object that will hold the result.
-    //! \param S1 the first semigroup of the intersection.
+    //! \param T an empty SchreierSims object that will hold the result.
+    //! \param S1 the first group of the intersection.
     //! \param S2 the second group of the intersection.
     //!
     //! \throws LibsemigroupsException if \p T is not empty.
