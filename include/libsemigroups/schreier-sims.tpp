@@ -39,7 +39,6 @@ namespace libsemigroups {
         _tmp_element2(this->internal_copy(_one)),
         _transversal(),
         _inversal() {
-    fmt::print("Default constructing {} ! ! ! \n", fmt::ptr(this));
     _orbits_lookup.fill(false);
     init();
   }
@@ -47,7 +46,7 @@ namespace libsemigroups {
   template <size_t N, typename Point, typename Element, typename Traits>
   SchreierSims<N, Point, Element, Traits>&
   SchreierSims<N, Point, Element, Traits>::init() {
-    clear();
+    free_strong_gens_traversal_inversal();
     _base_size = 0;
     _finished  = false;
     _orbits_lookup.fill(false);
@@ -56,13 +55,12 @@ namespace libsemigroups {
 
   template <size_t N, typename Point, typename Element, typename Traits>
   SchreierSims<N, Point, Element, Traits>::~SchreierSims() {
-    fmt::print("Destructor for {} ! ! ! \n", fmt::ptr(this));
     if constexpr (std::is_pointer_v<internal_element_type>) {
       if (_one != nullptr) {
         // _one not being the nullptr indicates that this owns its data, and
         // otherwise that it does not. This is required by the move
         // constructors.
-        clear();
+        free_strong_gens_traversal_inversal();
         this->internal_free(_tmp_element1);
         this->internal_free(_tmp_element2);
         this->internal_free(_one);
@@ -85,9 +83,6 @@ namespace libsemigroups {
         _tmp_element2(this->internal_copy(_one)),
         _transversal(),
         _inversal() {
-    fmt::print("Copy constructor from {} into {} ! ! ! \n",
-               fmt::ptr(&that),
-               fmt::ptr(this));
     init_strong_gens_traversal_inversal(that);
   }
 
@@ -106,35 +101,47 @@ namespace libsemigroups {
         _transversal(std::move(that._transversal)),
         _inversal(std::move(that._inversal)) {
     if constexpr (std::is_pointer_v<internal_element_type>) {
+      // We set that._one to be the nullptr to indicate that "that" no longer
+      // owns its data, and that its destructor shouldn't try to delete it
       that._one = nullptr;
     }
-
-    fmt::print("Move constructor from {} into {} ! ! ! \n",
-               fmt::ptr(&that),
-               fmt::ptr(this));
   }
 
   template <size_t N, typename Point, typename Element, typename Traits>
   SchreierSims<N, Point, Element, Traits>&
   SchreierSims<N, Point, Element, Traits>::operator=(SchreierSims const& that) {
-    fmt::print("Copy assigning from {} into {} ! ! ! \n",
-               fmt::ptr(&that),
-               fmt::ptr(this));
+    free_strong_gens_traversal_inversal();
+
     _base          = that._base;
     _base_size     = that._base_size;
     _domain        = that._domain;
     _finished      = that._finished;
-    _one           = this->internal_copy(that._one);
     _orbits        = that._orbits;
     _orbits_lookup = that._orbits_lookup;
-    _tmp_element1  = this->internal_copy(_one);
-    _tmp_element2  = this->internal_copy(_one);
-
-    _strong_gens.clear();
-    _transversal.clear();
-    _inversal.clear();
 
     init_strong_gens_traversal_inversal(that);
+
+    return *this;
+  }
+
+  template <size_t N, typename Point, typename Element, typename Traits>
+  SchreierSims<N, Point, Element, Traits>&
+  SchreierSims<N, Point, Element, Traits>::operator=(SchreierSims&& that) {
+    _base      = std::move(that._base);
+    _base_size = std::move(that._base_size);
+    _domain    = std::move(that._domain);
+    _finished  = std::move(that._finished);
+    _orbits    = std::move(that._orbits);
+
+    // We swap the next things so that both this and that delete the relevant
+    // data in the destructor
+    std::swap(_one, that._one);
+    std::swap(_orbits_lookup, that._orbits_lookup);
+    std::swap(_tmp_element1, that._tmp_element1);
+    std::swap(_tmp_element2, that._tmp_element2);
+    std::swap(_strong_gens, that._strong_gens);
+    std::swap(_transversal, that._transversal);
+    std::swap(_inversal, that._inversal);
 
     return *this;
   }
@@ -439,8 +446,6 @@ namespace libsemigroups {
               = this->internal_copy(that._inversal[depth][index]);
         }
       }
-    }
-    for (size_t depth = 0; depth < N; ++depth) {
       for (size_t index = 0; index < that._strong_gens.size(depth); ++index) {
         _strong_gens.push_back(
             depth, this->internal_copy(that._strong_gens.at(depth, index)));
@@ -448,11 +453,13 @@ namespace libsemigroups {
     }
   }
 
-  template <size_t N, typename Point, typename Element, typename Traits>
   // TODO(later): this could be better, especially when use in init() above,
   // we could recycle the memory allocated, instead of freeing everything as
   // below.
-  void SchreierSims<N, Point, Element, Traits>::clear() {
+  template <size_t N, typename Point, typename Element, typename Traits>
+  void SchreierSims<N, Point, Element, Traits>::
+      free_strong_gens_traversal_inversal() {
+    std::unordered_set<internal_element_type> deleted;
     for (size_t depth = 0; depth < N; ++depth) {
       for (size_t index = 0; index < N; ++index) {
         if (_orbits_lookup[depth][index]) {
@@ -460,9 +467,6 @@ namespace libsemigroups {
           this->internal_free(_inversal[depth][index]);
         }
       }
-    }
-    std::unordered_set<internal_element_type> deleted;
-    for (size_t depth = 0; depth < N; ++depth) {
       for (size_t index = 0; index < _strong_gens.size(depth); ++index) {
         if (deleted.find(_strong_gens.at(depth, index)) == deleted.end()) {
           this->internal_free(_strong_gens.at(depth, index));

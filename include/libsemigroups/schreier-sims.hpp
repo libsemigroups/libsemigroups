@@ -307,7 +307,7 @@ namespace libsemigroups {
     //!
     //! Default move assignment.
     // TODO fix in the same way as the move constructor above
-    SchreierSims& operator=(SchreierSims&&) = default;
+    SchreierSims& operator=(SchreierSims&&);
 
     //! \brief Default copy assignment
     //!
@@ -941,7 +941,7 @@ namespace libsemigroups {
 
     // Used by copy constructor and assignment operator.
     void init_strong_gens_traversal_inversal(SchreierSims const& that);
-    void clear();
+    void free_strong_gens_traversal_inversal();
 
     void internal_add_base_point(point_type pt);
     void orbit_enumerate(index_type depth, index_type first = 0);
