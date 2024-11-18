@@ -295,7 +295,7 @@ namespace libsemigroups {
     //! \brief Default move constructor.
     //!
     //! Default move constructor.
-    SchreierSims(SchreierSims&&) = default;
+    SchreierSims(SchreierSims&&);
 
     //! \brief Default copy constructor.
     //!
@@ -306,6 +306,7 @@ namespace libsemigroups {
     //! \brief Default move assignment.
     //!
     //! Default move assignment.
+    // TODO fix in the same way as the move constructor above
     SchreierSims& operator=(SchreierSims&&) = default;
 
     //! \brief Default copy assignment
@@ -932,10 +933,9 @@ namespace libsemigroups {
 
     bool internal_equal_to(internal_const_element_type x,
                            internal_const_element_type y) const
-        noexcept(noexcept(
-            EqualTo()(this->to_external_const(x),
-                      this->to_external_const(
-                          y)) && noexcept(this->to_external_const(x)))) {
+        noexcept(noexcept(EqualTo()(this->to_external_const(x),
+                                    this->to_external_const(y))
+                          && noexcept(this->to_external_const(x)))) {
       return EqualTo()(this->to_external_const(x), this->to_external_const(y));
     }
 

@@ -4422,8 +4422,8 @@ namespace libsemigroups {
                           "[quick][schreier-sims][copy constructor]") {
     auto rg    = ReportGuard(false);
     using Perm = Perm<0, uint8_t>;
-    SchreierSims<255, uint8_t, Perm> S1;
-    S1.add_generator(Perm(
+    SchreierSims<255, uint8_t, Perm>* S1 = new SchreierSims<255, uint8_t, Perm>();
+    S1->add_generator(Perm(
         {1,   0,   2,   3,   4,   5,   6,   7,   8,   9,   10,  11,  12,  13,
          14,  15,  16,  17,  18,  19,  20,  21,  22,  23,  24,  25,  26,  27,
          28,  29,  30,  31,  32,  33,  34,  35,  36,  37,  38,  39,  40,  41,
@@ -4443,7 +4443,7 @@ namespace libsemigroups {
          224, 225, 226, 227, 228, 229, 230, 231, 232, 233, 234, 235, 236, 237,
          238, 239, 240, 241, 242, 243, 244, 245, 246, 247, 248, 249, 250, 251,
          252, 253, 254}));
-    S1.add_generator(Perm(
+    S1->add_generator(Perm(
         {1,   2,   3,   4,   0,   5,   6,   7,   8,   9,   10,  11,  12,  13,
          14,  15,  16,  17,  18,  19,  20,  21,  22,  23,  24,  25,  26,  27,
          28,  29,  30,  31,  32,  33,  34,  35,  36,  37,  38,  39,  40,  41,
@@ -4464,11 +4464,13 @@ namespace libsemigroups {
          238, 239, 240, 241, 242, 243, 244, 245, 246, 247, 248, 249, 250, 251,
          252, 253, 254}));
 
-    SchreierSims<255, uint8_t, Perm> S2(S1);
-    REQUIRE(&S1 != &S2);
-    REQUIRE(S1.number_of_generators() == S2.number_of_generators());
-    REQUIRE(S1.current_size() == S2.current_size());
-    REQUIRE(S1.finished() == S2.finished());
+    SchreierSims<255, uint8_t, Perm>* S2 = new SchreierSims<255, uint8_t, Perm>(*S1);
+    delete S1;
+    // REQUIRE(&S1 != &S2);
+    // REQUIRE(S1->number_of_generators() == S2.number_of_generators());
+    // REQUIRE(S1->current_size() == S2.current_size());
+    // REQUIRE(S1->finished() == S2.finished());
+    REQUIRE(S2->size() == 120);
   }
 
 }  // namespace libsemigroups

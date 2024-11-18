@@ -39,6 +39,8 @@ namespace libsemigroups {
         _tmp_element2(this->internal_copy(_one)),
         _transversal(),
         _inversal() {
+    fmt::print("Default constructing {} ! ! ! \n", fmt::ptr(this));
+    _orbits_lookup.fill(false);
     init();
   }
 
@@ -54,10 +56,18 @@ namespace libsemigroups {
 
   template <size_t N, typename Point, typename Element, typename Traits>
   SchreierSims<N, Point, Element, Traits>::~SchreierSims() {
-    clear();
-    this->internal_free(_one);
-    this->internal_free(_tmp_element1);
-    this->internal_free(_tmp_element2);
+    fmt::print("Destructor for {} ! ! ! \n", fmt::ptr(this));
+    if constexpr (std::is_pointer_v<internal_element_type>) {
+      if (_one != nullptr) {
+        // _one not being the nullptr indicates that this owns its data, and
+        // otherwise that it does not. This is required by the move
+        // constructors.
+        clear();
+        this->internal_free(_tmp_element1);
+        this->internal_free(_tmp_element2);
+        this->internal_free(_one);
+      }
+    }
   }
 
   template <size_t N, typename Point, typename Element, typename Traits>
@@ -67,7 +77,7 @@ namespace libsemigroups {
         _base_size(that._base_size),
         _domain(that._domain),
         _finished(that._finished),
-        _one(this->internal_copy(that._one)),
+        _one(this->to_internal(One()(N))),
         _orbits(that._orbits),
         _orbits_lookup(that._orbits_lookup),
         _strong_gens(),
@@ -75,12 +85,41 @@ namespace libsemigroups {
         _tmp_element2(this->internal_copy(_one)),
         _transversal(),
         _inversal() {
+    fmt::print("Copy constructor from {} into {} ! ! ! \n",
+               fmt::ptr(&that),
+               fmt::ptr(this));
     init_strong_gens_traversal_inversal(that);
+  }
+
+  template <size_t N, typename Point, typename Element, typename Traits>
+  SchreierSims<N, Point, Element, Traits>::SchreierSims(SchreierSims&& that)
+      : _base(std::move(that._base)),
+        _base_size(std::move(that._base_size)),
+        _domain(std::move(that._domain)),
+        _finished(std::move(that._finished)),
+        _one(std::move(that._one)),
+        _orbits(std::move(that._orbits)),
+        _orbits_lookup(std::move(that._orbits_lookup)),
+        _strong_gens(std::move(that._strong_gens)),
+        _tmp_element1(std::move(that._tmp_element1)),
+        _tmp_element2(std::move(that._tmp_element2)),
+        _transversal(std::move(that._transversal)),
+        _inversal(std::move(that._inversal)) {
+    if constexpr (std::is_pointer_v<internal_element_type>) {
+      that._one = nullptr;
+    }
+
+    fmt::print("Move constructor from {} into {} ! ! ! \n",
+               fmt::ptr(&that),
+               fmt::ptr(this));
   }
 
   template <size_t N, typename Point, typename Element, typename Traits>
   SchreierSims<N, Point, Element, Traits>&
   SchreierSims<N, Point, Element, Traits>::operator=(SchreierSims const& that) {
+    fmt::print("Copy assigning from {} into {} ! ! ! \n",
+               fmt::ptr(&that),
+               fmt::ptr(this));
     _base          = that._base;
     _base_size     = that._base_size;
     _domain        = that._domain;
