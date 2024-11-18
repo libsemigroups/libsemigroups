@@ -581,11 +581,10 @@ namespace libsemigroups {
     REQUIRE(knuth_bendix::contains(kb, "bbb", "b"));
   }
 
-  LIBSEMIGROUPS_TEST_CASE(
-      "KnuthBendix",
-      "028",
-      "left congruence on finite semigroup (RewriteFromLeft)",
-      "[quick]") {
+  LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
+                          "028",
+                          "left congruence on finite semigroup",
+                          "[quick]") {
     auto                  rg = ReportGuard(false);
     FroidurePin<Transf<>> S;
     S.add_generator(Transf<>({1, 3, 4, 2, 3}));
@@ -597,10 +596,10 @@ namespace libsemigroups {
 
     KnuthBendix kb(left, to_presentation<word_type>(S));
     ToString    to_string(kb.presentation().alphabet());
-    knuth_bendix::add_pair(kb, to_string(l), to_string(r));
+    knuth_bendix::add_pair(kb, l, r);
     REQUIRE(kb.number_of_classes() == 69);
-    REQUIRE(knuth_bendix::reduce_no_run(kb, "baabab") == "aab");
-    REQUIRE(knuth_bendix::reduce_no_run(kb, "aabaaab") == "aab");
-    REQUIRE(knuth_bendix::contains(kb, "baabab", "aabaaab"));
+    REQUIRE(knuth_bendix::reduce_no_run(kb, 100101_w) == 001_w);
+    REQUIRE(knuth_bendix::reduce_no_run(kb, 0010001_w) == 001_w);
+    REQUIRE(knuth_bendix::contains(kb, 100101_w, 0010001_w));
   }
 }  // namespace libsemigroups

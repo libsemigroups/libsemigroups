@@ -183,89 +183,92 @@ namespace libsemigroups {
   }
 
   template <typename Rewriter, typename ReductionOrder>
-  KnuthBendix<Rewriter, ReductionOrder>::KnuthBendix(KnuthBendix const& that)
-      : KnuthBendix() {
-    operator=(that);
-  }
-
-  template <typename Rewriter, typename ReductionOrder>
-  KnuthBendix<Rewriter, ReductionOrder>::KnuthBendix(KnuthBendix&& that)
-      : KnuthBendix(static_cast<KnuthBendix const&>(that)) {}
-
-  template <typename Rewriter, typename ReductionOrder>
   KnuthBendix<Rewriter, ReductionOrder>&
   KnuthBendix<Rewriter, ReductionOrder>::operator=(KnuthBendix&& that) {
-    *this = static_cast<KnuthBendix const&>(that);
+    CongruenceInterface::operator=(std::move(that));  // TODO correct?
+    _gen_pairs_initted        = std::move(that._gen_pairs_initted);
+    _gilman_graph             = std::move(that._gilman_graph);
+    _gilman_graph_node_labels = std::move(that._gilman_graph_node_labels);
+    _internal_is_same_as_external
+        = std::move(that._internal_is_same_as_external);
+    _overlap_measure = std::move(that._overlap_measure);
+    _presentation    = std::move(that._presentation);
+    _rewriter        = std::move(that._rewriter);
+    _settings        = std::move(that._settings);
+    _stats           = std::move(that._stats);
     return *this;
   }
 
   template <typename Rewriter, typename ReductionOrder>
   KnuthBendix<Rewriter, ReductionOrder>&
   KnuthBendix<Rewriter, ReductionOrder>::operator=(KnuthBendix const& that) {
-    // TODO(0) the operator should call the rvalue ref one above not the other
-    // way around
-    Runner::operator=(that);
-    _rewriter = that._rewriter;
-
-    _settings                     = that._settings;
+    CongruenceInterface::operator=(that);
+    _gen_pairs_initted            = that._gen_pairs_initted;
     _gilman_graph                 = that._gilman_graph;
+    _gilman_graph_node_labels     = that._gilman_graph_node_labels;
     _internal_is_same_as_external = that._internal_is_same_as_external;
+    _overlap_measure              = nullptr;
     _presentation                 = that._presentation;
+    _rewriter                     = that._rewriter;
+    _settings                     = that._settings;
+    _stats                        = that._stats;
 
+    // The next line sets _overlap_measure to be something sensible.
     overlap_policy(_settings.overlap_policy);
 
     return *this;
   }
 
   template <typename Rewriter, typename ReductionOrder>
+  KnuthBendix<Rewriter, ReductionOrder>::KnuthBendix(KnuthBendix&& that)
+      : KnuthBendix() {
+    operator=(std::move(that));
+  }
+
+  template <typename Rewriter, typename ReductionOrder>
+  KnuthBendix<Rewriter, ReductionOrder>::KnuthBendix(KnuthBendix const& that)
+      : KnuthBendix() {
+    operator=(that);
+  }
+
+  template <typename Rewriter, typename ReductionOrder>
   KnuthBendix<Rewriter, ReductionOrder>::~KnuthBendix() = default;
 
   template <typename Rewriter, typename ReductionOrder>
-  KnuthBendix<Rewriter, ReductionOrder>&
-  KnuthBendix<Rewriter, ReductionOrder>::init(
-      congruence_kind                  knd,
-      Presentation<std::string> const& p) {
-    return private_init(knd, p, true);
+  KnuthBendix<Rewriter, ReductionOrder>::KnuthBendix(
+      congruence_kind             knd,
+      Presentation<std::string>&& p)
+      : KnuthBendix() {
+    init(knd, std::move(p));
   }
 
   template <typename Rewriter, typename ReductionOrder>
   KnuthBendix<Rewriter, ReductionOrder>&
   KnuthBendix<Rewriter, ReductionOrder>::init(congruence_kind             knd,
                                               Presentation<std::string>&& p) {
-    return private_init(knd, std::move(p), true);
-  }
-
-  template <typename Rewriter, typename ReductionOrder>
-  KnuthBendix<Rewriter, ReductionOrder>&
-  KnuthBendix<Rewriter, ReductionOrder>::private_init(
-      congruence_kind                  knd,
-      Presentation<std::string> const& p,
-      bool                             call_init) {
-    // TODO(0) avoid code dupl between this and the next private_init overload
-    // by simply copying the private_init(knd, Presentation<std::string>(p),
-    // call_init) which will call the next function anyway
     p.validate();
-    if (call_init) {
-      CongruenceInterface::init(knd);
-    }
-    _presentation = p;
-    init_from_presentation();
-    return *this;
-  }
-
-  template <typename Rewriter, typename ReductionOrder>
-  KnuthBendix<Rewriter, ReductionOrder>&
-  KnuthBendix<Rewriter, ReductionOrder>::private_init(
-      congruence_kind             knd,
-      Presentation<std::string>&& p,
-      bool                        call_init) {
-    p.validate();
-    if (call_init) {
-      CongruenceInterface::init(knd);
-    }
+    init();
+    CongruenceInterface::init(knd);
     _presentation = std::move(p);
     init_from_presentation();
     return *this;
+  }
+
+  template <typename Rewriter, typename ReductionOrder>
+  KnuthBendix<Rewriter, ReductionOrder>::KnuthBendix(
+      congruence_kind                  knd,
+      Presentation<std::string> const& p)
+      : KnuthBendix() {
+    init(knd, p);
+  }
+
+  template <typename Rewriter, typename ReductionOrder>
+  KnuthBendix<Rewriter, ReductionOrder>&
+  KnuthBendix<Rewriter, ReductionOrder>::init(
+      congruence_kind                  knd,
+      Presentation<std::string> const& p) {
+    // Call rvalue ref init
+    return init(knd, Presentation(p));
   }
 
   //////////////////////////////////////////////////////////////////////////
@@ -857,6 +860,7 @@ namespace libsemigroups {
   // KnuthBendixImpl - methods for rules - private
   //////////////////////////////////////////////////////////////////////////
 
+  // TODO move this to the single call site
   template <typename Rewriter, typename ReductionOrder>
   void KnuthBendix<Rewriter, ReductionOrder>::init_from_presentation() {
     auto const& p                 = _presentation;

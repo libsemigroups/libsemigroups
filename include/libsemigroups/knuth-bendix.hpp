@@ -258,7 +258,7 @@ namespace libsemigroups {
     //! \complexity
     //! \f$O(n)\f$ where \f$n\f$ is the sum of the lengths of the words in
     //! rules of \p copy.
-    KnuthBendix(KnuthBendix const& copy);
+    KnuthBendix(KnuthBendix const& that);
 
     // TODO doc
     KnuthBendix(KnuthBendix&&);
@@ -272,42 +272,24 @@ namespace libsemigroups {
     ~KnuthBendix();
 
     // TODO doc
-    KnuthBendix(congruence_kind knd, Presentation<std::string> const& p)
-        : KnuthBendix() {
-      // TODO(0) static constexpr bool CallDefaultInit = true;
-      // TODO(0) static constexpr bool DontCallDefaultInit = false;
-      // and then use these instead of magic true and false values
-      private_init(knd, p, true);  // false means don't call init, since we
-                                   // just called it from KnuthBendix()
-    }
+    KnuthBendix(congruence_kind knd, Presentation<std::string> const& p);
 
     // TODO doc
     KnuthBendix& init(congruence_kind knd, Presentation<std::string> const& p);
 
     // TODO doc
-    KnuthBendix(congruence_kind knd, Presentation<std::string>&& p)
-        : KnuthBendix() {
-      private_init(knd,
-                   std::move(p),
-                   true);  // false means don't call init, since we just
-                           // called it from KnuthBendix()
-    }
+    KnuthBendix(congruence_kind knd, Presentation<std::string>&& p);
 
     // TODO doc
     KnuthBendix& init(congruence_kind knd, Presentation<std::string>&& p);
 
     // TODO doc
+    // No rvalue ref version because we can't use it.
     template <typename Word>
     explicit KnuthBendix(congruence_kind knd, Presentation<Word> const& p)
         : KnuthBendix(knd, to_presentation<std::string>(p, [](auto const& x) {
                         return x;
                       })) {}
-    // TODO(xxx) don't convert to human readable anywhere
-
-    // TODO doc
-    template <typename Word>
-    explicit KnuthBendix(congruence_kind knd, Presentation<Word>&& p)
-        : KnuthBendix(knd, to_presentation<std::string>(p)) {}
 
     // TODO doc
     template <typename Word>
@@ -317,22 +299,7 @@ namespace libsemigroups {
       return *this;
     }
 
-    // TODO doc
-    template <typename Word>
-    KnuthBendix& init(congruence_kind knd, Presentation<Word>&& p) {
-      init(knd,
-           to_presentation<std::string>(p, [](auto const& x) { return x; }));
-      return *this;
-    }
-
    private:
-    KnuthBendix& private_init(congruence_kind                  knd,
-                              Presentation<std::string> const& p,
-                              bool                             call_init);
-    KnuthBendix& private_init(congruence_kind             knd,
-                              Presentation<std::string>&& p,
-                              bool                        call_init);
-
     void init_from_generating_pairs();
     void init_from_presentation();
 
