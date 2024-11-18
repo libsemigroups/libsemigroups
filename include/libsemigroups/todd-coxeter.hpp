@@ -255,6 +255,21 @@ namespace libsemigroups {
       };
     };
 
+    //! The type of the nodes in the word graph.
+    using node_type = typename WordGraph<uint32_t>::node_type;
+
+    //! The type of the edge-labels in the word graph.
+    using label_type = typename WordGraph<uint32_t>::label_type;
+
+    ////////////////////////////////////////////////////////////////////////
+    // Interface requirements - native-types
+    ////////////////////////////////////////////////////////////////////////
+
+    // TODO(0) comment on what these are
+    using native_letter_type       = letter_type;
+    using native_word_type         = word_type;
+    using native_presentation_type = Presentation<native_word_type>;
+
    private:
     ////////////////////////////////////////////////////////////////////////
     // 1. ToddCoxeter - nested classes - private
@@ -496,21 +511,6 @@ namespace libsemigroups {
     Graph                                  _word_graph;
 
    public:
-    //! The type of the nodes in the word graph.
-    using node_type = typename WordGraph<uint32_t>::node_type;
-
-    //! The type of the edge-labels in the word graph.
-    using label_type = typename WordGraph<uint32_t>::label_type;
-
-    ////////////////////////////////////////////////////////////////////////
-    // Interface requirements - native-types
-    ////////////////////////////////////////////////////////////////////////
-
-    // TODO(0) comment on what these are
-    using native_letter_type       = letter_type;
-    using native_word_type         = word_type;
-    using native_presentation_type = Presentation<native_word_type>;
-
     //! The type of the underlying WordGraph.
     using word_graph_type = Graph;
     //! @}

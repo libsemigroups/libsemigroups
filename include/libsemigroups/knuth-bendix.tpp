@@ -125,16 +125,15 @@ namespace libsemigroups {
     if (p == _settings.overlap_policy && _overlap_measure != nullptr) {
       return *this;
     }
-    delete _overlap_measure;
     switch (p) {
       case options::overlap::ABC:
-        _overlap_measure = new ABC();
+        _overlap_measure.reset(new ABC());
         break;
       case options::overlap::AB_BC:
-        _overlap_measure = new AB_BC();
+        _overlap_measure.reset(new AB_BC());
         break;
       case options::overlap::MAX_AB_BC:
-        _overlap_measure = new MAX_AB_BC();
+        _overlap_measure.reset(new MAX_AB_BC());
         break;
       default:
         LIBSEMIGROUPS_ASSERT(false);
@@ -150,30 +149,34 @@ namespace libsemigroups {
   template <typename Rewriter, typename ReductionOrder>
   KnuthBendix<Rewriter, ReductionOrder>::KnuthBendix(congruence_kind knd)
       : CongruenceInterface(knd),
-        _settings(),
-        _stats(),
-        _rewriter(),
         _gen_pairs_initted(),
         _gilman_graph(),
+        _gilman_graph_node_labels(),
         _internal_is_same_as_external(),
-        _overlap_measure(),
-        _presentation() {
+        _overlap_measure(nullptr),
+        _presentation(),
+        _rewriter(),
+        _settings(),
+        _stats(),
+        _tmp_element1() {
     init(knd);
   }
 
   template <typename Rewriter, typename ReductionOrder>
   KnuthBendix<Rewriter, ReductionOrder>&
   KnuthBendix<Rewriter, ReductionOrder>::init(congruence_kind knd) {
-    _rewriter.init();
-
     CongruenceInterface::init(knd);
-    _settings.init();
-    _stats.init();
 
     _gen_pairs_initted = false;
     _gilman_graph.init(0, 0);
+    _gilman_graph_node_labels.clear();
     _internal_is_same_as_external = false;
+    _overlap_measure              = nullptr;
     _presentation.init();
+    _rewriter.init();
+    _settings.init();
+    _stats.init();
+    // The next line sets _overlap_measure to be something sensible.
 
     overlap_policy(_settings.overlap_policy);
     return *this;
@@ -215,9 +218,7 @@ namespace libsemigroups {
   }
 
   template <typename Rewriter, typename ReductionOrder>
-  KnuthBendix<Rewriter, ReductionOrder>::~KnuthBendix() {
-    delete _overlap_measure;
-  }
+  KnuthBendix<Rewriter, ReductionOrder>::~KnuthBendix() = default;
 
   template <typename Rewriter, typename ReductionOrder>
   KnuthBendix<Rewriter, ReductionOrder>&

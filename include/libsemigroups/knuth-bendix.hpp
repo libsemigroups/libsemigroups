@@ -186,9 +186,10 @@ namespace libsemigroups {
       size_t                    max_overlap;
       size_t                    max_rules;
       typename options::overlap overlap_policy;
-    } _settings;
+    };
 
-    mutable struct Stats {
+    struct Stats {
+      // TODO(0) delete the alias
       using time_point = std::chrono::high_resolution_clock::time_point;
       Stats() noexcept;
       Stats& init() noexcept;
@@ -201,20 +202,22 @@ namespace libsemigroups {
       size_t prev_active_rules;
       size_t prev_inactive_rules;
       size_t prev_total_rules;
-    } _stats;
+    };
 
     ////////////////////////////////////////////////////////////////////////
     // KnuthBendix - data - private
     ////////////////////////////////////////////////////////////////////////
 
-    Rewriter                  _rewriter;
-    bool                      _gen_pairs_initted;
-    WordGraph<uint32_t>       _gilman_graph;
-    std::vector<std::string>  _gilman_graph_node_labels;
-    bool                      _internal_is_same_as_external;
-    OverlapMeasure*           _overlap_measure;
-    Presentation<std::string> _presentation;
-    std::string               _tmp_element1;
+    bool                            _gen_pairs_initted;
+    WordGraph<uint32_t>             _gilman_graph;
+    std::vector<std::string>        _gilman_graph_node_labels;
+    bool                            _internal_is_same_as_external;
+    std::unique_ptr<OverlapMeasure> _overlap_measure;
+    Presentation<std::string>       _presentation;
+    Rewriter                        _rewriter;
+    Settings                        _settings;
+    mutable Stats                   _stats;
+    std::string                     _tmp_element1;
 
    public:
     //////////////////////////////////////////////////////////////////////////
@@ -309,8 +312,6 @@ namespace libsemigroups {
     // TODO doc
     template <typename Word>
     KnuthBendix& init(congruence_kind knd, Presentation<Word> const& p) {
-      // TODO(0) we copy the input presentation twice here once in init, and
-      // again in this function, better not duplicate
       init(knd,
            to_presentation<std::string>(p, [](auto const& x) { return x; }));
       return *this;
