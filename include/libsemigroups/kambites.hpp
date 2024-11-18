@@ -131,9 +131,6 @@ namespace libsemigroups {
 
     //! Default constructor.
     //!
-    //! \par Parameters
-    //! (None)
-    //!
     //! \exceptions
     //! \no_libsemigroups_except
     //!

@@ -72,6 +72,7 @@ namespace libsemigroups {
   //! semigroup or monoid on the classes of a left, right, or 2-sided
   //! congruence; see \cite Coleman2022aa for more details.
 
+  //! \defgroup todd_coxeter_class_group ToddCoxeter
   //! \ingroup todd_coxeter_group
   //!
   //! \brief Class containing an implementation of the Todd-Coxeter Algorithm.
@@ -90,70 +91,8 @@ namespace libsemigroups {
   //!
   //! \sa congruence_kind and tril.
   //!
-  //! \par Example 1
-  //! \code
-  //! Presentation<word_type> p;
-  //! p.alphabet(2);
-  //! presentation::add_rule(p, 00_w, 0_w);
-  //! presentation::add_rule(p, 0_w, 1_w);
-  //! ToddCoxeter tc(congruence_kind::left, p);
-  //! tc.strategy(options::strategy::felsch);
-  //! tc.number_of_classes();
-  //! tc.contains(0000_w, 00_w);
-  //! tc.index_of(0000_w);
-  //! \endcode
   //!
-  //! \par Example 2
-  //! \code
-  //! Presentation<word_type> p;
-  //! p.alphabet(4);
-  //! presentation::add_rule(p, 00_w, 0_w);
-  //! presentation::add_rule(p, 10_w, 1_w);
-  //! presentation::add_rule(p, 01_w, 1_w);
-  //! presentation::add_rule(p, 20_w, 2_w);
-  //! presentation::add_rule(p, 02_w, 2_w);
-  //! presentation::add_rule(p, 30_w, 3_w);
-  //! presentation::add_rule(p, 03_w, 3_w);
-  //! presentation::add_rule(p, 11_w, 0_w);
-  //! presentation::add_rule(p, 23_w, 0_w);
-  //! presentation::add_rule(p, 222_w, 0_w);
-  //! presentation::add_rule(p, 12121212121212_w, 0_w);
-  //! presentation::add_rule(p, 12131213121312131213121312131213_w, 0_w);
-  //! ToddCoxeter tc(congruence_kind::twosided, p);
-  //! tc.strategy(options::strategy::hlt)
-  //!    .lookahead_extent(options::lookahead_extent::partial)
-  //!    .save(false);
-  //! tc.number_of_classes()  // 10'752
-  //! tc.complete();          // true
-  //! tc.compatible();        // true
-  //! todd_coxeter::number_of_idempotents(tc); // 1
-  //! tc.standardize(order::recursive);
-  //! std::vector<word_type>(tc.cbegin_normal_forms(),
-  //!                        tc.cbegin_normal_forms() + 10);
-  //! // {0_w,
-  //! //  1_w,
-  //! //  2_w,
-  //! //  21_w,
-  //! //  12_w,
-  //! //  121_w,
-  //! //  22_w,
-  //! //  221_w,
-  //! //  212_w,
-  //! //  2121_w};
-  //! tc.standardize(order::lex);
-  //! std::vector<word_type>(tc.cbegin_normal_forms(),
-  //!                        tc.cbegin_normal_forms() + 10);
-  //! // {0_w,
-  //! //  01_w,
-  //! //  012_w,
-  //! //  0121_w,
-  //! //  01212_w,
-  //! //  012121_w,
-  //! //  0121212_w,
-  //! //  01212121_w,
-  //! //  012121212_w,
-  //! //  0121212121_w};
-  //! \endcode
+
   class ToddCoxeter : public CongruenceInterface,
                       public detail::FelschGraphSettings<ToddCoxeter> {
     using FelschGraphSettings_ = FelschGraphSettings<ToddCoxeter>;
@@ -163,22 +102,12 @@ namespace libsemigroups {
     // 0. ToddCoxeter - member types - public
     ////////////////////////////////////////////////////////////////////////
 
-    //! The type of the nodes in the word graph.
-    using node_type = typename WordGraph<uint32_t>::node_type;
+    //! \defgroup todd_coxeter_class_mem_types Member types
+    //! \ingroup todd_coxeter_class_group
+    //!
+    //! \brief Public member types
 
-    //! The type of the edge-labels in the word graph.
-    using label_type = typename WordGraph<uint32_t>::label_type;
-
-    ////////////////////////////////////////////////////////////////////////
-    // Interface requirements - native-types
-    ////////////////////////////////////////////////////////////////////////
-
-    // TODO(0) comment on what these are
-    using native_letter_type       = letter_type;
-    using native_word_type         = word_type;
-    using native_presentation_type = Presentation<native_word_type>;
-
-    //! \ingroup todd_coxeter_group
+    //! \ingroup todd_coxeter_class_mem_types
     //!
     //! \brief Struct containing various options that can be used to control the
     //! behaviour of Todd-Coxeter.
@@ -239,6 +168,7 @@ namespace libsemigroups {
         Rc
       };
 
+      //! \ingroup todd_coxeter_class_mem_types
       //! \brief Enum class for specifying the extent of any lookahead
       //! performed.
       //!
@@ -256,6 +186,7 @@ namespace libsemigroups {
         partial
       };
 
+      //! \ingroup todd_coxeter_class_mem_types
       //! \brief Enum class for specifying the style of any lookahead
       //! performed.
       //!
@@ -274,6 +205,7 @@ namespace libsemigroups {
         felsch
       };
 
+      //! \ingroup todd_coxeter_class_mem_types
       //! \brief Enum class containing values for specifying how to handle edge
       //! definitions.
       //!
@@ -564,12 +496,35 @@ namespace libsemigroups {
     Graph                                  _word_graph;
 
    public:
+    //! The type of the nodes in the word graph.
+    using node_type = typename WordGraph<uint32_t>::node_type;
+
+    //! The type of the edge-labels in the word graph.
+    using label_type = typename WordGraph<uint32_t>::label_type;
+
+    ////////////////////////////////////////////////////////////////////////
+    // Interface requirements - native-types
+    ////////////////////////////////////////////////////////////////////////
+
+    // TODO(0) comment on what these are
+    using native_letter_type       = letter_type;
+    using native_word_type         = word_type;
+    using native_presentation_type = Presentation<native_word_type>;
+
     //! The type of the underlying WordGraph.
     using word_graph_type = Graph;
+    //! @}
 
     ////////////////////////////////////////////////////////////////////////
     // 3. ToddCoxeter - constructors + initializers - public
     ////////////////////////////////////////////////////////////////////////
+
+    //! \defgroup todd_coxeter_class_init_group Constructors + initializers
+    //! \ingroup todd_coxeter_class_group
+    //!
+    //! \brief Construct or re-initialize a \ref ToddCoxeter instance (public
+    //! member function).
+    //! @{
 
     //! Default constructor.
     ToddCoxeter();
@@ -762,6 +717,7 @@ namespace libsemigroups {
           = to_presentation<word_type>(p, [](auto const& x) { return x; });
       return *this;
     }
+    //! @}
 
     // TODO(0) doc
     template <typename Iterator1, typename Iterator2>
@@ -796,6 +752,10 @@ namespace libsemigroups {
     }
 
    public:
+    //! \defgroup todd_coxeter_class_intf_group Common functions
+    //! \ingroup todd_coxeter_class_group
+    //!
+    //! @{
     template <typename Iterator1,
               typename Iterator2,
               typename Iterator3,
@@ -842,6 +802,7 @@ namespace libsemigroups {
     //! congruence over a finitely presented semigroup is undecidable in
     //! general, and this function may never terminate.
     [[nodiscard]] uint64_t number_of_classes();
+    //! @}
 
     ////////////////////////////////////////////////////////////////////////
     // 6. ToddCoxeter - interface requirements - contains
@@ -1646,6 +1607,72 @@ namespace libsemigroups {
     size_t hlt_lookahead(bool stop_early);
     size_t felsch_lookahead();
   };
+
+  //! \ingroup todd_coxeter_class_group
+  //! \par Example 1
+  //! \code
+  //! Presentation<word_type> p;
+  //! p.alphabet(2);
+  //! presentation::add_rule(p, 00_w, 0_w);
+  //! presentation::add_rule(p, 0_w, 1_w);
+  //! ToddCoxeter tc(congruence_kind::left, p);
+  //! tc.strategy(options::strategy::felsch);
+  //! tc.number_of_classes();
+  //! tc.contains(0000_w, 00_w);
+  //! tc.index_of(0000_w);
+  //! \endcode
+  //!
+  //! \par Example 2
+  //! \code
+  //! Presentation<word_type> p;
+  //! p.alphabet(4);
+  //! presentation::add_rule(p, 00_w, 0_w);
+  //! presentation::add_rule(p, 10_w, 1_w);
+  //! presentation::add_rule(p, 01_w, 1_w);
+  //! presentation::add_rule(p, 20_w, 2_w);
+  //! presentation::add_rule(p, 02_w, 2_w);
+  //! presentation::add_rule(p, 30_w, 3_w);
+  //! presentation::add_rule(p, 03_w, 3_w);
+  //! presentation::add_rule(p, 11_w, 0_w);
+  //! presentation::add_rule(p, 23_w, 0_w);
+  //! presentation::add_rule(p, 222_w, 0_w);
+  //! presentation::add_rule(p, 12121212121212_w, 0_w);
+  //! presentation::add_rule(p, 12131213121312131213121312131213_w, 0_w);
+  //! ToddCoxeter tc(congruence_kind::twosided, p);
+  //! tc.strategy(options::strategy::hlt)
+  //!    .lookahead_extent(options::lookahead_extent::partial)
+  //!    .save(false);
+  //! tc.number_of_classes()  // 10'752
+  //! tc.complete();          // true
+  //! tc.compatible();        // true
+  //! todd_coxeter::number_of_idempotents(tc); // 1
+  //! tc.standardize(order::recursive);
+  //! std::vector<word_type>(tc.cbegin_normal_forms(),
+  //!                        tc.cbegin_normal_forms() + 10);
+  //! // {0_w,
+  //! //  1_w,
+  //! //  2_w,
+  //! //  21_w,
+  //! //  12_w,
+  //! //  121_w,
+  //! //  22_w,
+  //! //  221_w,
+  //! //  212_w,
+  //! //  2121_w};
+  //! tc.standardize(order::lex);
+  //! std::vector<word_type>(tc.cbegin_normal_forms(),
+  //!                        tc.cbegin_normal_forms() + 10);
+  //! // {0_w,
+  //! //  01_w,
+  //! //  012_w,
+  //! //  0121_w,
+  //! //  01212_w,
+  //! //  012121_w,
+  //! //  0121212_w,
+  //! //  01212121_w,
+  //! //  012121212_w,
+  //! //  0121212121_w};
+  //! \endcode
 
   ////////////////////////////////////////////////////////////////////////
   // ToddCoxeter helpers

@@ -137,7 +137,8 @@ namespace libsemigroups {
       _tmp_value2.assign(first2, last2);
     } else {
       ToString to_string(_presentation.alphabet());
-      // TODO improve!
+      // TODO remove this, Kambites does not yet behave as ToddCoxeter +
+      // Knuthbendix do
       _tmp_value1 = to_string(word_type(first1, last1));
       _tmp_value2 = to_string(word_type(first2, last2));
     }
