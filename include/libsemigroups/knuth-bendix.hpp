@@ -234,7 +234,7 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! Constant.
-    explicit KnuthBendix(congruence_kind knd);
+    explicit KnuthBendix();
 
     //! \brief Remove the presentation and rewriter data
     //!
@@ -247,7 +247,7 @@ namespace libsemigroups {
     //!
     //! \returns
     //! A reference to \c this.
-    KnuthBendix& init(congruence_kind knd);
+    KnuthBendix& init();
 
     //! \brief Copy constructor.
     //!
@@ -273,12 +273,12 @@ namespace libsemigroups {
 
     // TODO doc
     KnuthBendix(congruence_kind knd, Presentation<std::string> const& p)
-        : KnuthBendix(knd) {
+        : KnuthBendix() {
       // TODO(0) static constexpr bool CallDefaultInit = true;
       // TODO(0) static constexpr bool DontCallDefaultInit = false;
       // and then use these instead of magic true and false values
-      private_init(knd, p, false);  // false means don't call init, since we
-                                    // just called it from KnuthBendix()
+      private_init(knd, p, true);  // false means don't call init, since we
+                                   // just called it from KnuthBendix()
     }
 
     // TODO doc
@@ -286,11 +286,11 @@ namespace libsemigroups {
 
     // TODO doc
     KnuthBendix(congruence_kind knd, Presentation<std::string>&& p)
-        : KnuthBendix(knd) {
+        : KnuthBendix() {
       private_init(knd,
                    std::move(p),
-                   false);  // false means don't call init, since we just
-                            // called it from KnuthBendix()
+                   true);  // false means don't call init, since we just
+                           // called it from KnuthBendix()
     }
 
     // TODO doc
@@ -1337,7 +1337,7 @@ namespace libsemigroups {
       Presentation<std::string> q;
       q.alphabet(p.alphabet());
       q.contains_empty_word(p.contains_empty_word());
-      KnuthBendix kb(twosided);
+      KnuthBendix kb;
 
       for (auto omit = p.rules.crbegin(); omit != p.rules.crend(); omit += 2) {
         q.rules.clear();

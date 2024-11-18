@@ -147,8 +147,8 @@ namespace libsemigroups {
   //////////////////////////////////////////////////////////////////////////
 
   template <typename Rewriter, typename ReductionOrder>
-  KnuthBendix<Rewriter, ReductionOrder>::KnuthBendix(congruence_kind knd)
-      : CongruenceInterface(knd),
+  KnuthBendix<Rewriter, ReductionOrder>::KnuthBendix()
+      : CongruenceInterface(),
         _gen_pairs_initted(),
         _gilman_graph(),
         _gilman_graph_node_labels(),
@@ -159,13 +159,13 @@ namespace libsemigroups {
         _settings(),
         _stats(),
         _tmp_element1() {
-    init(knd);
+    init();
   }
 
   template <typename Rewriter, typename ReductionOrder>
   KnuthBendix<Rewriter, ReductionOrder>&
-  KnuthBendix<Rewriter, ReductionOrder>::init(congruence_kind knd) {
-    CongruenceInterface::init(knd);
+  KnuthBendix<Rewriter, ReductionOrder>::init() {
+    CongruenceInterface::init();
 
     _gen_pairs_initted = false;
     _gilman_graph.init(0, 0);
@@ -176,16 +176,16 @@ namespace libsemigroups {
     _rewriter.init();
     _settings.init();
     _stats.init();
-    // The next line sets _overlap_measure to be something sensible.
 
+    // The next line sets _overlap_measure to be something sensible.
     overlap_policy(_settings.overlap_policy);
     return *this;
   }
 
   template <typename Rewriter, typename ReductionOrder>
   KnuthBendix<Rewriter, ReductionOrder>::KnuthBendix(KnuthBendix const& that)
-      : KnuthBendix(that.kind()) {
-    *this = that;
+      : KnuthBendix() {
+    operator=(that);
   }
 
   template <typename Rewriter, typename ReductionOrder>
@@ -246,7 +246,7 @@ namespace libsemigroups {
     // call_init) which will call the next function anyway
     p.validate();
     if (call_init) {
-      init(knd);
+      CongruenceInterface::init(knd);
     }
     _presentation = p;
     init_from_presentation();
@@ -261,7 +261,7 @@ namespace libsemigroups {
       bool                        call_init) {
     p.validate();
     if (call_init) {
-      init(knd);
+      CongruenceInterface::init(knd);
     }
     _presentation = std::move(p);
     init_from_presentation();

@@ -668,7 +668,7 @@ namespace libsemigroups {
                      KNUTH_BENDIX_TYPES) {
     auto rg = ReportGuard(false);
 
-    TestType kb(twosided);
+    TestType kb;
 
     REQUIRE(kb.confluent());
     REQUIRE(kb.number_of_active_rules() == 0);

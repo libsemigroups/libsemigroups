@@ -1259,7 +1259,7 @@ namespace libsemigroups {
   }
 
   TEMPLATE_TEST_CASE("code coverage", "[057][quick]", KNUTH_BENDIX_TYPES) {
-    TestType kb1(twosided);
+    TestType kb1;
     TestType kb2(kb1);
     REQUIRE(kb1.number_of_classes() == 0);
 
