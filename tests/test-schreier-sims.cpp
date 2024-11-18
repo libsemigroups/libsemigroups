@@ -66,6 +66,7 @@ namespace libsemigroups {
     S.add_generator(Perm({0, 1}));
     REQUIRE(S.size() == 1);
     REQUIRE(S.sift(Perm({1, 0})) == Perm({1, 0}));
+    REQUIRE(S.sift(Perm({0, 1})) == S.one());
     REQUIRE(!S.contains(Perm({1, 0})));
     REQUIRE(S.contains(Perm({0, 1})));
     REQUIRE(
@@ -337,6 +338,7 @@ namespace libsemigroups {
 
     REQUIRE(S.size() == 8);
     REQUIRE(S.sift(S.generator(0)) == S.one());
+    REQUIRE(S.sift(S.generator(1)) == S.one());
     REQUIRE(S.contains(S.generator(0)));
     REQUIRE(S.contains(S.generator(1)));
     REQUIRE(S.contains(Perm({0, 6, 3, 7, 5, 1, 4, 8, 2})));
