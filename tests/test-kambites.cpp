@@ -98,8 +98,7 @@ namespace libsemigroups {
       p.alphabet(A);
 
       Kambites<std::string> k;
-      KnuthBendix           kb1(congruence_kind::twosided);
-      KnuthBendix           kb2(congruence_kind::twosided);
+      KnuthBendix           kb1, kb2;
 
       for (size_t j = 0; j < sample_size; ++j) {
         for (size_t r = 0; r < R; ++r) {
@@ -148,20 +147,18 @@ namespace libsemigroups {
     presentation::add_rule(p, "ef", "dg");
 
     Kambites<T> k(p);
-    ToWord      to_word(p.alphabet());
 
     REQUIRE(kambites::contains(k, "abcd", "aaaeaa"));
     REQUIRE(kambites::contains(k, "ef", "dg"));
     REQUIRE(kambites::contains(k, "aaaaaef", "aaaaadg"));
     REQUIRE(kambites::contains(k, "efababa", "dgababa"));
 
-    k.validate_word(to_word("abcd"));
-    REQUIRE(to_word("abcd") == 0123_w);
-    REQUIRE(to_word("aaaeaa") == 000400_w);
-    REQUIRE(kambites::contains(k, to_word("abcd"), to_word("aaaeaa")));
-    REQUIRE(kambites::contains(k, to_word("ef"), to_word("dg")));
-    REQUIRE(kambites::contains(k, to_word("aaaaaef"), to_word("aaaaadg")));
-    REQUIRE(kambites::contains(k, to_word("efababa"), to_word("dgababa")));
+    //    REQUIRE(to_word("abcd") == 0123_w);
+    //  REQUIRE(to_word("aaaeaa") == 000400_w);
+    // REQUIRE(kambites::contains(k, to_word("abcd"), to_word("aaaeaa")));
+    // REQUIRE(kambites::contains(k, to_word("ef"), to_word("dg")));
+    // REQUIRE(kambites::contains(k, to_word("aaaaaef"), to_word("aaaaadg")));
+    // REQUIRE(kambites::contains(k, to_word("efababa"), to_word("dgababa")));
 
     auto s = to_froidure_pin(k);
     s.enumerate(100);
@@ -2647,7 +2644,7 @@ namespace libsemigroups {
     REQUIRE(kk.presentation().alphabet() == "abcdefg");
 
     p.alphabet("abcdefg");
-    kambites::add_pair(kk, to_word("abababab"), to_word("aba"));
+    kambites::add_pair(kk, "abababab", "aba");
     REQUIRE(kk.small_overlap_class() == 1);
 
     Presentation<word_type> pp;

@@ -130,18 +130,8 @@ namespace libsemigroups {
                                                         Iterator2 last1,
                                                         Iterator3 first2,
                                                         Iterator4 last2) {
-    if constexpr (std::is_same_v<typename decltype(_presentation)::letter_type,
-                                 typename std::decay_t<
-                                     decltype(*std::declval<Iterator2>())>>) {
-      _tmp_value1.assign(first1, last1);
-      _tmp_value2.assign(first2, last2);
-    } else {
-      ToString to_string(_presentation.alphabet());
-      // TODO remove this, Kambites does not yet behave as ToddCoxeter +
-      // Knuthbendix do
-      _tmp_value1 = to_string(word_type(first1, last1));
-      _tmp_value2 = to_string(word_type(first2, last2));
-    }
+    _tmp_value1.assign(first1, last1);
+    _tmp_value2.assign(first2, last2);
     return contains_no_checks(_tmp_value1, _tmp_value2);
   }
 
@@ -581,7 +571,13 @@ namespace libsemigroups {
       } else {
         auto pairs = (rx::iterator_range(generating_pairs().cbegin(),
                                          generating_pairs().cend())
-                      | ToString(_presentation.alphabet()) | rx::to_vector());
+                      // TODO(0) just pass the iterators to the start and end of
+                      // everything in generating_pairs() directly to Ukkonen,
+                      // to avoid this conversion and the constexpr
+                      | rx::transform([](word_type const& w) {
+                          return std::string(w.begin(), w.end());
+                        })
+                      | rx::to_vector());
         ukkonen::add_words_no_checks(
             _suffix_tree, pairs.cbegin(), pairs.cend());
         _presentation.rules.insert(_presentation.rules.end(),

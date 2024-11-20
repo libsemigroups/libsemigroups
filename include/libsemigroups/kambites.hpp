@@ -50,7 +50,6 @@
 #include "to-presentation.hpp"  // for to_presentation
 #include "types.hpp"            // for word_type, tril, letter_type
 #include "ukkonen.hpp"          // for Ukkonen
-#include "words.hpp"            // for ToStrings
 
 #include "detail/multi-string-view.hpp"  // for MultiStringView
 #include "detail/string.hpp"             // for is_prefix
@@ -250,10 +249,6 @@ namespace libsemigroups {
                                                     Iterator2 last1,
                                                     Iterator3 first2,
                                                     Iterator4 last2) const {
-      using iterator_points_at = decltype(*std::declval<Iterator1>());
-      static_assert(
-          std::is_convertible_v<iterator_points_at, native_letter_type>);
-      // TODO(0) impl for non-native letter_types
       if (finished()) {
         const_cast<Kambites*>(this)->contains_no_checks(
             first1, last1, first2, last2);
@@ -334,17 +329,9 @@ namespace libsemigroups {
                                     InputIterator1 first,
                                     InputIterator2 last) {
       run();
+      // TODO improve!
       _tmp_value2.clear();
-      if constexpr (std::is_same_v<
-                        typename decltype(_presentation)::letter_type,
-                        typename std::decay_t<
-                            decltype(*std::declval<InputIterator1>())>>) {
-        _tmp_value1.assign(first, last);
-      } else {
-        ToString to_string(_presentation.alphabet());
-        // TODO improve!
-        _tmp_value1 = to_string(word_type(first, last));
-      }
+      _tmp_value1.assign(first, last);
       normal_form_no_checks(_tmp_value2, _tmp_value1);
       return std::copy(std::begin(_tmp_value2), std::end(_tmp_value2), d_first);
     }
@@ -419,6 +406,11 @@ namespace libsemigroups {
       return _suffix_tree;
     }
 
+    template <typename Iterator1, typename Iterator2>
+    void throw_if_letter_out_of_bounds(Iterator1 first, Iterator2 last) const {
+      _presentation.validate_word(first, last);
+    }
+
    private:
     ////////////////////////////////////////////////////////////////////////
     // Kambites - init functions - private
@@ -434,37 +426,6 @@ namespace libsemigroups {
     //
     // Not noexcept, throws
     void validate_small_overlap_class();
-
-   public:
-    // TODO(0) update to use iterators
-    void validate_word(word_type const& w) const {
-      if constexpr (std::is_same_v<
-                        typename decltype(_presentation)::letter_type,
-                        letter_type>) {
-        _presentation.validate_word(w.cbegin(), w.cend());
-      } else {
-        ToString   to_string(_presentation.alphabet());
-        value_type ww = to_string(w);
-        _presentation.validate_word(ww.cbegin(), ww.cend());
-      }
-    }
-
-    template <typename Iterator1, typename Iterator2>
-    void throw_if_letter_out_of_bounds(Iterator1 first, Iterator2 last) const {
-      if constexpr (std::is_same_v<
-                        typename decltype(_presentation)::letter_type,
-                        typename std::decay_t<
-                            decltype(*std::declval<Iterator1>())>>) {
-        // TODO static assert that replacing Iterator1 by Iterator2 in the
-        // previous line, yields the same type
-        _presentation.validate_word(first, last);
-      } else {
-        ToString to_string(_presentation.alphabet());
-        // TODO improve!
-        value_type ww = to_string(word_type(first, last));
-        _presentation.validate_word(ww.cbegin(), ww.cend());
-      }
-    }
 
    private:
     ////////////////////////////////////////////////////////////////////////
