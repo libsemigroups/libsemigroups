@@ -4424,8 +4424,8 @@ namespace libsemigroups {
                           "[quick][schreier-sims][copy constructor]") {
     auto rg    = ReportGuard(false);
     using Perm = Perm<0, uint8_t>;
-    SchreierSims<255, uint8_t, Perm>* S1 =
-	new SchreierSims<255, uint8_t, Perm>();
+    SchreierSims<255, uint8_t, Perm>* S1
+        = new SchreierSims<255, uint8_t, Perm>();
     S1->add_generator(Perm(
         {1,   0,   2,   3,   4,   5,   6,   7,   8,   9,   10,  11,  12,  13,
          14,  15,  16,  17,  18,  19,  20,  21,  22,  23,  24,  25,  26,  27,
@@ -4467,12 +4467,12 @@ namespace libsemigroups {
          238, 239, 240, 241, 242, 243, 244, 245, 246, 247, 248, 249, 250, 251,
          252, 253, 254}));
 
-    SchreierSims<255, uint8_t, Perm>* S2 =
-	new SchreierSims<255, uint8_t, Perm>(std::move(*S1));
+    SchreierSims<255, uint8_t, Perm>* S2
+        = new SchreierSims<255, uint8_t, Perm>(std::move(*S1));
     REQUIRE(S2->size() == 120);
 
-    SchreierSims<255, uint8_t, Perm>* S3 =
-	new SchreierSims<255, uint8_t, Perm>();
+    SchreierSims<255, uint8_t, Perm>* S3
+        = new SchreierSims<255, uint8_t, Perm>();
     *S3 = std::move(*S2);
     REQUIRE(S3->size() == 120);
     delete S1;
