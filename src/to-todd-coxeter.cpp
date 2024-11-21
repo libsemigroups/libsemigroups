@@ -57,7 +57,9 @@ namespace libsemigroups {
         tc_arg.target_no_checks(n + 1, a, wg->target_no_checks(n, a) + 1);
       }
     }
-    return ToddCoxeter(knd, std::move(tc_arg));
+    return ToddCoxeter(knd != congruence_kind::twosided ? congruence_kind::right
+                                                        : knd,
+                       std::move(tc_arg));
   }
 
 }  // namespace libsemigroups

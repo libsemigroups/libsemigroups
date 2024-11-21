@@ -393,9 +393,6 @@ namespace libsemigroups {
                                  Presentation<word_type>&& p) {
     init();
     CongruenceInterface::init(knd);
-    if (knd == congruence_kind::left) {
-      presentation::reverse(p);
-    }
     _input_presentation = p;
     presentation::normalize_alphabet(p);  // Throws if p is not valid
     _word_graph.init(std::move(p));
@@ -426,8 +423,8 @@ namespace libsemigroups {
   ToddCoxeter& ToddCoxeter::init(congruence_kind knd, ToddCoxeter const& tc) {
     if (tc.kind() != congruence_kind::twosided && knd != tc.kind()) {
       LIBSEMIGROUPS_EXCEPTION(
-          "incompatible types of congruence, found ({} / {}) but only (left "
-          "/ left), (right / right), (two-sided / *) are valid",
+          "incompatible types of congruence, found ({} / {}) but only "
+          "(right / right) and (two-sided / *) are valid",
           tc.kind(),
           knd);
     }
@@ -439,9 +436,6 @@ namespace libsemigroups {
     rules.insert(rules.end(),
                  tc.generating_pairs().cbegin(),
                  tc.generating_pairs().cend());
-    if (kind() == congruence_kind::left && tc.kind() != congruence_kind::left) {
-      presentation::reverse(_word_graph.presentation());
-    }
     LIBSEMIGROUPS_ASSERT(!_setting_stack.empty());
     // TODO(0) don't we need to reset the setting_stack here too?
     return *this;

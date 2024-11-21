@@ -1459,10 +1459,19 @@ namespace libsemigroups {
     //! \exceptions
     //! \no_libsemigroups_except
     template <typename Word>
-    void reverse(Presentation<Word>& p) {
+    Presentation<Word>& reverse(Presentation<Word>& p) {
       for (auto& rule : p.rules) {
         std::reverse(rule.begin(), rule.end());
       }
+      return p;
+    }
+
+    template <typename Word>
+    Presentation<Word>&& reverse(Presentation<Word>&& p) {
+      for (auto& rule : p.rules) {
+        std::reverse(rule.begin(), rule.end());
+      }
+      return std::move(p);
     }
 
     //! \brief Normalize the alphabet to \f$\{0, \ldots, n - 1\}\f$.

@@ -148,13 +148,6 @@ namespace libsemigroups {
                                             Iterator2 last1,
                                             Iterator3 first2,
                                             Iterator4 last2) {
-      if (kind() == congruence_kind::left) {
-        return add_pair_no_checks_no_reverse(
-            std::make_reverse_iterator(last1),
-            std::make_reverse_iterator(first1),
-            std::make_reverse_iterator(last2),
-            std::make_reverse_iterator(first2));
-      }
       return add_pair_no_checks_no_reverse(first1, last1, first2, last2);
     }
 

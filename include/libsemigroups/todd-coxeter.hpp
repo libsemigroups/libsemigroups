@@ -770,14 +770,7 @@ namespace libsemigroups {
                                     citow<Iterator2> last1,
                                     citow<Iterator3> first2,
                                     citow<Iterator4> last2) {
-      if (kind() == congruence_kind::left) {
-        add_pair_no_checks_no_reverse(std::make_reverse_iterator(last1),
-                                      std::make_reverse_iterator(first1),
-                                      std::make_reverse_iterator(last2),
-                                      std::make_reverse_iterator(first2));
-      } else {
-        add_pair_no_checks_no_reverse(first1, last1, first2, last2);
-      }
+      add_pair_no_checks_no_reverse(first1, last1, first2, last2);
       return *this;
     }
 
@@ -1473,16 +1466,8 @@ namespace libsemigroups {
                                          citow<Iterator2> last) const {
       node_type c = current_word_graph().initial_node();
 
-      if (kind() != congruence_kind::left) {
-        c = word_graph::follow_path_no_checks(
-            current_word_graph(), c, first, last);
-      } else {
-        c = word_graph::follow_path_no_checks(
-            current_word_graph(),
-            c,
-            std::make_reverse_iterator(last),
-            std::make_reverse_iterator(first));
-      }
+      c = word_graph::follow_path_no_checks(
+          current_word_graph(), c, first, last);
       size_t const offset
           = (native_presentation().contains_empty_word() ? 0 : 1);
       return (c == UNDEFINED ? UNDEFINED : static_cast<node_type>(c - offset));
@@ -1539,11 +1524,6 @@ namespace libsemigroups {
       }
 
       return _forest.path_to_root_no_checks(d_first, i);
-      // TODO(0) maybe withdraw left congs altogether?
-      // This doesn't compile with the call to std::reverse below
-      // if (kind() != congruence_kind::left) {
-      //   std::reverse(d_first, d_last);
-      // }
     }
 
    public:
@@ -1784,9 +1764,7 @@ namespace libsemigroups {
     Word word_of_no_checks(ToddCoxeter& tc, node_type i) {
       Word result;
       tc.word_of_no_checks(std::back_inserter(result), i);
-      if (tc.kind() != congruence_kind::left) {
-        std::reverse(std::begin(result), std::end(result));
-      }
+      std::reverse(std::begin(result), std::end(result));
       return result;
     }
 
@@ -1795,9 +1773,7 @@ namespace libsemigroups {
     Word word_of(ToddCoxeter& tc, node_type i) {
       Word result;
       tc.word_of(std::back_inserter(result), i);
-      if (tc.kind() != congruence_kind::left) {
-        std::reverse(std::begin(result), std::end(result));
-      }
+      std::reverse(std::begin(result), std::end(result));
       return result;
     }
 
@@ -1822,9 +1798,7 @@ namespace libsemigroups {
       OutputWord result;
       tc.reduce_no_run_no_checks(
           std::back_inserter(result), std::begin(w), std::end(w));
-      if (tc.kind() != congruence_kind::left) {
-        std::reverse(std::begin(result), std::end(result));
-      }
+      std::reverse(std::begin(result), std::end(result));
       return result;
     }
 
@@ -1833,9 +1807,7 @@ namespace libsemigroups {
     OutputWord reduce_no_run(ToddCoxeter& tc, InputWord const& w) {
       OutputWord result;
       tc.reduce_no_run(std::back_inserter(result), std::begin(w), std::end(w));
-      if (tc.kind() != congruence_kind::left) {
-        std::reverse(std::begin(result), std::end(result));
-      }
+      std::reverse(std::begin(result), std::end(result));
       return result;
     }
 
