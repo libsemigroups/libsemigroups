@@ -1064,7 +1064,7 @@ namespace libsemigroups {
     // Interface helpers - to_human_readable_repr
     ////////////////////////////////////////////////////////////////////////
 
-    // TODO move out of knuth_bendix namespace
+    // TODO(0) move out of knuth_bendix namespace
     // TODO(0) What should the \param be?
     //! \brief Return a string representation of a KnuthBendix instance
     //!
