@@ -107,7 +107,7 @@ namespace libsemigroups {
       ToddCoxeter tc(congruence_kind::right, s.presentation());
 
       for (auto const& p : sims::right_generating_pairs(wg)) {
-        todd_coxeter::add_pair(tc, p.first, p.second);
+        todd_coxeter::add_generating_pair(tc, p.first, p.second);
       }
       tc.run();
 
@@ -123,7 +123,7 @@ namespace libsemigroups {
 
       tc.init(congruence_kind::right, s.presentation());
       for (auto const& p : sims::right_generating_pairs(s.presentation(), wg)) {
-        todd_coxeter::add_pair(tc, p.first, p.second);
+        todd_coxeter::add_generating_pair(tc, p.first, p.second);
       }
       tc.run();
       tc.standardize(Order::shortlex);
@@ -139,7 +139,7 @@ namespace libsemigroups {
       ToddCoxeter tc(congruence_kind::twosided, s.presentation());
 
       for (auto const& p : sims::right_generating_pairs(wg)) {
-        todd_coxeter::add_pair(tc, p.first, p.second);
+        todd_coxeter::add_generating_pair(tc, p.first, p.second);
       }
       tc.run();
 
@@ -155,7 +155,7 @@ namespace libsemigroups {
 
       tc.init(congruence_kind::right, s.presentation());
       for (auto const& p : sims::right_generating_pairs(s.presentation(), wg)) {
-        todd_coxeter::add_pair(tc, p.first, p.second);
+        todd_coxeter::add_generating_pair(tc, p.first, p.second);
       }
       tc.run();
       tc.standardize(Order::shortlex);

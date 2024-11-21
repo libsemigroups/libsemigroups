@@ -1288,7 +1288,7 @@ namespace libsemigroups {
   //   TestType kb(twosided, S);
   //   auto&       P = kb.quotient_froidure_pin();
   //   REQUIRE(P.size() == 88);
-  //   kb.add_pair(S.factorisation(Transf({3, 4, 4, 4, 4})),
+  //   kb.add_generating_pair(S.factorisation(Transf({3, 4, 4, 4, 4})),
   //               S.factorisation(Transf({3, 1, 3, 3, 3})));
   //   // P is now invalid, it's a reference to something that was deleted
   //   in

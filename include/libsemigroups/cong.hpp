@@ -62,7 +62,7 @@ namespace libsemigroups {
   //! S.is_obviously_infinite();  // false
   //!
   //! Congruence cong(twosided, S);
-  //! cong.add_pair({1, 1, 1}, {0});
+  //! cong.add_generating_pair({1, 1, 1}, {0});
   //! cong.number_of_classes(); // 3
   //! \endcode
   // TODO(0):
@@ -101,7 +101,7 @@ namespace libsemigroups {
     //! \complexity
     //! Constant.
     //!
-    //! \sa set_number_of_generators and add_pair.
+    //! \sa set_number_of_generators and add_generating_pair.
     explicit Congruence(congruence_kind type) : CongruenceInterface() {
       init(type);
     }
@@ -218,7 +218,7 @@ namespace libsemigroups {
     ~Congruence() = default;
 
     //////////////////////////////////////////////////////////////////////////
-    // Congruence - interface requirements - add_pair
+    // Congruence - interface requirements - add_generating_pair
     //////////////////////////////////////////////////////////////////////////
 
     using CongruenceInterface::add_pair_no_checks;
@@ -227,11 +227,11 @@ namespace libsemigroups {
               typename Iterator2,
               typename Iterator3,
               typename Iterator4>
-    [[nodiscard]] Congruence& add_pair(Iterator1 first1,
+    [[nodiscard]] Congruence& add_generating_pair(Iterator1 first1,
                                        Iterator2 last1,
                                        Iterator3 first2,
                                        Iterator4 last2) {
-      CongruenceInterface::add_pair<Congruence>(first1, last1, first2, last2);
+      CongruenceInterface::add_generating_pair<Congruence>(first1, last1, first2, last2);
       return *this;
     }
 
@@ -502,10 +502,10 @@ namespace libsemigroups {
   namespace congruence {
 
     ////////////////////////////////////////////////////////////////////////
-    // Interface helpers - add_pair
+    // Interface helpers - add_generating_pair
     ////////////////////////////////////////////////////////////////////////
 
-    using congruence_interface::add_pair;
+    using congruence_interface::add_generating_pair;
     using congruence_interface::add_pair_no_checks;
 
     ////////////////////////////////////////////////////////////////////////

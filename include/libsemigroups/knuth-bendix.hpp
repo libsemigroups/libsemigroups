@@ -302,7 +302,7 @@ namespace libsemigroups {
     void init_from_presentation();
 
     //////////////////////////////////////////////////////////////////////////
-    // KnuthBendix - interface requirements - add_pair
+    // KnuthBendix - interface requirements - add_generating_pair
     //////////////////////////////////////////////////////////////////////////
 
    public:
@@ -316,11 +316,11 @@ namespace libsemigroups {
               typename Iterator2,
               typename Iterator3,
               typename Iterator4>
-    [[nodiscard]] KnuthBendix& add_pair(Iterator1 first1,
+    [[nodiscard]] KnuthBendix& add_generating_pair(Iterator1 first1,
                                         Iterator2 last1,
                                         Iterator3 first2,
                                         Iterator4 last2) {
-      CongruenceInterface::add_pair<KnuthBendix>(first1, last1, first2, last2);
+      CongruenceInterface::add_generating_pair<KnuthBendix>(first1, last1, first2, last2);
       return *this;
     }
 
@@ -1036,10 +1036,10 @@ namespace libsemigroups {
 
   namespace knuth_bendix {
     ////////////////////////////////////////////////////////////////////////
-    // Interface helpers - add_pair
+    // Interface helpers - add_generating_pair
     ////////////////////////////////////////////////////////////////////////
 
-    using congruence_interface::add_pair;
+    using congruence_interface::add_generating_pair;
     using congruence_interface::add_pair_no_checks;
 
     ////////////////////////////////////////////////////////////////////////

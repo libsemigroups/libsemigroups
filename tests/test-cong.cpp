@@ -189,7 +189,7 @@ namespace libsemigroups {
     presentation::add_rule(p, 21_w, 1_w);
 
     Congruence cong(twosided, p);
-    congruence::add_pair(cong, 0_w, 1_w);
+    congruence::add_generating_pair(cong, 0_w, 1_w);
 
     REQUIRE(cong.number_of_classes() == POSITIVE_INFINITY);
 
@@ -234,7 +234,7 @@ namespace libsemigroups {
     REQUIRE(S.number_of_rules() == 2460);
 
     Congruence cong(twosided, S, S.right_cayley_graph());
-    congruence::add_pair(cong, 0321322_w, 322133_w);
+    congruence::add_generating_pair(cong, 0321322_w, 322133_w);
 
     REQUIRE(cong.number_of_classes() == 525);
 
@@ -275,9 +275,9 @@ namespace libsemigroups {
     // REQUIRE(S.number_of_rules() == 45416);
 
     Congruence cong(twosided, S, S.right_cayley_graph());
-    congruence::add_pair(
+    congruence::add_generating_pair(
         cong, {7, 10, 9, 3, 6, 9, 4, 7, 9, 10}, {9, 3, 6, 6, 10, 9, 4, 7});
-    congruence::add_pair(cong, {8, 7, 5, 8, 9, 8}, {6, 3, 8, 6, 1, 2, 4});
+    congruence::add_generating_pair(cong, {8, 7, 5, 8, 9, 8}, {6, 3, 8, 6, 1, 2, 4});
 
     REQUIRE(cong.number_of_classes() == 19'009);
     // REQUIRE(cong.number_of_non_trivial_classes() == 577);
@@ -315,7 +315,7 @@ namespace libsemigroups {
     // REQUIRE(S.number_of_rules() == 1121);
 
     Congruence cong(twosided, S, S.right_cayley_graph());
-    congruence::add_pair(cong, {2, 7}, {1, 6, 6, 1});
+    congruence::add_generating_pair(cong, {2, 7}, {1, 6, 6, 1});
     REQUIRE(cong.number_of_classes() == 32);
   }
 
@@ -349,7 +349,7 @@ namespace libsemigroups {
     REQUIRE(is_obviously_infinite(p));
 
     Congruence cong(twosided, p);
-    congruence::add_pair(cong, 111_w, {});
+    congruence::add_generating_pair(cong, 111_w, {});
     REQUIRE(cong.number_of_classes() == 3);
 
     if (cong.has<KnuthBendix<>>()) {
@@ -376,8 +376,8 @@ namespace libsemigroups {
     presentation::add_identity_rules(p, 0);
 
     Congruence cong(twosided, p);
-    congruence::add_pair(cong, 11111_w, 1_w);
-    congruence::add_pair(cong, 222_w, 2_w);
+    congruence::add_generating_pair(cong, 11111_w, 1_w);
+    congruence::add_generating_pair(cong, 222_w, 2_w);
 
     REQUIRE(cong.number_of_classes() == 15);
   }
@@ -396,7 +396,7 @@ namespace libsemigroups {
     presentation::add_rule(p, "aBabaBabaBabaBab", "BabaBabaBabaBaba");
 
     Congruence cong(twosided, p);
-    congruence::add_pair(cong, "a", "b");
+    congruence::add_generating_pair(cong, "a", "b");
 
     REQUIRE(cong.number_of_classes() == 4);
     REQUIRE(!to_froidure_pin(cong)->contains_one());
@@ -418,7 +418,7 @@ namespace libsemigroups {
     word_type w2 = froidure_pin::factorisation(S, Transf({3, 4, 4, 4, 4}));
 
     Congruence cong(twosided, S, S.right_cayley_graph());
-    congruence::add_pair(
+    congruence::add_generating_pair(
         cong,
         froidure_pin::factorisation(S, Transf({3, 4, 4, 4, 4})),
         froidure_pin::factorisation(S, Transf({3, 1, 3, 3, 3})));
@@ -453,7 +453,7 @@ namespace libsemigroups {
     // REQUIRE(is_obviously_infinite(p));
 
     Congruence cong(twosided, p);
-    congruence::add_pair(cong, 0_w, 1_w);
+    congruence::add_generating_pair(cong, 0_w, 1_w);
 
     REQUIRE(is_obviously_infinite(cong));
     REQUIRE(cong.number_of_classes() == POSITIVE_INFINITY);
@@ -484,7 +484,7 @@ namespace libsemigroups {
     presentation::add_rule(p, 000_w, 00_w);
 
     Congruence cong(twosided, p);
-    congruence::add_pair(cong, {0}, {1});
+    congruence::add_generating_pair(cong, {0}, {1});
 
     word_type x = "0"_w + pow(1_w, 20);
     word_type y = "00"_w + pow(1_w, 20);
@@ -518,7 +518,7 @@ namespace libsemigroups {
                 .empty());
     REQUIRE(cong.finished());
     REQUIRE(cong.started());
-    REQUIRE_THROWS_AS(congruence::add_pair(cong, 00_w, 0_w),
+    REQUIRE_THROWS_AS(congruence::add_generating_pair(cong, 00_w, 0_w),
                       LibsemigroupsException);
   }
 
@@ -560,7 +560,7 @@ namespace libsemigroups {
     presentation::add_rule(p, 00111010_w, 111010_w);
 
     Congruence cong(twosided, p);
-    congruence::add_pair(cong, 0_w, 1_w);
+    congruence::add_generating_pair(cong, 0_w, 1_w);
     REQUIRE(cong.number_of_classes() == 1);
     if (cong.has<ToddCoxeter>() && cong.get<ToddCoxeter>()->finished()) {
       ToddCoxeter tc(twosided, p);
@@ -617,7 +617,7 @@ namespace libsemigroups {
     for (size_t i = 0; i < elms.size(); i += 2) {
       froidure_pin::factorisation(S, w1, S.position(elms[i]));
       froidure_pin::factorisation(S, w2, S.position(elms[i + 1]));
-      congruence::add_pair(cong, w1, w2);
+      congruence::add_generating_pair(cong, w1, w2);
     }
     REQUIRE(cong.number_of_classes() == 1);
   }
@@ -631,7 +631,7 @@ namespace libsemigroups {
     p.alphabet(1);
 
     Congruence cong(twosided, p);
-    congruence::add_pair(cong, 00_w, 00_w);
+    congruence::add_generating_pair(cong, 00_w, 00_w);
     REQUIRE(cong.contains(00_w, 00_w));
   }
 
@@ -658,7 +658,7 @@ namespace libsemigroups {
       p.alphabet(3);
       presentation::add_rule(p, {0, 1}, {0});
       Congruence cong(twosided, p);
-      congruence::add_pair(cong, {2, 2}, {2});
+      congruence::add_generating_pair(cong, {2, 2}, {2});
       REQUIRE(is_obviously_infinite(cong));
       REQUIRE(cong.number_of_classes() == POSITIVE_INFINITY);
     }
@@ -668,7 +668,7 @@ namespace libsemigroups {
       presentation::add_rule(p, {0, 1}, {0});
       presentation::add_rule(p, {0, 0}, {0});
       Congruence cong(twosided, p);
-      congruence::add_pair(cong, {1, 1}, {1});
+      congruence::add_generating_pair(cong, {1, 1}, {1});
       REQUIRE(is_obviously_infinite(cong));
     }
     {
@@ -677,7 +677,7 @@ namespace libsemigroups {
       presentation::add_rule(p, {0, 1}, {0});
       presentation::add_rule(p, {0, 0}, {0});
       Congruence cong(twosided, p);
-      congruence::add_pair(cong, {1, 2}, {1});
+      congruence::add_generating_pair(cong, {1, 2}, {1});
       REQUIRE(is_obviously_infinite(cong));
     }
     {
@@ -685,16 +685,7 @@ namespace libsemigroups {
       p.alphabet(3);
       presentation::add_rule(p, {0, 1}, {0});
       Congruence cong(right, p);
-      congruence::add_pair(cong, {2, 2}, {2});
-      REQUIRE(is_obviously_infinite(cong));
-    }
-    {
-      Presentation<word_type> p;
-      p.alphabet(3);
-      presentation::add_rule(p, {0, 1}, {0});
-      presentation::add_rule(p, {0, 0}, {0});
-      Congruence cong(right, p);
-      congruence::add_pair(cong, {1, 1}, {1});
+      congruence::add_generating_pair(cong, {2, 2}, {2});
       REQUIRE(is_obviously_infinite(cong));
     }
     {
@@ -703,7 +694,16 @@ namespace libsemigroups {
       presentation::add_rule(p, {0, 1}, {0});
       presentation::add_rule(p, {0, 0}, {0});
       Congruence cong(right, p);
-      congruence::add_pair(cong, {1, 2}, {1});
+      congruence::add_generating_pair(cong, {1, 1}, {1});
+      REQUIRE(is_obviously_infinite(cong));
+    }
+    {
+      Presentation<word_type> p;
+      p.alphabet(3);
+      presentation::add_rule(p, {0, 1}, {0});
+      presentation::add_rule(p, {0, 0}, {0});
+      Congruence cong(right, p);
+      congruence::add_generating_pair(cong, {1, 2}, {1});
       REQUIRE(is_obviously_infinite(cong));
     }
     {
@@ -712,17 +712,7 @@ namespace libsemigroups {
       presentation::add_rule(p, {0, 1}, {0});
       presentation::reverse(p);
       Congruence cong(right, p);
-      congruence::add_pair(cong, {2, 2}, {2});
-      REQUIRE(is_obviously_infinite(cong));
-    }
-    {
-      Presentation<word_type> p;
-      p.alphabet(3);
-      presentation::add_rule(p, {0, 1}, {0});
-      presentation::add_rule(p, {0, 0}, {0});
-      presentation::reverse(p);
-      Congruence cong(right, p);
-      congruence::add_pair(cong, {1, 1}, {1});
+      congruence::add_generating_pair(cong, {2, 2}, {2});
       REQUIRE(is_obviously_infinite(cong));
     }
     {
@@ -732,7 +722,17 @@ namespace libsemigroups {
       presentation::add_rule(p, {0, 0}, {0});
       presentation::reverse(p);
       Congruence cong(right, p);
-      congruence::add_pair(cong, {1, 2}, {1});
+      congruence::add_generating_pair(cong, {1, 1}, {1});
+      REQUIRE(is_obviously_infinite(cong));
+    }
+    {
+      Presentation<word_type> p;
+      p.alphabet(3);
+      presentation::add_rule(p, {0, 1}, {0});
+      presentation::add_rule(p, {0, 0}, {0});
+      presentation::reverse(p);
+      Congruence cong(right, p);
+      congruence::add_generating_pair(cong, {1, 2}, {1});
       REQUIRE(is_obviously_infinite(cong));
     }
 
@@ -741,7 +741,7 @@ namespace libsemigroups {
     REQUIRE(fp.size() == 2);
     {
       Congruence cong(twosided, fp, fp.right_cayley_graph());
-      congruence::add_pair(cong, {1}, {0});
+      congruence::add_generating_pair(cong, {1}, {0});
       REQUIRE(!is_obviously_infinite(cong));
 
       REQUIRE(cong.number_of_classes() == 1);
@@ -768,7 +768,7 @@ namespace libsemigroups {
       auto S = to_froidure_pin(gens);
 
       Congruence cong(twosided, S, S.right_cayley_graph());
-      congruence::add_pair(cong, {1}, {0});
+      congruence::add_generating_pair(cong, {1}, {0});
 
       REQUIRE(cong.number_of_classes() == 3);
       REQUIRE(cong.contains({1}, {0}));
@@ -796,7 +796,7 @@ namespace libsemigroups {
     {
       auto       S = to_froidure_pin({gens[0], gens[2], gens[3]});
       Congruence cong(twosided, S, S.right_cayley_graph());
-      congruence::add_pair(cong, {1}, {0});
+      congruence::add_generating_pair(cong, {1}, {0});
 
       REQUIRE(cong.number_of_classes() == 2);
       REQUIRE(cong.contains({1}, {0}));
@@ -830,7 +830,7 @@ namespace libsemigroups {
 
     Congruence cong(right, S, S.left_cayley_graph());
 
-    congruence::add_pair(cong, 001100010_w, 10001_w);
+    congruence::add_generating_pair(cong, 001100010_w, 10001_w);
 
     REQUIRE(cong.number_of_classes() == 69);
     REQUIRE(cong.number_of_classes() == 69);
@@ -861,7 +861,7 @@ namespace libsemigroups {
     // REQUIRE(S.size() == 88);
     // REQUIRE(S.degree() == 5);
     Congruence cong(right, S, S.right_cayley_graph());
-    congruence::add_pair(cong, 010001100_w, 10001_w);
+    congruence::add_generating_pair(cong, 010001100_w, 10001_w);
 
     REQUIRE(cong.number_of_classes() == 72);
     REQUIRE(cong.number_of_classes() == 72);
@@ -894,7 +894,7 @@ namespace libsemigroups {
     froidure_pin::factorisation(S, w1, S.position(Transf<>({3, 4, 4, 4, 4})));
     froidure_pin::factorisation(S, w2, S.position(Transf<>({3, 1, 3, 3, 3})));
     Congruence cong(right, S, S.right_cayley_graph());
-    congruence::add_pair(cong, w1, w2);
+    congruence::add_generating_pair(cong, w1, w2);
 
     REQUIRE(cong.number_of_classes() == 72);
     REQUIRE(cong.number_of_classes() == 72);
@@ -919,9 +919,9 @@ namespace libsemigroups {
     p.alphabet("ab");
     REQUIRE(!p.contains_empty_word());
     Congruence cong(twosided, p);
-    congruence::add_pair(cong, "aa", "a");
-    congruence::add_pair(cong, "ab", "a");
-    congruence::add_pair(cong, "ba", "a");
+    congruence::add_generating_pair(cong, "aa", "a");
+    congruence::add_generating_pair(cong, "ab", "a");
+    congruence::add_generating_pair(cong, "ba", "a");
 
     REQUIRE(cong.has<KnuthBendix<>>());
     auto& kb = *cong.get<KnuthBendix<>>();
@@ -965,7 +965,7 @@ namespace libsemigroups {
     auto       q = stellar_monoid(2);
     presentation::change_alphabet(q, 10_w);
     for (auto it = q.rules.cbegin(); it != q.rules.cend(); it += 2) {
-      congruence::add_pair(cong, *it, *(it + 1));
+      congruence::add_generating_pair(cong, *it, *(it + 1));
     }
 
     REQUIRE(!is_obviously_infinite(cong));
@@ -993,7 +993,7 @@ namespace libsemigroups {
     Congruence cong(twosided, p);
     auto       q = stellar_monoid(3);
     for (auto it = q.rules.cbegin(); it != q.rules.cend(); it += 2) {
-      congruence::add_pair(cong, *it, *(it + 1));
+      congruence::add_generating_pair(cong, *it, *(it + 1));
     }
     REQUIRE(!is_obviously_infinite(cong));
     REQUIRE(cong.number_of_classes() == 16);
@@ -1039,7 +1039,7 @@ namespace libsemigroups {
     Congruence cong(twosided, p);
     auto       q = stellar_monoid(4);
     for (auto it = q.rules.cbegin(); it != q.rules.cend(); it += 2) {
-      congruence::add_pair(cong, *it, *(it + 1));
+      congruence::add_generating_pair(cong, *it, *(it + 1));
     }
 
     REQUIRE(!is_obviously_infinite(cong));
@@ -1071,7 +1071,7 @@ namespace libsemigroups {
     Congruence cong(twosided, p);
     auto       q = stellar_monoid(5);
     for (auto it = q.rules.cbegin(); it != q.rules.cend(); it += 2) {
-      congruence::add_pair(cong, *it, *(it + 1));
+      congruence::add_generating_pair(cong, *it, *(it + 1));
     }
 
     REQUIRE(!is_obviously_infinite(cong));
@@ -1106,7 +1106,7 @@ namespace libsemigroups {
     Congruence cong(twosided, p);
     auto       q = stellar_monoid(6);
     for (auto it = q.rules.cbegin(); it != q.rules.cend(); it += 2) {
-      congruence::add_pair(cong, *it, *(it + 1));
+      congruence::add_generating_pair(cong, *it, *(it + 1));
     }
 
     REQUIRE(!is_obviously_infinite(cong));
@@ -1137,7 +1137,7 @@ namespace libsemigroups {
     Congruence cong(twosided, p);
     auto       q = stellar_monoid(7);
     for (auto it = q.rules.cbegin(); it != q.rules.cend(); it += 2) {
-      congruence::add_pair(cong, *it, *(it + 1));
+      congruence::add_generating_pair(cong, *it, *(it + 1));
     }
 
     REQUIRE(!is_obviously_infinite(cong));
@@ -1179,11 +1179,11 @@ namespace libsemigroups {
     presentation::reverse(p);
 
     Congruence cong1(right, p);
-    congruence::add_pair(cong1, "a", "bbb");
+    congruence::add_generating_pair(cong1, "a", "bbb");
     REQUIRE(cong1.number_of_classes() == 11);
 
     Congruence cong2(right, p);
-    congruence::add_pair(cong2, "bb", "aaaaaaa");
+    congruence::add_generating_pair(cong2, "bb", "aaaaaaa");
     REQUIRE(cong1.number_of_classes() == cong2.number_of_classes());
   }
 
@@ -1196,12 +1196,12 @@ namespace libsemigroups {
     p.alphabet(3);
 
     Congruence cong(twosided, p);
-    congruence::add_pair(cong, 1_w, 2_w);
-    congruence::add_pair(cong, 00_w, 0_w);
-    congruence::add_pair(cong, 01_w, 10_w);
-    congruence::add_pair(cong, 01_w, 1_w);
-    congruence::add_pair(cong, 02_w, 20_w);
-    congruence::add_pair(cong, 02_w, 2_w);
+    congruence::add_generating_pair(cong, 1_w, 2_w);
+    congruence::add_generating_pair(cong, 00_w, 0_w);
+    congruence::add_generating_pair(cong, 01_w, 10_w);
+    congruence::add_generating_pair(cong, 01_w, 1_w);
+    congruence::add_generating_pair(cong, 02_w, 20_w);
+    congruence::add_generating_pair(cong, 02_w, 2_w);
 
     REQUIRE(!cong.contains(1_w, 2222222222_w));
   }
@@ -1214,11 +1214,11 @@ namespace libsemigroups {
     Presentation<word_type> p;
     p.alphabet(2);
     Congruence cong(twosided, p);
-    congruence::add_pair(cong, 000_w, 0_w);
-    congruence::add_pair(cong, 1111_w, 1_w);
-    congruence::add_pair(cong, 01110_w, 00_w);
-    congruence::add_pair(cong, 1001_w, 11_w);
-    congruence::add_pair(cong, 001010101010_w, 00_w);
+    congruence::add_generating_pair(cong, 000_w, 0_w);
+    congruence::add_generating_pair(cong, 1111_w, 1_w);
+    congruence::add_generating_pair(cong, 01110_w, 00_w);
+    congruence::add_generating_pair(cong, 1001_w, 11_w);
+    congruence::add_generating_pair(cong, 001010101010_w, 00_w);
 
     REQUIRE(congruence::currently_contains(cong, 1111_w, 11_w) == tril::FALSE);
     REQUIRE(congruence::contains(cong, 1111_w, 1_w));
@@ -1266,7 +1266,7 @@ namespace libsemigroups {
     p.alphabet("abcdefg");
     presentation::add_rule(p, "abcd", "aaaeaa");
     Congruence cong(twosided, p);
-    congruence::add_pair(cong, "ef", "dg");
+    congruence::add_generating_pair(cong, "ef", "dg");
     REQUIRE(is_obviously_infinite(cong));
     REQUIRE(cong.number_of_generating_pairs() == 1);
     cong.run();

@@ -516,7 +516,7 @@ namespace libsemigroups {
     // auto tc = to_todd_coxeter(twosided, S);
     ToddCoxeter tc(twosided, to_presentation<word_type>(S));
 
-    todd_coxeter::add_pair(tc, 0_w, 1_w);
+    todd_coxeter::add_generating_pair(tc, 0_w, 1_w);
 
     section_felsch(tc);
     section_hlt(tc);
@@ -579,7 +579,7 @@ namespace libsemigroups {
     auto tc = to_todd_coxeter(twosided, S, S.right_cayley_graph());
     REQUIRE(tc.current_word_graph().number_of_nodes() == 89);
 
-    todd_coxeter::add_pair(
+    todd_coxeter::add_generating_pair(
         tc,
         froidure_pin::factorisation(S, Transf({3, 4, 4, 4, 4})),
         froidure_pin::factorisation(S, Transf({3, 1, 3, 3, 3})));
@@ -755,7 +755,7 @@ namespace libsemigroups {
             == 010001100_w);
     REQUIRE(froidure_pin::factorisation(S, Transf<>({3, 1, 3, 3, 3}))
             == 10001_w);
-    todd_coxeter::add_pair(
+    todd_coxeter::add_generating_pair(
         tc,
         froidure_pin::factorisation(S, Transf<>({3, 4, 4, 4, 4})),
         froidure_pin::factorisation(S, Transf<>({3, 1, 3, 3, 3})));
@@ -863,7 +863,7 @@ namespace libsemigroups {
     SECTION("construction from presentation") {
       ToddCoxeter tc(right,
                      presentation::reverse(to_presentation<word_type>(S)));
-      todd_coxeter::add_pair(
+      todd_coxeter::add_generating_pair(
           tc,
           reverse(froidure_pin::factorisation(S, Transf<>({3, 4, 4, 4, 4}))),
           reverse(froidure_pin::factorisation(S, Transf<>({3, 1, 3, 3, 3}))));
@@ -871,7 +871,7 @@ namespace libsemigroups {
     }
     SECTION("construction from Cayley graph") {
       auto tc = to_todd_coxeter(right, S, S.left_cayley_graph());
-      todd_coxeter::add_pair(
+      todd_coxeter::add_generating_pair(
           tc,
           reverse(froidure_pin::factorisation(S, Transf<>({3, 4, 4, 4, 4}))),
           reverse(froidure_pin::factorisation(S, Transf<>({3, 1, 3, 3, 3}))));
@@ -880,7 +880,7 @@ namespace libsemigroups {
     SECTION("default construction + move from Cayley graph") {
       ToddCoxeter tc;
       tc = to_todd_coxeter(right, S, S.left_cayley_graph());
-      todd_coxeter::add_pair(
+      todd_coxeter::add_generating_pair(
           tc,
           reverse(froidure_pin::factorisation(S, Transf<>({3, 4, 4, 4, 4}))),
           reverse(froidure_pin::factorisation(S, Transf<>({3, 1, 3, 3, 3}))));
@@ -890,7 +890,7 @@ namespace libsemigroups {
       ToddCoxeter tc;
       tc = ToddCoxeter(right,
                        presentation::reverse(to_presentation<word_type>(S)));
-      todd_coxeter::add_pair(
+      todd_coxeter::add_generating_pair(
           tc,
           reverse(froidure_pin::factorisation(S, Transf<>({3, 4, 4, 4, 4}))),
           reverse(froidure_pin::factorisation(S, Transf<>({3, 1, 3, 3, 3}))));
@@ -912,7 +912,7 @@ namespace libsemigroups {
     auto tc = to_todd_coxeter(right, S, S.right_cayley_graph());
     // ToddCoxeter tc(right, to_presentation<word_type>(S));
 
-    todd_coxeter::add_pair(
+    todd_coxeter::add_generating_pair(
         tc,
         froidure_pin::factorisation(S, Transf<>({3, 4, 4, 4, 4})),
         froidure_pin::factorisation(S, Transf<>({3, 1, 3, 3, 3})));
@@ -984,7 +984,7 @@ namespace libsemigroups {
     word_type w2
         = froidure_pin::factorisation(S, S.position(Transf<>({3, 1, 3, 3, 3})));
 
-    todd_coxeter::add_pair(tc, w1, w2);
+    todd_coxeter::add_generating_pair(tc, w1, w2);
 
     section_hlt(tc);
     section_felsch(tc);
@@ -1332,7 +1332,7 @@ namespace libsemigroups {
 
     ToddCoxeter tc2(right, tc1);
     REQUIRE(!contains(tc1, 0_w, 1_w));
-    todd_coxeter::add_pair(tc2, 0_w, 1_w);
+    todd_coxeter::add_generating_pair(tc2, 0_w, 1_w);
 
     section_felsch(tc2);
     section_hlt(tc2);
@@ -1431,10 +1431,10 @@ namespace libsemigroups {
     ToddCoxeter tc1(twosided, p);
     REQUIRE(tc1.number_of_classes() == 5);
     ToddCoxeter tc2(right, tc1);
-    todd_coxeter::add_pair(tc2, "a", "b");
-    REQUIRE_THROWS_AS(todd_coxeter::add_pair(tc2, 0_w, 2_w),
+    todd_coxeter::add_generating_pair(tc2, "a", "b");
+    REQUIRE_THROWS_AS(todd_coxeter::add_generating_pair(tc2, 0_w, 2_w),
                       LibsemigroupsException);
-    REQUIRE_THROWS_AS(todd_coxeter::add_pair(tc2, "a", "c"),
+    REQUIRE_THROWS_AS(todd_coxeter::add_generating_pair(tc2, "a", "c"),
                       LibsemigroupsException);
 
     section_hlt(tc2);
@@ -1480,7 +1480,7 @@ namespace libsemigroups {
     section_Cr_style(tc);
     section_Rc_style(tc);
 
-    todd_coxeter::add_pair(tc, "b", "B");
+    todd_coxeter::add_generating_pair(tc, "b", "B");
     REQUIRE(is_obviously_infinite(tc));
     REQUIRE(tc.number_of_classes() == POSITIVE_INFINITY);
     REQUIRE(tc.presentation().rules
@@ -1490,7 +1490,7 @@ namespace libsemigroups {
     REQUIRE(tc.generating_pairs() == std::vector<word_type>({{1}, {2}}));
     REQUIRE(!tc.finished());
     REQUIRE(!tc.started());
-    todd_coxeter::add_pair(tc, "b", "a");
+    todd_coxeter::add_generating_pair(tc, "b", "a");
     REQUIRE(!is_obviously_infinite(tc));
 
     REQUIRE(tc.number_of_classes() == 1);
@@ -1521,7 +1521,7 @@ namespace libsemigroups {
 
     for (auto knd : {twosided, right}) {
       auto tc = to_todd_coxeter(knd, kb);
-      todd_coxeter::add_pair(tc, {1}, {2});
+      todd_coxeter::add_generating_pair(tc, {1}, {2});
       REQUIRE(tc.number_of_classes() == 1);
       if (tc.kind() == twosided) {
         REQUIRE(to_froidure_pin(tc).size() == 1);
@@ -1559,7 +1559,7 @@ namespace libsemigroups {
     ToddCoxeter tc2(right, tc1);
     tc2.lookahead_next(1);
     tc2.report_every(1);
-    todd_coxeter::add_pair(tc2, 0_w, 00_w);
+    todd_coxeter::add_generating_pair(tc2, 0_w, 00_w);
 
     section_hlt(tc2);
     section_felsch(tc2);
@@ -1579,7 +1579,7 @@ namespace libsemigroups {
     REQUIRE(S.number_of_rules() == 18);
     auto tc = to_todd_coxeter(
         twosided, S, S.right_cayley_graph());  // use Cayley graph
-    todd_coxeter::add_pair(tc, {0}, {1, 1});
+    todd_coxeter::add_generating_pair(tc, {0}, {1, 1});
 
     section_felsch(tc);
     section_hlt(tc);
@@ -1610,7 +1610,7 @@ namespace libsemigroups {
     presentation::reverse(p);
 
     ToddCoxeter tc1(right, p);
-    todd_coxeter::add_pair(tc1, "a", "bbb");
+    todd_coxeter::add_generating_pair(tc1, "a", "bbb");
     section_hlt(tc1);
     section_felsch(tc1);
     section_Rc_style(tc1);
@@ -1813,8 +1813,8 @@ namespace libsemigroups {
     REQUIRE(tc.current_word_graph().felsch_tree().number_of_nodes() == 7);
 
     ToddCoxeter tc2(right, tc);
-    todd_coxeter::add_pair(tc2, 00_w, 0_w);
-    todd_coxeter::add_pair(tc2, 00_w, 0_w);
+    todd_coxeter::add_generating_pair(tc2, 00_w, 0_w);
+    todd_coxeter::add_generating_pair(tc2, 00_w, 0_w);
 
     // Uses CongruenceInterface's generating pairs
     REQUIRE(tc2.number_of_generating_pairs() == 2);
@@ -1824,7 +1824,7 @@ namespace libsemigroups {
 
     ToddCoxeter tc3(twosided, p);
     REQUIRE(is_non_trivial(tc3) == tril::TRUE);
-    todd_coxeter::add_pair(tc3, 00_w, 0_w);
+    todd_coxeter::add_generating_pair(tc3, 00_w, 0_w);
 
     REQUIRE(is_non_trivial(tc3) == tril::unknown);
     REQUIRE(tc3.number_of_classes() == 1);
@@ -2550,7 +2550,7 @@ namespace libsemigroups {
     auto p = to_presentation<word_type>(S);
     {
       ToddCoxeter tc1(twosided, p);
-      todd_coxeter::add_pair(tc1, w1, w2);
+      todd_coxeter::add_generating_pair(tc1, w1, w2);
 
       section_felsch(tc1);
       section_hlt(tc1);
@@ -2566,7 +2566,7 @@ namespace libsemigroups {
     }
     {
       ToddCoxeter tc2(twosided, p);
-      todd_coxeter::add_pair(tc2, w1, w2);
+      todd_coxeter::add_generating_pair(tc2, w1, w2);
 
       section_hlt(tc2);
       section_felsch(tc2);
@@ -3352,7 +3352,7 @@ namespace libsemigroups {
     presentation::add_rule(p, "accAABab", "");
 
     ToddCoxeter H(right, p);
-    todd_coxeter::add_pair(H, "bc", "");
+    todd_coxeter::add_generating_pair(H, "bc", "");
     H.lookahead_next(1'000'000);
 
     REQUIRE(H.number_of_classes() == 16'384);
@@ -3372,8 +3372,8 @@ namespace libsemigroups {
     presentation::add_rule(p, "accAABab", "");
 
     ToddCoxeter H(right, p);
-    todd_coxeter::add_pair(H, "bc", "");
-    todd_coxeter::add_pair(H, "bc", "ABAAbcabC");
+    todd_coxeter::add_generating_pair(H, "bc", "");
+    todd_coxeter::add_generating_pair(H, "bc", "ABAAbcabC");
 
     H.strategy(options::strategy::hlt)
         .lookahead_extent(options::lookahead_extent::partial);
@@ -3405,9 +3405,9 @@ namespace libsemigroups {
     presentation::add_rule(p, "accAABab", "");
 
     ToddCoxeter H(right, p);
-    todd_coxeter::add_pair(H, "bc", "");
-    todd_coxeter::add_pair(H, "ABAAbcabC", "");
-    todd_coxeter::add_pair(H, "AcccacBcA", "");
+    todd_coxeter::add_generating_pair(H, "bc", "");
+    todd_coxeter::add_generating_pair(H, "ABAAbcabC", "");
+    todd_coxeter::add_generating_pair(H, "AcccacBcA", "");
     H.large_collapse(10'000)
         .strategy(options::strategy::hlt)
         .lookahead_extent(options::lookahead_extent::partial);
@@ -3493,7 +3493,7 @@ namespace libsemigroups {
     // section_Cr_style(H); // too slow
     // section_Rc_style(H); // about 1.7s
 
-    todd_coxeter::add_pair(H, "b", "");
+    todd_coxeter::add_generating_pair(H, "b", "");
 
     REQUIRE(H.number_of_classes() == 180);
   }
@@ -3537,7 +3537,7 @@ namespace libsemigroups {
     presentation::add_rule(p, "DVdv", "");
 
     ToddCoxeter H(right, p);
-    todd_coxeter::add_pair(H, "a", "");
+    todd_coxeter::add_generating_pair(H, "a", "");
 
     section_hlt(H);
     section_CR_style(H);
@@ -3624,7 +3624,7 @@ namespace libsemigroups {
 
     ToddCoxeter H(right, p);
 
-    todd_coxeter::add_pair(H, "ab", "");
+    todd_coxeter::add_generating_pair(H, "ab", "");
 
     section_hlt(H);
     section_felsch(H);
@@ -4002,7 +4002,7 @@ namespace libsemigroups {
 
     SECTION("custom HLT") {
       ToddCoxeter tc(right, p);
-      todd_coxeter::add_pair(tc, "xy", "");
+      todd_coxeter::add_generating_pair(tc, "xy", "");
       tc.strategy(options::strategy::hlt)
           .lookahead_extent(options::lookahead_extent::partial)
           .lookahead_style(options::lookahead_style::hlt)
@@ -4017,7 +4017,7 @@ namespace libsemigroups {
       presentation::replace_word_with_new_generator(p, "axY");
       REQUIRE(presentation::length(p) == 140);
       ToddCoxeter tc(right, p);
-      todd_coxeter::add_pair(tc, "xy", "");
+      todd_coxeter::add_generating_pair(tc, "xy", "");
       tc.strategy(options::strategy::felsch);
       REQUIRE(tc.number_of_classes() == 10'644'480);
     }
@@ -4055,7 +4055,7 @@ namespace libsemigroups {
     REQUIRE(presentation::length(p) == 367);
 
     ToddCoxeter tc(right, p);
-    todd_coxeter::add_pair(tc, "xy", "");
+    todd_coxeter::add_generating_pair(tc, "xy", "");
     tc.lookahead_style(options::lookahead_style::felsch)
         .lookahead_extent(options::lookahead_extent::partial)
         .strategy(options::strategy::hlt)
@@ -4738,8 +4738,8 @@ namespace libsemigroups {
 
     {
       ToddCoxeter tc(twosided, wg);
-      todd_coxeter::add_pair(tc, 12_w, 2_w);
-      todd_coxeter::add_pair(tc, 21_w, 2_w);
+      todd_coxeter::add_generating_pair(tc, 12_w, 2_w);
+      todd_coxeter::add_generating_pair(tc, 21_w, 2_w);
       REQUIRE(tc.number_of_classes() == 40'321);
     }
   }
@@ -4898,9 +4898,9 @@ namespace libsemigroups {
     presentation::reverse(p);
 
     ToddCoxeter tc(right, p);
-    todd_coxeter::add_pair(tc, "a", "");
-    todd_coxeter::add_pair(tc, "b", "");
-    todd_coxeter::add_pair(tc, "c", "");
+    todd_coxeter::add_generating_pair(tc, "a", "");
+    todd_coxeter::add_generating_pair(tc, "b", "");
+    todd_coxeter::add_generating_pair(tc, "c", "");
     tc.strategy(options::strategy::felsch).use_relations_in_extra(true);
 
     REQUIRE(tc.number_of_classes() == 7'238'400);

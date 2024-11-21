@@ -1074,7 +1074,7 @@ namespace libsemigroups {
       open_xml_tag("LatexColumnTitle", "HLT");
       BENCHMARK("HLT") {
         ToddCoxeter H(congruence_kind::right, p);
-        H.add_pair({1, 2}, {});
+        H.add_generating_pair({1, 2}, {});
         H.lookahead_next(1'000'000).lookahead_extent(lookahead_extent::partial);
         REQUIRE(H.number_of_classes() == 16'384);
       };
@@ -1083,7 +1083,7 @@ namespace libsemigroups {
       // open_xml_tag("LatexColumnTitle", "Felsch");
       // BENCHMARK("Felsch") {
       //  ToddCoxeter H(congruence_kind::right, p);
-      //  H.add_pair({1, 2}, {});
+      //  H.add_generating_pair({1, 2}, {});
       //  H.strategy(strategy::felsch).def_max(100'000);
       //  REQUIRE(H.number_of_classes() == 16'384);
       //};
@@ -1109,8 +1109,8 @@ namespace libsemigroups {
       open_xml_tag("LatexColumnTitle", "HLT");
       BENCHMARK("HLT") {
         ToddCoxeter H(congruence_kind::right, p);
-        H.add_pair({b, c}, {});
-        H.add_pair({A, B, A, A, b}, {c, B, A, C});
+        H.add_generating_pair({b, c}, {});
+        H.add_generating_pair({A, B, A, A, b}, {c, B, A, C});
 
         H.strategy(strategy::hlt).save(true).def_max(100'000);
 
@@ -1121,8 +1121,8 @@ namespace libsemigroups {
       // open_xml_tag("LatexColumnTitle", "Felsch");
       // BENCHMARK("Felsch") {
       //   ToddCoxeter H(congruence_kind::right, p);
-      //   H.add_pair({b, c}, {});
-      //   H.add_pair({A, B, A, A, b, c, a, b, C}, {});
+      //   H.add_generating_pair({b, c}, {});
+      //   H.add_generating_pair({A, B, A, A, b, c, a, b, C}, {});
 
       //   H.strategy(strategy::felsch);
 
@@ -1154,9 +1154,9 @@ namespace libsemigroups {
       open_xml_tag("LatexColumnTitle", "HLT");
       BENCHMARK("HLT") {
         ToddCoxeter H(congruence_kind::right, p);
-        H.add_pair({}, {a, B, C, b, a, c});
-        H.add_pair({b, A, C, b, a, a, c, A}, {});
-        H.add_pair({a, c, c, A, A, B, a, b}, {});
+        H.add_generating_pair({}, {a, B, C, b, a, c});
+        H.add_generating_pair({b, A, C, b, a, a, c, A}, {});
+        H.add_generating_pair({a, c, c, A, A, B, a, b}, {});
 
         H.save(true).def_max(20'000).large_collapse(10'000);
         REQUIRE(H.number_of_classes() == 131'072);
@@ -1185,9 +1185,9 @@ namespace libsemigroups {
       open_xml_tag("LatexColumnTitle", "HLT");
       BENCHMARK("HLT") {
         ToddCoxeter H(congruence_kind::right, p);
-        H.add_pair({b, c}, {});
-        H.add_pair({A, B, A, A, b, c, a, b, C}, {});
-        H.add_pair({A, c, c, c, a, c, B, c, A}, {});
+        H.add_generating_pair({b, c}, {});
+        H.add_generating_pair({A, B, A, A, b, c, a, b, C}, {});
+        H.add_generating_pair({A, c, c, c, a, c, B, c, A}, {});
 
         H.strategy(strategy::hlt)
             .save(true)
@@ -1244,9 +1244,9 @@ namespace libsemigroups {
       open_xml_tag("LatexColumnTitle", "HLT");
       BENCHMARK("HLT") {
         ToddCoxeter H(congruence_kind::right, p);
-        H.add_pair({a, B, C, b, a, c}, {});
-        H.add_pair({b, A, C, b, a, a, c, A}, {});
-        H.add_pair({a, c, c, A, A, B, a, b}, {});
+        H.add_generating_pair({a, B, C, b, a, c}, {});
+        H.add_generating_pair({b, A, C, b, a, a, c, A}, {});
+        H.add_generating_pair({a, c, c, A, A, B, a, b}, {});
 
         H.strategy(strategy::hlt)
             .save(true)
@@ -1337,7 +1337,7 @@ namespace libsemigroups {
       open_xml_tag("LatexColumnTitle", "HLT");
       BENCHMARK("HLT") {
         ToddCoxeter H(congruence_kind::right, p);
-        H.add_pair({b}, {});
+        H.add_generating_pair({b}, {});
 
         H.strategy(strategy::hlt)
             .save(false)
@@ -1373,9 +1373,9 @@ namespace libsemigroups {
       open_xml_tag("LatexColumnTitle", "HLT");
       BENCHMARK("HLT") {
         ToddCoxeter H(congruence_kind::right, p);
-        H.add_pair({a, B, C, b, a, c}, {});
-        H.add_pair({b, A, C, b, a, a, c, A}, {});
-        H.add_pair({a, c, c, A, A, B, a, b}, {});
+        H.add_generating_pair({a, B, C, b, a, c}, {});
+        H.add_generating_pair({b, A, C, b, a, a, c, A}, {});
+        H.add_generating_pair({a, c, c, A, A, B, a, b}, {});
         H.strategy(strategy::hlt)
             .save(true)
             .lookahead_extent(lookahead_extent::partial)

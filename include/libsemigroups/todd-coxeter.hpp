@@ -50,7 +50,7 @@
 // 1.  ToddCoxeter - nested classes - private
 // 2.  ToddCoxeter - data members - private
 // 3.  ToddCoxeter - constructors + initializers - public
-// 4.  ToddCoxeter - interface requirements - add_pair
+// 4.  ToddCoxeter - interface requirements - add_generating_pair
 // 5.  ToddCoxeter - interface requirements - number_of_classes
 // 6.  ToddCoxeter - interface requirements - contains
 // 7.  ToddCoxeter - interface requirements - reduce
@@ -756,7 +756,7 @@ namespace libsemigroups {
     }
 
     ////////////////////////////////////////////////////////////////////////
-    // 4. ToddCoxeter - interface requirements - add_pair
+    // 4. ToddCoxeter - interface requirements - add_generating_pair
     ////////////////////////////////////////////////////////////////////////
 
     // using CongruenceInterface::add_pair_no_checks; TODO use or rm
@@ -797,11 +797,11 @@ namespace libsemigroups {
               typename Iterator2,
               typename Iterator3,
               typename Iterator4>
-    ToddCoxeter& add_pair(Iterator1 first1,
+    ToddCoxeter& add_generating_pair(Iterator1 first1,
                           Iterator2 last1,
                           Iterator3 first2,
                           Iterator4 last2) {
-      CongruenceInterface::add_pair<ToddCoxeter>(first1, last1, first2, last2);
+      CongruenceInterface::add_generating_pair<ToddCoxeter>(first1, last1, first2, last2);
       return *this;
     }
 
@@ -1695,7 +1695,7 @@ namespace libsemigroups {
     // ToddCoxeter add_generating_pairs helpers
     ////////////////////////////////////////////////////////////////////////
 
-    using congruence_interface::add_pair;
+    using congruence_interface::add_generating_pair;
     using congruence_interface::add_pair_no_checks;
 
     ////////////////////////////////////////////////////////////////////////

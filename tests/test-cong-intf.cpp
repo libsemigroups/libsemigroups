@@ -42,7 +42,7 @@ namespace libsemigroups {
     namespace congruence {
       LIBSEMIGROUPS_TEST_CASE("CongruenceInterface",
                               "000",
-                              "add_pair",
+                              "add_generating_pair",
                               "[quick]") {
         auto rg = ReportGuard(REPORT);
 
@@ -57,9 +57,9 @@ namespace libsemigroups {
         SECTION("CongruenceByPairs") {
           ToddCoxeter tc(twosided);
           tc.set_number_of_generators(2);
-          tc.add_pair({0, 0, 0}, {0});
-          tc.add_pair({1, 1, 1, 1}, {1});
-          tc.add_pair({0, 1, 0, 1}, {0, 0});
+          tc.add_generating_pair({0, 0, 0}, {0});
+          tc.add_generating_pair({1, 1, 1, 1}, {1});
+          tc.add_generating_pair({0, 1, 0, 1}, {0, 0});
           cong = std::make_unique<CongruenceByPairs<FroidurePinTCE>>(
               right, tc.quotient_froidure_pin());
           // FIXME(when CongruenceByPairs has a proper traits class) We can't
@@ -78,15 +78,15 @@ namespace libsemigroups {
         }
 
         cong->set_number_of_generators(2);
-        cong->add_pair({0, 0, 0}, {0});
-        cong->add_pair({1, 1, 1, 1}, {1});
-        cong->add_pair({0, 1, 0, 1}, {0, 0});
+        cong->add_generating_pair({0, 0, 0}, {0});
+        cong->add_generating_pair({1, 1, 1, 1}, {1});
+        cong->add_generating_pair({0, 1, 0, 1}, {0, 0});
 
         REQUIRE(!cong->finished());
         REQUIRE(cong->number_of_classes() == 27);
         REQUIRE(cong->finished());
         REQUIRE(cong->started());
-        REQUIRE_THROWS_AS(cong->add_pair({0}, {1}), LibsemigroupsException);
+        REQUIRE_THROWS_AS(cong->add_generating_pair({0}, {1}), LibsemigroupsException);
       }
 
       LIBSEMIGROUPS_TEST_CASE("CongruenceInterface",
@@ -117,9 +117,9 @@ namespace libsemigroups {
           SECTION("CongruenceByPairs") {
             ToddCoxeter tc(twosided);
             tc.set_number_of_generators(2);
-            tc.add_pair({0, 0, 0}, {0});
-            tc.add_pair({1, 1, 1, 1}, {1});
-            tc.add_pair({0, 1, 0, 1}, {0, 0});
+            tc.add_generating_pair({0, 0, 0}, {0});
+            tc.add_generating_pair({1, 1, 1, 1}, {1});
+            tc.add_generating_pair({0, 1, 0, 1}, {0, 0});
             cong = std::make_unique<CongruenceByPairs<FroidurePinTCE>>(
                 right, tc.quotient_froidure_pin());
             // FIXME(when CongruenceByPairs has a proper traits class) We can't
@@ -139,9 +139,9 @@ namespace libsemigroups {
         REQUIRE(!cong->started());
 
         cong->set_number_of_generators(2);
-        cong->add_pair({0, 0, 0}, {0});
-        cong->add_pair({1, 1, 1, 1}, {1});
-        cong->add_pair({0, 1, 0, 1}, {0, 0});
+        cong->add_generating_pair({0, 0, 0}, {0});
+        cong->add_generating_pair({1, 1, 1, 1}, {1});
+        cong->add_generating_pair({0, 1, 0, 1}, {0, 0});
 
         REQUIRE(cong->const_contains({0, 0, 0}, {0, 0}) == tril::unknown);
         REQUIRE(!cong->contains({0, 0, 0}, {0, 0}));
@@ -169,9 +169,9 @@ namespace libsemigroups {
         SECTION("CongruenceByPairs") {
           ToddCoxeter tc(twosided);
           tc.set_number_of_generators(2);
-          tc.add_pair({0, 0, 0}, {0});
-          tc.add_pair({1, 1, 1, 1}, {1});
-          tc.add_pair({0, 1, 0, 1}, {0, 0});
+          tc.add_generating_pair({0, 0, 0}, {0});
+          tc.add_generating_pair({1, 1, 1, 1}, {1});
+          tc.add_generating_pair({0, 1, 0, 1}, {0, 0});
           cong = std::make_unique<CongruenceByPairs<FroidurePinTCE>>(
               right, tc.quotient_froidure_pin());
           // FIXME(when CongruenceByPairs has a proper traits class) We can't
@@ -196,9 +196,9 @@ namespace libsemigroups {
         }
 
         cong->set_number_of_generators(2);
-        cong->add_pair({0, 0, 0}, {0});
-        cong->add_pair({1, 1, 1, 1}, {1});
-        cong->add_pair({0, 1, 0, 1}, {0, 0});
+        cong->add_generating_pair({0, 0, 0}, {0});
+        cong->add_generating_pair({1, 1, 1, 1}, {1});
+        cong->add_generating_pair({0, 1, 0, 1}, {0, 0});
 
         REQUIRE(cong->less({0}, {1}));
         REQUIRE(cong->number_of_classes() == 27);
@@ -227,9 +227,9 @@ namespace libsemigroups {
         REQUIRE(cong->is_quotient_obviously_infinite());
         REQUIRE(!cong->is_quotient_obviously_finite());
 
-        cong->add_pair({0, 0, 0}, {0});
-        cong->add_pair({1, 1, 1, 1}, {1});
-        cong->add_pair({0, 1, 0, 1}, {0, 0});
+        cong->add_generating_pair({0, 0, 0}, {0});
+        cong->add_generating_pair({1, 1, 1, 1}, {1});
+        cong->add_generating_pair({0, 1, 0, 1}, {0, 0});
 
         REQUIRE(!cong->is_quotient_obviously_infinite());
         REQUIRE(!cong->is_quotient_obviously_finite());
@@ -249,9 +249,9 @@ namespace libsemigroups {
         SECTION("CongruenceByPairs") {
           ToddCoxeter tc(twosided);
           tc.set_number_of_generators(2);
-          tc.add_pair({0, 0, 0}, {0});
-          tc.add_pair({1, 1, 1, 1}, {1});
-          tc.add_pair({0, 1, 0, 1}, {0, 0});
+          tc.add_generating_pair({0, 0, 0}, {0});
+          tc.add_generating_pair({1, 1, 1, 1}, {1});
+          tc.add_generating_pair({0, 1, 0, 1}, {0, 0});
           cong = std::make_unique<CongruenceByPairs<FroidurePinTCE>>(
               right, tc.quotient_froidure_pin());
         }
@@ -269,7 +269,7 @@ namespace libsemigroups {
                             LibsemigroupsException);
         }
 
-        cong->add_pair({0, 0, 0}, {0, 0});
+        cong->add_generating_pair({0, 0, 0}, {0, 0});
 
         REQUIRE(!cong->is_quotient_obviously_infinite());
         REQUIRE(!cong->is_quotient_obviously_finite());
@@ -305,9 +305,9 @@ namespace libsemigroups {
         SECTION("CongruenceByPairs") {
           ToddCoxeter tc(twosided);
           tc.set_number_of_generators(2);
-          tc.add_pair({0, 0, 0}, {0});
-          tc.add_pair({1, 1, 1, 1}, {1});
-          tc.add_pair({0, 1, 0, 1}, {0, 0});
+          tc.add_generating_pair({0, 0, 0}, {0});
+          tc.add_generating_pair({1, 1, 1, 1}, {1});
+          tc.add_generating_pair({0, 1, 0, 1}, {0, 0});
           cong = std::make_unique<CongruenceByPairs<FroidurePinTCE>>(
               left, tc.quotient_froidure_pin());
         }
@@ -325,7 +325,7 @@ namespace libsemigroups {
                             LibsemigroupsException);
         }
 
-        cong->add_pair({0, 0, 0}, {0, 0});
+        cong->add_generating_pair({0, 0, 0}, {0, 0});
 
         REQUIRE(cong->has_parent_froidure_pin());
         REQUIRE(cong->parent_froidure_pin()->size() == 27);
@@ -351,7 +351,7 @@ namespace libsemigroups {
           cong = std::make_unique<KnuthBendix>(S);
         }
 
-        cong->add_pair(S.factorisation(Transf<>({3, 4, 4, 4, 4})),
+        cong->add_generating_pair(S.factorisation(Transf<>({3, 4, 4, 4, 4})),
                        S.factorisation(Transf<>({3, 1, 3, 3, 3})));
 
         REQUIRE(cong->number_of_classes() == 21);
@@ -449,7 +449,7 @@ namespace libsemigroups {
         SECTION("Congruence") {
           cong = std::make_unique<Congruence>(right, S);
         }
-        cong->add_pair(S.factorisation(Transf<>({3, 4, 4, 4, 4})),
+        cong->add_generating_pair(S.factorisation(Transf<>({3, 4, 4, 4, 4})),
                        S.factorisation(Transf<>({3, 1, 3, 3, 3})));
 
         REQUIRE(cong->number_of_classes() == 72);
@@ -490,9 +490,9 @@ namespace libsemigroups {
         }
 
         cong->set_number_of_generators(2);
-        cong->add_pair({0, 0, 0}, {0});
-        cong->add_pair({1, 1, 1, 1}, {1});
-        cong->add_pair({0, 1, 0, 1}, {0, 0});
+        cong->add_generating_pair({0, 0, 0}, {0});
+        cong->add_generating_pair({1, 1, 1, 1}, {1});
+        cong->add_generating_pair({0, 1, 0, 1}, {0, 0});
 
         REQUIRE(cong->quotient_froidure_pin()->immutable());
       }

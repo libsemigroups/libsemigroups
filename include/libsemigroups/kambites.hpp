@@ -202,11 +202,11 @@ namespace libsemigroups {
               typename Iterator2,
               typename Iterator3,
               typename Iterator4>
-    [[nodiscard]] Kambites& add_pair(Iterator1 first1,
+    [[nodiscard]] Kambites& add_generating_pair(Iterator1 first1,
                                      Iterator2 last1,
                                      Iterator3 first2,
                                      Iterator4 last2) {
-      CongruenceInterface::add_pair<Kambites>(first1, last1, first2, last2);
+      CongruenceInterface::add_generating_pair<Kambites>(first1, last1, first2, last2);
       return *this;
     }
 
@@ -637,7 +637,7 @@ namespace libsemigroups {
   Kambites(Presentation<Word> const&) -> Kambites<Word>;
 
   namespace kambites {
-    using congruence_interface::add_pair;
+    using congruence_interface::add_generating_pair;
     using congruence_interface::add_pair_no_checks;
 
     ////////////////////////////////////////////////////////////////////////

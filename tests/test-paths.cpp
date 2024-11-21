@@ -461,9 +461,9 @@ namespace libsemigroups {
 
     KnuthBendix kb2(congruence_kind::twosided, p);
     for (size_t i = 0; i < lprime.size(); ++i) {
-      knuth_bendix::add_pair(kb2, lprime[i], rhs[i]);
+      knuth_bendix::add_generating_pair(kb2, lprime[i], rhs[i]);
     }
-    knuth_bendix::add_pair(kb2, 1_w, 00000001_w);
+    knuth_bendix::add_generating_pair(kb2, 1_w, 00000001_w);
     REQUIRE(kb2.number_of_classes() == 9);
     auto T = to_froidure_pin(kb2);
     T.run();

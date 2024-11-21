@@ -136,7 +136,7 @@ namespace libsemigroups {
 
    public:
     ////////////////////////////////////////////////////////////////////////
-    // CongruenceInterface - add_pair
+    // CongruenceInterface - add_generating_pair
     ////////////////////////////////////////////////////////////////////////
 
     // TODO(0) should it be Subclass & ??
@@ -157,7 +157,7 @@ namespace libsemigroups {
               typename Iterator2,
               typename Iterator3,
               typename Iterator4>
-    auto& add_pair(Iterator1 first1,
+    auto& add_generating_pair(Iterator1 first1,
                    Iterator2 last1,
                    Iterator3 first2,
                    Iterator4 last2) {
@@ -235,7 +235,7 @@ namespace libsemigroups {
 
   namespace congruence_interface {
     ////////////////////////////////////////////////////////////////////////
-    // Interface helpers - add_pair
+    // Interface helpers - add_generating_pair
     ////////////////////////////////////////////////////////////////////////
 
     // TODO(0) doc
@@ -276,17 +276,17 @@ namespace libsemigroups {
 
     // TODO(doc)
     template <typename Subclass, typename Word>
-    Subclass& add_pair(Subclass& ci, Word const& u, Word const& v) {
+    Subclass& add_generating_pair(Subclass& ci, Word const& u, Word const& v) {
       static_assert(std::is_base_of_v<CongruenceInterface, Subclass>);
-      return ci.add_pair(
+      return ci.add_generating_pair(
           std::begin(u), std::end(u), std::begin(v), std::end(v));
     }
 
     // TODO(doc)
     template <typename Subclass, typename Word>
-    inline Subclass& add_pair(Subclass& ci, Word&& u, Word&& v) {
+    inline Subclass& add_generating_pair(Subclass& ci, Word&& u, Word&& v) {
       static_assert(std::is_base_of_v<CongruenceInterface, Subclass>);
-      return ci.add_pair(std::make_move_iterator(std::begin(u)),
+      return ci.add_generating_pair(std::make_move_iterator(std::begin(u)),
                          std::make_move_iterator(std::end(u)),
                          std::make_move_iterator(std::begin(v)),
                          std::make_move_iterator(std::end(v)));
@@ -294,17 +294,17 @@ namespace libsemigroups {
 
     // TODO(doc)
     template <typename Subclass, typename Int>
-    Subclass& add_pair(Subclass&                         ci,
+    Subclass& add_generating_pair(Subclass&                         ci,
                        std::initializer_list<Int> const& u,
                        std::initializer_list<Int> const& v) {
-      return add_pair<Subclass, std::vector<Int>>(ci, u, v);
+      return add_generating_pair<Subclass, std::vector<Int>>(ci, u, v);
     }
 
     // TODO(doc)
     template <typename Subclass>
-    inline Subclass& add_pair(Subclass& ci, char const* u, char const* v) {
+    inline Subclass& add_generating_pair(Subclass& ci, char const* u, char const* v) {
       static_assert(std::is_base_of_v<CongruenceInterface, Subclass>);
-      return ci.add_pair(u, u + std::strlen(u), v, v + std::strlen(v));
+      return ci.add_generating_pair(u, u + std::strlen(u), v, v + std::strlen(v));
     }
 
     ////////////////////////////////////////////////////////////////////////
