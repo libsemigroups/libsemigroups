@@ -29,7 +29,26 @@ namespace libsemigroups {
   class ToddCoxeter;
   enum class congruence_kind;
 
-  ToddCoxeter to_todd_coxeter(congruence_kind knd, FroidurePinBase& fp);
+  template <typename Node>
+  ToddCoxeter to_todd_coxeter(congruence_kind        knd,
+                              FroidurePinBase&       fpb,
+                              WordGraph<Node> const& wg) {
+    using node_type  = typename ToddCoxeter::word_graph_type::node_type;
+    using label_type = typename ToddCoxeter::word_graph_type::label_type;
+
+    WordGraph<node_type> copy(wg.number_of_nodes() + 1, wg.out_degree());
+
+    for (label_type a = 0; a < copy.out_degree(); ++a) {
+      copy.target_no_checks(0, a, fpb.position_of_generator_no_checks(a) + 1);
+    }
+
+    for (node_type n = 0; n < copy.number_of_nodes() - 1; ++n) {
+      for (label_type a = 0; a < copy.out_degree(); ++a) {
+        copy.target_no_checks(n + 1, a, wg.target_no_checks(n, a) + 1);
+      }
+    }
+    return ToddCoxeter(knd, std::move(copy));
+  }
 
   template <typename Rewriter, typename ReductionOrder>
   ToddCoxeter to_todd_coxeter(congruence_kind                        knd,
@@ -43,7 +62,7 @@ namespace libsemigroups {
     }
     // TODO why are we doing this? Why not just use the active rules of kb?
     auto fp = to_froidure_pin(kb);
-    return to_todd_coxeter(knd, fp);
+    return to_todd_coxeter(knd, fp, fp.right_cayley_graph());
   }
 
 }  // namespace libsemigroups

@@ -19,12 +19,12 @@
 // This file contains a class KnuthBendix which implements the Knuth-Bendix
 // algorithm for finitely presented monoids.
 
-// TODO:
+// TODO(1)
 // * noexcept
+// * separate rule container from Rules
+// TODO(0)
 // * fix doc
-// * template Rules
-// * template Order
-// * Separate rule container from Rules
+// * nodiscard
 
 #ifndef LIBSEMIGROUPS_KNUTH_BENDIX_HPP_
 #define LIBSEMIGROUPS_KNUTH_BENDIX_HPP_
@@ -65,8 +65,6 @@
 #include "detail/rewriters.hpp"          // for RewriteTrie
 #include "detail/string.hpp"             // for is_prefix, maximum_common_prefix
 
-#include "ranges.hpp"  // for iterator_range
-
 namespace libsemigroups {
   // Forward declarations
   namespace detail {
@@ -74,7 +72,7 @@ namespace libsemigroups {
     class KBE;
   }  // namespace detail
 
-  // TODO update the description
+  // TODO(0) update the description
   //! Defined in \c knuth-bendix.hpp.
   //!
   //! On this page we describe the functionality relating to the Knuth-Bendix
@@ -260,30 +258,30 @@ namespace libsemigroups {
     //! rules of \p copy.
     KnuthBendix(KnuthBendix const& that);
 
-    // TODO doc
+    // TODO(0) doc
     KnuthBendix(KnuthBendix&&);
 
-    // TODO doc
+    // TODO(0) doc
     KnuthBendix& operator=(KnuthBendix const&);
 
-    // TODO doc
+    // TODO(0) doc
     KnuthBendix& operator=(KnuthBendix&&);
 
     ~KnuthBendix();
 
-    // TODO doc
+    // TODO(0) doc
     KnuthBendix(congruence_kind knd, Presentation<std::string> const& p);
 
-    // TODO doc
+    // TODO(0) doc
     KnuthBendix& init(congruence_kind knd, Presentation<std::string> const& p);
 
-    // TODO doc
+    // TODO(0) doc
     KnuthBendix(congruence_kind knd, Presentation<std::string>&& p);
 
-    // TODO doc
+    // TODO(0) doc
     KnuthBendix& init(congruence_kind knd, Presentation<std::string>&& p);
 
-    // TODO doc
+    // TODO(0) doc
     // No rvalue ref version because we can't use it.
     template <typename Word>
     explicit KnuthBendix(congruence_kind knd, Presentation<Word> const& p)
@@ -291,7 +289,7 @@ namespace libsemigroups {
                         return x;
                       })) {}
 
-    // TODO doc
+    // TODO(0) doc
     template <typename Word>
     KnuthBendix& init(congruence_kind knd, Presentation<Word> const& p) {
       init(knd,
@@ -351,14 +349,10 @@ namespace libsemigroups {
                                       Iterator2 last1,
                                       Iterator3 first2,
                                       Iterator4 last2) {
-      using iterator_points_at = decltype(*std::declval<Iterator1>());
-      static_assert(
-          std::is_convertible_v<iterator_points_at, native_letter_type>);
-      // TODO(0) impl for non-native letter types
       if (std::equal(first1, last1, first2, last2)) {
         return tril::TRUE;
       }
-      // TODO(0) remove allocations here
+      // TODO(1) remove allocations here
       std::string w1, w2;
       reduce_no_run_no_checks(std::back_inserter(w1), first1, last1);
       reduce_no_run_no_checks(std::back_inserter(w2), first2, last2);
@@ -420,7 +414,7 @@ namespace libsemigroups {
     OutputIterator reduce_no_run_no_checks(OutputIterator d_first,
                                            InputIterator1 first,
                                            InputIterator2 last) {
-      // TODO(0) improve this to not require _tmp_element1
+      // TODO(1) improve this to not require _tmp_element1
       if constexpr (std::is_same_v<InputIterator1, char const*>) {
         static_assert(std::is_same_v<InputIterator2, char const*>);
         _tmp_element1.assign(first, std::distance(first, last));
@@ -432,6 +426,7 @@ namespace libsemigroups {
           std::begin(_tmp_element1), std::end(_tmp_element1), d_first);
     }
 
+    // TODO(0) should be const
     template <typename OutputIterator,
               typename InputIterator1,
               typename InputIterator2>
@@ -462,7 +457,7 @@ namespace libsemigroups {
       return reduce_no_run(d_first, first, last);
     }
 
-    // TODO(0) implement reduce_inplace x4 if possible.
+    // TODO(1) implement reduce_inplace x4 if possible.
 
     //////////////////////////////////////////////////////////////////////////
     // KnuthBendix - setters for optional parameters - public
@@ -692,7 +687,6 @@ namespace libsemigroups {
     // KnuthBendix - member functions for rules and rewriting - public
     //////////////////////////////////////////////////////////////////////////
 
-    // TODO can this be done in a better ways?
     //! \brief Check if every letter of a word is in the presentation's
     //! alphabet.
     //!
@@ -735,8 +729,7 @@ namespace libsemigroups {
       return _presentation;
     }
 
-    // TODO add note about empty active rules after
-    // init and non-const-ness
+    // TODO(0) add note about empty active rules after init and non-const-ness
     //! \brief Return the current number of active
     //! rules in the KnuthBendix instance.
     //!
@@ -798,22 +791,21 @@ namespace libsemigroups {
       return _rewriter.stats().total_rules;
     }
 
-    // TODO What do we do about doc-ing this?
+    // TODO(0) What do we do about doc-ing this?
+    //! Type of the rules in the system.
     using rule_type = std::pair<std::string, std::string>;
-    // TODO update the doc, now returns a Range
-    // TODO add note about empty active rules after
+
+    // TODO(0) update the doc, now returns a Range
+    // TODO(0) add note about empty active rules after
     // init
     //! \brief Return a copy of the active rules.
     //!
-    //! This member function returns a vector
-    //! consisting of the pairs of strings which
-    //! represent the rules of the KnuthBendix
-    //! instance. The \c first entry in every such
-    //! pair is greater than the \c second according
-    //! to the reduction ordering of the KnuthBendix
-    //! instance. The rules are sorted according to
-    //! the reduction ordering used by the rewriting
-    //! system, on the first entry.
+    //! This member function returns a vector consisting of the pairs of
+    //! strings which represent the rules of the KnuthBendix instance. The \c
+    //! first entry in every such pair is greater than the \c second according
+    //! to the reduction ordering of the KnuthBendix instance. The rules are
+    //! sorted according to the reduction ordering used by the rewriting system,
+    //! on the first entry.
     //!
     //! \returns
     //! A copy of the currently active rules, a
@@ -832,7 +824,7 @@ namespace libsemigroups {
       }
       return iterator_range(_rewriter.begin(), _rewriter.end())
              | transform([this](auto const& rule) {
-                 // TODO remove allocation
+                 // TODO(1) remove allocation
                  detail::internal_string_type lhs
                      = detail::internal_string_type(*rule->lhs());
                  detail::internal_string_type rhs
@@ -844,8 +836,7 @@ namespace libsemigroups {
     }
 
    private:
-    // TODO(0) move this to a more appropriate location in this file
-
+    // TODO(0) recycle this doc or delete
     // TODO add note about empty active rules after
     // init and non-const-ness
     //! \brief Rewrite a word in-place.
@@ -862,6 +853,7 @@ namespace libsemigroups {
     // TODO update doc
     void rewrite_inplace(std::string& w);
 
+    // TODO(0) recycle this doc or delete
     // TODO add note about empty active rules after
     // init and non-const-ness
     //! \brief Rewrite a word.
@@ -946,7 +938,7 @@ namespace libsemigroups {
     //////////////////////////////////////////////////////////////////////////
     // KnuthBendix - attributes - public
     //////////////////////////////////////////////////////////////////////////
-
+    // TODO(0) recycle or delete
     //! \brief Check if two inputs are equivalent with respect to the system
     //!
     //! By first testing \c string equivalence, then by rewriting the inputs,
@@ -964,12 +956,8 @@ namespace libsemigroups {
     //! terminates when the rewriting system is confluent, which may be never.
     //!
     //! \sa run.
-    // TODO rename contains
-    // TODO do a no check version of this
-    // TODO version taking rvalue refs?
 
-    // REVIEW Why does equal to take strings, but
-    // this take words?
+    // TODO(0) recycle or delete
     //! \brief Check containment
     //!
     //! Check if the pair of words \p u and \p v is
@@ -984,16 +972,9 @@ namespace libsemigroups {
     //! congruence, and \c false otherwise.
     //!
     //! \sa \ref equal_to.
-    // TODO add perf warning
-
-    // REVIEW can this be copied given the params
-    // are a different type?
-    //! \copydoc contains
 
     // No in-place version just use rewrite instead,
     // this only exists so that run is called.
-    // TODO required?
-    //   [[nodiscard]] std::string normal_form(std::string const& w);
 
    private:
     void report_presentation(Presentation<std::string> const&) const;
@@ -1035,8 +1016,7 @@ namespace libsemigroups {
     }
 
     //////////////////////////////////////////////////////////////////////////
-    // Runner - pure virtual member functions -
-    // private
+    // Runner - pure virtual member functions - private
     //////////////////////////////////////////////////////////////////////////
 
     void               run_impl() override;
@@ -1071,7 +1051,7 @@ namespace libsemigroups {
     using congruence_interface::currently_contains;
     using congruence_interface::currently_contains_no_checks;
 
-    // TODO(0) version of this goes to congruence_interface??
+    // TODO(JDM) version of this goes to congruence_interface??
     template <typename Rewriter, typename ReductionOrder>
     [[nodiscard]] bool contains(KnuthBendix<Rewriter, ReductionOrder>& kb,
                                 std::string_view                       u,
@@ -1086,13 +1066,14 @@ namespace libsemigroups {
                                 char const*                            v) {
       return kb.contains(u, u + std::strlen(u), v, v + std::strlen(v));
     }
-    // TODO(0) 6x more contains functions for string_views + char const*
+
+    // TODO(JDM) 6x more contains functions for string_views + char const*
 
     ////////////////////////////////////////////////////////////////////////
     // Interface helpers - reduce
     ////////////////////////////////////////////////////////////////////////
 
-    // TODO(0) version of this goes to congruence_interface??
+    // TODO(JDM) version of this goes to congruence_interface??
     // TODO(0) doc
     template <typename Rewriter,
               typename ReductionOrder,
@@ -1167,7 +1148,7 @@ namespace libsemigroups {
     // Interface helpers - to_human_readable_repr
     ////////////////////////////////////////////////////////////////////////
 
-    // TODO What should the \param be?
+    // TODO(0) What should the \param be?
     //! \brief Return a string representation of a KnuthBendix instance
     //!
     //! Return a string representation of a KnuthBendix instance, specifying the
@@ -1190,6 +1171,7 @@ namespace libsemigroups {
       str alphabet_size = std::to_string(kb.presentation().alphabet().size());
       str n_rules       = std::to_string(kb.number_of_active_rules());
 
+      // TODO(JE) use fmt::format instead
       return str("<") + conf + " on " + alphabet_size + " letters with "
              + n_rules + " active rules>";
     }
@@ -1254,7 +1236,7 @@ namespace libsemigroups {
       if (!kb.presentation().contains_empty_word()) {
         paths.next();
       }
-      // TODO update to return strings
+      // TODO(0) update to return strings
       return paths;
     }
 

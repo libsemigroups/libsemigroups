@@ -62,40 +62,6 @@ namespace libsemigroups {
     return *this;
   }
 
-  Congruence& Congruence::init(congruence_kind type, FroidurePinBase& S) {
-    if (S.is_finite() != tril::FALSE) {
-      S.run();
-    } else {
-      LIBSEMIGROUPS_EXCEPTION(
-          "the 2nd argument does not represent a finite semigroup!");
-    }
-    init(type);
-    _race.max_threads(POSITIVE_INFINITY);
-
-    auto p  = to_presentation<word_type>(S);
-    auto tc = std::make_shared<ToddCoxeter>(type, p);
-    add_runner(tc);
-    tc = std::make_shared<ToddCoxeter>(type, p);
-    tc->strategy(ToddCoxeter::options::strategy::felsch);
-    add_runner(tc);
-
-    // TODO(later) if necessary make a runner that tries to S.run(), then get
-    // the Cayley graph and use that in the ToddCoxeter, at present that'll
-    // happen here in the constructor
-    tc = std::make_shared<ToddCoxeter>(to_todd_coxeter(type, S));
-    add_runner(tc);
-    tc = std::make_shared<ToddCoxeter>(type, p);
-    tc->strategy(ToddCoxeter::options::strategy::felsch);
-    add_runner(tc);
-    if (p.rules.size() < 256) {
-      // TODO(later) at present if there are lots of rules it takes a long
-      // time to construct a KnuthBendix<> instance since it reduces the rules
-      // as they are added maybe better to defer this until running
-      add_runner(std::make_shared<KnuthBendix<>>(type, p));
-    }
-    return *this;
-  }
-
   uint64_t Congruence::number_of_classes() {
     run();
     auto winner_kind = _runner_kinds[_race.winner_index()];

@@ -298,8 +298,8 @@ namespace libsemigroups {
     ToString to_string(kb.presentation().alphabet());
     knuth_bendix::add_pair(
         kb,
-        to_string(froidure_pin::factorisation(S, Transf<>({3, 4, 4, 4, 4}))),
-        to_string(froidure_pin::factorisation(S, Transf<>({3, 1, 3, 3, 3}))));
+        froidure_pin::factorisation(S, Transf<>({3, 4, 4, 4, 4})),
+        froidure_pin::factorisation(S, Transf<>({3, 1, 3, 3, 3})));
 
     REQUIRE(kb.generating_pairs()
             == std::vector<word_type>({010001100_w, 10001_w}));
@@ -350,8 +350,7 @@ namespace libsemigroups {
 
     REQUIRE(knuth_bendix::reduce_no_run(kb, "100011"_w) == "10001"_w);
 
-    auto nf = (froidure_pin::normal_forms(S)
-               | ToString(kb.presentation().alphabet()));
+    auto nf = froidure_pin::normal_forms(S);
     REQUIRE((nf | count()) == 88);
     auto pp = partition(kb, nf);
     REQUIRE(pp.size() == 72);
@@ -360,28 +359,19 @@ namespace libsemigroups {
                 | filter([](auto const& val) { return val.size() > 1; }));
 
     REQUIRE((ntc | count()) == 4);
-    REQUIRE((ntc | to_vector())
-            == std::vector<std::vector<std::string>>(
-                {{{1, 0, 0, 0, 1},
-                  {1, 0, 0, 0, 1, 1},
-                  {0, 0, 1, 0, 0, 0, 1},
-                  {0, 1, 0, 0, 0, 1, 0},
-                  {0, 1, 0, 0, 0, 1, 0, 1},
-                  {1, 0, 0, 0, 1, 0, 0, 0},
-                  {0, 1, 0, 0, 0, 1, 1, 0, 0}},
-                 {{0, 1, 0, 0, 0, 1},
-                  {1, 0, 0, 0, 1, 0, 1},
-                  {0, 0, 1, 0, 0, 0, 1, 0, 1}},
-                 {{1, 0, 0, 0, 1, 0},
-                  {0, 1, 0, 0, 0, 1, 1},
-                  {1, 0, 0, 0, 1, 1, 0},
-                  {0, 0, 1, 0, 0, 0, 1, 0},
-                  {0, 1, 0, 0, 0, 1, 0, 0}},
-                 {{1, 0, 0, 0, 1, 0, 0},
-                  {0, 1, 0, 0, 0, 1, 1, 0},
-                  {1, 0, 0, 0, 1, 1, 0, 0},
-                  {0, 0, 1, 0, 0, 0, 1, 0, 0},
-                  {0, 1, 0, 0, 0, 1, 0, 0, 0}}}));
+    REQUIRE(
+        (ntc | to_vector())
+        == std::vector<std::vector<word_type>>(
+            {{10001_w,
+              100011_w,
+              0010001_w,
+              0100010_w,
+              01000101_w,
+              10001000_w,
+              010001100_w},
+             {010001_w, 1000101_w, 001000101_w},
+             {100010_w, 0100011_w, 1000110_w, 00100010_w, 01000100_w},
+             {1000100_w, 01000110_w, 10001100_w, 001000100_w, 010001000_w}}));
   }
 
   TEMPLATE_TEST_CASE("manual left congruence!!!",

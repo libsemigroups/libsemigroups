@@ -32,34 +32,6 @@
 #include "libsemigroups/word-graph.hpp"         // for WordGraph
 
 namespace libsemigroups {
-
-  ToddCoxeter to_todd_coxeter(congruence_kind knd, FroidurePinBase& fp) {
-    using node_type         = typename ToddCoxeter::word_graph_type::node_type;
-    using label_type        = typename ToddCoxeter::word_graph_type::label_type;
-    using cayley_graph_type = typename FroidurePinBase::cayley_graph_type;
-
-    cayley_graph_type const* wg;
-
-    if (knd == congruence_kind::left) {
-      wg = &fp.left_cayley_graph();
-    } else {
-      wg = &fp.right_cayley_graph();
-    }
-
-    WordGraph<node_type> tc_arg(wg->number_of_nodes() + 1, wg->out_degree());
-
-    for (label_type a = 0; a < tc_arg.out_degree(); ++a) {
-      tc_arg.target_no_checks(0, a, fp.position_of_generator_no_checks(a) + 1);
-    }
-
-    for (node_type n = 0; n < tc_arg.number_of_nodes() - 1; ++n) {
-      for (label_type a = 0; a < tc_arg.out_degree(); ++a) {
-        tc_arg.target_no_checks(n + 1, a, wg->target_no_checks(n, a) + 1);
-      }
-    }
-    return ToddCoxeter(knd != congruence_kind::twosided ? congruence_kind::right
-                                                        : knd,
-                       std::move(tc_arg));
-  }
+  // TODO(0) delete this file
 
 }  // namespace libsemigroups

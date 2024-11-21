@@ -16,6 +16,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
+#define CATCH_CONFIG_ENABLE_ALL_STRINGMAKERS
+
 #include "catch_amalgamated.hpp"  // for TEST_CASE
 #include "test-main.hpp"          // for LIBSEMIGROUPS_TEST_CASE
 
@@ -59,7 +61,6 @@ namespace libsemigroups {
   using literals::operator""_w;
 
   constexpr congruence_kind twosided = congruence_kind::twosided;
-  constexpr congruence_kind left     = congruence_kind::left;
   constexpr congruence_kind right    = congruence_kind::right;
 
   using fpsemigroup::stellar_monoid;
@@ -74,17 +75,18 @@ namespace libsemigroups {
     p.alphabet(2);
     presentation::add_rule(p, 000_w, 0_w);
     presentation::add_rule(p, 0_w, 11_w);
+    presentation::reverse(p);
 
-    Congruence cong(left, p);
+    Congruence cong(right, p);
 
     REQUIRE(cong.number_of_classes() == 5);
-    REQUIRE(cong.contains(011001_w, 001_w));
+    REQUIRE(cong.contains(100110_w, 100_w));
 
-    REQUIRE(cong.contains(001_w, 00001_w));
-    REQUIRE(cong.contains(011001_w, 001_w));
-    REQUIRE(!cong.contains(000_w, 001_w));
+    REQUIRE(cong.contains(100_w, 10000_w));
+    REQUIRE(cong.contains(100110_w, 100_w));
+    REQUIRE(!cong.contains(000_w, 100_w));
     REQUIRE(!cong.contains(1_w, 0000_w));
-    REQUIRE(!cong.contains(0000_w, 001_w));
+    REQUIRE(!cong.contains(0000_w, 100_w));
   }
 
   LIBSEMIGROUPS_TEST_CASE("Congruence",
@@ -231,7 +233,7 @@ namespace libsemigroups {
     REQUIRE(S.size() == 11804);
     REQUIRE(S.number_of_rules() == 2460);
 
-    Congruence cong(twosided, S);
+    Congruence cong(twosided, S, S.right_cayley_graph());
     congruence::add_pair(cong, 0321322_w, 322133_w);
 
     REQUIRE(cong.number_of_classes() == 525);
@@ -272,7 +274,7 @@ namespace libsemigroups {
     // REQUIRE(S.size() == 65536);
     // REQUIRE(S.number_of_rules() == 45416);
 
-    Congruence cong(twosided, S);
+    Congruence cong(twosided, S, S.right_cayley_graph());
     congruence::add_pair(
         cong, {7, 10, 9, 3, 6, 9, 4, 7, 9, 10}, {9, 3, 6, 6, 10, 9, 4, 7});
     congruence::add_pair(cong, {8, 7, 5, 8, 9, 8}, {6, 3, 8, 6, 1, 2, 4});
@@ -312,7 +314,7 @@ namespace libsemigroups {
     // REQUIRE(S.size() == 712);
     // REQUIRE(S.number_of_rules() == 1121);
 
-    Congruence cong(twosided, S);
+    Congruence cong(twosided, S, S.right_cayley_graph());
     congruence::add_pair(cong, {2, 7}, {1, 6, 6, 1});
     REQUIRE(cong.number_of_classes() == 32);
   }
@@ -415,7 +417,7 @@ namespace libsemigroups {
     word_type w1 = froidure_pin::factorisation(S, Transf({3, 4, 4, 4, 4}));
     word_type w2 = froidure_pin::factorisation(S, Transf({3, 4, 4, 4, 4}));
 
-    Congruence cong(twosided, S);
+    Congruence cong(twosided, S, S.right_cayley_graph());
     congruence::add_pair(
         cong,
         froidure_pin::factorisation(S, Transf({3, 4, 4, 4, 4})),
@@ -502,8 +504,9 @@ namespace libsemigroups {
     p.alphabet("ab");
     presentation::add_rule(p, "ab", "ba");
     presentation::add_rule(p, "a", "b");
+    presentation::reverse(p);
 
-    Congruence cong(left, p);
+    Congruence cong(right, p);
 
     // No generating pairs for the congruence (not the fp semigroup) means no
     // non-trivial classes.
@@ -529,7 +532,7 @@ namespace libsemigroups {
                                     Transf({7, 3, 5, 3, 4, 2, 7, 7}),
                                     Transf({7, 3, 5, 3, 4, 2, 7, 7}),
                                     Transf({3, 6, 3, 4, 0, 6, 0, 7})});
-    Congruence cong(twosided, S);
+    Congruence cong(twosided, S, S.right_cayley_graph());
     REQUIRE(cong.number_of_classes() == S.size());
   }
 
@@ -609,7 +612,7 @@ namespace libsemigroups {
           return S.contains(x);
         }));
 
-    Congruence cong(right, S);
+    Congruence cong(right, S, S.right_cayley_graph());
     word_type  w1, w2;
     for (size_t i = 0; i < elms.size(); i += 2) {
       froidure_pin::factorisation(S, w1, S.position(elms[i]));
@@ -707,7 +710,8 @@ namespace libsemigroups {
       Presentation<word_type> p;
       p.alphabet(3);
       presentation::add_rule(p, {0, 1}, {0});
-      Congruence cong(left, p);
+      presentation::reverse(p);
+      Congruence cong(right, p);
       congruence::add_pair(cong, {2, 2}, {2});
       REQUIRE(is_obviously_infinite(cong));
     }
@@ -716,7 +720,8 @@ namespace libsemigroups {
       p.alphabet(3);
       presentation::add_rule(p, {0, 1}, {0});
       presentation::add_rule(p, {0, 0}, {0});
-      Congruence cong(left, p);
+      presentation::reverse(p);
+      Congruence cong(right, p);
       congruence::add_pair(cong, {1, 1}, {1});
       REQUIRE(is_obviously_infinite(cong));
     }
@@ -725,16 +730,17 @@ namespace libsemigroups {
       p.alphabet(3);
       presentation::add_rule(p, {0, 1}, {0});
       presentation::add_rule(p, {0, 0}, {0});
-      Congruence cong(left, p);
+      presentation::reverse(p);
+      Congruence cong(right, p);
       congruence::add_pair(cong, {1, 2}, {1});
       REQUIRE(is_obviously_infinite(cong));
     }
 
     using Transf = LeastTransf<3>;
-    auto p       = to_froidure_pin({Transf({0, 1, 0}), Transf({0, 1, 2})});
-    REQUIRE(p.size() == 2);
+    auto fp      = to_froidure_pin({Transf({0, 1, 0}), Transf({0, 1, 2})});
+    REQUIRE(fp.size() == 2);
     {
-      Congruence cong(twosided, p);
+      Congruence cong(twosided, fp, fp.right_cayley_graph());
       congruence::add_pair(cong, {1}, {0});
       REQUIRE(!is_obviously_infinite(cong));
 
@@ -761,7 +767,7 @@ namespace libsemigroups {
     {
       auto S = to_froidure_pin(gens);
 
-      Congruence cong(twosided, S);
+      Congruence cong(twosided, S, S.right_cayley_graph());
       congruence::add_pair(cong, {1}, {0});
 
       REQUIRE(cong.number_of_classes() == 3);
@@ -789,7 +795,7 @@ namespace libsemigroups {
     }
     {
       auto       S = to_froidure_pin({gens[0], gens[2], gens[3]});
-      Congruence cong(twosided, S);
+      Congruence cong(twosided, S, S.right_cayley_graph());
       congruence::add_pair(cong, {1}, {0});
 
       REQUIRE(cong.number_of_classes() == 2);
@@ -822,23 +828,25 @@ namespace libsemigroups {
     REQUIRE(S.size() == 88);
     REQUIRE(S.degree() == 5);
 
-    Congruence cong(left, S);
+    Congruence cong(right, S, S.left_cayley_graph());
 
-    congruence::add_pair(cong, 010001100_w, 10001_w);
+    congruence::add_pair(cong, 001100010_w, 10001_w);
 
     REQUIRE(cong.number_of_classes() == 69);
     REQUIRE(cong.number_of_classes() == 69);
 
-    word_type w3 = froidure_pin::factorisation(S, Transf<>({1, 3, 1, 3, 3}));
-    word_type w4 = froidure_pin::factorisation(S, Transf<>({4, 2, 4, 4, 2}));
+    word_type w3
+        = reverse(froidure_pin::factorisation(S, Transf<>({1, 3, 1, 3, 3})));
+    word_type w4
+        = reverse(froidure_pin::factorisation(S, Transf<>({4, 2, 4, 4, 2})));
     REQUIRE(!cong.contains(w3, w4));
-    REQUIRE(cong.contains(w3, 00101_w));
-    REQUIRE(cong.contains(100101_w, 0010001_w));
-    REQUIRE(!cong.contains(011000_w, 11_w));
-    REQUIRE(!cong.contains(10001000_w, 1001_w));
+    REQUIRE(cong.contains(w3, 10100_w));
+    REQUIRE(cong.contains(101001_w, 1000100_w));
+    REQUIRE(!cong.contains(000110_w, 11_w));
+    REQUIRE(!cong.contains(00010001_w, 1001_w));
 
-    REQUIRE(cong.contains(100101_w, 0010001_w));
-    REQUIRE(!cong.contains(10001000_w, 1001_w));
+    REQUIRE(cong.contains(101001_w, 1000100_w));
+    REQUIRE(!cong.contains(00010001_w, 1001_w));
   }
 
   LIBSEMIGROUPS_TEST_CASE("Congruence",
@@ -852,7 +860,7 @@ namespace libsemigroups {
 
     // REQUIRE(S.size() == 88);
     // REQUIRE(S.degree() == 5);
-    Congruence cong(right, S);
+    Congruence cong(right, S, S.right_cayley_graph());
     congruence::add_pair(cong, 010001100_w, 10001_w);
 
     REQUIRE(cong.number_of_classes() == 72);
@@ -885,7 +893,7 @@ namespace libsemigroups {
     word_type w1, w2;
     froidure_pin::factorisation(S, w1, S.position(Transf<>({3, 4, 4, 4, 4})));
     froidure_pin::factorisation(S, w2, S.position(Transf<>({3, 1, 3, 3, 3})));
-    Congruence cong(right, S);
+    Congruence cong(right, S, S.right_cayley_graph());
     congruence::add_pair(cong, w1, w2);
 
     REQUIRE(cong.number_of_classes() == 72);
@@ -905,24 +913,42 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Congruence", "032", "contains", "[quick][cong]") {
-    auto                    rg = ReportGuard(true);
-    Presentation<word_type> p;
-    p.alphabet(2);
+    using namespace std::string_literals;
+    auto                      rg = ReportGuard(false);
+    Presentation<std::string> p;
+    p.alphabet("ab");
+    REQUIRE(!p.contains_empty_word());
     Congruence cong(twosided, p);
-    congruence::add_pair(cong, 00_w, 0_w);
-    congruence::add_pair(cong, 01_w, 0_w);
-    congruence::add_pair(cong, 10_w, 0_w);
+    congruence::add_pair(cong, "aa", "a");
+    congruence::add_pair(cong, "ab", "a");
+    congruence::add_pair(cong, "ba", "a");
+
+    REQUIRE(cong.has<KnuthBendix<>>());
+    auto& kb = *cong.get<KnuthBendix<>>();
+    REQUIRE((kb.active_rules() | rx::to_vector() | rx::count()) == 0);
+
     cong.run();
-    // KnuthBendix kb(twosided, p);
-    // REQUIRE(knuth_bendix::reduce(kb, 11_w) == 11_w);
-    // REQUIRE(knuth_bendix::reduce(kb, 1_w) == 1_w);
-    // REQUIRE(!knuth_bendix::contains(kb, 11_w, 1_w));
-    REQUIRE(congruence::currently_contains_no_checks(cong, 11_w, 1_w)
+
+    REQUIRE(cong.has<KnuthBendix<>>());
+    REQUIRE(kb.finished());
+    REQUIRE(kb.confluent());
+    REQUIRE(kb.presentation().alphabet() == "ab");
+    REQUIRE(kb.presentation().rules
+            == std::vector<std::string>({"aa", "a", "ab", "a", "ba", "a"}));
+    REQUIRE(!kb.presentation().contains_empty_word());
+    REQUIRE((kb.active_rules() | rx::to_vector())
+            == std::vector<std::decay_t<decltype(kb)>::rule_type>(
+                {{"ba", "a"}, {"ab", "a"}, {"aa", "a"}}));
+
+    REQUIRE(knuth_bendix::reduce(kb, "bb") == "bb");
+    REQUIRE(knuth_bendix::reduce(kb, "b") == "b");
+    REQUIRE(!knuth_bendix::contains(kb, "bb", "b"));
+    REQUIRE(congruence::currently_contains_no_checks(cong, "bb", "b")
             == tril::FALSE);
-    REQUIRE(cong.contains(00_w, 0_w));
-    REQUIRE(cong.contains(01_w, 0_w));
-    REQUIRE(cong.contains(10_w, 0_w));
-    REQUIRE(cong.contains(10_w, 0101_w));
+    REQUIRE(congruence::contains(cong, "aa", "a"));
+    REQUIRE(congruence::contains(cong, "ab", "a"));
+    REQUIRE(congruence::contains(cong, "ba", "a"));
+    REQUIRE(congruence::contains(cong, "ba", "abab"));
   }
 
   LIBSEMIGROUPS_TEST_CASE("Congruence",
@@ -1136,7 +1162,7 @@ namespace libsemigroups {
                           "039",
                           "left cong. on an f.p. semigroup",
                           "[quick][cong]") {
-    auto rg = ReportGuard(true);
+    auto rg = ReportGuard(false);
 
     Presentation<std::string> p;
     p.alphabet("abe");
@@ -1196,7 +1222,7 @@ namespace libsemigroups {
 
     REQUIRE(congruence::currently_contains(cong, 1111_w, 11_w) == tril::FALSE);
     REQUIRE(congruence::contains(cong, 1111_w, 1_w));
-    REQUIRE(congruence::contains(cong, 1111_w, 11_w));
+    REQUIRE(!congruence::contains(cong, 1111_w, 11_w));
     if (cong.has<ToddCoxeter>()) {
       REQUIRE_NOTHROW(cong.get<ToddCoxeter>());
     }
@@ -1210,10 +1236,10 @@ namespace libsemigroups {
     Presentation<word_type> p;
     p.alphabet(2);
 
-    for (auto const& knd : {left, right, twosided}) {
+    for (auto const& knd : {right, twosided}) {
       Congruence cong(knd, p);
-      // Required in case of using a 1 core computer, otherwise the tests below
-      // fail.
+      // Required in case of using a 1 core computer, otherwise the tests
+      // below fail.
       REQUIRE(cong.contains(0000_w, 0000_w));
       REQUIRE(!cong.contains(0000_w, 0001_w));
       if (knd == twosided) {

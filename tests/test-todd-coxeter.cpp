@@ -100,7 +100,6 @@ namespace libsemigroups {
 
   struct LibsemigroupsException;  // Forward declaration
   congruence_kind constexpr twosided = congruence_kind::twosided;
-  congruence_kind constexpr left     = congruence_kind::left;
   congruence_kind constexpr right    = congruence_kind::right;
 
   namespace {
@@ -577,7 +576,7 @@ namespace libsemigroups {
     REQUIRE(S.size() == 88);
 
     // Construct from Cayley graph of S
-    auto tc = to_todd_coxeter(twosided, S);
+    auto tc = to_todd_coxeter(twosided, S, S.right_cayley_graph());
     REQUIRE(tc.current_word_graph().number_of_nodes() == 89);
 
     todd_coxeter::add_pair(
@@ -750,7 +749,7 @@ namespace libsemigroups {
     REQUIRE(S.size() == 88);
     REQUIRE(S.number_of_rules() == 18);
 
-    auto tc = to_todd_coxeter(twosided, S);
+    auto tc = to_todd_coxeter(twosided, S, S.right_cayley_graph());
 
     REQUIRE(froidure_pin::factorisation(S, Transf<>({3, 4, 4, 4, 4}))
             == 010001100_w);
@@ -871,7 +870,7 @@ namespace libsemigroups {
       test_case_010(tc, S);
     }
     SECTION("construction from Cayley graph") {
-      auto tc = to_todd_coxeter(left, S);
+      auto tc = to_todd_coxeter(right, S, S.left_cayley_graph());
       todd_coxeter::add_pair(
           tc,
           reverse(froidure_pin::factorisation(S, Transf<>({3, 4, 4, 4, 4}))),
@@ -880,7 +879,7 @@ namespace libsemigroups {
     }
     SECTION("default construction + move from Cayley graph") {
       ToddCoxeter tc;
-      tc = to_todd_coxeter(left, S);
+      tc = to_todd_coxeter(right, S, S.left_cayley_graph());
       todd_coxeter::add_pair(
           tc,
           reverse(froidure_pin::factorisation(S, Transf<>({3, 4, 4, 4, 4}))),
@@ -910,7 +909,7 @@ namespace libsemigroups {
     REQUIRE(S.size() == 88);
     REQUIRE(S.number_of_rules() == 18);
 
-    auto tc = to_todd_coxeter(right, S);
+    auto tc = to_todd_coxeter(right, S, S.right_cayley_graph());
     // ToddCoxeter tc(right, to_presentation<word_type>(S));
 
     todd_coxeter::add_pair(
@@ -978,7 +977,7 @@ namespace libsemigroups {
     REQUIRE(S.size() == 88);
     REQUIRE(S.number_of_rules() == 18);
 
-    ToddCoxeter tc = to_todd_coxeter(twosided, S);  // use the Cayley graph
+    ToddCoxeter tc = to_todd_coxeter(twosided, S, S.right_cayley_graph());
 
     word_type w1
         = froidure_pin::factorisation(S, S.position(Transf<>({3, 4, 4, 4, 4})));
@@ -1578,7 +1577,8 @@ namespace libsemigroups {
         = to_froidure_pin({Transf({1, 3, 4, 2, 3}), Transf({3, 2, 1, 3, 3})});
     REQUIRE(S.size() == 88);
     REQUIRE(S.number_of_rules() == 18);
-    auto tc = to_todd_coxeter(twosided, S);  // use Cayley graph
+    auto tc = to_todd_coxeter(
+        twosided, S, S.right_cayley_graph());  // use Cayley graph
     todd_coxeter::add_pair(tc, {0}, {1, 1});
 
     section_felsch(tc);

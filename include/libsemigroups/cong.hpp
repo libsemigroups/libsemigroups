@@ -133,12 +133,36 @@ namespace libsemigroups {
     //! use a std::shared_ptr to avoid the copy!
     // template <typename T>
     // TODO(0) should be a helper
-    Congruence(congruence_kind type, FroidurePinBase& S) : Congruence() {
-      init(type, S);
+    template <typename Node>
+    Congruence(congruence_kind        type,
+               FroidurePinBase&       S,
+               WordGraph<Node> const& wg)
+        : Congruence() {
+      init(type, S, wg);
     }
 
     // TODO doc
-    Congruence& init(congruence_kind type, FroidurePinBase& S);
+    // TODO(0) helper
+    template <typename Node>
+    Congruence& init(congruence_kind        type,
+                     FroidurePinBase&       S,
+                     WordGraph<Node> const& wg) {
+      if (S.is_finite() != tril::FALSE) {
+        S.run();
+      } else {
+        LIBSEMIGROUPS_EXCEPTION(
+            "the 2nd argument does not represent a finite semigroup!");
+      }
+      init(type);
+
+      // TODO(later) if necessary make a runner that tries to S.run(), then get
+      // the Cayley graph and use that in the ToddCoxeter, at present that'll
+      // happen here in the constructor
+      auto tc = std::make_shared<ToddCoxeter>(to_todd_coxeter(type, S, wg));
+      add_runner(tc);
+      // TODO add felsch TC also
+      return *this;
+    }
 
     //! Construct from kind (left/right/2-sided) and Presentation.
     //!

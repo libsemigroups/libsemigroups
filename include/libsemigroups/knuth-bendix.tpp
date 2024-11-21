@@ -509,13 +509,11 @@ namespace libsemigroups {
     for (auto it = pairs.cbegin(); it != pairs.cend(); ++it) {
       // it points at a word_type
       p.rules.emplace_back(it->cbegin(), it->cend());
-      auto& lhs = p.rules.back();
-      add_octo(lhs);
+      add_octo(p.rules.back());
       ++it;
       p.rules.emplace_back(it->cbegin(), it->cend());
-      auto& rhs = p.rules.back();
-      add_octo(rhs);
-      add_rule_impl(lhs, rhs);
+      add_octo(p.rules.back());
+      add_rule_impl(p.rules.cend()[-2], p.rules.cend()[-1]);
     }
   }
 

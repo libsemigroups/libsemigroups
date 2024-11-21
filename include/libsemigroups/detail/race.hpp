@@ -316,6 +316,7 @@ namespace libsemigroups {
             t.at(i).join();
           }
           report_elapsed_time("Race: ", tmr);
+          report_default("\n");
           for (auto method = _runners.begin(); method < _runners.end();
                ++method) {
             if ((*method)->finished()) {
@@ -327,7 +328,6 @@ namespace libsemigroups {
               break;
             }
           }
-          // Uncommenting the following stops _winner_index from working
           if (_winner != nullptr) {
             for (auto rnnr : _runners) {
               if (rnnr != _winner) {

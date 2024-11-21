@@ -2868,7 +2868,7 @@ namespace libsemigroups {
           // TODO avoid the copy here
           copy.induced_subgraph_no_checks(static_cast<Node>(0),
                                           wg.number_of_active_nodes());
-          tc.init(tc.kind(), p, copy).add_pair(wx, wy);
+          todd_coxeter::add_pair(tc.init(tc.kind(), p, copy), wx, wy);
           LIBSEMIGROUPS_ASSERT(tc.word_graph().number_of_nodes()
                                == wg.number_of_active_nodes());
           // fmt::print("x = {}, y = {}\n", x, y);

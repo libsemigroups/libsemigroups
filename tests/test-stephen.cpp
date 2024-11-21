@@ -1218,11 +1218,11 @@ namespace libsemigroups {
       REQUIRE(stephen::number_of_words_accepted(S) == POSITIVE_INFINITY);
 
       {
-        auto const index = tc.word_to_class_index(w);
+        auto const index = todd_coxeter::index_of(tc, w);
         auto       T     = Stephen(p);
 
         for (auto const& ww : (stephen::words_accepted(S) | rx::take(1024))) {
-          REQUIRE(tc.word_to_class_index(ww) == index);
+          REQUIRE(todd_coxeter::index_of(tc, ww) == index);
           REQUIRE(stephen::accepts(T.set_word(ww), ww));
         }
       }
@@ -1280,10 +1280,10 @@ namespace libsemigroups {
     REQUIRE(stephen::number_of_words_accepted(S) == POSITIVE_INFINITY);
 
     {
-      auto const index = tc.word_to_class_index(w);
+      auto const index = todd_coxeter::index_of(tc, w);
 
       for (auto const& u : (stephen::words_accepted(S) | rx::take(1024))) {
-        REQUIRE(tc.word_to_class_index(u) == index);
+        REQUIRE(todd_coxeter::index_of(tc, u) == index);
       }
     }
     {
