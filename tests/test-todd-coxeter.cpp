@@ -702,11 +702,10 @@ namespace libsemigroups {
       section_Cr_style(tc);
 
       REQUIRE(!tc.is_standardized());
-      REQUIRE(index_of(tc, reverse(001_w)) == index_of(tc, reverse(00001_w)));
-      REQUIRE(index_of(tc, reverse(011001_w))
-              == index_of(tc, reverse(00001_w)));
-      REQUIRE(index_of(tc, reverse(1_w)) != index_of(tc, reverse(0000_w)));
-      REQUIRE(index_of(tc, reverse(000_w)) != index_of(tc, reverse(0000_w)));
+      REQUIRE(index_of(tc, 100_w) == index_of(tc, 10000_w));
+      REQUIRE(index_of(tc, 100110_w) == index_of(tc, 10000_w));
+      REQUIRE(index_of(tc, 1_w) != index_of(tc, 0000_w));
+      REQUIRE(index_of(tc, 000_w) != index_of(tc, 0000_w));
       tc.standardize(Order::shortlex);
       REQUIRE(tc.is_standardized());
       check_standardize(tc);
@@ -843,16 +842,13 @@ namespace libsemigroups {
 
       REQUIRE(ntc.size() == 1);
       REQUIRE(ntc[0].size() == 20);
-      REQUIRE(
-          ntc
-          == decltype(ntc)(
-              {{reverse(001_w),       reverse(101_w),      reverse(0001_w),
-                reverse(0101_w),      reverse(1001_w),     reverse(00001_w),
-                reverse(00101_w),     reverse(10001_w),    reverse(10101_w),
-                reverse(000101_w),    reverse(010001_w),   reverse(010101_w),
-                reverse(100101_w),    reverse(0000101_w),  reverse(0010001_w),
-                reverse(1000101_w),   reverse(01000101_w), reverse(001000100_w),
-                reverse(001000101_w), reverse(010001100_w)}}));
+      REQUIRE(ntc
+              == decltype(ntc)(
+                  {{100_w,      101_w,       1000_w,      1010_w,
+                    1001_w,     10000_w,     10100_w,     10001_w,
+                    10101_w,    101000_w,    100010_w,    101010_w,
+                    101001_w,   1010000_w,   1000100_w,   1010001_w,
+                    10100010_w, 001000100_w, 101000100_w, 001100010_w}}));
       REQUIRE(std::all_of(
           ntc[0].cbegin(), ntc[0].cend(), [&ntc, &tc](auto const& w) {
             return contains(tc, w, ntc[0][0]);
