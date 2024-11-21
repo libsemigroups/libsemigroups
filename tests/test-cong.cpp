@@ -1136,7 +1136,7 @@ namespace libsemigroups {
                           "039",
                           "left cong. on an f.p. semigroup",
                           "[quick][cong]") {
-    auto rg = ReportGuard(false);
+    auto rg = ReportGuard(true);
 
     Presentation<std::string> p;
     p.alphabet("abe");
@@ -1150,11 +1150,13 @@ namespace libsemigroups {
     presentation::add_rule(p, "bbaaa", "bb");
     presentation::add_rule(p, "bbaba", "bbaa");
 
-    Congruence cong1(left, p);
+    presentation::reverse(p);
+
+    Congruence cong1(right, p);
     congruence::add_pair(cong1, "a", "bbb");
     REQUIRE(cong1.number_of_classes() == 11);
 
-    Congruence cong2(left, p);
+    Congruence cong2(right, p);
     congruence::add_pair(cong2, "bb", "aaaaaaa");
     REQUIRE(cong1.number_of_classes() == cong2.number_of_classes());
   }
