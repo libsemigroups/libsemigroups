@@ -38,15 +38,15 @@ namespace libsemigroups {
     using label_type        = typename ToddCoxeter::word_graph_type::label_type;
     using cayley_graph_type = typename FroidurePinBase::cayley_graph_type;
 
-    cayley_graph_type const* ad;
+    cayley_graph_type const* wg;
 
     if (knd == congruence_kind::left) {
-      ad = &fp.left_cayley_graph();
+      wg = &fp.left_cayley_graph();
     } else {
-      ad = &fp.right_cayley_graph();
+      wg = &fp.right_cayley_graph();
     }
 
-    WordGraph<node_type> tc_arg(ad->number_of_nodes() + 1, ad->out_degree());
+    WordGraph<node_type> tc_arg(wg->number_of_nodes() + 1, wg->out_degree());
 
     for (label_type a = 0; a < tc_arg.out_degree(); ++a) {
       tc_arg.target_no_checks(0, a, fp.position_of_generator_no_checks(a) + 1);
@@ -54,7 +54,7 @@ namespace libsemigroups {
 
     for (node_type n = 0; n < tc_arg.number_of_nodes() - 1; ++n) {
       for (label_type a = 0; a < tc_arg.out_degree(); ++a) {
-        tc_arg.target_no_checks(n + 1, a, ad->target_no_checks(n, a) + 1);
+        tc_arg.target_no_checks(n + 1, a, wg->target_no_checks(n, a) + 1);
       }
     }
     return ToddCoxeter(knd, std::move(tc_arg));
