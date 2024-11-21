@@ -1,6 +1,6 @@
 //
 // libsemigroups - C++ library for semigroups and monoids
-// Copyright (C) 2019-2023 James D. Mitchell
+// Copyright (C) 2019-2024 James D. Mitchell
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -39,13 +39,14 @@ namespace libsemigroups {
         _tmp_element2(this->internal_copy(_one)),
         _transversal(),
         _inversal() {
+    _orbits_lookup.fill(false);
     init();
   }
 
   template <size_t N, typename Point, typename Element, typename Traits>
   SchreierSims<N, Point, Element, Traits>&
   SchreierSims<N, Point, Element, Traits>::init() {
-    clear();
+    free_strong_gens_traversal_inversal();
     _base_size = 0;
     _finished  = false;
     _orbits_lookup.fill(false);
@@ -54,10 +55,17 @@ namespace libsemigroups {
 
   template <size_t N, typename Point, typename Element, typename Traits>
   SchreierSims<N, Point, Element, Traits>::~SchreierSims() {
-    clear();
-    this->internal_free(_one);
-    this->internal_free(_tmp_element1);
-    this->internal_free(_tmp_element2);
+    if constexpr (std::is_pointer_v<internal_element_type>) {
+      if (_one != nullptr) {
+        // _one not being the nullptr indicates that this owns its data, and
+        // otherwise that it does not. This is required by the move
+        // constructors.
+        free_strong_gens_traversal_inversal();
+        this->internal_free(_tmp_element1);
+        this->internal_free(_tmp_element2);
+        this->internal_free(_one);
+      }
+    }
   }
 
   template <size_t N, typename Point, typename Element, typename Traits>
@@ -67,7 +75,7 @@ namespace libsemigroups {
         _base_size(that._base_size),
         _domain(that._domain),
         _finished(that._finished),
-        _one(this->internal_copy(that._one)),
+        _one(this->to_internal(One()(N))),
         _orbits(that._orbits),
         _orbits_lookup(that._orbits_lookup),
         _strong_gens(),
@@ -79,25 +87,74 @@ namespace libsemigroups {
   }
 
   template <size_t N, typename Point, typename Element, typename Traits>
+  SchreierSims<N, Point, Element, Traits>::SchreierSims(SchreierSims&& that)
+      : _base(std::move(that._base)),
+        _base_size(std::move(that._base_size)),
+        _domain(std::move(that._domain)),
+        _finished(std::move(that._finished)),
+        _one(std::move(that._one)),
+        _orbits(std::move(that._orbits)),
+        _orbits_lookup(std::move(that._orbits_lookup)),
+        _strong_gens(std::move(that._strong_gens)),
+        _tmp_element1(std::move(that._tmp_element1)),
+        _tmp_element2(std::move(that._tmp_element2)),
+        _transversal(std::move(that._transversal)),
+        _inversal(std::move(that._inversal)) {
+    if constexpr (std::is_pointer_v<internal_element_type>) {
+      // We set that._one to be the nullptr to indicate that "that" no longer
+      // owns its data, and that its destructor shouldn't try to delete it
+      that._one = nullptr;
+    }
+  }
+
+  template <size_t N, typename Point, typename Element, typename Traits>
   SchreierSims<N, Point, Element, Traits>&
   SchreierSims<N, Point, Element, Traits>::operator=(SchreierSims const& that) {
+    free_strong_gens_traversal_inversal();
+
     _base          = that._base;
     _base_size     = that._base_size;
     _domain        = that._domain;
     _finished      = that._finished;
-    _one           = this->internal_copy(that._one);
     _orbits        = that._orbits;
     _orbits_lookup = that._orbits_lookup;
-    _tmp_element1  = this->internal_copy(_one);
-    _tmp_element2  = this->internal_copy(_one);
-
-    _strong_gens.clear();
-    _transversal.clear();
-    _inversal.clear();
 
     init_strong_gens_traversal_inversal(that);
 
     return *this;
+  }
+
+  template <size_t N, typename Point, typename Element, typename Traits>
+  SchreierSims<N, Point, Element, Traits>&
+  SchreierSims<N, Point, Element, Traits>::operator=(SchreierSims&& that) {
+    _base      = std::move(that._base);
+    _base_size = std::move(that._base_size);
+    _domain    = std::move(that._domain);
+    _finished  = std::move(that._finished);
+    _orbits    = std::move(that._orbits);
+
+    // We swap the next things so that both this and that delete the relevant
+    // data in the destructor
+    std::swap(_one, that._one);
+    std::swap(_orbits_lookup, that._orbits_lookup);
+    std::swap(_tmp_element1, that._tmp_element1);
+    std::swap(_tmp_element2, that._tmp_element2);
+    std::swap(_strong_gens, that._strong_gens);
+    std::swap(_transversal, that._transversal);
+    std::swap(_inversal, that._inversal);
+
+    return *this;
+  }
+
+  template <size_t N, typename Point, typename Element, typename Traits>
+  bool SchreierSims<N, Point, Element, Traits>::add_generator_no_checks(
+      const_element_reference x) {
+    if (contains(x)) {
+      return false;
+    }
+    _finished = false;
+    _strong_gens.push_back(0, this->internal_copy(this->to_internal_const(x)));
+    return true;
   }
 
   template <size_t N, typename Point, typename Element, typename Traits>
@@ -108,21 +165,15 @@ namespace libsemigroups {
       LIBSEMIGROUPS_EXCEPTION("there are already the maximum number {} of "
                               "generators, cannot add any more!",
                               _strong_gens.size(0));
-    } else if (contains(x)) {
-      return false;
     }
-    _finished = false;
-    _strong_gens.push_back(0, this->internal_copy(this->to_internal_const(x)));
-    return true;
+    return add_generator_no_checks(x);
   }
 
   template <size_t N, typename Point, typename Element, typename Traits>
-  size_t SchreierSims<N, Point, Element, Traits>::number_of_generators()
-      const noexcept {
+  size_t SchreierSims<N, Point, Element, Traits>::number_of_generators() const {
     if (_base_size == 0) {
       return 0;
     }
-    LIBSEMIGROUPS_ASSERT(!_strong_gens.empty());
     return number_of_strong_generators_no_checks(0);
   }
 
@@ -160,7 +211,7 @@ namespace libsemigroups {
     throw_if_bad_depth(depth);
     throw_if_point_gt_degree(pt);
     throw_if_point_not_in_orbit(depth, pt);
-    return inversal_element_no_checks(depth, pt);
+    return inverse_transversal_element_no_checks(depth, pt);
   }
 
   template <size_t N, typename Point, typename Element, typename Traits>
@@ -178,7 +229,20 @@ namespace libsemigroups {
   }
 
   template <size_t N, typename Point, typename Element, typename Traits>
-  bool SchreierSims<N, Point, Element, Traits>::const_contains(
+  uint64_t SchreierSims<N, Point, Element, Traits>::current_size() const {
+    // TODO(later) check if product overflows?
+    if (empty()) {
+      return 1;
+    }
+    uint64_t out = 1;
+    for (index_type i = 0; i < _base_size; i++) {
+      out *= _orbits.size(i);
+    }
+    return out;
+  }
+
+  template <size_t N, typename Point, typename Element, typename Traits>
+  bool SchreierSims<N, Point, Element, Traits>::currently_contains(
       const_element_reference x) const {
     if (!is_valid_degree(Degree()(x))) {
       return false;
@@ -192,7 +256,7 @@ namespace libsemigroups {
   SchreierSims<N, Point, Element, Traits>::contains(const_element_reference x) {
     if (is_valid_degree(Degree()(x))) {
       run();
-      return const_contains(x);
+      return currently_contains(x);
     } else {
       return false;
     }
@@ -382,8 +446,6 @@ namespace libsemigroups {
               = this->internal_copy(that._inversal[depth][index]);
         }
       }
-    }
-    for (size_t depth = 0; depth < N; ++depth) {
       for (size_t index = 0; index < that._strong_gens.size(depth); ++index) {
         _strong_gens.push_back(
             depth, this->internal_copy(that._strong_gens.at(depth, index)));
@@ -391,11 +453,13 @@ namespace libsemigroups {
     }
   }
 
-  template <size_t N, typename Point, typename Element, typename Traits>
   // TODO(later): this could be better, especially when use in init() above,
   // we could recycle the memory allocated, instead of freeing everything as
   // below.
-  void SchreierSims<N, Point, Element, Traits>::clear() {
+  template <size_t N, typename Point, typename Element, typename Traits>
+  void SchreierSims<N, Point, Element, Traits>::
+      free_strong_gens_traversal_inversal() {
+    std::unordered_set<internal_element_type> deleted;
     for (size_t depth = 0; depth < N; ++depth) {
       for (size_t index = 0; index < N; ++index) {
         if (_orbits_lookup[depth][index]) {
@@ -403,9 +467,6 @@ namespace libsemigroups {
           this->internal_free(_inversal[depth][index]);
         }
       }
-    }
-    std::unordered_set<internal_element_type> deleted;
-    for (size_t depth = 0; depth < N; ++depth) {
       for (size_t index = 0; index < _strong_gens.size(depth); ++index) {
         if (deleted.find(_strong_gens.at(depth, index)) == deleted.end()) {
           this->internal_free(_strong_gens.at(depth, index));
@@ -497,16 +558,18 @@ namespace libsemigroups {
   }
 
   namespace schreier_sims {
-    template <size_t N>
-    void intersection(SchreierSims<N>& T,
-                      SchreierSims<N>& S1,
-                      SchreierSims<N>& S2) {
+    template <size_t N, typename Point, typename Element, typename Traits>
+    void intersection(SchreierSims<N, Point, Element, Traits>& T,
+                      SchreierSims<N, Point, Element, Traits>& S1,
+                      SchreierSims<N, Point, Element, Traits>& S2) {
       // This might not be correct for general traits, i.e. only works for
       // permutations for now.
-      using point_type   = typename SchreierSims<N>::point_type;
-      using element_type = typename SchreierSims<N>::element_type;
-      using One          = typename SchreierSims<N>::One;
-      using Product      = typename SchreierSims<N>::Product;
+      using point_type =
+          typename SchreierSims<N, Point, Element, Traits>::point_type;
+      using element_type =
+          typename SchreierSims<N, Point, Element, Traits>::element_type;
+      using One     = typename SchreierSims<N, Point, Element, Traits>::One;
+      using Product = typename SchreierSims<N, Point, Element, Traits>::Product;
 
       if (!T.empty()) {
         LIBSEMIGROUPS_EXCEPTION("the parameter T must be empty");
@@ -533,7 +596,7 @@ namespace libsemigroups {
         base_size = N - 1;
       }
 
-      auto S2B = std::make_unique<SchreierSims<N>>();
+      auto S2B = std::make_unique<SchreierSims<N, Point, Element, Traits>>();
       for (size_t depth = 0; depth < base_size; ++depth) {
         S2B->add_base_point(S1.base(depth));
       }
@@ -622,4 +685,61 @@ namespace libsemigroups {
       T.run();
     }
   }  // namespace schreier_sims
+
+  template <size_t N, typename Point, typename Element, typename Traits>
+  [[nodiscard]] std::string
+  to_human_readable_repr(SchreierSims<N, Point, Element, Traits> const& S,
+                         size_t max_width) {
+    size_t      base_size     = S.base_size();
+    size_t      nr_generators = S.number_of_generators();
+    std::string base_string;
+    std::string out;
+
+    // 3 * base_size is a lower bound on the length of the base as a string in
+    // the form "(X, X, X, X)".
+    if (base_size == 0) {
+      base_string = "()";
+    } else if (3 * base_size < max_width) {
+      base_string = "(";
+      for (size_t i = 0; i < base_size - 1; ++i) {
+        base_string.append(std::to_string(S.base_no_checks(i)) + ", ");
+      }
+      base_string.append(std::to_string(S.base_no_checks(base_size - 1)) + ")");
+    }
+
+    if (S.finished()) {
+      size_t size = S.current_size();
+
+      out = fmt::format("<SchreierSims with {} generator{}, base {} & size {}>",
+                        nr_generators,
+                        nr_generators == 1 ? "" : "s",
+                        base_string,
+                        size);
+
+      if (out.length() > max_width) {
+        out = fmt::format(
+            "<SchreierSims with {} generator{}, base size {} & size {}>",
+            nr_generators,
+            nr_generators == 1 ? "" : "s",
+            base_size,
+            size);
+      }
+      return out;
+    }
+
+    out = fmt::format(
+        "<partially enumerated SchreierSims with {} generator{} & base {}>",
+        nr_generators,
+        nr_generators == 1 ? "" : "s",
+        base_string);
+
+    if (out.length() > max_width) {
+      out = fmt::format("<partially enumerated SchreierSims with {} "
+                        "generator{} & base size {}>",
+                        nr_generators,
+                        nr_generators == 1 ? "" : "s",
+                        base_size);
+    }
+    return out;
+  }
 }  // namespace libsemigroups
