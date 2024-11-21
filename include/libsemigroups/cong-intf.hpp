@@ -158,9 +158,9 @@ namespace libsemigroups {
               typename Iterator3,
               typename Iterator4>
     auto& add_generating_pair(Iterator1 first1,
-                   Iterator2 last1,
-                   Iterator3 first2,
-                   Iterator4 last2) {
+                              Iterator2 last1,
+                              Iterator3 first2,
+                              Iterator4 last2) {
       throw_if_started();
       throw_if_letter_out_of_bounds<Subclass>(first1, last1);
       throw_if_letter_out_of_bounds<Subclass>(first2, last2);
@@ -287,28 +287,31 @@ namespace libsemigroups {
     inline Subclass& add_generating_pair(Subclass& ci, Word&& u, Word&& v) {
       static_assert(std::is_base_of_v<CongruenceInterface, Subclass>);
       return ci.add_generating_pair(std::make_move_iterator(std::begin(u)),
-                         std::make_move_iterator(std::end(u)),
-                         std::make_move_iterator(std::begin(v)),
-                         std::make_move_iterator(std::end(v)));
+                                    std::make_move_iterator(std::end(u)),
+                                    std::make_move_iterator(std::begin(v)),
+                                    std::make_move_iterator(std::end(v)));
     }
 
     // TODO(doc)
     template <typename Subclass, typename Int>
     Subclass& add_generating_pair(Subclass&                         ci,
-                       std::initializer_list<Int> const& u,
-                       std::initializer_list<Int> const& v) {
+                                  std::initializer_list<Int> const& u,
+                                  std::initializer_list<Int> const& v) {
       return add_generating_pair<Subclass, std::vector<Int>>(ci, u, v);
     }
 
     // TODO(doc)
     template <typename Subclass>
-    inline Subclass& add_generating_pair(Subclass& ci, char const* u, char const* v) {
+    inline Subclass& add_generating_pair(Subclass&   ci,
+                                         char const* u,
+                                         char const* v) {
       static_assert(std::is_base_of_v<CongruenceInterface, Subclass>);
-      return ci.add_generating_pair(u, u + std::strlen(u), v, v + std::strlen(v));
+      return ci.add_generating_pair(
+          u, u + std::strlen(u), v, v + std::strlen(v));
     }
 
     ////////////////////////////////////////////////////////////////////////
-    // Interface helpers - contains
+    // Interface helpers - currently_contains_no_checks
     ////////////////////////////////////////////////////////////////////////
 
     // TODO(0) doc
@@ -316,58 +319,47 @@ namespace libsemigroups {
     tril currently_contains_no_checks(Subclass const& ci,
                                       Word const&     u,
                                       Word const&     v) {
+      static_assert(std::is_base_of_v<CongruenceInterface, Subclass>);
       return ci.currently_contains_no_checks(
           std::begin(u), std::end(u), std::begin(v), std::end(v));
     }
 
     template <typename Subclass>
-    tril currently_contains_no_checks(Subclass&   ci,
-                                      char const* u,
-                                      char const* v) {
+    tril currently_contains_no_checks(Subclass const& ci,
+                                      char const*     u,
+                                      char const*     v) {
+      static_assert(std::is_base_of_v<CongruenceInterface, Subclass>);
       return ci.currently_contains_no_checks(
           u, u + std::strlen(u), v, v + std::strlen(v));
     }
 
-    // TODO(0) doc
-    template <typename Subclass, typename Word>
-    tril currently_contains(Subclass const& ci, Word const& u, Word const& v) {
-      return ci.currently_contains(
-          std::begin(u), std::end(u), std::begin(v), std::end(v));
-    }
-
-    // TODO(0) doc
-    template <typename Subclass, typename Word>
-    bool contains_no_checks(Subclass& ci, Word const& u, Word const& v) {
-      return ci.contains_no_checks(
-          std::begin(u), std::end(u), std::begin(v), std::end(v));
-    }
-
-    template <typename Subclass>
-    bool contains_no_checks(Subclass& ci, char const* u, char const* v) {
-      return ci.contains_no_checks(
-          u, u + std::strlen(u), v, v + std::strlen(v));
-    }
-
-    // TODO(0) doc
-    template <typename Subclass, typename Word>
-    bool contains(Subclass& ci, Word const& u, Word const& v) {
-      return ci.contains(
-          std::begin(u), std::end(u), std::begin(v), std::end(v));
-    }
-
-    template <typename Subclass>
-    bool contains(Subclass& ci, char const* u, char const* v) {
-      return ci.contains(u, u + std::strlen(u), v, v + std::strlen(v));
-    }
-
-    // TODO(0) doc
     template <typename Subclass,
               typename Int = typename Subclass::native_letter_type>
     tril currently_contains_no_checks(Subclass const&                   ci,
                                       std::initializer_list<Int> const& u,
                                       std::initializer_list<Int> const& v) {
+      static_assert(std::is_base_of_v<CongruenceInterface, Subclass>);
       return currently_contains_no_checks<Subclass, std::initializer_list<Int>>(
           ci, u, v);
+    }
+
+    ////////////////////////////////////////////////////////////////////////
+    // Interface helpers - currently_contains
+    ////////////////////////////////////////////////////////////////////////
+
+    // TODO(0) doc
+    template <typename Subclass, typename Word>
+    tril currently_contains(Subclass const& ci, Word const& u, Word const& v) {
+      static_assert(std::is_base_of_v<CongruenceInterface, Subclass>);
+      return ci.currently_contains(
+          std::begin(u), std::end(u), std::begin(v), std::end(v));
+    }
+
+    template <typename Subclass>
+    tril currently_contains(Subclass const& ci, char const* u, char const* v) {
+      static_assert(std::is_base_of_v<CongruenceInterface, Subclass>);
+      return ci.currently_contains_no_checks(
+          u, u + std::strlen(u), v, v + std::strlen(v));
     }
 
     // TODO(0) doc
@@ -376,16 +368,55 @@ namespace libsemigroups {
     tril currently_contains(Subclass const&                   ci,
                             std::initializer_list<Int> const& u,
                             std::initializer_list<Int> const& v) {
+      static_assert(std::is_base_of_v<CongruenceInterface, Subclass>);
       return currently_contains<Subclass, std::initializer_list<Int>>(ci, u, v);
+    }
+
+    ////////////////////////////////////////////////////////////////////////
+    // Interface helpers - contains_no_checks
+    ////////////////////////////////////////////////////////////////////////
+
+    // TODO(0) doc
+    template <typename Subclass, typename Word>
+    bool contains_no_checks(Subclass& ci, Word const& u, Word const& v) {
+      static_assert(std::is_base_of_v<CongruenceInterface, Subclass>);
+      return ci.contains_no_checks(
+          std::begin(u), std::end(u), std::begin(v), std::end(v));
+    }
+
+    template <typename Subclass>
+    bool contains_no_checks(Subclass& ci, char const* u, char const* v) {
+      static_assert(std::is_base_of_v<CongruenceInterface, Subclass>);
+      return ci.contains_no_checks(
+          u, u + std::strlen(u), v, v + std::strlen(v));
     }
 
     // TODO(0) doc
     template <typename Subclass,
               typename Int = typename Subclass::native_letter_type>
-    bool contains_no_checks(Subclass&                         ci,
+    tril contains_no_checks(Subclass&                         ci,
                             std::initializer_list<Int> const& u,
                             std::initializer_list<Int> const& v) {
+      static_assert(std::is_base_of_v<CongruenceInterface, Subclass>);
       return contains_no_checks<Subclass, std::initializer_list<Int>>(ci, u, v);
+    }
+
+    ////////////////////////////////////////////////////////////////////////
+    // Interface helpers - contains
+    ////////////////////////////////////////////////////////////////////////
+
+    // TODO(0) doc
+    template <typename Subclass, typename Word>
+    bool contains(Subclass& ci, Word const& u, Word const& v) {
+      static_assert(std::is_base_of_v<CongruenceInterface, Subclass>);
+      return ci.contains(
+          std::begin(u), std::end(u), std::begin(v), std::end(v));
+    }
+
+    template <typename Subclass>
+    bool contains(Subclass& ci, char const* u, char const* v) {
+      static_assert(std::is_base_of_v<CongruenceInterface, Subclass>);
+      return ci.contains(u, u + std::strlen(u), v, v + std::strlen(v));
     }
 
     // TODO(0) doc
@@ -394,6 +425,7 @@ namespace libsemigroups {
     bool contains(Subclass&                         ci,
                   std::initializer_list<Int> const& u,
                   std::initializer_list<Int> const& v) {
+      static_assert(std::is_base_of_v<CongruenceInterface, Subclass>);
       return contains<Subclass, std::initializer_list<Int>>(ci, u, v);
     }
   }  // namespace congruence_interface

@@ -317,10 +317,11 @@ namespace libsemigroups {
               typename Iterator3,
               typename Iterator4>
     [[nodiscard]] KnuthBendix& add_generating_pair(Iterator1 first1,
-                                        Iterator2 last1,
-                                        Iterator3 first2,
-                                        Iterator4 last2) {
-      CongruenceInterface::add_generating_pair<KnuthBendix>(first1, last1, first2, last2);
+                                                   Iterator2 last1,
+                                                   Iterator3 first2,
+                                                   Iterator4 last2) {
+      CongruenceInterface::add_generating_pair<KnuthBendix>(
+          first1, last1, first2, last2);
       return *this;
     }
 
@@ -1032,8 +1033,6 @@ namespace libsemigroups {
   std::ostream& operator<<(std::ostream&,
                            KnuthBendix<Rewriter, ReductionOrder> const&);
 
-  KnuthBendix(congruence_kind) -> KnuthBendix<>;
-
   namespace knuth_bendix {
     ////////////////////////////////////////////////////////////////////////
     // Interface helpers - add_generating_pair
@@ -1050,24 +1049,6 @@ namespace libsemigroups {
     using congruence_interface::contains_no_checks;
     using congruence_interface::currently_contains;
     using congruence_interface::currently_contains_no_checks;
-
-    // TODO(JDM) version of this goes to congruence_interface??
-    template <typename Rewriter, typename ReductionOrder>
-    [[nodiscard]] bool contains(KnuthBendix<Rewriter, ReductionOrder>& kb,
-                                std::string_view                       u,
-                                std::string_view                       v) {
-      return kb.contains(
-          std::begin(u), std::end(u), std::begin(v), std::end(v));
-    }
-
-    template <typename Rewriter, typename ReductionOrder>
-    [[nodiscard]] bool contains(KnuthBendix<Rewriter, ReductionOrder>& kb,
-                                char const*                            u,
-                                char const*                            v) {
-      return kb.contains(u, u + std::strlen(u), v, v + std::strlen(v));
-    }
-
-    // TODO(JDM) 6x more contains functions for string_views + char const*
 
     ////////////////////////////////////////////////////////////////////////
     // Interface helpers - reduce
