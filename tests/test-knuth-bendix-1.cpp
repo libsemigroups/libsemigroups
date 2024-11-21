@@ -84,8 +84,8 @@ namespace libsemigroups {
     [[nodiscard]] inline auto
     normal_forms_from_word_graph(KnuthBendix<Rewriter, ReductionOrder>& kb,
                                  WordGraph<WordType>&                   wg) {
-      ReversiblePaths paths(wg);
-      paths.source(0).reverse(kb.kind() == congruence_kind::left);
+      Paths paths(wg);
+      paths.source(0);
       if (!kb.presentation().contains_empty_word()) {
         paths.next();
       }

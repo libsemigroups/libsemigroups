@@ -55,12 +55,6 @@ namespace libsemigroups {
 
   namespace {
 
-    template <typename Word>
-    Word& reverse(Word&& w) {
-      std::reverse(w.begin(), w.end());
-      return w;
-    }
-
     void output_gap_benchmark_file(std::string const& fname, ToddCoxeter& tc) {
       std::ofstream file;
       file.open(fname);

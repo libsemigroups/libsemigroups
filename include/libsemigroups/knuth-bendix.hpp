@@ -839,10 +839,6 @@ namespace libsemigroups {
                      = detail::internal_string_type(*rule->rhs());
                  internal_to_external_string(lhs);
                  internal_to_external_string(rhs);
-                 if (this->kind() == congruence_kind::left) {
-                   std::reverse(lhs.begin(), lhs.end());
-                   std::reverse(rhs.begin(), rhs.end());
-                 }
                  return std::make_pair(lhs, rhs);
                });
     }
@@ -1250,8 +1246,8 @@ namespace libsemigroups {
     template <typename Rewriter, typename ReductionOrder>
     [[nodiscard]] inline auto
     normal_forms(KnuthBendix<Rewriter, ReductionOrder>& kb) {
-      ReversiblePaths paths(kb.gilman_graph());
-      paths.source_no_checks(0).reverse(kb.kind() == congruence_kind::left);
+      Paths paths(kb.gilman_graph());
+      paths.source_no_checks(0);
       // It's possible that the gilman graph is empty, so the call to
       // source_no_checks(0) is technically invalid, but nothing goes wrong, so
       // we just go with it. This is slightly smelly.

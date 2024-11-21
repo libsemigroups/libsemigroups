@@ -58,6 +58,12 @@ namespace libsemigroups {
   namespace detail {
     std::string const& chars_in_human_readable_order();
   }
+  // TODO(0) doc
+  template <typename Word>
+  Word& reverse(Word&& w) {
+    std::reverse(w.begin(), w.end());
+    return w;
+  }
 
   ////////////////////////////////////////////////////////////////////////
   // Words

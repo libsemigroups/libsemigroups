@@ -429,9 +429,6 @@ namespace libsemigroups {
   template <typename Rewriter, typename ReductionOrder>
   void KnuthBendix<Rewriter, ReductionOrder>::rewrite_inplace(
       detail::external_string_type& w) {
-    if (kind() == congruence_kind::left) {
-      std::reverse(w.begin(), w.end());
-    }
     if (_rewriter.number_of_active_rules() == 0
         && _rewriter.number_of_pending_rules() != 0) {
       _rewriter.process_pending_rules();
@@ -441,9 +438,6 @@ namespace libsemigroups {
     _rewriter.rewrite(w);
     internal_to_external_string(w);
     rm_octo(w);
-    if (kind() == congruence_kind::left) {
-      std::reverse(w.begin(), w.end());
-    }
   }
 
   //////////////////////////////////////////////////////////////////////////
@@ -888,10 +882,6 @@ namespace libsemigroups {
     auto const last  = p.rules.cend();
     for (auto it = first; it != last; it += 2) {
       auto lhs = *it, rhs = *(it + 1);
-      if (kind() == congruence_kind::left) {
-        std::reverse(lhs.begin(), lhs.end());
-        std::reverse(rhs.begin(), rhs.end());
-      }
       add_rule_impl(lhs, rhs);
     }
   }

@@ -62,7 +62,6 @@
 namespace libsemigroups {
   congruence_kind constexpr twosided = congruence_kind::twosided;
   congruence_kind constexpr right    = congruence_kind::right;
-  congruence_kind constexpr left     = congruence_kind::left;
 
   using literals::operator""_w;
   using namespace rx;
@@ -462,10 +461,11 @@ namespace libsemigroups {
 
     auto p = to_presentation<std::string>(S);
     REQUIRE(!p.contains_empty_word());
+    presentation::reverse(p);
 
-    TestType kb(left, p);
+    TestType kb(right, p);
 
-    knuth_bendix::add_pair(kb, "abaaabbaa", "baaab");
+    knuth_bendix::add_pair(kb, "aabbaaaba", "baaab");
 
     kb.run();
 
@@ -477,7 +477,7 @@ namespace libsemigroups {
     Paths paths1(copy);
     REQUIRE(paths1.min(1).source(0).count() == 69);
     REQUIRE(knuth_bendix::normal_forms(kb).min(1).count() == 69);
-    REQUIRE(!knuth_bendix::contains(kb, "aaaabb", "abaaabaa"));
+    REQUIRE(!knuth_bendix::contains(kb, "bbaaaa", "aabaaaba"));
 
     REQUIRE(kb.number_of_classes() == 69);
 
@@ -488,42 +488,34 @@ namespace libsemigroups {
 
     REQUIRE(nf1
             == std::vector<std::string>(
-                {"a",        "b",        "aa",       "ba",       "ab",
-                 "bb",       "aaa",      "baa",      "aba",      "bba",
-                 "aab",      "abb",      "aaaa",     "baaa",     "abaa",
-                 "bbaa",     "aaba",     "baba",     "abba",     "aabb",
-                 "babb",     "abaaa",    "bbaaa",    "aabaa",    "babaa",
-                 "abbaa",    "aaaba",    "baaba",    "ababa",    "aabba",
-                 "babba",    "aaabb",    "baabb",    "ababb",    "aabaaa",
-                 "babaaa",   "abbaaa",   "aaabaa",   "baabaa",   "ababaa",
-                 "aabbaa",   "babbaa",   "aaaaba",   "baaaba",   "aaabba",
-                 "baabba",   "ababba",   "aaaabb",   "baaabb",   "aaabaaa",
-                 "baabaaa",  "ababaaa",  "aaaabaa",  "baaabaa",  "aaabbaa",
-                 "baabbaa",  "ababbaa",  "abaaaba",  "aaaabba",  "baaabba",
-                 "abaaabb",  "aaaabaaa", "baaabaaa", "abaaabaa", "aaaabbaa",
-                 "baaabbaa", "aabaaaba", "abaaabba", "abaaabaaa"}));
+                {"a",        "b",        "aa",       "ab",       "ba",
+                 "bb",       "aaa",      "aab",      "aba",      "abb",
+                 "baa",      "bba",      "aaaa",     "aaab",     "aaba",
+                 "aabb",     "abaa",     "abab",     "abba",     "bbaa",
+                 "bbab",     "aaaba",    "aaabb",    "aabaa",    "aabab",
+                 "aabba",    "abaaa",    "abaab",    "ababa",    "abbaa",
+                 "abbab",    "bbaaa",    "bbaab",    "bbaba",    "aaabaa",
+                 "aaabab",   "aaabba",   "aabaaa",   "aabaab",   "aababa",
+                 "aabbaa",   "aabbab",   "abaaaa",   "abaaab",   "abbaaa",
+                 "abbaab",   "abbaba",   "bbaaaa",   "bbaaab",   "aaabaaa",
+                 "aaabaab",  "aaababa",  "aabaaaa",  "aabaaab",  "aabbaaa",
+                 "aabbaab",  "aabbaba",  "abaaaba",  "abbaaaa",  "abbaaab",
+                 "bbaaaba",  "aaabaaaa", "aaabaaab", "aabaaaba", "aabbaaaa",
+                 "aabbaaab", "abaaabaa", "abbaaaba", "aaabaaaba"}));
     REQUIRE(std::all_of(nf1.begin(), nf1.end(), [&kb](auto& w) {
       return knuth_bendix::reduce(kb, w) == w;
     }));
 
-    auto nf     = froidure_pin::normal_forms(S) | to_string | take(S.size());
-    auto result = kb.gilman_graph();
-    // auto expected = to_word_graph<size_t>(
-    //     45, {{1, 2},   {31, 9}, {43, 11}, {4, 5},  {},       {20, 21}, {7,
-    //     8},
-    //          {4, 18},  {},      {10, 11}, {6, 12}, {14},     {13},     {},
-    //          {15, 16}, {24, 8}, {17},     {},      {19},     {23},     {27,
-    //          12}, {22},     {},      {},       {4, 25}, {26},     {}, {28,
-    //          8}, {4, 29},  {30},    {},       {3, 32}, {33, 34}, {39, 12},
-    //          {35}, {36, 16}, {37, 8}, {4, 38},  {},      {40, 8},  {4, 41},
-    //          {42},
-    //          {},       {44},    {}});
-    // REQUIRE(result == expected);
+    auto nf = froidure_pin::normal_forms(S) | to_string | take(S.size());
 
-    REQUIRE(knuth_bendix::reduce(kb, "abaaaa") == "aba");
+    REQUIRE(knuth_bendix::reduce(kb, "aaaaba") == "aba");
 
     REQUIRE((nf | count()) == 88);
-    auto pp = partition(kb, nf);
+    auto vnf = (nf | to_vector());
+    for (auto& w : vnf) {
+      reverse(w);
+    }
+    auto pp = partition(kb, iterator_range(vnf.begin(), vnf.end()));
     REQUIRE(pp.size() == 69);
 
     auto ntc = (iterator_range(pp)
@@ -534,10 +526,10 @@ namespace libsemigroups {
     REQUIRE(
         ntc
         == std::vector<std::vector<std::string>>(
-            {{"aab",     "bab",      "aaab",      "abab",      "baab",
-              "aaaab",   "aabab",    "baaab",     "babab",     "aaabab",
-              "abaaab",  "ababab",   "baabab",    "aaaabab",   "aabaaab",
-              "baaabab", "abaaabab", "aabaaabaa", "aabaaabab", "abaaabbaa"}}));
+            {{"baa",     "bab",      "baaa",      "baba",      "baab",
+              "baaaa",   "babaa",    "baaab",     "babab",     "babaaa",
+              "baaaba",  "bababa",   "babaab",    "babaaaa",   "baaabaa",
+              "babaaab", "babaaaba", "aabaaabaa", "babaaabaa", "aabbaaaba"}}));
 
     REQUIRE(std::all_of(ntc[0].begin(), ntc[0].end(), [&kb, &ntc](auto& w) {
       return knuth_bendix::reduce(kb, w) == ntc[0][0];
@@ -548,30 +540,31 @@ namespace libsemigroups {
     REQUIRE((kb.active_rules() | sort(weird_cmp()) | to_vector())
             == std::vector<std::pair<std::string, std::string>>(
                 {{"bbb", "b"},
-                 {"babc", "aabc"},
-                 {"bbab", "bab"},
+                 {"babb", "bab"},
+                 {"cbab", "cbaa"},
                  {"aaaaa", "aa"},
-                 {"aaabc", "aabc"},
-                 {"abaab", "aaaab"},
-                 {"baaaa", "ba"},
-                 {"baabc", "aabc"},
-                 {"bbaab", "baaab"},
-                 {"aababa", "aabb"},
-                 {"aababb", "aaba"},
-                 {"bababa", "babb"},
-                 {"bababb", "baba"},
-                 {"bbaaab", "baab"},
-                 {"aabbaaa", "aabb"},
-                 {"babaaab", "aabaaab"},
-                 {"babbaaa", "babb"},
-                 {"aaabaaab", "aabaaab"},
-                 {"aabaaabb", "aabaaab"},
-                 {"baabaaab", "aabaaab"},
-                 {"aabaaabaaa", "aabaaab"},
-                 {"aabaaabaac", "aabc"},
-                 {"abaaabbaac", "aabc"}}));
+                 {"aaaab", "ab"},
+                 {"baaba", "baaaa"},
+                 {"baabb", "baaab"},
+                 {"cbaaa", "cbaa"},
+                 {"cbaab", "cbaa"},
+                 {"ababaa", "bbaa"},
+                 {"ababab", "bbab"},
+                 {"baaabb", "baab"},
+                 {"bbabaa", "abaa"},
+                 {"bbabab", "abab"},
+                 {"aaabbaa", "bbaa"},
+                 {"aaabbab", "bbab"},
+                 {"baaabab", "baaabaa"},
+                 {"baaabaaa", "baaabaa"},
+                 {"baaabaab", "baaabaa"},
+                 {"bbaaabaa", "baaabaa"},
+                 {"aaabaaabaa", "baaabaa"},
+                 {"caabaaabaa", "cbaa"},
+                 {"caabbaaaba", "cbaa"}}));
     REQUIRE(knuth_bendix::is_reduced(kb));
 
+    presentation::reverse(p);
     kb.init(right, p);
     knuth_bendix::add_pair(
         kb,
@@ -594,12 +587,12 @@ namespace libsemigroups {
     auto l = 010001100_w;
     auto r = 10001_w;
 
-    KnuthBendix kb(left, to_presentation<word_type>(S));
+    KnuthBendix kb(right, presentation::reverse(to_presentation<word_type>(S)));
     ToString    to_string(kb.presentation().alphabet());
-    knuth_bendix::add_pair(kb, l, r);
+    knuth_bendix::add_pair(kb, reverse(l), reverse(r));
     REQUIRE(kb.number_of_classes() == 69);
-    REQUIRE(knuth_bendix::reduce_no_run(kb, 100101_w) == 001_w);
-    REQUIRE(knuth_bendix::reduce_no_run(kb, 0010001_w) == 001_w);
-    REQUIRE(knuth_bendix::contains(kb, 100101_w, 0010001_w));
+    REQUIRE(knuth_bendix::reduce_no_run(kb, 101001_w) == 100_w);
+    REQUIRE(knuth_bendix::reduce_no_run(kb, 1000100_w) == 100_w);
+    REQUIRE(knuth_bendix::contains(kb, 101001_w, 1000100_w));
   }
 }  // namespace libsemigroups
