@@ -86,10 +86,10 @@ namespace libsemigroups {
         auto last  = generating_pairs().cend();
         if (_runner_kinds[i] == RunnerKind::TC) {
           for (auto it = first; it != last; it += 2) {
-            // We have to call the specific add_pair_no_checks for each type of
+            // We have to call the specific add_generating_pair_no_checks for each type of
             // runner so that the generating pairs are correctly modified to
             // match the native letters in the alphabet
-            std::static_pointer_cast<ToddCoxeter>(runner)->add_pair_no_checks(
+            std::static_pointer_cast<ToddCoxeter>(runner)->add_generating_pair_no_checks(
                 std::begin(*it),
                 std::end(*it),
                 std::begin(*(it + 1)),
@@ -97,7 +97,7 @@ namespace libsemigroups {
           }
         } else if (_runner_kinds[i] == RunnerKind::KB) {
           for (auto it = first; it != last; it += 2) {
-            std::static_pointer_cast<KnuthBendix<>>(runner)->add_pair_no_checks(
+            std::static_pointer_cast<KnuthBendix<>>(runner)->add_generating_pair_no_checks(
                 std::begin(*it),
                 std::end(*it),
                 std::begin(*(it + 1)),
@@ -107,7 +107,7 @@ namespace libsemigroups {
           LIBSEMIGROUPS_ASSERT(_runner_kinds[i] == RunnerKind::K);
           for (auto it = first; it != last; it += 2) {
             std::static_pointer_cast<Kambites<word_type>>(runner)
-                ->add_pair_no_checks(std::begin(*it),
+                ->add_generating_pair_no_checks(std::begin(*it),
                                      std::end(*it),
                                      std::begin(*(it + 1)),
                                      std::end(*(it + 1)));

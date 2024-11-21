@@ -144,7 +144,7 @@ namespace libsemigroups {
               typename Iterator2,
               typename Iterator3,
               typename Iterator4>
-    CongruenceInterface& add_pair_no_checks(Iterator1 first1,
+    CongruenceInterface& add_generating_pair_no_checks(Iterator1 first1,
                                             Iterator2 last1,
                                             Iterator3 first2,
                                             Iterator4 last2) {
@@ -164,7 +164,7 @@ namespace libsemigroups {
       throw_if_started();
       throw_if_letter_out_of_bounds<Subclass>(first1, last1);
       throw_if_letter_out_of_bounds<Subclass>(first2, last2);
-      return static_cast<Subclass&>(*this).add_pair_no_checks(
+      return static_cast<Subclass&>(*this).add_generating_pair_no_checks(
           first1, last1, first2, last2);
     }
 
@@ -240,19 +240,19 @@ namespace libsemigroups {
 
     // TODO(0) doc
     template <typename Word>
-    inline CongruenceInterface& add_pair_no_checks(CongruenceInterface& ci,
+    inline CongruenceInterface& add_generating_pair_no_checks(CongruenceInterface& ci,
                                                    Word const&          u,
                                                    Word const&          v) {
-      return ci.add_pair_no_checks(
+      return ci.add_generating_pair_no_checks(
           std::begin(u), std::end(u), std::begin(v), std::end(v));
     }
 
     // TODO(0) doc
     template <typename Word>
-    inline CongruenceInterface& add_pair_no_checks(CongruenceInterface& ci,
+    inline CongruenceInterface& add_generating_pair_no_checks(CongruenceInterface& ci,
                                                    Word&&               u,
                                                    Word&&               v) {
-      return ci.add_pair_no_checks(std::make_move_iterator(std::begin(u)),
+      return ci.add_generating_pair_no_checks(std::make_move_iterator(std::begin(u)),
                                    std::make_move_iterator(std::end(u)),
                                    std::make_move_iterator(std::begin(v)),
                                    std::make_move_iterator(std::end(v)));
@@ -260,17 +260,17 @@ namespace libsemigroups {
 
     // TODO(doc)
     template <typename Subclass, typename Int>
-    Subclass& add_pair_no_checks(Subclass&                         ci,
+    Subclass& add_generating_pair_no_checks(Subclass&                         ci,
                                  std::initializer_list<Int> const& u,
                                  std::initializer_list<Int> const& v) {
-      return add_pair_no_checks<Subclass, std::vector<Int>>(ci, u, v);
+      return add_generating_pair_no_checks<Subclass, std::vector<Int>>(ci, u, v);
     }
 
     // TODO(doc)
-    inline CongruenceInterface& add_pair_no_checks(CongruenceInterface& ci,
+    inline CongruenceInterface& add_generating_pair_no_checks(CongruenceInterface& ci,
                                                    char const*          u,
                                                    char const*          v) {
-      return ci.add_pair_no_checks(
+      return ci.add_generating_pair_no_checks(
           u, u + std::strlen(u), v, v + std::strlen(v));
     }
 

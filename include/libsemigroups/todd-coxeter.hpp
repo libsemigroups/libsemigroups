@@ -759,14 +759,14 @@ namespace libsemigroups {
     // 4. ToddCoxeter - interface requirements - add_generating_pair
     ////////////////////////////////////////////////////////////////////////
 
-    // using CongruenceInterface::add_pair_no_checks; TODO use or rm
+    // using CongruenceInterface::add_generating_pair_no_checks; TODO use or rm
 
    private:
     template <typename Iterator1,
               typename Iterator2,
               typename Iterator3,
               typename Iterator4>
-    ToddCoxeter& add_pair_no_checks(citow<Iterator1> first1,
+    ToddCoxeter& add_generating_pair_no_checks(citow<Iterator1> first1,
                                     citow<Iterator2> last1,
                                     citow<Iterator3> first2,
                                     citow<Iterator4> last2) {
@@ -783,11 +783,11 @@ namespace libsemigroups {
               typename Iterator2,
               typename Iterator3,
               typename Iterator4>
-    ToddCoxeter& add_pair_no_checks(Iterator1 first1,
+    ToddCoxeter& add_generating_pair_no_checks(Iterator1 first1,
                                     Iterator2 last1,
                                     Iterator3 first2,
                                     Iterator4 last2) {
-      return add_pair_no_checks(make_citow(first1),
+      return add_generating_pair_no_checks(make_citow(first1),
                                 make_citow(last1),
                                 make_citow(first2),
                                 make_citow(last2));
@@ -1696,7 +1696,7 @@ namespace libsemigroups {
     ////////////////////////////////////////////////////////////////////////
 
     using congruence_interface::add_generating_pair;
-    using congruence_interface::add_pair_no_checks;
+    using congruence_interface::add_generating_pair_no_checks;
 
     ////////////////////////////////////////////////////////////////////////
     // ToddCoxeter specific helpers - word -> index

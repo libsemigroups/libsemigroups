@@ -310,7 +310,7 @@ namespace libsemigroups {
     // pairs contained in CongruenceInterface are word_types, and so we don't
     // require any conversion here (since chars can be converted implicitly to
     // letter_types)
-    using CongruenceInterface::add_pair_no_checks;
+    using CongruenceInterface::add_generating_pair_no_checks;
 
     template <typename Iterator1,
               typename Iterator2,
@@ -1039,7 +1039,7 @@ namespace libsemigroups {
     ////////////////////////////////////////////////////////////////////////
 
     using congruence_interface::add_generating_pair;
-    using congruence_interface::add_pair_no_checks;
+    using congruence_interface::add_generating_pair_no_checks;
 
     ////////////////////////////////////////////////////////////////////////
     // Interface helpers - contains
