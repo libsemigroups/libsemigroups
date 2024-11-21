@@ -203,10 +203,11 @@ namespace libsemigroups {
               typename Iterator3,
               typename Iterator4>
     [[nodiscard]] Kambites& add_generating_pair(Iterator1 first1,
-                                     Iterator2 last1,
-                                     Iterator3 first2,
-                                     Iterator4 last2) {
-      CongruenceInterface::add_generating_pair<Kambites>(first1, last1, first2, last2);
+                                                Iterator2 last1,
+                                                Iterator3 first2,
+                                                Iterator4 last2) {
+      CongruenceInterface::add_generating_pair<Kambites>(
+          first1, last1, first2, last2);
       return *this;
     }
 
@@ -643,194 +644,20 @@ namespace libsemigroups {
     ////////////////////////////////////////////////////////////////////////
     // Interface helpers - contains
     ////////////////////////////////////////////////////////////////////////
-    // TODO(0) ensure there are Word2, string_view, and char const* versions of
-    // these
-    // TODO(0) replace these with using congruence_interface::contains etc
 
-    // TODO(0) doc
-    template <typename Word1, typename Word2>
-    [[nodiscard]] tril currently_contains_no_checks(Kambites<Word1> const& k,
-                                                    Word2 const&           u,
-                                                    Word2 const&           v) {
-      return k.currently_contains_no_checks(
-          std::begin(u), std::end(u), std::begin(v), std::end(v));
-    }
-
-    // TODO(0) doc
-    template <typename Word1, typename Word2>
-    [[nodiscard]] tril currently_contains(Kambites<Word1> const& k,
-                                          Word2 const&           u,
-                                          Word2 const&           v) {
-      return k.currently_contains(
-          std::begin(u), std::end(u), std::begin(v), std::end(v));
-    }
-
-    template <typename Word>
-    [[nodiscard]] bool contains_no_checks(Kambites<Word>&  k,
-                                          std::string_view u,
-                                          std::string_view v) {
-      return k.contains_no_checks(
-          std::begin(u), std::end(u), std::begin(v), std::end(v));
-    }
-
-    // TODO(0) doc
-    template <typename Word1, typename Word2>
-    [[nodiscard]] bool contains_no_checks(Kambites<Word1>& k,
-                                          Word2 const&     u,
-                                          Word2 const&     v) {
-      return k.contains_no_checks(
-          std::begin(u), std::end(u), std::begin(v), std::end(v));
-    }
-
-    // JDM not sure why this is required in addition to the string_view one, but
-    // it is.
-    template <typename Word>
-    [[nodiscard]] bool contains(Kambites<Word>& k,
-                                char const*     u,
-                                char const*     v) {
-      return k.contains(u, u + std::strlen(u), v, v + std::strlen(v));
-    }
-
-    template <typename Word>
-    [[nodiscard]] bool contains(Kambites<Word>&  k,
-                                std::string_view u,
-                                std::string_view v) {
-      return k.contains(std::begin(u), std::end(u), std::begin(v), std::end(v));
-    }
-
-    // TODO(0) doc
-    template <typename Word1, typename Word2>
-    [[nodiscard]] bool contains(Kambites<Word1>& k,
-                                Word2 const&     u,
-                                Word2 const&     v) {
-      return k.contains(std::begin(u), std::end(u), std::begin(v), std::end(v));
-    }
-
-    // TODO(0) doc
-    template <typename Word1, typename Int = size_t>
-    [[nodiscard]] tril
-    currently_contains_no_checks(Kambites<Word1> const&            k,
-                                 std::initializer_list<Int> const& u,
-                                 std::initializer_list<Int> const& v) {
-      return currently_contains_no_checks<std::initializer_list<Int>>(k, u, v);
-    }
-
-    // TODO(0) doc
-    template <typename Word1, typename Int = size_t>
-    [[nodiscard]] tril currently_contains(Kambites<Word1> const&            k,
-                                          std::initializer_list<Int> const& u,
-                                          std::initializer_list<Int> const& v) {
-      return currently_contains<std::initializer_list<Int>>(k, u, v);
-    }
-
-    // TODO(0) doc
-    template <typename Word1, typename Int = size_t>
-    [[nodiscard]] bool contains_no_checks(Kambites<Word1>&                  k,
-                                          std::initializer_list<Int> const& u,
-                                          std::initializer_list<Int> const& v) {
-      return contains_no_checks<std::initializer_list<Int>>(k, u, v);
-    }
-
-    // TODO(0) doc
-    template <typename Word1, typename Int = size_t>
-    [[nodiscard]] bool contains(Kambites<Word1>&                  k,
-                                std::initializer_list<Int> const& u,
-                                std::initializer_list<Int> const& v) {
-      return contains<std::initializer_list<Int>>(k, u, v);
-    }
+    using congruence_interface::contains;
+    using congruence_interface::contains_no_checks;
+    using congruence_interface::currently_contains;
+    using congruence_interface::currently_contains_no_checks;
 
     ////////////////////////////////////////////////////////////////////////
     // Interface helpers - reduce
     ////////////////////////////////////////////////////////////////////////
 
-    // TODO(0) doc
-    template <typename Word,
-              typename InputWord,
-              typename OutputWord = InputWord>
-    OutputWord reduce_no_run_no_checks(Kambites<Word>& k, InputWord const& w) {
-      OutputWord result;
-      k.reduce_no_run_no_checks(
-          std::back_inserter(result), std::begin(w), std::end(w));
-      if (k.kind() != congruence_kind::left) {
-        std::reverse(std::begin(result), std::end(result));
-      }
-      return result;
-    }
-
-    // TODO(0) doc
-    template <typename Word,
-              typename InputWord,
-              typename OutputWord = InputWord>
-    OutputWord reduce_no_run(Kambites<Word>& k, InputWord const& w) {
-      OutputWord result;
-      k.reduce_no_run(std::back_inserter(result), std::begin(w), std::end(w));
-      return result;
-    }
-
-    // TODO(0) doc
-    template <typename Word,
-              typename InputWord,
-              typename OutputWord = InputWord>
-    OutputWord reduce_no_checks(Kambites<Word>& k, InputWord const& w) {
-      OutputWord result;
-      k.reduce_no_checks(
-          std::back_inserter(result), std::begin(w), std::end(w));
-      return result;
-    }
-
-    // TODO(0) doc
-    template <typename Word,
-              typename InputWord,
-              typename OutputWord = InputWord>
-    OutputWord reduce(Kambites<Word>& k, InputWord const& w) {
-      OutputWord result;
-      k.reduce(std::back_inserter(result), std::begin(w), std::end(w));
-      return result;
-    }
-
-    template <typename Word, typename OutputWord = std::string>
-    OutputWord reduce(Kambites<Word>& k, std::string_view w) {
-      OutputWord result;
-      k.reduce(std::back_inserter(result), std::begin(w), std::end(w));
-      return result;
-    }
-
-    // TODO(0) add the missing functions string_view + char const* here
-    template <typename Word, typename OutputWord = std::string>
-    OutputWord reduce(Kambites<Word>& k, char const* w) {
-      OutputWord result;
-      k.reduce(std::back_inserter(result), w, w + std::strlen(w));
-      return result;
-    }
-
-    // TODO(0) doc
-    template <typename Word, typename Int = size_t>
-    auto reduce_no_run_no_checks(Kambites<Word>&                   k,
-                                 std::initializer_list<Int> const& w) {
-      return reduce_no_run_no_checks<std::initializer_list<Int>,
-                                     std::vector<Int>>(k, w);
-    }
-
-    // TODO(0) doc
-    template <typename Word, typename Int = size_t>
-    auto reduce_no_run(Kambites<Word>& k, std::initializer_list<Int> const& w) {
-      return reduce_no_run<std::initializer_list<Int>, std::vector<Int>>(k, w);
-    }
-
-    // TODO(0) doc
-    template <typename Word, typename Int = size_t>
-    auto reduce_no_checks(Kambites<Word>&                   k,
-                          std::initializer_list<Int> const& w) {
-      return reduce_no_checks<std::initializer_list<Int>, std::vector<Int>>(k,
-                                                                            w);
-    }
-
-    // TODO(0) doc
-    template <typename Word, typename Int = size_t>
-    auto reduce(Kambites<Word>& k, std::initializer_list<Int> const& w) {
-      return reduce<std::initializer_list<Int>, std::vector<Int>>(k, w);
-    }
-
+    using congruence_interface::reduce;
+    using congruence_interface::reduce_no_checks;
+    using congruence_interface::reduce_no_run;
+    using congruence_interface::reduce_no_run_no_checks;
   }  // namespace kambites
 
   template <typename Range, typename Word>

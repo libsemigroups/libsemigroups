@@ -215,7 +215,7 @@ namespace libsemigroups {
     Rewriter                        _rewriter;
     Settings                        _settings;
     mutable Stats                   _stats;
-    std::string                     _tmp_element1;
+    mutable std::string             _tmp_element1;
 
    public:
     //////////////////////////////////////////////////////////////////////////
@@ -349,7 +349,7 @@ namespace libsemigroups {
     tril currently_contains_no_checks(Iterator1 first1,
                                       Iterator2 last1,
                                       Iterator3 first2,
-                                      Iterator4 last2) {
+                                      Iterator4 last2) const {
       if (std::equal(first1, last1, first2, last2)) {
         return tril::TRUE;
       }
@@ -373,7 +373,7 @@ namespace libsemigroups {
     tril currently_contains(Iterator1 first1,
                             Iterator2 last1,
                             Iterator3 first2,
-                            Iterator4 last2) {
+                            Iterator4 last2) const {
       throw_if_letter_out_of_bounds(first1, last1);
       throw_if_letter_out_of_bounds(first2, last2);
       return currently_contains_no_checks(first1, last1, first2, last2);
@@ -414,7 +414,7 @@ namespace libsemigroups {
               typename InputIterator2>
     OutputIterator reduce_no_run_no_checks(OutputIterator d_first,
                                            InputIterator1 first,
-                                           InputIterator2 last) {
+                                           InputIterator2 last) const {
       // TODO(1) improve this to not require _tmp_element1
       if constexpr (std::is_same_v<InputIterator1, char const*>) {
         static_assert(std::is_same_v<InputIterator2, char const*>);
@@ -422,7 +422,8 @@ namespace libsemigroups {
       } else {
         _tmp_element1.assign(first, last);
       }
-      rewrite_inplace(_tmp_element1);
+      const_cast<KnuthBendix<Rewriter, ReductionOrder>&>(*this).rewrite_inplace(
+          _tmp_element1);
       return std::copy(
           std::begin(_tmp_element1), std::end(_tmp_element1), d_first);
     }
@@ -433,7 +434,7 @@ namespace libsemigroups {
               typename InputIterator2>
     OutputIterator reduce_no_run(OutputIterator d_first,
                                  InputIterator1 first,
-                                 InputIterator2 last) {
+                                 InputIterator2 last) const {
       throw_if_letter_out_of_bounds(first, last);
       return reduce_no_run_no_checks(d_first, first, last);
     }
@@ -1054,81 +1055,16 @@ namespace libsemigroups {
     // Interface helpers - reduce
     ////////////////////////////////////////////////////////////////////////
 
-    // TODO(JDM) version of this goes to congruence_interface??
-    // TODO(0) doc
-    template <typename Rewriter,
-              typename ReductionOrder,
-              typename InputWord,
-              typename OutputWord = InputWord>
-    OutputWord
-    reduce_no_run_no_checks(KnuthBendix<Rewriter, ReductionOrder>& kb,
-                            InputWord const&                       w) {
-      OutputWord result;
-      kb.reduce_no_run_no_checks(
-          std::back_inserter(result), std::begin(w), std::end(w));
-      return result;
-    }
-
-    // TODO(0) doc
-    template <typename Rewriter,
-              typename ReductionOrder,
-              typename InputWord,
-              typename OutputWord = InputWord>
-    OutputWord reduce_no_run(KnuthBendix<Rewriter, ReductionOrder>& kb,
-                             InputWord const&                       w) {
-      OutputWord result;
-      kb.reduce_no_run(std::back_inserter(result), std::begin(w), std::end(w));
-      return result;
-    }
-
-    template <typename Rewriter, typename ReductionOrder>
-    std::string reduce_no_run(KnuthBendix<Rewriter, ReductionOrder>& kb,
-                              char const*                            w) {
-      std::string result;
-      kb.reduce_no_run(std::back_inserter(result), w, w + std::strlen(w));
-      return result;
-    }  // TODO(0) other functions like this one
-
-    // TODO(0) doc
-    template <typename Rewriter,
-              typename ReductionOrder,
-              typename InputWord,
-              typename OutputWord = InputWord>
-    OutputWord reduce_no_checks(KnuthBendix<Rewriter, ReductionOrder>& kb,
-                                InputWord const&                       w) {
-      OutputWord result;
-      kb.reduce_no_checks(
-          std::back_inserter(result), std::begin(w), std::end(w));
-      return result;
-    }
-
-    // TODO(0) doc
-    template <typename Rewriter,
-              typename ReductionOrder,
-              typename InputWord,
-              typename OutputWord = InputWord>
-    OutputWord reduce(KnuthBendix<Rewriter, ReductionOrder>& kb,
-                      InputWord const&                       w) {
-      OutputWord result;
-      kb.reduce(std::back_inserter(result), std::begin(w), std::end(w));
-      return result;
-    }
-
-    template <typename Rewriter, typename ReductionOrder>
-    std::string reduce(KnuthBendix<Rewriter, ReductionOrder>& kb,
-                       char const*                            w) {
-      std::string result;
-      kb.reduce(std::back_inserter(result), w, w + std::strlen(w));
-      return result;
-    }
-
-    // TODO(0) initializer list versions of the above
-    // TODO(0) char const* versions of the above
+    using congruence_interface::reduce;
+    using congruence_interface::reduce_no_checks;
+    using congruence_interface::reduce_no_run;
+    using congruence_interface::reduce_no_run_no_checks;
 
     ////////////////////////////////////////////////////////////////////////
     // Interface helpers - to_human_readable_repr
     ////////////////////////////////////////////////////////////////////////
 
+    // TODO move out of knuth_bendix namespace
     // TODO(0) What should the \param be?
     //! \brief Return a string representation of a KnuthBendix instance
     //!

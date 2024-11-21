@@ -767,9 +767,9 @@ namespace libsemigroups {
               typename Iterator3,
               typename Iterator4>
     ToddCoxeter& add_generating_pair_no_checks(citow<Iterator1> first1,
-                                    citow<Iterator2> last1,
-                                    citow<Iterator3> first2,
-                                    citow<Iterator4> last2) {
+                                               citow<Iterator2> last1,
+                                               citow<Iterator3> first2,
+                                               citow<Iterator4> last2) {
       add_pair_no_checks_no_reverse(first1, last1, first2, last2);
       return *this;
     }
@@ -784,13 +784,13 @@ namespace libsemigroups {
               typename Iterator3,
               typename Iterator4>
     ToddCoxeter& add_generating_pair_no_checks(Iterator1 first1,
-                                    Iterator2 last1,
-                                    Iterator3 first2,
-                                    Iterator4 last2) {
+                                               Iterator2 last1,
+                                               Iterator3 first2,
+                                               Iterator4 last2) {
       return add_generating_pair_no_checks(make_citow(first1),
-                                make_citow(last1),
-                                make_citow(first2),
-                                make_citow(last2));
+                                           make_citow(last1),
+                                           make_citow(first2),
+                                           make_citow(last2));
     }
 
     template <typename Iterator1,
@@ -798,10 +798,11 @@ namespace libsemigroups {
               typename Iterator3,
               typename Iterator4>
     ToddCoxeter& add_generating_pair(Iterator1 first1,
-                          Iterator2 last1,
-                          Iterator3 first2,
-                          Iterator4 last2) {
-      CongruenceInterface::add_generating_pair<ToddCoxeter>(first1, last1, first2, last2);
+                                     Iterator2 last1,
+                                     Iterator3 first2,
+                                     Iterator4 last2) {
+      CongruenceInterface::add_generating_pair<ToddCoxeter>(
+          first1, last1, first2, last2);
       return *this;
     }
 
@@ -1789,10 +1790,17 @@ namespace libsemigroups {
     using congruence_interface::currently_contains_no_checks;
 
     ////////////////////////////////////////////////////////////////////////
-    // Interface helpers - reduce
+    // Interface helpers - reduce[_no_run][_no_checks]
     ////////////////////////////////////////////////////////////////////////
 
+    using congruence_interface::reduce;
+    using congruence_interface::reduce_no_checks;
+    using congruence_interface::reduce_no_run;
+    using congruence_interface::reduce_no_run_no_checks;
+
     // TODO(0) doc
+    // This has to be repeated here (not in cong-intf.hpp) because we need to
+    // reverse the word for ToddCoxeter, but not in KnuthBendix or Kambites.
     template <typename InputWord, typename OutputWord = InputWord>
     OutputWord reduce_no_run_no_checks(ToddCoxeter& tc, InputWord const& w) {
       OutputWord result;
@@ -1803,6 +1811,8 @@ namespace libsemigroups {
     }
 
     // TODO(0) doc
+    // This has to be repeated here (not in cong-intf.hpp) because we need to
+    // reverse the word for ToddCoxeter, but not in KnuthBendix or Kambites.
     template <typename InputWord, typename OutputWord = InputWord>
     OutputWord reduce_no_run(ToddCoxeter& tc, InputWord const& w) {
       OutputWord result;
@@ -1812,62 +1822,27 @@ namespace libsemigroups {
     }
 
     // TODO(0) doc
+    // This has to be repeated here (not in cong-intf.hpp) because we need to
+    // reverse the word for ToddCoxeter, but not in KnuthBendix or Kambites.
     template <typename InputWord, typename OutputWord = InputWord>
     OutputWord reduce_no_checks(ToddCoxeter& tc, InputWord const& w) {
       OutputWord result;
       tc.reduce_no_checks(
           std::back_inserter(result), std::begin(w), std::end(w));
-      if (tc.kind() != congruence_kind::left) {
-        std::reverse(std::begin(result), std::end(result));
-      }
+      std::reverse(std::begin(result), std::end(result));
       return result;
     }
 
     // TODO(0) doc
+    // This has to be repeated here (not in cong-intf.hpp) because we need to
+    // reverse the word for ToddCoxeter, but not in KnuthBendix or Kambites.
     template <typename InputWord, typename OutputWord = InputWord>
     OutputWord reduce(ToddCoxeter& tc, InputWord const& w) {
       OutputWord result;
       tc.reduce(std::back_inserter(result), std::begin(w), std::end(w));
-      if (tc.kind() != congruence_kind::left) {
-        std::reverse(std::begin(result), std::end(result));
-      }
+      std::reverse(std::begin(result), std::end(result));
       return result;
     }
-
-    // TODO(0) doc
-    template <typename Int = size_t>
-    auto reduce_no_run_no_checks(ToddCoxeter&                      tc,
-                                 std::initializer_list<Int> const& w) {
-      return reduce_no_run_no_checks<std::initializer_list<Int>,
-                                     std::vector<Int>>(tc, w);
-    }
-
-    // TODO(0) doc
-    template <typename Int = size_t>
-    auto reduce_no_run(ToddCoxeter& tc, std::initializer_list<Int> const& w) {
-      return reduce_no_run<std::initializer_list<Int>, std::vector<Int>>(tc, w);
-    }
-
-    // TODO(0) doc
-    template <typename Int = size_t>
-    auto reduce_no_checks(ToddCoxeter&                      tc,
-                          std::initializer_list<Int> const& w) {
-      return reduce_no_checks<std::initializer_list<Int>, std::vector<Int>>(tc,
-                                                                            w);
-    }
-
-    // TODO(0) doc
-    template <typename Int = size_t>
-    auto reduce(ToddCoxeter& tc, std::initializer_list<Int> const& w) {
-      return reduce<std::initializer_list<Int>, std::vector<Int>>(tc, w);
-    }
-
-    inline auto reduce(ToddCoxeter& tc, char const* w) {
-      // TODO is this consistent?  Should the return type be word_type?
-      return reduce<std::string, std::string>(tc, w);
-    }
-
-    // TODO(0) the other 3 reduce functions for char const*
 
     ////////////////////////////////////////////////////////////////////////
     // Interface helpers - class_of

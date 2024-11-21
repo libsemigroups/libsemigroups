@@ -228,10 +228,11 @@ namespace libsemigroups {
               typename Iterator3,
               typename Iterator4>
     [[nodiscard]] Congruence& add_generating_pair(Iterator1 first1,
-                                       Iterator2 last1,
-                                       Iterator3 first2,
-                                       Iterator4 last2) {
-      CongruenceInterface::add_generating_pair<Congruence>(first1, last1, first2, last2);
+                                                  Iterator2 last1,
+                                                  Iterator3 first2,
+                                                  Iterator4 last2) {
+      CongruenceInterface::add_generating_pair<Congruence>(
+          first1, last1, first2, last2);
       return *this;
     }
 
@@ -517,10 +518,15 @@ namespace libsemigroups {
     using congruence_interface::currently_contains;
     using congruence_interface::currently_contains_no_checks;
 
-    // It would be possible to use typename Range::output_type instead of
-    // word_type to make this agnostic to whether we're using strings or
-    // word_type, but then it's not very clear what letters we should use for
-    // the alphabet when ToddCoxeter or Kambites<word_type> is used.
+    ////////////////////////////////////////////////////////////////////////
+    // Interface helpers - reduce
+    ////////////////////////////////////////////////////////////////////////
+
+    using congruence_interface::reduce;
+    using congruence_interface::reduce_no_checks;
+    using congruence_interface::reduce_no_run;
+    using congruence_interface::reduce_no_run_no_checks;
+
     template <typename Range>
     std::vector<std::vector<std::decay_t<typename Range::output_type>>>
     non_trivial_classes(Congruence& cong, Range r) {
