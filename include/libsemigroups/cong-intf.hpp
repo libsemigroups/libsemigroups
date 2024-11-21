@@ -358,18 +358,8 @@ namespace libsemigroups {
     // TODO(0) doc
     template <typename Subclass, typename Word>
     bool contains(Subclass& ci, Word const& u, Word const& v) {
-      if constexpr (std::is_same_v<typename Subclass::native_letter_type, char>
-                    && !std::is_same_v<typename Subclass::native_letter_type,
-                                       typename Word::value_type>) {
-        ToString to_string(ci.presentation().alphabet());
-        return contains(ci, to_string(u), to_string(v));
-        // TODO(0) the string -> word case
-        // TODO(0) it'd be better not to do this here, because we can't store
-        // the ToString object
-      } else {
-        return ci.contains(
-            std::begin(u), std::end(u), std::begin(v), std::end(v));
-      }
+      return ci.contains(
+          std::begin(u), std::end(u), std::begin(v), std::end(v));
     }
 
     template <typename Subclass>
@@ -429,7 +419,6 @@ namespace libsemigroups {
     return result;
   }
 
-  // TODO(0) remove word_type, template
   template <typename Thing,
             typename Iterator1,
             typename Iterator2,
@@ -441,7 +430,6 @@ namespace libsemigroups {
     return partition(ci, rx::iterator_range(first, last));
   }
 
-  // TODO(0) remove word_type, template
   template <typename Thing,
             typename Iterator1,
             typename Iterator2,
@@ -455,6 +443,7 @@ namespace libsemigroups {
 
   namespace detail {
 
+    // TODO delete?
     template <typename Subclass>
     struct ToStringIteratorTraits : ConstIteratorTraits<std::string> {
       using internal_iterator_type =

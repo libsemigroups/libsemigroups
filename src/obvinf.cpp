@@ -212,12 +212,9 @@ namespace libsemigroups {
             d, d.cbegin_active_nodes(), d.cend_active_nodes())) {
       return false;
     }
-    auto p = tc.presentation();  // TODO don't copy this here
-    presentation::normalize_alphabet(p);
+    auto                p = tc.native_presentation();
     IsObviouslyInfinite ioi(p.alphabet().size());
     ioi.add_rules_no_checks(p.rules.cbegin(), p.rules.cend());
-    // TODO is the next line correct, shouldn't the generating pairs also
-    // be normalized?
     ioi.add_rules_no_checks(tc.generating_pairs().cbegin(),
                             tc.generating_pairs().cend());
     return ioi.result();

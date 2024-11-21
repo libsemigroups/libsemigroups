@@ -112,18 +112,40 @@ namespace libsemigroups {
     }
   }
 
-  void Congruence::init_runners() {
+  void Congruence::init_runners() const {
     if (!_runners_initted) {
       _runners_initted = true;
-      for (auto& runner : _race) {
+      for (auto const& [i, runner] : rx::enumerate(_race)) {
         auto first = generating_pairs().cbegin();
         auto last  = generating_pairs().cend();
-        for (auto it = first; it != last; it += 2) {
-          std::static_pointer_cast<CongruenceInterface>(runner)
-              ->add_pair_no_checks_no_reverse(std::begin(*it),
-                                              std::end(*it),
-                                              std::begin(*(it + 1)),
-                                              std::end(*(it + 1)));
+        if (_runner_kinds[i] == RunnerKind::TC) {
+          for (auto it = first; it != last; it += 2) {
+            // We have to call the specific add_pair_no_checks for each type of
+            // runner so that the generating pairs are correctly modified to
+            // match the native letters in the alphabet
+            std::static_pointer_cast<ToddCoxeter>(runner)->add_pair_no_checks(
+                std::begin(*it),
+                std::end(*it),
+                std::begin(*(it + 1)),
+                std::end(*(it + 1)));
+          }
+        } else if (_runner_kinds[i] == RunnerKind::KB) {
+          for (auto it = first; it != last; it += 2) {
+            std::static_pointer_cast<KnuthBendix<>>(runner)->add_pair_no_checks(
+                std::begin(*it),
+                std::end(*it),
+                std::begin(*(it + 1)),
+                std::end(*(it + 1)));
+          }
+        } else {
+          LIBSEMIGROUPS_ASSERT(_runner_kinds[i] == RunnerKind::K);
+          for (auto it = first; it != last; it += 2) {
+            std::static_pointer_cast<Kambites<word_type>>(runner)
+                ->add_pair_no_checks(std::begin(*it),
+                                     std::end(*it),
+                                     std::begin(*(it + 1)),
+                                     std::end(*(it + 1)));
+          }
         }
       }
     }

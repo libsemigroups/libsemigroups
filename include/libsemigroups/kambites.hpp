@@ -245,15 +245,18 @@ namespace libsemigroups {
               typename Iterator2,
               typename Iterator3,
               typename Iterator4>
-    [[nodiscard]] bool currently_contains_no_checks(Iterator1 first1,
+    [[nodiscard]] tril currently_contains_no_checks(Iterator1 first1,
                                                     Iterator2 last1,
                                                     Iterator3 first2,
                                                     Iterator4 last2) const {
       if (finished()) {
-        const_cast<Kambites*>(this)->contains_no_checks(
-            first1, last1, first2, last2);
+        return const_cast<Kambites*>(this)->contains_no_checks(
+                   first1, last1, first2, last2)
+                   ? tril::TRUE
+                   : tril::FALSE;
       }
-      return std::equal(first1, last1, first2, last2);
+      return std::equal(first1, last1, first2, last2) ? tril::TRUE
+                                                      : tril::FALSE;
     }
 
     template <typename Iterator1,
@@ -830,14 +833,12 @@ namespace libsemigroups {
 
   }  // namespace kambites
 
-  template <typename Range,
-            typename Word1,
-            typename Word2 = typename Kambites<Word1>::value_type>
-  [[nodiscard]] std::vector<std::vector<Word2>> partition(Kambites<Word1>& k,
-                                                          Range            r) {
-    static_assert(
-        std::is_same_v<std::decay_t<typename Range::output_type>, Word2>);
-    using return_type = std::vector<std::vector<Word2>>;
+  template <typename Range, typename Word>
+  [[nodiscard]] std::vector<
+      std::vector<std::decay_t<typename Range::output_type>>>
+  partition(Kambites<Word>& k, Range r) {
+    using output_type = std::decay_t<typename Range::output_type>;
+    using return_type = std::vector<std::vector<output_type>>;
 
     if (!r.is_finite) {
       LIBSEMIGROUPS_EXCEPTION("the 2nd argument (a range) must be finite, "
@@ -846,8 +847,8 @@ namespace libsemigroups {
 
     return_type result;
 
-    std::unordered_map<Word2, size_t> map;
-    size_t                            index = 0;
+    std::unordered_map<output_type, size_t> map;
+    size_t                                  index = 0;
 
     while (!r.at_end()) {
       auto next = r.get();

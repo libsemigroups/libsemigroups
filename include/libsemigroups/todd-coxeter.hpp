@@ -408,6 +408,10 @@ namespace libsemigroups {
         return _it == that._it;
       }
 
+      bool operator!=(citow<Iterator> that) const noexcept {
+        return _it != that._it;
+      }
+
       bool operator<=(citow<Iterator> that) const noexcept {
         return _it <= that._it;
       }
@@ -416,8 +420,12 @@ namespace libsemigroups {
         return _it >= that._it;
       }
 
-      bool operator!=(citow<Iterator> that) const noexcept {
-        return _it != that._it;
+      bool operator<(citow<Iterator> that) const noexcept {
+        return _it < that._it;
+      }
+
+      bool operator>(citow<Iterator> that) const noexcept {
+        return _it > that._it;
       }
 
       citow& operator++() {
@@ -425,9 +433,31 @@ namespace libsemigroups {
         return *this;
       }
 
+      citow& operator+=(size_type val) noexcept {
+        _it += val;
+        return *this;
+      }
+
+      citow operator+(size_type val) const noexcept {
+        citow result(*this);
+        result += val;
+        return result;
+      }
+
       citow& operator--() {
         --_it;
         return *this;
+      }
+
+      citow& operator-=(size_type val) noexcept {
+        _it -= val;
+        return *this;
+      }
+
+      citow operator-(size_type val) const noexcept {
+        citow result(*this);
+        result -= val;
+        return result;
       }
 
       [[nodiscard]] Iterator get() const noexcept {

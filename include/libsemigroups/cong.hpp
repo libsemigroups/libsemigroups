@@ -65,13 +65,15 @@ namespace libsemigroups {
   //! cong.add_pair({1, 1, 1}, {0});
   //! cong.number_of_classes(); // 3
   //! \endcode
+  // TODO(0):
+  // * impl presentation mem fn
   class Congruence : public CongruenceInterface {
     enum class RunnerKind : size_t { TC = 0, KB = 1, K = 2 };
     /////////////////////////////////////////////////////////////////////////
     // Congruence - data - private
     /////////////////////////////////////////////////////////////////////////
-    detail::Race            _race;
-    bool                    _runners_initted;
+    mutable detail::Race    _race;
+    mutable bool            _runners_initted;
     std::vector<RunnerKind> _runner_kinds;
 
    public:
@@ -130,6 +132,7 @@ namespace libsemigroups {
     //! \warning the parameter `T const& S` is copied, this might be expensive,
     //! use a std::shared_ptr to avoid the copy!
     // template <typename T>
+    // TODO(0) should be a helper
     Congruence(congruence_kind type, FroidurePinBase& S) : Congruence() {
       init(type, S);
     }
@@ -164,12 +167,15 @@ namespace libsemigroups {
     // No rvalue ref version because we are not able to use p directly anyway
     template <typename Word>
     Congruence(congruence_kind type, Presentation<Word> const& p)
-        : Congruence(type, to_presentation<word_type>(p)) {}
+        : Congruence(type, to_presentation<word_type>(p, [](auto const& x) {
+                       return x;
+                     })) {}
 
     //! TODO(doc)
     template <typename Word>
     Congruence& init(congruence_kind type, Presentation<Word> const& p) {
-      init(type, to_presentation<word_type>(p));
+      init(type,
+           to_presentation<word_type>(p, [](auto const& x) { return x; }));
       return *this;
     }
 
@@ -226,6 +232,27 @@ namespace libsemigroups {
                                                     Iterator4 last2) const {
       //      using iterator_points_at = decltype(*std::declval<Iterator1>());
 
+      if (finished()) {
+        auto winner_kind = _runner_kinds[_race.winner_index()];
+        if (winner_kind == RunnerKind::TC) {
+          return std::static_pointer_cast<ToddCoxeter>(_race.winner())
+                         ->contains_no_checks(first1, last1, first2, last2)
+                     ? tril::TRUE
+                     : tril::FALSE;
+        } else if (winner_kind == RunnerKind::KB) {
+          return std::static_pointer_cast<KnuthBendix<>>(_race.winner())
+                         ->contains_no_checks(first1, last1, first2, last2)
+                     ? tril::TRUE
+                     : tril::FALSE;
+        } else {
+          LIBSEMIGROUPS_ASSERT(winner_kind == RunnerKind::K);
+          return std::static_pointer_cast<Kambites<word_type>>(_race.winner())
+                         ->contains_no_checks(first1, last1, first2, last2)
+                     ? tril::TRUE
+                     : tril::FALSE;
+        }
+      }
+      init_runners();
       tril result = tril::unknown;
       for (auto const& [i, runner] : rx::enumerate(_race)) {
         if (_runner_kinds[i] == RunnerKind::TC) {
@@ -436,7 +463,7 @@ namespace libsemigroups {
     // Congruence - member functions - private
     //////////////////////////////////////////////////////////////////////////
 
-    void init_runners();
+    void init_runners() const;
 
     //////////////////////////////////////////////////////////////////////////
     // Runner - pure virtual member functions - private
@@ -451,36 +478,34 @@ namespace libsemigroups {
   namespace congruence {
 
     ////////////////////////////////////////////////////////////////////////
-    // Congruence add_generating_pairs helpers
+    // Interface helpers - add_pair
     ////////////////////////////////////////////////////////////////////////
 
     using congruence_interface::add_pair;
     using congruence_interface::add_pair_no_checks;
+
+    ////////////////////////////////////////////////////////////////////////
+    // Interface helpers - contains
+    ////////////////////////////////////////////////////////////////////////
+
+    using congruence_interface::contains;
+    using congruence_interface::contains_no_checks;
+    using congruence_interface::currently_contains;
+    using congruence_interface::currently_contains_no_checks;
 
     // It would be possible to use typename Range::output_type instead of
     // word_type to make this agnostic to whether we're using strings or
     // word_type, but then it's not very clear what letters we should use for
     // the alphabet when ToddCoxeter or Kambites<word_type> is used.
     template <typename Range>
-    std::vector<std::vector<word_type>> non_trivial_classes(Congruence& cong,
-                                                            Range       r) {
-      static_assert(
-          std::is_same_v<std::decay_t<typename Range::output_type>, word_type>);
-      using rx::operator|;
+    std::vector<std::vector<std::decay_t<typename Range::output_type>>>
+    non_trivial_classes(Congruence& cong, Range r) {
       cong.run();
       if (cong.has<ToddCoxeter>() && cong.get<ToddCoxeter>()->finished()) {
         return non_trivial_classes(*cong.get<ToddCoxeter>(), r);
       } else if (cong.has<KnuthBendix<>>()
                  && cong.get<KnuthBendix<>>()->finished()) {
-        auto const& p       = cong.get<KnuthBendix<>>()->presentation();
-        auto        strings = non_trivial_classes(*cong.get<KnuthBendix<>>(),
-                                           r | ToString(p.alphabet()));
-        std::vector<std::vector<word_type>> result;
-        for (auto const& klass : strings) {
-          result.push_back(rx::iterator_range(klass.begin(), klass.end())
-                           | ToWord(p.alphabet()) | rx::to_vector());
-        }
-        return result;
+        return non_trivial_classes(*cong.get<KnuthBendix<>>(), r);
       } else if (cong.has<Kambites<word_type>>()) {
         return non_trivial_classes(*cong.get<Kambites<word_type>>(), r);
       }
@@ -490,9 +515,11 @@ namespace libsemigroups {
     // We have to pass the presentation here, because o/w we have no way of
     // knowing over what we should compute the non-trivial classes (i.e. we
     // cannot always recover p from cong).
+    // TODO remove?
     std::vector<std::vector<word_type>>
     non_trivial_classes(Congruence& cong, Presentation<word_type> const& p);
 
+    // TODO remove?
     std::vector<std::vector<std::string>>
     non_trivial_classes(Congruence& cong, Presentation<std::string> const& p);
   }  // namespace congruence

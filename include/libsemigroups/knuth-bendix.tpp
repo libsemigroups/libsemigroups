@@ -946,8 +946,8 @@ namespace libsemigroups {
     //
     // This should work ok if kb1 and kb2 represent different kinds of
     // congruence.
-    template <typename Rewriter, typename ReductionOrder>
-    std::vector<std::vector<std::string>>
+    template <typename Rewriter, typename ReductionOrder, typename Word>
+    std::vector<std::vector<Word>>
     non_trivial_classes(KnuthBendix<Rewriter, ReductionOrder>& kb1,
                         KnuthBendix<Rewriter, ReductionOrder>& kb2) {
       using rx::operator|;
@@ -1108,24 +1108,40 @@ namespace libsemigroups {
       // We only want those paths that pass through at least one of the edges
       // in g2 but not g1. Hence we require the `filter` in the next
       // expression.
-      auto ntc = partition(kb1,
-                           (paths.source(0)
-                            | rx::filter([&g1](word_type const& path) {
-                                return word_graph::last_node_on_path(
-                                           g1, 0, path.cbegin(), path.cend())
-                                           .second
-                                       != path.cend();
-                              })
-                            | ToString(kb2.presentation().alphabet())));
+      auto words = (paths.source(0) | rx::filter([&g1](word_type const& path) {
+                      return word_graph::last_node_on_path(
+                                 g1, 0, path.cbegin(), path.cend())
+                                 .second
+                             != path.cend();
+                    }));
       // The check in the next loop could be put into the lambda passed to
       // filter above, but then we'd have to convert `path` to a string, and
       // then discard the string, so better to do it here. Note that the
       // normal forms in `kb1` never contain an edge in g2 \ g1 and so we must
       // add in every normal form.
-      for (auto& klass : ntc) {
-        klass.push_back(reduce_no_checks(kb1, klass[0]));
+      if constexpr (std::is_same_v<Word, std::string>) {
+        auto ntc
+            = partition(kb1, words | ToString(kb2.presentation().alphabet()));
+        for (auto& klass : ntc) {
+          klass.push_back(reduce_no_checks(kb1, klass[0]));
+        }
+        return ntc;
+      } else if (!std::is_same_v<Word, word_type>) {
+        auto ntc
+            = partition(kb1, (words | rx::transform([](word_type const& w) {
+                                return Word(w.begin(), w.end());
+                              })));
+        for (auto& klass : ntc) {
+          klass.push_back(reduce_no_checks(kb1, klass[0]));
+        }
+        return ntc;
+      } else {
+        auto ntc = partition(kb1, words);
+        for (auto& klass : ntc) {
+          klass.push_back(reduce_no_checks(kb1, klass[0]));
+        }
+        return ntc;
       }
-      return ntc;
     }
 
     template <typename Rewriter, typename ReductionOrder>

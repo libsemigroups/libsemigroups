@@ -1263,8 +1263,11 @@ namespace libsemigroups {
     }
 
     // Compute non-trivial classes in kb1!
-    template <typename Rewriter, typename ReductionOrder>
-    [[nodiscard]] std::vector<std::vector<std::string>>
+    // TODO remove default template param
+    template <typename Rewriter,
+              typename ReductionOrder,
+              typename Word = std::string>
+    [[nodiscard]] std::vector<std::vector<Word>>
     non_trivial_classes(KnuthBendix<Rewriter, ReductionOrder>& kb1,
                         KnuthBendix<Rewriter, ReductionOrder>& kb2);
 
@@ -1428,12 +1431,10 @@ namespace libsemigroups {
   // TODO Doc
   // TODO tpp file?
   template <typename Rewriter, typename ReductionOrder, typename Range>
-  [[nodiscard]] std::vector<std::vector<typename Range::output_type>>
+  [[nodiscard]] std::vector<
+      std::vector<std::decay_t<typename Range::output_type>>>
   partition(KnuthBendix<Rewriter, ReductionOrder>& kb, Range r) {
-    // static_assert(
-    //     std::is_same_v<std::decay_t<typename Range::output_type>,
-    //     std::string>);
-    using output_type = typename Range::output_type;
+    using output_type = std::decay_t<typename Range::output_type>;
     using return_type = std::vector<std::vector<output_type>>;
     using rx::operator|;
 

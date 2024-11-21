@@ -131,6 +131,11 @@ namespace libsemigroups {
         return _winner_index;
       }
 
+      [[nodiscard]] size_t winner_index() {
+        run();
+        return _winner_index;
+      }
+
       [[nodiscard]] bool finished() const noexcept {
         return _winner != nullptr;
       }
@@ -322,6 +327,7 @@ namespace libsemigroups {
               break;
             }
           }
+          // Uncommenting the following stops _winner_index from working
           if (_winner != nullptr) {
             for (auto rnnr : _runners) {
               if (rnnr != _winner) {
