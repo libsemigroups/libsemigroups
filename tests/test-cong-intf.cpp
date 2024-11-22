@@ -37,6 +37,11 @@ namespace libsemigroups {
   congruence_kind constexpr twosided = congruence_kind::twosided;
   congruence_kind constexpr onesided = congruence_kind::onesided;
 
+  using congruence::non_trivial_classes;
+  using knuth_bendix::normal_forms;
+  using todd_coxeter::non_trivial_classes;
+  using todd_coxeter::normal_forms;
+
   TEMPLATE_TEST_CASE("CongruenceInterface: add_generating_pair",
                      "[000][quick]",
                      ToddCoxeter,
@@ -270,8 +275,6 @@ namespace libsemigroups {
                      KnuthBendix<>,
                      ToddCoxeter) {
     auto rg = ReportGuard(false);
-    using knuth_bendix::normal_forms;
-    using todd_coxeter::normal_forms;
 
     Presentation<std::string> p;
     p.contains_empty_word(true);

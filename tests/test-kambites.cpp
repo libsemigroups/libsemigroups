@@ -50,6 +50,11 @@ namespace libsemigroups {
   congruence_kind constexpr onesided = congruence_kind::onesided;
   congruence_kind constexpr twosided = congruence_kind::twosided;
 
+  using kambites::contains;
+  using kambites::non_trivial_classes;
+  using kambites::partition;
+  using kambites::reduce;
+
   namespace {
 
     std::string random_power_string(std::string const& s,

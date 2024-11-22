@@ -37,7 +37,10 @@
 
 namespace libsemigroups {
 
+  using congruence::contains;
   using congruence::non_trivial_classes;
+  using congruence::partition;
+  using congruence::reduce;
 
   namespace {
     auto sizes_ntc(std::vector<std::vector<word_type>> const& ntc) {

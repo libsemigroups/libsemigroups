@@ -561,12 +561,12 @@ namespace libsemigroups {
     partition(Congruence& cong, Range r) {
       cong.run();
       if (cong.has<ToddCoxeter>() && cong.get<ToddCoxeter>()->finished()) {
-        return partition(*cong.get<ToddCoxeter>(), r);
+        return todd_coxeter::partition(*cong.get<ToddCoxeter>(), r);
       } else if (cong.has<KnuthBendix<>>()
                  && cong.get<KnuthBendix<>>()->finished()) {
-        return partition(*cong.get<KnuthBendix<>>(), r);
+        return knuth_bendix::partition(*cong.get<KnuthBendix<>>(), r);
       } else if (cong.has<Kambites<word_type>>()) {
-        return partition(*cong.get<Kambites<word_type>>(), r);
+        return kambites::partition(*cong.get<Kambites<word_type>>(), r);
       }
       LIBSEMIGROUPS_EXCEPTION("Cannot compute the non-trivial classes!");
     }
@@ -576,6 +576,24 @@ namespace libsemigroups {
     ////////////////////////////////////////////////////////////////////////
 
     using congruence_interface::non_trivial_classes;
+
+    // This is a copy of the function in the congruence_interface namespace,
+    // couldn't get it to compile without copying (probably just require some
+    // SFINAE)
+    template <typename Range,
+              typename Word = std::decay_t<typename Range::output_type>,
+              typename      = std::enable_if_t<rx::is_input_or_sink_v<Range>>>
+    std::vector<std::vector<Word>> non_trivial_classes(Congruence& ci,
+                                                       Range       r) {
+      auto result = partition(ci, r);
+      result.erase(
+          std::remove_if(result.begin(),
+                         result.end(),
+                         [](auto const& x) -> bool { return x.size() <= 1; }),
+          result.end());
+      return result;
+    }
+
     // template <typename Word>
     // std::vector<std::vector<Word>> non_trivial_classes(Congruence& cong1,
     //                                                   Congruence& cong2);
