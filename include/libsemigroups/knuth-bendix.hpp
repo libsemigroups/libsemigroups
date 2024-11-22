@@ -1300,42 +1300,6 @@ namespace libsemigroups {
     //! If no rule can be shown to be redundant in this way, then an iterator
     //! pointing to \c p.cend() is returned.
     //!
-    //! \tparam W type of words in the Presentation
-    //! \tparam T type of the 2nd parameter (time to try running
-    //! Knuth-Bendix). \param p the presentation \param t time to run
-    //! KnuthBendix for every omitted rule
-    //!
-    //! \warning The progress of the Knuth-Bendix algorithm may differ between
-    //! different calls to this function even if the parameters are identical.
-    //! As such this is non-deterministic, and may produce different results
-    //! with the same input.
-    template <typename W, typename T>
-    [[nodiscard]] auto redundant_rule(Presentation<W> const& p, T t) {
-      auto pp = to_presentation<std::string>(p);
-      return p.rules.cbegin()
-             + std::distance(pp.rules.cbegin(), redundant_rule(pp, t));
-    }
-
-    //! \brief Return an iterator pointing at the left hand side of a redundant
-    //! rule.
-    //!
-    //! This function is defined in \c knuth-bendix.hpp.
-    //!
-    //! Starting with the last rule in the presentation, this function
-    //! attempts to run the Knuth-Bendix algorithm on the rules of the
-    //! presentation except for the given omitted rule. For every such omitted
-    //! rule, Knuth-Bendix is run for the length of time indicated by the
-    //! second parameter \p t, and then it is checked if the omitted rule can
-    //! be shown to be redundant (rewriting both sides of the omitted rule
-    //! using the other rules using the output of the, not necessarily
-    //! finished, Knuth-Bendix algorithm).
-    //!
-    //! If the omitted rule can be shown to be redundant in this way, then an
-    //! iterator pointing to its left hand side is returned.
-    //!
-    //! If no rule can be shown to be redundant in this way, then an iterator
-    //! pointing to \c p.cend() is returned.
-    //!
     //! \tparam T type of the 2nd parameter (time to try running
     //! Knuth-Bendix). \param p the presentation \param t time to run
     //! KnuthBendix for every omitted rule
@@ -1366,6 +1330,42 @@ namespace libsemigroups {
         }
       }
       return p.rules.cend();
+    }
+
+    //! \brief Return an iterator pointing at the left hand side of a redundant
+    //! rule.
+    //!
+    //! This function is defined in \c knuth-bendix.hpp.
+    //!
+    //! Starting with the last rule in the presentation, this function
+    //! attempts to run the Knuth-Bendix algorithm on the rules of the
+    //! presentation except for the given omitted rule. For every such omitted
+    //! rule, Knuth-Bendix is run for the length of time indicated by the
+    //! second parameter \p t, and then it is checked if the omitted rule can
+    //! be shown to be redundant (rewriting both sides of the omitted rule
+    //! using the other rules using the output of the, not necessarily
+    //! finished, Knuth-Bendix algorithm).
+    //!
+    //! If the omitted rule can be shown to be redundant in this way, then an
+    //! iterator pointing to its left hand side is returned.
+    //!
+    //! If no rule can be shown to be redundant in this way, then an iterator
+    //! pointing to \c p.cend() is returned.
+    //!
+    //! \tparam W type of words in the Presentation
+    //! \tparam T type of the 2nd parameter (time to try running
+    //! Knuth-Bendix). \param p the presentation \param t time to run
+    //! KnuthBendix for every omitted rule
+    //!
+    //! \warning The progress of the Knuth-Bendix algorithm may differ between
+    //! different calls to this function even if the parameters are identical.
+    //! As such this is non-deterministic, and may produce different results
+    //! with the same input.
+    template <typename W, typename T>
+    [[nodiscard]] auto redundant_rule(Presentation<W> const& p, T t) {
+      auto pp = to_presentation<std::string>(p);
+      return p.rules.cbegin()
+             + std::distance(pp.rules.cbegin(), redundant_rule(pp, t));
     }
 
   }  // namespace knuth_bendix
