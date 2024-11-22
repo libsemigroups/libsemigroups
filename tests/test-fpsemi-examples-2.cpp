@@ -68,7 +68,8 @@ namespace libsemigroups {
                           "[fpsemi-examples][quick]") {
     auto rg = ReportGuard(false);
 
-    KnuthBendix kb(congruence_kind::twosided, chinese_monoid(3));
+    KnuthBendix kb(congruence_kind::twosided,
+                   to_presentation<std::string>(chinese_monoid(3)));
     REQUIRE(is_obviously_infinite(kb));
     REQUIRE(kb.number_of_classes() == POSITIVE_INFINITY);
     REQUIRE(kb.presentation().rules

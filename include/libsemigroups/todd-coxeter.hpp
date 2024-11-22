@@ -1946,7 +1946,6 @@ namespace libsemigroups {
 
     // TODO(0) doc
     // TODO(0) template <word_type>
-    // TODO(0) remove?
     // TODO(0) update as we did for partition below, or remove it
     std::vector<std::vector<word_type>> non_trivial_classes(ToddCoxeter& tc1,
                                                             ToddCoxeter& tc2);

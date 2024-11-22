@@ -31,7 +31,7 @@ namespace libsemigroups {
   // constexpr bool REPORT              = false;
   // congruence_kind constexpr twosided = congruence_kind::twosided;
   // congruence_kind constexpr left     = congruence_kind::left;
-  // congruence_kind constexpr right    = congruence_kind::right;
+  // congruence_kind constexpr onesided    = congruence_kind::onesided;
 
   // using detail::TCE;
   // using FroidurePinTCE = FroidurePin<TCE, FroidurePinTraits<TCE,
@@ -61,12 +61,13 @@ namespace libsemigroups {
           tc.add_generating_pair({1, 1, 1, 1}, {1});
           tc.add_generating_pair({0, 1, 0, 1}, {0, 0});
           cong = std::make_unique<CongruenceByPairs<FroidurePinTCE>>(
-              right, tc.quotient_froidure_pin());
+              onesided, tc.quotient_froidure_pin());
           // FIXME(when CongruenceByPairs has a proper traits class) We can't
     use
           // "twosided" here because TCE's products are only defined on the
-    right
-          // by generators, and CongruenceByPairs(twosided) does left and right
+    onesided
+          // by generators, and CongruenceByPairs(twosided) does left and
+    onesided
           // multiplication by generators. When CongruenceByPairs has a proper
           // traits class we can define Product to be the product in
           // tc.quotient_froidure_pin and via operator*.
@@ -86,7 +87,8 @@ namespace libsemigroups {
         REQUIRE(cong->number_of_classes() == 27);
         REQUIRE(cong->finished());
         REQUIRE(cong->started());
-        REQUIRE_THROWS_AS(cong->add_generating_pair({0}, {1}), LibsemigroupsException);
+        REQUIRE_THROWS_AS(cong->add_generating_pair({0}, {1}),
+    LibsemigroupsException);
       }
 
       LIBSEMIGROUPS_TEST_CASE("CongruenceInterface",
@@ -121,13 +123,14 @@ namespace libsemigroups {
             tc.add_generating_pair({1, 1, 1, 1}, {1});
             tc.add_generating_pair({0, 1, 0, 1}, {0, 0});
             cong = std::make_unique<CongruenceByPairs<FroidurePinTCE>>(
-                right, tc.quotient_froidure_pin());
+                onesided, tc.quotient_froidure_pin());
             // FIXME(when CongruenceByPairs has a proper traits class) We can't
             // use "twosided" here because TCE's products are only defined on
     the
-            // right by generators, and CongruenceByPairs(twosided) does left
+            // onesided by generators, and CongruenceByPairs(twosided) does left
     and
-            // right multiplication by generators. When CongruenceByPairs has a
+            // onesided multiplication by generators. When CongruenceByPairs has
+    a
             // proper traits class we can define Product to be the product in
             // tc.quotient_froidure_pin and via operator*.
             REQUIRE(cong->const_contains({0}, {1}) == tril::unknown);
@@ -173,12 +176,13 @@ namespace libsemigroups {
           tc.add_generating_pair({1, 1, 1, 1}, {1});
           tc.add_generating_pair({0, 1, 0, 1}, {0, 0});
           cong = std::make_unique<CongruenceByPairs<FroidurePinTCE>>(
-              right, tc.quotient_froidure_pin());
+              onesided, tc.quotient_froidure_pin());
           // FIXME(when CongruenceByPairs has a proper traits class) We can't
     use
           // "twosided" here because TCE's products are only defined on the
-    right
-          // by generators, and CongruenceByPairs(twosided) does left and right
+    onesided
+          // by generators, and CongruenceByPairs(twosided) does left and
+    onesided
           // multiplication by generators. When CongruenceByPairs has a proper
           // traits class we can define Product to be the product in
           // tc.quotient_froidure_pin and via operator*.
@@ -253,7 +257,7 @@ namespace libsemigroups {
           tc.add_generating_pair({1, 1, 1, 1}, {1});
           tc.add_generating_pair({0, 1, 0, 1}, {0, 0});
           cong = std::make_unique<CongruenceByPairs<FroidurePinTCE>>(
-              right, tc.quotient_froidure_pin());
+              onesided, tc.quotient_froidure_pin());
         }
         SECTION("Congruence") {
           FpSemigroup S;
@@ -263,7 +267,7 @@ namespace libsemigroups {
           S.add_rule({0, 1, 0, 1}, {0, 0});
           REQUIRE(!S.is_obviously_infinite());
           REQUIRE(!S.is_obviously_finite());
-          cong = std::make_unique<Congruence>(right, S);
+          cong = std::make_unique<Congruence>(onesided, S);
 
           REQUIRE_THROWS_AS(cong->set_number_of_generators(3),
                             LibsemigroupsException);
@@ -444,10 +448,10 @@ namespace libsemigroups {
         REQUIRE(S.number_of_rules() == 18);
 
         SECTION("CongruenceByPairs") {
-          cong = std::make_unique<CongruenceByPairs<decltype(S)>>(right, S);
+          cong = std::make_unique<CongruenceByPairs<decltype(S)>>(onesided, S);
         }
         SECTION("Congruence") {
-          cong = std::make_unique<Congruence>(right, S);
+          cong = std::make_unique<Congruence>(onesided, S);
         }
         cong->add_generating_pair(S.factorisation(Transf<>({3, 4, 4, 4, 4})),
                        S.factorisation(Transf<>({3, 1, 3, 3, 3})));

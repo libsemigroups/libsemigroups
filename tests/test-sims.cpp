@@ -97,14 +97,14 @@ namespace libsemigroups {
 
     // The following checks whether the return value of generating_pairs is
     // correct by using a ToddCoxeter instance. This works for both left and
-    // right congruences because we really compute a right congruence on the
-    // dual semigroup when setting the kind to left. Thus when we get the
-    // generating pairs they generate that right congruence on the dual, which
-    // the function below checks. This seems potentially confusing.
+    // onesided congruences because we really compute a onesided congruence on
+    // the dual semigroup when setting the kind to left. Thus when we get the
+    // generating pairs they generate that onesided congruence on the dual,
+    // which the function below checks. This seems potentially confusing.
     template <typename Sims1Or2, typename Node>
     void check_right_generating_pairs(Sims1Or2 const&        s,
                                       WordGraph<Node> const& wg) {
-      ToddCoxeter tc(congruence_kind::right, s.presentation());
+      ToddCoxeter tc(congruence_kind::onesided, s.presentation());
 
       for (auto const& p : sims::right_generating_pairs(wg)) {
         todd_coxeter::add_generating_pair(tc, p.first, p.second);
@@ -121,7 +121,7 @@ namespace libsemigroups {
       result.induced_subgraph_no_checks(0, result.number_of_active_nodes());
       REQUIRE(result == expected);
 
-      tc.init(congruence_kind::right, s.presentation());
+      tc.init(congruence_kind::onesided, s.presentation());
       for (auto const& p : sims::right_generating_pairs(s.presentation(), wg)) {
         todd_coxeter::add_generating_pair(tc, p.first, p.second);
       }
@@ -153,7 +153,7 @@ namespace libsemigroups {
       result.induced_subgraph_no_checks(0, result.number_of_active_nodes());
       REQUIRE(result == expected);
 
-      tc.init(congruence_kind::right, s.presentation());
+      tc.init(congruence_kind::onesided, s.presentation());
       for (auto const& p : sims::right_generating_pairs(s.presentation(), wg)) {
         todd_coxeter::add_generating_pair(tc, p.first, p.second);
       }
@@ -418,7 +418,7 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("Sims1",
                           "004",
-                          "partition_monoid(2) right",
+                          "partition_monoid(2) onesided",
                           "[quick][low-index][no-valgrind]") {
     auto                    rg = ReportGuard(false);
     Presentation<word_type> p;
@@ -487,7 +487,7 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("Sims1",
                           "006",
-                          "full_transformation_monoid(3) right",
+                          "full_transformation_monoid(3) onesided",
                           "[quick][low-index][no-valgrind]") {
     auto rg = ReportGuard(false);
     auto S  = to_froidure_pin({Transf<3>::make({1, 2, 0}),
@@ -650,7 +650,7 @@ namespace libsemigroups {
     auto  p  = temperley_lieb_monoid(3);
     Sims1 S(p);
     REQUIRE(S.number_of_congruences(14) == 9);
-    // sims::dot_poset("example-014-TL-3-right", S.cbegin(14), S.cend(14));
+    // sims::dot_poset("example-014-TL-3-onesided", S.cbegin(14), S.cend(14));
     presentation::reverse(p);
     S.init(p);
     REQUIRE(S.number_of_congruences(14) == 9);
@@ -664,7 +664,7 @@ namespace libsemigroups {
     auto  p  = temperley_lieb_monoid(4);
     Sims1 S(p);
     REQUIRE(S.number_of_congruences(14) == 79);
-    // sims::dot_poset("example-014-TL-4-right", S.cbegin(14), S.cend(14));
+    // sims::dot_poset("example-014-TL-4-onesided", S.cbegin(14), S.cend(14));
     presentation::reverse(p);
     S.init(p);
     REQUIRE(S.number_of_congruences(14) == 79);
@@ -1130,8 +1130,9 @@ namespace libsemigroups {
     //              .word_graph();
     // // WARNING: the number below is not necessarily the minimal degree of
     // an
-    // // action on right congruences, only the minimal degree of an action on
-    // // right congruences containing the pair {0}, {1}.
+    // // action on onesided congruences, only the minimal degree of an action
+    // on
+    // // onesided congruences containing the pair {0}, {1}.
     // REQUIRE(d.number_of_nodes() == 51);
     // auto S = to_froidure_pin<Transf<0, node_type>>(d);
     // REQUIRE(S.size() == 945);
@@ -1232,7 +1233,7 @@ namespace libsemigroups {
     Sims1 C;
     C.presentation(p);
     REQUIRE(C.number_of_congruences(2) == 67);
-    // sims::dot_poset("example-030-right", C.cbegin(2), C.cend(2));
+    // sims::dot_poset("example-030-onesided", C.cbegin(2), C.cend(2));
   }
 
   LIBSEMIGROUPS_TEST_CASE("Sims1",
@@ -1333,7 +1334,7 @@ namespace libsemigroups {
     S.presentation(p);
     REQUIRE(S.number_of_congruences(3) == 14);
     REQUIRE(S.number_of_congruences(4) == 14);
-    // sims::dot_poset("example-034-right", S.cbegin(3), S.cend(3));
+    // sims::dot_poset("example-034-onesided", S.cbegin(3), S.cend(3));
 
     REQUIRE_THROWS_AS(S.cbegin_long_rules(p.rules.size() + 1),
                       LibsemigroupsException);
@@ -1796,10 +1797,10 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("Sims1",
                           "045",
-                          "right zero semigroup - minimal o.r.c. rep",
+                          "onesided zero semigroup - minimal o.r.c. rep",
                           "[quick][sims1]") {
     // This is an example of a semigroup with a strictly cyclic faithful
-    // right representation.
+    // onesided representation.
     auto         rg = ReportGuard(false);
     size_t const n  = 5;
     auto         p  = rectangular_band(1, n);
@@ -1813,7 +1814,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("Sims1",
                           "046",
                           "semigroup with faithful non-strictly cyclic "
-                          "action of right congruence",
+                          "action of onesided congruence",
                           "[quick][sims1]") {
     // Found with Smallsemi, this example is minimal wrt size of the
     // semigroup.
@@ -3868,10 +3869,12 @@ namespace libsemigroups {
     presentation::add_rule(p, "aaa", "bb");
     presentation::add_rule(p, "aab", "ba");
 
-    ToddCoxeter tc(congruence_kind::twosided, p);
+    auto q = to_presentation<word_type>(p);
+
+    ToddCoxeter tc(congruence_kind::twosided, q);
     REQUIRE(tc.number_of_classes() == 12);
 
-    Sims2             s(p);
+    Sims2             s(q);
     SimsRefinerIdeals ip(s.presentation());
     s.add_pruner(ip);
 
@@ -4025,7 +4028,7 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("Sims1",
                           "124",
-                          "Right congruence checking",
+                          "onesided congruence checking",
                           "[quick][low-index]") {
     Presentation<word_type> p;
     p.alphabet(01_w);

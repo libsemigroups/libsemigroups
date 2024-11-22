@@ -1073,7 +1073,7 @@ namespace libsemigroups {
 
       open_xml_tag("LatexColumnTitle", "HLT");
       BENCHMARK("HLT") {
-        ToddCoxeter H(congruence_kind::right, p);
+        ToddCoxeter H(congruence_kind::onesided, p);
         H.add_generating_pair({1, 2}, {});
         H.lookahead_next(1'000'000).lookahead_extent(lookahead_extent::partial);
         REQUIRE(H.number_of_classes() == 16'384);
@@ -1082,7 +1082,7 @@ namespace libsemigroups {
       // About 2s
       // open_xml_tag("LatexColumnTitle", "Felsch");
       // BENCHMARK("Felsch") {
-      //  ToddCoxeter H(congruence_kind::right, p);
+      //  ToddCoxeter H(congruence_kind::onesided, p);
       //  H.add_generating_pair({1, 2}, {});
       //  H.strategy(strategy::felsch).def_max(100'000);
       //  REQUIRE(H.number_of_classes() == 16'384);
@@ -1108,7 +1108,7 @@ namespace libsemigroups {
       letter_type C = 5;
       open_xml_tag("LatexColumnTitle", "HLT");
       BENCHMARK("HLT") {
-        ToddCoxeter H(congruence_kind::right, p);
+        ToddCoxeter H(congruence_kind::onesided, p);
         H.add_generating_pair({b, c}, {});
         H.add_generating_pair({A, B, A, A, b}, {c, B, A, C});
 
@@ -1120,7 +1120,7 @@ namespace libsemigroups {
       // About 2s
       // open_xml_tag("LatexColumnTitle", "Felsch");
       // BENCHMARK("Felsch") {
-      //   ToddCoxeter H(congruence_kind::right, p);
+      //   ToddCoxeter H(congruence_kind::onesided, p);
       //   H.add_generating_pair({b, c}, {});
       //   H.add_generating_pair({A, B, A, A, b, c, a, b, C}, {});
 
@@ -1153,7 +1153,7 @@ namespace libsemigroups {
 
       open_xml_tag("LatexColumnTitle", "HLT");
       BENCHMARK("HLT") {
-        ToddCoxeter H(congruence_kind::right, p);
+        ToddCoxeter H(congruence_kind::onesided, p);
         H.add_generating_pair({}, {a, B, C, b, a, c});
         H.add_generating_pair({b, A, C, b, a, a, c, A}, {});
         H.add_generating_pair({a, c, c, A, A, B, a, b}, {});
@@ -1184,7 +1184,7 @@ namespace libsemigroups {
 
       open_xml_tag("LatexColumnTitle", "HLT");
       BENCHMARK("HLT") {
-        ToddCoxeter H(congruence_kind::right, p);
+        ToddCoxeter H(congruence_kind::onesided, p);
         H.add_generating_pair({b, c}, {});
         H.add_generating_pair({A, B, A, A, b, c, a, b, C}, {});
         H.add_generating_pair({A, c, c, c, a, c, B, c, A}, {});
@@ -1243,7 +1243,7 @@ namespace libsemigroups {
 
       open_xml_tag("LatexColumnTitle", "HLT");
       BENCHMARK("HLT") {
-        ToddCoxeter H(congruence_kind::right, p);
+        ToddCoxeter H(congruence_kind::onesided, p);
         H.add_generating_pair({a, B, C, b, a, c}, {});
         H.add_generating_pair({b, A, C, b, a, a, c, A}, {});
         H.add_generating_pair({a, c, c, A, A, B, a, b}, {});
@@ -1336,7 +1336,7 @@ namespace libsemigroups {
 
       open_xml_tag("LatexColumnTitle", "HLT");
       BENCHMARK("HLT") {
-        ToddCoxeter H(congruence_kind::right, p);
+        ToddCoxeter H(congruence_kind::onesided, p);
         H.add_generating_pair({b}, {});
 
         H.strategy(strategy::hlt)
@@ -1372,7 +1372,7 @@ namespace libsemigroups {
 
       open_xml_tag("LatexColumnTitle", "HLT");
       BENCHMARK("HLT") {
-        ToddCoxeter H(congruence_kind::right, p);
+        ToddCoxeter H(congruence_kind::onesided, p);
         H.add_generating_pair({a, B, C, b, a, c}, {});
         H.add_generating_pair({b, A, C, b, a, a, c, A}, {});
         H.add_generating_pair({a, c, c, A, A, B, a, b}, {});

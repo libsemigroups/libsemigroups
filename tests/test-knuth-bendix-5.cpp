@@ -61,7 +61,7 @@
 
 namespace libsemigroups {
   congruence_kind constexpr twosided = congruence_kind::twosided;
-  congruence_kind constexpr right    = congruence_kind::right;
+  congruence_kind constexpr onesided = congruence_kind::onesided;
 
   using literals::operator""_w;
   using namespace rx;
@@ -171,7 +171,7 @@ namespace libsemigroups {
     REQUIRE(kb.number_of_classes() == 88);
   }
 
-  TEMPLATE_TEST_CASE("manual right congruence",
+  TEMPLATE_TEST_CASE("manual onesided congruence",
                      "[125][quick][knuth-bendix]",
                      KNUTH_BENDIX_TYPES) {
     using words::operator+;
@@ -266,7 +266,7 @@ namespace libsemigroups {
              {1000100_w, 01000110_w, 10001100_w, 001000100_w, 010001000_w}}));
   }
 
-  TEMPLATE_TEST_CASE("right congruence!!!",
+  TEMPLATE_TEST_CASE("onesided congruence!!!",
                      "[126][quick][knuth-bendix]",
                      KNUTH_BENDIX_TYPES) {
     using words::operator+;
@@ -280,7 +280,7 @@ namespace libsemigroups {
 
     auto p = to_presentation<word_type>(S);
 
-    TestType     kb(right, p);
+    TestType     kb(onesided, p);
     Presentation q(kb.presentation());
     presentation::change_alphabet(q, "ab");
 
@@ -453,7 +453,7 @@ namespace libsemigroups {
     REQUIRE(!p.contains_empty_word());
     presentation::reverse(p);
 
-    TestType kb(right, p);
+    TestType kb(onesided, p);
 
     knuth_bendix::add_generating_pair(kb, "aabbaaaba", "baaab");
 
@@ -555,7 +555,7 @@ namespace libsemigroups {
     REQUIRE(knuth_bendix::is_reduced(kb));
 
     presentation::reverse(p);
-    kb.init(right, p);
+    kb.init(onesided, p);
     knuth_bendix::add_generating_pair(
         kb,
         to_string(froidure_pin::factorisation(S, Transf<>({3, 4, 4, 4, 4}))),
@@ -577,7 +577,8 @@ namespace libsemigroups {
     auto l = 010001100_w;
     auto r = 10001_w;
 
-    KnuthBendix kb(right, presentation::reverse(to_presentation<word_type>(S)));
+    KnuthBendix kb(onesided,
+                   presentation::reverse(to_presentation<word_type>(S)));
     ToString    to_string(kb.presentation().alphabet());
     knuth_bendix::add_generating_pair(kb, reverse(l), reverse(r));
     REQUIRE(kb.number_of_classes() == 69);

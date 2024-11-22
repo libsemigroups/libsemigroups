@@ -59,10 +59,8 @@ namespace libsemigroups {
   //! The values in this enum can be used to indicate that a congruence should
   //! be 2-sided, left, or right.
   enum class congruence_kind {
-    //! Value representing a left congruence.
-    left = 0,
-    //! Value representing a right congruence.
-    right = 1,
+    //! Value representing a one-sided congruence.
+    onesided = 0,
     //! Value representing a two-sided congruence.
     twosided = 2
   };

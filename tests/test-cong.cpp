@@ -61,7 +61,7 @@ namespace libsemigroups {
   using literals::operator""_w;
 
   constexpr congruence_kind twosided = congruence_kind::twosided;
-  constexpr congruence_kind right    = congruence_kind::right;
+  constexpr congruence_kind onesided = congruence_kind::onesided;
 
   using fpsemigroup::stellar_monoid;
   using fpsemigroup::zero_rook_monoid;
@@ -77,7 +77,7 @@ namespace libsemigroups {
     presentation::add_rule(p, 0_w, 11_w);
     presentation::reverse(p);
 
-    Congruence cong(right, p);
+    Congruence cong(onesided, p);
 
     REQUIRE(cong.number_of_classes() == 5);
     REQUIRE(cong.contains(100110_w, 100_w));
@@ -277,7 +277,8 @@ namespace libsemigroups {
     Congruence cong(twosided, S, S.right_cayley_graph());
     congruence::add_generating_pair(
         cong, {7, 10, 9, 3, 6, 9, 4, 7, 9, 10}, {9, 3, 6, 6, 10, 9, 4, 7});
-    congruence::add_generating_pair(cong, {8, 7, 5, 8, 9, 8}, {6, 3, 8, 6, 1, 2, 4});
+    congruence::add_generating_pair(
+        cong, {8, 7, 5, 8, 9, 8}, {6, 3, 8, 6, 1, 2, 4});
 
     REQUIRE(cong.number_of_classes() == 19'009);
     // REQUIRE(cong.number_of_non_trivial_classes() == 577);
@@ -506,7 +507,7 @@ namespace libsemigroups {
     presentation::add_rule(p, "a", "b");
     presentation::reverse(p);
 
-    Congruence cong(right, p);
+    Congruence cong(onesided, p);
 
     // No generating pairs for the congruence (not the fp semigroup) means no
     // non-trivial classes.
@@ -582,7 +583,7 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("Congruence",
                           "023",
-                          "right congruence on finite semigroup",
+                          "onesided congruence on finite semigroup",
                           "[quick][cong][no-valgrind]") {
     auto rg      = ReportGuard(false);
     using Transf = LeastTransf<8>;
@@ -612,7 +613,7 @@ namespace libsemigroups {
           return S.contains(x);
         }));
 
-    Congruence cong(right, S, S.right_cayley_graph());
+    Congruence cong(onesided, S, S.right_cayley_graph());
     word_type  w1, w2;
     for (size_t i = 0; i < elms.size(); i += 2) {
       froidure_pin::factorisation(S, w1, S.position(elms[i]));
@@ -684,7 +685,7 @@ namespace libsemigroups {
       Presentation<word_type> p;
       p.alphabet(3);
       presentation::add_rule(p, {0, 1}, {0});
-      Congruence cong(right, p);
+      Congruence cong(onesided, p);
       congruence::add_generating_pair(cong, {2, 2}, {2});
       REQUIRE(is_obviously_infinite(cong));
     }
@@ -693,7 +694,7 @@ namespace libsemigroups {
       p.alphabet(3);
       presentation::add_rule(p, {0, 1}, {0});
       presentation::add_rule(p, {0, 0}, {0});
-      Congruence cong(right, p);
+      Congruence cong(onesided, p);
       congruence::add_generating_pair(cong, {1, 1}, {1});
       REQUIRE(is_obviously_infinite(cong));
     }
@@ -702,7 +703,7 @@ namespace libsemigroups {
       p.alphabet(3);
       presentation::add_rule(p, {0, 1}, {0});
       presentation::add_rule(p, {0, 0}, {0});
-      Congruence cong(right, p);
+      Congruence cong(onesided, p);
       congruence::add_generating_pair(cong, {1, 2}, {1});
       REQUIRE(is_obviously_infinite(cong));
     }
@@ -711,7 +712,7 @@ namespace libsemigroups {
       p.alphabet(3);
       presentation::add_rule(p, {0, 1}, {0});
       presentation::reverse(p);
-      Congruence cong(right, p);
+      Congruence cong(onesided, p);
       congruence::add_generating_pair(cong, {2, 2}, {2});
       REQUIRE(is_obviously_infinite(cong));
     }
@@ -721,7 +722,7 @@ namespace libsemigroups {
       presentation::add_rule(p, {0, 1}, {0});
       presentation::add_rule(p, {0, 0}, {0});
       presentation::reverse(p);
-      Congruence cong(right, p);
+      Congruence cong(onesided, p);
       congruence::add_generating_pair(cong, {1, 1}, {1});
       REQUIRE(is_obviously_infinite(cong));
     }
@@ -731,7 +732,7 @@ namespace libsemigroups {
       presentation::add_rule(p, {0, 1}, {0});
       presentation::add_rule(p, {0, 0}, {0});
       presentation::reverse(p);
-      Congruence cong(right, p);
+      Congruence cong(onesided, p);
       congruence::add_generating_pair(cong, {1, 2}, {1});
       REQUIRE(is_obviously_infinite(cong));
     }
@@ -828,7 +829,7 @@ namespace libsemigroups {
     REQUIRE(S.size() == 88);
     REQUIRE(S.degree() == 5);
 
-    Congruence cong(right, S, S.left_cayley_graph());
+    Congruence cong(onesided, S, S.left_cayley_graph());
 
     congruence::add_generating_pair(cong, 001100010_w, 10001_w);
 
@@ -851,7 +852,7 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("Congruence",
                           "030",
-                          "right congruence on finite semigroup",
+                          "onesided congruence on finite semigroup",
                           "[quick][cong]") {
     auto                  rg = ReportGuard(false);
     FroidurePin<Transf<>> S;
@@ -860,7 +861,7 @@ namespace libsemigroups {
 
     // REQUIRE(S.size() == 88);
     // REQUIRE(S.degree() == 5);
-    Congruence cong(right, S, S.right_cayley_graph());
+    Congruence cong(onesided, S, S.right_cayley_graph());
     congruence::add_generating_pair(cong, 010001100_w, 10001_w);
 
     REQUIRE(cong.number_of_classes() == 72);
@@ -880,7 +881,7 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("Congruence",
                           "031",
-                          "right congruence on finite semigroup",
+                          "onesided congruence on finite semigroup",
                           "[quick][cong]") {
     auto                  rg = ReportGuard(false);
     FroidurePin<Transf<>> S;
@@ -893,7 +894,7 @@ namespace libsemigroups {
     word_type w1, w2;
     froidure_pin::factorisation(S, w1, S.position(Transf<>({3, 4, 4, 4, 4})));
     froidure_pin::factorisation(S, w2, S.position(Transf<>({3, 1, 3, 3, 3})));
-    Congruence cong(right, S, S.right_cayley_graph());
+    Congruence cong(onesided, S, S.right_cayley_graph());
     congruence::add_generating_pair(cong, w1, w2);
 
     REQUIRE(cong.number_of_classes() == 72);
@@ -1178,11 +1179,11 @@ namespace libsemigroups {
 
     presentation::reverse(p);
 
-    Congruence cong1(right, p);
+    Congruence cong1(onesided, p);
     congruence::add_generating_pair(cong1, "a", "bbb");
     REQUIRE(cong1.number_of_classes() == 11);
 
-    Congruence cong2(right, p);
+    Congruence cong2(onesided, p);
     congruence::add_generating_pair(cong2, "bb", "aaaaaaa");
     REQUIRE(cong1.number_of_classes() == cong2.number_of_classes());
   }
@@ -1236,7 +1237,7 @@ namespace libsemigroups {
     Presentation<word_type> p;
     p.alphabet(2);
 
-    for (auto const& knd : {right, twosided}) {
+    for (auto const& knd : {onesided, twosided}) {
       Congruence cong(knd, p);
       // Required in case of using a 1 core computer, otherwise the tests
       // below fail.
