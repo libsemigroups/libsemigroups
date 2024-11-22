@@ -1372,43 +1372,6 @@ namespace libsemigroups {
     }
   }  // namespace knuth_bendix
 
-  // TODO Doc
-  // TODO tpp file?
-  template <typename Rewriter, typename ReductionOrder, typename Range>
-  [[nodiscard]] std::vector<
-      std::vector<std::decay_t<typename Range::output_type>>>
-  partition(KnuthBendix<Rewriter, ReductionOrder>& kb, Range r) {
-    using output_type = std::decay_t<typename Range::output_type>;
-    using return_type = std::vector<std::vector<output_type>>;
-    using rx::operator|;
-
-    if (!r.is_finite) {
-      LIBSEMIGROUPS_EXCEPTION("the 2nd argument (a range) must be finite, "
-                              "found an infinite range");
-    }
-
-    return_type result;
-
-    std::unordered_map<output_type, size_t> map;
-    size_t                                  index = 0;
-
-    while (!r.at_end()) {
-      auto next = r.get();
-      if (kb.presentation().contains_empty_word() || !next.empty()) {
-        auto next_nf        = knuth_bendix::reduce(kb, next);
-        auto [it, inserted] = map.emplace(next_nf, index);
-        if (inserted) {
-          result.emplace_back();
-          index++;
-        }
-        size_t index_of_next_nf = it->second;
-        result[index_of_next_nf].push_back(next);
-      }
-      r.next();
-    }
-    return result;
-  }
-
   // TODO to tpp file
   template <typename Word, typename Rewriter, typename ReductionOrder>
   Presentation<Word>

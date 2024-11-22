@@ -668,6 +668,59 @@ namespace libsemigroups {
     }
   }  // namespace congruence_interface
 
+  // TODO Doc
+  // TODO tpp file
+  // TODO to congruence namespace
+  template <typename Subclass, typename Range>
+  [[nodiscard]] std::vector<
+      std::vector<std::decay_t<typename Range::output_type>>>
+  partition(Subclass& kb, Range r) {
+    static_assert(std::is_base_of_v<CongruenceInterface, Subclass>);
+
+    using output_type = std::decay_t<typename Range::output_type>;
+    using return_type = std::vector<std::vector<output_type>>;
+
+    if (!r.is_finite) {
+      LIBSEMIGROUPS_EXCEPTION("the 2nd argument (a range) must be finite, "
+                              "found an infinite range");
+    }
+
+    return_type result;
+
+    std::unordered_map<output_type, size_t> map;
+    size_t                                  index = 0;
+
+    while (!r.at_end()) {
+      auto next = r.get();
+      if (kb.presentation().contains_empty_word() || !next.empty()) {
+        auto next_nf        = congruence_interface::reduce(kb, next);
+        auto [it, inserted] = map.emplace(next_nf, index);
+        if (inserted) {
+          result.emplace_back();
+          index++;
+        }
+        size_t index_of_next_nf = it->second;
+        result[index_of_next_nf].push_back(next);
+      }
+      r.next();
+    }
+    return result;
+  }
+
+  // TODO to congruence namespace
+  template <typename Thing,
+            typename Iterator1,
+            typename Iterator2,
+            typename Word
+            = typename rx::iterator_range<Iterator1, Iterator2>::output_type>
+  // TODO(0) remove word_type here?
+  std::vector<std::vector<word_type>> partition(Thing&    ci,
+                                                Iterator1 first,
+                                                Iterator2 last) {
+    return partition(ci, rx::iterator_range(first, last));
+  }
+
+  // TODO to congruence namespace
   template <typename Thing,
             typename Range,
             typename Word = std::decay_t<typename Range::output_type>,
@@ -682,18 +735,7 @@ namespace libsemigroups {
     return result;
   }
 
-  template <typename Thing,
-            typename Iterator1,
-            typename Iterator2,
-            typename Word
-            = typename rx::iterator_range<Iterator1, Iterator2>::output_type>
-  // TODO(0) remove word_type here?
-  std::vector<std::vector<word_type>> partition(Thing&    ci,
-                                                Iterator1 first,
-                                                Iterator2 last) {
-    return partition(ci, rx::iterator_range(first, last));
-  }
-
+  // TODO to congruence namespace
   template <typename Thing,
             typename Iterator1,
             typename Iterator2,

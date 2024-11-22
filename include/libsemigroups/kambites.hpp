@@ -680,41 +680,16 @@ namespace libsemigroups {
 
   // TODO(1) implement a normal_forms function for Kambites objects. This will
   // have to be a custom range type, with the mem fns of Word/StringRange, but
-  // only returning distinct normal forms.
+  // only returning distinct normal forms. Or it could use to_froidure_pin,
+  // which can also enumerate normal forms
 
-  template <typename Range, typename Word>
-  [[nodiscard]] std::vector<
-      std::vector<std::decay_t<typename Range::output_type>>>
-  partition(Kambites<Word>& k, Range r) {
-    using output_type = std::decay_t<typename Range::output_type>;
-    using return_type = std::vector<std::vector<output_type>>;
+  ////////////////////////////////////////////////////////////////////////
+  // Interface helpers - partition
+  ////////////////////////////////////////////////////////////////////////
 
-    if (!r.is_finite) {
-      LIBSEMIGROUPS_EXCEPTION("the 2nd argument (a range) must be finite, "
-                              "found an infinite range");
-    }
-
-    return_type result;
-
-    std::unordered_map<output_type, size_t> map;
-    size_t                                  index = 0;
-
-    while (!r.at_end()) {
-      auto next = r.get();
-      if (k.presentation().contains_empty_word() || !next.empty()) {
-        auto next_nf = kambites::reduce(k, next);  // TODO(0)reduce_no_checks?
-        auto [it, inserted] = map.emplace(next_nf, index);
-        if (inserted) {
-          result.emplace_back();
-          index++;
-        }
-        size_t index_of_next_nf = it->second;
-        result[index_of_next_nf].push_back(next);
-      }
-      r.next();
-    }
-    return result;
-  }
+  ////////////////////////////////////////////////////////////////////////
+  // Interface helpers - non_trivial_classes
+  ////////////////////////////////////////////////////////////////////////
 
   // There's no non_trivial_classes(Kambites k1, Kambites k2) because it's
   // unclear how this could be computed (because they always define infinite
