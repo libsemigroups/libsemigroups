@@ -17,9 +17,6 @@
 
 // The purpose of this file is to test the CongruenceInterface class.
 
-// TODO(0):
-// * to_froidure_pin
-
 #include "catch_amalgamated.hpp"  // for REQUIRE
 #include "libsemigroups/cong-intf.hpp"
 #include "libsemigroups/to-froidure-pin.hpp"
