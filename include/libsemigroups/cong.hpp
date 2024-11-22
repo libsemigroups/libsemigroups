@@ -535,21 +535,7 @@ namespace libsemigroups {
     // Interface helpers - non_trivial_classes
     ////////////////////////////////////////////////////////////////////////
 
-    // TODO(0) the next function shouldn't be required.
-    template <typename Range>
-    std::vector<std::vector<std::decay_t<typename Range::output_type>>>
-    non_trivial_classes(Congruence& cong, Range r) {
-      cong.run();
-      if (cong.has<ToddCoxeter>() && cong.get<ToddCoxeter>()->finished()) {
-        return non_trivial_classes(*cong.get<ToddCoxeter>(), r);
-      } else if (cong.has<KnuthBendix<>>()
-                 && cong.get<KnuthBendix<>>()->finished()) {
-        return non_trivial_classes(*cong.get<KnuthBendix<>>(), r);
-      } else if (cong.has<Kambites<word_type>>()) {
-        return non_trivial_classes(*cong.get<Kambites<word_type>>(), r);
-      }
-      LIBSEMIGROUPS_EXCEPTION("Cannot compute the non-trivial classes!");
-    }
+    // Not required.
 
     // We have to pass the presentation here, because o/w we have no way of
     // knowing over what we should compute the non-trivial classes (i.e. we

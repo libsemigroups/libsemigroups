@@ -1373,6 +1373,7 @@ namespace libsemigroups {
   }  // namespace knuth_bendix
 
   // TODO to tpp file
+  // TODO to to_presentation file
   template <typename Word, typename Rewriter, typename ReductionOrder>
   Presentation<Word>
   to_presentation(KnuthBendix<Rewriter, ReductionOrder>& kb) {

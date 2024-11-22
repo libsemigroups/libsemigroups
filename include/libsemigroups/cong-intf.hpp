@@ -668,6 +668,16 @@ namespace libsemigroups {
     }
   }  // namespace congruence_interface
 
+  ////////////////////////////////////////////////////////////////////////
+  // Interface helpers - normal_forms
+  ////////////////////////////////////////////////////////////////////////
+
+  // There's nothing in common to implement in this file.
+
+  ////////////////////////////////////////////////////////////////////////
+  // Interface helpers - partition
+  ////////////////////////////////////////////////////////////////////////
+
   // TODO Doc
   // TODO tpp file
   // TODO to congruence namespace
@@ -675,7 +685,9 @@ namespace libsemigroups {
   [[nodiscard]] std::vector<
       std::vector<std::decay_t<typename Range::output_type>>>
   partition(Subclass& kb, Range r) {
-    static_assert(std::is_base_of_v<CongruenceInterface, Subclass>);
+    // Congruence + ToddCoxeter have their own overloads for this
+    static_assert(!std::is_same_v<Subclass, ToddCoxeter>
+                  && !std::is_same_v<Subclass, Congruence>);
 
     using output_type = std::decay_t<typename Range::output_type>;
     using return_type = std::vector<std::vector<output_type>>;
@@ -707,25 +719,32 @@ namespace libsemigroups {
     return result;
   }
 
+  // TODO Doc
+  // TODO tpp file
   // TODO to congruence namespace
-  template <typename Thing,
+  template <typename Subclass,
             typename Iterator1,
             typename Iterator2,
-            typename Word
-            = typename rx::iterator_range<Iterator1, Iterator2>::output_type>
-  // TODO(0) remove word_type here?
-  std::vector<std::vector<word_type>> partition(Thing&    ci,
-                                                Iterator1 first,
-                                                Iterator2 last) {
+            typename Word = std::decay_t<
+                typename rx::iterator_range<Iterator1, Iterator2>::output_type>>
+  std::vector<std::vector<Word>> partition(Subclass& ci,
+                                           Iterator1 first,
+                                           Iterator2 last) {
+    static_assert(std::is_base_of_v<CongruenceInterface, Subclass>);
     return partition(ci, rx::iterator_range(first, last));
   }
 
+  ////////////////////////////////////////////////////////////////////////
+  // Interface helpers - non_trivial_classes
+  ////////////////////////////////////////////////////////////////////////
+
   // TODO to congruence namespace
-  template <typename Thing,
+  template <typename Subclass,
             typename Range,
             typename Word = std::decay_t<typename Range::output_type>,
             typename      = std::enable_if_t<rx::is_input_or_sink_v<Range>>>
-  std::vector<std::vector<Word>> non_trivial_classes(Thing& ci, Range r) {
+  std::vector<std::vector<Word>> non_trivial_classes(Subclass& ci, Range r) {
+    static_assert(std::is_base_of_v<CongruenceInterface, Subclass>);
     auto result = partition(ci, r);
     result.erase(
         std::remove_if(result.begin(),
@@ -736,65 +755,26 @@ namespace libsemigroups {
   }
 
   // TODO to congruence namespace
-  template <typename Thing,
+  template <typename Subclass,
             typename Iterator1,
             typename Iterator2,
-            typename Word
-            = typename rx::iterator_range<Iterator1, Iterator2>::output_type>
-  // TODO(0) remove word_type here?
-  std::vector<std::vector<word_type>> non_trivial_classes(Thing&    ci,
-                                                          Iterator1 first,
-                                                          Iterator2 last) {
+            typename Word = std::decay_t<
+                typename rx::iterator_range<Iterator1, Iterator2>::output_type>>
+  std::vector<std::vector<Word>> non_trivial_classes(Subclass& ci,
+                                                     Iterator1 first,
+                                                     Iterator2 last) {
     return non_trivial_classes(ci, rx::iterator_range(first, last));
   }
 
-  namespace detail {
-
-    // TODO delete?
-    template <typename Subclass>
-    struct ToStringIteratorTraits : ConstIteratorTraits<std::string> {
-      using internal_iterator_type =
-          typename ConstIteratorTraits<std::string>::internal_iterator_type;
-      using state_type        = Subclass*;
-      using value_type        = std::string;
-      using reference         = value_type&;
-      using const_reference   = value_type const&;
-      using const_pointer     = value_type const*;
-      using pointer           = value_type*;
-      using iterator_category = std::bidirectional_iterator_tag;
-
-      struct Deref {
-        value_type operator()(state_type                    state,
-                              internal_iterator_type const& it) const noexcept {
-          return state->presentation().letter(*it);
-        }
-      };
-    };
-
-    template <typename Subclass>
-    struct ToWordIteratorTraits : ConstIteratorTraits<word_type> {
-      using internal_iterator_type =
-          typename ConstIteratorTraits<word_type>::internal_iterator_type;
-      using state_type        = Subclass*;
-      using value_type        = word_type;
-      using reference         = value_type&;
-      using const_reference   = value_type const&;
-      using const_pointer     = value_type const*;
-      using pointer           = value_type*;
-      using iterator_category = std::bidirectional_iterator_tag;
-
-      struct Deref {
-        value_type operator()(state_type             state,
-                              internal_iterator_type it) const noexcept {
-          return state->presentation().index_no_checks(*it);
-        }
-      };
-    };
-  }  // namespace detail
-
 }  // namespace libsemigroups
 #endif  // LIBSEMIGROUPS_CONG_INTF_HPP_
-        // old doc follows TODO use it or lose it
+
+////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////
+// old doc follows TODO use it or lose it
 ////////////////////////////////////////////////////////////////////////////
 // CongruenceInterface - non-pure virtual functions - public
 ////////////////////////////////////////////////////////////////////////////

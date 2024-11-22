@@ -37,6 +37,8 @@
 
 namespace libsemigroups {
 
+  using congruence::non_trivial_classes;
+
   namespace {
     auto sizes_ntc(std::vector<std::vector<word_type>> const& ntc) {
       std::vector<size_t> sizes(ntc.size(), 0);
@@ -209,11 +211,11 @@ namespace libsemigroups {
             == std::vector<std::vector<std::string>>(
                 {{{1}, {0, 1}, {1, 1}, {0, 1, 1}, {0}}}));
 
-    REQUIRE(congruence::non_trivial_classes(cong, p)
+    REQUIRE(non_trivial_classes(cong, p)
             == std::vector<std::vector<word_type>>(
                 {{1_w, 01_w, 11_w, 011_w, 0_w}}));
 
-    REQUIRE(congruence::non_trivial_classes(
+    REQUIRE(non_trivial_classes(
                 cong, to_presentation<std::string>(p, [](auto x) { return x; }))
             == std::vector<std::vector<std::string>>(
                 {{{1}, {0, 1}, {1, 1}, {0, 1, 1}, {0}}}));
@@ -774,8 +776,7 @@ namespace libsemigroups {
       REQUIRE(cong.number_of_classes() == 3);
       REQUIRE(cong.contains({1}, {0}));
 
-      auto ntc = congruence::non_trivial_classes(cong,
-                                                 froidure_pin::normal_forms(S));
+      auto ntc = non_trivial_classes(cong, froidure_pin::normal_forms(S));
       REQUIRE(ntc.size() == 3);
       REQUIRE(ntc[0].size() == 12);
       REQUIRE(ntc[1].size() == 63'880);
@@ -802,8 +803,7 @@ namespace libsemigroups {
       REQUIRE(cong.number_of_classes() == 2);
       REQUIRE(cong.contains({1}, {0}));
 
-      auto ntc = congruence::non_trivial_classes(cong,
-                                                 froidure_pin::normal_forms(S));
+      auto ntc = non_trivial_classes(cong, froidure_pin::normal_forms(S));
       REQUIRE(ntc.size() == 2);
       REQUIRE(ntc[0].size() == 8);
       REQUIRE(ntc[1].size() == 8);
@@ -975,8 +975,7 @@ namespace libsemigroups {
     ToddCoxeter tc(twosided, p);
     REQUIRE(tc.number_of_classes() == 7);
 
-    auto ntc
-        = congruence::non_trivial_classes(cong, todd_coxeter::normal_forms(tc));
+    auto ntc = non_trivial_classes(cong, todd_coxeter::normal_forms(tc));
     REQUIRE(ntc.size() == 1);
     std::sort(ntc[0].begin(), ntc[0].end());
     REQUIRE(ntc[0] == std::vector<word_type>({010_w, 10_w, 101_w}));
@@ -1002,8 +1001,7 @@ namespace libsemigroups {
     ToddCoxeter tc(twosided, p);
     REQUIRE(tc.number_of_classes() == 34);
 
-    auto ntc
-        = congruence::non_trivial_classes(cong, todd_coxeter::normal_forms(tc));
+    auto ntc = non_trivial_classes(cong, todd_coxeter::normal_forms(tc));
     REQUIRE(ntc.size() == 4);
     std::for_each(ntc.begin(), ntc.end(), [](auto& val) {
       std::sort(val.begin(), val.end());
@@ -1049,8 +1047,7 @@ namespace libsemigroups {
     ToddCoxeter tc(twosided, p);
     REQUIRE(tc.number_of_classes() == 209);
 
-    auto ntc
-        = congruence::non_trivial_classes(cong, todd_coxeter::normal_forms(tc));
+    auto ntc = non_trivial_classes(cong, todd_coxeter::normal_forms(tc));
     REQUIRE(ntc.size() == 17);
 
     auto sizes = sizes_ntc(ntc);
@@ -1081,8 +1078,7 @@ namespace libsemigroups {
     ToddCoxeter tc(twosided, p);
     REQUIRE(tc.number_of_classes() == 1'546);
 
-    auto ntc
-        = congruence::non_trivial_classes(cong, todd_coxeter::normal_forms(tc));
+    auto ntc = non_trivial_classes(cong, todd_coxeter::normal_forms(tc));
     REQUIRE(ntc.size() == 86);
 
     auto sizes = sizes_ntc(ntc);
@@ -1116,8 +1112,7 @@ namespace libsemigroups {
     ToddCoxeter tc(twosided, p);
     REQUIRE(tc.number_of_classes() == 13'327);
 
-    auto ntc
-        = congruence::non_trivial_classes(cong, todd_coxeter::normal_forms(tc));
+    auto ntc = non_trivial_classes(cong, todd_coxeter::normal_forms(tc));
     REQUIRE(ntc.size() == 517);
 
     REQUIRE(unique_sizes_ntc(ntc)
@@ -1147,8 +1142,7 @@ namespace libsemigroups {
     ToddCoxeter tc(twosided, p);
     REQUIRE(tc.number_of_classes() == 130'922);
 
-    auto ntc
-        = congruence::non_trivial_classes(cong, todd_coxeter::normal_forms(tc));
+    auto ntc = non_trivial_classes(cong, todd_coxeter::normal_forms(tc));
     REQUIRE(ntc.size() == 3'620);
 
     REQUIRE(unique_sizes_ntc(ntc)
@@ -1254,7 +1248,7 @@ namespace libsemigroups {
 
       REQUIRE(w.count() == 31);
 
-      REQUIRE(congruence::non_trivial_classes(cong, w).empty());
+      REQUIRE(non_trivial_classes(cong, w).empty());
     }
   }
 
@@ -1282,7 +1276,7 @@ namespace libsemigroups {
     REQUIRE(w.count() == 399);
     // REQUIRE(cong.get<Kambites<word_type>>()->presentation().alphabet()
     //         == word_type({0, 1, 2, 3, 4, 5, 6}));
-    REQUIRE(congruence::non_trivial_classes(cong, w)
+    REQUIRE(non_trivial_classes(cong, w)
             == std::vector<std::vector<std::string>>({{"dg", "ef"},
                                                       {"adg", "aef"},
                                                       {"bdg", "bef"},
