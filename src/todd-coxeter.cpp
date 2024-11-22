@@ -1114,7 +1114,7 @@ namespace libsemigroups {
 #endif
     std::vector<std::vector<word_type>> non_trivial_classes(ToddCoxeter& tc1,
                                                             ToddCoxeter& tc2) {
-      return non_trivial_classes(tc1, normal_forms(tc2));
+      return todd_coxeter::non_trivial_classes(tc1, normal_forms(tc2));
     }
   }  // namespace todd_coxeter
 }  // namespace libsemigroups

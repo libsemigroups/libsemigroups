@@ -48,7 +48,9 @@ namespace libsemigroups {
   using todd_coxeter::contains;
   using todd_coxeter::index_of;
   using todd_coxeter::is_non_trivial;
+  using todd_coxeter::non_trivial_classes;
   using todd_coxeter::normal_forms;
+  using todd_coxeter::partition;
   using todd_coxeter::reduce;
   using todd_coxeter::redundant_rule;
   using todd_coxeter::word_of;

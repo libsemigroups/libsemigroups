@@ -666,106 +666,104 @@ namespace libsemigroups {
         return reduce<Subclass, std::string, std::string>(ci, w);
       }
     }
-  }  // namespace congruence_interface
 
-  ////////////////////////////////////////////////////////////////////////
-  // Interface helpers - normal_forms
-  ////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////
+    // Interface helpers - normal_forms
+    ////////////////////////////////////////////////////////////////////////
 
-  // There's nothing in common to implement in this file.
+    // There's nothing in common to implement in this file.
 
-  ////////////////////////////////////////////////////////////////////////
-  // Interface helpers - partition
-  ////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////
+    // Interface helpers - partition
+    ////////////////////////////////////////////////////////////////////////
 
-  // TODO Doc
-  // TODO tpp file
-  // TODO to congruence namespace
-  template <typename Subclass, typename Range>
-  [[nodiscard]] std::vector<
-      std::vector<std::decay_t<typename Range::output_type>>>
-  partition(Subclass& kb, Range r) {
-    // Congruence + ToddCoxeter have their own overloads for this
-    static_assert(!std::is_same_v<Subclass, ToddCoxeter>
-                  && !std::is_same_v<Subclass, Congruence>);
+    // TODO Doc
+    // TODO tpp file
+    // TODO to congruence namespace
+    template <typename Subclass, typename Range>
+    [[nodiscard]] std::vector<
+        std::vector<std::decay_t<typename Range::output_type>>>
+    partition(Subclass& kb, Range r) {
+      // Congruence + ToddCoxeter have their own overloads for this
+      static_assert(!std::is_same_v<Subclass, ToddCoxeter>
+                    && !std::is_same_v<Subclass, Congruence>);
 
-    using output_type = std::decay_t<typename Range::output_type>;
-    using return_type = std::vector<std::vector<output_type>>;
+      using output_type = std::decay_t<typename Range::output_type>;
+      using return_type = std::vector<std::vector<output_type>>;
 
-    if (!r.is_finite) {
-      LIBSEMIGROUPS_EXCEPTION("the 2nd argument (a range) must be finite, "
-                              "found an infinite range");
-    }
-
-    return_type result;
-
-    std::unordered_map<output_type, size_t> map;
-    size_t                                  index = 0;
-
-    while (!r.at_end()) {
-      auto next = r.get();
-      if (kb.presentation().contains_empty_word() || !next.empty()) {
-        auto next_nf        = congruence_interface::reduce(kb, next);
-        auto [it, inserted] = map.emplace(next_nf, index);
-        if (inserted) {
-          result.emplace_back();
-          index++;
-        }
-        size_t index_of_next_nf = it->second;
-        result[index_of_next_nf].push_back(next);
+      if (!r.is_finite) {
+        LIBSEMIGROUPS_EXCEPTION("the 2nd argument (a range) must be finite, "
+                                "found an infinite range");
       }
-      r.next();
+
+      return_type result;
+
+      std::unordered_map<output_type, size_t> map;
+      size_t                                  index = 0;
+
+      while (!r.at_end()) {
+        auto next = r.get();
+        if (kb.presentation().contains_empty_word() || !next.empty()) {
+          auto next_nf        = congruence_interface::reduce(kb, next);
+          auto [it, inserted] = map.emplace(next_nf, index);
+          if (inserted) {
+            result.emplace_back();
+            index++;
+          }
+          size_t index_of_next_nf = it->second;
+          result[index_of_next_nf].push_back(next);
+        }
+        r.next();
+      }
+      return result;
     }
-    return result;
-  }
 
-  // TODO Doc
-  // TODO tpp file
-  // TODO to congruence namespace
-  template <typename Subclass,
-            typename Iterator1,
-            typename Iterator2,
-            typename Word = std::decay_t<
-                typename rx::iterator_range<Iterator1, Iterator2>::output_type>>
-  std::vector<std::vector<Word>> partition(Subclass& ci,
-                                           Iterator1 first,
-                                           Iterator2 last) {
-    static_assert(std::is_base_of_v<CongruenceInterface, Subclass>);
-    return partition(ci, rx::iterator_range(first, last));
-  }
+    // TODO Doc
+    // TODO tpp file
+    template <
+        typename Subclass,
+        typename Iterator1,
+        typename Iterator2,
+        typename Word = std::decay_t<
+            typename rx::iterator_range<Iterator1, Iterator2>::output_type>>
+    std::vector<std::vector<Word>> partition(Subclass& ci,
+                                             Iterator1 first,
+                                             Iterator2 last) {
+      static_assert(std::is_base_of_v<CongruenceInterface, Subclass>);
+      return partition(ci, rx::iterator_range(first, last));
+    }
 
-  ////////////////////////////////////////////////////////////////////////
-  // Interface helpers - non_trivial_classes
-  ////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////
+    // Interface helpers - non_trivial_classes
+    ////////////////////////////////////////////////////////////////////////
 
-  // TODO to congruence namespace
-  template <typename Subclass,
-            typename Range,
-            typename Word = std::decay_t<typename Range::output_type>,
-            typename      = std::enable_if_t<rx::is_input_or_sink_v<Range>>>
-  std::vector<std::vector<Word>> non_trivial_classes(Subclass& ci, Range r) {
-    static_assert(std::is_base_of_v<CongruenceInterface, Subclass>);
-    auto result = partition(ci, r);
-    result.erase(
-        std::remove_if(result.begin(),
-                       result.end(),
-                       [](auto const& x) -> bool { return x.size() <= 1; }),
-        result.end());
-    return result;
-  }
+    template <typename Subclass,
+              typename Range,
+              typename Word = std::decay_t<typename Range::output_type>,
+              typename      = std::enable_if_t<rx::is_input_or_sink_v<Range>>>
+    std::vector<std::vector<Word>> non_trivial_classes(Subclass& ci, Range r) {
+      static_assert(std::is_base_of_v<CongruenceInterface, Subclass>);
+      auto result = partition(ci, r);
+      result.erase(
+          std::remove_if(result.begin(),
+                         result.end(),
+                         [](auto const& x) -> bool { return x.size() <= 1; }),
+          result.end());
+      return result;
+    }
 
-  // TODO to congruence namespace
-  template <typename Subclass,
-            typename Iterator1,
-            typename Iterator2,
-            typename Word = std::decay_t<
-                typename rx::iterator_range<Iterator1, Iterator2>::output_type>>
-  std::vector<std::vector<Word>> non_trivial_classes(Subclass& ci,
-                                                     Iterator1 first,
-                                                     Iterator2 last) {
-    return non_trivial_classes(ci, rx::iterator_range(first, last));
-  }
-
+    template <
+        typename Subclass,
+        typename Iterator1,
+        typename Iterator2,
+        typename Word = std::decay_t<
+            typename rx::iterator_range<Iterator1, Iterator2>::output_type>>
+    std::vector<std::vector<Word>> non_trivial_classes(Subclass& ci,
+                                                       Iterator1 first,
+                                                       Iterator2 last) {
+      return non_trivial_classes(ci, rx::iterator_range(first, last));
+    }
+  }  // namespace congruence_interface
 }  // namespace libsemigroups
 #endif  // LIBSEMIGROUPS_CONG_INTF_HPP_
 

@@ -1703,14 +1703,7 @@ namespace libsemigroups {
     using node_type = typename ToddCoxeter::node_type;
 
     ////////////////////////////////////////////////////////////////////////
-    // ToddCoxeter add_generating_pairs helpers
-    ////////////////////////////////////////////////////////////////////////
-
-    using congruence_interface::add_generating_pair;
-    using congruence_interface::add_generating_pair_no_checks;
-
-    ////////////////////////////////////////////////////////////////////////
-    // ToddCoxeter specific helpers - word -> index
+    // Possible future interface helpers - word -> index
     ////////////////////////////////////////////////////////////////////////
 
     // TODO(0) doc
@@ -1767,7 +1760,7 @@ namespace libsemigroups {
     // TODO(0) versions of these for char const*
 
     ////////////////////////////////////////////////////////////////////////
-    // ToddCoxeter specific helpers - index -> word
+    // Possible future interface helpers - index -> word
     ////////////////////////////////////////////////////////////////////////
 
     // TODO(0) doc
@@ -1789,6 +1782,184 @@ namespace libsemigroups {
     }
 
     // TODO(0) 2x current_word_of
+
+    ////////////////////////////////////////////////////////////////////////
+    // Possible future interface helpers - class_of
+    ////////////////////////////////////////////////////////////////////////
+
+    // TODO(0) doc
+    inline auto class_of(ToddCoxeter& tc, node_type n) {
+      size_t const offset = (tc.presentation().contains_empty_word() ? 0 : 1);
+      tc.run();
+      // We call run and then current_word_graph, because the word
+      // graph does not need to be standardized for this to work.
+      return Paths(tc.current_word_graph()).source(0).target(n + offset);
+    }
+
+    // TODO(0) doc
+    inline auto class_of_no_checks(ToddCoxeter& tc, node_type n) {
+      size_t const offset = (tc.presentation().contains_empty_word() ? 0 : 1);
+      tc.run();
+      // We call run and then current_word_graph, because the word
+      // graph does not need to be standardized for this to work.
+      return Paths(tc.current_word_graph())
+          .source_no_checks(0)
+          .target_no_checks(n + offset);
+    }
+
+    // TODO(0) doc
+    template <typename Iterator1, typename Iterator2>
+    auto class_of(ToddCoxeter& tc, Iterator1 first, Iterator2 last) {
+      return class_of(tc, tc.index_of(first, last));
+    }
+
+    // TODO(0) doc
+    template <typename Iterator1, typename Iterator2>
+    auto class_of_no_checks(ToddCoxeter& tc, Iterator1 first, Iterator2 last) {
+      return class_of_no_checks(tc, tc.index_of_no_checks(first, last));
+    }
+
+    // TODO(0) doc
+    template <typename Word,
+              typename = std::enable_if_t<!std::is_integral_v<Word>>>
+    inline auto class_of(ToddCoxeter& tc, Word const& w) {
+      return class_of(tc, std::begin(w), std::end(w));
+    }
+
+    // TODO(0) doc
+    template <typename Word,
+              typename = std::enable_if_t<!std::is_integral_v<Word>>>
+    inline auto class_of_no_checks(ToddCoxeter& tc, Word const& w) {
+      return class_of_no_checks(tc, std::begin(w), std::end(w));
+    }
+
+    // TODO(0) doc
+    template <typename Int = size_t>
+    inline auto class_of(ToddCoxeter& tc, std::initializer_list<Int> const& w) {
+      return class_of(tc, std::begin(w), std::end(w));
+    }
+
+    // TODO(0) doc
+    template <typename Int = size_t>
+    inline auto class_of_no_checks(ToddCoxeter&                      tc,
+                                   std::initializer_list<Int> const& w) {
+      return class_of_no_checks(tc, std::begin(w), std::end(w));
+    }
+
+    // TODO(0) class_of (ToddCoxeter, char const*)
+    // TODO(0) class_of_no_checks (ToddCoxeter, char const*)
+
+    // TODO(0) doc
+    // TODO(0) remove?
+    uint64_t number_of_idempotents(ToddCoxeter& tc);
+
+    ////////////////////////////////////////////////////////////////////////
+    // Possible future interface helpers - first_equivalent_pair
+    ////////////////////////////////////////////////////////////////////////
+
+    // TODO(0) doc
+    // TODO(1) range version
+    template <typename Iterator>
+    std::pair<Iterator, Iterator> first_equivalent_pair(ToddCoxeter& tc,
+                                                        Iterator     first,
+                                                        Iterator     last) {
+      std::unordered_map<ToddCoxeter::node_type, Iterator> map;
+      size_t                                               index = 0;
+      for (auto it = first; it != last; ++it, ++index) {
+        auto [map_it, inserted]
+            = map.emplace(todd_coxeter::index_of(tc, *it), it);
+        if (!inserted) {
+          return std::pair(map_it->second, it);
+        }
+      }
+      return std::pair(last, last);
+    }
+
+    ////////////////////////////////////////////////////////////////////////
+    // Possible future interface helpers - is_traversal
+    ////////////////////////////////////////////////////////////////////////
+    // TODO(0) doc
+    template <typename Iterator>
+    bool is_traversal(ToddCoxeter& tc, Iterator first, Iterator last) {
+      return first_equivalent_pair(tc, first, last) == std::pair(last, last);
+    }
+
+    ////////////////////////////////////////////////////////////////////////
+    // Possible future interface helpers - is_non_trivial
+    ////////////////////////////////////////////////////////////////////////
+
+    //! Check if the congruence has more than one class.
+    //!
+    //! Returns tril::TRUE if it is possible to show that the congruence is
+    //! non-trivial; tril::FALSE if the congruence is already known to be
+    //! trivial; and tril::unknown if it is not possible to show that the
+    //! congruence is non-trivial.
+    //!
+    //! This function attempts to find a non-trivial congruence containing
+    //! the congruence represented by a ToddCoxeter instance by repeating the
+    //! following steps on a copy until the enumeration concludes:
+    //! 1. running the enumeration for the specified amount of time
+    //! 2. repeatedly choosing a random pair of cosets and identifying them,
+    //!    until the number of cosets left in the quotient is smaller than
+    //!    \p threshold times the initial number of cosets for this step.
+    //! If at the end of this process, the ToddCoxeter instance is
+    //! non-trivial, then the original ToddCoxeter is also non-trivial.
+    //! Otherwise, the entire process is repeated again up to a total of \p
+    //! tries times.
+    //!
+    //! \param tries the number of attempts to find non-trivial
+    //! super-congruence.
+    //! \param try_for the amount of time in millisecond to enumerate the
+    //! congruence after choosing a random pair of representatives and
+    //! identifying them.
+    //! \param threshold the threshold (see description).
+    //!
+    //! \returns A value of type \ref tril
+    // TODO(0) redo the doc
+    tril is_non_trivial(ToddCoxeter&              tc,
+                        size_t                    tries = 10,
+                        std::chrono::milliseconds try_for
+                        = std::chrono::milliseconds(100),
+                        float threshold = 0.99);
+
+    ////////////////////////////////////////////////////////////////////////
+    // Possible future interface helpers - redundant_rule
+    ////////////////////////////////////////////////////////////////////////
+
+    // FIXME run_for seems to not function properly here.
+    // TODO(0) doc
+    // TODO(0) out of line this
+    template <typename Word, typename Time>
+    [[nodiscard]] auto redundant_rule(Presentation<Word> const& p, Time t) {
+      constexpr static congruence_kind twosided = congruence_kind::twosided;
+
+      p.validate();
+      Presentation<Word> q;
+      q.alphabet(p.alphabet());
+      q.contains_empty_word(p.contains_empty_word());
+      ToddCoxeter tc;
+      ToWord      to_word(p.alphabet());
+
+      for (auto omit = p.rules.crbegin(); omit != p.rules.crend(); omit += 2) {
+        q.rules.clear();
+        q.rules.insert(q.rules.end(), p.rules.crbegin(), omit);
+        q.rules.insert(q.rules.end(), omit + 2, p.rules.crend());
+        tc.init(twosided, q);
+        tc.run_for(t);
+        if (todd_coxeter::index_of(tc, to_word(*omit))
+            == todd_coxeter::index_of(tc, to_word(*(omit + 1)))) {
+          return (omit + 1).base() - 1;
+        }
+      }
+      return p.rules.cend();
+    }
+
+    ////////////////////////////////////////////////////////////////////////
+    // ToddCoxeter add_generating_pairs helpers
+    ////////////////////////////////////////////////////////////////////////
+
+    using congruence_interface::add_generating_pair;
+    using congruence_interface::add_generating_pair_no_checks;
 
     ////////////////////////////////////////////////////////////////////////
     // Interface helpers - contains
@@ -1855,72 +2026,6 @@ namespace libsemigroups {
     }
 
     ////////////////////////////////////////////////////////////////////////
-    // Interface helpers - class_of
-    ////////////////////////////////////////////////////////////////////////
-
-    // TODO(0) doc
-    inline auto class_of(ToddCoxeter& tc, node_type n) {
-      size_t const offset = (tc.presentation().contains_empty_word() ? 0 : 1);
-      tc.run();
-      // We call run and then current_word_graph, because the word
-      // graph does not need to be standardized for this to work.
-      return Paths(tc.current_word_graph()).source(0).target(n + offset);
-    }
-
-    // TODO(0) doc
-    inline auto class_of_no_checks(ToddCoxeter& tc, node_type n) {
-      size_t const offset = (tc.presentation().contains_empty_word() ? 0 : 1);
-      tc.run();
-      // We call run and then current_word_graph, because the word
-      // graph does not need to be standardized for this to work.
-      return Paths(tc.current_word_graph())
-          .source_no_checks(0)
-          .target_no_checks(n + offset);
-    }
-
-    // TODO(0) doc
-    template <typename Iterator1, typename Iterator2>
-    auto class_of(ToddCoxeter& tc, Iterator1 first, Iterator2 last) {
-      return class_of(tc, tc.index_of(first, last));
-    }
-
-    // TODO(0) doc
-    template <typename Iterator1, typename Iterator2>
-    auto class_of_no_checks(ToddCoxeter& tc, Iterator1 first, Iterator2 last) {
-      return class_of_no_checks(tc, tc.index_of_no_checks(first, last));
-    }
-
-    // TODO(0) doc
-    template <typename Word,
-              typename = std::enable_if_t<!std::is_integral_v<Word>>>
-    inline auto class_of(ToddCoxeter& tc, Word const& w) {
-      return class_of(tc, std::begin(w), std::end(w));
-    }
-
-    // TODO(0) doc
-    template <typename Word,
-              typename = std::enable_if_t<!std::is_integral_v<Word>>>
-    inline auto class_of_no_checks(ToddCoxeter& tc, Word const& w) {
-      return class_of_no_checks(tc, std::begin(w), std::end(w));
-    }
-
-    // TODO(0) doc
-    template <typename Int = size_t>
-    inline auto class_of(ToddCoxeter& tc, std::initializer_list<Int> const& w) {
-      return class_of(tc, std::begin(w), std::end(w));
-    }
-
-    // TODO(0) doc
-    template <typename Int = size_t>
-    inline auto class_of_no_checks(ToddCoxeter&                      tc,
-                                   std::initializer_list<Int> const& w) {
-      return class_of_no_checks(tc, std::begin(w), std::end(w));
-    }
-
-    // TODO(0) class_of (ToddCoxeter, char const*)
-    // TODO(0) class_of_no_checks (ToddCoxeter, char const*)
-
-    ////////////////////////////////////////////////////////////////////////
     // Interface helpers - normal_forms
     ////////////////////////////////////////////////////////////////////////
 
@@ -1958,8 +2063,69 @@ namespace libsemigroups {
     }
 
     ////////////////////////////////////////////////////////////////////////
+    // Interface helpers - partition
+    ////////////////////////////////////////////////////////////////////////
+
+    // TODO(0) doc
+    // TODO(0) out of line
+    template <typename Range,
+              typename = std::enable_if_t<rx::is_input_or_sink_v<Range>>>
+    std::vector<std::vector<std::decay_t<typename Range::output_type>>>
+    partition(ToddCoxeter& tc, Range r) {
+      using return_type
+          = std::vector<std::vector<std::decay_t<typename Range::output_type>>>;
+
+      if (tc.number_of_classes() == POSITIVE_INFINITY) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "the 1st argument defines a congruence with infinitely many "
+            "classes, the non-trivial classes cannot be determined!");
+        // They really can't be determined because we cannot run ToddCoxeter at
+        // all
+      } else if (!r.is_finite) {
+        LIBSEMIGROUPS_EXCEPTION("the 2nd argument (a range) must be finite, "
+                                "found an infinite range");
+      }
+      return_type         result;
+      std::vector<size_t> lookup;
+      size_t              next_index = 0;
+
+      while (!r.at_end()) {
+        auto       next  = r.get();
+        auto const index = todd_coxeter::index_of(tc, next);
+        if (index >= lookup.size()) {
+          lookup.resize(index + 1, UNDEFINED);
+        }
+        if (lookup[index] == UNDEFINED) {
+          lookup[index] = next_index++;
+          result.emplace_back();
+        }
+        result[lookup[index]].push_back(std::move(next));
+        r.next();
+      }
+      return result;
+    }
+
+    ////////////////////////////////////////////////////////////////////////
     // Interface helpers - non_trivial_classes
     ////////////////////////////////////////////////////////////////////////
+
+    using congruence_interface::non_trivial_classes;
+
+    // This is a copy of the function in the congruence_interface namespace,
+    // couldn't get it to compile without copying
+    template <typename Range,
+              typename Word = std::decay_t<typename Range::output_type>,
+              typename      = std::enable_if_t<rx::is_input_or_sink_v<Range>>>
+    std::vector<std::vector<Word>> non_trivial_classes(ToddCoxeter& ci,
+                                                       Range        r) {
+      auto result = partition(ci, r);
+      result.erase(
+          std::remove_if(result.begin(),
+                         result.end(),
+                         [](auto const& x) -> bool { return x.size() <= 1; }),
+          result.end());
+      return result;
+    }
 
     // TODO(0) doc
     // TODO(0) template <word_type>
@@ -1967,150 +2133,7 @@ namespace libsemigroups {
     std::vector<std::vector<word_type>> non_trivial_classes(ToddCoxeter& tc1,
                                                             ToddCoxeter& tc2);
 
-    // TODO(0) doc
-    // TODO(0) remove?
-    uint64_t number_of_idempotents(ToddCoxeter& tc);
-
-    ////////////////////////////////////////////////////////////////////////
-    // Interface helpers - first_equivalent_pair
-    ////////////////////////////////////////////////////////////////////////
-    // TODO(0) doc
-    // TODO(1) range version
-    template <typename Iterator>
-    std::pair<Iterator, Iterator> first_equivalent_pair(ToddCoxeter& tc,
-                                                        Iterator     first,
-                                                        Iterator     last) {
-      std::unordered_map<ToddCoxeter::node_type, Iterator> map;
-      size_t                                               index = 0;
-      for (auto it = first; it != last; ++it, ++index) {
-        auto [map_it, inserted]
-            = map.emplace(todd_coxeter::index_of(tc, *it), it);
-        if (!inserted) {
-          return std::pair(map_it->second, it);
-        }
-      }
-      return std::pair(last, last);
-    }
-
-    ////////////////////////////////////////////////////////////////////////
-    // Interface helpers - is_traversal
-    ////////////////////////////////////////////////////////////////////////
-    // TODO(0) doc
-    template <typename Iterator>
-    bool is_traversal(ToddCoxeter& tc, Iterator first, Iterator last) {
-      return first_equivalent_pair(tc, first, last) == std::pair(last, last);
-    }
-
-    ////////////////////////////////////////////////////////////////////////
-    // Interface helpers - is_non_trivial
-    ////////////////////////////////////////////////////////////////////////
-
-    //! Check if the congruence has more than one class.
-    //!
-    //! Returns tril::TRUE if it is possible to show that the congruence is
-    //! non-trivial; tril::FALSE if the congruence is already known to be
-    //! trivial; and tril::unknown if it is not possible to show that the
-    //! congruence is non-trivial.
-    //!
-    //! This function attempts to find a non-trivial congruence containing
-    //! the congruence represented by a ToddCoxeter instance by repeating the
-    //! following steps on a copy until the enumeration concludes:
-    //! 1. running the enumeration for the specified amount of time
-    //! 2. repeatedly choosing a random pair of cosets and identifying them,
-    //!    until the number of cosets left in the quotient is smaller than
-    //!    \p threshold times the initial number of cosets for this step.
-    //! If at the end of this process, the ToddCoxeter instance is
-    //! non-trivial, then the original ToddCoxeter is also non-trivial.
-    //! Otherwise, the entire process is repeated again up to a total of \p
-    //! tries times.
-    //!
-    //! \param tries the number of attempts to find non-trivial
-    //! super-congruence.
-    //! \param try_for the amount of time in millisecond to enumerate the
-    //! congruence after choosing a random pair of representatives and
-    //! identifying them.
-    //! \param threshold the threshold (see description).
-    //!
-    //! \returns A value of type \ref tril
-    // TODO(0) redo the doc
-    tril is_non_trivial(ToddCoxeter&              tc,
-                        size_t                    tries = 10,
-                        std::chrono::milliseconds try_for
-                        = std::chrono::milliseconds(100),
-                        float threshold = 0.99);
-
-    ////////////////////////////////////////////////////////////////////////
-    // Interface helpers - redundant_rule
-    ////////////////////////////////////////////////////////////////////////
-    // FIXME run_for seems to not function properly here.
-    // TODO(0) doc
-    // TODO(0) out of line this
-    template <typename Word, typename Time>
-    [[nodiscard]] auto redundant_rule(Presentation<Word> const& p, Time t) {
-      constexpr static congruence_kind twosided = congruence_kind::twosided;
-
-      p.validate();
-      Presentation<Word> q;
-      q.alphabet(p.alphabet());
-      q.contains_empty_word(p.contains_empty_word());
-      ToddCoxeter tc;
-      ToWord      to_word(p.alphabet());
-
-      for (auto omit = p.rules.crbegin(); omit != p.rules.crend(); omit += 2) {
-        q.rules.clear();
-        q.rules.insert(q.rules.end(), p.rules.crbegin(), omit);
-        q.rules.insert(q.rules.end(), omit + 2, p.rules.crend());
-        tc.init(twosided, q);
-        tc.run_for(t);
-        if (todd_coxeter::index_of(tc, to_word(*omit))
-            == todd_coxeter::index_of(tc, to_word(*(omit + 1)))) {
-          return (omit + 1).base() - 1;
-        }
-      }
-      return p.rules.cend();
-    }
-
   }  // namespace todd_coxeter
-
-  // TODO move into todd_coxeter namespace
-  // TODO(0) doc
-  // TODO(0) out of line
-  template <typename Range,
-            typename = std::enable_if_t<rx::is_input_or_sink_v<Range>>>
-  std::vector<std::vector<std::decay_t<typename Range::output_type>>>
-  partition(ToddCoxeter& tc, Range r) {
-    using return_type
-        = std::vector<std::vector<std::decay_t<typename Range::output_type>>>;
-
-    if (tc.number_of_classes() == POSITIVE_INFINITY) {
-      LIBSEMIGROUPS_EXCEPTION(
-          "the 1st argument defines a congruence with infinitely many "
-          "classes, the non-trivial classes cannot be determined!");
-      // They really can't be determined because we cannot run ToddCoxeter at
-      // all
-    } else if (!r.is_finite) {
-      LIBSEMIGROUPS_EXCEPTION("the 2nd argument (a range) must be finite, "
-                              "found an infinite range");
-    }
-    return_type         result;
-    std::vector<size_t> lookup;
-    size_t              next_index = 0;
-
-    while (!r.at_end()) {
-      auto       next  = r.get();
-      auto const index = todd_coxeter::index_of(tc, next);
-      if (index >= lookup.size()) {
-        lookup.resize(index + 1, UNDEFINED);
-      }
-      if (lookup[index] == UNDEFINED) {
-        lookup[index] = next_index++;
-        result.emplace_back();
-      }
-      result[lookup[index]].push_back(std::move(next));
-      r.next();
-    }
-    return result;
-  }
 
   // TODO(0) to_human_readable_repr
 

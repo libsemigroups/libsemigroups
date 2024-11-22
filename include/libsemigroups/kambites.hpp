@@ -672,30 +672,34 @@ namespace libsemigroups {
     using congruence_interface::reduce_no_checks;
     using congruence_interface::reduce_no_run;
     using congruence_interface::reduce_no_run_no_checks;
+
+    ////////////////////////////////////////////////////////////////////////
+    // Interface helpers - normal_forms
+    ////////////////////////////////////////////////////////////////////////
+
+    // TODO(1) implement a normal_forms function for Kambites objects. This will
+    // have to be a custom range type, with the mem fns of Word/StringRange, but
+    // only returning distinct normal forms. Or it could use to_froidure_pin,
+    // which can also enumerate normal forms
+
+    ////////////////////////////////////////////////////////////////////////
+    // Interface helpers - partition
+    ////////////////////////////////////////////////////////////////////////
+
+    using congruence_interface::partition;
+
+    ////////////////////////////////////////////////////////////////////////
+    // Interface helpers - non_trivial_classes
+    ////////////////////////////////////////////////////////////////////////
+
+    using congruence_interface::non_trivial_classes;
+
+    // There's no non_trivial_classes(Kambites k1, Kambites k2) because it's
+    // unclear how this could be computed (because they always define infinite
+    // semigroups/monoids), so we can't just do non_trivial_classes(k1,
+    // kambites::normal_forms(k2)) (as in ToddCoxeter) because there are
+    // infinitely many normal_forms.
   }  // namespace kambites
-
-  ////////////////////////////////////////////////////////////////////////
-  // Interface helpers - normal_forms
-  ////////////////////////////////////////////////////////////////////////
-
-  // TODO(1) implement a normal_forms function for Kambites objects. This will
-  // have to be a custom range type, with the mem fns of Word/StringRange, but
-  // only returning distinct normal forms. Or it could use to_froidure_pin,
-  // which can also enumerate normal forms
-
-  ////////////////////////////////////////////////////////////////////////
-  // Interface helpers - partition
-  ////////////////////////////////////////////////////////////////////////
-
-  ////////////////////////////////////////////////////////////////////////
-  // Interface helpers - non_trivial_classes
-  ////////////////////////////////////////////////////////////////////////
-
-  // There's no non_trivial_classes(Kambites k1, Kambites k2) because it's
-  // unclear how this could be computed (because they always define infinite
-  // semigroups/monoids), so we can't just do non_trivial_classes(k1,
-  // kambites::normal_forms(k2)) (as in ToddCoxeter) because there are
-  // infinitely many normal_forms.
 
 }  // namespace libsemigroups
 

@@ -1093,6 +1093,61 @@ namespace libsemigroups {
 
   namespace knuth_bendix {
     ////////////////////////////////////////////////////////////////////////
+    // KnuthBendix specific helpers
+    ////////////////////////////////////////////////////////////////////////
+
+    // TODO Should this have a param?
+    //! \brief Run the Knuth-Bendix algorithm by considering all overlaps of
+    //! a given length.
+    //!
+    //! This function runs the Knuth-Bendix algorithm on the rewriting
+    //! system represented by a KnuthBendix instance by considering all
+    //! overlaps of a given length \f$n\f$ (according to the \ref
+    //! options::overlap) before those overlaps of length \f$n + 1\f$.
+    //!
+    //! \complexity
+    //! See warning.
+    //!
+    //! \warning This will terminate when the KnuthBendix instance is
+    //! confluent, which might be never.
+    //!
+    //! \sa \ref run.
+    template <typename Rewriter, typename ReductionOrder>
+    void by_overlap_length(KnuthBendix<Rewriter, ReductionOrder>&);
+
+    //! \brief Check if the all rules are reduced with respect to each other.
+    //!
+    //! This function is defined in \c knuth-bendix.hpp.
+    //!
+    //! \returns \c true if for each pair \f$(A, B)\f$ and \f$(C, D)\f$ of rules
+    //! stored within the KnuthBendix instance, \f$C\f$ is neither a subword of
+    //! \f$A\f$ nor \f$B\f$. Returns \c false otherwise.
+    //!
+    //! \tparam Rewriter type of the rewriting system to be used in the
+    //! Knuth-Bendix algorithm.
+    //! \tparam ReductionOrder type of the reduction ordering used by the
+    //! Knuth-Bendix algorithm.
+    //! \param kb the KnuthBendix instance defining the rules that are to be
+    //! checked for being reduced.
+    template <typename Rewriter, typename ReductionOrder>
+    [[nodiscard]] bool is_reduced(KnuthBendix<Rewriter, ReductionOrder>& kb) {
+      for (auto const& test_rule : kb.active_rules()) {
+        auto const lhs = test_rule.first;
+        for (auto const& rule : kb.active_rules()) {
+          if (test_rule == rule) {
+            continue;
+          }
+
+          if (rule.first.find(lhs) != detail::internal_string_type::npos
+              || rule.second.find(lhs) != detail::internal_string_type::npos) {
+            return false;
+          }
+        }
+      }
+      return true;
+    }
+
+    ////////////////////////////////////////////////////////////////////////
     // Interface helpers - add_generating_pair
     ////////////////////////////////////////////////////////////////////////
 
@@ -1118,56 +1173,8 @@ namespace libsemigroups {
     using congruence_interface::reduce_no_run_no_checks;
 
     ////////////////////////////////////////////////////////////////////////
-    // Interface helpers - to_human_readable_repr
+    // Interface helpers - normal_forms
     ////////////////////////////////////////////////////////////////////////
-
-    // TODO(0) move out of knuth_bendix namespace
-    // TODO(0) What should the \param be?
-    //! \brief Return a string representation of a KnuthBendix instance
-    //!
-    //! Return a string representation of a KnuthBendix instance, specifying the
-    //! size of the underlying alphabet and the number of active rules.
-    //!
-    //! \returns The representation, a value of type \c std::string
-    // TODO(0) rename to_human_readable_repr
-    template <typename Rewriter, typename ReductionOrder>
-    std::string repr(KnuthBendix<Rewriter, ReductionOrder>& kb) {
-      using str = std::string;
-
-      str conf;
-      if (!kb.confluent_known()) {
-        conf = "KnuthBendix";
-      } else if (kb.confluent()) {
-        conf = "confluent KnuthBendix";
-      } else {
-        conf = "non-confluent KnuthBendix";
-      }
-      str alphabet_size = std::to_string(kb.presentation().alphabet().size());
-      str n_rules       = std::to_string(kb.number_of_active_rules());
-
-      // TODO(JE) use fmt::format instead
-      return str("<") + conf + " on " + alphabet_size + " letters with "
-             + n_rules + " active rules>";
-    }
-
-    // TODO Should this have a param?
-    //! \brief Run the Knuth-Bendix algorithm by considering all overlaps of
-    //! a given length.
-    //!
-    //! This function runs the Knuth-Bendix algorithm on the rewriting
-    //! system represented by a KnuthBendix instance by considering all
-    //! overlaps of a given length \f$n\f$ (according to the \ref
-    //! options::overlap) before those overlaps of length \f$n + 1\f$.
-    //!
-    //! \complexity
-    //! See warning.
-    //!
-    //! \warning This will terminate when the KnuthBendix instance is
-    //! confluent, which might be never.
-    //!
-    //! \sa \ref run.
-    template <typename Rewriter, typename ReductionOrder>
-    void by_overlap_length(KnuthBendix<Rewriter, ReductionOrder>&);
 
     //! \brief Return a forward iterator pointing at the first normal form with
     //! length in a given range.
@@ -1206,14 +1213,108 @@ namespace libsemigroups {
       return detail::NormalFormRange<Word, Rewriter, ReductionOrder>(kb);
     }
 
+    ////////////////////////////////////////////////////////////////////////
+    // Interface helpers - partition
+    ////////////////////////////////////////////////////////////////////////
+
+    using congruence_interface::partition;
+
+    ////////////////////////////////////////////////////////////////////////
+    // Interface helpers - non_trivial_classes
+    ////////////////////////////////////////////////////////////////////////
+
+    using congruence_interface::non_trivial_classes;
+
     // Compute non-trivial classes in kb1!
-    // TODO remove default template param
     template <typename Rewriter,
               typename ReductionOrder,
               typename Word = std::string>
     [[nodiscard]] std::vector<std::vector<Word>>
     non_trivial_classes(KnuthBendix<Rewriter, ReductionOrder>& kb1,
                         KnuthBendix<Rewriter, ReductionOrder>& kb2);
+
+    // TODO(0) move all of the functions from here to the end of the namespace
+    // knuth_bendix to before the interface helpers when they are out of lined.
+
+    ////////////////////////////////////////////////////////////////////////
+    // Possible future interface helpers - try_equal_to
+    ////////////////////////////////////////////////////////////////////////
+
+    // TODO Doc
+    template <typename T>
+    inline tril try_equal_to(Presentation<std::string>& p,
+                             std::string const&         lhs,
+                             std::string const&         rhs,
+                             T t = std::chrono::seconds(1)) {
+      constexpr static congruence_kind twosided = congruence_kind::twosided;
+
+      // TODO validate lhs and rhs
+      KnuthBendix         kb(twosided, p);
+      std::string         lphbt = p.alphabet();
+      std::vector<size_t> perm(lphbt.size(), 0);
+      std::iota(perm.begin(), perm.end(), 0);
+
+      do {
+        detail::apply_permutation(lphbt, perm);
+
+        p.alphabet(lphbt);
+        p.validate();
+
+        kb.init(twosided, p);
+        // TODO(0) no checks
+        if (reduce_no_run(kb, lhs) == reduce_no_run(kb, rhs)) {
+          return tril::TRUE;
+        }
+        kb.run_for(t);
+        // TODO(0) no checks
+        if (reduce_no_run(kb, lhs) == reduce_no_run(kb, rhs)) {
+          return tril::TRUE;
+        } else if (kb.finished()) {
+          return tril::FALSE;
+        }
+      } while (std::next_permutation(perm.begin(), perm.end()));
+      return tril::unknown;
+    }
+
+    ////////////////////////////////////////////////////////////////////////
+    // Possible future interface helpers - redundant_rule
+    ////////////////////////////////////////////////////////////////////////
+
+    //! \brief Return an iterator pointing at the left hand side of a redundant
+    //! rule.
+    //!
+    //! This function is defined in \c knuth-bendix.hpp.
+    //!
+    //! Starting with the last rule in the presentation, this function
+    //! attempts to run the Knuth-Bendix algorithm on the rules of the
+    //! presentation except for the given omitted rule. For every such omitted
+    //! rule, Knuth-Bendix is run for the length of time indicated by the
+    //! second parameter \p t, and then it is checked if the omitted rule can
+    //! be shown to be redundant (rewriting both sides of the omitted rule
+    //! using the other rules using the output of the, not necessarily
+    //! finished, Knuth-Bendix algorithm).
+    //!
+    //! If the omitted rule can be shown to be redundant in this way, then an
+    //! iterator pointing to its left hand side is returned.
+    //!
+    //! If no rule can be shown to be redundant in this way, then an iterator
+    //! pointing to \c p.cend() is returned.
+    //!
+    //! \tparam W type of words in the Presentation
+    //! \tparam T type of the 2nd parameter (time to try running
+    //! Knuth-Bendix). \param p the presentation \param t time to run
+    //! KnuthBendix for every omitted rule
+    //!
+    //! \warning The progress of the Knuth-Bendix algorithm may differ between
+    //! different calls to this function even if the parameters are identical.
+    //! As such this is non-deterministic, and may produce different results
+    //! with the same input.
+    template <typename W, typename T>
+    [[nodiscard]] auto redundant_rule(Presentation<W> const& p, T t) {
+      auto pp = to_presentation<std::string>(p);
+      return p.rules.cbegin()
+             + std::distance(pp.rules.cbegin(), redundant_rule(pp, t));
+    }
 
     //! \brief Return an iterator pointing at the left hand side of a redundant
     //! rule.
@@ -1267,109 +1368,6 @@ namespace libsemigroups {
       return p.rules.cend();
     }
 
-    //! \brief Check if the all rules are reduced with respect to each other.
-    //!
-    //! This function is defined in \c knuth-bendix.hpp.
-    //!
-    //! \returns \c true if for each pair \f$(A, B)\f$ and \f$(C, D)\f$ of rules
-    //! stored within the KnuthBendix instance, \f$C\f$ is neither a subword of
-    //! \f$A\f$ nor \f$B\f$. Returns \c false otherwise.
-    //!
-    //! \tparam Rewriter type of the rewriting system to be used in the
-    //! Knuth-Bendix algorithm.
-    //! \tparam ReductionOrder type of the reduction ordering used by the
-    //! Knuth-Bendix algorithm.
-    //! \param kb the KnuthBendix instance defining the rules that are to be
-    //! checked for being reduced.
-    template <typename Rewriter, typename ReductionOrder>
-    [[nodiscard]] bool is_reduced(KnuthBendix<Rewriter, ReductionOrder>& kb) {
-      for (auto const& test_rule : kb.active_rules()) {
-        auto const lhs = test_rule.first;
-        for (auto const& rule : kb.active_rules()) {
-          if (test_rule == rule) {
-            continue;
-          }
-
-          if (rule.first.find(lhs) != detail::internal_string_type::npos
-              || rule.second.find(lhs) != detail::internal_string_type::npos) {
-            return false;
-          }
-        }
-      }
-      return true;
-    }
-
-    // TODO Doc
-    template <typename T>
-    inline tril try_equal_to(Presentation<std::string>& p,
-                             std::string const&         lhs,
-                             std::string const&         rhs,
-                             T t = std::chrono::seconds(1)) {
-      constexpr static congruence_kind twosided = congruence_kind::twosided;
-
-      // TODO validate lhs and rhs
-      KnuthBendix         kb(twosided, p);
-      std::string         lphbt = p.alphabet();
-      std::vector<size_t> perm(lphbt.size(), 0);
-      std::iota(perm.begin(), perm.end(), 0);
-
-      do {
-        detail::apply_permutation(lphbt, perm);
-
-        p.alphabet(lphbt);
-        p.validate();
-
-        kb.init(twosided, p);
-        // TODO(0) no checks
-        if (reduce_no_run(kb, lhs) == reduce_no_run(kb, rhs)) {
-          return tril::TRUE;
-        }
-        kb.run_for(t);
-        // TODO(0) no checks
-        if (reduce_no_run(kb, lhs) == reduce_no_run(kb, rhs)) {
-          return tril::TRUE;
-        } else if (kb.finished()) {
-          return tril::FALSE;
-        }
-      } while (std::next_permutation(perm.begin(), perm.end()));
-      return tril::unknown;
-    }
-
-    //! \brief Return an iterator pointing at the left hand side of a redundant
-    //! rule.
-    //!
-    //! This function is defined in \c knuth-bendix.hpp.
-    //!
-    //! Starting with the last rule in the presentation, this function
-    //! attempts to run the Knuth-Bendix algorithm on the rules of the
-    //! presentation except for the given omitted rule. For every such omitted
-    //! rule, Knuth-Bendix is run for the length of time indicated by the
-    //! second parameter \p t, and then it is checked if the omitted rule can
-    //! be shown to be redundant (rewriting both sides of the omitted rule
-    //! using the other rules using the output of the, not necessarily
-    //! finished, Knuth-Bendix algorithm).
-    //!
-    //! If the omitted rule can be shown to be redundant in this way, then an
-    //! iterator pointing to its left hand side is returned.
-    //!
-    //! If no rule can be shown to be redundant in this way, then an iterator
-    //! pointing to \c p.cend() is returned.
-    //!
-    //! \tparam W type of words in the Presentation
-    //! \tparam T type of the 2nd parameter (time to try running
-    //! Knuth-Bendix). \param p the presentation \param t time to run
-    //! KnuthBendix for every omitted rule
-    //!
-    //! \warning The progress of the Knuth-Bendix algorithm may differ between
-    //! different calls to this function even if the parameters are identical.
-    //! As such this is non-deterministic, and may produce different results
-    //! with the same input.
-    template <typename W, typename T>
-    [[nodiscard]] auto redundant_rule(Presentation<W> const& p, T t) {
-      auto pp = to_presentation<std::string>(p);
-      return p.rules.cbegin()
-             + std::distance(pp.rules.cbegin(), redundant_rule(pp, t));
-    }
   }  // namespace knuth_bendix
 
   // TODO to tpp file
@@ -1392,6 +1390,37 @@ namespace libsemigroups {
     }
   }
 
+  ////////////////////////////////////////////////////////////////////////
+  // global functions - to_human_readable_repr
+  ////////////////////////////////////////////////////////////////////////
+
+  // TODO(0) What should the \param be?
+  //! \brief Return a string representation of a KnuthBendix instance
+  //!
+  //! Return a string representation of a KnuthBendix instance, specifying the
+  //! size of the underlying alphabet and the number of active rules.
+  //!
+  //! \returns The representation, a value of type \c std::string
+  // TODO(0) rename to_human_readable_repr
+  template <typename Rewriter, typename ReductionOrder>
+  std::string repr(KnuthBendix<Rewriter, ReductionOrder>& kb) {
+    using str = std::string;
+
+    str conf;
+    if (!kb.confluent_known()) {
+      conf = "KnuthBendix";
+    } else if (kb.confluent()) {
+      conf = "confluent KnuthBendix";
+    } else {
+      conf = "non-confluent KnuthBendix";
+    }
+    str alphabet_size = std::to_string(kb.presentation().alphabet().size());
+    str n_rules       = std::to_string(kb.number_of_active_rules());
+
+    // TODO(JE) use fmt::format instead
+    return str("<") + conf + " on " + alphabet_size + " letters with " + n_rules
+           + " active rules>";
+  }
 }  // namespace libsemigroups
 
 #include "knuth-bendix.tpp"
