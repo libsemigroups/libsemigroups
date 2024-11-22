@@ -50,6 +50,7 @@
 #include "constants.hpp"        // for Max, PositiveInfinity, operat...
 #include "debug.hpp"            // for LIBSEMIGROUPS_ASSERT
 #include "exception.hpp"        // for LIBSEMIGROUPS_EXCEPTION
+#include "obvinf.hpp"           // for is_obviously_infinite
 #include "order.hpp"            // for ShortLexCompare
 #include "paths.hpp"            // for Paths
 #include "presentation.hpp"     // for Presentation

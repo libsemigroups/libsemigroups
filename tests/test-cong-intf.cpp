@@ -22,6 +22,7 @@
 
 #include "catch_amalgamated.hpp"  // for REQUIRE
 #include "libsemigroups/cong-intf.hpp"
+#include "libsemigroups/to-froidure-pin.hpp"
 #include "libsemigroups/to-todd-coxeter.hpp"
 #include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 
@@ -135,7 +136,7 @@ namespace libsemigroups {
     REQUIRE(!is_obviously_infinite(cong));
   }
 
-  TEMPLATE_TEST_CASE("CongruenceInterface: non_trivial_classes",
+  TEMPLATE_TEST_CASE("CongruenceInterface: non_trivial_classes x1",
                      "[007][quick]",
                      ToddCoxeter,
                      Congruence,
@@ -178,111 +179,65 @@ namespace libsemigroups {
     REQUIRE(ntc[0] == expect);
   }
 
-  /*      LIBSEMIGROUPS_TEST_CASE("CongruenceInterface",
-                                "008",
-                                "cbegin/cend_ntc",
-                                "[quick]") {
-          auto rg = ReportGuard(REPORT);
-          auto S  = FroidurePin<Transf<>>(
-              {Transf<>({1, 3, 4, 2, 3}), Transf<>({3, 2, 1, 3, 3})});
+  TEMPLATE_TEST_CASE("CongruenceInterface: non_trivial_classes x2",
+                     "[008][quick]",
+                     ToddCoxeter,
+                     Congruence,
+                     KnuthBendix<>) {
+    auto rg = ReportGuard(false);
+    auto S  = to_froidure_pin(
+        {Transf<>({1, 3, 4, 2, 3}), Transf<>({3, 2, 1, 3, 3})});
 
-          std::unique_ptr<CongruenceInterface> cong;
+    REQUIRE(S.size() == 88);
+    REQUIRE(S.number_of_rules() == 18);
 
-          REQUIRE(S.size() == 88);
-          REQUIRE(S.number_of_rules() == 18);
+    TestType cong(onesided, to_presentation<word_type>(S));
+    congruence::add_generating_pair(
+        cong,
+        froidure_pin::factorisation(S, Transf<>({3, 4, 4, 4, 4})),
+        froidure_pin::factorisation(S, Transf<>({3, 1, 3, 3, 3})));
 
-          SECTION("CongruenceByPairs") {
-            cong = std::make_unique<CongruenceByPairs<decltype(S)>>(onesided,
-      S);
-          }
-          SECTION("Congruence") {
-            cong = std::make_unique<Congruence>(onesided, S);
-          }
-          cong->add_generating_pair(S.factorisation(Transf<>({3, 4, 4, 4,
-     4})), S.factorisation(Transf<>({3, 1, 3, 3, 3})));
+    REQUIRE(cong.number_of_classes() == 72);
 
-          REQUIRE(cong->number_of_classes() == 72);
-          REQUIRE(cong->number_of_non_trivial_classes() == 4);
-          std::vector<size_t> actual(4, 0);
-          std::transform(cong->cbegin_ntc(),
-                         cong->cend_ntc(),
-                         actual.begin(),
-                         std::mem_fn(&std::vector<word_type>::size));
-          std::sort(actual.begin(), actual.end());
-          std::vector<size_t> expect = {3, 5, 5, 7};
-          REQUIRE(actual == expect);
-        }
+    auto ntc = non_trivial_classes(cong, froidure_pin::normal_forms(S));
+    REQUIRE(ntc.size() == 4);
 
-        LIBSEMIGROUPS_TEST_CASE("CongruenceInterface",
-                                "009",
-                                "quotient is immutable",
-                                "[quick]") {
-          auto rg = ReportGuard(REPORT);
+    std::vector<size_t> actual(4, 0);
+    std::transform(ntc.begin(),
+                   ntc.end(),
+                   actual.begin(),
+                   std::mem_fn(&std::vector<word_type>::size));
+    std::sort(actual.begin(), actual.end());
+    std::vector<size_t> expect = {3, 5, 5, 7};
+    REQUIRE(actual == expect);
+  }
 
-          std::unique_ptr<CongruenceInterface> cong;
+  TEMPLATE_TEST_CASE("CongruenceInterface: no generating pairs added",
+                     "[010][quick]",
+                     ToddCoxeter,
+                     Congruence,
+                     KnuthBendix<>,
+                     Kambites<>) {
+    auto rg = ReportGuard(false);
 
-          SECTION("ToddCoxeter") {
-            cong = std::make_unique<ToddCoxeter>(twosided);
-          }
-          SECTION("KnuthBendix") {
-            cong = std::make_unique<KnuthBendix>();
-          }
-          // TODO(later) not yet implemented
-          // SECTION("CongruenceByPairs") {
-          //   cong =
-          //
-      std::make_unique<CongruenceByPairs<decltype(S)::element_type>>(twosided,
-          //   S);
-          // }
-          SECTION("Congruence") {
-            cong = std::make_unique<Congruence>(twosided);
-          }
+    Presentation<word_type> p;
+    p.alphabet(4);
 
-          cong->set_number_of_generators(2);
-          cong->add_generating_pair({0, 0, 0}, {0});
-          cong->add_generating_pair({1, 1, 1, 1}, {1});
-          cong->add_generating_pair({0, 1, 0, 1}, {0, 0});
+    TestType cong(twosided, p);
 
-          REQUIRE(cong->quotient_froidure_pin()->immutable());
-        }
+    if constexpr (std::is_same_v<TestType, ToddCoxeter>
+                  || std::is_same_v<TestType, KnuthBendix<>>) {
+      REQUIRE(congruence_interface::currently_contains(cong, 1_w, 2222222222_w)
+              == tril::unknown);
+    } else {
+      REQUIRE(congruence_interface::currently_contains(cong, 1_w, 2222222222_w)
+              == tril::FALSE);
+    }
+    // REQUIRE(!congruence_interface::contains(cong, 1_w, 2222222222_w));
+    REQUIRE(cong.number_of_classes() == POSITIVE_INFINITY);
+  }
 
-        LIBSEMIGROUPS_TEST_CASE("CongruenceInterface",
-                                "010",
-                                "no generating pairs added",
-                                "[quick][cong]") {
-          auto                                 rg = ReportGuard(REPORT);
-          std::unique_ptr<CongruenceInterface> cong;
-          SECTION("common behaviour") {
-            SECTION("KnuthBendix") {
-              cong = std::make_unique<KnuthBendix>();
-              cong->set_number_of_generators(4);
-              // KnuthBendix can find the class index, but the others can't
-            }
-            SECTION("Congruence") {
-              cong = std::make_unique<Congruence>(twosided);
-              cong->set_number_of_generators(4);
-              static_cast<Congruence*>(cong.get())->max_threads(2);
-              REQUIRE(cong->const_contains({1}, {2, 2, 2, 2, 2, 2, 2, 2, 2,
-     2})
-                      == tril::FALSE);
-            }
-            REQUIRE(cong->word_to_class_index({2, 2, 2, 2}) == 254);
-            REQUIRE(cong->class_index_to_word(2) == word_type({2}));
-          }
-          SECTION("ToddCoxeter") {
-            cong = std::make_unique<ToddCoxeter>(twosided);
-            cong->set_number_of_generators(4);
-            REQUIRE(cong->const_contains({1}, {2, 2, 2, 2, 2, 2, 2, 2, 2, 2})
-                    == tril::unknown);
-            REQUIRE_THROWS_AS(cong->word_to_class_index({2, 2, 2, 2}),
-                              LibsemigroupsException);
-            REQUIRE_THROWS_AS(cong->class_index_to_word(2),
-      LibsemigroupsException);
-          }
-          REQUIRE(!cong->contains({1}, {2, 2, 2, 2, 2, 2, 2, 2, 2, 2}));
-          REQUIRE(cong->number_of_classes() == POSITIVE_INFINITY);
-        }
-
+  /*
         LIBSEMIGROUPS_TEST_CASE("CongruenceInterface",
                                 "011",
                                 "nr generators not set",
@@ -333,9 +288,8 @@ namespace libsemigroups {
           REQUIRE(cong.const_contains({1}, {2, 2, 2, 2, 2, 2, 2, 2, 2, 2})
                   == tril::FALSE);
           REQUIRE(cong.class_index_to_word(2) == word_type({2}));
-          REQUIRE(!cong.contains({1}, {2, 2, 2, 2, 2, 2, 2, 2, 2, 2}));
-          REQUIRE(cong.number_of_classes() == 88);
+          REQUIRE(!congruence_interface::contains(cong, {1}, {2, 2, 2, 2, 2, 2,
+     2, 2, 2, 2})); REQUIRE(cong.number_of_classes() == 88);
         }
-      }  // namespace congruence
          */
 }  // namespace libsemigroups

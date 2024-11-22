@@ -530,25 +530,6 @@ namespace libsemigroups {
     using congruence_interface::reduce_no_run_no_checks;
 
     ////////////////////////////////////////////////////////////////////////
-    // Interface helpers - partition
-    ////////////////////////////////////////////////////////////////////////
-
-    template <typename Range>
-    std::vector<std::vector<std::decay_t<typename Range::output_type>>>
-    partition(Congruence& cong, Range r) {
-      cong.run();
-      if (cong.has<ToddCoxeter>() && cong.get<ToddCoxeter>()->finished()) {
-        return partition(*cong.get<ToddCoxeter>(), r);
-      } else if (cong.has<KnuthBendix<>>()
-                 && cong.get<KnuthBendix<>>()->finished()) {
-        return partition(*cong.get<KnuthBendix<>>(), r);
-      } else if (cong.has<Kambites<word_type>>()) {
-        return partition(*cong.get<Kambites<word_type>>(), r);
-      }
-      LIBSEMIGROUPS_EXCEPTION("Cannot compute the non-trivial classes!");
-    }
-
-    ////////////////////////////////////////////////////////////////////////
     // Interface helpers - non_trivial_classes
     ////////////////////////////////////////////////////////////////////////
 
@@ -579,6 +560,26 @@ namespace libsemigroups {
     std::vector<std::vector<std::string>>
     non_trivial_classes(Congruence& cong, Presentation<std::string> const& p);
   }  // namespace congruence
+
+  ////////////////////////////////////////////////////////////////////////
+  // Interface helpers - partition
+  ////////////////////////////////////////////////////////////////////////
+
+  template <typename Range>
+  std::vector<std::vector<std::decay_t<typename Range::output_type>>>
+  partition(Congruence& cong, Range r) {
+    cong.run();
+    if (cong.has<ToddCoxeter>() && cong.get<ToddCoxeter>()->finished()) {
+      return partition(*cong.get<ToddCoxeter>(), r);
+    } else if (cong.has<KnuthBendix<>>()
+               && cong.get<KnuthBendix<>>()->finished()) {
+      return partition(*cong.get<KnuthBendix<>>(), r);
+    } else if (cong.has<Kambites<word_type>>()) {
+      return partition(*cong.get<Kambites<word_type>>(), r);
+    }
+    LIBSEMIGROUPS_EXCEPTION("Cannot compute the non-trivial classes!");
+  }
+
 }  // namespace libsemigroups
 
 #endif  // LIBSEMIGROUPS_CONG_HPP_

@@ -713,6 +713,7 @@ EXTRA_PROGRAMS += test_bipart
 EXTRA_PROGRAMS += test_bitset
 EXTRA_PROGRAMS += test_bmat8
 EXTRA_PROGRAMS += test_cong
+EXTRA_PROGRAMS += test_cong_all
 EXTRA_PROGRAMS += test_cong_intf
 EXTRA_PROGRAMS += test_constants
 EXTRA_PROGRAMS += test_containers
@@ -884,6 +885,19 @@ test_bitset_SOURCES += tests/catch_amalgamated.cpp
 test_bmat8_SOURCES =  tests/test-bmat8.cpp
 test_bmat8_SOURCES += tests/test-main.cpp
 test_bmat8_SOURCES += tests/catch_amalgamated.cpp
+
+test_cong_all_SOURCES =  tests/test-cong-intf.cpp
+test_cong_all_SOURCES += tests/test-cong.cpp
+test_cong_all_SOURCES += tests/test-kambites.cpp
+test_cong_all_SOURCES += tests/test-knuth-bendix-1.cpp
+test_cong_all_SOURCES += tests/test-knuth-bendix-2.cpp
+test_cong_all_SOURCES += tests/test-knuth-bendix-3.cpp
+test_cong_all_SOURCES += tests/test-knuth-bendix-4.cpp
+test_cong_all_SOURCES += tests/test-knuth-bendix-5.cpp
+test_cong_all_SOURCES += tests/test-knuth-bendix-6.cpp
+test_cong_all_SOURCES += tests/test-todd-coxeter.cpp
+test_cong_all_SOURCES += tests/test-main.cpp
+test_cong_all_SOURCES += tests/catch_amalgamated.cpp
 
 test_cong_intf_SOURCES =  tests/test-cong-intf.cpp
 test_cong_intf_SOURCES += tests/test-main.cpp

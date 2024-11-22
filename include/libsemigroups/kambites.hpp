@@ -153,9 +153,13 @@ namespace libsemigroups {
 
     ~Kambites();
 
+    // Although congruence_kind can only be twosided for Kambites objects, we
+    // have the parameter for uniformity with KnuthBendix, ToddCoxeter, and
+    // Congruence.
     explicit Kambites(congruence_kind, Presentation<value_type> const& p)
         // TODO(0) throw if congruence_kind is onesided x everywhere in the
         // constructors here
+
         : Kambites() {
       p.validate();
       _presentation = p;
@@ -184,11 +188,17 @@ namespace libsemigroups {
     // No rvalue ref version of this because we can't use the presentation.
     template <typename OtherWord>
     explicit Kambites(congruence_kind ck, Presentation<OtherWord> const& p)
-        : Kambites(ck, to_presentation<value_type>(p)) {}
+        : Kambites(ck,
+                   // The lambda in the next line converts, say, chars to
+                   // size_ts, but doesn't convert size_ts to human_readable
+                   // characters.
+                   to_presentation<value_type>(p, [](auto x) { return x; })) {}
 
     template <typename OtherWord>
     Kambites& init(congruence_kind ck, Presentation<OtherWord> const& p) {
-      init(ck, to_presentation<value_type>(p));
+      // The lambda in the next line converts, say, chars to size_ts, but
+      // doesn't convert size_ts to human_readable characters.
+      init(ck, to_presentation<value_type>(p, [](auto x) { return x; }));
       return *this;
     }
 
@@ -639,7 +649,7 @@ namespace libsemigroups {
   };
 
   template <typename Word>
-  Kambites(Presentation<Word> const&) -> Kambites<Word>;
+  Kambites(congruence_kind, Presentation<Word> const&) -> Kambites<Word>;
 
   namespace kambites {
     using congruence_interface::add_generating_pair;

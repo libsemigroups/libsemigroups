@@ -278,15 +278,15 @@ namespace libsemigroups {
   template <typename Rewriter, typename ReductionOrder>
   uint64_t KnuthBendix<Rewriter, ReductionOrder>::number_of_classes() {
     // TODO uncomment
-    // if (is_obviously_infinite(*this)) {
-    //   return POSITIVE_INFINITY;
-    // }
+    if (is_obviously_infinite(*this)) {
+      return POSITIVE_INFINITY;
+    }
 
     int const modifier = (presentation().contains_empty_word() ? 0 : -1);
     if (presentation().alphabet().empty()) {
       return 1 + modifier;
     } else {
-      uint64_t const out = knuth_bendix::normal_forms(*this) | rx::count();
+      uint64_t const out = knuth_bendix::normal_forms(*this).count();
       return out;
     }
   }
