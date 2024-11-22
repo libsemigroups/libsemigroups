@@ -59,14 +59,18 @@ namespace libsemigroups {
 
   std::unique_ptr<FroidurePinBase> to_froidure_pin(Congruence& cong) {
     cong.run();
-    if (cong.has<KnuthBendix<>>()) {
-      auto fp = to_froidure_pin(*cong.get<KnuthBendix<>>());
+    if (cong.has<Kambites<word_type>>()) {
+      // TODO(0) there an issue here that if the Kambites clause isn't first,
+      // then we incorrectly start running the other algos here, which run
+      // forever. Probably something goes wrong that the other runners don't
+      // get deleted if Kambites wins, since it's run first.
+      auto fp = to_froidure_pin(*cong.get<Kambites<word_type>>());
       return std::make_unique<decltype(fp)>(std::move(fp));
     } else if (cong.has<ToddCoxeter>()) {
       auto fp = to_froidure_pin(*cong.get<ToddCoxeter>());
       return std::make_unique<decltype(fp)>(std::move(fp));
-    } else if (cong.has<Kambites<word_type>>()) {
-      auto fp = to_froidure_pin(*cong.get<Kambites<word_type>>());
+    } else if (cong.has<KnuthBendix<>>()) {
+      auto fp = to_froidure_pin(*cong.get<KnuthBendix<>>());
       return std::make_unique<decltype(fp)>(std::move(fp));
     }
     LIBSEMIGROUPS_EXCEPTION("TODO");

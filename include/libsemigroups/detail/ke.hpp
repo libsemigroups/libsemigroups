@@ -201,6 +201,24 @@ namespace libsemigroups {
   tril FroidurePin<detail::KE<word_type>,
                    FroidurePinTraits<detail::KE<word_type>,
                                      Kambites<word_type>>>::is_finite() const;
+
+// TODO(1) this doesn't work because size is a mem fn of FroidurePinBase...
+//  template <>
+//  [[nodiscard]] size_t
+//  FroidurePin<detail::KE<std::string>,
+//              FroidurePinTraits<detail::KE<std::string>,
+//                                Kambites<std::string>>>::size();
+//
+//  template <>
+//  [[nodiscard]] size_t
+//  FroidurePin<detail::KE<detail::MultiStringView>,
+//              FroidurePinTraits<detail::KE<detail::MultiStringView>,
+//                                Kambites<detail::MultiStringView>>>::size();
+//
+//  template <>
+//  [[nodiscard]] size_t FroidurePin<
+//      detail::KE<word_type>,
+//      FroidurePinTraits<detail::KE<word_type>, Kambites<word_type>>>::size();
 #endif
 
 }  // namespace libsemigroups

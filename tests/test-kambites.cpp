@@ -156,6 +156,7 @@ namespace libsemigroups {
     REQUIRE(kambites::contains(k, "aaaaaef", "aaaaadg"));
     REQUIRE(kambites::contains(k, "efababa", "dgababa"));
 
+    // TODO uncomment or delete
     //    REQUIRE(to_word("abcd") == 0123_w);
     //  REQUIRE(to_word("aaaeaa") == 000400_w);
     // REQUIRE(kambites::contains(k, to_word("abcd"), to_word("aaaeaa")));

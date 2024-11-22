@@ -1035,6 +1035,62 @@ namespace libsemigroups {
   std::ostream& operator<<(std::ostream&,
                            KnuthBendix<Rewriter, ReductionOrder> const&);
 
+  namespace detail {
+    // TODO put in separate file
+    template <typename Word, typename Rewriter, typename ReductionOrder>
+    class NormalFormRange : public Paths<uint32_t> {
+      using Paths_ = Paths<uint32_t>;
+
+      mutable Word                           _current;
+      KnuthBendix<Rewriter, ReductionOrder>* _kb;
+
+     public:
+      using size_type   = typename Paths_::size_type;
+      using output_type = Word const&;
+
+      explicit NormalFormRange(KnuthBendix<Rewriter, ReductionOrder>& kb)
+          : Paths(kb.gilman_graph()), _current(), _kb(&kb) {
+        // It's possible that the gilman graph is empty, so the call to
+        // source_no_checks(0) is technically invalid, but nothing goes wrong,
+        // so we just go with it. This is slightly smelly.
+        Paths_::source_no_checks(0);
+        if (!kb.presentation().contains_empty_word()) {
+          Paths_::next();
+        }
+      }
+
+      output_type get() const {
+        word_type const& w = Paths_::get();
+        _current.clear();
+        for (auto c : w) {
+          _current.push_back(_kb->presentation().letter_no_checks(c));
+        }
+        return _current;
+      }
+
+      NormalFormRange& min(size_type val) noexcept {
+        Paths_::min(val);
+        return *this;
+      }
+
+      NormalFormRange& max(size_type val) noexcept {
+        Paths_::max(val);
+        return *this;
+      }
+
+      using Paths_::at_end;
+      using Paths_::count;
+      using Paths_::max;
+      using Paths_::min;
+      using Paths_::next;
+      using Paths_::size_hint;
+
+      static constexpr bool is_finite     = true;  // this isn't always true!
+      static constexpr bool is_idempotent = true;
+    };  // class NormalFormRange
+
+  }  // namespace detail
+
   namespace knuth_bendix {
     ////////////////////////////////////////////////////////////////////////
     // Interface helpers - add_generating_pair
@@ -1143,21 +1199,11 @@ namespace libsemigroups {
     //!
     //! \sa \ref cend_normal_forms.
     // TODO update doc
-    template <typename Rewriter, typename ReductionOrder>
+    template <typename Word = std::string,
+              typename Rewriter,
+              typename ReductionOrder>
     [[nodiscard]] auto normal_forms(KnuthBendix<Rewriter, ReductionOrder>& kb) {
-      using rx::operator|;
-      Paths paths(kb.gilman_graph());
-      paths.source_no_checks(0);
-      // It's possible that the gilman graph is empty, so the call to
-      // source_no_checks(0) is technically invalid, but nothing goes wrong, so
-      // we just go with it. This is slightly smelly.
-      if (!kb.presentation().contains_empty_word()) {
-        paths.next();
-      }
-      return paths;
-      // TODO(1) if we pipe this into a ToString object or something else, then
-      // we lose the ability to use the Paths mem fns like min/max/count etc, so
-      // for now this will always output word_types
+      return detail::NormalFormRange<Word, Rewriter, ReductionOrder>(kb);
     }
 
     // Compute non-trivial classes in kb1!

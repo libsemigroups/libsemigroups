@@ -104,11 +104,13 @@ namespace libsemigroups {
     //! Constant.
     //!
     //! \sa set_number_of_generators and add_generating_pair.
+    // TODO remove
     explicit Congruence(congruence_kind type) : CongruenceInterface() {
       init(type);
     }
 
     // TODO doc
+    // TODO remove
     Congruence& init(congruence_kind type) {
       CongruenceInterface::init(type);
       return init();

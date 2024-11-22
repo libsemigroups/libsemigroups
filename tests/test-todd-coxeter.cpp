@@ -4242,10 +4242,6 @@ namespace libsemigroups {
 
       if (n < 3)
         continue;
-
-      //      REQUIRE((normal_forms(tc) | ToString("abc") |
-      //      to_vector())
-      //              == std::vector<std::string>());
     }
   }
 

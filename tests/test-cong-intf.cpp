@@ -31,18 +31,11 @@
 
 #include "libsemigroups/detail/tce.hpp"  // for TCE
 
-#define CONG_INTF_TYPES ToddCoxeter, Congruence, KnuthBendix<>, Kambites<>
-
 namespace libsemigroups {
   using namespace literals;
-  // struct LibsemigroupsException;  // Forward declaration
 
   congruence_kind constexpr twosided = congruence_kind::twosided;
   congruence_kind constexpr onesided = congruence_kind::onesided;
-
-  // using detail::TCE;
-  // using FroidurePinTCE = FroidurePin<TCE, FroidurePinTraits<TCE,
-  // TCE::Table>>;
 
   TEMPLATE_TEST_CASE("CongruenceInterface: add_generating_pair",
                      "[000][quick]",
@@ -99,7 +92,7 @@ namespace libsemigroups {
   }
 
   TEMPLATE_TEST_CASE("CongruenceInterface: is_obviously_infinite",
-                     "[003][quick]",
+                     "[002][quick]",
                      // ToddCoxeter, TODO(0) currently broken for ToddCoxeter
                      Congruence,
                      KnuthBendix<>) {
@@ -137,7 +130,7 @@ namespace libsemigroups {
   }
 
   TEMPLATE_TEST_CASE("CongruenceInterface: non_trivial_classes x1",
-                     "[007][quick]",
+                     "[003][quick]",
                      ToddCoxeter,
                      Congruence,
                      KnuthBendix<>) {
@@ -180,7 +173,7 @@ namespace libsemigroups {
   }
 
   TEMPLATE_TEST_CASE("CongruenceInterface: non_trivial_classes x2",
-                     "[008][quick]",
+                     "[004][quick]",
                      ToddCoxeter,
                      Congruence,
                      KnuthBendix<>) {
@@ -213,7 +206,7 @@ namespace libsemigroups {
   }
 
   TEMPLATE_TEST_CASE("CongruenceInterface: no generating pairs added",
-                     "[010][quick]",
+                     "[005][quick]",
                      ToddCoxeter,
                      Congruence,
                      KnuthBendix<>,
@@ -233,63 +226,146 @@ namespace libsemigroups {
       REQUIRE(congruence_interface::currently_contains(cong, 1_w, 2222222222_w)
               == tril::FALSE);
     }
-    // REQUIRE(!congruence_interface::contains(cong, 1_w, 2222222222_w));
+    REQUIRE(!congruence_interface::contains(cong, 1_w, 2222222222_w));
     REQUIRE(cong.number_of_classes() == POSITIVE_INFINITY);
   }
 
-  /*
-        LIBSEMIGROUPS_TEST_CASE("CongruenceInterface",
-                                "011",
-                                "nr generators not set",
-                                "[quick][cong]") {
-          auto                                 rg = ReportGuard(REPORT);
-          std::unique_ptr<CongruenceInterface> cong;
-          SECTION("ToddCoxeter") {
-            cong = std::make_unique<ToddCoxeter>(twosided);
-          }
-          SECTION("KnuthBendix") {
-            cong = std::make_unique<KnuthBendix>();
-          }
-          SECTION("Congruence") {
-            cong = std::make_unique<Congruence>(twosided);
-          }
-          REQUIRE_THROWS_AS(cong->set_number_of_generators(0),
-                            LibsemigroupsException);
-          REQUIRE_THROWS_AS(
-              cong->const_contains({1}, {2, 2, 2, 2, 2, 2, 2, 2, 2, 2}),
-              LibsemigroupsException);
-          REQUIRE_THROWS_AS(cong->contains({1}, {2, 2, 2, 2, 2, 2, 2, 2, 2,
-     2}), LibsemigroupsException); REQUIRE(cong->number_of_classes() ==
-     UNDEFINED); REQUIRE_THROWS_AS(cong->word_to_class_index({2, 2, 2, 2}),
-                            LibsemigroupsException);
-          REQUIRE_THROWS_AS(cong->class_index_to_word(0),
-      LibsemigroupsException); REQUIRE_THROWS_AS(cong->class_index_to_word(1),
-      LibsemigroupsException); REQUIRE_THROWS_AS(cong->class_index_to_word(2),
-      LibsemigroupsException); REQUIRE_THROWS_AS(cong->run(),
-      LibsemigroupsException);
-        }
+  TEMPLATE_TEST_CASE("CongruenceInterface: to_froidure_pin",
+                     "[006][quick]",
+                     Kambites<>) {
+    auto                      rg = ReportGuard(false);
+    Presentation<std::string> p;
+    p.alphabet("abcdefg");
 
-        LIBSEMIGROUPS_TEST_CASE("CongruenceInterface",
-                                "012",
-                                "no generating pairs",
-                                "[quick][cong]") {
-          auto rg = ReportGuard(REPORT);
-          auto S  = FroidurePin<Transf<>>({Transf<>({1, 3, 4, 2, 3}),
-                                           Transf<>({1, 3, 4, 2, 3}),
-                                           Transf<>({3, 2, 1, 3, 3})});
+    presentation::add_rule(p, "abcd", "aaaeaa");
+    presentation::add_rule(p, "ef", "dg");
 
-          REQUIRE(S.size() == 88);
-          REQUIRE(S.number_of_rules() == 21);
+    TestType cong(twosided, p);
 
-          CongruenceByPairs<decltype(S)> cong(twosided, S);
-          REQUIRE_THROWS_AS(cong.set_number_of_generators(0),
-                            LibsemigroupsException);
-          REQUIRE(cong.word_to_class_index({2, 2, 2, 2}) == 0);
-          REQUIRE(cong.const_contains({1}, {2, 2, 2, 2, 2, 2, 2, 2, 2, 2})
-                  == tril::FALSE);
-          REQUIRE(cong.class_index_to_word(2) == word_type({2}));
-          REQUIRE(!congruence_interface::contains(cong, {1}, {2, 2, 2, 2, 2, 2,
-     2, 2, 2, 2})); REQUIRE(cong.number_of_classes() == 88);
-        }
-         */
+    auto fp = to_froidure_pin(cong);
+
+    fp.enumerate(1'000);
+    REQUIRE(!fp.finished());
+    REQUIRE(fp.current_size() == 8'205);
+
+    REQUIRE((froidure_pin::current_normal_forms(fp) | ToString(p.alphabet())
+             | rx::take(100) | rx::to_vector())
+            == std::vector<std::string>(
+                {"a",   "b",   "c",   "d",   "e",   "f",   "g",   "aa",  "ab",
+                 "ac",  "ad",  "ae",  "af",  "ag",  "ba",  "bb",  "bc",  "bd",
+                 "be",  "bf",  "bg",  "ca",  "cb",  "cc",  "cd",  "ce",  "cf",
+                 "cg",  "da",  "db",  "dc",  "dd",  "de",  "df",  "dg",  "ea",
+                 "eb",  "ec",  "ed",  "ee",  "eg",  "fa",  "fb",  "fc",  "fd",
+                 "fe",  "ff",  "fg",  "ga",  "gb",  "gc",  "gd",  "ge",  "gf",
+                 "gg",  "aaa", "aab", "aac", "aad", "aae", "aaf", "aag", "aba",
+                 "abb", "abc", "abd", "abe", "abf", "abg", "aca", "acb", "acc",
+                 "acd", "ace", "acf", "acg", "ada", "adb", "adc", "add", "ade",
+                 "adf", "adg", "aea", "aeb", "aec", "aed", "aee", "aeg", "afa",
+                 "afb", "afc", "afd", "afe", "aff", "afg", "aga", "agb", "agc",
+                 "agd"}));
+  }
+
+  TEMPLATE_TEST_CASE("CongruenceInterface: to_froidure_pin",
+                     "[007][quick]",
+                     KnuthBendix<>,
+                     ToddCoxeter) {
+    auto rg = ReportGuard(false);
+    using knuth_bendix::normal_forms;
+    using todd_coxeter::normal_forms;
+
+    Presentation<std::string> p;
+    p.contains_empty_word(true);
+    p.alphabet("Bab");
+    presentation::add_rule_no_checks(p, "aa", "");
+    presentation::add_rule_no_checks(p, "bB", "");
+    presentation::add_rule_no_checks(p, "bbb", "");
+    presentation::add_rule_no_checks(p, "ababab", "");
+
+    TestType cong(twosided, p);
+
+    REQUIRE(cong.number_of_classes() == 12);
+    REQUIRE(to_froidure_pin(cong).size() == 12);
+  }
+
+  TEMPLATE_TEST_CASE("CongruenceInterface: to_froidure_pin",
+                     "[008][quick]",
+                     Congruence) {
+    auto rg = ReportGuard(false);
+    using knuth_bendix::normal_forms;
+    using todd_coxeter::normal_forms;
+
+    Presentation<std::string> p;
+    p.contains_empty_word(true);
+    p.alphabet("Bab");
+    presentation::add_rule_no_checks(p, "aa", "");
+    presentation::add_rule_no_checks(p, "bB", "");
+    presentation::add_rule_no_checks(p, "bbb", "");
+    presentation::add_rule_no_checks(p, "ababab", "");
+
+    TestType cong(twosided, p);
+
+    REQUIRE(cong.number_of_classes() == 12);
+    REQUIRE(to_froidure_pin(cong)->size() == 12);
+
+    p.init();
+    p.alphabet("abcdefg");
+    p.contains_empty_word(false);
+    presentation::add_rule(p, "abcd", "aaaeaa");
+    presentation::add_rule(p, "ef", "dg");
+
+    cong.init(twosided, p);
+    REQUIRE(cong.number_of_classes() == POSITIVE_INFINITY);
+
+    auto fp = to_froidure_pin(cong);
+    fp->enumerate(1'000);
+    REQUIRE(fp->current_size() == 8'205);
+  }
+
+  TEMPLATE_TEST_CASE("CongruenceInterface: normal_forms",
+                     "[009][quick]",
+                     KnuthBendix<>,
+                     ToddCoxeter) {
+    auto rg = ReportGuard(false);
+    using knuth_bendix::normal_forms;
+    using todd_coxeter::normal_forms;
+
+    Presentation<std::string> p;
+    p.contains_empty_word(true);
+    p.alphabet("Bab");
+    presentation::add_rule_no_checks(p, "aa", "");
+    presentation::add_rule_no_checks(p, "bB", "");
+    presentation::add_rule_no_checks(p, "bbb", "");
+    presentation::add_rule_no_checks(p, "ababab", "");
+
+    TestType cong(twosided, p);
+
+    REQUIRE(cong.number_of_classes() == 12);
+    REQUIRE((normal_forms<std::string>(cong) | rx::to_vector())
+            == std::vector<std::string>({"",
+                                         "B",
+                                         "a",
+                                         "b",
+                                         "Ba",
+                                         "aB",
+                                         "ab",
+                                         "ba",
+                                         "BaB",
+                                         "Bab",
+                                         "aBa",
+                                         "baB"}));
+    REQUIRE((normal_forms<word_type>(cong) | rx::to_vector())
+            == std::vector<word_type>({{},
+                                       {66},
+                                       {97},
+                                       {98},
+                                       {66, 97},
+                                       {97, 66},
+                                       {97, 98},
+                                       {98, 97},
+                                       {66, 97, 66},
+                                       {66, 97, 98},
+                                       {97, 66, 97},
+                                       {98, 97, 66}}));
+  }
+
 }  // namespace libsemigroups
