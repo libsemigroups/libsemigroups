@@ -29,6 +29,9 @@ namespace libsemigroups {
   class ToddCoxeter;
   enum class congruence_kind;
 
+  // TODO to_todd_coxeter for FroidurePin<TCE> just return the original
+  // ToddCoxeter instance.
+
   template <typename Node>
   ToddCoxeter to_todd_coxeter(congruence_kind        knd,
                               FroidurePinBase&       fpb,

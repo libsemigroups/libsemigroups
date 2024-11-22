@@ -531,23 +531,28 @@ namespace libsemigroups {
     using congruence_interface::reduce_no_run;
     using congruence_interface::reduce_no_run_no_checks;
 
-    ////////////////////////////////////////////////////////////////////////
-    // Interface helpers - non_trivial_classes
-    ////////////////////////////////////////////////////////////////////////
-
-    // Not required.
-
-    // We have to pass the presentation here, because o/w we have no way of
-    // knowing over what we should compute the non-trivial classes (i.e. we
-    // cannot always recover p from cong).
-    // TODO remove?
-    std::vector<std::vector<word_type>>
-    non_trivial_classes(Congruence& cong, Presentation<word_type> const& p);
-
-    // TODO remove?
-    std::vector<std::vector<std::string>>
-    non_trivial_classes(Congruence& cong, Presentation<std::string> const& p);
   }  // namespace congruence
+
+  ////////////////////////////////////////////////////////////////////////
+  // Interface helpers - normal_forms
+  ////////////////////////////////////////////////////////////////////////
+
+  // The following doesn't work, because the types of the two returned values
+  // aren't the same.
+  // TODO(0) implement a class containing a variant for this.
+  // template <typename Word>
+  // auto normal_forms(Congruence& cong) {
+  //   cong.run();
+  //   if (cong.has<ToddCoxeter>() && cong.get<ToddCoxeter>()->finished()) {
+  //     return todd_coxeter::normal_forms(*cong.get<ToddCoxeter>());
+  //   } else if (cong.has<KnuthBendix<>>()
+  //              && cong.get<KnuthBendix<>>()->finished()) {
+  //     return knuth_bendix::normal_forms(*cong.get<KnuthBendix<>>());
+  //   }
+  //   // There's currently no normal_forms function for Kambites, so can't
+  //   // return anything in that case.
+  //   LIBSEMIGROUPS_EXCEPTION("Cannot compute the non-trivial classes!");
+  // }
 
   ////////////////////////////////////////////////////////////////////////
   // Interface helpers - partition
@@ -567,6 +572,27 @@ namespace libsemigroups {
     }
     LIBSEMIGROUPS_EXCEPTION("Cannot compute the non-trivial classes!");
   }
+
+  ////////////////////////////////////////////////////////////////////////
+  // Interface helpers - non_trivial_classes
+  ////////////////////////////////////////////////////////////////////////
+
+  // template <typename Word>
+  // std::vector<std::vector<Word>> non_trivial_classes(Congruence& cong1,
+  //                                                   Congruence& cong2);
+  // TODO(1) can't really do this until normal_forms is working.
+
+  // Not required.
+  // We have to pass the presentation here, because o/w we have no way of
+  // knowing over what we should compute the non-trivial classes (i.e. we
+  // cannot always recover p from cong).
+  // TODO remove?
+  std::vector<std::vector<word_type>>
+  non_trivial_classes(Congruence& cong, Presentation<word_type> const& p);
+
+  // TODO remove?
+  std::vector<std::vector<std::string>>
+  non_trivial_classes(Congruence& cong, Presentation<std::string> const& p);
 
 }  // namespace libsemigroups
 
