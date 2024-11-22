@@ -153,25 +153,29 @@ namespace libsemigroups {
 
     ~Kambites();
 
-    explicit Kambites(Presentation<value_type> const& p) : Kambites() {
+    explicit Kambites(congruence_kind, Presentation<value_type> const& p)
+        // TODO(0) throw if congruence_kind is onesided x everywhere in the
+        // constructors here
+        : Kambites() {
       p.validate();
       _presentation = p;
       private_init_from_presentation(false);
     }
 
-    Kambites& init(Presentation<value_type> const& p) {
+    Kambites& init(congruence_kind, Presentation<value_type> const& p) {
       p.validate();
       _presentation = p;
       return private_init_from_presentation(true);
     }
 
-    explicit Kambites(Presentation<value_type>&& p) : Kambites() {
+    explicit Kambites(congruence_kind, Presentation<value_type>&& p)
+        : Kambites() {
       p.validate();
       _presentation = std::move(p);
       private_init_from_presentation(false);
     }
 
-    Kambites& init(Presentation<value_type>&& p) {
+    Kambites& init(congruence_kind, Presentation<value_type>&& p) {
       p.validate();
       _presentation = std::move(p);
       return private_init_from_presentation(true);
@@ -179,12 +183,12 @@ namespace libsemigroups {
 
     // No rvalue ref version of this because we can't use the presentation.
     template <typename OtherWord>
-    explicit Kambites(Presentation<OtherWord> const& p)
-        : Kambites(to_presentation<value_type>(p)) {}
+    explicit Kambites(congruence_kind ck, Presentation<OtherWord> const& p)
+        : Kambites(ck, to_presentation<value_type>(p)) {}
 
     template <typename OtherWord>
-    Kambites& init(Presentation<OtherWord> const& p) {
-      init(to_presentation<value_type>(p));
+    Kambites& init(congruence_kind ck, Presentation<OtherWord> const& p) {
+      init(ck, to_presentation<value_type>(p));
       return *this;
     }
 

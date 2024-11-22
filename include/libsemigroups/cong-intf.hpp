@@ -687,6 +687,7 @@ namespace libsemigroups {
             typename Iterator2,
             typename Word
             = typename rx::iterator_range<Iterator1, Iterator2>::output_type>
+  // TODO(0) remove word_type here?
   std::vector<std::vector<word_type>> partition(Thing&    ci,
                                                 Iterator1 first,
                                                 Iterator2 last) {
@@ -698,6 +699,7 @@ namespace libsemigroups {
             typename Iterator2,
             typename Word
             = typename rx::iterator_range<Iterator1, Iterator2>::output_type>
+  // TODO(0) remove word_type here?
   std::vector<std::vector<word_type>> non_trivial_classes(Thing&    ci,
                                                           Iterator1 first,
                                                           Iterator2 last) {

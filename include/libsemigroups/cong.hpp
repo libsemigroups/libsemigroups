@@ -72,6 +72,7 @@ namespace libsemigroups {
     /////////////////////////////////////////////////////////////////////////
     // Congruence - data - private
     /////////////////////////////////////////////////////////////////////////
+
     mutable detail::Race    _race;
     mutable bool            _runners_initted;
     std::vector<RunnerKind> _runner_kinds;
@@ -82,7 +83,8 @@ namespace libsemigroups {
     //////////////////////////////////////////////////////////////////////////
 
     // TODO doc
-    Congruence() : CongruenceInterface(), _race(), _runners_initted() {
+    Congruence()
+        : CongruenceInterface(), _race(), _runners_initted(), _runner_kinds() {
       init();
     }
 
@@ -527,6 +529,30 @@ namespace libsemigroups {
     using congruence_interface::reduce_no_run;
     using congruence_interface::reduce_no_run_no_checks;
 
+    ////////////////////////////////////////////////////////////////////////
+    // Interface helpers - partition
+    ////////////////////////////////////////////////////////////////////////
+
+    template <typename Range>
+    std::vector<std::vector<std::decay_t<typename Range::output_type>>>
+    partition(Congruence& cong, Range r) {
+      cong.run();
+      if (cong.has<ToddCoxeter>() && cong.get<ToddCoxeter>()->finished()) {
+        return partition(*cong.get<ToddCoxeter>(), r);
+      } else if (cong.has<KnuthBendix<>>()
+                 && cong.get<KnuthBendix<>>()->finished()) {
+        return partition(*cong.get<KnuthBendix<>>(), r);
+      } else if (cong.has<Kambites<word_type>>()) {
+        return partition(*cong.get<Kambites<word_type>>(), r);
+      }
+      LIBSEMIGROUPS_EXCEPTION("Cannot compute the non-trivial classes!");
+    }
+
+    ////////////////////////////////////////////////////////////////////////
+    // Interface helpers - non_trivial_classes
+    ////////////////////////////////////////////////////////////////////////
+
+    // TODO(0) the next function shouldn't be required.
     template <typename Range>
     std::vector<std::vector<std::decay_t<typename Range::output_type>>>
     non_trivial_classes(Congruence& cong, Range r) {

@@ -884,6 +884,7 @@ namespace libsemigroups {
           && current_word_graph().number_of_nodes_active() == 1) {
         return std::equal(first1, last1, first2, last2);
       }
+      run();
       return currently_contains_no_checks(first1, last1, first2, last2)
              == tril::TRUE;
     }
@@ -1373,6 +1374,15 @@ namespace libsemigroups {
     ////////////////////////////////////////////////////////////////////////
     // 9. ToddCoxeter - accessors - public
     ////////////////////////////////////////////////////////////////////////
+
+    // TODO(0) doc
+    // TODO(0) use this
+    [[nodiscard]] bool empty() const {
+      return (native_presentation().rules.empty() && generating_pairs().empty()
+              && current_word_graph().number_of_nodes_active() == 1);
+      // FIXME there's an issue where the word graph can have 0 nodes but 1
+      // active node.
+    }
 
     // TODO(0) doc
     Presentation<word_type> const& native_presentation() const noexcept {

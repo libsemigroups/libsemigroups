@@ -210,6 +210,12 @@ namespace libsemigroups {
     if (tc.finished()
         || word_graph::is_complete(
             d, d.cbegin_active_nodes(), d.cend_active_nodes())) {
+      // FIXME(0) this doesn't work as expected ATM, since the word graph can
+      // sometimes be empty (0 nodes), but with 1 active node, so this line
+      // can throw (because the range pointed at by d.cbegin_active_nodes(),
+      // d.cend_active_nodes() is non-empty but d itself has no nodes)
+      // This is an initialization issue for ToddCoxeter, it should always be
+      // true the number of nodes >= number of active nodes.
       return false;
     }
     auto                p = tc.native_presentation();
