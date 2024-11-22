@@ -1937,17 +1937,24 @@ namespace libsemigroups {
     //! \exceptions
     //! \no_libsemigroups_except
     // TODO(0): redo the doc
-    // TODO(0) note in the doc that the output is always word_type, and to use
-    // transform if that's not what's wanted; or add some sort of template here
-    // to specify the output type
+    // TODO(0) out of line this
+    template <typename Word = word_type>
     inline auto normal_forms(ToddCoxeter& tc) {
       // TODO(1) avoid allocations here.
       // To do this we'll have to make a custom range object that stores a
       // word_type _word that gets updated by calls to
       // tc.word_of_no_checks(std::back_inserter(_word), i);
-      return rx::seq() | rx::take(tc.number_of_classes())
-             | rx::transform(
-                 [&tc](auto i) { return word_of_no_checks(tc, i); });
+
+      auto nf
+          = rx::seq() | rx::take(tc.number_of_classes())
+            | rx::transform([&tc](auto i) { return word_of_no_checks(tc, i); });
+      if constexpr (std::is_same_v<Word, word_type>) {
+        return nf;
+      } else {
+        return nf | rx::transform([](auto const& w) {
+                 return Word(std::begin(w), std::end(w));
+               });
+      }
     }
 
     ////////////////////////////////////////////////////////////////////////

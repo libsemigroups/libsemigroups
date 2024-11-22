@@ -286,7 +286,7 @@ namespace libsemigroups {
     if (presentation().alphabet().empty()) {
       return 1 + modifier;
     } else {
-      uint64_t const out = knuth_bendix::normal_forms(*this).count();
+      uint64_t const out = knuth_bendix::normal_forms(*this) | rx::count();
       return out;
     }
   }

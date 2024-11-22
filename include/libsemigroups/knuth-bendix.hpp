@@ -53,7 +53,7 @@
 #include "order.hpp"            // for ShortLexCompare
 #include "paths.hpp"            // for Paths
 #include "presentation.hpp"     // for Presentation
-#include "ranges.hpp"           // for operator<<
+#include "ranges.hpp"           // for operator|
 #include "runner.hpp"           // for Runner
 #include "to-presentation.hpp"  // for to_presentation
 #include "types.hpp"            // for word_type
@@ -1143,8 +1143,8 @@ namespace libsemigroups {
     //! \sa \ref cend_normal_forms.
     // TODO update doc
     template <typename Rewriter, typename ReductionOrder>
-    [[nodiscard]] inline auto
-    normal_forms(KnuthBendix<Rewriter, ReductionOrder>& kb) {
+    [[nodiscard]] auto normal_forms(KnuthBendix<Rewriter, ReductionOrder>& kb) {
+      using rx::operator|;
       Paths paths(kb.gilman_graph());
       paths.source_no_checks(0);
       // It's possible that the gilman graph is empty, so the call to
@@ -1153,8 +1153,10 @@ namespace libsemigroups {
       if (!kb.presentation().contains_empty_word()) {
         paths.next();
       }
-      // TODO(0) update to return strings
       return paths;
+      // TODO(1) if we pipe this into a ToString object or something else, then
+      // we lose the ability to use the Paths mem fns like min/max/count etc, so
+      // for now this will always output word_types
     }
 
     // Compute non-trivial classes in kb1!

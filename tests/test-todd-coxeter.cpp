@@ -1620,9 +1620,7 @@ namespace libsemigroups {
 
     REQUIRE(tc1.number_of_classes() == 11);
 
-    auto to_string = rx::transform(
-        [](auto const& w) { return std::string(w.begin(), w.end()); });
-    REQUIRE((normal_forms(tc1) | to_string | to_vector())
+    REQUIRE((normal_forms<std::string>(tc1) | to_vector())
             == std::vector<std::string>({"a",
                                          "b",
                                          "e",
@@ -1637,7 +1635,7 @@ namespace libsemigroups {
 
     ToddCoxeter tc2(twosided, p);
     REQUIRE(tc2.number_of_classes() == 40);
-    auto part = partition(tc1, normal_forms(tc2) | to_string);
+    auto part = partition(tc1, normal_forms<std::string>(tc2));
     REQUIRE(part
             == decltype(part)(
                 {{"a",       "aa",      "ab",       "bb",       "aaa",

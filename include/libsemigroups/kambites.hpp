@@ -664,6 +664,14 @@ namespace libsemigroups {
     using congruence_interface::reduce_no_run_no_checks;
   }  // namespace kambites
 
+  ////////////////////////////////////////////////////////////////////////
+  // Interface helpers - normal_forms
+  ////////////////////////////////////////////////////////////////////////
+
+  // TODO(1) implement a normal_forms function for Kambites objects. This will
+  // have to be a custom range type, with the mem fns of Word/StringRange, but
+  // only returning distinct normal forms.
+
   template <typename Range, typename Word>
   [[nodiscard]] std::vector<
       std::vector<std::decay_t<typename Range::output_type>>>
