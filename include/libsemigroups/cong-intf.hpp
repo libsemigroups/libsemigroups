@@ -501,16 +501,33 @@ namespace libsemigroups {
     auto reduce_no_run_no_checks(Subclass const&                   ci,
                                  std::initializer_list<Int> const& w) {
       static_assert(std::is_base_of_v<CongruenceInterface, Subclass>);
-      return reduce_no_run_no_checks<Subclass,
-                                     std::initializer_list<Int>,
-                                     std::vector<Int>>(ci, w);
+      if constexpr (std::is_same_v<Subclass, ToddCoxeter>) {
+        // We have a special case here for ToddCoxeter because ToddCoxeter
+        // reverses the output words, in its reduce_no_run_no_checks, which does
+        // not have the template parameter Subclass, so we call the 2-template
+        // parameter overload of this function for ToddCoxeter. I.e. if we
+        // called the 3-template param version as in the "else" case below, then
+        // we'd just be calling the function above, which doesn't reverse the
+        // words, and we'd get incorrect output.
+        return reduce_no_run_no_checks<std::initializer_list<Int>,
+                                       std::vector<Int>>(ci, w);
+      } else {
+        return reduce_no_run_no_checks<Subclass,
+                                       std::initializer_list<Int>,
+                                       std::vector<Int>>(ci, w);
+      }
     }
 
     // TODO(0) doc
     template <typename Subclass>
     auto reduce_no_run_no_checks(Subclass const& ci, char const* w) {
       static_assert(std::is_base_of_v<CongruenceInterface, Subclass>);
-      return reduce_no_run_no_checks<Subclass, std::string, std::string>(ci, w);
+      if constexpr (std::is_same_v<Subclass, ToddCoxeter>) {
+        return reduce_no_run_no_checks<std::string, std::string>(ci, w);
+      } else {
+        return reduce_no_run_no_checks<Subclass, std::string, std::string>(ci,
+                                                                           w);
+      }
     }
 
     ////////////////////////////////////////////////////////////////////////
@@ -537,16 +554,27 @@ namespace libsemigroups {
     auto reduce_no_run(Subclass const&                   ci,
                        std::initializer_list<Int> const& w) {
       static_assert(std::is_base_of_v<CongruenceInterface, Subclass>);
-      return reduce_no_run<Subclass,
-                           std::initializer_list<Int>,
-                           std::vector<Int>>(ci, w);
+      if constexpr (std::is_same_v<Subclass, ToddCoxeter>) {
+        // See the comment above about why there's a special case here.
+        return reduce_no_run<std::initializer_list<Int>, std::vector<Int>>(ci,
+                                                                           w);
+      } else {
+        return reduce_no_run<Subclass,
+                             std::initializer_list<Int>,
+                             std::vector<Int>>(ci, w);
+      }
     }
 
     // TODO(0) doc
     template <typename Subclass>
     auto reduce_no_run(Subclass const& ci, char const* w) {
       static_assert(std::is_base_of_v<CongruenceInterface, Subclass>);
-      return reduce_no_run<Subclass, std::string, std::string>(ci, w);
+      if constexpr (std::is_same_v<Subclass, ToddCoxeter>) {
+        // See the comment above about why there's a special case here.
+        return reduce_no_run<std::string, std::string>(ci, w);
+      } else {
+        return reduce_no_run<Subclass, std::string, std::string>(ci, w);
+      }
     }
 
     ////////////////////////////////////////////////////////////////////////
@@ -573,16 +601,26 @@ namespace libsemigroups {
     template <typename Subclass, typename Int = size_t>
     auto reduce_no_checks(Subclass& ci, std::initializer_list<Int> const& w) {
       static_assert(std::is_base_of_v<CongruenceInterface, Subclass>);
-      return reduce_no_checks<Subclass,
-                              std::initializer_list<Int>,
-                              std::vector<Int>>(ci, w);
+      if constexpr (std::is_same_v<Subclass, ToddCoxeter>) {
+        // See the comment above about why there's a special case here.
+        return reduce_no_checks<std::initializer_list<Int>, std::vector<Int>>(
+            ci, w);
+      } else {
+        return reduce_no_checks<Subclass,
+                                std::initializer_list<Int>,
+                                std::vector<Int>>(ci, w);
+      }
     }
 
     // TODO(0) doc
     template <typename Subclass>
     auto reduce_no_checks(Subclass& ci, char const* w) {
       static_assert(std::is_base_of_v<CongruenceInterface, Subclass>);
-      return reduce_no_checks<Subclass, std::string, std::string>(ci, w);
+      if constexpr (std::is_same_v<Subclass, ToddCoxeter>) {
+        return reduce_no_checks<std::string, std::string>(ci, w);
+      } else {
+        return reduce_no_checks<Subclass, std::string, std::string>(ci, w);
+      }
     }
 
     ////////////////////////////////////////////////////////////////////////
@@ -608,8 +646,13 @@ namespace libsemigroups {
     template <typename Subclass, typename Int = size_t>
     auto reduce(Subclass& ci, std::initializer_list<Int> const& w) {
       static_assert(std::is_base_of_v<CongruenceInterface, Subclass>);
-      return reduce<Subclass, std::initializer_list<Int>, std::vector<Int>>(ci,
-                                                                            w);
+      if constexpr (std::is_same_v<Subclass, ToddCoxeter>) {
+        // See the comment above about why there's a special case here.
+        return reduce<std::initializer_list<Int>, std::vector<Int>>(ci, w);
+      } else {
+        return reduce<Subclass, std::initializer_list<Int>, std::vector<Int>>(
+            ci, w);
+      }
     }
 
     // TODO(0) doc
