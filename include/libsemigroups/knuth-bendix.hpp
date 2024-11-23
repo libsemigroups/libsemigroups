@@ -1038,7 +1038,7 @@ namespace libsemigroups {
   namespace detail {
     // TODO put in separate file
     template <typename Word, typename Rewriter, typename ReductionOrder>
-    class NormalFormRange : public Paths<uint32_t> {
+    class KnuthBendixNormalFormRange : public Paths<uint32_t> {
       using Paths_ = Paths<uint32_t>;
 
       mutable Word                           _current;
@@ -1048,7 +1048,8 @@ namespace libsemigroups {
       using size_type   = typename Paths_::size_type;
       using output_type = Word const&;
 
-      explicit NormalFormRange(KnuthBendix<Rewriter, ReductionOrder>& kb)
+      explicit KnuthBendixNormalFormRange(
+          KnuthBendix<Rewriter, ReductionOrder>& kb)
           : Paths(kb.gilman_graph()), _current(), _kb(&kb) {
         // It's possible that the gilman graph is empty, so the call to
         // source_no_checks(0) is technically invalid, but nothing goes wrong,
@@ -1068,12 +1069,12 @@ namespace libsemigroups {
         return _current;
       }
 
-      NormalFormRange& min(size_type val) noexcept {
+      KnuthBendixNormalFormRange& min(size_type val) noexcept {
         Paths_::min(val);
         return *this;
       }
 
-      NormalFormRange& max(size_type val) noexcept {
+      KnuthBendixNormalFormRange& max(size_type val) noexcept {
         Paths_::max(val);
         return *this;
       }
@@ -1087,7 +1088,7 @@ namespace libsemigroups {
 
       static constexpr bool is_finite     = true;  // this isn't always true!
       static constexpr bool is_idempotent = true;
-    };  // class NormalFormRange
+    };  // class KnuthBendixNormalFormRange
 
   }  // namespace detail
 
@@ -1210,7 +1211,8 @@ namespace libsemigroups {
               typename Rewriter,
               typename ReductionOrder>
     [[nodiscard]] auto normal_forms(KnuthBendix<Rewriter, ReductionOrder>& kb) {
-      return detail::NormalFormRange<Word, Rewriter, ReductionOrder>(kb);
+      return detail::KnuthBendixNormalFormRange<Word, Rewriter, ReductionOrder>(
+          kb);
     }
 
     ////////////////////////////////////////////////////////////////////////

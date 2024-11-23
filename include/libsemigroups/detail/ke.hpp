@@ -60,7 +60,7 @@ namespace libsemigroups {
       ~KE()                    = default;
 
       KE(Kambites<Word>& k, value_type const& w)
-          : _value(kambites::reduce_no_checks(k, w)) {}
+          : _value(::libsemigroups::kambites::reduce_no_checks(k, w)) {}
 
       // KE(Kambites<Word>& k, value_type&& w)
       //     : _value(kambites::reduce_no_checks(k, std::move(w))) {}

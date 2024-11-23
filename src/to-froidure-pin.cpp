@@ -64,8 +64,7 @@ namespace libsemigroups {
       // then we incorrectly start running the other algos here, which run
       // forever. Probably something goes wrong that the other runners don't
       // get deleted if Kambites wins, since it's run first.
-      auto fp = to_froidure_pin(*cong.get<Kambites<word_type>>());
-      return std::make_unique<decltype(fp)>(std::move(fp));
+      return to_froidure_pin(*cong.get<Kambites<word_type>>());
     } else if (cong.has<ToddCoxeter>()) {
       auto fp = to_froidure_pin(*cong.get<ToddCoxeter>());
       return std::make_unique<decltype(fp)>(std::move(fp));

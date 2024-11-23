@@ -154,21 +154,23 @@ namespace libsemigroups {
     return result;
   }
 
+  // TODO(0) convert other to_froidure_pin's to return unique_ptr
   template <typename String>
-  auto to_froidure_pin(Kambites<String>& k) {
+  std::unique_ptr<FroidurePinBase> to_froidure_pin(Kambites<String>& k) {
     if (k.small_overlap_class() < 4) {
       LIBSEMIGROUPS_EXCEPTION(
           "the small overlap class of the argument must be >= 4, found {}",
           k.small_overlap_class());
     }
 
+    // TODO(0) deduction guide
     FroidurePin<detail::KE<String>> result(k);
 
     size_t const n = k.presentation().alphabet().size();
     for (size_t i = 0; i < n; ++i) {
       result.add_generator(detail::KE<String>(k, i));
     }
-    return result;
+    return std::make_unique<decltype(result)>(std::move(result));
   }
 
   std::unique_ptr<FroidurePinBase> to_froidure_pin(Congruence& cong);

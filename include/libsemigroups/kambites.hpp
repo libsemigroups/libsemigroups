@@ -44,7 +44,6 @@
 #include "constants.hpp"        // for UNDEFINED, POSITIVE_INFINITY
 #include "debug.hpp"            // for LIBSEMIGROUPS_DEBUG
 #include "exception.hpp"        // for LIBSEMIGROUPS_EXCEPTION
-#include "froidure-pin.hpp"     // for FroidurePin, FroidurePinTraits
 #include "order.hpp"            // for lexicographical_compare
 #include "presentation.hpp"     // for Presentation
 #include "to-presentation.hpp"  // for to_presentation
@@ -445,7 +444,6 @@ namespace libsemigroups {
     // Not noexcept, throws
     void validate_small_overlap_class();
 
-   private:
     ////////////////////////////////////////////////////////////////////////
     // Kambites - XYZ functions - private
     ////////////////////////////////////////////////////////////////////////
@@ -673,9 +671,22 @@ namespace libsemigroups {
     using congruence_interface::reduce_no_run;
     using congruence_interface::reduce_no_run_no_checks;
 
+  }  // namespace kambites
+}  // namespace libsemigroups
+
+#include "detail/kambites-normal-form-range.hpp"  // for KambitesNormalFormRange
+
+namespace libsemigroups {
+  namespace kambites {
     ////////////////////////////////////////////////////////////////////////
     // Interface helpers - normal_forms
     ////////////////////////////////////////////////////////////////////////
+
+    // short_lex normal forms, could be lex normal forms too
+    template <typename Word>
+    auto normal_forms(Kambites<Word>& k) {
+      return detail::KambitesNormalFormRange(k);
+    }
 
     // TODO(1) implement a normal_forms function for Kambites objects. This will
     // have to be a custom range type, with the mem fns of Word/StringRange, but
