@@ -23,7 +23,7 @@
 // * re-implement reserve
 // * remove preferred_defs from FelschGraph etc (except where they are really
 // needed)? Or possibly reintroduce PrefDefs here
-// * TODO(0) re-add report why stopped
+// * re-add report why stopped
 
 #ifndef LIBSEMIGROUPS_TODD_COXETER_HPP_
 #define LIBSEMIGROUPS_TODD_COXETER_HPP_
@@ -211,9 +211,9 @@ namespace libsemigroups {
         //! [ACE](https://staff.itee.uq.edu.au/havas/) strategy of the same
         //! name. The Felsch is run until at least f_defs() nodes are
         //! defined, then the HLT strategy is run until at least hlt_defs()
-        //! divided by length_of_generating_pairs() nodes have been defined.
-        //! These steps are repeated until the enumeration terminates.
-        // TODO(0) what is the current version of length_of_generating_pairs?
+        //! divided by \f$N\f$ nodes have been defined, where \f$N\f$ is the sum
+        //! of the lengths of the words in the presentation and generating
+        //! pairs. These steps are repeated until the enumeration terminates.
         CR,
 
         //! This strategy is meant to mimic the
@@ -226,19 +226,19 @@ namespace libsemigroups {
         //! This strategy is meant to mimic the
         //! [ACE](https://staff.itee.uq.edu.au/havas/) strategy Cr. The Felsch
         //! strategy is run until at least f_defs() new nodes have been
-        //! defined, the HLT strategy is then run until at least hlt_defs()
-        //! divided by length_of_generating_pairs() new nodes are defined,
-        //! and then the Felsch strategy is run.
-        // TODO(0) what is the current version of length_of_generating_pairs?
+        //! defined, then the HLT strategy is run until at least hlt_defs()
+        //! divided by \f$N\f$ nodes have been defined, where \f$N\f$ is the sum
+        //! of the lengths of the words in the presentation and generating
+        //! pairs. Then the Felsch strategy is run.
         Cr,
 
         //! This strategy is meant to mimic the
         //! [ACE](https://staff.itee.uq.edu.au/havas/) strategy Rc. The HLT
-        //! strategy is run until at least hlt_defs() divided by
-        //! length_of_generating_pairs() new nodes have been
-        //! defined, the Felsch strategy is then run until at least f_defs()
-        //! new nodes are defined, and then the HLT strategy is run.
-        // TODO(0) what is the current version of length_of_generating_pairs?
+        //! strategy is run until at least hlt_defs() divided by \f$N\f$ new
+        //! nodes have been defined (where \f$N\f$ is the sum of the lengths of
+        //! the words in the presentation and generating pairs) the Felsch
+        //! strategy is then run until at least f_defs() new nodes are defined,
+        //! and then the HLT strategy is run.
         Rc
       };
 
@@ -495,7 +495,7 @@ namespace libsemigroups {
         return _tc->_input_presentation.index_no_checks(*_it);
       }
 
-      // TODO operator-> ??
+      // TODO(1) operator-> ??
 
       bool operator==(citow<Iterator> that) const noexcept {
         return _it == that._it;
@@ -595,7 +595,7 @@ namespace libsemigroups {
       using reference              = proxy_ref;
       using const_reference        = value_type;
 
-      // TODO use proxy for pointers too?
+      // TODO(1) use proxy for pointers too?
       using const_pointer = value_type const*;
       using pointer       = value_type*;
 
