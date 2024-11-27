@@ -518,7 +518,10 @@ namespace libsemigroups {
   }
 
   ToddCoxeter& ToddCoxeter::lookahead_stop_early_ratio(float val) {
-    // TODO throw if val < 0 or >= 1.0
+    if (val < 0.0 or val >= 1.0) {
+      LIBSEMIGROUPS_EXCEPTION(
+          "Expected a float in the interval [0, 1), found {}", val);
+    }
     tc_settings().lookahead_stop_early_ratio = val;
     return *this;
   }
@@ -560,7 +563,7 @@ namespace libsemigroups {
     return tc_settings().lookahead_extent;
   }
 
-  ToddCoxeter& ToddCoxeter::save(bool x) {
+  ToddCoxeter& ToddCoxeter::save(bool x) noexcept {
     tc_settings().save = x;
     return *this;
   }
@@ -569,7 +572,7 @@ namespace libsemigroups {
     return tc_settings().save;
   }
 
-  ToddCoxeter& ToddCoxeter::strategy(options::strategy x) {
+  ToddCoxeter& ToddCoxeter::strategy(options::strategy x) noexcept {
     tc_settings().strategy = x;
     return *this;
   }
@@ -636,8 +639,24 @@ namespace libsemigroups {
   // ToddCoxeter - accessors - public
   ////////////////////////////////////////////////////////////////////////
 
+  ToddCoxeter::word_graph_type const& ToddCoxeter::word_graph() {
+    run();
+    LIBSEMIGROUPS_ASSERT(finished());
+    shrink_to_fit();
+    return current_word_graph();
+  }
+
+  Forest const& ToddCoxeter::spanning_tree() {
+    run();
+    LIBSEMIGROUPS_ASSERT(finished());
+    shrink_to_fit();
+    return current_spanning_tree();
+  }
+
   bool ToddCoxeter::is_standardized(Order val) const {
-    // TODO(0) this is probably not always valid
+    // TODO(0) this is probably not always valid,
+    // the easiest fix for this would just be to call standardize(val) and check
+    // if the return value is false, but this wouldn't be const, so maybe not.
     return val == _standardized
            && _forest.number_of_nodes()
                   == current_word_graph().number_of_nodes_active();
@@ -696,7 +715,7 @@ namespace libsemigroups {
   }
 
   void ToddCoxeter::run_impl() {
-    if (is_obviously_infinite(*this)) {
+    if (!running_for() && is_obviously_infinite(*this)) {
       LIBSEMIGROUPS_EXCEPTION(
           "there are infinitely many classes in the congruence and "
           "Todd-Coxeter will never terminate");
@@ -742,7 +761,8 @@ namespace libsemigroups {
   ////////////////////////////////////////////////////////////////////////
 
   void ToddCoxeter::init_run() {
-    if (is_obviously_infinite(*this)) {
+    // TODO(1) why is this check here and in run_impl??
+    if (!running_for() && is_obviously_infinite(*this)) {
       LIBSEMIGROUPS_EXCEPTION(
           "there are infinitely many classes in the congruence and "
           "Todd-Coxeter will never terminate");
@@ -1093,25 +1113,6 @@ namespace libsemigroups {
       return tril::unknown;
     }
 
-#if !defined(__clang__)
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wmaybe-uninitialized"
-#endif
-
-    uint64_t number_of_idempotents(ToddCoxeter& tc) {
-      word_type tmp;
-      size_t    i = 0;
-      return normal_forms(tc) | rx::filter([&](auto const& w) {
-               tmp.clear();
-               tmp.insert(tmp.end(), w.cbegin(), w.cend());
-               tmp.insert(tmp.end(), w.cbegin(), w.cend());
-               return todd_coxeter::index_of(tc, tmp) == i++;
-             })
-             | rx::count();
-    }
-#if !defined(__clang__)
-#pragma GCC diagnostic pop
-#endif
     std::vector<std::vector<word_type>> non_trivial_classes(ToddCoxeter& tc1,
                                                             ToddCoxeter& tc2) {
       return todd_coxeter::non_trivial_classes(tc1, normal_forms(tc2));

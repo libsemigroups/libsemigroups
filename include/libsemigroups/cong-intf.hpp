@@ -235,11 +235,26 @@ namespace libsemigroups {
   };
 
   namespace congruence_interface {
+    //! \defgroup cong_intf_helpers_group Generic congruence helpers
+    //!
+    //! \ingroup todd_coxeter_group
+    //! \ingroup knuth_bendix_group
+    //!
+    //! \brief Helper functions for subclasses of \ref CongruenceInterface.
+    //!
+    //! This page contains documentation for helper functions for the classes
+    //! Congruence, Kambites, KnuthBendix, and ToddCoxeter. The functions
+    //! documented on this page belong to all of the namespaces
+    //! ``congruence_interface``, ``congruence``, ``kambites``,
+    //! ``knuth_bendix``, and ``todd_coxeter``.
+    //!
+    //! @{
+
     ////////////////////////////////////////////////////////////////////////
     // Interface helpers - add_generating_pair
     ////////////////////////////////////////////////////////////////////////
 
-    // TODO(0) doc
+    //! \brief Helper for adding a generating pair of words.
     template <typename Word>
     inline CongruenceInterface&
     add_generating_pair_no_checks(CongruenceInterface& ci,
@@ -666,6 +681,7 @@ namespace libsemigroups {
         return reduce<Subclass, std::string, std::string>(ci, w);
       }
     }
+    //! @}
 
     ////////////////////////////////////////////////////////////////////////
     // Interface helpers - normal_forms

@@ -87,27 +87,17 @@ namespace libsemigroups {
         return static_cast<Subclass&>(*this);
       }
 
-      //
       [[nodiscard]] FelschGraphSettings const& settings() const noexcept {
         return *this;
       }
 
-      // TODO doc for the purpose of copying the doc elsewhere
+      // Doc in todd-coxeter.hpp
       Subclass& def_version(options::def_version val) {
         _def_version = val;
         return static_cast<Subclass&>(*this);
       }
 
-      //! The current value of the definition policy setting.
-      //!
-      //! \parameters
-      //! (None)
-      //!
-      //! \returns The current value of the setting, a value of type
-      //! ``options::definitions``.
-      //!
-      //! \exceptions
-      //! \noexcept
+      // Doc in todd-coxeter.hpp
       [[nodiscard]] options::def_version def_version() const noexcept {
         return _def_version;
       }

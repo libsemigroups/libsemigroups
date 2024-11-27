@@ -73,6 +73,10 @@ namespace libsemigroups {
     class KBE;
   }  // namespace detail
 
+  //! \defgroup knuth_bendix_class_group The Knuth-Bendix class
+  //!
+  //! This page TODO
+
   // TODO(0) update the description
   //! Defined in \c knuth-bendix.hpp.
   //!
@@ -1093,6 +1097,12 @@ namespace libsemigroups {
   }  // namespace detail
 
   namespace knuth_bendix {
+
+    //! \defgroup knuth_bendix_helpers_group Knuth-Bendix specific helpers
+    //!
+    //! TODO
+    //! @{
+
     ////////////////////////////////////////////////////////////////////////
     // KnuthBendix specific helpers
     ////////////////////////////////////////////////////////////////////////
@@ -1369,7 +1379,7 @@ namespace libsemigroups {
       return p.rules.cbegin()
              + std::distance(pp.rules.cbegin(), redundant_rule(pp, t));
     }
-
+    //! @}
   }  // namespace knuth_bendix
 
   // TODO to tpp file
