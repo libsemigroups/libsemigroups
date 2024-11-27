@@ -167,7 +167,11 @@ def doxygen_filename(thing: str) -> str:
         struct, or namespace.
     """
     orig = thing
+
     thing = re.sub("_", "__", thing)
+
+    if thing.endswith("_group"):
+        return f"docs/xml/group__{thing}.xml"
     p = re.compile(r"::")
     thing = p.sub("_1_1", thing)
     p = re.compile(r"([A-Z])")
@@ -804,7 +808,7 @@ return {fun_body};
 def pybind11_default_repr(thing: str) -> str:
     if is_abstract_class(thing) or is_namespace(thing) or is_free_fn(thing):
         return ""
-    return f'thing.def("__repr__", &detail::to_string<{shortname_(thing)} const&>);\n'
+    return 'thing.def("__repr__", [](auto const& thing) {return to_human_readable_repr(thing);});\n'
 
 
 ########################################################################

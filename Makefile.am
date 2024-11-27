@@ -120,6 +120,7 @@ detailinclude_HEADERS += include/libsemigroups/detail/formatters.hpp
 detailinclude_HEADERS += include/libsemigroups/detail/function-ref.hpp
 detailinclude_HEADERS += include/libsemigroups/detail/int-range.hpp
 detailinclude_HEADERS += include/libsemigroups/detail/iterator.hpp
+detailinclude_HEADERS += include/libsemigroups/detail/kambites-normal-form-range.hpp
 detailinclude_HEADERS += include/libsemigroups/detail/kbe.hpp
 detailinclude_HEADERS += include/libsemigroups/detail/kbe.tpp
 detailinclude_HEADERS += include/libsemigroups/detail/ke.hpp
