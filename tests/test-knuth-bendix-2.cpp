@@ -1493,8 +1493,8 @@ namespace libsemigroups {
   TEMPLATE_TEST_CASE("hypostylic",
                      "[065][todd-coxeter][quick]",
                      KNUTH_BENDIX_TYPES) {
-    using words::operator+;
     using namespace literals;
+    using words::operator+;
 
     auto   rg = ReportGuard(false);
     size_t n  = 2;
@@ -1508,7 +1508,9 @@ namespace libsemigroups {
     REQUIRE(kb.presentation().alphabet() == std::string({0, 1}));
     REQUIRE((knuth_bendix::normal_forms<word_type>(kb)
              | filter([&kb](auto const& w) {
-                 return knuth_bendix::reduce(kb, w + w) == w;
+                 auto ww = w;
+                 ww.insert(ww.begin(), w.begin(), w.end());
+                 return knuth_bendix::reduce(kb, ww) == w;
                })
              | to_vector())
             == std::vector<word_type>({{}, 0_w, 1_w, 10_w}));
