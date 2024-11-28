@@ -24,6 +24,8 @@
 // * remove preferred_defs from FelschGraph etc (except where they are really
 // needed)? Or possibly reintroduce PrefDefs here
 // * re-add report why stopped
+//
+// * TODO(0) check for left, and table remnants in the doc
 
 #ifndef LIBSEMIGROUPS_TODD_COXETER_HPP_
 #define LIBSEMIGROUPS_TODD_COXETER_HPP_
@@ -293,7 +295,6 @@ namespace libsemigroups {
       //! performed. The aim is to only follow paths from nodes in the word
       //! graph labelled by generating pairs that actually pass through the
       //! edge described by a definition.
-      //!
       //!
       //! The values in this enum represent what to do if the number of
       //! definitions in the stack exceeds the value \ref def_max.
@@ -937,7 +938,7 @@ namespace libsemigroups {
     //! Congruence, Kambites, KnuthBendix, and \ref todd_coxeter_class_group
     //! "ToddCoxeter".
     //!
-    //! The page contains documentation of the member functions of
+    //! This page contains documentation of the member functions of
     //!  \ref todd_coxeter_class_group "ToddCoxeter" that are implemented in all
     //!  of the classes Congruence,
     //! Kambites, KnuthBendix, and \ref todd_coxeter_class_group "ToddCoxeter".
@@ -1885,26 +1886,31 @@ namespace libsemigroups {
     //! @}
 
 #ifdef PARSED_BY_DOXYGEN
-    // TODO(0) delete or use
-    // There are two versions of this
-    // represented by the values options::definitions::v1 and
-    // options::definitions::v2. The first version is simpler, but may
-    // involve following the same path that leads nowhere multiple times.
-    // The second version is more complex, and attempts to avoid following
-    // the same path multiple times if it is found to lead nowhere once.
-
-    // TODO(0) this isn't included in the doc for some reason.
     //! \ingroup todd_coxeter_class_settings_group
     //!
-    //! TODO(0)
-    Subclass& def_version(options::def_version val);
+    //! \brief Set the value of the definition version setting.
+    //!
+    //! There are two versions of definition processing represented by the
+    //! values options::def_version::one and options::def_version::two. The
+    //! first version is simpler, but may involve following the same path that
+    //! leads nowhere multiple times. The second version is more complex, and
+    //! attempts to avoid following the same path multiple times if it is
+    //! found to lead nowhere once.
+    //!
+    //! \param val the version to use.
+    //!
+    //! \returns A reference to `*this`.
+    ToddCoxeter& def_version(options::def_version val);
 
     //! \ingroup todd_coxeter_class_settings_group
     //!
-    //! The current value of the definition policy setting.
+    //! \brief Get the current value of the definition version setting.
+    //!
+    //! This function returns the current version of the definition version
+    //! setting.
     //!
     //! \returns The current value of the setting, a value of type
-    //! ``options::definitions``.
+    //! ``options::def_version``.
     //!
     //! \exceptions
     //! \noexcept
@@ -3612,7 +3618,15 @@ namespace libsemigroups {
     //! @}
   }  // namespace todd_coxeter
 
-  // TODO(0) to_human_readable_repr
+  // TODO(0) doc
+  // TODO(0) to cpp
+  // TODO(0) remove inline
+  inline std::string to_human_readable_repr(ToddCoxeter const& tc) {
+    return fmt::format("<ToddCoxeter over {} with {}/{} active/nodes>",
+                       to_human_readable_repr(tc.presentation()),
+                       tc.current_word_graph().number_of_nodes_active(),
+                       tc.current_word_graph().number_of_nodes());
+  }
 
 }  // namespace libsemigroups
 #endif  // LIBSEMIGROUPS_TODD_COXETER_HPP_
