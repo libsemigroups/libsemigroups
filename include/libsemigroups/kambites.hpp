@@ -209,19 +209,28 @@ namespace libsemigroups {
     // Interface requirements - add_pairs
     ////////////////////////////////////////////////////////////////////////
 
-    using CongruenceInterface::add_generating_pair_no_checks;
+    template <typename Iterator1,
+              typename Iterator2,
+              typename Iterator3,
+              typename Iterator4>
+    Kambites& add_generating_pair_no_checks(Iterator1 first1,
+                                            Iterator2 last1,
+                                            Iterator3 first2,
+                                            Iterator4 last2) {
+      return CongruenceInterface::add_generating_pair_no_checks<Kambites>(
+          first1, last1, first2, last2);
+    }
 
     template <typename Iterator1,
               typename Iterator2,
               typename Iterator3,
               typename Iterator4>
-    [[nodiscard]] Kambites& add_generating_pair(Iterator1 first1,
-                                                Iterator2 last1,
-                                                Iterator3 first2,
-                                                Iterator4 last2) {
-      CongruenceInterface::add_generating_pair<Kambites>(
+    Kambites& add_generating_pair(Iterator1 first1,
+                                  Iterator2 last1,
+                                  Iterator3 first2,
+                                  Iterator4 last2) {
+      return CongruenceInterface::add_generating_pair<Kambites>(
           first1, last1, first2, last2);
-      return *this;
     }
 
     ////////////////////////////////////////////////////////////////////////

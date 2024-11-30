@@ -926,8 +926,8 @@ namespace libsemigroups {
                                                citow<Iterator2> last1,
                                                citow<Iterator3> first2,
                                                citow<Iterator4> last2) {
-      add_pair_no_checks_no_reverse(first1, last1, first2, last2);
-      return *this;
+      return CongruenceInterface::add_generating_pair_no_checks<ToddCoxeter>(
+          first1, last1, first2, last2);
     }
 
    public:
@@ -3336,6 +3336,8 @@ namespace libsemigroups {
     //!
     //! \param p the presentation.
     //! \param t time to run Todd-Coxeter for every omitted rule.
+    //!
+    //! \returns An iterator.
     //!
     //! \warning The progress of the Todd-Coxeter algorithm may differ between
     //! different calls to this function even if the parameters are identical.

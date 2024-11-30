@@ -521,7 +521,7 @@ namespace libsemigroups {
     // auto tc = to_todd_coxeter(twosided, S);
     ToddCoxeter tc(twosided, to_presentation<word_type>(S));
 
-    todd_coxeter::add_generating_pair(tc, 0_w, 1_w);
+    todd_coxeter::add_generating_pair_no_checks(tc, 0_w, 1_w);
 
     section_felsch(tc);
     section_hlt(tc);

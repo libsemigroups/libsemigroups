@@ -103,6 +103,8 @@
         title="Making presentations from other objects" />
     </tab>
     <tab type="usergroup" visible="yes" url="@ref ranges_group" title="Ranges" />
+    <tab type="user" visible="yes" url="@ref ukkonen_group" title="Suffix trees" />
+    <tab type="user" visible="yes" url="@ref aho_corasick_group" title="Tries" />
     <tab type="user" visible="yes" url="@ref dot_group" title="Visualisation" />
     <tab type="usergroup" visible="yes" url="@ref word_graph_group" title="Word graphs">
       <tab type="user" visible="yes" url="@ref libsemigroups::Forest" title="Forest" />
@@ -129,8 +131,27 @@
       <tab type="user" visible="yes" url="@ref libsemigroups::Action" title="Action" />
       <tab type="user" visible="yes" url="@ref libsemigroups::RightAction" title="RightAction" />
     </tab>
-    <tab type="user" visible="yes" url="@ref aho_corasick_group" title="Aho Corasick" />
-    <tab type="usergroup" visible="yes" url="@ref congruences_group" title="Congruences">
+    <tab type="usergroup" visible="yes" url="@ref cong_intf_group" title="CongruenceInterface">
+      <tab type="user" visible="yes" url="@ref libsemigroups::CongruenceInterface" title="The CongruenceInterface class"/>
+      <tab type="user" visible="yes" url="@ref cong_intf_helpers_group" title="Helper functions"/>
+    </tab>
+    <tab type="user" visible="yes" url="@ref froidure_pin_group" title="Froidure-Pin" />
+    <tab type="usergroup" visible="yes" url="@ref knuth_bendix_group" title="Knuth-Bendix">
+      <tab type="usergroup" visible="yes" url="@ref knuth_bendix_class_group" title="The KnuthBendix class">
+        <tab type="user" visible="yes" url="@ref knuth_bendix_class_mem_types_group" title="Member types"/>
+        <tab type="user" visible="yes" url="@ref knuth_bendix_class_init_group" title="Constructors + Initializers"/>
+        <tab type="user" visible="yes" url="@ref knuth_bendix_class_settings_group" title="Settings"/>
+        <tab type="user" visible="yes" url="@ref knuth_bendix_class_intf_group" title="Common functions"/>
+        <tab type="user" visible="yes" url="@ref knuth_bendix_class_accessors_group" title="Accessors"/>
+        <tab type="user" visible="yes" url="@ref knuth_bendix_class_mod_group" title="Modifiers"/>
+        <tab type="user" visible="yes" url="@ref knuth_bendix_class_word_index_group" title="Word -> index"/>
+        <tab type="user" visible="yes" url="@ref knuth_bendix_class_index_word_group" title="Index -> word"/>
+      </tab>
+      <tab type="user" visible="yes" url="@ref knuth_bendix_helpers_group" title="Knuth-Bendix helper functions" />
+    </tab>
+    <tab type="user" visible="yes" url="@ref freeband_group" title="Radoszewski-Rytter" />
+    <tab type="user" visible="yes" url="@ref schreier_sims_group" title="Schreier-Sims" />
+    <tab type="usergroup" visible="yes" url="@ref congruences_group" title="Sims Low Index Congruences">
       <tab type="usergroup" visible="yes" url="group__congruences__group.html#nested-classes"
         title="Classes">
         <tab type="user" visible="yes" url="@ref libsemigroups::SimsStats" title="SimsStats" />
@@ -150,30 +171,10 @@
       <tab type="user" visible="yes" url="group__congruences__group.html#func-members"
         title="Functions" />
     </tab>
-    <tab type="user" visible="yes" url="@ref froidure_pin_group" title="Froidure-Pin" />
-    <tab type="usergroup" visible="yes" url="@ref knuth_bendix_group" title="Knuth-Bendix">
-      <tab type="usergroup" visible="yes" url="@ref knuth_bendix_class_group" title="KnuthBendix class">
-        <tab type="usergroup" visible="yes" url="@ref knuth_bendix_class_mem_types_group" title="Member types">
-        <tab type="user" visible="yes" url="@ref ToddCoxeter::options" title="ToddCoxeter::options"/>
-        </tab>
-        <tab type="user" visible="yes" url="@ref knuth_bendix_class_init_group" title="Constructors + Initializers"/>
-        <tab type="user" visible="yes" url="@ref knuth_bendix_class_settings_group" title="Settings"/>
-        <tab type="user" visible="yes" url="@ref knuth_bendix_class_intf_group" title="Common functions"/>
-        <!-- TODO need a better name than "Common functions" -->
-        <tab type="user" visible="yes" url="@ref knuth_bendix_class_accessors_group" title="Accessors"/>
-        <tab type="user" visible="yes" url="@ref knuth_bendix_class_mod_group" title="Modifiers"/>
-        <tab type="user" visible="yes" url="@ref knuth_bendix_class_word_index_group" title="Word -> index"/>
-        <tab type="user" visible="yes" url="@ref knuth_bendix_class_index_word_group" title="Index -> word"/>
-      </tab>
-      <tab type="user" visible="yes" url="@ref cong_intf_helpers_group" title="Generic congruence helper functions"/>
-      <tab type="user" visible="yes" url="@ref knuth_bendix_helpers_group" title="Todd-Coxeter specific helper functions" />
-    </tab>
-    <tab type="user" visible="yes" url="@ref freeband_group" title="Radoszewski-Rytter" />
-    <tab type="user" visible="yes" url="@ref schreier_sims_group" title="Schreier-Sims" />
     <tab type="usergroup" visible="yes" url="@ref todd_coxeter_group" title="Todd-Coxeter">
-      <tab type="usergroup" visible="yes" url="@ref todd_coxeter_class_group" title="ToddCoxeter class">
+      <tab type="usergroup" visible="yes" url="@ref todd_coxeter_class_group" title="The ToddCoxeter class">
         <tab type="usergroup" visible="yes" url="@ref todd_coxeter_class_mem_types_group" title="Member types">
-        <tab type="user" visible="yes" url="@ref ToddCoxeter::options" title="ToddCoxeter::options"/>
+        <tab type="user" visible="yes" url="@ref libsemigroups::ToddCoxeter::options" title="The options nested struct"/>
         </tab>
         <tab type="user" visible="yes" url="@ref todd_coxeter_class_init_group" title="Constructors + Initializers"/>
         <tab type="user" visible="yes" url="@ref todd_coxeter_class_settings_group" title="Settings"/>
@@ -184,10 +185,8 @@
         <tab type="user" visible="yes" url="@ref todd_coxeter_class_word_index_group" title="Word -> index"/>
         <tab type="user" visible="yes" url="@ref todd_coxeter_class_index_word_group" title="Index -> word"/>
       </tab>
-      <tab type="user" visible="yes" url="@ref cong_intf_helpers_group" title="Generic congruence helper functions"/>
-      <tab type="user" visible="yes" url="@ref todd_coxeter_helpers_group" title="Todd-Coxeter specific helper functions" />
+      <tab type="user" visible="yes" url="@ref todd_coxeter_helpers_group" title="Todd-Coxeter helper functions" />
     </tab>
-    <tab type="user" visible="yes" url="@ref ukkonen_group" title="Ukkonen" />
     <tab type="user" visible="yes" url="_HEADING_" title="Bibliography" />
     <tab type="user" visible="yes" url="@ref citelist" title="Bibliography" />
     <tab type="user" visible="yes" url="_HEADING_" title="Further info" />

@@ -246,11 +246,11 @@ namespace libsemigroups {
 
     auto fp = to_froidure_pin(cong);
 
-    fp.enumerate(1'000);
-    REQUIRE(!fp.finished());
-    REQUIRE(fp.current_size() == 8'205);
+    fp->enumerate(1'000);
+    REQUIRE(!fp->finished());
+    REQUIRE(fp->current_size() == 8'205);
 
-    REQUIRE((froidure_pin::current_normal_forms(fp) | ToString(p.alphabet())
+    REQUIRE((froidure_pin::current_normal_forms(*fp) | ToString(p.alphabet())
              | rx::take(100) | rx::to_vector())
             == std::vector<std::string>(
                 {"a",   "b",   "c",   "d",   "e",   "f",   "g",   "aa",  "ab",

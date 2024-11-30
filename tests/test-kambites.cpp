@@ -2615,8 +2615,7 @@ namespace libsemigroups {
     REQUIRE(is_obviously_infinite(k));
     REQUIRE(k.number_of_classes() == POSITIVE_INFINITY);
 
-    using element_type = typename decltype(to_froidure_pin(k))::element_type;
-    auto s             = to_froidure_pin(k);
+    auto s = to_froidure_pin(k);
     REQUIRE(froidure_pin::minimal_factorisation(*s, 100) == 0100_w);
     // REQUIRE(s->position(element_type(k, 0100_w)) == 100);
     REQUIRE(s->current_size() == 8196);

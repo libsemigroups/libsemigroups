@@ -28,12 +28,6 @@ namespace libsemigroups {
   // CongruenceInterface - non-pure virtual methods - private
   /////////////////////////////////////////////////////////////////////////
 
-  void CongruenceInterface::add_pair_no_checks_no_reverse(word_type const& u,
-                                                          word_type const& v) {
-    _generating_pairs.push_back(u);
-    _generating_pairs.push_back(v);
-  }
-
   void CongruenceInterface::throw_if_started() const {
     if (started()) {
       LIBSEMIGROUPS_EXCEPTION(

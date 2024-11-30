@@ -550,6 +550,16 @@ namespace libsemigroups {
       return it->second;
     }
 
+    template <typename Thing>
+    Node& node(Thing&& thing) {
+      auto name_str = detail::dot_to_string(std::forward<Thing>(thing));
+      auto it       = _nodes.find(name_str);
+      if (it == _nodes.cend()) {
+        LIBSEMIGROUPS_EXCEPTION("there is no node named {}!", name_str);
+      }
+      return it->second;
+    }
+
     //! \brief Add an edge with given head and tail.
     //!
     //! This function adds an edge with head and tail obtained from \p head and
@@ -575,6 +585,24 @@ namespace libsemigroups {
       throw_if_not_node(tail_str);
       _edges.emplace_back(head_str, tail_str);
       return _edges.back();
+    }
+
+    // Returns the first edge from head to tail.
+    // TODO(0) doc
+    template <typename Thing1, typename Thing2>
+    Edge& edge(Thing1&& head, Thing2&& tail) {
+      auto head_str = detail::dot_to_string(std::forward<Thing1>(head));
+      auto tail_str = detail::dot_to_string(std::forward<Thing2>(tail));
+      throw_if_not_node(head_str);
+      throw_if_not_node(tail_str);
+      auto it = std::find_if(_edges.begin(), _edges.end(), [&](Edge const& e) {
+        return e.head == head_str && e.tail == tail_str;
+      });
+      if (it == _edges.cend()) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "there is no edges from {} to {}!", head_str, tail_str);
+      }
+      return *it;
     }
 
     //! \brief Convert a Dot object to a string.

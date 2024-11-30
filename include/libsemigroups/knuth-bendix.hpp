@@ -315,19 +315,28 @@ namespace libsemigroups {
     // pairs contained in CongruenceInterface are word_types, and so we don't
     // require any conversion here (since chars can be converted implicitly to
     // letter_types)
-    using CongruenceInterface::add_generating_pair_no_checks;
+    template <typename Iterator1,
+              typename Iterator2,
+              typename Iterator3,
+              typename Iterator4>
+    KnuthBendix& add_generating_pair_no_checks(Iterator1 first1,
+                                               Iterator2 last1,
+                                               Iterator3 first2,
+                                               Iterator4 last2) {
+      return CongruenceInterface::add_generating_pair_no_checks<KnuthBendix>(
+          first1, last1, first2, last2);
+    }
 
     template <typename Iterator1,
               typename Iterator2,
               typename Iterator3,
               typename Iterator4>
-    [[nodiscard]] KnuthBendix& add_generating_pair(Iterator1 first1,
-                                                   Iterator2 last1,
-                                                   Iterator3 first2,
-                                                   Iterator4 last2) {
-      CongruenceInterface::add_generating_pair<KnuthBendix>(
+    KnuthBendix& add_generating_pair(Iterator1 first1,
+                                     Iterator2 last1,
+                                     Iterator3 first2,
+                                     Iterator4 last2) {
+      return CongruenceInterface::add_generating_pair<KnuthBendix>(
           first1, last1, first2, last2);
-      return *this;
     }
 
     ////////////////////////////////////////////////////////////////////////
@@ -351,10 +360,10 @@ namespace libsemigroups {
               typename Iterator2,
               typename Iterator3,
               typename Iterator4>
-    tril currently_contains_no_checks(Iterator1 first1,
-                                      Iterator2 last1,
-                                      Iterator3 first2,
-                                      Iterator4 last2) const {
+    [[nodiscard]] tril currently_contains_no_checks(Iterator1 first1,
+                                                    Iterator2 last1,
+                                                    Iterator3 first2,
+                                                    Iterator4 last2) const {
       if (std::equal(first1, last1, first2, last2)) {
         return tril::TRUE;
       }
