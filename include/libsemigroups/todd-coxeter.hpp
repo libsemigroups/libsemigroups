@@ -993,9 +993,8 @@ namespace libsemigroups {
                                      Iterator2 last1,
                                      Iterator3 first2,
                                      Iterator4 last2) {
-      CongruenceInterface::add_generating_pair<ToddCoxeter>(
+      return CongruenceInterface::add_generating_pair<ToddCoxeter>(
           first1, last1, first2, last2);
-      return *this;
     }
 
     ////////////////////////////////////////////////////////////////////////
@@ -1186,6 +1185,9 @@ namespace libsemigroups {
     //!
     //! \cong_intf_params_reduce
     //!
+    //! \returns An \p OutputIterator pointing one beyond the last letter
+    //! inserted into \p d_first.
+    //!
     //! \cong_intf_warn_assume_letters_in_bounds
     //!
     //! \todd_coxeter_note_reverse
@@ -1214,6 +1216,9 @@ namespace libsemigroups {
     //!
     //! \cong_intf_params_reduce
     //!
+    //! \returns An \p OutputIterator pointing one beyond the last letter
+    //! inserted into \p d_first.
+    //!
     //! \cong_intf_throws_if_letters_out_of_bounds
     //!
     //! \todd_coxeter_note_reverse
@@ -1237,6 +1242,9 @@ namespace libsemigroups {
     //! canconical representative of its congruence class.
     //!
     //! \cong_intf_params_reduce
+    //!
+    //! \returns An \p OutputIterator pointing one beyond the last letter
+    //! inserted into \p d_first.
     //!
     //! \cong_intf_warn_assume_letters_in_bounds
     //!
@@ -1263,6 +1271,9 @@ namespace libsemigroups {
     //! canconical representative of its congruence class.
     //!
     //! \cong_intf_params_reduce
+    //!
+    //! \returns An \p OutputIterator pointing one beyond the last letter
+    //! inserted into \p d_first.
     //!
     //! \cong_intf_throws_if_letters_out_of_bounds
     //!
@@ -3491,8 +3502,8 @@ namespace libsemigroups {
     //! tc. This function triggers a full enumeration of \p tc.
     //!
     //! \tparam Range the type of the input range of words.
-    //! \tparam Word the type of the words in the output (defaults to the type
-    //! of the words in the input range).
+    //! \tparam OutputWord the type of the words in the output (defaults to the
+    //! type of the words in the input range).
     //!
     //! \param tc the \ref todd_coxeter_class_group "ToddCoxeter" instance.
     //! \param r the input range of words.
@@ -3508,10 +3519,10 @@ namespace libsemigroups {
     //! \cong_intf_warn_undecidable{Todd-Coxeter}.
     // TODO(0) out of line
     template <typename Range,
-              typename Word = std::decay_t<typename Range::output_type>,
-              typename      = std::enable_if_t<rx::is_input_or_sink_v<Range>>>
-    std::vector<std::vector<Word>> partition(ToddCoxeter& tc, Range r) {
-      using return_type = std::vector<std::vector<Word>>;
+              typename OutputWord = std::decay_t<typename Range::output_type>,
+              typename = std::enable_if_t<rx::is_input_or_sink_v<Range>>>
+    std::vector<std::vector<OutputWord>> partition(ToddCoxeter& tc, Range r) {
+      using return_type = std::vector<std::vector<OutputWord>>;
 
       if (tc.number_of_classes() == POSITIVE_INFINITY) {
         LIBSEMIGROUPS_EXCEPTION(
@@ -3575,11 +3586,11 @@ namespace libsemigroups {
     //! \cong_intf_warn_undecidable{Todd-Coxeter}.
     // couldn't get it to compile without copying
     template <typename Range,
-              typename Word = std::decay_t<typename Range::output_type>,
-              typename      = std::enable_if_t<rx::is_input_or_sink_v<Range>>>
-    std::vector<std::vector<Word>> non_trivial_classes(ToddCoxeter& tc,
-                                                       Range        r) {
-      auto result = partition<Range, Word>(tc, r);
+              typename OutputWord = std::decay_t<typename Range::output_type>,
+              typename = std::enable_if_t<rx::is_input_or_sink_v<Range>>>
+    std::vector<std::vector<OutputWord>> non_trivial_classes(ToddCoxeter& tc,
+                                                             Range        r) {
+      auto result = partition<Range, OutputWord>(tc, r);
       result.erase(
           std::remove_if(result.begin(),
                          result.end(),
@@ -3611,10 +3622,11 @@ namespace libsemigroups {
     //! tc2 is infinite.
     //!
     //! \cong_intf_warn_undecidable{Todd-Coxeter}.
-    template <typename Word = word_type>
-    std::vector<std::vector<Word>> non_trivial_classes(ToddCoxeter& tc1,
-                                                       ToddCoxeter& tc2) {
-      return todd_coxeter::non_trivial_classes(tc1, normal_forms<Word>(tc2));
+    template <typename OutputWord = word_type>
+    std::vector<std::vector<OutputWord>> non_trivial_classes(ToddCoxeter& tc1,
+                                                             ToddCoxeter& tc2) {
+      return todd_coxeter::non_trivial_classes(tc1,
+                                               normal_forms<OutputWord>(tc2));
     }
 
     //! @}
