@@ -384,10 +384,10 @@ namespace libsemigroups {
               typename Iterator2,
               typename Iterator3,
               typename Iterator4>
-    tril currently_contains(Iterator1 first1,
-                            Iterator2 last1,
-                            Iterator3 first2,
-                            Iterator4 last2) const {
+    [[nodiscard]] tril currently_contains(Iterator1 first1,
+                                          Iterator2 last1,
+                                          Iterator3 first2,
+                                          Iterator4 last2) const {
       throw_if_letter_out_of_bounds(first1, last1);
       throw_if_letter_out_of_bounds(first2, last2);
       return currently_contains_no_checks(first1, last1, first2, last2);
@@ -397,10 +397,10 @@ namespace libsemigroups {
               typename Iterator2,
               typename Iterator3,
               typename Iterator4>
-    bool contains_no_checks(Iterator1 first1,
-                            Iterator2 last1,
-                            Iterator3 first2,
-                            Iterator4 last2) {
+    [[nodiscard]] bool contains_no_checks(Iterator1 first1,
+                                          Iterator2 last1,
+                                          Iterator3 first2,
+                                          Iterator4 last2) {
       run();
       return currently_contains_no_checks(first1, last1, first2, last2)
              == tril::TRUE;
@@ -410,10 +410,10 @@ namespace libsemigroups {
               typename Iterator2,
               typename Iterator3,
               typename Iterator4>
-    bool contains(Iterator1 first1,
-                  Iterator2 last1,
-                  Iterator3 first2,
-                  Iterator4 last2) {
+    [[nodiscard]] bool contains(Iterator1 first1,
+                                Iterator2 last1,
+                                Iterator3 first2,
+                                Iterator4 last2) {
       run();
       return currently_contains(first1, last1, first2, last2) == tril::TRUE;
     }
@@ -998,6 +998,7 @@ namespace libsemigroups {
     void report_progress_from_thread(std::atomic_bool const&);
     void report_after_run();
 
+    // TODO(0) remove this use the version in CongruenceInterface
     void throw_if_started() const;
     void stats_check_point();
 
