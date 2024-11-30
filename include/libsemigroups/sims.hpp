@@ -1308,7 +1308,7 @@ namespace libsemigroups {
 
       uint64_t number_of_congruences(size_type n) const;
     };  // SimsBase
-  }  // namespace detail
+  }     // namespace detail
 
   namespace sims {
     class const_cgp_iterator;
@@ -1769,7 +1769,7 @@ namespace libsemigroups {
 
       using SimsBase::IteratorBase::stats;
     };  // class iterator_base
-  };  // Sims2
+  };    // Sims2
 
   //! \ingroup congruences_group
   //!
@@ -2868,7 +2868,8 @@ namespace libsemigroups {
           // TODO avoid the copy here
           copy.induced_subgraph_no_checks(static_cast<Node>(0),
                                           wg.number_of_active_nodes());
-          todd_coxeter::add_generating_pair(tc.init(tc.kind(), p, copy), wx, wy);
+          todd_coxeter::add_generating_pair(
+              tc.init(tc.kind(), p, copy), wx, wy);
           LIBSEMIGROUPS_ASSERT(tc.word_graph().number_of_nodes()
                                == wg.number_of_active_nodes());
           // fmt::print("x = {}, y = {}\n", x, y);

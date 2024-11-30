@@ -557,7 +557,6 @@ namespace libsemigroups {
       [[nodiscard]] Iterator get() const noexcept {
         return _it;
       }
-
     };  // class citow
 
     // itow only differs from citow in the dereference member function
@@ -609,7 +608,6 @@ namespace libsemigroups {
       reference operator*() {
         return reference(this->_tc, this->_it);
       }
-
     };  // class itow
 
     // Helpers for constructing citow + itow
@@ -1734,7 +1732,7 @@ namespace libsemigroups {
     //!
     //! \returns A reference to `*this`.
     //!
-    //!\throws LibsemigroupsException if \p val is not in the interval \f$[0,
+    //! \throws LibsemigroupsException if \p val is not in the interval \f$[0,
     //! 1)\f$.
     ToddCoxeter& lookahead_stop_early_ratio(float val);
 

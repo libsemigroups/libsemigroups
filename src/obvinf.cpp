@@ -62,7 +62,7 @@ namespace libsemigroups {
 #ifdef LIBSEMIGROUPS_EIGEN_ENABLED
     _matrix = decltype(_matrix)(0, n);
 #else
-    _matrix = decltype(_matrix)(n, 0);
+    _matrix           = decltype(_matrix)(n, 0);
 #endif
     return *this;
   }

@@ -1808,12 +1808,12 @@ namespace libsemigroups {
     REQUIRE(!c.at_end());
     // c.next();  // FIXME runs forever, but shouldn't!
     // REQUIRE(c.at_end());
-    //  REQUIRE((class_by_index(tc, 0) | rx::count()) == 1);
-    //  REQUIRE((class_by_index(tc, 1) | rx::count()) == 1);
-    //  REQUIRE((class_by_index(tc, 2) | rx::count()) == 1);
-    //  TODO(1) the following no longer work
-    //  REQUIRE(class_by_index(tc, 3).count() == POSITIVE_INFINITY);
-    //  REQUIRE(class_by_index(tc, 4).count() == POSITIVE_INFINITY);
+    // REQUIRE((class_by_index(tc, 0) | rx::count()) == 1);
+    // REQUIRE((class_by_index(tc, 1) | rx::count()) == 1);
+    // REQUIRE((class_by_index(tc, 2) | rx::count()) == 1);
+    // TODO(1) the following no longer work
+    // REQUIRE(class_by_index(tc, 3).count() == POSITIVE_INFINITY);
+    // REQUIRE(class_by_index(tc, 4).count() == POSITIVE_INFINITY);
     REQUIRE(!p.contains_empty_word());
     REQUIRE_THROWS_AS(class_of(tc, ""_w), LibsemigroupsException);
     REQUIRE_THROWS_AS(class_of(tc, {}), LibsemigroupsException);
@@ -4637,7 +4637,7 @@ namespace libsemigroups {
       presentation::add_rule(p, pow({a}, 3), {a});
     }
     using words::operator+;
-    WordRange words;
+    WordRange    words;
     words.alphabet_size(n).min(0).max(8);
 
     for (size_t a = 0; a < n - 1; ++a) {

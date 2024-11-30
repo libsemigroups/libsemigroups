@@ -26,7 +26,6 @@ namespace libsemigroups {
   class Kambites;
 
   namespace detail {
-    // TODO(0) move to separate file
     template <typename Word>
     class KambitesNormalFormRange {
       mutable Word                                _current;
@@ -38,7 +37,7 @@ namespace libsemigroups {
      public:
       using output_type = Word const&;
 
-      KambitesNormalFormRange(Kambites<Word>& k)
+      explicit KambitesNormalFormRange(Kambites<Word>& k)
           : _current(),
             _end(),
             _fpb(to_froidure_pin(k)),
@@ -90,4 +89,4 @@ namespace libsemigroups {
 
   }  // namespace detail
 }  // namespace libsemigroups
-#endif
+#endif  // LIBSEMIGROUPS_DETAIL_KAMBITES_NORMAL_FORM_RANGE_HPP_

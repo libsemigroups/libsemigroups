@@ -100,8 +100,6 @@ namespace libsemigroups {
     CongruenceInterface& operator=(CongruenceInterface const&) = default;
     CongruenceInterface& operator=(CongruenceInterface&&)      = default;
 
-    ~CongruenceInterface();
-
     ////////////////////////////////////////////////////////////////////////////
     // CongruenceInterface - validation - protected
     ////////////////////////////////////////////////////////////////////////////
@@ -113,6 +111,7 @@ namespace libsemigroups {
     }
 
    public:
+    ~CongruenceInterface();
     ////////////////////////////////////////////////////////////////////////////
     // CongruenceInterface - public member functions
     ////////////////////////////////////////////////////////////////////////////
@@ -1122,7 +1121,6 @@ namespace libsemigroups {
     //! \returns The partition of the input range.
     //!
     //! \throws LibsemigroupsException if the input range of words is infinite.
-    // TODO tpp file
     template <typename Subclass,
               typename Range,
               typename OutputWord = std::decay_t<typename Range::output_type>,

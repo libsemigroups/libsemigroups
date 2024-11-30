@@ -72,7 +72,7 @@ namespace libsemigroups {
   namespace {
     template <typename Word, typename OtherWord = Word>
     void check_from_ke(Presentation<Word> const& p) {
-      using literals::operator""_w;
+      using literals::    operator""_w;
       Kambites<OtherWord> k(congruence_kind::twosided, p);
       auto                ptr = to_froidure_pin(k);
       auto& s = static_cast<FroidurePin<detail::KE<OtherWord>>&>(*ptr);

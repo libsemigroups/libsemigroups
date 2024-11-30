@@ -119,9 +119,10 @@ namespace libsemigroups {
     ToddCoxeter* _tc;
 
    public:
-    SettingsGuard(ToddCoxeter* tc) : _tc(tc) {
+    explicit SettingsGuard(ToddCoxeter* tc) : _tc(tc) {
       _tc->_setting_stack.push_back(std::make_unique<Settings>());
     }
+
     ~SettingsGuard() {
       _tc->_setting_stack.pop_back();
       LIBSEMIGROUPS_ASSERT(!_tc->_setting_stack.empty());
@@ -518,7 +519,7 @@ namespace libsemigroups {
   }
 
   ToddCoxeter& ToddCoxeter::lookahead_stop_early_ratio(float val) {
-    if (val < 0.0 or val >= 1.0) {
+    if (val < 0.0 || val >= 1.0) {
       LIBSEMIGROUPS_EXCEPTION(
           "Expected a float in the interval [0, 1), found {}", val);
     }
