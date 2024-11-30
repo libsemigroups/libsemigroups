@@ -32,6 +32,7 @@
 #include "types.hpp"      // for word_type, relation_type, letter_type, tril
 
 namespace libsemigroups {
+  // Forward decls
   class Congruence;
   class ToddCoxeter;
 
@@ -46,6 +47,10 @@ namespace libsemigroups {
   //! * \ref todd_coxeter_class_group "ToddCoxeter"
 
   //! \ingroup cong_intf_group
+  //!
+  //! \brief Class collecting common aspects of classes representing
+  //! congruences.
+  //!
   //! Defined in ``cong-intf.hpp``.
   //!
   //! Every class for representing a congruence in ``libsemigroups`` is derived
@@ -152,9 +157,13 @@ namespace libsemigroups {
       return _generating_pairs;
     }
 
-    //! The handedness of the congruence (left, right, or 2-sided).
+    //! \brief The kind of the congruence (1- or 2-sided).
     //!
-    //! \returns A \ref congruence_kind.
+    //! This function returns the kind of the congruence represented by a
+    //! derived class of CongruenceInterface. See \ref congruence_kind for
+    //! details.
+    //!
+    //! \return The kind of the congruence (1- or 2-sided).
     //!
     //! \exceptions
     //! \noexcept
@@ -205,7 +214,7 @@ namespace libsemigroups {
       throw_if_started();
       throw_if_letter_out_of_bounds<Subclass>(first1, last1);
       throw_if_letter_out_of_bounds<Subclass>(first2, last2);
-      return add_generating_pair_no_checks<Subclass>(
+      return static_cast<Subclass&>(*this).add_generating_pair_no_checks(
           first1, last1, first2, last2);
     }
 
@@ -262,6 +271,27 @@ namespace libsemigroups {
     ////////////////////////////////////////////////////////////////////////
 
     //! \brief Helper for adding a generating pair of words.
+    //! Check if a pair of words belongs to the congruence.
+    //!
+    //! \param u a word (vector of integers) over the generators of the
+    //! semigroup.
+    //! \param v a word (vector of integers) over the generators of
+    //! the semigroup.
+    //!
+    //! \returns \c true if the words \p u and \p v belong to the
+    //! same congruence class, and \c false otherwise.
+    //!
+    //! \throws LibsemigroupsException if \p u or \p v contains a letter that
+    //! is out of bounds.
+    //!
+    //! \throws std::bad_alloc if the (possibly infinite) computation uses all
+    //! the available memory.
+    //!
+    //! \complexity
+    //! See warning.
+    //!
+    //! \warning The problem of determining the return value of this function
+    //! is undecidable in general, and this function may never terminate.
     template <typename Subclass, typename Word>
     Subclass& add_generating_pair_no_checks(Subclass&   ci,
                                             Word const& u,
@@ -820,27 +850,6 @@ namespace libsemigroups {
 // CongruenceInterface - non-pure virtual functions - public
 ////////////////////////////////////////////////////////////////////////////
 
-//! Check if a pair of words belongs to the congruence.
-//!
-//! \param u a word (vector of integers) over the generators of the
-//! semigroup.
-//! \param v a word (vector of integers) over the generators of
-//! the semigroup.
-//!
-//! \returns \c true if the words \p u and \p v belong to the
-//! same congruence class, and \c false otherwise.
-//!
-//! \throws LibsemigroupsException if \p u or \p v contains a letter that
-//! is out of bounds.
-//!
-//! \throws std::bad_alloc if the (possibly infinite) computation uses all
-//! the available memory.
-//!
-//! \complexity
-//! See warning.
-//!
-//! \warning The problem of determining the return value of this function
-//! is undecidable in general, and this function may never terminate.
 // virtual bool contains(word_type const& u, word_type const& v) {
 //   return u == v || word_to_class_index(u) == word_to_class_index(v);
 // }
@@ -877,40 +886,6 @@ namespace libsemigroups {
 //! Linear in `u.size() + v.size()`.
 // virtual tril const_contains(word_type const& u, word_type const& v)
 // const;
-
-//! Compare the indices of the classes containing two words.
-//!
-//! This function returns \c true if the congruence class of \p v is less
-//! than the class of \p v in a total ordering of congruence classes.
-//!
-//! \param u a word (vector of integers) over the generators of the
-//! semigroup.
-//! \param v a word (vector of integers) over the generators of
-//! the semigroup.
-//!
-//! \returns \c true if the class of \p u is less than that of \p .
-//!
-//! \throws LibsemigroupsException if \p u or \p v contains a letter that
-//! is out of bounds.
-//!
-//! \throws std::bad_alloc if the (possibly infinite) computation uses all
-//! the available memory.
-//!
-//! \complexity
-//! See warning.
-//!
-//! \warning The problem of determining the return value of this function
-//! is undecidable in general, and this function may never terminate.
-//!
-//! \par Possible Implementation
-//! \code
-//! bool less(word_type const& u, word_type const& v) {
-//!   return word_to_class_index(u) < word_to_class_index(v);
-//! }
-//! \endcode
-// virtual bool less(word_type const& u, word_type const& v) {
-//   return word_to_class_index(u) < word_to_class_index(v);
-// }
 
 /////////////////////////////////////////////////////////////////////////
 // CongruenceInterface - non-virtual functions - public
