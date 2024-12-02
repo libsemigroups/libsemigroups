@@ -715,6 +715,7 @@ namespace libsemigroups {
     }
   }
 
+  // TODO(1) add !running_until to check below?
   void ToddCoxeter::run_impl() {
     if (!running_for() && is_obviously_infinite(*this)) {
       LIBSEMIGROUPS_EXCEPTION(
@@ -722,7 +723,7 @@ namespace libsemigroups {
           "Todd-Coxeter will never terminate");
     } else if (strategy() != options::strategy::felsch
                && strategy() != options::strategy::hlt && running_until()) {
-      LIBSEMIGROUPS_EXCEPTION("the strategy {} cannot be used with run_until!",
+      LIBSEMIGROUPS_EXCEPTION("the strategy {} cannot be used with run_until !",
                               strategy());
     }
 
@@ -762,13 +763,6 @@ namespace libsemigroups {
   ////////////////////////////////////////////////////////////////////////
 
   void ToddCoxeter::init_run() {
-    // TODO(1) why is this check here and in run_impl??
-    if (!running_for() && is_obviously_infinite(*this)) {
-      LIBSEMIGROUPS_EXCEPTION(
-          "there are infinitely many classes in the congruence and "
-          "Todd-Coxeter will never terminate");
-    }
-
     _word_graph.settings(*this);
     _word_graph.reset_start_time();
     _word_graph.stats_check_point();
@@ -831,7 +825,13 @@ namespace libsemigroups {
       }
       _word_graph.report_progress_from_thread();
       report_no_prefix("{:-<90}\n", "");
-      _finished = true;
+      if (!is_obviously_infinite(*this)) {
+        // We require this clause because we might still be obviously infinite
+        // and running_for a specific amount of time, in which case we are
+        // never finished. This is an issue when the input presentation has no
+        // rules for example.
+        _finished = true;
+      }
     }
   }
 
@@ -850,9 +850,6 @@ namespace libsemigroups {
         }
       }
       current = _word_graph.next_active_node(current);
-    }
-    if (!stopped()) {
-      _finished = true;
     }
   }
 

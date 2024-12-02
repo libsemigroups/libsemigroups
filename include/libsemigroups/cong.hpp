@@ -340,6 +340,7 @@ namespace libsemigroups {
                                           Iterator3 first2,
                                           Iterator4 last2) {
       run();
+      LIBSEMIGROUPS_ASSERT(_race.winner_index() != UNDEFINED);
       auto winner_kind = _runner_kinds[_race.winner_index()];
       if (winner_kind == RunnerKind::TC) {
         return std::static_pointer_cast<ToddCoxeter>(_race.winner())

@@ -1354,6 +1354,16 @@ namespace libsemigroups {
     REQUIRE(tc3.number_of_classes() == 1);
     tc3.shrink_to_fit();
     REQUIRE(tc3.current_word_graph() == tc2.current_word_graph());
+
+    p.rules.clear();
+    tc3.init(twosided, p);
+    REQUIRE(tc3.presentation().rules.empty());
+    REQUIRE(tc3.number_of_generating_pairs() == 0);
+
+    REQUIRE_NOTHROW(tc3.run_for(std::chrono::nanoseconds(1)));
+    REQUIRE(!tc3.finished());
+    // This shouldn't ever return true, since the presentation defines the free
+    // semigroup with 2 generators
   }
 
   LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
@@ -2802,9 +2812,6 @@ namespace libsemigroups {
                                          "cccc"}));
 
     ToddCoxeter tc(twosided, p);
-    // TODO(0) rm
-    // REQUIRE(tc.input_presentation().alphabet() == word_type({97, 98, 99,
-    // 100}));
 
     REQUIRE(!is_obviously_infinite(tc));
 
