@@ -138,9 +138,9 @@ namespace libsemigroups {
 
   template <typename Word>
   void Kambites<Word>::normal_form_no_checks(value_type&       result,
-                                             value_type const& w0) {
-    using words:: operator+;
-    using words:: operator+=;
+                                             value_type const& w0) const {
+    using words::operator+;
+    using words::operator+=;
     size_t        r = UNDEFINED;
     internal_type w(w0);
     internal_type v(result);
@@ -202,7 +202,9 @@ namespace libsemigroups {
   template <typename SFINAE>
   auto Kambites<Word>::normal_form_no_checks(value_type&      result,
                                              word_type const& w)
-      -> std::enable_if_t<!std::is_same_v<value_type, word_type>, SFINAE> {
+      -> std::enable_if_t<!std::is_same_v<value_type, word_type>,
+                          SFINAE> const {
+    // TODO(1) remove use of to_string
     std::string ww = to_string(presentation(), w);
     normal_form_no_checks(result, ww);
     return to_word(presentation(), result);
@@ -534,7 +536,7 @@ namespace libsemigroups {
                                          internal_type& v,
                                          internal_type& w) const {
     using words::operator+=;
-    size_t       i, j;
+    size_t i, j;
     std::tie(i, j) = clean_overlap_prefix_mod(w, w.size());
     if (j == UNDEFINED) {
       // line 39

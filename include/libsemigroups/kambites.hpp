@@ -56,6 +56,12 @@
 
 namespace libsemigroups {
 
+  //! \defgroup kambites_group Kambites
+  //!
+  //! TODO
+
+  //! \ingroup kambites_group
+  //!
   //! Defined in ``kambites.hpp``.
   //!
   //! On this page we describe the functionality relating to the algorithms
@@ -338,36 +344,39 @@ namespace libsemigroups {
     ////////////////////////////////////////////////////////////////////////
 
    private:
-    void normal_form_no_checks(value_type& result, value_type const& w);
+    void normal_form_no_checks(value_type& result, value_type const& w) const;
 
     template <typename SFINAE = word_type>
     auto normal_form_no_checks(value_type& result, word_type const& w)
-        -> std::enable_if_t<!std::is_same_v<value_type, word_type>, SFINAE>;
+        -> std::enable_if_t<!std::is_same_v<value_type, word_type>,
+                            SFINAE> const;
 
    public:
+    // TODO(0) to tpp file
     template <typename OutputIterator, typename Iterator1, typename Iterator2>
     OutputIterator reduce_no_run_no_checks(OutputIterator d_first,
                                            Iterator1      first,
-                                           Iterator2      last) {
-      // TODO(0) shouldn't this check if we're finished, and if so, then return
-      // the correct answer?
+                                           Iterator2      last) const {
+      if (finished()) {
+        _tmp_value2.clear();
+        _tmp_value1.assign(first, last);
+        normal_form_no_checks(_tmp_value2, _tmp_value1);
+        return std::copy(
+            std::begin(_tmp_value2), std::end(_tmp_value2), d_first);
+      }
 
-      // Does nothing
+      // Does nothing in this case
       return std::copy(first, last, d_first);
     }
 
     template <typename OutputIterator, typename Iterator1, typename Iterator2>
     OutputIterator reduce_no_run(OutputIterator d_first,
                                  Iterator1      first,
-                                 Iterator2      last) {
-      // TODO(0) shouldn't this check if we're finished, and if so, then return
-      // the correct answer?
+                                 Iterator2      last) const {
       throw_if_letter_out_of_bounds(first, last);
-      // Also does nothing
       return reduce_no_run_no_checks(d_first, first, last);
     }
 
-    // TODO(0) to tpp file
     template <typename OutputIterator,
               typename InputIterator1,
               typename InputIterator2>
@@ -375,11 +384,7 @@ namespace libsemigroups {
                                     InputIterator1 first,
                                     InputIterator2 last) {
       run();
-      // TODO(1) improve!
-      _tmp_value2.clear();
-      _tmp_value1.assign(first, last);
-      normal_form_no_checks(_tmp_value2, _tmp_value1);
-      return std::copy(std::begin(_tmp_value2), std::end(_tmp_value2), d_first);
+      return reduce_no_run_no_checks(d_first, first, last);
     }
 
     template <typename OutputIterator,
@@ -675,6 +680,9 @@ namespace libsemigroups {
   template <typename Word>
   Kambites(congruence_kind, Presentation<Word> const&) -> Kambites<Word>;
 
+  //! \ingroup kambites_group
+  //!
+  //! TODO
   namespace kambites {
     using congruence_interface::add_generating_pair;
     using congruence_interface::add_generating_pair_no_checks;
