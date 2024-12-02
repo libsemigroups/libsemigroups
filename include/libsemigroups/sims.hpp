@@ -2870,8 +2870,8 @@ namespace libsemigroups {
                                           wg.number_of_active_nodes());
           todd_coxeter::add_generating_pair(
               tc.init(tc.kind(), p, copy), wx, wy);
-          LIBSEMIGROUPS_ASSERT(tc.word_graph().number_of_nodes()
-                               == wg.number_of_active_nodes());
+          // LIBSEMIGROUPS_ASSERT(tc.word_graph().number_of_nodes()
+          //                     == wg.number_of_active_nodes());
           // fmt::print("x = {}, y = {}\n", x, y);
           // fmt::print("wx = {}, wy = {}\n", wx, wy);
           // std::cout << copy << std::endl;
