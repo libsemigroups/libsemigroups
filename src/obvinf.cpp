@@ -140,6 +140,40 @@ namespace libsemigroups {
     return *this;
   }
 
+  IsObviouslyInfinite&
+  IsObviouslyInfinite::add_rules_no_checks(Presentation<std::string> const& p,
+                                           const_iterator_word_type first,
+                                           const_iterator_word_type last) {
+#ifdef LIBSEMIGROUPS_EIGEN_ENABLED
+    auto matrix_start = _matrix.rows();
+    _matrix.conservativeResize(matrix_start + (last - first) / 2,
+                               Eigen::NoChange);
+    _matrix.block(matrix_start, 0, (last - first) / 2, _matrix.cols())
+        .setZero();
+#else
+    auto matrix_start = 0;
+    std::fill(_matrix.begin(), _matrix.end(), 0);
+#endif
+
+    word_type lhs, rhs;
+    for (auto it = first; it < last; ++it) {
+      lhs.resize(it->size());
+      std::transform(it->begin(),
+                     it->end(),
+                     lhs.begin(),
+                     [&p](auto const& val) { return p.index_no_checks(val); });
+      ++it;
+      rhs.resize(it->size());
+      std::transform(it->begin(),
+                     it->end(),
+                     rhs.begin(),
+                     [&p](auto const& val) { return p.index_no_checks(val); });
+      private_add_rule(matrix_start + (it - first) / 2, lhs, rhs);
+    }
+    _nr_letter_components = _letter_components.number_of_blocks();
+    return *this;
+  }
+
   bool IsObviouslyInfinite::result() const {
 #ifdef LIBSEMIGROUPS_EIGEN_ENABLED
     LIBSEMIGROUPS_ASSERT(_matrix.rows() >= 0);
@@ -221,6 +255,8 @@ namespace libsemigroups {
     auto                p = tc.native_presentation();
     IsObviouslyInfinite ioi(p.alphabet().size());
     ioi.add_rules_no_checks(p.rules.cbegin(), p.rules.cend());
+    // TODO(0) if we change generating_pairs to return the non-native words,
+    // then this will not work as expected
     ioi.add_rules_no_checks(tc.generating_pairs().cbegin(),
                             tc.generating_pairs().cend());
     return ioi.result();

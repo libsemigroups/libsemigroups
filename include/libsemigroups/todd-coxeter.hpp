@@ -3364,8 +3364,6 @@ namespace libsemigroups {
     // Possible future interface helpers - is_non_trivial
     ////////////////////////////////////////////////////////////////////////
 
-    // TODO(0) add "this function is defined" in every functions doc in this
-    // namespace
     //! \brief Check if the congruence has more than one class.
     //!
     //! Defined in \c todd-coxeter.hpp.
