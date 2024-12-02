@@ -31,6 +31,8 @@
 #include "runner.hpp"     // for Runner
 #include "types.hpp"      // for word_type, relation_type, letter_type, tril
 
+// TODO(0) add "Defined in \c cong-intf.hpp" everywhere relevant in this file.
+
 namespace libsemigroups {
   // Forward decls
   class Congruence;
