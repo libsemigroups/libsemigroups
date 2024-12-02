@@ -2090,7 +2090,7 @@ namespace libsemigroups {
            "ababbbaabba"
            "babbbbbbabbababaabaabbbabaaabbabababbbbbabaaababbbabaabbb"
            "baabbbbabba"
-           "abaabbaabaaaaabaaabaabbbaaa, "
+           "abaabbaabaaaaabaaabaabbbaaa",
            "bbbaababbababbaaaabbaabbabbbbaababbabbbabbbababbbbbaaabab"
            "babbababaaa"
            "abbabbabbbbaaaaaaaaabbbabaaabbbbababaaaabaabbbbbbaababbaa"
@@ -2164,7 +2164,7 @@ namespace libsemigroups {
            "babbaababbb"
            "ababbaaaabbbbaaaaaaaabbabbbbbababaabbababbaabbaaaaaaaabba"
            "bbbabbbbaab"
-           "aabbbaabbbaaabaaaabb, "
+           "aabbbaabbbaaabaaaabb",
            "aaabbabababbbbbbbabbbbaaaabbbabbabaaabbaaaabbbbbababbabbb"
            "bbbbbbabbab"
            "abbbbaabaabababaabbababaababbbaaaabbbbbbbbaaabbbaaabaaabb"
@@ -2201,7 +2201,7 @@ namespace libsemigroups {
            "baabaaaaaab"
            "ababbabbabbababbbbbaabaaabbabababbbabbbabbabbbabaababbbbb"
            "abbabbabaab"
-           "abababbabbbab, "
+           "abababbabbbab",
            "bbbaabaababbbbbbbabbbbaaaabbbabbabaaabbaaaabbbbbababbabbb"
            "bbbbbbabbab"
            "abaaabbababababaabbababaababbbaaaabbbbbbbbaaabbbaaabaaabb"
@@ -2238,7 +2238,7 @@ namespace libsemigroups {
            "baabaaaaaab"
            "ababbabbabbababbbbbaabaaabbabababbbabbbabbabbbabaababbbbb"
            "abbabbabaab"
-           "abababbabbbab, "
+           "abababbabbbab",
            "aaabbabaabbabbbbabbaabbaabaaaabbababbbbaaababbbbabbbaaabb"
            "abaaabbabba"
            "babbbaababbbaabbbbaabbbbbbbbbaaabbaaabaababbabaaabaabaaba"
@@ -2275,7 +2275,7 @@ namespace libsemigroups {
            "bbbaabbbbab"
            "aaababbbbbbbababbbbbbabbbaabaabaaaaaaaaaaaaabbbabbbabbbaa"
            "babbbababaa"
-           "abaaaaaabbabbaaabaaa, "
+           "abaaaaaabbabbaaabaaa"
            "bbbaabaaabbabbbbabbaabbaabaaaabbababbbbaaababbbbabbbaaabb"
            "abaaabbabba"
            "baaaabbabbbbaabbbbaabbbbbbbbbaaabbaaabaababbabaaabaabaaba"
