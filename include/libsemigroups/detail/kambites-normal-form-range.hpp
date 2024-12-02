@@ -16,7 +16,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-// This file contains TODO
+// This file contains an implementation of a range object for producing normal
+// forms for a Kambites object.
 
 #ifndef LIBSEMIGROUPS_DETAIL_KAMBITES_NORMAL_FORM_RANGE_HPP_
 #define LIBSEMIGROUPS_DETAIL_KAMBITES_NORMAL_FORM_RANGE_HPP_
@@ -28,15 +29,15 @@ namespace libsemigroups {
   namespace detail {
     template <typename Word>
     class KambitesNormalFormRange {
-      mutable Word                                _current;
+     private:
+      mutable typename Kambites<Word>::value_type _current;
       FroidurePinBase::const_normal_form_iterator _end;
       std::unique_ptr<FroidurePinBase>            _fpb;
       FroidurePinBase::const_normal_form_iterator _it;
       Kambites<Word>*                             _k;
 
      public:
-      using output_type = Word const&;
-
+      using output_type = typename Kambites<Word>::value_type const&;
       explicit KambitesNormalFormRange(Kambites<Word>& k)
           : _current(),
             _end(),
