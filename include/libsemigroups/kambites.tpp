@@ -25,6 +25,7 @@
 // for solving the word problem in small overlap monoids, and a novel algorithm
 // for computing normal forms in small overlap monoids, by Maria Tsalakou.
 
+#include "libsemigroups/ukkonen.hpp"
 namespace libsemigroups {
   // Data structure for caching the regularly accessed parts of the
   // relation words.
@@ -138,8 +139,8 @@ namespace libsemigroups {
   template <typename Word>
   void Kambites<Word>::normal_form_no_checks(value_type&       result,
                                              value_type const& w0) {
-    using words:: operator+;
-    using words:: operator+=;
+    using words::operator+;
+    using words::operator+=;
     size_t        r = UNDEFINED;
     internal_type w(w0);
     internal_type v(result);
@@ -276,7 +277,7 @@ namespace libsemigroups {
   // O(number of relation words * (last - first))
   // See explanation above.
   //
-  // TODO(later): we tried multiple things here to try and improve this, but
+  // TODO(1): we tried multiple things here to try and improve this, but
   // none of them were better than the current function. Two things that we
   // never tried or didn't get to work were:
   // 1) Binary search
@@ -393,7 +394,7 @@ namespace libsemigroups {
       size_t                        i,
       internal_type_iterator const& first,
       internal_type_iterator const& last) const {
-    // TODO(later) use binary_search instead
+    // TODO(1) use binary_search instead
     for (auto const& j : _complements.of(i)) {
       if (detail::is_prefix(XYZ(j).cbegin(), XYZ(j).cend(), first, last)) {
         return j;
@@ -405,7 +406,7 @@ namespace libsemigroups {
   template <typename Word>
   size_t Kambites<Word>::complementary_XY_prefix(size_t               i,
                                                  internal_type const& w) const {
-    // TODO(later) use binary_search instead
+    // TODO(1) use binary_search instead
     for (auto const& j : _complements.of(i)) {
       if (detail::is_prefix(w, XY(j))) {
         return j;
@@ -533,7 +534,7 @@ namespace libsemigroups {
                                          internal_type& v,
                                          internal_type& w) const {
     using words::operator+=;
-    size_t       i, j;
+    size_t i, j;
     std::tie(i, j) = clean_overlap_prefix_mod(w, w.size());
     if (j == UNDEFINED) {
       // line 39
@@ -562,27 +563,13 @@ namespace libsemigroups {
   template <typename Word>
   void Kambites<Word>::run_impl() {
     if (!_have_class) {
-      if constexpr (std::is_same_v<value_type, word_type>) {
-        auto const& pairs = generating_pairs();
-        _presentation.rules.insert(
-            _presentation.rules.end(), pairs.cbegin(), pairs.cend());
-        ukkonen::add_words_no_checks(
-            _suffix_tree, pairs.cbegin(), pairs.cend());
-      } else {
-        auto pairs = (rx::iterator_range(generating_pairs().cbegin(),
-                                         generating_pairs().cend())
-                      // TODO(0) just pass the iterators to the start and end of
-                      // everything in generating_pairs() directly to Ukkonen,
-                      // to avoid this conversion and the constexpr
-                      | rx::transform([](word_type const& w) {
-                          return std::string(w.begin(), w.end());
-                        })
-                      | rx::to_vector());
-        ukkonen::add_words_no_checks(
-            _suffix_tree, pairs.cbegin(), pairs.cend());
-        _presentation.rules.insert(_presentation.rules.end(),
-                                   std::make_move_iterator(pairs.begin()),
-                                   std::make_move_iterator(pairs.end()));
+      auto const& pairs = generating_pairs();
+      for (auto it = pairs.begin(); it != pairs.end(); it += 2) {
+        ukkonen::add_word_no_checks(_suffix_tree, it->begin(), it->end());
+        ukkonen::add_word_no_checks(
+            _suffix_tree, (it + 1)->begin(), (it + 1)->end());
+        _presentation.add_rule_no_checks(
+            it->begin(), it->end(), (it + 1)->begin(), (it + 1)->end());
       }
 
       size_t result = POSITIVE_INFINITY;
