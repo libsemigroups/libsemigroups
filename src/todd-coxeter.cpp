@@ -948,8 +948,9 @@ namespace libsemigroups {
     SettingsGuard guard(this);
 
     strategy(options::strategy::hlt);
-    auto   M = current_word_graph().number_of_nodes_active();
-    size_t N = presentation::length(native_presentation());
+    auto M = current_word_graph().number_of_nodes_active();
+    // The +1 is here to avoid division by 0, in the lambda below.
+    size_t N = presentation::length(native_presentation()) + 1;
     run_until([this, &M, &N]() -> bool {
       return current_word_graph().number_of_nodes_active()
              >= (hlt_defs() / N) + M;
