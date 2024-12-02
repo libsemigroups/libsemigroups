@@ -169,9 +169,10 @@ def doxygen_filename(thing: str) -> str:
     orig = thing
 
     thing = re.sub("_", "__", thing)
-
     if thing.endswith("_group"):
-        return f"docs/xml/group__{thing}.xml"
+        fname = f"docs/xml/group__{thing}.xml"
+        if exists(fname) and isfile(fname):
+            return fname
     p = re.compile(r"::")
     thing = p.sub("_1_1", thing)
     p = re.compile(r"([A-Z])")

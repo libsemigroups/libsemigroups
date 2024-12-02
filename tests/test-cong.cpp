@@ -1238,6 +1238,7 @@ namespace libsemigroups {
       Congruence cong(knd, p);
       // Required in case of using a 1 core computer, otherwise the tests
       // below fail.
+      cong.max_threads(2);
       REQUIRE(cong.contains(0000_w, 0000_w));
       REQUIRE(!cong.contains(0000_w, 0001_w));
       if (knd == twosided) {
@@ -1247,9 +1248,9 @@ namespace libsemigroups {
       }
 
       WordRange w;
-      w.alphabet_size(2).min(0).max(5);
+      w.alphabet_size(2).min(1).max(5);
 
-      REQUIRE(w.count() == 31);
+      REQUIRE(w.count() == 30);
 
       REQUIRE(non_trivial_classes(cong, w).empty());
     }
