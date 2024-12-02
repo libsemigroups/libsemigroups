@@ -137,7 +137,7 @@ namespace libsemigroups {
   ToddCoxeter::Graph::init(Presentation<word_type> const& p) {
     NodeManager<node_type>::clear();
     FelschGraph_::init(p);
-    // FIXME(0) shouldn't add nodes here because then there'll be more than
+    // TODO(1) shouldn't add nodes here because then there'll be more than
     // there should be (i.e. NodeManager and FelschGraph_ will have
     // different numbers of nodes
     FelschGraph_::add_nodes(NodeManager<node_type>::node_capacity());
@@ -147,7 +147,7 @@ namespace libsemigroups {
   ToddCoxeter::Graph& ToddCoxeter::Graph::init(Presentation<word_type>&& p) {
     NodeManager<node_type>::clear();
     FelschGraph_::init(std::move(p));
-    // FIXME(0) shouldn't add nodes here because then there'll be more than
+    // TODO(1) shouldn't add nodes here because then there'll be more than
     // there should be (i.e. NodeManager and FelschGraph_ will have
     // different numbers of nodes
     FelschGraph_::add_nodes(NodeManager<node_type>::node_capacity());
@@ -655,7 +655,7 @@ namespace libsemigroups {
   }
 
   bool ToddCoxeter::is_standardized(Order val) const {
-    // TODO(0) this is probably not always valid,
+    // TODO(1) this is probably not always valid,
     // the easiest fix for this would just be to call standardize(val) and check
     // if the return value is false, but this wouldn't be const, so maybe not.
     return val == _standardized
@@ -664,7 +664,7 @@ namespace libsemigroups {
   }
 
   bool ToddCoxeter::is_standardized() const {
-    // TODO(0) this is probably not always valid, i.e. if we are standardized,
+    // TODO(1) this is probably not always valid, i.e. if we are standardized,
     // then grow, then collapse, but end up with the same number of nodes
     // again.
     return _standardized != Order::none
@@ -1119,4 +1119,11 @@ namespace libsemigroups {
       return todd_coxeter::non_trivial_classes(tc1, normal_forms(tc2));
     }
   }  // namespace todd_coxeter
+
+  std::string to_human_readable_repr(ToddCoxeter const& tc) {
+    return fmt::format("<ToddCoxeter over {} with {}/{} active/nodes>",
+                       to_human_readable_repr(tc.presentation()),
+                       tc.current_word_graph().number_of_nodes_active(),
+                       tc.current_word_graph().number_of_nodes());
+  }
 }  // namespace libsemigroups

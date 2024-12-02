@@ -19,13 +19,11 @@
 // This file contains a declaration of a class for performing the Todd-Coxeter
 // algorithm for semigroups and monoids.
 //
-// TODO: (1)
+// TODO(1)
 // * re-implement reserve
 // * remove preferred_defs from FelschGraph etc (except where they are really
 // needed)? Or possibly reintroduce PrefDefs here
 // * re-add report why stopped
-//
-// * TODO(0) check for left, and table remnants in the doc
 
 #ifndef LIBSEMIGROUPS_TODD_COXETER_HPP_
 #define LIBSEMIGROUPS_TODD_COXETER_HPP_
@@ -104,7 +102,7 @@ namespace libsemigroups {
   //! p.alphabet(2);
   //! presentation::add_rule(p, 00_w, 0_w);
   //! presentation::add_rule(p, 0_w, 1_w);
-  //! ToddCoxeter tc(congruence_kind::left, p);
+  //! ToddCoxeter tc(congruence_kind::onesided, p);
   //! tc.strategy(options::strategy::felsch);
   //! tc.number_of_classes();
   //! tc.contains(0000_w, 00_w);
@@ -132,12 +130,8 @@ namespace libsemigroups {
   //!    .lookahead_extent(options::lookahead_extent::partial)
   //!    .save(false);
   //! tc.number_of_classes()  // 10'752
-  //! tc.complete();          // true
-  //! tc.compatible();        // true
-  //! todd_coxeter::number_of_idempotents(tc); // 1
   //! tc.standardize(order::recursive);
-  //! std::vector<word_type>(tc.cbegin_normal_forms(),
-  //!                        tc.cbegin_normal_forms() + 10);
+  //! normal_forms(tc) | rx::take(10) | rx::to_vector()
   //! // {0_w,
   //! //  1_w,
   //! //  2_w,
@@ -147,10 +141,9 @@ namespace libsemigroups {
   //! //  22_w,
   //! //  221_w,
   //! //  212_w,
-  //! //  2121_w};
+  //! //  2121_w}
   //! tc.standardize(order::lex);
-  //! std::vector<word_type>(tc.cbegin_normal_forms(),
-  //!                        tc.cbegin_normal_forms() + 10);
+  //! normal_forms(tc) | rx::take(10) | rx::to_vector()
   //! // {0_w,
   //! //  01_w,
   //! //  012_w,
@@ -322,12 +315,29 @@ namespace libsemigroups {
 
     //! \ingroup todd_coxeter_class_mem_types_group
     //!
-    //! The type of the nodes in the word graph.
+    //! \brief The type of the nodes in the word graph.
     using node_type = typename WordGraph<uint32_t>::node_type;
 
     //! \ingroup todd_coxeter_class_mem_types_group
     //!
-    //! The type of the edge-labels in the word graph.
+    //! \brief The type of the index of a class.
+    //!
+    //! The type of the indices of classes in the congruence represented by a
+    //! \ref todd_coxeter_class_group "ToddCoxeter" instance.
+    //!
+    //! This alias is the same as \ref node_type, and is included to because
+    //! if a \ref todd_coxeter_class_group "ToddCoxeter" instance is created
+    //! from a Presentation, and that presentation does not \ref
+    //! Presentation::contains_empty_word, then there is always at least one
+    //! more node (the node representing the empty word) in the \ref
+    //! current_word_graph than there are classes in the congruence. This alias
+    //! is used to delineate the cases when we are referring to a node or a
+    //! class index.
+    using index_type = node_type;
+
+    //! \ingroup todd_coxeter_class_mem_types_group
+    //!
+    //! \brief The type of the edge-labels in the word graph.
     using label_type = typename WordGraph<uint32_t>::label_type;
 
     ////////////////////////////////////////////////////////////////////////
@@ -635,7 +645,7 @@ namespace libsemigroups {
    public:
     //! \ingroup todd_coxeter_class_mem_types_group
     //!
-    //! The type of the underlying WordGraph.
+    //! \brief The type of the underlying WordGraph.
     using word_graph_type = Graph;
 
     ////////////////////////////////////////////////////////////////////////
@@ -738,12 +748,12 @@ namespace libsemigroups {
     //!
     //! \tparam Node the type of the nodes in the 2nd argument.
     //!
-    //! \param knd the kind (left, right, or twosided) of the congruence.
+    //! \param knd the kind (1- or 2-sided) of the congruence.
     //! \param wg the word graph.
     //!
     //! \exceptions
     //! \no_libsemigroups_except
-    // TODO(0) a to_todd_coxeter variant that throws if wg is not valid
+    // TODO(1) a to_todd_coxeter variant that throws if wg is not valid
     // see below
     template <typename Node>
     ToddCoxeter(congruence_kind knd, WordGraph<Node> const& wg)
@@ -761,26 +771,17 @@ namespace libsemigroups {
     //!
     //! \tparam Node the type of the nodes in the 2nd argument.
     //!
-    //! \param knd the kind (left, right, or twosided) of the congruence.
+    //! \param knd the kind (1- or 2-sided) of the congruence.
     //! \param wg the word graph.
     //!
     //! \returns A reference to `*this`.
     //!
     //! \exceptions
     //! \no_libsemigroups_except
-    // TODO(0) out of line
-    // TODO(0) a to_todd_coxeter variant that throws if wg is not valid
+    // TODO(1) a to_todd_coxeter variant that throws if wg is not valid
     // i.e. any target is out of bounds
     template <typename Node>
-    ToddCoxeter& init(congruence_kind knd, WordGraph<Node> const& wg) {
-      LIBSEMIGROUPS_ASSERT(!_setting_stack.empty());
-      CongruenceInterface::init(knd);
-      _word_graph = wg;
-      _word_graph.presentation().alphabet(wg.out_degree());
-      copy_settings_into_graph();
-      _input_presentation = _word_graph.presentation();
-      return *this;
-    }
+    ToddCoxeter& init(congruence_kind knd, WordGraph<Node> const& wg);
 
     //! \brief Construct from \ref congruence_kind and \ref
     //! todd_coxeter_class_group "ToddCoxeter".
@@ -891,21 +892,37 @@ namespace libsemigroups {
       init(knd, p, wg);
     }
 
-    // TODO(0) a to_todd_coxeter variant that throws if p is not valid
-    // TODO(0) out of line
+    // TODO(1) a to_todd_coxeter variant that throws if p is not valid
+    // TODO(0) out of line or rm
     template <typename Node>
     ToddCoxeter& init(congruence_kind                knd,
                       Presentation<word_type> const& p,
                       WordGraph<Node> const&         wg) {
       init(knd, p);
       _word_graph = wg;
-      _word_graph.presentation(p);  // TODO does this throw if p is invalid?
+      _word_graph.presentation(p);  // TODO(0) does this throw if p is invalid?
       copy_settings_into_graph();
       return *this;
     }
 #endif
 
-    // TODO(0) doc
+    //! \ingroup todd_coxeter_class_init_group
+    //!
+    //! \brief Throws if any letter in a range is out of bounds.
+    //!
+    //! This function throws a LibsemigroupsException if any value pointed at
+    //! by an iterator in the range \p first to \p last is out of bounds (i.e.
+    //! does not belong to the alphabet of the \ref presentation used to
+    //! construct the \ref todd_coxeter_class_group "ToddCoxeter" instance).
+    //!
+    //! \tparam Iterator1 the type of first argument \p first.
+    //! \tparam Iterator2 the type of second argument \p last.
+    //!
+    //! \param first iterator pointing at the first letter of the word.
+    //! \param last iterator pointing one beyond the last letter of the word.
+    //!
+    //! \throw LibsemigroupsException if any letter in the range from \p first
+    //! to \p last is out of bounds.
     template <typename Iterator1, typename Iterator2>
     void throw_if_letter_out_of_bounds(Iterator1 first, Iterator2 last) const {
       presentation().validate_word(first, last);
@@ -1380,9 +1397,8 @@ namespace libsemigroups {
     //! \brief Set the number of Felsch style definitions in
     //! [ACE](https://staff.itee.uq.edu.au/havas/) strategies.
     //!
-    //! This function can be used to set the approx number of Felsch style
-    //! definitions in each phase of the
-    // TODO is this the number of edges or nodes added?
+    //! This function can be used to set the approximate number of nodes
+    //! defined in Felsch style in each phase of the
     //! [ACE](https://staff.itee.uq.edu.au/havas/) style strategies:
     //! * \ref options::strategy::CR;
     //! * \ref options::strategy::R_over_C;
@@ -1429,9 +1445,8 @@ namespace libsemigroups {
     //! \brief Set the number of HLT style definitions in
     //! [ACE](https://staff.itee.uq.edu.au/havas/) strategies.
     //!
-    //! This function can be used to set the approx number of HLT style
-    //! definitions in each phase of the
-    // TODO is this the number of edges or nodes added?
+    //! This function can be used to set the approximate number nodes defined
+    //! in HLT style in each phase of the
     //! [ACE](https://staff.itee.uq.edu.au/havas/) style strategies:
     //! * \ref options::strategy::CR;
     //! * \ref options::strategy::R_over_C;
@@ -1782,7 +1797,7 @@ namespace libsemigroups {
     //! This function can be used to set a lower bound for the number of
     //! classes of the congruence represented by a  \ref
     //! todd_coxeter_class_group "ToddCoxeter" instance. If the number of active
-    //! nodes becomes at least the value of the argument, and the table is
+    //! nodes becomes at least the value of the argument, and the word graph is
     //! complete (\ref word_graph::is_complete returns \c true), then the
     //! enumeration is terminated. When the given bound is equal to the number
     //! of classes, this may prevent following the paths labelled by relations
@@ -1954,13 +1969,12 @@ namespace libsemigroups {
     //!
     //! @{
 
-    // TODO(0) doc
-    // TODO(0) use this
     // [[nodiscard]] bool empty() const {
     //   return (native_presentation().rules.empty() &&
     //   generating_pairs().empty()
     //           && current_word_graph().number_of_nodes_active() == 1);
-    //   // FIXME there's an issue where the word graph can have 0 nodes but 1
+    //   // FIXME(1) there's an issue where the word graph can have 0 nodes but
+    //   1
     //   // active node.
     // }
 
@@ -2232,27 +2246,11 @@ namespace libsemigroups {
     //! @{
 
    private:
-    // TODO(0) to tpp
     template <typename Iterator1, typename Iterator2>
-    node_type current_index_of_no_checks(citow<Iterator1> first,
-                                         citow<Iterator2> last) const {
-      node_type c = current_word_graph().initial_node();
-
-      c = word_graph::follow_path_no_checks(
-          current_word_graph(), c, first, last);
-      // c is in the range 1, ..., number_of_cosets_active() because 0
-      // represents the identity coset, and does not correspond to an element,
-      // unless native_presentation().contains_empty_word()
-      size_t const offset
-          = (native_presentation().contains_empty_word() ? 0 : 1);
-      return (c == UNDEFINED ? UNDEFINED : static_cast<node_type>(c - offset));
-    }
+    index_type current_index_of_no_checks(citow<Iterator1> first,
+                                          citow<Iterator2> last) const;
 
    public:
-    // TODO(0) change node_type to index_type where appropriate in the next two
-    // sections, they aren't the same unless the presentaiton contains the empty
-    // word
-
     //! \brief Returns the current index of the class containing a word.
     //!
     //! This function returns the current index of the class containing the word
@@ -2280,8 +2278,8 @@ namespace libsemigroups {
     // NOTE THAT: the graph contains one more node than there are element if
     // the underlying presentation does not contain the empty word
     template <typename Iterator1, typename Iterator2>
-    node_type current_index_of_no_checks(Iterator1 first,
-                                         Iterator2 last) const {
+    index_type current_index_of_no_checks(Iterator1 first,
+                                          Iterator2 last) const {
       return current_index_of_no_checks(make_citow(first), make_citow(last));
     }
 
@@ -2309,7 +2307,7 @@ namespace libsemigroups {
     //!
     //! \cong_intf_throws_if_letters_out_of_bounds
     template <typename Iterator1, typename Iterator2>
-    node_type current_index_of(Iterator1 first, Iterator2 last) const {
+    index_type current_index_of(Iterator1 first, Iterator2 last) const {
       throw_if_letter_out_of_bounds(first, last);
       return current_index_of_no_checks(first, last);
     }
@@ -2338,16 +2336,8 @@ namespace libsemigroups {
     //! \returns The index of the class containing the word.
     //!
     //! \cong_intf_warn_assume_letters_in_bounds
-    // TODO(0) to tpp
     template <typename Iterator1, typename Iterator2>
-    node_type index_of_no_checks(Iterator1 first, Iterator2 last) {
-      run();
-      LIBSEMIGROUPS_ASSERT(finished());
-      if (!is_standardized()) {
-        standardize(Order::shortlex);
-      }
-      return current_index_of_no_checks(first, last);
-    }
+    index_type index_of_no_checks(Iterator1 first, Iterator2 last);
 
     //! \brief Returns the index of the class containing a word.
     //!
@@ -2374,7 +2364,7 @@ namespace libsemigroups {
     //!
     //! \cong_intf_throws_if_letters_out_of_bounds
     template <typename Iterator1, typename Iterator2>
-    node_type index_of(Iterator1 first, Iterator2 last) {
+    index_type index_of(Iterator1 first, Iterator2 last) {
       throw_if_letter_out_of_bounds(first, last);
       return index_of_no_checks(first, last);
     }
@@ -2404,19 +2394,9 @@ namespace libsemigroups {
     // TODO(2) maybe this isn't great, because we always wrap the incoming
     // iterators, even the _input_presentation, and the native_presentation are
     // identical, and the wrapping isn't necessary.
-    // TODO(0) to tpp
     template <typename OutputIterator>
     itow<OutputIterator> current_word_of_no_checks(itow<OutputIterator> d_first,
-                                                   node_type            i) {
-      if (!is_standardized()) {
-        standardize(Order::shortlex);
-      }
-      if (!native_presentation().contains_empty_word()) {
-        ++i;
-      }
-
-      return _forest.path_to_root_no_checks(d_first, i);
-    }
+                                                   index_type           i);
 
    public:
     //! \brief Insert a current word representing a class with given index into
@@ -2448,7 +2428,7 @@ namespace libsemigroups {
     // the underlying presentation does not contain the empty word
     template <typename OutputIterator>
     OutputIterator current_word_of_no_checks(OutputIterator d_first,
-                                             node_type      i) {
+                                             index_type     i) {
       return current_word_of_no_checks(make_itow(d_first), i).get();
     }
 
@@ -2476,19 +2456,8 @@ namespace libsemigroups {
     //! \throws LibsemigroupsException if \p i is out of bounds.
     //!
     //! \todd_coxeter_note_reverse
-    // TODO(0) to tpp
     template <typename OutputIterator>
-    OutputIterator current_word_of(OutputIterator d_first, node_type i) {
-      size_t const offset
-          = (native_presentation().contains_empty_word() ? 0 : 1);
-      if (i >= _word_graph.number_of_nodes_active() - offset) {
-        LIBSEMIGROUPS_EXCEPTION("invalid class index, expected a value in "
-                                "the range [0, {}), found {}",
-                                _word_graph.number_of_nodes_active() - offset,
-                                i);
-      }
-      return current_word_of_no_checks(d_first, i);
-    }
+    OutputIterator current_word_of(OutputIterator d_first, index_type i);
 
     //! \brief Insert the word representing a class with given index into
     //! an output iterator.
@@ -2514,7 +2483,7 @@ namespace libsemigroups {
     //!
     //! \todd_coxeter_note_reverse
     template <typename Iterator>
-    Iterator word_of_no_checks(Iterator d_first, node_type i) {
+    Iterator word_of_no_checks(Iterator d_first, index_type i) {
       run();
       LIBSEMIGROUPS_ASSERT(finished());
       return current_word_of_no_checks(d_first, i);
@@ -2545,7 +2514,7 @@ namespace libsemigroups {
     //!
     //! \todd_coxeter_note_reverse
     template <typename Iterator>
-    Iterator word_of(Iterator d_first, node_type i) {
+    Iterator word_of(Iterator d_first, index_type i) {
       run();
       LIBSEMIGROUPS_ASSERT(finished());
       return current_word_of(d_first, i);
@@ -2610,13 +2579,82 @@ namespace libsemigroups {
   };  // class ToddCoxeter
 
   ////////////////////////////////////////////////////////////////////////
+  // Out-of-line ToddCoxeter mem fn templates
+  ////////////////////////////////////////////////////////////////////////
+
+  template <typename Node>
+  ToddCoxeter& ToddCoxeter::init(congruence_kind        knd,
+                                 WordGraph<Node> const& wg) {
+    LIBSEMIGROUPS_ASSERT(!_setting_stack.empty());
+    CongruenceInterface::init(knd);
+    _word_graph = wg;
+    _word_graph.presentation().alphabet(wg.out_degree());
+    copy_settings_into_graph();
+    _input_presentation = _word_graph.presentation();
+    return *this;
+  }
+
+  template <typename Iterator1, typename Iterator2>
+  ToddCoxeter::index_type
+  ToddCoxeter::current_index_of_no_checks(citow<Iterator1> first,
+                                          citow<Iterator2> last) const {
+    node_type c = current_word_graph().initial_node();
+
+    c = word_graph::follow_path_no_checks(current_word_graph(), c, first, last);
+    // c is in the range 1, ..., number_of_cosets_active() because 0
+    // represents the identity coset, and does not correspond to an element,
+    // unless native_presentation().contains_empty_word()
+    size_t const offset = (native_presentation().contains_empty_word() ? 0 : 1);
+    return (c == UNDEFINED ? UNDEFINED : static_cast<index_type>(c - offset));
+  }
+
+  template <typename Iterator1, typename Iterator2>
+  ToddCoxeter::index_type ToddCoxeter::index_of_no_checks(Iterator1 first,
+                                                          Iterator2 last) {
+    run();
+    LIBSEMIGROUPS_ASSERT(finished());
+    if (!is_standardized()) {
+      standardize(Order::shortlex);
+    }
+    return current_index_of_no_checks(first, last);
+  }
+
+  template <typename OutputIterator>
+  ToddCoxeter::itow<OutputIterator>
+  ToddCoxeter::current_word_of_no_checks(itow<OutputIterator> d_first,
+                                         index_type           i) {
+    if (!is_standardized()) {
+      standardize(Order::shortlex);
+    }
+    if (!native_presentation().contains_empty_word()) {
+      ++i;
+    }
+
+    return _forest.path_to_root_no_checks(d_first, i);
+  }
+
+  template <typename OutputIterator>
+  OutputIterator ToddCoxeter::current_word_of(OutputIterator d_first,
+                                              index_type     i) {
+    size_t const offset = (native_presentation().contains_empty_word() ? 0 : 1);
+    if (i >= _word_graph.number_of_nodes_active() - offset) {
+      LIBSEMIGROUPS_EXCEPTION("invalid class index, expected a value in "
+                              "the range [0, {}), found {}",
+                              _word_graph.number_of_nodes_active() - offset,
+                              i);
+    }
+    return current_word_of_no_checks(d_first, i);
+  }
+
+  ////////////////////////////////////////////////////////////////////////
   // ToddCoxeter helpers
   ////////////////////////////////////////////////////////////////////////
 
   namespace todd_coxeter {
 
 #ifndef PARSED_BY_DOXYGEN
-    using node_type = typename ToddCoxeter::node_type;
+    // This is just for our convenience here, so not documented.
+    using index_type = typename ToddCoxeter::index_type;
 #endif
 
     //! \defgroup todd_coxeter_helpers_group ToddCoxeter helper functions
@@ -2624,6 +2662,8 @@ namespace libsemigroups {
     //!
     //! \brief Helper functions for the \ref todd_coxeter_class_group
     //! "ToddCoxeter" class.
+    //!
+    //! Defined in \c todd-coxeter.hpp.
     //!
     //! This page contains documentation for many helper functions for the \ref
     //! todd_coxeter_class_group "ToddCoxeter" class. In particular, these
@@ -2646,6 +2686,8 @@ namespace libsemigroups {
 
     //! \brief Returns the current index of the class containing a word.
     //!
+    //! Defined in \c todd-coxeter.hpp.
+    //!
     //! This function just calls
     //! \code
     //! tc.current_index_of_no_checks(std::begin(w), std::end(w));
@@ -2660,12 +2702,15 @@ namespace libsemigroups {
     //!
     //! \returns The current index of the class containing the word.
     template <typename Word>
-    node_type current_index_of_no_checks(ToddCoxeter const& tc, Word const& w) {
+    index_type current_index_of_no_checks(ToddCoxeter const& tc,
+                                          Word const&        w) {
       return tc.current_index_of_no_checks(std::begin(w), std::end(w));
     }
 
     //! \brief Returns the current index of the class containing a word.
     //!
+    //! Defined in \c todd-coxeter.hpp.
+    //!
     //! This function just calls
     //! \code
     //! tc.current_index_of(std::begin(w), std::end(w));
@@ -2680,11 +2725,13 @@ namespace libsemigroups {
     //!
     //! \returns The current index of the class containing the word.
     template <typename Word>
-    node_type current_index_of(ToddCoxeter const& tc, Word const& w) {
+    index_type current_index_of(ToddCoxeter const& tc, Word const& w) {
       return tc.current_index_of(std::begin(w), std::end(w));
     }
 
     //! \brief Returns the index of the class containing a word.
+    //!
+    //! Defined in \c todd-coxeter.hpp.
     //!
     //! This function just calls
     //! \code
@@ -2700,11 +2747,13 @@ namespace libsemigroups {
     //!
     //! \returns The index of the class containing the word.
     template <typename Word>
-    node_type index_of_no_checks(ToddCoxeter& tc, Word const& w) {
+    index_type index_of_no_checks(ToddCoxeter& tc, Word const& w) {
       return tc.index_of_no_checks(std::begin(w), std::end(w));
     }
 
     //! \brief Returns the index of the class containing a word.
+    //!
+    //! Defined in \c todd-coxeter.hpp.
     //!
     //! This function just calls
     //! \code
@@ -2720,11 +2769,13 @@ namespace libsemigroups {
     //!
     //! \returns The index of the class containing the word.
     template <typename Word>
-    node_type index_of(ToddCoxeter& tc, Word const& w) {
+    index_type index_of(ToddCoxeter& tc, Word const& w) {
       return tc.index_of(std::begin(w), std::end(w));
     }
 
     //! \brief Returns the current index of the class containing a word.
+    //!
+    //! Defined in \c todd-coxeter.hpp.
     //!
     //! This function just calls
     //! \code
@@ -2740,12 +2791,14 @@ namespace libsemigroups {
     //!
     //! \returns The current index of the class containing the word.
     template <typename Int = size_t>
-    node_type current_index_of_no_checks(ToddCoxeter&                      tc,
-                                         std::initializer_list<Int> const& w) {
+    index_type current_index_of_no_checks(ToddCoxeter&                      tc,
+                                          std::initializer_list<Int> const& w) {
       return current_index_of_no_checks<std::initializer_list<Int>>(tc, w);
     }
 
     //! \brief Returns the current index of the class containing a word.
+    //!
+    //! Defined in \c todd-coxeter.hpp.
     //!
     //! This function just calls
     //! \code
@@ -2761,12 +2814,14 @@ namespace libsemigroups {
     //!
     //! \returns The current index of the class containing the word.
     template <typename Int = size_t>
-    node_type current_index_of(ToddCoxeter&                      tc,
-                               std::initializer_list<Int> const& w) {
+    index_type current_index_of(ToddCoxeter&                      tc,
+                                std::initializer_list<Int> const& w) {
       return current_index_of<std::initializer_list<Int>>(tc, w);
     }
 
     //! \brief Returns the index of the class containing a word.
+    //!
+    //! Defined in \c todd-coxeter.hpp.
     //!
     //! This function just calls
     //! \code
@@ -2782,12 +2837,14 @@ namespace libsemigroups {
     //!
     //! \returns The index of the class containing the word.
     template <typename Int = size_t>
-    node_type index_of_no_checks(ToddCoxeter&                      tc,
-                                 std::initializer_list<Int> const& w) {
+    index_type index_of_no_checks(ToddCoxeter&                      tc,
+                                  std::initializer_list<Int> const& w) {
       return index_of_no_checks<std::initializer_list<Int>>(tc, w);
     }
 
     //! \brief Returns the index of the class containing a word.
+    //!
+    //! Defined in \c todd-coxeter.hpp.
     //!
     //! This function just calls
     //! \code
@@ -2803,11 +2860,13 @@ namespace libsemigroups {
     //!
     //! \returns The index of the class containing the word.
     template <typename Int = size_t>
-    node_type index_of(ToddCoxeter& tc, std::initializer_list<Int> const& w) {
+    index_type index_of(ToddCoxeter& tc, std::initializer_list<Int> const& w) {
       return index_of<std::initializer_list<Int>>(tc, w);
     }
 
     //! \brief Returns the current index of the class containing a word.
+    //!
+    //! Defined in \c todd-coxeter.hpp.
     //!
     //! This function just calls
     //! \code
@@ -2820,11 +2879,13 @@ namespace libsemigroups {
     //! \param w the word.
     //!
     //! \returns The current index of the class containing the word.
-    inline node_type current_index_of_no_checks(ToddCoxeter& tc,
-                                                char const*  w) {
+    inline index_type current_index_of_no_checks(ToddCoxeter& tc,
+                                                 char const*  w) {
       return tc.current_index_of_no_checks(w, w + std::strlen(w));
     }
     //! \brief Returns the current index of the class containing a word.
+    //!
+    //! Defined in \c todd-coxeter.hpp.
     //!
     //! This function just calls
     //! \code
@@ -2837,11 +2898,13 @@ namespace libsemigroups {
     //! \param w the word.
     //!
     //! \returns The current index of the class containing the word.
-    inline node_type current_index_of(ToddCoxeter& tc, char const* w) {
+    inline index_type current_index_of(ToddCoxeter& tc, char const* w) {
       return tc.current_index_of(w, w + std::strlen(w));
     }
 
     //! \brief Returns the index of the class containing a word.
+    //!
+    //! Defined in \c todd-coxeter.hpp.
     //!
     //! This function just calls
     //! \code
@@ -2854,11 +2917,13 @@ namespace libsemigroups {
     //! \param w the word.
     //!
     //! \returns The current index of the class containing the word.
-    inline node_type index_of_no_checks(ToddCoxeter& tc, char const* w) {
+    inline index_type index_of_no_checks(ToddCoxeter& tc, char const* w) {
       return tc.index_of_no_checks(w, w + std::strlen(w));
     }
 
     //! \brief Returns the index of the class containing a word.
+    //!
+    //! Defined in \c todd-coxeter.hpp.
     //!
     //! This function just calls
     //! \code
@@ -2871,7 +2936,7 @@ namespace libsemigroups {
     //! \param w the word.
     //!
     //! \returns The current index of the class containing the word.
-    inline node_type index_of(ToddCoxeter& tc, char const* w) {
+    inline index_type index_of(ToddCoxeter& tc, char const* w) {
       return tc.index_of(w, w + std::strlen(w));
     }
 
@@ -2881,6 +2946,8 @@ namespace libsemigroups {
 
     //! \brief Returns a word representing a class with given index.
     //!
+    //! Defined in \c todd-coxeter.hpp.
+    //!
     //! See ToddCoxeter::word_of_no_checks for details.
     //!
     //! \tparam Word the type of the returned word (default: \ref
@@ -2891,7 +2958,7 @@ namespace libsemigroups {
     //!
     //! \returns A representative of the class with given index.
     template <typename Word = word_type>
-    Word current_word_of_no_checks(ToddCoxeter& tc, node_type i) {
+    Word current_word_of_no_checks(ToddCoxeter& tc, index_type i) {
       Word result;
       tc.word_of_no_checks(std::back_inserter(result), i);
       std::reverse(std::begin(result), std::end(result));
@@ -2899,6 +2966,8 @@ namespace libsemigroups {
     }
 
     //! \brief Returns a word representing a class with given index.
+    //!
+    //! Defined in \c todd-coxeter.hpp.
     //!
     //! See ToddCoxeter::word_of for details.
     //!
@@ -2910,7 +2979,7 @@ namespace libsemigroups {
     //!
     //! \returns A representative of the class with given index.
     template <typename Word = word_type>
-    Word current_word_of(ToddCoxeter& tc, node_type i) {
+    Word current_word_of(ToddCoxeter& tc, index_type i) {
       Word result;
       tc.word_of(std::back_inserter(result), i);
       std::reverse(std::begin(result), std::end(result));
@@ -2918,6 +2987,8 @@ namespace libsemigroups {
     }
     //! \brief Returns a word representing a class with given index.
     //!
+    //! Defined in \c todd-coxeter.hpp.
+    //!
     //! See ToddCoxeter::word_of_no_checks for details.
     //!
     //! \tparam Word the type of the returned word (default: \ref
@@ -2928,7 +2999,7 @@ namespace libsemigroups {
     //!
     //! \returns A representative of the class with given index.
     template <typename Word = word_type>
-    Word word_of_no_checks(ToddCoxeter& tc, node_type i) {
+    Word word_of_no_checks(ToddCoxeter& tc, index_type i) {
       Word result;
       tc.word_of_no_checks(std::back_inserter(result), i);
       std::reverse(std::begin(result), std::end(result));
@@ -2936,6 +3007,8 @@ namespace libsemigroups {
     }
 
     //! \brief Returns a word representing a class with given index.
+    //!
+    //! Defined in \c todd-coxeter.hpp.
     //!
     //! See ToddCoxeter::word_of for details.
     //!
@@ -2947,7 +3020,7 @@ namespace libsemigroups {
     //!
     //! \returns A representative of the class with given index.
     template <typename Word = word_type>
-    Word word_of(ToddCoxeter& tc, node_type i) {
+    Word word_of(ToddCoxeter& tc, index_type i) {
       Word result;
       tc.word_of(std::back_inserter(result), i);
       std::reverse(std::begin(result), std::end(result));
@@ -2958,10 +3031,10 @@ namespace libsemigroups {
     // Possible future interface helpers - class_of
     ////////////////////////////////////////////////////////////////////////
 
-    // TODO(0) the node_type's in this section should also be index_type
-
     //! \brief Returns a range object containing every word in the congruence
     //! class with given index.
+    //!
+    //! Defined in \c todd-coxeter.hpp.
     //!
     //! This function returns a range object containing every word in belonging
     //! to the class with index \p n in the congruence represented by the
@@ -2978,9 +3051,8 @@ namespace libsemigroups {
     //! ``tc.number_of_classes()``.
     //!
     //! \cong_intf_warn_undecidable{Todd-Coxeter}
-    //! TODO(0) to tpp
     template <typename Word = word_type>
-    auto class_by_index(ToddCoxeter& tc, node_type n) {
+    auto class_by_index(ToddCoxeter& tc, index_type n) {
       size_t const offset = (tc.presentation().contains_empty_word() ? 0 : 1);
       tc.run();
       // We call run and then current_word_graph, because the word
@@ -3002,6 +3074,8 @@ namespace libsemigroups {
     //! \brief Returns a range object containing every word in the congruence
     //! class with given index.
     //!
+    //! Defined in \c todd-coxeter.hpp.
+    //!
     //! This function returns a range object containing every word in belonging
     //! to the class with index \p n in the congruence represented by the
     //!  \ref todd_coxeter_class_group "ToddCoxeter" instance \p tc. Calls to
@@ -3017,9 +3091,8 @@ namespace libsemigroups {
     //! is assumed that \p n is strictly less than ``tc.number_of_classes()``.
     //!
     //! \cong_intf_warn_undecidable{Todd-Coxeter}
-    //! TODO(0) to cpp + remove inline
     template <typename Word = word_type>
-    auto class_by_index_no_checks(ToddCoxeter& tc, node_type n) {
+    auto class_by_index_no_checks(ToddCoxeter& tc, index_type n) {
       size_t const offset = (tc.presentation().contains_empty_word() ? 0 : 1);
       tc.run();
       // We call run and then current_word_graph, because the word
@@ -3043,9 +3116,10 @@ namespace libsemigroups {
     //! \brief Returns a range object containing every word in the congruence
     //! class of a word given by iterators.
     //!
-    //! This function returns a range object containing every word in
-    //! belonging to the same class as the word (contained in the range from
-    //! \p first to
+    //! Defined in \c todd-coxeter.hpp.
+    //!
+    //! This function returns a range object containing every word in belonging
+    //! to the same class as the word (contained in the range from \p first to
     //! \p last) in the congruence represented by the  \ref
     //! todd_coxeter_class_group "ToddCoxeter" instance \p tc. Calls to this
     //! function trigger a full enumeration of \p tc.
@@ -3070,6 +3144,8 @@ namespace libsemigroups {
 
     //! \brief Returns a range object containing every word in the congruence
     //! class of a word given by iterators.
+    //!
+    //! Defined in \c todd-coxeter.hpp.
     //!
     //! This function returns a range object containing every word in
     //! belonging to the same class as the word (contained in the range from
@@ -3100,6 +3176,8 @@ namespace libsemigroups {
     //! \brief Returns a range object containing every word in the congruence
     //! class of a given word.
     //!
+    //! Defined in \c todd-coxeter.hpp.
+    //!
     //! This function returns a range object containing every word in
     //! belonging to the same class as the input word \p w in the congruence
     //! represented by the  \ref todd_coxeter_class_group "ToddCoxeter" instance
@@ -3124,6 +3202,8 @@ namespace libsemigroups {
 
     //! \brief Returns a range object containing every word in the congruence
     //! class of a given word.
+    //!
+    //! Defined in \c todd-coxeter.hpp.
     //!
     //! This function returns a range object containing every word in
     //! belonging to the same class as the input word \p w in the congruence
@@ -3150,6 +3230,8 @@ namespace libsemigroups {
     //! \brief Returns a range object containing every word in the congruence
     //! class of a given word.
     //!
+    //! Defined in \c todd-coxeter.hpp.
+    //!
     //! This function returns a range object containing every word in
     //! belonging to the same class as the input word \p w in the congruence
     //! represented by the  \ref todd_coxeter_class_group "ToddCoxeter" instance
@@ -3168,12 +3250,14 @@ namespace libsemigroups {
     //! \cong_intf_warn_undecidable{Todd-Coxeter}
     template <typename Word = word_type, typename Int = size_t>
     auto class_of(ToddCoxeter& tc, std::initializer_list<Int> const& w) {
-      // TODO(0) static_assert that Int is integral
+      static_assert(std::is_integral_v<Int>);
       return class_of<Word>(tc, std::begin(w), std::end(w));
     }
 
     //! \brief Returns a range object containing every word in the congruence
     //! class of a given word.
+    //!
+    //! Defined in \c todd-coxeter.hpp.
     //!
     //! This function returns a range object containing every word in
     //! belonging to the same class as the input word \p w in the congruence
@@ -3194,12 +3278,15 @@ namespace libsemigroups {
     template <typename Word = word_type, typename Int = size_t>
     auto class_of_no_checks(ToddCoxeter&                      tc,
                             std::initializer_list<Int> const& w) {
-      // TODO(0) static_assert that Int is integral
+      static_assert(std::is_integral_v<Int>);
+      return class_of<Word>(tc, std::begin(w), std::end(w));
       return class_of_no_checks<Word>(tc, std::begin(w), std::end(w));
     }
 
     //! \brief Returns a range object containing every word in the congruence
     //! class of a given word.
+    //!
+    //! Defined in \c todd-coxeter.hpp.
     //!
     //! This function returns a range object containing every word in
     //! belonging to the same class as the input word \p w in the congruence
@@ -3215,13 +3302,14 @@ namespace libsemigroups {
     //! \cong_intf_warn_assume_letters_in_bounds
     //!
     //! \cong_intf_warn_undecidable{Todd-Coxeter}
-    // TODO(0) to cpp + remove inline
     inline auto class_of_no_checks(ToddCoxeter& tc, char const* w) {
       return class_of_no_checks<std::string>(tc, w, w + std::strlen(w));
     }
 
     //! \brief Returns a range object containing every word in the congruence
     //! class of a given word.
+    //!
+    //! Defined in \c todd-coxeter.hpp.
     //!
     //! This function returns a range object containing every word in
     //! belonging to the same class as the input word \p w in the congruence
@@ -3237,7 +3325,6 @@ namespace libsemigroups {
     //! \cong_intf_throws_if_letters_out_of_bounds
     //!
     //! \cong_intf_warn_undecidable{Todd-Coxeter}
-    //! TODO(0) to cpp + remove inline
     inline auto class_of(ToddCoxeter& tc, char const* w) {
       return class_of<std::string>(tc, w, w + std::strlen(w));
     }
@@ -3268,7 +3355,6 @@ namespace libsemigroups {
     // Possible future interface helpers - is_traversal
     ////////////////////////////////////////////////////////////////////////
     // The next function is temporarily removed, to simplify the v3 release
-    // TODO(0) doc
     // template <typename Iterator>
     // bool is_traversal(ToddCoxeter& tc, Iterator first, Iterator last) {
     //   return first_equivalent_pair(tc, first, last) == std::pair(last, last);
@@ -3282,7 +3368,7 @@ namespace libsemigroups {
     // namespace
     //! \brief Check if the congruence has more than one class.
     //!
-    //! This function is defined in \c todd-coxeter.hpp.
+    //! Defined in \c todd-coxeter.hpp.
     //!
     //! Returns tril::TRUE if it is possible to show that the congruence is
     //! non-trivial; tril::FALSE if the congruence is already known to be
@@ -3295,7 +3381,7 @@ namespace libsemigroups {
     //! the enumeration concludes:
     //! 1. running the enumeration for the specified amount of time
     //! 2. repeatedly choosing a random pair of nodes and identifying them,
-    //!    until the number of nodes left in the quotient is smaller than
+    //!    until the number of nodes remaining in the quotient is smaller than
     //!    \p threshold times the initial number of nodes for this step.
     //! If at the end of this process, the  \ref todd_coxeter_class_group
     //! "ToddCoxeter" instance is non-trivial, then the original  \ref
@@ -3324,7 +3410,7 @@ namespace libsemigroups {
     //! \brief Return an iterator pointing at the left hand side of a redundant
     //! rule.
     //!
-    //! This function is defined in \c todd-coxeter.hpp.
+    //! Defined in \c todd-coxeter.hpp.
     //!
     //! Starting with the last rule in the presentation, this function
     //! attempts to run the Todd-Coxeter algorithm on the rules of the
@@ -3452,6 +3538,8 @@ namespace libsemigroups {
 
     //! \brief Returns a range object containing the normal forms.
     //!
+    //! Defined in \c todd-coxeter.hpp.
+    //!
     //! This function returns a range object containing normal forms of the
     //! classes of the congruence represented by an instance of ToddCoxeter. The
     //! order of the classes, and the normal form, that is returned are
@@ -3469,7 +3557,6 @@ namespace libsemigroups {
     //! \no_libsemigroups_except
     //!
     //! \cong_intf_warn_undecidable{Todd-Coxeter}.
-    // TODO(0) out of line this
     template <typename Word = word_type>
     inline auto normal_forms(ToddCoxeter& tc) {
       // TODO(1) avoid allocations here.
@@ -3495,6 +3582,8 @@ namespace libsemigroups {
 
     //! \brief Partition a range of words.
     //!
+    //! Defined in \c todd-coxeter.hpp.
+    //!
     //! This function returns the partition of the words in the range \p r
     //! induced by the \ref todd_coxeter_class_group "ToddCoxeter" instance \p
     //! tc. This function triggers a full enumeration of \p tc.
@@ -3515,7 +3604,6 @@ namespace libsemigroups {
     //! \throws LibsemigroupsException if the input range of words is infinite.
     //!
     //! \cong_intf_warn_undecidable{Todd-Coxeter}.
-    // TODO(0) out of line
     template <typename Range,
               typename OutputWord = std::decay_t<typename Range::output_type>,
               typename = std::enable_if_t<rx::is_input_or_sink_v<Range>>>
@@ -3561,6 +3649,8 @@ namespace libsemigroups {
     //! \brief Find the non-trivial classes in the partition of a range of
     //! words.
     //!
+    //! Defined in \c todd-coxeter.hpp.
+    //!
     //! This function returns the classes with size at least \f$2\f$ in the
     //! partition of the words in the range \p r induced by the \ref
     //! todd_coxeter_class_group "ToddCoxeter" instance \p tc. This function
@@ -3600,9 +3690,10 @@ namespace libsemigroups {
     //! \brief Find the non-trivial classes in the partition of the normal
     //! forms of one ToddCoxeter instance in another.
     //!
+    //! Defined in \c todd-coxeter.hpp.
+    //!
     //! This function returns the classes with size at least \f$2\f$ in the
-    //! partition of the normal forms of \p tc2 according to
-    //! the \ref
+    //! partition of the normal forms of \p tc2 according to the \ref
     //! todd_coxeter_class_group "ToddCoxeter" instance \p tc1. This function
     //! triggers a full enumeration of \p tc1 and \p tc2.
     //!
@@ -3630,15 +3721,23 @@ namespace libsemigroups {
     //! @}
   }  // namespace todd_coxeter
 
-  // TODO(0) doc
-  // TODO(0) to cpp
-  // TODO(0) remove inline
-  inline std::string to_human_readable_repr(ToddCoxeter const& tc) {
-    return fmt::format("<ToddCoxeter over {} with {}/{} active/nodes>",
-                       to_human_readable_repr(tc.presentation()),
-                       tc.current_word_graph().number_of_nodes_active(),
-                       tc.current_word_graph().number_of_nodes());
-  }
+  //! \ingroup todd_coxeter_group
+  //!
+  //! \brief Return a human readable representation of a \ref
+  //! todd_coxeter_class_group "ToddCoxeter" object.
+  //!
+  //! Defined in ``todd-coxeter.hpp``.
+  //!
+  //! This function returns a human readable representation of a
+  //! \ref todd_coxeter_class_group "ToddCoxeter" object.
+  //!
+  //! \param tc the \ref todd_coxeter_class_group "ToddCoxeter" object.
+  //!
+  //! \returns A std::string containing the representation.
+  //!
+  //! \exceptions
+  //! \no_libsemigroups_except
+  std::string to_human_readable_repr(ToddCoxeter const& tc);
 
 }  // namespace libsemigroups
 #endif  // LIBSEMIGROUPS_TODD_COXETER_HPP_
