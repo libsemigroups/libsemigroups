@@ -93,42 +93,56 @@ namespace libsemigroups {
   Kambites<Word>::~Kambites() = default;
 
   ////////////////////////////////////////////////////////////////////////
-  // CongruenceInterface - pure virtual functions impl - public
+  // Interface requirements - contains
   ////////////////////////////////////////////////////////////////////////
 
-  template <typename Word>
-  bool Kambites<Word>::contains(word_type const& u, word_type const& v) {
-    validate_small_overlap_class();
-    // Words aren't validated, the below returns false if they contain
-    // letters not in the alphabet.
-    if constexpr (std::is_same_v<internal_type, word_type>) {
-      return wp_prefix(internal_type(u), internal_type(v), internal_type());
-    } else {
-      ToString    to_string(presentation().alphabet());
-      std::string uu = to_string(u);
-      std::string vv = to_string(v);
-      return wp_prefix(internal_type(uu), internal_type(vv), internal_type());
-    }
-  }
+  // The Kambites class requires that input to contains to be actual objects
+  // not iterators. This is different from KnuthBendix and ToddCoxeter.
 
   template <typename Word>
-  template <typename SFINAE>
-  auto Kambites<Word>::contains(value_type const& u, value_type const& v)
-      -> std::enable_if_t<!std::is_same_v<value_type, word_type>, SFINAE> {
-    validate_small_overlap_class();
+  bool Kambites<Word>::contains_no_checks(value_type const& u,
+                                          value_type const& v) {
+    run();
     // Words aren't validated, the below returns false if they contain
     // letters not in the alphabet.
     return wp_prefix(internal_type(u), internal_type(v), internal_type());
   }
 
   template <typename Word>
-  typename Kambites<Word>::value_type
-  Kambites<Word>::normal_form(value_type const& w0) {
-    validate_small_overlap_class();
+  template <typename SFINAE>
+  auto Kambites<Word>::contains_no_checks(word_type const& u,
+                                          word_type const& v)
+      -> std::enable_if_t<!std::is_same_v<value_type, word_type>, SFINAE> {
+    run();
+    // Words aren't validated, the below returns false if they contain
+    // letters not in the alphabet.
+    std::string uu = to_string(presentation(), u);
+    std::string vv = to_string(presentation(), v);
+    return wp_prefix(internal_type(uu), internal_type(vv), internal_type());
+  }
+
+  template <typename Word>
+  template <typename Iterator1,
+            typename Iterator2,
+            typename Iterator3,
+            typename Iterator4>
+  [[nodiscard]] bool Kambites<Word>::contains_no_checks(Iterator1 first1,
+                                                        Iterator2 last1,
+                                                        Iterator3 first2,
+                                                        Iterator4 last2) {
+    _tmp_value1.assign(first1, last1);
+    _tmp_value2.assign(first2, last2);
+    return contains_no_checks(_tmp_value1, _tmp_value2);
+  }
+
+  template <typename Word>
+  void Kambites<Word>::normal_form_no_checks(value_type&       result,
+                                             value_type const& w0) {
     using words:: operator+;
     using words:: operator+=;
     size_t        r = UNDEFINED;
-    internal_type v, w(w0);
+    internal_type w(w0);
+    internal_type v(result);
     while (!w.empty()) {
       if (r == UNDEFINED) {
         normal_form_inner(r, v, w);
@@ -180,17 +194,17 @@ namespace libsemigroups {
       std::swap(w, wp);
       r = s;
     }
-    return v;
+    result = v;
   }
 
   template <typename Word>
   template <typename SFINAE>
-  auto Kambites<Word>::normal_form(word_type const& w)
+  auto Kambites<Word>::normal_form_no_checks(value_type&      result,
+                                             word_type const& w)
       -> std::enable_if_t<!std::is_same_v<value_type, word_type>, SFINAE> {
-    // Words aren't validated, the below returns false if they contain
-    // letters not in the alphabet.
-    std::string uu = to_string(presentation(), w);
-    return to_word(presentation(), normal_form(uu));
+    std::string ww = to_string(presentation(), w);
+    normal_form_no_checks(result, ww);
+    return to_word(presentation(), result);
   }
 
   ////////////////////////////////////////////////////////////////////////
@@ -557,7 +571,13 @@ namespace libsemigroups {
       } else {
         auto pairs = (rx::iterator_range(generating_pairs().cbegin(),
                                          generating_pairs().cend())
-                      | ToString(_presentation.alphabet()) | rx::to_vector());
+                      // TODO(0) just pass the iterators to the start and end of
+                      // everything in generating_pairs() directly to Ukkonen,
+                      // to avoid this conversion and the constexpr
+                      | rx::transform([](word_type const& w) {
+                          return std::string(w.begin(), w.end());
+                        })
+                      | rx::to_vector());
         ukkonen::add_words_no_checks(
             _suffix_tree, pairs.cbegin(), pairs.cend());
         _presentation.rules.insert(_presentation.rules.end(),

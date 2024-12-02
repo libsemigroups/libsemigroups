@@ -73,8 +73,9 @@ namespace libsemigroups {
     template <typename Word, typename OtherWord = Word>
     void check_from_ke(Presentation<Word> const& p) {
       using literals::    operator""_w;
-      Kambites<OtherWord> k(p);
-      auto                s = to_froidure_pin(k);
+      Kambites<OtherWord> k(congruence_kind::twosided, p);
+      auto                ptr = to_froidure_pin(k);
+      auto& s = static_cast<FroidurePin<detail::KE<OtherWord>>&>(*ptr);
       REQUIRE(s.is_finite() == tril::FALSE);
       s.enumerate(100);
       REQUIRE(s.current_size() == 8'205);

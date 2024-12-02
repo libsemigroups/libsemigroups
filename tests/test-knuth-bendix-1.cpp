@@ -59,12 +59,8 @@
 #include "libsemigroups/to-froidure-pin.hpp"  // for to_froidure_pin
 #include "libsemigroups/types.hpp"            // for word_type
 #include "libsemigroups/word-graph.hpp"       // for WordGraph
-#include "libsemigroups/words.hpp"            // for Inner, ToString
 
-// #include "libsemigroups/detail/kbe.hpp"     // for KBE
 #include "libsemigroups/detail/report.hpp"  // for ReportGuard
-
-#include "libsemigroups/ranges.hpp"  // for operator|, to_vector
 
 namespace libsemigroups {
   using namespace rx;
@@ -84,8 +80,8 @@ namespace libsemigroups {
     [[nodiscard]] inline auto
     normal_forms_from_word_graph(KnuthBendix<Rewriter, ReductionOrder>& kb,
                                  WordGraph<WordType>&                   wg) {
-      ReversiblePaths paths(wg);
-      paths.source(0).reverse(kb.kind() == congruence_kind::left);
+      Paths paths(wg);
+      paths.source(0);
       if (!kb.presentation().contains_empty_word()) {
         paths.next();
       }
@@ -112,16 +108,16 @@ namespace libsemigroups {
 
     REQUIRE(kb.number_of_active_rules() == 4);
     REQUIRE(kb.confluent());
-    REQUIRE(kb.normal_form("ca") == "a");
-    REQUIRE(kb.normal_form("ac") == "a");
-    REQUIRE(kb.equal_to("ca", "a"));
-    REQUIRE(kb.equal_to("ac", "a"));
+    REQUIRE(knuth_bendix::reduce(kb, "ca") == "a");
+    REQUIRE(knuth_bendix::reduce(kb, "ac") == "a");
+    REQUIRE(knuth_bendix::contains(kb, "ca", "a"));
+    REQUIRE(knuth_bendix::contains(kb, "ac", "a"));
     REQUIRE(kb.number_of_classes() == POSITIVE_INFINITY);
     REQUIRE(is_obviously_infinite(kb));
 
     auto nf = knuth_bendix::normal_forms(kb).min(1).max(5);
 
-    REQUIRE((nf | ToString("abc") | to_vector())
+    REQUIRE((nf | to_vector())
             == std::vector<std::string>({"a", "c", "cc", "ccc", "cccc"}));
     // REQUIRE(knuth_bendix::is_reduced(kb));
   }
@@ -153,7 +149,7 @@ namespace libsemigroups {
     REQUIRE(is_obviously_infinite(kb));
     auto nf = knuth_bendix::normal_forms(kb).min(1).max(5);
 
-    REQUIRE((nf | ToString("abc") | to_vector())
+    REQUIRE((nf | to_vector())
             == std::vector<std::string>({"a", "c", "cc", "ccc", "cccc"}));
     REQUIRE(kb.number_of_classes() == POSITIVE_INFINITY);
   }
@@ -187,10 +183,10 @@ namespace libsemigroups {
     REQUIRE(kb.number_of_classes() == POSITIVE_INFINITY);
 
     auto nf = knuth_bendix::normal_forms(kb);
-    REQUIRE((nf.min(1).max(2) | ToString(p.alphabet()) | to_vector())
+    REQUIRE((nf.min(1).max(2) | to_vector())
             == std::vector<std::string>({"0", "2"}));
 
-    REQUIRE((nf.min(1).max(12) | ToString(p.alphabet()) | to_vector())
+    REQUIRE((nf.min(1).max(12) | to_vector())
             == std::vector<std::string>({"0",
                                          "2",
                                          "22",
@@ -227,14 +223,14 @@ namespace libsemigroups {
 
     auto nf = knuth_bendix::normal_forms(kb);
 
-    REQUIRE((nf.min(0).max(5) | ToString(p.alphabet()) | to_vector())
+    REQUIRE((nf.min(0).max(5) | to_vector())
             == std::vector<std::string>(
                 {"",     "0",    "1",    "00",   "01",   "10",   "11",
                  "001",  "010",  "011",  "100",  "101",  "110",  "0010",
                  "0011", "0100", "0101", "0110", "1001", "1011", "1101"}));
-    REQUIRE(
-        (nf.min(0).max(10) | ToString(p.alphabet())
-         | all_of([&kb](auto const& w) { return kb.normal_form(w) == w; })));
+    REQUIRE((nf.min(0).max(10) | all_of([&kb](auto const& w) {
+               return knuth_bendix::reduce(kb, w) == w;
+             })));
   }
 
   TEMPLATE_TEST_CASE("Example 5.1 in Sims (infinite)",
@@ -260,7 +256,7 @@ namespace libsemigroups {
     REQUIRE(kb.number_of_classes() == POSITIVE_INFINITY);
 
     auto nf = knuth_bendix::normal_forms(kb);
-    REQUIRE((nf.min(0).max(5) | ToString(p.alphabet()) | to_vector())
+    REQUIRE((nf.min(0).max(5) | to_vector())
             == std::vector<std::string>(
                 {"",     "a",    "b",    "c",    "d",    "aa",   "ac",
                  "ad",   "bb",   "bc",   "bd",   "cc",   "dd",   "aaa",
@@ -268,9 +264,9 @@ namespace libsemigroups {
                  "bcc",  "bdd",  "ccc",  "ddd",  "aaaa", "aaac", "aaad",
                  "aacc", "aadd", "accc", "addd", "bbbb", "bbbc", "bbbd",
                  "bbcc", "bbdd", "bccc", "bddd", "cccc", "dddd"}));
-    REQUIRE(
-        (nf.min(0).max(6) | ToString(p.alphabet())
-         | all_of([&kb](auto const& w) { return kb.normal_form(w) == w; })));
+    REQUIRE((nf.min(0).max(6) | all_of([&kb](auto const& w) {
+               return knuth_bendix::reduce(kb, w) == w;
+             })));
   }
 
   TEMPLATE_TEST_CASE("Example 5.1 in Sims (infinite) x 2",
@@ -293,17 +289,17 @@ namespace libsemigroups {
     REQUIRE(kb.number_of_classes() == POSITIVE_INFINITY);
 
     auto nf = knuth_bendix::normal_forms(kb);
-    REQUIRE((nf.min(0).max(5) | ToString("abcd") | to_vector())
+    REQUIRE((nf.min(0).max(5) | to_vector())
             == std::vector<std::string>(
-                {"",     "a",    "b",    "c",    "d",    "aa",   "ac",
-                 "ad",   "bb",   "bc",   "bd",   "cc",   "dd",   "aaa",
-                 "aac",  "aad",  "acc",  "add",  "bbb",  "bbc",  "bbd",
-                 "bcc",  "bdd",  "ccc",  "ddd",  "aaaa", "aaac", "aaad",
-                 "aacc", "aadd", "accc", "addd", "bbbb", "bbbc", "bbbd",
-                 "bbcc", "bbdd", "bccc", "bddd", "cccc", "dddd"}));
-    REQUIRE(
-        (nf.min(0).max(6) | ToString(p.alphabet())
-         | all_of([&kb](auto const& w) { return kb.normal_form(w) == w; })));
+                {"",     "a",    "A",    "b",    "B",    "aa",   "ab",
+                 "aB",   "AA",   "Ab",   "AB",   "bb",   "BB",   "aaa",
+                 "aab",  "aaB",  "abb",  "aBB",  "AAA",  "AAb",  "AAB",
+                 "Abb",  "ABB",  "bbb",  "BBB",  "aaaa", "aaab", "aaaB",
+                 "aabb", "aaBB", "abbb", "aBBB", "AAAA", "AAAb", "AAAB",
+                 "AAbb", "AABB", "Abbb", "ABBB", "bbbb", "BBBB"}));
+    REQUIRE((nf.min(0).max(6) | all_of([&kb](auto const& w) {
+               return knuth_bendix::reduce(kb, w) == w;
+             })));
   }
 
   TEMPLATE_TEST_CASE("Example 5.3 in Sims",
@@ -329,7 +325,7 @@ namespace libsemigroups {
     auto nf = knuth_bendix::normal_forms(kb);
     REQUIRE(nf.count() == 12);
 
-    REQUIRE((nf | ToString(p.alphabet()) | to_vector())
+    REQUIRE((nf | to_vector())
             == std::vector<std::string>({"",
                                          "a",
                                          "b",
@@ -342,9 +338,9 @@ namespace libsemigroups {
                                          "bba",
                                          "babb",
                                          "bbab"}));
-    REQUIRE(
-        (nf.min(0).max(6) | ToString(p.alphabet())
-         | all_of([&kb](auto const& w) { return kb.normal_form(w) == w; })));
+    REQUIRE((nf.min(0).max(6) | all_of([&kb](auto const& w) {
+               return knuth_bendix::reduce(kb, w) == w;
+             })));
   }
 
   TEMPLATE_TEST_CASE("Example 5.4 in Sims",
@@ -368,8 +364,7 @@ namespace libsemigroups {
     REQUIRE(kb.confluent());
     REQUIRE(kb.number_of_classes() == 12);
 
-    auto nf
-        = knuth_bendix::normal_forms(kb).min(1).max(5) | ToString(p.alphabet());
+    auto nf = knuth_bendix::normal_forms(kb).min(1).max(5);
     REQUIRE(nf.size_hint() == 11);
     REQUIRE((nf | to_vector())
             == std::vector<std::string>({"B",
@@ -408,12 +403,11 @@ namespace libsemigroups {
     kb.run();
     REQUIRE(kb.number_of_active_rules() == 40);
     REQUIRE(kb.confluent());
-    REQUIRE(kb.normal_form("cc") == "b");
-    REQUIRE(kb.normal_form("ccc") == "");
+    REQUIRE(knuth_bendix::reduce(kb, "cc") == "b");
+    REQUIRE(knuth_bendix::reduce(kb, "ccc") == "");
     REQUIRE(kb.number_of_classes() == 168);
 
-    auto nf
-        = knuth_bendix::normal_forms(kb).min(1).max(5) | ToString(p.alphabet());
+    auto nf = knuth_bendix::normal_forms(kb).min(1).max(5);
     REQUIRE((nf | to_vector())
             == std::vector<std::string>(
                 {"a",    "b",    "c",    "ab",   "ac",   "ba",   "ca",
@@ -459,8 +453,7 @@ namespace libsemigroups {
 
     REQUIRE(equal(expected, paths));
 
-    auto nf
-        = knuth_bendix::normal_forms(kb).min(1).max(5) | ToString(p.alphabet());
+    auto nf = knuth_bendix::normal_forms(kb).min(1).max(5);
     REQUIRE((nf | to_vector())
             == std::vector<std::string>(
                 {"0",    "1",    "2",    "00",   "01",   "10",   "11",
@@ -634,7 +627,7 @@ namespace libsemigroups {
     REQUIRE(!kb1.finished());
     kb1.run();
     REQUIRE(kb1.confluent());
-    REQUIRE(kb1.normal_form("abababbdbcbdbabdbdb") == "bbbbbbddd");
+    REQUIRE(knuth_bendix::reduce(kb1, "abababbdbcbdbabdbdb") == "bbbbbbddd");
 
     kb1.init(twosided, p2);
     REQUIRE(!kb1.confluent());
@@ -653,19 +646,19 @@ namespace libsemigroups {
     REQUIRE(kb1.finished());
     REQUIRE(kb1.confluent());
     REQUIRE(kb1.confluent_known());
-    REQUIRE(kb1.normal_form("abababbdbcbdbabdbdb") == "bbbbbbddd");
+    REQUIRE(knuth_bendix::reduce(kb1, "abababbdbcbdbabdbdb") == "bbbbbbddd");
 
     TestType kb2(std::move(kb1));
     REQUIRE(kb2.confluent());
     REQUIRE(kb2.confluent_known());
     REQUIRE(kb2.finished());
-    REQUIRE(kb2.normal_form("abababbdbcbdbabdbdb") == "bbbbbbddd");
+    REQUIRE(knuth_bendix::reduce(kb2, "abababbdbcbdbabdbdb") == "bbbbbbddd");
 
     kb1 = std::move(kb2);
     REQUIRE(kb1.confluent());
     REQUIRE(kb1.confluent_known());
     REQUIRE(kb1.finished());
-    REQUIRE(kb1.normal_form("abababbdbcbdbabdbdb") == "bbbbbbddd");
+    REQUIRE(knuth_bendix::reduce(kb1, "abababbdbcbdbabdbdb") == "bbbbbbddd");
 
     kb1.init(twosided, std::move(p1));
     REQUIRE(!kb1.confluent());
@@ -674,7 +667,7 @@ namespace libsemigroups {
     REQUIRE(kb1.finished());
     REQUIRE(kb1.confluent());
     REQUIRE(kb1.confluent_known());
-    REQUIRE(kb1.normal_form("abababbdbcbdbabdbdb") == "bbbbbbddd");
+    REQUIRE(knuth_bendix::reduce(kb1, "abababbdbcbdbabdbdb") == "bbbbbbddd");
   }
 
   TEMPLATE_TEST_CASE("constructors/init for partially run",
@@ -759,10 +752,10 @@ namespace libsemigroups {
     //         == to_word_graph<size_t>(
     //             3, {{2, UNDEFINED, 1}, {UNDEFINED, UNDEFINED, 1}}));
 
-    REQUIRE(kb2.equal_to("a", "b"));
-    REQUIRE(kb2.equal_to("a", "ba"));
-    REQUIRE(kb2.equal_to("a", "bb"));
-    REQUIRE(kb2.equal_to("a", "bab"));
+    REQUIRE(knuth_bendix::contains(kb2, "a", "b"));
+    REQUIRE(knuth_bendix::contains(kb2, "a", "ba"));
+    REQUIRE(knuth_bendix::contains(kb2, "a", "bb"));
+    REQUIRE(knuth_bendix::contains(kb2, "a", "bab"));
 
     REQUIRE(knuth_bendix::non_trivial_classes(kb2, kb1)
             == std::vector<std::vector<std::string>>(
@@ -830,30 +823,30 @@ namespace libsemigroups {
     auto                    rg = ReportGuard(false);
     Presentation<word_type> p;
     p.alphabet(4);
-    presentation::add_rule_no_checks(p, {0, 1}, {1, 0});
-    presentation::add_rule_no_checks(p, {0, 2}, {2, 0});
-    presentation::add_rule_no_checks(p, {0, 0}, {0});
-    presentation::add_rule_no_checks(p, {0, 2}, {0});
-    presentation::add_rule_no_checks(p, {2, 0}, {0});
-    presentation::add_rule_no_checks(p, {1, 2}, {2, 1});
-    presentation::add_rule_no_checks(p, {1, 1, 1}, {1});
-    presentation::add_rule_no_checks(p, {1, 2}, {1});
-    presentation::add_rule_no_checks(p, {2, 1}, {1});
-    presentation::add_rule_no_checks(p, {0, 3}, {0});
-    presentation::add_rule_no_checks(p, {3, 0}, {0});
-    presentation::add_rule_no_checks(p, {1, 3}, {1});
-    presentation::add_rule_no_checks(p, {3, 1}, {1});
-    presentation::add_rule_no_checks(p, {2, 3}, {2});
-    presentation::add_rule_no_checks(p, {3, 2}, {2});
+    presentation::add_rule_no_checks(p, 01_w, 10_w);
+    presentation::add_rule_no_checks(p, 02_w, 20_w);
+    presentation::add_rule_no_checks(p, 00_w, 0_w);
+    presentation::add_rule_no_checks(p, 02_w, 0_w);
+    presentation::add_rule_no_checks(p, 20_w, 0_w);
+    presentation::add_rule_no_checks(p, 12_w, 21_w);
+    presentation::add_rule_no_checks(p, 111_w, 1_w);
+    presentation::add_rule_no_checks(p, 12_w, 1_w);
+    presentation::add_rule_no_checks(p, 21_w, 1_w);
+    presentation::add_rule_no_checks(p, 03_w, 0_w);
+    presentation::add_rule_no_checks(p, 30_w, 0_w);
+    presentation::add_rule_no_checks(p, 13_w, 1_w);
+    presentation::add_rule_no_checks(p, 31_w, 1_w);
+    presentation::add_rule_no_checks(p, 23_w, 2_w);
+    presentation::add_rule_no_checks(p, 32_w, 2_w);
 
     TestType kb1(twosided, p);
 
-    presentation::add_rule_no_checks(p, {0}, {1});
+    presentation::add_rule_no_checks(p, 0_w, 1_w);
 
     TestType kb2(twosided, p);
     REQUIRE(knuth_bendix::non_trivial_classes(kb2, kb1)
             == std::vector<std::vector<std::string>>(
-                {{"b", "ab", "bb", "abb", "a"}}));
+                {{{1}, {0, 1}, {1, 1}, {0, 1, 1}, {0}}}));
   }
 
   TEMPLATE_TEST_CASE("non-trivial congruence on an infinite fp semigroup ",
@@ -900,7 +893,7 @@ namespace libsemigroups {
     REQUIRE(kb1.number_of_classes() == POSITIVE_INFINITY);
 
     REQUIRE(
-        equal((knuth_bendix::normal_forms(kb1) | rx::take(1000)),
+        equal((knuth_bendix::normal_forms<word_type>(kb1) | rx::take(1000)),
               (normal_forms_from_word_graph(kb1, test_wg1) | rx::take(1000))));
 
     presentation::add_rule_no_checks(p, 1_w, 2_w);
@@ -916,15 +909,15 @@ namespace libsemigroups {
 
     REQUIRE(kb1.number_of_classes() == POSITIVE_INFINITY);
     REQUIRE(
-        equal((knuth_bendix::normal_forms(kb2) | rx::take(1000)),
+        equal((knuth_bendix::normal_forms<word_type>(kb2) | rx::take(1000)),
               (normal_forms_from_word_graph(kb2, test_wg2) | rx::take(1000))));
 
-    REQUIRE(kb2.equal_to("b", "c"));
+    REQUIRE(knuth_bendix::contains(kb2, 1_w, 2_w));
 
     auto ntc = knuth_bendix::non_trivial_classes(kb2, kb1);
     REQUIRE(ntc.size() == 1);
     REQUIRE(ntc[0].size() == 2);
-    REQUIRE(ntc == decltype(ntc)({{"c", "b"}}));
+    REQUIRE(ntc == decltype(ntc)({{{2}, {1}}}));
   }
 
   TEMPLATE_TEST_CASE("non-trivial congruence on an infinite fp semigroup",
@@ -963,10 +956,12 @@ namespace libsemigroups {
     presentation::add_rule_no_checks(p, 2_w, 3_w);
 
     TestType kb2(twosided, p);
-    auto     ntc = knuth_bendix::non_trivial_classes(kb2, kb1);
+    // TODO(0) be good to be able to specify the output type of
+    // non_trivial_classes
+    auto ntc = knuth_bendix::non_trivial_classes(kb2, kb1);
     REQUIRE(ntc.size() == 1);
     REQUIRE(ntc[0].size() == 3);
-    REQUIRE(ntc == decltype(ntc)({{"c", "d", "b"}}));
+    REQUIRE(ntc == decltype(ntc)({{{2}, {3}, {1}}}));
   }
 
   TEMPLATE_TEST_CASE("trivial congruence on a finite fp semigroup",
@@ -1025,11 +1020,33 @@ namespace libsemigroups {
 
     REQUIRE(ntc.size() == 1);
     REQUIRE(ntc[0].size() == 27);
-    std::vector<std::string> expected
-        = {"a",     "b",     "aa",    "ab",    "ba",     "bb",    "aaa",
-           "baa",   "aba",   "bab",   "abb",   "bba",    "bbb",   "baaa",
-           "abaa",  "bbaa",  "baba",  "abab",  "bbab",   "babb",  "bbaaa",
-           "babaa", "bbaba", "babab", "bbabb", "bbabaa", "bbabab"};
+    std::vector<std::string> expected = {{0},
+                                         {1},
+                                         {0, 0},
+                                         {0, 1},
+                                         {1, 0},
+                                         {1, 1},
+                                         {0, 0, 0},
+                                         {1, 0, 0},
+                                         {0, 1, 0},
+                                         {1, 0, 1},
+                                         {0, 1, 1},
+                                         {1, 1, 0},
+                                         {1, 1, 1},
+                                         {1, 0, 0, 0},
+                                         {0, 1, 0, 0},
+                                         {1, 1, 0, 0},
+                                         {1, 0, 1, 0},
+                                         {0, 1, 0, 1},
+                                         {1, 1, 0, 1},
+                                         {1, 0, 1, 1},
+                                         {1, 1, 0, 0, 0},
+                                         {1, 0, 1, 0, 0},
+                                         {1, 1, 0, 1, 0},
+                                         {1, 0, 1, 0, 1},
+                                         {1, 1, 0, 1, 1},
+                                         {1, 1, 0, 1, 0, 0},
+                                         {1, 1, 0, 1, 0, 1}};
     std::sort(expected.begin(), expected.end());
     std::sort(ntc[0].begin(), ntc[0].end());
     REQUIRE(ntc[0] == expected);
@@ -1057,6 +1074,7 @@ namespace libsemigroups {
     presentation::add_rule_no_checks(p, {0, 7}, {0, 1});
     presentation::add_rule_no_checks(p, {0, 8}, {0, 3});
     presentation::add_rule_no_checks(p, {0, 9}, {0, 3});
+
     presentation::add_rule_no_checks(p, {0, 10}, {0, 0});
     presentation::add_rule_no_checks(p, {1, 1}, {1});
     presentation::add_rule_no_checks(p, {1, 2}, {1});
@@ -1120,7 +1138,7 @@ namespace libsemigroups {
                                                 {},
                                                 {13},
                                                 {UNDEFINED}});
-    REQUIRE(equal(knuth_bendix::normal_forms(kb1),
+    REQUIRE(equal(knuth_bendix::normal_forms<word_type>(kb1),
                   normal_forms_from_word_graph(kb1, test_wg1)));
 
     presentation::add_rule_no_checks(p, {1}, {3});
@@ -1141,29 +1159,29 @@ namespace libsemigroups {
                                                 {},
                                                 {3}});
 
-    REQUIRE(equal(knuth_bendix::normal_forms(kb2),
+    REQUIRE(equal(knuth_bendix::normal_forms<word_type>(kb2),
                   normal_forms_from_word_graph(kb2, test_wg2)));
 
     auto ntc = knuth_bendix::non_trivial_classes(kb2, kb1);
 
-    std::vector<std::string> expected = {"b",
-                                         "d",
-                                         "ab",
-                                         "ad",
-                                         "ba",
-                                         "da",
-                                         "bd",
-                                         "aba",
-                                         "ada",
-                                         "bab",
-                                         "dab",
-                                         "dad",
-                                         "bda",
-                                         "adab"};
+    std::vector<std::string> expected = {{1},
+                                         {3},
+                                         {0, 1},
+                                         {0, 3},
+                                         {1, 0},
+                                         {3, 0},
+                                         {1, 3},
+                                         {0, 1, 0},
+                                         {0, 3, 0},
+                                         {1, 0, 1},
+                                         {3, 0, 1},
+                                         {3, 0, 3},
+                                         {1, 3, 0},
+                                         {0, 3, 0, 1}};
     std::sort(expected.begin(), expected.end());
     std::sort(ntc[0].begin(), ntc[0].end());
     REQUIRE(ntc[0] == expected);
-  }  // namespace libsemigroups
+  }
 
   TEMPLATE_TEST_CASE("non_trivial_classes exceptions",
                      "[026][quick][kbp]",
@@ -1228,15 +1246,15 @@ namespace libsemigroups {
   //   REQUIRE(kb.confluent());
   //   REQUIRE(kb.number_of_active_rules() == 9);
   //
-  //   REQUIRE(kb.equal_to("BAba", "c"));
-  //   REQUIRE(kb.equal_to("CAca", "d"));
-  //   REQUIRE(kb.equal_to("DAda", "y"));
-  //   REQUIRE(kb.equal_to("YByb", "f"));
-  //   REQUIRE(kb.equal_to("FAfa", "g"));
-  //   REQUIRE(kb.equal_to("ga", "ag"));
-  //   REQUIRE(kb.equal_to("GBgb", "h"));
-  //   REQUIRE(kb.equal_to("cb", "bc"));
-  //   REQUIRE(kb.equal_to("ya", "ay"));
+  //   REQUIRE(knuth_bendix::contains(kb, "BAba", "c"));
+  //   REQUIRE(knuth_bendix::contains(kb, "CAca", "d"));
+  //   REQUIRE(knuth_bendix::contains(kb, "DAda", "y"));
+  //   REQUIRE(knuth_bendix::contains(kb, "YByb", "f"));
+  //   REQUIRE(knuth_bendix::contains(kb, "FAfa", "g"));
+  //   REQUIRE(knuth_bendix::contains(kb, "ga", "ag"));
+  //   REQUIRE(knuth_bendix::contains(kb, "GBgb", "h"));
+  //   REQUIRE(knuth_bendix::contains(kb, "cb", "bc"));
+  //   REQUIRE(knuth_bendix::contains(kb, "ya", "ay"));
   // REQUIRE(kb.active_rules() == std::vector<std::pair<std::string,
   // std::string>>({}));
   // }
@@ -1259,7 +1277,7 @@ namespace libsemigroups {
   //   TestType kb(twosided, S);
   //   auto&       P = kb.quotient_froidure_pin();
   //   REQUIRE(P.size() == 88);
-  //   kb.add_pair(S.factorisation(Transf({3, 4, 4, 4, 4})),
+  //   kb.add_generating_pair(S.factorisation(Transf({3, 4, 4, 4, 4})),
   //               S.factorisation(Transf({3, 1, 3, 3, 3})));
   //   // P is now invalid, it's a reference to something that was deleted
   //   in
@@ -1323,7 +1341,7 @@ namespace libsemigroups {
   //   REQUIRE(kb.confluent());
   //   REQUIRE(kb.number_of_active_rules() == 1);
 
-  //   REQUIRE(kb.equal_to("Baab", "aaa"));
+  //   REQUIRE(knuth_bendix::contains(kb, "Baab", "aaa"));
   //   REQUIRE(kb.active_rules()
   //           == std::vector<rule_type>({}));
   // }
@@ -1347,13 +1365,13 @@ namespace libsemigroups {
   //   REQUIRE(kb.confluent());
   //   REQUIRE(kb.number_of_active_rules() == 7);
 
-  //   REQUIRE(kb.equal_to("BAba", "c"));
-  //   REQUIRE(kb.equal_to("CAca", "d"));
-  //   REQUIRE(kb.equal_to("CBcb", "y"));
-  //   REQUIRE(kb.equal_to("da", "ad"));
-  //   REQUIRE(kb.equal_to("ya", "ay"));
-  //   REQUIRE(kb.equal_to("db", "bd"));
-  //   REQUIRE(kb.equal_to("yb", "by"));
+  //   REQUIRE(knuth_bendix::contains(kb, "BAba", "c"));
+  //   REQUIRE(knuth_bendix::contains(kb, "CAca", "d"));
+  //   REQUIRE(knuth_bendix::contains(kb, "CBcb", "y"));
+  //   REQUIRE(knuth_bendix::contains(kb, "da", "ad"));
+  //   REQUIRE(knuth_bendix::contains(kb, "ya", "ay"));
+  //   REQUIRE(knuth_bendix::contains(kb, "db", "bd"));
+  //   REQUIRE(knuth_bendix::contains(kb, "yb", "by"));
   //   REQUIRE(kb.active_rules()
   //           == std::vector<rule_type>({}));
   // }
@@ -1381,8 +1399,8 @@ namespace libsemigroups {
   //   finished. kb.run_for(FOREVER); REQUIRE(kb.number_of_active_rules()
   //   == 11); REQUIRE(kb.confluent()); REQUIRE(kb.size() == 12);
 
-  //   REQUIRE(kb.equal_to("aa", ""));
-  //   REQUIRE(!kb.equal_to("a", "b"));
+  //   REQUIRE(knuth_bendix::contains(kb, "aa", ""));
+  //   REQUIRE(!knuth_bendix::contains(kb, "a", "b"));
 
   //   TestType kb2(&kb);
   //   REQUIRE(kb2.number_of_active_rules() == 11);

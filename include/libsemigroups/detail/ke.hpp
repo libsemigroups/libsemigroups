@@ -59,10 +59,11 @@ namespace libsemigroups {
       KE& operator=(KE&&)      = default;
       ~KE()                    = default;
 
-      KE(Kambites<Word>& k, value_type const& w) : _value(k.normal_form(w)) {}
+      KE(Kambites<Word>& k, value_type const& w)
+          : _value(::libsemigroups::kambites::reduce_no_checks(k, w)) {}
 
-      KE(Kambites<Word>& k, value_type&& w)
-          : _value(k.normal_form(std::move(w))) {}
+      // KE(Kambites<Word>& k, value_type&& w)
+      //     : _value(kambites::reduce_no_checks(k, std::move(w))) {}
 
       KE(Kambites<Word>& k, letter_type a)
           : KE(k, value_type({k.presentation().letter_no_checks(a)})) {}
@@ -200,6 +201,24 @@ namespace libsemigroups {
   tril FroidurePin<detail::KE<word_type>,
                    FroidurePinTraits<detail::KE<word_type>,
                                      Kambites<word_type>>>::is_finite() const;
+
+// TODO(1) this doesn't work because size is a mem fn of FroidurePinBase...
+//  template <>
+//  [[nodiscard]] size_t
+//  FroidurePin<detail::KE<std::string>,
+//              FroidurePinTraits<detail::KE<std::string>,
+//                                Kambites<std::string>>>::size();
+//
+//  template <>
+//  [[nodiscard]] size_t
+//  FroidurePin<detail::KE<detail::MultiStringView>,
+//              FroidurePinTraits<detail::KE<detail::MultiStringView>,
+//                                Kambites<detail::MultiStringView>>>::size();
+//
+//  template <>
+//  [[nodiscard]] size_t FroidurePin<
+//      detail::KE<word_type>,
+//      FroidurePinTraits<detail::KE<word_type>, Kambites<word_type>>>::size();
 #endif
 
 }  // namespace libsemigroups

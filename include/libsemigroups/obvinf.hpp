@@ -119,6 +119,9 @@ namespace libsemigroups {
   // TODO(1) there are definitely some assumptions about the calls to the member
   // functions of an IsObviouslyInfinite (see for example the function
   // is_obviously_infinite for a Presentation). These should be documented.
+  //
+  // TODO(1) this class should be more generic, like CongruenceInterface and
+  // its derived classes, allowing arbitrary iterators of rules to be added
   class IsObviouslyInfinite {
     // The default constructor is private since an object that is default
     // constructed isn't usable with the current public API.
@@ -260,6 +263,11 @@ namespace libsemigroups {
     IsObviouslyInfinite& add_rules_no_checks(std::string const&    lphbt,
                                              const_iterator_string first,
                                              const_iterator_string last);
+
+    IsObviouslyInfinite&
+    add_rules_no_checks(Presentation<std::string> const& lphbt,
+                        const_iterator_word_type         first,
+                        const_iterator_word_type         last);
 
     //! \brief Add rules from iterators to std::pair of std::string.
     //!
@@ -539,8 +547,8 @@ namespace libsemigroups {
     }
     IsObviouslyInfinite ioi(p.alphabet().size());
     ioi.add_rules_no_checks(p.alphabet(), p.rules.cbegin(), p.rules.cend());
-    ioi.add_rules_no_checks(kb.generating_pairs().cbegin(),
-                            kb.generating_pairs().cend());
+    ioi.add_rules_no_checks(
+        p, kb.generating_pairs().cbegin(), kb.generating_pairs().cend());
     return ioi.result();
   }
 

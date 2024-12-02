@@ -294,6 +294,20 @@ ALIASES += iterator_validity="\par Iterator validity"
 ALIASES += iterator_invalid="This function modifies the object defined by \p this, any iterators, pointers or references pointing into \c this may be invalidated by a call to this function."
 ALIASES += parameters="\par Parameters"
 
+ALIASES += cong_intf_warn_assume_letters_in_bounds="\warning This function does not check that the arguments are valid. In particular, it is assumed that every value pointed at by the iterators belongs to `presentation().alphabet()`."
+
+ALIASES += cong_intf_warn_undecidable{1}="\warning Termination of the \1 algorithm is undecidable in general, and this function may never terminate."
+
+ALIASES += cong_intf_params_contains="\tparam Iterator1 the type of the argument \p first1. \tparam Iterator2 the type of the argument \p last1. \tparam Iterator3 the type of the argument \p first2. \tparam Iterator4 the type of the argument \p last2. \param first1 iterator pointing at the first letter of the first word. \param last1 iterator pointing one beyond the last letter in the first word. \param first2 iterator pointing at the first letter of the second word. \param last2 iterator pointing one beyond the last letter in the second word."
+
+ALIASES += cong_intf_params_reduce="\tparam OutputIterator the type of the argument \p d_first. \tparam InputIterator1 the type of the argument \p first. \tparam InputIterator2 the type of the argument \p last. \param d_first output iterator. \param first iterator pointing at the first letter of the input word. \param last iterator pointing one beyond the last letter in the input word."
+
+ALIASES += cong_intf_throws_if_started="\throws LibsemigroupsException if \ref started returns \c true."
+
+ALIASES += cong_intf_throws_if_letters_out_of_bounds="\throws LibsemigroupsException if any of the values pointed at by the iterators is out of range, i.e. they do not belong to `presentation().alphabet()` and `Presentation::validate_word` throws."
+
+ALIASES += todd_coxeter_note_reverse="\note The word output into \p d_first is the desired word in reverse."
+
 # Set the OPTIMIZE_OUTPUT_FOR_C tag to YES if your project consists of C sources
 # only. Doxygen will then generate output that is more tailored for C. For
 # instance, some of the names that are used will be different. The list of all

@@ -44,17 +44,18 @@
 #include "constants.hpp"        // for UNDEFINED, POSITIVE_INFINITY
 #include "debug.hpp"            // for LIBSEMIGROUPS_DEBUG
 #include "exception.hpp"        // for LIBSEMIGROUPS_EXCEPTION
-#include "froidure-pin.hpp"     // for FroidurePin, FroidurePinTraits
 #include "order.hpp"            // for lexicographical_compare
 #include "presentation.hpp"     // for Presentation
 #include "to-presentation.hpp"  // for to_presentation
 #include "types.hpp"            // for word_type, tril, letter_type
 #include "ukkonen.hpp"          // for Ukkonen
-#include "words.hpp"            // for ToStrings
 
 #include "detail/multi-string-view.hpp"  // for MultiStringView
 #include "detail/string.hpp"             // for is_prefix
 #include "detail/uf.hpp"                 // for Duf<>
+
+// TODO(0):
+// * nodiscard
 
 namespace libsemigroups {
 
@@ -76,10 +77,14 @@ namespace libsemigroups {
 
     //! The type of strings used by a Kambites instance.
     // TODO update doc
+    // TODO remove use native_word_type instead
     using value_type
         = std::conditional_t<std::is_same_v<Word, detail::MultiStringView>,
                              std::string,
                              Word>;
+
+    using native_word_type   = value_type;
+    using native_letter_type = typename native_word_type::value_type;
 
    private:
     //! The template parameter \p Word.
@@ -110,11 +115,11 @@ namespace libsemigroups {
     mutable Complements                _complements;
     mutable bool                       _have_class;
     mutable std::vector<RelationWords> _XYZ_data;
+    mutable value_type                 _tmp_value1, _tmp_value2;
 
     Presentation<value_type> _presentation;
     Ukkonen                  _suffix_tree;
 
-   private:
     using internal_type_iterator = typename internal_type::const_iterator;
 
    public:
@@ -123,9 +128,6 @@ namespace libsemigroups {
     ////////////////////////////////////////////////////////////////////////
 
     //! Default constructor.
-    //!
-    //! \par Parameters
-    //! (None)
     //!
     //! \exceptions
     //! \no_libsemigroups_except
@@ -150,25 +152,33 @@ namespace libsemigroups {
 
     ~Kambites();
 
-    explicit Kambites(Presentation<value_type> const& p) : Kambites() {
+    // Although congruence_kind can only be twosided for Kambites objects, we
+    // have the parameter for uniformity with KnuthBendix, ToddCoxeter, and
+    // Congruence.
+    explicit Kambites(congruence_kind, Presentation<value_type> const& p)
+        // TODO(0) throw if congruence_kind is onesided x everywhere in the
+        // constructors here
+
+        : Kambites() {
       p.validate();
       _presentation = p;
       private_init_from_presentation(false);
     }
 
-    Kambites& init(Presentation<value_type> const& p) {
+    Kambites& init(congruence_kind, Presentation<value_type> const& p) {
       p.validate();
       _presentation = p;
       return private_init_from_presentation(true);
     }
 
-    explicit Kambites(Presentation<value_type>&& p) : Kambites() {
+    explicit Kambites(congruence_kind, Presentation<value_type>&& p)
+        : Kambites() {
       p.validate();
       _presentation = std::move(p);
       private_init_from_presentation(false);
     }
 
-    Kambites& init(Presentation<value_type>&& p) {
+    Kambites& init(congruence_kind, Presentation<value_type>&& p) {
       p.validate();
       _presentation = std::move(p);
       return private_init_from_presentation(true);
@@ -176,12 +186,18 @@ namespace libsemigroups {
 
     // No rvalue ref version of this because we can't use the presentation.
     template <typename OtherWord>
-    explicit Kambites(Presentation<OtherWord> const& p)
-        : Kambites(to_presentation<value_type>(p)) {}
+    explicit Kambites(congruence_kind ck, Presentation<OtherWord> const& p)
+        : Kambites(ck,
+                   // The lambda in the next line converts, say, chars to
+                   // size_ts, but doesn't convert size_ts to human_readable
+                   // characters.
+                   to_presentation<value_type>(p, [](auto x) { return x; })) {}
 
     template <typename OtherWord>
-    Kambites& init(Presentation<OtherWord> const& p) {
-      init(to_presentation<value_type>(p));
+    Kambites& init(congruence_kind ck, Presentation<OtherWord> const& p) {
+      // The lambda in the next line converts, say, chars to size_ts, but
+      // doesn't convert size_ts to human_readable characters.
+      init(ck, to_presentation<value_type>(p, [](auto x) { return x; }));
       return *this;
     }
 
@@ -189,40 +205,173 @@ namespace libsemigroups {
       return _presentation;
     }
 
-    //! \copydoc FpSemigroupInterface::size
-    //!
+    ////////////////////////////////////////////////////////////////////////
+    // Interface requirements - add_pairs
+    ////////////////////////////////////////////////////////////////////////
+
+    template <typename Iterator1,
+              typename Iterator2,
+              typename Iterator3,
+              typename Iterator4>
+    Kambites& add_generating_pair_no_checks(Iterator1 first1,
+                                            Iterator2 last1,
+                                            Iterator3 first2,
+                                            Iterator4 last2) {
+      return CongruenceInterface::add_generating_pair_no_checks<Kambites>(
+          first1, last1, first2, last2);
+    }
+
+    template <typename Iterator1,
+              typename Iterator2,
+              typename Iterator3,
+              typename Iterator4>
+    Kambites& add_generating_pair(Iterator1 first1,
+                                  Iterator2 last1,
+                                  Iterator3 first2,
+                                  Iterator4 last2) {
+      return CongruenceInterface::add_generating_pair<Kambites>(
+          first1, last1, first2, last2);
+    }
+
+    ////////////////////////////////////////////////////////////////////////
+    // Interface requirements - number_of_classes
+    ////////////////////////////////////////////////////////////////////////
+
     //! \throws LibsemigroupsException if the small overlap class is not at
     //! least \f$4\f$.
     // Not noexcept, throws
-    [[nodiscard]] uint64_t number_of_classes() override {
+    [[nodiscard]] uint64_t number_of_classes() {
       validate_small_overlap_class();
       return POSITIVE_INFINITY;
     }
 
-    //!
+    ////////////////////////////////////////////////////////////////////////
+    // Interface requirements - contains
+    ////////////////////////////////////////////////////////////////////////
+
+    // The Kambites class requires that input to contains to be actual objects
+    // not iterators. This is different from KnuthBendix and ToddCoxeter.
+   private:  // TODO(0) move to better location
+    [[nodiscard]] bool contains_no_checks(value_type const& u,
+                                          value_type const& v);
+
     //! \throws LibsemigroupsException if the small overlap class is not at
     //! least \f$4\f$.
-    // Not noexcept, throws
-    [[nodiscard]] bool contains(word_type const& u,
-                                word_type const& v) override;
-
-    // Note that the asymmetry between how contains and normal_form are
-    // implemented is because contains is a pure virtual function. Without this
-    // restriction contains could be more simply implemented as normal_form is.
     template <typename SFINAE = bool>
-    [[nodiscard]] auto contains(value_type const& u, value_type const& v)
+    [[nodiscard]] auto contains_no_checks(word_type const& u,
+                                          word_type const& v)
         -> std::enable_if_t<!std::is_same_v<value_type, word_type>, SFINAE>;
 
-    //! \copydoc FpSemigroupInterface::normal_form
-    //!
-    //! \throws LibsemigroupsException if the small overlap class is not at
-    //! least \f$4\f$.
-    // Not noexcept, lots of allocations
-    [[nodiscard]] value_type normal_form(value_type const& w);
+   public:
+    // TODO(0) to tpp
+    template <typename Iterator1,
+              typename Iterator2,
+              typename Iterator3,
+              typename Iterator4>
+    [[nodiscard]] tril currently_contains_no_checks(Iterator1 first1,
+                                                    Iterator2 last1,
+                                                    Iterator3 first2,
+                                                    Iterator4 last2) const {
+      if (finished()) {
+        return const_cast<Kambites*>(this)->contains_no_checks(
+                   first1, last1, first2, last2)
+                   ? tril::TRUE
+                   : tril::FALSE;
+      }
+      return std::equal(first1, last1, first2, last2) ? tril::TRUE
+                                                      : tril::FALSE;
+    }
 
+    template <typename Iterator1,
+              typename Iterator2,
+              typename Iterator3,
+              typename Iterator4>
+    [[nodiscard]] tril currently_contains(Iterator1 first1,
+                                          Iterator2 last1,
+                                          Iterator3 first2,
+                                          Iterator4 last2) const {
+      throw_if_letter_out_of_bounds(first1, last1);
+      throw_if_letter_out_of_bounds(first2, last2);
+
+      return currently_contains_no_checks(first1, last1, first2, last2);
+    }
+
+    template <typename Iterator1,
+              typename Iterator2,
+              typename Iterator3,
+              typename Iterator4>
+    [[nodiscard]] bool contains_no_checks(Iterator1 first1,
+                                          Iterator2 last1,
+                                          Iterator3 first2,
+                                          Iterator4 last2);
+
+    template <typename Iterator1,
+              typename Iterator2,
+              typename Iterator3,
+              typename Iterator4>
+    [[nodiscard]] bool contains(Iterator1 first1,
+                                Iterator2 last1,
+                                Iterator3 first2,
+                                Iterator4 last2) {
+      throw_if_letter_out_of_bounds(first1, last1);
+      throw_if_letter_out_of_bounds(first2, last2);
+      validate_small_overlap_class();
+      return contains_no_checks(first1, last1, first2, last2);
+    }
+
+    ////////////////////////////////////////////////////////////////////////
+    // Interface requirements - reduce
+    ////////////////////////////////////////////////////////////////////////
+
+    // TODO(0) make private
+    void normal_form_no_checks(value_type& result, value_type const& w);
+
+    // TODO(0) make private
     template <typename SFINAE = word_type>
-    [[nodiscard]] auto normal_form(word_type const& w)
+    auto normal_form_no_checks(value_type& result, word_type const& w)
         -> std::enable_if_t<!std::is_same_v<value_type, word_type>, SFINAE>;
+
+    template <typename OutputIterator, typename Iterator1, typename Iterator2>
+    OutputIterator reduce_no_run_no_checks(OutputIterator d_first,
+                                           Iterator1      first,
+                                           Iterator2      last) {
+      // Does nothing
+      return std::copy(first, last, d_first);
+    }
+
+    template <typename OutputIterator, typename Iterator1, typename Iterator2>
+    OutputIterator reduce_no_run(OutputIterator d_first,
+                                 Iterator1      first,
+                                 Iterator2      last) {
+      throw_if_letter_out_of_bounds(first, last);
+      // Also does nothing
+      return reduce_no_run_no_checks(d_first, first, last);
+    }
+
+    template <typename OutputIterator,
+              typename InputIterator1,
+              typename InputIterator2>
+    OutputIterator reduce_no_checks(OutputIterator d_first,
+                                    InputIterator1 first,
+                                    InputIterator2 last) {
+      run();
+      // TODO improve!
+      _tmp_value2.clear();
+      _tmp_value1.assign(first, last);
+      normal_form_no_checks(_tmp_value2, _tmp_value1);
+      return std::copy(std::begin(_tmp_value2), std::end(_tmp_value2), d_first);
+    }
+
+    template <typename OutputIterator,
+              typename InputIterator1,
+              typename InputIterator2>
+    OutputIterator reduce(OutputIterator d_first,
+                          InputIterator1 first,
+                          InputIterator2 last) {
+      throw_if_letter_out_of_bounds(first, last);
+      validate_small_overlap_class();
+      return reduce_no_checks(d_first, first, last);
+    }
 
     ////////////////////////////////////////////////////////////////////////
     // Kambites - member functions - public
@@ -283,6 +432,11 @@ namespace libsemigroups {
       return _suffix_tree;
     }
 
+    template <typename Iterator1, typename Iterator2>
+    void throw_if_letter_out_of_bounds(Iterator1 first, Iterator2 last) const {
+      _presentation.validate_word(first, last);
+    }
+
    private:
     ////////////////////////////////////////////////////////////////////////
     // Kambites - init functions - private
@@ -298,18 +452,6 @@ namespace libsemigroups {
     //
     // Not noexcept, throws
     void validate_small_overlap_class();
-
-    void validate_word(word_type const& w) const override {
-      if constexpr (std::is_same_v<
-                        typename decltype(_presentation)::letter_type,
-                        letter_type>) {
-        _presentation.validate_word(w.cbegin(), w.cend());
-      } else {
-        ToString   to_string(_presentation.alphabet());
-        value_type ww = to_string(w);
-        _presentation.validate_word(ww.cbegin(), ww.cend());
-      }
-    }
 
     ////////////////////////////////////////////////////////////////////////
     // Kambites - XYZ functions - private
@@ -514,48 +656,70 @@ namespace libsemigroups {
   };
 
   template <typename Word>
-  Kambites(Presentation<Word> const&) -> Kambites<Word>;
+  Kambites(congruence_kind, Presentation<Word> const&) -> Kambites<Word>;
 
-  template <typename Range,
-            typename Word1,
-            typename Word2 = typename Kambites<Word1>::value_type>
-  std::vector<std::vector<Word2>> partition(Kambites<Word1>& k, Range r) {
-    static_assert(
-        std::is_same_v<std::decay_t<typename Range::output_type>, Word2>);
-    using return_type = std::vector<std::vector<Word2>>;
+  namespace kambites {
+    using congruence_interface::add_generating_pair;
+    using congruence_interface::add_generating_pair_no_checks;
 
-    if (!r.is_finite) {
-      LIBSEMIGROUPS_EXCEPTION("the 2nd argument (a range) must be finite, "
-                              "found an infinite range");
+    ////////////////////////////////////////////////////////////////////////
+    // Interface helpers - contains
+    ////////////////////////////////////////////////////////////////////////
+
+    using congruence_interface::contains;
+    using congruence_interface::contains_no_checks;
+    using congruence_interface::currently_contains;
+    using congruence_interface::currently_contains_no_checks;
+
+    ////////////////////////////////////////////////////////////////////////
+    // Interface helpers - reduce
+    ////////////////////////////////////////////////////////////////////////
+
+    using congruence_interface::reduce;
+    using congruence_interface::reduce_no_checks;
+    using congruence_interface::reduce_no_run;
+    using congruence_interface::reduce_no_run_no_checks;
+
+  }  // namespace kambites
+}  // namespace libsemigroups
+
+#include "detail/kambites-normal-form-range.hpp"  // for KambitesNormalFormRange
+
+namespace libsemigroups {
+  namespace kambites {
+    ////////////////////////////////////////////////////////////////////////
+    // Interface helpers - normal_forms
+    ////////////////////////////////////////////////////////////////////////
+
+    // short_lex normal forms, could be lex normal forms too
+    template <typename Word>
+    auto normal_forms(Kambites<Word>& k) {
+      return detail::KambitesNormalFormRange(k);
     }
 
-    return_type result;
+    // TODO(1) implement a normal_forms function for Kambites objects. This will
+    // have to be a custom range type, with the mem fns of Word/StringRange, but
+    // only returning distinct normal forms. Or it could use to_froidure_pin,
+    // which can also enumerate normal forms
 
-    std::unordered_map<Word2, size_t> map;
-    size_t                            index = 0;
+    ////////////////////////////////////////////////////////////////////////
+    // Interface helpers - partition
+    ////////////////////////////////////////////////////////////////////////
 
-    while (!r.at_end()) {
-      auto next = r.get();
-      if (k.presentation().contains_empty_word() || !next.empty()) {
-        auto next_nf        = k.normal_form(next);
-        auto [it, inserted] = map.emplace(next_nf, index);
-        if (inserted) {
-          result.emplace_back();
-          index++;
-        }
-        size_t index_of_next_nf = it->second;
-        result[index_of_next_nf].push_back(next);
-      }
-      r.next();
-    }
-    return result;
-  }
+    using congruence_interface::partition;
 
-  // There's no non_trivial_classes(Kambites k1, Kambites k2) because it's
-  // unclear how this could be computed (because they always define infinite
-  // semigroups/monoids), so we can't just do non_trivial_classes(k1,
-  // kambites::normal_forms(k2)) (as in ToddCoxeter) because there are
-  // infinitely many normal_forms.
+    ////////////////////////////////////////////////////////////////////////
+    // Interface helpers - non_trivial_classes
+    ////////////////////////////////////////////////////////////////////////
+
+    using congruence_interface::non_trivial_classes;
+
+    // There's no non_trivial_classes(Kambites k1, Kambites k2) because it's
+    // unclear how this could be computed (because they always define infinite
+    // semigroups/monoids), so we can't just do non_trivial_classes(k1,
+    // kambites::normal_forms(k2)) (as in ToddCoxeter) because there are
+    // infinitely many normal_forms.
+  }  // namespace kambites
 
 }  // namespace libsemigroups
 

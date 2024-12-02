@@ -51,17 +51,20 @@ namespace libsemigroups {
       std::mutex                           _mtx;
       std::vector<std::shared_ptr<Runner>> _runners;
       std::shared_ptr<Runner>              _winner;
+      size_t                               _winner_index;
 
      public:
       // Construct an empty Race object, with maximum number of threads set to
       // std::thread::hardware_concurrency.
       Race();
 
+      // TODO(1) to cpp
       Race& init() {
         _max_threads = std::thread::hardware_concurrency();
         // do nothing to the _mtx
         _runners.clear();
-        _winner = nullptr;
+        _winner       = nullptr;
+        _winner_index = UNDEFINED;
         return *this;
       }
 
@@ -69,31 +72,38 @@ namespace libsemigroups {
         // Can't use = default because std::mutex is non-copyable.
         _max_threads = other._max_threads;
         // do nothing to the _mtx
-        _runners = other._runners;
-        _winner  = other._winner;
+        _runners      = other._runners;
+        _winner       = other._winner;
+        _winner_index = other._winner_index;
       }
 
+      // TODO(1) to cpp
       Race(Race&& other)
           : _max_threads(std::move(other._max_threads)),
             _mtx(),
             _runners(std::move(other._runners)),
-            _winner(std::move(other._winner)) {}
+            _winner(std::move(other._winner)),
+            _winner_index(std::move(other._winner_index)) {}
 
+      // TODO(1) to cpp
       Race& operator=(Race const& other) {
         // Can't use = default because std::mutex is non-copyable.
         _max_threads = other._max_threads;
         // do nothing to the _mtx
-        _runners = other._runners;
-        _winner  = other._winner;
+        _runners      = other._runners;
+        _winner       = other._winner;
+        _winner_index = other._winner_index;
         return *this;
       }
 
+      // TODO(1) to cpp
       Race& operator=(Race&& other) {
         // Can't use = default because std::mutex is non-copyable.
         _max_threads = std::move(other._max_threads);
         // do nothing to the _mtx
-        _runners = std::move(other._runners);
-        _winner  = std::move(other._winner);
+        _runners      = std::move(other._runners);
+        _winner       = std::move(other._winner);
+        _winner_index = std::move(other._winner_index);
         return *this;
       }
 
@@ -115,6 +125,15 @@ namespace libsemigroups {
       [[nodiscard]] std::shared_ptr<Runner> winner() {
         run();
         return _winner;
+      }
+
+      [[nodiscard]] size_t winner_index() const {
+        return _winner_index;
+      }
+
+      [[nodiscard]] size_t winner_index() {
+        run();
+        return _winner_index;
       }
 
       [[nodiscard]] bool finished() const noexcept {
@@ -237,14 +256,16 @@ namespace libsemigroups {
             report_default("using 0 additional threads\n");
             detail::Timer tmr;
             func(_runners.at(0));
-            _winner = _runners.at(0);
+            _winner       = _runners.at(0);
+            _winner_index = 0;
             report_elapsed_time("Race: ", tmr);
             return;
           }
           for (size_t i = 0; i < _runners.size(); ++i) {
             if (_runners[i]->finished()) {
               report_default("using 0 additional threads\n");
-              _winner = _runners[i];
+              _winner       = _runners[i];
+              _winner_index = i;
               report_default("#{} is already finished!\n", i);
               // delete the other runners?
               return;
@@ -295,12 +316,14 @@ namespace libsemigroups {
             t.at(i).join();
           }
           report_elapsed_time("Race: ", tmr);
+          report_default("\n");
           for (auto method = _runners.begin(); method < _runners.end();
                ++method) {
             if ((*method)->finished()) {
               LIBSEMIGROUPS_ASSERT(_winner == nullptr);
-              _winner    = *method;
-              size_t tid = thread_id(tids.at(method - _runners.begin()));
+              _winner       = *method;
+              _winner_index = method - _runners.begin();
+              size_t tid    = thread_id(tids.at(method - _runners.begin()));
               report_default("#{} is the winner!\n", tid);
               break;
             }

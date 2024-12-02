@@ -43,6 +43,7 @@ namespace libsemigroups {
     CongruenceInterface::init();
     _race.init();
     _runners_initted = false;
+    _runner_kinds.clear();
     return *this;
   }
 
@@ -51,61 +52,67 @@ namespace libsemigroups {
     init(type);
     _race.max_threads(POSITIVE_INFINITY);
     if (type == congruence_kind::twosided) {
-      _race.add_runner(std::make_shared<Kambites<word_type>>(p));
+      add_runner(std::make_shared<Kambites<word_type>>(type, p));
     }
-    _race.add_runner(std::make_shared<KnuthBendix<>>(type, p));
-    _race.add_runner(std::make_shared<ToddCoxeter>(type, p));
+    add_runner(std::make_shared<KnuthBendix<>>(type, p));
+
+    add_runner(std::make_shared<ToddCoxeter>(type, p));
     auto tc = std::make_shared<ToddCoxeter>(type, p);
     tc->strategy(ToddCoxeter::options::strategy::felsch);
-    _race.add_runner(tc);
-    // TODO(later) add a Runner that tries to create a ToddCoxeter using the
-    // Cayley graph of some FroidurePin
+    add_runner(tc);
     return *this;
   }
 
-  Congruence& Congruence::init(congruence_kind type, FroidurePinBase& S) {
-    if (S.is_finite() != tril::FALSE) {
-      S.run();
+  uint64_t Congruence::number_of_classes() {
+    run();
+    auto winner_kind = _runner_kinds[_race.winner_index()];
+    if (winner_kind == RunnerKind::TC) {
+      return std::static_pointer_cast<ToddCoxeter>(_race.winner())
+          ->number_of_classes();
+    } else if (winner_kind == RunnerKind::KB) {
+      return std::static_pointer_cast<KnuthBendix<>>(_race.winner())
+          ->number_of_classes();
     } else {
-      LIBSEMIGROUPS_EXCEPTION(
-          "the 2nd argument does not represent a finite semigroup!");
+      LIBSEMIGROUPS_ASSERT(winner_kind == RunnerKind::K);
+      return std::static_pointer_cast<Kambites<word_type>>(_race.winner())
+          ->number_of_classes();
     }
-    init(type);
-    _race.max_threads(POSITIVE_INFINITY);
-
-    auto p  = to_presentation<word_type>(S);
-    auto tc = std::make_shared<ToddCoxeter>(type, p);
-    _race.add_runner(tc);
-    tc = std::make_shared<ToddCoxeter>(type, p);
-    tc->strategy(ToddCoxeter::options::strategy::felsch);
-    _race.add_runner(tc);
-
-    // TODO(later) if necessary make a runner that tries to S.run(), then get
-    // the Cayley graph and use that in the ToddCoxeter, at present that'll
-    // happen here in the constructor
-    tc = std::make_shared<ToddCoxeter>(to_todd_coxeter(type, S));
-    _race.add_runner(tc);
-    tc = std::make_shared<ToddCoxeter>(type, p);
-    tc->strategy(ToddCoxeter::options::strategy::felsch);
-    _race.add_runner(tc);
-    if (p.rules.size() < 256) {
-      // TODO(later) at present if there are lots of rules it takes a long
-      // time to construct a KnuthBendix<> instance since it reduces the rules
-      // as they are added maybe better to defer this until running
-      _race.add_runner(std::make_shared<KnuthBendix<>>(type, p));
-    }
-    return *this;
   }
 
-  void Congruence::init_runners() {
+  void Congruence::init_runners() const {
     if (!_runners_initted) {
       _runners_initted = true;
-      for (auto& runner : _race) {
+      for (auto const& [i, runner] : rx::enumerate(_race)) {
         auto first = generating_pairs().cbegin();
         auto last  = generating_pairs().cend();
-        for (auto it = first; it != last; it += 2) {
-          std::static_pointer_cast<CongruenceInterface>(runner)
-              ->add_pair_no_checks_no_reverse(*it, *(it + 1));
+        if (_runner_kinds[i] == RunnerKind::TC) {
+          for (auto it = first; it != last; it += 2) {
+            // We have to call the specific add_generating_pair_no_checks for
+            // each type of runner so that the generating pairs are correctly
+            // modified to match the native letters in the alphabet
+            std::static_pointer_cast<ToddCoxeter>(runner)
+                ->add_generating_pair_no_checks(std::begin(*it),
+                                                std::end(*it),
+                                                std::begin(*(it + 1)),
+                                                std::end(*(it + 1)));
+          }
+        } else if (_runner_kinds[i] == RunnerKind::KB) {
+          for (auto it = first; it != last; it += 2) {
+            std::static_pointer_cast<KnuthBendix<>>(runner)
+                ->add_generating_pair_no_checks(std::begin(*it),
+                                                std::end(*it),
+                                                std::begin(*(it + 1)),
+                                                std::end(*(it + 1)));
+          }
+        } else {
+          LIBSEMIGROUPS_ASSERT(_runner_kinds[i] == RunnerKind::K);
+          for (auto it = first; it != last; it += 2) {
+            std::static_pointer_cast<Kambites<word_type>>(runner)
+                ->add_generating_pair_no_checks(std::begin(*it),
+                                                std::end(*it),
+                                                std::begin(*(it + 1)),
+                                                std::end(*(it + 1)));
+          }
         }
       }
     }

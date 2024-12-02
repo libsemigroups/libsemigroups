@@ -44,7 +44,6 @@ namespace libsemigroups {
 
   namespace detail {
 
-    // TODO move to detail namespace?
     // This struct exists to avoid having to write typename before
     // options::def_policy etc everywhere below
     struct FelschGraphEnums {
@@ -61,7 +60,6 @@ namespace libsemigroups {
 
     // This class exists so that both FelschGraph and ToddCoxeter can use the
     // same settings/options without code duplication
-    // TODO move to detail namespace?
     template <typename Subclass>
     class FelschGraphSettings : public FelschGraphEnums {
      private:
@@ -89,27 +87,17 @@ namespace libsemigroups {
         return static_cast<Subclass&>(*this);
       }
 
-      //
       [[nodiscard]] FelschGraphSettings const& settings() const noexcept {
         return *this;
       }
 
-      // TODO doc for the purpose of copying the doc elsewhere
+      // Doc in todd-coxeter.hpp
       Subclass& def_version(options::def_version val) {
         _def_version = val;
         return static_cast<Subclass&>(*this);
       }
 
-      //! The current value of the definition policy setting.
-      //!
-      //! \parameters
-      //! (None)
-      //!
-      //! \returns The current value of the setting, a value of type
-      //! ``options::definitions``.
-      //!
-      //! \exceptions
-      //! \noexcept
+      // Doc in todd-coxeter.hpp
       [[nodiscard]] options::def_version def_version() const noexcept {
         return _def_version;
       }

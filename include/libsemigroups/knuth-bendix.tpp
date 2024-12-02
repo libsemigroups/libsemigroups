@@ -125,16 +125,15 @@ namespace libsemigroups {
     if (p == _settings.overlap_policy && _overlap_measure != nullptr) {
       return *this;
     }
-    delete _overlap_measure;
     switch (p) {
       case options::overlap::ABC:
-        _overlap_measure = new ABC();
+        _overlap_measure.reset(new ABC());
         break;
       case options::overlap::AB_BC:
-        _overlap_measure = new AB_BC();
+        _overlap_measure.reset(new AB_BC());
         break;
       case options::overlap::MAX_AB_BC:
-        _overlap_measure = new MAX_AB_BC();
+        _overlap_measure.reset(new MAX_AB_BC());
         break;
       default:
         LIBSEMIGROUPS_ASSERT(false);
@@ -148,72 +147,119 @@ namespace libsemigroups {
   //////////////////////////////////////////////////////////////////////////
 
   template <typename Rewriter, typename ReductionOrder>
-  KnuthBendix<Rewriter, ReductionOrder>::KnuthBendix(congruence_kind knd)
-      : CongruenceInterface(knd),
-        _settings(),
-        _stats(),
-        _rewriter(),
+  KnuthBendix<Rewriter, ReductionOrder>::KnuthBendix()
+      : CongruenceInterface(),
         _gen_pairs_initted(),
         _gilman_graph(),
+        _gilman_graph_node_labels(),
         _internal_is_same_as_external(),
-        _overlap_measure(),
-        _presentation() {
-    init(knd);
+        _overlap_measure(nullptr),
+        _presentation(),
+        _rewriter(),
+        _settings(),
+        _stats(),
+        _tmp_element1() {
+    init();
   }
 
   template <typename Rewriter, typename ReductionOrder>
   KnuthBendix<Rewriter, ReductionOrder>&
-  KnuthBendix<Rewriter, ReductionOrder>::init(congruence_kind knd) {
-    _rewriter.init();
-
-    CongruenceInterface::init(knd);
-    _settings.init();
-    _stats.init();
+  KnuthBendix<Rewriter, ReductionOrder>::init() {
+    CongruenceInterface::init();
 
     _gen_pairs_initted = false;
     _gilman_graph.init(0, 0);
+    _gilman_graph_node_labels.clear();
     _internal_is_same_as_external = false;
+    _overlap_measure              = nullptr;
     _presentation.init();
+    _rewriter.init();
+    _settings.init();
+    _stats.init();
+
+    // The next line sets _overlap_measure to be something sensible.
     overlap_policy(_settings.overlap_policy);
     return *this;
   }
 
   template <typename Rewriter, typename ReductionOrder>
-  KnuthBendix<Rewriter, ReductionOrder>::KnuthBendix(KnuthBendix const& that)
-      : KnuthBendix(that.kind()) {
-    *this = that;
-  }
-
-  template <typename Rewriter, typename ReductionOrder>
-  KnuthBendix<Rewriter, ReductionOrder>::KnuthBendix(KnuthBendix&& that)
-      : KnuthBendix(static_cast<KnuthBendix const&>(that)) {}
-
-  template <typename Rewriter, typename ReductionOrder>
   KnuthBendix<Rewriter, ReductionOrder>&
   KnuthBendix<Rewriter, ReductionOrder>::operator=(KnuthBendix&& that) {
-    *this = static_cast<KnuthBendix const&>(that);
+    CongruenceInterface::operator=(std::move(that));  // TODO correct?
+    _gen_pairs_initted        = std::move(that._gen_pairs_initted);
+    _gilman_graph             = std::move(that._gilman_graph);
+    _gilman_graph_node_labels = std::move(that._gilman_graph_node_labels);
+    _internal_is_same_as_external
+        = std::move(that._internal_is_same_as_external);
+    _overlap_measure = std::move(that._overlap_measure);
+    _presentation    = std::move(that._presentation);
+    _rewriter        = std::move(that._rewriter);
+    _settings        = std::move(that._settings);
+    _stats           = std::move(that._stats);
     return *this;
   }
 
   template <typename Rewriter, typename ReductionOrder>
   KnuthBendix<Rewriter, ReductionOrder>&
   KnuthBendix<Rewriter, ReductionOrder>::operator=(KnuthBendix const& that) {
-    Runner::operator=(that);
-    _rewriter = that._rewriter;
-
-    _settings                     = that._settings;
+    CongruenceInterface::operator=(that);
+    _gen_pairs_initted            = that._gen_pairs_initted;
     _gilman_graph                 = that._gilman_graph;
+    _gilman_graph_node_labels     = that._gilman_graph_node_labels;
     _internal_is_same_as_external = that._internal_is_same_as_external;
+    _overlap_measure              = nullptr;
     _presentation                 = that._presentation;
+    _rewriter                     = that._rewriter;
+    _settings                     = that._settings;
+    _stats                        = that._stats;
 
+    // The next line sets _overlap_measure to be something sensible.
     overlap_policy(_settings.overlap_policy);
 
     return *this;
   }
 
   template <typename Rewriter, typename ReductionOrder>
-  KnuthBendix<Rewriter, ReductionOrder>::~KnuthBendix() {
-    delete _overlap_measure;
+  KnuthBendix<Rewriter, ReductionOrder>::KnuthBendix(KnuthBendix&& that)
+      : KnuthBendix() {
+    operator=(std::move(that));
+  }
+
+  template <typename Rewriter, typename ReductionOrder>
+  KnuthBendix<Rewriter, ReductionOrder>::KnuthBendix(KnuthBendix const& that)
+      : KnuthBendix() {
+    operator=(that);
+  }
+
+  template <typename Rewriter, typename ReductionOrder>
+  KnuthBendix<Rewriter, ReductionOrder>::~KnuthBendix() = default;
+
+  template <typename Rewriter, typename ReductionOrder>
+  KnuthBendix<Rewriter, ReductionOrder>::KnuthBendix(
+      congruence_kind             knd,
+      Presentation<std::string>&& p)
+      : KnuthBendix() {
+    init(knd, std::move(p));
+  }
+
+  template <typename Rewriter, typename ReductionOrder>
+  KnuthBendix<Rewriter, ReductionOrder>&
+  KnuthBendix<Rewriter, ReductionOrder>::init(congruence_kind             knd,
+                                              Presentation<std::string>&& p) {
+    p.validate();
+    init();
+    CongruenceInterface::init(knd);
+    _presentation = std::move(p);
+    init_from_presentation();
+    return *this;
+  }
+
+  template <typename Rewriter, typename ReductionOrder>
+  KnuthBendix<Rewriter, ReductionOrder>::KnuthBendix(
+      congruence_kind                  knd,
+      Presentation<std::string> const& p)
+      : KnuthBendix() {
+    init(knd, p);
   }
 
   template <typename Rewriter, typename ReductionOrder>
@@ -221,44 +267,8 @@ namespace libsemigroups {
   KnuthBendix<Rewriter, ReductionOrder>::init(
       congruence_kind                  knd,
       Presentation<std::string> const& p) {
-    return private_init(knd, p, true);
-  }
-
-  template <typename Rewriter, typename ReductionOrder>
-  KnuthBendix<Rewriter, ReductionOrder>&
-  KnuthBendix<Rewriter, ReductionOrder>::init(congruence_kind             knd,
-                                              Presentation<std::string>&& p) {
-    return private_init(knd, std::move(p), true);
-  }
-
-  template <typename Rewriter, typename ReductionOrder>
-  KnuthBendix<Rewriter, ReductionOrder>&
-  KnuthBendix<Rewriter, ReductionOrder>::private_init(
-      congruence_kind                  knd,
-      Presentation<std::string> const& p,
-      bool                             call_init) {
-    p.validate();
-    if (call_init) {
-      init(knd);
-    }
-    _presentation = p;
-    init_from_presentation();
-    return *this;
-  }
-
-  template <typename Rewriter, typename ReductionOrder>
-  KnuthBendix<Rewriter, ReductionOrder>&
-  KnuthBendix<Rewriter, ReductionOrder>::private_init(
-      congruence_kind             knd,
-      Presentation<std::string>&& p,
-      bool                        call_init) {
-    p.validate();
-    if (call_init) {
-      init(knd);
-    }
-    _presentation = std::move(p);
-    init_from_presentation();
-    return *this;
+    // Call rvalue ref init
+    return init(knd, Presentation(p));
   }
 
   //////////////////////////////////////////////////////////////////////////
@@ -268,9 +278,9 @@ namespace libsemigroups {
   template <typename Rewriter, typename ReductionOrder>
   uint64_t KnuthBendix<Rewriter, ReductionOrder>::number_of_classes() {
     // TODO uncomment
-    // if (is_obviously_infinite(*this)) {
-    //   return POSITIVE_INFINITY;
-    // }
+    if (is_obviously_infinite(*this)) {
+      return POSITIVE_INFINITY;
+    }
 
     int const modifier = (presentation().contains_empty_word() ? 0 : -1);
     if (presentation().alphabet().empty()) {
@@ -281,39 +291,13 @@ namespace libsemigroups {
     }
   }
 
-  template <typename Rewriter, typename ReductionOrder>
-  bool KnuthBendix<Rewriter, ReductionOrder>::equal_to(std::string const& u,
-                                                       std::string const& v) {
-    presentation().validate_word(u.cbegin(), u.cend());
-    presentation().validate_word(v.cbegin(), v.cend());
-
-    if (u == v) {
-      return true;
-    }
-
-    auto uu = rewrite(u);
-    auto vv = rewrite(v);
-
-    if (uu == vv) {
-      return true;
-    } else if (finished()) {
-      return false;
-    }
-
-    run();
-
-    rewrite_inplace(uu);
-    rewrite_inplace(vv);
-    return uu == vv;
-  }
-
-  template <typename Rewriter, typename ReductionOrder>
-  std::string
-  KnuthBendix<Rewriter, ReductionOrder>::normal_form(std::string const& w) {
-    presentation().validate_word(w.cbegin(), w.cend());
-    run();
-    return rewrite(w);
-  }
+  // template <typename Rewriter, typename ReductionOrder>
+  // std::string
+  // KnuthBendix<Rewriter, ReductionOrder>::normal_form(std::string const& w) {
+  //   presentation().validate_word(w.cbegin(), w.cend());
+  //   run();
+  //   return rewrite(w);
+  // }
 
   template <typename Rewriter, typename ReductionOrder>
   void KnuthBendix<Rewriter, ReductionOrder>::report_presentation(
@@ -445,9 +429,6 @@ namespace libsemigroups {
   template <typename Rewriter, typename ReductionOrder>
   void KnuthBendix<Rewriter, ReductionOrder>::rewrite_inplace(
       detail::external_string_type& w) {
-    if (kind() == congruence_kind::left) {
-      std::reverse(w.begin(), w.end());
-    }
     if (_rewriter.number_of_active_rules() == 0
         && _rewriter.number_of_pending_rules() != 0) {
       _rewriter.process_pending_rules();
@@ -457,9 +438,6 @@ namespace libsemigroups {
     _rewriter.rewrite(w);
     internal_to_external_string(w);
     rm_octo(w);
-    if (kind() == congruence_kind::left) {
-      std::reverse(w.begin(), w.end());
-    }
   }
 
   //////////////////////////////////////////////////////////////////////////
@@ -519,28 +497,23 @@ namespace libsemigroups {
     if (_gen_pairs_initted) {
       return;
     }
-
     _gen_pairs_initted = true;
 
-    auto&    p = _presentation;
-    ToString to_string(p.alphabet());
-    auto     pairs
-        = (generating_pairs() | rx::transform([&to_string](auto const& w) {
-             return to_string(w);
-           }))
-          | rx::in_groups_of_exactly(2);
+    auto& p     = _presentation;
+    auto& pairs = generating_pairs();
 
-    if (kind() != congruence_kind::twosided && (pairs | rx::count()) != 0) {
+    if (kind() != congruence_kind::twosided && !pairs.empty()) {
       p.alphabet(p.alphabet() + presentation::first_unused_letter(p));
     }
-    for (auto&& x : pairs) {
-      auto lhs = x.get();
-      add_octo(lhs);
-      x.next();
-      auto rhs = x.get();
-      add_octo(rhs);
-      add_rule_impl(lhs, rhs);
-      presentation::add_rule(p, lhs, rhs);
+
+    for (auto it = pairs.cbegin(); it != pairs.cend(); ++it) {
+      // it points at a word_type
+      p.rules.emplace_back(it->cbegin(), it->cend());
+      add_octo(p.rules.back());
+      ++it;
+      p.rules.emplace_back(it->cbegin(), it->cend());
+      add_octo(p.rules.back());
+      add_rule_impl(p.rules.cend()[-2], p.rules.cend()[-1]);
     }
   }
 
@@ -879,6 +852,7 @@ namespace libsemigroups {
   // KnuthBendixImpl - methods for rules - private
   //////////////////////////////////////////////////////////////////////////
 
+  // TODO move this to the single call site
   template <typename Rewriter, typename ReductionOrder>
   void KnuthBendix<Rewriter, ReductionOrder>::init_from_presentation() {
     auto const& p                 = _presentation;
@@ -906,10 +880,6 @@ namespace libsemigroups {
     auto const last  = p.rules.cend();
     for (auto it = first; it != last; it += 2) {
       auto lhs = *it, rhs = *(it + 1);
-      if (kind() == congruence_kind::left) {
-        std::reverse(lhs.begin(), lhs.end());
-        std::reverse(rhs.begin(), rhs.end());
-      }
       add_rule_impl(lhs, rhs);
     }
   }
@@ -964,8 +934,8 @@ namespace libsemigroups {
     //
     // This should work ok if kb1 and kb2 represent different kinds of
     // congruence.
-    template <typename Rewriter, typename ReductionOrder>
-    std::vector<std::vector<std::string>>
+    template <typename Rewriter, typename ReductionOrder, typename Word>
+    std::vector<std::vector<Word>>
     non_trivial_classes(KnuthBendix<Rewriter, ReductionOrder>& kb1,
                         KnuthBendix<Rewriter, ReductionOrder>& kb2) {
       using rx::operator|;
@@ -989,11 +959,11 @@ namespace libsemigroups {
                                 kb1.presentation().alphabet());
       }
 
-      // We construct the WordGraph `ad` obtained by subtracting all of the
+      // We construct the WordGraph `wg` obtained by subtracting all of the
       // edges from the Gilman graph of kb1 from the Gilman graph of kb2. The
-      // non-trivial classes are finite if and only if `ad` is acyclic. It
-      // would be possible to do this without actually constructing `ad` but
-      // constructing `ad` is simpler, and so we do that for now.
+      // non-trivial classes are finite if and only if `wg` is acyclic. It
+      // would be possible to do this without actually constructing `wg` but
+      // constructing `wg` is simpler, and so we do that for now.
 
       auto g2 = kb2.gilman_graph();
       auto g1 = kb1.gilman_graph();
@@ -1003,8 +973,7 @@ namespace libsemigroups {
 
       if (g2.number_of_nodes() < g1.number_of_nodes()) {
         LIBSEMIGROUPS_EXCEPTION(
-            "the Gilman digraph of the 1st argument must have at least as "
-            "many "
+            "the Gilman digraph of the 1st argument must have at least as many "
             "nodes as the Gilman digraph of the 2nd argument, found {} nodes "
             "and {} nodes",
             g2.number_of_nodes(),
@@ -1036,7 +1005,7 @@ namespace libsemigroups {
       }
 
       // We do a depth first search simultaneously for cycles, and edges E in
-      // g2 not in g1. Pre order forcycle detection, post order for "can we
+      // g2 not in g1. Pre order for cycle detection, post order for "can we
       // reach a node incident to an edge in E" and "number of paths through a
       // node is infinite"
       size_t const N = g2.number_of_nodes();
@@ -1110,41 +1079,57 @@ namespace libsemigroups {
 
       // Construct the "can_reach" subgraph of g2, could use a WordGraphView
       // here instead (but these don't yet exist) TODO(later)
-      WordGraph<size_t> ad(g2.number_of_nodes(), g2.out_degree());
+      WordGraph<size_t> wg(g2.number_of_nodes(), g2.out_degree());
 
-      for (auto v : ad.nodes()) {
+      for (auto v : wg.nodes()) {
         if (can_reach[v]) {
-          for (auto e : ad.labels()) {
+          for (auto e : wg.labels()) {
             auto ve = g2.target_no_checks(v, e);
             if (ve != UNDEFINED && can_reach[ve]) {
-              ad.target_no_checks(v, e, ve);
+              wg.target_no_checks(v, e, ve);
             }
           }
         }
       }
 
-      Paths paths(ad);
+      Paths paths(wg);
       // We only want those paths that pass through at least one of the edges
       // in g2 but not g1. Hence we require the `filter` in the next
       // expression.
-      auto ntc = partition(kb1,
-                           (paths.source(0)
-                            | rx::filter([&g1](word_type const& path) {
-                                return word_graph::last_node_on_path(
-                                           g1, 0, path.cbegin(), path.cend())
-                                           .second
-                                       != path.cend();
-                              })
-                            | ToString(kb2.presentation().alphabet())));
+      auto words = (paths.source(0) | rx::filter([&g1](word_type const& path) {
+                      return word_graph::last_node_on_path(
+                                 g1, 0, path.cbegin(), path.cend())
+                                 .second
+                             != path.cend();
+                    }));
       // The check in the next loop could be put into the lambda passed to
       // filter above, but then we'd have to convert `path` to a string, and
       // then discard the string, so better to do it here. Note that the
       // normal forms in `kb1` never contain an edge in g2 \ g1 and so we must
       // add in every normal form.
-      for (auto& klass : ntc) {
-        klass.push_back(kb1.normal_form(klass[0]));
+      if constexpr (std::is_same_v<Word, std::string>) {
+        auto ntc
+            = partition(kb1, words | ToString(kb2.presentation().alphabet()));
+        for (auto& klass : ntc) {
+          klass.push_back(reduce_no_checks(kb1, klass[0]));
+        }
+        return ntc;
+      } else if (!std::is_same_v<Word, word_type>) {
+        auto ntc
+            = partition(kb1, (words | rx::transform([](word_type const& w) {
+                                return Word(w.begin(), w.end());
+                              })));
+        for (auto& klass : ntc) {
+          klass.push_back(reduce_no_checks(kb1, klass[0]));
+        }
+        return ntc;
+      } else {
+        auto ntc = partition(kb1, words);
+        for (auto& klass : ntc) {
+          klass.push_back(reduce_no_checks(kb1, klass[0]));
+        }
+        return ntc;
       }
-      return ntc;
     }
 
     template <typename Rewriter, typename ReductionOrder>

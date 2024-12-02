@@ -25,7 +25,7 @@ namespace libsemigroups {
   using TCE = detail::TCE;
 
   FroidurePin<TCE> to_froidure_pin(ToddCoxeter& tc) {
-    using digraph_type = typename ToddCoxeter::digraph_type;
+    using word_graph_type = typename ToddCoxeter::word_graph_type;
 
     if (tc.kind() != congruence_kind::twosided) {
       LIBSEMIGROUPS_EXCEPTION(
@@ -36,9 +36,9 @@ namespace libsemigroups {
     tc.run();
     tc.shrink_to_fit();
     // Ensure class indices and letters are equal!
-    auto         wg = std::make_shared<digraph_type>(tc.word_graph());
-    size_t const n  = tc.word_graph().out_degree();
-    size_t       m  = n;
+    auto wg        = std::make_shared<word_graph_type>(tc.current_word_graph());
+    size_t const n = tc.current_word_graph().out_degree();
+    size_t       m = n;
     for (letter_type a = 0; a < m;) {
       if (wg->target_no_checks(0, a) != a + 1) {
         wg->remove_label(a);
@@ -52,21 +52,24 @@ namespace libsemigroups {
     for (size_t i = 0; i < n; ++i) {
       // We use _word_graph.target_no_checks instead of just i, because there
       // might be more generators than cosets.
-      result.add_generator(TCE(tc.word_graph().target_no_checks(0, i)));
+      result.add_generator(TCE(tc.current_word_graph().target_no_checks(0, i)));
     }
     return result;
   }
 
   std::unique_ptr<FroidurePinBase> to_froidure_pin(Congruence& cong) {
     cong.run();
-    if (cong.has<KnuthBendix<>>()) {
-      auto fp = to_froidure_pin(*cong.get<KnuthBendix<>>());
-      return std::make_unique<decltype(fp)>(std::move(fp));
+    if (cong.has<Kambites<word_type>>()) {
+      // TODO(0) there an issue here that if the Kambites clause isn't first,
+      // then we incorrectly start running the other algos here, which run
+      // forever. Probably something goes wrong that the other runners don't
+      // get deleted if Kambites wins, since it's run first.
+      return to_froidure_pin(*cong.get<Kambites<word_type>>());
     } else if (cong.has<ToddCoxeter>()) {
       auto fp = to_froidure_pin(*cong.get<ToddCoxeter>());
       return std::make_unique<decltype(fp)>(std::move(fp));
-    } else if (cong.has<Kambites<word_type>>()) {
-      auto fp = to_froidure_pin(*cong.get<Kambites<word_type>>());
+    } else if (cong.has<KnuthBendix<>>()) {
+      auto fp = to_froidure_pin(*cong.get<KnuthBendix<>>());
       return std::make_unique<decltype(fp)>(std::move(fp));
     }
     LIBSEMIGROUPS_EXCEPTION("TODO");

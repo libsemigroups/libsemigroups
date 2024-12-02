@@ -62,15 +62,20 @@ namespace libsemigroups {
   //! S.is_obviously_infinite();  // false
   //!
   //! Congruence cong(twosided, S);
-  //! cong.add_pair({1, 1, 1}, {0});
+  //! cong.add_generating_pair({1, 1, 1}, {0});
   //! cong.number_of_classes(); // 3
   //! \endcode
+  // TODO(0):
+  // * impl presentation mem fn
   class Congruence : public CongruenceInterface {
+    enum class RunnerKind : size_t { TC = 0, KB = 1, K = 2 };
     /////////////////////////////////////////////////////////////////////////
     // Congruence - data - private
     /////////////////////////////////////////////////////////////////////////
-    detail::Race _race;
-    bool         _runners_initted;
+
+    mutable detail::Race    _race;
+    mutable bool            _runners_initted;
+    std::vector<RunnerKind> _runner_kinds;
 
    public:
     //////////////////////////////////////////////////////////////////////////
@@ -78,7 +83,8 @@ namespace libsemigroups {
     //////////////////////////////////////////////////////////////////////////
 
     // TODO doc
-    Congruence() : CongruenceInterface(), _race(), _runners_initted() {
+    Congruence()
+        : CongruenceInterface(), _race(), _runners_initted(), _runner_kinds() {
       init();
     }
 
@@ -97,12 +103,14 @@ namespace libsemigroups {
     //! \complexity
     //! Constant.
     //!
-    //! \sa set_number_of_generators and add_pair.
+    //! \sa set_number_of_generators and add_generating_pair.
+    // TODO remove
     explicit Congruence(congruence_kind type) : CongruenceInterface() {
       init(type);
     }
 
     // TODO doc
+    // TODO remove
     Congruence& init(congruence_kind type) {
       CongruenceInterface::init(type);
       return init();
@@ -128,12 +136,37 @@ namespace libsemigroups {
     //! \warning the parameter `T const& S` is copied, this might be expensive,
     //! use a std::shared_ptr to avoid the copy!
     // template <typename T>
-    Congruence(congruence_kind type, FroidurePinBase& S) : Congruence() {
-      init(type, S);
+    // TODO(0) should be a helper
+    template <typename Node>
+    Congruence(congruence_kind        type,
+               FroidurePinBase&       S,
+               WordGraph<Node> const& wg)
+        : Congruence() {
+      init(type, S, wg);
     }
 
     // TODO doc
-    Congruence& init(congruence_kind type, FroidurePinBase& S);
+    // TODO(0) helper
+    template <typename Node>
+    Congruence& init(congruence_kind        type,
+                     FroidurePinBase&       S,
+                     WordGraph<Node> const& wg) {
+      if (S.is_finite() != tril::FALSE) {
+        S.run();
+      } else {
+        LIBSEMIGROUPS_EXCEPTION(
+            "the 2nd argument does not represent a finite semigroup!");
+      }
+      init(type);
+
+      // TODO(later) if necessary make a runner that tries to S.run(), then get
+      // the Cayley graph and use that in the ToddCoxeter, at present that'll
+      // happen here in the constructor
+      auto tc = std::make_shared<ToddCoxeter>(to_todd_coxeter(type, S, wg));
+      add_runner(tc);
+      // TODO add felsch TC also
+      return *this;
+    }
 
     //! Construct from kind (left/right/2-sided) and Presentation.
     //!
@@ -162,12 +195,15 @@ namespace libsemigroups {
     // No rvalue ref version because we are not able to use p directly anyway
     template <typename Word>
     Congruence(congruence_kind type, Presentation<Word> const& p)
-        : Congruence(type, to_presentation<word_type>(p)) {}
+        : Congruence(type, to_presentation<word_type>(p, [](auto const& x) {
+                       return x;
+                     })) {}
 
     //! TODO(doc)
     template <typename Word>
     Congruence& init(congruence_kind type, Presentation<Word> const& p) {
-      init(type, to_presentation<word_type>(p));
+      init(type,
+           to_presentation<word_type>(p, [](auto const& x) { return x; }));
       return *this;
     }
 
@@ -186,26 +222,181 @@ namespace libsemigroups {
     ~Congruence() = default;
 
     //////////////////////////////////////////////////////////////////////////
-    // CongruenceInterface - pure virtual - public
+    // Congruence - interface requirements - add_generating_pair
     //////////////////////////////////////////////////////////////////////////
 
-    [[nodiscard]] uint64_t number_of_classes() override {
-      run();
-      return std::static_pointer_cast<CongruenceInterface>(_race.winner())
-          ->number_of_classes();
+    template <typename Iterator1,
+              typename Iterator2,
+              typename Iterator3,
+              typename Iterator4>
+    Congruence& add_generating_pair_no_checks(Iterator1 first1,
+                                              Iterator2 last1,
+                                              Iterator3 first2,
+                                              Iterator4 last2) {
+      return CongruenceInterface::add_generating_pair_no_checks<Congruence>(
+          first1, last1, first2, last2);
     }
 
-    [[nodiscard]] bool contains(word_type const& u,
-                                word_type const& v) override {
-      run();
-      return std::static_pointer_cast<CongruenceInterface>(_race.winner())
-          ->contains(u, v);
+    template <typename Iterator1,
+              typename Iterator2,
+              typename Iterator3,
+              typename Iterator4>
+    Congruence& add_generating_pair(Iterator1 first1,
+                                    Iterator2 last1,
+                                    Iterator3 first2,
+                                    Iterator4 last2) {
+      return CongruenceInterface::add_generating_pair<Congruence>(
+          first1, last1, first2, last2);
     }
 
-    void validate_word(word_type const& w) const override {
+    ////////////////////////////////////////////////////////////////////////
+    // Congruence - interface requirements - number_of_classes
+    ////////////////////////////////////////////////////////////////////////
+
+    [[nodiscard]] uint64_t number_of_classes();
+
+    ////////////////////////////////////////////////////////////////////////
+    // Congruence - interface requirements - contains
+    ////////////////////////////////////////////////////////////////////////
+
+    // TODO(0) out of line
+    template <typename Iterator1,
+              typename Iterator2,
+              typename Iterator3,
+              typename Iterator4>
+    [[nodiscard]] tril currently_contains_no_checks(Iterator1 first1,
+                                                    Iterator2 last1,
+                                                    Iterator3 first2,
+                                                    Iterator4 last2) const {
+      //      using iterator_points_at = decltype(*std::declval<Iterator1>());
+
+      if (finished()) {
+        auto winner_kind = _runner_kinds[_race.winner_index()];
+        if (winner_kind == RunnerKind::TC) {
+          return std::static_pointer_cast<ToddCoxeter>(_race.winner())
+                         ->contains_no_checks(first1, last1, first2, last2)
+                     ? tril::TRUE
+                     : tril::FALSE;
+        } else if (winner_kind == RunnerKind::KB) {
+          return std::static_pointer_cast<KnuthBendix<>>(_race.winner())
+                         ->contains_no_checks(first1, last1, first2, last2)
+                     ? tril::TRUE
+                     : tril::FALSE;
+        } else {
+          LIBSEMIGROUPS_ASSERT(winner_kind == RunnerKind::K);
+          return std::static_pointer_cast<Kambites<word_type>>(_race.winner())
+                         ->contains_no_checks(first1, last1, first2, last2)
+                     ? tril::TRUE
+                     : tril::FALSE;
+        }
+      }
+      init_runners();
+      tril result = tril::unknown;
+      for (auto const& [i, runner] : rx::enumerate(_race)) {
+        if (_runner_kinds[i] == RunnerKind::TC) {
+          result = std::static_pointer_cast<ToddCoxeter>(runner)
+                       ->currently_contains_no_checks(
+                           first1, last1, first2, last2);
+        } else if (_runner_kinds[i] == RunnerKind::KB) {
+          result = std::static_pointer_cast<KnuthBendix<>>(runner)
+                       ->currently_contains_no_checks(
+                           first1, last1, first2, last2);
+        } else {
+          LIBSEMIGROUPS_ASSERT(_runner_kinds[i] == RunnerKind::K);
+          result = std::static_pointer_cast<Kambites<word_type>>(runner)
+                       ->currently_contains_no_checks(
+                           first1, last1, first2, last2);
+        }
+        if (result != tril::unknown) {
+          break;
+        }
+      }
+      return result;
+    }
+
+    // TODO(0) can this be included in CongruenceInterface if it's the same in
+    // every derived class?
+    template <typename Iterator1,
+              typename Iterator2,
+              typename Iterator3,
+              typename Iterator4>
+    [[nodiscard]] tril currently_contains(Iterator1 first1,
+                                          Iterator2 last1,
+                                          Iterator3 first2,
+                                          Iterator4 last2) const {
+      throw_if_letter_out_of_bounds(first1, last1);
+      throw_if_letter_out_of_bounds(first2, last2);
+      return currently_contains_no_checks(first1, last1, first2, last2);
+    }
+
+    // TODO(0) can this be included in CongruenceInterface if it's the same in
+    // every derived class?
+    template <typename Iterator1,
+              typename Iterator2,
+              typename Iterator3,
+              typename Iterator4>
+    [[nodiscard]] bool contains_no_checks(Iterator1 first1,
+                                          Iterator2 last1,
+                                          Iterator3 first2,
+                                          Iterator4 last2) {
+      run();
+      LIBSEMIGROUPS_ASSERT(_race.winner_index() != UNDEFINED);
+      auto winner_kind = _runner_kinds[_race.winner_index()];
+      if (winner_kind == RunnerKind::TC) {
+        return std::static_pointer_cast<ToddCoxeter>(_race.winner())
+            ->contains_no_checks(first1, last1, first2, last2);
+      } else if (winner_kind == RunnerKind::KB) {
+        return std::static_pointer_cast<KnuthBendix<>>(_race.winner())
+            ->contains_no_checks(first1, last1, first2, last2);
+      } else {
+        LIBSEMIGROUPS_ASSERT(winner_kind == RunnerKind::K);
+        return std::static_pointer_cast<Kambites<word_type>>(_race.winner())
+            ->contains_no_checks(first1, last1, first2, last2);
+      }
+    }
+
+    // TODO(0) can this be included in CongruenceInterface if it's the same in
+    // every derived class?
+    template <typename Iterator1,
+              typename Iterator2,
+              typename Iterator3,
+              typename Iterator4>
+    [[nodiscard]] bool contains(Iterator1 first1,
+                                Iterator2 last1,
+                                Iterator3 first2,
+                                Iterator4 last2) {
+      throw_if_letter_out_of_bounds(first1, last1);
+      throw_if_letter_out_of_bounds(first2, last2);
+      return contains_no_checks(first1, last1, first2, last2);
+    }
+
+    ////////////////////////////////////////////////////////////////////////
+    // OLD
+    ////////////////////////////////////////////////////////////////////////
+
+    // TODO(0) replace with iterators
+    // TODO(0) out of line
+    [[nodiscard]] bool contains(word_type const& u, word_type const& v) {
+      return contains(std::begin(u), std::end(u), std::begin(v), std::end(v));
+    }
+
+    // TODO(0) out of line
+    template <typename Iterator1, typename Iterator2>
+    void throw_if_letter_out_of_bounds(Iterator1 first, Iterator2 last) const {
       if (!_race.empty()) {
-        std::static_pointer_cast<CongruenceInterface>(*_race.begin())
-            ->validate_word(w);
+        size_t index = (finished() ? _race.winner_index() : 0);
+
+        if (_runner_kinds[index] == RunnerKind::TC) {
+          std::static_pointer_cast<ToddCoxeter>(*_race.begin())
+              ->throw_if_letter_out_of_bounds(first, last);
+        } else if (_runner_kinds[index] == RunnerKind::KB) {
+          std::static_pointer_cast<KnuthBendix<>>(*_race.begin())
+              ->throw_if_letter_out_of_bounds(first, last);
+        } else {
+          LIBSEMIGROUPS_ASSERT(_runner_kinds[index] == RunnerKind::K);
+          std::static_pointer_cast<Kambites<word_type>>(*_race.begin())
+              ->throw_if_letter_out_of_bounds(first, last);
+        }
         return;
       }
       LIBSEMIGROUPS_EXCEPTION(
@@ -234,9 +425,6 @@ namespace libsemigroups {
     //! Returns the KnuthBendix instance used to compute the congruence (if
     //! any).
     //!
-    //! \parameters
-    //! (None)
-    //!
     //! \returns A std::shared_ptr to a KnuthBendix or \c nullptr.
     //!
     //! \exceptions
@@ -249,9 +437,6 @@ namespace libsemigroups {
 
     //! Checks if a KnuthBendix instance is being used to compute
     //! the congruence.
-    //!
-    //! \parameters
-    //! (None)
     //!
     //! \returns A value of type `bool`.
     //!
@@ -273,9 +458,6 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! Constant.
-    //!
-    //! \parameters
-    //! (None)
     [[nodiscard]] size_t max_threads() const noexcept {
       return _race.max_threads();
     }
@@ -301,11 +483,26 @@ namespace libsemigroups {
     }
 
    private:
+    void add_runner(std::shared_ptr<ToddCoxeter> ptr) {
+      _race.add_runner(ptr);  // TODO move?
+      _runner_kinds.push_back(RunnerKind::TC);
+    }
+
+    void add_runner(std::shared_ptr<KnuthBendix<>> ptr) {
+      _race.add_runner(ptr);  // TODO move?
+      _runner_kinds.push_back(RunnerKind::KB);
+    }
+
+    void add_runner(std::shared_ptr<Kambites<word_type>> ptr) {
+      _race.add_runner(ptr);  // TODO move?
+      _runner_kinds.push_back(RunnerKind::K);
+    }
+
     //////////////////////////////////////////////////////////////////////////
     // Congruence - member functions - private
     //////////////////////////////////////////////////////////////////////////
 
-    void init_runners();
+    void init_runners() const;
 
     //////////////////////////////////////////////////////////////////////////
     // Runner - pure virtual member functions - private
@@ -318,44 +515,112 @@ namespace libsemigroups {
   };
 
   namespace congruence {
-    // It would be possible to use typename Range::output_type instead of
-    // word_type to make this agnostic to whether we're using strings or
-    // word_type, but then it's not very clear what letters we should use for
-    // the alphabet when ToddCoxeter or Kambites<word_type> is used.
+
+    ////////////////////////////////////////////////////////////////////////
+    // Interface helpers - add_generating_pair
+    ////////////////////////////////////////////////////////////////////////
+
+    using congruence_interface::add_generating_pair;
+    using congruence_interface::add_generating_pair_no_checks;
+
+    ////////////////////////////////////////////////////////////////////////
+    // Interface helpers - contains
+    ////////////////////////////////////////////////////////////////////////
+
+    using congruence_interface::contains;
+    using congruence_interface::contains_no_checks;
+    using congruence_interface::currently_contains;
+    using congruence_interface::currently_contains_no_checks;
+
+    ////////////////////////////////////////////////////////////////////////
+    // Interface helpers - reduce
+    ////////////////////////////////////////////////////////////////////////
+
+    using congruence_interface::reduce;
+    using congruence_interface::reduce_no_checks;
+    using congruence_interface::reduce_no_run;
+    using congruence_interface::reduce_no_run_no_checks;
+
+    ////////////////////////////////////////////////////////////////////////
+    // Interface helpers - normal_forms
+    ////////////////////////////////////////////////////////////////////////
+
+    // The following doesn't work, because the types of the two returned values
+    // aren't the same.
+    // TODO(0) implement a class containing a variant for this.
+    // template <typename Word>
+    // auto normal_forms(Congruence& cong) {
+    //   cong.run();
+    //   if (cong.has<ToddCoxeter>() && cong.get<ToddCoxeter>()->finished()) {
+    //     return todd_coxeter::normal_forms(*cong.get<ToddCoxeter>());
+    //   } else if (cong.has<KnuthBendix<>>()
+    //              && cong.get<KnuthBendix<>>()->finished()) {
+    //     return knuth_bendix::normal_forms(*cong.get<KnuthBendix<>>());
+    //   }
+    //   // There's currently no normal_forms function for Kambites, so can't
+    //   // return anything in that case.
+    //   LIBSEMIGROUPS_EXCEPTION("Cannot compute the non-trivial classes!");
+    // }
+
+    ////////////////////////////////////////////////////////////////////////
+    // Interface helpers - partition
+    ////////////////////////////////////////////////////////////////////////
+
     template <typename Range>
-    std::vector<std::vector<word_type>> non_trivial_classes(Congruence& cong,
-                                                            Range       r) {
-      static_assert(
-          std::is_same_v<std::decay_t<typename Range::output_type>, word_type>);
-      using rx::operator|;
+    std::vector<std::vector<std::decay_t<typename Range::output_type>>>
+    partition(Congruence& cong, Range r) {
       cong.run();
       if (cong.has<ToddCoxeter>() && cong.get<ToddCoxeter>()->finished()) {
-        return non_trivial_classes(*cong.get<ToddCoxeter>(), r);
+        return todd_coxeter::partition(*cong.get<ToddCoxeter>(), r);
       } else if (cong.has<KnuthBendix<>>()
                  && cong.get<KnuthBendix<>>()->finished()) {
-        auto const& p       = cong.get<KnuthBendix<>>()->presentation();
-        auto        strings = non_trivial_classes(*cong.get<KnuthBendix<>>(),
-                                           r | ToString(p.alphabet()));
-        std::vector<std::vector<word_type>> result;
-        for (auto const& klass : strings) {
-          result.push_back(rx::iterator_range(klass.begin(), klass.end())
-                           | ToWord(p.alphabet()) | rx::to_vector());
-        }
-        return result;
+        return knuth_bendix::partition(*cong.get<KnuthBendix<>>(), r);
       } else if (cong.has<Kambites<word_type>>()) {
-        return non_trivial_classes(*cong.get<Kambites<word_type>>(), r);
+        return kambites::partition(*cong.get<Kambites<word_type>>(), r);
       }
       LIBSEMIGROUPS_EXCEPTION("Cannot compute the non-trivial classes!");
     }
 
+    ////////////////////////////////////////////////////////////////////////
+    // Interface helpers - non_trivial_classes
+    ////////////////////////////////////////////////////////////////////////
+
+    using congruence_interface::non_trivial_classes;
+
+    // This is a copy of the function in the congruence_interface namespace,
+    // couldn't get it to compile without copying (probably just require some
+    // SFINAE)
+    template <typename Range,
+              typename Word = std::decay_t<typename Range::output_type>,
+              typename      = std::enable_if_t<rx::is_input_or_sink_v<Range>>>
+    std::vector<std::vector<Word>> non_trivial_classes(Congruence& ci,
+                                                       Range       r) {
+      auto result = partition(ci, r);
+      result.erase(
+          std::remove_if(result.begin(),
+                         result.end(),
+                         [](auto const& x) -> bool { return x.size() <= 1; }),
+          result.end());
+      return result;
+    }
+
+    // template <typename Word>
+    // std::vector<std::vector<Word>> non_trivial_classes(Congruence& cong1,
+    //                                                   Congruence& cong2);
+    // TODO(1) can't really do this until normal_forms is working.
+
+    // Not required.
     // We have to pass the presentation here, because o/w we have no way of
     // knowing over what we should compute the non-trivial classes (i.e. we
     // cannot always recover p from cong).
+    // TODO remove?
     std::vector<std::vector<word_type>>
     non_trivial_classes(Congruence& cong, Presentation<word_type> const& p);
 
+    // TODO remove?
     std::vector<std::vector<std::string>>
     non_trivial_classes(Congruence& cong, Presentation<std::string> const& p);
+
   }  // namespace congruence
 }  // namespace libsemigroups
 

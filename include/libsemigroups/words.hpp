@@ -58,6 +58,12 @@ namespace libsemigroups {
   namespace detail {
     std::string const& chars_in_human_readable_order();
   }
+  // TODO(0) doc
+  template <typename Word>
+  Word& reverse(Word&& w) {
+    std::reverse(w.begin(), w.end());
+    return w;
+  }
 
   ////////////////////////////////////////////////////////////////////////
   // Words
@@ -962,6 +968,19 @@ namespace libsemigroups {
       return output;
     }
 
+    [[nodiscard]] letter_type operator()(char input) const {
+      // TODO improve this
+      // FIXME it also doesn't work
+      word_type output;
+      // operator()(output, std::string_view(&input, 1));
+      operator()(output, std::string(input, 1));
+      return output[0];
+    }
+
+    [[nodiscard]] letter_type call_no_checks(char input) const {
+      return _alphabet_map.find(input)->second;
+    }
+
     template <typename InputRange>
     struct Range;
 
@@ -1280,6 +1299,14 @@ namespace libsemigroups {
       std::string output;
                   operator()(output, input);
       return output;
+    }
+
+    template <typename Int>
+    [[nodiscard]] std::string
+    operator()(std::initializer_list<Int> input) const {
+      // TODO(0) use iterators instead
+      word_type copy(input.begin(), input.end());
+      return    operator()(copy);
     }
 
     template <typename InputRange>

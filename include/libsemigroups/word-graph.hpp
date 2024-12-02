@@ -3436,6 +3436,8 @@ namespace libsemigroups {
   //!
   //! \param wg the WordGraph object.
   //!
+  //! \returns A string containing the representation.
+  //!
   //! \exceptions
   //! \no_libsemigroups_except
   template <typename Node>
@@ -3448,6 +3450,8 @@ namespace libsemigroups {
   //! Return a human readable representation of a Meeter object.
   //!
   //! \param meet the Meeter object.
+  //!
+  //! \returns A string containing the representation.
   //!
   //! \exceptions
   //! \no_libsemigroups_except
@@ -3465,6 +3469,8 @@ namespace libsemigroups {
   //!
   //! \param join the Joiner object.
   //!
+  //! \returns A string containing the representation.
+  //!
   //! \exceptions
   //! \no_libsemigroups_except
   [[nodiscard]] static inline std::string
@@ -3473,7 +3479,6 @@ namespace libsemigroups {
     return "<Joiner of word graphs>";
   }
 
-  // TODO(0) to tpp
   //! \ingroup word_graph_group
   //!
   //! \brief Return a string that can be used to recreate a word graph.

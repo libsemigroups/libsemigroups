@@ -18,11 +18,7 @@
 
 #include "libsemigroups/cong-intf.hpp"
 
-#include <algorithm>  // for reverse
-
 #include "libsemigroups/exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
-
-#include "libsemigroups/detail/string.hpp"  // for detail::to_string
 
 namespace libsemigroups {
 
@@ -32,17 +28,6 @@ namespace libsemigroups {
   // CongruenceInterface - non-pure virtual methods - private
   /////////////////////////////////////////////////////////////////////////
 
-  void CongruenceInterface::add_pair_no_checks(word_type&& u, word_type&& v) {
-    throw_if_started();
-    for (auto&& w : {u, v}) {
-      _generating_pairs.push_back(std::move(w));
-      if (kind() == congruence_kind::left) {
-        std::reverse(_generating_pairs.back().begin(),
-                     _generating_pairs.back().end());
-      }
-    }
-  }
-
   void CongruenceInterface::throw_if_started() const {
     if (started()) {
       LIBSEMIGROUPS_EXCEPTION(
@@ -50,9 +35,4 @@ namespace libsemigroups {
     }
   }
 
-  void CongruenceInterface::add_pair_no_checks_no_reverse(word_type const& u,
-                                                          word_type const& v) {
-    _generating_pairs.push_back(u);
-    _generating_pairs.push_back(v);
-  }
 }  // namespace libsemigroups

@@ -80,6 +80,30 @@ namespace libsemigroups {
     return tril::FALSE;
   }
 
+  //   template <>
+  //   size_t FroidurePin<detail::KE<std::string>,
+  //                      FroidurePinTraits<detail::KE<std::string>,
+  //                                        Kambites<std::string>>>::size() {
+  //     return POSITIVE_INFINITY;
+  //   }
+  //
+  //   template <>
+  //   size_t
+  //   FroidurePin<detail::KE<detail::MultiStringView>,
+  //               FroidurePinTraits<detail::KE<detail::MultiStringView>,
+  //                                 Kambites<detail::MultiStringView>>>::size()
+  //                                 {
+  //     return POSITIVE_INFINITY;
+  //   }
+  //
+  //   template <>
+  //   size_t FroidurePin<
+  //       detail::KE<word_type>,
+  //       FroidurePinTraits<detail::KE<word_type>,
+  //       Kambites<word_type>>>::size() {
+  //     return POSITIVE_INFINITY;
+  //   }
+
   namespace detail {
     template <>
     word_type KE<word_type>::to_word(Kambites<word_type> const&) const {

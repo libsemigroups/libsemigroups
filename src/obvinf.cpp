@@ -140,6 +140,40 @@ namespace libsemigroups {
     return *this;
   }
 
+  IsObviouslyInfinite&
+  IsObviouslyInfinite::add_rules_no_checks(Presentation<std::string> const& p,
+                                           const_iterator_word_type first,
+                                           const_iterator_word_type last) {
+#ifdef LIBSEMIGROUPS_EIGEN_ENABLED
+    auto matrix_start = _matrix.rows();
+    _matrix.conservativeResize(matrix_start + (last - first) / 2,
+                               Eigen::NoChange);
+    _matrix.block(matrix_start, 0, (last - first) / 2, _matrix.cols())
+        .setZero();
+#else
+    auto matrix_start = 0;
+    std::fill(_matrix.begin(), _matrix.end(), 0);
+#endif
+
+    word_type lhs, rhs;
+    for (auto it = first; it < last; ++it) {
+      lhs.resize(it->size());
+      std::transform(it->begin(),
+                     it->end(),
+                     lhs.begin(),
+                     [&p](auto const& val) { return p.index_no_checks(val); });
+      ++it;
+      rhs.resize(it->size());
+      std::transform(it->begin(),
+                     it->end(),
+                     rhs.begin(),
+                     [&p](auto const& val) { return p.index_no_checks(val); });
+      private_add_rule(matrix_start + (it - first) / 2, lhs, rhs);
+    }
+    _nr_letter_components = _letter_components.number_of_blocks();
+    return *this;
+  }
+
   bool IsObviouslyInfinite::result() const {
 #ifdef LIBSEMIGROUPS_EIGEN_ENABLED
     LIBSEMIGROUPS_ASSERT(_matrix.rows() >= 0);
@@ -206,18 +240,23 @@ namespace libsemigroups {
   }
 
   bool is_obviously_infinite(ToddCoxeter const& tc) {
-    auto const& d = tc.word_graph();
+    auto const& d = tc.current_word_graph();
     if (tc.finished()
         || word_graph::is_complete(
             d, d.cbegin_active_nodes(), d.cend_active_nodes())) {
+      // FIXME(0) this doesn't work as expected ATM, since the word graph can
+      // sometimes be empty (0 nodes), but with 1 active node, so this line
+      // can throw (because the range pointed at by d.cbegin_active_nodes(),
+      // d.cend_active_nodes() is non-empty but d itself has no nodes)
+      // This is an initialization issue for ToddCoxeter, it should always be
+      // true the number of nodes >= number of active nodes.
       return false;
     }
-    auto p = tc.presentation();  // TODO don't copy this here
-    presentation::normalize_alphabet(p);
+    auto                p = tc.native_presentation();
     IsObviouslyInfinite ioi(p.alphabet().size());
     ioi.add_rules_no_checks(p.rules.cbegin(), p.rules.cend());
-    // TODO is the next line correct, shouldn't the generating pairs also
-    // be normalized?
+    // TODO(0) if we change generating_pairs to return the non-native words,
+    // then this will not work as expected
     ioi.add_rules_no_checks(tc.generating_pairs().cbegin(),
                             tc.generating_pairs().cend());
     return ioi.result();

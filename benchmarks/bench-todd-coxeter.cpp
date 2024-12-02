@@ -1073,8 +1073,8 @@ namespace libsemigroups {
 
       open_xml_tag("LatexColumnTitle", "HLT");
       BENCHMARK("HLT") {
-        ToddCoxeter H(congruence_kind::right, p);
-        H.add_pair({1, 2}, {});
+        ToddCoxeter H(congruence_kind::onesided, p);
+        todd_coxeter::add_generating_pair(H, "bc", "");
         H.lookahead_next(1'000'000).lookahead_extent(lookahead_extent::partial);
         REQUIRE(H.number_of_classes() == 16'384);
       };
@@ -1082,8 +1082,8 @@ namespace libsemigroups {
       // About 2s
       // open_xml_tag("LatexColumnTitle", "Felsch");
       // BENCHMARK("Felsch") {
-      //  ToddCoxeter H(congruence_kind::right, p);
-      //  H.add_pair({1, 2}, {});
+      //  ToddCoxeter H(congruence_kind::onesided, p);
+      //  todd_coxeter::add_generating_pair(H, "bc", "");
       //  H.strategy(strategy::felsch).def_max(100'000);
       //  REQUIRE(H.number_of_classes() == 16'384);
       //};
@@ -1101,16 +1101,11 @@ namespace libsemigroups {
 
       emit_xml_presentation_tags(p, "2p17-2p3", 8);
 
-      letter_type b = 1;
-      letter_type c = 2;
-      letter_type A = 3;
-      letter_type B = 4;
-      letter_type C = 5;
       open_xml_tag("LatexColumnTitle", "HLT");
       BENCHMARK("HLT") {
-        ToddCoxeter H(congruence_kind::right, p);
-        H.add_pair({b, c}, {});
-        H.add_pair({A, B, A, A, b}, {c, B, A, C});
+        ToddCoxeter H(congruence_kind::onesided, p);
+        todd_coxeter::add_generating_pair(H, "bc", "");
+        todd_coxeter::add_generating_pair(H, "ABAAb", "cBAC");
 
         H.strategy(strategy::hlt).save(true).def_max(100'000);
 
@@ -1120,9 +1115,10 @@ namespace libsemigroups {
       // About 2s
       // open_xml_tag("LatexColumnTitle", "Felsch");
       // BENCHMARK("Felsch") {
-      //   ToddCoxeter H(congruence_kind::right, p);
-      //   H.add_pair({b, c}, {});
-      //   H.add_pair({A, B, A, A, b, c, a, b, C}, {});
+      //   ToddCoxeter H(congruence_kind::onesided, p);
+      //   todd_coxeter::add_generating_pair(H, {b, c}, {});
+      //   todd_coxeter::add_generating_pair(H, {A, B, A, A, b, c, a, b, C},
+      //   {});
 
       //   H.strategy(strategy::felsch);
 
@@ -1140,23 +1136,16 @@ namespace libsemigroups {
       presentation::add_rule(p, "bACbaacA", "");
       presentation::add_rule(p, "accAABab", "");
 
-      letter_type a = 0;
-      letter_type b = 1;
-      letter_type c = 2;
-      letter_type A = 3;
-      letter_type B = 4;
-      letter_type C = 5;
-
       presentation::remove_duplicate_rules(p);
 
       emit_xml_presentation_tags(p, "2p17-fel1", 131'072);
 
       open_xml_tag("LatexColumnTitle", "HLT");
       BENCHMARK("HLT") {
-        ToddCoxeter H(congruence_kind::right, p);
-        H.add_pair({}, {a, B, C, b, a, c});
-        H.add_pair({b, A, C, b, a, a, c, A}, {});
-        H.add_pair({a, c, c, A, A, B, a, b}, {});
+        ToddCoxeter H(congruence_kind::onesided, p);
+        todd_coxeter::add_generating_pair(H, "", "aBCbac");
+        todd_coxeter::add_generating_pair(H, "bACbaacA", "");
+        todd_coxeter::add_generating_pair(H, "accAABab", "");
 
         H.save(true).def_max(20'000).large_collapse(10'000);
         REQUIRE(H.number_of_classes() == 131'072);
@@ -1175,19 +1164,13 @@ namespace libsemigroups {
       presentation::add_rule(p, "accAABab", "");
 
       emit_xml_presentation_tags(p, "2p17-fel1a", 1);
-      letter_type a = 0;
-      letter_type b = 1;
-      letter_type c = 2;
-      letter_type A = 3;
-      letter_type B = 4;
-      letter_type C = 5;
 
       open_xml_tag("LatexColumnTitle", "HLT");
       BENCHMARK("HLT") {
-        ToddCoxeter H(congruence_kind::right, p);
-        H.add_pair({b, c}, {});
-        H.add_pair({A, B, A, A, b, c, a, b, C}, {});
-        H.add_pair({A, c, c, c, a, c, B, c, A}, {});
+        ToddCoxeter H(congruence_kind::onesided, p);
+        todd_coxeter::add_generating_pair(H, "bc", "");
+        todd_coxeter::add_generating_pair(H, "ABAAbcabC", "");
+        todd_coxeter::add_generating_pair(H, "AcccacBcA", "");
 
         H.strategy(strategy::hlt)
             .save(true)
@@ -1239,14 +1222,12 @@ namespace libsemigroups {
 
       emit_xml_presentation_tags(p, "2p18-fe1", 262'144);
 
-      letter_type constexpr a = 0, b = 1, c = 2, A = 3, B = 4, C = 5;
-
       open_xml_tag("LatexColumnTitle", "HLT");
       BENCHMARK("HLT") {
-        ToddCoxeter H(congruence_kind::right, p);
-        H.add_pair({a, B, C, b, a, c}, {});
-        H.add_pair({b, A, C, b, a, a, c, A}, {});
-        H.add_pair({a, c, c, A, A, B, a, b}, {});
+        ToddCoxeter H(congruence_kind::onesided, p);
+        todd_coxeter::add_generating_pair(H, "aBCbac", "");
+        todd_coxeter::add_generating_pair(H, "bACbaacA", "");
+        todd_coxeter::add_generating_pair(H, "accAABab", "");
 
         H.strategy(strategy::hlt)
             .save(true)
@@ -1331,13 +1312,12 @@ namespace libsemigroups {
       presentation::balance_no_checks(p, "abAB", "ABab");
       presentation::sort_rules(p);
 
-      letter_type b = 1;
       emit_xml_presentation_tags(p, "SL219", 180);
 
       open_xml_tag("LatexColumnTitle", "HLT");
       BENCHMARK("HLT") {
-        ToddCoxeter H(congruence_kind::right, p);
-        H.add_pair({b}, {});
+        ToddCoxeter H(congruence_kind::onesided, p);
+        todd_coxeter::add_generating_pair(H, "b", "");
 
         H.strategy(strategy::hlt)
             .save(false)
@@ -1367,15 +1347,14 @@ namespace libsemigroups {
       presentation::add_rule(p, "CYcy", "");
       presentation::add_rule(p, "xYxy", "");
 
-      letter_type constexpr a = 0, b = 1, c = 2, A = 4, B = 5, C = 6;
       emit_xml_presentation_tags(p, "big-hard", 786'432);
 
       open_xml_tag("LatexColumnTitle", "HLT");
       BENCHMARK("HLT") {
-        ToddCoxeter H(congruence_kind::right, p);
-        H.add_pair({a, B, C, b, a, c}, {});
-        H.add_pair({b, A, C, b, a, a, c, A}, {});
-        H.add_pair({a, c, c, A, A, B, a, b}, {});
+        ToddCoxeter H(congruence_kind::onesided, p);
+        todd_coxeter::add_generating_pair(H, "aBCbac", "");
+        todd_coxeter::add_generating_pair(H, "bACbaacA", "");
+        todd_coxeter::add_generating_pair(H, "accAABab", "");
         H.strategy(strategy::hlt)
             .save(true)
             .lookahead_extent(lookahead_extent::partial)

@@ -455,15 +455,19 @@ namespace libsemigroups {
                                        00000001_w,
                                        00000001_w,
                                        00000001_w}));
+    ToString to_string(kb.presentation().alphabet());
     for (size_t i = 0; i < lprime.size(); ++i) {
-      REQUIRE(kb.contains(lprime[i], rhs[i]));
+      REQUIRE(
+          knuth_bendix::contains(kb, to_string(lprime[i]), to_string(rhs[i])));
     }
 
     KnuthBendix kb2(congruence_kind::twosided, p);
     for (size_t i = 0; i < lprime.size(); ++i) {
-      kb2.add_pair(lprime[i], rhs[i]);
+      knuth_bendix::add_generating_pair(
+          kb2, to_string(lprime[i]), to_string(rhs[i]));
     }
-    kb2.add_pair(1_w, 00000001_w);
+    knuth_bendix::add_generating_pair(
+        kb2, to_string(1_w), to_string(00000001_w));
     REQUIRE(kb2.number_of_classes() == 9);
     auto T = to_froidure_pin(kb2);
     T.run();

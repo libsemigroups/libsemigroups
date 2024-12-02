@@ -1642,6 +1642,11 @@ namespace libsemigroups {
         return copy;
       }
 
+      [[nodiscard]] difference_type
+      operator-(const_normal_form_iterator const& that) const noexcept {
+        return _pos - that._pos;
+      }
+
       void swap(const_normal_form_iterator& that) noexcept {
         std::swap(_froidure_pin, that._froidure_pin);
         std::swap(_pos, that._pos);

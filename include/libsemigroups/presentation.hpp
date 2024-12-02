@@ -561,8 +561,8 @@ namespace libsemigroups {
     //! \complexity
     //! Worst case \f$O(mn)\f$ where \f$m\f$ is the length of the longest
     //! word, and \f$n\f$ is the size of the alphabet.
-    template <typename Iterator>
-    void validate_word(Iterator first, Iterator last) const;
+    template <typename Iterator1, typename Iterator2>
+    void validate_word(Iterator1 first, Iterator2 last) const;
 
     //! \brief Check if every rule consists only of letters belonging to the
     //! alphabet.
@@ -598,7 +598,13 @@ namespace libsemigroups {
     void try_set_alphabet(decltype(_alphabet_map)& alphabet_map,
                           word_type&               old_alphabet);
     void validate_alphabet(decltype(_alphabet_map)& alphabet_map) const;
-  };
+  };  // class Presentation
+
+  template <typename Word>
+  Presentation(Presentation<Word> const&) -> Presentation<Word>;
+
+  template <typename Word>
+  Presentation(Presentation<Word>&&) -> Presentation<Word>;
 
   //! \ingroup presentations_group
   //!
@@ -1453,10 +1459,19 @@ namespace libsemigroups {
     //! \exceptions
     //! \no_libsemigroups_except
     template <typename Word>
-    void reverse(Presentation<Word>& p) {
+    Presentation<Word>& reverse(Presentation<Word>& p) {
       for (auto& rule : p.rules) {
         std::reverse(rule.begin(), rule.end());
       }
+      return p;
+    }
+
+    template <typename Word>
+    Presentation<Word>&& reverse(Presentation<Word>&& p) {
+      for (auto& rule : p.rules) {
+        std::reverse(rule.begin(), rule.end());
+      }
+      return std::move(p);
     }
 
     //! \brief Normalize the alphabet to \f$\{0, \ldots, n - 1\}\f$.

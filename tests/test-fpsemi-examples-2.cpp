@@ -68,7 +68,8 @@ namespace libsemigroups {
                           "[fpsemi-examples][quick]") {
     auto rg = ReportGuard(false);
 
-    KnuthBendix kb(congruence_kind::twosided, chinese_monoid(3));
+    KnuthBendix kb(congruence_kind::twosided,
+                   to_presentation<std::string>(chinese_monoid(3)));
     REQUIRE(is_obviously_infinite(kb));
     REQUIRE(kb.number_of_classes() == POSITIVE_INFINITY);
     REQUIRE(kb.presentation().rules
@@ -198,7 +199,7 @@ namespace libsemigroups {
     ToString to_string(kb.presentation().alphabet());
     do {
       auto s = to_string(letters);
-      next += map.emplace(kb.normal_form(s), next).second;
+      next += map.emplace(knuth_bendix::reduce(kb, s), next).second;
     } while (std::next_permutation(letters.begin(), letters.end()));
     REQUIRE(map.size() == 4);
 

@@ -251,9 +251,10 @@ namespace libsemigroups {
   }
 
   template <typename Word>
-  template <typename Iterator>
-  void Presentation<Word>::validate_word(Iterator first, Iterator last) const {
-    if (!_contains_empty_word && std::distance(first, last) == 0) {
+  template <typename Iterator1, typename Iterator2>
+  void Presentation<Word>::validate_word(Iterator1 first,
+                                         Iterator2 last) const {
+    if (!_contains_empty_word && first == last) {
       LIBSEMIGROUPS_EXCEPTION("words in rules cannot be empty, did you mean to "
                               "call contains_empty_word(true) first?");
     }
