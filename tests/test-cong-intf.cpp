@@ -263,8 +263,8 @@ namespace libsemigroups {
                  "abb", "abc", "abd", "abe", "abf", "abg", "aca", "acb", "acc",
                  "acd", "ace", "acf", "acg", "ada", "adb", "adc", "add", "ade",
                  "adf", "adg", "aea", "aeb", "aec", "aed", "aee", "aeg", "afa",
-                 "afb", "afc", "afd", "afe", "aff", "afg", "aga", "agb", "agc",
-                 "agd"}));
+                 "afb", "afc", "afd", "afe",  // codespell:ignore
+                 "aff", "afg", "aga", "agb", "agc", "agd"}));
   }
 
   TEMPLATE_TEST_CASE("CongruenceInterface: to_froidure_pin",
