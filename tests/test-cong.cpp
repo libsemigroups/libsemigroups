@@ -1218,7 +1218,8 @@ namespace libsemigroups {
     congruence::add_generating_pair(cong, 1001_w, 11_w);
     congruence::add_generating_pair(cong, 001010101010_w, 00_w);
 
-    REQUIRE(congruence::currently_contains(cong, 1111_w, 11_w) == tril::FALSE);
+    REQUIRE(congruence::currently_contains(cong, 1111_w, 11_w)
+            == tril::unknown);
     REQUIRE(congruence::contains(cong, 1111_w, 1_w));
     REQUIRE(!congruence::contains(cong, 1111_w, 11_w));
     if (cong.has<ToddCoxeter>()) {

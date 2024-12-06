@@ -91,7 +91,55 @@ namespace libsemigroups {
   Kambites<Word>::Kambites(Kambites const&) = default;
 
   template <typename Word>
+  Kambites<Word>::Kambites(Kambites&&) = default;
+
+  template <typename Word>
+  Kambites<Word>& Kambites<Word>::operator=(Kambites const&) = default;
+
+  template <typename Word>
+  Kambites<Word>& Kambites<Word>::operator=(Kambites&&) = default;
+
+  template <typename Word>
   Kambites<Word>::~Kambites() = default;
+
+  template <typename Word>
+  Kambites<Word>::Kambites(congruence_kind                       knd,
+                           Presentation<native_word_type> const& p)
+      : Kambites() {
+    throw_if_1_sided(knd);
+    p.validate();
+    _presentation = p;
+    private_init_from_presentation(false);
+  }
+
+  template <typename Word>
+  Kambites<Word>&
+  Kambites<Word>::init(congruence_kind knd,
+
+                       Presentation<native_word_type> const& p) {
+    throw_if_1_sided(knd);
+    p.validate();
+    _presentation = p;
+    return private_init_from_presentation(true);
+  }
+  template <typename Word>
+  Kambites<Word>::Kambites(congruence_kind                  knd,
+                           Presentation<native_word_type>&& p)
+      : Kambites() {
+    throw_if_1_sided(knd);
+    p.validate();
+    _presentation = std::move(p);
+    private_init_from_presentation(false);
+  }
+
+  template <typename Word>
+  Kambites<Word>& Kambites<Word>::init(congruence_kind                  knd,
+                                       Presentation<native_word_type>&& p) {
+    throw_if_1_sided(knd);
+    p.validate();
+    _presentation = std::move(p);
+    return private_init_from_presentation(true);
+  }
 
   ////////////////////////////////////////////////////////////////////////
   // Interface requirements - contains
@@ -287,7 +335,7 @@ namespace libsemigroups {
   }
 
   ////////////////////////////////////////////////////////////////////////
-  // Kambites - validation functions - public + private
+  // Kambites - validation functions - private
   ////////////////////////////////////////////////////////////////////////
 
   template <typename Word>

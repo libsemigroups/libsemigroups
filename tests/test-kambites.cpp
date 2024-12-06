@@ -2710,4 +2710,20 @@ namespace libsemigroups {
     REQUIRE_THROWS_AS(Kambites(onesided, p), LibsemigroupsException);
   }
 
+  LIBSEMIGROUPS_TEST_CASE_V3("Kambites",
+                             "080",
+                             "to_human_readable_repr",
+                             "[quick][kambites]") {
+    Presentation<std::string> p;
+    p.alphabet("abcdefg");
+    presentation::add_rule(p, "abcd", "ce");
+    presentation::add_rule(p, "df", "dg");
+
+    Kambites k(twosided, p);
+
+    REQUIRE(to_human_readable_repr(k)
+            == "<Kambites over <semigroup presentation "
+               "with 7 letters, 2 rules, and length 10> with small overlap "
+               "class +∞>");
+  }
 }  // namespace libsemigroups

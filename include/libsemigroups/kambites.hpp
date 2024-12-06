@@ -50,6 +50,7 @@
 #include "types.hpp"            // for word_type, tril, letter_type
 #include "ukkonen.hpp"          // for Ukkonen
 
+#include "detail/formatters.hpp"         // for formatting POSITIVE_INFINITY
 #include "detail/multi-string-view.hpp"  // for MultiStringView
 #include "detail/string.hpp"             // for is_prefix
 #include "detail/uf.hpp"                 // for Duf<>
@@ -182,16 +183,13 @@ namespace libsemigroups {
     Kambites(Kambites const&);
 
     //! Default move constructor.
-    // TODO(0) out of line?
-    Kambites(Kambites&&) = default;
+    Kambites(Kambites&&);
 
     //! Default copy assignment operator.
-    // TODO(0) out of line?
-    Kambites& operator=(Kambites const&) = default;
+    Kambites& operator=(Kambites const&);
 
     //! Default move assignment operator.
-    // TODO(0) out of line?
-    Kambites& operator=(Kambites&&) = default;
+    Kambites& operator=(Kambites&&);
 
     ~Kambites();
 
@@ -214,15 +212,7 @@ namespace libsemigroups {
     //! \throws LibsemigroupsException if \p knd is not \ref
     //! congruence_kind::twosided.
     // TODO(1) simplify constructors (like for KnuthBendix + ToddCoxeter)
-    // TODO(0) to tpp
-    explicit Kambites(congruence_kind                       knd,
-                      Presentation<native_word_type> const& p)
-        : Kambites() {
-      throw_if_1_sided(knd);
-      p.validate();
-      _presentation = p;
-      private_init_from_presentation(false);
-    }
+    Kambites(congruence_kind knd, Presentation<native_word_type> const& p);
 
     //! \brief Re-initialize a \ref Kambites instance.
     //!
@@ -244,44 +234,27 @@ namespace libsemigroups {
     //! \throws LibsemigroupsException if \p p is not valid.
     //! \throws LibsemigroupsException if \p knd is not \ref
     //! congruence_kind::twosided.
-    // TODO(0) to tpp
     Kambites& init(congruence_kind                       knd,
-                   Presentation<native_word_type> const& p) {
-      throw_if_1_sided(knd);
-      p.validate();
-      _presentation = p;
-      return private_init_from_presentation(true);
-    }
+                   Presentation<native_word_type> const& p);
 
     //! \copydoc Kambites(congruence_kind, Presentation<native_word_type>
     //! const&)
-    // TODO(0) to tpp
-    explicit Kambites(congruence_kind knd, Presentation<native_word_type>&& p)
-        : Kambites() {
-      throw_if_1_sided(knd);
-      p.validate();
-      _presentation = std::move(p);
-      private_init_from_presentation(false);
-    }
+    Kambites(congruence_kind knd, Presentation<native_word_type>&& p);
 
-    //! \copydoc init(congruence_kind, Presentation<native_word_type> const&)
-    // TODO(0) to tpp
-    Kambites& init(congruence_kind knd, Presentation<native_word_type>&& p) {
-      throw_if_1_sided(knd);
-      p.validate();
-      _presentation = std::move(p);
-      return private_init_from_presentation(true);
-    }
+    //! \copydoc init(congruence_kind, Presentation<native_word_type>
+    //! const&)
+    Kambites& init(congruence_kind knd, Presentation<native_word_type>&& p);
 
     //! \brief Construct from \ref congruence_kind and Presentation.
     //!
     //! This function constructs a  \ref Kambites instance representing a
-    //! congruence of kind \p knd over the semigroup or monoid defined by the
-    //! presentation \p p. The type of the words in \p p can be anything, but
-    //! will be converted in to \ref native_word_type. This means that if the
-    //! input presentation uses std::string, for example, as the word type, then
-    //! this presentation is converted into a \ref native_presentation_type.
-    //! This converted presentation can be recovered using \ref presentation.
+    //! congruence of kind \p knd over the semigroup or monoid defined by
+    //! the presentation \p p. The type of the words in \p p can be
+    //! anything, but will be converted in to \ref native_word_type. This
+    //! means that if the input presentation uses std::string, for example,
+    //! as the word type, then this presentation is converted into a \ref
+    //! native_presentation_type. This converted presentation can be
+    //! recovered using \ref presentation.
     //!
     //! \tparam OtherWord the type of the words in the presentation \p p.
     //! \param knd the kind (onesided or twosided) of the congruence.
@@ -292,7 +265,7 @@ namespace libsemigroups {
     //! congruence_kind::twosided.
     // No rvalue ref version of this because we can't use the presentation.
     template <typename OtherWord>
-    explicit Kambites(congruence_kind knd, Presentation<OtherWord> const& p)
+    Kambites(congruence_kind knd, Presentation<OtherWord> const& p)
         : Kambites(
               knd,
               // The lambda in the next line converts, say, chars to
@@ -304,8 +277,8 @@ namespace libsemigroups {
 
     //! \brief Re-initialize from \ref congruence_kind and Presentation.
     //!
-    //! This function re-initializes a \ref Kambites instance as if it had been
-    //! newly constructed from \p knd and \p p.
+    //! This function re-initializes a \ref Kambites instance as if it had
+    //! been newly constructed from \p knd and \p p.
     //!
     //! \tparam OtherWord the type of the words in the presentation \p p.
     //! \param knd the kind (onesided or twosided) of the congruence.
@@ -323,13 +296,13 @@ namespace libsemigroups {
       return *this;
     }
 
-    //! \brief Get the presentation used to define a \ref Kambites instance (if
-    //! any).
+    //! \brief Get the presentation used to define a \ref Kambites instance
+    //! (if any).
     //!
     //! If a \ref Kambites instance is constructed or initialised using a
     //! presentation, then a const reference to the
-    //! \ref native_presentation_type version of this presentation is returned
-    //! by this function.
+    //! \ref native_presentation_type version of this presentation is
+    //! returned by this function.
     //!
     //! \returns A const reference to the presentation.
     //!
@@ -346,7 +319,8 @@ namespace libsemigroups {
 
     //! \brief Add generating pair via iterators.
     //!
-    //! This function adds a generating pair to the congruence represented by a
+    //! This function adds a generating pair to the congruence represented
+    //! by a
     //! \ref Kambites instance.
     //!
     //! \cong_intf_params_contains
@@ -368,7 +342,8 @@ namespace libsemigroups {
 
     //! \brief Add generating pair via iterators.
     //!
-    //! This function adds a generating pair to the congruence represented by a
+    //! This function adds a generating pair to the congruence represented
+    //! by a
     //! \ref Kambites instance.
     //!
     //! \cong_intf_params_contains
@@ -395,18 +370,18 @@ namespace libsemigroups {
     //! \brief Compute the number of classes in the congruence.
     //!
     //! This function computes the number of classes in the congruence
-    //! represented by a \ref Kambites instance if the \ref small_overlap_class
-    //! is at least \f$4\f$. \ref Kambites instances can only compute the number
-    //! of classes if the condition of the previous sentence is fulfilled, and
-    //! in this case the number of classes is always \ref POSITIVE_INFINITY.
-    //! Otherwise an exception is thrown.
+    //! represented by a \ref Kambites instance if the \ref
+    //! small_overlap_class is at least \f$4\f$. \ref Kambites instances can
+    //! only compute the number of classes if the condition of the previous
+    //! sentence is fulfilled, and in this case the number of classes is
+    //! always \ref POSITIVE_INFINITY. Otherwise an exception is thrown.
     //!
     //! \returns The number of congruences classes of a \ref
     //! Kambites if \ref small_overlap_class is at least \f$4\f$.
     //!
     //! \throws LibsemigroupsException if it is not possible to compute the
-    //! number of classes of the congruence because the small overlap class is
-    //! too small.
+    //! number of classes of the congruence because the small overlap class
+    //! is too small.
     // Not noexcept, throws
     [[nodiscard]] uint64_t number_of_classes() {
       throw_if_not_C4();
@@ -418,11 +393,11 @@ namespace libsemigroups {
     ////////////////////////////////////////////////////////////////////////
 
    private:
-    // The Kambites class requires that input to contains to be actual objects
-    // not iterators. This is different from KnuthBendix and ToddCoxeter.
-    // One way to resolve this more satisfactorily would be to implement
-    // MultiStringView for non-strings, so that we can just construct a
-    // light-weight view and bung that in here instead.
+    // The Kambites class requires that input to contains to be actual
+    // objects not iterators. This is different from KnuthBendix and
+    // ToddCoxeter. One way to resolve this more satisfactorily would be to
+    // implement MultiStringView for non-strings, so that we can just
+    // construct a light-weight view and bung that in here instead.
     [[nodiscard]] bool contains_no_checks(native_word_type const& u,
                                           native_word_type const& v);
 
@@ -437,26 +412,30 @@ namespace libsemigroups {
    public:
     //! \brief Check containment of a pair of words via iterators.
     //!
-    //! This function checks whether or not the words represented by the ranges
-    //! \p first1 to \p last1 and \p first2 to \p last2 are already known to be
-    //! contained in the congruence represented by a \ref Kambites instance.
-    //! This function performs no enumeration, so it is possible for the words
-    //! to be contained in the congruence, but that this is not currently known.
+    //! This function checks whether or not the words represented by the
+    //! ranges
+    //! \p first1 to \p last1 and \p first2 to \p last2 are already known to
+    //! be contained in the congruence represented by a \ref Kambites
+    //! instance. This function performs no enumeration, so it is possible
+    //! for the words to be contained in the congruence, but that this is
+    //! not currently known.
     //!
     //! If any of the iterators point at words that do not belong to the
     //! ``presentation().alphabet()``, then \ref tril::FALSE or \ref
-    //! tril::unknown is returned (depending on whether \ref finished returns
+    //! tril::unknown is returned (depending on whether \ref finished
+    //! returns
     //! \c true or \c false, respectively).
     //!
     //! \cong_intf_params_contains
     //!
     //! \returns
     //! * tril::TRUE if the words are known to belong to the congruence;
-    //! * tril::FALSE if the words are known to not belong to the congruence;
+    //! * tril::FALSE if the words are known to not belong to the
+    //! congruence;
     //! * tril::unknown otherwise.
     //!
-    //! \warning It is assumed but not checked that the \ref small_overlap_class
-    //! is at least \f$4\f$.
+    //! \warning It is assumed but not checked that the \ref
+    //! small_overlap_class is at least \f$4\f$.
     template <typename Iterator1,
               typename Iterator2,
               typename Iterator3,
@@ -468,17 +447,20 @@ namespace libsemigroups {
 
     //! \brief Check containment of a pair of words via iterators.
     //!
-    //! This function checks whether or not the words represented by the ranges
-    //! \p first1 to \p last1 and \p first2 to \p last2 are already known to be
-    //! contained in the congruence represented by a \ref Kambites instance.
-    //! This function performs no enumeration, so it is possible for the words
-    //! to be contained in the congruence, but that this is not currently known.
+    //! This function checks whether or not the words represented by the
+    //! ranges
+    //! \p first1 to \p last1 and \p first2 to \p last2 are already known to
+    //! be contained in the congruence represented by a \ref Kambites
+    //! instance. This function performs no enumeration, so it is possible
+    //! for the words to be contained in the congruence, but that this is
+    //! not currently known.
     //!
     //! \cong_intf_params_contains
     //!
     //! \returns
     //! * tril::TRUE if the words are known to belong to the congruence;
-    //! * tril::FALSE if the words are known to not belong to the congruence;
+    //! * tril::FALSE if the words are known to not belong to the
+    //! congruence;
     //! * tril::unknown otherwise.
     //!
     //! \cong_intf_throws_if_letters_out_of_bounds
@@ -508,8 +490,8 @@ namespace libsemigroups {
     //!
     //! \cong_intf_warn_assume_letters_in_bounds
     //!
-    //! \warning It is assumed but not checked that the \ref small_overlap_class
-    //! is at least \f$4\f$.
+    //! \warning It is assumed but not checked that the \ref
+    //! small_overlap_class is at least \f$4\f$.
     template <typename Iterator1,
               typename Iterator2,
               typename Iterator3,
@@ -556,16 +538,17 @@ namespace libsemigroups {
                             SFINAE> const;
 
    public:
-    //! \brief Reduce a word with no computation of the small_overlap_class or
-    //! checks.
+    //! \brief Reduce a word with no computation of the small_overlap_class
+    //! or checks.
     //!
     //! This function writes a reduced word equivalent to the input word
-    //! described by the iterator \p first and \p last to the output iterator \p
-    //! d_first. If \ref finished returns \c true, then the word output by this
-    //! function is the lexicographically least word in the congruence class of
-    //! the input word. Otherwise, the input word is output. Note that in a
-    //! small overlap monoid, every congruence class is finite, and so this
-    //! lexicographically least word always exists. form for the input word.
+    //! described by the iterator \p first and \p last to the output
+    //! iterator \p d_first. If \ref finished returns \c true, then the word
+    //! output by this function is the lexicographically least word in the
+    //! congruence class of the input word. Otherwise, the input word is
+    //! output. Note that in a small overlap monoid, every congruence class
+    //! is finite, and so this lexicographically least word always exists.
+    //! form for the input word.
     //!
     //! \cong_intf_params_reduce
     //!
@@ -574,8 +557,8 @@ namespace libsemigroups {
     //!
     //! \cong_intf_warn_assume_letters_in_bounds
     //!
-    //! \warning It is assumed but not checked that the \ref small_overlap_class
-    //! is at least \f$4\f$.
+    //! \warning It is assumed but not checked that the \ref
+    //! small_overlap_class is at least \f$4\f$.
     template <typename OutputIterator, typename Iterator1, typename Iterator2>
     OutputIterator reduce_no_run_no_checks(OutputIterator d_first,
                                            Iterator1      first,
@@ -584,12 +567,13 @@ namespace libsemigroups {
     //! \brief Reduce a word with no computation of the small_overlap_class.
     //!
     //! This function writes a reduced word equivalent to the input word
-    //! described by the iterator \p first and \p last to the output iterator \p
-    //! d_first. If \ref finished returns \c true, then the word output by this
-    //! function is the lexicographically least word in the congruence class of
-    //! the input word. Otherwise, the input word is output. Note that in a
-    //! small overlap monoid, every congruence class is finite, and so this
-    //! lexicographically least word always exists. form for the input word.
+    //! described by the iterator \p first and \p last to the output
+    //! iterator \p d_first. If \ref finished returns \c true, then the word
+    //! output by this function is the lexicographically least word in the
+    //! congruence class of the input word. Otherwise, the input word is
+    //! output. Note that in a small overlap monoid, every congruence class
+    //! is finite, and so this lexicographically least word always exists.
+    //! form for the input word.
     //!
     //! \cong_intf_params_reduce
     //!
@@ -611,13 +595,13 @@ namespace libsemigroups {
 
     //! \brief Reduce a word with no checks.
     //!
-    //! This function computes the \ref small_overlap_class and then writes a
-    //! reduced word equivalent to the input word described by the iterator \p
-    //! first and \p last to the output iterator \p d_first. The word output by
-    //! this function is the lexicographically least word in the congruence
-    //! class of the input word. Note that in a small overlap monoid, every
-    //! congruence class is finite, and so this lexicographically least word
-    //! always exists.
+    //! This function computes the \ref small_overlap_class and then writes
+    //! a reduced word equivalent to the input word described by the
+    //! iterator \p first and \p last to the output iterator \p d_first. The
+    //! word output by this function is the lexicographically least word in
+    //! the congruence class of the input word. Note that in a small overlap
+    //! monoid, every congruence class is finite, and so this
+    //! lexicographically least word always exists.
     //!
     //! \cong_intf_params_reduce
     //!
@@ -626,8 +610,8 @@ namespace libsemigroups {
     //!
     //! \cong_intf_warn_assume_letters_in_bounds
     //!
-    //! \warning It is assumed but not checked that the \ref small_overlap_class
-    //! is at least \f$4\f$.
+    //! \warning It is assumed but not checked that the \ref
+    //! small_overlap_class is at least \f$4\f$.
     template <typename OutputIterator,
               typename InputIterator1,
               typename InputIterator2>
@@ -640,13 +624,13 @@ namespace libsemigroups {
 
     //! \brief Reduce a word.
     //!
-    //! This function computes the \ref small_overlap_class and then writes a
-    //! reduced word equivalent to the input word described by the iterator \p
-    //! first and \p last to the output iterator \p d_first. The word output by
-    //! this function is the lexicographically least word in the congruence
-    //! class of the input word. Note that in a small overlap monoid, every
-    //! congruence class is finite, and so this lexicographically least word
-    //! always exists.
+    //! This function computes the \ref small_overlap_class and then writes
+    //! a reduced word equivalent to the input word described by the
+    //! iterator \p first and \p last to the output iterator \p d_first. The
+    //! word output by this function is the lexicographically least word in
+    //! the congruence class of the input word. Note that in a small overlap
+    //! monoid, every congruence class is finite, and so this
+    //! lexicographically least word always exists.
     //!
     //! \cong_intf_params_reduce
     //!
@@ -708,9 +692,9 @@ namespace libsemigroups {
     //! \brief Returns the suffix tree used to compute pieces.
     //!
     //! This function returns a const reference to the generalised suffix
-    //! tree Ukkonoen object containing the relation words of a Kambites object,
-    //! that is used to determine the pieces, and decompositions of the relation
-    //! words.
+    //! tree Ukkonoen object containing the relation words of a Kambites
+    //! object, that is used to determine the pieces, and decompositions of
+    //! the relation words.
     //!
     //! \returns A const reference to a \ref Ukkonen object.
     //!
@@ -727,19 +711,20 @@ namespace libsemigroups {
 
     //! \brief Throws if any letter in a range is out of bounds.
     //!
-    //! This function throws a LibsemigroupsException if any value pointed at
-    //! by an iterator in the range \p first to \p last is out of bounds (i.e.
-    //! does not belong to the alphabet of the \ref presentation used to
-    //! construct the \ref Kambites instance).
+    //! This function throws a LibsemigroupsException if any value pointed
+    //! at by an iterator in the range \p first to \p last is out of bounds
+    //! (i.e. does not belong to the alphabet of the \ref presentation used
+    //! to construct the \ref Kambites instance).
     //!
     //! \tparam Iterator1 the type of first argument \p first.
     //! \tparam Iterator2 the type of second argument \p last.
     //!
     //! \param first iterator pointing at the first letter of the word.
-    //! \param last iterator pointing one beyond the last letter of the word.
+    //! \param last iterator pointing one beyond the last letter of the
+    //! word.
     //!
-    //! \throw LibsemigroupsException if any letter in the range from \p first
-    //! to \p last is out of bounds.
+    //! \throw LibsemigroupsException if any letter in the range from \p
+    //! first to \p last is out of bounds.
     template <typename Iterator1, typename Iterator2>
     void throw_if_letter_out_of_bounds(Iterator1 first, Iterator2 last) const {
       _presentation.validate_word(first, last);
@@ -747,8 +732,8 @@ namespace libsemigroups {
 
     //! \brief Throws if \ref small_overlap_class isn't at least \f$4\f$.
     //!
-    //! This function throws an exception if the \ref small_overlap_class is not
-    //! at least \f$4\f$.
+    //! This function throws an exception if the \ref small_overlap_class is
+    //! not at least \f$4\f$.
     //!
     //! \throws LibsemigroupsException if \ref small_overlap_class is not at
     //! least \f$4\f$.
@@ -801,9 +786,9 @@ namespace libsemigroups {
 
     // Returns the index of the relation word r_i = X_iY_iZ_i such that
     // X_iY_i is a clean overlap prefix of <s>, i.e. <s> = X_iY_iw for some
-    // w, and there's no factor of <s> of the form X_jY_j starting before the
-    // beginning of Y_i. If no such exists, UNDEFINED is returned.
-    // Not noexcept because relation_prefix isn'Word
+    // w, and there's no factor of <s> of the form X_jY_j starting before
+    // the beginning of Y_i. If no such exists, UNDEFINED is returned. Not
+    // noexcept because relation_prefix isn'Word
     [[nodiscard]] inline size_t
     clean_overlap_prefix(internal_type const& s) const {
       return clean_overlap_prefix(s.cbegin(), s.cend());
@@ -816,25 +801,25 @@ namespace libsemigroups {
     // Calls clean_overlap_prefix on every suffix of <s> starting within the
     // range [0, n), and returns a std::pair p where:
     //
-    // * <p.first> is the starting index of the suffix of <s> that contains a
-    //   clean_overlap_prefix.
+    // * <p.first> is the starting index of the suffix of <s> that contains
+    // a clean_overlap_prefix.
     //
     // * <p.second> is the index of the relation word that's a clear overlap
     //   prefix of a suffix of <s>
     [[nodiscard]] std::pair<size_t, size_t>
     clean_overlap_prefix_mod(internal_type const& s, size_t n) const;
 
-    // If x + [first, last) = aX_sY_sw words a, w and for some index s, where
-    // X_s = X_s'X_s'', x = aX_s', and [first, last) = X_s''Y_sw, then this
-    // function returns a tuple <Word> where:
+    // If x + [first, last) = aX_sY_sw words a, w and for some index s,
+    // where X_s = X_s'X_s'', x = aX_s', and [first, last) = X_s''Y_sw, then
+    // this function returns a tuple <Word> where:
     //
     // 1. std::get<0>(Word) is the index <s>
     //
     // 2. std::get<1>(Word) is an iterator <it1> into <x>, such that
     //    [it1, x.cend()) = X_s'
     //
-    // 3. std::get<2>(Word) is an iterator <it2> into [first, last), such that
-    //    [it2, last) = w
+    // 3. std::get<2>(Word) is an iterator <it2> into [first, last), such
+    //    that [it2, last) = w
     //
     // If no such relation word exists, then
     //
@@ -849,9 +834,9 @@ namespace libsemigroups {
                  internal_type_iterator const& first,
                  internal_type_iterator const& last) const;
 
-    // Returns a word equal to w in this, starting with the piece p, no checks
-    // are performed. Used in the normal_form function.
-    // Not noexcept because detail::is_prefix isn'Word
+    // Returns a word equal to w in this, starting with the piece p, no
+    // checks are performed. Used in the normal_form function. Not noexcept
+    // because detail::is_prefix isn'Word
     void replace_prefix(internal_type& w, internal_type const& p) const;
 
     ////////////////////////////////////////////////////////////////////////
@@ -871,8 +856,8 @@ namespace libsemigroups {
       return prefix_of_complement(i, w.cbegin(), w.cend());
     }
 
-    // Returns the index j of a complement of X_iY_iZ_i such that X_jY_j is a
-    // prefix of w. Otherwise, UNDEFINED is returned.
+    // Returns the index j of a complement of X_iY_iZ_i such that X_jY_j is
+    // a prefix of w. Otherwise, UNDEFINED is returned.
     [[nodiscard]] size_t complementary_XY_prefix(size_t               i,
                                                  internal_type const& w) const;
 
@@ -937,14 +922,15 @@ namespace libsemigroups {
     // (2009). Small overlap monoids. I. The word problem. J. Algebra,
     // 321(8), 2187–2205.
     //
-    // Returns true if u and v represent the same element of the fp semigroup
-    // represented by this, and p is a possible prefix of u, and v.
+    // Returns true if u and v represent the same element of the fp
+    // semigroup represented by this, and p is a possible prefix of u, and
+    // v.
     //
     // Parameters are given by value because they are modified by wp_prefix,
     // and it was too difficult to untangle the different cases (when u, v
     // are equal, not equal, references, rvalue references etc). It's
     // possible that it could be modified to only copy when necessary, but
-    // this doesn'Word seem worth it at present.
+    // this doesn't seem worth it at present.
     [[nodiscard]] bool wp_prefix(internal_type u,
                                  internal_type v,
                                  internal_type p) const;
@@ -960,7 +946,13 @@ namespace libsemigroups {
     void run_impl() override;
 
     bool finished_impl() const override {
-      // TODO(0) remove the _class >= 4 from here, this has the wrong meaning
+      // TODO(1) remove the _class >= 4 from here, this has the wrong
+      // meaning Currently this is used by Congruence which identifies the
+      // winner by checking which runner is finished, obviously this isn't
+      // correct for Kambites unless _class >= 4.
+      //
+      // Maybe implement succeeded in Runner also? and then use that in
+      // Race?
       return _have_class && _class >= 4;
     }
   };
@@ -1063,6 +1055,36 @@ namespace libsemigroups {
     // kambites::normal_forms(k2)) (as in ToddCoxeter) because there are
     // infinitely many normal_forms.
   }  // namespace kambites
+
+  //! \ingroup kambites_group
+  //!
+  //! \brief Return a human readable representation of a Kambites object.
+  //!
+  //! Defined in ``kambites.hpp``.
+  //!
+  //! This function returns a human readable representation of a
+  //! Kambites object.
+  //!
+  //! \param k the \ref Kambites object.
+  //!
+  //! \returns A std::string containing the representation.
+  //!
+  //! \exceptions
+  //! \no_libsemigroups_except
+  template <typename Word>
+  std::string to_human_readable_repr(Kambites<Word>& k) {
+    // TODO(1) if we implement succeeded in Runner, then we can check finished
+    // here and only display the small_overlap_class if we're finished.
+    std::string soc;
+    if (k.small_overlap_class() == POSITIVE_INFINITY) {
+      soc = fmt::format("{}", POSITIVE_INFINITY);
+    } else {
+      soc = fmt::format("{}", k.small_overlap_class());
+    }
+    return fmt::format("<Kambites over {} with small overlap class {}>",
+                       to_human_readable_repr(k.presentation()),
+                       soc);
+  }
 
 }  // namespace libsemigroups
 

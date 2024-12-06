@@ -220,14 +220,8 @@ namespace libsemigroups {
 
     TestType cong(twosided, p);
 
-    if constexpr (std::is_same_v<TestType, ToddCoxeter>
-                  || std::is_same_v<TestType, KnuthBendix<>>) {
-      REQUIRE(congruence_interface::currently_contains(cong, 1_w, 2222222222_w)
-              == tril::unknown);
-    } else {
-      REQUIRE(congruence_interface::currently_contains(cong, 1_w, 2222222222_w)
-              == tril::FALSE);
-    }
+    REQUIRE(congruence_interface::currently_contains(cong, 1_w, 2222222222_w)
+            == tril::unknown);
     REQUIRE(!congruence_interface::contains(cong, 1_w, 2222222222_w));
     REQUIRE(cong.number_of_classes() == POSITIVE_INFINITY);
   }
