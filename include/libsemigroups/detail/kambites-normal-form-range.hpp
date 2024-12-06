@@ -30,14 +30,15 @@ namespace libsemigroups {
     template <typename Word>
     class KambitesNormalFormRange {
      private:
-      mutable typename Kambites<Word>::value_type _current;
-      FroidurePinBase::const_normal_form_iterator _end;
-      std::unique_ptr<FroidurePinBase>            _fpb;
-      FroidurePinBase::const_normal_form_iterator _it;
-      Kambites<Word>*                             _k;
+      mutable typename Kambites<Word>::native_word_type _current;
+      FroidurePinBase::const_normal_form_iterator       _end;
+      std::unique_ptr<FroidurePinBase>                  _fpb;
+      FroidurePinBase::const_normal_form_iterator       _it;
+      Kambites<Word>*                                   _k;
 
      public:
-      using output_type = typename Kambites<Word>::value_type const&;
+      using output_type = typename Kambites<Word>::native_word_type const&;
+
       explicit KambitesNormalFormRange(Kambites<Word>& k)
           : _current(),
             _end(),

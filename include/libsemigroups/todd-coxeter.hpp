@@ -346,7 +346,8 @@ namespace libsemigroups {
 
     //! \ingroup todd_coxeter_class_mem_types_group
     //!
-    //! \brief Type of the letters in the relations of the native presentation.
+    //! \brief Type of the letters in the relations of the presentation stored
+    //! in a \ref todd_coxeter_class_group "ToddCoxeter" instance.
     //!
     //! A \ref todd_coxeter_class_group "ToddCoxeter" instance can be
     //! constructed or initialised from a presentation of arbitrary types of
@@ -356,17 +357,19 @@ namespace libsemigroups {
 
     //! \ingroup todd_coxeter_class_mem_types_group
     //!
-    //! \brief Type of the words in the relations of the native presentation.
+    //! \brief Type of the words in the relations of the presentation stored in
+    //! a \ref todd_coxeter_class_group "ToddCoxeter" instance.
     //!
     //! A \ref todd_coxeter_class_group "ToddCoxeter" instance can be
-    //! constructed or initialised from a presentation of arbitrary types of
-    //! letters and words. Internally the words are converted to \ref
+    //! constructed or initialised from a presentation with arbitrary types
+    //! of letters and words. Internally the words are converted to \ref
     //! native_word_type.
     using native_word_type = word_type;
 
     //! \ingroup todd_coxeter_class_mem_types_group
     //!
-    //! \brief Type of the native presentation.
+    //! \brief Type of the presentation stored in a \ref
+    //! todd_coxeter_class_group "ToddCoxeter" instance.
     //!
     //! A \ref todd_coxeter_class_group "ToddCoxeter" instance can be
     //! constructed or initialised from a presentation of arbitrary types of
@@ -789,9 +792,8 @@ namespace libsemigroups {
     //! This function constructs a  \ref todd_coxeter_class_group "ToddCoxeter"
     //! instance representing a congruence of kind \p knd over the  \ref
     //! todd_coxeter_class_group "ToddCoxeter" instance \p tc. The
-    //!  \ref todd_coxeter_class_group "ToddCoxeter" instance constructed in
-    //!  this way represents a quotient of
-    //! the word graph represented by \p tc.
+    //! \ref todd_coxeter_class_group "ToddCoxeter" instance constructed in
+    //!  this way represents a quotient of the word graph represented by \p tc.
     //!
     //! \param knd the kind (onesided, or twosided) of the congruence.
     //! \param tc the  \ref todd_coxeter_class_group "ToddCoxeter" instance.
@@ -1949,6 +1951,16 @@ namespace libsemigroups {
     ////////////////////////////////////////////////////////////////////////
 
 #ifndef PARSED_BY_DOXYGEN
+    // TODO(0) rename this, it's misleading at present. There are potentially 3
+    // presentations:
+    // 1. the one input (any type).
+    // 2. the one stored in _input_presentation, which is the one from 1.
+    //    converted to native_presentation_type in the constructor.
+    // 3. the internal presentation which is the one used by the implementation
+    //    (which requires the alphabet to be {0, ..., n - 1} for some n).
+    //
+    // The function native_presentation returns number 3, but the name suggests
+    // it returns 2. Maybe internal_presentation() would be better?
     Presentation<word_type> const& native_presentation() const noexcept {
       return _word_graph.presentation();
     }

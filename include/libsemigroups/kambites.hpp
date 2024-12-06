@@ -58,19 +58,34 @@ namespace libsemigroups {
 
   //! \defgroup kambites_group Kambites
   //!
-  //! TODO
+  //! Defined in ``kambites.hpp``.
+  //!
+  //! On this page there are links to the documentation for the algorithms in
+  //! ``libsemigroups`` for small overlap monoids by Mark %Kambites and the
+  //! authors of ``libsemigroups``;
+  //! see \cite Kambites2009aa, \cite Kambites2009ab, and \cite Mitchell2021aa.
 
   //! \ingroup kambites_group
   //!
   //! Defined in ``kambites.hpp``.
   //!
-  //! On this page we describe the functionality relating to the algorithms
-  //! for small overlap monoids by
-  //! [Kambites](https://doi.org/10.1016/j.jalgebra.2008.09.038) and the
-  //! authors of ``libsemigroups``.
+  //! \brief Class template implementing small overlap class, equality, and
+  //! normal forms for small overlap monoids.
   //!
-  //! This page describes the implementation in the class template Kambites.
-  // TODO(later) example
+  //! This page describes the class template Kambites for determining the
+  //! small overlap class of a presentation, and, for small overlap monoids
+  //! (those with small overlap class 4 or higher) checking equality of words
+  //! and for computing normal forms.
+  //!
+  //! Note that a Kambites instance represents a congruence on the free monoid
+  //! or semigroup containing the rules of a presentation used to construct the
+  //! instance, and the \ref generating_pairs. As such generating pairs or rules
+  //! are interchangeable in the context of Kambites objects.
+  //!
+  //! \tparam Word the type of the words in the presentation.
+  // TODO(1) example
+  // TODO(0) it seems a bit weird that the internal_type is the thing used as a
+  // template parameter here.
   template <typename Word = detail::MultiStringView>
   class Kambites : public CongruenceInterface {
    public:
@@ -78,16 +93,31 @@ namespace libsemigroups {
     // Kambites - aliases - public
     ////////////////////////////////////////////////////////////////////////
 
-    //! The type of strings used by a Kambites instance.
-    // TODO(0) update doc
-    // TODO(0) remove use native_word_type instead
-    using value_type
+    //! \brief Type of the words in the relations of the presentation stored in
+    //! a Kambites instance.
+    //!
+    //! A Kambites instance can be constructed or initialised from a
+    //! presentation with arbitrary types of letters and words. Internally the
+    //! words are converted to \ref native_word_type.
+    using native_word_type
         = std::conditional_t<std::is_same_v<Word, detail::MultiStringView>,
                              std::string,
                              Word>;
 
-    using native_word_type   = value_type;
+    //! \brief Type of the letters in the relations of the presentation stored
+    //! in a \ref Kambites instance.
+    //!
+    //! A \ref Kambites instance can be constructed or initialised from a
+    //! presentation of arbitrary types of letters and words. Internally the
+    //! letters are converted to \ref native_letter_type.
     using native_letter_type = typename native_word_type::value_type;
+
+    //! \brief Type of the presentation stored in a \ref Kambites instance.
+    //!
+    //! A \ref Kambites instance can be constructed or initialised from a
+    //! presentation of arbitrary types of letters and words. Internally the
+    //! presentation is stored as a \ref native_presentation_type.
+    using native_presentation_type = Presentation<native_word_type>;
 
    private:
     using internal_type = Word;
@@ -117,10 +147,10 @@ namespace libsemigroups {
     mutable Complements                _complements;
     mutable bool                       _have_class;
     mutable std::vector<RelationWords> _XYZ_data;
-    mutable value_type                 _tmp_value1, _tmp_value2;
+    mutable native_word_type           _tmp_value1, _tmp_value2;
 
-    Presentation<value_type> _presentation;
-    Ukkonen                  _suffix_tree;
+    Presentation<native_word_type> _presentation;
+    Ukkonen                        _suffix_tree;
 
     using internal_type_iterator = typename internal_type::const_iterator;
 
@@ -137,36 +167,62 @@ namespace libsemigroups {
     // Kambites - Constructors, destructor, initialisation - public
     ////////////////////////////////////////////////////////////////////////
 
-    //! Default constructor.
+    //! \brief Default constructor.
+    //!
+    //! This function default constructs an uninitialised \ref
+    //! Kambites instance.
+    Kambites();
+
+    //! \brief Re-initialize a \ref Kambites instance.
+    //!
+    //! This function puts a \ref Kambites instance back into the state that it
+    //! would have been in if it had just been newly default constructed.
+    //!
+    //! \returns A reference to `*this`.
     //!
     //! \exceptions
     //! \no_libsemigroups_except
-    //!
-    //! \complexity
-    //! Constant
-    Kambites();
-
     Kambites& init();
 
     //! Default copy constructor.
     Kambites(Kambites const&);
 
     //! Default move constructor.
+    // TODO(0) out of line?
     Kambites(Kambites&&) = default;
 
     //! Default copy assignment operator.
+    // TODO(0) out of line?
     Kambites& operator=(Kambites const&) = default;
 
     //! Default move assignment operator.
+    // TODO(0) out of line?
     Kambites& operator=(Kambites&&) = default;
 
     ~Kambites();
 
-    // Although congruence_kind can only be twosided for Kambites objects, we
-    // have the parameter for uniformity with KnuthBendix, ToddCoxeter, and
-    // Congruence.
+    //! \brief Construct from \ref congruence_kind and Presentation.
+    //!
+    //! This function constructs a  \ref Kambites instance representing a
+    //! congruence of kind \p knd over the semigroup or monoid defined by the
+    //! presentation \p p.
+    //!
+    //! Kambites instances can only be used to compute two-sided congruences,
+    //! and so the first parameter \p knd must always be
+    //! congruence_kind::twosided. The parameter \p knd is included for
+    //! uniformity of interface between with \ref KnuthBendix, \ref
+    //! Kambites, and \ref Congruence.
+    //!
+    //! \param knd the kind (onesided or twosided) of the congruence.
+    //! \param p the presentation.
+    //!
+    //! \throws LibsemigroupsException if \p p is not valid.
+    //! \throws LibsemigroupsException if \p knd is not \ref
+    //! congruence_kind::twosided.
     // TODO(1) simplify constructors (like for KnuthBendix + ToddCoxeter)
-    explicit Kambites(congruence_kind knd, Presentation<value_type> const& p)
+    // TODO(0) to tpp
+    explicit Kambites(congruence_kind                       knd,
+                      Presentation<native_word_type> const& p)
         : Kambites() {
       throw_if_1_sided(knd);
       p.validate();
@@ -174,14 +230,39 @@ namespace libsemigroups {
       private_init_from_presentation(false);
     }
 
-    Kambites& init(congruence_kind knd, Presentation<value_type> const& p) {
+    //! \brief Re-initialize a \ref Kambites instance.
+    //!
+    //! This function puts a \ref Kambites instance back into the state that
+    //! it would have been in if it had just been newly constructed from \p knd
+    //! and \p p.
+    //!
+    //! Kambites instances can only be used to compute two-sided congruences,
+    //! and so the first parameter \p knd must always be
+    //! congruence_kind::twosided. The parameter \p knd is included for
+    //! uniformity of interface between with \ref KnuthBendix, \ref
+    //! Kambites, and \ref Congruence.
+    //!
+    //! \param knd the kind (onesided or twosided) of the congruence.
+    //! \param p the presentation.
+    //!
+    //! \returns A reference to `*this`.
+    //!
+    //! \throws LibsemigroupsException if \p p is not valid.
+    //! \throws LibsemigroupsException if \p knd is not \ref
+    //! congruence_kind::twosided.
+    // TODO(0) to tpp
+    Kambites& init(congruence_kind                       knd,
+                   Presentation<native_word_type> const& p) {
       throw_if_1_sided(knd);
       p.validate();
       _presentation = p;
       return private_init_from_presentation(true);
     }
 
-    explicit Kambites(congruence_kind knd, Presentation<value_type>&& p)
+    //! \copydoc Kambites(congruence_kind, Presentation<native_word_type>
+    //! const&)
+    // TODO(0) to tpp
+    explicit Kambites(congruence_kind knd, Presentation<native_word_type>&& p)
         : Kambites() {
       throw_if_1_sided(knd);
       p.validate();
@@ -189,34 +270,78 @@ namespace libsemigroups {
       private_init_from_presentation(false);
     }
 
-    Kambites& init(congruence_kind knd, Presentation<value_type>&& p) {
+    //! \copydoc init(congruence_kind, Presentation<native_word_type> const&)
+    // TODO(0) to tpp
+    Kambites& init(congruence_kind knd, Presentation<native_word_type>&& p) {
       throw_if_1_sided(knd);
       p.validate();
       _presentation = std::move(p);
       return private_init_from_presentation(true);
     }
 
+    //! \brief Construct from \ref congruence_kind and Presentation.
+    //!
+    //! This function constructs a  \ref Kambites instance representing a
+    //! congruence of kind \p knd over the semigroup or monoid defined by the
+    //! presentation \p p. The type of the words in \p p can be anything, but
+    //! will be converted in to \ref native_word_type. This means that if the
+    //! input presentation uses std::string, for example, as the word type, then
+    //! this presentation is converted into a \ref native_presentation_type.
+    //! This converted presentation can be recovered using \ref presentation.
+    //!
+    //! \tparam OtherWord the type of the words in the presentation \p p.
+    //! \param knd the kind (onesided or twosided) of the congruence.
+    //! \param p the presentation.
+    //!
+    //! \throws LibsemigroupsException if \p p is not valid.
+    //! \throws LibsemigroupsException if \p knd is not \ref
+    //! congruence_kind::twosided.
     // No rvalue ref version of this because we can't use the presentation.
     template <typename OtherWord>
-    explicit Kambites(congruence_kind ck, Presentation<OtherWord> const& p)
-        : Kambites(ck,
-                   // The lambda in the next line converts, say, chars to
-                   // size_ts, but doesn't convert size_ts to human_readable
-                   // characters.
-                   to_presentation<value_type>(p, [](auto x) { return x; })) {
-      throw_if_1_sided(ck);
+    explicit Kambites(congruence_kind knd, Presentation<OtherWord> const& p)
+        : Kambites(
+              knd,
+              // The lambda in the next line converts, say, chars to
+              // size_ts, but doesn't convert size_ts to human_readable
+              // characters.
+              to_presentation<native_word_type>(p, [](auto x) { return x; })) {
+      throw_if_1_sided(knd);
     }
 
+    //! \brief Re-initialize from \ref congruence_kind and Presentation.
+    //!
+    //! This function re-initializes a \ref Kambites instance as if it had been
+    //! newly constructed from \p knd and \p p.
+    //!
+    //! \tparam OtherWord the type of the words in the presentation \p p.
+    //! \param knd the kind (onesided or twosided) of the congruence.
+    //! \param p the presentation.
+    //!
+    //! \throws LibsemigroupsException if \p p is not valid.
+    //! \throws LibsemigroupsException if \p knd is not \ref
+    //! congruence_kind::twosided.
     template <typename OtherWord>
-    Kambites& init(congruence_kind ck, Presentation<OtherWord> const& p) {
-      throw_if_1_sided(ck);
+    Kambites& init(congruence_kind knd, Presentation<OtherWord> const& p) {
+      throw_if_1_sided(knd);
       // The lambda in the next line converts, say, chars to size_ts, but
       // doesn't convert size_ts to human_readable characters.
-      init(ck, to_presentation<value_type>(p, [](auto x) { return x; }));
+      init(knd, to_presentation<native_word_type>(p, [](auto x) { return x; }));
       return *this;
     }
 
-    [[nodiscard]] Presentation<value_type> const&
+    //! \brief Get the presentation used to define a \ref Kambites instance (if
+    //! any).
+    //!
+    //! If a \ref Kambites instance is constructed or initialised using a
+    //! presentation, then a const reference to the
+    //! \ref native_presentation_type version of this presentation is returned
+    //! by this function.
+    //!
+    //! \returns A const reference to the presentation.
+    //!
+    //! \exceptions
+    //! \noexcept
+    [[nodiscard]] Presentation<native_word_type> const&
     presentation() const noexcept {
       return _presentation;
     }
@@ -225,6 +350,16 @@ namespace libsemigroups {
     // Interface requirements - add_pairs
     ////////////////////////////////////////////////////////////////////////
 
+    //! \brief Add generating pair via iterators.
+    //!
+    //! This function adds a generating pair to the congruence represented by a
+    //! \ref Kambites instance.
+    //!
+    //! \cong_intf_params_contains
+    //!
+    //! \returns A reference to `*this`.
+    //!
+    //! \cong_intf_warn_assume_letters_in_bounds
     template <typename Iterator1,
               typename Iterator2,
               typename Iterator3,
@@ -237,6 +372,16 @@ namespace libsemigroups {
           first1, last1, first2, last2);
     }
 
+    //! \brief Add generating pair via iterators.
+    //!
+    //! This function adds a generating pair to the congruence represented by a
+    //! \ref Kambites instance.
+    //!
+    //! \cong_intf_params_contains
+    //!
+    //! \returns A reference to `*this`.
+    //!
+    //! \cong_intf_throws_if_letters_out_of_bounds
     template <typename Iterator1,
               typename Iterator2,
               typename Iterator3,
@@ -253,11 +398,24 @@ namespace libsemigroups {
     // Interface requirements - number_of_classes
     ////////////////////////////////////////////////////////////////////////
 
-    //! \throws LibsemigroupsException if the small overlap class is not at
-    //! least \f$4\f$.
+    //! \brief Compute the number of classes in the congruence.
+    //!
+    //! This function computes the number of classes in the congruence
+    //! represented by a \ref Kambites instance if the \ref small_overlap_class
+    //! is at least \f$4\f$. \ref Kambites instances can only compute the number
+    //! of classes if the condition of the previous sentence is fulfilled, and
+    //! in this case the number of classes is always \ref POSITIVE_INFINITY.
+    //! Otherwise an exception is thrown.
+    //!
+    //! \returns The number of congruences classes of a \ref
+    //! Kambites if \ref small_overlap_class is at least \f$4\f$.
+    //!
+    //! \throws LibsemigroupsException if it is not possible to compute the
+    //! number of classes of the congruence because the small overlap class is
+    //! too small.
     // Not noexcept, throws
     [[nodiscard]] uint64_t number_of_classes() {
-      validate_small_overlap_class();
+      throw_if_not_C4();
       return POSITIVE_INFINITY;
     }
 
@@ -271,18 +429,40 @@ namespace libsemigroups {
     // One way to resolve this more satisfactorily would be to implement
     // MultiStringView for non-strings, so that we can just construct a
     // light-weight view and bung that in here instead.
-    [[nodiscard]] bool contains_no_checks(value_type const& u,
-                                          value_type const& v);
+    [[nodiscard]] bool contains_no_checks(native_word_type const& u,
+                                          native_word_type const& v);
 
     //! \throws LibsemigroupsException if the small overlap class is not at
     //! least \f$4\f$.
     template <typename SFINAE = bool>
     [[nodiscard]] auto contains_no_checks(word_type const& u,
                                           word_type const& v)
-        -> std::enable_if_t<!std::is_same_v<value_type, word_type>, SFINAE>;
+        -> std::enable_if_t<!std::is_same_v<native_word_type, word_type>,
+                            SFINAE>;
 
    public:
-    // TODO(0) to tpp
+    //! \brief Check containment of a pair of words via iterators.
+    //!
+    //! This function checks whether or not the words represented by the ranges
+    //! \p first1 to \p last1 and \p first2 to \p last2 are already known to be
+    //! contained in the congruence represented by a \ref Kambites instance.
+    //! This function performs no enumeration, so it is possible for the words
+    //! to be contained in the congruence, but that this is not currently known.
+    //!
+    //! If any of the iterators point at words that do not belong to the
+    //! ``presentation().alphabet()``, then \ref tril::FALSE or \ref
+    //! tril::unknown is returned (depending on whether \ref finished returns
+    //! \c true or \c false, respectively).
+    //!
+    //! \cong_intf_params_contains
+    //!
+    //! \returns
+    //! * tril::TRUE if the words are known to belong to the congruence;
+    //! * tril::FALSE if the words are known to not belong to the congruence;
+    //! * tril::unknown otherwise.
+    //!
+    //! \warning It is assumed but not checked that the \ref small_overlap_class
+    //! is at least \f$4\f$.
     template <typename Iterator1,
               typename Iterator2,
               typename Iterator3,
@@ -290,17 +470,24 @@ namespace libsemigroups {
     [[nodiscard]] tril currently_contains_no_checks(Iterator1 first1,
                                                     Iterator2 last1,
                                                     Iterator3 first2,
-                                                    Iterator4 last2) const {
-      if (finished()) {
-        return const_cast<Kambites*>(this)->contains_no_checks(
-                   first1, last1, first2, last2)
-                   ? tril::TRUE
-                   : tril::FALSE;
-      }
-      return std::equal(first1, last1, first2, last2) ? tril::TRUE
-                                                      : tril::FALSE;
-    }
+                                                    Iterator4 last2) const;
 
+    //! \brief Check containment of a pair of words via iterators.
+    //!
+    //! This function checks whether or not the words represented by the ranges
+    //! \p first1 to \p last1 and \p first2 to \p last2 are already known to be
+    //! contained in the congruence represented by a \ref Kambites instance.
+    //! This function performs no enumeration, so it is possible for the words
+    //! to be contained in the congruence, but that this is not currently known.
+    //!
+    //! \cong_intf_params_contains
+    //!
+    //! \returns
+    //! * tril::TRUE if the words are known to belong to the congruence;
+    //! * tril::FALSE if the words are known to not belong to the congruence;
+    //! * tril::unknown otherwise.
+    //!
+    //! \cong_intf_throws_if_letters_out_of_bounds
     template <typename Iterator1,
               typename Iterator2,
               typename Iterator3,
@@ -315,6 +502,20 @@ namespace libsemigroups {
       return currently_contains_no_checks(first1, last1, first2, last2);
     }
 
+    //! \brief Check containment of a pair of words via iterators.
+    //!
+    //! This function checks whether or not the words represented by the ranges
+    //! \p first1 to \p last1 and \p first2 to \p last2 are contained in the
+    //! congruence represented by a \ref Kambites instance.
+    //!
+    //! \cong_intf_params_contains
+    //!
+    //! \returns Whether or not the pair belongs to the congruence.
+    //!
+    //! \cong_intf_warn_assume_letters_in_bounds
+    //!
+    //! \warning It is assumed but not checked that the \ref small_overlap_class
+    //! is at least \f$4\f$.
     template <typename Iterator1,
               typename Iterator2,
               typename Iterator3,
@@ -324,7 +525,20 @@ namespace libsemigroups {
                                           Iterator3 first2,
                                           Iterator4 last2);
 
-    // TODO(0) to tpp
+    //! \brief Check containment of a pair of words via iterators.
+    //!
+    //! This function checks whether or not the words represented by the ranges
+    //! \p first1 to \p last1 and \p first2 to \p last2 are contained in the
+    //! congruence represented by a \ref Kambites instance.
+    //!
+    //! \cong_intf_params_contains
+    //!
+    //! \returns Whether or not the pair belongs to the congruence.
+    //!
+    //! \cong_intf_throws_if_letters_out_of_bounds
+    //!
+    //! \throws LibsemigroupsException if \ref small_overlap_class is not at
+    //! least \f$4\f$.
     template <typename Iterator1,
               typename Iterator2,
               typename Iterator3,
@@ -332,51 +546,94 @@ namespace libsemigroups {
     [[nodiscard]] bool contains(Iterator1 first1,
                                 Iterator2 last1,
                                 Iterator3 first2,
-                                Iterator4 last2) {
-      throw_if_letter_out_of_bounds(first1, last1);
-      throw_if_letter_out_of_bounds(first2, last2);
-      validate_small_overlap_class();
-      return contains_no_checks(first1, last1, first2, last2);
-    }
+                                Iterator4 last2);
 
     ////////////////////////////////////////////////////////////////////////
     // Interface requirements - reduce
     ////////////////////////////////////////////////////////////////////////
 
    private:
-    void normal_form_no_checks(value_type& result, value_type const& w) const;
+    void normal_form_no_checks(native_word_type&       result,
+                               native_word_type const& w) const;
 
     template <typename SFINAE = word_type>
-    auto normal_form_no_checks(value_type& result, word_type const& w)
-        -> std::enable_if_t<!std::is_same_v<value_type, word_type>,
+    auto normal_form_no_checks(native_word_type& result, word_type const& w)
+        -> std::enable_if_t<!std::is_same_v<native_word_type, word_type>,
                             SFINAE> const;
 
    public:
-    // TODO(0) to tpp file
+    //! \brief Reduce a word with no computation of the small_overlap_class or
+    //! checks.
+    //!
+    //! This function writes a reduced word equivalent to the input word
+    //! described by the iterator \p first and \p last to the output iterator \p
+    //! d_first. If \ref finished returns \c true, then the word output by this
+    //! function is the lexicographically least word in the congruence class of
+    //! the input word. Otherwise, the input word is output. Note that in a
+    //! small overlap monoid, every congruence class is finite, and so this
+    //! lexicographically least word always exists. form for the input word.
+    //!
+    //! \cong_intf_params_reduce
+    //!
+    //! \returns An \p OutputIterator pointing one beyond the last letter
+    //! inserted into \p d_first.
+    //!
+    //! \cong_intf_warn_assume_letters_in_bounds
+    //!
+    //! \warning It is assumed but not checked that the \ref small_overlap_class
+    //! is at least \f$4\f$.
     template <typename OutputIterator, typename Iterator1, typename Iterator2>
     OutputIterator reduce_no_run_no_checks(OutputIterator d_first,
                                            Iterator1      first,
-                                           Iterator2      last) const {
-      if (finished()) {
-        _tmp_value2.clear();
-        _tmp_value1.assign(first, last);
-        normal_form_no_checks(_tmp_value2, _tmp_value1);
-        return std::copy(
-            std::begin(_tmp_value2), std::end(_tmp_value2), d_first);
-      }
+                                           Iterator2      last) const;
 
-      // Does nothing in this case
-      return std::copy(first, last, d_first);
-    }
-
+    //! \brief Reduce a word with no computation of the small_overlap_class.
+    //!
+    //! This function writes a reduced word equivalent to the input word
+    //! described by the iterator \p first and \p last to the output iterator \p
+    //! d_first. If \ref finished returns \c true, then the word output by this
+    //! function is the lexicographically least word in the congruence class of
+    //! the input word. Otherwise, the input word is output. Note that in a
+    //! small overlap monoid, every congruence class is finite, and so this
+    //! lexicographically least word always exists. form for the input word.
+    //!
+    //! \cong_intf_params_reduce
+    //!
+    //! \returns An \p OutputIterator pointing one beyond the last letter
+    //! inserted into \p d_first.
+    //!
+    //! \cong_intf_throws_if_letters_out_of_bounds
+    //!
+    //! \throws LibsemigroupsException if \ref small_overlap_class is not at
+    //! least \f$4\f$.
     template <typename OutputIterator, typename Iterator1, typename Iterator2>
     OutputIterator reduce_no_run(OutputIterator d_first,
                                  Iterator1      first,
                                  Iterator2      last) const {
       throw_if_letter_out_of_bounds(first, last);
+      throw_if_not_C4();
       return reduce_no_run_no_checks(d_first, first, last);
     }
 
+    //! \brief Reduce a word with no checks.
+    //!
+    //! This function computes the \ref small_overlap_class and then writes a
+    //! reduced word equivalent to the input word described by the iterator \p
+    //! first and \p last to the output iterator \p d_first. The word output by
+    //! this function is the lexicographically least word in the congruence
+    //! class of the input word. Note that in a small overlap monoid, every
+    //! congruence class is finite, and so this lexicographically least word
+    //! always exists.
+    //!
+    //! \cong_intf_params_reduce
+    //!
+    //! \returns An \p OutputIterator pointing one beyond the last letter
+    //! inserted into \p d_first.
+    //!
+    //! \cong_intf_warn_assume_letters_in_bounds
+    //!
+    //! \warning It is assumed but not checked that the \ref small_overlap_class
+    //! is at least \f$4\f$.
     template <typename OutputIterator,
               typename InputIterator1,
               typename InputIterator2>
@@ -387,6 +644,25 @@ namespace libsemigroups {
       return reduce_no_run_no_checks(d_first, first, last);
     }
 
+    //! \brief Reduce a word.
+    //!
+    //! This function computes the \ref small_overlap_class and then writes a
+    //! reduced word equivalent to the input word described by the iterator \p
+    //! first and \p last to the output iterator \p d_first. The word output by
+    //! this function is the lexicographically least word in the congruence
+    //! class of the input word. Note that in a small overlap monoid, every
+    //! congruence class is finite, and so this lexicographically least word
+    //! always exists.
+    //!
+    //! \cong_intf_params_reduce
+    //!
+    //! \returns An \p OutputIterator pointing one beyond the last letter
+    //! inserted into \p d_first.
+    //!
+    //! \cong_intf_throws_if_letters_out_of_bounds
+    //!
+    //! \throws LibsemigroupsException if \ref small_overlap_class is not at
+    //! least \f$4\f$.
     template <typename OutputIterator,
               typename InputIterator1,
               typename InputIterator2>
@@ -394,7 +670,7 @@ namespace libsemigroups {
                           InputIterator1 first,
                           InputIterator2 last) {
       throw_if_letter_out_of_bounds(first, last);
-      validate_small_overlap_class();
+      throw_if_not_C4();
       return reduce_no_checks(d_first, first, last);
     }
 
@@ -402,8 +678,7 @@ namespace libsemigroups {
     // Kambites - member functions - public
     ////////////////////////////////////////////////////////////////////////
 
-    //! Get the small overlap class of the finitely presented semigroup
-    //! represented by \c this.
+    //! \brief Get the small overlap class.
     //!
     //! If \f$S\f$ is a finitely presented semigroup with generating set
     //! \f$A\f$, then a word \f$w\f$ over \f$A\f$ is a *piece* if \f$w\f$
@@ -431,16 +706,16 @@ namespace libsemigroups {
     //! in the relations of the semigroup.
     //!
     //! \warning
-    //! The member functions \ref equal_to and \ref normal_form only work if
+    //! The member functions \ref contains and \ref reduce only work if
     //! the return value of this function is at least \f$4\f$.
     // not noexcept because number_of_pieces_no_checks isn't
     [[nodiscard]] size_t small_overlap_class();
 
-    //! Returns the Ukkonen suffix tree object used to compute pieces.
+    //! \brief Returns the suffix tree used to compute pieces.
     //!
-    //! This function returns a reference to the Ukkonen generalised suffix
-    //! tree object containing the relation words of a Kambites object, that
-    //! is used to determine the pieces, and decompositions of the relation
+    //! This function returns a const reference to the generalised suffix
+    //! tree Ukkonoen object containing the relation words of a Kambites object,
+    //! that is used to determine the pieces, and decompositions of the relation
     //! words.
     //!
     //! \returns A const reference to a \ref Ukkonen object.
@@ -452,10 +727,38 @@ namespace libsemigroups {
       return _suffix_tree;
     }
 
+    ////////////////////////////////////////////////////////////////////////
+    // Kambites - validation functions - public
+    ////////////////////////////////////////////////////////////////////////
+
+    //! \brief Throws if any letter in a range is out of bounds.
+    //!
+    //! This function throws a LibsemigroupsException if any value pointed at
+    //! by an iterator in the range \p first to \p last is out of bounds (i.e.
+    //! does not belong to the alphabet of the \ref presentation used to
+    //! construct the \ref Kambites instance).
+    //!
+    //! \tparam Iterator1 the type of first argument \p first.
+    //! \tparam Iterator2 the type of second argument \p last.
+    //!
+    //! \param first iterator pointing at the first letter of the word.
+    //! \param last iterator pointing one beyond the last letter of the word.
+    //!
+    //! \throw LibsemigroupsException if any letter in the range from \p first
+    //! to \p last is out of bounds.
     template <typename Iterator1, typename Iterator2>
     void throw_if_letter_out_of_bounds(Iterator1 first, Iterator2 last) const {
       _presentation.validate_word(first, last);
     }
+
+    //! \brief Throws if \ref small_overlap_class isn't at least \f$4\f$.
+    //!
+    //! This function throws an exception if the \ref small_overlap_class is not
+    //! at least \f$4\f$.
+    //!
+    //! \throws LibsemigroupsException if \ref small_overlap_class is not at
+    //! least \f$4\f$.
+    void throw_if_not_C4();
 
    private:
     ////////////////////////////////////////////////////////////////////////
@@ -463,15 +766,6 @@ namespace libsemigroups {
     ////////////////////////////////////////////////////////////////////////
 
     Kambites& private_init_from_presentation(bool call_init);
-
-    ////////////////////////////////////////////////////////////////////////
-    // Kambites - validation functions - private
-    ////////////////////////////////////////////////////////////////////////
-
-    // Throws exception if the small_overlap_class is < 4.
-    //
-    // Not noexcept, throws
-    void validate_small_overlap_class();
 
     ////////////////////////////////////////////////////////////////////////
     // Kambites - XYZ functions - private
@@ -613,8 +907,8 @@ namespace libsemigroups {
       return (i % 2 == 0 ? i + 1 : i - 1);
     }
 
-    template <typename value_type>
-    static void pop_front(value_type& x) {
+    template <typename native_word_type>
+    static void pop_front(native_word_type& x) {
       x.erase(x.begin());
     }
 
@@ -672,17 +966,33 @@ namespace libsemigroups {
     void run_impl() override;
 
     bool finished_impl() const override {
+      // TODO(0) remove the _class >= 4 from here, this has the wrong meaning
       return _have_class && _class >= 4;
     }
   };
 
-  //! TODO(0) doc
+  //! \ingroup kambites_group
+  //!
+  //! Deduction guide to construct a Kambites<Word> from a
+  //! Presentation<Word> const reference.
   template <typename Word>
   Kambites(congruence_kind, Presentation<Word> const&) -> Kambites<Word>;
 
   //! \ingroup kambites_group
   //!
-  //! TODO
+  //! \brief Helper functions for the \ref Kambites class template.
+  //!
+  //! Defined in \c kambites.hpp.
+  //!
+  //! This page contains documentation for many helper functions for the \ref
+  //! Kambites class template. In particular, these functions include versions
+  //! of several of the member functions of \ref KnuthBendix (that accept
+  //! iterators) whose parameters are not iterators, but objects instead. The
+  //! helpers documented on this page all belong to the namespace ``kambites``.
+  //!
+  //! \sa \ref cong_intf_helpers_group
+  //!
+  //! @{
   namespace kambites {
     using congruence_interface::add_generating_pair;
     using congruence_interface::add_generating_pair_no_checks;
@@ -716,9 +1026,28 @@ namespace libsemigroups {
     // Interface helpers - normal_forms
     ////////////////////////////////////////////////////////////////////////
 
-    // short_lex normal forms, could be lex normal forms too
+    //! \brief Returns a range object containing normal forms.
+    //!
+    //! Defined in \c kambites.hpp.
+    //!
+    //! This function returns a range object containing short-lex normal forms
+    //! of the classes of the congruence represented by a Kambites instance.
+    //!
+    //! \tparam Word the type of the words contained in the parameter \p k.
+    //!
+    //! \param k the \ref Kambites instance.
+    //!
+    //! \returns A range object.
+    //!
+    //! \throws LibsemigroupsException if the Kambites::small_overlap_class of
+    //! \p k is not at least \f$4\f$.
+    //!
+    //! \warning The returned range object is always infinite.
+    // TODO(1) should be allowed to specify the OutputWord here too, this
+    // requires changes to KambitesNormalFormRange however.
     template <typename Word>
     auto normal_forms(Kambites<Word>& k) {
+      k.throw_if_not_C4();
       return detail::KambitesNormalFormRange(k);
     }
 
