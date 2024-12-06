@@ -287,7 +287,7 @@ namespace libsemigroups {
   }
 
   ////////////////////////////////////////////////////////////////////////
-  // Kambites - validation functions impl - private
+  // Kambites - validation functions - public + private
   ////////////////////////////////////////////////////////////////////////
 
   template <typename Word>
@@ -296,6 +296,14 @@ namespace libsemigroups {
       LIBSEMIGROUPS_EXCEPTION(
           "small overlap class must be at least 4, but found {}",
           small_overlap_class());
+    }
+  }
+
+  template <typename Word>
+  void Kambites<Word>::throw_if_1_sided(congruence_kind knd) {
+    if (knd == congruence_kind::onesided) {
+      LIBSEMIGROUPS_EXCEPTION("the 1st argument (congruence_kind) must be "
+                              "twosided, but found onesided");
     }
   }
 

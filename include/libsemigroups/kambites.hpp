@@ -154,13 +154,7 @@ namespace libsemigroups {
 
     using internal_type_iterator = typename internal_type::const_iterator;
 
-    // TODO(0) to tpp
-    void throw_if_1_sided(congruence_kind knd) {
-      if (knd == congruence_kind::onesided) {
-        LIBSEMIGROUPS_EXCEPTION("the 1st argument (congruence_kind) must be "
-                                "twosided, but found onesided");
-      }
-    }
+    void throw_if_1_sided(congruence_kind knd);
 
    public:
     ////////////////////////////////////////////////////////////////////////
