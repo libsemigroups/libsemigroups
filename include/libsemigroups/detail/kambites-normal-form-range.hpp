@@ -39,17 +39,34 @@ namespace libsemigroups {
      public:
       using output_type = typename Kambites<Word>::native_word_type const&;
 
+      KambitesNormalFormRange() = delete;
+
       explicit KambitesNormalFormRange(Kambites<Word>& k)
-          : _current(),
-            _end(),
-            _fpb(to_froidure_pin(k)),
-            _it(_fpb->cbegin_current_normal_forms()),
-            _k(&k) {
-        _end = _fpb->cend_current_normal_forms();
+          : _current(), _end(), _fpb(), _it(), _k() {
+        init(k);
       }
 
+      KambitesNormalFormRange& init(Kambites<Word>& k) {
+        _current.clear();
+        _fpb = to_froidure_pin(k);
+        _it  = _fpb->cbegin_current_normal_forms();
+        _k   = &k;
+        _end = _fpb->cend_current_normal_forms();
+        return *this;
+      }
+
+      KambitesNormalFormRange(KambitesNormalFormRange const& that)
+          : KambitesNormalFormRange(*that._k) {}
+
+      KambitesNormalFormRange(KambitesNormalFormRange&& that) = default;
+
+      KambitesNormalFormRange& operator=(KambitesNormalFormRange const& that) {
+        return init(*that._k);
+      }
+
+      KambitesNormalFormRange& operator=(KambitesNormalFormRange&&) = default;
+
       // TODO(0) init?
-      // TODO(0) rule of 5
       // TODO(1) allow setting of min/max etc like Paths
 
       output_type get() const {

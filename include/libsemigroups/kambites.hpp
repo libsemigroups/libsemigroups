@@ -155,7 +155,7 @@ namespace libsemigroups {
 
     using internal_type_iterator = typename internal_type::const_iterator;
 
-    void throw_if_1_sided(congruence_kind knd);
+    void throw_if_1_sided(congruence_kind knd) const;
 
    public:
     ////////////////////////////////////////////////////////////////////////
@@ -548,7 +548,6 @@ namespace libsemigroups {
     //! congruence class of the input word. Otherwise, the input word is
     //! output. Note that in a small overlap monoid, every congruence class
     //! is finite, and so this lexicographically least word always exists.
-    //! form for the input word.
     //!
     //! \cong_intf_params_reduce
     //!
@@ -589,7 +588,9 @@ namespace libsemigroups {
                                  Iterator1      first,
                                  Iterator2      last) const {
       throw_if_letter_out_of_bounds(first, last);
-      throw_if_not_C4();
+      // throw_if_not_C4();
+      // TODO(0) check if C4 is known and if it is check that we're at least
+      // C(4)
       return reduce_no_run_no_checks(d_first, first, last);
     }
 

@@ -166,6 +166,8 @@ namespace libsemigroups {
     run();
     // Words aren't validated, the below returns false if they contain
     // letters not in the alphabet.
+    // TODO(0) remove use of to_string
+    // Not sure that the function called here still exists
     std::string uu = to_string(presentation(), u);
     std::string vv = to_string(presentation(), v);
     return wp_prefix(internal_type(uu), internal_type(vv), internal_type());
@@ -287,7 +289,8 @@ namespace libsemigroups {
                                              word_type const&  w)
       -> std::enable_if_t<!std::is_same_v<native_word_type, word_type>,
                           SFINAE> const {
-    // TODO(1) remove use of to_string
+    // TODO(0) remove use of to_string
+    // Not sure that the function called here still exists
     std::string ww = to_string(presentation(), w);
     normal_form_no_checks(result, ww);
     return to_word(presentation(), result);
@@ -348,7 +351,7 @@ namespace libsemigroups {
   }
 
   template <typename Word>
-  void Kambites<Word>::throw_if_1_sided(congruence_kind knd) {
+  void Kambites<Word>::throw_if_1_sided(congruence_kind knd) const {
     if (knd == congruence_kind::onesided) {
       LIBSEMIGROUPS_EXCEPTION("the 1st argument (congruence_kind) must be "
                               "twosided, but found onesided");
