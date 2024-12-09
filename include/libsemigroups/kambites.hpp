@@ -267,11 +267,11 @@ namespace libsemigroups {
     template <typename OtherWord>
     Kambites(congruence_kind knd, Presentation<OtherWord> const& p)
         : Kambites(
-              knd,
-              // The lambda in the next line converts, say, chars to
-              // size_ts, but doesn't convert size_ts to human_readable
-              // characters.
-              to_presentation<native_word_type>(p, [](auto x) { return x; })) {
+            knd,
+            // The lambda in the next line converts, say, chars to
+            // size_ts, but doesn't convert size_ts to human_readable
+            // characters.
+            to_presentation<native_word_type>(p, [](auto x) { return x; })) {
       throw_if_1_sided(knd);
     }
 
