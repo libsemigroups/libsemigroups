@@ -23,6 +23,7 @@
 #define LIBSEMIGROUPS_DETAIL_KNUTH_BENDIX_NF_HPP_
 
 namespace detail {
+
   template <typename Word, typename Rewriter, typename ReductionOrder>
   class KnuthBendixNormalFormRange : public Paths<uint32_t> {
     using Paths_ = Paths<uint32_t>;

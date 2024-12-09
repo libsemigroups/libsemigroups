@@ -916,6 +916,7 @@ namespace libsemigroups {
   }
 
   namespace knuth_bendix {
+
     // We are computing non_trivial_classes with respect to kb2 (the greater
     // congruence, with fewer classes)
     //
@@ -1119,6 +1120,31 @@ namespace libsemigroups {
       }
     }
 
+    template <typename T>
+    [[nodiscard]] std::vector<std::string>::const_iterator
+    redundant_rule(Presentation<std::string> const& p, T t) {
+      constexpr static congruence_kind twosided = congruence_kind::twosided;
+
+      p.validate();
+      Presentation<std::string> q;
+      q.alphabet(p.alphabet());
+      q.contains_empty_word(p.contains_empty_word());
+      KnuthBendix kb;
+
+      for (auto omit = p.rules.crbegin(); omit != p.rules.crend(); omit += 2) {
+        q.rules.clear();
+        q.rules.insert(q.rules.end(), p.rules.crbegin(), omit);
+        q.rules.insert(q.rules.end(), omit + 2, p.rules.crend());
+        kb.init(twosided, q);
+        kb.run_for(t);
+        // TODO no_checks
+        if (reduce_no_run(kb, *omit) == reduce_no_run(kb, *(omit + 1))) {
+          return (omit + 1).base() - 1;
+        }
+      }
+      return p.rules.cend();
+    }
+
     template <typename Rewriter, typename ReductionOrder>
     void by_overlap_length(KnuthBendix<Rewriter, ReductionOrder>& kb) {
       size_t prev_max_overlap               = kb.max_overlap();
@@ -1133,6 +1159,59 @@ namespace libsemigroups {
       kb.max_overlap(prev_max_overlap);
       kb.check_confluence_interval(prev_check_confluence_interval);
     }
+
+    template <typename Rewriter, typename ReductionOrder>
+    [[nodiscard]] bool is_reduced(KnuthBendix<Rewriter, ReductionOrder>& kb) {
+      for (auto const& test_rule : kb.active_rules()) {
+        auto const lhs = test_rule.first;
+        for (auto const& rule : kb.active_rules()) {
+          if (test_rule == rule) {
+            continue;
+          }
+
+          if (rule.first.find(lhs) != detail::internal_string_type::npos
+              || rule.second.find(lhs) != detail::internal_string_type::npos) {
+            return false;
+          }
+        }
+      }
+      return true;
+    }
+
+    // template <typename T>
+    // tril try_equal_to(Presentation<std::string>& p,
+    //                          std::string const&         lhs,
+    //                          std::string const&         rhs,
+    //                          T                          t) {
+    //   constexpr static congruence_kind twosided = congruence_kind::twosided;
+
+    //   // TODO(0) validate lhs and rhs
+    //   KnuthBendix         kb(twosided, p);
+    //   std::string         lphbt = p.alphabet();
+    //   std::vector<size_t> perm(lphbt.size(), 0);
+    //   std::iota(perm.begin(), perm.end(), 0);
+
+    //   do {
+    //     detail::apply_permutation(lphbt, perm);
+
+    //     p.alphabet(lphbt);
+    //     p.validate();
+
+    //     kb.init(twosided, p);
+    //     // TODO(0) no checks
+    //     if (reduce_no_run(kb, lhs) == reduce_no_run(kb, rhs)) {
+    //       return tril::TRUE;
+    //     }
+    //     kb.run_for(t);
+    //     // TODO(0) no checks
+    //     if (reduce_no_run(kb, lhs) == reduce_no_run(kb, rhs)) {
+    //       return tril::TRUE;
+    //     } else if (kb.finished()) {
+    //       return tril::FALSE;
+    //     }
+    //   } while (std::next_permutation(perm.begin(), perm.end()));
+    //   return tril::unknown;
+    // }
 
   }  // namespace knuth_bendix
 

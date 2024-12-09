@@ -349,6 +349,7 @@ namespace libsemigroups {
     // KnuthBendix - interface requirements - contains
     ////////////////////////////////////////////////////////////////////////
 
+    // TODO(0) to tpp
     template <typename Iterator1,
               typename Iterator2,
               typename Iterator3,
@@ -414,6 +415,7 @@ namespace libsemigroups {
     // KnuthBendix - interface requirements - reduce
     ////////////////////////////////////////////////////////////////////////
 
+    // TODO(0) to tpp
     template <typename OutputIterator,
               typename InputIterator1,
               typename InputIterator2>
@@ -766,20 +768,16 @@ namespace libsemigroups {
       return _rewriter.number_of_inactive_rules();
     }
 
-    //! \brief Return the number of rules that
-    //! KnuthBendix has created
+    //! \brief Return the number of rules that KnuthBendix has created
     //!
-    //! Return the total number of Rule instances
-    //! that have been created whilst whilst the
-    //! Knuth-Bendix algorithm has been running.
-    //! Note that this is not the sum of \ref
-    //! number_of_active_rules and \ref
-    //! number_of_inactive_rules, due to the
-    //! re-initialisation of rules where possible.
+    //! Return the total number of Rule instances that have been created whilst
+    //! whilst the Knuth-Bendix algorithm has been running. Note that this is
+    //! not the sum of \ref number_of_active_rules and \ref
+    //! number_of_inactive_rules, due to the re-initialisation of rules where
+    //! possible.
     //!
     //! \returns
-    //! The total number of rules, a value of type
-    //! \c size_t.
+    //! The total number of rules, a value of type \c size_t.
     //!
     //! \exceptions
     //! \noexcept
@@ -810,6 +808,7 @@ namespace libsemigroups {
     //! \complexity
     //! \f$O(n)\f$ where \f$n\f$ is the sum of the
     //! lengths of the words in rules of \p copy.
+    // TODO(0) to tpp
     [[nodiscard]] auto active_rules() {
       using rx::iterator_range;
       using rx::transform;
@@ -1072,22 +1071,7 @@ namespace libsemigroups {
     //! \param kb the KnuthBendix instance defining the rules that are to be
     //! checked for being reduced.
     template <typename Rewriter, typename ReductionOrder>
-    [[nodiscard]] bool is_reduced(KnuthBendix<Rewriter, ReductionOrder>& kb) {
-      for (auto const& test_rule : kb.active_rules()) {
-        auto const lhs = test_rule.first;
-        for (auto const& rule : kb.active_rules()) {
-          if (test_rule == rule) {
-            continue;
-          }
-
-          if (rule.first.find(lhs) != detail::internal_string_type::npos
-              || rule.second.find(lhs) != detail::internal_string_type::npos) {
-            return false;
-          }
-        }
-      }
-      return true;
-    }
+    [[nodiscard]] bool is_reduced(KnuthBendix<Rewriter, ReductionOrder>& kb);
 
     ////////////////////////////////////////////////////////////////////////
     // Interface helpers - add_generating_pair
@@ -1176,49 +1160,6 @@ namespace libsemigroups {
     non_trivial_classes(KnuthBendix<Rewriter, ReductionOrder>& kb1,
                         KnuthBendix<Rewriter, ReductionOrder>& kb2);
 
-    // TODO(0) move all of the functions from here to the end of the namespace
-    // knuth_bendix to before the interface helpers when they are out of lined.
-
-    ////////////////////////////////////////////////////////////////////////
-    // Possible future interface helpers - try_equal_to
-    ////////////////////////////////////////////////////////////////////////
-
-    // TODO(0) Doc
-    template <typename T>
-    inline tril try_equal_to(Presentation<std::string>& p,
-                             std::string const&         lhs,
-                             std::string const&         rhs,
-                             T t = std::chrono::seconds(1)) {
-      constexpr static congruence_kind twosided = congruence_kind::twosided;
-
-      // TODO(0) validate lhs and rhs
-      KnuthBendix         kb(twosided, p);
-      std::string         lphbt = p.alphabet();
-      std::vector<size_t> perm(lphbt.size(), 0);
-      std::iota(perm.begin(), perm.end(), 0);
-
-      do {
-        detail::apply_permutation(lphbt, perm);
-
-        p.alphabet(lphbt);
-        p.validate();
-
-        kb.init(twosided, p);
-        // TODO(0) no checks
-        if (reduce_no_run(kb, lhs) == reduce_no_run(kb, rhs)) {
-          return tril::TRUE;
-        }
-        kb.run_for(t);
-        // TODO(0) no checks
-        if (reduce_no_run(kb, lhs) == reduce_no_run(kb, rhs)) {
-          return tril::TRUE;
-        } else if (kb.finished()) {
-          return tril::FALSE;
-        }
-      } while (std::next_permutation(perm.begin(), perm.end()));
-      return tril::unknown;
-    }
-
     ////////////////////////////////////////////////////////////////////////
     // Possible future interface helpers - redundant_rule
     ////////////////////////////////////////////////////////////////////////
@@ -1252,28 +1193,8 @@ namespace libsemigroups {
     //! As such this is non-deterministic, and may produce different results
     //! with the same input.
     template <typename T>
-    [[nodiscard]] auto redundant_rule(Presentation<std::string> const& p, T t) {
-      constexpr static congruence_kind twosided = congruence_kind::twosided;
-
-      p.validate();
-      Presentation<std::string> q;
-      q.alphabet(p.alphabet());
-      q.contains_empty_word(p.contains_empty_word());
-      KnuthBendix kb;
-
-      for (auto omit = p.rules.crbegin(); omit != p.rules.crend(); omit += 2) {
-        q.rules.clear();
-        q.rules.insert(q.rules.end(), p.rules.crbegin(), omit);
-        q.rules.insert(q.rules.end(), omit + 2, p.rules.crend());
-        kb.init(twosided, q);
-        kb.run_for(t);
-        // TODO no_checks
-        if (reduce_no_run(kb, *omit) == reduce_no_run(kb, *(omit + 1))) {
-          return (omit + 1).base() - 1;
-        }
-      }
-      return p.rules.cend();
-    }
+    [[nodiscard]] std::vector<std::string>::const_iterator
+    redundant_rule(Presentation<std::string> const& p, T t);
 
     //! \brief Return an iterator pointing at the left hand side of a redundant
     //! rule.
@@ -1310,6 +1231,19 @@ namespace libsemigroups {
       return p.rules.cbegin()
              + std::distance(pp.rules.cbegin(), redundant_rule(pp, t));
     }
+
+    ////////////////////////////////////////////////////////////////////////
+    // Possible future interface helpers - try_equal_to
+    ////////////////////////////////////////////////////////////////////////
+
+    // TODO(1) Doc
+    // TODO(1) template std::string
+    // TODO(1) re-include later
+    // template <typename T>
+    // inline tril try_equal_to(Presentation<std::string>& p,
+    //                          std::string const&         lhs,
+    //                          std::string const&         rhs,
+    //                          T t = std::chrono::seconds(1));
     //! @}
   }  // namespace knuth_bendix
 
@@ -1345,6 +1279,7 @@ namespace libsemigroups {
   //!
   //! \returns The representation, a value of type \c std::string
   // TODO(1) preferably kb would be a const&
+  // TODO(0) to tpp
   template <typename Rewriter, typename ReductionOrder>
   std::string
   to_human_readable_repr(KnuthBendix<Rewriter, ReductionOrder>& kb) {
