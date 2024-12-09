@@ -267,11 +267,11 @@ namespace libsemigroups {
     template <typename OtherWord>
     Kambites(congruence_kind knd, Presentation<OtherWord> const& p)
         : Kambites(
-            knd,
-            // The lambda in the next line converts, say, chars to
-            // size_ts, but doesn't convert size_ts to human_readable
-            // characters.
-            to_presentation<native_word_type>(p, [](auto x) { return x; })) {
+              knd,
+              // The lambda in the next line converts, say, chars to
+              // size_ts, but doesn't convert size_ts to human_readable
+              // characters.
+              to_presentation<native_word_type>(p, [](auto x) { return x; })) {
       throw_if_1_sided(knd);
     }
 
@@ -679,7 +679,15 @@ namespace libsemigroups {
     // not noexcept because number_of_pieces_no_checks isn't
     [[nodiscard]] size_t small_overlap_class();
 
-    // TODO(0) doc
+    //! \brief Get the current value of the small overlap class.
+    //!
+    //! See \ref small_overlap_class() for more details.
+    //!
+    //! \returns
+    //! The small overlap class if known or \ref UNDEFINED otherwise.
+    //!
+    //! \exceptions
+    //! \noexcept
     [[nodiscard]] size_t small_overlap_class() const noexcept;
 
     //! \brief Returns the suffix tree used to compute pieces.
@@ -732,8 +740,17 @@ namespace libsemigroups {
     //! least \f$4\f$.
     void throw_if_not_C4();
 
-    // TODO doc
-    bool success() const override {
+    //! \brief Check if the small overlap class has been computed and is at
+    //! least 4.
+    //!
+    //! This function calls \ref finished and checks whether or not the \ref
+    //! small_overlap_class is at least \f$4\f$. This function can be used to
+    //! check whether or not the functions \ref reduce and \ref contains can be
+    //! used.
+    //!
+    //! \returns Whether or not the small overlap class is known and that it is
+    //! at least \f$4\f$.
+    [[nodiscard]] bool success() const override {
       return finished() && _class >= 4;
     }
 
