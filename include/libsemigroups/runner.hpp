@@ -547,6 +547,11 @@ namespace libsemigroups {
     // Not noexcept because finished_impl isn't
     [[nodiscard]] bool finished() const;
 
+    // TODO(0) doc
+    [[nodiscard]] virtual bool success() const {
+      return finished();
+    }
+
     //! \brief  Check if \ref run has been called at least once before.
     //!
     //! Returns \c true if run() has started to run (it can be running or
@@ -709,6 +714,9 @@ namespace libsemigroups {
    private:
     virtual void               run_impl()            = 0;
     [[nodiscard]] virtual bool finished_impl() const = 0;
+    [[nodiscard]] virtual bool success_impl() const {
+      return finished();
+    }
 
     void set_state(state stt) const noexcept {
       // We can set the state back to never_run if run_impl throws, and we are

@@ -1271,10 +1271,10 @@ namespace libsemigroups {
     REQUIRE(cong.number_of_generating_pairs() == 1);
     cong.run();
     REQUIRE(cong.number_of_classes() == POSITIVE_INFINITY);
-    REQUIRE(cong.has<ToddCoxeter>());
+    REQUIRE(!cong.has<ToddCoxeter>());
     REQUIRE(cong.has<Kambites<word_type>>());
     REQUIRE(cong.get<Kambites<word_type>>()->finished());
-    REQUIRE(!cong.get<ToddCoxeter>()->finished());
+    REQUIRE(cong.get<Kambites<word_type>>()->success());
 
     StringRange w;
     w.alphabet("abcdefg").min(1).max(4);

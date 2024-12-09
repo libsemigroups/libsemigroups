@@ -86,7 +86,7 @@ namespace libsemigroups {
   //! \tparam Word the type of the words in the presentation.
   // TODO(1) example
   // TODO(0) it seems a bit weird that the internal_type is the thing used as a
-  // template parameter here.
+  // template parameter here. Discuss with Joe.
   template <typename Word = detail::MultiStringView>
   class Kambites : public CongruenceInterface {
    public:
@@ -267,11 +267,11 @@ namespace libsemigroups {
     template <typename OtherWord>
     Kambites(congruence_kind knd, Presentation<OtherWord> const& p)
         : Kambites(
-            knd,
-            // The lambda in the next line converts, say, chars to
-            // size_ts, but doesn't convert size_ts to human_readable
-            // characters.
-            to_presentation<native_word_type>(p, [](auto x) { return x; })) {
+              knd,
+              // The lambda in the next line converts, say, chars to
+              // size_ts, but doesn't convert size_ts to human_readable
+              // characters.
+              to_presentation<native_word_type>(p, [](auto x) { return x; })) {
       throw_if_1_sided(knd);
     }
 
@@ -401,14 +401,6 @@ namespace libsemigroups {
     [[nodiscard]] bool contains_no_checks(native_word_type const& u,
                                           native_word_type const& v);
 
-    //! \throws LibsemigroupsException if the small overlap class is not at
-    //! least \f$4\f$.
-    template <typename SFINAE = bool>
-    [[nodiscard]] auto contains_no_checks(word_type const& u,
-                                          word_type const& v)
-        -> std::enable_if_t<!std::is_same_v<native_word_type, word_type>,
-                            SFINAE>;
-
    public:
     //! \brief Check containment of a pair of words via iterators.
     //!
@@ -532,11 +524,6 @@ namespace libsemigroups {
     void normal_form_no_checks(native_word_type&       result,
                                native_word_type const& w) const;
 
-    template <typename SFINAE = word_type>
-    auto normal_form_no_checks(native_word_type& result, word_type const& w)
-        -> std::enable_if_t<!std::is_same_v<native_word_type, word_type>,
-                            SFINAE> const;
-
    public:
     //! \brief Reduce a word with no computation of the small_overlap_class
     //! or checks.
@@ -581,16 +568,18 @@ namespace libsemigroups {
     //!
     //! \cong_intf_throws_if_letters_out_of_bounds
     //!
-    //! \throws LibsemigroupsException if \ref small_overlap_class is not at
-    //! least \f$4\f$.
+    //! \throws LibsemigroupsException if the \ref small_overlap_class is known
+    //! and is not at least \f$4\f$.
     template <typename OutputIterator, typename Iterator1, typename Iterator2>
     OutputIterator reduce_no_run(OutputIterator d_first,
                                  Iterator1      first,
                                  Iterator2      last) const {
       throw_if_letter_out_of_bounds(first, last);
-      // throw_if_not_C4();
-      // TODO(0) check if C4 is known and if it is check that we're at least
-      // C(4)
+      if (finished() && small_overlap_class() < 4) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "small overlap class must be at least 4, but found {}",
+            small_overlap_class());
+      }
       return reduce_no_run_no_checks(d_first, first, last);
     }
 
@@ -690,6 +679,9 @@ namespace libsemigroups {
     // not noexcept because number_of_pieces_no_checks isn't
     [[nodiscard]] size_t small_overlap_class();
 
+    // TODO(0) doc
+    [[nodiscard]] size_t small_overlap_class() const noexcept;
+
     //! \brief Returns the suffix tree used to compute pieces.
     //!
     //! This function returns a const reference to the generalised suffix
@@ -739,6 +731,11 @@ namespace libsemigroups {
     //! \throws LibsemigroupsException if \ref small_overlap_class is not at
     //! least \f$4\f$.
     void throw_if_not_C4();
+
+    // TODO doc
+    bool success() const override {
+      return finished() && _class >= 4;
+    }
 
    private:
     ////////////////////////////////////////////////////////////////////////
@@ -947,18 +944,13 @@ namespace libsemigroups {
     void run_impl() override;
 
     bool finished_impl() const override {
-      // TODO(1) remove the _class >= 4 from here, this has the wrong
-      // meaning Currently this is used by Congruence which identifies the
-      // winner by checking which runner is finished, obviously this isn't
-      // correct for Kambites unless _class >= 4.
-      //
-      // Maybe implement succeeded in Runner also? and then use that in
-      // Race?
-      return _have_class && _class >= 4;
+      return _have_class;
     }
   };
 
   //! \ingroup kambites_group
+  //
+  //! \brief Deduction guide.
   //!
   //! Deduction guide to construct a Kambites<Word> from a
   //! Presentation<Word> const reference.
@@ -1055,6 +1047,8 @@ namespace libsemigroups {
     // semigroups/monoids), so we can't just do non_trivial_classes(k1,
     // kambites::normal_forms(k2)) (as in ToddCoxeter) because there are
     // infinitely many normal_forms.
+
+    //! @}
   }  // namespace kambites
 
   //! \ingroup kambites_group
@@ -1073,18 +1067,19 @@ namespace libsemigroups {
   //! \exceptions
   //! \no_libsemigroups_except
   template <typename Word>
-  std::string to_human_readable_repr(Kambites<Word>& k) {
-    // TODO(1) if we implement succeeded in Runner, then we can check finished
-    // here and only display the small_overlap_class if we're finished.
-    std::string soc;
-    if (k.small_overlap_class() == POSITIVE_INFINITY) {
-      soc = fmt::format("{}", POSITIVE_INFINITY);
-    } else {
-      soc = fmt::format("{}", k.small_overlap_class());
+  std::string to_human_readable_repr(Kambites<Word> const& k) {
+    std::string suffix;
+    if (k.finished()) {
+      suffix += " with small overlap class ";
+      if (k.small_overlap_class() == POSITIVE_INFINITY) {
+        suffix += fmt::format("{}", POSITIVE_INFINITY);
+      } else {
+        suffix += fmt::format("{}", k.small_overlap_class());
+      }
     }
-    return fmt::format("<Kambites over {} with small overlap class {}>",
+    return fmt::format("<Kambites over {}{}>",
                        to_human_readable_repr(k.presentation()),
-                       soc);
+                       suffix);
   }
 
 }  // namespace libsemigroups

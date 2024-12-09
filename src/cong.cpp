@@ -120,13 +120,6 @@ namespace libsemigroups {
 
   void Congruence::run_impl() {
     init_runners();
-    if (has<Kambites<word_type>>()) {
-      if (get<Kambites<word_type>>()->small_overlap_class() >= 4) {
-        // Race always checks for finished in the other runners, and the
-        // kambites is finished and will be declared the winner.
-        return;
-      }
-    }
     _race.run_until([this]() { return this->stopped(); });
   }
 

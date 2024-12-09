@@ -575,7 +575,8 @@ namespace libsemigroups {
       } else if (cong.has<KnuthBendix<>>()
                  && cong.get<KnuthBendix<>>()->finished()) {
         return knuth_bendix::partition(*cong.get<KnuthBendix<>>(), r);
-      } else if (cong.has<Kambites<word_type>>()) {
+      } else if (cong.has<Kambites<word_type>>()
+                 && cong.get<Kambites<word_type>>()->success()) {
         return kambites::partition(*cong.get<Kambites<word_type>>(), r);
       }
       LIBSEMIGROUPS_EXCEPTION("Cannot compute the non-trivial classes!");

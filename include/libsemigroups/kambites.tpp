@@ -152,25 +152,10 @@ namespace libsemigroups {
   bool Kambites<Word>::contains_no_checks(native_word_type const& u,
                                           native_word_type const& v) {
     run();
+    LIBSEMIGROUPS_ASSERT(small_overlap_class() >= 4);
     // Words aren't validated, the below returns false if they contain
     // letters not in the alphabet.
     return wp_prefix(internal_type(u), internal_type(v), internal_type());
-  }
-
-  template <typename Word>
-  template <typename SFINAE>
-  auto Kambites<Word>::contains_no_checks(word_type const& u,
-                                          word_type const& v)
-      -> std::enable_if_t<!std::is_same_v<native_word_type, word_type>,
-                          SFINAE> {
-    run();
-    // Words aren't validated, the below returns false if they contain
-    // letters not in the alphabet.
-    // TODO(0) remove use of to_string
-    // Not sure that the function called here still exists
-    std::string uu = to_string(presentation(), u);
-    std::string vv = to_string(presentation(), v);
-    return wp_prefix(internal_type(uu), internal_type(vv), internal_type());
   }
 
   template <typename Word>
@@ -183,7 +168,7 @@ namespace libsemigroups {
                                                Iterator2 last1,
                                                Iterator3 first2,
                                                Iterator4 last2) const {
-    if (finished()) {
+    if (success()) {
       return const_cast<Kambites*>(this)->contains_no_checks(
                  first1, last1, first2, last2)
                  ? tril::TRUE
@@ -224,8 +209,9 @@ namespace libsemigroups {
   template <typename Word>
   void Kambites<Word>::normal_form_no_checks(native_word_type&       result,
                                              native_word_type const& w0) const {
-    using words:: operator+;
-    using words:: operator+=;
+    LIBSEMIGROUPS_ASSERT(!finished() || small_overlap_class() >= 4);
+    using words::operator+;
+    using words::operator+=;
     size_t        r = UNDEFINED;
     internal_type w(w0);
     internal_type v(result);
@@ -284,24 +270,11 @@ namespace libsemigroups {
   }
 
   template <typename Word>
-  template <typename SFINAE>
-  auto Kambites<Word>::normal_form_no_checks(native_word_type& result,
-                                             word_type const&  w)
-      -> std::enable_if_t<!std::is_same_v<native_word_type, word_type>,
-                          SFINAE> const {
-    // TODO(0) remove use of to_string
-    // Not sure that the function called here still exists
-    std::string ww = to_string(presentation(), w);
-    normal_form_no_checks(result, ww);
-    return to_word(presentation(), result);
-  }
-
-  template <typename Word>
   template <typename OutputIterator, typename Iterator1, typename Iterator2>
   OutputIterator Kambites<Word>::reduce_no_run_no_checks(OutputIterator d_first,
                                                          Iterator1      first,
                                                          Iterator2 last) const {
-    if (finished()) {
+    if (success()) {
       _tmp_value2.clear();
       _tmp_value1.assign(first, last);
       normal_form_no_checks(_tmp_value2, _tmp_value1);
@@ -319,6 +292,11 @@ namespace libsemigroups {
   template <typename Word>
   size_t Kambites<Word>::small_overlap_class() {
     run();
+    return _class;
+  }
+
+  template <typename Word>
+  size_t Kambites<Word>::small_overlap_class() const noexcept {
     return _class;
   }
 
@@ -646,7 +624,7 @@ namespace libsemigroups {
                                          internal_type& v,
                                          internal_type& w) const {
     using words::operator+=;
-    size_t       i, j;
+    size_t i, j;
     std::tie(i, j) = clean_overlap_prefix_mod(w, w.size());
     if (j == UNDEFINED) {
       // line 39
