@@ -974,6 +974,8 @@ namespace libsemigroups {
   template <typename Word>
   Kambites(congruence_kind, Presentation<Word> const&) -> Kambites<Word>;
 
+#include "detail/kambites-nf.hpp"  // for KambitesNormalFormRange
+
   //! \ingroup kambites_group
   //!
   //! \brief Helper functions for the \ref Kambites class template.
@@ -1011,13 +1013,6 @@ namespace libsemigroups {
     using congruence_interface::reduce_no_run;
     using congruence_interface::reduce_no_run_no_checks;
 
-  }  // namespace kambites
-}  // namespace libsemigroups
-
-#include "detail/kambites-normal-form-range.hpp"  // for KambitesNormalFormRange
-
-namespace libsemigroups {
-  namespace kambites {
     ////////////////////////////////////////////////////////////////////////
     // Interface helpers - normal_forms
     ////////////////////////////////////////////////////////////////////////
