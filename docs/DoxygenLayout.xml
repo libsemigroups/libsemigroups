@@ -136,6 +136,10 @@
       <tab type="user" visible="yes" url="@ref cong_intf_helpers_group" title="Helper functions"/>
     </tab>
     <tab type="user" visible="yes" url="@ref froidure_pin_group" title="Froidure-Pin" />
+    <tab type="usergroup" visible="yes" url="@ref kambites_group" title="Kambites">
+      <tab type="user" visible="yes" url="@ref libsemigroups::Kambites" title="The Kambites class" />
+      <tab type="user" visible="yes" url="@ref libsemigroups::kambites" title="Kambites helper functions" />
+    </tab>
     <tab type="usergroup" visible="yes" url="@ref knuth_bendix_group" title="Knuth-Bendix">
       <tab type="usergroup" visible="yes" url="@ref knuth_bendix_class_group" title="The KnuthBendix class">
         <tab type="user" visible="yes" url="@ref knuth_bendix_class_mem_types_group" title="Member types"/>

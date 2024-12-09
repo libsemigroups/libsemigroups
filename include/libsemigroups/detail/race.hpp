@@ -262,11 +262,11 @@ namespace libsemigroups {
             return;
           }
           for (size_t i = 0; i < _runners.size(); ++i) {
-            if (_runners[i]->finished()) {
+            if (_runners[i]->success()) {
               report_default("using 0 additional threads\n");
               _winner       = _runners[i];
               _winner_index = i;
-              report_default("#{} is already finished!\n", i);
+              report_default("#{} already finished successfully!\n", i);
               // delete the other runners?
               return;
             }
@@ -293,7 +293,7 @@ namespace libsemigroups {
             // Stop two Runner* objects from killing each other
             {
               std::lock_guard<std::mutex> lg(_mtx);
-              if (_runners.at(pos)->finished()) {
+              if (_runners.at(pos)->success()) {
                 for (auto it = _runners.begin(); it < _runners.begin() + pos;
                      it++) {
                   (*it)->kill();
@@ -319,7 +319,7 @@ namespace libsemigroups {
           report_default("\n");
           for (auto method = _runners.begin(); method < _runners.end();
                ++method) {
-            if ((*method)->finished()) {
+            if ((*method)->success()) {
               LIBSEMIGROUPS_ASSERT(_winner == nullptr);
               _winner       = *method;
               _winner_index = method - _runners.begin();
