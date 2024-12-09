@@ -547,7 +547,12 @@ namespace libsemigroups {
     // Not noexcept because finished_impl isn't
     [[nodiscard]] bool finished() const;
 
-    // TODO(0) doc
+    //! \brief Check if run has been run to completion successfully.
+    //!
+    //! Returns \c true if \ref run has been run to completion and it was
+    //! successful. The default implementation is to just call \ref finished.
+    //!
+    //! \returns A \c bool.
     [[nodiscard]] virtual bool success() const {
       return finished();
     }
