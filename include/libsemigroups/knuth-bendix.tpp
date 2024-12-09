@@ -91,7 +91,7 @@ namespace libsemigroups {
   template <typename Rewriter, typename ReductionOrder>
   typename KnuthBendix<Rewriter, ReductionOrder>::Settings&
   KnuthBendix<Rewriter, ReductionOrder>::Settings::init() noexcept {
-    // TODO experiment with starting size to optimise speed.
+    // TODO(1) experiment with starting size to optimise speed.
     batch_size                = 128;
     check_confluence_interval = 4'096;
     max_overlap               = POSITIVE_INFINITY;
@@ -185,7 +185,7 @@ namespace libsemigroups {
   template <typename Rewriter, typename ReductionOrder>
   KnuthBendix<Rewriter, ReductionOrder>&
   KnuthBendix<Rewriter, ReductionOrder>::operator=(KnuthBendix&& that) {
-    CongruenceInterface::operator=(std::move(that));  // TODO correct?
+    CongruenceInterface::operator=(std::move(that));
     _gen_pairs_initted        = std::move(that._gen_pairs_initted);
     _gilman_graph             = std::move(that._gilman_graph);
     _gilman_graph_node_labels = std::move(that._gilman_graph_node_labels);
@@ -277,7 +277,6 @@ namespace libsemigroups {
 
   template <typename Rewriter, typename ReductionOrder>
   uint64_t KnuthBendix<Rewriter, ReductionOrder>::number_of_classes() {
-    // TODO uncomment
     if (is_obviously_infinite(*this)) {
       return POSITIVE_INFINITY;
     }
@@ -389,8 +388,6 @@ namespace libsemigroups {
         rc.min_width(12);  // .divider("{:-<95}\n");
         rc("KnuthBendix: RUN STATISTICS\n");
         // rc.divider();
-        // FIXME these are mostly 0, and should be obtained from the rewriter
-        // probably
         rc("KnuthBendix: max stack depth        {}\n",
            group_digits(_rewriter.max_stack_depth()));
         rc("KnuthBendix: max rule length        {}\n",
@@ -445,15 +442,6 @@ namespace libsemigroups {
   //////////////////////////////////////////////////////////////////////////
 
   template <typename Rewriter, typename ReductionOrder>
-  void KnuthBendix<Rewriter, ReductionOrder>::throw_if_started() const {
-    if (started()) {
-      LIBSEMIGROUPS_EXCEPTION(
-          "the presentation cannot be changed after Knuth-Bendix has "
-          "started, maybe try `init` instead?");
-    }
-  }
-
-  template <typename Rewriter, typename ReductionOrder>
   void KnuthBendix<Rewriter, ReductionOrder>::stats_check_point() {
     _stats.prev_active_rules   = number_of_active_rules();
     _stats.prev_inactive_rules = number_of_inactive_rules();
@@ -469,7 +457,6 @@ namespace libsemigroups {
     return _rewriter.confluence_known();
   }
 
-  // TODO should this check for 0 active rules?
   template <typename Rewriter, typename ReductionOrder>
   bool KnuthBendix<Rewriter, ReductionOrder>::confluent() const {
     if (_rewriter.number_of_active_rules() == 0
@@ -517,8 +504,8 @@ namespace libsemigroups {
     }
   }
 
-  // TODO (When the rewriters have a pointer to the KB instance) move this into
-  // the rewriter
+  // TODO(1) (When the rewriters have a pointer to the KB instance) move this
+  // into the rewriter
   template <typename Rewriter, typename ReductionOrder>
   void
   KnuthBendix<Rewriter, ReductionOrder>::run_real(std::atomic_bool& pause) {
@@ -552,14 +539,14 @@ namespace libsemigroups {
 
         if (nr > _settings.check_confluence_interval) {
           pause = true;
-          // Checking confluence requires there to be no pending rules which, in
-          // general, isn't the case at this point in the loop (other than when
-          // nr is a common multiple of batch_size and
+          // Checking confluence requires there to be no pending rules which,
+          // in general, isn't the case at this point in the loop (other than
+          // when nr is a common multiple of batch_size and
           // confluence_check_interval). Therefore, it might make sense to
           // process any remaining rules before checking confluence. However,
           // this seems to worsen performance on the test cases, so it remains
           // to see what the best option is for default behaviour.
-          // TODO should we process rules here too?
+          // TODO(1) should we process rules here too?
           // _rewriter.process_pending_rules();
           if (confluent()) {
             pause = false;
@@ -753,7 +740,7 @@ namespace libsemigroups {
   KnuthBendix<Rewriter, ReductionOrder>::uint_to_internal_char(size_t a) {
     // Ensure that the input value doesn't overflow the internal char type,
     // seems legit to me
-    // TODO should this be
+    // TODO(1) should this be
     // std::numeric_limits<detail::internal_char_type>::max() -
     // std::numeric_limits<detail::internal_char_type>::min()?
     LIBSEMIGROUPS_ASSERT(
@@ -771,7 +758,7 @@ namespace libsemigroups {
   template <typename Rewriter, typename ReductionOrder>
   typename detail::internal_string_type
   KnuthBendix<Rewriter, ReductionOrder>::uint_to_internal_string(size_t i) {
-    // TODO What is this check for?
+    // TODO(1) What is this check for?
     // TODO should this be
     // std::numeric_limits<detail::internal_char_type>::max() -
     // std::numeric_limits<detail::internal_char_type>::min()?
@@ -852,7 +839,7 @@ namespace libsemigroups {
   // KnuthBendixImpl - methods for rules - private
   //////////////////////////////////////////////////////////////////////////
 
-  // TODO move this to the single call site
+  // TODO(1) move this to the single call site
   template <typename Rewriter, typename ReductionOrder>
   void KnuthBendix<Rewriter, ReductionOrder>::init_from_presentation() {
     auto const& p                 = _presentation;
@@ -922,7 +909,7 @@ namespace libsemigroups {
         // will be considered later, because when the rule `u` is reactivated it
         // is added to the end of the active rules list.
 
-        // TODO remove some of the above checks, since now rules don't get
+        // TODO(1) remove some of the above checks, since now rules don't get
         // processed after being added.
       }
     }
@@ -1078,7 +1065,7 @@ namespace libsemigroups {
       // so all we do is enumerate the paths in that graph
 
       // Construct the "can_reach" subgraph of g2, could use a WordGraphView
-      // here instead (but these don't yet exist) TODO(later)
+      // here instead (but these don't yet exist) TODO(1)
       WordGraph<size_t> wg(g2.number_of_nodes(), g2.out_degree());
 
       for (auto v : wg.nodes()) {
