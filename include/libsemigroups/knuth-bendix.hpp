@@ -81,9 +81,9 @@ namespace libsemigroups {
   //! Defined in \c knuth-bendix.hpp.
   //!
   //! On this page we describe the functionality relating to the Knuth-Bendix
-  //! algorithm for semigroups and monoids that is available in
-  //! \c libsemigroups. This page contains details of the member functions
-  //! of the class KnuthBendix.
+  //! algorithm for semigroups and monoids that is available in \c
+  //! libsemigroups. This page contains details of the member functions of the
+  //! class KnuthBendix.
   //!
   //! This class is used to represent a
   //! [string rewriting system](https://w.wiki/9Re)
@@ -357,21 +357,7 @@ namespace libsemigroups {
     [[nodiscard]] tril currently_contains_no_checks(Iterator1 first1,
                                                     Iterator2 last1,
                                                     Iterator3 first2,
-                                                    Iterator4 last2) const {
-      if (std::equal(first1, last1, first2, last2)) {
-        return tril::TRUE;
-      }
-      // TODO(1) remove allocations here
-      std::string w1, w2;
-      reduce_no_run_no_checks(std::back_inserter(w1), first1, last1);
-      reduce_no_run_no_checks(std::back_inserter(w2), first2, last2);
-      if (w1 == w2) {
-        return tril::TRUE;
-      } else if (finished()) {
-        return tril::FALSE;
-      }
-      return tril::unknown;
-    }
+                                                    Iterator4 last2) const;
 
     template <typename Iterator1,
               typename Iterator2,
@@ -415,25 +401,12 @@ namespace libsemigroups {
     // KnuthBendix - interface requirements - reduce
     ////////////////////////////////////////////////////////////////////////
 
-    // TODO(0) to tpp
     template <typename OutputIterator,
               typename InputIterator1,
               typename InputIterator2>
     OutputIterator reduce_no_run_no_checks(OutputIterator d_first,
                                            InputIterator1 first,
-                                           InputIterator2 last) const {
-      // TODO(1) improve this to not require _tmp_element1
-      if constexpr (std::is_same_v<InputIterator1, char const*>) {
-        static_assert(std::is_same_v<InputIterator2, char const*>);
-        _tmp_element1.assign(first, std::distance(first, last));
-      } else {
-        _tmp_element1.assign(first, last);
-      }
-      const_cast<KnuthBendix<Rewriter, ReductionOrder>&>(*this).rewrite_inplace(
-          _tmp_element1);
-      return std::copy(
-          std::begin(_tmp_element1), std::end(_tmp_element1), d_first);
-    }
+                                           InputIterator2 last) const;
 
     template <typename OutputIterator,
               typename InputIterator1,
@@ -808,26 +781,7 @@ namespace libsemigroups {
     //! \complexity
     //! \f$O(n)\f$ where \f$n\f$ is the sum of the
     //! lengths of the words in rules of \p copy.
-    // TODO(0) to tpp
-    [[nodiscard]] auto active_rules() {
-      using rx::iterator_range;
-      using rx::transform;
-      if (_rewriter.number_of_active_rules() == 0
-          && _rewriter.number_of_pending_rules() != 0) {
-        _rewriter.process_pending_rules();
-      }
-      return iterator_range(_rewriter.begin(), _rewriter.end())
-             | transform([this](auto const& rule) {
-                 // TODO(1) remove allocation
-                 detail::internal_string_type lhs
-                     = detail::internal_string_type(*rule->lhs());
-                 detail::internal_string_type rhs
-                     = detail::internal_string_type(*rule->rhs());
-                 internal_to_external_string(lhs);
-                 internal_to_external_string(rhs);
-                 return std::make_pair(lhs, rhs);
-               });
-    }
+    [[nodiscard]] auto active_rules();
 
    private:
     // TODO(0) recycle this doc or delete
@@ -1247,26 +1201,6 @@ namespace libsemigroups {
     //! @}
   }  // namespace knuth_bendix
 
-  // TODO(0) to tpp file
-  // TODO(0) to to_presentation file
-  template <typename Word, typename Rewriter, typename ReductionOrder>
-  Presentation<Word>
-  to_presentation(KnuthBendix<Rewriter, ReductionOrder>& kb) {
-    if constexpr (std::is_same_v<Word, std::string>) {
-      auto const&               p_orig = kb.presentation();
-      Presentation<std::string> p;
-      p.alphabet(p_orig.alphabet())
-          .contains_empty_word(p_orig.contains_empty_word());
-
-      for (auto const& rule : kb.active_rules()) {
-        presentation::add_rule(p, rule.first, rule.second);
-      }
-      return p;
-    } else {
-      return to_presentation<Word>(to_presentation<std::string>(kb));
-    }
-  }
-
   ////////////////////////////////////////////////////////////////////////
   // global functions - to_human_readable_repr
   ////////////////////////////////////////////////////////////////////////
@@ -1279,31 +1213,13 @@ namespace libsemigroups {
   //!
   //! \returns The representation, a value of type \c std::string
   // TODO(1) preferably kb would be a const&
-  // TODO(0) to tpp
   template <typename Rewriter, typename ReductionOrder>
-  std::string
-  to_human_readable_repr(KnuthBendix<Rewriter, ReductionOrder>& kb) {
-    std::string conf, genpairs;
-    if (kb.confluent_known()) {
-      conf = "confluent";
-      if (!kb.confluent()) {
-        conf = "non-" + conf;
-      }
-    }
-    if (kb.number_of_generating_pairs() != 0) {
-      genpairs = fmt::format("{} generating pairs + ",
-                             kb.number_of_generating_pairs());
-    }
+  std::string to_human_readable_repr(KnuthBendix<Rewriter, ReductionOrder>& kb);
 
-    return fmt::format(
-        "<{} {} KnuthBendix over {} with {}{}/{} active/inactive rules>",
-        conf,
-        kb.kind() == congruence_kind::twosided ? "2-sided" : "1-sided",
-        to_human_readable_repr(kb.presentation()),
-        genpairs,
-        kb.number_of_active_rules(),
-        kb.number_of_inactive_rules());
-  }
+  // TODO(0) doc
+  // This cannot go into to-presentation.hpp since we include that here
+  template <typename Word, typename Rewriter, typename ReductionOrder>
+  Presentation<Word> to_presentation(KnuthBendix<Rewriter, ReductionOrder>& kb);
 }  // namespace libsemigroups
 
 #include "knuth-bendix.tpp"

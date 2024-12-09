@@ -290,13 +290,73 @@ namespace libsemigroups {
     }
   }
 
-  // template <typename Rewriter, typename ReductionOrder>
-  // std::string
-  // KnuthBendix<Rewriter, ReductionOrder>::normal_form(std::string const& w) {
-  //   presentation().validate_word(w.cbegin(), w.cend());
-  //   run();
-  //   return rewrite(w);
-  // }
+  template <typename Rewriter, typename ReductionOrder>
+  template <typename Iterator1,
+            typename Iterator2,
+            typename Iterator3,
+            typename Iterator4>
+  [[nodiscard]] tril
+  KnuthBendix<Rewriter, ReductionOrder>::currently_contains_no_checks(
+      Iterator1 first1,
+      Iterator2 last1,
+      Iterator3 first2,
+      Iterator4 last2) const {
+    if (std::equal(first1, last1, first2, last2)) {
+      return tril::TRUE;
+    }
+    // TODO(1) remove allocations here
+    std::string w1, w2;
+    reduce_no_run_no_checks(std::back_inserter(w1), first1, last1);
+    reduce_no_run_no_checks(std::back_inserter(w2), first2, last2);
+    if (w1 == w2) {
+      return tril::TRUE;
+    } else if (finished()) {
+      return tril::FALSE;
+    }
+    return tril::unknown;
+  }
+
+  template <typename Rewriter, typename ReductionOrder>
+  template <typename OutputIterator,
+            typename InputIterator1,
+            typename InputIterator2>
+  OutputIterator KnuthBendix<Rewriter, ReductionOrder>::reduce_no_run_no_checks(
+      OutputIterator d_first,
+      InputIterator1 first,
+      InputIterator2 last) const {
+    // TODO(1) improve this to not require _tmp_element1
+    if constexpr (std::is_same_v<InputIterator1, char const*>) {
+      static_assert(std::is_same_v<InputIterator2, char const*>);
+      _tmp_element1.assign(first, std::distance(first, last));
+    } else {
+      _tmp_element1.assign(first, last);
+    }
+    const_cast<KnuthBendix<Rewriter, ReductionOrder>&>(*this).rewrite_inplace(
+        _tmp_element1);
+    return std::copy(
+        std::begin(_tmp_element1), std::end(_tmp_element1), d_first);
+  }
+
+  template <typename Rewriter, typename ReductionOrder>
+  [[nodiscard]] auto KnuthBendix<Rewriter, ReductionOrder>::active_rules() {
+    using rx::iterator_range;
+    using rx::transform;
+    if (_rewriter.number_of_active_rules() == 0
+        && _rewriter.number_of_pending_rules() != 0) {
+      _rewriter.process_pending_rules();
+    }
+    return iterator_range(_rewriter.begin(), _rewriter.end())
+           | transform([this](auto const& rule) {
+               // TODO(1) remove allocation
+               detail::internal_string_type lhs
+                   = detail::internal_string_type(*rule->lhs());
+               detail::internal_string_type rhs
+                   = detail::internal_string_type(*rule->rhs());
+               internal_to_external_string(lhs);
+               internal_to_external_string(rhs);
+               return std::make_pair(lhs, rhs);
+             });
+  }
 
   template <typename Rewriter, typename ReductionOrder>
   void KnuthBendix<Rewriter, ReductionOrder>::report_presentation(
@@ -1214,6 +1274,49 @@ namespace libsemigroups {
     // }
 
   }  // namespace knuth_bendix
+
+  template <typename Word, typename Rewriter, typename ReductionOrder>
+  Presentation<Word>
+  to_presentation(KnuthBendix<Rewriter, ReductionOrder>& kb) {
+    if constexpr (std::is_same_v<Word, std::string>) {
+      auto const&               p_orig = kb.presentation();
+      Presentation<std::string> p;
+      p.alphabet(p_orig.alphabet())
+          .contains_empty_word(p_orig.contains_empty_word());
+
+      for (auto const& rule : kb.active_rules()) {
+        presentation::add_rule(p, rule.first, rule.second);
+      }
+      return p;
+    } else {
+      return to_presentation<Word>(to_presentation<std::string>(kb));
+    }
+  }
+
+  template <typename Rewriter, typename ReductionOrder>
+  std::string
+  to_human_readable_repr(KnuthBendix<Rewriter, ReductionOrder>& kb) {
+    std::string conf, genpairs;
+    if (kb.confluent_known()) {
+      conf = "confluent";
+      if (!kb.confluent()) {
+        conf = "non-" + conf;
+      }
+    }
+    if (kb.number_of_generating_pairs() != 0) {
+      genpairs = fmt::format("{} generating pairs + ",
+                             kb.number_of_generating_pairs());
+    }
+
+    return fmt::format(
+        "<{} {} KnuthBendix over {} with {}{}/{} active/inactive rules>",
+        conf,
+        kb.kind() == congruence_kind::twosided ? "2-sided" : "1-sided",
+        to_human_readable_repr(kb.presentation()),
+        genpairs,
+        kb.number_of_active_rules(),
+        kb.number_of_inactive_rules());
+  }
 
   template <typename Rewriter, typename ReductionOrder>
   std::ostream& operator<<(std::ostream&                          os,
