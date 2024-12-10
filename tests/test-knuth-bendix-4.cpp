@@ -214,7 +214,7 @@ namespace libsemigroups {
     KnuthBendix<TestType> kb2(twosided, p);
     REQUIRE(kb2.number_of_classes() == 1);
 
-    auto ntc = knuth_bendix::non_trivial_classes(kb2, kb);
+    auto ntc = knuth_bendix::non_trivial_classes(kb, kb2);
     REQUIRE(ntc.size() == 1);
     REQUIRE(ntc[0].size() == 7'920);
     REQUIRE(std::find(ntc[0].cbegin(), ntc[0].cend(), "") != ntc[0].cend());

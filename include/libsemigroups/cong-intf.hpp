@@ -198,6 +198,7 @@ namespace libsemigroups {
                                             Iterator2 last1,
                                             Iterator3 first2,
                                             Iterator4 last2) {
+      LIBSEMIGROUPS_ASSERT(!started());
       _generating_pairs.emplace_back(first1, last1);
       _generating_pairs.emplace_back(first2, last2);
       return static_cast<Subclass&>(*this);

@@ -760,7 +760,7 @@ namespace libsemigroups {
     REQUIRE(knuth_bendix::contains(kb2, "a", "bb"));
     REQUIRE(knuth_bendix::contains(kb2, "a", "bab"));
 
-    REQUIRE(knuth_bendix::non_trivial_classes(kb2, kb1)
+    REQUIRE(knuth_bendix::non_trivial_classes(kb1, kb2)
             == std::vector<std::vector<std::string>>(
                 {{"b", "ab", "bb", "abb", "a"}}));
   }
@@ -789,7 +789,7 @@ namespace libsemigroups {
     KnuthBendix<TestType> kb2(twosided, p);
     REQUIRE(kb2.number_of_classes() == 2);
 
-    REQUIRE_THROWS_AS(knuth_bendix::non_trivial_classes(kb2, kb1),
+    REQUIRE_THROWS_AS(knuth_bendix::non_trivial_classes(kb1, kb2),
                       LibsemigroupsException);
   }
 
@@ -815,7 +815,7 @@ namespace libsemigroups {
 
     KnuthBendix<TestType> kb2(twosided, p);
 
-    REQUIRE(knuth_bendix::non_trivial_classes(kb2, kb1)
+    REQUIRE(knuth_bendix::non_trivial_classes(kb1, kb2)
             == std::vector<std::vector<std::string>>(
                 {{"ab", "b"}, {"bb", "abb", "a"}}));
   }
@@ -847,7 +847,7 @@ namespace libsemigroups {
     presentation::add_rule_no_checks(p, 0_w, 1_w);
 
     KnuthBendix<TestType> kb2(twosided, p);
-    REQUIRE(knuth_bendix::non_trivial_classes(kb2, kb1)
+    REQUIRE(knuth_bendix::non_trivial_classes(kb1, kb2)
             == std::vector<std::vector<std::string>>(
                 {{{1}, {0, 1}, {1, 1}, {0, 1, 1}, {0}}}));
   }
@@ -918,7 +918,7 @@ namespace libsemigroups {
 
     REQUIRE(knuth_bendix::contains(kb2, 1_w, 2_w));
 
-    auto ntc = knuth_bendix::non_trivial_classes(kb2, kb1);
+    auto ntc = knuth_bendix::non_trivial_classes(kb1, kb2);
     REQUIRE(ntc.size() == 1);
     REQUIRE(ntc[0].size() == 2);
     REQUIRE(ntc == decltype(ntc)({{{2}, {1}}}));
@@ -963,7 +963,7 @@ namespace libsemigroups {
     KnuthBendix<TestType> kb2(twosided, p);
     // TODO(0) be good to be able to specify the output type of
     // non_trivial_classes
-    auto ntc = knuth_bendix::non_trivial_classes(kb2, kb1);
+    auto ntc = knuth_bendix::non_trivial_classes(kb1, kb2);
     REQUIRE(ntc.size() == 1);
     REQUIRE(ntc[0].size() == 3);
     REQUIRE(ntc == decltype(ntc)({{{2}, {3}, {1}}}));
@@ -991,7 +991,7 @@ namespace libsemigroups {
     REQUIRE(!p.contains_empty_word());
     REQUIRE(kb1.number_of_classes() == 27);
     REQUIRE(kb2.number_of_classes() == 27);
-    auto ntc = knuth_bendix::non_trivial_classes(kb2, kb1);
+    auto ntc = knuth_bendix::non_trivial_classes(kb1, kb2);
     REQUIRE(ntc.empty());
   }
 
@@ -1022,7 +1022,7 @@ namespace libsemigroups {
 
     REQUIRE(kb2.number_of_classes() == 1);
 
-    auto ntc = knuth_bendix::non_trivial_classes(kb2, kb1);
+    auto ntc = knuth_bendix::non_trivial_classes(kb1, kb2);
 
     REQUIRE(ntc.size() == 1);
     REQUIRE(ntc[0].size() == 27);
@@ -1168,7 +1168,7 @@ namespace libsemigroups {
     REQUIRE(equal(knuth_bendix::normal_forms<word_type>(kb2),
                   normal_forms_from_word_graph(kb2, test_wg2)));
 
-    auto ntc = knuth_bendix::non_trivial_classes(kb2, kb1);
+    auto ntc = knuth_bendix::non_trivial_classes(kb1, kb2);
 
     std::vector<std::string> expected = {{1},
                                          {3},
@@ -1200,7 +1200,7 @@ namespace libsemigroups {
       Presentation<word_type> q;
       q.alphabet(2);
       KnuthBendix<TestType> kbq(twosided, q);
-      REQUIRE_THROWS_AS(knuth_bendix::non_trivial_classes(kbq, kbp),
+      REQUIRE_THROWS_AS(knuth_bendix::non_trivial_classes(kbp, kbq),
                         LibsemigroupsException);
       REQUIRE(kbq.number_of_inactive_rules() == 0);
     }
@@ -1213,7 +1213,7 @@ namespace libsemigroups {
       presentation::add_rule_no_checks(q, 00_w, 0_w);
 
       KnuthBendix<TestType> kbq(twosided, q);
-      REQUIRE_THROWS_AS(knuth_bendix::non_trivial_classes(kbp, kbq),
+      REQUIRE_THROWS_AS(knuth_bendix::non_trivial_classes(kbq, kbp),
                         LibsemigroupsException);
     }
   }

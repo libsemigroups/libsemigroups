@@ -47,17 +47,16 @@ namespace libsemigroups {
   //! semigroup as \p fp, run FroidurePin::run (or any other function that
   //! fully enumerates \p fp) prior to calling this function.
   //!
-  //! \tparam WordOutput the type of the presentation to construct (must be a
-  //! type of Presentation).
+  //! \tparam Word the type of the rules in the presentation being constructing.
   //!
   //! \param fp the FroidurePin object from which to obtain the rules.
   //!
-  //! \returns An object of type \c Presentation<WordOutput>.
+  //! \returns An object of type \c Presentation<Word>.
   //!
   //! \exceptions
   //! \no_libsemigroups_except
-  template <typename WordOutput>
-  Presentation<WordOutput> to_presentation(FroidurePinBase& fp);
+  template <typename Word>
+  Presentation<Word> to_presentation(FroidurePinBase& fp);
 
 #ifdef PARSED_BY_DOXYGEN
   //! \ingroup to_presentation_group
