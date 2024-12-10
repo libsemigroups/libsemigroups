@@ -92,7 +92,7 @@ namespace libsemigroups {
   typename KnuthBendix<Rewriter, ReductionOrder>::Settings&
   KnuthBendix<Rewriter, ReductionOrder>::Settings::init() noexcept {
     // TODO(1) experiment with starting size to optimise speed.
-    batch_size                = 128;
+    max_pending_rules         = 128;
     check_confluence_interval = 4'096;
     max_overlap               = POSITIVE_INFINITY;
     max_rules                 = POSITIVE_INFINITY;
@@ -601,7 +601,7 @@ namespace libsemigroups {
           pause = true;
           // Checking confluence requires there to be no pending rules which,
           // in general, isn't the case at this point in the loop (other than
-          // when nr is a common multiple of batch_size and
+          // when nr is a common multiple of max_pending_rules and
           // confluence_check_interval). Therefore, it might make sense to
           // process any remaining rules before checking confluence. However,
           // this seems to worsen performance on the test cases, so it remains
@@ -958,7 +958,8 @@ namespace libsemigroups {
                  vlhs.cend());  // rule = AQ_j -> Q_iC
         _rewriter.add_pending_rule(x, y);
 
-        if (_rewriter.number_of_pending_rules() >= _settings.batch_size) {
+        if (_rewriter.number_of_pending_rules()
+            >= _settings.max_pending_rules) {
           _rewriter.process_pending_rules();
         }
         // It can be that the iterator `it` is invalidated by the call to

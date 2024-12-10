@@ -201,7 +201,7 @@ namespace libsemigroups {
       Settings& operator=(Settings const&) noexcept = default;
       Settings& operator=(Settings&&) noexcept      = default;
 
-      size_t                    batch_size;
+      size_t                    max_pending_rules;
       size_t                    check_confluence_interval;
       size_t                    max_overlap;
       size_t                    max_rules;
@@ -706,8 +706,8 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! Constant.
-    KnuthBendix& batch_size(size_t val) {
-      _settings.batch_size = val;
+    KnuthBendix& max_pending_rules(size_t val) {
+      _settings.max_pending_rules = val;
       return *this;
     }
 
@@ -727,9 +727,8 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! Constant.
-    // TODO(0) rename -> max_pending_rules?
-    [[nodiscard]] size_t batch_size() const noexcept {
-      return _settings.batch_size;
+    [[nodiscard]] size_t max_pending_rules() const noexcept {
+      return _settings.max_pending_rules;
     }
 
     //! \brief Set the interval at which confluence is checked.

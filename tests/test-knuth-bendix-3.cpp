@@ -63,7 +63,6 @@ namespace libsemigroups {
   using namespace rx;
   using literals::operator""_w;
 
-  // TODO remove default?
   using rule_type = KnuthBendix<>::rule_type;
 
   struct LibsemigroupsException;

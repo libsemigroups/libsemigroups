@@ -742,19 +742,6 @@ namespace libsemigroups {
 
     KnuthBendix<TestType> kb2(twosided, p);
 
-    // TODO uncomment
-
-    // REQUIRE(kb1.gilman_graph()
-    //         == to_word_graph<size_t>(5,
-    //                                  {{3, 1, 2},
-    //                                   {UNDEFINED, 4},
-    //                                   {UNDEFINED, UNDEFINED, 2},
-    //                                   {UNDEFINED, 1}}));
-
-    // REQUIRE(kb2.gilman_graph()
-    //         == to_word_graph<size_t>(
-    //             3, {{2, UNDEFINED, 1}, {UNDEFINED, UNDEFINED, 1}}));
-
     REQUIRE(knuth_bendix::contains(kb2, "a", "b"));
     REQUIRE(knuth_bendix::contains(kb2, "a", "ba"));
     REQUIRE(knuth_bendix::contains(kb2, "a", "bb"));
@@ -961,9 +948,7 @@ namespace libsemigroups {
     presentation::add_rule_no_checks(p, 2_w, 3_w);
 
     KnuthBendix<TestType> kb2(twosided, p);
-    // TODO(0) be good to be able to specify the output type of
-    // non_trivial_classes
-    auto ntc = knuth_bendix::non_trivial_classes(kb1, kb2);
+    auto                  ntc = knuth_bendix::non_trivial_classes(kb1, kb2);
     REQUIRE(ntc.size() == 1);
     REQUIRE(ntc[0].size() == 3);
     REQUIRE(ntc == decltype(ntc)({{{2}, {3}, {1}}}));

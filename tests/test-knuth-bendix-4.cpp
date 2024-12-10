@@ -68,7 +68,6 @@ namespace libsemigroups {
 
   using namespace rx;
 
-  // TODO remove default?
   using rule_type = KnuthBendix<>::rule_type;
 
   using RewriteTrie     = detail::RewriteTrie;
