@@ -1163,17 +1163,12 @@ namespace libsemigroups {
           klass.push_back(reduce_no_checks(kb2, klass[0]));
         }
         return ntc;
-      } else if (!std::is_same_v<Word, word_type>) {
-        auto ntc
-            = partition(kb2, (words | rx::transform([](word_type const& w) {
-                                return Word(w.begin(), w.end());
-                              })));
-        for (auto& klass : ntc) {
-          klass.push_back(reduce_no_checks(kb2, klass[0]));
-        }
-        return ntc;
       } else {
-        auto ntc = partition(kb2, words);
+        auto ntc = partition(kb2,
+                             words | ToString(kb1.presentation().alphabet())
+                                 | rx::transform([](auto const& w) {
+                                     return Word(w.begin(), w.end());
+                                   }));
         for (auto& klass : ntc) {
           klass.push_back(reduce_no_checks(kb2, klass[0]));
         }
@@ -1299,9 +1294,9 @@ namespace libsemigroups {
     }
 
     return fmt::format(
-        "<{} {} KnuthBendix over {} with {}{}/{} active/inactive rules>",
+        "<{}{} KnuthBendix over {} with {}{}/{} active/inactive rules>",
         conf,
-        kb.kind() == congruence_kind::twosided ? "2-sided" : "1-sided",
+        kb.kind() == congruence_kind::twosided ? " 2-sided" : " 1-sided",
         to_human_readable_repr(kb.presentation()),
         genpairs,
         kb.number_of_active_rules(),

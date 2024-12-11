@@ -264,8 +264,9 @@ namespace libsemigroups {
                  "ad",   "bb",   "bc",   "bd",   "cc",   "dd",   "aaa",
                  "aac",  "aad",  "acc",  "add",  "bbb",  "bbc",  "bbd",
                  "bcc",  "bdd",  "ccc",  "ddd",  "aaaa", "aaac", "aaad",
-                 "aacc", "aadd", "accc", "addd", "bbbb", "bbbc", "bbbd",
-                 "bbcc", "bbdd", "bccc", "bddd", "cccc", "dddd"}));
+                 "aacc", "aadd", "accc", "addd",  // codespell:ignore
+                 "bbbb", "bbbc", "bbbd", "bbcc", "bbdd", "bccc", "bddd",
+                 "cccc", "dddd"}));
     REQUIRE((nf.min(0).max(6) | all_of([&kb](auto const& w) {
                return knuth_bendix::reduce(kb, w) == w;
              })));
@@ -440,17 +441,17 @@ namespace libsemigroups {
     REQUIRE(kb.number_of_active_rules() == 9);
     REQUIRE(kb.confluent());
 
-    auto& ad = kb.gilman_graph();
-    REQUIRE(ad.number_of_nodes() == 9);
-    REQUIRE(ad.number_of_edges() == 13);
-    REQUIRE(!word_graph::is_acyclic(ad));
+    auto& wg = kb.gilman_graph();
+    REQUIRE(wg.number_of_nodes() == 9);
+    REQUIRE(wg.number_of_edges() == 13);
+    REQUIRE(!word_graph::is_acyclic(wg));
 
     auto fp = to_froidure_pin(kb);
     fp.enumerate(100);
 
     auto expected = froidure_pin::current_normal_forms(fp);
 
-    Paths paths(ad);
+    Paths paths(wg);
     paths.source(0).min(1).max(fp.current_max_word_length() + 1);
 
     REQUIRE(equal(expected, paths));
@@ -499,11 +500,11 @@ namespace libsemigroups {
     // monoid presentation
     REQUIRE(S.number_of_generators() == 5);
 
-    auto& ad = kb.gilman_graph();
-    REQUIRE(ad.number_of_nodes() == 232);
-    REQUIRE(ad.number_of_edges() == 265);
-    REQUIRE(word_graph::is_acyclic(ad));
-    Paths paths(ad);
+    auto& wg = kb.gilman_graph();
+    REQUIRE(wg.number_of_nodes() == 232);
+    REQUIRE(wg.number_of_edges() == 265);
+    REQUIRE(word_graph::is_acyclic(wg));
+    Paths paths(wg);
     paths.source(0).min(0).max(13);
     REQUIRE(paths.count() == 336);
   }
@@ -529,11 +530,11 @@ namespace libsemigroups {
     REQUIRE(kb.confluent());
     REQUIRE(kb.number_of_classes() == 11);
 
-    auto& ad = kb.gilman_graph();
-    REQUIRE(ad.number_of_nodes() == 8);
-    REQUIRE(ad.number_of_edges() == 11);
-    REQUIRE(word_graph::is_acyclic(ad));
-    Paths paths(ad);
+    auto& wg = kb.gilman_graph();
+    REQUIRE(wg.number_of_nodes() == 8);
+    REQUIRE(wg.number_of_edges() == 11);
+    REQUIRE(word_graph::is_acyclic(wg));
+    Paths paths(wg);
     paths.source(0).min(0).max(5);
     REQUIRE(paths.count() == 12);
   }
@@ -553,11 +554,11 @@ namespace libsemigroups {
     kb.run();
     REQUIRE(kb.number_of_active_rules() == 4);
 
-    auto& ad = kb.gilman_graph();
-    REQUIRE(ad.number_of_nodes() == 7);
-    REQUIRE(ad.number_of_edges() == 17);
-    REQUIRE(!word_graph::is_acyclic(ad));
-    Paths paths(ad);
+    auto& wg = kb.gilman_graph();
+    REQUIRE(wg.number_of_nodes() == 7);
+    REQUIRE(wg.number_of_edges() == 17);
+    REQUIRE(!word_graph::is_acyclic(wg));
+    Paths paths(wg);
     paths.source(0).min(0).max(10);
     REQUIRE(paths.count() == 13'044);
   }
@@ -750,6 +751,9 @@ namespace libsemigroups {
     REQUIRE(knuth_bendix::non_trivial_classes(kb1, kb2)
             == std::vector<std::vector<std::string>>(
                 {{"b", "ab", "bb", "abb", "a"}}));
+    REQUIRE(knuth_bendix::non_trivial_classes<word_type>(kb1, kb2)
+            == std::vector<std::vector<word_type>>(
+                {{{98}, {97, 98}, {98, 98}, {97, 98, 98}, {97}}}));
   }
 
   TEMPLATE_TEST_CASE("KnuthBendix: non-trivial classes x 2",
@@ -1344,7 +1348,7 @@ namespace libsemigroups {
   //   presentation::add_rule_no_checks(p, "BAba", "c");
   //   presentation::add_rule_no_checks(p, "CAca", "d");
   //   presentation::add_rule_no_checks(p, "CBcb", "y");
-  //   presentation::add_rule_no_checks(p, "da", "ad");
+  //   presentation::add_rule_no_checks(p, "da", "wg");
   //   presentation::add_rule_no_checks(p, "ya", "ay");
   //   presentation::add_rule_no_checks(p, "db", "bd");
   //   presentation::add_rule_no_checks(p, "yb", "by");
@@ -1359,7 +1363,7 @@ namespace libsemigroups {
   //   REQUIRE(knuth_bendix::contains(kb, "BAba", "c"));
   //   REQUIRE(knuth_bendix::contains(kb, "CAca", "d"));
   //   REQUIRE(knuth_bendix::contains(kb, "CBcb", "y"));
-  //   REQUIRE(knuth_bendix::contains(kb, "da", "ad"));
+  //   REQUIRE(knuth_bendix::contains(kb, "da", "wg"));
   //   REQUIRE(knuth_bendix::contains(kb, "ya", "ay"));
   //   REQUIRE(knuth_bendix::contains(kb, "db", "bd"));
   //   REQUIRE(knuth_bendix::contains(kb, "yb", "by"));

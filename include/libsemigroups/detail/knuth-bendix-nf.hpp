@@ -57,6 +57,7 @@ namespace detail {
     }
 
     KnuthBendixNormalFormRange& min(size_type val) noexcept {
+      // TODO(0) should not allow 0 unless contains_empty_word
       Paths_::min(val);
       return *this;
     }
