@@ -1688,7 +1688,7 @@ namespace libsemigroups {
   TEMPLATE_TEST_CASE("KnuthBendix: Reinis MFE",
                      "[027][todd-coxeter][quick]",
                      KNUTH_BENDIX_TYPES) {
-    using literals::operator""_w;
+    using literals::        operator""_w;
     Presentation<word_type> p;
     p.alphabet(2);
     presentation::add_rule(p, "000"_w, "11"_w);
@@ -1723,7 +1723,7 @@ namespace libsemigroups {
     p.alphabet(2);
     presentation::add_idempotent_rules_no_checks(p, 01_w);
     using words::operator+;
-    WordRange words;
+    WordRange    words;
     words.alphabet_size(2).min(0).max(3);
     size_t n = 2;
     for (size_t a = 0; a < n - 1; ++a) {
