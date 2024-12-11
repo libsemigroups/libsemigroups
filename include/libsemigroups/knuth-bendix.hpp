@@ -1014,6 +1014,7 @@ namespace libsemigroups {
     // TODO(1) add note about empty active rules after, or better discuss that
     // there are three kinds of rules in the system: active, inactive, and
     // pending.
+    // TODO(1) allow type of words output to be specified
     [[nodiscard]] auto active_rules();
 
    private:
