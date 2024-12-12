@@ -210,7 +210,7 @@ namespace libsemigroups {
     REQUIRE(cong.has<KnuthBendix<>>());
 
     KnuthBendix<> kb(twosided, p);
-    REQUIRE(knuth_bendix::non_trivial_classes(*cong.get<KnuthBendix<>>(), kb)
+    REQUIRE(knuth_bendix::non_trivial_classes(kb, *cong.get<KnuthBendix<>>())
             == std::vector<std::vector<std::string>>(
                 {{{1}, {0, 1}, {1, 1}, {0, 1, 1}, {0}}}));
 
@@ -361,7 +361,7 @@ namespace libsemigroups {
     if (cong.has<KnuthBendix<>>()) {
       KnuthBendix<> kb(twosided, p);
       REQUIRE_THROWS_AS(
-          knuth_bendix::non_trivial_classes(*cong.get<KnuthBendix<>>(), kb),
+          knuth_bendix::non_trivial_classes(kb, *cong.get<KnuthBendix<>>()),
           LibsemigroupsException);
     } else if (cong.has<ToddCoxeter>()) {
       ToddCoxeter tc(twosided, p);
@@ -468,7 +468,7 @@ namespace libsemigroups {
 
     KnuthBendix<> kb(twosided, p);
     auto          ntc
-        = knuth_bendix::non_trivial_classes(*cong.get<KnuthBendix<>>(), kb);
+        = knuth_bendix::non_trivial_classes(kb, *cong.get<KnuthBendix<>>());
     REQUIRE(ntc.size() == 1);
     REQUIRE(ntc[0].size() == 5);
     REQUIRE(ntc[0]
@@ -580,7 +580,7 @@ namespace libsemigroups {
       KnuthBendix<> kb(twosided, p);
       REQUIRE(kb.number_of_classes() == 78);
       auto ntc
-          = knuth_bendix::non_trivial_classes(*cong.get<KnuthBendix<>>(), kb);
+          = knuth_bendix::non_trivial_classes(kb, *cong.get<KnuthBendix<>>());
       REQUIRE(ntc.size() == 1);
       REQUIRE(ntc[0].size() == 78);
     }
