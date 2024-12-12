@@ -1299,7 +1299,7 @@ namespace libsemigroups {
     //! \param kb1 the first \ref KnuthBendix instance.
     //! \param kb2 the second \ref KnuthBendix instance.
     //!
-    //! \returns The non-trivial classes of the input range.
+    //! \returns The non-trivial classes of \p kb1 in \p kb2.
     //!
     //! \throws LibsemigroupsException if \p kb1 has infinitely many classes
     //! and \p kb2 has finitely many classes (so that there is at least one
@@ -1345,8 +1345,8 @@ namespace libsemigroups {
     //!
     //! \tparam Time type of the 2nd parameter (time to try running
     //! Knuth-Bendix).
-    //! \param p the presentation
-    //! \param t time to run KnuthBendix for every omitted rule
+    //! \param p the presentation.
+    //! \param t time to run KnuthBendix for every omitted rule.
     //!
     //! \returns An iterator pointing at the left-hand side of a redundant rule
     //! of \c p.rules.cend().
@@ -1382,8 +1382,8 @@ namespace libsemigroups {
     //! \tparam Word type of words in the Presentation
     //! \tparam Time type of the 2nd parameter (time to try running
     //! Knuth-Bendix).
-    //! \param p the presentation
-    //! \param t time to run KnuthBendix for every omitted rule
+    //! \param p the presentation.
+    //! \param t time to run KnuthBendix for every omitted rule.
     //!
     //! \warning The progress of the Knuth-Bendix algorithm may differ between
     //! different calls to this function even if the parameters are identical.
@@ -1441,7 +1441,7 @@ namespace libsemigroups {
   //! \tparam Rewriter the first template parameter for KnuthBendix.
   //! \tparam ReductionOrder the second template parameter for KnuthBendix.
   //!
-  //! \param kb the KnuthBendix instance
+  //! \param kb the KnuthBendix instance.
   //!
   //! \returns The representation, a value of type \c std::string
   // TODO(1) preferably kb would be a const&
