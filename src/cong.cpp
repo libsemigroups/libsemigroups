@@ -139,7 +139,7 @@ namespace libsemigroups {
                  && cong.get<KnuthBendix<>>()->finished()) {
         KnuthBendix<> kb(cong.kind(), p);
         auto strings = ::libsemigroups::knuth_bendix::non_trivial_classes(
-            *cong.get<KnuthBendix<>>(), kb);
+            kb, *cong.get<KnuthBendix<>>());
         std::vector<std::vector<word_type>> result;
         for (auto const& klass : strings) {
           result.push_back(rx::iterator_range(klass.begin(), klass.end())
@@ -162,7 +162,7 @@ namespace libsemigroups {
       if (cong.has<KnuthBendix<>>() && cong.get<KnuthBendix<>>()->finished()) {
         KnuthBendix<> kb(cong.kind(), p);
         return ::libsemigroups::knuth_bendix::non_trivial_classes(
-            *cong.get<KnuthBendix<>>(), kb);
+            kb, *cong.get<KnuthBendix<>>());
       }
       if (cong.has<ToddCoxeter>() && cong.get<ToddCoxeter>()->finished()) {
         ToddCoxeter tc(cong.kind(), p);

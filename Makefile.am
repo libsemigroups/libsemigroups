@@ -124,6 +124,7 @@ detailinclude_HEADERS += include/libsemigroups/detail/kambites-nf.hpp
 detailinclude_HEADERS += include/libsemigroups/detail/kbe.hpp
 detailinclude_HEADERS += include/libsemigroups/detail/kbe.tpp
 detailinclude_HEADERS += include/libsemigroups/detail/ke.hpp
+detailinclude_HEADERS += include/libsemigroups/detail/knuth-bendix-nf.hpp
 detailinclude_HEADERS += include/libsemigroups/detail/multi-string-view.hpp
 detailinclude_HEADERS += include/libsemigroups/detail/node-managed-graph.hpp
 detailinclude_HEADERS += include/libsemigroups/detail/node-managed-graph.tpp

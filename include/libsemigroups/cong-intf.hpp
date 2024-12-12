@@ -198,6 +198,7 @@ namespace libsemigroups {
                                             Iterator2 last1,
                                             Iterator3 first2,
                                             Iterator4 last2) {
+      LIBSEMIGROUPS_ASSERT(!started());
       _generating_pairs.emplace_back(first1, last1);
       _generating_pairs.emplace_back(first2, last2);
       return static_cast<Subclass&>(*this);
@@ -1127,7 +1128,7 @@ namespace libsemigroups {
               typename Range,
               typename OutputWord = std::decay_t<typename Range::output_type>,
               typename = std::enable_if_t<rx::is_input_or_sink_v<Range>>>
-    [[nodiscard]] std::vector<std::vector<OutputWord>> partition(Subclass& kb,
+    [[nodiscard]] std::vector<std::vector<OutputWord>> partition(Subclass& ci,
                                                                  Range     r) {
       // Congruence + ToddCoxeter have their own overloads for this
       static_assert(!std::is_same_v<Subclass, ToddCoxeter>
@@ -1145,8 +1146,8 @@ namespace libsemigroups {
 
       while (!r.at_end()) {
         auto next = r.get();
-        if (kb.presentation().contains_empty_word() || !next.empty()) {
-          auto next_nf        = congruence_interface::reduce(kb, next);
+        if (ci.presentation().contains_empty_word() || !next.empty()) {
+          auto next_nf        = congruence_interface::reduce(ci, next);
           auto [it, inserted] = map.emplace(next_nf, index);
           if (inserted) {
             result.emplace_back();

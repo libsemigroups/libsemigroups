@@ -141,17 +141,8 @@
       <tab type="user" visible="yes" url="@ref libsemigroups::kambites" title="Kambites helper functions" />
     </tab>
     <tab type="usergroup" visible="yes" url="@ref knuth_bendix_group" title="Knuth-Bendix">
-      <tab type="usergroup" visible="yes" url="@ref knuth_bendix_class_group" title="The KnuthBendix class">
-        <tab type="user" visible="yes" url="@ref knuth_bendix_class_mem_types_group" title="Member types"/>
-        <tab type="user" visible="yes" url="@ref knuth_bendix_class_init_group" title="Constructors + Initializers"/>
-        <tab type="user" visible="yes" url="@ref knuth_bendix_class_settings_group" title="Settings"/>
-        <tab type="user" visible="yes" url="@ref knuth_bendix_class_intf_group" title="Common functions"/>
-        <tab type="user" visible="yes" url="@ref knuth_bendix_class_accessors_group" title="Accessors"/>
-        <tab type="user" visible="yes" url="@ref knuth_bendix_class_mod_group" title="Modifiers"/>
-        <tab type="user" visible="yes" url="@ref knuth_bendix_class_word_index_group" title="Word -> index"/>
-        <tab type="user" visible="yes" url="@ref knuth_bendix_class_index_word_group" title="Index -> word"/>
-      </tab>
-      <tab type="user" visible="yes" url="@ref knuth_bendix_helpers_group" title="Knuth-Bendix helper functions" />
+      <tab type="user" visible="yes" url="@ref libsemigroups::KnuthBendix" title="The KnuthBendix class"/>
+      <tab type="user" visible="yes" url="@ref libsemigroups::knuth_bendix" title="Knuth-Bendix helper functions"/>
     </tab>
     <tab type="user" visible="yes" url="@ref freeband_group" title="Radoszewski-Rytter" />
     <tab type="user" visible="yes" url="@ref schreier_sims_group" title="Schreier-Sims" />

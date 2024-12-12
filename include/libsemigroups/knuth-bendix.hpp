@@ -22,8 +22,6 @@
 // TODO(1)
 // * noexcept
 // * separate rule container from Rules
-// TODO(0)
-// * fix doc
 // * nodiscard
 
 #ifndef LIBSEMIGROUPS_KNUTH_BENDIX_HPP_
@@ -73,21 +71,24 @@ namespace libsemigroups {
     class KBE;
   }  // namespace detail
 
-  //! \defgroup knuth_bendix_class_group The Knuth-Bendix class
+  //! \defgroup knuth_bendix_group Knuth-Bendix
   //!
-  //! This page TODO
+  //! This page contains links to the documentation related to the
+  //! implementation of the Knuth-Bendix algorithm in ``libsemigroups``.
 
-  // TODO(0) update the description
+  //! \ingroup knuth_bendix_group
+  //!
+  //! \brief Class containing an implementation of the Knuth-Bendix Algorithm.
+  //!
   //! Defined in \c knuth-bendix.hpp.
   //!
   //! On this page we describe the functionality relating to the Knuth-Bendix
-  //! algorithm for semigroups and monoids that is available in
-  //! \c libsemigroups. This page contains details of the member functions
-  //! of the class KnuthBendix.
+  //! algorithm for semigroups and monoids in \c libsemigroups. This page
+  //! contains details of the member functions of the class KnuthBendix.
   //!
-  //! This class is used to represent a
-  //! [string rewriting system](https://w.wiki/9Re)
-  //! defining a finitely presented monoid or semigroup.
+  //! This class is used to represent a [string rewriting
+  //! system](https://w.wiki/9Re) defining a 1- or 2-sided congruence on a
+  //! finitely presented monoid or semigroup.
   //!
   //! \par Example
   //! \code
@@ -115,15 +116,6 @@ namespace libsemigroups {
     friend class ::libsemigroups::detail::KBE<KnuthBendix>;
 
     ////////////////////////////////////////////////////////////////////////
-    // KnuthBendix - typedefs/aliases - private
-    ////////////////////////////////////////////////////////////////////////
-
-    // using external_string_type = std::string;
-    // using internal_string_type = std::string;
-    // using external_char_type   = char;
-    // using internal_char_type   = char;
-
-    ////////////////////////////////////////////////////////////////////////
     // KnuthBendix - nested subclasses - private
     ////////////////////////////////////////////////////////////////////////
 
@@ -146,18 +138,43 @@ namespace libsemigroups {
     // Interface requirements - native-types
     ////////////////////////////////////////////////////////////////////////
 
-    using native_letter_type       = char;
-    using native_word_type         = std::string;
+    //! Type of the rules in the system.
+    using rule_type = std::pair<std::string, std::string>;
+
+    //! \brief Type of the letters in the relations of the presentation stored
+    //! in a \ref KnuthBendix instance.
+    //!
+    //! A \ref KnuthBendix instance can be constructed or initialised from a
+    //! presentation of arbitrary types of letters and words. Internally the
+    //! letters are converted to \ref native_letter_type.
+    using native_letter_type = char;
+
+    //! \brief Type of the words in the relations of the presentation stored in
+    //! a \ref KnuthBendix instance.
+    //!
+    //! A \ref KnuthBendix instance can be constructed or initialised from a
+    //! presentation with arbitrary types of letters and words. Internally the
+    //! words are converted to \ref native_word_type.
+    using native_word_type = std::string;
+
+    //! \brief Type of the presentation stored in a \ref KnuthBendix instance.
+    //!
+    //! A \ref KnuthBendix instance can be constructed or initialised from a
+    //! presentation of arbitrary types of letters and words. Internally the
+    //! presentation is stored as a \ref native_presentation_type.
     using native_presentation_type = Presentation<std::string>;
 
     //////////////////////////////////////////////////////////////////////////
     // KnuthBendix - types - public
     //////////////////////////////////////////////////////////////////////////
 
-    //! This type contains various enums for specifying certain options to a
-    //! KnuthBendix instance.
+    //! \brief Struct containing various options that can be used to control the
+    //! behaviour of Knuth-Bendix.
+    //!
+    //! This struct containing various options that can be used to control the
+    //! behaviour of Knuth-Bendix.
     struct options {
-      //! Values for specifying how to measure the length of an overlap.
+      //! \brief Values for specifying how to measure the length of an overlap.
       //!
       //! The values in this enum determine how a KnuthBendix instance
       //! measures the length \f$d(AB, BC)\f$ of the overlap of two words
@@ -184,7 +201,7 @@ namespace libsemigroups {
       Settings& operator=(Settings const&) noexcept = default;
       Settings& operator=(Settings&&) noexcept      = default;
 
-      size_t                    batch_size;
+      size_t                    max_pending_rules;
       size_t                    check_confluence_interval;
       size_t                    max_overlap;
       size_t                    max_rules;
@@ -232,21 +249,15 @@ namespace libsemigroups {
     //! Constructs a KnuthBendix instance with no rules, and the short-lex
     //! reduction ordering.
     //!
-    //! \param knd The kind of congruence to be used. Either \c left, \c right
-    //! or \c twosided.
-    //!
-    //! \complexity
-    //! Constant.
+    //! This function default constructs an uninitialised \ref
+    //! KnuthBendix instance.
     explicit KnuthBendix();
 
     //! \brief Remove the presentation and rewriter data
     //!
     //! This function clears the rewriter, presentation, settings and stats from
     //! the KnuthBendix object, putting it back into the state it would be in if
-    //! it was newly constructed.
-    //!
-    //! \param knd The kind of congruence to be used. Either \c left, \c right
-    //! or \c twosided.
+    //! it was newly default constructed.
     //!
     //! \returns
     //! A reference to \c this.
@@ -256,51 +267,113 @@ namespace libsemigroups {
     //!
     //! Copy constructor.
     //!
-    //! \param copy the KnuthBendix instance to copy.
+    //! \param that the KnuthBendix instance to copy.
     //!
     //! \complexity
     //! \f$O(n)\f$ where \f$n\f$ is the sum of the lengths of the words in
-    //! rules of \p copy.
+    //! rules of \p that.
     KnuthBendix(KnuthBendix const& that);
 
-    // TODO(0) doc
+    //! \brief Move constructor.
+    //!
+    //! Move constructor.
     KnuthBendix(KnuthBendix&&);
 
-    // TODO(0) doc
+    //! \brief Copy assignment operator.
+    //!
+    //! Copy assignment operator.
     KnuthBendix& operator=(KnuthBendix const&);
 
-    // TODO(0) doc
+    //! \brief Move assignment operator.
+    //!
+    //! Move assignment operator.
     KnuthBendix& operator=(KnuthBendix&&);
 
     ~KnuthBendix();
 
-    // TODO(0) doc
+    //! \brief Construct from \ref congruence_kind and Presentation.
+    //!
+    //! This function constructs a \ref KnuthBendix instance representing a
+    //! congruence of kind \p knd over the semigroup or monoid defined by the
+    //! presentation \p p.
+    //!
+    //! \param knd the kind (onesided or twosided) of the congruence.
+    //! \param p the presentation.
+    //!
+    //! \throws LibsemigroupsException if \p p is not valid.
     KnuthBendix(congruence_kind knd, Presentation<std::string> const& p);
 
-    // TODO(0) doc
+    //! \brief Re-initialize a \ref KnuthBendix instance.
+    //!
+    //! This function puts a \ref KnuthBendix instance back into the state that
+    //! it would have been in if it had just been newly constructed from \p knd
+    //! and \p p.
+    //!
+    //! \param knd the kind (onesided or twosided) of the congruence.
+    //! \param p the presentation.
+    //!
+    //! \returns A reference to `*this`.
+    //!
+    //! \throws LibsemigroupsException if \p p is not valid.
     KnuthBendix& init(congruence_kind knd, Presentation<std::string> const& p);
 
-    // TODO(0) doc
+    //! \copydoc KnuthBendix(congruence_kind, Presentation<std::string> const&)
     KnuthBendix(congruence_kind knd, Presentation<std::string>&& p);
 
-    // TODO(0) doc
+    //! \copydoc init(congruence_kind, Presentation<std::string> const&)
     KnuthBendix& init(congruence_kind knd, Presentation<std::string>&& p);
 
-    // TODO(0) doc
+    //! \brief Construct from \ref congruence_kind and Presentation.
+    //!
+    //! This function constructs a \ref KnuthBendix instance representing a
+    //! congruence of kind \p knd over the semigroup or monoid defined by the
+    //! presentation \p p. The type of the words in \p p can be anything, but
+    //! will be converted in to \ref native_word_type. This means that if the
+    //! input presentation uses \ref word_type, for example, as the word type,
+    //! then this presentation is converted into a \ref
+    //! native_presentation_type. This converted presentation can be recovered
+    //! using \ref presentation.
+    //!
+    //! \tparam Word the type of the words in the presentation \p p.
+    //! \param knd the kind (onesided or twosided) of the congruence.
+    //! \param p the presentation.
+    //!
+    //! \throws LibsemigroupsException if \p p is not valid.
     // No rvalue ref version because we can't use it.
     template <typename Word>
     explicit KnuthBendix(congruence_kind knd, Presentation<Word> const& p)
+        // to_presentation throws in the next line if p isn't valid.
+        // The next line looks weird but we are usually taking in letter_type's
+        // and returning chars
         : KnuthBendix(knd, to_presentation<std::string>(p, [](auto const& x) {
                         return x;
                       })) {}
 
-    // TODO(0) doc
+    //! \brief Re-initialize a \ref KnuthBendix
+    //! instance.
+    //!
+    //! This function re-initializes a  \ref KnuthBendix instance as if it had
+    //! been newly constructed from \p knd and \p p.
+    //!
+    //! \tparam Word the type of the words in the presentation \p p.
+    //! \param knd the kind (onesided or twosided) of the congruence.
+    //! \param p the presentation.
+    //!
+    //! \returns A reference to `*this`.
+    //!
+    //! \throws LibsemigroupsException if \p p is not valid.
     template <typename Word>
     KnuthBendix& init(congruence_kind knd, Presentation<Word> const& p) {
+      // to_presentation throws in the next line if p isn't valid.
+      // The next line looks weird but we are usually taking in letter_type's
+      // and returning chars
       init(knd,
            to_presentation<std::string>(p, [](auto const& x) { return x; }));
       return *this;
     }
+
+    // TODO(1) construct/init from kind and KnuthBendix const&, for consistency
+    // with ToddCoxeter
 
    private:
     void init_from_generating_pairs();
@@ -311,6 +384,20 @@ namespace libsemigroups {
     //////////////////////////////////////////////////////////////////////////
 
    public:
+    //! \brief Add generating pair via iterators.
+    //!
+    //! This function adds a generating pair to the congruence represented by a
+    //! \ref KnuthBendix instance.
+    //!
+    //! \cong_intf_params_contains
+    //!
+    //! \returns A reference to `*this`.
+    //!
+    //! \cong_intf_warn_assume_letters_in_bounds
+    //!
+    //! \warning It is assumed that \ref started returns \c false. Adding
+    //! generating pairs after \ref started is not permitted (but also not
+    //! checked by this function).
     // NOTE THAT this is not the same as in ToddCoxeter, because the generating
     // pairs contained in CongruenceInterface are word_types, and so we don't
     // require any conversion here (since chars can be converted implicitly to
@@ -327,6 +414,18 @@ namespace libsemigroups {
           first1, last1, first2, last2);
     }
 
+    //! \brief Add generating pair via iterators.
+    //!
+    //! This function adds a generating pair to the congruence represented by a
+    //! \ref KnuthBendix instance.
+    //!
+    //! \cong_intf_params_contains
+    //!
+    //! \returns A reference to `*this`.
+    //!
+    //! \cong_intf_throws_if_letters_out_of_bounds
+    //!
+    //! \cong_intf_throws_if_started
     template <typename Iterator1,
               typename Iterator2,
               typename Iterator3,
@@ -343,19 +442,44 @@ namespace libsemigroups {
     // KnuthBendix - interface requirements - number_of_classes
     ////////////////////////////////////////////////////////////////////////
 
+    //! \brief Compute the number of classes in the congruence.
+    //!
+    //! This function computes the number of classes in the congruence
+    //! represented by a \ref KnuthBendix instance by
+    //! running the congruence enumeration until it terminates.
+    //!
+    //! \returns The number of congruences classes of a \ref KnuthBendix
+    //! instance.
+    //!
+    //! \cong_intf_warn_undecidable{Knuth-Bendix}
     //!
     //! \note If \c this has been run until finished, then this function can
-    //! determine the size of the semigroup represented by \c this even if it is
-    //! infinite. Moreover, the complexity of this function is at worst
-    //! \f$O(mn)\f$ where \f$m\f$ is the number of letters in the alphabet, and
-    //! \f$n\f$ is the number of nodes in the \ref gilman_graph.
+    //! determine the number of classes of the congruence represented by \c this
+    //! even if it is infinite. Moreover, the complexity of this function is at
+    //! worst \f$O(mn)\f$ where \f$m\f$ is the number of letters in the
+    //! alphabet, and \f$n\f$ is the number of nodes in the \ref gilman_graph.
     [[nodiscard]] uint64_t number_of_classes();
 
     ////////////////////////////////////////////////////////////////////////
     // KnuthBendix - interface requirements - contains
     ////////////////////////////////////////////////////////////////////////
 
-    // TODO(0) should be const, isn't because rewrite_inplace isn't
+    //! \brief Check containment of a pair of words via iterators.
+    //!
+    //! This function checks whether or not the words represented by the ranges
+    //! \p first1 to \p last1 and \p first2 to \p last2 are already known to be
+    //! contained in the congruence represented by a \ref KnuthBendix instance.
+    //! This function performs no enumeration, so it is possible for the words
+    //! to be contained in the congruence, but that this is not currently known.
+    //!
+    //! \cong_intf_params_contains
+    //!
+    //! \returns
+    //! * tril::TRUE if the words are known to belong to the congruence;
+    //! * tril::FALSE if the words are known to not belong to the congruence;
+    //! * tril::unknown otherwise.
+    //!
+    //! \cong_intf_warn_assume_letters_in_bounds
     template <typename Iterator1,
               typename Iterator2,
               typename Iterator3,
@@ -363,23 +487,24 @@ namespace libsemigroups {
     [[nodiscard]] tril currently_contains_no_checks(Iterator1 first1,
                                                     Iterator2 last1,
                                                     Iterator3 first2,
-                                                    Iterator4 last2) const {
-      if (std::equal(first1, last1, first2, last2)) {
-        return tril::TRUE;
-      }
-      // TODO(1) remove allocations here
-      std::string w1, w2;
-      reduce_no_run_no_checks(std::back_inserter(w1), first1, last1);
-      reduce_no_run_no_checks(std::back_inserter(w2), first2, last2);
-      if (w1 == w2) {
-        return tril::TRUE;
-      } else if (finished()) {
-        return tril::FALSE;
-      }
-      return tril::unknown;
-    }
+                                                    Iterator4 last2) const;
 
-    // TODO(0) should be const, isn't because rewrite_inplace isn't
+    //! \brief Check containment of a pair of words via iterators.
+    //!
+    //! This function checks whether or not the words represented by the ranges
+    //! \p first1 to \p last1 and \p first2 to \p last2 are already known to be
+    //! contained in the congruence represented by a \ref KnuthBendix instance.
+    //! This function performs no enumeration, so it is possible for the words
+    //! to be contained in the congruence, but that this is not currently known.
+    //!
+    //! \cong_intf_params_contains
+    //!
+    //! \returns
+    //! * tril::TRUE if the words are known to belong to the congruence;
+    //! * tril::FALSE if the words are known to not belong to the congruence;
+    //! * tril::unknown otherwise.
+    //!
+    //! \cong_intf_throws_if_letters_out_of_bounds
     template <typename Iterator1,
               typename Iterator2,
               typename Iterator3,
@@ -393,6 +518,20 @@ namespace libsemigroups {
       return currently_contains_no_checks(first1, last1, first2, last2);
     }
 
+    //! \brief Check containment of a pair of words via iterators.
+    //!
+    //! This function checks whether or not the words represented by the ranges
+    //! \p first1 to \p last1 and \p first2 to \p last2 are contained in the
+    //! congruence represented by a \ref KnuthBendix instance. This function
+    //! triggers a full enumeration, which may never terminate.
+    //!
+    //! \cong_intf_params_contains
+    //!
+    //! \returns Whether or not the pair belongs to the congruence.
+    //!
+    //! \cong_intf_warn_undecidable{Knuth-Bendix}
+    //!
+    //! \cong_intf_warn_assume_letters_in_bounds
     template <typename Iterator1,
               typename Iterator2,
               typename Iterator3,
@@ -406,6 +545,21 @@ namespace libsemigroups {
              == tril::TRUE;
     }
 
+    //! \brief Check containment of a pair of words via iterators.
+    //!
+    //! This function checks whether or not the words represented by the ranges
+    //! \p first1 to \p last1 and \p first2 to \p last2 are contained in the
+    //! congruence represented by a \ref KnuthBendix
+    //! instance. This function triggers a full enumeration, which may never
+    //! terminate.
+    //!
+    //! \cong_intf_params_contains
+    //!
+    //! \returns Whether or not the pair belongs to the congruence.
+    //!
+    //! \cong_intf_warn_undecidable{Knuth-Bendix}
+    //!
+    //! \cong_intf_throws_if_letters_out_of_bounds
     template <typename Iterator1,
               typename Iterator2,
               typename Iterator3,
@@ -422,27 +576,47 @@ namespace libsemigroups {
     // KnuthBendix - interface requirements - reduce
     ////////////////////////////////////////////////////////////////////////
 
-    // TODO(0) should be const
+    //! \brief Reduce a word with no run and no checks.
+    //!
+    //! This function writes a reduced word equivalent to the input word
+    //! described by the iterator \p first and \p last to the output iterator \p
+    //! d_first. This function triggers no enumeration. The word output by this
+    //! function is equivalent to the input word in the congruence defined by a
+    //! \ref KnuthBendix instance. If the \ref KnuthBendix instance is \ref
+    //! finished, then the output word is a normal form for the input word. If
+    //! the \ref KnuthBendix instance is not \ref finished, then it might be
+    //! that equivalent input words produce different output words.
+    //!
+    //! \cong_intf_params_reduce
+    //!
+    //! \returns An \p OutputIterator pointing one beyond the last letter
+    //! inserted into \p d_first.
+    //!
+    //! \cong_intf_warn_assume_letters_in_bounds
     template <typename OutputIterator,
               typename InputIterator1,
               typename InputIterator2>
     OutputIterator reduce_no_run_no_checks(OutputIterator d_first,
                                            InputIterator1 first,
-                                           InputIterator2 last) const {
-      // TODO(1) improve this to not require _tmp_element1
-      if constexpr (std::is_same_v<InputIterator1, char const*>) {
-        static_assert(std::is_same_v<InputIterator2, char const*>);
-        _tmp_element1.assign(first, std::distance(first, last));
-      } else {
-        _tmp_element1.assign(first, last);
-      }
-      const_cast<KnuthBendix<Rewriter, ReductionOrder>&>(*this).rewrite_inplace(
-          _tmp_element1);
-      return std::copy(
-          std::begin(_tmp_element1), std::end(_tmp_element1), d_first);
-    }
+                                           InputIterator2 last) const;
 
-    // TODO(0) should be const
+    //! \brief Reduce a word with no enumeration.
+    //!
+    //! This function writes a reduced word equivalent to the input word
+    //! described by the iterator \p first and \p last to the output iterator \p
+    //! d_first. This function triggers no enumeration. The word output by this
+    //! function is equivalent to the input word in the congruence defined by a
+    //! \ref KnuthBendix instance. If the \ref KnuthBendix instance is \ref
+    //! finished, then the output word is a normal form for the input word. If
+    //! the \ref KnuthBendix instance is not \ref finished, then it might be
+    //! that equivalent input words produce different output words.
+    //!
+    //! \cong_intf_params_reduce
+    //!
+    //! \returns An \p OutputIterator pointing one beyond the last letter
+    //! inserted into \p d_first.
+    //!
+    //! \cong_intf_throws_if_letters_out_of_bounds
     template <typename OutputIterator,
               typename InputIterator1,
               typename InputIterator2>
@@ -453,6 +627,24 @@ namespace libsemigroups {
       return reduce_no_run_no_checks(d_first, first, last);
     }
 
+    //! \brief Reduce a word with no checks.
+    //!
+    //! This function triggers a full enumeration and then writes a reduced
+    //! word equivalent to the input word described by the iterator \p first and
+    //! \p last to the output iterator \p d_first. The word output by this
+    //! function is equivalent to the input word in the congruence defined by a
+    //! \ref KnuthBendix instance. In other words, the output word is a normal
+    //! form for the input word or equivalently a canconical representative of
+    //! its congruence class.
+    //!
+    //! \cong_intf_params_reduce
+    //!
+    //! \returns An \p OutputIterator pointing one beyond the last letter
+    //! inserted into \p d_first.
+    //!
+    //! \cong_intf_warn_assume_letters_in_bounds
+    //!
+    //! \cong_intf_warn_undecidable{Knuth-Bendix}
     template <typename OutputIterator,
               typename InputIterator1,
               typename InputIterator2>
@@ -463,6 +655,24 @@ namespace libsemigroups {
       return reduce_no_run_no_checks(d_first, first, last);
     }
 
+    //! \brief Reduce a word.
+    //!
+    //! This function triggers a full enumeration and then writes a reduced
+    //! word equivalent to the input word described by the iterator \p first and
+    //! \p last to the output iterator \p d_first. The word output by this
+    //! function is equivalent to the input word in the congruence defined by a
+    //! \ref KnuthBendix instance. In other words, the output word is a normal
+    //! form for the input word or equivalently a canconical representative of
+    //! its congruence class.
+    //!
+    //! \cong_intf_params_reduce
+    //!
+    //! \returns An \p OutputIterator pointing one beyond the last letter
+    //! inserted into \p d_first.
+    //!
+    //! \cong_intf_throws_if_letters_out_of_bounds
+    //!
+    //! \cong_intf_warn_undecidable{Knuth-Bendix}
     template <typename OutputIterator,
               typename InputIterator1,
               typename InputIterator2>
@@ -496,14 +706,12 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! Constant.
-    //!
-    //! \sa \ref run and \ref process_pending_rules.
-    KnuthBendix& batch_size(size_t val) {
-      _settings.batch_size = val;
+    KnuthBendix& max_pending_rules(size_t val) {
+      _settings.max_pending_rules = val;
       return *this;
     }
 
-    //! \brief Return the number of rules to accumulate before processing.
+    //! \brief Get the current number of rules to accumulate before processing.
     //!
     //! This function can be used to return the number of pending rules that
     //! must accumulate before they are reduced, processed, and added to the
@@ -519,24 +727,20 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! Constant.
-    //!
-    //! \sa \ref run and \ref process_pending_rules.
-    [[nodiscard]] size_t batch_size() const noexcept {
-      return _settings.batch_size;
+    [[nodiscard]] size_t max_pending_rules() const noexcept {
+      return _settings.max_pending_rules;
     }
 
     //! \brief Set the interval at which confluence is checked.
     //!
-    //! The function \ref run periodically checks if
-    //! the system is already confluent. This function can be used to
-    //! set how frequently this happens, it is the number of new overlaps
-    //! that should be considered before checking confluence. Setting this
-    //! value too low can adversely affect the performance of
-    //! \ref run.
+    //! The function \ref run periodically checks if the system is already
+    //! confluent. This function can be used to set how frequently this happens,
+    //! it is the number of new overlaps that should be considered before
+    //! checking confluence. Setting this value too low can adversely affect the
+    //! performance of \ref run.
     //!
-    //! The default value is \c 4096, and should be set to
-    //! \ref LIMIT_MAX if \ref run should never
-    //! check if the system is already confluent.
+    //! The default value is \c 4096, and should be set to \ref LIMIT_MAX if
+    //! \ref run should never check if the system is already confluent.
     //!
     //! \param val the new value of the interval.
     //!
@@ -552,7 +756,7 @@ namespace libsemigroups {
       return *this;
     }
 
-    //! \brief Return the interval at which confluence is checked.
+    //! \brief Get the current interval at which confluence is checked.
     //!
     //! The function \ref run periodically checks if
     //! the system is already confluent. This function can be used to
@@ -597,7 +801,7 @@ namespace libsemigroups {
       return *this;
     }
 
-    //! \brief Return the maximum length of overlaps to be considered.
+    //! \brief Get the current maximum length of overlaps to be considered.
     //!
     //! This function returns the maximum length of the overlap of two left hand
     //! sides of rules that should be considered in \ref run.
@@ -619,11 +823,10 @@ namespace libsemigroups {
 
     //! \brief Set the maximum number of rules.
     //!
-    //! This member function sets the (approximate) maximum number of rules
-    //! that the system should contain. If this is number is exceeded in
-    //! calls to \ref run or
-    //! knuth_bendix_by_overlap_length, then they
-    //! will terminate and the system may not be confluent.
+    //! This function sets the (approximate) maximum number of rules
+    //! that the system should contain. If this is number is exceeded in calls
+    //! to \ref run or knuth_bendix_by_overlap_length, then they will terminate
+    //! and the system may not be confluent.
     //!
     //! By default this value is \ref POSITIVE_INFINITY.
     //!
@@ -641,13 +844,12 @@ namespace libsemigroups {
       return *this;
     }
 
-    //! \brief Return the maximum number of rules.
+    //! \brief Get the current maximum number of rules.
     //!
-    //! This member function returns the (approximate) maximum number of rules
+    //! This function returns the (approximate) maximum number of rules
     //! that the system should contain. If this is number is exceeded in
     //! calls to \ref run or \ref knuth_bendix::by_overlap_length, then they
     //! will terminate and the system may not be confluent.
-    //!
     //!
     //! \returns
     //! The maximum number of rules the system should contain, a value of type
@@ -680,7 +882,7 @@ namespace libsemigroups {
     //! \sa options::overlap.
     KnuthBendix& overlap_policy(typename options::overlap val);
 
-    //! \brief Return the overlap policy.
+    //! \brief Get the current overlap policy.
     //!
     //! This function returns the way that the length of an overlap of two words
     //! in the system is measured.
@@ -703,37 +905,34 @@ namespace libsemigroups {
     // KnuthBendix - member functions for rules and rewriting - public
     //////////////////////////////////////////////////////////////////////////
 
-    //! \brief Check if every letter of a word is in the presentation's
-    //! alphabet.
+    //! \brief Throws if any letter in a range is out of bounds.
     //!
-    //! Check if every letter of a word is in the presentation's
-    //! alphabet.
+    //! This function throws a LibsemigroupsException if any value pointed
+    //! at by an iterator in the range \p first to \p last is out of bounds
+    //! (i.e. does not belong to the alphabet of the \ref presentation used
+    //! to construct the \ref Kambites instance).
     //!
-    //! \throws LibsemigroupsException if there is a letter of \p w not in the
-    //! presentations alphabet.
+    //! \tparam Iterator1 the type of first argument \p first.
+    //! \tparam Iterator2 the type of second argument \p last.
     //!
-    //! \param w word to validate.
+    //! \param first iterator pointing at the first letter of the word.
+    //! \param last iterator pointing one beyond the last letter of the
+    //! word.
     //!
-    //! \sa Presentation::validate_word.
-    // TODO(0) remove
-    void validate_word(word_type const& w) const {
-      ToString    to_string(presentation().alphabet());
-      std::string s = to_string(w);
-      presentation().validate_word(s.cbegin(), s.cend());
-    }
-
+    //! \throw LibsemigroupsException if any letter in the range from \p
+    //! first to \p last is out of bounds.
     template <typename Iterator1, typename Iterator2>
     void throw_if_letter_out_of_bounds(Iterator1 first, Iterator2 last) const {
       presentation().validate_word(first, last);
     }
 
-    //! \brief Return the presentation defined by the rewriting system
+    //! \brief Return the presentation defined by the rewriting system.
     //!
-    //! Return the presentation defined by the rewriting system
+    //! This function returns the presentation defined by the rewriting system.
     //!
     //! \returns
     //! A const reference to the presentation, a value of type
-    //! <tt>Presentation<std::string> const&</tt>.
+    //! ``Presentation<std::string> const&``.
     //!
     //! \exceptions
     //! \noexcept
@@ -745,58 +944,53 @@ namespace libsemigroups {
       return _presentation;
     }
 
-    // TODO(0) add note about empty active rules after init and non-const-ness
-    //! \brief Return the current number of active
-    //! rules in the KnuthBendix instance.
+    //! \brief Return the current number of active rules in the KnuthBendix
+    //! instance.
     //!
-    //! Return the current number of active rules in
-    //! the KnuthBendix instance.
+    //! This function returns the current number of active rules in the
+    //! KnuthBendix instance.
     //!
     //! \returns
-    //! The current number of active rules, a value
-    //! of type \c size_t.
+    //! The current number of active rules, a value of type \c size_t.
     //!
     //! \exceptions
     //! \noexcept
     //!
     //! \complexity
     //! Constant.
+    // TODO(1) this should be const
+    // TODO(1) add note about empty active rules after init and non-const-ness
+    // (this only applies if this becomes const)
     [[nodiscard]] size_t number_of_active_rules() noexcept;
 
-    //! \brief Return the current number of inactive
-    //! rules in the KnuthBendix instance.
+    //! \brief Return the current number of inactive rules in the KnuthBendix
+    //! instance.
     //!
-    //! Return the current number of inactive rules
-    //! in the KnuthBendix instance.
+    //! This function returns the current number of inactive rules in the
+    //! KnuthBendix instance.
     //!
     //! \returns
-    //! The current number of inactive rules, a
-    //! value of type \c size_t.
+    //! The current number of inactive rules, a value of type \c size_t.
     //!
     //! \exceptions
     //! \noexcept
     //!
     //! \complexity
     //! Constant.
-    //!
     [[nodiscard]] size_t number_of_inactive_rules() const noexcept {
       return _rewriter.number_of_inactive_rules();
     }
 
-    //! \brief Return the number of rules that
-    //! KnuthBendix has created
+    //! \brief Return the number of rules that KnuthBendix has created
     //!
-    //! Return the total number of Rule instances
-    //! that have been created whilst whilst the
-    //! Knuth-Bendix algorithm has been running.
-    //! Note that this is not the sum of \ref
-    //! number_of_active_rules and \ref
-    //! number_of_inactive_rules, due to the
-    //! re-initialisation of rules where possible.
+    //! This function returns the total number of Rule instances that have been
+    //! created whilst whilst the Knuth-Bendix algorithm has been running. Note
+    //! that this is not the sum of \ref number_of_active_rules and \ref
+    //! number_of_inactive_rules, due to the re-initialisation of rules where
+    //! possible.
     //!
     //! \returns
-    //! The total number of rules, a value of type
-    //! \c size_t.
+    //! The total number of rules, a value of type \c size_t.
     //!
     //! \exceptions
     //! \noexcept
@@ -807,81 +1001,27 @@ namespace libsemigroups {
       return _rewriter.stats().total_rules;
     }
 
-    // TODO(0) What do we do about doc-ing this?
-    //! Type of the rules in the system.
-    using rule_type = std::pair<std::string, std::string>;
-
-    // TODO(0) update the doc, now returns a Range
-    // TODO(0) add note about empty active rules after
-    // init
-    //! \brief Return a copy of the active rules.
+    //! \brief Return a range object containing the active rules.
     //!
-    //! This member function returns a vector consisting of the pairs of
-    //! strings which represent the rules of the KnuthBendix instance. The \c
+    //! This function returns a range object containing the pairs of
+    //! strings which represent the rules of a KnuthBendix instance. The \c
     //! first entry in every such pair is greater than the \c second according
-    //! to the reduction ordering of the KnuthBendix instance. The rules are
-    //! sorted according to the reduction ordering used by the rewriting system,
-    //! on the first entry.
+    //! to the reduction ordering of the KnuthBendix instance.
     //!
     //! \returns
-    //! A copy of the currently active rules, a
-    //! value of type
-    //! \c std::vector<rule_type>.
-    //!
-    //! \complexity
-    //! \f$O(n)\f$ where \f$n\f$ is the sum of the
-    //! lengths of the words in rules of \p copy.
-    [[nodiscard]] auto active_rules() {
-      using rx::iterator_range;
-      using rx::transform;
-      if (_rewriter.number_of_active_rules() == 0
-          && _rewriter.number_of_pending_rules() != 0) {
-        _rewriter.process_pending_rules();
-      }
-      return iterator_range(_rewriter.begin(), _rewriter.end())
-             | transform([this](auto const& rule) {
-                 // TODO(1) remove allocation
-                 detail::internal_string_type lhs
-                     = detail::internal_string_type(*rule->lhs());
-                 detail::internal_string_type rhs
-                     = detail::internal_string_type(*rule->rhs());
-                 internal_to_external_string(lhs);
-                 internal_to_external_string(rhs);
-                 return std::make_pair(lhs, rhs);
-               });
-    }
+    //! A range object containing the current active rules.
+    // TODO(1) should be const
+    // TODO(1) add note about empty active rules after, or better discuss that
+    // there are three kinds of rules in the system: active, inactive, and
+    // pending.
+    // TODO(1) allow type of words output to be specified
+    [[nodiscard]] auto active_rules();
 
    private:
-    // TODO(0) recycle this doc or delete
-    // TODO add note about empty active rules after
-    // init and non-const-ness
-    //! \brief Rewrite a word in-place.
-    //!
-    //! The word \p w is rewritten in-place
-    //! according to the current active rules in the
-    //! KnuthBendix instance.
-    //!
-    //! \param w the word to rewrite.
-    //!
-    //! \returns
-    //! The argument \p w after it has been
-    //! rewritten.
-    // TODO update doc
+    // TODO(1) remove this ...
     void rewrite_inplace(std::string& w);
 
-    // TODO(0) recycle this doc or delete
-    // TODO add note about empty active rules after
-    // init and non-const-ness
-    //! \brief Rewrite a word.
-    //!
-    //! Rewrites a copy of the word \p w rewritten according to the current
-    //! rules in the KnuthBendix instance.
-    //!
-    //! \param w the word to rewrite.
-    //!
-    //! \returns
-    //! A copy of the argument \p w after it has
-    //! been rewritten.
+    // TODO(1) remove this ...
     [[nodiscard]] std::string rewrite(std::string w) {
       rewrite_inplace(w);
       return w;
@@ -910,11 +1050,9 @@ namespace libsemigroups {
     //! instance is known, and \c false if it is not.
     [[nodiscard]] bool confluent_known() const noexcept;
 
-    // REVIEW None of these \sa's exist anymore. Should it be \ref
-    // number_of_classes and \ref normal_forms?
     //! \brief Return the Gilman \ref WordGraph.
     //!
-    //! Return the Gilman WordGraph of the system.
+    //! This function returns the Gilman WordGraph of the system.
     //!
     //! The Gilman WordGraph is a digraph where the labels of the paths from
     //! the initial node (corresponding to the empty word) correspond to the
@@ -931,19 +1069,17 @@ namespace libsemigroups {
     //! \warning This will terminate when the KnuthBendix instance is reduced
     //! and confluent, which might be never.
     //!
-    //! \sa \ref number_of_normal_forms, \ref cbegin_normal_forms, and \ref
-    //! cend_normal_forms.
+    //! \sa \ref number_of_classes, and \ref knuth_bendix::normal_forms.
     WordGraph<uint32_t> const& gilman_graph();
 
-    //! \brief Return the node labels of the Gilman
-    //! \ref WordGraph
+    //! \brief Return the node labels of the Gilman \ref WordGraph
     //!
-    //! Return the node labels of the Gilman \ref WordGraph, corresponding to
-    //! the unique prefixes of the left-hand sides of the rules of the rewriting
-    //! system.
+    //! This function returns the node labels of the Gilman \ref WordGraph,
+    //! corresponding to the unique prefixes of the left-hand sides of the rules
+    //! of the rewriting system.
     //!
-    //! \return The node labels of the Gilman \ref WordGraph, a value of type
-    //! \c std::vector<std::string>.
+    //! \return The node labels of the Gilman \ref WordGraph, a const reference
+    //! to a ``std::vector<std::string>``.
     //!
     //! \sa \ref gilman_graph.
     [[nodiscard]] std::vector<std::string> const& gilman_graph_node_labels() {
@@ -951,55 +1087,16 @@ namespace libsemigroups {
       return _gilman_graph_node_labels;
     }
 
-    //////////////////////////////////////////////////////////////////////////
-    // KnuthBendix - attributes - public
-    //////////////////////////////////////////////////////////////////////////
-    // TODO(0) recycle or delete
-    //! \brief Check if two inputs are equivalent with respect to the system
-    //!
-    //! By first testing \c string equivalence, then by rewriting the inputs,
-    //! then by running the Knuth-Bendix algorithm and rewriting the inputs with
-    //! respect to the updated system again, check if \p u and \p v are
-    //! equivalent.
-    //!
-    //! \param u, v the words to test the
-    //! equivalence of.
-    //!
-    //! \returns \c true if \p u is equivalent to \p v, and \c false otherwise.
-    //!
-    //! \warning If the inputs don't rewrite to equivalent words with the
-    //! initial rewriting rules, then the Knuth-Bendix algorithm is run. This
-    //! terminates when the rewriting system is confluent, which may be never.
-    //!
-    //! \sa run.
-
-    // TODO(0) recycle or delete
-    //! \brief Check containment
-    //!
-    //! Check if the pair of words \p u and \p v is
-    //! contained in within the congruence
-    //! corresponding to rewriting system.
-    //!
-    //! \param u, v the words to check containment
-    //! of.
-    //!
-    //! \returns \c true if the the pair consisting
-    //! of \p u and \p v is contained within the
-    //! congruence, and \c false otherwise.
-    //!
-    //! \sa \ref equal_to.
-
-    // No in-place version just use rewrite instead,
-    // this only exists so that run is called.
-
    private:
+    //////////////////////////////////////////////////////////////////////////
+    // KnuthBendix - private member functions
+    //////////////////////////////////////////////////////////////////////////
+
     void report_presentation(Presentation<std::string> const&) const;
     void report_before_run();
     void report_progress_from_thread(std::atomic_bool const&);
     void report_after_run();
 
-    // TODO(0) remove this use the version in CongruenceInterface
-    void throw_if_started() const;
     void stats_check_point();
 
     [[nodiscard]] static detail::internal_char_type
@@ -1032,99 +1129,54 @@ namespace libsemigroups {
       return _rewriter.max_active_word_length();
     }
 
+    void               run_real(std::atomic_bool&);
+    [[nodiscard]] bool stop_running() const;
+
     //////////////////////////////////////////////////////////////////////////
     // Runner - pure virtual member functions - private
     //////////////////////////////////////////////////////////////////////////
 
-    void               run_impl() override;
-    void               run_real(std::atomic_bool&);
-    bool               finished_impl() const override;
-    [[nodiscard]] bool stop_running() const;
-  };
+    void run_impl() override;
+    bool finished_impl() const override;
+  };  // class KnuthBendix
 
-  //! This friend function allows a KnuthBendix object to be left shifted
-  //! into a std::ostream, such as std::cout. The currently active rules
-  //! of the system are represented in the output.
-  template <typename Rewriter, typename ReductionOrder>
-  std::ostream& operator<<(std::ostream&,
-                           KnuthBendix<Rewriter, ReductionOrder> const&);
+// Special include for the KnuthBendixNormalFormRange, just to avoid cluttering
+// this file.
+#include "detail/knuth-bendix-nf.hpp"
 
-  namespace detail {
-    // TODO put in separate file
-    template <typename Word, typename Rewriter, typename ReductionOrder>
-    class KnuthBendixNormalFormRange : public Paths<uint32_t> {
-      using Paths_ = Paths<uint32_t>;
-
-      mutable Word                           _current;
-      KnuthBendix<Rewriter, ReductionOrder>* _kb;
-
-     public:
-      using size_type   = typename Paths_::size_type;
-      using output_type = Word const&;
-
-      explicit KnuthBendixNormalFormRange(
-          KnuthBendix<Rewriter, ReductionOrder>& kb)
-          : Paths(kb.gilman_graph()), _current(), _kb(&kb) {
-        // It's possible that the gilman graph is empty, so the call to
-        // source_no_checks(0) is technically invalid, but nothing goes wrong,
-        // so we just go with it. This is slightly smelly.
-        Paths_::source_no_checks(0);
-        if (!kb.presentation().contains_empty_word()) {
-          Paths_::next();
-        }
-      }
-
-      output_type get() const {
-        word_type const& w = Paths_::get();
-        _current.clear();
-        for (auto c : w) {
-          _current.push_back(_kb->presentation().letter_no_checks(c));
-        }
-        return _current;
-      }
-
-      KnuthBendixNormalFormRange& min(size_type val) noexcept {
-        Paths_::min(val);
-        return *this;
-      }
-
-      KnuthBendixNormalFormRange& max(size_type val) noexcept {
-        Paths_::max(val);
-        return *this;
-      }
-
-      using Paths_::at_end;
-      using Paths_::count;
-      using Paths_::max;
-      using Paths_::min;
-      using Paths_::next;
-      using Paths_::size_hint;
-
-      static constexpr bool is_finite     = true;  // this isn't always true!
-      static constexpr bool is_idempotent = true;
-    };  // class KnuthBendixNormalFormRange
-
-  }  // namespace detail
-
+  //! \ingroup knuth_bendix_group
+  //!
+  //! \brief Helper functions for the \ref KnuthBendix class.
+  //!
+  //! Defined in \c knuth-bendix.hpp.
+  //!
+  //! This page contains documentation for some helper functions for the \ref
+  //! KnuthBendix class. In particular, these functions include versions of
+  //! several of the member functions of \ref KnuthBendix (that accept
+  //! iterators) whose parameters are not iterators, but objects instead. The
+  //! helpers documented on this page all belong to the namespace
+  //! ``knuth_bendix``.
+  //!
+  //! \sa \ref cong_intf_helpers_group
   namespace knuth_bendix {
-
-    //! \defgroup knuth_bendix_helpers_group Knuth-Bendix specific helpers
-    //!
-    //! TODO
-    //! @{
 
     ////////////////////////////////////////////////////////////////////////
     // KnuthBendix specific helpers
     ////////////////////////////////////////////////////////////////////////
 
-    // TODO Should this have a param?
     //! \brief Run the Knuth-Bendix algorithm by considering all overlaps of
     //! a given length.
     //!
     //! This function runs the Knuth-Bendix algorithm on the rewriting
     //! system represented by a KnuthBendix instance by considering all
     //! overlaps of a given length \f$n\f$ (according to the \ref
-    //! options::overlap) before those overlaps of length \f$n + 1\f$.
+    //! KnuthBendix::options::overlap) before those overlaps of length \f$n +
+    //! 1\f$.
+    //!
+    //! \tparam Rewriter the first template parameter for KnuthBendix.
+    //! \tparam ReductionOrder the second template parameter for KnuthBendix.
+    //!
+    //! \param kb the KnuthBendix instance.
     //!
     //! \complexity
     //! See warning.
@@ -1132,41 +1184,25 @@ namespace libsemigroups {
     //! \warning This will terminate when the KnuthBendix instance is
     //! confluent, which might be never.
     //!
-    //! \sa \ref run.
+    //! \sa \ref KnuthBendix::run.
     template <typename Rewriter, typename ReductionOrder>
-    void by_overlap_length(KnuthBendix<Rewriter, ReductionOrder>&);
+    void by_overlap_length(KnuthBendix<Rewriter, ReductionOrder>& kb);
 
     //! \brief Check if the all rules are reduced with respect to each other.
     //!
-    //! This function is defined in \c knuth-bendix.hpp.
+    //! Defined in \c knuth-bendix.hpp.
+    //!
+    //! \tparam Rewriter the first template parameter for KnuthBendix.
+    //! \tparam ReductionOrder the second template parameter for KnuthBendix.
+    //!
+    //! \param kb the KnuthBendix instance defining the rules that are to be
+    //! checked for being reduced.
     //!
     //! \returns \c true if for each pair \f$(A, B)\f$ and \f$(C, D)\f$ of rules
     //! stored within the KnuthBendix instance, \f$C\f$ is neither a subword of
     //! \f$A\f$ nor \f$B\f$. Returns \c false otherwise.
-    //!
-    //! \tparam Rewriter type of the rewriting system to be used in the
-    //! Knuth-Bendix algorithm.
-    //! \tparam ReductionOrder type of the reduction ordering used by the
-    //! Knuth-Bendix algorithm.
-    //! \param kb the KnuthBendix instance defining the rules that are to be
-    //! checked for being reduced.
     template <typename Rewriter, typename ReductionOrder>
-    [[nodiscard]] bool is_reduced(KnuthBendix<Rewriter, ReductionOrder>& kb) {
-      for (auto const& test_rule : kb.active_rules()) {
-        auto const lhs = test_rule.first;
-        for (auto const& rule : kb.active_rules()) {
-          if (test_rule == rule) {
-            continue;
-          }
-
-          if (rule.first.find(lhs) != detail::internal_string_type::npos
-              || rule.second.find(lhs) != detail::internal_string_type::npos) {
-            return false;
-          }
-        }
-      }
-      return true;
-    }
+    [[nodiscard]] bool is_reduced(KnuthBendix<Rewriter, ReductionOrder>& kb);
 
     ////////////////////////////////////////////////////////////////////////
     // Interface helpers - add_generating_pair
@@ -1197,36 +1233,29 @@ namespace libsemigroups {
     // Interface helpers - normal_forms
     ////////////////////////////////////////////////////////////////////////
 
-    //! \brief Return a forward iterator pointing at the first normal form with
-    //! length in a given range.
+    //! \brief Returns a range object containing the normal forms.
     //!
-    //! If incremented, the iterator will point to the next least short-lex
-    //! normal form (if it's less than \p max in length).  Iterators of the
-    //! type returned by this function should only be compared with other
-    //! iterators created from the same KnuthBendix instance.
+    //! Defined in \c knuth-bendix.hpp.
     //!
-    //! \param lphbt the alphabet to use for the normal forms
-    //! \param min the minimum length of a normal form
-    //! \param max one larger than the maximum length of a normal form.
+    //! This function returns a range object containing normal forms of the
+    //! classes of the congruence represented by an instance of KnuthBendix. The
+    //! order of the classes, and the normal form that is returned, are
+    //! controlled by the reduction order used to construct \p kb. This function
+    //! triggers a full enumeration of \p kb.
     //!
-    //! \returns
-    //! A value of type \ref const_normal_form_iterator.
+    //! \tparam Word the type of the words contained in the output range
+    //! (default: std::string).
+    //! \tparam Rewriter the first template parameter for KnuthBendix.
+    //! \tparam ReductionOrder the second template parameter for KnuthBendix.
+    //!
+    //! \param kb the \ref KnuthBendix instance.
+    //!
+    //! \returns A range object.
     //!
     //! \exceptions
     //! \no_libsemigroups_except
     //!
-    //! \warning
-    //! Copying iterators of this type is relatively expensive.  As a
-    //! consequence, prefix incrementing \c ++it the iterator \c it returned
-    //! by \c cbegin_normal_forms is significantly cheaper than postfix
-    //! incrementing \c it++.
-    //!
-    //! \warning
-    //! If the finitely presented semigroup represented by \c this is
-    //! infinite, then \p max should be chosen with some care.
-    //!
-    //! \sa \ref cend_normal_forms.
-    // TODO update doc
+    //! \cong_intf_warn_undecidable{Knuth-Bendix}.
     template <typename Word = std::string,
               typename Rewriter,
               typename ReductionOrder>
@@ -1247,56 +1276,48 @@ namespace libsemigroups {
 
     using congruence_interface::non_trivial_classes;
 
-    // Compute non-trivial classes in kb1!
-    template <typename Rewriter,
-              typename ReductionOrder,
-              typename Word = std::string>
+    //! \brief Find the non-trivial classes of the quotient of one KnuthBendix
+    //! instance in another.
+    //!
+    //! This function returns the classes with size at least \f$2\f$ in the
+    //! normal forms of \p kb2 in \p kb1 (the greater congruence, with fewer
+    //! classes). This function triggers a full enumeration of both \p kb2 and
+    //! \p kb1.
+    //!
+    //! Note that this function does **not** compute the normal forms of \p kb2
+    //! and try to compute the partition of these induced by \p kb1, before
+    //! filtering out the classes of size \f$1\f$. In particular, it is possible
+    //! to compute the non-trivial classes of \p kb1 in \p kb2 if there are only
+    //! finitely many finite such classes, regardless of whether or not \p kb2
+    //! or \p kb1 has infinitely many classes.
+    //!
+    //! \tparam Word the type of the words contained in the output range
+    //! (default: std::string).
+    //! \tparam Rewriter the first template parameter for KnuthBendix.
+    //! \tparam ReductionOrder the second template parameter for KnuthBendix.
+    //!
+    //! \param kb1 the first \ref KnuthBendix instance.
+    //! \param kb2 the second \ref KnuthBendix instance.
+    //!
+    //! \returns The non-trivial classes of \p kb1 in \p kb2.
+    //!
+    //! \throws LibsemigroupsException if \p kb1 has infinitely many classes
+    //! and \p kb2 has finitely many classes (so that there is at least one
+    //! infinite non-trivial class).
+    //!
+    //! \throws LibsemigroupsException if the alphabets of the
+    //! presentations of \p kb1 and \p kb2 are not equal.
+    //!
+    //! \throws LibsemigroupsException if the \ref KnuthBendix::gilman_graph of
+    //! \p kb1 has fewer nodes than that of \p kb2.
+    //!
+    //! \cong_intf_warn_undecidable{Knuth-Bendix}.
+    template <typename Word = std::string,
+              typename Rewriter,
+              typename ReductionOrder>
     [[nodiscard]] std::vector<std::vector<Word>>
     non_trivial_classes(KnuthBendix<Rewriter, ReductionOrder>& kb1,
                         KnuthBendix<Rewriter, ReductionOrder>& kb2);
-
-    // TODO(0) move all of the functions from here to the end of the namespace
-    // knuth_bendix to before the interface helpers when they are out of lined.
-
-    ////////////////////////////////////////////////////////////////////////
-    // Possible future interface helpers - try_equal_to
-    ////////////////////////////////////////////////////////////////////////
-
-    // TODO Doc
-    template <typename T>
-    inline tril try_equal_to(Presentation<std::string>& p,
-                             std::string const&         lhs,
-                             std::string const&         rhs,
-                             T t = std::chrono::seconds(1)) {
-      constexpr static congruence_kind twosided = congruence_kind::twosided;
-
-      // TODO validate lhs and rhs
-      KnuthBendix         kb(twosided, p);
-      std::string         lphbt = p.alphabet();
-      std::vector<size_t> perm(lphbt.size(), 0);
-      std::iota(perm.begin(), perm.end(), 0);
-
-      do {
-        detail::apply_permutation(lphbt, perm);
-
-        p.alphabet(lphbt);
-        p.validate();
-
-        kb.init(twosided, p);
-        // TODO(0) no checks
-        if (reduce_no_run(kb, lhs) == reduce_no_run(kb, rhs)) {
-          return tril::TRUE;
-        }
-        kb.run_for(t);
-        // TODO(0) no checks
-        if (reduce_no_run(kb, lhs) == reduce_no_run(kb, rhs)) {
-          return tril::TRUE;
-        } else if (kb.finished()) {
-          return tril::FALSE;
-        }
-      } while (std::next_permutation(perm.begin(), perm.end()));
-      return tril::unknown;
-    }
 
     ////////////////////////////////////////////////////////////////////////
     // Possible future interface helpers - redundant_rule
@@ -1305,7 +1326,7 @@ namespace libsemigroups {
     //! \brief Return an iterator pointing at the left hand side of a redundant
     //! rule.
     //!
-    //! This function is defined in \c knuth-bendix.hpp.
+    //! Defined in \c knuth-bendix.hpp.
     //!
     //! Starting with the last rule in the presentation, this function
     //! attempts to run the Knuth-Bendix algorithm on the rules of the
@@ -1320,44 +1341,28 @@ namespace libsemigroups {
     //! iterator pointing to its left hand side is returned.
     //!
     //! If no rule can be shown to be redundant in this way, then an iterator
-    //! pointing to \c p.cend() is returned.
+    //! pointing to \c p.rules.cend() is returned.
     //!
-    //! \tparam T type of the 2nd parameter (time to try running
-    //! Knuth-Bendix). \param p the presentation \param t time to run
-    //! KnuthBendix for every omitted rule
+    //! \tparam Time type of the 2nd parameter (time to try running
+    //! Knuth-Bendix).
+    //! \param p the presentation.
+    //! \param t time to run KnuthBendix for every omitted rule.
+    //!
+    //! \returns An iterator pointing at the left-hand side of a redundant rule
+    //! of \c p.rules.cend().
     //!
     //! \warning The progress of the Knuth-Bendix algorithm may differ between
     //! different calls to this function even if the parameters are identical.
     //! As such this is non-deterministic, and may produce different results
     //! with the same input.
-    template <typename T>
-    [[nodiscard]] auto redundant_rule(Presentation<std::string> const& p, T t) {
-      constexpr static congruence_kind twosided = congruence_kind::twosided;
-
-      p.validate();
-      Presentation<std::string> q;
-      q.alphabet(p.alphabet());
-      q.contains_empty_word(p.contains_empty_word());
-      KnuthBendix kb;
-
-      for (auto omit = p.rules.crbegin(); omit != p.rules.crend(); omit += 2) {
-        q.rules.clear();
-        q.rules.insert(q.rules.end(), p.rules.crbegin(), omit);
-        q.rules.insert(q.rules.end(), omit + 2, p.rules.crend());
-        kb.init(twosided, q);
-        kb.run_for(t);
-        // TODO no_checks
-        if (reduce_no_run(kb, *omit) == reduce_no_run(kb, *(omit + 1))) {
-          return (omit + 1).base() - 1;
-        }
-      }
-      return p.rules.cend();
-    }
+    template <typename Time>
+    [[nodiscard]] std::vector<std::string>::const_iterator
+    redundant_rule(Presentation<std::string> const& p, Time t);
 
     //! \brief Return an iterator pointing at the left hand side of a redundant
     //! rule.
     //!
-    //! This function is defined in \c knuth-bendix.hpp.
+    //! Defined in \c knuth-bendix.hpp.
     //!
     //! Starting with the last rule in the presentation, this function
     //! attempts to run the Knuth-Bendix algorithm on the rules of the
@@ -1374,75 +1379,99 @@ namespace libsemigroups {
     //! If no rule can be shown to be redundant in this way, then an iterator
     //! pointing to \c p.cend() is returned.
     //!
-    //! \tparam W type of words in the Presentation
-    //! \tparam T type of the 2nd parameter (time to try running
-    //! Knuth-Bendix). \param p the presentation \param t time to run
-    //! KnuthBendix for every omitted rule
+    //! \tparam Word type of words in the Presentation
+    //! \tparam Time type of the 2nd parameter (time to try running
+    //! Knuth-Bendix).
+    //! \param p the presentation.
+    //! \param t time to run KnuthBendix for every omitted rule.
     //!
     //! \warning The progress of the Knuth-Bendix algorithm may differ between
     //! different calls to this function even if the parameters are identical.
     //! As such this is non-deterministic, and may produce different results
     //! with the same input.
-    template <typename W, typename T>
-    [[nodiscard]] auto redundant_rule(Presentation<W> const& p, T t) {
+    template <typename Word, typename Time>
+    [[nodiscard]] auto redundant_rule(Presentation<Word> const& p, Time t) {
       auto pp = to_presentation<std::string>(p);
       return p.rules.cbegin()
              + std::distance(pp.rules.cbegin(), redundant_rule(pp, t));
     }
-    //! @}
+
+    ////////////////////////////////////////////////////////////////////////
+    // Possible future interface helpers - try_equal_to
+    ////////////////////////////////////////////////////////////////////////
+
+    // TODO(1) Doc
+    // TODO(1) template std::string
+    // TODO(1) re-include later
+    // template <typename T>
+    // inline tril try_equal_to(Presentation<std::string>& p,
+    //                          std::string const&         lhs,
+    //                          std::string const&         rhs,
+    //                          T t = std::chrono::seconds(1));
   }  // namespace knuth_bendix
-
-  // TODO to tpp file
-  // TODO to to_presentation file
-  template <typename Word, typename Rewriter, typename ReductionOrder>
-  Presentation<Word>
-  to_presentation(KnuthBendix<Rewriter, ReductionOrder>& kb) {
-    if constexpr (std::is_same_v<Word, std::string>) {
-      auto const&               p_orig = kb.presentation();
-      Presentation<std::string> p;
-      p.alphabet(p_orig.alphabet())
-          .contains_empty_word(p_orig.contains_empty_word());
-
-      for (auto const& rule : kb.active_rules()) {
-        presentation::add_rule(p, rule.first, rule.second);
-      }
-      return p;
-    } else {
-      return to_presentation<Word>(to_presentation<std::string>(kb));
-    }
-  }
 
   ////////////////////////////////////////////////////////////////////////
   // global functions - to_human_readable_repr
   ////////////////////////////////////////////////////////////////////////
 
-  // TODO(0) What should the \param be?
+  //! \ingroup knuth_bendix_group
+  //!
+  //! \brief Insert into std::ostream.
+  //!
+  //! This function allows a KnuthBendix object to be left shifted
+  //! into a std::ostream, such as std::cout. The currently active rules
+  //! of the system are represented in the output.
+  //!
+  //! \param os the output stream to insert into.
+  //! \param kb the KnuthBendix object.
+  //!
+  //! \returns A reference to the first argument.
+  template <typename Rewriter, typename ReductionOrder>
+  std::ostream& operator<<(std::ostream&                                os,
+                           KnuthBendix<Rewriter, ReductionOrder> const& kb);
+
+  //! \ingroup knuth_bendix_group
+  //!
   //! \brief Return a string representation of a KnuthBendix instance
   //!
-  //! Return a string representation of a KnuthBendix instance, specifying the
-  //! size of the underlying alphabet and the number of active rules.
+  //! This function returns a string representation of a KnuthBendix instance,
+  //! specifying the size of the underlying alphabet and the number of active
+  //! rules.
+  //!
+  //! \tparam Rewriter the first template parameter for KnuthBendix.
+  //! \tparam ReductionOrder the second template parameter for KnuthBendix.
+  //!
+  //! \param kb the KnuthBendix instance.
   //!
   //! \returns The representation, a value of type \c std::string
-  // TODO(0) rename to_human_readable_repr
+  // TODO(1) preferably kb would be a const&
   template <typename Rewriter, typename ReductionOrder>
-  std::string repr(KnuthBendix<Rewriter, ReductionOrder>& kb) {
-    using str = std::string;
+  std::string to_human_readable_repr(KnuthBendix<Rewriter, ReductionOrder>& kb);
 
-    str conf;
-    if (!kb.confluent_known()) {
-      conf = "KnuthBendix";
-    } else if (kb.confluent()) {
-      conf = "confluent KnuthBendix";
-    } else {
-      conf = "non-confluent KnuthBendix";
-    }
-    str alphabet_size = std::to_string(kb.presentation().alphabet().size());
-    str n_rules       = std::to_string(kb.number_of_active_rules());
-
-    // TODO(JE) use fmt::format instead
-    return str("<") + conf + " on " + alphabet_size + " letters with " + n_rules
-           + " active rules>";
-  }
+  //! \ingroup to_presentation_group
+  //!
+  //! \brief Make a presentation from a KnuthBendix object.
+  //!
+  //! This function constructs and returns a Presentation object using the
+  //! currently active rules of \p kb.
+  //!
+  //! No enumeration of the argument \p kb is performed, so it might be the
+  //! case that the resulting presentation does not define the same
+  //! semigroup/monoid as \p kb. To ensure that the resulting presentation
+  //! defines the same semigroup as \p kb, run KnuthBendix::run (or any other
+  //! function that fully enumerates \p kb) prior to calling this function.
+  //!
+  //! \tparam Word the type of the rules in the presentation being constructed.
+  //!
+  //! \param kb the KnuthBendix object from which to obtain the rules.
+  //!
+  //! \returns An object of type \c Presentation<Word>.
+  //!
+  //! \exceptions
+  //! \no_libsemigroups_except
+  // This cannot go into to-presentation.hpp since we include that here
+  template <typename Word, typename Rewriter, typename ReductionOrder>
+  Presentation<Word> to_presentation(KnuthBendix<Rewriter, ReductionOrder>& kb);
 }  // namespace libsemigroups
 
 #include "knuth-bendix.tpp"

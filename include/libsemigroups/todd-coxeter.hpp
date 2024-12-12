@@ -1096,38 +1096,6 @@ namespace libsemigroups {
     //! \brief Check containment of a pair of words via iterators.
     //!
     //! This function checks whether or not the words represented by the ranges
-    //! \p first1 to \p last1 and \p first2 to \p last2 are contained in the
-    //! congruence represented by a \ref todd_coxeter_class_group "ToddCoxeter"
-    //! instance. This function triggers a full enumeration, which may never
-    //! terminate.
-    //!
-    //! \cong_intf_params_contains
-    //!
-    //! \returns Whether or not the pair belongs to the congruence.
-    //!
-    //! \cong_intf_warn_undecidable{Todd-Coxeter}
-    //!
-    //! \cong_intf_warn_assume_letters_in_bounds
-    template <typename Iterator1,
-              typename Iterator2,
-              typename Iterator3,
-              typename Iterator4>
-    bool contains_no_checks(Iterator1 first1,
-                            Iterator2 last1,
-                            Iterator3 first2,
-                            Iterator4 last2) {
-      if (native_presentation().rules.empty() && generating_pairs().empty()
-          && current_word_graph().number_of_nodes_active() == 1) {
-        return std::equal(first1, last1, first2, last2);
-      }
-      run();
-      return currently_contains_no_checks(first1, last1, first2, last2)
-             == tril::TRUE;
-    }
-
-    //! \brief Check containment of a pair of words via iterators.
-    //!
-    //! This function checks whether or not the words represented by the ranges
     //! \p first1 to \p last1 and \p first2 to \p last2 are already known to be
     //! contained in the congruence represented by a \ref
     //! todd_coxeter_class_group "ToddCoxeter" instance. This function performs
@@ -1153,6 +1121,39 @@ namespace libsemigroups {
       throw_if_letter_out_of_bounds(first1, last1);
       throw_if_letter_out_of_bounds(first2, last2);
       return currently_contains_no_checks(first1, last1, first2, last2);
+    }
+
+    //! \brief Check containment of a pair of words via iterators.
+    //!
+    //! This function checks whether or not the words represented by the ranges
+    //! \p first1 to \p last1 and \p first2 to \p last2 are contained in the
+    //! congruence represented by a \ref todd_coxeter_class_group "ToddCoxeter"
+    //! instance. This function triggers a full enumeration, which may never
+    //! terminate.
+    //!
+    //! \cong_intf_params_contains
+    //!
+    //! \returns Whether or not the pair belongs to the congruence.
+    //!
+    //! \cong_intf_warn_undecidable{Todd-Coxeter}
+    //!
+    //! \cong_intf_warn_assume_letters_in_bounds
+    // TODO(0) out of line this
+    template <typename Iterator1,
+              typename Iterator2,
+              typename Iterator3,
+              typename Iterator4>
+    bool contains_no_checks(Iterator1 first1,
+                            Iterator2 last1,
+                            Iterator3 first2,
+                            Iterator4 last2) {
+      if (native_presentation().rules.empty() && generating_pairs().empty()
+          && current_word_graph().number_of_nodes_active() == 1) {
+        return std::equal(first1, last1, first2, last2);
+      }
+      run();
+      return currently_contains_no_checks(first1, last1, first2, last2)
+             == tril::TRUE;
     }
 
     //! \brief Check containment of a pair of words via iterators.
@@ -3433,7 +3434,7 @@ namespace libsemigroups {
     //! iterator pointing to its left hand side is returned.
     //!
     //! If no rule can be shown to be redundant in this way, then an iterator
-    //! pointing to \c p.cend() is returned.
+    //! pointing to \c p.rules.cend() is returned.
     //!
     //! \tparam Word type of words in the Presentation.
     //! \tparam Time type of the 2nd parameter (time to try running
@@ -3442,7 +3443,8 @@ namespace libsemigroups {
     //! \param p the presentation.
     //! \param t time to run Todd-Coxeter for every omitted rule.
     //!
-    //! \returns An iterator.
+    //! \returns An iterator pointing at the left-hand side of a redundant rule
+    //! of \c p.rules.cend().
     //!
     //! \warning The progress of the Todd-Coxeter algorithm may differ between
     //! different calls to this function even if the parameters are identical.
@@ -3552,7 +3554,7 @@ namespace libsemigroups {
     //!
     //! This function returns a range object containing normal forms of the
     //! classes of the congruence represented by an instance of ToddCoxeter. The
-    //! order of the classes, and the normal form, that is returned are
+    //! order of the classes, and the normal form that is returned, are
     //! controlled by ToddCoxeter::standardize(Order). This function triggers a
     //! full enumeration of \p tc.
     //!
@@ -3711,7 +3713,7 @@ namespace libsemigroups {
     //! libsemigroups::word_type "word_type").
     //!
     //! \param tc1 the \ref todd_coxeter_class_group "ToddCoxeter" instance to
-    //! use for partition.
+    //! use for partitioning.
     //! \param tc2 the \ref todd_coxeter_class_group "ToddCoxeter" instance to
     //! be partitioned.
     //!
