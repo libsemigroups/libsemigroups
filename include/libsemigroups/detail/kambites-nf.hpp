@@ -22,85 +22,86 @@
 #ifndef LIBSEMIGROUPS_DETAIL_KAMBITES_NF_HPP_
 #define LIBSEMIGROUPS_DETAIL_KAMBITES_NF_HPP_
 
-namespace detail {
-  template <typename Word>
-  class KambitesNormalFormRange {
-   private:
-    mutable typename Kambites<Word>::native_word_type _current;
-    FroidurePinBase::const_normal_form_iterator       _end;
-    std::unique_ptr<FroidurePinBase>                  _fpb;
-    FroidurePinBase::const_normal_form_iterator       _it;
-    Kambites<Word>*                                   _k;
+namespace libsemigroups {
+  namespace detail {
+    template <typename Word>
+    class KambitesNormalFormRange {
+     private:
+      mutable typename Kambites<Word>::native_word_type _current;
+      FroidurePinBase::const_normal_form_iterator       _end;
+      std::unique_ptr<FroidurePinBase>                  _fpb;
+      FroidurePinBase::const_normal_form_iterator       _it;
+      Kambites<Word>*                                   _k;
 
-   public:
-    using output_type = typename Kambites<Word>::native_word_type const&;
+     public:
+      using output_type = typename Kambites<Word>::native_word_type const&;
 
-    KambitesNormalFormRange() = delete;
+      KambitesNormalFormRange() = delete;
 
-    explicit KambitesNormalFormRange(Kambites<Word>& k)
-        : _current(), _end(), _fpb(), _it(), _k() {
-      init(k);
-    }
-
-    KambitesNormalFormRange& init(Kambites<Word>& k) {
-      _current.clear();
-      _fpb = to_froidure_pin(k);
-      _it  = _fpb->cbegin_current_normal_forms();
-      _k   = &k;
-      _end = _fpb->cend_current_normal_forms();
-      return *this;
-    }
-
-    KambitesNormalFormRange(KambitesNormalFormRange const& that)
-        : KambitesNormalFormRange(*that._k) {}
-
-    KambitesNormalFormRange(KambitesNormalFormRange&& that) = default;
-
-    KambitesNormalFormRange& operator=(KambitesNormalFormRange const& that) {
-      return init(*that._k);
-    }
-
-    KambitesNormalFormRange& operator=(KambitesNormalFormRange&&) = default;
-
-    // TODO(0) init?
-    // TODO(1) allow setting of min/max etc like Paths
-
-    output_type get() const {
-      // TODO don't do this more than once per call
-      auto const& w = *_it;
-      _current.clear();
-      for (auto c : w) {
-        _current.push_back(_k->presentation().letter_no_checks(c));
+      explicit KambitesNormalFormRange(Kambites<Word>& k)
+          : _current(), _end(), _fpb(), _it(), _k() {
+        init(k);
       }
-      return _current;
-    }
 
-    void next() {
-      ++_it;
-      if (_it == _end) {
-        _fpb->enumerate(_fpb->current_size() + 1);
+      KambitesNormalFormRange& init(Kambites<Word>& k) {
+        _current.clear();
+        _fpb = to_froidure_pin(k);
+        _it  = _fpb->cbegin_current_normal_forms();
+        _k   = &k;
         _end = _fpb->cend_current_normal_forms();
+        return *this;
       }
-    }
 
-    [[nodiscard]] bool at_end() const {
-      return false;
-    }
+      KambitesNormalFormRange(KambitesNormalFormRange const& that)
+          : KambitesNormalFormRange(*that._k) {}
 
-    [[nodiscard]] uint64_t size_hint() const {
-      return POSITIVE_INFINITY;
-    }
+      KambitesNormalFormRange(KambitesNormalFormRange&& that) = default;
 
-    [[nodiscard]] uint64_t count() const {
-      return size_hint();
-    }
+      KambitesNormalFormRange& operator=(KambitesNormalFormRange const& that) {
+        return init(*that._k);
+      }
 
-    static constexpr bool is_finite     = false;
-    static constexpr bool is_idempotent = true;
-  };
+      KambitesNormalFormRange& operator=(KambitesNormalFormRange&&) = default;
 
-  template <typename Word>
-  KambitesNormalFormRange(Kambites<Word>&) -> KambitesNormalFormRange<Word>;
+      // TODO(1) allow setting of min/max etc like Paths
 
-}  // namespace detail
+      output_type get() const {
+        // TODO don't do this more than once per call
+        auto const& w = *_it;
+        _current.clear();
+        for (auto c : w) {
+          _current.push_back(_k->presentation().letter_no_checks(c));
+        }
+        return _current;
+      }
+
+      void next() {
+        ++_it;
+        if (_it == _end) {
+          _fpb->enumerate(_fpb->current_size() + 1);
+          _end = _fpb->cend_current_normal_forms();
+        }
+      }
+
+      [[nodiscard]] bool at_end() const {
+        return false;
+      }
+
+      [[nodiscard]] uint64_t size_hint() const {
+        return POSITIVE_INFINITY;
+      }
+
+      [[nodiscard]] uint64_t count() const {
+        return size_hint();
+      }
+
+      static constexpr bool is_finite     = false;
+      static constexpr bool is_idempotent = true;
+    };
+
+    template <typename Word>
+    KambitesNormalFormRange(Kambites<Word>&) -> KambitesNormalFormRange<Word>;
+
+  }  // namespace detail
+}  // namespace libsemigroups
 #endif  // LIBSEMIGROUPS_DETAIL_KAMBITES_NF_HPP_

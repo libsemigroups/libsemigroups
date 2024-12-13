@@ -34,7 +34,7 @@
 namespace libsemigroups {
 #ifndef PARSED_BY_DOXYGEN
   class FroidurePinBase;  // forward decl
-  class ToddCoxeter;
+  class ToddCoxeterBase;
 
   template <typename Rewriter, typename ReductionOrder>
   class KnuthBendix;
@@ -143,7 +143,7 @@ namespace libsemigroups {
     return to_froidure_pin<Element>(ad, 0, ad.number_of_nodes());
   }
 
-  FroidurePin<detail::TCE> to_froidure_pin(ToddCoxeter& tc);
+  FroidurePin<detail::TCE> to_froidure_pin(ToddCoxeterBase& tc);
 
   template <typename Rewriter, typename ReductionOrder>
   FroidurePin<detail::KBE<KnuthBendix<Rewriter, ReductionOrder>>>

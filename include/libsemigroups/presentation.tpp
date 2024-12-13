@@ -341,9 +341,9 @@ namespace libsemigroups {
     }
 
     template <typename Word>
-    [[nodiscard]] bool contains_rule(Presentation<Word>& p,
-                                     Word const&         lhs,
-                                     Word const&         rhs) {
+    bool contains_rule(Presentation<Word>& p,
+                       Word const&         lhs,
+                       Word const&         rhs) {
       for (auto it = p.rules.cbegin(); it != p.rules.cend(); it += 2) {
         if ((*it == lhs && *(it + 1) == rhs)
             || (*it == rhs && *(it + 1) == lhs)) {

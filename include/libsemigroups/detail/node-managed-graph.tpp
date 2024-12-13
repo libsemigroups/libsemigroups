@@ -17,7 +17,7 @@
 //
 
 // This file contains the implementation for the NodeManagedGraph class, used
-// by Stephen and by ToddCoxeter.
+// by Stephen and by ToddCoxeterBase.
 
 namespace libsemigroups {
 
@@ -191,10 +191,10 @@ namespace libsemigroups {
         //       num_nodes);
         //   size_t cost_bigcrush = 2 * num_nodes * out_degree() + num_nodes;
         //   if (cost_bigcrush < cost_pairwise) {
-        //     report_default("ToddCoxeter: large collapse {} -> {} nodes\n",
+        //     report_default("ToddCoxeterBase: large collapse {} -> {} nodes\n",
         //                    fmt::group_digits(prev_num_nodes),
         //                    fmt::group_digits(num_nodes));
-        //     report_default("ToddCoxeter: {} (coincidences)\n",
+        //     report_default("ToddCoxeterBase: {} (coincidences)\n",
         //                    fmt::group_digits(_coinc.size()));
         //     break;
         //   }

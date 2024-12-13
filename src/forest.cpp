@@ -37,7 +37,7 @@
 //! form.
 //!
 //! Returns a const iterator pointing to the normal form of the first
-//! class of the congruence represented by an instance of ToddCoxeter.
+//! class of the congruence represented by an instance of ToddCoxeterBase.
 //! The order of the classes, and the normal form, that is returned are
 //! controlled by standardize(order).
 //!

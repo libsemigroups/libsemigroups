@@ -41,7 +41,7 @@ namespace libsemigroups {
   //! \brief The possible orderings of words and strings.
   //!
   //! The values in this enum can be used as the arguments for functions such as
-  //! \ref ToddCoxeter::standardize(Order) or \ref WordRange.order(Order) to
+  //! \ref ToddCoxeterBase::standardize(Order) or \ref WordRange.order(Order) to
   //! specify which ordering should be used. The normal forms for congruence
   //! classes are given with respect to one of the orders specified by the
   //! values in this enum.

@@ -27,7 +27,7 @@
 #include "libsemigroups/froidure-pin.hpp"       // for FroidurePin
 #include "libsemigroups/knuth-bendix.hpp"       // for KnuthBendix<>
 #include "libsemigroups/to-froidure-pin.hpp"    // for to_froidure_pin
-#include "libsemigroups/todd-coxeter.hpp"       // for ToddCoxeter
+#include "libsemigroups/todd-coxeter.hpp"       // for ToddCoxeterBase
 #include "libsemigroups/types.hpp"              // for congruence_kind
 #include "libsemigroups/word-graph.hpp"         // for WordGraph
 

@@ -17,7 +17,7 @@
 //
 
 // This file contains a declaration of a class called FelschGraph which is
-// used by the classes Sims1 and ToddCoxeter.
+// used by the classes Sims1 and ToddCoxeterBase.
 
 // TODO:
 // * iwyu
@@ -58,7 +58,7 @@ namespace libsemigroups {
     bool constexpr DoNotRegisterDefs = false;
     bool constexpr RegisterDefs      = true;
 
-    // This class exists so that both FelschGraph and ToddCoxeter can use the
+    // This class exists so that both FelschGraph and ToddCoxeterBase can use the
     // same settings/options without code duplication
     template <typename Subclass>
     class FelschGraphSettings : public FelschGraphEnums {
@@ -255,7 +255,7 @@ namespace libsemigroups {
       // UNDEFINED and yb = UNDEFINED, or vice versa, and pref_defs(x, a, y,
       // b) is called if xa = UNDEFINED and yb = UNDEFINED.
       // Not nodiscard because we don't care about the return value in
-      // ToddCoxeter (return value indicates if we should stop early an
+      // ToddCoxeterBase (return value indicates if we should stop early an
       // incompatibility is discovered, which we never do in TC)
       template <bool RegDefs, typename Incompatible, typename PreferredDefs>
       bool merge_targets_of_nodes_if_possible(node_type      x,
@@ -282,7 +282,7 @@ namespace libsemigroups {
 
       // This function should remain here, i.e. don't move to tpp file.
       // Not nodiscard because we don't care about the return value in
-      // ToddCoxeter
+      // ToddCoxeterBase
       template <typename Incompatible, typename PreferredDefs>
       inline bool process_definition(Definition const& d,
                                      Incompatible&     incompat,
@@ -330,7 +330,7 @@ namespace libsemigroups {
       // of the i-th rule, and returns merge_targets on the last but one nodes
       // and letters.
       // Not nodiscard because we don't care about the return value in
-      // ToddCoxeter
+      // ToddCoxeterBase
       template <bool RegDefs, typename Incompatible, typename PreferredDefs>
       bool merge_targets_of_paths_labelled_by_rules_if_possible(
           node_type const& c,
@@ -384,7 +384,7 @@ namespace libsemigroups {
       // last_rule) or if there are edges missing in paths labelled by rules,
       // then try to fill those in so that fd is compatible.
       // Not nodiscard because we don't care about the return value in
-      // ToddCoxeter
+      // ToddCoxeterBase
       template <bool RegDefs,
                 typename Word,
                 typename Node,
@@ -401,7 +401,7 @@ namespace libsemigroups {
           PrefDefs&& pref_defs) noexcept;
 
       // Not nodiscard because we don't care about the return value in
-      // ToddCoxeter
+      // ToddCoxeterBase
       template <bool RegDefs,
                 typename Word,
                 typename Node,

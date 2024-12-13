@@ -52,11 +52,11 @@ namespace libsemigroups {
             side LeftOrRight>
   class Action<Element, Point, Func, Traits, LeftOrRight>::MultiplierCache {
    public:
-    [[nodiscard]] element_type& operator[](index_type i) {
+    element_type& operator[](index_type i) {
       return _multipliers[i].second;
     }
 
-    [[nodiscard]] bool defined(index_type i) const {
+    bool defined(index_type i) const {
       return (i < _multipliers.size() ? _multipliers[i].first : false);
     }
 

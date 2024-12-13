@@ -66,7 +66,7 @@ namespace libsemigroups {
       }
 
       // There are some examples where it is important that this function is
-      // inlined (such as ToddCoxeter 097)
+      // inlined (such as ToddCoxeterBase 097)
       inline bool push_front(letter_type x) {
         LIBSEMIGROUPS_ASSERT(x < _automata.number_of_cols());
         auto y = _automata.get(_current_state, x);

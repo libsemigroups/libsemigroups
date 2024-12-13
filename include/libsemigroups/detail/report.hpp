@@ -71,7 +71,7 @@ namespace libsemigroups {
     };
 
     // This object is a helper for formatting information reported by various
-    // classes in libsemigroups such as ToddCoxeter, KnuthBendix, etc.
+    // classes in libsemigroups such as ToddCoxeterBase, KnuthBendix, etc.
     //
     // The idea is to store the rows in the _rows, and to properly align the
     // values in each column. This is done by storing the rows and their widths,

@@ -25,19 +25,17 @@
 namespace libsemigroups {
 
   class FroidurePinBase;
-  // TODO uncomment  class KnuthBendix;
-  class ToddCoxeter;
-  enum class congruence_kind;
 
   // TODO to_todd_coxeter for FroidurePin<TCE> just return the original
   // ToddCoxeter instance.
 
+  // TODO(0) allow template param "word_type" to be specified
   template <typename Node>
-  ToddCoxeter to_todd_coxeter(congruence_kind        knd,
-                              FroidurePinBase&       fpb,
-                              WordGraph<Node> const& wg) {
-    using node_type  = typename ToddCoxeter::word_graph_type::node_type;
-    using label_type = typename ToddCoxeter::word_graph_type::label_type;
+  ToddCoxeter<word_type> to_todd_coxeter(congruence_kind        knd,
+                                         FroidurePinBase&       fpb,
+                                         WordGraph<Node> const& wg) {
+    using node_type  = typename ToddCoxeterBase::word_graph_type::node_type;
+    using label_type = typename ToddCoxeterBase::word_graph_type::label_type;
 
     WordGraph<node_type> copy(wg.number_of_nodes() + 1, wg.out_degree());
 
@@ -50,16 +48,20 @@ namespace libsemigroups {
         copy.target_no_checks(n + 1, a, wg.target_no_checks(n, a) + 1);
       }
     }
-    return ToddCoxeter(knd, std::move(copy));
+    // TODO(1) move "copy" into ToddCoxeter.
+    return ToddCoxeter<word_type>(knd, copy);
   }
 
+  // TODO(0) allow template param "word_type" to be specified
   template <typename Rewriter, typename ReductionOrder>
-  ToddCoxeter to_todd_coxeter(congruence_kind                        knd,
-                              KnuthBendix<Rewriter, ReductionOrder>& kb) {
+  ToddCoxeter<word_type>
+  to_todd_coxeter(congruence_kind                        knd,
+                  KnuthBendix<Rewriter, ReductionOrder>& kb) {
     if (kb.number_of_classes() == POSITIVE_INFINITY) {
       LIBSEMIGROUPS_EXCEPTION(
-          "cannot construct a ToddCoxeter instance using the Cayley graph of "
-          "an infinite KnuthBendix<> object, maybe try ToddCoxeter({}, "
+          "cannot construct a ToddCoxeterBase instance using the Cayley graph "
+          "of "
+          "an infinite KnuthBendix<> object, maybe try ToddCoxeterBase({}, "
           "kb.presentation()) instead?",
           kb.kind());
     }

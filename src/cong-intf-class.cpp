@@ -16,13 +16,25 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include "libsemigroups/cong-intf.hpp"
+#include "libsemigroups/cong-intf-class.hpp"
+
+#include <string>
 
 #include "libsemigroups/exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
 
 namespace libsemigroups {
 
   CongruenceInterface::~CongruenceInterface() = default;
+
+  CongruenceInterface::CongruenceInterface(CongruenceInterface const&)
+      = default;
+  CongruenceInterface::CongruenceInterface(CongruenceInterface&&) = default;
+
+  CongruenceInterface&
+  CongruenceInterface::operator=(CongruenceInterface const&)
+      = default;
+  CongruenceInterface& CongruenceInterface::operator=(CongruenceInterface&&)
+      = default;
 
   /////////////////////////////////////////////////////////////////////////
   // CongruenceInterface - non-pure virtual methods - private

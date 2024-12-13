@@ -62,7 +62,7 @@ namespace libsemigroups {
 #ifdef LIBSEMIGROUPS_EIGEN_ENABLED
     _matrix = decltype(_matrix)(0, n);
 #else
-    _matrix           = decltype(_matrix)(n, 0);
+    _matrix = decltype(_matrix)(n, 0);
 #endif
     return *this;
   }
@@ -239,7 +239,7 @@ namespace libsemigroups {
     }
   }
 
-  bool is_obviously_infinite(ToddCoxeter const& tc) {
+  bool is_obviously_infinite(ToddCoxeterBase const& tc) {
     auto const& d = tc.current_word_graph();
     if (tc.finished()
         || word_graph::is_complete(
@@ -248,17 +248,15 @@ namespace libsemigroups {
       // sometimes be empty (0 nodes), but with 1 active node, so this line
       // can throw (because the range pointed at by d.cbegin_active_nodes(),
       // d.cend_active_nodes() is non-empty but d itself has no nodes)
-      // This is an initialization issue for ToddCoxeter, it should always be
+      // This is an initialization issue for ToddCoxeterBase, it should always be
       // true the number of nodes >= number of active nodes.
       return false;
     }
-    auto                p = tc.native_presentation();
+    auto                p = tc.internal_presentation();
     IsObviouslyInfinite ioi(p.alphabet().size());
     ioi.add_rules_no_checks(p.rules.cbegin(), p.rules.cend());
-    // TODO(0) if we change generating_pairs to return the non-native words,
-    // then this will not work as expected
-    ioi.add_rules_no_checks(tc.generating_pairs().cbegin(),
-                            tc.generating_pairs().cend());
+    ioi.add_rules_no_checks(tc.internal_generating_pairs().cbegin(),
+                            tc.internal_generating_pairs().cend());
     return ioi.result();
   }
 
@@ -274,8 +272,8 @@ namespace libsemigroups {
   }
 
   bool is_obviously_infinite(Congruence& cong) {
-    if (cong.has<ToddCoxeter>()
-        && is_obviously_infinite(*cong.get<ToddCoxeter>())) {
+    if (cong.has<ToddCoxeterBase>()
+        && is_obviously_infinite(*cong.get<ToddCoxeterBase>())) {
       return true;
     } else if (cong.has<KnuthBendix<>>()
                && is_obviously_infinite(*cong.get<KnuthBendix<>>())) {

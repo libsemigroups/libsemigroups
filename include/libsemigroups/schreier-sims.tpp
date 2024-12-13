@@ -687,7 +687,7 @@ namespace libsemigroups {
   }  // namespace schreier_sims
 
   template <size_t N, typename Point, typename Element, typename Traits>
-  [[nodiscard]] std::string
+  std::string
   to_human_readable_repr(SchreierSims<N, Point, Element, Traits> const& S,
                          size_t max_width) {
     size_t      base_size     = S.base_size();

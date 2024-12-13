@@ -266,11 +266,10 @@ namespace libsemigroups {
     auto ntc = (iterator_range(pp.begin(), pp.end())
                 | filter([](auto const& val) { return val.size() > 1; })
                 | transform([](auto& val) {
-                    std::for_each(
-                        val.begin(), val.end(), [](auto& w) -> auto& {
-                          w.erase(w.begin());
-                          return w;
-                        });
+                    std::for_each(val.begin(), val.end(), [](auto& w) -> auto& {
+                      w.erase(w.begin());
+                      return w;
+                    });
                     return val;
                   }));
 
@@ -327,6 +326,9 @@ namespace libsemigroups {
         froidure_pin::factorisation(S, Transf<>({3, 1, 3, 3, 3})));
 
     REQUIRE(kb.generating_pairs()
+            == std::vector<std::string>(
+                {{0, 1, 0, 0, 0, 1, 1, 0, 0}, {1, 0, 0, 0, 1}}));
+    REQUIRE(kb.internal_generating_pairs()
             == std::vector<word_type>({010001100_w, 10001_w}));
     REQUIRE(normal_forms(kb).min(1).count() == 72);
 

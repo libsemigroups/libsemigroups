@@ -39,7 +39,6 @@
 #include <iostream>       // for string, operator<<, endl
 #include <numeric>        // for iota
 #include <string>         // for basic_string, char_traits
-#include <unordered_map>  // for operator==
 #include <unordered_set>  // for unordered_set
 #include <utility>        // for move, operator==, pair
 #include <vector>         // for vector, operator==
@@ -60,8 +59,6 @@
 #include "libsemigroups/detail/report.hpp"  // for ReportGuard
 #include "libsemigroups/detail/stl.hpp"     // for apply_permutation
 #include "libsemigroups/detail/string.hpp"  // for random_string, operator<<
-
-#include "libsemigroups/ranges.hpp"  // for operator|, to_vector
 
 namespace libsemigroups {
   congruence_kind constexpr twosided = congruence_kind::twosided;

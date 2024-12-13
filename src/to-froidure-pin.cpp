@@ -24,8 +24,8 @@ namespace libsemigroups {
 
   using TCE = detail::TCE;
 
-  FroidurePin<TCE> to_froidure_pin(ToddCoxeter& tc) {
-    using word_graph_type = typename ToddCoxeter::word_graph_type;
+  FroidurePin<TCE> to_froidure_pin(ToddCoxeterBase& tc) {
+    using word_graph_type = typename ToddCoxeterBase::word_graph_type;
 
     if (tc.kind() != congruence_kind::twosided) {
       LIBSEMIGROUPS_EXCEPTION(
@@ -65,8 +65,8 @@ namespace libsemigroups {
       // forever. Probably something goes wrong that the other runners don't
       // get deleted if Kambites wins, since it's run first.
       return to_froidure_pin(*cong.get<Kambites<word_type>>());
-    } else if (cong.has<ToddCoxeter>()) {
-      auto fp = to_froidure_pin(*cong.get<ToddCoxeter>());
+    } else if (cong.has<ToddCoxeter<word_type>>()) {
+      auto fp = to_froidure_pin(*cong.get<ToddCoxeter<word_type>>());
       return std::make_unique<decltype(fp)>(std::move(fp));
     } else if (cong.has<KnuthBendix<>>()) {
       auto fp = to_froidure_pin(*cong.get<KnuthBendix<>>());

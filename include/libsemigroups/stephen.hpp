@@ -63,7 +63,7 @@ namespace libsemigroups {
   //! (WordGraph) corresponding to the left factors of a word in a finitely
   //! presented semigroup. The algorithm implemented in this class is closely
   //! related to the Todd-Coxeter algorithm  (as implemented in \ref
-  //! ToddCoxeter) and originates in [Applications of automata theory to
+  //! ToddCoxeterBase) and originates in [Applications of automata theory to
   //! presentations of monoids and inverse monoids](https://rb.gy/brsuvc) by J.
   //! B. Stephen.
   namespace detail {

@@ -40,7 +40,7 @@
 
 namespace libsemigroups {
 #ifndef PARSED_BY_DOXYGEN
-  class ToddCoxeter;  // forward decl
+  class ToddCoxeterBase;  // forward decl
 
   template <typename Rewriter, typename ReductionOrder>
   class KnuthBendix;  // forward decl
@@ -440,26 +440,26 @@ namespace libsemigroups {
   //! \ingroup obvinf_group
   //!
   //! \brief Function for checking if the quotient of a finitely presented
-  //! semigroup or monoid defined by a ToddCoxeter object is obviously infinite
+  //! semigroup or monoid defined by a ToddCoxeterBase object is obviously infinite
   //! or not.
   //!
   //! This function returns \c true if the quotient of the finitely presented
-  //! semigroup or monoid defined by the ToddCoxeter object \p tc is obviously
+  //! semigroup or monoid defined by the ToddCoxeterBase object \p tc is obviously
   //! infinite; \c false is returned if it is not.
   //!
   //! This function exists to make it simpler to call an
   //! IsObviouslyInfinite object a single time, and uses some information from
-  //! the (possible incomplete) ToddCoxeter object to assist in this
+  //! the (possible incomplete) ToddCoxeterBase object to assist in this
   //! determination.
   //!
-  //! \param tc the ToddCoxeter instance.
+  //! \param tc the ToddCoxeterBase instance.
   //!
-  //! \returns Whether or not the quotient defined by a ToddCoxeter instance is
+  //! \returns Whether or not the quotient defined by a ToddCoxeterBase instance is
   //! obviously infinite.
   //!
   //! \note If this function returns \c false, it is still possible that the
-  //! quotient defined by the ToddCoxeter object \p tc is infinite.
-  bool is_obviously_infinite(ToddCoxeter const& tc);
+  //! quotient defined by the ToddCoxeterBase object \p tc is infinite.
+  bool is_obviously_infinite(ToddCoxeterBase const& tc);
 
   //! \ingroup obvinf_group
   //!
@@ -547,8 +547,9 @@ namespace libsemigroups {
     }
     IsObviouslyInfinite ioi(p.alphabet().size());
     ioi.add_rules_no_checks(p.alphabet(), p.rules.cbegin(), p.rules.cend());
-    ioi.add_rules_no_checks(
-        p, kb.generating_pairs().cbegin(), kb.generating_pairs().cend());
+    ioi.add_rules_no_checks(p.alphabet(),
+                            kb.generating_pairs().cbegin(),
+                            kb.generating_pairs().cend());
     return ioi.result();
   }
 

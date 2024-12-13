@@ -97,8 +97,8 @@ namespace libsemigroups {
   }
 
   template <typename Iterator>
-  [[nodiscard]] AhoCorasick::index_type
-  AhoCorasick::traverse_trie(Iterator first, Iterator last) const {
+  AhoCorasick::index_type AhoCorasick::traverse_trie(Iterator first,
+                                                     Iterator last) const {
     index_type current = root;
     for (auto it = first; it != last; ++it) {
       current = _all_nodes[current].child(*it);
@@ -111,11 +111,10 @@ namespace libsemigroups {
 
   namespace aho_corasick {
     template <typename Iterator>
-    [[nodiscard]] AhoCorasick::index_type
-    traverse_word_no_checks(AhoCorasick const& ac,
-                            index_type         start,
-                            Iterator           first,
-                            Iterator           last) {
+    AhoCorasick::index_type traverse_word_no_checks(AhoCorasick const& ac,
+                                                    index_type         start,
+                                                    Iterator           first,
+                                                    Iterator           last) {
       index_type current = start;
       for (auto it = first; it != last; ++it) {
         current = ac.traverse_no_checks(current, *it);

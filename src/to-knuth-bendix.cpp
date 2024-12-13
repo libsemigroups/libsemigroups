@@ -21,7 +21,7 @@
 #include "libsemigroups/froidure-pin-base.hpp"  // for FroidurePinBase
 #include "libsemigroups/froidure-pin.hpp"       // for FroidurePin
 #include "libsemigroups/knuth-bendix.hpp"       // for KnuthBendix<>
-#include "libsemigroups/todd-coxeter.hpp"       // for ToddCoxeter
+#include "libsemigroups/todd-coxeter.hpp"       // for ToddCoxeterBase
 #include "libsemigroups/types.hpp"              // for congruence_kind
 
 namespace libsemigroups {
@@ -30,7 +30,8 @@ namespace libsemigroups {
     return KnuthBendix<>(knd, to_presentation<word_type>(fp));
   }
 
-  KnuthBendix<> to_knuth_bendix(congruence_kind knd, ToddCoxeter const& tc) {
-    return KnuthBendix<>(knd, tc.presentation());
+  KnuthBendix<> to_knuth_bendix(congruence_kind        knd,
+                                ToddCoxeterBase const& tc) {
+    return KnuthBendix<>(knd, tc.internal_presentation());
   }
 }  // namespace libsemigroups

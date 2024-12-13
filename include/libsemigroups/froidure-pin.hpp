@@ -371,7 +371,7 @@ namespace libsemigroups {
     //! stated given by the parameter \p stt. This constructor only exists if
     //! \ref state_type is not \c void. This is used when the elements require
     //! some shared state to define their multiplication, such as, for example
-    //! an instance of KnuthBendix or ToddCoxeter.
+    //! an instance of KnuthBendix or ToddCoxeterBase.
     //!
     //! \param stt a std::shared_ptr to a state object.
     //!
@@ -405,7 +405,7 @@ namespace libsemigroups {
     //! stated given by the parameter \p stt. This constructor only exists if
     //! \ref state_type is not \c void. This is used when the elements require
     //! some shared state to define their multiplication, such as, for example
-    //! an instance of KnuthBendix or ToddCoxeter.
+    //! an instance of KnuthBendix or ToddCoxeterBase.
     //!
     //! \param stt a const reference to a state object.
     //!
