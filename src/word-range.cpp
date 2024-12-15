@@ -19,7 +19,7 @@
 // This file contains some functionality missing in some implementations of the
 // stl, or to augment the stl implementations.
 
-#include "libsemigroups/words.hpp"
+#include "libsemigroups/word-range.hpp"
 
 #include <algorithm>    // for lexicographical_...
 #include <cctype>       // for isalpha, isdigit

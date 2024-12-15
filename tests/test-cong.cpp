@@ -29,9 +29,9 @@
 #include "libsemigroups/obvinf.hpp"           // for is_obviously_infinite
 #include "libsemigroups/pbr.hpp"              // for PBR
 #include "libsemigroups/to-froidure-pin.hpp"
-#include "libsemigroups/transf.hpp"  // for Transf<>
-#include "libsemigroups/types.hpp"   // for word_type
-#include "libsemigroups/words.hpp"   // for literals
+#include "libsemigroups/transf.hpp"      // for Transf<>
+#include "libsemigroups/types.hpp"       // for word_type
+#include "libsemigroups/word-range.hpp"  // for literals
 
 #include "libsemigroups/detail/report.hpp"  // for ReportGuard
 

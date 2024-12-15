@@ -33,7 +33,7 @@
 // #include "libsemigroups/order.hpp"         // for shortlex_words
 // #include "libsemigroups/todd-coxeter.hpp"  // for fpsemigroup::ToddCoxeter
 // #include "libsemigroups/transf.hpp"        // for fpsemigroup::ToddCoxeter
-// #include "libsemigroups/words.hpp"         // for number_of_words
+// #include "libsemigroups/word-range.hpp"         // for number_of_words
 //
 // #include "libsemigroups/detail/string.hpp"  // for to_string of rule_type for
 // debugging

@@ -37,7 +37,7 @@
 #include "libsemigroups/to-todd-coxeter.hpp"  // for ??
 #include "libsemigroups/todd-coxeter.hpp"     // for ToddCoxeter
 #include "libsemigroups/transf.hpp"           // for Transf
-#include "libsemigroups/words.hpp"            // for operator"" _w
+#include "libsemigroups/word-range.hpp"       // for operator"" _w
 
 #include "libsemigroups/detail/report.hpp"  // for ReportGuard
 #include "libsemigroups/detail/tce.hpp"     // for TCE

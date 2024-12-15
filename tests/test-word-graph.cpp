@@ -27,7 +27,7 @@
 
 #include "libsemigroups/forest.hpp"      // for Forest
 #include "libsemigroups/word-graph.hpp"  // for WordGraph
-#include "libsemigroups/words.hpp"       // for literals, WordRange
+#include "libsemigroups/word-range.hpp"  // for literals, WordRange
 
 #include "libsemigroups/detail/string.hpp"  // for detail::to_string
 

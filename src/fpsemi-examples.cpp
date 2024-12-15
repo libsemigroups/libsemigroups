@@ -38,7 +38,7 @@
 #include "libsemigroups/presentation.hpp"  // for add_rule_no_checks, Presen...
 #include "libsemigroups/ranges.hpp"        // for operator|, to_vector, enum...
 #include "libsemigroups/types.hpp"         // for word_type, letter_type
-#include "libsemigroups/words.hpp"         // for operator""_w, operator+, pow
+#include "libsemigroups/word-range.hpp"    // for operator""_w, operator+, pow
 
 namespace libsemigroups {
   using literals::operator""_w;

@@ -106,7 +106,7 @@ pkginclude_HEADERS += include/libsemigroups/ukkonen.hpp
 pkginclude_HEADERS += include/libsemigroups/ukkonen.tpp
 pkginclude_HEADERS += include/libsemigroups/word-graph.hpp
 pkginclude_HEADERS += include/libsemigroups/word-graph.tpp
-pkginclude_HEADERS += include/libsemigroups/words.hpp
+pkginclude_HEADERS += include/libsemigroups/word-range.hpp
 
 detailincludedir = $(includedir)/libsemigroups/detail
 detailinclude_HEADERS =  include/libsemigroups/detail/bruidhinn-traits.hpp
@@ -656,7 +656,7 @@ libsemigroups_la_SOURCES += src/to-knuth-bendix.cpp
 libsemigroups_la_SOURCES += src/to-todd-coxeter.cpp
 libsemigroups_la_SOURCES += src/todd-coxeter.cpp
 libsemigroups_la_SOURCES += src/ukkonen.cpp
-libsemigroups_la_SOURCES += src/words.cpp
+libsemigroups_la_SOURCES += src/word-range.cpp
 
 libsemigroups_la_SOURCES += src/detail/felsch-tree.cpp
 libsemigroups_la_SOURCES += src/detail/ke.cpp
@@ -770,7 +770,7 @@ EXTRA_PROGRAMS += test_types
 EXTRA_PROGRAMS += test_uf
 EXTRA_PROGRAMS += test_ukkonen
 EXTRA_PROGRAMS += test_word_graph
-EXTRA_PROGRAMS += test_words
+EXTRA_PROGRAMS += test_word_range
 
 EXTRA_PROGRAMS += bench_all
 EXTRA_PROGRAMS += bench_action
@@ -866,7 +866,7 @@ test_all_SOURCES += tests/test-types.cpp
 test_all_SOURCES += tests/test-uf.cpp
 test_all_SOURCES += tests/test-ukkonen.cpp
 test_all_SOURCES += tests/test-word-graph.cpp
-test_all_SOURCES += tests/test-words.cpp
+test_all_SOURCES += tests/test-word-range.cpp
 
 test_action_SOURCES =  tests/test-action.cpp
 test_action_SOURCES += tests/test-main.cpp
@@ -1143,9 +1143,9 @@ test_word_graph_SOURCES =  tests/test-word-graph.cpp
 test_word_graph_SOURCES += tests/test-main.cpp
 test_word_graph_SOURCES += tests/catch_amalgamated.cpp
 
-test_words_SOURCES =  tests/test-words.cpp
-test_words_SOURCES += tests/test-main.cpp
-test_words_SOURCES += tests/catch_amalgamated.cpp
+test_word_range_SOURCES =  tests/test-word-range.cpp
+test_word_range_SOURCES += tests/test-main.cpp
+test_word_range_SOURCES += tests/catch_amalgamated.cpp
 
 bench_all_SOURCES =  benchmarks/examples/cong-intf.cpp
 bench_all_SOURCES += benchmarks/examples/generators.cpp

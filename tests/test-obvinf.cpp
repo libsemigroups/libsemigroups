@@ -22,8 +22,8 @@
 #include "libsemigroups/exception.hpp"
 #include "test-main.hpp"
 
-#include "libsemigroups/obvinf.hpp"  // for IsObviouslyInfinite
-#include "libsemigroups/words.hpp"   // for operator""_w
+#include "libsemigroups/obvinf.hpp"      // for IsObviouslyInfinite
+#include "libsemigroups/word-range.hpp"  // for operator""_w
 
 namespace libsemigroups {
   namespace {

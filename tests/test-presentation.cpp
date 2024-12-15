@@ -51,7 +51,7 @@
 #include "libsemigroups/ranges.hpp"           // for chain, shortlex_compare
 #include "libsemigroups/to-presentation.hpp"  // for to_presentation
 #include "libsemigroups/types.hpp"            // for word_type, letter_type
-#include "libsemigroups/words.hpp"            // for operator+=, operator""_w
+#include "libsemigroups/word-range.hpp"       // for operator+=, operator""_w
 
 #include "libsemigroups/detail/containers.hpp"  // for StaticVector1, operat...
 #include "libsemigroups/detail/int-range.hpp"   // for IntRange

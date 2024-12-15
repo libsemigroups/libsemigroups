@@ -42,7 +42,7 @@
 #include "ranges.hpp"      // for is_input_range
 #include "types.hpp"       // for word_type
 #include "word-graph.hpp"  // for WordGraph
-#include "words.hpp"       // for number_of_words
+#include "word-range.hpp"  // for number_of_words
 
 #include "detail/containers.hpp"      // for DynamicArray2
 #include "detail/path-iterators.hpp"  // for default_postfix_increment

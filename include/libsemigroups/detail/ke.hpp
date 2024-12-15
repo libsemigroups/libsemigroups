@@ -37,7 +37,7 @@
 #include "libsemigroups/order.hpp"         // for shortlex_compare
 #include "libsemigroups/presentation.hpp"  // for to_word
 #include "libsemigroups/types.hpp"         // for word_type, tril
-#include "libsemigroups/words.hpp"         // for ToWord, ToString
+#include "libsemigroups/word-range.hpp"    // for ToWord, ToString
 
 namespace libsemigroups {
   namespace detail {

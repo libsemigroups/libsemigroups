@@ -57,7 +57,7 @@
 #include "to-presentation.hpp"  // for to_presentation
 #include "types.hpp"            // for word_type
 #include "word-graph.hpp"       // for WordGraph
-#include "words.hpp"            // for to_strings
+#include "word-range.hpp"       // for to_strings
 
 #include "detail/multi-string-view.hpp"  // for MultiStringView
 #include "detail/report.hpp"             // for Reporter, REPORT_DEFAULT, REP...

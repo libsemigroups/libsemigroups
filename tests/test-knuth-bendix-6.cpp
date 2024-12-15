@@ -46,7 +46,7 @@
 #include "libsemigroups/presentation.hpp"     // for add_rule
 #include "libsemigroups/to-froidure-pin.hpp"  // for to_froidure_pin
 #include "libsemigroups/types.hpp"            // for word_type
-#include "libsemigroups/words.hpp"            // for operator""_w
+#include "libsemigroups/word-range.hpp"       // for operator""_w
 
 #include "libsemigroups/detail/report.hpp"  // for ReportGuard
 

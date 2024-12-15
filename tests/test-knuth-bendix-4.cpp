@@ -55,7 +55,7 @@
 #include "libsemigroups/paths.hpp"            // for Paths
 #include "libsemigroups/presentation.hpp"     // for add_rule, Presentation
 #include "libsemigroups/word-graph.hpp"       // for WordGraph
-#include "libsemigroups/words.hpp"  // for Inner, StringRange, to_str...
+#include "libsemigroups/word-range.hpp"  // for Inner, StringRange, to_str...
 
 #include "libsemigroups/detail/report.hpp"  // for ReportGuard
 #include "libsemigroups/detail/stl.hpp"     // for apply_permutation

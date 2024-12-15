@@ -24,11 +24,11 @@
 #include "catch_amalgamated.hpp"  // for REQUIRE, REQUIRE_THROWS_AS
 #include "test-main.hpp"          // for LIBSEMIGROUPS_TEST_CASE
 
-#include "libsemigroups/constants.hpp"  // for operator==, POSITIVE_INFINITY
-#include "libsemigroups/exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
-#include "libsemigroups/types.hpp"      // for word_type
-#include "libsemigroups/ukkonen.hpp"    // for Ukkonen, Ukkonen::State
-#include "libsemigroups/words.hpp"      // for literals
+#include "libsemigroups/constants.hpp"   // for operator==, POSITIVE_INFINITY
+#include "libsemigroups/exception.hpp"   // for LIBSEMIGROUPS_EXCEPTION
+#include "libsemigroups/types.hpp"       // for word_type
+#include "libsemigroups/ukkonen.hpp"     // for Ukkonen, Ukkonen::State
+#include "libsemigroups/word-range.hpp"  // for literals
 
 namespace libsemigroups {
 

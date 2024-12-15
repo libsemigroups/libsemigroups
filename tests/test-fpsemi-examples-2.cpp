@@ -43,7 +43,7 @@
 #include "libsemigroups/to-presentation.hpp"  // for to_presentation
 #include "libsemigroups/types.hpp"            // for congruence_kind, word_type
 #include "libsemigroups/word-graph.hpp"       // for is_complete
-#include "libsemigroups/words.hpp"            // for operator""_w, to_string
+#include "libsemigroups/word-range.hpp"       // for operator""_w, to_string
 
 #include "libsemigroups/detail/eigen.hpp"  // // for DenseBase::row, DenseBa...
 #include "libsemigroups/detail/fmt.hpp"    // for format, print

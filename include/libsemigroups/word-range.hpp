@@ -281,7 +281,7 @@ namespace libsemigroups {
   //! \brief Class for generating words in a given range and in a particular
   //! order.
   //!
-  //! Defined in `words.hpp`.
+  //! Defined in `word-range.hpp`.
   //!
   //! This class implements a range object for the lower level
   //! functions \ref cbegin_wislo and \ref cbegin_wilo. The purpose of this
@@ -739,7 +739,7 @@ namespace libsemigroups {
   //! \brief Class for converting strings to \ref word_type with specified
   //! alphabet.
   //!
-  //! Defined in `words.hpp`.
+  //! Defined in `word-range.hpp`.
   //!
   //! An instance of this class is used to convert from std::string to \ref
   //! word_type. The characters in the string are converted to integers
@@ -1075,7 +1075,7 @@ namespace libsemigroups {
   //! \brief Class for converting \ref word_type into std::string with specified
   //! alphabet.
   //!
-  //! Defined in `words.hpp`.
+  //! Defined in `word-range.hpp`.
   //!
   //! An instance of this class is used to convert from \ref word_type to
   //! std::string. The letters in the word are converted to characters
@@ -1481,7 +1481,7 @@ namespace libsemigroups {
   //! \brief Class for generating strings in a given range and in a particular
   //! order.
   //!
-  //! Defined in `words.hpp`.
+  //! Defined in `word-range.hpp`.
   //!
   //! This class implements a range object for strings and produces the same
   //! output as `WordRange() | ToString("ab")`, but is more convenient in some
@@ -1906,7 +1906,7 @@ namespace libsemigroups {
   //!
   //! \brief Namespace containing some custom literals for creating words.
   //!
-  //! Defined in `words.hpp`.
+  //! Defined in `word-range.hpp`.
   //!
   //! This namespace contains some functions for creating \ref word_type objects
   //! in a compact form.
@@ -1987,7 +1987,7 @@ namespace libsemigroups {
   //!
   //! \brief Namespace containing some operators for creating words.
   //!
-  //! Defined in `words.hpp`.
+  //! Defined in `word-range.hpp`.
   //!
   //! This namespace contains some functions for creating \ref word_type objects
   //! in a compact form.
@@ -2003,7 +2003,7 @@ namespace libsemigroups {
 
     //! \brief Returns the index of a character in human readable order.
     //!
-    //! Defined in `words.hpp`.
+    //! Defined in `word-range.hpp`.
     //!
     //! This function is the inverse of \ref words::human_readable_letter, see
     //! the documentation of that function for more details.

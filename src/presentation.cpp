@@ -30,7 +30,7 @@
 #include "libsemigroups/presentation.hpp"  // for Presentation, to_string, to_word
 #include "libsemigroups/to-presentation.hpp"  // for to_presentation
 #include "libsemigroups/types.hpp"            // for word_type
-#include "libsemigroups/words.hpp"            // for human_readable_letter
+#include "libsemigroups/word-range.hpp"       // for human_readable_letter
 
 #include "libsemigroups/detail/fmt.hpp"  // for format
 
