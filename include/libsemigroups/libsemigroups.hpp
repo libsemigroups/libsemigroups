@@ -74,6 +74,6 @@
 #include "types.hpp"
 #include "ukkonen.hpp"
 #include "word-graph.hpp"
-#include "words.hpp"
+#include "word-range.hpp"
 
 #endif  // LIBSEMIGROUPS_LIBSEMIGROUPS_HPP_

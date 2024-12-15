@@ -33,7 +33,7 @@
 #include "libsemigroups/constants.hpp"  // for UNDEFINED
 #include "libsemigroups/debug.hpp"      // for LIBSEMIGROUPS_ASSERT
 #include "libsemigroups/todd-coxeter.hpp"
-#include "libsemigroups/words.hpp"  // for ToWord
+#include "libsemigroups/word-range.hpp"  // for ToWord
 
 #include "libsemigroups/detail/eigen.hpp"
 

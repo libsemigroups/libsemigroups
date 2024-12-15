@@ -53,7 +53,7 @@
 #include "libsemigroups/to-presentation.hpp"  // for to_presentation
 #include "libsemigroups/transf.hpp"           // for Transf
 #include "libsemigroups/types.hpp"            // for word_type, letter_type
-#include "libsemigroups/words.hpp"            // for operator""_w
+#include "libsemigroups/word-range.hpp"       // for operator""_w
 
 #include "libsemigroups/detail/kbe.hpp"     // for KBE
 #include "libsemigroups/detail/report.hpp"  // for ReportGuard

@@ -42,14 +42,14 @@
 #include <utility>           // for move, pair
 #include <vector>            // for vector, operator!=
 
-#include "adapters.hpp"   // for Hash, EqualTo
-#include "constants.hpp"  // for Max, UNDEFINED, operator==
-#include "debug.hpp"      // for LIBSEMIGROUPS_ASSERT
-#include "order.hpp"      // for ShortLexCompare
-#include "ranges.hpp"     // for seq, operator|, rx, take, chain, is_sorted
-#include "types.hpp"      // for word_type
-#include "ukkonen.hpp"    // for GreedyReduceHelper, Ukkonen
-#include "words.hpp"      // for operator+
+#include "adapters.hpp"    // for Hash, EqualTo
+#include "constants.hpp"   // for Max, UNDEFINED, operator==
+#include "debug.hpp"       // for LIBSEMIGROUPS_ASSERT
+#include "order.hpp"       // for ShortLexCompare
+#include "ranges.hpp"      // for seq, operator|, rx, take, chain, is_sorted
+#include "types.hpp"       // for word_type
+#include "ukkonen.hpp"     // for GreedyReduceHelper, Ukkonen
+#include "word-range.hpp"  // for operator+
 
 #include "detail/fmt.hpp"     // for format
 #include "detail/string.hpp"  // for maximum_common_prefix

@@ -234,7 +234,7 @@ namespace libsemigroups {
 
     // Returns the string s to the power N, not optimized, complexity is O(N *
     // |s|)
-    // TODO move to words.hpp and/or remove
+    // TODO move to word-range.hpp and/or remove
     std::string power_string(std::string const& s, size_t N);
 
     std::string group_digits(int64_t num);

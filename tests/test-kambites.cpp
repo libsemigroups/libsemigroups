@@ -30,7 +30,7 @@
 #include "libsemigroups/to-froidure-pin.hpp"  // for to_froidure_pin
 #include "libsemigroups/transf.hpp"           // for LeastTransf
 #include "libsemigroups/types.hpp"            // for tril etc
-#include "libsemigroups/words.hpp"            // for number_of_words
+#include "libsemigroups/word-range.hpp"       // for number_of_words
 
 #include "libsemigroups/detail/report.hpp"  // for ReportGuard
 #include "libsemigroups/detail/string.hpp"  // for random_string etc

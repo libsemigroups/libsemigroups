@@ -45,7 +45,7 @@
 #include "libsemigroups/to-froidure-pin.hpp"
 #include "libsemigroups/types.hpp"       // for word_type, relation_type
 #include "libsemigroups/word-graph.hpp"  // for WordGraph, make, pow
-#include "libsemigroups/words.hpp"       // for operator""_w, WordRange
+#include "libsemigroups/word-range.hpp"  // for operator""_w, WordRange
 
 #include "libsemigroups/detail/report.hpp"  // for ReportGuard
 #include "libsemigroups/detail/stl.hpp"     // for hash

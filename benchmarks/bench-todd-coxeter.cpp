@@ -31,7 +31,7 @@
 #include "libsemigroups/presentation.hpp"
 #include "libsemigroups/todd-coxeter.hpp"  // for ToddCoxeter, ToddCoxeter::...
 #include "libsemigroups/types.hpp"         // for word_type, letter_type
-#include "libsemigroups/words.hpp"         // for operator""_p
+#include "libsemigroups/word-range.hpp"    // for operator""_p
 
 #include "libsemigroups/detail/report.hpp"  // for ReportGuard
 //

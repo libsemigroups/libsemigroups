@@ -106,7 +106,7 @@ pkginclude_HEADERS += include/libsemigroups/ukkonen.hpp
 pkginclude_HEADERS += include/libsemigroups/ukkonen.tpp
 pkginclude_HEADERS += include/libsemigroups/word-graph.hpp
 pkginclude_HEADERS += include/libsemigroups/word-graph.tpp
-pkginclude_HEADERS += include/libsemigroups/words.hpp
+pkginclude_HEADERS += include/libsemigroups/word-range.hpp
 
 detailincludedir = $(includedir)/libsemigroups/detail
 detailinclude_HEADERS =  include/libsemigroups/detail/bruidhinn-traits.hpp
@@ -656,7 +656,7 @@ libsemigroups_la_SOURCES += src/to-knuth-bendix.cpp
 libsemigroups_la_SOURCES += src/to-todd-coxeter.cpp
 libsemigroups_la_SOURCES += src/todd-coxeter.cpp
 libsemigroups_la_SOURCES += src/ukkonen.cpp
-libsemigroups_la_SOURCES += src/words.cpp
+libsemigroups_la_SOURCES += src/word-range.cpp
 
 libsemigroups_la_SOURCES += src/detail/felsch-tree.cpp
 libsemigroups_la_SOURCES += src/detail/ke.cpp

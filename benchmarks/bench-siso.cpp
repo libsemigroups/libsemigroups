@@ -19,8 +19,8 @@
 #include "bench-main.hpp"  // for LIBSEMIGROUPS_BENCHMARK
 #include "catch.hpp"       // for REQUIRE, REQUIRE_NOTHROW, REQUIRE_THROWS_AS
 
-#include "libsemigroups/order.hpp"  // for LexicographicalCompare
-#include "libsemigroups/words.hpp"  // for number_of_words
+#include "libsemigroups/order.hpp"       // for LexicographicalCompare
+#include "libsemigroups/word-range.hpp"  // for number_of_words
 
 namespace libsemigroups {
 

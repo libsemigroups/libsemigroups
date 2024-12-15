@@ -40,7 +40,7 @@
 #include "libsemigroups/to-froidure-pin.hpp"  // for to_froidure_pin
 #include "libsemigroups/todd-coxeter.hpp"     // for ToddCoxeter
 #include "libsemigroups/types.hpp"            // for congruence_kind, word_type
-#include "libsemigroups/words.hpp"            // for operator""_w
+#include "libsemigroups/word-range.hpp"       // for operator""_w
 
 #include "libsemigroups/detail/fmt.hpp"  // for format, print                                           //
 #include "libsemigroups/detail/report.hpp"  // for ReportGuard

@@ -29,7 +29,7 @@
 #include "libsemigroups/kambites.hpp"      // for Kambites
 #include "libsemigroups/knuth-bendix.hpp"  // for KnuthBendix
 #include "libsemigroups/ranges.hpp"        // for operator|, to_vector
-#include "libsemigroups/words.hpp"         // for StringRange
+#include "libsemigroups/word-range.hpp"    // for StringRange
 
 namespace libsemigroups {
   using detail::MultiStringView;
