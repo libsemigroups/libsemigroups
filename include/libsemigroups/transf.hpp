@@ -149,7 +149,7 @@ namespace libsemigroups {
     //! \returns
     //! A value of type \ref point_type.
     //!
-    //! \exception
+    //! \exceptions
     //! \noexcept
     [[nodiscard]] static point_type undef() noexcept {
       return static_cast<point_type>(UNDEFINED);

@@ -98,7 +98,7 @@ namespace libsemigroups {
       //!
       //! \param id the id of the new rule.
       //!
-      //! \exception
+      //! \exceptions
       //! \no_libsemigroups_except
       explicit Rule(int64_t id);
 
@@ -124,7 +124,7 @@ namespace libsemigroups {
       //!
       //! \returns A pointer to the left-hand side.
       //!
-      //! \exception
+      //! \exceptions
       //! \noexcept
       //!
       //! \complexity
@@ -144,7 +144,7 @@ namespace libsemigroups {
       //!
       //! \returns A pointer to the right-hand side.
       //!
-      //! \exception
+      //! \exceptions
       //! \noexcept
       //!
       //! \complexity
@@ -163,7 +163,7 @@ namespace libsemigroups {
       //!
       //! \returns A value of type `bool`.
       //!
-      //! \exception
+      //! \exceptions
       //! \noexcept
       //!
       //! \complexity
@@ -178,7 +178,7 @@ namespace libsemigroups {
       //!
       //! \returns A value of type `bool`.
       //!
-      //! \exception
+      //! \exceptions
       //! \noexcept
       //!
       //! \complexity
@@ -196,7 +196,7 @@ namespace libsemigroups {
       //!
       //! Deactivate a rule, if it is active.
       //!
-      //! \exception
+      //! \exceptions
       //! \noexcept
       //!
       //! \complexity
@@ -210,7 +210,7 @@ namespace libsemigroups {
       //!
       //! Activate a rule, if it is inactive.
       //!
-      //! \exception
+      //! \exceptions
       //! \noexcept
       //!
       //! \complexity
@@ -226,7 +226,7 @@ namespace libsemigroups {
       //!
       //! \param id the id to set.
       //!
-      //! \exception
+      //! \exceptions
       //! \noexcept
       //!
       //! \complexity
@@ -269,7 +269,7 @@ namespace libsemigroups {
       //! \complexity
       //! Constant.
       //!
-      //! \exception
+      //! \exceptions
       //! \noexcept
       [[nodiscard]] int64_t id() const noexcept {
         LIBSEMIGROUPS_ASSERT(_id != 0);
