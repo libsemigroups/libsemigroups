@@ -640,7 +640,7 @@ namespace libsemigroups {
     //! \complexity
     //! Constant.
     //!
-    //! \exception LibsemigroupsException if \p source or \p a is not
+    //! \throws LibsemigroupsException if \p source or \p a is not
     //! valid.
     // Not noexcept because throw_if_node_out_of_bounds/label aren't
     [[nodiscard]] node_type target(node_type source, label_type a) const;
@@ -1460,7 +1460,7 @@ namespace libsemigroups {
     //! \param first iterator into a word.
     //! \param last iterator into a word.
     //!
-    //! \exception
+    //! \exceptions
     //! \noexcept
     //!
     //! \returns A value of type \p Node1.
@@ -1492,7 +1492,7 @@ namespace libsemigroups {
     //! \param from the source node.
     //! \param path the word.
     //!
-    //! \exception
+    //! \exceptions
     //! \noexcept
     //!
     //! \returns A value of type \p Node1.
@@ -2065,7 +2065,7 @@ namespace libsemigroups {
     //! \param first iterator into a word.
     //! \param last iterator into a word.
     //!
-    //! \exception
+    //! \exceptions
     //! \noexcept
     //!
     //! \returns A pair consisting of the last node reached and an iterator

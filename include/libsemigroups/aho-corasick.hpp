@@ -725,7 +725,7 @@ namespace libsemigroups {
   //!
   //! \returns A string containing a representation of \p ac.
   //!
-  //! \exception
+  //! \exceptions
   //! \no_libsemigroups_except
   // TODO (now) rename this to_human_readable_repr
   std::string to_string(AhoCorasick& ac);
