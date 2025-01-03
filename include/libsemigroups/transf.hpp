@@ -243,9 +243,9 @@ namespace libsemigroups {
     //! \brief Make an instance of \c Subclass with degree \c 0.
     //!
     //! This is equivalent to default constructing a \c Subclass instance and is
-    //! here for consistency of interface only. The \c make static member
-    //! functions check their arguments, and the constructed \c Subclass
-    //! instance for validity, but in this case there's nothing to check.
+    //! here for consistency of interface only. The ``to_[Subclass]`` functions
+    //! check their arguments, and the constructed \c Subclass instance for
+    //! validity, but in this case there's nothing to check.
     //!
     //! \tparam Subclass the type of the return value.
     //!
@@ -1016,9 +1016,9 @@ namespace libsemigroups {
       typename Scalar
       = std::conditional_t<N == 0, uint32_t, typename SmallestInteger<N>::type>>
   class Transf : public PTransf<N, Scalar> {
+   public:
     using base_type = PTransf<N, Scalar>;
 
-   public:
     //! \brief Type of the image values.
     //!
     //! Also the template parameter \c Scalar.
@@ -1031,28 +1031,6 @@ namespace libsemigroups {
 
     using PTransf<N, Scalar>::PTransf;
     using base_type::degree;
-
-    //! \copydoc PTransfBase::make()
-    //!
-    //! \note \c Subclass is \c Transf !!
-    [[nodiscard]] static Transf make() {
-      return base_type::template make<Transf>();
-    }
-
-    //! \copydoc PTransfBase::make(OtherContainer&&)
-    template <typename OtherContainer>
-    [[nodiscard]] static Transf make(OtherContainer&& cont) {
-      return base_type::template make<Transf>(
-          std::forward<OtherContainer>(cont));
-    }
-
-    //! \copydoc PTransfBase::make(std::initializer_list<OtherScalar>)
-    //! \throws LibsemigroupsException if the value \ref UNDEFINED belongs to \p
-    //! cont.
-    template <typename OtherScalar>
-    [[nodiscard]] static Transf make(std::initializer_list<OtherScalar> cont) {
-      return make<std::initializer_list<OtherScalar>>(std::move(cont));
-    }
 
     //! \brief Multiply two transformations and store the product in \c this.
     //!
@@ -1089,6 +1067,42 @@ namespace libsemigroups {
       return base_type::template one<Transf>(M);
     }
   };
+
+  //! \copydoc PTransfBase::make()
+  //!
+  //! \note \c Subclass is \c Transf !!
+  template <
+      size_t N = 0,
+      typename Scalar
+      = std::conditional_t<N == 0, uint32_t, typename SmallestInteger<N>::type>>
+  [[nodiscard]] Transf<N, Scalar> to_transf() {
+    return Transf<N, Scalar>::base_type::template make<Transf<N, Scalar>>();
+  }
+
+  //! \copydoc PTransfBase::make(OtherContainer&&)
+  template <
+      size_t N = 0,
+      typename Scalar
+      = std::conditional_t<N == 0, uint32_t, typename SmallestInteger<N>::type>,
+      typename OtherContainer>
+  [[nodiscard]] Transf<N, Scalar> to_transf(OtherContainer&& cont) {
+    return Transf<N, Scalar>::base_type::template make<Transf<N, Scalar>>(
+        std::forward<OtherContainer>(cont));
+  }
+
+  //! \copydoc to_transf(OtherContainer&&)
+  //! \throws LibsemigroupsException if the value \ref UNDEFINED belongs to \p
+  //! cont.
+  template <
+      size_t N = 0,
+      typename Scalar
+      = std::conditional_t<N == 0, uint32_t, typename SmallestInteger<N>::type>,
+      typename OtherScalar>
+  [[nodiscard]] Transf<N, Scalar>
+  to_transf(std::initializer_list<OtherScalar> cont) {
+    return to_transf<N, Scalar, std::initializer_list<OtherScalar>>(
+        std::move(cont));
+  }
 
   namespace detail {
     template <typename T>

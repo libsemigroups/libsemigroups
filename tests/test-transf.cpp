@@ -62,7 +62,7 @@ namespace libsemigroups {
       } else {
         REQUIRE_THROWS_AS(x.increase_degree_by(10), LibsemigroupsException);
       }
-      auto t = Transf<>::make({9, 7, 3, 5, 3, 4, 2, 7, 7, 1});
+      auto t = to_transf({9, 7, 3, 5, 3, 4, 2, 7, 7, 1});
       REQUIRE(t.hash_value() != 0);
       REQUIRE_NOTHROW(t.undef());
     }
@@ -136,21 +136,19 @@ namespace libsemigroups {
                           "exceptions (dynamic)",
                           "[quick][transf]") {
     using point_type = typename Transf<>::point_type;
-    REQUIRE_NOTHROW(Transf<>::make());
-    REQUIRE_NOTHROW(Transf<>::make({0}));
-    REQUIRE_THROWS_AS(Transf<>::make({1}), LibsemigroupsException);
+    REQUIRE_NOTHROW(to_transf());
+    REQUIRE_NOTHROW(to_transf({0}));
+    REQUIRE_THROWS_AS(to_transf({1}), LibsemigroupsException);
 
-    REQUIRE_NOTHROW(Transf<>::make({0, 1, 2}));
-    REQUIRE_NOTHROW(
-        Transf<>::make(std::initializer_list<point_type>({0, 1, 2})));
-    REQUIRE_NOTHROW(Transf<>::make({0, 1, 2}));
+    REQUIRE_NOTHROW(to_transf({0, 1, 2}));
+    REQUIRE_NOTHROW(to_transf(std::initializer_list<point_type>({0, 1, 2})));
+    REQUIRE_NOTHROW(to_transf({0, 1, 2}));
 
-    REQUIRE_THROWS_AS(Transf<>::make({1, 2, 3}), LibsemigroupsException);
-    REQUIRE_THROWS_AS(
-        Transf<>::make(std::initializer_list<point_type>({1, 2, 3})),
-        LibsemigroupsException);
+    REQUIRE_THROWS_AS(to_transf({1, 2, 3}), LibsemigroupsException);
+    REQUIRE_THROWS_AS(to_transf(std::initializer_list<point_type>({1, 2, 3})),
+                      LibsemigroupsException);
 
-    REQUIRE_THROWS_AS(Transf<>::make(std::initializer_list<point_type>(
+    REQUIRE_THROWS_AS(to_transf(std::initializer_list<point_type>(
                           {UNDEFINED, UNDEFINED, UNDEFINED})),
                       LibsemigroupsException);
   }
@@ -159,15 +157,15 @@ namespace libsemigroups {
                           "003",
                           "exceptions (static)",
                           "[quick][transf]") {
-    REQUIRE_NOTHROW(Transf<1>::make({0}));
-    REQUIRE_THROWS_AS(Transf<1>::make({1}), LibsemigroupsException);
-    REQUIRE_THROWS_AS(Transf<2>::make({1}), LibsemigroupsException);
+    REQUIRE_NOTHROW(to_transf({0}));
+    REQUIRE_THROWS_AS(to_transf({1}), LibsemigroupsException);
+    REQUIRE_THROWS_AS(to_transf({1}), LibsemigroupsException);
 
-    REQUIRE_NOTHROW(Transf<3>::make({0, 1, 2}));
+    REQUIRE_NOTHROW(to_transf({0, 1, 2}));
 
-    REQUIRE_THROWS_AS(Transf<3>::make({1, 2, 3}), LibsemigroupsException);
+    REQUIRE_THROWS_AS(to_transf({1, 2, 3}), LibsemigroupsException);
 
-    REQUIRE_THROWS_AS(Transf<3>::make({UNDEFINED, UNDEFINED, UNDEFINED}),
+    REQUIRE_THROWS_AS(to_transf({UNDEFINED, UNDEFINED, UNDEFINED}),
                       LibsemigroupsException);
   }
 
