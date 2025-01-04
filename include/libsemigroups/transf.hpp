@@ -1481,9 +1481,9 @@ namespace libsemigroups {
       typename Scalar
       = std::conditional_t<N == 0, uint32_t, typename SmallestInteger<N>::type>>
   class Perm : public Transf<N, Scalar> {
+   public:
     using base_type = PTransf<N, Scalar>;
 
-   public:
     //! \brief Type of the image values.
     //!
     //! Also the template parameter \c Scalar.
@@ -1497,28 +1497,45 @@ namespace libsemigroups {
     using Transf<N, Scalar>::Transf;
     using base_type::degree;
 
-    //! \copydoc Transf::make(OtherContainer&&)
-    //! \throws LibsemigroupsException if there are repeated values in \p cont.
-    template <typename OtherContainer>
-    [[nodiscard]] static Perm make(OtherContainer&& cont) {
-      return base_type::template make<Perm>(std::forward<OtherContainer>(cont));
-    }
-
-    //! \copydoc Transf::make()
-    [[nodiscard]] static Perm make() {
-      return base_type::template make<Perm>();
-    }
-
-    //! \copydoc make(OtherContainer&&)
-    [[nodiscard]] static Perm make(std::initializer_list<point_type> cont) {
-      return make<std::initializer_list<point_type>>(std::move(cont));
-    }
-
     //! \copydoc Transf::one(size_t)
     [[nodiscard]] static Perm one(size_t M) {
       return base_type::template one<Perm>(M);
     }
   };
+
+  //! \copydoc PTransfBase::make(OtherContainer&&)
+  //! \throws LibsemigroupsException if there are repeated values in \p cont.
+  template <
+      size_t N = 0,
+      typename Scalar
+      = std::conditional_t<N == 0, uint32_t, typename SmallestInteger<N>::type>,
+      typename OtherContainer>
+  [[nodiscard]] Perm<N, Scalar> to_perm(OtherContainer&& cont) {
+    return Perm<N, Scalar>::base_type::template make<Perm<N, Scalar>>(
+        std::forward<OtherContainer>(cont));
+  }
+
+  //! \copydoc PTransfBase::make()
+  template <
+      size_t N = 0,
+      typename Scalar
+      = std::conditional_t<N == 0, uint32_t, typename SmallestInteger<N>::type>>
+  [[nodiscard]] Perm<N, Scalar> to_perm() {
+    return Perm<N, Scalar>::base_type::template make<Perm<N, Scalar>>();
+  }
+
+  //! \copydoc to_perm(OtherContainer&&)
+  template <
+      size_t N = 0,
+      typename Scalar
+      = std::conditional_t<N == 0, uint32_t, typename SmallestInteger<N>::type>>
+  [[nodiscard]] Perm<N, Scalar>
+  to_perm(std::initializer_list<typename Perm<N, Scalar>::point_type> cont) {
+    return to_perm<N,
+                   Scalar,
+                   std::initializer_list<typename Perm<N, Scalar>::point_type>>(
+        std::move(cont));
+  }
 
   ////////////////////////////////////////////////////////////////////////
   // Perm helpers

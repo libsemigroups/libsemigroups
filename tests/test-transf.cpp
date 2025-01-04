@@ -278,36 +278,36 @@ namespace libsemigroups {
                           "008",
                           "exceptions (dynamic)",
                           "[quick][perm]") {
-    REQUIRE_NOTHROW(Perm<>::make({}));
-    REQUIRE_NOTHROW(Perm<>::make({0}));
-    REQUIRE_NOTHROW(Perm<>::make({0, 1}));
-    REQUIRE_NOTHROW(Perm<>::make({1, 0}));
-    REQUIRE_NOTHROW(Perm<>::make({1, 4, 0, 3, 2}));
+    REQUIRE_NOTHROW(to_perm<>({}));
+    REQUIRE_NOTHROW(to_perm<>({0}));
+    REQUIRE_NOTHROW(to_perm<>({0, 1}));
+    REQUIRE_NOTHROW(to_perm<>({1, 0}));
+    REQUIRE_NOTHROW(to_perm<>({1, 4, 0, 3, 2}));
 
-    REQUIRE_THROWS_AS(Perm<>::make({1, 2}), LibsemigroupsException);
-    REQUIRE_THROWS_AS(Perm<>::make({1, 0, 3}), LibsemigroupsException);
-    REQUIRE_THROWS_AS(Perm<>::make({1, 0, 3, 6, 4}), LibsemigroupsException);
-    REQUIRE_THROWS_AS(Perm<>::make({1, 5, 0, 3, 2}), LibsemigroupsException);
-    REQUIRE_THROWS_AS(Perm<>::make({0, 1, 2, 3, 0}), LibsemigroupsException);
+    REQUIRE_THROWS_AS(to_perm<>({1, 2}), LibsemigroupsException);
+    REQUIRE_THROWS_AS(to_perm<>({1, 0, 3}), LibsemigroupsException);
+    REQUIRE_THROWS_AS(to_perm<>({1, 0, 3, 6, 4}), LibsemigroupsException);
+    REQUIRE_THROWS_AS(to_perm<>({1, 5, 0, 3, 2}), LibsemigroupsException);
+    REQUIRE_THROWS_AS(to_perm<>({0, 1, 2, 3, 0}), LibsemigroupsException);
   }
 
   LIBSEMIGROUPS_TEST_CASE("Perm",
                           "009",
                           "exceptions (static)",
                           "[quick][perm]") {
-    REQUIRE_NOTHROW(Perm<1>::make({0}));
-    REQUIRE_NOTHROW(Perm<2>::make({0, 1}));
-    REQUIRE_NOTHROW(Perm<2>::make({1, 0}));
-    REQUIRE_NOTHROW(Perm<5>::make({1, 4, 0, 3, 2}));
+    REQUIRE_NOTHROW(to_perm<1>({0}));
+    REQUIRE_NOTHROW(to_perm<2>({0, 1}));
+    REQUIRE_NOTHROW(to_perm<2>({1, 0}));
+    REQUIRE_NOTHROW(to_perm<5>({1, 4, 0, 3, 2}));
 
-    REQUIRE_THROWS_AS(Perm<1>::make({1, 2}), LibsemigroupsException);
-    REQUIRE_THROWS_AS(Perm<2>::make({1, 2}), LibsemigroupsException);
-    REQUIRE_THROWS_AS(Perm<3>::make({1, 0, 3}), LibsemigroupsException);
-    REQUIRE_THROWS_AS(Perm<5>::make({1, 0, 3, 6, 4}), LibsemigroupsException);
-    REQUIRE_THROWS_AS(Perm<5>::make({1, 5, 0, 3, 2}), LibsemigroupsException);
-    REQUIRE_THROWS_AS(Perm<5>::make({0, 1, 2, 3, 0}), LibsemigroupsException);
+    REQUIRE_THROWS_AS(to_perm<1>({1, 2}), LibsemigroupsException);
+    REQUIRE_THROWS_AS(to_perm<2>({1, 2}), LibsemigroupsException);
+    REQUIRE_THROWS_AS(to_perm<3>({1, 0, 3}), LibsemigroupsException);
+    REQUIRE_THROWS_AS(to_perm<5>({1, 0, 3, 6, 4}), LibsemigroupsException);
+    REQUIRE_THROWS_AS(to_perm<5>({1, 5, 0, 3, 2}), LibsemigroupsException);
+    REQUIRE_THROWS_AS(to_perm<5>({0, 1, 2, 3, 0}), LibsemigroupsException);
 
-    REQUIRE_NOTHROW(Perm<5>::make());
+    REQUIRE_NOTHROW(to_perm<5>());
   }
 
   LIBSEMIGROUPS_TEST_CASE("LeastTransf etc",
