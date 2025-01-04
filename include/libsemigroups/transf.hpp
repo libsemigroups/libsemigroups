@@ -269,7 +269,8 @@ namespace libsemigroups {
     //! \param cont the container.
     //!
     //! \throw LibsemigroupsException if any of the following hold:
-    //! * the size of \p cont is incompatible with \ref container_type.
+    //! * the size of \p cont is incompatible with \ref
+    //! PTransfBase::container_type.
     //! * any value in \p cont exceeds `cont.size()` and is not equal to
     //!   UNDEFINED.
     //!
@@ -291,7 +292,8 @@ namespace libsemigroups {
     //! \param cont the initializer list.
     //!
     //! \throw LibsemigroupsException if any of the following hold:
-    //! * the size of \p cont is incompatible with \ref container_type.
+    //! * the size of \p cont is incompatible with \ref
+    //! PTransfBase::container_type.
     //! * any value in \p cont exceeds `cont.size()` and is not equal to
     //!   UNDEFINED.
     //!
@@ -909,7 +911,7 @@ namespace libsemigroups {
   //! and the default value of \p Scalar is the smallest integer type able to
   //! hold \c N. See also SmallestInteger.
   //!
-  //! \tparam N  the degree (default: \c 0)
+  //! \tparam N the degree (default: \c 0)
   //! \tparam Scalar an unsigned integer type (the type of the image values)
   template <
       size_t N = 0,
@@ -952,7 +954,7 @@ namespace libsemigroups {
   //! \ingroup transf_group
   //! \brief Validate a partial transformation.
   //!
-  //! \tparam N  the degree
+  //! \tparam N the degree
   //! \tparam Scalar an unsigned integer type (the type of the image values)
   //!
   //! \param f the partial transformation to validate.
@@ -1005,7 +1007,7 @@ namespace libsemigroups {
   //! \p N is not \c 0, then the default value of \p Scalar is the smallest
   //! integer type able to hold \c N. See also SmallestInteger.
   //!
-  //! \tparam N  the degree (default: \c 0)
+  //! \tparam N the degree (default: \c 0)
   //! \tparam Scalar an unsigned integer type (the type of the image values)
   //!
   //! This class inherits from either StaticPTransf or DynamicPTransf, see the
@@ -1017,6 +1019,9 @@ namespace libsemigroups {
       = std::conditional_t<N == 0, uint32_t, typename SmallestInteger<N>::type>>
   class Transf : public PTransf<N, Scalar> {
    public:
+    //! \brief Type of the parent class.
+    //!
+    //! Type of the parent class.
     using base_type = PTransf<N, Scalar>;
 
     //! \brief Type of the image values.
@@ -1043,11 +1048,14 @@ namespace libsemigroups {
     //! \no_libsemigroups_except
     //!
     //! \complexity
-    //! Linear in \ref degree.
+    //! Linear in the degree of the transformation.
     //!
     //! \warning
     //! No checks are made on whether or not the parameters are compatible. If
     //! \p f and \p g have different degrees, then bad things will happen.
+    //!
+    //! \sa
+    //! \ref PTransfBase::degree
     void product_inplace(Transf const& f, Transf const& g);
 
     //! \brief Returns the identity transformation on the given number of
@@ -1068,9 +1076,19 @@ namespace libsemigroups {
     }
   };
 
-  //! \copydoc PTransfBase::make()
+  //! \relates Transf
   //!
-  //! \note \c Subclass is \c Transf !!
+  //! \brief Make an instance of \ref Transf with degree \c 0.
+  //!
+  //! This is equivalent to default constructing a \ref Transf instance and is
+  //! here for consistency of interface only. The ``to_...`` functions
+  //! check their arguments, and the constructed  instance for validity, but in
+  //! this case there's nothing to check.
+  //!
+  //! \tparam N the degree (default: \c 0)
+  //! \tparam Scalar an unsigned integer type (the type of the image values)
+  //!
+  //! \returns A \ref Transf instance with degree \c 0.
   template <
       size_t N = 0,
       typename Scalar
@@ -1079,7 +1097,30 @@ namespace libsemigroups {
     return Transf<N, Scalar>::base_type::template make<Transf<N, Scalar>>();
   }
 
-  //! \copydoc PTransfBase::make(OtherContainer&&)
+  //! \relates Transf
+  //!
+  //! \brief Construct from universal reference container and validate.
+  //!
+  //! Constructs a \ref Transf initialized using the container \p cont as
+  //! follows: the image of the point \c i under the transformation is the value
+  //! in position \c i of the container \p cont.
+  //!
+  //! \tparam N the degree (default: \c 0)
+  //! \tparam Scalar an unsigned integer type (the type of the image values)
+  //! \tparam OtherContainer universal reference for the type of the container
+  //! (default: Container).
+  //!
+  //! \param cont the container.
+  //!
+  //! \returns A \ref Transf instance with degree \c N.
+  //!
+  //! \throw LibsemigroupsException if any of the following hold:
+  //! * the size of \p cont is incompatible with \ref container_type.
+  //! * any value in \p cont exceeds `cont.size()` and is not equal to
+  //!   UNDEFINED.
+  //!
+  //! \complexity
+  //! Linear in the size of the container \p cont.
   template <
       size_t N = 0,
       typename Scalar
@@ -1090,7 +1131,10 @@ namespace libsemigroups {
         std::forward<OtherContainer>(cont));
   }
 
+  //! \relates Transf
+  //!
   //! \copydoc to_transf(OtherContainer&&)
+  //!
   //! \throws LibsemigroupsException if the value \ref UNDEFINED belongs to \p
   //! cont.
   template <
@@ -1178,7 +1222,7 @@ namespace libsemigroups {
   //! \p N is not \c 0, then the default value of \p Scalar is the smallest
   //! integer type able to hold \c N. See also SmallestInteger.
   //!
-  //! \tparam N  the degree (default: \c 0)
+  //! \tparam N the degree (default: \c 0)
   //! \tparam Scalar an unsigned integer type (the type of the image values)
   //! (default: \c uint32_t)
   //!
@@ -1191,7 +1235,11 @@ namespace libsemigroups {
       = std::conditional_t<N == 0, uint32_t, typename SmallestInteger<N>::type>>
   class PPerm : public PTransf<N, Scalar> {
    public:
+    //! \brief Type of the parent class.
+    //!
+    //! Type of the parent class.
     using base_type = PTransf<N, Scalar>;
+
     //! \brief Type of the image values.
     //!
     //! Also the template parameter \c Scalar.
@@ -1227,7 +1275,7 @@ namespace libsemigroups {
     //! No checks whatsoever are performed on the validity of the arguments.
     //!
     //! \sa
-    //! \ref make.
+    //! \ref to_pperm.
     //
     // Note: we use vectors here not container_type (which might be array),
     // because the length of dom and img might not equal degree().
@@ -1270,9 +1318,19 @@ namespace libsemigroups {
     }
   };
 
-  //! \copydoc PTransfBase::make()
+  //! \relates PPerm
   //!
-  //! \note \c Subclass is \c PPerm !!
+  //! \brief Make an instance of \ref PPerm with degree \c 0.
+  //!
+  //! This is equivalent to default constructing a \ref PPerm instance and is
+  //! here for consistency of interface only. The ``to_...`` functions
+  //! check their arguments, and the constructed  instance for validity, but in
+  //! this case there's nothing to check.
+  //!
+  //! \tparam N the degree (default: \c 0)
+  //! \tparam Scalar an unsigned integer type (the type of the image values)
+  //!
+  //! \returns A \ref PPerm instance with degree \c 0.
   template <
       size_t N = 0,
       typename Scalar
@@ -1281,9 +1339,30 @@ namespace libsemigroups {
     return PPerm<N, Scalar>::base_type::template make<PPerm<N, Scalar>>();
   }
 
-  //! \copydoc PTransfBase::make(OtherContainer&&)
+  //! \relates PPerm
   //!
-  //! \note \c Subclass is \c PPerm !!
+  //! \brief Construct from universal reference container and validate.
+  //!
+  //! Constructs a \ref PPerm initialized using the container \p cont as
+  //! follows: the image of the point \c i under the partial permutation is the
+  //! value in position \c i of the container \p cont.
+  //!
+  //! \tparam N the degree (default: \c 0)
+  //! \tparam Scalar an unsigned integer type (the type of the image values)
+  //! \tparam OtherContainer universal reference for the type of the container
+  //! (default: Container).
+  //!
+  //! \param cont the container.
+  //!
+  //! \returns A \ref PPerm instance with degree \c N.
+  //!
+  //! \throw LibsemigroupsException if any of the following hold:
+  //! * the size of \p cont is incompatible with \ref container_type.
+  //! * any value in \p cont exceeds `cont.size()` and is not equal to
+  //!   UNDEFINED.
+  //!
+  //! \complexity
+  //! Linear in the size of the container \p cont.
   template <
       size_t N = 0,
       typename Scalar
@@ -1294,7 +1373,9 @@ namespace libsemigroups {
         std::forward<OtherContainer>(cont));
   }
 
-  //! \copydoc make(OtherContainer&&)
+  //! \relates PPerm
+  //!
+  //! \copydoc to_pperm(OtherContainer&&)
   template <
       size_t N = 0,
       typename Scalar
@@ -1308,6 +1389,8 @@ namespace libsemigroups {
         std::move(cont));
   }
 
+  //! \relates PPerm
+  //!
   //! \brief Construct from domain, range, and degree, and validate
   //!
   //! Constructs a partial perm of degree \p M such that `f[dom[i]] =
@@ -1335,8 +1418,10 @@ namespace libsemigroups {
            std::vector<typename PPerm<N, Scalar>::point_type> const& ran,
            size_t                                                    M);
 
-  //! \copydoc make(std::vector<OtherScalar> const&, std::vector<OtherScalar>
-  //! const&, size_t const)
+  //! \relates PPerm
+  //!
+  //! \copydoc to_pperm(std::vector<typename PPerm<N, Scalar>::point_type>
+  //! const&,std::vector<typename PPerm<N, Scalar>::point_type> const&,size_t)
   template <
       size_t N = 0,
       typename Scalar
@@ -1470,7 +1555,7 @@ namespace libsemigroups {
   //! \p N is not \c 0, then the default value of \p Scalar is the smallest
   //! integer type able to hold \c N. See also SmallestInteger.
   //!
-  //! \tparam N  the degree (default: \c 0)
+  //! \tparam N the degree (default: \c 0)
   //! \tparam Scalar an unsigned integer type (the type of the image values)
   //!
   //! This class inherits from either StaticPTransf or DynamicPTransf, see the
@@ -1482,6 +1567,9 @@ namespace libsemigroups {
       = std::conditional_t<N == 0, uint32_t, typename SmallestInteger<N>::type>>
   class Perm : public Transf<N, Scalar> {
    public:
+    //! \brief Type of the parent class.
+    //!
+    //! Type of the parent class.
     using base_type = PTransf<N, Scalar>;
 
     //! \brief Type of the image values.
@@ -1503,8 +1591,31 @@ namespace libsemigroups {
     }
   };
 
-  //! \copydoc PTransfBase::make(OtherContainer&&)
-  //! \throws LibsemigroupsException if there are repeated values in \p cont.
+  //! \relates Perm
+  //!
+  //! \brief Construct from universal reference container and validate.
+  //!
+  //! Constructs a \ref Perm initialized using the container \p cont as
+  //! follows: the image of the point \c i under the permutation is the value in
+  //! position \c i of the container \p cont.
+  //!
+  //! \tparam N the degree (default: \c 0)
+  //! \tparam Scalar an unsigned integer type (the type of the image values)
+  //! \tparam OtherContainer universal reference for the type of the container
+  //! (default: Container).
+  //!
+  //! \param cont the container.
+  //!
+  //! \returns A \ref Perm instance with degree \c N.
+  //!
+  //! \throw LibsemigroupsException if any of the following hold:
+  //! * the size of \p cont is incompatible with \ref container_type.
+  //! * any value in \p cont exceeds `cont.size()` and is not equal to
+  //!   UNDEFINED.
+  //! * there are repeated values in \p cont.
+  //!
+  //! \complexity
+  //! Linear in the size of the container \p cont.
   template <
       size_t N = 0,
       typename Scalar
@@ -1515,7 +1626,19 @@ namespace libsemigroups {
         std::forward<OtherContainer>(cont));
   }
 
-  //! \copydoc PTransfBase::make()
+  //! \relates Perm
+  //!
+  //! \brief Make an instance of \ref Perm with degree \c 0.
+  //!
+  //! This is equivalent to default constructing a \ref Perm instance and is
+  //! here for consistency of interface only. The ``to_...`` functions
+  //! check their arguments, and the constructed  instance for validity, but in
+  //! this case there's nothing to check.
+  //!
+  //! \tparam N the degree (default: \c 0)
+  //! \tparam Scalar an unsigned integer type (the type of the image values)
+  //!
+  //! \returns A \ref Perm instance with degree \c 0.
   template <
       size_t N = 0,
       typename Scalar
@@ -1524,6 +1647,8 @@ namespace libsemigroups {
     return Perm<N, Scalar>::base_type::template make<Perm<N, Scalar>>();
   }
 
+  //! \relates Perm
+  //!
   //! \copydoc to_perm(OtherContainer&&)
   template <
       size_t N = 0,
