@@ -1190,9 +1190,8 @@ namespace libsemigroups {
       typename Scalar
       = std::conditional_t<N == 0, uint32_t, typename SmallestInteger<N>::type>>
   class PPerm : public PTransf<N, Scalar> {
-    using base_type = PTransf<N, Scalar>;
-
    public:
+    using base_type = PTransf<N, Scalar>;
     //! \brief Type of the image values.
     //!
     //! Also the template parameter \c Scalar.
@@ -1247,58 +1246,6 @@ namespace libsemigroups {
         : PPerm(std::vector<point_type>(dom), std::vector<point_type>(img), M) {
     }
 
-    //! \copydoc PTransfBase::make()
-    //!
-    //! \note \c Subclass is \c PPerm !!
-    [[nodiscard]] static PPerm make() {
-      return base_type::template make<PPerm>();
-    }
-
-    //! \copydoc PTransfBase::make(OtherContainer&&)
-    //!
-    //! \note \c Subclass is \c PPerm !!
-    template <typename OtherContainer>
-    [[nodiscard]] static PPerm make(OtherContainer&& cont) {
-      return base_type::template make<PPerm>(
-          std::forward<OtherContainer>(cont));
-    }
-
-    //! \copydoc make(OtherContainer&&)
-    [[nodiscard]] static PPerm make(std::initializer_list<point_type> cont) {
-      return make<std::initializer_list<point_type>>(std::move(cont));
-    }
-
-    //! \brief Construct from domain, range, and degree, and validate
-    //!
-    //! Constructs a partial perm of degree \p M such that `f[dom[i]] =
-    //! ran[i]` for all \c i and which is \ref UNDEFINED on every other value
-    //! in the range \f$[0, M)\f$.
-    //!
-    //! \param dom the domain
-    //! \param ran the range
-    //! \param M the degree
-    //!
-    //! \throws LibsemigroupsException if any of the following fail to hold:
-    //! * the value \p M is not compatible with the template parameter \p N
-    //! * \p dom and \p ran do not have the same size
-    //! * any value in \p dom or \p ran is greater than \p M
-    //! * there are repeated entries in \p dom or \p ran.
-    //!
-    //! \complexity
-    //! Linear in the size of \p dom.
-    template <typename OtherScalar>
-    [[nodiscard]] static PPerm make(std::vector<OtherScalar> const& dom,
-                                    std::vector<OtherScalar> const& ran,
-                                    size_t                          M);
-
-    //! \copydoc make(std::vector<OtherScalar> const&, std::vector<OtherScalar>
-    //! const&, size_t const)
-    [[nodiscard]] static PPerm make(std::initializer_list<Scalar> dom,
-                                    std::initializer_list<Scalar> ran,
-                                    size_t                        M) {
-      return make(std::vector<Scalar>(dom), std::vector<Scalar>(ran), M);
-    }
-
     //! \brief Multiply two partial perms and store the product in \c this.
     //!
     //! Replaces the contents of \c this by the product of \p f and \p g.
@@ -1321,12 +1268,88 @@ namespace libsemigroups {
     [[nodiscard]] static PPerm one(size_t M) {
       return base_type::template one<PPerm>(M);
     }
-
-   private:
-    static void validate_args(std::vector<point_type> const& dom,
-                              std::vector<point_type> const& ran,
-                              size_t                         deg = N);
   };
+
+  //! \copydoc PTransfBase::make()
+  //!
+  //! \note \c Subclass is \c PPerm !!
+  template <
+      size_t N = 0,
+      typename Scalar
+      = std::conditional_t<N == 0, uint32_t, typename SmallestInteger<N>::type>>
+  [[nodiscard]] PPerm<N, Scalar> to_pperm() {
+    return PPerm<N, Scalar>::base_type::template make<PPerm<N, Scalar>>();
+  }
+
+  //! \copydoc PTransfBase::make(OtherContainer&&)
+  //!
+  //! \note \c Subclass is \c PPerm !!
+  template <
+      size_t N = 0,
+      typename Scalar
+      = std::conditional_t<N == 0, uint32_t, typename SmallestInteger<N>::type>,
+      typename OtherContainer>
+  [[nodiscard]] PPerm<N, Scalar> to_pperm(OtherContainer&& cont) {
+    return PPerm<N, Scalar>::base_type::template make<PPerm<N, Scalar>>(
+        std::forward<OtherContainer>(cont));
+  }
+
+  //! \copydoc make(OtherContainer&&)
+  template <
+      size_t N = 0,
+      typename Scalar
+      = std::conditional_t<N == 0, uint32_t, typename SmallestInteger<N>::type>>
+  [[nodiscard]] PPerm<N, Scalar>
+  to_pperm(std::initializer_list<typename PPerm<N, Scalar>::point_type> cont) {
+    return to_pperm<
+        N,
+        Scalar,
+        std::initializer_list<typename PPerm<N, Scalar>::point_type>>(
+        std::move(cont));
+  }
+
+  //! \brief Construct from domain, range, and degree, and validate
+  //!
+  //! Constructs a partial perm of degree \p M such that `f[dom[i]] =
+  //! ran[i]` for all \c i and which is \ref UNDEFINED on every other value
+  //! in the range \f$[0, M)\f$.
+  //!
+  //! \param dom the domain
+  //! \param ran the range
+  //! \param M the degree
+  //!
+  //! \throws LibsemigroupsException if any of the following fail to hold:
+  //! * the value \p M is not compatible with the template parameter \p N
+  //! * \p dom and \p ran do not have the same size
+  //! * any value in \p dom or \p ran is greater than \p M
+  //! * there are repeated entries in \p dom or \p ran.
+  //!
+  //! \complexity
+  //! Linear in the size of \p dom.
+  template <
+      size_t N = 0,
+      typename Scalar
+      = std::conditional_t<N == 0, uint32_t, typename SmallestInteger<N>::type>>
+  [[nodiscard]] PPerm<N, Scalar>
+  to_pperm(std::vector<typename PPerm<N, Scalar>::point_type> const& dom,
+           std::vector<typename PPerm<N, Scalar>::point_type> const& ran,
+           size_t                                                    M);
+
+  //! \copydoc make(std::vector<OtherScalar> const&, std::vector<OtherScalar>
+  //! const&, size_t const)
+  template <
+      size_t N = 0,
+      typename Scalar
+      = std::conditional_t<N == 0, uint32_t, typename SmallestInteger<N>::type>>
+  [[nodiscard]] PPerm<N, Scalar>
+  to_pperm(std::initializer_list<typename PPerm<N, Scalar>::point_type> dom,
+           std::initializer_list<typename PPerm<N, Scalar>::point_type> ran,
+           size_t                                                       M) {
+    return to_pperm<N, Scalar>(
+        std::vector<typename PPerm<N, Scalar>::point_type>(dom),
+        std::vector<typename PPerm<N, Scalar>::point_type>(ran),
+        M);
+  }
 
   namespace detail {
     //! No doc
@@ -1358,6 +1381,14 @@ namespace libsemigroups {
       std::unordered_map<std::decay_t<decltype(*first)>, size_t> seen;
       validate_no_duplicates(first, last, seen);
     }
+
+    template <
+        size_t N        = 0,
+        typename Scalar = std::
+            conditional_t<N == 0, uint32_t, typename SmallestInteger<N>::type>>
+    void validate_args(std::vector<Scalar> const& dom,
+                       std::vector<Scalar> const& ran,
+                       size_t                     deg = N);
   }  // namespace detail
 
   ////////////////////////////////////////////////////////////////////////
