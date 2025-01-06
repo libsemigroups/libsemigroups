@@ -240,21 +240,6 @@ namespace libsemigroups {
     PTransfBase(std::initializer_list<Scalar> cont)
         : PTransfBase(cont.begin(), cont.end()) {}
 
-    //! \brief Make an instance of \c Subclass with degree \c 0.
-    //!
-    //! This is equivalent to default constructing a \c Subclass instance and is
-    //! here for consistency of interface only. The ``to_[Subclass]`` functions
-    //! check their arguments, and the constructed \c Subclass instance for
-    //! validity, but in this case there's nothing to check.
-    //!
-    //! \tparam Subclass the type of the return value.
-    //!
-    //! \returns A \c Subclass instance with degree \c 0.
-    template <typename Subclass>
-    [[nodiscard]] static Subclass make() {
-      return Subclass();
-    }
-
     //! \brief Construct from universal reference container and validate.
     //!
     //! Constructs a partial transformation initialized using the
@@ -1078,27 +1063,6 @@ namespace libsemigroups {
 
   //! \relates Transf
   //!
-  //! \brief Make an instance of \ref Transf with degree \c 0.
-  //!
-  //! This is equivalent to default constructing a \ref Transf instance and is
-  //! here for consistency of interface only. The ``to_...`` functions
-  //! check their arguments, and the constructed  instance for validity, but in
-  //! this case there's nothing to check.
-  //!
-  //! \tparam N the degree (default: \c 0)
-  //! \tparam Scalar an unsigned integer type (the type of the image values)
-  //!
-  //! \returns A \ref Transf instance with degree \c 0.
-  template <
-      size_t N = 0,
-      typename Scalar
-      = std::conditional_t<N == 0, uint32_t, typename SmallestInteger<N>::type>>
-  [[nodiscard]] Transf<N, Scalar> to_transf() {
-    return Transf<N, Scalar>::base_type::template make<Transf<N, Scalar>>();
-  }
-
-  //! \relates Transf
-  //!
   //! \brief Construct from universal reference container and validate.
   //!
   //! Constructs a \ref Transf initialized using the container \p cont as
@@ -1317,27 +1281,6 @@ namespace libsemigroups {
       return base_type::template one<PPerm>(M);
     }
   };
-
-  //! \relates PPerm
-  //!
-  //! \brief Make an instance of \ref PPerm with degree \c 0.
-  //!
-  //! This is equivalent to default constructing a \ref PPerm instance and is
-  //! here for consistency of interface only. The ``to_...`` functions
-  //! check their arguments, and the constructed  instance for validity, but in
-  //! this case there's nothing to check.
-  //!
-  //! \tparam N the degree (default: \c 0)
-  //! \tparam Scalar an unsigned integer type (the type of the image values)
-  //!
-  //! \returns A \ref PPerm instance with degree \c 0.
-  template <
-      size_t N = 0,
-      typename Scalar
-      = std::conditional_t<N == 0, uint32_t, typename SmallestInteger<N>::type>>
-  [[nodiscard]] PPerm<N, Scalar> to_pperm() {
-    return PPerm<N, Scalar>::base_type::template make<PPerm<N, Scalar>>();
-  }
 
   //! \relates PPerm
   //!
@@ -1624,27 +1567,6 @@ namespace libsemigroups {
   [[nodiscard]] Perm<N, Scalar> to_perm(OtherContainer&& cont) {
     return Perm<N, Scalar>::base_type::template make<Perm<N, Scalar>>(
         std::forward<OtherContainer>(cont));
-  }
-
-  //! \relates Perm
-  //!
-  //! \brief Make an instance of \ref Perm with degree \c 0.
-  //!
-  //! This is equivalent to default constructing a \ref Perm instance and is
-  //! here for consistency of interface only. The ``to_...`` functions
-  //! check their arguments, and the constructed  instance for validity, but in
-  //! this case there's nothing to check.
-  //!
-  //! \tparam N the degree (default: \c 0)
-  //! \tparam Scalar an unsigned integer type (the type of the image values)
-  //!
-  //! \returns A \ref Perm instance with degree \c 0.
-  template <
-      size_t N = 0,
-      typename Scalar
-      = std::conditional_t<N == 0, uint32_t, typename SmallestInteger<N>::type>>
-  [[nodiscard]] Perm<N, Scalar> to_perm() {
-    return Perm<N, Scalar>::base_type::template make<Perm<N, Scalar>>();
   }
 
   //! \relates Perm
