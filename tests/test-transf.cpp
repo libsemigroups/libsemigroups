@@ -180,41 +180,41 @@ namespace libsemigroups {
                           "[quick][pperm]") {
     using point_type = typename Transf<>::point_type;
     REQUIRE_NOTHROW(PPerm<>());
-    REQUIRE_NOTHROW(to_pperm<>({0}));
-    REQUIRE_NOTHROW(to_pperm<>({UNDEFINED}));
-    REQUIRE_THROWS_AS(to_pperm<>({1}), LibsemigroupsException);
+    REQUIRE_NOTHROW(to_pperm({0}));
+    REQUIRE_NOTHROW(to_pperm({UNDEFINED}));
+    REQUIRE_THROWS_AS(to_pperm({1}), LibsemigroupsException);
 
-    REQUIRE_NOTHROW(to_pperm<>({0, 1, 2}));
-    REQUIRE_NOTHROW(to_pperm<>(std::initializer_list<point_type>({0, 1, 2})));
-    REQUIRE_NOTHROW(to_pperm<>({0, UNDEFINED, 2}));
-    REQUIRE_NOTHROW(to_pperm<>({0, UNDEFINED, 5, UNDEFINED, UNDEFINED, 1}));
+    REQUIRE_NOTHROW(to_pperm({0, 1, 2}));
+    REQUIRE_NOTHROW(to_pperm(std::initializer_list<point_type>({0, 1, 2})));
+    REQUIRE_NOTHROW(to_pperm({0, UNDEFINED, 2}));
+    REQUIRE_NOTHROW(to_pperm({0, UNDEFINED, 5, UNDEFINED, UNDEFINED, 1}));
 
-    REQUIRE_THROWS_AS(to_pperm<>({1, 2, 3}), LibsemigroupsException);
-    REQUIRE_THROWS_AS(to_pperm<>({UNDEFINED, UNDEFINED, 3}),
+    REQUIRE_THROWS_AS(to_pperm({1, 2, 3}), LibsemigroupsException);
+    REQUIRE_THROWS_AS(to_pperm({UNDEFINED, UNDEFINED, 3}),
                       LibsemigroupsException);
-    REQUIRE_THROWS_AS(to_pperm<>({1, UNDEFINED, 1}), LibsemigroupsException);
+    REQUIRE_THROWS_AS(to_pperm({1, UNDEFINED, 1}), LibsemigroupsException);
     REQUIRE_THROWS_AS(
-        to_pperm<>(std::vector<point_type>({3, UNDEFINED, 2, 1, UNDEFINED, 3})),
+        to_pperm(std::vector<point_type>({3, UNDEFINED, 2, 1, UNDEFINED, 3})),
         LibsemigroupsException);
-    REQUIRE_THROWS_AS(to_pperm<>(std::initializer_list<point_type>({1, 2, 3})),
+    REQUIRE_THROWS_AS(to_pperm(std::initializer_list<point_type>({1, 2, 3})),
                       LibsemigroupsException);
-    REQUIRE_NOTHROW(to_pperm<>(std::initializer_list<u_int32_t>({1, 2}),
-                               std::initializer_list<u_int32_t>({0, 3}),
-                               5));
+    REQUIRE_NOTHROW(to_pperm(std::initializer_list<u_int32_t>({1, 2}),
+                             std::initializer_list<u_int32_t>({0, 3}),
+                             5));
     REQUIRE_NOTHROW(to_pperm<5, u_int32_t>({1, 2}, {0, 3}, 5));
     REQUIRE_NOTHROW(PPerm<5, u_int32_t>({1, 2}, {0, 3}, 5));
     REQUIRE_NOTHROW(PPerm<>({1, 2}, {0, 3}, 5));
-    REQUIRE_NOTHROW(to_pperm<>({1, 2}, {0, 5}, 6));
-    REQUIRE_THROWS_AS(to_pperm<>({1, 2}, {0}, 5), LibsemigroupsException);
-    REQUIRE_THROWS_AS(to_pperm<>({1, 2}, {0, 5}, 4), LibsemigroupsException);
-    REQUIRE_THROWS_AS(to_pperm<>({1, 5}, {0, 2}, 4), LibsemigroupsException);
+    REQUIRE_NOTHROW(to_pperm({1, 2}, {0, 5}, 6));
+    REQUIRE_THROWS_AS(to_pperm({1, 2}, {0}, 5), LibsemigroupsException);
+    REQUIRE_THROWS_AS(to_pperm({1, 2}, {0, 5}, 4), LibsemigroupsException);
+    REQUIRE_THROWS_AS(to_pperm({1, 5}, {0, 2}, 4), LibsemigroupsException);
 
-    REQUIRE_THROWS_AS(to_pperm<>({1, 1}, {0, 2}, 3), LibsemigroupsException);
-    REQUIRE_THROWS_AS(to_pperm<>({1, 0}, {2, 2}, 3), LibsemigroupsException);
-    REQUIRE_THROWS_AS(to_pperm<>({1, 2}), LibsemigroupsException);
-    REQUIRE_THROWS_AS(to_pperm<>({1, 0, 3}), LibsemigroupsException);
-    REQUIRE_THROWS_AS(to_pperm<>({1, 0, 3, 6, 4}), LibsemigroupsException);
-    REQUIRE_THROWS_AS(to_pperm<>({1, 5, 0, 3, 2}), LibsemigroupsException);
+    REQUIRE_THROWS_AS(to_pperm({1, 1}, {0, 2}, 3), LibsemigroupsException);
+    REQUIRE_THROWS_AS(to_pperm({1, 0}, {2, 2}, 3), LibsemigroupsException);
+    REQUIRE_THROWS_AS(to_pperm({1, 2}), LibsemigroupsException);
+    REQUIRE_THROWS_AS(to_pperm({1, 0, 3}), LibsemigroupsException);
+    REQUIRE_THROWS_AS(to_pperm({1, 0, 3, 6, 4}), LibsemigroupsException);
+    REQUIRE_THROWS_AS(to_pperm({1, 5, 0, 3, 2}), LibsemigroupsException);
   }
 
   LIBSEMIGROUPS_TEST_CASE("PPerm",
@@ -278,17 +278,17 @@ namespace libsemigroups {
                           "008",
                           "exceptions (dynamic)",
                           "[quick][perm]") {
-    REQUIRE_NOTHROW(to_perm<>({}));
-    REQUIRE_NOTHROW(to_perm<>({0}));
-    REQUIRE_NOTHROW(to_perm<>({0, 1}));
-    REQUIRE_NOTHROW(to_perm<>({1, 0}));
-    REQUIRE_NOTHROW(to_perm<>({1, 4, 0, 3, 2}));
+    REQUIRE_NOTHROW(to_perm({}));
+    REQUIRE_NOTHROW(to_perm({0}));
+    REQUIRE_NOTHROW(to_perm({0, 1}));
+    REQUIRE_NOTHROW(to_perm({1, 0}));
+    REQUIRE_NOTHROW(to_perm({1, 4, 0, 3, 2}));
 
-    REQUIRE_THROWS_AS(to_perm<>({1, 2}), LibsemigroupsException);
-    REQUIRE_THROWS_AS(to_perm<>({1, 0, 3}), LibsemigroupsException);
-    REQUIRE_THROWS_AS(to_perm<>({1, 0, 3, 6, 4}), LibsemigroupsException);
-    REQUIRE_THROWS_AS(to_perm<>({1, 5, 0, 3, 2}), LibsemigroupsException);
-    REQUIRE_THROWS_AS(to_perm<>({0, 1, 2, 3, 0}), LibsemigroupsException);
+    REQUIRE_THROWS_AS(to_perm({1, 2}), LibsemigroupsException);
+    REQUIRE_THROWS_AS(to_perm({1, 0, 3}), LibsemigroupsException);
+    REQUIRE_THROWS_AS(to_perm({1, 0, 3, 6, 4}), LibsemigroupsException);
+    REQUIRE_THROWS_AS(to_perm({1, 5, 0, 3, 2}), LibsemigroupsException);
+    REQUIRE_THROWS_AS(to_perm({0, 1, 2, 3, 0}), LibsemigroupsException);
   }
 
   LIBSEMIGROUPS_TEST_CASE("Perm",
