@@ -136,7 +136,7 @@ namespace libsemigroups {
                           "exceptions (dynamic)",
                           "[quick][transf]") {
     using point_type = typename Transf<>::point_type;
-    REQUIRE_NOTHROW(to_transf());
+    REQUIRE_NOTHROW(Transf());
     REQUIRE_NOTHROW(to_transf({0}));
     REQUIRE_THROWS_AS(to_transf({1}), LibsemigroupsException);
 
@@ -179,7 +179,7 @@ namespace libsemigroups {
                           "exceptions (dynamic)",
                           "[quick][pperm]") {
     using point_type = typename Transf<>::point_type;
-    REQUIRE_NOTHROW(to_pperm<>());
+    REQUIRE_NOTHROW(PPerm<>());
     REQUIRE_NOTHROW(to_pperm<>({0}));
     REQUIRE_NOTHROW(to_pperm<>({UNDEFINED}));
     REQUIRE_THROWS_AS(to_pperm<>({1}), LibsemigroupsException);
@@ -307,7 +307,7 @@ namespace libsemigroups {
     REQUIRE_THROWS_AS(to_perm<5>({1, 5, 0, 3, 2}), LibsemigroupsException);
     REQUIRE_THROWS_AS(to_perm<5>({0, 1, 2, 3, 0}), LibsemigroupsException);
 
-    REQUIRE_NOTHROW(to_perm<5>());
+    REQUIRE_NOTHROW(PPerm<5>());
   }
 
   LIBSEMIGROUPS_TEST_CASE("LeastTransf etc",
