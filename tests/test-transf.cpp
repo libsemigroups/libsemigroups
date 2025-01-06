@@ -198,11 +198,11 @@ namespace libsemigroups {
         LibsemigroupsException);
     REQUIRE_THROWS_AS(to_pperm(std::initializer_list<point_type>({1, 2, 3})),
                       LibsemigroupsException);
-    REQUIRE_NOTHROW(to_pperm(std::initializer_list<u_int32_t>({1, 2}),
-                             std::initializer_list<u_int32_t>({0, 3}),
+    REQUIRE_NOTHROW(to_pperm(std::initializer_list<uint32_t>({1, 2}),
+                             std::initializer_list<uint32_t>({0, 3}),
                              5));
-    REQUIRE_NOTHROW(to_pperm<5, u_int32_t>({1, 2}, {0, 3}, 5));
-    REQUIRE_NOTHROW(PPerm<5, u_int32_t>({1, 2}, {0, 3}, 5));
+    REQUIRE_NOTHROW(to_pperm<5, uint32_t>({1, 2}, {0, 3}, 5));
+    REQUIRE_NOTHROW(PPerm<5, uint32_t>({1, 2}, {0, 3}, 5));
     REQUIRE_NOTHROW(PPerm<>({1, 2}, {0, 3}, 5));
     REQUIRE_NOTHROW(to_pperm({1, 2}, {0, 5}, 6));
     REQUIRE_THROWS_AS(to_pperm({1, 2}, {0}, 5), LibsemigroupsException);
