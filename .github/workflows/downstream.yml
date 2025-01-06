@@ -55,7 +55,7 @@ jobs:
               sudo apt-get --yes update
               sudo apt-get install python3 --yes
               sudo apt-get install python3-pip --yes
-              sudo -H pip3 install -r requirements.txt
+              pip3 install -r requirements.txt
           - name: "Building libsemigroups_pybind11 . . ."
             run: |
               cd libsemigroups_pybind11
