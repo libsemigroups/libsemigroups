@@ -172,14 +172,13 @@ namespace libsemigroups {
     detail::validate_no_duplicates(ran.cbegin(), ran.cend(), seen);
   }
 
-  // STATIC
-  template <size_t N, typename Scalar>
-  [[nodiscard]] PPerm<N, Scalar>
-  to_pperm(std::vector<typename PPerm<N, Scalar>::point_type> const& dom,
-           std::vector<typename PPerm<N, Scalar>::point_type> const& ran,
-           size_t const                                              M) {
+  template <typename Return>
+  [[nodiscard]] std::enable_if_t<IsPPerm<Return>, Return>
+  to(std::vector<typename Return::point_type> const& dom,
+     std::vector<typename Return::point_type> const& ran,
+     size_t const                                    M) {
     detail::validate_args(dom, ran, M);
-    PPerm<N, Scalar> result(dom, ran, M);
+    Return result(dom, ran, M);
     validate(result);
     return result;
   }

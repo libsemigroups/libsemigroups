@@ -50,7 +50,7 @@
 #include "debug.hpp"      // for LIBSEMIGROUPS_ASSERT
 #include "exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
 #include "hpcombi.hpp"    // for HPCombi::Transf16
-#include "types.hpp"      // for SmallestInteger
+#include "types.hpp"      // for SmallestInteger, enable_if_is_same
 
 #include "detail/stl.hpp"  // for is_array_v
 
@@ -1058,57 +1058,6 @@ namespace libsemigroups {
     }
   };
 
-  //! \relates Transf
-  //!
-  //! \brief Construct from universal reference container and validate.
-  //!
-  //! Constructs a \ref Transf initialized using the container \p cont as
-  //! follows: the image of the point \c i under the transformation is the value
-  //! in position \c i of the container \p cont.
-  //!
-  //! \tparam N the degree (default: \c 0)
-  //! \tparam Scalar an unsigned integer type (the type of the image values)
-  //! \tparam OtherContainer universal reference for the type of the container
-  //! (default: Container).
-  //!
-  //! \param cont the container.
-  //!
-  //! \returns A \ref Transf instance with degree \c N.
-  //!
-  //! \throw LibsemigroupsException if any of the following hold:
-  //! * the size of \p cont is incompatible with \ref container_type.
-  //! * any value in \p cont exceeds `cont.size()` and is not equal to
-  //!   UNDEFINED.
-  //!
-  //! \complexity
-  //! Linear in the size of the container \p cont.
-  template <
-      size_t N = 0,
-      typename Scalar
-      = std::conditional_t<N == 0, uint32_t, typename SmallestInteger<N>::type>,
-      typename OtherContainer>
-  [[nodiscard]] Transf<N, Scalar> to_transf(OtherContainer&& cont) {
-    return Transf<N, Scalar>::template make<Transf<N, Scalar>>(
-        std::forward<OtherContainer>(cont));
-  }
-
-  //! \relates Transf
-  //!
-  //! \copydoc to_transf(OtherContainer&&)
-  //!
-  //! \throws LibsemigroupsException if the value \ref UNDEFINED belongs to \p
-  //! cont.
-  template <
-      size_t N = 0,
-      typename Scalar
-      = std::conditional_t<N == 0, uint32_t, typename SmallestInteger<N>::type>,
-      typename OtherScalar>
-  [[nodiscard]] Transf<N, Scalar>
-  to_transf(std::initializer_list<OtherScalar> cont) {
-    return to_transf<N, Scalar, std::initializer_list<OtherScalar>>(
-        std::move(cont));
-  }
-
   namespace detail {
     template <typename T>
     struct IsTransfHelper : std::false_type {};
@@ -1158,6 +1107,68 @@ namespace libsemigroups {
   //! Linear in \c f.degree().
   template <size_t N, typename Scalar>
   void validate(Transf<N, Scalar> const& f);
+
+  ////////////////////////////////////////////////////////////////////////
+  // to<Transf>
+  ////////////////////////////////////////////////////////////////////////
+
+  //! \relates Transf
+  //!
+  //! \brief Construct a \ref Transf from universal reference container and
+  //! validate.
+  //!
+  //! Constructs a \ref Transf initialized using the container \p cont as
+  //! follows: the image of the point \c i under the transformation is the value
+  //! in position \c i of the container \p cont.
+  //!
+  //! \tparam Return the return type.
+  //! \tparam OtherContainer universal reference for the type of the container.
+  //!
+  //! \param cont the container.
+  //!
+  //! \returns A \ref Transf instance with degree \c N.
+  //!
+  //! \throw LibsemigroupsException if any of the following hold:
+  //! * the size of \p cont is incompatible with \ref container_type.
+  //! * any value in \p cont exceeds `cont.size()` and is not equal to
+  //!   UNDEFINED.
+  //!
+  //! \complexity
+  //! Linear in the size of the container \p cont.
+  template <typename Return, typename OtherContainer>
+  [[nodiscard]] std::enable_if_t<IsTransf<Return>, Return>
+  to(OtherContainer&& cont) {
+    return Return::template make<Return>(std::forward<OtherContainer>(cont));
+  }
+
+  //! \relates Transf
+  //!
+  //! \brief Construct a \ref Transf from initializer list and validate.
+  //!
+  //! Constructs a \ref Transf initialized using the initializer list \p cont as
+  //! follows: the image of the point \c i under the transformation is the value
+  //! in position \c i of the container \p cont.
+  //!
+  //! \tparam Return the return type.
+  //! \tparam OtherContainer universal reference for the type of the container.
+  //!
+  //! \param cont the container.
+  //!
+  //! \returns A \ref Transf instance with degree \c N.
+  //!
+  //! \throw LibsemigroupsException if any of the following hold:
+  //! * the size of \p cont is incompatible with \ref container_type.
+  //! * any value in \p cont exceeds `cont.size()` and is not equal to
+  //!   UNDEFINED.
+  //! * the value \ref UNDEFINED belongs to \p cont.
+  //!
+  //! \complexity
+  //! Linear in the size of the container \p cont.
+  template <typename Return, typename OtherScalar>
+  [[nodiscard]] std::enable_if_t<IsTransf<Return>, Return>
+  to(std::initializer_list<OtherScalar> cont) {
+    return to<Return, std::initializer_list<OtherScalar>>(std::move(cont));
+  }
 
   ////////////////////////////////////////////////////////////////////////
   // PPerm
@@ -1231,9 +1242,6 @@ namespace libsemigroups {
     //!
     //! \warning
     //! No checks whatsoever are performed on the validity of the arguments.
-    //!
-    //! \sa
-    //! \ref to_pperm.
     //
     // Note: we use vectors here not container_type (which might be array),
     // because the length of dom and img might not equal degree().
@@ -1275,103 +1283,6 @@ namespace libsemigroups {
       return base_type::template one<PPerm>(M);
     }
   };
-
-  //! \relates PPerm
-  //!
-  //! \brief Construct from universal reference container and validate.
-  //!
-  //! Constructs a \ref PPerm initialized using the container \p cont as
-  //! follows: the image of the point \c i under the partial permutation is the
-  //! value in position \c i of the container \p cont.
-  //!
-  //! \tparam N the degree (default: \c 0)
-  //! \tparam Scalar an unsigned integer type (the type of the image values)
-  //! \tparam OtherContainer universal reference for the type of the container
-  //! (default: Container).
-  //!
-  //! \param cont the container.
-  //!
-  //! \returns A \ref PPerm instance with degree \c N.
-  //!
-  //! \throw LibsemigroupsException if any of the following hold:
-  //! * the size of \p cont is incompatible with \ref container_type.
-  //! * any value in \p cont exceeds `cont.size()` and is not equal to
-  //!   UNDEFINED.
-  //!
-  //! \complexity
-  //! Linear in the size of the container \p cont.
-  template <
-      size_t N = 0,
-      typename Scalar
-      = std::conditional_t<N == 0, uint32_t, typename SmallestInteger<N>::type>,
-      typename OtherContainer>
-  [[nodiscard]] PPerm<N, Scalar> to_pperm(OtherContainer&& cont) {
-    return PPerm<N, Scalar>::template make<PPerm<N, Scalar>>(
-        std::forward<OtherContainer>(cont));
-  }
-
-  //! \relates PPerm
-  //!
-  //! \copydoc to_pperm(OtherContainer&&)
-  template <
-      size_t N = 0,
-      typename Scalar
-      = std::conditional_t<N == 0, uint32_t, typename SmallestInteger<N>::type>>
-  [[nodiscard]] PPerm<N, Scalar>
-  to_pperm(std::initializer_list<typename PPerm<N, Scalar>::point_type> cont) {
-    return to_pperm<
-        N,
-        Scalar,
-        std::initializer_list<typename PPerm<N, Scalar>::point_type>>(
-        std::move(cont));
-  }
-
-  //! \relates PPerm
-  //!
-  //! \brief Construct from domain, range, and degree, and validate
-  //!
-  //! Constructs a partial perm of degree \p M such that `f[dom[i]] =
-  //! ran[i]` for all \c i and which is \ref UNDEFINED on every other value
-  //! in the range \f$[0, M)\f$.
-  //!
-  //! \param dom the domain
-  //! \param ran the range
-  //! \param M the degree
-  //!
-  //! \throws LibsemigroupsException if any of the following fail to hold:
-  //! * the value \p M is not compatible with the template parameter \p N
-  //! * \p dom and \p ran do not have the same size
-  //! * any value in \p dom or \p ran is greater than \p M
-  //! * there are repeated entries in \p dom or \p ran.
-  //!
-  //! \complexity
-  //! Linear in the size of \p dom.
-  template <
-      size_t N = 0,
-      typename Scalar
-      = std::conditional_t<N == 0, uint32_t, typename SmallestInteger<N>::type>>
-  [[nodiscard]] PPerm<N, Scalar>
-  to_pperm(std::vector<typename PPerm<N, Scalar>::point_type> const& dom,
-           std::vector<typename PPerm<N, Scalar>::point_type> const& ran,
-           size_t                                                    M);
-
-  //! \relates PPerm
-  //!
-  //! \copydoc to_pperm(std::vector<typename PPerm<N, Scalar>::point_type>
-  //! const&,std::vector<typename PPerm<N, Scalar>::point_type> const&,size_t)
-  template <
-      size_t N = 0,
-      typename Scalar
-      = std::conditional_t<N == 0, uint32_t, typename SmallestInteger<N>::type>>
-  [[nodiscard]] PPerm<N, Scalar>
-  to_pperm(std::initializer_list<typename PPerm<N, Scalar>::point_type> dom,
-           std::initializer_list<typename PPerm<N, Scalar>::point_type> ran,
-           size_t                                                       M) {
-    return to_pperm<N, Scalar>(
-        std::vector<typename PPerm<N, Scalar>::point_type>(dom),
-        std::vector<typename PPerm<N, Scalar>::point_type>(ran),
-        M);
-  }
 
   namespace detail {
     //! No doc
@@ -1469,6 +1380,137 @@ namespace libsemigroups {
   }
 
   ////////////////////////////////////////////////////////////////////////
+  // to<PPerm>
+  ////////////////////////////////////////////////////////////////////////
+
+  //! \relates PPerm
+  //!
+  //! \brief Construct a \ref PPerm from universal reference container and
+  //! validate.
+  //!
+  //! Constructs a \ref PPerm initialized using the container \p cont as
+  //! follows: the image of the point \c i under the partial permutation is the
+  //! value in position \c i of the container \p cont.
+  //!
+  //! \tparam Return the return type.
+  //! \tparam N the degree (default: \c 0).
+  //! \tparam Scalar an unsigned integer type (the type of the image values).
+  //! \tparam OtherContainer universal reference for the type of the container.
+  //!
+  //! \param cont the container.
+  //!
+  //! \returns A \ref PPerm instance with degree \c N.
+  //!
+  //! \throw LibsemigroupsException if any of the following hold:
+  //! * the size of \p cont is incompatible with \ref container_type.
+  //! * any value in \p cont exceeds `cont.size()` and is not equal to
+  //!   UNDEFINED.
+  //!
+  //! \complexity
+  //! Linear in the size of the container \p cont.
+  template <typename Return, typename OtherContainer>
+  [[nodiscard]] std::enable_if_t<IsPPerm<Return>, Return>
+  to(OtherContainer&& cont) {
+    return Return::template make<Return>(std::forward<OtherContainer>(cont));
+  }
+
+  //! \relates PPerm
+  //!
+  //! \brief Construct a \ref PPerm from initializer list and validate.
+  //!
+  //! Constructs a \ref PPerm initialized using the container \p cont as
+  //! follows: the image of the point \c i under the partial permutation is the
+  //! value in position \c i of the container \p cont.
+  //!
+  //! \tparam Return the return type.
+  //! \tparam N the degree (default: \c 0).
+  //! \tparam Scalar an unsigned integer type (the type of the image values).
+  //!
+  //! \param cont the container.
+  //!
+  //! \returns A \ref PPerm instance with degree \c N.
+  //!
+  //! \throw LibsemigroupsException if any of the following hold:
+  //! * the size of \p cont is incompatible with \ref container_type.
+  //! * any value in \p cont exceeds `cont.size()` and is not equal to
+  //!   UNDEFINED.
+  //!
+  //! \complexity
+  //! Linear in the size of the container \p cont.
+  template <typename Return>
+  [[nodiscard]] std::enable_if_t<IsPPerm<Return>, Return>
+  to(std::initializer_list<typename Return::point_type> cont) {
+    return to<Return, std::initializer_list<typename Return::point_type>>(
+        std::move(cont));
+  }
+
+  //! \relates PPerm
+  //!
+  //! \brief Construct a \ref PPerm from domain, range, and degree, and
+  //! validate.
+  //!
+  //! Constructs a partial perm of degree \p M such that `f[dom[i]] =
+  //! ran[i]` for all \c i and which is \ref UNDEFINED on every other value
+  //! in the range \f$[0, M)\f$.
+  //!
+  //! \tparam Return the return type.
+  //! \tparam N the degree (default: \c 0).
+  //! \tparam Scalar an unsigned integer type (the type of the image values).
+  //!
+  //! \param dom the domain
+  //! \param ran the range
+  //! \param M the degree
+  //!
+  //! \throws LibsemigroupsException if any of the following fail to hold:
+  //! * the value \p M is not compatible with the template parameter \p N
+  //! * \p dom and \p ran do not have the same size
+  //! * any value in \p dom or \p ran is greater than \p M
+  //! * there are repeated entries in \p dom or \p ran.
+  //!
+  //! \complexity
+  //! Linear in the size of \p dom.
+  template <typename Return>
+  [[nodiscard]] std::enable_if_t<IsPPerm<Return>, Return>
+  to(std::vector<typename Return::point_type> const& dom,
+     std::vector<typename Return::point_type> const& ran,
+     size_t                                          M);
+
+  //! \relates PPerm
+  //!
+  //! \brief Construct a \ref PPerm from domain, range, and degree, and
+  //! validate.
+  //!
+  //! Constructs a partial perm of degree \p M such that `f[dom[i]] =
+  //! ran[i]` for all \c i and which is \ref UNDEFINED on every other value
+  //! in the range \f$[0, M)\f$.
+  //!
+  //! \tparam Return the return type.
+  //! \tparam N the degree (default: \c 0).
+  //! \tparam Scalar an unsigned integer type (the type of the image values).
+  //!
+  //! \param dom the domain
+  //! \param ran the range
+  //! \param M the degree
+  //!
+  //! \throws LibsemigroupsException if any of the following fail to hold:
+  //! * the value \p M is not compatible with the template parameter \p N
+  //! * \p dom and \p ran do not have the same size
+  //! * any value in \p dom or \p ran is greater than \p M
+  //! * there are repeated entries in \p dom or \p ran.
+  //!
+  //! \complexity
+  //! Linear in the size of \p dom.
+  template <typename Return>
+  [[nodiscard]] std::enable_if_t<IsPPerm<Return>, Return>
+  to(std::initializer_list<typename Return::point_type> dom,
+     std::initializer_list<typename Return::point_type> ran,
+     size_t                                             M) {
+    return to<Return>(std::vector<typename Return::point_type>(dom),
+                      std::vector<typename Return::point_type>(ran),
+                      M);
+  }
+
+  ////////////////////////////////////////////////////////////////////////
   // Perm
   ////////////////////////////////////////////////////////////////////////
 
@@ -1525,56 +1567,6 @@ namespace libsemigroups {
     }
   };
 
-  //! \relates Perm
-  //!
-  //! \brief Construct from universal reference container and validate.
-  //!
-  //! Constructs a \ref Perm initialized using the container \p cont as
-  //! follows: the image of the point \c i under the permutation is the value in
-  //! position \c i of the container \p cont.
-  //!
-  //! \tparam N the degree (default: \c 0)
-  //! \tparam Scalar an unsigned integer type (the type of the image values)
-  //! \tparam OtherContainer universal reference for the type of the container
-  //! (default: Container).
-  //!
-  //! \param cont the container.
-  //!
-  //! \returns A \ref Perm instance with degree \c N.
-  //!
-  //! \throw LibsemigroupsException if any of the following hold:
-  //! * the size of \p cont is incompatible with \ref container_type.
-  //! * any value in \p cont exceeds `cont.size()` and is not equal to
-  //!   UNDEFINED.
-  //! * there are repeated values in \p cont.
-  //!
-  //! \complexity
-  //! Linear in the size of the container \p cont.
-  template <
-      size_t N = 0,
-      typename Scalar
-      = std::conditional_t<N == 0, uint32_t, typename SmallestInteger<N>::type>,
-      typename OtherContainer>
-  [[nodiscard]] Perm<N, Scalar> to_perm(OtherContainer&& cont) {
-    return Perm<N, Scalar>::template make<Perm<N, Scalar>>(
-        std::forward<OtherContainer>(cont));
-  }
-
-  //! \relates Perm
-  //!
-  //! \copydoc to_perm(OtherContainer&&)
-  template <
-      size_t N = 0,
-      typename Scalar
-      = std::conditional_t<N == 0, uint32_t, typename SmallestInteger<N>::type>>
-  [[nodiscard]] Perm<N, Scalar>
-  to_perm(std::initializer_list<typename Perm<N, Scalar>::point_type> cont) {
-    return to_perm<N,
-                   Scalar,
-                   std::initializer_list<typename Perm<N, Scalar>::point_type>>(
-        std::move(cont));
-  }
-
   ////////////////////////////////////////////////////////////////////////
   // Perm helpers
   ////////////////////////////////////////////////////////////////////////
@@ -1618,6 +1610,68 @@ namespace libsemigroups {
   auto validate(Perm<N, Scalar> const& f) {
     validate(static_cast<Transf<N, Scalar> const&>(f));
     detail::validate_no_duplicates(f.begin(), f.end());
+  }
+
+  ////////////////////////////////////////////////////////////////////////
+  // to<Perm>
+  ////////////////////////////////////////////////////////////////////////
+
+  //! \relates Perm
+  //!
+  //! \brief Construct from universal reference container and validate.
+  //!
+  //! Constructs a \ref Perm initialized using the container \p cont as
+  //! follows: the image of the point \c i under the permutation is the value in
+  //! position \c i of the container \p cont.
+  //!
+  //! \tparam Return the return type.
+  //! \tparam OtherContainer universal reference for the type of the container.
+  //!
+  //! \param cont the container.
+  //!
+  //! \returns A \ref Perm instance with degree \c N.
+  //!
+  //! \throw LibsemigroupsException if any of the following hold:
+  //! * the size of \p cont is incompatible with \ref container_type.
+  //! * any value in \p cont exceeds `cont.size()` and is not equal to
+  //!   UNDEFINED.
+  //! * there are repeated values in \p cont.
+  //!
+  //! \complexity
+  //! Linear in the size of the container \p cont.
+  template <typename Return, typename OtherContainer>
+  [[nodiscard]] std::enable_if_t<IsPerm<Return>, Return>
+  to(OtherContainer&& cont) {
+    return Return::template make<Return>(std::forward<OtherContainer>(cont));
+  }
+
+  //! \relates Perm
+  //!
+  //! \brief Construct from universal reference container and validate.
+  //!
+  //! Constructs a \ref Perm initialized using the container \p cont as
+  //! follows: the image of the point \c i under the permutation is the value in
+  //! position \c i of the container \p cont.
+  //!
+  //! \tparam Return the return type.
+  //!
+  //! \param cont the container.
+  //!
+  //! \returns A \ref Perm instance with degree \c N.
+  //!
+  //! \throw LibsemigroupsException if any of the following hold:
+  //! * the size of \p cont is incompatible with \ref container_type.
+  //! * any value in \p cont exceeds `cont.size()` and is not equal to
+  //!   UNDEFINED.
+  //! * there are repeated values in \p cont.
+  //!
+  //! \complexity
+  //! Linear in the size of the container \p cont.
+  template <typename Return>
+  [[nodiscard]] std::enable_if_t<IsPerm<Return>, Return>
+  to(std::initializer_list<typename Return::point_type> cont) {
+    return to<Return, std::initializer_list<typename Return::point_type>>(
+        std::move(cont));
   }
 
   ////////////////////////////////////////////////////////////////////////

@@ -96,7 +96,7 @@ namespace libsemigroups {
       // For dynamic Transf exception is thrown by FroidurePin because degree
       // is wrong, for static Transf exception is thrown by make, because the
       // container has the wrong size
-      REQUIRE_THROWS_AS(S.add_generator(to_transf<N>({1, 7, 2, 6, 0, 0, 1, 2})),
+      REQUIRE_THROWS_AS(S.add_generator(to<Transf<N>>({1, 7, 2, 6, 0, 0, 1, 2})),
                         LibsemigroupsException);
     }
 
