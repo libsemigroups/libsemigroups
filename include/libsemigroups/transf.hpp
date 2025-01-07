@@ -1393,8 +1393,6 @@ namespace libsemigroups {
   //! value in position \c i of the container \p cont.
   //!
   //! \tparam Return the return type.
-  //! \tparam N the degree (default: \c 0).
-  //! \tparam Scalar an unsigned integer type (the type of the image values).
   //! \tparam OtherContainer universal reference for the type of the container.
   //!
   //! \param cont the container.
@@ -1423,8 +1421,6 @@ namespace libsemigroups {
   //! value in position \c i of the container \p cont.
   //!
   //! \tparam Return the return type.
-  //! \tparam N the degree (default: \c 0).
-  //! \tparam Scalar an unsigned integer type (the type of the image values).
   //!
   //! \param cont the container.
   //!
@@ -1454,8 +1450,6 @@ namespace libsemigroups {
   //! in the range \f$[0, M)\f$.
   //!
   //! \tparam Return the return type.
-  //! \tparam N the degree (default: \c 0).
-  //! \tparam Scalar an unsigned integer type (the type of the image values).
   //!
   //! \param dom the domain
   //! \param ran the range
@@ -1485,8 +1479,6 @@ namespace libsemigroups {
   //! in the range \f$[0, M)\f$.
   //!
   //! \tparam Return the return type.
-  //! \tparam N the degree (default: \c 0).
-  //! \tparam Scalar an unsigned integer type (the type of the image values).
   //!
   //! \param dom the domain
   //! \param ran the range
