@@ -1003,12 +1003,9 @@ namespace libsemigroups {
       typename Scalar
       = std::conditional_t<N == 0, uint32_t, typename SmallestInteger<N>::type>>
   class Transf : public PTransf<N, Scalar> {
-   public:
-    //! \brief Type of the parent class.
-    //!
-    //! Type of the parent class.
     using base_type = PTransf<N, Scalar>;
 
+   public:
     //! \brief Type of the image values.
     //!
     //! Also the template parameter \c Scalar.
@@ -1091,7 +1088,7 @@ namespace libsemigroups {
       = std::conditional_t<N == 0, uint32_t, typename SmallestInteger<N>::type>,
       typename OtherContainer>
   [[nodiscard]] Transf<N, Scalar> to_transf(OtherContainer&& cont) {
-    return Transf<N, Scalar>::base_type::template make<Transf<N, Scalar>>(
+    return Transf<N, Scalar>::template make<Transf<N, Scalar>>(
         std::forward<OtherContainer>(cont));
   }
 
@@ -1198,12 +1195,9 @@ namespace libsemigroups {
       typename Scalar
       = std::conditional_t<N == 0, uint32_t, typename SmallestInteger<N>::type>>
   class PPerm : public PTransf<N, Scalar> {
-   public:
-    //! \brief Type of the parent class.
-    //!
-    //! Type of the parent class.
     using base_type = PTransf<N, Scalar>;
 
+   public:
     //! \brief Type of the image values.
     //!
     //! Also the template parameter \c Scalar.
@@ -1312,7 +1306,7 @@ namespace libsemigroups {
       = std::conditional_t<N == 0, uint32_t, typename SmallestInteger<N>::type>,
       typename OtherContainer>
   [[nodiscard]] PPerm<N, Scalar> to_pperm(OtherContainer&& cont) {
-    return PPerm<N, Scalar>::base_type::template make<PPerm<N, Scalar>>(
+    return PPerm<N, Scalar>::template make<PPerm<N, Scalar>>(
         std::forward<OtherContainer>(cont));
   }
 
@@ -1509,12 +1503,9 @@ namespace libsemigroups {
       typename Scalar
       = std::conditional_t<N == 0, uint32_t, typename SmallestInteger<N>::type>>
   class Perm : public Transf<N, Scalar> {
-   public:
-    //! \brief Type of the parent class.
-    //!
-    //! Type of the parent class.
     using base_type = PTransf<N, Scalar>;
 
+   public:
     //! \brief Type of the image values.
     //!
     //! Also the template parameter \c Scalar.
@@ -1565,7 +1556,7 @@ namespace libsemigroups {
       = std::conditional_t<N == 0, uint32_t, typename SmallestInteger<N>::type>,
       typename OtherContainer>
   [[nodiscard]] Perm<N, Scalar> to_perm(OtherContainer&& cont) {
-    return Perm<N, Scalar>::base_type::template make<Perm<N, Scalar>>(
+    return Perm<N, Scalar>::template make<Perm<N, Scalar>>(
         std::forward<OtherContainer>(cont));
   }
 
