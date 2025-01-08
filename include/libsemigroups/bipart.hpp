@@ -39,6 +39,7 @@
 #include "adapters.hpp"   // for Hash
 #include "debug.hpp"      // for LIBSEMIGROUPS_ASSERT
 #include "exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
+#include "types.hpp"      // for enable_if_is_same
 
 #include "detail/fmt.hpp"
 
@@ -727,7 +728,7 @@ namespace libsemigroups {
     void throw_if_class_index_out_of_range(size_t index) const;
   };  // class Blocks
 
-  //! \ingroup bipart_group
+  //! \relates Blocks
   //!
   //! \brief Validate the arguments, construct a Blocks object, and validate
   //! it.
@@ -741,20 +742,23 @@ namespace libsemigroups {
   //!
   //! \throws LibsemigroupsException if the constructed Blocks object is not
   //! valid.
-  template <typename Container>
-  [[nodiscard]] Blocks to_blocks(Container const& cont) {
+  template <typename Return, typename Container>
+  [[nodiscard]] enable_if_is_same<Return, Blocks> to(Container const& cont) {
     detail::validate_args<Blocks>(cont);
     Blocks result(cont);
     blocks::validate(result);
     return result;
   }
 
-  //! \copydoc to_blocks(Container const&)
-  [[nodiscard]] Blocks
-  to_blocks(std::initializer_list<std::vector<int32_t>> const& cont);
-
-  //! \ingroup bipart_group
+  //! \relates Blocks
   //!
+  //! \copydoc to(Container const&)
+  template <typename Thing>
+  [[nodiscard]] enable_if_is_same<Thing, Blocks>
+  to(std::initializer_list<std::vector<int32_t>> const& cont) {
+    return to<Blocks, std::initializer_list<std::vector<int32_t>>>(cont);
+  }
+
   //! \brief Return a human readable representation of a blocks object.
   //!
   //! Return a human readable representation (std::string) of a Blocks object.
@@ -1446,6 +1450,8 @@ namespace libsemigroups {
     void init_trans_blocks_lookup() const;
   };  // class Bipartition
 
+  //! \relates Bipartition
+  //!
   //! \brief Validate the arguments, construct a bipartition, and validate it.
   //!
   //! \tparam T the type of the parameter \p cont
@@ -1458,25 +1464,36 @@ namespace libsemigroups {
   //!
   //! \throws LibsemigroupsException if the constructed bipartition is not
   //! valid.
-  template <typename T>
-  [[nodiscard]] static Bipartition to_bipartition(T const& cont) {
+  template <typename Return, typename Container>
+  [[nodiscard]] enable_if_is_same<Return, Bipartition>
+  to(Container const& cont) {
     detail::validate_args<Bipartition>(cont);
     Bipartition result(cont);
     bipartition::validate(result);
     return result;
   }
 
+  //! \relates Bipartition
+  //!
   //! \brief Validate the arguments, construct a bipartition, and validate it.
   //!
-  //! See to_bipartition(T const&) for full details.
-  [[nodiscard]] Bipartition
-  to_bipartition(std::initializer_list<uint32_t> const& cont);
+  //! See `to<Bipartition>(Container const&)` for full details.
+  template <typename Return>
+  [[nodiscard]] enable_if_is_same<Return, Bipartition>
+  to(std::initializer_list<uint32_t> const& cont) {
+    return to<Bipartition, std::initializer_list<uint32_t>>(cont);
+  }
 
+  //! \relates Bipartition
+  //!
   //! \brief Validate the arguments, construct a bipartition, and validate it.
   //!
-  //! See to_bipartition(T const&) for full details.
-  [[nodiscard]] Bipartition
-  to_bipartition(std::initializer_list<std::vector<int32_t>> const& cont);
+  //! See `to<Bipartition>(Container const&)` for full details.
+  template <typename Return>
+  [[nodiscard]] enable_if_is_same<Return, Bipartition>
+  to(std::initializer_list<std::vector<int32_t>> const& cont) {
+    return to<Bipartition, std::initializer_list<std::vector<int32_t>>>(cont);
+  }
 
   //! \ingroup bipart_group
   //!
