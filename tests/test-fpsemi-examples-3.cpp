@@ -38,11 +38,10 @@ namespace libsemigroups {
   using fpsemigroup::not_symmetric_group;
   using fpsemigroup::symmetric_group;
 
-  LIBSEMIGROUPS_TEST_CASE(
-      "fpsemi-examples",
-      "070",
-      "not_symmetric_group(5) Guralnick + Kantor + Kassabov + Lubotzky",
-      "[fpsemi-examples][quick]") {
+  LIBSEMIGROUPS_TEST_CASE("fpsemi-examples",
+                          "070",
+                          "not_symmetric_group(5) GKKL",
+                          "[fpsemi-examples][quick]") {
     auto   rg = ReportGuard(false);
     size_t n  = 5;
 

@@ -6267,15 +6267,13 @@ namespace libsemigroups {
   //!
   //! Defined in `matrix.hpp`.
   //!
-  //! Alias template for truncated min-plus matrices.
+  //! Alias template for ntp matrices.
   //!
   //! \tparam T the threshold. If both \c T and \c P are \c 0, this indicates
-  //! that
-  //!   the value will be set at run time (default: \c 0).
+  //! that the value will be set at run time (default: \c 0).
   //!
   //! \tparam P the period. If both \c T and \c P are \c 0, this indicates
-  //! that the
-  //!   value will be set at run time (default: \c 0).
+  //! that the value will be set at run time (default: \c 0).
   //!
   //! \tparam R the number of rows.  A value of \c 0 indicates that the value
   //! will be set at run time (default: \c 0).

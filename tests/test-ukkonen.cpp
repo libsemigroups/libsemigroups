@@ -30,6 +30,8 @@
 #include "libsemigroups/ukkonen.hpp"     // for Ukkonen, Ukkonen::State
 #include "libsemigroups/word-range.hpp"  // for literals
 
+#include "libsemigroups/detail/int-range.hpp"  // for IntRange
+
 namespace libsemigroups {
 
   using literals::operator""_w;

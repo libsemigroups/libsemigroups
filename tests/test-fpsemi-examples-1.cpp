@@ -493,7 +493,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("fpsemi-examples",
-                          "107",
+                          "119",
                           "orientation_preserving_monoid auth except",
                           "[fpsemi-examples][quick]") {
     auto rg = ReportGuard(REPORT);

@@ -22,7 +22,7 @@
 #include <vector>   // for vector
 
 #include "catch_amalgamated.hpp"  // for  REQUIRE
-#include "test-main.hpp"          // for LIBSEMIGROUPS_TEST_CASE_V3
+#include "test-main.hpp"          // for LIBSEMIGROUPS_TEST_CASE
 
 #include "libsemigroups/debug.hpp"         // for LIBSEMIGROUPS_ASSERT
 #include "libsemigroups/froidure-pin.hpp"  // for FroidurePin
@@ -107,10 +107,10 @@ namespace libsemigroups {
 
   constexpr bool REPORT = false;
 
-  LIBSEMIGROUPS_TEST_CASE_V3("FroidurePin",
-                             "055",
-                             "(tropical max-plus semiring matrices)",
-                             "[quick][froidure-pin][tropmaxplus]") {
+  LIBSEMIGROUPS_TEST_CASE("FroidurePin",
+                          "055",
+                          "(tropical max-plus semiring matrices)",
+                          "[quick][froidure-pin][tropmaxplus]") {
     auto rg = ReportGuard(REPORT);
     // threshold 9, 2 x 2
     using Mat = MaxPlusTruncMat<9, 2>;

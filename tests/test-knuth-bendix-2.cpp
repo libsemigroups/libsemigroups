@@ -44,7 +44,7 @@
 #define CATCH_CONFIG_ENABLE_PAIR_STRINGMAKER
 
 #include "catch_amalgamated.hpp"  // for AssertionHandler, oper...
-#include "test-main.hpp"          // for TEMPLATE_TEST_CASE
+#include "test-main.hpp"          // for LIBSEMIGROUPS_TEMPLATE_TEST_CASE
 
 #include "libsemigroups/constants.hpp"        // for operator==, operator!=
 #include "libsemigroups/exception.hpp"        // for LibsemigroupsException
@@ -86,9 +86,11 @@ namespace libsemigroups {
 
   // Fibonacci group F(2,5) - monoid presentation - has order 12 (group
   // elements + empty word)
-  TEMPLATE_TEST_CASE("KnuthBendix: (from kbmag/standalone/kb_data/f25monoid)",
-                     "[031][quick][knuth-bendix][kbmag][shortlex]",
-                     KNUTH_BENDIX_TYPES) {
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
+                                   "031",
+                                   "kbmag/standalone/kb_data/f25monoid",
+                                   "[quick][knuth-bendix][kbmag][shortlex]",
+                                   KNUTH_BENDIX_TYPES) {
     auto rg = ReportGuard(false);
 
     Presentation<std::string> p;
@@ -153,9 +155,12 @@ namespace libsemigroups {
   }
 
   // trivial group - BHN presentation
-  TEMPLATE_TEST_CASE("KnuthBendix: (from kbmag/standalone/kb_data/degen4a)",
-                     "[032][quick][knuth-bendix][kbmag][shortlex][no-valgrind]",
-                     KNUTH_BENDIX_TYPES) {
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE(
+      "KnuthBendix",
+      "032",
+      "kbmag/standalone/kb_data/degen4a",
+      "[quick][knuth-bendix][kbmag][shortlex][no-valgrind]",
+      KNUTH_BENDIX_TYPES) {
     auto rg = ReportGuard(false);
 
     Presentation<std::string> p;
@@ -191,9 +196,11 @@ namespace libsemigroups {
   }
 
   // Torus group
-  TEMPLATE_TEST_CASE("KnuthBendix: (from kbmag/standalone/kb_data/torus)",
-                     "[033][quick][knuth-bendix][kbmag][shortlex]",
-                     KNUTH_BENDIX_TYPES) {
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
+                                   "033",
+                                   "kbmag/standalone/kb_data/torus",
+                                   "[quick][knuth-bendix][kbmag][shortlex]",
+                                   KNUTH_BENDIX_TYPES) {
     auto rg = ReportGuard(false);
 
     Presentation<std::string> p;
@@ -241,9 +248,12 @@ namespace libsemigroups {
   }
 
   //  3-fold cover of A_6
-  TEMPLATE_TEST_CASE("KnuthBendix: (from kbmag/standalone/kb_data/3a6)",
-                     "[034][quick][knuth-bendix][kbmag][shortlex][no-valgrind]",
-                     KNUTH_BENDIX_TYPES) {
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE(
+      "KnuthBendix",
+      "034",
+      "kbmag/standalone/kb_data/3a6",
+      "[quick][knuth-bendix][kbmag][shortlex][no-valgrind]",
+      KNUTH_BENDIX_TYPES) {
     auto rg = ReportGuard(false);
 
     Presentation<std::string> p;
@@ -298,9 +308,11 @@ namespace libsemigroups {
   }
 
   //  Free group on 2 generators
-  TEMPLATE_TEST_CASE("KnuthBendix: (from kbmag/standalone/kb_data/f2)",
-                     "[035][quick][knuth-bendix][kbmag][shortlex]",
-                     KNUTH_BENDIX_TYPES) {
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
+                                   "035",
+                                   "kbmag/standalone/kb_data/f2",
+                                   "[quick][knuth-bendix][kbmag][shortlex]",
+                                   KNUTH_BENDIX_TYPES) {
     auto rg = ReportGuard(false);
 
     Presentation<std::string> p;
@@ -340,9 +352,12 @@ namespace libsemigroups {
   }
 
   // Symmetric group S_16
-  TEMPLATE_TEST_CASE("KnuthBendix: (from kbmag/standalone/kb_data/s16)",
-                     "[036][quick][knuth-bendix][kbmag][shortlex][no-valgrind]",
-                     KNUTH_BENDIX_TYPES) {
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE(
+      "KnuthBendix",
+      "036",
+      "kbmag/standalone/kb_data/s16",
+      "[quick][knuth-bendix][kbmag][shortlex][no-valgrind]",
+      KNUTH_BENDIX_TYPES) {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("abcdefghijklmno");
@@ -604,9 +619,11 @@ namespace libsemigroups {
 
   // Presentation of group A_4 regarded as monoid presentation - gives
   // infinite monoid.
-  TEMPLATE_TEST_CASE("KnuthBendix: (from kbmag/standalone/kb_data/a4monoid)",
-                     "[037][quick][knuth-bendix][kbmag][shortlex]",
-                     KNUTH_BENDIX_TYPES) {
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
+                                   "037",
+                                   "kbmag/standalone/kb_data/a4monoid",
+                                   "[quick][knuth-bendix][kbmag][shortlex]",
+                                   KNUTH_BENDIX_TYPES) {
     auto rg = ReportGuard(false);
 
     Presentation<std::string> p;
@@ -638,9 +655,12 @@ namespace libsemigroups {
   }
 
   // fairly clearly the trivial group
-  TEMPLATE_TEST_CASE("KnuthBendix: (from kbmag/standalone/kb_data/degen3)",
-                     "[038][quick][knuth-bendix][kbmag][shortlex][no-valgrind]",
-                     KNUTH_BENDIX_TYPES) {
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE(
+      "KnuthBendix",
+      "038",
+      "kbmag/standalone/kb_data/degen3",
+      "[quick][knuth-bendix][kbmag][shortlex][no-valgrind]",
+      KNUTH_BENDIX_TYPES) {
     auto rg = ReportGuard(false);
 
     Presentation<std::string> p;
@@ -667,9 +687,11 @@ namespace libsemigroups {
   }
 
   // infinite cyclic group
-  TEMPLATE_TEST_CASE("KnuthBendix: (from kbmag/standalone/kb_data/ab1)",
-                     "[039][quick][knuth-bendix][kbmag][shortlex]",
-                     KNUTH_BENDIX_TYPES) {
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
+                                   "039",
+                                   "kbmag/standalone/kb_data/ab1",
+                                   "[quick][knuth-bendix][kbmag][shortlex]",
+                                   KNUTH_BENDIX_TYPES) {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("aA");
@@ -687,9 +709,11 @@ namespace libsemigroups {
   }
 
   // A generator, but trivial.
-  TEMPLATE_TEST_CASE("KnuthBendix: (from kbmag/standalone/kb_data/degen2)",
-                     "[040][quick][knuth-bendix][kbmag][shortlex]",
-                     KNUTH_BENDIX_TYPES) {
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
+                                   "040",
+                                   "kbmag/standalone/kb_data/degen2",
+                                   "[quick][knuth-bendix][kbmag][shortlex]",
+                                   KNUTH_BENDIX_TYPES) {
     auto rg = ReportGuard(false);
 
     Presentation<std::string> p;
@@ -711,9 +735,11 @@ namespace libsemigroups {
   }
 
   // Fibonacci group F(2,5)
-  TEMPLATE_TEST_CASE("KnuthBendix: (from kbmag/standalone/kb_data/f25)",
-                     "[041][quick][knuth-bendix][kbmag][shortlex]",
-                     KNUTH_BENDIX_TYPES) {
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
+                                   "041",
+                                   "kbmag/standalone/kb_data/f25",
+                                   "[quick][knuth-bendix][kbmag][shortlex]",
+                                   KNUTH_BENDIX_TYPES) {
     auto rg = ReportGuard(false);
 
     Presentation<std::string> p;
@@ -767,9 +793,11 @@ namespace libsemigroups {
   }
 
   // Von Dyck (2,3,7) group - infinite hyperbolic
-  TEMPLATE_TEST_CASE("KnuthBendix: (from kbmag/standalone/kb_data/237)",
-                     "[042][quick][knuth-bendix][kbmag][shortlex]",
-                     KNUTH_BENDIX_TYPES) {
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
+                                   "042",
+                                   "kbmag/standalone/kb_data/237",
+                                   "[quick][knuth-bendix][kbmag][shortlex]",
+                                   KNUTH_BENDIX_TYPES) {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("aAbBc");
@@ -824,9 +852,11 @@ namespace libsemigroups {
   }
 
   // Cyclic group of order 2.
-  TEMPLATE_TEST_CASE("KnuthBendix: (from kbmag/standalone/kb_data/c2)",
-                     "[043][quick][knuth-bendix][kbmag][shortlex]",
-                     KNUTH_BENDIX_TYPES) {
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
+                                   "043",
+                                   "kbmag/standalone/kb_data/c2",
+                                   "[quick][knuth-bendix][kbmag][shortlex]",
+                                   KNUTH_BENDIX_TYPES) {
     auto rg = ReportGuard(false);
 
     Presentation<std::string> p;
@@ -848,9 +878,11 @@ namespace libsemigroups {
 
   // The group is S_4, and the subgroup H of order 4. There are 30 reduced
   // words - 24 for the group elements, and 6 for the 6 cosets Hg.
-  TEMPLATE_TEST_CASE("KnuthBendix: (from kbmag/standalone/kb_data/cosets)",
-                     "[044][quick][knuth-bendix][kbmag][shortlex]",
-                     KNUTH_BENDIX_TYPES) {
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
+                                   "044",
+                                   "kbmag/standalone/kb_data/cosets",
+                                   "[quick][knuth-bendix][kbmag][shortlex]",
+                                   KNUTH_BENDIX_TYPES) {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.contains_empty_word(true);
@@ -902,9 +934,11 @@ namespace libsemigroups {
                                         {"bbaabb", "abba"}}}));
   }
 
-  TEMPLATE_TEST_CASE("KnuthBendix: Example 5.1 in Sims (KnuthBendix 09 again)",
-                     "[045][quick][knuth-bendix]",
-                     KNUTH_BENDIX_TYPES) {
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
+                                   "045",
+                                   "Ex. 5.1 in Sims (KnuthBendix 09 again)",
+                                   "[quick][knuth-bendix]",
+                                   KNUTH_BENDIX_TYPES) {
     auto rg = ReportGuard(false);
 
     Presentation<std::string> p;
@@ -925,9 +959,11 @@ namespace libsemigroups {
     REQUIRE(kb.confluent());
   }
 
-  TEMPLATE_TEST_CASE("KnuthBendix: (from kbmag/standalone/kb_data/nilp2)",
-                     "[046][quick][knuth-bendix][kbmag][shortlex]",
-                     KNUTH_BENDIX_TYPES) {
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
+                                   "046",
+                                   "kbmag/standalone/kb_data/nilp2",
+                                   "[quick][knuth-bendix][kbmag][shortlex]",
+                                   KNUTH_BENDIX_TYPES) {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("cCbBaA");
@@ -943,9 +979,11 @@ namespace libsemigroups {
     REQUIRE(!kb.confluent());
   }
 
-  TEMPLATE_TEST_CASE("KnuthBendix: Example 6.4 in Sims",
-                     "[047][quick][knuth-bendix][no-valgrind]",
-                     KNUTH_BENDIX_TYPES) {
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
+                                   "047",
+                                   "Ex. 6.4 in Sims",
+                                   "[quick][knuth-bendix][no-valgrind]",
+                                   KNUTH_BENDIX_TYPES) {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.contains_empty_word(true);
@@ -982,9 +1020,11 @@ namespace libsemigroups {
   }
 
   // Von Dyck (2,3,7) group - infinite hyperbolic
-  TEMPLATE_TEST_CASE("KnuthBendix: KnuthBendix 071 again",
-                     "[no-valgrind][048][quick][knuth-bendix][shortlex]",
-                     KNUTH_BENDIX_TYPES) {
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
+                                   "KnuthBendix 071 again",
+                                   "[no-valgrind]048",
+                                   "[quick][knuth-bendix][shortlex]",
+                                   KNUTH_BENDIX_TYPES) {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("aAbBc");
@@ -1055,10 +1095,11 @@ namespace libsemigroups {
                                          "Baac", "BacA", "cAAb", "cAAB"}));
   }
 
-  TEMPLATE_TEST_CASE("KnuthBendix: Example 5.4 in Sims (KnuthBendix 11 again) "
-                     "(different overlap policy)",
-                     "[049][quick][knuth-bendix]",
-                     KNUTH_BENDIX_TYPES) {
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
+                                   "049",
+                                   "Sims Ex. 5.4 - alt. overlap policy",
+                                   "[quick][knuth-bendix]",
+                                   KNUTH_BENDIX_TYPES) {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("Bab");
@@ -1096,11 +1137,11 @@ namespace libsemigroups {
                                          "baB"}));
   }
 
-  TEMPLATE_TEST_CASE(
-      "KnuthBendix: Example 5.4 in Sims (KnuthBendix 11 again) (different "
-      "overlap policy) x 2",
-      "[050][quick][knuth-bendix]",
-      KNUTH_BENDIX_TYPES) {
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
+                                   "050",
+                                   "Sims - Ex. 5.4 - alt. overlap policy",
+                                   "[quick][knuth-bendix]",
+                                   KNUTH_BENDIX_TYPES) {
     auto rg = ReportGuard(false);
 
     Presentation<std::string> p;
@@ -1124,9 +1165,11 @@ namespace libsemigroups {
     REQUIRE(kb.confluent());
   }
 
-  TEMPLATE_TEST_CASE("KnuthBendix: operator<<",
-                     "[051][quick][knuth-bendix]",
-                     KNUTH_BENDIX_TYPES) {
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
+                                   "051",
+                                   "operator<<",
+                                   "[quick][knuth-bendix]",
+                                   KNUTH_BENDIX_TYPES) {
     std::ostringstream os;
 
     Presentation<std::string> p;
@@ -1148,9 +1191,11 @@ namespace libsemigroups {
     os << kb2;  // Does not do anything visible
   }
 
-  TEMPLATE_TEST_CASE("KnuthBendix: confluence_interval",
-                     "[052][quick][knuth-bendix]",
-                     KNUTH_BENDIX_TYPES) {
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
+                                   "052",
+                                   "confluence_interval",
+                                   "[quick][knuth-bendix]",
+                                   KNUTH_BENDIX_TYPES) {
     Presentation<std::string> p;
     p.contains_empty_word(true);
     p.alphabet("Bab");
@@ -1163,9 +1208,11 @@ namespace libsemigroups {
     kb.check_confluence_interval(10);
   }
 
-  TEMPLATE_TEST_CASE("KnuthBendix: max_overlap",
-                     "[053][quick][knuth-bendix]",
-                     KNUTH_BENDIX_TYPES) {
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
+                                   "053",
+                                   "max_overlap",
+                                   "[quick][knuth-bendix]",
+                                   KNUTH_BENDIX_TYPES) {
     Presentation<std::string> p;
     p.contains_empty_word(true);
     p.alphabet("Bab");
@@ -1180,9 +1227,11 @@ namespace libsemigroups {
     kb.max_overlap(-11);
   }
 
-  TEMPLATE_TEST_CASE(
-      "KnuthBendix: (from kbmag/standalone/kb_data/d22) (2 / 3) (finite)",
-      "[054][quick][knuth-bendix][fpsemi][kbmag][shortlex]",
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE(
+      "KnuthBendix",
+      "054",
+      "kbmag/standalone/kb_data/d22",
+      "[quick][knuth-bendix][fpsemi][kbmag][shortlex]",
       KNUTH_BENDIX_TYPES) {
     auto rg = ReportGuard(false);
 
@@ -1214,9 +1263,11 @@ namespace libsemigroups {
                                          "ABD", "ABY", "ACY", "ADB"}));
   }
 
-  TEMPLATE_TEST_CASE(
-      "KnuthBendix: (from kbmag/standalone/kb_data/d22) (3 / 3) (finite)",
-      "[055][quick][knuth-bendix][fpsemi][kbmag][shortlex]",
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE(
+      "KnuthBendix",
+      "055",
+      "kbmag/standalone/kb_data/d22",
+      "[quick][knuth-bendix][fpsemi][kbmag][shortlex]",
       KNUTH_BENDIX_TYPES) {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
@@ -1240,9 +1291,11 @@ namespace libsemigroups {
     REQUIRE(kb.number_of_classes() == 22);
   }
 
-  TEMPLATE_TEST_CASE("KnuthBendix: small example",
-                     "[056][quick][knuth-bendix][shortlex]",
-                     KNUTH_BENDIX_TYPES) {
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
+                                   "056",
+                                   "small example",
+                                   "[quick][knuth-bendix][shortlex]",
+                                   KNUTH_BENDIX_TYPES) {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("ab");
@@ -1258,9 +1311,11 @@ namespace libsemigroups {
             == std::vector<std::string>({"a", "b", "aa", "ab", "ba", "bb"}));
   }
 
-  TEMPLATE_TEST_CASE("KnuthBendix: code coverage",
-                     "[057][quick]",
-                     KNUTH_BENDIX_TYPES) {
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
+                                   "057",
+                                   "code coverage",
+                                   "[quick]",
+                                   KNUTH_BENDIX_TYPES) {
     KnuthBendix<TestType> kb1;
     KnuthBendix<TestType> kb2(kb1);
     REQUIRE(kb1.number_of_classes() == 0);
@@ -1272,9 +1327,11 @@ namespace libsemigroups {
     REQUIRE(kb3.presentation().rules.size() / 2 == 1);
   }
 
-  TEMPLATE_TEST_CASE("KnuthBendix: small overlap 1",
-                     "[058][quick]",
-                     KNUTH_BENDIX_TYPES) {
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
+                                   "058",
+                                   "small overlap 1",
+                                   "[quick]",
+                                   KNUTH_BENDIX_TYPES) {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("BCA");
@@ -1305,9 +1362,11 @@ namespace libsemigroups {
   }
 
   // Symmetric group S_9
-  TEMPLATE_TEST_CASE("KnuthBendix: (from kbmag/standalone/kb_data/s9)",
-                     "[059][quick][knuth-bendix][kbmag][shortlex]",
-                     KNUTH_BENDIX_TYPES) {
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
+                                   "059",
+                                   "kbmag/standalone/kb_data/s9",
+                                   "[quick][knuth-bendix][kbmag][shortlex]",
+                                   KNUTH_BENDIX_TYPES) {
     auto rg = ReportGuard(false);
 
     Presentation<std::string> p;
@@ -1353,9 +1412,11 @@ namespace libsemigroups {
     REQUIRE(kb.number_of_classes() == 362'880);
   }
 
-  TEMPLATE_TEST_CASE("KnuthBendix: C(4) monoid",
-                     "[060][quick][knuth-bendix]",
-                     KNUTH_BENDIX_TYPES) {
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
+                                   "060",
+                                   "C(4) monoid",
+                                   "[quick][knuth-bendix]",
+                                   KNUTH_BENDIX_TYPES) {
     Presentation<std::string> p;
     p.alphabet("abcde");
     presentation::add_rule(p, "bceac", "aeebbc");
@@ -1366,9 +1427,11 @@ namespace libsemigroups {
     REQUIRE(kb.confluent());
   }
 
-  TEMPLATE_TEST_CASE("KnuthBendix: 1-relation hard case",
-                     "[061][fail][knuth-bendix]",
-                     KNUTH_BENDIX_TYPES) {
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
+                                   "061",
+                                   "1-relation hard case",
+                                   "[fail][knuth-bendix]",
+                                   KNUTH_BENDIX_TYPES) {
     auto                      rg = ReportGuard(true);
     Presentation<std::string> p;
     p.alphabet("ab");
@@ -1382,9 +1445,11 @@ namespace libsemigroups {
     REQUIRE(kb.confluent());
   }
 
-  TEMPLATE_TEST_CASE("KnuthBendix: 1-relation hard case x 2",
-                     "[062][quick][knuth-bendix][no-valgrind]",
-                     KNUTH_BENDIX_TYPES) {
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
+                                   "062",
+                                   "1-relation hard case x 2",
+                                   "[quick][knuth-bendix][no-valgrind]",
+                                   KNUTH_BENDIX_TYPES) {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.contains_empty_word(true);
@@ -1443,9 +1508,11 @@ namespace libsemigroups {
                  "bdb", "cba", "cbd", "dbc", "bacb", "bdbc", "cbdb", "cbdbc"}));
   }
 
-  TEMPLATE_TEST_CASE("KnuthBendix: search for a monoid that might not exist",
-                     "[063][quick][knuth-bendix]",
-                     KNUTH_BENDIX_TYPES) {
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
+                                   "063",
+                                   "search for a monoid that might not exist",
+                                   "[quick][knuth-bendix]",
+                                   KNUTH_BENDIX_TYPES) {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.contains_empty_word(true);
@@ -1479,12 +1546,14 @@ namespace libsemigroups {
     REQUIRE(kb.number_of_classes() == POSITIVE_INFINITY);
   }
 
-  TEMPLATE_TEST_CASE("KnuthBendix: Chinese monoid",
-                     "[064][knuth-bendix][quick][no-valgrind]",
-                     KNUTH_BENDIX_TYPES) {
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
+                                   "064",
+                                   "Chinese monoid",
+                                   "[knuth-bendix][quick][no-valgrind]",
+                                   KNUTH_BENDIX_TYPES) {
     auto rg = ReportGuard(false);
     // fmt::print(bg(fmt::color::white) | fg(fmt::color::black),
-    //            "[062]: Chinese monoid STARTING . . .\n");
+    //            "062",": Chinese monoid STARTING . . .\n");
 
     std::array<uint64_t, 11> const num
         = {0, 0, 22, 71, 181, 391, 750, 1'317, 2'161, 3'361, 5'006};
@@ -1498,9 +1567,11 @@ namespace libsemigroups {
     }
   }
 
-  TEMPLATE_TEST_CASE("KnuthBendix: hypostylic",
-                     "[065][todd-coxeter][quick]",
-                     KNUTH_BENDIX_TYPES) {
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
+                                   "065",
+                                   "hypostylic",
+                                   "[todd-coxeter][quick]",
+                                   KNUTH_BENDIX_TYPES) {
     using namespace literals;
     using words::operator+;
 
@@ -1533,9 +1604,11 @@ namespace libsemigroups {
     //         == to_word_graph<size_t>(5, {{1, 3}, {UNDEFINED, 2}, {}, {4}}));
   }
 
-  TEMPLATE_TEST_CASE("KnuthBendix: Chinese id monoid",
-                     "[066][todd-coxeter][quick]",
-                     KNUTH_BENDIX_TYPES) {
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
+                                   "066",
+                                   "Chinese id monoid",
+                                   "[todd-coxeter][quick]",
+                                   KNUTH_BENDIX_TYPES) {
     auto rg = ReportGuard(false);
     auto n  = 4;
     auto p  = fpsemigroup::chinese_monoid(n);
@@ -1550,9 +1623,11 @@ namespace libsemigroups {
     REQUIRE(knuth_bendix::reduce(kb, "cadb") == "cadb");
   }
 
-  TEMPLATE_TEST_CASE("KnuthBendix: sigma sylvester monoid",
-                     "[067][todd-coxeter][quick][no-valgrind]",
-                     KNUTH_BENDIX_TYPES) {
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
+                                   "067",
+                                   "sigma sylvester monoid",
+                                   "[todd-coxeter][quick][no-valgrind]",
+                                   KNUTH_BENDIX_TYPES) {
     using namespace literals;
     auto                    rg = ReportGuard(false);
     Presentation<word_type> p;
@@ -1685,9 +1760,11 @@ namespace libsemigroups {
     REQUIRE(kb.number_of_classes() == 312);
   }
 
-  TEMPLATE_TEST_CASE("KnuthBendix: Reinis MFE",
-                     "[027][todd-coxeter][quick]",
-                     KNUTH_BENDIX_TYPES) {
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
+                                   "027",
+                                   "Reinis MFE",
+                                   "[todd-coxeter][quick]",
+                                   KNUTH_BENDIX_TYPES) {
     using literals::        operator""_w;
     Presentation<word_type> p;
     p.alphabet(2);
@@ -1698,9 +1775,11 @@ namespace libsemigroups {
     REQUIRE(knuth_bendix::contains(kb, "000"_w, "11"_w));
   }
 
-  TEMPLATE_TEST_CASE("KnuthBendix: sigma sylvester monoid x 2",
-                     "[068][todd-coxeter][quick]",
-                     KNUTH_BENDIX_TYPES) {
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
+                                   "068",
+                                   "sigma sylvester monoid x 2",
+                                   "[todd-coxeter][quick]",
+                                   KNUTH_BENDIX_TYPES) {
     using namespace literals;
     auto                    rg = ReportGuard(false);
     Presentation<word_type> p;
