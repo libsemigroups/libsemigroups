@@ -277,7 +277,8 @@ jobs:
             - type: "Address"
               cxx_flags: "-fsanitize=address"
             - type: "UndefinedBehaviour"
-              cxx_flags: "-fsanitize=undefined -fno-sanitize-recover"
+              cxx_flags: "-fsanitize=undefined"
+              environment_variables: "UBSAN_OPTIONS=log_path=ubsan.log"
       steps:
          - uses: actions/checkout@v3
          - name: "Setup ccache . . ."
@@ -294,7 +295,10 @@ jobs:
          - name: "Build test_all . . ."
            run: make test_all -j4
          - name: "Run tests with ${{ matrix.type }}Sanitizer . . ."
-           run: ./test_all "[quick],[standard]"
+           run: ${{ matrix.environment_variables }} ./test_all "[quick],[standard]"
+         - name: "Check log files"
+           if: ${{ matrix.type != "UndefinedBehaviour" }}
+           run: [ -f ubsan_test.log* ];
    valgrind:
       timeout-minutes: 60
       runs-on: ubuntu-latest
