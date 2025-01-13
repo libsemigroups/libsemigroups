@@ -151,9 +151,9 @@ namespace libsemigroups {
 
     //! \brief A presentation for the dual symmetric inverse monoid.
     //!
-    //! Returns a monoid presentation defining the dual symmetric inverse monoid
-    //! of degree \p n. The argument \p val determines the specific presentation
-    //! which is returned. The only option is:
+    //! This function returns a monoid presentation defining the dual symmetric
+    //! inverse monoid of degree \p n. The argument \p val determines the
+    //! specific presentation which is returned. The only option is:
     //! * `author::Easdown + author::East + author::FitzGerald` (from Section 3
     //! of [10.48550/arxiv.0707.2439][]).
     //!
@@ -174,9 +174,9 @@ namespace libsemigroups {
 
     //! \brief A presentation for the uniform block bijection monoid.
     //!
-    //! Returns a monoid presentation defining the uniform block bijection
-    //! monoid of degree \p n. The argument \p val determines the specific
-    //! presentation which is returned. The only option is:
+    //! This function returns a monoid presentation defining the uniform block
+    //! bijection monoid of degree \p n. The argument \p val determines the
+    //! specific presentation which is returned. The only option is:
     //! * `author::FitzGerald` (see [10.1017/s0004972700037692][]).
     //!
     //! \param n the degree.
@@ -194,9 +194,9 @@ namespace libsemigroups {
 
     //! \brief A presentation for the partition monoid.
     //!
-    //! Returns a presentation defining the partition monoid of degree \p n. The
-    //! argument \p val determines the specific presentation which is returned.
-    //! The options are:
+    //! This function returns a presentation defining the partition monoid of
+    //! degree \p n. The argument \p val determines the specific presentation
+    //! which is returned. The options are:
     //! * `author::Machine`;
     //! * `author::East` (see Theorem 41 of
     //! [10.1016/j.jalgebra.2011.04.008][])
@@ -228,8 +228,9 @@ namespace libsemigroups {
 
     //! \brief A presentation for the singular part of the Brauer monoid.
     //!
-    //! Returns a monoid presentation for the singular part of the Brauer monoid
-    //! of degree \p n, as in Theorem 5 of [10.21136/MB.2007.134125][]).
+    //! This function returns a monoid presentation for the singular part of the
+    //! Brauer monoid of degree \p n, as in Theorem 5 of
+    //! [10.21136/MB.2007.134125][]).
     //!
     //! \param n the degree.
     //! \param val the author of the presentation (default: `author::Any`).
@@ -247,9 +248,9 @@ namespace libsemigroups {
     //! \brief A presentation for the monoid of orientation preserving
     //! mappings.
     //!
-    //! Returns a monoid presentation defining the monoid of orientation
-    //! preserving mappings on a finite chain of order \p n, as described in
-    //! [10.1007/s10012-000-0001-1][].
+    //! This function returns a monoid presentation defining the monoid of
+    //! orientation preserving mappings on a finite chain of order \p n, as
+    //! described in [10.1007/s10012-000-0001-1][].
     //!
     //! \param n the order of the chain.
     //! \param val the author of the presentation (default: `author::Any`).
@@ -266,9 +267,9 @@ namespace libsemigroups {
     //! \brief A presentation for the monoid of orientation preserving or
     //! reversing mappings.
     //!
-    //! Returns a monoid presentation defining the monoid of orientation
-    //! preserving or reversing mappings on a finite chain of order \p n, as
-    //! described in [10.1007/s10012-000-0001-1][].
+    //! This function returns a monoid presentation defining the monoid of
+    //! orientation preserving or reversing mappings on a finite chain of order
+    //! \p n, as described in [10.1007/s10012-000-0001-1][].
     //!
     //! \param n the order of the chain.
     //! \param val the author of the presentation (default: `author::Any`).
@@ -284,8 +285,8 @@ namespace libsemigroups {
 
     //! \brief A presentation for the Temperley-Lieb monoid.
     //!
-    //! Returns a monoid presentation defining the Temperley-Lieb monoid with
-    //! \p n generators, as described in Theorem 2.2 of
+    //! This function returns a monoid presentation defining the Temperley-Lieb
+    //! monoid with \p n generators, as described in Theorem 2.2 of
     //! [10.1093/qmath/haab001][].
     //!
     //! \param n the number of generators.
@@ -303,8 +304,9 @@ namespace libsemigroups {
 
     //! \brief A presentation for the Brauer monoid.
     //!
-    //! Returns a monoid presentation defining the Brauer monoid of degree \p n,
-    //! as described in Theorem 3.1 of the paper [10.2478/s11533-006-0017-6][].
+    //! This function returns a monoid presentation defining the Brauer monoid
+    //! of degree \p n, as described in Theorem 3.1 of the paper
+    //! [10.2478/s11533-006-0017-6][].
     //!
     //! \param n the degree.
     //! \param val the author of the presentation (default: `author::Any`).
@@ -321,8 +323,8 @@ namespace libsemigroups {
 
     //! A presentation for the partial Brauer monoid.
     //!
-    //! Returns a monoid presentation defining
-    //! the partial Brauer monoid of degree `n`, as described in Theorem 5.1 of
+    //! The function returns a monoid presentation defining the partial Brauer
+    //! monoid of degree `n`, as described in Theorem 5.1 of
     //! the paper [10.2478/s11533-006-0017-6][].
     //!
     //! \param n the degree
@@ -358,9 +360,9 @@ namespace libsemigroups {
 
     //! \brief A presentation for a Fibonacci semigroup.
     //!
-    //! Returns a semigroup presentation defining the Fibonacci semigroup
-    //! \f$F(r, n)\f$, where \f$r\f$ is \p r and \f$n\f$ is \p n, as described
-    //! in [10.1016/0022-4049(94)90005-1][].
+    //! This function returns a semigroup presentation defining the Fibonacci
+    //! semigroup \f$F(r, n)\f$, where \f$r\f$ is \p r and \f$n\f$ is \p n, as
+    //! described in [10.1016/0022-4049(94)90005-1][].
     //!
     //! \param r the length of the left hand sides of the relations.
     //! \param n the number of generators.
@@ -379,8 +381,8 @@ namespace libsemigroups {
 
     //! \brief A presentation for the plactic monoid.
     //!
-    //! Returns a monoid presentation defining the plactic monoid with \p n
-    //! generators (see Section 3 of [10.1007/s00233-022-10285-3][]).
+    //! This function returns a monoid presentation defining the plactic monoid
+    //! with \p n generators (see Section 3 of [10.1007/s00233-022-10285-3][]).
     //!
     //! \param n the number of generators.
     //! \param val the author of the presentation (default: `author::Any`).
@@ -397,8 +399,8 @@ namespace libsemigroups {
 
     //! \brief A presentation for the stylic monoid.
     //!
-    //! Returns a monoid presentation defining the stylic monoid with \p n
-    //! generators (see Theorem 8.1 of [10.1007/s00233-022-10285-3]).
+    //! This function returns a monoid presentation defining the stylic monoid
+    //! with \p n generators (see Theorem 8.1 of [10.1007/s00233-022-10285-3]).
     //!
     //! \param n the number of generators.
     //! \param val the author of the presentation (default: `author::Any`).
@@ -415,9 +417,9 @@ namespace libsemigroups {
 
     //! \brief A presentation for the symmetric group.
     //!
-    //! Returns a monoid presentation for the symmetric group of degree \p n.
-    //! The arguments \p val and \p index determine the specific presentation
-    //! which is returned. The options are:
+    //! This function returns a monoid presentation for the symmetric group of
+    //! degree \p n. The arguments \p val and \p index determine the specific
+    //! presentation which is returned. The options are:
     //!
     // clang-format off
     //!
@@ -457,9 +459,9 @@ namespace libsemigroups {
 
     //! \brief A presentation for the alternating group.
     //!
-    //! Returns a monoid presentation defining the alternating group of degree
-    //! \p n. The argument \p val determines the specific presentation which is
-    //! returned. The options are:
+    //! This function returns a monoid presentation defining the alternating
+    //! group of degree \p n. The argument \p val determines the specific
+    //! presentation which is returned. The options are:
     //! * `author::Moore` (see Ch. 3, Prop 1.3 of
     //! [hdl.handle.net/10023/2821][]).
     //!
@@ -478,8 +480,9 @@ namespace libsemigroups {
 
     //! \brief A presentation for a rectangular band.
     //!
-    //! Returns a semigroup presentation defining the \p m by \p n rectangular
-    //! band, as given in Proposition 4.2 of [10.1007/s002339910016][].
+    //! This function returns a semigroup presentation defining the \p m by \p n
+    //! rectangular band, as given in Proposition 4.2 of
+    //! [10.1007/s002339910016][].
     //!
     //! \param m the number of rows.
     //! \param n the number of columns.
@@ -497,9 +500,9 @@ namespace libsemigroups {
 
     //! \brief A presentation for the full transformation monoid.
     //!
-    //! Returns a monoid presentation defining the full transformation monoid.
-    //! The arguments \p val and \p index determine the specific presentation
-    //! which is returned. The options are:
+    //! This function returns a monoid presentation defining the full
+    //! transformation monoid. The arguments \p val and \p index determine the
+    //! specific presentation which is returned. The options are:
     //! * `author::Aizenstat` and `index = 0` (see Ch. 3, Prop 1.7 of
     //! [http://hdl.handle.net/10023/2821][]);
     //! * `author::Iwahori` and `index = 0` (see Theorem 9.3.1 of
@@ -533,9 +536,9 @@ namespace libsemigroups {
 
     //! \brief A presentation for the partial transformation monoid.
     //!
-    //! Returns a monoid presentation defining the partial transformation
-    //! monoid. The argument \p val determines the specific presentation which
-    //! is returned. The options are:
+    //! This function returns a monoid presentation defining the partial
+    //! transformation monoid. The argument \p val determines the specific
+    //! presentation which is returned. The options are:
     //! * `author::Machine`;
     //! * `author::Sutov` (see Theorem 9.4.1 of
     //! [10.1007/978-1-84800-281-4][]);
@@ -559,9 +562,9 @@ namespace libsemigroups {
 
     //! \brief A presentation for the symmetric inverse monoid.
     //!
-    //! Returns a monoid presentation defining the symmetric inverse monoid. The
-    //! argument \brief val determines the specific presentation which is
-    //! returned. The options are:
+    //! This function returns a monoid presentation defining the symmetric
+    //! inverse monoid. The argument \brief val determines the specific
+    //! presentation which is returned. The options are:
     //! * `author::Gay`;
     //! * `author::Sutov` (see Theorem 9.2.2 of
     //! [10.1007/978-1-84800-281-4][]);
@@ -595,8 +598,8 @@ namespace libsemigroups {
 
     //! \brief A presentation for the Chinese monoid.
     //!
-    //! Returns a monoid presentation defining the Chinese monoid, as described
-    //! in [10.1142/S0218196701000425][].
+    //! This function returns a monoid presentation defining the Chinese monoid,
+    //! as described in [10.1142/S0218196701000425][].
     //!
     //! \param n the number of generators.
     //! \param val the author of the presentation (default: `author::Any`).
@@ -613,10 +616,11 @@ namespace libsemigroups {
 
     //! \brief A presentation for a monogenic semigroup.
     //!
-    //! Returns a presentation defining the monogenic semigroup defined by the
-    //! presentation \f$\langle a \mid a^{m + r} = a^m \rangle\f$.
+    //! This function returns a presentation defining the monogenic semigroup
+    //! defined by the presentation \f$\langle a \mid a^{m + r} = a^m
+    //! \rangle\f$.
     //!
-    //! If \p m = 0, the presentation returned is a monoid presentation;
+    //! If \p m is 0, the presentation returned is a monoid presentation;
     //! otherwise, a semigroup presentation is returned.
     //!
     //! \param m the index.
@@ -633,9 +637,9 @@ namespace libsemigroups {
 
     //! \brief A presentation for the monoid of order-preserving mappings.
     //!
-    //! Returns a monoid presentation defining the monoid of order-preserving
-    //! transformations of degree \p n, as described in Section 2 of the paper
-    //! [10.1007/s10012-000-0001-1][].
+    //! This function returns a monoid presentation defining the monoid of
+    //! order-preserving transformations of degree \p n, as described in Section
+    //! 2 of the paper [10.1007/s10012-000-0001-1][].
     //!
     //! This presentation has \f$2n - 2\f$ generators and \f$n^2\f$ relations.
     //!
@@ -653,8 +657,8 @@ namespace libsemigroups {
 
     //! \brief A presentation for the cyclic inverse monoid.
     //!
-    //! Returns a monoid presentation defining the cyclic inverse monoid of
-    //! degree \p n.
+    //! This function returns a monoid presentation defining the cyclic inverse
+    //! monoid of degree \p n.
     //!
     //! The arguments \p val and \p index determine the specific presentation
     //! which is returned. The options are:
@@ -690,9 +694,9 @@ namespace libsemigroups {
     //! \p A presentation for the order-preserving part of the cyclic inverse
     //! monoid.
     //!
-    //! Returns a monoid presentation defining the order-preserving part of the
-    //! cyclic inverse monoid of degree \p n, as described in Theorem 2.17 of
-    //! the paper [10.48550/arxiv.2211.02155][].
+    //! This function returns a monoid presentation defining the
+    //! order-preserving part of the cyclic inverse monoid of degree \p n, as
+    //! described in Theorem 2.17 of the paper [10.48550/arxiv.2211.02155][].
     //!
     //! \param n the degree.
     //! \param val the author of the presentation (default: `author::Any`).
@@ -709,9 +713,9 @@ namespace libsemigroups {
     //! \brief A presentation for the monoid of partial isometries of a cycle
     //! graph.
     //!
-    //! Returns a monoid presentation defining the monoid of partial isometries
-    //! of an \f$n\f$-cycle graph, as described in Theorem 2.8 of
-    //! [10.48550/arxiv.2205.02196][].
+    //! This function returns a monoid presentation defining the monoid of
+    //! partial isometries of an \f$n\f$-cycle graph, as described in
+    //! Theorem 2.8 of [10.48550/arxiv.2205.02196][].
     //!
     //! \param n the number of vertices of the cycle graph.
     //! \param val the author of the presentation (default: `author::Any`).
@@ -727,9 +731,10 @@ namespace libsemigroups {
 
     //! \brief A non-presentation for the symmetric group.
     //!
-    //! Returns a monoid presentation which is claimed to define the symmetric
-    //! group of degree \p n, but does not. The argument \p val determines the
-    //! specific non-presentation which is returned. The options are:
+    //! This function returns a monoid presentation which is claimed to define
+    //! the symmetric group of degree \p n, but does not. The argument \p val
+    //! determines the specific non-presentation which is returned. The options
+    //! are:
     //! * `author::Guralnick + author::Kantor + author::Kassabov +
     //! author::Lubotzky` [doi.org/10.1090/S0894-0347-08-00590-0][].
     //!
