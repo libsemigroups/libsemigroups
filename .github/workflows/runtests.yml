@@ -267,7 +267,7 @@ jobs:
       runs-on: ubuntu-latest
       env:
         CXX: "ccache clang++"
-        CXXFLAGS: "-fdiagnostics-color -fno-omit-frame-pointer -g -O2"
+        CXXFLAGS: "-fdiagnostics-color -fno-omit-frame-pointer -g -O1"
       strategy:
         matrix:
           type: ["Thread", "Address", "UndefinedBehaviour"]
