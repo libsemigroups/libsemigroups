@@ -1130,8 +1130,7 @@ namespace libsemigroups {
   //!
   //! \throw LibsemigroupsException if any of the following hold:
   //! * the size of \p cont is incompatible with \ref container_type.
-  //! * any value in \p cont exceeds `cont.size()` and is not equal to
-  //!   UNDEFINED.
+  //! * any value in \p cont exceeds `cont.size()`.
   //!
   //! \complexity
   //! Linear in the size of the container \p cont.
