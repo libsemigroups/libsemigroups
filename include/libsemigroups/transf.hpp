@@ -50,7 +50,7 @@
 #include "debug.hpp"      // for LIBSEMIGROUPS_ASSERT
 #include "exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
 #include "hpcombi.hpp"    // for HPCombi::Transf16
-#include "types.hpp"      // for SmallestInteger, enable_if_is_same
+#include "types.hpp"      // for SmallestInteger
 
 #include "detail/stl.hpp"  // for is_array_v
 
