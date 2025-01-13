@@ -299,7 +299,11 @@ jobs:
            run: ${{ matrix.environment_variables }} ./test_all "[quick],[standard]"
          - name: "Check log files"
            if: ${{ matrix.type == 'UndefinedBehaviour' }}
-           run: ${{ '[ -f ubsan_test.log* ];' }}
+           run: |
+                if [ -f ubsan_test.log* ]; then
+                  cat ubsan_test.log*
+                  $(exit 1);
+                fi
    valgrind:
       timeout-minutes: 60
       runs-on: ubuntu-latest
