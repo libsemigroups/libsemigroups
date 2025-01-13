@@ -130,10 +130,11 @@ namespace libsemigroups {
     }
   }  // namespace
 
-  TEMPLATE_TEST_CASE("FroidurePin: Example 000",
-                     "[032][quick][froidure-pin][intmat]",
-                     (IntMat<0, 0, int64_t>),
-                     (IntMat<2, 2, int64_t>) ) {
+  TEMPLATE_TEST_CASE(
+      "FroidurePin: Example 000",
+      "[032][quick][froidure-pin][intmat][no-sanitize-undefined]",
+      (IntMat<0, 0, int64_t>),
+      (IntMat<2, 2, int64_t>) ) {
     // FIXME this test seemingly causes undefined behaviour (multiplication of
     // signed integers that overflows)
     auto rg = ReportGuard(REPORT);

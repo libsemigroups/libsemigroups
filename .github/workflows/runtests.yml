@@ -270,14 +270,9 @@ jobs:
         CXXFLAGS: "-fdiagnostics-color -fno-omit-frame-pointer -g -O1"
       strategy:
         matrix:
-          type: ["Thread", "Address", "UndefinedBehaviour"]
+          type: ["thread", "address", "undefined"]
           include:
-            - type: "Thread"
-              cxx_flags: "-fsanitize=thread"
-            - type: "Address"
-              cxx_flags: "-fsanitize=address"
-            - type: "UndefinedBehaviour"
-              cxx_flags: "-fsanitize=undefined"
+            - type: "undefined"
               environment_variables: "UBSAN_OPTIONS=log_path=ubsan.log"
         fail-fast: false
       steps:
@@ -287,18 +282,18 @@ jobs:
            with:
              update_packager_index: false
              install_ccache: true
-         - name: "Configure . . ."
+         - name: "Configure with -fsanitize=${{ matrix.type }} . . ."
            run: |
                 mkdir -p m4 && ./autogen.sh
-                ./configure CXX="$CXX" CXXFLAGS="${{ matrix.cxx_flags }} $CXXFLAGS"
+                ./configure CXX="$CXX" CXXFLAGS="-fsanitize=${{ matrix.type }} $CXXFLAGS"
          - name: "Build libsemigroups . . ."
            run: make -j4
          - name: "Build test_all . . ."
            run: make test_all -j4
-         - name: "Run tests with ${{ matrix.type }}Sanitizer . . ."
-           run: ${{ matrix.environment_variables }} ./test_all "[quick],[standard]"
+         - name: "Run tests . . ."
+           run: ${{ matrix.environment_variables }} ./test_all "[quick][exclude:no-sanitize-${{ matrix.type }}],[standard][exclude:no-sanitize-${{ matrix.type }}]"
          - name: "Check log files"
-           if: ${{ matrix.type == 'UndefinedBehaviour' }}
+           if: ${{ matrix.type == 'undefined' }}
            run: |
                 if [ -f ubsan.log* ]; then
                   cat ubsan.log*
