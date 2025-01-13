@@ -298,8 +298,8 @@ jobs:
          - name: "Run tests with ${{ matrix.type }}Sanitizer . . ."
            run: ${{ matrix.environment_variables }} ./test_all "[quick],[standard]"
          - name: "Check log files"
-           if: ${{ matrix.type != "UndefinedBehaviour" }}
-           run: [ -f ubsan_test.log* ];
+           if: ${{ matrix.type == 'UndefinedBehaviour' }}
+           run: ${{ '[ -f ubsan_test.log* ];' }}
    valgrind:
       timeout-minutes: 60
       runs-on: ubuntu-latest
