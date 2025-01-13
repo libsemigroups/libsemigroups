@@ -300,9 +300,9 @@ jobs:
          - name: "Check log files"
            if: ${{ matrix.type == 'UndefinedBehaviour' }}
            run: |
-                if [ -f ubsan_test.log* ]; then
-                  cat ubsan_test.log*
-                  $(exit 1);
+                if [ -f ubsan.log* ]; then
+                  cat ubsan.log*
+                  $(exit 1)
                 fi
    valgrind:
       timeout-minutes: 60
