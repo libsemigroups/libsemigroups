@@ -437,9 +437,6 @@ namespace libsemigroups {
     //!
     // clang-format on
     //!
-    //! The default for `val` is `author::Carmichael`. The default for `index`
-    //! is `0`.
-    //!
     //! \param n the degree of the symmetric group.
     //! \param val the author of the presentation (default:
     //! `author::Carmichael`).
