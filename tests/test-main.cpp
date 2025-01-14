@@ -119,7 +119,7 @@ struct LibsemigroupsListener : Catch::EventListenerBase {
       name   = testInfo.name;
       number = find_tag_starting_with(testInfo, LIBSEMIGROUPS_TEST_NUM);
 
-      for (std::string const& cat : {"quick", "standard", "extreme", "fail"}) {
+      for (char const* cat : {"quick", "standard", "extreme", "fail"}) {
         if (find_tag(testInfo, cat)) {
           category = cat;
           break;
@@ -206,7 +206,7 @@ struct LibsemigroupsListener : Catch::EventListenerBase {
 
     SectionStats(Catch::SectionStats const& ss, SectionInfo const& si)
         : duration(std::chrono::nanoseconds(
-            static_cast<uint64_t>(ss.durationInSeconds * std::pow(10, 9)))),
+              static_cast<uint64_t>(ss.durationInSeconds * std::pow(10, 9)))),
           name(si.name) {}
   };
 
