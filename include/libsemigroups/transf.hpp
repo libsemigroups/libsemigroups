@@ -731,7 +731,7 @@ namespace libsemigroups {
   //!
   //! \brief Partial transformations with dynamic degree.
   //!
-  //! Defined in ``transf.hpp``.
+  //! Defined in `transf.hpp`.
   //!
   //! This is a class for partial transformations where the number of points
   //! acted on (the degree) can be set at run time.
@@ -814,7 +814,7 @@ namespace libsemigroups {
   //!
   //! \brief Partial transformations with static degree.
   //!
-  //! Defined in ``transf.hpp``.
+  //! Defined in `transf.hpp`.
   //!
   //! Static partial transformations.
   //!
@@ -885,7 +885,7 @@ namespace libsemigroups {
   //!
   //! \brief Partial transformations with static or dynamic degree.
   //!
-  //! Defined in ``transf.hpp``.
+  //! Defined in `transf.hpp`.
   //!
   //! This alias equals either DynamicPTransf or StaticPTransf depending on
   //! the template parameters \p N and \p Scalar.
@@ -976,7 +976,7 @@ namespace libsemigroups {
   //!
   //! \brief Transformations with static or dynamic degree.
   //!
-  //! Defined in ``transf.hpp``.
+  //! Defined in `transf.hpp`.
   //!
   //! A *transformation* \f$f\f$ is just a function defined on the
   //! whole of \f$\{0, 1, \ldots, n - 1\}\f$ for some integer \f$n\f$
@@ -1177,7 +1177,7 @@ namespace libsemigroups {
   //!
   //! \brief Partial permutations with static or dynamic degree.
   //!
-  //! Defined in ``transf.hpp``.
+  //! Defined in `transf.hpp`.
   //!
   //! A *partial permutation* \f$f\f$ is just an injective partial
   //! transformation, which is stored as a container of the images of \f$\{0, 1,
@@ -1509,7 +1509,7 @@ namespace libsemigroups {
   //!
   //! \brief Permutations with static or dynamic degree.
   //!
-  //! Defined in ``transf.hpp``.
+  //! Defined in `transf.hpp`.
   //!
   //! A *permutation* \f$f\f$ is an injective transformation defined on the
   //! whole of \f$\{0, 1, \ldots, n - 1\}\f$ for some integer \f$n\f$ called
@@ -2363,10 +2363,10 @@ namespace libsemigroups {
   //! \brief Type of transformations using the least memory for a given degree.
   //!
   //! Helper for getting the type of the least size, and fastest,
-  //! transformation in ``libsemigroups`` or ``HPCombi`` that are defined on
+  //! transformation in `libsemigroups` or `HPCombi` that are defined on
   //! at most \c N points.
   //!
-  //! Defined in ``transf.hpp``.
+  //! Defined in `transf.hpp`.
   //!
   //! \tparam N the maximum number of points the transformations will be
   //! defined on.
@@ -2378,10 +2378,10 @@ namespace libsemigroups {
   //! \brief Type of partial perms using the least memory for a given degree.
   //!
   //! Helper for getting the type of the least size, and fastest, partial perm
-  //! in ``libsemigroups`` or ``HPCombi`` that are defined on at most \c N
+  //! in `libsemigroups` or `HPCombi` that are defined on at most \c N
   //! points.
   //!
-  //! Defined in ``transf.hpp``.
+  //! Defined in `transf.hpp`.
   //!
   //! \tparam N the maximum number of points the partial perms will be defined
   //! on.
@@ -2393,10 +2393,10 @@ namespace libsemigroups {
   //! \brief Type of perms using the least memory for a given degree.
   //!
   //! Helper for getting the type of the least size, and fastest, permutation
-  //! in ``libsemigroups`` or ``HPCombi`` that are defined on at most \c N
+  //! in `libsemigroups` or `HPCombi` that are defined on at most \c N
   //! points.
   //!
-  //! Defined in ``transf.hpp``.
+  //! Defined in `transf.hpp`.
   //!
   //! \tparam N the maximum number of points the permutations will be defined
   //! on.

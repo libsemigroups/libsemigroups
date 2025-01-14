@@ -68,7 +68,7 @@ namespace libsemigroups {
   //! \brief Compare two objects of the same type using
   //! std::lexicographical_compare.
   //!
-  //! Defined in ``order.hpp``.
+  //! Defined in `order.hpp`.
   //!
   //! Compare two objects of the same type using std::lexicographical_compare.
   //!
@@ -101,7 +101,7 @@ namespace libsemigroups {
   //! \brief Compare two objects via their pointers using
   //! std::lexicographical_compare.
   //!
-  //! Defined in ``order.hpp``.
+  //! Defined in `order.hpp`.
   //!
   //! Compare two objects via their pointers using std::lexicographical_compare.
   //!
@@ -134,7 +134,7 @@ namespace libsemigroups {
   //! \brief A stateless struct with binary call operator using
   //! std::lexicographical_compare.
   //!
-  //! Defined in ``order.hpp``.
+  //! Defined in `order.hpp`.
   //!
   //! A stateless struct with binary call operator using
   //! std::lexicographical_compare.
@@ -227,7 +227,7 @@ namespace libsemigroups {
   //! \brief Compare two objects of the same type using the short-lex reduction
   //! ordering.
   //!
-  //! Defined in ``order.hpp``.
+  //! Defined in `order.hpp`.
   //!
   //! Compare two objects of the same type using the short-lex reduction
   //! ordering.
@@ -275,7 +275,7 @@ namespace libsemigroups {
 
   //! \brief Compare two objects of the same type using \ref shortlex_compare.
   //!
-  //! Defined in ``order.hpp``.
+  //! Defined in `order.hpp`.
   //!
   //! Compare two objects of the same type using \ref shortlex_compare.
   //!
@@ -309,7 +309,7 @@ namespace libsemigroups {
 
   //! \brief Compare two objects via their pointers using \ref shortlex_compare.
   //!
-  //! Defined in ``order.hpp``.
+  //! Defined in `order.hpp`.
   //!
   //! Compare two objects via their pointers using \ref shortlex_compare.
   //!
@@ -344,7 +344,7 @@ namespace libsemigroups {
   //! \brief A stateless struct with binary call operator using \ref
   //! shortlex_compare.
   //!
-  //! Defined in ``order.hpp``.
+  //! Defined in `order.hpp`.
   //!
   //! A stateless struct with binary call operator using \ref shortlex_compare.
   //!
@@ -381,7 +381,7 @@ namespace libsemigroups {
   //! \brief Compare two objects of the same type using the recursive path
   //! comparison.
   //!
-  //! Defined in ``order.hpp``.
+  //! Defined in `order.hpp`.
   //!
   //! Compare two objects of the same type using the recursive path
   //! comparison described in \cite Jantzen2012aa (Definition 1.2.14, page 24).
@@ -447,7 +447,7 @@ namespace libsemigroups {
   //! \brief Compare two objects of the same type using \ref
   //! recursive_path_compare.
   //!
-  //! Defined in ``order.hpp``.
+  //! Defined in `order.hpp`.
   //!
   //! Compare two objects of the same type using \ref recursive_path_compare.
   //!
@@ -478,7 +478,7 @@ namespace libsemigroups {
   //! \brief Compare two objects via their pointers using
   //! \ref recursive_path_compare.
   //!
-  //! Defined in ``order.hpp``.
+  //! Defined in `order.hpp`.
   //!
   //! Compare two objects via their pointers using \ref recursive_path_compare.
   //!
@@ -511,7 +511,7 @@ namespace libsemigroups {
   //! \brief A stateless struct with binary call operator using
   //! \ref recursive_path_compare.
   //!
-  //! Defined in ``order.hpp``.
+  //! Defined in `order.hpp`.
   //!
   //! A stateless struct with binary call operator using \ref
   //! recursive_path_compare.

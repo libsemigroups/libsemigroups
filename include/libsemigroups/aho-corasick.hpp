@@ -61,7 +61,7 @@ namespace libsemigroups {
   //!
   //! \brief For an implementation of the Aho-Corasick algorithm
   //!
-  //! Defined in ``aho-corasick.hpp``.
+  //! Defined in `aho-corasick.hpp`.
   //!
   //! This class implements a trie based data structure with suffix links to be
   //! used with the Aho-Corasick dictionary searching algorithm. An introduction
@@ -76,7 +76,7 @@ namespace libsemigroups {
   //! being reinitialised, and exists as a way of minimising how frequently
   //! memory needs to be allocated and deallocated for nodes.
   //!
-  //! Several helper functions are provided in the ``aho_corasick`` namespace.
+  //! Several helper functions are provided in the `aho_corasick` namespace.
   class AhoCorasick {
    public:
     //! Alias for the index of a node in the trie
@@ -734,7 +734,7 @@ namespace libsemigroups {
   //!
   //! \brief Namespace for AhoCorasick helper functions.
   //!
-  //! Defined in ``aho-corasick.hpp``.
+  //! Defined in `aho-corasick.hpp`.
   //!
   //! This namespace contains various helper functions for the class
   //! AhoCorasick. These functions could be functions of AhoCorasick but they

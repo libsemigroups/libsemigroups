@@ -44,8 +44,8 @@
 namespace libsemigroups {
   //! \defgroup action_group Actions
   //! This page contains an overview of the functionality in
-  //! ``libsemigroups`` for finding actions of semigroups, or groups, on sets.
-  //! The notion of an "action" in the context of ``libsemigroups`` is analogous
+  //! `libsemigroups` for finding actions of semigroups, or groups, on sets.
+  //! The notion of an "action" in the context of `libsemigroups` is analogous
   //! to the notion of an orbit of a group.
   //!
   //! You are unlikely to want to use Action directly, but rather via the more
@@ -99,11 +99,11 @@ namespace libsemigroups {
   //!
   //! \brief Class for generating the action of a semigroup.
   //!
-  //! Defined in ``action.hpp``.
+  //! Defined in `action.hpp`.
   //!
-  //! This page contains details of the Action class in ``libsemigroups`` for
+  //! This page contains details of the Action class in `libsemigroups` for
   //! finding actions of semigroups, or groups, on sets.  The notion of an
-  //! "action" in the context of ``libsemigroups`` is analogous to the notion
+  //! "action" in the context of `libsemigroups` is analogous to the notion
   //! of an orbit of a group.
   //!
   //! You are unlikely to want to use this class directly directly, but rather

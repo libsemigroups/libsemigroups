@@ -74,7 +74,7 @@ namespace libsemigroups {
   //! \defgroup knuth_bendix_group Knuth-Bendix
   //!
   //! This page contains links to the documentation related to the
-  //! implementation of the Knuth-Bendix algorithm in ``libsemigroups``.
+  //! implementation of the Knuth-Bendix algorithm in `libsemigroups`.
 
   //! \ingroup knuth_bendix_group
   //!
@@ -932,7 +932,7 @@ namespace libsemigroups {
     //!
     //! \returns
     //! A const reference to the presentation, a value of type
-    //! ``Presentation<std::string> const&``.
+    //! `Presentation<std::string> const&`.
     //!
     //! \exceptions
     //! \noexcept
@@ -1079,7 +1079,7 @@ namespace libsemigroups {
     //! of the rewriting system.
     //!
     //! \return The node labels of the Gilman \ref WordGraph, a const reference
-    //! to a ``std::vector<std::string>``.
+    //! to a `std::vector<std::string>`.
     //!
     //! \sa \ref gilman_graph.
     [[nodiscard]] std::vector<std::string> const& gilman_graph_node_labels() {
@@ -1155,7 +1155,7 @@ namespace libsemigroups {
   //! several of the member functions of \ref KnuthBendix (that accept
   //! iterators) whose parameters are not iterators, but objects instead. The
   //! helpers documented on this page all belong to the namespace
-  //! ``knuth_bendix``.
+  //! `knuth_bendix`.
   //!
   //! \sa \ref cong_intf_helpers_group
   namespace knuth_bendix {

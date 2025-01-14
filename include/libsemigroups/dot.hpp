@@ -67,15 +67,15 @@ namespace libsemigroups {
   //! \defgroup dot_group Visualisation
   //!
   //! This page contains links to the various classes and functions in
-  //! ``libsemigroups`` for visualising instances of some of the other objects
-  //! implemented in ``libsemigroups``.
+  //! `libsemigroups` for visualising instances of some of the other objects
+  //! implemented in `libsemigroups`.
   //!
   //! The class Dot facilitates the creation and rendering of graph
   //! descriptions in the [DOT][] language of the [Graphviz][] graph drawing
   //! software.
   //!
   //! The function \ref dot can be used to produce initial Dot objects for
-  //! various of the data structures and algorithms in ``libsemigroups``:
+  //! various of the data structures and algorithms in `libsemigroups`:
   //!
   //! * \ref dot(AhoCorasick&)
   //! * \ref word_graph::dot(WordGraph<Node> const& wg)
@@ -88,7 +88,7 @@ namespace libsemigroups {
   //! \brief A representation of a graph in the [DOT][] language of
   //! [Graphviz][].
   //!
-  //! Defined in ``dot.hpp``.
+  //! Defined in `dot.hpp`.
   //!
   //! This class facilitates the creation and rendering of graph
   //! descriptions in the [DOT][] language of the [Graphviz][] graph drawing
@@ -110,7 +110,7 @@ namespace libsemigroups {
    public:
     //! \brief This nested struct represents a node in the represented graph.
     //!
-    //! Defined in ``dot.hpp``.
+    //! Defined in `dot.hpp`.
     //!
     //! This nested struct represents a node in the represented graph.
     struct Node {
@@ -169,7 +169,7 @@ namespace libsemigroups {
 
     //! \brief This nested struct represents an edge in the represented graph.
     //!
-    //! Defined in ``dot.hpp``.
+    //! Defined in `dot.hpp`.
     //!
     //! This nested struct represents an edge in the represented graph.
     struct Edge {

@@ -88,7 +88,7 @@ namespace libsemigroups {
   //! \brief Documentation for constant values.
   //!
   //! This file contains functionality for various constant values used in
-  //! ``libsemigroups``.
+  //! `libsemigroups`.
 
   //! \ingroup constants_group
   //! \brief Type for undefined values.

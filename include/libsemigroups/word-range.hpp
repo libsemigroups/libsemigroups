@@ -1202,7 +1202,7 @@ namespace libsemigroups {
 
     //! Check if the current ToString instance can convert a specified letter.
     //!
-    //! This function returns \c true if \p l can can be converted to a ``char``
+    //! This function returns \c true if \p l can can be converted to a `char`
     //! using this ToString instance, and \c false otherwise.
     //!
     //! \param l the letter to check the convertibility of.
@@ -1624,7 +1624,7 @@ namespace libsemigroups {
     //! * first() equal to the empty string;
     //! * last() equal to the empty string;
     //! * upper_bound() equal to \c 0;
-    //! * alphabet() equal to ``""``.
+    //! * alphabet() equal to `""`.
     StringRange() {
       init();
     }
@@ -1722,7 +1722,7 @@ namespace libsemigroups {
     //! to alphabet().
     //!
     //! \note The behaviour of this function is not exactly the same as
-    //! ``WordRange::last(word_type const&)``. That function will not throw if a
+    //! `WordRange::last(word_type const&)`. That function will not throw if a
     //! word contains letters not in the alphabet.
     //!
     //! \sa \ref max
@@ -1829,7 +1829,7 @@ namespace libsemigroups {
     //!
     //! Sets one past the last string in a StringRange object to be
     //! \f$\alpha^n\f$ where \f$\alpha\f$ is the first letter of
-    //! ``alphabet()`` (or ``"a"`` if the alphabet is empty) and
+    //! `alphabet()` (or `"a"` if the alphabet is empty) and
     //! \f$n\f$ corresponds to \p val.
     //!
     //! \param val the exponent.

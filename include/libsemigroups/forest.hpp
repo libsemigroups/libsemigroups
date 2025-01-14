@@ -35,7 +35,7 @@ namespace libsemigroups {
   //!
   //! \brief Class representing a collection of spanning trees of a word graph.
   //!
-  //! Defined in ``forest.hpp``.
+  //! Defined in `forest.hpp`.
   //!
   //! This class represents the collection of spanning trees of the strongly
   //! connected components of a word graph.

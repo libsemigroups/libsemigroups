@@ -34,17 +34,17 @@ namespace libsemigroups {
   //! \brief Documentation for exceptions.
   //!
   //! This file contains functionality for the exceptions used in
-  //! ``libsemigroups``.
+  //! `libsemigroups`.
   //!
 
   //! \ingroup exception_group
   //!
   //! \brief Exception class deriving from std::runtime_error.
   //!
-  //! Defined in ``exception.hpp``.
+  //! Defined in `exception.hpp`.
   //!
   //! This page contains the documentation for the class LibsemigroupsException.
-  //! All exceptions thrown by ``libsemigroups`` are LibsemigroupsException
+  //! All exceptions thrown by `libsemigroups` are LibsemigroupsException
   //! instances.
   struct LibsemigroupsException : public std::runtime_error {
     //! \brief Create an exception

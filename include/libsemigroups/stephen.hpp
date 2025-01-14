@@ -55,9 +55,9 @@
 // * canonical_form (as per Howie's book)
 namespace libsemigroups {
 
-  //! Defined in ``stephen.hpp``.
+  //! Defined in `stephen.hpp`.
   //!
-  //! On this page we describe the functionality in ``libsemigroups`` relating
+  //! On this page we describe the functionality in `libsemigroups` relating
   //! to Stephen's procedure for finitely presented semigroups. This class
   //! implements Stephen's procedure for (possibly) constructing the word graph
   //! (WordGraph) corresponding to the left factors of a word in a finitely

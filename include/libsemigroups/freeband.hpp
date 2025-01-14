@@ -36,11 +36,11 @@ namespace libsemigroups {
 
   //! \defgroup freeband_group Radoszewski-Rytter
   //!
-  //! ``libsemigroups`` contains an implementation of the Radoszewski-Rytter
+  //! `libsemigroups` contains an implementation of the Radoszewski-Rytter
   //! Algorithm \cite Radoszewski2010aa for testing equivalence of words in free
   //! bands.
   //!
-  //! The documentation for the functions in ``libsemigroups`` for free bands
+  //! The documentation for the functions in `libsemigroups` for free bands
   //! are linked to below.
 
   //! \ingroup freeband_group
@@ -90,7 +90,7 @@ namespace libsemigroups {
   //! \ingroup freeband_group
   //!
   //! \brief Check if two words represent the same element of a free
-  //! band (non-``word_type``).
+  //! band (non-`word_type`).
   //!
   //! \tparam T any type that can be converted to `word_type`
   //!

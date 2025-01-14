@@ -81,7 +81,7 @@ namespace libsemigroups {
   //! \ingroup misc_group
   //! \brief Collection of values related to reporting.
   //!
-  //! Defined in ``runner.hpp``.
+  //! Defined in `runner.hpp`.
   //!
   //! This class exists to collect some values related to reporting in its
   //! derived classes. These values are:
@@ -337,7 +337,7 @@ namespace libsemigroups {
   //!
   //! Defined in \c runner.hpp
   //!
-  //! Many of the classes in ``libsemigroups`` implementing the algorithms
+  //! Many of the classes in `libsemigroups` implementing the algorithms
   //! that are the reason for the existence of this library, are derived from
   //! Runner.  The Runner class exists to collect various common tasks
   //! required by such a derived class with a possibly long running \ref run.
