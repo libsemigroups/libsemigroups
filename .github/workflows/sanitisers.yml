@@ -15,8 +15,10 @@ jobs:
       matrix:
         type: ["thread", "address", "undefined"]
         include:
+          - type: "thread"
+            environment_variables: TSAN_OPTIONS="suppressions=tsan-suppression.cfg"
           - type: "undefined"
-            environment_variables: "UBSAN_OPTIONS=log_path=ubsan.log"
+            environment_variables: UBSAN_OPTIONS=log_path=ubsan.log
       fail-fast: false
     steps:
       - uses: actions/checkout@v3
