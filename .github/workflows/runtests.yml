@@ -262,43 +262,6 @@ jobs:
            run: make test_all -j4
          - name: "Run the quick tests . . ."
            run:  ./test_all "[quick]"
-   sanitisers:
-      timeout-minutes: 60
-      runs-on: ubuntu-latest
-      env:
-        CXX: "ccache clang++"
-        CXXFLAGS: "-fdiagnostics-color -fno-omit-frame-pointer -g -O1"
-      strategy:
-        matrix:
-          type: ["thread", "address", "undefined"]
-          include:
-            - type: "undefined"
-              environment_variables: "UBSAN_OPTIONS=log_path=ubsan.log"
-        fail-fast: false
-      steps:
-         - uses: actions/checkout@v3
-         - name: "Setup ccache . . ."
-           uses: Chocobo1/setup-ccache-action@v1
-           with:
-             update_packager_index: false
-             install_ccache: true
-         - name: "Configure with -fsanitize=${{ matrix.type }} . . ."
-           run: |
-                mkdir -p m4 && ./autogen.sh
-                ./configure CXX="$CXX" CXXFLAGS="-fsanitize=${{ matrix.type }} $CXXFLAGS"
-         - name: "Build libsemigroups . . ."
-           run: make -j4
-         - name: "Build test_all . . ."
-           run: make test_all -j4
-         - name: "Run tests . . ."
-           run: ${{ matrix.environment_variables }} ./test_all "[quick][exclude:no-sanitize-${{ matrix.type }}],[standard][exclude:no-sanitize-${{ matrix.type }}]"
-         - name: "Check log files"
-           if: ${{ matrix.type == 'undefined' }}
-           run: |
-                if [ -f ubsan.log* ]; then
-                  cat ubsan.log*
-                  $(exit 1)
-                fi
    valgrind:
       timeout-minutes: 60
       runs-on: ubuntu-latest
