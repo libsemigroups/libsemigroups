@@ -56,7 +56,7 @@ namespace libsemigroups {
 
   //! \defgroup ukkonen_group Ukkonen
   //!
-  //! Defined ``ukkonen.hpp``.
+  //! Defined `ukkonen.hpp`.
   //!
   //! This page contains an overview of the functionality in `libsemigroups`
   //! for Ukkonen's algorithm for constructing a generalised suffix tree.
@@ -637,7 +637,7 @@ namespace libsemigroups {
     //!
     //! \returns A value of type `word_index_type`.
     //!
-    //! \throws LibsemigroupsException if ``n.parent == UNDEFINED``
+    //! \throws LibsemigroupsException if `n.parent == UNDEFINED`
     //!
     //! \complexity
     //! Constant.
@@ -684,7 +684,7 @@ namespace libsemigroups {
     //! \returns A value of type `word_index_type`.
     //!
     //! \throws LibsemigroupsException if \p i is greater than
-    //! ``length_of_distinct_words() + number_of_distinct_words()``
+    //! `length_of_distinct_words() + number_of_distinct_words()`
     //!
     //! \complexity
     //! Constant.

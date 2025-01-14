@@ -80,7 +80,7 @@ namespace libsemigroups {
   //!
   //! \brief For an implementation of presentations for semigroups or monoids.
   //!
-  //! Defined in ``presentation.hpp``.
+  //! Defined in `presentation.hpp`.
   //!
   //! This class template can be used to construction presentations for
   //! semigroups or monoids and is intended to be used as the input to other
@@ -500,8 +500,8 @@ namespace libsemigroups {
     //! \brief Set whether whether the empty word is a valid relation word.
     //!
     //! Specify whether the empty word should be a valid relation word
-    //! (corresponding to \p val being ``true``), or not (corresponding to
-    //! \p val being ``false``).
+    //! (corresponding to \p val being `true`), or not (corresponding to
+    //! \p val being `false`).
     //!
     //! If the presentation is not allowed to contain the empty word (according
     //! to the value specified here), the presentation may still be isomorphic
@@ -610,7 +610,7 @@ namespace libsemigroups {
   //!
   //! \brief Namespace for Presentation helper functions.
   //!
-  //! Defined in ``presentation.hpp``.
+  //! Defined in `presentation.hpp`.
   //!
   //! This namespace contains various helper functions for the class
   //! \ref Presentation. These functions could be functions of \ref Presentation
@@ -2086,7 +2086,7 @@ namespace libsemigroups {
   //! \brief For an implementation of inverse presentations for semigroups or
   //! monoids.
   //!
-  //! Defined in ``presentation.hpp``.
+  //! Defined in `presentation.hpp`.
   //!
   //! This class template can be used to construction inverse presentations for
   //! semigroups or monoids and is intended to be used as the input to other

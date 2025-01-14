@@ -42,11 +42,11 @@ namespace libsemigroups {
   // The purpose of this class in v3 is just to deliver the winner, then that
   // object is used to answer whatever questions.
 
-  //! Defined in ``cong.hpp``.
+  //! Defined in `cong.hpp`.
   //!
   //! On this page we describe the functionality relating to the Congruence
   //! class. This class can be used for computing a congruence over a semigroup
-  //! by running every applicable algorithm from ``libsemigroups`` (and some
+  //! by running every applicable algorithm from `libsemigroups` (and some
   //! variants of the same algorithm) in parallel. This class is provided for
   //! convenience, at present it is not very customisable, and lacks some of
   //! the fine grained control offered by the classes implementing individual

@@ -55,7 +55,7 @@
 #include "detail/bruidhinn-traits.hpp"  // for BruidhinnTraits
 
 namespace libsemigroups {
-  //! Defined in ``konieczny.hpp``.
+  //! Defined in `konieczny.hpp`.
   //!
   //! This is a traits class for use with Konieczny.
   //!
@@ -128,7 +128,7 @@ namespace libsemigroups {
     using Degree = ::libsemigroups::Degree<element_type>;
   };
 
-  //! Defined in ``konieczny.hpp``.
+  //! Defined in `konieczny.hpp`.
   //!
   //! The class template Konieczny implements %Konieczny's algorithm as
   //! described in the article 'Green's equivalences in finite semigroups of
@@ -1717,7 +1717,7 @@ namespace libsemigroups {
   // DClass
   /////////////////////////////////////////////////////////////////////////////
 
-  //! Defined in ``konieczny.hpp``.
+  //! Defined in `konieczny.hpp`.
   //!
   //! The nested abstract class Konieczny::DClass represents a
   //! \f$\mathscr{D}\f$-class via a frame as computed in %Konieczny's
@@ -2526,7 +2526,7 @@ namespace libsemigroups {
   // RegularDClass
   /////////////////////////////////////////////////////////////////////////////
 
-  // Defined in ``konieczny.hpp``.
+  // Defined in `konieczny.hpp`.
   //
   // The nested class Konieczny::RegularDClass inherits from DClass and
   // represents a regular \f$\mathscr{D}\f$-class via a frame as
@@ -3130,7 +3130,7 @@ namespace libsemigroups {
   // NonRegularDClass
   /////////////////////////////////////////////////////////////////////////////
 
-  // Defined in ``konieczny.hpp``.
+  // Defined in `konieczny.hpp`.
   //
   // The nested class Konieczny::NonRegularDClass inherits from DClass
   // and represents a regular \f$\mathscr{D}\f$-class via a frame as

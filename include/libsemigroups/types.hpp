@@ -37,7 +37,7 @@ namespace libsemigroups {
   //! \brief Documentation for types.
   //!
   //! This file contains functionality for various types used in
-  //! ``libsemigroups``.
+  //! `libsemigroups`.
   //!
   //! @{
 

@@ -71,7 +71,7 @@ namespace libsemigroups {
   //! \defgroup todd_coxeter_group Todd-Coxeter
   //!
   //! This page contains documentation related to the implementation of the
-  //! Todd-Coxeter algorithm \cite Coleman2022aa in ``libsemigroups``.
+  //! Todd-Coxeter algorithm \cite Coleman2022aa in `libsemigroups`.
   //!
   //! The purpose of this algorithm is to find the WordGraph of the action of a
   //! semigroup or monoid on the classes of a 1-sided (right), or 2-sided
@@ -82,7 +82,7 @@ namespace libsemigroups {
   //!
   //! \brief Class containing an implementation of the Todd-Coxeter Algorithm.
   //!
-  //! Defined in ``todd-coxeter.hpp``.
+  //! Defined in `todd-coxeter.hpp`.
   //!
   //! This class contains an implementation of the Todd-Coxeter
   //! algorithm for computing 1-sided (right), and 2-sided congruences on
@@ -1362,7 +1362,7 @@ namespace libsemigroups {
     //! definitions.
     //!
     //! \returns The current value of the setting, a value of type
-    //! ``size_t``.
+    //! `size_t`.
     //!
     //! \exceptions
     //! \noexcept
@@ -1439,7 +1439,7 @@ namespace libsemigroups {
     //! The default value of this setting is \c 100'000.
     //!
     //! \returns The current value of the setting, a value of type
-    //! ``size_t``.
+    //! `size_t`.
     //!
     //! \exceptions
     //! \noexcept
@@ -1487,7 +1487,7 @@ namespace libsemigroups {
     //! The default value of this setting is \c 100'000.
     //!
     //! \returns The current value of the setting, a value of type
-    //! ``size_t``.
+    //! `size_t`.
     //!
     //! \exceptions
     //! \noexcept
@@ -1536,7 +1536,7 @@ namespace libsemigroups {
     //! The default value of this setting is \c 100'000.
     //!
     //! \returns The current value of the setting, a value of type
-    //! ``size_t``.
+    //! `size_t`.
     //!
     //! \exceptions
     //! \noexcept
@@ -1583,13 +1583,13 @@ namespace libsemigroups {
     //! \ref lookahead_growth_threshold, then the value of
     //! \ref lookahead_next is increased by a multiple of \p val.
     //!
-    //! The default value is of this setting is ``2.0``.
+    //! The default value is of this setting is `2.0`.
     //!
     //! \param val the value indicating the lookahead growth factor.
     //!
     //! \returns A reference to `*this`.
     //!
-    //! \throws LibsemigroupsException if \p val is less than ``1.0``.
+    //! \throws LibsemigroupsException if \p val is less than `1.0`.
     ToddCoxeter& lookahead_growth_factor(float val);
 
     //! \brief Get the current value of the lookahead growth factor.
@@ -1614,7 +1614,7 @@ namespace libsemigroups {
     //! lookahead_growth_threshold, then the value of \ref lookahead_next is
     //! increased.
     //!
-    //! The default value is ``4``.
+    //! The default value is `4`.
     //!
     //! \param val the value indicating the lookahead growth threshold.
     //!
@@ -1937,7 +1937,7 @@ namespace libsemigroups {
     //! setting.
     //!
     //! \returns The current value of the setting, a value of type
-    //! ``options::def_version``.
+    //! `options::def_version`.
     //!
     //! \exceptions
     //! \noexcept
@@ -2683,7 +2683,7 @@ namespace libsemigroups {
     //! functions include versions of several of the member functions of \ref
     //! todd_coxeter_class_group "ToddCoxeter" (that accept iterators) whose
     //! parameters are not iterators, but objects instead. The helpers
-    //! documented on this page all belong to the namespace ``todd_coxeter``.
+    //! documented on this page all belong to the namespace `todd_coxeter`.
     //!
     //! \sa \ref cong_intf_helpers_group
     //!
@@ -3061,7 +3061,7 @@ namespace libsemigroups {
     //! \returns A range object containing the class with index \p n.
     //!
     //! \throws LibsemigroupsException if \p n is greater than or equal to
-    //! ``tc.number_of_classes()``.
+    //! `tc.number_of_classes()`.
     //!
     //! \cong_intf_warn_undecidable{Todd-Coxeter}
     template <typename Word = word_type>
@@ -3101,7 +3101,7 @@ namespace libsemigroups {
     //! \returns A range object containing the class with index \p n.
     //!
     //! \warning This function does not check its arguments. In particular, it
-    //! is assumed that \p n is strictly less than ``tc.number_of_classes()``.
+    //! is assumed that \p n is strictly less than `tc.number_of_classes()`.
     //!
     //! \cong_intf_warn_undecidable{Todd-Coxeter}
     template <typename Word = word_type>
@@ -3738,7 +3738,7 @@ namespace libsemigroups {
   //! \brief Return a human readable representation of a \ref
   //! todd_coxeter_class_group "ToddCoxeter" object.
   //!
-  //! Defined in ``todd-coxeter.hpp``.
+  //! Defined in `todd-coxeter.hpp`.
   //!
   //! This function returns a human readable representation of a
   //! \ref todd_coxeter_class_group "ToddCoxeter" object.

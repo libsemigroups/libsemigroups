@@ -63,7 +63,7 @@ namespace libsemigroups {
   //! \defgroup word_graph_group Word graphs and related functionality
   //!
   //! This page collects various classes and functions related to word graphs
-  //! in ``libsemigroups``.
+  //! in `libsemigroups`.
   //!
   //! \sa \ref gabow_group, \ref paths_group
 
@@ -71,7 +71,7 @@ namespace libsemigroups {
   //!
   //! \brief Class for representing word graphs.
   //!
-  //! Defined in ``word-graph.hpp``.
+  //! Defined in `word-graph.hpp`.
   //!
   //! Instances of this class represent word graphs. If the word graph has \c n
   //! nodes, they are represented by the numbers \f$\{0, ..., n - 1\}\f$, and
@@ -1217,7 +1217,7 @@ namespace libsemigroups {
   //! \brief Namespace containing helper functions for the \ref WordGraph
   //! class.
   //!
-  //! Defined in ``word-graph.hpp``.
+  //! Defined in `word-graph.hpp`.
   //!
   //! \brief This namespace contains helper functions for the \ref WordGraph
   //! class.
@@ -1280,7 +1280,7 @@ namespace libsemigroups {
     //! \brief Returns the adjacency matrix of a word graph.
     //!
     //! This function returns the adjacency matrix of the word graph \p wg. The
-    //! type of the returned matrix depends on whether or not ``libsemigroups``
+    //! type of the returned matrix depends on whether or not `libsemigroups`
     //! is compiled with [eigen][] enabled. The returned matrix has the number
     //! of edges with source \c s and target \c t in the `(s, t)`-entry.
     //!

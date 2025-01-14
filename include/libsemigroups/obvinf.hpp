@@ -65,7 +65,7 @@ namespace libsemigroups {
   //! is obviously infinite.
   //!
   //! This page collects the documentation for the functionality in
-  //! ``libsemigroups`` for checking if a finitely presented semigroup or monoid
+  //! `libsemigroups` for checking if a finitely presented semigroup or monoid
   //! is obviously infinite.
 
   //! \ingroup obvinf_group

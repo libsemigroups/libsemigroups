@@ -54,7 +54,7 @@ namespace libsemigroups {
   //!
   //! \brief Traits class for FroidurePin.
   //!
-  //! Defined in ``froidure-pin.hpp``.
+  //! Defined in `froidure-pin.hpp`.
   //!
   //! This is a traits class for use with FroidurePin.
   //!
@@ -112,7 +112,7 @@ namespace libsemigroups {
   //!
   //! \brief Class implementing the Froidure-Pin algorithm.
   //!
-  //! Defined in ``froidure-pin.hpp``.
+  //! Defined in `froidure-pin.hpp`.
   //!
   //! The class template FroidurePin implements the Froidure-Pin algorithm as
   //! described in the article \cite Froidure1997aa by Veronique Froidure and
@@ -2392,7 +2392,7 @@ namespace libsemigroups {
   //! \defgroup converter_group Converters
   //!
   //! This page contains the documentation for the functions in
-  //! ``libsemigroups`` for converting one type of object to another.
+  //! `libsemigroups` for converting one type of object to another.
   //!
   //!  * \ref to_froidure_pin_group
   //!
@@ -2401,7 +2401,7 @@ namespace libsemigroups {
   //! \defgroup to_froidure_pin_group to_froidure_pin
   //!
   //! This page contains the documentation for the function \ref
-  //! to_froidure_pin in ``libsemigroups`` for converting objects to
+  //! to_froidure_pin in `libsemigroups` for converting objects to
   //! FroidurePin instances.
 
   //! \ingroup to_froidure_pin_group

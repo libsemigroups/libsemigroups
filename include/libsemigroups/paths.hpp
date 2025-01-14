@@ -52,7 +52,7 @@ namespace libsemigroups {
   //! \defgroup paths_group Paths
   //!
   //! This page contains links to the documentation for the functionality in
-  //! ``libsemigroups`` for finding and counting paths in WordGraph objects.
+  //! `libsemigroups` for finding and counting paths in WordGraph objects.
 
   //! Helper namespace.
   namespace paths {
@@ -568,7 +568,7 @@ namespace libsemigroups {
   //!
   //! \brief Range for iterating through paths in a WordGraph.
   //!
-  //! Defined in ``paths.hpp``.
+  //! Defined in `paths.hpp`.
   //!
   //! This class represents a range object that facilitates iterating through
   //! the paths in a WordGraph from a given \ref source node (possible to a \ref
@@ -577,7 +577,7 @@ namespace libsemigroups {
   //! \tparam Node the type of the nodes in the underlying WordGraph.
   //!
   //! So that the Paths class can be used efficiently with the functionality of
-  //! [rx::ranges][], the usual naming conventions in ``libsemigroups`` are not
+  //! [rx::ranges][], the usual naming conventions in `libsemigroups` are not
   //! used for the member functions:
   //! * \ref get
   //! * \ref next
@@ -586,7 +586,7 @@ namespace libsemigroups {
   //! * \ref count
   //!
   //! of Paths. In particular, none of these member functions check their
-  //! arguments, but they do not have the suffix ``_no_checks``.
+  //! arguments, but they do not have the suffix `_no_checks`.
   //!
   //! For a Paths object to be valid it must have its source node defined
   //! (using \ref source), both the source (set using \ref source) and target
@@ -1095,7 +1095,7 @@ namespace libsemigroups {
   //!
   //! \brief Range for iterating through paths in a WordGraph.
   //!
-  //! Defined in ``paths.hpp``.
+  //! Defined in `paths.hpp`.
   //!
   //! This class represents a range object that facilitates iterating through
   //! the paths in a WordGraph \ref source a given node (possible \ref target

@@ -101,7 +101,7 @@ namespace libsemigroups {
   //! \brief For keeping track of various statistics arising during the runtime
   //! of the low index algorithm.
   //!
-  //! Defined in ``sims.hpp``.
+  //! Defined in `sims.hpp`.
   //!
   //! On this page we describe the SimsStats class. The purpose of this
   //! class is to collect some statistics related to Sims1 or Sims2 class
@@ -274,7 +274,7 @@ namespace libsemigroups {
   //! \brief For setting the presentation and various runtime parameters of the
   //! Sims low index algorithm.
   //!
-  //! Defined in ``sims.hpp``.
+  //! Defined in `sims.hpp`.
   //!
   //! On this page we describe the SimsSettings class. The purpose of this class
   //! is to allow us to use the same interface for settings for Sims1, Sims2,
@@ -1320,7 +1320,7 @@ namespace libsemigroups {
   //! \brief For computing finite index right congruences of a finitely
   //! presented semigroup or monoid.
   //!
-  //! Defined in ``sims.hpp``.
+  //! Defined in `sims.hpp`.
   //!
   //! On this page we describe the functionality relating to the small index
   //! congruence algorithm for 1-sided congruences. The algorithm implemented by
@@ -1618,7 +1618,7 @@ namespace libsemigroups {
   //! \brief For computing finite index two-sided congruences of a finitely
   //! presented semigroup or monoid.
   //!
-  //! Defined in ``sims.hpp``.
+  //! Defined in `sims.hpp`.
   //!
   //! On this page we describe the functionality relating to the small index
   //! congruence algorithm for 2-sided congruences. The algorithm implemented by
@@ -1776,7 +1776,7 @@ namespace libsemigroups {
   //! \brief For computing small degree transformation representations of a
   //! finite semigroup or monoid.
   //!
-  //! Defined in ``sims.hpp``.
+  //! Defined in `sims.hpp`.
   //!
   //! This class is a helper for Sims1 calling the word_graph member
   //! function attempts to find a right congruence, represented as an
@@ -1954,7 +1954,7 @@ namespace libsemigroups {
   //! \brief For computing the minimal degree of a transformation representation
   //! arising from a right congruences of a finite semigroup or monoid.
   //!
-  //! Defined in ``sims.hpp``.
+  //! Defined in `sims.hpp`.
   //!
   //! This class is a helper for Sims1, calling the word_graph member
   //! function attempts to find a right congruence, represented as an
@@ -2094,7 +2094,7 @@ namespace libsemigroups {
     //!
     //! \brief For iterating over the right congruence generating pairs.
     //!
-    //! Defined in ``sims.hpp``.
+    //! Defined in `sims.hpp`.
     //!
     //! This class provides a means of iterating over the right congruence
     //! generating pairs (rcgp) of a finite index right congruence defined by a
@@ -2248,7 +2248,7 @@ namespace libsemigroups {
     //!
     //! \brief For iterating over the two-sided congruence generating pairs.
     //!
-    //! Defined in ``sims.hpp``.
+    //! Defined in `sims.hpp`.
     //!
     //! This class provides a means of iterating over the two-sided congruence
     //! generating pairs (cgp) of a finite index two-sided congruence defined by
@@ -3059,7 +3059,7 @@ namespace libsemigroups {
   //! \brief For pruning the search tree when looking for congruences arising
   //! from right or two-sided ideals.
   //!
-  //! Defined in ``sims.hpp``.
+  //! Defined in `sims.hpp`.
   //!
   //! This class provides a pruner for pruning the search tree when looking for
   //! right or two-sided congruences arising from ideals (Rees congruences).

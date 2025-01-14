@@ -41,7 +41,7 @@ namespace libsemigroups {
   //! \defgroup cong_intf_group The congruence interface
   //!
   //! This page contains links to the documentation of the common functionality
-  //! that for all  the classes in ``libsemigroups`` that represent congruences
+  //! that for all  the classes in `libsemigroups` that represent congruences
   //! on semigroups and monoids. These classes are:
   //! * \ref Congruence
   //! * \ref Kambites
@@ -53,9 +53,9 @@ namespace libsemigroups {
   //! \brief Class collecting common aspects of classes representing
   //! congruences.
   //!
-  //! Defined in ``cong-intf.hpp``.
+  //! Defined in `cong-intf.hpp`.
   //!
-  //! Every class for representing a congruence in ``libsemigroups`` is derived
+  //! Every class for representing a congruence in `libsemigroups` is derived
   //! from CongruenceInterface, which holds the member functions and data that
   //! are common to all its derived classes.
   //!
@@ -263,8 +263,8 @@ namespace libsemigroups {
     //! This page contains documentation for helper functions for the classes
     //! Congruence, Kambites, KnuthBendix, and \ref todd_coxeter_class_group
     //! "ToddCoxeter". The functions documented on this page belong to all of
-    //! the namespaces ``congruence_interface``, ``congruence``, ``kambites``,
-    //! ``knuth_bendix``, and ``todd_coxeter``.
+    //! the namespaces `congruence_interface`, `congruence`, `kambites`,
+    //! `knuth_bendix`, and `todd_coxeter`.
 
     ////////////////////////////////////////////////////////////////////////
     // Interface helpers - add_generating_pair
@@ -276,7 +276,7 @@ namespace libsemigroups {
     //! \brief Add a generating pair using objects instead of iterators.
     //!
     //! This page contains the documentation of the functions
-    //! ``add_generating_pair`` and ``add_generating_pair_no_checks``
+    //! `add_generating_pair` and `add_generating_pair_no_checks`
     //! which can be invoked with a variety of different argument types.
     //!
     //! @{
@@ -433,13 +433,13 @@ namespace libsemigroups {
     //! \brief Check containment of a pair of words in a congruence.
     //!
     //! This page contains the documentation of the functions
-    //! ``currently_contains_no_checks``; ``currently_contains``;
-    //! ``contains_no_checks``; and ``contains`` which can be invoked with a
+    //! `currently_contains_no_checks`; `currently_contains`;
+    //! `contains_no_checks`; and `contains` which can be invoked with a
     //! variety of different argument types.
     //!
-    //! Functions with the prefix ``currently_`` do not perform any enumeration
+    //! Functions with the prefix `currently_` do not perform any enumeration
     //! of the \ref CongruenceInterface derived class instances; and those with
-    //! the suffix ``_no_checks`` do not check that the input words are valid.
+    //! the suffix `_no_checks` do not check that the input words are valid.
     //!
     //! @{
 
@@ -763,13 +763,13 @@ namespace libsemigroups {
     //! \brief Check containment of a pair of words in a congruence.
     //!
     //! This page contains the documentation of the functions
-    //! ``reduce_no_run_no_checks``; ``reduce_no_run``;
-    //! ``reduce_no_checks``; and ``reduce`` which can be invoked with a
+    //! `reduce_no_run_no_checks`; `reduce_no_run`;
+    //! `reduce_no_checks`; and `reduce` which can be invoked with a
     //! variety of different argument types.
     //!
-    //! Functions with the suffix ``_no_run`` do not perform any enumeration
+    //! Functions with the suffix `_no_run` do not perform any enumeration
     //! of the \ref CongruenceInterface derived class instances; and those with
-    //! the suffix ``_no_checks`` do not check that the input words are valid.
+    //! the suffix `_no_checks` do not check that the input words are valid.
     //!
     //! @{
 
@@ -779,8 +779,8 @@ namespace libsemigroups {
     //! in the congruence represented by an instance of a derived class of \ref
     //! CongruenceInterface. This function triggers no enumeration. The word
     //! output by this function is equivalent to the input word in the
-    //! congruence. If \p ci is ``finished``, then the output word is a normal
-    //! form for the input word. If the \p ci is not ``finished``, then it
+    //! congruence. If \p ci is `finished`, then the output word is a normal
+    //! form for the input word. If the \p ci is not `finished`, then it
     //! might be that equivalent input words produce different output words.
     //!
     //! \tparam Subclass the type of the first parameter.
@@ -866,8 +866,8 @@ namespace libsemigroups {
     //! in the congruence represented by an instance of a derived class of \ref
     //! CongruenceInterface. This function triggers no enumeration. The word
     //! output by this function is equivalent to the input word in the
-    //! congruence. If \p ci is ``finished``, then the output word is a normal
-    //! form for the input word. If the \p ci is not ``finished``, then it
+    //! congruence. If \p ci is `finished`, then the output word is a normal
+    //! form for the input word. If the \p ci is not `finished`, then it
     //! might be that equivalent input words produce different output words.
     //!
     //! \tparam Subclass the type of the first parameter.
@@ -942,8 +942,8 @@ namespace libsemigroups {
     //! in the congruence represented by an instance of a derived class of \ref
     //! CongruenceInterface. This function triggers a full enumeration. The word
     //! output by this function is equivalent to the input word in the
-    //! congruence. If \p ci is ``finished``, then the output word is a normal
-    //! form for the input word. If the \p ci is not ``finished``, then it
+    //! congruence. If \p ci is `finished`, then the output word is a normal
+    //! form for the input word. If the \p ci is not `finished`, then it
     //! might be that equivalent input words produce different output words.
     //!
     //! \tparam Subclass the type of the first parameter.
@@ -1020,8 +1020,8 @@ namespace libsemigroups {
     //! in the congruence represented by an instance of a derived class of \ref
     //! CongruenceInterface. This function triggers a full enumeration. The word
     //! output by this function is equivalent to the input word in the
-    //! congruence. If \p ci is ``finished``, then the output word is a normal
-    //! form for the input word. If the \p ci is not ``finished``, then it
+    //! congruence. If \p ci is `finished`, then the output word is a normal
+    //! form for the input word. If the \p ci is not `finished`, then it
     //! might be that equivalent input words produce different output words.
     //!
     //! \tparam Subclass the type of the first parameter.
@@ -1096,8 +1096,8 @@ namespace libsemigroups {
     //!
     //! \brief Partition a range of words by a congruence.
     //!
-    //! This page contains the documentation of the functions ``partition`` and
-    //! ``non_trivial_classes`` for partitioning a range of words by a
+    //! This page contains the documentation of the functions `partition` and
+    //! `non_trivial_classes` for partitioning a range of words by a
     //! congruence.
     //!
     //! @{

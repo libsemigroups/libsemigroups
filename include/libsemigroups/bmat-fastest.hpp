@@ -47,10 +47,10 @@ namespace libsemigroups {
   //!
   //! Type of the fastest type of boolean matrix of given dimension.
   //!
-  //! Defined in ``bmat-fastest.hpp``.
+  //! Defined in `bmat-fastest.hpp`.
   //!
   //! Helper for getting the type of the fastest boolean \c N by \c N matrix in
-  //! ``libsemigroups`` or [HPCombi][] (if enabled).
+  //! `libsemigroups` or [HPCombi][] (if enabled).
   //!
   //! \tparam N the dimension of the boolean matrices.
   //! [HPCombi]: https://libsemigroups.github.io/HPCombi/

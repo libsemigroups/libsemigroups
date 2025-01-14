@@ -41,7 +41,7 @@ namespace libsemigroups {
   //! \defgroup gabow_group Gabow
   //!
   //! This page contains information about the implementation in
-  //! ``libsemigroups`` of Gabow's algorithm \cite Gab00 for computing the
+  //! `libsemigroups` of Gabow's algorithm \cite Gab00 for computing the
   //! strongly connected components of a WordGraph.
 
   //! \ingroup gabow_group
@@ -49,7 +49,7 @@ namespace libsemigroups {
   //! \brief Class implementing Gabow's algorithm for computing strongly
   //! connected components of a WordGraph.
   //!
-  //! Defined in ``gabow.hpp``.
+  //! Defined in `gabow.hpp`.
   //!
   //! Instances of this class can be used to compute, and provide information
   //! about, the strongly connected components of the WordGraph used to

@@ -36,7 +36,7 @@ namespace libsemigroups {
 
   //! \defgroup pbr_group Partitioned binary relations (PBRs)
   //!
-  //! Defined ``pbr.hpp``.
+  //! Defined `pbr.hpp`.
   //!
   //! This page contains an overview of the functionality in `libsemigroups`
   //! for partitioned binary relations (PBRs).
@@ -51,7 +51,7 @@ namespace libsemigroups {
 
   //! \brief Class for representing PBRs.
   //!
-  //! Defined in ``pbr.hpp``.
+  //! Defined in `pbr.hpp`.
   //!
   //! *Partitioned binary relations* (PBRs) are a generalisation of a
   //! bipartitions, and were introduced by Martin and Mazorchuk in
@@ -401,7 +401,7 @@ namespace libsemigroups {
     //! \ref one(PBR const&)
     PBR one(size_t n);
 
-    //! \brief Returns the identity PBR with degree ``x.degree()``.
+    //! \brief Returns the identity PBR with degree `x.degree()`.
     //!
     //! This member function returns a new \ref PBR with degree equal to the
     //! degree of \p x, where every value is adjacent to its negative.
@@ -777,7 +777,7 @@ namespace libsemigroups {
   //! \ref One.
   template <>
   struct One<PBR> {
-    //! \brief Returns the identity PBR with degree ``x.degree()``.
+    //! \brief Returns the identity PBR with degree `x.degree()`.
     //!
     //! This member function returns a new \ref PBR with degree equal to the
     //! degree of \p x, where every value is adjacent to its negative.

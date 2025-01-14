@@ -77,7 +77,7 @@ namespace libsemigroups {
     //!
     //! \brief For a rewriting rule
     //!
-    //! Defined in ``rewriters.hpp``.
+    //! Defined in `rewriters.hpp`.
     //!
     //! This class implements a data structure for storing *rewriting rules*.
     //! Here, a rewriting rule is a rule of the form \f$A \to B\f$, where

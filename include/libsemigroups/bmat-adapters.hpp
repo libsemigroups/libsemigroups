@@ -41,8 +41,8 @@ namespace libsemigroups {
   //! \defgroup adapters_bmat_group Adapters for BMat
   //!
   //! This page contains the documentation of the functionality in
-  //! ``libsemigroups`` that adapts \ref BMat types for use with the
-  //! algorithms in ``libsemigroups``.
+  //! `libsemigroups` that adapts \ref BMat types for use with the
+  //! algorithms in `libsemigroups`.
   //!
   //! Further adapters for \ref BMat8 and other matrix objects are available
   //! \ref adapters_bmat8_group "here" and \ref adapters_matrix_group "here".
@@ -55,7 +55,7 @@ namespace libsemigroups {
   //! \brief Specialisation of the ImageRightAction adapter for \ref BMat and
   //! containers of `BitSet`.
   //!
-  //! Defined in ``bmat-adapters.hpp``.
+  //! Defined in `bmat-adapters.hpp`.
   //!
   //! Specialization of the \ref ImageRightAction adapter for \ref BMat and
   //! containers of \ref BitSet.
@@ -107,7 +107,7 @@ namespace libsemigroups {
 
   //! \brief Specialisation of the ImageLeftAction adapter for \ref BMat.
   //!
-  //! Defined in ``bmat-adapters.hpp``.
+  //! Defined in `bmat-adapters.hpp`.
   //!
   //! Specialization of the ImageLeftAction adapter for \ref BMat
   //!
@@ -148,7 +148,7 @@ namespace libsemigroups {
 
   //! \brief Specialisation of the LambdaValue adapter for \ref BMat.
   //!
-  //! Defined in ``bmat-adapters.hpp``.
+  //! Defined in `bmat-adapters.hpp`.
   //!
   //! Specialization of the LambdaValue adapter for \ref BMat
   //!
@@ -176,7 +176,7 @@ namespace libsemigroups {
 
     //! \brief The type of Lambda Values.
     //!
-    //! For BMats, \c type is ``StaticVector1<BitSet<N>, N>`, where \c N is the
+    //! For BMats, \c type is `StaticVector1<BitSet<N>, N>`, where \c N is the
     //! maximum width of BitSet on the system. This represents the column space
     //! basis of the BMats.
     using type = detail::StaticVector1<BitSet<N>, N>;
@@ -298,12 +298,12 @@ namespace libsemigroups {
   ////////////////////////////////////////////////////////////////////////
 
   //! \brief Specialisation of the ImageRightAction adapter for \ref BMat and
-  //! ``BitSet``.
+  //! `BitSet`.
   //!
-  //! Defined in ``bmat-adapters.hpp``.
+  //! Defined in `bmat-adapters.hpp`.
   //!
   //! Specialization of the ImageRightAction adapter for \ref BMat and
-  //! ``BitSet``.
+  //! `BitSet`.
   //!
   //! \warning
   //! The template type `Mat` must be a \ref BMat type (\ref IsBMat<Mat> must be
@@ -345,7 +345,7 @@ namespace libsemigroups {
 
   //! \brief Specialisation of the RankState adapter for \ref BMat.
   //!
-  //! Defined in ``bmat-adapters.hpp``.
+  //! Defined in `bmat-adapters.hpp`.
   //!
   //! Specialization of the RankState adapter for \ref BMat.
   //!
@@ -367,7 +367,7 @@ namespace libsemigroups {
     //! The maximum size of \ref BitSet.
     using MaxBitSet = BitSet<BitSet<1>::max_size()>;
 
-    //! \brief Type of the ``RankState``
+    //! \brief Type of the `RankState`
     using type = RightAction<Mat, MaxBitSet, ImageRightAction<Mat, MaxBitSet>>;
 
     //! Deleted.
@@ -385,17 +385,17 @@ namespace libsemigroups {
     //! Deleted.
     RankState& operator=(RankState&&) = delete;
 
-    //! \brief Construct a ``RankState`` instance using iterators.
+    //! \brief Construct a `RankState` instance using iterators.
     //!
-    //! Construct a ``RankState`` instance using an iterator of generators.
+    //! Construct a `RankState` instance using an iterator of generators.
     //!
     //! \tparam T the iterator type of the parameters.
     //!
     //! \param first iterator pointing to the first generator.
     //! \param last iterator pointing one beyond the last generator.
     //!
-    //! \throws LibsemigroupsException if the std::distance between ``first``
-    //! and ``last`` is 0.
+    //! \throws LibsemigroupsException if the std::distance between `first`
+    //! and `last` is 0.
     template <typename T>
     RankState(T first, T last) {
       static thread_local std::vector<MaxBitSet> seeds;

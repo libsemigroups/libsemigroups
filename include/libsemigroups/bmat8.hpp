@@ -66,7 +66,7 @@ namespace libsemigroups {
 
   //! \ingroup bmat8_group
   //!
-  //! Defined in ``bmat8.hpp``.
+  //! Defined in `bmat8.hpp`.
   //!
   //! \brief Fast boolean matrices of dimension up to 8 x 8
   //!
@@ -299,7 +299,7 @@ namespace libsemigroups {
     //! \param c the index of the column.
     //!
     //! \returns
-    //! A ``bool``.
+    //! A `bool`.
     //!
     //! \exceptions
     //! \noexcept
@@ -449,7 +449,7 @@ namespace libsemigroups {
     //! int.
     //!
     //! \returns
-    //! A ``uint64_t``.
+    //! A `uint64_t`.
     //!
     //! \exceptions
     //! \noexcept
@@ -599,7 +599,7 @@ namespace libsemigroups {
   //!
   //! \brief Namespace for BMat8 helper functions.
   //!
-  //! Defined in ``bmat8.hpp``.
+  //! Defined in `bmat8.hpp`.
   //!
   //! This namespace contains various helper functions for the class BMat8.
   //! These functions could be functions of BMat8 but they only use

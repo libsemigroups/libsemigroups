@@ -59,16 +59,16 @@ namespace libsemigroups {
 
   //! \defgroup kambites_group Kambites
   //!
-  //! Defined in ``kambites.hpp``.
+  //! Defined in `kambites.hpp`.
   //!
   //! On this page there are links to the documentation for the algorithms in
-  //! ``libsemigroups`` for small overlap monoids by Mark %Kambites and the
-  //! authors of ``libsemigroups``;
+  //! `libsemigroups` for small overlap monoids by Mark %Kambites and the
+  //! authors of `libsemigroups`;
   //! see \cite Kambites2009aa, \cite Kambites2009ab, and \cite Mitchell2021aa.
 
   //! \ingroup kambites_group
   //!
-  //! Defined in ``kambites.hpp``.
+  //! Defined in `kambites.hpp`.
   //!
   //! \brief Class template implementing small overlap class, equality, and
   //! normal forms for small overlap monoids.
@@ -413,7 +413,7 @@ namespace libsemigroups {
     //! not currently known.
     //!
     //! If any of the iterators point at words that do not belong to the
-    //! ``presentation().alphabet()``, then \ref tril::FALSE or \ref
+    //! `presentation().alphabet()`, then \ref tril::FALSE or \ref
     //! tril::unknown is returned (depending on whether \ref finished
     //! returns
     //! \c true or \c false, respectively).
@@ -969,8 +969,8 @@ namespace libsemigroups {
   //
   //! \brief Deduction guide.
   //!
-  //! Deduction guide to construct a ``Kambites<Word>`` from a
-  //! ``Presentation<Word>`` const reference.
+  //! Deduction guide to construct a `Kambites<Word>` from a
+  //! `Presentation<Word>` const reference.
   template <typename Word>
   Kambites(congruence_kind, Presentation<Word> const&) -> Kambites<Word>;
 
@@ -986,7 +986,7 @@ namespace libsemigroups {
   //! Kambites class template. In particular, these functions include versions
   //! of several of the member functions of \ref KnuthBendix (that accept
   //! iterators) whose parameters are not iterators, but objects instead. The
-  //! helpers documented on this page all belong to the namespace ``kambites``.
+  //! helpers documented on this page all belong to the namespace `kambites`.
   //!
   //! \sa \ref cong_intf_helpers_group
   //!
@@ -1067,7 +1067,7 @@ namespace libsemigroups {
   //!
   //! \brief Return a human readable representation of a Kambites object.
   //!
-  //! Defined in ``kambites.hpp``.
+  //! Defined in `kambites.hpp`.
   //!
   //! This function returns a human readable representation of a
   //! Kambites object.

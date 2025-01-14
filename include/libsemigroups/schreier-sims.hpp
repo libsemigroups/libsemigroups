@@ -82,7 +82,7 @@ namespace libsemigroups {
   //! \ingroup schreier_sims_group
   //! \brief Traits class for use with the class template \ref SchreierSims.
   //!
-  //! Defined in ``schreier-sims.hpp``.
+  //! Defined in `schreier-sims.hpp`.
   //!
   //! This is a traits class for use with the class template SchreierSims.
   //!

@@ -73,7 +73,7 @@ namespace libsemigroups {
   //! ## Explicit specializations
   //!
   //! The following explicit specializations of some of the adapters listed
-  //! above are implemented in ``libsemigroups`` for the following types:
+  //! above are implemented in `libsemigroups` for the following types:
   //!
   //! * \ref adapters_bmat_group
   //! * \ref adapters_bmat8_group
@@ -88,7 +88,7 @@ namespace libsemigroups {
 
   //! \brief Adapter for the complexity of multiplication.
   //!
-  //! Defined in ``adapters.hpp``.
+  //! Defined in `adapters.hpp`.
   //!
   //! Specialisations of this struct should be stateless trivially default
   //! constructible with a call operator of signature `size_t
@@ -122,7 +122,7 @@ namespace libsemigroups {
 
   //! \brief Adapter for the degree of an element.
   //!
-  //! Defined in ``adapters.hpp``.
+  //! Defined in `adapters.hpp`.
   //!
   //! Specialisations of this struct should be stateless trivially default
   //! constructible with a call operator of signature `size_t
@@ -160,7 +160,7 @@ namespace libsemigroups {
 
   //! \brief Adapter for increasing the degree of an element.
   //!
-  //! Defined in ``adapters.hpp``.
+  //! Defined in `adapters.hpp`.
   //!
   //! Specialisations of this struct should be stateless trivially default
   //! constructible with a call operator of signature `void
@@ -247,7 +247,7 @@ namespace libsemigroups {
 
   //! \brief Adapter for the product of two elements.
   //!
-  //! Defined in ``adapters.hpp``.
+  //! Defined in `adapters.hpp`.
   //!
   //! Specialisations of this struct should be stateless trivially default
   //! constructible with a call operator of signature
@@ -286,7 +286,7 @@ namespace libsemigroups {
 
   //! \brief Adapter for the inverse of an element.
   //!
-  //! Defined in ``adapters.hpp``.
+  //! Defined in `adapters.hpp`.
   //!
   //! Specialisations of this struct should be stateless trivially default
   //! constructible with a call operator of signature `Point
@@ -321,7 +321,7 @@ namespace libsemigroups {
 
   //! \brief Adapter for the value of a left action.
   //!
-  //! Defined in ``adapters.hpp``.
+  //! Defined in `adapters.hpp`.
   //!
   //! Specialisations of this struct should be stateless trivially default
   //! constructible with a call operator of signature `void
@@ -352,7 +352,7 @@ namespace libsemigroups {
 
   //! \brief Adapter for the value of a right action.
   //!
-  //! Defined in ``adapters.hpp``.
+  //! Defined in `adapters.hpp`.
   //!
   //! Specialisations of this struct should be stateless trivially default
   //! constructible with a call operator of signature:
@@ -395,7 +395,7 @@ namespace libsemigroups {
 
   //! \brief Adapter for testing equality.
   //!
-  //! Defined in ``adapters.hpp``.
+  //! Defined in `adapters.hpp`.
   //!
   //! This type should be a stateless trivially default constructible with a
   //! call operator of signature `bool operator()(Value const&, Value
@@ -428,7 +428,7 @@ namespace libsemigroups {
 
   //! \brief Adapter for hashing.
   //!
-  //! Defined in ``adapters.hpp``.
+  //! Defined in `adapters.hpp`.
   //!
   //! This type should be a stateless trivially default constructible
   //! with a call operator of signature `size_t operator()(Value
@@ -463,7 +463,7 @@ namespace libsemigroups {
 
   //! \brief Specialised adapter for hashing vectors.
   //!
-  //! Defined in ``adapters.hpp``.
+  //! Defined in `adapters.hpp`.
   //!
   //! This type is stateless trivially default constructible
   //! and has a call operator of signature `size_t operator()(std::vector<T>
@@ -492,7 +492,7 @@ namespace libsemigroups {
 
   //! \brief Specialised adapter for hashing vectors with non-standard hasher.
   //!
-  //! Defined in ``adapters.hpp``.
+  //! Defined in `adapters.hpp`.
   //!
   //! This type is stateless trivially default constructible
   //! and has a call operator of signature `size_t operator()(std::vector<T>
@@ -522,7 +522,7 @@ namespace libsemigroups {
 
   //! \brief Specialised adapter for hashing arrays.
   //!
-  //! Defined in ``adapters.hpp``.
+  //! Defined in `adapters.hpp`.
   //!
   //! This type is stateless trivially default constructible
   //! and has a call operator of signature `size_t operator()(std::array<T, N>
@@ -552,7 +552,7 @@ namespace libsemigroups {
 
   //! \brief Specialised adapter for hashing pairs.
   //!
-  //! Defined in ``adapters.hpp``.
+  //! Defined in `adapters.hpp`.
   //!
   //! This type is stateless trivially default constructible
   //! and has a call operator of signature `size_t operator()(std::pair<S, T>
@@ -582,7 +582,7 @@ namespace libsemigroups {
 
   //! \brief Specialised adapter for hashing pairs of `size_t`s.
   //!
-  //! Defined in ``adapters.hpp``.
+  //! Defined in `adapters.hpp`.
   //!
   //! This type is stateless trivially default constructible
   //! and has a call operator of signature `size_t operator()(std::vector<T>
@@ -611,7 +611,7 @@ namespace libsemigroups {
 
   //! \brief Adapter for comparisons.
   //!
-  //! Defined in ``adapters.hpp``.
+  //! Defined in `adapters.hpp`.
   //!
   //! This type should be a stateless trivially default constructible with a
   //! call operator of signature `bool operator()(Value const&, Value
@@ -642,7 +642,7 @@ namespace libsemigroups {
 
   //! \brief Adapter for swapping.
   //!
-  //! Defined in ``adapters.hpp``.
+  //! Defined in `adapters.hpp`.
   //!
   //! This type should be a stateless trivially default constructible with a
   //! call operator of signature `void operator()(Value&, Value&)` (possibly
@@ -672,7 +672,7 @@ namespace libsemigroups {
   //! \brief Adapter for calculating right actions of each element in a
   //! container.
   //!
-  //! Defined in ``adapters.hpp``.
+  //! Defined in `adapters.hpp`.
   //!
   //! This struct applies `ImageRightAction<Element, Point>` to every value in a
   //! container of type `Container`.
@@ -717,7 +717,7 @@ namespace libsemigroups {
   //! \brief Adapter for calculating right actions of each element in a
   //! container.
   //!
-  //! Defined in ``adapters.hpp``.
+  //! Defined in `adapters.hpp`.
   //!
   //! This struct applies `OnTuples<Element, Point,
   //! Container>` to  a container of `Container` and then sorts it.
@@ -771,7 +771,7 @@ namespace libsemigroups {
 
   //! \brief Adapter for lambda functions.
   //!
-  //! Defined in ``adapters.hpp``.
+  //! Defined in `adapters.hpp`.
   //!
   //! This type should be a stateless struct with a single typedef \c type
   //! representing the type that should be used or returned by a \c Lambda
@@ -790,7 +790,7 @@ namespace libsemigroups {
 
   //! \brief Adapter for rho functions.
   //!
-  //! Defined in ``adapters.hpp``.
+  //! Defined in `adapters.hpp`.
   //!
   //! This type should be a stateless struct with a single typedef \c type
   //! representing the type that should be used or returned by a \c Rho
@@ -809,7 +809,7 @@ namespace libsemigroups {
 
   //! \brief Adapter for the action on LambdaValue's.
   //!
-  //! Defined in ``adapters.hpp``.
+  //! Defined in `adapters.hpp`.
   //!
   //! This type should be a stateless trivially default constructible
   //! with an operator of signature `void
@@ -830,7 +830,7 @@ namespace libsemigroups {
 
   //! \brief Adapter for the action on RhoValue's.
   //!
-  //! Defined in ``adapters.hpp``.
+  //! Defined in `adapters.hpp`.
   //!
   //! This type should be a stateless trivially default constructible
   //! with an operator of signature `void
@@ -852,7 +852,7 @@ namespace libsemigroups {
   // TODO(now) does this brief make sense?
   //! \brief Base class for states for ranks.
   //!
-  //! Defined in ``adapters.hpp``.
+  //! Defined in `adapters.hpp`.
   //!
   //! Specialisations of this class should have a typedef \c type representing
   //! the type of data stored in the class, a 0-parameter constructor, and a
@@ -896,7 +896,7 @@ namespace libsemigroups {
 
   //! \brief Adapter for calculating ranks.
   //!
-  //! Defined in ``adapters.hpp``.
+  //! Defined in `adapters.hpp`.
   //!
   //! This type should be default constructible and a call operator of signature
   //! `size_t operator()(Element const&)` if no additional data is required

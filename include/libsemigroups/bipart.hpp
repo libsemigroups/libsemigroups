@@ -45,7 +45,7 @@
 namespace libsemigroups {
   //! \defgroup bipart_group Bipartitions
   //!
-  //! Defined ``bipart.hpp``.
+  //! Defined `bipart.hpp`.
   //!
   //! This page contains an overview of the functionality in `libsemigroups`
   //! for bipartitions and blocks.
@@ -273,7 +273,7 @@ namespace libsemigroups {
   //! \brief A Blocks object represents a signed partition of the set
   //! \f$\{0, \ldots, n - 1\}\f$.
   //!
-  //! Defined in ``bipart.hpp``.
+  //! Defined in `bipart.hpp`.
   //!
   //! It is possible to associate to every Bipartition a pair of blocks,
   //! Bipartition::left_blocks() and Bipartition::right_blocks(), which
@@ -281,7 +281,7 @@ namespace libsemigroups {
   //! the Bipartition in the monoid of all bipartitions. This is the purpose of
   //! this class.
   //!
-  //! The Blocks class is not currently used widely in ``libsemigroups``
+  //! The Blocks class is not currently used widely in `libsemigroups`
   //! but are used extensively in the GAP package
   //! [Semigroups package for GAP](https://semigroups.github.io/Semigroups/).
   class Blocks {
@@ -781,13 +781,13 @@ namespace libsemigroups {
   //!
   //! \brief Class for representing bipartitions.
   //!
-  //! Defined in ``bipart.hpp``.
+  //! Defined in `bipart.hpp`.
   //!
   //! A *bipartition* is a partition of the set \f$\{0, ..., 2n - 1\}\f$ for
   //! some non-negative integer \f$n\f$; see the [Semigroups package for GAP
   //! documentation](https://semigroups.github.io/Semigroups/doc/chap3_mj.html)
   //! for more details.  The Bipartition class is more complex (i.e. has more
-  //! member functions) than are used in ``libsemigroups`` because they are
+  //! member functions) than are used in `libsemigroups` because they are
   //! used in the GAP package [Semigroups package for
   //! GAP](https://semigroups.github.io/Semigroups/).
   //!
@@ -1550,7 +1550,7 @@ namespace libsemigroups {
   //!
   //! \brief Compare bipartitions.
   //!
-  //! Convenience function that just calls ``operator<`` and ``operator==``.
+  //! Convenience function that just calls `operator<` and `operator==`.
   [[nodiscard]] inline bool operator<=(Bipartition const& x,
                                        Bipartition const& y) {
     return x < y || x == y;
@@ -1560,7 +1560,7 @@ namespace libsemigroups {
   //!
   //! \brief Compare bipartitions.
   //!
-  //! Convenience function that just calls ``operator<`` with the arguments
+  //! Convenience function that just calls `operator<` with the arguments
   //! switched.
   [[nodiscard]] inline bool operator>(Bipartition const& x,
                                       Bipartition const& y) {
@@ -1571,7 +1571,7 @@ namespace libsemigroups {
   //!
   //! \brief Compare bipartitions.
   //!
-  //! Convenience function that just calls ``operator<=`` with the arguments
+  //! Convenience function that just calls `operator<=` with the arguments
   //! switched.
   [[nodiscard]] inline bool operator>=(Bipartition const& x,
                                        Bipartition const& y) {

@@ -48,20 +48,20 @@ namespace libsemigroups {
   //! \defgroup ranges_group Ranges
   //!
   //! This page contains links to some classes and functions in
-  //! ``libsemigroups`` that extend the functionality of range objects from
+  //! `libsemigroups` that extend the functionality of range objects from
   //! [rx::ranges][].
   //!
   //! Please consult the [rx::ranges][] [README][] file for more information
   //! about ranges in general and the existing functionality of [rx::ranges][].
   //!
-  //! Range objects are used extensively elsewhere in ``libsemigroups``, and
+  //! Range objects are used extensively elsewhere in `libsemigroups`, and
   //! are returned by many functions.
   //!
-  //! \note So that range classes in ``libsemigroups`` can be used efficiently
+  //! \note So that range classes in `libsemigroups` can be used efficiently
   //! with the functionality of [rx::ranges][], the usual naming conventions in
-  //! ``libsemigroups`` are not used for the member functions of range objects.
+  //! `libsemigroups` are not used for the member functions of range objects.
   //! In particular, none of the member functions required by [rx::ranges][]
-  //! check their arguments, but they do not have the suffix ``_no_checks``.
+  //! check their arguments, but they do not have the suffix `_no_checks`.
   //!
   //! [rx::ranges]: https://github.com/simonask/rx-ranges/
   //! [README]: https://github.com/simonask/rx-ranges/blob/develop/README.md
@@ -74,12 +74,12 @@ namespace libsemigroups {
   //!
   //! \brief Aggregator for choosing a single random item in a range.
   //!
-  //! Defined in ``ranges.hpp``.
+  //! Defined in `ranges.hpp`.
   //!
   //! This struct can be used to select a single random item from an input
   //! range. This can be extremely inefficient if the input range is large,
   //! because every item in the range prior to the randomly chosen one must be
-  //! iterated through when ``get`` is called.
+  //! iterated through when `get` is called.
   //!
   //! \par Example
   //! \code
@@ -170,7 +170,7 @@ namespace libsemigroups {
   //!
   //! \brief Check if a range is sorted according to \p comp.
   //!
-  //! Defined in ``ranges.hpp``.
+  //! Defined in `ranges.hpp`.
   //!
   //! This function checks if a range is sorted according to the comparison
   //! function object \p comp, and is analogous to std::is_sorted.
@@ -193,7 +193,7 @@ namespace libsemigroups {
   //!
   //! \brief Check if a range is sorted according to std::less.
   //!
-  //! Defined in ``ranges.hpp``.
+  //! Defined in `ranges.hpp`.
   //!
   //! This function checks if a range is sorted according to the comparison
   //! function object \p comp, and is analogous to std::is_sorted.
@@ -215,7 +215,7 @@ namespace libsemigroups {
   //!
   //! \brief Check two ranges for equality.
   //!
-  //! Defined in ``ranges.hpp``.
+  //! Defined in `ranges.hpp`.
   //!
   //! This function checks if the ranges \p r1 and \p r2 are equal, in that
   //! they contain the same items (compared using `operator==`) in the same
@@ -235,7 +235,7 @@ namespace libsemigroups {
   //!
   //! \brief Check if a range is lexicographically less than another.
   //!
-  //! Defined in ``ranges.hpp``.
+  //! Defined in `ranges.hpp`.
   //!
   //! This function checks if the range \p r1 is lexicographically less than
   //! the range \p r2, using `operator<` on the items in the ranges.
@@ -256,7 +256,7 @@ namespace libsemigroups {
   //!
   //! \brief Check if a range is shortlex less than another.
   //!
-  //! Defined in ``ranges.hpp``.
+  //! Defined in `ranges.hpp`.
   //!
   //! This function checks if the range \p r1 is shortlex less than
   //! the range \p r2, using `operator<` on the items in the ranges.
@@ -283,7 +283,7 @@ namespace libsemigroups {
   //!
   //! \brief Chain objects (const references)
   //!
-  //! Defined in ``ranges.hpp``.
+  //! Defined in `ranges.hpp`.
   //!
   //! This function is just a wrapper for \c rx::chain but taking objects by
   //! reference rather than using iterators for convenience, and it returns a
@@ -307,7 +307,7 @@ namespace libsemigroups {
   //!
   //! \brief Enumerate an object (by const reference)
   //!
-  //! Defined in ``ranges.hpp``.
+  //! Defined in `ranges.hpp`.
   //!
   //! This function is just a wrapper for \c rx::enumerate but taking objects by
   //! reference rather than using iterators for convenience, and it returns a
@@ -332,7 +332,7 @@ namespace libsemigroups {
   //!
   //! \brief Insert a range into an output stream.
   //!
-  //! Defined in ``ranges.hpp``.
+  //! Defined in `ranges.hpp`.
   //!
   //! This function inserts a human readable representation of a range object
   //! into a std::ostream by applying std::to_string to each item in the range.

@@ -59,7 +59,7 @@ namespace libsemigroups {
   //! This page contains links to the documentation of the functionality in
   //! libsemigroups for matrices.
   //!
-  //! There are several different classes in ``libsemigroups`` for representing
+  //! There are several different classes in `libsemigroups` for representing
   //! matrices over various semirings. There are up to three different
   //! representations for every type of matrix:
   //!
@@ -77,7 +77,7 @@ namespace libsemigroups {
   //! page directly, but rather through the aliases described on the other
   //! matrix pages (such as, for example, \ref BMat).
   //!
-  //! \warning All of the matrices in ``libsemigroups`` have entries that are
+  //! \warning All of the matrices in `libsemigroups` have entries that are
   //! integer types, and the code does not currently attempt to detect
   //! overflows.
   //!
@@ -154,7 +154,7 @@ namespace libsemigroups {
   //!
   //! \brief Helper variable template.
   //!
-  //! Defined in ``matrix.hpp``.
+  //! Defined in `matrix.hpp`.
   //!
   //! This variable has value \c true if the template parameter \c T is
   //! derived from any of \ref DynamicMatrixStaticArith
@@ -1028,7 +1028,7 @@ namespace libsemigroups {
   // StaticRowViews - static arithmetic
   ////////////////////////////////////////////////////////////////////////
 
-  //! Defined in ``matrix.hpp``.
+  //! Defined in `matrix.hpp`.
   //!
   //! This is a class for views into a row of a matrix over a semiring. An
   //! instance of this class provides access to the elements in a row of a
@@ -1463,7 +1463,7 @@ namespace libsemigroups {
   //! \brief Row view class for \ref DynamicMatrixStaticArith
   //! "DynamicMatrix (compile-time arithmetic)".
   //!
-  //! Defined in ``matrix.hpp``.
+  //! Defined in `matrix.hpp`.
   //!
   //! This class is the type of row views into a \ref DynamicMatrixStaticArith
   //! "DynamicMatrix (with compile-time arithmetic)" with the same template
@@ -1639,7 +1639,7 @@ namespace libsemigroups {
   //! \brief Row view class for \ref DynamicMatrixDynamicArith
   //! "DynamicMatrix (run-time arithmetic)".
   //!
-  //! Defined in ``matrix.hpp``.
+  //! Defined in `matrix.hpp`.
   //!
   //! This class is the type of row views into a \ref
   //! DynamicMatrixDynamicArith "DynamicMatrix (run-time arithmetic)".
@@ -1799,7 +1799,7 @@ namespace libsemigroups {
 
   //! \brief Static matrix class
   //!
-  //! Defined in ``matrix.hpp``.
+  //! Defined in `matrix.hpp`.
   //!
   //! This is a class for matrices where both the arithmetic operations in
   //! the underlying semiring, and the dimensions of the matrices are known
@@ -2715,7 +2715,7 @@ namespace libsemigroups {
   //! \brief Class for matrices with compile time arithmetic and run-time
   //! dimensions.
   //!
-  //! Defined in ``matrix.hpp``.
+  //! Defined in `matrix.hpp`.
   //!
   //! This is a class for matrices where the arithmetic operations in the
   //! underlying semiring are known at compile time, and the dimensions of the
@@ -2792,9 +2792,9 @@ namespace libsemigroups {
     //! Alias for the template parameter \p OneOp.
     using One = OneOp;
 
-    //! \brief Alias for the semiring type (``void``).
+    //! \brief Alias for the semiring type (`void`).
     //!
-    //! The type of the semiring over which the matrix is defined is ``void``
+    //! The type of the semiring over which the matrix is defined is `void`
     //! because there's no semiring object, the arithmetic is defined by the
     //! template parameters.
     using semiring_type = void;
@@ -3144,7 +3144,7 @@ namespace libsemigroups {
   //!
   //! \brief Class for matrices with run-time arithmetic and dimensions.
   //!
-  //! Defined in ``matrix.hpp``.
+  //! Defined in `matrix.hpp`.
   //!
   //! This is a class for matrices where both the arithmetic operations in
   //! the underlying semiring and the dimensions of the matrix can be set at
@@ -3569,7 +3569,7 @@ namespace libsemigroups {
   //!
   //! \ingroup matrix_group
   //!
-  //! Defined in ``matrix.hpp``.
+  //! Defined in `matrix.hpp`.
   //!
   //! This variable has value \c true if the template parameter \c T is
   //! StaticMatrix; and \c false otherwise.
@@ -3582,7 +3582,7 @@ namespace libsemigroups {
   //!
   //! \brief Helper variable template.
   //!
-  //! Defined in ``matrix.hpp``.
+  //! Defined in `matrix.hpp`.
   //!
   //! This variable has value \c true if the template parameter \c T is
   //! DynamicMatrix; and \c false otherwise.
@@ -3595,7 +3595,7 @@ namespace libsemigroups {
   //!
   //! \brief Helper variable template.
   //!
-  //! Defined in ``matrix.hpp``.
+  //! Defined in `matrix.hpp`.
   //!
   //! This variable has value \c true if the template parameter \p T is
   //! DynamicMatrix<Semiring, Scalar>; and \c false otherwise.
@@ -3624,14 +3624,14 @@ namespace libsemigroups {
   //! \brief Namespace for helper functions for matrices.
   //!
   //! This namespace contains various helper functions for the various matrix
-  //! classes in ``libsemigroups``. These functions could have been member
+  //! classes in `libsemigroups`. These functions could have been member
   //! functions of the matrix classes but they only use public member functions,
   //! and so they are declared as free functions instead.
   namespace matrix {
 
     //! \brief Returns the threshold of a matrix.
     //!
-    //! Defined in ``matrix.hpp``.
+    //! Defined in `matrix.hpp`.
     //!
     //! The threshold of a matrix that does not have entries in a truncated
     //! semiring is \ref UNDEFINED, and this function returns this value.
@@ -3651,7 +3651,7 @@ namespace libsemigroups {
 
     //! \brief Returns the threshold of a matrix over a truncated semiring.
     //!
-    //! Defined in ``matrix.hpp``.
+    //! Defined in `matrix.hpp`.
     //!
     //! This function returns the threshold of a matrix over a truncated
     //! semiring.
@@ -3671,7 +3671,7 @@ namespace libsemigroups {
 
     //! \brief Returns the threshold of a matrix over a truncated semiring.
     //!
-    //! Defined in ``matrix.hpp``.
+    //! Defined in `matrix.hpp`.
     //!
     //! This function returns the threshold of a matrix over a truncated
     //! semiring.
@@ -3730,7 +3730,7 @@ namespace libsemigroups {
   //!
   //! \brief Function object for addition in the boolean semiring.
   //!
-  //! Defined in ``matrix.hpp``.
+  //! Defined in `matrix.hpp`.
   //!
   //! This is a stateless struct with a single call operator of signature:
   //! `bool operator()(bool x, bool y) const noexcept` which returns `x || y`;
@@ -3756,7 +3756,7 @@ namespace libsemigroups {
   //!
   //! \brief Function object for multiplication in the boolean semiring.
   //!
-  //! Defined in ``matrix.hpp``.
+  //! Defined in `matrix.hpp`.
   //!
   //! This is a stateless struct with a single call operator of signature:
   //! `bool operator()(bool x, bool y) const noexcept` which returns `x && y`;
@@ -3783,7 +3783,7 @@ namespace libsemigroups {
   //!
   //! \brief Function object for returning the multiplicative identity.
   //!
-  //! Defined in ``matrix.hpp``.
+  //! Defined in `matrix.hpp`.
   //!
   //! This is a stateless struct with a single call operator of signature:
   //! `bool operator()() const noexcept` which returns \c true; representing
@@ -3808,7 +3808,7 @@ namespace libsemigroups {
   //!
   //! \brief Function object for returning the additive identity.
   //!
-  //! Defined in ``matrix.hpp``.
+  //! Defined in `matrix.hpp`.
   //!
   //! This is a stateless struct with a single call operator of signature:
   //! `bool operator()() const noexcept` which returns \c false;
@@ -3833,7 +3833,7 @@ namespace libsemigroups {
   //!
   //! \brief Alias for dynamic boolean matrices.
   //!
-  //! Defined in ``matrix.hpp``.
+  //! Defined in `matrix.hpp`.
   //!
   //! Alias for the type of dynamic boolean matrices where the dimensions of the
   //! matrices can be defined at run time.
@@ -3847,7 +3847,7 @@ namespace libsemigroups {
   //!
   //! \brief Alias for static boolean matrices.
   //!
-  //! Defined in ``matrix.hpp``.
+  //! Defined in `matrix.hpp`.
   //!
   //! Alias for the type of static boolean matrices where the dimensions of the
   //! matrices are defined at compile time.
@@ -3867,7 +3867,7 @@ namespace libsemigroups {
   //!
   //! \brief Alias template for boolean matrices.
   //!
-  //! Defined in ``matrix.hpp``.
+  //! Defined in `matrix.hpp`.
   //!
   //! Alias template for boolean matrices.
   //!
@@ -3907,7 +3907,7 @@ namespace libsemigroups {
   //!
   //! \brief Helper to check if a type is \ref BMat.
   //!
-  //! Defined in ``matrix.hpp``.
+  //! Defined in `matrix.hpp`.
   //!
   //! This variable has value \c true if the template parameter \c T is the
   //! same as `BMat<R, C>` for some values of \c R and \c C.
@@ -3944,7 +3944,7 @@ namespace libsemigroups {
     //!
     //! \brief Check the entries in a boolean matrix are valid.
     //!
-    //! Defined in ``matrix.hpp``.
+    //! Defined in `matrix.hpp`.
     //!
     //! This function can be used to validate that a matrix contains values in
     //! the underlying semiring.
@@ -3975,7 +3975,7 @@ namespace libsemigroups {
     //!
     //! \brief Check an entry in a boolean matrix is valid.
     //!
-    //! Defined in ``matrix.hpp``.
+    //! Defined in `matrix.hpp`.
     //!
     //! This function can be used to validate that a matrix contains values in
     //! the underlying semiring.
@@ -4003,7 +4003,7 @@ namespace libsemigroups {
 
   //! \defgroup intmat_group Integer matrices
   //!
-  //! Defined in ``matrix.hpp``.
+  //! Defined in `matrix.hpp`.
   //!
   //! This page describes the functionality for \f$m \times n\f$  matrices of
   //! integers for arbitrary dimensions \f$m\f$ and \f$n\f$. There are two
@@ -4033,7 +4033,7 @@ namespace libsemigroups {
   //!
   //! \brief Function object for addition in the ring of integers.
   //!
-  //! Defined in ``matrix.hpp``.
+  //! Defined in `matrix.hpp`.
   //!
   //! This is a stateless struct with a single call operator of signature:
   //! `Scalar operator()(Scalar x, Scalar y) const noexcept`
@@ -4063,7 +4063,7 @@ namespace libsemigroups {
   //!
   //! \brief Function object for multiplication in the ring of integers.
   //!
-  //! Defined in ``matrix.hpp``.
+  //! Defined in `matrix.hpp`.
   //!
   //! This is a stateless struct with a single call operator of signature:
   //! `Scalar operator()(Scalar x, Scalar y) const noexcept`
@@ -4094,7 +4094,7 @@ namespace libsemigroups {
   //!
   //! \brief Function object for returning the additive identity.
   //!
-  //! Defined in ``matrix.hpp``.
+  //! Defined in `matrix.hpp`.
   //!
   //! This is a stateless struct with a single call operator of signature:
   //! `Scalar operator()() const noexcept` which returns \c 0; representing
@@ -4119,7 +4119,7 @@ namespace libsemigroups {
   //!
   //! \brief Function object for returning the multiplicative identity.
   //!
-  //! Defined in ``matrix.hpp``.
+  //! Defined in `matrix.hpp`.
   //!
   //! This is a stateless struct with a single call operator of signature:
   //! `Scalar operator()() const noexcept` which returns \c 1; representing
@@ -4144,7 +4144,7 @@ namespace libsemigroups {
   //!
   //! \brief Alias for dynamic integer matrices.
   //!
-  //! Defined in ``matrix.hpp``.
+  //! Defined in `matrix.hpp`.
   //!
   //! Alias for the type of dynamic integer matrices where the dimensions of the
   //! matrices can be defined at run time.
@@ -4161,7 +4161,7 @@ namespace libsemigroups {
   //!
   //! \brief Alias for static integer matrices.
   //!
-  //! Defined in ``matrix.hpp``.
+  //! Defined in `matrix.hpp`.
   //!
   //! Alias for the type of static integer matrices where the dimensions of the
   //! matrices can be defined at compile time.
@@ -4186,7 +4186,7 @@ namespace libsemigroups {
   //!
   //! \brief Alias template for integer matrices.
   //!
-  //! Defined in ``matrix.hpp``.
+  //! Defined in `matrix.hpp`.
   //!
   //! Alias template for integer matrices.
   //!
@@ -4217,7 +4217,7 @@ namespace libsemigroups {
   //!
   //! \brief Helper variable template.
   //!
-  //! Defined in ``matrix.hpp``.
+  //! Defined in `matrix.hpp`.
   //!
   //! This variable has value \c true if the template parameter \c T is
   //! \ref IntMat; and \c false otherwise.
@@ -4231,7 +4231,7 @@ namespace libsemigroups {
     //!
     //! \brief Validate that an integer matrix is valid.
     //!
-    //! Defined in ``matrix.hpp``.
+    //! Defined in `matrix.hpp`.
     //!
     //! This function throws an exception if the entries of an integer matrix
     //! are not valid, which is if and only if any of the entries equal \ref
@@ -4262,7 +4262,7 @@ namespace libsemigroups {
     //!
     //! \brief Validate that an entry in an integer matrix is valid.
     //!
-    //! Defined in ``matrix.hpp``.
+    //! Defined in `matrix.hpp`.
     //!
     //! This function throws an exception if the entry \p val of an integer
     //! matrix are not valid, which is if and only if the entry \p val equals
@@ -4291,7 +4291,7 @@ namespace libsemigroups {
   ////////////////////////////////////////////////////////////////////////
   //! \defgroup maxplusmat_group Max-plus matrices
   //!
-  //! Defined in ``matrix.hpp``.
+  //! Defined in `matrix.hpp`.
   //!
   //! This page describes the functionality for \f$n \times n\f$  matrices over
   //! the max-plus semiring for arbitrary dimension \f$n\f$. There are two types
@@ -4321,7 +4321,7 @@ namespace libsemigroups {
   //!
   //! \brief Function object for addition in the max-plus semiring.
   //!
-  //! Defined in ``matrix.hpp``.
+  //! Defined in `matrix.hpp`.
   //!
   //! \tparam Scalar the type of the values in the semiring (must be signed
   //! integer type).
@@ -4370,7 +4370,7 @@ namespace libsemigroups {
   //!
   //! \brief Function object for multiplication in the max-plus semiring.
   //!
-  //! Defined in ``matrix.hpp``.
+  //! Defined in `matrix.hpp`.
   //!
   //!  This is a stateless struct with a single call operator of signature:
   //!  `Scalar operator()(Scalar x, Scalar y) const noexcept`
@@ -4416,7 +4416,7 @@ namespace libsemigroups {
   //! \brief Function object for returning the additive identity of the max-plus
   //! semiring.
   //!
-  //! Defined in ``matrix.hpp``.
+  //! Defined in `matrix.hpp`.
   //!
   //! This is a stateless struct with a single call operator of signature:
   //! `Scalar operator()() const noexcept` which returns \f$-\infty\f$;
@@ -4446,7 +4446,7 @@ namespace libsemigroups {
   //!
   //! \brief Alias for dynamic max-plus matrices.
   //!
-  //! Defined in ``matrix.hpp``.
+  //! Defined in `matrix.hpp`.
   //!
   //! Alias for the type of dynamic max-plus matrices where the dimensions of
   //! the matrices can be defined at run time.
@@ -4463,7 +4463,7 @@ namespace libsemigroups {
   //!
   //! \brief Alias for static max-plus matrices.
   //!
-  //! Defined in ``matrix.hpp``.
+  //! Defined in `matrix.hpp`.
   //!
   //! Alias for static max-plus matrices whose arithmetic and dimensions are
   //! defined at compile-time.
@@ -4484,7 +4484,7 @@ namespace libsemigroups {
   //!
   //! \brief Alias template for max-plus matrices.
   //!
-  //! Defined in ``matrix.hpp``.
+  //! Defined in `matrix.hpp`.
   //!
   //! Alias template for max-plus matrices.
   //!
@@ -4516,7 +4516,7 @@ namespace libsemigroups {
   //!
   //! \brief Helper variable template.
   //!
-  //! Defined in ``matrix.hpp``.
+  //! Defined in `matrix.hpp`.
   //!
   //! This variable has value \c true if the template parameter \c T is
   //! \ref MaxPlusMat; and \c false otherwise.
@@ -4530,7 +4530,7 @@ namespace libsemigroups {
     //!
     //! \brief Validate that a max-plus matrix is valid.
     //!
-    //! Defined in ``matrix.hpp``.
+    //! Defined in `matrix.hpp`.
     //!
     //! This function can be used to validate that a matrix contains values in
     //! the underlying semiring.
@@ -4563,7 +4563,7 @@ namespace libsemigroups {
     //!
     //! \brief Validate that an entry in a max-plus matrix is valid.
     //!
-    //! Defined in ``matrix.hpp``.
+    //! Defined in `matrix.hpp`.
     //!
     //! This function can be used to validate that an entry in a matrix belongs
     //! to the underlying semiring.
@@ -4591,7 +4591,7 @@ namespace libsemigroups {
 
   //! \defgroup minplusmat_group Min-plus matrices
   //!
-  //! Defined in ``matrix.hpp``.
+  //! Defined in `matrix.hpp`.
   //!
   //! This page describes the functionality for \f$n \times n\f$  matrices
   //! over the min-plus semiring for arbitrary dimension \f$n\f$. There are
@@ -4622,7 +4622,7 @@ namespace libsemigroups {
   //!
   //! \brief Function object for addition in the min-plus semiring.
   //!
-  //! Defined in ``matrix.hpp``.
+  //! Defined in `matrix.hpp`.
   //!
   //! This is a stateless struct with a single call operator of signature:
   //! `Scalar operator()(Scalar x, Scalar y) const noexcept` that returns \f$x
@@ -4671,7 +4671,7 @@ namespace libsemigroups {
   //!
   //! \brief Function object for multiplication in the min-plus semiring.
   //!
-  //! Defined in ``matrix.hpp``.
+  //! Defined in `matrix.hpp`.
   //!
   //! This is a stateless struct with a single call operator of signature:
   //! `Scalar operator()(Scalar x, Scalar y) const noexcept`
@@ -4716,7 +4716,7 @@ namespace libsemigroups {
   //! \brief Function object for returning the additive identity of the
   //! min-plus semiring.
   //!
-  //! Defined in ``matrix.hpp``.
+  //! Defined in `matrix.hpp`.
   //!
   //! This is a stateless struct with a single call operator of signature:
   //! `Scalar operator()() const noexcept` which returns \f$\infty\f$;
@@ -4746,7 +4746,7 @@ namespace libsemigroups {
   //!
   //! \brief Alias for dynamic min-plus matrices.
   //!
-  //! Defined in ``matrix.hpp``.
+  //! Defined in `matrix.hpp`.
   //!
   //! Alias for the type of dynamic min-plus matrices where the dimensions of
   //! the matrices can be defined at run time.
@@ -4763,7 +4763,7 @@ namespace libsemigroups {
   //!
   //! \brief Alias for static min-plus matrices.
   //!
-  //! Defined in ``matrix.hpp``.
+  //! Defined in `matrix.hpp`.
   //!
   //! Alias for static min-plus matrices whose arithmetic and dimensions are
   //! defined at compile-time.
@@ -4784,7 +4784,7 @@ namespace libsemigroups {
   //!
   //! \brief Alias template for min-plus matrices.
   //!
-  //! Defined in ``matrix.hpp``.
+  //! Defined in `matrix.hpp`.
   //!
   //! Alias template for min-plus matrices.
   //!
@@ -4816,7 +4816,7 @@ namespace libsemigroups {
   //!
   //! \brief Helper variable template.
   //!
-  //! Defined in ``matrix.hpp``.
+  //! Defined in `matrix.hpp`.
   //!
   //! This variable has value \c true if the template parameter \c T is
   //! \ref MinPlusMat; and \c false otherwise.
@@ -4830,7 +4830,7 @@ namespace libsemigroups {
     //!
     //! \brief Validate that a min-plus matrix is valid.
     //!
-    //! Defined in ``matrix.hpp``.
+    //! Defined in `matrix.hpp`.
     //!
     //! This function can be used to validate that a matrix contains values in
     //! the underlying semiring.
@@ -4862,7 +4862,7 @@ namespace libsemigroups {
     //!
     //! \brief Validate that an entry in a min-plus matrix is valid.
     //!
-    //! Defined in ``matrix.hpp``.
+    //! Defined in `matrix.hpp`.
     //!
     //! This function can be used to validate that an entry in a matrix belongs
     //! to the underlying semiring.
@@ -4890,7 +4890,7 @@ namespace libsemigroups {
 
   //! \defgroup maxplustruncmat_group Truncated max-plus matrices
   //!
-  //! Defined in ``matrix.hpp``.
+  //! Defined in `matrix.hpp`.
   //!
   //! This page describes the functionality for \f$n \times n\f$  matrices
   //! over the finite quotient of the max-plus semiring by the congruence
@@ -4939,7 +4939,7 @@ namespace libsemigroups {
   //! \brief Function object for multiplication in truncated max-plus
   //! semirings.
   //!
-  //! Defined in ``matrix.hpp``.
+  //! Defined in `matrix.hpp`.
   //!
   //! This is a stateless struct with a single call operator of signature:
   //! `Scalar operator()(Scalar x, Scalar y) const noexcept`
@@ -4991,7 +4991,7 @@ namespace libsemigroups {
   //!
   //! \brief Class representing a truncated max-plus semiring.
   //!
-  //! Defined in ``matrix.hpp``.
+  //! Defined in `matrix.hpp`.
   //!
   //! This class represents the **truncated max-plus semiring** consists of
   //! the integers \f$\{0, \ldots , t\}\f$ for some value \f$t\f$ (called the
@@ -5176,7 +5176,7 @@ namespace libsemigroups {
   //!
   //! \brief Alias for dynamic truncated max-plus matrices.
   //!
-  //! Defined in ``matrix.hpp``.
+  //! Defined in `matrix.hpp`.
   //!
   //! Alias for the type of dynamic truncated max-plus matrices where the
   //! dimension is defined at run time, but the threshold is defined at
@@ -5195,7 +5195,7 @@ namespace libsemigroups {
   //!
   //! \brief Alias for static truncated max-plus matrices.
   //!
-  //! Defined in ``matrix.hpp``.
+  //! Defined in `matrix.hpp`.
   //!
   //! Alias for static truncated max-plus matrices where the threshold and
   //! dimensions are defined at compile-time.
@@ -5216,7 +5216,7 @@ namespace libsemigroups {
   //!
   //! \brief Alias template for truncated max-plus matrices.
   //!
-  //! Defined in ``matrix.hpp``.
+  //! Defined in `matrix.hpp`.
   //!
   //! Alias template for truncated max-plus matrices.
   //!
@@ -5265,7 +5265,7 @@ namespace libsemigroups {
   //!
   //! \brief Helper to check if a type is \ref MaxPlusTruncMat.
   //!
-  //! Defined in ``matrix.hpp``.
+  //! Defined in `matrix.hpp`.
   //!
   //! This variable has value \c true if the template parameter \c T is the
   //! same as \ref MaxPlusTruncMat for some template parameters; and \c false
@@ -5290,7 +5290,7 @@ namespace libsemigroups {
     //!
     //! \brief Validate that a truncated max-plus matrix is valid.
     //!
-    //! Defined in ``matrix.hpp``.
+    //! Defined in `matrix.hpp`.
     //!
     //! This function can be used to validate that a matrix contains values in
     //! the underlying semiring.
@@ -5331,7 +5331,7 @@ namespace libsemigroups {
     //!
     //! \brief Validate that an entry in a truncated max-plus matrix is valid.
     //!
-    //! Defined in ``matrix.hpp``.
+    //! Defined in `matrix.hpp`.
     //!
     //! This function can be used to validate that a matrix contains values in
     //! the underlying semiring.
@@ -5369,7 +5369,7 @@ namespace libsemigroups {
 
   //! \defgroup minplustruncmat_group Truncated min-plus matrices
   //!
-  //! Defined in ``matrix.hpp``.
+  //! Defined in `matrix.hpp`.
   //!
   //! This page describes the functionality for \f$n \times n\f$  matrices
   //! over the finite quotient of the min-plus semiring by the congruence
@@ -5418,7 +5418,7 @@ namespace libsemigroups {
   //! \brief Function object for multiplication in min-plus truncated
   //! semirings.
   //!
-  //! Defined in ``matrix.hpp``.
+  //! Defined in `matrix.hpp`.
   //!
   //! This is a stateless struct with a single call operator of signature:
   //! `Scalar operator()(Scalar x, Scalar y) const noexcept` that returns \f$x
@@ -5467,7 +5467,7 @@ namespace libsemigroups {
   //!
   //! \brief Class representing a truncated min-plus semiring.
   //!
-  //! Defined in ``matrix.hpp``.
+  //! Defined in `matrix.hpp`.
   //!
   //! This class represents the **min-plus truncated semiring** consists of
   //! the integers \f$\{0, \ldots , t\}\f$ for some value \f$t\f$ (called the
@@ -5650,7 +5650,7 @@ namespace libsemigroups {
   //!
   //! \brief Alias for dynamic truncated min-plus matrices.
   //!
-  //! Defined in ``matrix.hpp``.
+  //! Defined in `matrix.hpp`.
   //!
   //! Alias for the type of dynamic truncated min-plus matrices where the
   //! dimension is defined at run time, but the threshold is defined at
@@ -5669,7 +5669,7 @@ namespace libsemigroups {
   //!
   //! \brief Alias for static truncated min-plus matrices.
   //!
-  //! Defined in ``matrix.hpp``.
+  //! Defined in `matrix.hpp`.
   //!
   //! Alias for static truncated min-plus matrices where the threshold and
   //! dimensions are defined at compile-time.
@@ -5691,7 +5691,7 @@ namespace libsemigroups {
   //!
   //! \brief Alias template for truncated min-plus matrices.
   //!
-  //! Defined in ``matrix.hpp``.
+  //! Defined in `matrix.hpp`.
   //!
   //! Alias template for truncated min-plus matrices.
   //!
@@ -5740,7 +5740,7 @@ namespace libsemigroups {
   //!
   //! \brief Helper to check if a type is \ref MinPlusTruncMat.
   //!
-  //! Defined in ``matrix.hpp``.
+  //! Defined in `matrix.hpp`.
   //!
   //! This variable has value \c true if the template parameter \c T is the
   //! same as \ref MinPlusTruncMat for some template parameters; and \c false
@@ -5765,7 +5765,7 @@ namespace libsemigroups {
     //!
     //! \brief Validate that a truncated min-plus matrix is valid.
     //!
-    //! Defined in ``matrix.hpp``.
+    //! Defined in `matrix.hpp`.
     //!
     //! This function can be used to validate that a matrix contains values in
     //! the underlying semiring.
@@ -5809,7 +5809,7 @@ namespace libsemigroups {
     //!
     //! \brief Validate that an entry in a truncated min-plus matrix is valid.
     //!
-    //! Defined in ``matrix.hpp``.
+    //! Defined in `matrix.hpp`.
     //!
     //! This function can be used to validate that a matrix contains values in
     //! the underlying semiring.
@@ -5848,7 +5848,7 @@ namespace libsemigroups {
 
   //! \defgroup ntpmat_group Matrices over the natural numbers mod (t = t + p)
   //!
-  //! Defined in ``matrix.hpp``.
+  //! Defined in `matrix.hpp`.
   //!
   //! This page describes the functionality for \f$n \times n\f$ matrices over
   //! the finite quotient of the usual semiring of natural number by the
@@ -5923,7 +5923,7 @@ namespace libsemigroups {
   //!
   //! \brief Function object for addition in ntp semirings.
   //!
-  //! Defined in ``matrix.hpp``.
+  //! Defined in `matrix.hpp`.
   //!
   //! This is a stateless struct with a single call operator of signature:
   //! `Scalar operator()(Scalar x, Scalar y) const noexcept`
@@ -5964,7 +5964,7 @@ namespace libsemigroups {
   //!
   //! \brief Function object for multiplication in an ntp semirings.
   //!
-  //! Defined in ``matrix.hpp``.
+  //! Defined in `matrix.hpp`.
   //!
   //! This is a stateless struct with a single call operator of signature:
   //! `Scalar operator()(Scalar x, Scalar y) const noexcept`
@@ -5987,7 +5987,7 @@ namespace libsemigroups {
   struct NTPProd {
     //! \brief Call operator for multiplication.
     //!
-    //! Defined in ``matrix.hpp``.
+    //! Defined in `matrix.hpp`.
     //!
     //! This function returns the product of its arguments in an ntp semiring.
     //!
@@ -6007,7 +6007,7 @@ namespace libsemigroups {
   //!
   //! \brief Class representing an ntp semiring.
   //!
-  //! Defined in ``matrix.hpp``.
+  //! Defined in `matrix.hpp`.
   //!
   //! This class represents the **ntp semiring** consists of the integers
   //! \f$\{0, 1, ..., t, t +  1, ..., t + p - 1\}\f$ for some  \f$t\f$ and
@@ -6204,7 +6204,7 @@ namespace libsemigroups {
   //!
   //! \brief Alias for ntp matrices with dynamic threshold and period.
   //!
-  //! Defined in ``matrix.hpp``.
+  //! Defined in `matrix.hpp`.
   //!
   //! Alias for ntp matrices with dimensions, threshold, and period defined
   //! at runtime.
@@ -6217,7 +6217,7 @@ namespace libsemigroups {
   //!
   //! \brief Alias for ntp matrices with static threshold and period.
   //!
-  //! Defined in ``matrix.hpp``.
+  //! Defined in `matrix.hpp`.
   //!
   //! Alias for the type of dynamic ntp matrices where the dimension
   //! is defined at run time, but the threshold and period are defined at
@@ -6238,7 +6238,7 @@ namespace libsemigroups {
   //! \brief Alias for ntp matrices with static threshold and period, and
   //! dimensions.
   //!
-  //! Defined in ``matrix.hpp``.
+  //! Defined in `matrix.hpp`.
   //!
   //! Alias for static ntp matrices where the threshold, period, and
   //! dimensions are defined at compile-time.
@@ -6265,7 +6265,7 @@ namespace libsemigroups {
   //!
   //! \brief Alias template for ntp matrices.
   //!
-  //! Defined in ``matrix.hpp``.
+  //! Defined in `matrix.hpp`.
   //!
   //! Alias template for truncated min-plus matrices.
   //!
@@ -6325,7 +6325,7 @@ namespace libsemigroups {
   //!
   //! \brief Helper to check if a type is \ref NTPMat.
   //!
-  //! Defined in ``matrix.hpp``.
+  //! Defined in `matrix.hpp`.
   //!
   //! This variable has value \c true if the template parameter \c U is the
   //! same as \ref NTPMat<T, P, R, C, Scalar> for some values of \c T, \c P,
@@ -6349,7 +6349,7 @@ namespace libsemigroups {
   namespace matrix {
     //! \brief Returns the period of a static ntp matrix.
     //!
-    //! Defined in ``matrix.hpp``.
+    //! Defined in `matrix.hpp`.
     //!
     //! This function returns the template parameter \p P of a static ntp
     //! matrix.
@@ -6375,7 +6375,7 @@ namespace libsemigroups {
 
     //! \brief Returns the period of a dynamic ntp matrix.
     //!
-    //! Defined in ``matrix.hpp``.
+    //! Defined in `matrix.hpp`.
     //!
     //! This function returns the template parameter \p P of a dynamic ntp
     //! matrix.
@@ -6398,7 +6398,7 @@ namespace libsemigroups {
 
     //! \brief Returns the period of a dynamic ntp matrix.
     //!
-    //! Defined in ``matrix.hpp``.
+    //! Defined in `matrix.hpp`.
     //!
     //! This function returns the period of the dynamic ntp
     //! matrix \p x using its underlying semiring.
@@ -6422,7 +6422,7 @@ namespace libsemigroups {
     //!
     //! \brief Check that the entries in an ntp matrix are valid.
     //!
-    //! Defined in ``matrix.hpp``.
+    //! Defined in `matrix.hpp`.
     //!
     //! This function can be used to validate that a matrix contains values in
     //! the underlying semiring.
@@ -6466,7 +6466,7 @@ namespace libsemigroups {
     //!
     //! \brief Check that an entry in an ntp matrix is valid.
     //!
-    //! Defined in ``matrix.hpp``.
+    //! Defined in `matrix.hpp`.
     //!
     //! This function can be used to validate that a matrix contains values in
     //! the underlying semiring.
@@ -6833,7 +6833,7 @@ namespace libsemigroups {
 
   //! \defgroup projmaxplus_group Projective max-plus matrices
   //!
-  //! Defined in ``matrix.hpp``.
+  //! Defined in `matrix.hpp`.
   //!
   //! This page describes the functionality for \f$n \times n\f$ projective
   //! matrices over the max-plus semiring. Projective max-plus matrices belong
@@ -6881,7 +6881,7 @@ namespace libsemigroups {
   //! \brief Alias for static projective max-plus matrices with compile-time
   //! arithmetic and dimensions.
   //!
-  //! Defined in ``matrix.hpp``.
+  //! Defined in `matrix.hpp`.
   //!
   //! Alias for static projective max-plus matrices whose arithmetic and
   //! dimensions are defined at compile-time.
@@ -6898,7 +6898,7 @@ namespace libsemigroups {
   //! \brief Alias for dynamic projective max-plus matrices with run-time
   //! dimensions.
   //!
-  //! Defined in ``matrix.hpp``.
+  //! Defined in `matrix.hpp`.
   //!
   //! Alias for the type of dynamic projective max-plus matrices where the
   //! dimensions of the matrices can be defined at run time.
@@ -6911,7 +6911,7 @@ namespace libsemigroups {
   //! \ingroup projmaxplus_group
   //! \brief Alias template for projective max-plus matrices.
   //!
-  //! Defined in ``matrix.hpp``.
+  //! Defined in `matrix.hpp`.
   //!
   //! Alias template for projective max-plus matrices.
   //!
@@ -6944,7 +6944,7 @@ namespace libsemigroups {
   //!
   //! \brief Helper to check if a type is \ref ProjMaxPlusMat.
   //!
-  //! Defined in ``matrix.hpp``.
+  //! Defined in `matrix.hpp`.
   //!
   //! This variable has value \c true if the template parameter \c T is the
   //! same as \ref ProjMaxPlusMat<R, C, Scalar> for some values of \c R, \c C,
@@ -6961,7 +6961,7 @@ namespace libsemigroups {
     //! \brief Check that the entries in a projective max-plus matrix are
     //! valid.
     //!
-    //! Defined in ``matrix.hpp``.
+    //! Defined in `matrix.hpp`.
     //!
     //! This function can be used to validate that the matrix \p x contains
     //! values in the underlying semiring, by checking the underlying matrix.
@@ -6983,7 +6983,7 @@ namespace libsemigroups {
     //
     //! \brief Check that an entry in a projective max-plus matrix is valid.
     //!
-    //! Defined in ``matrix.hpp``.
+    //! Defined in `matrix.hpp`.
     //!
     //! This function can be used to validate that the matrix \p x contains
     //! values in the underlying semiring, using the underlying matrix.
@@ -7008,7 +7008,7 @@ namespace libsemigroups {
 
     //! \brief Returns a power of a matrix.
     //!
-    //! Defined in ``matrix.hpp``.
+    //! Defined in `matrix.hpp`.
     //!
     //! This function returns the matrix \p x to the power \p e.
     //! If \p e is \c 0, then the identity matrix is returned; if
@@ -7092,7 +7092,7 @@ namespace libsemigroups {
     //! \brief Returns a std::vector of row views into the rows of a dynamic
     //! matrix.
     //!
-    //! Defined in ``matrix.hpp``.
+    //! Defined in `matrix.hpp`.
     //!
     //! Returns a std::vector of row views into the rows of the dynamic
     //! matrix \p x.
@@ -7118,7 +7118,7 @@ namespace libsemigroups {
     //! \brief Returns a static vector of row views into the rows of a static
     //! matrix.
     //!
-    //! Defined in ``matrix.hpp``.
+    //! Defined in `matrix.hpp`.
     //!
     //! Returns a static vector of row views into the rows of the static
     //! matrix \p x.
@@ -7151,7 +7151,7 @@ namespace libsemigroups {
     //! \brief Converts a container of row views of a boolean matrix to bit
     //! sets, and append them to another container.
     //!
-    //! Defined in ``matrix.hpp``.
+    //! Defined in `matrix.hpp`.
     //!
     //! This function converts the row views (of a boolean matrix) in a
     //! container to bit sets and appends them to \p result.
@@ -7204,7 +7204,7 @@ namespace libsemigroups {
     //! \brief Converts a container of row views of a boolean matrix to bit
     //! sets, and return them.
     //!
-    //! Defined in ``matrix.hpp``.
+    //! Defined in `matrix.hpp`.
     //!
     //! This function converts the container of row views \p views of a
     //! boolean matrix to bit sets, and return them.
@@ -7257,7 +7257,7 @@ namespace libsemigroups {
     //! \brief Computes the rows of a boolean matrix as bit sets and appends
     //! them to a container.
     //!
-    //! Defined in ``matrix.hpp``.
+    //! Defined in `matrix.hpp`.
     //!
     //! Computes the rows of the matrix \p x as bit sets and
     //! appends them to \p result.
@@ -7298,7 +7298,7 @@ namespace libsemigroups {
     // Helper
     //! \brief Computes the rows of a boolean matrix as bit sets.
     //!
-    //! Defined in ``matrix.hpp``.
+    //! Defined in `matrix.hpp`.
     //!
     //! This functions returns the rows of a boolean matrix as bit sets.
     //!
@@ -7330,7 +7330,7 @@ namespace libsemigroups {
     //! \brief Appends a basis for the space spanned by some bitsets to a
     //! container.
     //!
-    //! Defined in ``matrix.hpp``.
+    //! Defined in `matrix.hpp`.
     //!
     //! Appends a basis for the space spanned by the bitsets in \p rows to
     //! the container \p result.
@@ -7385,7 +7385,7 @@ namespace libsemigroups {
 
     //! \brief Returns a basis for the space spanned by some bit sets.
     //!
-    //! Defined in ``matrix.hpp``.
+    //! Defined in `matrix.hpp`.
     //!
     //! Returns a basis for the space spanned by the bit sets in \p rows.
     //!
@@ -7423,7 +7423,7 @@ namespace libsemigroups {
     //! \brief Returns a basis for the space spanned by the rows of the
     //! boolean matrix.
     //!
-    //! Defined in ``matrix.hpp``.
+    //! Defined in `matrix.hpp`.
     //!
     //! This function returns a basis for the space spanned by the rows of the
     //! boolean matrix \p x.
@@ -7460,7 +7460,7 @@ namespace libsemigroups {
     //! \brief Appends a basis for the rowspace of a boolean matrix to a
     //! container.
     //!
-    //! Defined in ``matrix.hpp``.
+    //! Defined in `matrix.hpp`.
     //!
     //! This function appends a basis for the rowspace of the boolean matrix
     //! \p x to the container \p result.
@@ -7498,7 +7498,7 @@ namespace libsemigroups {
     //! \brief Appends a basis for a space spanned by row views or bit sets to
     //! a container.
     //!
-    //! Defined in ``matrix.hpp``.
+    //! Defined in `matrix.hpp`.
     //!
     //! This function appends a basis for the space spanned by the row
     //! views or bit sets in \p views to the container \p result.
@@ -7585,7 +7585,7 @@ namespace libsemigroups {
     //! \brief Appends a row space basis (consisting of row views) for the row
     //! space spanned by some rows.
     //!
-    //! Defined in ``matrix.hpp``.
+    //! Defined in `matrix.hpp`.
     //!
     //! This function appends a basis (consisting of row views) for the row
     //! space spanned by the rows in \p views to the container \p result.
@@ -7642,7 +7642,7 @@ namespace libsemigroups {
     //! \brief Appends a basis (consisting of row views) for the row space of
     //! a matrix to a container.
     //!
-    //! Defined in ``matrix.hpp``.
+    //! Defined in `matrix.hpp`.
     //!
     //! This function appends a basis (consisting of row views) for the row
     //! space of the matrix \p x to the container \p result.
@@ -7671,7 +7671,7 @@ namespace libsemigroups {
     //! \brief Returns a row space basis of a dynamic matrix as a std::vector
     //! of row views.
     //!
-    //! Defined in ``matrix.hpp``.
+    //! Defined in `matrix.hpp`.
     //!
     //! This function returns a row space basis of the dynamic matrix \p x as
     //! a std::vector of row views.
@@ -7698,7 +7698,7 @@ namespace libsemigroups {
     //! \brief Returns a row space basis of a static matrix as a static vector
     //! of row views.
     //!
-    //! Defined in ``matrix.hpp``.
+    //! Defined in `matrix.hpp`.
     //!
     //! This function returns a row space basis of the static matrix \p x as a
     //! static vector of row views.
@@ -7725,7 +7725,7 @@ namespace libsemigroups {
     //! \brief Returns a row basis for the space spanned by a container of
     //! row views.
     //!
-    //! Defined in ``matrix.hpp``.
+    //! Defined in `matrix.hpp`.
     //!
     //! This function returns a row space basis for the space spanned by the
     //! container \p rows of row views.
@@ -7759,7 +7759,7 @@ namespace libsemigroups {
 
     //! \brief Returns the size of the row space of a boolean matrix.
     //!
-    //! Defined in ``matrix.hpp``.
+    //! Defined in `matrix.hpp`.
     //!
     //! This function returns the size of the row space of the boolean matrix
     //! \p x. This is currently only implemented for types of matrix `Mat`
@@ -7868,7 +7868,7 @@ namespace libsemigroups {
   //!
   //! \brief Validates the arguments, constructs a matrix, and validates it.
   //!
-  //! Defined in ``matrix.hpp``.
+  //! Defined in `matrix.hpp`.
   //!
   //! Validates the arguments, constructs a matrix, and validates it.
   //!
@@ -7904,7 +7904,7 @@ namespace libsemigroups {
   //!
   //! \brief Validates the arguments, constructs a matrix, and validates it.
   //!
-  //! Defined in ``matrix.hpp``.
+  //! Defined in `matrix.hpp`.
   //!
   //! Validates the arguments, constructs a matrix, and validates it.
   //!
@@ -7939,7 +7939,7 @@ namespace libsemigroups {
   //!
   //! \brief Constructs a row and validates it.
   //!
-  //! Defined in ``matrix.hpp``.
+  //! Defined in `matrix.hpp`.
   //!
   //! This function constructs a row from a std::initializer_list and then
   //! calls \ref validate.
@@ -7976,7 +7976,7 @@ namespace libsemigroups {
   //! \brief Constructs a matrix (from std::initializer_list) and validates
   //! it.
   //!
-  //! Defined in ``matrix.hpp``.
+  //! Defined in `matrix.hpp`.
   //!
   //! Validates the arguments, constructs a matrix and validates it.
   //!
@@ -8021,7 +8021,7 @@ namespace libsemigroups {
   //! \brief Constructs a matrix (from std::vector of std::vector) and
   //! validates it.
   //!
-  //! Defined in ``matrix.hpp``.
+  //! Defined in `matrix.hpp`.
   //!
   //! Validates the arguments, constructs a matrix, and validates it.
   //!
@@ -8062,7 +8062,7 @@ namespace libsemigroups {
   //!
   //! \brief Constructs a row and validates it.
   //!
-  //! Defined in ``matrix.hpp``.
+  //! Defined in `matrix.hpp`.
   //!
   //! This function constructs a row and validates it.
   //!
@@ -8095,7 +8095,7 @@ namespace libsemigroups {
   //! \brief Constructs a projective max-plus matrix (from
   //! std::initializer_list) and validates it.
   //!
-  //! Defined in ``matrix.hpp``.
+  //! Defined in `matrix.hpp`.
   //!
   //! Validates the arguments, constructs a matrix, and validates it.
   //!
@@ -8284,11 +8284,11 @@ namespace libsemigroups {
   //! \brief Documentation for specialization of adapters for matrices
   //! satisfying \ref IsMatrix.
   //!
-  //! Defined in ``matrix.hpp``.
+  //! Defined in `matrix.hpp`.
   //!
   //! This page contains the documentation of the functionality in
-  //! ``libsemigroups`` that adapts  objects satisfying \ref IsMatrix for
-  //! use with the main algorithms in ``libsemigroups``.
+  //! `libsemigroups` that adapts  objects satisfying \ref IsMatrix for
+  //! use with the main algorithms in `libsemigroups`.
   //!
   //! Other adapters specifically for \ref BMat objects are available \ref
   //! adapters_bmat_group "here" and for \ref BMat8 objects \ref
@@ -8298,7 +8298,7 @@ namespace libsemigroups {
   //!
   //! \brief Specialization of \ref Complexity for \ref IsMatrix.
   //!
-  //! Defined in ``matrix.hpp``.
+  //! Defined in `matrix.hpp`.
   //!
   //! Specialization of the adapter \ref Complexity for types \p Mat
   //! satisfying \ref IsMatrix<Mat>.
@@ -8386,7 +8386,7 @@ namespace libsemigroups {
   //!
   //! \brief Specialization of \ref IncreaseDegree for \ref IsMatrix.
   //!
-  //! Defined in ``matrix.hpp``.
+  //! Defined in `matrix.hpp`.
   //!
   //! Specialization of the adapter \ref IncreaseDegree for types \p Mat
   //! satisfying \ref IsMatrix<Mat>.
@@ -8412,7 +8412,7 @@ namespace libsemigroups {
   //!
   //! \brief Specialization of \ref One for \ref IsMatrix.
   //!
-  //! Defined in ``matrix.hpp``.
+  //! Defined in `matrix.hpp`.
   //!
   //! Specialization of the adapter \ref One for types \p Mat satisfying
   //! \ref IsMatrix.
