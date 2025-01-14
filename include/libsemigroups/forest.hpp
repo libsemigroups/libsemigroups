@@ -442,7 +442,7 @@ namespace libsemigroups {
   [[nodiscard]] Forest to_forest(std::initializer_list<size_t> parent,
                                  std::initializer_list<size_t> edge_labels);
 
-  //! \ingroup word_graph_group
+  //! \relates Forest
   //!
   //! \brief Return a human readable representation of a Forest object.
   //!
