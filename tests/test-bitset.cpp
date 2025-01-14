@@ -26,12 +26,12 @@ namespace libsemigroups {
   BitSet<7>, BitSet<8>, BitSet<10>, BitSet<16>, BitSet<20>, BitSet<32>
 
 #if LIBSEMIGROUPS_SIZEOF_VOID_P == 8
-#define BITSET_64_TYPES BitSet<40>, BitSet<64>
+#define BITSET_64_TYPES , BitSet<40>, BitSet<64>
 #else
-#define BITESET_64_TYPES
+#define BITSET_64_TYPES
 #endif
 
-#define BITSET_TYPES BITSET_32_TYPES, BITSET_64_TYPES
+#define BITSET_TYPES BITSET_32_TYPES BITSET_64_TYPES
 
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("BitSet",
                                    "000",
