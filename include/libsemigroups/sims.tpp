@@ -37,6 +37,16 @@ namespace libsemigroups {
   }
 
   template <typename Subclass>
+  Subclass& SimsSettings<Subclass>::clear_excluded_pairs() {
+    if (_exclude_pruner_index != UNDEFINED) {
+      _exclude.clear();
+      _pruners.erase(_pruners.cbegin() + _exclude_pruner_index);
+      _exclude_pruner_index = UNDEFINED;
+    }
+    return static_cast<Subclass&>(*this);
+  }
+
+  template <typename Subclass>
   template <typename OtherSubclass>
   SimsSettings<Subclass>&
   SimsSettings<Subclass>::init(SimsSettings<OtherSubclass> const& that) {
@@ -61,13 +71,18 @@ namespace libsemigroups {
       LIBSEMIGROUPS_EXCEPTION(
           "the argument (a presentation) must not have 0 generators");
     }
-    // This normalises the rules in the case they are of the right type but
-    // not normalised
+    // TODO(0): (reiniscirpons) change this so that we just have a concrete
+    // implementation for word_type and then another which takes a Word and then
+    // calls the concete implementation like e.g. ToddCoxeter
+    // TODO(0): (reiniscirpons) use the citw stuff from ToddCoxeter once its
+    // available.
     Presentation<word_type> p_copy;
     if constexpr (std::is_same_v<Word, word_type>) {
       p_copy = p;
       presentation::normalize_alphabet(p_copy);
     } else {
+      // p_copy = to_presentation<word_type>(p, [](auto const& x) { return x;
+      // });
       p_copy = to_presentation<word_type>(p);
     }
     try {
@@ -112,6 +127,16 @@ namespace libsemigroups {
     }
 
     template <typename Node>
+    void throw_if_not_right_congruence(Presentation<word_type> const& p,
+                                       WordGraph<Node> const&         wg) {
+      if (!is_right_congruence(p, wg)) {
+        LIBSEMIGROUPS_EXCEPTION("The 2nd argument (a word graph) does not "
+                                "represent a right congruence of the semigroup "
+                                "defined by the 1st argument (a presentation)")
+      }
+    }
+
+    template <typename Node>
     bool is_two_sided_congruence_no_checks(Presentation<word_type> const& p,
                                            WordGraph<Node> const&         wg) {
       auto const N     = wg.number_of_active_nodes();
@@ -125,6 +150,35 @@ namespace libsemigroups {
         }
       }
       return true;
+    }
+
+    template <typename Node>
+    bool is_two_sided_congruence(Presentation<word_type> const& p,
+                                 WordGraph<Node> const&         wg) {
+      if (!is_right_congruence(p, wg)) {
+        return false;
+      }
+      return is_two_sided_congruence_no_checks(p, wg);
+    }
+
+    template <typename Node>
+    void throw_if_not_two_sided_congruence(Presentation<word_type> const& p,
+                                           WordGraph<Node> const&         wg) {
+      if (!is_two_sided_congruence(p, wg)) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "The 2nd argument (a word graph) does not "
+            "represent a 2-sided congruence of the semigroup "
+            "defined by the 1st argument (a presentation)")
+      }
+    }
+
+    template <typename Node>
+    rx::iterator_range<const_rcgp_iterator>
+    right_generating_pairs(WordGraph<Node> const& wg) {
+      Presentation<word_type> p;
+      p.alphabet(wg.out_degree());
+      throw_if_not_right_congruence(p, wg);
+      return right_generating_pairs_no_checks(p, wg);
     }
 
     template <typename Node>
@@ -237,5 +291,14 @@ namespace libsemigroups {
       return result;
     }
   }  // namespace sims
+
+  SimsRefinerIdeals&
+  SimsRefinerIdeals::init(Presentation<std::string> const& p) {
+    _presentation = to_presentation<word_type>(p);
+    _knuth_bendices[0].init(congruence_kind::twosided, _presentation).run();
+    std::fill(
+        _knuth_bendices.begin() + 1, _knuth_bendices.end(), _knuth_bendices[0]);
+    return *this;
+  }
 
 }  // namespace libsemigroups

@@ -833,15 +833,7 @@ namespace libsemigroups {
     //!
     //! \exceptions
     //! \no_libsemigroups_except
-    // TODO(0) to tpp file
-    Subclass& clear_excluded_pairs() {
-      if (_exclude_pruner_index != UNDEFINED) {
-        _exclude.clear();
-        _pruners.erase(_pruners.cbegin() + _exclude_pruner_index);
-        _exclude_pruner_index = UNDEFINED;
-      }
-      return static_cast<Subclass&>(*this);
-    }
+    Subclass& clear_excluded_pairs();
 
     //! \brief Get the current stats object.
     //!
@@ -2526,34 +2518,29 @@ namespace libsemigroups {
     //! \brief Check if a word graph defines a right congruence on an
     //! f.p. semigroup or monoid.
     //!
-    //! Returns `true` if the word graph \p wg defines a right congruence
+    //! \returns `true` if the word graph \p wg defines a right congruence
     //! on the semigroup or monoid defined by \p p and `false` otherwise.
     template <typename Node>
     bool is_right_congruence(Presentation<word_type> const& p,
                              WordGraph<Node> const&         wg);
 
     //! No doc
-    // TODO(0) out of line
-    // TODO(0) rename throw_if
     template <typename Node>
-    void validate_right_congruence(Presentation<word_type> const& p,
-                                   WordGraph<Node> const&         wg) {
-      if (!is_right_congruence(p, wg)) {
-        LIBSEMIGROUPS_EXCEPTION("The 2nd argument (a word graph) does not "
-                                "represent a right congruence of the semigroup "
-                                "defined by the 1st argument (a presentation)")
-      }
-    }
+    void throw_if_not_right_congruence(Presentation<word_type> const& p,
+                                       WordGraph<Node> const&         wg);
 
     //! \ingroup congruences_group
     //!
     //! \brief Check if a word graph defines a right congruence on the dual of
     //! an f.p. semigroup or monoid.
     //!
-    //! Returns `true` if the word graph \p wg defines a right congruence
-    //! on the dual of the semigroup or monoid defined by \p p and `false`
-    //! otherwise. This is equivalent to checking if the word graph defines a
+    //! This function checks if \p wg defines a right congruence over the dual
+    //! of \p p. This is equivalent to checking if the word graph defines a
     //! left congruence in the semigroup or monoid defined by \p p.
+    //!
+    //! \returns `true` if the word graph \p wg defines a right congruence
+    //! on the dual of the semigroup or monoid defined by \p p and `false`
+    //! otherwise.
     template <typename Node>
     bool is_right_congruence_of_dual(Presentation<word_type> const& p,
                                      WordGraph<Node> const&         wg) {
@@ -2567,7 +2554,7 @@ namespace libsemigroups {
     //! \brief Check if a word graph defines a two-sided congruence on
     //! an f.p. semigroup or monoid (no checks).
     //!
-    //! Returns `true` if the word graph \p wg defines a two-sided
+    //! \returns `true` if the word graph \p wg defines a two-sided
     //! congruence on the semigroup or monoid defined by \p p and `false`
     //! otherwise.
     //!
@@ -2585,38 +2572,24 @@ namespace libsemigroups {
     //! \brief Check if a word graph defines a two sided congruence on
     //! an f.p. semigroup or monoid.
     //!
-    //! Returns `true` if the word graph \p wg defines a two-sided
+    //! \returns `true` if the word graph \p wg defines a two-sided
     //! congruence on the semigroup or monoid defined by \p p and `false`
     //! otherwise.
-    // TODO(0) out of line
     template <typename Node>
     bool is_two_sided_congruence(Presentation<word_type> const& p,
-                                 WordGraph<Node> const&         wg) {
-      if (!is_right_congruence(p, wg)) {
-        return false;
-      }
-      return is_two_sided_congruence_no_checks(p, wg);
-    }
+                                 WordGraph<Node> const&         wg);
 
     //! No doc
-    // TODO(0) out of line
     template <typename Node>
-    void validate_two_sided_congruence(Presentation<word_type> const& p,
-                                       WordGraph<Node> const&         wg) {
-      if (!is_two_sided_congruence(p, wg)) {
-        LIBSEMIGROUPS_EXCEPTION(
-            "The 2nd argument (a word graph) does not "
-            "represent a 2-sided congruence of the semigroup "
-            "defined by the 1st argument (a presentation)")
-      }
-    }
+    void throw_if_not_two_sided_congruence(Presentation<word_type> const& p,
+                                           WordGraph<Node> const&         wg);
 
     //! \ingroup congruences_group
     //!
     //! \brief Get an iterator pointing to the first right congruence generating
     //! pair (no checks).
     //!
-    //! Returns an iterator pointing to the first generating pair of the right
+    //! \returns an iterator pointing to the first generating pair of the right
     //! congruence defined by the word graph \p wg on the semigroup or monoid
     //! defined by \p p.
     //!
@@ -2638,7 +2611,7 @@ namespace libsemigroups {
     //! \brief Get an iterator pointing to the first right congruence generating
     //! pair.
     //!
-    //! Returns an iterator pointing to the first generating pair of the right
+    //! \returns an iterator pointing to the first generating pair of the right
     //! congruence defined by the word graph \p wg on the semigroup or monoid
     //! defined by \p p.
     //!
@@ -2648,7 +2621,7 @@ namespace libsemigroups {
     const_rcgp_iterator
     cbegin_right_generating_pairs(Presentation<word_type> const& p,
                                   WordGraph<Node> const&         wg) {
-      validate_right_congruence(p, wg);
+      throw_if_not_right_congruence(p, wg);
       return cbegin_right_generating_pairs_no_checks(p, wg);
     }
 
@@ -2657,7 +2630,7 @@ namespace libsemigroups {
     //! \brief Get an iterator pointing to the first two-sided congruence
     //! generating pair (no checks).
     //!
-    //! Returns an iterator pointing to the first generating pair of the
+    //! \returns an iterator pointing to the first generating pair of the
     //! two-sided congruence defined by the word graph \p wg on the semigroup or
     //! monoid defined by \p p.
     //!
@@ -2687,7 +2660,7 @@ namespace libsemigroups {
     //! \brief Get an iterator pointing to the first two-sided congruence
     //! generating pair.
     //!
-    //! Returns an iterator pointing to the first generating pair of the
+    //! \returns an iterator pointing to the first generating pair of the
     //! two-sided congruence defined by the word graph \p wg on the semigroup or
     //! monoid defined by \p p.
     //!
@@ -2704,17 +2677,16 @@ namespace libsemigroups {
     const_cgp_iterator
     cbegin_two_sided_generating_pairs(Presentation<word_type> const& p,
                                       WordGraph<Node> const&         wg) {
-      validate_two_sided_congruence(p, wg);
+      throw_if_not_two_sided_congruence(p, wg);
       return cbegin_two_sided_generating_pairs_no_checks(p, wg);
     }
 
-    // TODO(0) many of the functions in below are missing a \returns item
     //! \ingroup congruences_group
     //!
     //! \brief Get an iterator pointing to one after the last right congruence
     //! generating pair (no checks).
     //!
-    //! Returns an iterator pointing to one after the last generating pair of
+    //! \returns an iterator pointing to one after the last generating pair of
     //! the right congruence defined by the word graph \p wg on the semigroup or
     //! monoid defined by \p p.
     //!
@@ -2735,7 +2707,7 @@ namespace libsemigroups {
     //! \brief Get an iterator pointing to one after the last right congruence
     //! generating pair.
     //!
-    //! Returns an iterator pointing to one after the last generating pair of
+    //! \returns an iterator pointing to one after the last generating pair of
     //! the right congruence defined by the word graph \p wg on the semigroup or
     //! monoid defined by \p p.
     //!
@@ -2745,7 +2717,7 @@ namespace libsemigroups {
     const_rcgp_iterator
     cend_right_generating_pairs(Presentation<word_type> const& p,
                                 WordGraph<Node> const&         wg) {
-      validate_right_congruence(p, wg);
+      throw_if_not_right_congruence(p, wg);
       return cend_right_generating_pairs_no_checks(p, wg);
     }
 
@@ -2754,7 +2726,7 @@ namespace libsemigroups {
     //! \brief Get an iterator pointing to one after the last two-sided
     //! congruence generating pair (no checks).
     //!
-    //! Returns an iterator pointing to one after the last generating pair of
+    //! \returns an iterator pointing to one after the last generating pair of
     //! the two-sided congruence defined by the word graph \p wg on the
     //! semigroup or monoid defined by \p p.
     //!
@@ -2782,7 +2754,7 @@ namespace libsemigroups {
     //! \brief Get an iterator pointing to one after the last two-sided
     //! congruence generating pair.
     //!
-    //! Returns an iterator pointing to one after the last generating pair of
+    //! \returns an iterator pointing to one after the last generating pair of
     //! the two-sided congruence defined by the word graph \p wg on the
     //! semigroup or monoid defined by \p p.
     //!
@@ -2799,7 +2771,7 @@ namespace libsemigroups {
     const_cgp_iterator
     cend_two_sided_generating_pairs(Presentation<word_type> const& p,
                                     WordGraph<Node> const&         wg) {
-      validate_two_sided_congruence(p, wg);
+      throw_if_not_two_sided_congruence(p, wg);
       return cend_two_sided_generating_pairs_no_checks(p, wg);
     }
 
@@ -2808,7 +2780,7 @@ namespace libsemigroups {
     //! \brief Compute the right congruence generating pairs of a word graph on
     //! an f.p. semigroup or monoid (no checks).
     //!
-    //! Returns the right congruence generating pairs of the right
+    //! \returns the right congruence generating pairs of the right
     //! congruence defined by the
     //! word graph \p wg on the semigroup or monoid defined by \p p.
     //!
@@ -2829,7 +2801,7 @@ namespace libsemigroups {
     //! \brief Compute the right congruence generating pairs of a word graph on
     //! an f.p. semigroup or monoid.
     //!
-    //! Returns the right congruence generating pairs of the right
+    //! \returns the right congruence generating pairs of the right
     //! congruence defined by the
     //! word graph \p wg on the semigroup or monoid defined by \p p.
     //!
@@ -2839,7 +2811,7 @@ namespace libsemigroups {
     rx::iterator_range<const_rcgp_iterator>
     right_generating_pairs(Presentation<word_type> const& p,
                            WordGraph<Node> const&         wg) {
-      validate_right_congruence(p, wg);
+      throw_if_not_right_congruence(p, wg);
       return right_generating_pairs_no_checks(p, wg);
     }
 
@@ -2848,7 +2820,7 @@ namespace libsemigroups {
     //! \brief Compute the right congruence generating pairs of a word graph on
     //! the free monoid (no checks).
     //!
-    //! Returns the right congruence generating pairs of the right
+    //! \returns the right congruence generating pairs of the right
     //! congruence defined by the
     //! word graph \p wg on the free monoid.
     //!
@@ -2869,28 +2841,22 @@ namespace libsemigroups {
     //! \brief Compute the right congruence generating pairs of a word graph on
     //! the free monoid.
     //!
-    //! Returns the right congruence generating pairs of the right
+    //! \returns the right congruence generating pairs of the right
     //! congruence defined by the
     //! word graph \p wg on the free monoid.
     //!
     //! \throws LibsemigroupsException if the argument \p wg does not define a
     //! right congruence on the free monoid.
-    // TODO(0) out of line
     template <typename Node>
     rx::iterator_range<const_rcgp_iterator>
-    right_generating_pairs(WordGraph<Node> const& wg) {
-      Presentation<word_type> p;
-      p.alphabet(wg.out_degree());
-      validate_right_congruence(p, wg);
-      return right_generating_pairs_no_checks(p, wg);
-    }
+    right_generating_pairs(WordGraph<Node> const& wg);
 
     //! \ingroup congruences_group
     //!
     //! \brief Compute the two-sided congruence generating pairs of a word graph
     //! on an f.p. semigroup or monoid (no checks).
     //!
-    //! Returns the two-sided congruence generating pairs of the two-sided
+    //! \returns the two-sided congruence generating pairs of the two-sided
     //! congruence defined by the
     //! word graph \p wg on the semigroup or monoid defined by \p p.
     //!
@@ -2920,7 +2886,7 @@ namespace libsemigroups {
     //! \brief Compute the two-sided congruence generating pairs of a word graph
     //! on an f.p. semigroup or monoid.
     //!
-    //! Returns the two-sided congruence generating pairs of the two-sided
+    //! \returns the two-sided congruence generating pairs of the two-sided
     //! congruence defined by the
     //! word graph \p wg on the semigroup or monoid defined by \p p.
     //!
@@ -2937,7 +2903,7 @@ namespace libsemigroups {
     rx::iterator_range<const_cgp_iterator>
     two_sided_generating_pairs(Presentation<word_type> const& p,
                                WordGraph<Node> const&         wg) {
-      validate_two_sided_congruence(p, wg);
+      throw_if_not_two_sided_congruence(p, wg);
       return two_sided_generating_pairs_no_checks(p, wg);
     }
 
@@ -2946,7 +2912,7 @@ namespace libsemigroups {
     //! \brief Compute the two-sided congruence generating pairs of a word graph
     //! on the free monoid (no checks).
     //!
-    //! Returns the two-sided congruence generating pairs of the two-sided
+    //! \returns the two-sided congruence generating pairs of the two-sided
     //! congruence defined by the
     //! word graph \p wg on the free monoid.
     //!
@@ -2976,7 +2942,7 @@ namespace libsemigroups {
     //! \brief Compute the two-sided congruence generating pairs of a word graph
     //! on the free monoid.
     //!
-    //! Returns the two-sided congruence generating pairs of the two-sided
+    //! \returns the two-sided congruence generating pairs of the two-sided
     //! congruence defined by the
     //! word graph \p wg on the free monoid.
     //!
@@ -2994,7 +2960,7 @@ namespace libsemigroups {
     two_sided_generating_pairs(WordGraph<Node> const& wg) {
       Presentation<word_type> p;
       p.alphabet(wg.out_degree());
-      validate_two_sided_congruence(p, wg);
+      throw_if_not_two_sided_congruence(p, wg);
       return two_sided_generating_pairs_no_checks(p, wg);
     }
 
@@ -3003,7 +2969,7 @@ namespace libsemigroups {
     //! \brief Check if a word graph defines a maximal right congruence on
     //! an f.p. semigroup or monoid.
     //!
-    //! Returns `true` if the word graph \p wg defines a maximal right
+    //! \returns `true` if the word graph \p wg defines a maximal right
     //! congruence on the semigroup or monoid defined by \p p and `false`
     //! otherwise.
     template <typename Node>
@@ -3015,12 +2981,14 @@ namespace libsemigroups {
     //! \brief Compute the inclusion poset of a collection of congruences
     //! defined by word graphs.
     //!
-    //! Returns a boolean matrix whose `(i, j)`-th entry is 1 if and only if the
-    //! congruence defined by the `i`-th word graph in `[first, last)` is a
-    //! subrelation of the congruence defined by the `j`-th word graph in
-    //! `[first, last)`. If `[first, last)` is the collection of all congruences
-    //! of a given semigroup or monoid, then this is equivalent to computing the
-    //! congruence lattice of the semigroup or monoid.
+    //! This function computes a boolean matrix whose `(i, j)`-th entry is 1 if
+    //! and only if the congruence defined by the `i`-th word graph in `[first,
+    //! last)` is a subrelation of the congruence defined by the `j`-th word
+    //! graph in `[first, last)`. If `[first, last)` is the collection of all
+    //! congruences of a given semigroup or monoid, then this is equivalent to
+    //! computing the congruence lattice of the semigroup or monoid.
+    //!
+    //! \returns a \ref Bmat object.
     //!
     //! \warning
     //! This function does no checks on its arguments whatsoever and assumes
@@ -3031,8 +2999,10 @@ namespace libsemigroups {
 
     //! \ingroup congruences_group
     //!
-    //! Construct a \ref Dot object representing the inclusion poset of a
+    //! \brief Construct a \ref Dot object representing the inclusion poset of a
     //! collection of word graphs.
+    //!
+    //! \returns a \ref Dot object.
     // The following produces a self-contained Dot object which doesn't render
     // very well.
     template <typename Iterator>
@@ -3261,15 +3231,7 @@ namespace libsemigroups {
     //! terminate on certain inputs.
     //!
     //! \sa presentation(Presentation<std::string> const&)
-    // TODO(0) to tpp
-    SimsRefinerIdeals& init(Presentation<std::string> const& p) {
-      _presentation = to_presentation<word_type>(p);
-      _knuth_bendices[0].init(congruence_kind::twosided, _presentation).run();
-      std::fill(_knuth_bendices.begin() + 1,
-                _knuth_bendices.end(),
-                _knuth_bendices[0]);
-      return *this;
-    }
+    SimsRefinerIdeals& init(Presentation<std::string> const& p);
 
     //! \brief Get the presentation over which the refiner is defined.
     //!

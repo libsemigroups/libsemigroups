@@ -4453,7 +4453,7 @@ namespace libsemigroups {
     wg = to_word_graph<node_type>(2, {{1, 1}, {1, 0}});
     wg.number_of_active_nodes(2);
     REQUIRE(!sims::is_right_congruence(p, wg));
-    REQUIRE_THROWS_AS(sims::validate_right_congruence(p, wg),
+    REQUIRE_THROWS_AS(sims::throw_if_not_right_congruence(p, wg),
                       LibsemigroupsException);
 
     // Works
@@ -4504,14 +4504,14 @@ namespace libsemigroups {
     wg = to_word_graph<node_type>(2, {{1, 1}, {1, 0}});
     wg.number_of_active_nodes(2);
     REQUIRE(!sims::is_two_sided_congruence(p, wg));
-    REQUIRE_THROWS_AS(sims::validate_two_sided_congruence(p, wg),
+    REQUIRE_THROWS_AS(sims::throw_if_not_two_sided_congruence(p, wg),
                       LibsemigroupsException);
 
     // Not compatible with X_Gamma
     wg = to_word_graph<node_type>(4, {{1, 2}, {2, 2}, {3, 3}, {3, 3}});
     wg.number_of_active_nodes(4);
     REQUIRE(!sims::is_two_sided_congruence(p, wg));
-    REQUIRE_THROWS_AS(sims::validate_two_sided_congruence(p, wg),
+    REQUIRE_THROWS_AS(sims::throw_if_not_two_sided_congruence(p, wg),
                       LibsemigroupsException);
 
     // Works
@@ -4958,6 +4958,40 @@ namespace libsemigroups {
 
     REQUIRE(d.number_of_nodes() == 6);
   }
+
+  // TODO(0): test fails for now, uncomment when we get Sims<Word> to work as
+  // per forthcoming changes to congruence interface and friends
+  // LIBSEMIGROUPS_TEST_CASE("Sims1",
+  //                         "131",
+  //                         "fp semigroup containing given pairs, std::string",
+  //                         "[quick][low-index]") {
+  //   auto rg = ReportGuard(false);
+  //
+  //   Presentation<std::string> p;
+  //   p.contains_empty_word(true);
+  //   p.alphabet("ab");
+  //   presentation::add_rule(p, "aaa", "a");
+  //   presentation::add_rule(p, "bb", "b");
+  //   presentation::add_rule(p, "abab", "a");
+  //
+  //   {
+  //     Sims1 T;
+  //     T.presentation(p);
+  //     sims::add_included_pair(T, "abab", "a");
+  //     REQUIRE(T.number_of_congruences(5) == 6);
+  //   }
+  //   {
+  //     Sims1 T;
+  //     presentation::reverse(p);
+  //     T.presentation(p);
+  //     sims::add_included_pair(T, "abab", "a");
+  //     REQUIRE(T.included_pairs() == std::vector<word_type>({"abab", "a"}));
+  //     REQUIRE(T.number_of_congruences(5) == 4);  // Verified with GAP
+  //   }
+  //   check_include(p, {"abab", "a"}, 5);
+  //   presentation::reverse(p);
+  //   check_include(p, {"abab", "a"}, 5);
+  // }
 
   LIBSEMIGROUPS_TEST_CASE("Sims2",
                           "256",
