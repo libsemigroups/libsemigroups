@@ -27,7 +27,7 @@
 
 #include "libsemigroups/constants.hpp"   // for UNDEFINED, Undefined, Max
 #include "libsemigroups/exception.hpp"   // for LibsemigroupsException
-#include "libsemigroups/forest.hpp"      // for to_forest, Forest, opera...
+#include "libsemigroups/forest.hpp"      // for to<Forest>, Forest, opera...
 #include "libsemigroups/gabow.hpp"       // for Gabow
 #include "libsemigroups/ranges.hpp"      // for equal
 #include "libsemigroups/word-graph.hpp"  // for WordGraph, to_action...
@@ -121,11 +121,11 @@ namespace libsemigroups {
     REQUIRE(scc.number_of_components() == 1);
     {
       auto const& f = scc.spanning_forest();
-      REQUIRE(f == to_forest({2, 2, UNDEFINED}, {0, 1, UNDEFINED}));
+      REQUIRE(f == to<Forest>({2, 2, UNDEFINED}, {0, 1, UNDEFINED}));
     }
     {
       auto const& f = scc.reverse_spanning_forest();
-      REQUIRE(f == to_forest({2, 2, UNDEFINED}, {2, 2, UNDEFINED}));
+      REQUIRE(f == to<Forest>({2, 2, UNDEFINED}, {2, 2, UNDEFINED}));
     }
   }
 
@@ -341,7 +341,7 @@ namespace libsemigroups {
     Gabow scc(wg);
     REQUIRE(scc.number_of_components() == 1);
     REQUIRE(scc.reverse_spanning_forest()
-            == to_forest({4, 2, 0, 4, UNDEFINED}, {2, 0, 1, 0, UNDEFINED}));
+            == to<Forest>({4, 2, 0, 4, UNDEFINED}, {2, 0, 1, 0, UNDEFINED}));
   }
 
   LIBSEMIGROUPS_TEST_CASE("Gabow",

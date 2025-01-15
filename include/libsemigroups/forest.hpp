@@ -28,7 +28,7 @@
 #include "constants.hpp"  // for Undefined, Max, UNDEFINED, operator!=
 #include "debug.hpp"      // for LIBSEMIGROUPS_ASSERT
 #include "exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
-#include "types.hpp"      // for word_type
+#include "types.hpp"      // for word_type, enable_if_is_same
 
 namespace libsemigroups {
   //! \ingroup word_graph_group
@@ -39,8 +39,6 @@ namespace libsemigroups {
   //!
   //! This class represents the collection of spanning trees of the strongly
   //! connected components of a word graph.
-  //!
-  //! \sa to_forest, to_human_readable_repr(Forest const&)
   class Forest {
     std::vector<size_t> _edge_label;
     std::vector<size_t> _parent;
@@ -416,11 +414,13 @@ namespace libsemigroups {
     void throw_if_node_out_of_bounds(node_type v) const;
   };
 
-  //! \ingroup word_graph_group
+  //! \relates Forest
   //!
   //! \brief Construct a Forest from parents and labels.
   //!
   //! This function constructs a Forest from vector of parents and labels.
+  //!
+  //! \tparam Return the return type.
   //!
   //! \param parent the vector of parents of nodes in the Forest.
   //! \param edge_labels the vector of edge labels in the Forest.
@@ -435,12 +435,64 @@ namespace libsemigroups {
   //! forest are located and so must coincide).
   //! * Forest::set_parent_and_label throws for `parent[i]` and `edge_labels[i]`
   //! for any value of `i`.
-  [[nodiscard]] Forest to_forest(std::vector<size_t> parent,
-                                 std::vector<size_t> edge_labels);
+  template <typename Return>
+  [[nodiscard]] enable_if_is_same<Return, Forest>
+  to(std::vector<size_t> parent, std::vector<size_t> edge_labels) {
+    if (parent.size() != edge_labels.size()) {
+      LIBSEMIGROUPS_EXCEPTION(
+          "expected the 1st and 2nd arguments (parents and edge labels) to "
+          "have equal size equal, found {} != {}",
+          parent.size(),
+          edge_labels.size());
+    }
+    size_t const num_nodes = parent.size();
+    Forest       result(num_nodes);
+    for (size_t i = 0; i < num_nodes; ++i) {
+      auto p = *(parent.begin() + i);
+      auto l = *(edge_labels.begin() + i);
+      if (p != UNDEFINED && l != UNDEFINED) {
+        result.set_parent_and_label(i, p, l);
+      } else if (!(p == UNDEFINED && l == UNDEFINED)) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "roots not at the same indices in the 1st and 2nd arguments "
+            "(parents and edge labels), expected UNDEFINED at index {} found "
+            "{} and {}",
+            i,
+            p,
+            l);
+      }
+    }
+    return result;
+  }
 
-  //! \copydoc to_forest(std::vector<size_t>, std::vector<size_t>)
-  [[nodiscard]] Forest to_forest(std::initializer_list<size_t> parent,
-                                 std::initializer_list<size_t> edge_labels);
+  //! \relates Forest
+  //!
+  //! \brief Construct a Forest from parents and labels.
+  //!
+  //! This function constructs a Forest from initializer lists of parents and
+  //! labels.
+  //!
+  //! \tparam Return the return type.
+  //!
+  //! \param parent the initializer list of parents of nodes in the Forest.
+  //! \param edge_labels the initializer list of edge labels in the Forest.
+  //!
+  //! \returns A newly constructed Forest with parents \p parent and edge labels
+  //! \p edge_labels.
+  //!
+  //! \throws LibsemigroupsException if any of the following hold:
+  //! * \p parent and \p edge_labels have different sizes;
+  //! * \p parent and \p edge_labels do not have the value \ref UNDEFINED in the
+  //! same positions (these values indicate where the roots of the trees in the
+  //! forest are located and so must coincide).
+  //! * Forest::set_parent_and_label throws for `parent[i]` and `edge_labels[i]`
+  //! for any value of `i`.
+  template <typename Return>
+  [[nodiscard]] enable_if_is_same<Return, Forest>
+  to(std::initializer_list<size_t> parent,
+     std::initializer_list<size_t> edge_labels) {
+    return to<Forest>(std::vector<size_t>(parent), std::vector(edge_labels));
+  }
 
   //! \relates Forest
   //!
@@ -453,7 +505,6 @@ namespace libsemigroups {
   //! \exceptions
   //! \no_libsemigroups_except
   [[nodiscard]] std::string to_human_readable_repr(Forest const& f);
-
 }  // namespace libsemigroups
 
 template <>
