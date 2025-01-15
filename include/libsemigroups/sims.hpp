@@ -3168,6 +3168,10 @@ namespace libsemigroups {
     //! Constructs a SimsRefinerIdeals pruner for the semigroup or monoid
     //! defined by \p p.
     //!
+    //! \tparam Word the type of words in the input presentation.
+    //!
+    //! \param p the presentation.
+    //!
     //! \warning
     //! This method assumes that KnuthBendix terminates on the input
     //! presentation \p p. If this is not the case then th pruner may not
@@ -3186,6 +3190,10 @@ namespace libsemigroups {
     //! This function puts an object back into the same state as if it had
     //! been newly constructed from the presentation \p p.
     //!
+    //! \tparam Word the type of words in the input presentation.
+    //!
+    //! \param p the presentation.
+    //!
     //! \returns A reference to \c *this.
     //!
     //! \throws LibsemigroupsException if `p` is not valid
@@ -3201,37 +3209,8 @@ namespace libsemigroups {
     //! terminate on certain inputs.
     //!
     //! \sa presentation(Presentation<word_type> const&)
-    SimsRefinerIdeals& init(Presentation<word_type> const& p) {
-      _presentation = p;
-      _knuth_bendices[0].init(congruence_kind::twosided, _presentation).run();
-      std::fill(_knuth_bendices.begin() + 1,
-                _knuth_bendices.end(),
-                _knuth_bendices[0]);
-      return *this;
-    }
-
-    //! \brief Reinitialize an existing SimsRefinerIdeals object from a
-    //! std::string presentation.
-    //!
-    //! This function puts an object back into the same state as if it had
-    //! been newly constructed from the presentation \p p.
-    //!
-    //! \returns A reference to \c *this.
-    //!
-    //! \throws LibsemigroupsException if `p` is not valid
-    //! \throws LibsemigroupsException if `p` has 0-generators and 0-relations.
-    //!
-    //! \warning This function has no exception guarantee, the object will be
-    //! in the same state as if it was default constructed if an exception is
-    //! thrown.
-    //!
-    //! \warning
-    //! This method assumes that KnuthBendix terminates on the input
-    //! presentation \p p. If this is not the case then th pruner may not
-    //! terminate on certain inputs.
-    //!
-    //! \sa presentation(Presentation<std::string> const&)
-    SimsRefinerIdeals& init(Presentation<std::string> const& p);
+    template <typename Word>
+    SimsRefinerIdeals& init(Presentation<Word> const& p);
 
     //! \brief Get the presentation over which the refiner is defined.
     //!

@@ -102,6 +102,21 @@ namespace libsemigroups {
     return static_cast<Subclass&>(*this);
   }
 
+  // TODO(0): (reiniscirpons) Change this in the same way as we do for Sims1,
+  // Once we add the citw stuff
+  template <typename Word>
+  SimsRefinerIdeals& SimsRefinerIdeals::init(Presentation<Word> const& p) {
+    if constexpr (std::is_same_v<Word, word_type>) {
+      _presentation = p;
+    } else {
+      _presentation = to_presentation<word_type>(p);
+    }
+    _knuth_bendices[0].init(congruence_kind::twosided, _presentation).run();
+    std::fill(
+        _knuth_bendices.begin() + 1, _knuth_bendices.end(), _knuth_bendices[0]);
+    return *this;
+  }
+
   template <typename Subclass>
   SimsSettings<Subclass>::~SimsSettings() = default;
 
@@ -291,14 +306,5 @@ namespace libsemigroups {
       return result;
     }
   }  // namespace sims
-
-  SimsRefinerIdeals&
-  SimsRefinerIdeals::init(Presentation<std::string> const& p) {
-    _presentation = to_presentation<word_type>(p);
-    _knuth_bendices[0].init(congruence_kind::twosided, _presentation).run();
-    std::fill(
-        _knuth_bendices.begin() + 1, _knuth_bendices.end(), _knuth_bendices[0]);
-    return *this;
-  }
 
 }  // namespace libsemigroups
