@@ -15,14 +15,21 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include <iostream>
+#include <string>  // for basic_string, allocator
+#include <tuple>   // for __ignore_t, ignore
+#include <vector>  // for vector, operator==
 
+#include "catch_amalgamated.hpp"  // for SourceLineInfo, operator""...
+#include "test-main.hpp"          // for LIBSEMIGROUPS_TEST_CASE
+
+#include "libsemigroups/aho-corasick.hpp"  // for traverse_word, AhoCorasick
 #include "libsemigroups/aho-corasick.hpp"  // for AhoCorasick
+#include "libsemigroups/constants.hpp"     // for operator==, operator!=
+#include "libsemigroups/dot.hpp"           // for Dot
 #include "libsemigroups/exception.hpp"     // for LibsemigroupsException
 #include "libsemigroups/types.hpp"         // for word_type
-
-#include "catch_amalgamated.hpp"  // for REQUIRE, REQUIRE_THROWS_AS, REQUI...
-#include "test-main.hpp"          // for LIBSEMIGROUPS_TEST_CASE
+#include "libsemigroups/word-range.hpp"    // for operator""_w, WordRange, pow
+#include "libsemigroups/word-range.hpp"    // for namespace literals
 
 namespace libsemigroups {
   using namespace literals;

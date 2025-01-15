@@ -20,11 +20,12 @@
 #include <cstdint>  // for int64_t
 
 #include "catch_amalgamated.hpp"  // for REQUIRE, REQUIRE_THROWS_AS
-#include "test-main.hpp"          // for LIBSEMIGROUPS_TEST_CASE_V3
+#include "test-main.hpp"          // for LIBSEMIGROUPS_TEST_CASE
 
 #include "libsemigroups/constants.hpp"     // for UNDEFINED
 #include "libsemigroups/froidure-pin.hpp"  // for FroidurePin
 #include "libsemigroups/matrix.hpp"        // for IntMat
+#include "libsemigroups/word-range.hpp"    // for namespace literals
 
 namespace libsemigroups {
   using namespace literals;  // for operator""_w
@@ -32,112 +33,17 @@ namespace libsemigroups {
   // Forward declaration
   struct LibsemigroupsException;
 
-  constexpr bool REPORT = false;
-
-  namespace {
-
-    template <typename Mat>
-    void test_IntMat001() {}
-
-    // IntMat
-    template <typename Mat>
-    void test008() {
-      FroidurePin<Mat> T;
-      T.add_generator(Mat({{0, 0}, {0, 1}}));
-      T.add_generator(Mat({{0, 1}, {-1, 0}}));
-      REQUIRE(froidure_pin::current_position(T, {}) == UNDEFINED);
-      REQUIRE_NOTHROW(froidure_pin::current_position(T, 0011_w));
-      REQUIRE(froidure_pin::current_position(T, 0011_w) == UNDEFINED);
-      auto w = froidure_pin::to_element(T, 0011_w);
-      REQUIRE(T.current_position(w) == UNDEFINED);
-      REQUIRE_THROWS_AS(froidure_pin::current_position(T, 0012_w),
-                        LibsemigroupsException);
-
-      REQUIRE(T.size() == 13);
-      REQUIRE(froidure_pin::current_position(T, 0011_w) == 6);
-      w = froidure_pin::to_element(T, 0011_w);
-      REQUIRE(T.current_position(w) == 6);
-    }
-
-    template <typename Mat>
-    void test009() {
-      FroidurePin<Mat> T;
-      T.add_generator(Mat({{0, 0}, {0, 1}}));
-      T.add_generator(Mat({{0, 1}, {-1, 0}}));
-
-      REQUIRE_THROWS_AS(froidure_pin::to_element(T, {}),
-                        LibsemigroupsException);
-      REQUIRE_THROWS_AS(froidure_pin::to_element(T, {0, 0, 1, 2}),
-                        LibsemigroupsException);
-
-      auto t = froidure_pin::to_element(T, {0, 0, 1, 1});
-      REQUIRE(t
-              == T.generator(0) * T.generator(0) * T.generator(1)
-                     * T.generator(1));
-    }
-    template <typename Mat>
-    void test010() {
-      FroidurePin<Mat> T;
-      T.add_generator(Mat({{0, 0}, {0, 1}}));
-      T.add_generator(Mat({{0, 1}, {-1, 0}}));
-
-      for (size_t i = 0; i < T.size(); ++i) {
-        REQUIRE_NOTHROW(T.prefix(i));
-        REQUIRE_THROWS_AS(T.prefix(i + T.size()), LibsemigroupsException);
-      }
-      for (size_t i = 0; i < T.size(); ++i) {
-        REQUIRE_NOTHROW(T.suffix(i));
-        REQUIRE_THROWS_AS(T.suffix(i + T.size()), LibsemigroupsException);
-      }
-      for (size_t i = 0; i < T.size(); ++i) {
-        REQUIRE_NOTHROW(T.first_letter(i));
-        REQUIRE_THROWS_AS(T.first_letter(i + T.size()), LibsemigroupsException);
-      }
-      for (size_t i = 0; i < T.size(); ++i) {
-        REQUIRE_NOTHROW(T.final_letter(i));
-        REQUIRE_THROWS_AS(T.final_letter(i + T.size()), LibsemigroupsException);
-      }
-      for (size_t i = 0; i < T.size(); ++i) {
-        REQUIRE_NOTHROW(T.current_length(i));
-        REQUIRE_THROWS_AS(T.current_length(i + T.size()),
-                          LibsemigroupsException);
-      }
-      for (size_t i = 0; i < T.size(); ++i) {
-        for (size_t j = 0; j < T.size(); ++j) {
-          REQUIRE_NOTHROW(froidure_pin::product_by_reduction(T, i, j));
-          REQUIRE_THROWS_AS(
-              froidure_pin::product_by_reduction(T, i + T.size(), j),
-              LibsemigroupsException);
-          REQUIRE_THROWS_AS(
-              froidure_pin::product_by_reduction(T, i, j + T.size()),
-              LibsemigroupsException);
-          REQUIRE_THROWS_AS(
-              froidure_pin::product_by_reduction(T, i + T.size(), j + T.size()),
-              LibsemigroupsException);
-        }
-      }
-      for (size_t i = 0; i < T.size(); ++i) {
-        for (size_t j = 0; j < T.size(); ++j) {
-          REQUIRE_NOTHROW(T.fast_product(i, j));
-          REQUIRE_THROWS_AS(T.fast_product(i + T.size(), j),
-                            LibsemigroupsException);
-          REQUIRE_THROWS_AS(T.fast_product(i, j + T.size()),
-                            LibsemigroupsException);
-          REQUIRE_THROWS_AS(T.fast_product(i + T.size(), j + T.size()),
-                            LibsemigroupsException);
-        }
-      }
-    }
-  }  // namespace
-
-  TEMPLATE_TEST_CASE(
-      "FroidurePin: Example 000",
-      "[032][quick][froidure-pin][intmat][no-sanitize-undefined]",
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE(
+      "FroidurePin",
+      "032",
+      "Example 000",
+      "[quick][froidure-pin][intmat][no-sanitize-undefined]",
       (IntMat<0, 0, int64_t>),
       (IntMat<2, 2, int64_t>) ) {
-    // FIXME this test seemingly causes undefined behaviour (multiplication of
-    // signed integers that overflows)
-    auto rg = ReportGuard(REPORT);
+    // this test seemingly causes undefined behaviour (multiplication of
+    // signed integers that overflows), which is either a bug or a feature
+    // depending on your perspective.
+    auto rg = ReportGuard(false);
 
     FroidurePin<TestType> S;
     S.add_generator(TestType({{0, 1}, {0, -1}}));
@@ -182,11 +88,13 @@ namespace libsemigroups {
                       LibsemigroupsException);
   }
 
-  TEMPLATE_TEST_CASE("FroidurePin: Example 001",
-                     "[034][quick][froidure-pin][intmat]",
-                     (IntMat<0, 0, int64_t>),
-                     (IntMat<2, 2, int64_t>) ) {
-    auto                  rg = ReportGuard(REPORT);
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("FroidurePin",
+                                   "034",
+                                   "Example 001",
+                                   "[quick][froidure-pin][intmat]",
+                                   (IntMat<0, 0, int64_t>),
+                                   (IntMat<2, 2, int64_t>) ) {
+    auto                  rg = ReportGuard(false);
     FroidurePin<TestType> S;
     S.add_generator(TestType({{0, 0}, {0, 1}}));
     S.add_generator(TestType({{0, 1}, {-1, 0}}));
@@ -214,27 +122,103 @@ namespace libsemigroups {
     REQUIRE(S.contains(x));
   }
 
-  LIBSEMIGROUPS_TEST_CASE_V3("FroidurePin<IntMat>",
-                             "036",
-                             "exception: current_position",
-                             "[quick][froidure-pin][element]") {
-    test008<IntMat<2>>();
-    test008<IntMat<>>();
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("FroidurePin",
+                                   "036",
+                                   "exception: current_position",
+                                   "[quick][froidure-pin][element]",
+                                   IntMat<2>,
+                                   IntMat<>) {
+    FroidurePin<TestType> T;
+    T.add_generator(TestType({{0, 0}, {0, 1}}));
+    T.add_generator(TestType({{0, 1}, {-1, 0}}));
+    REQUIRE(froidure_pin::current_position(T, {}) == UNDEFINED);
+    REQUIRE_NOTHROW(froidure_pin::current_position(T, 0011_w));
+    REQUIRE(froidure_pin::current_position(T, 0011_w) == UNDEFINED);
+    auto w = froidure_pin::to_element(T, 0011_w);
+    REQUIRE(T.current_position(w) == UNDEFINED);
+    REQUIRE_THROWS_AS(froidure_pin::current_position(T, 0012_w),
+                      LibsemigroupsException);
+
+    REQUIRE(T.size() == 13);
+    REQUIRE(froidure_pin::current_position(T, 0011_w) == 6);
+    w = froidure_pin::to_element(T, 0011_w);
+    REQUIRE(T.current_position(w) == 6);
   }
 
-  LIBSEMIGROUPS_TEST_CASE_V3("FroidurePin<IntMat>",
-                             "037",
-                             "exception: to_element",
-                             "[quick][froidure-pin][element]") {
-    test009<IntMat<2>>();
-    test009<IntMat<>>();
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("FroidurePin",
+                                   "037",
+                                   "exception: to_element",
+                                   "[quick][froidure-pin][element]",
+                                   IntMat<2>,
+                                   IntMat<>) {
+    FroidurePin<TestType> T;
+    T.add_generator(TestType({{0, 0}, {0, 1}}));
+    T.add_generator(TestType({{0, 1}, {-1, 0}}));
+
+    REQUIRE_THROWS_AS(froidure_pin::to_element(T, {}), LibsemigroupsException);
+    REQUIRE_THROWS_AS(froidure_pin::to_element(T, {0, 0, 1, 2}),
+                      LibsemigroupsException);
+
+    auto t = froidure_pin::to_element(T, {0, 0, 1, 1});
+    REQUIRE(
+        t == T.generator(0) * T.generator(0) * T.generator(1) * T.generator(1));
   }
 
-  LIBSEMIGROUPS_TEST_CASE_V3("FroidurePin<IntMat>",
-                             "038",
-                             "exception: prefix, suffix, first_letter",
-                             "[quick][froidure-pin][element][no-valgrind]") {
-    test010<IntMat<2>>();
-    test010<IntMat<>>();
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE(
+      "FroidurePin",
+      "038",
+      "exception: prefix, suffix, first_letter",
+      "[quick][froidure-pin][element][no-valgrind]",
+      IntMat<2>,
+      IntMat<>) {
+    FroidurePin<TestType> T;
+    T.add_generator(TestType({{0, 0}, {0, 1}}));
+    T.add_generator(TestType({{0, 1}, {-1, 0}}));
+
+    for (size_t i = 0; i < T.size(); ++i) {
+      REQUIRE_NOTHROW(T.prefix(i));
+      REQUIRE_THROWS_AS(T.prefix(i + T.size()), LibsemigroupsException);
+    }
+    for (size_t i = 0; i < T.size(); ++i) {
+      REQUIRE_NOTHROW(T.suffix(i));
+      REQUIRE_THROWS_AS(T.suffix(i + T.size()), LibsemigroupsException);
+    }
+    for (size_t i = 0; i < T.size(); ++i) {
+      REQUIRE_NOTHROW(T.first_letter(i));
+      REQUIRE_THROWS_AS(T.first_letter(i + T.size()), LibsemigroupsException);
+    }
+    for (size_t i = 0; i < T.size(); ++i) {
+      REQUIRE_NOTHROW(T.final_letter(i));
+      REQUIRE_THROWS_AS(T.final_letter(i + T.size()), LibsemigroupsException);
+    }
+    for (size_t i = 0; i < T.size(); ++i) {
+      REQUIRE_NOTHROW(T.current_length(i));
+      REQUIRE_THROWS_AS(T.current_length(i + T.size()), LibsemigroupsException);
+    }
+    for (size_t i = 0; i < T.size(); ++i) {
+      for (size_t j = 0; j < T.size(); ++j) {
+        REQUIRE_NOTHROW(froidure_pin::product_by_reduction(T, i, j));
+        REQUIRE_THROWS_AS(
+            froidure_pin::product_by_reduction(T, i + T.size(), j),
+            LibsemigroupsException);
+        REQUIRE_THROWS_AS(
+            froidure_pin::product_by_reduction(T, i, j + T.size()),
+            LibsemigroupsException);
+        REQUIRE_THROWS_AS(
+            froidure_pin::product_by_reduction(T, i + T.size(), j + T.size()),
+            LibsemigroupsException);
+      }
+    }
+    for (size_t i = 0; i < T.size(); ++i) {
+      for (size_t j = 0; j < T.size(); ++j) {
+        REQUIRE_NOTHROW(T.fast_product(i, j));
+        REQUIRE_THROWS_AS(T.fast_product(i + T.size(), j),
+                          LibsemigroupsException);
+        REQUIRE_THROWS_AS(T.fast_product(i, j + T.size()),
+                          LibsemigroupsException);
+        REQUIRE_THROWS_AS(T.fast_product(i + T.size(), j + T.size()),
+                          LibsemigroupsException);
+      }
+    }
   }
 }  // namespace libsemigroups

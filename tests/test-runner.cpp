@@ -18,13 +18,17 @@
 
 // The purpose of this file is to test the Runner class.
 
-#include <chrono>
+#include <chrono>   // for operator==, seconds, mill...
 #include <cstddef>  // for size_t
+#include <string>   // for operator==, basic_string
+#include <thread>   // for sleep_for
+#include <utility>  // for move, forward
 
-#include "catch_amalgamated.hpp"  // for REQUIRE, REQUIRE_NOTHROW
+#include "catch_amalgamated.hpp"  // for SourceLineInfo, operator"...
 #include "test-main.hpp"          // for LIBSEMIGROUPS_TEST_CASE
 
-#include "libsemigroups/runner.hpp"  // for Runner
+#include "libsemigroups/exception.hpp"  // for LibsemigroupsException
+#include "libsemigroups/runner.hpp"     // for Reporter, Runner, delta
 
 #include "libsemigroups/detail/report.hpp"  // for ReportGuard
 
@@ -274,6 +278,7 @@ namespace libsemigroups {
                             "011",
                             "run throws an exception",
                             "[quick][no-valgrind]") {
+      auto        rg = ReportGuard(REPORT);
       TestRunner4 tr;
       REQUIRE_THROWS_AS(tr.run(), LibsemigroupsException);
       REQUIRE(tr.current_state() == Runner::state::not_running);
@@ -288,7 +293,6 @@ namespace libsemigroups {
                         LibsemigroupsException);
       REQUIRE_THROWS_AS(tr.run(), LibsemigroupsException);
       REQUIRE(tr.finished());
-      auto rg = ReportGuard();
       REQUIRE_NOTHROW(tr.run_for(std::chrono::seconds(1)));
     }
 

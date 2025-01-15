@@ -122,777 +122,184 @@ namespace libsemigroups {
       std::swap(buf, rows);
     }
 
-    ////////////////////////////////////////////////////////////////////////
-    // Test functions - BMat
-    ////////////////////////////////////////////////////////////////////////
-
-    // Line 166 triggers a warning with gcc-13 that originates in a standard
-    // library header, so we ignore that warning.
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Warray-bounds"
-    template <typename Mat>
-    void test_BMat000() {
-      auto rg = ReportGuard(REPORT);
-      {
-        Mat m = to_matrix<Mat>({{0, 1}, {0, 1}});
-        REQUIRE_NOTHROW(matrix::throw_if_bad_entry(m));
-        REQUIRE(m == Mat({{0, 1}, {0, 1}}));
-        REQUIRE(!(m == Mat({{0, 0}, {0, 1}})));
-        REQUIRE(m == Mat({{0, 1}, {0, 1}}));
-        m.product_inplace_no_checks(Mat({{0, 0}, {0, 0}}),
-                                    Mat({{0, 0}, {0, 0}}));
-        REQUIRE(m == Mat({{0, 0}, {0, 0}}));
-        m.product_inplace_no_checks(Mat({{0, 0}, {0, 0}}),
-                                    Mat({{1, 1}, {1, 1}}));
-        REQUIRE(m == Mat({{0, 0}, {0, 0}}));
-        m.product_inplace_no_checks(Mat({{1, 1}, {1, 1}}),
-                                    Mat({{0, 0}, {0, 0}}));
-        REQUIRE(m == Mat({{0, 0}, {0, 0}}));
-
-        m.product_inplace_no_checks(Mat({{0, 1}, {1, 0}}),
-                                    Mat({{1, 0}, {1, 0}}));
-        REQUIRE(m == Mat({{1, 0}, {1, 0}}));
-        size_t const M = detail::BitSetCapacity<Mat>::value;
-        detail::StaticVector1<BitSet<M>, M> result;
-        matrix::bitset_rows(m, result);
-        REQUIRE(result.size() == 2);
-        REQUIRE(matrix::bitset_rows(m).size() == 2);
-        result.clear();
-        matrix::bitset_row_basis(m, result);
-        REQUIRE(result.size() == 1);
-        REQUIRE(matrix::bitset_row_basis(m).size() == 1);
-        REQUIRE(std::vector<bool>(m.cbegin(), m.cend())
-                == std::vector<bool>({true, false, true, false}));
-        REQUIRE(std::vector<bool>(m.begin(), m.end())
-                == std::vector<bool>({true, false, true, false}));
-      }
-
-      {
-        Mat m({{1, 1}, {0, 0}});
-        using RowView = typename Mat::RowView;
-
-        auto r = matrix::rows(m);
-        REQUIRE(std::vector<bool>(r[0].cbegin(), r[0].cend())
-                == std::vector<bool>({true, true}));
-        REQUIRE(std::vector<bool>(r[1].cbegin(), r[1].cend())
-                == std::vector<bool>({false, false}));
-        REQUIRE(r.size() == 2);
-        std::sort(
-            r.begin(), r.end(), [](RowView const& rv1, RowView const& rv2) {
-              return std::lexicographical_compare(
-                  rv1.begin(), rv1.end(), rv2.begin(), rv2.end());
-            });
-        REQUIRE(std::vector<bool>(r[0].cbegin(), r[0].cend())
-                == std::vector<bool>({false, false}));
-        REQUIRE(std::vector<bool>(r[1].cbegin(), r[1].cend())
-                == std::vector<bool>({true, true}));
-      }
-
-      {
-        using Row = typename Mat::Row;
-
-        Mat A(2, 2);
-        std::fill(A.begin(), A.end(), false);
-        REQUIRE(A.number_of_rows() == 2);
-        REQUIRE(A.number_of_cols() == 2);
-        REQUIRE(A == Mat({{false, false}, {false, false}}));
-
-        A(0, 0) = true;
-        A(1, 1) = true;
-        REQUIRE(A == Mat({{true, false}, {false, true}}));
-
-        Mat B(2, 2);
-        B(0, 1) = true;
-        B(1, 0) = true;
-        B(0, 0) = false;
-        B(1, 1) = false;
-        REQUIRE(B == Mat({{false, true}, {true, false}}));
-
-        REQUIRE(A + B == Mat({{true, true}, {true, true}}));
-        REQUIRE(A * B == B);
-        REQUIRE(B * A == B);
-        REQUIRE(B * B == A);
-        REQUIRE((A + B) * B == Mat({{true, true}, {true, true}}));
-
-        Row C({0, 1});
-        REQUIRE(C.number_of_rows() == 1);
-        REQUIRE(C.number_of_cols() == 2);
-
-        auto rv = A.row(0);
-        Row  D(rv);
-        REQUIRE(D.number_of_rows() == 1);
-        REQUIRE(D.number_of_cols() == 2);
-        REQUIRE(D != C);
-        auto views = matrix::rows(A);
-        REQUIRE(B < A);
-        B.swap(A);
-        REQUIRE(A < B);
-        std::swap(B, A);
-        REQUIRE(B < A);
-        REQUIRE(views[0] == Row({true, false}));
-        REQUIRE(Row({true, false}) == views[0]);
-        REQUIRE(Row({true, true}) != views[0]);
-        REQUIRE(Row({false, false}) < views[0]);
-        REQUIRE(A.hash_value() != 0);
-        A *= false;
-        REQUIRE(A == Mat({{false, false}, {false, false}}));
-        auto r = Row({true, false});
-        views  = matrix::rows(B);
-        REQUIRE(views[0].size() == 2);
-        r += views[0];
-        REQUIRE(r.number_of_cols() == 2);
-        REQUIRE(r.number_of_rows() == 1);
-        REQUIRE(r == Row({true, true}));
-
-        auto E = Mat::one(2);
-        REQUIRE(E.number_of_rows() == 2);
-        REQUIRE(E.number_of_cols() == 2);
-        auto viewse = matrix::rows(E);
-        REQUIRE(viewse.size() == 2);
-
-        std::ostringstream oss;
-        oss << E;  // Does not do anything visible
-
-        std::stringbuf buff;
-        std::ostream   os(&buff);
-        os << E;  // Also does not do anything visible
-      }
-      {
-        Mat m({{0, 0}, {0, 0}});
-        using scalar_type = typename Mat::scalar_type;
-        auto it           = m.cbegin();
-        REQUIRE(m.coords(it) == std::pair<scalar_type, scalar_type>({0, 0}));
-        REQUIRE(m.coords(++it) == std::pair<scalar_type, scalar_type>({0, 1}));
-        REQUIRE(m.coords(++it) == std::pair<scalar_type, scalar_type>({1, 0}));
-        REQUIRE(m.coords(++it) == std::pair<scalar_type, scalar_type>({1, 1}));
-      }
-      {
-        REQUIRE_THROWS_AS(to_matrix<Mat>({{0, 0}, {0, 2}}),
-                          LibsemigroupsException);
-      }
-    }
-#pragma GCC diagnostic pop
-
-    template <typename Mat>
-    void test_BMat001() {
-      auto x = Mat({{1, 0, 1}, {0, 1, 0}, {0, 1, 0}});
-      auto y = Mat({{0, 0, 0}, {0, 0, 0}, {0, 0, 0}});
-      auto z = Mat({{0, 0, 0}, {0, 0, 0}, {0, 0, 0}});
-      REQUIRE(y == z);
-      z.product_inplace_no_checks(x, y);
-      REQUIRE(y == z);
-      z.product_inplace_no_checks(y, x);
-      REQUIRE(y == z);
-      REQUIRE(!(y < z));
-      auto id = x.one();
-      z.product_inplace_no_checks(id, x);
-      REQUIRE(z == x);
-      z.product_inplace_no_checks(x, id);
-      REQUIRE(z == x);
-      REQUIRE(x.hash_value() != 0);
-    }
-
-    template <typename Mat>
-    void test_BMat002() {
-      using RowView = typename Mat::RowView;
-      auto x        = to_matrix<Mat>({{1, 0, 0}, {1, 0, 0}, {1, 0, 0}});
-      REQUIRE(matrix::row_basis(x).size() == 1);
-      REQUIRE(matrix::row_space_size(x) == 1);
-      x = to_matrix<Mat>({{1, 0, 0}, {1, 1, 0}, {1, 1, 1}});
-      REQUIRE(matrix::row_basis(x).size() == 3);
-      REQUIRE_THROWS_AS(x.row(3), LibsemigroupsException);
-      std::vector<RowView> v = {x.row(0), x.row(2)};
-      REQUIRE(matrix::row_basis<Mat>(v).size() == 2);
-      REQUIRE(matrix::row_space_size(x) == 3);
-      x = to_matrix<Mat>({{1, 0, 0}, {0, 1, 1}, {1, 1, 1}});
-      REQUIRE(matrix::row_basis(x).size() == 2);
-      REQUIRE(matrix::row_space_size(x) == 3);
-      x = to_matrix<Mat>({{1, 0, 0}, {0, 0, 1}, {0, 1, 0}});
-      REQUIRE(matrix::row_space_size(x) == 7);
-      std::vector<typename Mat::RowView> views;
-      std::vector<typename Mat::RowView> result;
-      matrix::row_basis<Mat, std::vector<typename Mat::RowView>&>(views,
-                                                                  result);
-    }
-
-    ////////////////////////////////////////////////////////////////////////
-    // Test functions - NTPMat
-    ////////////////////////////////////////////////////////////////////////
-
-    template <typename Mat>
-    void test_NTPMat000(NTPSemiring<> const* sr = nullptr) {
-      using Row = typename Mat::Row;
-      auto rg   = ReportGuard(REPORT);
-      Mat  m(sr, 3, 3);
-      // REQUIRE(matrix::throw_if_bad_entry(m)); // m might not be valid!
-      m.product_inplace_no_checks(
-          to_matrix<Mat>(sr, {{1, 1, 0}, {0, 0, 1}, {1, 0, 1}}),
-          to_matrix<Mat>(sr, {{1, 0, 1}, {0, 0, 1}, {1, 1, 0}}));
-      REQUIRE(m == to_matrix<Mat>(sr, {{1, 0, 2}, {1, 1, 0}, {2, 1, 1}}));
-      REQUIRE(m.row(0) == Row(sr, {1, 0, 2}));
-      REQUIRE(m.row(0).size() == 3);
-      auto r = matrix::rows(m);
-      REQUIRE(r[0] == Row(sr, {1, 0, 2}));
-      REQUIRE(r[1] == Row(sr, {1, 1, 0}));
-      REQUIRE(r[2] == Row(sr, {2, 1, 1}));
-      REQUIRE(m * Mat::one(sr, 3) == m);
-      REQUIRE(Mat::one(sr, 3) * m == m);
-    }
-
-    template <typename Mat>
-    void test_NTPMat001(NTPSemiring<> const* sr = nullptr) {
-      using Row         = typename Mat::Row;
-      using RowView     = typename Mat::RowView;
-      using scalar_type = typename Mat::scalar_type;
-
-      auto rg = ReportGuard(REPORT);
-
-      Mat m = to_matrix<Mat>(
-          sr, {{1, 1, 0, 0}, {2, 0, 2, 0}, {1, 2, 3, 9}, {0, 0, 0, 7}});
-      REQUIRE(m.number_of_cols() == 4);
-      REQUIRE(m.number_of_rows() == 4);
-      auto r = matrix::rows(m);
-      REQUIRE(r.size() == 4);
-      REQUIRE(std::vector<scalar_type>(r[0].cbegin(), r[0].cend())
-              == std::vector<scalar_type>({1, 1, 0, 0}));
-      r[0] += r[1];
-      REQUIRE(std::vector<scalar_type>(r[0].cbegin(), r[0].cend())
-              == std::vector<scalar_type>({3, 1, 2, 0}));
-      REQUIRE(std::vector<scalar_type>(r[1].cbegin(), r[1].cend())
-              == std::vector<scalar_type>({2, 0, 2, 0}));
-      REQUIRE(
-          m
-          == to_matrix<Mat>(
-              sr, {{3, 1, 2, 0}, {2, 0, 2, 0}, {1, 2, 3, 9}, {0, 0, 0, 7}}));
-      REQUIRE(r[0][0] == 3);
-      REQUIRE(r[0](0) == 3);
-      REQUIRE(r[2](3) == 9);
-      std::sort(r[0].begin(), r[0].end());
-      REQUIRE(std::vector<scalar_type>(r[0].cbegin(), r[0].cend())
-              == std::vector<scalar_type>({0, 1, 2, 3}));
-      REQUIRE(
-          m
-          == to_matrix<Mat>(
-              sr, {{0, 1, 2, 3}, {2, 0, 2, 0}, {1, 2, 3, 9}, {0, 0, 0, 7}}));
-      r[0] += 9;
-      REQUIRE(std::vector<scalar_type>(r[0].cbegin(), r[0].cend())
-              == std::vector<scalar_type>({9, 0, 1, 2}));
-      REQUIRE(
-          m
-          == to_matrix<Mat>(
-              sr, {{9, 0, 1, 2}, {2, 0, 2, 0}, {1, 2, 3, 9}, {0, 0, 0, 7}}));
-      r[1] *= 3;
-      REQUIRE(
-          m
-          == to_matrix<Mat>(
-              sr, {{9, 0, 1, 2}, {6, 0, 6, 0}, {1, 2, 3, 9}, {0, 0, 0, 7}}));
-      REQUIRE(std::vector<scalar_type>(r[1].cbegin(), r[1].cend())
-              == std::vector<scalar_type>({6, 0, 6, 0}));
-      REQUIRE(r[2] < r[1]);
-      r[1] = r[2];
-      REQUIRE(
-          m
-          == to_matrix<Mat>(
-              sr, {{9, 0, 1, 2}, {6, 0, 6, 0}, {1, 2, 3, 9}, {0, 0, 0, 7}}));
-      REQUIRE(r[1] == r[2]);
-      REQUIRE(r[1] == to_matrix<Row>(sr, {{1, 2, 3, 9}}));
-
-      RowView rv;
-      {
-        rv = r[0];
-        REQUIRE(rv == r[0]);
-        REQUIRE(&rv != &r[0]);
-      }
-    }
-
-    template <typename Mat>
-    void test_NTPMat002(NTPSemiring<> const* sr = nullptr) {
-      using Row = typename Mat::Row;
-
-      auto rg = ReportGuard(REPORT);
-      Mat  m(sr, {{1, 1, 0, 0}, {2, 0, 2, 0}, {1, 2, 3, 9}, {0, 0, 0, 7}});
-      REQUIRE(m.number_of_cols() == 4);
-      REQUIRE(m.number_of_rows() == 4);
-      auto r = matrix::rows(m);
-      REQUIRE(r.size() == 4);
-      REQUIRE(r[0] == to_matrix<Row>(sr, {{1, 1, 0, 0}}));
-      REQUIRE(r[1] == to_matrix<Row>(sr, {{2, 0, 2, 0}}));
-      REQUIRE(r[0] != to_matrix<Row>(sr, {{2, 0, 2, 0}}));
-      REQUIRE(r[1] != to_matrix<Row>(sr, {{1, 1, 0, 0}}));
-      REQUIRE(to_matrix<Row>(sr, {{1, 1, 0, 0}}) == r[0]);
-      REQUIRE(to_matrix<Row>(sr, {{2, 0, 2, 0}}) == r[1]);
-      REQUIRE(to_matrix<Row>(sr, {{2, 0, 2, 0}}) != r[0]);
-      REQUIRE(to_matrix<Row>(sr, {{1, 1, 0, 0}}) != r[1]);
-      REQUIRE(to_matrix<Row>(sr, {{1, 1, 0, 0}}) < Row(sr, {{9, 9, 9, 9}}));
-      REQUIRE(r[0] < to_matrix<Row>(sr, {{9, 9, 9, 9}}));
-      REQUIRE(!(to_matrix<Row>(sr, {{9, 9, 9, 9}}) < r[0]));
-      Row x(r[3]);
-      x *= 3;
-      REQUIRE(x == to_matrix<Row>(sr, {{0, 0, 0, 1}}));
-      REQUIRE(x.number_of_rows() == 1);
-      REQUIRE(x.number_of_cols() == 4);
-      REQUIRE(r[3] == to_matrix<Row>(sr, {{0, 0, 0, 7}}));
-      REQUIRE(r[3] != x);
-      REQUIRE(x != r[3]);
-      REQUIRE(!(x != x));
-    }
-
-    template <typename Mat>
-    void test_NTPMat003(NTPSemiring<> const* sr = nullptr) {
-      auto x        = to_matrix<Mat>(sr, {{22, 21, 0}, {10, 0, 0}, {1, 32, 1}});
-      auto expected = to_matrix<Mat>(sr, {{22, 21, 0}, {10, 0, 0}, {1, 32, 1}});
-      REQUIRE(x == expected);
-      REQUIRE(x.number_of_cols() == 3);
-      REQUIRE(x.number_of_rows() == 3);
-
-      auto y = to_matrix<Mat>(sr, {{10, 0, 0}, {0, 1, 0}, {1, 1, 0}});
-      REQUIRE(!(x == y));
-
-      y.product_inplace_no_checks(x, x);
-      expected = to_matrix<Mat>(sr, {{34, 34, 0}, {34, 34, 0}, {33, 33, 1}});
-      REQUIRE(y == expected);
-
-      REQUIRE(x < y);
-      auto id = x.one();
-      y.product_inplace_no_checks(id, x);
-      REQUIRE(y == x);
-      y.product_inplace_no_checks(x, id);
-      REQUIRE(y == x);
-      REQUIRE(Hash<Mat>()(y) != 0);
-    }
-
-    ////////////////////////////////////////////////////////////////////////
-    // Test functions - MaxPlusTruncMat
-    ////////////////////////////////////////////////////////////////////////
-
-    template <typename Mat>
-    void test_MaxPlusTruncMat000(MaxPlusTruncSemiring<> const* sr = nullptr) {
-      using scalar_type = typename Mat::scalar_type;
-      {
-        Mat m1(sr, 2, 2);
-        std::fill(m1.begin(), m1.end(), NEGATIVE_INFINITY);
-        REQUIRE(m1
-                == to_matrix<Mat>(sr,
-                                  {{NEGATIVE_INFINITY, NEGATIVE_INFINITY},
-                                   {NEGATIVE_INFINITY, NEGATIVE_INFINITY}}));
-        Mat m2(sr, 2, 2);
-        std::fill(m2.begin(), m2.end(), 4);
-        REQUIRE(m1 + m2 == m2);
-        REQUIRE(m2(0, 1) == 4);
-      }
-
-      auto rg = ReportGuard(REPORT);
-      {
-        std::vector<std::array<scalar_type, 2>> expected;
-        expected.push_back({1, 1});
-        expected.push_back({0, 0});
-        tropical_max_plus_row_basis<2, 5>(expected);
-        REQUIRE(expected.size() == 1);
-        REQUIRE(expected.at(0) == std::array<scalar_type, 2>({0, 0}));
-
-        Mat  m(sr, {{1, 1}, {0, 0}});
-        auto r = matrix::row_basis(m);
-        REQUIRE(r.size() == 1);
-        REQUIRE(std::vector<scalar_type>(r[0].cbegin(), r[0].cend())
-                == std::vector<scalar_type>({0, 0}));
-      }
-      {
-        Mat m(sr, {{1, 1}, {0, 0}});
-        m      = m.one();
-        auto r = matrix::row_basis(m);
-        REQUIRE(r.size() == 2);
-        REQUIRE(std::vector<scalar_type>(r[0].cbegin(), r[0].cend())
-                == std::vector<scalar_type>({NEGATIVE_INFINITY, 0}));
-        REQUIRE(std::vector<scalar_type>(r[1].cbegin(), r[1].cend())
-                == std::vector<scalar_type>({0, NEGATIVE_INFINITY}));
-      }
-      std::vector<typename Mat::RowView> views;
-      std::vector<typename Mat::RowView> result;
-      matrix::row_basis<Mat>(views, result);
-    }
-
-    template <typename Mat>
-    void test_MaxPlusTruncMat001(MaxPlusTruncSemiring<> const* sr = nullptr) {
-      // Threshold 5, 4 x 4
-      using scalar_type = typename Mat::scalar_type;
-      using Row         = typename Mat::Row;
-
-      auto m  = to_matrix<Mat>(sr,
-                              {{2, 2, 0, 1},
-                                {0, 0, 1, 3},
-                                {1, NEGATIVE_INFINITY, 0, 0},
-                                {0, 1, 0, 1}});
-      auto rg = ReportGuard(REPORT);
-      auto r  = matrix::row_basis(m);
-      REQUIRE(r.size() == 4);
-      REQUIRE(r[0] == to_matrix<Row>(sr, {0, 0, 1, 3}));
-      REQUIRE(r[1] == to_matrix<Row>(sr, {0, 1, 0, 1}));
-      REQUIRE(r[2] == to_matrix<Row>(sr, {1, NEGATIVE_INFINITY, 0, 0}));
-      REQUIRE(r[3] == to_matrix<Row>(sr, {2, 2, 0, 1}));
-      m.transpose();
-      REQUIRE(m
-              == to_matrix<Mat>(sr,
-                                {{2, 0, 1, 0},
-                                 {2, 0, NEGATIVE_INFINITY, 1},
-                                 {0, 1, 0, 0},
-                                 {1, 3, 0, 1}}));
-      m.transpose();
-      REQUIRE(m
-              == to_matrix<Mat>(sr,
-                                {{2, 2, 0, 1},
-                                 {0, 0, 1, 3},
-                                 {1, NEGATIVE_INFINITY, 0, 0},
-                                 {0, 1, 0, 1}}));
-
-      std::vector<std::array<scalar_type, 4>> expected;
-      expected.push_back({2, 2, 0, 1});
-      expected.push_back({0, 0, 1, 3});
-      expected.push_back({1, NEGATIVE_INFINITY, 0, 0});
-      expected.push_back({0, 1, 0, 1});
-      tropical_max_plus_row_basis<4, 5>(expected);
-      REQUIRE(expected.size() == 4);
-      REQUIRE(m * Mat::one(sr, 4) == m);
-      REQUIRE(Mat::one(sr, 4) * m == m);
-    }
-
-    template <typename Mat>
-    void test_MaxPlusTruncMat002(MaxPlusTruncSemiring<> const* sr = nullptr) {
-      auto x        = Mat(sr, {{22, 21, 0}, {10, 0, 0}, {1, 32, 1}});
-      auto expected = Mat(sr, {{22, 21, 0}, {10, 0, 0}, {1, 32, 1}});
-      REQUIRE(x == expected);
-
-      REQUIRE_THROWS_AS(
-          to_matrix<Mat>(sr, {{-100, 0, 0}, {0, 1, 0}, {1, -1, 0}}),
-          LibsemigroupsException);
-      auto y = Mat(sr, {{10, 0, 0}, {0, 1, 0}, {1, 1, 0}});
-      REQUIRE(!(x == y));
-
-      y.product_inplace_no_checks(x, x);
-      expected = Mat(sr, {{33, 33, 22}, {32, 32, 10}, {33, 33, 32}});
-      REQUIRE(y == expected);
-
-      REQUIRE(x < y);
-      auto id = x.one();
-      y.product_inplace_no_checks(id, x);
-      REQUIRE(y == x);
-      y.product_inplace_no_checks(x, id);
-      REQUIRE(y == x);
-      REQUIRE(Hash<Mat>()(y) != 0);
-      REQUIRE(x * Mat::one(sr, 3) == x);
-      REQUIRE(Mat::one(sr, 3) * x == x);
-    }
-
-    ////////////////////////////////////////////////////////////////////////
-    // Test functions - IntMat
-    ////////////////////////////////////////////////////////////////////////
-
-    template <typename Mat>
-    void test_IntMat000() {
-      {
-        auto x        = Mat({{-2, 2, 0}, {-1, 0, 0}, {1, -3, 1}});
-        auto expected = Mat({{-2, 2, 0}, {-1, 0, 0}, {1, -3, 1}});
-        REQUIRE(x == expected);
-
-        auto y = Mat({{-100, 0, 0}, {0, 1, 0}, {1, -1, 0}});
-        REQUIRE(!(x == y));
-
-        y.product_inplace_no_checks(x, x);
-        expected = Mat({{2, -4, 0}, {2, -2, 0}, {2, -1, 1}});
-        REQUIRE(y == expected);
-        REQUIRE(y.number_of_rows() == 3);
-
-        REQUIRE(x < y);
-        REQUIRE(Degree<Mat>()(x) == 3);
-        REQUIRE(Degree<Mat>()(y) == 3);
-        REQUIRE(Complexity<Mat>()(x) == 27);
-        REQUIRE(Complexity<Mat>()(y) == 27);
-        auto id = x.one();
-        y.product_inplace_no_checks(id, x);
-        REQUIRE(y == x);
-        y.product_inplace_no_checks(x, id);
-        REQUIRE(y == x);
-      }
-      {
-        auto x        = Mat({{-2, 2, 0}, {-1, 0, 0}, {1, -3, 1}});
-        auto expected = Mat({{-2, 2, 0}, {-1, 0, 0}, {1, -3, 1}});
-        REQUIRE(x == expected);
-
-        auto y = Mat({{-100, 0, 0}, {0, 1, 0}, {1, -1, 0}});
-        REQUIRE(!(x == y));
-
-        y.product_inplace_no_checks(x, x);
-        expected = Mat({{2, -4, 0}, {2, -2, 0}, {2, -1, 1}});
-        REQUIRE(y == expected);
-
-        REQUIRE(x < y);
-        auto id = x.one();
-        y.product_inplace_no_checks(id, x);
-        REQUIRE(y == x);
-        y.product_inplace_no_checks(x, id);
-        REQUIRE(y == x);
-        REQUIRE(Hash<Mat>()(y) != 0);
-      }
-    }
-
-    ////////////////////////////////////////////////////////////////////////
-    // Test functions - MaxPlusMat
-    ////////////////////////////////////////////////////////////////////////
-
-    template <typename Mat>
-    void test_MaxPlusMat000() {
-      auto x        = Mat({{-2, 2, 0}, {-1, 0, 0}, {1, -3, 1}});
-      auto expected = Mat({{-2, 2, 0}, {-1, 0, 0}, {1, -3, 1}});
-      REQUIRE(x == expected);
-
-      auto y = Mat{{-100, 0, 0}, {0, 1, 0}, {1, -1, 0}};
-      REQUIRE(!(x == y));
-      REQUIRE(x != y);
-
-      y.product_inplace_no_checks(x, x);
-      expected = Mat({{1, 2, 2}, {1, 1, 1}, {2, 3, 2}});
-      REQUIRE(y == expected);
-
-      REQUIRE(x < y);
-      REQUIRE(Degree<Mat>()(x) == 3);
-      REQUIRE(Degree<Mat>()(y) == 3);
-      REQUIRE(Complexity<Mat>()(x) == 27);
-      REQUIRE(Complexity<Mat>()(y) == 27);
-      auto id = x.one();
-      y.product_inplace_no_checks(id, x);
-      REQUIRE(y == x);
-      y.product_inplace_no_checks(x, id);
-      REQUIRE(y == x);
-      REQUIRE(Hash<Mat>()(y) != 0);
-    }
-
-    ////////////////////////////////////////////////////////////////////////
-    // Test functions - MinPlusMat
-    ////////////////////////////////////////////////////////////////////////
-
-    template <typename Mat>
-    void test_MinPlusMat000() {
-      {
-        auto x        = Mat({{-2, 2, 0}, {-1, 0, 0}, {1, -3, 1}});
-        auto expected = Mat({{-2, 2, 0}, {-1, 0, 0}, {1, -3, 1}});
-        // Just testing the below doesn't compile
-        // matrix::row_basis(x);
-        REQUIRE(x == expected);
-
-        auto y = Mat({{-100, 0, 0}, {0, 1, 0}, {1, -1, 0}});
-        REQUIRE(!(x == y));
-
-        y.product_inplace_no_checks(x, x);
-        expected = Mat({{-4, -3, -2}, {-3, -3, -1}, {-4, -3, -3}});
-        REQUIRE(y == expected);
-
-        REQUIRE(!(x < y));
-        REQUIRE(Degree<Mat>()(x) == 3);
-        REQUIRE(Degree<Mat>()(y) == 3);
-        REQUIRE(Complexity<Mat>()(x) == 27);
-        REQUIRE(Complexity<Mat>()(y) == 27);
-        auto id = x.one();
-        y.product_inplace_no_checks(id, x);
-        REQUIRE(y == x);
-        y.product_inplace_no_checks(x, id);
-        REQUIRE(y == x);
-      }
-      {
-        auto x        = Mat({{22, 21, 0}, {10, 0, 0}, {1, 32, 1}});
-        auto expected = Mat({{22, 21, 0}, {10, 0, 0}, {1, 32, 1}});
-        REQUIRE(x == expected);
-
-        auto y = Mat({{10, 0, 0}, {0, 1, 0}, {1, 1, 0}});
-        REQUIRE(!(x == y));
-
-        y.product_inplace_no_checks(x, x);
-        REQUIRE(y == Mat({{1, 21, 1}, {1, 0, 0}, {2, 22, 1}}));
-
-        REQUIRE(x > y);
-        REQUIRE(Degree<Mat>()(x) == 3);
-        REQUIRE(Degree<Mat>()(y) == 3);
-        REQUIRE(Complexity<Mat>()(x) == 27);
-        REQUIRE(Complexity<Mat>()(y) == 27);
-        auto id = x.one();
-        y.product_inplace_no_checks(id, x);
-        REQUIRE(y == x);
-        y.product_inplace_no_checks(x, id);
-        REQUIRE(y == x);
-        REQUIRE(Hash<Mat>()(y) != 0);
-      }
-    }
-
-    ////////////////////////////////////////////////////////////////////////
-    // Test functions - MinPlusTruncMat
-    ////////////////////////////////////////////////////////////////////////
-
-    template <typename Mat>
-    void test_MinPlusTruncMat000(MinPlusTruncSemiring<> const* sr = nullptr) {
-      auto x = Mat(sr, {{22, 21, 0}, {10, 0, 0}, {1, 32, 1}});
-
-      auto expected = to_matrix<Mat>(sr, {{22, 21, 0}, {10, 0, 0}, {1, 32, 1}});
-      REQUIRE(x == expected);
-
-      auto y = Mat(sr, {{10, 0, 0}, {0, 1, 0}, {1, 1, 0}});
-      REQUIRE(!(x == y));
-
-      y.product_inplace_no_checks(x, x);
-      expected = Mat(sr, {{1, 21, 1}, {1, 0, 0}, {2, 22, 1}});
-      REQUIRE(y == expected);
-
-      REQUIRE(!(x < y));
-      REQUIRE(Degree<Mat>()(x) == 3);
-      REQUIRE(Degree<Mat>()(y) == 3);
-      REQUIRE(Complexity<Mat>()(x) == 27);
-      REQUIRE(Complexity<Mat>()(y) == 27);
-      auto id = x.one();
-      y.product_inplace_no_checks(id, x);
-      REQUIRE(y == x);
-      y.product_inplace_no_checks(x, id);
-      REQUIRE(y == x);
-      REQUIRE(Hash<Mat>()(y) != 0);
-      REQUIRE_THROWS_AS(
-          to_matrix<Mat>(sr, {{-22, 21, 0}, {10, 0, 0}, {1, 32, 1}}),
-          LibsemigroupsException);
-      REQUIRE(x * Mat::one(sr, 3) == x);
-      REQUIRE(Mat::one(sr, 3) * x == x);
-    }
-
-    ////////////////////////////////////////////////////////////////////////
-    // Test functions - ProjMaxPlusMat
-    ////////////////////////////////////////////////////////////////////////
-
-    template <typename Mat>
-    void test_ProjMaxPlusMat000() {
-      using Row     = typename Mat::Row;
-      auto x        = to_matrix<Mat>({{-2, 2, 0}, {-1, 0, 0}, {1, -3, 1}});
-      auto expected = to_matrix<Mat>({{-4, 0, -2}, {-3, -2, -2}, {-1, -5, -1}});
-      REQUIRE(x == expected);
-      REQUIRE(x.scalar_zero() == NEGATIVE_INFINITY);
-      REQUIRE(x.scalar_one() == 0);
-
-      auto y
-          = to_matrix<Mat>({{NEGATIVE_INFINITY, 0, 0}, {0, 1, 0}, {1, -1, 0}});
-      expected = to_matrix<Mat>(
-          {{NEGATIVE_INFINITY, -1, -1}, {-1, 0, -1}, {0, -2, -1}});
-      REQUIRE(y == expected);
-      REQUIRE(!(x == y));
-
-      y.product_inplace_no_checks(x, x);
-      expected = Mat({{-2, -1, -1}, {-2, -2, -2}, {-1, 0, -1}});
-      REQUIRE(y == expected);
-
-      REQUIRE(x < y);
-      REQUIRE(y > x);
-      REQUIRE(Degree<Mat>()(x) == 3);
-      REQUIRE(Degree<Mat>()(y) == 3);
-      REQUIRE(Complexity<Mat>()(x) == 27);
-      REQUIRE(Complexity<Mat>()(y) == 27);
-      auto id = x.one();
-      y.product_inplace_no_checks(id, x);
-      REQUIRE(y == x);
-      y.product_inplace_no_checks(x, id);
-      REQUIRE(y == x);
-
-      REQUIRE(to_matrix<Mat>({{-2, 2, 0}, {-1, 0, 0}, {1, -3, 1}}).hash_value()
-              != 0);
-
-      y = x;
-      REQUIRE(&x != &y);
-      REQUIRE(x == y);
-      // TODO uncomment or remove
-      // REQUIRE(y
-      //         == to_matrix<Mat>(nullptr, {{-2, 2, 0}, {-1, 0, 0}, {1, -3,
-      //         1}}));
-
-      auto yy(y);
-      REQUIRE(yy == y);
-
-      std::ostringstream oss;
-      oss << y;  // Does not do anything visible
-      std::stringbuf buff;
-      std::ostream   os(&buff);
-      os << y;  // Also does not do anything visible
-
-      REQUIRE(y.row(0) == to_matrix<Row>({-4, 0, -2}));
-      REQUIRE(y.row(1) == Row({-3, -2, -2}));
-      REQUIRE(Row(y.row(0)) == y.row(0));
-
-      auto zz(std::move(y));
-
-      Mat tt;
-      REQUIRE(tt != zz);
-      REQUIRE(Mat::one(3)
-              == Mat({{0, NEGATIVE_INFINITY, NEGATIVE_INFINITY},
-                      {NEGATIVE_INFINITY, 0, NEGATIVE_INFINITY},
-                      {NEGATIVE_INFINITY, NEGATIVE_INFINITY, 0}}));
-      REQUIRE(zz(0, 0) == -4);
-      REQUIRE(zz.number_of_cols() == 3);
-      zz += zz;
-      REQUIRE(zz == Mat({{-2, 2, 0}, {-1, 0, 0}, {1, -3, 1}}));
-      zz *= 2;
-      REQUIRE(zz == Mat({{-2, 2, 0}, {-1, 0, 0}, {1, -3, 1}}));
-      REQUIRE(zz + x == Mat({{-2, 2, 0}, {-1, 0, 0}, {1, -3, 1}}));
-      REQUIRE(zz * x == Mat({{-2, -1, -1}, {-2, -2, -2}, {-1, 0, -1}}));
-      REQUIRE(std::accumulate(zz.cbegin(), zz.cend(), 0) == -20);
-      REQUIRE(std::accumulate(zz.begin(), zz.end(), 0) == -20);
-      x.transpose();
-      REQUIRE(x == Mat({{-4, -3, -1}, {0, -2, -5}, {-2, -2, -1}}));
-      x.swap(zz);
-      REQUIRE(zz == Mat({{-4, -3, -1}, {0, -2, -5}, {-2, -2, -1}}));
-      REQUIRE(matrix::pow(x, 100)
-              == Mat({{-1, 0, -1}, {-2, -1, -2}, {-1, 0, -1}}));
-      REQUIRE_THROWS_AS(matrix::pow(x, -100), LibsemigroupsException);
-      REQUIRE(matrix::pow(x, 1)
-              == Mat({{-4, 0, -2}, {-3, -2, -2}, {-1, -5, -1}}));
-      REQUIRE(matrix::pow(x, 0) == Mat::one(3));
-    }
-
   }  // namespace
 
   ////////////////////////////////////////////////////////////////////////
   // Test cases - BMat
   ////////////////////////////////////////////////////////////////////////
 
-  LIBSEMIGROUPS_TEST_CASE("Matrix", "000", "BMat<2>", "[quick]") {
-    test_BMat000<BMat<2>>();
-  }
-
-  LIBSEMIGROUPS_TEST_CASE("Matrix", "001", "BMat<>", "[quick]") {
-    test_BMat000<BMat<>>();
-  }
-
-  LIBSEMIGROUPS_TEST_CASE("Matrix", "002", "BMat<3> + BMat<>", "[quick]") {
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("Matrix",
+                                   "000",
+                                   "boolean matrix - test 1",
+                                   "[quick]",
+                                   BMat<2>,
+                                   BMat<>) {
     auto rg = ReportGuard(REPORT);
     {
-      BMat<3> m;
-      m.product_inplace_no_checks(BMat<3>({{1, 1, 0}, {0, 0, 1}, {1, 0, 1}}),
-                                  BMat<3>({{1, 0, 1}, {0, 0, 1}, {1, 1, 0}}));
-      REQUIRE(m == BMat<3>({{1, 0, 1}, {1, 1, 0}, {1, 1, 1}}));
+      TestType m = to_matrix<TestType>({{0, 1}, {0, 1}});
+      REQUIRE_NOTHROW(matrix::throw_if_bad_entry(m));
+      REQUIRE(m == TestType({{0, 1}, {0, 1}}));
+      REQUIRE(!(m == TestType({{0, 0}, {0, 1}})));
+      REQUIRE(m == TestType({{0, 1}, {0, 1}}));
+      m.product_inplace_no_checks(TestType({{0, 0}, {0, 0}}),
+                                  TestType({{0, 0}, {0, 0}}));
+      REQUIRE(m == TestType({{0, 0}, {0, 0}}));
+      m.product_inplace_no_checks(TestType({{0, 0}, {0, 0}}),
+                                  TestType({{1, 1}, {1, 1}}));
+      REQUIRE(m == TestType({{0, 0}, {0, 0}}));
+      m.product_inplace_no_checks(TestType({{1, 1}, {1, 1}}),
+                                  TestType({{0, 0}, {0, 0}}));
+      REQUIRE(m == TestType({{0, 0}, {0, 0}}));
+
+      m.product_inplace_no_checks(TestType({{0, 1}, {1, 0}}),
+                                  TestType({{1, 0}, {1, 0}}));
+      REQUIRE(m == TestType({{1, 0}, {1, 0}}));
+      size_t const M = detail::BitSetCapacity<TestType>::value;
+      detail::StaticVector1<BitSet<M>, M> result;
+      matrix::bitset_rows(m, result);
+      REQUIRE(result.size() == 2);
+      REQUIRE(matrix::bitset_rows(m).size() == 2);
+      result.clear();
+      matrix::bitset_row_basis(m, result);
+      REQUIRE(result.size() == 1);
+      REQUIRE(matrix::bitset_row_basis(m).size() == 1);
+      REQUIRE(std::vector<bool>(m.cbegin(), m.cend())
+              == std::vector<bool>({true, false, true, false}));
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Warray-bounds"
+      REQUIRE(std::vector<bool>(m.begin(), m.end())  // ****
+              == std::vector<bool>({true, false, true, false}));
+#pragma GCC diagnostic pop
+    }
+
+    {
+      TestType m({{1, 1}, {0, 0}});
+      using RowView = typename TestType::RowView;
+
+      auto r = matrix::rows(m);
+      REQUIRE(std::vector<bool>(r[0].cbegin(), r[0].cend())
+              == std::vector<bool>({true, true}));
+      REQUIRE(std::vector<bool>(r[1].cbegin(), r[1].cend())
+              == std::vector<bool>({false, false}));
+      REQUIRE(r.size() == 2);
+      std::sort(r.begin(), r.end(), [](RowView const& rv1, RowView const& rv2) {
+        return std::lexicographical_compare(
+            rv1.begin(), rv1.end(), rv2.begin(), rv2.end());
+      });
+      REQUIRE(std::vector<bool>(r[0].cbegin(), r[0].cend())
+              == std::vector<bool>({false, false}));
+      REQUIRE(std::vector<bool>(r[1].cbegin(), r[1].cend())
+              == std::vector<bool>({true, true}));
+    }
+
+    {
+      using Row = typename TestType::Row;
+
+      TestType A(2, 2);
+      std::fill(A.begin(), A.end(), false);
+      REQUIRE(A.number_of_rows() == 2);
+      REQUIRE(A.number_of_cols() == 2);
+      REQUIRE(A == TestType({{false, false}, {false, false}}));
+
+      A(0, 0) = true;
+      A(1, 1) = true;
+      REQUIRE(A == TestType({{true, false}, {false, true}}));
+
+      TestType B(2, 2);
+      B(0, 1) = true;
+      B(1, 0) = true;
+      B(0, 0) = false;
+      B(1, 1) = false;
+      REQUIRE(B == TestType({{false, true}, {true, false}}));
+
+      REQUIRE(A + B == TestType({{true, true}, {true, true}}));
+      REQUIRE(A * B == B);
+      REQUIRE(B * A == B);
+      REQUIRE(B * B == A);
+      REQUIRE((A + B) * B == TestType({{true, true}, {true, true}}));
+
+      Row C({0, 1});
+      REQUIRE(C.number_of_rows() == 1);
+      REQUIRE(C.number_of_cols() == 2);
+
+      auto rv = A.row(0);
+      Row  D(rv);
+      REQUIRE(D.number_of_rows() == 1);
+      REQUIRE(D.number_of_cols() == 2);
+      REQUIRE(D != C);
+      auto views = matrix::rows(A);
+      REQUIRE(B < A);
+      B.swap(A);
+      REQUIRE(A < B);
+      std::swap(B, A);
+      REQUIRE(B < A);
+      REQUIRE(views[0] == Row({true, false}));
+      REQUIRE(Row({true, false}) == views[0]);
+      REQUIRE(Row({true, true}) != views[0]);
+      REQUIRE(Row({false, false}) < views[0]);
+      REQUIRE(A.hash_value() != 0);
+      A *= false;
+      REQUIRE(A == TestType({{false, false}, {false, false}}));
+      auto r = Row({true, false});
+      views  = matrix::rows(B);
+      REQUIRE(views[0].size() == 2);
+      r += views[0];
+      REQUIRE(r.number_of_cols() == 2);
+      REQUIRE(r.number_of_rows() == 1);
+      REQUIRE(r == Row({true, true}));
+
+      auto E = TestType::one(2);
+      REQUIRE(E.number_of_rows() == 2);
+      REQUIRE(E.number_of_cols() == 2);
+      auto viewse = matrix::rows(E);
+      REQUIRE(viewse.size() == 2);
+
+      std::ostringstream oss;
+      oss << E;  // Does not do anything visible
+
+      std::stringbuf buff;
+      std::ostream   os(&buff);
+      os << E;  // Also does not do anything visible
     }
     {
-      BMat<> m(3, 3);
-      m.product_inplace_no_checks(BMat<>({{1, 1, 0}, {0, 0, 1}, {1, 0, 1}}),
-                                  BMat<>({{1, 0, 1}, {0, 0, 1}, {1, 1, 0}}));
-      REQUIRE(m == BMat<>({{1, 0, 1}, {1, 1, 0}, {1, 1, 1}}));
+      TestType m({{0, 0}, {0, 0}});
+      using scalar_type = typename TestType::scalar_type;
+      auto it           = m.cbegin();
+      REQUIRE(m.coords(it) == std::pair<scalar_type, scalar_type>({0, 0}));
+      REQUIRE(m.coords(++it) == std::pair<scalar_type, scalar_type>({0, 1}));
+      REQUIRE(m.coords(++it) == std::pair<scalar_type, scalar_type>({1, 0}));
+      REQUIRE(m.coords(++it) == std::pair<scalar_type, scalar_type>({1, 1}));
     }
     {
-      BMat<>* A = new BMat<>();
-      delete A;
-      BMat<3>* B = new BMat<3>();
-      delete B;
-      BMat<3>::Row* C = new BMat<3>::Row();
-      delete C;
-      BMat<2>::Row* D = new BMat<2>::Row();
-      delete D;
-      BMat<2>* E = new BMat<2>();
-      delete E;
+      REQUIRE_THROWS_AS(to_matrix<TestType>({{0, 0}, {0, 2}}),
+                        LibsemigroupsException);
     }
   }
 
-  LIBSEMIGROUPS_TEST_CASE("Matrix", "003", "BMat<2> + BMat<>", "[quick]") {
-    BMat<2> AB;
-    BMat<2> A;
-    BMat<2> B;
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("Matrix",
+                                   "002",
+                                   "boolean matrix - test 2",
+                                   "[quick]",
+                                   BMat<3>,
+                                   BMat<>) {
+    auto     rg = ReportGuard(REPORT);
+    TestType m(3, 3);
+    m.product_inplace_no_checks(TestType({{1, 1, 0}, {0, 0, 1}, {1, 0, 1}}),
+                                TestType({{1, 0, 1}, {0, 0, 1}, {1, 1, 0}}));
+    REQUIRE(m == TestType({{1, 0, 1}, {1, 1, 0}, {1, 1, 1}}));
+    TestType* A = new TestType();
+    delete A;
+    typename TestType::Row* B = new typename TestType::Row();
+    delete B;
+  }
+
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("Matrix",
+                                   "003",
+                                   "boolean matrix - test 3",
+                                   "[quick]",
+                                   BMat<2>,
+                                   BMat<>) {
+    TestType AB(2, 2), A(2, 2), B(2, 2);
     std::fill(A.begin(), A.end(), false);
     std::fill(B.begin(), B.end(), false);
     std::fill(AB.begin(), AB.end(), false);
@@ -900,49 +307,119 @@ namespace libsemigroups {
 
     AB.product_inplace_no_checks(A, B);
     REQUIRE(AB == B);
-
-    REQUIRE(A.one() == BMat<2>({{true, false}, {false, true}}));
-
-    BMat<> CD(2, 2);
-    BMat<> C(2, 2);
-    BMat<> D(2, 2);
-
-    std::fill(CD.begin(), CD.end(), false);
-    std::fill(D.begin(), D.end(), false);
-    C(1, 1) = true;
-    CD.product_inplace_no_checks(C, D);
-    REQUIRE(CD == D);
-    REQUIRE(D.one() == BMat<>({{true, false}, {false, true}}));
+    REQUIRE(A.one() == TestType({{true, false}, {false, true}}));
   }
 
-  LIBSEMIGROUPS_TEST_CASE("Matrix", "004", "BMat<3>", "[quick]") {
-    test_BMat001<BMat<3>>();
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("Matrix",
+                                   "004",
+                                   "boolean matrix - test 4",
+                                   "[quick]",
+                                   BMat<3>,
+                                   BMat<>) {
+    auto x = TestType({{1, 0, 1}, {0, 1, 0}, {0, 1, 0}});
+    auto y = TestType({{0, 0, 0}, {0, 0, 0}, {0, 0, 0}});
+    auto z = TestType({{0, 0, 0}, {0, 0, 0}, {0, 0, 0}});
+    REQUIRE(y == z);
+    z.product_inplace_no_checks(x, y);
+    REQUIRE(y == z);
+    z.product_inplace_no_checks(y, x);
+    REQUIRE(y == z);
+    REQUIRE(!(y < z));
+    auto id = x.one();
+    z.product_inplace_no_checks(id, x);
+    REQUIRE(z == x);
+    z.product_inplace_no_checks(x, id);
+    REQUIRE(z == x);
+    REQUIRE(x.hash_value() != 0);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("Matrix", "005", "BMat<>", "[quick]") {
-    test_BMat001<BMat<>>();
-  }
-
-  LIBSEMIGROUPS_TEST_CASE("Matrix", "006", "BMat<3> row_basis", "[quick]") {
-    test_BMat002<BMat<3>>();
-  }
-  LIBSEMIGROUPS_TEST_CASE("Matrix", "007", "BMat<> row_basis", "[quick]") {
-    test_BMat002<BMat<>>();
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("Matrix",
+                                   "006",
+                                   "boolean matrix - row_basis",
+                                   "[quick]",
+                                   BMat<3>,
+                                   BMat<>) {
+    using RowView = typename TestType::RowView;
+    auto x        = to_matrix<TestType>({{1, 0, 0}, {1, 0, 0}, {1, 0, 0}});
+    REQUIRE(matrix::row_basis(x).size() == 1);
+    REQUIRE(matrix::row_space_size(x) == 1);
+    x = to_matrix<TestType>({{1, 0, 0}, {1, 1, 0}, {1, 1, 1}});
+    REQUIRE(matrix::row_basis(x).size() == 3);
+    REQUIRE_THROWS_AS(x.row(3), LibsemigroupsException);
+    std::vector<RowView> v = {x.row(0), x.row(2)};
+    REQUIRE(matrix::row_basis<TestType>(v).size() == 2);
+    REQUIRE(matrix::row_space_size(x) == 3);
+    x = to_matrix<TestType>({{1, 0, 0}, {0, 1, 1}, {1, 1, 1}});
+    REQUIRE(matrix::row_basis(x).size() == 2);
+    REQUIRE(matrix::row_space_size(x) == 3);
+    x = to_matrix<TestType>({{1, 0, 0}, {0, 0, 1}, {0, 1, 0}});
+    REQUIRE(matrix::row_space_size(x) == 7);
+    std::vector<typename TestType::RowView> views;
+    std::vector<typename TestType::RowView> result;
+    matrix::row_basis<TestType, std::vector<typename TestType::RowView>&>(
+        views, result);
   }
 
   ////////////////////////////////////////////////////////////////////////
   // Test cases - IntMat
   ////////////////////////////////////////////////////////////////////////
 
-  LIBSEMIGROUPS_TEST_CASE("Matrix", "008", "IntMat<3>", "[quick]") {
-    test_IntMat000<IntMat<3>>();
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("Matrix",
+                                   "008",
+                                   "integer matrix - test 1",
+                                   "[quick]",
+                                   IntMat<3>,
+                                   IntMat<>) {
+    {
+      auto x        = TestType({{-2, 2, 0}, {-1, 0, 0}, {1, -3, 1}});
+      auto expected = TestType({{-2, 2, 0}, {-1, 0, 0}, {1, -3, 1}});
+      REQUIRE(x == expected);
+
+      auto y = TestType({{-100, 0, 0}, {0, 1, 0}, {1, -1, 0}});
+      REQUIRE(!(x == y));
+
+      y.product_inplace_no_checks(x, x);
+      expected = TestType({{2, -4, 0}, {2, -2, 0}, {2, -1, 1}});
+      REQUIRE(y == expected);
+      REQUIRE(y.number_of_rows() == 3);
+
+      REQUIRE(x < y);
+      REQUIRE(Degree<TestType>()(x) == 3);
+      REQUIRE(Degree<TestType>()(y) == 3);
+      REQUIRE(Complexity<TestType>()(x) == 27);
+      REQUIRE(Complexity<TestType>()(y) == 27);
+      auto id = x.one();
+      y.product_inplace_no_checks(id, x);
+      REQUIRE(y == x);
+      y.product_inplace_no_checks(x, id);
+      REQUIRE(y == x);
+    }
+    {
+      auto x        = TestType({{-2, 2, 0}, {-1, 0, 0}, {1, -3, 1}});
+      auto expected = TestType({{-2, 2, 0}, {-1, 0, 0}, {1, -3, 1}});
+      REQUIRE(x == expected);
+
+      auto y = TestType({{-100, 0, 0}, {0, 1, 0}, {1, -1, 0}});
+      REQUIRE(!(x == y));
+
+      y.product_inplace_no_checks(x, x);
+      expected = TestType({{2, -4, 0}, {2, -2, 0}, {2, -1, 1}});
+      REQUIRE(y == expected);
+
+      REQUIRE(x < y);
+      auto id = x.one();
+      y.product_inplace_no_checks(id, x);
+      REQUIRE(y == x);
+      y.product_inplace_no_checks(x, id);
+      REQUIRE(y == x);
+      REQUIRE(Hash<TestType>()(y) != 0);
+    }
   }
 
-  LIBSEMIGROUPS_TEST_CASE("Matrix", "009", "IntMat<>", "[quick]") {
-    test_IntMat000<IntMat<>>();
-  }
-
-  LIBSEMIGROUPS_TEST_CASE("Matrix", "010", "IntMat code cov", "[quick]") {
+  LIBSEMIGROUPS_TEST_CASE("Matrix",
+                          "010",
+                          "integer matrix - code cov",
+                          "[quick]") {
     IntMat<>* A = new IntMat<>();
     delete A;
     IntMat<3>* B = new IntMat<3>();
@@ -966,12 +443,35 @@ namespace libsemigroups {
   // Test cases - MaxPlusMat
   ////////////////////////////////////////////////////////////////////////
 
-  LIBSEMIGROUPS_TEST_CASE("Matrix", "011", "MaxPlusMat<3>", "[quick]") {
-    test_MaxPlusMat000<MaxPlusMat<3>>();
-  }
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("Matrix",
+                                   "011",
+                                   "max-plus matrix - test 1",
+                                   "[quick]",
+                                   MaxPlusMat<>,
+                                   MaxPlusMat<3>) {
+    auto x        = TestType({{-2, 2, 0}, {-1, 0, 0}, {1, -3, 1}});
+    auto expected = TestType({{-2, 2, 0}, {-1, 0, 0}, {1, -3, 1}});
+    REQUIRE(x == expected);
 
-  LIBSEMIGROUPS_TEST_CASE("Matrix", "012", "MaxPlusMat<>", "[quick]") {
-    test_MaxPlusMat000<MaxPlusMat<>>();
+    auto y = TestType{{-100, 0, 0}, {0, 1, 0}, {1, -1, 0}};
+    REQUIRE(!(x == y));
+    REQUIRE(x != y);
+
+    y.product_inplace_no_checks(x, x);
+    expected = TestType({{1, 2, 2}, {1, 1, 1}, {2, 3, 2}});
+    REQUIRE(y == expected);
+
+    REQUIRE(x < y);
+    REQUIRE(Degree<TestType>()(x) == 3);
+    REQUIRE(Degree<TestType>()(y) == 3);
+    REQUIRE(Complexity<TestType>()(x) == 27);
+    REQUIRE(Complexity<TestType>()(y) == 27);
+    auto id = x.one();
+    y.product_inplace_no_checks(id, x);
+    REQUIRE(y == x);
+    y.product_inplace_no_checks(x, id);
+    REQUIRE(y == x);
+    REQUIRE(Hash<TestType>()(y) != 0);
   }
 
   LIBSEMIGROUPS_TEST_CASE("Matrix", "013", "MaxPlusMat code cov", "[quick]") {
@@ -985,12 +485,60 @@ namespace libsemigroups {
   // Test cases - MinPlusMat
   ////////////////////////////////////////////////////////////////////////
 
-  LIBSEMIGROUPS_TEST_CASE("Matrix", "014", "MinPlusMat<3>", "[quick]") {
-    test_MinPlusMat000<MinPlusMat<3>>();
-  }
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("Matrix",
+                                   "014",
+                                   "min-plus matrix - test 1",
+                                   "[quick]",
+                                   MinPlusMat<3>,
+                                   MinPlusMat<>) {
+    {
+      auto x        = TestType({{-2, 2, 0}, {-1, 0, 0}, {1, -3, 1}});
+      auto expected = TestType({{-2, 2, 0}, {-1, 0, 0}, {1, -3, 1}});
+      // Just testing the below doesn't compile
+      // matrix::row_basis(x);
+      REQUIRE(x == expected);
 
-  LIBSEMIGROUPS_TEST_CASE("Matrix", "015", "MinPlusMat<>", "[quick]") {
-    test_MinPlusMat000<MinPlusMat<>>();
+      auto y = TestType({{-100, 0, 0}, {0, 1, 0}, {1, -1, 0}});
+      REQUIRE(!(x == y));
+
+      y.product_inplace_no_checks(x, x);
+      expected = TestType({{-4, -3, -2}, {-3, -3, -1}, {-4, -3, -3}});
+      REQUIRE(y == expected);
+
+      REQUIRE(!(x < y));
+      REQUIRE(Degree<TestType>()(x) == 3);
+      REQUIRE(Degree<TestType>()(y) == 3);
+      REQUIRE(Complexity<TestType>()(x) == 27);
+      REQUIRE(Complexity<TestType>()(y) == 27);
+      auto id = x.one();
+      y.product_inplace_no_checks(id, x);
+      REQUIRE(y == x);
+      y.product_inplace_no_checks(x, id);
+      REQUIRE(y == x);
+    }
+    {
+      auto x        = TestType({{22, 21, 0}, {10, 0, 0}, {1, 32, 1}});
+      auto expected = TestType({{22, 21, 0}, {10, 0, 0}, {1, 32, 1}});
+      REQUIRE(x == expected);
+
+      auto y = TestType({{10, 0, 0}, {0, 1, 0}, {1, 1, 0}});
+      REQUIRE(!(x == y));
+
+      y.product_inplace_no_checks(x, x);
+      REQUIRE(y == TestType({{1, 21, 1}, {1, 0, 0}, {2, 22, 1}}));
+
+      REQUIRE(x > y);
+      REQUIRE(Degree<TestType>()(x) == 3);
+      REQUIRE(Degree<TestType>()(y) == 3);
+      REQUIRE(Complexity<TestType>()(x) == 27);
+      REQUIRE(Complexity<TestType>()(y) == 27);
+      auto id = x.one();
+      y.product_inplace_no_checks(id, x);
+      REQUIRE(y == x);
+      y.product_inplace_no_checks(x, id);
+      REQUIRE(y == x);
+      REQUIRE(Hash<TestType>()(y) != 0);
+    }
   }
 
   LIBSEMIGROUPS_TEST_CASE("Matrix", "016", "MinPlusMat code cov", "[quick]") {
@@ -1004,58 +552,154 @@ namespace libsemigroups {
   // Test cases - MaxPlusTruncMat
   ////////////////////////////////////////////////////////////////////////
 
-  LIBSEMIGROUPS_TEST_CASE("Matrix", "017", "MaxPlusTruncMat<5, 2>", "[quick]") {
-    // Threshold 5, 2 x 2
-    test_MaxPlusTruncMat000<MaxPlusTruncMat<5, 2>>();
-  }
-
-  LIBSEMIGROUPS_TEST_CASE("Matrix", "018", "MaxPlusTruncMat<5>", "[quick]") {
-    // Threshold 5, 2 x 2
-    test_MaxPlusTruncMat000<MaxPlusTruncMat<5>>();
-  }
-
-  LIBSEMIGROUPS_TEST_CASE("Matrix", "019", "MaxPlusTruncMat<>", "[quick]") {
-    // Threshold 5, 2 x 2 (specified in test_MaxPlusTruncMat000)
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("Matrix",
+                                   "017",
+                                   "max-plus trunc. matrix - test 1",
+                                   "[quick]",
+                                   (MaxPlusTruncMat<5, 2>),
+                                   MaxPlusTruncMat<5>,
+                                   MaxPlusTruncMat<>) {
     REQUIRE_THROWS_AS(MaxPlusTruncSemiring<>(-1), LibsemigroupsException);
-    MaxPlusTruncSemiring<> const* sr = new MaxPlusTruncSemiring<>(5);
-    test_MaxPlusTruncMat000<MaxPlusTruncMat<>>(sr);
+    // Threshold 5, 2 x 2
+    MaxPlusTruncSemiring<>* sr = nullptr;
+    if constexpr (!std::is_same_v<typename TestType::semiring_type, void>) {
+      sr = new MaxPlusTruncSemiring(5);
+    }
+    using scalar_type = typename TestType::scalar_type;
+    {
+      TestType m1(sr, 2, 2);
+      std::fill(m1.begin(), m1.end(), NEGATIVE_INFINITY);
+      REQUIRE(m1
+              == to_matrix<TestType>(sr,
+                                     {{NEGATIVE_INFINITY, NEGATIVE_INFINITY},
+                                      {NEGATIVE_INFINITY, NEGATIVE_INFINITY}}));
+      TestType m2(sr, 2, 2);
+      std::fill(m2.begin(), m2.end(), 4);
+      REQUIRE(m1 + m2 == m2);
+      REQUIRE(m2(0, 1) == 4);
+    }
+
+    auto rg = ReportGuard(REPORT);
+    {
+      std::vector<std::array<scalar_type, 2>> expected;
+      expected.push_back({1, 1});
+      expected.push_back({0, 0});
+      tropical_max_plus_row_basis<2, 5>(expected);
+      REQUIRE(expected.size() == 1);
+      REQUIRE(expected.at(0) == std::array<scalar_type, 2>({0, 0}));
+
+      TestType m(sr, {{1, 1}, {0, 0}});
+      auto     r = matrix::row_basis(m);
+      REQUIRE(r.size() == 1);
+      REQUIRE(std::vector<scalar_type>(r[0].cbegin(), r[0].cend())
+              == std::vector<scalar_type>({0, 0}));
+    }
+    {
+      TestType m(sr, {{1, 1}, {0, 0}});
+      m      = m.one();
+      auto r = matrix::row_basis(m);
+      REQUIRE(r.size() == 2);
+      REQUIRE(std::vector<scalar_type>(r[0].cbegin(), r[0].cend())
+              == std::vector<scalar_type>({NEGATIVE_INFINITY, 0}));
+      REQUIRE(std::vector<scalar_type>(r[1].cbegin(), r[1].cend())
+              == std::vector<scalar_type>({0, NEGATIVE_INFINITY}));
+    }
+    std::vector<typename TestType::RowView> views;
+    std::vector<typename TestType::RowView> result;
+    matrix::row_basis<TestType>(views, result);
     delete sr;
   }
 
-  LIBSEMIGROUPS_TEST_CASE("Matrix", "020", "MaxPlusTruncMat<5, 4>", "[quick]") {
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("Matrix",
+                                   "020",
+                                   "max-plus trunc. matrix - test 2",
+                                   "[quick]",
+                                   (MaxPlusTruncMat<5, 4>),
+                                   MaxPlusTruncMat<5>,
+                                   MaxPlusTruncMat<>) {
     // Threshold 5, 4 x 4
-    test_MaxPlusTruncMat001<MaxPlusTruncMat<5, 4>>();
-  }
+    using scalar_type = typename TestType::scalar_type;
+    using Row         = typename TestType::Row;
 
-  LIBSEMIGROUPS_TEST_CASE("Matrix", "021", "MaxPlusTruncMat<5>", "[quick]") {
-    // Threshold 5, 4 x 4
-    test_MaxPlusTruncMat001<MaxPlusTruncMat<5>>();
-  }
+    MaxPlusTruncSemiring<>* sr = nullptr;
+    if constexpr (!std::is_same_v<typename TestType::semiring_type, void>) {
+      sr = new MaxPlusTruncSemiring(5);
+    }
 
-  LIBSEMIGROUPS_TEST_CASE("Matrix", "022", "MaxPlusTruncMat<>", "[quick]") {
-    // Threshold 5, 4 x 4
-    MaxPlusTruncSemiring<> const* sr = new MaxPlusTruncSemiring<>(5);
-    test_MaxPlusTruncMat001<MaxPlusTruncMat<>>(sr);
+    auto m  = to_matrix<TestType>(sr,
+                                 {{2, 2, 0, 1},
+                                   {0, 0, 1, 3},
+                                   {1, NEGATIVE_INFINITY, 0, 0},
+                                   {0, 1, 0, 1}});
+    auto rg = ReportGuard(REPORT);
+    auto r  = matrix::row_basis(m);
+    REQUIRE(r.size() == 4);
+    REQUIRE(r[0] == to_matrix<Row>(sr, {0, 0, 1, 3}));
+    REQUIRE(r[1] == to_matrix<Row>(sr, {0, 1, 0, 1}));
+    REQUIRE(r[2] == to_matrix<Row>(sr, {1, NEGATIVE_INFINITY, 0, 0}));
+    REQUIRE(r[3] == to_matrix<Row>(sr, {2, 2, 0, 1}));
+    m.transpose();
+    REQUIRE(m
+            == to_matrix<TestType>(sr,
+                                   {{2, 0, 1, 0},
+                                    {2, 0, NEGATIVE_INFINITY, 1},
+                                    {0, 1, 0, 0},
+                                    {1, 3, 0, 1}}));
+    m.transpose();
+    REQUIRE(m
+            == to_matrix<TestType>(sr,
+                                   {{2, 2, 0, 1},
+                                    {0, 0, 1, 3},
+                                    {1, NEGATIVE_INFINITY, 0, 0},
+                                    {0, 1, 0, 1}}));
+
+    std::vector<std::array<scalar_type, 4>> expected;
+    expected.push_back({2, 2, 0, 1});
+    expected.push_back({0, 0, 1, 3});
+    expected.push_back({1, NEGATIVE_INFINITY, 0, 0});
+    expected.push_back({0, 1, 0, 1});
+    tropical_max_plus_row_basis<4, 5>(expected);
+    REQUIRE(expected.size() == 4);
+    REQUIRE(m * TestType::one(sr, 4) == m);
+    REQUIRE(TestType::one(sr, 4) * m == m);
     delete sr;
   }
 
-  LIBSEMIGROUPS_TEST_CASE("Matrix",
-                          "023",
-                          "MaxPlusTruncMat<33, 3>",
-                          "[quick]") {
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("Matrix",
+                                   "023",
+                                   "max-plus trunc. matrix - test 3",
+                                   "[quick]",
+                                   (MaxPlusTruncMat<33, 3>),
+                                   MaxPlusTruncMat<33>,
+                                   MaxPlusTruncMat<>) {
     // Threshold 33, 3 x 3
-    test_MaxPlusTruncMat002<MaxPlusTruncMat<33, 3>>();
-  }
+    MaxPlusTruncSemiring<>* sr = nullptr;
+    if constexpr (!std::is_same_v<typename TestType::semiring_type, void>) {
+      sr = new MaxPlusTruncSemiring(33);
+    }
+    auto x        = TestType(sr, {{22, 21, 0}, {10, 0, 0}, {1, 32, 1}});
+    auto expected = TestType(sr, {{22, 21, 0}, {10, 0, 0}, {1, 32, 1}});
+    REQUIRE(x == expected);
 
-  LIBSEMIGROUPS_TEST_CASE("Matrix", "024", "MaxPlusTruncMat<33>", "[quick]") {
-    // Threshold 33, 3 x 3
-    test_MaxPlusTruncMat002<MaxPlusTruncMat<33>>();
-  }
+    REQUIRE_THROWS_AS(
+        to_matrix<TestType>(sr, {{-100, 0, 0}, {0, 1, 0}, {1, -1, 0}}),
+        LibsemigroupsException);
+    auto y = TestType(sr, {{10, 0, 0}, {0, 1, 0}, {1, 1, 0}});
+    REQUIRE(!(x == y));
 
-  LIBSEMIGROUPS_TEST_CASE("Matrix", "025", "MaxPlusTruncMat<>", "[quick]") {
-    // Threshold 33, 3 x 3
-    MaxPlusTruncSemiring<> const* sr = new MaxPlusTruncSemiring<>(33);
-    test_MaxPlusTruncMat002<MaxPlusTruncMat<>>(sr);
+    y.product_inplace_no_checks(x, x);
+    expected = TestType(sr, {{33, 33, 22}, {32, 32, 10}, {33, 33, 32}});
+    REQUIRE(y == expected);
+
+    REQUIRE(x < y);
+    auto id = x.one();
+    y.product_inplace_no_checks(id, x);
+    REQUIRE(y == x);
+    y.product_inplace_no_checks(x, id);
+    REQUIRE(y == x);
+    REQUIRE(Hash<TestType>()(y) != 0);
+    REQUIRE(x * TestType::one(sr, 3) == x);
+    REQUIRE(TestType::one(sr, 3) * x == x);
     delete sr;
   }
 
@@ -1078,90 +722,230 @@ namespace libsemigroups {
   // Test cases - MinPlusTruncMat
   ////////////////////////////////////////////////////////////////////////
 
-  LIBSEMIGROUPS_TEST_CASE("Matrix",
-                          "027",
-                          "MinPlusTruncMat<33, 3>",
-                          "[quick]") {
-    // 3 x 3 matrices with threshold 33
-    test_MinPlusTruncMat000<MinPlusTruncMat<33, 3>>();
-  }
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("Matrix",
+                                   "027",
+                                   "min-plus trunc. matrix - test 1",
+                                   "[quick]",
+                                   (MinPlusTruncMat<33, 3>),
+                                   MinPlusTruncMat<33>,
+                                   MinPlusTruncMat<>) {
+    // Threshold 33, 3 x 3
+    MinPlusTruncSemiring<>* sr = nullptr;
+    if constexpr (!std::is_same_v<typename TestType::semiring_type, void>) {
+      sr = new MinPlusTruncSemiring(33);
+    }
+    auto x = TestType(sr, {{22, 21, 0}, {10, 0, 0}, {1, 32, 1}});
 
-  LIBSEMIGROUPS_TEST_CASE("Matrix", "028", "MinPlusTruncMat<33>", "[quick]") {
-    // 3 x 3 matrices with threshold 33
-    test_MinPlusTruncMat000<MinPlusTruncMat<33>>();
-  }
+    auto expected
+        = to_matrix<TestType>(sr, {{22, 21, 0}, {10, 0, 0}, {1, 32, 1}});
+    REQUIRE(x == expected);
 
-  LIBSEMIGROUPS_TEST_CASE("Matrix", "029", "MinPlusTruncMat<>", "[quick]") {
-    // 3 x 3 matrices with threshold 33
-    REQUIRE_THROWS_AS(MinPlusTruncSemiring<>(-1), LibsemigroupsException);
-    MinPlusTruncSemiring<> const* sr = new MinPlusTruncSemiring<>(33);
-    test_MinPlusTruncMat000<MinPlusTruncMat<>>(sr);
+    auto y = TestType(sr, {{10, 0, 0}, {0, 1, 0}, {1, 1, 0}});
+    REQUIRE(!(x == y));
+
+    y.product_inplace_no_checks(x, x);
+    expected = TestType(sr, {{1, 21, 1}, {1, 0, 0}, {2, 22, 1}});
+    REQUIRE(y == expected);
+
+    REQUIRE(!(x < y));
+    REQUIRE(Degree<TestType>()(x) == 3);
+    REQUIRE(Degree<TestType>()(y) == 3);
+    REQUIRE(Complexity<TestType>()(x) == 27);
+    REQUIRE(Complexity<TestType>()(y) == 27);
+    auto id = x.one();
+    y.product_inplace_no_checks(id, x);
+    REQUIRE(y == x);
+    y.product_inplace_no_checks(x, id);
+    REQUIRE(y == x);
+    REQUIRE(Hash<TestType>()(y) != 0);
+    REQUIRE_THROWS_AS(
+        to_matrix<TestType>(sr, {{-22, 21, 0}, {10, 0, 0}, {1, 32, 1}}),
+        LibsemigroupsException);
+    REQUIRE(x * TestType::one(sr, 3) == x);
+    REQUIRE(TestType::one(sr, 3) * x == x);
     delete sr;
   }
-
   ////////////////////////////////////////////////////////////////////////
   // Test cases - NTPMat
   ////////////////////////////////////////////////////////////////////////
 
-  LIBSEMIGROUPS_TEST_CASE("Matrix", "030", "NTPMat<0, 3, 3, 3>", "[quick]") {
-    test_NTPMat000<NTPMat<0, 3, 3, 3>>();
-    test_NTPMat000<NTPMat<0, 3, 3>>();
-  }
-
-  LIBSEMIGROUPS_TEST_CASE("Matrix", "031", "NTPMat<0, 3>", "[quick]") {
-    test_NTPMat000<NTPMat<0, 3>>();
-  }
-
-  LIBSEMIGROUPS_TEST_CASE("Matrix", "032", "NTPMat<>", "[quick]") {
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("Matrix",
+                                   "030",
+                                   "3x3 matrix, t = 0, p = 3",
+                                   "[quick]",
+                                   (NTPMat<0, 3, 3, 3>),
+                                   (NTPMat<0, 3, 3>),
+                                   NTPMat<>) {
     REQUIRE_THROWS_AS(NTPSemiring<int>(4, -1), LibsemigroupsException);
     REQUIRE_THROWS_AS(NTPSemiring<int>(-1, -1), LibsemigroupsException);
-    NTPSemiring<> const* sr = new NTPSemiring<>(0, 3);
-    test_NTPMat000<NTPMat<>>(sr);
+
+    NTPSemiring<>* sr = nullptr;
+    if constexpr (!std::is_same_v<typename TestType::semiring_type, void>) {
+      sr = new NTPSemiring<>(0, 3);
+    }
+    using Row   = typename TestType::Row;
+    auto     rg = ReportGuard(REPORT);
+    TestType m(sr, 3, 3);
+    // REQUIRE(matrix::throw_if_bad_entry(m)); // m might not be valid!
+    m.product_inplace_no_checks(
+        to_matrix<TestType>(sr, {{1, 1, 0}, {0, 0, 1}, {1, 0, 1}}),
+        to_matrix<TestType>(sr, {{1, 0, 1}, {0, 0, 1}, {1, 1, 0}}));
+    REQUIRE(m == to_matrix<TestType>(sr, {{1, 0, 2}, {1, 1, 0}, {2, 1, 1}}));
+    REQUIRE(m.row(0) == Row(sr, {1, 0, 2}));
+    REQUIRE(m.row(0).size() == 3);
+    auto r = matrix::rows(m);
+    REQUIRE(r[0] == Row(sr, {1, 0, 2}));
+    REQUIRE(r[1] == Row(sr, {1, 1, 0}));
+    REQUIRE(r[2] == Row(sr, {2, 1, 1}));
+    REQUIRE(m * TestType::one(sr, 3) == m);
+    REQUIRE(TestType::one(sr, 3) * m == m);
     delete sr;
   }
 
-  LIBSEMIGROUPS_TEST_CASE("Matrix", "033", "NTPMat<0, 10, 4, 4>", "[quick]") {
-    test_NTPMat001<NTPMat<0, 10, 4, 4>>();
-    test_NTPMat001<NTPMat<0, 10, 4>>();
-  }
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("Matrix",
+                                   "034",
+                                   "4x4 matrix, t = 0, p = 10",
+                                   "[quick]",
+                                   (NTPMat<0, 10>),
+                                   NTPMat<>) {
+    NTPSemiring<>* sr = nullptr;
+    if constexpr (!std::is_same_v<typename TestType::semiring_type, void>) {
+      sr = new NTPSemiring<>(0, 10);
+    }
+    using Row         = typename TestType::Row;
+    using RowView     = typename TestType::RowView;
+    using scalar_type = typename TestType::scalar_type;
 
-  LIBSEMIGROUPS_TEST_CASE("Matrix", "034", "NTPMat<0, 10>", "[quick]") {
-    test_NTPMat001<NTPMat<0, 10>>();
-  }
+    auto rg = ReportGuard(REPORT);
 
-  LIBSEMIGROUPS_TEST_CASE("Matrix", "035", "NTPMat<>", "[quick]") {
-    NTPSemiring<> const* sr = new NTPSemiring<>(0, 10);
-    test_NTPMat001<NTPMat<>>(sr);
+    TestType m = to_matrix<TestType>(
+        sr, {{1, 1, 0, 0}, {2, 0, 2, 0}, {1, 2, 3, 9}, {0, 0, 0, 7}});
+    REQUIRE(m.number_of_cols() == 4);
+    REQUIRE(m.number_of_rows() == 4);
+    auto r = matrix::rows(m);
+    REQUIRE(r.size() == 4);
+    REQUIRE(std::vector<scalar_type>(r[0].cbegin(), r[0].cend())
+            == std::vector<scalar_type>({1, 1, 0, 0}));
+    r[0] += r[1];
+    REQUIRE(std::vector<scalar_type>(r[0].cbegin(), r[0].cend())
+            == std::vector<scalar_type>({3, 1, 2, 0}));
+    REQUIRE(std::vector<scalar_type>(r[1].cbegin(), r[1].cend())
+            == std::vector<scalar_type>({2, 0, 2, 0}));
+    REQUIRE(m
+            == to_matrix<TestType>(
+                sr, {{3, 1, 2, 0}, {2, 0, 2, 0}, {1, 2, 3, 9}, {0, 0, 0, 7}}));
+    REQUIRE(r[0][0] == 3);
+    REQUIRE(r[0](0) == 3);
+    REQUIRE(r[2](3) == 9);
+    std::sort(r[0].begin(), r[0].end());
+    REQUIRE(std::vector<scalar_type>(r[0].cbegin(), r[0].cend())
+            == std::vector<scalar_type>({0, 1, 2, 3}));
+    REQUIRE(m
+            == to_matrix<TestType>(
+                sr, {{0, 1, 2, 3}, {2, 0, 2, 0}, {1, 2, 3, 9}, {0, 0, 0, 7}}));
+    r[0] += 9;
+    REQUIRE(std::vector<scalar_type>(r[0].cbegin(), r[0].cend())
+            == std::vector<scalar_type>({9, 0, 1, 2}));
+    REQUIRE(m
+            == to_matrix<TestType>(
+                sr, {{9, 0, 1, 2}, {2, 0, 2, 0}, {1, 2, 3, 9}, {0, 0, 0, 7}}));
+    r[1] *= 3;
+    REQUIRE(m
+            == to_matrix<TestType>(
+                sr, {{9, 0, 1, 2}, {6, 0, 6, 0}, {1, 2, 3, 9}, {0, 0, 0, 7}}));
+    REQUIRE(std::vector<scalar_type>(r[1].cbegin(), r[1].cend())
+            == std::vector<scalar_type>({6, 0, 6, 0}));
+    REQUIRE(r[2] < r[1]);
+    r[1] = r[2];
+    REQUIRE(m
+            == to_matrix<TestType>(
+                sr, {{9, 0, 1, 2}, {6, 0, 6, 0}, {1, 2, 3, 9}, {0, 0, 0, 7}}));
+    REQUIRE(r[1] == r[2]);
+    REQUIRE(r[1] == to_matrix<Row>(sr, {{1, 2, 3, 9}}));
+
+    RowView rv;
+    {
+      rv = r[0];
+      REQUIRE(rv == r[0]);
+      REQUIRE(&rv != &r[0]);
+    }
     delete sr;
   }
 
-  LIBSEMIGROUPS_TEST_CASE("Matrix", "036", "NTPMat<0, 10, 4, 4>", "[quick]") {
-    test_NTPMat002<NTPMat<0, 10, 4, 4>>();
-    test_NTPMat002<NTPMat<0, 10, 4>>();
-  }
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("Matrix",
+                                   "036",
+                                   "4x4 matrix, t = 0, p = 10",
+                                   "[quick]",
+                                   (NTPMat<0, 10, 4, 4>),
+                                   (NTPMat<0, 10, 4>),
+                                   (NTPMat<0, 10>),
+                                   NTPMat<>) {
+    using Row         = typename TestType::Row;
+    NTPSemiring<>* sr = nullptr;
+    if constexpr (!std::is_same_v<typename TestType::semiring_type, void>) {
+      sr = new NTPSemiring<>(0, 10);
+    }
 
-  LIBSEMIGROUPS_TEST_CASE("Matrix", "037", "NTPMat<0, 10>", "[quick]") {
-    test_NTPMat002<NTPMat<0, 10>>();
-  }
-
-  LIBSEMIGROUPS_TEST_CASE("Matrix", "038", "NTPMat<>", "[quick]") {
-    NTPSemiring<> const* sr = new NTPSemiring<>(0, 10);
-    test_NTPMat002<NTPMat<>>(sr);
+    auto     rg = ReportGuard(REPORT);
+    TestType m(sr, {{1, 1, 0, 0}, {2, 0, 2, 0}, {1, 2, 3, 9}, {0, 0, 0, 7}});
+    REQUIRE(m.number_of_cols() == 4);
+    REQUIRE(m.number_of_rows() == 4);
+    auto r = matrix::rows(m);
+    REQUIRE(r.size() == 4);
+    REQUIRE(r[0] == to_matrix<Row>(sr, {{1, 1, 0, 0}}));
+    REQUIRE(r[1] == to_matrix<Row>(sr, {{2, 0, 2, 0}}));
+    REQUIRE(r[0] != to_matrix<Row>(sr, {{2, 0, 2, 0}}));
+    REQUIRE(r[1] != to_matrix<Row>(sr, {{1, 1, 0, 0}}));
+    REQUIRE(to_matrix<Row>(sr, {{1, 1, 0, 0}}) == r[0]);
+    REQUIRE(to_matrix<Row>(sr, {{2, 0, 2, 0}}) == r[1]);
+    REQUIRE(to_matrix<Row>(sr, {{2, 0, 2, 0}}) != r[0]);
+    REQUIRE(to_matrix<Row>(sr, {{1, 1, 0, 0}}) != r[1]);
+    REQUIRE(to_matrix<Row>(sr, {{1, 1, 0, 0}}) < Row(sr, {{9, 9, 9, 9}}));
+    REQUIRE(r[0] < to_matrix<Row>(sr, {{9, 9, 9, 9}}));
+    REQUIRE(!(to_matrix<Row>(sr, {{9, 9, 9, 9}}) < r[0]));
+    Row x(r[3]);
+    x *= 3;
+    REQUIRE(x == to_matrix<Row>(sr, {{0, 0, 0, 1}}));
+    REQUIRE(x.number_of_rows() == 1);
+    REQUIRE(x.number_of_cols() == 4);
+    REQUIRE(r[3] == to_matrix<Row>(sr, {{0, 0, 0, 7}}));
+    REQUIRE(r[3] != x);
+    REQUIRE(x != r[3]);
+    REQUIRE(!(x != x));
     delete sr;
   }
 
-  LIBSEMIGROUPS_TEST_CASE("Matrix", "039", "NTPMat<33, 2, 3, 3>", "[quick]") {
-    test_NTPMat003<NTPMat<33, 2, 3, 3>>();
-    test_NTPMat003<NTPMat<33, 2, 3>>();
-  }
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("Matrix",
+                                   "038",
+                                   "3x3 matrix, t = 33, p = 2",
+                                   "[quick]",
+                                   (NTPMat<33, 2>),
+                                   NTPMat<>) {
+    NTPSemiring<>* sr = nullptr;
+    if constexpr (!std::is_same_v<typename TestType::semiring_type, void>) {
+      sr = new NTPSemiring<>(33, 2);
+    }
+    auto x = to_matrix<TestType>(sr, {{22, 21, 0}, {10, 0, 0}, {1, 32, 1}});
+    auto expected
+        = to_matrix<TestType>(sr, {{22, 21, 0}, {10, 0, 0}, {1, 32, 1}});
+    REQUIRE(x == expected);
+    REQUIRE(x.number_of_cols() == 3);
+    REQUIRE(x.number_of_rows() == 3);
 
-  LIBSEMIGROUPS_TEST_CASE("Matrix", "040", "NTPMat<33, 2>", "[quick]") {
-    test_NTPMat003<NTPMat<33, 2>>();
-  }
+    auto y = to_matrix<TestType>(sr, {{10, 0, 0}, {0, 1, 0}, {1, 1, 0}});
+    REQUIRE(!(x == y));
 
-  LIBSEMIGROUPS_TEST_CASE("Matrix", "041", "NTPMat<>", "[quick]") {
-    NTPSemiring<> const* sr = new NTPSemiring<>(33, 2);
-    test_NTPMat003<NTPMat<>>(sr);
+    y.product_inplace_no_checks(x, x);
+    expected = to_matrix<TestType>(sr, {{34, 34, 0}, {34, 34, 0}, {33, 33, 1}});
+    REQUIRE(y == expected);
+
+    REQUIRE(x < y);
+    auto id = x.one();
+    y.product_inplace_no_checks(id, x);
+    REQUIRE(y == x);
+    y.product_inplace_no_checks(x, id);
+    REQUIRE(y == x);
+    REQUIRE(Hash<TestType>()(y) != 0);
     delete sr;
   }
 
@@ -1169,13 +953,97 @@ namespace libsemigroups {
   // Test cases - ProjMaxPlusMat
   ////////////////////////////////////////////////////////////////////////
 
-  LIBSEMIGROUPS_TEST_CASE("Matrix", "042", "ProjMaxPlusMat<3>", "[quick]") {
-    test_ProjMaxPlusMat000<ProjMaxPlusMat<3, 3>>();
-    test_ProjMaxPlusMat000<ProjMaxPlusMat<3>>();
-  }
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("Matrix",
+                                   "042",
+                                   "3x3 matrix",
+                                   "[quick]",
+                                   (ProjMaxPlusMat<3, 3>),
+                                   ProjMaxPlusMat<3>,
+                                   ProjMaxPlusMat<>) {
+    using Row = typename TestType::Row;
+    auto x    = to_matrix<TestType>({{-2, 2, 0}, {-1, 0, 0}, {1, -3, 1}});
+    auto expected
+        = to_matrix<TestType>({{-4, 0, -2}, {-3, -2, -2}, {-1, -5, -1}});
+    REQUIRE(x == expected);
+    REQUIRE(x.scalar_zero() == NEGATIVE_INFINITY);
+    REQUIRE(x.scalar_one() == 0);
 
-  LIBSEMIGROUPS_TEST_CASE("Matrix", "043", "ProjMaxPlusMat<>", "[quick]") {
-    test_ProjMaxPlusMat000<ProjMaxPlusMat<>>();
+    auto y = to_matrix<TestType>(
+        {{NEGATIVE_INFINITY, 0, 0}, {0, 1, 0}, {1, -1, 0}});
+    expected = to_matrix<TestType>(
+        {{NEGATIVE_INFINITY, -1, -1}, {-1, 0, -1}, {0, -2, -1}});
+    REQUIRE(y == expected);
+    REQUIRE(!(x == y));
+
+    y.product_inplace_no_checks(x, x);
+    expected = TestType({{-2, -1, -1}, {-2, -2, -2}, {-1, 0, -1}});
+    REQUIRE(y == expected);
+
+    REQUIRE(x < y);
+    REQUIRE(y > x);
+    REQUIRE(Degree<TestType>()(x) == 3);
+    REQUIRE(Degree<TestType>()(y) == 3);
+    REQUIRE(Complexity<TestType>()(x) == 27);
+    REQUIRE(Complexity<TestType>()(y) == 27);
+    auto id = x.one();
+    y.product_inplace_no_checks(id, x);
+    REQUIRE(y == x);
+    y.product_inplace_no_checks(x, id);
+    REQUIRE(y == x);
+
+    REQUIRE(
+        to_matrix<TestType>({{-2, 2, 0}, {-1, 0, 0}, {1, -3, 1}}).hash_value()
+        != 0);
+
+    y = x;
+    REQUIRE(&x != &y);
+    REQUIRE(x == y);
+    // TODO uncomment or remove
+    // REQUIRE(y
+    //         == to_matrix<TestType>(nullptr, {{-2, 2, 0}, {-1, 0, 0}, {1, -3,
+    //         1}}));
+
+    auto yy(y);
+    REQUIRE(yy == y);
+
+    std::ostringstream oss;
+    oss << y;  // Does not do anything visible
+    std::stringbuf buff;
+    std::ostream   os(&buff);
+    os << y;  // Also does not do anything visible
+
+    REQUIRE(y.row(0) == to_matrix<Row>({-4, 0, -2}));
+    REQUIRE(y.row(1) == Row({-3, -2, -2}));
+    REQUIRE(Row(y.row(0)) == y.row(0));
+
+    auto zz(std::move(y));
+
+    TestType tt;
+    REQUIRE(tt != zz);
+    REQUIRE(TestType::one(3)
+            == TestType({{0, NEGATIVE_INFINITY, NEGATIVE_INFINITY},
+                         {NEGATIVE_INFINITY, 0, NEGATIVE_INFINITY},
+                         {NEGATIVE_INFINITY, NEGATIVE_INFINITY, 0}}));
+    REQUIRE(zz(0, 0) == -4);
+    REQUIRE(zz.number_of_cols() == 3);
+    zz += zz;
+    REQUIRE(zz == TestType({{-2, 2, 0}, {-1, 0, 0}, {1, -3, 1}}));
+    zz *= 2;
+    REQUIRE(zz == TestType({{-2, 2, 0}, {-1, 0, 0}, {1, -3, 1}}));
+    REQUIRE(zz + x == TestType({{-2, 2, 0}, {-1, 0, 0}, {1, -3, 1}}));
+    REQUIRE(zz * x == TestType({{-2, -1, -1}, {-2, -2, -2}, {-1, 0, -1}}));
+    REQUIRE(std::accumulate(zz.cbegin(), zz.cend(), 0) == -20);
+    REQUIRE(std::accumulate(zz.begin(), zz.end(), 0) == -20);
+    x.transpose();
+    REQUIRE(x == TestType({{-4, -3, -1}, {0, -2, -5}, {-2, -2, -1}}));
+    x.swap(zz);
+    REQUIRE(zz == TestType({{-4, -3, -1}, {0, -2, -5}, {-2, -2, -1}}));
+    REQUIRE(matrix::pow(x, 100)
+            == TestType({{-1, 0, -1}, {-2, -1, -2}, {-1, 0, -1}}));
+    REQUIRE_THROWS_AS(matrix::pow(x, -100), LibsemigroupsException);
+    REQUIRE(matrix::pow(x, 1)
+            == TestType({{-4, 0, -2}, {-3, -2, -2}, {-1, -5, -1}}));
+    REQUIRE(matrix::pow(x, 0) == TestType::one(3));
   }
 
   LIBSEMIGROUPS_TEST_CASE("Matrix", "044", "exceptions", "[quick][element]") {

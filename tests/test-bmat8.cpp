@@ -25,7 +25,7 @@
 #include <vector>         // for vector
 
 #include "catch_amalgamated.hpp"  // for REQUIRE, REQUIRE_THROWS_AS, REQUIRE_NOTHROW
-#include "test-main.hpp"          // for LIBSEMIGROUPS_TEST_CASE_V3
+#include "test-main.hpp"          // for LIBSEMIGROUPS_TEST_CASE
 
 #include "libsemigroups/bmat8.hpp"         // for BMat8, operator<<, col_sp...
 #include "libsemigroups/exception.hpp"     // for LibsemigroupsException
@@ -39,10 +39,7 @@ namespace libsemigroups {
   // Forward decl
   struct LibsemigroupsException;
 
-  LIBSEMIGROUPS_TEST_CASE_V3("BMat8",
-                             "000",
-                             "transpose",
-                             "[quick][no-valgrind]") {
+  LIBSEMIGROUPS_TEST_CASE("BMat8", "000", "transpose", "[quick][no-valgrind]") {
     auto  rg = ReportGuard(false);
     BMat8 bm1(0);
     REQUIRE(bmat8::transpose(bm1) == bm1);
@@ -70,7 +67,7 @@ namespace libsemigroups {
                       {1, 1, 1, 1, 1, 1, 1, 0}}));
   }
 
-  LIBSEMIGROUPS_TEST_CASE_V3("BMat8", "001", "arithmetic", "[quick]") {
+  LIBSEMIGROUPS_TEST_CASE("BMat8", "001", "arithmetic", "[quick]") {
     auto  rg = ReportGuard(false);
     BMat8 bm({{0, 0, 0, 1, 0, 0, 1, 1},
               {1, 1, 1, 1, 1, 1, 0, 1},
@@ -137,7 +134,7 @@ namespace libsemigroups {
     REQUIRE(bm == BMat8({{1, 0, 1}, {1, 1, 0}, {1, 0, 0}}));
   }
 
-  LIBSEMIGROUPS_TEST_CASE_V3("BMat8", "002", "identity matrix", "[quick]") {
+  LIBSEMIGROUPS_TEST_CASE("BMat8", "002", "identity matrix", "[quick]") {
     auto  rg = ReportGuard(false);
     BMat8 bm({{0, 1, 1, 1, 0, 1, 0, 1},
               {0, 0, 0, 0, 0, 0, 0, 1},
@@ -160,7 +157,7 @@ namespace libsemigroups {
     REQUIRE(bmat8::one() == id);
   }
 
-  LIBSEMIGROUPS_TEST_CASE_V3("BMat8", "003", "random", "[quick]") {
+  LIBSEMIGROUPS_TEST_CASE("BMat8", "003", "random", "[quick]") {
     auto rg = ReportGuard(false);
     for (size_t d = 1; d < 9; ++d) {
       BMat8 const bm = bmat8::random(d);
@@ -177,7 +174,7 @@ namespace libsemigroups {
     REQUIRE_THROWS_AS(bmat8::random(9), LibsemigroupsException);
   }
 
-  LIBSEMIGROUPS_TEST_CASE_V3("BMat8", "004", "call operator", "[quick]") {
+  LIBSEMIGROUPS_TEST_CASE("BMat8", "004", "call operator", "[quick]") {
     auto                           rg  = ReportGuard(false);
     std::vector<std::vector<bool>> mat = {{0, 0, 0, 1, 0, 0, 1},
                                           {0, 1, 1, 1, 0, 1, 0},
@@ -195,7 +192,7 @@ namespace libsemigroups {
     }
   }
 
-  LIBSEMIGROUPS_TEST_CASE_V3("BMat8", "005", "operator<<", "[quick]") {
+  LIBSEMIGROUPS_TEST_CASE("BMat8", "005", "operator<<", "[quick]") {
     auto               rg = ReportGuard(false);
     std::ostringstream oss;
     oss << bmat8::random();  // Does not do anything visible
@@ -205,7 +202,7 @@ namespace libsemigroups {
     os << bmat8::random();  // Also does not do anything visible
   }
 
-  LIBSEMIGROUPS_TEST_CASE_V3("BMat8", "006", "set", "[quick]") {
+  LIBSEMIGROUPS_TEST_CASE("BMat8", "006", "set", "[quick]") {
     auto  rg = ReportGuard(false);
     BMat8 bm({{0, 1, 1, 1, 0, 1, 0, 1},
               {0, 0, 0, 0, 0, 0, 0, 1},
@@ -287,7 +284,7 @@ namespace libsemigroups {
     REQUIRE_THROWS_AS(zeros.at(8, 8) = true, LibsemigroupsException);
   }
 
-  LIBSEMIGROUPS_TEST_CASE_V3("BMat8", "007", "row space basis", "[quick]") {
+  LIBSEMIGROUPS_TEST_CASE("BMat8", "007", "row space basis", "[quick]") {
     auto  rg = ReportGuard(false);
     BMat8 bm({{0, 1, 1, 1, 0, 1, 0, 1},
               {0, 0, 0, 0, 0, 0, 0, 1},
@@ -346,7 +343,7 @@ namespace libsemigroups {
     }
   }
 
-  LIBSEMIGROUPS_TEST_CASE_V3("BMat8", "008", "col space basis", "[quick]") {
+  LIBSEMIGROUPS_TEST_CASE("BMat8", "008", "col space basis", "[quick]") {
     auto  rg = ReportGuard(false);
     BMat8 bm({{0, 1, 1, 1, 0, 1, 0, 1},
               {0, 0, 0, 0, 0, 0, 0, 1},
@@ -405,7 +402,7 @@ namespace libsemigroups {
     }
   }
 
-  LIBSEMIGROUPS_TEST_CASE_V3("BMat8", "009", "row space basis x 2", "[quick]") {
+  LIBSEMIGROUPS_TEST_CASE("BMat8", "009", "row space basis x 2", "[quick]") {
     auto                     rg = ReportGuard(false);
     detail::Timer            t;
     const std::vector<BMat8> gens
@@ -441,10 +438,10 @@ namespace libsemigroups {
     // std::cout << t;
   }
 
-  LIBSEMIGROUPS_TEST_CASE_V3("BMat8",
-                             "010",
-                             "number_of_rows, number_of_cols",
-                             "[quick]") {
+  LIBSEMIGROUPS_TEST_CASE("BMat8",
+                          "010",
+                          "number_of_rows, number_of_cols",
+                          "[quick]") {
     auto  rg    = ReportGuard(false);
     BMat8 idem1 = bmat8::one();
     BMat8 idem2 = bmat8::one();
@@ -482,10 +479,7 @@ namespace libsemigroups {
     }
   }
 
-  LIBSEMIGROUPS_TEST_CASE_V3("BMat8",
-                             "011",
-                             "row_space, col_space",
-                             "[quick]") {
+  LIBSEMIGROUPS_TEST_CASE("BMat8", "011", "row_space, col_space", "[quick]") {
     auto  rg    = ReportGuard(false);
     BMat8 idem1 = bmat8::one();
     BMat8 idem2 = bmat8::one();
@@ -583,7 +577,7 @@ namespace libsemigroups {
     REQUIRE(21 == bmat8::row_space_size(bm3t));
   }
 
-  LIBSEMIGROUPS_TEST_CASE_V3("BMat8", "012", "rows", "[quick]") {
+  LIBSEMIGROUPS_TEST_CASE("BMat8", "012", "rows", "[quick]") {
     auto  rg = ReportGuard(false);
     BMat8 x({{0, 1}, {1, 0}});
     REQUIRE(x.to_int() == 4647714815446351872);
@@ -661,7 +655,7 @@ namespace libsemigroups {
     }
   }
 
-  LIBSEMIGROUPS_TEST_CASE_V3("BMat8", "013", "one", "[quick]") {
+  LIBSEMIGROUPS_TEST_CASE("BMat8", "013", "one", "[quick]") {
     auto rg = ReportGuard(false);
     for (size_t i = 1; i <= 8; ++i) {
       BMat8 x = bmat8::one<BMat8>(i);
@@ -671,7 +665,7 @@ namespace libsemigroups {
     REQUIRE(bmat8::minimum_dim(BMat8(0)) == 0);
   }
 
-  LIBSEMIGROUPS_TEST_CASE_V3("BMat8", "014", "vector constructor", "[quick]") {
+  LIBSEMIGROUPS_TEST_CASE("BMat8", "014", "vector constructor", "[quick]") {
     auto  rg = ReportGuard(false);
     BMat8 zero(0);
     REQUIRE(BMat8({{0, 0}, {0, 0}}) == zero);
@@ -703,10 +697,7 @@ namespace libsemigroups {
                       LibsemigroupsException);
   }
 
-  LIBSEMIGROUPS_TEST_CASE_V3("BMat8",
-                             "015",
-                             "comparison operators",
-                             "[quick]") {
+  LIBSEMIGROUPS_TEST_CASE("BMat8", "015", "comparison operators", "[quick]") {
     auto  rg = ReportGuard(false);
     BMat8 bm1(0);
     BMat8 bm2({{0, 0, 0, 1, 0, 0, 1, 1},
@@ -738,7 +729,7 @@ namespace libsemigroups {
     REQUIRE(bm1 != bm2);
   }
 
-  LIBSEMIGROUPS_TEST_CASE_V3("BMat8", "016", "adapters", "[quick]") {
+  LIBSEMIGROUPS_TEST_CASE("BMat8", "016", "adapters", "[quick]") {
     auto  rg = ReportGuard(false);
     BMat8 bm1(0);
     REQUIRE(Complexity<BMat8>()(bm1) == 0);
@@ -794,7 +785,7 @@ namespace libsemigroups {
     REQUIRE(Inverse<BMat8>()(bm6) == bm6 * bm6);
   }
 
-  LIBSEMIGROUPS_TEST_CASE_V3("BMat8", "017", "one x 2", "[quick]") {
+  LIBSEMIGROUPS_TEST_CASE("BMat8", "017", "one x 2", "[quick]") {
     BMat8 bm5({{1, 0, 0, 0, 0, 0, 0, 0},
                {0, 1, 0, 0, 0, 0, 0, 0},
                {0, 0, 1, 0, 0, 0, 0, 0},
@@ -808,7 +799,7 @@ namespace libsemigroups {
     REQUIRE(bmat8::one(8) == bmat8::one());
   }
 
-  LIBSEMIGROUPS_TEST_CASE_V3("BMat8", "018", "is_regular_element", "[quick]") {
+  LIBSEMIGROUPS_TEST_CASE("BMat8", "018", "is_regular_element", "[quick]") {
     REQUIRE((rx::seq<uint64_t>() | rx::take(100'000) | rx::filter([](auto val) {
                return bmat8::is_regular_element(BMat8(val));
              })
@@ -816,12 +807,12 @@ namespace libsemigroups {
             == 97'996);
   }
 
-  LIBSEMIGROUPS_TEST_CASE_V3("BMat8", "019", "at", "[quick]") {
+  LIBSEMIGROUPS_TEST_CASE("BMat8", "019", "at", "[quick]") {
     auto x = bmat8::random();
     REQUIRE_THROWS_AS(x.at(0, 8), LibsemigroupsException);
   }
 
-  LIBSEMIGROUPS_TEST_CASE_V3("BMat8", "020", "to_string", "[quick]") {
+  LIBSEMIGROUPS_TEST_CASE("BMat8", "020", "to_string", "[quick]") {
     REQUIRE(to_string(bmat8::one(5)) == R"V0G0N(BMat8({{1, 0, 0, 0, 0},
        {0, 1, 0, 0, 0},
        {0, 0, 1, 0, 0},

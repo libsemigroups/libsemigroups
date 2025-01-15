@@ -29,123 +29,55 @@ namespace libsemigroups {
 
   constexpr bool REPORT = false;
 
-  ////////////////////////////////////////////////////////////////////////
-  // Test functions
-  ////////////////////////////////////////////////////////////////////////
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("Konieczny",
+                                   "000",
+                                   "4x4 boolean matrix semigroup (size 26)",
+                                   "[quick][bmat]",
+                                   BMat<>,
+                                   BMat<4>) {
+    auto                  rg = ReportGuard(REPORT);
+    std::vector<TestType> gens
+        = {TestType({{0, 1, 0, 1}, {1, 0, 0, 0}, {0, 1, 1, 1}, {0, 1, 1, 0}}),
+           TestType({{0, 1, 1, 1}, {1, 1, 0, 0}, {0, 0, 0, 0}, {1, 1, 1, 1}}),
+           TestType({{0, 1, 1, 0}, {0, 1, 1, 0}, {0, 1, 1, 1}, {1, 1, 1, 1}})};
 
-  namespace {
+    Konieczny<TestType> S(gens);
+    REQUIRE(S.size() == 26);
+  }
 
-    template <typename Mat>
-    void test000() {
-      auto             rg = ReportGuard(REPORT);
-      std::vector<Mat> gens
-          = {Mat({{0, 1, 0, 1}, {1, 0, 0, 0}, {0, 1, 1, 1}, {0, 1, 1, 0}}),
-             Mat({{0, 1, 1, 1}, {1, 1, 0, 0}, {0, 0, 0, 0}, {1, 1, 1, 1}}),
-             Mat({{0, 1, 1, 0}, {0, 1, 1, 0}, {0, 1, 1, 1}, {1, 1, 1, 1}})};
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("Konieczny",
+                                   "002",
+                                   "4x4 boolean matrix semigroup (size 415)",
+                                   "[quick][bmat][no-valgrind]",
+                                   BMat<>,
+                                   BMat<4>) {
+    auto                  rg = ReportGuard(REPORT);
+    std::vector<TestType> gens
+        = {TestType({{1, 0, 0, 0}, {0, 0, 1, 0}, {1, 0, 0, 1}, {0, 1, 0, 0}}),
+           TestType({{1, 0, 0, 1}, {1, 0, 0, 1}, {1, 1, 1, 1}, {0, 1, 1, 0}}),
+           TestType({{1, 0, 1, 0}, {1, 0, 1, 1}, {0, 0, 1, 1}, {0, 1, 0, 1}}),
+           TestType({{0, 0, 0, 0}, {0, 1, 0, 1}, {1, 1, 1, 0}, {1, 0, 0, 1}}),
+           TestType({{0, 0, 0, 1}, {0, 0, 1, 0}, {1, 0, 0, 1}, {1, 1, 0, 0}})};
 
-      Konieczny<Mat> S(gens);
-      REQUIRE(S.size() == 26);
+    Konieczny<TestType> S(gens);
+    REQUIRE(S.size() == 415);
+  }
+
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE(
+      "Konieczny",
+      "004",
+      "40x40 boolean matrix semigroup (size 248'017)",
+      "[extreme][bmat]",
+      BMat<40>,
+      BMat<>) {
+    auto                rg = ReportGuard(true);
+    Konieczny<TestType> S;
+    for (auto const& v : konieczny_data::clark_gens) {
+      S.add_generator(TestType(v));
     }
-
-    template <typename Mat>
-    void test001() {
-      auto             rg = ReportGuard(REPORT);
-      std::vector<Mat> gens
-          = {Mat({{1, 0, 0, 0}, {0, 0, 1, 0}, {1, 0, 0, 1}, {0, 1, 0, 0}}),
-             Mat({{1, 0, 0, 1}, {1, 0, 0, 1}, {1, 1, 1, 1}, {0, 1, 1, 0}}),
-             Mat({{1, 0, 1, 0}, {1, 0, 1, 1}, {0, 0, 1, 1}, {0, 1, 0, 1}}),
-             Mat({{0, 0, 0, 0}, {0, 1, 0, 1}, {1, 1, 1, 0}, {1, 0, 0, 1}}),
-             Mat({{0, 0, 0, 1}, {0, 0, 1, 0}, {1, 0, 0, 1}, {1, 1, 0, 0}})};
-
-      Konieczny<Mat> S(gens);
-      REQUIRE(S.size() == 415);
-    }
-
-    template <typename Mat>
-    void test002() {
-      auto           rg = ReportGuard(true);
-      Konieczny<Mat> S;
-      for (auto const& v : konieczny_data::clark_gens) {
-        S.add_generator(Mat(v));
-      }
-      REQUIRE(S.generator(0).number_of_rows() == 40);
-      S.run();
-      REQUIRE(S.size() == 248017);
-    }
-
-    template <typename Mat>
-    void test003() {
-      auto             rg   = ReportGuard(REPORT);
-      std::vector<Mat> gens = {Mat({{0, 1, 1, 1, 0},
-                                    {0, 0, 1, 0, 0},
-                                    {1, 0, 0, 1, 0},
-                                    {1, 1, 1, 0, 0},
-                                    {0, 1, 1, 1, 1}}),
-                               Mat({{0, 0, 0, 1, 0},
-                                    {0, 0, 1, 0, 0},
-                                    {1, 0, 0, 0, 0},
-                                    {0, 0, 0, 0, 0},
-                                    {0, 1, 0, 1, 1}}),
-                               Mat({{0, 0, 0, 1, 0},
-                                    {1, 1, 0, 0, 0},
-                                    {0, 0, 1, 1, 1},
-                                    {1, 1, 0, 0, 1},
-                                    {0, 0, 1, 1, 0}}),
-                               Mat({{0, 1, 0, 0, 1},
-                                    {0, 0, 1, 0, 1},
-                                    {1, 0, 1, 0, 0},
-                                    {0, 1, 1, 1, 0},
-                                    {1, 0, 0, 0, 1}})};
-
-      Konieczny<Mat> S(gens);
-      REQUIRE(S.size() == 513);
-    }
-  }  // namespace
-
-  ////////////////////////////////////////////////////////////////////////
-  // Test cases
-  ////////////////////////////////////////////////////////////////////////
-
-  LIBSEMIGROUPS_TEST_CASE("Konieczny",
-                          "000",
-                          "test000<BMat<>>",
-                          "[quick][bmat]") {
-    test000<BMat<>>();
-  }
-
-  LIBSEMIGROUPS_TEST_CASE("Konieczny",
-                          "001",
-                          "test000<BMat<4>>",
-                          "[quick][bmat]") {
-    test000<BMat<4>>();
-  }
-
-  LIBSEMIGROUPS_TEST_CASE("Konieczny",
-                          "002",
-                          "test001<BMat<>>",
-                          "[quick][bmat][no-valgrind]") {
-    test001<BMat<>>();
-  }
-
-  LIBSEMIGROUPS_TEST_CASE("Konieczny",
-                          "003",
-                          "test001<BMat<4>>",
-                          "[quick][bmat][no-valgrind]") {
-    test001<BMat<4>>();
-  }
-
-  LIBSEMIGROUPS_TEST_CASE("Konieczny",
-                          "004",
-                          "BMat<>: generators from Sean Clark",
-                          "[extreme][bmat]") {
-    test002<BMat<>>();
-  }
-
-  LIBSEMIGROUPS_TEST_CASE("Konieczny",
-                          "005",
-                          "BMat<40>: generators from Sean Clark",
-                          "[extreme][bmat]") {
-    test002<BMat<40>>();
+    REQUIRE(S.generator(0).number_of_rows() == 40);
+    S.run();
+    REQUIRE(S.size() == 248'017);
   }
 
   LIBSEMIGROUPS_TEST_CASE("Konieczny", "006", "exceptions", "[quick][bmat]") {
@@ -158,17 +90,35 @@ namespace libsemigroups {
     // This doesn't throw when using BMat<4>, so there's no test for that
   }
 
-  LIBSEMIGROUPS_TEST_CASE("Konieczny",
-                          "007",
-                          "code coverage",
-                          "[quick][bmat][no-valgrind]") {
-    test003<BMat<>>();
-  }
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("Konieczny",
+                                   "007",
+                                   "5x5 boolean matrix semigroup (size 513)",
+                                   "[quick][bmat][no-valgrind]",
+                                   BMat<>,
+                                   BMat<5>) {
+    auto                  rg   = ReportGuard(REPORT);
+    std::vector<TestType> gens = {TestType({{0, 1, 1, 1, 0},
+                                            {0, 0, 1, 0, 0},
+                                            {1, 0, 0, 1, 0},
+                                            {1, 1, 1, 0, 0},
+                                            {0, 1, 1, 1, 1}}),
+                                  TestType({{0, 0, 0, 1, 0},
+                                            {0, 0, 1, 0, 0},
+                                            {1, 0, 0, 0, 0},
+                                            {0, 0, 0, 0, 0},
+                                            {0, 1, 0, 1, 1}}),
+                                  TestType({{0, 0, 0, 1, 0},
+                                            {1, 1, 0, 0, 0},
+                                            {0, 0, 1, 1, 1},
+                                            {1, 1, 0, 0, 1},
+                                            {0, 0, 1, 1, 0}}),
+                                  TestType({{0, 1, 0, 0, 1},
+                                            {0, 0, 1, 0, 1},
+                                            {1, 0, 1, 0, 0},
+                                            {0, 1, 1, 1, 0},
+                                            {1, 0, 0, 0, 1}})};
 
-  LIBSEMIGROUPS_TEST_CASE("Konieczny",
-                          "008",
-                          "code coverage",
-                          "[quick][bmat][no-valgrind]") {
-    test003<BMat<5>>();
+    Konieczny<TestType> S(gens);
+    REQUIRE(S.size() == 513);
   }
 }  // namespace libsemigroups

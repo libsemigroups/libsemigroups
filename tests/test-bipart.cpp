@@ -30,7 +30,7 @@
 #include <vector>     // for vector, operator==, allocator
 
 #include "catch_amalgamated.hpp"  // for REQUIRE, REQUIRE_THROWS_AS, REQUIRE_NOTHROW
-#include "test-main.hpp"          // for LIBSEMIGROUPS_TEST_CASE_V3
+#include "test-main.hpp"          // for LIBSEMIGROUPS_TEST_CASE
 
 #include "libsemigroups/bipart.hpp"     // for Bipartition
 #include "libsemigroups/exception.hpp"  // for LibsemigroupsException
@@ -50,7 +50,7 @@ namespace libsemigroups {
 
   }  // namespace
 
-  LIBSEMIGROUPS_TEST_CASE_V3("Blocks", "001", "empty blocks", "[quick]") {
+  LIBSEMIGROUPS_TEST_CASE("Blocks", "001", "empty blocks", "[quick]") {
     Blocks b1 = to_blocks({});
     Blocks b2 = to_blocks({{4, 2}, {-1, -5}, {-3, -6}});
     REQUIRE(b2.lookup() == std::vector<bool>({true, false, true}));
@@ -67,7 +67,7 @@ namespace libsemigroups {
             == "Blocks({{-1, -5}, {2, 4}, {-3, -6}})");
   }
 
-  LIBSEMIGROUPS_TEST_CASE_V3("Blocks", "002", "non-empty blocks", "[quick]") {
+  LIBSEMIGROUPS_TEST_CASE("Blocks", "002", "non-empty blocks", "[quick]") {
     Blocks b = construct_blocks({0, 1, 2, 1, 0, 2}, {true, false, true});
     REQUIRE(b == b);
     REQUIRE_NOTHROW(b.block_no_checks(0, 0));
@@ -93,10 +93,10 @@ namespace libsemigroups {
     REQUIRE_THROWS_AS(blocks::validate(b), LibsemigroupsException);
   }
 
-  LIBSEMIGROUPS_TEST_CASE_V3("Blocks",
-                             "003",
-                             "left blocks of bipartition",
-                             "[quick]") {
+  LIBSEMIGROUPS_TEST_CASE("Blocks",
+                          "003",
+                          "left blocks of bipartition",
+                          "[quick]") {
     Bipartition x = Bipartition(
         {0, 1, 2, 1, 0, 2, 1, 0, 2, 2, 0, 0, 2, 0, 3, 4, 4, 1, 3, 0});
     Blocks* b = x.left_blocks();
@@ -115,10 +115,10 @@ namespace libsemigroups {
     delete b;
   }
 
-  LIBSEMIGROUPS_TEST_CASE_V3("Blocks",
-                             "004",
-                             "right blocks of bipartition",
-                             "[quick]") {
+  LIBSEMIGROUPS_TEST_CASE("Blocks",
+                          "004",
+                          "right blocks of bipartition",
+                          "[quick]") {
     Bipartition x = Bipartition(
         {0, 1, 1, 1, 1, 2, 3, 2, 4, 4, 5, 2, 4, 2, 1, 1, 1, 2, 3, 2});
     Blocks* b = x.right_blocks();
@@ -139,10 +139,7 @@ namespace libsemigroups {
     delete b;
   }
 
-  LIBSEMIGROUPS_TEST_CASE_V3("Blocks",
-                             "005",
-                             "copy [empty blocks]",
-                             "[quick]") {
+  LIBSEMIGROUPS_TEST_CASE("Blocks", "005", "copy [empty blocks]", "[quick]") {
     Blocks b = construct_blocks({}, {});
     Blocks c(b);
     REQUIRE(!IsBipartition<Blocks>);
@@ -156,10 +153,10 @@ namespace libsemigroups {
     REQUIRE(c.rank() == 0);
   }
 
-  LIBSEMIGROUPS_TEST_CASE_V3("Blocks",
-                             "006",
-                             "copy [non-empty blocks]",
-                             "[quick]") {
+  LIBSEMIGROUPS_TEST_CASE("Blocks",
+                          "006",
+                          "copy [non-empty blocks]",
+                          "[quick]") {
     Blocks b = construct_blocks({0, 0, 1, 0, 2, 0, 1, 2, 2, 1, 0},
                                 {false, true, false});
     Blocks c(b);
@@ -179,7 +176,7 @@ namespace libsemigroups {
     REQUIRE(c.rank() == 1);
   }
 
-  LIBSEMIGROUPS_TEST_CASE_V3("Blocks", "007", "hash value", "[quick]") {
+  LIBSEMIGROUPS_TEST_CASE("Blocks", "007", "hash value", "[quick]") {
     Blocks b = construct_blocks({0, 0, 1, 0, 2, 0, 1, 2, 2, 1, 0},
                                 {false, true, false});
     Blocks c = construct_blocks({0, 0, 1, 0, 2, 0, 1, 2, 2, 1, 0},
@@ -194,7 +191,7 @@ namespace libsemigroups {
     REQUIRE(b.hash_value() == 0);
   }
 
-  LIBSEMIGROUPS_TEST_CASE_V3("Blocks", "008", "operator<", "[quick]") {
+  LIBSEMIGROUPS_TEST_CASE("Blocks", "008", "operator<", "[quick]") {
     Blocks b = construct_blocks({0, 0, 1, 0, 2, 0, 1, 2, 2, 1, 0},
                                 {false, true, false});
     Blocks c = construct_blocks({0, 0, 1, 0, 2, 0, 1, 2, 2, 1, 0},
@@ -211,10 +208,10 @@ namespace libsemigroups {
     REQUIRE(b < c);
   }
 
-  LIBSEMIGROUPS_TEST_CASE_V3("Bipartition",
-                             "009",
-                             "mem fns 1",
-                             "[quick][bipartition]") {
+  LIBSEMIGROUPS_TEST_CASE("Bipartition",
+                          "009",
+                          "mem fns 1",
+                          "[quick][bipartition]") {
     auto x = Bipartition(
         {0, 1, 2, 1, 0, 2, 1, 0, 2, 2, 0, 0, 2, 0, 3, 4, 4, 1, 3, 0});
     auto y = Bipartition(
@@ -271,10 +268,10 @@ namespace libsemigroups {
             == "<bipartition of degree 10 with 5 blocks and rank 1>");
   }
 
-  LIBSEMIGROUPS_TEST_CASE_V3("Bipartition",
-                             "010",
-                             "hash",
-                             "[quick][bipartition]") {
+  LIBSEMIGROUPS_TEST_CASE("Bipartition",
+                          "010",
+                          "hash",
+                          "[quick][bipartition]") {
     Bipartition x({0, 1, 2, 1, 0, 2, 1, 0, 2, 2, 0, 0, 2, 0, 3, 4, 4, 1, 3, 0});
     auto        expected = x.hash_value();
     for (size_t i = 0; i < 1'000'000; i++) {
@@ -282,10 +279,10 @@ namespace libsemigroups {
     }
   }
 
-  LIBSEMIGROUPS_TEST_CASE_V3("Bipartition",
-                             "011",
-                             "mem fns 2",
-                             "[quick][bipartition]") {
+  LIBSEMIGROUPS_TEST_CASE("Bipartition",
+                          "011",
+                          "mem fns 2",
+                          "[quick][bipartition]") {
     Bipartition x({0, 0, 0, 0, 0, 0, 1, 2, 0, 1, 0, 0, 1, 2, 3, 3, 0, 4, 1, 1});
 
     REQUIRE(x.rank() == 3);
@@ -335,10 +332,10 @@ namespace libsemigroups {
     REQUIRE(x.rank() == 3);
   }
 
-  LIBSEMIGROUPS_TEST_CASE_V3("Bipartition",
-                             "012",
-                             "delete/copy",
-                             "[quick][bipartition]") {
+  LIBSEMIGROUPS_TEST_CASE("Bipartition",
+                          "012",
+                          "delete/copy",
+                          "[quick][bipartition]") {
     Bipartition x({0, 0, 0, 0});
     Bipartition y(x);
 
@@ -346,10 +343,10 @@ namespace libsemigroups {
     REQUIRE(y == expected);
   }
 
-  LIBSEMIGROUPS_TEST_CASE_V3("Bipartition",
-                             "013",
-                             "degree 0",
-                             "[quick][bipartition]") {
+  LIBSEMIGROUPS_TEST_CASE("Bipartition",
+                          "013",
+                          "degree 0",
+                          "[quick][bipartition]") {
     Bipartition x(std::vector<uint32_t>({}));
     REQUIRE(x.number_of_blocks() == 0);
     REQUIRE(x.number_of_left_blocks() == 0);
@@ -365,19 +362,19 @@ namespace libsemigroups {
     delete b;
   }
 
-  LIBSEMIGROUPS_TEST_CASE_V3("Bipartition",
-                             "014",
-                             "exceptions",
-                             "[quick][bipartition]") {
+  LIBSEMIGROUPS_TEST_CASE("Bipartition",
+                          "014",
+                          "exceptions",
+                          "[quick][bipartition]") {
     REQUIRE_NOTHROW(Bipartition(std::vector<uint32_t>()));
     REQUIRE_THROWS_AS(to_bipartition({0}), LibsemigroupsException);
     REQUIRE_THROWS_AS(to_bipartition({1, 0}), LibsemigroupsException);
   }
 
-  LIBSEMIGROUPS_TEST_CASE_V3("Bipartition",
-                             "015",
-                             "convenience constructor",
-                             "[quick][bipartition]") {
+  LIBSEMIGROUPS_TEST_CASE("Bipartition",
+                          "015",
+                          "convenience constructor",
+                          "[quick][bipartition]") {
     Bipartition xx(
         {0, 0, 0, 0, 0, 0, 1, 2, 0, 1, 0, 0, 1, 2, 3, 3, 0, 4, 1, 1});
 
@@ -533,10 +530,10 @@ namespace libsemigroups {
                       LibsemigroupsException);
   }
 
-  LIBSEMIGROUPS_TEST_CASE_V3("Bipartition",
-                             "016",
-                             "force copy constructor over move constructor",
-                             "[quick][bipartition]") {
+  LIBSEMIGROUPS_TEST_CASE("Bipartition",
+                          "016",
+                          "force copy constructor over move constructor",
+                          "[quick][bipartition]") {
     std::vector<uint32_t> xx(
         {0, 1, 2, 1, 0, 2, 1, 0, 2, 2, 0, 0, 2, 0, 3, 4, 4, 1, 3, 0});
     auto                  x = Bipartition(xx);
@@ -582,15 +579,12 @@ namespace libsemigroups {
     REQUIRE(copy1 == copy2);
   }
 
-  LIBSEMIGROUPS_TEST_CASE_V3("Bipartition",
-                             "017",
-                             "adapters",
-                             "[quick][bipart]") {
+  LIBSEMIGROUPS_TEST_CASE("Bipartition", "017", "adapters", "[quick][bipart]") {
     Bipartition x({0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 3, 3, 1, 2, 1});
     REQUIRE_NOTHROW(IncreaseDegree<Bipartition>()(x, 0));
   }
 
-  LIBSEMIGROUPS_TEST_CASE_V3("Bipartition", "018", "bug", "[quick][bipart]") {
+  LIBSEMIGROUPS_TEST_CASE("Bipartition", "018", "bug", "[quick][bipart]") {
     Bipartition x({{1, -2, -3}, {-1}, {2, 3}});
     REQUIRE_NOTHROW(bipartition::validate(x));
   }

@@ -21,10 +21,11 @@
 
 #include "bmat-data.hpp"          // for clark_gens
 #include "catch_amalgamated.hpp"  // for REQUIRE
-#include "test-main.hpp"          // for LIBSEMIGROUPS_TEST_CASE_V3
+#include "test-main.hpp"          // for LIBSEMIGROUPS_TEST_CASE
 
 #include "libsemigroups/froidure-pin.hpp"  // for FroidurePin<>::element_index_type
 #include "libsemigroups/matrix.hpp"        // for BMat
+#include "libsemigroups/word-range.hpp"  // for namespace literals
 
 #include "libsemigroups/detail/report.hpp"  // for ReportGuard
 
@@ -40,10 +41,12 @@ namespace libsemigroups {
   // Test cases - BMat
   ////////////////////////////////////////////////////////////////////////
 
-  TEMPLATE_TEST_CASE("FroidurePin: small example 1",
-                     "[005][quick][froidure-pin][bmat]",
-                     BMat<4>,
-                     BMat<>) {
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("FroidurePin",
+                                   "005",
+                                   "small example 1",
+                                   "[quick][froidure-pin][bmat]",
+                                   BMat<4>,
+                                   BMat<>) {
     auto                  rg = ReportGuard(REPORT);
     FroidurePin<TestType> S;
     S.add_generator(
@@ -89,10 +92,12 @@ namespace libsemigroups {
     REQUIRE(std::is_sorted(S.cbegin_sorted(), S.cend_sorted()));
   }
 
-  TEMPLATE_TEST_CASE("FroidurePin: regular bmat monoid 4",
-                     "[007][quick][froidure-pin][bmat][no-valgrind]",
-                     BMat<4>,
-                     BMat<>) {
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("FroidurePin",
+                                   "007",
+                                   "regular bmat monoid 4",
+                                   "[quick][froidure-pin][bmat][no-valgrind]",
+                                   BMat<4>,
+                                   BMat<>) {
     auto                  rg = ReportGuard(REPORT);
     FroidurePin<TestType> S;
     S.add_generator(
@@ -107,10 +112,12 @@ namespace libsemigroups {
     REQUIRE(S.number_of_idempotents() == 2'360);
   }
 
-  TEMPLATE_TEST_CASE("FroidurePin: small example 2",
-                     "[009][quick][froidure-pin][bmat]",
-                     BMat<3>,
-                     BMat<>) {
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("FroidurePin",
+                                   "009",
+                                   "small example 2",
+                                   "[quick][froidure-pin][bmat]",
+                                   BMat<3>,
+                                   BMat<>) {
     auto rg = ReportGuard(REPORT);
 
     FroidurePin<TestType> S;
@@ -143,10 +150,12 @@ namespace libsemigroups {
     REQUIRE(S.fast_product(1, 2) == 1);
   }
 
-  TEMPLATE_TEST_CASE("FroidurePin: small example 3",
-                     "[011][quick][froidure-pin][bmat]",
-                     BMat<4>,
-                     BMat<>) {
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("FroidurePin",
+                                   "011",
+                                   "small example 3",
+                                   "[quick][froidure-pin][bmat]",
+                                   BMat<4>,
+                                   BMat<>) {
     auto S = to_froidure_pin(
         {TestType({{1, 0, 0, 0}, {0, 0, 1, 0}, {1, 0, 0, 1}, {0, 1, 0, 0}}),
          TestType({{1, 0, 0, 1}, {1, 0, 0, 1}, {1, 1, 1, 1}, {0, 1, 1, 0}}),
@@ -156,10 +165,12 @@ namespace libsemigroups {
     REQUIRE(S.size() == 415);
   }
 
-  TEMPLATE_TEST_CASE("FroidurePin: Clark generators",
-                     "[013][extreme][froidure-pin][bmat]",
-                     BMat<40>,
-                     BMat<>) {
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("FroidurePin",
+                                   "013",
+                                   "Clark generators",
+                                   "[extreme][froidure-pin][bmat]",
+                                   BMat<40>,
+                                   BMat<>) {
     auto                  rg = ReportGuard(true);
     FroidurePin<TestType> S;
     for (auto const& x : konieczny_data::clark_gens) {

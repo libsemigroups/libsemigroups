@@ -20,7 +20,7 @@
 #include <cstdint>      // for uint8_t
 #include <type_traits>  // for enable_if, is_integral
 
-#include "catch_amalgamated.hpp"           // for LIBSEMIGROUPS_TEST_CASE_V3
+#include "catch_amalgamated.hpp"           // for LIBSEMIGROUPS_TEST_CASE
 #include "libsemigroups/adapters.hpp"      // for complexity etc
 #include "libsemigroups/debug.hpp"         // for LIBSEMIGROUPS_ASSERT
 #include "libsemigroups/froidure-pin.hpp"  // for FroidurePin<>::element_i...
@@ -79,10 +79,10 @@ namespace libsemigroups {
     }
   };
 
-  LIBSEMIGROUPS_TEST_CASE_V3("FroidurePin",
-                             "031",
-                             "uint32_t/uint8_t",
-                             "[quick][froidure-pin][integers]") {
+  LIBSEMIGROUPS_TEST_CASE("FroidurePin",
+                          "031",
+                          "uint32_t/uint8_t",
+                          "[quick][froidure-pin][integers]") {
     auto                  rg = ReportGuard(REPORT);
     FroidurePin<uint32_t> S;
     S.add_generator(2);

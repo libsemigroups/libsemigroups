@@ -16,28 +16,34 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
+#include <type_traits>  // for is_reference
+
 #ifndef LIBSEMIGROUPS_TESTS_TEST_MAIN_HPP_
 #define LIBSEMIGROUPS_TESTS_TEST_MAIN_HPP_
 
 #define CATCH_CONFIG_ENABLE_ALL_STRINGMAKERS
-#include "libsemigroups/paths.hpp"
-#include "libsemigroups/runner.hpp"
-#include "libsemigroups/types.hpp"
 
 #define STR2(X) #X
 #define STR(X) STR2(X)
 
-// TODO(0) remove the nr from the prefix
+#define LIBSEMIGROUPS_TEST_NUM "LIBSEMIGROUPS_TEST_NUM="
+#define LIBSEMIGROUPS_TEST_PREFIX "LIBSEMIGROUPS_TEST_PREFIX="
 
-#define LIBSEMIGROUPS_TEST_CASE(classname, nr, msg, tags)             \
-  TEST_CASE(classname " " nr ": " msg,                                \
-            "[" classname " " nr "][" classname "][" nr "][" __FILE__ \
-            "][" STR(__LINE__) "]" tags)
+// Note that TEST_NUM_ID and TEST_PREFIX_ID allow us to locate these
+// tags in the listener
+#define LIBSEMIGROUPS_TEST_CASE(classname, nr, msg, tags)                 \
+  TEST_CASE(classname ": " msg,                                           \
+            "[" LIBSEMIGROUPS_TEST_PREFIX classname " " nr "][" classname \
+            " " nr "][" classname "][" nr "][" LIBSEMIGROUPS_TEST_NUM nr  \
+            "][" __FILE__ "][" STR(__LINE__) "]" tags)
 
-#define LIBSEMIGROUPS_TEST_CASE_V3(classname, nr, msg, tags)          \
-  TEST_CASE(classname ": " msg,                                       \
-            "[" classname " " nr "][" classname "][" nr "][" __FILE__ \
-            "][" STR(__LINE__) "]" tags)
+#define LIBSEMIGROUPS_TEMPLATE_TEST_CASE(classname, nr, msg, tags, ...) \
+  TEMPLATE_TEST_CASE(classname ": " msg,                                \
+                     "[" LIBSEMIGROUPS_TEST_PREFIX classname " " nr     \
+                     "][" classname " " nr "][" classname "][" nr       \
+                     "][" LIBSEMIGROUPS_TEST_NUM nr "][" __FILE__       \
+                     "][" STR(__LINE__) "]" tags,                       \
+                     __VA_ARGS__)
 
 namespace libsemigroups {
 
@@ -69,27 +75,5 @@ namespace libsemigroups {
     REQUIRE(*it == *copy);
   }
 }  // namespace libsemigroups
-
-CATCH_REGISTER_ENUM(libsemigroups::tril,
-                    libsemigroups::tril::TRUE,
-                    libsemigroups::tril::FALSE,
-                    libsemigroups::tril::unknown);
-
-CATCH_REGISTER_ENUM(libsemigroups::paths::algorithm,
-                    libsemigroups::paths::algorithm::dfs,
-                    libsemigroups::paths::algorithm::matrix,
-                    libsemigroups::paths::algorithm::acyclic,
-                    libsemigroups::paths::algorithm::automatic,
-                    libsemigroups::paths::algorithm::trivial)
-
-CATCH_REGISTER_ENUM(libsemigroups::Runner::state,
-                    libsemigroups::Runner::state::never_run,
-                    libsemigroups::Runner::state::running_to_finish,
-                    libsemigroups::Runner::state::running_for,
-                    libsemigroups::Runner::state::running_until,
-                    libsemigroups::Runner::state::timed_out,
-                    libsemigroups::Runner::state::stopped_by_predicate,
-                    libsemigroups::Runner::state::not_running,
-                    libsemigroups::Runner::state::dead);
 
 #endif  // LIBSEMIGROUPS_TESTS_TEST_MAIN_HPP_

@@ -32,84 +32,6 @@ namespace libsemigroups {
 
   namespace {
     template <typename T>
-    void test_transf000() {
-      static_assert(IsTransf<T>, "IsTransf<T> must be true!");
-      auto x = T({0, 1, 0});
-      auto y = T({0, 1, 0});
-      REQUIRE(x == y);
-      REQUIRE(y * y == x);
-      REQUIRE((x < y) == false);
-
-      auto z = T({0, 1, 0, 3});
-      REQUIRE(x < z);
-      REQUIRE(image(z) == std::vector<typename T::point_type>({0, 1, 3}));
-
-      auto expected = T({0, 0, 0});
-      REQUIRE(expected < x);
-
-      REQUIRE(z.degree() == 4);
-      REQUIRE(Complexity<T>()(z) == 4);
-      REQUIRE(z.rank() == 3);
-      auto id = one(z);
-
-      expected = T({0, 1, 2, 3});
-      REQUIRE(id == expected);
-
-      if (IsDynamic<T>) {
-        x.increase_degree_by(10);
-        REQUIRE(x.degree() == 13);
-        REQUIRE(x.end() - x.begin() == 13);
-      } else {
-        REQUIRE_THROWS_AS(x.increase_degree_by(10), LibsemigroupsException);
-      }
-      auto t = to<Transf<>>({9, 7, 3, 5, 3, 4, 2, 7, 7, 1});
-      REQUIRE(t.hash_value() != 0);
-      REQUIRE_NOTHROW(t.undef());
-    }
-
-    template <typename T>
-    void test_pperm001() {
-      static_assert(IsPPerm<T>, "IsPPerm<T> must be true!");
-      auto x = T({4, 5, 0}, {9, 0, 1}, 10);
-      auto y = T({4, 5, 0}, {9, 0, 1}, 10);
-      REQUIRE(x.undef() == UNDEFINED);
-      REQUIRE(x == y);
-      auto yy = x * x;
-      REQUIRE(yy[0] == UNDEFINED);
-      REQUIRE(yy[1] == UNDEFINED);
-      REQUIRE(yy.at(2) == UNDEFINED);
-      REQUIRE(yy.at(3) == UNDEFINED);
-      REQUIRE(yy.at(4) == UNDEFINED);
-      REQUIRE(yy.at(5) == 1);
-
-      REQUIRE(yy > y);
-      REQUIRE(!(x < x));
-      auto expected = T({UNDEFINED, UNDEFINED, UNDEFINED});
-      REQUIRE(expected > x);
-
-      REQUIRE(x.degree() == 10);
-      REQUIRE(y.degree() == 10);
-      REQUIRE(Complexity<T>()(x) == 10);
-      REQUIRE(Complexity<T>()(y) == 10);
-      REQUIRE(yy.rank() == 1);
-      REQUIRE(y.rank() == 3);
-      REQUIRE(x.rank() == 3);
-
-      auto id  = one(x);
-      expected = T({0, 1, 2, 3, 4, 5, 6, 7, 8, 9});
-      REQUIRE(id == expected);
-
-      if (IsDynamic<T>) {
-        x.increase_degree_by(10);
-        REQUIRE(x.degree() == 20);
-        REQUIRE(x.end() >= x.begin());
-        REQUIRE(static_cast<size_t>(x.end() - x.begin()) == x.degree());
-      } else {
-        REQUIRE_THROWS_AS(x.increase_degree_by(10), LibsemigroupsException);
-      }
-      REQUIRE(x.hash_value() != 0);
-    }
-    template <typename T>
     bool test_inverse(T const& p) {
       return p * inverse(p) == one(p) && inverse(p) * p == one(p);
     }
@@ -126,9 +48,44 @@ namespace libsemigroups {
     // REQUIRE(to_string(x, "{}") == "Transf<0, uint32_t>({0, 1, 0})");
   }
 
-  LIBSEMIGROUPS_TEST_CASE("Transf", "001", "mem fns", "[quick][transf]") {
-    test_transf000<Transf<>>();
-    test_transf000<Transf<4>>();
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("Transf",
+                                   "001",
+                                   "mem fns",
+                                   "[quick][transf]",
+                                   Transf<>,
+                                   Transf<4>) {
+    static_assert(IsTransf<TestType>, "IsTransf<TestType> must be true!");
+    auto x = TestType({0, 1, 0});
+    auto y = TestType({0, 1, 0});
+    REQUIRE(x == y);
+    REQUIRE(y * y == x);
+    REQUIRE((x < y) == false);
+
+    auto z = TestType({0, 1, 0, 3});
+    REQUIRE(x < z);
+    REQUIRE(image(z) == std::vector<typename TestType::point_type>({0, 1, 3}));
+
+    auto expected = TestType({0, 0, 0});
+    REQUIRE(expected < x);
+
+    REQUIRE(z.degree() == 4);
+    REQUIRE(Complexity<TestType>()(z) == 4);
+    REQUIRE(z.rank() == 3);
+    auto id = one(z);
+
+    expected = TestType({0, 1, 2, 3});
+    REQUIRE(id == expected);
+
+    if (IsDynamic<TestType>) {
+      x.increase_degree_by(10);
+      REQUIRE(x.degree() == 13);
+      REQUIRE(x.end() - x.begin() == 13);
+    } else {
+      REQUIRE_THROWS_AS(x.increase_degree_by(10), LibsemigroupsException);
+    }
+    auto t = to<Transf<>>({9, 7, 3, 5, 3, 4, 2, 7, 7, 1});
+    REQUIRE(t.hash_value() != 0);
+    REQUIRE_NOTHROW(t.undef());
   }
 
   LIBSEMIGROUPS_TEST_CASE("Transf",
@@ -170,9 +127,51 @@ namespace libsemigroups {
                       LibsemigroupsException);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("PPerm", "004", "mem fns", "[quick][pperm]") {
-    test_pperm001<PPerm<>>();
-    test_pperm001<PPerm<10>>();
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("PPerm",
+                                   "004",
+                                   "mem fns",
+                                   "[quick][pperm]",
+                                   PPerm<>,
+                                   PPerm<10>) {
+    static_assert(IsPPerm<TestType>, "IsPPerm<TestType> must be true!");
+    auto x = TestType({4, 5, 0}, {9, 0, 1}, 10);
+    auto y = TestType({4, 5, 0}, {9, 0, 1}, 10);
+    REQUIRE(x.undef() == UNDEFINED);
+    REQUIRE(x == y);
+    auto yy = x * x;
+    REQUIRE(yy[0] == UNDEFINED);
+    REQUIRE(yy[1] == UNDEFINED);
+    REQUIRE(yy.at(2) == UNDEFINED);
+    REQUIRE(yy.at(3) == UNDEFINED);
+    REQUIRE(yy.at(4) == UNDEFINED);
+    REQUIRE(yy.at(5) == 1);
+
+    REQUIRE(yy > y);
+    REQUIRE(!(x < x));
+    auto expected = TestType({UNDEFINED, UNDEFINED, UNDEFINED});
+    REQUIRE(expected > x);
+
+    REQUIRE(x.degree() == 10);
+    REQUIRE(y.degree() == 10);
+    REQUIRE(Complexity<TestType>()(x) == 10);
+    REQUIRE(Complexity<TestType>()(y) == 10);
+    REQUIRE(yy.rank() == 1);
+    REQUIRE(y.rank() == 3);
+    REQUIRE(x.rank() == 3);
+
+    auto id  = one(x);
+    expected = TestType({0, 1, 2, 3, 4, 5, 6, 7, 8, 9});
+    REQUIRE(id == expected);
+
+    if (IsDynamic<TestType>) {
+      x.increase_degree_by(10);
+      REQUIRE(x.degree() == 20);
+      REQUIRE(x.end() >= x.begin());
+      REQUIRE(static_cast<size_t>(x.end() - x.begin()) == x.degree());
+    } else {
+      REQUIRE_THROWS_AS(x.increase_degree_by(10), LibsemigroupsException);
+    }
+    REQUIRE(x.hash_value() != 0);
   }
 
   LIBSEMIGROUPS_TEST_CASE("PPerm",
