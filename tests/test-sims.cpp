@@ -114,7 +114,7 @@ namespace libsemigroups {
       REQUIRE(T.included_pairs() == e);
 
       // auto it = std::find_if(T.cbegin(n), T.cend(n), foo);
-      // REQUIRE(*it == to_word_graph<uint32_t>(1, {{0, 0}}));
+      // REQUIRE(*it == to<WordGraph<uint32_t>>(1, {{0, 0}}));
       REQUIRE(std::all_of(T.cbegin(n), T.cend(n), foo));
       REQUIRE(static_cast<uint64_t>(std::count_if(S.cbegin(n), S.cend(n), foo))
               == T.number_of_congruences(n));
@@ -278,22 +278,22 @@ namespace libsemigroups {
       REQUIRE(S.number_of_congruences(1) == 1);
 
       auto it = S.cbegin(1);
-      REQUIRE(*it == to_word_graph<node_type>(1, {{0, 0}}));
+      REQUIRE(*it == to<WordGraph<node_type>>(1, {{0, 0}}));
 
       it = S.cbegin(5);
-      REQUIRE(*(it++) == to_word_graph<node_type>(5, {{0, 0}}));
-      REQUIRE(*(it++) == to_word_graph<node_type>(5, {{1, 0}, {1, 1}}));
-      REQUIRE(*(it++) == to_word_graph<node_type>(5, {{1, 1}, {1, 1}}));
-      REQUIRE(*(it++) == to_word_graph<node_type>(5, {{1, 2}, {1, 1}, {1, 2}}));
-      REQUIRE(*(it++) == to_word_graph<node_type>(5, {{1, 2}, {1, 1}, {2, 2}}));
+      REQUIRE(*(it++) == to<WordGraph<node_type>>(5, {{0, 0}}));
+      REQUIRE(*(it++) == to<WordGraph<node_type>>(5, {{1, 0}, {1, 1}}));
+      REQUIRE(*(it++) == to<WordGraph<node_type>>(5, {{1, 1}, {1, 1}}));
+      REQUIRE(*(it++) == to<WordGraph<node_type>>(5, {{1, 2}, {1, 1}, {1, 2}}));
+      REQUIRE(*(it++) == to<WordGraph<node_type>>(5, {{1, 2}, {1, 1}, {2, 2}}));
       REQUIRE(*(it++)
-              == to_word_graph<node_type>(5, {{1, 2}, {1, 1}, {3, 2}, {3, 3}}));
+              == to<WordGraph<node_type>>(5, {{1, 2}, {1, 1}, {3, 2}, {3, 3}}));
       REQUIRE(*(it++) == WordGraph<node_type>(0, 2));
       REQUIRE(*(it++) == WordGraph<node_type>(0, 2));
       REQUIRE(*(it++) == WordGraph<node_type>(0, 2));
 
       it = S.cbegin(3);
-      REQUIRE(*it == to_word_graph<node_type>(3, {{0, 0}}));
+      REQUIRE(*it == to<WordGraph<node_type>>(3, {{0, 0}}));
       // Note that Catch's REQUIRE macro is not thread safe, see:
       // https://github.com/catchorg/Catch2/issues/99
       // as such we cannot call any function (like
@@ -364,9 +364,9 @@ namespace libsemigroups {
     REQUIRE(S.number_of_congruences(10) == 176);
 
     auto it = S.cbegin(2);
-    REQUIRE(*(it++) == to_word_graph<node_type>(2, {{0, 0, 0}}));
-    REQUIRE(*(it++) == to_word_graph<node_type>(2, {{1, 0, 1}, {1, 1, 1}}));
-    REQUIRE(*(it++) == to_word_graph<node_type>(2, {{1, 1, 1}, {1, 1, 1}}));
+    REQUIRE(*(it++) == to<WordGraph<node_type>>(2, {{0, 0, 0}}));
+    REQUIRE(*(it++) == to<WordGraph<node_type>>(2, {{1, 0, 1}, {1, 1, 1}}));
+    REQUIRE(*(it++) == to<WordGraph<node_type>>(2, {{1, 1, 1}, {1, 1, 1}}));
     REQUIRE(*(it++) == WordGraph<node_type>(0, 3));
     REQUIRE(*(it++) == WordGraph<node_type>(0, 3));
     // sims::dot_poset("example-001", S.cbegin(4), S.cend(4));
@@ -1099,7 +1099,7 @@ namespace libsemigroups {
     // REQUIRE(word_graph::is_strictly_cyclic(d));
     // REQUIRE(
     //     d
-    //     == to_word_graph<uint32_t>(
+    //     == to<WordGraph<uint32_t>>(
     //         22, {{0, 0, 1, 0, 2, 3, 2},        {1, 4, 0, 5, 6, 3, 7},
     //              {2, 2, 2, 2, 2, 2, 2},        {3, 8, 3, 9, 6, 3, 7},
     //              {4, 1, 4, 10, 6, 2, 11},      {5, 10, 5, 1, 12, 2, 7},
@@ -1756,7 +1756,7 @@ namespace libsemigroups {
     // whichever one is found first, in multiple threads
     // REQUIRE(
     //     d
-    //     == to_word_graph<node_type>(
+    //     == to<WordGraph<node_type>>(
     //         22,
     //         {{0, 1, 0, 2, 0},      {1, 3, 3, 4, 5},      {2, 6, 6, 2, 0},
     //          {3, 0, 1, 2, 5},      {4, 4, 4, 4, 4},      {5, 5, 5, 7, 5},
@@ -1946,25 +1946,25 @@ namespace libsemigroups {
 
     REQUIRE(
         *it++
-        == to_word_graph<node_type>(5, {{1, 1, 1, 1}, {1, 1, 1, 1}}));  // Good
+        == to<WordGraph<node_type>>(5, {{1, 1, 1, 1}, {1, 1, 1, 1}}));  // Good
     REQUIRE(*it++
-            == to_word_graph<node_type>(
+            == to<WordGraph<node_type>>(
                 5, {{1, 1, 1, 2}, {1, 1, 1, 2}, {1, 1, 1, 2}}));  // Good
     REQUIRE(*it++
-            == to_word_graph<node_type>(
+            == to<WordGraph<node_type>>(
                 5, {{1, 2, 1, 1}, {1, 1, 1, 1}, {2, 2, 2, 2}}));  // Good
     REQUIRE(
         *it++
-        == to_word_graph<node_type>(
+        == to<WordGraph<node_type>>(
             5,
             {{1, 2, 1, 1}, {1, 1, 1, 1}, {2, 2, 2, 3}, {2, 2, 2, 3}}));  // Good
     REQUIRE(
         *it++
-        == to_word_graph<node_type>(
+        == to<WordGraph<node_type>>(
             5,
             {{1, 2, 1, 3}, {1, 1, 1, 3}, {2, 2, 2, 2}, {1, 1, 1, 3}}));  // Good
     REQUIRE(*it++
-            == to_word_graph<node_type>(5,
+            == to<WordGraph<node_type>>(5,
                                         {{1, 2, 1, 3},
                                          {1, 1, 1, 3},
                                          {2, 2, 2, 4},
@@ -1974,24 +1974,24 @@ namespace libsemigroups {
 
     it = T.cbegin(5);
 
-    REQUIRE(*it++ == to_word_graph<node_type>(5, {{0, 0, 0, 0}}));
-    REQUIRE(*it++ == to_word_graph<node_type>(5, {{0, 0, 0, 1}, {0, 0, 0, 1}}));
-    REQUIRE(*it++ == to_word_graph<node_type>(5, {{1, 1, 1, 0}, {1, 1, 1, 0}}));
-    REQUIRE(*it++ == to_word_graph<node_type>(5, {{1, 1, 1, 1}, {1, 1, 1, 1}}));
+    REQUIRE(*it++ == to<WordGraph<node_type>>(5, {{0, 0, 0, 0}}));
+    REQUIRE(*it++ == to<WordGraph<node_type>>(5, {{0, 0, 0, 1}, {0, 0, 0, 1}}));
+    REQUIRE(*it++ == to<WordGraph<node_type>>(5, {{1, 1, 1, 0}, {1, 1, 1, 0}}));
+    REQUIRE(*it++ == to<WordGraph<node_type>>(5, {{1, 1, 1, 1}, {1, 1, 1, 1}}));
     REQUIRE(*it++
-            == to_word_graph<node_type>(
+            == to<WordGraph<node_type>>(
                 5, {{1, 1, 1, 2}, {1, 1, 1, 2}, {1, 1, 1, 2}}));
     REQUIRE(*it++
-            == to_word_graph<node_type>(
+            == to<WordGraph<node_type>>(
                 5, {{1, 2, 1, 1}, {1, 1, 1, 1}, {2, 2, 2, 2}}));
     REQUIRE(*it++
-            == to_word_graph<node_type>(
+            == to<WordGraph<node_type>>(
                 5, {{1, 2, 1, 1}, {1, 1, 1, 1}, {2, 2, 2, 3}, {2, 2, 2, 3}}));
     REQUIRE(*it++
-            == to_word_graph<node_type>(
+            == to<WordGraph<node_type>>(
                 5, {{1, 2, 1, 3}, {1, 1, 1, 3}, {2, 2, 2, 2}, {1, 1, 1, 3}}));
     REQUIRE(*it++
-            == to_word_graph<node_type>(5,
+            == to<WordGraph<node_type>>(5,
                                         {{1, 2, 1, 3},
                                          {1, 1, 1, 3},
                                          {2, 2, 2, 4},
@@ -2056,7 +2056,7 @@ namespace libsemigroups {
     REQUIRE(word_graph::is_strictly_cyclic(d));
     REQUIRE(d.number_of_nodes() == 4);
     REQUIRE(d
-            == to_word_graph<uint32_t>(
+            == to<WordGraph<uint32_t>>(
                 4, {{2, 2, 3}, {0, 1, 2}, {2, 2, 2}, {3, 3, 3}}));
     auto T = to_froidure_pin<Transf<4>>(d);
     REQUIRE(T.generator(0) == Transf<4>({2, 0, 2, 3}));
@@ -2064,7 +2064,7 @@ namespace libsemigroups {
     REQUIRE(T.generator(2) == Transf<4>({3, 2, 2, 3}));
     REQUIRE(T.size() == 5);
 
-    auto dd = to_word_graph<uint8_t>(5,
+    auto dd = to<WordGraph<uint8_t>>(5,
                                      {{0, 0, 0, 0, 0},
                                       {0, 0, 0, 0, 2},
                                       {2, 2, 2, 2, 2},
@@ -2103,7 +2103,7 @@ namespace libsemigroups {
           REQUIRE(W.generator(2) == Transf<0, node_type>({4, 3, 2, 3, 4}));
           REQUIRE(
               result
-              == to_word_graph<uint32_t>(
+              == to<WordGraph<uint32_t>>(
                   5, {{3, 3, 4}, {0, 1, 3}, {2, 2, 2}, {3, 3, 3}, {4, 4, 4}}));
           non_strictly_cyclic_count++;
         }
@@ -3819,13 +3819,13 @@ namespace libsemigroups {
     Sims2 s(p);
     REQUIRE(s.number_of_congruences(4) == 4);  // Verified with GAP
     auto it = s.cbegin(4);
-    REQUIRE(*(it++) == to_word_graph<node_type>(4, {{0, 0}}));          // ok
-    REQUIRE(*(it++) == to_word_graph<node_type>(4, {{0, 1}, {1, 1}}));  // ok
+    REQUIRE(*(it++) == to<WordGraph<node_type>>(4, {{0, 0}}));          // ok
+    REQUIRE(*(it++) == to<WordGraph<node_type>>(4, {{0, 1}, {1, 1}}));  // ok
     REQUIRE(*(it++)
-            == to_word_graph<node_type>(4, {{1, 2}, {0, 2}, {2, 2}}));  // ok
+            == to<WordGraph<node_type>>(4, {{1, 2}, {0, 2}, {2, 2}}));  // ok
 
     REQUIRE(*(it++)
-            == to_word_graph<node_type>(
+            == to<WordGraph<node_type>>(
                 4, {{1, 2}, {0, 2}, {3, 2}, {2, 2}}));  // ok
     REQUIRE(it == s.cend(4));
 
@@ -3882,13 +3882,13 @@ namespace libsemigroups {
     REQUIRE(s.number_of_congruences(4) == 6);  // Verified with GAP
     auto it = s.cbegin(5);
     // Verified in 000
-    REQUIRE(*(it++) == to_word_graph<node_type>(5, {{0, 0}}));
-    REQUIRE(*(it++) == to_word_graph<node_type>(5, {{1, 0}, {1, 1}}));
-    REQUIRE(*(it++) == to_word_graph<node_type>(5, {{1, 1}, {1, 1}}));
-    REQUIRE(*(it++) == to_word_graph<node_type>(5, {{1, 2}, {1, 1}, {1, 2}}));
-    REQUIRE(*(it++) == to_word_graph<node_type>(5, {{1, 2}, {1, 1}, {2, 2}}));
+    REQUIRE(*(it++) == to<WordGraph<node_type>>(5, {{0, 0}}));
+    REQUIRE(*(it++) == to<WordGraph<node_type>>(5, {{1, 0}, {1, 1}}));
+    REQUIRE(*(it++) == to<WordGraph<node_type>>(5, {{1, 1}, {1, 1}}));
+    REQUIRE(*(it++) == to<WordGraph<node_type>>(5, {{1, 2}, {1, 1}, {1, 2}}));
+    REQUIRE(*(it++) == to<WordGraph<node_type>>(5, {{1, 2}, {1, 1}, {2, 2}}));
     REQUIRE(*(it++)
-            == to_word_graph<node_type>(5, {{1, 2}, {1, 1}, {3, 2}, {3, 3}}));
+            == to<WordGraph<node_type>>(5, {{1, 2}, {1, 1}, {3, 2}, {3, 3}}));
   }
 
   LIBSEMIGROUPS_TEST_CASE("Sims2",
@@ -3917,14 +3917,14 @@ namespace libsemigroups {
 
     auto it = s.cbegin(27);
 
-    REQUIRE(*(it++) == to_word_graph<node_type>(27, {{0, 0, 0}}));  // ok
+    REQUIRE(*(it++) == to<WordGraph<node_type>>(27, {{0, 0, 0}}));  // ok
     REQUIRE(*(it++)
-            == to_word_graph<node_type>(27, {{0, 0, 1}, {1, 1, 1}}));  // ok
+            == to<WordGraph<node_type>>(27, {{0, 0, 1}, {1, 1, 1}}));  // ok
     REQUIRE(*(it++)
-            == to_word_graph<node_type>(
+            == to<WordGraph<node_type>>(
                 27, {{0, 1, 2}, {1, 0, 2}, {2, 2, 2}}));  // ok
     REQUIRE(*(it++)
-            == to_word_graph<node_type>(27,
+            == to<WordGraph<node_type>>(27,
                                         {{1, 2, 3},
                                          {4, 5, 3},
                                          {6, 0, 3},
@@ -3933,7 +3933,7 @@ namespace libsemigroups {
                                          {2, 1, 3},
                                          {5, 4, 3}}));  // ok
     REQUIRE(*(it++)
-            == to_word_graph<node_type>(27,
+            == to<WordGraph<node_type>>(27,
                                         {{1, 2, 3},
                                          {4, 5, 6},
                                          {7, 0, 6},
@@ -3951,7 +3951,7 @@ namespace libsemigroups {
                                          {14, 14, 14},
                                          {9, 12, 14}}));  // ok
     REQUIRE(*(it++)
-            == to_word_graph<node_type>(
+            == to<WordGraph<node_type>>(
                 27, {{1, 2, 3},    {4, 5, 6},    {7, 0, 6},    {8, 9, 3},
                      {0, 7, 10},   {2, 1, 10},   {11, 12, 6},  {5, 4, 3},
                      {13, 14, 9},  {15, 3, 9},   {16, 17, 10}, {18, 19, 12},
@@ -3960,7 +3960,7 @@ namespace libsemigroups {
                      {19, 18, 6},  {21, 21, 21}, {10, 24, 21}, {17, 16, 21},
                      {23, 22, 10}}));  // ok
     REQUIRE(*(it++)
-            == to_word_graph<node_type>(
+            == to<WordGraph<node_type>>(
                 27, {{1, 2, 3},    {4, 5, 6},    {7, 0, 6},    {8, 9, 3},
                      {0, 7, 10},   {2, 1, 10},   {11, 12, 6},  {5, 4, 3},
                      {13, 14, 9},  {15, 3, 9},   {16, 17, 10}, {18, 19, 12},
@@ -4196,8 +4196,8 @@ namespace libsemigroups {
     REQUIRE(s.number_of_congruences(2) == 2);
 
     auto it = s.cbegin(2);
-    REQUIRE(*(it++) == to_word_graph<uint32_t>(2, {{0, 0}}));
-    REQUIRE(*(it++) == to_word_graph<uint32_t>(2, {{1, 1}, {1, 1}}));
+    REQUIRE(*(it++) == to<WordGraph<uint32_t>>(2, {{0, 0}}));
+    REQUIRE(*(it++) == to<WordGraph<uint32_t>>(2, {{1, 1}, {1, 1}}));
 
     REQUIRE(s.number_of_congruences(3) == 4);
     REQUIRE(s.number_of_congruences(4) == 9);
@@ -4310,7 +4310,7 @@ namespace libsemigroups {
     // });
 
     // REQUIRE(wg_found.number_of_active_nodes() == 0);
-    // auto wg_expected = to_word_graph<uint32_t>(6,
+    // auto wg_expected = to<WordGraph<uint32_t>>(6,
     //                                            {{1, 0, 0, 2, 0, 0},
     //                                             {1, 0, 3, 1, 1, 1},
     //                                             {2, 2, 2, 2, 0, 2},
@@ -4438,40 +4438,40 @@ namespace libsemigroups {
     word_graph_type wg;
 
     // Wrong alphabet size
-    wg = to_word_graph<node_type>(3, {{1, 1, 1}, {2, 2, 2}, {2, 2, 2}});
+    wg = to<WordGraph<node_type>>(3, {{1, 1, 1}, {2, 2, 2}, {2, 2, 2}});
     wg.number_of_active_nodes(3);
     REQUIRE(!sims::is_right_congruence(p, wg));
 
     // Incomplete
-    wg = to_word_graph<node_type>(2, {{1, 1}, {1, UNDEFINED}});
+    wg = to<WordGraph<node_type>>(2, {{1, 1}, {1, UNDEFINED}});
     wg.number_of_active_nodes(2);
     REQUIRE(!sims::is_right_congruence(p, wg));
 
     // Incompatible
-    wg = to_word_graph<node_type>(2, {{1, 1}, {1, 0}});
+    wg = to<WordGraph<node_type>>(2, {{1, 1}, {1, 0}});
     wg.number_of_active_nodes(2);
     REQUIRE(!sims::is_right_congruence(p, wg));
     REQUIRE_THROWS_AS(sims::throw_if_not_right_congruence(p, wg),
                       LibsemigroupsException);
 
     // Works
-    wg = to_word_graph<node_type>(4, {{1, 2}, {2, 2}, {3, 3}, {3, 3}});
+    wg = to<WordGraph<node_type>>(4, {{1, 2}, {2, 2}, {3, 3}, {3, 3}});
     wg.number_of_active_nodes(4);
     REQUIRE(sims::is_right_congruence(p, wg));
 
     // Non maximal
-    wg = to_word_graph<node_type>(2, {{1, 1}, {1, 0}});
+    wg = to<WordGraph<node_type>>(2, {{1, 1}, {1, 0}});
     wg.number_of_active_nodes(2);
     REQUIRE(!sims::is_maximal_right_congruence(p, wg));
-    wg = to_word_graph<node_type>(4, {{1, 2}, {2, 2}, {3, 3}, {3, 3}});
+    wg = to<WordGraph<node_type>>(4, {{1, 2}, {2, 2}, {3, 3}, {3, 3}});
     wg.number_of_active_nodes(4);
     REQUIRE(!sims::is_maximal_right_congruence(p, wg));
-    wg = to_word_graph<node_type>(1, {{0, 0}});
+    wg = to<WordGraph<node_type>>(1, {{0, 0}});
     wg.number_of_active_nodes(1);
     REQUIRE(!sims::is_maximal_right_congruence(p, wg));
 
     // Is maximal
-    wg = to_word_graph<node_type>(2, {{1, 1}, {1, 1}});
+    wg = to<WordGraph<node_type>>(2, {{1, 1}, {1, 1}});
     wg.number_of_active_nodes(2);
     REQUIRE(sims::is_maximal_right_congruence(p, wg));
   }
@@ -4489,31 +4489,31 @@ namespace libsemigroups {
     word_graph_type wg;
 
     // Wrong alphabet size
-    wg = to_word_graph<node_type>(3, {{1, 1, 1}, {2, 2, 2}, {2, 2, 2}});
+    wg = to<WordGraph<node_type>>(3, {{1, 1, 1}, {2, 2, 2}, {2, 2, 2}});
     wg.number_of_active_nodes(3);
     REQUIRE(!sims::is_two_sided_congruence(p, wg));
 
     // Incomplete
-    wg = to_word_graph<node_type>(2, {{1, 1}, {1, UNDEFINED}});
+    wg = to<WordGraph<node_type>>(2, {{1, 1}, {1, UNDEFINED}});
     wg.number_of_active_nodes(2);
     REQUIRE(!sims::is_two_sided_congruence(p, wg));
 
     // Incompatible
-    wg = to_word_graph<node_type>(2, {{1, 1}, {1, 0}});
+    wg = to<WordGraph<node_type>>(2, {{1, 1}, {1, 0}});
     wg.number_of_active_nodes(2);
     REQUIRE(!sims::is_two_sided_congruence(p, wg));
     REQUIRE_THROWS_AS(sims::throw_if_not_two_sided_congruence(p, wg),
                       LibsemigroupsException);
 
     // Not compatible with X_Gamma
-    wg = to_word_graph<node_type>(4, {{1, 2}, {2, 2}, {3, 3}, {3, 3}});
+    wg = to<WordGraph<node_type>>(4, {{1, 2}, {2, 2}, {3, 3}, {3, 3}});
     wg.number_of_active_nodes(4);
     REQUIRE(!sims::is_two_sided_congruence(p, wg));
     REQUIRE_THROWS_AS(sims::throw_if_not_two_sided_congruence(p, wg),
                       LibsemigroupsException);
 
     // Works
-    wg = to_word_graph<node_type>(2, {{1, 1}, {1, 1}});
+    wg = to<WordGraph<node_type>>(2, {{1, 1}, {1, 1}});
     wg.number_of_active_nodes(2);
     REQUIRE(sims::is_two_sided_congruence(p, wg));
   }

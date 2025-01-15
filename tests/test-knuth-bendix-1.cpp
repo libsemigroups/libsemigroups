@@ -927,7 +927,7 @@ namespace libsemigroups {
 
     KnuthBendix<TestType> kb1(twosided, p);
 
-    WordGraph test_wg1 = to_word_graph<size_t>(
+    WordGraph test_wg1 = to<WordGraph<size_t>>(
         6,
         {{1, 2, 3, 4, 5},
          {},
@@ -944,7 +944,7 @@ namespace libsemigroups {
     presentation::add_rule_no_checks(p, 1_w, 2_w);
     KnuthBendix<TestType> kb2(twosided, p);
 
-    WordGraph test_wg2 = to_word_graph<size_t>(
+    WordGraph test_wg2 = to<WordGraph<size_t>>(
         5,
         {{1, 2, UNDEFINED, 3, 4},
          {},
@@ -1165,7 +1165,7 @@ namespace libsemigroups {
     KnuthBendix<TestType> kb1(twosided, p);
     REQUIRE(kb1.gilman_graph().number_of_nodes() == 16);
 
-    WordGraph test_wg1 = to_word_graph<size_t>(16,
+    WordGraph test_wg1 = to<WordGraph<size_t>>(16,
                                                {{3,
                                                  1,
                                                  UNDEFINED,
@@ -1196,7 +1196,7 @@ namespace libsemigroups {
     presentation::add_rule_no_checks(p, {1}, {3});
     KnuthBendix<TestType> kb2(twosided, p);
 
-    WordGraph test_wg2 = to_word_graph<size_t>(4,
+    WordGraph test_wg2 = to<WordGraph<size_t>>(4,
                                                {{2,
                                                  1,
                                                  UNDEFINED,
