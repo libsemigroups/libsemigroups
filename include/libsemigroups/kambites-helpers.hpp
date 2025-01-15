@@ -72,7 +72,7 @@ namespace libsemigroups {
   //!
   //! This page contains documentation for many helper functions for the \ref
   //! Kambites class template. In particular, these functions include versions
-  //! of several of the member functions of \ref KnuthBendix (that accept
+  //! of several of the member functions of \ref KnuthBendixBase (that accept
   //! iterators) whose parameters are not iterators, but objects instead. The
   //! helpers documented on this page all belong to the namespace `kambites`.
   //!

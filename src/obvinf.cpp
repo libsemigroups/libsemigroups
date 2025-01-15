@@ -17,7 +17,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-// We put this first so that KnuthBendix is defined by the time obvinf.hpp
+// We put this first so that KnuthBendixBase is defined by the time obvinf.hpp
 // needs it.
 #include "libsemigroups/knuth-bendix.hpp"
 
@@ -275,8 +275,8 @@ namespace libsemigroups {
     if (cong.has<ToddCoxeterBase>()
         && is_obviously_infinite(*cong.get<ToddCoxeterBase>())) {
       return true;
-    } else if (cong.has<KnuthBendix<>>()
-               && is_obviously_infinite(*cong.get<KnuthBendix<>>())) {
+    } else if (cong.has<KnuthBendixBase<>>()
+               && is_obviously_infinite(*cong.get<KnuthBendixBase<>>())) {
       return true;
     } else if (cong.has<Kambites<word_type>>()
                && is_obviously_infinite(*cong.get<Kambites<word_type>>())) {

@@ -27,8 +27,8 @@ namespace libsemigroups {
   class ToddCoxeterBase;
   enum class congruence_kind;
 
-  KnuthBendix<> to_knuth_bendix(congruence_kind knd, FroidurePinBase& fp);
-  KnuthBendix<> to_knuth_bendix(congruence_kind knd, ToddCoxeterBase const& tc);
+  KnuthBendixBase<> to_knuth_bendix(congruence_kind knd, FroidurePinBase& fp);
+  KnuthBendixBase<> to_knuth_bendix(congruence_kind knd, ToddCoxeterBase const& tc);
 
 }  // namespace libsemigroups
 #endif  // LIBSEMIGROUPS_TO_KNUTH_BENDIX_HPP_

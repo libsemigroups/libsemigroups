@@ -18,7 +18,7 @@
 
 // This file contains the declaration of the class KBE, which can be used as
 // the element_type for a FroidurePin instance. This class just wraps a
-// reduced word of a KnuthBendix instance.
+// reduced word of a KnuthBendixBase instance.
 
 #ifndef LIBSEMIGROUPS_DETAIL_KE_HPP_
 #define LIBSEMIGROUPS_DETAIL_KE_HPP_

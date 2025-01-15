@@ -17,7 +17,7 @@
 //
 
 // This file contains an implementation of a range object for producing normal
-// forms for a KnuthBendix object.
+// forms for a KnuthBendixBase object.
 
 #ifndef LIBSEMIGROUPS_DETAIL_KNUTH_BENDIX_NF_HPP_
 #define LIBSEMIGROUPS_DETAIL_KNUTH_BENDIX_NF_HPP_
@@ -30,7 +30,7 @@
 namespace libsemigroups {
 
   template <typename Rewriter, typename ReductionOrder>
-  class KnuthBendix;
+  class KnuthBendixBase;
 
   namespace detail {
 
@@ -39,14 +39,14 @@ namespace libsemigroups {
       using Paths_ = Paths<uint32_t>;
 
       mutable Word                           _current;
-      KnuthBendix<Rewriter, ReductionOrder>* _kb;
+      KnuthBendixBase<Rewriter, ReductionOrder>* _kb;
 
      public:
       using size_type   = typename Paths_::size_type;
       using output_type = Word const&;
 
       explicit KnuthBendixNormalFormRange(
-          KnuthBendix<Rewriter, ReductionOrder>& kb)
+          KnuthBendixBase<Rewriter, ReductionOrder>& kb)
           : Paths(kb.gilman_graph()), _current(), _kb(&kb) {
         // It's possible that the gilman graph is empty, so the call to
         // source_no_checks(0) is technically invalid, but nothing goes wrong,

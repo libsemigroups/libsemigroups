@@ -30,7 +30,7 @@
 #include "cong-intf-helpers.hpp"   // for partition, add_gener...
 #include "exception.hpp"           // for LIBSEMIGROUPS_EXCEPTION
 #include "kambites-class.hpp"      // for Kambites
-#include "knuth-bendix-class.hpp"  // for KnuthBendix
+#include "knuth-bendix-base.hpp"  // for KnuthBendixBase
 #include "todd-coxeter-base.hpp"   // for ToddCoxeterBase
 #include "types.hpp"               // for word_type
 
@@ -66,14 +66,14 @@ namespace libsemigroups {
     // We have to pass the presentation here, because o/w we have no way of
     // knowing over what we should compute the non-trivial classes (i.e. we
     // cannot always recover p from cong).
-    // TODO(1) implement an analogous version of this for KnuthBendix,
+    // TODO(1) implement an analogous version of this for KnuthBendixBase,
     // ToddCoxeterBase, and Kambites.
     // TODO(1) document this (not currently docced because nothing else in
     // this namespace is documented directly at present)
     std::vector<std::vector<word_type>>
     non_trivial_classes(Congruence& cong, Presentation<word_type> const& p);
 
-    // TODO(1) implement an analogous version of this for KnuthBendix,
+    // TODO(1) implement an analogous version of this for KnuthBendixBase,
     // ToddCoxeterBase, and Kambites.
     // TODO(1) document this (not currently docced because nothing else in
     // this namespace is documented directly at present)

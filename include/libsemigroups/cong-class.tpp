@@ -76,7 +76,7 @@ namespace libsemigroups {
         return std::static_pointer_cast<ToddCoxeter<word_type>>(_race.winner())
             ->currently_contains_no_checks(first1, last1, first2, last2);
       } else if (winner_kind == RunnerKind::KB) {
-        return std::static_pointer_cast<KnuthBendix<>>(_race.winner())
+        return std::static_pointer_cast<KnuthBendixBase<>>(_race.winner())
             ->currently_contains_no_checks(first1, last1, first2, last2);
       } else {
         LIBSEMIGROUPS_ASSERT(winner_kind == RunnerKind::K);
@@ -93,7 +93,7 @@ namespace libsemigroups {
                   ->currently_contains_no_checks(first1, last1, first2, last2);
       } else if (_runner_kinds[i] == RunnerKind::KB) {
         result
-            = std::static_pointer_cast<KnuthBendix<>>(runner)
+            = std::static_pointer_cast<KnuthBendixBase<>>(runner)
                   ->currently_contains_no_checks(first1, last1, first2, last2);
       } else {
         LIBSEMIGROUPS_ASSERT(_runner_kinds[i] == RunnerKind::K);
@@ -121,7 +121,7 @@ namespace libsemigroups {
         return std::static_pointer_cast<ToddCoxeter<word_type>>(_race.winner())
             ->reduce_no_run_no_checks(d_first, first, last);
       } else if (winner_kind == RunnerKind::KB) {
-        return std::static_pointer_cast<KnuthBendix<>>(_race.winner())
+        return std::static_pointer_cast<KnuthBendixBase<>>(_race.winner())
             ->reduce_no_run_no_checks(d_first, first, last);
       } else {
         LIBSEMIGROUPS_ASSERT(winner_kind == RunnerKind::K);
@@ -135,7 +135,7 @@ namespace libsemigroups {
       return std::static_pointer_cast<ToddCoxeter<word_type>>(*_race.begin())
           ->reduce_no_run_no_checks(d_first, first, last);
     } else if (_runner_kinds[0] == RunnerKind::KB) {
-      return std::static_pointer_cast<KnuthBendix<>>(*_race.begin())
+      return std::static_pointer_cast<KnuthBendixBase<>>(*_race.begin())
           ->reduce_no_run_no_checks(d_first, first, last);
     } else {
       LIBSEMIGROUPS_ASSERT(_runner_kinds[0] == RunnerKind::K);
@@ -154,7 +154,7 @@ namespace libsemigroups {
         std::static_pointer_cast<ToddCoxeter<word_type>>(*_race.begin())
             ->throw_if_letter_out_of_bounds(first, last);
       } else if (_runner_kinds[index] == RunnerKind::KB) {
-        std::static_pointer_cast<KnuthBendix<>>(*_race.begin())
+        std::static_pointer_cast<KnuthBendixBase<>>(*_race.begin())
             ->throw_if_letter_out_of_bounds(first, last);
       } else {
         LIBSEMIGROUPS_ASSERT(_runner_kinds[index] == RunnerKind::K);
@@ -175,9 +175,9 @@ namespace libsemigroups {
     if constexpr (std::is_same_v<Thing, Kambites<word_type>>) {
       val  = RunnerKind::K;
       name = "Kambites";
-    } else if constexpr (std::is_same_v<Thing, KnuthBendix<>>) {
+    } else if constexpr (std::is_same_v<Thing, KnuthBendixBase<>>) {
       val  = RunnerKind::KB;
-      name = "KnuthBendix";
+      name = "KnuthBendixBase";
     } else if constexpr (std::is_same_v<Thing, ToddCoxeter<word_type>>) {
       val  = RunnerKind::TC;
       name = "ToddCoxeter<word_type>";
@@ -207,7 +207,7 @@ namespace libsemigroups {
     RunnerKind val;
     if constexpr (std::is_same_v<Thing, Kambites<word_type>>) {
       val = RunnerKind::K;
-    } else if constexpr (std::is_same_v<Thing, KnuthBendix<>>) {
+    } else if constexpr (std::is_same_v<Thing, KnuthBendixBase<>>) {
       val = RunnerKind::KB;
     } else if constexpr (std::is_same_v<Thing, ToddCoxeter<word_type>>) {
       val = RunnerKind::TC;

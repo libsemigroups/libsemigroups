@@ -56,12 +56,12 @@ namespace libsemigroups {
   template <typename Rewriter, typename ReductionOrder>
   ToddCoxeter<word_type>
   to_todd_coxeter(congruence_kind                        knd,
-                  KnuthBendix<Rewriter, ReductionOrder>& kb) {
+                  KnuthBendixBase<Rewriter, ReductionOrder>& kb) {
     if (kb.number_of_classes() == POSITIVE_INFINITY) {
       LIBSEMIGROUPS_EXCEPTION(
           "cannot construct a ToddCoxeterBase instance using the Cayley graph "
           "of "
-          "an infinite KnuthBendix<> object, maybe try ToddCoxeterBase({}, "
+          "an infinite KnuthBendixBase<> object, maybe try ToddCoxeterBase({}, "
           "kb.presentation()) instead?",
           kb.kind());
     }

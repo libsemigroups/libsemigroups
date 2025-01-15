@@ -132,7 +132,7 @@ namespace libsemigroups {
 
 #ifndef PARSED_BY_DOXYGEN
     // This has to be repeated here (not in cong-intf.hpp) because we need to
-    // reverse the word for ToddCoxeter<Word>, but not in KnuthBendix or
+    // reverse the word for ToddCoxeter<Word>, but not in KnuthBendixBase or
     // Kambites.
     //
     // The enable_if stops this from matching char const* = char[n]
@@ -147,7 +147,7 @@ namespace libsemigroups {
     }
 
     // This has to be repeated here (not in cong-intf.hpp) because we need to
-    // reverse the word for ToddCoxeter<Word>, but not in KnuthBendix or
+    // reverse the word for ToddCoxeter<Word>, but not in KnuthBendixBase or
     // Kambites.
     //
     // The enable_if stops this from matching char const* = char[n]
@@ -161,7 +161,7 @@ namespace libsemigroups {
     }
 
     // This has to be repeated here (not in cong-intf.hpp) because we need to
-    // reverse the word for ToddCoxeter<Word>, but not in KnuthBendix or
+    // reverse the word for ToddCoxeter<Word>, but not in KnuthBendixBase or
     // Kambites.
     //
     // The enable_if stops this from matching char const* = char[n]
@@ -176,7 +176,7 @@ namespace libsemigroups {
     }
 
     // This has to be repeated here (not in cong-intf.hpp) because we need to
-    // reverse the word for ToddCoxeter<Word>, but not in KnuthBendix or
+    // reverse the word for ToddCoxeter<Word>, but not in KnuthBendixBase or
     // Kambites.
     //
     // The enable_if stops this from matching char const* = char[n]

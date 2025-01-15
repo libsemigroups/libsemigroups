@@ -33,7 +33,7 @@
 #include "libsemigroups/constants.hpp"           // for operator==, opera...
 #include "libsemigroups/exception.hpp"           // for LIBSEMIGROUPS_EXC...
 #include "libsemigroups/exception.hpp"           // for LIBSEMIGROUPS_EXCEPTION
-#include "libsemigroups/knuth-bendix-class.hpp"  // for KnuthBendix
+#include "libsemigroups/knuth-bendix-base.hpp"  // for KnuthBendixBase
 #include "libsemigroups/knuth-bendix-helpers.hpp"  // for non_trivial_classes
 #include "libsemigroups/obvinf.hpp"                // for is_obviously_infi...
 #include "libsemigroups/paths.hpp"                 // for number_of_paths
@@ -69,10 +69,10 @@ namespace libsemigroups {
           && cong.get<ToddCoxeter<word_type>>()->finished()) {
         ToddCoxeter<word_type> tc(cong.kind(), p);
         return non_trivial_classes(*cong.get<ToddCoxeter<word_type>>(), tc);
-      } else if (cong.has<KnuthBendix<>>()
-                 && cong.get<KnuthBendix<>>()->finished()) {
-        KnuthBendix<> kb(cong.kind(), p);
-        auto strings = non_trivial_classes(kb, *cong.get<KnuthBendix<>>());
+      } else if (cong.has<KnuthBendixBase<>>()
+                 && cong.get<KnuthBendixBase<>>()->finished()) {
+        KnuthBendixBase<> kb(cong.kind(), p);
+        auto strings = non_trivial_classes(kb, *cong.get<KnuthBendixBase<>>());
         std::vector<std::vector<word_type>> result;
         for (auto const& klass : strings) {
           result.push_back(rx::iterator_range(klass.begin(), klass.end())
@@ -94,10 +94,10 @@ namespace libsemigroups {
     // {
     //   using rx::operator|;
     //   cong.run();
-    //   if (cong.has<KnuthBendix<>>() && cong.get<KnuthBendix<>>()->finished())
+    //   if (cong.has<KnuthBendixBase<>>() && cong.get<KnuthBendixBase<>>()->finished())
     //   {
-    //     KnuthBendix<> kb(cong.kind(), p);
-    //     return non_trivial_classes(kb, *cong.get<KnuthBendix<>>());
+    //     KnuthBendixBase<> kb(cong.kind(), p);
+    //     return non_trivial_classes(kb, *cong.get<KnuthBendixBase<>>());
     //   }
     //   if (cong.has<ToddCoxeter<word_type>>()
     //       && cong.get<ToddCoxeter<word_type>>()->finished()) {

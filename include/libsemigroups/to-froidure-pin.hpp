@@ -37,7 +37,7 @@ namespace libsemigroups {
   class ToddCoxeterBase;
 
   template <typename Rewriter, typename ReductionOrder>
-  class KnuthBendix;
+  class KnuthBendixBase;
   class Congruence;
 #endif
 
@@ -146,9 +146,9 @@ namespace libsemigroups {
   FroidurePin<detail::TCE> to_froidure_pin(ToddCoxeterBase& tc);
 
   template <typename Rewriter, typename ReductionOrder>
-  FroidurePin<detail::KBE<KnuthBendix<Rewriter, ReductionOrder>>>
-  to_froidure_pin(KnuthBendix<Rewriter, ReductionOrder>& kb) {
-    using KBE      = detail::KBE<KnuthBendix<Rewriter, ReductionOrder>>;
+  FroidurePin<detail::KBE<KnuthBendixBase<Rewriter, ReductionOrder>>>
+  to_froidure_pin(KnuthBendixBase<Rewriter, ReductionOrder>& kb) {
+    using KBE      = detail::KBE<KnuthBendixBase<Rewriter, ReductionOrder>>;
     size_t const n = kb.presentation().alphabet().size();
 
     if (n == 0) {

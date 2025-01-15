@@ -17,7 +17,7 @@
 //
 
 // This file contains the implementations of helper function templates for the
-// KnuthBendix class template.
+// KnuthBendixBase class template.
 
 namespace libsemigroups {
   namespace congruence_interface {
@@ -27,8 +27,8 @@ namespace libsemigroups {
 
     template <typename Word, typename Rewriter, typename ReductionOrder>
     std::vector<std::vector<Word>>
-    non_trivial_classes(KnuthBendix<Rewriter, ReductionOrder>& kb1,
-                        KnuthBendix<Rewriter, ReductionOrder>& kb2) {
+    non_trivial_classes(KnuthBendixBase<Rewriter, ReductionOrder>& kb1,
+                        KnuthBendixBase<Rewriter, ReductionOrder>& kb2) {
       using rx::operator|;
 
       // It is intended that kb2 is defined using the same presentation as kb1
@@ -247,7 +247,7 @@ namespace libsemigroups {
       Presentation<std::string> q;
       q.alphabet(p.alphabet());
       q.contains_empty_word(p.contains_empty_word());
-      KnuthBendix kb;
+      KnuthBendixBase kb;
 
       for (auto omit = p.rules.crbegin(); omit != p.rules.crend(); omit += 2) {
         q.rules.clear();
@@ -264,7 +264,7 @@ namespace libsemigroups {
     }
 
     template <typename Rewriter, typename ReductionOrder>
-    void by_overlap_length(KnuthBendix<Rewriter, ReductionOrder>& kb) {
+    void by_overlap_length(KnuthBendixBase<Rewriter, ReductionOrder>& kb) {
       size_t prev_max_overlap               = kb.max_overlap();
       size_t prev_check_confluence_interval = kb.check_confluence_interval();
       kb.max_overlap(1);
@@ -279,7 +279,7 @@ namespace libsemigroups {
     }
 
     template <typename Rewriter, typename ReductionOrder>
-    bool is_reduced(KnuthBendix<Rewriter, ReductionOrder>& kb) {
+    bool is_reduced(KnuthBendixBase<Rewriter, ReductionOrder>& kb) {
       for (auto const& test_rule : kb.active_rules()) {
         auto const lhs = test_rule.first;
         for (auto const& rule : kb.active_rules()) {
@@ -305,7 +305,7 @@ namespace libsemigroups {
     //   congruence_kind::twosided;
 
     //   // TODO(1) validate lhs and rhs
-    //   KnuthBendix         kb(twosided, p);
+    //   KnuthBendixBase         kb(twosided, p);
     //   std::string         lphbt = p.alphabet();
     //   std::vector<size_t> perm(lphbt.size(), 0);
     //   std::iota(perm.begin(), perm.end(), 0);

@@ -34,7 +34,7 @@
 #include "libsemigroups/debug.hpp"               // for LIBSEMIGROUPS_ASSERT
 #include "libsemigroups/exception.hpp"           // for LIBSEMIGROUPS_EXCEPTION
 #include "libsemigroups/kambites-class.hpp"      // for Kambites
-#include "libsemigroups/knuth-bendix-class.hpp"  // for KnuthBendix
+#include "libsemigroups/knuth-bendix-base.hpp"  // for KnuthBendixBase
 #include "libsemigroups/paths.hpp"               // for number_of_paths
 #include "libsemigroups/presentation.hpp"        // for add_rule, longest_ru...
 #include "libsemigroups/ranges.hpp"              // for operator|, enumerate
@@ -73,7 +73,7 @@ namespace libsemigroups {
     if (type == congruence_kind::twosided) {
       add_runner(std::make_shared<Kambites<word_type>>(type, p));
     }
-    add_runner(std::make_shared<KnuthBendix<>>(type, p));
+    add_runner(std::make_shared<KnuthBendixBase<>>(type, p));
 
     add_runner(std::make_shared<ToddCoxeter<word_type>>(type, p));
     auto tc = std::make_shared<ToddCoxeter<word_type>>(type, p);
@@ -89,7 +89,7 @@ namespace libsemigroups {
       return std::static_pointer_cast<ToddCoxeter<word_type>>(_race.winner())
           ->number_of_classes();
     } else if (winner_kind == RunnerKind::KB) {
-      return std::static_pointer_cast<KnuthBendix<>>(_race.winner())
+      return std::static_pointer_cast<KnuthBendixBase<>>(_race.winner())
           ->number_of_classes();
     } else {
       LIBSEMIGROUPS_ASSERT(winner_kind == RunnerKind::K);
@@ -118,7 +118,7 @@ namespace libsemigroups {
                                               std::end(*(it + 1)));
           }
         } else if (_runner_kinds[i] == RunnerKind::KB) {
-          auto         kb = std::static_pointer_cast<KnuthBendix<>>(runner);
+          auto         kb = std::static_pointer_cast<KnuthBendixBase<>>(runner);
           size_t const n  = kb->number_of_generating_pairs();
           // Only add the generating pairs not already in the runners
           for (auto it = first + n; it != last; it += 2) {
@@ -160,7 +160,7 @@ namespace libsemigroups {
           return std::static_pointer_cast<Kambites<word_type>>(_race.winner())
               ->presentation();
         }
-        // KnuthBendix uses a std::string Presentation and this can't be
+        // KnuthBendixBase uses a std::string Presentation and this can't be
         // returned by reference here. There are probably better ways of
         // handling this:
         // 1. store a copy in the congruence object itself

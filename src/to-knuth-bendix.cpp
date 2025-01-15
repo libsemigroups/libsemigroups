@@ -20,18 +20,18 @@
 
 #include "libsemigroups/froidure-pin-base.hpp"  // for FroidurePinBase
 #include "libsemigroups/froidure-pin.hpp"       // for FroidurePin
-#include "libsemigroups/knuth-bendix.hpp"       // for KnuthBendix<>
+#include "libsemigroups/knuth-bendix.hpp"       // for KnuthBendixBase<>
 #include "libsemigroups/todd-coxeter.hpp"       // for ToddCoxeterBase
 #include "libsemigroups/types.hpp"              // for congruence_kind
 
 namespace libsemigroups {
 
-  KnuthBendix<> to_knuth_bendix(congruence_kind knd, FroidurePinBase& fp) {
-    return KnuthBendix<>(knd, to_presentation<word_type>(fp));
+  KnuthBendixBase<> to_knuth_bendix(congruence_kind knd, FroidurePinBase& fp) {
+    return KnuthBendixBase<>(knd, to_presentation<word_type>(fp));
   }
 
-  KnuthBendix<> to_knuth_bendix(congruence_kind        knd,
+  KnuthBendixBase<> to_knuth_bendix(congruence_kind        knd,
                                 ToddCoxeterBase const& tc) {
-    return KnuthBendix<>(knd, tc.internal_presentation());
+    return KnuthBendixBase<>(knd, tc.internal_presentation());
   }
 }  // namespace libsemigroups

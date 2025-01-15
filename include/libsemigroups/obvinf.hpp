@@ -43,7 +43,7 @@ namespace libsemigroups {
   class ToddCoxeterBase;  // forward decl
 
   template <typename Rewriter, typename ReductionOrder>
-  class KnuthBendix;  // forward decl
+  class KnuthBendixBase;  // forward decl
   class Congruence;   // forward decl
 
   template <typename Word>
@@ -518,26 +518,26 @@ namespace libsemigroups {
   //! \ingroup obvinf_group
   //!
   //! \brief Function for checking if the quotient of a finitely presented
-  //! semigroup or monoid defined by a KnuthBendix object is obviously infinite
+  //! semigroup or monoid defined by a KnuthBendixBase object is obviously infinite
   //! or not.
   //!
   //! This function returns \c true if the quotient of the finitely presented
-  //! semigroup or monoid defined by the KnuthBendix object \p kb is obviously
+  //! semigroup or monoid defined by the KnuthBendixBase object \p kb is obviously
   //! infinite; \c false is returned if it is not.
   //!
   //! This function exists to make it simpler to call an IsObviouslyInfinite
   //! object a single time, and uses some information from the (possible
-  //! incomplete) KnuthBendix object to assist in this determination.
+  //! incomplete) KnuthBendixBase object to assist in this determination.
   //!
-  //! \param kb the KnuthBendix instance.
+  //! \param kb the KnuthBendixBase instance.
   //!
-  //! \returns Whether or not the quotient defined by a KnuthBendix instance is
+  //! \returns Whether or not the quotient defined by a KnuthBendixBase instance is
   //! obviously infinite.
   //!
   //! \note If this function returns \c false, it is still possible that the
-  //! quotient defined by the KnuthBendix object \p kb is infinite.
+  //! quotient defined by the KnuthBendixBase object \p kb is infinite.
   template <typename Rewriter, typename ReductionOrder>
-  bool is_obviously_infinite(KnuthBendix<Rewriter, ReductionOrder>& kb) {
+  bool is_obviously_infinite(KnuthBendixBase<Rewriter, ReductionOrder>& kb) {
     if (kb.finished()) {
       return !word_graph::is_acyclic(kb.gilman_graph());
     }

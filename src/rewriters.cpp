@@ -25,7 +25,7 @@
 
 namespace libsemigroups {
   namespace detail {
-    // Construct from KnuthBendix with new but empty internal_string_type's
+    // Construct from KnuthBendixBase with new but empty internal_string_type's
     Rule::Rule(int64_t id)
         : _lhs(new internal_string_type()),
           _rhs(new internal_string_type()),
@@ -398,7 +398,7 @@ namespace libsemigroups {
       auto time
           = std::chrono::duration_cast<std::chrono::seconds>(now - start_time);
 
-      report_default("KnuthBendix: locally confluent for: {:>{width}} / "
+      report_default("KnuthBendixBase: locally confluent for: {:>{width}} / "
                      "{:>{width}} ({:>4.1f}%) pairs of rules ({}s)\n",
                      detail::group_digits(seen),
                      total_pairs_s,
@@ -621,7 +621,7 @@ namespace libsemigroups {
       auto time
           = std::chrono::duration_cast<std::chrono::seconds>(now - start_time);
 
-      report_default("KnuthBendix: locally confluent for: {:>{width}} / "
+      report_default("KnuthBendixBase: locally confluent for: {:>{width}} / "
                      "{:>{width}} ({:>4.1f}%) rules ({}s)\n",
                      detail::group_digits(seen),
                      total_rules_s,

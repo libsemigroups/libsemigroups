@@ -18,7 +18,7 @@
 
 // This file contains the declaration of the class KBE, which can be used as
 // the element_type for a FroidurePin instance. This class just wraps a
-// reduced word of a KnuthBendix instance.
+// reduced word of a KnuthBendixBase instance.
 
 #ifndef LIBSEMIGROUPS_DETAIL_KBE_HPP_
 #define LIBSEMIGROUPS_DETAIL_KBE_HPP_
@@ -29,7 +29,7 @@
 
 #include "libsemigroups/adapters.hpp"      // for One
 #include "libsemigroups/froidure-pin.hpp"  // for FroidurePin
-#include "libsemigroups/knuth-bendix.hpp"  // for KnuthBendix<KnuthBendix_>
+#include "libsemigroups/knuth-bendix.hpp"  // for KnuthBendixBase<KnuthBendix_>
 #include "libsemigroups/obvinf.hpp"        // for is_obviously_infinite
 #include "libsemigroups/types.hpp"         // for word_type, letter_type
 
@@ -149,11 +149,11 @@ namespace libsemigroups {
   };
 
   // template <>
-  // word_type FroidurePin<detail::KBE<KnuthBendix<>>>::factorisation(
-  //     detail::KBE<KnuthBendix<>> const& x);
+  // word_type FroidurePin<detail::KBE<KnuthBendixBase<>>>::factorisation(
+  //     detail::KBE<KnuthBendixBase<>> const& x);
 
   // template <>
-  // tril FroidurePin<detail::KBE<KnuthBendix<>>>::is_finite() const;
+  // tril FroidurePin<detail::KBE<KnuthBendixBase<>>>::is_finite() const;
 
 }  // namespace libsemigroups
 

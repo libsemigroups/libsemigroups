@@ -35,7 +35,7 @@
 
 #include "multi-string-view.hpp"  // for MultiStringView
 
-// TODO(2) Add a KnuthBendix pointer to the rewriter class so that overlap
+// TODO(2) Add a KnuthBendixBase pointer to the rewriter class so that overlap
 // detection can be handled by the rewriter (and therefore depend on the
 // implementation) rather than on the KB object.
 
@@ -119,8 +119,8 @@ namespace libsemigroups {
       //! \brief Return the left-hand side of the rule.
       //!
       //! Return the left-hand side of the rule. If this rule was create by a
-      //! \ref KnuthBendix, this is guaranteed to be greater than its right-hand
-      //! side according to the reduction ordering of that \ref KnuthBendix.
+      //! \ref KnuthBendixBase, this is guaranteed to be greater than its right-hand
+      //! side according to the reduction ordering of that \ref KnuthBendixBase.
       //!
       //! \returns A pointer to the left-hand side.
       //!
@@ -131,7 +131,7 @@ namespace libsemigroups {
       //! Constant.
       //!
       //! \sa
-      //! \ref KnuthBendix
+      //! \ref KnuthBendixBase
       [[nodiscard]] internal_string_type* lhs() const noexcept {
         return _lhs;
       }
@@ -139,8 +139,8 @@ namespace libsemigroups {
       //! \brief Return the right-hand side of the rule.
       //!
       //! Return the right-hand side of the rule. If this rule was create by a
-      //! \ref KnuthBendix, this is guaranteed to be less than its left-hand
-      //! side according to the reduction ordering of that \ref KnuthBendix.
+      //! \ref KnuthBendixBase, this is guaranteed to be less than its left-hand
+      //! side according to the reduction ordering of that \ref KnuthBendixBase.
       //!
       //! \returns A pointer to the right-hand side.
       //!
@@ -151,7 +151,7 @@ namespace libsemigroups {
       //! Constant.
       //!
       //! \sa
-      //! \ref KnuthBendix
+      //! \ref KnuthBendixBase
       [[nodiscard]] internal_string_type* rhs() const noexcept {
         return _rhs;
       }

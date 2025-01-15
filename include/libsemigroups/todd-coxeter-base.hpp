@@ -770,13 +770,13 @@ namespace libsemigroups {
     //! \ingroup todd_coxeter_class_group
     //!
     //! \brief Documentation of common member functions of \ref
-    //! Congruence, Kambites, KnuthBendix, and \ref
+    //! Congruence, Kambites, KnuthBendixBase, and \ref
     //! todd_coxeter_class_group "ToddCoxeterBase".
     //!
     //! This page contains documentation of the member functions of
     //!  \ref todd_coxeter_class_group "ToddCoxeterBase" that are
     //!  implemented in all of the classes Congruence,
-    //! Kambites, KnuthBendix, and \ref todd_coxeter_class_group
+    //! Kambites, KnuthBendixBase, and \ref todd_coxeter_class_group
     //! "ToddCoxeterBase".
     //!
     //! @{

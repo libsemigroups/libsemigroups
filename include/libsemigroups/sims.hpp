@@ -3135,7 +3135,7 @@ namespace libsemigroups {
   class SimsRefinerIdeals {
    private:
     using node_type    = uint32_t;
-    using KnuthBendix_ = KnuthBendix<>;
+    using KnuthBendix_ = KnuthBendixBase<>;
     std::vector<KnuthBendix_> _knuth_bendices;
     Presentation<word_type>   _presentation;
 
@@ -3173,7 +3173,7 @@ namespace libsemigroups {
     //! \param p the presentation.
     //!
     //! \warning
-    //! This method assumes that KnuthBendix terminates on the input
+    //! This method assumes that KnuthBendixBase terminates on the input
     //! presentation \p p. If this is not the case then th pruner may not
     //! terminate on certain inputs.
     template <typename Word>
@@ -3237,7 +3237,7 @@ namespace libsemigroups {
     //! returns `true`.
     //!
     //! \warning
-    //! This method assumes that KnuthBendix terminates on the underlying
+    //! This method assumes that KnuthBendixBase terminates on the underlying
     //! presentation that was used to construct the SimsRefinerIdeals object. If
     //! this is not the case then th pruner may not terminate on certain inputs.
     bool operator()(Sims1::word_graph_type const& wg);

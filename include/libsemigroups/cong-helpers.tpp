@@ -37,9 +37,9 @@ namespace libsemigroups {
     //   cong.run();
     //   if (cong.has<ToddCoxeterBase>() && cong.get<ToddCoxeterBase>()->finished()) {
     //     return todd_coxeter::normal_forms(*cong.get<ToddCoxeterBase>());
-    //   } else if (cong.has<KnuthBendix<>>()
-    //              && cong.get<KnuthBendix<>>()->finished()) {
-    //     return knuth_bendix::normal_forms(*cong.get<KnuthBendix<>>());
+    //   } else if (cong.has<KnuthBendixBase<>>()
+    //              && cong.get<KnuthBendixBase<>>()->finished()) {
+    //     return knuth_bendix::normal_forms(*cong.get<KnuthBendixBase<>>());
     //   }
     //   // There's currently no normal_forms function for Kambites, so can't
     //   // return anything in that case.
@@ -54,10 +54,10 @@ namespace libsemigroups {
       cong.run();
       if (cong.has<ToddCoxeterBase>() && cong.get<ToddCoxeterBase>()->finished()) {
         return partition<Range, OutputWord>(*cong.get<ToddCoxeterBase>(), r);
-      } else if (cong.has<KnuthBendix<>>()
-                 && cong.get<KnuthBendix<>>()->finished()) {
-        return partition<KnuthBendix<>, Range, OutputWord>(
-            *cong.get<KnuthBendix<>>(), r);
+      } else if (cong.has<KnuthBendixBase<>>()
+                 && cong.get<KnuthBendixBase<>>()->finished()) {
+        return partition<KnuthBendixBase<>, Range, OutputWord>(
+            *cong.get<KnuthBendixBase<>>(), r);
       } else if (cong.has<Kambites<word_type>>()
                  && cong.get<Kambites<word_type>>()->success()) {
         return partition<Kambites<word_type>, Range, OutputWord>(

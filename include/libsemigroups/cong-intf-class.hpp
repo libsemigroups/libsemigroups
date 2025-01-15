@@ -40,7 +40,7 @@ namespace libsemigroups {
   //! These classes are:
   //! * \ref Congruence
   //! * \ref Kambites
-  //! * \ref KnuthBendix
+  //! * \ref KnuthBendixBase
   //! * \ref todd_coxeter_class_group "ToddCoxeterBase"
 
   //! \defgroup cong_all_classes_group Classes
@@ -65,7 +65,7 @@ namespace libsemigroups {
   //! These classes are:
   //! * \ref Congruence
   //! * \ref Kambites
-  //! * \ref KnuthBendix
+  //! * \ref KnuthBendixBase
   //! * \ref todd_coxeter_class_group "ToddCoxeterBase"
   class CongruenceInterface : public Runner {
     /////////////////////////////////////////////////////////////////////////

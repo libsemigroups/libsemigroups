@@ -842,7 +842,7 @@ namespace libsemigroups {
 
 #ifndef PARSED_BY_DOXYGEN
     // This has to be repeated here (not in cong-intf.hpp) because we need to
-    // reverse the word for ToddCoxeterBase, but not in KnuthBendix or Kambites.
+    // reverse the word for ToddCoxeterBase, but not in KnuthBendixBase or Kambites.
     //
     // The enable_if stops this from matching char const* = char[n]
     template <typename Word, typename InputWord = Word>
@@ -850,7 +850,7 @@ namespace libsemigroups {
     reduce_no_run_no_checks(ToddCoxeter<Word> const& tc, InputWord const& w);
 
     // This has to be repeated here (not in cong-intf.hpp) because we need to
-    // reverse the word for ToddCoxeter<Word>, but not in KnuthBendix or
+    // reverse the word for ToddCoxeter<Word>, but not in KnuthBendixBase or
     // Kambites.
     //
     // The enable_if stops this from matching char const* = char[n]
@@ -859,7 +859,7 @@ namespace libsemigroups {
     reduce_no_run(ToddCoxeter<Word> const& tc, InputWord const& w);
 
     // This has to be repeated here (not in cong-intf.hpp) because we need to
-    // reverse the word for ToddCoxeter<Word>, but not in KnuthBendix or
+    // reverse the word for ToddCoxeter<Word>, but not in KnuthBendixBase or
     // Kambites.
     //
     // The enable_if stops this from matching char const* = char[n]
@@ -868,7 +868,7 @@ namespace libsemigroups {
     reduce_no_checks(ToddCoxeter<Word>& tc, InputWord const& w);
 
     // This has to be repeated here (not in cong-intf.hpp) because we need to
-    // reverse the word for ToddCoxeter<Word>, but not in KnuthBendix or
+    // reverse the word for ToddCoxeter<Word>, but not in KnuthBendixBase or
     // Kambites.
     //
     // The enable_if stops this from matching char const* = char[n]
