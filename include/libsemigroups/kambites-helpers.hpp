@@ -57,8 +57,6 @@ namespace libsemigroups {
     //! \p k is not at least \f$4\f$.
     //!
     //! \warning The returned range object is always infinite.
-    // TODO(1) should be allowed to specify the OutputWord here too, this
-    // requires changes to KambitesNormalFormRange however.
     template <typename Word>
     auto normal_forms(Kambites<Word>& k) {
       k.throw_if_not_C4();

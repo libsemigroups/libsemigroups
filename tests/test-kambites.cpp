@@ -2147,8 +2147,6 @@ namespace libsemigroups {
     REQUIRE(contains(k, 0000045_w, 0000036_w));
     REQUIRE(contains(k, 4501010_w, 3601010_w));
 
-    // Skip 9000 to ensure that this reruns enumerate on the underlying
-    // FroidurePinBase
     REQUIRE((normal_forms(k) | rx::take(50) | rx::to_vector())
             == std::vector<word_type>(
                 {0_w,  1_w,  2_w,  3_w,  4_w,  5_w,  6_w,  00_w, 01_w, 02_w,
@@ -2156,6 +2154,8 @@ namespace libsemigroups {
                  16_w, 20_w, 21_w, 22_w, 23_w, 24_w, 25_w, 26_w, 30_w, 31_w,
                  32_w, 33_w, 34_w, 35_w, 36_w, 40_w, 41_w, 42_w, 43_w, 44_w,
                  46_w, 50_w, 51_w, 52_w, 53_w, 54_w, 55_w, 56_w, 60_w, 61_w}));
+    // Skip 9000 to ensure that this reruns enumerate on the underlying
+    // FroidurePinBase
     REQUIRE(
         (normal_forms(k) | rx::skip_n(9'000) | rx::take(50) | rx::to_vector())
         == std::vector<word_type>(
@@ -2266,10 +2266,6 @@ namespace libsemigroups {
     presentation::add_rule(pp, to_word("abcd"), to_word("aaaeaa"));
     presentation::add_rule(pp, to_word("ef"), to_word("dg"));
 
-    kk.init(twosided, pp);
-    REQUIRE(kk.generating_pairs().empty());
-    REQUIRE(kk.small_overlap_class() == 4);
-
     Kambites kkk(twosided, pp);
     REQUIRE(kkk.generating_pairs().empty());
     REQUIRE(kkk.small_overlap_class() == 4);
@@ -2279,7 +2275,6 @@ namespace libsemigroups {
         kambites::add_generating_pair(k2, 01011011101111_w, 0123_w),
         LibsemigroupsException);
 
-    REQUIRE_THROWS_AS(k2.init(onesided, p), LibsemigroupsException);
     REQUIRE_THROWS_AS(Kambites(onesided, p), LibsemigroupsException);
   }
 

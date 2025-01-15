@@ -83,7 +83,7 @@ namespace libsemigroups {
     _have_class = false;
     _XYZ_data.clear();
     // Non-mutable
-    _input_generating_pairs.clear();
+    _generating_pairs.clear();
     _suffix_tree.init();
     return *this;
   }
@@ -110,7 +110,7 @@ namespace libsemigroups {
     throw_if_1_sided(knd);
     p.validate();
     _presentation = p;
-    // TODO(0) probably need to reset the _input_generating_pairs also
+    // TODO(0) probably need to reset the _generating_pairs also
     private_init_from_presentation(false);
   }
 
@@ -130,7 +130,7 @@ namespace libsemigroups {
     throw_if_1_sided(knd);
     p.validate();
     _presentation = std::move(p);
-    // TODO(0) probably need to reset the _input_generating_pairs also
+    // TODO(0) probably need to reset the _generating_pairs also
     private_init_from_presentation(false);
   }
 
@@ -163,8 +163,8 @@ namespace libsemigroups {
       // letters not in the alphabet.
       // The Kambites class requires that input to contains to be actual
       // objects not iterators. This is different from KnuthBendix and
-      // ToddCoxeterBase. One way to resolve this more satisfactorily would be to
-      // implement MultiStringView for non-strings, so that we can just
+      // ToddCoxeterBase. One way to resolve this more satisfactorily would be
+      // to implement MultiStringView for non-strings, so that we can just
       // construct a light-weight view and bung that in here instead.
       return wp_prefix(internal_type(_tmp_value1),
                        internal_type(_tmp_value2),

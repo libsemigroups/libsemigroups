@@ -151,7 +151,7 @@ namespace libsemigroups {
     mutable std::vector<RelationWords> _XYZ_data;
     mutable native_word_type           _tmp_value1, _tmp_value2;
 
-    std::vector<native_word_type>  _input_generating_pairs;
+    std::vector<native_word_type>  _generating_pairs;
     Presentation<native_word_type> _presentation;
     Ukkonen                        _suffix_tree;
 
@@ -266,16 +266,17 @@ namespace libsemigroups {
     //! \throws LibsemigroupsException if \p knd is not \ref
     //! congruence_kind::twosided.
     // No rvalue ref version of this because we can't use the presentation.
-    template <typename OtherWord>
-    Kambites(congruence_kind knd, Presentation<OtherWord> const& p)
-        : Kambites(
-              knd,
-              // The lambda in the next line converts, say, chars to
-              // size_ts, but doesn't convert size_ts to human_readable
-              // characters.
-              to_presentation<native_word_type>(p, [](auto x) { return x; })) {
-      throw_if_1_sided(knd);
-    }
+    // template <typename OtherWord>
+    // Kambites(congruence_kind knd, Presentation<OtherWord> const& p)
+    //     : Kambites(
+    //           knd,
+    //           // The lambda in the next line converts, say, chars to
+    //           // size_ts, but doesn't convert size_ts to human_readable
+    //           // characters.
+    //           to_presentation<native_word_type>(p, [](auto x) { return x; }))
+    //           {
+    //   throw_if_1_sided(knd);
+    // }
 
     //! \brief Re-initialize from \ref congruence_kind and Presentation.
     //!
@@ -289,14 +290,14 @@ namespace libsemigroups {
     //! \throws LibsemigroupsException if \p p is not valid.
     //! \throws LibsemigroupsException if \p knd is not \ref
     //! congruence_kind::twosided.
-    template <typename OtherWord>
-    Kambites& init(congruence_kind knd, Presentation<OtherWord> const& p) {
-      throw_if_1_sided(knd);
-      // The lambda in the next line converts, say, chars to size_ts, but
-      // doesn't convert size_ts to human_readable characters.
-      init(knd, to_presentation<native_word_type>(p, [](auto x) { return x; }));
-      return *this;
-    }
+    // template <typename OtherWord>
+    // Kambites& init(congruence_kind knd, Presentation<OtherWord> const& p) {
+    //   throw_if_1_sided(knd);
+    //   // The lambda in the next line converts, say, chars to size_ts, but
+    //   // doesn't convert size_ts to human_readable characters.
+    //   init(knd, to_presentation<native_word_type>(p, [](auto x) { return x;
+    //   })); return *this;
+    // }
 
     //! \brief Get the presentation used to define a \ref Kambites instance
     //! (if any).
@@ -328,7 +329,7 @@ namespace libsemigroups {
     //! \noexcept
     [[nodiscard]] std::vector<native_word_type> const&
     generating_pairs() const noexcept {
-      return _input_generating_pairs;
+      return _generating_pairs;
     }
 
     ////////////////////////////////////////////////////////////////////////
@@ -354,10 +355,10 @@ namespace libsemigroups {
                                             Iterator3 first2,
                                             Iterator4 last2) {
       LIBSEMIGROUPS_ASSERT(!started());
-      // TODO(2) if native_word_type == word_type, then _input_generating_pairs
+      // TODO(2) if native_word_type == word_type, then _generating_pairs
       // == _generating_pairs
-      _input_generating_pairs.emplace_back(first1, last1);
-      _input_generating_pairs.emplace_back(first2, last2);
+      _generating_pairs.emplace_back(first1, last1);
+      _generating_pairs.emplace_back(first2, last2);
       return CongruenceInterface::add_internal_generating_pair_no_checks<
           Kambites>(first1, last1, first2, last2);
     }
