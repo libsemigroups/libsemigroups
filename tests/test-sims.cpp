@@ -2039,8 +2039,7 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("Sims1",
                           "046",
-                          "semigroup with faithful non-strictly cyclic "
-                          "action of onesided congruence",
+                          "semigroup with faithful non-strictly cyclic action",
                           "[quick][sims1]") {
     // Found with Smallsemi, this example is minimal wrt size of the
     // semigroup.

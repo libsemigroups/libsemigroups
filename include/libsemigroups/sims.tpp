@@ -223,10 +223,11 @@ namespace libsemigroups {
                                           wg.number_of_active_nodes());
           tc.init(congruence_kind::onesided, p, copy);
           todd_coxeter::add_generating_pair(tc, wx, wy);
-          LIBSEMIGROUPS_ASSERT(tc.word_graph().number_of_nodes()
-                               == wg.number_of_active_nodes());
-          LIBSEMIGROUPS_ASSERT(tc.number_of_classes()
-                               < wg.number_of_active_nodes());
+          // TODO(0): add back asserts once ToddCoxeter is finished
+          // LIBSEMIGROUPS_ASSERT(tc.word_graph().number_of_nodes()
+          //                      == wg.number_of_active_nodes());
+          // LIBSEMIGROUPS_ASSERT(tc.number_of_classes()
+          //                      < wg.number_of_active_nodes());
           if (tc.number_of_classes() > 1) {
             return false;
           }
