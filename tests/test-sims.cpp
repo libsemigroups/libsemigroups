@@ -57,7 +57,6 @@
 #include "libsemigroups/transf.hpp"           // for Transf
 #include "libsemigroups/types.hpp"            // for word_type
 #include "libsemigroups/word-graph.hpp"       // for WordGraph
-#include "libsemigroups/words.hpp"            // for operator""_w, operator+
 
 #include "libsemigroups/detail/eigen.hpp"           // for DenseBase::row
 #include "libsemigroups/detail/felsch-graph.hpp"    // for FelschGraph
