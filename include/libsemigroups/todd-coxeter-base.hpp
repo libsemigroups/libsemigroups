@@ -83,7 +83,7 @@ namespace libsemigroups {
   //! \defgroup todd_coxeter_group Todd-Coxeter
   //!
   //! This page contains documentation related to the implementation of the
-  //! Todd-Coxeter algorithm \cite Coleman2022aa in ``libsemigroups``.
+  //! Todd-Coxeter algorithm \cite Coleman2022aa in `libsemigroups`.
   //!
   //! The purpose of this algorithm is to find the WordGraph of the action of a
   //! semigroup or monoid on the classes of a 1-sided (right), or 2-sided
@@ -94,7 +94,7 @@ namespace libsemigroups {
   //!
   //! \brief Class containing an implementation of the Todd-Coxeter Algorithm.
   //!
-  //! Defined in ``todd-coxeter.hpp``.
+  //! Defined in `todd-coxeter.hpp`.
   //!
   //! This class contains an implementation of the Todd-Coxeter
   //! algorithm for computing 1-sided (right), and 2-sided congruences on
@@ -1149,7 +1149,7 @@ namespace libsemigroups {
     //! of definitions.
     //!
     //! \returns The current value of the setting, a value of type
-    //! ``size_t``.
+    //! `size_t`.
     //!
     //! \exceptions
     //! \noexcept
@@ -1226,7 +1226,7 @@ namespace libsemigroups {
     //! The default value of this setting is \c 100'000.
     //!
     //! \returns The current value of the setting, a value of type
-    //! ``size_t``.
+    //! `size_t`.
     //!
     //! \exceptions
     //! \noexcept
@@ -1274,7 +1274,7 @@ namespace libsemigroups {
     //! The default value of this setting is \c 100'000.
     //!
     //! \returns The current value of the setting, a value of type
-    //! ``size_t``.
+    //! `size_t`.
     //!
     //! \exceptions
     //! \noexcept
@@ -1323,7 +1323,7 @@ namespace libsemigroups {
     //! The default value of this setting is \c 100'000.
     //!
     //! \returns The current value of the setting, a value of type
-    //! ``size_t``.
+    //! `size_t`.
     //!
     //! \exceptions
     //! \noexcept
@@ -1372,13 +1372,13 @@ namespace libsemigroups {
     //! \ref lookahead_growth_threshold, then the value of
     //! \ref lookahead_next is increased by a multiple of \p val.
     //!
-    //! The default value is of this setting is ``2.0``.
+    //! The default value is of this setting is `2.0`.
     //!
     //! \param val the value indicating the lookahead growth factor.
     //!
     //! \returns A reference to `*this`.
     //!
-    //! \throws LibsemigroupsException if \p val is less than ``1.0``.
+    //! \throws LibsemigroupsException if \p val is less than `1.0`.
     ToddCoxeterBase& lookahead_growth_factor(float val);
 
     //! \brief Get the current value of the lookahead growth factor.
@@ -1403,7 +1403,7 @@ namespace libsemigroups {
     //! \ref lookahead_growth_threshold, then the value of \ref
     //! lookahead_next is increased.
     //!
-    //! The default value is ``4``.
+    //! The default value is `4`.
     //!
     //! \param val the value indicating the lookahead growth threshold.
     //!
@@ -1736,7 +1736,7 @@ namespace libsemigroups {
     //! version setting.
     //!
     //! \returns The current value of the setting, a value of type
-    //! ``options::def_version``.
+    //! `options::def_version`.
     //!
     //! \exceptions
     //! \noexcept
@@ -2409,7 +2409,7 @@ namespace libsemigroups {
   //! \brief Return a human readable representation of a \ref
   //! todd_coxeter_class_group "ToddCoxeterBase" object.
   //!
-  //! Defined in ``todd-coxeter.hpp``.
+  //! Defined in `todd-coxeter.hpp`.
   //!
   //! This function returns a human readable representation of a \ref
   //! todd_coxeter_class_group "ToddCoxeterBase" object.

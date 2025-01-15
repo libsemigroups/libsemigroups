@@ -36,7 +36,7 @@ namespace libsemigroups {
   //!
   //! This page contains links to the documentation for the classes Congruence
   //! and CongruenceInterface, and to helper functions for all of the classes in
-  //! ``libsemigroups`` that are derived from CongruenceInterface.
+  //! `libsemigroups` that are derived from CongruenceInterface.
   //! These classes are:
   //! * \ref Congruence
   //! * \ref Kambites
@@ -56,9 +56,9 @@ namespace libsemigroups {
   //! \brief Class collecting common aspects of classes representing
   //! congruences.
   //!
-  //! Defined in ``cong-intf.hpp``.
+  //! Defined in `cong-intf.hpp`.
   //!
-  //! Every class for representing a congruence in ``libsemigroups`` is derived
+  //! Every class for representing a congruence in `libsemigroups` is derived
   //! from CongruenceInterface, which holds the member functions and data that
   //! are common to all its derived classes.
   //!

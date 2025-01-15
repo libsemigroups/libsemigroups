@@ -43,12 +43,12 @@ namespace libsemigroups {
   //! \brief Class for running Kambites, KnuthBendix, and \ref
   //! todd_coxeter_class_group "ToddCoxeterBase" in parallel.
   //!
-  //! Defined in ``cong.hpp``.
+  //! Defined in `cong.hpp`.
   //!
   //! On this page we describe the functionality relating to the class
-  //! Congruence in ``libsemigroups``. This class can be used for computing a
+  //! Congruence in `libsemigroups`. This class can be used for computing a
   //! congruence over a semigroup or monoid by running every applicable
-  //! algorithm from ``libsemigroups`` (and some variants of the same algorithm)
+  //! algorithm from `libsemigroups` (and some variants of the same algorithm)
   //! in parallel. This class is provided for convenience, at present it is not
   //! very customisable, and lacks some of the fine grained control offered by
   //! the classes implementing individual algorithms, such as Kambites,
@@ -645,7 +645,7 @@ namespace libsemigroups {
     //! construct or initialise the object.
     //!
     //! \throws LibsemigroupsException if \ref finished returns \c true and
-    //! ``has<KnuthBendix>()`` returns \c true.
+    //! `has<KnuthBendix>()` returns \c true.
     [[nodiscard]] native_presentation_type const& presentation() const;
 
     //! \brief Get the generating pairs of the congruence.
@@ -701,7 +701,7 @@ namespace libsemigroups {
   //! \brief Return a human readable representation of a \ref
   //! Congruence object.
   //!
-  //! Defined in ``cong.hpp``.
+  //! Defined in `cong.hpp`.
   //!
   //! This function returns a human readable representation of a
   //! \ref Congruence object.

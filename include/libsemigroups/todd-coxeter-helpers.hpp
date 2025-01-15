@@ -69,7 +69,7 @@ namespace libsemigroups {
     //! functions include versions of several of the member functions of \ref
     //! todd_coxeter_class_group "ToddCoxeterBase" (that accept iterators) whose
     //! parameters are not iterators, but objects instead. The helpers
-    //! documented on this page all belong to the namespace ``todd_coxeter``.
+    //! documented on this page all belong to the namespace `todd_coxeter`.
     //!
     //! \sa \ref cong_intf_helpers_group
     //!
@@ -445,7 +445,7 @@ namespace libsemigroups {
     //! \returns A range object containing the class with index \p n.
     //!
     //! \throws LibsemigroupsException if \p n is greater than or equal to
-    //! ``tc.number_of_classes()``.
+    //! `tc.number_of_classes()`.
     //!
     //! \cong_intf_warn_undecidable{Todd-Coxeter}
     // Can't out of line this because of auto return type
@@ -487,7 +487,7 @@ namespace libsemigroups {
     //! \returns A range object containing the class with index \p n.
     //!
     //! \warning This function does not check its arguments. In particular, it
-    //! is assumed that \p n is strictly less than ``tc.number_of_classes()``.
+    //! is assumed that \p n is strictly less than `tc.number_of_classes()`.
     //!
     //! \cong_intf_warn_undecidable{Todd-Coxeter}
     // Can't out of line this because of auto return type

@@ -145,7 +145,7 @@ namespace libsemigroups {
   //! several of the member functions of \ref KnuthBendix (that accept
   //! iterators) whose parameters are not iterators, but objects instead. The
   //! helpers documented on this page all belong to the namespace
-  //! ``knuth_bendix``.
+  //! `knuth_bendix`.
   //!
   //! \sa \ref cong_intf_helpers_group
   namespace knuth_bendix {
