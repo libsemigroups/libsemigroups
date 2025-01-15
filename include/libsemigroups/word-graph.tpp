@@ -1406,7 +1406,7 @@ namespace libsemigroups {
   std::enable_if_t<IsWordGraph<Return>, Return>
   to(size_t                                                      num_nodes,
      std::vector<std::vector<typename Return::node_type>> const& edges) {
-    WordGraph<Node> result(num_nodes, edges.begin()->size());
+    Return result(num_nodes, edges.begin()->size());
     for (size_t i = 0; i < edges.size(); ++i) {
       for (size_t j = 0; j < (edges.begin() + i)->size(); ++j) {
         auto val = *((edges.begin() + i)->begin() + j);
@@ -1418,10 +1418,12 @@ namespace libsemigroups {
     return result;
   }
 
-  template <typename Return, typename Node>
+  template <typename Return>
   std::enable_if_t<IsWordGraph<Return>, Return>
-  to(size_t num_nodes, std::initializer_list<std::vector<Node>> il) {
-    return to<WordGraph<Node>>(num_nodes, std::vector<std::vector<Node>>(il));
+  to(size_t                                                         num_nodes,
+     std::initializer_list<std::vector<typename Return::node_type>> il) {
+    return to<Return>(num_nodes,
+                      std::vector<std::vector<typename Return::node_type>>(il));
   }
 
   namespace detail {
