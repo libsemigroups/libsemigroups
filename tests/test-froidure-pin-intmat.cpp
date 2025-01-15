@@ -33,14 +33,16 @@ namespace libsemigroups {
   // Forward declaration
   struct LibsemigroupsException;
 
-  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("FroidurePin",
-                                   "032",
-                                   "Example 000",
-                                   "[quick][froidure-pin][intmat]",
-                                   (IntMat<0, 0, int64_t>),
-                                   (IntMat<2, 2, int64_t>) ) {
-    // FIXME this test seemingly causes undefined behaviour (multiplication of
-    // signed integers that overflows)
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE(
+      "FroidurePin",
+      "032",
+      "Example 000",
+      "[quick][froidure-pin][intmat][no-sanitize-undefined]",
+      (IntMat<0, 0, int64_t>),
+      (IntMat<2, 2, int64_t>) ) {
+    // this test seemingly causes undefined behaviour (multiplication of
+    // signed integers that overflows), which is either a bug or a feature
+    // depending on your perspective.
     auto rg = ReportGuard(false);
 
     FroidurePin<TestType> S;
