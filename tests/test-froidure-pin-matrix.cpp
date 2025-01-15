@@ -61,9 +61,14 @@ namespace libsemigroups {
     REQUIRE(S.position(x) == 5);
     REQUIRE(S.contains(x));
 
-    x = TestType({{-2, 2, 0}, {-1, 0, 0}, {0, 0, 0}});
-    REQUIRE(S.position(x) == UNDEFINED);
-    REQUIRE(!S.contains(x));
+    if constexpr (IsDynamicMatrix<TestType>) {
+      // If TestType is a static matrix, then the next line leads to out of
+      // bounds accesses, since we are constructing a too big matrix without
+      // checks.
+      x = TestType({{-2, 2, 0}, {-1, 0, 0}, {0, 0, 0}});
+      REQUIRE(S.position(x) == UNDEFINED);
+      REQUIRE(!S.contains(x));
+    }
   }
 
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("FroidurePin",
