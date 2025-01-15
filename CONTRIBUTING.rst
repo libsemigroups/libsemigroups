@@ -64,10 +64,21 @@ Some more conventions:
   - functions that are (or should be) implemented for all of the public facing
     classes in ``libsemigroups``, such as, for example
     `to_human_readable_repr`
-  - the `to` functions such as `to<Blocks>`, `to<WordGraph>` etc,
-    to avoid the repetition in `blocks::to<Blocks>`, or other functions where
-    the namespace would belong to the function name (like
-    `words::number_of_words`).
+
+* Functions that construct an object must be of one of three types;
+  constructors, `make` functions, or `to` functions:
+
+  * A constructor should be used to construct an object without checking its
+    arguments.
+  * A `make` function should be a member of a helper namespace (such as
+    `inverse_presentation` or `blocks`) that is used to construct an object
+    from non-libsemigroups objects such as containers, integers and strings.
+    It should check its arguments.
+  * A `to` function should be a specialisation of a function template that is
+    used to convert from one `libsemigroups` type to another. A typical
+    signature might look something like
+    `to<ToddCoxeter>(Presentation<word_type> p)`. It should check its
+    arguments.
 
 * The documentation for each function may contain the following section
   indicators in the following order:
