@@ -734,6 +734,7 @@ namespace libsemigroups {
   //! it.
   //!
   //! \tparam Container the type of the parameter \p cont.
+  //! \tparam Return the return type.
   //!
   //! \param cont container containing a lookup for the blocks.
   //!
@@ -752,9 +753,20 @@ namespace libsemigroups {
 
   //! \relates Blocks
   //!
-  //! \copydoc to(Container const&)
-  template <typename Thing>
-  [[nodiscard]] enable_if_is_same<Thing, Blocks>
+  //! \brief Validate the arguments, construct a Blocks object, and validate
+  //! it.
+  //!
+  //! \tparam Return the return type.
+  //!
+  //! \param cont container containing a lookup for the blocks.
+  //!
+  //! \throws LibsemigroupsException if the arguments do not describe a
+  //! signed partition.
+  //!
+  //! \throws LibsemigroupsException if the constructed Blocks object is not
+  //! valid.
+  template <typename Return>
+  [[nodiscard]] enable_if_is_same<Return, Blocks>
   to(std::initializer_list<std::vector<int32_t>> const& cont) {
     return to<Blocks, std::initializer_list<std::vector<int32_t>>>(cont);
   }
@@ -1454,7 +1466,8 @@ namespace libsemigroups {
   //!
   //! \brief Validate the arguments, construct a bipartition, and validate it.
   //!
-  //! \tparam T the type of the parameter \p cont
+  //! \tparam T the type of the parameter \p cont.
+  //! \tparam Return the return type.
   //!
   //! \param cont either a vector providing a lookup for the blocks of the
   //! bipartition or a vector of vectors (or initializer list).
@@ -1477,7 +1490,7 @@ namespace libsemigroups {
   //!
   //! \brief Validate the arguments, construct a bipartition, and validate it.
   //!
-  //! See `to<Bipartition>(Container const&)` for full details.
+  //! \copydoc to(Container const&)
   template <typename Return>
   [[nodiscard]] enable_if_is_same<Return, Bipartition>
   to(std::initializer_list<uint32_t> const& cont) {
@@ -1486,9 +1499,7 @@ namespace libsemigroups {
 
   //! \relates Bipartition
   //!
-  //! \brief Validate the arguments, construct a bipartition, and validate it.
-  //!
-  //! See `to<Bipartition>(Container const&)` for full details.
+  //! \copydoc to(Container const&)
   template <typename Return>
   [[nodiscard]] enable_if_is_same<Return, Bipartition>
   to(std::initializer_list<std::vector<int32_t>> const& cont) {
