@@ -28,11 +28,11 @@
 #include <unordered_map>  // for operator==
 #include <utility>        // for forward, move
 
-#include "libsemigroups/cong-class.hpp"          // for Congruence
-#include "libsemigroups/cong-intf-class.hpp"     // for CongruenceInterfa...
-#include "libsemigroups/constants.hpp"           // for operator==, opera...
-#include "libsemigroups/exception.hpp"           // for LIBSEMIGROUPS_EXC...
-#include "libsemigroups/exception.hpp"           // for LIBSEMIGROUPS_EXCEPTION
+#include "libsemigroups/cong-class.hpp"         // for Congruence
+#include "libsemigroups/cong-intf-class.hpp"    // for CongruenceInterfa...
+#include "libsemigroups/constants.hpp"          // for operator==, opera...
+#include "libsemigroups/exception.hpp"          // for LIBSEMIGROUPS_EXC...
+#include "libsemigroups/exception.hpp"          // for LIBSEMIGROUPS_EXCEPTION
 #include "libsemigroups/knuth-bendix-base.hpp"  // for KnuthBendixBase
 #include "libsemigroups/knuth-bendix-helpers.hpp"  // for non_trivial_classes
 #include "libsemigroups/obvinf.hpp"                // for is_obviously_infi...
@@ -71,8 +71,9 @@ namespace libsemigroups {
         return non_trivial_classes(*cong.get<ToddCoxeter<word_type>>(), tc);
       } else if (cong.has<KnuthBendixBase<>>()
                  && cong.get<KnuthBendixBase<>>()->finished()) {
-        KnuthBendixBase<> kb(cong.kind(), p);
-        auto strings = non_trivial_classes(kb, *cong.get<KnuthBendixBase<>>());
+        KnuthBendix kb(cong.kind(), to_presentation<std::string>(p));
+        auto        strings
+            = non_trivial_classes(kb, *cong.get<KnuthBendix<std::string>>());
         std::vector<std::vector<word_type>> result;
         for (auto const& klass : strings) {
           result.push_back(rx::iterator_range(klass.begin(), klass.end())
@@ -94,7 +95,8 @@ namespace libsemigroups {
     // {
     //   using rx::operator|;
     //   cong.run();
-    //   if (cong.has<KnuthBendixBase<>>() && cong.get<KnuthBendixBase<>>()->finished())
+    //   if (cong.has<KnuthBendixBase<>>() &&
+    //   cong.get<KnuthBendixBase<>>()->finished())
     //   {
     //     KnuthBendixBase<> kb(cong.kind(), p);
     //     return non_trivial_classes(kb, *cong.get<KnuthBendixBase<>>());

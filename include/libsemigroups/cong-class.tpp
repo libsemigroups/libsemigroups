@@ -174,10 +174,10 @@ namespace libsemigroups {
     std::string name;
     if constexpr (std::is_same_v<Thing, Kambites<word_type>>) {
       val  = RunnerKind::K;
-      name = "Kambites";
+      name = "Kambites<word_type>";
     } else if constexpr (std::is_same_v<Thing, KnuthBendixBase<>>) {
       val  = RunnerKind::KB;
-      name = "KnuthBendixBase";
+      name = "KnuthBendix<word_type>";
     } else if constexpr (std::is_same_v<Thing, ToddCoxeter<word_type>>) {
       val  = RunnerKind::TC;
       name = "ToddCoxeter<word_type>";

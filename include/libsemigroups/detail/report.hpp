@@ -128,16 +128,14 @@ namespace libsemigroups {
 
       void emit();
     };  // ReportCell
-  }     // namespace detail
+  }  // namespace detail
 
   bool reporting_enabled() noexcept;
 
   template <typename... Args>
   std::string fmt_default(std::string_view sv, Args&&... args) {
-    auto        tid     = detail::this_threads_id();
-    std::string fmt_str = "#{}: ";
-    fmt_str.append(sv.begin(), sv.end());
-    return fmt::format(std::move(fmt_str), tid, std::forward<Args>(args)...);
+    std::string prefix = fmt::format("#{}: ", detail::this_threads_id());
+    return prefix + fmt::format(sv, std::forward<Args>(args)...);
   }
 
   template <typename... Args>

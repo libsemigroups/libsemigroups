@@ -62,7 +62,9 @@ namespace libsemigroups {
     KnuthBendix& init(congruence_kind knd, Presentation<Word>&& p) {
       if constexpr (!std::is_same_v<Word, std::string>) {
         // to_presentation throws in the next line if p isn't valid
-        KnuthBendixBase_::init(knd, to_presentation<std::string>(p));
+        // TODO(0) comment about the lambda in the next line
+        KnuthBendixBase_::init(
+            knd, to_presentation<std::string>(p, [](auto x) { return x; }));
       } else {
         // TODO(1) normalize? presentation::normalize_alphabet(p);
         KnuthBendixBase_::init(knd, p);
@@ -127,6 +129,149 @@ namespace libsemigroups {
       // KnuthBendix and not KnuthBendixBase
       return CongruenceInterface::add_generating_pair<KnuthBendix>(
           first1, last1, first2, last2);
+    }
+
+    ////////////////////////////////////////////////////////////////////////
+    // KnuthBendix - interface requirements - contains
+    ////////////////////////////////////////////////////////////////////////
+
+    // The CongruenceInterface::currently_contains_no_checks and
+    // contains_no_checks, are used directly, since the letters pointed at by
+    // iterators in the presentation() and internal_presentation() are currently
+    // the same.
+
+    //! \brief Check containment of a pair of words via iterators.
+    //!
+    //! This function checks whether or not the words represented by the ranges
+    //! \p first1 to \p last1 and \p first2 to \p last2 are already known to be
+    //! contained in the congruence represented by a \ref
+    //! todd_coxeter_class_group "KnuthBendixBase_" instance. This function
+    //! performs no enumeration, so it is possible for the words to be contained
+    //! in the congruence, but that this is not currently known.
+    //!
+    //! \cong_intf_params_contains
+    //!
+    //! \returns
+    //! * tril::TRUE if the words are known to belong to the congruence;
+    //! * tril::FALSE if the words are known to not belong to the congruence;
+    //! * tril::unknown otherwise.
+    //!
+    //! \cong_intf_throws_if_letters_out_of_bounds
+    template <typename Iterator1,
+              typename Iterator2,
+              typename Iterator3,
+              typename Iterator4>
+    tril currently_contains(Iterator1 first1,
+                            Iterator2 last1,
+                            Iterator3 first2,
+                            Iterator4 last2) const {
+      // Call CongruenceInterface version so that we perform bound checks in
+      // KnuthBendix and not KnuthBendixBase_
+      return CongruenceInterface::currently_contains<KnuthBendix>(
+          first1, last1, first2, last2);
+    }
+
+    //! \brief Check containment of a pair of words via iterators.
+    //!
+    //! This function checks whether or not the words represented by the ranges
+    //! \p first1 to \p last1 and \p first2 to \p last2 are contained in the
+    //! congruence represented by a \ref todd_coxeter_class_group
+    //! "KnuthBendixBase_" instance. This function triggers a full enumeration,
+    //! which may never terminate.
+    //!
+    //! \cong_intf_params_contains
+    //!
+    //! \returns Whether or not the pair belongs to the congruence.
+    //!
+    //! \cong_intf_warn_undecidable{Todd-Coxeter}
+    //!
+    //! \cong_intf_throws_if_letters_out_of_bounds
+    template <typename Iterator1,
+              typename Iterator2,
+              typename Iterator3,
+              typename Iterator4>
+    bool contains(Iterator1 first1,
+                  Iterator2 last1,
+                  Iterator3 first2,
+                  Iterator4 last2) {
+      // TODO(1) remove when is_free is implemented
+      if (presentation().rules.empty() && generating_pairs().empty()) {
+        return std::equal(first1, last1, first2, last2);
+      }
+      // Call CongruenceInterface version so that we perform bound checks in
+      // KnuthBendix and not KnuthBendixBase_
+      return CongruenceInterface::contains<KnuthBendix>(
+          first1, last1, first2, last2);
+    }
+
+    ////////////////////////////////////////////////////////////////////////
+    // KnuthBendix - interface requirements - reduce
+    ////////////////////////////////////////////////////////////////////////
+
+    // The functions CongruenceInterface::reduce_*_no_checks are used directly,
+    // since the letters pointed at by iterators in the presentation() and
+    // internal_presentation() are currently the same.
+
+    //! \brief Reduce a word with no enumeration.
+    //!
+    //! This function writes a reduced word equivalent to the input word
+    //! described by the iterator \p first and \p last to the output iterator \p
+    //! d_first. This function triggers no enumeration. The word output by
+    //! this function is equivalent to the input word in the congruence defined
+    //! by a \ref todd_coxeter_class_group "KnuthBendixBase_" instance. If the
+    //!  \ref todd_coxeter_class_group "KnuthBendixBase_" instance is \ref
+    //!  finished, then the output word is a normal
+    //! form for the input word. If the  \ref todd_coxeter_class_group
+    //! "KnuthBendixBase_" instance is not \ref finished, then it might be that
+    //! equivalent input words produce different output words.
+    //!
+    //! \cong_intf_params_reduce
+    //!
+    //! \returns An \p OutputIterator pointing one beyond the last letter
+    //! inserted into \p d_first.
+    //!
+    //! \cong_intf_throws_if_letters_out_of_bounds
+    //!
+    //! \todd_coxeter_note_reverse
+    template <typename OutputIterator,
+              typename InputIterator1,
+              typename InputIterator2>
+    OutputIterator reduce_no_run(OutputIterator d_first,
+                                 InputIterator1 first,
+                                 InputIterator2 last) const {
+      return CongruenceInterface::reduce_no_run<KnuthBendix>(
+          d_first, first, last);
+    }
+
+    //! \brief Reduce a word.
+    //!
+    //! This function triggers a full enumeration and then writes a reduced
+    //! word equivalent to the input word described by the iterator \p first and
+    //! \p last to the output iterator \p d_first. The word output by this
+    //! function is equivalent to the input word in the congruence defined by a
+    //! \ref todd_coxeter_class_group "KnuthBendixBase_" instance. In other
+    //! words, the output word is a normal form for the input word or
+    //! equivalently a canconical representative of its congruence class.
+    //!
+    //! \cong_intf_params_reduce
+    //!
+    //! \returns An \p OutputIterator pointing one beyond the last letter
+    //! inserted into \p d_first.
+    //!
+    //! \cong_intf_throws_if_letters_out_of_bounds
+    //!
+    //! \cong_intf_warn_undecidable{Todd-Coxeter}
+    //!
+    //! \todd_coxeter_note_reverse
+    template <typename OutputIterator,
+              typename InputIterator1,
+              typename InputIterator2>
+    OutputIterator reduce(OutputIterator d_first,
+                          InputIterator1 first,
+                          InputIterator2 last) {
+      // Call CongruenceInterface version so that we perform bound checks in
+      // KnuthBendix and not KnuthBendixBase_
+      return CongruenceInterface::reduce<KnuthBendix>(d_first, first, last);
     }
   };  // class KnuthBendix
 

@@ -78,6 +78,7 @@ namespace libsemigroups {
         Rule* ptr = const_cast<Rule*>(cptr);
         ptr->deactivate();
         _inactive_rules.insert(_inactive_rules.end(), ptr);
+        report_no_prefix("{:-<95}\n", "");
       }
       _active_rules.clear();
       for (auto& it : _cursors) {
@@ -398,8 +399,9 @@ namespace libsemigroups {
       auto time
           = std::chrono::duration_cast<std::chrono::seconds>(now - start_time);
 
-      report_default("KnuthBendixBase: locally confluent for: {:>{width}} / "
-                     "{:>{width}} ({:>4.1f}%) pairs of rules ({}s)\n",
+      report_no_prefix("{:-<95}\n", "");
+      report_default("KnuthBendix: locally confluent for: {0:>{width}} / "
+                     "{1:>{width}} ({2:>4.1f}%) pairs of rules ({3}s)\n",
                      detail::group_digits(seen),
                      total_pairs_s,
                      (total_pairs != 0)
@@ -410,6 +412,9 @@ namespace libsemigroups {
     }
 
     bool RewriteFromLeft::confluent_impl(std::atomic_uint64_t& seen) const {
+      using std::chrono::time_point;
+      time_point start_time = std::chrono::high_resolution_clock::now();
+
       set_cached_confluent(tril::TRUE);
       internal_string_type word1;
       internal_string_type word2;
@@ -447,12 +452,18 @@ namespace libsemigroups {
                 rewrite(word2);
                 if (word1 != word2) {
                   set_cached_confluent(tril::FALSE);
+                  if (reporting_enabled()) {
+                    report_from_confluent(seen, start_time);
+                  }
                   return false;
                 }
               }
             }
           }
         }
+      }
+      if (reporting_enabled()) {
+        report_from_confluent(seen, start_time);
       }
       return cached_confluent();
     }
@@ -469,7 +480,6 @@ namespace libsemigroups {
         using std::chrono::time_point;
         time_point     start_time = std::chrono::high_resolution_clock::now();
         detail::Ticker t([&]() { report_from_confluent(seen, start_time); });
-        report_no_prefix("{:-<95}\n", "");
         return confluent_impl(seen);
       } else {
         return confluent_impl(seen);
@@ -604,7 +614,6 @@ namespace libsemigroups {
         using std::chrono::time_point;
         time_point     start_time = std::chrono::high_resolution_clock::now();
         detail::Ticker t([&]() { report_from_confluent(seen, start_time); });
-        report_no_prefix("{:-<95}\n", "");
         return confluent_impl(seen);
       } else {
         return confluent_impl(seen);
@@ -621,8 +630,9 @@ namespace libsemigroups {
       auto time
           = std::chrono::duration_cast<std::chrono::seconds>(now - start_time);
 
-      report_default("KnuthBendixBase: locally confluent for: {:>{width}} / "
-                     "{:>{width}} ({:>4.1f}%) rules ({}s)\n",
+      report_no_prefix("{:-<95}\n", "");
+      report_default("KnuthBendix: locally confluent for: {0:>{width}} / "
+                     "{1:>{width}} ({2:>4.1f}%) rules ({3}s)\n",
                      detail::group_digits(seen),
                      total_rules_s,
                      (total_rules != 0)
@@ -633,10 +643,15 @@ namespace libsemigroups {
     }
 
     bool RewriteTrie::confluent_impl(std::atomic_uint64_t& seen) const {
+      using std::chrono::time_point;
+      time_point start_time = std::chrono::high_resolution_clock::now();
+
       index_type link;
       set_cached_confluent(tril::TRUE);
 
       // For each rule, check if any descendent of any suffix breaks confluence
+      // FIXME are _rules the active rules? Not clear to JDM that this is the
+      // case.
       for (auto node_it = _rules.begin(); node_it != _rules.end(); ++node_it) {
         seen++;
         link = _trie.suffix_link_no_checks(node_it->first);
@@ -645,10 +660,17 @@ namespace libsemigroups {
           if (!descendants_confluent(
                   node_it->second, link, _trie.height_no_checks(link))) {
             set_cached_confluent(tril::FALSE);
+            if (reporting_enabled()) {
+              report_from_confluent(seen, start_time);
+            }
             return false;
           }
           link = _trie.suffix_link_no_checks(link);
         }
+      }
+
+      if (reporting_enabled()) {
+        report_from_confluent(seen, start_time);
       }
       // Set cached value
       // set_cached_confluent(tril::TRUE);

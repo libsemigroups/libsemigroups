@@ -80,7 +80,7 @@ namespace libsemigroups {
   };
 
   //////////////////////////////////////////////////////////////////////////
-  // KnuthBendixBase::Settings - constructor - public
+  // KnuthBendix::Settings - constructor - public
   //////////////////////////////////////////////////////////////////////////
 
   template <typename Rewriter, typename ReductionOrder>
@@ -372,7 +372,7 @@ namespace libsemigroups {
     auto longest_short
         = presentation::longest_rule_length(internal_presentation());
 
-    report_default("KnuthBendixBase: |A| = {}, |R| = {}, "
+    report_default("KnuthBendix: |A| = {}, |R| = {}, "
                    "|u| + |v| \u2208 [{}, {}], \u2211(|u| + |v|) = {}\n",
                    p.alphabet().size(),
                    group_digits(p.rules.size() / 2),
@@ -385,7 +385,7 @@ namespace libsemigroups {
   void KnuthBendixBase<Rewriter, ReductionOrder>::report_before_run() {
     if (reporting_enabled()) {
       report_no_prefix("{:+<95}\n", "");
-      report_default("KnuthBendixBase: STARTING . . .\n");
+      report_default("KnuthBendix: STARTING . . .\n");
       report_no_prefix("{:+<95}\n", "");
       // Required so that we can use the current presentation and not the
       // initial one.
@@ -426,17 +426,17 @@ namespace libsemigroups {
 
       detail::ReportCell<4> rc;
       rc.min_width(12);  // .divider("{:-<95}\n");
-      rc("KnuthBendixBase: rules {} (active) | {} (inactive) | {} (defined)\n",
+      rc("KnuthBendix: rules {} (active) | {} (inactive) | {} (defined)\n",
          group_digits(active),
          group_digits(inactive),
          group_digits(defined));
 
-      rc("KnuthBendixBase: diff  {} (active) | {} (inactive) | {} (defined)\n",
+      rc("KnuthBendix: diff  {} (active) | {} (inactive) | {} (defined)\n",
          signed_group_digits(active_diff),
          signed_group_digits(inactive_diff),
          signed_group_digits(defined_diff));
 
-      rc("KnuthBendixBase: time  {} (total)  | {} (killed)   | {} (defined)\n",
+      rc("KnuthBendix: time  {} (total)  | {} (killed)   | {} (defined)\n",
          detail::string_time(run_time),
          mean_killed,
          mean_defined);
@@ -453,15 +453,15 @@ namespace libsemigroups {
         using detail::group_digits;
         detail::ReportCell<2> rc;
         rc.min_width(12);  // .divider("{:-<95}\n");
-        rc("KnuthBendixBase: RUN STATISTICS\n");
+        rc("KnuthBendix: RUN STATISTICS\n");
         // rc.divider();
-        rc("KnuthBendixBase: max stack depth        {}\n",
+        rc("KnuthBendix: max stack depth        {}\n",
            group_digits(_rewriter.max_stack_depth()));
-        rc("KnuthBendixBase: max rule length        {}\n",
+        rc("KnuthBendix: max rule length        {}\n",
            group_digits(_rewriter.stats().max_word_length));
-        rc("KnuthBendixBase: max active rule length {}\n",
+        rc("KnuthBendix: max active rule length {}\n",
            group_digits(max_active_word_length()));
-        // rc("KnuthBendixBase: number of unique lhs   {}\n",
+        // rc("KnuthBendix: number of unique lhs   {}\n",
         //    group_digits(_stats.unique_lhs_rules.size()));
       }
 
@@ -470,7 +470,7 @@ namespace libsemigroups {
       report_presentation(p);
 
       report_no_prefix("{:+<95}\n", "");
-      report_default("KnuthBendixBase: STOPPING -- ");
+      report_default("KnuthBendix: STOPPING -- ");
 
       if (finished()) {
         report_no_prefix("finished!\n");
@@ -655,11 +655,11 @@ namespace libsemigroups {
       // used to define the KnuthBendixBase.  If _rewriter._pending_rules is
       // non-empty, then it means that the rules in _rewriter might not define
       // the system.
-      report_default("KnuthBendixBase: the system is confluent already!\n");
+      report_default("KnuthBendix: the system is confluent already!\n");
       return;
     } else if (_rewriter.number_of_active_rules() >= max_rules()) {
       report_default(
-          "KnuthBendixBase: too many rules, found {}, max_rules() is {}\n",
+          "KnuthBendix: too many rules, found {}, max_rules() is {}\n",
           _rewriter.number_of_active_rules(),
           max_rules());
       return;
@@ -1012,7 +1012,7 @@ namespace libsemigroups {
     }
 
     return fmt::format(
-        "<{}{} KnuthBendixBase over {} with {}{}/{} active/inactive rules>",
+        "<{}{} KnuthBendix over {} with {}{}/{} active/inactive rules>",
         conf,
         kb.kind() == congruence_kind::twosided ? " 2-sided" : " 1-sided",
         to_human_readable_repr(kb.internal_presentation()),
