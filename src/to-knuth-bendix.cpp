@@ -31,8 +31,4 @@ namespace libsemigroups {
     return KnuthBendix<word_type>(knd, to_presentation<word_type>(fp));
   }
 
-  KnuthBendix<word_type> to_knuth_bendix(congruence_kind        knd,
-                                         ToddCoxeterBase const& tc) {
-    return KnuthBendix<word_type>(knd, tc.internal_presentation());
-  }
 }  // namespace libsemigroups
