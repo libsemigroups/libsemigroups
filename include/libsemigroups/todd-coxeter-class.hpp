@@ -27,6 +27,7 @@
 #define LIBSEMIGROUPS_TODD_COXETER_CLASS_HPP_
 
 #include "todd-coxeter-base.hpp"
+// TODO(0) iwyu
 
 namespace libsemigroups {
 
@@ -250,6 +251,7 @@ namespace libsemigroups {
     template <typename Node>
     ToddCoxeter& init(congruence_kind knd, WordGraph<Node> const& wg);
 
+    // TODO(0) uncomment
     //    // Used in Sims
     //    // TODO(1) could this and the next function be removed, and replaced
     //    with

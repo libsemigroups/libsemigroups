@@ -72,7 +72,7 @@ namespace libsemigroups {
     presentation::add_rule(p, 000_w, 0_w);
     presentation::add_rule(p, 0_w, 11_w);
 
-    KnuthBendix<TestType> kb(twosided, p);
+    auto kb(knuth_bendix::make(twosided, p));
 
     REQUIRE(!kb.finished());
     REQUIRE(kb.number_of_classes() == 5);
@@ -373,7 +373,7 @@ namespace libsemigroups {
                                    "[quick][knuth-bendix]",
                                    KNUTH_BENDIX_TYPES) {
     using literals::operator""_w;
-    auto            rg = ReportGuard(false);
+    auto rg = ReportGuard(false);
 
     Presentation<word_type> p1;
     p1.contains_empty_word(true);

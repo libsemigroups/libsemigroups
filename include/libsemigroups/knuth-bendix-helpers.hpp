@@ -33,7 +33,7 @@
 #include "constants.hpp"           // for UNDEFINED, POSITIVE_...
 #include "debug.hpp"               // for LIBSEMIGROUPS_ASSERT
 #include "exception.hpp"           // for LIBSEMIGROUPS_EXCEPTION
-#include "knuth-bendix-base.hpp"  // for KnuthBendixBase
+#include "knuth-bendix-class.hpp"  // for KnuthBendix
 #include "paths.hpp"               // for Paths
 #include "presentation.hpp"        // for Presentation
 #include "ranges.hpp"              // for seq, input_range_ite...
@@ -57,15 +57,15 @@ namespace libsemigroups {
     //! Defined in \c knuth-bendix-helpers.hpp.
     //!
     //! This function returns a range object containing normal forms of the
-    //! classes of the congruence represented by an instance of KnuthBendixBase. The
-    //! order of the classes, and the normal form that is returned, are
+    //! classes of the congruence represented by an instance of KnuthBendixBase.
+    //! The order of the classes, and the normal form that is returned, are
     //! controlled by the reduction order used to construct \p kb. This function
     //! triggers a full enumeration of \p kb.
     //!
-    //! \tparam Word the type of the words contained in the output range
-    //! (default: std::string).
+    //! \tparam Word the type of the words contained in the output range.
     //! \tparam Rewriter the first template parameter for KnuthBendixBase.
-    //! \tparam ReductionOrder the second template parameter for KnuthBendixBase.
+    //! \tparam ReductionOrder the second template parameter for
+    //! KnuthBendixBase.
     //!
     //! \param kb the \ref KnuthBendixBase instance.
     //!
@@ -75,10 +75,9 @@ namespace libsemigroups {
     //! \no_libsemigroups_except
     //!
     //! \cong_intf_warn_undecidable{Knuth-Bendix}.
-    template <typename Word = std::string,
-              typename Rewriter,
-              typename ReductionOrder>
-    [[nodiscard]] auto normal_forms(KnuthBendixBase<Rewriter, ReductionOrder>& kb) {
+    template <typename Word, typename Rewriter, typename ReductionOrder>
+    [[nodiscard]] auto
+    normal_forms(KnuthBendix<Word, Rewriter, ReductionOrder>& kb) {
       return detail::KnuthBendixNormalFormRange<Word, Rewriter, ReductionOrder>(
           kb);
     }
@@ -87,8 +86,8 @@ namespace libsemigroups {
     // Interface helpers - non_trivial_classes
     ////////////////////////////////////////////////////////////////////////
 
-    //! \brief Find the non-trivial classes of the quotient of one KnuthBendixBase
-    //! instance in another.
+    //! \brief Find the non-trivial classes of the quotient of one
+    //! KnuthBendixBase instance in another.
     //!
     //! Defined in \c knuth-bendix-helpers.hpp.
     //!
@@ -107,7 +106,8 @@ namespace libsemigroups {
     //! \tparam Word the type of the words contained in the output range
     //! (default: std::string).
     //! \tparam Rewriter the first template parameter for KnuthBendixBase.
-    //! \tparam ReductionOrder the second template parameter for KnuthBendixBase.
+    //! \tparam ReductionOrder the second template parameter for
+    //! KnuthBendixBase.
     //!
     //! \param kb1 the first \ref KnuthBendixBase instance.
     //! \param kb2 the second \ref KnuthBendixBase instance.
@@ -121,16 +121,15 @@ namespace libsemigroups {
     //! \throws LibsemigroupsException if the alphabets of the
     //! presentations of \p kb1 and \p kb2 are not equal.
     //!
-    //! \throws LibsemigroupsException if the \ref KnuthBendixBase::gilman_graph of
+    //! \throws LibsemigroupsException if the \ref KnuthBendixBase::gilman_graph
+    //! of
     //! \p kb1 has fewer nodes than that of \p kb2.
     //!
     //! \cong_intf_warn_undecidable{Knuth-Bendix}.
-    template <typename Word = std::string,
-              typename Rewriter,
-              typename ReductionOrder>
+    template <typename Word, typename Rewriter, typename ReductionOrder>
     [[nodiscard]] std::vector<std::vector<Word>>
-    non_trivial_classes(KnuthBendixBase<Rewriter, ReductionOrder>& kb1,
-                        KnuthBendixBase<Rewriter, ReductionOrder>& kb2);
+    non_trivial_classes(KnuthBendix<Word, Rewriter, ReductionOrder>& kb1,
+                        KnuthBendix<Word, Rewriter, ReductionOrder>& kb2);
 
   }  // namespace congruence_interface
 
@@ -162,11 +161,12 @@ namespace libsemigroups {
     //! This function runs the Knuth-Bendix algorithm on the rewriting
     //! system represented by a KnuthBendixBase instance by considering all
     //! overlaps of a given length \f$n\f$ (according to the \ref
-    //! KnuthBendixBase::options::overlap) before those overlaps of length \f$n +
-    //! 1\f$.
+    //! KnuthBendixBase::options::overlap) before those overlaps of length \f$n
+    //! + 1\f$.
     //!
     //! \tparam Rewriter the first template parameter for KnuthBendixBase.
-    //! \tparam ReductionOrder the second template parameter for KnuthBendixBase.
+    //! \tparam ReductionOrder the second template parameter for
+    //! KnuthBendixBase.
     //!
     //! \param kb the KnuthBendixBase instance.
     //!
@@ -177,24 +177,27 @@ namespace libsemigroups {
     //! confluent, which might be never.
     //!
     //! \sa \ref KnuthBendixBase::run.
-    template <typename Rewriter, typename ReductionOrder>
-    void by_overlap_length(KnuthBendixBase<Rewriter, ReductionOrder>& kb);
+    template <typename Word, typename Rewriter, typename ReductionOrder>
+    void by_overlap_length(KnuthBendix<Word, Rewriter, ReductionOrder>& kb);
 
     //! \brief Check if the all rules are reduced with respect to each other.
     //!
     //! Defined in \c knuth-bendix.hpp.
     //!
     //! \tparam Rewriter the first template parameter for KnuthBendixBase.
-    //! \tparam ReductionOrder the second template parameter for KnuthBendixBase.
+    //! \tparam ReductionOrder the second template parameter for
+    //! KnuthBendixBase.
     //!
     //! \param kb the KnuthBendixBase instance defining the rules that are to be
     //! checked for being reduced.
     //!
     //! \returns \c true if for each pair \f$(A, B)\f$ and \f$(C, D)\f$ of rules
-    //! stored within the KnuthBendixBase instance, \f$C\f$ is neither a subword of
+    //! stored within the KnuthBendixBase instance, \f$C\f$ is neither a subword
+    //! of
     //! \f$A\f$ nor \f$B\f$. Returns \c false otherwise.
-    template <typename Rewriter, typename ReductionOrder>
-    [[nodiscard]] bool is_reduced(KnuthBendixBase<Rewriter, ReductionOrder>& kb);
+    template <typename Word, typename Rewriter, typename ReductionOrder>
+    [[nodiscard]] bool
+    is_reduced(KnuthBendix<Word, Rewriter, ReductionOrder>& kb);
 
     ////////////////////////////////////////////////////////////////////////
     // Interface helpers - add_generating_pair
@@ -309,6 +312,7 @@ namespace libsemigroups {
     //! different calls to this function even if the parameters are identical.
     //! As such this is non-deterministic, and may produce different results
     //! with the same input.
+    // TODO(0) remove and use the above instead
     template <typename Word, typename Time>
     [[nodiscard]] auto redundant_rule(Presentation<Word> const& p, Time t) {
       auto pp = to_presentation<std::string>(p);

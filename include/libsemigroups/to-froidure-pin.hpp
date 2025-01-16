@@ -149,13 +149,13 @@ namespace libsemigroups {
   FroidurePin<detail::KBE<KnuthBendixBase<Rewriter, ReductionOrder>>>
   to_froidure_pin(KnuthBendixBase<Rewriter, ReductionOrder>& kb) {
     using KBE      = detail::KBE<KnuthBendixBase<Rewriter, ReductionOrder>>;
-    size_t const n = kb.presentation().alphabet().size();
+    size_t const n = kb.internal_presentation().alphabet().size();
 
     if (n == 0) {
-      LIBSEMIGROUPS_EXCEPTION("TODO");
+      LIBSEMIGROUPS_EXCEPTION("TODO(0)");
     } else if (kb.kind() != congruence_kind::twosided) {
       LIBSEMIGROUPS_EXCEPTION(
-          "the argument must be a two-sided congruence, found a {} congruence",
+          "the argument must be a 2-sided congruence, found a {} congruence",
           kb.kind());
     }
     kb.run();
@@ -164,7 +164,7 @@ namespace libsemigroups {
     for (size_t i = 0; i < n; ++i) {
       result.add_generator(KBE(kb, i));
     }
-    if (kb.presentation().contains_empty_word()) {
+    if (kb.internal_presentation().contains_empty_word()) {
       result.add_generator(KBE(kb, ""));
     }
     return result;

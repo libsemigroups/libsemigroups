@@ -201,7 +201,8 @@ namespace libsemigroups {
 
   template <typename Rewriter, typename ReductionOrder>
   KnuthBendixBase<Rewriter, ReductionOrder>&
-  KnuthBendixBase<Rewriter, ReductionOrder>::operator=(KnuthBendixBase const& that) {
+  KnuthBendixBase<Rewriter, ReductionOrder>::operator=(
+      KnuthBendixBase const& that) {
     CongruenceInterface::operator=(that);
     _gen_pairs_initted            = that._gen_pairs_initted;
     _gilman_graph                 = that._gilman_graph;
@@ -220,13 +221,15 @@ namespace libsemigroups {
   }
 
   template <typename Rewriter, typename ReductionOrder>
-  KnuthBendixBase<Rewriter, ReductionOrder>::KnuthBendixBase(KnuthBendixBase&& that)
+  KnuthBendixBase<Rewriter, ReductionOrder>::KnuthBendixBase(
+      KnuthBendixBase&& that)
       : KnuthBendixBase() {
     operator=(std::move(that));
   }
 
   template <typename Rewriter, typename ReductionOrder>
-  KnuthBendixBase<Rewriter, ReductionOrder>::KnuthBendixBase(KnuthBendixBase const& that)
+  KnuthBendixBase<Rewriter, ReductionOrder>::KnuthBendixBase(
+      KnuthBendixBase const& that)
       : KnuthBendixBase() {
     operator=(that);
   }
@@ -244,13 +247,14 @@ namespace libsemigroups {
 
   template <typename Rewriter, typename ReductionOrder>
   KnuthBendixBase<Rewriter, ReductionOrder>&
-  KnuthBendixBase<Rewriter, ReductionOrder>::init(congruence_kind             knd,
-                                              Presentation<std::string>&& p) {
+  KnuthBendixBase<Rewriter, ReductionOrder>::init(
+      congruence_kind             knd,
+      Presentation<std::string>&& p) {
     p.validate();
     init();
     CongruenceInterface::init(knd);
     _presentation = std::move(p);
-    init_from_presentation();
+    init_from_internal_presentation();
     return *this;
   }
 
@@ -281,8 +285,9 @@ namespace libsemigroups {
       return POSITIVE_INFINITY;
     }
 
-    int const modifier = (presentation().contains_empty_word() ? 0 : -1);
-    if (presentation().alphabet().empty()) {
+    int const modifier
+        = (internal_presentation().contains_empty_word() ? 0 : -1);
+    if (internal_presentation().alphabet().empty()) {
       return 1 + modifier;
     } else {
       uint64_t result = number_of_paths(gilman_graph(), 0);
@@ -319,7 +324,8 @@ namespace libsemigroups {
   template <typename OutputIterator,
             typename InputIterator1,
             typename InputIterator2>
-  OutputIterator KnuthBendixBase<Rewriter, ReductionOrder>::reduce_no_run_no_checks(
+  OutputIterator
+  KnuthBendixBase<Rewriter, ReductionOrder>::reduce_no_run_no_checks(
       OutputIterator d_first,
       InputIterator1 first,
       InputIterator2 last) const {
@@ -330,8 +336,8 @@ namespace libsemigroups {
     } else {
       _tmp_element1.assign(first, last);
     }
-    const_cast<KnuthBendixBase<Rewriter, ReductionOrder>&>(*this).rewrite_inplace(
-        _tmp_element1);
+    const_cast<KnuthBendixBase<Rewriter, ReductionOrder>&>(*this)
+        .rewrite_inplace(_tmp_element1);
     return std::copy(
         std::begin(_tmp_element1), std::end(_tmp_element1), d_first);
   }
@@ -361,8 +367,10 @@ namespace libsemigroups {
   void KnuthBendixBase<Rewriter, ReductionOrder>::report_presentation(
       Presentation<std::string> const& p) const {
     using detail::group_digits;
-    auto shortest_short = presentation::shortest_rule_length(presentation());
-    auto longest_short  = presentation::longest_rule_length(presentation());
+    auto shortest_short
+        = presentation::shortest_rule_length(internal_presentation());
+    auto longest_short
+        = presentation::longest_rule_length(internal_presentation());
 
     report_default("KnuthBendixBase: |A| = {}, |R| = {}, "
                    "|u| + |v| \u2208 [{}, {}], \u2211(|u| + |v|) = {}\n",
@@ -512,7 +520,8 @@ namespace libsemigroups {
   //////////////////////////////////////////////////////////////////////////
 
   template <typename Rewriter, typename ReductionOrder>
-  bool KnuthBendixBase<Rewriter, ReductionOrder>::confluent_known() const noexcept {
+  bool
+  KnuthBendixBase<Rewriter, ReductionOrder>::confluent_known() const noexcept {
     return _rewriter.confluence_known();
   }
 
@@ -684,7 +693,7 @@ namespace libsemigroups {
   WordGraph<uint32_t> const&
   KnuthBendixBase<Rewriter, ReductionOrder>::gilman_graph() {
     if (_gilman_graph.number_of_nodes() == 0
-        && !presentation().alphabet().empty()) {
+        && !internal_presentation().alphabet().empty()) {
       // TODO(1) should implement a SettingsGuard as in ToddCoxeterBase
       // reset the settings so that we really run!
       max_rules(POSITIVE_INFINITY);
@@ -705,10 +714,11 @@ namespace libsemigroups {
       }
 
       _gilman_graph.add_nodes(prefixes.size());
-      _gilman_graph.add_to_out_degree(presentation().alphabet().size());
+      _gilman_graph.add_to_out_degree(
+          internal_presentation().alphabet().size());
 
       for (auto& p : prefixes) {
-        for (size_t i = 0; i < presentation().alphabet().size(); ++i) {
+        for (size_t i = 0; i < internal_presentation().alphabet().size(); ++i) {
           auto s  = p.first + uint_to_internal_string(i);
           auto it = prefixes.find(s);
           if (it != prefixes.end()) {
@@ -731,7 +741,7 @@ namespace libsemigroups {
       }
       if (kind() != congruence_kind::twosided
           && !internal_generating_pairs().empty()) {
-        auto const& p    = presentation();
+        auto const& p    = internal_presentation();
         auto        octo = p.index(p.alphabet().back());
         auto        src  = _gilman_graph.target_no_checks(0, octo);
         LIBSEMIGROUPS_ASSERT(src != UNDEFINED);
@@ -763,9 +773,9 @@ namespace libsemigroups {
   //////////////////////////////////////////////////////////////////////////
 
   template <typename Rewriter, typename ReductionOrder>
-  void
-  KnuthBendixBase<Rewriter, ReductionOrder>::add_rule_impl(std::string const& p,
-                                                       std::string const& q) {
+  void KnuthBendixBase<Rewriter, ReductionOrder>::add_rule_impl(
+      std::string const& p,
+      std::string const& q) {
     if (p == q) {
       return;
     }
@@ -843,7 +853,7 @@ namespace libsemigroups {
   KnuthBendixBase<Rewriter, ReductionOrder>::external_to_internal_char(
       detail::external_char_type c) const {
     LIBSEMIGROUPS_ASSERT(!_internal_is_same_as_external);
-    return uint_to_internal_char(presentation().index(c));
+    return uint_to_internal_char(internal_presentation().index(c));
   }
 
   template <typename Rewriter, typename ReductionOrder>
@@ -851,7 +861,7 @@ namespace libsemigroups {
   KnuthBendixBase<Rewriter, ReductionOrder>::internal_to_external_char(
       detail::internal_char_type a) const {
     LIBSEMIGROUPS_ASSERT(!_internal_is_same_as_external);
-    return presentation().letter_no_checks(internal_char_to_uint(a));
+    return internal_presentation().letter_no_checks(internal_char_to_uint(a));
   }
 
   template <typename Rewriter, typename ReductionOrder>
@@ -881,7 +891,7 @@ namespace libsemigroups {
       detail::external_string_type& w) const {
     if (kind() != congruence_kind::twosided
         && !internal_generating_pairs().empty()) {
-      w = presentation().alphabet().back() + w;
+      w = internal_presentation().alphabet().back() + w;
     }
   }
 
@@ -890,7 +900,8 @@ namespace libsemigroups {
       detail::external_string_type& w) const {
     if (kind() != congruence_kind::twosided
         && !internal_generating_pairs().empty()) {
-      LIBSEMIGROUPS_ASSERT(w.front() == presentation().alphabet().back());
+      LIBSEMIGROUPS_ASSERT(w.front()
+                           == internal_presentation().alphabet().back());
       w.erase(w.begin());
     }
   }
@@ -901,7 +912,8 @@ namespace libsemigroups {
 
   // TODO(1) move this to the single call site
   template <typename Rewriter, typename ReductionOrder>
-  void KnuthBendixBase<Rewriter, ReductionOrder>::init_from_presentation() {
+  void
+  KnuthBendixBase<Rewriter, ReductionOrder>::init_from_internal_presentation() {
     auto const& p                 = _presentation;
     _internal_is_same_as_external = true;
     for (size_t i = 0; i < p.alphabet().size(); ++i) {
@@ -933,8 +945,9 @@ namespace libsemigroups {
 
   // OVERLAP_2 from Sims, p77
   template <typename Rewriter, typename ReductionOrder>
-  void KnuthBendixBase<Rewriter, ReductionOrder>::overlap(detail::Rule const* u,
-                                                      detail::Rule const* v) {
+  void
+  KnuthBendixBase<Rewriter, ReductionOrder>::overlap(detail::Rule const* u,
+                                                     detail::Rule const* v) {
     LIBSEMIGROUPS_ASSERT(u->active() && v->active());
     auto const &ulhs = *(u->lhs()), vlhs = *(v->lhs());
     auto const &urhs = *(u->rhs()), vrhs = *(v->rhs());
@@ -977,7 +990,7 @@ namespace libsemigroups {
   }
 
   template <typename Rewriter, typename ReductionOrder>
-  std::ostream& operator<<(std::ostream&                          os,
+  std::ostream& operator<<(std::ostream&                              os,
                            KnuthBendixBase<Rewriter, ReductionOrder>& kb) {
     os << kb.active_rules();
     return os;
@@ -1002,7 +1015,7 @@ namespace libsemigroups {
         "<{}{} KnuthBendixBase over {} with {}{}/{} active/inactive rules>",
         conf,
         kb.kind() == congruence_kind::twosided ? " 2-sided" : " 1-sided",
-        to_human_readable_repr(kb.presentation()),
+        to_human_readable_repr(kb.internal_presentation()),
         genpairs,
         kb.number_of_active_rules(),
         kb.number_of_inactive_rules());
@@ -1012,7 +1025,7 @@ namespace libsemigroups {
   Presentation<Word>
   to_presentation(KnuthBendixBase<Rewriter, ReductionOrder>& kb) {
     if constexpr (std::is_same_v<Word, std::string>) {
-      auto const&               p_orig = kb.presentation();
+      auto const&               p_orig = kb.internal_presentation();
       Presentation<std::string> p;
       p.alphabet(p_orig.alphabet())
           .contains_empty_word(p_orig.contains_empty_word());

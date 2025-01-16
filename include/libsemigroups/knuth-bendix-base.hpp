@@ -24,8 +24,8 @@
 // * separate rule container from Rules
 // * nodiscard
 
-#ifndef LIBSEMIGROUPS_KNUTH_BENDIX_CLASS_HPP_
-#define LIBSEMIGROUPS_KNUTH_BENDIX_CLASS_HPP_
+#ifndef LIBSEMIGROUPS_KNUTH_BENDIX_BASE_HPP_
+#define LIBSEMIGROUPS_KNUTH_BENDIX_BASE_HPP_
 
 #include <algorithm>      // for max, min, copy
 #include <atomic>         // for atomic_bool
@@ -156,7 +156,8 @@ namespace libsemigroups {
     //! words are converted to \ref native_word_type.
     using native_word_type = std::string;
 
-    //! \brief Type of the presentation stored in a \ref KnuthBendixBase instance.
+    //! \brief Type of the presentation stored in a \ref KnuthBendixBase
+    //! instance.
     //!
     //! A \ref KnuthBendixBase instance can be constructed or initialised from a
     //! presentation of arbitrary types of letters and words. Internally the
@@ -254,8 +255,8 @@ namespace libsemigroups {
     //! \brief Remove the presentation and rewriter data
     //!
     //! This function clears the rewriter, presentation, settings and stats from
-    //! the KnuthBendixBase object, putting it back into the state it would be in if
-    //! it was newly default constructed.
+    //! the KnuthBendixBase object, putting it back into the state it would be
+    //! in if it was newly default constructed.
     //!
     //! \returns
     //! A reference to \c this.
@@ -303,9 +304,9 @@ namespace libsemigroups {
 
     //! \brief Re-initialize a \ref KnuthBendixBase instance.
     //!
-    //! This function puts a \ref KnuthBendixBase instance back into the state that
-    //! it would have been in if it had just been newly constructed from \p knd
-    //! and \p p.
+    //! This function puts a \ref KnuthBendixBase instance back into the state
+    //! that it would have been in if it had just been newly constructed from \p
+    //! knd and \p p.
     //!
     //! \param knd the kind (onesided or twosided) of the congruence.
     //! \param p the presentation.
@@ -313,9 +314,11 @@ namespace libsemigroups {
     //! \returns A reference to `*this`.
     //!
     //! \throws LibsemigroupsException if \p p is not valid.
-    KnuthBendixBase& init(congruence_kind knd, Presentation<std::string> const& p);
+    KnuthBendixBase& init(congruence_kind                  knd,
+                          Presentation<std::string> const& p);
 
-    //! \copydoc KnuthBendixBase(congruence_kind, Presentation<std::string> const&)
+    //! \copydoc KnuthBendixBase(congruence_kind, Presentation<std::string>
+    //! const&)
     KnuthBendixBase(congruence_kind knd, Presentation<std::string>&& p);
 
     //! \copydoc init(congruence_kind, Presentation<std::string> const&)
@@ -343,15 +346,16 @@ namespace libsemigroups {
         // to_presentation throws in the next line if p isn't valid.
         // The next line looks weird but we are usually taking in letter_type's
         // and returning chars
-        : KnuthBendixBase(knd, to_presentation<std::string>(p, [](auto const& x) {
-                        return x;
-                      })) {}
+        : KnuthBendixBase(knd,
+                          to_presentation<std::string>(p, [](auto const& x) {
+                            return x;
+                          })) {}
 
     //! \brief Re-initialize a \ref KnuthBendixBase
     //! instance.
     //!
-    //! This function re-initializes a  \ref KnuthBendixBase instance as if it had
-    //! been newly constructed from \p knd and \p p.
+    //! This function re-initializes a  \ref KnuthBendixBase instance as if it
+    //! had been newly constructed from \p knd and \p p.
     //!
     //! \tparam Word the type of the words in the presentation \p p.
     //! \param knd the kind (onesided or twosided) of the congruence.
@@ -370,12 +374,12 @@ namespace libsemigroups {
       return *this;
     }
 
-    // TODO(1) construct/init from kind and KnuthBendixBase const&, for consistency
-    // with ToddCoxeterBase
+    // TODO(1) construct/init from kind and KnuthBendixBase const&, for
+    // consistency with ToddCoxeterBase
 
    private:
     void init_from_generating_pairs();
-    void init_from_presentation();
+    void init_from_internal_presentation();
 
     //////////////////////////////////////////////////////////////////////////
     // KnuthBendixBase - interface requirements - add_generating_pair
@@ -396,18 +400,18 @@ namespace libsemigroups {
     //! \warning It is assumed that \ref started returns \c false. Adding
     //! generating pairs after \ref started is not permitted (but also not
     //! checked by this function).
-    // NOTE THAT this is not the same as in ToddCoxeterBase, because the generating
-    // pairs contained in CongruenceInterface are word_types, and so we don't
-    // require any conversion here (since chars can be converted implicitly to
-    // letter_types)
+    // NOTE THAT this is not the same as in ToddCoxeterBase, because the
+    // generating pairs contained in CongruenceInterface are word_types, and so
+    // we don't require any conversion here (since chars can be converted
+    // implicitly to letter_types)
     template <typename Iterator1,
               typename Iterator2,
               typename Iterator3,
               typename Iterator4>
     KnuthBendixBase& add_generating_pair_no_checks(Iterator1 first1,
-                                               Iterator2 last1,
-                                               Iterator3 first2,
-                                               Iterator4 last2) {
+                                                   Iterator2 last1,
+                                                   Iterator3 first2,
+                                                   Iterator4 last2) {
       LIBSEMIGROUPS_ASSERT(!started());
       _input_generating_pairs.emplace_back(first1, last1);
       _input_generating_pairs.emplace_back(first2, last2);
@@ -432,9 +436,9 @@ namespace libsemigroups {
               typename Iterator3,
               typename Iterator4>
     KnuthBendixBase& add_generating_pair(Iterator1 first1,
-                                     Iterator2 last1,
-                                     Iterator3 first2,
-                                     Iterator4 last2) {
+                                         Iterator2 last1,
+                                         Iterator3 first2,
+                                         Iterator4 last2) {
       return CongruenceInterface::add_generating_pair<KnuthBendixBase>(
           first1, last1, first2, last2);
     }
@@ -469,9 +473,10 @@ namespace libsemigroups {
     //!
     //! This function checks whether or not the words represented by the ranges
     //! \p first1 to \p last1 and \p first2 to \p last2 are already known to be
-    //! contained in the congruence represented by a \ref KnuthBendixBase instance.
-    //! This function performs no enumeration, so it is possible for the words
-    //! to be contained in the congruence, but that this is not currently known.
+    //! contained in the congruence represented by a \ref KnuthBendixBase
+    //! instance. This function performs no enumeration, so it is possible for
+    //! the words to be contained in the congruence, but that this is not
+    //! currently known.
     //!
     //! \cong_intf_params_contains
     //!
@@ -494,9 +499,10 @@ namespace libsemigroups {
     //!
     //! This function checks whether or not the words represented by the ranges
     //! \p first1 to \p last1 and \p first2 to \p last2 are already known to be
-    //! contained in the congruence represented by a \ref KnuthBendixBase instance.
-    //! This function performs no enumeration, so it is possible for the words
-    //! to be contained in the congruence, but that this is not currently known.
+    //! contained in the congruence represented by a \ref KnuthBendixBase
+    //! instance. This function performs no enumeration, so it is possible for
+    //! the words to be contained in the congruence, but that this is not
+    //! currently known.
     //!
     //! \cong_intf_params_contains
     //!
@@ -581,10 +587,10 @@ namespace libsemigroups {
     //! described by the iterator \p first and \p last to the output iterator \p
     //! d_first. This function triggers no enumeration. The word output by this
     //! function is equivalent to the input word in the congruence defined by a
-    //! \ref KnuthBendixBase instance. If the \ref KnuthBendixBase instance is \ref
-    //! finished, then the output word is a normal form for the input word. If
-    //! the \ref KnuthBendixBase instance is not \ref finished, then it might be
-    //! that equivalent input words produce different output words.
+    //! \ref KnuthBendixBase instance. If the \ref KnuthBendixBase instance is
+    //! \ref finished, then the output word is a normal form for the input word.
+    //! If the \ref KnuthBendixBase instance is not \ref finished, then it might
+    //! be that equivalent input words produce different output words.
     //!
     //! \cong_intf_params_reduce
     //!
@@ -605,10 +611,10 @@ namespace libsemigroups {
     //! described by the iterator \p first and \p last to the output iterator \p
     //! d_first. This function triggers no enumeration. The word output by this
     //! function is equivalent to the input word in the congruence defined by a
-    //! \ref KnuthBendixBase instance. If the \ref KnuthBendixBase instance is \ref
-    //! finished, then the output word is a normal form for the input word. If
-    //! the \ref KnuthBendixBase instance is not \ref finished, then it might be
-    //! that equivalent input words produce different output words.
+    //! \ref KnuthBendixBase instance. If the \ref KnuthBendixBase instance is
+    //! \ref finished, then the output word is a normal form for the input word.
+    //! If the \ref KnuthBendixBase instance is not \ref finished, then it might
+    //! be that equivalent input words produce different output words.
     //!
     //! \cong_intf_params_reduce
     //!
@@ -632,9 +638,9 @@ namespace libsemigroups {
     //! word equivalent to the input word described by the iterator \p first and
     //! \p last to the output iterator \p d_first. The word output by this
     //! function is equivalent to the input word in the congruence defined by a
-    //! \ref KnuthBendixBase instance. In other words, the output word is a normal
-    //! form for the input word or equivalently a canconical representative of
-    //! its congruence class.
+    //! \ref KnuthBendixBase instance. In other words, the output word is a
+    //! normal form for the input word or equivalently a canconical
+    //! representative of its congruence class.
     //!
     //! \cong_intf_params_reduce
     //!
@@ -660,9 +666,9 @@ namespace libsemigroups {
     //! word equivalent to the input word described by the iterator \p first and
     //! \p last to the output iterator \p d_first. The word output by this
     //! function is equivalent to the input word in the congruence defined by a
-    //! \ref KnuthBendixBase instance. In other words, the output word is a normal
-    //! form for the input word or equivalently a canconical representative of
-    //! its congruence class.
+    //! \ref KnuthBendixBase instance. In other words, the output word is a
+    //! normal form for the input word or equivalently a canconical
+    //! representative of its congruence class.
     //!
     //! \cong_intf_params_reduce
     //!
@@ -921,7 +927,7 @@ namespace libsemigroups {
     //! first to \p last is out of bounds.
     template <typename Iterator1, typename Iterator2>
     void throw_if_letter_out_of_bounds(Iterator1 first, Iterator2 last) const {
-      presentation().validate_word(first, last);
+      internal_presentation().validate_word(first, last);
     }
 
     //! \brief Return the presentation defined by the rewriting system.
@@ -938,7 +944,7 @@ namespace libsemigroups {
     //! \complexity
     //! Constant.
     [[nodiscard]] native_presentation_type const&
-    presentation() const noexcept {
+    internal_presentation() const noexcept {
       return _presentation;
     }
 
@@ -977,8 +983,8 @@ namespace libsemigroups {
     // (this only applies if this becomes const)
     [[nodiscard]] size_t number_of_active_rules() noexcept;
 
-    //! \brief Return the current number of inactive rules in the KnuthBendixBase
-    //! instance.
+    //! \brief Return the current number of inactive rules in the
+    //! KnuthBendixBase instance.
     //!
     //! This function returns the current number of inactive rules in the
     //! KnuthBendixBase instance.
@@ -1080,8 +1086,8 @@ namespace libsemigroups {
     //! \exceptions
     //! \no_libsemigroups_except
     //!
-    //! \warning This will terminate when the KnuthBendixBase instance is reduced
-    //! and confluent, which might be never.
+    //! \warning This will terminate when the KnuthBendixBase instance is
+    //! reduced and confluent, which might be never.
     //!
     //! \sa \ref number_of_classes, and \ref knuth_bendix::normal_forms.
     WordGraph<uint32_t> const& gilman_graph();
@@ -1173,7 +1179,7 @@ namespace libsemigroups {
   //!
   //! \returns A reference to the first argument.
   template <typename Rewriter, typename ReductionOrder>
-  std::ostream& operator<<(std::ostream&                                os,
+  std::ostream& operator<<(std::ostream&                                    os,
                            KnuthBendixBase<Rewriter, ReductionOrder> const& kb);
 
   //! \ingroup knuth_bendix_group
@@ -1182,9 +1188,9 @@ namespace libsemigroups {
   //!
   //! Defined in \c knuth-bendix.hpp.
   //!
-  //! This function returns a string representation of a KnuthBendixBase instance,
-  //! specifying the size of the underlying alphabet and the number of active
-  //! rules.
+  //! This function returns a string representation of a KnuthBendixBase
+  //! instance, specifying the size of the underlying alphabet and the number of
+  //! active rules.
   //!
   //! \tparam Rewriter the first template parameter for KnuthBendixBase.
   //! \tparam ReductionOrder the second template parameter for KnuthBendixBase.
@@ -1194,7 +1200,8 @@ namespace libsemigroups {
   //! \returns The representation, a value of type \c std::string
   // TODO(1) preferably kb would be a const&
   template <typename Rewriter, typename ReductionOrder>
-  std::string to_human_readable_repr(KnuthBendixBase<Rewriter, ReductionOrder>& kb);
+  std::string
+  to_human_readable_repr(KnuthBendixBase<Rewriter, ReductionOrder>& kb);
 
   //! \ingroup to_presentation_group
   //!
@@ -1208,8 +1215,9 @@ namespace libsemigroups {
   //! No enumeration of the argument \p kb is performed, so it might be the
   //! case that the resulting presentation does not define the same
   //! semigroup/monoid as \p kb. To ensure that the resulting presentation
-  //! defines the same semigroup as \p kb, run KnuthBendixBase::run (or any other
-  //! function that fully enumerates \p kb) prior to calling this function.
+  //! defines the same semigroup as \p kb, run KnuthBendixBase::run (or any
+  //! other function that fully enumerates \p kb) prior to calling this
+  //! function.
   //!
   //! \tparam Word the type of the rules in the presentation being constructed.
   //!
@@ -1221,7 +1229,8 @@ namespace libsemigroups {
   //! \no_libsemigroups_except
   // This cannot go into to-presentation.hpp since we include that here
   template <typename Word, typename Rewriter, typename ReductionOrder>
-  Presentation<Word> to_presentation(KnuthBendixBase<Rewriter, ReductionOrder>& kb);
+  Presentation<Word>
+  to_presentation(KnuthBendixBase<Rewriter, ReductionOrder>& kb);
 }  // namespace libsemigroups
 
 #include "knuth-bendix-base.tpp"

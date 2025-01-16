@@ -38,7 +38,7 @@ namespace libsemigroups {
     class KnuthBendixNormalFormRange : public Paths<uint32_t> {
       using Paths_ = Paths<uint32_t>;
 
-      mutable Word                           _current;
+      mutable Word                               _current;
       KnuthBendixBase<Rewriter, ReductionOrder>* _kb;
 
      public:
@@ -52,7 +52,7 @@ namespace libsemigroups {
         // source_no_checks(0) is technically invalid, but nothing goes wrong,
         // so we just go with it. This is slightly smelly.
         Paths_::source_no_checks(0);
-        if (!kb.presentation().contains_empty_word()) {
+        if (!kb.internal_presentation().contains_empty_word()) {
           Paths_::next();
         }
       }
@@ -61,7 +61,7 @@ namespace libsemigroups {
         word_type const& w = Paths_::get();
         _current.clear();
         for (auto c : w) {
-          _current.push_back(_kb->presentation().letter_no_checks(c));
+          _current.push_back(_kb->internal_presentation().letter_no_checks(c));
         }
         return _current;
       }

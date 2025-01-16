@@ -27,8 +27,8 @@ namespace libsemigroups {
 
     template <typename Word, typename Rewriter, typename ReductionOrder>
     std::vector<std::vector<Word>>
-    non_trivial_classes(KnuthBendixBase<Rewriter, ReductionOrder>& kb1,
-                        KnuthBendixBase<Rewriter, ReductionOrder>& kb2) {
+    non_trivial_classes(KnuthBendix<Word, Rewriter, ReductionOrder>& kb1,
+                        KnuthBendix<Word, Rewriter, ReductionOrder>& kb2) {
       using rx::operator|;
 
       // It is intended that kb2 is defined using the same presentation as kb1
@@ -198,19 +198,21 @@ namespace libsemigroups {
       // then discard the string, so better to do it here. Note that the
       // normal forms in `kb2` never contain an edge in g1 \ g2 and so we must
       // add in every normal form.
+      // TODO(0) is there a simpler way to do the next bit?
       if constexpr (std::is_same_v<Word, std::string>) {
-        auto ntc
-            = partition(kb2, words | ToString(kb1.presentation().alphabet()));
+        auto ntc = partition(
+            kb2, words | ToString(kb1.internal_presentation().alphabet()));
         for (auto& klass : ntc) {
           klass.push_back(reduce_no_checks(kb2, klass[0]));
         }
         return ntc;
       } else {
-        auto ntc = partition(kb2,
-                             words | ToString(kb1.presentation().alphabet())
-                                 | rx::transform([](auto const& w) {
-                                     return Word(w.begin(), w.end());
-                                   }));
+        auto ntc
+            = partition(kb2,
+                        words | ToString(kb1.internal_presentation().alphabet())
+                            | rx::transform([](auto const& w) {
+                                return Word(w.begin(), w.end());
+                              }));
         for (auto& klass : ntc) {
           klass.push_back(reduce_no_checks(kb2, klass[0]));
         }
@@ -263,8 +265,8 @@ namespace libsemigroups {
       return p.rules.cend();
     }
 
-    template <typename Rewriter, typename ReductionOrder>
-    void by_overlap_length(KnuthBendixBase<Rewriter, ReductionOrder>& kb) {
+    template <typename Word, typename Rewriter, typename ReductionOrder>
+    void by_overlap_length(KnuthBendix<Word, Rewriter, ReductionOrder>& kb) {
       size_t prev_max_overlap               = kb.max_overlap();
       size_t prev_check_confluence_interval = kb.check_confluence_interval();
       kb.max_overlap(1);
@@ -278,8 +280,8 @@ namespace libsemigroups {
       kb.check_confluence_interval(prev_check_confluence_interval);
     }
 
-    template <typename Rewriter, typename ReductionOrder>
-    bool is_reduced(KnuthBendixBase<Rewriter, ReductionOrder>& kb) {
+    template <typename Word, typename Rewriter, typename ReductionOrder>
+    bool is_reduced(KnuthBendix<Word, Rewriter, ReductionOrder>& kb) {
       for (auto const& test_rule : kb.active_rules()) {
         auto const lhs = test_rule.first;
         for (auto const& rule : kb.active_rules()) {
