@@ -324,56 +324,6 @@ namespace libsemigroups {
     //! \copydoc init(congruence_kind, Presentation<std::string> const&)
     KnuthBendixBase& init(congruence_kind knd, Presentation<std::string>&& p);
 
-    //! \brief Construct from \ref congruence_kind and Presentation.
-    //!
-    //! This function constructs a \ref KnuthBendixBase instance representing a
-    //! congruence of kind \p knd over the semigroup or monoid defined by the
-    //! presentation \p p. The type of the words in \p p can be anything, but
-    //! will be converted in to \ref native_word_type. This means that if the
-    //! input presentation uses \ref word_type, for example, as the word type,
-    //! then this presentation is converted into a \ref
-    //! native_presentation_type. This converted presentation can be recovered
-    //! using \ref presentation.
-    //!
-    //! \tparam Word the type of the words in the presentation \p p.
-    //! \param knd the kind (onesided or twosided) of the congruence.
-    //! \param p the presentation.
-    //!
-    //! \throws LibsemigroupsException if \p p is not valid.
-    // No rvalue ref version because we can't use it.
-    template <typename Word>
-    explicit KnuthBendixBase(congruence_kind knd, Presentation<Word> const& p)
-        // to_presentation throws in the next line if p isn't valid.
-        // The next line looks weird but we are usually taking in letter_type's
-        // and returning chars
-        : KnuthBendixBase(knd,
-                          to_presentation<std::string>(p, [](auto const& x) {
-                            return x;
-                          })) {}
-
-    //! \brief Re-initialize a \ref KnuthBendixBase
-    //! instance.
-    //!
-    //! This function re-initializes a  \ref KnuthBendixBase instance as if it
-    //! had been newly constructed from \p knd and \p p.
-    //!
-    //! \tparam Word the type of the words in the presentation \p p.
-    //! \param knd the kind (onesided or twosided) of the congruence.
-    //! \param p the presentation.
-    //!
-    //! \returns A reference to `*this`.
-    //!
-    //! \throws LibsemigroupsException if \p p is not valid.
-    template <typename Word>
-    KnuthBendixBase& init(congruence_kind knd, Presentation<Word> const& p) {
-      // to_presentation throws in the next line if p isn't valid.
-      // The next line looks weird but we are usually taking in letter_type's
-      // and returning chars
-      init(knd,
-           to_presentation<std::string>(p, [](auto const& x) { return x; }));
-      return *this;
-    }
-
     // TODO(1) construct/init from kind and KnuthBendixBase const&, for
     // consistency with ToddCoxeterBase
 

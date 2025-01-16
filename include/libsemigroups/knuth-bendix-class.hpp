@@ -59,6 +59,7 @@ namespace libsemigroups {
       init(knd, std::move(p));
     }
 
+    // TODO to tpp
     KnuthBendix& init(congruence_kind knd, Presentation<Word>&& p) {
       if constexpr (!std::is_same_v<Word, std::string>) {
         // to_presentation throws in the next line if p isn't valid
@@ -98,7 +99,7 @@ namespace libsemigroups {
     ////////////////////////////////////////////////////////////////////////
     // KnuthBendix - interface requirements - add_generating_pair
     ////////////////////////////////////////////////////////////////////////
-
+    // to tpp
     template <typename Iterator1,
               typename Iterator2,
               typename Iterator3,
@@ -183,9 +184,10 @@ namespace libsemigroups {
     //!
     //! \returns Whether or not the pair belongs to the congruence.
     //!
-    //! \cong_intf_warn_undecidable{Todd-Coxeter}
+    //! \cong_intf_warn_undecidable{Knuth-Bendix}
     //!
     //! \cong_intf_throws_if_letters_out_of_bounds
+    // TODO(0) to tpp
     template <typename Iterator1,
               typename Iterator2,
               typename Iterator3,
@@ -260,7 +262,7 @@ namespace libsemigroups {
     //!
     //! \cong_intf_throws_if_letters_out_of_bounds
     //!
-    //! \cong_intf_warn_undecidable{Todd-Coxeter}
+    //! \cong_intf_warn_undecidable{Knuth-Bendix}
     //!
     //! \todd_coxeter_note_reverse
     template <typename OutputIterator,
@@ -284,7 +286,6 @@ namespace libsemigroups {
   namespace knuth_bendix {
     // This function exists so that we can do make<Rewriter>(knd, p)
     // and the type of p can be used to deduce the template parameter Word.
-    // TODO(0) the template params should be in the same order
     template <typename Rewriter       = detail::RewriteTrie,
               typename ReductionOrder = ShortLexCompare,
               typename Word>
