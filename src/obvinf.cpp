@@ -248,8 +248,8 @@ namespace libsemigroups {
       // sometimes be empty (0 nodes), but with 1 active node, so this line
       // can throw (because the range pointed at by d.cbegin_active_nodes(),
       // d.cend_active_nodes() is non-empty but d itself has no nodes)
-      // This is an initialization issue for ToddCoxeterBase, it should always be
-      // true the number of nodes >= number of active nodes.
+      // This is an initialization issue for ToddCoxeterBase, it should always
+      // be true the number of nodes >= number of active nodes.
       return false;
     }
     auto                p = tc.internal_presentation();
@@ -269,20 +269,6 @@ namespace libsemigroups {
     // This function required because of the p.alphabet below!
     ioi.add_rules_no_checks(p.alphabet(), p.rules.cbegin(), p.rules.cend());
     return ioi.result();
-  }
-
-  bool is_obviously_infinite(Congruence& cong) {
-    if (cong.has<ToddCoxeterBase>()
-        && is_obviously_infinite(*cong.get<ToddCoxeterBase>())) {
-      return true;
-    } else if (cong.has<KnuthBendixBase<>>()
-               && is_obviously_infinite(*cong.get<KnuthBendixBase<>>())) {
-      return true;
-    } else if (cong.has<Kambites<word_type>>()
-               && is_obviously_infinite(*cong.get<Kambites<word_type>>())) {
-      return true;
-    }
-    return false;
   }
 
 }  // namespace libsemigroups

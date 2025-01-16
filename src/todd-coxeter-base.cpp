@@ -266,7 +266,7 @@ namespace libsemigroups {
             < number_of_nodes_active() * stop_early_ratio) {
           report_no_prefix("{:-<90}\n", "");
           report_default(
-              "ToddCoxeterBase: too few nodes killed in last {}, expected >= "
+              "ToddCoxeter: too few nodes killed in last {}, expected >= "
               "{}, found {}, aborting lookahead . . .\n",
               stop_early_interval,
               static_cast<size_t>(number_of_nodes_active() * stop_early_ratio),
@@ -754,8 +754,7 @@ namespace libsemigroups {
             || report_every() >= std::chrono::milliseconds(1'500))) {
       // TODO(0) report_strategy
       auto msg = fmt::format("{:+<90}\n", "");
-      msg += fmt_default("ToddCoxeterBase: Using {} strategy . . .\n",
-                         strategy());
+      msg += fmt_default("ToddCoxeter: Using {} strategy . . .\n", strategy());
       msg += fmt::format("{:+<90}\n", "");
       report_no_prefix(msg);
 
@@ -777,7 +776,7 @@ namespace libsemigroups {
     // This is where we pass through from settings to the
     // _word_graph.definitions
     _word_graph.definitions().init(this);
-    _word_graph.report_prefix("ToddCoxeterBase");
+    _word_graph.report_prefix("ToddCoxeter");
   }
   ////////////////////////////////////////////////////////////////////////
   // ToddCoxeterBase - main strategies - private
@@ -994,7 +993,7 @@ namespace libsemigroups {
   void ToddCoxeterBase::report_next_lookahead(size_t old_value) const {
     static const std::string pad(8, ' ');
     int64_t diff = static_cast<int64_t>(lookahead_next()) - old_value;
-    report_default("ToddCoxeterBase: next lookahead at {} | {:>12} (nodes)  "
+    report_default("ToddCoxeter: next lookahead at {} | {:>12} (nodes)  "
                    "| {:>12} (diff)\n",
                    pad,
                    fmt::group_digits(lookahead_next()),
@@ -1005,7 +1004,7 @@ namespace libsemigroups {
   void ToddCoxeterBase::report_nodes_killed(int64_t N) const {
     report_no_prefix("{:-<90}\n", "");
     report_default(
-        "ToddCoxeterBase: lookahead complete with    | {:>12} (killed) |\n",
+        "ToddCoxeter: lookahead complete with    | {:>12} (killed) |\n",
         detail::group_digits(-1 * N));
   }
 
@@ -1015,7 +1014,7 @@ namespace libsemigroups {
 
   void ToddCoxeterBase::perform_lookahead(bool stop_early) {
     report_no_prefix("{:-<90}\n", "");
-    report_default("ToddCoxeterBase: performing {} {} lookahead . . .\n",
+    report_default("ToddCoxeter: performing {} {} lookahead . . .\n",
                    lookahead_extent(),
                    lookahead_style());
     report_no_prefix("{:-<90}\n", "");

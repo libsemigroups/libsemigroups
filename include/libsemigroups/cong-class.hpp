@@ -28,7 +28,7 @@
 #include "cong-intf-class.hpp"     // CongruenceInterface
 #include "exception.hpp"           // for LIBSEMIGROUPS_EXCEPTION
 #include "kambites-class.hpp"      // for Kambites
-#include "knuth-bendix-base.hpp"  // for KnuthBendixBase
+#include "knuth-bendix-class.hpp"  // for KnuthBendix
 #include "to-todd-coxeter.hpp"     // for to_todd_coxeter
 #include "todd-coxeter-class.hpp"  // for ToddCoxeter
 #include "types.hpp"               // for word_type
@@ -37,6 +37,8 @@
 
 namespace libsemigroups {
   class FroidurePinBase;  // Forward declaration, constructor parameters
+
+  struct CongruenceBase {};
 
   //! \ingroup cong_all_classes_group
   //!
@@ -66,8 +68,27 @@ namespace libsemigroups {
   //! congruence::add_generating_pair(cong, {0, 0, 0}, {});
   //! cong.number_of_classes(); // 3
   //! \endcode
-  class Congruence : public CongruenceInterface {
+  template <typename Word>
+  class Congruence : public CongruenceInterface, public CongruenceBase {
     enum class RunnerKind : size_t { TC = 0, KB = 1, K = 2 };
+
+    template <RunnerKind kind>
+    struct RunnerType;
+
+    template <>
+    struct RunnerType<RunnerKind::TC> {
+      using type = ToddCoxeter<Word>;
+    };
+
+    template <>
+    struct RunnerType<RunnerKind::KB> {
+      using type = KnuthBendix<Word>;
+    };
+
+    template <>
+    struct RunnerType<RunnerKind::K> {
+      using type = Kambites<Word>;
+    };
 
     /////////////////////////////////////////////////////////////////////////
     // Congruence - data - private
@@ -82,8 +103,8 @@ namespace libsemigroups {
     // Interface requirements - native-types
     ////////////////////////////////////////////////////////////////////////
 
-    //! \brief Type of the letters in the relations of the presentation stored
-    //! in a \ref Congruence instance.
+    //! \brief Type of the letters in the relations of the presentation
+    //! stored in a \ref Congruence instance.
     //!
     //! A \ref Congruence instance can be constructed or initialised from a
     //! presentation of arbitrary types of letters and words. Internally the
@@ -96,14 +117,14 @@ namespace libsemigroups {
     //! A \ref Congruence instance can be constructed or initialised from a
     //! presentation with arbitrary types of letters and words. Internally the
     //! words are converted to \ref native_word_type.
-    using native_word_type = word_type;
+    using native_word_type = Word;
 
     //! \brief Type of the presentation stored in a \ref Congruence instance.
     //!
     //! A \ref Congruence instance can be constructed or initialised from a
     //! presentation of arbitrary types of letters and words. Internally the
     //! presentation is stored as a \ref native_presentation_type.
-    using native_presentation_type = Presentation<native_word_type>;
+    using native_presentation_type = Presentation<Word>;
 
     //////////////////////////////////////////////////////////////////////////
     // Congruence - constructors - public
@@ -153,7 +174,7 @@ namespace libsemigroups {
     //!
     //! \throws LibsemigroupsException if \p p is not valid.
     // No rvalue ref version because we anyway must copy p multiple times
-    Congruence(congruence_kind knd, Presentation<word_type> const& p)
+    Congruence(congruence_kind knd, Presentation<Word> const& p)
         : Congruence() {
       init(knd, p);
     }
@@ -171,23 +192,9 @@ namespace libsemigroups {
     //!
     //! \throws LibsemigroupsException if \p p is not valid.
     // No rvalue ref version because we anyway must copy p multiple times
-    Congruence& init(congruence_kind knd, Presentation<word_type> const& p);
+    Congruence& init(congruence_kind knd, Presentation<Word> const& p);
 
-    //! \copydoc Congruence(congruence_kind, Presentation<word_type> const&)
-    // No rvalue ref version because we are not able to use p directly anyway
-    template <typename Word>
-    Congruence(congruence_kind knd, Presentation<Word> const& p)
-        : Congruence(knd, to_presentation<word_type>(p, [](auto const& x) {
-                       return x;
-                     })) {}
-
-    //! \copydoc init(congruence_kind, Presentation<word_type> const&)
-    // No rvalue ref version because we are not able to use p directly anyway
-    template <typename Word>
-    Congruence& init(congruence_kind knd, Presentation<Word> const& p) {
-      init(knd, to_presentation<word_type>(p, [](auto const& x) { return x; }));
-      return *this;
-    }
+    // TODO(0) rvalue reference Presentation<Word> constructor
 
     //! \brief Construct from congruence_kind, FroidurePin, and WordGraph.
     //!
@@ -643,9 +650,6 @@ namespace libsemigroups {
     //!
     //! \throws LibsemigroupsException if no presentation was used to
     //! construct or initialise the object.
-    //!
-    //! \throws LibsemigroupsException if \ref finished returns \c true and
-    //! `has<KnuthBendixBase>()` returns \c true.
     [[nodiscard]] native_presentation_type const& presentation() const;
 
     //! \brief Get the generating pairs of the congruence.
@@ -659,27 +663,24 @@ namespace libsemigroups {
     //!
     //! \exceptions
     //! \noexcept
-    [[nodiscard]] std::vector<native_word_type> const&
-    generating_pairs() const noexcept {
-      return internal_generating_pairs();
-    }
+    [[nodiscard]] std::vector<Word> const& generating_pairs() const;
 
    private:
     //////////////////////////////////////////////////////////////////////////
     // Congruence - member functions - private
     //////////////////////////////////////////////////////////////////////////
 
-    void add_runner(std::shared_ptr<ToddCoxeter<word_type>>&& ptr) {
+    void add_runner(std::shared_ptr<ToddCoxeter<Word>>&& ptr) {
       _race.add_runner(std::move(ptr));
       _runner_kinds.push_back(RunnerKind::TC);
     }
 
-    void add_runner(std::shared_ptr<KnuthBendixBase<>>&& ptr) {
+    void add_runner(std::shared_ptr<KnuthBendix<Word>>&& ptr) {
       _race.add_runner(std::move(ptr));
       _runner_kinds.push_back(RunnerKind::KB);
     }
 
-    void add_runner(std::shared_ptr<Kambites<word_type>>&& ptr) {
+    void add_runner(std::shared_ptr<Kambites<Word>>&& ptr) {
       _race.add_runner(std::move(ptr));
       _runner_kinds.push_back(RunnerKind::K);
     }
@@ -695,6 +696,16 @@ namespace libsemigroups {
       return _race.finished();
     }
   };  // class Congruence
+
+  template <typename Word>
+  Congruence(congruence_kind, Presentation<Word> const&) -> Congruence<Word>;
+
+  template <typename Word>
+  Congruence(congruence_kind, Presentation<Word>&&) -> Congruence<Word>;
+
+  template <typename Node>
+  Congruence(congruence_kind knd, FroidurePinBase& S, WordGraph<Node> const& wg)
+      -> Congruence<word_type>;
 
   //! \ingroup cong_all_group
   //!
@@ -712,7 +723,8 @@ namespace libsemigroups {
   //!
   //! \exceptions
   //! \no_libsemigroups_except
-  std::string to_human_readable_repr(Congruence const& c);
+  template <typename Word>
+  std::string to_human_readable_repr(Congruence<Word> const& c);
 }  // namespace libsemigroups
 
 #include "cong-class.tpp"

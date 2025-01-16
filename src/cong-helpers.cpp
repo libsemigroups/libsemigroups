@@ -61,35 +61,37 @@ namespace libsemigroups {
     // We have to pass the presentation here, because o/w we have no way of
     // knowing over what we should compute the non-trivial classes (i.e. we
     // cannot always recover p from cong).
-    std::vector<std::vector<word_type>>
-    non_trivial_classes(Congruence& cong, Presentation<word_type> const& p) {
-      using rx::operator|;
-      cong.run();
-      if (cong.has<ToddCoxeter<word_type>>()
-          && cong.get<ToddCoxeter<word_type>>()->finished()) {
-        ToddCoxeter<word_type> tc(cong.kind(), p);
-        return non_trivial_classes(*cong.get<ToddCoxeter<word_type>>(), tc);
-      } else if (cong.has<KnuthBendixBase<>>()
-                 && cong.get<KnuthBendixBase<>>()->finished()) {
-        KnuthBendix kb(cong.kind(), to_presentation<std::string>(p));
-        auto        strings
-            = non_trivial_classes(kb, *cong.get<KnuthBendix<std::string>>());
-        std::vector<std::vector<word_type>> result;
-        for (auto const& klass : strings) {
-          result.push_back(rx::iterator_range(klass.begin(), klass.end())
-                           | ToWord(kb.presentation().alphabet())
-                           | rx::to_vector());
-        }
-        return result;
-      }
-      // If a Kambites object wins the race in Congruence, then we cannot
-      // really compute anything here unless the semigroup defined by p is
-      // finite, but that'd be better handled explicitly in any code calling
-      // this.
-      LIBSEMIGROUPS_EXCEPTION("Cannot compute the non-trivial classes!");
-    }
+    // TODO(0) renovate or rm
+    // template <typename Word>
+    // std::vector<std::vector<Word>>
+    // non_trivial_classes(Word& cong, Presentation<word_type> const& p) {
+    //   using rx::operator|;
+    //   cong.run();
+    //   if (cong.has<ToddCoxeter<word_type>>()
+    //       && cong.get<ToddCoxeter<word_type>>()->finished()) {
+    //     ToddCoxeter<word_type> tc(cong.kind(), p);
+    //     return non_trivial_classes(*cong.get<ToddCoxeter<word_type>>(), tc);
+    //   } else if (cong.has<KnuthBendixBase<>>()
+    //              && cong.get<KnuthBendixBase<>>()->finished()) {
+    //     KnuthBendix kb(cong.kind(), to_presentation<std::string>(p));
+    //     auto        strings
+    //         = non_trivial_classes(kb, *cong.get<KnuthBendix<std::string>>());
+    //     std::vector<std::vector<word_type>> result;
+    //     for (auto const& klass : strings) {
+    //       result.push_back(rx::iterator_range(klass.begin(), klass.end())
+    //                        | ToWord(kb.presentation().alphabet())
+    //                        | rx::to_vector());
+    //     }
+    //     return result;
+    //   }
+    //   // If a Kambites object wins the race in Congruence, then we cannot
+    //   // really compute anything here unless the semigroup defined by p is
+    //   // finite, but that'd be better handled explicitly in any code calling
+    //   // this.
+    //   LIBSEMIGROUPS_EXCEPTION("Cannot compute the non-trivial classes!");
+    // }
 
-    // TODO(0) uncomment
+    // TODO(0) uncomment or rm
     // std::vector<std::vector<std::string>>
     // non_trivial_classes(Congruence& cong, Presentation<std::string> const& p)
     // {

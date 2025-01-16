@@ -41,8 +41,13 @@
 namespace libsemigroups {
 
   // Forward decls
-  class Congruence;
   class CongruenceInterface;
+
+  struct CongruenceBase;
+
+  template <typename Word>
+  class Congruence;
+
   class ToddCoxeterBase;
 
   template <typename Word>
@@ -886,19 +891,19 @@ namespace libsemigroups {
     ////////////////////////////////////////////////////////////////////////
 
     // Forward decls defined in todd-coxeter-helpers.tpp and cong-helpers.tpp
+    // TODO(0) static assert that Word is Range::output_type
     template <typename Word,
               typename Range,
               typename = std::enable_if_t<rx::is_input_or_sink_v<Range>>>
     [[nodiscard]] std::vector<std::vector<Word>>
     partition(ToddCoxeter<Word>& ci, Range r);
 
-    // TODO(0) remove OutputWord just use Range::output_type, and assert that
-    // this is the same type as word
-    template <typename Range,
-              typename OutputWord = std::decay_t<typename Range::output_type>,
+    // TODO(0) static assert that Word is Range::output_type
+    template <typename Word,
+              typename Range,
               typename = std::enable_if_t<rx::is_input_or_sink_v<Range>>>
-    [[nodiscard]] std::vector<std::vector<OutputWord>> partition(Congruence& ci,
-                                                                 Range       r);
+    [[nodiscard]] std::vector<std::vector<Word>> partition(Congruence<Word>& ci,
+                                                           Range             r);
 
     //! \brief Partition a range of words.
     //!

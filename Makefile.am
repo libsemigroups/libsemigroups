@@ -656,7 +656,6 @@ lib_LTLIBRARIES = libsemigroups.la
 libsemigroups_la_SOURCES  = src/aho-corasick.cpp
 libsemigroups_la_SOURCES += src/bipart.cpp
 libsemigroups_la_SOURCES += src/bmat8.cpp
-libsemigroups_la_SOURCES += src/cong-class.cpp
 libsemigroups_la_SOURCES += src/cong-helpers.cpp
 libsemigroups_la_SOURCES += src/cong-intf-class.cpp
 libsemigroups_la_SOURCES += src/constants.cpp

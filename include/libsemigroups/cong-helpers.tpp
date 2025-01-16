@@ -35,7 +35,8 @@ namespace libsemigroups {
     // template <typename Word>
     // auto normal_forms(Congruence& cong) {
     //   cong.run();
-    //   if (cong.has<ToddCoxeterBase>() && cong.get<ToddCoxeterBase>()->finished()) {
+    //   if (cong.has<ToddCoxeterBase>() &&
+    //   cong.get<ToddCoxeterBase>()->finished()) {
     //     return todd_coxeter::normal_forms(*cong.get<ToddCoxeterBase>());
     //   } else if (cong.has<KnuthBendixBase<>>()
     //              && cong.get<KnuthBendixBase<>>()->finished()) {
@@ -49,19 +50,18 @@ namespace libsemigroups {
     // Interface helpers - partition
     ////////////////////////////////////////////////////////////////////////
 
-    template <typename Range, typename OutputWord, typename>
-    std::vector<std::vector<OutputWord>> partition(Congruence& cong, Range r) {
+    template <typename Word, typename Range, typename>
+    std::vector<std::vector<Word>> partition(Congruence<Word>& cong, Range r) {
       cong.run();
-      if (cong.has<ToddCoxeterBase>() && cong.get<ToddCoxeterBase>()->finished()) {
-        return partition<Range, OutputWord>(*cong.get<ToddCoxeterBase>(), r);
-      } else if (cong.has<KnuthBendixBase<>>()
-                 && cong.get<KnuthBendixBase<>>()->finished()) {
-        return partition<KnuthBendixBase<>, Range, OutputWord>(
-            *cong.get<KnuthBendixBase<>>(), r);
-      } else if (cong.has<Kambites<word_type>>()
-                 && cong.get<Kambites<word_type>>()->success()) {
-        return partition<Kambites<word_type>, Range, OutputWord>(
-            *cong.get<Kambites<word_type>>(), r);
+      if (cong.template has<ToddCoxeter<Word>>()
+          && cong.template get<ToddCoxeter<Word>>()->finished()) {
+        return partition(*cong.template get<ToddCoxeter<Word>>(), r);
+      } else if (cong.template has<KnuthBendix<Word>>()
+                 && cong.template get<KnuthBendix<Word>>()->finished()) {
+        return partition(*cong.template get<KnuthBendix<Word>>(), r);
+      } else if (cong.template has<Kambites<Word>>()
+                 && cong.template get<Kambites<Word>>()->success()) {
+        return partition(*cong.template get<Kambites<Word>>(), r);
       }
       LIBSEMIGROUPS_EXCEPTION("Cannot compute the non-trivial classes!");
     }

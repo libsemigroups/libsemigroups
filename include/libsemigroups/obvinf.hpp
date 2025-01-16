@@ -44,7 +44,9 @@ namespace libsemigroups {
 
   template <typename Rewriter, typename ReductionOrder>
   class KnuthBendixBase;  // forward decl
-  class Congruence;       // forward decl
+
+  template <typename Word>
+  class Congruence;  // forward decl
 
   template <typename Word>
   class Kambites;  // forward decl
@@ -481,7 +483,9 @@ namespace libsemigroups {
   //!
   //! \note If this function returns \c false, it is still possible that the
   //! congruence has infinitely many classes.
-  bool is_obviously_infinite(Congruence& c);
+  // This function is implemented in cong-class.tpp
+  template <typename Word>
+  bool is_obviously_infinite(Congruence<Word>& c);
 
   //! \ingroup obvinf_group
   //!

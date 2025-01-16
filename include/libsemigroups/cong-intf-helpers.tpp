@@ -184,7 +184,7 @@ namespace libsemigroups {
     std::vector<std::vector<OutputWord>> partition(Subclass& ci, Range r) {
       // Congruence + ToddCoxeter have their own overloads for this
       static_assert(!std::is_base_of_v<ToddCoxeterBase, Subclass>
-                    && !std::is_same_v<Subclass, Congruence>);
+                    && !std::is_base_of_v<CongruenceBase, Subclass>);
 
       if (!r.is_finite) {
         LIBSEMIGROUPS_EXCEPTION("the 2nd argument (a range) must be finite, "

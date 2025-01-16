@@ -38,6 +38,8 @@ namespace libsemigroups {
 
   template <typename Rewriter, typename ReductionOrder>
   class KnuthBendixBase;
+
+  template <typename Word>
   class Congruence;
 #endif
 
@@ -171,8 +173,8 @@ namespace libsemigroups {
   }
 
   // TODO(0) convert other to_froidure_pin's to return unique_ptr
-  template <typename String>
-  std::unique_ptr<FroidurePinBase> to_froidure_pin(Kambites<String>& k) {
+  template <typename Word>
+  std::unique_ptr<FroidurePinBase> to_froidure_pin(Kambites<Word>& k) {
     if (k.small_overlap_class() < 4) {
       LIBSEMIGROUPS_EXCEPTION(
           "the small overlap class of the argument must be >= 4, found {}",
@@ -180,16 +182,33 @@ namespace libsemigroups {
     }
 
     // TODO(0) deduction guide
-    FroidurePin<detail::KE<String>> result(k);
+    FroidurePin<detail::KE<Word>> result(k);
 
     size_t const n = k.presentation().alphabet().size();
     for (size_t i = 0; i < n; ++i) {
-      result.add_generator(detail::KE<String>(k, i));
+      result.add_generator(detail::KE<Word>(k, i));
     }
     return std::make_unique<decltype(result)>(std::move(result));
   }
 
-  std::unique_ptr<FroidurePinBase> to_froidure_pin(Congruence& cong);
+  template <typename Word>
+  std::unique_ptr<FroidurePinBase> to_froidure_pin(Congruence<Word>& cong) {
+    cong.run();
+    if (cong.template has<Kambites<Word>>()) {
+      // TODO(0) there an issue here that if the Kambites clause isn't first,
+      // then we incorrectly start running the other algos here, which run
+      // forever. Probably something goes wrong that the other runners don't
+      // template get deleted if Kambites wins, since it's run first.
+      return to_froidure_pin(*cong.template get<Kambites<Word>>());
+    } else if (cong.template has<ToddCoxeter<Word>>()) {
+      auto fp = to_froidure_pin(*cong.template get<ToddCoxeter<Word>>());
+      return std::make_unique<decltype(fp)>(std::move(fp));
+    } else if (cong.template has<KnuthBendixBase<>>()) {
+      auto fp = to_froidure_pin(*cong.template get<KnuthBendixBase<>>());
+      return std::make_unique<decltype(fp)>(std::move(fp));
+    }
+    LIBSEMIGROUPS_EXCEPTION("TODO");
+  }
 
 }  // namespace libsemigroups
 #endif  // LIBSEMIGROUPS_TO_FROIDURE_PIN_HPP_
