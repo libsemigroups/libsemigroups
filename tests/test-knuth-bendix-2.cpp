@@ -1588,12 +1588,11 @@ namespace libsemigroups {
     KnuthBendix<word_type, TestType> kb(congruence_kind::twosided, p);
     kb.run();
     REQUIRE(kb.presentation().alphabet() == word_type({0, 1}));
-    REQUIRE((knuth_bendix::normal_forms<word_type>(kb)
-             | filter([&kb](auto const& w) {
-                 auto ww = w;
-                 ww.insert(ww.begin(), w.begin(), w.end());
-                 return knuth_bendix::reduce(kb, ww) == w;
-               })
+    REQUIRE((knuth_bendix::normal_forms(kb) | filter([&kb](auto const& w) {
+               auto ww = w;
+               ww.insert(ww.begin(), w.begin(), w.end());
+               return knuth_bendix::reduce(kb, ww) == w;
+             })
              | to_vector())
             == std::vector<word_type>({{}, 0_w, 1_w, 10_w}));
     REQUIRE((kb.active_rules() | sort(weird_cmp()) | to_vector())

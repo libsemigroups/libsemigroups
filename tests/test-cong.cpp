@@ -383,8 +383,7 @@ namespace libsemigroups {
       REQUIRE_THROWS_AS(knuth_bendix::non_trivial_classes(
                             kb, *cong.get<KnuthBendix<word_type>>()),
                         LibsemigroupsException);
-      REQUIRE((knuth_bendix::normal_forms<word_type>(
-                   *cong.get<KnuthBendix<word_type>>())
+      REQUIRE((knuth_bendix::normal_forms(*cong.get<KnuthBendix<word_type>>())
                | rx::to_vector())
               == std::vector<word_type>({{}, 0_w, 1_w}));
     } else if (cong.has<ToddCoxeter<word_type>>()) {

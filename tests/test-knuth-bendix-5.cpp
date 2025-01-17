@@ -340,7 +340,7 @@ namespace libsemigroups {
 
     REQUIRE((normal_forms(kb).min(1) | count()) == 72);
     REQUIRE(!kb.presentation().contains_empty_word());
-    REQUIRE((normal_forms<word_type>(kb) | to_vector())
+    REQUIRE((normal_forms(kb) | to_vector())
             == std::vector<word_type>(
                 {0_w,        1_w,       00_w,      01_w,      10_w,
                  11_w,       000_w,     001_w,     010_w,     011_w,

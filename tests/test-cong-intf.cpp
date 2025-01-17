@@ -393,54 +393,32 @@ namespace libsemigroups {
 
     REQUIRE(cong.number_of_classes() == 12);
 
-    // TODO(0) uncomment
-    // std::vector<std::string> strings;
-    // std::vector<word_type>   words;
+    std::vector<std::string> strings;
 
-    // // This is a bit awkward, but we can't return different types from a
-    // // normal_forms(Congruence<word_type>&) function
-    // if (cong.template has<ToddCoxeter<word_type>>()) {
-    //   strings = (normal_forms<std::string>(*cong.template
-    //   get<ToddCoxeter<word_type>>())
-    //              | rx::to_vector());
-    //   words   = (normal_forms<word_type>(*cong.template
-    //   get<ToddCoxeter<word_type>>())
-    //            | rx::to_vector());
-    // } else {
-    //   REQUIRE(cong.template has<KnuthBendix<>>());
-    //   strings = (normal_forms<std::string>(*cong.template
-    //   get<KnuthBendix<>>())
-    //              | rx::to_vector());
-    //   words   = (normal_forms<word_type>(*cong.template get<KnuthBendix<>>())
-    //            | rx::to_vector());
-    // }
+    // This is a bit awkward, but we can't return different types from a
+    // normal_forms(Congruence<word_type>&) function TODO(1)
+    if (cong.template has<ToddCoxeter<std::string>>()) {
+      strings = (normal_forms(*cong.template get<ToddCoxeter<std::string>>())
+                 | rx::to_vector());
+    } else {
+      REQUIRE(cong.template has<KnuthBendix<std::string>>());
+      strings = (normal_forms(*cong.template get<KnuthBendix<std::string>>())
+                 | rx::to_vector());
+    }
 
-    // REQUIRE(strings
-    //         == std::vector<std::string>({"",
-    //                                      "B",
-    //                                      "a",
-    //                                      "b",
-    //                                      "Ba",
-    //                                      "aB",
-    //                                      "ab",
-    //                                      "ba",
-    //                                      "BaB",
-    //                                      "Bab",
-    //                                      "aBa",
-    //                                      "baB"}));
-    // REQUIRE(words
-    //         == std::vector<word_type>({{},
-    //                                    {66},
-    //                                    {97},
-    //                                    {98},
-    //                                    {66, 97},
-    //                                    {97, 66},
-    //                                    {97, 98},
-    //                                    {98, 97},
-    //                                    {66, 97, 66},
-    //                                    {66, 97, 98},
-    //                                    {97, 66, 97},
-    //                                    {98, 97, 66}}));
+    REQUIRE(strings
+            == std::vector<std::string>({"",
+                                         "B",
+                                         "a",
+                                         "b",
+                                         "Ba",
+                                         "aB",
+                                         "ab",
+                                         "ba",
+                                         "BaB",
+                                         "Bab",
+                                         "aBa",
+                                         "baB"}));
   }
 
 }  // namespace libsemigroups
