@@ -17,9 +17,10 @@
 //
 
 // This file contains the declaration of the class TCE, which is a wrapper
-// around ToddCoxeterBase class indices, that can be used as the element type for
-// the FroidurePin class template. This file also contains specializations of
-// the adapters complexity, degree, less, one, product, and std::hash for TCE.
+// around ToddCoxeterBase class indices, that can be used as the element type
+// for the FroidurePin class template. This file also contains specializations
+// of the adapters complexity, degree, less, one, product, and std::hash for
+// TCE.
 
 #ifndef LIBSEMIGROUPS_DETAIL_TCE_HPP_
 #define LIBSEMIGROUPS_DETAIL_TCE_HPP_

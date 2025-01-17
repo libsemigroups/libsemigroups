@@ -119,8 +119,9 @@ namespace libsemigroups {
       //! \brief Return the left-hand side of the rule.
       //!
       //! Return the left-hand side of the rule. If this rule was create by a
-      //! \ref KnuthBendixBase, this is guaranteed to be greater than its right-hand
-      //! side according to the reduction ordering of that \ref KnuthBendixBase.
+      //! \ref KnuthBendixBase, this is guaranteed to be greater than its
+      //! right-hand side according to the reduction ordering of that \ref
+      //! KnuthBendixBase.
       //!
       //! \returns A pointer to the left-hand side.
       //!

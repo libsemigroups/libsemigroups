@@ -58,8 +58,8 @@ namespace libsemigroups {
     bool constexpr DoNotRegisterDefs = false;
     bool constexpr RegisterDefs      = true;
 
-    // This class exists so that both FelschGraph and ToddCoxeterBase can use the
-    // same settings/options without code duplication
+    // This class exists so that both FelschGraph and ToddCoxeterBase can use
+    // the same settings/options without code duplication
     template <typename Subclass>
     class FelschGraphSettings : public FelschGraphEnums {
      private:

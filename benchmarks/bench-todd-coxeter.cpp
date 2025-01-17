@@ -106,7 +106,8 @@ namespace libsemigroups {
       emit_xml_presentation_tags(p, std::to_string(index), size);
     }
 
-    constexpr auto DoNothing = [](ToddCoxeter&) {};
+    template <typename Word>
+    constexpr auto DoNothing = [](ToddCoxeter<Word>&) {};
 
     template <typename Func2>
     void benchmark_todd_coxeter_single(
@@ -148,8 +149,8 @@ namespace libsemigroups {
         Presentation<word_type>&&              p,
         size_t                                 n,
         std::initializer_list<strategy> const& strategies = {strategy::hlt}) {
-      benchmark_todd_coxeter_single<decltype(DoNothing) const&>(
-          size, std::move(p), n, strategies, DoNothing);
+      benchmark_todd_coxeter_single<decltype(DoNothing<word_type>) const&>(
+          size, std::move(p), n, strategies, DoNothing<word_type>);
     }
 
     // TODO be good to recover the below
@@ -263,7 +264,7 @@ namespace libsemigroups {
         },
         "orientation_preserving_monoid_AR00",
         strategies,
-        DoNothing);
+        DoNothing<word_type>);
   }  // namespace orientation_preserving
 
   // Becomes impractical to do multiple runs when n >= 10, so we switch to
@@ -340,7 +341,7 @@ namespace libsemigroups {
         },
         "orientation_preserving_reversing_monoid_AR00",
         strategies,
-        DoNothing);
+        DoNothing<word_type>);
   }  // namespace orientation_reversing
 
   // Approx 9s (2021 - MacBook Air M1 - 8GB RAM)
@@ -410,12 +411,12 @@ namespace libsemigroups {
         [](size_t n) { return presentation::examples::partition_monoid(n); },
         "partition_monoid",
         strategies,
-        DoNothing);
+        DoNothing<word_type>);
 
     // Becomes impractical to do multiple runs for n >= 7, so we switch to
     // doing single runs.
 
-    auto init_func = [](ToddCoxeter& tc) {
+    auto init_func = [](ToddCoxeter<word_type>& tc) {
       tc.use_relations_in_extra(true)
           .lookahead_next(200'000'000)
           .save(true)
@@ -455,20 +456,24 @@ namespace libsemigroups {
         },
         "dual_symmetric_inverse_monoid_EEF07",
         strategies,
-        DoNothing);
+        DoNothing<word_type>);
 
     // Becomes impractical to do multiple runs for n >= 7, so we switch to
     // doing single runs.
 
-    auto init = [](ToddCoxeter& tc) {
+    template <typename Word>
+    auto init = [](ToddCoxeter<Word>& tc) {
       tc.lookahead_min(10'000'000).save(true).def_policy(def_policy::unlimited);
     };
 
     TEST_CASE("dual_symmetric_inverse_monoid(7)",
               "[paper][dual_symmetric_inverse_monoid][n=7]") {
       auto p = presentation::examples::dual_symmetric_inverse_monoid_EEF07(7);
-      benchmark_todd_coxeter_single(
-          6'166'105, std::move(p), 7, {strategy::hlt, strategy::felsch}, init);
+      benchmark_todd_coxeter_single(6'166'105,
+                                    std::move(p),
+                                    7,
+                                    {strategy::hlt, strategy::felsch},
+                                    init<word_type>);
     }
   }  // namespace dual_symmetric_inverse
 
@@ -495,7 +500,7 @@ namespace libsemigroups {
         },
         "uniform_block_bijection_monoid_Fit03",
         strategies,
-        [](ToddCoxeter& tc) {
+        [](ToddCoxeter<word_type>& tc) {
           if (tc.strategy() == strategy::Rc) {
             tc.lookahead_extent(lookahead_extent::full);
           }
@@ -556,7 +561,7 @@ namespace libsemigroups {
         },
         "temperley_lieb_monoid_Eas21",
         strategies,
-        DoNothing);
+        DoNothing<word_type>);
 
     // Becomes impractical to do multiple runs after n >= 15, so we switch to
     // doing single runs.
@@ -610,7 +615,7 @@ namespace libsemigroups {
         },
         "singular_brauer_monoid_MM07",
         strategies,
-        DoNothing);
+        DoNothing<word_type>);
 
     // Approx. 1 minute
     // TODO lower bound has no impact here, because HLT doesn't check for
@@ -620,7 +625,7 @@ namespace libsemigroups {
     TEST_CASE("singular_brauer_monoid(8) (Maltcev-Mazorchuk)",
               "[paper][singular_brauer_monoid][n=8]") {
       uint64_t size      = 1'986'705;
-      auto     init_func = [&size](ToddCoxeter& tc) {
+      auto     init_func = [&size](ToddCoxeter<word_type>& tc) {
         tc.lookahead_next(size / 2).lookahead_min(size / 2).lower_bound(size);
       };
       benchmark_todd_coxeter_single(
@@ -680,7 +685,7 @@ namespace libsemigroups {
         [](size_t n) { return presentation::examples::stylic_monoid_AR22(n); },
         "stylic_monoid_AR22",
         strategies,
-        DoNothing);
+        DoNothing<word_type>);
 
     // Becomes impractical to do multiple runs after n >= 11, so we switch to
     // doing single runs.
@@ -740,7 +745,7 @@ namespace libsemigroups {
         [](size_t n) { return presentation::examples::stellar_monoid_GH19(n); },
         "stellar_monoid_GH19",
         strategies,
-        DoNothing);
+        DoNothing<word_type>);
 
     // Becomes impractical to do multiple runs after n >= 10, so we switch to
     // doing single runs.

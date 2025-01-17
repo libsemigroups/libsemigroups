@@ -1185,4 +1185,4 @@ namespace libsemigroups {
 
 #include "knuth-bendix-base.tpp"
 
-#endif  // LIBSEMIGROUPS_KNUTH_BENDIX_CLASS-HPP_
+#endif  // LIBSEMIGROUPS_KNUTH_BENDIX_BASE_HPP_

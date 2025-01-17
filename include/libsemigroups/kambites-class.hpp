@@ -213,7 +213,8 @@ namespace libsemigroups {
     //! \throws LibsemigroupsException if \p p is not valid.
     //! \throws LibsemigroupsException if \p knd is not \ref
     //! congruence_kind::twosided.
-    // TODO(1) simplify constructors (like for KnuthBendixBase + ToddCoxeterBase)
+    // TODO(1) simplify constructors (like for KnuthBendixBase +
+    // ToddCoxeterBase)
     Kambites(congruence_kind knd, Presentation<native_word_type> const& p);
 
     //! \brief Re-initialize a \ref Kambites instance.

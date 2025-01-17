@@ -128,7 +128,7 @@ namespace libsemigroups {
 
       void emit();
     };  // ReportCell
-  }  // namespace detail
+  }     // namespace detail
 
   bool reporting_enabled() noexcept;
 

@@ -1170,7 +1170,7 @@ test_word_range_SOURCES =  tests/test-word-range.cpp
 test_word_range_SOURCES += tests/test-main.cpp
 test_word_range_SOURCES += tests/catch_amalgamated.cpp
 
-bench_all_SOURCES =  benchmarks/examples/cong-intf-class.cpp
+bench_all_SOURCES =  benchmarks/examples/cong-intf.cpp
 bench_all_SOURCES += benchmarks/examples/generators.cpp
 bench_all_SOURCES += benchmarks/bench-action.cpp
 bench_all_SOURCES += benchmarks/bench-word-graph.cpp

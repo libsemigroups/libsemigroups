@@ -204,7 +204,8 @@ namespace libsemigroups {
       if (_first_free_node == UNDEFINED) {
         // There are no free nodes to recycle: make new ones.
         // It seems to be marginally faster to make lots like this, than to
-        // just make 1, in some examples, notably ToddCoxeterBase 040 (Walker 3).
+        // just make 1, in some examples, notably ToddCoxeterBase 040 (Walker
+        // 3).
         add_free_nodes(growth_factor() * node_capacity());
       }
       add_active_nodes(1);

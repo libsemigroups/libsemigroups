@@ -1111,11 +1111,11 @@ namespace libsemigroups {
   //!
   //! [rx::ranges]: https://github.com/simonask/rx-ranges
   // Note that this class only exists so that range objects returned by
-  // KnuthBendixBase can be reversed if necessary. This wouldn't be necessary if we
-  // knew at compile time that a KnuthBendixBase object represented a left
+  // KnuthBendixBase can be reversed if necessary. This wouldn't be necessary if
+  // we knew at compile time that a KnuthBendixBase object represented a left
   // congruence, since we could just return something like "Paths |
-  // transform(reverse)". But since the handedness of KnuthBendixBase can be set at
-  // runtime we require a single return type (i.e. can't conditionally return
+  // transform(reverse)". But since the handedness of KnuthBendixBase can be set
+  // at runtime we require a single return type (i.e. can't conditionally return
   // "Paths" if right or 2-sided, and "Paths | transform(reverse)" if left,
   // because these are different types) for KnuthBendixBase::normal_forms,
   // which is what the class ReversiblePaths provides.

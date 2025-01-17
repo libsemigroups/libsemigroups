@@ -842,7 +842,8 @@ namespace libsemigroups {
 
 #ifndef PARSED_BY_DOXYGEN
     // This has to be repeated here (not in cong-intf.hpp) because we need to
-    // reverse the word for ToddCoxeterBase, but not in KnuthBendixBase or Kambites.
+    // reverse the word for ToddCoxeterBase, but not in KnuthBendixBase or
+    // Kambites.
     //
     // The enable_if stops this from matching char const* = char[n]
     template <typename Word, typename InputWord = Word>
