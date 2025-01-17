@@ -926,6 +926,9 @@ namespace libsemigroups {
     //!
     //! \throws LibsemigroupsException if the input range of words is
     //! infinite.
+    // TODO(0) remove OutputWord just use Subclass::native_word_type
+    // TODO(0) static_assert that Range::output_type is the same as
+    // Subclass::native_word_type
     template <typename Subclass,
               typename Range,
               typename OutputWord = std::decay_t<typename Range::output_type>,
