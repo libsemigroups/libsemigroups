@@ -373,28 +373,29 @@ namespace libsemigroups {
     congruence::add_generating_pair(cong, 111_w, {});
     REQUIRE(cong.number_of_classes() == 3);
 
-    REQUIRE((congruence::normal_forms(cong) | rx::to_vector())
-            == std::vector<word_type>({{}, {0}, {1}}));
+    // REQUIRE((congruence::normal_forms(cong) | rx::to_vector())
+    //        == std::vector<word_type>({{}, {0}, {1}}));
 
-    // TODO(0) replace with a call to normal_forms
-    // if (cong.has<KnuthBendix<word_type>>()) {
-    //  KnuthBendix<word_type> kb(twosided, p);
-    //  REQUIRE_THROWS_AS(knuth_bendix::non_trivial_classes(
-    //                        kb, *cong.get<KnuthBendix<word_type>>()),
-    //                    LibsemigroupsException);
-    //  REQUIRE((knuth_bendix::normal_forms<word_type>(
-    //               *cong.get<KnuthBendix<word_type>>())
-    //           | rx::to_vector())
-    //          == std::vector<word_type>({{}, {0}, {1}}));
-    //} else if (cong.has<ToddCoxeter<std::string><word_type>>()) {
-    //  ToddCoxeter<std::string> tc(twosided, p);
-    //  REQUIRE_THROWS_AS(
-    //      todd_coxeter::non_trivial_classes(*cong.get<ToddCoxeter<std::string>>(),
-    //      tc), LibsemigroupsException);
-    //  REQUIRE((todd_coxeter::normal_forms<word_type>(*cong.get<ToddCoxeter<std::string>>())
-    //           | rx::to_vector())
-    //          == std::vector<word_type>({{}, {0}, {1}}));
-    //}
+    // TODO(1) replace with a call to normal_forms, currently doesn't exist
+    // because can't overload on return type
+    if (cong.has<KnuthBendix<word_type>>()) {
+      KnuthBendix<word_type> kb(twosided, p);
+      REQUIRE_THROWS_AS(knuth_bendix::non_trivial_classes(
+                            kb, *cong.get<KnuthBendix<word_type>>()),
+                        LibsemigroupsException);
+      REQUIRE((knuth_bendix::normal_forms<word_type>(
+                   *cong.get<KnuthBendix<word_type>>())
+               | rx::to_vector())
+              == std::vector<word_type>({{}, 0_w, 1_w}));
+    } else if (cong.has<ToddCoxeter<word_type>>()) {
+      ToddCoxeter tc(twosided, p);
+      REQUIRE_THROWS_AS(todd_coxeter::non_trivial_classes(
+                            *cong.get<ToddCoxeter<word_type>>(), tc),
+                        LibsemigroupsException);
+      REQUIRE((todd_coxeter::normal_forms(*cong.get<ToddCoxeter<word_type>>())
+               | rx::to_vector())
+              == std::vector<word_type>({{}, {0}, {1}}));
+    }
   }
 
   LIBSEMIGROUPS_TEST_CASE("Congruence",

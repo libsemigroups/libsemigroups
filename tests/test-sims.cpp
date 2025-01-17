@@ -3177,7 +3177,7 @@ namespace libsemigroups {
     presentation::add_rule(p, "ts", "stt");
 
     ToddCoxeter tc(congruence_kind::twosided, p);
-    tc.strategy(ToddCoxeter::options::strategy::felsch);
+    tc.strategy(ToddCoxeterBase::options::strategy::felsch);
     REQUIRE(tc.number_of_classes() == 1);
     tc.shrink_to_fit();
     REQUIRE(tc.word_graph().number_of_nodes() == 1);

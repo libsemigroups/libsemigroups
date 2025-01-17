@@ -37,10 +37,10 @@
 //
 namespace libsemigroups {
   using literals::operator""_p;
-  using strategy         = ToddCoxeter::options::strategy;
-  using lookahead_extent = ToddCoxeter::options::lookahead_extent;
-  using def_policy       = ToddCoxeter::options::def_policy;
-  using def_version      = ToddCoxeter::options::def_version;
+  using strategy         = ToddCoxeterBase::options::strategy;
+  using lookahead_extent = ToddCoxeterBase::options::lookahead_extent;
+  using def_policy       = ToddCoxeterBase::options::def_policy;
+  using def_version      = ToddCoxeterBase::options::def_version;
 
   namespace {
     template <typename S, typename T>
