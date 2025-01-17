@@ -103,8 +103,8 @@ namespace libsemigroups {
       Presentation<std::string> p;
       p.alphabet(A);
 
-      Kambites<std::string> k;
-      KnuthBendix           kb1, kb2;
+      Kambites<std::string>    k;
+      KnuthBendix<std::string> kb1, kb2;
 
       for (size_t j = 0; j < sample_size; ++j) {
         for (size_t r = 0; r < R; ++r) {

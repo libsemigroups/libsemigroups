@@ -1020,11 +1020,12 @@ namespace libsemigroups {
   }
 
   // Von Dyck (2,3,7) group - infinite hyperbolic
-  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
-                                   "KnuthBendix 071 again",
-                                   "[no-valgrind]048",
-                                   "[quick][knuth-bendix][shortlex]",
-                                   REWRITER_TYPES) {
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE(
+      "KnuthBendix",
+      "048",
+      "KnuthBendix 071 again",
+      "[no-valgrind][quick][knuth-bendix][shortlex]",
+      REWRITER_TYPES) {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("aAbBc");

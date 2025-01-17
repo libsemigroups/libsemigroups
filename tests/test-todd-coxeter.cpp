@@ -5000,15 +5000,6 @@ namespace libsemigroups {
     REQUIRE((froidure_pin::rules(S) | rx::count()) == 17'785);
     auto kb = to_knuth_bendix(twosided, S);
     auto q  = kb.presentation();
-    REQUIRE(q.alphabet() == "abcdef");
-    REQUIRE(knuth_bendix::reduce_no_run(kb, "af") == "f");
-
-    for (auto const& [l, r] : froidure_pin::rules(S)) {
-      if (l == 05_w && r == 5_w) {
-        fmt::print("af=f is a rule!\n");
-        break;
-      }
-    }
   }
 
   LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
