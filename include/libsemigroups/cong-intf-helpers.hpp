@@ -891,14 +891,12 @@ namespace libsemigroups {
     ////////////////////////////////////////////////////////////////////////
 
     // Forward decls defined in todd-coxeter-helpers.tpp and cong-helpers.tpp
-    // TODO(0) static assert that Word is Range::output_type
     template <typename Word,
               typename Range,
               typename = std::enable_if_t<rx::is_input_or_sink_v<Range>>>
     [[nodiscard]] std::vector<std::vector<Word>>
     partition(ToddCoxeter<Word>& ci, Range r);
 
-    // TODO(0) static assert that Word is Range::output_type
     template <typename Word,
               typename Range,
               typename = std::enable_if_t<rx::is_input_or_sink_v<Range>>>
@@ -926,34 +924,22 @@ namespace libsemigroups {
     //!
     //! \throws LibsemigroupsException if the input range of words is
     //! infinite.
-    // TODO(0) remove OutputWord just use Subclass::native_word_type
-    // TODO(0) static_assert that Range::output_type is the same as
-    // Subclass::native_word_type
     template <typename Subclass,
               typename Range,
-              typename OutputWord = std::decay_t<typename Range::output_type>,
               typename = std::enable_if_t<rx::is_input_or_sink_v<Range>>>
-    [[nodiscard]] std::vector<std::vector<OutputWord>> partition(Subclass& ci,
-                                                                 Range     r);
+    [[nodiscard]] std::vector<std::vector<typename Subclass::native_word_type>>
+    partition(Subclass& ci, Range r);
 
     //! \brief Partition a range of words (via iterators)
     //!
     //! Defined in `cong-intf.hpp`.
     //!
     //! See \ref partition(Subclass&, Range) for details.
-    template <
-        typename Subclass,
-        typename Iterator1,
-        typename Iterator2,
-        typename OutputWord = std::decay_t<
-            typename rx::iterator_range<Iterator1, Iterator2>::output_type>>
-    std::vector<std::vector<OutputWord>> partition(Subclass& ci,
-                                                   Iterator1 first,
-                                                   Iterator2 last) {
-      static_assert(std::is_base_of_v<CongruenceInterface, Subclass>);
-      return partition<Subclass,
-                       rx::iterator_range<Iterator1, Iterator2>,
-                       OutputWord>(ci, rx::iterator_range(first, last));
+    template <typename Subclass, typename Iterator1, typename Iterator2>
+    std::vector<std::vector<typename Subclass::native_word_type>>
+    partition(Subclass& ci, Iterator1 first, Iterator2 last) {
+      // static asserts are in done in the next call to partition
+      return partition(ci, rx::iterator_range(first, last));
     }
 
     ////////////////////////////////////////////////////////////////////////
@@ -983,9 +969,8 @@ namespace libsemigroups {
     //! infinite.
     template <typename Subclass,
               typename Range,
-              typename OutputWord = std::decay_t<typename Range::output_type>,
               typename = std::enable_if_t<rx::is_input_or_sink_v<Range>>>
-    [[nodiscard]] std::vector<std::vector<OutputWord>>
+    [[nodiscard]] std::vector<std::vector<typename Subclass::native_word_type>>
     non_trivial_classes(Subclass& ci, Range r);
 
     //! \brief Partition a range of words into non-trivial classes (via
@@ -994,19 +979,10 @@ namespace libsemigroups {
     //! Defined in `cong-intf.hpp`.
     //!
     //! See \ref non_trivial_classes(Subclass&, Range) for details.
-    template <
-        typename Subclass,
-        typename Iterator1,
-        typename Iterator2,
-        typename OutputWord = std::decay_t<
-            typename rx::iterator_range<Iterator1, Iterator2>::output_type>>
-    std::vector<std::vector<OutputWord>> non_trivial_classes(Subclass& ci,
-                                                             Iterator1 first,
-                                                             Iterator2 last) {
-      return non_trivial_classes<Subclass,
-                                 rx::iterator_range<Iterator1, Iterator2>,
-                                 OutputWord>(ci,
-                                             rx::iterator_range(first, last));
+    template <typename Subclass, typename Iterator1, typename Iterator2>
+    std::vector<std::vector<typename Subclass::native_word_type>>
+    non_trivial_classes(Subclass& ci, Iterator1 first, Iterator2 last) {
+      return non_trivial_classes(ci, rx::iterator_range(first, last));
     }
 
     //! @}

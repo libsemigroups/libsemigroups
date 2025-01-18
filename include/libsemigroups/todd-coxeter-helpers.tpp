@@ -241,8 +241,9 @@ namespace libsemigroups {
 
     template <typename Word, typename Range, typename>
     std::vector<std::vector<Word>> partition(ToddCoxeter<Word>& tc, Range r) {
-      // TODO(0) static assert that the output_type of Range and Word are the
-      // same
+      static_assert(
+          std::is_same_v<Word, std::decay_t<typename Range::output_type>>);
+
       using return_type = std::vector<std::vector<Word>>;
 
       if (tc.number_of_classes() == POSITIVE_INFINITY) {

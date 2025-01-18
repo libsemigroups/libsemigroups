@@ -52,6 +52,9 @@ namespace libsemigroups {
 
     template <typename Word, typename Range, typename>
     std::vector<std::vector<Word>> partition(Congruence<Word>& cong, Range r) {
+      static_assert(
+          std::is_same_v<Word, std::decay_t<typename Range::output_type>>);
+
       cong.run();
       if (cong.template has<ToddCoxeter<Word>>()
           && cong.template get<ToddCoxeter<Word>>()->finished()) {

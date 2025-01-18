@@ -19,13 +19,14 @@
 // This file contains the implementations of helper function templates for the
 // CongruenceInterface class.
 
+#include "libsemigroups/cong-intf-class.hpp"
 namespace libsemigroups {
 
   namespace congruence_interface {
     ////////////////////////////////////////////////////////////////////////
     // Interface helpers - reduce_no_run_no_checks
     ////////////////////////////////////////////////////////////////////////
-
+    // TODO(0) remove outputword
     template <typename Subclass, typename InputWord, typename OutputWord>
     OutputWord reduce_no_run_no_checks(Subclass const& ci, InputWord const& w) {
       static_assert(std::is_base_of_v<CongruenceInterface, Subclass>);
@@ -180,21 +181,28 @@ namespace libsemigroups {
     // Interface helpers - partition
     ////////////////////////////////////////////////////////////////////////
 
-    template <typename Subclass, typename Range, typename OutputWord, typename>
-    std::vector<std::vector<OutputWord>> partition(Subclass& ci, Range r) {
+    template <typename Subclass, typename Range, typename>
+    std::vector<std::vector<typename Subclass::native_word_type>>
+    partition(Subclass& ci, Range r) {
+      using Word = typename Subclass::native_word_type;
+
       // Congruence + ToddCoxeter have their own overloads for this
       static_assert(!std::is_base_of_v<ToddCoxeterBase, Subclass>
                     && !std::is_base_of_v<CongruenceBase, Subclass>);
+      static_assert(std::is_base_of_v<CongruenceInterface, Subclass>);
+
+      static_assert(
+          std::is_same_v<Word, std::decay_t<typename Range::output_type>>);
 
       if (!r.is_finite) {
         LIBSEMIGROUPS_EXCEPTION("the 2nd argument (a range) must be finite, "
                                 "found an infinite range");
       }
 
-      std::vector<std::vector<OutputWord>> result;
+      std::vector<std::vector<Word>> result;
 
-      std::unordered_map<OutputWord, size_t> map;
-      size_t                                 index = 0;
+      std::unordered_map<Word, size_t> map;
+      size_t                           index = 0;
 
       while (!r.at_end()) {
         auto next = r.get();
@@ -217,10 +225,12 @@ namespace libsemigroups {
     // Interface helpers - non_trivial_classes
     ////////////////////////////////////////////////////////////////////////
 
-    template <typename Subclass, typename Range, typename OutputWord, typename>
-    std::vector<std::vector<OutputWord>> non_trivial_classes(Subclass& ci,
-                                                             Range     r) {
+    template <typename Subclass, typename Range, typename>
+    std::vector<std::vector<typename Subclass::native_word_type>>
+    non_trivial_classes(Subclass& ci, Range r) {
       static_assert(std::is_base_of_v<CongruenceInterface, Subclass>);
+      static_assert(std::is_same_v<typename Subclass::native_word_type,
+                                   std::decay_t<typename Range::output_type>>);
       auto result = partition(ci, r);
       result.erase(
           std::remove_if(result.begin(),

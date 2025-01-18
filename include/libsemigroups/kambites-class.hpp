@@ -86,8 +86,6 @@ namespace libsemigroups {
   //!
   //! \tparam Word the type of the words in the presentation.
   // TODO(1) example
-  // TODO(0) it seems a bit weird that the internal_type is the thing used as a
-  // template parameter here. Discuss with Joe.
   template <typename Word = detail::MultiStringView>
   class Kambites : public CongruenceInterface {
    public:
