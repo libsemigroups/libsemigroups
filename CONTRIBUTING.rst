@@ -70,13 +70,13 @@ Some more conventions:
 
   * A constructor should be used to construct an object without checking its
     arguments.
-  * A `make` function should be a member of a helper namespace (such as
-    `inverse_presentation` or `blocks`) that is used to construct an object
-    from non-libsemigroups objects such as containers, integers and strings.
-    It should check its arguments.
-  * A `to` function should be a specialisation of a function template that is
-    used to convert from one `libsemigroups` type to another. A typical
-    signature might look something like
+  * A `make` function should be a free function template in the libsemigroups
+    namespace that is used to construct an object from non-libsemigroups
+    objects such as containers, integers and strings. It should check its
+    arguments.
+  * A `to` function should a free function template in the libsemigroups
+    namespace that is used to convert from one `libsemigroups` type to another.
+    A typical signature might look something like
     `to<ToddCoxeter>(Presentation<word_type> p)`. It should check its
     arguments.
 
