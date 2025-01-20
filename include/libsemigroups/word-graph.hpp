@@ -2044,7 +2044,7 @@ namespace libsemigroups {
     //!
     //! \par Example
     //! \code
-    //! auto wg = to<WordGraph<uint8_t>>(
+    //! auto wg = make<WordGraph<uint8_t>>(
     //!     5, {{0, 0}, {1, 1}, {2}, {3, 3}});
     //! word_graph::is_strictly_cyclic(wg);  // returns false
     //! \endcode
@@ -2692,7 +2692,7 @@ namespace libsemigroups {
   //! out-degree is specified by the length of the first item
   //! in the 2nd parameter.
   //!
-  //! \tparam Return the return type.
+  //! \tparam Return the return type. Must satisfy \ref IsWordGraph<Return>.
   //!
   //! \param num_nodes the number of nodes in the word graph.
   //! \param targets the targets of the word graph.
@@ -2709,22 +2709,22 @@ namespace libsemigroups {
   //! \par Example
   //! \code
   //! // Construct a word graph with 5 nodes and 10 edges (7 specified)
-  //! to<WordGraph<uint8_t>>(5, {{0, 0}, {1, 1}, {2}, {3, 3}});
+  //! make<WordGraph<uint8_t>>(5, {{0, 0}, {1, 1}, {2}, {3, 3}});
   //! \endcode
   // Passing the 2nd parameter "targets" by value disambiguates it from the
-  // other to<WordGraph>.
+  // other make<WordGraph>.
   template <typename Return>
   [[nodiscard]] std::enable_if_t<IsWordGraph<Return>, Return>
-  to(size_t                                                         num_nodes,
-     std::initializer_list<std::vector<typename Return::node_type>> targets);
+  make(size_t                                                         num_nodes,
+       std::initializer_list<std::vector<typename Return::node_type>> targets);
 
   //! \relates WordGraph
   //!
-  //! \copydoc to
+  //! \copydoc make
   template <typename Return>
   [[nodiscard]] std::enable_if_t<IsWordGraph<Return>, Return>
-  to(size_t                                                      num_nodes,
-     std::vector<std::vector<typename Return::node_type>> const& targets);
+  make(size_t                                                      num_nodes,
+       std::vector<std::vector<typename Return::node_type>> const& targets);
 
   namespace detail {
     template <typename Subclass>
