@@ -335,10 +335,10 @@ namespace libsemigroups {
     }
 
     //! \brief Modifies \p w to contain the labels of the edges on the path
-    //! from a root node to \p i.
+    //! to a root node from \p i.
     //!
     //! This function modifies its first argument \p w in-place to contain the
-    //! labels of the edges on the path from a root node to node \p i.
+    //! labels of the edges on the path to a root node from node \p i.
     //!
     //! \param w value to contain the result.
     //! \param i the node.
@@ -347,6 +347,21 @@ namespace libsemigroups {
     // TODO(0) to helper
     void path_to_root_no_checks(word_type& w, node_type i) const;
 
+    //! \brief Store the labels of the edges on the path to a root node from \p
+    //! i.
+    //!
+    //! This function writes labels of the edges on the path to a root node from
+    //! node \p i to the iterator \p d_first.
+    //!
+    //! \tparam Iterator The type of the parameter, and the return type.
+    //!
+    //! \param d_first the output iterator.
+    //! \param i the node.
+    //!
+    //! \returns An \c Iterator pointing one beyond the last letter inserted
+    //! into \p d_first.
+    //!
+    //! \warning No checks are performed on the arguments of this function.
     template <typename Iterator>
     Iterator path_to_root_no_checks(Iterator d_first, node_type i) const {
       auto it = d_first;
@@ -359,10 +374,10 @@ namespace libsemigroups {
     }
 
     //! \brief Returns a word containing the labels of the edges on the path
-    //! from a root node to \p i.
+    //! to a root node from \p i.
     //!
     //! This function returns a word containing the labels of the edges on the
-    //! path from a root node to node \p i.
+    //! path to a root node from node \p i.
     //!
     //! \param i the node.
     //!
@@ -377,10 +392,10 @@ namespace libsemigroups {
     }
 
     //! \brief Modifies \p w to contain the labels of the edges on the path
-    //! from a root node to \p i.
+    //! to a root node from \p i.
     //!
     //! This function modifies its first argument \p w in-place to contain the
-    //! labels of the edges on the path from a root node to node \p i.
+    //! labels of the edges on the path to a root node from node \p i.
     //!
     //! \param w value to contain the result.
     //! \param i the node.
@@ -393,10 +408,10 @@ namespace libsemigroups {
     }
 
     //! \brief Returns a word containing the labels of the edges on the path
-    //! from a root node to \p i.
+    //! to a root node from \p i.
     //!
     //! This function returns a word containing the labels of the edges on the
-    //! path from a root node to node \p i.
+    //! path to a root node from node \p i.
     //!
     //! \param i the node.
     //!
