@@ -435,7 +435,8 @@ namespace libsemigroups {
   //!
   //! This function constructs a Forest from vector of parents and labels.
   //!
-  //! \tparam Return the return type.
+  //! \tparam Return the return type. Must satisfy
+  //! `std::is_same<Return, Forest>`.
   //!
   //! \param parent the vector of parents of nodes in the Forest.
   //! \param edge_labels the vector of edge labels in the Forest.
@@ -452,7 +453,7 @@ namespace libsemigroups {
   //! for any value of `i`.
   template <typename Return>
   [[nodiscard]] enable_if_is_same<Return, Forest>
-  to(std::vector<size_t> parent, std::vector<size_t> edge_labels) {
+  make(std::vector<size_t> parent, std::vector<size_t> edge_labels) {
     if (parent.size() != edge_labels.size()) {
       LIBSEMIGROUPS_EXCEPTION(
           "expected the 1st and 2nd arguments (parents and edge labels) to "
@@ -487,7 +488,8 @@ namespace libsemigroups {
   //! This function constructs a Forest from initializer lists of parents and
   //! labels.
   //!
-  //! \tparam Return the return type.
+  //! \tparam Return the return type. Must satisfy
+  //! `std::is_same<Return, Forest>`.
   //!
   //! \param parent the initializer list of parents of nodes in the Forest.
   //! \param edge_labels the initializer list of edge labels in the Forest.
@@ -504,9 +506,9 @@ namespace libsemigroups {
   //! for any value of `i`.
   template <typename Return>
   [[nodiscard]] enable_if_is_same<Return, Forest>
-  to(std::initializer_list<size_t> parent,
-     std::initializer_list<size_t> edge_labels) {
-    return to<Forest>(std::vector<size_t>(parent), std::vector(edge_labels));
+  make(std::initializer_list<size_t> parent,
+       std::initializer_list<size_t> edge_labels) {
+    return make<Forest>(std::vector<size_t>(parent), std::vector(edge_labels));
   }
 
   //! \relates Forest
