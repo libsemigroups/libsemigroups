@@ -95,11 +95,11 @@ namespace libsemigroups {
     }
 
     void disjoint_union_inplace_no_checks(StephenGraph const& that) {
-      // TODO throw exception if that.labels() != this->labels()
-      // TODO the following requires that this and that are standardized
+      // TODO(0): throw exception if that.labels() != this->labels()
+      // TODO(1): the following requires that this and that are standardized
       // and that this and that are run to the end
       size_t const N = number_of_nodes_active();
-      // TODO the following 2 lines are a bit awkward
+      // TODO(1): the following 2 lines are a bit awkward
       BaseGraph::add_nodes(that.number_of_nodes());
       NodeManager<node_type>::add_active_nodes(that.number_of_nodes());
 
@@ -227,7 +227,7 @@ namespace libsemigroups {
   template <typename P>
   void Stephen<P>::run_impl() {
     reset_start_time();
-    // TODO report_after_run (including report_why_we_stopped) and
+    // TODO(0): report_after_run (including report_why_we_stopped) and
     // report_before_run
     if (reporting_enabled()) {
       detail::Ticker t([this]() { _word_graph.report_progress_from_thread(); });

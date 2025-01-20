@@ -83,7 +83,7 @@ namespace libsemigroups {
     int64_t diff  = int64_t(_word_graph.number_of_nodes_active()
                            - stats.prev_active_nodes);
 
-    // TODO(v3) use fmtlib
+    // TODO(0) use fmtlib
     static bool first_call = true;
     if (first_call) {
       first_call = false;
@@ -119,7 +119,7 @@ namespace libsemigroups {
   }
 
 
-// TODO port changes from here into tpp file
+// TODO(0) port changes from here into tpp file
   void Stephen::run_impl() {
     auto start_time = std::chrono::high_resolution_clock::now();
     // if (!initted()) {
@@ -146,7 +146,7 @@ namespace libsemigroups {
           if (rit == it->cend()) {
             ++it;
             if (it->empty()) {
-              // TODO move this logic into complete_path
+              // TODO(0) move this logic into complete_path
               did_def = false;
               c       = current;
             } else {
@@ -177,7 +177,7 @@ namespace libsemigroups {
             if (rit == it->cend()) {
               --it;
               if (it->empty()) {
-                // TODO move this logic into complete_path
+                // TODO(0) move this logic into complete_path
                 continue;
               } else {
                 c = _word_graph
@@ -230,7 +230,7 @@ namespace libsemigroups {
       int64_t diff  = int64_t(_word_graph.number_of_nodes_active()
                              - stats.prev_active_nodes);
 
-      // TODO(v3) use fmtlib
+      // TODO(0) use fmtlib
       static bool first_call = true;
       if (first_call) {
         first_call = false;

@@ -40,19 +40,22 @@
 #include "detail/stl.hpp"                      // for IsStdSharedPtr
 #include "detail/word-graph-with-sources.hpp"  // for DigraphWithSources
 
-// TODO
+// TODO(0)
 // * iwyu
+// * update reporting to new standard
+// * update so that run_for, run_until work properly (at present basically
+//   run_impl starts again from scratch every time)
+// TODO(1)
 // * minimal rep (as per Reinis) (named normal_form?)
+// * invert() - just swap the initial and accept states and re-standardize
+// * idempotent() - just make the accept state = initial state.
+// TODO(2)
 // * class_of for inverse Stephen (i.e. all walks in the graph through all
 // nodes) (not sure how to do this just yet). This is different than
 // words_accepted see Corollary 3.2 in Stephen's "Presentations of inverse
 // monoids" paper (not thesis).
-// * invert() - just swap the initial and accept states and re-standardize
-// * idempotent() - just make the accept state = initial state.
-// * update reporting to new standard
-// * update so that run_for, run_until work properly (at present basically
-//   run_impl starts again from scratch every time)
 // * canonical_form (as per Howie's book)
+
 namespace libsemigroups {
 
   //! Defined in `stephen.hpp`.
@@ -60,7 +63,7 @@ namespace libsemigroups {
   //! On this page we describe the functionality in `libsemigroups` relating
   //! to Stephen's procedure for finitely presented semigroups. This class
   //! implements Stephen's procedure for (possibly) constructing the word graph
-  //! (WordGraph) corresponding to the left factors of a word in a finitely
+  //! (\ref WordGraph) corresponding to the left factors of a word in a finitely
   //! presented semigroup. The algorithm implemented in this class is closely
   //! related to the Todd-Coxeter algorithm  (as implemented in \ref
   //! ToddCoxeterImpl) and originates in [Applications of automata theory to
@@ -93,6 +96,7 @@ namespace libsemigroups {
              || std::is_same_v<R, InversePresentation<word_type>>;
     }
 
+    // TODO (0): finish assert
     static_assert(is_valid_presentation<P>(), "TODO");
 
    public:
@@ -170,9 +174,10 @@ namespace libsemigroups {
       init(q);
     }
 
-    // TODO to tpp
+    // TODO(0): to tpp
     template <typename Q>
     Stephen& init(Q const& q) {
+      // TODO (0): finish assert
       static_assert(((IsInversePresentation<P>) == (IsInversePresentation<Q>) )
                         && IsPresentation<P> && IsPresentation<Q>,
                     "TODO");
@@ -183,7 +188,7 @@ namespace libsemigroups {
       }
     }
 
-    // TODO make private and hid in tpp file
+    // TODO(0): make private and hide in tpp file
     template <typename PP>
     static constexpr auto& deref_if_necessary(PP&& p) {
       if constexpr (detail::IsStdSharedPtr<std::decay_t<PP>>) {
@@ -259,10 +264,10 @@ namespace libsemigroups {
     //!
     //! \exceptions
     //! \noexcept
-    // TODO add a warning that if the value of word is set, then run is called,
-    // then word is set to another value, then word_graph() is accessed, then
-    // the returned value doesn't relate to the currently set value. Or better
-    // still don't have this behaviour
+    // TODO(0) add a warning that if the value of word is set, then run is
+    // called, then word is set to another value, then word_graph() is accessed,
+    // then the returned value doesn't relate to the currently set value. Or
+    // better still don't have this behaviour
     word_graph_type const& word_graph() const noexcept {
       return _word_graph;
     }
@@ -291,8 +296,8 @@ namespace libsemigroups {
     }
 
     void operator*=(Stephen<P>& y) {
-      // TODO if one of this and that is finished, then just tack on the linear
-      // graph.
+      // TODO(0): if one of this and that is finished, then just tack on the
+      // linear graph.
       this->run();
       y.run();
       // FIXME _word_graph has two mem fns number_nodes_active (in NodeManager)
@@ -352,7 +357,7 @@ namespace libsemigroups {
   template <typename Word>
   Stephen(std::shared_ptr<InversePresentation<Word>>&&)
       -> Stephen<std::shared_ptr<InversePresentation<word_type>>>;
-  // TODO other shared_prt guides?
+  // TODO(0): other shared_prt guides?
 
 }  // namespace libsemigroups
 #include "stephen.tpp"
@@ -415,7 +420,7 @@ namespace libsemigroups {
       return paths.source(s.initial_state());
     }
 
-    // TODO to tpp
+    // TODO(0): to tpp
     template <typename PresentationType>
     uint64_t number_of_words_accepted(Stephen<PresentationType>& s,
                                       size_t                     min = 0,
@@ -434,7 +439,7 @@ namespace libsemigroups {
       return number_of_paths(s.word_graph(), 0, min, max);
     }
 
-    // TODO to tpp
+    // TODO(0) to tpp
     template <typename P>
     Dot dot(Stephen<P>& s) {
       Dot result;
@@ -475,7 +480,7 @@ namespace libsemigroups {
                                x.word());
   }
 
-  // TODO to tpp
+  // TODO(0) to tpp
   template <typename PresentationType>
   std::ostream& operator<<(std::ostream&                    os,
                            Stephen<PresentationType> const& x) {
@@ -485,14 +490,14 @@ namespace libsemigroups {
     // } else {
     word = " " + std::to_string(x.word().size()) + " letter word, ";
     //}
-    // TODO use fmt
+    // TODO(0): use fmt
     os << std::string("<Stephen for ") << word << " with "
        << x.word_graph().number_of_nodes() << "  nodes, "
        << x.word_graph().number_of_edges() << " edges>";
     return os;
   }
 
-  // TODO reuse the doc from here to end of file
+  // TODO(0) reuse the doc from here to end of file
   //! The return type of \ref cbegin_words_accepted and \ref
   //! cend_words_accepted. This is the same as
   //! \ref WordGraph::const_pstislo_iterator.

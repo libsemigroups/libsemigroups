@@ -1414,10 +1414,10 @@ namespace libsemigroups {
     Stephen S(p);
     S.set_word(0110_w).run();
     REQUIRE(S.word_graph().number_of_nodes() == 8);
-    // TODO rename words_accepted -> class_of
+    // TODO(0): rename words_accepted -> class_of
     REQUIRE((stephen::words_accepted(S) | rx::to_vector())
             == std::vector<word_type>());
   }
 
-  // TODO the examples from Stephen's paper/thesis?
+  // TODO(0): the examples from Stephen's paper/thesis?
 }  // namespace libsemigroups
