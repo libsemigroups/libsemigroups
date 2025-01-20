@@ -83,9 +83,13 @@ namespace libsemigroups {
     void ThreadIdManager::reset() {
       // Only do this from the main thread
       LIBSEMIGROUPS_ASSERT(tid(std::this_thread::get_id()) == 0);
-      // Delete all thread_ids
-      _thread_map.clear();
-      _next_tid = 0;
+      {
+        std::lock_guard<std::mutex> lg(_mtx);
+
+        // Delete all thread_ids
+        _thread_map.clear();
+        _next_tid = 0;
+      }
       // Reinsert the main thread's id
       tid(std::this_thread::get_id());
     }
