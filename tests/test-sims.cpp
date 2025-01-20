@@ -4891,25 +4891,25 @@ namespace libsemigroups {
 
     auto it = S.cbegin(9);
     REQUIRE(*(it++)
-            == to_word_graph<node_type>(
+            == make<WordGraph<node_type>>(
                 9, {{1, 2}, {1, 3}, {4, 5}, {4, 4}, {3, 1}, {3, 0}}));
     REQUIRE(*(it++)
-            == to_word_graph<node_type>(
+            == make<WordGraph<node_type>>(
                 9, {{1, 2}, {3, 3}, {4, 5}, {1, 4}, {4, 1}, {3, 0}}));
     REQUIRE(*(it++)
-            == to_word_graph<node_type>(
+            == make<WordGraph<node_type>>(
                 9, {{1, 2}, {3, 4}, {3, 5}, {1, 1}, {4, 3}, {4, 0}}));
     REQUIRE(*(it++)
-            == to_word_graph<node_type>(9,
-                                        {{1, 2},
-                                         {3, 4},
-                                         {5, 6},
-                                         {1, 7},
-                                         {8, 5},
-                                         {7, 1},
-                                         {4, 0},
-                                         {5, 8},
-                                         {4, 3}}));
+            == make<WordGraph<node_type>>(9,
+                                          {{1, 2},
+                                           {3, 4},
+                                           {5, 6},
+                                           {1, 7},
+                                           {8, 5},
+                                           {7, 1},
+                                           {4, 0},
+                                           {5, 8},
+                                           {4, 3}}));
     REQUIRE(*(it++) == WordGraph<node_type>(0, 2));
     REQUIRE(*(it++) == WordGraph<node_type>(0, 2));
     REQUIRE(*(it++) == WordGraph<node_type>(0, 2));
