@@ -734,7 +734,8 @@ namespace libsemigroups {
   //! it.
   //!
   //! \tparam Container the type of the parameter \p cont.
-  //! \tparam Return the return type.
+  //! \tparam Return the return type. Must satisfy
+  //! `std::is_same<Return, Blocks>`.
   //!
   //! \param cont container containing a lookup for the blocks.
   //!
@@ -744,7 +745,7 @@ namespace libsemigroups {
   //! \throws LibsemigroupsException if the constructed Blocks object is not
   //! valid.
   template <typename Return, typename Container>
-  [[nodiscard]] enable_if_is_same<Return, Blocks> to(Container const& cont) {
+  [[nodiscard]] enable_if_is_same<Return, Blocks> make(Container const& cont) {
     detail::validate_args<Blocks>(cont);
     Blocks result(cont);
     blocks::validate(result);
@@ -756,7 +757,8 @@ namespace libsemigroups {
   //! \brief Validate the arguments, construct a Blocks object, and validate
   //! it.
   //!
-  //! \tparam Return the return type.
+  //! \tparam Return the return type. Must satisfy
+  //! `std::is_same<Return, Blocks>`.
   //!
   //! \param cont container containing a lookup for the blocks.
   //!
@@ -767,8 +769,8 @@ namespace libsemigroups {
   //! valid.
   template <typename Return>
   [[nodiscard]] enable_if_is_same<Return, Blocks>
-  to(std::initializer_list<std::vector<int32_t>> const& cont) {
-    return to<Blocks, std::initializer_list<std::vector<int32_t>>>(cont);
+  make(std::initializer_list<std::vector<int32_t>> const& cont) {
+    return make<Blocks, std::initializer_list<std::vector<int32_t>>>(cont);
   }
 
   //! \brief Return a human readable representation of a blocks object.
@@ -1466,8 +1468,9 @@ namespace libsemigroups {
   //!
   //! \brief Validate the arguments, construct a bipartition, and validate it.
   //!
-  //! \tparam T the type of the parameter \p cont.
-  //! \tparam Return the return type.
+  //! \tparam Container the type of the parameter \p cont.
+  //! \tparam Return the return type. Must satisfy
+  //! `std::is_same<Return, Bipartition>`.
   //!
   //! \param cont either a vector providing a lookup for the blocks of the
   //! bipartition or a vector of vectors (or initializer list).
@@ -1479,7 +1482,7 @@ namespace libsemigroups {
   //! valid.
   template <typename Return, typename Container>
   [[nodiscard]] enable_if_is_same<Return, Bipartition>
-  to(Container const& cont) {
+  make(Container const& cont) {
     detail::validate_args<Bipartition>(cont);
     Bipartition result(cont);
     bipartition::validate(result);
@@ -1490,20 +1493,20 @@ namespace libsemigroups {
   //!
   //! \brief Validate the arguments, construct a bipartition, and validate it.
   //!
-  //! \copydoc to(Container const&)
+  //! \copydoc make(Container const&)
   template <typename Return>
   [[nodiscard]] enable_if_is_same<Return, Bipartition>
-  to(std::initializer_list<uint32_t> const& cont) {
-    return to<Bipartition, std::initializer_list<uint32_t>>(cont);
+  make(std::initializer_list<uint32_t> const& cont) {
+    return make<Bipartition, std::initializer_list<uint32_t>>(cont);
   }
 
   //! \relates Bipartition
   //!
-  //! \copydoc to(Container const&)
+  //! \copydoc make(Container const&)
   template <typename Return>
   [[nodiscard]] enable_if_is_same<Return, Bipartition>
-  to(std::initializer_list<std::vector<int32_t>> const& cont) {
-    return to<Bipartition, std::initializer_list<std::vector<int32_t>>>(cont);
+  make(std::initializer_list<std::vector<int32_t>> const& cont) {
+    return make<Bipartition, std::initializer_list<std::vector<int32_t>>>(cont);
   }
 
   //! \ingroup bipart_group
