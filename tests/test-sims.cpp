@@ -546,9 +546,9 @@ namespace libsemigroups {
                           "full_transformation_monoid(3) onesided",
                           "[quick][low-index][no-valgrind]") {
     auto rg = ReportGuard(false);
-    auto S  = to_froidure_pin({to<Transf<3>>({1, 2, 0}),
-                               to<Transf<3>>({1, 0, 2}),
-                               to<Transf<3>>({0, 1, 0})});
+    auto S  = to_froidure_pin({make<Transf<3>>({1, 2, 0}),
+                               make<Transf<3>>({1, 0, 2}),
+                               make<Transf<3>>({0, 1, 0})});
     REQUIRE(S.size() == 27);
     REQUIRE(S.number_of_generators() == 3);
     REQUIRE(S.number_of_rules() == 16);
@@ -2052,9 +2052,9 @@ namespace libsemigroups {
 
     auto rg = ReportGuard(false);
 
-    auto S = to_froidure_pin({to<Transf<6>>({0, 0, 2, 1, 4, 1}),
-                              to<Transf<6>>({0, 0, 2, 3, 4, 3}),
-                              to<Transf<6>>({0, 2, 2, 0, 4, 4})});
+    auto S = to_froidure_pin({make<Transf<6>>({0, 0, 2, 1, 4, 1}),
+                              make<Transf<6>>({0, 0, 2, 3, 4, 3}),
+                              make<Transf<6>>({0, 2, 2, 0, 4, 4})});
 
     REQUIRE(S.size() == 5);
     auto p = to_presentation<word_type>(S);
@@ -3568,11 +3568,11 @@ namespace libsemigroups {
                           "[standard][sims2][low-index]") {
     auto                  rg = ReportGuard(false);
     FroidurePin<PPerm<4>> T;
-    T.add_generator(to<PPerm<4>>({1, 2, 3, 0}));
-    T.add_generator(to<PPerm<4>>({1, 2, 3}, {1, 2, 3}, 4));
-    T.add_generator(to<PPerm<4>>({0, 2, 3}, {0, 2, 3}, 4));
-    T.add_generator(to<PPerm<4>>({0, 1, 3}, {0, 1, 3}, 4));
-    T.add_generator(to<PPerm<4>>({0, 1, 2}, {0, 1, 2}, 4));
+    T.add_generator(make<PPerm<4>>({1, 2, 3, 0}));
+    T.add_generator(make<PPerm<4>>({1, 2, 3}, {1, 2, 3}, 4));
+    T.add_generator(make<PPerm<4>>({0, 2, 3}, {0, 2, 3}, 4));
+    T.add_generator(make<PPerm<4>>({0, 1, 3}, {0, 1, 3}, 4));
+    T.add_generator(make<PPerm<4>>({0, 1, 2}, {0, 1, 2}, 4));
     REQUIRE(T.size() == 61);
 
     auto p = to_presentation<word_type>(T);
@@ -3626,10 +3626,10 @@ namespace libsemigroups {
                           "[quick][sims2][low-index][no-valgrind]") {
     auto                   rg = ReportGuard(false);
     FroidurePin<Transf<4>> S;
-    S.add_generator(to<Transf<4>>({0, 1, 2, 3}));
-    S.add_generator(to<Transf<4>>({0, 0, 2, 3}));
-    S.add_generator(to<Transf<4>>({0, 1, 1, 3}));
-    S.add_generator(to<Transf<4>>({0, 1, 2, 2}));
+    S.add_generator(make<Transf<4>>({0, 1, 2, 3}));
+    S.add_generator(make<Transf<4>>({0, 0, 2, 3}));
+    S.add_generator(make<Transf<4>>({0, 1, 1, 3}));
+    S.add_generator(make<Transf<4>>({0, 1, 2, 2}));
     REQUIRE(S.size() == 14);
     auto p = to_presentation<word_type>(S);
 
