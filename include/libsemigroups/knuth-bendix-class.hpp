@@ -16,7 +16,9 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-// This file contains a class KnuthBendix TODO
+// This file contains a class KnuthBendix TODO(0)
+// TODO(0) doc
+// TODO(0) iwyu
 
 #ifndef LIBSEMIGROUPS_KNUTH_BENDIX_CLASS_HPP_
 #define LIBSEMIGROUPS_KNUTH_BENDIX_CLASS_HPP_
@@ -99,7 +101,7 @@ namespace libsemigroups {
     ////////////////////////////////////////////////////////////////////////
     // KnuthBendix - interface requirements - add_generating_pair
     ////////////////////////////////////////////////////////////////////////
-    // to tpp
+    // TODO(0) to tpp
     template <typename Iterator1,
               typename Iterator2,
               typename Iterator3,
@@ -277,9 +279,11 @@ namespace libsemigroups {
     }
   };  // class KnuthBendix
 
+  // TODO(0) doc
   template <typename Word>
   KnuthBendix(congruence_kind, Presentation<Word> const&) -> KnuthBendix<Word>;
 
+  // TODO(0) doc
   template <typename Word>
   KnuthBendix(congruence_kind, Presentation<Word>&&) -> KnuthBendix<Word>;
 

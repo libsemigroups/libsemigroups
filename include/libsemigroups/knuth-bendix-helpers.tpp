@@ -192,32 +192,28 @@ namespace libsemigroups {
                                  g2, 0, path.cbegin(), path.cend())
                                  .second
                              != path.cend();
-                    }));
-      // The check in the next loop could be put into the lambda passed to
-      // filter above, but then we'd have to convert `path` to a string, and
-      // then discard the string, so better to do it here. Note that the
-      // normal forms in `kb2` never contain an edge in g1 \ g2 and so we must
-      // add in every normal form.
-      // TODO(0) is there a simpler way to do the next bit?
-      if constexpr (std::is_same_v<Word, std::string>) {
-        auto ntc = partition(
-            kb2, words | ToString(kb1.internal_presentation().alphabet()));
-        for (auto& klass : ntc) {
-          klass.push_back(reduce_no_checks(kb2, klass[0]));
-        }
-        return ntc;
-      } else {
-        auto ntc
-            = partition(kb2,
-                        words | ToString(kb1.internal_presentation().alphabet())
-                            | rx::transform([](auto const& w) {
-                                return Word(w.begin(), w.end());
-                              }));
-        for (auto& klass : ntc) {
-          klass.push_back(reduce_no_checks(kb2, klass[0]));
-        }
-        return ntc;
+                    })
+                    | rx::transform([&kb2](word_type const& path) {
+                        Word result(path.size(), 0);
+                        std::transform(
+                            path.cbegin(),
+                            path.cend(),
+                            result.begin(),
+                            [&kb2](auto index) {
+                              return kb2.presentation().letter_no_checks(index);
+                            });
+                        return result;
+                      }));
+      // TODO(1) if Word == word_type, then we could avoid allocating Word
+      // result above, just change path in-place.
+
+      // Note that the normal forms in `kb2` never
+      // contain an edge in g1 \ g2 and so we must add in every normal form.
+      auto ntc = partition(kb2, words);
+      for (auto& klass : ntc) {
+        klass.push_back(reduce_no_checks(kb2, klass[0]));
       }
+      return ntc;
     }
   }  // namespace congruence_interface
 

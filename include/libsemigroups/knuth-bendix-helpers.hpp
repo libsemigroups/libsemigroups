@@ -16,7 +16,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-// This file contains the helpers for the Kambites class template.
+// This file contains the helpers for the KnuthBendix class template.
 
 #ifndef LIBSEMIGROUPS_KNUTH_BENDIX_HELPERS_HPP_
 #define LIBSEMIGROUPS_KNUTH_BENDIX_HELPERS_HPP_
