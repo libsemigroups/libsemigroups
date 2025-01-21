@@ -246,58 +246,6 @@ namespace libsemigroups {
     //! const&)
     Kambites& init(congruence_kind knd, Presentation<native_word_type>&& p);
 
-    //! \brief Construct from \ref congruence_kind and Presentation.
-    //!
-    //! This function constructs a  \ref Kambites instance representing a
-    //! congruence of kind \p knd over the semigroup or monoid defined by
-    //! the presentation \p p. The type of the words in \p p can be
-    //! anything, but will be converted in to \ref native_word_type. This
-    //! means that if the input presentation uses std::string, for example,
-    //! as the word type, then this presentation is converted into a \ref
-    //! native_presentation_type. This converted presentation can be
-    //! recovered using \ref presentation.
-    //!
-    //! \tparam OtherWord the type of the words in the presentation \p p.
-    //! \param knd the kind (onesided or twosided) of the congruence.
-    //! \param p the presentation.
-    //!
-    //! \throws LibsemigroupsException if \p p is not valid.
-    //! \throws LibsemigroupsException if \p knd is not \ref
-    //! congruence_kind::twosided.
-    // No rvalue ref version of this because we can't use the presentation.
-    // template <typename OtherWord>
-    // Kambites(congruence_kind knd, Presentation<OtherWord> const& p)
-    //     : Kambites(
-    //           knd,
-    //           // The lambda in the next line converts, say, chars to
-    //           // size_ts, but doesn't convert size_ts to human_readable
-    //           // characters.
-    //           to_presentation<native_word_type>(p, [](auto x) { return x; }))
-    //           {
-    //   throw_if_1_sided(knd);
-    // }
-
-    //! \brief Re-initialize from \ref congruence_kind and Presentation.
-    //!
-    //! This function re-initializes a \ref Kambites instance as if it had
-    //! been newly constructed from \p knd and \p p.
-    //!
-    //! \tparam OtherWord the type of the words in the presentation \p p.
-    //! \param knd the kind (onesided or twosided) of the congruence.
-    //! \param p the presentation.
-    //!
-    //! \throws LibsemigroupsException if \p p is not valid.
-    //! \throws LibsemigroupsException if \p knd is not \ref
-    //! congruence_kind::twosided.
-    // template <typename OtherWord>
-    // Kambites& init(congruence_kind knd, Presentation<OtherWord> const& p) {
-    //   throw_if_1_sided(knd);
-    //   // The lambda in the next line converts, say, chars to size_ts, but
-    //   // doesn't convert size_ts to human_readable characters.
-    //   init(knd, to_presentation<native_word_type>(p, [](auto x) { return x;
-    //   })); return *this;
-    // }
-
     //! \brief Get the presentation used to define a \ref Kambites instance
     //! (if any).
     //!
@@ -345,6 +293,7 @@ namespace libsemigroups {
     //! \returns A reference to `*this`.
     //!
     //! \cong_intf_warn_assume_letters_in_bounds
+    // TODO(0) to tpp file
     template <typename Iterator1,
               typename Iterator2,
               typename Iterator3,

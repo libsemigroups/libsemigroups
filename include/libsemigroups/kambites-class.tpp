@@ -83,6 +83,7 @@ namespace libsemigroups {
     _have_class = false;
     _XYZ_data.clear();
     // Non-mutable
+    // TODO(0) _presentation???
     _generating_pairs.clear();
     _suffix_tree.init();
     return *this;
@@ -214,8 +215,8 @@ namespace libsemigroups {
   void Kambites<Word>::normal_form_no_checks(native_word_type&       result,
                                              native_word_type const& w0) const {
     LIBSEMIGROUPS_ASSERT(!finished() || small_overlap_class() >= 4);
-    using words:: operator+;
-    using words:: operator+=;
+    using words::operator+;
+    using words::operator+=;
     size_t        r = UNDEFINED;
     internal_type w(w0);
     internal_type v(result);
@@ -637,7 +638,7 @@ namespace libsemigroups {
                                          internal_type& v,
                                          internal_type& w) const {
     using words::operator+=;
-    size_t       i, j;
+    size_t i, j;
     std::tie(i, j) = clean_overlap_prefix_mod(w, w.size());
     if (j == UNDEFINED) {
       // line 39
