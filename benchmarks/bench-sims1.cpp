@@ -240,35 +240,37 @@ namespace libsemigroups {
       return sample;
     }
 
-    std::vector<std::pair<Presentation<word_type>, size_t>>
-    generate_sample(size_t num_letters, size_t word_len, size_t num_classes) {
-      std::vector<std::pair<Presentation<word_type>, size_t>> sample;
-
-      Presentation<word_type> p;
-      p.alphabet(num_letters);
-      Sims1 C;
-
-      WordRange lhs;
-      lhs.alphabet_size(num_letters).min(1).max(word_len);
-      WordRange rhs;
-      rhs.alphabet_size(num_letters);
-
-      for (auto const& l : lhs) {
-        rhs.first(l).max(word_len);
-        for (auto const& r : rhs | rx::skip_n(1)) {
-          p.rules = {l, r};
-          C.presentation(p);
-          size_t const m
-              = C.number_of_threads(1).number_of_congruences(num_classes);
-          sample.emplace_back(p, m);
-        }
-      }
-
-      std::sort(sample.begin(), sample.end(), [](auto const& x, auto const& y) {
-        return x.second < y.second;
-      });
-      return sample;
-    }
+    //    std::vector<std::pair<Presentation<word_type>, size_t>>
+    //    generate_sample(size_t num_letters, size_t word_len, size_t
+    //    num_classes) {
+    //      std::vector<std::pair<Presentation<word_type>, size_t>> sample;
+    //
+    //      Presentation<word_type> p;
+    //      p.alphabet(num_letters);
+    //      Sims1 C;
+    //
+    //      WordRange lhs;
+    //      lhs.alphabet_size(num_letters).min(1).max(word_len);
+    //      WordRange rhs;
+    //      rhs.alphabet_size(num_letters);
+    //
+    //      for (auto const& l : lhs) {
+    //        rhs.first(l).max(word_len);
+    //        for (auto const& r : rhs | rx::skip_n(1)) {
+    //          p.rules = {l, r};
+    //          C.presentation(p);
+    //          size_t const m
+    //              = C.number_of_threads(1).number_of_congruences(num_classes);
+    //          sample.emplace_back(p, m);
+    //        }
+    //      }
+    //
+    //      std::sort(sample.begin(), sample.end(), [](auto const& x, auto
+    //      const& y) {
+    //        return x.second < y.second;
+    //      });
+    //      return sample;
+    //    }
 
     void bench_parallel(
         std::vector<std::pair<Presentation<word_type>, size_t>> const& sample,

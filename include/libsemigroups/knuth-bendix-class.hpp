@@ -50,6 +50,7 @@ namespace libsemigroups {
       _generating_pairs.clear();
       _presentation.init();
       KnuthBendixBase_::init();
+      return *this;
     }
 
     KnuthBendix(KnuthBendix const&)            = default;

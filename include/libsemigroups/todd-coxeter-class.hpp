@@ -253,23 +253,35 @@ namespace libsemigroups {
     template <typename Node>
     ToddCoxeter& init(congruence_kind knd, WordGraph<Node> const& wg);
 
-    // TODO(0) uncomment
-    //    // Used in Sims
-    //    // TODO(1) could this and the next function be removed, and replaced
-    //    with
-    //    // something else?
-    //    template <typename Node>
-    //    ToddCoxeter(congruence_kind           knd,
-    //                Presentation<Word> const& p,
-    //                WordGraph<Node> const&    wg) {
-    //      init(knd, p, wg);
-    //    }
-    //
-    //    // TODO(1) a to_todd_coxeter variant that throws if p is not valid
-    //    template <typename Node>
-    //    ToddCoxeter& init(congruence_kind           knd,
-    //                      Presentation<Word> const& p,
-    //                      WordGraph<Node> const&    wg);
+    // Used in Sims
+    // TODO(1) could this and the next function be removed, and replaced
+    // with something else?
+    template <typename Node>
+    ToddCoxeter(congruence_kind           knd,
+                Presentation<Word> const& p,
+                WordGraph<Node> const&    wg) {
+      init(knd, p, wg);
+    }
+
+    // TODO(1) a to_todd_coxeter variant that throws if p is not valid
+    // TODO(0) to tpp
+    template <typename Node>
+    ToddCoxeter& init(congruence_kind           knd,
+                      Presentation<Word> const& p,
+                      WordGraph<Node> const&    wg) {
+      if constexpr (!std::is_same_v<Word, word_type>) {
+        // to_presentation throws in the next line if p isn't valid
+        ToddCoxeterBase::init(knd, to_presentation<word_type>(p), wg);
+        _presentation = p;
+      } else {
+        p.validate();
+        _presentation = p;  // copy p in to _presentation
+        auto copy     = p;
+        presentation::normalize_alphabet(copy);
+        ToddCoxeterBase::init(knd, copy, wg);
+      }
+      return *this;
+    }
 
     template <typename Iterator1, typename Iterator2>
     void throw_if_letter_out_of_bounds(Iterator1 first, Iterator2 last) const {

@@ -206,7 +206,7 @@ namespace libsemigroups {
         return false;
       }
 
-      ToddCoxeter tc;
+      ToddCoxeter<word_type> tc;
 
       auto   tree = word_graph::spanning_tree(wg, 0);
       size_t N    = wg.number_of_active_nodes();
