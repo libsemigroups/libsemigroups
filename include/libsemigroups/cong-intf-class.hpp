@@ -72,6 +72,9 @@ namespace libsemigroups {
     // CongruenceInterface - data members - private
     /////////////////////////////////////////////////////////////////////////
 
+    // TODO(1) given that each of ToddCoxeter<>, KnuthBendix<>, and Kambites<>
+    // now contain their generating pairs, it's not clear that we need to store
+    // them here as well.
     std::vector<word_type> _internal_generating_pairs;
     congruence_kind        _type;
 
@@ -215,6 +218,8 @@ namespace libsemigroups {
     // CongruenceInterface - contains
     ////////////////////////////////////////////////////////////////////////
 
+    // currently_contains_no_checks must be implemented in the derived class.
+
     template <typename Subclass,
               typename Iterator1,
               typename Iterator2,
@@ -251,6 +256,8 @@ namespace libsemigroups {
     ////////////////////////////////////////////////////////////////////////
     // CongruenceInterface - reduce
     ////////////////////////////////////////////////////////////////////////
+
+    // reduce_no_run_no_checks must be implemented in the derived class
 
     template <typename Subclass,
               typename OutputIterator,
