@@ -171,6 +171,30 @@ namespace libsemigroups {
 
     //! \brief A presentation for the partition monoid.
     //!
+    //! This function returns a monoid presentation defining the partition
+    //! monoid of degree \p n.
+    //!
+    //! \param n the degree.
+    //!
+    //! \returns A value of type `Presentation<libsemigroups::word_type>`.
+    //!
+    //! \throws LibsemigroupsException if `val == author::Machine && n != 3`.
+    //! \throws LibsemigroupsException if `val == author::East && n < 4`.
+    //! \throws LibsemigroupsException if `val = author::Halverson + author::Ram
+    //! and n < 1`
+    //! \throws LibsemigroupsException if \p val is not one of the options
+    //! specified above.
+    //!
+    //! [10.1016/j.jalgebra.2011.04.008]:
+    //! https://doi.org/10.1016/j.jalgebra.2011.04.008
+    //! [10.1016/j.ejc.2004.06.005]:
+    //! https://doi.org/10.1016/j.ejc.2004.06.005
+    [[nodiscard]] Presentation<word_type> partition_monoid(size_t n,
+                                                           author val
+                                                           = author::East);
+
+    //! \brief A presentation for the partition monoid.
+    //!
     //! This function returns a presentation defining the partition monoid of
     //! degree \p n. The argument \p val determines the specific presentation
     //! which is returned. The options are:
