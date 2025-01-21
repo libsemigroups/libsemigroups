@@ -640,7 +640,7 @@ namespace libsemigroups {
     //! \exceptions
     //! \no_libsemigroups_except
     // TODO(1) a to_todd_coxeter variant that throws if wg is not valid
-    // i.e. any target is out of bounds
+    // i.e. any target is out of bounds.
     template <typename Node>
     ToddCoxeterBase& init(congruence_kind knd, WordGraph<Node> const& wg);
 
@@ -761,6 +761,10 @@ namespace libsemigroups {
     void throw_if_letter_out_of_bounds(Iterator1 first, Iterator2 last) const {
       internal_presentation().validate_word(first, last);
     }
+
+    static void
+    throw_if_presentation_not_normalized(Presentation<word_type> const&,
+                                         std::string_view arg = "1st");
 
     ////////////////////////////////////////////////////////////////////////
     // 4. ToddCoxeterBase - interface requirements - add_generating_pair

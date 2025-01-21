@@ -406,10 +406,10 @@ namespace libsemigroups {
 
   ToddCoxeterBase& ToddCoxeterBase::init(congruence_kind           knd,
                                          Presentation<word_type>&& p) {
-    // TODO(0) Update so that it throws if the alphabet is not normalized
+    p.validate();
+    throw_if_presentation_not_normalized(p);
     init();
     CongruenceInterface::init(knd);
-    presentation::normalize_alphabet(p);  // Throws if p is not valid
     _word_graph.init(std::move(p));
     copy_settings_into_graph();
     LIBSEMIGROUPS_ASSERT(!_setting_stack.empty());
@@ -459,6 +459,27 @@ namespace libsemigroups {
   }
 
   ToddCoxeterBase::~ToddCoxeterBase() = default;
+
+  void ToddCoxeterBase::throw_if_presentation_not_normalized(
+      Presentation<word_type> const& p,
+      std::string_view               arg) {
+    auto first = std::begin(p.alphabet()), last = std::begin(p.alphabet());
+    if (!std::is_sorted(first, last)) {
+      LIBSEMIGROUPS_EXCEPTION(
+          "the {} argument (presentation) must have sorted alphabet, found {}",
+          arg,
+          p.alphabet());
+    }
+
+    auto it = std::max_element(first, last);
+    if (it != last && *it != p.alphabet().size() - 1) {
+      LIBSEMIGROUPS_EXCEPTION("the {} argument (presentation) has invalid "
+                              "alphabet, expected [0, ..., {}] found {}",
+                              arg,
+                              p.alphabet().size() - 1,
+                              p.alphabet());
+    }
+  }
 
   ////////////////////////////////////////////////////////////////////////
   // ToddCoxeterBase - Interface requirements
