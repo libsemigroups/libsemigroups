@@ -609,15 +609,10 @@ namespace libsemigroups {
       return p;
     }
 
-    Presentation<word_type> dual_symmetric_inverse_monoid(size_t n,
-                                                          author val) {
+    Presentation<word_type> dual_symmetric_inverse_monoid(size_t n) {
       if (n < 3) {
         LIBSEMIGROUPS_EXCEPTION(
             "expected 1st argument to be at least 3, found {}", n);
-      } else if (val != author::Easdown + author::East + author::FitzGerald) {
-        LIBSEMIGROUPS_EXCEPTION("expected 2nd argument to be author::Easdown + "
-                                "author::East + author::FitzGerald, found {}",
-                                val);
       }
       auto mij = [](size_t i, size_t j) {
         if (i == j) {

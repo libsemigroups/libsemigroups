@@ -146,25 +146,15 @@ namespace libsemigroups {
     //! \brief A presentation for the dual symmetric inverse monoid.
     //!
     //! This function returns a monoid presentation defining the dual symmetric
-    //! inverse monoid of degree \p n. The argument \p val determines the
-    //! specific presentation which is returned. The only option is:
-    //! * `author::Easdown + author::East + author::FitzGerald` (from Section 3
-    //! of [10.48550/arxiv.0707.2439][]).
+    //! inverse monoid of degree \p n, as in Section 3 of \cite Easdown2007aa.
     //!
     //! \param n the degree.
-    //! \param val the author of the presentation (default: `author::Easdown +
-    //! author::East + author::FitzGerald`).
     //!
     //! \returns A value of type `Presentation<libsemigroups::word_type>`.
     //!
     //! \throws LibsemigroupsException if `n < 3`.
-    //! \throws LibsemigroupsException if \p val is not
-    //! `author::Easdown + author::East + author::FitzGerald`.
-    //!
-    //! [10.48550/arxiv.0707.2439]: https://doi.org/10.48550/arxiv.0707.2439
-    [[nodiscard]] Presentation<word_type> dual_symmetric_inverse_monoid(
-        size_t n,
-        author val = author::Easdown + author::East + author::FitzGerald);
+    [[nodiscard]] Presentation<word_type>
+    dual_symmetric_inverse_monoid(size_t n);
 
     //! \brief A presentation for the uniform block bijection monoid.
     //!

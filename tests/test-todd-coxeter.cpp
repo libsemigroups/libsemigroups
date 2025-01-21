@@ -2158,8 +2158,7 @@ namespace libsemigroups {
     auto rg = ReportGuard(true);
 
     for (size_t n = 3; n <= 6; ++n) {
-      auto p = dual_symmetric_inverse_monoid(
-          n, author::Easdown + author::East + author::FitzGerald);
+      auto        p = dual_symmetric_inverse_monoid(n);
       ToddCoxeter tc(congruence_kind::twosided, p);
       output_gap_benchmark_file("dual-sym-inv-" + std::to_string(n) + ".g", tc);
     }
