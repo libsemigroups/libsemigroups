@@ -550,8 +550,6 @@ namespace libsemigroups {
             .empty());
     REQUIRE(cong.finished());
     REQUIRE(cong.started());
-    REQUIRE_THROWS_AS(congruence::add_generating_pair(cong, 00_w, 0_w),
-                      LibsemigroupsException);
   }
 
   LIBSEMIGROUPS_TEST_CASE("Congruence",

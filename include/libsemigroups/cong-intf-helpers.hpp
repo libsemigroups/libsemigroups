@@ -106,10 +106,11 @@ namespace libsemigroups {
     //! \return A reference to \p ci.
     //!
     //! \cong_intf_warn_assume_letters_in_bounds
-    template <typename Subclass, typename Word>
-    Subclass& add_generating_pair_no_checks(Subclass&   ci,
-                                            Word const& u,
-                                            Word const& v) {
+    template <typename Subclass>
+    Subclass& add_generating_pair_no_checks(
+        Subclass&                                  ci,
+        typename Subclass::native_word_type const& u,
+        typename Subclass::native_word_type const& v) {
       static_assert(std::is_base_of_v<CongruenceInterface, Subclass>);
       return ci.add_generating_pair_no_checks(
           std::begin(u), std::end(u), std::begin(v), std::end(v));
@@ -129,8 +130,8 @@ namespace libsemigroups {
                                   std::initializer_list<Int> const& u,
                                   std::initializer_list<Int> const& v) {
       static_assert(std::is_base_of_v<CongruenceInterface, Subclass>);
-      return add_generating_pair_no_checks<Subclass, std::vector<Int>>(
-          ci, u, v);
+      return ci.add_generating_pair_no_checks(
+          std::begin(u), std::end(u), std::begin(v), std::end(v));
     }
 
     //! \brief Helper for adding a generating pair of words
@@ -146,6 +147,9 @@ namespace libsemigroups {
                                             char const* u,
                                             char const* v) {
       static_assert(std::is_base_of_v<CongruenceInterface, Subclass>);
+      // We could static_assert that Subclass::native_word_type == std::string,
+      // but it doesn't seem that adding this restriction would gain us
+      // anything, so it is not currently done.
       return ci.add_generating_pair_no_checks(
           u, u + std::strlen(u), v, v + std::strlen(v));
     }
@@ -165,6 +169,9 @@ namespace libsemigroups {
                                             std::string_view u,
                                             std::string_view v) {
       static_assert(std::is_base_of_v<CongruenceInterface, Subclass>);
+      // We could static_assert that Subclass::native_word_type == std::string,
+      // but it doesn't seem that adding this restriction would gain us
+      // anything, so it is not currently done.
       return ci.add_generating_pair_no_checks(
           std::begin(u), std::end(u), std::begin(v), std::end(v));
     }
@@ -187,8 +194,11 @@ namespace libsemigroups {
     //! \return A reference to \p ci.
     //!
     //! \cong_intf_throws_if_letters_out_of_bounds
-    template <typename Subclass, typename Word>
-    Subclass& add_generating_pair(Subclass& ci, Word const& u, Word const& v) {
+    template <typename Subclass>
+    Subclass&
+    add_generating_pair(Subclass&                                  ci,
+                        typename Subclass::native_word_type const& u,
+                        typename Subclass::native_word_type const& v) {
       static_assert(std::is_base_of_v<CongruenceInterface, Subclass>);
       return ci.add_generating_pair(
           std::begin(u), std::end(u), std::begin(v), std::end(v));
@@ -207,7 +217,8 @@ namespace libsemigroups {
                                   std::initializer_list<Int> const& u,
                                   std::initializer_list<Int> const& v) {
       static_assert(std::is_base_of_v<CongruenceInterface, Subclass>);
-      return add_generating_pair<Subclass, std::vector<Int>>(ci, u, v);
+      return ci.add_generating_pair(
+          std::begin(u), std::end(u), std::begin(v), std::end(v));
     }
 
     //! \brief Helper for adding a generating pair of words
@@ -221,6 +232,9 @@ namespace libsemigroups {
     template <typename Subclass>
     Subclass& add_generating_pair(Subclass& ci, char const* u, char const* v) {
       static_assert(std::is_base_of_v<CongruenceInterface, Subclass>);
+      // We could static_assert that Subclass::native_word_type == std::string,
+      // but it doesn't seem that adding this restriction would gain us
+      // anything, so it is not currently done.
       return ci.add_generating_pair(
           u, u + std::strlen(u), v, v + std::strlen(v));
     }
@@ -240,6 +254,9 @@ namespace libsemigroups {
                                   std::string_view u,
                                   std::string_view v) {
       static_assert(std::is_base_of_v<CongruenceInterface, Subclass>);
+      // We could static_assert that Subclass::native_word_type == std::string,
+      // but it doesn't seem that adding this restriction would gain us
+      // anything, so it is not currently done.
       return ci.add_generating_pair_no_checks(
           std::begin(u), std::end(u), std::begin(v), std::end(v));
     }
@@ -292,29 +309,29 @@ namespace libsemigroups {
     //! * tril::unknown otherwise.
     //!
     //! \cong_intf_warn_assume_letters_in_bounds
-    template <typename Subclass, typename Word>
-    [[nodiscard]] tril currently_contains_no_checks(Subclass const& ci,
-                                                    Word const&     u,
-                                                    Word const&     v) {
+    template <typename Subclass>
+    [[nodiscard]] tril
+    currently_contains_no_checks(Subclass const&                            ci,
+                                 typename Subclass::native_word_type const& u,
+                                 typename Subclass::native_word_type const& v) {
       static_assert(std::is_base_of_v<CongruenceInterface, Subclass>);
       return ci.currently_contains_no_checks(
           std::begin(u), std::end(u), std::begin(v), std::end(v));
     }
 
-    // This version of the function catches the cases when u & v are not of
-    // the same type but both convertible to string_view
     //! \brief Helper for checking containment of a pair of words
-    //! (std::string_view).
+    //! (std::initializer_list).
     //!
     //! Defined in `cong-intf.hpp`.
     //!
     //! See \ref
     //! currently_contains_no_checks(Subclass const&, Word const&, Word
     //! const&) for details.
-    template <typename Subclass>
-    [[nodiscard]] tril currently_contains_no_checks(Subclass const&  ci,
-                                                    std::string_view u,
-                                                    std::string_view v) {
+    template <typename Subclass, typename Int>
+    [[nodiscard]] tril
+    currently_contains_no_checks(Subclass const&                   ci,
+                                 std::initializer_list<Int> const& u,
+                                 std::initializer_list<Int> const& v) {
       static_assert(std::is_base_of_v<CongruenceInterface, Subclass>);
       return ci.currently_contains_no_checks(
           std::begin(u), std::end(u), std::begin(v), std::end(v));
@@ -333,27 +350,33 @@ namespace libsemigroups {
                                                     char const*     u,
                                                     char const*     v) {
       static_assert(std::is_base_of_v<CongruenceInterface, Subclass>);
+      // We could static_assert that Subclass::native_word_type == std::string,
+      // but it doesn't seem that adding this restriction would gain us
+      // anything, so it is not currently done.
       return ci.currently_contains_no_checks(
           u, u + std::strlen(u), v, v + std::strlen(v));
     }
 
+    // This version of the function catches the cases when u & v are not of
+    // the same type but both convertible to string_view
     //! \brief Helper for checking containment of a pair of words
-    //! (std::initializer_list).
+    //! (std::string_view).
     //!
     //! Defined in `cong-intf.hpp`.
     //!
     //! See \ref
     //! currently_contains_no_checks(Subclass const&, Word const&, Word
     //! const&) for details.
-    template <typename Subclass,
-              typename Int = typename Subclass::native_letter_type>
-    [[nodiscard]] tril
-    currently_contains_no_checks(Subclass const&                   ci,
-                                 std::initializer_list<Int> const& u,
-                                 std::initializer_list<Int> const& v) {
+    template <typename Subclass>
+    [[nodiscard]] tril currently_contains_no_checks(Subclass const&  ci,
+                                                    std::string_view u,
+                                                    std::string_view v) {
       static_assert(std::is_base_of_v<CongruenceInterface, Subclass>);
-      return currently_contains_no_checks<Subclass, std::initializer_list<Int>>(
-          ci, u, v);
+      // We could static_assert that Subclass::native_word_type == std::string,
+      // but it doesn't seem that adding this restriction would gain us
+      // anything, so it is not currently done.
+      return ci.currently_contains_no_checks(
+          std::begin(u), std::end(u), std::begin(v), std::end(v));
     }
 
     ////////////////////////////////////////////////////////////////////////
@@ -383,29 +406,28 @@ namespace libsemigroups {
     //! * tril::unknown otherwise.
     //!
     //! \cong_intf_throws_if_letters_out_of_bounds
-    template <typename Subclass, typename Word>
-    [[nodiscard]] tril currently_contains(Subclass const& ci,
-                                          Word const&     u,
-                                          Word const&     v) {
+    template <typename Subclass>
+    [[nodiscard]] tril
+    currently_contains(Subclass const&                            ci,
+                       typename Subclass::native_word_type const& u,
+                       typename Subclass::native_word_type const& v) {
       static_assert(std::is_base_of_v<CongruenceInterface, Subclass>);
       return ci.currently_contains(
           std::begin(u), std::end(u), std::begin(v), std::end(v));
     }
 
-    // This version of the function catches the cases when u & v are not of
-    // the same type but both convertible to string_view
     //! \brief Helper for checking containment of a pair of words
-    //! (std::string_view).
+    //! (std::initializer_list).
     //!
     //! Defined in `cong-intf.hpp`.
     //!
     //! See \ref
     //! currently_contains(Subclass const&, Word const&, Word const&)
     //! for details.
-    template <typename Subclass>
-    [[nodiscard]] tril currently_contains(Subclass const&  ci,
-                                          std::string_view u,
-                                          std::string_view v) {
+    template <typename Subclass, typename Int>
+    [[nodiscard]] tril currently_contains(Subclass const&                   ci,
+                                          std::initializer_list<Int> const& u,
+                                          std::initializer_list<Int> const& v) {
       static_assert(std::is_base_of_v<CongruenceInterface, Subclass>);
       return ci.currently_contains(
           std::begin(u), std::end(u), std::begin(v), std::end(v));
@@ -428,21 +450,23 @@ namespace libsemigroups {
           u, u + std::strlen(u), v, v + std::strlen(v));
     }
 
+    // This version of the function catches the cases when u & v are not of
+    // the same type but both convertible to string_view
     //! \brief Helper for checking containment of a pair of words
-    //! (std::initializer_list).
+    //! (std::string_view).
     //!
     //! Defined in `cong-intf.hpp`.
     //!
     //! See \ref
     //! currently_contains(Subclass const&, Word const&, Word const&)
     //! for details.
-    template <typename Subclass,
-              typename Int = typename Subclass::native_letter_type>
-    [[nodiscard]] tril currently_contains(Subclass const&                   ci,
-                                          std::initializer_list<Int> const& u,
-                                          std::initializer_list<Int> const& v) {
+    template <typename Subclass>
+    [[nodiscard]] tril currently_contains(Subclass const&  ci,
+                                          std::string_view u,
+                                          std::string_view v) {
       static_assert(std::is_base_of_v<CongruenceInterface, Subclass>);
-      return currently_contains<Subclass, std::initializer_list<Int>>(ci, u, v);
+      return ci.currently_contains(
+          std::begin(u), std::end(u), std::begin(v), std::end(v));
     }
 
     ////////////////////////////////////////////////////////////////////////
@@ -468,13 +492,50 @@ namespace libsemigroups {
     //! \returns Whether or not the pair belongs to the congruence.
     //!
     //! \cong_intf_warn_assume_letters_in_bounds
-    template <typename Subclass, typename Word>
-    [[nodiscard]] bool contains_no_checks(Subclass&   ci,
-                                          Word const& u,
-                                          Word const& v) {
+    template <typename Subclass>
+    [[nodiscard]] bool
+    contains_no_checks(Subclass&                                  ci,
+                       typename Subclass::native_word_type const& u,
+                       typename Subclass::native_word_type const& v) {
       static_assert(std::is_base_of_v<CongruenceInterface, Subclass>);
       return ci.contains_no_checks(
           std::begin(u), std::end(u), std::begin(v), std::end(v));
+    }
+
+    //! \brief Helper for checking containment of a pair of words
+    //! (std::initializer_list).
+    //!
+    //! Defined in `cong-intf.hpp`.
+    //!
+    //! See \ref
+    //! contains_no_checks(Subclass&, Word const&, Word const&)
+    //! for details.
+    template <typename Subclass, typename Int>
+    [[nodiscard]] bool contains_no_checks(Subclass&                         ci,
+                                          std::initializer_list<Int> const& u,
+                                          std::initializer_list<Int> const& v) {
+      static_assert(std::is_base_of_v<CongruenceInterface, Subclass>);
+      return contains_no_checks<Subclass, std::initializer_list<Int>>(ci, u, v);
+    }
+
+    //! \brief Helper for checking containment of a pair of words
+    //! (string literal).
+    //!
+    //! Defined in `cong-intf.hpp`.
+    //!
+    //! See \ref
+    //! contains_no_checks(Subclass&, Word const&, Word const&)
+    //! for details.
+    template <typename Subclass>
+    [[nodiscard]] bool contains_no_checks(Subclass&   ci,
+                                          char const* u,
+                                          char const* v) {
+      static_assert(std::is_base_of_v<CongruenceInterface, Subclass>);
+      // We could static_assert that Subclass::native_word_type == std::string,
+      // but it doesn't seem that adding this restriction would gain us
+      // anything, so it is not currently done.
+      return ci.contains_no_checks(
+          u, u + std::strlen(u), v, v + std::strlen(v));
     }
 
     // This version of the function catches the cases when u & v are not of
@@ -492,42 +553,11 @@ namespace libsemigroups {
                                           std::string_view u,
                                           std::string_view v) {
       static_assert(std::is_base_of_v<CongruenceInterface, Subclass>);
+      // We could static_assert that Subclass::native_word_type == std::string,
+      // but it doesn't seem that adding this restriction would gain us
+      // anything, so it is not currently done.
       return ci.contains_no_checks(
           std::begin(u), std::end(u), std::begin(v), std::end(v));
-    }
-
-    //! \brief Helper for checking containment of a pair of words
-    //! (string literal).
-    //!
-    //! Defined in `cong-intf.hpp`.
-    //!
-    //! See \ref
-    //! contains_no_checks(Subclass&, Word const&, Word const&)
-    //! for details.
-    template <typename Subclass>
-    [[nodiscard]] bool contains_no_checks(Subclass&   ci,
-                                          char const* u,
-                                          char const* v) {
-      static_assert(std::is_base_of_v<CongruenceInterface, Subclass>);
-      return ci.contains_no_checks(
-          u, u + std::strlen(u), v, v + std::strlen(v));
-    }
-
-    //! \brief Helper for checking containment of a pair of words
-    //! (std::initializer_list).
-    //!
-    //! Defined in `cong-intf.hpp`.
-    //!
-    //! See \ref
-    //! contains_no_checks(Subclass&, Word const&, Word const&)
-    //! for details.
-    template <typename Subclass,
-              typename Int = typename Subclass::native_letter_type>
-    [[nodiscard]] bool contains_no_checks(Subclass&                         ci,
-                                          std::initializer_list<Int> const& u,
-                                          std::initializer_list<Int> const& v) {
-      static_assert(std::is_base_of_v<CongruenceInterface, Subclass>);
-      return contains_no_checks<Subclass, std::initializer_list<Int>>(ci, u, v);
     }
 
     ////////////////////////////////////////////////////////////////////////
@@ -553,8 +583,27 @@ namespace libsemigroups {
     //! \returns Whether or not the pair belongs to the congruence.
     //!
     //! \cong_intf_throws_if_letters_out_of_bounds
-    template <typename Subclass, typename Word>
-    [[nodiscard]] bool contains(Subclass& ci, Word const& u, Word const& v) {
+    template <typename Subclass>
+    [[nodiscard]] bool contains(Subclass&                                  ci,
+                                typename Subclass::native_word_type const& u,
+                                typename Subclass::native_word_type const& v) {
+      static_assert(std::is_base_of_v<CongruenceInterface, Subclass>);
+      return ci.contains(
+          std::begin(u), std::end(u), std::begin(v), std::end(v));
+    }
+
+    //! \brief Helper for checking containment of a pair of words
+    //! (std::initializer_list).
+    //!
+    //! Defined in `cong-intf.hpp`.
+    //!
+    //! See \ref
+    //! contains_no_checks(Subclass&, Word const&, Word const&)
+    //! for details.
+    template <typename Subclass, typename Int>
+    [[nodiscard]] bool contains(Subclass&                         ci,
+                                std::initializer_list<Int> const& u,
+                                std::initializer_list<Int> const& v) {
       static_assert(std::is_base_of_v<CongruenceInterface, Subclass>);
       return ci.contains(
           std::begin(u), std::end(u), std::begin(v), std::end(v));
@@ -575,6 +624,9 @@ namespace libsemigroups {
                                 std::string_view u,
                                 std::string_view v) {
       static_assert(std::is_base_of_v<CongruenceInterface, Subclass>);
+      // We could static_assert that Subclass::native_word_type == std::string,
+      // but it doesn't seem that adding this restriction would gain us
+      // anything, so it is not currently done.
       return ci.contains(
           std::begin(u), std::end(u), std::begin(v), std::end(v));
     }
@@ -590,25 +642,12 @@ namespace libsemigroups {
     template <typename Subclass>
     [[nodiscard]] bool contains(Subclass& ci, char const* u, char const* v) {
       static_assert(std::is_base_of_v<CongruenceInterface, Subclass>);
+      // We could static_assert that Subclass::native_word_type == std::string,
+      // but it doesn't seem that adding this restriction would gain us
+      // anything, so it is not currently done.
       return ci.contains(u, u + std::strlen(u), v, v + std::strlen(v));
     }
 
-    //! \brief Helper for checking containment of a pair of words
-    //! (std::initializer_list).
-    //!
-    //! Defined in `cong-intf.hpp`.
-    //!
-    //! See \ref
-    //! contains_no_checks(Subclass&, Word const&, Word const&)
-    //! for details.
-    template <typename Subclass,
-              typename Int = typename Subclass::native_letter_type>
-    [[nodiscard]] bool contains(Subclass&                         ci,
-                                std::initializer_list<Int> const& u,
-                                std::initializer_list<Int> const& v) {
-      static_assert(std::is_base_of_v<CongruenceInterface, Subclass>);
-      return contains<Subclass, std::initializer_list<Int>>(ci, u, v);
-    }
     //! @}
 
     ////////////////////////////////////////////////////////////////////////

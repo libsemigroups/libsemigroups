@@ -1464,8 +1464,6 @@ namespace libsemigroups {
     REQUIRE(tc1.number_of_classes() == 5);
     ToddCoxeter tc2(onesided, tc1);
     todd_coxeter::add_generating_pair(tc2, "a", "b");
-    REQUIRE_THROWS_AS(todd_coxeter::add_generating_pair(tc2, 0_w, 2_w),
-                      LibsemigroupsException);
     REQUIRE_THROWS_AS(todd_coxeter::add_generating_pair(tc2, "a", "c"),
                       LibsemigroupsException);
 

@@ -2249,10 +2249,6 @@ namespace libsemigroups {
     presentation::add_rule(p, "abcd", "aaaeaa");
     presentation::add_rule(p, "ef", "dg");
 
-    REQUIRE_THROWS_AS(
-        kambites::add_generating_pair(kk, to_word("abababab"), to_word("aba")),
-        LibsemigroupsException);
-
     kk.init(twosided, std::move(p));
     REQUIRE(!kk.started());
     REQUIRE(kk.presentation().alphabet() == "abcdefg");

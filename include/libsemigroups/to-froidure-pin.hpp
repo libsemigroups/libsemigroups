@@ -203,8 +203,8 @@ namespace libsemigroups {
     } else if (cong.template has<ToddCoxeter<Word>>()) {
       auto fp = to_froidure_pin(*cong.template get<ToddCoxeter<Word>>());
       return std::make_unique<decltype(fp)>(std::move(fp));
-    } else if (cong.template has<KnuthBendixBase<>>()) {
-      auto fp = to_froidure_pin(*cong.template get<KnuthBendixBase<>>());
+    } else if (cong.template has<KnuthBendix<Word>>()) {
+      auto fp = to_froidure_pin(*cong.template get<KnuthBendix<Word>>());
       return std::make_unique<decltype(fp)>(std::move(fp));
     }
     LIBSEMIGROUPS_EXCEPTION("TODO");
