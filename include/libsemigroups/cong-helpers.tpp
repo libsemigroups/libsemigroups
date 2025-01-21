@@ -46,6 +46,7 @@ namespace libsemigroups {
     //   // return anything in that case.
     //   LIBSEMIGROUPS_EXCEPTION("Cannot compute the non-trivial classes!");
     // }
+
     ////////////////////////////////////////////////////////////////////////
     // Interface helpers - partition
     ////////////////////////////////////////////////////////////////////////
@@ -66,7 +67,7 @@ namespace libsemigroups {
                  && cong.template get<Kambites<Word>>()->success()) {
         return partition(*cong.template get<Kambites<Word>>(), r);
       }
-      LIBSEMIGROUPS_EXCEPTION("Cannot compute the non-trivial classes!");
+      LIBSEMIGROUPS_EXCEPTION("Cannot compute the partition");
     }
 
   }  // namespace congruence_interface
