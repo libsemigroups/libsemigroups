@@ -219,7 +219,7 @@ namespace libsemigroups {
           node_type t = follow_path_no_checks(tc.current_word_graph(), 0, w);
           REQUIRE(t != UNDEFINED);
           if (t != 0) {
-            auto ww = w;
+            auto ww = w;  // TODO(0) remove ww, just use w in the next line
             map.emplace(t - 1, std::move(ww));
             if (map.size() == tc.number_of_classes()) {
               break;
@@ -4602,7 +4602,7 @@ namespace libsemigroups {
       presentation::add_rule(p, pow({a}, 3), {a});
     }
     using words::operator+;
-    WordRange    words;
+    WordRange words;
     words.alphabet_size(n).min(0).max(8);
 
     for (size_t a = 0; a < n - 1; ++a) {
@@ -4630,7 +4630,6 @@ namespace libsemigroups {
     // p = to_presentation<word_type>(to_presentation(kb));
     // REQUIRE(p.rules == std::vector<word_type>());
     REQUIRE(tc.number_of_classes() == 3'945);
-    REQUIRE((normal_forms(tc) | Random()).get() == word_type());
   }
 
   // Takes nearly 13 hours to complete

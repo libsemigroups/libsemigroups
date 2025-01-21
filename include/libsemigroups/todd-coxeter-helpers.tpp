@@ -29,7 +29,6 @@ namespace libsemigroups {
     Word current_word_of_no_checks(ToddCoxeter<Word>& tc, index_type i) {
       Word result;
       tc.current_word_of_no_checks(std::back_inserter(result), i);
-      std::reverse(std::begin(result), std::end(result));
       return result;
     }
 
@@ -37,7 +36,6 @@ namespace libsemigroups {
     Word current_word_of(ToddCoxeter<Word>& tc, index_type i) {
       Word result;
       tc.current_word_of(std::back_inserter(result), i);
-      std::reverse(std::begin(result), std::end(result));
       return result;
     }
 
@@ -45,7 +43,6 @@ namespace libsemigroups {
     Word word_of_no_checks(ToddCoxeter<Word>& tc, index_type i) {
       Word result;
       tc.word_of_no_checks(std::back_inserter(result), i);
-      std::reverse(std::begin(result), std::end(result));
       return result;
     }
 
@@ -53,7 +50,6 @@ namespace libsemigroups {
     Word word_of(ToddCoxeter<Word>& tc, index_type i) {
       Word result;
       tc.word_of(std::back_inserter(result), i);
-      std::reverse(std::begin(result), std::end(result));
       return result;
     }
 
@@ -129,66 +125,6 @@ namespace libsemigroups {
       }
       return p.rules.cend();
     }
-
-#ifndef PARSED_BY_DOXYGEN
-    // This has to be repeated here (not in cong-intf.hpp) because we need to
-    // reverse the word for ToddCoxeter<Word>, but not in KnuthBendixBase or
-    // Kambites.
-    //
-    // The enable_if stops this from matching char const* = char[n]
-    template <typename Word, typename InputWord>
-    std::enable_if_t<!std::is_array_v<InputWord>, Word>
-    reduce_no_run_no_checks(ToddCoxeter<Word> const& tc, InputWord const& w) {
-      Word result;
-      tc.reduce_no_run_no_checks(
-          std::back_inserter(result), std::begin(w), std::end(w));
-      std::reverse(std::begin(result), std::end(result));
-      return result;
-    }
-
-    // This has to be repeated here (not in cong-intf.hpp) because we need to
-    // reverse the word for ToddCoxeter<Word>, but not in KnuthBendixBase or
-    // Kambites.
-    //
-    // The enable_if stops this from matching char const* = char[n]
-    template <typename Word, typename InputWord>
-    std::enable_if_t<!std::is_array_v<InputWord>, Word>
-    reduce_no_run(ToddCoxeter<Word> const& tc, InputWord const& w) {
-      Word result;
-      tc.reduce_no_run(std::back_inserter(result), std::begin(w), std::end(w));
-      std::reverse(std::begin(result), std::end(result));
-      return result;
-    }
-
-    // This has to be repeated here (not in cong-intf.hpp) because we need to
-    // reverse the word for ToddCoxeter<Word>, but not in KnuthBendixBase or
-    // Kambites.
-    //
-    // The enable_if stops this from matching char const* = char[n]
-    template <typename Word, typename InputWord>
-    std::enable_if_t<!std::is_array_v<InputWord>, Word>
-    reduce_no_checks(ToddCoxeter<Word>& tc, InputWord const& w) {
-      Word result;
-      tc.reduce_no_checks(
-          std::back_inserter(result), std::begin(w), std::end(w));
-      std::reverse(std::begin(result), std::end(result));
-      return result;
-    }
-
-    // This has to be repeated here (not in cong-intf.hpp) because we need to
-    // reverse the word for ToddCoxeter<Word>, but not in KnuthBendixBase or
-    // Kambites.
-    //
-    // The enable_if stops this from matching char const* = char[n]
-    template <typename Word, typename InputWord>
-    std::enable_if_t<!std::is_array_v<InputWord>, Word>
-    reduce(ToddCoxeter<Word>& tc, InputWord const& w) {
-      Word result;
-      tc.reduce(std::back_inserter(result), std::begin(w), std::end(w));
-      std::reverse(std::begin(result), std::end(result));
-      return result;
-    }
-#endif
 
     ////////////////////////////////////////////////////////////////////////
     // Possible future interface helpers - first_equivalent_pair

@@ -654,11 +654,10 @@ namespace libsemigroups {
     //! \returns An irreducible word equivalent to \p w.
     //!
     //! \cong_intf_warn_assume_letters_in_bounds
-    template <typename Subclass,
-              typename InputWord,
-              typename OutputWord = InputWord>
-    [[nodiscard]] OutputWord reduce_no_run_no_checks(Subclass const&  ci,
-                                                     InputWord const& w);
+    template <typename Subclass>
+    [[nodiscard]] typename Subclass::native_word_type
+    reduce_no_run_no_checks(Subclass const&                            ci,
+                            typename Subclass::native_word_type const& w);
 
     // No string_view version is required because there is only a single
     // "word" parameter, and so the first template will catch every case
@@ -671,10 +670,8 @@ namespace libsemigroups {
     //! See \ref
     //! reduce_no_run_no_checks(Subclass const&, InputWord const&)
     //! for details.
-    template <typename Subclass,
-              typename Int        = size_t,
-              typename OutputWord = std::vector<Int>>
-    [[nodiscard]] OutputWord
+    template <typename Subclass, typename Int>
+    [[nodiscard]] typename Subclass::native_word_type
     reduce_no_run_no_checks(Subclass const&                   ci,
                             std::initializer_list<Int> const& w);
 
@@ -685,9 +682,9 @@ namespace libsemigroups {
     //! See \ref
     //! reduce_no_run_no_checks(Subclass const&, InputWord const&)
     //! for details.
-    template <typename Subclass, typename OutputWord = std::string>
-    [[nodiscard]] auto reduce_no_run_no_checks(Subclass const& ci,
-                                               char const*     w);
+    template <typename Subclass>
+    [[nodiscard]] typename Subclass::native_word_type
+    reduce_no_run_no_checks(Subclass const& ci, char const* w);
 
     ////////////////////////////////////////////////////////////////////////
     // Interface helpers - reduce_no_run
@@ -716,11 +713,10 @@ namespace libsemigroups {
     //! \returns An irreducible word equivalent to \p w.
     //!
     //! \cong_intf_throws_if_letters_out_of_bounds
-    template <typename Subclass,
-              typename InputWord,
-              typename OutputWord = InputWord>
-    [[nodiscard]] OutputWord reduce_no_run(Subclass const&  ci,
-                                           InputWord const& w);
+    template <typename Subclass>
+    [[nodiscard]] typename Subclass::native_word_type
+    reduce_no_run(Subclass const&                            ci,
+                  typename Subclass::native_word_type const& w);
 
     // No string_view version is required because there is only a single
     // "word" parameter, and so the first template will catch every case
@@ -733,11 +729,9 @@ namespace libsemigroups {
     //! See \ref
     //! reduce_no_run(Subclass const&, InputWord const&)
     //! for details.
-    template <typename Subclass,
-              typename Int        = size_t,
-              typename OutputWord = std::vector<Int>>
-    [[nodiscard]] OutputWord reduce_no_run(Subclass const&                   ci,
-                                           std::initializer_list<Int> const& w);
+    template <typename Subclass, typename Int>
+    [[nodiscard]] typename Subclass::native_word_type
+    reduce_no_run(Subclass const& ci, std::initializer_list<Int> const& w);
 
     //! \brief Reduce a word (string literal).
     //!
@@ -746,8 +740,9 @@ namespace libsemigroups {
     //! See \ref
     //! reduce_no_run(Subclass const&, InputWord const&)
     //! for details.
-    template <typename Subclass, typename OutputWord = std::string>
-    [[nodiscard]] OutputWord reduce_no_run(Subclass const& ci, char const* w);
+    template <typename Subclass>
+    [[nodiscard]] typename Subclass::native_word_type
+    reduce_no_run(Subclass const& ci, char const* w);
 
     ////////////////////////////////////////////////////////////////////////
     // Interface helpers - reduce_no_checks
@@ -777,10 +772,10 @@ namespace libsemigroups {
     //! \returns An irreducible word equivalent to \p w.
     //!
     //! \cong_intf_warn_assume_letters_in_bounds
-    template <typename Subclass,
-              typename InputWord,
-              typename OutputWord = InputWord>
-    [[nodiscard]] OutputWord reduce_no_checks(Subclass& ci, InputWord const& w);
+    template <typename Subclass>
+    [[nodiscard]] typename Subclass::native_word_type
+    reduce_no_checks(Subclass const&                            ci,
+                     typename Subclass::native_word_type const& w);
 
     // No string_view version is required because there is only a single
     // "word" parameter, and so the first template will catch every case
@@ -793,11 +788,9 @@ namespace libsemigroups {
     //! See \ref
     //! reduce_no_checks(Subclass&, InputWord const&)
     //! for details.
-    template <typename Subclass,
-              typename Int        = size_t,
-              typename OutputWord = std::vector<Int>>
-    [[nodiscard]] OutputWord
-    reduce_no_checks(Subclass& ci, std::initializer_list<Int> const& w);
+    template <typename Subclass, typename Int>
+    [[nodiscard]] typename Subclass::native_word_type
+    reduce_no_checks(Subclass const& ci, std::initializer_list<Int> const& w);
 
     //! \brief Reduce a word (string literal).
     //!
@@ -806,8 +799,9 @@ namespace libsemigroups {
     //! See \ref
     //! reduce_no_checks(Subclass&, InputWord const&)
     //! for details.
-    template <typename Subclass, typename OutputWord = std::string>
-    [[nodiscard]] OutputWord reduce_no_checks(Subclass& ci, char const* w);
+    template <typename Subclass>
+    [[nodiscard]] typename Subclass::native_word_type
+    reduce_no_checks(Subclass const& ci, char const* w);
 
     ////////////////////////////////////////////////////////////////////////
     // Interface helpers - reduce
@@ -837,10 +831,9 @@ namespace libsemigroups {
     //! \returns An irreducible word equivalent to \p w.
     //!
     //! \cong_intf_throws_if_letters_out_of_bounds
-    template <typename Subclass,
-              typename InputWord,
-              typename OutputWord = InputWord>
-    [[nodiscard]] OutputWord reduce(Subclass& ci, InputWord const& w);
+    template <typename Subclass>
+    [[nodiscard]] typename Subclass::native_word_type
+    reduce(Subclass const& ci, typename Subclass::native_word_type const& w);
 
     // No string_view version is required because there is only a single
     // "word" parameter, and so the first template will catch every case
@@ -851,19 +844,18 @@ namespace libsemigroups {
     //! Defined in `cong-intf.hpp`.
     //!
     //! See \ref reduce(Subclass&, InputWord const&) for details.
-    template <typename Subclass,
-              typename Int        = size_t,
-              typename OutputWord = std::vector<Int>>
-    [[nodiscard]] OutputWord reduce(Subclass&                         ci,
-                                    std::initializer_list<Int> const& w);
+    template <typename Subclass, typename Int>
+    [[nodiscard]] typename Subclass::native_word_type
+    reduce(Subclass const& ci, std::initializer_list<Int> const& w);
 
     //! \brief Reduce a word (string literal).
     //!
     //! Defined in `cong-intf.hpp`.
     //!
     //! See \ref reduce(Subclass&, InputWord const&) for details.
-    template <typename Subclass, typename OutputWord = std::string>
-    [[nodiscard]] auto reduce(Subclass& ci, char const* w);
+    template <typename Subclass>
+    [[nodiscard]] typename Subclass::native_word_type reduce(Subclass const& ci,
+                                                             char const*     w);
 
     //! @}
 

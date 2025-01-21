@@ -19,162 +19,139 @@
 // This file contains the implementations of helper function templates for the
 // CongruenceInterface class.
 
-#include "libsemigroups/cong-intf-class.hpp"
 namespace libsemigroups {
 
   namespace congruence_interface {
     ////////////////////////////////////////////////////////////////////////
     // Interface helpers - reduce_no_run_no_checks
     ////////////////////////////////////////////////////////////////////////
-    // TODO(0) remove outputword
-    template <typename Subclass, typename InputWord, typename OutputWord>
-    OutputWord reduce_no_run_no_checks(Subclass const& ci, InputWord const& w) {
+
+    template <typename Subclass>
+    typename Subclass::native_word_type
+    reduce_no_run_no_checks(Subclass const&                            ci,
+                            typename Subclass::native_word_type const& w) {
       static_assert(std::is_base_of_v<CongruenceInterface, Subclass>);
-      OutputWord result;
+      typename Subclass::native_word_type result;
       ci.reduce_no_run_no_checks(
           std::back_inserter(result), std::begin(w), std::end(w));
       return result;
     }
 
-    template <typename Subclass, typename Int, typename OutputWord>
-    OutputWord reduce_no_run_no_checks(Subclass const&                   ci,
-                                       std::initializer_list<Int> const& w) {
+    template <typename Subclass, typename Int>
+    typename Subclass::native_word_type
+    reduce_no_run_no_checks(Subclass const&                   ci,
+                            std::initializer_list<Int> const& w) {
       static_assert(std::is_base_of_v<CongruenceInterface, Subclass>);
-      if constexpr (std::is_base_of_v<ToddCoxeterBase, Subclass>) {
-        // We have a special case here for ToddCoxeterBase because
-        // ToddCoxeterBase reverses the output words, in its
-        // reduce_no_run_no_checks, which does not have the template parameter
-        // Subclass, so we call the 2-template parameter overload of this
-        // function for ToddCoxeterBase. I.e. if we called the 3-template param
-        // version as in the "else" case below, then we'd just be calling the
-        // function above, which doesn't reverse the words, and we'd get
-        // incorrect output.
-        return reduce_no_run_no_checks<OutputWord, std::initializer_list<Int>>(
-            ci, w);
-      } else {
-        return reduce_no_run_no_checks<Subclass,
-                                       std::initializer_list<Int>,
-                                       OutputWord>(ci, w);
-      }
+      typename Subclass::native_word_type result;
+      ci.reduce_no_run_no_checks(
+          std::back_inserter(result), std::begin(w), std::end(w));
+      return result;
     }
 
-    template <typename Subclass, typename OutputWord>
-    auto reduce_no_run_no_checks(Subclass const& ci, char const* w) {
+    template <typename Subclass>
+    typename Subclass::native_word_type
+    reduce_no_run_no_checks(Subclass const& ci, char const* w) {
       static_assert(std::is_base_of_v<CongruenceInterface, Subclass>);
-      if constexpr (std::is_base_of_v<ToddCoxeterBase, Subclass>) {
-        return reduce_no_run_no_checks<OutputWord, std::string_view>(ci, w);
-      } else {
-        return reduce_no_run_no_checks<Subclass, std::string_view, OutputWord>(
-            ci, w);
-      }
+      typename Subclass::native_word_type result;
+      ci.reduce_no_run_no_checks(
+          std::back_inserter(result), w, w + std::strlen(w));
+      return result;
     }
 
     ////////////////////////////////////////////////////////////////////////
     // Interface helpers - reduce_no_run
     ////////////////////////////////////////////////////////////////////////
 
-    template <typename Subclass, typename InputWord, typename OutputWord>
-    OutputWord reduce_no_run(Subclass const& ci, InputWord const& w) {
+    template <typename Subclass>
+    typename Subclass::native_word_type
+    reduce_no_run(Subclass const&                            ci,
+                  typename Subclass::native_word_type const& w) {
       static_assert(std::is_base_of_v<CongruenceInterface, Subclass>);
-      OutputWord result;
+      typename Subclass::native_word_type result;
       ci.reduce_no_run(std::back_inserter(result), std::begin(w), std::end(w));
       return result;
     }
 
-    template <typename Subclass, typename Int, typename OutputWord>
-    OutputWord reduce_no_run(Subclass const&                   ci,
-                             std::initializer_list<Int> const& w) {
+    template <typename Subclass, typename Int>
+    typename Subclass::native_word_type
+    reduce_no_run(Subclass const& ci, std::initializer_list<Int> const& w) {
       static_assert(std::is_base_of_v<CongruenceInterface, Subclass>);
-      if constexpr (std::is_base_of_v<ToddCoxeterBase, Subclass>) {
-        // See the comment above about why there's a special case here.
-        return reduce_no_run<OutputWord, std::initializer_list<Int>>(ci, w);
-      } else {
-        return reduce_no_run<Subclass, std::initializer_list<Int>, OutputWord>(
-            ci, w);
-      }
+      typename Subclass::native_word_type result;
+      ci.reduce_no_run(std::back_inserter(result), std::begin(w), std::end(w));
+      return result;
     }
 
-    template <typename Subclass, typename OutputWord>
-    OutputWord reduce_no_run(Subclass const& ci, char const* w) {
+    template <typename Subclass>
+    typename Subclass::native_word_type reduce_no_run(Subclass const& ci,
+                                                      char const*     w) {
       static_assert(std::is_base_of_v<CongruenceInterface, Subclass>);
-      if constexpr (std::is_base_of_v<ToddCoxeterBase, Subclass>) {
-        // See the comment above about why there's a special case here.
-        return reduce_no_run<OutputWord, std::string_view>(ci, w);
-      } else {
-        return reduce_no_run<Subclass, std::string_view, OutputWord>(ci, w);
-      }
+      typename Subclass::native_word_type result;
+      ci.reduce_no_run(std::back_inserter(result), w, w + std::strlen(w));
+      return result;
     }
 
     ////////////////////////////////////////////////////////////////////////
     // Interface helpers - reduce_no_checks
     ////////////////////////////////////////////////////////////////////////
 
-    template <typename Subclass, typename InputWord, typename OutputWord>
-    OutputWord reduce_no_checks(Subclass& ci, InputWord const& w) {
+    template <typename Subclass>
+    typename Subclass::native_word_type
+    reduce_no_checks(Subclass&                                  ci,
+                     typename Subclass::native_word_type const& w) {
       static_assert(std::is_base_of_v<CongruenceInterface, Subclass>);
-      OutputWord result;
+      typename Subclass::native_word_type result;
       ci.reduce_no_checks(
           std::back_inserter(result), std::begin(w), std::end(w));
       return result;
     }
 
-    template <typename Subclass, typename Int, typename OutputWord>
-    OutputWord reduce_no_checks(Subclass&                         ci,
-                                std::initializer_list<Int> const& w) {
+    template <typename Subclass, typename Int>
+    typename Subclass::native_word_type
+    reduce_no_checks(Subclass& ci, std::initializer_list<Int> const& w) {
       static_assert(std::is_base_of_v<CongruenceInterface, Subclass>);
-      if constexpr (std::is_base_of_v<ToddCoxeterBase, Subclass>) {
-        // See the comment above about why there's a special case here.
-        return reduce_no_checks<OutputWord, std::initializer_list<Int>>(ci, w);
-      } else {
-        return reduce_no_checks<Subclass,
-                                std::initializer_list<Int>,
-                                OutputWord>(ci, w);
-      }
+      typename Subclass::native_word_type result;
+      ci.reduce_no_checks(
+          std::back_inserter(result), std::begin(w), std::end(w));
+      return result;
     }
 
-    template <typename Subclass, typename OutputWord>
-    OutputWord reduce_no_checks(Subclass& ci, char const* w) {
+    template <typename Subclass>
+    typename Subclass::native_word_type reduce_no_checks(Subclass&   ci,
+                                                         char const* w) {
       static_assert(std::is_base_of_v<CongruenceInterface, Subclass>);
-      if constexpr (std::is_base_of_v<ToddCoxeterBase, Subclass>) {
-        // See the comment above about why there's a special case here.
-        return reduce_no_checks<OutputWord, std::string_view>(ci, w);
-      } else {
-        return reduce_no_checks<Subclass, std::string_view, OutputWord>(ci, w);
-      }
+      typename Subclass::native_word_type result;
+      ci.reduce_no_checks(std::back_inserter(result), w, w + std::strlen(w));
+      return result;
     }
 
     ////////////////////////////////////////////////////////////////////////
     // Interface helpers - reduce
     ////////////////////////////////////////////////////////////////////////
 
-    template <typename Subclass, typename InputWord, typename OutputWord>
-    OutputWord reduce(Subclass& ci, InputWord const& w) {
+    template <typename Subclass>
+    typename Subclass::native_word_type
+    reduce(Subclass& ci, typename Subclass::native_word_type const& w) {
       static_assert(std::is_base_of_v<CongruenceInterface, Subclass>);
-      OutputWord result;
+      typename Subclass::native_word_type result;
       ci.reduce(std::back_inserter(result), std::begin(w), std::end(w));
       return result;
     }
 
-    template <typename Subclass, typename Int, typename OutputWord>
-    OutputWord reduce(Subclass& ci, std::initializer_list<Int> const& w) {
+    template <typename Subclass, typename Int>
+    typename Subclass::native_word_type
+    reduce(Subclass& ci, std::initializer_list<Int> const& w) {
       static_assert(std::is_base_of_v<CongruenceInterface, Subclass>);
-      if constexpr (std::is_base_of_v<ToddCoxeterBase, Subclass>) {
-        // See the comment above about why there's a special case here.
-        return reduce<OutputWord, std::initializer_list<Int>>(ci, w);
-      } else {
-        return reduce<Subclass, std::initializer_list<Int>, OutputWord>(ci, w);
-      }
+      typename Subclass::native_word_type result;
+      ci.reduce(std::back_inserter(result), std::begin(w), std::end(w));
+      return result;
     }
 
-    template <typename Subclass, typename OutputWord>
-    auto reduce(Subclass& ci, char const* w) {
+    template <typename Subclass>
+    typename Subclass::native_word_type reduce(Subclass& ci, char const* w) {
       static_assert(std::is_base_of_v<CongruenceInterface, Subclass>);
-      if constexpr (std::is_base_of_v<ToddCoxeterBase, Subclass>) {
-        // See the comment above about why there's a special case here.
-        return reduce<OutputWord, std::string_view>(ci, w);
-      } else {
-        return reduce<Subclass, std::string_view, OutputWord>(ci, w);
-      }
+      typename Subclass::native_word_type result;
+      ci.reduce(std::back_inserter(result), w, w + std::strlen(w));
+      return result;
     }
 
     ////////////////////////////////////////////////////////////////////////

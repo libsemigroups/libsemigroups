@@ -58,6 +58,7 @@ namespace libsemigroups {
     // partition(Congruence& cong, Range r);
     //
     // is declared in cong-intf-helpers.hpp
+    // TODO(0) update the signature above
 
   }  // namespace congruence_interface
 

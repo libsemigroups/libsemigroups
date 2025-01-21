@@ -840,44 +840,6 @@ namespace libsemigroups {
 
     //! @}
 
-#ifndef PARSED_BY_DOXYGEN
-    // This has to be repeated here (not in cong-intf.hpp) because we need to
-    // reverse the word for ToddCoxeterBase, but not in KnuthBendixBase or
-    // Kambites.
-    //
-    // The enable_if stops this from matching char const* = char[n]
-    template <typename Word, typename InputWord = Word>
-    [[nodiscard]] std::enable_if_t<!std::is_array_v<InputWord>, Word>
-    reduce_no_run_no_checks(ToddCoxeter<Word> const& tc, InputWord const& w);
-
-    // This has to be repeated here (not in cong-intf.hpp) because we need to
-    // reverse the word for ToddCoxeter<Word>, but not in KnuthBendixBase or
-    // Kambites.
-    //
-    // The enable_if stops this from matching char const* = char[n]
-    template <typename Word, typename InputWord = Word>
-    [[nodiscard]] std::enable_if_t<!std::is_array_v<InputWord>, Word>
-    reduce_no_run(ToddCoxeter<Word> const& tc, InputWord const& w);
-
-    // This has to be repeated here (not in cong-intf.hpp) because we need to
-    // reverse the word for ToddCoxeter<Word>, but not in KnuthBendixBase or
-    // Kambites.
-    //
-    // The enable_if stops this from matching char const* = char[n]
-    template <typename Word, typename InputWord = Word>
-    [[nodiscard]] std::enable_if_t<!std::is_array_v<InputWord>, Word>
-    reduce_no_checks(ToddCoxeter<Word>& tc, InputWord const& w);
-
-    // This has to be repeated here (not in cong-intf.hpp) because we need to
-    // reverse the word for ToddCoxeter<Word>, but not in KnuthBendixBase or
-    // Kambites.
-    //
-    // The enable_if stops this from matching char const* = char[n]
-    template <typename Word, typename InputWord = Word>
-    [[nodiscard]] std::enable_if_t<!std::is_array_v<InputWord>, Word>
-    reduce(ToddCoxeter<Word>& tc, InputWord const& w);
-#endif
-
   }  // namespace todd_coxeter
 
   // This namespace contains implementations of the interface helpers (i.e.
@@ -951,6 +913,7 @@ namespace libsemigroups {
     // partition(ToddCoxeter<Word>& tc, Range r);
     //
     // is declared in cong-intf-helpers.hpp
+    // TODO(0) update the signature
 
     ////////////////////////////////////////////////////////////////////////
     // Interface helpers - non_trivial_classes

@@ -89,7 +89,9 @@ namespace libsemigroups {
       ++i;
     }
 
-    return _forest.path_to_root_no_checks(d_first, i);
+    word_type result;  // TODO(1) avoid alloc here
+    _forest.path_to_root_no_checks(std::back_inserter(result), i);
+    return std::copy(result.crbegin(), result.crend(), d_first);
   }
 
   template <typename OutputIterator>
