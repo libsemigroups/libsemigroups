@@ -82,6 +82,8 @@ namespace libsemigroups {
   using fpsemigroup::full_transformation_monoid;
   using fpsemigroup::monogenic_semigroup;
   using fpsemigroup::partition_monoid;
+  using fpsemigroup::partition_monoid_HR05;
+  using fpsemigroup::partition_monoid_Machine;
   using fpsemigroup::plactic_monoid;
   using fpsemigroup::rectangular_band;
   using fpsemigroup::stellar_monoid;
@@ -531,7 +533,7 @@ namespace libsemigroups {
                           "partition_monoid(3)",
                           "[standard][low-index][no-coverage]") {
     auto rg = ReportGuard(false);
-    auto p  = partition_monoid(3, author::Machine);
+    auto p  = partition_monoid_Machine(3);
     REQUIRE(!p.contains_empty_word());
     REQUIRE(p.alphabet() == 01234_w);
 
@@ -1735,7 +1737,7 @@ namespace libsemigroups {
                           "partition_monoid(3) - minimal o.r.c. rep",
                           "[extreme][sims1]") {
     auto rg = ReportGuard(true);
-    auto p  = partition_monoid(3, author::Machine);
+    auto p  = partition_monoid_Machine(3);
     REQUIRE(!p.contains_empty_word());
     REQUIRE(p.alphabet() == 01234_w);
 
@@ -4245,7 +4247,7 @@ namespace libsemigroups {
     REQUIRE(s.number_of_threads(8).number_of_congruences(15)
             == 15);  // correct value is 15
 
-    // p  = partition_monoid(3, author::Machine);
+    // p  = partition_monoid_Machine(3);
     // ip = SimsRefinerIdeals(to_presentation<std::string>(p));
     // s.init(p).add_pruner(ip);
     // REQUIRE(s.number_of_congruences(203) == 5767);  // checked in GAP
@@ -5017,7 +5019,7 @@ namespace libsemigroups {
     std::vector<word_type> forbid;
     SimsRefinerFaithful    pruno(forbid);
     for (size_t n = 2; n <= 7; ++n) {
-      p = partition_monoid(n, author::Halverson + author::Ram);
+      p = partition_monoid_HR05(n);
       presentation::sort_rules(p);
       presentation::remove_duplicate_rules(p);
 

@@ -2008,10 +2008,10 @@ namespace libsemigroups {
                           "[todd-coxeter][quick][no-valgrind][no-coverage]") {
     auto rg = ReportGuard(false);
     using fpsemigroup::author;
-    using fpsemigroup::partition_monoid;
+    using fpsemigroup::partition_monoid_Eas11;
 
     auto const  n = 4;
-    auto        p = partition_monoid(n, author::East);
+    auto        p = partition_monoid_Eas11(n);
     ToddCoxeter tc(twosided, p);
 
     section_felsch(tc);
@@ -2137,11 +2137,11 @@ namespace libsemigroups {
       "Generate GAP benchmarks for partition_monoid(n) (East)",
       "[todd-coxeter][fail]") {
     using fpsemigroup::author;
-    using fpsemigroup::partition_monoid;
+    using fpsemigroup::partition_monoid_Eas11;
     auto rg = ReportGuard(true);
 
     for (size_t n = 4; n <= 6; ++n) {
-      auto        p = partition_monoid(n, author::East);
+      auto        p = partition_monoid_Eas11(n);
       ToddCoxeter tc(congruence_kind::twosided, p);
       tc.save(true);
       output_gap_benchmark_file("partition-" + std::to_string(n) + ".g", tc);
@@ -2262,10 +2262,10 @@ namespace libsemigroups {
                           "partition_monoid(2)",
                           "[todd-coxeter][quick]") {
     using fpsemigroup::author;
-    using fpsemigroup::partition_monoid;
+    using fpsemigroup::partition_monoid_Machine;
 
     auto rg = ReportGuard(false);
-    auto p  = partition_monoid(2, author::Machine);
+    auto p  = partition_monoid_Machine(2);
 
     ToddCoxeter tc(congruence_kind::twosided, p);
     section_felsch(tc);

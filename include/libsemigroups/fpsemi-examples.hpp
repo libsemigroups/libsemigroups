@@ -172,60 +172,75 @@ namespace libsemigroups {
     //! \brief A presentation for the partition monoid.
     //!
     //! This function returns a monoid presentation defining the partition
-    //! monoid of degree \p n.
+    //! monoid of degree \p n, as in \cite Halverson2005aa.
     //!
     //! \param n the degree.
     //!
     //! \returns A value of type `Presentation<libsemigroups::word_type>`.
     //!
-    //! \throws LibsemigroupsException if `val == author::Machine && n != 3`.
-    //! \throws LibsemigroupsException if `val == author::East && n < 4`.
-    //! \throws LibsemigroupsException if `val = author::Halverson + author::Ram
-    //! and n < 1`
-    //! \throws LibsemigroupsException if \p val is not one of the options
-    //! specified above.
+    //! \throws LibsemigroupsException if `n < 1`.
     //!
-    //! [10.1016/j.jalgebra.2011.04.008]:
-    //! https://doi.org/10.1016/j.jalgebra.2011.04.008
-    //! [10.1016/j.ejc.2004.06.005]:
-    //! https://doi.org/10.1016/j.ejc.2004.06.005
-    [[nodiscard]] Presentation<word_type> partition_monoid(size_t n,
-                                                           author val
-                                                           = author::East);
+    //! \sa
+    //! `partition_monoid`, `partition_monoid_Eas11` and
+    //! `partition_monoid_Machine`.
+    [[nodiscard]] Presentation<word_type> partition_monoid_HR05(size_t n);
 
     //! \brief A presentation for the partition monoid.
     //!
-    //! This function returns a presentation defining the partition monoid of
-    //! degree \p n. The argument \p val determines the specific presentation
-    //! which is returned. The options are:
-    //! * `author::Machine`;
-    //! * `author::East` (see Theorem 41 of
-    //! [10.1016/j.jalgebra.2011.04.008][])
-    //! * `author::Halverson + author::Ram` (see Theorem 1.11 (b) of
-    //! [10.1016/j.ejc.2004.06.005][])
-    //!
-    //! Note that `author::East` returns a monoid presentation, and
-    //! `author::Machine` returns a semigroup presentation.
+    //! This function returns a monoid presentation defining the partition
+    //! monoid of degree \p n, as in Theorem 41 of \cite East2011aa.
     //!
     //! \param n the degree.
-    //! \param val the author of the presentation (default: `author::East`).
     //!
     //! \returns A value of type `Presentation<libsemigroups::word_type>`.
     //!
-    //! \throws LibsemigroupsException if `val == author::Machine && n != 3`.
-    //! \throws LibsemigroupsException if `val == author::East && n < 4`.
-    //! \throws LibsemigroupsException if `val = author::Halverson + author::Ram
-    //! and n < 1`
-    //! \throws LibsemigroupsException if \p val is not one of the options
-    //! specified above.
+    //! \throws LibsemigroupsException if `n < 4`.
     //!
-    //! [10.1016/j.jalgebra.2011.04.008]:
-    //! https://doi.org/10.1016/j.jalgebra.2011.04.008
-    //! [10.1016/j.ejc.2004.06.005]:
-    //! https://doi.org/10.1016/j.ejc.2004.06.005
-    [[nodiscard]] Presentation<word_type> partition_monoid(size_t n,
-                                                           author val
-                                                           = author::East);
+    //! \sa
+    //! `partition_monoid`, `partition_monoid_HR05` and
+    //! `partition_monoid_Machine`.
+    [[nodiscard]] Presentation<word_type> partition_monoid_Eas11(size_t n);
+
+    //! \brief A presentation for the partition monoid.
+    //!
+    //! This function returns a monoid presentation defining the partition
+    //! monoid of degree \p n, where \p n is either `2` or `3`. This
+    //! presentation was found using `libsemigroups`.
+    //!
+    //! \param n the degree.
+    //!
+    //! \returns A value of type `Presentation<libsemigroups::word_type>`.
+    //!
+    //! \throws LibsemigroupsException if `n != 2` or `n != 3`.
+    //!
+    //! \sa
+    //! `partition_monoid`, `partition_monoid_Eas11`, and
+    //! `partition_monoid_HR05`.
+    [[nodiscard]] Presentation<word_type> partition_monoid_Machine(size_t n);
+
+    //! \brief A presentation for the partition monoid.
+    //!
+    //! This function returns a monoid presentation defining the partition
+    //! monoid of degree \p n, as in Theorem 41 of \cite East2011aa.
+    //!
+    //! \param n the degree.
+    //!
+    //! \returns A value of type `Presentation<libsemigroups::word_type>`.
+    //!
+    //! \throws LibsemigroupsException if `n < 4`.
+    //!
+    //! \note
+    //! This function performs exactly the same as `partition_monoid_Eas11`, and
+    //! exists as a convenience function for when a presentation for the
+    //! partition monoid is required, but the relations of the presentation are
+    //! not important.
+    //!
+    //! \sa
+    //! `partition_monoid_Eas11`, `partition_monoid_HR05` and
+    //! `partition_monoid_Machine`.
+    [[nodiscard]] inline Presentation<word_type> partition_monoid(size_t n) {
+      return partition_monoid_Eas11(n);
+    }
 
     //! \brief A presentation for the singular part of the Brauer monoid.
     //!

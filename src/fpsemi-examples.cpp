@@ -741,136 +741,14 @@ namespace libsemigroups {
       return p;
     }
 
-    // From Theorem 41 in doi:10.1016/j.jalgebra.2011.04.008
-    Presentation<word_type> partition_monoid(size_t n, author val) {
-      if (val == author::Machine) {
-        if (n != 2 && n != 3) {
-          LIBSEMIGROUPS_EXCEPTION("the 1st argument (size_t) must be 2 or "
-                                  "3 when the 2nd argument "
-                                  "is author::Machine, found {}",
-                                  n);
-        }
-      } else if (val == author::East) {
-        if (n < 4) {
-          LIBSEMIGROUPS_EXCEPTION(
-              "the 1st argument (degree) must be at least 4 when the 2nd "
-              "argument is author::East, found {}",
-              n);
-        }
-      } else if (val == author::Halverson + author::Ram) {
-        if (n < 1) {
-          LIBSEMIGROUPS_EXCEPTION(
-              "the 1st argument (degree) must be at least 1 when the 2nd "
-              "argument is author::Halverson + author::Ram, found {}",
-              n);
-        }
-      } else {
-        LIBSEMIGROUPS_EXCEPTION("the 2nd argument must be author::Machine "
-                                "or author::East, found {}",
-                                val);
+    Presentation<word_type> partition_monoid_HR05(size_t n) {
+      if (n < 1) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "the 1st argument (size_t) must be at least 1, found {}", n);
       }
 
       Presentation<word_type> p;
 
-      if (val == author::Machine && n == 2) {
-        p.rules
-            = {01_w, 1_w, 10_w,  1_w, 02_w,  2_w, 20_w,   2_w,   03_w,   3_w,
-               30_w, 3_w, 11_w,  0_w, 13_w,  3_w, 22_w,   2_w,   31_w,   3_w,
-               33_w, 3_w, 232_w, 2_w, 323_w, 3_w, 1212_w, 212_w, 2121_w, 212_w};
-        p.alphabet_from_rules();
-        return p;
-      }
-      if (val == author::Machine && n == 3) {
-        p.rules = {00_w,       0_w,       01_w,       1_w,       02_w,
-                   2_w,        03_w,      3_w,        04_w,      4_w,
-                   10_w,       1_w,       20_w,       2_w,       22_w,
-                   0_w,        24_w,      4_w,        30_w,      3_w,
-                   33_w,       3_w,       40_w,       4_w,       42_w,
-                   4_w,        44_w,      4_w,        111_w,     0_w,
-                   112_w,      21_w,      121_w,      2_w,       211_w,
-                   12_w,       212_w,     11_w,       214_w,     114_w,
-                   312_w,      123_w,     343_w,      3_w,       412_w,
-                   411_w,      434_w,     4_w,        1131_w,    232_w,
-                   1132_w,     231_w,     1231_w,     32_w,      1232_w,
-                   31_w,       1234_w,    314_w,      1323_w,    313_w,
-                   1414_w,     414_w,     2131_w,     132_w,     2132_w,
-                   131_w,      2134_w,    1314_w,     2313_w,    1313_w,
-                   2314_w,     1134_w,    2323_w,     323_w,     3132_w,
-                   313_w,      3143_w,    123_w,      3232_w,    323_w,
-                   4114_w,     414_w,     4132_w,     4131_w,    4141_w,
-                   414_w,      13113_w,   3213_w,     13414_w,   4134_w,
-                   23113_w,    3113_w,    23213_w,    13213_w,   23413_w,
-                   13413_w,    23414_w,   14134_w,    31141_w,   11413_w,
-                   31311_w,    3213_w,    32311_w,    3113_w,    34113_w,
-                   123_w,      34143_w,   11413_w,    41134_w,   4314_w,
-                   41311_w,    13114_w,   41313_w,    4313_w,    41314_w,
-                   4134_w,     41341_w,   4134_w,     41432_w,   41431_w,
-                   113413_w,   31413_w,   114134_w,   3414_w,    131143_w,
-                   43213_w,    131313_w,  31313_w,    131413_w,  3413_w,
-                   143114_w,   43114_w,   231143_w,   143213_w,  311341_w,
-                   31413_w,    311431_w,  114313_w,   313131_w,  31313_w,
-                   313141_w,   3413_w,    314113_w,   3_w,       414311_w,
-                   43114_w,    414314_w,  414_w,      431314_w,  13114_w,
-                   1143131_w,  311432_w,  1143213_w,  31143_w,   1313413_w,
-                   313413_w,   3114321_w, 31143_w,    3131341_w, 313413_w,
-                   4311432_w,  4143131_w, 31143231_w, 3114323_w, 311432341_w,
-                   114313413_w};
-        p.alphabet_from_rules();
-        return p;
-      }
-
-      // author::East and n >= 4
-      if (val == author::East) {
-        p.alphabet(4);
-        p.contains_empty_word(true);
-
-        // V1
-        presentation::add_rule_no_checks(p, pow(1_w, n), {});
-        presentation::add_rule_no_checks(p, pow(01_w, n - 1), {});
-        presentation::add_rule_no_checks(p, 00_w, {});
-        for (size_t i = 2; i <= n / 2; ++i) {
-          presentation::add_rule_no_checks(
-              p, pow(pow(1_w, i) + 0_w + pow(1_w, n - i) + 0_w, 2), {});
-        }
-
-        // V2
-        presentation::add_rule_no_checks(p, 22_w, 2_w);
-        presentation::add_rule_no_checks(p, 232_w, 2_w);
-        presentation::add_rule_no_checks(p, 012_w + pow(1_w, n - 1) + 0_w, 2_w);
-        presentation::add_rule_no_checks(
-            p, 10_w + pow(1_w, n - 1) + 210_w + pow(1_w, n - 1), 2_w);
-
-        // V3
-        presentation::add_rule_no_checks(p, 33_w, 3_w);
-        presentation::add_rule_no_checks(p, 323_w, 3_w);
-        presentation::add_rule_no_checks(p, 30_w, 3_w);
-        presentation::add_rule_no_checks(p, 03_w, 3_w);
-        presentation::add_rule_no_checks(
-            p, 110_w + pow(1_w, n - 2) + 3110_w + pow(1_w, n - 2), 3_w);
-        presentation::add_rule_no_checks(p,
-                                         pow(1_w, n - 1) + 010_w
-                                             + pow(1_w, n - 1) + 310_w
-                                             + pow(1_w, n - 1) + 01_w,
-                                         3_w);
-
-        // V4
-        presentation::add_rule_no_checks(p, 0202_w, 202_w);
-        presentation::add_rule_no_checks(p, 2020_w, 202_w);
-
-        // V5
-        presentation::add_rule_no_checks(
-            p, 313_w + pow(1_w, n - 1), 13_w + pow(1_w, n - 1) + 3_w);
-
-        // V6
-        presentation::add_rule_no_checks(
-            p, 3113_w + pow(1_w, n - 2), 113_w + pow(1_w, n - 2) + 3_w);
-        // V7
-        presentation::add_rule_no_checks(
-            p, 3112_w + pow(1_w, n - 2), 112_w + pow(1_w, n - 2) + 3_w);
-        return p;
-      }
-
-      // author::Halverson + author::Ram and n >= 1
       std::vector<word_type> s(n), r(n), q(n);
       for (size_t i = 0; i < n; ++i) {
         if (i != n - 1) {
@@ -939,6 +817,111 @@ namespace libsemigroups {
         presentation::add_rule_no_checks(
             p, r[i] + r[n - 1], r[n - 1] + r[i]);  // (Q5)
       }
+      return p;
+    }
+
+    Presentation<word_type> partition_monoid_Eas11(size_t n) {
+      if (n < 4) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "the 1st argument (degree) must be at least 4, found {}", n);
+      }
+
+      Presentation<word_type> p;
+
+      p.alphabet(4);
+      p.contains_empty_word(true);
+
+      // V1
+      presentation::add_rule_no_checks(p, pow(1_w, n), {});
+      presentation::add_rule_no_checks(p, pow(01_w, n - 1), {});
+      presentation::add_rule_no_checks(p, 00_w, {});
+      for (size_t i = 2; i <= n / 2; ++i) {
+        presentation::add_rule_no_checks(
+            p, pow(pow(1_w, i) + 0_w + pow(1_w, n - i) + 0_w, 2), {});
+      }
+
+      // V2
+      presentation::add_rule_no_checks(p, 22_w, 2_w);
+      presentation::add_rule_no_checks(p, 232_w, 2_w);
+      presentation::add_rule_no_checks(p, 012_w + pow(1_w, n - 1) + 0_w, 2_w);
+      presentation::add_rule_no_checks(
+          p, 10_w + pow(1_w, n - 1) + 210_w + pow(1_w, n - 1), 2_w);
+
+      // V3
+      presentation::add_rule_no_checks(p, 33_w, 3_w);
+      presentation::add_rule_no_checks(p, 323_w, 3_w);
+      presentation::add_rule_no_checks(p, 30_w, 3_w);
+      presentation::add_rule_no_checks(p, 03_w, 3_w);
+      presentation::add_rule_no_checks(
+          p, 110_w + pow(1_w, n - 2) + 3110_w + pow(1_w, n - 2), 3_w);
+      presentation::add_rule_no_checks(p,
+                                       pow(1_w, n - 1) + 010_w + pow(1_w, n - 1)
+                                           + 310_w + pow(1_w, n - 1) + 01_w,
+                                       3_w);
+
+      // V4
+      presentation::add_rule_no_checks(p, 0202_w, 202_w);
+      presentation::add_rule_no_checks(p, 2020_w, 202_w);
+
+      // V5
+      presentation::add_rule_no_checks(
+          p, 313_w + pow(1_w, n - 1), 13_w + pow(1_w, n - 1) + 3_w);
+
+      // V6
+      presentation::add_rule_no_checks(
+          p, 3113_w + pow(1_w, n - 2), 113_w + pow(1_w, n - 2) + 3_w);
+      // V7
+      presentation::add_rule_no_checks(
+          p, 3112_w + pow(1_w, n - 2), 112_w + pow(1_w, n - 2) + 3_w);
+      return p;
+    }
+
+    Presentation<word_type> partition_monoid_Machine(size_t n) {
+      if (n != 2 && n != 3) {
+        LIBSEMIGROUPS_EXCEPTION("the 1st argument must be 2 or 3 found {}", n);
+      }
+
+      Presentation<word_type> p;
+
+      if (n == 2) {
+        p.rules
+            = {01_w, 1_w, 10_w,  1_w, 02_w,  2_w, 20_w,   2_w,   03_w,   3_w,
+               30_w, 3_w, 11_w,  0_w, 13_w,  3_w, 22_w,   2_w,   31_w,   3_w,
+               33_w, 3_w, 232_w, 2_w, 323_w, 3_w, 1212_w, 212_w, 2121_w, 212_w};
+        p.alphabet_from_rules();
+        return p;
+      }
+
+      p.rules = {
+          00_w,       0_w,       01_w,        1_w,        02_w,      2_w,
+          03_w,       3_w,       04_w,        4_w,        10_w,      1_w,
+          20_w,       2_w,       22_w,        0_w,        24_w,      4_w,
+          30_w,       3_w,       33_w,        3_w,        40_w,      4_w,
+          42_w,       4_w,       44_w,        4_w,        111_w,     0_w,
+          112_w,      21_w,      121_w,       2_w,        211_w,     12_w,
+          212_w,      11_w,      214_w,       114_w,      312_w,     123_w,
+          343_w,      3_w,       412_w,       411_w,      434_w,     4_w,
+          1131_w,     232_w,     1132_w,      231_w,      1231_w,    32_w,
+          1232_w,     31_w,      1234_w,      314_w,      1323_w,    313_w,
+          1414_w,     414_w,     2131_w,      132_w,      2132_w,    131_w,
+          2134_w,     1314_w,    2313_w,      1313_w,     2314_w,    1134_w,
+          2323_w,     323_w,     3132_w,      313_w,      3143_w,    123_w,
+          3232_w,     323_w,     4114_w,      414_w,      4132_w,    4131_w,
+          4141_w,     414_w,     13113_w,     3213_w,     13414_w,   4134_w,
+          23113_w,    3113_w,    23213_w,     13213_w,    23413_w,   13413_w,
+          23414_w,    14134_w,   31141_w,     11413_w,    31311_w,   3213_w,
+          32311_w,    3113_w,    34113_w,     123_w,      34143_w,   11413_w,
+          41134_w,    4314_w,    41311_w,     13114_w,    41313_w,   4313_w,
+          41314_w,    4134_w,    41341_w,     4134_w,     41432_w,   41431_w,
+          113413_w,   31413_w,   114134_w,    3414_w,     131143_w,  43213_w,
+          131313_w,   31313_w,   131413_w,    3413_w,     143114_w,  43114_w,
+          231143_w,   143213_w,  311341_w,    31413_w,    311431_w,  114313_w,
+          313131_w,   31313_w,   313141_w,    3413_w,     314113_w,  3_w,
+          414311_w,   43114_w,   414314_w,    414_w,      431314_w,  13114_w,
+          1143131_w,  311432_w,  1143213_w,   31143_w,    1313413_w, 313413_w,
+          3114321_w,  31143_w,   3131341_w,   313413_w,   4311432_w, 4143131_w,
+          31143231_w, 3114323_w, 311432341_w, 114313413_w};
+      p.alphabet_from_rules();
       return p;
     }
 

@@ -50,43 +50,7 @@ namespace libsemigroups {
   struct LibsemigroupsException;
   constexpr bool REPORT = false;
 
-  using fpsemigroup::author;
-
-  using fpsemigroup::alternating_group;
-  using fpsemigroup::brauer_monoid;
-  using fpsemigroup::chinese_monoid;
-  using fpsemigroup::cyclic_inverse_monoid;
-  using fpsemigroup::dual_symmetric_inverse_monoid;
-  using fpsemigroup::fibonacci_semigroup;
-  using fpsemigroup::full_transformation_monoid;
-  using fpsemigroup::hypo_plactic_monoid;
-  using fpsemigroup::monogenic_semigroup;
-  using fpsemigroup::motzkin_monoid;
-  using fpsemigroup::not_renner_type_B_monoid;
-  using fpsemigroup::not_renner_type_D_monoid;
-  using fpsemigroup::not_symmetric_group;
-  using fpsemigroup::order_preserving_cyclic_inverse_monoid;
-  using fpsemigroup::order_preserving_monoid;
-  using fpsemigroup::orientation_preserving_monoid;
-  using fpsemigroup::orientation_preserving_reversing_monoid;
-  using fpsemigroup::partial_brauer_monoid;
-  using fpsemigroup::partial_isometries_cycle_graph_monoid;
-  using fpsemigroup::partial_transformation_monoid;
-  using fpsemigroup::partition_monoid;
-  using fpsemigroup::plactic_monoid;
-  using fpsemigroup::rectangular_band;
-  using fpsemigroup::renner_type_B_monoid;
-  using fpsemigroup::renner_type_D_monoid;
-  using fpsemigroup::sigma_stylic_monoid;
-  using fpsemigroup::singular_brauer_monoid;
-  using fpsemigroup::special_linear_group_2;
-  using fpsemigroup::stellar_monoid;
-  using fpsemigroup::stylic_monoid;
-  using fpsemigroup::symmetric_group;
-  using fpsemigroup::symmetric_inverse_monoid;
-  using fpsemigroup::temperley_lieb_monoid;
-  using fpsemigroup::uniform_block_bijection_monoid;
-  using fpsemigroup::zero_rook_monoid;
+  using namespace fpsemigroup;
 
   LIBSEMIGROUPS_TEST_CASE("fpsemi-examples",
                           "000",
@@ -102,7 +66,7 @@ namespace libsemigroups {
         == partial_transformation_monoid(4, author::Mitchell + author::Whyte));
     REQUIRE(symmetric_inverse_monoid(4)
             == symmetric_inverse_monoid(4, author::Mitchell + author::Whyte));
-    REQUIRE(partition_monoid(4) == partition_monoid(4, author::East));
+    REQUIRE(partition_monoid(4) == partition_monoid_Eas11(4));
     REQUIRE(cyclic_inverse_monoid(4)
             == cyclic_inverse_monoid(4, author::Fernandes));
 
@@ -161,10 +125,9 @@ namespace libsemigroups {
     REQUIRE(stellar_monoid(5).contains_empty_word());
     REQUIRE(dual_symmetric_inverse_monoid(5).contains_empty_word());
     REQUIRE(uniform_block_bijection_monoid(5).contains_empty_word());
-    REQUIRE(partition_monoid(5, author::East).contains_empty_word());
-    REQUIRE(partition_monoid(5, author::Halverson + author::Ram)
-                .contains_empty_word());
-    REQUIRE(!partition_monoid(3, author::Machine).contains_empty_word());
+    REQUIRE(partition_monoid_Eas11(5).contains_empty_word());
+    REQUIRE(partition_monoid_HR05(5).contains_empty_word());
+    REQUIRE(!partition_monoid_Machine(3).contains_empty_word());
     REQUIRE(!singular_brauer_monoid(5).contains_empty_word());
     REQUIRE(orientation_preserving_monoid(5).contains_empty_word());
     REQUIRE(orientation_preserving_reversing_monoid(5).contains_empty_word());
@@ -301,27 +264,13 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("fpsemi-examples",
-                          "012",
-                          "partition_monoid auth except",
-                          "[fpsemi-examples][quick]") {
-    auto rg = ReportGuard(REPORT);
-    REQUIRE_THROWS_AS(partition_monoid(3, author::Burnside),
-                      LibsemigroupsException);
-    REQUIRE_THROWS_AS(partition_monoid(5, author::Machine),
-                      LibsemigroupsException);
-  }
-
-  LIBSEMIGROUPS_TEST_CASE("fpsemi-examples",
                           "013",
                           "partition_monoid degree except",
                           "[fpsemi-examples][quick]") {
     auto rg = ReportGuard(REPORT);
-    REQUIRE_THROWS_AS(partition_monoid(4, author::Machine),
-                      LibsemigroupsException);
-    REQUIRE_THROWS_AS(partition_monoid(3, author::East),
-                      LibsemigroupsException);
-    REQUIRE_THROWS_AS(partition_monoid(0, author::Halverson + author::Ram),
-                      LibsemigroupsException);
+    REQUIRE_THROWS_AS(partition_monoid_Machine(4), LibsemigroupsException);
+    REQUIRE_THROWS_AS(partition_monoid_Eas11(3), LibsemigroupsException);
+    REQUIRE_THROWS_AS(partition_monoid_HR05(0), LibsemigroupsException);
   }
 
   LIBSEMIGROUPS_TEST_CASE("fpsemi-examples",
@@ -644,11 +593,9 @@ namespace libsemigroups {
                           "partition_monoid(5)",
                           "[fpsemi-examples][standard]") {
     auto        rg = ReportGuard(REPORT);
-    ToddCoxeter tc(congruence_kind::twosided,
-                   partition_monoid(5, author::East));
+    ToddCoxeter tc(congruence_kind::twosided, partition_monoid_Eas11(5));
     REQUIRE(tc.number_of_classes() == 115'975);
-    tc.init(congruence_kind::twosided,
-            partition_monoid(5, author::Halverson + author::Ram));
+    tc.init(congruence_kind::twosided, partition_monoid_HR05(5));
     REQUIRE(tc.number_of_classes() == 115'975);
   }
 
@@ -688,17 +635,13 @@ namespace libsemigroups {
                           "partition_monoid(n), 1 <= n <= 3",
                           "[fpsemi-examples][quick]") {
     auto        rg = ReportGuard(REPORT);
-    ToddCoxeter tc(congruence_kind::twosided,
-                   partition_monoid(3, author::Machine));
+    ToddCoxeter tc(congruence_kind::twosided, partition_monoid_Machine(3));
     REQUIRE(tc.number_of_classes() == 203);
-    tc.init(congruence_kind::twosided,
-            partition_monoid(3, author::Halverson + author::Ram));
+    tc.init(congruence_kind::twosided, partition_monoid_HR05(3));
     REQUIRE(tc.number_of_classes() == 203);
-    tc.init(congruence_kind::twosided,
-            partition_monoid(2, author::Halverson + author::Ram));
+    tc.init(congruence_kind::twosided, partition_monoid_HR05(2));
     REQUIRE(tc.number_of_classes() == 15);
-    tc.init(congruence_kind::twosided,
-            partition_monoid(1, author::Halverson + author::Ram));
+    tc.init(congruence_kind::twosided, partition_monoid_HR05(1));
     REQUIRE(tc.number_of_classes() == 2);
   }
 
