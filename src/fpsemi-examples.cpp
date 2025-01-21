@@ -352,13 +352,10 @@ namespace libsemigroups {
     using words::operator+;
     using words::operator+=;
 
-    Presentation<word_type> stellar_monoid(size_t l, author val) {
+    Presentation<word_type> stellar_monoid(size_t l) {
       if (l < 2) {
         LIBSEMIGROUPS_EXCEPTION(
             "expected 1st argument to be at least 2, found {}", l);
-      } else if (val != author::Any) {
-        LIBSEMIGROUPS_EXCEPTION(
-            "expected 2nd argument to be author::Any, found {}", val);
       }
       auto p = zero_rook_monoid(l);
 

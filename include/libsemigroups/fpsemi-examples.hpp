@@ -80,46 +80,46 @@ namespace libsemigroups {
       //! encoded as the `uint64_t` value \f$2^9\f$.
       Gay = 1 << 9,
 
-      //! encoded as the `uint64_t` value \f$2^10\f$.
+      //! encoded as the `uint64_t` value \f$2^{10}\f$.
       Godelle = 1 << 10,
 
-      //! encoded as the `uint64_t` value \f$2^11\f$.
+      //! encoded as the `uint64_t` value \f$2^{11}\f$.
       Guralnick = 1 << 11,
 
-      //! encoded as the `uint64_t` value \f$2^12\f$.
+      //! encoded as the `uint64_t` value \f$2^{12}\f$.
       Halverson = 1 << 12,
 
-      //! encoded as the `uint64_t` value \f$2^13\f$.
+      //! encoded as the `uint64_t` value \f$2^{13}\f$.
       Iwahori = 1 << 13,
 
-      //! encoded as the `uint64_t` value \f$2^14\f$.
+      //! encoded as the `uint64_t` value \f$2^{14}\f$.
       Kantor = 1 << 14,
 
-      //! encoded as the `uint64_t` value \f$2^15\f$.
+      //! encoded as the `uint64_t` value \f$2^{15}\f$.
       Kassabov = 1 << 15,
 
-      //! encoded as the `uint64_t` value \f$2^16\f$.
+      //! encoded as the `uint64_t` value \f$2^{16}\f$.
       Lubotzky = 1 << 16,
 
-      //! encoded as the `uint64_t` value \f$2^17\f$.
+      //! encoded as the `uint64_t` value \f$2^{17}\f$.
       Mitchell = 1 << 17,
 
-      //! encoded as the `uint64_t` value \f$2^18\f$.
+      //! encoded as the `uint64_t` value \f$2^{18}\f$.
       Miller = 1 << 18,
 
-      //! encoded as the `uint64_t` value \f$2^19\f$.
+      //! encoded as the `uint64_t` value \f$2^{19}\f$.
       Moore = 1 << 19,
 
-      //! encoded as the `uint64_t` value \f$2^20\f$.
+      //! encoded as the `uint64_t` value \f$2^{20}\f$.
       Moser = 1 << 20,
 
-      //! encoded as the `uint64_t` value \f$2^21\f$.
+      //! encoded as the `uint64_t` value \f$2^{21}\f$.
       Sutov = 1 << 21,
 
-      //! encoded as the `uint64_t` value \f$2^22\f$.
+      //! encoded as the `uint64_t` value \f$2^{22}\f$.
       Ram = 1 << 22,
 
-      //! encoded as the `uint64_t` value \f$2^2\f$.
+      //! encoded as the `uint64_t` value \f$2^{23}\f$.
       Whyte = 1 << 23
     };
 
@@ -133,21 +133,15 @@ namespace libsemigroups {
 
     //! \brief A presentation for the stellar monoid.
     //!
-    //! Returns the stellar monoid with \p l generators, as in Theorem 4.39 of
-    //! [10.48550/arXiv.1910.11740][].
+    //! This function returns a monoid presentation defining the stellar monoid
+    //! with \p l generators, as in Theorem 4.39 of \cite Gay1999aa.
     //!
     //! \param l the number of generators.
-    //! \param val the author (default: `author::Any`).
     //!
     //! \returns A value of type `Presentation<libsemigroups::word_type>`.
     //!
     //! \throws LibsemigroupsException if `l < 2`.
-    //! \throws LibsemigroupsException if \p val is not author::Any.
-    //!
-    //! [10.48550/arXiv.1910.11740]: https://doi.org/10.48550/arXiv.1910.11740
-    [[nodiscard]] Presentation<word_type> stellar_monoid(size_t l,
-                                                         author val
-                                                         = author::Any);
+    [[nodiscard]] Presentation<word_type> stellar_monoid(size_t l);
 
     //! \brief A presentation for the dual symmetric inverse monoid.
     //!

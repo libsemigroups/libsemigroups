@@ -112,7 +112,6 @@ namespace libsemigroups {
             == cyclic_inverse_monoid(4, author::Fernandes));
 
     // author::Any defaults
-    REQUIRE(stellar_monoid(4, author::Any) == stellar_monoid(4));
     REQUIRE(singular_brauer_monoid(4, author::Any)
             == singular_brauer_monoid(4));
     REQUIRE(orientation_preserving_monoid(4, author::Any)
@@ -405,14 +404,6 @@ namespace libsemigroups {
     auto rg = ReportGuard(REPORT);
     REQUIRE_THROWS_AS(stellar_monoid(0), LibsemigroupsException);
     REQUIRE_THROWS_AS(stellar_monoid(1), LibsemigroupsException);
-  }
-
-  LIBSEMIGROUPS_TEST_CASE("fpsemi-examples",
-                          "103",
-                          "stellar_monoid auth except",
-                          "[fpsemi-examples][quick]") {
-    auto rg = ReportGuard(REPORT);
-    REQUIRE_THROWS_AS(stellar_monoid(5, author::Sutov), LibsemigroupsException);
   }
 
   LIBSEMIGROUPS_TEST_CASE("fpsemi-examples",
