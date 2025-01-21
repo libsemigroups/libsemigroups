@@ -201,6 +201,7 @@ namespace libsemigroups {
       _generating_pairs.clear();
       _presentation.init();
       ToddCoxeterBase::init();
+      return *this;
     }
 
     ToddCoxeter(ToddCoxeter const&)            = default;
@@ -242,6 +243,7 @@ namespace libsemigroups {
     ToddCoxeter& init(congruence_kind knd, ToddCoxeter const& tc) {
       ToddCoxeterBase::init(knd, tc);
       _presentation = tc.presentation();
+      return *this;
     }
 
     template <typename Node>

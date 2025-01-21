@@ -774,6 +774,8 @@ namespace libsemigroups {
         && (!running_for()
             || report_every() >= std::chrono::milliseconds(1'500))) {
       // TODO(0) report_strategy
+      // TODO(0) if using ACE style strategy include the value of the relevant
+      // setting
       auto msg = fmt::format("{:+<90}\n", "");
       msg += fmt_default("ToddCoxeter: Using {} strategy . . .\n", strategy());
       msg += fmt::format("{:+<90}\n", "");
