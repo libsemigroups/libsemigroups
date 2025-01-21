@@ -53,49 +53,6 @@ namespace libsemigroups {
       return result;
     }
 
-    template <typename Word>
-    [[nodiscard]] tril is_non_trivial(ToddCoxeter<Word>&        tc,
-                                      size_t                    tries,
-                                      std::chrono::milliseconds try_for,
-                                      float                     threshold) {
-      using detail::node_managed_graph::random_active_node;
-
-      if (is_obviously_infinite(tc)) {
-        return tril::TRUE;
-      } else if (tc.finished()) {
-        return tc.number_of_classes() == 1 ? tril::FALSE : tril::TRUE;
-      }
-
-      for (size_t try_ = 0; try_ < tries; ++try_) {
-        report_default(
-            "trying to show non-triviality: {} / {}\n", try_ + 1, tries);
-        ToddCoxeterBase copy(tc);
-        copy.save(true);
-        while (!copy.finished()) {
-          copy.run_for(try_for);
-          size_t limit = copy.current_word_graph().number_of_nodes_active();
-          while (copy.current_word_graph().number_of_nodes_active()
-                     >= threshold * limit
-                 && !copy.finished()) {
-            auto  c1 = random_active_node(copy.current_word_graph());
-            auto  c2 = random_active_node(copy.current_word_graph());
-            auto& wg = const_cast<ToddCoxeterBase::word_graph_type&>(
-                copy.current_word_graph());
-            wg.merge_nodes_no_checks(c1, c2);
-            wg.process_coincidences<detail::RegisterDefs>();
-            wg.process_definitions();
-            copy.run_for(try_for);
-          }
-        }
-        if (copy.number_of_classes() > 1) {
-          report_default("successfully showed non-triviality!\n");
-          return tril::TRUE;
-        }
-      }
-      report_default("failed to show non-triviality!\n");
-      return tril::unknown;
-    }
-
     ////////////////////////////////////////////////////////////////////////
     // Possible future interface helpers - redundant_rule
     ////////////////////////////////////////////////////////////////////////

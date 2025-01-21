@@ -33,8 +33,8 @@ namespace libsemigroups {
   template <typename Word>
   Congruence<Word>& Congruence<Word>::init(congruence_kind           type,
                                            Presentation<Word> const& p) {
-    CongruenceInterface::init(type);
     init();
+    CongruenceInterface::init(type);
     _race.max_threads(POSITIVE_INFINITY);
     if (type == congruence_kind::twosided) {
       add_runner(std::make_shared<Kambites<Word>>(type, p));

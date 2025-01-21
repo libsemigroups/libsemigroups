@@ -791,8 +791,7 @@ namespace libsemigroups {
     //! \param threshold the threshold (see description).
     //!
     //! \returns A value of type \ref tril
-    template <typename Word>
-    [[nodiscard]] tril is_non_trivial(ToddCoxeter<Word>&        tc,
+    [[nodiscard]] tril is_non_trivial(ToddCoxeterBase&          tc,
                                       size_t                    tries = 10,
                                       std::chrono::milliseconds try_for
                                       = std::chrono::milliseconds(100),
@@ -872,7 +871,7 @@ namespace libsemigroups {
     //! \no_libsemigroups_except
     //!
     //! \cong_intf_warn_undecidable{Todd-Coxeter}.
-    template <typename Word = word_type>
+    template <typename Word>
     [[nodiscard]] auto normal_forms(ToddCoxeter<Word>& tc);
 
     ////////////////////////////////////////////////////////////////////////

@@ -31,15 +31,4 @@ namespace libsemigroups {
     return *this;
   }
 
-  // template <typename Word>
-  // template <typename Node>
-  // ToddCoxeter<Word>& ToddCoxeter<Word>::init(congruence_kind           knd,
-  //                                            Presentation<Word> const& p,
-  //                                            WordGraph<Node> const&    wg) {
-  //   ToddCoxeterBase::init(knd, p, wg);
-  //   _presentation = p;
-  //   _generating_pairs.clear();
-  //   return *this;
-  // }
-
 }  // namespace libsemigroups

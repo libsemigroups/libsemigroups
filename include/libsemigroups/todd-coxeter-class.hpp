@@ -27,7 +27,7 @@
 #define LIBSEMIGROUPS_TODD_COXETER_CLASS_HPP_
 
 #include "todd-coxeter-base.hpp"
-// TODO(0) iwyu
+// TODO(0) iwyu, doc
 
 namespace libsemigroups {
 
@@ -193,6 +193,7 @@ namespace libsemigroups {
 
    public:
     using native_word_type = Word;
+    // TODO(0) native_letter_type, native_presentation_type
 
     ToddCoxeter() = default;
 
@@ -211,6 +212,7 @@ namespace libsemigroups {
       init(knd, std::move(p));
     }
 
+    // TODO(0) to tpp
     ToddCoxeter& init(congruence_kind knd, Presentation<Word>&& p) {
       if constexpr (!std::is_same_v<Word, word_type>) {
         // to_presentation throws in the next line if p isn't valid
@@ -312,7 +314,7 @@ namespace libsemigroups {
     ////////////////////////////////////////////////////////////////////////
     // ToddCoxeter - interface requirements - add_generating_pair
     ////////////////////////////////////////////////////////////////////////
-
+    // TODO(0) to tpp
     template <typename Iterator1,
               typename Iterator2,
               typename Iterator3,
