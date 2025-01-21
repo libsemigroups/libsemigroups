@@ -691,14 +691,10 @@ namespace libsemigroups {
       return result;
     }
 
-    Presentation<word_type> uniform_block_bijection_monoid(size_t n,
-                                                           author val) {
+    Presentation<word_type> uniform_block_bijection_monoid(size_t n) {
       if (n < 3) {
         LIBSEMIGROUPS_EXCEPTION(
             "expected 1st argument to be at least 3, found {}", n);
-      } else if (val != author::FitzGerald) {
-        LIBSEMIGROUPS_EXCEPTION(
-            "expected 2nd argument to be author::FitzGerald, found {}", val);
       }
 
       word_type t = {n - 1};

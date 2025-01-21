@@ -159,22 +159,15 @@ namespace libsemigroups {
     //! \brief A presentation for the uniform block bijection monoid.
     //!
     //! This function returns a monoid presentation defining the uniform block
-    //! bijection monoid of degree \p n. The argument \p val determines the
-    //! specific presentation which is returned. The only option is:
-    //! * `author::FitzGerald` (see [10.1017/s0004972700037692][]).
+    //! bijection monoid of degree \p n, as in \cite FitzGerald2003aa.
     //!
     //! \param n the degree.
-    //! \param val the author of the presentation (default:
-    //! `author::FitzGerald`).
     //!
     //! \returns A value of type `Presentation<libsemigroups::word_type>`.
     //!
     //! \throws LibsemigroupsException if `n < 3`.
-    //! \throws LibsemigroupsException if \p val is not `author::FitzGerald`.
-    //!
-    //! [10.1017/s0004972700037692]: https://doi.org/10.1017/s0004972700037692
     [[nodiscard]] Presentation<word_type>
-    uniform_block_bijection_monoid(size_t n, author val = author::FitzGerald);
+    uniform_block_bijection_monoid(size_t n);
 
     //! \brief A presentation for the partition monoid.
     //!

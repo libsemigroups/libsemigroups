@@ -1967,7 +1967,7 @@ namespace libsemigroups {
     auto       rg = ReportGuard(false);
     auto const n  = 5;
 
-    auto p = uniform_block_bijection_monoid(n, author::FitzGerald);
+    auto p = uniform_block_bijection_monoid(n);
 
     ToddCoxeter tc(twosided, p);
 
@@ -2175,7 +2175,7 @@ namespace libsemigroups {
     auto rg = ReportGuard(true);
 
     for (size_t n = 3; n <= 7; ++n) {
-      auto        p = uniform_block_bijection_monoid(n, author::FitzGerald);
+      auto        p = uniform_block_bijection_monoid(n);
       ToddCoxeter tc(congruence_kind::twosided, p);
       output_gap_benchmark_file(
           "uniform-block-bijection-" + std::to_string(n) + ".g", tc);

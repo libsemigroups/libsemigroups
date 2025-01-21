@@ -1244,7 +1244,7 @@ namespace libsemigroups {
                           "uniform_block_bijection_monoid(4) (Fitzgerald)",
                           "[extreme][sims1]") {
     auto rg = ReportGuard(true);
-    auto p  = uniform_block_bijection_monoid(4, author::FitzGerald);
+    auto p  = fpsemigroup::uniform_block_bijection_monoid(4);
     presentation::remove_duplicate_rules(p);
     presentation::reduce_complements(p);
     presentation::sort_each_rule(p);

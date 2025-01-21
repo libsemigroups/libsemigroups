@@ -102,8 +102,6 @@ namespace libsemigroups {
         == partial_transformation_monoid(4, author::Mitchell + author::Whyte));
     REQUIRE(symmetric_inverse_monoid(4)
             == symmetric_inverse_monoid(4, author::Mitchell + author::Whyte));
-    REQUIRE(uniform_block_bijection_monoid(4)
-            == uniform_block_bijection_monoid(4, author::FitzGerald));
     REQUIRE(partition_monoid(4) == partition_monoid(4, author::East));
     REQUIRE(cyclic_inverse_monoid(4)
             == cyclic_inverse_monoid(4, author::Fernandes));
@@ -294,20 +292,11 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("fpsemi-examples",
-                          "010",
-                          "uniform_block_bijection_monoid auth except",
-                          "[fpsemi-examples][quick]") {
-    auto rg = ReportGuard(REPORT);
-    REQUIRE_THROWS_AS(uniform_block_bijection_monoid(9, author::Burnside),
-                      LibsemigroupsException);
-  }
-
-  LIBSEMIGROUPS_TEST_CASE("fpsemi-examples",
                           "011",
                           "uniform_block_bijection_monoid degree except",
                           "[fpsemi-examples][quick]") {
     auto rg = ReportGuard(REPORT);
-    REQUIRE_THROWS_AS(uniform_block_bijection_monoid(2, author::FitzGerald),
+    REQUIRE_THROWS_AS(uniform_block_bijection_monoid(2),
                       LibsemigroupsException);
   }
 
@@ -644,7 +633,7 @@ namespace libsemigroups {
                           "[fpsemi-examples][quick][no-valgrind]") {
     auto   rg = ReportGuard(REPORT);
     size_t n  = 5;
-    auto   p  = uniform_block_bijection_monoid(n, author::FitzGerald);
+    auto   p  = uniform_block_bijection_monoid(n);
     p.validate();
     ToddCoxeter tc(congruence_kind::twosided, p);
     REQUIRE(tc.number_of_classes() == 1'496);
