@@ -403,15 +403,8 @@ namespace libsemigroups {
 
   template <typename Word>
   std::string to_human_readable_repr(Congruence<Word> const& c) {
-    std::string p;
-    try {
-      // TODO(0) (do this better)
-      p = " over " + to_human_readable_repr(c.presentation());
-    } catch (...) {
-    }
-
-    return fmt::format("<Congruence{} with {} runner{}>",
-                       p,
+    return fmt::format("<Congruence over {} with {} runner{}>",
+                       to_human_readable_repr(c.presentation()),
                        c.number_of_runners(),
                        c.number_of_runners() > 1 ? "s" : "");
   }

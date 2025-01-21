@@ -38,6 +38,9 @@
 namespace libsemigroups {
   class FroidurePinBase;  // Forward declaration, constructor parameters
 
+  // TODO(0) doc
+  // Polymorphic base class so we can easily check
+  // std::is_base_of<CongruenceBase, Thing>
   struct CongruenceBase {};
 
   //! \ingroup cong_all_classes_group
@@ -71,24 +74,6 @@ namespace libsemigroups {
   template <typename Word>
   class Congruence : public CongruenceInterface, public CongruenceBase {
     enum class RunnerKind : size_t { TC = 0, KB = 1, K = 2 };
-
-    template <RunnerKind kind>
-    struct RunnerType;
-
-    template <>
-    struct RunnerType<RunnerKind::TC> {
-      using type = ToddCoxeter<Word>;
-    };
-
-    template <>
-    struct RunnerType<RunnerKind::KB> {
-      using type = KnuthBendix<Word>;
-    };
-
-    template <>
-    struct RunnerType<RunnerKind::K> {
-      using type = Kambites<Word>;
-    };
 
     /////////////////////////////////////////////////////////////////////////
     // Congruence - data - private
@@ -697,12 +682,15 @@ namespace libsemigroups {
     }
   };  // class Congruence
 
+  // TODO(0) doc
   template <typename Word>
   Congruence(congruence_kind, Presentation<Word> const&) -> Congruence<Word>;
 
+  // TODO(0) doc
   template <typename Word>
   Congruence(congruence_kind, Presentation<Word>&&) -> Congruence<Word>;
 
+  // TODO(0) doc
   template <typename Node>
   Congruence(congruence_kind knd, FroidurePinBase& S, WordGraph<Node> const& wg)
       -> Congruence<word_type>;

@@ -20,6 +20,11 @@
 // its derived classes. This is a separate file so that we can declare all the
 // derived classes of CongruenceInterface prior to declaring the functions in
 // this file.
+//
+// The implementation of all helpers must go into the namespace
+// congruence_interface, and then be aliased into the, e.g., todd_coxeter
+// namespace. This makes it possible to generically use, e.g.,
+// congruence_interface::normal_form in, e.g., the python bindings.
 
 #ifndef LIBSEMIGROUPS_CONG_INTF_HELPERS_HPP_
 #define LIBSEMIGROUPS_CONG_INTF_HELPERS_HPP_
@@ -35,8 +40,7 @@
 #include <vector>            // for vector
 
 #include "exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
-#include "libsemigroups/todd-coxeter-base.hpp"
-#include "ranges.hpp"  // for is_input_or_sink_v, iterator_...
+#include "ranges.hpp"     // for is_input_or_sink_v, iterator_...
 
 namespace libsemigroups {
 
