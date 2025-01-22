@@ -71,7 +71,6 @@ namespace libsemigroups {
             == cyclic_inverse_monoid(4, author::Fernandes));
 
     // author::Any defaults
-    REQUIRE(stylic_monoid(4, author::Any) == stylic_monoid(4));
     REQUIRE(rectangular_band(5, 3, author::Any) == rectangular_band(5, 3));
     REQUIRE(chinese_monoid(5, author::Any) == chinese_monoid(5));
     REQUIRE(monogenic_semigroup(6, 3, author::Any)
@@ -333,14 +332,6 @@ namespace libsemigroups {
     auto rg = ReportGuard(REPORT);
     REQUIRE_THROWS_AS(stylic_monoid(0), LibsemigroupsException);
     REQUIRE_THROWS_AS(stylic_monoid(1), LibsemigroupsException);
-  }
-
-  LIBSEMIGROUPS_TEST_CASE("fpsemi-examples",
-                          "105",
-                          "stylic_monoid auth except",
-                          "[fpsemi-examples][quick]") {
-    auto rg = ReportGuard(REPORT);
-    REQUIRE_THROWS_AS(stylic_monoid(5, author::Sutov), LibsemigroupsException);
   }
 
   LIBSEMIGROUPS_TEST_CASE("fpsemi-examples",

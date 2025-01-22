@@ -416,13 +416,10 @@ namespace libsemigroups {
       return p;
     }
 
-    Presentation<word_type> stylic_monoid(size_t n, author val) {
+    Presentation<word_type> stylic_monoid(size_t n) {
       if (n < 2) {
         LIBSEMIGROUPS_EXCEPTION(
             "expected 1st argument to be at least 2, found {}", n);
-      } else if (val != author::Any) {
-        LIBSEMIGROUPS_EXCEPTION(
-            "expected 2nd argument to be author::Any, found {}", val);
       }
       auto p = plactic_monoid(n);
       presentation::add_idempotent_rules_no_checks(p, range(n));
