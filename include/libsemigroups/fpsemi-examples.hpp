@@ -356,20 +356,14 @@ namespace libsemigroups {
     //! \brief A presentation for the plactic monoid.
     //!
     //! This function returns a monoid presentation defining the plactic monoid
-    //! with \p n generators (see Section 3 of [10.1007/s00233-022-10285-3][]).
+    //! with \p n generators, as in see Section 3 of \cite Abram2022aa.
     //!
     //! \param n the number of generators.
-    //! \param val the author of the presentation (default: `author::Any`).
     //!
     //! \returns A value of type `Presentation<libsemigroups::word_type>`.
     //!
     //! \throws LibsemigroupsException if `n < 2`.
-    //! \throws LibsemigroupsException if \p val is not `author::Any`.
-    //!
-    //! [10.1007/s00233-022-10285-3]: https://doi.org/10.1007/s00233-022-10285-3
-    [[nodiscard]] Presentation<word_type> plactic_monoid(size_t n,
-                                                         author val
-                                                         = author::Any);
+    [[nodiscard]] Presentation<word_type> plactic_monoid(size_t n);
 
     //! \brief A presentation for the stylic monoid.
     //!
