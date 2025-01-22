@@ -1533,18 +1533,19 @@ namespace libsemigroups {
     presentation::add_rule_no_checks(p, "abcabd", "");
     presentation::balance_no_checks(p, "abc", "efg");
     REQUIRE(p.rules
-            == std::vector<std::string>({"aaaa",
-                                         "aaaa",
-                                         "aaaaa",
-                                         "aaaa",
-                                         "c",
-                                         "a",
-                                         "aabbaac",
-                                         "aaaaaaa",
-                                         "dddcc",
-                                         "baaaa",
-                                         "abd",
-                                         "gfe"}));
+            == std::vector<std::string>(  // codespell:begin-ignore
+                {"aaaa",
+                 "aaaa",
+                 "aaaaa",
+                 "aaaa",
+                 "c",
+                 "a",
+                 "aabbaac",
+                 "aaaaaaa",
+                 "dddcc",
+                 "baaaa",
+                 "abd",
+                 "gfe"}));  // codespell:end-ignore
   }
 
   LIBSEMIGROUPS_TEST_CASE("Presentation",

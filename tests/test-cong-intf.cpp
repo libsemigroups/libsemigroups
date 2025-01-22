@@ -261,7 +261,7 @@ namespace libsemigroups {
 
     REQUIRE((froidure_pin::current_normal_forms(*fp) | ToString(p.alphabet())
              | rx::take(100) | rx::to_vector())
-            == std::vector<std::string>(
+            == std::vector<std::string>(  // codespell:begin-ignore
                 {"a",   "b",   "c",   "d",   "e",   "f",   "g",   "aa",  "ab",
                  "ac",  "ad",  "ae",  "af",  "ag",  "ba",  "bb",  "bc",  "bd",
                  "be",  "bf",  "bg",  "ca",  "cb",  "cc",  "cd",  "ce",  "cf",
@@ -272,8 +272,8 @@ namespace libsemigroups {
                  "abb", "abc", "abd", "abe", "abf", "abg", "aca", "acb", "acc",
                  "acd", "ace", "acf", "acg", "ada", "adb", "adc", "add", "ade",
                  "adf", "adg", "aea", "aeb", "aec", "aed", "aee", "aeg", "afa",
-                 "afb", "afc", "afd", "afe",  // codespell:ignore
-                 "aff", "afg", "aga", "agb", "agc", "agd"}));
+                 "afb", "afc", "afd", "afe", "aff", "afg", "aga", "agb", "agc",
+                 "agd"}));  // codespell:end-ignore
   }
 
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("CongruenceInterface",
