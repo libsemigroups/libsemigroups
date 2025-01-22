@@ -341,22 +341,17 @@ namespace libsemigroups {
     //!
     //! This function returns a semigroup presentation defining the Fibonacci
     //! semigroup \f$F(r, n)\f$, where \f$r\f$ is \p r and \f$n\f$ is \p n, as
-    //! described in [10.1016/0022-4049(94)90005-1][].
+    //! described in \cite Campbell1994aa.
     //!
     //! \param r the length of the left hand sides of the relations.
     //! \param n the number of generators.
-    //! \param val the author of the presentation (default: `author::Any`).
     //!
     //! \returns A value of type `Presentation<libsemigroups::word_type>`.
     //!
-    //! \throws LibsemigroupsException if `n == 0`.
-    //! \throws LibsemigroupsException if `r == 0`.
-    //! \throws LibsemigroupsException if \p val is not `author::Any`.
-    //!
-    //! [10.1016/0022-4049(94)90005-1]:
-    //! https://doi.org/10.1016/0022-4049(94)90005-1
-    [[nodiscard]] Presentation<word_type>
-    fibonacci_semigroup(size_t r, size_t n, author val = author::Any);
+    //! \throws LibsemigroupsException if `n < 1`.
+    //! \throws LibsemigroupsException if `r < 1`.
+    [[nodiscard]] Presentation<word_type> fibonacci_semigroup(size_t r,
+                                                              size_t n);
 
     //! \brief A presentation for the plactic monoid.
     //!

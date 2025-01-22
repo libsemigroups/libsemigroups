@@ -368,18 +368,13 @@ namespace libsemigroups {
       return p;
     }
 
-    Presentation<word_type> fibonacci_semigroup(size_t r,
-                                                size_t n,
-                                                author val) {
+    Presentation<word_type> fibonacci_semigroup(size_t r, size_t n) {
       if (r == 0) {
         LIBSEMIGROUPS_EXCEPTION(
             "expected 1st argument to be strictly positive, found {}", r);
       } else if (n == 0) {
         LIBSEMIGROUPS_EXCEPTION(
             "expected 2nd argument to be strictly positive, found {}", n);
-      } else if (val != author::Any) {
-        LIBSEMIGROUPS_EXCEPTION(
-            "expected 3rd argument to be author::Any, found {}", val);
       }
       Presentation<word_type> p;
 
