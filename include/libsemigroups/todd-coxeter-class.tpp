@@ -25,7 +25,14 @@ namespace libsemigroups {
   ToddCoxeter<Word>& ToddCoxeter<Word>::init(congruence_kind        knd,
                                              WordGraph<Node> const& wg) {
     ToddCoxeterBase::init(knd, wg);
-    _presentation = to_presentation<Word>(current_word_graph().presentation());
+    if constexpr (std::is_same_v<Word, word_type>) {
+      _presentation = current_word_graph().presentation();
+    } else {
+      // TODO(0) implement to_presentation<word_type>(Presentation<word_type>)
+      // which just returns the input unchanged, and remove this if-statement
+      _presentation
+          = to_presentation<Word>(current_word_graph().presentation());
+    }
     _generating_pairs.clear();
     return *this;
   }

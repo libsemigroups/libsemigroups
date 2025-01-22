@@ -148,6 +148,16 @@ namespace libsemigroups {
   // ToddCoxeterBase::Graph
   ////////////////////////////////////////////////////////////////////////
 
+  ToddCoxeterBase::Graph& ToddCoxeterBase::Graph::init() {
+    NodeManager<node_type>::clear();
+    FelschGraph_::init();
+    // TODO(1) shouldn't add nodes here because then there'll be more than
+    // there should be (i.e. NodeManager and FelschGraph_ will have
+    // different numbers of nodes
+    FelschGraph_::add_nodes(NodeManager<node_type>::node_capacity());
+    return *this;
+  }
+
   ToddCoxeterBase::Graph&
   ToddCoxeterBase::Graph::init(Presentation<word_type> const& p) {
     NodeManager<node_type>::clear();
@@ -354,6 +364,7 @@ namespace libsemigroups {
     }
     LIBSEMIGROUPS_ASSERT(!_setting_stack.empty());
     _standardized = Order::none;
+    _word_graph.init();
     copy_settings_into_graph();
     return *this;
   }

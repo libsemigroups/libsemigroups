@@ -472,6 +472,7 @@ namespace libsemigroups {
       using FelschGraph_::target_no_checks;
       using NodeManagedGraph_::NodeManagedGraph;
 
+      Graph& init();
       // TODO(1) corresponding constructors
       Graph& init(Presentation<word_type> const& p);
       Graph& init(Presentation<word_type>&& p);
