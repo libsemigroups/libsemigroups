@@ -288,20 +288,14 @@ namespace libsemigroups {
     //!
     //! This function returns a monoid presentation defining the Temperley-Lieb
     //! monoid with \p n generators, as described in Theorem 2.2 of
-    //! [10.1093/qmath/haab001][].
+    //! \cite East2022aa.
     //!
     //! \param n the number of generators.
-    //! \param val the author of the presentation (default: `author::Any`).
     //!
     //! \returns A value of type `Presentation<libsemigroups::word_type>`.
     //!
     //! \throws LibsemigroupsException if `n < 3`.
-    //! \throws LibsemigroupsException if \p val is not `author::Any`.
-    //!
-    //! [10.1093/qmath/haab001]: https://doi.org/10.1093/qmath/haab001
-    [[nodiscard]] Presentation<word_type> temperley_lieb_monoid(size_t n,
-                                                                author val
-                                                                = author::Any);
+    [[nodiscard]] Presentation<word_type> temperley_lieb_monoid(size_t n);
 
     //! \brief A presentation for the Brauer monoid.
     //!
