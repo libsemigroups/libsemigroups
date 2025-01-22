@@ -269,14 +269,14 @@ namespace libsemigroups {
 
     auto nf = knuth_bendix::normal_forms(kb);
     REQUIRE((nf.min(0).max(5) | to_vector())
-            == std::vector<std::string>(
+            == std::vector<std::string>(  // codespell:end-ignore
                 {"",     "a",    "b",    "c",    "d",    "aa",   "ac",
                  "ad",   "bb",   "bc",   "bd",   "cc",   "dd",   "aaa",
                  "aac",  "aad",  "acc",  "add",  "bbb",  "bbc",  "bbd",
                  "bcc",  "bdd",  "ccc",  "ddd",  "aaaa", "aaac", "aaad",
-                 "aacc", "aadd", "accc", "addd",  // codespell:ignore
-                 "bbbb", "bbbc", "bbbd", "bbcc", "bbdd", "bccc", "bddd",
-                 "cccc", "dddd"}));
+                 "aacc", "aadd", "accc", "addd", "bbbb", "bbbc", "bbbd",
+                 "bbcc", "bbdd", "bccc", "bddd", "cccc", "dddd"}));
+    // codespell:end-ignore
     REQUIRE((nf.min(0).max(6) | all_of([&kb](auto const& w) {
                return knuth_bendix::reduce(kb, w) == w;
              })));
