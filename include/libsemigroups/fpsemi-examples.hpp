@@ -245,21 +245,14 @@ namespace libsemigroups {
     //! \brief A presentation for the singular part of the Brauer monoid.
     //!
     //! This function returns a monoid presentation for the singular part of the
-    //! Brauer monoid of degree \p n, as in Theorem 5 of
-    //! [10.21136/MB.2007.134125][]).
+    //! Brauer monoid of degree \p n, as in Theorem 5 of \cite Maltcev2007aa.
     //!
     //! \param n the degree.
-    //! \param val the author of the presentation (default: `author::Any`).
     //!
     //! \returns A value of type `Presentation<libsemigroups::word_type>`.
     //!
     //! \throws LibsemigroupsException if `n < 3`.
-    //! \throws LibsemigroupsException if \p val is not `author::Any`.
-    //!
-    //! [10.21136/MB.2007.134125]: https://doi.org/10.21136/MB.2007.134125
-    [[nodiscard]] Presentation<word_type> singular_brauer_monoid(size_t n,
-                                                                 author val
-                                                                 = author::Any);
+    [[nodiscard]] Presentation<word_type> singular_brauer_monoid(size_t n);
 
     //! \brief A presentation for the monoid of orientation preserving
     //! mappings.

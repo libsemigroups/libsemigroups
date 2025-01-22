@@ -927,13 +927,10 @@ namespace libsemigroups {
 
     // From Theorem 5 in 10.21136/MB.2007.134125
     // https://dml.cz/bitstream/handle/10338.dmlcz/134125/MathBohem_132-2007-3_6.pdf
-    Presentation<word_type> singular_brauer_monoid(size_t n, author val) {
+    Presentation<word_type> singular_brauer_monoid(size_t n) {
       if (n < 3) {
         LIBSEMIGROUPS_EXCEPTION(
             "expected 1st argument to be at least 3, found {}", n);
-      } else if (val != author::Any) {
-        LIBSEMIGROUPS_EXCEPTION(
-            "expected 2nd argument to be author::Any, found {}", val);
       }
       std::vector<std::vector<word_type>> t;
       size_t                              value = 0;
