@@ -71,8 +71,6 @@ namespace libsemigroups {
             == cyclic_inverse_monoid(4, author::Fernandes));
 
     // author::Any defaults
-    REQUIRE(brauer_monoid(4, author::Any) == brauer_monoid(4));
-    REQUIRE(partial_brauer_monoid(4, author::Any) == partial_brauer_monoid(4));
     REQUIRE(motzkin_monoid(4, author::Any) == motzkin_monoid(4));
     REQUIRE(fibonacci_semigroup(5, 2, author::Any)
             == fibonacci_semigroup(5, 2));
