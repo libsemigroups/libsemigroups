@@ -1199,13 +1199,10 @@ namespace libsemigroups {
 
     // From Theorem 4.1 in
     // https://arxiv.org/pdf/1301.4518
-    Presentation<word_type> motzkin_monoid(size_t n, author val) {
+    Presentation<word_type> motzkin_monoid(size_t n) {
       if (n < 1) {
         LIBSEMIGROUPS_EXCEPTION(
             "expected 1st argument to be at least 1, found {}", n);
-      } else if (val != author::Any) {
-        LIBSEMIGROUPS_EXCEPTION(
-            "expected 2nd argument to be author::Any, found {}", val);
       }
 
       Presentation<word_type> p;

@@ -322,23 +322,20 @@ namespace libsemigroups {
     //! \throws LibsemigroupsException if `n < 1`.
     [[nodiscard]] Presentation<word_type> partial_brauer_monoid(size_t n);
 
-    //! A presentation for the Motzkin monoid.
+    //! \brief A presentation for the Motzkin monoid.
     //!
-    //! Returns a monoid presentation defining
-    //! the Motzkin monoid of degree `n`, as described in Theorem 4.1 of the
-    //! paper [10.48550/arXiv.1301.4518][], with the additional relations
-    //! \f$ r_i t_i l_i = r_i ^ 2 \f$ added to fix a hole in Lemma 4.10 which
-    //! rendered the presentation as stated in the paper incorrect.
+    //! This function returns a monoid presentation defining
+    //! the Motzkin monoid of degree \p n, as described in Theorem 4.1 of
+    //! \cite Posner2013aa, with the additional relations \f$ r_i t_i l_i = r_i
+    //! ^ 2 \f$ added to fix a hole in Lemma 4.10 which rendered the
+    //! presentation as stated in the paper incorrect.
     //!
-    //! \param n the degree
+    //! \param n the degree.
     //!
-    //! \returns A `std::vector<relation_type>`
+    //! \returns A value of type `Presentation<libsemigroups::word_type>`.
     //!
-    //! [10.48550/arXiv.1301.4518]:
-    //! https://doi.org/10.48550/arXiv.1301.4518
-    [[nodiscard]] Presentation<word_type> motzkin_monoid(size_t n,
-                                                         author val
-                                                         = author::Any);
+    //! \throws LibsemigroupsException if `n < 1`.
+    [[nodiscard]] Presentation<word_type> motzkin_monoid(size_t n);
 
     //! \brief A presentation for a Fibonacci semigroup.
     //!
