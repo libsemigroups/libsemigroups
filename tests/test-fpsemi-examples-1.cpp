@@ -71,8 +71,6 @@ namespace libsemigroups {
             == cyclic_inverse_monoid(4, author::Fernandes));
 
     // author::Any defaults
-    REQUIRE(orientation_preserving_reversing_monoid(4, author::Any)
-            == orientation_preserving_reversing_monoid(4));
     REQUIRE(temperley_lieb_monoid(4, author::Any) == temperley_lieb_monoid(4));
     REQUIRE(brauer_monoid(4, author::Any) == brauer_monoid(4));
     REQUIRE(partial_brauer_monoid(4, author::Any) == partial_brauer_monoid(4));
@@ -411,15 +409,6 @@ namespace libsemigroups {
     REQUIRE_THROWS_AS(orientation_preserving_reversing_monoid(1),
                       LibsemigroupsException);
     REQUIRE_THROWS_AS(orientation_preserving_reversing_monoid(2),
-                      LibsemigroupsException);
-  }
-
-  LIBSEMIGROUPS_TEST_CASE("fpsemi-examples",
-                          "108",
-                          "orientation_preserving_reversing_monoid auth except",
-                          "[fpsemi-examples][quick]") {
-    auto rg = ReportGuard(REPORT);
-    REQUIRE_THROWS_AS(orientation_preserving_reversing_monoid(0, author::Sutov),
                       LibsemigroupsException);
   }
 

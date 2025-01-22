@@ -274,19 +274,15 @@ namespace libsemigroups {
     //!
     //! This function returns a monoid presentation defining the monoid of
     //! orientation preserving or reversing mappings on a finite chain of order
-    //! \p n, as described in [10.1007/s10012-000-0001-1][].
+    //! \p n, as described in \cite Arthur2000aa.
     //!
     //! \param n the order of the chain.
-    //! \param val the author of the presentation (default: `author::Any`).
     //!
     //! \returns A value of type `Presentation<libsemigroups::word_type>`.
     //!
     //! \throws LibsemigroupsException if `n < 3`.
-    //! \throws LibsemigroupsException if \p val is not `author::Any`.
-    //!
-    //! [10.1007/s10012-000-0001-1]: https://doi.org/10.1007/s10012-000-0001-1
     [[nodiscard]] Presentation<word_type>
-    orientation_preserving_reversing_monoid(size_t n, author val = author::Any);
+    orientation_preserving_reversing_monoid(size_t n);
 
     //! \brief A presentation for the Temperley-Lieb monoid.
     //!
