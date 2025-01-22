@@ -1134,13 +1134,10 @@ namespace libsemigroups {
 
     // From Theorem 5.1 in
     // https://link.springer.com/content/pdf/10.2478/s11533-006-0017-6.pdf
-    Presentation<word_type> partial_brauer_monoid(size_t n, author val) {
+    Presentation<word_type> partial_brauer_monoid(size_t n) {
       if (n < 1) {
         LIBSEMIGROUPS_EXCEPTION(
             "expected 1st argument to be at least 1, found {}", n);
-      } else if (val != author::Any) {
-        LIBSEMIGROUPS_EXCEPTION(
-            "expected 2nd argument to be author::Any, found {}", val);
       }
 
       std::vector<word_type> s(n), t(n), v(n);

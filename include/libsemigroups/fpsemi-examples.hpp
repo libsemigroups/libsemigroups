@@ -309,24 +309,18 @@ namespace libsemigroups {
     //! \throws LibsemigroupsException if `n < 1`.
     [[nodiscard]] Presentation<word_type> brauer_monoid(size_t n);
 
-    //! A presentation for the partial Brauer monoid.
+    //! \brief A presentation for the partial Brauer monoid.
     //!
-    //! The function returns a monoid presentation defining the partial Brauer
-    //! monoid of degree `n`, as described in Theorem 5.1 of
-    //! the paper [10.2478/s11533-006-0017-6][].
+    //! This function returns a monoid presentation defining the partial Brauer
+    //! monoid of degree \p n, as described in Theorem 5.1 of
+    //! \cite Kudryavtseva2006aa.
     //!
-    //! \param n the degree
-    //! \param val the author of the presentation (default: `author::Any`).
+    //! \param n the degree.
     //!
     //! \returns A value of type `Presentation<libsemigroups::word_type>`.
     //!
-    //! \throws LibsemigroupsException if \p val is not `author::Any`.
-    //!
-    //! [10.2478/s11533-006-0017-6]:
-    //! https://doi.org/10.2478/s11533-006-0017-6
-    [[nodiscard]] Presentation<word_type> partial_brauer_monoid(size_t n,
-                                                                author val
-                                                                = author::Any);
+    //! \throws LibsemigroupsException if `n < 1`.
+    [[nodiscard]] Presentation<word_type> partial_brauer_monoid(size_t n);
 
     //! A presentation for the Motzkin monoid.
     //!
