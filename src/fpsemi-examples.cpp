@@ -995,14 +995,10 @@ namespace libsemigroups {
     }
 
     // From https://doi.org/10.1007/s10012-000-0001-1
-    Presentation<word_type> orientation_preserving_monoid(size_t n,
-                                                          author val) {
+    Presentation<word_type> orientation_preserving_monoid(size_t n) {
       if (n < 3) {
         LIBSEMIGROUPS_EXCEPTION(
             "expected 1st argument to be at least 3, found {}", n);
-      } else if (val != author::Any) {
-        LIBSEMIGROUPS_EXCEPTION(
-            "expected 2nd argument to be author::Any, found {}", val);
       }
       Presentation<word_type> p;
       p.alphabet(2);
