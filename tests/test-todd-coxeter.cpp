@@ -1853,14 +1853,14 @@ namespace libsemigroups {
   // Takes about 1.8s
   LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                           "042",
-                          "symmetric_group(9, Moore)",
+                          "symmetric_group(9) Moore_b",
                           "[todd-coxeter][extreme]") {
     using fpsemigroup::author;
-    using fpsemigroup::symmetric_group_Rus95_1;
+    using fpsemigroup::symmetric_group_Moo97_b;
 
     auto rg = ReportGuard(true);
 
-    auto p = symmetric_group_Rus95_1(9);
+    auto p = symmetric_group_Moo97_b(9);
     presentation::reduce_complements(p);
     presentation::remove_duplicate_rules(p);
     presentation::sort_rules(p);
@@ -1886,15 +1886,15 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                           "043",
-                          "symmetric_group(7, Coxeter + Moser)",
+                          "symmetric_group(7) Moore_a",
                           "[todd-coxeter][quick][no-valgrind]") {
     using fpsemigroup::author;
-    using fpsemigroup::symmetric_group_Rus95_2;
+    using fpsemigroup::symmetric_group_Moo97_a;
 
     auto rg = ReportGuard(false);
 
     size_t n = 7;
-    auto   p = symmetric_group_Rus95_2(n);
+    auto   p = symmetric_group_Moo97_a(n);
 
     ToddCoxeter tc(twosided, p);
 
@@ -1916,7 +1916,7 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                           "116",
-                          "symmetric_group(7, Burnside + Miller)",
+                          "symmetric_group(7) Burnside",
                           "[todd-coxeter][quick][no-valgrind]") {
     using fpsemigroup::author;
     using fpsemigroup::symmetric_group_Bur12;

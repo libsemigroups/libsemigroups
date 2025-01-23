@@ -2834,7 +2834,7 @@ namespace libsemigroups {
     std::array<uint64_t, 10> const num = {0, 0, 0, 6, 30, 156, 1'455};
     auto                           rg  = ReportGuard(false);
     size_t                         n   = 4;
-    auto                           p   = fpsemigroup::symmetric_group_GM09_1(n);
+    auto                           p   = fpsemigroup::symmetric_group_Car56(n);
     Sims1                          C;
     C.presentation(p).number_of_threads(4);
     REQUIRE(C.number_of_congruences(factorial(n)) == num[n]);

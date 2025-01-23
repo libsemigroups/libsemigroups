@@ -429,7 +429,7 @@ namespace libsemigroups {
       return p;
     }
 
-    // Burnside + Miller
+    // This presentation is due to Burnside [p. 464] and Miller [p. 366] in 1911
     // See Eq 2.6 of 'Presentations of finite simple groups: A quantitative
     // approach' J. Amer. Math. Soc. 21 (2008), 711-774
     Presentation<word_type> symmetric_group_Bur12(size_t n) {
@@ -463,10 +463,9 @@ namespace libsemigroups {
       return p;
     }
 
-    // Carmichael
-    // Exercise 9.5.2, p172 of
+    // Carmichael pg. 169 and Exercise 9.5.2, p172 of
     // https://link.springer.com/book/10.1007/978-1-84800-281-4
-    Presentation<word_type> symmetric_group_GM09_1(size_t n) {
+    Presentation<word_type> symmetric_group_Car56(size_t n) {
       if (n < 2) {
         LIBSEMIGROUPS_EXCEPTION(
             "expected 1st argument (degree) to be at least 2, found {}", n);
@@ -494,32 +493,21 @@ namespace libsemigroups {
       return p;
     }
 
-    // Moore 1
-    Presentation<word_type> symmetric_group_GM09_2(size_t n) {
-      if (n < 4) {
+    // From Theorm A in Moore 1897
+    Presentation<word_type> symmetric_group_Moo97_a(size_t n) {
+      if (n < 2) {
         LIBSEMIGROUPS_EXCEPTION(
-            "expected 1st argument (degree) to be at least 4, found {}", n);
+            "expected 1st argument (degree) to be at least 2, found {}", n);
       }
       Presentation<word_type> p;
       presentation::add_involution_rules_no_checks(p, range(n - 1));
-      for (size_t i = 0; i <= n - 4; ++i) {
-        for (size_t j = i + 2; j <= n - 2; ++j) {
-          presentation::add_rule_no_checks(p, {i, j}, {j, i});
-        }
-      }
-
-      for (size_t i = 0; i < n - 2; ++i) {
-        presentation::add_rule_no_checks(p, {i, i + 1, i}, {i + 1, i, i + 1});
-      }
+      add_coxeter_common(p, n);
       p.alphabet_from_rules();
       return p;
     }
 
-    // Moore 0
-    // From Chapter 3, Proposition 1.1 in https://bit.ly/3R5ZpKW (Ruskuc thesis)
-    // TODO(0) This isn't the presentation given in the above reference. Is
-    // there a correct reference?
-    Presentation<word_type> symmetric_group_Rus95_1(size_t n) {
+    // From Theorm A' in Moore 1897
+    Presentation<word_type> symmetric_group_Moo97_b(size_t n) {
       if (n < 2) {
         LIBSEMIGROUPS_EXCEPTION(
             "expected 1st argument (degree) to be at least 2, found {}", n);
@@ -534,21 +522,6 @@ namespace libsemigroups {
         presentation::add_rule_no_checks(
             p, pow(0_w + pow(pow(1_w, n - 1), j) + 0_w + pow(1_w, j), 2), {});
       }
-      p.alphabet_from_rules();
-      return p;
-    }
-
-    // Coxeter + Moser
-    // From Chapter 3, Proposition 1.2 in https://bit.ly/3R5ZpKW (Ruskuc thesis)
-    Presentation<word_type> symmetric_group_Rus95_2(size_t n) {
-      if (n < 2) {
-        LIBSEMIGROUPS_EXCEPTION(
-            "expected 1st argument (degree) to be at least 2, found {}", n);
-      }
-      Presentation<word_type> p;
-
-      presentation::add_involution_rules_no_checks(p, range(n - 1));
-      add_coxeter_common(p, n);
       p.alphabet_from_rules();
       return p;
     }
@@ -1354,7 +1327,7 @@ namespace libsemigroups {
       Presentation<word_type> p;
       if (val == author::Aizenstat) {
         // From Proposition 1.7 in https://bit.ly/3R5ZpKW
-        p = symmetric_group_Rus95_1(n);
+        p = symmetric_group_Moo97_b(n);
 
         presentation::add_rule_no_checks(p, 02_w, 2_w);
         presentation::add_rule_no_checks(
@@ -1380,7 +1353,7 @@ namespace libsemigroups {
         // using Theorem 9.1.4 to express presentation in terms
         // of the pi_i and e_12.
         // https://link.springer.com/book/10.1007/978-1-84800-281-4
-        p = symmetric_group_GM09_1(n);
+        p = symmetric_group_Car56(n);
         add_full_transformation_monoid_relations(p, n, 0, n - 1);
       } else {
         // val == author::Mitchell + author::Whyte
@@ -1398,7 +1371,7 @@ namespace libsemigroups {
           presentation::add_rule_no_checks(p, pow(0102_w, 3) + 010_w, 20102_w);
         } else {
           // n >= 4
-          p = symmetric_group_GM09_1(n);
+          p = symmetric_group_Car56(n);
           if (index == 0) {
             // From Theorem 1.5 of arXiv:2406.19294
 
@@ -1521,7 +1494,7 @@ namespace libsemigroups {
       } else {
         // From Theorem 1.6 of https://doi.org/10.48550/arXiv.2406.19294
         // val == author::Mitchell + author::Whyte
-        p = symmetric_group_GM09_1(n);
+        p = symmetric_group_Car56(n);
 
         // Relation I3
         std::vector<size_t> gens(n - 1);  // list of generators to use prod on
@@ -1594,7 +1567,7 @@ namespace libsemigroups {
       }
       Presentation<word_type> p;
       if (val == author::Sutov) {
-        p = symmetric_group_GM09_1(n);
+        p = symmetric_group_Car56(n);
 
         std::vector<word_type> pi, epsilon = {{n - 1}};
         for (size_t i = 0; i <= n - 2; ++i) {
@@ -1617,7 +1590,7 @@ namespace libsemigroups {
             p, epsilon[1] + epsilon[0] + pi[0], epsilon[1] + epsilon[0]);
         p.alphabet_from_rules();
       } else if (val == author::Gay) {
-        p = symmetric_group_Rus95_2(n);
+        p = symmetric_group_Moo97_a(n);
         p.alphabet(n);
         presentation::add_idempotent_rules_no_checks(p, {n - 1});
         add_rook_monoid_common(p, n);
@@ -1625,7 +1598,7 @@ namespace libsemigroups {
         // val == author::Mitchell + author::Whyte
         // From Theorem 1.4 of https://doi.org/10.48550/arXiv.2406.19294
 
-        p = symmetric_group_GM09_1(n);
+        p = symmetric_group_Car56(n);
 
         // Relation I2
         presentation::add_rule_no_checks(p, {0, 1, 0, n - 1}, {n - 1, 0, 1, 0});

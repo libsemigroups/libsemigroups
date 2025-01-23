@@ -586,7 +586,7 @@ namespace libsemigroups {
     //! \brief A presentation for the symmetric group.
     //!
     //! This function returns a monoid presentation for the symmetric group of
-    //! degree \p n, as in Comment 9.5.2 of \cite Ganyushkin2009aa. This
+    //! degree \p n, as on page 169 of \cite Carmichael1956aa. This
     //! presentation has \f$n - 1\f$ generators and \f$(n - 1)^2\f$ relations.
     //!
     //! \param n the degree of the symmetric group.
@@ -594,66 +594,39 @@ namespace libsemigroups {
     //! \returns A value of type `Presentation<libsemigroups::word_type>`.
     //!
     //! \throws LibsemigroupsException if `n < 2`.
-    [[nodiscard]] Presentation<word_type> symmetric_group_GM09_1(size_t n);
+    [[nodiscard]] Presentation<word_type> symmetric_group_Car56(size_t n);
 
     //! \brief A presentation for the symmetric group.
     //!
     //! This function returns a monoid presentation for the symmetric group of
-    //! degree \p n, as in Comment 9.5.3 of \cite Ganyushkin2009aa. This
-    //! presentation has \f$n - 1\f$ generators and \f$\frac{n(n - 1)}{2}\f$
-    //! relations.
-    //!
-    //! \param n the degree of the symmetric group.
-    //!
-    //! \returns A value of type `Presentation<libsemigroups::word_type>`.
-    //!
-    //! \throws LibsemigroupsException if `n < 4`.
-    [[nodiscard]] Presentation<word_type> symmetric_group_GM09_2(size_t n);
-
-    //! \brief A presentation for the symmetric group.
-    //!
-    //! This function returns a monoid presentation for the symmetric group of
-    //! degree \p n, as in Ch. 3, Prop 1.1 of \cite Ruskuc1995aa. This
-    //! presentation has \f$2\f$ generators and \f$n + 1\f$ relations for \f$n
-    //! \geq 4\f$. If \f$n<4\f$ then there are \f$4\f$ relations.
+    //! degree \p n, as in Theorem A of \cite Moore1897aa. This  presentation
+    //! has \f$n - 1\f$ generators and \f$\frac{n(n - 1)}{2}\f$ relations.
     //!
     //! \param n the degree of the symmetric group.
     //!
     //! \returns A value of type `Presentation<libsemigroups::word_type>`.
     //!
     //! \throws LibsemigroupsException if `n < 2`.
-    [[nodiscard]] Presentation<word_type> symmetric_group_Rus95_1(size_t n);
+    [[nodiscard]] Presentation<word_type> symmetric_group_Moo97_a(size_t n);
 
     //! \brief A presentation for the symmetric group.
     //!
     //! This function returns a monoid presentation for the symmetric group of
-    //! degree \p n, as in Ch. 3, Prop 1.2 of \cite Ruskuc1995aa. This
-    //! presentation has \f$n - 1\f$ generators and \f$n(n - 1)/2\f$ relations.
+    //! degree \p n, as in in Theorem A' of \cite Moore1897aa. This presentation
+    //! has \f$2\f$ generators and \f$n + 1\f$ relations for \f$n \geq 4\f$. If
+    //! \f$n<4\f$ then there are \f$4\f$ relations.
     //!
     //! \param n the degree of the symmetric group.
     //!
     //! \returns A value of type `Presentation<libsemigroups::word_type>`.
     //!
     //! \throws LibsemigroupsException if `n < 2`.
-    // TODO(0): This is exactly the same as GM09_2. Which one do we keep?
-    [[nodiscard]] Presentation<word_type> symmetric_group_Rus95_2(size_t n);
+    [[nodiscard]] Presentation<word_type> symmetric_group_Moo97_b(size_t n);
 
-    //! \brief A presentation for the symmetric group.
-    //!
-    //! This function returns a monoid presentation for the symmetric group of
-    //! degree \p n, as in Comment 9.5.2 of \cite Ganyushkin2009aa. This
-    //! presentation has \f$n - 1\f$ generators and \f$(n - 1)^2\f$ relations.
-    //!
-    //!
-    //!
-    //! \param n the degree of the symmetric group.
-    //!
-    //! \returns A value of type `Presentation<libsemigroups::word_type>`.
-    //!
-    //! \throws LibsemigroupsException if `n < 2`.
+    //! \copydoc symmetric_group_Car56
     //!
     //! \note
-    //! This function performs exactly the same as `symmetric_group_GM09_1`, and
+    //! This function performs exactly the same as `symmetric_group_Car56`, and
     //! exists as a convenience function for when a presentation for the
     //! symmetric group is required, but the relations of the presentation are
     //! not important.
@@ -662,12 +635,11 @@ namespace libsemigroups {
     //! For a different %presentation of the symmetric group, see %one of the
     //! following functions:
     //! * `symmetric_group_Bur12`;
-    //! * `symmetric_group_GM09_1`;
-    //! * `symmetric_group_GM09_2`;
-    //! * `symmetric_group_Rus95_1`;
-    //! * `symmetric_group_Rus95_2`.
+    //! * `symmetric_group_Car56`;
+    //! * `symmetric_group_Moo97_a`;
+    //! * `symmetric_group_Moo97_1`;
     [[nodiscard]] inline Presentation<word_type> symmetric_group(size_t n) {
-      return symmetric_group_GM09_1(n);
+      return symmetric_group_Car56(n);
     }
 
     //! \brief A presentation for the alternating group.
