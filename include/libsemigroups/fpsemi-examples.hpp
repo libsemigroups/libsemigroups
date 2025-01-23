@@ -141,7 +141,21 @@ namespace libsemigroups {
     //! \returns A value of type `Presentation<libsemigroups::word_type>`.
     //!
     //! \throws LibsemigroupsException if `l < 2`.
-    [[nodiscard]] Presentation<word_type> stellar_monoid(size_t l);
+    [[nodiscard]] Presentation<word_type> stellar_monoid_GH19(size_t l);
+
+    //! \copydoc stellar_monoid_GH19
+    //!
+    //! \note
+    //! This function performs exactly the same as `stellar_monoid_GH19`, and
+    //! exists as a convenience function for when a presentation for the
+    //! stellar monoid is required, but the relations of the presentation are
+    //! not important.
+    //!
+    //! \sa
+    //! `stellar_monoid_GH19`.
+    [[nodiscard]] inline Presentation<word_type> stellar_monoid(size_t l) {
+      return stellar_monoid_GH19(l);
+    }
 
     //! \brief A presentation for the dual symmetric inverse monoid.
     //!
@@ -154,7 +168,22 @@ namespace libsemigroups {
     //!
     //! \throws LibsemigroupsException if `n < 3`.
     [[nodiscard]] Presentation<word_type>
-    dual_symmetric_inverse_monoid(size_t n);
+    dual_symmetric_inverse_monoid_EEF07(size_t n);
+
+    //! \copydoc dual_symmetric_inverse_monoid_EEF07
+    //!
+    //! \note
+    //! This function performs exactly the same as
+    //! `dual_symmetric_inverse_monoid_EEF07`, and exists as a convenience
+    //! function for when a presentation for the dual symmetric inverse monoid
+    //! is required, but the relations of the presentation are not important.
+    //!
+    //! \sa
+    //! `dual_symmetric_inverse_monoid`.
+    [[nodiscard]] inline Presentation<word_type>
+    dual_symmetric_inverse_monoid(size_t n) {
+      return dual_symmetric_inverse_monoid_EEF07(n);
+    }
 
     //! \brief A presentation for the uniform block bijection monoid.
     //!
@@ -167,7 +196,22 @@ namespace libsemigroups {
     //!
     //! \throws LibsemigroupsException if `n < 3`.
     [[nodiscard]] Presentation<word_type>
-    uniform_block_bijection_monoid(size_t n);
+    uniform_block_bijection_monoid_Fit03(size_t n);
+
+    //! \copydoc uniform_block_bijection_monoid_Fit03
+    //!
+    //! \note
+    //! This function performs exactly the same as
+    //! `uniform_block_bijection_monoid_Fit03`, and exists as a convenience
+    //! function for when a presentation for the uniform block bijection monoid
+    //! is required, but the relations of the presentation are not important.
+    //!
+    //! \sa
+    //! `uniform_block_bijection_monoid_Fit03`.
+    [[nodiscard]] inline Presentation<word_type>
+    uniform_block_bijection_monoid(size_t n) {
+      return uniform_block_bijection_monoid_Fit03(n);
+    }
 
     //! \brief A presentation for the partition monoid.
     //!
@@ -252,7 +296,22 @@ namespace libsemigroups {
     //! \returns A value of type `Presentation<libsemigroups::word_type>`.
     //!
     //! \throws LibsemigroupsException if `n < 3`.
-    [[nodiscard]] Presentation<word_type> singular_brauer_monoid(size_t n);
+    [[nodiscard]] Presentation<word_type> singular_brauer_monoid_MM07(size_t n);
+
+    //! \copydoc singular_brauer_monoid_MM07
+    //!
+    //! \note
+    //! This function performs exactly the same as
+    //! `singular_brauer_monoid_MM07`, and exists as a convenience function for
+    //! when a presentation for the singular part of the brauer monoid is
+    //! required, but the relations of the presentation are not important.
+    //!
+    //! \sa
+    //! `singular_brauer_monoid_MM07`.
+    [[nodiscard]] inline Presentation<word_type>
+    singular_brauer_monoid(size_t n) {
+      return singular_brauer_monoid_MM07(n);
+    }
 
     //! \brief A presentation for the monoid of orientation preserving
     //! mappings.
@@ -267,7 +326,23 @@ namespace libsemigroups {
     //!
     //! \throws LibsemigroupsException if `n < 3`.
     [[nodiscard]] Presentation<word_type>
-    orientation_preserving_monoid(size_t n);
+    orientation_preserving_monoid_AR00(size_t n);
+
+    //! \copydoc orientation_preserving_monoid_AR00
+    //!
+    //! \note
+    //! This function performs exactly the same as
+    //! `orientation_preserving_monoid_AR00`, and exists as a convenience
+    //! function for when a presentation for the the monoid of
+    //! orientation preserving mappings on a finite chain is required,
+    //! but the relations of the presentation are not important.
+    //!
+    //! \sa
+    //! `orientation_preserving_monoid_AR00`.
+    [[nodiscard]] inline Presentation<word_type>
+    orientation_preserving_monoid(size_t n) {
+      return orientation_preserving_monoid_AR00(n);
+    }
 
     //! \brief A presentation for the monoid of orientation preserving or
     //! reversing mappings.
@@ -282,7 +357,24 @@ namespace libsemigroups {
     //!
     //! \throws LibsemigroupsException if `n < 3`.
     [[nodiscard]] Presentation<word_type>
-    orientation_preserving_reversing_monoid(size_t n);
+    orientation_preserving_reversing_monoid_AR00(size_t n);
+
+    //! \copydoc orientation_preserving_reversing_monoid_AR00
+
+    //!
+    //! \note
+    //! This function performs exactly the same as
+    //! `orientation_preserving_reversing_monoid_AR00`, and exists as a
+    //! convenience function for when a presentation for the monoid of
+    //! orientation preserving or reversing mappings on a finite chain is
+    //! required, but the relations of the presentation are not important.
+    //!
+    //! \sa
+    //! `orientation_preserving_reversing_monoid_AR00`.
+    [[nodiscard]] inline Presentation<word_type>
+    orientation_preserving_reversing_monoid(size_t n) {
+      return orientation_preserving_reversing_monoid_AR00(n);
+    }
 
     //! \brief A presentation for the Temperley-Lieb monoid.
     //!
@@ -295,7 +387,22 @@ namespace libsemigroups {
     //! \returns A value of type `Presentation<libsemigroups::word_type>`.
     //!
     //! \throws LibsemigroupsException if `n < 3`.
-    [[nodiscard]] Presentation<word_type> temperley_lieb_monoid(size_t n);
+    [[nodiscard]] Presentation<word_type> temperley_lieb_monoid_Eas21(size_t n);
+
+    //! \copydoc temperley_lieb_monoid_Eas21
+    //!
+    //! \note
+    //! This function performs exactly the same as
+    //! `temperley_lieb_monoid_Eas21`, and exists as a convenience function for
+    //! when a presentation for the Temperley-Lieb monoid is required, but the
+    //! relations of the presentation are not important.
+    //!
+    //! \sa
+    //! `temperley_lieb_monoid_Eas21`.
+    [[nodiscard]] inline Presentation<word_type>
+    temperley_lieb_monoid(size_t n) {
+      return temperley_lieb_monoid_Eas21(n);
+    }
 
     //! \brief A presentation for the Brauer monoid.
     //!
@@ -307,7 +414,21 @@ namespace libsemigroups {
     //! \returns A value of type `Presentation<libsemigroups::word_type>`.
     //!
     //! \throws LibsemigroupsException if `n < 1`.
-    [[nodiscard]] Presentation<word_type> brauer_monoid(size_t n);
+    [[nodiscard]] Presentation<word_type> brauer_monoid_KM07(size_t n);
+
+    //! \copydoc brauer_monoid_KM07
+    //!
+    //! \note
+    //! This function performs exactly the same as `brauer_monoid_KM07`, and
+    //! exists as a convenience function for when a presentation for the Brauer
+    //! monoid is required, but the relations of the presentation are not
+    //! important.
+    //!
+    //! \sa
+    //! `brauer_monoid_KM07`.
+    [[nodiscard]] inline Presentation<word_type> brauer_monoid(size_t n) {
+      return brauer_monoid_KM07(n);
+    }
 
     //! \brief A presentation for the partial Brauer monoid.
     //!
@@ -320,7 +441,22 @@ namespace libsemigroups {
     //! \returns A value of type `Presentation<libsemigroups::word_type>`.
     //!
     //! \throws LibsemigroupsException if `n < 1`.
-    [[nodiscard]] Presentation<word_type> partial_brauer_monoid(size_t n);
+    [[nodiscard]] Presentation<word_type> partial_brauer_monoid_KM07(size_t n);
+
+    //! \copydoc partial_brauer_monoid_KM07
+    //!
+    //! \note
+    //! This function performs exactly the same as `partial_brauer_monoid_KM07`,
+    //! and exists as a convenience function for when a presentation for the
+    //! partial Brauer monoid is required, but the relations of the presentation
+    //! are not important.
+    //!
+    //! \sa
+    //! `partial_brauer_monoid_KM07`.
+    [[nodiscard]] inline Presentation<word_type>
+    partial_brauer_monoid(size_t n) {
+      return partial_brauer_monoid_KM07(n);
+    }
 
     //! \brief A presentation for the Motzkin monoid.
     //!
@@ -335,7 +471,21 @@ namespace libsemigroups {
     //! \returns A value of type `Presentation<libsemigroups::word_type>`.
     //!
     //! \throws LibsemigroupsException if `n < 1`.
-    [[nodiscard]] Presentation<word_type> motzkin_monoid(size_t n);
+    [[nodiscard]] Presentation<word_type> motzkin_monoid_PHL13(size_t n);
+
+    //! \copydoc motzkin_monoid_PHL13
+    //!
+    //! \note
+    //! This function performs exactly the same as `motzkin_monoid_PHL13`,
+    //! and exists as a convenience function for when a presentation for the
+    //! Motzkin monoid is required, but the relations of the presentation
+    //! are not important.
+    //!
+    //! \sa
+    //! `motzkin_monoid_PHL13`.
+    [[nodiscard]] inline Presentation<word_type> motzkin_monoid(size_t n) {
+      return motzkin_monoid_PHL13(n);
+    }
 
     //! \brief A presentation for a Fibonacci semigroup.
     //!
@@ -350,20 +500,49 @@ namespace libsemigroups {
     //!
     //! \throws LibsemigroupsException if `n < 1`.
     //! \throws LibsemigroupsException if `r < 1`.
-    [[nodiscard]] Presentation<word_type> fibonacci_semigroup(size_t r,
-                                                              size_t n);
+    [[nodiscard]] Presentation<word_type> fibonacci_semigroup_CRRT94(size_t r,
+                                                                     size_t n);
+
+    //! \copydoc fibonacci_semigroup_CRRT94
+    //!
+    //! \note
+    //! This function performs exactly the same as `fibonacci_semigroup_CRRT94`,
+    //! and exists as a convenience function for when a presentation for the
+    //! Fibonacci semigroup is required, but the relations of the presentation
+    //! are not important.
+    //!
+    //! \sa
+    //! `fibonacci_semigroup_CRRT94`.
+    [[nodiscard]] inline Presentation<word_type> fibonacci_semigroup(size_t r,
+                                                                     size_t n) {
+      return fibonacci_semigroup_CRRT94(r, n);
+    }
 
     //! \brief A presentation for the plactic monoid.
     //!
     //! This function returns a monoid presentation defining the plactic monoid
-    //! with \p n generators, as in see Section 3 of \cite Abram2022aa.
+    //! with \p n generators, as in see Theorem 6 of \cite Knuth1970aa.
     //!
     //! \param n the number of generators.
     //!
     //! \returns A value of type `Presentation<libsemigroups::word_type>`.
     //!
     //! \throws LibsemigroupsException if `n < 2`.
-    [[nodiscard]] Presentation<word_type> plactic_monoid(size_t n);
+    [[nodiscard]] Presentation<word_type> plactic_monoid_Knu70(size_t n);
+
+    //! \copydoc plactic_monoid_Knu70
+    //!
+    //! \note
+    //! This function performs exactly the same as `plactic_monoid_Knu70`,
+    //! and exists as a convenience function for when a presentation for the
+    //! plactic monoid is required, but the relations of the presentation
+    //! are not important.
+    //!
+    //! \sa
+    //! `plactic_monoid_Knu70`.
+    [[nodiscard]] inline Presentation<word_type> plactic_monoid(size_t n) {
+      return plactic_monoid_Knu70(n);
+    }
 
     //! \brief A presentation for the stylic monoid.
     //!
@@ -375,7 +554,21 @@ namespace libsemigroups {
     //! \returns A value of type `Presentation<libsemigroups::word_type>`.
     //!
     //! \throws LibsemigroupsException if `n < 2`.
-    [[nodiscard]] Presentation<word_type> stylic_monoid(size_t n);
+    [[nodiscard]] Presentation<word_type> stylic_monoid_AR22(size_t n);
+
+    //! \copydoc stylic_monoid_AR22
+    //!
+    //! \note
+    //! This function performs exactly the same as `stylic_monoid_AR22`,
+    //! and exists as a convenience function for when a presentation for the
+    //! stylic monoid is required, but the relations of the presentation
+    //! are not important.
+    //!
+    //! \sa
+    //! `stylic_monoid_AR22`.
+    [[nodiscard]] inline Presentation<word_type> stylic_monoid(size_t n) {
+      return stylic_monoid_AR22(n);
+    }
 
     //! \brief A presentation for the symmetric group.
     //!

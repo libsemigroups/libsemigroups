@@ -352,7 +352,7 @@ namespace libsemigroups {
     using words::operator+;
     using words::operator+=;
 
-    Presentation<word_type> stellar_monoid(size_t l) {
+    Presentation<word_type> stellar_monoid_GH19(size_t l) {
       if (l < 2) {
         LIBSEMIGROUPS_EXCEPTION(
             "expected 1st argument to be at least 2, found {}", l);
@@ -368,7 +368,7 @@ namespace libsemigroups {
       return p;
     }
 
-    Presentation<word_type> fibonacci_semigroup(size_t r, size_t n) {
+    Presentation<word_type> fibonacci_semigroup_CRRT94(size_t r, size_t n) {
       if (r == 0) {
         LIBSEMIGROUPS_EXCEPTION(
             "expected 1st argument to be strictly positive, found {}", r);
@@ -388,7 +388,9 @@ namespace libsemigroups {
       return p;
     }
 
-    Presentation<word_type> plactic_monoid(size_t n) {
+    // Theorem 6 of https://doi.org/10.2140/pjm.1970.34.709 (Knuth), and Section
+    // 3 of https://doi.org/10.1007/s00233-022-10285-3 (Abram, Reutenauer)
+    Presentation<word_type> plactic_monoid_Knu70(size_t n) {
       if (n < 1) {
         LIBSEMIGROUPS_EXCEPTION(
             "expected 1st argument to be at least 1, found {}", n);
@@ -416,12 +418,12 @@ namespace libsemigroups {
       return p;
     }
 
-    Presentation<word_type> stylic_monoid(size_t n) {
+    Presentation<word_type> stylic_monoid_AR22(size_t n) {
       if (n < 2) {
         LIBSEMIGROUPS_EXCEPTION(
             "expected 1st argument to be at least 2, found {}", n);
       }
-      auto p = plactic_monoid(n);
+      auto p = plactic_monoid_Knu70(n);
       presentation::add_idempotent_rules_no_checks(p, range(n));
       p.contains_empty_word(true);
       return p;
@@ -578,7 +580,7 @@ namespace libsemigroups {
       return p;
     }
 
-    Presentation<word_type> dual_symmetric_inverse_monoid(size_t n) {
+    Presentation<word_type> dual_symmetric_inverse_monoid_EEF07(size_t n) {
       if (n < 3) {
         LIBSEMIGROUPS_EXCEPTION(
             "expected 1st argument to be at least 3, found {}", n);
@@ -660,7 +662,7 @@ namespace libsemigroups {
       return result;
     }
 
-    Presentation<word_type> uniform_block_bijection_monoid(size_t n) {
+    Presentation<word_type> uniform_block_bijection_monoid_Fit03(size_t n) {
       if (n < 3) {
         LIBSEMIGROUPS_EXCEPTION(
             "expected 1st argument to be at least 3, found {}", n);
@@ -896,7 +898,7 @@ namespace libsemigroups {
 
     // From Theorem 5 in 10.21136/MB.2007.134125
     // https://dml.cz/bitstream/handle/10338.dmlcz/134125/MathBohem_132-2007-3_6.pdf
-    Presentation<word_type> singular_brauer_monoid(size_t n) {
+    Presentation<word_type> singular_brauer_monoid_MM07(size_t n) {
       if (n < 3) {
         LIBSEMIGROUPS_EXCEPTION(
             "expected 1st argument to be at least 3, found {}", n);
@@ -964,7 +966,7 @@ namespace libsemigroups {
     }
 
     // From https://doi.org/10.1007/s10012-000-0001-1
-    Presentation<word_type> orientation_preserving_monoid(size_t n) {
+    Presentation<word_type> orientation_preserving_monoid_AR00(size_t n) {
       if (n < 3) {
         LIBSEMIGROUPS_EXCEPTION(
             "expected 1st argument to be at least 3, found {}", n);
@@ -989,7 +991,8 @@ namespace libsemigroups {
     }
 
     // Also from https://doi.org/10.1007/s10012-000-0001-1
-    Presentation<word_type> orientation_preserving_reversing_monoid(size_t n) {
+    Presentation<word_type>
+    orientation_preserving_reversing_monoid_AR00(size_t n) {
       if (n < 3) {
         LIBSEMIGROUPS_EXCEPTION(
             "expected 1st argument to be at least 3, found {}", n);
@@ -1024,7 +1027,7 @@ namespace libsemigroups {
     }
 
     // From Theorem 2.2 in https://doi.org/10.1093/qmath/haab001
-    Presentation<word_type> temperley_lieb_monoid(size_t n) {
+    Presentation<word_type> temperley_lieb_monoid_Eas21(size_t n) {
       if (n < 3) {
         LIBSEMIGROUPS_EXCEPTION(
             "expected 1st argument to be at least 3, found {}", n);
@@ -1054,7 +1057,7 @@ namespace libsemigroups {
 
     // From Theorem 3.1 in
     // https://link.springer.com/content/pdf/10.2478/s11533-006-0017-6.pdf
-    Presentation<word_type> brauer_monoid(size_t n) {
+    Presentation<word_type> brauer_monoid_KM07(size_t n) {
       if (n < 1) {
         LIBSEMIGROUPS_EXCEPTION(
             "expected 1st argument to be at least 1, found {}", n);
@@ -1103,7 +1106,7 @@ namespace libsemigroups {
 
     // From Theorem 5.1 in
     // https://link.springer.com/content/pdf/10.2478/s11533-006-0017-6.pdf
-    Presentation<word_type> partial_brauer_monoid(size_t n) {
+    Presentation<word_type> partial_brauer_monoid_KM07(size_t n) {
       if (n < 1) {
         LIBSEMIGROUPS_EXCEPTION(
             "expected 1st argument to be at least 1, found {}", n);
@@ -1118,7 +1121,7 @@ namespace libsemigroups {
       }
       v[n - 1] = {3 * n - 3};
 
-      Presentation<word_type> p = brauer_monoid(n);
+      Presentation<word_type> p = brauer_monoid_KM07(n);
       p.alphabet(3 * n - 2);
 
       // 15 from p14
@@ -1168,7 +1171,7 @@ namespace libsemigroups {
 
     // From Theorem 4.1 in
     // https://arxiv.org/pdf/1301.4518
-    Presentation<word_type> motzkin_monoid(size_t n) {
+    Presentation<word_type> motzkin_monoid_PHL13(size_t n) {
       if (n < 1) {
         LIBSEMIGROUPS_EXCEPTION(
             "expected 1st argument to be at least 1, found {}", n);
@@ -1991,7 +1994,7 @@ namespace libsemigroups {
         LIBSEMIGROUPS_EXCEPTION(
             "expected 2nd argument to be author::Any, found {}", val);
       }
-      auto result = plactic_monoid(n);
+      auto result = plactic_monoid_Knu70(n);
 
       for (letter_type a = 0; a < n; ++a) {
         for (letter_type b = a; b < n; ++b) {
@@ -2022,7 +2025,7 @@ namespace libsemigroups {
         LIBSEMIGROUPS_EXCEPTION(
             "expected 2nd argument to be author::Any, found {}", val);
       }
-      auto p = plactic_monoid(sigma.size());
+      auto p = plactic_monoid_Knu70(sigma.size());
       p.contains_empty_word(true);
       for (auto [a, e] : rx::enumerate(sigma)) {
         presentation::add_rule(p, pow({a}, e), {a});

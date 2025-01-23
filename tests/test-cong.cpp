@@ -69,6 +69,7 @@ namespace libsemigroups {
   constexpr congruence_kind onesided = congruence_kind::onesided;
 
   using fpsemigroup::stellar_monoid;
+  using fpsemigroup::stellar_monoid_GH19;
   using fpsemigroup::zero_rook_monoid;
 
   LIBSEMIGROUPS_TEST_CASE("Congruence",

@@ -106,7 +106,7 @@ namespace libsemigroups {
                           "test semigroup/monoid status",
                           "[fpsemi-examples][quick]") {
     auto rg = ReportGuard(REPORT);
-    REQUIRE(stellar_monoid(5).contains_empty_word());
+    REQUIRE(stellar_monoid_GH19(5).contains_empty_word());
     REQUIRE(dual_symmetric_inverse_monoid(5).contains_empty_word());
     REQUIRE(uniform_block_bijection_monoid(5).contains_empty_word());
     REQUIRE(partition_monoid_Eas11(5).contains_empty_word());

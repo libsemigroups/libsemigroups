@@ -49,7 +49,7 @@ namespace libsemigroups {
     }
   }  // namespace
 
-  using fpsemigroup::singular_brauer_monoid;
+  using fpsemigroup::singular_brauer_monoid_MM07;
   using fpsemigroup::symmetric_inverse_monoid;
 
   TEST_CASE("POI(3) from FroidurePin", "[POI3][Sim1][quick][talk]") {
@@ -132,7 +132,7 @@ namespace libsemigroups {
   TEST_CASE("singular_brauer_monoid(3) (Maltcev-Mazorchuk)",
             "[talk][singular_brauer_monoid3]") {
     auto                    rg = ReportGuard(false);
-    Presentation<word_type> p  = singular_brauer_monoid(3);
+    Presentation<word_type> p  = singular_brauer_monoid_MM07(3);
     REQUIRE(p.rules.size() == 48);
 
     BENCHMARK("Right congruences") {
@@ -150,7 +150,7 @@ namespace libsemigroups {
   TEST_CASE("singular_brauer_monoid(4) (Maltcev-Mazorchuk)",
             "[talk][singular_brauer_monoid4]") {
     auto                    rg = ReportGuard(true);
-    Presentation<word_type> p  = singular_brauer_monoid(4);
+    Presentation<word_type> p  = singular_brauer_monoid_MM07(4);
     REQUIRE(presentation::length(p) == 660);
     presentation::remove_duplicate_rules(p);
     REQUIRE(presentation::length(p) == 600);

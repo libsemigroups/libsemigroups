@@ -77,6 +77,7 @@ namespace libsemigroups {
 
   using fpsemigroup::author;
   using fpsemigroup::brauer_monoid;
+  using fpsemigroup::brauer_monoid_KM07;
   using fpsemigroup::chinese_monoid;
   using fpsemigroup::fibonacci_semigroup;
   using fpsemigroup::full_transformation_monoid;
@@ -923,7 +924,7 @@ namespace libsemigroups {
     S.add_generator(Bipartition({{1, -3}, {2, -4}, {3, 4}, {-1, -2}}));
     REQUIRE(S.size() == 81);
 
-    /// auto p  = singular_brauer_monoid(4);
+    /// auto p  = singular_brauer_monoid_MM07(4);
     auto p = to_presentation<word_type>(S);
     p.validate();
     REQUIRE(p.alphabet().size() == 10);
@@ -1088,7 +1089,7 @@ namespace libsemigroups {
                           "brauer_monoid(4) (Kudryavtseva-Mazorchuk)",
                           "[extreme][sims1]") {
     auto rg = ReportGuard(true);
-    auto p  = brauer_monoid(4);
+    auto p  = brauer_monoid_KM07(4);
     REQUIRE(p.alphabet().size() == 6);
     REQUIRE(presentation::length(p) == 140);
     presentation::remove_duplicate_rules(p);
@@ -1173,7 +1174,7 @@ namespace libsemigroups {
     // {4, -4}, {5, -5}, {-1, -2}})); REQUIRE(S.size() == 945);
 
     // auto p = to_presentation<word_type>(S);
-    auto p = brauer_monoid(5);
+    auto p = brauer_monoid_KM07(5);
 
     REQUIRE(presentation::length(p) == 240);
 
@@ -1241,12 +1242,13 @@ namespace libsemigroups {
     // REQUIRE(S.size() == 945);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("Sims1",
-                          "026",
-                          "uniform_block_bijection_monoid(4) (Fitzgerald)",
-                          "[extreme][sims1]") {
+  LIBSEMIGROUPS_TEST_CASE(
+      "Sims1",
+      "026",
+      "uniform_block_bijection_monoid_Fit03(4) (Fitzgerald)",
+      "[extreme][sims1]") {
     auto rg = ReportGuard(true);
-    auto p  = fpsemigroup::uniform_block_bijection_monoid(4);
+    auto p  = fpsemigroup::uniform_block_bijection_monoid_Fit03(4);
     presentation::remove_duplicate_rules(p);
     presentation::reduce_complements(p);
     presentation::sort_each_rule(p);
