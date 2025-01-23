@@ -526,13 +526,10 @@ namespace libsemigroups {
       return p;
     }
 
-    Presentation<word_type> alternating_group(size_t n, author val) {
+    Presentation<word_type> alternating_group_Moo97(size_t n) {
       if (n < 4) {
         LIBSEMIGROUPS_EXCEPTION(
             "expected 1st argument to be at least 4, found {}", n);
-      } else if (val != author::Moore) {
-        LIBSEMIGROUPS_EXCEPTION(
-            "expected 2nd argument to be author::Moore, found {}", val);
       }
       Presentation<word_type> p;
 

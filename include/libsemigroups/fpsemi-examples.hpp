@@ -637,7 +637,7 @@ namespace libsemigroups {
     //! * `symmetric_group_Bur12`;
     //! * `symmetric_group_Car56`;
     //! * `symmetric_group_Moo97_a`;
-    //! * `symmetric_group_Moo97_1`;
+    //! * `symmetric_group_Moo97_b`;
     [[nodiscard]] inline Presentation<word_type> symmetric_group(size_t n) {
       return symmetric_group_Car56(n);
     }
@@ -645,23 +645,28 @@ namespace libsemigroups {
     //! \brief A presentation for the alternating group.
     //!
     //! This function returns a monoid presentation defining the alternating
-    //! group of degree \p n. The argument \p val determines the specific
-    //! presentation which is returned. The options are:
-    //! * `author::Moore` (see Ch. 3, Prop 1.3 of
-    //! [hdl.handle.net/10023/2821][]).
+    //! group of degree \p, as in Theorem B of \cite Moore1897aa.
     //!
     //! \param n the degree of the alternating group.
-    //! \param val the author of the presentation (default: `author::Moore`).
     //!
     //! \returns A value of type `Presentation<libsemigroups::word_type>`.
     //!
     //! \throws LibsemigroupsException if `n < 4`.
-    //! \throws LibsemigroupsException if `val` is not `author::Moore`.
+    [[nodiscard]] Presentation<word_type> alternating_group_Moo97(size_t n);
+
+    //! \copydoc alternating_group_Moo97
     //!
-    //! [hdl.handle.net/10023/2821]: http://hdl.handle.net/10023/2821
-    [[nodiscard]] Presentation<word_type> alternating_group(size_t n,
-                                                            author val
-                                                            = author::Moore);
+    //! \note
+    //! This function performs exactly the same as `alternating_group_Moo97`,
+    //! and exists as a convenience function for when a presentation for the
+    //! alternating group is required, but the relations of the presentation are
+    //! not important.
+    //!
+    //! \sa
+    //! `alternating_group_Moo97`.
+    [[nodiscard]] inline Presentation<word_type> alternating_group(size_t n) {
+      return alternating_group_Moo97(n);
+    }
 
     //! \brief A presentation for a rectangular band.
     //!

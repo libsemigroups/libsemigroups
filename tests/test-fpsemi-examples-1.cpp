@@ -53,55 +53,6 @@ namespace libsemigroups {
   using namespace fpsemigroup;
 
   LIBSEMIGROUPS_TEST_CASE("fpsemi-examples",
-                          "000",
-                          "test default values",
-                          "[fpsemi-examples][quick]") {
-    // author defaults
-    REQUIRE(symmetric_group(4) == symmetric_group_Car56(4));
-    REQUIRE(alternating_group(4) == alternating_group(4, author::Moore));
-    REQUIRE(full_transformation_monoid(4)
-            == full_transformation_monoid(4, author::Mitchell + author::Whyte));
-    REQUIRE(
-        partial_transformation_monoid(4)
-        == partial_transformation_monoid(4, author::Mitchell + author::Whyte));
-    REQUIRE(symmetric_inverse_monoid(4)
-            == symmetric_inverse_monoid(4, author::Mitchell + author::Whyte));
-    REQUIRE(partition_monoid(4) == partition_monoid_Eas11(4));
-    REQUIRE(cyclic_inverse_monoid(4)
-            == cyclic_inverse_monoid(4, author::Fernandes));
-
-    // author::Any defaults
-    REQUIRE(rectangular_band(5, 3, author::Any) == rectangular_band(5, 3));
-    REQUIRE(chinese_monoid(5, author::Any) == chinese_monoid(5));
-    REQUIRE(monogenic_semigroup(6, 3, author::Any)
-            == monogenic_semigroup(6, 3));
-    REQUIRE(order_preserving_monoid(4, author::Any)
-            == order_preserving_monoid(4));
-    REQUIRE(order_preserving_cyclic_inverse_monoid(4, author::Any)
-            == order_preserving_cyclic_inverse_monoid(4));
-    REQUIRE(partial_isometries_cycle_graph_monoid(4, author::Any)
-            == partial_isometries_cycle_graph_monoid(4));
-    REQUIRE(special_linear_group_2(5, author::Any)
-            == special_linear_group_2(5));
-    REQUIRE(hypo_plactic_monoid(4, author::Any) == hypo_plactic_monoid(4));
-    REQUIRE(sigma_stylic_monoid({3, 4}, author::Any)
-            == sigma_stylic_monoid({3, 4}));
-    REQUIRE(zero_rook_monoid(4, author::Any) == zero_rook_monoid(4));
-    REQUIRE(renner_type_B_monoid(4, 1, author::Any)
-            == renner_type_B_monoid(4, 1));
-    REQUIRE(not_renner_type_B_monoid(4, 1, author::Any)
-            == not_renner_type_B_monoid(4, 1));
-    REQUIRE(renner_type_D_monoid(4, 1, author::Any)
-            == renner_type_D_monoid(4, 1));
-    REQUIRE(not_renner_type_D_monoid(4, 1, author::Any)
-            == not_renner_type_D_monoid(4, 1));
-
-    // index defaults
-    REQUIRE(cyclic_inverse_monoid(4, author::Fernandes)
-            == cyclic_inverse_monoid(4, author::Fernandes, 1));
-  }
-
-  LIBSEMIGROUPS_TEST_CASE("fpsemi-examples",
                           "102",
                           "test semigroup/monoid status",
                           "[fpsemi-examples][quick]") {
@@ -238,21 +189,11 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("fpsemi-examples",
-                          "014",
-                          "alternating_group auth except",
-                          "[fpsemi-examples][quick]") {
-    auto rg = ReportGuard(REPORT);
-    REQUIRE_THROWS_AS(alternating_group(5, author::Sutov),
-                      LibsemigroupsException);
-  }
-
-  LIBSEMIGROUPS_TEST_CASE("fpsemi-examples",
                           "015",
                           "alternating_group degree except",
                           "[fpsemi-examples][quick]") {
     auto rg = ReportGuard(REPORT);
-    REQUIRE_THROWS_AS(alternating_group(3, author::Moore),
-                      LibsemigroupsException);
+    REQUIRE_THROWS_AS(alternating_group(3), LibsemigroupsException);
   }
 
   LIBSEMIGROUPS_TEST_CASE("fpsemi-examples",
@@ -871,8 +812,7 @@ namespace libsemigroups {
                           "[fpsemi-examples][quick][no-valgrind]") {
     auto        rg = ReportGuard(REPORT);
     size_t      n  = 7;
-    ToddCoxeter tc(congruence_kind::twosided,
-                   alternating_group(n, author::Moore));
+    ToddCoxeter tc(congruence_kind::twosided, alternating_group_Moo97(n));
     REQUIRE(tc.number_of_classes() == 2'520);
   }
 
