@@ -36,7 +36,7 @@ namespace libsemigroups {
 
   using fpsemigroup::author;
   using fpsemigroup::not_symmetric_group;
-  using fpsemigroup::symmetric_group;
+  using fpsemigroup::symmetric_group_GM09_1;
 
   LIBSEMIGROUPS_TEST_CASE("fpsemi-examples",
                           "070",
@@ -49,7 +49,7 @@ namespace libsemigroups {
     C.presentation(not_symmetric_group(n));
 
     Sims1 D;
-    D.presentation(symmetric_group(n, author::Carmichael));
+    D.presentation(symmetric_group_GM09_1(n));
 
     REQUIRE(C.number_of_congruences(3) == 41);
     REQUIRE(D.number_of_congruences(3) == 2);

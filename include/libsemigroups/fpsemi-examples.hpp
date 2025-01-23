@@ -380,41 +380,102 @@ namespace libsemigroups {
     //! \brief A presentation for the symmetric group.
     //!
     //! This function returns a monoid presentation for the symmetric group of
-    //! degree \p n. The arguments \p val and \p index determine the specific
-    //! presentation which is returned. The options are:
-    //!
-    // clang-format off
-    //!
-    //! Author                              | Index | No. generators  | No. relations             | Reference
-    //! ----------------------------------- | ----- | --------------- | ------------------------- | ---------------------------------------------------------------
-    //! `author::Burnside + author::Miller` | `0`   | \f$n - 1\f$     | \f$n^3 - 5n^2 + 9n - 5\f$ | p.464 of [10.1017/CBO9781139237253][]   <!-- NOLINT -->
-    //! `author::Carmichael`                | `0`   | \f$n - 1\f$     | \f$(n - 1)^2\f$           | Comment 9.5.2 of [10.1007/978-1-84800-281-4][]   <!-- NOLINT -->
-    //! `author::Coxeter + author::Moser`   | `0`   | \f$n - 1\f$     | \f$n(n + 1)/2\f$          | Ch.3, Prop 1.2 of [hdl.handle.net/10023/2821][]  <!-- NOLINT -->
-    //! `author::Moore`                     | `0`   | \f$2\f$         | \f$n + 1\f$               | Ch. 3, Prop 1.1 of [hdl.handle.net/10023/2821][] <!-- NOLINT -->
-    //! ^                                   | `1`   | \f$n - 1\f$     | \f$n(n + 1)/2\f$          | Comment 9.5.3 of [10.1007/978-1-84800-281-4][]   <!-- NOLINT -->
-    //!
-    //! [10.1017/CBO9781139237253]: https://doi.org/10.1017/CBO9781139237253
-    //! [10.1007/978-1-84800-281-4]: https://doi.org/10.1007/978-1-84800-281-4
-    //! [hdl.handle.net/10023/2821]: http://hdl.handle.net/10023/2821
-    //!
-    // clang-format on
+    //! degree \p n, as in p.464 of \cite Burnside2012aa. This presentation has
+    //! \f$n - 1\f$ generators and \f$n^3 - 5n^2 + 9n - 5\f$ relations.
     //!
     //! \param n the degree of the symmetric group.
-    //! \param val the author of the presentation (default:
-    //! `author::Carmichael`).
-    //! \param index which of the author's presentations to return, if multiple
-    //! exist (default: `0`).
+    //!
+    //! \returns A value of type `Presentation<libsemigroups::word_type>`.
+    //!
+    //! \throws LibsemigroupsException if `n < 2`.
+    [[nodiscard]] Presentation<word_type> symmetric_group_Bur12(size_t n);
+
+    //! \brief A presentation for the symmetric group.
+    //!
+    //! This function returns a monoid presentation for the symmetric group of
+    //! degree \p n, as in Comment 9.5.2 of \cite Ganyushkin2009aa. This
+    //! presentation has \f$n - 1\f$ generators and \f$(n - 1)^2\f$ relations.
+    //!
+    //! \param n the degree of the symmetric group.
+    //!
+    //! \returns A value of type `Presentation<libsemigroups::word_type>`.
+    //!
+    //! \throws LibsemigroupsException if `n < 2`.
+    [[nodiscard]] Presentation<word_type> symmetric_group_GM09_1(size_t n);
+
+    //! \brief A presentation for the symmetric group.
+    //!
+    //! This function returns a monoid presentation for the symmetric group of
+    //! degree \p n, as in Comment 9.5.3 of \cite Ganyushkin2009aa. This
+    //! presentation has \f$n - 1\f$ generators and \f$\frac{n(n - 1)}{2}\f$
+    //! relations.
+    //!
+    //! \param n the degree of the symmetric group.
     //!
     //! \returns A value of type `Presentation<libsemigroups::word_type>`.
     //!
     //! \throws LibsemigroupsException if `n < 4`.
-    //! \throws LibsemigroupsException if the author-index combination is
-    //! not present in the table above.
+    [[nodiscard]] Presentation<word_type> symmetric_group_GM09_2(size_t n);
+
+    //! \brief A presentation for the symmetric group.
     //!
-    [[nodiscard]] Presentation<word_type> symmetric_group(size_t n,
-                                                          author val
-                                                          = author::Carmichael,
-                                                          size_t index = 0);
+    //! This function returns a monoid presentation for the symmetric group of
+    //! degree \p n, as in Ch. 3, Prop 1.1 of \cite Ruskuc1995aa. This
+    //! presentation has \f$2\f$ generators and \f$n + 1\f$ relations for \f$n
+    //! \geq 4\f$. If \f$n<4\f$ then there are \f$4\f$ relations.
+    //!
+    //! \param n the degree of the symmetric group.
+    //!
+    //! \returns A value of type `Presentation<libsemigroups::word_type>`.
+    //!
+    //! \throws LibsemigroupsException if `n < 2`.
+    [[nodiscard]] Presentation<word_type> symmetric_group_Rus95_1(size_t n);
+
+    //! \brief A presentation for the symmetric group.
+    //!
+    //! This function returns a monoid presentation for the symmetric group of
+    //! degree \p n, as in Ch. 3, Prop 1.2 of \cite Ruskuc1995aa. This
+    //! presentation has \f$n - 1\f$ generators and \f$n(n - 1)/2\f$ relations.
+    //!
+    //! \param n the degree of the symmetric group.
+    //!
+    //! \returns A value of type `Presentation<libsemigroups::word_type>`.
+    //!
+    //! \throws LibsemigroupsException if `n < 2`.
+    // TODO(0): This is exactly the same as GM09_2. Which one do we keep?
+    [[nodiscard]] Presentation<word_type> symmetric_group_Rus95_2(size_t n);
+
+    //! \brief A presentation for the symmetric group.
+    //!
+    //! This function returns a monoid presentation for the symmetric group of
+    //! degree \p n, as in Comment 9.5.2 of \cite Ganyushkin2009aa. This
+    //! presentation has \f$n - 1\f$ generators and \f$(n - 1)^2\f$ relations.
+    //!
+    //!
+    //!
+    //! \param n the degree of the symmetric group.
+    //!
+    //! \returns A value of type `Presentation<libsemigroups::word_type>`.
+    //!
+    //! \throws LibsemigroupsException if `n < 2`.
+    //!
+    //! \note
+    //! This function performs exactly the same as `symmetric_group_GM09_1`, and
+    //! exists as a convenience function for when a presentation for the
+    //! symmetric group is required, but the relations of the presentation are
+    //! not important.
+    //!
+    //! \sa
+    //! For a different %presentation of the symmetric group, see %one of the
+    //! following functions:
+    //! * `symmetric_group_Bur12`;
+    //! * `symmetric_group_GM09_1`;
+    //! * `symmetric_group_GM09_2`;
+    //! * `symmetric_group_Rus95_1`;
+    //! * `symmetric_group_Rus95_2`.
+    [[nodiscard]] inline Presentation<word_type> symmetric_group(size_t n) {
+      return symmetric_group_GM09_1(n);
+    }
 
     //! \brief A presentation for the alternating group.
     //!

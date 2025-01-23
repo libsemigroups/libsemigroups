@@ -1856,11 +1856,11 @@ namespace libsemigroups {
                           "symmetric_group(9, Moore)",
                           "[todd-coxeter][extreme]") {
     using fpsemigroup::author;
-    using fpsemigroup::symmetric_group;
+    using fpsemigroup::symmetric_group_Rus95_1;
 
     auto rg = ReportGuard(true);
 
-    auto p = symmetric_group(9, author::Moore);
+    auto p = symmetric_group_Rus95_1(9);
     presentation::reduce_complements(p);
     presentation::remove_duplicate_rules(p);
     presentation::sort_rules(p);
@@ -1889,12 +1889,12 @@ namespace libsemigroups {
                           "symmetric_group(7, Coxeter + Moser)",
                           "[todd-coxeter][quick][no-valgrind]") {
     using fpsemigroup::author;
-    using fpsemigroup::symmetric_group;
+    using fpsemigroup::symmetric_group_Rus95_2;
 
     auto rg = ReportGuard(false);
 
     size_t n = 7;
-    auto   p = symmetric_group(n, author::Coxeter + author::Moser);
+    auto   p = symmetric_group_Rus95_2(n);
 
     ToddCoxeter tc(twosided, p);
 
@@ -1919,11 +1919,11 @@ namespace libsemigroups {
                           "symmetric_group(7, Burnside + Miller)",
                           "[todd-coxeter][quick][no-valgrind]") {
     using fpsemigroup::author;
-    using fpsemigroup::symmetric_group;
+    using fpsemigroup::symmetric_group_Bur12;
     auto rg = ReportGuard(false);
 
     size_t n = 7;
-    auto   p = symmetric_group(n, author::Burnside + author::Miller);
+    auto   p = symmetric_group_Bur12(n);
 
     ToddCoxeter tc(twosided, p);
     section_hlt(tc);

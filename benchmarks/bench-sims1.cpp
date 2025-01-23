@@ -384,8 +384,7 @@ namespace libsemigroups {
 
   TEST_CASE("Presentation length Burnside+Miller S_n",
             "[symmetric_group][length][003]") {
-    auto p = symmetric_group(
-        5, fpsemigroup::author::Burnside + fpsemigroup::author::Miller);
+    auto p = fpsemigroup::symmetric_group_Bur12(5);
     bench_length(p, 120, 156);
   }
 

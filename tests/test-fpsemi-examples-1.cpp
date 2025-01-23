@@ -57,7 +57,7 @@ namespace libsemigroups {
                           "test default values",
                           "[fpsemi-examples][quick]") {
     // author defaults
-    REQUIRE(symmetric_group(4) == symmetric_group(4, author::Carmichael));
+    REQUIRE(symmetric_group(4) == symmetric_group_GM09_1(4));
     REQUIRE(alternating_group(4) == alternating_group(4, author::Moore));
     REQUIRE(full_transformation_monoid(4)
             == full_transformation_monoid(4, author::Mitchell + author::Whyte));
@@ -97,8 +97,6 @@ namespace libsemigroups {
             == not_renner_type_D_monoid(4, 1));
 
     // index defaults
-    REQUIRE(symmetric_group(4, author::Moore)
-            == symmetric_group(4, author::Moore, 0));
     REQUIRE(cyclic_inverse_monoid(4, author::Fernandes)
             == cyclic_inverse_monoid(4, author::Fernandes, 1));
   }
@@ -124,12 +122,11 @@ namespace libsemigroups {
     REQUIRE(!fibonacci_semigroup(5, 2).contains_empty_word());
     REQUIRE(plactic_monoid(5).contains_empty_word());
     REQUIRE(stylic_monoid(5).contains_empty_word());
-    REQUIRE(symmetric_group(5, author::Burnside + author::Miller)
-                .contains_empty_word());
-    REQUIRE(symmetric_group(5, author::Carmichael).contains_empty_word());
-    REQUIRE(symmetric_group(5, author::Coxeter + author::Moser)
-                .contains_empty_word());
-    REQUIRE(symmetric_group(5, author::Moore).contains_empty_word());
+    REQUIRE(symmetric_group_Bur12(5).contains_empty_word());
+    REQUIRE(symmetric_group_GM09_1(5).contains_empty_word());
+    REQUIRE(symmetric_group_GM09_2(5).contains_empty_word());
+    REQUIRE(symmetric_group_Rus95_1(5).contains_empty_word());
+    REQUIRE(symmetric_group_Rus95_2(5).contains_empty_word());
     REQUIRE(alternating_group(5).contains_empty_word());
     REQUIRE(!rectangular_band(5, 5).contains_empty_word());
     REQUIRE(
@@ -204,32 +201,15 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("fpsemi-examples",
-                          "005",
-                          "symmetric_group auth except",
-                          "[fpsemi-examples][quick]") {
-    auto rg = ReportGuard(REPORT);
-    REQUIRE_THROWS_AS(symmetric_group(9, author::Sutov),
-                      LibsemigroupsException);
-  }
-
-  LIBSEMIGROUPS_TEST_CASE("fpsemi-examples",
                           "006",
                           "symmetric_group degree except",
                           "[fpsemi-examples][quick]") {
     auto rg = ReportGuard(REPORT);
-    REQUIRE_THROWS_AS(symmetric_group(3, author::Carmichael),
-                      LibsemigroupsException);
-  }
-
-  LIBSEMIGROUPS_TEST_CASE("fpsemi-examples",
-                          "007",
-                          "symmetric_group index except",
-                          "[fpsemi-examples][quick]") {
-    auto rg = ReportGuard(REPORT);
-    REQUIRE_THROWS_AS(symmetric_group(5, author::Moore, 2),
-                      LibsemigroupsException);
-    REQUIRE_THROWS_AS(symmetric_group(5, author::Carmichael, 1),
-                      LibsemigroupsException);
+    REQUIRE_THROWS_AS(symmetric_group_Bur12(1), LibsemigroupsException);
+    REQUIRE_THROWS_AS(symmetric_group_GM09_1(1), LibsemigroupsException);
+    REQUIRE_THROWS_AS(symmetric_group_GM09_2(3), LibsemigroupsException);
+    REQUIRE_THROWS_AS(symmetric_group_Rus95_1(1), LibsemigroupsException);
+    REQUIRE_THROWS_AS(symmetric_group_Rus95_2(1), LibsemigroupsException);
   }
 
   LIBSEMIGROUPS_TEST_CASE("fpsemi-examples",
@@ -625,8 +605,7 @@ namespace libsemigroups {
                           "[fpsemi-examples][quick][no-valgrind]") {
     auto        rg = ReportGuard(REPORT);
     size_t      n  = 6;
-    ToddCoxeter tc(congruence_kind::twosided,
-                   symmetric_group(n, author::Burnside + author::Miller));
+    ToddCoxeter tc(congruence_kind::twosided, symmetric_group_Bur12(n));
     REQUIRE(tc.number_of_classes() == 720);
   }
 
@@ -636,8 +615,7 @@ namespace libsemigroups {
                           "[fpsemi-examples][quick][no-valgrind]") {
     auto        rg = ReportGuard(REPORT);
     size_t      n  = 6;
-    ToddCoxeter tc(congruence_kind::twosided,
-                   symmetric_group(n, author::Carmichael));
+    ToddCoxeter tc(congruence_kind::twosided, symmetric_group_GM09_1(n));
     REQUIRE(tc.number_of_classes() == 720);
   }
 
@@ -648,8 +626,7 @@ namespace libsemigroups {
     auto   rg = ReportGuard(REPORT);
     size_t n  = 6;
 
-    ToddCoxeter tc(congruence_kind::twosided,
-                   symmetric_group(n, author::Moore, 0));
+    ToddCoxeter tc(congruence_kind::twosided, symmetric_group_Rus95_1(n));
     REQUIRE(tc.number_of_classes() == 720);
   }
 
@@ -659,8 +636,7 @@ namespace libsemigroups {
                           "[fpsemi-examples][quick][no-valgrind]") {
     auto        rg = ReportGuard(REPORT);
     size_t      n  = 7;
-    ToddCoxeter tc(congruence_kind::twosided,
-                   symmetric_group(n, author::Moore, 1));
+    ToddCoxeter tc(congruence_kind::twosided, symmetric_group_GM09_2(n));
     REQUIRE(tc.number_of_classes() == 5'040);
   }
 
@@ -671,12 +647,59 @@ namespace libsemigroups {
     auto   rg = ReportGuard(REPORT);
     size_t n  = 6;
 
-    ToddCoxeter tc(congruence_kind::twosided,
-                   symmetric_group(n, author::Coxeter + author::Moser));
+    ToddCoxeter tc(congruence_kind::twosided, symmetric_group_Rus95_2(n));
     REQUIRE(tc.number_of_classes() == 720);
-    REQUIRE(presentation::length(
-                symmetric_group(n, author::Coxeter + author::Moser))
-            == 58);
+    REQUIRE(presentation::length(symmetric_group_Rus95_2(n)) == 58);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE(
+      "fpsemi-examples",
+      "047",
+      "symmetric_group nr generators, relations and classes",
+      "[fpsemi-examples][quick]") {
+    auto                    rg = ReportGuard(REPORT);
+    Presentation<word_type> p;
+    ToddCoxeter             tc;
+    size_t                  max_n = 8;
+    for (size_t n = 2; n < max_n; ++n) {
+      p = symmetric_group_Bur12(n);
+      REQUIRE(p.alphabet().size() == n - 1);
+      REQUIRE(p.rules.size() == 2 * (n * n * n - 5 * n * n + 9 * n - 5));
+      tc = ToddCoxeter(congruence_kind::twosided, p);
+      REQUIRE(tc.number_of_classes() == tgamma(n + 1));
+    }
+    for (size_t n = 2; n < max_n; ++n) {
+      p = symmetric_group_GM09_1(n);
+      REQUIRE(p.alphabet().size() == n - 1);
+      REQUIRE(p.rules.size() == 2 * (n - 1) * (n - 1));
+      tc = ToddCoxeter(congruence_kind::twosided, p);
+      REQUIRE(tc.number_of_classes() == tgamma(n + 1));
+    }
+    for (size_t n = 4; n < max_n; ++n) {
+      p = symmetric_group_GM09_2(n);
+      REQUIRE(p.alphabet().size() == n - 1);
+      REQUIRE(p.rules.size() == n * (n - 1));
+      tc = ToddCoxeter(congruence_kind::twosided, p);
+      REQUIRE(tc.number_of_classes() == tgamma(n + 1));
+    }
+    for (size_t n = 2; n < max_n; ++n) {
+      p = symmetric_group_Rus95_1(n);
+      REQUIRE(p.alphabet().size() == 2);
+      if (n < 4) {
+        REQUIRE(p.rules.size() == 2 * 4);
+      } else {
+        REQUIRE(p.rules.size() == 2 * (n + 1));
+      }
+      tc = ToddCoxeter(congruence_kind::twosided, p);
+      REQUIRE(tc.number_of_classes() == tgamma(n + 1));
+    }
+    for (size_t n = 4; n < max_n; ++n) {
+      p = symmetric_group_Rus95_2(n);
+      REQUIRE(p.alphabet().size() == n - 1);
+      REQUIRE(p.rules.size() == n * (n - 1));
+      tc = ToddCoxeter(congruence_kind::twosided, p);
+      REQUIRE(tc.number_of_classes() == tgamma(n + 1));
+    }
   }
 
   LIBSEMIGROUPS_TEST_CASE("fpsemi-examples",

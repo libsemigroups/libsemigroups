@@ -2832,7 +2832,7 @@ namespace libsemigroups {
     std::array<uint64_t, 10> const num = {0, 0, 0, 6, 30, 156, 1'455};
     auto                           rg  = ReportGuard(false);
     size_t                         n   = 4;
-    auto                           p   = symmetric_group(n, author::Carmichael);
+    auto                           p   = fpsemigroup::symmetric_group_GM09_1(n);
     Sims1                          C;
     C.presentation(p).number_of_threads(4);
     REQUIRE(C.number_of_congruences(factorial(n)) == num[n]);
@@ -3545,8 +3545,7 @@ namespace libsemigroups {
                           "2-sided S_6 Burnside+Miller presentation",
                           "[fail][sims2][low-index]") {
     auto  rg = ReportGuard(true);
-    Sims2 S(fpsemigroup::symmetric_group(
-        7, fpsemigroup::author::Burnside + fpsemigroup::author::Miller));
+    Sims2 S(fpsemigroup::symmetric_group_Bur12(7));
     S.number_of_threads(std::thread::hardware_concurrency());
     REQUIRE(S.number_of_congruences(720) == 3);
   }
