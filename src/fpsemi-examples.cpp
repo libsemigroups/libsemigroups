@@ -1635,15 +1635,10 @@ namespace libsemigroups {
       return p;
     }
 
-    Presentation<word_type> monogenic_semigroup(size_t m,
-                                                size_t r,
-                                                author val) {
+    Presentation<word_type> monogenic_semigroup(size_t m, size_t r) {
       if (r == 0) {
         LIBSEMIGROUPS_EXCEPTION(
             "expected 2nd argument to be strictly positive, found {}", r);
-      } else if (val != author::Any) {
-        LIBSEMIGROUPS_EXCEPTION(
-            "expected 3rd argument to be author::Any, found {}", val);
       }
       Presentation<word_type> p;
       presentation::add_rule_no_checks(p, pow(0_w, m + r), pow(0_w, m));

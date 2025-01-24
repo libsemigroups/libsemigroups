@@ -931,15 +931,12 @@ namespace libsemigroups {
     //!
     //! \param m the index.
     //! \param r the period.
-    //! \param val the author of the presentation (default: `author::Any`).
     //!
     //! \returns A value of type `Presentation<libsemigroups::word_type>`.
     //!
-    //! \throws LibsemigroupsException if `m < 0`.
-    //! \throws LibsemigroupsException if `r = 0`.
-    //! \throws LibsemigroupsException if \p val is not `author::Any`.
-    [[nodiscard]] Presentation<word_type>
-    monogenic_semigroup(size_t m, size_t r, author val = author::Any);
+    //! \throws LibsemigroupsException if `r == 0`.
+    [[nodiscard]] Presentation<word_type> monogenic_semigroup(size_t m,
+                                                              size_t r);
 
     //! \brief A presentation for the monoid of order-preserving mappings.
     //!
