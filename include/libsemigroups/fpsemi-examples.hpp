@@ -797,8 +797,8 @@ namespace libsemigroups {
     //! \brief A presentation for the partial transformation monoid.
     //!
     //! This function returns a monoid presentation defining the partial
-    //! transformation monoid of degree \p n, as in Theorem 1.6 of \cite
-    //! Mitchell2024aa.
+    //! transformation monoid of degree \p n, as in Theorem 1.6 of
+    //! \cite Mitchell2024aa.
     //!
     //! \param n the degree of the partial transformation monoid.
     //!
@@ -830,38 +830,72 @@ namespace libsemigroups {
     //! \brief A presentation for the symmetric inverse monoid.
     //!
     //! This function returns a monoid presentation defining the symmetric
-    //! inverse monoid. The argument \brief val determines the specific
-    //! presentation which is returned. The options are:
-    //! * `author::Gay`;
-    //! * `author::Sutov` (see Theorem 9.2.2 of
-    //! [10.1007/978-1-84800-281-4][]);
-    //! * `author::Mitchell + author::Whyte` (see Theorem 1.4 of
-    //! [10.48550/arXiv.2406.19294][]).
+    //! inverse monoid of degree \p n, as in Example 7.1.2 of \cite Gay2018aa.
     //!
     //!
     //! \param n the degree of the symmetric inverse monoid.
-    //! \param val the author of the presentation (default: `author::Mitchell +
-    //! author::Whyte`).
     //!
     //! \returns A value of type `Presentation<libsemigroups::word_type>`.
     //!
-    //! \throws LibsemigroupsException if \p val is not one of the options
-    //! specified above.
-    //!
-    //! [10.1007/978-1-84800-281-4]: https://doi.org/10.1007/978-1-84800-281-4
-    //! [10.48550/arXiv.2406.19294]: https://doi.org/10.48550/arXiv.2406.19294
-    //
-    // When val == author::Gay, this is just a presentation for the symmetric
-    // inverse monoid, a slightly modified version from Solomon (so that
-    // contains the Coxeter+Moser presentation for the symmetric group),
-    // Example 7.1.2 in Joel gay's thesis (JDM the presentation in Example 7.1.2
-    // seems to have 2n - 1 generators whereas this function returns a monoid on
-    // n generators. TODO ask Florent again if this reference is correct
-    // Maybe should be Solomon:
+    //! \throws LibsemigroupsException if `n < 2`.
+    // This is just a presentation for the symmetric inverse monoid, a slightly
+    // modified version from Solomon (so that contains the Coxeter+Moser
+    // presentation for the symmetric group), Example 7.1.2 in Joel gay's thesis
+    // (JDM the presentation in Example 7.1.2 seems to have 2n - 1 generators
+    // whereas this function returns a monoid on n generators. TODO ask Florent
+    // again if this reference is correct Maybe should be Solomon:
     // https://www.sciencedirect.com/science/article/pii/S0021869303005933/pdf
     [[nodiscard]] Presentation<word_type>
-    symmetric_inverse_monoid(size_t n,
-                             author val = author::Mitchell + author::Whyte);
+    symmetric_inverse_monoid_Gay18(size_t n);
+
+    //! \brief A presentation for the symmetric inverse monoid.
+    //!
+    //! This function returns a monoid presentation defining the symmetric
+    //! inverse monoid of degree \p n due to Shutov \cite Shutov1960aa, as in
+    //! Theorem 9.2.2 of \cite Ganyushkin2009aa.
+    //!
+    //! \param n the degree of the symmetric inverse monoid.
+    //!
+    //! \returns A value of type `Presentation<libsemigroups::word_type>`.
+    //!
+    //! \throws LibsemigroupsException if `n < 4`.
+    [[nodiscard]] Presentation<word_type>
+    symmetric_inverse_monoid_Shu60(size_t n);
+
+    //! \brief A presentation for the symmetric inverse monoid.
+    //!
+    //! This function returns a monoid presentation defining the partial
+    //! transformation monoid of degree \p n, as in Theorem 1.4 of
+    //! \cite Mitchell2024aa.
+    //!
+    //!
+    //! \param n the degree of the symmetric inverse monoid.
+    //!
+    //! \returns A value of type `Presentation<libsemigroups::word_type>`.
+    //!
+    //! \throws LibsemigroupsException if `n < 4`.
+    [[nodiscard]] Presentation<word_type>
+    symmetric_inverse_monoid_MW24(size_t n);
+
+    //! \copydoc partial_transformation_monoid_MW24
+    //!
+    //! \note
+    //! This function performs exactly the same as
+    //! `symmetric_inverse_monoid_MW24`, and exists as a convenience
+    //! function for when a presentation for the symmetric inverse monoid
+    //! is required, but the relations of the presentation are not important.
+    //!
+    //! \sa
+    //! \sa
+    //! For a different %presentation of the full transformation monoid, see
+    //! %one of the following functions:
+    //! * `symmetric_inverse_monoid_Gay18`;
+    //! * `symmetric_inverse_monoid_Shu60`;
+    //! * `symmetric_inverse_monoid_MW24`.
+    [[nodiscard]] inline Presentation<word_type>
+    symmetric_inverse_monoid(size_t n) {
+      return symmetric_inverse_monoid_MW24(n);
+    }
 
     //! \brief A presentation for the Chinese monoid.
     //!

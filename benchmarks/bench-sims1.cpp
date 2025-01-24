@@ -50,7 +50,6 @@ namespace libsemigroups {
   }  // namespace
 
   using fpsemigroup::singular_brauer_monoid_MM07;
-  using fpsemigroup::symmetric_inverse_monoid;
 
   TEST_CASE("POI(3) from FroidurePin", "[POI3][Sim1][quick][talk]") {
     auto                  rg = ReportGuard(false);
@@ -170,7 +169,7 @@ namespace libsemigroups {
   TEST_CASE("symmetric_inverse_monoid(2) (Hivert)",
             "[talk][symmetric_inverse_monoid2]") {
     auto                    rg = ReportGuard(true);
-    Presentation<word_type> p  = symmetric_inverse_monoid(2);
+    Presentation<word_type> p  = fpsemigroup::symmetric_inverse_monoid_Gay18(2);
     presentation::remove_duplicate_rules(p);
     presentation::sort_each_rule(p);
     presentation::sort_rules(p);
@@ -185,7 +184,7 @@ namespace libsemigroups {
   TEST_CASE("symmetric_inverse_monoid(3) (Hivert)",
             "[talk][symmetric_inverse_monoid3]") {
     auto                    rg = ReportGuard(true);
-    Presentation<word_type> p  = symmetric_inverse_monoid(3);
+    Presentation<word_type> p  = fpsemigroup::symmetric_inverse_monoid_Gay18(3);
     presentation::remove_duplicate_rules(p);
     presentation::sort_each_rule(p);
     presentation::sort_rules(p);
@@ -200,7 +199,7 @@ namespace libsemigroups {
   TEST_CASE("symmetric_inverse_monoid(4) (Hivert)",
             "[talk][symmetric_inverse_monoid4]") {
     auto                    rg = ReportGuard(false);
-    Presentation<word_type> p  = symmetric_inverse_monoid(4);
+    Presentation<word_type> p  = fpsemigroup::symmetric_inverse_monoid_Gay18(4);
     presentation::remove_duplicate_rules(p);
     presentation::sort_each_rule(p);
     presentation::sort_rules(p);

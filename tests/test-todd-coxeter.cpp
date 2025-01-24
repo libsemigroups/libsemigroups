@@ -2300,13 +2300,13 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                           "113",
-                          "symmetric_inverse_monoid(5, Sutov)",
+                          "symmetric_inverse_monoid(5) Shutov",
                           "[todd-coxeter][quick][no-valgrind]") {
     using fpsemigroup::author;
-    using fpsemigroup::symmetric_inverse_monoid;
+    using fpsemigroup::symmetric_inverse_monoid_Shu60;
 
     auto rg = ReportGuard(false);
-    auto p  = symmetric_inverse_monoid(5, author::Sutov);
+    auto p  = symmetric_inverse_monoid_Shu60(5);
 
     ToddCoxeter tc(congruence_kind::twosided, p);
     section_felsch(tc);
@@ -2320,7 +2320,7 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                           "114",
-                          "partial_transformation_monoid(5, Sutov)",
+                          "partial_transformation_monoid(5) Shutov",
                           "[todd-coxeter][extreme]") {
     using fpsemigroup::author;
     using fpsemigroup::partial_transformation_monoid_Shu60;

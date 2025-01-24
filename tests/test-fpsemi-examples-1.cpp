@@ -572,7 +572,7 @@ namespace libsemigroups {
                           "symmetric inverse monoid Gay presentation",
                           "[fpsemi-examples][quick]") {
     auto rg = ReportGuard(REPORT);
-    auto p  = symmetric_inverse_monoid(4, author::Gay);
+    auto p  = fpsemigroup::symmetric_inverse_monoid_Gay18(4);
 
     presentation::sort_each_rule(p);
     presentation::sort_rules(p);
@@ -668,7 +668,7 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("fpsemi-examples",
                           "050",
-                          "partial_transformation_monoid(5) Sutov",
+                          "partial_transformation_monoid(5) Shutov",
                           "[fpsemi-examples][quick][no-valgrind]") {
     auto        rg = ReportGuard(REPORT);
     size_t      n  = 5;
@@ -696,7 +696,7 @@ namespace libsemigroups {
     size_t n  = 5;
 
     ToddCoxeter tc(congruence_kind::twosided,
-                   symmetric_inverse_monoid(n, author::Sutov));
+                   fpsemigroup::symmetric_inverse_monoid_Shu60(n));
     REQUIRE(tc.number_of_classes() == 1'546);
   }
 
@@ -707,9 +707,8 @@ namespace libsemigroups {
     auto   rg = ReportGuard(REPORT);
     size_t n  = 4;
 
-    ToddCoxeter tc(
-        congruence_kind::twosided,
-        symmetric_inverse_monoid(n, author::Mitchell + author::Whyte));
+    ToddCoxeter tc(congruence_kind::twosided,
+                   fpsemigroup::symmetric_inverse_monoid_MW24(n));
     REQUIRE(tc.number_of_classes() == 209);
   }
 
@@ -720,9 +719,8 @@ namespace libsemigroups {
     auto   rg = ReportGuard(REPORT);
     size_t n  = 5;
 
-    ToddCoxeter tc(
-        congruence_kind::twosided,
-        symmetric_inverse_monoid(n, author::Mitchell + author::Whyte));
+    ToddCoxeter tc(congruence_kind::twosided,
+                   fpsemigroup::symmetric_inverse_monoid_MW24(n));
     REQUIRE(tc.number_of_classes() == 1'546);
   }
 
