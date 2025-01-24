@@ -390,14 +390,14 @@ namespace libsemigroups {
   TEST_CASE("Presentation length Fernandes cyclic inverse monoid 1st",
             "[cyclic_inverse][length][000]") {
     size_t n = 10;
-    auto   p = cyclic_inverse_monoid(n, fpsemigroup::author::Fernandes, 0);
+    auto   p = fpsemigroup::cyclic_inverse_monoid_Fer22_a(n);
     bench_length(p, 4, 6);
   }
 
   TEST_CASE("Presentation length Fernandes cyclic inverse monoid 2nd",
             "[cyclic_inverse][length][001]") {
     size_t n = 10;
-    auto   p = cyclic_inverse_monoid(n, fpsemigroup::author::Fernandes, 1);
+    auto   p = fpsemigroup::cyclic_inverse_monoid_Fer22_b(n);
     bench_length(p, 4, 6);
   }
 

@@ -1703,70 +1703,63 @@ namespace libsemigroups {
       return p;
     }
 
-    Presentation<word_type> cyclic_inverse_monoid(size_t n,
-                                                  author val,
-                                                  size_t index) {
-      if (val != author::Fernandes) {
+    // See Theorem 2.6 of https://arxiv.org/pdf/2211.02155.pdf
+    Presentation<word_type> cyclic_inverse_monoid_Fer22_a(size_t n) {
+      if (n < 3) {
         LIBSEMIGROUPS_EXCEPTION(
-            "expected 2nd argument to be author::Fernandes, found {}", val);
-      } else if (n < 3) {
-        LIBSEMIGROUPS_EXCEPTION(
-            "the 1st argument must be at least 3 when the 2nd argument is "
-            "author::Fernandes, found {}",
-            n);
-      } else if (index > 1) {
-        LIBSEMIGROUPS_EXCEPTION("the 3rd argument must be 0 or 1 when the 2nd "
-                                "argument is author::Fernandes, found {}",
-                                n);
+            "expected 1st argument to be at least 3, found {}", n);
       }
-
       Presentation<word_type> p;
       p.contains_empty_word(true);
+      p.alphabet(n + 1);
 
-      // See Theorem 2.6 of https://arxiv.org/pdf/2211.02155.pdf
-      if (index == 0) {
-        p.alphabet(n + 1);
+      // R1
+      presentation::add_rule_no_checks(p, pow(0_w, n), {});
 
-        // R1
-        presentation::add_rule_no_checks(p, pow(0_w, n), {});
+      // R2
+      presentation::add_idempotent_rules_no_checks(p, range(1, n + 1));
 
-        // R2
-        presentation::add_idempotent_rules_no_checks(p, range(1, n + 1));
+      // R3
+      presentation::add_commutes_rules_no_checks(p, range(1, n + 1));
 
-        // R3
-        presentation::add_commutes_rules_no_checks(p, range(1, n + 1));
-
-        // R4
-        presentation::add_rule_no_checks(p, 01_w, word_type({n}) + 0_w);
-        for (size_t i = 0; i < n - 1; ++i) {
-          presentation::add_rule_no_checks(
-              p, 0_w + word_type({i + 2}), word_type({i + 1}) + 0_w);
-        }
-
-        // R5
-        presentation::add_rule_no_checks(p, range(0, n + 1), range(1, n + 1));
-
-      } else if (index == 1) {
-        // See Theorem 2.7 of https://arxiv.org/pdf/2211.02155.pdf
-        p.alphabet(2);
-
-        presentation::add_rule_no_checks(p, pow(0_w, n), ""_w);  // relation Q1
-        presentation::add_rule_no_checks(p, 11_w, 1_w);          // relation Q2
-
-        // relations Q3
-        for (size_t j = 2; j <= n; ++j) {
-          for (size_t i = 1; i < j; ++i) {
-            presentation::add_rule_no_checks(
-                p,
-                1_w + pow(0_w, n - j + i) + 1_w + pow(0_w, n - i + j),
-                pow(0_w, n - j + i) + 1_w + pow(0_w, n - i + j) + 1_w);
-          }
-        }
+      // R4
+      presentation::add_rule_no_checks(p, 01_w, word_type({n}) + 0_w);
+      for (size_t i = 0; i < n - 1; ++i) {
         presentation::add_rule_no_checks(
-            p,
-            0_w + pow(1_w + pow(0_w, n - 1), n),
-            pow(1_w + pow(0_w, n - 1), n));  // relation Q4
+            p, 0_w + word_type({i + 2}), word_type({i + 1}) + 0_w);
       }
+
+      // R5
+      presentation::add_rule_no_checks(p, range(0, n + 1), range(1, n + 1));
+      return p;
+    }
+
+    // See Theorem 2.7 of https://arxiv.org/pdf/2211.02155.pdf
+    Presentation<word_type> cyclic_inverse_monoid_Fer22_b(size_t n) {
+      if (n < 3) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "expected 1st argument to be at least 3, found {}", n);
+      }
+      Presentation<word_type> p;
+      p.contains_empty_word(true);
+      p.alphabet(2);
+
+      presentation::add_rule_no_checks(p, pow(0_w, n), ""_w);  // relation Q1
+      presentation::add_rule_no_checks(p, 11_w, 1_w);          // relation Q2
+
+      // relations Q3
+      for (size_t j = 2; j <= n; ++j) {
+        for (size_t i = 1; i < j; ++i) {
+          presentation::add_rule_no_checks(
+              p,
+              1_w + pow(0_w, n - j + i) + 1_w + pow(0_w, n - i + j),
+              pow(0_w, n - j + i) + 1_w + pow(0_w, n - i + j) + 1_w);
+        }
+      }
+      presentation::add_rule_no_checks(
+          p,
+          0_w + pow(1_w + pow(0_w, n - 1), n),
+          pow(1_w + pow(0_w, n - 1), n));  // relation Q4
       return p;
     }
 

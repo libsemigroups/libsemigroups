@@ -600,7 +600,8 @@ namespace libsemigroups {
     //!
     //! This function returns a monoid presentation for the symmetric group of
     //! degree \p n, as in Theorem A of \cite Moore1897aa. This  presentation
-    //! has \f$n - 1\f$ generators and \f$\frac{n(n - 1)}{2}\f$ relations.
+    //! has \f$n - 1\f$ generators and \f$\frac{1}{2}\left(n(n - 1)\right)\f$
+    //! relations.
     //!
     //! \param n the degree of the symmetric group.
     //!
@@ -972,38 +973,52 @@ namespace libsemigroups {
     //! \brief A presentation for the cyclic inverse monoid.
     //!
     //! This function returns a monoid presentation defining the cyclic inverse
-    //! monoid of degree \p n.
+    //! monoid of degree \p n, as in Theorem 2.6 of \cite Fernandes2022aa.
     //!
-    //! The arguments \p val and \p index determine the specific presentation
-    //! which is returned. The options are:
-    //! * `val = author::Fernandes`:
-    //!    * `index = 0` (see Theorem 2.6 of [10.48550/arxiv.2211.02155][]);
-    //!    * `index = 1` (see Theorem 2.7 of [10.48550/arxiv.2211.02155][]).
-    //!
-    //! The presentation with `val = author::Fernandes` and `index = 0` has
-    //! \f$n + 1\f$ generators and \f$\frac{1}{2} \left(n^2 + 3n + 4\right)\f$
-    //! relations.
-    //!
-    //! The presentation with `val = author::Fernandes` and `index = 1` has
-    //! \f$2\f$ generators and \f$\frac{1}{2}\left(n^2 - n + 6\right)\f$
-    //! relations.
+    //! This has \f$n + 1\f$ generators and \f$\frac{1}{2} \left(n^2 + 3n +
+    //! 4\right)\f$ relations.
     //!
     //! \param n the degree.
-    //! \param val the author (default: `author::Fernandes`).
-    //! \param index the index (default: `1`).
     //!
     //! \returns A value of type `Presentation<libsemigroups::word_type>`.
     //!
     //! \throws LibsemigroupsException if `n < 3`.
-    //! \throws LibsemigroupsException if `val` is not `author::Fernandes`.
-    //! \throws LibsemigroupsException if `val == author::Fernandes` and \p
-    //! index is not `0` or `1`.
-    //!
-    //! [10.48550/arxiv.2211.02155]: https://doi.org/10.48550/arxiv.2211.02155
     [[nodiscard]] Presentation<word_type>
-    cyclic_inverse_monoid(size_t n,
-                          author val   = author::Fernandes,
-                          size_t index = 1);
+    cyclic_inverse_monoid_Fer22_a(size_t n);
+
+    //! \brief A presentation for the cyclic inverse monoid.
+    //!
+    //! This function returns a monoid presentation defining the cyclic inverse
+    //! monoid of degree \p n, as in Theorem 2.7 of \cite Fernandes2022aa.
+    //!
+    //! This presentation has \f$2\f$ generators and \f$\frac{1}{2}\left(n^2 - n
+    //! + 6\right)\f$ relations.
+    //!
+    //! \param n the degree.
+    //!
+    //! \returns A value of type `Presentation<libsemigroups::word_type>`.
+    //!
+    //! \throws LibsemigroupsException if `n < 3`.
+    [[nodiscard]] Presentation<word_type>
+    cyclic_inverse_monoid_Fer22_b(size_t n);
+
+    //! \copydoc cyclic_inverse_monoid_Fer22_b
+    //!
+    //! \note
+    //! This function performs exactly the same as
+    //! `cyclic_inverse_monoid_Fer22_b`, and exists as a convenience
+    //! function for when a presentation for the cyclic inverse monoid
+    //! is required, but the relations of the presentation are not important.
+    //!
+    //! \sa
+    //! For a different %presentation of the full transformation monoid, see
+    //! %one of the following functions:
+    //! * `cyclic_inverse_monoid_Fer22_a`;
+    //! * `cyclic_inverse_monoid_Fer22_b`.
+    [[nodiscard]] inline Presentation<word_type>
+    cyclic_inverse_monoid(size_t n) {
+      return cyclic_inverse_monoid_Fer22_b(n);
+    }
 
     //! \p A presentation for the order-preserving part of the cyclic inverse
     //! monoid.

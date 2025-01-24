@@ -91,7 +91,8 @@ namespace libsemigroups {
     REQUIRE(monogenic_semigroup(0, 5).contains_empty_word());
     REQUIRE(!monogenic_semigroup(2, 6).contains_empty_word());
     REQUIRE(order_preserving_monoid(5).contains_empty_word());
-    REQUIRE(cyclic_inverse_monoid(5).contains_empty_word());
+    REQUIRE(cyclic_inverse_monoid_Fer22_a(5).contains_empty_word());
+    REQUIRE(cyclic_inverse_monoid_Fer22_b(5).contains_empty_word());
     REQUIRE(order_preserving_cyclic_inverse_monoid(5).contains_empty_word());
     REQUIRE(partial_isometries_cycle_graph_monoid(5).contains_empty_word());
     REQUIRE(not_symmetric_group(5).contains_empty_word());
@@ -289,29 +290,12 @@ namespace libsemigroups {
                           "cyclic_inverse_monoid degree except",
                           "[fpsemi-examples][quick]") {
     auto rg = ReportGuard(REPORT);
-    REQUIRE_THROWS_AS(cyclic_inverse_monoid(0, author::Fernandes, 0),
-                      LibsemigroupsException);
-    REQUIRE_THROWS_AS(cyclic_inverse_monoid(1, author::Fernandes, 0),
-                      LibsemigroupsException);
-    REQUIRE_THROWS_AS(cyclic_inverse_monoid(2, author::Fernandes, 0),
-                      LibsemigroupsException);
-    REQUIRE_THROWS_AS(cyclic_inverse_monoid(0, author::Fernandes, 1),
-                      LibsemigroupsException);
-    REQUIRE_THROWS_AS(cyclic_inverse_monoid(1, author::Fernandes, 1),
-                      LibsemigroupsException);
-    REQUIRE_THROWS_AS(cyclic_inverse_monoid(2, author::Fernandes, 1),
-                      LibsemigroupsException);
-  }
-
-  LIBSEMIGROUPS_TEST_CASE("fpsemi-examples",
-                          "028",
-                          "cyclic_inverse_monoid author except",
-                          "[fpsemi-examples][quick]") {
-    auto rg = ReportGuard(REPORT);
-    REQUIRE_THROWS_AS(cyclic_inverse_monoid(5, author::Burnside, 0),
-                      LibsemigroupsException);
-    REQUIRE_THROWS_AS(cyclic_inverse_monoid(5, author::Fernandes, 3),
-                      LibsemigroupsException);
+    REQUIRE_THROWS_AS(cyclic_inverse_monoid_Fer22_a(0), LibsemigroupsException);
+    REQUIRE_THROWS_AS(cyclic_inverse_monoid_Fer22_a(1), LibsemigroupsException);
+    REQUIRE_THROWS_AS(cyclic_inverse_monoid_Fer22_a(2), LibsemigroupsException);
+    REQUIRE_THROWS_AS(cyclic_inverse_monoid_Fer22_b(0), LibsemigroupsException);
+    REQUIRE_THROWS_AS(cyclic_inverse_monoid_Fer22_b(1), LibsemigroupsException);
+    REQUIRE_THROWS_AS(cyclic_inverse_monoid_Fer22_b(2), LibsemigroupsException);
   }
 
   LIBSEMIGROUPS_TEST_CASE(
@@ -773,34 +757,33 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("fpsemi-examples",
                           "057",
-                          "cyclic_inverse_monoid(4) Fernandes 1",
+                          "cyclic_inverse_monoid(4) Fernandes b",
                           "[fpsemi-examples][quick]") {
     auto   rg = ReportGuard(REPORT);
     size_t n  = 4;
 
-    ToddCoxeter tc(congruence_kind::twosided,
-                   cyclic_inverse_monoid(n, author::Fernandes, 1));
+    ToddCoxeter tc(congruence_kind::twosided, cyclic_inverse_monoid_Fer22_b(n));
     REQUIRE(tc.number_of_classes() == 61);
   }
 
   LIBSEMIGROUPS_TEST_CASE("fpsemi-examples",
                           "058",
-                          "cyclic_inverse_monoid(8) Fernandes index 1",
+                          "cyclic_inverse_monoid(8) Fernandes b",
                           "[fpsemi-examples][quick][no-valgrind]") {
     auto        rg = ReportGuard(REPORT);
     size_t      n  = 8;
-    ToddCoxeter tc(congruence_kind::twosided,
-                   cyclic_inverse_monoid(n, author::Fernandes, 1));
+    ToddCoxeter tc(congruence_kind::twosided, cyclic_inverse_monoid_Fer22_b(n));
     REQUIRE(tc.number_of_classes() == 2'041);
   }
 
   LIBSEMIGROUPS_TEST_CASE("fpsemi-examples",
                           "059",
-                          "cyclic_inverse_monoid Fernandes index 0",
+                          "cyclic_inverse_monoid Fernandes a",
                           "[fpsemi-examples][quick][no-valgrind]") {
     auto rg = ReportGuard(REPORT);
     for (size_t n = 3; n < 10; ++n) {
-      auto p = fpsemigroup::cyclic_inverse_monoid(n, author::Fernandes, 0);
+      auto p = fpsemigroup::cyclic_inverse_monoid_Fer22_a(n);
+      REQUIRE(p.alphabet().size() == (n + 1));
       REQUIRE(p.rules.size() == (n * n + 3 * n + 4));
       if (n == 3) {
         presentation::sort_each_rule(p);
@@ -813,6 +796,20 @@ namespace libsemigroups {
                      31_w,  13_w, 32_w, 23_w, 0123_w, 123_w}));
       }
 
+      ToddCoxeter tc(congruence_kind::twosided, p);
+      REQUIRE(tc.number_of_classes() == n * std::pow(2, n) - n + 1);
+    }
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("fpsemi-examples",
+                          "059",
+                          "cyclic_inverse_monoid Fernandes b",
+                          "[fpsemi-examples][quick][no-valgrind]") {
+    auto rg = ReportGuard(REPORT);
+    for (size_t n = 3; n < 10; ++n) {
+      auto p = fpsemigroup::cyclic_inverse_monoid_Fer22_b(n);
+      REQUIRE(p.alphabet().size() == 2);
+      REQUIRE(p.rules.size() == (n * n - n + 6));
       ToddCoxeter tc(congruence_kind::twosided, p);
       REQUIRE(tc.number_of_classes() == n * std::pow(2, n) - n + 1);
     }

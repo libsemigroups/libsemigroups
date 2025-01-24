@@ -3558,11 +3558,9 @@ namespace libsemigroups {
                           "2-sided CI_4 Fernandes presentation",
                           "[standard][sims2][low-index]") {
     auto  rg = ReportGuard(false);
-    Sims2 S(fpsemigroup::cyclic_inverse_monoid(
-        4, fpsemigroup::author::Fernandes, 0));
+    Sims2 S(fpsemigroup::cyclic_inverse_monoid_Fer22_a(4));
     REQUIRE(S.number_of_congruences(61) == 14);
-    S.presentation(fpsemigroup::cyclic_inverse_monoid(
-        4, fpsemigroup::author::Fernandes, 1));
+    S.presentation(fpsemigroup::cyclic_inverse_monoid_Fer22_b(4));
     REQUIRE(S.number_of_congruences(61) == 14);
   }
 
