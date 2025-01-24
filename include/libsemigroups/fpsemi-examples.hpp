@@ -717,7 +717,7 @@ namespace libsemigroups {
     //!
     //! This function returns a monoid presentation defining the full
     //! transformation monoid of degree \p n due to Iwahori and Iwahori
-    //! \cite Iwahori1974aa, as in Theorem 9.3.1 of \cite  Ganyushkin2009aa.
+    //! \cite Iwahori1974aa, as in Theorem 9.3.1 of \cite Ganyushkin2009aa.
     //!
     //! \param n the degree of the full transformation monoid.
     //!
@@ -783,28 +783,49 @@ namespace libsemigroups {
     //! \brief A presentation for the partial transformation monoid.
     //!
     //! This function returns a monoid presentation defining the partial
-    //! transformation monoid. The argument \p val determines the specific
-    //! presentation which is returned. The options are:
-    //! * `author::Machine`;
-    //! * `author::Sutov` (see Theorem 9.4.1 of
-    //! [10.1007/978-1-84800-281-4][]);
-    //! * `author::Mitchell + author::Whyte`  (See Theorem 1.5 of
-    //! [10.48550/arXiv.2406.19294]).
+    //! transformation monoid of degree \p n due to Shutov \cite Shutov1960aa,
+    //! as in Theorem 9.4.1 of \cite Ganyushkin2009aa.
     //!
     //! \param n the degree of the partial transformation monoid.
-    //! \param val the author of the presentation (default: `author::Mitchell +
-    //! author::Whyte`).
     //!
     //! \returns A value of type `Presentation<libsemigroups::word_type>`.
     //!
-    //! \throws LibsemigroupsException if \p val is not one of the options
-    //! specified above.
+    //! \throws LibsemigroupsException if `n < 4`.
+    [[nodiscard]] Presentation<word_type>
+    partial_transformation_monoid_Shu60(size_t n);
+
+    //! \brief A presentation for the partial transformation monoid.
     //!
-    //! [10.1007/978-1-84800-281-4]: https://doi.org/10.1007/978-1-84800-281-4
-    //! [10.48550/arXiv.2406.19294]: https://doi.org/10.48550/arXiv.2406.19294
-    [[nodiscard]] Presentation<word_type> partial_transformation_monoid(
-        size_t n,
-        author val = author::Mitchell + author::Whyte);
+    //! This function returns a monoid presentation defining the partial
+    //! transformation monoid of degree \p n, as in Theorem 1.6 of \cite
+    //! Mitchell2024aa.
+    //!
+    //! \param n the degree of the partial transformation monoid.
+    //!
+    //! \returns A value of type `Presentation<libsemigroups::word_type>`.
+    //!
+    //! \throws LibsemigroupsException if `n < 2`.
+    [[nodiscard]] Presentation<word_type>
+    partial_transformation_monoid_MW24(size_t n);
+
+    //! \copydoc partial_transformation_monoid_MW24
+    //!
+    //! \note
+    //! This function performs exactly the same as
+    //! `partial_transformation_monoid_MW24`, and exists as a convenience
+    //! function for when a presentation for the partial transformation monoid
+    //! is required, but the relations of the presentation are not important.
+    //!
+    //! \sa
+    //! \sa
+    //! For a different %presentation of the full transformation monoid, see
+    //! %one of the following functions:
+    //! * `partial_transformation_monoid_Shu60`;
+    //! * `partial_transformation_monoid_MW24`.
+    [[nodiscard]] inline Presentation<word_type>
+    partial_transformation_monoid(size_t n) {
+      return partial_transformation_monoid_MW24(n);
+    }
 
     //! \brief A presentation for the symmetric inverse monoid.
     //!

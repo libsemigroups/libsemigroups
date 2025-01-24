@@ -1455,104 +1455,74 @@ namespace libsemigroups {
       return p;
     }
 
-    Presentation<word_type> partial_transformation_monoid(size_t n,
-                                                          author val) {
-      if (n < 3) {
+    // From Theorem 1.6 of https://doi.org/10.48550/arXiv.2406.19294
+    Presentation<word_type> partial_transformation_monoid_MW24(size_t n) {
+      if (n < 2) {
         LIBSEMIGROUPS_EXCEPTION(
-            "the 1st argument (size_t) must be at least 3, found {}", n);
-      } else if (val != author::Machine && val != author::Sutov
-                 && val != author::Mitchell + author::Whyte) {
-        LIBSEMIGROUPS_EXCEPTION(
-            "expected 2nd argument to be author::Machine, or "
-            "author::Sutov, or author::Mitchell + author::Whyte, found {}",
-            val);
-      } else if (val == author::Machine && n != 3) {
-        LIBSEMIGROUPS_EXCEPTION("the 1st argument must be 3 where the 2nd "
-                                "argument is {}, found {}",
-                                val,
-                                n);
-      } else if (val == author::Sutov && n < 4) {
-        LIBSEMIGROUPS_EXCEPTION("the 1st argument must be at least 4 when the "
-                                "2nd argument is author::Sutov, found {}",
-                                n);
+            "the 1st argument (size_t) must be at least 2, found {}", n);
       }
-
       Presentation<word_type> p;
-      if (val == author::Machine) {
-        p.alphabet(4);
-        p.contains_empty_word(true);
-        p.rules
-            = {00_w,    ""_w,    03_w,     3_w,     22_w,    2_w,     23_w,
-               2_w,     32_w,    3_w,      33_w,    3_w,     010_w,   11_w,
-               011_w,   10_w,    101_w,    0_w,     110_w,   01_w,    111_w,
-               ""_w,    113_w,   013_w,    201_w,   012_w,   302_w,   202_w,
-               312_w,   212_w,   0120_w,   211_w,   0121_w,  210_w,   0202_w,
-               202_w,   0210_w,  121_w,    0211_w,  120_w,   0212_w,  212_w,
-               1210_w,  021_w,   1211_w,   020_w,   1213_w,  0213_w,  1313_w,
-               313_w,   2020_w,  202_w,    2021_w,  212_w,   2121_w,  2120_w,
-               2131_w,  2130_w,  3012_w,   301_w,   3013_w,  301_w,   3131_w,
-               3130_w,  10213_w, 3102_w,   11202_w, 2112_w,  11212_w, 2102_w,
-               13102_w, 213_w,   21021_w,  21020_w, 21120_w, 2112_w,  21121_w,
-               2102_w,  21301_w, 13112_w,  31021_w, 31020_w, 31120_w, 3112_w,
-               31121_w, 3102_w,  121202_w, 21202_w};
 
-      } else if (val == author::Sutov) {
-        // From Theorem 9.4.1, p169, (Ganyushkin + Mazorchuk)
-        // https://link.springer.com/book/10.1007/978-1-84800-281-4
-        p = symmetric_inverse_monoid(n, author::Sutov);
-        p.alphabet(n + 1);
-        add_full_transformation_monoid_relations(p, n, 0, n);
-        presentation::add_rule_no_checks(p, {n, 0, n - 1, 0}, {n});
-        presentation::add_rule_no_checks(p, {0, n - 1, 0, n}, {0, n - 1, 0});
-        presentation::add_rule_no_checks(
-            p, {n, n - 1}, {0, n - 1, 0, n - 1, n});
-        presentation::add_rule_no_checks(p, {n, 1, n - 1, 1}, {1, n - 1, 1, n});
-      } else {
-        // From Theorem 1.6 of https://doi.org/10.48550/arXiv.2406.19294
-        // val == author::Mitchell + author::Whyte
-        p = symmetric_group_Car56(n);
+      p = symmetric_group_Car56(n);
 
-        // Relation I3
-        std::vector<size_t> gens(n - 1);  // list of generators to use prod on
-        std::iota(gens.begin(), gens.end(), 0);
-        presentation::add_rule_no_checks(
-            p,
-            prod(gens, 0, n - 1, 1) + word_type({0, n - 1}),
-            word_type({n - 1}) + prod(gens, 0, n - 1, 1) + word_type({0}));
+      // Relation I3
+      std::vector<size_t> gens(n - 1);  // list of generators to use prod on
+      std::iota(gens.begin(), gens.end(), 0);
+      presentation::add_rule_no_checks(
+          p,
+          prod(gens, 0, n - 1, 1) + word_type({0, n - 1}),
+          word_type({n - 1}) + prod(gens, 0, n - 1, 1) + word_type({0}));
 
-        // Relation T3
-        presentation::add_rule_no_checks(p, {1, 2, 1, n}, {n, 1, 2, 1});
+      // Relation T3
+      presentation::add_rule_no_checks(p, {1, 2, 1, n}, {n, 1, 2, 1});
 
-        // Relation T7
-        presentation::add_rule_no_checks(
-            p,
-            {n - 2, 0, 1, 0, n, n - 2, 0, 1, 0, n},
-            {n, n - 2, 0, 1, 0, n, n - 2, 0, 1, 0});
+      // Relation T7
+      presentation::add_rule_no_checks(p,
+                                       {n - 2, 0, 1, 0, n, n - 2, 0, 1, 0, n},
+                                       {n, n - 2, 0, 1, 0, n, n - 2, 0, 1, 0});
 
-        // Relation T8
-        presentation::add_rule_no_checks(
-            p,
-            prod(gens, 1, n - 1, 1) + word_type({1, 0, n}),
-            word_type({n}) + prod(gens, 1, n - 1, 1) + word_type({1}));
+      // Relation T8
+      presentation::add_rule_no_checks(
+          p,
+          prod(gens, 1, n - 1, 1) + word_type({1, 0, n}),
+          word_type({n}) + prod(gens, 1, n - 1, 1) + word_type({1}));
 
-        // Relation T9
-        presentation::add_rule_no_checks(
-            p, {0, 1, 0, n, 0, 1, 0, n, 0, 1, 0, n, 0, 1, 0}, {n, 0, 1, 0, n});
+      // Relation T9
+      presentation::add_rule_no_checks(
+          p, {0, 1, 0, n, 0, 1, 0, n, 0, 1, 0, n, 0, 1, 0}, {n, 0, 1, 0, n});
 
-        // Relation P1
-        presentation::add_rule_no_checks(p, {n, 0, n - 1, 0}, {n});
+      // Relation P1
+      presentation::add_rule_no_checks(p, {n, 0, n - 1, 0}, {n});
 
-        // Relation P5
-        presentation::add_rule_no_checks(p, {1, n - 1, 1, n}, {n, 1, n - 1, 1});
+      // Relation P5
+      presentation::add_rule_no_checks(p, {1, n - 1, 1, n}, {n, 1, n - 1, 1});
 
-        // Relation P6
-        presentation::add_rule_no_checks(
-            p, {0, 1, 0, n - 1, 0, 1, 0}, {n - 1, 0, n, 0});
+      // Relation P6
+      presentation::add_rule_no_checks(
+          p, {0, 1, 0, n - 1, 0, 1, 0}, {n - 1, 0, n, 0});
 
-        // Relation P7
-        presentation::add_rule_no_checks(
-            p, {0, n - 1, 0, n - 1, 0}, {n, n - 1});
+      // Relation P7
+      presentation::add_rule_no_checks(p, {0, n - 1, 0, n - 1, 0}, {n, n - 1});
+
+      p.alphabet_from_rules();
+      return p;
+    }
+
+    // Due to Shutov 1960, as in Theorem 9.4.1, p169, (Ganyushkin + Mazorchuk)
+    // https://link.springer.com/book/10.1007/978-1-84800-281-4
+    Presentation<word_type> partial_transformation_monoid_Shu60(size_t n) {
+      if (n < 4) {
+        LIBSEMIGROUPS_EXCEPTION("the 1st argument must be at least 4, found {}",
+                                n);
       }
+      Presentation<word_type> p;
+      p = symmetric_inverse_monoid(n, author::Sutov);
+      p.alphabet(n + 1);
+      add_full_transformation_monoid_relations(p, n, 0, n);
+      presentation::add_rule_no_checks(p, {n, 0, n - 1, 0}, {n});
+      presentation::add_rule_no_checks(p, {0, n - 1, 0, n}, {0, n - 1, 0});
+      presentation::add_rule_no_checks(p, {n, n - 1}, {0, n - 1, 0, n - 1, n});
+      presentation::add_rule_no_checks(p, {n, 1, n - 1, 1}, {1, n - 1, 1, n});
       p.alphabet_from_rules();
       return p;
     }

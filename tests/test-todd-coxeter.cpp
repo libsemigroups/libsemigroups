@@ -2323,11 +2323,11 @@ namespace libsemigroups {
                           "partial_transformation_monoid(5, Sutov)",
                           "[todd-coxeter][extreme]") {
     using fpsemigroup::author;
-    using fpsemigroup::partial_transformation_monoid;
+    using fpsemigroup::partial_transformation_monoid_Shu60;
 
     auto   rg = ReportGuard(true);
     size_t n  = 5;
-    auto   p  = partial_transformation_monoid(n, author::Sutov);
+    auto   p  = partial_transformation_monoid_Shu60(n);
 
     ToddCoxeter tc(congruence_kind::twosided, p);
     section_felsch(tc);

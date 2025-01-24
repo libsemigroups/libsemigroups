@@ -2286,8 +2286,9 @@ namespace libsemigroups {
                           "053",
                           "partial_transformation_monoid(3)",
                           "[extreme][low-index]") {
-    auto  rg = ReportGuard(true);
-    auto  p  = partial_transformation_monoid(3, author::Machine);
+    auto rg = ReportGuard(true);
+    using namespace fpsemigroup;
+    auto  p = partial_transformation_monoid_MW24(3);
     Sims1 S;
     S.presentation(p).number_of_threads(std::thread::hardware_concurrency());
     REQUIRE(S.number_of_congruences(64) == 92'703);
@@ -2909,8 +2910,9 @@ namespace libsemigroups {
                           "partial_transformation_monoid(4)",
                           "[fail][low-index]") {
     auto rg = ReportGuard(true);
-    auto p  = partial_transformation_monoid(4, author::Sutov);
-    auto w  = presentation::longest_subword_reducing_length(p);
+    using namespace fpsemigroup;
+    auto p = partial_transformation_monoid_Shu60(4);
+    auto w = presentation::longest_subword_reducing_length(p);
     while (!w.empty()) {
       presentation::replace_word_with_new_generator(
           p, presentation::longest_subword_reducing_length(p));
