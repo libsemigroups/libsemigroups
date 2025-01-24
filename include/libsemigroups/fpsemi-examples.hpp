@@ -46,7 +46,6 @@ namespace libsemigroups {
     //! authors, values of this type can be passed as an argument to
     //! disambiguate which presentation is wanted.
     enum class author : uint64_t {
-
       //! encoded as the `uint64_t` value \f$0\f$.
       Any = 0,
 
