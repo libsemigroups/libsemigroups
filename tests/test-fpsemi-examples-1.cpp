@@ -538,78 +538,46 @@ namespace libsemigroups {
     REQUIRE(tc.number_of_classes() == 45);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("fpsemi-examples",
-                          "043",
-                          "symmetric_group(6) Burnside + Miller",
-                          "[fpsemi-examples][quick][no-valgrind]") {
-    auto        rg = ReportGuard(REPORT);
-    size_t      n  = 6;
-    ToddCoxeter tc(congruence_kind::twosided, symmetric_group_Bur12(n));
-    REQUIRE(tc.number_of_classes() == 720);
-  }
-
-  LIBSEMIGROUPS_TEST_CASE("fpsemi-examples",
-                          "044",
-                          "symmetric_group(6) Carmichael",
-                          "[fpsemi-examples][quick][no-valgrind]") {
-    auto        rg = ReportGuard(REPORT);
-    size_t      n  = 6;
-    ToddCoxeter tc(congruence_kind::twosided, symmetric_group_Car56(n));
-    REQUIRE(tc.number_of_classes() == 720);
-  }
-
-  LIBSEMIGROUPS_TEST_CASE("fpsemi-examples",
-                          "045",
-                          "symmetric_group(6) Moore index 0",
-                          "[fpsemi-examples][quick][no-valgrind]") {
-    auto   rg = ReportGuard(REPORT);
-    size_t n  = 6;
-
-    ToddCoxeter tc(congruence_kind::twosided, symmetric_group_Moo97_b(n));
-    REQUIRE(tc.number_of_classes() == 720);
-  }
-
-  LIBSEMIGROUPS_TEST_CASE("fpsemi-examples",
-                          "046",
-                          "symmetric_group(7) Moore index 1",
-                          "[fpsemi-examples][quick][no-valgrind]") {
-    auto        rg = ReportGuard(REPORT);
-    size_t      n  = 7;
-    ToddCoxeter tc(congruence_kind::twosided, symmetric_group_Moo97_a(n));
-    REQUIRE(tc.number_of_classes() == 5'040);
-  }
-
   LIBSEMIGROUPS_TEST_CASE(
       "fpsemi-examples",
       "047",
       "symmetric_group nr generators, relations and classes",
-      "[fpsemi-examples][quick]") {
-    auto                    rg = ReportGuard(REPORT);
-    Presentation<word_type> p;
-    ToddCoxeter             tc;
-    size_t                  max_n = 8;
-    for (size_t n = 2; n < max_n; ++n) {
+      "[fpsemi-examples][quick][no-valgrind]") {
+    auto                               rg = ReportGuard(REPORT);
+    Presentation<word_type>            p;
+    ToddCoxeter                        tc;
+    size_t                             min_n = 2;
+    size_t                             max_n = 8;
+    std::unordered_map<size_t, size_t> factorial;
+    size_t                             current_factorial = 1;
+    for (size_t n = 1; n < max_n; ++n) {
+      current_factorial *= n;
+      if (n >= min_n) {
+        factorial[n] = current_factorial;
+      }
+    }
+    for (size_t n = min_n; n < max_n; ++n) {
       p = symmetric_group_Bur12(n);
       REQUIRE(p.alphabet().size() == n - 1);
       REQUIRE(p.rules.size() == 2 * (n * n * n - 5 * n * n + 9 * n - 5));
       tc = ToddCoxeter(congruence_kind::twosided, p);
-      REQUIRE(tc.number_of_classes() == tgamma(n + 1));
+      REQUIRE(tc.number_of_classes() == factorial[n]);
     }
-    for (size_t n = 2; n < max_n; ++n) {
+    for (size_t n = min_n; n < max_n; ++n) {
       p = symmetric_group_Car56(n);
       REQUIRE(p.alphabet().size() == n - 1);
       REQUIRE(p.rules.size() == 2 * (n - 1) * (n - 1));
       tc = ToddCoxeter(congruence_kind::twosided, p);
-      REQUIRE(tc.number_of_classes() == tgamma(n + 1));
+      REQUIRE(tc.number_of_classes() == factorial[n]);
     }
-    for (size_t n = 2; n < max_n; ++n) {
+    for (size_t n = min_n; n < max_n; ++n) {
       p = symmetric_group_Moo97_a(n);
       REQUIRE(p.alphabet().size() == n - 1);
       REQUIRE(p.rules.size() == n * (n - 1));
       tc = ToddCoxeter(congruence_kind::twosided, p);
-      REQUIRE(tc.number_of_classes() == tgamma(n + 1));
+      REQUIRE(tc.number_of_classes() == factorial[n]);
     }
-    for (size_t n = 2; n < max_n; ++n) {
+    for (size_t n = min_n; n < max_n; ++n) {
       p = symmetric_group_Moo97_b(n);
       REQUIRE(p.alphabet().size() == 2);
       if (n < 4) {
@@ -618,7 +586,7 @@ namespace libsemigroups {
         REQUIRE(p.rules.size() == 2 * (n + 1));
       }
       tc = ToddCoxeter(congruence_kind::twosided, p);
-      REQUIRE(tc.number_of_classes() == tgamma(n + 1));
+      REQUIRE(tc.number_of_classes() == factorial[n]);
     }
   }
 
