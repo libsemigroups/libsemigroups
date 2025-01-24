@@ -341,7 +341,6 @@ namespace libsemigroups {
       }
       return t;
     }
-
   }  // namespace
 
   namespace fpsemigroup {
@@ -1286,147 +1285,170 @@ namespace libsemigroups {
       return p;
     }
 
-    Presentation<word_type> full_transformation_monoid(size_t n,
-                                                       author val,
-                                                       size_t index) {
-      if (val != author::Aizenstat && val != author::Iwahori
-          && val != author::Mitchell + author::Whyte) {
+    // From Section 5, Theorem 2 Aizenstat (Russian) or Proposition 1.7 in
+    // https://bit.ly/3R5ZpKW (English)
+    Presentation<word_type> full_transformation_monoid_Aiz58(size_t n) {
+      if (n < 4) {
         LIBSEMIGROUPS_EXCEPTION(
-            "expected 2nd argument to be author::Aizenstat, or "
-            "author::Iwahori, or author::Mitchell + author::Whyte found {}",
-            val);
-      } else if (n < 4 && val != author::Mitchell + author::Whyte) {
-        LIBSEMIGROUPS_EXCEPTION(
-            "the 1st argument (degree) must be at least 4 when the 2nd "
-            "argument is author::Aizenstat or author::Iwahori, found {}",
-            n);
-      } else if (n < 2 && val == author::Mitchell + author::Whyte) {
-        LIBSEMIGROUPS_EXCEPTION(
-            "the 1st argument must be at least 2 when the 2nd argument is "
-            "author::Mitchell + author::Whyte, found {}",
-            val);
-      } else if (index > 1) {
-        LIBSEMIGROUPS_EXCEPTION(
-            "the 3rd argument (index) must be either 0 or 1, found {}", index);
-      } else if (index != 0 && val != author::Mitchell + author::Whyte) {
-        LIBSEMIGROUPS_EXCEPTION("the 3rd argument (index) must be 0 when the "
-                                "2nd argument (author) is "
-                                " author::Mitchell + author::Whyte, found {}",
-                                index);
-      } else if (index == 1 && n % 2 == 0) {
-        LIBSEMIGROUPS_EXCEPTION("the 1st argument (degree) must be odd when "
-                                "the 3rd argument (index) is 1");
+            "the 1st argument (degree) must be at least 4, found {}", n);
       }
-
       Presentation<word_type> p;
-      if (val == author::Aizenstat) {
-        // From Proposition 1.7 in https://bit.ly/3R5ZpKW
-        p = symmetric_group_Moo97_b(n);
+      p = symmetric_group_Moo97_b(n);
 
-        presentation::add_rule_no_checks(p, 02_w, 2_w);
-        presentation::add_rule_no_checks(
-            p, pow(1_w, n - 2) + 0112_w + pow(1_w, n - 2) + 011_w, 2_w);
-        presentation::add_rule_no_checks(p,
-                                         10_w + pow(1_w, n - 1) + 012_w
-                                             + pow(1_w, n - 1) + 010_w
-                                             + pow(1_w, n - 1),
-                                         2_w);
-        presentation::add_rule_no_checks(
-            p, pow(210_w + pow(1_w, n - 1), 2), 2_w);
-        presentation::add_rule_no_checks(
-            p, pow(pow(1_w, n - 1) + 012_w, 2), 2_w + pow(1_w, n - 1) + 012_w);
-        presentation::add_rule_no_checks(p,
-                                         pow(2_w + pow(1_w, n - 1) + 01_w, 2),
-                                         2_w + pow(1_w, n - 1) + 012_w);
-        presentation::add_rule_no_checks(
-            p,
-            pow(210_w + pow(1_w, n - 2) + 01_w, 2),
-            pow(10_w + (pow(1_w, n - 2)) + 012_w, 2));
-      } else if (val == author::Iwahori) {
-        // From Theorem 9.3.1, p161-162, (Ganyushkin + Mazorchuk)
-        // using Theorem 9.1.4 to express presentation in terms
-        // of the pi_i and e_12.
-        // https://link.springer.com/book/10.1007/978-1-84800-281-4
-        p = symmetric_group_Car56(n);
-        add_full_transformation_monoid_relations(p, n, 0, n - 1);
-      } else {
-        // val == author::Mitchell + author::Whyte
+      presentation::add_rule_no_checks(p, 02_w, 2_w);
+      presentation::add_rule_no_checks(
+          p, pow(1_w, n - 2) + 0112_w + pow(1_w, n - 2) + 011_w, 2_w);
+      presentation::add_rule_no_checks(p,
+                                       10_w + pow(1_w, n - 1) + 012_w
+                                           + pow(1_w, n - 1) + 010_w
+                                           + pow(1_w, n - 1),
+                                       2_w);
+      presentation::add_rule_no_checks(p, pow(210_w + pow(1_w, n - 1), 2), 2_w);
+      presentation::add_rule_no_checks(
+          p, pow(pow(1_w, n - 1) + 012_w, 2), 2_w + pow(1_w, n - 1) + 012_w);
+      presentation::add_rule_no_checks(p,
+                                       pow(2_w + pow(1_w, n - 1) + 01_w, 2),
+                                       2_w + pow(1_w, n - 1) + 012_w);
+      presentation::add_rule_no_checks(
+          p,
+          pow(210_w + pow(1_w, n - 2) + 01_w, 2),
+          pow(10_w + (pow(1_w, n - 2)) + 012_w, 2));
+      p.alphabet_from_rules();
+      p.contains_empty_word(true);
+      return p;
+    }
 
-        if (n == 2) {
-          presentation::add_rule_no_checks(p, 00_w, ""_w);
-          presentation::add_rule_no_checks(p, 01_w, 1_w);
-          presentation::add_rule_no_checks(p, 11_w, 1_w);
-        } else if (n == 3) {
-          presentation::add_rule_no_checks(p, 00_w, ""_w);
-          presentation::add_rule_no_checks(p, 11_w, ""_w);
-          presentation::add_rule_no_checks(p, 010_w, 101_w);
-          presentation::add_rule_no_checks(p, 02_w, 2_w);
-          presentation::add_rule_no_checks(p, 2121_w, 2_w);
-          presentation::add_rule_no_checks(p, pow(0102_w, 3) + 010_w, 20102_w);
-        } else {
-          // n >= 4
-          p = symmetric_group_Car56(n);
-          if (index == 0) {
-            // From Theorem 1.5 of arXiv:2406.19294
-
-            // Relation T1
-            presentation::add_rule_no_checks(p, {n - 1, 1, n - 1, 1}, {n - 1});
-
-            // Relation T3
-            presentation::add_rule_no_checks(
-                p, {1, 2, 1, n - 1}, {n - 1, 1, 2, 1});
-
-            // Relation T7
-            presentation::add_rule_no_checks(
-                p,
-                {n - 2, 0, 1, 0, n - 1, n - 2, 0, 1, 0, n - 1},
-                {n - 1, n - 2, 0, 1, 0, n - 1, n - 2, 0, 1, 0});
-
-            // Relation T8
-            std::vector<size_t> gens(n
-                                     - 1);  // list of generators to use prod on
-            std::iota(gens.begin(), gens.end(), 0);
-            presentation::add_rule_no_checks(
-                p,
-                prod(gens, 1, n - 1, 1) + word_type({1, 0, n - 1}),
-                word_type({n - 1}) + prod(gens, 1, n - 1, 1) + word_type({1}));
-
-            // Relation T9
-            presentation::add_rule_no_checks(
-                p,
-                {0, 1, 0, n - 1, 0, 1, 0, n - 1, 0, 1, 0, n - 1, 0, 1, 0},
-                {n - 1, 0, 1, 0, n - 1});
-          } else {
-            // index == 1
-
-            // Relation T7
-            presentation::add_rule_no_checks(
-                p,
-                {n - 2, 0, 1, 0, n - 1, n - 2, 0, 1, 0, n - 1},
-                {n - 1, n - 2, 0, 1, 0, n - 1, n - 2, 0, 1, 0});
-
-            // Relation T9
-            presentation::add_rule_no_checks(
-                p,
-                {0, 1, 0, n - 1, 0, 1, 0, n - 1, 0, 1, 0, n - 1, 0, 1, 0},
-                {n - 1, 0, 1, 0, n - 1});
-
-            // Relation T10
-            presentation::add_rule_no_checks(
-                p, {1, 2, 1, n - 1, 1, 2, 1}, {n - 1, 1, n - 1, 1});
-
-            // Relation T8
-            std::vector<size_t> gens(n
-                                     - 1);  // list of generators to use prod on
-            std::iota(gens.begin(), gens.end(), 0);
-            presentation::add_rule_no_checks(
-                p,
-                word_type({1}) + prod(gens, n - 2, 0, -1) + word_type({n - 1})
-                    + prod(gens, 1, n - 1, 1) + word_type({1}),
-                {0, n - 1, 1, n - 1, 1});
-          }
-        }
+    // From Theorem 9.3.1, p161-162, (Ganyushkin + Mazorchuk), proved in
+    // Iwahori, using Theorem 9.1.4 to express presentation in terms of the
+    // pi_i and e_12.
+    // https://link.springer.com/book/10.1007/978-1-84800-281-4
+    Presentation<word_type> full_transformation_monoid_II74(size_t n) {
+      if (n < 4) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "the 1st argument (degree) must be at least 4, found {}", n);
       }
+      Presentation<word_type> p;
+      p = symmetric_group_Car56(n);
+      add_full_transformation_monoid_relations(p, n, 0, n - 1);
+      p.alphabet_from_rules();
+      p.contains_empty_word(true);
+      return p;
+    }
+
+    // From Theorem 1.5 of arXiv:2406.19294
+    Presentation<word_type> full_transformation_monoid_MW24_a(size_t n) {
+      if (n < 2) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "the 1st argument (degree) must be at least 2, found {}", n);
+      }
+      Presentation<word_type> p;
+      // TODO(0) should the small degree presentations stay, since they don't
+      // correspond to the paper?
+      if (n == 2) {
+        presentation::add_rule_no_checks(p, 00_w, ""_w);
+        presentation::add_rule_no_checks(p, 01_w, 1_w);
+        presentation::add_rule_no_checks(p, 11_w, 1_w);
+        p.alphabet_from_rules();
+        p.contains_empty_word(true);
+        return p;
+      } else if (n == 3) {
+        presentation::add_rule_no_checks(p, 00_w, ""_w);
+        presentation::add_rule_no_checks(p, 11_w, ""_w);
+        presentation::add_rule_no_checks(p, 010_w, 101_w);
+        presentation::add_rule_no_checks(p, 02_w, 2_w);
+        presentation::add_rule_no_checks(p, 2121_w, 2_w);
+        presentation::add_rule_no_checks(p, pow(0102_w, 3) + 010_w, 20102_w);
+        p.alphabet_from_rules();
+        p.contains_empty_word(true);
+        return p;
+      }
+
+      p = symmetric_group_Car56(n);
+
+      // From Theorem 1.5 of arXiv:2406.19294
+
+      // Relation T1
+      presentation::add_rule_no_checks(p, {n - 1, 1, n - 1, 1}, {n - 1});
+
+      // Relation T3
+      presentation::add_rule_no_checks(p, {1, 2, 1, n - 1}, {n - 1, 1, 2, 1});
+
+      // Relation T7
+      presentation::add_rule_no_checks(
+          p,
+          {n - 2, 0, 1, 0, n - 1, n - 2, 0, 1, 0, n - 1},
+          {n - 1, n - 2, 0, 1, 0, n - 1, n - 2, 0, 1, 0});
+
+      // Relation T8
+      std::vector<size_t> gens(n - 1);  // list of generators to use prod on
+      std::iota(gens.begin(), gens.end(), 0);
+      presentation::add_rule_no_checks(
+          p,
+          prod(gens, 1, n - 1, 1) + word_type({1, 0, n - 1}),
+          word_type({n - 1}) + prod(gens, 1, n - 1, 1) + word_type({1}));
+
+      // Relation T9
+      presentation::add_rule_no_checks(
+          p,
+          {0, 1, 0, n - 1, 0, 1, 0, n - 1, 0, 1, 0, n - 1, 0, 1, 0},
+          {n - 1, 0, 1, 0, n - 1});
+
+      p.alphabet_from_rules();
+      p.contains_empty_word(true);
+      return p;
+    }
+
+    // From Theorem 1.5 of arXiv:2406.19294
+    Presentation<word_type> full_transformation_monoid_MW24_b(size_t n) {
+      if (n < 3) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "the 1st argument (degree) must be at least 3, found {}", n);
+      } else if (n % 2 != 1) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "the 1st argument (degree) must be odd, found {}", n);
+      }
+      Presentation<word_type> p;
+
+      // TODO(0) should the small degree presentations stay, since they don't
+      // correspond to the paper?
+      if (n == 3) {
+        presentation::add_rule_no_checks(p, 00_w, ""_w);
+        presentation::add_rule_no_checks(p, 11_w, ""_w);
+        presentation::add_rule_no_checks(p, 010_w, 101_w);
+        presentation::add_rule_no_checks(p, 02_w, 2_w);
+        presentation::add_rule_no_checks(p, 2121_w, 2_w);
+        presentation::add_rule_no_checks(p, pow(0102_w, 3) + 010_w, 20102_w);
+        p.alphabet_from_rules();
+        p.contains_empty_word(true);
+        return p;
+      }
+
+      p = symmetric_group_Car56(n);
+
+      // Relation T7
+      presentation::add_rule_no_checks(
+          p,
+          {n - 2, 0, 1, 0, n - 1, n - 2, 0, 1, 0, n - 1},
+          {n - 1, n - 2, 0, 1, 0, n - 1, n - 2, 0, 1, 0});
+
+      // Relation T9
+      presentation::add_rule_no_checks(
+          p,
+          {0, 1, 0, n - 1, 0, 1, 0, n - 1, 0, 1, 0, n - 1, 0, 1, 0},
+          {n - 1, 0, 1, 0, n - 1});
+
+      // Relation T10
+      presentation::add_rule_no_checks(
+          p, {1, 2, 1, n - 1, 1, 2, 1}, {n - 1, 1, n - 1, 1});
+
+      // Relation T8
+      std::vector<size_t> gens(n - 1);  // list of generators to use prod on
+      std::iota(gens.begin(), gens.end(), 0);
+      presentation::add_rule_no_checks(
+          p,
+          word_type({1}) + prod(gens, n - 2, 0, -1) + word_type({n - 1})
+              + prod(gens, 1, n - 1, 1) + word_type({1}),
+          {0, n - 1, 1, n - 1, 1});
 
       p.alphabet_from_rules();
       p.contains_empty_word(true);

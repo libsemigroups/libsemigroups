@@ -637,7 +637,7 @@ namespace libsemigroups {
     //! * `symmetric_group_Bur12`;
     //! * `symmetric_group_Car56`;
     //! * `symmetric_group_Moo97_a`;
-    //! * `symmetric_group_Moo97_b`;
+    //! * `symmetric_group_Moo97_b`.
     [[nodiscard]] inline Presentation<word_type> symmetric_group(size_t n) {
       return symmetric_group_Car56(n);
     }
@@ -645,7 +645,7 @@ namespace libsemigroups {
     //! \brief A presentation for the alternating group.
     //!
     //! This function returns a monoid presentation defining the alternating
-    //! group of degree \p, as in Theorem B of \cite Moore1897aa.
+    //! group of degree \p n, as in Theorem B of \cite Moore1897aa.
     //!
     //! \param n the degree of the alternating group.
     //!
@@ -688,8 +688,8 @@ namespace libsemigroups {
     //! \note
     //! This function performs exactly the same as `rectangular_band_ACOR00`,
     //! and exists as a convenience function for when a presentation for a
-    //! rectangular is required, but the relations of the presentation are not
-    //! important.
+    //! rectangular band is required, but the relations of the presentation are
+    //! not important.
     //!
     //! \sa
     //! `rectangular_band_ACOR00`.
@@ -701,38 +701,84 @@ namespace libsemigroups {
     //! \brief A presentation for the full transformation monoid.
     //!
     //! This function returns a monoid presentation defining the full
-    //! transformation monoid. The arguments \p val and \p index determine the
-    //! specific presentation which is returned. The options are:
-    //! * `author::Aizenstat` and `index = 0` (see Ch. 3, Prop 1.7 of
-    //! [http://hdl.handle.net/10023/2821][]);
-    //! * `author::Iwahori` and `index = 0` (see Theorem 9.3.1 of
-    //! [10.1007/978-1-84800-281-4][]);
-    //! * `author::Mitchell + author::Whyte` (see Theorem 1.5 of
-    //! [10.48550/arXiv.2406.19294][]):
-    //!    * `index = 0` for the presentation with five non-symmetric-group
-    //!    relations;
-    //!    * `index = 1` for the presentation with four non-symmetric-group
-    //!    relations, valid for odd degree.
+    //! transformation monoid of degree \p n, as in Section 5, Theorem 2 of
+    //! \cite Aizenstat1958aa (Russian) and Chapter 3, Proposition 1.7 of
+    //! \cite Ruskuc1995aa (English).
     //!
     //! \param n the degree of the full transformation monoid.
-    //! \param val the author of the presentation (default: `author::Mitchell +
-    //! author::Whyte`).
-    //! \param index which of the author's presentations to
-    //! return, if multiple exist (default: `0`).
     //!
     //! \returns A value of type `Presentation<libsemigroups::word_type>`.
     //!
     //! \throws LibsemigroupsException if `n < 4`.
-    //! \throws LibsemigroupsException if the author-index combination is
-    //! not present in the table above.
-    //!
-    //! [http://hdl.handle.net/10023/2821]: http://hdl.handle.net/10023/2821
-    //! [10.1007/978-1-84800-281-4]: https://doi.org/10.1007/978-1-84800-281-4
-    //! [10.48550/arXiv.2406.19294]: https://doi.org/10.48550/arXiv.2406.19294
     [[nodiscard]] Presentation<word_type>
-    full_transformation_monoid(size_t n,
-                               author val   = author::Mitchell + author::Whyte,
-                               size_t index = 0);
+    full_transformation_monoid_Aiz58(size_t n);
+
+    //! \brief A presentation for the full transformation monoid.
+    //!
+    //! This function returns a monoid presentation defining the full
+    //! transformation monoid of degree \p n due to Iwahori and Iwahori
+    //! \cite Iwahori1974aa, as in Theorem 9.3.1 of \cite  Ganyushkin2009aa.
+    //!
+    //! \param n the degree of the full transformation monoid.
+    //!
+    //! \returns A value of type `Presentation<libsemigroups::word_type>`.
+    //!
+    //! \throws LibsemigroupsException if `n < 4`.
+    [[nodiscard]] Presentation<word_type>
+    full_transformation_monoid_II74(size_t n);
+
+    //! \brief A presentation for the full transformation monoid.
+    //!
+    //! This function returns a monoid presentation defining the full
+    //! transformation monoid of degree \p n, corresponding to
+    //! \f$\mathcal{T}\f$ in Theorem 1.5 of \cite Mitchell2024aa. For `n >= 4`
+    //! this presentation has five non-symmetric-group relations.
+    //!
+    //! \param n the degree of the full transformation monoid.
+    //!
+    //! \returns A value of type `Presentation<libsemigroups::word_type>`.
+    //!
+    //! \throws LibsemigroupsException if `n < 2`.
+    [[nodiscard]] Presentation<word_type>
+    full_transformation_monoid_MW24_a(size_t n);
+
+    //! \brief A presentation for the full transformation monoid.
+    //!
+    //! This function returns a monoid presentation defining the full
+    //! transformation monoid of degree \p n, corresponding to
+    //! \f$\mathcal{T}'\f$ in Theorem 1.5 of \cite Mitchell2024aa. This
+    //! presentation is only valid for odd values of \p n, and for `n >= 5`
+    //! this presentation has four non-symmetric-group relations.
+    //!
+    //! \param n the degree of the full transformation monoid.
+    //!
+    //! \returns A value of type `Presentation<libsemigroups::word_type>`.
+    //!
+    //! \throws LibsemigroupsException if `n < 3`.
+    //! \throws LibsemigroupsException if \p n is not odd.
+    [[nodiscard]] Presentation<word_type>
+    full_transformation_monoid_MW24_b(size_t n);
+
+    //! \copydoc full_transformation_monoid_MW24_a
+    //!
+    //! \note
+    //! This function performs exactly the same as
+    //! `full_transformation_monoid_MW24_a`, and exists as a convenience
+    //! function for when a presentation for the full transformation monoid is
+    //! required, but the relations of the presentation are not important.
+    //!
+    //! \sa
+    //! \sa
+    //! For a different %presentation of the full transformation monoid, see
+    //! %one of the following functions:
+    //! * `full_transformation_monoid_Aiz58`;
+    //! * `full_transformation_monoid_II74`;
+    //! * `full_transformation_monoid_MW24_a`;
+    //! * `full_transformation_monoid_MW24_b`.
+    [[nodiscard]] inline Presentation<word_type>
+    full_transformation_monoid(size_t n) {
+      return full_transformation_monoid_MW24_a(n);
+    }
 
     //! \brief A presentation for the partial transformation monoid.
     //!

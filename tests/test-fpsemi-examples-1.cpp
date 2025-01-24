@@ -79,14 +79,10 @@ namespace libsemigroups {
     REQUIRE(symmetric_group_Moo97_b(5).contains_empty_word());
     REQUIRE(alternating_group(5).contains_empty_word());
     REQUIRE(!rectangular_band(5, 5).contains_empty_word());
-    REQUIRE(
-        full_transformation_monoid(5, author::Iwahori).contains_empty_word());
-    REQUIRE(
-        full_transformation_monoid(5, author::Aizenstat).contains_empty_word());
-    REQUIRE(full_transformation_monoid(5, author::Mitchell + author::Whyte, 0)
-                .contains_empty_word());
-    REQUIRE(full_transformation_monoid(5, author::Mitchell + author::Whyte, 1)
-                .contains_empty_word());
+    REQUIRE(full_transformation_monoid_II74(5).contains_empty_word());
+    REQUIRE(full_transformation_monoid_Aiz58(5).contains_empty_word());
+    REQUIRE(full_transformation_monoid_MW24_a(5).contains_empty_word());
+    REQUIRE(full_transformation_monoid_MW24_b(5).contains_empty_word());
 
     REQUIRE(
         partial_transformation_monoid(5, author::Sutov).contains_empty_word());
@@ -104,31 +100,22 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("fpsemi-examples",
-                          "001",
-                          "full_transformation_monoid author index except",
-                          "[fpsemi-examples][quick]") {
-    auto rg = ReportGuard(REPORT);
-    REQUIRE_THROWS_AS(full_transformation_monoid(5, author::Burnside),
-                      LibsemigroupsException);
-    REQUIRE_THROWS_AS(full_transformation_monoid(5, author::Iwahori, 1),
-                      LibsemigroupsException);
-    REQUIRE_THROWS_AS(
-        full_transformation_monoid(5, author::Mitchell + author::Whyte, 2),
-        LibsemigroupsException);
-  }
-
-  LIBSEMIGROUPS_TEST_CASE("fpsemi-examples",
                           "002",
                           "full_transformation_monoid degree except",
                           "[fpsemi-examples][quick]") {
     auto rg = ReportGuard(REPORT);
-    REQUIRE_THROWS_AS(full_transformation_monoid(3, author::Iwahori),
+    REQUIRE_THROWS_AS(full_transformation_monoid_Aiz58(1),
                       LibsemigroupsException);
-    REQUIRE_THROWS_AS(full_transformation_monoid(1), LibsemigroupsException);
-    REQUIRE_THROWS_AS(
-        full_transformation_monoid(6, author::Mitchell + author::Whyte, 1),
-        LibsemigroupsException);
-    REQUIRE_THROWS_AS(full_transformation_monoid(1), LibsemigroupsException);
+    REQUIRE_THROWS_AS(full_transformation_monoid_II74(3),
+                      LibsemigroupsException);
+    REQUIRE_THROWS_AS(full_transformation_monoid_MW24_a(1),
+                      LibsemigroupsException);
+    REQUIRE_THROWS_AS(full_transformation_monoid_MW24_b(1),
+                      LibsemigroupsException);
+    REQUIRE_THROWS_AS(full_transformation_monoid_MW24_b(2),
+                      LibsemigroupsException);
+    REQUIRE_THROWS_AS(full_transformation_monoid_MW24_b(6),
+                      LibsemigroupsException);
   }
 
   LIBSEMIGROUPS_TEST_CASE("fpsemi-examples",
@@ -632,7 +619,7 @@ namespace libsemigroups {
     size_t n  = 5;
 
     ToddCoxeter tc(congruence_kind::twosided,
-                   full_transformation_monoid(n, author::Iwahori));
+                   full_transformation_monoid_II74(n));
     REQUIRE(tc.number_of_classes() == 3'125);
   }
 
@@ -643,14 +630,12 @@ namespace libsemigroups {
       "[fpsemi-examples][quick]") {
     auto rg = ReportGuard(REPORT);
 
-    ToddCoxeter tc2(
-        congruence_kind::twosided,
-        full_transformation_monoid(2, author::Mitchell + author::Whyte));
+    ToddCoxeter tc2(congruence_kind::twosided,
+                    full_transformation_monoid_MW24_a(2));
     REQUIRE(tc2.number_of_classes() == 4);
 
-    ToddCoxeter tc3(
-        congruence_kind::twosided,
-        full_transformation_monoid(3, author::Mitchell + author::Whyte));
+    ToddCoxeter tc3(congruence_kind::twosided,
+                    full_transformation_monoid_MW24_a(3));
     REQUIRE(tc3.number_of_classes() == 27);
   }
 
@@ -661,9 +646,8 @@ namespace libsemigroups {
     auto   rg = ReportGuard(REPORT);
     size_t n  = 5;
 
-    ToddCoxeter tc(
-        congruence_kind::twosided,
-        full_transformation_monoid(n, author::Mitchell + author::Whyte));
+    ToddCoxeter tc(congruence_kind::twosided,
+                   full_transformation_monoid_MW24_a(n));
     REQUIRE(tc.number_of_classes() == 3'125);
   }
 
@@ -675,9 +659,8 @@ namespace libsemigroups {
     auto   rg = ReportGuard(REPORT);
     size_t n  = 5;
 
-    ToddCoxeter tc(
-        congruence_kind::twosided,
-        full_transformation_monoid(n, author::Mitchell + author::Whyte, 1));
+    ToddCoxeter tc(congruence_kind::twosided,
+                   full_transformation_monoid_MW24_b(n));
     REQUIRE(tc.number_of_classes() == 3'125);
   }
 
@@ -688,9 +671,8 @@ namespace libsemigroups {
     auto   rg = ReportGuard(REPORT);
     size_t n  = 6;
 
-    ToddCoxeter tc(
-        congruence_kind::twosided,
-        full_transformation_monoid(n, author::Mitchell + author::Whyte));
+    ToddCoxeter tc(congruence_kind::twosided,
+                   full_transformation_monoid_MW24_a(n));
     REQUIRE(tc.number_of_classes() == 46'656);
   }
 
@@ -792,7 +774,7 @@ namespace libsemigroups {
     size_t n  = 4;
 
     ToddCoxeter tc(congruence_kind::twosided,
-                   full_transformation_monoid(n, author::Aizenstat));
+                   full_transformation_monoid_Aiz58(n));
     REQUIRE(tc.number_of_classes() == 256);
   }
 

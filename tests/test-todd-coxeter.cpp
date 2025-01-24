@@ -2342,14 +2342,14 @@ namespace libsemigroups {
   // stop_early in lookahead really helps in this example
   LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                           "115",
-                          "full_transformation_monoid(7, Iwahori)",
+                          "full_transformation_monoid(7) Iwahori",
                           "[todd-coxeter][extreme]") {
     using fpsemigroup::author;
-    using fpsemigroup::full_transformation_monoid;
+    using fpsemigroup::full_transformation_monoid_II74;
 
     auto   rg = ReportGuard(true);
     size_t n  = 7;
-    auto   p  = full_transformation_monoid(n, author::Iwahori);
+    auto   p  = full_transformation_monoid_II74(n);
 
     REQUIRE(presentation::length(p) == 69'656);
     presentation::remove_redundant_generators(p);

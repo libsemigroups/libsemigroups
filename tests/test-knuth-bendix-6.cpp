@@ -358,8 +358,8 @@ namespace libsemigroups {
                                    KNUTH_BENDIX_TYPES) {
     auto rg = ReportGuard(true);
 
-    size_t n = 5;
-    auto   p = full_transformation_monoid(n, fpsemigroup::author::Iwahori);
+    size_t                n = 5;
+    auto                  p = fpsemigroup::full_transformation_monoid_II74(n);
     KnuthBendix<TestType> kb(twosided, p);
     REQUIRE(!is_obviously_infinite(kb));
     kb.run();

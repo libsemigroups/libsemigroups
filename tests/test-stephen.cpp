@@ -244,7 +244,7 @@ namespace libsemigroups {
     using namespace fpsemigroup;
     auto   rg = ReportGuard(true);
     size_t n  = 5;
-    auto   p  = full_transformation_monoid(n, author::Iwahori);
+    auto   p  = full_transformation_monoid_II74(n);
     p.validate();
 
     Stephen s(std::move(p));

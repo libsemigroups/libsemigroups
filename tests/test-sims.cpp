@@ -81,6 +81,7 @@ namespace libsemigroups {
   using fpsemigroup::chinese_monoid;
   using fpsemigroup::fibonacci_semigroup;
   using fpsemigroup::full_transformation_monoid;
+  using fpsemigroup::full_transformation_monoid_II74;
   using fpsemigroup::monogenic_semigroup;
   using fpsemigroup::partition_monoid;
   using fpsemigroup::partition_monoid_HR05;
@@ -585,7 +586,7 @@ namespace libsemigroups {
                           "[fail][low-index][babbage]") {
     auto rg = ReportGuard(true);
 
-    auto p = full_transformation_monoid(4, author::Iwahori);
+    auto p = full_transformation_monoid_II74(4);
 
     REQUIRE(p.alphabet().size() == 4);
 
@@ -3510,7 +3511,7 @@ namespace libsemigroups {
                           "2-sided T_4",
                           "[standard][sims2][no-valgrind][no-coverage]") {
     auto  rg = ReportGuard(false);
-    Sims2 S(fpsemigroup::full_transformation_monoid(4, author::Iwahori));
+    Sims2 S(fpsemigroup::full_transformation_monoid_II74(4));
 
     REQUIRE(S.number_of_congruences(256) == 11);  // Verified with GAP
     // sims::dot_poset("example-093-T-4-2-sided", S.cbegin(256), S.cend(256));
@@ -3521,8 +3522,7 @@ namespace libsemigroups {
                           "2-sided T_4 Iwahori presentation",
                           "[standard][sims2][low-index][no-valgrind]") {
     auto  rg = ReportGuard(false);
-    Sims2 S(fpsemigroup::full_transformation_monoid(
-        4, fpsemigroup::author::Iwahori));
+    Sims2 S(fpsemigroup::full_transformation_monoid_II74(4));
     REQUIRE(S.number_of_congruences(256) == 11);
   }
 
@@ -3533,8 +3533,7 @@ namespace libsemigroups {
                           "2-sided T_4 Aizenstat presentation",
                           "[fail][sims2][low-index]") {
     auto  rg = ReportGuard(true);
-    Sims2 S(fpsemigroup::full_transformation_monoid(
-        4, fpsemigroup::author::Aizenstat));
+    Sims2 S(fpsemigroup::full_transformation_monoid_Aiz58(4));
     S.number_of_threads(std::thread::hardware_concurrency());
     // The below test takes too long to terminate
     REQUIRE(S.number_of_congruences(256) == 11);

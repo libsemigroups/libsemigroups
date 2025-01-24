@@ -354,14 +354,14 @@ namespace libsemigroups {
 
   TEST_CASE("Presentation length Iwahori T_n",
             "[full_transf_monoid][length][000]") {
-    auto p = full_transformation_monoid(4, fpsemigroup::author::Iwahori);
+    auto p = fpsemigroup::full_transformation_monoid_II74(4);
     bench_length(p);
   }
 
   // Doesn't run, or is so slow that it's useless
   TEST_CASE("Presentation length Aizenstat",
             "[full_transf_monoid][length][001]") {
-    auto  p = full_transformation_monoid(4, fpsemigroup::author::Aizenstat);
+    auto  p = fpsemigroup::full_transformation_monoid_Aiz58(4);
     Sims1 C;
     C.presentation(p).number_of_threads(1);
     REQUIRE(presentation::length(p) == 0);
