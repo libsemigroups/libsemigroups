@@ -1810,14 +1810,11 @@ namespace libsemigroups {
     }
 
     // See Theorem 2.8 of https://arxiv.org/pdf/2205.02196.pdf
-    Presentation<word_type> partial_isometries_cycle_graph_monoid(size_t n,
-                                                                  author val) {
+    Presentation<word_type>
+    partial_isometries_cycle_graph_monoid_FP22(size_t n) {
       if (n < 3) {
         LIBSEMIGROUPS_EXCEPTION(
             "expected 1st argument to be at least 3, found {}", n);
-      } else if (val != author::Any) {
-        LIBSEMIGROUPS_EXCEPTION(
-            "expected 2nd argument to be author::Any, found {}", val);
       }
 
       Presentation<word_type> p;

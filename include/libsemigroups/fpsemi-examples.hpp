@@ -1055,20 +1055,32 @@ namespace libsemigroups {
     //! graph.
     //!
     //! This function returns a monoid presentation defining the monoid of
-    //! partial isometries of an \f$n\f$-cycle graph, as described in
-    //! Theorem 2.8 of [10.48550/arxiv.2205.02196][].
+    //! partial isometries of an \f$n\f$-cycle graph, as in Theorem 2.8 of
+    //! \cite Fernandes2022ab
     //!
     //! \param n the number of vertices of the cycle graph.
-    //! \param val the author of the presentation (default: `author::Any`).
     //!
     //! \returns A value of type `Presentation<libsemigroups::word_type>`.
     //!
     //! \throws LibsemigroupsException if `n < 3`.
-    //! \throws LibsemigroupsException if \p val is not `author::Any`.
-    //!
-    //! [10.48550/arxiv.2205.02196]: https://doi.org/10.48550/arxiv.2205.02196
     [[nodiscard]] Presentation<word_type>
-    partial_isometries_cycle_graph_monoid(size_t n, author val = author::Any);
+    partial_isometries_cycle_graph_monoid_FP22(size_t n);
+
+    //! \copydoc partial_isometries_cycle_graph_monoid_FP22
+    //!
+    //! \note
+    //! This function performs exactly the same as
+    //! `partial_isometries_cycle_graph_monoid_FP22`, and exists as a
+    //! convenience function for when a presentation for the monoid of
+    //! partial isometries of an \f$n\f$-cycle graph is required, but the
+    //! relations of the presentation are not important.
+    //!
+    //! \sa
+    //! `partial_isometries_cycle_graph_monoid_FP22`.
+    [[nodiscard]] inline Presentation<word_type>
+    partial_isometries_cycle_graph_monoid(size_t n) {
+      return partial_isometries_cycle_graph_monoid_FP22(n);
+    }
 
     //! \brief A non-presentation for the symmetric group.
     //!
