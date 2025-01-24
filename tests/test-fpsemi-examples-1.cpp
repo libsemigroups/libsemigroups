@@ -285,15 +285,6 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("fpsemi-examples",
-                          "109",
-                          "order_preserving_monoid auth except",
-                          "[fpsemi-examples][quick]") {
-    auto rg = ReportGuard(REPORT);
-    REQUIRE_THROWS_AS(order_preserving_monoid(5, author::Sutov),
-                      LibsemigroupsException);
-  }
-
-  LIBSEMIGROUPS_TEST_CASE("fpsemi-examples",
                           "027",
                           "cyclic_inverse_monoid degree except",
                           "[fpsemi-examples][quick]") {
@@ -380,6 +371,21 @@ namespace libsemigroups {
 
     ToddCoxeter tc(congruence_kind::twosided, p);
     REQUIRE(tc.number_of_classes() == 126);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("fpsemi-examples",
+                          "031",
+                          "order_preserving_monoid nr generators and relations",
+                          "[fpsemi-examples][quick]") {
+    auto                    rg    = ReportGuard(REPORT);
+    size_t                  min_n = 3;
+    size_t                  max_n = 10;
+    Presentation<word_type> p;
+    for (size_t n = min_n; n <= max_n; ++n) {
+      p = order_preserving_monoid_AR00(n);
+      REQUIRE(p.alphabet().size() == 2 * n - 2);
+      REQUIRE(p.rules.size() == 2 * n * n);
+    }
   }
 
   LIBSEMIGROUPS_TEST_CASE("fpsemi-examples",

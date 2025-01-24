@@ -942,21 +942,32 @@ namespace libsemigroups {
     //!
     //! This function returns a monoid presentation defining the monoid of
     //! order-preserving transformations of degree \p n, as described in Section
-    //! 2 of the paper [10.1007/s10012-000-0001-1][].
+    //! 2 of \cite Arthur2000aa.
     //!
     //! This presentation has \f$2n - 2\f$ generators and \f$n^2\f$ relations.
     //!
     //! \param n the degree.
-    //! \param val the author of the presentation (default: `author::Any`).
     //!
     //! \returns A value of type `Presentation<libsemigroups::word_type>`.
     //!
     //! \throws LibsemigroupsException if `n < 3`.
-    //! \throws LibsemigroupsException if \p val is not `author::Any`.
-    //!
-    //! [10.1007/s10012-000-0001-1]: https://doi.org/10.1007/s10012-000-0001-1
     [[nodiscard]] Presentation<word_type>
-    order_preserving_monoid(size_t n, author val = author::Any);
+    order_preserving_monoid_AR00(size_t n);
+
+    //! \copydoc order_preserving_monoid_AR00
+    //!
+    //! \note
+    //! This function performs exactly the same as
+    //! `order_preserving_monoid_AR00`, and exists as a convenience
+    //! function for when a presentation for the order preserving monoid is
+    //! required, but the relations of the presentation are not important.
+    //!
+    //! \sa
+    //! `order_preserving_monoid_AR00`.
+    [[nodiscard]] inline Presentation<word_type>
+    order_preserving_monoid(size_t n) {
+      return order_preserving_monoid_AR00(n);
+    }
 
     //! \brief A presentation for the cyclic inverse monoid.
     //!
