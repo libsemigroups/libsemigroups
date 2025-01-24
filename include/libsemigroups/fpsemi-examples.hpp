@@ -600,7 +600,7 @@ namespace libsemigroups {
     //!
     //! This function returns a monoid presentation for the symmetric group of
     //! degree \p n, as in Theorem A of \cite Moore1897aa. This  presentation
-    //! has \f$n - 1\f$ generators and \f$\frac{1}{2}\left(n(n - 1)\right)\f$
+    //! has \f$n - 1\f$ generators and \f$\frac{1}{2}n(n - 1)\f$
     //! relations.
     //!
     //! \param n the degree of the symmetric group.
