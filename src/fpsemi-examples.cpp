@@ -1610,13 +1610,10 @@ namespace libsemigroups {
     // Chinese monoid
     // See: The Chinese Monoid - Cassaigne, Espie, Krob, Novelli and Hivert,
     // 2001
-    Presentation<word_type> chinese_monoid(size_t n, author val) {
+    Presentation<word_type> chinese_monoid_CEKNH01(size_t n) {
       if (n < 2) {
         LIBSEMIGROUPS_EXCEPTION(
             "expected 1st argument to be at least 2, found {}", n);
-      } else if (val != author::Any) {
-        LIBSEMIGROUPS_EXCEPTION(
-            "expected 2nd argument to be author::Any, found {}", val);
       }
       Presentation<word_type> p;
       p.alphabet(n);

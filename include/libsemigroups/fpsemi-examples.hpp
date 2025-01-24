@@ -768,7 +768,6 @@ namespace libsemigroups {
     //! required, but the relations of the presentation are not important.
     //!
     //! \sa
-    //! \sa
     //! For a different %presentation of the full transformation monoid, see
     //! %one of the following functions:
     //! * `full_transformation_monoid_Aiz58`;
@@ -816,7 +815,6 @@ namespace libsemigroups {
     //! function for when a presentation for the partial transformation monoid
     //! is required, but the relations of the presentation are not important.
     //!
-    //! \sa
     //! \sa
     //! For a different %presentation of the full transformation monoid, see
     //! %one of the following functions:
@@ -886,7 +884,6 @@ namespace libsemigroups {
     //! is required, but the relations of the presentation are not important.
     //!
     //! \sa
-    //! \sa
     //! For a different %presentation of the full transformation monoid, see
     //! %one of the following functions:
     //! * `symmetric_inverse_monoid_Gay18`;
@@ -899,21 +896,29 @@ namespace libsemigroups {
 
     //! \brief A presentation for the Chinese monoid.
     //!
-    //! This function returns a monoid presentation defining the Chinese monoid,
-    //! as described in [10.1142/S0218196701000425][].
+    //! This function returns a monoid presentation defining the Chinese monoid
+    //! with \p n generators, as in \cite Cassaigne2001aa.
     //!
     //! \param n the number of generators.
-    //! \param val the author of the presentation (default: `author::Any`).
     //!
     //! \returns A value of type `Presentation<libsemigroups::word_type>`.
     //!
     //! \throws LibsemigroupsException if `n < 2`.
-    //! \throws LibsemigroupsException if \p val is not `author::Any`.
+    [[nodiscard]] Presentation<word_type> chinese_monoid_CEKNH01(size_t n);
+
+    //! \copydoc chinese_monoid_CEKNH01
     //!
-    //! [10.1142/S0218196701000425]: https://doi.org/10.1142/S0218196701000425
-    [[nodiscard]] Presentation<word_type> chinese_monoid(size_t n,
-                                                         author val
-                                                         = author::Any);
+    //! \note
+    //! This function performs exactly the same as
+    //! `chinese_monoid_CEKNH01`, and exists as a convenience
+    //! function for when a presentation for the Chinese monoid is required, but
+    //! the relations of the presentation are not important.
+    //!
+    //! \sa
+    //! `chinese_monoid_CEKNH01`.
+    [[nodiscard]] inline Presentation<word_type> chinese_monoid(size_t n) {
+      return chinese_monoid_CEKNH01(n);
+    }
 
     //! \brief A presentation for a monogenic semigroup.
     //!

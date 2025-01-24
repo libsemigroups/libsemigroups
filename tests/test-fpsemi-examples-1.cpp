@@ -87,7 +87,7 @@ namespace libsemigroups {
     REQUIRE(partial_transformation_monoid_Shu60(5).contains_empty_word());
     REQUIRE(partial_transformation_monoid_MW24(5).contains_empty_word());
     REQUIRE(symmetric_inverse_monoid(5).contains_empty_word());
-    REQUIRE(chinese_monoid(5).contains_empty_word());
+    REQUIRE(chinese_monoid_CEKNH01(5).contains_empty_word());
     REQUIRE(monogenic_semigroup(0, 5).contains_empty_word());
     REQUIRE(!monogenic_semigroup(2, 6).contains_empty_word());
     REQUIRE(order_preserving_monoid(5).contains_empty_word());
