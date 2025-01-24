@@ -93,7 +93,8 @@ namespace libsemigroups {
     REQUIRE(order_preserving_monoid(5).contains_empty_word());
     REQUIRE(cyclic_inverse_monoid_Fer22_a(5).contains_empty_word());
     REQUIRE(cyclic_inverse_monoid_Fer22_b(5).contains_empty_word());
-    REQUIRE(order_preserving_cyclic_inverse_monoid(5).contains_empty_word());
+    REQUIRE(
+        order_preserving_cyclic_inverse_monoid_Fer22(5).contains_empty_word());
     REQUIRE(partial_isometries_cycle_graph_monoid(5).contains_empty_word());
     REQUIRE(not_symmetric_group(5).contains_empty_word());
   }
@@ -309,16 +310,6 @@ namespace libsemigroups {
     REQUIRE_THROWS_AS(order_preserving_cyclic_inverse_monoid(1),
                       LibsemigroupsException);
     REQUIRE_THROWS_AS(order_preserving_cyclic_inverse_monoid(2),
-                      LibsemigroupsException);
-  }
-
-  LIBSEMIGROUPS_TEST_CASE(
-      "fpsemi-examples",
-      "110",
-      "order_preserving_cyclic_inverse_monoid author except",
-      "[fpsemi-examples][quick]") {
-    auto rg = ReportGuard(REPORT);
-    REQUIRE_THROWS_AS(order_preserving_cyclic_inverse_monoid(2, author::Sutov),
                       LibsemigroupsException);
   }
 

@@ -1020,24 +1020,36 @@ namespace libsemigroups {
       return cyclic_inverse_monoid_Fer22_b(n);
     }
 
-    //! \p A presentation for the order-preserving part of the cyclic inverse
-    //! monoid.
+    //! \brief A presentation for the order-preserving part of the cyclic
+    //! inverse monoid.
     //!
     //! This function returns a monoid presentation defining the
-    //! order-preserving part of the cyclic inverse monoid of degree \p n, as
-    //! described in Theorem 2.17 of the paper [10.48550/arxiv.2211.02155][].
+    //! order-preserving part of the cyclic inverse monoid of degree \p n, as in
+    //! Theorem 2.17 of \cite Fernandes2022aa.
     //!
     //! \param n the degree.
-    //! \param val the author of the presentation (default: `author::Any`).
     //!
     //! \returns A value of type `Presentation<libsemigroups::word_type>`.
     //!
     //! \throws LibsemigroupsException if `n < 3`.
-    //! \throws LibsemigroupsException if \p val is not `author::Any`.
-    //!
-    //! [10.48550/arxiv.2211.02155]: https://doi.org/10.48550/arxiv.2211.02155
     [[nodiscard]] Presentation<word_type>
-    order_preserving_cyclic_inverse_monoid(size_t n, author val = author::Any);
+    order_preserving_cyclic_inverse_monoid_Fer22(size_t n);
+
+    //! \copydoc order_preserving_cyclic_inverse_monoid_Fer22
+    //!
+    //! \note
+    //! This function performs exactly the same as
+    //! `order_preserving_cyclic_inverse_monoid_Fer22`, and exists as a
+    //! convenience function for when a presentation for the order preserving
+    //! part of the cyclic inverse monoid is required, but the relations of the
+    //! presentation are not important.
+    //!
+    //! \sa
+    //! `order_preserving_cyclic_inverse_monoid_Fer22`.
+    [[nodiscard]] inline Presentation<word_type>
+    order_preserving_cyclic_inverse_monoid(size_t n) {
+      return order_preserving_cyclic_inverse_monoid_Fer22(n);
+    }
 
     //! \brief A presentation for the monoid of partial isometries of a cycle
     //! graph.
