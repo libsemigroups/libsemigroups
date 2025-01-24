@@ -1241,7 +1241,7 @@ namespace libsemigroups {
 
     // From Proposition 4.2 in
     // https://link.springer.com/content/pdf/10.1007/s002339910016.pdf
-    Presentation<word_type> rectangular_band(size_t m, size_t n, author val) {
+    Presentation<word_type> rectangular_band_ACOR00(size_t m, size_t n) {
       if (m == 0) {
         LIBSEMIGROUPS_EXCEPTION(
             "expected 1st argument to be strictly positive, found {}", m);
@@ -1249,9 +1249,6 @@ namespace libsemigroups {
       if (n == 0) {
         LIBSEMIGROUPS_EXCEPTION(
             "expected 2nd argument to be strictly positive, found {}", n);
-      } else if (val != author::Any) {
-        LIBSEMIGROUPS_EXCEPTION(
-            "expected 3rd argument to be author::Any, found {}", val);
       }
 
       std::vector<word_type> a(m);

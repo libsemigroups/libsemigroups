@@ -671,22 +671,32 @@ namespace libsemigroups {
     //! \brief A presentation for a rectangular band.
     //!
     //! This function returns a semigroup presentation defining the \p m by \p n
-    //! rectangular band, as given in Proposition 4.2 of
-    //! [10.1007/s002339910016][].
+    //! rectangular band, as given in Proposition 4.2 of \cite Ayik2000aa.
     //!
     //! \param m the number of rows.
     //! \param n the number of columns.
-    //! \param val the author of the presentation (default: `author::Any`).
     //!
     //! \returns A value of type `Presentation<libsemigroups::word_type>`.
     //!
     //! \throws LibsemigroupsException if `m == 0`.
     //! \throws LibsemigroupsException if `n == 0`.
-    //! \throws LibsemigroupsException if \p val is not `author::Any`.
+    [[nodiscard]] Presentation<word_type> rectangular_band_ACOR00(size_t m,
+                                                                  size_t n);
+
+    //! \copydoc rectangular_band_ACOR00
     //!
-    //! [10.1007/s002339910016]: https://doi.org/10.1007/s002339910016
-    [[nodiscard]] Presentation<word_type>
-    rectangular_band(size_t m, size_t n, author val = author::Any);
+    //! \note
+    //! This function performs exactly the same as `rectangular_band_ACOR00`,
+    //! and exists as a convenience function for when a presentation for a
+    //! rectangular is required, but the relations of the presentation are not
+    //! important.
+    //!
+    //! \sa
+    //! `rectangular_band_ACOR00`.
+    [[nodiscard]] inline Presentation<word_type> rectangular_band(size_t m,
+                                                                  size_t n) {
+      return rectangular_band_ACOR00(m, n);
+    }
 
     //! \brief A presentation for the full transformation monoid.
     //!
