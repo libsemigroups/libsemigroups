@@ -37,8 +37,6 @@ namespace libsemigroups {
 
   constexpr congruence_kind twosided = congruence_kind::twosided;
 
-  using fpsemigroup::author;
-
   using fpsemigroup::rook_monoid;
 
   // Loops for ever: Infinite monoid ???

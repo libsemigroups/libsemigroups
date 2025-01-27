@@ -75,7 +75,6 @@ namespace libsemigroups {
 
   using namespace literals;
 
-  using fpsemigroup::author;
   using fpsemigroup::brauer_monoid;
   using fpsemigroup::brauer_monoid_KM07;
   using fpsemigroup::chinese_monoid;

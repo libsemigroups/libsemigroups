@@ -34,7 +34,6 @@
 
 namespace libsemigroups {
 
-  using fpsemigroup::author;
   using fpsemigroup::not_symmetric_group_GKKL08;
   using fpsemigroup::symmetric_group_Car56;
 

@@ -1855,7 +1855,6 @@ namespace libsemigroups {
                           "042",
                           "symmetric_group(9) Moore_b",
                           "[todd-coxeter][extreme]") {
-    using fpsemigroup::author;
     using fpsemigroup::symmetric_group_Moo97_b;
 
     auto rg = ReportGuard(true);
@@ -1888,7 +1887,6 @@ namespace libsemigroups {
                           "043",
                           "symmetric_group(7) Moore_a",
                           "[todd-coxeter][quick][no-valgrind]") {
-    using fpsemigroup::author;
     using fpsemigroup::symmetric_group_Moo97_a;
 
     auto rg = ReportGuard(false);
@@ -1918,7 +1916,6 @@ namespace libsemigroups {
                           "116",
                           "symmetric_group(7) Burnside",
                           "[todd-coxeter][quick][no-valgrind]") {
-    using fpsemigroup::author;
     using fpsemigroup::symmetric_group_Bur12;
     auto rg = ReportGuard(false);
 
@@ -1960,7 +1957,6 @@ namespace libsemigroups {
                           "047",
                           "uniform_block_bijection_monoid(3) (FitzGerald) ",
                           "[todd-coxeter][quick][no-valgrind]") {
-    using fpsemigroup::author;
     using fpsemigroup::uniform_block_bijection_monoid_Fit03;
 
     // 16, 131, 1496, 22482, 426833, 9934563, 9934563
@@ -2007,7 +2003,7 @@ namespace libsemigroups {
                           "partition_monoid(4) (East)",
                           "[todd-coxeter][quick][no-valgrind][no-coverage]") {
     auto rg = ReportGuard(false);
-    using fpsemigroup::author;
+
     using fpsemigroup::partition_monoid_Eas11;
 
     auto const  n = 4;
@@ -2136,7 +2132,6 @@ namespace libsemigroups {
       "055",
       "Generate GAP benchmarks for partition_monoid(n) (East)",
       "[todd-coxeter][fail]") {
-    using fpsemigroup::author;
     using fpsemigroup::partition_monoid_Eas11;
     auto rg = ReportGuard(true);
 
@@ -2153,7 +2148,6 @@ namespace libsemigroups {
                           "Generate GAP benchmarks for dual symmetric inverse "
                           "monoid (Easdown + East + FitzGerald)",
                           "[todd-coxeter][fail]") {
-    using fpsemigroup::author;
     using fpsemigroup::dual_symmetric_inverse_monoid_EEF07;
     auto rg = ReportGuard(true);
 
@@ -2169,7 +2163,6 @@ namespace libsemigroups {
                           "Generate GAP benchmarks for "
                           "uniform_block_bijection_monoid (FitzGerald)",
                           "[todd-coxeter][fail]") {
-    using fpsemigroup::author;
     using fpsemigroup::uniform_block_bijection_monoid_Fit03;
 
     auto rg = ReportGuard(true);
@@ -2261,7 +2254,6 @@ namespace libsemigroups {
                           "111",
                           "partition_monoid(2)",
                           "[todd-coxeter][quick]") {
-    using fpsemigroup::author;
     using fpsemigroup::partition_monoid_Machine;
 
     auto rg = ReportGuard(false);
@@ -2302,7 +2294,6 @@ namespace libsemigroups {
                           "113",
                           "symmetric_inverse_monoid(5) Shutov",
                           "[todd-coxeter][quick][no-valgrind]") {
-    using fpsemigroup::author;
     using fpsemigroup::symmetric_inverse_monoid_Shu60;
 
     auto rg = ReportGuard(false);
@@ -2322,7 +2313,6 @@ namespace libsemigroups {
                           "114",
                           "partial_transformation_monoid(5) Shutov",
                           "[todd-coxeter][extreme]") {
-    using fpsemigroup::author;
     using fpsemigroup::partial_transformation_monoid_Shu60;
 
     auto   rg = ReportGuard(true);
@@ -2344,7 +2334,6 @@ namespace libsemigroups {
                           "115",
                           "full_transformation_monoid(7) Iwahori",
                           "[todd-coxeter][extreme]") {
-    using fpsemigroup::author;
     using fpsemigroup::full_transformation_monoid_II74;
 
     auto   rg = ReportGuard(true);
