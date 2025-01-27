@@ -1896,12 +1896,12 @@ namespace libsemigroups {
       return p;
     }
 
-    // n should be prime for this presentation to actually defined the claimed
-    // group.
-    Presentation<word_type> special_linear_group_2(size_t n, author val) {
-      if (val != author::Any) {
+    // n should be an odd prime for this presentation to actually defined the
+    // claimed group. See Theorem 4 in https://doi.org/10.1112/blms/12.1.17
+    Presentation<word_type> special_linear_group_2_CR80(size_t q) {
+      if (q < 3) {
         LIBSEMIGROUPS_EXCEPTION(
-            "expected 2nd argument to be author::Any, found {}", val);
+            "expected 1st argument to be at least 3, found {}", q);
       }
       Presentation<word_type> p;
       p.alphabet(4);
@@ -1910,8 +1910,8 @@ namespace libsemigroups {
       presentation::add_rule(p, 00_w + pow(31_w, 3), {});
       presentation::add_rule(
           p,
-          pow(0_w + pow(2_w, 4) + 0_w + pow(2_w, (n + 1) / 2), 2) + pow(2_w, n)
-              + pow(0_w, 2 * (n / 3)),
+          pow(0_w + pow(2_w, 4) + 0_w + pow(2_w, (q + 1) / 2), 2) + pow(2_w, q)
+              + pow(0_w, 2 * (q / 3)),
           {});
       return p;
     }

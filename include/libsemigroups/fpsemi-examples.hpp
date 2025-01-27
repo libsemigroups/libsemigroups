@@ -1108,12 +1108,37 @@ namespace libsemigroups {
       return not_symmetric_group_GKKL08(n);
     }
 
-    // TODO (doc)
-    // n should be prime for this presentation to actually defined the claimed
-    // group.
-    [[nodiscard]] Presentation<word_type> special_linear_group_2(size_t n,
-                                                                 author val
-                                                                 = author::Any);
+    //! \brief A non-presentation for the special linear group
+    //! \f$\mathrm{SL}(2, q))\f$.
+    //!
+    //! This function returns a presentation for the special linear group
+    //! \f$\mathrm{SL}(2, q)\f$ (also written \f$\mathrm{SL(2,
+    //! \mathbb{Z}_q)}\f$), where \p q is an odd prime, as in Theorem 4 of
+    //! \cite Campbell1980aa.
+    //!
+    //! \param q the order of the finite field over which the special linear
+    //! group is constructed. This should be an odd prime for the returned
+    //! presentation to define claimed group.
+    //!
+    //! \returns A value of type `Presentation<libsemigroups::word_type>`.
+    //!
+    //! \throws LibsemigroupsException if `q < 3`.
+    [[nodiscard]] Presentation<word_type> special_linear_group_2_CR80(size_t q);
+
+    //! \copydoc special_linear_group_2_CR80
+    //!
+    //! \note
+    //! This function performs exactly the same as
+    //! `special_linear_group_2_CR80`, and exists as a convenience function for
+    //! when a presentation for the special linear group \f$\mathrm{SL}(2,q)\f$
+    //! is required, but the relations of the presentation are not important.
+    //!
+    //! \sa
+    //! `special_linear_group_2_CR80`.
+    [[nodiscard]] inline Presentation<word_type>
+    special_linear_group_2(size_t q) {
+      return special_linear_group_2_CR80(q);
+    }
 
     // TODO (doc)
     [[nodiscard]] Presentation<word_type> hypo_plactic_monoid(size_t n,
