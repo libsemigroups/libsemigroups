@@ -134,8 +134,7 @@ namespace libsemigroups {
     //! \throws LibsemigroupsException if `n < 1`.
     //!
     //! \sa
-    //! `partition_monoid`, `partition_monoid_Eas11` and
-    //! `partition_monoid_Machine`.
+    //! `partition_monoid` and `partition_monoid_Eas11`.
     [[nodiscard]] Presentation<word_type> partition_monoid_HR05(size_t n);
 
     //! \brief A presentation for the partition monoid.
@@ -150,26 +149,8 @@ namespace libsemigroups {
     //! \throws LibsemigroupsException if `n < 4`.
     //!
     //! \sa
-    //! `partition_monoid`, `partition_monoid_HR05` and
-    //! `partition_monoid_Machine`.
+    //! `partition_monoid` and `partition_monoid_HR05`.
     [[nodiscard]] Presentation<word_type> partition_monoid_Eas11(size_t n);
-
-    //! \brief A presentation for the partition monoid.
-    //!
-    //! This function returns a monoid presentation defining the partition
-    //! monoid of degree \p n, where \p n is either `2` or `3`. This
-    //! presentation was found using `libsemigroups`.
-    //!
-    //! \param n the degree.
-    //!
-    //! \returns A value of type `Presentation<word_type>`.
-    //!
-    //! \throws LibsemigroupsException if `n != 2` or `n != 3`.
-    //!
-    //! \sa
-    //! `partition_monoid`, `partition_monoid_Eas11`, and
-    //! `partition_monoid_HR05`.
-    [[nodiscard]] Presentation<word_type> partition_monoid_Machine(size_t n);
 
     //! \brief A presentation for the partition monoid.
     //!
@@ -189,8 +170,7 @@ namespace libsemigroups {
     //! not important.
     //!
     //! \sa
-    //! `partition_monoid_Eas11`, `partition_monoid_HR05` and
-    //! `partition_monoid_Machine`.
+    //! `partition_monoid_Eas11` and `partition_monoid_HR05`.
     [[nodiscard]] inline Presentation<word_type> partition_monoid(size_t n) {
       return partition_monoid_Eas11(n);
     }

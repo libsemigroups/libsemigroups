@@ -62,7 +62,6 @@ namespace libsemigroups {
     REQUIRE(uniform_block_bijection_monoid(5).contains_empty_word());
     REQUIRE(partition_monoid_Eas11(5).contains_empty_word());
     REQUIRE(partition_monoid_HR05(5).contains_empty_word());
-    REQUIRE(!partition_monoid_Machine(3).contains_empty_word());
     REQUIRE(!singular_brauer_monoid(5).contains_empty_word());
     REQUIRE(orientation_preserving_monoid(5).contains_empty_word());
     REQUIRE(orientation_preserving_reversing_monoid(5).contains_empty_word());
@@ -163,7 +162,6 @@ namespace libsemigroups {
                           "partition_monoid degree except",
                           "[fpsemi-examples][quick]") {
     auto rg = ReportGuard(REPORT);
-    REQUIRE_THROWS_AS(partition_monoid_Machine(4), LibsemigroupsException);
     REQUIRE_THROWS_AS(partition_monoid_Eas11(3), LibsemigroupsException);
     REQUIRE_THROWS_AS(partition_monoid_HR05(0), LibsemigroupsException);
   }
@@ -437,9 +435,7 @@ namespace libsemigroups {
                           "partition_monoid(n), 1 <= n <= 3",
                           "[fpsemi-examples][quick]") {
     auto        rg = ReportGuard(REPORT);
-    ToddCoxeter tc(congruence_kind::twosided, partition_monoid_Machine(3));
-    REQUIRE(tc.number_of_classes() == 203);
-    tc.init(congruence_kind::twosided, partition_monoid_HR05(3));
+    ToddCoxeter tc(congruence_kind::twosided, partition_monoid_HR05(3));
     REQUIRE(tc.number_of_classes() == 203);
     tc.init(congruence_kind::twosided, partition_monoid_HR05(2));
     REQUIRE(tc.number_of_classes() == 15);

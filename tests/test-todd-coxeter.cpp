@@ -2254,10 +2254,10 @@ namespace libsemigroups {
                           "111",
                           "partition_monoid(2)",
                           "[todd-coxeter][quick]") {
-    using fpsemigroup::partition_monoid_Machine;
+    using fpsemigroup::partition_monoid_HR05;
 
     auto rg = ReportGuard(false);
-    auto p  = partition_monoid_Machine(2);
+    auto p  = partition_monoid_HR05(2);
 
     ToddCoxeter tc(congruence_kind::twosided, p);
     section_felsch(tc);
