@@ -1084,27 +1084,29 @@ namespace libsemigroups {
     //! \brief A non-presentation for the symmetric group.
     //!
     //! This function returns a monoid presentation which is claimed to define
-    //! the symmetric group of degree \p n, but does not. The argument \p val
-    //! determines the specific non-presentation which is returned. The options
-    //! are:
-    //! * `author::Guralnick + author::Kantor + author::Kassabov +
-    //! author::Lubotzky` [doi.org/10.1090/S0894-0347-08-00590-0][].
+    //! the symmetric group of degree \p n, but does not, as in Section 2.2 of
+    //! Guralnick2008aa.
     //!
     //! \param n the claimed degree of the symmetric group.
-    //! \param val the author of the presentation (default: `author::Guralnick +
-    //! author::Kantor + author::Kassabov + author::Lubotzky`).
     //!
     //! \returns A value of type `Presentation<libsemigroups::word_type>`.
     //!
     //! \throws LibsemigroupsException if `n < 4`.
-    //! \throws LibsemigroupsException if `val` is not listed above.
+    [[nodiscard]] Presentation<word_type> not_symmetric_group_GKKL08(size_t n);
+
+    //! \copydoc not_symmetric_group_GKKL08
     //!
-    //! [doi.org/10.1090/S0894-0347-08-00590-0]:
-    //! https://doi.org/10.1090/S0894-0347-08-00590-0
-    [[nodiscard]] Presentation<word_type>
-    not_symmetric_group(size_t n,
-                        author val = author::Guralnick + author::Kantor
-                                     + author::Kassabov + author::Lubotzky);
+    //! \note
+    //! This function performs exactly the same as `not_symmetric_group_GKKL08`,
+    //! and exists as a convenience function for when a presentation that
+    //! incorrectly claims to be the symmetric group required, but the relations
+    //! of the presentation are not important.
+    //!
+    //! \sa
+    //! `not_symmetric_group_GKKL08`.
+    [[nodiscard]] inline Presentation<word_type> not_symmetric_group(size_t n) {
+      return not_symmetric_group_GKKL08(n);
+    }
 
     // TODO (doc)
     // n should be prime for this presentation to actually defined the claimed

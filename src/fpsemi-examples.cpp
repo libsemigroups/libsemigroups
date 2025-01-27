@@ -1858,20 +1858,13 @@ namespace libsemigroups {
       return p;
     }
 
-    Presentation<word_type> not_symmetric_group(size_t n, author val) {
+    // See Section 2.2 of 'Presentations of finite simple groups: A quantitative
+    // approach' J. Amer. Math. Soc. 21 (2008), 711-774
+    Presentation<word_type> not_symmetric_group_GKKL08(size_t n) {
       if (n < 4) {
         LIBSEMIGROUPS_EXCEPTION(
             "expected 1st argument to be at least 4, found {}", n);
-      } else if (val
-                 != author::Guralnick + author::Kantor + author::Kassabov
-                        + author::Lubotzky) {
-        LIBSEMIGROUPS_EXCEPTION(
-            "expected 2nd argument to be author::Guralnick + author::Kantor",
-            " + author::Kassabov + author::Lubotzky found {}",
-            val);
       }
-      // See Section 2.2 of 'Presentations of finite simple groups: A
-      // quantitative approach' J. Amer. Math. Soc. 21 (2008), 711-774
 
       Presentation<word_type> p;
       p.alphabet(n - 1).contains_empty_word(true);

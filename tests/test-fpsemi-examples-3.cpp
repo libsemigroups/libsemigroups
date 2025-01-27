@@ -25,7 +25,7 @@
 #include "catch_amalgamated.hpp"  // for StringRef, SourceLineInfo
 #include "test-main.hpp"          // for LIBSEMIGROUPS_TEST_CASE
 
-#include "libsemigroups/fpsemi-examples.hpp"  // for not_symmetric_group
+#include "libsemigroups/fpsemi-examples.hpp"  // for not_symmetric_group_GKKL08
 #include "libsemigroups/sims.hpp"             // for Sims1
 #include "libsemigroups/types.hpp"            // for tril
 
@@ -35,7 +35,7 @@
 namespace libsemigroups {
 
   using fpsemigroup::author;
-  using fpsemigroup::not_symmetric_group;
+  using fpsemigroup::not_symmetric_group_GKKL08;
   using fpsemigroup::symmetric_group_Car56;
 
   LIBSEMIGROUPS_TEST_CASE("fpsemi-examples",
@@ -46,7 +46,7 @@ namespace libsemigroups {
     size_t n  = 5;
 
     Sims1 C;
-    C.presentation(not_symmetric_group(n));
+    C.presentation(not_symmetric_group_GKKL08(n));
 
     Sims1 D;
     D.presentation(symmetric_group_Car56(n));

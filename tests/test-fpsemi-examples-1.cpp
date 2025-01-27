@@ -97,7 +97,7 @@ namespace libsemigroups {
         order_preserving_cyclic_inverse_monoid_Fer22(5).contains_empty_word());
     REQUIRE(
         partial_isometries_cycle_graph_monoid_FP22(5).contains_empty_word());
-    REQUIRE(not_symmetric_group(5).contains_empty_word());
+    REQUIRE(not_symmetric_group_GKKL08(5).contains_empty_word());
   }
 
   LIBSEMIGROUPS_TEST_CASE("fpsemi-examples",
