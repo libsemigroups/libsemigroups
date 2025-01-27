@@ -508,7 +508,7 @@ namespace libsemigroups {
     Presentation<word_type> symmetric_group_Bur12(size_t n) {
       if (n < 2) {
         LIBSEMIGROUPS_EXCEPTION(
-            "expected 1st argument (degree) to be at least 2, found {}", n);
+            "expected 1st argument to be at least 2, found {}", n);
       }
       Presentation<word_type> p;
       presentation::add_involution_rules_no_checks(p, range(n - 1));
@@ -541,7 +541,7 @@ namespace libsemigroups {
     Presentation<word_type> symmetric_group_Car56(size_t n) {
       if (n < 2) {
         LIBSEMIGROUPS_EXCEPTION(
-            "expected 1st argument (degree) to be at least 2, found {}", n);
+            "expected 1st argument to be at least 2, found {}", n);
       }
       Presentation<word_type> p;
       presentation::add_involution_rules_no_checks(p, range(n - 1));
@@ -570,7 +570,7 @@ namespace libsemigroups {
     Presentation<word_type> symmetric_group_Moo97_a(size_t n) {
       if (n < 2) {
         LIBSEMIGROUPS_EXCEPTION(
-            "expected 1st argument (degree) to be at least 2, found {}", n);
+            "expected 1st argument to be at least 2, found {}", n);
       }
       Presentation<word_type> p;
       presentation::add_involution_rules_no_checks(p, range(n - 1));
@@ -583,7 +583,7 @@ namespace libsemigroups {
     Presentation<word_type> symmetric_group_Moo97_b(size_t n) {
       if (n < 2) {
         LIBSEMIGROUPS_EXCEPTION(
-            "expected 1st argument (degree) to be at least 2, found {}", n);
+            "expected 1st argument to be at least 2, found {}", n);
       }
       Presentation<word_type> p;
       presentation::add_rule_no_checks(p, 00_w, {});
