@@ -47,7 +47,7 @@ namespace libsemigroups {
     //!
     //! \param l the number of generators.
     //!
-    //! \returns A value of type `Presentation<libsemigroups::word_type>`.
+    //! \returns A value of type `Presentation<word_type>`.
     //!
     //! \throws LibsemigroupsException if `l < 2`.
     [[nodiscard]] Presentation<word_type> stellar_monoid_GH19(size_t l);
@@ -73,7 +73,7 @@ namespace libsemigroups {
     //!
     //! \param n the degree.
     //!
-    //! \returns A value of type `Presentation<libsemigroups::word_type>`.
+    //! \returns A value of type `Presentation<word_type>`.
     //!
     //! \throws LibsemigroupsException if `n < 3`.
     [[nodiscard]] Presentation<word_type>
@@ -101,7 +101,7 @@ namespace libsemigroups {
     //!
     //! \param n the degree.
     //!
-    //! \returns A value of type `Presentation<libsemigroups::word_type>`.
+    //! \returns A value of type `Presentation<word_type>`.
     //!
     //! \throws LibsemigroupsException if `n < 3`.
     [[nodiscard]] Presentation<word_type>
@@ -129,7 +129,7 @@ namespace libsemigroups {
     //!
     //! \param n the degree.
     //!
-    //! \returns A value of type `Presentation<libsemigroups::word_type>`.
+    //! \returns A value of type `Presentation<word_type>`.
     //!
     //! \throws LibsemigroupsException if `n < 1`.
     //!
@@ -145,7 +145,7 @@ namespace libsemigroups {
     //!
     //! \param n the degree.
     //!
-    //! \returns A value of type `Presentation<libsemigroups::word_type>`.
+    //! \returns A value of type `Presentation<word_type>`.
     //!
     //! \throws LibsemigroupsException if `n < 4`.
     //!
@@ -162,7 +162,7 @@ namespace libsemigroups {
     //!
     //! \param n the degree.
     //!
-    //! \returns A value of type `Presentation<libsemigroups::word_type>`.
+    //! \returns A value of type `Presentation<word_type>`.
     //!
     //! \throws LibsemigroupsException if `n != 2` or `n != 3`.
     //!
@@ -178,7 +178,7 @@ namespace libsemigroups {
     //!
     //! \param n the degree.
     //!
-    //! \returns A value of type `Presentation<libsemigroups::word_type>`.
+    //! \returns A value of type `Presentation<word_type>`.
     //!
     //! \throws LibsemigroupsException if `n < 4`.
     //!
@@ -202,7 +202,7 @@ namespace libsemigroups {
     //!
     //! \param n the degree.
     //!
-    //! \returns A value of type `Presentation<libsemigroups::word_type>`.
+    //! \returns A value of type `Presentation<word_type>`.
     //!
     //! \throws LibsemigroupsException if `n < 3`.
     [[nodiscard]] Presentation<word_type> singular_brauer_monoid_MM07(size_t n);
@@ -231,7 +231,7 @@ namespace libsemigroups {
     //!
     //! \param n the order of the chain.
     //!
-    //! \returns A value of type `Presentation<libsemigroups::word_type>`.
+    //! \returns A value of type `Presentation<word_type>`.
     //!
     //! \throws LibsemigroupsException if `n < 3`.
     [[nodiscard]] Presentation<word_type>
@@ -262,7 +262,7 @@ namespace libsemigroups {
     //!
     //! \param n the order of the chain.
     //!
-    //! \returns A value of type `Presentation<libsemigroups::word_type>`.
+    //! \returns A value of type `Presentation<word_type>`.
     //!
     //! \throws LibsemigroupsException if `n < 3`.
     [[nodiscard]] Presentation<word_type>
@@ -293,7 +293,7 @@ namespace libsemigroups {
     //!
     //! \param n the number of generators.
     //!
-    //! \returns A value of type `Presentation<libsemigroups::word_type>`.
+    //! \returns A value of type `Presentation<word_type>`.
     //!
     //! \throws LibsemigroupsException if `n < 3`.
     [[nodiscard]] Presentation<word_type> temperley_lieb_monoid_Eas21(size_t n);
@@ -320,7 +320,7 @@ namespace libsemigroups {
     //!
     //! \param n the degree.
     //!
-    //! \returns A value of type `Presentation<libsemigroups::word_type>`.
+    //! \returns A value of type `Presentation<word_type>`.
     //!
     //! \throws LibsemigroupsException if `n < 1`.
     [[nodiscard]] Presentation<word_type> brauer_monoid_KM07(size_t n);
@@ -347,7 +347,7 @@ namespace libsemigroups {
     //!
     //! \param n the degree.
     //!
-    //! \returns A value of type `Presentation<libsemigroups::word_type>`.
+    //! \returns A value of type `Presentation<word_type>`.
     //!
     //! \throws LibsemigroupsException if `n < 1`.
     [[nodiscard]] Presentation<word_type> partial_brauer_monoid_KM07(size_t n);
@@ -377,7 +377,7 @@ namespace libsemigroups {
     //!
     //! \param n the degree.
     //!
-    //! \returns A value of type `Presentation<libsemigroups::word_type>`.
+    //! \returns A value of type `Presentation<word_type>`.
     //!
     //! \throws LibsemigroupsException if `n < 1`.
     [[nodiscard]] Presentation<word_type> motzkin_monoid_PHL13(size_t n);
@@ -405,7 +405,7 @@ namespace libsemigroups {
     //! \param r the length of the left hand sides of the relations.
     //! \param n the number of generators.
     //!
-    //! \returns A value of type `Presentation<libsemigroups::word_type>`.
+    //! \returns A value of type `Presentation<word_type>`.
     //!
     //! \throws LibsemigroupsException if `n < 1`.
     //! \throws LibsemigroupsException if `r < 1`.
@@ -434,7 +434,7 @@ namespace libsemigroups {
     //!
     //! \param n the number of generators.
     //!
-    //! \returns A value of type `Presentation<libsemigroups::word_type>`.
+    //! \returns A value of type `Presentation<word_type>`.
     //!
     //! \throws LibsemigroupsException if `n < 2`.
     [[nodiscard]] Presentation<word_type> plactic_monoid_Knu70(size_t n);
@@ -460,7 +460,7 @@ namespace libsemigroups {
     //!
     //! \param n the number of generators.
     //!
-    //! \returns A value of type `Presentation<libsemigroups::word_type>`.
+    //! \returns A value of type `Presentation<word_type>`.
     //!
     //! \throws LibsemigroupsException if `n < 2`.
     [[nodiscard]] Presentation<word_type> stylic_monoid_AR22(size_t n);
@@ -487,7 +487,7 @@ namespace libsemigroups {
     //!
     //! \param n the degree of the symmetric group.
     //!
-    //! \returns A value of type `Presentation<libsemigroups::word_type>`.
+    //! \returns A value of type `Presentation<word_type>`.
     //!
     //! \throws LibsemigroupsException if `n < 2`.
     [[nodiscard]] Presentation<word_type> symmetric_group_Bur12(size_t n);
@@ -500,7 +500,7 @@ namespace libsemigroups {
     //!
     //! \param n the degree of the symmetric group.
     //!
-    //! \returns A value of type `Presentation<libsemigroups::word_type>`.
+    //! \returns A value of type `Presentation<word_type>`.
     //!
     //! \throws LibsemigroupsException if `n < 2`.
     [[nodiscard]] Presentation<word_type> symmetric_group_Car56(size_t n);
@@ -514,7 +514,7 @@ namespace libsemigroups {
     //!
     //! \param n the degree of the symmetric group.
     //!
-    //! \returns A value of type `Presentation<libsemigroups::word_type>`.
+    //! \returns A value of type `Presentation<word_type>`.
     //!
     //! \throws LibsemigroupsException if `n < 2`.
     [[nodiscard]] Presentation<word_type> symmetric_group_Moo97_a(size_t n);
@@ -528,7 +528,7 @@ namespace libsemigroups {
     //!
     //! \param n the degree of the symmetric group.
     //!
-    //! \returns A value of type `Presentation<libsemigroups::word_type>`.
+    //! \returns A value of type `Presentation<word_type>`.
     //!
     //! \throws LibsemigroupsException if `n < 2`.
     [[nodiscard]] Presentation<word_type> symmetric_group_Moo97_b(size_t n);
@@ -559,7 +559,7 @@ namespace libsemigroups {
     //!
     //! \param n the degree of the alternating group.
     //!
-    //! \returns A value of type `Presentation<libsemigroups::word_type>`.
+    //! \returns A value of type `Presentation<word_type>`.
     //!
     //! \throws LibsemigroupsException if `n < 4`.
     [[nodiscard]] Presentation<word_type> alternating_group_Moo97(size_t n);
@@ -586,7 +586,7 @@ namespace libsemigroups {
     //! \param m the number of rows.
     //! \param n the number of columns.
     //!
-    //! \returns A value of type `Presentation<libsemigroups::word_type>`.
+    //! \returns A value of type `Presentation<word_type>`.
     //!
     //! \throws LibsemigroupsException if `m == 0`.
     //! \throws LibsemigroupsException if `n == 0`.
@@ -617,7 +617,7 @@ namespace libsemigroups {
     //!
     //! \param n the degree of the full transformation monoid.
     //!
-    //! \returns A value of type `Presentation<libsemigroups::word_type>`.
+    //! \returns A value of type `Presentation<word_type>`.
     //!
     //! \throws LibsemigroupsException if `n < 4`.
     [[nodiscard]] Presentation<word_type>
@@ -631,7 +631,7 @@ namespace libsemigroups {
     //!
     //! \param n the degree of the full transformation monoid.
     //!
-    //! \returns A value of type `Presentation<libsemigroups::word_type>`.
+    //! \returns A value of type `Presentation<word_type>`.
     //!
     //! \throws LibsemigroupsException if `n < 4`.
     [[nodiscard]] Presentation<word_type>
@@ -646,7 +646,7 @@ namespace libsemigroups {
     //!
     //! \param n the degree of the full transformation monoid.
     //!
-    //! \returns A value of type `Presentation<libsemigroups::word_type>`.
+    //! \returns A value of type `Presentation<word_type>`.
     //!
     //! \throws LibsemigroupsException if `n < 2`.
     [[nodiscard]] Presentation<word_type>
@@ -662,7 +662,7 @@ namespace libsemigroups {
     //!
     //! \param n the degree of the full transformation monoid.
     //!
-    //! \returns A value of type `Presentation<libsemigroups::word_type>`.
+    //! \returns A value of type `Presentation<word_type>`.
     //!
     //! \throws LibsemigroupsException if `n < 3`.
     //! \throws LibsemigroupsException if \p n is not odd.
@@ -697,7 +697,7 @@ namespace libsemigroups {
     //!
     //! \param n the degree of the partial transformation monoid.
     //!
-    //! \returns A value of type `Presentation<libsemigroups::word_type>`.
+    //! \returns A value of type `Presentation<word_type>`.
     //!
     //! \throws LibsemigroupsException if `n < 4`.
     [[nodiscard]] Presentation<word_type>
@@ -711,7 +711,7 @@ namespace libsemigroups {
     //!
     //! \param n the degree of the partial transformation monoid.
     //!
-    //! \returns A value of type `Presentation<libsemigroups::word_type>`.
+    //! \returns A value of type `Presentation<word_type>`.
     //!
     //! \throws LibsemigroupsException if `n < 2`.
     [[nodiscard]] Presentation<word_type>
@@ -743,7 +743,7 @@ namespace libsemigroups {
     //!
     //! \param n the degree of the symmetric inverse monoid.
     //!
-    //! \returns A value of type `Presentation<libsemigroups::word_type>`.
+    //! \returns A value of type `Presentation<word_type>`.
     //!
     //! \throws LibsemigroupsException if `n < 2`.
     // This is just a presentation for the symmetric inverse monoid, a slightly
@@ -764,7 +764,7 @@ namespace libsemigroups {
     //!
     //! \param n the degree of the symmetric inverse monoid.
     //!
-    //! \returns A value of type `Presentation<libsemigroups::word_type>`.
+    //! \returns A value of type `Presentation<word_type>`.
     //!
     //! \throws LibsemigroupsException if `n < 4`.
     [[nodiscard]] Presentation<word_type>
@@ -779,7 +779,7 @@ namespace libsemigroups {
     //!
     //! \param n the degree of the symmetric inverse monoid.
     //!
-    //! \returns A value of type `Presentation<libsemigroups::word_type>`.
+    //! \returns A value of type `Presentation<word_type>`.
     //!
     //! \throws LibsemigroupsException if `n < 4`.
     [[nodiscard]] Presentation<word_type>
@@ -811,7 +811,7 @@ namespace libsemigroups {
     //!
     //! \param n the number of generators.
     //!
-    //! \returns A value of type `Presentation<libsemigroups::word_type>`.
+    //! \returns A value of type `Presentation<word_type>`.
     //!
     //! \throws LibsemigroupsException if `n < 2`.
     [[nodiscard]] Presentation<word_type> chinese_monoid_CEKNH01(size_t n);
@@ -842,7 +842,7 @@ namespace libsemigroups {
     //! \param m the index.
     //! \param r the period.
     //!
-    //! \returns A value of type `Presentation<libsemigroups::word_type>`.
+    //! \returns A value of type `Presentation<word_type>`.
     //!
     //! \throws LibsemigroupsException if `r == 0`.
     [[nodiscard]] Presentation<word_type> monogenic_semigroup(size_t m,
@@ -858,7 +858,7 @@ namespace libsemigroups {
     //!
     //! \param n the degree.
     //!
-    //! \returns A value of type `Presentation<libsemigroups::word_type>`.
+    //! \returns A value of type `Presentation<word_type>`.
     //!
     //! \throws LibsemigroupsException if `n < 3`.
     [[nodiscard]] Presentation<word_type>
@@ -889,7 +889,7 @@ namespace libsemigroups {
     //!
     //! \param n the degree.
     //!
-    //! \returns A value of type `Presentation<libsemigroups::word_type>`.
+    //! \returns A value of type `Presentation<word_type>`.
     //!
     //! \throws LibsemigroupsException if `n < 3`.
     [[nodiscard]] Presentation<word_type>
@@ -905,7 +905,7 @@ namespace libsemigroups {
     //!
     //! \param n the degree.
     //!
-    //! \returns A value of type `Presentation<libsemigroups::word_type>`.
+    //! \returns A value of type `Presentation<word_type>`.
     //!
     //! \throws LibsemigroupsException if `n < 3`.
     [[nodiscard]] Presentation<word_type>
@@ -938,7 +938,7 @@ namespace libsemigroups {
     //!
     //! \param n the degree.
     //!
-    //! \returns A value of type `Presentation<libsemigroups::word_type>`.
+    //! \returns A value of type `Presentation<word_type>`.
     //!
     //! \throws LibsemigroupsException if `n < 3`.
     [[nodiscard]] Presentation<word_type>
@@ -969,7 +969,7 @@ namespace libsemigroups {
     //!
     //! \param n the number of vertices of the cycle graph.
     //!
-    //! \returns A value of type `Presentation<libsemigroups::word_type>`.
+    //! \returns A value of type `Presentation<word_type>`.
     //!
     //! \throws LibsemigroupsException if `n < 3`.
     [[nodiscard]] Presentation<word_type>
@@ -999,7 +999,7 @@ namespace libsemigroups {
     //!
     //! \param n the claimed degree of the symmetric group.
     //!
-    //! \returns A value of type `Presentation<libsemigroups::word_type>`.
+    //! \returns A value of type `Presentation<word_type>`.
     //!
     //! \throws LibsemigroupsException if `n < 4`.
     [[nodiscard]] Presentation<word_type> not_symmetric_group_GKKL08(size_t n);
@@ -1030,7 +1030,7 @@ namespace libsemigroups {
     //! group is constructed. This should be an odd prime for the returned
     //! presentation to define claimed group.
     //!
-    //! \returns A value of type `Presentation<libsemigroups::word_type>`.
+    //! \returns A value of type `Presentation<word_type>`.
     //!
     //! \throws LibsemigroupsException if `q < 3`.
     [[nodiscard]] Presentation<word_type> special_linear_group_2_CR80(size_t q);
@@ -1060,7 +1060,7 @@ namespace libsemigroups {
     //!
     //! \param n the number of generators.
     //!
-    //! \returns A value of type `Presentation<libsemigroups::word_type>`.
+    //! \returns A value of type `Presentation<word_type>`.
     //!
     //! \throws LibsemigroupsException if `n < 1`.
     [[nodiscard]] Presentation<word_type> hypo_plactic_monoid_Nov00(size_t n);
@@ -1093,7 +1093,7 @@ namespace libsemigroups {
     //!
     //! \param sigma a vector representing the image of \f$\sigma\f$.
     //!
-    //! \returns A value of type `Presentation<libsemigroups::word_type>`.
+    //! \returns A value of type `Presentation<word_type>`.
     //!
     //! \throws LibsemigroupsException if `n < 1`.
     // TODO add reference when possible, specialise the name and add a default
@@ -1111,7 +1111,7 @@ namespace libsemigroups {
     //!
     //! \param n the degree.
     //!
-    //! \returns A value of type `Presentation<libsemigroups::word_type>`.
+    //! \returns A value of type `Presentation<word_type>`.
     //!
     //! \throws LibsemigroupsException if `n < 2`.
     // When q = 0, the a_i^2 = 1 relations from the C+M symmetric group
@@ -1143,7 +1143,7 @@ namespace libsemigroups {
     //!
     //! \param l the size of the monoid.
     //!
-    //! \returns a value of type `Presentation<libsemigroups::word_type>`.
+    //! \returns a value of type `Presentation<word_type>`.
     //!
     //! \exceptions
     //! \no_libsemigroups_except
@@ -1157,7 +1157,7 @@ namespace libsemigroups {
     //!
     //! \param l the size of the monoid.
     //!
-    //! \returns a value of type `Presentation<libsemigroups::word_type>`.
+    //! \returns a value of type `Presentation<word_type>`.
     //!
     //! \exceptions
     //! \no_libsemigroups_except
@@ -1192,7 +1192,7 @@ namespace libsemigroups {
     //!
     //! \param l the size of the claimed monoid.
     //!
-    //! \returns a value of type `Presentation<libsemigroups::word_type>`.
+    //! \returns a value of type `Presentation<word_type>`.
     //!
     //! \exceptions
     //! \no_libsemigroups_except
@@ -1207,7 +1207,7 @@ namespace libsemigroups {
     //!
     //! \param l the size of the claimed monoid.
     //!
-    //! \returns a value of type `Presentation<libsemigroups::word_type>`.
+    //! \returns a value of type `Presentation<word_type>`.
     //!
     //! \exceptions
     //! \no_libsemigroups_except
@@ -1242,7 +1242,7 @@ namespace libsemigroups {
     //!
     //! \param l the size of the monoid.
     //!
-    //! \returns a value of type `Presentation<libsemigroups::word_type>`.
+    //! \returns a value of type `Presentation<word_type>`.
     //!
     //! \exceptions
     //! \no_libsemigroups_except
@@ -1256,7 +1256,7 @@ namespace libsemigroups {
     //!
     //! \param l the size of the monoid.
     //!
-    //! \returns a value of type `Presentation<libsemigroups::word_type>`.
+    //! \returns a value of type `Presentation<word_type>`.
     //!
     //! \exceptions
     //! \no_libsemigroups_except
@@ -1291,7 +1291,7 @@ namespace libsemigroups {
     //!
     //! \param l the size of the claimed monoid.
     //!
-    //! \returns a value of type `Presentation<libsemigroups::word_type>`.
+    //! \returns a value of type `Presentation<word_type>`.
     //!
     //! \exceptions
     //! \no_libsemigroups_except
@@ -1306,7 +1306,7 @@ namespace libsemigroups {
     //!
     //! \param l the size of the claimed monoid.
     //!
-    //! \returns a value of type `Presentation<libsemigroups::word_type>`.
+    //! \returns a value of type `Presentation<word_type>`.
     //!
     //! \exceptions
     //! \no_libsemigroups_except
