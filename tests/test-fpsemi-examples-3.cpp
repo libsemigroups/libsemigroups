@@ -35,7 +35,7 @@
 namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("fpsemi-examples",
-                          "070",
+                          "097",
                           "not_symmetric_group(5) GKKL",
                           "[fpsemi-examples][quick]") {
     auto   rg = ReportGuard(false);

@@ -61,7 +61,7 @@ namespace libsemigroups {
   using namespace fpsemigroup;
 
   LIBSEMIGROUPS_TEST_CASE("fpsemi-examples",
-                          "067",
+                          "085",
                           "chinese_monoid(3)",
                           "[fpsemi-examples][quick]") {
     auto rg = ReportGuard(false);
@@ -94,7 +94,7 @@ namespace libsemigroups {
   // relation is abc instead of bac (or rather the alphabet is re-ordered so
   // that the first rule is abc), then this runs forever.
   LIBSEMIGROUPS_TEST_CASE("fpsemi-examples",
-                          "068",
+                          "086",
                           "plactic_monoid(3)",
                           "[fpsemi-examples][quick]") {
     auto rg = ReportGuard(false);
@@ -172,7 +172,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("fpsemi-examples",
-                          "069",
+                          "087",
                           "stylic_monoid(4)",
                           "[fpsemi-examples][quick]") {
     auto        rg = ReportGuard(false);
@@ -182,7 +182,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("fpsemi-examples",
-                          "071",
+                          "088",
                           "hypo_plactic_monoid(3)",
                           "[fpsemi-examples][quick]") {
     auto rg = ReportGuard(false);
@@ -207,7 +207,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("fpsemi-examples",
-                          "076",
+                          "089",
                           "not_renner_type_B_monoid_God09(3)",
                           "[quick][fpsemi-examples][hivert][no-valgrind]") {
     auto        rg = ReportGuard(false);
@@ -219,7 +219,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("fpsemi-examples",
-                          "077",
+                          "090",
                           "not_renner_type_B_monoid_Gay18(3)",
                           "[quick][fpsemi-examples][hivert][no-valgrind]") {
     auto        rg = ReportGuard(false);
@@ -231,7 +231,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("fpsemi-examples",
-                          "086",
+                          "091",
                           "not_renner_type_D_monoid_Machine(2)",
                           "[quick][fpsemi-examples][hivert]") {
     auto        rg = ReportGuard(false);
@@ -244,7 +244,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("fpsemi-examples",
-                          "087",
+                          "092",
                           "not_renner_type_D_monoid_God09(2)",
                           "[quick][fpsemi-examples][hivert]") {
     auto        rg = ReportGuard(false);
@@ -257,7 +257,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("fpsemi-examples",
-                          "088",
+                          "093",
                           "not_renner_type_D_monoid_Machine(3)",
                           "[quick][fpsemi-examples][hivert][no-valgrind]") {
     auto        rg = ReportGuard(false);
@@ -269,7 +269,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("fpsemi-examples",
-                          "089",
+                          "094",
                           "not_renner_type_D_monoid_God09(3)",
                           "[quick][fpsemi-examples][hivert][no-valgrind]") {
     auto        rg = ReportGuard(false);
@@ -281,7 +281,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("fpsemi-examples",
-                          "090",
+                          "095",
                           "not_renner_type_D_monoid_Machine(4)",
                           "[quick][fpsemi-examples][hivert][no-valgrind]") {
     auto        rg = ReportGuard(false);
@@ -294,7 +294,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("fpsemi-examples",
-                          "091",
+                          "096",
                           "not_renner_type_D_monoid_God09(4)",
                           "[quick][fpsemi-examples][hivert][no-valgrind]") {
     auto        rg = ReportGuard(false);
