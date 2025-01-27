@@ -1,4 +1,4 @@
 [codespell]
 skip = ./extern,./.git,./benchmarks/catch.hpp,./tests/catch_*.*pp,./config,./autom4te.cache,./m4,./aclocal.m4,./configure,./libtool,./configure~,./tests/test-knuth-bendix-*.cpp,./docs/html/*,./docs/xml/*,./tests/gap.g,config.log
-ignore-words-list=nd,nam,wit,toword,towords,theses,elment
+ignore-words-list=nd,nam,wit,toword,towords,theses,elment,groupe
 ignore-multiline-regex=codespell:begin-ignore.*codespell:end-ignore
