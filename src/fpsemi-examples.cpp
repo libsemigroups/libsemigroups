@@ -221,6 +221,43 @@ namespace libsemigroups {
       }
     }
 
+    word_type max_elt_B(size_t i) {
+      word_type t(0);
+      for (int end = i; end >= 0; end--) {
+        for (int k = 0; k <= end; k++) {
+          t.push_back(k);
+        }
+      }
+      return t;
+    }
+
+    void renner_type_B_impl(Presentation<word_type>& p, size_t l, int q) {
+      add_renner_type_B_common(p, l, q);
+
+      auto s = range(l);
+      auto e = range(l, 2 * l + 1);
+
+      for (size_t i = 1; i < l; i++) {
+        std::vector<size_t> new_rel = max_elt_B(i);
+        new_rel.push_back(e[0]);
+        new_rel.insert(new_rel.begin(), e[0]);
+        presentation::add_rule_no_checks(p, new_rel, {e[i + 1]});
+      }
+      p.alphabet_from_rules().contains_empty_word(true);
+    }
+
+    void not_renner_type_B_impl(Presentation<word_type>& p, size_t l, int q) {
+      add_renner_type_B_common(p, l, q);
+
+      auto s = range(l);
+      auto e = range(l, 2 * l + 1);
+      if (l >= 2) {
+        presentation::add_rule_no_checks(
+            p, {e[0], s[0], s[1], s[0], e[0]}, {e[2]});
+      }
+      p.alphabet_from_rules().contains_empty_word(true);
+    }
+
     void add_renner_type_D_common(Presentation<word_type>& p, size_t l, int q) {
       LIBSEMIGROUPS_ASSERT(q == 0 || q == 1);
       // q is supposed to be 0 or 1
@@ -298,6 +335,67 @@ namespace libsemigroups {
       presentation::add_rule_no_checks(p, {f, s[1], f}, {e[2]});
     }
 
+    word_type max_elt_D(size_t i, int g) {
+      // g est 0 ou 1 : 0 pour f et 1 pour e
+      word_type t(0);
+      int       parity = g;
+      for (int end = i; end > 0; end--) {
+        t.push_back(parity);
+        for (int k = 2; k <= end; k++) {
+          t.push_back(k);
+        }
+        parity = (parity + 1) % 2;
+      }
+      return t;
+    }
+
+    void renner_type_D_impl(Presentation<word_type>& p, size_t l, int q) {
+      add_renner_type_D_common(p, l, q);
+
+      auto        s = range(l);
+      auto        e = range(l, 2 * l + 1);
+      letter_type f = 2 * l + 1;
+
+      for (size_t i = 2; i < l; i++) {
+        word_type new_rel_f = max_elt_D(i, 0);
+        word_type new_rel_e = max_elt_D(i, 1);
+
+        if (i % 2 == 0) {
+          new_rel_e.insert(new_rel_e.begin(), f);
+          new_rel_e.push_back(e[0]);
+          presentation::add_rule_no_checks(p, new_rel_e, {e[i + 1]});
+
+          new_rel_f.insert(new_rel_f.begin(), e[0]);
+          new_rel_f.push_back(f);
+          presentation::add_rule_no_checks(p, new_rel_f, {e[i + 1]});
+        } else {
+          new_rel_e.insert(new_rel_e.begin(), f);
+          new_rel_e.push_back(f);
+          presentation::add_rule_no_checks(p, new_rel_e, {e[i + 1]});
+          new_rel_f.insert(new_rel_f.begin(), e[0]);
+          new_rel_f.push_back(e[0]);
+          presentation::add_rule_no_checks(p, new_rel_f, {e[i + 1]});
+        }
+      }
+      p.alphabet_from_rules().contains_empty_word(true);
+    }
+
+    void not_renner_type_D_impl(Presentation<word_type>& p, size_t l, int q) {
+      add_renner_type_D_common(p, l, q);
+
+      auto        s = range(l);
+      auto        e = range(l, 2 * l + 1);
+      letter_type f = 2 * l + 1;
+
+      if (l >= 3) {
+        presentation::add_rule_no_checks(
+            p, {e[0], s[0], s[2], s[1], f}, {e[3]});
+        presentation::add_rule_no_checks(
+            p, {f, s[1], s[2], s[0], e[0]}, {e[3]});
+      }
+      p.alphabet_from_rules().contains_empty_word(true);
+    }
+
     void add_coxeter_common(Presentation<word_type>& p, size_t n) {
       for (letter_type i = 0; i < n - 2; ++i) {
         presentation::add_rule_no_checks(p, {i, i + 1, i}, {i + 1, i, i + 1});
@@ -317,30 +415,6 @@ namespace libsemigroups {
       presentation::add_rule_no_checks(
           p, pow({0, n - 1}, 2), {n - 1, 0, n - 1});
     }
-
-    word_type max_elt_B(size_t i) {
-      word_type t(0);
-      for (int end = i; end >= 0; end--) {
-        for (int k = 0; k <= end; k++) {
-          t.push_back(k);
-        }
-      }
-      return t;
-    }
-
-    word_type max_elt_D(size_t i, int g) {
-      // g est 0 ou 1 : 0 pour f et 1 pour e
-      word_type t(0);
-      int       parity = g;
-      for (int end = i; end > 0; end--) {
-        t.push_back(parity);
-        for (int k = 2; k <= end; k++) {
-          t.push_back(k);
-        }
-        parity = (parity + 1) % 2;
-      }
-      return t;
-    }
   }  // namespace
 
   namespace fpsemigroup {
@@ -356,7 +430,7 @@ namespace libsemigroups {
         LIBSEMIGROUPS_EXCEPTION(
             "expected 1st argument to be at least 2, found {}", l);
       }
-      auto p = zero_rook_monoid(l);
+      auto p = zero_rook_monoid_Gay18(l);
 
       word_type t = {l - 1};
       for (size_t i = 0; i < l - 1; ++i) {
@@ -1953,13 +2027,10 @@ namespace libsemigroups {
       return p;
     }
 
-    Presentation<word_type> zero_rook_monoid(size_t n, author val) {
+    Presentation<word_type> zero_rook_monoid_Gay18(size_t n) {
       if (n < 2) {
         LIBSEMIGROUPS_EXCEPTION(
             "the 1st argument (degree) must at least 2, found {}", n);
-      } else if (val != author::Any) {
-        LIBSEMIGROUPS_EXCEPTION(
-            "expected 2nd argument to be author::Any, found {}", val);
       }
 
       Presentation<word_type> p;
@@ -1970,115 +2041,64 @@ namespace libsemigroups {
       return p;
     }
 
-    Presentation<word_type> not_renner_type_B_monoid(size_t l,
-                                                     int    q,
-                                                     author val) {
-      if (q != 0 && q != 1) {
-        LIBSEMIGROUPS_EXCEPTION("the 2nd argument must be 0 or 1, found {}", q);
-      } else if (val != author::Any) {
-        LIBSEMIGROUPS_EXCEPTION(
-            "expected 3rd argument to be author::Any, found {}", val);
-      }
-
+    // Definition 8.4.1 + Example 8.4.2 in Joel's thesis.
+    Presentation<word_type> renner_type_B_monoid_Gay18_a(size_t l) {
       Presentation<word_type> p;
-      add_renner_type_B_common(p, l, q);
-
-      auto s = range(l);
-      auto e = range(l, 2 * l + 1);
-      if (l >= 2) {
-        presentation::add_rule_no_checks(
-            p, {e[0], s[0], s[1], s[0], e[0]}, {e[2]});
-      }
-      p.alphabet_from_rules().contains_empty_word(true);
+      renner_type_B_impl(p, l, 0);
       return p;
     }
 
-    Presentation<word_type> renner_type_B_monoid(size_t l, int q, author val) {
-      if (q != 0 && q != 1) {
-        LIBSEMIGROUPS_EXCEPTION("the 2nd argument must be 0 or 1, found {}", q);
-      } else if (val != author::Any) {
-        LIBSEMIGROUPS_EXCEPTION(
-            "expected 3rd argument to be author::Any, found {}", val);
-      }
-
+    // same presentation as for Gay18_a except pi_i ^ 2 = pi_i replaced with
+    // pi_i ^ 2 = 1 (usual Renner monoid)
+    Presentation<word_type> renner_type_B_monoid_Gay18_b(size_t l) {
       Presentation<word_type> p;
-      add_renner_type_B_common(p, l, q);
-
-      auto s = range(l);
-      auto e = range(l, 2 * l + 1);
-
-      for (size_t i = 1; i < l; i++) {
-        std::vector<size_t> new_rel = max_elt_B(i);
-        new_rel.push_back(e[0]);
-        new_rel.insert(new_rel.begin(), e[0]);
-        presentation::add_rule_no_checks(p, new_rel, {e[i + 1]});
-      }
-      p.alphabet_from_rules().contains_empty_word(true);
+      renner_type_B_impl(p, l, 1);
       return p;
     }
 
-    Presentation<word_type> not_renner_type_D_monoid(size_t l,
-                                                     int    q,
-                                                     author val) {
-      if (q != 0 && q != 1) {
-        LIBSEMIGROUPS_EXCEPTION("the 2nd argument must be 0 or 1, found {}", q);
-      } else if (val != author::Any) {
-        LIBSEMIGROUPS_EXCEPTION(
-            "expected 3rd argument to be author::Any, found {}", val);
-      }
+    // Example 7.1.2, of Joel's thesis
+    Presentation<word_type> not_renner_type_B_monoid_Gay18(size_t l) {
       Presentation<word_type> p;
-      add_renner_type_D_common(p, l, q);
-
-      auto        s = range(l);
-      auto        e = range(l, 2 * l + 1);
-      letter_type f = 2 * l + 1;
-
-      if (l >= 3) {
-        presentation::add_rule_no_checks(
-            p, {e[0], s[0], s[2], s[1], f}, {e[3]});
-        presentation::add_rule_no_checks(
-            p, {f, s[1], s[2], s[0], e[0]}, {e[3]});
-      }
-      p.alphabet_from_rules().contains_empty_word(true);
+      not_renner_type_B_impl(p, l, 0);
       return p;
     }
 
-    Presentation<word_type> renner_type_D_monoid(size_t l, int q, author val) {
-      if (q != 0 && q != 1) {
-        LIBSEMIGROUPS_EXCEPTION("the 2nd argument must be 0 or 1, found {}", q);
-      } else if (val != author::Any) {
-        LIBSEMIGROUPS_EXCEPTION(
-            "expected 3rd argument to be author::Any, found {}", val);
-      }
+    // Godelle's presentation from: p40 of
+    //  https://www.cambridge.org/core/services/aop-cambridge-core/content/view/B6BAB75BD3463916FEDEC15BEDA724FF/S0004972710000365a.pdf/presentation_for_renner_monoids.pdf
+    //  or
+    //  https://arxiv.org/abs/0904.0926
+    Presentation<word_type> not_renner_type_B_monoid_God09(size_t l) {
       Presentation<word_type> p;
-      add_renner_type_D_common(p, l, q);
+      not_renner_type_B_impl(p, l, 1);
+      return p;
+    }
 
-      auto        s = range(l);
-      auto        e = range(l, 2 * l + 1);
-      letter_type f = 2 * l + 1;
+    // Definition 8.4.22 in Joel's thesis
+    Presentation<word_type> renner_type_D_monoid_Gay18_a(size_t l) {
+      Presentation<word_type> p;
+      renner_type_D_impl(p, l, 0);
+      return p;
+    }
 
-      for (size_t i = 2; i < l; i++) {
-        word_type new_rel_f = max_elt_D(i, 0);
-        word_type new_rel_e = max_elt_D(i, 1);
+    // See Theorem 8.4.43 in Joel's thesis
+    Presentation<word_type> renner_type_D_monoid_Gay18_b(size_t l) {
+      Presentation<word_type> p;
+      renner_type_D_impl(p, l, 1);
+      return p;
+    }
 
-        if (i % 2 == 0) {
-          new_rel_e.insert(new_rel_e.begin(), f);
-          new_rel_e.push_back(e[0]);
-          presentation::add_rule_no_checks(p, new_rel_e, {e[i + 1]});
+    // No reference
+    Presentation<word_type> not_renner_type_D_monoid_Machine(size_t l) {
+      Presentation<word_type> p;
+      not_renner_type_D_impl(p, l, 0);
+      return p;
+    }
 
-          new_rel_f.insert(new_rel_f.begin(), e[0]);
-          new_rel_f.push_back(f);
-          presentation::add_rule_no_checks(p, new_rel_f, {e[i + 1]});
-        } else {
-          new_rel_e.insert(new_rel_e.begin(), f);
-          new_rel_e.push_back(f);
-          presentation::add_rule_no_checks(p, new_rel_e, {e[i + 1]});
-          new_rel_f.insert(new_rel_f.begin(), e[0]);
-          new_rel_f.push_back(e[0]);
-          presentation::add_rule_no_checks(p, new_rel_f, {e[i + 1]});
-        }
-      }
-      p.alphabet_from_rules().contains_empty_word(true);
+    // Godelle's presentation from: p41 of
+    // https://www.cambridge.org/core/services/aop-cambridge-core/content/view/B6BAB75BD3463916FEDEC15BEDA724FF/S0004972710000365a.pdf/presentation_for_renner_monoids.pdf
+    Presentation<word_type> not_renner_type_D_monoid_God09(size_t l) {
+      Presentation<word_type> p;
+      not_renner_type_D_impl(p, l, 1);
       return p;
     }
 
