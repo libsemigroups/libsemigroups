@@ -241,10 +241,9 @@ namespace libsemigroups {
                           "002",
                           "full transf monoid",
                           "[quick][stephen][no-valgrind]") {
-    using namespace fpsemigroup;
     auto   rg = ReportGuard(true);
     size_t n  = 5;
-    auto   p  = full_transformation_monoid_II74(n);
+    auto   p  = fpsemigroup::full_transformation_monoid_II74(n);
     p.validate();
 
     Stephen s(std::move(p));
@@ -474,9 +473,8 @@ namespace libsemigroups {
                           "007",
                           "Fibonacci(4, 6)",
                           "[stephen][extreme]") {
-    using namespace fpsemigroup;
     auto    rg = ReportGuard(true);
-    Stephen S(fibonacci_semigroup(4, 6));
+    Stephen S(fpsemigroup::fibonacci_semigroup(4, 6));
     S.set_word(0123_w).run_for(std::chrono::seconds(10));
     REQUIRE(!S.finished());
   }

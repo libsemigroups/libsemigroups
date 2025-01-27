@@ -597,10 +597,10 @@ namespace libsemigroups {
     //! \brief A presentation for the hypoplactic monoid.
     //!
     //! This function returns a presentation for the hypoplactic monoid with \p
-    //! \n generators, as in Definition 4.2 of \cite Novelli2000aa.
+    //! n generators, as in Definition 4.2 of \cite Novelli2000aa.
     //!
     //! This monoid is a quotient monoid of the plactic monoid, and this
-    //! presentation includes the rules from \ref plactic_monoid_Knu80.
+    //! presentation includes the rules from \ref plactic_monoid_Knu70.
     //!
     //! \param n the number of generators.
     //!
@@ -755,6 +755,7 @@ namespace libsemigroups {
     //! multiple presentations. The section below defines some default
     //! functions; functions that should be used when the particular relations
     //! aren't important, only the semigroup or monoid they define.
+    ///@{
 
     //! \copydoc stellar_monoid_GH19
     //!
@@ -1313,7 +1314,7 @@ namespace libsemigroups {
       return renner_type_D_monoid_Gay18_a(l);
     }
 
-    //! \copydoc not_renner_type_D_monoid_Gay18
+    //! \copydoc not_renner_type_D_monoid_God09
     //!
     //! \note
     //! This function performs exactly the same as
@@ -1331,7 +1332,7 @@ namespace libsemigroups {
     //! deformation of 1.
     [[nodiscard]] inline Presentation<word_type>
     not_renner_type_D_monoid(size_t l) {
-      return not_renner_type_D_monoid_Machine(l);
+      return not_renner_type_D_monoid_God09(l);
     }
     ///@}
 

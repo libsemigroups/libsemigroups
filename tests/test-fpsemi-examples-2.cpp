@@ -34,7 +34,7 @@
 #include "test-main.hpp"          // for LIBSEMIGROUPS_TEST_CASE
 
 #include "libsemigroups/constants.hpp"        // for operator==, operator!=
-#include "libsemigroups/fpsemi-examples.hpp"  // for not_renner_type_D_monoid
+#include "libsemigroups/fpsemi-examples.hpp"  // for fpsemigroup
 #include "libsemigroups/knuth-bendix.hpp"     // for KnuthBendix, to_present...
 #include "libsemigroups/obvinf.hpp"           // for is_obviously_infinite
 #include "libsemigroups/paths.hpp"            // for ReversiblePaths
@@ -58,9 +58,7 @@ namespace libsemigroups {
 
   struct LibsemigroupsException;
 
-  using fpsemigroup::chinese_monoid;
-  using fpsemigroup::plactic_monoid;
-  using fpsemigroup::stylic_monoid;
+  using namespace fpsemigroup;
 
   LIBSEMIGROUPS_TEST_CASE("fpsemi-examples",
                           "067",
@@ -189,8 +187,7 @@ namespace libsemigroups {
                           "[fpsemi-examples][quick]") {
     auto rg = ReportGuard(false);
 
-    KnuthBendix kb(congruence_kind::twosided,
-                   fpsemigroup::hypo_plactic_monoid(3));
+    KnuthBendix kb(congruence_kind::twosided, hypo_plactic_monoid(3));
     kb.run();
 
     word_type                               letters = {0, 1, 2};
@@ -215,7 +212,7 @@ namespace libsemigroups {
                           "[quick][fpsemi-examples][hivert][no-valgrind]") {
     auto        rg = ReportGuard(false);
     KnuthBendix kb(congruence_kind::twosided,
-                   fpsemigroup::not_renner_type_B_monoid_God09(3));
+                   not_renner_type_B_monoid_God09(3));
     REQUIRE(!is_obviously_infinite(kb));
     kb.run();
     REQUIRE(kb.number_of_classes() == POSITIVE_INFINITY);
@@ -227,7 +224,7 @@ namespace libsemigroups {
                           "[quick][fpsemi-examples][hivert][no-valgrind]") {
     auto        rg = ReportGuard(false);
     KnuthBendix kb(congruence_kind::twosided,
-                   fpsemigroup::not_renner_type_B_monoid_Gay18(3));
+                   not_renner_type_B_monoid_Gay18(3));
     REQUIRE(!is_obviously_infinite(kb));
     kb.run();
     REQUIRE(kb.number_of_classes() == POSITIVE_INFINITY);
@@ -239,7 +236,7 @@ namespace libsemigroups {
                           "[quick][fpsemi-examples][hivert]") {
     auto        rg = ReportGuard(false);
     KnuthBendix kb(congruence_kind::twosided,
-                   fpsemigroup::not_renner_type_D_monoid_Machine(2));
+                   not_renner_type_D_monoid_Machine(2));
     REQUIRE(kb.presentation().rules.size() == 68);
     REQUIRE(!is_obviously_infinite(kb));
     kb.run();
@@ -252,7 +249,7 @@ namespace libsemigroups {
                           "[quick][fpsemi-examples][hivert]") {
     auto        rg = ReportGuard(false);
     KnuthBendix kb(congruence_kind::twosided,
-                   fpsemigroup::not_renner_type_D_monoid_God09(2));
+                   not_renner_type_D_monoid_God09(2));
 
     REQUIRE(kb.presentation().rules.size() == 68);
     REQUIRE(!is_obviously_infinite(kb));
@@ -265,7 +262,7 @@ namespace libsemigroups {
                           "[quick][fpsemi-examples][hivert][no-valgrind]") {
     auto        rg = ReportGuard(false);
     KnuthBendix kb(congruence_kind::twosided,
-                   fpsemigroup::not_renner_type_D_monoid_Machine(3));
+                   not_renner_type_D_monoid_Machine(3));
     REQUIRE(kb.presentation().rules.size() == 130);
     REQUIRE(!is_obviously_infinite(kb));
     REQUIRE(kb.number_of_classes() == 541);
@@ -277,7 +274,7 @@ namespace libsemigroups {
                           "[quick][fpsemi-examples][hivert][no-valgrind]") {
     auto        rg = ReportGuard(false);
     KnuthBendix kb(congruence_kind::twosided,
-                   fpsemigroup::not_renner_type_D_monoid_God09(3));
+                   not_renner_type_D_monoid_God09(3));
     REQUIRE(kb.presentation().rules.size() == 130);
     REQUIRE(!is_obviously_infinite(kb));
     REQUIRE(kb.number_of_classes() == 541);
@@ -289,7 +286,7 @@ namespace libsemigroups {
                           "[quick][fpsemi-examples][hivert][no-valgrind]") {
     auto        rg = ReportGuard(false);
     KnuthBendix kb(congruence_kind::twosided,
-                   fpsemigroup::not_renner_type_D_monoid_Machine(4));
+                   not_renner_type_D_monoid_Machine(4));
     REQUIRE(kb.presentation().rules.size() == 204);
     REQUIRE(!is_obviously_infinite(kb));
     kb.run();
@@ -302,7 +299,7 @@ namespace libsemigroups {
                           "[quick][fpsemi-examples][hivert][no-valgrind]") {
     auto        rg = ReportGuard(false);
     KnuthBendix kb(congruence_kind::twosided,
-                   fpsemigroup::not_renner_type_D_monoid_God09(4));
+                   not_renner_type_D_monoid_God09(4));
     REQUIRE(kb.presentation().rules.size() == 204);
     REQUIRE(!is_obviously_infinite(kb));
     kb.run();

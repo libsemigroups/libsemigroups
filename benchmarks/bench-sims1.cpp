@@ -31,7 +31,7 @@
 #include "libsemigroups/bmat-fastest.hpp"
 #include "libsemigroups/bmat8.hpp"
 #include "libsemigroups/detail/report.hpp"    // for ReportGuard
-#include "libsemigroups/fpsemi-examples.hpp"  // for singular_brauer_monoid, ...
+#include "libsemigroups/fpsemi-examples.hpp"  // for fpsemigroup
 #include "libsemigroups/froidure-pin.hpp"     // for FroidurePinBase
 #include "libsemigroups/froidure-pin.hpp"     // for FroidurePin
 #include "libsemigroups/knuth-bendix.hpp"     // for redundant_rule
@@ -48,8 +48,6 @@ namespace libsemigroups {
       std::cout << fmt::format("<{0} value=\"{1}\"></{0}>", name, val);
     }
   }  // namespace
-
-  using fpsemigroup::singular_brauer_monoid_MM07;
 
   TEST_CASE("POI(3) from FroidurePin", "[POI3][Sim1][quick][talk]") {
     auto                  rg = ReportGuard(false);
@@ -131,7 +129,7 @@ namespace libsemigroups {
   TEST_CASE("singular_brauer_monoid(3) (Maltcev-Mazorchuk)",
             "[talk][singular_brauer_monoid3]") {
     auto                    rg = ReportGuard(false);
-    Presentation<word_type> p  = singular_brauer_monoid_MM07(3);
+    Presentation<word_type> p  = fpsemigroup::singular_brauer_monoid_MM07(3);
     REQUIRE(p.rules.size() == 48);
 
     BENCHMARK("Right congruences") {
@@ -149,7 +147,7 @@ namespace libsemigroups {
   TEST_CASE("singular_brauer_monoid(4) (Maltcev-Mazorchuk)",
             "[talk][singular_brauer_monoid4]") {
     auto                    rg = ReportGuard(true);
-    Presentation<word_type> p  = singular_brauer_monoid_MM07(4);
+    Presentation<word_type> p  = fpsemigroup::singular_brauer_monoid_MM07(4);
     REQUIRE(presentation::length(p) == 660);
     presentation::remove_duplicate_rules(p);
     REQUIRE(presentation::length(p) == 600);
