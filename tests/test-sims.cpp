@@ -516,9 +516,9 @@ namespace libsemigroups {
                           "partition_monoid(3)",
                           "[standard][low-index][no-coverage]") {
     auto rg = ReportGuard(false);
-    auto p  = fpsemigroup::partition_monoid(3);
-    REQUIRE(!p.contains_empty_word());
-    REQUIRE(p.alphabet() == 01234_w);
+    auto p  = fpsemigroup::partition_monoid_HR05(3);
+    REQUIRE(p.contains_empty_word());
+    REQUIRE(p.alphabet() == 0123456_w);
 
     Sims1 S;
     S.presentation(p).long_rule_length(11).number_of_threads(

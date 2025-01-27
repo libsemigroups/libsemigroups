@@ -22,7 +22,6 @@
 #define LIBSEMIGROUPS_FPSEMI_EXAMPLES_HPP_
 
 #include <cstddef>  // for size_t
-#include <cstdint>  // for uint64_t
 #include <vector>   // for vector
 
 #include "presentation.hpp"  // for Presentation
