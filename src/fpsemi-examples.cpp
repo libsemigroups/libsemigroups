@@ -1944,11 +1944,7 @@ namespace libsemigroups {
     }
 
     Presentation<word_type>
-    sigma_stylic_monoid(std::vector<size_t> const& sigma, author val) {
-      if (val != author::Any) {
-        LIBSEMIGROUPS_EXCEPTION(
-            "expected 2nd argument to be author::Any, found {}", val);
-      }
+    sigma_plactic_monoid(std::vector<size_t> const& sigma) {
       auto p = plactic_monoid_Knu70(sigma.size());
       p.contains_empty_word(true);
       for (auto [a, e] : rx::enumerate(sigma)) {

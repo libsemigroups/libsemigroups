@@ -1169,10 +1169,27 @@ namespace libsemigroups {
       return hypo_plactic_monoid_Nov00(n);
     }
 
-    // TODO (doc)
+    //! \brief A presentation for the \f$\sigma\f$-plactic monoid.
+    //!
+    //! This function returns a presentation for the \f$\sigma\f$-plactic monoid
+    //! with `sigma.size()` generators, where the image of \f$\sigma\f$ is given
+    //! by the values in \p sigma.
+    //!
+    //! The \f$\sigma\f$-plactic monoid is the quotient of the plactic monoid by
+    //! the least congruence containing the relation \f$a^{\sigma(a)} = a\f$ for
+    //! each \f$a\f$ in the alphabet. When \f$\sigma(a) = 2\f$ for all \f$a\f$,
+    //! the resultant \f$\sigma\f$-plactic monoid is known as the stylic monoid,
+    //! as studied in \cite Abram2022aa.
+    //!
+    //! \param sigma a vector representing the image of \f$\sigma\f$.
+    //!
+    //! \returns A value of type `Presentation<libsemigroups::word_type>`.
+    //!
+    //! \throws LibsemigroupsException if `n < 1`.
+    // TODO add reference when possible, specialise the name and add a default
+    // function
     [[nodiscard]] Presentation<word_type>
-    sigma_stylic_monoid(std::vector<size_t> const& sigma,
-                        author                     val = author::Any);
+    sigma_plactic_monoid(std::vector<size_t> const& sigma);
 
     // TODO add okada_monoid
     // TODO add free_semilattice

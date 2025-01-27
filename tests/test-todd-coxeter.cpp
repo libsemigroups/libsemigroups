@@ -4591,9 +4591,9 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                           "038",
-                          "sigma-stylic monoid",
+                          "sigma-plactic monoid",
                           "[todd-coxeter][extreme]") {
-    auto p = fpsemigroup::sigma_stylic_monoid({2, 2, 2});
+    auto p = fpsemigroup::sigma_plactic_monoid({2, 2, 2});
     p.contains_empty_word(true);
     ToddCoxeter tc(twosided, p);
 
