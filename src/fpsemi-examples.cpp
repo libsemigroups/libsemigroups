@@ -1916,11 +1916,8 @@ namespace libsemigroups {
       return p;
     }
 
-    Presentation<word_type> hypo_plactic_monoid(size_t n, author val) {
-      if (val != author::Any) {
-        LIBSEMIGROUPS_EXCEPTION(
-            "expected 2nd argument to be author::Any, found {}", val);
-      }
+    // See Definition 4.2 of https://doi.org/10.1016/S0012-365X(99)00270-8
+    Presentation<word_type> hypo_plactic_monoid_Nov00(size_t n) {
       auto result = plactic_monoid_Knu70(n);
 
       for (letter_type a = 0; a < n; ++a) {

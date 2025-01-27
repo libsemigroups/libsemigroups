@@ -1108,7 +1108,7 @@ namespace libsemigroups {
       return not_symmetric_group_GKKL08(n);
     }
 
-    //! \brief A non-presentation for the special linear group
+    //! \brief A presentation for the special linear group
     //! \f$\mathrm{SL}(2, q))\f$.
     //!
     //! This function returns a presentation for the special linear group
@@ -1140,10 +1140,34 @@ namespace libsemigroups {
       return special_linear_group_2_CR80(q);
     }
 
-    // TODO (doc)
-    [[nodiscard]] Presentation<word_type> hypo_plactic_monoid(size_t n,
-                                                              author val
-                                                              = author::Any);
+    //! \brief A presentation for the hypoplactic monoid.
+    //!
+    //! This function returns a presentation for the hypoplactic monoid with \p
+    //! \n generators, as in Definition 4.2 of \cite Novelli2000aa.
+    //!
+    //! This monoid is a quotient monoid of the plactic monoid, and this
+    //! presentation includes the rules from \ref plactic_monoid_Knu80.
+    //!
+    //! \param n the number of generators.
+    //!
+    //! \returns A value of type `Presentation<libsemigroups::word_type>`.
+    //!
+    //! \throws LibsemigroupsException if `n < 1`.
+    [[nodiscard]] Presentation<word_type> hypo_plactic_monoid_Nov00(size_t n);
+
+    //! \copydoc hypo_plactic_monoid_Nov00
+    //!
+    //! \note
+    //! This function performs exactly the same as `hypo_plactic_monoid_Nov00`,
+    //! and exists as a convenience function for when a presentation for the
+    //! hypoplactic monoid is required, but the relations of the presentation
+    //! are not important.
+    //!
+    //! \sa
+    //! `hypo_plactic_monoid_Nov00`.
+    [[nodiscard]] inline Presentation<word_type> hypo_plactic_monoid(size_t n) {
+      return hypo_plactic_monoid_Nov00(n);
+    }
 
     // TODO (doc)
     [[nodiscard]] Presentation<word_type>
