@@ -2024,7 +2024,7 @@ namespace libsemigroups {
     p.validate();
 
     ToddCoxeter tc(twosided, p);
-    REQUIRE(tc.number_of_classes() == 9);
+    REQUIRE(tc.number_of_classes() == 10);
   }
 
   LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",

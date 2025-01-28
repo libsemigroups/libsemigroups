@@ -57,45 +57,60 @@ namespace libsemigroups {
                           "test semigroup/monoid status",
                           "[fpsemi-examples][quick]") {
     auto rg = ReportGuard(REPORT);
-    REQUIRE(stellar_monoid_GH19(5).contains_empty_word());
-    REQUIRE(dual_symmetric_inverse_monoid(5).contains_empty_word());
-    REQUIRE(uniform_block_bijection_monoid(5).contains_empty_word());
+    // TODO(0) Add tests for all functions
+    REQUIRE(alternating_group_Moo97(5).contains_empty_word());
+    REQUIRE(brauer_monoid_KM07(5).contains_empty_word());
+    REQUIRE(chinese_monoid_CEKNH01(5).contains_empty_word());
+    REQUIRE(cyclic_inverse_monoid_Fer22_a(5).contains_empty_word());
+    REQUIRE(cyclic_inverse_monoid_Fer22_b(5).contains_empty_word());
+    REQUIRE(dual_symmetric_inverse_monoid_EEF07(5).contains_empty_word());
+    REQUIRE(!fibonacci_semigroup_CRRT94(5, 2).contains_empty_word());
+    REQUIRE(full_transformation_monoid_Aiz58(5).contains_empty_word());
+    REQUIRE(full_transformation_monoid_II74(5).contains_empty_word());
+    REQUIRE(full_transformation_monoid_MW24_a(5).contains_empty_word());
+    REQUIRE(full_transformation_monoid_MW24_b(5).contains_empty_word());
+    REQUIRE(hypo_plactic_monoid_Nov00(5).contains_empty_word());
+    REQUIRE(monogenic_semigroup(0, 5).contains_empty_word());
+    REQUIRE(!monogenic_semigroup(2, 6).contains_empty_word());
+    REQUIRE(motzkin_monoid_PHL13(5).contains_empty_word());
+    REQUIRE(not_renner_type_B_monoid_Gay18(5, 0).contains_empty_word());
+    REQUIRE(not_renner_type_B_monoid_Gay18(5, 1).contains_empty_word());
+    REQUIRE(not_renner_type_D_monoid_God09(5, 0).contains_empty_word());
+    REQUIRE(not_renner_type_D_monoid_God09(5, 1).contains_empty_word());
+    REQUIRE(not_symmetric_group_GKKL08(5).contains_empty_word());
+    REQUIRE(
+        order_preserving_cyclic_inverse_monoid_Fer22(5).contains_empty_word());
+    REQUIRE(order_preserving_monoid_AR00(5).contains_empty_word());
+    REQUIRE(orientation_preserving_monoid_AR00(5).contains_empty_word());
+    REQUIRE(
+        orientation_preserving_reversing_monoid_AR00(5).contains_empty_word());
+    REQUIRE(partial_brauer_monoid_KM07(5).contains_empty_word());
+    REQUIRE(
+        partial_isometries_cycle_graph_monoid_FP22(5).contains_empty_word());
+    REQUIRE(partial_transformation_monoid_MW24(5).contains_empty_word());
+    REQUIRE(partial_transformation_monoid_Shu60(5).contains_empty_word());
     REQUIRE(partition_monoid_Eas11(5).contains_empty_word());
     REQUIRE(partition_monoid_HR05(5).contains_empty_word());
-    REQUIRE(!singular_brauer_monoid(5).contains_empty_word());
-    REQUIRE(orientation_preserving_monoid(5).contains_empty_word());
-    REQUIRE(orientation_preserving_reversing_monoid(5).contains_empty_word());
-    REQUIRE(temperley_lieb_monoid(5).contains_empty_word());
-    REQUIRE(brauer_monoid(5).contains_empty_word());
-    REQUIRE(partial_brauer_monoid(5).contains_empty_word());
-    REQUIRE(motzkin_monoid(5).contains_empty_word());
-    REQUIRE(!fibonacci_semigroup(5, 2).contains_empty_word());
-    REQUIRE(plactic_monoid(5).contains_empty_word());
-    REQUIRE(stylic_monoid(5).contains_empty_word());
+    REQUIRE(plactic_monoid_Knu70(5).contains_empty_word());
+    REQUIRE(!rectangular_band_ACOR00(5, 5).contains_empty_word());
+    REQUIRE(renner_type_B_monoid_Gay18(5, 0).contains_empty_word());
+    REQUIRE(renner_type_B_monoid_Gay18(5, 1).contains_empty_word());
+    REQUIRE(renner_type_D_monoid_Gay18(5, 0).contains_empty_word());
+    REQUIRE(renner_type_D_monoid_Gay18(5, 1).contains_empty_word());
+    REQUIRE(singular_brauer_monoid_MM07(5).contains_empty_word());
+    REQUIRE(special_linear_group_2_CR80(5).contains_empty_word());
+    REQUIRE(stellar_monoid_GH19(5).contains_empty_word());
+    REQUIRE(stylic_monoid_AR22(5).contains_empty_word());
     REQUIRE(symmetric_group_Bur12(5).contains_empty_word());
     REQUIRE(symmetric_group_Car56(5).contains_empty_word());
     REQUIRE(symmetric_group_Moo97_a(5).contains_empty_word());
     REQUIRE(symmetric_group_Moo97_b(5).contains_empty_word());
-    REQUIRE(alternating_group(5).contains_empty_word());
-    REQUIRE(!rectangular_band(5, 5).contains_empty_word());
-    REQUIRE(full_transformation_monoid_II74(5).contains_empty_word());
-    REQUIRE(full_transformation_monoid_Aiz58(5).contains_empty_word());
-    REQUIRE(full_transformation_monoid_MW24_a(5).contains_empty_word());
-    REQUIRE(full_transformation_monoid_MW24_b(5).contains_empty_word());
-    REQUIRE(partial_transformation_monoid_Shu60(5).contains_empty_word());
-    REQUIRE(partial_transformation_monoid_MW24(5).contains_empty_word());
-    REQUIRE(symmetric_inverse_monoid(5).contains_empty_word());
-    REQUIRE(chinese_monoid_CEKNH01(5).contains_empty_word());
-    REQUIRE(monogenic_semigroup(0, 5).contains_empty_word());
-    REQUIRE(!monogenic_semigroup(2, 6).contains_empty_word());
-    REQUIRE(order_preserving_monoid(5).contains_empty_word());
-    REQUIRE(cyclic_inverse_monoid_Fer22_a(5).contains_empty_word());
-    REQUIRE(cyclic_inverse_monoid_Fer22_b(5).contains_empty_word());
-    REQUIRE(
-        order_preserving_cyclic_inverse_monoid_Fer22(5).contains_empty_word());
-    REQUIRE(
-        partial_isometries_cycle_graph_monoid_FP22(5).contains_empty_word());
-    REQUIRE(not_symmetric_group_GKKL08(5).contains_empty_word());
+    REQUIRE(symmetric_inverse_monoid_Gay18(5).contains_empty_word());
+    REQUIRE(symmetric_inverse_monoid_MW24(5).contains_empty_word());
+    REQUIRE(symmetric_inverse_monoid_Shu60(5).contains_empty_word());
+    REQUIRE(temperley_lieb_monoid_Eas21(5).contains_empty_word());
+    REQUIRE(uniform_block_bijection_monoid_Fit03(5).contains_empty_word());
+    REQUIRE(zero_rook_monoid_Gay18(5).contains_empty_word());
   }
 
   LIBSEMIGROUPS_TEST_CASE("fpsemi-examples",
@@ -405,7 +420,7 @@ namespace libsemigroups {
     auto        rg = ReportGuard(REPORT);
     size_t      n  = 6;
     ToddCoxeter tc(congruence_kind::twosided, singular_brauer_monoid(n));
-    REQUIRE(tc.number_of_classes() == 9'675);
+    REQUIRE(tc.number_of_classes() == 9'676);
   }
 
   LIBSEMIGROUPS_TEST_CASE("fpsemi-examples",

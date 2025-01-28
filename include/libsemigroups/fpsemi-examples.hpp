@@ -571,7 +571,7 @@ namespace libsemigroups {
     [[nodiscard]] Presentation<word_type> not_symmetric_group_GKKL08(size_t n);
 
     //! \brief A presentation for the special linear group
-    //! \f$\mathrm{SL}(2, q))\f$.
+    //! \f$\mathrm{SL}(2, q)\f$.
     //!
     //! This function returns a presentation for the special linear group
     //! \f$\mathrm{SL}(2, q)\f$ (also written \f$\mathrm{SL(2,

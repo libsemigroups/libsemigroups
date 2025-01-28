@@ -882,6 +882,7 @@ namespace libsemigroups {
         }
       }
       p.alphabet_from_rules();
+      p.contains_empty_word(true);
       return p;
     }
 
