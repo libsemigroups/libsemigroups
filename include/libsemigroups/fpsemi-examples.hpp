@@ -98,9 +98,6 @@ namespace libsemigroups {
     //! \returns A value of type `Presentation<word_type>`.
     //!
     //! \throws LibsemigroupsException if `n < 1`.
-    //!
-    //! \sa
-    //! `partition_monoid` and `partition_monoid_Eas11`.
     [[nodiscard]] Presentation<word_type> partition_monoid_HR05(size_t n);
 
     //! \brief A presentation for the partition monoid.
@@ -113,9 +110,6 @@ namespace libsemigroups {
     //! \returns A value of type `Presentation<word_type>`.
     //!
     //! \throws LibsemigroupsException if `n < 4`.
-    //!
-    //! \sa
-    //! `partition_monoid` and `partition_monoid_HR05`.
     [[nodiscard]] Presentation<word_type> partition_monoid_Eas11(size_t n);
 
     //! \brief A presentation for the singular part of the Brauer monoid.
