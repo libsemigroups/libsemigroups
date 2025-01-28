@@ -625,119 +625,78 @@ namespace libsemigroups {
 
     //! \brief A presentation for the Renner monoid of type B.
     //!
-    //! This functions returns a presentation for the Renner monoid of type B,
-    //! as in Definition 8.4.1 and Example 8.4.2 of \cite Gay2018aa.
+    //! This functions returns a presentation for the Renner monoid of type B
+    //! with size \p l and Iwahori-Hecke deformation \p q.
+    //!
+    //! When `q == 0`, this corresponds to Definition 8.4.1 and Example 8.4.2 of
+    //! \cite Gay2018aa.
+    //!
+    //! When `q == 1`, this corresponds to Theorem 8.4.19 of \cite Gay2018aa.
     //!
     //! \param l the size of the monoid.
+    //! \param q the Iwahori-Hecke deformation.
     //!
     //! \returns a value of type `Presentation<word_type>`.
     //!
-    //! \exceptions
-    //! \no_libsemigroups_except
-    [[nodiscard]] Presentation<word_type>
-    renner_type_B_monoid_Gay18_a(size_t l);
-
-    //! \brief A presentation for the Renner monoid of type B.
-    //!
-    //! This functions returns a presentation for the Renner monoid of type B,
-    //! as in Theorem 8.4.19 of \cite Gay2018aa.
-    //!
-    //! \param l the size of the monoid.
-    //!
-    //! \returns a value of type `Presentation<word_type>`.
-    //!
-    //! \exceptions
-    //! \no_libsemigroups_except
-    [[nodiscard]] Presentation<word_type>
-    renner_type_B_monoid_Gay18_b(size_t l);
+    //! \throws LibsemigroupsException if `q != 0` or `q != 1`.
+    [[nodiscard]] Presentation<word_type> renner_type_B_monoid_Gay18(size_t l,
+                                                                     int    q);
 
     //! \brief A presentation that incorrectly claims to be the Renner monoid of
     //! type B.
     //!
     //! This functions returns a presentation that incorrectly claims to be the
-    //! Renner monoid of type B, as in Example 7.1.2 of \cite Gay2018aa.
+    //! Renner monoid of type B with size \p l and Iwahori-Hecke deformation
+    //! \p q.
     //!
-    //! \param l the size of the claimed monoid.
+    //! When `q == 0`, this corresponds to Example 7.1.2 of \cite Gay2018aa.
     //!
-    //! \returns a value of type `Presentation<word_type>`.
+    //! When `q == 1`, this corresponds to Section 3.2 of \cite Godelle2009aa.
     //!
-    //! \exceptions
-    //! \no_libsemigroups_except
-    [[nodiscard]] Presentation<word_type>
-    not_renner_type_B_monoid_Gay18(size_t l);
-
-    //! \brief A presentation that incorrectly claims to be the Renner monoid of
-    //! type B.
-    //!
-    //! This functions returns a presentation that incorrectly claims to be the
-    //! Renner monoid of type B, as in Section 3.2 of \cite Godelle2009aa.
-    //!
-    //! \param l the size of the claimed monoid.
+    //! \param l the size of the monoid.
+    //! \param q the Iwahori-Hecke deformation.
     //!
     //! \returns a value of type `Presentation<word_type>`.
     //!
-    //! \exceptions
-    //! \no_libsemigroups_except
+    //! \throws LibsemigroupsException if `q != 0` or `q != 1`.
     [[nodiscard]] Presentation<word_type>
-    not_renner_type_B_monoid_God09(size_t l);
+    not_renner_type_B_monoid_Gay18(size_t l, int q);
 
     //! \brief A presentation for the Renner monoid of type D.
     //!
-    //! This functions returns a presentation for the Renner monoid of type D,
-    //! as in Definition 8.4.22 of \cite Gay2018aa.
+    //! This functions returns a presentation for the Renner monoid of type D
+    //! with size \p l and Iwahori-Hecke deformation \p q.
+    //!
+    //! When `q == 0`, this corresponds Definition 8.4.22 of \cite Gay2018aa.
+    //!
+    //! When `q == 1`, this corresponds to Theorem 8.4.43 of \cite Gay2018aa.
     //!
     //! \param l the size of the monoid.
+    //! \param q the Iwahori-Hecke deformation.
     //!
     //! \returns a value of type `Presentation<word_type>`.
     //!
-    //! \exceptions
-    //! \no_libsemigroups_except
-    [[nodiscard]] Presentation<word_type>
-    renner_type_D_monoid_Gay18_a(size_t l);
-
-    //! \brief A presentation for the Renner monoid of type D.
-    //!
-    //! This functions returns a presentation for the Renner monoid of type D,
-    //! as in Theorem 8.4.43 of \cite Gay2018aa.
-    //!
-    //! \param l the size of the monoid.
-    //!
-    //! \returns a value of type `Presentation<word_type>`.
-    //!
-    //! \exceptions
-    //! \no_libsemigroups_except
-    [[nodiscard]] Presentation<word_type>
-    renner_type_D_monoid_Gay18_b(size_t l);
+    //! \throws LibsemigroupsException if `q != 0` or `q != 1`.
+    [[nodiscard]] Presentation<word_type> renner_type_D_monoid_Gay18(size_t l,
+                                                                     int    q);
 
     //! \brief A presentation that incorrectly claims to be the Renner monoid of
     //! type D.
     //!
     //! This functions returns a presentation that incorrectly claims to be the
-    //! Renner monoid of type D.
+    //! Renner monoid of type D with size \p l and Iwahori-Hecke deformation
+    //! \p q.
     //!
-    //! \param l the size of the claimed monoid.
+    //! When `q == 1`, this corresponds to Section 3.3 of \cite Godelle2009aa.
     //!
-    //! \returns a value of type `Presentation<word_type>`.
-    //!
-    //! \exceptions
-    //! \no_libsemigroups_except
-    [[nodiscard]] Presentation<word_type>
-    not_renner_type_D_monoid_Machine(size_t l);
-
-    //! \brief A presentation that incorrectly claims to be the Renner monoid of
-    //! type D.
-    //!
-    //! This functions returns a presentation that incorrectly claims to be the
-    //! Renner monoid of type D, as in Section 3.3 of \cite Godelle2009aa.
-    //!
-    //! \param l the size of the claimed monoid.
+    //! \param l the size of the monoid.
+    //! \param q the Iwahori-Hecke deformation.
     //!
     //! \returns a value of type `Presentation<word_type>`.
     //!
-    //! \exceptions
-    //! \no_libsemigroups_except
+    //! \throws LibsemigroupsException if `q != 0` or `q != 1`.
     [[nodiscard]] Presentation<word_type>
-    not_renner_type_D_monoid_God09(size_t l);
+    not_renner_type_D_monoid_God09(size_t l, int q);
 
     ///@}
 
@@ -1246,24 +1205,19 @@ namespace libsemigroups {
       return zero_rook_monoid_Gay18(n);
     }
 
-    //! \copydoc renner_type_B_monoid_Gay18_a
+    //! \copydoc renner_type_B_monoid_Gay18
     //!
     //! \note
     //! This function performs exactly the same as
-    //! `renner_type_B_monoid_Gay18_a`, and exists as a convenience function for
+    //! `renner_type_B_monoid_Gay18`, and exists as a convenience function for
     //! when a presentation for the Renner monoid of type B is required, but
     //! the relations of the presentation are not important.
     //!
     //! \sa
-    //! For a different %presentation of the Renner monoid of type B, see
-    //! %one of the following functions:
-    //! * `renner_type_B_monoid_Gay18_a`, corresponding to Iwahori-Hecke
-    //! deformation of 0;
-    //! * `renner_type_B_monoid_Gay18_b`, corresponding to Iwahori-Hecke
-    //! deformation of 1.
-    [[nodiscard]] inline Presentation<word_type>
-    renner_type_B_monoid(size_t l) {
-      return renner_type_B_monoid_Gay18_a(l);
+    //! `renner_type_B_monoid_Gay18`.
+    [[nodiscard]] inline Presentation<word_type> renner_type_B_monoid(size_t l,
+                                                                      int q) {
+      return renner_type_B_monoid_Gay18(l, q);
     }
 
     //! \copydoc not_renner_type_B_monoid_Gay18
@@ -1276,35 +1230,25 @@ namespace libsemigroups {
     //! important.
     //!
     //! \sa
-    //! For a different %presentation that incorrectly claims to be the Renner
-    //! monoid of type B, see %one of the following functions:
-    //! * `not_renner_type_B_monoid_Gay18`, corresponding to Iwahori-Hecke
-    //! deformation of 0;
-    //! * `not_renner_type_B_monoid_God09`, corresponding to Iwahori-Hecke
-    //! deformation of 1.
+    //! `not_renner_type_B_monoid_Gay18`.
     [[nodiscard]] inline Presentation<word_type>
-    not_renner_type_B_monoid(size_t l) {
-      return not_renner_type_B_monoid_Gay18(l);
+    not_renner_type_B_monoid(size_t l, int q) {
+      return not_renner_type_B_monoid_Gay18(l, q);
     }
 
-    //! \copydoc renner_type_D_monoid_Gay18_a
+    //! \copydoc renner_type_D_monoid_Gay18
     //!
     //! \note
     //! This function performs exactly the same as
-    //! `renner_type_D_monoid_Gay18_a`, and exists as a convenience function for
+    //! `renner_type_D_monoid_Gay18`, and exists as a convenience function for
     //! when a presentation for the Renner monoid of type D is required, but
     //! the relations of the presentation are not important.
     //!
     //! \sa
-    //! For a different %presentation of the Renner monoid of type D, see
-    //! %one of the following functions:
-    //! * `renner_type_D_monoid_Gay18_a`, corresponding to Iwahori-Hecke
-    //! deformation of 0;
-    //! * `renner_type_D_monoid_Gay18_b`, corresponding to Iwahori-Hecke
-    //! deformation of 1.
-    [[nodiscard]] inline Presentation<word_type>
-    renner_type_D_monoid(size_t l) {
-      return renner_type_D_monoid_Gay18_a(l);
+    //! `renner_type_D_monoid_Gay18`
+    [[nodiscard]] inline Presentation<word_type> renner_type_D_monoid(size_t l,
+                                                                      int q) {
+      return renner_type_D_monoid_Gay18(l, q);
     }
 
     //! \copydoc not_renner_type_D_monoid_God09
@@ -1317,15 +1261,10 @@ namespace libsemigroups {
     //! important.
     //!
     //! \sa
-    //! For a different %presentation that incorrectly claims to be the Renner
-    //! monoid of type D, see %one of the following functions:
-    //! * `not_renner_type_D_monoid_Machine`, corresponding to Iwahori-Hecke
-    //! deformation of 0;
-    //! * `not_renner_type_D_monoid_God09`, corresponding to Iwahori-Hecke
-    //! deformation of 1.
+    //! `not_renner_type_D_monoid_God09`
     [[nodiscard]] inline Presentation<word_type>
-    not_renner_type_D_monoid(size_t l) {
-      return not_renner_type_D_monoid_God09(l);
+    not_renner_type_D_monoid(size_t l, int q) {
+      return not_renner_type_D_monoid_God09(l, q);
     }
     ///@}
 

@@ -3243,7 +3243,7 @@ namespace libsemigroups {
                           "[no-valgrind][quick][todd-coxeter][no-coverage]") {
     auto rg = ReportGuard(false);
 
-    ToddCoxeter tc(twosided, fpsemigroup::renner_type_D_monoid_Gay18_b(4));
+    ToddCoxeter tc(twosided, fpsemigroup::renner_type_D_monoid(4, 1));
     tc.strategy(options::strategy::hlt)
         .lookahead_extent(options::lookahead_extent::partial);
 
@@ -3644,7 +3644,7 @@ namespace libsemigroups {
                           "[todd-coxeter][extreme]") {
     auto rg = ReportGuard(true);
     // Sorting the rules makes this twice as slow...
-    auto p = fpsemigroup::renner_type_D_monoid_Gay18_b(5);
+    auto p = fpsemigroup::renner_type_D_monoid(5, 1);
     presentation::sort_each_rule(p);
     presentation::sort_rules(p);
     REQUIRE(p.rules.size() == 308);

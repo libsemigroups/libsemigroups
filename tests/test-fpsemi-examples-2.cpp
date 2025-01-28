@@ -206,100 +206,108 @@ namespace libsemigroups {
         == 19);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("fpsemi-examples",
-                          "089",
-                          "not_renner_type_B_monoid_God09(3)",
-                          "[quick][fpsemi-examples][hivert][no-valgrind]") {
+  LIBSEMIGROUPS_TEST_CASE(
+      "fpsemi-examples",
+      "089",
+      "not_renner_type_B_monoid(3, 1) (Godelle presentation)",
+      "[quick][fpsemi-examples][hivert][no-valgrind]") {
     auto        rg = ReportGuard(false);
     KnuthBendix kb(congruence_kind::twosided,
-                   not_renner_type_B_monoid_God09(3));
+                   fpsemigroup::not_renner_type_B_monoid(3, 1));
     REQUIRE(!is_obviously_infinite(kb));
     kb.run();
     REQUIRE(kb.number_of_classes() == POSITIVE_INFINITY);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("fpsemi-examples",
-                          "090",
-                          "not_renner_type_B_monoid_Gay18(3)",
-                          "[quick][fpsemi-examples][hivert][no-valgrind]") {
+  LIBSEMIGROUPS_TEST_CASE(
+      "fpsemi-examples",
+      "090",
+      "not_renner_type_B_monoid(3, 0) (Godelle presentation)",
+      "[quick][fpsemi-examples][hivert][no-valgrind]") {
     auto        rg = ReportGuard(false);
     KnuthBendix kb(congruence_kind::twosided,
-                   not_renner_type_B_monoid_Gay18(3));
+                   fpsemigroup::not_renner_type_B_monoid(3, 0));
     REQUIRE(!is_obviously_infinite(kb));
     kb.run();
     REQUIRE(kb.number_of_classes() == POSITIVE_INFINITY);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("fpsemi-examples",
-                          "091",
-                          "not_renner_type_D_monoid_Machine(2)",
-                          "[quick][fpsemi-examples][hivert]") {
+  LIBSEMIGROUPS_TEST_CASE(
+      "fpsemi-examples",
+      "091",
+      "not_renner_type_D_monoid(2, 1) (Godelle presentation)",
+      "[quick][fpsemi-examples][hivert]") {
     auto        rg = ReportGuard(false);
     KnuthBendix kb(congruence_kind::twosided,
-                   not_renner_type_D_monoid_Machine(2));
+                   fpsemigroup::not_renner_type_D_monoid(2, 1));
     REQUIRE(kb.presentation().rules.size() == 68);
     REQUIRE(!is_obviously_infinite(kb));
     kb.run();
     REQUIRE(kb.number_of_classes() == 37);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("fpsemi-examples",
-                          "092",
-                          "not_renner_type_D_monoid_God09(2)",
-                          "[quick][fpsemi-examples][hivert]") {
+  LIBSEMIGROUPS_TEST_CASE(
+      "fpsemi-examples",
+      "092",
+      "not_renner_type_D_monoid(2, 0) (Godelle presentation)",
+      "[quick][fpsemi-examples][hivert]") {
     auto        rg = ReportGuard(false);
     KnuthBendix kb(congruence_kind::twosided,
-                   not_renner_type_D_monoid_God09(2));
+                   fpsemigroup::not_renner_type_D_monoid(2, 0));
 
     REQUIRE(kb.presentation().rules.size() == 68);
     REQUIRE(!is_obviously_infinite(kb));
     REQUIRE(kb.number_of_classes() == 37);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("fpsemi-examples",
-                          "093",
-                          "not_renner_type_D_monoid_Machine(3)",
-                          "[quick][fpsemi-examples][hivert][no-valgrind]") {
+  LIBSEMIGROUPS_TEST_CASE(
+      "fpsemi-examples",
+      "093",
+      "not_renner_type_D_monoid(3, 1) (Godelle presentation)",
+      "[quick][fpsemi-examples][hivert][no-valgrind]") {
     auto        rg = ReportGuard(false);
     KnuthBendix kb(congruence_kind::twosided,
-                   not_renner_type_D_monoid_Machine(3));
+                   fpsemigroup::not_renner_type_D_monoid(3, 1));
     REQUIRE(kb.presentation().rules.size() == 130);
     REQUIRE(!is_obviously_infinite(kb));
     REQUIRE(kb.number_of_classes() == 541);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("fpsemi-examples",
-                          "094",
-                          "not_renner_type_D_monoid_God09(3)",
-                          "[quick][fpsemi-examples][hivert][no-valgrind]") {
+  LIBSEMIGROUPS_TEST_CASE(
+      "fpsemi-examples",
+      "094",
+      "not_renner_type_D_monoid(3, 0) (Godelle presentation)",
+      "[quick][fpsemi-examples][hivert][no-valgrind]") {
     auto        rg = ReportGuard(false);
     KnuthBendix kb(congruence_kind::twosided,
-                   not_renner_type_D_monoid_God09(3));
+                   fpsemigroup::not_renner_type_D_monoid(3, 0));
     REQUIRE(kb.presentation().rules.size() == 130);
     REQUIRE(!is_obviously_infinite(kb));
     REQUIRE(kb.number_of_classes() == 541);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("fpsemi-examples",
-                          "095",
-                          "not_renner_type_D_monoid_Machine(4)",
-                          "[quick][fpsemi-examples][hivert][no-valgrind]") {
+  LIBSEMIGROUPS_TEST_CASE(
+      "fpsemi-examples",
+      "095",
+      "not_renner_type_D_monoid(4, 1) (Godelle presentation)",
+      "[quick][fpsemi-examples][hivert][no-valgrind]") {
     auto        rg = ReportGuard(false);
     KnuthBendix kb(congruence_kind::twosided,
-                   not_renner_type_D_monoid_Machine(4));
+                   fpsemigroup::not_renner_type_D_monoid(4, 1));
     REQUIRE(kb.presentation().rules.size() == 204);
     REQUIRE(!is_obviously_infinite(kb));
     kb.run();
     REQUIRE(kb.number_of_classes() == POSITIVE_INFINITY);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("fpsemi-examples",
-                          "096",
-                          "not_renner_type_D_monoid_God09(4)",
-                          "[quick][fpsemi-examples][hivert][no-valgrind]") {
+  LIBSEMIGROUPS_TEST_CASE(
+      "fpsemi-examples",
+      "096",
+      "not_renner_type_D_monoid(4, 0) (Godelle presentation)",
+      "[quick][fpsemi-examples][hivert][no-valgrind]") {
     auto        rg = ReportGuard(false);
     KnuthBendix kb(congruence_kind::twosided,
-                   not_renner_type_D_monoid_God09(4));
+                   fpsemigroup::not_renner_type_D_monoid(4, 0));
     REQUIRE(kb.presentation().rules.size() == 204);
     REQUIRE(!is_obviously_infinite(kb));
     kb.run();
