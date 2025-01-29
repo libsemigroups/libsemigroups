@@ -39,24 +39,24 @@
 #include "catch_amalgamated.hpp"  // for REQUIRE, REQUIRE_THROWS_AS, REQUI...
 #include "test-main.hpp"          // for LIBSEMIGROUPS_TEST_CASE
 
-#include "libsemigroups/bipart.hpp"           // for Bipartition
-#include "libsemigroups/constants.hpp"        // for UNDEFINED
-#include "libsemigroups/exception.hpp"        // for LibsemigroupsException
-#include "libsemigroups/fpsemi-examples.hpp"  // for fpsemigroup etc
-#include "libsemigroups/froidure-pin.hpp"     // for FroidurePin
-#include "libsemigroups/gabow.hpp"            // for Gabow
-#include "libsemigroups/knuth-bendix.hpp"     // for redundant_rule
-#include "libsemigroups/matrix.hpp"           // for DynamicMatrix, BMat
-#include "libsemigroups/order.hpp"            // for shortlex_compare, Order
-#include "libsemigroups/presentation.hpp"     // for Presentation
-#include "libsemigroups/ranges.hpp"           // for shortlex_compare
-#include "libsemigroups/sims.hpp"             // for Sims1
-#include "libsemigroups/to-froidure-pin.hpp"  // for make
-#include "libsemigroups/to-presentation.hpp"  // for to_presentation
-#include "libsemigroups/todd-coxeter.hpp"     // for ToddCoxeter
-#include "libsemigroups/transf.hpp"           // for Transf
-#include "libsemigroups/types.hpp"            // for word_type
-#include "libsemigroups/word-graph.hpp"       // for WordGraph
+#include "libsemigroups/bipart.hpp"        // for Bipartition
+#include "libsemigroups/constants.hpp"     // for UNDEFINED
+#include "libsemigroups/exception.hpp"     // for LibsemigroupsException
+#include "libsemigroups/froidure-pin.hpp"  // for FroidurePin
+#include "libsemigroups/gabow.hpp"         // for Gabow
+#include "libsemigroups/knuth-bendix.hpp"  // for redundant_rule
+#include "libsemigroups/matrix.hpp"        // for DynamicMatrix, BMat
+#include "libsemigroups/order.hpp"         // for shortlex_compare, Order
+#include "libsemigroups/presentation-examples.hpp"  // for fpsemigroup etc
+#include "libsemigroups/presentation.hpp"           // for Presentation
+#include "libsemigroups/ranges.hpp"                 // for shortlex_compare
+#include "libsemigroups/sims.hpp"                   // for Sims1
+#include "libsemigroups/to-froidure-pin.hpp"        // for make
+#include "libsemigroups/to-presentation.hpp"        // for to_presentation
+#include "libsemigroups/todd-coxeter.hpp"           // for ToddCoxeter
+#include "libsemigroups/transf.hpp"                 // for Transf
+#include "libsemigroups/types.hpp"                  // for word_type
+#include "libsemigroups/word-graph.hpp"             // for WordGraph
 
 #include "libsemigroups/detail/eigen.hpp"           // for DenseBase::row
 #include "libsemigroups/detail/felsch-graph.hpp"    // for FelschGraph

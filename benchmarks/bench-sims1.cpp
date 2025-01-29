@@ -30,11 +30,11 @@
 #include "libsemigroups/bipart.hpp"  // for Bipartition
 #include "libsemigroups/bmat-fastest.hpp"
 #include "libsemigroups/bmat8.hpp"
-#include "libsemigroups/detail/report.hpp"    // for ReportGuard
-#include "libsemigroups/fpsemi-examples.hpp"  // for fpsemigroup
-#include "libsemigroups/froidure-pin.hpp"     // for FroidurePinBase
-#include "libsemigroups/froidure-pin.hpp"     // for FroidurePin
-#include "libsemigroups/knuth-bendix.hpp"     // for redundant_rule
+#include "libsemigroups/detail/report.hpp"          // for ReportGuard
+#include "libsemigroups/froidure-pin.hpp"           // for FroidurePinBase
+#include "libsemigroups/froidure-pin.hpp"           // for FroidurePin
+#include "libsemigroups/knuth-bendix.hpp"           // for redundant_rule
+#include "libsemigroups/presentation-examples.hpp"  // for presentation::examples
 #include "libsemigroups/runner.hpp"
 #include "libsemigroups/sims.hpp"             // for ReportGuard
 #include "libsemigroups/to-presentation.hpp"  // for to_presentation

@@ -25,19 +25,19 @@
 #include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 
 #include "libsemigroups/bmat8.hpp"
-#include "libsemigroups/fpsemi-examples.hpp"  // for dual_symmetric_...
 #include "libsemigroups/froidure-pin.hpp"
 #include "libsemigroups/gabow.hpp"
-#include "libsemigroups/obvinf.hpp"           // for is_obviously_infinite
-#include "libsemigroups/presentation.hpp"     // for Presentation
-#include "libsemigroups/ranges.hpp"           // for is_sorted
-#include "libsemigroups/to-froidure-pin.hpp"  // for make
-#include "libsemigroups/to-knuth-bendix.hpp"  // for to_knuth_bendix
-#include "libsemigroups/to-presentation.hpp"  // for Presentation
-#include "libsemigroups/to-todd-coxeter.hpp"  // for ??
-#include "libsemigroups/todd-coxeter.hpp"     // for ToddCoxeter
-#include "libsemigroups/transf.hpp"           // for Transf
-#include "libsemigroups/word-range.hpp"       // for operator"" _w
+#include "libsemigroups/obvinf.hpp"                 // for is_obviously_infinite
+#include "libsemigroups/presentation-examples.hpp"  // for dual_symmetric_...
+#include "libsemigroups/presentation.hpp"           // for Presentation
+#include "libsemigroups/ranges.hpp"                 // for is_sorted
+#include "libsemigroups/to-froidure-pin.hpp"        // for make
+#include "libsemigroups/to-knuth-bendix.hpp"        // for to_knuth_bendix
+#include "libsemigroups/to-presentation.hpp"        // for Presentation
+#include "libsemigroups/to-todd-coxeter.hpp"        // for ??
+#include "libsemigroups/todd-coxeter.hpp"           // for ToddCoxeter
+#include "libsemigroups/transf.hpp"                 // for Transf
+#include "libsemigroups/word-range.hpp"             // for operator"" _w
 
 #include "libsemigroups/detail/report.hpp"  // for ReportGuard
 #include "libsemigroups/detail/tce.hpp"     // for TCE

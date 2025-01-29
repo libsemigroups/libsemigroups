@@ -39,14 +39,14 @@
 #include "catch_amalgamated.hpp"  // for operator""_catch_sr
 #include "test-main.hpp"          // for LIBSEMIGROUPS_TEMPLATE_TEST_CASE
 
-#include "libsemigroups/constants.hpp"        // for operator==, Max, POSIT...
-#include "libsemigroups/fpsemi-examples.hpp"  // for partial_transformation...
-#include "libsemigroups/knuth-bendix.hpp"     // for KnuthBendix, normal_forms
-#include "libsemigroups/obvinf.hpp"           // for is_obviously_infinite
-#include "libsemigroups/presentation.hpp"     // for add_rule
-#include "libsemigroups/to-froidure-pin.hpp"  // for to_froidure_pin
-#include "libsemigroups/types.hpp"            // for word_type
-#include "libsemigroups/word-range.hpp"       // for operator""_w
+#include "libsemigroups/constants.hpp"     // for operator==, Max, POSIT...
+#include "libsemigroups/knuth-bendix.hpp"  // for KnuthBendix, normal_forms
+#include "libsemigroups/obvinf.hpp"        // for is_obviously_infinite
+#include "libsemigroups/presentation-examples.hpp"  // for partial_transformation...
+#include "libsemigroups/presentation.hpp"           // for add_rule
+#include "libsemigroups/to-froidure-pin.hpp"        // for to_froidure_pin
+#include "libsemigroups/types.hpp"                  // for word_type
+#include "libsemigroups/word-range.hpp"             // for operator""_w
 
 #include "libsemigroups/detail/report.hpp"  // for ReportGuard
 

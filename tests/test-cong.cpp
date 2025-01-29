@@ -21,13 +21,13 @@
 #include "catch_amalgamated.hpp"  // for TEST_CASE
 #include "test-main.hpp"          // for LIBSEMIGROUPS_TEST_CASE
 
-#include "libsemigroups/bmat-fastest.hpp"     // for BMatFastest
-#include "libsemigroups/bmat8.hpp"            // for BMat8
-#include "libsemigroups/cong.hpp"             // for Congruence
-#include "libsemigroups/fpsemi-examples.hpp"  // for rook_monoid etc
-#include "libsemigroups/froidure-pin.hpp"     // for FroidurePin
-#include "libsemigroups/obvinf.hpp"           // for is_obviously_infinite
-#include "libsemigroups/pbr.hpp"              // for PBR
+#include "libsemigroups/bmat-fastest.hpp"           // for BMatFastest
+#include "libsemigroups/bmat8.hpp"                  // for BMat8
+#include "libsemigroups/cong.hpp"                   // for Congruence
+#include "libsemigroups/froidure-pin.hpp"           // for FroidurePin
+#include "libsemigroups/obvinf.hpp"                 // for is_obviously_infinite
+#include "libsemigroups/pbr.hpp"                    // for PBR
+#include "libsemigroups/presentation-examples.hpp"  // for rook_monoid etc
 #include "libsemigroups/to-froidure-pin.hpp"
 #include "libsemigroups/transf.hpp"      // for Transf<>
 #include "libsemigroups/types.hpp"       // for word_type

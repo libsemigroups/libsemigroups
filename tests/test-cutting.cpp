@@ -26,7 +26,7 @@
 
 #include "libsemigroups/cutting.hpp"
 #include "libsemigroups/detail/string.hpp"
-#include "libsemigroups/fpsemi-examples.hpp"
+#include "libsemigroups/presentation-examples.hpp"
 #include "libsemigroups/types.hpp"
 
 namespace libsemigroups {

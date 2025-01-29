@@ -19,7 +19,7 @@
 // This file contains some implementations of functions that produce fp
 // semigroups for testing purposes.
 
-#include "libsemigroups/fpsemi-examples.hpp"
+#include "libsemigroups/presentation-examples.hpp"
 
 #include <algorithm>         // for max, for_each
 #include <cmath>             // for abs

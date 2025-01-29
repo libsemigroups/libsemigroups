@@ -41,17 +41,17 @@
 #include "catch_amalgamated.hpp"  // for operator""_catch_sr
 #include "test-main.hpp"          // for  LIBSEMIGROUPS_TEMPLATE_TEST_CASE
 
-#include "libsemigroups/constants.hpp"        // for operator==, PositiveIn...
-#include "libsemigroups/exception.hpp"        // for LibsemigroupsException
-#include "libsemigroups/fpsemi-examples.hpp"  // for Inner, ToString, Str...
-#include "libsemigroups/knuth-bendix.hpp"     // for KnuthBendix, normal_forms
-#include "libsemigroups/obvinf.hpp"           // for is_obviously_infinite
-#include "libsemigroups/order.hpp"            // for shortlex_compare
-#include "libsemigroups/paths.hpp"            // for Paths
-#include "libsemigroups/presentation.hpp"     // for add_rule, Presentation
-#include "libsemigroups/ranges.hpp"           // for equal
-#include "libsemigroups/word-graph.hpp"       // for WordGraph
-#include "libsemigroups/word-range.hpp"       // for Inner, ToString, Str...
+#include "libsemigroups/constants.hpp"     // for operator==, PositiveIn...
+#include "libsemigroups/exception.hpp"     // for LibsemigroupsException
+#include "libsemigroups/knuth-bendix.hpp"  // for KnuthBendix, normal_forms
+#include "libsemigroups/obvinf.hpp"        // for is_obviously_infinite
+#include "libsemigroups/order.hpp"         // for shortlex_compare
+#include "libsemigroups/paths.hpp"         // for Paths
+#include "libsemigroups/presentation-examples.hpp"  // for Inner, ToString, Str...
+#include "libsemigroups/presentation.hpp"  // for add_rule, Presentation
+#include "libsemigroups/ranges.hpp"        // for equal
+#include "libsemigroups/word-graph.hpp"    // for WordGraph
+#include "libsemigroups/word-range.hpp"    // for Inner, ToString, Str...
 
 #include "libsemigroups/detail/report.hpp"  // for ReportGuard
 

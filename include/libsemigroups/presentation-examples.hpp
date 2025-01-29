@@ -33,7 +33,7 @@ namespace libsemigroups {
   //! \brief Namespace for presentations of some finitely presented
   //! semigroups.
   //!
-  //! Defined in `fpsemi-examples.hpp`.
+  //! Defined in `presentation-examples.hpp`.
   //!
   //! This namespace contains functions which give presentations for some
   //! common finitely presented semigroups and monoids.

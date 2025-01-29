@@ -47,15 +47,15 @@
 #include "catch_amalgamated.hpp"  // for AssertionHandler, oper...
 #include "test-main.hpp"          // for LIBSEMIGROUPS_TEMPLATE_TEST_CASE
 
-#include "libsemigroups/constants.hpp"        // for operator==, operator!=
-#include "libsemigroups/exception.hpp"        // for LibsemigroupsException
-#include "libsemigroups/fpsemi-examples.hpp"  // for partition_monoid
-#include "libsemigroups/knuth-bendix.hpp"     // for KnuthBendix, normal_forms
-#include "libsemigroups/order.hpp"            // for shortlex_compare
-#include "libsemigroups/paths.hpp"            // for Paths
-#include "libsemigroups/presentation.hpp"     // for add_rule, Presentation
-#include "libsemigroups/word-graph.hpp"       // for WordGraph
-#include "libsemigroups/word-range.hpp"  // for Inner, StringRange, to_str...
+#include "libsemigroups/constants.hpp"     // for operator==, operator!=
+#include "libsemigroups/exception.hpp"     // for LibsemigroupsException
+#include "libsemigroups/knuth-bendix.hpp"  // for KnuthBendix, normal_forms
+#include "libsemigroups/order.hpp"         // for shortlex_compare
+#include "libsemigroups/paths.hpp"         // for Paths
+#include "libsemigroups/presentation-examples.hpp"  // for partition_monoid
+#include "libsemigroups/presentation.hpp"  // for add_rule, Presentation
+#include "libsemigroups/word-graph.hpp"    // for WordGraph
+#include "libsemigroups/word-range.hpp"    // for Inner, StringRange, to_str...
 
 #include "libsemigroups/detail/report.hpp"  // for ReportGuard
 #include "libsemigroups/detail/stl.hpp"     // for apply_permutation

@@ -27,7 +27,7 @@
 
 #include "catch.hpp"  // for REQUIRE, REQUIRE_NOTHROW, REQUIRE_THROWS_AS
 
-#include "libsemigroups/fpsemi-examples.hpp"
+#include "libsemigroups/presentation-examples.hpp"
 #include "libsemigroups/presentation.hpp"
 #include "libsemigroups/todd-coxeter.hpp"  // for ToddCoxeter, ToddCoxeter::...
 #include "libsemigroups/types.hpp"         // for word_type, letter_type
