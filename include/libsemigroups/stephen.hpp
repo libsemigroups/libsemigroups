@@ -80,6 +80,7 @@ namespace libsemigroups {
     };
   }  // namespace detail
 
+  // TODO(0): put reference in bib and use it with \cite
   //! \ingroup stephen_group
   //!
   //! \brief For constructing the word graph of left factors of a word in an
@@ -326,6 +327,7 @@ namespace libsemigroups {
     //!
     //! \exceptions
     //! \noexcept
+    // TODO(0): throw error if word is not set
     word_type const& word() const noexcept {
       return _word;
     }
@@ -346,6 +348,8 @@ namespace libsemigroups {
     // called, then word is set to another value, then word_graph() is accessed,
     // then the returned value doesn't relate to the currently set value. Or
     // better still don't have this behaviour
+    // TODO(0): clear word_graph when set_word is called (with a different word)
+    // TODO(0): throw error if no word is set?
     word_graph_type const& word_graph() const noexcept {
       return _word_graph;
     }
@@ -401,8 +405,8 @@ namespace libsemigroups {
     //! \cong_intf_warn_undecidable{Stephen}.
     // TODO(0): exceptions?
     void operator*=(Stephen<P>& that) {
-      // TODO(0): if one of this and that is finished, then just tack on the
-      // linear graph.
+      // TODO(0): if only one of this and that is finished, then just tack on
+      // the linear graph.
       this->run();
       that.run();
       // TODO (0) FIXME _word_graph has two mem fns number_nodes_active (in
@@ -424,6 +428,7 @@ namespace libsemigroups {
    private:
     Stephen& init_after_presentation_set();
     void     throw_if_presentation_empty(presentation_type const&) const;
+    void     throw_if_not_ready() const;
     void     something_changed() noexcept;
 
     void run_impl() override;
@@ -771,27 +776,13 @@ namespace libsemigroups {
   //!
   //! Return a human readable representation of a Stephen object.
   //!
-  //! \param x the SimsStats object.
+  //! \param x the Stephen object.
   //!
   //! \exceptions
   //! \no_libsemigroups_except
-  // TODO(0) change to to_human_readable_rep
-  // TODO(0) to tpp
   template <typename PresentationType>
-  std::ostream& operator<<(std::ostream&                    os,
-                           Stephen<PresentationType> const& x) {
-    std::string word;
-    // if (x.word().size() < 10) {
-    //   word = detail::to_string(x.word());
-    // } else {
-    word = " " + std::to_string(x.word().size()) + " letter word, ";
-    //}
-    // TODO(0): use fmt
-    os << std::string("<Stephen for ") << word << " with "
-       << x.word_graph().number_of_nodes() << "  nodes, "
-       << x.word_graph().number_of_edges() << " edges>";
-    return os;
-  }
+  [[nodiscard]] std::string
+  to_human_readable_repr(Stephen<PresentationType> const& x);
 }  // namespace libsemigroups
 
 #include "stephen.tpp"

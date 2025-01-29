@@ -239,6 +239,16 @@ namespace libsemigroups {
   }
 
   template <typename P>
+  void Stephen<P>::throw_if_not_ready() const {
+    if (presentation().rules.empty() && presentation().alphabet().empty()) {
+      LIBSEMIGROUPS_EXCEPTION(
+          "the presentation must be defined using init() before "
+          "calling this function");
+    } else if (word()) {
+    }
+  }
+
+  template <typename P>
   void Stephen<P>::run_impl() {
     reset_start_time();
     // TODO(0): report_after_run (including report_why_we_stopped) and
@@ -361,5 +371,20 @@ namespace libsemigroups {
                  .second
              == w.cend();
     }
+
+    template <typename PresentationType>
+    [[nodiscard]] std::string
+    to_human_readable_repr(Stephen<PresentationType> const& x) {
+      std::string word;
+      return fmt::format("<Stephen object over presentation {} for {} with {} "
+                         "nodes and {} edges>",
+                         to_human_readable_repr(x.presentation()),
+                         x.word().size() < 10
+                             ? fmt::format("word {}", x.word())
+                             : fmt::format("{} letter word", x.word().size()),
+                         x.word_graph.number_of_nodes(),
+                         x.word_graph.number_of_edges());
+    }
   }  // namespace stephen
+
 }  // namespace libsemigroups

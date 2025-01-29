@@ -1230,6 +1230,7 @@ namespace libsemigroups {
     }
   }
 
+  // TODO(0): figure out why this fails
   // This test fails in the fp-inverse-monoids branch and here, not sure if
   // it's supposed to or not should look at it more carefully
   //   LIBSEMIGROUPS_TEST_CASE("Stephen",
@@ -1419,6 +1420,26 @@ namespace libsemigroups {
     REQUIRE((stephen::words_accepted(S) | rx::to_vector())
             == std::vector<word_type>());
   }
+
+  // TODO(0): uncomment after fixing issue with shared pointers
+  // LIBSEMIGROUPS_TEST_CASE("Stephen",
+  //                         "049",
+  //                         "to_human_readable_repr",
+  //                         "[stephen][quick]") {
+  //   Presentation<word_type> p;
+  //   p.alphabet(01_w);
+  //   p.contains_empty_word(true);
+  //   presentation::add_rule(p, 000_w, 11_w);
+  //   presentation::add_rule(p, 001_w, 10_w);
+  //
+  //   Stephen stephen(p);
+  //   REQUIRE(to_human_readable_repr(stephen)
+  //           == fmt::format("<Stephen object over presentation {} for word {}
+  //           "
+  //                          "with 0 nodes and 0 edges>",
+  //                          to_human_readable_repr(stephen.presentation()),
+  //                          stephen.word()));
+  // }
 
   // TODO(0): the examples from Stephen's paper/thesis?
 }  // namespace libsemigroups
