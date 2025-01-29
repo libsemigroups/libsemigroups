@@ -56,19 +56,13 @@
 // monoids" paper (not thesis).
 // * canonical_form (as per Howie's book)
 
+//! \defgroup stephen_group Stephen
+//!
+//! On this page we describe the functionality in `libsemigroups` relating
+//! to Stephen's procedure for finitely presented semigroups.
+
 namespace libsemigroups {
 
-  //! Defined in `stephen.hpp`.
-  //!
-  //! On this page we describe the functionality in `libsemigroups` relating
-  //! to Stephen's procedure for finitely presented semigroups. This class
-  //! implements Stephen's procedure for (possibly) constructing the word graph
-  //! (\ref WordGraph) corresponding to the left factors of a word in a finitely
-  //! presented semigroup. The algorithm implemented in this class is closely
-  //! related to the Todd-Coxeter algorithm  (as implemented in \ref
-  //! ToddCoxeterImpl) and originates in [Applications of automata theory to
-  //! presentations of monoids and inverse monoids](https://rb.gy/brsuvc) by J.
-  //! B. Stephen.
   namespace detail {
     template <typename T>
     struct ActualPresentation {
@@ -86,6 +80,28 @@ namespace libsemigroups {
     };
   }  // namespace detail
 
+  //! \ingroup stephen_group
+  //!
+  //! \brief For constructing the word graph of left factors of a word in an
+  //! f.p. semigroup.
+  //!
+  //! Defined in `sims.hpp`.
+  //!
+  //! This class implements Stephen's procedure for constructing
+  //! the WordGraph corresponding to the left factors of a word in a finitely
+  //! presented semigroup or a finitely presented inverse semigroup. The
+  //! algorithm implemented in this class is closely related to the Todd-Coxeter
+  //! algorithm  (as implemented in ToddCoxeter) and originates in [Applications
+  //! of automata theory to presentations of monoids and inverse
+  //! monoids](https://rb.gy/brsuvc) by J. B. Stephen.
+  //!
+  //! \tparam P a type derived from \ref PresentationBase. This is the type of
+  //! the underlying presentation used in the Stephen algorithm. Common choices
+  //! include \ref Presentation<word_type>, \ref Presentation<std::string>, \ref
+  //! InversePresentation<word_type> and \ref InversePresentation<std::string>.
+  //! If an \ref InversePresentation is supplied, then the \ref Stephen class
+  //! will use the Stephen procedure for inverse semigroups when run. Otherwise
+  //! the Stephen procedure for general semigroups is used instead.
   template <typename P>
   class Stephen : public Runner {
     template <typename Q>
@@ -100,51 +116,69 @@ namespace libsemigroups {
     static_assert(is_valid_presentation<P>(), "TODO");
 
    public:
+    //! The underlying presentation type.
     using presentation_type = typename detail::ActualPresentation<P>::type;
 
-    //! The return type of the function \ref word_graph.
+    //! The return type of the function \ref libsemigroups::Stephen::word_graph.
     using word_graph_type = WordGraph<uint32_t>;
-    using node_type       = word_graph_type::node_type;
+    //! The node type of \ref libsemigroups::Stephen::word_graph_type.
+    using node_type = word_graph_type::node_type;
 
    private:
     class StephenGraph;  // forward decl
 
     // Data members
-    node_type    _accept_state;
-    bool         _something_changed;
-    bool         _finished;
+    node_type _accept_state;
+    bool      _something_changed;
+    bool      _finished;
+    // TODO(0): Change  _presentation to be a shared pointer to the presentation
+    // P (currently it could be either a presentation or a shared pointer to a
+    // presentation)
     P            _presentation;
     word_type    _word;
     StephenGraph _word_graph;
 
    public:
-    //! Default constructor.
+    //! \brief Default constructor.
     //!
     //! Default constructs an empty instance, use \ref init and \ref set_word
     //! to specify the presentation and the word, respectively.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
     Stephen();
+
+    //! \brief Reinitialize an existing Stephen object.
+    //!
+    //! This function puts a Stephen object back into the same state as if
+    //! it had been newly default constructed.
+    //!
+    //! \returns A reference to \c this.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
     Stephen& init();
 
-    //! Construct from a presentation.
+    //! \brief Construct from a presentation (copy).
     //!
-    //! Construct an instance for the presentation \p p.
+    //! Construct an instance from the presentation \p p. This constructor
+    //! copies \p p.
     //!
-    //! \tparam P a type derived from PresentationBase
+    //! \tparam P a type derived from \ref PresentationBase
     //!
     //! \param p the presentation.
     //!
     //! \throws LibsemigroupsException if `p.validate()` throws.
     //! \throws LibsemigroupsException if `p.alphabet().size()` is `0`.
-    explicit Stephen(P&& p);
-    Stephen& init(P&& p);
+    explicit Stephen(P const& p);
 
-    //! Initialize from a presentation.
+    //! \brief Initialize from a presentation (copy).
     //!
-    //! Replaces the current value (if any) returned by \ref presentation by
-    //! the argument, and the state of the object is the same as if it had
-    //! been newly constructed from the presentation \p p.
+    //! This function puts a Stephen object back into the same state as if it
+    //! had been newly constructed from the presentation \p p. This initializer
+    //! copies \p p.
     //!
-    //! \tparam P a type derived from PresentationBase
+    //! \tparam P a type derived from \ref PresentationBase
     //!
     //! \param p the presentation.
     //!
@@ -152,8 +186,34 @@ namespace libsemigroups {
     //!
     //! \throws LibsemigroupsException if `p.validate()` throws.
     //! \throws LibsemigroupsException if `p.alphabet().size()` is `0`.
-    explicit Stephen(P const& p);
     Stephen& init(P const& p);
+
+    //! \brief Construct from a presentation (move).
+    //!
+    //! Construct an instance from the presentation \p p. This constructor
+    //! moves \p p.
+    //!
+    //! \tparam P a type derived from \ref PresentationBase
+    //!
+    //! \param p the presentation.
+    //!
+    //! \throws LibsemigroupsException if `p.validate()` throws.
+    //! \throws LibsemigroupsException if `p.alphabet().size()` is `0`.
+    explicit Stephen(P&& p);
+
+    //! \brief Initialize from a presentation (move).
+    //!
+    //! This function puts a Stephen object back into the same state as if it
+    //! had been newly constructed from the presentation \p p. This initializer
+    //! moves \p p.
+    //!
+    //! \tparam P a type derived from \ref PresentationBase
+    //!
+    //! \param p the presentation.
+    //!
+    //! \throws LibsemigroupsException if `p.validate()` throws.
+    //! \throws LibsemigroupsException if `p.alphabet().size()` is `0`.
+    Stephen& init(P&& p);
 
     //! Default copy constructor
     Stephen(Stephen const& that) = default;
@@ -169,24 +229,42 @@ namespace libsemigroups {
 
     ~Stephen() = default;
 
+    //! \brief Construct from a different presentation type (copy).
+    //!
+    //! Construct an instance from the presentation \p q with a possibly
+    //! different underlying presentation type. This constructor copies \p q.
+    //!
+    //! \tparam P a type derived from \ref PresentationBase
+    //!
+    //! \tparam Q a type derived from \ref PresentationBase
+    //!
+    //! \param q the presentation.
+    //!
+    //! \throws LibsemigroupsException if `q.validate()` throws.
+    //! \throws LibsemigroupsException if `q.alphabet().size()` is `0`.
     template <typename Q>
     explicit Stephen(Q const& q) : Stephen() {
       init(q);
     }
 
-    // TODO(0): to tpp
+    //! \brief Initialize from a different presentation type (copy).
+    //!
+    //! This function puts a Stephen object back into the same state as if it
+    //! had been newly constructed from the presentation \p q with a possibly
+    //! different underlying presentation type. This initializer copies \p q.
+    //!
+    //! \tparam P a type derived from \ref PresentationBase
+    //!
+    //! \tparam Q a type derived from \ref PresentationBase
+    //!
+    //! \param q the presentation.
+    //!
+    //! \returns A reference to \c this.
+    //!
+    //! \throws LibsemigroupsException if `q.validate()` throws.
+    //! \throws LibsemigroupsException if `q.alphabet().size()` is `0`.
     template <typename Q>
-    Stephen& init(Q const& q) {
-      // TODO (0): finish assert
-      static_assert(((IsInversePresentation<P>) == (IsInversePresentation<Q>) )
-                        && IsPresentation<P> && IsPresentation<Q>,
-                    "TODO");
-      if constexpr (IsInversePresentation<P> && IsInversePresentation<Q>) {
-        return init(to<InversePresentation<word_type>>(q));
-      } else {
-        return init(to<Presentation<word_type>>(q));
-      }
-    }
+    Stephen& init(Q const& q);
 
     // TODO(0): make private and hide in tpp file
     template <typename PP>
@@ -198,13 +276,13 @@ namespace libsemigroups {
       }
     }
 
-    //! The input presentation.
+    //! \brief Get the input presentation.
     //!
-    //! Returns a const reference to the input presentation.
+    //! This function returns a const reference to the input presentation.
     //!
     //! \param (None)
     //!
-    //! \returns A const reference to a Presentation<word_type>.
+    //! \returns A const reference to a \ref presentation_type.
     //!
     //! \exceptions
     //! \noexcept
@@ -212,7 +290,7 @@ namespace libsemigroups {
       return deref_if_necessary(_presentation);
     }
 
-    //! Set the word.
+    //! \brief Set the initial word (copy).
     //!
     //! This function can be used to set the word whose left factors, or
     //! equivalent words, are sought. The input word is copied.
@@ -221,24 +299,24 @@ namespace libsemigroups {
     //!
     //! \returns A reference to \c this.
     //!
-    //! \throws LibsemigroupsException if the letters in \p do not all belong
+    //! \throws LibsemigroupsException if the letters in \p w do not all belong
     //! to the alphabet of the \ref presentation.
     Stephen& set_word(word_type const& w);
 
-    //! Set the word.
+    //! \brief Set the initial word (move).
     //!
     //! This function can be used to set the word whose left factors, or
-    //! equivalent words, are sought.
+    //! equivalent words, are sought. The input word is moved.
     //!
     //! \param w an rvalue reference to the input word.
     //!
     //! \returns A reference to \c this.
     //!
-    //! \throws LibsemigroupsException if the letters in \p do not all belong
+    //! \throws LibsemigroupsException if the letters in \p w do not all belong
     //! to the alphabet of the \ref presentation.
     Stephen& set_word(word_type&& w);
 
-    //! The word.
+    //! \brief Get the initial word.
     //!
     //! Returns a const reference to the word set by \ref set_word.
     //!
@@ -252,7 +330,7 @@ namespace libsemigroups {
       return _word;
     }
 
-    //! The word graph.
+    //! \brief Get the word graph.
     //!
     //! Returns a const reference to the word graph in its present state. The
     //! algorithm implemented in this class is not triggered by calls to this
@@ -272,7 +350,7 @@ namespace libsemigroups {
       return _word_graph;
     }
 
-    //! The accept state of the word graph.
+    //! \brief Get the accept state of the word graph.
     //!
     //! This function triggers the algorithm implemented in this class (if it
     //! hasn't been triggered already), and then returns the accept state of
@@ -285,30 +363,61 @@ namespace libsemigroups {
     //! \throws LibsemigroupsException if no presentation was set at
     //! construction or with \ref init.
     //!
-    //! \warning The problem of determining whether two words are equal in
-    //! a finitely presented semigroup is undecidable in general, and this
-    //! function may never terminate.
+    //! \cong_intf_warn_undecidable{Stephen}.
     // Throws if run throws, also this is not in the helper namespace because
     // we cache the return value.
-    node_type                  accept_state();
-    static constexpr node_type initial_state() {
+    node_type accept_state();
+
+    //! \brief Get the initial state of the word graph.
+    //!
+    //! This function return the initial state of \ref word_graph.
+    //!
+    //! \param (None)
+    //!
+    //! \returns A \ref node_type.
+    //!
+    //! \exceptions
+    //! \noexcept
+    static constexpr node_type initial_state() noexcept {
       return 0;
     }
 
-    void operator*=(Stephen<P>& y) {
+    //! \brief Append a Stephen object
+    //!
+    //! This function triggers a run of the Stephen algorithm of \c this and \p
+    //! that, if it hasn't been run already and then appends the Stephen
+    //! object \p that to \c this. This modifies the current Stephen instance
+    //! in-place. The result is a Stephen instance with underlying word equal
+    //! to the concatenation of \c this.word() and \c that.word().
+    //!
+    //! The advantage of this is that if either \c this or \p that have already
+    //! been run, then we can reuse the underlying word graphs instead of having
+    //! to recompute them completely from scratch.
+    //!
+    //! \param that the Stephen instance to append.
+    //!
+    //! \returns (None)
+    //!
+    //! \cong_intf_warn_undecidable{Stephen}.
+    // TODO(0): exceptions?
+    void operator*=(Stephen<P>& that) {
       // TODO(0): if one of this and that is finished, then just tack on the
       // linear graph.
       this->run();
-      y.run();
-      // FIXME _word_graph has two mem fns number_nodes_active (in NodeManager)
-      // and number_active_nodes (in WordGraph), this is super confusing!
+      that.run();
+      // TODO (0) FIXME _word_graph has two mem fns number_nodes_active (in
+      // NodeManager) and number_active_nodes (in WordGraph), this is super
+      // confusing!
       size_t const N = _word_graph.number_of_nodes_active();
-      _word_graph.disjoint_union_inplace_no_checks(y._word_graph);
-      _word_graph.merge_nodes_no_checks(accept_state(), y.initial_state() + N);
+      _word_graph.disjoint_union_inplace_no_checks(that._word_graph);
+      _word_graph.merge_nodes_no_checks(accept_state(),
+                                        that.initial_state() + N);
       _word_graph.template process_coincidences<detail::DoNotRegisterDefs>();
+      // TODO(0): This should probably be the y.accept_state() + N, but double
+      // check
       _accept_state = UNDEFINED;
       _finished     = false;
-      _word.insert(_word.end(), y._word.cbegin(), y._word.cend());
+      _word.insert(_word.end(), that._word.cbegin(), that._word.cend());
       _word_graph.cursor() = initial_state();
     }
 
@@ -333,6 +442,7 @@ namespace libsemigroups {
   // alternative is to use a std::shared_ptr<Presentation<word_type>> or
   // std::shared_ptr<InversePresentation<word_type>>;
   // Presentation<std::string> is not allowed.
+  // TODO(0): Change once _presentation is changed to be a shared_ptr
   template <typename Word>
   Stephen(Presentation<Word> const&) -> Stephen<Presentation<word_type>>;
 
@@ -357,24 +467,97 @@ namespace libsemigroups {
   template <typename Word>
   Stephen(std::shared_ptr<InversePresentation<Word>>&&)
       -> Stephen<std::shared_ptr<InversePresentation<word_type>>>;
-  // TODO(0): other shared_prt guides?
+  // TODO(0): other shared_ptr guides?
 
 }  // namespace libsemigroups
-#include "stephen.tpp"
 
 namespace libsemigroups {
+  //! \ingroup stephen_group
+  //!
+  //! \brief Helper functions for the \ref Stephen class.
+  //!
+  //! Defined in \c stephen.hpp.
+  //!
+  //! This page contains documentation for some helper functions for the \ref
+  //! Stephen class. The helpers documented on this page all belong to the
+  //! namespace `stephen`.
   namespace stephen {
+
+    // TODO(0): Use Paths here?
+    //! The return type of \ref cbegin_words_accepted and \ref
+    //! cend_words_accepted. This is the same as
+    //! \ref WordGraph::const_pstislo_iterator.
     using const_iterator_words_accepted
         = detail::const_pstislo_iterator<uint32_t>;
 
+    // TODO(0): Use Paths here?
+    //! The return type of \ref cbegin_left_factors and \ref
+    //! cend_left_factors. This is the same as \ref
+    //! WordGraph::const_pislo_iterator.
     using const_iterator_left_factors = detail::const_pislo_iterator<uint32_t>;
 
+    //! \brief Check if a word is equivalent to Stephen::word.
+    //!
+    //! This function triggers the algorithm implemented in this class (if it
+    //! hasn't been triggered already), and then returns \c true if the input
+    //! word \p w is equivalent to Stephen::word in the semigroup defined by
+    //! Stephen::presentation. A word is equivalent to Stephen::word if it
+    //! labels a path in Stephen::word_graph with source \c 0 and target
+    //! Stephen::accept_state.
+    //!
+    //! \param s the Stephen instance
+    //! \param w a const reference to the input word.
+    //!
+    //! \returns A \c bool.
+    //!
+    //! \throws LibsemigroupsException if no presentation was set at
+    //! the construction of \p s or with \ref Stephen::init.
+    //!
+    //! \cong_intf_warn_undecidable{Stephen}.
     template <typename PresentationType>
     bool accepts(Stephen<PresentationType>& s, word_type const& w);
 
+    //! \brief Check if a word is a left factor of Stephen::word.
+    //!
+    //! This function triggers the algorithm implemented in this class (if it
+    //! hasn't been triggered already), and then returns \c true if the input
+    //! word \p w is a left factor of Stephen::word in the semigroup defined
+    //! by Stephen::presentation. A word is a left factor of Stephen::word
+    //! if it labels a path in Stephen::word_graph with source \c 0.
+    //!
+    //! \param s the Stephen instance
+    //! \param w a const reference to the input word.
+    //!
+    //! \returns A \c bool.
+    //!
+    //! \throws LibsemigroupsException if no presentation was set at
+    //! the construction of \p s or with Stephen::init.
+    //!
+    //! \cong_intf_warn_undecidable{Stephen}.
     template <typename PresentationType>
     bool is_left_factor(Stephen<PresentationType>& s, word_type const& w);
 
+    //! \brief Returns an iterator pointing at the first word equivalent to
+    //! Stephen::word in short-lex order.
+    //!
+    //! This function triggers the algorithm implemented in this class (if it
+    //! hasn't been triggered already).
+    //!
+    //! \param s the Stephen instance
+    //! \param min the minimum length of an equivalent word (default: 0)
+    //! \param max the maximum length of an equivalent word (default:
+    //! POSITIVE_INFINITY)
+    //!
+    //! \returns A \c const_iterator.
+    //!
+    //! \throws LibsemigroupsException if no presentation was set at
+    //! the construction of \p s or with Stephen::init.
+    //!
+    //! \cong_intf_warn_undecidable{Stephen}.
+    //!
+    //! \sa WordGraph::cbegin_pstislo for more information about the
+    //! iterators returned by this function.
+    // Not noexcept because cend_pstislo isn't
     template <typename PresentationType>
     const_iterator_words_accepted
     cbegin_words_accepted(Stephen<PresentationType>& s,
@@ -385,6 +568,12 @@ namespace libsemigroups {
           s.word_graph(), s.initial_state(), s.accept_state(), min, max);
     }
 
+    //! \brief Returns an iterator pointing one past the last word equivalent to
+    //! \ref Stephen::word.
+    //!
+    //! \cong_intf_warn_undecidable{Stephen}.
+    //!
+    //! \sa \ref cbegin_words_accepted for more information.
     template <typename PresentationType>
     const_iterator_words_accepted
     cend_words_accepted(Stephen<PresentationType>& s) {
@@ -392,12 +581,34 @@ namespace libsemigroups {
       return cend_pstislo(s.word_graph());
     }
 
+    // TODO(0): doc
     template <typename PresentationType>
     auto words_accepted(Stephen<PresentationType>& s) {
       Paths paths(s.word_graph());
       return paths.source(s.initial_state()).target(s.accept_state());
     }
 
+    //! \brief Returns an iterator pointing at the first word (in short-lex
+    //! order) that is a left factor of Stephen::word.
+    //!
+    //! This function triggers the algorithm implemented in this class (if it
+    //! hasn't been triggered already).
+    //!
+    //! \param s the Stephen instance
+    //! \param min the minimum length of an equivalent word (default: 0)
+    //! \param max the maximum length of an equivalent word (default:
+    //! POSITIVE_INFINITY)
+    //!
+    //! \returns A \c const_iterator_left_factors.
+    //!
+    //! \throws LibsemigroupsException if no presentation was set at
+    //! the construction of \p s or with Stephen::init.
+    //!
+    //! \cong_intf_warn_undecidable{Stephen}.
+    //!
+    //! \sa WordGraph::cbegin_pislo for more information about the
+    //! iterators returned by this function.
+    // Not noexcept because cbegin_pislo isn't
     template <typename PresentationType>
     const_iterator_left_factors
     cbegin_left_factors(Stephen<PresentationType>& s,
@@ -407,6 +618,13 @@ namespace libsemigroups {
       return cbegin_pislo(s.word_graph(), 0, min, max);
     }
 
+    //! \brief Returns an iterator pointing one past the last word that is a
+    //! left factor of Stephen::word.
+    //!
+    //! \cong_intf_warn_undecidable{Stephen}.
+    //!
+    //! \sa \ref cbegin_left_factors for more information.
+    // Not noexcept because cend_pislo isn't
     template <typename PresentationType>
     const_iterator_left_factors
     cend_left_factors(Stephen<PresentationType>& s) {
@@ -414,12 +632,36 @@ namespace libsemigroups {
       return cend_pislo(s.word_graph());
     }
 
+    // TODO(0): doc
     template <typename PresentationType>
     auto left_factors(Stephen<PresentationType>& s) {
       Paths paths(s.word_graph());
       return paths.source(s.initial_state());
     }
 
+    //! \brief Returns the number of words accepted with length in a given
+    //! range.
+    //!
+    //! This function returns the number of words that are equivalent to
+    //! Stephen::word in the instance \p s with length between \p min and \p
+    //! max. This is the same as the number of paths in Stephen::word_graph
+    //! (if Stephen::run has been called) with source \c 0, target
+    //! Stephen::accept_state,  and length in the range \p min to \p max.
+    //!
+    //! \param s the Stephen instance.
+    //! \param min the minimum length of a word (default: 0).
+    //! \param max one more than the maximum length of a word (default:
+    //! POSITIVE_INFINITY).
+    //!
+    //! \returns A \c uint64_t.
+    //!
+    //! \throws LibsemigroupsException if no presentation was set at
+    //! the construction of \p s or with Stephen::init.
+    //!
+    //! \cong_intf_warn_undecidable{Stephen}.
+    //!
+    //! \sa WordGraph::number_of_paths.
+    // Not noexcept because number_of_paths isn't
     // TODO(0): to tpp
     template <typename PresentationType>
     uint64_t number_of_words_accepted(Stephen<PresentationType>& s,
@@ -431,6 +673,30 @@ namespace libsemigroups {
           s.word_graph(), node_type(0), s.accept_state(), min, max);
     }
 
+    //! \brief Returns the number of left factors with length in a given range.
+    //!
+    //! This function returns the number of left factors of the
+    //! Stephen::word in the instance \p s with length between \p min and \p
+    //! max. This is the same as the number of paths in Stephen::word_graph
+    //! (if Stephen::run has been called) with source \c 0 and length in the
+    //! range \p min to \p max.
+    //!
+    //! \param s the Stephen instance.
+    //! \param min the minimum length of a word (default: 0).
+    //! \param max one more than the maximum length of a word (default:
+    //! POSITIVE_INFINITY).
+    //!
+    //! \returns A \c uint64_t.
+    //!
+    //! \throws LibsemigroupsException if no presentation was set at
+    //! the construction of \p s or with Stephen::init.
+    //!
+    //! \cong_intf_warn_undecidable{Stephen}.
+    //!
+    //! \sa WordGraph::number_of_paths.
+    // Number of words that represent left factors of word()
+    // Not noexcept because number_of_paths isn't
+    // TODO(0): to tpp
     template <typename PresentationType>
     uint64_t number_of_left_factors(Stephen<PresentationType>& s,
                                     size_t                     min = 0,
@@ -439,6 +705,7 @@ namespace libsemigroups {
       return number_of_paths(s.word_graph(), 0, min, max);
     }
 
+    // TODO(0): doc
     // TODO(0) to tpp
     template <typename P>
     Dot dot(Stephen<P>& s) {
@@ -472,6 +739,26 @@ namespace libsemigroups {
     }
   }  // namespace stephen
 
+  //! \brief Check equality of two Stephen instances.
+  //!
+  //! This function triggers a run of the Stephen algorithm of \p x and \p y,
+  //! if it hasn't been run already, and then checks that \c x.word() equals
+  //! \c y.word() in the underlying semigroup.
+  //!
+  //! \param x a Stephen instance
+  //! \param y a Stephen instance
+  //!
+  //! \returns A \c const_iterator_left_factors.
+  //!
+  //! \throws LibsemigroupsException if no presentation was set at
+  //! the construction of \p s or with Stephen::init.
+  //!
+  //! \cong_intf_warn_undecidable{Stephen}.
+  //!
+  //! \sa WordGraph::cbegin_pislo for more information about the
+  //! iterators returned by this function.
+  // TODO(0): validate that the underlying presentations are the same
+  // TODO(0): make equal_to_no_checks that does not do this check
   template <typename PresentationType>
   bool operator==(Stephen<PresentationType> const& x,
                   Stephen<PresentationType> const& y) {
@@ -480,6 +767,15 @@ namespace libsemigroups {
                                x.word());
   }
 
+  //! \brief Return a human readable representation of a Stephen object.
+  //!
+  //! Return a human readable representation of a Stephen object.
+  //!
+  //! \param x the SimsStats object.
+  //!
+  //! \exceptions
+  //! \no_libsemigroups_except
+  // TODO(0) change to to_human_readable_rep
   // TODO(0) to tpp
   template <typename PresentationType>
   std::ostream& operator<<(std::ostream&                    os,
@@ -496,162 +792,8 @@ namespace libsemigroups {
        << x.word_graph().number_of_edges() << " edges>";
     return os;
   }
-
-  // TODO(0) reuse the doc from here to end of file
-  //! The return type of \ref cbegin_words_accepted and \ref
-  //! cend_words_accepted. This is the same as
-  //! \ref WordGraph::const_pstislo_iterator.
-
-  //! The return type of \ref cbegin_left_factors and \ref
-  //! cend_left_factors. This is the same as \ref
-  //! WordGraph::const_pislo_iterator.
-
-  //! Check if a word is equivalent to Stephen::word.
-  //!
-  //! This function triggers the algorithm implemented in this class (if it
-  //! hasn't been triggered already), and then returns \c true if the input
-  //! word \p w is equivalent to Stephen::word in the semigroup defined by
-  //! Stephen::presentation. A word is equivalent to Stephen::word if it
-  //! labels a path in Stephen::word_graph with source \c 0 and target
-  //! Stephen::accept_state.
-  //!
-  //! \param s the Stephen instance
-  //! \param w a const reference to the input word.
-  //!
-  //! \returns A \c bool.
-  //!
-  //! \throws LibsemigroupsException if no presentation was set at
-  //! the construction of \p s or with Stephen::init.
-  //!
-  //! \warning The problem of determining whether two words are equal in
-  //! a finitely presented semigroup is undecidable in general, and this
-  //! function may never terminate.
-
-  //! Check if a word is a left factor of Stephen::word.
-  //!
-  //! This function triggers the algorithm implemented in this class (if it
-  //! hasn't been triggered already), and then returns \c true if the input
-  //! word \p w is a left factor of Stephen::word in the semigroup defined
-  //! by Stephen::presentation. A word is a left factor of Stephen::word
-  //! if it labels a path in Stephen::word_graph with source \c 0.
-  //!
-  //! \param s the Stephen instance
-  //! \param w a const reference to the input word.
-  //!
-  //! \returns A \c bool.
-  //!
-  //! \throws LibsemigroupsException if no presentation was set at
-  //! the construction of \p s or with Stephen::init.
-  //!
-  //! \warning The problem of determining whether a word is a left factor of
-  //! another word in a finitely presented semigroup is undecidable in
-  //! general, and this function may never terminate.
-
-  //! Returns an iterator pointing at the first word equivalent to
-  //! Stephen::word in short-lex order.
-  //!
-  //! This function triggers the algorithm implemented in this class (if it
-  //! hasn't been triggered already).
-  //!
-  //! \param s the Stephen instance
-  //! \param min the minimum length of an equivalent word (default: 0)
-  //! \param max the maximum length of an equivalent word (default:
-  //! POSITIVE_INFINITY)
-  //!
-  //! \returns A \c const_iterator.
-  //!
-  //! \throws LibsemigroupsException if no presentation was set at
-  //! the construction of \p s or with Stephen::init.
-  //!
-  //! \warning The problem of determining whether two words are equal in
-  //! a finitely presented semigroup is undecidable in general, and this
-  //! function may never terminate.
-  //!
-  //! \sa WordGraph::cbegin_pstislo for more information about the
-  //! iterators returned by this function.
-  //!
-  //! Returns an iterator pointing one past the last word equivalent to
-  //! Stephen::word.
-  //!
-  //! \sa \ref cbegin_words_accepted for more information.
-  // Not noexcept because cend_pstislo isn't
-
-  //! Returns an iterator pointing at the first word (in short-lex order)
-  //! that is a left factor of Stephen::word.
-  //!
-  //! This function triggers the algorithm implemented in this class (if it
-  //! hasn't been triggered already).
-  //!
-  //! \param s the Stephen instance
-  //! \param min the minimum length of an equivalent word (default: 0)
-  //! \param max the maximum length of an equivalent word (default:
-  //! POSITIVE_INFINITY)
-  //!
-  //! \returns A \c const_iterator_left_factors.
-  //!
-  //! \throws LibsemigroupsException if no presentation was set at
-  //! the construction of \p s or with Stephen::init.
-  //!
-  //! \warning The problem of determining whether a word is a left factor of
-  //! another word in a finitely presented semigroup is undecidable in
-  //! general, and this function may never terminate.
-  //!
-  //! \sa WordGraph::cbegin_pislo for more information about the
-  //! iterators returned by this function.
-  // Not noexcept because cbegin_pislo isn't
-
-  //! Returns an iterator pointing one past the last word that is a left
-  //! factor of Stephen::word.
-  //!
-  //! \sa \ref cbegin_left_factors for more information.
-  // Not noexcept because cend_pislo isn't
-
-  //! Returns the number of words accepted with length in a given range.
-  //!
-  //! This function returns the number of words that are equivalent to
-  //! Stephen::word in the instance \p s with length between \p min and \p
-  //! max. This is the same as the number of paths in Stephen::word_graph
-  //! (if Stephen::run has been called) with source \c 0, target
-  //! Stephen::accept_state,  and length in the range \p min to \p max.
-  //!
-  //! \param s the Stephen instance.
-  //! \param min the minimum length of a word (default: 0).
-  //! \param max one more than the maximum length of a word (default:
-  //! POSITIVE_INFINITY).
-  //!
-  //! \returns A \c uint64_t.
-  //!
-  //! \throws LibsemigroupsException if no presentation was set at
-  //! the construction of \p s or with Stephen::init.
-  //!
-  //!
-  //! \sa WordGraph::number_of_paths.
-  // Not noexcept because number_of_paths isn't
-
-  //! Returns the number of left factors with length in a given range.
-  //!
-  //! This function returns the number of left factors of the
-  //! Stephen::word in the instance \p s with length between \p min and \p
-  //! max. This is the same as the number of paths in Stephen::word_graph
-  //! (if Stephen::run has been called) with source \c 0 and length in the
-  //! range \p min to \p max.
-  //!
-  //! \param s the Stephen instance.
-  //! \param min the minimum length of a word (default: 0).
-  //! \param max one more than the maximum length of a word (default:
-  //! POSITIVE_INFINITY).
-  //!
-  //! \returns A \c uint64_t.
-  //!
-  //! \throws LibsemigroupsException if no presentation was set at
-  //! the construction of \p s or with Stephen::init.
-  //!
-  //! \sa WordGraph::number_of_paths.
-  //!
-  //! \throws LibsemigroupsException if no presentation was set at
-  //! construction or with Stephen::init.
-  // Number of words that represent left factors of word()
-  // Not noexcept because number_of_paths isn't
-
 }  // namespace libsemigroups
+
+#include "stephen.tpp"
+
 #endif  // LIBSEMIGROUPS_STEPHEN_HPP_

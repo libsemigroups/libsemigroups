@@ -142,6 +142,16 @@ namespace libsemigroups {
   }
 
   template <typename P>
+  Stephen<P>& Stephen<P>::init(P const& p) {
+    deref_if_necessary(p).validate();
+    throw_if_presentation_empty(deref_if_necessary(p));
+    _presentation = p;
+    something_changed();
+    _word.clear();
+    return *this;
+  }
+
+  template <typename P>
   Stephen<P>::Stephen(P&& p) : Stephen() {
     init(std::move(p));
   }
@@ -157,13 +167,17 @@ namespace libsemigroups {
   }
 
   template <typename P>
-  Stephen<P>& Stephen<P>::init(P const& p) {
-    deref_if_necessary(p).validate();
-    throw_if_presentation_empty(deref_if_necessary(p));
-    _presentation = p;
-    something_changed();
-    _word.clear();
-    return *this;
+  template <typename Q>
+  Stephen<P>& Stephen<P>::init(Q const& q) {
+    // TODO (0): finish assert
+    static_assert(((IsInversePresentation<P>) == (IsInversePresentation<Q>) )
+                      && IsPresentation<P> && IsPresentation<Q>,
+                  "TODO");
+    if constexpr (IsInversePresentation<P> && IsInversePresentation<Q>) {
+      return init(to_inverse_presentation<word_type>(q));
+    } else {
+      return init(to_presentation<word_type>(q));
+    }
   }
 
   template <typename P>

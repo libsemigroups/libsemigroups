@@ -953,8 +953,9 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("Stephen",
                           "034",
-                          "(inverse presentation) "
-                          "step_hen/tests/test_schutzenbergergraph.py:test_001",
+                          "(inverse) "
+                          "step_hen test_schutzenbergergraph 001 "
+                          "(string)",
                           "[stephen][quick]") {
     ToWord to_word("abcABC");
 
@@ -980,8 +981,8 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("Stephen",
                           "035",
-                          "(inverse presentation) "
-                          "step_hen/tests/test_schutzenbergergraph.py:test_001",
+                          "(inverse) "
+                          "step_hen test_schutzenbergergraph 001",
                           "[stephen][quick]") {
     InversePresentation<std::string> p;
     p.alphabet("abcABC");
@@ -1007,8 +1008,8 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("Stephen",
                           "036",
-                          "(inverse presentation) "
-                          "step_hen/tests/test_schutzenbergergraph.py:test_002",
+                          "(inverse) "
+                          "step_hen test_schutzenbergergraph 002",
                           "[stephen][quick]") {
     ToWord                         to_word("abcABC");
     InversePresentation<word_type> p;
@@ -1025,8 +1026,8 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("Stephen",
                           "037",
-                          "(inverse presentation) "
-                          "step_hen/tests/test_schutzenbergergraph.py:test_003",
+                          "(inverse) "
+                          "step_hen test_schutzenbergergraph 003",
                           "[stephen][quick]") {
     ToWord                         to_word("xyXY");
     InversePresentation<word_type> p;
@@ -1044,8 +1045,8 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("Stephen",
                           "038",
-                          "(inverse presentation) "
-                          "step_hen/tests/test_schutzenbergergraph.py:test_004",
+                          "(inverse) "
+                          "step_hen test_schutzenbergergraph 004",
                           "[stephen][quick]") {
     ToWord                         to_word("xyXY");
     InversePresentation<word_type> p;
@@ -1083,8 +1084,8 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("Stephen",
                           "039",
-                          "(inverse presentation) "
-                          "step_hen/tests/test_schutzenbergergraph.py:test_005",
+                          "(inverse) "
+                          "step_hen test_schutzenbergergraph 005",
                           "[stephen][quick]") {
     ToWord                         to_word("xyXY");
     InversePresentation<word_type> p;
@@ -1103,8 +1104,8 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("Stephen",
                           "040",
-                          "(inverse presentation) "
-                          "step_hen/tests/test_schutzenbergergraph.py:test_006",
+                          "(inverse) "
+                          "step_hen test_schutzenbergergraph 006",
                           "[stephen][quick]") {
     ToWord                         to_word("abcABC");
     InversePresentation<word_type> p;

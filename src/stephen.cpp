@@ -35,6 +35,7 @@
 #include "libsemigroups/detail/report.hpp"              // for REPORT_DEFAULT_V3
 #include "libsemigroups/detail/string.hpp"              // for group_digits
 
+// TODO(0): remove file?
 namespace libsemigroups {
 
   ////////////////////////////////////////////////////////////////////////
