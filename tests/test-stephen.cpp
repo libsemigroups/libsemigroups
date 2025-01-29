@@ -37,16 +37,16 @@
 #include "catch_amalgamated.hpp"  // for REQUIRE, REQUIRE_THROWS_AS, REQUI...
 #include "test-main.hpp"          // for LIBSEMIGROUPS_TEST_CASE
 
-#include "libsemigroups/constants.hpp"        // for UNDEFINED
-#include "libsemigroups/exception.hpp"        // for LibsemigroupsExcep...
-#include "libsemigroups/fpsemi-examples.hpp"  // for make, fibonacci_se...
-#include "libsemigroups/order.hpp"            // for LexicographicalCom...
-#include "libsemigroups/presentation.hpp"     // for add_rule
-#include "libsemigroups/stephen.hpp"          // for Stephen, Stephen::...
-#include "libsemigroups/todd-coxeter.hpp"     // for ToddCoxeter
-#include "libsemigroups/types.hpp"            // for word_type
-#include "libsemigroups/word-graph.hpp"       // for WordGraph, ope...
-#include "libsemigroups/word-range.hpp"       // for StringToWord, word...
+#include "libsemigroups/constants.hpp"              // for UNDEFINED
+#include "libsemigroups/exception.hpp"              // for LibsemigroupsExcep...
+#include "libsemigroups/order.hpp"                  // for LexicographicalCom...
+#include "libsemigroups/presentation-examples.hpp"  // for make, fibonacci_se...
+#include "libsemigroups/presentation.hpp"           // for add_rule
+#include "libsemigroups/stephen.hpp"                // for Stephen, Stephen::...
+#include "libsemigroups/todd-coxeter.hpp"           // for ToddCoxeter
+#include "libsemigroups/types.hpp"                  // for word_type
+#include "libsemigroups/word-graph.hpp"             // for WordGraph, ope...
+#include "libsemigroups/word-range.hpp"             // for StringToWord, word...
 
 #include "libsemigroups/detail/report.hpp"  // for ReportGuard
 
@@ -241,10 +241,9 @@ namespace libsemigroups {
                           "002",
                           "full transf monoid",
                           "[quick][stephen][no-valgrind]") {
-    using namespace fpsemigroup;
     auto   rg = ReportGuard(true);
     size_t n  = 5;
-    auto   p  = full_transformation_monoid(n, author::Iwahori);
+    auto   p  = presentation::examples::full_transformation_monoid_II74(n);
     p.validate();
 
     Stephen s(std::move(p));
@@ -474,9 +473,8 @@ namespace libsemigroups {
                           "007",
                           "Fibonacci(4, 6)",
                           "[stephen][extreme]") {
-    using namespace fpsemigroup;
     auto    rg = ReportGuard(true);
-    Stephen S(fibonacci_semigroup(4, 6));
+    Stephen S(presentation::examples::fibonacci_semigroup(4, 6));
     S.set_word(0123_w).run_for(std::chrono::seconds(10));
     REQUIRE(!S.finished());
   }
@@ -1150,7 +1148,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Stephen", "042", "empty word", "[stephen][quick]") {
-    auto p = fpsemigroup::symmetric_inverse_monoid(4);
+    auto p = presentation::examples::symmetric_inverse_monoid(4);
     REQUIRE(p.contains_empty_word());
     REQUIRE(p.alphabet().size() == 4);
 
@@ -1200,7 +1198,7 @@ namespace libsemigroups {
     ReportGuard rg(false);
     ToddCoxeter tc;
     {
-      auto p = fpsemigroup::symmetric_inverse_monoid(4);
+      auto p = presentation::examples::symmetric_inverse_monoid(4);
       REQUIRE(p.contains_empty_word());
       REQUIRE(p.alphabet().size() == 4);
       p.validate();
@@ -1209,7 +1207,7 @@ namespace libsemigroups {
 
     {
       InversePresentation<word_type> p
-          = fpsemigroup::symmetric_inverse_monoid(4);
+          = presentation::examples::symmetric_inverse_monoid(4);
       p.inverses_no_checks(0123_w);
       p.validate();
 
@@ -1272,7 +1270,7 @@ namespace libsemigroups {
                           "non-inverse presentation -- operator==",
                           "[stephen][quick][no-valgrind]") {
     ReportGuard rg(false);
-    auto        p = fpsemigroup::symmetric_inverse_monoid(4);
+    auto        p = presentation::examples::symmetric_inverse_monoid(4);
 
     ToddCoxeter tc(congruence_kind::twosided, p);
 
@@ -1299,7 +1297,7 @@ namespace libsemigroups {
                           "032",
                           "Plactic monoid",
                           "[stephen][quick]") {
-    auto p = fpsemigroup::plactic_monoid(4);
+    auto p = presentation::examples::plactic_monoid(4);
     p.contains_empty_word(true);
     Stephen s(p);
     s.set_word(0013122_w).run();
@@ -1411,7 +1409,7 @@ namespace libsemigroups {
                           "plactic monoid",
                           "[stephen][fail]") {
     ReportGuard rg(true);
-    auto        p = fpsemigroup::chinese_monoid(3);
+    auto        p = presentation::examples::chinese_monoid(3);
 
     Stephen S(p);
     S.set_word(0110_w).run();

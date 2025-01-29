@@ -66,8 +66,8 @@ namespace libsemigroups {
   //! presentations:
   //! * \ref Presentation "the Presentation class"
   //! * \ref InversePresentation "the InversePresentation class"
-  //! * \ref libsemigroups::presentation "Helper functions for presentations"
-  //! * \ref libsemigroups::fpsemigroup "Presentations for standard examples"
+  //! * \ref ::presentation "Helper functions for presentations"
+  //! * \ref ::presentation::examples "Presentations for standard examples"
   //!
   //! For documentation on how to create presentations from other
   //! `libsemigroups` objects, see the documentation for the `to_presentation`

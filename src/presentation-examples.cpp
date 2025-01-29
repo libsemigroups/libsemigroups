@@ -19,7 +19,7 @@
 // This file contains some implementations of functions that produce fp
 // semigroups for testing purposes.
 
-#include "libsemigroups/fpsemi-examples.hpp"
+#include "libsemigroups/presentation-examples.hpp"
 
 #include <algorithm>         // for max, for_each
 #include <cmath>             // for abs
@@ -27,18 +27,18 @@
 #include <cstdlib>           // for abs
 #include <initializer_list>  // for initializer_list
 #include <numeric>           // for iota
-#include <string>            // for basic_string
+#include <unordered_map>     // for operator==
 #include <utility>           // for move, swap
 
 #include "libsemigroups/constants.hpp"     // for operator==
 #include "libsemigroups/debug.hpp"         // for LIBSEMIGROUPS_ASSERT
-#include "libsemigroups/detail/fmt.hpp"    // for format
 #include "libsemigroups/exception.hpp"     // for LIBSEMIGROUPS_EXCEPTION
-#include "libsemigroups/order.hpp"         // for shortlex_compare
 #include "libsemigroups/presentation.hpp"  // for add_rule_no_checks, Presen...
 #include "libsemigroups/ranges.hpp"        // for operator|, to_vector, enum...
 #include "libsemigroups/types.hpp"         // for word_type, letter_type
 #include "libsemigroups/word-range.hpp"    // for operator""_w, operator+, pow
+
+#include "libsemigroups/detail/fmt.hpp"  // for format, format_string
 
 namespace libsemigroups {
   using literals::operator""_w;
@@ -341,10 +341,9 @@ namespace libsemigroups {
       }
       return t;
     }
-
   }  // namespace
 
-  namespace fpsemigroup {
+  namespace presentation::examples {
 
     using literals::operator""_w;
     using words::pow;
@@ -352,13 +351,10 @@ namespace libsemigroups {
     using words::operator+;
     using words::operator+=;
 
-    Presentation<word_type> stellar_monoid(size_t l, author val) {
+    Presentation<word_type> stellar_monoid_GH19(size_t l) {
       if (l < 2) {
         LIBSEMIGROUPS_EXCEPTION(
             "expected 1st argument to be at least 2, found {}", l);
-      } else if (val != author::Any) {
-        LIBSEMIGROUPS_EXCEPTION(
-            "expected 2nd argument to be author::Any, found {}", val);
       }
       auto p = zero_rook_monoid(l);
 
@@ -371,18 +367,13 @@ namespace libsemigroups {
       return p;
     }
 
-    Presentation<word_type> fibonacci_semigroup(size_t r,
-                                                size_t n,
-                                                author val) {
+    Presentation<word_type> fibonacci_semigroup_CRRT94(size_t r, size_t n) {
       if (r == 0) {
         LIBSEMIGROUPS_EXCEPTION(
             "expected 1st argument to be strictly positive, found {}", r);
       } else if (n == 0) {
         LIBSEMIGROUPS_EXCEPTION(
             "expected 2nd argument to be strictly positive, found {}", n);
-      } else if (val != author::Any) {
-        LIBSEMIGROUPS_EXCEPTION(
-            "expected 3rd argument to be author::Any, found {}", val);
       }
       Presentation<word_type> p;
 
@@ -396,13 +387,12 @@ namespace libsemigroups {
       return p;
     }
 
-    Presentation<word_type> plactic_monoid(size_t n, author val) {
+    // Theorem 6 of https://doi.org/10.2140/pjm.1970.34.709 (Knuth), and Section
+    // 3 of https://doi.org/10.1007/s00233-022-10285-3 (Abram, Reutenauer)
+    Presentation<word_type> plactic_monoid_Knu70(size_t n) {
       if (n < 1) {
         LIBSEMIGROUPS_EXCEPTION(
             "expected 1st argument to be at least 1, found {}", n);
-      } else if (val != author::Any) {
-        LIBSEMIGROUPS_EXCEPTION(
-            "expected 2nd argument to be author::Any, found {}", val);
       }
       Presentation<word_type> p;
       p.alphabet(n);
@@ -427,155 +417,42 @@ namespace libsemigroups {
       return p;
     }
 
-    Presentation<word_type> stylic_monoid(size_t n, author val) {
+    Presentation<word_type> stylic_monoid_AR22(size_t n) {
       if (n < 2) {
         LIBSEMIGROUPS_EXCEPTION(
             "expected 1st argument to be at least 2, found {}", n);
-      } else if (val != author::Any) {
-        LIBSEMIGROUPS_EXCEPTION(
-            "expected 2nd argument to be author::Any, found {}", val);
       }
-      auto p = plactic_monoid(n);
+      auto p = plactic_monoid_Knu70(n);
       presentation::add_idempotent_rules_no_checks(p, range(n));
       p.contains_empty_word(true);
       return p;
     }
 
-    Presentation<word_type> symmetric_group(size_t n,
-                                            author val,
-                                            size_t index) {
-      if (val != author::Burnside + author::Miller && val != author::Carmichael
-          && val != author::Coxeter + author::Moser && val != author::Moore) {
-        LIBSEMIGROUPS_EXCEPTION("expected 2nd argument to be one of: "
-                                "author::Burnside + author::Miller, "
-                                "author::Carmichael, author::Coxeter + "
-                                "author::Moser, or author::Moore, found {}",
-                                val);
-      } else if (val != author::Coxeter + author::Moser && n < 4) {
-        LIBSEMIGROUPS_EXCEPTION("expected 1st argument (degree) to be at least "
-                                "4 when author is {}, found {}",
-                                val,
-                                n);
-      } else if (val == author::Coxeter + author::Moser && n < 2) {
-        LIBSEMIGROUPS_EXCEPTION("expected 1st argument (degree) to be at least "
-                                "2 when author is {}, found {}",
-                                val,
-                                n);
-      } else if (val == author::Moore) {
-        if (index > 1) {
-          LIBSEMIGROUPS_EXCEPTION("expected 3rd argument to be 0 or 1 when 2nd "
-                                  "argument is author::Moore, found {}",
-                                  index);
+    // This presentation is due to Burnside [p. 464] and Miller [p. 366] in 1911
+    // See Eq 2.6 of 'Presentations of finite simple groups: A quantitative
+    // approach' J. Amer. Math. Soc. 21 (2008), 711-774
+    Presentation<word_type> symmetric_group_Bur12(size_t n) {
+      if (n < 2) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "expected 1st argument to be at least 2, found {}", n);
+      }
+      Presentation<word_type> p;
+      presentation::add_involution_rules_no_checks(p, range(n - 1));
+
+      for (size_t i = 0; i <= n - 2; ++i) {
+        for (size_t j = 0; j <= n - 2; ++j) {
+          if (i != j) {
+            presentation::add_rule_no_checks(p, pow({i, j}, 3), {});
+          }
         }
-      } else if (index != 0) {
-        LIBSEMIGROUPS_EXCEPTION("expected 3rd argument to be 0 when 2nd "
-                                "argument is {}, found {}",
-                                val,
-                                index);
       }
 
-      Presentation<word_type> p;
-
-      if (val == author::Carmichael) {
-        // Exercise 9.5.2, p172 of
-        // https://link.springer.com/book/10.1007/978-1-84800-281-4
-        presentation::add_involution_rules_no_checks(p, range(n - 1));
-        for (size_t i = 0; i < n - 2; ++i) {
-          presentation::add_rule_no_checks(p, pow({i, i + 1}, 3), {});
-        }
-        presentation::add_rule_no_checks(p, pow({n - 2, 0}, 3), {});
-        for (size_t i = 0; i < n - 2; ++i) {
-          for (size_t j = 0; j < i; ++j) {
-            presentation::add_rule_no_checks(p, pow({i, i + 1, i, j}, 2), {});
-          }
-          for (size_t j = i + 2; j <= n - 2; ++j) {
-            presentation::add_rule_no_checks(p, pow({i, i + 1, i, j}, 2), {});
-          }
-        }
-        for (size_t i = 1; i < n - 2; ++i) {
-          presentation::add_rule_no_checks(p, pow({n - 2, 0, n - 2, i}, 2), {});
-        }
-      } else if (val == author::Coxeter + author::Moser) {
-        // From Chapter 3, Proposition 1.2 in https://bit.ly/3R5ZpKW (Ruskuc
-        // thesis)
-
-        presentation::add_involution_rules_no_checks(p, range(n - 1));
-        add_coxeter_common(p, n);
-      } else if (val == author::Moore) {
-        if (index == 0) {
-          // From Chapter 3, Proposition 1.1 in https://bit.ly/3R5ZpKW (Ruskuc
-          // thesis)
-          presentation::add_rule_no_checks(p, 00_w, {});
-          presentation::add_rule_no_checks(p, pow(1_w, n), {});
-          presentation::add_rule_no_checks(p, pow(01_w, n - 1), {});
-          presentation::add_rule_no_checks(
-              p, pow(0_w + pow(1_w, n - 1) + 01_w, 3), {});
-          for (size_t j = 2; j <= n - 2; ++j) {
-            presentation::add_rule_no_checks(
-                p,
-                pow(0_w + pow(pow(1_w, n - 1), j) + 0_w + pow(1_w, j), 2),
-                {});
-          }
-        } else if (index == 1) {
-          presentation::add_involution_rules_no_checks(p, range(n - 1));
-          for (size_t i = 0; i <= n - 4; ++i) {
-            for (size_t j = i + 2; j <= n - 2; ++j) {
-              presentation::add_rule_no_checks(p, {i, j}, {j, i});
-            }
-          }
-
-          for (size_t i = 1; i <= n - 2; ++i) {
-            presentation::add_rule_no_checks(
-                p, {i, i - 1, i}, {i - 1, i, i - 1});
-          }
-        }
-      } else if (val == author::Burnside + author::Miller) {
-        // See Eq 2.6 of 'Presentations of finite simple groups: A
-        // quantitative approach' J. Amer. Math. Soc. 21 (2008), 711-774
-        presentation::add_involution_rules_no_checks(p, range(n - 1));
-
-        for (size_t i = 0; i <= n - 2; ++i) {
-          for (size_t j = 0; j <= n - 2; ++j) {
-            if (i != j) {
-              presentation::add_rule_no_checks(p, pow({i, j}, 3), {});
-            }
-          }
-        }
-
-        for (size_t i = 0; i <= n - 2; ++i) {
-          for (size_t j = 0; j <= n - 2; ++j) {
-            if (i != j) {
-              for (size_t k = 0; k <= n - 2; ++k) {
-                if (k != i && k != j) {
-                  presentation::add_rule_no_checks(p, pow({i, j, i, k}, 2), {});
-                }
-              }
-            }
-          }
-        }
-      } else {
-        LIBSEMIGROUPS_ASSERT(val
-                             == author::Guralnick + author::Kantor
-                                    + author::Kassabov + author::Lubotzky);
-        // See Section 2.2 of 'Presentations of finite simple groups: A
-        // quantitative approach' J. Amer. Math. Soc. 21 (2008), 711-774
-        presentation::add_involution_rules_no_checks(p, range(n - 1));
-
-        for (size_t i = 0; i <= n - 2; ++i) {
-          for (size_t j = 0; j <= n - 2; ++j) {
-            if (i != j) {
-              presentation::add_rule_no_checks(p, pow({i, j}, 3), {});
-            }
-          }
-        }
-
-        for (size_t i = 0; i <= n - 2; ++i) {
-          for (size_t j = 0; j <= n - 2; ++j) {
-            if (i != j) {
-              for (size_t k = 0; k <= n - 2; ++k) {
-                if (k != i && k != j) {
-                  presentation::add_rule_no_checks(p, pow({i, j, k}, 4), {});
-                }
+      for (size_t i = 0; i <= n - 2; ++i) {
+        for (size_t j = 0; j <= n - 2; ++j) {
+          if (i != j) {
+            for (size_t k = 0; k <= n - 2; ++k) {
+              if (k != i && k != j) {
+                presentation::add_rule_no_checks(p, pow({i, j, i, k}, 2), {});
               }
             }
           }
@@ -585,13 +462,73 @@ namespace libsemigroups {
       return p;
     }
 
-    Presentation<word_type> alternating_group(size_t n, author val) {
+    // Carmichael pg. 169 and Exercise 9.5.2, p172 of
+    // https://link.springer.com/book/10.1007/978-1-84800-281-4
+    Presentation<word_type> symmetric_group_Car56(size_t n) {
+      if (n < 2) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "expected 1st argument to be at least 2, found {}", n);
+      }
+      Presentation<word_type> p;
+      presentation::add_involution_rules_no_checks(p, range(n - 1));
+      for (size_t i = 0; i < n - 2; ++i) {
+        presentation::add_rule_no_checks(p, pow({i, i + 1}, 3), {});
+      }
+      if (n != 2) {
+        presentation::add_rule_no_checks(p, pow({n - 2, 0}, 3), {});
+      }
+      for (size_t i = 0; i < n - 2; ++i) {
+        for (size_t j = 0; j < i; ++j) {
+          presentation::add_rule_no_checks(p, pow({i, i + 1, i, j}, 2), {});
+        }
+        for (size_t j = i + 2; j <= n - 2; ++j) {
+          presentation::add_rule_no_checks(p, pow({i, i + 1, i, j}, 2), {});
+        }
+      }
+      for (size_t i = 1; i < n - 2; ++i) {
+        presentation::add_rule_no_checks(p, pow({n - 2, 0, n - 2, i}, 2), {});
+      }
+      p.alphabet_from_rules();
+      return p;
+    }
+
+    // From Theorm A in Moore 1897
+    Presentation<word_type> symmetric_group_Moo97_a(size_t n) {
+      if (n < 2) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "expected 1st argument to be at least 2, found {}", n);
+      }
+      Presentation<word_type> p;
+      presentation::add_involution_rules_no_checks(p, range(n - 1));
+      add_coxeter_common(p, n);
+      p.alphabet_from_rules();
+      return p;
+    }
+
+    // From Theorm A' in Moore 1897
+    Presentation<word_type> symmetric_group_Moo97_b(size_t n) {
+      if (n < 2) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "expected 1st argument to be at least 2, found {}", n);
+      }
+      Presentation<word_type> p;
+      presentation::add_rule_no_checks(p, 00_w, {});
+      presentation::add_rule_no_checks(p, pow(1_w, n), {});
+      presentation::add_rule_no_checks(p, pow(01_w, n - 1), {});
+      presentation::add_rule_no_checks(
+          p, pow(0_w + pow(1_w, n - 1) + 01_w, 3), {});
+      for (size_t j = 2; j <= n - 2; ++j) {
+        presentation::add_rule_no_checks(
+            p, pow(0_w + pow(pow(1_w, n - 1), j) + 0_w + pow(1_w, j), 2), {});
+      }
+      p.alphabet_from_rules();
+      return p;
+    }
+
+    Presentation<word_type> alternating_group_Moo97(size_t n) {
       if (n < 4) {
         LIBSEMIGROUPS_EXCEPTION(
             "expected 1st argument to be at least 4, found {}", n);
-      } else if (val != author::Moore) {
-        LIBSEMIGROUPS_EXCEPTION(
-            "expected 2nd argument to be author::Moore, found {}", val);
       }
       Presentation<word_type> p;
 
@@ -612,15 +549,10 @@ namespace libsemigroups {
       return p;
     }
 
-    Presentation<word_type> dual_symmetric_inverse_monoid(size_t n,
-                                                          author val) {
+    Presentation<word_type> dual_symmetric_inverse_monoid_EEF07(size_t n) {
       if (n < 3) {
         LIBSEMIGROUPS_EXCEPTION(
             "expected 1st argument to be at least 3, found {}", n);
-      } else if (val != author::Easdown + author::East + author::FitzGerald) {
-        LIBSEMIGROUPS_EXCEPTION("expected 2nd argument to be author::Easdown + "
-                                "author::East + author::FitzGerald, found {}",
-                                val);
       }
       auto mij = [](size_t i, size_t j) {
         if (i == j) {
@@ -699,14 +631,10 @@ namespace libsemigroups {
       return result;
     }
 
-    Presentation<word_type> uniform_block_bijection_monoid(size_t n,
-                                                           author val) {
+    Presentation<word_type> uniform_block_bijection_monoid_Fit03(size_t n) {
       if (n < 3) {
         LIBSEMIGROUPS_EXCEPTION(
             "expected 1st argument to be at least 3, found {}", n);
-      } else if (val != author::FitzGerald) {
-        LIBSEMIGROUPS_EXCEPTION(
-            "expected 2nd argument to be author::FitzGerald, found {}", val);
       }
 
       word_type t = {n - 1};
@@ -753,136 +681,14 @@ namespace libsemigroups {
       return p;
     }
 
-    // From Theorem 41 in doi:10.1016/j.jalgebra.2011.04.008
-    Presentation<word_type> partition_monoid(size_t n, author val) {
-      if (val == author::Machine) {
-        if (n != 2 && n != 3) {
-          LIBSEMIGROUPS_EXCEPTION("the 1st argument (size_t) must be 2 or "
-                                  "3 when the 2nd argument "
-                                  "is author::Machine, found {}",
-                                  n);
-        }
-      } else if (val == author::East) {
-        if (n < 4) {
-          LIBSEMIGROUPS_EXCEPTION(
-              "the 1st argument (degree) must be at least 4 when the 2nd "
-              "argument is author::East, found {}",
-              n);
-        }
-      } else if (val == author::Halverson + author::Ram) {
-        if (n < 1) {
-          LIBSEMIGROUPS_EXCEPTION(
-              "the 1st argument (degree) must be at least 1 when the 2nd "
-              "argument is author::Halverson + author::Ram, found {}",
-              n);
-        }
-      } else {
-        LIBSEMIGROUPS_EXCEPTION("the 2nd argument must be author::Machine "
-                                "or author::East, found {}",
-                                val);
+    Presentation<word_type> partition_monoid_HR05(size_t n) {
+      if (n < 1) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "the 1st argument (size_t) must be at least 1, found {}", n);
       }
 
       Presentation<word_type> p;
 
-      if (val == author::Machine && n == 2) {
-        p.rules
-            = {01_w, 1_w, 10_w,  1_w, 02_w,  2_w, 20_w,   2_w,   03_w,   3_w,
-               30_w, 3_w, 11_w,  0_w, 13_w,  3_w, 22_w,   2_w,   31_w,   3_w,
-               33_w, 3_w, 232_w, 2_w, 323_w, 3_w, 1212_w, 212_w, 2121_w, 212_w};
-        p.alphabet_from_rules();
-        return p;
-      }
-      if (val == author::Machine && n == 3) {
-        p.rules = {00_w,       0_w,       01_w,       1_w,       02_w,
-                   2_w,        03_w,      3_w,        04_w,      4_w,
-                   10_w,       1_w,       20_w,       2_w,       22_w,
-                   0_w,        24_w,      4_w,        30_w,      3_w,
-                   33_w,       3_w,       40_w,       4_w,       42_w,
-                   4_w,        44_w,      4_w,        111_w,     0_w,
-                   112_w,      21_w,      121_w,      2_w,       211_w,
-                   12_w,       212_w,     11_w,       214_w,     114_w,
-                   312_w,      123_w,     343_w,      3_w,       412_w,
-                   411_w,      434_w,     4_w,        1131_w,    232_w,
-                   1132_w,     231_w,     1231_w,     32_w,      1232_w,
-                   31_w,       1234_w,    314_w,      1323_w,    313_w,
-                   1414_w,     414_w,     2131_w,     132_w,     2132_w,
-                   131_w,      2134_w,    1314_w,     2313_w,    1313_w,
-                   2314_w,     1134_w,    2323_w,     323_w,     3132_w,
-                   313_w,      3143_w,    123_w,      3232_w,    323_w,
-                   4114_w,     414_w,     4132_w,     4131_w,    4141_w,
-                   414_w,      13113_w,   3213_w,     13414_w,   4134_w,
-                   23113_w,    3113_w,    23213_w,    13213_w,   23413_w,
-                   13413_w,    23414_w,   14134_w,    31141_w,   11413_w,
-                   31311_w,    3213_w,    32311_w,    3113_w,    34113_w,
-                   123_w,      34143_w,   11413_w,    41134_w,   4314_w,
-                   41311_w,    13114_w,   41313_w,    4313_w,    41314_w,
-                   4134_w,     41341_w,   4134_w,     41432_w,   41431_w,
-                   113413_w,   31413_w,   114134_w,   3414_w,    131143_w,
-                   43213_w,    131313_w,  31313_w,    131413_w,  3413_w,
-                   143114_w,   43114_w,   231143_w,   143213_w,  311341_w,
-                   31413_w,    311431_w,  114313_w,   313131_w,  31313_w,
-                   313141_w,   3413_w,    314113_w,   3_w,       414311_w,
-                   43114_w,    414314_w,  414_w,      431314_w,  13114_w,
-                   1143131_w,  311432_w,  1143213_w,  31143_w,   1313413_w,
-                   313413_w,   3114321_w, 31143_w,    3131341_w, 313413_w,
-                   4311432_w,  4143131_w, 31143231_w, 3114323_w, 311432341_w,
-                   114313413_w};
-        p.alphabet_from_rules();
-        return p;
-      }
-
-      // author::East and n >= 4
-      if (val == author::East) {
-        p.alphabet(4);
-        p.contains_empty_word(true);
-
-        // V1
-        presentation::add_rule_no_checks(p, pow(1_w, n), {});
-        presentation::add_rule_no_checks(p, pow(01_w, n - 1), {});
-        presentation::add_rule_no_checks(p, 00_w, {});
-        for (size_t i = 2; i <= n / 2; ++i) {
-          presentation::add_rule_no_checks(
-              p, pow(pow(1_w, i) + 0_w + pow(1_w, n - i) + 0_w, 2), {});
-        }
-
-        // V2
-        presentation::add_rule_no_checks(p, 22_w, 2_w);
-        presentation::add_rule_no_checks(p, 232_w, 2_w);
-        presentation::add_rule_no_checks(p, 012_w + pow(1_w, n - 1) + 0_w, 2_w);
-        presentation::add_rule_no_checks(
-            p, 10_w + pow(1_w, n - 1) + 210_w + pow(1_w, n - 1), 2_w);
-
-        // V3
-        presentation::add_rule_no_checks(p, 33_w, 3_w);
-        presentation::add_rule_no_checks(p, 323_w, 3_w);
-        presentation::add_rule_no_checks(p, 30_w, 3_w);
-        presentation::add_rule_no_checks(p, 03_w, 3_w);
-        presentation::add_rule_no_checks(
-            p, 110_w + pow(1_w, n - 2) + 3110_w + pow(1_w, n - 2), 3_w);
-        presentation::add_rule_no_checks(p,
-                                         pow(1_w, n - 1) + 010_w
-                                             + pow(1_w, n - 1) + 310_w
-                                             + pow(1_w, n - 1) + 01_w,
-                                         3_w);
-
-        // V4
-        presentation::add_rule_no_checks(p, 0202_w, 202_w);
-        presentation::add_rule_no_checks(p, 2020_w, 202_w);
-
-        // V5
-        presentation::add_rule_no_checks(
-            p, 313_w + pow(1_w, n - 1), 13_w + pow(1_w, n - 1) + 3_w);
-
-        // V6
-        presentation::add_rule_no_checks(
-            p, 3113_w + pow(1_w, n - 2), 113_w + pow(1_w, n - 2) + 3_w);
-        // V7
-        presentation::add_rule_no_checks(
-            p, 3112_w + pow(1_w, n - 2), 112_w + pow(1_w, n - 2) + 3_w);
-        return p;
-      }
-
-      // author::Halverson + author::Ram and n >= 1
       std::vector<word_type> s(n), r(n), q(n);
       for (size_t i = 0; i < n; ++i) {
         if (i != n - 1) {
@@ -954,15 +760,68 @@ namespace libsemigroups {
       return p;
     }
 
+    Presentation<word_type> partition_monoid_Eas11(size_t n) {
+      if (n < 4) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "the 1st argument (degree) must be at least 4, found {}", n);
+      }
+
+      Presentation<word_type> p;
+
+      p.alphabet(4);
+      p.contains_empty_word(true);
+
+      // V1
+      presentation::add_rule_no_checks(p, pow(1_w, n), {});
+      presentation::add_rule_no_checks(p, pow(01_w, n - 1), {});
+      presentation::add_rule_no_checks(p, 00_w, {});
+      for (size_t i = 2; i <= n / 2; ++i) {
+        presentation::add_rule_no_checks(
+            p, pow(pow(1_w, i) + 0_w + pow(1_w, n - i) + 0_w, 2), {});
+      }
+
+      // V2
+      presentation::add_rule_no_checks(p, 22_w, 2_w);
+      presentation::add_rule_no_checks(p, 232_w, 2_w);
+      presentation::add_rule_no_checks(p, 012_w + pow(1_w, n - 1) + 0_w, 2_w);
+      presentation::add_rule_no_checks(
+          p, 10_w + pow(1_w, n - 1) + 210_w + pow(1_w, n - 1), 2_w);
+
+      // V3
+      presentation::add_rule_no_checks(p, 33_w, 3_w);
+      presentation::add_rule_no_checks(p, 323_w, 3_w);
+      presentation::add_rule_no_checks(p, 30_w, 3_w);
+      presentation::add_rule_no_checks(p, 03_w, 3_w);
+      presentation::add_rule_no_checks(
+          p, 110_w + pow(1_w, n - 2) + 3110_w + pow(1_w, n - 2), 3_w);
+      presentation::add_rule_no_checks(p,
+                                       pow(1_w, n - 1) + 010_w + pow(1_w, n - 1)
+                                           + 310_w + pow(1_w, n - 1) + 01_w,
+                                       3_w);
+
+      // V4
+      presentation::add_rule_no_checks(p, 0202_w, 202_w);
+      presentation::add_rule_no_checks(p, 2020_w, 202_w);
+
+      // V5
+      presentation::add_rule_no_checks(
+          p, 313_w + pow(1_w, n - 1), 13_w + pow(1_w, n - 1) + 3_w);
+
+      // V6
+      presentation::add_rule_no_checks(
+          p, 3113_w + pow(1_w, n - 2), 113_w + pow(1_w, n - 2) + 3_w);
+      // V7
+      presentation::add_rule_no_checks(
+          p, 3112_w + pow(1_w, n - 2), 112_w + pow(1_w, n - 2) + 3_w);
+      return p;
+    }
+
     // From Theorem 5 in 10.21136/MB.2007.134125
     // https://dml.cz/bitstream/handle/10338.dmlcz/134125/MathBohem_132-2007-3_6.pdf
-    Presentation<word_type> singular_brauer_monoid(size_t n, author val) {
+    Presentation<word_type> singular_brauer_monoid_MM07(size_t n) {
       if (n < 3) {
         LIBSEMIGROUPS_EXCEPTION(
             "expected 1st argument to be at least 3, found {}", n);
-      } else if (val != author::Any) {
-        LIBSEMIGROUPS_EXCEPTION(
-            "expected 2nd argument to be author::Any, found {}", val);
       }
       std::vector<std::vector<word_type>> t;
       size_t                              value = 0;
@@ -1023,18 +882,15 @@ namespace libsemigroups {
         }
       }
       p.alphabet_from_rules();
+      p.contains_empty_word(true);
       return p;
     }
 
     // From https://doi.org/10.1007/s10012-000-0001-1
-    Presentation<word_type> orientation_preserving_monoid(size_t n,
-                                                          author val) {
+    Presentation<word_type> orientation_preserving_monoid_AR00(size_t n) {
       if (n < 3) {
         LIBSEMIGROUPS_EXCEPTION(
             "expected 1st argument to be at least 3, found {}", n);
-      } else if (val != author::Any) {
-        LIBSEMIGROUPS_EXCEPTION(
-            "expected 2nd argument to be author::Any, found {}", val);
       }
       Presentation<word_type> p;
       p.alphabet(2);
@@ -1057,13 +913,10 @@ namespace libsemigroups {
 
     // Also from https://doi.org/10.1007/s10012-000-0001-1
     Presentation<word_type>
-    orientation_preserving_reversing_monoid(size_t n, author val) {
+    orientation_preserving_reversing_monoid_AR00(size_t n) {
       if (n < 3) {
         LIBSEMIGROUPS_EXCEPTION(
             "expected 1st argument to be at least 3, found {}", n);
-      } else if (val != author::Any) {
-        LIBSEMIGROUPS_EXCEPTION(
-            "expected 2nd argument to be author::Any, found {}", val);
       }
       Presentation<word_type> p;
       p.alphabet(3);
@@ -1095,13 +948,10 @@ namespace libsemigroups {
     }
 
     // From Theorem 2.2 in https://doi.org/10.1093/qmath/haab001
-    Presentation<word_type> temperley_lieb_monoid(size_t n, author val) {
+    Presentation<word_type> temperley_lieb_monoid_Eas21(size_t n) {
       if (n < 3) {
         LIBSEMIGROUPS_EXCEPTION(
             "expected 1st argument to be at least 3, found {}", n);
-      } else if (val != author::Any) {
-        LIBSEMIGROUPS_EXCEPTION(
-            "expected 2nd argument to be author::Any, found {}", val);
       }
 
       Presentation<word_type> p;
@@ -1128,13 +978,10 @@ namespace libsemigroups {
 
     // From Theorem 3.1 in
     // https://link.springer.com/content/pdf/10.2478/s11533-006-0017-6.pdf
-    Presentation<word_type> brauer_monoid(size_t n, author val) {
+    Presentation<word_type> brauer_monoid_KM07(size_t n) {
       if (n < 1) {
         LIBSEMIGROUPS_EXCEPTION(
             "expected 1st argument to be at least 1, found {}", n);
-      } else if (val != author::Any) {
-        LIBSEMIGROUPS_EXCEPTION(
-            "expected 2nd argument to be author::Any, found {}", val);
       }
       std::vector<word_type> s(n), t(n);
       for (size_t i = 0; i < n - 1; ++i) {
@@ -1180,13 +1027,10 @@ namespace libsemigroups {
 
     // From Theorem 5.1 in
     // https://link.springer.com/content/pdf/10.2478/s11533-006-0017-6.pdf
-    Presentation<word_type> partial_brauer_monoid(size_t n, author val) {
+    Presentation<word_type> partial_brauer_monoid_KM07(size_t n) {
       if (n < 1) {
         LIBSEMIGROUPS_EXCEPTION(
             "expected 1st argument to be at least 1, found {}", n);
-      } else if (val != author::Any) {
-        LIBSEMIGROUPS_EXCEPTION(
-            "expected 2nd argument to be author::Any, found {}", val);
       }
 
       std::vector<word_type> s(n), t(n), v(n);
@@ -1198,7 +1042,7 @@ namespace libsemigroups {
       }
       v[n - 1] = {3 * n - 3};
 
-      Presentation<word_type> p = brauer_monoid(n);
+      Presentation<word_type> p = brauer_monoid_KM07(n);
       p.alphabet(3 * n - 2);
 
       // 15 from p14
@@ -1248,13 +1092,10 @@ namespace libsemigroups {
 
     // From Theorem 4.1 in
     // https://arxiv.org/pdf/1301.4518
-    Presentation<word_type> motzkin_monoid(size_t n, author val) {
+    Presentation<word_type> motzkin_monoid_PHL13(size_t n) {
       if (n < 1) {
         LIBSEMIGROUPS_EXCEPTION(
             "expected 1st argument to be at least 1, found {}", n);
-      } else if (val != author::Any) {
-        LIBSEMIGROUPS_EXCEPTION(
-            "expected 2nd argument to be author::Any, found {}", val);
       }
 
       Presentation<word_type> p;
@@ -1351,7 +1192,7 @@ namespace libsemigroups {
 
     // From Proposition 4.2 in
     // https://link.springer.com/content/pdf/10.1007/s002339910016.pdf
-    Presentation<word_type> rectangular_band(size_t m, size_t n, author val) {
+    Presentation<word_type> rectangular_band_ACOR00(size_t m, size_t n) {
       if (m == 0) {
         LIBSEMIGROUPS_EXCEPTION(
             "expected 1st argument to be strictly positive, found {}", m);
@@ -1359,9 +1200,6 @@ namespace libsemigroups {
       if (n == 0) {
         LIBSEMIGROUPS_EXCEPTION(
             "expected 2nd argument to be strictly positive, found {}", n);
-      } else if (val != author::Any) {
-        LIBSEMIGROUPS_EXCEPTION(
-            "expected 3rd argument to be author::Any, found {}", val);
       }
 
       std::vector<word_type> a(m);
@@ -1399,331 +1237,323 @@ namespace libsemigroups {
       return p;
     }
 
-    Presentation<word_type> full_transformation_monoid(size_t n,
-                                                       author val,
-                                                       size_t index) {
-      if (val != author::Aizenstat && val != author::Iwahori
-          && val != author::Mitchell + author::Whyte) {
+    // From Section 5, Theorem 2 Aizenstat (Russian) or Proposition 1.7 in
+    // https://bit.ly/3R5ZpKW (English)
+    Presentation<word_type> full_transformation_monoid_Aiz58(size_t n) {
+      if (n < 4) {
         LIBSEMIGROUPS_EXCEPTION(
-            "expected 2nd argument to be author::Aizenstat, or "
-            "author::Iwahori, or author::Mitchell + author::Whyte found {}",
-            val);
-      } else if (n < 4 && val != author::Mitchell + author::Whyte) {
-        LIBSEMIGROUPS_EXCEPTION(
-            "the 1st argument (degree) must be at least 4 when the 2nd "
-            "argument is author::Aizenstat or author::Iwahori, found {}",
-            n);
-      } else if (n < 2 && val == author::Mitchell + author::Whyte) {
-        LIBSEMIGROUPS_EXCEPTION(
-            "the 1st argument must be at least 2 when the 2nd argument is "
-            "author::Mitchell + author::Whyte, found {}",
-            val);
-      } else if (index > 1) {
-        LIBSEMIGROUPS_EXCEPTION(
-            "the 3rd argument (index) must be either 0 or 1, found {}", index);
-      } else if (index != 0 && val != author::Mitchell + author::Whyte) {
-        LIBSEMIGROUPS_EXCEPTION("the 3rd argument (index) must be 0 when the "
-                                "2nd argument (author) is "
-                                " author::Mitchell + author::Whyte, found {}",
-                                index);
-      } else if (index == 1 && n % 2 == 0) {
-        LIBSEMIGROUPS_EXCEPTION("the 1st argument (degree) must be odd when "
-                                "the 3rd argument (index) is 1");
+            "the 1st argument (degree) must be at least 4, found {}", n);
       }
-
       Presentation<word_type> p;
-      if (val == author::Aizenstat) {
-        // From Proposition 1.7 in https://bit.ly/3R5ZpKW
-        p = symmetric_group(n, author::Moore);
+      p = symmetric_group_Moo97_b(n);
 
-        presentation::add_rule_no_checks(p, 02_w, 2_w);
-        presentation::add_rule_no_checks(
-            p, pow(1_w, n - 2) + 0112_w + pow(1_w, n - 2) + 011_w, 2_w);
-        presentation::add_rule_no_checks(p,
-                                         10_w + pow(1_w, n - 1) + 012_w
-                                             + pow(1_w, n - 1) + 010_w
-                                             + pow(1_w, n - 1),
-                                         2_w);
-        presentation::add_rule_no_checks(
-            p, pow(210_w + pow(1_w, n - 1), 2), 2_w);
-        presentation::add_rule_no_checks(
-            p, pow(pow(1_w, n - 1) + 012_w, 2), 2_w + pow(1_w, n - 1) + 012_w);
-        presentation::add_rule_no_checks(p,
-                                         pow(2_w + pow(1_w, n - 1) + 01_w, 2),
-                                         2_w + pow(1_w, n - 1) + 012_w);
-        presentation::add_rule_no_checks(
-            p,
-            pow(210_w + pow(1_w, n - 2) + 01_w, 2),
-            pow(10_w + (pow(1_w, n - 2)) + 012_w, 2));
-      } else if (val == author::Iwahori) {
-        // From Theorem 9.3.1, p161-162, (Ganyushkin + Mazorchuk)
-        // using Theorem 9.1.4 to express presentation in terms
-        // of the pi_i and e_12.
-        // https://link.springer.com/book/10.1007/978-1-84800-281-4
-        p = symmetric_group(n, author::Carmichael);
-        add_full_transformation_monoid_relations(p, n, 0, n - 1);
-      } else {
-        // val == author::Mitchell + author::Whyte
+      presentation::add_rule_no_checks(p, 02_w, 2_w);
+      presentation::add_rule_no_checks(
+          p, pow(1_w, n - 2) + 0112_w + pow(1_w, n - 2) + 011_w, 2_w);
+      presentation::add_rule_no_checks(p,
+                                       10_w + pow(1_w, n - 1) + 012_w
+                                           + pow(1_w, n - 1) + 010_w
+                                           + pow(1_w, n - 1),
+                                       2_w);
+      presentation::add_rule_no_checks(p, pow(210_w + pow(1_w, n - 1), 2), 2_w);
+      presentation::add_rule_no_checks(
+          p, pow(pow(1_w, n - 1) + 012_w, 2), 2_w + pow(1_w, n - 1) + 012_w);
+      presentation::add_rule_no_checks(p,
+                                       pow(2_w + pow(1_w, n - 1) + 01_w, 2),
+                                       2_w + pow(1_w, n - 1) + 012_w);
+      presentation::add_rule_no_checks(
+          p,
+          pow(210_w + pow(1_w, n - 2) + 01_w, 2),
+          pow(10_w + (pow(1_w, n - 2)) + 012_w, 2));
+      p.alphabet_from_rules();
+      p.contains_empty_word(true);
+      return p;
+    }
 
-        if (n == 2) {
-          presentation::add_rule_no_checks(p, 00_w, ""_w);
-          presentation::add_rule_no_checks(p, 01_w, 1_w);
-          presentation::add_rule_no_checks(p, 11_w, 1_w);
-        } else if (n == 3) {
-          presentation::add_rule_no_checks(p, 00_w, ""_w);
-          presentation::add_rule_no_checks(p, 11_w, ""_w);
-          presentation::add_rule_no_checks(p, 010_w, 101_w);
-          presentation::add_rule_no_checks(p, 02_w, 2_w);
-          presentation::add_rule_no_checks(p, 2121_w, 2_w);
-          presentation::add_rule_no_checks(p, pow(0102_w, 3) + 010_w, 20102_w);
-        } else {
-          // n >= 4
-          p = symmetric_group(n, author::Carmichael);
-          if (index == 0) {
-            // From Theorem 1.5 of arXiv:2406.19294
-
-            // Relation T1
-            presentation::add_rule_no_checks(p, {n - 1, 1, n - 1, 1}, {n - 1});
-
-            // Relation T3
-            presentation::add_rule_no_checks(
-                p, {1, 2, 1, n - 1}, {n - 1, 1, 2, 1});
-
-            // Relation T7
-            presentation::add_rule_no_checks(
-                p,
-                {n - 2, 0, 1, 0, n - 1, n - 2, 0, 1, 0, n - 1},
-                {n - 1, n - 2, 0, 1, 0, n - 1, n - 2, 0, 1, 0});
-
-            // Relation T8
-            std::vector<size_t> gens(n
-                                     - 1);  // list of generators to use prod on
-            std::iota(gens.begin(), gens.end(), 0);
-            presentation::add_rule_no_checks(
-                p,
-                prod(gens, 1, n - 1, 1) + word_type({1, 0, n - 1}),
-                word_type({n - 1}) + prod(gens, 1, n - 1, 1) + word_type({1}));
-
-            // Relation T9
-            presentation::add_rule_no_checks(
-                p,
-                {0, 1, 0, n - 1, 0, 1, 0, n - 1, 0, 1, 0, n - 1, 0, 1, 0},
-                {n - 1, 0, 1, 0, n - 1});
-          } else {
-            // index == 1
-
-            // Relation T7
-            presentation::add_rule_no_checks(
-                p,
-                {n - 2, 0, 1, 0, n - 1, n - 2, 0, 1, 0, n - 1},
-                {n - 1, n - 2, 0, 1, 0, n - 1, n - 2, 0, 1, 0});
-
-            // Relation T9
-            presentation::add_rule_no_checks(
-                p,
-                {0, 1, 0, n - 1, 0, 1, 0, n - 1, 0, 1, 0, n - 1, 0, 1, 0},
-                {n - 1, 0, 1, 0, n - 1});
-
-            // Relation T10
-            presentation::add_rule_no_checks(
-                p, {1, 2, 1, n - 1, 1, 2, 1}, {n - 1, 1, n - 1, 1});
-
-            // Relation T8
-            std::vector<size_t> gens(n
-                                     - 1);  // list of generators to use prod on
-            std::iota(gens.begin(), gens.end(), 0);
-            presentation::add_rule_no_checks(
-                p,
-                word_type({1}) + prod(gens, n - 2, 0, -1) + word_type({n - 1})
-                    + prod(gens, 1, n - 1, 1) + word_type({1}),
-                {0, n - 1, 1, n - 1, 1});
-          }
-        }
+    // From Theorem 9.3.1, p161-162, (Ganyushkin + Mazorchuk), proved in
+    // Iwahori, using Theorem 9.1.4 to express presentation in terms of the
+    // pi_i and e_12.
+    // https://link.springer.com/book/10.1007/978-1-84800-281-4
+    Presentation<word_type> full_transformation_monoid_II74(size_t n) {
+      if (n < 4) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "the 1st argument (degree) must be at least 4, found {}", n);
       }
+      Presentation<word_type> p;
+      p = symmetric_group_Car56(n);
+      add_full_transformation_monoid_relations(p, n, 0, n - 1);
+      p.alphabet_from_rules();
+      p.contains_empty_word(true);
+      return p;
+    }
+
+    // From Theorem 1.5 of arXiv:2406.19294
+    Presentation<word_type> full_transformation_monoid_MW24_a(size_t n) {
+      if (n < 2) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "the 1st argument (degree) must be at least 2, found {}", n);
+      }
+      Presentation<word_type> p;
+      // TODO(0) should the small degree presentations stay, since they don't
+      // correspond to the paper?
+      if (n == 2) {
+        presentation::add_rule_no_checks(p, 00_w, ""_w);
+        presentation::add_rule_no_checks(p, 01_w, 1_w);
+        presentation::add_rule_no_checks(p, 11_w, 1_w);
+        p.alphabet_from_rules();
+        p.contains_empty_word(true);
+        return p;
+      } else if (n == 3) {
+        presentation::add_rule_no_checks(p, 00_w, ""_w);
+        presentation::add_rule_no_checks(p, 11_w, ""_w);
+        presentation::add_rule_no_checks(p, 010_w, 101_w);
+        presentation::add_rule_no_checks(p, 02_w, 2_w);
+        presentation::add_rule_no_checks(p, 2121_w, 2_w);
+        presentation::add_rule_no_checks(p, pow(0102_w, 3) + 010_w, 20102_w);
+        p.alphabet_from_rules();
+        p.contains_empty_word(true);
+        return p;
+      }
+
+      p = symmetric_group_Car56(n);
+
+      // From Theorem 1.5 of arXiv:2406.19294
+
+      // Relation T1
+      presentation::add_rule_no_checks(p, {n - 1, 1, n - 1, 1}, {n - 1});
+
+      // Relation T3
+      presentation::add_rule_no_checks(p, {1, 2, 1, n - 1}, {n - 1, 1, 2, 1});
+
+      // Relation T7
+      presentation::add_rule_no_checks(
+          p,
+          {n - 2, 0, 1, 0, n - 1, n - 2, 0, 1, 0, n - 1},
+          {n - 1, n - 2, 0, 1, 0, n - 1, n - 2, 0, 1, 0});
+
+      // Relation T8
+      std::vector<size_t> gens(n - 1);  // list of generators to use prod on
+      std::iota(gens.begin(), gens.end(), 0);
+      presentation::add_rule_no_checks(
+          p,
+          prod(gens, 1, n - 1, 1) + word_type({1, 0, n - 1}),
+          word_type({n - 1}) + prod(gens, 1, n - 1, 1) + word_type({1}));
+
+      // Relation T9
+      presentation::add_rule_no_checks(
+          p,
+          {0, 1, 0, n - 1, 0, 1, 0, n - 1, 0, 1, 0, n - 1, 0, 1, 0},
+          {n - 1, 0, 1, 0, n - 1});
 
       p.alphabet_from_rules();
       p.contains_empty_word(true);
       return p;
     }
 
-    Presentation<word_type> partial_transformation_monoid(size_t n,
-                                                          author val) {
+    // From Theorem 1.5 of arXiv:2406.19294
+    Presentation<word_type> full_transformation_monoid_MW24_b(size_t n) {
       if (n < 3) {
         LIBSEMIGROUPS_EXCEPTION(
-            "the 1st argument (size_t) must be at least 3, found {}", n);
-      } else if (val != author::Machine && val != author::Sutov
-                 && val != author::Mitchell + author::Whyte) {
+            "the 1st argument (degree) must be at least 3, found {}", n);
+      } else if (n % 2 != 1) {
         LIBSEMIGROUPS_EXCEPTION(
-            "expected 2nd argument to be author::Machine, or "
-            "author::Sutov, or author::Mitchell + author::Whyte, found {}",
-            val);
-      } else if (val == author::Machine && n != 3) {
-        LIBSEMIGROUPS_EXCEPTION("the 1st argument must be 3 where the 2nd "
-                                "argument is {}, found {}",
-                                val,
-                                n);
-      } else if (val == author::Sutov && n < 4) {
-        LIBSEMIGROUPS_EXCEPTION("the 1st argument must be at least 4 when the "
-                                "2nd argument is author::Sutov, found {}",
-                                n);
+            "the 1st argument (degree) must be odd, found {}", n);
       }
-
       Presentation<word_type> p;
-      if (val == author::Machine) {
-        p.alphabet(4);
+
+      // TODO(0) should the small degree presentations stay, since they don't
+      // correspond to the paper?
+      if (n == 3) {
+        presentation::add_rule_no_checks(p, 00_w, ""_w);
+        presentation::add_rule_no_checks(p, 11_w, ""_w);
+        presentation::add_rule_no_checks(p, 010_w, 101_w);
+        presentation::add_rule_no_checks(p, 02_w, 2_w);
+        presentation::add_rule_no_checks(p, 2121_w, 2_w);
+        presentation::add_rule_no_checks(p, pow(0102_w, 3) + 010_w, 20102_w);
+        p.alphabet_from_rules();
         p.contains_empty_word(true);
-        p.rules
-            = {00_w,    ""_w,    03_w,     3_w,     22_w,    2_w,     23_w,
-               2_w,     32_w,    3_w,      33_w,    3_w,     010_w,   11_w,
-               011_w,   10_w,    101_w,    0_w,     110_w,   01_w,    111_w,
-               ""_w,    113_w,   013_w,    201_w,   012_w,   302_w,   202_w,
-               312_w,   212_w,   0120_w,   211_w,   0121_w,  210_w,   0202_w,
-               202_w,   0210_w,  121_w,    0211_w,  120_w,   0212_w,  212_w,
-               1210_w,  021_w,   1211_w,   020_w,   1213_w,  0213_w,  1313_w,
-               313_w,   2020_w,  202_w,    2021_w,  212_w,   2121_w,  2120_w,
-               2131_w,  2130_w,  3012_w,   301_w,   3013_w,  301_w,   3131_w,
-               3130_w,  10213_w, 3102_w,   11202_w, 2112_w,  11212_w, 2102_w,
-               13102_w, 213_w,   21021_w,  21020_w, 21120_w, 2112_w,  21121_w,
-               2102_w,  21301_w, 13112_w,  31021_w, 31020_w, 31120_w, 3112_w,
-               31121_w, 3102_w,  121202_w, 21202_w};
-
-      } else if (val == author::Sutov) {
-        // From Theorem 9.4.1, p169, (Ganyushkin + Mazorchuk)
-        // https://link.springer.com/book/10.1007/978-1-84800-281-4
-        p = symmetric_inverse_monoid(n, author::Sutov);
-        p.alphabet(n + 1);
-        add_full_transformation_monoid_relations(p, n, 0, n);
-        presentation::add_rule_no_checks(p, {n, 0, n - 1, 0}, {n});
-        presentation::add_rule_no_checks(p, {0, n - 1, 0, n}, {0, n - 1, 0});
-        presentation::add_rule_no_checks(
-            p, {n, n - 1}, {0, n - 1, 0, n - 1, n});
-        presentation::add_rule_no_checks(p, {n, 1, n - 1, 1}, {1, n - 1, 1, n});
-      } else {
-        // From Theorem 1.6 of https://doi.org/10.48550/arXiv.2406.19294
-        // val == author::Mitchell + author::Whyte
-        p = symmetric_group(n, author::Carmichael);
-
-        // Relation I3
-        std::vector<size_t> gens(n - 1);  // list of generators to use prod on
-        std::iota(gens.begin(), gens.end(), 0);
-        presentation::add_rule_no_checks(
-            p,
-            prod(gens, 0, n - 1, 1) + word_type({0, n - 1}),
-            word_type({n - 1}) + prod(gens, 0, n - 1, 1) + word_type({0}));
-
-        // Relation T3
-        presentation::add_rule_no_checks(p, {1, 2, 1, n}, {n, 1, 2, 1});
-
-        // Relation T7
-        presentation::add_rule_no_checks(
-            p,
-            {n - 2, 0, 1, 0, n, n - 2, 0, 1, 0, n},
-            {n, n - 2, 0, 1, 0, n, n - 2, 0, 1, 0});
-
-        // Relation T8
-        presentation::add_rule_no_checks(
-            p,
-            prod(gens, 1, n - 1, 1) + word_type({1, 0, n}),
-            word_type({n}) + prod(gens, 1, n - 1, 1) + word_type({1}));
-
-        // Relation T9
-        presentation::add_rule_no_checks(
-            p, {0, 1, 0, n, 0, 1, 0, n, 0, 1, 0, n, 0, 1, 0}, {n, 0, 1, 0, n});
-
-        // Relation P1
-        presentation::add_rule_no_checks(p, {n, 0, n - 1, 0}, {n});
-
-        // Relation P5
-        presentation::add_rule_no_checks(p, {1, n - 1, 1, n}, {n, 1, n - 1, 1});
-
-        // Relation P6
-        presentation::add_rule_no_checks(
-            p, {0, 1, 0, n - 1, 0, 1, 0}, {n - 1, 0, n, 0});
-
-        // Relation P7
-        presentation::add_rule_no_checks(
-            p, {0, n - 1, 0, n - 1, 0}, {n, n - 1});
+        return p;
       }
+
+      p = symmetric_group_Car56(n);
+
+      // Relation T7
+      presentation::add_rule_no_checks(
+          p,
+          {n - 2, 0, 1, 0, n - 1, n - 2, 0, 1, 0, n - 1},
+          {n - 1, n - 2, 0, 1, 0, n - 1, n - 2, 0, 1, 0});
+
+      // Relation T9
+      presentation::add_rule_no_checks(
+          p,
+          {0, 1, 0, n - 1, 0, 1, 0, n - 1, 0, 1, 0, n - 1, 0, 1, 0},
+          {n - 1, 0, 1, 0, n - 1});
+
+      // Relation T10
+      presentation::add_rule_no_checks(
+          p, {1, 2, 1, n - 1, 1, 2, 1}, {n - 1, 1, n - 1, 1});
+
+      // Relation T8
+      std::vector<size_t> gens(n - 1);  // list of generators to use prod on
+      std::iota(gens.begin(), gens.end(), 0);
+      presentation::add_rule_no_checks(
+          p,
+          word_type({1}) + prod(gens, n - 2, 0, -1) + word_type({n - 1})
+              + prod(gens, 1, n - 1, 1) + word_type({1}),
+          {0, n - 1, 1, n - 1, 1});
+
       p.alphabet_from_rules();
+      p.contains_empty_word(true);
+      return p;
+    }
+
+    // From Theorem 1.6 of https://doi.org/10.48550/arXiv.2406.19294
+    Presentation<word_type> partial_transformation_monoid_MW24(size_t n) {
+      if (n < 2) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "the 1st argument (size_t) must be at least 2, found {}", n);
+      }
+      Presentation<word_type> p;
+
+      p = symmetric_group_Car56(n);
+
+      // Relation I3
+      std::vector<size_t> gens(n - 1);  // list of generators to use prod on
+      std::iota(gens.begin(), gens.end(), 0);
+      presentation::add_rule_no_checks(
+          p,
+          prod(gens, 0, n - 1, 1) + word_type({0, n - 1}),
+          word_type({n - 1}) + prod(gens, 0, n - 1, 1) + word_type({0}));
+
+      // Relation T3
+      presentation::add_rule_no_checks(p, {1, 2, 1, n}, {n, 1, 2, 1});
+
+      // Relation T7
+      presentation::add_rule_no_checks(p,
+                                       {n - 2, 0, 1, 0, n, n - 2, 0, 1, 0, n},
+                                       {n, n - 2, 0, 1, 0, n, n - 2, 0, 1, 0});
+
+      // Relation T8
+      presentation::add_rule_no_checks(
+          p,
+          prod(gens, 1, n - 1, 1) + word_type({1, 0, n}),
+          word_type({n}) + prod(gens, 1, n - 1, 1) + word_type({1}));
+
+      // Relation T9
+      presentation::add_rule_no_checks(
+          p, {0, 1, 0, n, 0, 1, 0, n, 0, 1, 0, n, 0, 1, 0}, {n, 0, 1, 0, n});
+
+      // Relation P1
+      presentation::add_rule_no_checks(p, {n, 0, n - 1, 0}, {n});
+
+      // Relation P5
+      presentation::add_rule_no_checks(p, {1, n - 1, 1, n}, {n, 1, n - 1, 1});
+
+      // Relation P6
+      presentation::add_rule_no_checks(
+          p, {0, 1, 0, n - 1, 0, 1, 0}, {n - 1, 0, n, 0});
+
+      // Relation P7
+      presentation::add_rule_no_checks(p, {0, n - 1, 0, n - 1, 0}, {n, n - 1});
+
+      p.alphabet_from_rules();
+      return p;
+    }
+
+    // Due to Shutov 1960, as in Theorem 9.4.1, p169, (Ganyushkin + Mazorchuk)
+    // https://link.springer.com/book/10.1007/978-1-84800-281-4
+    Presentation<word_type> partial_transformation_monoid_Shu60(size_t n) {
+      if (n < 4) {
+        LIBSEMIGROUPS_EXCEPTION("the 1st argument must be at least 4, found {}",
+                                n);
+      }
+      Presentation<word_type> p;
+      p = symmetric_inverse_monoid_Shu60(n);
+      p.alphabet(n + 1);
+      add_full_transformation_monoid_relations(p, n, 0, n);
+      presentation::add_rule_no_checks(p, {n, 0, n - 1, 0}, {n});
+      presentation::add_rule_no_checks(p, {0, n - 1, 0, n}, {0, n - 1, 0});
+      presentation::add_rule_no_checks(p, {n, n - 1}, {0, n - 1, 0, n - 1, n});
+      presentation::add_rule_no_checks(p, {n, 1, n - 1, 1}, {1, n - 1, 1, n});
+      p.alphabet_from_rules();
+      return p;
+    }
+
+    Presentation<word_type> symmetric_inverse_monoid_Gay18(size_t n) {
+      if (n < 2) {
+        LIBSEMIGROUPS_EXCEPTION("the 1st argument must be at least 2, found {}",
+                                n);
+      }
+      Presentation<word_type> p;
+      p = symmetric_group_Moo97_a(n);
+      p.alphabet(n);
+      presentation::add_idempotent_rules_no_checks(p, {n - 1});
+      add_rook_monoid_common(p, n);
+      p.alphabet_from_rules();
+      p.contains_empty_word(true);
       return p;
     }
 
     // From Theorem 9.2.2, p156
     // https://link.springer.com/book/10.1007/978-1-84800-281-4 (Ganyushkin +
     // Mazorchuk)
-    Presentation<word_type> symmetric_inverse_monoid(size_t n, author val) {
-      if (val != author::Sutov && val != author::Gay
-          && val != author::Mitchell + author::Whyte) {
-        LIBSEMIGROUPS_EXCEPTION(
-            "expected 2nd argument to be author::Sutov, or "
-            "author::Gay, or author::Mitchell + author::Whyte, found {}",
-            val);
-      } else if (val == author::Sutov && n < 4) {
-        LIBSEMIGROUPS_EXCEPTION("the 1st argument must be at least 4 when the "
-                                "2nd argument is author::Sutov, found {}",
+    Presentation<word_type> symmetric_inverse_monoid_Shu60(size_t n) {
+      if (n < 4) {
+        LIBSEMIGROUPS_EXCEPTION("the 1st argument must be at least 4, found {}",
                                 n);
-      } else if (val == author::Gay && n < 2) {
-        LIBSEMIGROUPS_EXCEPTION("the 1st argument must be at least 2 when the "
-                                "2nd argument is author::Gay, found {}",
-                                n);
-      } else if (val == author::Mitchell + author::Whyte && n < 4) {
-        LIBSEMIGROUPS_EXCEPTION(
-            "the 1st argument must be at least 4 when the "
-            "2nd argument is author::Mitchell + author::Whyte, found {}",
-            n);
       }
       Presentation<word_type> p;
-      if (val == author::Sutov) {
-        p = symmetric_group(n, author::Carmichael);
+      p = symmetric_group_Car56(n);
 
-        std::vector<word_type> pi, epsilon = {{n - 1}};
-        for (size_t i = 0; i <= n - 2; ++i) {
-          pi.push_back({i});
-          epsilon.push_back(pi[i] + epsilon[0] + pi[i]);
-        }
-
-        presentation::add_rule_no_checks(
-            p, pow(epsilon[0], 2), word_type(epsilon[0]));
-        presentation::add_rule_no_checks(
-            p, epsilon[0] + epsilon[1], epsilon[1] + epsilon[0]);
-
-        for (size_t k = 1; k <= n - 2; ++k) {
-          presentation::add_rule_no_checks(
-              p, epsilon[1] + pi[k], pi[k] + epsilon[1]);
-          presentation::add_rule_no_checks(
-              p, epsilon[k + 1] + pi[0], pi[0] + epsilon[k + 1]);
-        }
-        presentation::add_rule_no_checks(
-            p, epsilon[1] + epsilon[0] + pi[0], epsilon[1] + epsilon[0]);
-        p.alphabet_from_rules();
-      } else if (val == author::Gay) {
-        p = symmetric_group(n, author::Coxeter + author::Moser);
-        p.alphabet(n);
-        presentation::add_idempotent_rules_no_checks(p, {n - 1});
-        add_rook_monoid_common(p, n);
-      } else {
-        // val == author::Mitchell + author::Whyte
-        // From Theorem 1.4 of https://doi.org/10.48550/arXiv.2406.19294
-
-        p = symmetric_group(n, author::Carmichael);
-
-        // Relation I2
-        presentation::add_rule_no_checks(p, {0, 1, 0, n - 1}, {n - 1, 0, 1, 0});
-
-        // Relation I6
-        std::vector<size_t> gens(n - 1);  // list of generators to use prod on
-        std::iota(gens.begin(), gens.end(), 0);
-        presentation::add_rule_no_checks(
-            p,
-            prod(gens, 0, n - 1, 1) + word_type({0, n - 1}),
-            word_type({n - 1, n - 1}) + prod(gens, 0, n - 1, 1)
-                + word_type({0}));
-
-        // Relation I7
-        presentation::add_rule_no_checks(
-            p, {0, n - 1, 0, n - 1, 0, n - 1, 0}, {n - 1, 0, n - 1});
+      std::vector<word_type> pi, epsilon = {{n - 1}};
+      for (size_t i = 0; i <= n - 2; ++i) {
+        pi.push_back({i});
+        epsilon.push_back(pi[i] + epsilon[0] + pi[i]);
       }
 
+      presentation::add_rule_no_checks(
+          p, pow(epsilon[0], 2), word_type(epsilon[0]));
+      presentation::add_rule_no_checks(
+          p, epsilon[0] + epsilon[1], epsilon[1] + epsilon[0]);
+
+      for (size_t k = 1; k <= n - 2; ++k) {
+        presentation::add_rule_no_checks(
+            p, epsilon[1] + pi[k], pi[k] + epsilon[1]);
+        presentation::add_rule_no_checks(
+            p, epsilon[k + 1] + pi[0], pi[0] + epsilon[k + 1]);
+      }
+      presentation::add_rule_no_checks(
+          p, epsilon[1] + epsilon[0] + pi[0], epsilon[1] + epsilon[0]);
+      p.alphabet_from_rules();
+      p.alphabet_from_rules();
+      p.contains_empty_word(true);
+      return p;
+    }
+
+    // From Theorem 1.4 of https://doi.org/10.48550/arXiv.2406.19294
+    Presentation<word_type> symmetric_inverse_monoid_MW24(size_t n) {
+      if (n < 4) {
+        LIBSEMIGROUPS_EXCEPTION("the 1st argument must be at least 4, found {}",
+                                n);
+      }
+      Presentation<word_type> p;
+
+      p = symmetric_group_Car56(n);
+
+      // Relation I2
+      presentation::add_rule_no_checks(p, {0, 1, 0, n - 1}, {n - 1, 0, 1, 0});
+
+      // Relation I6
+      std::vector<size_t> gens(n - 1);  // list of generators to use prod on
+      std::iota(gens.begin(), gens.end(), 0);
+      presentation::add_rule_no_checks(
+          p,
+          prod(gens, 0, n - 1, 1) + word_type({0, n - 1}),
+          word_type({n - 1, n - 1}) + prod(gens, 0, n - 1, 1) + word_type({0}));
+
+      // Relation I7
+      presentation::add_rule_no_checks(
+          p, {0, n - 1, 0, n - 1, 0, n - 1, 0}, {n - 1, 0, n - 1});
       p.alphabet_from_rules();
       p.contains_empty_word(true);
       return p;
@@ -1732,13 +1562,10 @@ namespace libsemigroups {
     // Chinese monoid
     // See: The Chinese Monoid - Cassaigne, Espie, Krob, Novelli and Hivert,
     // 2001
-    Presentation<word_type> chinese_monoid(size_t n, author val) {
+    Presentation<word_type> chinese_monoid_CEKNH01(size_t n) {
       if (n < 2) {
         LIBSEMIGROUPS_EXCEPTION(
             "expected 1st argument to be at least 2, found {}", n);
-      } else if (val != author::Any) {
-        LIBSEMIGROUPS_EXCEPTION(
-            "expected 2nd argument to be author::Any, found {}", val);
       }
       Presentation<word_type> p;
       p.alphabet(n);
@@ -1760,15 +1587,10 @@ namespace libsemigroups {
       return p;
     }
 
-    Presentation<word_type> monogenic_semigroup(size_t m,
-                                                size_t r,
-                                                author val) {
+    Presentation<word_type> monogenic_semigroup(size_t m, size_t r) {
       if (r == 0) {
         LIBSEMIGROUPS_EXCEPTION(
             "expected 2nd argument to be strictly positive, found {}", r);
-      } else if (val != author::Any) {
-        LIBSEMIGROUPS_EXCEPTION(
-            "expected 3rd argument to be author::Any, found {}", val);
       }
       Presentation<word_type> p;
       presentation::add_rule_no_checks(p, pow(0_w, m + r), pow(0_w, m));
@@ -1781,13 +1603,10 @@ namespace libsemigroups {
       return p;
     }
 
-    Presentation<word_type> order_preserving_monoid(size_t n, author val) {
+    Presentation<word_type> order_preserving_monoid_AR00(size_t n) {
       if (n < 3) {
         LIBSEMIGROUPS_EXCEPTION(
             "expected 1st argument to be at least 3, found {}", n);
-      } else if (val != author::Any) {
-        LIBSEMIGROUPS_EXCEPTION(
-            "expected 2nd argument to be author::Any, found {}", val);
       }
       std::vector<word_type> u, v;
 
@@ -1836,82 +1655,72 @@ namespace libsemigroups {
       return p;
     }
 
-    Presentation<word_type> cyclic_inverse_monoid(size_t n,
-                                                  author val,
-                                                  size_t index) {
-      if (val != author::Fernandes) {
+    // See Theorem 2.6 of https://arxiv.org/pdf/2211.02155.pdf
+    Presentation<word_type> cyclic_inverse_monoid_Fer22_a(size_t n) {
+      if (n < 3) {
         LIBSEMIGROUPS_EXCEPTION(
-            "expected 2nd argument to be author::Fernandes, found {}", val);
-      } else if (n < 3) {
-        LIBSEMIGROUPS_EXCEPTION(
-            "the 1st argument must be at least 3 when the 2nd argument is "
-            "author::Fernandes, found {}",
-            n);
-      } else if (index > 1) {
-        LIBSEMIGROUPS_EXCEPTION("the 3rd argument must be 0 or 1 when the 2nd "
-                                "argument is author::Fernandes, found {}",
-                                n);
+            "expected 1st argument to be at least 3, found {}", n);
       }
-
       Presentation<word_type> p;
       p.contains_empty_word(true);
+      p.alphabet(n + 1);
 
-      // See Theorem 2.6 of https://arxiv.org/pdf/2211.02155.pdf
-      if (index == 0) {
-        p.alphabet(n + 1);
+      // R1
+      presentation::add_rule_no_checks(p, pow(0_w, n), {});
 
-        // R1
-        presentation::add_rule_no_checks(p, pow(0_w, n), {});
+      // R2
+      presentation::add_idempotent_rules_no_checks(p, range(1, n + 1));
 
-        // R2
-        presentation::add_idempotent_rules_no_checks(p, range(1, n + 1));
+      // R3
+      presentation::add_commutes_rules_no_checks(p, range(1, n + 1));
 
-        // R3
-        presentation::add_commutes_rules_no_checks(p, range(1, n + 1));
-
-        // R4
-        presentation::add_rule_no_checks(p, 01_w, word_type({n}) + 0_w);
-        for (size_t i = 0; i < n - 1; ++i) {
-          presentation::add_rule_no_checks(
-              p, 0_w + word_type({i + 2}), word_type({i + 1}) + 0_w);
-        }
-
-        // R5
-        presentation::add_rule_no_checks(p, range(0, n + 1), range(1, n + 1));
-
-      } else if (index == 1) {
-        // See Theorem 2.7 of https://arxiv.org/pdf/2211.02155.pdf
-        p.alphabet(2);
-
-        presentation::add_rule_no_checks(p, pow(0_w, n), ""_w);  // relation Q1
-        presentation::add_rule_no_checks(p, 11_w, 1_w);          // relation Q2
-
-        // relations Q3
-        for (size_t j = 2; j <= n; ++j) {
-          for (size_t i = 1; i < j; ++i) {
-            presentation::add_rule_no_checks(
-                p,
-                1_w + pow(0_w, n - j + i) + 1_w + pow(0_w, n - i + j),
-                pow(0_w, n - j + i) + 1_w + pow(0_w, n - i + j) + 1_w);
-          }
-        }
+      // R4
+      presentation::add_rule_no_checks(p, 01_w, word_type({n}) + 0_w);
+      for (size_t i = 0; i < n - 1; ++i) {
         presentation::add_rule_no_checks(
-            p,
-            0_w + pow(1_w + pow(0_w, n - 1), n),
-            pow(1_w + pow(0_w, n - 1), n));  // relation Q4
+            p, 0_w + word_type({i + 2}), word_type({i + 1}) + 0_w);
       }
+
+      // R5
+      presentation::add_rule_no_checks(p, range(0, n + 1), range(1, n + 1));
+      return p;
+    }
+
+    // See Theorem 2.7 of https://arxiv.org/pdf/2211.02155.pdf
+    Presentation<word_type> cyclic_inverse_monoid_Fer22_b(size_t n) {
+      if (n < 3) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "expected 1st argument to be at least 3, found {}", n);
+      }
+      Presentation<word_type> p;
+      p.contains_empty_word(true);
+      p.alphabet(2);
+
+      presentation::add_rule_no_checks(p, pow(0_w, n), ""_w);  // relation Q1
+      presentation::add_rule_no_checks(p, 11_w, 1_w);          // relation Q2
+
+      // relations Q3
+      for (size_t j = 2; j <= n; ++j) {
+        for (size_t i = 1; i < j; ++i) {
+          presentation::add_rule_no_checks(
+              p,
+              1_w + pow(0_w, n - j + i) + 1_w + pow(0_w, n - i + j),
+              pow(0_w, n - j + i) + 1_w + pow(0_w, n - i + j) + 1_w);
+        }
+      }
+      presentation::add_rule_no_checks(
+          p,
+          0_w + pow(1_w + pow(0_w, n - 1), n),
+          pow(1_w + pow(0_w, n - 1), n));  // relation Q4
       return p;
     }
 
     // See Theorem 2.17 of https://arxiv.org/pdf/2211.02155.pdf
-    Presentation<word_type> order_preserving_cyclic_inverse_monoid(size_t n,
-                                                                   author val) {
+    Presentation<word_type>
+    order_preserving_cyclic_inverse_monoid_Fer22(size_t n) {
       if (n < 3) {
         LIBSEMIGROUPS_EXCEPTION(
             "expected 1st argument to be at least 3, found {}", n);
-      } else if (val != author::Any) {
-        LIBSEMIGROUPS_EXCEPTION(
-            "expected 2nd argument to be author::Any, found {}", val);
       }
 
       Presentation<word_type> p;
@@ -1953,14 +1762,11 @@ namespace libsemigroups {
     }
 
     // See Theorem 2.8 of https://arxiv.org/pdf/2205.02196.pdf
-    Presentation<word_type> partial_isometries_cycle_graph_monoid(size_t n,
-                                                                  author val) {
+    Presentation<word_type>
+    partial_isometries_cycle_graph_monoid_FP22(size_t n) {
       if (n < 3) {
         LIBSEMIGROUPS_EXCEPTION(
             "expected 1st argument to be at least 3, found {}", n);
-      } else if (val != author::Any) {
-        LIBSEMIGROUPS_EXCEPTION(
-            "expected 2nd argument to be author::Any, found {}", val);
       }
 
       Presentation<word_type> p;
@@ -2004,20 +1810,13 @@ namespace libsemigroups {
       return p;
     }
 
-    Presentation<word_type> not_symmetric_group(size_t n, author val) {
+    // See Section 2.2 of 'Presentations of finite simple groups: A quantitative
+    // approach' J. Amer. Math. Soc. 21 (2008), 711-774
+    Presentation<word_type> not_symmetric_group_GKKL08(size_t n) {
       if (n < 4) {
         LIBSEMIGROUPS_EXCEPTION(
             "expected 1st argument to be at least 4, found {}", n);
-      } else if (val
-                 != author::Guralnick + author::Kantor + author::Kassabov
-                        + author::Lubotzky) {
-        LIBSEMIGROUPS_EXCEPTION(
-            "expected 2nd argument to be author::Guralnick + author::Kantor",
-            " + author::Kassabov + author::Lubotzky found {}",
-            val);
       }
-      // See Section 2.2 of 'Presentations of finite simple groups: A
-      // quantitative approach' J. Amer. Math. Soc. 21 (2008), 711-774
 
       Presentation<word_type> p;
       p.alphabet(n - 1).contains_empty_word(true);
@@ -2049,12 +1848,12 @@ namespace libsemigroups {
       return p;
     }
 
-    // n should be prime for this presentation to actually defined the claimed
-    // group.
-    Presentation<word_type> special_linear_group_2(size_t n, author val) {
-      if (val != author::Any) {
+    // n should be an odd prime for this presentation to actually defined the
+    // claimed group. See Theorem 4 in https://doi.org/10.1112/blms/12.1.17
+    Presentation<word_type> special_linear_group_2_CR80(size_t q) {
+      if (q < 3) {
         LIBSEMIGROUPS_EXCEPTION(
-            "expected 2nd argument to be author::Any, found {}", val);
+            "expected 1st argument to be at least 3, found {}", q);
       }
       Presentation<word_type> p;
       p.alphabet(4);
@@ -2063,18 +1862,15 @@ namespace libsemigroups {
       presentation::add_rule(p, 00_w + pow(31_w, 3), {});
       presentation::add_rule(
           p,
-          pow(0_w + pow(2_w, 4) + 0_w + pow(2_w, (n + 1) / 2), 2) + pow(2_w, n)
-              + pow(0_w, 2 * (n / 3)),
+          pow(0_w + pow(2_w, 4) + 0_w + pow(2_w, (q + 1) / 2), 2) + pow(2_w, q)
+              + pow(0_w, 2 * (q / 3)),
           {});
       return p;
     }
 
-    Presentation<word_type> hypo_plactic_monoid(size_t n, author val) {
-      if (val != author::Any) {
-        LIBSEMIGROUPS_EXCEPTION(
-            "expected 2nd argument to be author::Any, found {}", val);
-      }
-      auto result = plactic_monoid(n);
+    // See Definition 4.2 of https://doi.org/10.1016/S0012-365X(99)00270-8
+    Presentation<word_type> hypo_plactic_monoid_Nov00(size_t n) {
+      auto result = plactic_monoid_Knu70(n);
 
       for (letter_type a = 0; a < n; ++a) {
         for (letter_type b = a; b < n; ++b) {
@@ -2100,12 +1896,8 @@ namespace libsemigroups {
     }
 
     Presentation<word_type>
-    sigma_stylic_monoid(std::vector<size_t> const& sigma, author val) {
-      if (val != author::Any) {
-        LIBSEMIGROUPS_EXCEPTION(
-            "expected 2nd argument to be author::Any, found {}", val);
-      }
-      auto p = plactic_monoid(sigma.size());
+    sigma_plactic_monoid_AHMNT24(std::vector<size_t> const& sigma) {
+      auto p = plactic_monoid_Knu70(sigma.size());
       p.contains_empty_word(true);
       for (auto [a, e] : rx::enumerate(sigma)) {
         presentation::add_rule(p, pow({a}, e), {a});
@@ -2113,13 +1905,10 @@ namespace libsemigroups {
       return p;
     }
 
-    Presentation<word_type> zero_rook_monoid(size_t n, author val) {
+    Presentation<word_type> zero_rook_monoid_Gay18(size_t n) {
       if (n < 2) {
         LIBSEMIGROUPS_EXCEPTION(
             "the 1st argument (degree) must at least 2, found {}", n);
-      } else if (val != author::Any) {
-        LIBSEMIGROUPS_EXCEPTION(
-            "expected 2nd argument to be author::Any, found {}", val);
       }
 
       Presentation<word_type> p;
@@ -2130,14 +1919,9 @@ namespace libsemigroups {
       return p;
     }
 
-    Presentation<word_type> not_renner_type_B_monoid(size_t l,
-                                                     int    q,
-                                                     author val) {
+    Presentation<word_type> not_renner_type_B_monoid_Gay18(size_t l, int q) {
       if (q != 0 && q != 1) {
         LIBSEMIGROUPS_EXCEPTION("the 2nd argument must be 0 or 1, found {}", q);
-      } else if (val != author::Any) {
-        LIBSEMIGROUPS_EXCEPTION(
-            "expected 3rd argument to be author::Any, found {}", val);
       }
 
       Presentation<word_type> p;
@@ -2153,12 +1937,9 @@ namespace libsemigroups {
       return p;
     }
 
-    Presentation<word_type> renner_type_B_monoid(size_t l, int q, author val) {
+    Presentation<word_type> renner_type_B_monoid_Gay18(size_t l, int q) {
       if (q != 0 && q != 1) {
         LIBSEMIGROUPS_EXCEPTION("the 2nd argument must be 0 or 1, found {}", q);
-      } else if (val != author::Any) {
-        LIBSEMIGROUPS_EXCEPTION(
-            "expected 3rd argument to be author::Any, found {}", val);
       }
 
       Presentation<word_type> p;
@@ -2177,14 +1958,9 @@ namespace libsemigroups {
       return p;
     }
 
-    Presentation<word_type> not_renner_type_D_monoid(size_t l,
-                                                     int    q,
-                                                     author val) {
+    Presentation<word_type> not_renner_type_D_monoid_God09(size_t l, int q) {
       if (q != 0 && q != 1) {
         LIBSEMIGROUPS_EXCEPTION("the 2nd argument must be 0 or 1, found {}", q);
-      } else if (val != author::Any) {
-        LIBSEMIGROUPS_EXCEPTION(
-            "expected 3rd argument to be author::Any, found {}", val);
       }
       Presentation<word_type> p;
       add_renner_type_D_common(p, l, q);
@@ -2203,12 +1979,9 @@ namespace libsemigroups {
       return p;
     }
 
-    Presentation<word_type> renner_type_D_monoid(size_t l, int q, author val) {
+    Presentation<word_type> renner_type_D_monoid_Gay18(size_t l, int q) {
       if (q != 0 && q != 1) {
         LIBSEMIGROUPS_EXCEPTION("the 2nd argument must be 0 or 1, found {}", q);
-      } else if (val != author::Any) {
-        LIBSEMIGROUPS_EXCEPTION(
-            "expected 3rd argument to be author::Any, found {}", val);
       }
       Presentation<word_type> p;
       add_renner_type_D_common(p, l, q);
@@ -2242,5 +2015,5 @@ namespace libsemigroups {
       return p;
     }
 
-  }  // namespace fpsemigroup
+  }  // namespace presentation::examples
 }  // namespace libsemigroups

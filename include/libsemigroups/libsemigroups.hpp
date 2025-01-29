@@ -1,6 +1,6 @@
 //
 // libsemigroups - C++ library for semigroups and monoids
-// Copyright (C) 2019-2024 James D. Mitchell
+// Copyright (C) 2019-2025 James D. Mitchell
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -35,7 +35,6 @@
 #include "bmat-adapters.hpp"
 #include "bmat-fastest.hpp"
 #include "bmat8.hpp"
-#include "config.hpp"
 #include "cong-intf.hpp"
 #include "cong.hpp"
 #include "constants.hpp"
@@ -45,7 +44,6 @@
 #include "dot.hpp"
 #include "exception.hpp"
 #include "forest.hpp"
-#include "fpsemi-examples.hpp"
 #include "freeband.hpp"
 #include "froidure-pin-base.hpp"
 #include "froidure-pin.hpp"
@@ -59,6 +57,7 @@
 #include "order.hpp"
 #include "paths.hpp"
 #include "pbr.hpp"
+#include "presentation-examples.hpp"
 #include "presentation.hpp"
 #include "ranges.hpp"
 #include "runner.hpp"

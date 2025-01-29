@@ -27,7 +27,7 @@
 
 #include "catch.hpp"  // for REQUIRE, REQUIRE_NOTHROW, REQUIRE_THROWS_AS
 
-#include "libsemigroups/fpsemi-examples.hpp"
+#include "libsemigroups/presentation-examples.hpp"
 #include "libsemigroups/presentation.hpp"
 #include "libsemigroups/todd-coxeter.hpp"  // for ToddCoxeter, ToddCoxeter::...
 #include "libsemigroups/types.hpp"         // for word_type, letter_type
@@ -228,16 +228,6 @@ namespace libsemigroups {
 
   }  // namespace
 
-  using fpsemigroup::dual_symmetric_inverse_monoid;
-  using fpsemigroup::orientation_preserving_monoid;
-  using fpsemigroup::orientation_preserving_reversing_monoid;
-  using fpsemigroup::partition_monoid;
-  using fpsemigroup::singular_brauer_monoid;
-  using fpsemigroup::stellar_monoid;
-  using fpsemigroup::stylic_monoid;
-  using fpsemigroup::temperley_lieb_monoid;
-  using fpsemigroup::uniform_block_bijection_monoid;
-
   ////////////////////////////////////////////////////////////////////////
   // 1. orientation_preserving_monoid
   ////////////////////////////////////////////////////////////////////////
@@ -268,8 +258,10 @@ namespace libsemigroups {
         "OP_n",
         3,
         9,
-        [](size_t n) { return orientation_preserving_monoid(n); },
-        "orientation_preserving_monoid",
+        [](size_t n) {
+          return presentation::examples::orientation_preserving_monoid_AR00(n);
+        },
+        "orientation_preserving_monoid_AR00",
         strategies,
         DoNothing);
   }  // namespace orientation_preserving
@@ -280,28 +272,36 @@ namespace libsemigroups {
   TEST_CASE("orientation_preserving_monoid(n) (Arthur-Ruskuc), n = 10",
             "[paper][orientation_preserving_monoid][n=10][hlt]") {
     benchmark_todd_coxeter_single(
-        923'690, orientation_preserving_monoid(10), 10);
+        923'690,
+        presentation::examples::orientation_preserving_monoid_AR00(10),
+        10);
   }
 
   // 4m13s (2021 - MacBook Air M1 - 8GB RAM)
   TEST_CASE("orientation_preserving_monoid(n) (Arthur-Ruskuc), n = 11",
             "[paper][orientation_preserving_monoid][n=11][hlt]") {
     benchmark_todd_coxeter_single(
-        3'879'766, orientation_preserving_monoid(11), 11);
+        3'879'766,
+        presentation::examples::orientation_preserving_monoid_AR00(11),
+        11);
   }
 
   // 54m35s (2021 - MacBook Air M1 - 8GB RAM)
   TEST_CASE("orientation_preserving_monoid(n) (Arthur-Ruskuc), n = 12",
             "[paper][orientation_preserving_monoid][n=12][hlt]") {
     benchmark_todd_coxeter_single(
-        16'224'804, orientation_preserving_monoid(12), 12);
+        16'224'804,
+        presentation::examples::orientation_preserving_monoid_AR00(12),
+        12);
   }
 
   // 9h14m (2021 - MacBook Air M1 - 8GB RAM)
   TEST_CASE("orientation_preserving_monoid(n) (Arthur-Ruskuc), n = 13",
             "[paper][orientation_preserving_monoid][n=13][hlt]") {
     benchmark_todd_coxeter_single(
-        67'603'744, orientation_preserving_monoid(13), 13);
+        67'603'744,
+        presentation::examples::orientation_preserving_monoid_AR00(13),
+        13);
   }
 
   ////////////////////////////////////////////////////////////////////////
@@ -334,8 +334,11 @@ namespace libsemigroups {
         "OR_n",
         3,
         8,
-        [](size_t n) { return orientation_preserving_reversing_monoid(n); },
-        "orientation_preserving_reversing_monoid",
+        [](size_t n) {
+          return presentation::examples::
+              orientation_preserving_reversing_monoid_AR00(n);
+        },
+        "orientation_preserving_reversing_monoid_AR00",
         strategies,
         DoNothing);
   }  // namespace orientation_reversing
@@ -344,35 +347,48 @@ namespace libsemigroups {
   TEST_CASE("orientation_preserving_reversing_monoid(9) - hlt",
             "[paper][orientation_preserving_reversing_monoid][n=9][hlt]") {
     benchmark_todd_coxeter_single(
-        434'835, orientation_preserving_reversing_monoid(9), 9);
+        434'835,
+        presentation::examples::orientation_preserving_reversing_monoid_AR00(9),
+        9);
   }
 
   // Approx 90s (2021 - MacBook Air M1 - 8GB RAM)
   TEST_CASE("orientation_preserving_reversing_monoid(10) - hlt",
             "[paper][orientation_preserving_reversing_monoid][n=10][hlt]") {
     benchmark_todd_coxeter_single(
-        1'843'320, orientation_preserving_reversing_monoid(10), 10);
+        1'843'320,
+        presentation::examples::orientation_preserving_reversing_monoid_AR00(
+            10),
+        10);
   }
 
   // ?? (2021 - MacBook Air M1 - 8GB RAM)
   TEST_CASE("orientation_preserving_reversing_monoid(11) - hlt",
             "[paper][orientation_preserving_reversing_monoid][n=11][hlt]") {
     benchmark_todd_coxeter_single(
-        7'753'471, orientation_preserving_reversing_monoid(11), 11);
+        7'753'471,
+        presentation::examples::orientation_preserving_reversing_monoid_AR00(
+            11),
+        11);
   }
 
   // ?? (2021 - MacBook Air M1 - 8GB RAM)
   TEST_CASE("orientation_preserving_reversing_monoid(12) - hlt",
             "[paper][orientation_preserving_reversing_monoid][n=12][hlt]") {
     benchmark_todd_coxeter_single(
-        32'440'884, orientation_preserving_reversing_monoid(12), 12);
+        32'440'884,
+        presentation::examples::orientation_preserving_reversing_monoid_AR00(
+            12),
+        12);
   }
 
   // ?? (2021 - MacBook Air M1 - 8GB RAM)
   // TEST_CASE("orientation_preserving_reversing_monoid(13) - hlt",
   //           "[paper][orientation_preserving_reversing_monoid][n=13][hlt]") {
   //   benchmark_todd_coxeter_single(
-  //       135'195'307, orientation_preserving_reversing_monoid(13), 13);
+  //       135'195'307,
+  //       presentation::examples::orientation_preserving_reversing_monoid_AR00(13),
+  //       13);
   // }
 
   ////////////////////////////////////////////////////////////////////////
@@ -391,7 +407,7 @@ namespace libsemigroups {
         "P_n",
         4,
         6,
-        [](size_t n) { return partition_monoid(n); },
+        [](size_t n) { return presentation::examples::partition_monoid(n); },
         "partition_monoid",
         strategies,
         DoNothing);
@@ -409,7 +425,7 @@ namespace libsemigroups {
     // Approx 49m35s
     TEST_CASE("partition_monoid(7) - hlt",
               "[paper][partition_monoid][n=7][hlt]") {
-      auto p = partition_monoid(7);
+      auto p = presentation::examples::partition_monoid(7);
       benchmark_todd_coxeter_single(
           190'899'322, std::move(p), 7, {strategy::hlt}, init_func);
     }
@@ -434,8 +450,10 @@ namespace libsemigroups {
         "I_n^*",
         3,
         6,
-        [](size_t n) { return dual_symmetric_inverse_monoid(n); },
-        "dual_symmetric_inverse_monoid",
+        [](size_t n) {
+          return presentation::examples::dual_symmetric_inverse_monoid_EEF07(n);
+        },
+        "dual_symmetric_inverse_monoid_EEF07",
         strategies,
         DoNothing);
 
@@ -448,7 +466,7 @@ namespace libsemigroups {
 
     TEST_CASE("dual_symmetric_inverse_monoid(7)",
               "[paper][dual_symmetric_inverse_monoid][n=7]") {
-      auto p = dual_symmetric_inverse_monoid(7);
+      auto p = presentation::examples::dual_symmetric_inverse_monoid_EEF07(7);
       benchmark_todd_coxeter_single(
           6'166'105, std::move(p), 7, {strategy::hlt, strategy::felsch}, init);
     }
@@ -471,8 +489,11 @@ namespace libsemigroups {
         "FI_n^*",
         3,
         7,
-        [](size_t n) { return uniform_block_bijection_monoid(n); },
-        "uniform_block_bijection_monoid",
+        [](size_t n) {
+          return presentation::examples::uniform_block_bijection_monoid_Fit03(
+              n);
+        },
+        "uniform_block_bijection_monoid_Fit03",
         strategies,
         [](ToddCoxeter& tc) {
           if (tc.strategy() == strategy::Rc) {
@@ -488,7 +509,7 @@ namespace libsemigroups {
               "[paper][uniform_block_bijection_monoid][n=8]") {
       benchmark_todd_coxeter_single(
           9'934'563,
-          uniform_block_bijection_monoid(8),
+          presentation::examples::uniform_block_bijection_monoid_Fit03(8),
           8,
           {strategy::hlt, strategy::felsch, strategy::Rc});
     }
@@ -530,8 +551,10 @@ namespace libsemigroups {
         "J_n",
         3,
         14,
-        [](size_t n) { return temperley_lieb_monoid(n); },
-        "temperley_lieb_monoid",
+        [](size_t n) {
+          return presentation::examples::temperley_lieb_monoid_Eas21(n);
+        },
+        "temperley_lieb_monoid_Eas21",
         strategies,
         DoNothing);
 
@@ -541,20 +564,26 @@ namespace libsemigroups {
     // Approx. 18s (2021 - MacBook Air M1 - 8GB RAM)
     TEST_CASE("temperley_lieb_monoid(15) - hlt",
               "[paper][temperley_lieb_monoid][n=15][hlt]") {
-      benchmark_todd_coxeter_single(9'694'845, temperley_lieb_monoid(15), 15);
+      benchmark_todd_coxeter_single(
+          9'694'845,
+          presentation::examples::temperley_lieb_monoid_Eas21(15),
+          15);
     }
 
     // Approx. 82s (2021 - MacBook Air M1 - 8GB RAM)
     TEST_CASE("temperley_lieb_monoid(16) - hlt",
               "[paper][temperley_lieb_monoid][n=16][hlt]") {
-      benchmark_todd_coxeter_single(35'357'670, temperley_lieb_monoid(16), 16);
+      benchmark_todd_coxeter_single(
+          35'357'670,
+          presentation::examples::temperley_lieb_monoid_Eas21(16),
+          16);
     }
 
     // Approx. ? (2021 - MacBook Air M1 - 8GB RAM)
     // TEST_CASE("temperley_lieb_monoid(17) - hlt",
     //           "[paper][temperley_lieb_monoid][n=17][hlt]") {
-    //   benchmark_todd_coxeter_single(129'644'790, temperley_lieb_monoid(17),
-    //   17);
+    //   benchmark_todd_coxeter_single(129'644'790,
+    //   presentation::examples::temperley_lieb_monoid_Eas21(17), 17);
     // }
   }  // namespace temperley_lieb
 
@@ -576,8 +605,10 @@ namespace libsemigroups {
         "B_n\\setminus S_n",
         3,
         7,
-        [](size_t n) { return singular_brauer_monoid(n); },
-        "singular_brauer_monoid",
+        [](size_t n) {
+          return presentation::examples::singular_brauer_monoid_MM07(n);
+        },
+        "singular_brauer_monoid_MM07",
         strategies,
         DoNothing);
 
@@ -593,7 +624,11 @@ namespace libsemigroups {
         tc.lookahead_next(size / 2).lookahead_min(size / 2).lower_bound(size);
       };
       benchmark_todd_coxeter_single(
-          size, singular_brauer_monoid(8), 8, {strategy::hlt}, init_func);
+          size,
+          presentation::examples::singular_brauer_monoid_MM07(8),
+          8,
+          {strategy::hlt},
+          init_func);
     }
 
     // Approx. ? Running this appears to use >27gb of memory, which JDM's
@@ -606,7 +641,7 @@ namespace libsemigroups {
     //              tc.lookahead_next(size / 2).lookahead_min(size / 2);
     //            };
     //            benchmark_todd_coxeter_single(size,
-    //                                          singular_brauer_monoid(9),
+    //                                          presentation::examples::singular_brauer_monoid_MM07(9),
     //                                          9,
     //                                          {strategy::hlt},
     //                                          init_func);
@@ -642,8 +677,8 @@ namespace libsemigroups {
         "\\operatorname{Stylic}(n)",
         3,
         10,
-        [](size_t n) { return stylic_monoid(n); },
-        "stylic_monoid",
+        [](size_t n) { return presentation::examples::stylic_monoid_AR22(n); },
+        "stylic_monoid_AR22",
         strategies,
         DoNothing);
 
@@ -653,14 +688,18 @@ namespace libsemigroups {
     // Approx 17s (2021 - MacBook Air M1 - 8GB RAM)
     TEST_CASE("stylic_monoid(11) - HLT (default)",
               "[paper][stylic_monoid][n=11][hlt]") {
-      benchmark_todd_coxeter_single(4'213'597, stylic_monoid(11), 11);
+      benchmark_todd_coxeter_single(
+          4'213'597, presentation::examples::stylic_monoid_AR22(11), 11);
     }
 
     // Approx 153s (2021 - MacBook Air M1 - 8GB RAM)
     TEST_CASE("stylic_monoid(12) - HLT (default)",
               "[paper][stylic_monoid][n=12][hlt]") {
       benchmark_todd_coxeter_single(
-          27'644'437, stylic_monoid(12), 12, {strategy::hlt});
+          27'644'437,
+          presentation::examples::stylic_monoid_AR22(12),
+          12,
+          {strategy::hlt});
     }
 
     // Approx ?? (2021 - MacBook Air M1 - 8GB RAM)
@@ -668,7 +707,8 @@ namespace libsemigroups {
     // used by HLT this currently just spirals off into too many nodes.
     // TEST_CASE("stylic_monoid(13) - HLT (default)",
     //           "[paper][stylic_monoid][n=13][hlt]") {
-    //   benchmark_todd_coxeter_single(190'899'322, stylic_monoid(13), 13);
+    //   benchmark_todd_coxeter_single(190'899'322,
+    //   presentation::examples::stylic_monoid_AR22(13), 13);
     // }
   }  // namespace stylic
 
@@ -697,8 +737,8 @@ namespace libsemigroups {
         "\\operatorname{Stellar}(n)",
         3,
         9,
-        [](size_t n) { return stellar_monoid(n); },
-        "stellar_monoid",
+        [](size_t n) { return presentation::examples::stellar_monoid_GH19(n); },
+        "stellar_monoid_GH19",
         strategies,
         DoNothing);
 
@@ -708,14 +748,20 @@ namespace libsemigroups {
     TEST_CASE("stellar_monoid(10) - Felsch (default)",
               "[paper][stellar_monoid][n=10][hlt]") {
       benchmark_todd_coxeter_single(
-          9'864'101, stellar_monoid(10), 10, {strategy::felsch});
+          9'864'101,
+          presentation::examples::stellar_monoid_GH19(10),
+          10,
+          {strategy::felsch});
     }
 
     // Approx 22m52s (2021 - MacBook Air M1 - 8GB RAM)
     TEST_CASE("stellar_monoid(11) - Felsch (default)",
               "[paper][stellar_monoid][n=11][hlt]") {
       benchmark_todd_coxeter_single(
-          108'505'112, stellar_monoid(11), 11, {strategy::felsch});
+          108'505'112,
+          presentation::examples::stellar_monoid_GH19(11),
+          11,
+          {strategy::felsch});
     }
   }  // namespace stellar
 

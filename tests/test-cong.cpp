@@ -21,13 +21,13 @@
 #include "catch_amalgamated.hpp"  // for TEST_CASE
 #include "test-main.hpp"          // for LIBSEMIGROUPS_TEST_CASE
 
-#include "libsemigroups/bmat-fastest.hpp"     // for BMatFastest
-#include "libsemigroups/bmat8.hpp"            // for BMat8
-#include "libsemigroups/cong.hpp"             // for Congruence
-#include "libsemigroups/fpsemi-examples.hpp"  // for rook_monoid
-#include "libsemigroups/froidure-pin.hpp"     // for FroidurePin
-#include "libsemigroups/obvinf.hpp"           // for is_obviously_infinite
-#include "libsemigroups/pbr.hpp"              // for PBR
+#include "libsemigroups/bmat-fastest.hpp"           // for BMatFastest
+#include "libsemigroups/bmat8.hpp"                  // for BMat8
+#include "libsemigroups/cong.hpp"                   // for Congruence
+#include "libsemigroups/froidure-pin.hpp"           // for FroidurePin
+#include "libsemigroups/obvinf.hpp"                 // for is_obviously_infinite
+#include "libsemigroups/pbr.hpp"                    // for PBR
+#include "libsemigroups/presentation-examples.hpp"  // for rook_monoid etc
 #include "libsemigroups/to-froidure-pin.hpp"
 #include "libsemigroups/transf.hpp"      // for Transf<>
 #include "libsemigroups/types.hpp"       // for word_type
@@ -67,9 +67,6 @@ namespace libsemigroups {
 
   constexpr congruence_kind twosided = congruence_kind::twosided;
   constexpr congruence_kind onesided = congruence_kind::onesided;
-
-  using fpsemigroup::stellar_monoid;
-  using fpsemigroup::zero_rook_monoid;
 
   LIBSEMIGROUPS_TEST_CASE("Congruence",
                           "000",
@@ -960,13 +957,13 @@ namespace libsemigroups {
                           "stellar_monoid S2",
                           "[quick][cong]") {
     auto                    rg = ReportGuard(false);
-    Presentation<word_type> p  = zero_rook_monoid(2);
+    Presentation<word_type> p  = presentation::examples::zero_rook_monoid(2);
     presentation::change_alphabet(p, 10_w);
 
     REQUIRE(!is_obviously_infinite(p));
 
     Congruence cong(twosided, p);
-    auto       q = stellar_monoid(2);
+    auto       q = presentation::examples::stellar_monoid(2);
     presentation::change_alphabet(q, 10_w);
     for (auto it = q.rules.cbegin(); it != q.rules.cend(); it += 2) {
       congruence::add_generating_pair(cong, *it, *(it + 1));
@@ -989,12 +986,12 @@ namespace libsemigroups {
                           "stellar_monoid S3",
                           "[quick][cong]") {
     auto                    rg = ReportGuard(false);
-    Presentation<word_type> p  = zero_rook_monoid(3);
+    Presentation<word_type> p  = presentation::examples::zero_rook_monoid(3);
 
     REQUIRE(!is_obviously_infinite(p));
 
     Congruence cong(twosided, p);
-    auto       q = stellar_monoid(3);
+    auto       q = presentation::examples::stellar_monoid(3);
     for (auto it = q.rules.cbegin(); it != q.rules.cend(); it += 2) {
       congruence::add_generating_pair(cong, *it, *(it + 1));
     }
@@ -1034,12 +1031,12 @@ namespace libsemigroups {
                           "stellar_monoid S4",
                           "[quick][cong][no-valgrind]") {
     auto                    rg = ReportGuard(false);
-    Presentation<word_type> p  = zero_rook_monoid(4);
+    Presentation<word_type> p  = presentation::examples::zero_rook_monoid(4);
 
     REQUIRE(!is_obviously_infinite(p));
 
     Congruence cong(twosided, p);
-    auto       q = stellar_monoid(4);
+    auto       q = presentation::examples::stellar_monoid(4);
     for (auto it = q.rules.cbegin(); it != q.rules.cend(); it += 2) {
       congruence::add_generating_pair(cong, *it, *(it + 1));
     }
@@ -1067,10 +1064,10 @@ namespace libsemigroups {
                           "stellar_monoid S5",
                           "[quick][cong][no-valgrind]") {
     auto                    rg = ReportGuard(false);
-    Presentation<word_type> p  = zero_rook_monoid(5);
+    Presentation<word_type> p  = presentation::examples::zero_rook_monoid(5);
 
     Congruence cong(twosided, p);
-    auto       q = stellar_monoid(5);
+    auto       q = presentation::examples::stellar_monoid(5);
     for (auto it = q.rules.cbegin(); it != q.rules.cend(); it += 2) {
       congruence::add_generating_pair(cong, *it, *(it + 1));
     }
@@ -1101,10 +1098,10 @@ namespace libsemigroups {
                           "stellar_monoid S6",
                           "[quick][cong][no-valgrind]") {
     auto                    rg = ReportGuard(false);
-    Presentation<word_type> p  = zero_rook_monoid(6);
+    Presentation<word_type> p  = presentation::examples::zero_rook_monoid(6);
 
     Congruence cong(twosided, p);
-    auto       q = stellar_monoid(6);
+    auto       q = presentation::examples::stellar_monoid(6);
     for (auto it = q.rules.cbegin(); it != q.rules.cend(); it += 2) {
       congruence::add_generating_pair(cong, *it, *(it + 1));
     }
@@ -1131,10 +1128,10 @@ namespace libsemigroups {
                           "stellar_monoid S7",
                           "[quick][cong][no-valgrind]") {
     auto                    rg = ReportGuard(false);
-    Presentation<word_type> p  = zero_rook_monoid(7);
+    Presentation<word_type> p  = presentation::examples::zero_rook_monoid(7);
 
     Congruence cong(twosided, p);
-    auto       q = stellar_monoid(7);
+    auto       q = presentation::examples::stellar_monoid(7);
     for (auto it = q.rules.cbegin(); it != q.rules.cend(); it += 2) {
       congruence::add_generating_pair(cong, *it, *(it + 1));
     }

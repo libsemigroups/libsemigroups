@@ -39,14 +39,14 @@
 #include "catch_amalgamated.hpp"  // for operator""_catch_sr
 #include "test-main.hpp"          // for LIBSEMIGROUPS_TEMPLATE_TEST_CASE
 
-#include "libsemigroups/constants.hpp"        // for operator==, Max, POSIT...
-#include "libsemigroups/fpsemi-examples.hpp"  // for partial_transformation...
-#include "libsemigroups/knuth-bendix.hpp"     // for KnuthBendix, normal_forms
-#include "libsemigroups/obvinf.hpp"           // for is_obviously_infinite
-#include "libsemigroups/presentation.hpp"     // for add_rule
-#include "libsemigroups/to-froidure-pin.hpp"  // for to_froidure_pin
-#include "libsemigroups/types.hpp"            // for word_type
-#include "libsemigroups/word-range.hpp"       // for operator""_w
+#include "libsemigroups/constants.hpp"     // for operator==, Max, POSIT...
+#include "libsemigroups/knuth-bendix.hpp"  // for KnuthBendix, normal_forms
+#include "libsemigroups/obvinf.hpp"        // for is_obviously_infinite
+#include "libsemigroups/presentation-examples.hpp"  // for partial_transformation...
+#include "libsemigroups/presentation.hpp"           // for add_rule
+#include "libsemigroups/to-froidure-pin.hpp"        // for to_froidure_pin
+#include "libsemigroups/types.hpp"                  // for word_type
+#include "libsemigroups/word-range.hpp"             // for operator""_w
 
 #include "libsemigroups/detail/report.hpp"  // for ReportGuard
 
@@ -305,7 +305,7 @@ namespace libsemigroups {
                                    "[quick][knuth-bendix]",
                                    KNUTH_BENDIX_TYPES) {
     auto                    rg = ReportGuard(false);
-    Presentation<word_type> p  = fpsemigroup::chinese_monoid(3);
+    Presentation<word_type> p  = presentation::examples::chinese_monoid(3);
 
     KnuthBendix<TestType> kb(twosided, p);
     REQUIRE(is_obviously_infinite(kb));
@@ -323,7 +323,7 @@ namespace libsemigroups {
     auto rg = ReportGuard(false);
 
     size_t n = 4;
-    auto   p = partial_transformation_monoid(n, fpsemigroup::author::Sutov);
+    auto   p = presentation::examples::partial_transformation_monoid_Shu60(n);
 
     KnuthBendix<TestType> kb(twosided, p);
     REQUIRE(!is_obviously_infinite(kb));
@@ -343,7 +343,7 @@ namespace libsemigroups {
     auto rg = ReportGuard(true);
 
     size_t n = 5;
-    auto   p = partial_transformation_monoid(n, fpsemigroup::author::Sutov);
+    auto   p = presentation::examples::partial_transformation_monoid_Shu60(n);
 
     KnuthBendix<TestType> kb(twosided, p);
     REQUIRE(!is_obviously_infinite(kb));
@@ -359,7 +359,7 @@ namespace libsemigroups {
     auto rg = ReportGuard(true);
 
     size_t n = 5;
-    auto   p = full_transformation_monoid(n, fpsemigroup::author::Iwahori);
+    auto   p = presentation::examples::full_transformation_monoid_II74(n);
     KnuthBendix<TestType> kb(twosided, p);
     REQUIRE(!is_obviously_infinite(kb));
     kb.run();

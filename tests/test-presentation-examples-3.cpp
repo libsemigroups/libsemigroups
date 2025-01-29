@@ -15,8 +15,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-// This file is the third of three containing tests for the fpsemi-examples
-// functions. The tests in this file use Sims1.
+// This file is the third of three containing tests for the
+// presentation-examples functions. The tests in this file use Sims1.
 
 // #define CATCH_CONFIG_ENABLE_PAIR_STRINGMAKER
 
@@ -25,31 +25,27 @@
 #include "catch_amalgamated.hpp"  // for StringRef, SourceLineInfo
 #include "test-main.hpp"          // for LIBSEMIGROUPS_TEST_CASE
 
-#include "libsemigroups/fpsemi-examples.hpp"  // for not_symmetric_group
-#include "libsemigroups/sims.hpp"             // for Sims1
-#include "libsemigroups/types.hpp"            // for tril
+#include "libsemigroups/presentation-examples.hpp"  // for not_symmetric_group_GKK...
+#include "libsemigroups/sims.hpp"                   // for Sims1
+#include "libsemigroups/types.hpp"                  // for tril
 
 #include "libsemigroups/detail/fmt.hpp"     // for format, print
 #include "libsemigroups/detail/report.hpp"  // for ReportGuard
 
 namespace libsemigroups {
 
-  using fpsemigroup::author;
-  using fpsemigroup::not_symmetric_group;
-  using fpsemigroup::symmetric_group;
-
-  LIBSEMIGROUPS_TEST_CASE("fpsemi-examples",
-                          "070",
+  LIBSEMIGROUPS_TEST_CASE("pres-examples",
+                          "097",
                           "not_symmetric_group(5) GKKL",
-                          "[fpsemi-examples][quick]") {
+                          "[pres-examples][quick]") {
     auto   rg = ReportGuard(false);
     size_t n  = 5;
 
     Sims1 C;
-    C.presentation(not_symmetric_group(n));
+    C.presentation(presentation::examples::not_symmetric_group_GKKL08(n));
 
     Sims1 D;
-    D.presentation(symmetric_group(n, author::Carmichael));
+    D.presentation(presentation::examples::symmetric_group_Car56(n));
 
     REQUIRE(C.number_of_congruences(3) == 41);
     REQUIRE(D.number_of_congruences(3) == 2);
