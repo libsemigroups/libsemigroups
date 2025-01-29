@@ -129,7 +129,8 @@ namespace libsemigroups {
   TEST_CASE("singular_brauer_monoid(3) (Maltcev-Mazorchuk)",
             "[talk][singular_brauer_monoid3]") {
     auto                    rg = ReportGuard(false);
-    Presentation<word_type> p  = fpsemigroup::singular_brauer_monoid_MM07(3);
+    Presentation<word_type> p
+        = presentation::examples::singular_brauer_monoid_MM07(3);
     REQUIRE(p.rules.size() == 48);
 
     BENCHMARK("Right congruences") {
@@ -147,7 +148,8 @@ namespace libsemigroups {
   TEST_CASE("singular_brauer_monoid(4) (Maltcev-Mazorchuk)",
             "[talk][singular_brauer_monoid4]") {
     auto                    rg = ReportGuard(true);
-    Presentation<word_type> p  = fpsemigroup::singular_brauer_monoid_MM07(4);
+    Presentation<word_type> p
+        = presentation::examples::singular_brauer_monoid_MM07(4);
     REQUIRE(presentation::length(p) == 660);
     presentation::remove_duplicate_rules(p);
     REQUIRE(presentation::length(p) == 600);
@@ -167,7 +169,8 @@ namespace libsemigroups {
   TEST_CASE("symmetric_inverse_monoid(2) (Hivert)",
             "[talk][symmetric_inverse_monoid2]") {
     auto                    rg = ReportGuard(true);
-    Presentation<word_type> p  = fpsemigroup::symmetric_inverse_monoid_Gay18(2);
+    Presentation<word_type> p
+        = presentation::examples::symmetric_inverse_monoid_Gay18(2);
     presentation::remove_duplicate_rules(p);
     presentation::sort_each_rule(p);
     presentation::sort_rules(p);
@@ -182,7 +185,8 @@ namespace libsemigroups {
   TEST_CASE("symmetric_inverse_monoid(3) (Hivert)",
             "[talk][symmetric_inverse_monoid3]") {
     auto                    rg = ReportGuard(true);
-    Presentation<word_type> p  = fpsemigroup::symmetric_inverse_monoid_Gay18(3);
+    Presentation<word_type> p
+        = presentation::examples::symmetric_inverse_monoid_Gay18(3);
     presentation::remove_duplicate_rules(p);
     presentation::sort_each_rule(p);
     presentation::sort_rules(p);
@@ -197,7 +201,8 @@ namespace libsemigroups {
   TEST_CASE("symmetric_inverse_monoid(4) (Hivert)",
             "[talk][symmetric_inverse_monoid4]") {
     auto                    rg = ReportGuard(false);
-    Presentation<word_type> p  = fpsemigroup::symmetric_inverse_monoid_Gay18(4);
+    Presentation<word_type> p
+        = presentation::examples::symmetric_inverse_monoid_Gay18(4);
     presentation::remove_duplicate_rules(p);
     presentation::sort_each_rule(p);
     presentation::sort_rules(p);
@@ -351,14 +356,14 @@ namespace libsemigroups {
 
   TEST_CASE("Presentation length Iwahori T_n",
             "[full_transf_monoid][length][000]") {
-    auto p = fpsemigroup::full_transformation_monoid_II74(4);
+    auto p = presentation::examples::full_transformation_monoid_II74(4);
     bench_length(p);
   }
 
   // Doesn't run, or is so slow that it's useless
   TEST_CASE("Presentation length Aizenstat",
             "[full_transf_monoid][length][001]") {
-    auto  p = fpsemigroup::full_transformation_monoid_Aiz58(4);
+    auto  p = presentation::examples::full_transformation_monoid_Aiz58(4);
     Sims1 C;
     C.presentation(p).number_of_threads(1);
     REQUIRE(presentation::length(p) == 0);
@@ -381,21 +386,21 @@ namespace libsemigroups {
 
   TEST_CASE("Presentation length Burnside+Miller S_n",
             "[symmetric_group][length][003]") {
-    auto p = fpsemigroup::symmetric_group_Bur12(5);
+    auto p = presentation::examples::symmetric_group_Bur12(5);
     bench_length(p, 120, 156);
   }
 
   TEST_CASE("Presentation length Fernandes cyclic inverse monoid 1st",
             "[cyclic_inverse][length][000]") {
     size_t n = 10;
-    auto   p = fpsemigroup::cyclic_inverse_monoid_Fer22_a(n);
+    auto   p = presentation::examples::cyclic_inverse_monoid_Fer22_a(n);
     bench_length(p, 4, 6);
   }
 
   TEST_CASE("Presentation length Fernandes cyclic inverse monoid 2nd",
             "[cyclic_inverse][length][001]") {
     size_t n = 10;
-    auto   p = fpsemigroup::cyclic_inverse_monoid_Fer22_b(n);
+    auto   p = presentation::examples::cyclic_inverse_monoid_Fer22_b(n);
     bench_length(p, 4, 6);
   }
 
@@ -648,7 +653,7 @@ namespace libsemigroups {
 
   TEST_CASE("Order endomorphisms n = 3 - all", "[order_endos][n=3]") {
     auto rg = ReportGuard(false);
-    auto p  = fpsemigroup::order_preserving_monoid(3);
+    auto p  = presentation::examples::order_preserving_monoid(3);
 
     Sims1 C;
     C.presentation(p);
@@ -659,7 +664,7 @@ namespace libsemigroups {
 
   TEST_CASE("Order endomorphisms n = 4 - all", "[order_endos][n=4]") {
     auto rg = ReportGuard(false);
-    auto p  = fpsemigroup::order_preserving_monoid(4);
+    auto p  = presentation::examples::order_preserving_monoid(4);
 
     Sims1 C;
     C.presentation(p);
@@ -670,7 +675,7 @@ namespace libsemigroups {
 
   TEST_CASE("Order endomorphisms n = 5 - all", "[order_endos][n=5]") {
     auto rg = ReportGuard(false);
-    auto p  = fpsemigroup::order_preserving_monoid(5);
+    auto p  = presentation::examples::order_preserving_monoid(5);
     presentation::sort_each_rule(p);
     presentation::sort_rules(p);
     presentation::remove_duplicate_rules(p);
