@@ -1113,7 +1113,10 @@ namespace libsemigroups {
     //! are not important.
     //!
     //! \sa
-    //! `partition_monoid_Eas11` and `partition_monoid_HR05`.
+    //! For a specific %presentation of the full transformation monoid, see
+    //! %one of the following functions:
+    //! * `partition_monoid_Eas11`;
+    //! * `partition_monoid_HR05`.
     [[nodiscard]] inline Presentation<word_type> partition_monoid(size_t n) {
       return partition_monoid_Eas11(n);
     }
