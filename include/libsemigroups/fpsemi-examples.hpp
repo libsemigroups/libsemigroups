@@ -554,13 +554,13 @@ namespace libsemigroups {
     //! by the least congruence containing the relation \f$a^{\sigma(a)} =
     //! a\f$ for each \f$a\f$ in the alphabet. When \f$\sigma(a) = 2\f$ for
     //! all \f$a\f$, the resultant \f$\sigma\f$-plactic monoid is known as the
-    //! stylic monoid, as studied in \cite Abram2022aa.
+    //! stylic monoid, and is given in \ref stylic_monoid.
     //!
     //! \param sigma a vector representing the image of \f$\sigma\f$.
     //!
     //! \returns A value of type `Presentation<word_type>`.
     //!
-    //! \throws LibsemigroupsException if `n < 1`.
+    //! \throws LibsemigroupsException if `sigma.size() < 1`.
     [[nodiscard]] Presentation<word_type>
     sigma_plactic_monoid_AHMNT24(std::vector<size_t> const& sigma);
 
