@@ -784,7 +784,7 @@ namespace libsemigroups {
                           "partition_monoid(7)",
                           "[knuthbendix][extreme]") {
     auto        rg = ReportGuard(true);
-    auto        p  = fpsemigroup::partition_monoid(7);
+    auto        p  = presentation::examples::partition_monoid(7);
     KnuthBendix k(twosided, p);
     REQUIRE(k.number_of_classes() == 0);
   }

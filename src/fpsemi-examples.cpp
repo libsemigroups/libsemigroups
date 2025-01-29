@@ -343,7 +343,7 @@ namespace libsemigroups {
     }
   }  // namespace
 
-  namespace fpsemigroup {
+  namespace presentation::examples {
 
     using literals::operator""_w;
     using words::pow;
@@ -2015,5 +2015,5 @@ namespace libsemigroups {
       return p;
     }
 
-  }  // namespace fpsemigroup
+  }  // namespace presentation::examples
 }  // namespace libsemigroups

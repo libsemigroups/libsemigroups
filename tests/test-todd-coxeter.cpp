@@ -1726,7 +1726,7 @@ namespace libsemigroups {
       "[todd-coxeter][standard][no-coverage][no-valgrind]") {
     auto rg = ReportGuard(false);
 
-    auto p = fpsemigroup::stylic_monoid(9);
+    auto p = presentation::examples::stylic_monoid(9);
     REQUIRE(presentation::length(p) == 1'467);
     presentation::remove_trivial_rules(p);
     presentation::remove_duplicate_rules(p);
@@ -1759,7 +1759,7 @@ namespace libsemigroups {
                           "fibonacci_semigroup(4, 6)",
                           "[todd-coxeter][fail]") {
     auto        rg = ReportGuard();
-    ToddCoxeter tc(twosided, fpsemigroup::fibonacci_semigroup(4, 6));
+    ToddCoxeter tc(twosided, presentation::examples::fibonacci_semigroup(4, 6));
     // tc.strategy(ptions::strategy::felsch);
     REQUIRE(tc.number_of_classes() == 0);
   }
@@ -1853,7 +1853,7 @@ namespace libsemigroups {
                           "[todd-coxeter][extreme]") {
     auto rg = ReportGuard(true);
 
-    auto p = fpsemigroup::symmetric_group_Moo97_b(9);
+    auto p = presentation::examples::symmetric_group_Moo97_b(9);
     presentation::reduce_complements(p);
     presentation::remove_duplicate_rules(p);
     presentation::sort_rules(p);
@@ -1884,7 +1884,7 @@ namespace libsemigroups {
     auto rg = ReportGuard(false);
 
     size_t n = 7;
-    auto   p = fpsemigroup::symmetric_group_Moo97_a(n);
+    auto   p = presentation::examples::symmetric_group_Moo97_a(n);
 
     ToddCoxeter tc(twosided, p);
 
@@ -1911,7 +1911,7 @@ namespace libsemigroups {
     auto rg = ReportGuard(false);
 
     size_t n = 7;
-    auto   p = fpsemigroup::symmetric_group_Bur12(n);
+    auto   p = presentation::examples::symmetric_group_Bur12(n);
 
     ToddCoxeter tc(twosided, p);
     section_hlt(tc);
@@ -1928,9 +1928,9 @@ namespace libsemigroups {
                           "046",
                           "Easdown-East-FitzGerald DualSymInv(5)",
                           "[todd-coxeter][quick][no-valgrind][no-coverage]") {
-    auto        rg = ReportGuard(false);
-    auto const  n  = 5;
-    auto        p  = fpsemigroup::dual_symmetric_inverse_monoid_EEF07(n);
+    auto       rg = ReportGuard(false);
+    auto const n  = 5;
+    auto p = presentation::examples::dual_symmetric_inverse_monoid_EEF07(n);
     ToddCoxeter tc(twosided, p);
 
     section_felsch(tc);
@@ -1952,7 +1952,7 @@ namespace libsemigroups {
     auto       rg = ReportGuard(false);
     auto const n  = 5;
 
-    auto p = fpsemigroup::uniform_block_bijection_monoid_Fit03(n);
+    auto p = presentation::examples::uniform_block_bijection_monoid_Fit03(n);
 
     ToddCoxeter tc(twosided, p);
 
@@ -1971,7 +1971,7 @@ namespace libsemigroups {
                           "[todd-coxeter][quick][no-valgrind][no-coverage]") {
     auto         rg = ReportGuard(false);
     size_t const n  = 7;
-    auto         p  = fpsemigroup::stellar_monoid_GH19(n);
+    auto         p  = presentation::examples::stellar_monoid_GH19(n);
 
     ToddCoxeter tc(congruence_kind::twosided, p);
 
@@ -1992,7 +1992,7 @@ namespace libsemigroups {
     auto rg = ReportGuard(false);
 
     auto const  n = 4;
-    auto        p = fpsemigroup::partition_monoid_Eas11(n);
+    auto        p = presentation::examples::partition_monoid_Eas11(n);
     ToddCoxeter tc(twosided, p);
 
     section_felsch(tc);
@@ -2012,7 +2012,7 @@ namespace libsemigroups {
                           "[todd-coxeter][quick][no-valgrind][no-coverage]") {
     auto         rg = ReportGuard(false);
     size_t const n  = 3;
-    auto         p  = fpsemigroup::singular_brauer_monoid_MM07(n);
+    auto         p  = presentation::examples::singular_brauer_monoid_MM07(n);
     presentation::remove_redundant_generators(p);
 
     // presentation::remove_duplicate_rules(p);
@@ -2033,8 +2033,8 @@ namespace libsemigroups {
                           "[todd-coxeter][quick][no-valgrind][no-coverage]") {
     auto         rg = ReportGuard(false);
     size_t const n  = 4;
-    auto         p  = fpsemigroup::orientation_preserving_monoid_AR00(n);
-    ToddCoxeter  tc(congruence_kind::twosided, p);
+    auto p = presentation::examples::orientation_preserving_monoid_AR00(n);
+    ToddCoxeter tc(congruence_kind::twosided, p);
     tc.strategy(options::strategy::hlt)
         .lookahead_extent(options::lookahead_extent::partial);
 
@@ -2054,7 +2054,9 @@ namespace libsemigroups {
                           "[todd-coxeter][quick][no-valgrind][no-coverage]") {
     auto         rg = ReportGuard(false);
     size_t const n  = 5;
-    auto p = fpsemigroup::orientation_preserving_reversing_monoid_AR00(n);
+    auto         p
+        = presentation::examples::orientation_preserving_reversing_monoid_AR00(
+            n);
     ToddCoxeter tc(congruence_kind::twosided, p);
 
     section_hlt(tc);
@@ -2073,7 +2075,7 @@ namespace libsemigroups {
                           "[todd-coxeter][quick][no-valgrind][no-coverage]") {
     auto         rg = ReportGuard(false);
     size_t const n  = 10;
-    auto         p  = fpsemigroup::temperley_lieb_monoid_Eas21(n);
+    auto         p  = presentation::examples::temperley_lieb_monoid_Eas21(n);
 
     REQUIRE(presentation::length(p) == 315);
     presentation::reduce_complements(p);
@@ -2100,7 +2102,7 @@ namespace libsemigroups {
       "[todd-coxeter][fail]") {
     auto rg = ReportGuard(true);
     for (size_t n = 3; n <= 9; ++n) {
-      auto        p = fpsemigroup::stellar_monoid_GH19(n);
+      auto        p = presentation::examples::stellar_monoid_GH19(n);
       ToddCoxeter tc(congruence_kind::twosided, p);
       output_gap_benchmark_file("stellar-" + std::to_string(n) + ".g", tc);
     }
@@ -2114,7 +2116,7 @@ namespace libsemigroups {
     auto rg = ReportGuard(true);
 
     for (size_t n = 4; n <= 6; ++n) {
-      auto        p = fpsemigroup::partition_monoid_Eas11(n);
+      auto        p = presentation::examples::partition_monoid_Eas11(n);
       ToddCoxeter tc(congruence_kind::twosided, p);
       tc.save(true);
       output_gap_benchmark_file("partition-" + std::to_string(n) + ".g", tc);
@@ -2129,7 +2131,7 @@ namespace libsemigroups {
     auto rg = ReportGuard(true);
 
     for (size_t n = 3; n <= 6; ++n) {
-      auto        p = fpsemigroup::dual_symmetric_inverse_monoid_EEF07(n);
+      auto p = presentation::examples::dual_symmetric_inverse_monoid_EEF07(n);
       ToddCoxeter tc(congruence_kind::twosided, p);
       output_gap_benchmark_file("dual-sym-inv-" + std::to_string(n) + ".g", tc);
     }
@@ -2143,7 +2145,7 @@ namespace libsemigroups {
     auto rg = ReportGuard(true);
 
     for (size_t n = 3; n <= 7; ++n) {
-      auto        p = fpsemigroup::uniform_block_bijection_monoid_Fit03(n);
+      auto p = presentation::examples::uniform_block_bijection_monoid_Fit03(n);
       ToddCoxeter tc(congruence_kind::twosided, p);
       output_gap_benchmark_file(
           "uniform-block-bijection-" + std::to_string(n) + ".g", tc);
@@ -2156,7 +2158,7 @@ namespace libsemigroups {
                           "[todd-coxeter][fail]") {
     auto rg = ReportGuard(true);
     for (size_t n = 3; n <= 9; ++n) {
-      auto        p = fpsemigroup::stylic_monoid(n);
+      auto        p = presentation::examples::stylic_monoid(n);
       ToddCoxeter tc(congruence_kind::twosided, p);
       output_gap_benchmark_file("stylic-" + std::to_string(n) + ".g", tc);
     }
@@ -2168,7 +2170,7 @@ namespace libsemigroups {
                           "[todd-coxeter][fail]") {
     auto rg = ReportGuard(true);
     for (size_t n = 3; n <= 9; ++n) {
-      auto        p = fpsemigroup::orientation_preserving_monoid(n);
+      auto        p = presentation::examples::orientation_preserving_monoid(n);
       ToddCoxeter tc(congruence_kind::twosided, p);
       output_gap_benchmark_file("orient-" + std::to_string(n) + ".g", tc);
     }
@@ -2180,7 +2182,8 @@ namespace libsemigroups {
                           "[todd-coxeter][fail]") {
     auto rg = ReportGuard(true);
     for (size_t n = 3; n <= 8; ++n) {
-      auto        p = fpsemigroup::orientation_preserving_reversing_monoid(n);
+      auto p
+          = presentation::examples::orientation_preserving_reversing_monoid(n);
       ToddCoxeter tc(congruence_kind::twosided, p);
       output_gap_benchmark_file("orient-reverse-" + std::to_string(n) + ".g",
                                 tc);
@@ -2194,7 +2197,7 @@ namespace libsemigroups {
       "[todd-coxeter][fail]") {
     auto rg = ReportGuard(true);
     for (size_t n = 3; n <= 13; ++n) {
-      auto        p = fpsemigroup::temperley_lieb_monoid(n);
+      auto        p = presentation::examples::temperley_lieb_monoid(n);
       ToddCoxeter tc(congruence_kind::twosided, p);
       output_gap_benchmark_file("temperley-lieb-" + std::to_string(n) + ".g",
                                 tc);
@@ -2208,7 +2211,7 @@ namespace libsemigroups {
       "[todd-coxeter][fail]") {
     auto rg = ReportGuard(true);
     for (size_t n = 3; n <= 7; ++n) {
-      auto        p = fpsemigroup::singular_brauer_monoid(n);
+      auto        p = presentation::examples::singular_brauer_monoid(n);
       ToddCoxeter tc(congruence_kind::twosided, p);
       output_gap_benchmark_file("singular-brauer-" + std::to_string(n) + ".g",
                                 tc);
@@ -2220,7 +2223,7 @@ namespace libsemigroups {
                           "partition_monoid(2)",
                           "[todd-coxeter][quick]") {
     auto rg = ReportGuard(false);
-    auto p  = fpsemigroup::partition_monoid_HR05(2);
+    auto p  = presentation::examples::partition_monoid_HR05(2);
 
     ToddCoxeter tc(congruence_kind::twosided, p);
     section_felsch(tc);
@@ -2238,7 +2241,7 @@ namespace libsemigroups {
                           "[todd-coxeter][quick][no-valgrind][no-coverage]") {
     auto         rg = ReportGuard(false);
     size_t const n  = 4;
-    auto         p  = fpsemigroup::brauer_monoid_KM07(n);
+    auto         p  = presentation::examples::brauer_monoid_KM07(n);
     presentation::sort_rules(p);
     presentation::remove_duplicate_rules(p);
     ToddCoxeter tc(congruence_kind::twosided, p);
@@ -2256,7 +2259,7 @@ namespace libsemigroups {
                           "symmetric_inverse_monoid(5) Shutov",
                           "[todd-coxeter][quick][no-valgrind]") {
     auto rg = ReportGuard(false);
-    auto p  = fpsemigroup::symmetric_inverse_monoid_Shu60(5);
+    auto p  = presentation::examples::symmetric_inverse_monoid_Shu60(5);
 
     ToddCoxeter tc(congruence_kind::twosided, p);
     section_felsch(tc);
@@ -2274,7 +2277,7 @@ namespace libsemigroups {
                           "[todd-coxeter][extreme]") {
     auto   rg = ReportGuard(true);
     size_t n  = 5;
-    auto   p  = fpsemigroup::partial_transformation_monoid_Shu60(n);
+    auto   p  = presentation::examples::partial_transformation_monoid_Shu60(n);
 
     ToddCoxeter tc(congruence_kind::twosided, p);
     section_felsch(tc);
@@ -2293,7 +2296,7 @@ namespace libsemigroups {
                           "[todd-coxeter][extreme]") {
     auto   rg = ReportGuard(true);
     size_t n  = 7;
-    auto   p  = fpsemigroup::full_transformation_monoid_II74(n);
+    auto   p  = presentation::examples::full_transformation_monoid_II74(n);
 
     REQUIRE(presentation::length(p) == 69'656);
     presentation::remove_redundant_generators(p);
@@ -3128,7 +3131,8 @@ namespace libsemigroups {
 
     for (auto [i, p] : enumerate(primes)) {
       SECTION("p = " + std::to_string(p)) {
-        ToddCoxeter tc(twosided, fpsemigroup::special_linear_group_2(p));
+        ToddCoxeter tc(twosided,
+                       presentation::examples::special_linear_group_2(p));
 
         section_hlt(tc);
         section_felsch(tc);
@@ -3243,7 +3247,8 @@ namespace libsemigroups {
                           "[no-valgrind][quick][todd-coxeter][no-coverage]") {
     auto rg = ReportGuard(false);
 
-    ToddCoxeter tc(twosided, fpsemigroup::renner_type_D_monoid(4, 1));
+    ToddCoxeter tc(twosided,
+                   presentation::examples::renner_type_D_monoid(4, 1));
     tc.strategy(options::strategy::hlt)
         .lookahead_extent(options::lookahead_extent::partial);
 
@@ -3644,7 +3649,7 @@ namespace libsemigroups {
                           "[todd-coxeter][extreme]") {
     auto rg = ReportGuard(true);
     // Sorting the rules makes this twice as slow...
-    auto p = fpsemigroup::renner_type_D_monoid(5, 1);
+    auto p = presentation::examples::renner_type_D_monoid(5, 1);
     presentation::sort_each_rule(p);
     presentation::sort_rules(p);
     REQUIRE(p.rules.size() == 308);
@@ -4163,7 +4168,7 @@ namespace libsemigroups {
     // A003462
     auto rg = ReportGuard(true);
     for (size_t n = 4; n < 11; ++n) {
-      auto p = fpsemigroup::hypo_plactic_monoid(n);
+      auto p = presentation::examples::hypo_plactic_monoid(n);
       p.contains_empty_word(true);
       presentation::add_idempotent_rules_no_checks(
           p, (seq<size_t>() | take(n) | to_vector()));
@@ -4203,7 +4208,7 @@ namespace libsemigroups {
            {1, 6, 30, 80, 155, 186, 156, 80, 30, 6, 1}};
     auto rg = ReportGuard(true);
     for (size_t n = 2; n < 11; ++n) {
-      auto p = fpsemigroup::chinese_monoid(n);
+      auto p = presentation::examples::chinese_monoid(n);
       p.contains_empty_word(true);
       presentation::add_idempotent_rules_no_checks(
           p, (seq<size_t>() | take(n) | to_vector()));
@@ -4234,7 +4239,7 @@ namespace libsemigroups {
                           "Chinese id monoid x 2",
                           "[todd-coxeter][extreme]") {
     auto n = 5;
-    auto p = fpsemigroup::chinese_monoid(n);
+    auto p = presentation::examples::chinese_monoid(n);
     p.contains_empty_word(true);
     presentation::add_idempotent_rules_no_checks(
         p, (seq<size_t>() | take(n) | to_vector()));
@@ -4360,7 +4365,7 @@ namespace libsemigroups {
     // https://oeis.org/A126390
     using words::pow;
     for (size_t n = 5; n < 6; ++n) {  // size.size(); ++n) {
-      auto p = fpsemigroup::plactic_monoid(n);
+      auto p = presentation::examples::plactic_monoid(n);
       p.contains_empty_word(true);
 
       for (size_t a = 0; a < n; ++a) {
@@ -4500,7 +4505,7 @@ namespace libsemigroups {
     // #include "Plact4-1_3_last.txt"
     size_t n = 4, r = 4, s = 1;
 
-    auto p = fpsemigroup::plactic_monoid(n);
+    auto p = presentation::examples::plactic_monoid(n);
     p.contains_empty_word(true);
 
     for (size_t a = 0; a < n; ++a) {
@@ -4537,7 +4542,7 @@ namespace libsemigroups {
                           "038",
                           "sigma-plactic monoid",
                           "[todd-coxeter][extreme]") {
-    auto p = fpsemigroup::sigma_plactic_monoid({2, 2, 2});
+    auto p = presentation::examples::sigma_plactic_monoid({2, 2, 2});
     p.contains_empty_word(true);
     ToddCoxeter tc(twosided, p);
 

@@ -98,7 +98,7 @@
         title="InversePresentation class" />
       <tab type="usergroup" visible="yes" url="@ref libsemigroups::presentation"
         title="Helper functions" />
-      <tab type="usergroup" visible="yes" url="@ref libsemigroups::fpsemigroup" title="Examples" />
+      <tab type="usergroup" visible="yes" url="@ref libsemigroups::presentation::examples" title="Examples" />
       <tab type="usergroup" visible="yes" url="@ref to_presentation_group"
         title="Making presentations from other objects" />
     </tab>

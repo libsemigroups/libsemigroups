@@ -88,7 +88,8 @@ namespace libsemigroups {
                           "003",
                           "symmetric_inverse_semigroup",
                           "[cutting][quick][no-valgrind]") {
-    auto p = to_inverse_presentation(fpsemigroup::symmetric_inverse_monoid(4));
+    auto p = to_inverse_presentation(
+        presentation::examples::symmetric_inverse_monoid(4));
     REQUIRE(p.alphabet() == 01234567_w);
     REQUIRE(p.inverses() == 45670123_w);
     p.validate();
@@ -103,8 +104,8 @@ namespace libsemigroups {
                           "004",
                           "symmetric_inverse_monoid",
                           "[cutting][extreme]") {
-    InversePresentation<word_type> p
-        = to_inverse_presentation(fpsemigroup::symmetric_inverse_monoid(7));
+    InversePresentation<word_type> p = to_inverse_presentation(
+        presentation::examples::symmetric_inverse_monoid(7));
 
     REQUIRE(presentation::length(p) == 340);
     presentation::sort_each_rule(p);
@@ -130,7 +131,7 @@ namespace libsemigroups {
                           "dual_symmetric_inverse_monoid",
                           "[cutting][quick][no-valgrind]") {
     auto p = to_inverse_presentation(
-        fpsemigroup::dual_symmetric_inverse_monoid(4));
+        presentation::examples::dual_symmetric_inverse_monoid(4));
     REQUIRE(p.contains_empty_word());
 
     auto c = Cutting(p);

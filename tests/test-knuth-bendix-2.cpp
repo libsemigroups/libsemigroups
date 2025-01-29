@@ -1559,7 +1559,7 @@ namespace libsemigroups {
         = {0, 0, 22, 71, 181, 391, 750, 1'317, 2'161, 3'361, 5'006};
 
     for (size_t n = 2; n < 11; ++n) {
-      auto p = fpsemigroup::chinese_monoid(n);
+      auto p = presentation::examples::chinese_monoid(n);
       p.contains_empty_word(true);
       KnuthBendix<TestType> kb(twosided, p);
       kb.run();
@@ -1577,7 +1577,7 @@ namespace libsemigroups {
 
     auto   rg = ReportGuard(false);
     size_t n  = 2;
-    auto   p  = fpsemigroup::hypo_plactic_monoid(n);
+    auto   p  = presentation::examples::hypo_plactic_monoid(n);
     p.contains_empty_word(true);
     presentation::add_idempotent_rules_no_checks(
         p, (seq<size_t>() | take(n) | to_vector()));
@@ -1612,7 +1612,7 @@ namespace libsemigroups {
                                    KNUTH_BENDIX_TYPES) {
     auto rg = ReportGuard(false);
     auto n  = 4;
-    auto p  = fpsemigroup::chinese_monoid(n);
+    auto p  = presentation::examples::chinese_monoid(n);
     p.contains_empty_word(true);
     presentation::add_idempotent_rules_no_checks(p, p.alphabet());
 
