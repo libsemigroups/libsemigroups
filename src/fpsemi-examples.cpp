@@ -1896,7 +1896,7 @@ namespace libsemigroups {
     }
 
     Presentation<word_type>
-    sigma_plactic_monoid(std::vector<size_t> const& sigma) {
+    sigma_plactic_monoid_AHMNT24(std::vector<size_t> const& sigma) {
       auto p = plactic_monoid_Knu70(sigma.size());
       p.contains_empty_word(true);
       for (auto [a, e] : rx::enumerate(sigma)) {

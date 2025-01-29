@@ -543,6 +543,27 @@ namespace libsemigroups {
     [[nodiscard]] Presentation<word_type> renner_type_D_monoid_Gay18(size_t l,
                                                                      int    q);
 
+    //! \brief A presentation for the \f$\sigma\f$-plactic monoid.
+    //!
+    //! This function returns a presentation for the \f$\sigma\f$-plactic
+    //! monoid with `sigma.size()` generators as in Section 3.1
+    //! \cite Abram2024aa.
+    //! The image of \f$\sigma\f$ is given by the values in \p sigma.
+    //!
+    //! The \f$\sigma\f$-plactic monoid is the quotient of the plactic monoid
+    //! by the least congruence containing the relation \f$a^{\sigma(a)} =
+    //! a\f$ for each \f$a\f$ in the alphabet. When \f$\sigma(a) = 2\f$ for
+    //! all \f$a\f$, the resultant \f$\sigma\f$-plactic monoid is known as the
+    //! stylic monoid, as studied in \cite Abram2022aa.
+    //!
+    //! \param sigma a vector representing the image of \f$\sigma\f$.
+    //!
+    //! \returns A value of type `Presentation<word_type>`.
+    //!
+    //! \throws LibsemigroupsException if `n < 1`.
+    [[nodiscard]] Presentation<word_type>
+    sigma_plactic_monoid_AHMNT24(std::vector<size_t> const& sigma);
+
     //! \brief A presentation for the singular part of the Brauer monoid.
     //!
     //! This function returns a monoid presentation for the singular part of
@@ -1156,27 +1177,20 @@ namespace libsemigroups {
       return renner_type_D_monoid_Gay18(l, q);
     }
 
-    //! \brief A presentation for the \f$\sigma\f$-plactic monoid.
+    //! \copydoc sigma_plactic_monoid_AHMNT24
     //!
-    //! This function returns a presentation for the \f$\sigma\f$-plactic
-    //! monoid with `sigma.size()` generators, where the image of \f$\sigma\f$
-    //! is given by the values in \p sigma.
+    //! \note
+    //! This function performs exactly the same as
+    //! `sigma_plactic_monoid_AHMNT24`, and exists as a convenience function for
+    //! when a presentation for the \f$\sigma\f$-plactic monoid is required, but
+    //! the relations of the presentation are not important.
     //!
-    //! The \f$\sigma\f$-plactic monoid is the quotient of the plactic monoid
-    //! by the least congruence containing the relation \f$a^{\sigma(a)} =
-    //! a\f$ for each \f$a\f$ in the alphabet. When \f$\sigma(a) = 2\f$ for
-    //! all \f$a\f$, the resultant \f$\sigma\f$-plactic monoid is known as the
-    //! stylic monoid, as studied in \cite Abram2022aa.
-    //!
-    //! \param sigma a vector representing the image of \f$\sigma\f$.
-    //!
-    //! \returns A value of type `Presentation<word_type>`.
-    //!
-    //! \throws LibsemigroupsException if `n < 1`.
-    // TODO add reference when possible, specialise the name and add a default
-    // function
-    [[nodiscard]] Presentation<word_type>
-    sigma_plactic_monoid(std::vector<size_t> const& sigma);
+    //! \sa
+    //! `sigma_plactic_monoid_AHMNT24`
+    [[nodiscard]] inline Presentation<word_type>
+    sigma_plactic_monoid(std::vector<size_t> const& sigma) {
+      return sigma_plactic_monoid_AHMNT24(sigma);
+    }
 
     //! \copydoc singular_brauer_monoid_MM07
     //!
