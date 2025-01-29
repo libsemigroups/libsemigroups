@@ -43,6 +43,26 @@ namespace libsemigroups {
 #endif
 
     namespace detail {
+      template <typename Node>
+      bool is_shortlex_standardized(WordGraph<Node> const& wg) {
+        Node current_max_node = 0;
+
+        for (auto s : wg.nodes()) {
+          for (auto t : wg.targets_no_checks(s)) {
+            if (t != UNDEFINED) {
+              if (t > current_max_node) {
+                if (t == current_max_node + 1) {
+                  current_max_node++;
+                } else {
+                  return false;
+                }
+              }
+            }
+          }
+        }
+        return true;
+      }
+
       template <typename Graph>
       bool shortlex_standardize(Graph& wg, Forest& f) {
         LIBSEMIGROUPS_ASSERT(wg.number_of_nodes() != 0);
@@ -479,6 +499,18 @@ namespace libsemigroups {
           return detail::recursive_standardize(wg, f);
         default:
           return false;
+      }
+    }
+
+    template <typename Node>
+    bool is_standardized(WordGraph<Node> const& wg, Order val) {
+      switch (val) {
+        case Order::none:
+          return true;
+        case Order::shortlex:
+          return detail::is_shortlex_standardized(wg);
+        default:
+          LIBSEMIGROUPS_EXCEPTION("not yet implemented")
       }
     }
 

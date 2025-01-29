@@ -42,7 +42,7 @@
 #include "libsemigroups/types.hpp"            // for congruence_kind, word_type
 #include "libsemigroups/word-range.hpp"       // for operator""_w
 
-#include "libsemigroups/detail/fmt.hpp"  // for format, print                                           //
+#include "libsemigroups/detail/fmt.hpp"     // for format, print
 #include "libsemigroups/detail/report.hpp"  // for ReportGuard
 
 namespace libsemigroups {

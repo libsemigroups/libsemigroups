@@ -29,11 +29,11 @@ namespace libsemigroups {
   // TODO to_todd_coxeter for FroidurePin<TCE> just return the original
   // ToddCoxeter instance.
 
-  // TODO(0) allow template param "word_type" to be specified
-  template <typename Node>
-  ToddCoxeter<word_type> to_todd_coxeter(congruence_kind        knd,
-                                         FroidurePinBase&       fpb,
-                                         WordGraph<Node> const& wg) {
+  // TODO(0) remove default template param
+  template <typename Word = word_type, typename Node>
+  ToddCoxeter<Word> to_todd_coxeter(congruence_kind        knd,
+                                    FroidurePinBase&       fpb,
+                                    WordGraph<Node> const& wg) {
     using node_type  = typename ToddCoxeterBase::word_graph_type::node_type;
     using label_type = typename ToddCoxeterBase::word_graph_type::label_type;
 
@@ -49,7 +49,7 @@ namespace libsemigroups {
       }
     }
     // TODO(1) move "copy" into ToddCoxeter.
-    return ToddCoxeter<word_type>(knd, copy);
+    return ToddCoxeter<Word>(knd, copy);
   }
 
   // TODO(0) allow template param "word_type" to be specified

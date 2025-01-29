@@ -198,9 +198,9 @@ namespace libsemigroups {
     ToddCoxeter() = default;
 
     ToddCoxeter& init() {
+      ToddCoxeterBase::init();
       _generating_pairs.clear();
       _presentation.init();
-      ToddCoxeterBase::init();
       return *this;
     }
 

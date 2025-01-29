@@ -5024,11 +5024,17 @@ namespace libsemigroups {
     tc.standardize(Order::shortlex);
     // Have to standardize or otherwise what we are about to do below
     // makes no sense
+    // REQUIRE(word_graph::is_standardized(tc.current_word_graph()));
     REQUIRE(!tc.finished());
 
     auto const& wg    = tc.current_word_graph();
-    auto        nodes = word_graph::nodes_reachable_from(wg, 0);
+    auto        set   = word_graph::nodes_reachable_from(wg, 0);
+    auto        nodes = std::vector<uint32_t>(set.begin(), set.end());
+    std::sort(nodes.begin(), nodes.end());
     REQUIRE(!nodes.empty());
+    for (auto s : nodes) {
+      REQUIRE(s == nodes[s]);
+    }
     auto n = *std::max_element(nodes.begin(), nodes.end());
 
     REQUIRE(todd_coxeter::current_index_of(
@@ -5036,4 +5042,5 @@ namespace libsemigroups {
             == n - 1);
     REQUIRE(!tc.finished());
   }
+
 }  // namespace libsemigroups

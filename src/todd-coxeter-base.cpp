@@ -1126,7 +1126,7 @@ namespace libsemigroups {
   }
 
   std::string to_human_readable_repr(ToddCoxeterBase const& tc) {
-    return fmt::format("<ToddCoxeterBase over {} with {}/{} active/nodes>",
+    return fmt::format("<ToddCoxeter over {} with {}/{} active/nodes>",
                        to_human_readable_repr(tc.internal_presentation()),
                        tc.current_word_graph().number_of_nodes_active(),
                        tc.current_word_graph().number_of_nodes());

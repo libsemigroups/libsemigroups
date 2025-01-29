@@ -199,9 +199,6 @@ namespace libsemigroups {
 
     REQUIRE(cong.number_of_classes() == POSITIVE_INFINITY);
 
-    // REQUIRE(cong.template has<KnuthBendix<word_type>>());
-
-    // Used to require KnuthBendixCongruenceByPairs to work
     REQUIRE(congruence::contains(cong, 0_w, 1_w));
     REQUIRE(congruence::contains(cong, 0_w, 10_w));
     REQUIRE(congruence::contains(cong, 0_w, 11_w));
@@ -209,12 +206,14 @@ namespace libsemigroups {
     REQUIRE(congruence::contains(cong, 1_w, 11_w));
     REQUIRE(congruence::contains(cong, 101_w, 10_w));
 
-    // TODO(0) uncomment
-    // KnuthBendix<> kb(twosided, p);
-    // REQUIRE(knuth_bendix::non_trivial_classes(kb, *cong.get<KnuthBendix<>>())
-    //         == std::vector<std::vector<std::string>>(
-    //             {{{1}, {0, 1}, {1, 1}, {0, 1, 1}, {0}}}));
+    // Used to require KnuthBendixCongruenceByPairs to work
+    KnuthBendix kb(twosided, p);
+    REQUIRE(cong.template has<decltype(kb)>());
+    REQUIRE(knuth_bendix::non_trivial_classes(kb, *cong.get<decltype(kb)>())
+            == std::vector<std::vector<word_type>>(
+                {{1_w, 01_w, 11_w, 011_w, 0_w}}));
 
+    // TODO(0) uncomment or rm
     // REQUIRE(non_trivial_classes(cong, p)
     //         == std::vector<std::vector<word_type>>(
     //             {{1_w, 01_w, 11_w, 011_w, 0_w}}));

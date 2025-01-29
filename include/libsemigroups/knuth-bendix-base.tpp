@@ -1001,7 +1001,7 @@ namespace libsemigroups {
   to_human_readable_repr(KnuthBendixBase<Rewriter, ReductionOrder>& kb) {
     std::string conf, genpairs;
     if (kb.confluent_known()) {
-      conf = "confluent";
+      conf = "confluent ";
       if (!kb.confluent()) {
         conf = "non-" + conf;
       }
@@ -1014,7 +1014,7 @@ namespace libsemigroups {
     return fmt::format(
         "<{}{} KnuthBendix over {} with {}{}/{} active/inactive rules>",
         conf,
-        kb.kind() == congruence_kind::twosided ? " 2-sided" : " 1-sided",
+        kb.kind() == congruence_kind::twosided ? "2-sided" : "1-sided",
         to_human_readable_repr(kb.internal_presentation()),
         genpairs,
         kb.number_of_active_rules(),

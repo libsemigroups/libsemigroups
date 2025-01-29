@@ -67,7 +67,7 @@ namespace libsemigroups {
     // presentation this could take place in the Runner so that they are done
     // in parallel
     add_runner(
-        std::make_shared<ToddCoxeter<Word>>(to_todd_coxeter(knd, S, wg)));
+        std::make_shared<ToddCoxeter<Word>>(to_todd_coxeter<Word>(knd, S, wg)));
 
     // FIXME uncommenting the following lines causes multiple issues in the
     // extreme Congruence test
@@ -215,9 +215,8 @@ namespace libsemigroups {
       val  = RunnerKind::TC;
       name = "ToddCoxeter";
     } else {
-      // TODO(0) throw
-      LIBSEMIGROUPS_ASSERT(false);
-      val = RunnerKind::TC;  // To prevent compiler warnings
+      LIBSEMIGROUPS_EXCEPTION(
+          "There's no object of the specified type in the congruence");
     }
 
     if (finished()) {
@@ -247,8 +246,7 @@ namespace libsemigroups {
     } else if constexpr (std::is_same_v<Thing, ToddCoxeter<Word>>) {
       val = RunnerKind::TC;
     } else {
-      LIBSEMIGROUPS_ASSERT(false);
-      val = RunnerKind::TC;  // To prevent compiler warnings
+      return false;
     }
 
     if (finished()) {

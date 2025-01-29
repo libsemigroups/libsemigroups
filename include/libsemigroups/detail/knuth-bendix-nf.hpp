@@ -24,13 +24,14 @@
 
 #include <cstdint>  // for uint32_t
 
-#include "libsemigroups/paths.hpp"  // for Paths
-#include "libsemigroups/types.hpp"  // for word_type
+#include "libsemigroups/paths.hpp"            // for Paths
+#include "libsemigroups/to-froidure-pin.hpp"  // for to_froidure_pin
+#include "libsemigroups/types.hpp"            // for word_type
 
 namespace libsemigroups {
 
-  template <typename Rewriter, typename ReductionOrder>
-  class KnuthBendixBase;
+  template <typename Word, typename Rewriter, typename ReductionOrder>
+  class KnuthBendix;
 
   namespace detail {
 
@@ -38,21 +39,21 @@ namespace libsemigroups {
     class KnuthBendixNormalFormRange : public Paths<uint32_t> {
       using Paths_ = Paths<uint32_t>;
 
-      mutable Word                               _current;
-      KnuthBendixBase<Rewriter, ReductionOrder>* _kb;
+      mutable Word                                 _current;
+      KnuthBendix<Word, Rewriter, ReductionOrder>* _kb;
 
      public:
       using size_type   = typename Paths_::size_type;
       using output_type = Word const&;
 
       explicit KnuthBendixNormalFormRange(
-          KnuthBendixBase<Rewriter, ReductionOrder>& kb)
+          KnuthBendix<Word, Rewriter, ReductionOrder>& kb)
           : Paths(kb.gilman_graph()), _current(), _kb(&kb) {
         // It's possible that the gilman graph is empty, so the call to
         // source_no_checks(0) is technically invalid, but nothing goes wrong,
         // so we just go with it. This is slightly smelly.
         Paths_::source_no_checks(0);
-        if (!kb.internal_presentation().contains_empty_word()) {
+        if (!kb.presentation().contains_empty_word()) {
           Paths_::next();
         }
       }
@@ -61,7 +62,7 @@ namespace libsemigroups {
         word_type const& w = Paths_::get();
         _current.clear();
         for (auto c : w) {
-          _current.push_back(_kb->internal_presentation().letter_no_checks(c));
+          _current.push_back(_kb->presentation().letter_no_checks(c));
         }
         return _current;
       }
