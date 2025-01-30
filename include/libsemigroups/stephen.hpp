@@ -63,23 +63,6 @@
 
 namespace libsemigroups {
 
-  namespace detail {
-    template <typename T>
-    struct ActualPresentation {
-      using type = T;
-    };
-
-    template <>
-    struct ActualPresentation<std::shared_ptr<Presentation<word_type>>> {
-      using type = Presentation<word_type>;
-    };
-
-    template <>
-    struct ActualPresentation<std::shared_ptr<InversePresentation<word_type>>> {
-      using type = InversePresentation<word_type>;
-    };
-  }  // namespace detail
-
   // TODO(0): put reference in bib and use it with \cite
   //! \ingroup stephen_group
   //!
@@ -96,29 +79,31 @@ namespace libsemigroups {
   //! of automata theory to presentations of monoids and inverse
   //! monoids](https://rb.gy/brsuvc) by J. B. Stephen.
   //!
-  //! \tparam P a type derived from \ref PresentationBase. This is the type of
-  //! the underlying presentation used in the Stephen algorithm. Common choices
-  //! include \ref Presentation<word_type>, \ref Presentation<std::string>, \ref
-  //! InversePresentation<word_type> and \ref InversePresentation<std::string>.
-  //! If an \ref InversePresentation is supplied, then the \ref Stephen class
-  //! will use the Stephen procedure for inverse semigroups when run. Otherwise
-  //! the Stephen procedure for general semigroups is used instead.
-  template <typename P>
+  //! \tparam PresentationType a type derived from \ref PresentationBase. This
+  //! is the type of the underlying presentation used in the Stephen algorithm.
+  //! Common choices include \ref Presentation<word_type>, \ref
+  //! Presentation<std::string>, \ref InversePresentation<word_type> and \ref
+  //! InversePresentation<std::string>. If an \ref InversePresentation is
+  //! supplied, then the \ref Stephen class will use the Stephen procedure for
+  //! inverse semigroups when run. Otherwise the Stephen procedure for general
+  //! semigroups is used instead.
+  template <typename PresentationType>
   class Stephen : public Runner {
     template <typename Q>
     static constexpr bool is_valid_presentation() {
-      using R = typename detail::ActualPresentation<std::decay_t<Q>>::type;
-
-      return std::is_same_v<R, Presentation<word_type>>
-             || std::is_same_v<R, InversePresentation<word_type>>;
+      return std::is_same_v<Q, Presentation<word_type>>
+             || std::is_same_v<Q, InversePresentation<word_type>>;
+      // TODO(0): enable this once shared_ptr stuff works
+      // || std::is_same_v<Q, Presentation<std::string>>
+      // || std::is_same_v<Q, InversePresentation<std::string>>;
     }
 
     // TODO (0): finish assert
-    static_assert(is_valid_presentation<P>(), "TODO");
+    static_assert(is_valid_presentation<PresentationType>(), "TODO");
 
    public:
     //! The underlying presentation type.
-    using presentation_type = typename detail::ActualPresentation<P>::type;
+    using presentation_type = PresentationType;
 
     //! The return type of the function \ref libsemigroups::Stephen::word_graph.
     using word_graph_type = WordGraph<uint32_t>;
@@ -129,15 +114,12 @@ namespace libsemigroups {
     class StephenGraph;  // forward decl
 
     // Data members
-    node_type _accept_state;
-    bool      _something_changed;
-    bool      _finished;
-    // TODO(0): Change  _presentation to be a shared pointer to the presentation
-    // P (currently it could be either a presentation or a shared pointer to a
-    // presentation)
-    P            _presentation;
-    word_type    _word;
-    StephenGraph _word_graph;
+    node_type                         _accept_state;
+    bool                              _something_changed;
+    bool                              _finished;
+    std::shared_ptr<PresentationType> _presentation;
+    word_type                         _word;
+    StephenGraph                      _word_graph;
 
    public:
     //! \brief Default constructor.
@@ -148,6 +130,8 @@ namespace libsemigroups {
     //! \exceptions
     //! \no_libsemigroups_except
     Stephen();
+
+    // TODO(0): versions of initializing from shared_ptr to presentation
 
     //! \brief Reinitialize an existing Stephen object.
     //!
@@ -165,56 +149,45 @@ namespace libsemigroups {
     //! Construct an instance from the presentation \p p. This constructor
     //! copies \p p.
     //!
-    //! \tparam P a type derived from \ref PresentationBase
+    //! \tparam PresentationType a type derived from \ref PresentationBase
     //!
     //! \param p the presentation.
     //!
     //! \throws LibsemigroupsException if `p.validate()` throws.
     //! \throws LibsemigroupsException if `p.alphabet().size()` is `0`.
-    explicit Stephen(P const& p);
-
-    //! \brief Initialize from a presentation (copy).
-    //!
-    //! This function puts a Stephen object back into the same state as if it
-    //! had been newly constructed from the presentation \p p. This initializer
-    //! copies \p p.
-    //!
-    //! \tparam P a type derived from \ref PresentationBase
-    //!
-    //! \param p the presentation.
-    //!
-    //! \returns A reference to \c this.
-    //!
-    //! \throws LibsemigroupsException if `p.validate()` throws.
-    //! \throws LibsemigroupsException if `p.alphabet().size()` is `0`.
-    Stephen& init(P const& p);
+    explicit Stephen(PresentationType const& p) : Stephen() {
+      init(p);
+    }
 
     //! \brief Construct from a presentation (move).
     //!
     //! Construct an instance from the presentation \p p. This constructor
     //! moves \p p.
     //!
-    //! \tparam P a type derived from \ref PresentationBase
+    //! \tparam PresentationType a type derived from \ref PresentationBase
     //!
     //! \param p the presentation.
     //!
     //! \throws LibsemigroupsException if `p.validate()` throws.
     //! \throws LibsemigroupsException if `p.alphabet().size()` is `0`.
-    explicit Stephen(P&& p);
+    explicit Stephen(PresentationType&& p) : Stephen() {
+      init(std::move(p));
+    }
 
-    //! \brief Initialize from a presentation (move).
+    //! \brief Construct from a shared pointer to presentation (copy).
     //!
-    //! This function puts a Stephen object back into the same state as if it
-    //! had been newly constructed from the presentation \p p. This initializer
-    //! moves \p p.
+    //! Construct an instance from the shared pointer \p ptr to a shared
+    //! presentation object. This constructor copies \p ptr.
     //!
-    //! \tparam P a type derived from \ref PresentationBase
+    //! \tparam PresentationType a type derived from \ref PresentationBase
     //!
-    //! \param p the presentation.
+    //! \param ptr a shared pointer to a presentation.
     //!
-    //! \throws LibsemigroupsException if `p.validate()` throws.
-    //! \throws LibsemigroupsException if `p.alphabet().size()` is `0`.
-    Stephen& init(P&& p);
+    //! \throws LibsemigroupsException if `*ptr->validate()` throws.
+    //! \throws LibsemigroupsException if `*ptr->alphabet().size()` is `0`.
+    explicit Stephen(std::shared_ptr<PresentationType> const& ptr) : Stephen() {
+      init(ptr);
+    }
 
     //! Default copy constructor
     Stephen(Stephen const& that) = default;
@@ -230,21 +203,73 @@ namespace libsemigroups {
 
     ~Stephen() = default;
 
+    //! \brief Initialize from a presentation (copy).
+    //!
+    //! This function puts a Stephen object back into the same state as if it
+    //! had been newly constructed from the presentation \p p. This initializer
+    //! copies \p p.
+    //!
+    //! \tparam PresentationType a type derived from \ref PresentationBase
+    //!
+    //! \param p the presentation.
+    //!
+    //! \returns A reference to \c this.
+    //!
+    //! \throws LibsemigroupsException if `p.validate()` throws.
+    //! \throws LibsemigroupsException if `p.alphabet().size()` is `0`.
+    Stephen& init(PresentationType const& p) {
+      return init(std::make_shared<PresentationType>(p));
+    }
+
+    //! \brief Initialize from a presentation (move).
+    //!
+    //! This function puts a Stephen object back into the same state as if it
+    //! had been newly constructed from the presentation \p p. This initializer
+    //! moves \p p.
+    //!
+    //! \tparam PresentationType a type derived from \ref PresentationBase
+    //!
+    //! \param p the presentation.
+    //!
+    //! \returns A reference to \c this.
+    //!
+    //! \throws LibsemigroupsException if `p.validate()` throws.
+    //! \throws LibsemigroupsException if `p.alphabet().size()` is `0`.
+    Stephen& init(PresentationType&& p) {
+      return init(std::make_shared<PresentationType>(std::move(p)));
+    }
+
+    //! \brief Initialize from a shared pointer to presentation (copy).
+    //!
+    //! This function puts a Stephen object back into the same state as if it
+    //! had been newly constructed from the shared pointer to a presentation \p
+    //! ptr. This initializer copies \p ptr.
+    //!
+    //! \tparam PresentationType a type derived from \ref PresentationBase
+    //!
+    //! \param ptr a shared pointer to a presentation.
+    //!
+    //! \returns A reference to \c this.
+    //!
+    //! \throws LibsemigroupsException if `ptr->validate()` throws.
+    //! \throws LibsemigroupsException if `ptr->alphabet().size()` is `0`.
+    Stephen& init(std::shared_ptr<PresentationType> const& ptr);
+
     //! \brief Construct from a different presentation type (copy).
     //!
     //! Construct an instance from the presentation \p q with a possibly
     //! different underlying presentation type. This constructor copies \p q.
     //!
-    //! \tparam P a type derived from \ref PresentationBase
+    //! \tparam PresentationType a type derived from \ref PresentationBase
     //!
-    //! \tparam Q a type derived from \ref PresentationBase
+    //! \tparam OtherPresentationType a type derived from \ref PresentationBase
     //!
     //! \param q the presentation.
     //!
     //! \throws LibsemigroupsException if `q.validate()` throws.
     //! \throws LibsemigroupsException if `q.alphabet().size()` is `0`.
-    template <typename Q>
-    explicit Stephen(Q const& q) : Stephen() {
+    template <typename OtherPresentationType>
+    explicit Stephen(OtherPresentationType const& q) : Stephen() {
       init(q);
     }
 
@@ -254,9 +279,9 @@ namespace libsemigroups {
     //! had been newly constructed from the presentation \p q with a possibly
     //! different underlying presentation type. This initializer copies \p q.
     //!
-    //! \tparam P a type derived from \ref PresentationBase
+    //! \tparam PresentationType a type derived from \ref PresentationBase
     //!
-    //! \tparam Q a type derived from \ref PresentationBase
+    //! \tparam OtherPresentationType a type derived from \ref PresentationBase
     //!
     //! \param q the presentation.
     //!
@@ -264,18 +289,8 @@ namespace libsemigroups {
     //!
     //! \throws LibsemigroupsException if `q.validate()` throws.
     //! \throws LibsemigroupsException if `q.alphabet().size()` is `0`.
-    template <typename Q>
-    Stephen& init(Q const& q);
-
-    // TODO(0): make private and hide in tpp file
-    template <typename PP>
-    static constexpr auto& deref_if_necessary(PP&& p) {
-      if constexpr (detail::IsStdSharedPtr<std::decay_t<PP>>) {
-        return *p;
-      } else {
-        return p;
-      }
-    }
+    template <typename OtherPresentationType>
+    Stephen& init(OtherPresentationType const& q);
 
     //! \brief Get the input presentation.
     //!
@@ -288,7 +303,7 @@ namespace libsemigroups {
     //! \exceptions
     //! \noexcept
     presentation_type const& presentation() const noexcept {
-      return deref_if_necessary(_presentation);
+      return *_presentation;
     }
 
     //! \brief Set the initial word (copy).
@@ -404,7 +419,7 @@ namespace libsemigroups {
     //!
     //! \cong_intf_warn_undecidable{Stephen}.
     // TODO(0): exceptions?
-    void operator*=(Stephen<P>& that) {
+    void operator*=(Stephen<PresentationType>& that) {
       // TODO(0): if only one of this and that is finished, then just tack on
       // the linear graph.
       this->run();
@@ -443,11 +458,9 @@ namespace libsemigroups {
 
   // Deduction guides
   // The following is not a mistake but intentional, if no presentation type is
-  // explicitly used, then we use Presentation<word_type>. The only other
-  // alternative is to use a std::shared_ptr<Presentation<word_type>> or
-  // std::shared_ptr<InversePresentation<word_type>>;
+  // explicitly used, then we use Presentation<word_type>.
   // Presentation<std::string> is not allowed.
-  // TODO(0): Change once _presentation is changed to be a shared_ptr
+  // TODO(0): allow for Presentation<std::string>
   template <typename Word>
   Stephen(Presentation<Word> const&) -> Stephen<Presentation<word_type>>;
 
@@ -456,6 +469,10 @@ namespace libsemigroups {
 
   template <typename Word>
   Stephen(Presentation<Word>&&) -> Stephen<Presentation<word_type>>;
+
+  template <typename Word>
+  Stephen(std::shared_ptr<Presentation<Word>>&&)
+      -> Stephen<Presentation<word_type>>;
 
   template <typename Word>
   Stephen(InversePresentation<Word> const&)
@@ -471,7 +488,7 @@ namespace libsemigroups {
 
   template <typename Word>
   Stephen(std::shared_ptr<InversePresentation<Word>>&&)
-      -> Stephen<std::shared_ptr<InversePresentation<word_type>>>;
+      -> Stephen<InversePresentation<word_type>>;
   // TODO(0): other shared_ptr guides?
 
 }  // namespace libsemigroups
@@ -712,8 +729,8 @@ namespace libsemigroups {
 
     // TODO(0): doc
     // TODO(0) to tpp
-    template <typename P>
-    Dot dot(Stephen<P>& s) {
+    template <typename PresentationType>
+    Dot dot(Stephen<PresentationType>& s) {
       Dot result;
       result.kind(Dot::Kind::digraph);
       result.add_node("initial").add_attr("style", "invis");
@@ -725,7 +742,7 @@ namespace libsemigroups {
       result.add_edge(s.accept_state(), "accept");
 
       size_t max_letters = s.presentation().alphabet().size();
-      if constexpr (IsInversePresentation<P>) {
+      if constexpr (IsInversePresentation<PresentationType>) {
         max_letters /= 2;
       }
 

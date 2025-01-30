@@ -21,9 +21,10 @@
 #include "libsemigroups/detail/report.hpp"
 namespace libsemigroups {
 
-  template <typename P>
-  class Stephen<P>::StephenGraph : public detail::NodeManagedGraph<
-                                       detail::WordGraphWithSources<uint32_t>> {
+  template <typename PresentationType>
+  class Stephen<PresentationType>::StephenGraph
+      : public detail::NodeManagedGraph<
+            detail::WordGraphWithSources<uint32_t>> {
     // TODO(0) both of these aliases aren't required.
     using BaseGraph            = detail::WordGraphWithSources<uint32_t>;
     using WordGraphWithSources = BaseGraph;
@@ -114,74 +115,60 @@ namespace libsemigroups {
     }
   };
 
-  template <typename P>
-  Stephen<P>::Stephen()
+  template <typename PresentationType>
+  Stephen<PresentationType>::Stephen()
       : _accept_state(UNDEFINED),
         _something_changed(true),
         _finished(false),
-        _presentation(),
+        _presentation(std::make_shared<PresentationType>()),
         _word(),
         _word_graph() {
     _word_graph.report_prefix("Stephen");
   }
 
-  template <typename P>
-  Stephen<P>& Stephen<P>::init() {
+  template <typename PresentationType>
+  Stephen<PresentationType>& Stephen<PresentationType>::init() {
     _accept_state      = UNDEFINED;
     _something_changed = true;
     _finished          = false;
-    _presentation.init();
+    _presentation->init();
     _word.clear();
     _word_graph.init();
     _word_graph.report_prefix("Stephen");
   }
 
-  template <typename P>
-  Stephen<P>::Stephen(P const& p) : Stephen() {
-    init(p);
-  }
-
-  template <typename P>
-  Stephen<P>& Stephen<P>::init(P const& p) {
-    deref_if_necessary(p).validate();
-    throw_if_presentation_empty(deref_if_necessary(p));
-    _presentation = p;
+  template <typename PresentationType>
+  Stephen<PresentationType>& Stephen<PresentationType>::init(
+      std::shared_ptr<PresentationType> const& ptr) {
+    ptr->validate();
+    throw_if_presentation_empty(*ptr);
+    //  TODO(0): check ok
+    _presentation = ptr;
     something_changed();
     _word.clear();
     return *this;
   }
 
-  template <typename P>
-  Stephen<P>::Stephen(P&& p) : Stephen() {
-    init(std::move(p));
-  }
-
-  template <typename P>
-  Stephen<P>& Stephen<P>::init(P&& p) {
-    deref_if_necessary(p).validate();
-    throw_if_presentation_empty(deref_if_necessary(p));
-    _presentation = std::move(p);
-    something_changed();
-    _word.clear();
-    return *this;
-  }
-
-  template <typename P>
-  template <typename Q>
-  Stephen<P>& Stephen<P>::init(Q const& q) {
+  template <typename PresentationType>
+  template <typename OtherPresentationType>
+  Stephen<PresentationType>&
+  Stephen<PresentationType>::init(OtherPresentationType const& q) {
     // TODO (0): finish assert
-    static_assert(((IsInversePresentation<P>) == (IsInversePresentation<Q>) )
-                      && IsPresentation<P> && IsPresentation<Q>,
+    static_assert(((IsInversePresentation<PresentationType>)
+                   == (IsInversePresentation<OtherPresentationType>) )
+                      && IsPresentation<PresentationType>
+                      && IsPresentation<OtherPresentationType>,
                   "TODO");
-    if constexpr (IsInversePresentation<P> && IsInversePresentation<Q>) {
+    if constexpr (IsInversePresentation<PresentationType>
+                  && IsInversePresentation<OtherPresentationType>) {
       return init(to_inverse_presentation<word_type>(q));
     } else {
       return init(to_presentation<word_type>(q));
     }
   }
 
-  template <typename P>
-  void Stephen<P>::something_changed() noexcept {
+  template <typename PresentationType>
+  void Stephen<PresentationType>::something_changed() noexcept {
     _something_changed = true;
     _finished          = false;
     _accept_state      = UNDEFINED;
@@ -191,24 +178,27 @@ namespace libsemigroups {
   // Public
   ////////////////////////////////////////////////////////////////////////
 
-  template <typename P>
-  Stephen<P>& Stephen<P>::set_word(word_type const& w) {
+  template <typename PresentationType>
+  Stephen<PresentationType>&
+  Stephen<PresentationType>::set_word(word_type const& w) {
     presentation().validate_word(w.cbegin(), w.cend());
     something_changed();
     _word = w;
     return *this;
   }
 
-  template <typename P>
-  Stephen<P>& Stephen<P>::set_word(word_type&& w) {
+  template <typename PresentationType>
+  Stephen<PresentationType>&
+  Stephen<PresentationType>::set_word(word_type&& w) {
     presentation().validate_word(w.cbegin(), w.cend());
     something_changed();
     _word = std::move(w);
     return *this;
   }
 
-  template <typename P>
-  typename Stephen<P>::node_type Stephen<P>::accept_state() {
+  template <typename PresentationType>
+  typename Stephen<PresentationType>::node_type
+  Stephen<PresentationType>::accept_state() {
     if (_accept_state == UNDEFINED) {
       using word_graph::last_node_on_path_no_checks;
       run();
@@ -223,23 +213,23 @@ namespace libsemigroups {
   // Private Member Functions
   ////////////////////////////////////////////////////////////////////////
 
-  template <typename P>
-  void Stephen<P>::standardize() {
+  template <typename PresentationType>
+  void Stephen<PresentationType>::standardize() {
     word_graph::standardize(_word_graph);
     _word_graph.induced_subgraph_no_checks(
         0, _word_graph.number_of_nodes_active());
   }
 
-  template <typename P>
-  void
-  Stephen<P>::throw_if_presentation_empty(presentation_type const& p) const {
+  template <typename PresentationType>
+  void Stephen<PresentationType>::throw_if_presentation_empty(
+      presentation_type const& p) const {
     if (p.alphabet().empty()) {
       LIBSEMIGROUPS_EXCEPTION("the presentation must not have 0 generators");
     }
   }
 
-  template <typename P>
-  void Stephen<P>::throw_if_not_ready() const {
+  template <typename PresentationType>
+  void Stephen<PresentationType>::throw_if_not_ready() const {
     if (presentation().rules.empty() && presentation().alphabet().empty()) {
       LIBSEMIGROUPS_EXCEPTION(
           "the presentation must be defined using init() before "
@@ -248,8 +238,8 @@ namespace libsemigroups {
     }
   }
 
-  template <typename P>
-  void Stephen<P>::run_impl() {
+  template <typename PresentationType>
+  void Stephen<PresentationType>::run_impl() {
     reset_start_time();
     // TODO(0): report_after_run (including report_why_we_stopped) and
     // report_before_run
@@ -261,8 +251,8 @@ namespace libsemigroups {
     }
   }
 
-  template <typename P>
-  void Stephen<P>::really_run_impl() {
+  template <typename PresentationType>
+  void Stephen<PresentationType>::really_run_impl() {
     if (_something_changed) {
       throw_if_presentation_empty(presentation());
       _something_changed = false;
@@ -352,19 +342,19 @@ namespace libsemigroups {
 
   namespace stephen {
 
-    template <typename P>
-    bool accepts(Stephen<P>& s, word_type const& w) {
+    template <typename PresentationType>
+    bool accepts(Stephen<PresentationType>& s, word_type const& w) {
       using word_graph::follow_path;
-      using node_type = typename Stephen<P>::node_type;
+      using node_type = typename Stephen<PresentationType>::node_type;
       s.run();
       LIBSEMIGROUPS_ASSERT(s.accept_state() != UNDEFINED);
       return s.accept_state() == follow_path(s.word_graph(), node_type(0), w);
     }
 
-    template <typename P>
-    bool is_left_factor(Stephen<P>& s, word_type const& w) {
+    template <typename PresentationType>
+    bool is_left_factor(Stephen<PresentationType>& s, word_type const& w) {
       using word_graph::last_node_on_path;
-      using node_type = typename Stephen<P>::node_type;
+      using node_type = typename Stephen<PresentationType>::node_type;
       s.run();
       return last_node_on_path(
                  s.word_graph(), node_type(0), w.cbegin(), w.cend())

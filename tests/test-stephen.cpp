@@ -1176,7 +1176,7 @@ namespace libsemigroups {
     presentation::add_rule(p, to_word("bc"), to_word("cb"));
 
     auto ptr = std::make_shared<decltype(p)>(p);
-    auto S   = Stephen<std::shared_ptr<InversePresentation<word_type>>>(ptr);
+    auto S   = Stephen<InversePresentation<word_type>>(ptr);
     S.set_word(to_word("BaAbaBcAbC"));
     S.run();
     REQUIRE(S.word_graph().number_of_nodes() == 7);
@@ -1440,6 +1440,62 @@ namespace libsemigroups {
   //                          to_human_readable_repr(stephen.presentation()),
   //                          stephen.word()));
   // }
+
+  // The following uses up about 7GB memory to run
+  LIBSEMIGROUPS_TEST_CASE("Stephen",
+                          "050",
+                          "shared_ptr memory check",
+                          "[stephen][extreme][no-valgrind]") {
+    ToWord                         to_word("abcABC");
+    InversePresentation<word_type> p;
+    p.alphabet(to_word("abcABC"));
+    p.inverses_no_checks(to_word("ABCabc"));
+    presentation::add_rule(p, to_word("a"), to_word("b"));
+    for (size_t i = 0; i < 2 << 14; ++i) {
+      presentation::add_rule(p, random_word(2 << 9, 6), random_word(2 << 9, 6));
+    }  // About 500 Mb in size
+    auto ptr = std::make_shared<InversePresentation<word_type>>(
+        p);  // Adds another 500 Mb due to copy
+
+    size_t                                               n = 12;
+    std::vector<Stephen<InversePresentation<word_type>>> stephens(n);
+    // Uses no extra memory with shared pointer
+    for (size_t i = 0; i < n; ++i) {
+      std::cout << i << "\n";
+      stephens[i].init(ptr);
+      if (i % 2 == 0) {
+        stephens[i].set_word(to_word("a"));
+      } else {
+        stephens[i].set_word(to_word("b"));
+      }
+      stephens[i].run();
+      REQUIRE(stephens[i].word_graph().number_of_nodes() == 2);
+      REQUIRE(stephens[i].word_graph()
+              == to_word_graph<uint32_t>(
+                  2,
+                  {{1, 1, UNDEFINED, UNDEFINED, UNDEFINED, UNDEFINED},
+                   {UNDEFINED, UNDEFINED, UNDEFINED, 0, 0, UNDEFINED}}));
+    }
+
+    std::vector<Stephen<InversePresentation<word_type>>> bad_stephens(n);
+    // Uses 6GB extra memory without shared pointer
+    for (size_t i = 0; i < n; ++i) {
+      std::cout << i << "\n";
+      bad_stephens[i].init(p);
+      if (i % 2 == 0) {
+        bad_stephens[i].set_word(to_word("a"));
+      } else {
+        bad_stephens[i].set_word(to_word("b"));
+      }
+      bad_stephens[i].run();
+      REQUIRE(bad_stephens[i].word_graph().number_of_nodes() == 2);
+      REQUIRE(bad_stephens[i].word_graph()
+              == to_word_graph<uint32_t>(
+                  2,
+                  {{1, 1, UNDEFINED, UNDEFINED, UNDEFINED, UNDEFINED},
+                   {UNDEFINED, UNDEFINED, UNDEFINED, 0, 0, UNDEFINED}}));
+    }
+  }
 
   // TODO(0): the examples from Stephen's paper/thesis?
 }  // namespace libsemigroups
