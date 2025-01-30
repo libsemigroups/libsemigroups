@@ -496,7 +496,7 @@ namespace libsemigroups {
     RewriteTrie& RewriteTrie::operator=(RewriteTrie const& that) {
       init();
       RewriterBase::operator=(that);
-      for (auto* crule : that) {
+      for (auto* crule : *this) {
         Rule* rule = const_cast<Rule*>(crule);
         add_rule_to_trie(rule);
       }

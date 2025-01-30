@@ -278,9 +278,10 @@ namespace libsemigroups {
           report_default(
               "ToddCoxeter: too few nodes killed in last {}, expected >= "
               "{}, found {}, aborting lookahead . . .\n",
-              stop_early_interval,
-              static_cast<size_t>(number_of_nodes_active() * stop_early_ratio),
-              killed_last_interval);
+              detail::string_time(stop_early_interval),
+              detail::group_digits(static_cast<size_t>(number_of_nodes_active()
+                                                       * stop_early_ratio)),
+              detail::group_digits(killed_last_interval));
           report_no_prefix("{:-<90}\n", "");
           break;
         }
