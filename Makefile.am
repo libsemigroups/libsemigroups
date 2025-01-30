@@ -659,7 +659,6 @@ libsemigroups_la_SOURCES += src/bmat8.cpp
 libsemigroups_la_SOURCES += src/cong-helpers.cpp
 libsemigroups_la_SOURCES += src/cong-intf-class.cpp
 libsemigroups_la_SOURCES += src/constants.cpp
-libsemigroups_la_SOURCES += src/cutting.cpp
 libsemigroups_la_SOURCES += src/dot.cpp
 libsemigroups_la_SOURCES += src/exception.cpp
 libsemigroups_la_SOURCES += src/forest.cpp
