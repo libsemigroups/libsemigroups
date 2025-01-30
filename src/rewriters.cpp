@@ -582,6 +582,7 @@ namespace libsemigroups {
           // Find rule that corresponds to terminal node
           Rule const* rule     = _rules.find(current)->second;
           auto        lhs_size = rule->lhs()->size();
+          LIBSEMIGROUPS_ASSERT(lhs_size != 0);
 
           // Check the lhs is smaller than the portion of the word that has
           // been read

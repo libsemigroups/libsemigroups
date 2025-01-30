@@ -642,9 +642,10 @@ namespace libsemigroups {
 
       RewriteTrie() : RewriterBase(true), _rules(), _trie() {}
 
-      RewriteTrie(const RewriteTrie& that);
+      RewriteTrie(RewriteTrie const& that);
 
       RewriteTrie& operator=(RewriteTrie const& that);
+      // TODO(1) move constructor, and move assignment operator
 
       ~RewriteTrie() = default;
 
@@ -691,7 +692,7 @@ namespace libsemigroups {
       void add_rule_to_trie(Rule* rule) {
         index_type node = _trie.add_word_no_checks(rule->lhs()->cbegin(),
                                                    rule->lhs()->cend());
-        _rules.emplace(node, rule);
+        _rules.emplace(node, copy_rule(rule));
       }
 
       Rules::iterator make_active_rule_pending(Rules::iterator it);

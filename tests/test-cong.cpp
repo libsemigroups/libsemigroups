@@ -192,24 +192,29 @@ namespace libsemigroups {
     presentation::add_rule(p, 12_w, 1_w);
     presentation::add_rule(p, 21_w, 1_w);
 
-    Congruence cong(twosided, p);
-    congruence::add_generating_pair(cong, 0_w, 1_w);
-    REQUIRE(cong.presentation() == p);
-    REQUIRE(cong.generating_pairs() == std::vector<word_type>({0_w, 1_w}));
+    KnuthBendix<word_type> kb2;
+    {  // This code block is here to ensure that KnuthBendix is properly copied,
+       // and does not depend on anything remaining in cong.
+      Congruence cong(twosided, p);
+      congruence::add_generating_pair(cong, 0_w, 1_w);
+      REQUIRE(cong.presentation() == p);
+      REQUIRE(cong.generating_pairs() == std::vector<word_type>({0_w, 1_w}));
 
-    REQUIRE(cong.number_of_classes() == POSITIVE_INFINITY);
+      REQUIRE(cong.number_of_classes() == POSITIVE_INFINITY);
 
-    REQUIRE(congruence::contains(cong, 0_w, 1_w));
-    REQUIRE(congruence::contains(cong, 0_w, 10_w));
-    REQUIRE(congruence::contains(cong, 0_w, 11_w));
-    REQUIRE(congruence::contains(cong, 0_w, 101_w));
-    REQUIRE(congruence::contains(cong, 1_w, 11_w));
-    REQUIRE(congruence::contains(cong, 101_w, 10_w));
+      REQUIRE(congruence::contains(cong, 0_w, 1_w));
+      REQUIRE(congruence::contains(cong, 0_w, 10_w));
+      REQUIRE(congruence::contains(cong, 0_w, 11_w));
+      REQUIRE(congruence::contains(cong, 0_w, 101_w));
+      REQUIRE(congruence::contains(cong, 1_w, 11_w));
+      REQUIRE(congruence::contains(cong, 101_w, 10_w));
+      REQUIRE(cong.template has<KnuthBendix<word_type>>());
+      kb2 = *cong.get<KnuthBendix<word_type>>();
+    }
 
     // Used to require KnuthBendixCongruenceByPairs to work
     KnuthBendix kb(twosided, p);
-    REQUIRE(cong.template has<decltype(kb)>());
-    REQUIRE(knuth_bendix::non_trivial_classes(kb, *cong.get<decltype(kb)>())
+    REQUIRE(knuth_bendix::non_trivial_classes(kb, kb2)
             == std::vector<std::vector<word_type>>(
                 {{1_w, 01_w, 11_w, 011_w, 0_w}}));
 
