@@ -3264,9 +3264,10 @@ namespace libsemigroups {
                           "085",
                           "Renner monoid type D4 (Gay-Hivert), q = 1",
                           "[no-valgrind][quick][todd-coxeter][no-coverage]") {
-    auto        rg = ReportGuard(false);
-    ToddCoxeter tc(twosided,
-                   presentation::examples::renner_type_D_monoid(4, 1));
+    auto rg = ReportGuard(false);
+    auto p  = presentation::examples::renner_type_D_monoid(4, 1);
+    presentation::normalize_alphabet(p);
+    ToddCoxeter tc(twosided, p);
     tc.strategy(options::strategy::hlt)
         .lookahead_extent(options::lookahead_extent::partial);
 
@@ -4600,7 +4601,7 @@ namespace libsemigroups {
       presentation::add_rule(p, pow({a}, 3), {a});
     }
     using words::operator+;
-    WordRange    words;
+    WordRange words;
     words.alphabet_size(n).min(0).max(8);
 
     for (size_t a = 0; a < n - 1; ++a) {

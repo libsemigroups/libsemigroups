@@ -330,7 +330,7 @@ namespace libsemigroups {
     REQUIRE(kb.number_of_classes() == 625);
     REQUIRE(to_human_readable_repr(kb)
             == "<confluent 2-sided KnuthBendix over <monoid presentation with "
-               "5 letters, 260 rules, and length 4131> with 362/204 "
+               "5 letters, 260 rules, and length 4131> with 362/134 "
                "active/inactive rules>");
   }
 
@@ -373,7 +373,7 @@ namespace libsemigroups {
                                    "[quick][knuth-bendix]",
                                    KNUTH_BENDIX_TYPES) {
     using literals::operator""_w;
-    auto            rg = ReportGuard(false);
+    auto rg = ReportGuard(false);
 
     Presentation<word_type> p1;
     p1.contains_empty_word(true);
