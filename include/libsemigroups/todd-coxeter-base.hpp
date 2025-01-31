@@ -994,8 +994,6 @@ namespace libsemigroups {
     //! inserted into \p d_first.
     //!
     //! \cong_intf_warn_assume_letters_in_bounds
-    //!
-    //! \todd_coxeter_note_reverse
     template <typename OutputIterator,
               typename InputIterator1,
               typename InputIterator2>
@@ -1024,7 +1022,6 @@ namespace libsemigroups {
     //!
     //! \cong_intf_throws_if_letters_out_of_bounds
     //!
-    //! \todd_coxeter_note_reverse
     template <typename OutputIterator,
               typename InputIterator1,
               typename InputIterator2>
@@ -1056,7 +1053,6 @@ namespace libsemigroups {
     //!
     //! \cong_intf_warn_undecidable{Todd-Coxeter}
     //!
-    //! \todd_coxeter_note_reverse
     template <typename OutputIterator,
               typename InputIterator1,
               typename InputIterator2>
@@ -1088,7 +1084,6 @@ namespace libsemigroups {
     //!
     //! \cong_intf_warn_undecidable{Todd-Coxeter}
     //!
-    //! \todd_coxeter_note_reverse
     template <typename OutputIterator,
               typename InputIterator1,
               typename InputIterator2>
@@ -2251,7 +2246,6 @@ namespace libsemigroups {
     //! particular, it is assumed that \p i is a valid index of a current
     //! class.
     //!
-    //! \todd_coxeter_note_reverse
     // NOTE THAT: the graph contains one more node than there are element
     // if the underlying presentation does not contain the empty word
     template <typename OutputIterator>
@@ -2283,7 +2277,6 @@ namespace libsemigroups {
     //!
     //! \throws LibsemigroupsException if \p i is out of bounds.
     //!
-    //! \todd_coxeter_note_reverse
     template <typename OutputIterator>
     OutputIterator current_word_of(OutputIterator d_first, index_type i) const;
 
@@ -2310,7 +2303,6 @@ namespace libsemigroups {
     //!
     //! \throws LibsemigroupsException if \p i is out of bounds.
     //!
-    //! \todd_coxeter_note_reverse
     template <typename Iterator>
     Iterator word_of_no_checks(Iterator d_first, index_type i) {
       run();
@@ -2342,8 +2334,6 @@ namespace libsemigroups {
     //! \warning This function does not check its arguments. In
     //! particular, it is assumed that \p i is a valid index of a current
     //! class.
-    //!
-    //! \todd_coxeter_note_reverse
     template <typename Iterator>
     Iterator word_of(Iterator d_first, index_type i) {
       run();

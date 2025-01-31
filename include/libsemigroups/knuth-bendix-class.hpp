@@ -205,8 +205,6 @@ namespace libsemigroups {
     //! inserted into \p d_first.
     //!
     //! \cong_intf_throws_if_letters_out_of_bounds
-    //!
-    //! \todd_coxeter_note_reverse
     template <typename OutputIterator,
               typename InputIterator1,
               typename InputIterator2>
@@ -235,8 +233,6 @@ namespace libsemigroups {
     //! \cong_intf_throws_if_letters_out_of_bounds
     //!
     //! \cong_intf_warn_undecidable{Knuth-Bendix}
-    //!
-    //! \todd_coxeter_note_reverse
     template <typename OutputIterator,
               typename InputIterator1,
               typename InputIterator2>
