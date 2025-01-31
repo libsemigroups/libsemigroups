@@ -78,7 +78,6 @@ namespace libsemigroups {
         Rule* ptr = const_cast<Rule*>(cptr);
         ptr->deactivate();
         _inactive_rules.insert(_inactive_rules.end(), ptr);
-        report_no_prefix("{:-<95}\n", "");
       }
       _active_rules.clear();
       for (auto& it : _cursors) {
@@ -398,17 +397,18 @@ namespace libsemigroups {
       auto now           = std::chrono::high_resolution_clock::now();
       auto time
           = std::chrono::duration_cast<std::chrono::seconds>(now - start_time);
-
-      report_no_prefix("{:-<95}\n", "");
-      report_default("KnuthBendix: locally confluent for: {0:>{width}} / "
-                     "{1:>{width}} ({2:>4.1f}%) pairs of rules ({3}s)\n",
-                     detail::group_digits(seen),
-                     total_pairs_s,
-                     (total_pairs != 0)
-                         ? 100 * static_cast<double>(seen) / total_pairs
-                         : 100,
-                     time.count(),
-                     fmt::arg("width", total_pairs_s.size()));
+      if (reporting_enabled()) {
+        report_no_prefix("{:-<95}\n", "");
+        report_default("KnuthBendix: locally confluent for: {0:>{width}} / "
+                       "{1:>{width}} ({2:>4.1f}%) pairs of rules ({3}s)\n",
+                       detail::group_digits(seen),
+                       total_pairs_s,
+                       (total_pairs != 0)
+                           ? 100 * static_cast<double>(seen) / total_pairs
+                           : 100,
+                       time.count(),
+                       fmt::arg("width", total_pairs_s.size()));
+      }
     }
 
     bool RewriteFromLeft::confluent_impl(std::atomic_uint64_t& seen) const {
@@ -630,17 +630,18 @@ namespace libsemigroups {
       auto now           = std::chrono::high_resolution_clock::now();
       auto time
           = std::chrono::duration_cast<std::chrono::seconds>(now - start_time);
-
-      report_no_prefix("{:-<95}\n", "");
-      report_default("KnuthBendix: locally confluent for: {0:>{width}} / "
-                     "{1:>{width}} ({2:>4.1f}%) rules ({3}s)\n",
-                     detail::group_digits(seen),
-                     total_rules_s,
-                     (total_rules != 0)
-                         ? 100 * static_cast<double>(seen) / total_rules
-                         : 100,
-                     time.count(),
-                     fmt::arg("width", total_rules_s.size()));
+      if (reporting_enabled()) {
+        report_no_prefix("{:-<95}\n", "");
+        report_default("KnuthBendix: locally confluent for: {0:>{width}} / "
+                       "{1:>{width}} ({2:>4.1f}%) rules ({3}s)\n",
+                       detail::group_digits(seen),
+                       total_rules_s,
+                       (total_rules != 0)
+                           ? 100 * static_cast<double>(seen) / total_rules
+                           : 100,
+                       time.count(),
+                       fmt::arg("width", total_rules_s.size()));
+      }
     }
 
     bool RewriteTrie::confluent_impl(std::atomic_uint64_t& seen) const {
