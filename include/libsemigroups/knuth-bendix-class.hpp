@@ -43,6 +43,7 @@ namespace libsemigroups {
 
    public:
     using native_word_type = Word;
+    // TODO(0) rm native_letter_type/presentation_type??
 
     KnuthBendix() = default;
 
@@ -62,20 +63,7 @@ namespace libsemigroups {
       init(knd, std::move(p));
     }
 
-    // TODO to tpp
-    KnuthBendix& init(congruence_kind knd, Presentation<Word>&& p) {
-      if constexpr (!std::is_same_v<Word, std::string>) {
-        // to_presentation throws in the next line if p isn't valid
-        // TODO(0) comment about the lambda in the next line
-        KnuthBendixBase_::init(
-            knd, to_presentation<std::string>(p, [](auto x) { return x; }));
-      } else {
-        // TODO(1) normalize? presentation::normalize_alphabet(p);
-        KnuthBendixBase_::init(knd, p);
-      }
-      _presentation = std::move(p);
-      return *this;
-    }
+    KnuthBendix& init(congruence_kind knd, Presentation<Word>&& p);
 
     KnuthBendix(congruence_kind knd, Presentation<Word> const& p)
         // call the rval ref constructor
@@ -102,7 +90,7 @@ namespace libsemigroups {
     ////////////////////////////////////////////////////////////////////////
     // KnuthBendix - interface requirements - add_generating_pair
     ////////////////////////////////////////////////////////////////////////
-    // TODO(0) to tpp
+
     template <typename Iterator1,
               typename Iterator2,
               typename Iterator3,
@@ -110,16 +98,7 @@ namespace libsemigroups {
     KnuthBendix& add_generating_pair_no_checks(Iterator1 first1,
                                                Iterator2 last1,
                                                Iterator3 first2,
-                                               Iterator4 last2) {
-      // Add the input iterators to _generating_pairs
-      _generating_pairs.emplace_back(first1, last1);
-      _generating_pairs.emplace_back(first2, last2);
-      // Although this looks like it does nothing, remember the type of words in
-      // *this and KnuthBendixBase_ may not be the same
-      KnuthBendixBase_::add_generating_pair_no_checks(
-          first1, last1, first2, last2);
-      return *this;
-    }
+                                               Iterator4 last2);
 
     template <typename Iterator1,
               typename Iterator2,
@@ -190,7 +169,6 @@ namespace libsemigroups {
     //! \cong_intf_warn_undecidable{Knuth-Bendix}
     //!
     //! \cong_intf_throws_if_letters_out_of_bounds
-    // TODO(0) to tpp
     template <typename Iterator1,
               typename Iterator2,
               typename Iterator3,
@@ -198,16 +176,7 @@ namespace libsemigroups {
     bool contains(Iterator1 first1,
                   Iterator2 last1,
                   Iterator3 first2,
-                  Iterator4 last2) {
-      // TODO(1) remove when is_free is implemented
-      if (presentation().rules.empty() && generating_pairs().empty()) {
-        return std::equal(first1, last1, first2, last2);
-      }
-      // Call CongruenceInterface version so that we perform bound checks in
-      // KnuthBendix and not KnuthBendixBase_
-      return CongruenceInterface::contains<KnuthBendix>(
-          first1, last1, first2, last2);
-    }
+                  Iterator4 last2);
 
     ////////////////////////////////////////////////////////////////////////
     // KnuthBendix - interface requirements - reduce
@@ -302,4 +271,6 @@ namespace libsemigroups {
   }  // namespace knuth_bendix
 
 }  // namespace libsemigroups
+
+#include "knuth-bendix-class.tpp"
 #endif  // LIBSEMIGROUPS_KNUTH_BENDIX_CLASS_HPP_

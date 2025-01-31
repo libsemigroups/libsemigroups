@@ -304,7 +304,7 @@ namespace libsemigroups {
                                             Iterator4 last2) {
       LIBSEMIGROUPS_ASSERT(!started());
       // TODO(2) if native_word_type == word_type, then _generating_pairs
-      // == _generating_pairs
+      // == _generating_pairs, maybe better not to duplicate
       _generating_pairs.emplace_back(first1, last1);
       _generating_pairs.emplace_back(first2, last2);
       return CongruenceInterface::add_internal_generating_pair_no_checks<
