@@ -179,7 +179,8 @@ namespace libsemigroups {
     // No rvalue ref version because we anyway must copy p multiple times
     Congruence& init(congruence_kind knd, Presentation<Word> const& p);
 
-    // TODO(0) rvalue reference Presentation<Word> constructor
+    // The Congruence itself doesn't store a presentation directly, so we don't
+    // bother with rvalue reference Presentation<Word> constructor/init.
 
     //! \brief Construct from congruence_kind, FroidurePin, and WordGraph.
     //!
