@@ -220,7 +220,7 @@ namespace libsemigroups {
 
     // TODO(0) uncomment or rm
     // REQUIRE(non_trivial_classes(cong, p)
-    //         == std::vector<std::vector<word_type>>(
+    //         == std::vector<std::vector<word_type>>(te
     //             {{1_w, 01_w, 11_w, 011_w, 0_w}}));
 
     // REQUIRE(non_trivial_classes(
