@@ -942,6 +942,15 @@ namespace libsemigroups {
   template <typename Word>
   Kambites(congruence_kind, Presentation<Word> const&) -> Kambites<Word>;
 
+  template <typename Word>
+  Kambites(congruence_kind, Presentation<Word>&&) -> Kambites<Word>;
+
+  template <typename Word>
+  Kambites(Kambites<Word> const&) -> Kambites<Word>;
+
+  template <typename Word>
+  Kambites(Kambites<Word>&&) -> Kambites<Word>;
+
   //! \ingroup kambites_group
   //!
   //! \brief Return a human readable representation of a Kambites object.

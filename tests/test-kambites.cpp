@@ -516,10 +516,8 @@ namespace libsemigroups {
     p.alphabet("cab");
     Kambites k(twosided, p);
     REQUIRE(k.small_overlap_class() == POSITIVE_INFINITY);
-
-    Kambites<> kk(twosided, p);
-    REQUIRE(kk.small_overlap_class() == POSITIVE_INFINITY);
   }
+
   ////////////////////////////////////////////////////////////////////////
 
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("Kambites",
