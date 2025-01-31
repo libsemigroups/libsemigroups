@@ -42,6 +42,7 @@ namespace libsemigroups {
     reduce_no_run_no_checks(Subclass const&                   ci,
                             std::initializer_list<Int> const& w) {
       static_assert(std::is_base_of_v<CongruenceInterface, Subclass>);
+      static_assert(std::is_integral_v<Int>);
       typename Subclass::native_word_type result;
       ci.reduce_no_run_no_checks(
           std::back_inserter(result), std::begin(w), std::end(w));
@@ -76,6 +77,7 @@ namespace libsemigroups {
     typename Subclass::native_word_type
     reduce_no_run(Subclass const& ci, std::initializer_list<Int> const& w) {
       static_assert(std::is_base_of_v<CongruenceInterface, Subclass>);
+      static_assert(std::is_integral_v<Int>);
       typename Subclass::native_word_type result;
       ci.reduce_no_run(std::back_inserter(result), std::begin(w), std::end(w));
       return result;
@@ -109,6 +111,7 @@ namespace libsemigroups {
     typename Subclass::native_word_type
     reduce_no_checks(Subclass& ci, std::initializer_list<Int> const& w) {
       static_assert(std::is_base_of_v<CongruenceInterface, Subclass>);
+      static_assert(std::is_integral_v<Int>);
       typename Subclass::native_word_type result;
       ci.reduce_no_checks(
           std::back_inserter(result), std::begin(w), std::end(w));
@@ -141,6 +144,7 @@ namespace libsemigroups {
     typename Subclass::native_word_type
     reduce(Subclass& ci, std::initializer_list<Int> const& w) {
       static_assert(std::is_base_of_v<CongruenceInterface, Subclass>);
+      static_assert(std::is_integral_v<Int>);
       typename Subclass::native_word_type result;
       ci.reduce(std::back_inserter(result), std::begin(w), std::end(w));
       return result;

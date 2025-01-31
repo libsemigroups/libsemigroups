@@ -196,6 +196,7 @@ namespace libsemigroups {
     [[nodiscard]] index_type
     current_index_of_no_checks(ToddCoxeter<Word>&                tc,
                                std::initializer_list<Int> const& w) {
+      static_assert(std::is_integral_v<Int>);
       return tc.current_index_of_no_checks(std::begin(w), std::end(w));
     }
 
@@ -220,6 +221,7 @@ namespace libsemigroups {
     [[nodiscard]] index_type
     current_index_of(ToddCoxeter<Word>&                tc,
                      std::initializer_list<Int> const& w) {
+      static_assert(std::is_integral_v<Int>);
       return tc.current_index_of(std::begin(w), std::end(w));
     }
 
@@ -244,6 +246,7 @@ namespace libsemigroups {
     [[nodiscard]] index_type
     index_of_no_checks(ToddCoxeter<Word>&                tc,
                        std::initializer_list<Int> const& w) {
+      static_assert(std::is_integral_v<Int>);
       return tc.index_of_no_checks(std::begin(w), std::end(w));
     }
 
@@ -267,6 +270,7 @@ namespace libsemigroups {
     template <typename Word, typename Int>
     [[nodiscard]] index_type index_of(ToddCoxeter<Word>&                tc,
                                       std::initializer_list<Int> const& w) {
+      static_assert(std::is_integral_v<Int>);
       return tc.index_of(std::begin(w), std::end(w));
     }
 
