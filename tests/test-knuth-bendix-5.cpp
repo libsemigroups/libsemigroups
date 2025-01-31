@@ -266,11 +266,10 @@ namespace libsemigroups {
     auto ntc = (iterator_range(pp.begin(), pp.end())
                 | filter([](auto const& val) { return val.size() > 1; })
                 | transform([](auto& val) {
-                    std::for_each(
-                        val.begin(), val.end(), [](auto& w) -> auto& {
-                          w.erase(w.begin());
-                          return w;
-                        });
+                    std::for_each(val.begin(), val.end(), [](auto& w) -> auto& {
+                      w.erase(w.begin());
+                      return w;
+                    });
                     return val;
                   }));
 
@@ -306,7 +305,7 @@ namespace libsemigroups {
 
     auto p = to_presentation<word_type>(S);
 
-    auto kb(knuth_bendix::make(onesided, p));
+    KnuthBendix<word_type, TestType> kb(onesided, p);
 
     add_generating_pair(
         kb,

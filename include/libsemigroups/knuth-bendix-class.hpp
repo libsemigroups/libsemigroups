@@ -257,18 +257,13 @@ namespace libsemigroups {
   template <typename Word>
   KnuthBendix(congruence_kind, Presentation<Word>&&) -> KnuthBendix<Word>;
 
-  namespace knuth_bendix {
-    // This function exists so that we can do make<Rewriter>(knd, p)
-    // and the type of p can be used to deduce the template parameter Word.
-    template <typename Rewriter       = detail::RewriteTrie,
-              typename ReductionOrder = ShortLexCompare,
-              typename Word>
-    KnuthBendix<Word, Rewriter, ReductionOrder>
-    make(congruence_kind knd, Presentation<Word> const& p) {
-      return KnuthBendix<Word, Rewriter, ReductionOrder>(knd, p);
-    }
+  // TODO(0) doc
+  template <typename Word>
+  KnuthBendix(KnuthBendix<Word> const&) -> KnuthBendix<Word>;
 
-  }  // namespace knuth_bendix
+  // TODO(0) doc
+  template <typename Word>
+  KnuthBendix(KnuthBendix<Word>&&) -> KnuthBendix<Word>;
 
 }  // namespace libsemigroups
 
