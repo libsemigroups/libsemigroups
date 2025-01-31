@@ -217,17 +217,6 @@ namespace libsemigroups {
     REQUIRE(knuth_bendix::non_trivial_classes(kb, kb2)
             == std::vector<std::vector<word_type>>(
                 {{1_w, 01_w, 11_w, 011_w, 0_w}}));
-
-    // TODO(0) uncomment or rm
-    // REQUIRE(non_trivial_classes(cong, p)
-    //         == std::vector<std::vector<word_type>>(te
-    //             {{1_w, 01_w, 11_w, 011_w, 0_w}}));
-
-    // REQUIRE(non_trivial_classes(
-    //             cong, to_presentation<std::string>(p, [](auto x) { return x;
-    //             }))
-    //         == std::vector<std::vector<std::string>>(
-    //             {{{1}, {0, 1}, {1, 1}, {0, 1, 1}, {0}}}));
   }
 
   LIBSEMIGROUPS_TEST_CASE("Congruence",
@@ -297,8 +286,8 @@ namespace libsemigroups {
     cong.run();
     // auto tc = cong.get<ToddCoxeter<std::string>>();
     // tc->lookahead_extent(ToddCoxeter<std::string>::options::lookahead_extent::full);
-    // FIXME without the lookahead we get the wrong answer here.
-    // FIXME the next line triggers without the previous triggers a seg fault.
+    // FIXME(1) without the lookahead we get the wrong answer here.
+    // FIXME(1) the next line, without the previous, triggers a seg fault.
     // tc->perform_lookahead(false);
     REQUIRE(cong.number_of_classes() == 19'009);
     auto ntc
