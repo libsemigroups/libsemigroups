@@ -133,14 +133,13 @@ namespace libsemigroups {
             == tril::FALSE);
   }
 
-  LIBSEMIGROUPS_TEMPLATE_TEST_CASE(
-      "CongruenceInterface",
-      "002",
-      "is_obviously_infinite",
-      "[quick]",
-      // ToddCoxeter<word_type>, TODO(0) currently broken for ToddCoxeter
-      Congruence<word_type>,
-      KnuthBendix<word_type>) {
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("CongruenceInterface",
+                                   "002",
+                                   "is_obviously_infinite",
+                                   "[quick]",
+                                   ToddCoxeter<word_type>,
+                                   Congruence<word_type>,
+                                   KnuthBendix<word_type>) {
     auto rg = ReportGuard(false);
 
     TestType cong;
