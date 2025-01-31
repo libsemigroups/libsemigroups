@@ -219,8 +219,7 @@ namespace libsemigroups {
           node_type t = follow_path_no_checks(tc.current_word_graph(), 0, w);
           REQUIRE(t != UNDEFINED);
           if (t != 0) {
-            auto ww = w;  // TODO(0) remove ww, just use w in the next line
-            map.emplace(t - 1, std::move(ww));
+            map.emplace(t - 1, w);
             if (map.size() == tc.number_of_classes()) {
               break;
             }

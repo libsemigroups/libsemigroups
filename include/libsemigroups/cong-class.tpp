@@ -69,7 +69,7 @@ namespace libsemigroups {
     add_runner(
         std::make_shared<ToddCoxeter<Word>>(to_todd_coxeter<Word>(knd, S, wg)));
 
-    // FIXME uncommenting the following lines causes multiple issues in the
+    // FIXME(1) uncommenting the following lines causes multiple issues in the
     // extreme Congruence test
     // auto tc = to_todd_coxeter(knd, S, wg);
     // tc.strategy(ToddCoxeter<Word>::options::strategy::felsch);
