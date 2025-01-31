@@ -26,9 +26,23 @@
 #ifndef LIBSEMIGROUPS_TODD_COXETER_CLASS_HPP_
 #define LIBSEMIGROUPS_TODD_COXETER_CLASS_HPP_
 
-#include "todd-coxeter-base.hpp"
-// TODO(0) iwyu, doc
+#include <algorithm>    // for equal
+#include <cstddef>      // for ptrdiff_t, size_t
+#include <iterator>     // for bidirectional_iterator_tag
+#include <string>       // for basic_string, string
+#include <type_traits>  // for is_same_v
+#include <utility>      // for move
+#include <vector>       // for vector
 
+#include "cong-intf-class.hpp"    // for CongruenceInterface
+#include "presentation.hpp"       // for Presentation
+#include "to-presentation.hpp"    // for to_presentation
+#include "todd-coxeter-base.hpp"  // for ToddCoxeterBase
+#include "types.hpp"              // for congruence_kind (ptr only)
+
+#include "detail/fmt.hpp"  // for fmt
+
+// TODO(0) doc
 namespace libsemigroups {
 
   template <typename Word>
@@ -193,16 +207,10 @@ namespace libsemigroups {
 
    public:
     using native_word_type = Word;
-    // TODO(0) native_letter_type, native_presentation_type
 
     ToddCoxeter() = default;
 
-    ToddCoxeter& init() {
-      ToddCoxeterBase::init();
-      _generating_pairs.clear();
-      _presentation.init();
-      return *this;
-    }
+    ToddCoxeter& init();
 
     ToddCoxeter(ToddCoxeter const&)            = default;
     ToddCoxeter(ToddCoxeter&&)                 = default;
@@ -213,20 +221,7 @@ namespace libsemigroups {
       init(knd, std::move(p));
     }
 
-    // TODO(0) to tpp
-    ToddCoxeter& init(congruence_kind knd, Presentation<Word>&& p) {
-      if constexpr (!std::is_same_v<Word, word_type>) {
-        // to_presentation throws in the next line if p isn't valid
-        ToddCoxeterBase::init(knd, to_presentation<word_type>(p));
-        _presentation = std::move(p);
-      } else {
-        p.validate();
-        _presentation = p;  // copy p in to _presentation
-        presentation::normalize_alphabet(p);
-        ToddCoxeterBase::init(knd, std::move(p));
-      }
-      return *this;
-    }
+    ToddCoxeter& init(congruence_kind knd, Presentation<Word>&& p);
 
     ToddCoxeter(congruence_kind knd, Presentation<Word> const& p)
         // call the rval ref constructor
@@ -266,24 +261,10 @@ namespace libsemigroups {
     }
 
     // TODO(1) a to_todd_coxeter variant that throws if p is not valid
-    // TODO(0) to tpp
     template <typename Node>
     ToddCoxeter& init(congruence_kind           knd,
                       Presentation<Word> const& p,
-                      WordGraph<Node> const&    wg) {
-      if constexpr (!std::is_same_v<Word, word_type>) {
-        // to_presentation throws in the next line if p isn't valid
-        ToddCoxeterBase::init(knd, to_presentation<word_type>(p), wg);
-        _presentation = p;
-      } else {
-        p.validate();
-        _presentation = p;  // copy p in to _presentation
-        auto copy     = p;
-        presentation::normalize_alphabet(copy);
-        ToddCoxeterBase::init(knd, copy, wg);
-      }
-      return *this;
-    }
+                      WordGraph<Node> const&    wg);
 
     template <typename Iterator1, typename Iterator2>
     void throw_if_letter_out_of_bounds(Iterator1 first, Iterator2 last) const {
@@ -328,7 +309,7 @@ namespace libsemigroups {
     ////////////////////////////////////////////////////////////////////////
     // ToddCoxeter - interface requirements - add_generating_pair
     ////////////////////////////////////////////////////////////////////////
-    // TODO(0) to tpp
+
     template <typename Iterator1,
               typename Iterator2,
               typename Iterator3,
@@ -336,16 +317,7 @@ namespace libsemigroups {
     ToddCoxeter& add_generating_pair_no_checks(Iterator1 first1,
                                                Iterator2 last1,
                                                Iterator3 first2,
-                                               Iterator4 last2) {
-      // Add the input iterators to _generating_pairs
-      _generating_pairs.emplace_back(first1, last1);
-      _generating_pairs.emplace_back(first2, last2);
-      ToddCoxeterBase::add_generating_pair_no_checks(make_citow(first1),
-                                                     make_citow(last1),
-                                                     make_citow(first2),
-                                                     make_citow(last2));
-      return *this;
-    }
+                                               Iterator4 last2);
 
     template <typename Iterator1,
               typename Iterator2,
@@ -478,17 +450,7 @@ namespace libsemigroups {
     bool contains(Iterator1 first1,
                   Iterator2 last1,
                   Iterator3 first2,
-                  Iterator4 last2) {
-      // TODO(1) remove when is_free is implemented
-      if (presentation().rules.empty() && generating_pairs().empty()
-          && current_word_graph().number_of_nodes_active() == 1) {
-        return std::equal(first1, last1, first2, last2);
-      }
-      // Call CongruenceInterface version so that we perform bound checks in
-      // ToddCoxeter and not ToddCoxeterBase
-      return CongruenceInterface::contains<ToddCoxeter>(
-          first1, last1, first2, last2);
-    }
+                  Iterator4 last2);
 
     ////////////////////////////////////////////////////////////////////////
     // ToddCoxeter - interface requirements - reduce
@@ -553,8 +515,6 @@ namespace libsemigroups {
     OutputIterator reduce_no_run(OutputIterator d_first,
                                  InputIterator1 first,
                                  InputIterator2 last) const {
-      // Do not call CongruenceInterface version because we need the words to be
-      // reversed (i.e. must call ToddCoxeterBase version)
       return CongruenceInterface::reduce_no_run<ToddCoxeter>(
           d_first, first, last);
     }
@@ -908,7 +868,7 @@ namespace libsemigroups {
     }
 
     //! @}
-  };
+  };  // class ToddCoxeter
 
   template <typename Word>
   ToddCoxeter(congruence_kind, Presentation<Word> const&) -> ToddCoxeter<Word>;
@@ -927,12 +887,13 @@ namespace libsemigroups {
   ToddCoxeter(congruence_kind, WordGraph<Node>&&) -> ToddCoxeter<word_type>;
 
   template <typename Word>
-  std::string to_human_readable_repr(ToddCoxeter<Word> const& tc) {
-    return fmt::format("<ToddCoxeter over {} with {}/{} active/nodes>",
-                       to_human_readable_repr(tc.presentation()),
-                       tc.current_word_graph().number_of_nodes_active(),
-                       tc.current_word_graph().number_of_nodes());
-  }
+  ToddCoxeter(ToddCoxeter<Word> const&) -> ToddCoxeter<Word>;
+
+  template <typename Word>
+  ToddCoxeter(ToddCoxeter<Word>&&) -> ToddCoxeter<Word>;
+
+  template <typename Word>
+  std::string to_human_readable_repr(ToddCoxeter<Word> const& tc);
 }  // namespace libsemigroups
 
 #include "todd-coxeter-class.tpp"
