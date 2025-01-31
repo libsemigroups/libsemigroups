@@ -66,7 +66,7 @@ namespace libsemigroups {
       // TODO(1) allow setting of min/max etc like Paths
 
       output_type get() const {
-        // TODO don't do this more than once per call
+        // TODO(1) don't do this more than once per call
         auto const& w = *_it;
         _current.clear();
         for (auto c : w) {

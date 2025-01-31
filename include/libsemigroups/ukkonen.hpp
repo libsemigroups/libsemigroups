@@ -2405,8 +2405,9 @@ namespace libsemigroups {
     auto dfs(Ukkonen const& u, T& helper);
 
     namespace detail {
-      // TODO when the old ToddCoxeterBase is removed move this into
-      // presentation.hpp
+      // TODO(0) when the old ToddCoxeterBase is removed move this into
+      // presentation.hpp. I.e. this isn't required here but in
+      // presentation.hpp so should be in that file
       class GreedyReduceHelper {
        private:
         size_t              _best;
@@ -2433,7 +2434,7 @@ namespace libsemigroups {
         std::pair<const_iterator, const_iterator> yield(Ukkonen const& u);
       };
     }  // namespace detail
-  }    // namespace ukkonen
+  }  // namespace ukkonen
 
   //! \brief Return a human readable representation of an Ukkonen object.
   //!
