@@ -59,6 +59,16 @@ namespace libsemigroups {
 
   enum class tril;
 
+  namespace detail {
+    static inline void throw_if_nullptr(char const*      w,
+                                        std::string_view arg = "1st") {
+      if (w == nullptr) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "the {} argument (char const*) must not be nullptr", arg);
+      }
+    }
+  }  // namespace detail
+
   namespace congruence_interface {
 
     //! \defgroup cong_intf_helpers_group Generic congruence helpers
@@ -147,6 +157,8 @@ namespace libsemigroups {
                                             char const* u,
                                             char const* v) {
       static_assert(std::is_base_of_v<CongruenceInterface, Subclass>);
+      LIBSEMIGROUPS_ASSERT(u != nullptr);
+      LIBSEMIGROUPS_ASSERT(v != nullptr);
       // We could static_assert that Subclass::native_word_type == std::string,
       // but it doesn't seem that adding this restriction would gain us
       // anything, so it is not currently done.
@@ -232,6 +244,8 @@ namespace libsemigroups {
     template <typename Subclass>
     Subclass& add_generating_pair(Subclass& ci, char const* u, char const* v) {
       static_assert(std::is_base_of_v<CongruenceInterface, Subclass>);
+      detail::throw_if_nullptr(u, "2nd");
+      detail::throw_if_nullptr(v, "3rd");
       // We could static_assert that Subclass::native_word_type == std::string,
       // but it doesn't seem that adding this restriction would gain us
       // anything, so it is not currently done.
@@ -350,6 +364,8 @@ namespace libsemigroups {
                                                     char const*     u,
                                                     char const*     v) {
       static_assert(std::is_base_of_v<CongruenceInterface, Subclass>);
+      LIBSEMIGROUPS_ASSERT(u != nullptr);
+      LIBSEMIGROUPS_ASSERT(v != nullptr);
       // We could static_assert that Subclass::native_word_type == std::string,
       // but it doesn't seem that adding this restriction would gain us
       // anything, so it is not currently done.
@@ -446,7 +462,9 @@ namespace libsemigroups {
                                           char const*     u,
                                           char const*     v) {
       static_assert(std::is_base_of_v<CongruenceInterface, Subclass>);
-      return ci.currently_contains_no_checks(
+      detail::throw_if_nullptr(u, "2nd");
+      detail::throw_if_nullptr(v, "3rd");
+      return ci.currently_contains(
           u, u + std::strlen(u), v, v + std::strlen(v));
     }
 
@@ -531,6 +549,8 @@ namespace libsemigroups {
                                           char const* u,
                                           char const* v) {
       static_assert(std::is_base_of_v<CongruenceInterface, Subclass>);
+      LIBSEMIGROUPS_ASSERT(u != nullptr);
+      LIBSEMIGROUPS_ASSERT(v != nullptr);
       // We could static_assert that Subclass::native_word_type == std::string,
       // but it doesn't seem that adding this restriction would gain us
       // anything, so it is not currently done.
@@ -642,6 +662,8 @@ namespace libsemigroups {
     template <typename Subclass>
     [[nodiscard]] bool contains(Subclass& ci, char const* u, char const* v) {
       static_assert(std::is_base_of_v<CongruenceInterface, Subclass>);
+      detail::throw_if_nullptr(u, "2nd");
+      detail::throw_if_nullptr(v, "3rd");
       // We could static_assert that Subclass::native_word_type == std::string,
       // but it doesn't seem that adding this restriction would gain us
       // anything, so it is not currently done.

@@ -53,6 +53,7 @@ namespace libsemigroups {
     typename Subclass::native_word_type
     reduce_no_run_no_checks(Subclass const& ci, char const* w) {
       static_assert(std::is_base_of_v<CongruenceInterface, Subclass>);
+      LIBSEMIGROUPS_ASSERT(w != nullptr);
       typename Subclass::native_word_type result;
       ci.reduce_no_run_no_checks(
           std::back_inserter(result), w, w + std::strlen(w));
@@ -87,6 +88,8 @@ namespace libsemigroups {
     typename Subclass::native_word_type reduce_no_run(Subclass const& ci,
                                                       char const*     w) {
       static_assert(std::is_base_of_v<CongruenceInterface, Subclass>);
+      detail::throw_if_nullptr(w, "2nd");
+
       typename Subclass::native_word_type result;
       ci.reduce_no_run(std::back_inserter(result), w, w + std::strlen(w));
       return result;
@@ -122,6 +125,7 @@ namespace libsemigroups {
     typename Subclass::native_word_type reduce_no_checks(Subclass&   ci,
                                                          char const* w) {
       static_assert(std::is_base_of_v<CongruenceInterface, Subclass>);
+      LIBSEMIGROUPS_ASSERT(w != nullptr);
       typename Subclass::native_word_type result;
       ci.reduce_no_checks(std::back_inserter(result), w, w + std::strlen(w));
       return result;
@@ -153,6 +157,7 @@ namespace libsemigroups {
     template <typename Subclass>
     typename Subclass::native_word_type reduce(Subclass& ci, char const* w) {
       static_assert(std::is_base_of_v<CongruenceInterface, Subclass>);
+      detail::throw_if_nullptr(w, "2nd");
       typename Subclass::native_word_type result;
       ci.reduce(std::back_inserter(result), w, w + std::strlen(w));
       return result;

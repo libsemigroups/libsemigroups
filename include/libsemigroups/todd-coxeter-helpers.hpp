@@ -292,6 +292,7 @@ namespace libsemigroups {
     template <typename Word>
     [[nodiscard]] inline index_type
     current_index_of_no_checks(ToddCoxeter<Word>& tc, char const* w) {
+      LIBSEMIGROUPS_ASSERT(w != nullptr);
       return tc.current_index_of_no_checks(w, w + std::strlen(w));
     }
 
@@ -313,6 +314,7 @@ namespace libsemigroups {
     template <typename Word>
     [[nodiscard]] inline index_type current_index_of(ToddCoxeter<Word>& tc,
                                                      char const*        w) {
+      detail::throw_if_nullptr(w, "2nd");
       return tc.current_index_of(w, w + std::strlen(w));
     }
 
@@ -334,6 +336,7 @@ namespace libsemigroups {
     template <typename Word>
     [[nodiscard]] inline index_type index_of_no_checks(ToddCoxeter<Word>& tc,
                                                        char const*        w) {
+      LIBSEMIGROUPS_ASSERT(w != nullptr);
       return tc.index_of_no_checks(w, w + std::strlen(w));
     }
 
@@ -355,6 +358,7 @@ namespace libsemigroups {
     template <typename Word>
     [[nodiscard]] inline index_type index_of(ToddCoxeter<Word>& tc,
                                              char const*        w) {
+      detail::throw_if_nullptr(w, "2nd");
       return tc.index_of(w, w + std::strlen(w));
     }
 
@@ -724,6 +728,7 @@ namespace libsemigroups {
     template <typename Word>
     [[nodiscard]] inline auto class_of_no_checks(ToddCoxeter<Word>& tc,
                                                  char const*        w) {
+      LIBSEMIGROUPS_ASSERT(w != nullptr);
       return class_of_no_checks(tc, w, w + std::strlen(w));
     }
 
@@ -748,13 +753,9 @@ namespace libsemigroups {
     //! \cong_intf_throws_if_letters_out_of_bounds
     //!
     //! \cong_intf_warn_undecidable{Todd-Coxeter}
-    // TODO(0) out of line
     template <typename Word>
     [[nodiscard]] auto class_of(ToddCoxeter<Word>& tc, char const* w) {
-      if (w == nullptr) {  // TODO(0) add similar exception elsewhere
-        LIBSEMIGROUPS_EXCEPTION(
-            "the 2nd argument (char const*) must not be nullptr");
-      }
+      detail::throw_if_nullptr(w, "2nd");
       return class_of(tc, w, w + std::strlen(w));
     }
 
