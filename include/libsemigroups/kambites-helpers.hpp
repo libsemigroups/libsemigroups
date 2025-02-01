@@ -28,14 +28,14 @@
 #ifndef LIBSEMIGROUPS_KAMBITES_HELPERS_HPP_
 #define LIBSEMIGROUPS_KAMBITES_HELPERS_HPP_
 
-#include "cong-intf-helpers.hpp"  // for helper declarations in congruence_interface namespace
+#include "cong-common-helpers.hpp"  // for helper declarations in congruence_common namespace
 #include "kambites-class.hpp"  // for Kambites
 
 #include "detail/kambites-nf.hpp"  // for KambitesNormalFormRange
 
 namespace libsemigroups {
 
-  namespace congruence_interface {
+  namespace congruence_common {
     ////////////////////////////////////////////////////////////////////////
     // Interface helpers - normal_forms
     ////////////////////////////////////////////////////////////////////////
@@ -62,7 +62,7 @@ namespace libsemigroups {
       k.throw_if_not_C4();
       return detail::KambitesNormalFormRange(k);
     }
-  }  // namespace congruence_interface
+  }  // namespace congruence_common
 
   //! \ingroup kambites_group
   //!
@@ -80,44 +80,44 @@ namespace libsemigroups {
   //!
   //! @{
   namespace kambites {
-    using congruence_interface::add_generating_pair;
-    using congruence_interface::add_generating_pair_no_checks;
+    using congruence_common::add_generating_pair;
+    using congruence_common::add_generating_pair_no_checks;
 
     ////////////////////////////////////////////////////////////////////////
     // Interface helpers - contains
     ////////////////////////////////////////////////////////////////////////
 
-    using congruence_interface::contains;
-    using congruence_interface::contains_no_checks;
-    using congruence_interface::currently_contains;
-    using congruence_interface::currently_contains_no_checks;
+    using congruence_common::contains;
+    using congruence_common::contains_no_checks;
+    using congruence_common::currently_contains;
+    using congruence_common::currently_contains_no_checks;
 
     ////////////////////////////////////////////////////////////////////////
     // Interface helpers - reduce
     ////////////////////////////////////////////////////////////////////////
 
-    using congruence_interface::reduce;
-    using congruence_interface::reduce_no_checks;
-    using congruence_interface::reduce_no_run;
-    using congruence_interface::reduce_no_run_no_checks;
+    using congruence_common::reduce;
+    using congruence_common::reduce_no_checks;
+    using congruence_common::reduce_no_run;
+    using congruence_common::reduce_no_run_no_checks;
 
     ////////////////////////////////////////////////////////////////////////
     // Interface helpers - normal_forms
     ////////////////////////////////////////////////////////////////////////
 
-    using congruence_interface::normal_forms;
+    using congruence_common::normal_forms;
 
     ////////////////////////////////////////////////////////////////////////
     // Interface helpers - partition
     ////////////////////////////////////////////////////////////////////////
 
-    using congruence_interface::partition;
+    using congruence_common::partition;
 
     ////////////////////////////////////////////////////////////////////////
     // Interface helpers - non_trivial_classes
     ////////////////////////////////////////////////////////////////////////
 
-    using congruence_interface::non_trivial_classes;
+    using congruence_common::non_trivial_classes;
 
     // There's no non_trivial_classes(Kambites k1, Kambites k2) because it's
     // unclear how this could be computed (because they always define infinite

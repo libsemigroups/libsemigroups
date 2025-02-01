@@ -70,13 +70,13 @@ namespace libsemigroups {
   ////////////////////////////////////////////////////////////////////////
 
   template <typename Word>
-  Kambites<Word>::Kambites() : CongruenceInterface(congruence_kind::twosided) {
+  Kambites<Word>::Kambites() : CongruenceCommon(congruence_kind::twosided) {
     init();
   }
 
   template <typename Word>
   Kambites<Word>& Kambites<Word>::init() {
-    CongruenceInterface::init();
+    CongruenceCommon::init();
     // Mutable
     _class = UNDEFINED;
     _complements.init();
@@ -185,7 +185,7 @@ namespace libsemigroups {
                                           Iterator2 last1,
                                           Iterator3 first2,
                                           Iterator4 last2) const {
-    auto result = CongruenceInterface::currently_contains<Kambites>(
+    auto result = CongruenceCommon::currently_contains<Kambites>(
         first1, last1, first2, last2);
     // if result != tril::unknown then we must have success() or the words
     // are identical, o/w we maybe cannot actually answer this question.
@@ -207,7 +207,7 @@ namespace libsemigroups {
                                 Iterator4 last2) {
     run();
     throw_if_not_C4();
-    return CongruenceInterface::contains<Kambites>(
+    return CongruenceCommon::contains<Kambites>(
         first1, last1, first2, last2);
   }
 

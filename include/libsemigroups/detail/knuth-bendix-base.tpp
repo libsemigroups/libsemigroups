@@ -149,7 +149,7 @@ namespace libsemigroups {
 
     template <typename Rewriter, typename ReductionOrder>
     KnuthBendixBase<Rewriter, ReductionOrder>::KnuthBendixBase()
-        : CongruenceInterface(),
+        : CongruenceCommon(),
           _gen_pairs_initted(),
           _gilman_graph(),
           _gilman_graph_node_labels(),
@@ -166,7 +166,7 @@ namespace libsemigroups {
     template <typename Rewriter, typename ReductionOrder>
     KnuthBendixBase<Rewriter, ReductionOrder>&
     KnuthBendixBase<Rewriter, ReductionOrder>::init() {
-      CongruenceInterface::init();
+      CongruenceCommon::init();
 
       _gen_pairs_initted = false;
       _gilman_graph.init(0, 0);
@@ -187,7 +187,7 @@ namespace libsemigroups {
     KnuthBendixBase<Rewriter, ReductionOrder>&
     KnuthBendixBase<Rewriter, ReductionOrder>::operator=(
         KnuthBendixBase&& that) {
-      CongruenceInterface::operator=(std::move(that));
+      CongruenceCommon::operator=(std::move(that));
       _gen_pairs_initted        = std::move(that._gen_pairs_initted);
       _gilman_graph             = std::move(that._gilman_graph);
       _gilman_graph_node_labels = std::move(that._gilman_graph_node_labels);
@@ -205,7 +205,7 @@ namespace libsemigroups {
     KnuthBendixBase<Rewriter, ReductionOrder>&
     KnuthBendixBase<Rewriter, ReductionOrder>::operator=(
         KnuthBendixBase const& that) {
-      CongruenceInterface::operator=(that);
+      CongruenceCommon::operator=(that);
       _gen_pairs_initted            = that._gen_pairs_initted;
       _gilman_graph                 = that._gilman_graph;
       _gilman_graph_node_labels     = that._gilman_graph_node_labels;
@@ -254,7 +254,7 @@ namespace libsemigroups {
         Presentation<std::string>&& p) {
       p.validate();
       init();
-      CongruenceInterface::init(knd);
+      CongruenceCommon::init(knd);
       _presentation = std::move(p);
       init_from_internal_presentation();
       return *this;

@@ -38,7 +38,7 @@
 #include <utility>   // for move, pair
 #include <vector>    // for vector
 
-#include "cong-intf-class.hpp"  // for Congruen...
+#include "cong-common-class.hpp"  // for Congruen...
 #include "constants.hpp"        // for operator!=
 #include "debug.hpp"            // for LIBSEMIG...
 #include "forest.hpp"           // for Forest
@@ -167,7 +167,7 @@ namespace libsemigroups {
   //! //  012121212_w,
   //! //  0121212121_w};
   //! \endcode
-  class ToddCoxeterBase : public CongruenceInterface,
+  class ToddCoxeterBase : public CongruenceCommon,
                           public detail::FelschGraphSettings<ToddCoxeterBase> {
     using FelschGraphSettings_ = FelschGraphSettings<ToddCoxeterBase>;
 
@@ -809,7 +809,7 @@ namespace libsemigroups {
                                                    Iterator2 last1,
                                                    Iterator3 first2,
                                                    Iterator4 last2) {
-      return CongruenceInterface::add_internal_generating_pair_no_checks<
+      return CongruenceCommon::add_internal_generating_pair_no_checks<
           ToddCoxeterBase>(first1, last1, first2, last2);
     }
 
@@ -834,7 +834,7 @@ namespace libsemigroups {
                                          Iterator2 last1,
                                          Iterator3 first2,
                                          Iterator4 last2) {
-      return CongruenceInterface::add_generating_pair<ToddCoxeterBase>(
+      return CongruenceCommon::add_generating_pair<ToddCoxeterBase>(
           first1, last1, first2, last2);
     }
 
@@ -916,7 +916,7 @@ namespace libsemigroups {
                             Iterator2 last1,
                             Iterator3 first2,
                             Iterator4 last2) const {
-      return CongruenceInterface::currently_contains<ToddCoxeterBase>(
+      return CongruenceCommon::currently_contains<ToddCoxeterBase>(
           first1, last1, first2, last2);
     }
 
@@ -1028,7 +1028,7 @@ namespace libsemigroups {
     OutputIterator reduce_no_run(OutputIterator d_first,
                                  InputIterator1 first,
                                  InputIterator2 last) const {
-      return CongruenceInterface::reduce_no_run<ToddCoxeterBase>(
+      return CongruenceCommon::reduce_no_run<ToddCoxeterBase>(
           d_first, first, last);
     }
 
@@ -1059,7 +1059,7 @@ namespace libsemigroups {
     OutputIterator reduce_no_checks(OutputIterator d_first,
                                     InputIterator1 first,
                                     InputIterator2 last) {
-      return CongruenceInterface::reduce_no_checks<ToddCoxeterBase>(
+      return CongruenceCommon::reduce_no_checks<ToddCoxeterBase>(
           d_first, first, last);
     }
 
@@ -1090,7 +1090,7 @@ namespace libsemigroups {
     OutputIterator reduce(OutputIterator d_first,
                           InputIterator1 first,
                           InputIterator2 last) {
-      return CongruenceInterface::reduce<ToddCoxeterBase>(d_first, first, last);
+      return CongruenceCommon::reduce<ToddCoxeterBase>(d_first, first, last);
     }
     //! @}
 
@@ -1102,7 +1102,7 @@ namespace libsemigroups {
     // This is documented in Runner, so we don't duplicate the doc here.
     template <typename T>
     void report_every(T val) {
-      CongruenceInterface::report_every(val);
+      CongruenceCommon::report_every(val);
       _word_graph.report_every(val);
     }
     using Reporter::report_every;

@@ -45,7 +45,7 @@
 #include <utility>        // for move, make_pair
 #include <vector>         // for vector
 
-#include "libsemigroups/cong-intf-class.hpp"  // for CongruenceInte...
+#include "libsemigroups/cong-common-class.hpp"  // for CongruenceInte...
 #include "libsemigroups/constants.hpp"        // for POSITIVE_INFINITY
 #include "libsemigroups/debug.hpp"            // for LIBSEMIGROUPS_...
 #include "libsemigroups/obvinf.hpp"           // for is_obviously_infinite
@@ -109,7 +109,7 @@ namespace libsemigroups {
     //! \endcode
     template <typename Rewriter       = detail::RewriteTrie,
               typename ReductionOrder = ShortLexCompare>
-    class KnuthBendixBase : public CongruenceInterface {
+    class KnuthBendixBase : public CongruenceCommon {
       // defined in detail/kbe.hpp
       friend class ::libsemigroups::detail::KBE<KnuthBendixBase>;
 
@@ -356,7 +356,7 @@ namespace libsemigroups {
       //! generating pairs after \ref started is not permitted (but also not
       //! checked by this function).
       // NOTE THAT this is not the same as in ToddCoxeterBase, because the
-      // generating pairs contained in CongruenceInterface are word_types, and
+      // generating pairs contained in CongruenceCommon are word_types, and
       // so we don't require any conversion here (since chars can be converted
       // implicitly to letter_types)
       template <typename Iterator1,
@@ -370,7 +370,7 @@ namespace libsemigroups {
         LIBSEMIGROUPS_ASSERT(!started());
         _input_generating_pairs.emplace_back(first1, last1);
         _input_generating_pairs.emplace_back(first2, last2);
-        return CongruenceInterface::add_internal_generating_pair_no_checks<
+        return CongruenceCommon::add_internal_generating_pair_no_checks<
             KnuthBendixBase>(first1, last1, first2, last2);
       }
 
@@ -395,7 +395,7 @@ namespace libsemigroups {
                                            Iterator2 last1,
                                            Iterator3 first2,
                                            Iterator4 last2) {
-        return CongruenceInterface::add_generating_pair<KnuthBendixBase>(
+        return CongruenceCommon::add_generating_pair<KnuthBendixBase>(
             first1, last1, first2, last2);
       }
 
@@ -478,7 +478,7 @@ namespace libsemigroups {
                                             Iterator2 last1,
                                             Iterator3 first2,
                                             Iterator4 last2) const {
-        return CongruenceInterface::currently_contains<KnuthBendixBase>(
+        return CongruenceCommon::currently_contains<KnuthBendixBase>(
             first1, last1, first2, last2);
       }
 
@@ -505,7 +505,7 @@ namespace libsemigroups {
                                             Iterator2 last1,
                                             Iterator3 first2,
                                             Iterator4 last2) {
-        return CongruenceInterface::contains_no_checks<KnuthBendixBase>(
+        return CongruenceCommon::contains_no_checks<KnuthBendixBase>(
             first1, last1, first2, last2);
       }
 
@@ -533,7 +533,7 @@ namespace libsemigroups {
                                   Iterator2 last1,
                                   Iterator3 first2,
                                   Iterator4 last2) {
-        return CongruenceInterface::contains<KnuthBendixBase>(
+        return CongruenceCommon::contains<KnuthBendixBase>(
             first1, last1, first2, last2);
       }
 
@@ -592,7 +592,7 @@ namespace libsemigroups {
       OutputIterator reduce_no_run(OutputIterator d_first,
                                    InputIterator1 first,
                                    InputIterator2 last) const {
-        return CongruenceInterface::reduce_no_run<KnuthBendixBase>(
+        return CongruenceCommon::reduce_no_run<KnuthBendixBase>(
             d_first, first, last);
       }
 
@@ -622,7 +622,7 @@ namespace libsemigroups {
       OutputIterator reduce_no_checks(OutputIterator d_first,
                                       InputIterator1 first,
                                       InputIterator2 last) {
-        return CongruenceInterface::reduce_no_checks<KnuthBendixBase>(
+        return CongruenceCommon::reduce_no_checks<KnuthBendixBase>(
             d_first, first, last);
       }
 
@@ -652,7 +652,7 @@ namespace libsemigroups {
       OutputIterator reduce(OutputIterator d_first,
                             InputIterator1 first,
                             InputIterator2 last) {
-        return CongruenceInterface::reduce<KnuthBendixBase>(
+        return CongruenceCommon::reduce<KnuthBendixBase>(
             d_first, first, last);
       }
 

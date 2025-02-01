@@ -24,7 +24,7 @@
 #include <string_view>  // for basic_string_view
 #include <tuple>        // for tie
 
-#include "libsemigroups/cong-intf-class.hpp"  // for CongruenceInterface
+#include "libsemigroups/cong-common-class.hpp"  // for CongruenceCommon
 #include "libsemigroups/constants.hpp"        // for operator==, operator!=
 #include "libsemigroups/debug.hpp"            // for LIBSEMIGROUPS_ASSERT
 #include "libsemigroups/exception.hpp"        // for LIBSEMIGROUPS_EXCEP...
@@ -344,7 +344,7 @@ namespace libsemigroups {
   ////////////////////////////////////////////////////////////////////////
 
   ToddCoxeterBase::ToddCoxeterBase()
-      : CongruenceInterface(),
+      : CongruenceCommon(),
         _finished(),
         _forest(),
         _setting_stack(),
@@ -354,7 +354,7 @@ namespace libsemigroups {
   }
 
   ToddCoxeterBase& ToddCoxeterBase::init() {
-    CongruenceInterface::init();
+    CongruenceCommon::init();
     _finished = false;
     _forest.init();
     if (_setting_stack.empty()) {
@@ -382,7 +382,7 @@ namespace libsemigroups {
 
   ToddCoxeterBase& ToddCoxeterBase::operator=(ToddCoxeterBase&& that) {
     LIBSEMIGROUPS_ASSERT(!that._setting_stack.empty());
-    CongruenceInterface::operator=(std::move(that));
+    CongruenceCommon::operator=(std::move(that));
     _finished      = std::move(that._finished);
     _forest        = std::move(that._forest);
     _setting_stack = std::move(that._setting_stack);
@@ -397,7 +397,7 @@ namespace libsemigroups {
 
   ToddCoxeterBase& ToddCoxeterBase::operator=(ToddCoxeterBase const& that) {
     LIBSEMIGROUPS_ASSERT(!that._setting_stack.empty());
-    CongruenceInterface::operator=(that);
+    CongruenceCommon::operator=(that);
     _finished = that._finished;
     _forest   = that._forest;
     _setting_stack.clear();
@@ -421,7 +421,7 @@ namespace libsemigroups {
     p.validate();
     throw_if_presentation_not_normalized(p);
     init();
-    CongruenceInterface::init(knd);
+    CongruenceCommon::init(knd);
     _word_graph.init(std::move(p));
     copy_settings_into_graph();
     LIBSEMIGROUPS_ASSERT(!_setting_stack.empty());
@@ -458,7 +458,7 @@ namespace libsemigroups {
           knd);
     }
     init();
-    CongruenceInterface::init(knd);
+    CongruenceCommon::init(knd);
     _word_graph.init(tc.internal_presentation());
     copy_settings_into_graph();
     auto& rules = _word_graph.presentation().rules;

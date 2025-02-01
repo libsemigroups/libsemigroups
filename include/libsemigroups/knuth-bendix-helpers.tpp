@@ -20,7 +20,7 @@
 // KnuthBendixBase class template.
 
 namespace libsemigroups {
-  namespace congruence_interface {
+  namespace congruence_common {
     ////////////////////////////////////////////////////////////////////////
     // Interface helpers - non_trivial_classes
     ////////////////////////////////////////////////////////////////////////
@@ -215,7 +215,7 @@ namespace libsemigroups {
       }
       return ntc;
     }
-  }  // namespace congruence_interface
+  }  // namespace congruence_common
 
   namespace knuth_bendix {
 

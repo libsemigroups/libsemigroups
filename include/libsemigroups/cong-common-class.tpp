@@ -17,12 +17,12 @@
 //
 
 // This file contains the implementations of member function templates for the
-// CongruenceInterface class.
+// CongruenceCommon class.
 
 namespace libsemigroups {
 
   ////////////////////////////////////////////////////////////////////////
-  // Out of line member functions for CongruenceInterface
+  // Out of line member functions for CongruenceCommon
   ////////////////////////////////////////////////////////////////////////
 
   template <typename Subclass,
@@ -30,7 +30,7 @@ namespace libsemigroups {
             typename Iterator2,
             typename Iterator3,
             typename Iterator4>
-  tril CongruenceInterface::currently_contains(Iterator1 first1,
+  tril CongruenceCommon::currently_contains(Iterator1 first1,
                                                Iterator2 last1,
                                                Iterator3 first2,
                                                Iterator4 last2) const {
@@ -45,7 +45,7 @@ namespace libsemigroups {
             typename Iterator2,
             typename Iterator3,
             typename Iterator4>
-  bool CongruenceInterface::contains_no_checks(Iterator1 first1,
+  bool CongruenceCommon::contains_no_checks(Iterator1 first1,
                                                Iterator2 last1,
                                                Iterator3 first2,
                                                Iterator4 last2) {
@@ -66,7 +66,7 @@ namespace libsemigroups {
             typename Iterator3,
             typename Iterator4>
   Subclass&
-  CongruenceInterface::add_internal_generating_pair_no_checks(Iterator1 first1,
+  CongruenceCommon::add_internal_generating_pair_no_checks(Iterator1 first1,
                                                               Iterator2 last1,
                                                               Iterator3 first2,
                                                               Iterator4 last2) {
@@ -81,7 +81,7 @@ namespace libsemigroups {
             typename Iterator2,
             typename Iterator3,
             typename Iterator4>
-  Subclass& CongruenceInterface::add_generating_pair(Iterator1 first1,
+  Subclass& CongruenceCommon::add_generating_pair(Iterator1 first1,
                                                      Iterator2 last1,
                                                      Iterator3 first2,
                                                      Iterator4 last2) {
@@ -96,7 +96,7 @@ namespace libsemigroups {
             typename OutputIterator,
             typename Iterator1,
             typename Iterator2>
-  OutputIterator CongruenceInterface::reduce_no_run(OutputIterator d_first,
+  OutputIterator CongruenceCommon::reduce_no_run(OutputIterator d_first,
                                                     Iterator1      first,
                                                     Iterator2      last) const {
     throw_if_letter_out_of_bounds<Subclass>(first, last);
@@ -112,7 +112,7 @@ namespace libsemigroups {
             typename OutputIterator,
             typename InputIterator1,
             typename InputIterator2>
-  OutputIterator CongruenceInterface::reduce(OutputIterator d_first,
+  OutputIterator CongruenceCommon::reduce(OutputIterator d_first,
                                              InputIterator1 first,
                                              InputIterator2 last) {
     throw_if_letter_out_of_bounds<Subclass>(first, last);

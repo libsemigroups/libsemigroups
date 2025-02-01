@@ -118,7 +118,7 @@ namespace libsemigroups {
 
   }  // namespace todd_coxeter
 
-  namespace congruence_interface {
+  namespace congruence_common {
     template <typename Word>
     auto normal_forms(ToddCoxeter<Word>& tc) {
       // TODO(1) avoid allocations here.
@@ -174,5 +174,5 @@ namespace libsemigroups {
                                                        ToddCoxeter<Word>& tc2) {
       return non_trivial_classes(tc1, normal_forms<Word>(tc2));
     }
-  }  // namespace congruence_interface
+  }  // namespace congruence_common
 }  // namespace libsemigroups

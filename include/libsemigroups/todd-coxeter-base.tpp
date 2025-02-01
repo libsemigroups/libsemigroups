@@ -25,7 +25,7 @@ namespace libsemigroups {
   ToddCoxeterBase& ToddCoxeterBase::init(congruence_kind        knd,
                                          WordGraph<Node> const& wg) {
     LIBSEMIGROUPS_ASSERT(!_setting_stack.empty());
-    CongruenceInterface::init(knd);
+    CongruenceCommon::init(knd);
     init();
     // FIXME setting the setting in the next line, and adding a Felsch runner to
     // the word graph version of Congruence leads to an incorrect answer for the
@@ -157,7 +157,7 @@ namespace libsemigroups {
         && current_word_graph().number_of_nodes_active() == 1) {
       return std::equal(first1, last1, first2, last2);
     }
-    return CongruenceInterface::contains_no_checks<ToddCoxeterBase>(
+    return CongruenceCommon::contains_no_checks<ToddCoxeterBase>(
         first1, last1, first2, last2);
   }
 
@@ -175,7 +175,7 @@ namespace libsemigroups {
         && current_word_graph().number_of_nodes_active() == 1) {
       return std::equal(first1, last1, first2, last2);
     }
-    return CongruenceInterface::contains<ToddCoxeterBase>(
+    return CongruenceCommon::contains<ToddCoxeterBase>(
         first1, last1, first2, last2);
   }
 

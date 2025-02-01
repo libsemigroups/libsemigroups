@@ -23,7 +23,7 @@
 
 namespace libsemigroups {
 
-  namespace congruence_interface {
+  namespace congruence_common {
 
     ////////////////////////////////////////////////////////////////////////
     // Interface helpers - normal_forms
@@ -70,5 +70,5 @@ namespace libsemigroups {
       LIBSEMIGROUPS_EXCEPTION("Cannot compute the partition");
     }
 
-  }  // namespace congruence_interface
+  }  // namespace congruence_common
 }  // namespace libsemigroups

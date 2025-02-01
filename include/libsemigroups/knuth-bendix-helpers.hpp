@@ -29,7 +29,7 @@
 #include <utility>      // for move
 #include <vector>       // for vector
 
-#include "cong-intf-helpers.hpp"   // for partition, add_gener...
+#include "cong-common-helpers.hpp"   // for partition, add_gener...
 #include "constants.hpp"           // for UNDEFINED, POSITIVE_...
 #include "debug.hpp"               // for LIBSEMIGROUPS_ASSERT
 #include "exception.hpp"           // for LIBSEMIGROUPS_EXCEPTION
@@ -47,7 +47,7 @@
 
 namespace libsemigroups {
 
-  namespace congruence_interface {
+  namespace congruence_common {
     ////////////////////////////////////////////////////////////////////////
     // Interface helpers - normal_forms
     ////////////////////////////////////////////////////////////////////////
@@ -131,7 +131,7 @@ namespace libsemigroups {
     non_trivial_classes(KnuthBendix<Word, Rewriter, ReductionOrder>& kb1,
                         KnuthBendix<Word, Rewriter, ReductionOrder>& kb2);
 
-  }  // namespace congruence_interface
+  }  // namespace congruence_common
 
   //! \ingroup knuth_bendix_group
   //!
@@ -203,44 +203,44 @@ namespace libsemigroups {
     // Interface helpers - add_generating_pair
     ////////////////////////////////////////////////////////////////////////
 
-    using congruence_interface::add_generating_pair;
-    using congruence_interface::add_generating_pair_no_checks;
+    using congruence_common::add_generating_pair;
+    using congruence_common::add_generating_pair_no_checks;
 
     ////////////////////////////////////////////////////////////////////////
     // Interface helpers - contains
     ////////////////////////////////////////////////////////////////////////
 
-    using congruence_interface::contains;
-    using congruence_interface::contains_no_checks;
-    using congruence_interface::currently_contains;
-    using congruence_interface::currently_contains_no_checks;
+    using congruence_common::contains;
+    using congruence_common::contains_no_checks;
+    using congruence_common::currently_contains;
+    using congruence_common::currently_contains_no_checks;
 
     ////////////////////////////////////////////////////////////////////////
     // Interface helpers - reduce
     ////////////////////////////////////////////////////////////////////////
 
-    using congruence_interface::reduce;
-    using congruence_interface::reduce_no_checks;
-    using congruence_interface::reduce_no_run;
-    using congruence_interface::reduce_no_run_no_checks;
+    using congruence_common::reduce;
+    using congruence_common::reduce_no_checks;
+    using congruence_common::reduce_no_run;
+    using congruence_common::reduce_no_run_no_checks;
 
     ////////////////////////////////////////////////////////////////////////
     // Interface helpers - normal_forms
     ////////////////////////////////////////////////////////////////////////
 
-    using congruence_interface::normal_forms;
+    using congruence_common::normal_forms;
 
     ////////////////////////////////////////////////////////////////////////
     // Interface helpers - partition
     ////////////////////////////////////////////////////////////////////////
 
-    using congruence_interface::partition;
+    using congruence_common::partition;
 
     ////////////////////////////////////////////////////////////////////////
     // Interface helpers - non_trivial_classes
     ////////////////////////////////////////////////////////////////////////
 
-    using congruence_interface::non_trivial_classes;
+    using congruence_common::non_trivial_classes;
 
     ////////////////////////////////////////////////////////////////////////
     // Possible future interface helpers - redundant_rule

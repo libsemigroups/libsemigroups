@@ -16,7 +16,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include "libsemigroups/cong-intf-class.hpp"
+#include "libsemigroups/cong-common-class.hpp"
 
 #include <string>
 
@@ -25,23 +25,23 @@
 
 namespace libsemigroups {
 
-  CongruenceInterface::~CongruenceInterface() = default;
+  CongruenceCommon::~CongruenceCommon() = default;
 
-  CongruenceInterface::CongruenceInterface(CongruenceInterface const&)
+  CongruenceCommon::CongruenceCommon(CongruenceCommon const&)
       = default;
-  CongruenceInterface::CongruenceInterface(CongruenceInterface&&) = default;
+  CongruenceCommon::CongruenceCommon(CongruenceCommon&&) = default;
 
-  CongruenceInterface&
-  CongruenceInterface::operator=(CongruenceInterface const&)
+  CongruenceCommon&
+  CongruenceCommon::operator=(CongruenceCommon const&)
       = default;
-  CongruenceInterface& CongruenceInterface::operator=(CongruenceInterface&&)
+  CongruenceCommon& CongruenceCommon::operator=(CongruenceCommon&&)
       = default;
 
   /////////////////////////////////////////////////////////////////////////
-  // CongruenceInterface - non-pure virtual methods - private
+  // CongruenceCommon - non-pure virtual methods - private
   /////////////////////////////////////////////////////////////////////////
 
-  void CongruenceInterface::throw_if_started() const {
+  void CongruenceCommon::throw_if_started() const {
     if (started()) {
       LIBSEMIGROUPS_EXCEPTION(
           "cannot add further generating pairs at this stage");

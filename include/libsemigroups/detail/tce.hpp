@@ -76,7 +76,7 @@ namespace libsemigroups {
       // Note that the value of the class_index_type _value below is the
       // actual class_index_type  used in the ToddCoxeterBase class and not that
       // number minus 1, which is what "class_index" means in the context of
-      // CongruenceInterface objects.
+      // CongruenceCommon objects.
       node_type _index;
     };
 

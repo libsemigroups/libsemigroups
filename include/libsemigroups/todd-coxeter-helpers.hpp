@@ -32,7 +32,7 @@
 #include <utility>           // for move
 #include <vector>            // for vector
 
-#include "cong-intf-helpers.hpp"   // for partition, add_ge...
+#include "cong-common-helpers.hpp"   // for partition, add_ge...
 #include "constants.hpp"           // for UNDEFINED, operat...
 #include "exception.hpp"           // for LIBSEMIGROUPS_EXC...
 #include "paths.hpp"               // for Paths
@@ -848,8 +848,8 @@ namespace libsemigroups {
 
   // This namespace contains implementations of the interface helpers (i.e.
   // specific versions for ToddCoxeterBase of the helper functions from
-  // cong-intf.hpp).
-  namespace congruence_interface {
+  // cong-common.hpp).
+  namespace congruence_common {
     ////////////////////////////////////////////////////////////////////////
     // Interface helpers - normal_forms
     ////////////////////////////////////////////////////////////////////////
@@ -916,7 +916,7 @@ namespace libsemigroups {
     // [[nodiscard]] std::vector<std::vector<Word>>
     // partition(ToddCoxeter<Word>& tc, Range r);
     //
-    // is declared in cong-intf-helpers.hpp
+    // is declared in cong-common-helpers.hpp
     // TODO(0) update the signature
 
     ////////////////////////////////////////////////////////////////////////
@@ -950,44 +950,44 @@ namespace libsemigroups {
     template <typename Word>
     [[nodiscard]] std::vector<std::vector<Word>>
     non_trivial_classes(ToddCoxeter<Word>& tc1, ToddCoxeter<Word>& tc2);
-  }  // namespace congruence_interface
+  }  // namespace congruence_common
 
   // The todd_coxeter namespace contains all helpers specific to
   // ToddCoxeter<Word> and aliases for the common functionality in the
-  // congruence_interface namespace.
+  // congruence_common namespace.
   namespace todd_coxeter {
     ////////////////////////////////////////////////////////////////////////
     // ToddCoxeter<Word> add_generating_pairs helpers
     ////////////////////////////////////////////////////////////////////////
 
-    using congruence_interface::add_generating_pair;
-    using congruence_interface::add_generating_pair_no_checks;
+    using congruence_common::add_generating_pair;
+    using congruence_common::add_generating_pair_no_checks;
 
     ////////////////////////////////////////////////////////////////////////
     // Interface helpers - contains
     ////////////////////////////////////////////////////////////////////////
 
-    using congruence_interface::contains;
-    using congruence_interface::contains_no_checks;
-    using congruence_interface::currently_contains;
-    using congruence_interface::currently_contains_no_checks;
+    using congruence_common::contains;
+    using congruence_common::contains_no_checks;
+    using congruence_common::currently_contains;
+    using congruence_common::currently_contains_no_checks;
 
     ////////////////////////////////////////////////////////////////////////
     // Interface helpers - reduce[_no_run][_no_checks]
     ////////////////////////////////////////////////////////////////////////
 
-    using congruence_interface::reduce;
-    using congruence_interface::reduce_no_checks;
-    using congruence_interface::reduce_no_run;
-    using congruence_interface::reduce_no_run_no_checks;
+    using congruence_common::reduce;
+    using congruence_common::reduce_no_checks;
+    using congruence_common::reduce_no_run;
+    using congruence_common::reduce_no_run_no_checks;
 
     ////////////////////////////////////////////////////////////////////////
     // Interface helpers - partitioning and normal forms
     ////////////////////////////////////////////////////////////////////////
 
-    using congruence_interface::non_trivial_classes;
-    using congruence_interface::normal_forms;
-    using congruence_interface::partition;
+    using congruence_common::non_trivial_classes;
+    using congruence_common::normal_forms;
+    using congruence_common::partition;
 
   }  // namespace todd_coxeter
 }  // namespace libsemigroups

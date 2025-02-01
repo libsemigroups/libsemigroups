@@ -34,7 +34,7 @@
 #include <utility>      // for move
 #include <vector>       // for vector
 
-#include "cong-intf-class.hpp"    // for CongruenceInterface
+#include "cong-common-class.hpp"    // for CongruenceCommon
 #include "presentation.hpp"       // for Presentation
 #include "to-presentation.hpp"    // for to_presentation
 #include "todd-coxeter-base.hpp"  // for ToddCoxeterBase
@@ -327,9 +327,9 @@ namespace libsemigroups {
                                      Iterator2 last1,
                                      Iterator3 first2,
                                      Iterator4 last2) {
-      // Call CongruenceInterface version so that we perform bound checks in
+      // Call CongruenceCommon version so that we perform bound checks in
       // ToddCoxeter and not ToddCoxeterBase
-      return CongruenceInterface::add_generating_pair<ToddCoxeter>(
+      return CongruenceCommon::add_generating_pair<ToddCoxeter>(
           first1, last1, first2, last2);
     }
 
@@ -393,9 +393,9 @@ namespace libsemigroups {
                             Iterator2 last1,
                             Iterator3 first2,
                             Iterator4 last2) const {
-      // Call CongruenceInterface version so that we perform bound checks in
+      // Call CongruenceCommon version so that we perform bound checks in
       // ToddCoxeter and not ToddCoxeterBase
-      return CongruenceInterface::currently_contains<ToddCoxeter>(
+      return CongruenceCommon::currently_contains<ToddCoxeter>(
           first1, last1, first2, last2);
     }
 
@@ -513,7 +513,7 @@ namespace libsemigroups {
     OutputIterator reduce_no_run(OutputIterator d_first,
                                  InputIterator1 first,
                                  InputIterator2 last) const {
-      return CongruenceInterface::reduce_no_run<ToddCoxeter>(
+      return CongruenceCommon::reduce_no_run<ToddCoxeter>(
           d_first, first, last);
     }
 
@@ -572,9 +572,9 @@ namespace libsemigroups {
     OutputIterator reduce(OutputIterator d_first,
                           InputIterator1 first,
                           InputIterator2 last) {
-      // Call CongruenceInterface version so that we perform bound checks in
+      // Call CongruenceCommon version so that we perform bound checks in
       // ToddCoxeter and not ToddCoxeterBase
-      return CongruenceInterface::reduce<ToddCoxeter>(d_first, first, last);
+      return CongruenceCommon::reduce<ToddCoxeter>(d_first, first, last);
     }
 
     //! @}

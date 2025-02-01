@@ -29,7 +29,7 @@
 #include <utility>        // for forward, move
 
 #include "libsemigroups/cong-class.hpp"       // for Congruence
-#include "libsemigroups/cong-intf-class.hpp"  // for CongruenceInterfa...
+#include "libsemigroups/cong-common-class.hpp"  // for CongruenceInterfa...
 #include "libsemigroups/constants.hpp"        // for operator==, opera...
 #include "libsemigroups/exception.hpp"        // for LIBSEMIGROUPS_EXC...
 #include "libsemigroups/exception.hpp"        // for LIBSEMIGROUPS_EXCEPTION
@@ -56,7 +56,7 @@
 
 namespace libsemigroups {
 
-  namespace congruence_interface {
+  namespace congruence_common {
 
     // We have to pass the presentation here, because o/w we have no way of
     // knowing over what we should compute the non-trivial classes (i.e. we
@@ -122,5 +122,5 @@ namespace libsemigroups {
     // this.
     // LIBSEMIGROUPS_EXCEPTION("Cannot compute the non-trivial classes!");
     // }
-  }  // namespace congruence_interface
+  }  // namespace congruence_common
 }  // namespace libsemigroups

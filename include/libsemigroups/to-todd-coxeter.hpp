@@ -55,8 +55,8 @@ namespace libsemigroups {
   // TODO(0) allow template param "word_type" to be specified
   template <typename Rewriter, typename ReductionOrder>
   ToddCoxeter<word_type>
-  to_todd_coxeter(congruence_kind                            knd,
-                  KnuthBendixBase<Rewriter, ReductionOrder>& kb) {
+  to_todd_coxeter(congruence_kind                                    knd,
+                  detail::KnuthBendixBase<Rewriter, ReductionOrder>& kb) {
     if (kb.number_of_classes() == POSITIVE_INFINITY) {
       LIBSEMIGROUPS_EXCEPTION(
           "cannot construct a ToddCoxeterBase instance using the Cayley graph "

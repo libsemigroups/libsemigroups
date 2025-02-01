@@ -114,9 +114,9 @@ namespace libsemigroups {
         && current_word_graph().number_of_nodes_active() == 1) {
       return std::equal(first1, last1, first2, last2);
     }
-    // Call CongruenceInterface version so that we perform bound checks in
+    // Call CongruenceCommon version so that we perform bound checks in
     // ToddCoxeter and not ToddCoxeterBase
-    return CongruenceInterface::contains<ToddCoxeter>(
+    return CongruenceCommon::contains<ToddCoxeter>(
         first1, last1, first2, last2);
   }
 

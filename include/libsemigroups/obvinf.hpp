@@ -124,7 +124,7 @@ namespace libsemigroups {
   // functions of an IsObviouslyInfinite (see for example the function
   // is_obviously_infinite for a Presentation). These should be documented.
   //
-  // TODO(1) this class should be more generic, like CongruenceInterface and
+  // TODO(1) this class should be more generic, like CongruenceCommon and
   // its derived classes, allowing arbitrary iterators of rules to be added
   class IsObviouslyInfinite {
     // The default constructor is private since an object that is default

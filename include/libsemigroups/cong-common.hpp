@@ -21,7 +21,7 @@
 #ifndef LIBSEMIGROUPS_CONG_INTF_HPP_
 #define LIBSEMIGROUPS_CONG_INTF_HPP_
 
-#include "cong-intf-class.hpp"
-#include "cong-intf-helpers.hpp"
+#include "cong-common-class.hpp"
+#include "cong-common-helpers.hpp"
 
 #endif  // LIBSEMIGROUPS_CONG_INTF_HPP_

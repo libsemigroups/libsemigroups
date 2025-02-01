@@ -15,7 +15,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-// The purpose of this file is to test the CongruenceInterface class.
+// The purpose of this file is to test the CongruenceCommon class.
 
 #include <algorithm>      // for transform, sort
 #include <cstddef>        // for size_t
@@ -32,7 +32,7 @@
 #include "test-main.hpp"          // for LIBSEMIGROUPS_TEST_CASE
 
 #include "libsemigroups/cong-helpers.hpp"          // for add_generating_pair
-#include "libsemigroups/cong-intf-helpers.hpp"     // for currently_contains
+#include "libsemigroups/cong-common-helpers.hpp"     // for currently_contains
 #include "libsemigroups/constants.hpp"             // for operator!=, opera...
 #include "libsemigroups/exception.hpp"             // for LibsemigroupsExce...
 #include "libsemigroups/froidure-pin-base.hpp"     // for current_normal_forms
@@ -75,7 +75,7 @@ namespace libsemigroups {
   using todd_coxeter::non_trivial_classes;
   using todd_coxeter::normal_forms;
 
-  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("CongruenceInterface",
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("CongruenceCommon",
                                    "000",
                                    "add_generating_pair",
                                    "[quick]",
@@ -96,11 +96,11 @@ namespace libsemigroups {
     REQUIRE(cong.number_of_classes() == 27);
     REQUIRE(cong.finished());
     REQUIRE(cong.started());
-    REQUIRE_THROWS_AS(congruence_interface::add_generating_pair(cong, 0_w, 1_w),
+    REQUIRE_THROWS_AS(congruence_common::add_generating_pair(cong, 0_w, 1_w),
                       LibsemigroupsException);
   }
 
-  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("CongruenceInterface",
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("CongruenceCommon",
                                    "001",
                                    "contains",
                                    "[quick]",
@@ -111,9 +111,9 @@ namespace libsemigroups {
     auto rg = ReportGuard(false);
 
     TestType cong;
-    REQUIRE_THROWS_AS(congruence_interface::currently_contains(cong, {0}, {1}),
+    REQUIRE_THROWS_AS(congruence_common::currently_contains(cong, {0}, {1}),
                       LibsemigroupsException);
-    REQUIRE_THROWS_AS(congruence_interface::currently_contains(cong, {0}, {0}),
+    REQUIRE_THROWS_AS(congruence_common::currently_contains(cong, {0}, {0}),
                       LibsemigroupsException);
 
     REQUIRE(!cong.finished());
@@ -127,13 +127,13 @@ namespace libsemigroups {
 
     cong.init(twosided, p);
 
-    REQUIRE(!congruence_interface::contains(cong, 000_w, 00_w));
+    REQUIRE(!congruence_common::contains(cong, 000_w, 00_w));
     REQUIRE(cong.finished());
-    REQUIRE(congruence_interface::currently_contains(cong, 000_w, 00_w)
+    REQUIRE(congruence_common::currently_contains(cong, 000_w, 00_w)
             == tril::FALSE);
   }
 
-  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("CongruenceInterface",
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("CongruenceCommon",
                                    "002",
                                    "is_obviously_infinite",
                                    "[quick]",
@@ -166,14 +166,14 @@ namespace libsemigroups {
     REQUIRE(!is_obviously_infinite(cong));
 
     cong.init(onesided, p);
-    congruence_interface::add_generating_pair(cong, 000_w, 00_w);
+    congruence_common::add_generating_pair(cong, 000_w, 00_w);
 
     REQUIRE(!is_obviously_infinite(cong));
     REQUIRE(cong.number_of_classes() == 24);
     REQUIRE(!is_obviously_infinite(cong));
   }
 
-  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("CongruenceInterface",
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("CongruenceCommon",
                                    "003",
                                    "non_trivial_classes x1",
                                    "[quick]",
@@ -189,7 +189,7 @@ namespace libsemigroups {
 
     TestType cong(twosided, to_presentation<word_type>(S));
 
-    congruence_interface::add_generating_pair(
+    congruence_common::add_generating_pair(
         cong,
         froidure_pin::factorisation(S, Transf<>({3, 4, 4, 4, 4})),
         froidure_pin::factorisation(S, Transf<>({3, 1, 3, 3, 3})));
@@ -218,7 +218,7 @@ namespace libsemigroups {
     REQUIRE(ntc[0] == expect);
   }
 
-  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("CongruenceInterface",
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("CongruenceCommon",
                                    "004",
                                    "non_trivial_classes x2",
                                    "[quick]",
@@ -253,7 +253,7 @@ namespace libsemigroups {
     REQUIRE(actual == expect);
   }
 
-  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("CongruenceInterface",
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("CongruenceCommon",
                                    "005",
                                    "no generating pairs added",
                                    "[quick]",
@@ -268,13 +268,13 @@ namespace libsemigroups {
 
     TestType cong(twosided, p);
 
-    REQUIRE(congruence_interface::currently_contains(cong, 1_w, 2222222222_w)
+    REQUIRE(congruence_common::currently_contains(cong, 1_w, 2222222222_w)
             == tril::unknown);
-    REQUIRE(!congruence_interface::contains(cong, 1_w, 2222222222_w));
+    REQUIRE(!congruence_common::contains(cong, 1_w, 2222222222_w));
     REQUIRE(cong.number_of_classes() == POSITIVE_INFINITY);
   }
 
-  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("CongruenceInterface",
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("CongruenceCommon",
                                    "006",
                                    "to_froidure_pin",
                                    "[quick]",
@@ -311,7 +311,7 @@ namespace libsemigroups {
                  "agd"}));  // codespell:end-ignore
   }
 
-  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("CongruenceInterface",
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("CongruenceCommon",
                                    "007",
                                    "to_froidure_pin",
                                    "[quick]",
@@ -336,7 +336,7 @@ namespace libsemigroups {
     REQUIRE(to_froidure_pin(cong).size() == 12);
   }
 
-  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("CongruenceInterface",
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("CongruenceCommon",
                                    "008",
                                    "to_froidure_pin",
                                    "[quick]",
@@ -372,7 +372,7 @@ namespace libsemigroups {
     REQUIRE(fp->current_size() == 8'205);
   }
 
-  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("CongruenceInterface",
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("CongruenceCommon",
                                    "009",
                                    "normal_forms",
                                    "[quick]",
@@ -408,7 +408,7 @@ namespace libsemigroups {
                                          "baB"}));
   }
 
-  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("CongruenceInterface",
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("CongruenceCommon",
                                    "010",
                                    "normal_forms",
                                    "[quick]",

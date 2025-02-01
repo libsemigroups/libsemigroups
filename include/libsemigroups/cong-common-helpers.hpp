@@ -16,15 +16,15 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-// This file contains helper functions for the class CongruenceInterface and
+// This file contains helper functions for the class CongruenceCommon and
 // its derived classes. This is a separate file so that we can declare all the
-// derived classes of CongruenceInterface prior to declaring the functions in
+// derived classes of CongruenceCommon prior to declaring the functions in
 // this file.
 //
 // The implementation of all helpers must go into the namespace
-// congruence_interface, and then be aliased into the, e.g., todd_coxeter
+// congruence_common, and then be aliased into the, e.g., todd_coxeter
 // namespace. This makes it possible to generically use, e.g.,
-// congruence_interface::normal_form in, e.g., the python bindings.
+// congruence_common::normal_form in, e.g., the python bindings.
 
 #ifndef LIBSEMIGROUPS_CONG_INTF_HELPERS_HPP_
 #define LIBSEMIGROUPS_CONG_INTF_HELPERS_HPP_
@@ -45,7 +45,7 @@
 namespace libsemigroups {
 
   // Forward decls
-  class CongruenceInterface;
+  class CongruenceCommon;
 
   template <typename Word>
   class Congruence;
@@ -69,17 +69,17 @@ namespace libsemigroups {
     }
   }  // namespace detail
 
-  namespace congruence_interface {
+  namespace congruence_common {
 
     //! \defgroup cong_intf_helpers_group Generic congruence helpers
     //! \ingroup cong_all_group
     //!
-    //! \brief Helper functions for subclasses of \ref CongruenceInterface.
+    //! \brief Helper functions for subclasses of \ref CongruenceCommon.
     //!
     //! This page contains documentation for helper functions for the classes
     //! Congruence, Kambites, KnuthBendixBase, and \ref todd_coxeter_class_group
     //! "ToddCoxeterBase". The functions documented on this page belong to all
-    //! of the namespaces \ref cong_intf_helpers_group "congruence_interface",
+    //! of the namespaces \ref cong_intf_helpers_group "congruence_common",
     //! \ref congruence, \ref kambites, \ref knuth_bendix, and \ref
     //! todd_coxeter_helpers_group "todd_coxeter".
 
@@ -100,16 +100,16 @@ namespace libsemigroups {
 
     //! \brief Helper for adding a generating pair of words.
     //!
-    //! Defined in `cong-intf.hpp`.
+    //! Defined in `cong-common.hpp`.
     //!
     //! This function can be used to add a generating pair to the subclass \p
-    //! ci of \ref CongruenceInterface using the objects themselves rather
+    //! ci of \ref CongruenceCommon using the objects themselves rather
     //! than using iterators.
     //!
     //! \tparam Subclass the type of the first parameter.
     //! \tparam Word the type of the second and third parameters.
     //!
-    //! \param ci the subclass of \ref CongruenceInterface.
+    //! \param ci the subclass of \ref CongruenceCommon.
     //! \param u the left hand side of the pair to add.
     //! \param v the right hand side of the pair to add.
     //!
@@ -121,7 +121,7 @@ namespace libsemigroups {
         Subclass&                                  ci,
         typename Subclass::native_word_type const& u,
         typename Subclass::native_word_type const& v) {
-      static_assert(std::is_base_of_v<CongruenceInterface, Subclass>);
+      static_assert(std::is_base_of_v<CongruenceCommon, Subclass>);
       return ci.add_generating_pair_no_checks(
           std::begin(u), std::end(u), std::begin(v), std::end(v));
     }
@@ -129,7 +129,7 @@ namespace libsemigroups {
     //! \brief Helper for adding a generating pair of words
     //! (std::initializer_list).
     //!
-    //! Defined in `cong-intf.hpp`.
+    //! Defined in `cong-common.hpp`.
     //!
     //! See \ref
     //! add_generating_pair_no_checks(Subclass&, Word const&, Word const&)
@@ -139,7 +139,7 @@ namespace libsemigroups {
     add_generating_pair_no_checks(Subclass&                         ci,
                                   std::initializer_list<Int> const& u,
                                   std::initializer_list<Int> const& v) {
-      static_assert(std::is_base_of_v<CongruenceInterface, Subclass>);
+      static_assert(std::is_base_of_v<CongruenceCommon, Subclass>);
       return ci.add_generating_pair_no_checks(
           std::begin(u), std::end(u), std::begin(v), std::end(v));
     }
@@ -147,7 +147,7 @@ namespace libsemigroups {
     //! \brief Helper for adding a generating pair of words
     //! (string literals).
     //!
-    //! Defined in `cong-intf.hpp`.
+    //! Defined in `cong-common.hpp`.
     //!
     //! See \ref
     //! add_generating_pair_no_checks(Subclass&, Word const&, Word const&)
@@ -156,7 +156,7 @@ namespace libsemigroups {
     Subclass& add_generating_pair_no_checks(Subclass&   ci,
                                             char const* u,
                                             char const* v) {
-      static_assert(std::is_base_of_v<CongruenceInterface, Subclass>);
+      static_assert(std::is_base_of_v<CongruenceCommon, Subclass>);
       LIBSEMIGROUPS_ASSERT(u != nullptr);
       LIBSEMIGROUPS_ASSERT(v != nullptr);
       // We could static_assert that Subclass::native_word_type == std::string,
@@ -171,7 +171,7 @@ namespace libsemigroups {
     //! \brief Helper for adding a generating pair of words
     //! (std::string_view).
     //!
-    //! Defined in `cong-intf.hpp`.
+    //! Defined in `cong-common.hpp`.
     //!
     //! See \ref
     //! add_generating_pair_no_checks(Subclass&, Word const&, Word const&)
@@ -180,7 +180,7 @@ namespace libsemigroups {
     Subclass& add_generating_pair_no_checks(Subclass&        ci,
                                             std::string_view u,
                                             std::string_view v) {
-      static_assert(std::is_base_of_v<CongruenceInterface, Subclass>);
+      static_assert(std::is_base_of_v<CongruenceCommon, Subclass>);
       // We could static_assert that Subclass::native_word_type == std::string,
       // but it doesn't seem that adding this restriction would gain us
       // anything, so it is not currently done.
@@ -190,16 +190,16 @@ namespace libsemigroups {
 
     //! \brief Helper for adding a generating pair of words.
     //!
-    //! Defined in `cong-intf.hpp`.
+    //! Defined in `cong-common.hpp`.
     //!
     //! This function can be used to add a generating pair to the subclass \p
-    //! ci of \ref CongruenceInterface using the objects themselves rather
+    //! ci of \ref CongruenceCommon using the objects themselves rather
     //! than using iterators.
     //!
     //! \tparam Subclass the type of the first parameter.
     //! \tparam Word the type of the second and third parameters.
     //!
-    //! \param ci the subclass of \ref CongruenceInterface.
+    //! \param ci the subclass of \ref CongruenceCommon.
     //! \param u the left hand side of the pair to add.
     //! \param v the right hand side of the pair to add.
     //!
@@ -211,7 +211,7 @@ namespace libsemigroups {
     add_generating_pair(Subclass&                                  ci,
                         typename Subclass::native_word_type const& u,
                         typename Subclass::native_word_type const& v) {
-      static_assert(std::is_base_of_v<CongruenceInterface, Subclass>);
+      static_assert(std::is_base_of_v<CongruenceCommon, Subclass>);
       return ci.add_generating_pair(
           std::begin(u), std::end(u), std::begin(v), std::end(v));
     }
@@ -219,7 +219,7 @@ namespace libsemigroups {
     //! \brief Helper for adding a generating pair of words
     //! (std::initializer_list).
     //!
-    //! Defined in `cong-intf.hpp`.
+    //! Defined in `cong-common.hpp`.
     //!
     //! See \ref
     //! add_generating_pair(Subclass&, Word const&, Word const&)
@@ -228,7 +228,7 @@ namespace libsemigroups {
     Subclass& add_generating_pair(Subclass&                         ci,
                                   std::initializer_list<Int> const& u,
                                   std::initializer_list<Int> const& v) {
-      static_assert(std::is_base_of_v<CongruenceInterface, Subclass>);
+      static_assert(std::is_base_of_v<CongruenceCommon, Subclass>);
       return ci.add_generating_pair(
           std::begin(u), std::end(u), std::begin(v), std::end(v));
     }
@@ -236,14 +236,14 @@ namespace libsemigroups {
     //! \brief Helper for adding a generating pair of words
     //! (string literals).
     //!
-    //! Defined in `cong-intf.hpp`.
+    //! Defined in `cong-common.hpp`.
     //!
     //! See \ref
     //! add_generating_pair(Subclass&, Word const&, Word const&)
     //! for details.
     template <typename Subclass>
     Subclass& add_generating_pair(Subclass& ci, char const* u, char const* v) {
-      static_assert(std::is_base_of_v<CongruenceInterface, Subclass>);
+      static_assert(std::is_base_of_v<CongruenceCommon, Subclass>);
       detail::throw_if_nullptr(u, "2nd");
       detail::throw_if_nullptr(v, "3rd");
       // We could static_assert that Subclass::native_word_type == std::string,
@@ -258,7 +258,7 @@ namespace libsemigroups {
     //! \brief Helper for adding a generating pair of words
     //! (std::string_view).
     //!
-    //! Defined in `cong-intf.hpp`.
+    //! Defined in `cong-common.hpp`.
     //!
     //! See \ref
     //! add_generating_pair(Subclass&, Word const&, Word const&)
@@ -267,7 +267,7 @@ namespace libsemigroups {
     Subclass& add_generating_pair(Subclass&        ci,
                                   std::string_view u,
                                   std::string_view v) {
-      static_assert(std::is_base_of_v<CongruenceInterface, Subclass>);
+      static_assert(std::is_base_of_v<CongruenceCommon, Subclass>);
       // We could static_assert that Subclass::native_word_type == std::string,
       // but it doesn't seem that adding this restriction would gain us
       // anything, so it is not currently done.
@@ -286,7 +286,7 @@ namespace libsemigroups {
     //!
     //! \brief Check containment of a pair of words in a congruence.
     //!
-    //! Defined in `cong-intf.hpp`.
+    //! Defined in `cong-common.hpp`.
     //!
     //! This page contains the documentation of the functions
     //! \ref currently_contains_no_checks; \ref currently_contains;
@@ -294,7 +294,7 @@ namespace libsemigroups {
     //! variety of different argument types.
     //!
     //! Functions with the prefix `currently_` do not perform any
-    //! enumeration of the \ref CongruenceInterface derived class instances;
+    //! enumeration of the \ref CongruenceCommon derived class instances;
     //! and those with the suffix `_no_checks` do not check that the input
     //! words are valid.
     //!
@@ -302,18 +302,18 @@ namespace libsemigroups {
 
     //! \brief Check containment of a pair of words.
     //!
-    //! Defined in `cong-intf.hpp`.
+    //! Defined in `cong-common.hpp`.
     //!
     //! This function checks whether or not the words \p u and \p v are
     //! already known to be contained in the congruence represented by a \ref
-    //! CongruenceInterface derived class instance \p ci. This function
+    //! CongruenceCommon derived class instance \p ci. This function
     //! performs no enumeration of \p ci, so it is possible for the words to
     //! be contained in the congruence, but that this is not currently known.
     //!
     //! \tparam Subclass the type of the first parameter.
     //! \tparam Word the type of the second and third parameters.
     //!
-    //! \param ci the subclass of \ref CongruenceInterface.
+    //! \param ci the subclass of \ref CongruenceCommon.
     //! \param u the left hand side of the pair to add.
     //! \param v the right hand side of the pair to add.
     //!
@@ -328,7 +328,7 @@ namespace libsemigroups {
     currently_contains_no_checks(Subclass const&                            ci,
                                  typename Subclass::native_word_type const& u,
                                  typename Subclass::native_word_type const& v) {
-      static_assert(std::is_base_of_v<CongruenceInterface, Subclass>);
+      static_assert(std::is_base_of_v<CongruenceCommon, Subclass>);
       return ci.currently_contains_no_checks(
           std::begin(u), std::end(u), std::begin(v), std::end(v));
     }
@@ -336,7 +336,7 @@ namespace libsemigroups {
     //! \brief Helper for checking containment of a pair of words
     //! (std::initializer_list).
     //!
-    //! Defined in `cong-intf.hpp`.
+    //! Defined in `cong-common.hpp`.
     //!
     //! See \ref
     //! currently_contains_no_checks(Subclass const&, Word const&, Word
@@ -346,7 +346,7 @@ namespace libsemigroups {
     currently_contains_no_checks(Subclass const&                   ci,
                                  std::initializer_list<Int> const& u,
                                  std::initializer_list<Int> const& v) {
-      static_assert(std::is_base_of_v<CongruenceInterface, Subclass>);
+      static_assert(std::is_base_of_v<CongruenceCommon, Subclass>);
       return ci.currently_contains_no_checks(
           std::begin(u), std::end(u), std::begin(v), std::end(v));
     }
@@ -354,7 +354,7 @@ namespace libsemigroups {
     //! \brief Helper for checking containment of a pair of words
     //! (string literal).
     //!
-    //! Defined in `cong-intf.hpp`.
+    //! Defined in `cong-common.hpp`.
     //!
     //! See \ref
     //! currently_contains_no_checks(Subclass const&, Word const&, Word
@@ -363,7 +363,7 @@ namespace libsemigroups {
     [[nodiscard]] tril currently_contains_no_checks(Subclass const& ci,
                                                     char const*     u,
                                                     char const*     v) {
-      static_assert(std::is_base_of_v<CongruenceInterface, Subclass>);
+      static_assert(std::is_base_of_v<CongruenceCommon, Subclass>);
       LIBSEMIGROUPS_ASSERT(u != nullptr);
       LIBSEMIGROUPS_ASSERT(v != nullptr);
       // We could static_assert that Subclass::native_word_type == std::string,
@@ -378,7 +378,7 @@ namespace libsemigroups {
     //! \brief Helper for checking containment of a pair of words
     //! (std::string_view).
     //!
-    //! Defined in `cong-intf.hpp`.
+    //! Defined in `cong-common.hpp`.
     //!
     //! See \ref
     //! currently_contains_no_checks(Subclass const&, Word const&, Word
@@ -387,7 +387,7 @@ namespace libsemigroups {
     [[nodiscard]] tril currently_contains_no_checks(Subclass const&  ci,
                                                     std::string_view u,
                                                     std::string_view v) {
-      static_assert(std::is_base_of_v<CongruenceInterface, Subclass>);
+      static_assert(std::is_base_of_v<CongruenceCommon, Subclass>);
       // We could static_assert that Subclass::native_word_type == std::string,
       // but it doesn't seem that adding this restriction would gain us
       // anything, so it is not currently done.
@@ -401,18 +401,18 @@ namespace libsemigroups {
 
     //! \brief Check containment of a pair of words.
     //!
-    //! Defined in `cong-intf.hpp`.
+    //! Defined in `cong-common.hpp`.
     //!
     //! This function checks whether or not the words \p u and \p v are
     //! already known to be contained in the congruence represented by a \ref
-    //! CongruenceInterface derived class instance \p ci. This function
+    //! CongruenceCommon derived class instance \p ci. This function
     //! performs no enumeration of \p ci, so it is possible for the words to
     //! be contained in the congruence, but that this is not currently known.
     //!
     //! \tparam Subclass the type of the first parameter.
     //! \tparam Word the type of the second and third parameters.
     //!
-    //! \param ci the subclass of \ref CongruenceInterface.
+    //! \param ci the subclass of \ref CongruenceCommon.
     //! \param u the left hand side of the pair to add.
     //! \param v the right hand side of the pair to add.
     //!
@@ -427,7 +427,7 @@ namespace libsemigroups {
     currently_contains(Subclass const&                            ci,
                        typename Subclass::native_word_type const& u,
                        typename Subclass::native_word_type const& v) {
-      static_assert(std::is_base_of_v<CongruenceInterface, Subclass>);
+      static_assert(std::is_base_of_v<CongruenceCommon, Subclass>);
       return ci.currently_contains(
           std::begin(u), std::end(u), std::begin(v), std::end(v));
     }
@@ -435,7 +435,7 @@ namespace libsemigroups {
     //! \brief Helper for checking containment of a pair of words
     //! (std::initializer_list).
     //!
-    //! Defined in `cong-intf.hpp`.
+    //! Defined in `cong-common.hpp`.
     //!
     //! See \ref
     //! currently_contains(Subclass const&, Word const&, Word const&)
@@ -444,7 +444,7 @@ namespace libsemigroups {
     [[nodiscard]] tril currently_contains(Subclass const&                   ci,
                                           std::initializer_list<Int> const& u,
                                           std::initializer_list<Int> const& v) {
-      static_assert(std::is_base_of_v<CongruenceInterface, Subclass>);
+      static_assert(std::is_base_of_v<CongruenceCommon, Subclass>);
       return ci.currently_contains(
           std::begin(u), std::end(u), std::begin(v), std::end(v));
     }
@@ -452,7 +452,7 @@ namespace libsemigroups {
     //! \brief Helper for checking containment of a pair of words
     //! (string literal).
     //!
-    //! Defined in `cong-intf.hpp`.
+    //! Defined in `cong-common.hpp`.
     //!
     //! See \ref
     //! currently_contains(Subclass const&, Word const&, Word const&)
@@ -461,7 +461,7 @@ namespace libsemigroups {
     [[nodiscard]] tril currently_contains(Subclass const& ci,
                                           char const*     u,
                                           char const*     v) {
-      static_assert(std::is_base_of_v<CongruenceInterface, Subclass>);
+      static_assert(std::is_base_of_v<CongruenceCommon, Subclass>);
       detail::throw_if_nullptr(u, "2nd");
       detail::throw_if_nullptr(v, "3rd");
       return ci.currently_contains(
@@ -473,7 +473,7 @@ namespace libsemigroups {
     //! \brief Helper for checking containment of a pair of words
     //! (std::string_view).
     //!
-    //! Defined in `cong-intf.hpp`.
+    //! Defined in `cong-common.hpp`.
     //!
     //! See \ref
     //! currently_contains(Subclass const&, Word const&, Word const&)
@@ -482,7 +482,7 @@ namespace libsemigroups {
     [[nodiscard]] tril currently_contains(Subclass const&  ci,
                                           std::string_view u,
                                           std::string_view v) {
-      static_assert(std::is_base_of_v<CongruenceInterface, Subclass>);
+      static_assert(std::is_base_of_v<CongruenceCommon, Subclass>);
       return ci.currently_contains(
           std::begin(u), std::end(u), std::begin(v), std::end(v));
     }
@@ -493,17 +493,17 @@ namespace libsemigroups {
 
     //! \brief Check containment of a pair of words.
     //!
-    //! Defined in `cong-intf.hpp`.
+    //! Defined in `cong-common.hpp`.
     //!
     //! This function checks whether or not the words \p u and \p v are
     //! contained in the congruence represented by the instance \p ci of a
-    //! derived class of \ref CongruenceInterface. This function triggers a
+    //! derived class of \ref CongruenceCommon. This function triggers a
     //! full enumeration of \p ci, which may never terminate.
     //!
     //! \tparam Subclass the type of the first parameter.
     //! \tparam Word the type of the second and third parameters.
     //!
-    //! \param ci the subclass of \ref CongruenceInterface.
+    //! \param ci the subclass of \ref CongruenceCommon.
     //! \param u the left hand side of the pair to add.
     //! \param v the right hand side of the pair to add.
     //!
@@ -515,7 +515,7 @@ namespace libsemigroups {
     contains_no_checks(Subclass&                                  ci,
                        typename Subclass::native_word_type const& u,
                        typename Subclass::native_word_type const& v) {
-      static_assert(std::is_base_of_v<CongruenceInterface, Subclass>);
+      static_assert(std::is_base_of_v<CongruenceCommon, Subclass>);
       return ci.contains_no_checks(
           std::begin(u), std::end(u), std::begin(v), std::end(v));
     }
@@ -523,7 +523,7 @@ namespace libsemigroups {
     //! \brief Helper for checking containment of a pair of words
     //! (std::initializer_list).
     //!
-    //! Defined in `cong-intf.hpp`.
+    //! Defined in `cong-common.hpp`.
     //!
     //! See \ref
     //! contains_no_checks(Subclass&, Word const&, Word const&)
@@ -532,14 +532,14 @@ namespace libsemigroups {
     [[nodiscard]] bool contains_no_checks(Subclass&                         ci,
                                           std::initializer_list<Int> const& u,
                                           std::initializer_list<Int> const& v) {
-      static_assert(std::is_base_of_v<CongruenceInterface, Subclass>);
+      static_assert(std::is_base_of_v<CongruenceCommon, Subclass>);
       return contains_no_checks<Subclass, std::initializer_list<Int>>(ci, u, v);
     }
 
     //! \brief Helper for checking containment of a pair of words
     //! (string literal).
     //!
-    //! Defined in `cong-intf.hpp`.
+    //! Defined in `cong-common.hpp`.
     //!
     //! See \ref
     //! contains_no_checks(Subclass&, Word const&, Word const&)
@@ -548,7 +548,7 @@ namespace libsemigroups {
     [[nodiscard]] bool contains_no_checks(Subclass&   ci,
                                           char const* u,
                                           char const* v) {
-      static_assert(std::is_base_of_v<CongruenceInterface, Subclass>);
+      static_assert(std::is_base_of_v<CongruenceCommon, Subclass>);
       LIBSEMIGROUPS_ASSERT(u != nullptr);
       LIBSEMIGROUPS_ASSERT(v != nullptr);
       // We could static_assert that Subclass::native_word_type == std::string,
@@ -563,7 +563,7 @@ namespace libsemigroups {
     //! \brief Helper for checking containment of a pair of words
     //! (std::string_view).
     //!
-    //! Defined in `cong-intf.hpp`.
+    //! Defined in `cong-common.hpp`.
     //!
     //! See \ref
     //! contains_no_checks(Subclass&, Word const&, Word const&)
@@ -572,7 +572,7 @@ namespace libsemigroups {
     [[nodiscard]] bool contains_no_checks(Subclass&        ci,
                                           std::string_view u,
                                           std::string_view v) {
-      static_assert(std::is_base_of_v<CongruenceInterface, Subclass>);
+      static_assert(std::is_base_of_v<CongruenceCommon, Subclass>);
       // We could static_assert that Subclass::native_word_type == std::string,
       // but it doesn't seem that adding this restriction would gain us
       // anything, so it is not currently done.
@@ -586,17 +586,17 @@ namespace libsemigroups {
 
     //! \brief Check containment of a pair of words.
     //!
-    //! Defined in `cong-intf.hpp`.
+    //! Defined in `cong-common.hpp`.
     //!
     //! This function checks whether or not the words \p u and \p v are
     //! contained in the congruence represented by the instance \p ci of a
-    //! derived class of \ref CongruenceInterface. This function triggers a
+    //! derived class of \ref CongruenceCommon. This function triggers a
     //! full enumeration of \p ci, which may never terminate.
     //!
     //! \tparam Subclass the type of the first parameter.
     //! \tparam Word the type of the second and third parameters.
     //!
-    //! \param ci the subclass of \ref CongruenceInterface.
+    //! \param ci the subclass of \ref CongruenceCommon.
     //! \param u the left hand side of the pair to add.
     //! \param v the right hand side of the pair to add.
     //!
@@ -607,7 +607,7 @@ namespace libsemigroups {
     [[nodiscard]] bool contains(Subclass&                                  ci,
                                 typename Subclass::native_word_type const& u,
                                 typename Subclass::native_word_type const& v) {
-      static_assert(std::is_base_of_v<CongruenceInterface, Subclass>);
+      static_assert(std::is_base_of_v<CongruenceCommon, Subclass>);
       return ci.contains(
           std::begin(u), std::end(u), std::begin(v), std::end(v));
     }
@@ -615,7 +615,7 @@ namespace libsemigroups {
     //! \brief Helper for checking containment of a pair of words
     //! (std::initializer_list).
     //!
-    //! Defined in `cong-intf.hpp`.
+    //! Defined in `cong-common.hpp`.
     //!
     //! See \ref
     //! contains_no_checks(Subclass&, Word const&, Word const&)
@@ -624,7 +624,7 @@ namespace libsemigroups {
     [[nodiscard]] bool contains(Subclass&                         ci,
                                 std::initializer_list<Int> const& u,
                                 std::initializer_list<Int> const& v) {
-      static_assert(std::is_base_of_v<CongruenceInterface, Subclass>);
+      static_assert(std::is_base_of_v<CongruenceCommon, Subclass>);
       return ci.contains(
           std::begin(u), std::end(u), std::begin(v), std::end(v));
     }
@@ -634,7 +634,7 @@ namespace libsemigroups {
     //! \brief Helper for checking containment of a pair of words
     //! (std::string_view).
     //!
-    //! Defined in `cong-intf.hpp`.
+    //! Defined in `cong-common.hpp`.
     //!
     //! See \ref
     //! contains(Subclass&, Word const&, Word const&)
@@ -643,7 +643,7 @@ namespace libsemigroups {
     [[nodiscard]] bool contains(Subclass&        ci,
                                 std::string_view u,
                                 std::string_view v) {
-      static_assert(std::is_base_of_v<CongruenceInterface, Subclass>);
+      static_assert(std::is_base_of_v<CongruenceCommon, Subclass>);
       // We could static_assert that Subclass::native_word_type == std::string,
       // but it doesn't seem that adding this restriction would gain us
       // anything, so it is not currently done.
@@ -654,14 +654,14 @@ namespace libsemigroups {
     //! \brief Helper for checking containment of a pair of words
     //! (string literal).
     //!
-    //! Defined in `cong-intf.hpp`.
+    //! Defined in `cong-common.hpp`.
     //!
     //! See \ref
     //! contains(Subclass&, Word const&, Word const&)
     //! for details.
     template <typename Subclass>
     [[nodiscard]] bool contains(Subclass& ci, char const* u, char const* v) {
-      static_assert(std::is_base_of_v<CongruenceInterface, Subclass>);
+      static_assert(std::is_base_of_v<CongruenceCommon, Subclass>);
       detail::throw_if_nullptr(u, "2nd");
       detail::throw_if_nullptr(v, "3rd");
       // We could static_assert that Subclass::native_word_type == std::string,
@@ -681,7 +681,7 @@ namespace libsemigroups {
     //!
     //! \brief Check containment of a pair of words in a congruence.
     //!
-    //! Defined in `cong-intf.hpp`.
+    //! Defined in `cong-common.hpp`.
     //!
     //! This page contains the documentation of the functions \ref
     //! reduce_no_run_no_checks; \ref reduce_no_run; \ref reduce_no_checks;
@@ -690,7 +690,7 @@ namespace libsemigroups {
     //! types.
     //!
     //! Functions with the suffix `_no_run` do not perform any enumeration
-    //! of the \ref CongruenceInterface derived class instances; and those
+    //! of the \ref CongruenceCommon derived class instances; and those
     //! with the suffix `_no_checks` do not check that the input words are
     //! valid.
     //!
@@ -698,11 +698,11 @@ namespace libsemigroups {
 
     //! \brief Reduce a word with no enumeration or checks.
     //!
-    //! Defined in `cong-intf.hpp`.
+    //! Defined in `cong-common.hpp`.
     //!
     //! This function returns a reduced word equivalent to the input word \p w
     //! in the congruence represented by an instance of a derived class of
-    //! \ref CongruenceInterface. This function triggers no enumeration. The
+    //! \ref CongruenceCommon. This function triggers no enumeration. The
     //! word output by this function is equivalent to the input word in the
     //! congruence. If \p ci is `finished`, then the output word is a normal
     //! form for the input word. If the \p ci is not `finished`, then it
@@ -713,7 +713,7 @@ namespace libsemigroups {
     //! \tparam OutputWord the type of word to be returned (defaults to \p
     //! InputWord).
     //!
-    //! \param ci the subclass of \ref CongruenceInterface.
+    //! \param ci the subclass of \ref CongruenceCommon.
     //! \param w the word to reduce.
     //!
     //! \returns An irreducible word equivalent to \p w.
@@ -730,7 +730,7 @@ namespace libsemigroups {
 
     //! \brief Reduce a word (std::initializer_list).
     //!
-    //! Defined in `cong-intf.hpp`.
+    //! Defined in `cong-common.hpp`.
     //!
     //! See \ref
     //! reduce_no_run_no_checks(Subclass const&, InputWord const&)
@@ -742,7 +742,7 @@ namespace libsemigroups {
 
     //! \brief Reduce a word (string literal).
     //!
-    //! Defined in `cong-intf.hpp`.
+    //! Defined in `cong-common.hpp`.
     //!
     //! See \ref
     //! reduce_no_run_no_checks(Subclass const&, InputWord const&)
@@ -757,11 +757,11 @@ namespace libsemigroups {
 
     //! \brief Reduce a word with no enumeration.
     //!
-    //! Defined in `cong-intf.hpp`.
+    //! Defined in `cong-common.hpp`.
     //!
     //! This function returns a reduced word equivalent to the input word \p w
     //! in the congruence represented by an instance of a derived class of
-    //! \ref CongruenceInterface. This function triggers no enumeration. The
+    //! \ref CongruenceCommon. This function triggers no enumeration. The
     //! word output by this function is equivalent to the input word in the
     //! congruence. If \p ci is `finished`, then the output word is a normal
     //! form for the input word. If the \p ci is not `finished`, then it
@@ -772,7 +772,7 @@ namespace libsemigroups {
     //! \tparam OutputWord the type of word to be returned (defaults to \p
     //! InputWord).
     //!
-    //! \param ci the subclass of \ref CongruenceInterface.
+    //! \param ci the subclass of \ref CongruenceCommon.
     //! \param w the word to reduce.
     //!
     //! \returns An irreducible word equivalent to \p w.
@@ -789,7 +789,7 @@ namespace libsemigroups {
 
     //! \brief Reduce a word (std::initializer_list).
     //!
-    //! Defined in `cong-intf.hpp`.
+    //! Defined in `cong-common.hpp`.
     //!
     //! See \ref
     //! reduce_no_run(Subclass const&, InputWord const&)
@@ -800,7 +800,7 @@ namespace libsemigroups {
 
     //! \brief Reduce a word (string literal).
     //!
-    //! Defined in `cong-intf.hpp`.
+    //! Defined in `cong-common.hpp`.
     //!
     //! See \ref
     //! reduce_no_run(Subclass const&, InputWord const&)
@@ -815,11 +815,11 @@ namespace libsemigroups {
 
     //! \brief Reduce a word with no checks.
     //!
-    //! Defined in `cong-intf.hpp`.
+    //! Defined in `cong-common.hpp`.
     //!
     //! This function returns a reduced word equivalent to the input word \p w
     //! in the congruence represented by an instance of a derived class of
-    //! \ref CongruenceInterface. This function triggers a full enumeration.
+    //! \ref CongruenceCommon. This function triggers a full enumeration.
     //! The word output by this function is equivalent to the input word in
     //! the congruence. If \p ci is `finished`, then the output word is a
     //! normal form for the input word. If the \p ci is not `finished`, then
@@ -831,7 +831,7 @@ namespace libsemigroups {
     //! \tparam OutputWord the type of word to be returned (defaults to \p
     //! InputWord).
     //!
-    //! \param ci the subclass of \ref CongruenceInterface.
+    //! \param ci the subclass of \ref CongruenceCommon.
     //! \param w the word to reduce.
     //!
     //! \returns An irreducible word equivalent to \p w.
@@ -848,7 +848,7 @@ namespace libsemigroups {
 
     //! \brief Reduce a word (std::initializer_list).
     //!
-    //! Defined in `cong-intf.hpp`.
+    //! Defined in `cong-common.hpp`.
     //!
     //! See \ref
     //! reduce_no_checks(Subclass&, InputWord const&)
@@ -859,7 +859,7 @@ namespace libsemigroups {
 
     //! \brief Reduce a word (string literal).
     //!
-    //! Defined in `cong-intf.hpp`.
+    //! Defined in `cong-common.hpp`.
     //!
     //! See \ref
     //! reduce_no_checks(Subclass&, InputWord const&)
@@ -874,11 +874,11 @@ namespace libsemigroups {
 
     //! \brief Reduce a word.
     //!
-    //! Defined in `cong-intf.hpp`.
+    //! Defined in `cong-common.hpp`.
     //!
     //! This function returns a reduced word equivalent to the input word \p w
     //! in the congruence represented by an instance of a derived class of
-    //! \ref CongruenceInterface. This function triggers a full enumeration.
+    //! \ref CongruenceCommon. This function triggers a full enumeration.
     //! The word output by this function is equivalent to the input word in
     //! the congruence. If \p ci is `finished`, then the output word is a
     //! normal form for the input word. If the \p ci is not `finished`, then
@@ -890,7 +890,7 @@ namespace libsemigroups {
     //! \tparam OutputWord the type of word to be returned (defaults to \p
     //! InputWord).
     //!
-    //! \param ci the subclass of \ref CongruenceInterface.
+    //! \param ci the subclass of \ref CongruenceCommon.
     //! \param w the word to reduce.
     //!
     //! \returns An irreducible word equivalent to \p w.
@@ -906,7 +906,7 @@ namespace libsemigroups {
 
     //! \brief Reduce a word (std::initializer_list).
     //!
-    //! Defined in `cong-intf.hpp`.
+    //! Defined in `cong-common.hpp`.
     //!
     //! See \ref reduce(Subclass&, InputWord const&) for details.
     template <typename Subclass, typename Int>
@@ -915,7 +915,7 @@ namespace libsemigroups {
 
     //! \brief Reduce a word (string literal).
     //!
-    //! Defined in `cong-intf.hpp`.
+    //! Defined in `cong-common.hpp`.
     //!
     //! See \ref reduce(Subclass&, InputWord const&) for details.
     template <typename Subclass>
@@ -935,7 +935,7 @@ namespace libsemigroups {
     //!
     //! \brief Partition a range of words by a congruence.
     //!
-    //! Defined in `cong-intf.hpp`.
+    //! Defined in `cong-common.hpp`.
     //!
     //! This page contains the documentation of the functions \ref partition
     //! and \ref non_trivial_classes for partitioning a range of words by a
@@ -962,11 +962,11 @@ namespace libsemigroups {
 
     //! \brief Partition a range of words.
     //!
-    //! Defined in `cong-intf.hpp`.
+    //! Defined in `cong-common.hpp`.
     //!
     //! This function returns the partition of the words in the range \p r
     //! induced by the instance \p ci of a derived class of \ref
-    //! CongruenceInterface. This function triggers a full enumeration of \p
+    //! CongruenceCommon. This function triggers a full enumeration of \p
     //! ci.
     //!
     //! \tparam Subclass the type of the first parameter.
@@ -974,7 +974,7 @@ namespace libsemigroups {
     //! \tparam OutputWord the type of the words in the output (defaults to
     //! the type of the words in the input range).
     //!
-    //! \param ci the derived class of \ref CongruenceInterface.
+    //! \param ci the derived class of \ref CongruenceCommon.
     //! \param r the input range of words.
     //!
     //! \returns The partition of the input range.
@@ -989,7 +989,7 @@ namespace libsemigroups {
 
     //! \brief Partition a range of words (via iterators)
     //!
-    //! Defined in `cong-intf.hpp`.
+    //! Defined in `cong-common.hpp`.
     //!
     //! See \ref partition(Subclass&, Range) for details.
     template <typename Subclass, typename Iterator1, typename Iterator2>
@@ -1006,7 +1006,7 @@ namespace libsemigroups {
     //! \brief Find the non-trivial classes in the partition of a range of
     //! words.
     //!
-    //! Defined in `cong-intf.hpp`.
+    //! Defined in `cong-common.hpp`.
     //!
     //! This function returns the classes with size at least \f$2\f$ in the
     //! partition of the words in the range \p r according to \p ci.
@@ -1017,7 +1017,7 @@ namespace libsemigroups {
     //! \tparam OutputWord the type of the words in the output (defaults to
     //! the type of the words in the input range).
     //!
-    //! \param ci a derived class of CongruenceInterface.
+    //! \param ci a derived class of CongruenceCommon.
     //! \param r the input range of words.
     //!
     //! \returns The partition of the input range.
@@ -1033,7 +1033,7 @@ namespace libsemigroups {
     //! \brief Partition a range of words into non-trivial classes (via
     //! iterators).
     //!
-    //! Defined in `cong-intf.hpp`.
+    //! Defined in `cong-common.hpp`.
     //!
     //! See \ref non_trivial_classes(Subclass&, Range) for details.
     template <typename Subclass, typename Iterator1, typename Iterator2>
@@ -1043,9 +1043,9 @@ namespace libsemigroups {
     }
 
     //! @}
-  }  // namespace congruence_interface
+  }  // namespace congruence_common
 }  // namespace libsemigroups
 
-#include "cong-intf-helpers.tpp"
+#include "cong-common-helpers.tpp"
 
 #endif  // LIBSEMIGROUPS_CONG_INTF_HELPERS_HPP_

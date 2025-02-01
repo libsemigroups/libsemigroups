@@ -35,7 +35,7 @@
 #include "bmat-adapters.hpp"
 #include "bmat-fastest.hpp"
 #include "bmat8.hpp"
-#include "cong-intf.hpp"
+#include "cong-common.hpp"
 #include "cong.hpp"
 #include "constants.hpp"
 #include "cutting.hpp"

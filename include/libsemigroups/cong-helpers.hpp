@@ -27,7 +27,7 @@
 #include <vector>  // for vector
 
 #include "cong-class.hpp"         // for Congruence
-#include "cong-intf-helpers.hpp"  // for partition, add_gener...
+#include "cong-common-helpers.hpp"  // for partition, add_gener...
 #include "exception.hpp"          // for LIBSEMIGROUPS_EXCEPTION
 #include "kambites-class.hpp"     // for Kambites
 #include "todd-coxeter-base.hpp"  // for ToddCoxeterBase
@@ -41,7 +41,7 @@ namespace libsemigroups {
   template <typename Word>
   class Presentation;
 
-  namespace congruence_interface {
+  namespace congruence_common {
     ////////////////////////////////////////////////////////////////////////
     // Interface helpers - normal_forms
     ////////////////////////////////////////////////////////////////////////
@@ -60,9 +60,9 @@ namespace libsemigroups {
     // [[nodiscard]] std::vector<std::vector<Word>> partition(Congruence<Word>&
     // ci, Range r);
     //
-    // is forward declared in cong-intf-helpers.hpp
+    // is forward declared in cong-common-helpers.hpp
 
-  }  // namespace congruence_interface
+  }  // namespace congruence_common
 
   //! \ingroup cong_all_group
   //!
@@ -75,40 +75,40 @@ namespace libsemigroups {
   //! of several of the member functions of the Congruence class template (that
   //! accept iterators) whose parameters are not iterators, but the underlying
   //! objects. The helpers documented on this page all belong to the namespace
-  //! \ref congruence and \ref cong_intf_helpers_group "congruence_interface".
+  //! \ref congruence and \ref cong_intf_helpers_group "congruence_common".
   namespace congruence {
 
     ////////////////////////////////////////////////////////////////////////
     // Interface helpers - add_generating_pair
     ////////////////////////////////////////////////////////////////////////
 
-    using congruence_interface::add_generating_pair;
-    using congruence_interface::add_generating_pair_no_checks;
+    using congruence_common::add_generating_pair;
+    using congruence_common::add_generating_pair_no_checks;
 
     ////////////////////////////////////////////////////////////////////////
     // Interface helpers - contains
     ////////////////////////////////////////////////////////////////////////
 
-    using congruence_interface::contains;
-    using congruence_interface::contains_no_checks;
-    using congruence_interface::currently_contains;
-    using congruence_interface::currently_contains_no_checks;
+    using congruence_common::contains;
+    using congruence_common::contains_no_checks;
+    using congruence_common::currently_contains;
+    using congruence_common::currently_contains_no_checks;
 
     ////////////////////////////////////////////////////////////////////////
     // Interface helpers - reduce
     ////////////////////////////////////////////////////////////////////////
 
-    using congruence_interface::reduce;
-    using congruence_interface::reduce_no_checks;
-    using congruence_interface::reduce_no_run;
-    using congruence_interface::reduce_no_run_no_checks;
+    using congruence_common::reduce;
+    using congruence_common::reduce_no_checks;
+    using congruence_common::reduce_no_run;
+    using congruence_common::reduce_no_run_no_checks;
 
     ////////////////////////////////////////////////////////////////////////
     // Interface helpers - partitioning
     ////////////////////////////////////////////////////////////////////////
 
-    using congruence_interface::non_trivial_classes;
-    using congruence_interface::partition;
+    using congruence_common::non_trivial_classes;
+    using congruence_common::partition;
 
   }  // namespace congruence
 }  // namespace libsemigroups

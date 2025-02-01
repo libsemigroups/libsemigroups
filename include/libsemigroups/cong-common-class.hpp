@@ -35,8 +35,8 @@ namespace libsemigroups {
   //! \defgroup cong_all_group Congruences
   //!
   //! This page contains links to the documentation for the classes Congruence
-  //! and CongruenceInterface, and to helper functions for all of the classes in
-  //! `libsemigroups` that are derived from CongruenceInterface.
+  //! and CongruenceCommon, and to helper functions for all of the classes in
+  //! `libsemigroups` that are derived from CongruenceCommon.
   //!
   //! These classes are:
   //! * \ref Congruence
@@ -57,10 +57,10 @@ namespace libsemigroups {
   //! \brief Class collecting common aspects of classes representing
   //! congruences.
   //!
-  //! Defined in `cong-intf.hpp`.
+  //! Defined in `cong-common.hpp`.
   //!
   //! Every class for representing a congruence in `libsemigroups` is derived
-  //! from CongruenceInterface, which holds the member functions and data that
+  //! from CongruenceCommon, which holds the member functions and data that
   //! are common to all its derived classes.
   //!
   //! The most useful of these classes are:
@@ -68,9 +68,9 @@ namespace libsemigroups {
   //! * \ref Kambites
   //! * \ref KnuthBendix
   //! * \ref ToddCoxeter
-  class CongruenceInterface : public Runner {
+  class CongruenceCommon : public Runner {
     /////////////////////////////////////////////////////////////////////////
-    // CongruenceInterface - data members - private
+    // CongruenceCommon - data members - private
     /////////////////////////////////////////////////////////////////////////
 
     // TODO(1) given that each of ToddCoxeter<>, KnuthBendix<>, and Kambites<>
@@ -81,36 +81,36 @@ namespace libsemigroups {
 
    protected:
     ////////////////////////////////////////////////////////////////////////////
-    // CongruenceInterface - constructors + destructor - protected
+    // CongruenceCommon - constructors + destructor - protected
     ////////////////////////////////////////////////////////////////////////////
 
     // Constructors + initializers are protected to prevent construction of
-    // useless CongruenceInterface objects
-    CongruenceInterface() = default;
+    // useless CongruenceCommon objects
+    CongruenceCommon() = default;
 
-    CongruenceInterface& init() {
+    CongruenceCommon& init() {
       _internal_generating_pairs.clear();
       Runner::init();
       return *this;
     }
 
-    explicit CongruenceInterface(congruence_kind type) : CongruenceInterface() {
+    explicit CongruenceCommon(congruence_kind type) : CongruenceCommon() {
       init(type);
     }
 
-    CongruenceInterface& init(congruence_kind type) {
+    CongruenceCommon& init(congruence_kind type) {
       init();
       _type = type;
       return *this;
     }
 
-    CongruenceInterface(CongruenceInterface const&);
-    CongruenceInterface(CongruenceInterface&&);
-    CongruenceInterface& operator=(CongruenceInterface const&);
-    CongruenceInterface& operator=(CongruenceInterface&&);
+    CongruenceCommon(CongruenceCommon const&);
+    CongruenceCommon(CongruenceCommon&&);
+    CongruenceCommon& operator=(CongruenceCommon const&);
+    CongruenceCommon& operator=(CongruenceCommon&&);
 
     ////////////////////////////////////////////////////////////////////////////
-    // CongruenceInterface - validation - protected
+    // CongruenceCommon - validation - protected
     ////////////////////////////////////////////////////////////////////////////
 
     template <typename Subclass, typename Iterator1, typename Iterator2>
@@ -120,10 +120,10 @@ namespace libsemigroups {
     }
 
    public:
-    ~CongruenceInterface();
+    ~CongruenceCommon();
 
     ////////////////////////////////////////////////////////////////////////////
-    // CongruenceInterface - public member functions
+    // CongruenceCommon - public member functions
     ////////////////////////////////////////////////////////////////////////////
 
     //! \brief Returns the number of generating pairs.
@@ -147,7 +147,7 @@ namespace libsemigroups {
     //! pairs.
     //!
     //! This function returns the generating pairs of the congruence
-    //! represented by any derived class of a CongruenceInterface. This is
+    //! represented by any derived class of a CongruenceCommon. This is
     //! always a std::vector of \ref word_type, regardless of the
     //! type of the presentation used by the implementation in the derived
     //! class.
@@ -168,7 +168,7 @@ namespace libsemigroups {
     //! \brief The kind of the congruence (1- or 2-sided).
     //!
     //! This function returns the kind of the congruence represented by a
-    //! derived class of CongruenceInterface. See \ref congruence_kind for
+    //! derived class of CongruenceCommon. See \ref congruence_kind for
     //! details.
     //!
     //! \return The kind of the congruence (1- or 2-sided).
@@ -185,13 +185,13 @@ namespace libsemigroups {
    protected:
     // This is protected so that it is not possible to change the kind
     // arbitrarily.
-    CongruenceInterface& kind(congruence_kind knd) {
+    CongruenceCommon& kind(congruence_kind knd) {
       _type = knd;
       return *this;
     }
 
     ////////////////////////////////////////////////////////////////////////
-    // CongruenceInterface - add_internal_generating_pair
+    // CongruenceCommon - add_internal_generating_pair
     ////////////////////////////////////////////////////////////////////////
 
     // The functions in this section are used as aliases in the derived
@@ -217,7 +217,7 @@ namespace libsemigroups {
                                   Iterator4 last2);
 
     ////////////////////////////////////////////////////////////////////////
-    // CongruenceInterface - contains
+    // CongruenceCommon - contains
     ////////////////////////////////////////////////////////////////////////
 
     // currently_contains_no_checks must be implemented in the derived class.
@@ -256,7 +256,7 @@ namespace libsemigroups {
     }
 
     ////////////////////////////////////////////////////////////////////////
-    // CongruenceInterface - reduce
+    // CongruenceCommon - reduce
     ////////////////////////////////////////////////////////////////////////
 
     // reduce_no_run_no_checks must be implemented in the derived class
@@ -291,8 +291,8 @@ namespace libsemigroups {
 
    private:
     void throw_if_started() const;
-  };  // class CongruenceInterface
+  };  // class CongruenceCommon
 }  // namespace libsemigroups
 
-#include "cong-intf-class.tpp"
+#include "cong-common-class.tpp"
 #endif  // LIBSEMIGROUPS_CONG_INTF_CLASS_HPP_
