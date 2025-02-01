@@ -80,7 +80,7 @@ namespace libsemigroups {
     //! Congruence, Kambites, KnuthBendixBase, and \ref todd_coxeter_class_group
     //! "ToddCoxeterBase". The functions documented on this page belong to all
     //! of the namespaces \ref cong_intf_helpers_group "congruence_interface",
-    //! `congruence`, \ref kambites, \ref knuth_bendix, and \ref
+    //! \ref congruence, \ref kambites, \ref knuth_bendix, and \ref
     //! todd_coxeter_helpers_group "todd_coxeter".
 
     ////////////////////////////////////////////////////////////////////////

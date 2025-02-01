@@ -53,17 +53,28 @@ namespace libsemigroups {
 
     // The function template:
     //
-    // template <typename Range, typename OutputWord, typename>
-    // [[nodiscard]] std::vector<std::vector<OutputWord>>
-    // partition(Congruence& cong, Range r);
+    // template <typename Word,
+    //           typename Range,
+    //           typename = std::enable_if_t<rx::is_input_or_sink_v<Range>>>
+    // [[nodiscard]] std::vector<std::vector<Word>> partition(Congruence<Word>&
+    // ci, Range r);
     //
-    // is declared in cong-intf-helpers.hpp
-    // TODO(0) update the signature above
+    // is forward declared in cong-intf-helpers.hpp
 
   }  // namespace congruence_interface
 
-  // There's no doc for anything in this section it's covered by the
-  // congruence interface helpers.
+  //! \ingroup cong_all_group
+  //!
+  //! Helper functions for the Congruence class template
+  //!
+  //! Defined in \c cong-helpers.hpp.
+  //!
+  //! This page contains documentation for many helper functions for the
+  //! Congruence class template. In particular, these functions include versions
+  //! of several of the member functions of the Congruence class template (that
+  //! accept iterators) whose parameters are not iterators, but the underlying
+  //! objects. The helpers documented on this page all belong to the namespace
+  //! \ref congruence and \ref cong_intf_helpers_group "congruence_interface".
   namespace congruence {
 
     ////////////////////////////////////////////////////////////////////////
