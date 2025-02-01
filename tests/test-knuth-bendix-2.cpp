@@ -68,7 +68,7 @@ namespace libsemigroups {
 
   struct LibsemigroupsException;
 
-  using rule_type = KnuthBendixBase<>::rule_type;
+  using rule_type = detail::KnuthBendixBase<>::rule_type;
 
   using RewriteTrie     = detail::RewriteTrie;
   using RewriteFromLeft = detail::RewriteFromLeft;
@@ -1808,7 +1808,7 @@ namespace libsemigroups {
     p.alphabet(2);
     presentation::add_idempotent_rules_no_checks(p, 01_w);
     using words::operator+;
-    WordRange    words;
+    WordRange words;
     words.alphabet_size(2).min(0).max(3);
     size_t n = 2;
     for (size_t a = 0; a < n - 1; ++a) {

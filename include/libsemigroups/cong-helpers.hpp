@@ -30,9 +30,10 @@
 #include "cong-intf-helpers.hpp"  // for partition, add_gener...
 #include "exception.hpp"          // for LIBSEMIGROUPS_EXCEPTION
 #include "kambites-class.hpp"     // for Kambites
-#include "knuth-bendix-base.hpp"  // for KnuthBendixBase
 #include "todd-coxeter-base.hpp"  // for ToddCoxeterBase
 #include "types.hpp"              // for word_type
+//
+#include "detail/knuth-bendix-base.hpp"  // for KnuthBendixBase
 
 namespace libsemigroups {
 

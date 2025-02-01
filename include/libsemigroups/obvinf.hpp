@@ -42,8 +42,10 @@ namespace libsemigroups {
 #ifndef PARSED_BY_DOXYGEN
   class ToddCoxeterBase;  // forward decl
 
-  template <typename Rewriter, typename ReductionOrder>
-  class KnuthBendixBase;  // forward decl
+  namespace detail {
+    template <typename Rewriter, typename ReductionOrder>
+    class KnuthBendixBase;  // forward decl
+  }
 
   template <typename Word>
   class Congruence;  // forward decl
@@ -541,7 +543,8 @@ namespace libsemigroups {
   //! \note If this function returns \c false, it is still possible that the
   //! quotient defined by the KnuthBendixBase object \p kb is infinite.
   template <typename Rewriter, typename ReductionOrder>
-  bool is_obviously_infinite(KnuthBendixBase<Rewriter, ReductionOrder>& kb) {
+  bool
+  is_obviously_infinite(detail::KnuthBendixBase<Rewriter, ReductionOrder>& kb) {
     if (kb.finished()) {
       return !word_graph::is_acyclic(kb.gilman_graph());
     }

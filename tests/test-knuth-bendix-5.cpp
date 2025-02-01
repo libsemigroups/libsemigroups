@@ -68,12 +68,10 @@ namespace libsemigroups {
 
   using knuth_bendix::add_generating_pair;
   using knuth_bendix::contains;
-  using knuth_bendix::non_trivial_classes;
   using knuth_bendix::normal_forms;
   using knuth_bendix::partition;
   using knuth_bendix::reduce;
   using knuth_bendix::reduce_no_run;
-  using knuth_bendix::redundant_rule;
 
   using RewriteTrie     = detail::RewriteTrie;
   using RewriteFromLeft = detail::RewriteFromLeft;
@@ -81,7 +79,7 @@ namespace libsemigroups {
 #define KNUTH_BENDIX_TYPES RewriteTrie, RewriteFromLeft
 
   namespace {
-    using rule_type = KnuthBendixBase<>::rule_type;
+    using rule_type = detail::KnuthBendixBase<>::rule_type;
 
     struct weird_cmp {
       bool operator()(rule_type const& x, rule_type const& y) const noexcept {

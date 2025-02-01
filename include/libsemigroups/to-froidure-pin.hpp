@@ -137,6 +137,7 @@ namespace libsemigroups {
   //! Make a FroidurePin object from a WordGraph.
   //!
   //! Calls `to_froidure_pin(ad, 0, ad.number_of_nodes())`; see above.
+  // TODO(0) ad -> wg
   template <typename Element, typename Node>
   FroidurePin<Element> to_froidure_pin(WordGraph<Node> const& ad) {
     return to_froidure_pin<Element>(ad, 0, ad.number_of_nodes());
@@ -145,9 +146,9 @@ namespace libsemigroups {
   FroidurePin<detail::TCE> to_froidure_pin(ToddCoxeterBase& tc);
 
   template <typename Rewriter, typename ReductionOrder>
-  FroidurePin<detail::KBE<KnuthBendixBase<Rewriter, ReductionOrder>>>
-  to_froidure_pin(KnuthBendixBase<Rewriter, ReductionOrder>& kb) {
-    using KBE      = detail::KBE<KnuthBendixBase<Rewriter, ReductionOrder>>;
+  FroidurePin<detail::KBE<detail::KnuthBendixBase<Rewriter, ReductionOrder>>>
+  to_froidure_pin(detail::KnuthBendixBase<Rewriter, ReductionOrder>& kb) {
+    using KBE = detail::KBE<detail::KnuthBendixBase<Rewriter, ReductionOrder>>;
     size_t const n = kb.internal_presentation().alphabet().size();
 
     if (n == 0) {

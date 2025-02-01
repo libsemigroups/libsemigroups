@@ -65,7 +65,7 @@ namespace libsemigroups {
 
   using namespace rx;
 
-  using rule_type = KnuthBendixBase<>::rule_type;
+  using rule_type = detail::KnuthBendixBase<>::rule_type;
 
   using RewriteTrie     = detail::RewriteTrie;
   using RewriteFromLeft = detail::RewriteFromLeft;

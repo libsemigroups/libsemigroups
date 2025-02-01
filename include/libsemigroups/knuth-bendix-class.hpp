@@ -19,14 +19,16 @@
 // This file contains a class KnuthBendix TODO(0)
 // TODO(0) doc
 // TODO(0) iwyu
+// TODO(0) active rules, also anything else that returns anything related to
+// the word type.
 
 #ifndef LIBSEMIGROUPS_KNUTH_BENDIX_CLASS_HPP_
 #define LIBSEMIGROUPS_KNUTH_BENDIX_CLASS_HPP_
 
-#include "knuth-bendix-base.hpp"
 #include "order.hpp"
 #include "presentation.hpp"
 
+#include "detail/knuth-bendix-base.hpp"
 #include "detail/rewriters.hpp"
 
 namespace libsemigroups {
@@ -34,9 +36,9 @@ namespace libsemigroups {
   template <typename Word,
             typename Rewriter       = detail::RewriteTrie,
             typename ReductionOrder = ShortLexCompare>
-  class KnuthBendix : public KnuthBendixBase<Rewriter, ReductionOrder> {
+  class KnuthBendix : public detail::KnuthBendixBase<Rewriter, ReductionOrder> {
    private:
-    using KnuthBendixBase_ = KnuthBendixBase<Rewriter, ReductionOrder>;
+    using KnuthBendixBase_ = detail::KnuthBendixBase<Rewriter, ReductionOrder>;
 
     std::vector<Word>  _generating_pairs;
     Presentation<Word> _presentation;

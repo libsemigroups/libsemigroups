@@ -28,12 +28,11 @@
 #include <unordered_map>  // for operator==
 #include <utility>        // for forward, move
 
-#include "libsemigroups/cong-class.hpp"         // for Congruence
-#include "libsemigroups/cong-intf-class.hpp"    // for CongruenceInterfa...
-#include "libsemigroups/constants.hpp"          // for operator==, opera...
-#include "libsemigroups/exception.hpp"          // for LIBSEMIGROUPS_EXC...
-#include "libsemigroups/exception.hpp"          // for LIBSEMIGROUPS_EXCEPTION
-#include "libsemigroups/knuth-bendix-base.hpp"  // for KnuthBendixBase
+#include "libsemigroups/cong-class.hpp"       // for Congruence
+#include "libsemigroups/cong-intf-class.hpp"  // for CongruenceInterfa...
+#include "libsemigroups/constants.hpp"        // for operator==, opera...
+#include "libsemigroups/exception.hpp"        // for LIBSEMIGROUPS_EXC...
+#include "libsemigroups/exception.hpp"        // for LIBSEMIGROUPS_EXCEPTION
 #include "libsemigroups/knuth-bendix-helpers.hpp"  // for non_trivial_classes
 #include "libsemigroups/obvinf.hpp"                // for is_obviously_infi...
 #include "libsemigroups/paths.hpp"                 // for number_of_paths
@@ -46,8 +45,9 @@
 #include "libsemigroups/word-graph.hpp"            // for WordGraph::WordGr...
 #include "libsemigroups/word-range.hpp"            // for ToString, ToWord
 
-#include "libsemigroups/detail/fmt.hpp"             // for format, print
-#include "libsemigroups/detail/iterator.hpp"        // for operator+
+#include "libsemigroups/detail/fmt.hpp"                // for format, print
+#include "libsemigroups/detail/iterator.hpp"           // for operator+
+#include "libsemigroups/detail/knuth-bendix-base.hpp"  // for KnuthBendixBase
 #include "libsemigroups/detail/path-iterators.hpp"  // for const_pstilo_iter...
 #include "libsemigroups/detail/report.hpp"          // for report_default
 #include "libsemigroups/detail/rewriters.hpp"       // for RewriteTrie
