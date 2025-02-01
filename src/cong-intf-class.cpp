@@ -21,6 +21,7 @@
 #include <string>
 
 #include "libsemigroups/exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
+#include "libsemigroups/runner.hpp"     // for Runner
 
 namespace libsemigroups {
 

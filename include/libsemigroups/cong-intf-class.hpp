@@ -37,11 +37,12 @@ namespace libsemigroups {
   //! This page contains links to the documentation for the classes Congruence
   //! and CongruenceInterface, and to helper functions for all of the classes in
   //! `libsemigroups` that are derived from CongruenceInterface.
+  //!
   //! These classes are:
   //! * \ref Congruence
   //! * \ref Kambites
-  //! * \ref KnuthBendixBase
-  //! * \ref todd_coxeter_class_group "ToddCoxeterBase"
+  //! * \ref KnuthBendix
+  //! * \ref todd_coxeter_class_group "ToddCoxeter"
 
   //! \defgroup cong_all_classes_group Classes
   //! \ingroup cong_all_group
@@ -63,11 +64,11 @@ namespace libsemigroups {
   //! from CongruenceInterface, which holds the member functions and data that
   //! are common to all its derived classes.
   //!
-  //! These classes are:
+  //! The most useful of these classes are:
   //! * \ref Congruence
   //! * \ref Kambites
-  //! * \ref KnuthBendixBase
-  //! * \ref todd_coxeter_class_group "ToddCoxeterBase"
+  //! * \ref KnuthBendix
+  //! * \ref ToddCoxeter
   class CongruenceInterface : public Runner {
     /////////////////////////////////////////////////////////////////////////
     // CongruenceInterface - data members - private
@@ -121,6 +122,7 @@ namespace libsemigroups {
 
    public:
     ~CongruenceInterface();
+
     ////////////////////////////////////////////////////////////////////////////
     // CongruenceInterface - public member functions
     ////////////////////////////////////////////////////////////////////////////
@@ -128,7 +130,7 @@ namespace libsemigroups {
     //! \brief Returns the number of generating pairs.
     //!
     //! This function returns the number of generating pairs, which is the size
-    //! of \ref generating_pairs divided by \f$2\f$.
+    //! of \ref internal_generating_pairs divided by \f$2\f$.
     //!
     //! \returns
     //! The number of generating pairs.
