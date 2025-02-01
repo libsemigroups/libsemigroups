@@ -47,7 +47,9 @@ namespace libsemigroups {
   // Forward decls
   class CongruenceInterface;
 
-  struct CongruenceBase;
+  namespace detail {
+    struct CongruenceBase;
+  }
 
   template <typename Word>
   class Congruence;

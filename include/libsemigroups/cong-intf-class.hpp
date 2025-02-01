@@ -47,11 +47,10 @@ namespace libsemigroups {
   //! \defgroup cong_all_classes_group Classes
   //! \ingroup cong_all_group
   //!
-  //! \brief Documentation for the classes Congruence, CongruenceBase, and
-  //! CongruenceInterface.
+  //! \brief Documentation for the class template Congruence.
   //!
-  //! This page contains links to the documentation for the classes
-  //! Congruence, CongruenceBase, and CongruenceInterface.
+  //! This page contains links to the documentation for the class template
+  //! Congruence.
 
   //! \ingroup cong_all_classes_group
   //!

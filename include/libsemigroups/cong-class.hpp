@@ -46,15 +46,9 @@ namespace libsemigroups {
   template <typename Word>
   class ToddCoxeter;
 
-  //! \ingroup cong_all_classes_group
-  //!
-  //! \brief Empty base class for polymorphism.
-  //!
-  //! Defined in \c cong-class.hpp
-  //!
-  //! Empty base class for polymorphism. so we can easily check
-  //! `std::is_base_of<CongruenceBase, Thing>`.
-  struct CongruenceBase {};
+  namespace detail {
+    struct CongruenceBase {};
+  }  // namespace detail
 
   //! \ingroup cong_all_classes_group
   //!
@@ -89,7 +83,7 @@ namespace libsemigroups {
   //! cong.number_of_classes(); // 3
   //! \endcode
   template <typename Word>
-  class Congruence : public CongruenceInterface, public CongruenceBase {
+  class Congruence : public CongruenceInterface, public detail::CongruenceBase {
     enum class RunnerKind : size_t { TC = 0, KB = 1, K = 2 };
 
     /////////////////////////////////////////////////////////////////////////
