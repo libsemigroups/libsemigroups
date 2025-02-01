@@ -24,18 +24,18 @@
 #include <string_view>  // for basic_string_view
 #include <tuple>        // for tie
 
-#include "libsemigroups/cong-common-class.hpp"  // for CongruenceCommon
-#include "libsemigroups/constants.hpp"        // for operator==, operator!=
-#include "libsemigroups/debug.hpp"            // for LIBSEMIGROUPS_ASSERT
-#include "libsemigroups/exception.hpp"        // for LIBSEMIGROUPS_EXCEP...
-#include "libsemigroups/forest.hpp"           // for Forest
-#include "libsemigroups/obvinf.hpp"           // for is_obviously_infinite
-#include "libsemigroups/order.hpp"            // for Order
-#include "libsemigroups/presentation.hpp"     // for Presentation, length
-#include "libsemigroups/runner.hpp"           // for Runner::run_until
-#include "libsemigroups/types.hpp"            // for word_type, letter_type
+#include "libsemigroups/constants.hpp"     // for operator==, operator!=
+#include "libsemigroups/debug.hpp"         // for LIBSEMIGROUPS_ASSERT
+#include "libsemigroups/exception.hpp"     // for LIBSEMIGROUPS_EXCEP...
+#include "libsemigroups/forest.hpp"        // for Forest
+#include "libsemigroups/obvinf.hpp"        // for is_obviously_infinite
+#include "libsemigroups/order.hpp"         // for Order
+#include "libsemigroups/presentation.hpp"  // for Presentation, length
+#include "libsemigroups/runner.hpp"        // for Runner::run_until
+#include "libsemigroups/types.hpp"         // for word_type, letter_type
 
-#include "libsemigroups/detail/felsch-graph.hpp"  // for DoNotRegisterDefs
+#include "libsemigroups/detail/cong-common-class.hpp"  // for CongruenceCommon
+#include "libsemigroups/detail/felsch-graph.hpp"       // for DoNotRegisterDefs
 #include "libsemigroups/detail/fmt.hpp"       // for format_decimal, copy_str
 #include "libsemigroups/detail/iterator.hpp"  // for operator+
 #include "libsemigroups/detail/node-manager.hpp"  // for NodeManager

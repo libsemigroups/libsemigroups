@@ -40,7 +40,6 @@
 #include <utility>           // for get, move, swap, make_pair
 #include <vector>            // for vector, swap
 
-#include "cong-common-class.hpp"  // for CongruenceCommon
 #include "constants.hpp"        // for UNDEFINED, operator==
 #include "debug.hpp"            // for LIBSEMIGROUPS_ASSERT
 #include "exception.hpp"        // for LIBSEMIGROUPS_EXCEPTION
@@ -51,6 +50,7 @@
 #include "ukkonen.hpp"          // for maximal_piece_prefix_no...
 #include "word-range.hpp"       // for operator+=, operator+
 
+#include "detail/cong-common-class.hpp"  // for CongruenceCommon
 #include "detail/fmt.hpp"                // for format
 #include "detail/multi-string-view.hpp"  // for MultiStringView, is_prefix
 #include "detail/string.hpp"             // for is_prefix, maximum_comm...
@@ -307,8 +307,8 @@ namespace libsemigroups {
       // == _generating_pairs, maybe better not to duplicate
       _generating_pairs.emplace_back(first1, last1);
       _generating_pairs.emplace_back(first2, last2);
-      return CongruenceCommon::add_internal_generating_pair_no_checks<
-          Kambites>(first1, last1, first2, last2);
+      return CongruenceCommon::add_internal_generating_pair_no_checks<Kambites>(
+          first1, last1, first2, last2);
     }
 
     //! \brief Add generating pair via iterators.
@@ -565,8 +565,7 @@ namespace libsemigroups {
     OutputIterator reduce_no_checks(OutputIterator d_first,
                                     InputIterator1 first,
                                     InputIterator2 last) {
-      return CongruenceCommon::reduce_no_checks<Kambites>(
-          d_first, first, last);
+      return CongruenceCommon::reduce_no_checks<Kambites>(d_first, first, last);
     }
 
     //! \brief Reduce a word.

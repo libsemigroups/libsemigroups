@@ -16,7 +16,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include "libsemigroups/cong-common-class.hpp"
+#include "cong-common-class.hpp"
 
 #include <string>
 
@@ -27,15 +27,12 @@ namespace libsemigroups {
 
   CongruenceCommon::~CongruenceCommon() = default;
 
-  CongruenceCommon::CongruenceCommon(CongruenceCommon const&)
-      = default;
-  CongruenceCommon::CongruenceCommon(CongruenceCommon&&) = default;
+  CongruenceCommon::CongruenceCommon(CongruenceCommon const&) = default;
+  CongruenceCommon::CongruenceCommon(CongruenceCommon&&)      = default;
 
-  CongruenceCommon&
-  CongruenceCommon::operator=(CongruenceCommon const&)
+  CongruenceCommon& CongruenceCommon::operator=(CongruenceCommon const&)
       = default;
-  CongruenceCommon& CongruenceCommon::operator=(CongruenceCommon&&)
-      = default;
+  CongruenceCommon& CongruenceCommon::operator=(CongruenceCommon&&) = default;
 
   /////////////////////////////////////////////////////////////////////////
   // CongruenceCommon - non-pure virtual methods - private

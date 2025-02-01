@@ -34,13 +34,13 @@
 #include <utility>      // for move
 #include <vector>       // for vector
 
-#include "cong-common-class.hpp"    // for CongruenceCommon
 #include "presentation.hpp"       // for Presentation
 #include "to-presentation.hpp"    // for to_presentation
 #include "todd-coxeter-base.hpp"  // for ToddCoxeterBase
 #include "types.hpp"              // for congruence_kind (ptr only)
 
-#include "detail/fmt.hpp"  // for fmt
+#include "detail/cong-common-class.hpp"  // for CongruenceCommon
+#include "detail/fmt.hpp"                // for fmt
 
 // TODO(0) doc
 namespace libsemigroups {
@@ -513,8 +513,7 @@ namespace libsemigroups {
     OutputIterator reduce_no_run(OutputIterator d_first,
                                  InputIterator1 first,
                                  InputIterator2 last) const {
-      return CongruenceCommon::reduce_no_run<ToddCoxeter>(
-          d_first, first, last);
+      return CongruenceCommon::reduce_no_run<ToddCoxeter>(d_first, first, last);
     }
 
     //! \brief Reduce a word with no checks.

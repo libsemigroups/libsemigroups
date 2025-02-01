@@ -45,7 +45,6 @@
 #include <utility>        // for move, make_pair
 #include <vector>         // for vector
 
-#include "libsemigroups/cong-common-class.hpp"  // for CongruenceInte...
 #include "libsemigroups/constants.hpp"        // for POSITIVE_INFINITY
 #include "libsemigroups/debug.hpp"            // for LIBSEMIGROUPS_...
 #include "libsemigroups/obvinf.hpp"           // for is_obviously_infinite
@@ -57,11 +56,12 @@
 #include "libsemigroups/word-graph.hpp"       // for WordGraph, to_...
 #include "libsemigroups/word-range.hpp"       // for to_human_reada...
 
-#include "fmt.hpp"        // for format, print
-#include "report.hpp"     // for report_no_prefix
-#include "rewriters.hpp"  // for Rule, internal...
-#include "string.hpp"     // for group_digits
-#include "timer.hpp"      // for string_time
+#include "cong-common-class.hpp"  // for CongruenceInte...
+#include "fmt.hpp"                // for format, print
+#include "report.hpp"             // for report_no_prefix
+#include "rewriters.hpp"          // for Rule, internal...
+#include "string.hpp"             // for group_digits
+#include "timer.hpp"              // for string_time
 
 namespace libsemigroups {
   // Forward declarations
@@ -652,8 +652,7 @@ namespace libsemigroups {
       OutputIterator reduce(OutputIterator d_first,
                             InputIterator1 first,
                             InputIterator2 last) {
-        return CongruenceCommon::reduce<KnuthBendixBase>(
-            d_first, first, last);
+        return CongruenceCommon::reduce<KnuthBendixBase>(d_first, first, last);
       }
 
       // TODO(1) implement reduce_inplace x4 if possible.

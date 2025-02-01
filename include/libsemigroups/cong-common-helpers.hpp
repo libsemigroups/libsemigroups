@@ -100,7 +100,7 @@ namespace libsemigroups {
 
     //! \brief Helper for adding a generating pair of words.
     //!
-    //! Defined in `cong-common.hpp`.
+    //! Defined in `cong-common-helpers.hpp`.
     //!
     //! This function can be used to add a generating pair to the subclass \p
     //! ci of \ref CongruenceCommon using the objects themselves rather
@@ -129,7 +129,7 @@ namespace libsemigroups {
     //! \brief Helper for adding a generating pair of words
     //! (std::initializer_list).
     //!
-    //! Defined in `cong-common.hpp`.
+    //! Defined in `cong-common-helpers.hpp`.
     //!
     //! See \ref
     //! add_generating_pair_no_checks(Subclass&, Word const&, Word const&)
@@ -147,7 +147,7 @@ namespace libsemigroups {
     //! \brief Helper for adding a generating pair of words
     //! (string literals).
     //!
-    //! Defined in `cong-common.hpp`.
+    //! Defined in `cong-common-helpers.hpp`.
     //!
     //! See \ref
     //! add_generating_pair_no_checks(Subclass&, Word const&, Word const&)
@@ -171,7 +171,7 @@ namespace libsemigroups {
     //! \brief Helper for adding a generating pair of words
     //! (std::string_view).
     //!
-    //! Defined in `cong-common.hpp`.
+    //! Defined in `cong-common-helpers.hpp`.
     //!
     //! See \ref
     //! add_generating_pair_no_checks(Subclass&, Word const&, Word const&)
@@ -190,7 +190,7 @@ namespace libsemigroups {
 
     //! \brief Helper for adding a generating pair of words.
     //!
-    //! Defined in `cong-common.hpp`.
+    //! Defined in `cong-common-helpers.hpp`.
     //!
     //! This function can be used to add a generating pair to the subclass \p
     //! ci of \ref CongruenceCommon using the objects themselves rather
@@ -219,7 +219,7 @@ namespace libsemigroups {
     //! \brief Helper for adding a generating pair of words
     //! (std::initializer_list).
     //!
-    //! Defined in `cong-common.hpp`.
+    //! Defined in `cong-common-helpers.hpp`.
     //!
     //! See \ref
     //! add_generating_pair(Subclass&, Word const&, Word const&)
@@ -236,7 +236,7 @@ namespace libsemigroups {
     //! \brief Helper for adding a generating pair of words
     //! (string literals).
     //!
-    //! Defined in `cong-common.hpp`.
+    //! Defined in `cong-common-helpers.hpp`.
     //!
     //! See \ref
     //! add_generating_pair(Subclass&, Word const&, Word const&)
@@ -258,7 +258,7 @@ namespace libsemigroups {
     //! \brief Helper for adding a generating pair of words
     //! (std::string_view).
     //!
-    //! Defined in `cong-common.hpp`.
+    //! Defined in `cong-common-helpers.hpp`.
     //!
     //! See \ref
     //! add_generating_pair(Subclass&, Word const&, Word const&)
@@ -286,7 +286,7 @@ namespace libsemigroups {
     //!
     //! \brief Check containment of a pair of words in a congruence.
     //!
-    //! Defined in `cong-common.hpp`.
+    //! Defined in `cong-common-helpers.hpp`.
     //!
     //! This page contains the documentation of the functions
     //! \ref currently_contains_no_checks; \ref currently_contains;
@@ -302,7 +302,7 @@ namespace libsemigroups {
 
     //! \brief Check containment of a pair of words.
     //!
-    //! Defined in `cong-common.hpp`.
+    //! Defined in `cong-common-helpers.hpp`.
     //!
     //! This function checks whether or not the words \p u and \p v are
     //! already known to be contained in the congruence represented by a \ref
@@ -336,7 +336,7 @@ namespace libsemigroups {
     //! \brief Helper for checking containment of a pair of words
     //! (std::initializer_list).
     //!
-    //! Defined in `cong-common.hpp`.
+    //! Defined in `cong-common-helpers.hpp`.
     //!
     //! See \ref
     //! currently_contains_no_checks(Subclass const&, Word const&, Word
@@ -354,7 +354,7 @@ namespace libsemigroups {
     //! \brief Helper for checking containment of a pair of words
     //! (string literal).
     //!
-    //! Defined in `cong-common.hpp`.
+    //! Defined in `cong-common-helpers.hpp`.
     //!
     //! See \ref
     //! currently_contains_no_checks(Subclass const&, Word const&, Word
@@ -378,7 +378,7 @@ namespace libsemigroups {
     //! \brief Helper for checking containment of a pair of words
     //! (std::string_view).
     //!
-    //! Defined in `cong-common.hpp`.
+    //! Defined in `cong-common-helpers.hpp`.
     //!
     //! See \ref
     //! currently_contains_no_checks(Subclass const&, Word const&, Word
@@ -401,7 +401,7 @@ namespace libsemigroups {
 
     //! \brief Check containment of a pair of words.
     //!
-    //! Defined in `cong-common.hpp`.
+    //! Defined in `cong-common-helpers.hpp`.
     //!
     //! This function checks whether or not the words \p u and \p v are
     //! already known to be contained in the congruence represented by a \ref
@@ -435,7 +435,7 @@ namespace libsemigroups {
     //! \brief Helper for checking containment of a pair of words
     //! (std::initializer_list).
     //!
-    //! Defined in `cong-common.hpp`.
+    //! Defined in `cong-common-helpers.hpp`.
     //!
     //! See \ref
     //! currently_contains(Subclass const&, Word const&, Word const&)
@@ -452,7 +452,7 @@ namespace libsemigroups {
     //! \brief Helper for checking containment of a pair of words
     //! (string literal).
     //!
-    //! Defined in `cong-common.hpp`.
+    //! Defined in `cong-common-helpers.hpp`.
     //!
     //! See \ref
     //! currently_contains(Subclass const&, Word const&, Word const&)
@@ -473,7 +473,7 @@ namespace libsemigroups {
     //! \brief Helper for checking containment of a pair of words
     //! (std::string_view).
     //!
-    //! Defined in `cong-common.hpp`.
+    //! Defined in `cong-common-helpers.hpp`.
     //!
     //! See \ref
     //! currently_contains(Subclass const&, Word const&, Word const&)
@@ -493,7 +493,7 @@ namespace libsemigroups {
 
     //! \brief Check containment of a pair of words.
     //!
-    //! Defined in `cong-common.hpp`.
+    //! Defined in `cong-common-helpers.hpp`.
     //!
     //! This function checks whether or not the words \p u and \p v are
     //! contained in the congruence represented by the instance \p ci of a
@@ -523,7 +523,7 @@ namespace libsemigroups {
     //! \brief Helper for checking containment of a pair of words
     //! (std::initializer_list).
     //!
-    //! Defined in `cong-common.hpp`.
+    //! Defined in `cong-common-helpers.hpp`.
     //!
     //! See \ref
     //! contains_no_checks(Subclass&, Word const&, Word const&)
@@ -539,7 +539,7 @@ namespace libsemigroups {
     //! \brief Helper for checking containment of a pair of words
     //! (string literal).
     //!
-    //! Defined in `cong-common.hpp`.
+    //! Defined in `cong-common-helpers.hpp`.
     //!
     //! See \ref
     //! contains_no_checks(Subclass&, Word const&, Word const&)
@@ -563,7 +563,7 @@ namespace libsemigroups {
     //! \brief Helper for checking containment of a pair of words
     //! (std::string_view).
     //!
-    //! Defined in `cong-common.hpp`.
+    //! Defined in `cong-common-helpers.hpp`.
     //!
     //! See \ref
     //! contains_no_checks(Subclass&, Word const&, Word const&)
@@ -586,7 +586,7 @@ namespace libsemigroups {
 
     //! \brief Check containment of a pair of words.
     //!
-    //! Defined in `cong-common.hpp`.
+    //! Defined in `cong-common-helpers.hpp`.
     //!
     //! This function checks whether or not the words \p u and \p v are
     //! contained in the congruence represented by the instance \p ci of a
@@ -615,7 +615,7 @@ namespace libsemigroups {
     //! \brief Helper for checking containment of a pair of words
     //! (std::initializer_list).
     //!
-    //! Defined in `cong-common.hpp`.
+    //! Defined in `cong-common-helpers.hpp`.
     //!
     //! See \ref
     //! contains_no_checks(Subclass&, Word const&, Word const&)
@@ -634,7 +634,7 @@ namespace libsemigroups {
     //! \brief Helper for checking containment of a pair of words
     //! (std::string_view).
     //!
-    //! Defined in `cong-common.hpp`.
+    //! Defined in `cong-common-helpers.hpp`.
     //!
     //! See \ref
     //! contains(Subclass&, Word const&, Word const&)
@@ -654,7 +654,7 @@ namespace libsemigroups {
     //! \brief Helper for checking containment of a pair of words
     //! (string literal).
     //!
-    //! Defined in `cong-common.hpp`.
+    //! Defined in `cong-common-helpers.hpp`.
     //!
     //! See \ref
     //! contains(Subclass&, Word const&, Word const&)
@@ -681,7 +681,7 @@ namespace libsemigroups {
     //!
     //! \brief Check containment of a pair of words in a congruence.
     //!
-    //! Defined in `cong-common.hpp`.
+    //! Defined in `cong-common-helpers.hpp`.
     //!
     //! This page contains the documentation of the functions \ref
     //! reduce_no_run_no_checks; \ref reduce_no_run; \ref reduce_no_checks;
@@ -698,7 +698,7 @@ namespace libsemigroups {
 
     //! \brief Reduce a word with no enumeration or checks.
     //!
-    //! Defined in `cong-common.hpp`.
+    //! Defined in `cong-common-helpers.hpp`.
     //!
     //! This function returns a reduced word equivalent to the input word \p w
     //! in the congruence represented by an instance of a derived class of
@@ -730,7 +730,7 @@ namespace libsemigroups {
 
     //! \brief Reduce a word (std::initializer_list).
     //!
-    //! Defined in `cong-common.hpp`.
+    //! Defined in `cong-common-helpers.hpp`.
     //!
     //! See \ref
     //! reduce_no_run_no_checks(Subclass const&, InputWord const&)
@@ -742,7 +742,7 @@ namespace libsemigroups {
 
     //! \brief Reduce a word (string literal).
     //!
-    //! Defined in `cong-common.hpp`.
+    //! Defined in `cong-common-helpers.hpp`.
     //!
     //! See \ref
     //! reduce_no_run_no_checks(Subclass const&, InputWord const&)
@@ -757,7 +757,7 @@ namespace libsemigroups {
 
     //! \brief Reduce a word with no enumeration.
     //!
-    //! Defined in `cong-common.hpp`.
+    //! Defined in `cong-common-helpers.hpp`.
     //!
     //! This function returns a reduced word equivalent to the input word \p w
     //! in the congruence represented by an instance of a derived class of
@@ -789,7 +789,7 @@ namespace libsemigroups {
 
     //! \brief Reduce a word (std::initializer_list).
     //!
-    //! Defined in `cong-common.hpp`.
+    //! Defined in `cong-common-helpers.hpp`.
     //!
     //! See \ref
     //! reduce_no_run(Subclass const&, InputWord const&)
@@ -800,7 +800,7 @@ namespace libsemigroups {
 
     //! \brief Reduce a word (string literal).
     //!
-    //! Defined in `cong-common.hpp`.
+    //! Defined in `cong-common-helpers.hpp`.
     //!
     //! See \ref
     //! reduce_no_run(Subclass const&, InputWord const&)
@@ -815,7 +815,7 @@ namespace libsemigroups {
 
     //! \brief Reduce a word with no checks.
     //!
-    //! Defined in `cong-common.hpp`.
+    //! Defined in `cong-common-helpers.hpp`.
     //!
     //! This function returns a reduced word equivalent to the input word \p w
     //! in the congruence represented by an instance of a derived class of
@@ -848,7 +848,7 @@ namespace libsemigroups {
 
     //! \brief Reduce a word (std::initializer_list).
     //!
-    //! Defined in `cong-common.hpp`.
+    //! Defined in `cong-common-helpers.hpp`.
     //!
     //! See \ref
     //! reduce_no_checks(Subclass&, InputWord const&)
@@ -859,7 +859,7 @@ namespace libsemigroups {
 
     //! \brief Reduce a word (string literal).
     //!
-    //! Defined in `cong-common.hpp`.
+    //! Defined in `cong-common-helpers.hpp`.
     //!
     //! See \ref
     //! reduce_no_checks(Subclass&, InputWord const&)
@@ -874,7 +874,7 @@ namespace libsemigroups {
 
     //! \brief Reduce a word.
     //!
-    //! Defined in `cong-common.hpp`.
+    //! Defined in `cong-common-helpers.hpp`.
     //!
     //! This function returns a reduced word equivalent to the input word \p w
     //! in the congruence represented by an instance of a derived class of
@@ -906,7 +906,7 @@ namespace libsemigroups {
 
     //! \brief Reduce a word (std::initializer_list).
     //!
-    //! Defined in `cong-common.hpp`.
+    //! Defined in `cong-common-helpers.hpp`.
     //!
     //! See \ref reduce(Subclass&, InputWord const&) for details.
     template <typename Subclass, typename Int>
@@ -915,7 +915,7 @@ namespace libsemigroups {
 
     //! \brief Reduce a word (string literal).
     //!
-    //! Defined in `cong-common.hpp`.
+    //! Defined in `cong-common-helpers.hpp`.
     //!
     //! See \ref reduce(Subclass&, InputWord const&) for details.
     template <typename Subclass>
@@ -935,7 +935,7 @@ namespace libsemigroups {
     //!
     //! \brief Partition a range of words by a congruence.
     //!
-    //! Defined in `cong-common.hpp`.
+    //! Defined in `cong-common-helpers.hpp`.
     //!
     //! This page contains the documentation of the functions \ref partition
     //! and \ref non_trivial_classes for partitioning a range of words by a
@@ -962,7 +962,7 @@ namespace libsemigroups {
 
     //! \brief Partition a range of words.
     //!
-    //! Defined in `cong-common.hpp`.
+    //! Defined in `cong-common-helpers.hpp`.
     //!
     //! This function returns the partition of the words in the range \p r
     //! induced by the instance \p ci of a derived class of \ref
@@ -989,7 +989,7 @@ namespace libsemigroups {
 
     //! \brief Partition a range of words (via iterators)
     //!
-    //! Defined in `cong-common.hpp`.
+    //! Defined in `cong-common-helpers.hpp`.
     //!
     //! See \ref partition(Subclass&, Range) for details.
     template <typename Subclass, typename Iterator1, typename Iterator2>
@@ -1006,7 +1006,7 @@ namespace libsemigroups {
     //! \brief Find the non-trivial classes in the partition of a range of
     //! words.
     //!
-    //! Defined in `cong-common.hpp`.
+    //! Defined in `cong-common-helpers.hpp`.
     //!
     //! This function returns the classes with size at least \f$2\f$ in the
     //! partition of the words in the range \p r according to \p ci.
@@ -1033,7 +1033,7 @@ namespace libsemigroups {
     //! \brief Partition a range of words into non-trivial classes (via
     //! iterators).
     //!
-    //! Defined in `cong-common.hpp`.
+    //! Defined in `cong-common-helpers.hpp`.
     //!
     //! See \ref non_trivial_classes(Subclass&, Range) for details.
     template <typename Subclass, typename Iterator1, typename Iterator2>

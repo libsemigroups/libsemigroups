@@ -29,13 +29,13 @@
 #include <utility>  // for move
 #include <vector>   // for vector
 
-#include "cong-common-class.hpp"     // for CongruenceCommon
 #include "knuth-bendix-class.hpp"  // for KnuthBendixBase
 #include "presentation.hpp"        // for Presentation
 #include "to-todd-coxeter.hpp"     // for to_todd_coxeter
 #include "types.hpp"               // for letter_type, wor...
 
-#include "detail/race.hpp"  // for Race
+#include "detail/cong-common-class.hpp"  // for CongruenceCommon
+#include "detail/race.hpp"               // for Race
 
 namespace libsemigroups {
   class FroidurePinBase;  // Forward declaration, constructor parameters
@@ -456,8 +456,7 @@ namespace libsemigroups {
     OutputIterator reduce_no_run(OutputIterator d_first,
                                  Iterator1      first,
                                  Iterator2      last) const {
-      return CongruenceCommon::reduce_no_run<Congruence>(
-          d_first, first, last);
+      return CongruenceCommon::reduce_no_run<Congruence>(d_first, first, last);
     }
 
     //! \brief Reduce a word with no checks.
