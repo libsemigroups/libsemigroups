@@ -110,9 +110,9 @@ namespace libsemigroups {
                                      Iterator2 last1,
                                      Iterator3 first2,
                                      Iterator4 last2) {
-      // Call CongruenceCommon version so that we perform bound checks in
+      // Call detail::CongruenceCommon version so that we perform bound checks in
       // KnuthBendix and not KnuthBendixBase
-      return CongruenceCommon::add_generating_pair<KnuthBendix>(
+      return detail::CongruenceCommon::add_generating_pair<KnuthBendix>(
           first1, last1, first2, last2);
     }
 
@@ -120,7 +120,7 @@ namespace libsemigroups {
     // KnuthBendix - interface requirements - contains
     ////////////////////////////////////////////////////////////////////////
 
-    // The CongruenceCommon::currently_contains_no_checks and
+    // The detail::CongruenceCommon::currently_contains_no_checks and
     // contains_no_checks, are used directly, since the letters pointed at by
     // iterators in the presentation() and internal_presentation() are currently
     // the same.
@@ -150,9 +150,9 @@ namespace libsemigroups {
                             Iterator2 last1,
                             Iterator3 first2,
                             Iterator4 last2) const {
-      // Call CongruenceCommon version so that we perform bound checks in
+      // Call detail::CongruenceCommon version so that we perform bound checks in
       // KnuthBendix and not KnuthBendixBase_
-      return CongruenceCommon::currently_contains<KnuthBendix>(
+      return detail::CongruenceCommon::currently_contains<KnuthBendix>(
           first1, last1, first2, last2);
     }
 
@@ -184,7 +184,7 @@ namespace libsemigroups {
     // KnuthBendix - interface requirements - reduce
     ////////////////////////////////////////////////////////////////////////
 
-    // The functions CongruenceCommon::reduce_*_no_checks are used directly,
+    // The functions detail::CongruenceCommon::reduce_*_no_checks are used directly,
     // since the letters pointed at by iterators in the presentation() and
     // internal_presentation() are currently the same.
 
@@ -213,7 +213,7 @@ namespace libsemigroups {
     OutputIterator reduce_no_run(OutputIterator d_first,
                                  InputIterator1 first,
                                  InputIterator2 last) const {
-      return CongruenceCommon::reduce_no_run<KnuthBendix>(
+      return detail::CongruenceCommon::reduce_no_run<KnuthBendix>(
           d_first, first, last);
     }
 
@@ -241,9 +241,9 @@ namespace libsemigroups {
     OutputIterator reduce(OutputIterator d_first,
                           InputIterator1 first,
                           InputIterator2 last) {
-      // Call CongruenceCommon version so that we perform bound checks in
+      // Call detail::CongruenceCommon version so that we perform bound checks in
       // KnuthBendix and not KnuthBendixBase_
-      return CongruenceCommon::reduce<KnuthBendix>(d_first, first, last);
+      return detail::CongruenceCommon::reduce<KnuthBendix>(d_first, first, last);
     }
   };  // class KnuthBendix
 

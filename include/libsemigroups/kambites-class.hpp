@@ -50,7 +50,7 @@
 #include "ukkonen.hpp"          // for maximal_piece_prefix_no...
 #include "word-range.hpp"       // for operator+=, operator+
 
-#include "detail/cong-common-class.hpp"  // for CongruenceCommon
+#include "detail/cong-common-class.hpp"  // for detail::CongruenceCommon
 #include "detail/fmt.hpp"                // for format
 #include "detail/multi-string-view.hpp"  // for MultiStringView, is_prefix
 #include "detail/string.hpp"             // for is_prefix, maximum_comm...
@@ -87,7 +87,7 @@ namespace libsemigroups {
   //! \tparam Word the type of the words in the presentation.
   // TODO(1) example
   template <typename Word = detail::MultiStringView>
-  class Kambites : public CongruenceCommon {
+  class Kambites : public detail::CongruenceCommon {
    public:
     ////////////////////////////////////////////////////////////////////////
     // Kambites - aliases - public
@@ -307,7 +307,7 @@ namespace libsemigroups {
       // == _generating_pairs, maybe better not to duplicate
       _generating_pairs.emplace_back(first1, last1);
       _generating_pairs.emplace_back(first2, last2);
-      return CongruenceCommon::add_internal_generating_pair_no_checks<Kambites>(
+      return detail::CongruenceCommon::add_internal_generating_pair_no_checks<Kambites>(
           first1, last1, first2, last2);
     }
 
@@ -330,7 +330,7 @@ namespace libsemigroups {
                                   Iterator2 last1,
                                   Iterator3 first2,
                                   Iterator4 last2) {
-      return CongruenceCommon::add_generating_pair<Kambites>(
+      return detail::CongruenceCommon::add_generating_pair<Kambites>(
           first1, last1, first2, last2);
     }
 
@@ -452,7 +452,7 @@ namespace libsemigroups {
                                           Iterator2 last1,
                                           Iterator3 first2,
                                           Iterator4 last2) {
-      return CongruenceCommon::contains_no_checks<Kambites>(
+      return detail::CongruenceCommon::contains_no_checks<Kambites>(
           first1, last1, first2, last2);
     }
 
@@ -537,7 +537,7 @@ namespace libsemigroups {
     OutputIterator reduce_no_run(OutputIterator d_first,
                                  Iterator1      first,
                                  Iterator2      last) const {
-      return CongruenceCommon::reduce_no_run<Kambites>(d_first, first, last);
+      return detail::CongruenceCommon::reduce_no_run<Kambites>(d_first, first, last);
     }
 
     //! \brief Reduce a word with no checks.
@@ -565,7 +565,7 @@ namespace libsemigroups {
     OutputIterator reduce_no_checks(OutputIterator d_first,
                                     InputIterator1 first,
                                     InputIterator2 last) {
-      return CongruenceCommon::reduce_no_checks<Kambites>(d_first, first, last);
+      return detail::CongruenceCommon::reduce_no_checks<Kambites>(d_first, first, last);
     }
 
     //! \brief Reduce a word.
@@ -593,7 +593,7 @@ namespace libsemigroups {
     OutputIterator reduce(OutputIterator d_first,
                           InputIterator1 first,
                           InputIterator2 last) {
-      return CongruenceCommon::reduce<Kambites>(d_first, first, last);
+      return detail::CongruenceCommon::reduce<Kambites>(d_first, first, last);
     }
 
     ////////////////////////////////////////////////////////////////////////

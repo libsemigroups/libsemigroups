@@ -23,7 +23,7 @@ namespace libsemigroups {
 
   template <typename Word>
   Congruence<Word>& Congruence<Word>::init() {
-    CongruenceCommon::init();
+    detail::CongruenceCommon::init();
     _race.init();
     _runners_initted = false;
     _runner_kinds.clear();
@@ -34,7 +34,7 @@ namespace libsemigroups {
   Congruence<Word>& Congruence<Word>::init(congruence_kind           type,
                                            Presentation<Word> const& p) {
     init();
-    CongruenceCommon::init(type);
+    detail::CongruenceCommon::init(type);
     _race.max_threads(POSITIVE_INFINITY);
     if (type == congruence_kind::twosided) {
       add_runner(std::make_shared<Kambites<Word>>(type, p));
@@ -59,7 +59,7 @@ namespace libsemigroups {
       LIBSEMIGROUPS_EXCEPTION(
           "the 2nd argument does not represent a finite semigroup!");
     }
-    CongruenceCommon::init(knd);
+    detail::CongruenceCommon::init(knd);
 
     // TODO(1) if necessary make a runner that tries to S.run(), then get
     // the Cayley graph and use that in the ToddCoxeter, at present

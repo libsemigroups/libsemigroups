@@ -16,7 +16,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include "cong-common-class.hpp"
+#include "libsemigroups/detail/cong-common-class.hpp"
 
 #include <string>
 
@@ -24,25 +24,27 @@
 #include "libsemigroups/runner.hpp"     // for Runner
 
 namespace libsemigroups {
+  namespace detail {
 
-  CongruenceCommon::~CongruenceCommon() = default;
+    CongruenceCommon::~CongruenceCommon() = default;
 
-  CongruenceCommon::CongruenceCommon(CongruenceCommon const&) = default;
-  CongruenceCommon::CongruenceCommon(CongruenceCommon&&)      = default;
+    CongruenceCommon::CongruenceCommon(CongruenceCommon const&) = default;
+    CongruenceCommon::CongruenceCommon(CongruenceCommon&&)      = default;
 
-  CongruenceCommon& CongruenceCommon::operator=(CongruenceCommon const&)
-      = default;
-  CongruenceCommon& CongruenceCommon::operator=(CongruenceCommon&&) = default;
+    CongruenceCommon& CongruenceCommon::operator=(CongruenceCommon const&)
+        = default;
+    CongruenceCommon& CongruenceCommon::operator=(CongruenceCommon&&) = default;
 
-  /////////////////////////////////////////////////////////////////////////
-  // CongruenceCommon - non-pure virtual methods - private
-  /////////////////////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////////////////
+    // CongruenceCommon - non-pure virtual methods - private
+    /////////////////////////////////////////////////////////////////////////
 
-  void CongruenceCommon::throw_if_started() const {
-    if (started()) {
-      LIBSEMIGROUPS_EXCEPTION(
-          "cannot add further generating pairs at this stage");
+    void CongruenceCommon::throw_if_started() const {
+      if (started()) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "cannot add further generating pairs at this stage");
+      }
     }
-  }
+  }  // namespace detail
 
 }  // namespace libsemigroups

@@ -39,7 +39,7 @@
 #include "todd-coxeter-base.hpp"  // for ToddCoxeterBase
 #include "types.hpp"              // for congruence_kind (ptr only)
 
-#include "detail/cong-common-class.hpp"  // for CongruenceCommon
+#include "detail/cong-common-class.hpp"  // for detail::CongruenceCommon
 #include "detail/fmt.hpp"                // for fmt
 
 // TODO(0) doc
@@ -327,9 +327,9 @@ namespace libsemigroups {
                                      Iterator2 last1,
                                      Iterator3 first2,
                                      Iterator4 last2) {
-      // Call CongruenceCommon version so that we perform bound checks in
+      // Call detail::CongruenceCommon version so that we perform bound checks in
       // ToddCoxeter and not ToddCoxeterBase
-      return CongruenceCommon::add_generating_pair<ToddCoxeter>(
+      return detail::CongruenceCommon::add_generating_pair<ToddCoxeter>(
           first1, last1, first2, last2);
     }
 
@@ -393,9 +393,9 @@ namespace libsemigroups {
                             Iterator2 last1,
                             Iterator3 first2,
                             Iterator4 last2) const {
-      // Call CongruenceCommon version so that we perform bound checks in
+      // Call detail::CongruenceCommon version so that we perform bound checks in
       // ToddCoxeter and not ToddCoxeterBase
-      return CongruenceCommon::currently_contains<ToddCoxeter>(
+      return detail::CongruenceCommon::currently_contains<ToddCoxeter>(
           first1, last1, first2, last2);
     }
 
@@ -513,7 +513,7 @@ namespace libsemigroups {
     OutputIterator reduce_no_run(OutputIterator d_first,
                                  InputIterator1 first,
                                  InputIterator2 last) const {
-      return CongruenceCommon::reduce_no_run<ToddCoxeter>(d_first, first, last);
+      return detail::CongruenceCommon::reduce_no_run<ToddCoxeter>(d_first, first, last);
     }
 
     //! \brief Reduce a word with no checks.
@@ -571,9 +571,9 @@ namespace libsemigroups {
     OutputIterator reduce(OutputIterator d_first,
                           InputIterator1 first,
                           InputIterator2 last) {
-      // Call CongruenceCommon version so that we perform bound checks in
+      // Call detail::CongruenceCommon version so that we perform bound checks in
       // ToddCoxeter and not ToddCoxeterBase
-      return CongruenceCommon::reduce<ToddCoxeter>(d_first, first, last);
+      return detail::CongruenceCommon::reduce<ToddCoxeter>(d_first, first, last);
     }
 
     //! @}

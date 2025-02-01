@@ -15,7 +15,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-// The purpose of this file is to test the CongruenceCommon class.
+// The purpose of this file is to test the detail::CongruenceCommon class.
 
 // TODO(0) use some of the functionality here or delete the file
 

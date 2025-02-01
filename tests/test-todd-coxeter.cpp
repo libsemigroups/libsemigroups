@@ -1849,7 +1849,7 @@ namespace libsemigroups {
     todd_coxeter::add_generating_pair(tc2, 00_w, 0_w);
     todd_coxeter::add_generating_pair(tc2, 00_w, 0_w);
 
-    // Uses CongruenceCommon's generating pairs
+    // Uses detail::CongruenceCommon's generating pairs
     REQUIRE(tc2.number_of_generating_pairs() == 2);
 
     p.init();

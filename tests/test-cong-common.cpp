@@ -31,8 +31,8 @@
 #include "catch_amalgamated.hpp"  // for REQUIRE
 #include "test-main.hpp"          // for LIBSEMIGROUPS_TEST_CASE
 
+#include "libsemigroups/cong-common-helpers.hpp"   // for currently_contains
 #include "libsemigroups/cong-helpers.hpp"          // for add_generating_pair
-#include "libsemigroups/cong-common-helpers.hpp"     // for currently_contains
 #include "libsemigroups/constants.hpp"             // for operator!=, opera...
 #include "libsemigroups/exception.hpp"             // for LibsemigroupsExce...
 #include "libsemigroups/froidure-pin-base.hpp"     // for current_normal_forms

@@ -34,7 +34,7 @@
 #include "to-todd-coxeter.hpp"     // for to_todd_coxeter
 #include "types.hpp"               // for letter_type, wor...
 
-#include "detail/cong-common-class.hpp"  // for CongruenceCommon
+#include "detail/cong-common-class.hpp"  // for detail::CongruenceCommon
 #include "detail/race.hpp"               // for Race
 
 namespace libsemigroups {
@@ -83,7 +83,7 @@ namespace libsemigroups {
   //! cong.number_of_classes(); // 3
   //! \endcode
   template <typename Word>
-  class Congruence : public CongruenceCommon, public detail::CongruenceBase {
+  class Congruence : public detail::CongruenceCommon, public detail::CongruenceBase {
     enum class RunnerKind : size_t { TC = 0, KB = 1, K = 2 };
 
     /////////////////////////////////////////////////////////////////////////
@@ -114,7 +114,7 @@ namespace libsemigroups {
     //!
     //! This function default constructs an uninitialised Congruence instance.
     Congruence()
-        : CongruenceCommon(), _race(), _runners_initted(), _runner_kinds() {
+        : detail::CongruenceCommon(), _race(), _runners_initted(), _runner_kinds() {
       init();
     }
 
@@ -251,7 +251,7 @@ namespace libsemigroups {
                                               Iterator3 first2,
                                               Iterator4 last2) {
       _runners_initted = false;
-      return CongruenceCommon::add_internal_generating_pair_no_checks<
+      return detail::CongruenceCommon::add_internal_generating_pair_no_checks<
           Congruence>(first1, last1, first2, last2);
     }
 
@@ -276,7 +276,7 @@ namespace libsemigroups {
                                     Iterator3 first2,
                                     Iterator4 last2) {
       _runners_initted = false;
-      return CongruenceCommon::add_generating_pair<Congruence>(
+      return detail::CongruenceCommon::add_generating_pair<Congruence>(
           first1, last1, first2, last2);
     }
 
@@ -351,7 +351,7 @@ namespace libsemigroups {
                                           Iterator2 last1,
                                           Iterator3 first2,
                                           Iterator4 last2) const {
-      return CongruenceCommon::currently_contains<Congruence>(
+      return detail::CongruenceCommon::currently_contains<Congruence>(
           first1, last1, first2, last2);
     }
 
@@ -382,7 +382,7 @@ namespace libsemigroups {
                                           Iterator2 last1,
                                           Iterator3 first2,
                                           Iterator4 last2) {
-      return CongruenceCommon::contains_no_checks<Congruence>(
+      return detail::CongruenceCommon::contains_no_checks<Congruence>(
           first1, last1, first2, last2);
     }
 
@@ -409,7 +409,7 @@ namespace libsemigroups {
                                 Iterator2 last1,
                                 Iterator3 first2,
                                 Iterator4 last2) {
-      return CongruenceCommon::contains<Congruence>(
+      return detail::CongruenceCommon::contains<Congruence>(
           first1, last1, first2, last2);
     }
 
@@ -456,7 +456,7 @@ namespace libsemigroups {
     OutputIterator reduce_no_run(OutputIterator d_first,
                                  Iterator1      first,
                                  Iterator2      last) const {
-      return CongruenceCommon::reduce_no_run<Congruence>(d_first, first, last);
+      return detail::CongruenceCommon::reduce_no_run<Congruence>(d_first, first, last);
     }
 
     //! \brief Reduce a word with no checks.
@@ -478,7 +478,7 @@ namespace libsemigroups {
     OutputIterator reduce_no_checks(OutputIterator d_first,
                                     InputIterator1 first,
                                     InputIterator2 last) {
-      return CongruenceCommon::reduce_no_checks<Congruence>(
+      return detail::CongruenceCommon::reduce_no_checks<Congruence>(
           d_first, first, last);
     }
 
@@ -501,7 +501,7 @@ namespace libsemigroups {
     OutputIterator reduce(OutputIterator d_first,
                           InputIterator1 first,
                           InputIterator2 last) {
-      return CongruenceCommon::reduce<Congruence>(d_first, first, last);
+      return detail::CongruenceCommon::reduce<Congruence>(d_first, first, last);
     }
 
     ////////////////////////////////////////////////////////////////////////
@@ -530,7 +530,7 @@ namespace libsemigroups {
     // Congruence - member functions - public
     //////////////////////////////////////////////////////////////////////////
 
-    //! \brief Get a derived class of CongruenceCommon being used to compute
+    //! \brief Get a derived class of detail::CongruenceCommon being used to compute
     //! a Congruence instance.
     //!
     //! This function returns a std::shared_ptr to a \p Thing if such an object
@@ -538,9 +538,9 @@ namespace libsemigroups {
     //! a Congruence instance. If no such \p Thing is available, then an
     //! exception is thrown.
     //!
-    //! \tparam Thing the type of the CongruenceCommon object being sought.
+    //! \tparam Thing the type of the detail::CongruenceCommon object being sought.
     //!
-    //! \returns The derived class of CongruenceCommon.
+    //! \returns The derived class of detail::CongruenceCommon.
     //!
     //! \throws LibsemigroupsException if no \p Thing is available.
     //!
@@ -548,14 +548,14 @@ namespace libsemigroups {
     template <typename Thing>
     std::shared_ptr<Thing> get() const;
 
-    //! \brief Check if a derived class of CongruenceCommon being used to
+    //! \brief Check if a derived class of detail::CongruenceCommon being used to
     //! compute a Congruence instance.
     //!
     //! This function returns \c true if a \p Thing is being used or could be
     //! used to compute the congruence represented by a Congruence instance; or
     //! \c false if not.
     //!
-    //! \tparam Thing the type of the CongruenceCommon object being sought.
+    //! \tparam Thing the type of the detail::CongruenceCommon object being sought.
     //!
     //! \returns Whether or not a \p Thing is being used to compute the
     //! Congruence instance.
@@ -605,7 +605,7 @@ namespace libsemigroups {
 
     //! \brief Get the number of runners.
     //!
-    //! This function returns the number of distinct CongruenceCommon
+    //! This function returns the number of distinct detail::CongruenceCommon
     //! instances that are contained in a Congruence object.
     //!
     //! \returns The number of runners.
