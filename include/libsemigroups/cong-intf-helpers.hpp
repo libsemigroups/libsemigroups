@@ -47,10 +47,6 @@ namespace libsemigroups {
   // Forward decls
   class CongruenceInterface;
 
-  namespace detail {
-    struct CongruenceBase;
-  }
-
   template <typename Word>
   class Congruence;
 
@@ -62,6 +58,8 @@ namespace libsemigroups {
   enum class tril;
 
   namespace detail {
+    struct CongruenceBase;
+
     static inline void throw_if_nullptr(char const*      w,
                                         std::string_view arg = "1st") {
       if (w == nullptr) {
