@@ -133,8 +133,9 @@
       </tab>
     <tab type="usergroup" visible="yes" url="@ref cong_all_group" title="Congruences">
       <tab type="usergroup" visible="yes" url="@ref cong_all_classes_group" title="Classes">
-        <tab type="user" visible="yes" url="@ref libsemigroups::CongruenceInterface" title="The CongruenceInterface class"/>
         <tab type="user" visible="yes" url="@ref libsemigroups::Congruence" title="The Congruence class"/>
+        <tab type="user" visible="yes" url="@ref libsemigroups::CongruenceBase" title="The CongruenceBase class"/>
+        <tab type="user" visible="yes" url="@ref libsemigroups::CongruenceInterface" title="The CongruenceInterface class"/>
       </tab>
       <tab type="usergroup" visible="yes" url="@ref cong_intf_helpers_group" title="Helper functions">
         <tab type="user" visible="yes" url="@ref cong_intf_helpers_add_pair_group" title="Add generating pairs"/>

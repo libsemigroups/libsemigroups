@@ -61,7 +61,7 @@ namespace libsemigroups {
     }
     CongruenceInterface::init(knd);
 
-    // TODO(later) if necessary make a runner that tries to S.run(), then get
+    // TODO(1) if necessary make a runner that tries to S.run(), then get
     // the Cayley graph and use that in the ToddCoxeter, at present
     // that'll happen here in the constructor, same for the creation of the
     // presentation this could take place in the Runner so that they are done

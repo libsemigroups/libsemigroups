@@ -1,6 +1,6 @@
 //
 // libsemigroups - C++ library for semigroups and monoids
-// Copyright (C) 2019-2023 James D. Mitchell
+// Copyright (C) 2019-2025 James D. Mitchell
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -16,31 +16,44 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-// This file contains stuff for creating congruence over FroidurePin objects or
-// over Presentation objects.
+// This file contains the declaration of the Congruence class template, for
+// creating congruence over FroidurePin objects or over Presentation objects.
 
 #ifndef LIBSEMIGROUPS_CONG_CLASS_HPP_
 #define LIBSEMIGROUPS_CONG_CLASS_HPP_
 
 #include <cstddef>  // for size_t
+#include <cstdint>  // for uint64_t
 #include <memory>   // for shared_ptr
+#include <string>   // for string
+#include <utility>  // for move
+#include <vector>   // for vector
 
-#include "cong-intf-class.hpp"     // CongruenceInterface
-#include "exception.hpp"           // for LIBSEMIGROUPS_EXCEPTION
-#include "kambites-class.hpp"      // for Kambites
-#include "knuth-bendix-class.hpp"  // for KnuthBendix
+#include "cong-intf-class.hpp"     // for CongruenceInterface
+#include "knuth-bendix-class.hpp"  // for KnuthBendixBase
+#include "presentation.hpp"        // for Presentation
 #include "to-todd-coxeter.hpp"     // for to_todd_coxeter
-#include "todd-coxeter-class.hpp"  // for ToddCoxeter
-#include "types.hpp"               // for word_type
+#include "types.hpp"               // for letter_type, wor...
 
 #include "detail/race.hpp"  // for Race
 
 namespace libsemigroups {
   class FroidurePinBase;  // Forward declaration, constructor parameters
 
-  // TODO(0) doc
-  // Polymorphic base class so we can easily check
-  // std::is_base_of<CongruenceBase, Thing>
+  template <typename Node>
+  class WordGraph;
+
+  template <typename Word>
+  class ToddCoxeter;
+
+  //! \ingroup cong_all_classes_group
+  //!
+  //! \brief Empty base class for polymorphism.
+  //!
+  //! Defined in \c cong-class.hpp
+  //!
+  //! Empty base class for polymorphism. so we can easily check
+  //! `std::is_base_of<CongruenceBase, Thing>`.
   struct CongruenceBase {};
 
   //! \ingroup cong_all_classes_group
@@ -48,18 +61,22 @@ namespace libsemigroups {
   //! \brief Class for running Kambites, KnuthBendixBase, and \ref
   //! todd_coxeter_class_group "ToddCoxeterBase" in parallel.
   //!
-  //! Defined in `cong.hpp`.
+  //! Defined in `cong-class.hpp`.
   //!
-  //! On this page we describe the functionality relating to the class
+  //! On this page we describe the functionality relating to the class template
   //! Congruence in `libsemigroups`. This class can be used for computing a
   //! congruence over a semigroup or monoid by running every applicable
   //! algorithm from `libsemigroups` (and some variants of the same algorithm)
   //! in parallel. This class is provided for convenience, at present it is not
   //! very customisable, and lacks some of the fine grained control offered by
   //! the classes implementing individual algorithms, such as Kambites,
-  //! KnuthBendixBase, and \ref todd_coxeter_class_group "ToddCoxeterBase".
+  //! KnuthBendix, and \ref todd_coxeter_class_group "ToddCoxeter".
   //!
-  //! \sa congruence_kind and tril.
+  //! \tparam Word the type of the words used in the \ref presentation and
+  //! \ref generating_pairs.
+  //!
+  //! \sa \ref cong_intf_helpers_group for information about helper functions
+  //! for the Congruence class template.
   //!
   //! \par Example
   //! \code
@@ -68,7 +85,7 @@ namespace libsemigroups {
   //! presentation::add_rule(p, {0, 1}, {});
   //! Congruence cong(congruence_kind::twosided, p);
   //! is_obviously_infinite(cong);  // true
-  //! congruence::add_generating_pair(cong, {0, 0, 0}, {});
+  //! congruence_interface::add_generating_pair(cong, {0, 0, 0}, {});
   //! cong.number_of_classes(); // 3
   //! \endcode
   template <typename Word>
@@ -88,28 +105,12 @@ namespace libsemigroups {
     // Interface requirements - native-types
     ////////////////////////////////////////////////////////////////////////
 
-    //! \brief Type of the letters in the relations of the presentation
-    //! stored in a \ref Congruence instance.
-    //!
-    //! A \ref Congruence instance can be constructed or initialised from a
-    //! presentation of arbitrary types of letters and words. Internally the
-    //! letters are converted to \ref native_letter_type.
-    using native_letter_type = letter_type;
-
     //! \brief Type of the words in the relations of the presentation stored in
     //! a \ref Congruence instance.
     //!
-    //! A \ref Congruence instance can be constructed or initialised from a
-    //! presentation with arbitrary types of letters and words. Internally the
-    //! words are converted to \ref native_word_type.
+    //! The template parameter \c Word, which is the type of the words in the
+    //! relations of the presentation stored in a \ref Congruence instance.
     using native_word_type = Word;
-
-    //! \brief Type of the presentation stored in a \ref Congruence instance.
-    //!
-    //! A \ref Congruence instance can be constructed or initialised from a
-    //! presentation of arbitrary types of letters and words. Internally the
-    //! presentation is stored as a \ref native_presentation_type.
-    using native_presentation_type = Presentation<Word>;
 
     //////////////////////////////////////////////////////////////////////////
     // Congruence - constructors - public
@@ -158,7 +159,7 @@ namespace libsemigroups {
     //! \param p the presentation.
     //!
     //! \throws LibsemigroupsException if \p p is not valid.
-    // No rvalue ref version because we anyway must copy p multiple times
+    // NOTE: No rvalue ref version because we anyway must copy p multiple times
     Congruence(congruence_kind knd, Presentation<Word> const& p)
         : Congruence() {
       init(knd, p);
@@ -176,11 +177,8 @@ namespace libsemigroups {
     //! \returns A reference to `*this`.
     //!
     //! \throws LibsemigroupsException if \p p is not valid.
-    // No rvalue ref version because we anyway must copy p multiple times
+    // NOTE:  No rvalue ref version because we anyway must copy p multiple times
     Congruence& init(congruence_kind knd, Presentation<Word> const& p);
-
-    // The Congruence itself doesn't store a presentation directly, so we don't
-    // bother with rvalue reference Presentation<Word> constructor/init.
 
     //! \brief Construct from congruence_kind, FroidurePin, and WordGraph.
     //!
@@ -561,8 +559,7 @@ namespace libsemigroups {
     //! compute a Congruence instance.
     //!
     //! This function returns \c true if a \p Thing is being used or could be
-    //! used to compute the congruence represented by a Congruence instance;
-    //! or
+    //! used to compute the congruence represented by a Congruence instance; or
     //! \c false if not.
     //!
     //! \tparam Thing the type of the CongruenceInterface object being sought.
@@ -583,7 +580,7 @@ namespace libsemigroups {
     //! Congruence instance can use.
     //!
     //! \returns
-    //! A value of type \c size_t.
+    //! The maximum number of threads to use.
     //!
     //! \exceptions
     //! \noexcept
@@ -630,20 +627,18 @@ namespace libsemigroups {
     //! congruence.
     //!
     //! This function returns the presentation used to construct a Congruence
-    //! object. This is not always possible.
+    //! object.
     //!
     //! \returns The presentation.
     //!
     //! \throws LibsemigroupsException if no presentation was used to
     //! construct or initialise the object.
-    [[nodiscard]] native_presentation_type const& presentation() const;
+    [[nodiscard]] Presentation<Word> const& presentation() const;
 
     //! \brief Get the generating pairs of the congruence.
     //!
-    //! This function returns the generating pairs of the congruence. The words
-    //! comprising the generating pairs are converted to \ref native_word_type
-    //! as they are added via \ref add_generating_pair. This function returns
-    //! the std::vector of these \ref native_word_type.
+    //! This function returns the generating pairs of the congruence, as added
+    //! to the congruence by \ref add_generating_pair.
     //!
     //! \returns The std::vector of generating pairs.
     //!
@@ -683,25 +678,69 @@ namespace libsemigroups {
     }
   };  // class Congruence
 
-  // TODO(0) doc
+  //! \ingroup cong_all_classes_group
+  //!
+  //! \brief Deduction guide.
+  //!
+  //! Defined in `cong-class.hpp`.
+  //!
+  //! Deduction guide to construct a `Congruence<Word>` from a
+  //! \ref congruence_kind and Presentation<Word> const reference.
   template <typename Word>
   Congruence(congruence_kind, Presentation<Word> const&) -> Congruence<Word>;
 
-  // TODO(0) doc
+  //! \ingroup cong_all_classes_group
+  //!
+  //! \brief Deduction guide.
+  //!
+  //! Defined in `cong-class.hpp`.
+  //!
+  //! Deduction guide to construct a `Congruence<Word>` from a
+  //! \ref congruence_kind and Presentation<Word> rvalue reference.
+  // TODO(0) there's no rvalue ref constructor so does this ever get used?
   template <typename Word>
   Congruence(congruence_kind, Presentation<Word>&&) -> Congruence<Word>;
 
-  // TODO(0) doc
+  //! \ingroup cong_all_classes_group
+  //!
+  //! \brief Deduction guide.
+  //!
+  //! Defined in `cong-class.hpp`.
+  //!
+  //! Deduction guide to construct a `Congruence<Word>` from a
+  //! \ref congruence_kind, FroidurePinBase, and WordGraph.
   template <typename Node>
   Congruence(congruence_kind knd, FroidurePinBase& S, WordGraph<Node> const& wg)
       -> Congruence<word_type>;
 
-  //! \ingroup cong_all_group
+  //! \ingroup cong_all_classes_group
+  //!
+  //! \brief Deduction guide.
+  //!
+  //! Defined in `cong-class.hpp`.
+  //!
+  //! Deduction guide to construct a `Congruence<Word>` from a
+  //! `Congruence<Word>`.
+  template <typename Word>
+  Congruence(Congruence<Word> const&) -> Congruence<Word>;
+
+  //! \ingroup cong_all_classes_group
+  //!
+  //! \brief Deduction guide.
+  //!
+  //! Defined in `cong-class.hpp`.
+  //!
+  //! Deduction guide to construct a `Congruence<Word>` from a
+  //! `Congruence<Word>`.
+  template <typename Word>
+  Congruence(Congruence<Word>&&) -> Congruence<Word>;
+
+  //! \ingroup cong_all_classes_group
   //!
   //! \brief Return a human readable representation of a \ref
   //! Congruence object.
   //!
-  //! Defined in `cong.hpp`.
+  //! Defined in `cong-class.hpp`.
   //!
   //! This function returns a human readable representation of a
   //! \ref Congruence object.
