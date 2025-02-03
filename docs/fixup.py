@@ -343,6 +343,11 @@ def fix_pages_1(data: str) -> tuple[str, bool]:
 
 
 def delete_matching(filename: str, pattern: str) -> bool:
+    """
+    Not used, but a function that will delete every <tr> in the html files
+    <filename> that match <pattern>. A bit of a blunt instrument.
+    """
+
     def do_it(data: str):
         nonlocal pattern, filename
         pattern = re.compile(pattern)

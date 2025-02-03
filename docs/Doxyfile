@@ -260,7 +260,7 @@ PYTHON_DOCSTRING       = YES
 # documentation from any documented member that it re-implements.
 # The default value is: YES.
 
-INHERIT_DOCS           = NO
+INHERIT_DOCS           = YES
 
 # If the SEPARATE_MEMBER_PAGES tag is set to YES then Doxygen will produce a new
 # page for each member. If set to NO, the documentation of a member will be part
@@ -622,7 +622,7 @@ HIDE_UNDOC_MEMBERS     = NO
 # if EXTRACT_ALL is enabled.
 # The default value is: NO.
 
-HIDE_UNDOC_CLASSES     = YES
+HIDE_UNDOC_CLASSES     = NO
 
 # If the HIDE_UNDOC_NAMESPACES tag is set to YES, Doxygen will hide all
 # undocumented namespaces that are normally visible in the namespace hierarchy.
