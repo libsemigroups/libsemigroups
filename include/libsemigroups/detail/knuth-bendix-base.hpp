@@ -69,44 +69,7 @@ namespace libsemigroups {
     template <typename KnuthBendix_>
     class KBE;
 
-    //! \defgroup knuth_bendix_group Knuth-Bendix
-    //!
-    //! This page contains links to the documentation related to the
-    //! implementation of the Knuth-Bendix algorithm in `libsemigroups`.
-
-    //! \ingroup knuth_bendix_group
-    //!
-    //! \brief Class containing an implementation of the Knuth-Bendix Algorithm.
-    //!
-    //! Defined in \c knuth-bendix.hpp.
-    //!
-    //! On this page we describe the functionality relating to the Knuth-Bendix
-    //! algorithm for semigroups and monoids in \c libsemigroups. This page
-    //! contains details of the member functions of the class KnuthBendixBase.
-    //!
-    //! This class is used to represent a [string rewriting
-    //! system](https://w.wiki/9Re) defining a 1- or 2-sided congruence on a
-    //! finitely presented monoid or semigroup.
-    //!
-    //! \par Example
-    //! \code
-    //! Presentation<std::string> p;
-    //! p.contains_empty_word(true);
-    //! p.alphabet("abcd");
-    //! presentation::add_rule_no_checks(p, "ab", "");
-    //! presentation::add_rule_no_checks(p, "ba", "");
-    //! presentation::add_rule_no_checks(p, "cd", "");
-    //! presentation::add_rule_no_checks(p, "dc", "");
-    //! presentation::add_rule_no_checks(p, "ca", "ac");
-    //!
-    //! KnuthBendixBase kb(twosided, p);
-    //!
-    //! !kb.confluent();              // true
-    //! kb.run();
-    //! kb.number_of_active_rules();  // 8
-    //! kb.confluent();               // true
-    //! kb.number_of_classes();       // POSITIVE_INFINITY
-    //! \endcode
+    //! No doc
     template <typename Rewriter       = detail::RewriteTrie,
               typename ReductionOrder = ShortLexCompare>
     class KnuthBendixBase : public CongruenceCommon {
@@ -118,7 +81,6 @@ namespace libsemigroups {
       ////////////////////////////////////////////////////////////////////////
 
       // Overlap measures
-      // TODO(0) is this exposed in KnuthBendix?
       struct OverlapMeasure {
         virtual size_t
         operator()(detail::Rule const*,
@@ -995,20 +957,19 @@ namespace libsemigroups {
         return _rewriter.stats().total_rules;
       }
 
-      //! \brief Return a range object containing the active rules.
-      //!
-      //! This function returns a range object containing the pairs of
-      //! strings which represent the rules of a KnuthBendixBase instance. The
-      //! \c first entry in every such pair is greater than the \c second
-      //! according to the reduction ordering of the KnuthBendixBase instance.
-      //!
-      //! \returns
-      //! A range object containing the current active rules.
       // TODO(1) should be const
       // TODO(1) add note about empty active rules after, or better discuss that
       // there are three kinds of rules in the system: active, inactive, and
       // pending.
-      // TODO(0) need version of this in KnuthBendix
+      //! \brief Return a range object containing the active rules.
+      //!
+      //! This function returns a range object containing the pairs of
+      //! strings which represent the rules of a KnuthBendix instance. The
+      //! \c first entry in every such pair is greater than the \c second
+      //! according to the reduction ordering of the KnuthBendix instance.
+      //!
+      //! \returns
+      //! A range object containing the current active rules.
       [[nodiscard]] auto active_rules();
 
      private:

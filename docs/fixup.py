@@ -6,6 +6,7 @@ from typing import Callable
 from pprint import pformat
 from glob import glob
 import re
+from bs4 import BeautifulSoup
 
 
 def modify_in_place(
@@ -341,6 +342,26 @@ def fix_pages_1(data: str) -> tuple[str, bool]:
     return result, count > 0
 
 
+def delete_matching(filename: str, pattern: str) -> bool:
+    def do_it(data: str):
+        nonlocal pattern, filename
+        pattern = re.compile(pattern)
+
+        soup = BeautifulSoup(data, "html.parser")
+
+        for tr_tags in soup.find_all("tr"):
+            try:
+                for val in tr_tags["class"]:
+                    if pattern.search(val):
+                        # print(f"In {filename}: deleting {val}")
+                        tr_tags.decompose()
+            except KeyError:
+                pass
+        return str(soup), True
+
+    return modify_in_place(filename, do_it)
+
+
 if __name__ == "__main__":
     modify_in_place("./html/navtree.js", fix_menu_1)
     modify_in_place("./html/navtree.js", fix_menu_2)
@@ -349,3 +370,6 @@ if __name__ == "__main__":
     modify_in_place("./html/navtree.js", fix_menu_3_part_3)
     modify_in_place("./html/navtree.js", fix_menu_4)
     modify_in_place_all_files("./html/*.html", fix_pages_1)
+    delete_matching(
+        "./html/classlibsemigroups_1_1_knuth_bendix.html", "libsemigroups_1_1detail"
+    )

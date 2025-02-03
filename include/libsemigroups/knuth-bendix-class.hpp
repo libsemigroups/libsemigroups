@@ -33,6 +33,49 @@
 
 namespace libsemigroups {
 
+  //! \defgroup knuth_bendix_group Knuth-Bendix
+  //!
+  //! This page contains links to the documentation related to the
+  //! implementation of the Knuth-Bendix algorithm in `libsemigroups`.
+
+  //! \ingroup knuth_bendix_group
+  //!
+  //! \brief Class template containing an implementation of the Knuth-Bendix
+  //! Algorithm.
+  //!
+  //! Defined in \c knuth-bendix.hpp.
+  //!
+  //! On this page we describe the functionality relating to the Knuth-Bendix
+  //! algorithm for semigroups and monoids in \c libsemigroups. This page
+  //! contains details of the member functions of the class KnuthBendix.
+  //!
+  //! This class is used to represent a [string rewriting
+  //! system](https://w.wiki/9Re) defining a 1- or 2-sided congruence on a
+  //! finitely presented monoid or semigroup.
+  //!
+  //! \tparam Word TODO
+  //! \tparam Rewriter TODO
+  //! \tparam ReductionOrder TODO
+  //!
+  //! \par Example
+  //! \code
+  //! Presentation<std::string> p;
+  //! p.contains_empty_word(true);
+  //! p.alphabet("abcd");
+  //! presentation::add_rule_no_checks(p, "ab", "");
+  //! presentation::add_rule_no_checks(p, "ba", "");
+  //! presentation::add_rule_no_checks(p, "cd", "");
+  //! presentation::add_rule_no_checks(p, "dc", "");
+  //! presentation::add_rule_no_checks(p, "ca", "ac");
+  //!
+  //! KnuthBendix kb(twosided, p);
+  //!
+  //! !kb.confluent();              // true
+  //! kb.run();
+  //! kb.number_of_active_rules();  // 8
+  //! kb.confluent();               // true
+  //! kb.number_of_classes();       // POSITIVE_INFINITY
+  //! \endcode
   template <typename Word,
             typename Rewriter       = detail::RewriteTrie,
             typename ReductionOrder = ShortLexCompare>
@@ -110,8 +153,8 @@ namespace libsemigroups {
                                      Iterator2 last1,
                                      Iterator3 first2,
                                      Iterator4 last2) {
-      // Call detail::CongruenceCommon version so that we perform bound checks in
-      // KnuthBendix and not KnuthBendixBase
+      // Call detail::CongruenceCommon version so that we perform bound checks
+      // in KnuthBendix and not KnuthBendixBase
       return detail::CongruenceCommon::add_generating_pair<KnuthBendix>(
           first1, last1, first2, last2);
     }
@@ -150,8 +193,8 @@ namespace libsemigroups {
                             Iterator2 last1,
                             Iterator3 first2,
                             Iterator4 last2) const {
-      // Call detail::CongruenceCommon version so that we perform bound checks in
-      // KnuthBendix and not KnuthBendixBase_
+      // Call detail::CongruenceCommon version so that we perform bound checks
+      // in KnuthBendix and not KnuthBendixBase_
       return detail::CongruenceCommon::currently_contains<KnuthBendix>(
           first1, last1, first2, last2);
     }
@@ -184,9 +227,9 @@ namespace libsemigroups {
     // KnuthBendix - interface requirements - reduce
     ////////////////////////////////////////////////////////////////////////
 
-    // The functions detail::CongruenceCommon::reduce_*_no_checks are used directly,
-    // since the letters pointed at by iterators in the presentation() and
-    // internal_presentation() are currently the same.
+    // The functions detail::CongruenceCommon::reduce_*_no_checks are used
+    // directly, since the letters pointed at by iterators in the presentation()
+    // and internal_presentation() are currently the same.
 
     //! \brief Reduce a word with no enumeration.
     //!
@@ -241,10 +284,17 @@ namespace libsemigroups {
     OutputIterator reduce(OutputIterator d_first,
                           InputIterator1 first,
                           InputIterator2 last) {
-      // Call detail::CongruenceCommon version so that we perform bound checks in
-      // KnuthBendix and not KnuthBendixBase_
-      return detail::CongruenceCommon::reduce<KnuthBendix>(d_first, first, last);
+      // Call detail::CongruenceCommon version so that we perform bound checks
+      // in KnuthBendix and not KnuthBendixBase_
+      return detail::CongruenceCommon::reduce<KnuthBendix>(
+          d_first, first, last);
     }
+
+    // Include the following to pull the doc into KnuthBendix
+    using KnuthBendixBase_::active_rules;
+    using KnuthBendixBase_::number_of_active_rules;
+    using options = typename KnuthBendixBase_::options;
+
   };  // class KnuthBendix
 
   // TODO(0) doc
