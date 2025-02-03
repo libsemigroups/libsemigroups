@@ -85,7 +85,7 @@ namespace libsemigroups {
     //!
     //! The functions documented below provide specific presentations for
     //! various semigroups and monoids, usually accompanied by a reference to
-    //! a the source of the presentation. There may be several presentations
+    //! the source of the presentation. There may be several presentations
     //! for any semigroup or monoid.
     //!
     //! For each semigroup or monoid, there is a corresponding default
