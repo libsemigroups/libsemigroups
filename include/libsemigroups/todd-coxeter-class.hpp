@@ -42,9 +42,95 @@
 #include "detail/fmt.hpp"                // for fmt
 #include "detail/todd-coxeter-base.hpp"  // for ToddCoxeterBase
 
-// TODO(0) doc
 namespace libsemigroups {
 
+  //! \defgroup todd_coxeter_group Todd-Coxeter
+  //!
+  //! This page contains documentation related to the implementation of the
+  //! Todd-Coxeter algorithm \cite Coleman2022aa in `libsemigroups`.
+  //!
+  //! The purpose of this algorithm is to find the WordGraph of the action of
+  //! a semigroup or monoid on the classes of a 1-sided (right), or 2-sided
+  //! congruence; see \cite Coleman2022aa for more details.
+
+  //! \defgroup todd_coxeter_class_group ToddCoxeter class
+  //! \ingroup todd_coxeter_group
+  //!
+  //! \brief Class containing an implementation of the Todd-Coxeter Algorithm.
+  //!
+  //! Defined in `todd-coxeter.hpp`.
+  //!
+  //! This class contains an implementation of the Todd-Coxeter
+  //! algorithm for computing 1-sided (right), and 2-sided congruences on
+  //! a semigroup or monoid.
+  //!
+  //! In this documentation we use the term "congruence enumeration" to mean
+  //! the execution of (any version of) the Todd-Coxeter algorithm. Some of
+  //! the features of this class were inspired by similar features in
+  //! [ACE](https://staff.itee.uq.edu.au/havas/) by George Havas and Colin
+  //! Ramsay.
+  //!
+  //! \sa congruence_kind and tril.
+  //!
+  //! \par Example 1
+  //! \code
+  //! Presentation<word_type> p;
+  //! p.alphabet(2);
+  //! presentation::add_rule(p, 00_w, 0_w);
+  //! presentation::add_rule(p, 0_w, 1_w);
+  //! ToddCoxeter tc(congruence_kind::onesided, p);
+  //! tc.strategy(options::strategy::felsch);
+  //! tc.number_of_classes();
+  //! tc.contains(0000_w, 00_w);
+  //! tc.index_of(0000_w);
+  //! \endcode
+  //!
+  //! \par Example 2
+  //! \code
+  //! Presentation<word_type> p;
+  //! p.alphabet(4);
+  //! presentation::add_rule(p, 00_w, 0_w);
+  //! presentation::add_rule(p, 10_w, 1_w);
+  //! presentation::add_rule(p, 01_w, 1_w);
+  //! presentation::add_rule(p, 20_w, 2_w);
+  //! presentation::add_rule(p, 02_w, 2_w);
+  //! presentation::add_rule(p, 30_w, 3_w);
+  //! presentation::add_rule(p, 03_w, 3_w);
+  //! presentation::add_rule(p, 11_w, 0_w);
+  //! presentation::add_rule(p, 23_w, 0_w);
+  //! presentation::add_rule(p, 222_w, 0_w);
+  //! presentation::add_rule(p, 12121212121212_w, 0_w);
+  //! presentation::add_rule(p, 12131213121312131213121312131213_w, 0_w);
+  //! ToddCoxeter tc(congruence_kind::twosided, p);
+  //! tc.strategy(options::strategy::hlt)
+  //!    .lookahead_extent(options::lookahead_extent::partial)
+  //!    .save(false);
+  //! tc.number_of_classes()  // 10'752
+  //! tc.standardize(order::recursive);
+  //! normal_forms(tc) | rx::take(10) | rx::to_vector()
+  //! // {0_w,
+  //! //  1_w,
+  //! //  2_w,
+  //! //  21_w,
+  //! //  12_w,
+  //! //  121_w,
+  //! //  22_w,
+  //! //  221_w,
+  //! //  212_w,
+  //! //  2121_w}
+  //! tc.standardize(order::lex);
+  //! normal_forms(tc) | rx::take(10) | rx::to_vector()
+  //! // {0_w,
+  //! //  01_w,
+  //! //  012_w,
+  //! //  0121_w,
+  //! //  01212_w,
+  //! //  012121_w,
+  //! //  0121212_w,
+  //! //  01212121_w,
+  //! //  012121212_w,
+  //! //  0121212121_w};
+  //! \endcode
   template <typename Word>
   class ToddCoxeter : public detail::ToddCoxeterBase {
    private:
@@ -206,50 +292,379 @@ namespace libsemigroups {
     }
 
    public:
+#ifdef PARSED_BY_DOXYGEN
+    //! \ingroup todd_coxeter_class_mem_types_group
+    //!
+    //! \brief Struct containing various options that can be used to control
+    //! the behaviour of Todd-Coxeter.
+    //!
+    //! This struct containing various options that can be used to control the
+    //! behaviour of Todd-Coxeter.
+    struct options : public FelschGraphSettings_::options {
+      //! \brief Enum class containing various strategies.
+      //!
+      //! The values in this enum can be passed to the member function \ref
+      //! strategy to define the strategy to be used when performing a
+      //! congruence enumeration.
+      //!
+      //! Several of the strategies mimic
+      //! [ACE](https://staff.itee.uq.edu.au/havas/) strategies of the same
+      //! name. The [ACE](https://staff.itee.uq.edu.au/havas/) strategy \"R*\"
+      //! is equivalent to \c strategy(options::strategy::hlt).save(true).
+      enum class strategy {
+        //! This value indicates that the HLT (Hazelgrove-Leech-Trotter)
+        //! strategy should be used. This is analogous to
+        //! [ACE](https://staff.itee.uq.edu.au/havas/)'s R-style.
+        hlt,
+
+        //! This value indicates that the Felsch strategy should be used.
+        //! This is analogous to [ACE](https://staff.itee.uq.edu.au/havas/)'s
+        //! C-style.
+        felsch,
+
+        //! This strategy is meant to mimic the
+        //! [ACE](https://staff.itee.uq.edu.au/havas/) strategy of the same
+        //! name. The Felsch is run until at least f_defs() nodes are
+        //! defined, then the HLT strategy is run until at least hlt_defs()
+        //! divided by \f$N\f$ nodes have been defined, where \f$N\f$ is the
+        //! sum
+        //! of the lengths of the words in the presentation and generating
+        //! pairs. These steps are repeated until the enumeration terminates.
+        CR,
+
+        //! This strategy is meant to mimic the
+        //! [ACE](https://staff.itee.uq.edu.au/havas/) strategy R/C. The HLT
+        //! strategy is run until the first lookahead is triggered (when
+        //! \ref number_of_nodes_active is at least \ref lookahead_next). A
+        //! full
+        //! lookahead is then performed, and then the CR strategy is used.
+        R_over_C,
+
+        //! This strategy is meant to mimic the
+        //! [ACE](https://staff.itee.uq.edu.au/havas/) strategy Cr. The Felsch
+        //! strategy is run until at least f_defs() new nodes have been
+        //! defined, then the HLT strategy is run until at least hlt_defs()
+        //! divided by \f$N\f$ nodes have been defined, where \f$N\f$ is the
+        //! sum
+        //! of the lengths of the words in the presentation and generating
+        //! pairs. Then the Felsch strategy is run.
+        Cr,
+
+        //! This strategy is meant to mimic the
+        //! [ACE](https://staff.itee.uq.edu.au/havas/) strategy Rc. The HLT
+        //! strategy is run until at least hlt_defs() divided by \f$N\f$ new
+        //! nodes have been defined (where \f$N\f$ is the sum of the lengths
+        //! of
+        //! the words in the presentation and generating pairs) the Felsch
+        //! strategy is then run until at least f_defs() new nodes are
+        //! defined,
+        //! and then the HLT strategy is run.
+        Rc
+      };
+
+      //! \brief Enum class for specifying the extent of any lookahead
+      //! performed.
+      //!
+      //! The values in this enum can be used as the argument for
+      //! \ref lookahead_extent to specify the extent of any lookahead that
+      //! should be performed.
+      enum class lookahead_extent {
+        //! Perform a full lookahead from every node in the word graph.
+        //! Full lookaheads are therefore sometimes slower but may
+        //! detect more coincidences than a partial lookahead.
+        full,
+        //! Perform a partial lookahead starting from the current node in the
+        //! word graph. Partial lookaheads are sometimes faster but may not
+        //! detect as many coincidences as a full lookahead.
+        partial
+      };
+
+      //! \brief Enum class for specifying the style of any lookahead
+      //! performed.
+      //!
+      //! The values in this enum can be used as the argument for
+      //! \ref lookahead_style to specify the style of any lookahead that
+      //! should be performed.
+      enum class lookahead_style {
+        //! The lookahead will be done in HLT style by following the paths
+        //! labelled by every relation from every node in the range
+        //! specified by lookahead_extent::full or lookahead_extent::partial.
+        hlt,
+
+        //! The lookahead will be done in Felsch style where every edge is
+        //! considered in every path labelled by a relation in which it
+        //! occurs.
+        felsch
+      };
+
+      //! \brief Enum class containing values for specifying how to handle
+      //! edge definitions.
+      //!
+      //! The values in this enum can be used as the argument for
+      //! \ref def_policy.
+      //!
+      //! For our purposes, a *definition* is a recently defined edge in the
+      //! word graph that we are attempting to construct in an instance of
+      //! ToddCoxeter. The values in this enum influence how these
+      //! definitions are stored and processed.
+      //!
+      //! For every definition held in the definition stack, a depth first
+      //! search through the Felsch tree of the generating pairs is
+      //! performed. The aim is to only follow paths from nodes in the word
+      //! graph labelled by generating pairs that actually pass through the
+      //! edge described by a definition.
+      //!
+      //! The values in this enum represent what to do if the number of
+      //! definitions in the stack exceeds the value \ref def_max.
+      enum class def_policy : uint8_t {
+        //! Do not put newly generated definitions in the stack if the stack
+        //! already has size \ref def_max.
+        no_stack_if_no_space,
+        //! If the definition stack has size \ref def_max and a new
+        //! definition is generated, then definitions with dead source node
+        //! are
+        //! are popped from the top of the stack (if any).
+        purge_from_top,
+        //! If the definition stack has size \ref def_max and a new
+        //! definition is generated, then definitions with dead source node
+        //! are
+        //! are popped from the entire of the stack (if any).
+        purge_all,
+        //! If the definition stack has size \ref def_max and a new
+        //! definition is generated, then all definitions in the stack are
+        //! discarded.
+        discard_all_if_no_space,
+        //! There is no limit to the number of definitions that can be put in
+        //! the stack.
+        unlimited
+      };
+    };
+#endif
+
+    //! \defgroup todd_coxeter_class_mem_types_group Member types
+    //! \ingroup todd_coxeter_class_group
+    //!
+    //! \brief Public member types
+    //!
+    //! This page contains the documentation of the public member types of a
+    //! \ref_todd_coxeter instance.
+
+    //! \ingroup todd_coxeter_class_mem_types_group
+    //!
+    //! \brief Type of the letters in the relations of the presentation stored
+    //! in a \ref_todd_coxeter instance.
+    //!
+    //! Type of the letters in the relations of the presentation stored
+    //! in a \ref_todd_coxeter instance.
     using native_word_type = Word;
 
+    //! \ingroup todd_coxeter_class_mem_types_group
+    //! \hideinitializer
+    //!
+    //! \brief The type of the nodes in the word graph.
+    //!
+    //! The type of the nodes in the word graph.
+    using node_type = typename detail::ToddCoxeterBase::node_type;
+
+    //! \ingroup todd_coxeter_class_mem_types_group
+    //! \hideinitializer
+    //!
+    //! \brief The type of the underlying WordGraph.
+    //!
+    //! The type of the underlying WordGraph.
+    using word_graph_type = typename detail::ToddCoxeterBase::word_graph_type;
+
+    //! \ingroup todd_coxeter_class_mem_types_group
+    //! \hideinitializer
+    //!
+    //! \brief The type of the index of a class.
+    //!
+    //! The type of the indices of classes in the congruence represented by a
+    //! \ref_todd_coxeter instance.
+    //!
+    //! This alias is the same as \ref node_type, and is included to because if
+    //! a \ref_todd_coxeter instance is created from a Presentation, and that
+    //! presentation does not \ref Presentation::contains_empty_word, then there
+    //! is always at least one more node (the node representing the empty word)
+    //! in the \ref current_word_graph than there are classes in the congruence.
+    //! This alias is used to delineate the cases when we are referring to a
+    //! node or a class index.
+    using index_type = typename detail::ToddCoxeterBase::index_type;
+
+    //! \ingroup todd_coxeter_class_mem_types_group
+    //! \hideinitializer
+    //!
+    //! \brief The type of the edge-labels in the word graph.
+    //!
+    //! The type of the edge-labels in the word graph.
+    using label_type = typename detail::ToddCoxeterBase::label_type;
+
+    //! \defgroup todd_coxeter_class_init_group Constructors + initializers
+    //! \ingroup todd_coxeter_class_group
+    //!
+    //! \brief Construct or re-initialize a \ref_todd_coxeter
+    //! instance (public member function).
+    //!
+    //! This page documents the constructors and initialisers for the
+    //! \ref_todd_coxeter class.
+    //!
+    //! Every constructor (except the move + copy constructors, and the move
+    //! and copy assignment operators) has a matching `init` function with the
+    //! same signature that can be used to re-initialize a \ref_todd_coxeter
+    //! instance as if it had just been constructed; but without necessarily
+    //! releasing any previous allocated memory.
+    //!
+    //! @{
+
+    //! \brief Default constructor.
+    //!
+    //! This function default constructs an uninitialised \ref_todd_coxeter
+    //! instance.
     ToddCoxeter() = default;
 
+    //! \brief Re-initialize a \ref_todd_coxeter instance.
+    //!
+    //! This function puts a \ref_todd_coxeter instance back into the state
+    //! that it would have been in if it had just been newly default
+    //! constructed.
+    //!
+    //! \returns A reference to `*this`.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
     ToddCoxeter& init();
 
-    ToddCoxeter(ToddCoxeter const&)            = default;
-    ToddCoxeter(ToddCoxeter&&)                 = default;
-    ToddCoxeter& operator=(ToddCoxeter const&) = default;
-    ToddCoxeter& operator=(ToddCoxeter&&)      = default;
+    //! Copy constructor.
+    ToddCoxeter(ToddCoxeter const&) = default;
 
+    //! Move constructor.
+    ToddCoxeter(ToddCoxeter&&) = default;
+
+    //! Copy assignment operator.
+    ToddCoxeter& operator=(ToddCoxeter const&) = default;
+
+    //! Move assignment operator.
+    ToddCoxeter& operator=(ToddCoxeter&&) = default;
+
+    //! \brief Construct from \ref congruence_kind and Presentation.
+    //!
+    //! This function constructs a  \ref_todd_coxeter instance representing a
+    //! congruence of kind \p knd over the semigroup or monoid defined by the
+    //! presentation \p p.
+    //!
+    //! \param knd the kind (onesided or twosided) of the congruence.
+    //! \param p the presentation.
+    //!
+    //! \throws LibsemigroupsException if \p p is not valid.
     ToddCoxeter(congruence_kind knd, Presentation<Word>&& p) : ToddCoxeter() {
       init(knd, std::move(p));
     }
 
+    //! \brief Re-initialize a \ref_todd_coxeter
+    //! instance.
+    //!
+    //! This function puts a  \ref_todd_coxeter
+    //! instance back into the state that it would have been in if it had just
+    //! been newly constructed from \p knd and \p p.
+    //!
+    //! \param knd the kind (onesided or twosided) of the congruence.
+    //! \param p the presentation.
+    //!
+    //! \returns A reference to `*this`.
+    //!
+    //! \throws LibsemigroupsException if \p p is not valid.
     ToddCoxeter& init(congruence_kind knd, Presentation<Word>&& p);
 
+    //! \copydoc ToddCoxeter(congruence_kind, Presentation<Word>&&)
     ToddCoxeter(congruence_kind knd, Presentation<Word> const& p)
         // call the rval ref constructor
         : ToddCoxeter(knd, Presentation<Word>(p)) {}
 
+    //! \copydoc init(congruence_kind, Presentation<Word>&&)
     ToddCoxeter& init(congruence_kind knd, Presentation<Word> const& p) {
       // call the rval ref init
       return init(knd, Presentation<Word>(p));
     }
 
+    //! \brief Construct from \ref congruence_kind and \ref_todd_coxeter.
+    //!
+    //! This function constructs a  \ref_todd_coxeter instance representing a
+    //! congruence of kind \p knd over the \ref_todd_coxeter instance \p tc.
+    //! The \ref_todd_coxeter instance constructed in this way represents a
+    //! quotient of the word graph represented by \p tc.
+    //!
+    //! \param knd the kind (onesided, or twosided) of the congruence.
+    //! \param tc the \ref_todd_coxeter instance.
+    //!
+    //! \throw LibsemigroupsException if the arguments \p knd and \p tc are
+    //! not compatible. If the first item is `tc.kind()` and the second is the
+    //! parameter \p knd, then compatible arguments are (one-sided,
+    //! one-sided), (two-sided, one-sided), and (two-sided, two-sided).
     ToddCoxeter(congruence_kind knd, ToddCoxeter const& tc)
         : ToddCoxeterBase(knd, tc), _presentation(tc.presentation()) {}
 
+    //! \brief Re-initialize a \ref_todd_coxeter instance.
+    //!
+    //! This function puts a \ref_todd_coxeter instance back into the state
+    //! that it would have been in if it had just been newly constructed from \p
+    //! knd and \p tc.
+    //!
+    //! \param knd the kind (onesided, or twosided) of the congruence.
+    //! \param tc the \ref_todd_coxeter instance.
+    //!
+    //! \returns A reference to `*this`.
+    //!
+    //! \throw LibsemigroupsException if the arguments \p knd and \p tc are
+    //! not compatible. If the first item is `tc.kind()` and the second is the
+    //! parameter \p knd, then compatible arguments are (one-sided,
+    //! one-sided), (two-sided, one-sided), and (two-sided, two-sided).
     ToddCoxeter& init(congruence_kind knd, ToddCoxeter const& tc) {
       ToddCoxeterBase::init(knd, tc);
       _presentation = tc.presentation();
       return *this;
     }
 
+    //! \brief Construct from \ref congruence_kind and \ref WordGraph.
+    //!
+    //! This function constructs a  \ref_todd_coxeter instance representing a
+    //! congruence of kind \p knd over the WordGraph \p wg. The
+    //! \ref_todd_coxeter instance constructed in this way represents a quotient
+    //! of the word graph \p wg. If \p wg happens to be the left or right Cayley
+    //! graph of a semigroup or monoid, then the \ref_todd_coxeter instance will
+    //! represent a quotient of that semigroup.
+    //!
+    //! \tparam Node the type of the nodes in the 2nd argument.
+    //!
+    //! \param knd the kind (1- or 2-sided) of the congruence.
+    //! \param wg the word graph.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
     template <typename Node>
     ToddCoxeter(congruence_kind knd, WordGraph<Node> const& wg)
         : ToddCoxeter() {
       init(knd, wg);
     }
 
+    //! \brief Re-initialize a \ref_todd_coxeter instance.
+    //!
+    //! This function puts a  \ref_todd_coxeter instance back into the state
+    //! that it would have been in if it had just been newly constructed from
+    //! \p knd and \p wg.
+    //!
+    //! \tparam Node the type of the nodes in the 2nd argument.
+    //!
+    //! \param knd the kind (1- or 2-sided) of the congruence.
+    //! \param wg the word graph.
+    //!
+    //! \returns A reference to `*this`.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
     template <typename Node>
     ToddCoxeter& init(congruence_kind knd, WordGraph<Node> const& wg);
 
+#ifndef PARSED_BY_DOXYGEN
     // Used in Sims
     // TODO(1) could this and the next function be removed, and replaced
     // with something else?
@@ -265,18 +680,38 @@ namespace libsemigroups {
     ToddCoxeter& init(congruence_kind           knd,
                       Presentation<Word> const& p,
                       WordGraph<Node> const&    wg);
+#endif
 
+    //! \ingroup todd_coxeter_class_init_group
+    //!
+    //! \brief Throws if any letter in a range is out of bounds.
+    //!
+    //! This function throws a LibsemigroupsException if any value pointed
+    //! at by an iterator in the range \p first to \p last is out of
+    //! bounds (i.e. does not belong to the alphabet of the \ref
+    //! presentation used to construct the \ref ref_todd_coxeter instance).
+    //!
+    //! \tparam Iterator1 the type of first argument \p first.
+    //! \tparam Iterator2 the type of second argument \p last.
+    //!
+    //! \param first iterator pointing at the first letter of the word.
+    //! \param last iterator pointing one beyond the last letter of the
+    //! word.
+    //!
+    //! \throw LibsemigroupsException if any letter in the range from \p
+    //! first to \p last is out of bounds.
     template <typename Iterator1, typename Iterator2>
     void throw_if_letter_out_of_bounds(Iterator1 first, Iterator2 last) const {
       presentation().validate_word(first, last);
     }
+    //! @}
 
     //! \brief Get the generating pairs of the congruence.
     //!
-    //! This function returns the generating pairs of the congruence. The words
-    //! comprising the generating pairs are converted to \ref native_word_type
-    //! as they are added via \ref add_generating_pair. This function returns
-    //! the std::vector of these \ref native_word_type.
+    //! This function returns the generating pairs of the congruence. The
+    //! words comprising the generating pairs are converted to \ref
+    //! native_word_type as they are added via \ref add_generating_pair. This
+    //! function returns the std::vector of these \ref native_word_type.
     //!
     //! \returns The std::vector of generating pairs.
     //!
@@ -290,13 +725,13 @@ namespace libsemigroups {
     //! todd_coxeter_class_group "ToddCoxeter" instance (if any).
     //!
     //! If a \ref todd_coxeter_class_group "ToddCoxeterBase" instance is
-    //! constructed or initialised using a presentation, then a const reference
-    //! to the \ref native_presentation_type version of this presentation is
-    //! returned by this function.
+    //! constructed or initialised using a presentation, then a const
+    //! reference to the \ref native_presentation_type version of this
+    //! presentation is returned by this function.
     //!
     //! If the \ref todd_coxeter_class_group "ToddCoxeterBase" instance was
-    //! constructed or initialised from a WordGraph, then this presentation will
-    //! be empty.
+    //! constructed or initialised from a WordGraph, then this presentation
+    //! will be empty.
     //!
     //! \returns A const reference to the presentation.
     //!
@@ -339,12 +774,13 @@ namespace libsemigroups {
 
     //! \brief Check containment of a pair of words via iterators.
     //!
-    //! This function checks whether or not the words represented by the ranges
-    //! \p first1 to \p last1 and \p first2 to \p last2 are already known to be
-    //! contained in the congruence represented by a \ref
+    //! This function checks whether or not the words represented by the
+    //! ranges
+    //! \p first1 to \p last1 and \p first2 to \p last2 are already known to
+    //! be contained in the congruence represented by a \ref
     //! todd_coxeter_class_group "ToddCoxeterBase" instance. This function
-    //! performs no enumeration, so it is possible for the words to be contained
-    //! in the congruence, but that this is not currently known.
+    //! performs no enumeration, so it is possible for the words to be
+    //! contained in the congruence, but that this is not currently known.
     //!
     //! \cong_intf_params_contains
     //!
@@ -370,12 +806,13 @@ namespace libsemigroups {
 
     //! \brief Check containment of a pair of words via iterators.
     //!
-    //! This function checks whether or not the words represented by the ranges
-    //! \p first1 to \p last1 and \p first2 to \p last2 are already known to be
-    //! contained in the congruence represented by a \ref
+    //! This function checks whether or not the words represented by the
+    //! ranges
+    //! \p first1 to \p last1 and \p first2 to \p last2 are already known to
+    //! be contained in the congruence represented by a \ref
     //! todd_coxeter_class_group "ToddCoxeterBase" instance. This function
-    //! performs no enumeration, so it is possible for the words to be contained
-    //! in the congruence, but that this is not currently known.
+    //! performs no enumeration, so it is possible for the words to be
+    //! contained in the congruence, but that this is not currently known.
     //!
     //! \cong_intf_params_contains
     //!
@@ -401,7 +838,8 @@ namespace libsemigroups {
 
     //! \brief Check containment of a pair of words via iterators.
     //!
-    //! This function checks whether or not the words represented by the ranges
+    //! This function checks whether or not the words represented by the
+    //! ranges
     //! \p first1 to \p last1 and \p first2 to \p last2 are contained in the
     //! congruence represented by a \ref todd_coxeter_class_group
     //! "ToddCoxeterBase" instance. This function triggers a full enumeration,
@@ -430,7 +868,8 @@ namespace libsemigroups {
 
     //! \brief Check containment of a pair of words via iterators.
     //!
-    //! This function checks whether or not the words represented by the ranges
+    //! This function checks whether or not the words represented by the
+    //! ranges
     //! \p first1 to \p last1 and \p first2 to \p last2 are contained in the
     //! congruence represented by a \ref todd_coxeter_class_group
     //! "ToddCoxeterBase" instance. This function triggers a full enumeration,
@@ -459,10 +898,11 @@ namespace libsemigroups {
     //! \brief Reduce a word with no enumeration or checks.
     //!
     //! This function writes a reduced word equivalent to the input word
-    //! described by the iterator \p first and \p last to the output iterator \p
-    //! d_first. This function triggers no enumeration. The word output by
-    //! this function is equivalent to the input word in the congruence defined
-    //! by a \ref todd_coxeter_class_group "ToddCoxeterBase" instance. If the
+    //! described by the iterator \p first and \p last to the output iterator
+    //! \p d_first. This function triggers no enumeration. The word output by
+    //! this function is equivalent to the input word in the congruence
+    //! defined by a \ref todd_coxeter_class_group "ToddCoxeterBase" instance.
+    //! If the
     //!  \ref todd_coxeter_class_group "ToddCoxeterBase" instance is \ref
     //!  finished, then the output word is a normal
     //! form for the input word. If the  \ref todd_coxeter_class_group
@@ -490,10 +930,11 @@ namespace libsemigroups {
     //! \brief Reduce a word with no enumeration.
     //!
     //! This function writes a reduced word equivalent to the input word
-    //! described by the iterator \p first and \p last to the output iterator \p
-    //! d_first. This function triggers no enumeration. The word output by
-    //! this function is equivalent to the input word in the congruence defined
-    //! by a \ref todd_coxeter_class_group "ToddCoxeterBase" instance. If the
+    //! described by the iterator \p first and \p last to the output iterator
+    //! \p d_first. This function triggers no enumeration. The word output by
+    //! this function is equivalent to the input word in the congruence
+    //! defined by a \ref todd_coxeter_class_group "ToddCoxeterBase" instance.
+    //! If the
     //!  \ref todd_coxeter_class_group "ToddCoxeterBase" instance is \ref
     //!  finished, then the output word is a normal
     //! form for the input word. If the  \ref todd_coxeter_class_group
@@ -520,9 +961,11 @@ namespace libsemigroups {
     //! \brief Reduce a word with no checks.
     //!
     //! This function triggers a full enumeration and then writes a reduced
-    //! word equivalent to the input word described by the iterator \p first and
+    //! word equivalent to the input word described by the iterator \p first
+    //! and
     //! \p last to the output iterator \p d_first. The word output by this
-    //! function is equivalent to the input word in the congruence defined by a
+    //! function is equivalent to the input word in the congruence defined by
+    //! a
     //! \ref todd_coxeter_class_group "ToddCoxeterBase" instance. In other
     //! words, the output word is a normal form for the input word or
     //! equivalently a canconical representative of its congruence class.
@@ -550,9 +993,11 @@ namespace libsemigroups {
     //! \brief Reduce a word.
     //!
     //! This function triggers a full enumeration and then writes a reduced
-    //! word equivalent to the input word described by the iterator \p first and
+    //! word equivalent to the input word described by the iterator \p first
+    //! and
     //! \p last to the output iterator \p d_first. The word output by this
-    //! function is equivalent to the input word in the congruence defined by a
+    //! function is equivalent to the input word in the congruence defined by
+    //! a
     //! \ref todd_coxeter_class_group "ToddCoxeterBase" instance. In other
     //! words, the output word is a normal form for the input word or
     //! equivalently a canconical representative of its congruence class.
@@ -587,8 +1032,8 @@ namespace libsemigroups {
     //! \defgroup todd_coxeter_class_word_index_group Word to class index
     //! \ingroup todd_coxeter_class_group
     //!
-    //! \brief Member functions for converting a word into the index of a class
-    //! in a \ref todd_coxeter_class_group "ToddCoxeterBase" instance.
+    //! \brief Member functions for converting a word into the index of a
+    //! class in a \ref todd_coxeter_class_group "ToddCoxeterBase" instance.
     //!
     //! This page contains documentation for the member functions of \ref
     //! todd_coxeter_class_group "ToddCoxeterBase" that can be used to convert
@@ -601,12 +1046,12 @@ namespace libsemigroups {
 
     //! \brief Returns the current index of the class containing a word.
     //!
-    //! This function returns the current index of the class containing the word
-    //! described by the iterators \p first and \p last. No enumeration is
-    //! triggered by calls to this function. Unless \ref finished returns \c
-    //! true, the index returned by this function is essentially arbitrary, and
-    //! can only really be used to check whether or not two words are currently
-    //! known to belong to the congruence.
+    //! This function returns the current index of the class containing the
+    //! word described by the iterators \p first and \p last. No enumeration
+    //! is triggered by calls to this function. Unless \ref finished returns
+    //! \c true, the index returned by this function is essentially arbitrary,
+    //! and can only really be used to check whether or not two words are
+    //! currently known to belong to the congruence.
     //!
     //! The returned index is obtained by following the path in \ref
     //! current_word_graph from node \c 0 labelled by the word given by the
@@ -634,12 +1079,12 @@ namespace libsemigroups {
 
     //! \brief Returns the current index of the class containing a word.
     //!
-    //! This function returns the current index of the class containing the word
-    //! described by the iterators \p first and \p last. No enumeration is
-    //! triggered by calls to this function. Unless \ref finished returns \c
-    //! true, the index returned by this function is essentially arbitrary, and
-    //! can only really be used to check whether or not two words are currently
-    //! known to belong to the congruence.
+    //! This function returns the current index of the class containing the
+    //! word described by the iterators \p first and \p last. No enumeration
+    //! is triggered by calls to this function. Unless \ref finished returns
+    //! \c true, the index returned by this function is essentially arbitrary,
+    //! and can only really be used to check whether or not two words are
+    //! currently known to belong to the congruence.
     //!
     //! The returned index is obtained by following the path in \ref
     //! current_word_graph from node \c 0 labelled by the word given by the
@@ -665,16 +1110,16 @@ namespace libsemigroups {
     //!
     //! This function returns the index of the class containing the word
     //! described by the iterators \p first and \p last. A full enumeration is
-    //! triggered by calls to this function. If the \ref current_word_graph has
-    //! not already been standardized, then this function first standardizes it
-    //! with respect to Order::shortlex; otherwise the existing standardization
-    //! order is used.
+    //! triggered by calls to this function. If the \ref current_word_graph
+    //! has not already been standardized, then this function first
+    //! standardizes it with respect to Order::shortlex; otherwise the
+    //! existing standardization order is used.
     //!
     //! The returned index is obtained by following the path in \ref
     //! current_word_graph from node \c 0 labelled by the word given by the
     //! arguments \p first and \p last. Since a full enumeration is triggered
-    //! by calls to this function, the word graph is complete, and so the return
-    //! value is never \ref UNDEFINED.
+    //! by calls to this function, the word graph is complete, and so the
+    //! return value is never \ref UNDEFINED.
     //!
     //! \tparam Iterator1 the type of first argument \p first.
     //! \tparam Iterator2 the type of second argument \p last.
@@ -695,16 +1140,16 @@ namespace libsemigroups {
     //!
     //! This function returns the index of the class containing the word
     //! described by the iterators \p first and \p last. A full enumeration is
-    //! triggered by calls to this function. If the \ref current_word_graph has
-    //! not already been standardized, then this function first standardizes it
-    //! with respect to Order::shortlex; otherwise the existing standardization
-    //! order is used.
+    //! triggered by calls to this function. If the \ref current_word_graph
+    //! has not already been standardized, then this function first
+    //! standardizes it with respect to Order::shortlex; otherwise the
+    //! existing standardization order is used.
     //!
     //! The returned index is obtained by following the path in \ref
     //! current_word_graph from node \c 0 labelled by the word given by the
     //! arguments \p first and \p last. Since a full enumeration is triggered
-    //! by calls to this function, the word graph is complete, and so the return
-    //! value is never \ref UNDEFINED.
+    //! by calls to this function, the word graph is complete, and so the
+    //! return value is never \ref UNDEFINED.
     //!
     //! \tparam Iterator1 the type of first argument \p first.
     //! \tparam Iterator2 the type of second argument \p last.
@@ -744,17 +1189,17 @@ namespace libsemigroups {
     //!
     //! @{
 
-    //! \brief Insert a current word representing a class with given index into
-    //! an output iterator.
+    //! \brief Insert a current word representing a class with given index
+    //! into an output iterator.
     //!
     //! This function appends a current word representing the class with index
     //! \p i to the output iterator \p d_first. No enumeration is triggered by
     //! calls to this function, but \ref current_word_graph is standardized
     //! (using Order::shortlex) if it is not already standardized.
     //!
-    //! The word appended to \p d_first is obtained by following a path in \ref
-    //! current_spanning_tree from the node corresponding to index \c i back to
-    //! the root of that tree.
+    //! The word appended to \p d_first is obtained by following a path in
+    //! \ref current_spanning_tree from the node corresponding to index \c i
+    //! back to the root of that tree.
     //!
     //! \tparam OutputIterator the type of the first argument.
     //!
@@ -777,17 +1222,17 @@ namespace libsemigroups {
           .get();
     }
 
-    //! \brief Insert a current word representing a class with given index into
-    //! an output iterator.
+    //! \brief Insert a current word representing a class with given index
+    //! into an output iterator.
     //!
     //! This function appends a current word representing the class with index
     //! \p i to the output iterator \p d_first. No enumeration is triggered by
     //! calls to this function, but \ref current_word_graph is standardized
     //! (using Order::shortlex) if it is not already standardized.
     //!
-    //! The word appended to \p d_first is obtained by following a path in \ref
-    //! current_spanning_tree from the node corresponding to index \c i back to
-    //! the root of that tree.
+    //! The word appended to \p d_first is obtained by following a path in
+    //! \ref current_spanning_tree from the node corresponding to index \c i
+    //! back to the root of that tree.
     //!
     //! \tparam OutputIterator the type of the first argument.
     //!
@@ -809,12 +1254,13 @@ namespace libsemigroups {
     //! an output iterator.
     //!
     //! This function appends the word representing the class with index
-    //! \p i to the output iterator \p d_first. A full enumeration is triggered
-    //! by calls to this function, and \ref current_word_graph is standardized.
+    //! \p i to the output iterator \p d_first. A full enumeration is
+    //! triggered by calls to this function, and \ref current_word_graph is
+    //! standardized.
     //!
-    //! The word appended to \p d_first is obtained by following a path in \ref
-    //! current_spanning_tree from the node corresponding to index \c i back to
-    //! the root of that tree.
+    //! The word appended to \p d_first is obtained by following a path in
+    //! \ref current_spanning_tree from the node corresponding to index \c i
+    //! back to the root of that tree.
     //!
     //! \tparam OutputIterator the type of the first argument.
     //!
@@ -835,12 +1281,13 @@ namespace libsemigroups {
     //! an output iterator.
     //!
     //! This function appends the word representing the class with index
-    //! \p i to the output iterator \p d_first. A full enumeration is triggered
-    //! by calls to this function, and \ref current_word_graph is standardized.
+    //! \p i to the output iterator \p d_first. A full enumeration is
+    //! triggered by calls to this function, and \ref current_word_graph is
+    //! standardized.
     //!
-    //! The word appended to \p d_first is obtained by following a path in \ref
-    //! current_spanning_tree from the node corresponding to index \c i back to
-    //! the root of that tree.
+    //! The word appended to \p d_first is obtained by following a path in
+    //! \ref current_spanning_tree from the node corresponding to index \c i
+    //! back to the root of that tree.
     //!
     //! \tparam OutputIterator the type of the first argument.
     //!

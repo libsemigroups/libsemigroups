@@ -46,6 +46,7 @@ namespace libsemigroups {
 
     // This struct exists to avoid having to write typename before
     // options::def_policy etc everywhere below
+    // TODO(0) document this
     struct FelschGraphEnums {
       struct options {
         enum class def_version : uint8_t {
@@ -423,7 +424,7 @@ namespace libsemigroups {
       }
 
     }  // namespace felsch_graph
-  }    // namespace detail
+  }  // namespace detail
 }  // namespace libsemigroups
 
 #include "felsch-graph.tpp"

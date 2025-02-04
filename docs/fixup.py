@@ -348,7 +348,7 @@ def delete_matching(filename: str, pattern: str) -> bool:
     <filename> that match <pattern>. A bit of a blunt instrument.
     """
 
-    def do_it(data: str):
+    def do_it(data: str) -> tuple[str, bool]:
         nonlocal pattern, filename
         pattern = re.compile(pattern)
 
@@ -367,6 +367,14 @@ def delete_matching(filename: str, pattern: str) -> bool:
     return modify_in_place(filename, do_it)
 
 
+def substitute(pattern: str, repl: str) -> bool:
+    def func(data: str) -> tuple[str, bool]:
+        nonlocal pattern, repl
+        return re.sub(pattern, repl, data), True
+
+    return func
+
+
 if __name__ == "__main__":
     modify_in_place("./html/navtree.js", fix_menu_1)
     modify_in_place("./html/navtree.js", fix_menu_2)
@@ -377,4 +385,8 @@ if __name__ == "__main__":
     modify_in_place_all_files("./html/*.html", fix_pages_1)
     delete_matching(
         "./html/classlibsemigroups_1_1_knuth_bendix.html", "libsemigroups_1_1detail"
+    )
+    modify_in_place(
+        "./html/group__todd__coxeter__class__settings__group.html",
+        substitute(r"\bToddCoxeterBase\b", "ToddCoxeter"),
     )
