@@ -26,14 +26,14 @@
 #include <string>  // for string
 #include <vector>  // for vector
 
-#include "cong-class.hpp"         // for Congruence
+#include "cong-class.hpp"           // for Congruence
 #include "cong-common-helpers.hpp"  // for partition, add_gener...
-#include "exception.hpp"          // for LIBSEMIGROUPS_EXCEPTION
-#include "kambites-class.hpp"     // for Kambites
-#include "todd-coxeter-base.hpp"  // for ToddCoxeterBase
-#include "types.hpp"              // for word_type
-//
+#include "exception.hpp"            // for LIBSEMIGROUPS_EXCEPTION
+#include "kambites-class.hpp"       // for Kambites
+#include "types.hpp"                // for word_type
+
 #include "detail/knuth-bendix-base.hpp"  // for KnuthBendixBase
+#include "detail/todd-coxeter-base.hpp"  // for ToddCoxeterBase
 
 namespace libsemigroups {
 

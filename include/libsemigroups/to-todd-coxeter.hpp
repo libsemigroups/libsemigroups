@@ -34,8 +34,10 @@ namespace libsemigroups {
   ToddCoxeter<Word> to_todd_coxeter(congruence_kind        knd,
                                     FroidurePinBase&       fpb,
                                     WordGraph<Node> const& wg) {
-    using node_type  = typename ToddCoxeterBase::word_graph_type::node_type;
-    using label_type = typename ToddCoxeterBase::word_graph_type::label_type;
+    using node_type =
+        typename detail::ToddCoxeterBase::word_graph_type::node_type;
+    using label_type =
+        typename detail::ToddCoxeterBase::word_graph_type::label_type;
 
     WordGraph<node_type> copy(wg.number_of_nodes() + 1, wg.out_degree());
 

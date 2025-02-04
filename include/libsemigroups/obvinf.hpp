@@ -40,12 +40,12 @@
 
 namespace libsemigroups {
 #ifndef PARSED_BY_DOXYGEN
-  class ToddCoxeterBase;  // forward decl
 
   namespace detail {
     template <typename Rewriter, typename ReductionOrder>
     class KnuthBendixBase;  // forward decl
-  }
+    class ToddCoxeterBase;  // forward decl
+  }  // namespace detail
 
   template <typename Word>
   class Congruence;  // forward decl
@@ -124,8 +124,8 @@ namespace libsemigroups {
   // functions of an IsObviouslyInfinite (see for example the function
   // is_obviously_infinite for a Presentation). These should be documented.
   //
-  // TODO(1) this class should be more generic, like detail::CongruenceCommon and
-  // its derived classes, allowing arbitrary iterators of rules to be added
+  // TODO(1) this class should be more generic, like detail::CongruenceCommon
+  // and its derived classes, allowing arbitrary iterators of rules to be added
   class IsObviouslyInfinite {
     // The default constructor is private since an object that is default
     // constructed isn't usable with the current public API.
@@ -463,7 +463,7 @@ namespace libsemigroups {
   //!
   //! \note If this function returns \c false, it is still possible that the
   //! quotient defined by the ToddCoxeterBase object \p tc is infinite.
-  bool is_obviously_infinite(ToddCoxeterBase const& tc);
+  bool is_obviously_infinite(detail::ToddCoxeterBase const& tc);
 
   //! \ingroup obvinf_group
   //!

@@ -151,7 +151,7 @@ namespace libsemigroups {
 
   template <>
   struct FroidurePinState<detail::TCE> {
-    using type = typename ToddCoxeterBase::word_graph_type;
+    using type = typename detail::ToddCoxeterBase::word_graph_type;
   };
 }  // namespace libsemigroups
 

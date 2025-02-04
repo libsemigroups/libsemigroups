@@ -22,19 +22,19 @@
 #include <string_view>  // for basic_st...
 #include <tuple>        // for tie
 
-#include "libsemigroups/constants.hpp"          // for operator!=
-#include "libsemigroups/obvinf.hpp"             // for is_obvio...
-#include "libsemigroups/todd-coxeter-base.hpp"  // for ToddCoxeterBase
-#include "libsemigroups/types.hpp"              // for tril
+#include "libsemigroups/constants.hpp"  // for operator!=
+#include "libsemigroups/obvinf.hpp"     // for is_obvio...
+#include "libsemigroups/types.hpp"      // for tril
 
-#include "libsemigroups/detail/felsch-graph.hpp"             // for Register...
-#include "libsemigroups/detail/node-managed-graph.hpp"       // for random_a...
-#include "libsemigroups/detail/report.hpp"                   // for report_d...
+#include "libsemigroups/detail/felsch-graph.hpp"        // for Register...
+#include "libsemigroups/detail/node-managed-graph.hpp"  // for random_a...
+#include "libsemigroups/detail/report.hpp"              // for report_d...
+#include "libsemigroups/detail/todd-coxeter-base.hpp"   // for ToddCoxeterBase
 #include "libsemigroups/detail/word-graph-with-sources.hpp"  // for WordGrap...
 
 namespace libsemigroups {
   namespace todd_coxeter {
-    [[nodiscard]] tril is_non_trivial(ToddCoxeterBase&          tc,
+    [[nodiscard]] tril is_non_trivial(detail::ToddCoxeterBase&  tc,
                                       size_t                    tries,
                                       std::chrono::milliseconds try_for,
                                       float                     threshold) {
@@ -49,7 +49,7 @@ namespace libsemigroups {
       for (size_t try_ = 0; try_ < tries; ++try_) {
         report_default(
             "trying to show non-triviality: {} / {}\n", try_ + 1, tries);
-        ToddCoxeterBase copy(tc);
+        detail::ToddCoxeterBase copy(tc);
         copy.save(true);
         while (!copy.finished()) {
           copy.run_for(try_for);
@@ -59,7 +59,7 @@ namespace libsemigroups {
                  && !copy.finished()) {
             auto  c1 = random_active_node(copy.current_word_graph());
             auto  c2 = random_active_node(copy.current_word_graph());
-            auto& wg = const_cast<ToddCoxeterBase::word_graph_type&>(
+            auto& wg = const_cast<detail::ToddCoxeterBase::word_graph_type&>(
                 copy.current_word_graph());
             wg.merge_nodes_no_checks(c1, c2);
             wg.process_coincidences<detail::RegisterDefs>();

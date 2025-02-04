@@ -21,7 +21,7 @@
 #ifndef LIBSEMIGROUPS_TODD_COXETER_HPP_
 #define LIBSEMIGROUPS_TODD_COXETER_HPP_
 
-#include "todd-coxeter-base.hpp"
+#include "detail/todd-coxeter-base.hpp"
 #include "todd-coxeter-class.hpp"
 #include "todd-coxeter-helpers.hpp"
 

@@ -143,7 +143,7 @@ namespace libsemigroups {
     return to_froidure_pin<Element>(ad, 0, ad.number_of_nodes());
   }
 
-  FroidurePin<detail::TCE> to_froidure_pin(ToddCoxeterBase& tc);
+  FroidurePin<detail::TCE> to_froidure_pin(detail::ToddCoxeterBase& tc);
 
   template <typename Rewriter, typename ReductionOrder>
   FroidurePin<detail::KBE<detail::KnuthBendixBase<Rewriter, ReductionOrder>>>

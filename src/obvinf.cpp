@@ -62,7 +62,7 @@ namespace libsemigroups {
 #ifdef LIBSEMIGROUPS_EIGEN_ENABLED
     _matrix = decltype(_matrix)(0, n);
 #else
-    _matrix           = decltype(_matrix)(n, 0);
+    _matrix = decltype(_matrix)(n, 0);
 #endif
     return *this;
   }
@@ -239,7 +239,7 @@ namespace libsemigroups {
     }
   }
 
-  bool is_obviously_infinite(ToddCoxeterBase const& tc) {
+  bool is_obviously_infinite(detail::ToddCoxeterBase const& tc) {
     auto const& d = tc.current_word_graph();
     if (tc.finished()
         || word_graph::is_complete(
