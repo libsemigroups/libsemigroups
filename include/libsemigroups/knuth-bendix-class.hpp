@@ -39,7 +39,16 @@ namespace libsemigroups {
   //! This page contains links to the documentation related to the
   //! implementation of the Knuth-Bendix algorithm in `libsemigroups`.
 
+  //! \defgroup knuth_bendix_class_group The KnuthBendix class
   //! \ingroup knuth_bendix_group
+  //!
+  //! \brief This page contains links to the documentation related to the
+  //! KnuthBendix class.
+  //!
+  //! This page contains links to the documentation related to the
+  //! KnuthBendix class.
+
+  //! \ingroup knuth_bendix_class_group
   //! \hideinheritancegraph
   //!
   //! \brief Class template containing an implementation of the Knuth-Bendix
@@ -780,7 +789,7 @@ namespace libsemigroups {
 
   };  // class KnuthBendix
 
-  //! \ingroup knuth_bendix_group
+  //! \ingroup knuth_bendix_class_group
   //
   //! \brief Deduction guide.
   //!
@@ -791,7 +800,7 @@ namespace libsemigroups {
   template <typename Word>
   KnuthBendix(congruence_kind, Presentation<Word> const&) -> KnuthBendix<Word>;
 
-  //! \ingroup knuth_bendix_group
+  //! \ingroup knuth_bendix_class_group
   //
   //! \brief Deduction guide.
   //!
@@ -802,7 +811,7 @@ namespace libsemigroups {
   template <typename Word>
   KnuthBendix(congruence_kind, Presentation<Word>&&) -> KnuthBendix<Word>;
 
-  //! \ingroup knuth_bendix_group
+  //! \ingroup knuth_bendix_class_group
   //
   //! \brief Deduction guide.
   //!
@@ -813,7 +822,7 @@ namespace libsemigroups {
   template <typename Word>
   KnuthBendix(KnuthBendix<Word> const&) -> KnuthBendix<Word>;
 
-  //! \ingroup knuth_bendix_group
+  //! \ingroup knuth_bendix_class_group
   //
   //! \brief Deduction guide.
   //!

@@ -42,7 +42,7 @@
 #include "word-range.hpp"           // for ToString
 
 #include "detail/fmt.hpp"              // for format
-#include "detail/knuth-bendix-nf.hpp"  // for KnuthBendixBase, KnuthBe...
+#include "detail/knuth-bendix-nf.hpp"  // for KnuthBendix, KnuthBe...
 #include "detail/rewriters.hpp"        // for internal_string_type
 
 namespace libsemigroups {
@@ -57,17 +57,17 @@ namespace libsemigroups {
     //! Defined in \c knuth-bendix-helpers.hpp.
     //!
     //! This function returns a range object containing normal forms of the
-    //! classes of the congruence represented by an instance of KnuthBendixBase.
+    //! classes of the congruence represented by an instance of KnuthBendix.
     //! The order of the classes, and the normal form that is returned, are
     //! controlled by the reduction order used to construct \p kb. This function
     //! triggers a full enumeration of \p kb.
     //!
     //! \tparam Word the type of the words contained in the output range.
-    //! \tparam Rewriter the first template parameter for KnuthBendixBase.
+    //! \tparam Rewriter the first template parameter for KnuthBendix.
     //! \tparam ReductionOrder the second template parameter for
-    //! KnuthBendixBase.
+    //! KnuthBendix.
     //!
-    //! \param kb the \ref KnuthBendixBase instance.
+    //! \param kb the \ref KnuthBendix instance.
     //!
     //! \returns A range object.
     //!
@@ -87,7 +87,7 @@ namespace libsemigroups {
     ////////////////////////////////////////////////////////////////////////
 
     //! \brief Find the non-trivial classes of the quotient of one
-    //! KnuthBendixBase instance in another.
+    //! KnuthBendix instance in another.
     //!
     //! Defined in \c knuth-bendix-helpers.hpp.
     //!
@@ -105,12 +105,12 @@ namespace libsemigroups {
     //!
     //! \tparam Word the type of the words contained in the output range
     //! (default: std::string).
-    //! \tparam Rewriter the first template parameter for KnuthBendixBase.
+    //! \tparam Rewriter the first template parameter for KnuthBendix.
     //! \tparam ReductionOrder the second template parameter for
-    //! KnuthBendixBase.
+    //! KnuthBendix.
     //!
-    //! \param kb1 the first \ref KnuthBendixBase instance.
-    //! \param kb2 the second \ref KnuthBendixBase instance.
+    //! \param kb1 the first \ref KnuthBendix instance.
+    //! \param kb2 the second \ref KnuthBendix instance.
     //!
     //! \returns The non-trivial classes of \p kb1 in \p kb2.
     //!
@@ -121,7 +121,7 @@ namespace libsemigroups {
     //! \throws LibsemigroupsException if the alphabets of the
     //! presentations of \p kb1 and \p kb2 are not equal.
     //!
-    //! \throws LibsemigroupsException if the \ref KnuthBendixBase::gilman_graph
+    //! \throws LibsemigroupsException if the \ref KnuthBendix::gilman_graph
     //! of
     //! \p kb1 has fewer nodes than that of \p kb2.
     //!
@@ -133,68 +133,80 @@ namespace libsemigroups {
 
   }  // namespace congruence_common
 
+  //! \defgroup knuth_bendix_helpers_group Knuth-Bendix helper functions
   //! \ingroup knuth_bendix_group
   //!
   //! \brief Helper functions for the \ref KnuthBendix class.
   //!
-  //! Defined in \c knuth-bendix.hpp.
+  //! Defined in \c knuth-bendix-helpers.hpp.
   //!
   //! This page contains documentation for some helper functions for the \ref
-  //! KnuthBendixBase class. In particular, these functions include versions of
-  //! several of the member functions of \ref KnuthBendixBase (that accept
+  //! KnuthBendix class. In particular, these functions include versions of
+  //! several of the member functions of \ref KnuthBendix (that accept
   //! iterators) whose parameters are not iterators, but objects instead. The
   //! helpers documented on this page all belong to the namespace
-  //! `knuth_bendix`.
+  //! \ref knuth_bendix.
   //!
   //! \sa \ref cong_intf_helpers_group
+
+  //! This page contains documentation for everything in the namespace \ref
+  //! knuth_bendix. This includes everything from
+  //! \ref cong_intf_helpers_group and \ref knuth_bendix_helpers_group.
   namespace knuth_bendix {
 
     ////////////////////////////////////////////////////////////////////////
-    // KnuthBendixBase specific helpers
+    // KnuthBendix specific helpers
     ////////////////////////////////////////////////////////////////////////
 
+    //! \ingroup knuth_bendix_helpers_group
+    //!
     //! \brief Run the Knuth-Bendix algorithm by considering all overlaps of
     //! a given length.
     //!
     //! Defined in \c knuth-bendix-helpers.hpp.
     //!
     //! This function runs the Knuth-Bendix algorithm on the rewriting
-    //! system represented by a KnuthBendixBase instance by considering all
+    //! system represented by a KnuthBendix instance by considering all
     //! overlaps of a given length \f$n\f$ (according to the \ref
-    //! KnuthBendixBase::options::overlap) before those overlaps of length \f$n
+    //! KnuthBendix::options::overlap) before those overlaps of length \f$n
     //! + 1\f$.
     //!
-    //! \tparam Rewriter the first template parameter for KnuthBendixBase.
+    //! \tparam Word the type of the words in the \ref
+    //! KnuthBendix::presentation.
+    //! \tparam Rewriter the first template parameter for KnuthBendix.
     //! \tparam ReductionOrder the second template parameter for
-    //! KnuthBendixBase.
+    //! KnuthBendix.
     //!
-    //! \param kb the KnuthBendixBase instance.
+    //! \param kb the KnuthBendix instance.
     //!
     //! \complexity
     //! See warning.
     //!
-    //! \warning This will terminate when the KnuthBendixBase instance is
+    //! \warning This will terminate when the KnuthBendix instance is
     //! confluent, which might be never.
     //!
-    //! \sa \ref KnuthBendixBase::run.
+    //! \sa KnuthBendix::run.
     template <typename Word, typename Rewriter, typename ReductionOrder>
     void by_overlap_length(KnuthBendix<Word, Rewriter, ReductionOrder>& kb);
 
+    //! \ingroup knuth_bendix_helpers_group
+    //!
     //! \brief Check if the all rules are reduced with respect to each other.
     //!
-    //! Defined in \c knuth-bendix.hpp.
+    //! Defined in \c knuth-bendix-helpers.hpp.
     //!
-    //! \tparam Rewriter the first template parameter for KnuthBendixBase.
+    //! \tparam Word the type of the words in the \ref
+    //! KnuthBendix::presentation.
+    //! \tparam Rewriter the first template parameter for KnuthBendix.
     //! \tparam ReductionOrder the second template parameter for
-    //! KnuthBendixBase.
+    //! KnuthBendix.
     //!
-    //! \param kb the KnuthBendixBase instance defining the rules that are to be
+    //! \param kb the KnuthBendix instance defining the rules that are to be
     //! checked for being reduced.
     //!
     //! \returns \c true if for each pair \f$(A, B)\f$ and \f$(C, D)\f$ of rules
-    //! stored within the KnuthBendixBase instance, \f$C\f$ is neither a subword
-    //! of
-    //! \f$A\f$ nor \f$B\f$. Returns \c false otherwise.
+    //! stored within the KnuthBendix instance, \f$C\f$ is neither a subword
+    //! of \f$A\f$ nor \f$B\f$. Returns \c false otherwise.
     template <typename Word, typename Rewriter, typename ReductionOrder>
     [[nodiscard]] bool
     is_reduced(KnuthBendix<Word, Rewriter, ReductionOrder>& kb);
@@ -246,10 +258,11 @@ namespace libsemigroups {
     // Possible future interface helpers - redundant_rule
     ////////////////////////////////////////////////////////////////////////
 
+    //! \ingroup knuth_bendix_helpers_group
     //! \brief Return an iterator pointing at the left hand side of a redundant
     //! rule.
     //!
-    //! Defined in \c knuth-bendix.hpp.
+    //! Defined in \c knuth-bendix-helpers.hpp.
     //!
     //! Starting with the last rule in the presentation, this function
     //! attempts to run the Knuth-Bendix algorithm on the rules of the
@@ -269,7 +282,7 @@ namespace libsemigroups {
     //! \tparam Time type of the 2nd parameter (time to try running
     //! Knuth-Bendix).
     //! \param p the presentation.
-    //! \param t time to run KnuthBendixBase for every omitted rule.
+    //! \param t time to run KnuthBendix for every omitted rule.
     //!
     //! \returns An iterator pointing at the left-hand side of a redundant rule
     //! of \c p.rules.cend().
@@ -282,10 +295,11 @@ namespace libsemigroups {
     [[nodiscard]] std::vector<std::string>::const_iterator
     redundant_rule(Presentation<std::string> const& p, Time t);
 
+    //! \ingroup knuth_bendix_helpers_group
     //! \brief Return an iterator pointing at the left hand side of a redundant
     //! rule.
     //!
-    //! Defined in \c knuth-bendix.hpp.
+    //! Defined in \c knuth-bendix-helpers.hpp.
     //!
     //! Starting with the last rule in the presentation, this function
     //! attempts to run the Knuth-Bendix algorithm on the rules of the
@@ -302,11 +316,11 @@ namespace libsemigroups {
     //! If no rule can be shown to be redundant in this way, then an iterator
     //! pointing to \c p.cend() is returned.
     //!
-    //! \tparam Word type of words in the Presentation
+    //! \tparam Word type of words in the Presentation \p p.
     //! \tparam Time type of the 2nd parameter (time to try running
     //! Knuth-Bendix).
     //! \param p the presentation.
-    //! \param t time to run KnuthBendixBase for every omitted rule.
+    //! \param t time to run KnuthBendix for every omitted rule.
     //!
     //! \warning The progress of the Knuth-Bendix algorithm may differ between
     //! different calls to this function even if the parameters are identical.

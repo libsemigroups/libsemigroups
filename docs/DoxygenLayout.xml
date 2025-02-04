@@ -151,8 +151,8 @@
       <tab type="user" visible="yes" url="@ref libsemigroups::kambites" title="Kambites helper functions" />
     </tab>
     <tab type="usergroup" visible="yes" url="@ref knuth_bendix_group" title="Knuth-Bendix">
-      <tab type="user" visible="yes" url="@ref libsemigroups::KnuthBendix" title="The KnuthBendix class"/>
-      <tab type="user" visible="yes" url="@ref libsemigroups::knuth_bendix" title="Knuth-Bendix helper functions"/>
+      <tab type="user" visible="yes" url="@ref knuth_bendix_class_group" title="The KnuthBendix class"/>
+      <tab type="user" visible="yes" url="@ref knuth_bendix_helpers_group" title="Knuth-Bendix helper functions"/>
     </tab>
     <tab type="user" visible="yes" url="@ref freeband_group" title="Radoszewski-Rytter" />
     <tab type="user" visible="yes" url="@ref schreier_sims_group" title="Schreier-Sims" />
