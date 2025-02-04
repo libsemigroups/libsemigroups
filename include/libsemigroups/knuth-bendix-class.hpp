@@ -650,7 +650,6 @@ namespace libsemigroups {
     //!
     //! \sa options::overlap.
     [[nodiscard]] typename options::overlap overlap_policy() const noexcept;
-#endif
 
     //////////////////////////////////////////////////////////////////////////
     // KnuthBendix - member functions for rules - public
@@ -671,7 +670,7 @@ namespace libsemigroups {
     //! \complexity
     //! Constant.
     // NOTE: this technique for including the function + doc doesn't work with
-    // overloaded functions
+    // overloaded functions.
     using KnuthBendixBase_::number_of_active_rules;
 
     //! \brief Return the current number of inactive rules in the
@@ -777,6 +776,7 @@ namespace libsemigroups {
     //! \sa \ref gilman_graph.
     // TODO(0) renovate currently always returns labels that are strings
     using KnuthBendixBase_::gilman_graph_node_labels;
+#endif
 
   };  // class KnuthBendix
 

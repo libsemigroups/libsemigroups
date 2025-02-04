@@ -29,17 +29,17 @@
 #include <utility>      // for move
 #include <vector>       // for vector
 
-#include "cong-common-helpers.hpp"   // for partition, add_gener...
-#include "constants.hpp"           // for UNDEFINED, POSITIVE_...
-#include "debug.hpp"               // for LIBSEMIGROUPS_ASSERT
-#include "exception.hpp"           // for LIBSEMIGROUPS_EXCEPTION
-#include "knuth-bendix-class.hpp"  // for KnuthBendix
-#include "paths.hpp"               // for Paths
-#include "presentation.hpp"        // for Presentation
-#include "ranges.hpp"              // for seq, input_range_ite...
-#include "types.hpp"               // for congruence_kind, wor...
-#include "word-graph.hpp"          // for WordGraph
-#include "word-range.hpp"          // for ToString
+#include "cong-common-helpers.hpp"  // for partition, add_gener...
+#include "constants.hpp"            // for UNDEFINED, POSITIVE_...
+#include "debug.hpp"                // for LIBSEMIGROUPS_ASSERT
+#include "exception.hpp"            // for LIBSEMIGROUPS_EXCEPTION
+#include "knuth-bendix-class.hpp"   // for KnuthBendix
+#include "paths.hpp"                // for Paths
+#include "presentation.hpp"         // for Presentation
+#include "ranges.hpp"               // for seq, input_range_ite...
+#include "types.hpp"                // for congruence_kind, wor...
+#include "word-graph.hpp"           // for WordGraph
+#include "word-range.hpp"           // for ToString
 
 #include "detail/fmt.hpp"              // for format
 #include "detail/knuth-bendix-nf.hpp"  // for KnuthBendixBase, KnuthBe...
@@ -135,7 +135,7 @@ namespace libsemigroups {
 
   //! \ingroup knuth_bendix_group
   //!
-  //! \brief Helper functions for the \ref KnuthBendixBase class.
+  //! \brief Helper functions for the \ref KnuthBendix class.
   //!
   //! Defined in \c knuth-bendix.hpp.
   //!
