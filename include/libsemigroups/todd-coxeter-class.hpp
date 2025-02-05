@@ -441,14 +441,6 @@ namespace libsemigroups {
     };
 #endif
 
-    //! \defgroup todd_coxeter_class_mem_types_group Member types
-    //! \ingroup todd_coxeter_class_group
-    //!
-    //! \brief Public member types
-    //!
-    //! This page contains the documentation of the public member types of a
-    //! \ref_todd_coxeter instance.
-
     //! \ingroup todd_coxeter_class_mem_types_group
     //!
     //! \brief Type of the letters in the relations of the presentation stored
@@ -499,29 +491,14 @@ namespace libsemigroups {
     //! The type of the edge-labels in the word graph.
     using label_type = typename detail::ToddCoxeterBase::label_type;
 
-    //! \defgroup todd_coxeter_class_init_group Constructors + initializers
-    //! \ingroup todd_coxeter_class_group
-    //!
-    //! \brief Construct or re-initialize a \ref_todd_coxeter
-    //! instance (public member function).
-    //!
-    //! This page documents the constructors and initialisers for the
-    //! \ref_todd_coxeter class.
-    //!
-    //! Every constructor (except the move + copy constructors, and the move
-    //! and copy assignment operators) has a matching `init` function with the
-    //! same signature that can be used to re-initialize a \ref_todd_coxeter
-    //! instance as if it had just been constructed; but without necessarily
-    //! releasing any previous allocated memory.
-    //!
-    //! @{
-
+    //! \ingroup todd_coxeter_class_init_group
     //! \brief Default constructor.
     //!
     //! This function default constructs an uninitialised \ref_todd_coxeter
     //! instance.
     ToddCoxeter() = default;
 
+    //! \ingroup todd_coxeter_class_init_group
     //! \brief Re-initialize a \ref_todd_coxeter instance.
     //!
     //! This function puts a \ref_todd_coxeter instance back into the state
@@ -534,18 +511,27 @@ namespace libsemigroups {
     //! \no_libsemigroups_except
     ToddCoxeter& init();
 
+    //! \ingroup todd_coxeter_class_init_group
     //! Copy constructor.
     ToddCoxeter(ToddCoxeter const&) = default;
 
+    //! \ingroup todd_coxeter_class_init_group
     //! Move constructor.
     ToddCoxeter(ToddCoxeter&&) = default;
 
+    //! \ingroup todd_coxeter_class_init_group
+    //! \brief Copy assignment operator.
+    //!
     //! Copy assignment operator.
     ToddCoxeter& operator=(ToddCoxeter const&) = default;
 
+    //! \ingroup todd_coxeter_class_init_group
+    //! \brief Move assignment operator.
+    //!
     //! Move assignment operator.
     ToddCoxeter& operator=(ToddCoxeter&&) = default;
 
+    //! \ingroup todd_coxeter_class_init_group
     //! \brief Construct from \ref congruence_kind and Presentation.
     //!
     //! This function constructs a  \ref_todd_coxeter instance representing a
@@ -560,6 +546,7 @@ namespace libsemigroups {
       init(knd, std::move(p));
     }
 
+    //! \ingroup todd_coxeter_class_init_group
     //! \brief Re-initialize a \ref_todd_coxeter
     //! instance.
     //!
@@ -575,17 +562,20 @@ namespace libsemigroups {
     //! \throws LibsemigroupsException if \p p is not valid.
     ToddCoxeter& init(congruence_kind knd, Presentation<Word>&& p);
 
+    //! \ingroup todd_coxeter_class_init_group
     //! \copydoc ToddCoxeter(congruence_kind, Presentation<Word>&&)
     ToddCoxeter(congruence_kind knd, Presentation<Word> const& p)
         // call the rval ref constructor
         : ToddCoxeter(knd, Presentation<Word>(p)) {}
 
+    //! \ingroup todd_coxeter_class_init_group
     //! \copydoc init(congruence_kind, Presentation<Word>&&)
     ToddCoxeter& init(congruence_kind knd, Presentation<Word> const& p) {
       // call the rval ref init
       return init(knd, Presentation<Word>(p));
     }
 
+    //! \ingroup todd_coxeter_class_init_group
     //! \brief Construct from \ref congruence_kind and \ref_todd_coxeter.
     //!
     //! This function constructs a  \ref_todd_coxeter instance representing a
@@ -603,6 +593,7 @@ namespace libsemigroups {
     ToddCoxeter(congruence_kind knd, ToddCoxeter const& tc)
         : ToddCoxeterBase(knd, tc), _presentation(tc.presentation()) {}
 
+    //! \ingroup todd_coxeter_class_init_group
     //! \brief Re-initialize a \ref_todd_coxeter instance.
     //!
     //! This function puts a \ref_todd_coxeter instance back into the state
@@ -624,6 +615,7 @@ namespace libsemigroups {
       return *this;
     }
 
+    //! \ingroup todd_coxeter_class_init_group
     //! \brief Construct from \ref congruence_kind and \ref WordGraph.
     //!
     //! This function constructs a  \ref_todd_coxeter instance representing a
@@ -646,6 +638,7 @@ namespace libsemigroups {
       init(knd, wg);
     }
 
+    //! \ingroup todd_coxeter_class_init_group
     //! \brief Re-initialize a \ref_todd_coxeter instance.
     //!
     //! This function puts a  \ref_todd_coxeter instance back into the state
@@ -704,7 +697,6 @@ namespace libsemigroups {
     void throw_if_letter_out_of_bounds(Iterator1 first, Iterator2 last) const {
       presentation().validate_word(first, last);
     }
-    //! @}
 
     //! \brief Get the generating pairs of the congruence.
     //!
@@ -724,12 +716,12 @@ namespace libsemigroups {
     //! \brief Get the presentation used to define a \ref
     //! todd_coxeter_class_group "ToddCoxeter" instance (if any).
     //!
-    //! If a \ref todd_coxeter_class_group "ToddCoxeterBase" instance is
+    //! If a \ref_todd_coxeter instance is
     //! constructed or initialised using a presentation, then a const
     //! reference to the \ref native_presentation_type version of this
     //! presentation is returned by this function.
     //!
-    //! If the \ref todd_coxeter_class_group "ToddCoxeterBase" instance was
+    //! If the \ref_todd_coxeter instance was
     //! constructed or initialised from a WordGraph, then this presentation
     //! will be empty.
     //!
@@ -774,13 +766,11 @@ namespace libsemigroups {
 
     //! \brief Check containment of a pair of words via iterators.
     //!
-    //! This function checks whether or not the words represented by the
-    //! ranges
-    //! \p first1 to \p last1 and \p first2 to \p last2 are already known to
-    //! be contained in the congruence represented by a \ref
-    //! todd_coxeter_class_group "ToddCoxeterBase" instance. This function
-    //! performs no enumeration, so it is possible for the words to be
-    //! contained in the congruence, but that this is not currently known.
+    //! This function checks whether or not the words represented by the ranges
+    //! \p first1 to \p last1 and \p first2 to \p last2 are already known to be
+    //! contained in the congruence represented by a \ref_todd_coxeter instance.
+    //! This function performs no enumeration, so it is possible for the words
+    //! to be contained in the congruence, but that this is not currently known.
     //!
     //! \cong_intf_params_contains
     //!
@@ -806,12 +796,10 @@ namespace libsemigroups {
 
     //! \brief Check containment of a pair of words via iterators.
     //!
-    //! This function checks whether or not the words represented by the
-    //! ranges
-    //! \p first1 to \p last1 and \p first2 to \p last2 are already known to
-    //! be contained in the congruence represented by a \ref
-    //! todd_coxeter_class_group "ToddCoxeterBase" instance. This function
-    //! performs no enumeration, so it is possible for the words to be
+    //! This function checks whether or not the words represented by the ranges
+    //! \p first1 to \p last1 and \p first2 to \p last2 are already known to be
+    //! contained in the congruence represented by a \ref_todd_coxeter. This
+    //! function performs no enumeration, so it is possible for the words to be
     //! contained in the congruence, but that this is not currently known.
     //!
     //! \cong_intf_params_contains
@@ -838,12 +826,10 @@ namespace libsemigroups {
 
     //! \brief Check containment of a pair of words via iterators.
     //!
-    //! This function checks whether or not the words represented by the
-    //! ranges
+    //! This function checks whether or not the words represented by the ranges
     //! \p first1 to \p last1 and \p first2 to \p last2 are contained in the
-    //! congruence represented by a \ref todd_coxeter_class_group
-    //! "ToddCoxeterBase" instance. This function triggers a full enumeration,
-    //! which may never terminate.
+    //! congruence represented by a \ref_todd_coxeter instance. This function
+    //! triggers a full enumeration, which may never terminate.
     //!
     //! \cong_intf_params_contains
     //!
@@ -871,9 +857,8 @@ namespace libsemigroups {
     //! This function checks whether or not the words represented by the
     //! ranges
     //! \p first1 to \p last1 and \p first2 to \p last2 are contained in the
-    //! congruence represented by a \ref todd_coxeter_class_group
-    //! "ToddCoxeterBase" instance. This function triggers a full enumeration,
-    //! which may never terminate.
+    //! congruence represented by a \ref_todd_coxeter instance. This function
+    //! triggers a full enumeration, which may never terminate.
     //!
     //! \cong_intf_params_contains
     //!
@@ -898,16 +883,13 @@ namespace libsemigroups {
     //! \brief Reduce a word with no enumeration or checks.
     //!
     //! This function writes a reduced word equivalent to the input word
-    //! described by the iterator \p first and \p last to the output iterator
-    //! \p d_first. This function triggers no enumeration. The word output by
-    //! this function is equivalent to the input word in the congruence
-    //! defined by a \ref todd_coxeter_class_group "ToddCoxeterBase" instance.
-    //! If the
-    //!  \ref todd_coxeter_class_group "ToddCoxeterBase" instance is \ref
-    //!  finished, then the output word is a normal
-    //! form for the input word. If the  \ref todd_coxeter_class_group
-    //! "ToddCoxeterBase" instance is not \ref finished, then it might be that
-    //! equivalent input words produce different output words.
+    //! described by the iterator \p first and \p last to the output iterator \p
+    //! d_first. This function triggers no enumeration. The word output by this
+    //! function is equivalent to the input word in the congruence defined by a
+    //! \ref_todd_coxeter instance. If the \ref_todd_coxeter instance is \ref
+    //! finished, then the output word is a normal form for the input word. If
+    //! the \ref_todd_coxeter instance is not \ref finished, then it might be
+    //! that equivalent input words produce different output words.
     //!
     //! \cong_intf_params_reduce
     //!
@@ -933,13 +915,13 @@ namespace libsemigroups {
     //! described by the iterator \p first and \p last to the output iterator
     //! \p d_first. This function triggers no enumeration. The word output by
     //! this function is equivalent to the input word in the congruence
-    //! defined by a \ref todd_coxeter_class_group "ToddCoxeterBase" instance.
+    //! defined by a \ref_todd_coxeter instance.
     //! If the
-    //!  \ref todd_coxeter_class_group "ToddCoxeterBase" instance is \ref
+    //!  \ref_todd_coxeter instance is \ref
     //!  finished, then the output word is a normal
-    //! form for the input word. If the  \ref todd_coxeter_class_group
-    //! "ToddCoxeterBase" instance is not \ref finished, then it might be that
-    //! equivalent input words produce different output words.
+    //! form for the input word. If the  \ref_todd_coxeter instance is not \ref
+    //! finished, then it might be that equivalent input words produce different
+    //! output words.
     //!
     //! \cong_intf_params_reduce
     //!
@@ -966,7 +948,7 @@ namespace libsemigroups {
     //! \p last to the output iterator \p d_first. The word output by this
     //! function is equivalent to the input word in the congruence defined by
     //! a
-    //! \ref todd_coxeter_class_group "ToddCoxeterBase" instance. In other
+    //! \ref_todd_coxeter instance. In other
     //! words, the output word is a normal form for the input word or
     //! equivalently a canconical representative of its congruence class.
     //!
@@ -998,7 +980,7 @@ namespace libsemigroups {
     //! \p last to the output iterator \p d_first. The word output by this
     //! function is equivalent to the input word in the congruence defined by
     //! a
-    //! \ref todd_coxeter_class_group "ToddCoxeterBase" instance. In other
+    //! \ref_todd_coxeter instance. In other
     //! words, the output word is a normal form for the input word or
     //! equivalently a canconical representative of its congruence class.
     //!
@@ -1033,11 +1015,11 @@ namespace libsemigroups {
     //! \ingroup todd_coxeter_class_group
     //!
     //! \brief Member functions for converting a word into the index of a
-    //! class in a \ref todd_coxeter_class_group "ToddCoxeterBase" instance.
+    //! class in a \ref_todd_coxeter instance.
     //!
-    //! This page contains documentation for the member functions of \ref
-    //! todd_coxeter_class_group "ToddCoxeterBase" that can be used to convert
-    //! a word into the index of congruence class.
+    //! This page contains documentation for the member functions of
+    //! \ref_todd_coxeter that can be used to convert a word into the index of
+    //! congruence class.
     //!
     //! \sa \ref todd_coxeter_class_index_word_group for the inverses of the
     //! functions described on this page.
@@ -1176,11 +1158,11 @@ namespace libsemigroups {
     //! \ingroup todd_coxeter_class_group
     //!
     //! \brief Member functions for converting the index of a class
-    //! into a word in a \ref todd_coxeter_class_group "ToddCoxeterBase"
+    //! into a word in a \ref_todd_coxeter
     //! instance.
     //!
     //! This page contains documentation for the member functions of
-    //!  \ref todd_coxeter_class_group "ToddCoxeterBase" that can be used to
+    //!  \ref_todd_coxeter that can be used to
     //!  convert the index of a congruence class
     //! to a representative word belonging to that congruence class.
     //!

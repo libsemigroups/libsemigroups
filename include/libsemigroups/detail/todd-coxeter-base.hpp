@@ -75,6 +75,85 @@
 ////////////////////////////////////////////////////////////////////////
 
 namespace libsemigroups {
+
+  // NOTE: groups are defined here because the order they are declared is the
+  // order they appear in the output doc.
+
+  //! \defgroup todd_coxeter_class_mem_types_group Member types
+  //! \ingroup todd_coxeter_class_group
+  //!
+  //! \brief Public member types
+  //!
+  //! This page contains the documentation of the public member types of a
+  //! \ref_todd_coxeter instance.
+
+  //! \defgroup todd_coxeter_class_init_group Constructors + initializers
+  //! \ingroup todd_coxeter_class_group
+  //!
+  //! \brief Construct or re-initialize a \ref_todd_coxeter
+  //! instance (public member function).
+  //!
+  //! This page documents the constructors and initialisers for the
+  //! \ref_todd_coxeter class.
+  //!
+  //! Every constructor (except the move + copy constructors, and the move
+  //! and copy assignment operators) has a matching `init` function with the
+  //! same signature that can be used to re-initialize a \ref_todd_coxeter
+  //! instance as if it had just been constructed; but without necessarily
+  //! releasing any previous allocated memory.
+
+  //! \defgroup todd_coxeter_class_settings_group Settings
+  //! \ingroup todd_coxeter_class_group
+  //!
+  //! \brief Settings that control the behaviour of a  \ref
+  //! todd_coxeter_class_group  instance.
+  //!
+  //! This page contains information about the member functions of the
+  //! \ref_todd_coxeter that control various settings that influence the
+  //! congruence enumeration process.
+  //!
+  //! There are a fairly large number of settings, they can profoundly
+  //! alter the run time of a congruence enumeration process, but it is hard
+  //! to predict what settings will work best for any particular input.
+  //!
+  //! See also \ref Runner for further settings.
+
+  //! \defgroup todd_coxeter_class_intf_group Common member functions
+  //! \ingroup todd_coxeter_class_group
+  //!
+  //! \brief Documentation of common member functions of \ref Congruence,
+  //! \ref Kambites, \ref libsemigroups::KnuthBendix, and \ref_todd_coxeter.
+  //!
+  //! This page contains documentation of the member functions of
+  //! \ref_todd_coxeter that are implemented in all of the classes Congruence,
+  //! Kambites, KnuthBendix, and \ref_todd_coxeter.
+
+  //! \defgroup todd_coxeter_class_accessors_group Accessors
+  //!
+  //! \ingroup todd_coxeter_class_group
+  //!
+  //! \brief Member functions that can be used to access the state of a
+  //! \ref_todd_coxeter instance.
+  //!
+  //! This page contains the documentation of the various member
+  //! functions of the \ref_todd_coxeter
+  //! class that can be used to access the state of an instance.
+  //!
+  //! Those functions with the prefix `current_` do not perform any
+  //! further enumeration.
+
+  //! \defgroup todd_coxeter_class_mod_group Modifiers
+  //! \ingroup todd_coxeter_class_group
+  //!
+  //! \brief Member functions that can be used to modify the state of a
+  //! \ref_todd_coxeter instance.
+  //!
+  //! This page contains documentation of the member functions of
+  //! \ref_todd_coxeter that can be used to modify the state of a
+  //! \ref_todd_coxeter instance. In other words, for modifying the WordGraph
+  //! that is the output of the algorithm in a way that preserves it up to
+  //! isomorphism.
+
   namespace detail {
     class ToddCoxeterBase
         : public detail::CongruenceCommon,
@@ -307,21 +386,7 @@ namespace libsemigroups {
       // 4. ToddCoxeterBase - interface requirements - add_generating_pair
       ////////////////////////////////////////////////////////////////////////
 
-      //! \defgroup todd_coxeter_class_intf_group Common member functions
-      //! \ingroup todd_coxeter_class_group
-      //!
-      //! \brief Documentation of common member functions of \ref
-      //! Congruence, Kambites, KnuthBendixBase, and \ref
-      //! todd_coxeter_class_group "ToddCoxeterBase".
-      //!
-      //! This page contains documentation of the member functions of
-      //!  \ref_todd_coxeter that are
-      //!  implemented in all of the classes Congruence,
-      //! Kambites, KnuthBendixBase, and \ref todd_coxeter_class_group
-      //! "ToddCoxeterBase".
-      //!
-      //! @{
-
+      //! \ingroup todd_coxeter_class_intf_group
       //! \brief Add generating pair via iterators.
       //!
       //! This function adds a generating pair to the congruence represented
@@ -349,6 +414,7 @@ namespace libsemigroups {
             ToddCoxeterBase>(first1, last1, first2, last2);
       }
 
+      //! \ingroup todd_coxeter_class_intf_group
       //! \brief Add generating pair via iterators.
       //!
       //! This function adds a generating pair to the congruence represented
@@ -378,17 +444,16 @@ namespace libsemigroups {
       // 5. ToddCoxeterBase - interface requirements - number_of_classes
       ////////////////////////////////////////////////////////////////////////
 
+      //! \ingroup todd_coxeter_class_intf_group
       //! \brief Compute the number of classes in the congruence.
       //!
       //! This function computes the number of classes in the congruence
-      //! represented by a \ref_todd_coxeter
-      //! instance by running the congruence enumeration until it
-      //! terminates.
+      //! represented by a \ref_todd_coxeter instance by running the congruence
+      //! enumeration until it terminates.
       //!
-      //! \returns The number of congruences classes of a \ref
-      //! todd_coxeter_class_group "ToddCoxeterBase" instance if this number
-      //! is finite, or \ref POSITIVE_INFINITY in some cases if this number
-      //! is not finite.
+      //! \returns The number of congruences classes of a \ref_todd_coxeter
+      //! instance if this number is finite, or \ref POSITIVE_INFINITY in some
+      //! cases if this number is not finite.
       //!
       //! \cong_intf_warn_undecidable{Todd-Coxeter}
       [[nodiscard]] uint64_t number_of_classes();
@@ -397,22 +462,21 @@ namespace libsemigroups {
       // 6. ToddCoxeterBase - interface requirements - contains
       ////////////////////////////////////////////////////////////////////////
 
+      //! \ingroup todd_coxeter_class_intf_group
       //! \brief Check containment of a pair of words via iterators.
       //!
       //! This function checks whether or not the words represented by the
-      //! ranges
-      //! \p first1 to \p last1 and \p first2 to \p last2 are already known
-      //! to be contained in the congruence represented by a \ref
-      //! todd_coxeter_class_group "ToddCoxeterBase" instance. This function
-      //! performs no enumeration, so it is possible for the words to be
-      //! contained in the congruence, but that this is not currently known.
+      //! ranges \p first1 to \p last1 and \p first2 to \p last2 are already
+      //! known to be contained in the congruence represented by a \ref
+      //! todd_coxeter_class_group  instance. This function performs no
+      //! enumeration, so it is possible for the words to be contained in the
+      //! congruence, but that this is not currently known.
       //!
       //! \cong_intf_params_contains
       //!
       //! \returns
       //! * tril::TRUE if the words are known to belong to the congruence;
-      //! * tril::FALSE if the words are known to not belong to the
-      //! congruence;
+      //! * tril::FALSE if the words are known to not belong to the congruence;
       //! * tril::unknown otherwise.
       //!
       //! \cong_intf_warn_assume_letters_in_bounds
@@ -425,13 +489,14 @@ namespace libsemigroups {
                                         Iterator3 first2,
                                         Iterator4 last2) const;
 
+      //! \ingroup todd_coxeter_class_intf_group
       //! \brief Check containment of a pair of words via iterators.
       //!
       //! This function checks whether or not the words represented by the
       //! ranges
       //! \p first1 to \p last1 and \p first2 to \p last2 are already known
       //! to be contained in the congruence represented by a \ref
-      //! todd_coxeter_class_group "ToddCoxeterBase" instance. This function
+      //! todd_coxeter_class_group  instance. This function
       //! performs no enumeration, so it is possible for the words to be
       //! contained in the congruence, but that this is not currently known.
       //!
@@ -456,13 +521,14 @@ namespace libsemigroups {
             first1, last1, first2, last2);
       }
 
+      //! \ingroup todd_coxeter_class_intf_group
       //! \brief Check containment of a pair of words via iterators.
       //!
       //! This function checks whether or not the words represented by the
       //! ranges
       //! \p first1 to \p last1 and \p first2 to \p last2 are contained in
-      //! the congruence represented by a \ref todd_coxeter_class_group
-      //! "ToddCoxeterBase" instance. This function triggers a full
+      //! the congruence represented by a \ref_todd_coxeter
+      //!  instance. This function triggers a full
       //! enumeration, which may never terminate.
       //!
       //! \cong_intf_params_contains
@@ -481,13 +547,14 @@ namespace libsemigroups {
                               Iterator3 first2,
                               Iterator4 last2);
 
+      //! \ingroup todd_coxeter_class_intf_group
       //! \brief Check containment of a pair of words via iterators.
       //!
       //! This function checks whether or not the words represented by the
       //! ranges
       //! \p first1 to \p last1 and \p first2 to \p last2 are contained in
-      //! the congruence represented by a \ref todd_coxeter_class_group
-      //! "ToddCoxeterBase" instance. This function triggers a full
+      //! the congruence represented by a \ref_todd_coxeter
+      //!  instance. This function triggers a full
       //! enumeration, which may never terminate.
       //!
       //! \cong_intf_params_contains
@@ -510,19 +577,18 @@ namespace libsemigroups {
       // 7. ToddCoxeterBase - interface requirements - reduce
       ////////////////////////////////////////////////////////////////////////
 
+      //! \ingroup todd_coxeter_class_intf_group
       //! \brief Reduce a word with no enumeration or checks.
       //!
       //! This function writes a reduced word equivalent to the input word
-      //! described by the iterator \p first and \p last to the output
-      //! iterator \p d_first. This function triggers no enumeration. The
-      //! word output by this function is equivalent to the input word in
-      //! the congruence defined by a \ref todd_coxeter_class_group
-      //! "ToddCoxeterBase" instance. If the
-      //!  \ref_todd_coxeter instance is \ref
-      //!  finished, then the output word is a normal
-      //! form for the input word. If the  \ref todd_coxeter_class_group
-      //! "ToddCoxeterBase" instance is not \ref finished, then it might be
-      //! that equivalent input words produce different output words.
+      //! described by the iterator \p first and \p last to the output iterator
+      //! \p d_first. This function triggers no enumeration. The word output by
+      //! this function is equivalent to the input word in the congruence
+      //! defined by a \ref_todd_coxeter instance. If the \ref_todd_coxeter
+      //! instance is \ref finished, then the output word is a normal form for
+      //! the input word. If the \ref_todd_coxeter instance is not \ref
+      //! finished, then it might be that equivalent input words produce
+      //! different output words.
       //!
       //! \cong_intf_params_reduce
       //!
@@ -537,19 +603,18 @@ namespace libsemigroups {
                                              InputIterator1 first,
                                              InputIterator2 last) const;
 
+      //! \ingroup todd_coxeter_class_intf_group
       //! \brief Reduce a word with no enumeration.
       //!
       //! This function writes a reduced word equivalent to the input word
-      //! described by the iterator \p first and \p last to the output
-      //! iterator \p d_first. This function triggers no enumeration. The
-      //! word output by this function is equivalent to the input word in
-      //! the congruence defined by a \ref todd_coxeter_class_group
-      //! "ToddCoxeterBase" instance. If the
-      //!  \ref_todd_coxeter instance is \ref
-      //!  finished, then the output word is a normal
-      //! form for the input word. If the  \ref todd_coxeter_class_group
-      //! "ToddCoxeterBase" instance is not \ref finished, then it might be
-      //! that equivalent input words produce different output words.
+      //! described by the iterator \p first and \p last to the output iterator
+      //! \p d_first. This function triggers no enumeration. The word output by
+      //! this function is equivalent to the input word in the congruence
+      //! defined by a \ref_todd_coxeter instance. If the \ref_todd_coxeter
+      //! instance is \ref finished, then the output word is a normal form for
+      //! the input word. If the \ref_todd_coxeter instance is not \ref
+      //! finished, then it might be that equivalent input words produce
+      //! different output words.
       //!
       //! \cong_intf_params_reduce
       //!
@@ -557,7 +622,6 @@ namespace libsemigroups {
       //! inserted into \p d_first.
       //!
       //! \cong_intf_throws_if_letters_out_of_bounds
-      //!
       template <typename OutputIterator,
                 typename InputIterator1,
                 typename InputIterator2>
@@ -568,6 +632,7 @@ namespace libsemigroups {
             d_first, first, last);
       }
 
+      //! \ingroup todd_coxeter_class_intf_group
       //! \brief Reduce a word with no checks.
       //!
       //! This function triggers a full enumeration and then writes a
@@ -599,6 +664,7 @@ namespace libsemigroups {
             d_first, first, last);
       }
 
+      //! \ingroup todd_coxeter_class_intf_group
       //! \brief Reduce a word.
       //!
       //! This function triggers a full enumeration and then writes a
@@ -629,7 +695,6 @@ namespace libsemigroups {
         return detail::CongruenceCommon::reduce<ToddCoxeterBase>(
             d_first, first, last);
       }
-      //! @}
 
       ////////////////////////////////////////////////////////////////////////
       // 8. ToddCoxeterBase - settings - public
@@ -645,24 +710,7 @@ namespace libsemigroups {
       using Reporter::report_every;
 #endif
 
-      //! \defgroup todd_coxeter_class_settings_group Settings
-      //! \ingroup todd_coxeter_class_group
-      //!
-      //! \brief Settings that control the behaviour of a  \ref
-      //! todd_coxeter_class_group "ToddCoxeterBase" instance.
-      //!
-      //! This page contains information about the member functions of the
-      //! \ref_todd_coxeter that control various settings that influence the
-      //! congruence enumeration process.
-      //!
-      //! There are a fairly large number of settings, they can profoundly
-      //! alter the run time of a congruence enumeration process, but it is hard
-      //! to predict what settings will work best for any particular input.
-      //!
-      //! See also \ref Runner for further settings.
-      //!
-      //! @{
-
+      //! \ingroup todd_coxeter_class_settings_group
       //! \brief Set the maximum number of definitions in the stack.
       //!
       //! This setting specifies the maximum number of definitions that can
@@ -680,6 +728,7 @@ namespace libsemigroups {
       //! \noexcept
       ToddCoxeterBase& def_max(size_t val) noexcept;
 
+      //! \ingroup todd_coxeter_class_settings_group
       //! \brief Get the current value of the setting for the maximum number
       //! of definitions.
       //!
@@ -690,10 +739,11 @@ namespace libsemigroups {
       //! \noexcept
       [[nodiscard]] size_t def_max() const noexcept;
 
+      //! \ingroup todd_coxeter_class_settings_group
       //! \brief Set the definition policy.
       //!
       //! This function can be used to specify how to handle definitions.
-      //! For details see options::def_policy.
+      //! For details see \ref ToddCoxeter::options::def_policy.
       //!
       //! The default value of this setting is
       //! \ref ToddCoxeter::options::def_policy::no_stack_if_no_space.
@@ -706,19 +756,21 @@ namespace libsemigroups {
       //! \no_libsemigroups_except
       ToddCoxeterBase& def_policy(options::def_policy val);
 
+      //! \ingroup todd_coxeter_class_settings_group
       //! \brief Get the current value of the definition policy.
       //!
       //! This function returns the current value of the definition policy
       //! which specifies how to handle definitions. For details see
-      //! options::def_policy.
+      //! \ref ToddCoxeter::options::def_policy.
       //!
       //! \returns The current value of the setting, a value of type
-      //! \ref options::def_policy.
+      //! \ref ToddCoxeter::options::def_policy.
       //!
       //! \exceptions
       //! \noexcept
       [[nodiscard]] options::def_policy def_policy() const noexcept;
 
+      //! \ingroup todd_coxeter_class_settings_group
       //! \brief Set the number of Felsch style definitions in
       //! [ACE](https://staff.itee.uq.edu.au/havas/) strategies.
       //!
@@ -743,6 +795,7 @@ namespace libsemigroups {
       //! \throws LibsemigroupsException if \p val is \c 0.
       ToddCoxeterBase& f_defs(size_t val);
 
+      //! \ingroup todd_coxeter_class_settings_group
       //! \brief Get the number of Felsch style definitions in
       //! [ACE](https://staff.itee.uq.edu.au/havas/) strategies.
       //!
@@ -767,6 +820,7 @@ namespace libsemigroups {
       //! \noexcept
       [[nodiscard]] size_t f_defs() const noexcept;
 
+      //! \ingroup todd_coxeter_class_settings_group
       //! \brief Set the number of HLT style definitions in
       //! [ACE](https://staff.itee.uq.edu.au/havas/) strategies.
       //!
@@ -791,6 +845,7 @@ namespace libsemigroups {
       //! \throws LibsemigroupsException if \p val is \c 0.
       ToddCoxeterBase& hlt_defs(size_t val);
 
+      //! \ingroup todd_coxeter_class_settings_group
       //! \brief Get the number of HLT style definitions in
       //! [ACE](https://staff.itee.uq.edu.au/havas/) strategies.
       //!
@@ -815,6 +870,7 @@ namespace libsemigroups {
       //! \noexcept
       [[nodiscard]] size_t hlt_defs() const noexcept;
 
+      //! \ingroup todd_coxeter_class_settings_group
       //! \brief Set the size of a large collapse.
       //!
       //! This function can be used to set what should be considered a
@@ -849,6 +905,7 @@ namespace libsemigroups {
       //! \noexcept
       ToddCoxeterBase& large_collapse(size_t val) noexcept;
 
+      //! \ingroup todd_coxeter_class_settings_group
       //! \brief Get the current size of a large collapse.
       //!
       //! This function can be used to get what is currently considered a
@@ -864,6 +921,7 @@ namespace libsemigroups {
       //! \noexcept
       [[nodiscard]] size_t large_collapse() const noexcept;
 
+      //! \ingroup todd_coxeter_class_settings_group
       //! \brief Set the lookahead extent.
       //!
       //! This function can be used to specify the extent of any lookaheads
@@ -882,6 +940,7 @@ namespace libsemigroups {
       //! \noexcept
       ToddCoxeterBase& lookahead_extent(options::lookahead_extent val) noexcept;
 
+      //! \ingroup todd_coxeter_class_settings_group
       //! \brief Get the current value of the lookahead extent.
       //!
       //! This function returns the current value of the lookahead extent
@@ -896,6 +955,7 @@ namespace libsemigroups {
       //! \noexcept
       [[nodiscard]] options::lookahead_extent lookahead_extent() const noexcept;
 
+      //! \ingroup todd_coxeter_class_settings_group
       //! \brief Set the lookahead growth factor.
       //!
       //! This setting determines by what factor the number of nodes
@@ -916,6 +976,7 @@ namespace libsemigroups {
       //! \throws LibsemigroupsException if \p val is less than `1.0`.
       ToddCoxeterBase& lookahead_growth_factor(float val);
 
+      //! \ingroup todd_coxeter_class_settings_group
       //! \brief Get the current value of the lookahead growth factor.
       //!
       //! This function returns the current value of the lookahead growth
@@ -928,6 +989,7 @@ namespace libsemigroups {
       //! \noexcept
       [[nodiscard]] float lookahead_growth_factor() const noexcept;
 
+      //! \ingroup todd_coxeter_class_settings_group
       //! \brief Set the lookahead growth threshold.
       //!
       //! This setting determines the threshold for the number of nodes
@@ -948,6 +1010,7 @@ namespace libsemigroups {
       //! \noexcept
       ToddCoxeterBase& lookahead_growth_threshold(size_t val) noexcept;
 
+      //! \ingroup todd_coxeter_class_settings_group
       //! \brief Get the current value of the lookahead growth threshold.
       //!
       //! This function returns the current value of the lookahead growth
@@ -960,6 +1023,7 @@ namespace libsemigroups {
       //! \noexcept
       [[nodiscard]] size_t lookahead_growth_threshold() const noexcept;
 
+      //! \ingroup todd_coxeter_class_settings_group
       //! \brief Set the minimum value of \ref lookahead_next.
       //!
       //! After a lookahead is performed the value of \ref lookahead_next is
@@ -981,6 +1045,7 @@ namespace libsemigroups {
       //! \noexcept
       ToddCoxeterBase& lookahead_min(size_t val) noexcept;
 
+      //! \ingroup todd_coxeter_class_settings_group
       //! \brief Get the current value of the minimum lookahead setting.
       //!
       //! This function returns the current value of the minimum lookahead.
@@ -995,6 +1060,7 @@ namespace libsemigroups {
       //! \noexcept
       [[nodiscard]] size_t lookahead_min() const noexcept;
 
+      //! \ingroup todd_coxeter_class_settings_group
       //! \brief Set the threshold that will trigger a lookahead.
       //!
       //! If the number of active nodes exceeds the value set by this
@@ -1011,6 +1077,7 @@ namespace libsemigroups {
       //! \noexcept
       ToddCoxeterBase& lookahead_next(size_t val) noexcept;
 
+      //! \ingroup todd_coxeter_class_settings_group
       //! \brief Get the current value of the lookahead next setting.
       //!
       //! This function returns the current value of the lookahead next
@@ -1024,6 +1091,7 @@ namespace libsemigroups {
       //! \noexcept
       [[nodiscard]] size_t lookahead_next() const noexcept;
 
+      //! \ingroup todd_coxeter_class_settings_group
       //! \brief Set the lookahead stop early interval.
       //!
       //! During any lookaheads that are performed, it is periodically
@@ -1047,6 +1115,7 @@ namespace libsemigroups {
       ToddCoxeterBase&
       lookahead_stop_early_interval(std::chrono::nanoseconds val) noexcept;
 
+      //! \ingroup todd_coxeter_class_settings_group
       //! \brief Get the current value of the lookahead stop early interval.
       //!
       //! This function returns the current value of the lookahead stop
@@ -1060,6 +1129,7 @@ namespace libsemigroups {
       //! \noexcept
       std::chrono::nanoseconds lookahead_stop_early_interval() const noexcept;
 
+      //! \ingroup todd_coxeter_class_settings_group
       //! \brief Set the lookahead stop early ratio.
       //!
       //! During any lookaheads that are performed, it is periodically
@@ -1082,6 +1152,7 @@ namespace libsemigroups {
       //! \f$[0, 1)\f$.
       ToddCoxeterBase& lookahead_stop_early_ratio(float val);
 
+      //! \ingroup todd_coxeter_class_settings_group
       //! \brief Get the current value of the lookahead stop early ratio.
       //!
       //! This function returns the current value of the lookahead stop
@@ -1094,6 +1165,7 @@ namespace libsemigroups {
       //! \noexcept
       float lookahead_stop_early_ratio() const noexcept;
 
+      //! \ingroup todd_coxeter_class_settings_group
       //! \brief Set the style of lookahead.
       //!
       //! This function can be used to set the style of any lookaheads that
@@ -1112,6 +1184,7 @@ namespace libsemigroups {
       //! \noexcept
       ToddCoxeterBase& lookahead_style(options::lookahead_style val) noexcept;
 
+      //! \ingroup todd_coxeter_class_settings_group
       //! \brief Get the current value of the lookahead style.
       //!
       //! This function returns the current value of the lookahead style.
@@ -1123,6 +1196,7 @@ namespace libsemigroups {
       //! \noexcept
       [[nodiscard]] options::lookahead_style lookahead_style() const noexcept;
 
+      //! \ingroup todd_coxeter_class_settings_group
       //! \brief Specify the minimum number of classes that may permit any
       //! enumeration early stop.
       //!
@@ -1145,6 +1219,7 @@ namespace libsemigroups {
       //! \noexcept
       ToddCoxeterBase& lower_bound(size_t val) noexcept;
 
+      //! \ingroup todd_coxeter_class_settings_group
       //! \brief Get the current value of the lower bound.
       //!
       //! This function returns the current value of the lower bound.
@@ -1157,6 +1232,7 @@ namespace libsemigroups {
       //! \noexcept
       [[nodiscard]] size_t lower_bound() const noexcept;
 
+      //! \ingroup todd_coxeter_class_settings_group
       //! \brief Set whether or not to process definitions during HLT.
       //!
       //! If the argument of this function is \c true and the HLT strategy
@@ -1173,6 +1249,7 @@ namespace libsemigroups {
       //! \noexcept
       ToddCoxeterBase& save(bool val) noexcept;
 
+      //! \ingroup todd_coxeter_class_settings_group
       //! \brief Get the current value of the save setting.
       //!
       //! This function returns the current value of the save setting.
@@ -1184,6 +1261,7 @@ namespace libsemigroups {
       //! \noexcept
       [[nodiscard]] bool save() const noexcept;
 
+      //! \ingroup todd_coxeter_class_settings_group
       //! \brief Specify the congruence enumeration strategy.
       //!
       //! The strategy used during the enumeration can be specified using
@@ -1199,6 +1277,7 @@ namespace libsemigroups {
       //! \noexcept
       ToddCoxeterBase& strategy(options::strategy val) noexcept;
 
+      //! \ingroup todd_coxeter_class_settings_group
       //! \brief Get the current value of the strategy setting.
       //!
       //! This function returns the current value of the strategy setting.
@@ -1210,6 +1289,7 @@ namespace libsemigroups {
       //! \noexcept
       [[nodiscard]] options::strategy strategy() const noexcept;
 
+      //! \ingroup todd_coxeter_class_settings_group
       //! \brief Set whether or not to perform an HLT-style push of the
       //! defining relations at the identity.
       //!
@@ -1228,6 +1308,7 @@ namespace libsemigroups {
       //! \noexcept
       ToddCoxeterBase& use_relations_in_extra(bool val) noexcept;
 
+      //! \ingroup todd_coxeter_class_settings_group
       //! \brief Get the current value of the \"use relations in extra\"
       //! setting.
       //!
@@ -1240,7 +1321,6 @@ namespace libsemigroups {
       //! \exceptions
       //! \noexcept
       [[nodiscard]] bool use_relations_in_extra() const noexcept;
-      //! @}
 
 #ifdef PARSED_BY_DOXYGEN
       //! \ingroup todd_coxeter_class_settings_group
@@ -1268,7 +1348,7 @@ namespace libsemigroups {
       //! version setting.
       //!
       //! \returns The current value of the setting, a value of type
-      //! `options::def_version`.
+      //! \ref ToddCoxeter::options::def_version.
       //!
       //! \exceptions
       //! \noexcept
@@ -1289,21 +1369,6 @@ namespace libsemigroups {
       }
 #endif
 
-      //! \defgroup todd_coxeter_class_accessors_group Accessors
-      //! \ingroup todd_coxeter_class_group
-      //!
-      //! \brief Member functions that can be used to access the state of a
-      //! \ref_todd_coxeter instance.
-      //!
-      //! This page contains the documentation of the various member
-      //! functions of the \ref_todd_coxeter
-      //! class that can be used to access the state of an instance.
-      //!
-      //! Those functions with the prefix `current_` do not perform any
-      //! further enumeration.
-      //!
-      //! @{
-
       // [[nodiscard]] bool empty() const {
       //   return (internal_presentation().rules.empty() &&
       //   generating_pairs().empty()
@@ -1314,14 +1379,15 @@ namespace libsemigroups {
       //   // active node.
       // }
 
+      //! \ingroup todd_coxeter_class_accessors_group
       //! \brief Get the current word graph.
       //!
       //! In some sense, the purpose of the Todd-Coxeter algorithm is to
       //! produce a WordGraph of the action of a set of generators on the
       //! classes of a congruence. This function can be used to obtain a
-      //! reference to that WordGraph as it currently exists within a \ref
-      //! todd_coxeter_class_group "ToddCoxeterBase" instance. This function
-      //! does not trigger any enumeration.
+      //! reference to that WordGraph as it currently exists within a
+      //! \ref_todd_coxeter instance. This function does not trigger any
+      //! enumeration.
       //!
       //! The WordGraph returned by this function may be in a rather
       //! complicated state. No guarantees are given: about the values of
@@ -1344,6 +1410,7 @@ namespace libsemigroups {
         return _word_graph;
       }
 
+      //! \ingroup todd_coxeter_class_accessors_group
       //! \brief Get the word graph after performing a full congruence
       //! enumeration.
       //!
@@ -1371,6 +1438,7 @@ namespace libsemigroups {
       //! \returns A const reference to the underlying WordGraph.
       word_graph_type const& word_graph();
 
+      //! \ingroup todd_coxeter_class_accessors_group
       //! \brief Get the current possible spanning tree of the underlying
       //! word graph.
       //!
@@ -1397,6 +1465,7 @@ namespace libsemigroups {
         return _forest;
       }
 
+      //! \ingroup todd_coxeter_class_accessors_group
       //! \brief Get the spanning tree of the underlying word graph.
       //!
       //! This function returns a const reference to a spanning tree (a \ref
@@ -1408,6 +1477,7 @@ namespace libsemigroups {
       //! \ref WordGraph.
       Forest const& spanning_tree();
 
+      //! \ingroup todd_coxeter_class_accessors_group
       //! \brief Get the current standardization order of the underlying
       //! word graph.
       //!
@@ -1429,9 +1499,8 @@ namespace libsemigroups {
       //!   word belonging to a given congruence class;
       //!   - the return values of \ref todd_coxeter::normal_forms will be
       //!   in short-lex order;
-      //!   - the classes of the congruence will be indexed in short-lex
-      //!   order
-      //!     on the short-lex least word;
+      //!   - the classes of the congruence will be indexed in short-lex order
+      //!   on the short-lex least word;
       //! * Order::lex implies that:
       //!   - the return values of \ref todd_coxeter::normal_forms will be
       //!   ordered lexicographically.
@@ -1454,6 +1523,7 @@ namespace libsemigroups {
         return _standardized;
       }
 
+      //! \ingroup todd_coxeter_class_accessors_group
       //! \brief Check if the word graph is currently standardized with
       //! respect to a given order.
       //!
@@ -1470,6 +1540,7 @@ namespace libsemigroups {
       //! \no_libsemigroups_except
       bool is_standardized(Order val) const;
 
+      //! \ingroup todd_coxeter_class_accessors_group
       //! \brief Check if the word graph is currently standardized with
       //! respect to any order.
       //!
@@ -1483,27 +1554,12 @@ namespace libsemigroups {
       //! \exceptions
       //! \no_libsemigroups_except
       bool is_standardized() const;
-      //! @}
 
       ////////////////////////////////////////////////////////////////////////
       // 10. ToddCoxeterBase - modifiers - public
       ////////////////////////////////////////////////////////////////////////
 
-      //! \defgroup todd_coxeter_class_mod_group Modifiers
-      //! \ingroup todd_coxeter_class_group
-      //!
-      //! \brief Member functions that can be used to modify the state of a
-      //! \ref_todd_coxeter instance.
-      //!
-      //! This page contains documentation of the member functions of
-      //!  \ref_todd_coxeter that can be used
-      //!  to modify the state of a \ref
-      //! todd_coxeter_class_group "ToddCoxeterBase" instance. In other
-      //! words, for modifying the WordGraph that is the output of the
-      //! algorithm in a way that preserves it up to isomorphism.
-      //!
-      //! @{
-
+      //! \ingroup todd_coxeter_class_mod_group
       //! \brief Shrink the underlying word graph to remove all dead nodes.
       //!
       //! This function triggers a full enumeration, and standardization,
@@ -1513,6 +1569,7 @@ namespace libsemigroups {
       //! nothing.
       void shrink_to_fit();
 
+      //! \ingroup todd_coxeter_class_mod_group
       //! \brief Standardize the \ref current_word_graph.
       //!
       //! This function standardizes the return value of \ref
@@ -1537,6 +1594,7 @@ namespace libsemigroups {
       //! \sa \ref current_spanning_tree.
       bool standardize(Order val);
 
+      //! \ingroup todd_coxeter_class_mod_group
       //! \brief Perform a lookahead.
       //!
       //! This function can be used to explicitly perform a lookahead. The
@@ -1566,7 +1624,7 @@ namespace libsemigroups {
       //! instance.
       //!
       //! This page contains documentation for the member functions of \ref
-      //! todd_coxeter_class_group "ToddCoxeterBase" that can be used to
+      //! todd_coxeter_class_group  that can be used to
       //! convert a word into the index of congruence class.
       //!
       //! \sa \ref todd_coxeter_class_index_word_group for the inverses of
@@ -1600,7 +1658,7 @@ namespace libsemigroups {
       //!
       //! \cong_intf_warn_assume_letters_in_bounds
       //!
-      // NOTE THAT: the graph contains one more node than there are element
+      // NOTE: the graph contains one more node than there are element
       // if the underlying presentation does not contain the empty word
       template <typename Iterator1, typename Iterator2>
       index_type current_index_of_no_checks(Iterator1 first,
@@ -1903,12 +1961,12 @@ namespace libsemigroups {
     //! \ingroup todd_coxeter_group
     //!
     //! \brief Return a human readable representation of a \ref
-    //! todd_coxeter_class_group "ToddCoxeterBase" object.
+    //! todd_coxeter_class_group  object.
     //!
     //! Defined in `todd-coxeter.hpp`.
     //!
-    //! This function returns a human readable representation of a \ref
-    //! todd_coxeter_class_group "ToddCoxeterBase" object.
+    //! This function returns a human readable representation of a
+    //! \ref_todd_coxeter object.
     //!
     //! \param tc the \ref_todd_coxeter object.
     //!
