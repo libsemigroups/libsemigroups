@@ -33,42 +33,6 @@
 namespace libsemigroups {
   namespace detail {
 
-    //! \defgroup cong_all_group Congruences
-    //!
-    //! This page contains links to the documentation for the classes Congruence
-    //! and CongruenceCommon, and to helper functions for all of the classes in
-    //! `libsemigroups` that are derived from CongruenceCommon.
-    //!
-    //! These classes are:
-    //! * \ref Congruence
-    //! * \ref Kambites
-    //! * \ref KnuthBendix
-    //! * \ref todd_coxeter_class_group "ToddCoxeter"
-
-    //! \defgroup cong_all_classes_group Classes
-    //! \ingroup cong_all_group
-    //!
-    //! \brief Documentation for the class template Congruence.
-    //!
-    //! This page contains links to the documentation for the class template
-    //! Congruence.
-
-    //! \ingroup cong_all_classes_group
-    //!
-    //! \brief Class collecting common aspects of classes representing
-    //! congruences.
-    //!
-    //! Defined in `cong-common.hpp`.
-    //!
-    //! Every class for representing a congruence in `libsemigroups` is derived
-    //! from CongruenceCommon, which holds the member functions and data that
-    //! are common to all its derived classes.
-    //!
-    //! The most useful of these classes are:
-    //! * \ref Congruence
-    //! * \ref Kambites
-    //! * \ref KnuthBendix
-    //! * \ref ToddCoxeter
     class CongruenceCommon : public Runner {
       /////////////////////////////////////////////////////////////////////////
       // CongruenceCommon - data members - private
@@ -128,6 +92,7 @@ namespace libsemigroups {
       // CongruenceCommon - public member functions
       ////////////////////////////////////////////////////////////////////////////
 
+      // TODO(0) include this doc somewhere
       //! \brief Returns the number of generating pairs.
       //!
       //! This function returns the number of generating pairs, which is the
@@ -145,7 +110,24 @@ namespace libsemigroups {
         return _internal_generating_pairs.size() / 2;
       }
 
+      // TODO(0) remove this doc (maybe reuse it somewhere)
       //! \brief Returns a const reference to the std::vector of generating
+      //! pairs.
+      //!
+      //! This function returns the generating pairs of the congruence
+      //! represented by any derived class of a CongruenceCommon. This is
+      //! always a std::vector of \ref word_type, regardless of the
+      //! type of the presentation used by the implementation in the derived
+      //! class.
+      //!
+      //! \returns
+      //! A const reference to the generating pairs.
+      //!
+      //! \exceptions
+      //! \noexcept
+      //!
+      //! \complexity
+      //! Constant.
       //! pairs.
       //!
       //! This function returns the generating pairs of the congruence
@@ -167,6 +149,7 @@ namespace libsemigroups {
         return _internal_generating_pairs;
       }
 
+      // TODO(0) include this doc somewhere
       //! \brief The kind of the congruence (1- or 2-sided).
       //!
       //! This function returns the kind of the congruence represented by a

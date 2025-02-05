@@ -68,9 +68,10 @@ namespace libsemigroups {
   //! \cite Kambites2009ab, and \cite Mitchell2021aa.
   //!
   //! Helper functions for the class template Kambites can be found in the
-  //! namespace \ref congruence_common and \ref kambites. At present the
-  //! helper functions in these two namespaces are identical, because there are
-  //! no helper functions that only apply to the Kambites class template.
+  //! namespace \ref cong_intf_helpers_group "congruence_common" and \ref
+  //! kambites. At present the helper functions in these two namespaces are
+  //! identical, because there are no helper functions that only apply to the
+  //! Kambites class template.
 
   //! \defgroup kambites_class_group The Kambites class
   //! \ingroup kambites_group

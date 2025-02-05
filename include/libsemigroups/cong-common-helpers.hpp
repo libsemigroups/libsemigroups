@@ -71,17 +71,13 @@ namespace libsemigroups {
 
   namespace congruence_common {
 
-    //! \defgroup cong_intf_helpers_group Generic congruence helpers
-    //! \ingroup cong_all_group
-    //!
-    //! \brief Helper functions for subclasses of \ref detail::CongruenceCommon.
+    //! \defgroup cong_intf_helpers_group Common congruence helpers
     //!
     //! This page contains documentation for helper functions for the classes
-    //! Congruence, Kambites, KnuthBendixBase, and \ref todd_coxeter_class_group
-    //! "ToddCoxeterBase". The functions documented on this page belong to all
-    //! of the namespaces \ref cong_intf_helpers_group "congruence_common",
-    //! \ref congruence, \ref kambites, \ref knuth_bendix, and \ref
-    //! todd_coxeter_helpers_group "todd_coxeter".
+    //! Congruence, Kambites, KnuthBendix, and \ref_todd_coxeter. The
+    //! functions documented on this page belong to all of the namespaces
+    //! \ref cong_intf_helpers_group "congruence_common", \ref congruence, \ref
+    //! kambites, \ref knuth_bendix, and \ref todd_coxeter.
 
     ////////////////////////////////////////////////////////////////////////
     // Interface helpers - add_generating_pair

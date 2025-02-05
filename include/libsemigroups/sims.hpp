@@ -100,7 +100,7 @@
 
 namespace libsemigroups {
 
-  //! \ingroup congruences_group
+  //!
   //!
   //! \brief For keeping track of various statistics arising during the runtime
   //! of the low index algorithm.
@@ -281,7 +281,7 @@ namespace libsemigroups {
     }
   };
 
-  //! \ingroup congruences_group
+  //!
   //!
   //! \brief For setting the presentation and various runtime parameters of the
   //! Sims low index algorithm.
@@ -1482,7 +1482,7 @@ namespace libsemigroups {
     class const_rcgp_iterator;
   }  // namespace sims
 
-  //! \ingroup congruences_group
+  //!
   //!
   //! \brief For computing finite index right congruences of a finitely
   //! presented semigroup or monoid.
@@ -1796,7 +1796,7 @@ namespace libsemigroups {
 #endif
   };
 
-  //! \ingroup congruences_group
+  //!
   //!
   //! \brief For computing finite index two-sided congruences of a finitely
   //! presented semigroup or monoid.
@@ -1975,7 +1975,7 @@ namespace libsemigroups {
     };  // class iterator_base
   };  // Sims2
 
-  //! \ingroup congruences_group
+  //!
   //!
   //! \brief For computing small degree transformation representations of a
   //! finite semigroup or monoid.
@@ -2173,7 +2173,7 @@ namespace libsemigroups {
     [[nodiscard]] Sims1::word_graph_type word_graph() const;
   };
 
-  //! \ingroup congruences_group
+  //!
   //!
   //! \brief For computing the minimal degree of a transformation representation
   //! arising from a right congruences of a finite semigroup or monoid.
@@ -2286,7 +2286,7 @@ namespace libsemigroups {
   namespace sims {
     class const_cgp_iterator;
 
-    //! \ingroup congruences_group
+    //!
     //!
     //! \brief For iterating over the right congruence generating pairs.
     //!
@@ -2436,7 +2436,7 @@ namespace libsemigroups {
       bool populate_relation() const;
     };  // const_rcgp_iterator
 
-    //! \ingroup congruences_group
+    //!
     //!
     //! \brief For iterating over the two-sided congruence generating pairs.
     //!
@@ -2514,7 +2514,7 @@ namespace libsemigroups {
     rx::iterator_range<const_cgp_iterator>
     two_sided_generating_pairs(WordGraph<Node> const& wg);
 
-    //! \ingroup congruences_group
+    //!
     //!
     //! \brief Check if a word graph defines a right congruence on an
     //! f.p. semigroup or monoid.
@@ -2530,7 +2530,7 @@ namespace libsemigroups {
     void throw_if_not_right_congruence(Presentation<word_type> const& p,
                                        WordGraph<Node> const&         wg);
 
-    //! \ingroup congruences_group
+    //!
     //!
     //! \brief Check if a word graph defines a right congruence on the dual of
     //! an f.p. semigroup or monoid.
@@ -2550,7 +2550,7 @@ namespace libsemigroups {
       return is_right_congruence(p_rev, wg);
     }
 
-    //! \ingroup congruences_group
+    //!
     //!
     //! \brief Check if a word graph defines a two-sided congruence on
     //! an f.p. semigroup or monoid (no checks).
@@ -2568,7 +2568,7 @@ namespace libsemigroups {
     bool is_two_sided_congruence_no_checks(Presentation<word_type> const& p,
                                            WordGraph<Node> const&         wg);
 
-    //! \ingroup congruences_group
+    //!
     //!
     //! \brief Check if a word graph defines a two sided congruence on
     //! an f.p. semigroup or monoid.
@@ -2585,7 +2585,7 @@ namespace libsemigroups {
     void throw_if_not_two_sided_congruence(Presentation<word_type> const& p,
                                            WordGraph<Node> const&         wg);
 
-    //! \ingroup congruences_group
+    //!
     //!
     //! \brief Get an iterator pointing to the first right congruence generating
     //! pair (no checks).
@@ -2607,7 +2607,7 @@ namespace libsemigroups {
       return const_rcgp_iterator(p, &wg, 0, 0);
     }
 
-    //! \ingroup congruences_group
+    //!
     //!
     //! \brief Get an iterator pointing to the first right congruence generating
     //! pair.
@@ -2626,7 +2626,7 @@ namespace libsemigroups {
       return cbegin_right_generating_pairs_no_checks(p, wg);
     }
 
-    //! \ingroup congruences_group
+    //!
     //!
     //! \brief Get an iterator pointing to the first two-sided congruence
     //! generating pair (no checks).
@@ -2656,7 +2656,7 @@ namespace libsemigroups {
       return const_cgp_iterator(p, &wg, 0, 0);
     }
 
-    //! \ingroup congruences_group
+    //!
     //!
     //! \brief Get an iterator pointing to the first two-sided congruence
     //! generating pair.
@@ -2682,7 +2682,7 @@ namespace libsemigroups {
       return cbegin_two_sided_generating_pairs_no_checks(p, wg);
     }
 
-    //! \ingroup congruences_group
+    //!
     //!
     //! \brief Get an iterator pointing to one after the last right congruence
     //! generating pair (no checks).
@@ -2703,7 +2703,7 @@ namespace libsemigroups {
       return const_rcgp_iterator(p, &wg, wg.number_of_active_nodes(), 0);
     }
 
-    //! \ingroup congruences_group
+    //!
     //!
     //! \brief Get an iterator pointing to one after the last right congruence
     //! generating pair.
@@ -2722,7 +2722,7 @@ namespace libsemigroups {
       return cend_right_generating_pairs_no_checks(p, wg);
     }
 
-    //! \ingroup congruences_group
+    //!
     //!
     //! \brief Get an iterator pointing to one after the last two-sided
     //! congruence generating pair (no checks).
@@ -2750,7 +2750,7 @@ namespace libsemigroups {
       return const_cgp_iterator(p, &wg, wg.number_of_active_nodes(), 0);
     }
 
-    //! \ingroup congruences_group
+    //!
     //!
     //! \brief Get an iterator pointing to one after the last two-sided
     //! congruence generating pair.
@@ -2776,7 +2776,7 @@ namespace libsemigroups {
       return cend_two_sided_generating_pairs_no_checks(p, wg);
     }
 
-    //! \ingroup congruences_group
+    //!
     //!
     //! \brief Compute the right congruence generating pairs of a word graph on
     //! an f.p. semigroup or monoid (no checks).
@@ -2797,7 +2797,7 @@ namespace libsemigroups {
                                 cend_right_generating_pairs_no_checks(p, wg));
     }
 
-    //! \ingroup congruences_group
+    //!
     //!
     //! \brief Compute the right congruence generating pairs of a word graph on
     //! an f.p. semigroup or monoid.
@@ -2816,7 +2816,7 @@ namespace libsemigroups {
       return right_generating_pairs_no_checks(p, wg);
     }
 
-    //! \ingroup congruences_group
+    //!
     //!
     //! \brief Compute the right congruence generating pairs of a word graph on
     //! the free monoid (no checks).
@@ -2837,7 +2837,7 @@ namespace libsemigroups {
       return right_generating_pairs_no_checks(p, wg);
     }
 
-    //! \ingroup congruences_group
+    //!
     //!
     //! \brief Compute the right congruence generating pairs of a word graph on
     //! the free monoid.
@@ -2852,7 +2852,7 @@ namespace libsemigroups {
     rx::iterator_range<const_rcgp_iterator>
     right_generating_pairs(WordGraph<Node> const& wg);
 
-    //! \ingroup congruences_group
+    //!
     //!
     //! \brief Compute the two-sided congruence generating pairs of a word graph
     //! on an f.p. semigroup or monoid (no checks).
@@ -2882,7 +2882,7 @@ namespace libsemigroups {
           cend_two_sided_generating_pairs_no_checks(p, wg));
     }
 
-    //! \ingroup congruences_group
+    //!
     //!
     //! \brief Compute the two-sided congruence generating pairs of a word graph
     //! on an f.p. semigroup or monoid.
@@ -2908,7 +2908,7 @@ namespace libsemigroups {
       return two_sided_generating_pairs_no_checks(p, wg);
     }
 
-    //! \ingroup congruences_group
+    //!
     //!
     //! \brief Compute the two-sided congruence generating pairs of a word graph
     //! on the free monoid (no checks).
@@ -2938,7 +2938,7 @@ namespace libsemigroups {
           cend_two_sided_generating_pairs_no_checks(p, wg));
     }
 
-    //! \ingroup congruences_group
+    //!
     //!
     //! \brief Compute the two-sided congruence generating pairs of a word graph
     //! on the free monoid.
@@ -2965,7 +2965,7 @@ namespace libsemigroups {
       return two_sided_generating_pairs_no_checks(p, wg);
     }
 
-    //! \ingroup congruences_group
+    //!
     //!
     //! \brief Check if a word graph defines a maximal right congruence on
     //! an f.p. semigroup or monoid.
@@ -2977,7 +2977,7 @@ namespace libsemigroups {
     bool is_maximal_right_congruence(Presentation<word_type> const& p,
                                      WordGraph<Node> const&         wg);
 
-    //! \ingroup congruences_group
+    //!
     //!
     //! \brief Compute the inclusion poset of a collection of congruences
     //! defined by word graphs.
@@ -2998,7 +2998,7 @@ namespace libsemigroups {
     template <typename Iterator>
     BMat<> poset(Iterator first, Iterator last);
 
-    //! \ingroup congruences_group
+    //!
     //!
     //! \brief Construct a \ref Dot object representing the inclusion poset of a
     //! collection of word graphs.
@@ -3011,7 +3011,7 @@ namespace libsemigroups {
 
   }  // namespace sims
 
-  //! \ingroup congruences_group
+  //!
   //!
   //! \brief For pruning the search tree when looking for congruences arising
   //! from right or two-sided congruences representing faithful actions.
@@ -3121,7 +3121,7 @@ namespace libsemigroups {
     bool operator()(Sims1::word_graph_type const& wg);
   };
 
-  //! \ingroup congruences_group
+  //!
   //!
   //! \brief For pruning the search tree when looking for congruences arising
   //! from right or two-sided ideals.
@@ -3244,7 +3244,7 @@ namespace libsemigroups {
     bool operator()(Sims1::word_graph_type const& wg);
   };
 
-  //! \ingroup congruence_group
+  //!
   //!
   //! \brief Return a human readable representation of a SimsStats object.
   //!
@@ -3256,7 +3256,7 @@ namespace libsemigroups {
   //! \no_libsemigroups_except
   [[nodiscard]] std::string to_human_readable_repr(SimsStats const& x);
 
-  //! \ingroup congruence_group
+  //!
   //!
   //! \brief Return a human readable representation of a Sims1 object.
   //!
@@ -3268,7 +3268,7 @@ namespace libsemigroups {
   //! \no_libsemigroups_except
   [[nodiscard]] std::string to_human_readable_repr(Sims1 const& x);
 
-  //! \ingroup congruence_group
+  //!
   //!
   //! \brief Return a human readable representation of a Sims2 object.
   //!
@@ -3280,7 +3280,7 @@ namespace libsemigroups {
   //! \no_libsemigroups_except
   [[nodiscard]] std::string to_human_readable_repr(Sims2 const& x);
 
-  //! \ingroup congruence_group
+  //!
   //!
   //! \brief Return a human readable representation of a RepOrc object.
   //!
@@ -3292,7 +3292,7 @@ namespace libsemigroups {
   //! \no_libsemigroups_except
   [[nodiscard]] std::string to_human_readable_repr(RepOrc const& x);
 
-  //! \ingroup congruence_group
+  //!
   //!
   //! \brief Return a human readable representation of a MinimalRepOrc object.
   //!
@@ -3304,7 +3304,7 @@ namespace libsemigroups {
   //! \no_libsemigroups_except
   [[nodiscard]] std::string to_human_readable_repr(MinimalRepOrc const& x);
 
-  //! \ingroup congruence_group
+  //!
   //!
   //! \brief Return a human readable representation of a SimsRefinerIdeals
   //! object.
@@ -3317,7 +3317,7 @@ namespace libsemigroups {
   //! \no_libsemigroups_except
   [[nodiscard]] std::string to_human_readable_repr(SimsRefinerIdeals const& x);
 
-  //! \ingroup congruence_group
+  //! TODO(0) relink all the doc in this file to the correct group!
   //!
   //! \brief Return a human readable representation of a SimsRefinerFaithful
   //! object.

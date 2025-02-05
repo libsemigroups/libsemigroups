@@ -131,19 +131,15 @@
       <tab type="user" visible="yes" url="@ref libsemigroups::Action" title="Action" />
       <tab type="user" visible="yes" url="@ref libsemigroups::RightAction" title="RightAction" />
       </tab>
-    <tab type="usergroup" visible="yes" url="@ref cong_all_group" title="Congruences">
-      <tab type="usergroup" visible="yes" url="@ref cong_all_classes_group" title="Classes">
-        <tab type="user" visible="yes" url="@ref libsemigroups::Congruence" title="The Congruence class"/>
-        <tab type="user" visible="yes" url="@ref libsemigroups::CongruenceBase" title="The CongruenceBase class"/>
-        <tab type="user" visible="yes" url="@ref libsemigroups::CongruenceInterface" title="The CongruenceInterface class"/>
-      </tab>
-      <tab type="usergroup" visible="yes" url="@ref cong_intf_helpers_group" title="Generic congruence helpers">
+      <tab type="usergroup" visible="yes" url="@ref cong_intf_helpers_group" title="Common congruence helpers">
         <tab type="user" visible="yes" url="@ref cong_intf_helpers_add_pair_group" title="Add generating pairs"/>
         <tab type="user" visible="yes" url="@ref cong_intf_helpers_contains_group" title="Containment"/>
         <tab type="user" visible="yes" url="@ref cong_intf_helpers_reduce_group" title="Reduce a word"/>
         <tab type="user" visible="yes" url="@ref cong_intf_helpers_partition_group" title="Partitioning"/>
       </tab>
-      <tab type="user" visible="yes" url="@ref libsemigroups::congruence" title="Helpers for the Congruence class"/>
+    <tab type="usergroup" visible="yes" url="@ref congruence_group" title="Congruence">
+      <tab type="user" visible="yes" url="@ref congruence_class_group" title="The Congruence class"/>
+      <tab type="user" visible="yes" url="@ref libsemigroups::congruence" title="Congruence helper functions"/>
     </tab>
     <tab type="user" visible="yes" url="@ref froidure_pin_group" title="Froidure-Pin" />
     <tab type="usergroup" visible="yes" url="@ref kambites_group" title="Kambites">

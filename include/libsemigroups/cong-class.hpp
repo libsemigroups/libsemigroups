@@ -50,10 +50,30 @@ namespace libsemigroups {
     struct CongruenceBase {};
   }  // namespace detail
 
-  //! \ingroup cong_all_classes_group
+  //! \defgroup congruence_group Congruence
   //!
-  //! \brief Class for running Kambites, KnuthBendixBase, and \ref
-  //! todd_coxeter_class_group "ToddCoxeterBase" in parallel.
+  //! This page contains links documentation related to the class template
+  //! Congruence.
+  //!
+  //! Helper functions for the class template Congruence can be found in the
+  //! namespaces \ref cong_intf_helpers_group "congruence_common" and \ref
+  //! congruence. At present the helper functions in these two namespaces are
+  //! identical, because there are no helper functions that only apply to the
+  //! Congruence class template.
+
+  //! \defgroup congruence_class_group The Congruence class
+  //! \ingroup congruence_group
+  //!
+  //! \brief This page contains links to the documentation related to the
+  //! Congruence class.
+  //!
+  //! This page contains links to the documentation related to the
+  //! Congruence class.
+
+  //! \ingroup congruence_class_group
+  //!
+  //! \brief Class for running Kambites, KnuthBendix, and \ref_todd_coxeter
+  //! in parallel.
   //!
   //! Defined in `cong-class.hpp`.
   //!
@@ -64,7 +84,7 @@ namespace libsemigroups {
   //! in parallel. This class is provided for convenience, at present it is not
   //! very customisable, and lacks some of the fine grained control offered by
   //! the classes implementing individual algorithms, such as Kambites,
-  //! KnuthBendix, and \ref todd_coxeter_class_group "ToddCoxeter".
+  //! KnuthBendix, and \ref_todd_coxeter.
   //!
   //! \tparam Word the type of the words used in the \ref presentation and
   //! \ref generating_pairs.
@@ -83,7 +103,8 @@ namespace libsemigroups {
   //! cong.number_of_classes(); // 3
   //! \endcode
   template <typename Word>
-  class Congruence : public detail::CongruenceCommon, public detail::CongruenceBase {
+  class Congruence : public detail::CongruenceCommon,
+                     public detail::CongruenceBase {
     enum class RunnerKind : size_t { TC = 0, KB = 1, K = 2 };
 
     /////////////////////////////////////////////////////////////////////////
@@ -114,7 +135,10 @@ namespace libsemigroups {
     //!
     //! This function default constructs an uninitialised Congruence instance.
     Congruence()
-        : detail::CongruenceCommon(), _race(), _runners_initted(), _runner_kinds() {
+        : detail::CongruenceCommon(),
+          _race(),
+          _runners_initted(),
+          _runner_kinds() {
       init();
     }
 
@@ -456,7 +480,8 @@ namespace libsemigroups {
     OutputIterator reduce_no_run(OutputIterator d_first,
                                  Iterator1      first,
                                  Iterator2      last) const {
-      return detail::CongruenceCommon::reduce_no_run<Congruence>(d_first, first, last);
+      return detail::CongruenceCommon::reduce_no_run<Congruence>(
+          d_first, first, last);
     }
 
     //! \brief Reduce a word with no checks.
@@ -530,15 +555,16 @@ namespace libsemigroups {
     // Congruence - member functions - public
     //////////////////////////////////////////////////////////////////////////
 
-    //! \brief Get a derived class of detail::CongruenceCommon being used to compute
-    //! a Congruence instance.
+    //! \brief Get a derived class of detail::CongruenceCommon being used to
+    //! compute a Congruence instance.
     //!
     //! This function returns a std::shared_ptr to a \p Thing if such an object
     //! is being used or could be used to compute the congruence represented by
     //! a Congruence instance. If no such \p Thing is available, then an
     //! exception is thrown.
     //!
-    //! \tparam Thing the type of the detail::CongruenceCommon object being sought.
+    //! \tparam Thing the type of the detail::CongruenceCommon object being
+    //! sought.
     //!
     //! \returns The derived class of detail::CongruenceCommon.
     //!
@@ -548,14 +574,15 @@ namespace libsemigroups {
     template <typename Thing>
     std::shared_ptr<Thing> get() const;
 
-    //! \brief Check if a derived class of detail::CongruenceCommon being used to
-    //! compute a Congruence instance.
+    //! \brief Check if a derived class of detail::CongruenceCommon being used
+    //! to compute a Congruence instance.
     //!
     //! This function returns \c true if a \p Thing is being used or could be
     //! used to compute the congruence represented by a Congruence instance; or
     //! \c false if not.
     //!
-    //! \tparam Thing the type of the detail::CongruenceCommon object being sought.
+    //! \tparam Thing the type of the detail::CongruenceCommon object being
+    //! sought.
     //!
     //! \returns Whether or not a \p Thing is being used to compute the
     //! Congruence instance.
@@ -671,7 +698,7 @@ namespace libsemigroups {
     }
   };  // class Congruence
 
-  //! \ingroup cong_all_classes_group
+  //! \ingroup congruence_class_group
   //!
   //! \brief Deduction guide.
   //!
@@ -682,7 +709,7 @@ namespace libsemigroups {
   template <typename Word>
   Congruence(congruence_kind, Presentation<Word> const&) -> Congruence<Word>;
 
-  //! \ingroup cong_all_classes_group
+  //! \ingroup congruence_class_group
   //!
   //! \brief Deduction guide.
   //!
@@ -694,7 +721,7 @@ namespace libsemigroups {
   template <typename Word>
   Congruence(congruence_kind, Presentation<Word>&&) -> Congruence<Word>;
 
-  //! \ingroup cong_all_classes_group
+  //! \ingroup congruence_class_group
   //!
   //! \brief Deduction guide.
   //!
@@ -706,7 +733,7 @@ namespace libsemigroups {
   Congruence(congruence_kind knd, FroidurePinBase& S, WordGraph<Node> const& wg)
       -> Congruence<word_type>;
 
-  //! \ingroup cong_all_classes_group
+  //! \ingroup congruence_class_group
   //!
   //! \brief Deduction guide.
   //!
@@ -717,7 +744,7 @@ namespace libsemigroups {
   template <typename Word>
   Congruence(Congruence<Word> const&) -> Congruence<Word>;
 
-  //! \ingroup cong_all_classes_group
+  //! \ingroup congruence_class_group
   //!
   //! \brief Deduction guide.
   //!
@@ -728,7 +755,7 @@ namespace libsemigroups {
   template <typename Word>
   Congruence(Congruence<Word>&&) -> Congruence<Word>;
 
-  //! \ingroup cong_all_classes_group
+  //! \ingroup congruence_group
   //!
   //! \brief Return a human readable representation of a \ref
   //! Congruence object.
