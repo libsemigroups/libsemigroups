@@ -795,7 +795,7 @@ namespace libsemigroups {
   //!
   //! Defined in `knuth-bendix-class.hpp`.
   //!
-  //! Deduction guide to construct a `Kambites<Word>` from a
+  //! Deduction guide to construct a `KnuthBendix<Word>` from a
   //! `Presentation<Word>` const reference.
   template <typename Word>
   KnuthBendix(congruence_kind, Presentation<Word> const&) -> KnuthBendix<Word>;
@@ -806,7 +806,8 @@ namespace libsemigroups {
   //!
   //! Defined in `knuth-bendix-class.hpp`.
   //!
-  //! Deduction guide to construct a `Kambites<Word>` from a
+  //! Deduction guide to construct a `KnuthBendix<Word>` from a
+  //!
   //! `Presentation<Word>` rvalue reference.
   template <typename Word>
   KnuthBendix(congruence_kind, Presentation<Word>&&) -> KnuthBendix<Word>;
@@ -817,7 +818,7 @@ namespace libsemigroups {
   //!
   //! Defined in `knuth-bendix-class.hpp`.
   //!
-  //! Deduction guide to construct a `Kambites<Word>` from a
+  //! Deduction guide to construct a `KnuthBendix<Word>` from a
   //! `KnuthBendix<Word>` const reference.
   template <typename Word>
   KnuthBendix(KnuthBendix<Word> const&) -> KnuthBendix<Word>;
@@ -828,7 +829,7 @@ namespace libsemigroups {
   //!
   //! Defined in `knuth-bendix-class.hpp`.
   //!
-  //! Deduction guide to construct a `Kambites<Word>` from a
+  //! Deduction guide to construct a `KnuthBendix<Word>` from a
   //! `KnuthBendix<Word>` rvalue reference.
   template <typename Word>
   KnuthBendix(KnuthBendix<Word>&&) -> KnuthBendix<Word>;

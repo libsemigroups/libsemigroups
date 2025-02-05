@@ -1610,7 +1610,6 @@ namespace libsemigroups {
       //! \param stop_early whether or not to consider stopping the
       //! lookahead early if too few nodes are killed.
       void perform_lookahead(bool stop_early);
-      //! @}
 
       ////////////////////////////////////////////////////////////////////////
       // 11. ToddCoxeterBase - word -> index
@@ -1768,9 +1767,9 @@ namespace libsemigroups {
       //! instance.
       //!
       //! This page contains documentation for the member functions of
-      //!  \ref_todd_coxeter that can be used
-      //!  to convert the index of a congruence class
-      //! to a representative word belonging to that congruence class.
+      //! \ref_todd_coxeter that can be used to convert the index of a
+      //! congruence class to a representative word belonging to that
+      //! class.
       //!
       //! \sa \ref todd_coxeter_class_word_index_group for the inverses of
       //! the functions described on this page.
@@ -1958,23 +1957,6 @@ namespace libsemigroups {
       size_t felsch_lookahead();
     };  // class ToddCoxeterBase
 
-    //! \ingroup todd_coxeter_group
-    //!
-    //! \brief Return a human readable representation of a \ref
-    //! todd_coxeter_class_group  object.
-    //!
-    //! Defined in `todd-coxeter.hpp`.
-    //!
-    //! This function returns a human readable representation of a
-    //! \ref_todd_coxeter object.
-    //!
-    //! \param tc the \ref_todd_coxeter object.
-    //!
-    //! \returns A std::string containing the representation.
-    //!
-    //! \exceptions
-    //! \no_libsemigroups_except
-    std::string to_human_readable_repr(ToddCoxeterBase const& tc);
   }  // namespace detail
 
 }  // namespace libsemigroups

@@ -46,6 +46,9 @@
 #include "detail/path-iterators.hpp"  // for const_pilo_iterat...
 
 namespace libsemigroups {
+  //! This page contains documentation for everything in the namespace \ref
+  //! todd_coxeter. This includes everything from \ref cong_intf_helpers_group
+  //! and \ref todd_coxeter_helpers_group.
   namespace todd_coxeter {
     ////////////////////////////////////////////////////////////////////////
     // ToddCoxeter<Word> helpers
@@ -56,20 +59,19 @@ namespace libsemigroups {
     using index_type = typename detail::ToddCoxeterBase::index_type;
 #endif
 
-    //! \defgroup todd_coxeter_helpers_group ToddCoxeter<Word> helper functions
+    //! \defgroup todd_coxeter_helpers_group ToddCoxeter helper functions
     //! \ingroup todd_coxeter_group
     //!
-    //! \brief Helper functions for the \ref todd_coxeter_class_group
-    //! "ToddCoxeterBase" class.
+    //! \brief Helper functions for the \ref_todd_coxeter class.
     //!
-    //! Defined in \c todd-coxeter.hpp.
+    //! Defined in \c todd-coxeter-helpers.hpp.
     //!
-    //! This page contains documentation for many helper functions for the \ref
-    //! todd_coxeter_class_group "ToddCoxeterBase" class. In particular, these
-    //! functions include versions of several of the member functions of \ref
-    //! todd_coxeter_class_group "ToddCoxeterBase" (that accept iterators) whose
-    //! parameters are not iterators, but objects instead. The helpers
-    //! documented on this page all belong to the namespace `todd_coxeter`.
+    //! This page contains documentation for many helper functions for the
+    //! \ref_todd_coxeter class. In particular, these functions include versions
+    //! of several of the member functions of \ref_todd_coxeter (that accept
+    //! iterators) whose parameters are not iterators, but objects instead. The
+    //! helpers documented on this page all belong to the namespace \ref
+    //! todd_coxeter.
     //!
     //! \sa \ref cong_intf_helpers_group
     //!
@@ -86,18 +88,18 @@ namespace libsemigroups {
 
     //! \brief Returns the current index of the class containing a word.
     //!
-    //! Defined in \c todd-coxeter.hpp.
+    //! Defined in \c todd-coxeter-helpers.hpp.
     //!
     //! This function just calls
     //! \code
     //! tc.current_index_of_no_checks(std::begin(w), std::end(w));
     //! \endcode
     //!
-    //! See ToddCoxeter<Word>::current_index_of_no_checks for details.
+    //! See ToddCoxeter::current_index_of_no_checks for details.
     //!
     //! \tparam Word the type of the second argument \p w.
     //!
-    //! \param tc the ToddCoxeter<Word> instance.
+    //! \param tc the ToddCoxeter instance.
     //! \param w the word.
     //!
     //! \returns The current index of the class containing the word.
@@ -109,18 +111,18 @@ namespace libsemigroups {
 
     //! \brief Returns the current index of the class containing a word.
     //!
-    //! Defined in \c todd-coxeter.hpp.
+    //! Defined in \c todd-coxeter-helpers.hpp.
     //!
     //! This function just calls
     //! \code
     //! tc.current_index_of(std::begin(w), std::end(w));
     //! \endcode
     //!
-    //! See \ref ToddCoxeter<Word>::current_index_of for details.
+    //! See \ref ToddCoxeter::current_index_of for details.
     //!
     //! \tparam Word the type of the second argument \p w.
     //!
-    //! \param tc the ToddCoxeter<Word> instance.
+    //! \param tc the  \ref_todd_coxeter instance.
     //! \param w the word.
     //!
     //! \returns The current index of the class containing the word.
@@ -132,18 +134,18 @@ namespace libsemigroups {
 
     //! \brief Returns the index of the class containing a word.
     //!
-    //! Defined in \c todd-coxeter.hpp.
+    //! Defined in \c todd-coxeter-helpers.hpp.
     //!
     //! This function just calls
     //! \code
     //! tc.index_of_no_checks(std::begin(w), std::end(w));
     //! \endcode
     //!
-    //! See \ref ToddCoxeter<Word>::index_of_no_checks for details.
+    //! See ToddCoxeter::index_of_no_checks for details.
     //!
     //! \tparam Word the type of the second argument \p w.
     //!
-    //! \param tc the ToddCoxeter<Word> instance.
+    //! \param tc the  \ref_todd_coxeter instance.
     //! \param w the word.
     //!
     //! \returns The index of the class containing the word.
@@ -155,18 +157,18 @@ namespace libsemigroups {
 
     //! \brief Returns the index of the class containing a word.
     //!
-    //! Defined in \c todd-coxeter.hpp.
+    //! Defined in \c todd-coxeter-helpers.hpp.
     //!
     //! This function just calls
     //! \code
     //! tc.index_of(std::begin(w), std::end(w));
     //! \endcode
     //!
-    //! See \ref ToddCoxeter<Word>::index_of for details.
+    //! See \ref ToddCoxeter::index_of for details.
     //!
     //! \tparam Word the type of the second argument \p w.
     //!
-    //! \param tc the ToddCoxeter<Word> instance.
+    //! \param tc the  \ref_todd_coxeter instance.
     //! \param w the word.
     //!
     //! \returns The index of the class containing the word.
@@ -177,18 +179,18 @@ namespace libsemigroups {
 
     //! \brief Returns the current index of the class containing a word.
     //!
-    //! Defined in \c todd-coxeter.hpp.
+    //! Defined in \c todd-coxeter-helpers.hpp.
     //!
     //! This function just calls
     //! \code
     //! tc.current_index_of_no_checks(std::begin(w), std::end(w));
     //! \endcode
     //!
-    //! See ToddCoxeter<Word>::current_index_of_no_checks for details.
+    //! See ToddCoxeter::current_index_of_no_checks for details.
     //!
     //! \tparam Int the type of items in the second argument \p w.
     //!
-    //! \param tc the ToddCoxeter<Word> instance.
+    //! \param tc the  \ref_todd_coxeter instance.
     //! \param w the word.
     //!
     //! \returns The current index of the class containing the word.
@@ -202,18 +204,18 @@ namespace libsemigroups {
 
     //! \brief Returns the current index of the class containing a word.
     //!
-    //! Defined in \c todd-coxeter.hpp.
+    //! Defined in \c todd-coxeter-helpers.hpp.
     //!
     //! This function just calls
     //! \code
     //! tc.current_index_of(std::begin(w), std::end(w));
     //! \endcode
     //!
-    //! See \ref ToddCoxeter<Word>::current_index_of for details.
+    //! See \ref ToddCoxeter::current_index_of for details.
     //!
     //! \tparam Int the type of items in the second argument \p w.
     //!
-    //! \param tc the ToddCoxeter<Word> instance.
+    //! \param tc the  \ref_todd_coxeter instance.
     //! \param w the word.
     //!
     //! \returns The current index of the class containing the word.
@@ -227,18 +229,18 @@ namespace libsemigroups {
 
     //! \brief Returns the index of the class containing a word.
     //!
-    //! Defined in \c todd-coxeter.hpp.
+    //! Defined in \c todd-coxeter-helpers.hpp.
     //!
     //! This function just calls
     //! \code
     //! tc.index_of_no_checks(std::begin(w), std::end(w));
     //! \endcode
     //!
-    //! See \ref ToddCoxeter<Word>::index_of_no_checks for details.
+    //! See \ref ToddCoxeter::index_of_no_checks for details.
     //!
     //! \tparam Int the type of items in the second argument \p w.
     //!
-    //! \param tc the ToddCoxeter<Word> instance.
+    //! \param tc the  \ref_todd_coxeter instance.
     //! \param w the word.
     //!
     //! \returns The index of the class containing the word.
@@ -252,18 +254,18 @@ namespace libsemigroups {
 
     //! \brief Returns the index of the class containing a word.
     //!
-    //! Defined in \c todd-coxeter.hpp.
+    //! Defined in \c todd-coxeter-helpers.hpp.
     //!
     //! This function just calls
     //! \code
     //! tc.index_of(std::begin(w), std::end(w));
     //! \endcode
     //!
-    //! See \ref ToddCoxeter<Word>::index_of for details.
+    //! See \ref ToddCoxeter::index_of for details.
     //!
     //! \tparam Int the type of items in the second argument \p w.
     //!
-    //! \param tc the ToddCoxeter<Word> instance.
+    //! \param tc the  \ref_todd_coxeter instance.
     //! \param w the word.
     //!
     //! \returns The index of the class containing the word.
@@ -276,16 +278,16 @@ namespace libsemigroups {
 
     //! \brief Returns the current index of the class containing a word.
     //!
-    //! Defined in \c todd-coxeter.hpp.
+    //! Defined in \c todd-coxeter-helpers.hpp.
     //!
     //! This function just calls
     //! \code
     //! tc.current_index_of_no_checks(w, w + std::strlen(w));
     //! \endcode
     //!
-    //! See ToddCoxeter<Word>::current_index_of_no_checks for details.
+    //! See ToddCoxeter::current_index_of_no_checks for details.
     //!
-    //! \param tc the ToddCoxeter<Word> instance.
+    //! \param tc the  \ref_todd_coxeter instance.
     //! \param w the word.
     //!
     //! \returns The current index of the class containing the word.
@@ -298,16 +300,16 @@ namespace libsemigroups {
 
     //! \brief Returns the current index of the class containing a word.
     //!
-    //! Defined in \c todd-coxeter.hpp.
+    //! Defined in \c todd-coxeter-helpers.hpp.
     //!
     //! This function just calls
     //! \code
     //! tc.current_index_of(w, w + std::strlen(w));
     //! \endcode
     //!
-    //! See ToddCoxeter<Word>::current_index_of for details.
+    //! See ToddCoxeter::current_index_of for details.
     //!
-    //! \param tc the ToddCoxeter<Word> instance.
+    //! \param tc the  \ref_todd_coxeter instance.
     //! \param w the word.
     //!
     //! \returns The current index of the class containing the word.
@@ -320,16 +322,16 @@ namespace libsemigroups {
 
     //! \brief Returns the index of the class containing a word.
     //!
-    //! Defined in \c todd-coxeter.hpp.
+    //! Defined in \c todd-coxeter-helpers.hpp.
     //!
     //! This function just calls
     //! \code
     //! tc.index_of_no_checks(w, w + std::strlen(w));
     //! \endcode
     //!
-    //! See ToddCoxeter<Word>::index_of_no_checks for details.
+    //! See ToddCoxeter::index_of_no_checks for details.
     //!
-    //! \param tc the ToddCoxeter<Word> instance.
+    //! \param tc the  \ref_todd_coxeter instance.
     //! \param w the word.
     //!
     //! \returns The current index of the class containing the word.
@@ -342,16 +344,16 @@ namespace libsemigroups {
 
     //! \brief Returns the index of the class containing a word.
     //!
-    //! Defined in \c todd-coxeter.hpp.
+    //! Defined in \c todd-coxeter-helpers.hpp.
     //!
     //! This function just calls
     //! \code
     //! tc.index_of(w, w + std::strlen(w));
     //! \endcode
     //!
-    //! See ToddCoxeter<Word>::index_of for details.
+    //! See ToddCoxeter::index_of for details.
     //!
-    //! \param tc the ToddCoxeter<Word> instance.
+    //! \param tc the  \ref_todd_coxeter instance.
     //! \param w the word.
     //!
     //! \returns The current index of the class containing the word.
@@ -368,14 +370,14 @@ namespace libsemigroups {
 
     //! \brief Returns a word representing a class with given index.
     //!
-    //! Defined in \c todd-coxeter.hpp.
+    //! Defined in \c todd-coxeter-helpers.hpp.
     //!
-    //! See ToddCoxeter<Word>::word_of_no_checks for details.
+    //! See ToddCoxeter::word_of_no_checks for details.
     //!
     //! \tparam Word the type of the returned word (default: \ref
     //! libsemigroups::word_type "word_type").
     //!
-    //! \param tc the ToddCoxeter<Word> instance.
+    //! \param tc the  \ref_todd_coxeter instance.
     //! \param i the index of the class.
     //!
     //! \returns A representative of the class with given index.
@@ -385,14 +387,14 @@ namespace libsemigroups {
 
     //! \brief Returns a word representing a class with given index.
     //!
-    //! Defined in \c todd-coxeter.hpp.
+    //! Defined in \c todd-coxeter-helpers.hpp.
     //!
-    //! See ToddCoxeter<Word>::word_of for details.
+    //! See ToddCoxeter::word_of for details.
     //!
     //! \tparam Word the type of the returned word (default: \ref
     //! libsemigroups::word_type "word_type").
     //!
-    //! \param tc the ToddCoxeter<Word> instance.
+    //! \param tc the  \ref_todd_coxeter instance.
     //! \param i the index of the class.
     //!
     //! \returns A representative of the class with given index.
@@ -401,14 +403,14 @@ namespace libsemigroups {
 
     //! \brief Returns a word representing a class with given index.
     //!
-    //! Defined in \c todd-coxeter.hpp.
+    //! Defined in \c todd-coxeter-helpers.hpp.
     //!
-    //! See ToddCoxeter<Word>::word_of_no_checks for details.
+    //! See ToddCoxeter::word_of_no_checks for details.
     //!
     //! \tparam Word the type of the returned word (default: \ref
     //! libsemigroups::word_type "word_type").
     //!
-    //! \param tc the ToddCoxeter<Word> instance.
+    //! \param tc the \ref_todd_coxeter instance.
     //! \param i the index of the class.
     //!
     //! \returns A representative of the class with given index.
@@ -417,14 +419,14 @@ namespace libsemigroups {
 
     //! \brief Returns a word representing a class with given index.
     //!
-    //! Defined in \c todd-coxeter.hpp.
+    //! Defined in \c todd-coxeter-helpers.hpp.
     //!
-    //! See ToddCoxeter<Word>::word_of for details.
+    //! See ToddCoxeter::word_of for details.
     //!
     //! \tparam Word the type of the returned word (default: \ref
     //! libsemigroups::word_type "word_type").
     //!
-    //! \param tc the ToddCoxeter<Word> instance.
+    //! \param tc the  \ref_todd_coxeter instance.
     //! \param i the index of the class.
     //!
     //! \returns A representative of the class with given index.
@@ -438,15 +440,15 @@ namespace libsemigroups {
     //! \brief Returns a range object containing every word in the congruence
     //! class with given index.
     //!
-    //! Defined in \c todd-coxeter.hpp.
+    //! Defined in \c todd-coxeter-helpers.hpp.
     //!
     //! This function returns a range object containing every word in belonging
     //! to the class with index \p n in the congruence represented by the
-    //!  \ref todd_coxeter_class_group "ToddCoxeter<Word>" instance \p tc. Calls
+    //!  \ref_todd_coxeter instance \p tc. Calls
     //!  to this function trigger a full
     //! enumeration of \p tc.
     //!
-    //! \param tc the  \ref todd_coxeter_class_group "ToddCoxeter<Word>"
+    //! \param tc the  \ref_todd_coxeter
     //! instance.
     //! \param n the index of the class.
     //!
@@ -480,15 +482,15 @@ namespace libsemigroups {
     //! \brief Returns a range object containing every word in the congruence
     //! class with given index.
     //!
-    //! Defined in \c todd-coxeter.hpp.
+    //! Defined in \c todd-coxeter-helpers.hpp.
     //!
     //! This function returns a range object containing every word in belonging
     //! to the class with index \p n in the congruence represented by the
-    //!  \ref todd_coxeter_class_group "ToddCoxeter<Word>" instance \p tc. Calls
+    //!  \ref_todd_coxeter instance \p tc. Calls
     //!  to this function trigger a full
     //! enumeration of \p tc.
     //!
-    //! \param tc the  \ref todd_coxeter_class_group "ToddCoxeter<Word>"
+    //! \param tc the  \ref_todd_coxeter
     //! instance.
     //! \param n the index of the class.
     //!
@@ -525,19 +527,18 @@ namespace libsemigroups {
     //! \brief Returns a range object containing every word in the congruence
     //! class of a word given by iterators.
     //!
-    //! Defined in \c todd-coxeter.hpp.
+    //! Defined in \c todd-coxeter-helpers.hpp.
     //!
     //! This function returns a range object containing every word in belonging
     //! to the same class as the word (contained in the range from \p first to
-    //! \p last) in the congruence represented by the  \ref
-    //! todd_coxeter_class_group "ToddCoxeter<Word>" instance \p tc. Calls to
-    //! this function trigger a full enumeration of \p tc.
+    //! \p last) in the congruence represented by the  \ref_todd_coxeter
+    //! instance \p tc. Calls to this function trigger a full enumeration of \p
+    //! tc.
     //!
     //! \tparam Iterator1 the type of the 2nd argument \p first.
     //! \tparam Iterator2 the type of the 3rd argument \p last.
     //!
-    //! \param tc the  \ref todd_coxeter_class_group "ToddCoxeter<Word>"
-    //! instance.
+    //! \param tc the  \ref_todd_coxeter instance.
     //! \param first iterator pointing at the first letter of the word.
     //! \param last iterator pointing one beyond the last letter of the word.
     //!
@@ -557,20 +558,18 @@ namespace libsemigroups {
     //! \brief Returns a range object containing every word in the congruence
     //! class of a word given by iterators.
     //!
-    //! Defined in \c todd-coxeter.hpp.
+    //! Defined in \c todd-coxeter-helpers.hpp.
     //!
-    //! This function returns a range object containing every word in
-    //! belonging to the same class as the word (contained in the range from
-    //! \p first to
-    //! \p last) in the congruence represented by the  \ref
-    //! todd_coxeter_class_group "ToddCoxeter<Word>" instance \p tc. Calls to
-    //! this function trigger a full enumeration of \p tc.
+    //! This function returns a range object containing every word in belonging
+    //! to the same class as the word (contained in the range from \p first to
+    //! \p last) in the congruence represented by the  \ref_todd_coxeter
+    //! instance \p tc. Calls to this function trigger a full enumeration of \p
+    //! tc.
     //!
     //! \tparam Iterator1 the type of the 2nd argument \p first.
     //! \tparam Iterator2 the type of the 3rd argument \p last.
     //!
-    //! \param tc the  \ref todd_coxeter_class_group "ToddCoxeter<Word>"
-    //! instance.
+    //! \param tc the  \ref_todd_coxeter instance.
     //! \param first iterator pointing at the first letter of the word.
     //! \param last iterator pointing one beyond the last letter of the word.
     //!
@@ -590,17 +589,17 @@ namespace libsemigroups {
     //! \brief Returns a range object containing every word in the congruence
     //! class of a given word.
     //!
-    //! Defined in \c todd-coxeter.hpp.
+    //! Defined in \c todd-coxeter-helpers.hpp.
     //!
     //! This function returns a range object containing every word in
     //! belonging to the same class as the input word \p w in the congruence
-    //! represented by the  \ref todd_coxeter_class_group "ToddCoxeter<Word>"
+    //! represented by the  \ref_todd_coxeter
     //! instance
     //! \p tc. Calls to this function trigger a full enumeration of \p tc.
     //!
     //! \tparam Word the type of the 2nd argument \p w.
     //!
-    //! \param tc the  \ref todd_coxeter_class_group "ToddCoxeter<Word>"
+    //! \param tc the  \ref_todd_coxeter
     //! instance.
     //! \param w the input word.
     //!
@@ -618,17 +617,17 @@ namespace libsemigroups {
     //! \brief Returns a range object containing every word in the congruence
     //! class of a given word.
     //!
-    //! Defined in \c todd-coxeter.hpp.
+    //! Defined in \c todd-coxeter-helpers.hpp.
     //!
     //! This function returns a range object containing every word in
     //! belonging to the same class as the input word \p w in the congruence
-    //! represented by the  \ref todd_coxeter_class_group "ToddCoxeter<Word>"
+    //! represented by the  \ref_todd_coxeter
     //! instance
     //! \p tc. Calls to this function trigger a full enumeration of \p tc.
     //!
     //! \tparam Word the type of the 2nd argument \p w.
     //!
-    //! \param tc the  \ref todd_coxeter_class_group "ToddCoxeter<Word>"
+    //! \param tc the  \ref_todd_coxeter
     //! instance.
     //! \param w the input word.
     //!
@@ -647,17 +646,17 @@ namespace libsemigroups {
     //! \brief Returns a range object containing every word in the congruence
     //! class of a given word.
     //!
-    //! Defined in \c todd-coxeter.hpp.
+    //! Defined in \c todd-coxeter-helpers.hpp.
     //!
     //! This function returns a range object containing every word in
     //! belonging to the same class as the input word \p w in the congruence
-    //! represented by the  \ref todd_coxeter_class_group "ToddCoxeter<Word>"
+    //! represented by the  \ref_todd_coxeter
     //! instance
     //! \p tc. Calls to this function trigger a full enumeration of \p tc.
     //!
     //! \tparam Int the type of the letters in the word \p w.
     //!
-    //! \param tc the  \ref todd_coxeter_class_group "ToddCoxeter<Word>"
+    //! \param tc the  \ref_todd_coxeter
     //! instance.
     //! \param w the input word.
     //!
@@ -677,17 +676,17 @@ namespace libsemigroups {
     //! \brief Returns a range object containing every word in the congruence
     //! class of a given word.
     //!
-    //! Defined in \c todd-coxeter.hpp.
+    //! Defined in \c todd-coxeter-helpers.hpp.
     //!
     //! This function returns a range object containing every word in
     //! belonging to the same class as the input word \p w in the congruence
-    //! represented by the  \ref todd_coxeter_class_group "ToddCoxeter<Word>"
+    //! represented by the  \ref_todd_coxeter
     //! instance
     //! \p tc. Calls to this function trigger a full enumeration of \p tc.
     //!
     //! \tparam Int the type of the letters in the word \p w.
     //!
-    //! \param tc the \ref todd_coxeter_class_group "ToddCoxeter<Word>"
+    //! \param tc the \ref_todd_coxeter
     //! instance.
     //! \param w the input word.
     //!
@@ -707,15 +706,15 @@ namespace libsemigroups {
     //! \brief Returns a range object containing every word in the congruence
     //! class of a given word.
     //!
-    //! Defined in \c todd-coxeter.hpp.
+    //! Defined in \c todd-coxeter-helpers.hpp.
     //!
     //! This function returns a range object containing every word in
     //! belonging to the same class as the input word \p w in the congruence
-    //! represented by the  \ref todd_coxeter_class_group "ToddCoxeter<Word>"
+    //! represented by the  \ref_todd_coxeter
     //! instance
     //! \p tc. Calls to this function trigger a full enumeration of \p tc.
     //!
-    //! \param tc the  \ref todd_coxeter_class_group "ToddCoxeter<Word>"
+    //! \param tc the  \ref_todd_coxeter
     //! instance.
     //! \param w pointer to first letter.
     //!
@@ -735,15 +734,15 @@ namespace libsemigroups {
     //! \brief Returns a range object containing every word in the congruence
     //! class of a given word.
     //!
-    //! Defined in \c todd-coxeter.hpp.
+    //! Defined in \c todd-coxeter-helpers.hpp.
     //!
     //! This function returns a range object containing every word in
     //! belonging to the same class as the input word \p w in the congruence
-    //! represented by the  \ref todd_coxeter_class_group "ToddCoxeter<Word>"
+    //! represented by the  \ref_todd_coxeter
     //! instance
     //! \p tc. Calls to this function trigger a full enumeration of \p tc.
     //!
-    //! \param tc the  \ref todd_coxeter_class_group "ToddCoxeter<Word>"
+    //! \param tc the  \ref_todd_coxeter
     //! instance.
     //! \param w pointer to first letter.
     //!
@@ -765,7 +764,7 @@ namespace libsemigroups {
 
     //! \brief Check if the congruence has more than one class.
     //!
-    //! Defined in \c todd-coxeter.hpp.
+    //! Defined in \c todd-coxeter-helpers.hpp.
     //!
     //! Returns tril::TRUE if it is possible to show that the congruence is
     //! non-trivial; tril::FALSE if the congruence is already known to be
@@ -773,21 +772,19 @@ namespace libsemigroups {
     //! congruence is non-trivial.
     //!
     //! This function attempts to find a non-trivial congruence containing
-    //! the congruence represented by a \ref todd_coxeter_class_group
-    //! "ToddCoxeter<Word>" instance by repeating the following steps on a copy
-    //! until the enumeration concludes:
+    //! the congruence represented by a \ref_todd_coxeter instance by repeating
+    //! the following steps on a copy until the enumeration concludes:
     //! 1. running the enumeration for the specified amount of time
     //! 2. repeatedly choosing a random pair of nodes and identifying them,
     //!    until the number of nodes remaining in the quotient is smaller than
     //!    \p threshold times the initial number of nodes for this step.
-    //! If at the end of this process, the  \ref todd_coxeter_class_group
-    //! "ToddCoxeter<Word>" instance is non-trivial, then the original  \ref
-    //! todd_coxeter_class_group "ToddCoxeter<Word>" is also non-trivial.
+    //!
+    //! If at the end of this process, the  \ref_todd_coxeter instance is
+    //! non-trivial, then the original  \ref_todd_coxeter is also non-trivial.
     //! Otherwise, the entire process is repeated again up to a total of \p
     //! tries times.
     //!
-    //! \param tc the  \ref todd_coxeter_class_group "ToddCoxeter<Word>"
-    //! instance.
+    //! \param tc the  \ref_todd_coxeter instance.
     //! \param tries the number of attempts to find non-trivial
     //! super-congruence.
     //! \param try_for the amount of time in millisecond to enumerate the
@@ -809,7 +806,7 @@ namespace libsemigroups {
     //! \brief Return an iterator pointing at the left hand side of a redundant
     //! rule.
     //!
-    //! Defined in \c todd-coxeter.hpp.
+    //! Defined in \c todd-coxeter-helpers.hpp.
     //!
     //! Starting with the last rule in the presentation, this function
     //! attempts to run the Todd-Coxeter algorithm on the rules of the
@@ -856,18 +853,18 @@ namespace libsemigroups {
 
     //! \brief Returns a range object containing the normal forms.
     //!
-    //! Defined in \c todd-coxeter.hpp.
+    //! Defined in \c todd-coxeter-helpers.hpp.
     //!
     //! This function returns a range object containing normal forms of the
     //! classes of the congruence represented by an instance of
-    //! ToddCoxeter<Word>. The order of the classes, and the normal form that is
-    //! returned, are controlled by ToddCoxeter<Word>::standardize(Order). This
+    //! \ref_todd_coxeter. The order of the classes, and the normal form that is
+    //! returned, are controlled by ToddCoxeter::standardize(Order). This
     //! function triggers a full enumeration of \p tc.
     //!
     //! \tparam Word the type of the words contained in the output range
     //! (default: \ref libsemigroups::word_type "word_type").
     //!
-    //! \param tc the \ref todd_coxeter_class_group "ToddCoxeter<Word>"
+    //! \param tc the \ref_todd_coxeter
     //! instance.
     //!
     //! \returns A range object.
@@ -885,10 +882,10 @@ namespace libsemigroups {
 
     //! \brief Partition a range of words.
     //!
-    //! Defined in \c todd-coxeter.hpp.
+    //! Defined in \c todd-coxeter-helpers.hpp.
     //!
     //! This function returns the partition of the words in the range \p r
-    //! induced by the \ref todd_coxeter_class_group "ToddCoxeter<Word>"
+    //! induced by the \ref_todd_coxeter
     //! instance
     //! \p tc. This function triggers a full enumeration of \p tc.
     //!
@@ -896,7 +893,7 @@ namespace libsemigroups {
     //! \tparam Word the type of the words in the output (defaults to the
     //! type of the words in the input range).
     //!
-    //! \param tc the \ref todd_coxeter_class_group "ToddCoxeter<Word>"
+    //! \param tc the \ref_todd_coxeter
     //! instance.
     //! \param r the input range of words.
     //!
@@ -924,22 +921,20 @@ namespace libsemigroups {
     ////////////////////////////////////////////////////////////////////////
 
     //! \brief Find the non-trivial classes in the partition of the normal
-    //! forms of one ToddCoxeter<Word> instance in another.
+    //! forms of one \ref_todd_coxeter instance in another.
     //!
-    //! Defined in \c todd-coxeter.hpp.
+    //! Defined in \c todd-coxeter-helpers.hpp.
     //!
     //! This function returns the classes with size at least \f$2\f$ in the
-    //! partition of the normal forms of \p tc2 according to the \ref
-    //! todd_coxeter_class_group "ToddCoxeter<Word>" instance \p tc1. This
-    //! function triggers a full enumeration of \p tc1 and \p tc2.
+    //! partition of the normal forms of \p tc2 according to the
+    //! \ref_todd_coxeter instance \p tc1. This function triggers a full
+    //! enumeration of \p tc1 and \p tc2.
     //!
     //! \tparam Word the type of the words in the output (defaults \ref
     //! libsemigroups::word_type "word_type").
     //!
-    //! \param tc1 the \ref todd_coxeter_class_group "ToddCoxeter<Word>"
-    //! instance to use for partitioning.
-    //! \param tc2 the \ref todd_coxeter_class_group "ToddCoxeter<Word>"
-    //! instance to be partitioned.
+    //! \param tc1 the \ref_todd_coxeter instance to use for partitioning.
+    //! \param tc2 the \ref_todd_coxeter instance to be partitioned.
     //!
     //! \returns The partition of the input range.
     //!

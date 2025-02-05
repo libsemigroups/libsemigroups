@@ -394,3 +394,7 @@ if __name__ == "__main__":
         "./html/group__todd__coxeter__class__intf__group.html",
         substitute(r"\bToddCoxeterBase\b", "ToddCoxeter"),
     )
+    modify_in_place(
+        "html/group__todd__coxeter__helpers__group.html",
+        substitute(r"\bdetail::ToddCoxeterBase\b", "ToddCoxeter<Word>"),
+    )

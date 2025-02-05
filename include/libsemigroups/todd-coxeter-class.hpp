@@ -1226,7 +1226,6 @@ namespace libsemigroups {
     //! output word.
     //!
     //! \throws LibsemigroupsException if \p i is out of bounds.
-    //!
     template <typename OutputIterator>
     OutputIterator current_word_of(OutputIterator d_first, index_type i) const {
       return ToddCoxeterBase::current_word_of(make_itow(d_first), i).get();
@@ -1290,28 +1289,100 @@ namespace libsemigroups {
     //! @}
   };  // class ToddCoxeter
 
+  //! \ingroup todd_coxeter_class_group
+  //
+  //! \brief Deduction guide.
+  //!
+  //! Defined in `todd-coxeter-class.hpp`.
+  //!
+  //! Deduction guide to construct a `ToddCoxeter<Word>` from a
+  //! `Presentation<Word>` const reference.
   template <typename Word>
   ToddCoxeter(congruence_kind, Presentation<Word> const&) -> ToddCoxeter<Word>;
 
+  //! \ingroup todd_coxeter_class_group
+  //
+  //! \brief Deduction guide.
+  //!
+  //! Defined in `todd-coxeter-class.hpp`.
+  //!
+  //! Deduction guide to construct a `ToddCoxeter<Word>` from a
+  //! `Presentation<Word>` rvalue reference.
   template <typename Word>
   ToddCoxeter(congruence_kind, Presentation<Word>&&) -> ToddCoxeter<Word>;
 
+  //! \ingroup todd_coxeter_class_group
+  //
+  //! \brief Deduction guide.
+  //!
+  //! Defined in `todd-coxeter-class.hpp`.
+  //!
+  //! Deduction guide to construct a `ToddCoxeter<Word>` from a
+  //! `ToddCoxeter<Word>` const reference.
   template <typename Word>
   ToddCoxeter(congruence_kind, ToddCoxeter<Word> const&) -> ToddCoxeter<Word>;
 
+  //! \ingroup todd_coxeter_class_group
+  //
+  //! \brief Deduction guide.
+  //!
+  //! Defined in `todd-coxeter-class.hpp`.
+  //!
+  //! Deduction guide to construct a `ToddCoxeter<word_type>` from a
+  //! `WordGraph<Node>` const reference.
   template <typename Node>
   ToddCoxeter(congruence_kind, WordGraph<Node> const&)
       -> ToddCoxeter<word_type>;
 
+  //! \ingroup todd_coxeter_class_group
+  //
+  //! \brief Deduction guide.
+  //!
+  //! Defined in `todd-coxeter-class.hpp`.
+  //!
+  //! Deduction guide to construct a `ToddCoxeter<word_type>` from a
+  //! `WordGraph<Node>` rvalue reference.
   template <typename Node>
   ToddCoxeter(congruence_kind, WordGraph<Node>&&) -> ToddCoxeter<word_type>;
 
+  //! \ingroup todd_coxeter_class_group
+  //
+  //! \brief Deduction guide.
+  //!
+  //! Defined in `todd-coxeter-class.hpp`.
+  //!
+  //! Deduction guide to construct a `ToddCoxeter<Word>` from a
+  //! `ToddCoxeter<Word>` const reference.
   template <typename Word>
   ToddCoxeter(ToddCoxeter<Word> const&) -> ToddCoxeter<Word>;
 
+  //! \ingroup todd_coxeter_class_group
+  //
+  //! \brief Deduction guide.
+  //!
+  //! Defined in `todd-coxeter-class.hpp`.
+  //!
+  //! Deduction guide to construct a `ToddCoxeter<Word>` from a
+  //! `ToddCoxeter<Word>` rvalue reference.
   template <typename Word>
   ToddCoxeter(ToddCoxeter<Word>&&) -> ToddCoxeter<Word>;
 
+  //! \ingroup todd_coxeter_group
+  //!
+  //! \brief Return a human readable representation of a \ref_todd_coxeter
+  //! object.
+  //!
+  //! Defined in `todd-coxeter.hpp`.
+  //!
+  //! This function returns a human readable representation of a
+  //! \ref_todd_coxeter object.
+  //!
+  //! \param tc the \ref_todd_coxeter object.
+  //!
+  //! \returns A std::string containing the representation.
+  //!
+  //! \exceptions
+  //! \no_libsemigroups_except
   template <typename Word>
   std::string to_human_readable_repr(ToddCoxeter<Word> const& tc);
 }  // namespace libsemigroups
