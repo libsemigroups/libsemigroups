@@ -64,21 +64,22 @@ namespace libsemigroups {
     }
   }  // namespace congruence_common
 
-  //! \ingroup kambites_group
-  //!
   //! \brief Helper functions for the \ref Kambites class template.
   //!
   //! Defined in \c kambites.hpp.
   //!
   //! This page contains documentation for many helper functions for the \ref
   //! Kambites class template. In particular, these functions include versions
-  //! of several of the member functions of \ref KnuthBendixBase (that accept
+  //! of several of the member functions of \ref Kambites (that accept
   //! iterators) whose parameters are not iterators, but objects instead. The
   //! helpers documented on this page all belong to the namespace `kambites`.
   //!
   //! \sa \ref cong_intf_helpers_group
-  //!
-  //! @{
+
+  //! This page contains documentation for everything in the namespace \ref
+  //! kambites. This includes everything from \ref cong_intf_helpers_group, at
+  //! present there are no helper functions, beyond those in \ref
+  //! cong_intf_helpers_group, for the \ref Kambites class template.
   namespace kambites {
     using congruence_common::add_generating_pair;
     using congruence_common::add_generating_pair_no_checks;

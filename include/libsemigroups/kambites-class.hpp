@@ -64,10 +64,25 @@ namespace libsemigroups {
   //!
   //! On this page there are links to the documentation for the algorithms in
   //! `libsemigroups` for small overlap monoids by Mark %Kambites and the
-  //! authors of `libsemigroups`;
-  //! see \cite Kambites2009aa, \cite Kambites2009ab, and \cite Mitchell2021aa.
+  //! authors of `libsemigroups`; see \cite Kambites2009aa,
+  //! \cite Kambites2009ab, and \cite Mitchell2021aa.
+  //!
+  //! Helper functions for the class template Kambites can be found in the
+  //! namespace \ref congruence_common and \ref kambites. At present the
+  //! helper functions in these two namespaces are identical, because there are
+  //! no helper functions that only apply to the Kambites class template.
 
+  //! \defgroup kambites_class_group The Kambites class
   //! \ingroup kambites_group
+  //!
+  //! \brief This page contains links to the documentation related to the
+  //! Kambites class.
+  //!
+  //! This page contains links to the documentation related to the
+  //! Kambites class.
+
+  //! \ingroup kambites_class_group
+  //! \hideinheritancegraph
   //!
   //! \brief Class template implementing small overlap class, equality, and
   //! normal forms for small overlap monoids.
@@ -307,8 +322,8 @@ namespace libsemigroups {
       // == _generating_pairs, maybe better not to duplicate
       _generating_pairs.emplace_back(first1, last1);
       _generating_pairs.emplace_back(first2, last2);
-      return detail::CongruenceCommon::add_internal_generating_pair_no_checks<Kambites>(
-          first1, last1, first2, last2);
+      return detail::CongruenceCommon::add_internal_generating_pair_no_checks<
+          Kambites>(first1, last1, first2, last2);
     }
 
     //! \brief Add generating pair via iterators.
@@ -537,7 +552,8 @@ namespace libsemigroups {
     OutputIterator reduce_no_run(OutputIterator d_first,
                                  Iterator1      first,
                                  Iterator2      last) const {
-      return detail::CongruenceCommon::reduce_no_run<Kambites>(d_first, first, last);
+      return detail::CongruenceCommon::reduce_no_run<Kambites>(
+          d_first, first, last);
     }
 
     //! \brief Reduce a word with no checks.
@@ -565,7 +581,8 @@ namespace libsemigroups {
     OutputIterator reduce_no_checks(OutputIterator d_first,
                                     InputIterator1 first,
                                     InputIterator2 last) {
-      return detail::CongruenceCommon::reduce_no_checks<Kambites>(d_first, first, last);
+      return detail::CongruenceCommon::reduce_no_checks<Kambites>(
+          d_first, first, last);
     }
 
     //! \brief Reduce a word.
@@ -930,7 +947,7 @@ namespace libsemigroups {
     }
   };  // class Kambites
 
-  //! \ingroup kambites_group
+  //! \ingroup kambites_class_group
   //
   //! \brief Deduction guide.
   //!
@@ -941,12 +958,36 @@ namespace libsemigroups {
   template <typename Word>
   Kambites(congruence_kind, Presentation<Word> const&) -> Kambites<Word>;
 
+  //! \ingroup kambites_class_group
+  //
+  //! \brief Deduction guide.
+  //!
+  //! Defined in `kambites.hpp`.
+  //!
+  //! Deduction guide to construct a `Kambites<Word>` from a
+  //! `Presentation<Word>` rvalue reference.
   template <typename Word>
   Kambites(congruence_kind, Presentation<Word>&&) -> Kambites<Word>;
 
+  //! \ingroup kambites_class_group
+  //
+  //! \brief Deduction guide.
+  //!
+  //! Defined in `kambites.hpp`.
+  //!
+  //! Deduction guide to construct a `Kambites<Word>` from a
+  //! `Kambites<Word>` const reference.
   template <typename Word>
   Kambites(Kambites<Word> const&) -> Kambites<Word>;
 
+  //! \ingroup kambites_class_group
+  //
+  //! \brief Deduction guide.
+  //!
+  //! Defined in `kambites.hpp`.
+  //!
+  //! Deduction guide to construct a `Kambites<Word>` from a
+  //! `Kambites<Word>` rvalue reference.
   template <typename Word>
   Kambites(Kambites<Word>&&) -> Kambites<Word>;
 
