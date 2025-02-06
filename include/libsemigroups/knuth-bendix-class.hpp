@@ -522,7 +522,7 @@ namespace libsemigroups {
   KnuthBendix(congruence_kind, Presentation<Word>&&) -> KnuthBendix<Word>;
 
   //! \ingroup knuth_bendix_class_group
-  //
+  //!
   //! \brief Deduction guide.
   //!
   //! Defined in `knuth-bendix-class.hpp`.
@@ -533,7 +533,7 @@ namespace libsemigroups {
   KnuthBendix(KnuthBendix<Word> const&) -> KnuthBendix<Word>;
 
   //! \ingroup knuth_bendix_class_group
-  //
+  //!
   //! \brief Deduction guide.
   //!
   //! Defined in `knuth-bendix-class.hpp`.

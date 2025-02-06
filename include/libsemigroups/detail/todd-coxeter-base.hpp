@@ -181,19 +181,10 @@ namespace libsemigroups {
         };
       };  // struct options
 
-      using node_type  = typename WordGraph<uint32_t>::node_type;
-      using index_type = node_type;
-      using label_type = typename WordGraph<uint32_t>::label_type;
-
-      ////////////////////////////////////////////////////////////////////////
-      // Interface requirements - native-types
-      ////////////////////////////////////////////////////////////////////////
-
-      // TODO(0) rm
-      using native_letter_type = letter_type;
-      using native_word_type   = word_type;
-      // TODO(0) rm
-      using native_presentation_type = Presentation<native_word_type>;
+      using node_type        = typename WordGraph<uint32_t>::node_type;
+      using index_type       = node_type;
+      using label_type       = typename WordGraph<uint32_t>::label_type;
+      using native_word_type = word_type;
 
      private:
       ////////////////////////////////////////////////////////////////////////
@@ -1363,7 +1354,7 @@ namespace libsemigroups {
       ////////////////////////////////////////////////////////////////////////
 
 #ifndef PARSED_BY_DOXYGEN
-      [[nodiscard]] native_presentation_type const&
+      [[nodiscard]] Presentation<word_type> const&
       internal_presentation() const noexcept {
         return _word_graph.presentation();
       }
