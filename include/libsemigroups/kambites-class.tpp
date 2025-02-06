@@ -84,7 +84,9 @@ namespace libsemigroups {
     _have_class = false;
     _XYZ_data.clear();
     // Non-mutable
-    // _presentation.init(); TODO
+    // _presentation.init(); FIXME(0) this needs to be added but one of the
+    // other constructors is messed up by this so better just do the
+    // simplification of the constructors now.
     _generating_pairs.clear();
     _suffix_tree.init();
     return *this;

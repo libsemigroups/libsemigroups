@@ -2255,6 +2255,11 @@ namespace libsemigroups {
     kambites::add_generating_pair(kk, "abababab", "aba");
     REQUIRE(kk.small_overlap_class() == 1);
 
+    kk.init();
+    REQUIRE(kk.presentation().rules.empty());
+    REQUIRE(kk.presentation().alphabet().empty());
+    REQUIRE(kk.generating_pairs().empty());
+
     Presentation<word_type> pp;
     pp.alphabet(7);
     presentation::add_rule(pp, to_word("abcd"), to_word("aaaeaa"));
