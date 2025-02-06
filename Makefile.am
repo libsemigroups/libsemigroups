@@ -1215,7 +1215,7 @@ bench_multi_string_view_SOURCES =  benchmarks/bench-multi-string-view.cpp
 bench_multi_string_view_SOURCES += benchmarks/bench-main.cpp
 
 bench_todd_coxeter_SOURCES =  benchmarks/bench-todd-coxeter.cpp
-bench_todd_coxeter_SOURCES += benchmarks/examples/cong-common-class.cpp
+bench_todd_coxeter_SOURCES += benchmarks/examples/cong-intf.cpp
 bench_todd_coxeter_SOURCES += benchmarks/bench-main.cpp
 
 bench_uf_SOURCES =  benchmarks/bench-uf.cpp
