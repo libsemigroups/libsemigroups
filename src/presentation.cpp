@@ -59,6 +59,77 @@ namespace libsemigroups {
                            std::vector<int>(alphabet.begin(), alphabet.end()));
       }
     }
+    GreedyReduceHelper::GreedyReduceHelper(Ukkonen const& st)
+        : _best(),
+          _best_goodness(),
+          _distance_from_root(st.nodes().size(), 0),
+          _num_leafs(st.nodes().size(), 0),
+          _scratch(),
+          _suffix_index() {}
+
+    GreedyReduceHelper::~GreedyReduceHelper() = default;
+
+    void GreedyReduceHelper::pre_order(Ukkonen const& st, size_t v) {
+      auto const& nodes = st.nodes();
+      // This is a tree so we've never seen v before!
+      if (!nodes[v].is_root()) {
+        _distance_from_root[v]
+            = _distance_from_root[nodes[v].parent] + nodes[v].length();
+      }
+      if (nodes[v].is_leaf()) {
+        _num_leafs[v]++;
+        // Starting index of the suffix that the leaf corresponds to
+        _suffix_index.push_back(nodes[v].r - _distance_from_root[v]);
+      }
+    }
+
+    void GreedyReduceHelper::post_order(Ukkonen const& st, size_t v) {
+      auto const& nodes = st.nodes();
+      if (nodes[v].is_leaf() || nodes[v].is_root()) {
+        return;
+      }
+
+      for (auto const& child : nodes[v].children) {
+        _num_leafs[v] += _num_leafs[child.second];
+      }
+      _scratch.assign(_suffix_index.cend() - _num_leafs[v],
+                      _suffix_index.cend());
+      std::sort(_scratch.begin(), _scratch.end());
+      // number of non-overlapping subwords corresponding to the node v
+      size_t num_non_overlap = st.multiplicity(st.word_index(_scratch[0]));
+
+      // Only try greedily matching non-overlapping subwords from left to
+      // right
+      auto subword_begin = _scratch[0];
+      auto it            = _scratch.cbegin();
+      do {
+        auto subword_end = subword_begin + _distance_from_root[v];
+        it               = std::lower_bound(it, _scratch.cend(), subword_end);
+        if (it != _scratch.cend()) {
+          subword_begin = *it;
+          num_non_overlap += st.multiplicity(st.word_index(subword_begin));
+        }
+      } while (it != _scratch.cend());
+      int goodness = (_distance_from_root[v] * num_non_overlap)
+                     - num_non_overlap - (_distance_from_root[v] + 1);
+      if (goodness > _best_goodness) {
+        _best          = v;
+        _best_goodness = goodness;
+      }
+    }
+
+    using const_iterator = typename Ukkonen::const_iterator;
+
+    std::pair<const_iterator, const_iterator>
+    GreedyReduceHelper::yield(Ukkonen const& st) {
+      auto const& nodes = st.nodes();
+      if (nodes[_best].is_root()) {
+        return {st.cbegin(), st.cbegin()};
+      }
+      return {st.cbegin()
+                  + (nodes[_best].l - _distance_from_root[nodes[_best].parent]),
+              st.cbegin() + nodes[_best].r};
+    }
   }  // namespace detail
 
   namespace presentation {

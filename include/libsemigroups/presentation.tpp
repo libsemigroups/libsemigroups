@@ -568,7 +568,7 @@ namespace libsemigroups {
     Word longest_subword_reducing_length(Presentation<Word>& p) {
       Ukkonen u;
       ukkonen::add_words(u, p.rules.cbegin(), p.rules.cend());
-      ukkonen::detail::GreedyReduceHelper helper(u);
+      detail::GreedyReduceHelper helper(u);
       // Get the best word [first, last) so that replacing every
       // non-overlapping occurrence of [first, last) in p.rules with a new
       // generator "x", and adding "x = [first, last)" as a relation reduces
@@ -976,8 +976,8 @@ namespace libsemigroups {
                                       Word const&         letters1,
                                       Word const&         letters2) {
       using words::operator+;
-      size_t       m = letters1.size(), n = letters2.size();
-      Word const * shorter = &letters1, *longer = &letters2;
+      size_t      m = letters1.size(), n = letters2.size();
+      Word const *shorter = &letters1, *longer = &letters2;
       if (m > n) {
         std::swap(shorter, longer);
         std::swap(m, n);
