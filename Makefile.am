@@ -719,7 +719,7 @@ EXTRA_DIST += benchmarks/bench-main.hpp
 EXTRA_DIST += benchmarks/catch.hpp 
 EXTRA_DIST += benchmarks/uf-old.hpp
 EXTRA_DIST += benchmarks/examples/common.hpp
-EXTRA_DIST += benchmarks/examples/cong-common.hpp
+EXTRA_DIST += benchmarks/examples/cong-intf.hpp
 EXTRA_DIST += benchmarks/examples/generators.hpp
 
 ## For testing . . .
@@ -1168,7 +1168,7 @@ test_word_range_SOURCES =  tests/test-word-range.cpp
 test_word_range_SOURCES += tests/test-main.cpp
 test_word_range_SOURCES += tests/catch_amalgamated.cpp
 
-bench_all_SOURCES =  benchmarks/examples/cong-common.cpp
+bench_all_SOURCES =  benchmarks/examples/cong-intf.cpp
 bench_all_SOURCES += benchmarks/examples/generators.cpp
 bench_all_SOURCES += benchmarks/bench-action.cpp
 bench_all_SOURCES += benchmarks/bench-word-graph.cpp

@@ -16,7 +16,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include "congruence-common.hpp"
+#include "cong-intf.hpp"
 
 #include <cstddef>  // for size_t
 #include <vector>   // for vector
