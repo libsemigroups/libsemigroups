@@ -203,8 +203,8 @@ namespace libsemigroups {
   template <typename Thing>
   std::shared_ptr<Thing> Congruence<Word>::get() const {
     init_runners();
-    RunnerKind  val;
-    std::string name;  // TODO(0) string_view
+    RunnerKind       val;
+    std::string_view name;
     if constexpr (std::is_same_v<Thing, Kambites<Word>>) {
       val  = RunnerKind::K;
       name = "Kambites";

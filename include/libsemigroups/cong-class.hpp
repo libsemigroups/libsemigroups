@@ -22,12 +22,13 @@
 #ifndef LIBSEMIGROUPS_CONG_CLASS_HPP_
 #define LIBSEMIGROUPS_CONG_CLASS_HPP_
 
-#include <cstddef>  // for size_t
-#include <cstdint>  // for uint64_t
-#include <memory>   // for shared_ptr
-#include <string>   // for string
-#include <utility>  // for move
-#include <vector>   // for vector
+#include <cstddef>      // for size_t
+#include <cstdint>      // for uint64_t
+#include <memory>       // for shared_ptr
+#include <string>       // for string
+#include <string_view>  // for string_view
+#include <utility>      // for move
+#include <vector>       // for vector
 
 #include "knuth-bendix-class.hpp"  // for KnuthBendixBase
 #include "presentation.hpp"        // for Presentation
