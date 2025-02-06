@@ -240,6 +240,18 @@ namespace libsemigroups {
       }
 
      private:
+      void clear_runners_after_race() {
+        if (_winner != nullptr) {
+          for (auto rnnr : _runners) {
+            if (rnnr != _winner) {
+              rnnr.reset();
+            }
+          }
+          _runners.clear();
+          _runners.push_back(_winner);
+        }
+      }
+
       // Runs the callable object \p func on every Runner in parallel.
       template <typename TCallable>
       void run_func(TCallable const& func) {
@@ -259,6 +271,7 @@ namespace libsemigroups {
             _winner       = _runners.at(0);
             _winner_index = 0;
             report_elapsed_time("Race: ", tmr);
+            clear_runners_after_race();
             return;
           }
           for (size_t i = 0; i < _runners.size(); ++i) {
@@ -268,6 +281,7 @@ namespace libsemigroups {
               _winner_index = i;
               report_default("#{} already finished successfully!\n", i);
               // delete the other runners?
+              clear_runners_after_race();
               return;
             }
           }
@@ -305,7 +319,6 @@ namespace libsemigroups {
               }
             }
           };
-          // TODO remove the next line?
           reset_thread_ids();
 
           std::vector<std::thread> t;
@@ -328,15 +341,7 @@ namespace libsemigroups {
               break;
             }
           }
-          if (_winner != nullptr) {
-            for (auto rnnr : _runners) {
-              if (rnnr != _winner) {
-                rnnr.reset();
-              }
-            }
-            _runners.clear();
-            _runners.push_back(_winner);
-          }
+          clear_runners_after_race();
         }
       }
     };

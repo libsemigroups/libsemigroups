@@ -204,7 +204,7 @@ namespace libsemigroups {
   std::shared_ptr<Thing> Congruence<Word>::get() const {
     init_runners();
     RunnerKind  val;
-    std::string name;
+    std::string name;  // TODO(0) string_view
     if constexpr (std::is_same_v<Thing, Kambites<Word>>) {
       val  = RunnerKind::K;
       name = "Kambites";
