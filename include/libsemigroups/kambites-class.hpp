@@ -309,7 +309,6 @@ namespace libsemigroups {
     //! \returns A reference to `*this`.
     //!
     //! \cong_intf_warn_assume_letters_in_bounds
-    // TODO(0) to tpp file
     template <typename Iterator1,
               typename Iterator2,
               typename Iterator3,
@@ -317,20 +316,11 @@ namespace libsemigroups {
     Kambites& add_generating_pair_no_checks(Iterator1 first1,
                                             Iterator2 last1,
                                             Iterator3 first2,
-                                            Iterator4 last2) {
-      LIBSEMIGROUPS_ASSERT(!started());
-      // TODO(2) if native_word_type == word_type, then _generating_pairs
-      // == _generating_pairs, maybe better not to duplicate
-      _generating_pairs.emplace_back(first1, last1);
-      _generating_pairs.emplace_back(first2, last2);
-      return detail::CongruenceCommon::add_internal_generating_pair_no_checks<
-          Kambites>(first1, last1, first2, last2);
-    }
+                                            Iterator4 last2);
 
     //! \brief Add generating pair via iterators.
     //!
-    //! This function adds a generating pair to the congruence represented
-    //! by a
+    //! This function adds a generating pair to the congruence represented by a
     //! \ref Kambites instance.
     //!
     //! \cong_intf_params_contains
