@@ -885,16 +885,14 @@ namespace libsemigroups {
     //! Defined in \c todd-coxeter-helpers.hpp.
     //!
     //! This function returns the partition of the words in the range \p r
-    //! induced by the \ref_todd_coxeter
-    //! instance
-    //! \p tc. This function triggers a full enumeration of \p tc.
+    //! induced by the \ref_todd_coxeter instance \p tc. This function triggers
+    //! a full enumeration of \p tc.
     //!
+    //! \tparam Word the type of the words in \p tc, in the range \p r, and in
+    //! the output.
     //! \tparam Range the type of the input range of words.
-    //! \tparam Word the type of the words in the output (defaults to the
-    //! type of the words in the input range).
     //!
-    //! \param tc the \ref_todd_coxeter
-    //! instance.
+    //! \param tc the \ref_todd_coxeter instance.
     //! \param r the input range of words.
     //!
     //! \returns The partition of the input range.
@@ -906,15 +904,10 @@ namespace libsemigroups {
     //! \throws LibsemigroupsException if the input range of words is infinite.
     //!
     //! \cong_intf_warn_undecidable{Todd-Coxeter}.
-
-    // The function:
-    //
-    // template <typename Word, typename Range, typename OutputWord, typename>
-    // [[nodiscard]] std::vector<std::vector<Word>>
-    // partition(ToddCoxeter<Word>& tc, Range r);
-    //
-    // is declared in cong-common-helpers.hpp
-    // TODO(0) update the signature
+    // The following function is also declared in cong-common-helpers.hpp:
+    template <typename Word, typename Range, typename>
+    [[nodiscard]] std::vector<std::vector<Word>>
+    partition(ToddCoxeter<Word>& tc, Range r);
 
     ////////////////////////////////////////////////////////////////////////
     // Interface helpers - non_trivial_classes

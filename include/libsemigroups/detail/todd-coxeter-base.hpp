@@ -122,7 +122,7 @@ namespace libsemigroups {
   //! \ingroup todd_coxeter_class_group
   //!
   //! \brief Documentation of common member functions of \ref Congruence,
-  //! \ref Kambites, \ref libsemigroups::KnuthBendix, and \ref_todd_coxeter.
+  //! \ref Kambites, \ref_knuth_bendix, and \ref_todd_coxeter.
   //!
   //! This page contains documentation of the member functions of
   //! \ref_todd_coxeter that are implemented in all of the classes Congruence,
@@ -377,22 +377,6 @@ namespace libsemigroups {
       // 4. ToddCoxeterBase - interface requirements - add_generating_pair
       ////////////////////////////////////////////////////////////////////////
 
-      //! \ingroup todd_coxeter_class_intf_group
-      //! \brief Add generating pair via iterators.
-      //!
-      //! This function adds a generating pair to the congruence represented
-      //! by a
-      //! \ref_todd_coxeter instance.
-      //!
-      //! \cong_intf_params_contains
-      //!
-      //! \returns A reference to `*this`.
-      //!
-      //! \cong_intf_warn_assume_letters_in_bounds
-      //!
-      //! \warning It is assumed that \ref started returns \c false. Adding
-      //! generating pairs after \ref started is not permitted (but also not
-      //! checked by this function).
       template <typename Iterator1,
                 typename Iterator2,
                 typename Iterator3,
@@ -405,20 +389,6 @@ namespace libsemigroups {
             ToddCoxeterBase>(first1, last1, first2, last2);
       }
 
-      //! \ingroup todd_coxeter_class_intf_group
-      //! \brief Add generating pair via iterators.
-      //!
-      //! This function adds a generating pair to the congruence represented
-      //! by a
-      //! \ref_todd_coxeter instance.
-      //!
-      //! \cong_intf_params_contains
-      //!
-      //! \returns A reference to `*this`.
-      //!
-      //! \cong_intf_throws_if_letters_out_of_bounds
-      //!
-      //! \cong_intf_throws_if_started
       template <typename Iterator1,
                 typename Iterator2,
                 typename Iterator3,
@@ -436,6 +406,7 @@ namespace libsemigroups {
       ////////////////////////////////////////////////////////////////////////
 
       //! \ingroup todd_coxeter_class_intf_group
+      //!
       //! \brief Compute the number of classes in the congruence.
       //!
       //! This function computes the number of classes in the congruence
@@ -453,24 +424,6 @@ namespace libsemigroups {
       // 6. ToddCoxeterBase - interface requirements - contains
       ////////////////////////////////////////////////////////////////////////
 
-      //! \ingroup todd_coxeter_class_intf_group
-      //! \brief Check containment of a pair of words via iterators.
-      //!
-      //! This function checks whether or not the words represented by the
-      //! ranges \p first1 to \p last1 and \p first2 to \p last2 are already
-      //! known to be contained in the congruence represented by a \ref
-      //! todd_coxeter_class_group  instance. This function performs no
-      //! enumeration, so it is possible for the words to be contained in the
-      //! congruence, but that this is not currently known.
-      //!
-      //! \cong_intf_params_contains
-      //!
-      //! \returns
-      //! * tril::TRUE if the words are known to belong to the congruence;
-      //! * tril::FALSE if the words are known to not belong to the congruence;
-      //! * tril::unknown otherwise.
-      //!
-      //! \cong_intf_warn_assume_letters_in_bounds
       template <typename Iterator1,
                 typename Iterator2,
                 typename Iterator3,
@@ -480,26 +433,6 @@ namespace libsemigroups {
                                         Iterator3 first2,
                                         Iterator4 last2) const;
 
-      //! \ingroup todd_coxeter_class_intf_group
-      //! \brief Check containment of a pair of words via iterators.
-      //!
-      //! This function checks whether or not the words represented by the
-      //! ranges
-      //! \p first1 to \p last1 and \p first2 to \p last2 are already known
-      //! to be contained in the congruence represented by a \ref
-      //! todd_coxeter_class_group  instance. This function
-      //! performs no enumeration, so it is possible for the words to be
-      //! contained in the congruence, but that this is not currently known.
-      //!
-      //! \cong_intf_params_contains
-      //!
-      //! \returns
-      //! * tril::TRUE if the words are known to belong to the congruence;
-      //! * tril::FALSE if the words are known to not belong to the
-      //! congruence;
-      //! * tril::unknown otherwise.
-      //!
-      //! \cong_intf_throws_if_letters_out_of_bounds
       template <typename Iterator1,
                 typename Iterator2,
                 typename Iterator3,
@@ -512,23 +445,6 @@ namespace libsemigroups {
             first1, last1, first2, last2);
       }
 
-      //! \ingroup todd_coxeter_class_intf_group
-      //! \brief Check containment of a pair of words via iterators.
-      //!
-      //! This function checks whether or not the words represented by the
-      //! ranges
-      //! \p first1 to \p last1 and \p first2 to \p last2 are contained in
-      //! the congruence represented by a \ref_todd_coxeter
-      //!  instance. This function triggers a full
-      //! enumeration, which may never terminate.
-      //!
-      //! \cong_intf_params_contains
-      //!
-      //! \returns Whether or not the pair belongs to the congruence.
-      //!
-      //! \cong_intf_warn_undecidable{Todd-Coxeter}
-      //!
-      //! \cong_intf_warn_assume_letters_in_bounds
       template <typename Iterator1,
                 typename Iterator2,
                 typename Iterator3,
@@ -538,23 +454,6 @@ namespace libsemigroups {
                               Iterator3 first2,
                               Iterator4 last2);
 
-      //! \ingroup todd_coxeter_class_intf_group
-      //! \brief Check containment of a pair of words via iterators.
-      //!
-      //! This function checks whether or not the words represented by the
-      //! ranges
-      //! \p first1 to \p last1 and \p first2 to \p last2 are contained in
-      //! the congruence represented by a \ref_todd_coxeter
-      //!  instance. This function triggers a full
-      //! enumeration, which may never terminate.
-      //!
-      //! \cong_intf_params_contains
-      //!
-      //! \returns Whether or not the pair belongs to the congruence.
-      //!
-      //! \cong_intf_warn_undecidable{Todd-Coxeter}
-      //!
-      //! \cong_intf_throws_if_letters_out_of_bounds
       template <typename Iterator1,
                 typename Iterator2,
                 typename Iterator3,
@@ -568,25 +467,6 @@ namespace libsemigroups {
       // 7. ToddCoxeterBase - interface requirements - reduce
       ////////////////////////////////////////////////////////////////////////
 
-      //! \ingroup todd_coxeter_class_intf_group
-      //! \brief Reduce a word with no enumeration or checks.
-      //!
-      //! This function writes a reduced word equivalent to the input word
-      //! described by the iterator \p first and \p last to the output iterator
-      //! \p d_first. This function triggers no enumeration. The word output by
-      //! this function is equivalent to the input word in the congruence
-      //! defined by a \ref_todd_coxeter instance. If the \ref_todd_coxeter
-      //! instance is \ref finished, then the output word is a normal form for
-      //! the input word. If the \ref_todd_coxeter instance is not \ref
-      //! finished, then it might be that equivalent input words produce
-      //! different output words.
-      //!
-      //! \cong_intf_params_reduce
-      //!
-      //! \returns An \p OutputIterator pointing one beyond the last letter
-      //! inserted into \p d_first.
-      //!
-      //! \cong_intf_warn_assume_letters_in_bounds
       template <typename OutputIterator,
                 typename InputIterator1,
                 typename InputIterator2>
@@ -594,25 +474,6 @@ namespace libsemigroups {
                                              InputIterator1 first,
                                              InputIterator2 last) const;
 
-      //! \ingroup todd_coxeter_class_intf_group
-      //! \brief Reduce a word with no enumeration.
-      //!
-      //! This function writes a reduced word equivalent to the input word
-      //! described by the iterator \p first and \p last to the output iterator
-      //! \p d_first. This function triggers no enumeration. The word output by
-      //! this function is equivalent to the input word in the congruence
-      //! defined by a \ref_todd_coxeter instance. If the \ref_todd_coxeter
-      //! instance is \ref finished, then the output word is a normal form for
-      //! the input word. If the \ref_todd_coxeter instance is not \ref
-      //! finished, then it might be that equivalent input words produce
-      //! different output words.
-      //!
-      //! \cong_intf_params_reduce
-      //!
-      //! \returns An \p OutputIterator pointing one beyond the last letter
-      //! inserted into \p d_first.
-      //!
-      //! \cong_intf_throws_if_letters_out_of_bounds
       template <typename OutputIterator,
                 typename InputIterator1,
                 typename InputIterator2>
@@ -623,28 +484,6 @@ namespace libsemigroups {
             d_first, first, last);
       }
 
-      //! \ingroup todd_coxeter_class_intf_group
-      //! \brief Reduce a word with no checks.
-      //!
-      //! This function triggers a full enumeration and then writes a
-      //! reduced word equivalent to the input word described by the
-      //! iterator \p first and
-      //! \p last to the output iterator \p d_first. The word output by this
-      //! function is equivalent to the input word in the congruence defined
-      //! by a
-      //! \ref_todd_coxeter instance. In other
-      //! words, the output word is a normal form for the input word or
-      //! equivalently a canconical representative of its congruence class.
-      //!
-      //! \cong_intf_params_reduce
-      //!
-      //! \returns An \p OutputIterator pointing one beyond the last letter
-      //! inserted into \p d_first.
-      //!
-      //! \cong_intf_warn_assume_letters_in_bounds
-      //!
-      //! \cong_intf_warn_undecidable{Todd-Coxeter}
-      //!
       template <typename OutputIterator,
                 typename InputIterator1,
                 typename InputIterator2>
@@ -655,28 +494,6 @@ namespace libsemigroups {
             d_first, first, last);
       }
 
-      //! \ingroup todd_coxeter_class_intf_group
-      //! \brief Reduce a word.
-      //!
-      //! This function triggers a full enumeration and then writes a
-      //! reduced word equivalent to the input word described by the
-      //! iterator \p first and
-      //! \p last to the output iterator \p d_first. The word output by this
-      //! function is equivalent to the input word in the congruence defined
-      //! by a
-      //! \ref_todd_coxeter instance. In other
-      //! words, the output word is a normal form for the input word or
-      //! equivalently a canconical representative of its congruence class.
-      //!
-      //! \cong_intf_params_reduce
-      //!
-      //! \returns An \p OutputIterator pointing one beyond the last letter
-      //! inserted into \p d_first.
-      //!
-      //! \cong_intf_throws_if_letters_out_of_bounds
-      //!
-      //! \cong_intf_warn_undecidable{Todd-Coxeter}
-      //!
       template <typename OutputIterator,
                 typename InputIterator1,
                 typename InputIterator2>
@@ -1387,7 +1204,7 @@ namespace libsemigroups {
       //! inactive) should coincide with the number of active nodes; that
       //! the graph is complete; or that the graph is compatible with the
       //! relations of the \ref presentation or with the \ref
-      //! generating_pairs.
+      //! ToddCoxeter::generating_pairs.
       //!
       //! The functions \ref standardize(Order) and \ref shrink_to_fit can
       //! be used to modify the returned word graph in-place to have
@@ -1419,12 +1236,12 @@ namespace libsemigroups {
       //! the empty word. The returned WordGraph is also short-lex
       //! standardized. The returned WordGraph will usually be complete and
       //! compatible with the relations of the \ref presentation and with
-      //! the \ref generating_pairs. The WordGraph may not be complete or
-      //! compatible for some values of the settings. For example, if the
-      //! setting \ref lower_bound is used but is not the same as the number
-      //! of classes in the congruence, then the WordGraph returned by this
-      //! function may not be compatible with the relations of \ref
-      //! presentation or \ref generating_pairs.
+      //! the \ref ToddCoxeter::generating_pairs. The WordGraph may not be
+      //! complete or compatible for some values of the settings. For example,
+      //! if the setting \ref lower_bound is used but is not the same as the
+      //! number of classes in the congruence, then the WordGraph returned by
+      //! this function may not be compatible with the relations of \ref
+      //! presentation or \ref ToddCoxeter::generating_pairs.
       //!
       //! \returns A const reference to the underlying WordGraph.
       word_graph_type const& word_graph();
@@ -1480,14 +1297,15 @@ namespace libsemigroups {
       //! The return value of this function indicates the following:
       //! * Order::none implies that no standardization has been performed
       //! and:
-      //!   - the return value of \ref reduce will essentially arbitrary;
+      //!   - the return value of \ref ToddCoxeter::reduce will essentially
+      //!   arbitrary;
       //!   - the return values of \ref todd_coxeter::normal_forms will be
       //!   essentially arbitrary;
       //!   - the classes of the congruence will be indexed in an arbitrary
       //!   order;
       //! * Order::shortlex implies that:
-      //!   - the return value of \ref reduce will be the short-lex least
-      //!   word belonging to a given congruence class;
+      //!   - the return value of \ref ToddCoxeter::reduce will be the short-lex
+      //!   least word belonging to a given congruence class;
       //!   - the return values of \ref todd_coxeter::normal_forms will be
       //!   in short-lex order;
       //!   - the classes of the congruence will be indexed in short-lex order
@@ -1495,12 +1313,12 @@ namespace libsemigroups {
       //! * Order::lex implies that:
       //!   - the return values of \ref todd_coxeter::normal_forms will be
       //!   ordered lexicographically.
-      //!   - the return values of \ref reduce and the indexes of class are
-      //!     essentially arbitrary because there is not necessarily a
-      //!     lexicographically least word in every class;
+      //!   - the return values of \ref ToddCoxeter::reduce and the indexes of
+      //!   class are essentially arbitrary because there is not necessarily a
+      //!   lexicographically least word in every class;
       //! * Order::recursive implies that:
-      //!   - the return value of \ref reduce will be the recursive path
-      //!   least word belonging to a given congruence class;
+      //!   - the return value of \ref ToddCoxeter::reduce will be the recursive
+      //!   path least word belonging to a given congruence class;
       //!   - the return values of \ref todd_coxeter::normal_forms will be
       //!   in recursive path order;
       //!   - the classes of the congruence will be indexed in recursive

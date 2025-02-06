@@ -334,10 +334,10 @@ namespace libsemigroups {
 
         //! This strategy is meant to mimic the
         //! [ACE](https://staff.itee.uq.edu.au/havas/) strategy R/C. The HLT
-        //! strategy is run until the first lookahead is triggered (when
-        //! \ref number_of_nodes_active is at least \ref lookahead_next). A
-        //! full
-        //! lookahead is then performed, and then the CR strategy is used.
+        //! strategy is run until the first lookahead is triggered (when the
+        //! number of active nodes in \ref current_word_graph is at least \ref
+        //! lookahead_next). A full lookahead is then performed, and then the CR
+        //! strategy is used.
         R_over_C,
 
         //! This strategy is meant to mimic the
@@ -366,8 +366,8 @@ namespace libsemigroups {
       //! performed.
       //!
       //! The values in this enum can be used as the argument for
-      //! \ref lookahead_extent to specify the extent of any lookahead that
-      //! should be performed.
+      //! \ref ToddCoxeter::lookahead_extent to specify the extent of any
+      //! lookahead that should be performed.
       enum class lookahead_extent {
         //! Perform a full lookahead from every node in the word graph.
         //! Full lookaheads are therefore sometimes slower but may
@@ -437,6 +437,36 @@ namespace libsemigroups {
         //! There is no limit to the number of definitions that can be put in
         //! the stack.
         unlimited
+      };
+
+      // NOTE: The next enum (def_version) is actually defined in FelschGraph,
+      // not in ToddCoxeter
+
+      //! \brief Values for specifying how to handle edge definitions.
+      //!
+      //! The values in this enum can be used as the argument for
+      //! \ref ToddCoxeter::def_version().
+      //!
+      //! For our purposes, a definition is a recently defined edge in the
+      //! word graph that we are attempting to construct in an instance of
+      //! \ref_todd_coxeter. The values in this enum influence how these
+      //! definitions are stored and processed.
+      //!
+      //! For every definition held in the definition stack, a depth first
+      //! search through the Felsch tree of the generating pairs is performed.
+      //! The aim is to only follow paths from nodes in the word graph
+      //! labelled by generating pairs that actually pass through the edge
+      //! described by a definition. There are two versions of this
+      //! represented by the values def_version::one and def_version::two. The
+      //! first version is simpler, but may involve following the same path
+      //! that leads nowhere multiple times. The second version is more
+      //! complex, and attempts to avoid following the same path multiple
+      //! times if it is found to lead nowhere once.
+      enum class def_version : uint8_t {
+        //! Version 1 definition processing.
+        one,
+        //! Version 2 definition processing.
+        two,
       };
     };
 #endif
@@ -682,7 +712,7 @@ namespace libsemigroups {
     //! This function throws a LibsemigroupsException if any value pointed
     //! at by an iterator in the range \p first to \p last is out of
     //! bounds (i.e. does not belong to the alphabet of the \ref
-    //! presentation used to construct the \ref ref_todd_coxeter instance).
+    //! presentation used to construct the \ref_todd_coxeter instance).
     //!
     //! \tparam Iterator1 the type of first argument \p first.
     //! \tparam Iterator2 the type of second argument \p last.
@@ -698,6 +728,8 @@ namespace libsemigroups {
       presentation().validate_word(first, last);
     }
 
+    //! \ingroup todd_coxeter_class_intf_group
+    //!
     //! \brief Get the generating pairs of the congruence.
     //!
     //! This function returns the generating pairs of the congruence. The
@@ -713,8 +745,10 @@ namespace libsemigroups {
       return _generating_pairs;
     }
 
-    //! \brief Get the presentation used to define a \ref
-    //! todd_coxeter_class_group "ToddCoxeter" instance (if any).
+    //! \ingroup todd_coxeter_class_intf_group
+    //!
+    //! \brief Get the presentation used to define a \ref_todd_coxeter instance
+    //! (if any).
     //!
     //! If a \ref_todd_coxeter instance is constructed or initialised using a
     //! presentation, then a const reference to this presentation is returned by
@@ -735,6 +769,23 @@ namespace libsemigroups {
     // ToddCoxeter - interface requirements - add_generating_pair
     ////////////////////////////////////////////////////////////////////////
 
+    //! \ingroup todd_coxeter_class_intf_group
+    //!
+    //! \brief Add generating pair via iterators.
+    //!
+    //! This function adds a generating pair to the congruence represented
+    //! by a
+    //! \ref_todd_coxeter instance.
+    //!
+    //! \cong_intf_params_contains
+    //!
+    //! \returns A reference to `*this`.
+    //!
+    //! \cong_intf_warn_assume_letters_in_bounds
+    //!
+    //! \warning It is assumed that \ref started returns \c false. Adding
+    //! generating pairs after \ref started is not permitted (but also not
+    //! checked by this function).
     template <typename Iterator1,
               typename Iterator2,
               typename Iterator3,
@@ -744,6 +795,20 @@ namespace libsemigroups {
                                                Iterator3 first2,
                                                Iterator4 last2);
 
+    //! \ingroup todd_coxeter_class_intf_group
+    //!
+    //! \brief Add generating pair via iterators.
+    //!
+    //! This function adds a generating pair to the congruence represented by
+    //! a \ref_todd_coxeter instance.
+    //!
+    //! \cong_intf_params_contains
+    //!
+    //! \returns A reference to `*this`.
+    //!
+    //! \cong_intf_throws_if_letters_out_of_bounds
+    //!
+    //! \cong_intf_throws_if_started
     template <typename Iterator1,
               typename Iterator2,
               typename Iterator3,
@@ -762,6 +827,8 @@ namespace libsemigroups {
     // ToddCoxeter - interface requirements - contains
     ////////////////////////////////////////////////////////////////////////
 
+    //! \ingroup todd_coxeter_class_intf_group
+    //!
     //! \brief Check containment of a pair of words via iterators.
     //!
     //! This function checks whether or not the words represented by the ranges
@@ -792,6 +859,8 @@ namespace libsemigroups {
                                                            make_citow(last2));
     }
 
+    //! \ingroup todd_coxeter_class_intf_group
+    //!
     //! \brief Check containment of a pair of words via iterators.
     //!
     //! This function checks whether or not the words represented by the ranges
@@ -822,6 +891,8 @@ namespace libsemigroups {
           first1, last1, first2, last2);
     }
 
+    //! \ingroup todd_coxeter_class_intf_group
+    //!
     //! \brief Check containment of a pair of words via iterators.
     //!
     //! This function checks whether or not the words represented by the ranges
@@ -850,10 +921,11 @@ namespace libsemigroups {
                                                  make_citow(last2));
     }
 
+    //! \ingroup todd_coxeter_class_intf_group
+    //!
     //! \brief Check containment of a pair of words via iterators.
     //!
-    //! This function checks whether or not the words represented by the
-    //! ranges
+    //! This function checks whether or not the words represented by the ranges
     //! \p first1 to \p last1 and \p first2 to \p last2 are contained in the
     //! congruence represented by a \ref_todd_coxeter instance. This function
     //! triggers a full enumeration, which may never terminate.
@@ -878,6 +950,8 @@ namespace libsemigroups {
     // ToddCoxeter - interface requirements - reduce
     ////////////////////////////////////////////////////////////////////////
 
+    //! \ingroup todd_coxeter_class_intf_group
+    //!
     //! \brief Reduce a word with no enumeration or checks.
     //!
     //! This function writes a reduced word equivalent to the input word
@@ -907,19 +981,19 @@ namespace libsemigroups {
           .get();
     }
 
+    //! \ingroup todd_coxeter_class_intf_group
+    //!
     //! \brief Reduce a word with no enumeration.
     //!
     //! This function writes a reduced word equivalent to the input word
-    //! described by the iterator \p first and \p last to the output iterator
-    //! \p d_first. This function triggers no enumeration. The word output by
-    //! this function is equivalent to the input word in the congruence
-    //! defined by a \ref_todd_coxeter instance.
-    //! If the
-    //!  \ref_todd_coxeter instance is \ref
-    //!  finished, then the output word is a normal
-    //! form for the input word. If the  \ref_todd_coxeter instance is not \ref
-    //! finished, then it might be that equivalent input words produce different
-    //! output words.
+    //! described by the iterator \p first and \p last to the output iterator \p
+    //! d_first. This function triggers no enumeration. The word output by this
+    //! function is equivalent to the input word in the congruence defined by a
+    //! \ref_todd_coxeter instance. If the \ref_todd_coxeter instance is \ref
+    //! finished, then the output word is a normal form for the input word. If
+    //! the
+    //! \ref_todd_coxeter instance is not \ref finished, then it might be that
+    //! equivalent input words produce different output words.
     //!
     //! \cong_intf_params_reduce
     //!
@@ -927,7 +1001,6 @@ namespace libsemigroups {
     //! inserted into \p d_first.
     //!
     //! \cong_intf_throws_if_letters_out_of_bounds
-    //!
     template <typename OutputIterator,
               typename InputIterator1,
               typename InputIterator2>
@@ -938,6 +1011,8 @@ namespace libsemigroups {
           d_first, first, last);
     }
 
+    //! \ingroup todd_coxeter_class_intf_group
+    //!
     //! \brief Reduce a word with no checks.
     //!
     //! This function triggers a full enumeration and then writes a reduced
@@ -970,17 +1045,17 @@ namespace libsemigroups {
           .get();
     }
 
+    //! \ingroup todd_coxeter_class_intf_group
+    //!
     //! \brief Reduce a word.
     //!
     //! This function triggers a full enumeration and then writes a reduced
-    //! word equivalent to the input word described by the iterator \p first
-    //! and
+    //! word equivalent to the input word described by the iterator \p first and
     //! \p last to the output iterator \p d_first. The word output by this
-    //! function is equivalent to the input word in the congruence defined by
-    //! a
-    //! \ref_todd_coxeter instance. In other
-    //! words, the output word is a normal form for the input word or
-    //! equivalently a canconical representative of its congruence class.
+    //! function is equivalent to the input word in the congruence defined by a
+    //! \ref_todd_coxeter instance. In other words, the output word is a normal
+    //! form for the input word or equivalently a canconical representative of
+    //! its congruence class.
     //!
     //! \cong_intf_params_reduce
     //!
@@ -1002,8 +1077,6 @@ namespace libsemigroups {
       return detail::CongruenceCommon::reduce<ToddCoxeter>(
           d_first, first, last);
     }
-
-    //! @}
 
     ////////////////////////////////////////////////////////////////////////
     // ToddCoxeterBase - word -> index
