@@ -652,8 +652,6 @@ namespace libsemigroups {
       set_cached_confluent(tril::TRUE);
 
       // For each rule, check if any descendent of any suffix breaks confluence
-      // FIXME are _rules the active rules? Not clear to JDM that this is the
-      // case.
       for (auto node_it = _rules.begin(); node_it != _rules.end(); ++node_it) {
         seen++;
         link = _trie.suffix_link_no_checks(node_it->first);
