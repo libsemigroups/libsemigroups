@@ -716,14 +716,12 @@ namespace libsemigroups {
     //! \brief Get the presentation used to define a \ref
     //! todd_coxeter_class_group "ToddCoxeter" instance (if any).
     //!
-    //! If a \ref_todd_coxeter instance is
-    //! constructed or initialised using a presentation, then a const
-    //! reference to the \ref native_presentation_type version of this
-    //! presentation is returned by this function.
+    //! If a \ref_todd_coxeter instance is constructed or initialised using a
+    //! presentation, then a const reference to this presentation is returned by
+    //! this function.
     //!
-    //! If the \ref_todd_coxeter instance was
-    //! constructed or initialised from a WordGraph, then this presentation
-    //! will be empty.
+    //! If the \ref_todd_coxeter instance was constructed or initialised from a
+    //! WordGraph, then this presentation will be empty.
     //!
     //! \returns A const reference to the presentation.
     //!

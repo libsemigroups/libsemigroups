@@ -112,28 +112,12 @@ namespace libsemigroups {
     //! \brief Type of the words in the relations of the presentation stored in
     //! a Kambites instance.
     //!
-    //! A Kambites instance can be constructed or initialised from a
-    //! presentation with arbitrary types of letters and words. Internally the
-    //! words are converted to \ref native_word_type.
+    //! Type of the words in the relations of the presentation stored in
+    //! a Kambites instance.
     using native_word_type
         = std::conditional_t<std::is_same_v<Word, detail::MultiStringView>,
                              std::string,
                              Word>;
-
-    //! \brief Type of the letters in the relations of the presentation stored
-    //! in a \ref Kambites instance.
-    //!
-    //! A \ref Kambites instance can be constructed or initialised from a
-    //! presentation of arbitrary types of letters and words. Internally the
-    //! letters are converted to \ref native_letter_type.
-    using native_letter_type = typename native_word_type::value_type;
-
-    //! \brief Type of the presentation stored in a \ref Kambites instance.
-    //!
-    //! A \ref Kambites instance can be constructed or initialised from a
-    //! presentation of arbitrary types of letters and words. Internally the
-    //! presentation is stored as a \ref native_presentation_type.
-    using native_presentation_type = Presentation<native_word_type>;
 
    private:
     using internal_type = Word;
@@ -266,15 +250,14 @@ namespace libsemigroups {
     //! (if any).
     //!
     //! If a \ref Kambites instance is constructed or initialised using a
-    //! presentation, then a const reference to the \ref
-    //! native_presentation_type version of this presentation is returned by
+    //! presentation, then a const reference to this presentation is returned by
     //! this function.
     //!
     //! \returns A const reference to the presentation.
     //!
     //! \exceptions
     //! \noexcept
-    [[nodiscard]] native_presentation_type const&
+    [[nodiscard]] Presentation<native_word_type> const&
     presentation() const noexcept {
       return _presentation;
     }

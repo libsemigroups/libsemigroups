@@ -163,13 +163,7 @@ namespace libsemigroups {
       // TODO(0) import into KnuthBendix<>
       using rule_type = std::pair<std::string, std::string>;
 
-      // TODO(0) rm
-      using native_letter_type = char;
-
       using native_word_type = std::string;
-
-      // TODO(0) rm
-      using native_presentation_type = Presentation<std::string>;
 
       //////////////////////////////////////////////////////////////////////////
       // KnuthBendixBase - types - public
@@ -657,7 +651,7 @@ namespace libsemigroups {
         internal_presentation().validate_word(first, last);
       }
 
-      [[nodiscard]] native_presentation_type const&
+      [[nodiscard]] Presentation<std::string> const&
       internal_presentation() const noexcept {
         return _presentation;
       }
@@ -857,7 +851,7 @@ namespace libsemigroups {
       void run_impl() override;
       bool finished_impl() const override;
     };  // class KnuthBendixBase
-  }     // namespace detail
+  }  // namespace detail
 
   ////////////////////////////////////////////////////////////////////////
   // global functions - to_human_readable_repr

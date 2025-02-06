@@ -123,7 +123,6 @@ namespace libsemigroups {
     //! Type of the letters in the relations of the presentation stored
     //! in a \ref KnuthBendix instance.
     using native_word_type = Word;
-    // TODO(0) rm native_letter_type/presentation_type
 
     //! \ingroup knuth_bendix_class_init_group
     //!
