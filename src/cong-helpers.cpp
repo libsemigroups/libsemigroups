@@ -61,7 +61,8 @@ namespace libsemigroups {
     // We have to pass the presentation here, because o/w we have no way of
     // knowing over what we should compute the non-trivial classes (i.e. we
     // cannot always recover p from cong).
-    // TODO(0) renovate or rm
+    // TODO(1) reintegrate this function, but for every one of KnuthBendix,
+    // Kambites, ToddCoxeter, and Congruence
     // template <typename Word>
     // std::vector<std::vector<Word>>
     // non_trivial_classes(Word& cong, Presentation<word_type> const& p) {
@@ -91,7 +92,8 @@ namespace libsemigroups {
     //   LIBSEMIGROUPS_EXCEPTION("Cannot compute the non-trivial classes!");
     // }
 
-    // TODO(0) uncomment or rm
+    // TODO(1) reintegrate this function, but for every one of KnuthBendix,
+    // Kambites, ToddCoxeter, and Congruence
     // std::vector<std::vector<std::string>>
     // non_trivial_classes(Congruence& cong, Presentation<std::string> const& p)
     // {
