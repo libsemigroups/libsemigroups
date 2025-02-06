@@ -718,7 +718,8 @@ namespace libsemigroups {
   //!
   //! Deduction guide to construct a `Congruence<Word>` from a
   //! \ref congruence_kind and Presentation<Word> rvalue reference.
-  // TODO(0) there's no rvalue ref constructor so does this ever get used?
+  // NOTE:there's no rvalue ref constructor, so it's possible this guide is
+  // superfluous
   template <typename Word>
   Congruence(congruence_kind, Presentation<Word>&&) -> Congruence<Word>;
 
