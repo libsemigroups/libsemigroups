@@ -225,7 +225,7 @@ jobs:
                 brew install gcc
                 brew install doxygen
          - name: "Pip install docs/requirements.txt . . ."
-           run: python3 -m pip install -r docs/requirements.txt
+           run: pip install -r docs/requirements.txt
          - name: "Clone doxygen-awesome-css . . ."
            run: |
                 git submodule update --init --recursive
