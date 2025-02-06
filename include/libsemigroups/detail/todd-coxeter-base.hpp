@@ -25,8 +25,8 @@
 // needed)? Or possibly reintroduce PrefDefs here
 // * re-add report why stopped
 
-#ifndef LIBSEMIGROUPS_TODD_COXETER_BASE_HPP_
-#define LIBSEMIGROUPS_TODD_COXETER_BASE_HPP_
+#ifndef LIBSEMIGROUPS_DETAIL_TODD_COXETER_BASE_HPP_
+#define LIBSEMIGROUPS_DETAIL_TODD_COXETER_BASE_HPP_
 
 #include <chrono>    // for nanoseconds
 #include <cstddef>   // for size_t
@@ -1962,4 +1962,4 @@ namespace libsemigroups {
 }  // namespace libsemigroups
 
 #include "todd-coxeter-base.tpp"
-#endif  // LIBSEMIGROUPS_TODD_COXETER_BASE_HPP_
+#endif  // LIBSEMIGROUPS_DETAIL_TODD_COXETER_BASE_HPP_

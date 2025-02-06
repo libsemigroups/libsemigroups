@@ -45,7 +45,7 @@ namespace libsemigroups {
     template <typename Rewriter, typename ReductionOrder>
     class KnuthBendixBase;  // forward decl
     class ToddCoxeterBase;  // forward decl
-  }  // namespace detail
+  }                         // namespace detail
 
   template <typename Word>
   class Congruence;  // forward decl

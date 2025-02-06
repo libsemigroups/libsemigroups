@@ -786,7 +786,6 @@ namespace libsemigroups {
     // TODO(0) renovate currently always returns labels that are strings
     using KnuthBendixBase_::gilman_graph_node_labels;
 #endif
-
   };  // class KnuthBendix
 
   //! \ingroup knuth_bendix_class_group

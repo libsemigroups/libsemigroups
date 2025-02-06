@@ -70,7 +70,8 @@ namespace libsemigroups {
   ////////////////////////////////////////////////////////////////////////
 
   template <typename Word>
-  Kambites<Word>::Kambites() : detail::CongruenceCommon(congruence_kind::twosided) {
+  Kambites<Word>::Kambites()
+      : detail::CongruenceCommon(congruence_kind::twosided) {
     init();
   }
 

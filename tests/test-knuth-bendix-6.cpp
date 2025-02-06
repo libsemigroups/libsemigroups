@@ -373,7 +373,7 @@ namespace libsemigroups {
                                    "[quick][knuth-bendix]",
                                    KNUTH_BENDIX_TYPES) {
     using literals::operator""_w;
-    auto rg = ReportGuard(false);
+    auto            rg = ReportGuard(false);
 
     Presentation<word_type> p1;
     p1.contains_empty_word(true);

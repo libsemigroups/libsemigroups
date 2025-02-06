@@ -18,8 +18,8 @@
 // This file contains declarations of functions for constructing various
 // standard examples of presentations.
 
-#ifndef LIBSEMIGROUPS_FPSEMI_EXAMPLES_HPP_
-#define LIBSEMIGROUPS_FPSEMI_EXAMPLES_HPP_
+#ifndef LIBSEMIGROUPS_PRESENTATION_EXAMPLES_HPP_
+#define LIBSEMIGROUPS_PRESENTATION_EXAMPLES_HPP_
 
 #include <cstddef>  // for size_t
 #include <vector>   // for vector
@@ -1340,4 +1340,4 @@ namespace libsemigroups {
 
   }  // namespace presentation::examples
 }  // namespace libsemigroups
-#endif  // LIBSEMIGROUPS_FPSEMI_EXAMPLES_HPP_
+#endif  // LIBSEMIGROUPS_PRESENTATION_EXAMPLES_HPP_

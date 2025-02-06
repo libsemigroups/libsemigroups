@@ -2434,7 +2434,7 @@ namespace libsemigroups {
         std::pair<const_iterator, const_iterator> yield(Ukkonen const& u);
       };
     }  // namespace detail
-  }  // namespace ukkonen
+  }    // namespace ukkonen
 
   //! \brief Return a human readable representation of an Ukkonen object.
   //!
