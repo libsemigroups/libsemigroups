@@ -398,3 +398,7 @@ if __name__ == "__main__":
         "html/group__todd__coxeter__helpers__group.html",
         substitute(r"\bdetail::ToddCoxeterBase\b", "ToddCoxeter<Word>"),
     )
+    modify_in_place(
+        "./html/group__knuth__bendix__class__settings__group.html",
+        substitute(r"\bKnuthBendixBase\b", "KnuthBendix"),
+    )

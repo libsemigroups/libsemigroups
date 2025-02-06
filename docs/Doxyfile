@@ -306,7 +306,8 @@ ALIASES                = "exceptions=\par Exceptions" \
                          "cong_intf_params_reduce=\tparam OutputIterator the type of the argument \p d_first. \tparam InputIterator1 the type of the argument \p first. \tparam InputIterator2 the type of the argument \p last. \param d_first output iterator. \param first iterator pointing at the first letter of the input word. \param last iterator pointing one beyond the last letter in the input word." \
                          "cong_intf_throws_if_started=\throws LibsemigroupsException if \ref started returns \c true." \
                          "cong_intf_throws_if_letters_out_of_bounds=\throws LibsemigroupsException if any of the values pointed at by the iterators is out of range, i.e. they do not belong to `presentation().alphabet()` and `Presentation::validate_word` throws." \
-                         "ref_todd_coxeter=\ref todd_coxeter_class_group \"ToddCoxeter\""
+                         "ref_todd_coxeter=\ref todd_coxeter_class_group \"ToddCoxeter\"" \
+                         "ref_knuth_bendix=\ref knuth_bendix_class_group \"KnuthBendix\""
 
 # Set the OPTIMIZE_OUTPUT_FOR_C tag to YES if your project consists of C sources
 # only. Doxygen will then generate output that is more tailored for C. For

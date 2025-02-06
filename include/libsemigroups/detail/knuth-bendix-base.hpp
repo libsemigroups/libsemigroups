@@ -67,9 +67,69 @@ namespace libsemigroups {
   namespace detail {
     template <typename KnuthBendix_>
     class KBE;
+    //! \defgroup knuth_bendix_class_mem_types_group Member types
+    //! \ingroup knuth_bendix_class_group
+    //!
+    //! \brief Public member types
+    //!
+    //! This page contains the documentation of the public member types of a
+    //! \ref_knuth_bendix instance.
 
-    //! No doc, but this has to be here so that KnuthBendix can document
-    //! function aliases for the member functions of KnuthBendixBase
+    //! \defgroup knuth_bendix_class_init_group Constructors + initializers
+    //! \ingroup knuth_bendix_class_group
+    //!
+    //! \brief Construct or re-initialize a \ref_knuth_bendix
+    //! instance (public member function).
+    //!
+    //! This page documents the constructors and initialisers for the
+    //! \ref_knuth_bendix class.
+    //!
+    //! Every constructor (except the move + copy constructors, and the move
+    //! and copy assignment operators) has a matching `init` function with the
+    //! same signature that can be used to re-initialize a \ref_knuth_bendix
+    //! instance as if it had just been constructed; but without necessarily
+    //! releasing any previous allocated memory.
+
+    //! \defgroup knuth_bendix_class_settings_group Settings
+    //! \ingroup knuth_bendix_class_group
+    //!
+    //! \brief Settings that control the behaviour of a \ref_knuth_bendix
+    //! instance.
+    //!
+    //! This page contains information about the member functions of the
+    //! \ref_knuth_bendix that control various settings that influence the
+    //! running of the Knuth-Bendix algorithm.
+    //!
+    //! There are a fairly large number of settings, they can profoundly alter
+    //! the run time, but it is hard to predict what settings will work best for
+    //! any particular input.
+    //!
+    //! See also \ref Runner for further settings.
+
+    //! \defgroup knuth_bendix_class_intf_group Common member functions
+    //! \ingroup knuth_bendix_class_group
+    //!
+    //! \brief Documentation of common member functions of \ref Congruence,
+    //! \ref Kambites, \ref_knuth_bendix, and \ref_todd_coxeter.
+    //!
+    //! This page contains documentation of the member functions of
+    //! \ref_knuth_bendix that are implemented in all of the classes Congruence,
+    //! Kambites, \ref_knuth_bendix, and \ref_todd_coxeter.
+
+    //! \defgroup knuth_bendix_class_accessors_group Accessors
+    //!
+    //! \ingroup knuth_bendix_class_group
+    //!
+    //! \brief Member functions that can be used to access the state of a
+    //! \ref_knuth_bendix instance.
+    //!
+    //! This page contains the documentation of the various member functions of
+    //! the \ref_knuth_bendix class that can be used to access the state of an
+    //! instance.
+    //!
+    //! Those functions with the prefix `current_` do not perform any
+    //! further enumeration.
+
     template <typename Rewriter       = detail::RewriteTrie,
               typename ReductionOrder = ShortLexCompare>
     class KnuthBendixBase : public CongruenceCommon {
@@ -239,6 +299,23 @@ namespace libsemigroups {
       // KnuthBendixBase - interface requirements - number_of_classes
       ////////////////////////////////////////////////////////////////////////
 
+      //! \ingroup knuth_bendix_class_intf_group
+      //! \brief Compute the number of classes in the congruence.
+      //!
+      //! This function computes the number of classes in the congruence
+      //! represented by a \ref_knuth_bendix instance by
+      //! running the congruence enumeration until it terminates.
+      //!
+      //! \returns The number of congruences classes of a \ref_knuth_bendix
+      //! instance.
+      //!
+      //! \cong_intf_warn_undecidable{Knuth-Bendix}
+      //!
+      //! \note If \c this has been run until finished, then this function can
+      //! determine the number of classes of the congruence represented by \c
+      //! this even if it is infinite. Moreover, the complexity of this function
+      //! is at worst \f$O(mn)\f$ where \f$m\f$ is the number of letters in the
+      //! alphabet, and \f$n\f$ is the number of nodes in the \ref gilman_graph.
       [[nodiscard]] uint64_t number_of_classes();
 
       ////////////////////////////////////////////////////////////////////////
@@ -336,44 +413,236 @@ namespace libsemigroups {
       // KnuthBendixBase - setters for optional parameters - public
       //////////////////////////////////////////////////////////////////////////
 
+      //! \ingroup knuth_bendix_class_settings_group
+      //!
+      //! \brief Set the number of rules to accumulate before they are
+      //! processed.
+      //!
+      //! This function can be used to specify the number of pending rules that
+      //! must accumulate before they are reduced, processed, and added to the
+      //! system.
+      //!
+      //! The default value is \c 128, and should be set to \c 1 if \ref run
+      //! should attempt to add each rule as they are created without waiting
+      //! for rules to accumulate.
+      //!
+      //! \param val the new value of the batch size.
+      //!
+      //! \returns
+      //! A reference to \c *this.
+      //!
+      //! \complexity
+      //! Constant.
       KnuthBendixBase& max_pending_rules(size_t val) {
         _settings.max_pending_rules = val;
         return *this;
       }
 
+      //! \ingroup knuth_bendix_class_settings_group
+      //!
+      //! \brief Get the current number of rules to accumulate before
+      //! processing.
+      //!
+      //! This function can be used to return the number of pending rules that
+      //! must accumulate before they are reduced, processed, and added to the
+      //! system.
+      //!
+      //! The default value is \c 128.
+      //!
+      //! \returns
+      //! The batch size, a value of type \c size_t.
+      //!
+      //! \exceptions
+      //! \noexcept
+      //!
+      //! \complexity
+      //! Constant.
       [[nodiscard]] size_t max_pending_rules() const noexcept {
         return _settings.max_pending_rules;
       }
 
+      //! \ingroup knuth_bendix_class_settings_group
+      //!
+      //! \brief Set the interval at which confluence is checked.
+      //!
+      //! The function \ref run periodically checks if the system is already
+      //! confluent. This function can be used to set how frequently this
+      //! happens, it is the number of new overlaps that should be considered
+      //! before checking confluence. Setting this value too low can adversely
+      //! affect the performance of \ref run.
+      //!
+      //! The default value is \c 4096, and should be set to \ref LIMIT_MAX if
+      //! \ref run should never check if the system is already confluent.
+      //!
+      //! \param val the new value of the interval.
+      //!
+      //! \returns
+      //! A reference to \c *this.
+      //!
+      //! \complexity
+      //! Constant.
+      //!
+      //! \sa \ref run.
       KnuthBendixBase& check_confluence_interval(size_t val) {
         _settings.check_confluence_interval = val;
         return *this;
       }
 
+      //! \ingroup knuth_bendix_class_settings_group
+      //!
+      //! \brief Get the current interval at which confluence is checked.
+      //!
+      //! The function \ref run periodically checks if
+      //! the system is already confluent. This function can be used to
+      //! return how frequently this happens, it is the number of new overlaps
+      //! that should be considered before checking confluence.
+      //!
+      //! \returns
+      //! The interval at which confluence is checked a value of type \c size_t.
+      //!
+      //! \exceptions
+      //! \noexcept
+      //!
+      //! \complexity
+      //! Constant.
+      //!
+      //! \sa \ref run.
       [[nodiscard]] size_t check_confluence_interval() const noexcept {
         return _settings.check_confluence_interval;
       }
 
+      //! \ingroup knuth_bendix_class_settings_roup
+      //!
+      //! \brief Set the maximum length of overlaps to be considered.
+      //!
+      //! This function can be used to specify the maximum length of the
+      //! overlap of two left hand sides of rules that should be considered in
+      //! \ref run.
+      //!
+      //! If this value is less than the longest left hand side of a rule, then
+      //! \ref run can terminate without the system being
+      //! confluent.
+      //!
+      //! \param val the new value of the maximum overlap length.
+      //!
+      //! \returns
+      //! A reference to \c *this.
+      //!
+      //! \complexity
+      //! Constant.
+      //!
+      //! \sa \ref run.
       KnuthBendixBase& max_overlap(size_t val) {
         _settings.max_overlap = val;
         return *this;
       }
 
+      //! \ingroup knuth_bendix_class_settings_group
+      //!
+      //! \brief Get the current maximum length of overlaps to be considered.
+      //!
+      //! This function returns the maximum length of the overlap of two left
+      //! hand sides of rules that should be considered in \ref run.
+      //!
+      //! \returns
+      //! The maximum length of the overlaps to be considered a value of type
+      //! \c size_t.
+      //!
+      //! \exceptions
+      //! \noexcept
+      //!
+      //! \complexity
+      //! Constant.
+      //!
+      //! \sa \ref run.
       [[nodiscard]] size_t max_overlap() const noexcept {
         return _settings.max_overlap;
       }
 
+      //! \ingroup knuth_bendix_class_settings_group
+      //!
+      //! \brief Set the maximum number of rules.
+      //!
+      //! This function sets the (approximate) maximum number of rules
+      //! that the system should contain. If this is number is exceeded in calls
+      //! to \ref run or knuth_bendix::by_overlap_length, then they will
+      //! terminate and the system may not be confluent.
+      //!
+      //! By default this value is \ref POSITIVE_INFINITY.
+      //!
+      //! \param val the maximum number of rules.
+      //!
+      //! \returns
+      //! A reference to \c *this.
+      //!
+      //! \complexity
+      //! Constant.
+      //!
+      //! \sa \ref run.
       KnuthBendixBase& max_rules(size_t val) {
         _settings.max_rules = val;
         return *this;
       }
 
+      //! \ingroup knuth_bendix_class_settings_group
+      //!
+      //! \brief Get the current maximum number of rules.
+      //!
+      //! This function returns the (approximate) maximum number of rules
+      //! that the system should contain. If this is number is exceeded in
+      //! calls to \ref run or \ref knuth_bendix::by_overlap_length, then they
+      //! will terminate and the system may not be confluent.
+      //!
+      //! \returns
+      //! The maximum number of rules the system should contain, a value of type
+      //! \c size_t.
+      //!
+      //! \exceptions
+      //! \noexcept
+      //!
+      //! \complexity
+      //! Constant.
+      //!
+      //! \sa \ref run.
       [[nodiscard]] size_t max_rules() const noexcept {
         return _settings.max_rules;
       }
 
+      //! \ingroup knuth_bendix_class_settings_group
+      //!
+      //! \brief Set the overlap policy.
+      //!
+      //! This function can be used to determine the way that the length
+      //! of an overlap of two words in the system is measured.
+      //!
+      //! \param val the overlap policy.
+      //!
+      //! \returns
+      //! A reference to \c *this.
+      //!
+      //! \complexity
+      //! Constant.
+      //!
+      //! \sa \ref KnuthBendix::options::overlap.
       KnuthBendixBase& overlap_policy(typename options::overlap val);
 
+      //! \ingroup knuth_bendix_class_settings_group
+      //!
+      //! \brief Get the current overlap policy.
+      //!
+      //! This function returns the way that the length of an overlap of two
+      //! words in the system is measured.
+      //!
+      //! \returns
+      //! The overlap policy.
+      //!
+      //! \exceptions
+      //! \noexcept
+      //!
+      //! \complexity
+      //! Constant.
+      //!
+      //! \sa \ref KnuthBendix::options::overlap.
       [[nodiscard]] typename options::overlap overlap_policy() const noexcept {
         return _settings.overlap_policy;
       }
@@ -400,19 +669,69 @@ namespace libsemigroups {
         return _input_generating_pairs;
       }
 
+      //! \ingroup knuth_bendix_class_accessors_group
+      //! \brief Return the current number of active rules in the
+      //! \ref_knuth_bendix instance.
+      //!
+      //! This function returns the current number of active rules in the
+      //! \ref_knuth_bendix instance.
+      //!
+      //! \returns
+      //! The current number of active rules, a value of type \c size_t.
+      //!
+      //! \exceptions
+      //! \noexcept
+      //!
+      //! \complexity
+      //! Constant.
       // TODO(1) this should be const
       // TODO(1) add note about empty active rules after init and non-const-ness
       // (this only applies if this becomes const)
       [[nodiscard]] size_t number_of_active_rules() noexcept;
 
+      //! \ingroup knuth_bendix_class_accessors_group
+      //!
+      //! \brief Return the current number of inactive rules in the
+      //! \ref_knuth_bendix instance.
+      //!
+      //! This function returns the current number of inactive rules in the
+      //! \ref_knuth_bendix instance.
+      //!
+      //! \returns
+      //! The current number of inactive rules, a value of type \c size_t.
+      //!
+      //! \exceptions
+      //! \noexcept
+      //!
+      //! \complexity
+      //! Constant.
       [[nodiscard]] size_t number_of_inactive_rules() const noexcept {
         return _rewriter.number_of_inactive_rules();
       }
 
+      //! \ingroup knuth_bendix_class_accessors_group
+      //!
+      //! \brief Return the number of rules that \ref_knuth_bendix has created
+      //!
+      //! This function returns the total number of Rule instances that have
+      //! been created whilst whilst the Knuth-Bendix algorithm has been
+      //! running. Note that this is not the sum of \ref number_of_active_rules
+      //! and \ref number_of_inactive_rules, due to the re-initialisation of
+      //! rules where possible.
+      //!
+      //! \returns
+      //! The total number of rules, a value of type \c size_t.
+      //!
+      //! \exceptions
+      //! \noexcept
+      //!
+      //! \complexity
+      //! Constant.
       [[nodiscard]] size_t total_rules() const noexcept {
         return _rewriter.stats().total_rules;
       }
 
+      // Documented in KnuthBendix
       // TODO(1) should be const
       // TODO(1) add note about empty active rules after, or better discuss that
       // there are three kinds of rules in the system: active, inactive, and
@@ -434,9 +753,53 @@ namespace libsemigroups {
       // KnuthBendixBase - main member functions - public
       //////////////////////////////////////////////////////////////////////////
 
-      [[nodiscard]] bool         confluent() const;
-      [[nodiscard]] bool         confluent_known() const noexcept;
+      //! \ingroup knuth_bendix_class_accessors_group
+      //!
+      //! \brief Check confluence of the current rules.
+      //!
+      //! Check confluence of the current rules.
+      //!
+      //! \returns \c true if the \ref_knuth_bendix instance is
+      //! [confluent](https://w.wiki/9DA) and \c false if it is not.
+      [[nodiscard]] bool confluent() const;
+
+      //! \ingroup knuth_bendix_class_accessors_group
+      //!
+      //! \brief Check if the current system knows the state of confluence of
+      //! the current rules.
+      //!
+      //! Check if the current system knows the state of confluence of the
+      //! current rules.
+      //!
+      //! \returns \c true if the confluence of the rules in the
+      //! \ref_knuth_bendix instance is known, and \c false if it is not.
+      [[nodiscard]] bool confluent_known() const noexcept;
+
+      //! \ingroup knuth_bendix_class_accessors_group
+      //!
+      //! \brief Return the Gilman \ref WordGraph.
+      //!
+      //! This function returns the Gilman WordGraph of the system.
+      //!
+      //! The Gilman WordGraph is a digraph where the labels of the paths from
+      //! the initial node (corresponding to the empty word) correspond to the
+      //! shortlex normal forms of the semigroup elements.
+      //!
+      //! The semigroup is finite if the graph is cyclic, and infinite
+      //! otherwise.
+      //!
+      //! \returns A const reference to a \ref WordGraph.
+      //!
+      //! \exceptions
+      //! \no_libsemigroups_except
+      //!
+      //! \warning This will terminate when the \ref_knuth_bendix instance is
+      //! reduced and confluent, which might be never.
+      //!
+      //! \sa \ref number_of_classes, and \ref knuth_bendix::normal_forms.
       WordGraph<uint32_t> const& gilman_graph();
+
+      // Documented in KnuthBendix
       [[nodiscard]] std::vector<std::string> const& gilman_graph_node_labels() {
         gilman_graph();  // to ensure that gilman_graph is initialised
         return _gilman_graph_node_labels;
@@ -494,7 +857,7 @@ namespace libsemigroups {
       void run_impl() override;
       bool finished_impl() const override;
     };  // class KnuthBendixBase
-  }     // namespace detail
+  }  // namespace detail
 
   ////////////////////////////////////////////////////////////////////////
   // global functions - to_human_readable_repr
@@ -506,12 +869,12 @@ namespace libsemigroups {
   //!
   //! Defined in \c knuth-bendix.hpp.
   //!
-  //! This function allows a KnuthBendix object to be left shifted into a
+  //! This function allows a \ref_knuth_bendix object to be left shifted into a
   //! std::ostream, such as std::cout. The currently active rules of the
   //! system are represented in the output.
   //!
   //! \param os the output stream to insert into.
-  //! \param kb the KnuthBendix object.
+  //! \param kb the \ref_knuth_bendix object.
   //!
   //! \returns A reference to the first argument.
 #if PARSED_BY_DOXYGEN
@@ -528,19 +891,19 @@ namespace libsemigroups {
 
   //! \ingroup knuth_bendix_group
   //!
-  //! \brief Return a string representation of a KnuthBendix instance
+  //! \brief Return a string representation of a \ref_knuth_bendix instance
   //!
   //! Defined in \c knuth-bendix.hpp.
   //!
-  //! This function returns a string representation of a KnuthBendix
+  //! This function returns a string representation of a \ref_knuth_bendix
   //! instance, specifying the size of the underlying alphabet and the number
   //! of active rules.
   //!
-  //! \tparam Rewriter the first template parameter for KnuthBendix.
+  //! \tparam Rewriter the first template parameter for \ref_knuth_bendix.
   //! \tparam ReductionOrder the second template parameter for
-  //! KnuthBendix.
+  //! \ref_knuth_bendix.
   //!
-  //! \param kb the KnuthBendix instance.
+  //! \param kb the \ref_knuth_bendix instance.
   //!
   //! \returns The representation, a value of type \c std::string.
   // TODO(1) preferably kb would be a const&
@@ -556,7 +919,7 @@ namespace libsemigroups {
 
   //! \ingroup to_presentation_group
   //!
-  //! \brief Make a presentation from a KnuthBendix object.
+  //! \brief Make a presentation from a \ref_knuth_bendix object.
   //!
   //! Defined in \c knuth-bendix.hpp.
   //!
@@ -566,14 +929,14 @@ namespace libsemigroups {
   //! No enumeration of the argument \p kb is performed, so it might be the
   //! case that the resulting presentation does not define the same
   //! semigroup/monoid as \p kb. To ensure that the resulting presentation
-  //! defines the same semigroup as \p kb, run KnuthBendix::run (or any
+  //! defines the same semigroup as \p kb, run \ref KnuthBendix::run (or any
   //! other function that fully enumerates \p kb) prior to calling this
   //! function.
   //!
   //! \tparam Word the type of the rules in the presentation being
   //! constructed.
   //!
-  //! \param kb the KnuthBendix object from which to obtain the rules.
+  //! \param kb the \ref_knuth_bendix object from which to obtain the rules.
   //!
   //! \returns An object of type \c Presentation<Word>.
   //!

@@ -58,7 +58,7 @@ namespace libsemigroups {
   //!
   //! \brief Class containing an implementation of the Todd-Coxeter Algorithm.
   //!
-  //! Defined in `todd-coxeter.hpp`.
+  //! Defined in `todd-coxeter-class.hpp`.
   //!
   //! This class contains an implementation of the Todd-Coxeter
   //! algorithm for computing 1-sided (right), and 2-sided congruences on
