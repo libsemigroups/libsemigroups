@@ -16,8 +16,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-// This file contains helper functions for the class detail::CongruenceCommon
-// and its derived classes. This is a separate file so that we can declare all
+// This file contains helper functions for the derived classes of
+// detail::CongruenceCommon. This is a separate file so that we can declare all
 // the derived classes of detail::CongruenceCommon prior to declaring the
 // functions in this file.
 //
@@ -26,8 +26,8 @@
 // namespace. This makes it possible to generically use, e.g.,
 // congruence_common::normal_forms in, e.g., the python bindings.
 
-#ifndef LIBSEMIGROUPS_CONG_INTF_HELPERS_HPP_
-#define LIBSEMIGROUPS_CONG_INTF_HELPERS_HPP_
+#ifndef LIBSEMIGROUPS_CONG_COMMON_HELPERS_HPP_
+#define LIBSEMIGROUPS_CONG_COMMON_HELPERS_HPP_
 
 #include <algorithm>         // for remove_if
 #include <cstring>           // for strlen, size_t
@@ -94,31 +94,34 @@ namespace libsemigroups {
     //!
     //! @{
 
+    //! \anchor add_generating_pairs_no_checks_main
     //! \brief Helper for adding a generating pair of words.
     //!
     //! Defined in `cong-common-helpers.hpp`.
     //!
-    //! This function can be used to add a generating pair to the subclass \p
-    //! ci of \ref detail::CongruenceCommon using the objects themselves rather
-    //! than using iterators.
+    //! This function can be used to add a generating pair to \p thing
+    //! using objects themselves rather than iterators.
     //!
-    //! \tparam Subclass the type of the first parameter.
-    //! \tparam Word the type of the second and third parameters.
+    //! \tparam Thing the type of the first parameter must be one of
+    //! Kambites, KnuthBendix, \ref_todd_coxeter, or Congruence.
     //!
-    //! \param ci the subclass of \ref detail::CongruenceCommon.
+    //! \param thing the object to add generating pairs to.
     //! \param u the left hand side of the pair to add.
     //! \param v the right hand side of the pair to add.
     //!
-    //! \return A reference to \p ci.
+    //! \return A reference to \p thing.
     //!
     //! \cong_intf_warn_assume_letters_in_bounds
-    template <typename Subclass>
-    Subclass& add_generating_pair_no_checks(
-        Subclass&                                  ci,
-        typename Subclass::native_word_type const& u,
-        typename Subclass::native_word_type const& v) {
-      static_assert(std::is_base_of_v<detail::CongruenceCommon, Subclass>);
-      return ci.add_generating_pair_no_checks(
+    // NOTE: we use native_word_type and not another template param to avoid
+    // unexpected behaviour, if for example we add words which are strings to a
+    // ToddCoxeter<word_type>, then unexpected things might happen.
+    template <typename Thing>
+    Thing&
+    add_generating_pair_no_checks(Thing&                                  thing,
+                                  typename Thing::native_word_type const& u,
+                                  typename Thing::native_word_type const& v) {
+      static_assert(std::is_base_of_v<detail::CongruenceCommon, Thing>);
+      return thing.add_generating_pair_no_checks(
           std::begin(u), std::end(u), std::begin(v), std::end(v));
     }
 
@@ -127,16 +130,17 @@ namespace libsemigroups {
     //!
     //! Defined in `cong-common-helpers.hpp`.
     //!
-    //! See \ref
-    //! add_generating_pair_no_checks(Subclass&, Word const&, Word const&)
-    //! for details.
-    template <typename Subclass, typename Int>
-    Subclass&
-    add_generating_pair_no_checks(Subclass&                         ci,
-                                  std::initializer_list<Int> const& u,
-                                  std::initializer_list<Int> const& v) {
-      static_assert(std::is_base_of_v<detail::CongruenceCommon, Subclass>);
-      return ci.add_generating_pair_no_checks(
+    //! \tparam Int must satisfy `std::integral_type_v<Int>`.
+    //!
+    //! See \ref add_generating_pairs_no_checks_main
+    //! "add_generating_pair_no_checks" for details.
+    template <typename Thing, typename Int>
+    Thing& add_generating_pair_no_checks(Thing& thing,
+                                         std::initializer_list<Int> const& u,
+                                         std::initializer_list<Int> const& v) {
+      static_assert(std::is_base_of_v<detail::CongruenceCommon, Thing>);
+      static_assert(std::is_integral_v<Int>);
+      return thing.add_generating_pair_no_checks(
           std::begin(u), std::end(u), std::begin(v), std::end(v));
     }
 
@@ -145,70 +149,69 @@ namespace libsemigroups {
     //!
     //! Defined in `cong-common-helpers.hpp`.
     //!
-    //! See \ref
-    //! add_generating_pair_no_checks(Subclass&, Word const&, Word const&)
-    //! for details.
-    template <typename Subclass>
-    Subclass& add_generating_pair_no_checks(Subclass&   ci,
-                                            char const* u,
-                                            char const* v) {
-      static_assert(std::is_base_of_v<detail::CongruenceCommon, Subclass>);
+    //! See \ref add_generating_pairs_no_checks_main
+    //! "add_generating_pair_no_checks" for details.
+    template <typename Thing>
+    Thing& add_generating_pair_no_checks(Thing&      thing,
+                                         char const* u,
+                                         char const* v) {
+      static_assert(std::is_base_of_v<detail::CongruenceCommon, Thing>);
       LIBSEMIGROUPS_ASSERT(u != nullptr);
       LIBSEMIGROUPS_ASSERT(v != nullptr);
-      // We could static_assert that Subclass::native_word_type == std::string,
+      // We could static_assert that Thing::native_word_type == std::string,
       // but it doesn't seem that adding this restriction would gain us
       // anything, so it is not currently done.
-      return ci.add_generating_pair_no_checks(
+      return thing.add_generating_pair_no_checks(
           u, u + std::strlen(u), v, v + std::strlen(v));
     }
 
     // This version of the function catches the cases when u & v are not of
     // the same type but both convertible to string_view
-    //! \brief Helper for adding a generating pair of words
-    //! (std::string_view).
+    //! \brief Helper for adding a generating pair of words (std::string_view).
     //!
     //! Defined in `cong-common-helpers.hpp`.
     //!
-    //! See \ref
-    //! add_generating_pair_no_checks(Subclass&, Word const&, Word const&)
-    //! for details.
-    template <typename Subclass>
-    Subclass& add_generating_pair_no_checks(Subclass&        ci,
-                                            std::string_view u,
-                                            std::string_view v) {
-      static_assert(std::is_base_of_v<detail::CongruenceCommon, Subclass>);
-      // We could static_assert that Subclass::native_word_type == std::string,
+    //! See \ref add_generating_pairs_no_checks_main
+    //! "add_generating_pair_no_checks" for details.
+    template <typename Thing>
+    Thing& add_generating_pair_no_checks(Thing&           thing,
+                                         std::string_view u,
+                                         std::string_view v) {
+      static_assert(std::is_base_of_v<detail::CongruenceCommon, Thing>);
+      // We could static_assert that Thing::native_word_type == std::string,
       // but it doesn't seem that adding this restriction would gain us
       // anything, so it is not currently done.
-      return ci.add_generating_pair_no_checks(
+      return thing.add_generating_pair_no_checks(
           std::begin(u), std::end(u), std::begin(v), std::end(v));
     }
 
+    //! \anchor add_generating_pairs_main
     //! \brief Helper for adding a generating pair of words.
     //!
     //! Defined in `cong-common-helpers.hpp`.
     //!
-    //! This function can be used to add a generating pair to the subclass \p
-    //! ci of \ref detail::CongruenceCommon using the objects themselves rather
-    //! than using iterators.
+    //! This function can be used to add a generating pair to \p thing
+    //! using objects themselves rather than iterators.
     //!
-    //! \tparam Subclass the type of the first parameter.
-    //! \tparam Word the type of the second and third parameters.
+    //! \tparam Thing the type of the first parameter must be one of
+    //! Kambites, KnuthBendix, \ref_todd_coxeter, or Congruence.
     //!
-    //! \param ci the subclass of \ref detail::CongruenceCommon.
+    //! \param thing the object to add generating pairs to.
     //! \param u the left hand side of the pair to add.
     //! \param v the right hand side of the pair to add.
     //!
-    //! \return A reference to \p ci.
+    //! \return A reference to \p thing.
     //!
     //! \cong_intf_throws_if_letters_out_of_bounds
-    template <typename Subclass>
-    Subclass&
-    add_generating_pair(Subclass&                                  ci,
-                        typename Subclass::native_word_type const& u,
-                        typename Subclass::native_word_type const& v) {
-      static_assert(std::is_base_of_v<detail::CongruenceCommon, Subclass>);
-      return ci.add_generating_pair(
+    // NOTE: we use native_word_type and not another template param to avoid
+    // unexpected behaviour, if for example we add words which are strings to a
+    // ToddCoxeter<word_type>, then unexpected things might happen.
+    template <typename Thing>
+    Thing& add_generating_pair(Thing&                                  thing,
+                               typename Thing::native_word_type const& u,
+                               typename Thing::native_word_type const& v) {
+      static_assert(std::is_base_of_v<detail::CongruenceCommon, Thing>);
+      return thing.add_generating_pair(
           std::begin(u), std::end(u), std::begin(v), std::end(v));
     }
 
@@ -217,15 +220,16 @@ namespace libsemigroups {
     //!
     //! Defined in `cong-common-helpers.hpp`.
     //!
-    //! See \ref
-    //! add_generating_pair(Subclass&, Word const&, Word const&)
-    //! for details.
-    template <typename Subclass, typename Int>
-    Subclass& add_generating_pair(Subclass&                         ci,
-                                  std::initializer_list<Int> const& u,
-                                  std::initializer_list<Int> const& v) {
-      static_assert(std::is_base_of_v<detail::CongruenceCommon, Subclass>);
-      return ci.add_generating_pair(
+    //! \tparam Int must satisfy `std::integral_type_v<Int>`.
+    //!
+    //! See \ref add_generating_pairs_main "add_generating_pairs" for details.
+    template <typename Thing, typename Int>
+    Thing& add_generating_pair(Thing&                            thing,
+                               std::initializer_list<Int> const& u,
+                               std::initializer_list<Int> const& v) {
+      static_assert(std::is_base_of_v<detail::CongruenceCommon, Thing>);
+      static_assert(std::is_integral_v<Int>);
+      return thing.add_generating_pair(
           std::begin(u), std::end(u), std::begin(v), std::end(v));
     }
 
@@ -234,18 +238,16 @@ namespace libsemigroups {
     //!
     //! Defined in `cong-common-helpers.hpp`.
     //!
-    //! See \ref
-    //! add_generating_pair(Subclass&, Word const&, Word const&)
-    //! for details.
-    template <typename Subclass>
-    Subclass& add_generating_pair(Subclass& ci, char const* u, char const* v) {
-      static_assert(std::is_base_of_v<detail::CongruenceCommon, Subclass>);
+    //! See \ref add_generating_pairs_main "add_generating_pairs" for details.
+    template <typename Thing>
+    Thing& add_generating_pair(Thing& thing, char const* u, char const* v) {
+      static_assert(std::is_base_of_v<detail::CongruenceCommon, Thing>);
       detail::throw_if_nullptr(u, "2nd");
       detail::throw_if_nullptr(v, "3rd");
-      // We could static_assert that Subclass::native_word_type == std::string,
+      // We could static_assert that Thing::native_word_type == std::string,
       // but it doesn't seem that adding this restriction would gain us
       // anything, so it is not currently done.
-      return ci.add_generating_pair(
+      return thing.add_generating_pair(
           u, u + std::strlen(u), v, v + std::strlen(v));
     }
 
@@ -256,18 +258,16 @@ namespace libsemigroups {
     //!
     //! Defined in `cong-common-helpers.hpp`.
     //!
-    //! See \ref
-    //! add_generating_pair(Subclass&, Word const&, Word const&)
-    //! for details.
-    template <typename Subclass>
-    Subclass& add_generating_pair(Subclass&        ci,
-                                  std::string_view u,
-                                  std::string_view v) {
-      static_assert(std::is_base_of_v<detail::CongruenceCommon, Subclass>);
-      // We could static_assert that Subclass::native_word_type == std::string,
+    //! See \ref add_generating_pairs_main "add_generating_pairs" for details.
+    template <typename Thing>
+    Thing& add_generating_pair(Thing&           thing,
+                               std::string_view u,
+                               std::string_view v) {
+      static_assert(std::is_base_of_v<detail::CongruenceCommon, Thing>);
+      // We could static_assert that Thing::native_word_type == std::string,
       // but it doesn't seem that adding this restriction would gain us
       // anything, so it is not currently done.
-      return ci.add_generating_pair_no_checks(
+      return thing.add_generating_pair_no_checks(
           std::begin(u), std::end(u), std::begin(v), std::end(v));
     }
 
@@ -289,29 +289,35 @@ namespace libsemigroups {
     //! \ref contains_no_checks; and \ref contains which can be invoked with a
     //! variety of different argument types.
     //!
-    //! Functions with the prefix `currently_` do not perform any
-    //! enumeration of the \ref detail::CongruenceCommon derived class
-    //! instances; and those with the suffix `_no_checks` do not check that the
-    //! input words are valid.
+    //! These helper functions can be applied to objects of the types:
+    //! * Congruence
+    //! * Kambites
+    //! * KnuthBendix
+    //! * \ref_todd_coxeter
+    //!
+    //! Functions with the prefix `currently_` do not perform any enumeration
+    //! of the object representing a congruence; and those with the suffix
+    //! `_no_checks` do not check that the input words are valid.
     //!
     //! @{
 
+    //! \anchor currently_contains_no_checks_main
     //! \brief Check containment of a pair of words.
     //!
     //! Defined in `cong-common-helpers.hpp`.
     //!
-    //! This function checks whether or not the words \p u and \p v are
-    //! already known to be contained in the congruence represented by a \ref
-    //! detail::CongruenceCommon derived class instance \p ci. This function
-    //! performs no enumeration of \p ci, so it is possible for the words to
-    //! be contained in the congruence, but that this is not currently known.
+    //! This function checks whether or not the words \p u and \p v are already
+    //! known to be contained in the congruence represented by \p thing. This
+    //! function performs no enumeration of \p thing, so it is possible for the
+    //! words to be contained in the congruence, but that this is not currently
+    //! known.
     //!
-    //! \tparam Subclass the type of the first parameter.
-    //! \tparam Word the type of the second and third parameters.
+    //! \tparam Thing the type of the first parameter must be one of
+    //! Kambites, KnuthBendix, \ref_todd_coxeter, or Congruence.
     //!
-    //! \param ci the subclass of \ref detail::CongruenceCommon.
-    //! \param u the left hand side of the pair to add.
-    //! \param v the right hand side of the pair to add.
+    //! \param thing the object to check containment in.
+    //! \param u the first word.
+    //! \param v the second word.
     //!
     //! \returns
     //! * tril::TRUE if the words are known to belong to the congruence;
@@ -319,13 +325,16 @@ namespace libsemigroups {
     //! * tril::unknown otherwise.
     //!
     //! \cong_intf_warn_assume_letters_in_bounds
-    template <typename Subclass>
+    // NOTE: we use native_word_type and not another template param to avoid
+    // unexpected behaviour, if for example we add words which are strings to a
+    // ToddCoxeter<word_type>, then unexpected things might happen.
+    template <typename Thing>
     [[nodiscard]] tril
-    currently_contains_no_checks(Subclass const&                            ci,
-                                 typename Subclass::native_word_type const& u,
-                                 typename Subclass::native_word_type const& v) {
-      static_assert(std::is_base_of_v<detail::CongruenceCommon, Subclass>);
-      return ci.currently_contains_no_checks(
+    currently_contains_no_checks(Thing const&                            thing,
+                                 typename Thing::native_word_type const& u,
+                                 typename Thing::native_word_type const& v) {
+      static_assert(std::is_base_of_v<detail::CongruenceCommon, Thing>);
+      return thing.currently_contains_no_checks(
           std::begin(u), std::end(u), std::begin(v), std::end(v));
     }
 
@@ -334,16 +343,18 @@ namespace libsemigroups {
     //!
     //! Defined in `cong-common-helpers.hpp`.
     //!
-    //! See \ref
-    //! currently_contains_no_checks(Subclass const&, Word const&, Word
-    //! const&) for details.
-    template <typename Subclass, typename Int>
+    //! \tparam Int must satisfy `std::integral_type_v<Int>`.
+    //!
+    //! See \ref currently_contains_no_checks_main
+    //! "currently_contains_no_checks" for details.
+    template <typename Thing, typename Int>
     [[nodiscard]] tril
-    currently_contains_no_checks(Subclass const&                   ci,
+    currently_contains_no_checks(Thing const&                      thing,
                                  std::initializer_list<Int> const& u,
                                  std::initializer_list<Int> const& v) {
-      static_assert(std::is_base_of_v<detail::CongruenceCommon, Subclass>);
-      return ci.currently_contains_no_checks(
+      static_assert(std::is_base_of_v<detail::CongruenceCommon, Thing>);
+      static_assert(std::is_integral_v<Int>);
+      return thing.currently_contains_no_checks(
           std::begin(u), std::end(u), std::begin(v), std::end(v));
     }
 
@@ -352,42 +363,40 @@ namespace libsemigroups {
     //!
     //! Defined in `cong-common-helpers.hpp`.
     //!
-    //! See \ref
-    //! currently_contains_no_checks(Subclass const&, Word const&, Word
-    //! const&) for details.
-    template <typename Subclass>
-    [[nodiscard]] tril currently_contains_no_checks(Subclass const& ci,
-                                                    char const*     u,
-                                                    char const*     v) {
-      static_assert(std::is_base_of_v<detail::CongruenceCommon, Subclass>);
+    //! See \ref currently_contains_no_checks_main
+    //! "currently_contains_no_checks" for details.
+    template <typename Thing>
+    [[nodiscard]] tril currently_contains_no_checks(Thing const& thing,
+                                                    char const*  u,
+                                                    char const*  v) {
+      static_assert(std::is_base_of_v<detail::CongruenceCommon, Thing>);
       LIBSEMIGROUPS_ASSERT(u != nullptr);
       LIBSEMIGROUPS_ASSERT(v != nullptr);
-      // We could static_assert that Subclass::native_word_type == std::string,
+      // We could static_assert that Thing::native_word_type == std::string,
       // but it doesn't seem that adding this restriction would gain us
       // anything, so it is not currently done.
-      return ci.currently_contains_no_checks(
+      return thing.currently_contains_no_checks(
           u, u + std::strlen(u), v, v + std::strlen(v));
     }
 
-    // This version of the function catches the cases when u & v are not of
-    // the same type but both convertible to string_view
     //! \brief Helper for checking containment of a pair of words
     //! (std::string_view).
     //!
     //! Defined in `cong-common-helpers.hpp`.
     //!
-    //! See \ref
-    //! currently_contains_no_checks(Subclass const&, Word const&, Word
-    //! const&) for details.
-    template <typename Subclass>
-    [[nodiscard]] tril currently_contains_no_checks(Subclass const&  ci,
+    //! See \ref currently_contains_no_checks_main
+    //! "currently_contains_no_checks" for details.
+    // NOTE: This version of the function catches the cases when u & v are not
+    // of the same type but both convertible to string_view
+    template <typename Thing>
+    [[nodiscard]] tril currently_contains_no_checks(Thing const&     thing,
                                                     std::string_view u,
                                                     std::string_view v) {
-      static_assert(std::is_base_of_v<detail::CongruenceCommon, Subclass>);
-      // We could static_assert that Subclass::native_word_type == std::string,
+      static_assert(std::is_base_of_v<detail::CongruenceCommon, Thing>);
+      // We could static_assert that Thing::native_word_type == std::string,
       // but it doesn't seem that adding this restriction would gain us
       // anything, so it is not currently done.
-      return ci.currently_contains_no_checks(
+      return thing.currently_contains_no_checks(
           std::begin(u), std::end(u), std::begin(v), std::end(v));
     }
 
@@ -395,22 +404,23 @@ namespace libsemigroups {
     // Interface helpers - currently_contains
     ////////////////////////////////////////////////////////////////////////
 
+    //! \anchor currently_contains_main
     //! \brief Check containment of a pair of words.
     //!
     //! Defined in `cong-common-helpers.hpp`.
     //!
-    //! This function checks whether or not the words \p u and \p v are
-    //! already known to be contained in the congruence represented by a \ref
-    //! detail::CongruenceCommon derived class instance \p ci. This function
-    //! performs no enumeration of \p ci, so it is possible for the words to
-    //! be contained in the congruence, but that this is not currently known.
+    //! This function checks whether or not the words \p u and \p v are already
+    //! known to be contained in the congruence represented by \p thing. This
+    //! function performs no enumeration of \p thing, so it is possible for the
+    //! words to be contained in the congruence, but that this is not currently
+    //! known.
     //!
-    //! \tparam Subclass the type of the first parameter.
-    //! \tparam Word the type of the second and third parameters.
+    //! \tparam Thing the type of the first parameter must be one of
+    //! Kambites, KnuthBendix, \ref_todd_coxeter, or Congruence.
     //!
-    //! \param ci the subclass of \ref detail::CongruenceCommon.
-    //! \param u the left hand side of the pair to add.
-    //! \param v the right hand side of the pair to add.
+    //! \param thing the object to check containment in.
+    //! \param u the first word.
+    //! \param v the second word.
     //!
     //! \returns
     //! * tril::TRUE if the words are known to belong to the congruence;
@@ -418,13 +428,16 @@ namespace libsemigroups {
     //! * tril::unknown otherwise.
     //!
     //! \cong_intf_throws_if_letters_out_of_bounds
-    template <typename Subclass>
+    // NOTE: we use native_word_type and not another template param to avoid
+    // unexpected behaviour, if for example we add words which are strings to a
+    // ToddCoxeter<word_type>, then unexpected things might happen.
+    template <typename Thing>
     [[nodiscard]] tril
-    currently_contains(Subclass const&                            ci,
-                       typename Subclass::native_word_type const& u,
-                       typename Subclass::native_word_type const& v) {
-      static_assert(std::is_base_of_v<detail::CongruenceCommon, Subclass>);
-      return ci.currently_contains(
+    currently_contains(Thing const&                            thing,
+                       typename Thing::native_word_type const& u,
+                       typename Thing::native_word_type const& v) {
+      static_assert(std::is_base_of_v<detail::CongruenceCommon, Thing>);
+      return thing.currently_contains(
           std::begin(u), std::end(u), std::begin(v), std::end(v));
     }
 
@@ -433,15 +446,16 @@ namespace libsemigroups {
     //!
     //! Defined in `cong-common-helpers.hpp`.
     //!
-    //! See \ref
-    //! currently_contains(Subclass const&, Word const&, Word const&)
-    //! for details.
-    template <typename Subclass, typename Int>
-    [[nodiscard]] tril currently_contains(Subclass const&                   ci,
+    //! \tparam Int must satisfy `std::integral_type_v<Int>`.
+    //!
+    //! See \ref currently_contains_main "currently_contains" for details.
+    template <typename Thing, typename Int>
+    [[nodiscard]] tril currently_contains(Thing const& thing,
                                           std::initializer_list<Int> const& u,
                                           std::initializer_list<Int> const& v) {
-      static_assert(std::is_base_of_v<detail::CongruenceCommon, Subclass>);
-      return ci.currently_contains(
+      static_assert(std::is_base_of_v<detail::CongruenceCommon, Thing>);
+      static_assert(std::is_integral_v<Int>);
+      return thing.currently_contains(
           std::begin(u), std::end(u), std::begin(v), std::end(v));
     }
 
@@ -450,17 +464,15 @@ namespace libsemigroups {
     //!
     //! Defined in `cong-common-helpers.hpp`.
     //!
-    //! See \ref
-    //! currently_contains(Subclass const&, Word const&, Word const&)
-    //! for details.
-    template <typename Subclass>
-    [[nodiscard]] tril currently_contains(Subclass const& ci,
-                                          char const*     u,
-                                          char const*     v) {
-      static_assert(std::is_base_of_v<detail::CongruenceCommon, Subclass>);
+    //! See \ref currently_contains_main "currently_contains" for details.
+    template <typename Thing>
+    [[nodiscard]] tril currently_contains(Thing const& thing,
+                                          char const*  u,
+                                          char const*  v) {
+      static_assert(std::is_base_of_v<detail::CongruenceCommon, Thing>);
       detail::throw_if_nullptr(u, "2nd");
       detail::throw_if_nullptr(v, "3rd");
-      return ci.currently_contains(
+      return thing.currently_contains(
           u, u + std::strlen(u), v, v + std::strlen(v));
     }
 
@@ -471,15 +483,13 @@ namespace libsemigroups {
     //!
     //! Defined in `cong-common-helpers.hpp`.
     //!
-    //! See \ref
-    //! currently_contains(Subclass const&, Word const&, Word const&)
-    //! for details.
-    template <typename Subclass>
-    [[nodiscard]] tril currently_contains(Subclass const&  ci,
+    //! See \ref currently_contains_main "currently_contains" for details.
+    template <typename Thing>
+    [[nodiscard]] tril currently_contains(Thing const&     thing,
                                           std::string_view u,
                                           std::string_view v) {
-      static_assert(std::is_base_of_v<detail::CongruenceCommon, Subclass>);
-      return ci.currently_contains(
+      static_assert(std::is_base_of_v<detail::CongruenceCommon, Thing>);
+      return thing.currently_contains(
           std::begin(u), std::end(u), std::begin(v), std::end(v));
     }
 
@@ -487,32 +497,35 @@ namespace libsemigroups {
     // Interface helpers - contains_no_checks
     ////////////////////////////////////////////////////////////////////////
 
+    //! \anchor contains_no_checks_main
     //! \brief Check containment of a pair of words.
     //!
     //! Defined in `cong-common-helpers.hpp`.
     //!
     //! This function checks whether or not the words \p u and \p v are
-    //! contained in the congruence represented by the instance \p ci of a
-    //! derived class of \ref detail::CongruenceCommon. This function triggers a
-    //! full enumeration of \p ci, which may never terminate.
+    //! contained in the congruence represented by \p thing. This function
+    //! triggers a full enumeration of \p thing, which may never terminate.
     //!
-    //! \tparam Subclass the type of the first parameter.
-    //! \tparam Word the type of the second and third parameters.
+    //! \tparam Thing the type of the first parameter must be one of
+    //! Kambites, KnuthBendix, \ref_todd_coxeter, or Congruence.
     //!
-    //! \param ci the subclass of \ref detail::CongruenceCommon.
+    //! \param thing the object to check containment in.
     //! \param u the left hand side of the pair to add.
     //! \param v the right hand side of the pair to add.
     //!
     //! \returns Whether or not the pair belongs to the congruence.
     //!
     //! \cong_intf_warn_assume_letters_in_bounds
-    template <typename Subclass>
+    // NOTE: we use native_word_type and not another template param to avoid
+    // unexpected behaviour, if for example we add words which are strings to a
+    // ToddCoxeter<word_type>, then unexpected things might happen.
+    template <typename Thing>
     [[nodiscard]] bool
-    contains_no_checks(Subclass&                                  ci,
-                       typename Subclass::native_word_type const& u,
-                       typename Subclass::native_word_type const& v) {
-      static_assert(std::is_base_of_v<detail::CongruenceCommon, Subclass>);
-      return ci.contains_no_checks(
+    contains_no_checks(Thing&                                  thing,
+                       typename Thing::native_word_type const& u,
+                       typename Thing::native_word_type const& v) {
+      static_assert(std::is_base_of_v<detail::CongruenceCommon, Thing>);
+      return thing.contains_no_checks(
           std::begin(u), std::end(u), std::begin(v), std::end(v));
     }
 
@@ -521,15 +534,16 @@ namespace libsemigroups {
     //!
     //! Defined in `cong-common-helpers.hpp`.
     //!
-    //! See \ref
-    //! contains_no_checks(Subclass&, Word const&, Word const&)
-    //! for details.
-    template <typename Subclass, typename Int>
-    [[nodiscard]] bool contains_no_checks(Subclass&                         ci,
+    //! \tparam Int must satisfy `std::integral_type_v<Int>`.
+    //!
+    //! See \ref contains_no_checks_main "contains_no_checks" for details.
+    template <typename Thing, typename Int>
+    [[nodiscard]] bool contains_no_checks(Thing& thing,
                                           std::initializer_list<Int> const& u,
                                           std::initializer_list<Int> const& v) {
-      static_assert(std::is_base_of_v<detail::CongruenceCommon, Subclass>);
-      return contains_no_checks<Subclass, std::initializer_list<Int>>(ci, u, v);
+      static_assert(std::is_base_of_v<detail::CongruenceCommon, Thing>);
+      static_assert(std::is_integral_v<Int>);
+      return contains_no_checks<Thing, std::initializer_list<Int>>(thing, u, v);
     }
 
     //! \brief Helper for checking containment of a pair of words
@@ -537,20 +551,18 @@ namespace libsemigroups {
     //!
     //! Defined in `cong-common-helpers.hpp`.
     //!
-    //! See \ref
-    //! contains_no_checks(Subclass&, Word const&, Word const&)
-    //! for details.
-    template <typename Subclass>
-    [[nodiscard]] bool contains_no_checks(Subclass&   ci,
+    //! See \ref contains_no_checks_main "contains_no_checks" for details.
+    template <typename Thing>
+    [[nodiscard]] bool contains_no_checks(Thing&      thing,
                                           char const* u,
                                           char const* v) {
-      static_assert(std::is_base_of_v<detail::CongruenceCommon, Subclass>);
+      static_assert(std::is_base_of_v<detail::CongruenceCommon, Thing>);
       LIBSEMIGROUPS_ASSERT(u != nullptr);
       LIBSEMIGROUPS_ASSERT(v != nullptr);
-      // We could static_assert that Subclass::native_word_type == std::string,
+      // We could static_assert that Thing::native_word_type == std::string,
       // but it doesn't seem that adding this restriction would gain us
       // anything, so it is not currently done.
-      return ci.contains_no_checks(
+      return thing.contains_no_checks(
           u, u + std::strlen(u), v, v + std::strlen(v));
     }
 
@@ -561,18 +573,16 @@ namespace libsemigroups {
     //!
     //! Defined in `cong-common-helpers.hpp`.
     //!
-    //! See \ref
-    //! contains_no_checks(Subclass&, Word const&, Word const&)
-    //! for details.
-    template <typename Subclass>
-    [[nodiscard]] bool contains_no_checks(Subclass&        ci,
+    //! See \ref contains_no_checks_main "contains_no_checks" for details.
+    template <typename Thing>
+    [[nodiscard]] bool contains_no_checks(Thing&           thing,
                                           std::string_view u,
                                           std::string_view v) {
-      static_assert(std::is_base_of_v<detail::CongruenceCommon, Subclass>);
-      // We could static_assert that Subclass::native_word_type == std::string,
+      static_assert(std::is_base_of_v<detail::CongruenceCommon, Thing>);
+      // We could static_assert that Thing::native_word_type == std::string,
       // but it doesn't seem that adding this restriction would gain us
       // anything, so it is not currently done.
-      return ci.contains_no_checks(
+      return thing.contains_no_checks(
           std::begin(u), std::end(u), std::begin(v), std::end(v));
     }
 
@@ -580,31 +590,34 @@ namespace libsemigroups {
     // Interface helpers - contains
     ////////////////////////////////////////////////////////////////////////
 
+    //! \anchor contains_main
     //! \brief Check containment of a pair of words.
     //!
     //! Defined in `cong-common-helpers.hpp`.
     //!
     //! This function checks whether or not the words \p u and \p v are
-    //! contained in the congruence represented by the instance \p ci of a
-    //! derived class of \ref detail::CongruenceCommon. This function triggers a
-    //! full enumeration of \p ci, which may never terminate.
+    //! contained in the congruence represented by \p thing. This function
+    //! triggers a full enumeration of \p thing, which may never terminate.
     //!
-    //! \tparam Subclass the type of the first parameter.
-    //! \tparam Word the type of the second and third parameters.
+    //! \tparam Thing the type of the first parameter must be one of
+    //! Kambites, KnuthBendix, \ref_todd_coxeter, or Congruence.
     //!
-    //! \param ci the subclass of \ref detail::CongruenceCommon.
+    //! \param thing the object to check containment in.
     //! \param u the left hand side of the pair to add.
     //! \param v the right hand side of the pair to add.
     //!
     //! \returns Whether or not the pair belongs to the congruence.
     //!
     //! \cong_intf_throws_if_letters_out_of_bounds
-    template <typename Subclass>
-    [[nodiscard]] bool contains(Subclass&                                  ci,
-                                typename Subclass::native_word_type const& u,
-                                typename Subclass::native_word_type const& v) {
-      static_assert(std::is_base_of_v<detail::CongruenceCommon, Subclass>);
-      return ci.contains(
+    // NOTE: we use native_word_type and not another template param to avoid
+    // unexpected behaviour, if for example we add words which are strings to a
+    // ToddCoxeter<word_type>, then unexpected things might happen.
+    template <typename Thing>
+    [[nodiscard]] bool contains(Thing&                                  thing,
+                                typename Thing::native_word_type const& u,
+                                typename Thing::native_word_type const& v) {
+      static_assert(std::is_base_of_v<detail::CongruenceCommon, Thing>);
+      return thing.contains(
           std::begin(u), std::end(u), std::begin(v), std::end(v));
     }
 
@@ -613,15 +626,16 @@ namespace libsemigroups {
     //!
     //! Defined in `cong-common-helpers.hpp`.
     //!
-    //! See \ref
-    //! contains_no_checks(Subclass&, Word const&, Word const&)
-    //! for details.
-    template <typename Subclass, typename Int>
-    [[nodiscard]] bool contains(Subclass&                         ci,
+    //! \tparam Int must satisfy `std::integral_type_v<Int>`.
+    //!
+    //! See \ref contains_main "contains" for details.
+    template <typename Thing, typename Int>
+    [[nodiscard]] bool contains(Thing&                            thing,
                                 std::initializer_list<Int> const& u,
                                 std::initializer_list<Int> const& v) {
-      static_assert(std::is_base_of_v<detail::CongruenceCommon, Subclass>);
-      return ci.contains(
+      static_assert(std::is_base_of_v<detail::CongruenceCommon, Thing>);
+      static_assert(std::is_integral_v<Int>);
+      return thing.contains(
           std::begin(u), std::end(u), std::begin(v), std::end(v));
     }
 
@@ -632,18 +646,16 @@ namespace libsemigroups {
     //!
     //! Defined in `cong-common-helpers.hpp`.
     //!
-    //! See \ref
-    //! contains(Subclass&, Word const&, Word const&)
-    //! for details.
-    template <typename Subclass>
-    [[nodiscard]] bool contains(Subclass&        ci,
+    //! See \ref contains_main "contains" for details.
+    template <typename Thing>
+    [[nodiscard]] bool contains(Thing&           thing,
                                 std::string_view u,
                                 std::string_view v) {
-      static_assert(std::is_base_of_v<detail::CongruenceCommon, Subclass>);
-      // We could static_assert that Subclass::native_word_type == std::string,
+      static_assert(std::is_base_of_v<detail::CongruenceCommon, Thing>);
+      // We could static_assert that Thing::native_word_type == std::string,
       // but it doesn't seem that adding this restriction would gain us
       // anything, so it is not currently done.
-      return ci.contains(
+      return thing.contains(
           std::begin(u), std::end(u), std::begin(v), std::end(v));
     }
 
@@ -652,18 +664,16 @@ namespace libsemigroups {
     //!
     //! Defined in `cong-common-helpers.hpp`.
     //!
-    //! See \ref
-    //! contains(Subclass&, Word const&, Word const&)
-    //! for details.
-    template <typename Subclass>
-    [[nodiscard]] bool contains(Subclass& ci, char const* u, char const* v) {
-      static_assert(std::is_base_of_v<detail::CongruenceCommon, Subclass>);
+    //! See \ref contains_main "contains" for details.
+    template <typename Thing>
+    [[nodiscard]] bool contains(Thing& thing, char const* u, char const* v) {
+      static_assert(std::is_base_of_v<detail::CongruenceCommon, Thing>);
       detail::throw_if_nullptr(u, "2nd");
       detail::throw_if_nullptr(v, "3rd");
-      // We could static_assert that Subclass::native_word_type == std::string,
+      // We could static_assert that Thing::native_word_type == std::string,
       // but it doesn't seem that adding this restriction would gain us
       // anything, so it is not currently done.
-      return ci.contains(u, u + std::strlen(u), v, v + std::strlen(v));
+      return thing.contains(u, u + std::strlen(u), v, v + std::strlen(v));
     }
 
     //! @}
@@ -675,50 +685,56 @@ namespace libsemigroups {
     //! \defgroup cong_intf_helpers_reduce_group Reduce a word
     //! \ingroup cong_intf_helpers_group
     //!
-    //! \brief Check containment of a pair of words in a congruence.
+    //! \brief Find an irreducible word equivalent to a given word.
     //!
     //! Defined in `cong-common-helpers.hpp`.
     //!
     //! This page contains the documentation of the functions \ref
-    //! reduce_no_run_no_checks; \ref reduce_no_run; \ref reduce_no_checks;
-    //! and
+    //! reduce_no_run_no_checks; \ref reduce_no_run; \ref reduce_no_checks; and
     //! \ref reduce which can be invoked with a variety of different argument
     //! types.
     //!
-    //! Functions with the suffix `_no_run` do not perform any enumeration
-    //! of the \ref detail::CongruenceCommon derived class instances; and those
-    //! with the suffix `_no_checks` do not check that the input words are
-    //! valid.
+    //! These helper functions can be applied to objects of the types:
+    //! * Congruence
+    //! * Kambites
+    //! * KnuthBendix
+    //! * \ref_todd_coxeter
+    //!
+    //! Functions with the suffix `_no_run` do not perform any enumeration of
+    //! the object representing a congruence; and those with the suffix
+    //! `_no_checks` do not check that the input words are valid.
     //!
     //! @{
 
+    //! \anchor reduce_no_run_no_checks_main
     //! \brief Reduce a word with no enumeration or checks.
     //!
     //! Defined in `cong-common-helpers.hpp`.
     //!
     //! This function returns a reduced word equivalent to the input word \p w
-    //! in the congruence represented by an instance of a derived class of
-    //! \ref detail::CongruenceCommon. This function triggers no enumeration.
-    //! The word output by this function is equivalent to the input word in the
-    //! congruence. If \p ci is `finished`, then the output word is a normal
-    //! form for the input word. If the \p ci is not `finished`, then it
-    //! might be that equivalent input words produce different output words.
+    //! in the congruence represented by \p thing. This function triggers no
+    //! enumeration of \p thing. The word output by this function is equivalent
+    //! to the input word in the congruence. If \p thing is \ref
+    //! Runner::finished, then the output word is a normal form for the input
+    //! word. If \p thing is not \ref Runner::finished, then it might be that
+    //! equivalent input words produce different output words.
     //!
-    //! \tparam Subclass the type of the first parameter.
-    //! \tparam InputWord the type of the second parameter.
-    //! \tparam OutputWord the type of word to be returned (defaults to \p
-    //! InputWord).
+    //! \tparam Thing the type of the first parameter must be one of
+    //! Kambites, KnuthBendix, \ref_todd_coxeter, or Congruence.
     //!
-    //! \param ci the subclass of \ref detail::CongruenceCommon.
+    //! \param thing the object to reduce words in.
     //! \param w the word to reduce.
     //!
     //! \returns An irreducible word equivalent to \p w.
     //!
     //! \cong_intf_warn_assume_letters_in_bounds
-    template <typename Subclass>
-    [[nodiscard]] typename Subclass::native_word_type
-    reduce_no_run_no_checks(Subclass const&                            ci,
-                            typename Subclass::native_word_type const& w);
+    // NOTE: we use native_word_type and not another template param to avoid
+    // unexpected behaviour, if for example we add words which are strings to a
+    // ToddCoxeter<word_type>, then unexpected things might happen.
+    template <typename Thing>
+    [[nodiscard]] typename Thing::native_word_type
+    reduce_no_run_no_checks(Thing const&                            thing,
+                            typename Thing::native_word_type const& w);
 
     // No string_view version is required because there is only a single
     // "word" parameter, and so the first template will catch every case
@@ -728,115 +744,113 @@ namespace libsemigroups {
     //!
     //! Defined in `cong-common-helpers.hpp`.
     //!
-    //! See \ref
-    //! reduce_no_run_no_checks(Subclass const&, InputWord const&)
-    //! for details.
-    template <typename Subclass, typename Int>
-    [[nodiscard]] typename Subclass::native_word_type
-    reduce_no_run_no_checks(Subclass const&                   ci,
+    //! \tparam Int must satisfy `std::integral_type_v<Int>`.
+    //!
+    //! See \ref reduce_no_run_no_checks_main
+    //! "reduce_no_run_no_checks" for details.
+    template <typename Thing, typename Int>
+    [[nodiscard]] typename Thing::native_word_type
+    reduce_no_run_no_checks(Thing const&                      thing,
                             std::initializer_list<Int> const& w);
 
     //! \brief Reduce a word (string literal).
     //!
     //! Defined in `cong-common-helpers.hpp`.
     //!
-    //! See \ref
-    //! reduce_no_run_no_checks(Subclass const&, InputWord const&)
-    //! for details.
-    template <typename Subclass>
-    [[nodiscard]] typename Subclass::native_word_type
-    reduce_no_run_no_checks(Subclass const& ci, char const* w);
+    //! See \ref reduce_no_run_no_checks_main
+    //! "reduce_no_run_no_checks" for details.
+    template <typename Thing>
+    [[nodiscard]] typename Thing::native_word_type
+    reduce_no_run_no_checks(Thing const& thing, char const* w);
 
     ////////////////////////////////////////////////////////////////////////
     // Interface helpers - reduce_no_run
     ////////////////////////////////////////////////////////////////////////
 
+    //! \anchor reduce_no_run_main
     //! \brief Reduce a word with no enumeration.
     //!
     //! Defined in `cong-common-helpers.hpp`.
     //!
     //! This function returns a reduced word equivalent to the input word \p w
-    //! in the congruence represented by an instance of a derived class of
-    //! \ref detail::CongruenceCommon. This function triggers no enumeration.
-    //! The word output by this function is equivalent to the input word in the
-    //! congruence. If \p ci is `finished`, then the output word is a normal
-    //! form for the input word. If the \p ci is not `finished`, then it
-    //! might be that equivalent input words produce different output words.
+    //! in the congruence represented by \p thing. This function triggers no
+    //! enumeration of \p thing. The word output by this function is equivalent
+    //! to the input word in the congruence. If \p thing is \ref
+    //! Runner::finished, then the output word is a normal form for the input
+    //! word. If \p thing is not \ref Runner::finished, then it might be that
+    //! equivalent input words produce different output words.
     //!
-    //! \tparam Subclass the type of the first parameter.
-    //! \tparam InputWord the type of the second parameter.
-    //! \tparam OutputWord the type of word to be returned (defaults to \p
-    //! InputWord).
+    //! \tparam Thing the type of the first parameter must be one of
+    //! Kambites, KnuthBendix, \ref_todd_coxeter, or Congruence.
     //!
-    //! \param ci the subclass of \ref detail::CongruenceCommon.
+    //! \param thing the object to reduce words in.
     //! \param w the word to reduce.
     //!
     //! \returns An irreducible word equivalent to \p w.
     //!
     //! \cong_intf_throws_if_letters_out_of_bounds
-    template <typename Subclass>
-    [[nodiscard]] typename Subclass::native_word_type
-    reduce_no_run(Subclass const&                            ci,
-                  typename Subclass::native_word_type const& w);
+    // NOTE: we use native_word_type and not another template param to avoid
+    // unexpected behaviour, if for example we add words which are strings to a
+    // ToddCoxeter<word_type>, then unexpected things might happen.
+    template <typename Thing>
+    [[nodiscard]] typename Thing::native_word_type
+    reduce_no_run(Thing const&                            thing,
+                  typename Thing::native_word_type const& w);
 
     // No string_view version is required because there is only a single
-    // "word" parameter, and so the first template will catch every case
+    // "w" parameter, and so the first template will catch every case
     // except initializer_list and char const*
 
     //! \brief Reduce a word (std::initializer_list).
     //!
     //! Defined in `cong-common-helpers.hpp`.
     //!
-    //! See \ref
-    //! reduce_no_run(Subclass const&, InputWord const&)
-    //! for details.
-    template <typename Subclass, typename Int>
-    [[nodiscard]] typename Subclass::native_word_type
-    reduce_no_run(Subclass const& ci, std::initializer_list<Int> const& w);
+    //! \tparam Int must satisfy `std::integral_type_v<Int>`.
+    //!
+    //! See \ref reduce_no_run_main "reduce_no_run" for details.
+    template <typename Thing, typename Int>
+    [[nodiscard]] typename Thing::native_word_type
+    reduce_no_run(Thing const& thing, std::initializer_list<Int> const& w);
 
     //! \brief Reduce a word (string literal).
     //!
     //! Defined in `cong-common-helpers.hpp`.
     //!
-    //! See \ref
-    //! reduce_no_run(Subclass const&, InputWord const&)
-    //! for details.
-    template <typename Subclass>
-    [[nodiscard]] typename Subclass::native_word_type
-    reduce_no_run(Subclass const& ci, char const* w);
+    //! See \ref reduce_no_run_main "reduce_no_run" for details.
+    template <typename Thing>
+    [[nodiscard]] typename Thing::native_word_type
+    reduce_no_run(Thing const& thing, char const* w);
 
     ////////////////////////////////////////////////////////////////////////
     // Interface helpers - reduce_no_checks
     ////////////////////////////////////////////////////////////////////////
 
+    //! \anchor reduce_no_checks_main
     //! \brief Reduce a word with no checks.
     //!
     //! Defined in `cong-common-helpers.hpp`.
     //!
     //! This function returns a reduced word equivalent to the input word \p w
-    //! in the congruence represented by an instance of a derived class of
-    //! \ref detail::CongruenceCommon. This function triggers a full
-    //! enumeration. The word output by this function is equivalent to the input
-    //! word in the congruence. If \p ci is `finished`, then the output word is
-    //! a normal form for the input word. If the \p ci is not `finished`, then
-    //! it might be that equivalent input words produce different output
-    //! words.
+    //! in the congruence represented by \p thing. This function triggers a full
+    //! enumeration of \p thing. The output word is a normal form for the input
+    //! word.
     //!
-    //! \tparam Subclass the type of the first parameter.
-    //! \tparam InputWord the type of the second parameter.
-    //! \tparam OutputWord the type of word to be returned (defaults to \p
-    //! InputWord).
+    //! \tparam Thing the type of the first parameter must be one of
+    //! Kambites, KnuthBendix, \ref_todd_coxeter, or Congruence.
     //!
-    //! \param ci the subclass of \ref detail::CongruenceCommon.
+    //! \param thing the object to reduce words in.
     //! \param w the word to reduce.
     //!
     //! \returns An irreducible word equivalent to \p w.
     //!
     //! \cong_intf_warn_assume_letters_in_bounds
-    template <typename Subclass>
-    [[nodiscard]] typename Subclass::native_word_type
-    reduce_no_checks(Subclass const&                            ci,
-                     typename Subclass::native_word_type const& w);
+    // NOTE: we use native_word_type and not another template param to avoid
+    // unexpected behaviour, if for example we add words which are strings to a
+    // ToddCoxeter<word_type>, then unexpected things might happen.
+    template <typename Thing>
+    [[nodiscard]] typename Thing::native_word_type
+    reduce_no_checks(Thing const&                            thing,
+                     typename Thing::native_word_type const& w);
 
     // No string_view version is required because there is only a single
     // "word" parameter, and so the first template will catch every case
@@ -846,55 +860,50 @@ namespace libsemigroups {
     //!
     //! Defined in `cong-common-helpers.hpp`.
     //!
-    //! See \ref
-    //! reduce_no_checks(Subclass&, InputWord const&)
-    //! for details.
-    template <typename Subclass, typename Int>
-    [[nodiscard]] typename Subclass::native_word_type
-    reduce_no_checks(Subclass const& ci, std::initializer_list<Int> const& w);
+    //! \tparam Int must satisfy `std::integral_type_v<Int>`.
+    //!
+    //! See \ref reduce_no_checks_main "reduce_no_checks" for details.
+    template <typename Thing, typename Int>
+    [[nodiscard]] typename Thing::native_word_type
+    reduce_no_checks(Thing const& thing, std::initializer_list<Int> const& w);
 
     //! \brief Reduce a word (string literal).
     //!
     //! Defined in `cong-common-helpers.hpp`.
     //!
-    //! See \ref
-    //! reduce_no_checks(Subclass&, InputWord const&)
-    //! for details.
-    template <typename Subclass>
-    [[nodiscard]] typename Subclass::native_word_type
-    reduce_no_checks(Subclass const& ci, char const* w);
+    //! See \ref reduce_no_checks_main "reduce_no_checks" for details.
+    template <typename Thing>
+    [[nodiscard]] typename Thing::native_word_type
+    reduce_no_checks(Thing const& thing, char const* w);
 
     ////////////////////////////////////////////////////////////////////////
     // Interface helpers - reduce
     ////////////////////////////////////////////////////////////////////////
-
+    //! \anchor reduce_main
     //! \brief Reduce a word.
     //!
     //! Defined in `cong-common-helpers.hpp`.
     //!
     //! This function returns a reduced word equivalent to the input word \p w
-    //! in the congruence represented by an instance of a derived class of
-    //! \ref detail::CongruenceCommon. This function triggers a full
-    //! enumeration. The word output by this function is equivalent to the input
-    //! word in the congruence. If \p ci is `finished`, then the output word is
-    //! a normal form for the input word. If the \p ci is not `finished`, then
-    //! it might be that equivalent input words produce different output
-    //! words.
+    //! in the congruence represented by \p thing. This function triggers a full
+    //! enumeration of \p thing. The output word is a normal form for the input
+    //! word.
     //!
-    //! \tparam Subclass the type of the first parameter.
-    //! \tparam InputWord the type of the second parameter.
-    //! \tparam OutputWord the type of word to be returned (defaults to \p
-    //! InputWord).
+    //! \tparam Thing the type of the first parameter must be one of
+    //! Kambites, KnuthBendix, \ref_todd_coxeter, or Congruence.
     //!
-    //! \param ci the subclass of \ref detail::CongruenceCommon.
+    //! \param thing the object to reduce words in.
     //! \param w the word to reduce.
     //!
     //! \returns An irreducible word equivalent to \p w.
     //!
     //! \cong_intf_throws_if_letters_out_of_bounds
-    template <typename Subclass>
-    [[nodiscard]] typename Subclass::native_word_type
-    reduce(Subclass const& ci, typename Subclass::native_word_type const& w);
+    // NOTE: we use native_word_type and not another template param to avoid
+    // unexpected behaviour, if for example we add words which are strings to a
+    // ToddCoxeter<word_type>, then unexpected things might happen.
+    template <typename Thing>
+    [[nodiscard]] typename Thing::native_word_type
+    reduce(Thing const& thing, typename Thing::native_word_type const& w);
 
     // No string_view version is required because there is only a single
     // "word" parameter, and so the first template will catch every case
@@ -902,21 +911,23 @@ namespace libsemigroups {
 
     //! \brief Reduce a word (std::initializer_list).
     //!
+    //! \tparam Int must satisfy `std::integral_type_v<Int>`.
+    //!
     //! Defined in `cong-common-helpers.hpp`.
     //!
-    //! See \ref reduce(Subclass&, InputWord const&) for details.
-    template <typename Subclass, typename Int>
-    [[nodiscard]] typename Subclass::native_word_type
-    reduce(Subclass const& ci, std::initializer_list<Int> const& w);
+    //! See \ref reduce_main "reduce" for details.
+    template <typename Thing, typename Int>
+    [[nodiscard]] typename Thing::native_word_type
+    reduce(Thing const& thing, std::initializer_list<Int> const& w);
 
     //! \brief Reduce a word (string literal).
     //!
     //! Defined in `cong-common-helpers.hpp`.
     //!
-    //! See \ref reduce(Subclass&, InputWord const&) for details.
-    template <typename Subclass>
-    [[nodiscard]] typename Subclass::native_word_type reduce(Subclass const& ci,
-                                                             char const*     w);
+    //! See \ref reduce_main "reduce" for details.
+    template <typename Thing>
+    [[nodiscard]] typename Thing::native_word_type reduce(Thing const& thing,
+                                                          char const*  w);
 
     //! @}
 
@@ -926,6 +937,10 @@ namespace libsemigroups {
 
     // There's nothing in common to implement in this file.
 
+    ////////////////////////////////////////////////////////////////////////
+    // Interface helpers - partition
+    ////////////////////////////////////////////////////////////////////////
+
     //! \defgroup cong_intf_helpers_partition_group Partitioning
     //! \ingroup cong_intf_helpers_group
     //!
@@ -933,66 +948,65 @@ namespace libsemigroups {
     //!
     //! Defined in `cong-common-helpers.hpp`.
     //!
-    //! This page contains the documentation of the functions \ref partition
-    //! and \ref non_trivial_classes for partitioning a range of words by a
-    //! congruence.
+    //! This page contains the documentation of the functions \ref
+    //! partition(Thing&, Range) and \ref non_trivial_classes for partitioning a
+    //! range of words by a congruence.
     //!
     //! @{
 
-    ////////////////////////////////////////////////////////////////////////
-    // Interface helpers - partition
-    ////////////////////////////////////////////////////////////////////////
-
+#ifndef PARSED_BY_DOXYGEN
     // Forward decls defined in todd-coxeter-helpers.tpp and cong-helpers.tpp
     template <typename Word,
               typename Range,
               typename = std::enable_if_t<rx::is_input_or_sink_v<Range>>>
     [[nodiscard]] std::vector<std::vector<Word>>
-    partition(ToddCoxeter<Word>& ci, Range r);
+    partition(ToddCoxeter<Word>& thing, Range r);
 
     template <typename Word,
               typename Range,
               typename = std::enable_if_t<rx::is_input_or_sink_v<Range>>>
-    [[nodiscard]] std::vector<std::vector<Word>> partition(Congruence<Word>& ci,
-                                                           Range             r);
+    [[nodiscard]] std::vector<std::vector<Word>>
+    partition(Congruence<Word>& thing, Range r);
+#endif
 
     //! \brief Partition a range of words.
     //!
     //! Defined in `cong-common-helpers.hpp`.
     //!
     //! This function returns the partition of the words in the range \p r
-    //! induced by the instance \p ci of a derived class of \ref
-    //! detail::CongruenceCommon. This function triggers a full enumeration of
-    //! \p ci.
+    //! induced by the object \p thing. This function triggers a full
+    //! enumeration of \p thing.
     //!
-    //! \tparam Subclass the type of the first parameter.
-    //! \tparam Range the type of the input range of words.
-    //! \tparam OutputWord the type of the words in the output (defaults to
-    //! the type of the words in the input range).
+    //! \tparam Thing the type of the first parameter must be one of
+    //! Kambites, KnuthBendix, \ref_todd_coxeter, or Congruence.
     //!
-    //! \param ci the derived class of \ref detail::CongruenceCommon.
+    //! \tparam Range the type of the input range of words, must satisfy
+    //! `std::enable_if_t<rx::is_input_or_sink_v<Range>>` and
+    //! `Range::output_type` must decay to `Thing::native_word_type`.
+    //!
+    //! \param thing the object used to partition \p r.
     //! \param r the input range of words.
     //!
     //! \returns The partition of the input range.
     //!
     //! \throws LibsemigroupsException if the input range of words is
     //! infinite.
-    template <typename Subclass,
+    template <typename Thing,
               typename Range,
               typename = std::enable_if_t<rx::is_input_or_sink_v<Range>>>
-    [[nodiscard]] std::vector<std::vector<typename Subclass::native_word_type>>
-    partition(Subclass& ci, Range r);
+    [[nodiscard]] std::vector<std::vector<typename Thing::native_word_type>>
+    partition(Thing& thing, Range r);
 
     //! \brief Partition a range of words (via iterators)
     //!
     //! Defined in `cong-common-helpers.hpp`.
     //!
-    //! See \ref partition(Subclass&, Range) for details.
-    template <typename Subclass, typename Iterator1, typename Iterator2>
-    std::vector<std::vector<typename Subclass::native_word_type>>
-    partition(Subclass& ci, Iterator1 first, Iterator2 last) {
+    //! See \ref partition(Thing&, Range) for details.
+    template <typename Thing, typename Iterator1, typename Iterator2>
+    std::vector<std::vector<typename Thing::native_word_type>>
+    partition(Thing& thing, Iterator1 first, Iterator2 last) {
       // static asserts are in done in the next call to partition
-      return partition(ci, rx::iterator_range(first, last));
+      return partition(thing, rx::iterator_range(first, last));
     }
 
     ////////////////////////////////////////////////////////////////////////
@@ -1005,37 +1019,39 @@ namespace libsemigroups {
     //! Defined in `cong-common-helpers.hpp`.
     //!
     //! This function returns the classes with size at least \f$2\f$ in the
-    //! partition of the words in the range \p r according to \p ci.
-    //! This function triggers a full enumeration of \p ci.
+    //! partition of the words in the range \p r according to \p thing.
+    //! This function triggers a full enumeration of \p thing.
     //!
-    //! \tparam Subclass the type of the first parameter.
-    //! \tparam Range the type of the input range of words.
-    //! \tparam OutputWord the type of the words in the output (defaults to
-    //! the type of the words in the input range).
+    //! \tparam Thing the type of the first parameter must be one of
+    //! Kambites, KnuthBendix, \ref_todd_coxeter, or Congruence.
     //!
-    //! \param ci a derived class of detail::CongruenceCommon.
+    //! \tparam Range the type of the input range of words, must satisfy
+    //! `std::enable_if_t<rx::is_input_or_sink_v<Range>>` and
+    //! `Range::output_type` must decay to `Thing::native_word_type`.
+    //!
+    //! \param thing the object used to partition \p r.
     //! \param r the input range of words.
     //!
     //! \returns The partition of the input range.
     //!
     //! \throws LibsemigroupsException if the input range of words is
     //! infinite.
-    template <typename Subclass,
+    template <typename Thing,
               typename Range,
               typename = std::enable_if_t<rx::is_input_or_sink_v<Range>>>
-    [[nodiscard]] std::vector<std::vector<typename Subclass::native_word_type>>
-    non_trivial_classes(Subclass& ci, Range r);
+    [[nodiscard]] std::vector<std::vector<typename Thing::native_word_type>>
+    non_trivial_classes(Thing& thing, Range r);
 
     //! \brief Partition a range of words into non-trivial classes (via
     //! iterators).
     //!
     //! Defined in `cong-common-helpers.hpp`.
     //!
-    //! See \ref non_trivial_classes(Subclass&, Range) for details.
-    template <typename Subclass, typename Iterator1, typename Iterator2>
-    std::vector<std::vector<typename Subclass::native_word_type>>
-    non_trivial_classes(Subclass& ci, Iterator1 first, Iterator2 last) {
-      return non_trivial_classes(ci, rx::iterator_range(first, last));
+    //! See \ref non_trivial_classes(Thing&, Range) for details.
+    template <typename Thing, typename Iterator1, typename Iterator2>
+    std::vector<std::vector<typename Thing::native_word_type>>
+    non_trivial_classes(Thing& thing, Iterator1 first, Iterator2 last) {
+      return non_trivial_classes(thing, rx::iterator_range(first, last));
     }
 
     //! @}
@@ -1044,4 +1060,4 @@ namespace libsemigroups {
 
 #include "cong-common-helpers.tpp"
 
-#endif  // LIBSEMIGROUPS_CONG_INTF_HELPERS_HPP_
+#endif  // LIBSEMIGROUPS_CONG_COMMON_HELPERS_HPP_
