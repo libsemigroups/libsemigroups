@@ -84,7 +84,7 @@ namespace libsemigroups {
     _have_class = false;
     _XYZ_data.clear();
     // Non-mutable
-    // TODO(0) _presentation???
+    // _presentation.init(); TODO
     _generating_pairs.clear();
     _suffix_tree.init();
     return *this;
@@ -112,7 +112,6 @@ namespace libsemigroups {
     throw_if_1_sided(knd);
     p.validate();
     _presentation = p;
-    // TODO(0) probably need to reset the _generating_pairs also
     private_init_from_presentation(false);
   }
 
@@ -123,8 +122,10 @@ namespace libsemigroups {
     throw_if_1_sided(knd);
     p.validate();
     _presentation = p;
+    _generating_pairs.clear();
     return private_init_from_presentation(true);
   }
+
   template <typename Word>
   Kambites<Word>::Kambites(congruence_kind                  knd,
                            Presentation<native_word_type>&& p)
@@ -132,7 +133,6 @@ namespace libsemigroups {
     throw_if_1_sided(knd);
     p.validate();
     _presentation = std::move(p);
-    // TODO(0) probably need to reset the _generating_pairs also
     private_init_from_presentation(false);
   }
 
@@ -142,6 +142,7 @@ namespace libsemigroups {
     throw_if_1_sided(knd);
     p.validate();
     _presentation = std::move(p);
+    _generating_pairs.clear();
     return private_init_from_presentation(true);
   }
 
@@ -235,8 +236,8 @@ namespace libsemigroups {
   void Kambites<Word>::normal_form_no_checks(native_word_type&       result,
                                              native_word_type const& w0) const {
     LIBSEMIGROUPS_ASSERT(!finished() || small_overlap_class() >= 4);
-    using words:: operator+;
-    using words:: operator+=;
+    using words::operator+;
+    using words::operator+=;
     size_t        r = UNDEFINED;
     internal_type w(w0);
     internal_type v(result);
@@ -658,7 +659,7 @@ namespace libsemigroups {
                                          internal_type& v,
                                          internal_type& w) const {
     using words::operator+=;
-    size_t       i, j;
+    size_t i, j;
     std::tie(i, j) = clean_overlap_prefix_mod(w, w.size());
     if (j == UNDEFINED) {
       // line 39
