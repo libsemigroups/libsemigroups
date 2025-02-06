@@ -92,77 +92,18 @@ namespace libsemigroups {
       // CongruenceCommon - public member functions
       ////////////////////////////////////////////////////////////////////////////
 
-      // TODO(0) include this doc somewhere
-      //! \brief Returns the number of generating pairs.
-      //!
-      //! This function returns the number of generating pairs, which is the
-      //! size of \ref internal_generating_pairs divided by \f$2\f$.
-      //!
-      //! \returns
-      //! The number of generating pairs.
-      //!
-      //! \exceptions
-      //! \noexcept
-      //!
-      //! \complexity
-      //! Constant.
+      // Documented in todd-coxeter-class.hpp etc
       [[nodiscard]] size_t number_of_generating_pairs() const noexcept {
         return _internal_generating_pairs.size() / 2;
       }
 
-      // TODO(0) remove this doc (maybe reuse it somewhere)
-      //! \brief Returns a const reference to the std::vector of generating
-      //! pairs.
-      //!
-      //! This function returns the generating pairs of the congruence
-      //! represented by any derived class of a CongruenceCommon. This is
-      //! always a std::vector of \ref word_type, regardless of the
-      //! type of the presentation used by the implementation in the derived
-      //! class.
-      //!
-      //! \returns
-      //! A const reference to the generating pairs.
-      //!
-      //! \exceptions
-      //! \noexcept
-      //!
-      //! \complexity
-      //! Constant.
-      //! pairs.
-      //!
-      //! This function returns the generating pairs of the congruence
-      //! represented by any derived class of a CongruenceCommon. This is
-      //! always a std::vector of \ref word_type, regardless of the
-      //! type of the presentation used by the implementation in the derived
-      //! class.
-      //!
-      //! \returns
-      //! A const reference to the generating pairs.
-      //!
-      //! \exceptions
-      //! \noexcept
-      //!
-      //! \complexity
-      //! Constant.
+      // no doc
       [[nodiscard]] std::vector<word_type> const&
       internal_generating_pairs() const noexcept {
         return _internal_generating_pairs;
       }
 
-      // TODO(0) include this doc somewhere
-      //! \brief The kind of the congruence (1- or 2-sided).
-      //!
-      //! This function returns the kind of the congruence represented by a
-      //! derived class of CongruenceCommon. See \ref congruence_kind for
-      //! details.
-      //!
-      //! \return The kind of the congruence (1- or 2-sided).
-      //!
-      //! \exceptions
-      //! \noexcept
-      //!
-      //! \complexity
-      //! Constant.
+      // Documented in todd-coxeter-class.hpp etc
       [[nodiscard]] congruence_kind kind() const noexcept {
         return _type;
       }
@@ -277,7 +218,7 @@ namespace libsemigroups {
      private:
       void throw_if_started() const;
     };  // class CongruenceCommon
-  }     // namespace detail
+  }  // namespace detail
 }  // namespace libsemigroups
 
 #include "cong-common-class.tpp"

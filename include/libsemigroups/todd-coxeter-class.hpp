@@ -469,6 +469,41 @@ namespace libsemigroups {
         two,
       };
     };
+
+    // TODO(0) add to KnuthBendix, Kambites, Congruence doc
+    //! \ingroup todd_coxeter_class_intf_group
+    //!
+    //! \brief The kind of the congruence (1- or 2-sided).
+    //!
+    //! This function returns the kind of the congruence represented by a
+    //! \ref_todd_coxeter instance; see \ref congruence_kind for details.
+    //!
+    //! \return The kind of the congruence (1- or 2-sided).
+    //!
+    //! \exceptions
+    //! \noexcept
+    //!
+    //! \complexity
+    //! Constant.
+    [[nodiscard]] congruence_kind kind() const noexcept;
+
+    // TODO(0) add to KnuthBendix, Kambites, Congruence doc
+    //! \ingroup todd_coxeter_class_intf_group
+    //!
+    //! \brief Returns the number of generating pairs.
+    //!
+    //! This function returns the number of generating pairs, which is the
+    //! size of \ref generating_pairs divided by \f$2\f$.
+    //!
+    //! \returns
+    //! The number of generating pairs.
+    //!
+    //! \exceptions
+    //! \noexcept
+    //!
+    //! \complexity
+    //! Constant.
+    [[nodiscard]] size_t number_of_generating_pairs() const noexcept;
 #endif
 
     //! \ingroup todd_coxeter_class_mem_types_group
@@ -504,13 +539,13 @@ namespace libsemigroups {
     //! The type of the indices of classes in the congruence represented by a
     //! \ref_todd_coxeter instance.
     //!
-    //! This alias is the same as \ref node_type, and is included to because if
-    //! a \ref_todd_coxeter instance is created from a Presentation, and that
-    //! presentation does not \ref Presentation::contains_empty_word, then there
-    //! is always at least one more node (the node representing the empty word)
-    //! in the \ref current_word_graph than there are classes in the congruence.
-    //! This alias is used to delineate the cases when we are referring to a
-    //! node or a class index.
+    //! This alias is the same as \ref node_type, and is included to because
+    //! if a \ref_todd_coxeter instance is created from a Presentation, and
+    //! that presentation does not \ref Presentation::contains_empty_word,
+    //! then there is always at least one more node (the node representing the
+    //! empty word) in the \ref current_word_graph than there are classes in
+    //! the congruence. This alias is used to delineate the cases when we are
+    //! referring to a node or a class index.
     using index_type = typename detail::ToddCoxeterBase::index_type;
 
     //! \ingroup todd_coxeter_class_mem_types_group
@@ -627,8 +662,8 @@ namespace libsemigroups {
     //! \brief Re-initialize a \ref_todd_coxeter instance.
     //!
     //! This function puts a \ref_todd_coxeter instance back into the state
-    //! that it would have been in if it had just been newly constructed from \p
-    //! knd and \p tc.
+    //! that it would have been in if it had just been newly constructed from
+    //! \p knd and \p tc.
     //!
     //! \param knd the kind (onesided, or twosided) of the congruence.
     //! \param tc the \ref_todd_coxeter instance.
@@ -650,10 +685,11 @@ namespace libsemigroups {
     //!
     //! This function constructs a  \ref_todd_coxeter instance representing a
     //! congruence of kind \p knd over the WordGraph \p wg. The
-    //! \ref_todd_coxeter instance constructed in this way represents a quotient
-    //! of the word graph \p wg. If \p wg happens to be the left or right Cayley
-    //! graph of a semigroup or monoid, then the \ref_todd_coxeter instance will
-    //! represent a quotient of that semigroup.
+    //! \ref_todd_coxeter instance constructed in this way represents a
+    //! quotient of the word graph \p wg. If \p wg happens to be the left or
+    //! right Cayley graph of a semigroup or monoid, then the
+    //! \ref_todd_coxeter instance will represent a quotient of that
+    //! semigroup.
     //!
     //! \tparam Node the type of the nodes in the 2nd argument.
     //!
@@ -747,15 +783,15 @@ namespace libsemigroups {
 
     //! \ingroup todd_coxeter_class_intf_group
     //!
-    //! \brief Get the presentation used to define a \ref_todd_coxeter instance
-    //! (if any).
+    //! \brief Get the presentation used to define a \ref_todd_coxeter
+    //! instance (if any).
     //!
     //! If a \ref_todd_coxeter instance is constructed or initialised using a
-    //! presentation, then a const reference to this presentation is returned by
-    //! this function.
+    //! presentation, then a const reference to this presentation is returned
+    //! by this function.
     //!
-    //! If the \ref_todd_coxeter instance was constructed or initialised from a
-    //! WordGraph, then this presentation will be empty.
+    //! If the \ref_todd_coxeter instance was constructed or initialised from
+    //! a WordGraph, then this presentation will be empty.
     //!
     //! \returns A const reference to the presentation.
     //!
@@ -831,11 +867,13 @@ namespace libsemigroups {
     //!
     //! \brief Check containment of a pair of words via iterators.
     //!
-    //! This function checks whether or not the words represented by the ranges
-    //! \p first1 to \p last1 and \p first2 to \p last2 are already known to be
-    //! contained in the congruence represented by a \ref_todd_coxeter instance.
-    //! This function performs no enumeration, so it is possible for the words
-    //! to be contained in the congruence, but that this is not currently known.
+    //! This function checks whether or not the words represented by the
+    //! ranges
+    //! \p first1 to \p last1 and \p first2 to \p last2 are already known to
+    //! be contained in the congruence represented by a \ref_todd_coxeter
+    //! instance. This function performs no enumeration, so it is possible for
+    //! the words to be contained in the congruence, but that this is not
+    //! currently known.
     //!
     //! \cong_intf_params_contains
     //!
@@ -863,11 +901,13 @@ namespace libsemigroups {
     //!
     //! \brief Check containment of a pair of words via iterators.
     //!
-    //! This function checks whether or not the words represented by the ranges
-    //! \p first1 to \p last1 and \p first2 to \p last2 are already known to be
-    //! contained in the congruence represented by a \ref_todd_coxeter. This
-    //! function performs no enumeration, so it is possible for the words to be
-    //! contained in the congruence, but that this is not currently known.
+    //! This function checks whether or not the words represented by the
+    //! ranges
+    //! \p first1 to \p last1 and \p first2 to \p last2 are already known to
+    //! be contained in the congruence represented by a \ref_todd_coxeter.
+    //! This function performs no enumeration, so it is possible for the words
+    //! to be contained in the congruence, but that this is not currently
+    //! known.
     //!
     //! \cong_intf_params_contains
     //!
@@ -895,7 +935,8 @@ namespace libsemigroups {
     //!
     //! \brief Check containment of a pair of words via iterators.
     //!
-    //! This function checks whether or not the words represented by the ranges
+    //! This function checks whether or not the words represented by the
+    //! ranges
     //! \p first1 to \p last1 and \p first2 to \p last2 are contained in the
     //! congruence represented by a \ref_todd_coxeter instance. This function
     //! triggers a full enumeration, which may never terminate.
@@ -925,7 +966,8 @@ namespace libsemigroups {
     //!
     //! \brief Check containment of a pair of words via iterators.
     //!
-    //! This function checks whether or not the words represented by the ranges
+    //! This function checks whether or not the words represented by the
+    //! ranges
     //! \p first1 to \p last1 and \p first2 to \p last2 are contained in the
     //! congruence represented by a \ref_todd_coxeter instance. This function
     //! triggers a full enumeration, which may never terminate.
@@ -955,9 +997,10 @@ namespace libsemigroups {
     //! \brief Reduce a word with no enumeration or checks.
     //!
     //! This function writes a reduced word equivalent to the input word
-    //! described by the iterator \p first and \p last to the output iterator \p
-    //! d_first. This function triggers no enumeration. The word output by this
-    //! function is equivalent to the input word in the congruence defined by a
+    //! described by the iterator \p first and \p last to the output iterator
+    //! \p d_first. This function triggers no enumeration. The word output by
+    //! this function is equivalent to the input word in the congruence
+    //! defined by a
     //! \ref_todd_coxeter instance. If the \ref_todd_coxeter instance is \ref
     //! finished, then the output word is a normal form for the input word. If
     //! the \ref_todd_coxeter instance is not \ref finished, then it might be
@@ -986,9 +1029,10 @@ namespace libsemigroups {
     //! \brief Reduce a word with no enumeration.
     //!
     //! This function writes a reduced word equivalent to the input word
-    //! described by the iterator \p first and \p last to the output iterator \p
-    //! d_first. This function triggers no enumeration. The word output by this
-    //! function is equivalent to the input word in the congruence defined by a
+    //! described by the iterator \p first and \p last to the output iterator
+    //! \p d_first. This function triggers no enumeration. The word output by
+    //! this function is equivalent to the input word in the congruence
+    //! defined by a
     //! \ref_todd_coxeter instance. If the \ref_todd_coxeter instance is \ref
     //! finished, then the output word is a normal form for the input word. If
     //! the
@@ -1050,12 +1094,14 @@ namespace libsemigroups {
     //! \brief Reduce a word.
     //!
     //! This function triggers a full enumeration and then writes a reduced
-    //! word equivalent to the input word described by the iterator \p first and
+    //! word equivalent to the input word described by the iterator \p first
+    //! and
     //! \p last to the output iterator \p d_first. The word output by this
-    //! function is equivalent to the input word in the congruence defined by a
-    //! \ref_todd_coxeter instance. In other words, the output word is a normal
-    //! form for the input word or equivalently a canconical representative of
-    //! its congruence class.
+    //! function is equivalent to the input word in the congruence defined by
+    //! a
+    //! \ref_todd_coxeter instance. In other words, the output word is a
+    //! normal form for the input word or equivalently a canconical
+    //! representative of its congruence class.
     //!
     //! \cong_intf_params_reduce
     //!
