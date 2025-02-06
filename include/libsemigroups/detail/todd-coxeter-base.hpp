@@ -296,7 +296,7 @@ namespace libsemigroups {
 
       bool                                   _finished;
       Forest                                 _forest;
-      std::vector<std::unique_ptr<Settings>> _setting_stack;
+      std::vector<std::unique_ptr<Settings>> _settings_stack;
       Order                                  _standardized;
       Graph                                  _word_graph;
 
@@ -328,7 +328,7 @@ namespace libsemigroups {
       template <typename Node>
       ToddCoxeterBase(congruence_kind knd, WordGraph<Node> const& wg)
           : ToddCoxeterBase() {
-        LIBSEMIGROUPS_ASSERT(!_setting_stack.empty());
+        LIBSEMIGROUPS_ASSERT(!_settings_stack.empty());
         init(knd, wg);
       }
 

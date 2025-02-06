@@ -25,7 +25,7 @@ namespace libsemigroups {
     template <typename Node>
     ToddCoxeterBase& ToddCoxeterBase::init(congruence_kind        knd,
                                            WordGraph<Node> const& wg) {
-      LIBSEMIGROUPS_ASSERT(!_setting_stack.empty());
+      LIBSEMIGROUPS_ASSERT(!_settings_stack.empty());
       detail::CongruenceCommon::init(knd);
       init();
       // FIXME setting the setting in the next line, and adding a Felsch runner

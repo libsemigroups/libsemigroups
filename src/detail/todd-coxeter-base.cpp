@@ -41,8 +41,6 @@
 #include "libsemigroups/detail/node-manager.hpp"  // for NodeManager
 #include "libsemigroups/detail/report.hpp"        // for report_no_prefix
 
-// TODO(0) rename _setting_stack -> _settings_stack
-
 namespace libsemigroups {
   namespace detail {
     using node_type = typename ToddCoxeterBase::node_type;
@@ -117,13 +115,13 @@ namespace libsemigroups {
     };  // class ToddCoxeterBase::Settings
 
     ToddCoxeterBase::Settings& ToddCoxeterBase::tc_settings() {
-      LIBSEMIGROUPS_ASSERT(!_setting_stack.empty());
-      return *_setting_stack.back();
+      LIBSEMIGROUPS_ASSERT(!_settings_stack.empty());
+      return *_settings_stack.back();
     }
 
     ToddCoxeterBase::Settings const& ToddCoxeterBase::tc_settings() const {
-      LIBSEMIGROUPS_ASSERT(!_setting_stack.empty());
-      return *_setting_stack.back();
+      LIBSEMIGROUPS_ASSERT(!_settings_stack.empty());
+      return *_settings_stack.back();
     }
 
     ////////////////////////////////////////////////////////////////////////
@@ -135,12 +133,12 @@ namespace libsemigroups {
 
      public:
       explicit SettingsGuard(ToddCoxeterBase* tc) : _tc(tc) {
-        _tc->_setting_stack.push_back(std::make_unique<Settings>());
+        _tc->_settings_stack.push_back(std::make_unique<Settings>());
       }
 
       ~SettingsGuard() {
-        _tc->_setting_stack.pop_back();
-        LIBSEMIGROUPS_ASSERT(!_tc->_setting_stack.empty());
+        _tc->_settings_stack.pop_back();
+        LIBSEMIGROUPS_ASSERT(!_tc->_settings_stack.empty());
       }
     };  // class ToddCoxeterBase::SettingsGuard
 
@@ -347,7 +345,7 @@ namespace libsemigroups {
         : detail::CongruenceCommon(),
           _finished(),
           _forest(),
-          _setting_stack(),
+          _settings_stack(),
           _standardized(),
           _word_graph() {
       init();
@@ -357,13 +355,14 @@ namespace libsemigroups {
       detail::CongruenceCommon::init();
       _finished = false;
       _forest.init();
-      if (_setting_stack.empty()) {
-        _setting_stack.push_back(std::make_unique<Settings>());
+      if (_settings_stack.empty()) {
+        _settings_stack.push_back(std::make_unique<Settings>());
       } else {
-        _setting_stack.erase(_setting_stack.begin() + 1, _setting_stack.end());
-        _setting_stack.back()->init();
+        _settings_stack.erase(_settings_stack.begin() + 1,
+                              _settings_stack.end());
+        _settings_stack.back()->init();
       }
-      LIBSEMIGROUPS_ASSERT(!_setting_stack.empty());
+      LIBSEMIGROUPS_ASSERT(!_settings_stack.empty());
       _standardized = Order::none;
       _word_graph.init();
       copy_settings_into_graph();
@@ -373,7 +372,7 @@ namespace libsemigroups {
     ToddCoxeterBase::ToddCoxeterBase(ToddCoxeterBase const& that)
         : ToddCoxeterBase() {
       operator=(that);
-      LIBSEMIGROUPS_ASSERT(!_setting_stack.empty());
+      LIBSEMIGROUPS_ASSERT(!_settings_stack.empty());
     }
 
     ToddCoxeterBase::ToddCoxeterBase(ToddCoxeterBase&& that)
@@ -382,28 +381,28 @@ namespace libsemigroups {
     }
 
     ToddCoxeterBase& ToddCoxeterBase::operator=(ToddCoxeterBase&& that) {
-      LIBSEMIGROUPS_ASSERT(!that._setting_stack.empty());
+      LIBSEMIGROUPS_ASSERT(!that._settings_stack.empty());
       detail::CongruenceCommon::operator=(std::move(that));
-      _finished      = std::move(that._finished);
-      _forest        = std::move(that._forest);
-      _setting_stack = std::move(that._setting_stack);
-      _standardized  = std::move(that._standardized);
-      _word_graph    = std::move(that._word_graph);
+      _finished       = std::move(that._finished);
+      _forest         = std::move(that._forest);
+      _settings_stack = std::move(that._settings_stack);
+      _standardized   = std::move(that._standardized);
+      _word_graph     = std::move(that._word_graph);
       // The next line is essential so that the _word_graph.definitions()._tc
       // points at <this>.
       _word_graph.definitions().init(this);
-      LIBSEMIGROUPS_ASSERT(!_setting_stack.empty());
+      LIBSEMIGROUPS_ASSERT(!_settings_stack.empty());
       return *this;
     }
 
     ToddCoxeterBase& ToddCoxeterBase::operator=(ToddCoxeterBase const& that) {
-      LIBSEMIGROUPS_ASSERT(!that._setting_stack.empty());
+      LIBSEMIGROUPS_ASSERT(!that._settings_stack.empty());
       detail::CongruenceCommon::operator=(that);
       _finished = that._finished;
       _forest   = that._forest;
-      _setting_stack.clear();
-      for (auto const& uptr : that._setting_stack) {
-        _setting_stack.push_back(std::make_unique<Settings>(*uptr));
+      _settings_stack.clear();
+      for (auto const& uptr : that._settings_stack) {
+        _settings_stack.push_back(std::make_unique<Settings>(*uptr));
       }
       _standardized = that._standardized;
       _word_graph   = that._word_graph;
@@ -413,7 +412,7 @@ namespace libsemigroups {
     ToddCoxeterBase::ToddCoxeterBase(congruence_kind           knd,
                                      Presentation<word_type>&& p)
         : ToddCoxeterBase() {
-      LIBSEMIGROUPS_ASSERT(!_setting_stack.empty());
+      LIBSEMIGROUPS_ASSERT(!_settings_stack.empty());
       init(knd, std::move(p));
     }
 
@@ -425,7 +424,7 @@ namespace libsemigroups {
       detail::CongruenceCommon::init(knd);
       _word_graph.init(std::move(p));
       copy_settings_into_graph();
-      LIBSEMIGROUPS_ASSERT(!_setting_stack.empty());
+      LIBSEMIGROUPS_ASSERT(!_settings_stack.empty());
       return *this;
     }
 
@@ -433,7 +432,7 @@ namespace libsemigroups {
                                      Presentation<word_type> const& p)
         // call the rval ref constructor
         : ToddCoxeterBase(knd, Presentation<word_type>(p)) {
-      LIBSEMIGROUPS_ASSERT(!_setting_stack.empty());
+      LIBSEMIGROUPS_ASSERT(!_settings_stack.empty());
     }
 
     ToddCoxeterBase& ToddCoxeterBase::init(congruence_kind                knd,
@@ -446,7 +445,7 @@ namespace libsemigroups {
                                      ToddCoxeterBase const& tc)
         : ToddCoxeterBase() {
       init(knd, tc);
-      LIBSEMIGROUPS_ASSERT(!_setting_stack.empty());
+      LIBSEMIGROUPS_ASSERT(!_settings_stack.empty());
     }
 
     ToddCoxeterBase& ToddCoxeterBase::init(congruence_kind        knd,
@@ -466,7 +465,7 @@ namespace libsemigroups {
       rules.insert(rules.end(),
                    tc.internal_generating_pairs().cbegin(),
                    tc.internal_generating_pairs().cend());
-      LIBSEMIGROUPS_ASSERT(!_setting_stack.empty());
+      LIBSEMIGROUPS_ASSERT(!_settings_stack.empty());
       // TODO(0) don't we need to reset the setting_stack here too?
       return *this;
     }
