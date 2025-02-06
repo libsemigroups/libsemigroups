@@ -43,7 +43,7 @@ namespace libsemigroups {
                                            WordGraph<Node> const&         wg) {
       init(knd, p);
       _word_graph = wg;
-      _word_graph.presentation(p);  // TODO(0) does this throw if p is invalid?
+      _word_graph.presentation(p);  // this does not throw when p is invalid
       copy_settings_into_graph();
       return *this;
     }
