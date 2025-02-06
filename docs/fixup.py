@@ -383,9 +383,9 @@ if __name__ == "__main__":
     modify_in_place("./html/navtree.js", fix_menu_3_part_3)
     modify_in_place("./html/navtree.js", fix_menu_4)
     modify_in_place_all_files("./html/*.html", fix_pages_1)
-    delete_matching(
-        "./html/classlibsemigroups_1_1_knuth_bendix.html", "libsemigroups_1_1detail"
-    )
+    # delete_matching(
+    #     "./html/classlibsemigroups_1_1_knuth_bendix.html", "libsemigroups_1_1detail"
+    # )
     modify_in_place(
         "./html/group__todd__coxeter__class__settings__group.html",
         substitute(r"\bToddCoxeterBase\b", "ToddCoxeter"),
