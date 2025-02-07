@@ -45,7 +45,7 @@ namespace libsemigroups {
     template <typename Rewriter, typename ReductionOrder>
     class KnuthBendixBase;  // forward decl
     class ToddCoxeterBase;  // forward decl
-  }                         // namespace detail
+  }  // namespace detail
 
   template <typename Word>
   class Congruence;  // forward decl
@@ -269,7 +269,24 @@ namespace libsemigroups {
                                              const_iterator_string first,
                                              const_iterator_string last);
 
-    // TODO(0) doc
+    //! \brief Add rules from iterators to \ref word_type.
+    //!
+    //! This function adds the rules described by the iterators \p first and \p
+    //! last.
+    //!
+    //! \param lphbt unused (for consistency of interface only)
+    //! \param first iterator pointing at the left-hand-side of the first rule
+    //! to add.
+    //! \param last iterator pointing one beyond the right-hand-side of the last
+    //! rule to add.
+    //!
+    //! \returns A reference to `*this`.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    //! \warning
+    //! This function does not check its arguments.
     IsObviouslyInfinite& add_rules_no_checks(std::string const&       lphbt,
                                              const_iterator_word_type first,
                                              const_iterator_word_type last);
