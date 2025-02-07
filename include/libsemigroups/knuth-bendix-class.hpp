@@ -19,20 +19,25 @@
 // This file contains the declaration of the class template KnuthBendix which
 // is really just a facade for detail::KnuthBendixBase.
 
-// TODO(0) iwyu
 // TODO(0) active rules, also anything else that returns anything related to
 // the word type.
 
 #ifndef LIBSEMIGROUPS_KNUTH_BENDIX_CLASS_HPP_
 #define LIBSEMIGROUPS_KNUTH_BENDIX_CLASS_HPP_
 
-#include "order.hpp"
-#include "presentation.hpp"
+#include <utility>  // for move
+#include <vector>   // for vector
 
-#include "detail/knuth-bendix-base.hpp"
-#include "detail/rewriters.hpp"
+#include "order.hpp"         // for ShortLexCompare
+#include "presentation.hpp"  // for Presentation
+
+#include "detail/cong-common-class.hpp"  // for CongruenceCommon
+#include "detail/knuth-bendix-base.hpp"  // for KnuthBendixBase
+#include "detail/rewriters.hpp"          // for RewriteTrie
 
 namespace libsemigroups {
+  enum class congruence_kind;
+  enum class tril;
 
   //! \defgroup knuth_bendix_group Knuth-Bendix
   //!
