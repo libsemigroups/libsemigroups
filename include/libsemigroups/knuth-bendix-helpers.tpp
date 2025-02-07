@@ -276,8 +276,8 @@ namespace libsemigroups {
       kb.check_confluence_interval(prev_check_confluence_interval);
     }
 
-    template <typename Word, typename Rewriter, typename ReductionOrder>
-    bool is_reduced(KnuthBendix<Word, Rewriter, ReductionOrder>& kb) {
+    template <typename Rewriter, typename ReductionOrder>
+    bool is_reduced(detail::KnuthBendixImpl<Rewriter, ReductionOrder>& kb) {
       for (auto const& test_rule : kb.active_rules()) {
         auto const lhs = test_rule.first;
         for (auto const& rule : kb.active_rules()) {

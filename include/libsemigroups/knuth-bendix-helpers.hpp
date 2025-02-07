@@ -207,9 +207,15 @@ namespace libsemigroups {
     //! \returns \c true if for each pair \f$(A, B)\f$ and \f$(C, D)\f$ of rules
     //! stored within the KnuthBendix instance, \f$C\f$ is neither a subword
     //! of \f$A\f$ nor \f$B\f$. Returns \c false otherwise.
+#ifndef PARSED_BY_DOXYGEN
+    template <typename Rewriter, typename ReductionOrder>
+    [[nodiscard]] bool
+    is_reduced(detail::KnuthBendixImpl<Rewriter, ReductionOrder>& kb);
+#else
     template <typename Word, typename Rewriter, typename ReductionOrder>
     [[nodiscard]] bool
     is_reduced(KnuthBendix<Word, Rewriter, ReductionOrder>& kb);
+#endif
 
     ////////////////////////////////////////////////////////////////////////
     // Interface helpers - add_generating_pair
