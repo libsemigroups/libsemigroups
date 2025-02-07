@@ -311,7 +311,24 @@ namespace libsemigroups {
       // KnuthBendixBase - interface requirements - contains
       ////////////////////////////////////////////////////////////////////////
 
-      // TODO(0) re-add the doc for this one function
+      //! \ingroup knuth_bendix_class_intf_group
+      //! \brief Check containment of a pair of words via iterators.
+      //!
+      //! This function checks whether or not the words represented by the
+      //! ranges \p first1 to \p last1 and \p first2 to \p last2 are already
+      //! known to be contained in the congruence represented by a
+      //! \ref_knuth_bendix instance. This function performs no enumeration, so
+      //! it is possible for the words to be contained in the congruence, but
+      //! that this is not currently known.
+      //!
+      //! \cong_common_params_contains
+      //!
+      //! \returns
+      //! * tril::TRUE if the words are known to belong to the congruence;
+      //! * tril::FALSE if the words are known to not belong to the congruence;
+      //! * tril::unknown otherwise.
+      //!
+      //! \cong_common_warn_assume_letters_in_bounds
       template <typename Iterator1,
                 typename Iterator2,
                 typename Iterator3,
@@ -321,6 +338,9 @@ namespace libsemigroups {
                                                       Iterator3 first2,
                                                       Iterator4 last2) const;
 
+      // Documented in KnuthBendix (because it appears there because we call
+      // CongruenceCommon::currently_contains directly so that bounds checks are
+      // done in KnuthBendix)
       template <typename Iterator1,
                 typename Iterator2,
                 typename Iterator3,
@@ -333,7 +353,22 @@ namespace libsemigroups {
             first1, last1, first2, last2);
       }
 
-      // TODO(0) re-add the doc for this one function
+      //! \ingroup knuth_bendix_class_intf_group
+      //!
+      //! \brief Check containment of a pair of words via iterators.
+      //!
+      //! This function checks whether or not the words represented by the
+      //! ranges \p first1 to \p last1 and \p first2 to \p last2 are contained
+      //! in the congruence represented by a \ref_knuth_bendix instance. This
+      //! function triggers a full enumeration, which may never terminate.
+      //!
+      //! \cong_common_params_contains
+      //!
+      //! \returns Whether or not the pair belongs to the congruence.
+      //!
+      //! \cong_common_warn_undecidable{Knuth-Bendix}
+      //!
+      //! \cong_common_warn_assume_letters_in_bounds
       template <typename Iterator1,
                 typename Iterator2,
                 typename Iterator3,
@@ -346,6 +381,9 @@ namespace libsemigroups {
             first1, last1, first2, last2);
       }
 
+      // Documented in KnuthBendix (because it appears there because we call
+      // CongruenceCommon::contains directly so that bounds checks are
+      // done in KnuthBendix)
       template <typename Iterator1,
                 typename Iterator2,
                 typename Iterator3,
@@ -362,7 +400,26 @@ namespace libsemigroups {
       // KnuthBendixBase - interface requirements - reduce
       ////////////////////////////////////////////////////////////////////////
 
-      // TODO(0) re-add the doc for this one function
+      //! \ingroup knuth_bendix_class_intf_group
+      //! \brief Reduce a word with no run and no checks.
+      //!
+      //! This function writes a reduced word equivalent to the input word
+      //! described by the iterator \p first and \p last to the output iterator
+      //! \p d_first. This function triggers no enumeration. The word output by
+      //! this function is equivalent to the input word in the congruence
+      //! defined by a
+      //! \ref KnuthBendixBase instance. If the \ref KnuthBendixBase instance is
+      //! \ref finished, then the output word is a normal form for the input
+      //! word. If the \ref KnuthBendixBase instance is not \ref finished, then
+      //! it might be that equivalent input words produce different output
+      //! words.
+      //!
+      //! \cong_common_params_reduce
+      //!
+      //! \returns An \p OutputIterator pointing one beyond the last letter
+      //! inserted into \p d_first.
+      //!
+      //! \cong_common_warn_assume_letters_in_bounds
       template <typename OutputIterator,
                 typename InputIterator1,
                 typename InputIterator2>
@@ -370,6 +427,9 @@ namespace libsemigroups {
                                              InputIterator1 first,
                                              InputIterator2 last) const;
 
+      // Documented in KnuthBendix (because it appears there because we call
+      // CongruenceCommon::reduce_no_run directly so that bounds checks are
+      // done in KnuthBendix)
       template <typename OutputIterator,
                 typename InputIterator1,
                 typename InputIterator2>
@@ -380,7 +440,27 @@ namespace libsemigroups {
             d_first, first, last);
       }
 
-      // TODO(0) re-add the doc for this one function
+      //! \ingroup knuth_bendix_class_intf_group
+      //! \brief Reduce a word with no checks.
+      //!
+      //! This function triggers a full enumeration and then writes a reduced
+      //! word equivalent to the input word described by the iterator \p first
+      //! and
+      //! \p last to the output iterator \p d_first. The word output by this
+      //! function is equivalent to the input word in the congruence defined by
+      //! a
+      //! \ref KnuthBendixBase instance. In other words, the output word is a
+      //! normal form for the input word or equivalently a canconical
+      //! representative of its congruence class.
+      //!
+      //! \cong_common_params_reduce
+      //!
+      //! \returns An \p OutputIterator pointing one beyond the last letter
+      //! inserted into \p d_first.
+      //!
+      //! \cong_common_warn_assume_letters_in_bounds
+      //!
+      //! \cong_common_warn_undecidable{Knuth-Bendix}
       template <typename OutputIterator,
                 typename InputIterator1,
                 typename InputIterator2>
@@ -391,6 +471,9 @@ namespace libsemigroups {
             d_first, first, last);
       }
 
+      // Documented in KnuthBendix (because it appears there because we call
+      // CongruenceCommon::reduce directly so that bounds checks are
+      // done in KnuthBendix)
       template <typename OutputIterator,
                 typename InputIterator1,
                 typename InputIterator2>
@@ -843,7 +926,7 @@ namespace libsemigroups {
       void run_impl() override;
       bool finished_impl() const override;
     };  // class KnuthBendixBase
-  }     // namespace detail
+  }  // namespace detail
 
   ////////////////////////////////////////////////////////////////////////
   // global functions - to_human_readable_repr

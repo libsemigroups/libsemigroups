@@ -67,7 +67,7 @@ namespace libsemigroups {
     if (presentation().rules.empty() && generating_pairs().empty()) {
       return std::equal(first1, last1, first2, last2);
     }
-    // Call detail::CongruenceCommon version so that we perform bound checks in
+    // Call CongruenceCommon version so that we perform bound checks in
     // KnuthBendix and not KnuthBendixBase_
     return detail::CongruenceCommon::contains<KnuthBendix>(
         first1, last1, first2, last2);

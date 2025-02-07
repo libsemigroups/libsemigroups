@@ -19,9 +19,6 @@
 // This file contains the declaration of the class template KnuthBendix which
 // is really just a facade for detail::KnuthBendixBase.
 
-// TODO(0) active rules, also anything else that returns anything related to
-// the word type.
-
 #ifndef LIBSEMIGROUPS_KNUTH_BENDIX_CLASS_HPP_
 #define LIBSEMIGROUPS_KNUTH_BENDIX_CLASS_HPP_
 
@@ -357,6 +354,9 @@ namespace libsemigroups {
     // KnuthBendix - interface requirements - contains
     ////////////////////////////////////////////////////////////////////////
 
+    // NOTE: contains_no_checks and currently_contains_no_checks are implemented
+    // and documented in KnuthBendixBase
+
     //! \ingroup knuth_bendix_class_intf_group
     //!
     //! \brief Check containment of a pair of words via iterators.
@@ -383,7 +383,7 @@ namespace libsemigroups {
                             Iterator2 last1,
                             Iterator3 first2,
                             Iterator4 last2) const {
-      // Call detail::CongruenceCommon version so that we perform bound checks
+      // Call CongruenceCommon version so that we perform bound checks
       // in KnuthBendix and not KnuthBendixBase_
       return detail::CongruenceCommon::currently_contains<KnuthBendix>(
           first1, last1, first2, last2);
@@ -419,6 +419,9 @@ namespace libsemigroups {
     // KnuthBendix - interface requirements - reduce
     ////////////////////////////////////////////////////////////////////////
 
+    // NOTE: reduce_no_checks and reduce_no_run_no_checks are implemented and
+    // documented in KnuthBendixBase
+
     //! \ingroup knuth_bendix_class_intf_group
     //!
     //! \brief Reduce a word with no enumeration.
@@ -444,6 +447,8 @@ namespace libsemigroups {
     OutputIterator reduce_no_run(OutputIterator d_first,
                                  InputIterator1 first,
                                  InputIterator2 last) const {
+      // Call CongruenceCommon version so that we perform bound checks
+      // in KnuthBendix and not KnuthBendixBase_
       return detail::CongruenceCommon::reduce_no_run<KnuthBendix>(
           d_first, first, last);
     }
@@ -474,11 +479,15 @@ namespace libsemigroups {
     OutputIterator reduce(OutputIterator d_first,
                           InputIterator1 first,
                           InputIterator2 last) {
-      // Call detail::CongruenceCommon version so that we perform bound checks
+      // Call CongruenceCommon version so that we perform bound checks
       // in KnuthBendix and not KnuthBendixBase_
       return detail::CongruenceCommon::reduce<KnuthBendix>(
           d_first, first, last);
     }
+
+    ////////////////////////////////////////////////////////////////////////
+    // KnuthBendix specific stuff
+    ////////////////////////////////////////////////////////////////////////
 
     //! \ingroup knuth_bendix_class_accessors_group
     //! \brief Return a range object containing the active rules.
@@ -519,6 +528,7 @@ namespace libsemigroups {
     //! reference to a `std::vector<Word>`.
     //!
     //! \sa \ref gilman_graph.
+    // TODO(0) to tpp if possible
     std::vector<Word> gilman_graph_node_labels() {
       auto base_result = KnuthBendixBase_::gilman_graph_node_labels();
       if constexpr (std::is_same_v<
