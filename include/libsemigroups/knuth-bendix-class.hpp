@@ -124,6 +124,14 @@ namespace libsemigroups {
     //! in a \ref KnuthBendix instance.
     using native_word_type = Word;
 
+    //! \ingroup knuth_bendix_class_mem_types_group
+    //! \hideinitializer
+    //!
+    //! \brief Type of the rules in the system.
+    //!
+    //! Type of the rules in the system.
+    using rule_type = typename KnuthBendixBase_::rule_type;
+
     //! \ingroup knuth_bendix_class_init_group
     //!
     //! \brief Default constructor.

@@ -159,10 +159,7 @@ namespace libsemigroups {
       // Interface requirements - native-types
       ////////////////////////////////////////////////////////////////////////
 
-      //! Type of the rules in the system.
-      // TODO(0) import into KnuthBendix<>
-      using rule_type = std::pair<std::string, std::string>;
-
+      using rule_type        = std::pair<std::string, std::string>;
       using native_word_type = std::string;
 
       //////////////////////////////////////////////////////////////////////////
