@@ -32,8 +32,8 @@
 #include "kambites-class.hpp"       // for Kambites
 #include "types.hpp"                // for word_type
 
-#include "detail/knuth-bendix-base.hpp"  // for KnuthBendixBase
-#include "detail/todd-coxeter-base.hpp"  // for ToddCoxeterBase
+#include "detail/knuth-bendix-impl.hpp"  // for KnuthBendixImpl
+#include "detail/todd-coxeter-impl.hpp"  // for ToddCoxeterImpl
 
 namespace libsemigroups {
 

@@ -24,8 +24,8 @@ namespace libsemigroups {
 
   using TCE = detail::TCE;
 
-  FroidurePin<TCE> to_froidure_pin(detail::ToddCoxeterBase& tc) {
-    using word_graph_type = typename detail::ToddCoxeterBase::word_graph_type;
+  FroidurePin<TCE> to_froidure_pin(detail::ToddCoxeterImpl& tc) {
+    using word_graph_type = typename detail::ToddCoxeterImpl::word_graph_type;
 
     if (tc.kind() != congruence_kind::twosided) {
       LIBSEMIGROUPS_EXCEPTION(

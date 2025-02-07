@@ -43,9 +43,9 @@ namespace libsemigroups {
 
   namespace detail {
     template <typename Rewriter, typename ReductionOrder>
-    class KnuthBendixBase;  // forward decl
-    class ToddCoxeterBase;  // forward decl
-  }  // namespace detail
+    class KnuthBendixImpl;  // forward decl
+    class ToddCoxeterImpl;  // forward decl
+  }                         // namespace detail
 
   template <typename Word>
   class Congruence;  // forward decl
@@ -463,26 +463,26 @@ namespace libsemigroups {
   //! \ingroup obvinf_group
   //!
   //! \brief Function for checking if the quotient of a finitely presented
-  //! semigroup or monoid defined by a ToddCoxeterBase object is obviously
+  //! semigroup or monoid defined by a ToddCoxeterImpl object is obviously
   //! infinite or not.
   //!
   //! This function returns \c true if the quotient of the finitely presented
-  //! semigroup or monoid defined by the ToddCoxeterBase object \p tc is
+  //! semigroup or monoid defined by the ToddCoxeterImpl object \p tc is
   //! obviously infinite; \c false is returned if it is not.
   //!
   //! This function exists to make it simpler to call an
   //! IsObviouslyInfinite object a single time, and uses some information from
-  //! the (possible incomplete) ToddCoxeterBase object to assist in this
+  //! the (possible incomplete) ToddCoxeterImpl object to assist in this
   //! determination.
   //!
-  //! \param tc the ToddCoxeterBase instance.
+  //! \param tc the ToddCoxeterImpl instance.
   //!
-  //! \returns Whether or not the quotient defined by a ToddCoxeterBase instance
+  //! \returns Whether or not the quotient defined by a ToddCoxeterImpl instance
   //! is obviously infinite.
   //!
   //! \note If this function returns \c false, it is still possible that the
-  //! quotient defined by the ToddCoxeterBase object \p tc is infinite.
-  bool is_obviously_infinite(detail::ToddCoxeterBase const& tc);
+  //! quotient defined by the ToddCoxeterImpl object \p tc is infinite.
+  bool is_obviously_infinite(detail::ToddCoxeterImpl const& tc);
 
   //! \ingroup obvinf_group
   //!
@@ -543,27 +543,27 @@ namespace libsemigroups {
   //! \ingroup obvinf_group
   //!
   //! \brief Function for checking if the quotient of a finitely presented
-  //! semigroup or monoid defined by a KnuthBendixBase object is obviously
+  //! semigroup or monoid defined by a KnuthBendixImpl object is obviously
   //! infinite or not.
   //!
   //! This function returns \c true if the quotient of the finitely presented
-  //! semigroup or monoid defined by the KnuthBendixBase object \p kb is
+  //! semigroup or monoid defined by the KnuthBendixImpl object \p kb is
   //! obviously infinite; \c false is returned if it is not.
   //!
   //! This function exists to make it simpler to call an IsObviouslyInfinite
   //! object a single time, and uses some information from the (possible
-  //! incomplete) KnuthBendixBase object to assist in this determination.
+  //! incomplete) KnuthBendixImpl object to assist in this determination.
   //!
-  //! \param kb the KnuthBendixBase instance.
+  //! \param kb the KnuthBendixImpl instance.
   //!
-  //! \returns Whether or not the quotient defined by a KnuthBendixBase instance
+  //! \returns Whether or not the quotient defined by a KnuthBendixImpl instance
   //! is obviously infinite.
   //!
   //! \note If this function returns \c false, it is still possible that the
-  //! quotient defined by the KnuthBendixBase object \p kb is infinite.
+  //! quotient defined by the KnuthBendixImpl object \p kb is infinite.
   template <typename Rewriter, typename ReductionOrder>
   bool
-  is_obviously_infinite(detail::KnuthBendixBase<Rewriter, ReductionOrder>& kb) {
+  is_obviously_infinite(detail::KnuthBendixImpl<Rewriter, ReductionOrder>& kb) {
     if (kb.finished()) {
       return !word_graph::is_acyclic(kb.gilman_graph());
     }

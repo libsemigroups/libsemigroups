@@ -21,7 +21,7 @@
 #ifndef LIBSEMIGROUPS_KNUTH_BENDIX_HPP_
 #define LIBSEMIGROUPS_KNUTH_BENDIX_HPP_
 
-#include "detail/knuth-bendix-base.hpp"
+#include "detail/knuth-bendix-impl.hpp"
 #include "knuth-bendix-class.hpp"
 #include "knuth-bendix-helpers.hpp"
 

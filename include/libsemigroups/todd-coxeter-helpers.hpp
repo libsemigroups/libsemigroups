@@ -56,7 +56,7 @@ namespace libsemigroups {
 
 #ifndef PARSED_BY_DOXYGEN
     // This is just for our convenience here, so not documented.
-    using index_type = typename detail::ToddCoxeterBase::index_type;
+    using index_type = typename detail::ToddCoxeterImpl::index_type;
 #endif
 
     //! \defgroup todd_coxeter_helpers_group ToddCoxeter helper functions
@@ -793,7 +793,7 @@ namespace libsemigroups {
     //! \param threshold the threshold (see description).
     //!
     //! \returns A value of type \ref tril
-    [[nodiscard]] tril is_non_trivial(detail::ToddCoxeterBase&  tc,
+    [[nodiscard]] tril is_non_trivial(detail::ToddCoxeterImpl&  tc,
                                       size_t                    tries = 10,
                                       std::chrono::milliseconds try_for
                                       = std::chrono::milliseconds(100),
@@ -844,7 +844,7 @@ namespace libsemigroups {
   }  // namespace todd_coxeter
 
   // This namespace contains implementations of the interface helpers (i.e.
-  // specific versions for ToddCoxeterBase of the helper functions from
+  // specific versions for ToddCoxeterImpl of the helper functions from
   // cong-common.hpp).
   namespace congruence_common {
     ////////////////////////////////////////////////////////////////////////

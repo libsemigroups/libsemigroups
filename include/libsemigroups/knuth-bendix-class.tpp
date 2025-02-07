@@ -24,10 +24,10 @@ namespace libsemigroups {
                                                     Presentation<Word>&& p) {
     if constexpr (!std::is_same_v<Word, std::string>) {
       // to_presentation throws in the next line if p isn't valid
-      KnuthBendixBase_::init(
+      KnuthBendixImpl_::init(
           knd, to_presentation<std::string>(p, [](auto x) { return x; }));
     } else {
-      KnuthBendixBase_::init(knd, p);
+      KnuthBendixImpl_::init(knd, p);
     }
     _presentation = std::move(p);
     return *this;
@@ -48,8 +48,8 @@ namespace libsemigroups {
     _generating_pairs.emplace_back(first1, last1);
     _generating_pairs.emplace_back(first2, last2);
     // Although this looks like it does nothing, remember the type of words in
-    // *this and KnuthBendixBase_ may not be the same
-    KnuthBendixBase_::add_generating_pair_no_checks(
+    // *this and KnuthBendixImpl_ may not be the same
+    KnuthBendixImpl_::add_generating_pair_no_checks(
         first1, last1, first2, last2);
     return *this;
   }
@@ -68,16 +68,16 @@ namespace libsemigroups {
       return std::equal(first1, last1, first2, last2);
     }
     // Call CongruenceCommon version so that we perform bound checks in
-    // KnuthBendix and not KnuthBendixBase_
+    // KnuthBendix and not KnuthBendixImpl_
     return detail::CongruenceCommon::contains<KnuthBendix>(
         first1, last1, first2, last2);
   }
 
   template <typename Word, typename Rewriter, typename ReductionOrder>
   auto KnuthBendix<Word, Rewriter, ReductionOrder>::active_rules() {
-    auto result = KnuthBendixBase_::active_rules();
+    auto result = KnuthBendixImpl_::active_rules();
     if constexpr (std::is_same_v<native_word_type,
-                                 typename KnuthBendixBase_::native_word_type>) {
+                                 typename KnuthBendixImpl_::native_word_type>) {
       return result;
     } else {
       // TODO(1) remove allocations here somehow (probably by making a custom
@@ -93,9 +93,9 @@ namespace libsemigroups {
   template <typename Word, typename Rewriter, typename ReductionOrder>
   std::vector<Word>
   KnuthBendix<Word, Rewriter, ReductionOrder>::gilman_graph_node_labels() {
-    auto base_result = KnuthBendixBase_::gilman_graph_node_labels();
+    auto base_result = KnuthBendixImpl_::gilman_graph_node_labels();
     if constexpr (std::is_same_v<native_word_type,
-                                 typename KnuthBendixBase_::native_word_type>) {
+                                 typename KnuthBendixImpl_::native_word_type>) {
       return base_result;
     } else {
       std::vector<Word> result;

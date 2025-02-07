@@ -79,7 +79,7 @@ namespace libsemigroups {
 #define KNUTH_BENDIX_TYPES RewriteTrie, RewriteFromLeft
 
   namespace {
-    using rule_type = detail::KnuthBendixBase<>::rule_type;
+    using rule_type = detail::KnuthBendixImpl<>::rule_type;
 
     struct weird_cmp {
       bool operator()(rule_type const& x, rule_type const& y) const noexcept {

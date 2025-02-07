@@ -35,9 +35,9 @@ namespace libsemigroups {
                                     FroidurePinBase&       fpb,
                                     WordGraph<Node> const& wg) {
     using node_type =
-        typename detail::ToddCoxeterBase::word_graph_type::node_type;
+        typename detail::ToddCoxeterImpl::word_graph_type::node_type;
     using label_type =
-        typename detail::ToddCoxeterBase::word_graph_type::label_type;
+        typename detail::ToddCoxeterImpl::word_graph_type::label_type;
 
     WordGraph<node_type> copy(wg.number_of_nodes() + 1, wg.out_degree());
 
@@ -58,12 +58,12 @@ namespace libsemigroups {
   template <typename Rewriter, typename ReductionOrder>
   ToddCoxeter<word_type>
   to_todd_coxeter(congruence_kind                                    knd,
-                  detail::KnuthBendixBase<Rewriter, ReductionOrder>& kb) {
+                  detail::KnuthBendixImpl<Rewriter, ReductionOrder>& kb) {
     if (kb.number_of_classes() == POSITIVE_INFINITY) {
       LIBSEMIGROUPS_EXCEPTION(
-          "cannot construct a ToddCoxeterBase instance using the Cayley graph "
+          "cannot construct a ToddCoxeterImpl instance using the Cayley graph "
           "of "
-          "an infinite KnuthBendixBase<> object, maybe try ToddCoxeterBase({}, "
+          "an infinite KnuthBendixImpl<> object, maybe try ToddCoxeterImpl({}, "
           "kb.presentation()) instead?",
           kb.kind());
     }

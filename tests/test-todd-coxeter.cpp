@@ -97,7 +97,7 @@ namespace libsemigroups {
   }  // namespace
 
   using TCE     = detail::TCE;
-  using options = detail::ToddCoxeterBase::options;
+  using options = detail::ToddCoxeterImpl::options;
 
   using namespace literals;
   using namespace rx;

@@ -41,10 +41,10 @@ namespace libsemigroups {
 
   namespace detail {
 
-    class ToddCoxeterBase;
+    class ToddCoxeterImpl;
 
     template <typename Rewriter, typename ReductionOrder>
-    class KnuthBendixBase;
+    class KnuthBendixImpl;
 
     template <typename Thing>
     struct to_froidure_pin_helper;
@@ -144,12 +144,12 @@ namespace libsemigroups {
     return to_froidure_pin<Element>(wg, 0, wg.number_of_nodes());
   }
 
-  FroidurePin<detail::TCE> to_froidure_pin(detail::ToddCoxeterBase& tc);
+  FroidurePin<detail::TCE> to_froidure_pin(detail::ToddCoxeterImpl& tc);
 
   template <typename Rewriter, typename ReductionOrder>
-  FroidurePin<detail::KBE<detail::KnuthBendixBase<Rewriter, ReductionOrder>>>
-  to_froidure_pin(detail::KnuthBendixBase<Rewriter, ReductionOrder>& kb) {
-    using KBE = detail::KBE<detail::KnuthBendixBase<Rewriter, ReductionOrder>>;
+  FroidurePin<detail::KBE<detail::KnuthBendixImpl<Rewriter, ReductionOrder>>>
+  to_froidure_pin(detail::KnuthBendixImpl<Rewriter, ReductionOrder>& kb) {
+    using KBE = detail::KBE<detail::KnuthBendixImpl<Rewriter, ReductionOrder>>;
     size_t const n = kb.internal_presentation().alphabet().size();
 
     if (n == 0) {

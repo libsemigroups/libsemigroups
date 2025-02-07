@@ -90,15 +90,15 @@ namespace libsemigroups {
   }  // namespace detail
 
   // TODO(0) uncomment and/or move to cpp file, and implement for other types of
-  // KnuthBendixBase also
+  // KnuthBendixImpl also
   // template <> word_type
-  // FroidurePin<detail::KBE<KnuthBendixBase<>>>::factorisation(
-  //     detail::KBE<KnuthBendixBase<>> const& x) {
+  // FroidurePin<detail::KBE<KnuthBendixImpl<>>>::factorisation(
+  //     detail::KBE<KnuthBendixImpl<>> const& x) {
   //   return x.word(*state());
   // }
 
   // template <>
-  // tril FroidurePin<detail::KBE<KnuthBendixBase<>>>::is_finite() const {
+  // tril FroidurePin<detail::KBE<KnuthBendixImpl<>>>::is_finite() const {
   //   // Turns out that the FroidurePin can be finished without the state
   //   // being finished, this sounds like a bug, I'm not 100% sure how that
   //   // works. Probably the state of the FroidurePin and the underlying

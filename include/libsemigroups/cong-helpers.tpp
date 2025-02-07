@@ -35,12 +35,12 @@ namespace libsemigroups {
     // template <typename Word>
     // auto normal_forms(Congruence& cong) {
     //   cong.run();
-    //   if (cong.has<ToddCoxeterBase>() &&
-    //   cong.get<ToddCoxeterBase>()->finished()) {
-    //     return todd_coxeter::normal_forms(*cong.get<ToddCoxeterBase>());
-    //   } else if (cong.has<KnuthBendixBase<>>()
-    //              && cong.get<KnuthBendixBase<>>()->finished()) {
-    //     return knuth_bendix::normal_forms(*cong.get<KnuthBendixBase<>>());
+    //   if (cong.has<ToddCoxeterImpl>() &&
+    //   cong.get<ToddCoxeterImpl>()->finished()) {
+    //     return todd_coxeter::normal_forms(*cong.get<ToddCoxeterImpl>());
+    //   } else if (cong.has<KnuthBendixImpl<>>()
+    //              && cong.get<KnuthBendixImpl<>>()->finished()) {
+    //     return knuth_bendix::normal_forms(*cong.get<KnuthBendixImpl<>>());
     //   }
     //   // There's currently no normal_forms function for Kambites, so can't
     //   // return anything in that case.

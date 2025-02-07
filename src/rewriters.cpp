@@ -25,7 +25,7 @@
 
 namespace libsemigroups {
   namespace detail {
-    // Construct from KnuthBendixBase with new but empty internal_string_type's
+    // Construct from KnuthBendixImpl with new but empty internal_string_type's
     Rule::Rule(int64_t id)
         : _lhs(new internal_string_type()),
           _rhs(new internal_string_type()),

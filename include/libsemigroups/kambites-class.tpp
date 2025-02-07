@@ -153,8 +153,8 @@ namespace libsemigroups {
       // Words aren't validated, the below returns false if they contain
       // letters not in the alphabet.
       // The Kambites class requires that input to contains to be actual
-      // objects not iterators. This is different from KnuthBendixBase and
-      // ToddCoxeterBase. One way to resolve this more satisfactorily would be
+      // objects not iterators. This is different from KnuthBendixImpl and
+      // ToddCoxeterImpl. One way to resolve this more satisfactorily would be
       // to implement MultiStringView for non-strings, so that we can just
       // construct a light-weight view and bung that in here instead.
       return wp_prefix(internal_type(_tmp_value1),

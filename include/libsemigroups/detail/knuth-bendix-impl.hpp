@@ -16,7 +16,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-// This file contains a class KnuthBendixBase which implements the Knuth-Bendix
+// This file contains a class KnuthBendixImpl which implements the Knuth-Bendix
 // algorithm for finitely presented monoids.
 
 // TODO(1)
@@ -24,8 +24,8 @@
 // * separate rule container from Rules
 // * nodiscard
 
-#ifndef LIBSEMIGROUPS_DETAIL_KNUTH_BENDIX_BASE_HPP_
-#define LIBSEMIGROUPS_DETAIL_KNUTH_BENDIX_BASE_HPP_
+#ifndef LIBSEMIGROUPS_DETAIL_KNUTH_BENDIX_IMPL_HPP_
+#define LIBSEMIGROUPS_DETAIL_KNUTH_BENDIX_IMPL_HPP_
 
 #include <algorithm>      // for max, min, copy
 #include <atomic>         // for atomic_bool
@@ -132,12 +132,12 @@ namespace libsemigroups {
 
     template <typename Rewriter       = detail::RewriteTrie,
               typename ReductionOrder = ShortLexCompare>
-    class KnuthBendixBase : public CongruenceCommon {
+    class KnuthBendixImpl : public CongruenceCommon {
       // defined in detail/kbe.hpp
-      friend class ::libsemigroups::detail::KBE<KnuthBendixBase>;
+      friend class ::libsemigroups::detail::KBE<KnuthBendixImpl>;
 
       ////////////////////////////////////////////////////////////////////////
-      // KnuthBendixBase - nested subclasses - private
+      // KnuthBendixImpl - nested subclasses - private
       ////////////////////////////////////////////////////////////////////////
 
       // Overlap measures
@@ -163,7 +163,7 @@ namespace libsemigroups {
       using native_word_type = std::string;
 
       //////////////////////////////////////////////////////////////////////////
-      // KnuthBendixBase - types - public
+      // KnuthBendixImpl - types - public
       //////////////////////////////////////////////////////////////////////////
 
       struct options {
@@ -202,7 +202,7 @@ namespace libsemigroups {
       };
 
       ////////////////////////////////////////////////////////////////////////
-      // KnuthBendixBase - data - private
+      // KnuthBendixImpl - data - private
       ////////////////////////////////////////////////////////////////////////
 
       bool                            _gen_pairs_initted;
@@ -218,43 +218,43 @@ namespace libsemigroups {
 
      public:
       //////////////////////////////////////////////////////////////////////////
-      // KnuthBendixBase - constructors and destructor - public
+      // KnuthBendixImpl - constructors and destructor - public
       //////////////////////////////////////////////////////////////////////////
 
-      KnuthBendixBase();
-      KnuthBendixBase& init();
-      KnuthBendixBase(KnuthBendixBase const& that);
+      KnuthBendixImpl();
+      KnuthBendixImpl& init();
+      KnuthBendixImpl(KnuthBendixImpl const& that);
 
-      KnuthBendixBase(KnuthBendixBase&&);
+      KnuthBendixImpl(KnuthBendixImpl&&);
 
-      KnuthBendixBase& operator=(KnuthBendixBase const&);
+      KnuthBendixImpl& operator=(KnuthBendixImpl const&);
 
-      KnuthBendixBase& operator=(KnuthBendixBase&&);
+      KnuthBendixImpl& operator=(KnuthBendixImpl&&);
 
-      ~KnuthBendixBase();
+      ~KnuthBendixImpl();
 
-      KnuthBendixBase(congruence_kind knd, Presentation<std::string> const& p);
+      KnuthBendixImpl(congruence_kind knd, Presentation<std::string> const& p);
 
-      KnuthBendixBase& init(congruence_kind                  knd,
+      KnuthBendixImpl& init(congruence_kind                  knd,
                             Presentation<std::string> const& p);
 
-      KnuthBendixBase(congruence_kind knd, Presentation<std::string>&& p);
+      KnuthBendixImpl(congruence_kind knd, Presentation<std::string>&& p);
 
-      KnuthBendixBase& init(congruence_kind knd, Presentation<std::string>&& p);
+      KnuthBendixImpl& init(congruence_kind knd, Presentation<std::string>&& p);
 
-      // TODO(1) construct/init from kind and KnuthBendixBase const&, for
-      // consistency with ToddCoxeterBase
+      // TODO(1) construct/init from kind and KnuthBendixImpl const&, for
+      // consistency with ToddCoxeterImpl
 
      private:
       void init_from_generating_pairs();
       void init_from_internal_presentation();
 
       //////////////////////////////////////////////////////////////////////////
-      // KnuthBendixBase - interface requirements - add_generating_pair
+      // KnuthBendixImpl - interface requirements - add_generating_pair
       //////////////////////////////////////////////////////////////////////////
 
      public:
-      // NOTE THAT this is not the same as in ToddCoxeterBase, because the
+      // NOTE THAT this is not the same as in ToddCoxeterImpl, because the
       // generating pairs contained in CongruenceCommon are word_types, and
       // so we don't require any conversion here (since chars can be converted
       // implicitly to letter_types)
@@ -262,30 +262,30 @@ namespace libsemigroups {
                 typename Iterator2,
                 typename Iterator3,
                 typename Iterator4>
-      KnuthBendixBase& add_generating_pair_no_checks(Iterator1 first1,
+      KnuthBendixImpl& add_generating_pair_no_checks(Iterator1 first1,
                                                      Iterator2 last1,
                                                      Iterator3 first2,
                                                      Iterator4 last2) {
         LIBSEMIGROUPS_ASSERT(!started());
         return CongruenceCommon::add_internal_generating_pair_no_checks<
-            KnuthBendixBase>(first1, last1, first2, last2);
+            KnuthBendixImpl>(first1, last1, first2, last2);
       }
 
       template <typename Iterator1,
                 typename Iterator2,
                 typename Iterator3,
                 typename Iterator4>
-      KnuthBendixBase& add_generating_pair(Iterator1 first1,
+      KnuthBendixImpl& add_generating_pair(Iterator1 first1,
                                            Iterator2 last1,
                                            Iterator3 first2,
                                            Iterator4 last2) {
         LIBSEMIGROUPS_ASSERT(!started());
-        return CongruenceCommon::add_generating_pair<KnuthBendixBase>(
+        return CongruenceCommon::add_generating_pair<KnuthBendixImpl>(
             first1, last1, first2, last2);
       }
 
       ////////////////////////////////////////////////////////////////////////
-      // KnuthBendixBase - interface requirements - number_of_classes
+      // KnuthBendixImpl - interface requirements - number_of_classes
       ////////////////////////////////////////////////////////////////////////
 
       //! \ingroup knuth_bendix_class_intf_group
@@ -308,7 +308,7 @@ namespace libsemigroups {
       [[nodiscard]] uint64_t number_of_classes();
 
       ////////////////////////////////////////////////////////////////////////
-      // KnuthBendixBase - interface requirements - contains
+      // KnuthBendixImpl - interface requirements - contains
       ////////////////////////////////////////////////////////////////////////
 
       //! \ingroup knuth_bendix_class_intf_group
@@ -349,7 +349,7 @@ namespace libsemigroups {
                                             Iterator2 last1,
                                             Iterator3 first2,
                                             Iterator4 last2) const {
-        return CongruenceCommon::currently_contains<KnuthBendixBase>(
+        return CongruenceCommon::currently_contains<KnuthBendixImpl>(
             first1, last1, first2, last2);
       }
 
@@ -377,7 +377,7 @@ namespace libsemigroups {
                                             Iterator2 last1,
                                             Iterator3 first2,
                                             Iterator4 last2) {
-        return CongruenceCommon::contains_no_checks<KnuthBendixBase>(
+        return CongruenceCommon::contains_no_checks<KnuthBendixImpl>(
             first1, last1, first2, last2);
       }
 
@@ -392,12 +392,12 @@ namespace libsemigroups {
                                   Iterator2 last1,
                                   Iterator3 first2,
                                   Iterator4 last2) {
-        return CongruenceCommon::contains<KnuthBendixBase>(
+        return CongruenceCommon::contains<KnuthBendixImpl>(
             first1, last1, first2, last2);
       }
 
       ////////////////////////////////////////////////////////////////////////
-      // KnuthBendixBase - interface requirements - reduce
+      // KnuthBendixImpl - interface requirements - reduce
       ////////////////////////////////////////////////////////////////////////
 
       //! \ingroup knuth_bendix_class_intf_group
@@ -408,9 +408,9 @@ namespace libsemigroups {
       //! \p d_first. This function triggers no enumeration. The word output by
       //! this function is equivalent to the input word in the congruence
       //! defined by a
-      //! \ref KnuthBendixBase instance. If the \ref KnuthBendixBase instance is
+      //! \ref KnuthBendixImpl instance. If the \ref KnuthBendixImpl instance is
       //! \ref finished, then the output word is a normal form for the input
-      //! word. If the \ref KnuthBendixBase instance is not \ref finished, then
+      //! word. If the \ref KnuthBendixImpl instance is not \ref finished, then
       //! it might be that equivalent input words produce different output
       //! words.
       //!
@@ -436,7 +436,7 @@ namespace libsemigroups {
       OutputIterator reduce_no_run(OutputIterator d_first,
                                    InputIterator1 first,
                                    InputIterator2 last) const {
-        return CongruenceCommon::reduce_no_run<KnuthBendixBase>(
+        return CongruenceCommon::reduce_no_run<KnuthBendixImpl>(
             d_first, first, last);
       }
 
@@ -449,7 +449,7 @@ namespace libsemigroups {
       //! \p last to the output iterator \p d_first. The word output by this
       //! function is equivalent to the input word in the congruence defined by
       //! a
-      //! \ref KnuthBendixBase instance. In other words, the output word is a
+      //! \ref KnuthBendixImpl instance. In other words, the output word is a
       //! normal form for the input word or equivalently a canconical
       //! representative of its congruence class.
       //!
@@ -467,7 +467,7 @@ namespace libsemigroups {
       OutputIterator reduce_no_checks(OutputIterator d_first,
                                       InputIterator1 first,
                                       InputIterator2 last) {
-        return CongruenceCommon::reduce_no_checks<KnuthBendixBase>(
+        return CongruenceCommon::reduce_no_checks<KnuthBendixImpl>(
             d_first, first, last);
       }
 
@@ -480,13 +480,13 @@ namespace libsemigroups {
       OutputIterator reduce(OutputIterator d_first,
                             InputIterator1 first,
                             InputIterator2 last) {
-        return CongruenceCommon::reduce<KnuthBendixBase>(d_first, first, last);
+        return CongruenceCommon::reduce<KnuthBendixImpl>(d_first, first, last);
       }
 
       // TODO(1) implement reduce_inplace x4 if possible.
 
       //////////////////////////////////////////////////////////////////////////
-      // KnuthBendixBase - setters for optional parameters - public
+      // KnuthBendixImpl - setters for optional parameters - public
       //////////////////////////////////////////////////////////////////////////
 
       //! \ingroup knuth_bendix_class_settings_group
@@ -509,7 +509,7 @@ namespace libsemigroups {
       //!
       //! \complexity
       //! Constant.
-      KnuthBendixBase& max_pending_rules(size_t val) {
+      KnuthBendixImpl& max_pending_rules(size_t val) {
         _settings.max_pending_rules = val;
         return *this;
       }
@@ -559,7 +559,7 @@ namespace libsemigroups {
       //! Constant.
       //!
       //! \sa \ref run.
-      KnuthBendixBase& check_confluence_interval(size_t val) {
+      KnuthBendixImpl& check_confluence_interval(size_t val) {
         _settings.check_confluence_interval = val;
         return *this;
       }
@@ -608,7 +608,7 @@ namespace libsemigroups {
       //! Constant.
       //!
       //! \sa \ref run.
-      KnuthBendixBase& max_overlap(size_t val) {
+      KnuthBendixImpl& max_overlap(size_t val) {
         _settings.max_overlap = val;
         return *this;
       }
@@ -655,7 +655,7 @@ namespace libsemigroups {
       //! Constant.
       //!
       //! \sa \ref run.
-      KnuthBendixBase& max_rules(size_t val) {
+      KnuthBendixImpl& max_rules(size_t val) {
         _settings.max_rules = val;
         return *this;
       }
@@ -700,7 +700,7 @@ namespace libsemigroups {
       //! Constant.
       //!
       //! \sa \ref KnuthBendix::options::overlap.
-      KnuthBendixBase& overlap_policy(typename options::overlap val);
+      KnuthBendixImpl& overlap_policy(typename options::overlap val);
 
       //! \ingroup knuth_bendix_class_settings_group
       //!
@@ -724,7 +724,7 @@ namespace libsemigroups {
       }
 
       //////////////////////////////////////////////////////////////////////////
-      // KnuthBendixBase - member functions for rules and rewriting - public
+      // KnuthBendixImpl - member functions for rules and rewriting - public
       //////////////////////////////////////////////////////////////////////////
 
       template <typename Iterator1, typename Iterator2>
@@ -819,7 +819,7 @@ namespace libsemigroups {
 
      public:
       //////////////////////////////////////////////////////////////////////////
-      // KnuthBendixBase - main member functions - public
+      // KnuthBendixImpl - main member functions - public
       //////////////////////////////////////////////////////////////////////////
 
       //! \ingroup knuth_bendix_class_accessors_group
@@ -876,7 +876,7 @@ namespace libsemigroups {
 
      private:
       //////////////////////////////////////////////////////////////////////////
-      // KnuthBendixBase - private member functions
+      // KnuthBendixImpl - private member functions
       //////////////////////////////////////////////////////////////////////////
 
       void report_presentation(Presentation<std::string> const&) const;
@@ -925,8 +925,8 @@ namespace libsemigroups {
 
       void run_impl() override;
       bool finished_impl() const override;
-    };  // class KnuthBendixBase
-  }  // namespace detail
+    };  // class KnuthBendixImpl
+  }     // namespace detail
 
   ////////////////////////////////////////////////////////////////////////
   // global functions - to_human_readable_repr
@@ -958,7 +958,7 @@ namespace libsemigroups {
   template <typename Rewriter, typename ReductionOrder>
   std::ostream&
   operator<<(std::ostream&                                            os,
-             detail::KnuthBendixBase<Rewriter, ReductionOrder> const& kb);
+             detail::KnuthBendixImpl<Rewriter, ReductionOrder> const& kb);
 #endif
 
   //! \ingroup knuth_bendix_group
@@ -986,7 +986,7 @@ namespace libsemigroups {
 #else
   template <typename Rewriter, typename ReductionOrder>
   std::string
-  to_human_readable_repr(detail::KnuthBendixBase<Rewriter, ReductionOrder>& kb);
+  to_human_readable_repr(detail::KnuthBendixImpl<Rewriter, ReductionOrder>& kb);
 #endif
 
   //! \ingroup to_presentation_group
@@ -1022,11 +1022,11 @@ namespace libsemigroups {
 #else
   template <typename Word, typename Rewriter, typename ReductionOrder>
   Presentation<Word>
-  to_presentation(detail::KnuthBendixBase<Rewriter, ReductionOrder>& kb);
+  to_presentation(detail::KnuthBendixImpl<Rewriter, ReductionOrder>& kb);
 #endif
 
 }  // namespace libsemigroups
 
-#include "knuth-bendix-base.tpp"
+#include "knuth-bendix-impl.tpp"
 
-#endif  // LIBSEMIGROUPS_DETAIL_KNUTH_BENDIX_BASE_HPP_
+#endif  // LIBSEMIGROUPS_DETAIL_KNUTH_BENDIX_IMPL_HPP_

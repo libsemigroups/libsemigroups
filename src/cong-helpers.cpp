@@ -47,7 +47,7 @@
 #include "libsemigroups/detail/cong-common-class.hpp"  // for CongruenceInterfa...
 #include "libsemigroups/detail/fmt.hpp"                // for format, print
 #include "libsemigroups/detail/iterator.hpp"           // for operator+
-#include "libsemigroups/detail/knuth-bendix-base.hpp"  // for KnuthBendixBase
+#include "libsemigroups/detail/knuth-bendix-impl.hpp"  // for KnuthBendixImpl
 #include "libsemigroups/detail/path-iterators.hpp"  // for const_pstilo_iter...
 #include "libsemigroups/detail/report.hpp"          // for report_default
 #include "libsemigroups/detail/rewriters.hpp"       // for RewriteTrie
@@ -72,8 +72,8 @@ namespace libsemigroups {
     //       && cong.get<ToddCoxeter<word_type>>()->finished()) {
     //     ToddCoxeter<word_type> tc(cong.kind(), p);
     //     return non_trivial_classes(*cong.get<ToddCoxeter<word_type>>(), tc);
-    //   } else if (cong.has<KnuthBendixBase<>>()
-    //              && cong.get<KnuthBendixBase<>>()->finished()) {
+    //   } else if (cong.has<KnuthBendixImpl<>>()
+    //              && cong.get<KnuthBendixImpl<>>()->finished()) {
     //     KnuthBendix kb(cong.kind(), to_presentation<std::string>(p));
     //     auto        strings
     //         = non_trivial_classes(kb, *cong.get<KnuthBendix<std::string>>());
@@ -99,11 +99,11 @@ namespace libsemigroups {
     // {
     //   using rx::operator|;
     //   cong.run();
-    //   if (cong.has<KnuthBendixBase<>>() &&
-    //   cong.get<KnuthBendixBase<>>()->finished())
+    //   if (cong.has<KnuthBendixImpl<>>() &&
+    //   cong.get<KnuthBendixImpl<>>()->finished())
     //   {
-    //     KnuthBendixBase<> kb(cong.kind(), p);
-    //     return non_trivial_classes(kb, *cong.get<KnuthBendixBase<>>());
+    //     KnuthBendixImpl<> kb(cong.kind(), p);
+    //     return non_trivial_classes(kb, *cong.get<KnuthBendixImpl<>>());
     //   }
     //   if (cong.has<ToddCoxeter<word_type>>()
     //       && cong.get<ToddCoxeter<word_type>>()->finished()) {

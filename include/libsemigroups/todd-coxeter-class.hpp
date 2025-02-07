@@ -17,11 +17,11 @@
 //
 
 // This file contains the declaration of the ToddCoxeter class. This class
-// exists mostly to wrap ToddCoxeterBase (where the action happens) to make it
+// exists mostly to wrap ToddCoxeterImpl (where the action happens) to make it
 // more user friendly. In particular, ToddCoxeter presentation()
 // and generating_pairs() return the input presentation and generating pairs,
 // whatever their type, and not the normalized Presentation<word_type> required
-// by ToddCoxeterBase.
+// by ToddCoxeterImpl.
 
 #ifndef LIBSEMIGROUPS_TODD_COXETER_CLASS_HPP_
 #define LIBSEMIGROUPS_TODD_COXETER_CLASS_HPP_
@@ -40,7 +40,7 @@
 
 #include "detail/cong-common-class.hpp"  // for detail::CongruenceCommon
 #include "detail/fmt.hpp"                // for fmt
-#include "detail/todd-coxeter-base.hpp"  // for ToddCoxeterBase
+#include "detail/todd-coxeter-impl.hpp"  // for ToddCoxeterImpl
 
 namespace libsemigroups {
 
@@ -132,14 +132,14 @@ namespace libsemigroups {
   //! //  0121212121_w};
   //! \endcode
   template <typename Word>
-  class ToddCoxeter : public detail::ToddCoxeterBase {
+  class ToddCoxeter : public detail::ToddCoxeterImpl {
    private:
     std::vector<Word>  _generating_pairs;
     Presentation<Word> _presentation;
 
     // The following is a class for wrapping iterators. This is used by the
     // member functions that accept iterators (that point at words that might
-    // not be the word_type used by ToddCoxeterBase) to convert the values
+    // not be the word_type used by ToddCoxeterImpl) to convert the values
     // pointed at into word_types, and in the class itow, to allow assignment of
     // these values too.
     // CITOW = const_iterator_to_word
@@ -521,7 +521,7 @@ namespace libsemigroups {
     //! \brief The type of the nodes in the word graph.
     //!
     //! The type of the nodes in the word graph.
-    using node_type = typename detail::ToddCoxeterBase::node_type;
+    using node_type = typename detail::ToddCoxeterImpl::node_type;
 
     //! \ingroup todd_coxeter_class_mem_types_group
     //! \hideinitializer
@@ -529,7 +529,7 @@ namespace libsemigroups {
     //! \brief The type of the underlying WordGraph.
     //!
     //! The type of the underlying WordGraph.
-    using word_graph_type = typename detail::ToddCoxeterBase::word_graph_type;
+    using word_graph_type = typename detail::ToddCoxeterImpl::word_graph_type;
 
     //! \ingroup todd_coxeter_class_mem_types_group
     //! \hideinitializer
@@ -546,7 +546,7 @@ namespace libsemigroups {
     //! empty word) in the \ref current_word_graph than there are classes in
     //! the congruence. This alias is used to delineate the cases when we are
     //! referring to a node or a class index.
-    using index_type = typename detail::ToddCoxeterBase::index_type;
+    using index_type = typename detail::ToddCoxeterImpl::index_type;
 
     //! \ingroup todd_coxeter_class_mem_types_group
     //! \hideinitializer
@@ -554,7 +554,7 @@ namespace libsemigroups {
     //! \brief The type of the edge-labels in the word graph.
     //!
     //! The type of the edge-labels in the word graph.
-    using label_type = typename detail::ToddCoxeterBase::label_type;
+    using label_type = typename detail::ToddCoxeterImpl::label_type;
 
     //! \ingroup todd_coxeter_class_init_group
     //! \brief Default constructor.
@@ -656,7 +656,7 @@ namespace libsemigroups {
     //! parameter \p knd, then compatible arguments are (one-sided,
     //! one-sided), (two-sided, one-sided), and (two-sided, two-sided).
     ToddCoxeter(congruence_kind knd, ToddCoxeter const& tc)
-        : ToddCoxeterBase(knd, tc), _presentation(tc.presentation()) {}
+        : ToddCoxeterImpl(knd, tc), _presentation(tc.presentation()) {}
 
     //! \ingroup todd_coxeter_class_init_group
     //! \brief Re-initialize a \ref_todd_coxeter instance.
@@ -675,7 +675,7 @@ namespace libsemigroups {
     //! parameter \p knd, then compatible arguments are (one-sided,
     //! one-sided), (two-sided, one-sided), and (two-sided, two-sided).
     ToddCoxeter& init(congruence_kind knd, ToddCoxeter const& tc) {
-      ToddCoxeterBase::init(knd, tc);
+      ToddCoxeterImpl::init(knd, tc);
       _presentation = tc.presentation();
       return *this;
     }
@@ -854,7 +854,7 @@ namespace libsemigroups {
                                      Iterator3 first2,
                                      Iterator4 last2) {
       // Call detail::CongruenceCommon version so that we perform bound checks
-      // in ToddCoxeter and not ToddCoxeterBase
+      // in ToddCoxeter and not ToddCoxeterImpl
       return detail::CongruenceCommon::add_generating_pair<ToddCoxeter>(
           first1, last1, first2, last2);
     }
@@ -891,7 +891,7 @@ namespace libsemigroups {
                                       Iterator2 last1,
                                       Iterator3 first2,
                                       Iterator4 last2) const {
-      return ToddCoxeterBase::currently_contains_no_checks(make_citow(first1),
+      return ToddCoxeterImpl::currently_contains_no_checks(make_citow(first1),
                                                            make_citow(last1),
                                                            make_citow(first2),
                                                            make_citow(last2));
@@ -926,7 +926,7 @@ namespace libsemigroups {
                             Iterator3 first2,
                             Iterator4 last2) const {
       // Call detail::CongruenceCommon version so that we perform bound checks
-      // in ToddCoxeter and not ToddCoxeterBase
+      // in ToddCoxeter and not ToddCoxeterImpl
       return detail::CongruenceCommon::currently_contains<ToddCoxeter>(
           first1, last1, first2, last2);
     }
@@ -956,7 +956,7 @@ namespace libsemigroups {
                             Iterator2 last1,
                             Iterator3 first2,
                             Iterator4 last2) {
-      return ToddCoxeterBase::contains_no_checks(make_citow(first1),
+      return ToddCoxeterImpl::contains_no_checks(make_citow(first1),
                                                  make_citow(last1),
                                                  make_citow(first2),
                                                  make_citow(last2));
@@ -1019,7 +1019,7 @@ namespace libsemigroups {
     OutputIterator reduce_no_run_no_checks(OutputIterator d_first,
                                            InputIterator1 first,
                                            InputIterator2 last) const {
-      return ToddCoxeterBase::reduce_no_run_no_checks(
+      return ToddCoxeterImpl::reduce_no_run_no_checks(
                  make_itow(d_first), make_citow(first), make_citow(last))
           .get();
     }
@@ -1084,7 +1084,7 @@ namespace libsemigroups {
     OutputIterator reduce_no_checks(OutputIterator d_first,
                                     InputIterator1 first,
                                     InputIterator2 last) {
-      return ToddCoxeterBase::reduce_no_checks(
+      return ToddCoxeterImpl::reduce_no_checks(
                  make_itow(d_first), make_citow(first), make_citow(last))
           .get();
     }
@@ -1119,13 +1119,13 @@ namespace libsemigroups {
                           InputIterator1 first,
                           InputIterator2 last) {
       // Call detail::CongruenceCommon version so that we perform bound checks
-      // in ToddCoxeter and not ToddCoxeterBase
+      // in ToddCoxeter and not ToddCoxeterImpl
       return detail::CongruenceCommon::reduce<ToddCoxeter>(
           d_first, first, last);
     }
 
     ////////////////////////////////////////////////////////////////////////
-    // ToddCoxeterBase - word -> index
+    // ToddCoxeterImpl - word -> index
     ////////////////////////////////////////////////////////////////////////
 
     //! \defgroup todd_coxeter_class_word_index_group Word to class index
@@ -1172,7 +1172,7 @@ namespace libsemigroups {
     template <typename Iterator1, typename Iterator2>
     index_type current_index_of_no_checks(Iterator1 first,
                                           Iterator2 last) const {
-      return ToddCoxeterBase::current_index_of_no_checks(make_citow(first),
+      return ToddCoxeterImpl::current_index_of_no_checks(make_citow(first),
                                                          make_citow(last));
     }
 
@@ -1231,7 +1231,7 @@ namespace libsemigroups {
     //! \cong_common_warn_assume_letters_in_bounds
     template <typename Iterator1, typename Iterator2>
     index_type index_of_no_checks(Iterator1 first, Iterator2 last) {
-      return ToddCoxeterBase::index_of_no_checks(make_citow(first),
+      return ToddCoxeterImpl::index_of_no_checks(make_citow(first),
                                                  make_citow(last));
     }
 
@@ -1317,7 +1317,7 @@ namespace libsemigroups {
     template <typename OutputIterator>
     OutputIterator current_word_of_no_checks(OutputIterator d_first,
                                              index_type     i) const {
-      return ToddCoxeterBase::current_word_of_no_checks(make_itow(d_first), i)
+      return ToddCoxeterImpl::current_word_of_no_checks(make_itow(d_first), i)
           .get();
     }
 
@@ -1345,7 +1345,7 @@ namespace libsemigroups {
     //! \throws LibsemigroupsException if \p i is out of bounds.
     template <typename OutputIterator>
     OutputIterator current_word_of(OutputIterator d_first, index_type i) const {
-      return ToddCoxeterBase::current_word_of(make_itow(d_first), i).get();
+      return ToddCoxeterImpl::current_word_of(make_itow(d_first), i).get();
     }
 
     //! \brief Insert the word representing a class with given index into
@@ -1372,7 +1372,7 @@ namespace libsemigroups {
     //! \throws LibsemigroupsException if \p i is out of bounds.
     template <typename Iterator>
     Iterator word_of_no_checks(Iterator d_first, index_type i) {
-      return ToddCoxeterBase::word_of_no_checks(make_itow(d_first), i).get();
+      return ToddCoxeterImpl::word_of_no_checks(make_itow(d_first), i).get();
     }
 
     //! \brief Insert the word representing a class with given index into
@@ -1400,7 +1400,7 @@ namespace libsemigroups {
     //! is assumed that \p i is a valid index of a current class.
     template <typename Iterator>
     Iterator word_of(Iterator d_first, index_type i) {
-      return ToddCoxeterBase::word_of(make_itow(d_first), i).get();
+      return ToddCoxeterImpl::word_of(make_itow(d_first), i).get();
     }
 
     //! @}

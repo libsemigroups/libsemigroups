@@ -63,7 +63,7 @@ namespace libsemigroups {
   using namespace rx;
   using literals::operator""_w;
 
-  using rule_type = detail::KnuthBendixBase<>::rule_type;
+  using rule_type = detail::KnuthBendixImpl<>::rule_type;
 
   struct LibsemigroupsException;
 

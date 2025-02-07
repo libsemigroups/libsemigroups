@@ -68,7 +68,7 @@ namespace libsemigroups {
 
   struct LibsemigroupsException;
 
-  using rule_type = detail::KnuthBendixBase<>::rule_type;
+  using rule_type = detail::KnuthBendixImpl<>::rule_type;
 
   using RewriteTrie     = detail::RewriteTrie;
   using RewriteFromLeft = detail::RewriteFromLeft;

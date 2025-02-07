@@ -3169,7 +3169,7 @@ namespace libsemigroups {
     //! \param p the presentation.
     //!
     //! \warning
-    //! This method assumes that KnuthBendixBase terminates on the input
+    //! This method assumes that KnuthBendixImpl terminates on the input
     //! presentation \p p. If this is not the case then th pruner may not
     //! terminate on certain inputs.
     template <typename Word>
@@ -3233,7 +3233,7 @@ namespace libsemigroups {
     //! returns `true`.
     //!
     //! \warning
-    //! This method assumes that KnuthBendixBase terminates on the underlying
+    //! This method assumes that KnuthBendixImpl terminates on the underlying
     //! presentation that was used to construct the SimsRefinerIdeals object. If
     //! this is not the case then th pruner may not terminate on certain inputs.
     bool operator()(Sims1::word_graph_type const& wg);

@@ -22,7 +22,7 @@ namespace libsemigroups {
 
   template <typename Word>
   ToddCoxeter<Word>& ToddCoxeter<Word>::init() {
-    ToddCoxeterBase::init();
+    ToddCoxeterImpl::init();
     _generating_pairs.clear();
     _presentation.init();
     return *this;
@@ -33,13 +33,13 @@ namespace libsemigroups {
                                              Presentation<Word>&& p) {
     if constexpr (!std::is_same_v<Word, word_type>) {
       // to_presentation throws in the next line if p isn't valid
-      ToddCoxeterBase::init(knd, to_presentation<word_type>(p));
+      ToddCoxeterImpl::init(knd, to_presentation<word_type>(p));
       _presentation = std::move(p);
     } else {
       p.validate();
       _presentation = p;  // copy p in to _presentation
       presentation::normalize_alphabet(p);
-      ToddCoxeterBase::init(knd, std::move(p));
+      ToddCoxeterImpl::init(knd, std::move(p));
     }
     _generating_pairs.clear();
     return *this;
@@ -49,7 +49,7 @@ namespace libsemigroups {
   template <typename Node>
   ToddCoxeter<Word>& ToddCoxeter<Word>::init(congruence_kind        knd,
                                              WordGraph<Node> const& wg) {
-    ToddCoxeterBase::init(knd, wg);
+    ToddCoxeterImpl::init(knd, wg);
     _presentation = to_presentation<Word>(current_word_graph().presentation());
     _generating_pairs.clear();
     return *this;
@@ -62,14 +62,14 @@ namespace libsemigroups {
                                              WordGraph<Node> const&    wg) {
     if constexpr (!std::is_same_v<Word, word_type>) {
       // to_presentation throws in the next line if p isn't valid
-      ToddCoxeterBase::init(knd, to_presentation<word_type>(p), wg);
+      ToddCoxeterImpl::init(knd, to_presentation<word_type>(p), wg);
       _presentation = p;
     } else {
       p.validate();
       _presentation = p;  // copy p in to _presentation
       auto copy     = p;
       presentation::normalize_alphabet(copy);
-      ToddCoxeterBase::init(knd, copy, wg);
+      ToddCoxeterImpl::init(knd, copy, wg);
     }
     _generating_pairs.clear();
     return *this;
@@ -88,7 +88,7 @@ namespace libsemigroups {
     // Add the input iterators to _generating_pairs
     _generating_pairs.emplace_back(first1, last1);
     _generating_pairs.emplace_back(first2, last2);
-    ToddCoxeterBase::add_generating_pair_no_checks(make_citow(first1),
+    ToddCoxeterImpl::add_generating_pair_no_checks(make_citow(first1),
                                                    make_citow(last1),
                                                    make_citow(first2),
                                                    make_citow(last2));
@@ -110,7 +110,7 @@ namespace libsemigroups {
       return std::equal(first1, last1, first2, last2);
     }
     // Call detail::CongruenceCommon version so that we perform bound checks in
-    // ToddCoxeter and not ToddCoxeterBase
+    // ToddCoxeter and not ToddCoxeterImpl
     return detail::CongruenceCommon::contains<ToddCoxeter>(
         first1, last1, first2, last2);
   }

@@ -25,8 +25,8 @@
 // needed)? Or possibly reintroduce PrefDefs here
 // * re-add report why stopped
 
-#ifndef LIBSEMIGROUPS_DETAIL_TODD_COXETER_BASE_HPP_
-#define LIBSEMIGROUPS_DETAIL_TODD_COXETER_BASE_HPP_
+#ifndef LIBSEMIGROUPS_DETAIL_TODD_COXETER_IMPL_HPP_
+#define LIBSEMIGROUPS_DETAIL_TODD_COXETER_IMPL_HPP_
 
 #include <chrono>    // for nanoseconds
 #include <cstddef>   // for size_t
@@ -57,21 +57,21 @@
 
 ////////////////////////////////////////////////////////////////////////
 // This file is organised as follows:
-// 0.  ToddCoxeterBase - member types - public
-// 1.  ToddCoxeterBase - nested classes - private
-// 2.  ToddCoxeterBase - data members - private
-// 3.  ToddCoxeterBase - constructors + initializers - public
-// 4.  ToddCoxeterBase - interface requirements - add_generating_pair
-// 5.  ToddCoxeterBase - interface requirements - number_of_classes
-// 6.  ToddCoxeterBase - interface requirements - contains
-// 7.  ToddCoxeterBase - interface requirements - reduce
-// 8.  ToddCoxeterBase - settings - public
-// 9.  ToddCoxeterBase - accessors - public
-// 10. ToddCoxeterBase - modifiers - public
-// 11. ToddCoxeterBase - word -> index
-// 12. ToddCoxeterBase - index -> word
+// 0.  ToddCoxeterImpl - member types - public
+// 1.  ToddCoxeterImpl - nested classes - private
+// 2.  ToddCoxeterImpl - data members - private
+// 3.  ToddCoxeterImpl - constructors + initializers - public
+// 4.  ToddCoxeterImpl - interface requirements - add_generating_pair
+// 5.  ToddCoxeterImpl - interface requirements - number_of_classes
+// 6.  ToddCoxeterImpl - interface requirements - contains
+// 7.  ToddCoxeterImpl - interface requirements - reduce
+// 8.  ToddCoxeterImpl - settings - public
+// 9.  ToddCoxeterImpl - accessors - public
+// 10. ToddCoxeterImpl - modifiers - public
+// 11. ToddCoxeterImpl - word -> index
+// 12. ToddCoxeterImpl - index -> word
 // 13. Runner      - pure virtual member functions - private
-// 14. ToddCoxeterBase - member functions - private
+// 14. ToddCoxeterImpl - member functions - private
 ////////////////////////////////////////////////////////////////////////
 
 namespace libsemigroups {
@@ -155,14 +155,14 @@ namespace libsemigroups {
   //! isomorphism.
 
   namespace detail {
-    class ToddCoxeterBase
+    class ToddCoxeterImpl
         : public detail::CongruenceCommon,
-          public detail::FelschGraphSettings<ToddCoxeterBase> {
-      using FelschGraphSettings_ = FelschGraphSettings<ToddCoxeterBase>;
+          public detail::FelschGraphSettings<ToddCoxeterImpl> {
+      using FelschGraphSettings_ = FelschGraphSettings<ToddCoxeterImpl>;
 
      public:
       ////////////////////////////////////////////////////////////////////////
-      // 0. ToddCoxeterBase - member types - public
+      // 0. ToddCoxeterImpl - member types - public
       ////////////////////////////////////////////////////////////////////////
 
       struct options : public FelschGraphSettings_::options {
@@ -188,7 +188,7 @@ namespace libsemigroups {
 
      private:
       ////////////////////////////////////////////////////////////////////////
-      // 1. ToddCoxeterBase - nested classes - private
+      // 1. ToddCoxeterImpl - nested classes - private
       ////////////////////////////////////////////////////////////////////////
 
       struct Settings;
@@ -202,7 +202,7 @@ namespace libsemigroups {
        private:
         bool                    _any_skipped;
         std::vector<Definition> _definitions;
-        ToddCoxeterBase const*  _tc;
+        ToddCoxeterImpl const*  _tc;
 
        public:
         Definitions() : _any_skipped(false), _definitions(), _tc(nullptr) {}
@@ -214,7 +214,7 @@ namespace libsemigroups {
         Definitions& operator=(Definitions&&)           = default;
 
         // TODO(1) corresponding constructor
-        void init(ToddCoxeterBase const* tc) {
+        void init(ToddCoxeterImpl const* tc) {
           _any_skipped = false;
           _definitions.clear();
           _tc = tc;
@@ -291,7 +291,7 @@ namespace libsemigroups {
       };  // class Graph
 
       ////////////////////////////////////////////////////////////////////////
-      // 2. ToddCoxeterBase - data members - private
+      // 2. ToddCoxeterImpl - data members - private
       ////////////////////////////////////////////////////////////////////////
 
       bool                                   _finished;
@@ -304,42 +304,42 @@ namespace libsemigroups {
       using word_graph_type = Graph;
 
       ////////////////////////////////////////////////////////////////////////
-      // 3. ToddCoxeterBase - constructors + initializers - public
+      // 3. ToddCoxeterImpl - constructors + initializers - public
       ////////////////////////////////////////////////////////////////////////
 
-      ToddCoxeterBase();
-      ToddCoxeterBase& init();
+      ToddCoxeterImpl();
+      ToddCoxeterImpl& init();
 
-      ToddCoxeterBase(ToddCoxeterBase const& that);
-      ToddCoxeterBase(ToddCoxeterBase&&);
-      ToddCoxeterBase& operator=(ToddCoxeterBase const&);
-      ToddCoxeterBase& operator=(ToddCoxeterBase&&);
+      ToddCoxeterImpl(ToddCoxeterImpl const& that);
+      ToddCoxeterImpl(ToddCoxeterImpl&&);
+      ToddCoxeterImpl& operator=(ToddCoxeterImpl const&);
+      ToddCoxeterImpl& operator=(ToddCoxeterImpl&&);
 
-      ~ToddCoxeterBase();
+      ~ToddCoxeterImpl();
 
-      ToddCoxeterBase(congruence_kind knd, Presentation<word_type>&& p);
-      ToddCoxeterBase& init(congruence_kind knd, Presentation<word_type>&& p);
-      ToddCoxeterBase(congruence_kind knd, Presentation<word_type> const& p);
-      ToddCoxeterBase& init(congruence_kind                knd,
+      ToddCoxeterImpl(congruence_kind knd, Presentation<word_type>&& p);
+      ToddCoxeterImpl& init(congruence_kind knd, Presentation<word_type>&& p);
+      ToddCoxeterImpl(congruence_kind knd, Presentation<word_type> const& p);
+      ToddCoxeterImpl& init(congruence_kind                knd,
                             Presentation<word_type> const& p);
 
       // TODO(1) a to_todd_coxeter variant that throws if wg is not valid
       // see below
       template <typename Node>
-      ToddCoxeterBase(congruence_kind knd, WordGraph<Node> const& wg)
-          : ToddCoxeterBase() {
+      ToddCoxeterImpl(congruence_kind knd, WordGraph<Node> const& wg)
+          : ToddCoxeterImpl() {
         LIBSEMIGROUPS_ASSERT(!_settings_stack.empty());
         init(knd, wg);
       }
 
       template <typename Node>
-      ToddCoxeterBase& init(congruence_kind knd, WordGraph<Node> const& wg);
+      ToddCoxeterImpl& init(congruence_kind knd, WordGraph<Node> const& wg);
 
       // TODO(1) rvalue ref WordGraph init + constructor
 
-      ToddCoxeterBase(congruence_kind knd, ToddCoxeterBase const& tc);
+      ToddCoxeterImpl(congruence_kind knd, ToddCoxeterImpl const& tc);
 
-      ToddCoxeterBase& init(congruence_kind knd, ToddCoxeterBase const& tc);
+      ToddCoxeterImpl& init(congruence_kind knd, ToddCoxeterImpl const& tc);
 
       // This is a constructor and not a helper so that everything that takes a
       // presentation has the same constructors, regardless of what they use
@@ -350,7 +350,7 @@ namespace libsemigroups {
       // TODO(1) could this and the next function be removed, and replaced
       // with something else?
       template <typename Node>
-      ToddCoxeterBase(congruence_kind                knd,
+      ToddCoxeterImpl(congruence_kind                knd,
                       Presentation<word_type> const& p,
                       WordGraph<Node> const&         wg) {
         init(knd, p, wg);
@@ -358,7 +358,7 @@ namespace libsemigroups {
 
       // TODO(1) a to_todd_coxeter variant that throws if p is not valid
       template <typename Node>
-      ToddCoxeterBase& init(congruence_kind                knd,
+      ToddCoxeterImpl& init(congruence_kind                knd,
                             Presentation<word_type> const& p,
                             WordGraph<Node> const&         wg);
 #endif
@@ -374,35 +374,35 @@ namespace libsemigroups {
                                            std::string_view arg = "1st");
 
       ////////////////////////////////////////////////////////////////////////
-      // 4. ToddCoxeterBase - interface requirements - add_generating_pair
+      // 4. ToddCoxeterImpl - interface requirements - add_generating_pair
       ////////////////////////////////////////////////////////////////////////
 
       template <typename Iterator1,
                 typename Iterator2,
                 typename Iterator3,
                 typename Iterator4>
-      ToddCoxeterBase& add_generating_pair_no_checks(Iterator1 first1,
+      ToddCoxeterImpl& add_generating_pair_no_checks(Iterator1 first1,
                                                      Iterator2 last1,
                                                      Iterator3 first2,
                                                      Iterator4 last2) {
         return detail::CongruenceCommon::add_internal_generating_pair_no_checks<
-            ToddCoxeterBase>(first1, last1, first2, last2);
+            ToddCoxeterImpl>(first1, last1, first2, last2);
       }
 
       template <typename Iterator1,
                 typename Iterator2,
                 typename Iterator3,
                 typename Iterator4>
-      ToddCoxeterBase& add_generating_pair(Iterator1 first1,
+      ToddCoxeterImpl& add_generating_pair(Iterator1 first1,
                                            Iterator2 last1,
                                            Iterator3 first2,
                                            Iterator4 last2) {
-        return detail::CongruenceCommon::add_generating_pair<ToddCoxeterBase>(
+        return detail::CongruenceCommon::add_generating_pair<ToddCoxeterImpl>(
             first1, last1, first2, last2);
       }
 
       ////////////////////////////////////////////////////////////////////////
-      // 5. ToddCoxeterBase - interface requirements - number_of_classes
+      // 5. ToddCoxeterImpl - interface requirements - number_of_classes
       ////////////////////////////////////////////////////////////////////////
 
       //! \ingroup todd_coxeter_class_intf_group
@@ -421,7 +421,7 @@ namespace libsemigroups {
       [[nodiscard]] uint64_t number_of_classes();
 
       ////////////////////////////////////////////////////////////////////////
-      // 6. ToddCoxeterBase - interface requirements - contains
+      // 6. ToddCoxeterImpl - interface requirements - contains
       ////////////////////////////////////////////////////////////////////////
 
       template <typename Iterator1,
@@ -441,7 +441,7 @@ namespace libsemigroups {
                               Iterator2 last1,
                               Iterator3 first2,
                               Iterator4 last2) const {
-        return detail::CongruenceCommon::currently_contains<ToddCoxeterBase>(
+        return detail::CongruenceCommon::currently_contains<ToddCoxeterImpl>(
             first1, last1, first2, last2);
       }
 
@@ -464,7 +464,7 @@ namespace libsemigroups {
                     Iterator4 last2);
 
       ////////////////////////////////////////////////////////////////////////
-      // 7. ToddCoxeterBase - interface requirements - reduce
+      // 7. ToddCoxeterImpl - interface requirements - reduce
       ////////////////////////////////////////////////////////////////////////
 
       template <typename OutputIterator,
@@ -480,7 +480,7 @@ namespace libsemigroups {
       OutputIterator reduce_no_run(OutputIterator d_first,
                                    InputIterator1 first,
                                    InputIterator2 last) const {
-        return detail::CongruenceCommon::reduce_no_run<ToddCoxeterBase>(
+        return detail::CongruenceCommon::reduce_no_run<ToddCoxeterImpl>(
             d_first, first, last);
       }
 
@@ -490,7 +490,7 @@ namespace libsemigroups {
       OutputIterator reduce_no_checks(OutputIterator d_first,
                                       InputIterator1 first,
                                       InputIterator2 last) {
-        return detail::CongruenceCommon::reduce_no_checks<ToddCoxeterBase>(
+        return detail::CongruenceCommon::reduce_no_checks<ToddCoxeterImpl>(
             d_first, first, last);
       }
 
@@ -500,12 +500,12 @@ namespace libsemigroups {
       OutputIterator reduce(OutputIterator d_first,
                             InputIterator1 first,
                             InputIterator2 last) {
-        return detail::CongruenceCommon::reduce<ToddCoxeterBase>(
+        return detail::CongruenceCommon::reduce<ToddCoxeterImpl>(
             d_first, first, last);
       }
 
       ////////////////////////////////////////////////////////////////////////
-      // 8. ToddCoxeterBase - settings - public
+      // 8. ToddCoxeterImpl - settings - public
       ////////////////////////////////////////////////////////////////////////
 
 #ifndef PARSED_BY_DOXYGEN
@@ -534,7 +534,7 @@ namespace libsemigroups {
       //!
       //! \exceptions
       //! \noexcept
-      ToddCoxeterBase& def_max(size_t val) noexcept;
+      ToddCoxeterImpl& def_max(size_t val) noexcept;
 
       //! \ingroup todd_coxeter_class_settings_group
       //! \brief Get the current value of the setting for the maximum number
@@ -562,7 +562,7 @@ namespace libsemigroups {
       //!
       //! \exceptions
       //! \no_libsemigroups_except
-      ToddCoxeterBase& def_policy(options::def_policy val);
+      ToddCoxeterImpl& def_policy(options::def_policy val);
 
       //! \ingroup todd_coxeter_class_settings_group
       //! \brief Get the current value of the definition policy.
@@ -601,7 +601,7 @@ namespace libsemigroups {
       //! \returns A reference to `*this`.
       //!
       //! \throws LibsemigroupsException if \p val is \c 0.
-      ToddCoxeterBase& f_defs(size_t val);
+      ToddCoxeterImpl& f_defs(size_t val);
 
       //! \ingroup todd_coxeter_class_settings_group
       //! \brief Get the number of Felsch style definitions in
@@ -651,7 +651,7 @@ namespace libsemigroups {
       //! \returns A reference to `*this`.
       //!
       //! \throws LibsemigroupsException if \p val is \c 0.
-      ToddCoxeterBase& hlt_defs(size_t val);
+      ToddCoxeterImpl& hlt_defs(size_t val);
 
       //! \ingroup todd_coxeter_class_settings_group
       //! \brief Get the number of HLT style definitions in
@@ -711,7 +711,7 @@ namespace libsemigroups {
       //!
       //! \exceptions
       //! \noexcept
-      ToddCoxeterBase& large_collapse(size_t val) noexcept;
+      ToddCoxeterImpl& large_collapse(size_t val) noexcept;
 
       //! \ingroup todd_coxeter_class_settings_group
       //! \brief Get the current size of a large collapse.
@@ -746,7 +746,7 @@ namespace libsemigroups {
       //!
       //! \exceptions
       //! \noexcept
-      ToddCoxeterBase& lookahead_extent(options::lookahead_extent val) noexcept;
+      ToddCoxeterImpl& lookahead_extent(options::lookahead_extent val) noexcept;
 
       //! \ingroup todd_coxeter_class_settings_group
       //! \brief Get the current value of the lookahead extent.
@@ -782,7 +782,7 @@ namespace libsemigroups {
       //! \returns A reference to `*this`.
       //!
       //! \throws LibsemigroupsException if \p val is less than `1.0`.
-      ToddCoxeterBase& lookahead_growth_factor(float val);
+      ToddCoxeterImpl& lookahead_growth_factor(float val);
 
       //! \ingroup todd_coxeter_class_settings_group
       //! \brief Get the current value of the lookahead growth factor.
@@ -816,7 +816,7 @@ namespace libsemigroups {
       //!
       //! \exceptions
       //! \noexcept
-      ToddCoxeterBase& lookahead_growth_threshold(size_t val) noexcept;
+      ToddCoxeterImpl& lookahead_growth_threshold(size_t val) noexcept;
 
       //! \ingroup todd_coxeter_class_settings_group
       //! \brief Get the current value of the lookahead growth threshold.
@@ -851,7 +851,7 @@ namespace libsemigroups {
       //!
       //! \exceptions
       //! \noexcept
-      ToddCoxeterBase& lookahead_min(size_t val) noexcept;
+      ToddCoxeterImpl& lookahead_min(size_t val) noexcept;
 
       //! \ingroup todd_coxeter_class_settings_group
       //! \brief Get the current value of the minimum lookahead setting.
@@ -883,7 +883,7 @@ namespace libsemigroups {
       //!
       //! \exceptions
       //! \noexcept
-      ToddCoxeterBase& lookahead_next(size_t val) noexcept;
+      ToddCoxeterImpl& lookahead_next(size_t val) noexcept;
 
       //! \ingroup todd_coxeter_class_settings_group
       //! \brief Get the current value of the lookahead next setting.
@@ -920,7 +920,7 @@ namespace libsemigroups {
       //!
       //! \exceptions
       //! \noexcept
-      ToddCoxeterBase&
+      ToddCoxeterImpl&
       lookahead_stop_early_interval(std::chrono::nanoseconds val) noexcept;
 
       //! \ingroup todd_coxeter_class_settings_group
@@ -958,7 +958,7 @@ namespace libsemigroups {
       //!
       //! \throws LibsemigroupsException if \p val is not in the interval
       //! \f$[0, 1)\f$.
-      ToddCoxeterBase& lookahead_stop_early_ratio(float val);
+      ToddCoxeterImpl& lookahead_stop_early_ratio(float val);
 
       //! \ingroup todd_coxeter_class_settings_group
       //! \brief Get the current value of the lookahead stop early ratio.
@@ -990,7 +990,7 @@ namespace libsemigroups {
       //!
       //! \exceptions
       //! \noexcept
-      ToddCoxeterBase& lookahead_style(options::lookahead_style val) noexcept;
+      ToddCoxeterImpl& lookahead_style(options::lookahead_style val) noexcept;
 
       //! \ingroup todd_coxeter_class_settings_group
       //! \brief Get the current value of the lookahead style.
@@ -1025,7 +1025,7 @@ namespace libsemigroups {
       //!
       //! \exceptions
       //! \noexcept
-      ToddCoxeterBase& lower_bound(size_t val) noexcept;
+      ToddCoxeterImpl& lower_bound(size_t val) noexcept;
 
       //! \ingroup todd_coxeter_class_settings_group
       //! \brief Get the current value of the lower bound.
@@ -1055,7 +1055,7 @@ namespace libsemigroups {
       //!
       //! \exceptions
       //! \noexcept
-      ToddCoxeterBase& save(bool val) noexcept;
+      ToddCoxeterImpl& save(bool val) noexcept;
 
       //! \ingroup todd_coxeter_class_settings_group
       //! \brief Get the current value of the save setting.
@@ -1083,7 +1083,7 @@ namespace libsemigroups {
       //!
       //! \exceptions
       //! \noexcept
-      ToddCoxeterBase& strategy(options::strategy val) noexcept;
+      ToddCoxeterImpl& strategy(options::strategy val) noexcept;
 
       //! \ingroup todd_coxeter_class_settings_group
       //! \brief Get the current value of the strategy setting.
@@ -1114,7 +1114,7 @@ namespace libsemigroups {
       //!
       //! \exceptions
       //! \noexcept
-      ToddCoxeterBase& use_relations_in_extra(bool val) noexcept;
+      ToddCoxeterImpl& use_relations_in_extra(bool val) noexcept;
 
       //! \ingroup todd_coxeter_class_settings_group
       //! \brief Get the current value of the \"use relations in extra\"
@@ -1146,7 +1146,7 @@ namespace libsemigroups {
       //! \param val the version to use.
       //!
       //! \returns A reference to `*this`.
-      ToddCoxeterBase& def_version(options::def_version val);
+      ToddCoxeterImpl& def_version(options::def_version val);
 
       //! \ingroup todd_coxeter_class_settings_group
       //!
@@ -1167,7 +1167,7 @@ namespace libsemigroups {
 #endif
 
       ////////////////////////////////////////////////////////////////////////
-      // 9. ToddCoxeterBase - accessors - public
+      // 9. ToddCoxeterImpl - accessors - public
       ////////////////////////////////////////////////////////////////////////
 
 #ifndef PARSED_BY_DOXYGEN
@@ -1365,7 +1365,7 @@ namespace libsemigroups {
       bool is_standardized() const;
 
       ////////////////////////////////////////////////////////////////////////
-      // 10. ToddCoxeterBase - modifiers - public
+      // 10. ToddCoxeterImpl - modifiers - public
       ////////////////////////////////////////////////////////////////////////
 
       //! \ingroup todd_coxeter_class_mod_group
@@ -1421,7 +1421,7 @@ namespace libsemigroups {
       void perform_lookahead(bool stop_early);
 
       ////////////////////////////////////////////////////////////////////////
-      // 11. ToddCoxeterBase - word -> index
+      // 11. ToddCoxeterImpl - word -> index
       ////////////////////////////////////////////////////////////////////////
 
       //! \defgroup todd_coxeter_class_word_index_group Word to class index
@@ -1565,7 +1565,7 @@ namespace libsemigroups {
       //! @}
 
       ////////////////////////////////////////////////////////////////////////
-      // 12. ToddCoxeterBase - index -> word
+      // 12. ToddCoxeterImpl - index -> word
       ////////////////////////////////////////////////////////////////////////
 
       //! \defgroup todd_coxeter_class_index_word_group Class index to word
@@ -1724,7 +1724,7 @@ namespace libsemigroups {
       }
 
       ////////////////////////////////////////////////////////////////////////
-      // 14. ToddCoxeterBase - member functions - private
+      // 14. ToddCoxeterImpl - member functions - private
       ////////////////////////////////////////////////////////////////////////
 
       void copy_settings_into_graph();
@@ -1735,7 +1735,7 @@ namespace libsemigroups {
       Settings const& tc_settings() const;
 
       ////////////////////////////////////////////////////////////////////////
-      // ToddCoxeterBase - main strategies - private
+      // ToddCoxeterImpl - main strategies - private
       ////////////////////////////////////////////////////////////////////////
 
       void init_run();
@@ -1749,14 +1749,14 @@ namespace libsemigroups {
       void Rc_style();
 
       ////////////////////////////////////////////////////////////////////////
-      // ToddCoxeterBase - reporting - private
+      // ToddCoxeterImpl - reporting - private
       ////////////////////////////////////////////////////////////////////////
 
       void report_next_lookahead(size_t old_value) const;
       void report_nodes_killed(int64_t number) const;
 
       ////////////////////////////////////////////////////////////////////////
-      // ToddCoxeterBase - lookahead - private
+      // ToddCoxeterImpl - lookahead - private
       ////////////////////////////////////////////////////////////////////////
 
       static constexpr bool StopEarly      = true;
@@ -1764,11 +1764,11 @@ namespace libsemigroups {
 
       size_t hlt_lookahead(bool stop_early);
       size_t felsch_lookahead();
-    };  // class ToddCoxeterBase
+    };  // class ToddCoxeterImpl
 
   }  // namespace detail
 
 }  // namespace libsemigroups
 
-#include "todd-coxeter-base.tpp"
-#endif  // LIBSEMIGROUPS_DETAIL_TODD_COXETER_BASE_HPP_
+#include "todd-coxeter-impl.tpp"
+#endif  // LIBSEMIGROUPS_DETAIL_TODD_COXETER_IMPL_HPP_

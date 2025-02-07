@@ -202,7 +202,7 @@ namespace libsemigroups {
     //! Kambites instances can only be used to compute two-sided congruences,
     //! and so the first parameter \p knd must always be
     //! congruence_kind::twosided. The parameter \p knd is included for
-    //! uniformity of interface between with \ref KnuthBendixBase, \ref
+    //! uniformity of interface between with \ref KnuthBendixImpl, \ref
     //! Kambites, and \ref Congruence.
     //!
     //! \param knd the kind (onesided or twosided) of the congruence.
@@ -224,7 +224,7 @@ namespace libsemigroups {
     //! Kambites instances can only be used to compute two-sided congruences,
     //! and so the first parameter \p knd must always be
     //! congruence_kind::twosided. The parameter \p knd is included for
-    //! uniformity of interface between with \ref KnuthBendixBase, \ref
+    //! uniformity of interface between with \ref KnuthBendixImpl, \ref
     //! Kambites, and \ref Congruence.
     //!
     //! \param knd the kind (onesided or twosided) of the congruence.

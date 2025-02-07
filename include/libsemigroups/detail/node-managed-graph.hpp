@@ -17,7 +17,7 @@
 //
 
 // This file contains the declaration of the NodeManagedGraph class, used
-// by Stephen and by ToddCoxeterBase.
+// by Stephen and by ToddCoxeterImpl.
 
 // TODO:
 // * iwyu

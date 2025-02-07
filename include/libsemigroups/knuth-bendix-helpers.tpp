@@ -17,7 +17,7 @@
 //
 
 // This file contains the implementations of helper function templates for the
-// KnuthBendixBase class template.
+// KnuthBendixImpl class template.
 
 namespace libsemigroups {
   namespace congruence_common {
@@ -303,7 +303,7 @@ namespace libsemigroups {
     //   congruence_kind::twosided;
 
     //   // TODO(1) validate lhs and rhs
-    //   KnuthBendixBase         kb(twosided, p);
+    //   KnuthBendixImpl         kb(twosided, p);
     //   std::string         lphbt = p.alphabet();
     //   std::vector<size_t> perm(lphbt.size(), 0);
     //   std::iota(perm.begin(), perm.end(), 0);

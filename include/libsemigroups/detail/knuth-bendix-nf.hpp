@@ -17,7 +17,7 @@
 //
 
 // This file contains an implementation of a range object for producing normal
-// forms for a KnuthBendixBase object.
+// forms for a KnuthBendixImpl object.
 
 #ifndef LIBSEMIGROUPS_DETAIL_KNUTH_BENDIX_NF_HPP_
 #define LIBSEMIGROUPS_DETAIL_KNUTH_BENDIX_NF_HPP_

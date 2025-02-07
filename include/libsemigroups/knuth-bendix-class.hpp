@@ -17,7 +17,7 @@
 //
 
 // This file contains the declaration of the class template KnuthBendix which
-// is really just a facade for detail::KnuthBendixBase.
+// is really just a facade for detail::KnuthBendixImpl.
 
 #ifndef LIBSEMIGROUPS_KNUTH_BENDIX_CLASS_HPP_
 #define LIBSEMIGROUPS_KNUTH_BENDIX_CLASS_HPP_
@@ -29,7 +29,7 @@
 #include "presentation.hpp"  // for Presentation
 
 #include "detail/cong-common-class.hpp"  // for CongruenceCommon
-#include "detail/knuth-bendix-base.hpp"  // for KnuthBendixBase
+#include "detail/knuth-bendix-impl.hpp"  // for KnuthBendixImpl
 #include "detail/rewriters.hpp"          // for RewriteTrie
 
 namespace libsemigroups {
@@ -82,9 +82,9 @@ namespace libsemigroups {
   template <typename Word,
             typename Rewriter       = detail::RewriteTrie,
             typename ReductionOrder = ShortLexCompare>
-  class KnuthBendix : public detail::KnuthBendixBase<Rewriter, ReductionOrder> {
+  class KnuthBendix : public detail::KnuthBendixImpl<Rewriter, ReductionOrder> {
    private:
-    using KnuthBendixBase_ = detail::KnuthBendixBase<Rewriter, ReductionOrder>;
+    using KnuthBendixImpl_ = detail::KnuthBendixImpl<Rewriter, ReductionOrder>;
 
     std::vector<Word>  _generating_pairs;
     Presentation<Word> _presentation;
@@ -101,7 +101,7 @@ namespace libsemigroups {
       //! \brief Values for specifying how to measure the length of an
       //! overlap.
       //!
-      //! The values in this enum determine how a KnuthBendixBase instance
+      //! The values in this enum determine how a KnuthBendixImpl instance
       //! measures the length \f$d(AB, BC)\f$ of the overlap of two words
       //! \f$AB\f$ and \f$BC\f$:
       //!
@@ -154,7 +154,7 @@ namespace libsemigroups {
     KnuthBendix& init() {
       _generating_pairs.clear();
       _presentation.init();
-      KnuthBendixBase_::init();
+      KnuthBendixImpl_::init();
       return *this;
     }
 
@@ -380,7 +380,7 @@ namespace libsemigroups {
                                      Iterator3 first2,
                                      Iterator4 last2) {
       // Call detail::CongruenceCommon version so that we perform bound checks
-      // in KnuthBendix and not KnuthBendixBase
+      // in KnuthBendix and not KnuthBendixImpl
       return detail::CongruenceCommon::add_generating_pair<KnuthBendix>(
           first1, last1, first2, last2);
     }
@@ -390,7 +390,7 @@ namespace libsemigroups {
     ////////////////////////////////////////////////////////////////////////
 
     // NOTE: contains_no_checks and currently_contains_no_checks are implemented
-    // and documented in KnuthBendixBase
+    // and documented in KnuthBendixImpl
 
     //! \ingroup knuth_bendix_class_intf_group
     //!
@@ -419,7 +419,7 @@ namespace libsemigroups {
                             Iterator3 first2,
                             Iterator4 last2) const {
       // Call CongruenceCommon version so that we perform bound checks
-      // in KnuthBendix and not KnuthBendixBase_
+      // in KnuthBendix and not KnuthBendixImpl_
       return detail::CongruenceCommon::currently_contains<KnuthBendix>(
           first1, last1, first2, last2);
     }
@@ -455,7 +455,7 @@ namespace libsemigroups {
     ////////////////////////////////////////////////////////////////////////
 
     // NOTE: reduce_no_checks and reduce_no_run_no_checks are implemented and
-    // documented in KnuthBendixBase
+    // documented in KnuthBendixImpl
 
     //! \ingroup knuth_bendix_class_intf_group
     //!
@@ -483,7 +483,7 @@ namespace libsemigroups {
                                  InputIterator1 first,
                                  InputIterator2 last) const {
       // Call CongruenceCommon version so that we perform bound checks
-      // in KnuthBendix and not KnuthBendixBase_
+      // in KnuthBendix and not KnuthBendixImpl_
       return detail::CongruenceCommon::reduce_no_run<KnuthBendix>(
           d_first, first, last);
     }
@@ -515,7 +515,7 @@ namespace libsemigroups {
                           InputIterator1 first,
                           InputIterator2 last) {
       // Call CongruenceCommon version so that we perform bound checks
-      // in KnuthBendix and not KnuthBendixBase_
+      // in KnuthBendix and not KnuthBendixImpl_
       return detail::CongruenceCommon::reduce<KnuthBendix>(
           d_first, first, last);
     }

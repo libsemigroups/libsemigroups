@@ -30,7 +30,7 @@
 #include <utility>      // for move
 #include <vector>       // for vector
 
-#include "knuth-bendix-class.hpp"  // for KnuthBendixBase
+#include "knuth-bendix-class.hpp"  // for KnuthBendixImpl
 #include "presentation.hpp"        // for Presentation
 #include "to-todd-coxeter.hpp"     // for to_todd_coxeter
 #include "types.hpp"               // for letter_type, wor...

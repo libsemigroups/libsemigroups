@@ -54,7 +54,7 @@ namespace libsemigroups {
   enum class tril;
 
   namespace detail {
-    class ToddCoxeterBase;
+    class ToddCoxeterImpl;
     class CongruenceCommon;
     struct CongruenceBase;
 

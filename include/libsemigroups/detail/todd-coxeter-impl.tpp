@@ -17,13 +17,13 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-// This file contains out-of-line ToddCoxeterBase mem fn templates
+// This file contains out-of-line ToddCoxeterImpl mem fn templates
 
 namespace libsemigroups {
   namespace detail {
 
     template <typename Node>
-    ToddCoxeterBase& ToddCoxeterBase::init(congruence_kind        knd,
+    ToddCoxeterImpl& ToddCoxeterImpl::init(congruence_kind        knd,
                                            WordGraph<Node> const& wg) {
       LIBSEMIGROUPS_ASSERT(!_settings_stack.empty());
       detail::CongruenceCommon::init(knd);
@@ -38,7 +38,7 @@ namespace libsemigroups {
     }
 
     template <typename Node>
-    ToddCoxeterBase& ToddCoxeterBase::init(congruence_kind                knd,
+    ToddCoxeterImpl& ToddCoxeterImpl::init(congruence_kind                knd,
                                            Presentation<word_type> const& p,
                                            WordGraph<Node> const&         wg) {
       init(knd, p);
@@ -49,8 +49,8 @@ namespace libsemigroups {
     }
 
     template <typename Iterator1, typename Iterator2>
-    ToddCoxeterBase::index_type
-    ToddCoxeterBase::current_index_of_no_checks(Iterator1 first,
+    ToddCoxeterImpl::index_type
+    ToddCoxeterImpl::current_index_of_no_checks(Iterator1 first,
                                                 Iterator2 last) const {
       node_type c = current_word_graph().initial_node();
 
@@ -65,8 +65,8 @@ namespace libsemigroups {
     }
 
     template <typename Iterator1, typename Iterator2>
-    ToddCoxeterBase::index_type
-    ToddCoxeterBase::index_of_no_checks(Iterator1 first, Iterator2 last) {
+    ToddCoxeterImpl::index_type
+    ToddCoxeterImpl::index_of_no_checks(Iterator1 first, Iterator2 last) {
       run();
       LIBSEMIGROUPS_ASSERT(finished());
       if (!is_standardized()) {
@@ -77,7 +77,7 @@ namespace libsemigroups {
 
     template <typename OutputIterator>
     OutputIterator
-    ToddCoxeterBase::current_word_of_no_checks(OutputIterator d_first,
+    ToddCoxeterImpl::current_word_of_no_checks(OutputIterator d_first,
                                                index_type     i) const {
       if (!is_standardized()) {
         // We must standardize here o/w there's no bijection between the numbers
@@ -85,7 +85,7 @@ namespace libsemigroups {
         // Or worse, there's no guarantee that _forest is populated or is a
         // spanning tree of the current word graph
         // TODO(1) bit fishy here too
-        const_cast<ToddCoxeterBase*>(this)->standardize(Order::shortlex);
+        const_cast<ToddCoxeterImpl*>(this)->standardize(Order::shortlex);
       }
       if (!internal_presentation().contains_empty_word()) {
         ++i;
@@ -97,7 +97,7 @@ namespace libsemigroups {
     }
 
     template <typename OutputIterator>
-    OutputIterator ToddCoxeterBase::current_word_of(OutputIterator d_first,
+    OutputIterator ToddCoxeterImpl::current_word_of(OutputIterator d_first,
                                                     index_type     i) const {
       size_t const offset
           = (internal_presentation().contains_empty_word() ? 0 : 1);
@@ -108,7 +108,7 @@ namespace libsemigroups {
         // Or worse, there's no guarantee that _forest is populated or is a
         // spanning tree of the current word graph
         // TODO(1) bit fishy here too
-        const_cast<ToddCoxeterBase*>(this)->standardize(Order::shortlex);
+        const_cast<ToddCoxeterImpl*>(this)->standardize(Order::shortlex);
       }
       if (i >= _word_graph.number_of_nodes_active() - offset) {
         // Maybe we shouldn't standardize but should just check if corresponds
@@ -125,7 +125,7 @@ namespace libsemigroups {
               typename Iterator2,
               typename Iterator3,
               typename Iterator4>
-    tril ToddCoxeterBase::currently_contains_no_checks(Iterator1 first1,
+    tril ToddCoxeterImpl::currently_contains_no_checks(Iterator1 first1,
                                                        Iterator2 last1,
                                                        Iterator3 first2,
                                                        Iterator4 last2) const {
@@ -149,7 +149,7 @@ namespace libsemigroups {
               typename Iterator2,
               typename Iterator3,
               typename Iterator4>
-    bool ToddCoxeterBase::contains_no_checks(Iterator1 first1,
+    bool ToddCoxeterImpl::contains_no_checks(Iterator1 first1,
                                              Iterator2 last1,
                                              Iterator3 first2,
                                              Iterator4 last2) {
@@ -159,7 +159,7 @@ namespace libsemigroups {
           && current_word_graph().number_of_nodes_active() == 1) {
         return std::equal(first1, last1, first2, last2);
       }
-      return detail::CongruenceCommon::contains_no_checks<ToddCoxeterBase>(
+      return detail::CongruenceCommon::contains_no_checks<ToddCoxeterImpl>(
           first1, last1, first2, last2);
     }
 
@@ -167,7 +167,7 @@ namespace libsemigroups {
               typename Iterator2,
               typename Iterator3,
               typename Iterator4>
-    bool ToddCoxeterBase::contains(Iterator1 first1,
+    bool ToddCoxeterImpl::contains(Iterator1 first1,
                                    Iterator2 last1,
                                    Iterator3 first2,
                                    Iterator4 last2) {
@@ -177,7 +177,7 @@ namespace libsemigroups {
           && current_word_graph().number_of_nodes_active() == 1) {
         return std::equal(first1, last1, first2, last2);
       }
-      return detail::CongruenceCommon::contains<ToddCoxeterBase>(
+      return detail::CongruenceCommon::contains<ToddCoxeterImpl>(
           first1, last1, first2, last2);
     }
 
@@ -185,12 +185,12 @@ namespace libsemigroups {
               typename InputIterator1,
               typename InputIterator2>
     OutputIterator
-    ToddCoxeterBase::reduce_no_run_no_checks(OutputIterator d_first,
+    ToddCoxeterImpl::reduce_no_run_no_checks(OutputIterator d_first,
                                              InputIterator1 first,
                                              InputIterator2 last) const {
       if (!is_standardized()) {
         // TODO(1) this is a bit fishy
-        const_cast<ToddCoxeterBase*>(this)->standardize(Order::shortlex);
+        const_cast<ToddCoxeterImpl*>(this)->standardize(Order::shortlex);
       }
       return current_word_of_no_checks(d_first,
                                        current_index_of_no_checks(first, last));

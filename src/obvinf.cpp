@@ -29,7 +29,7 @@
 #include "libsemigroups/constants.hpp"     // for UNDEFINED
 #include "libsemigroups/debug.hpp"         // for LIBSEMIGROUPS_ASSERT
 #include "libsemigroups/knuth-bendix.hpp"  // for KnuthBendix
-#include "libsemigroups/todd-coxeter.hpp"  // for ToddCoxeterBase
+#include "libsemigroups/todd-coxeter.hpp"  // for ToddCoxeterImpl
 #include "libsemigroups/word-range.hpp"    // for ToWord
 
 #include "libsemigroups/detail/eigen.hpp"
@@ -226,7 +226,7 @@ namespace libsemigroups {
     }
   }
 
-  bool is_obviously_infinite(detail::ToddCoxeterBase const& tc) {
+  bool is_obviously_infinite(detail::ToddCoxeterImpl const& tc) {
     auto const& d = tc.current_word_graph();
     if (tc.finished()
         || word_graph::is_complete(
@@ -235,7 +235,7 @@ namespace libsemigroups {
       // sometimes be empty (0 nodes), but with 1 active node, so this line
       // can throw (because the range pointed at by d.cbegin_active_nodes(),
       // d.cend_active_nodes() is non-empty but d itself has no nodes)
-      // This is an initialization issue for ToddCoxeterBase, it should always
+      // This is an initialization issue for ToddCoxeterImpl, it should always
       // be true the number of nodes >= number of active nodes.
       return false;
     }
