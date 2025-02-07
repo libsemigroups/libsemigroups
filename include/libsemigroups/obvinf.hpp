@@ -240,7 +240,8 @@ namespace libsemigroups {
     //! \warning
     //! This function does not check its arguments.
     // TODO(0) does this check its args? Throw?
-    IsObviouslyInfinite& add_rules_no_checks(const_iterator_word_type first,
+    IsObviouslyInfinite& add_rules_no_checks(word_type const&,
+                                             const_iterator_word_type first,
                                              const_iterator_word_type last);
 
     //! \brief Add rules from iterators to std::string.
@@ -268,10 +269,10 @@ namespace libsemigroups {
                                              const_iterator_string first,
                                              const_iterator_string last);
 
-    IsObviouslyInfinite&
-    add_rules_no_checks(Presentation<std::string> const& lphbt,
-                        const_iterator_word_type         first,
-                        const_iterator_word_type         last);
+    // TODO(0) doc
+    IsObviouslyInfinite& add_rules_no_checks(std::string const&       lphbt,
+                                             const_iterator_word_type first,
+                                             const_iterator_word_type last);
 
     //! \brief Add rules from iterators to std::pair of std::string.
     //!
@@ -410,12 +411,13 @@ namespace libsemigroups {
           rx::seq<typename Presentation<Word>::letter_type>(0)
               | rx::take(p.alphabet().size()) | rx::to_vector());
       IsObviouslyInfinite ioi(copy_p.alphabet().size());
-      ioi.add_rules_no_checks(copy_p.rules.cbegin(), copy_p.rules.cend());
+      ioi.add_rules_no_checks(
+          p.alphabet(), copy_p.rules.cbegin(), copy_p.rules.cend());
       return ioi.result();
     }
 
     IsObviouslyInfinite ioi(p.alphabet().size());
-    ioi.add_rules_no_checks(p.rules.cbegin(), p.rules.cend());
+    ioi.add_rules_no_checks(p.alphabet(), p.rules.cbegin(), p.rules.cend());
     return ioi.result();
   }
 
@@ -555,8 +557,8 @@ namespace libsemigroups {
     IsObviouslyInfinite ioi(p.alphabet().size());
     ioi.add_rules_no_checks(p.alphabet(), p.rules.cbegin(), p.rules.cend());
     ioi.add_rules_no_checks(p.alphabet(),
-                            kb.generating_pairs().cbegin(),
-                            kb.generating_pairs().cend());
+                            kb.internal_generating_pairs().cbegin(),
+                            kb.internal_generating_pairs().cend());
     return ioi.result();
   }
 

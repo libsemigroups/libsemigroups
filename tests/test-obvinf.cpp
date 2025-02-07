@@ -117,7 +117,7 @@ namespace libsemigroups {
                           "[quick]") {
     IsObviouslyInfinite    ioi(2);
     std::vector<word_type> vv = {"aa"_w, "bba"_w, "bbaa"_w, "bbbbbb"_w};
-    ioi.add_rules_no_checks(vv.cbegin(), vv.cend());
+    ioi.add_rules_no_checks("ab"_w, vv.cbegin(), vv.cend());
 
     require_true_if_eigen_enabled(ioi);
 
@@ -182,10 +182,10 @@ namespace libsemigroups {
     auto                   w = 00_w;
     std::vector<word_type> v
         = {0010110220112_w, 0_w, 0001111000111102111_w, 11_w};
-    ioi.add_rules_no_checks(v.cbegin(), v.cend());
+    ioi.add_rules_no_checks(012_w, v.cbegin(), v.cend());
     REQUIRE(ioi.result());
     v = {22_w, 1010101_w};
-    ioi.add_rules_no_checks(v.cbegin(), v.cend());
+    ioi.add_rules_no_checks(012_w, v.cbegin(), v.cend());
     require_true_if_eigen_enabled(ioi);
 
     v = {111000001110000011100000111222111111111_w,
@@ -194,13 +194,13 @@ namespace libsemigroups {
          00_w,
          {},
          00000001111111112_w};
-    ioi.add_rules_no_checks(v.cbegin(), v.cend());
+    ioi.add_rules_no_checks(012_w, v.cbegin(), v.cend());
     require_true_if_eigen_enabled(ioi);
     v = {0_w, 00_w};
-    ioi.add_rules_no_checks(v.cbegin(), v.cend());
+    ioi.add_rules_no_checks(012_w, v.cbegin(), v.cend());
     REQUIRE(!ioi.result());
     v = {1_w, 1100_w, 200_w, 2211100_w};
-    ioi.add_rules_no_checks(v.cbegin(), v.cend());
+    ioi.add_rules_no_checks(012_w, v.cbegin(), v.cend());
     REQUIRE(!ioi.result());
   }
 
@@ -210,7 +210,7 @@ namespace libsemigroups {
                           "[quick][integer-alphabet]") {
     IsObviouslyInfinite    ioi(2);
     std::vector<word_type> v = {01_w, 0_w, 010_w, 10_w};
-    ioi.add_rules_no_checks(v.cbegin(), v.cend());
+    ioi.add_rules_no_checks(012_w, v.cbegin(), v.cend());
     REQUIRE(ioi.result());
   }
 
@@ -220,7 +220,7 @@ namespace libsemigroups {
                           "[quick][integer-alphabet]") {
     IsObviouslyInfinite    ioi(2);
     std::vector<word_type> v = {010_w, 00_w, 11_w, 1_w, 0101_w, 01110_w};
-    ioi.add_rules_no_checks(v.cbegin(), v.cend());
+    ioi.add_rules_no_checks(012_w, v.cbegin(), v.cend());
     REQUIRE(ioi.result());
   }
 
@@ -230,7 +230,7 @@ namespace libsemigroups {
                           "[quick][integer-alphabet]") {
     IsObviouslyInfinite    ioi(3);
     std::vector<word_type> v = {010_w, 12_w, 20_w, 1_w};
-    ioi.add_rules_no_checks(v.cbegin(), v.cend());
+    ioi.add_rules_no_checks(012_w, v.cbegin(), v.cend());
     REQUIRE(ioi.result());
   }
 
@@ -241,7 +241,7 @@ namespace libsemigroups {
     IsObviouslyInfinite    ioi(3);
     std::vector<word_type> v
         = {000_w, 112_w, 2222_w, 1210_w, 11_w, 21_w, 210_w, 112_w};
-    ioi.add_rules_no_checks(v.cbegin(), v.cend());
+    ioi.add_rules_no_checks(012_w, v.cbegin(), v.cend());
     REQUIRE(ioi.result());
   }
 
@@ -251,7 +251,7 @@ namespace libsemigroups {
                           "[quick][integer-alphabet]") {
     IsObviouslyInfinite    ioi(2);
     std::vector<word_type> v = {00_w, 110_w, 1100_w, 111111_w};
-    ioi.add_rules_no_checks(v.cbegin(), v.cend());
+    ioi.add_rules_no_checks(012_w, v.cbegin(), v.cend());
     require_true_if_eigen_enabled(ioi);
   }
 
@@ -261,7 +261,7 @@ namespace libsemigroups {
                           "[quick][integer-alphabet]") {
     IsObviouslyInfinite    ioi(2);
     std::vector<word_type> v = {0_w, 00_w, 1_w, 11_w};
-    ioi.add_rules_no_checks(v.cbegin(), v.cend());
+    ioi.add_rules_no_checks(012_w, v.cbegin(), v.cend());
     REQUIRE(ioi.result());
   }
 
@@ -272,7 +272,7 @@ namespace libsemigroups {
     IsObviouslyInfinite    ioi(5);
     std::vector<word_type> v
         = {0_w, 00_w, 1_w, 11_w, 014_w, 444_w, 32_w, 2_w, 22_w, 333_w};
-    ioi.add_rules_no_checks(v.cbegin(), v.cend());
+    ioi.add_rules_no_checks(012_w, v.cbegin(), v.cend());
     REQUIRE(ioi.result());
   }
 
@@ -282,7 +282,7 @@ namespace libsemigroups {
                           "[quick][integer-alphabet]") {
     IsObviouslyInfinite    ioi(2);
     std::vector<word_type> v = {0_w, 011_w, 1_w, 100_w};
-    ioi.add_rules_no_checks(v.cbegin(), v.cend());
+    ioi.add_rules_no_checks(012_w, v.cbegin(), v.cend());
     REQUIRE(!ioi.result());
     // Currently the test does not pass, but the semigroup
     // is infinite! Contains (ab)^n for all n.
@@ -295,7 +295,7 @@ namespace libsemigroups {
     IsObviouslyInfinite    ioi(3);
     std::vector<word_type> v
         = {0_w, 00_w, 1_w, 11_w, {}, 22_w, 02_w, 21_w, 0101_w, 01_w};
-    ioi.add_rules_no_checks(v.cbegin(), v.cend());
+    ioi.add_rules_no_checks(012_w, v.cbegin(), v.cend());
     REQUIRE(!ioi.result());
     // This is a presentation for a finite semigroup so
     // we should never detect it as obviously infinite

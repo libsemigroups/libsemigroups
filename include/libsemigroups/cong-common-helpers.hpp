@@ -74,8 +74,8 @@ namespace libsemigroups {
     //! This page contains documentation for helper functions for the classes
     //! Congruence, Kambites, KnuthBendix, and \ref_todd_coxeter. The
     //! functions documented on this page belong to all of the namespaces
-    //! \ref cong_common_helpers_group "congruence_common", \ref congruence, \ref
-    //! kambites, \ref knuth_bendix, and \ref todd_coxeter.
+    //! \ref cong_common_helpers_group "congruence_common", \ref congruence,
+    //! \ref kambites, \ref knuth_bendix, and \ref todd_coxeter.
 
     ////////////////////////////////////////////////////////////////////////
     // Interface helpers - add_generating_pair
