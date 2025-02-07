@@ -236,16 +236,16 @@ namespace libsemigroups {
     // Possible future interface helpers - redundant_rule
     ////////////////////////////////////////////////////////////////////////
 
-    template <typename T>
-    std::vector<std::string>::const_iterator
-    redundant_rule(Presentation<std::string> const& p, T t) {
+    template <typename Word, typename Time>
+    typename std::vector<Word>::const_iterator
+    redundant_rule(Presentation<Word> const& p, Time t) {
       constexpr static congruence_kind twosided = congruence_kind::twosided;
 
       p.validate();
-      Presentation<std::string> q;
+      Presentation<Word> q;
       q.alphabet(p.alphabet());
       q.contains_empty_word(p.contains_empty_word());
-      detail::KnuthBendixBase kb;
+      KnuthBendix<Word> kb;
 
       for (auto omit = p.rules.crbegin(); omit != p.rules.crend(); omit += 2) {
         q.rules.clear();

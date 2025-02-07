@@ -277,43 +277,6 @@ namespace libsemigroups {
     //! iterator pointing to its left hand side is returned.
     //!
     //! If no rule can be shown to be redundant in this way, then an iterator
-    //! pointing to \c p.rules.cend() is returned.
-    //!
-    //! \tparam Time type of the 2nd parameter (time to try running
-    //! Knuth-Bendix).
-    //! \param p the presentation.
-    //! \param t time to run KnuthBendix for every omitted rule.
-    //!
-    //! \returns An iterator pointing at the left-hand side of a redundant rule
-    //! of \c p.rules.cend().
-    //!
-    //! \warning The progress of the Knuth-Bendix algorithm may differ between
-    //! different calls to this function even if the parameters are identical.
-    //! As such this is non-deterministic, and may produce different results
-    //! with the same input.
-    template <typename Time>
-    [[nodiscard]] std::vector<std::string>::const_iterator
-    redundant_rule(Presentation<std::string> const& p, Time t);
-
-    //! \ingroup knuth_bendix_helpers_group
-    //! \brief Return an iterator pointing at the left hand side of a redundant
-    //! rule.
-    //!
-    //! Defined in \c knuth-bendix-helpers.hpp.
-    //!
-    //! Starting with the last rule in the presentation, this function
-    //! attempts to run the Knuth-Bendix algorithm on the rules of the
-    //! presentation except for the given omitted rule. For every such omitted
-    //! rule, Knuth-Bendix is run for the length of time indicated by the
-    //! second parameter \p t, and then it is checked if the omitted rule can
-    //! be shown to be redundant (rewriting both sides of the omitted rule
-    //! using the other rules using the output of the, not necessarily
-    //! finished, Knuth-Bendix algorithm).
-    //!
-    //! If the omitted rule can be shown to be redundant in this way, then an
-    //! iterator pointing to its left hand side is returned.
-    //!
-    //! If no rule can be shown to be redundant in this way, then an iterator
     //! pointing to \c p.cend() is returned.
     //!
     //! \tparam Word type of words in the Presentation \p p.
@@ -326,13 +289,9 @@ namespace libsemigroups {
     //! different calls to this function even if the parameters are identical.
     //! As such this is non-deterministic, and may produce different results
     //! with the same input.
-    // TODO(0) remove and use the above instead
     template <typename Word, typename Time>
-    [[nodiscard]] auto redundant_rule(Presentation<Word> const& p, Time t) {
-      auto pp = to_presentation<std::string>(p);
-      return p.rules.cbegin()
-             + std::distance(pp.rules.cbegin(), redundant_rule(pp, t));
-    }
+    [[nodiscard]] typename std::vector<Word>::const_iterator
+    redundant_rule(Presentation<Word> const& p, Time t);
 
   }  // namespace knuth_bendix
 }  // namespace libsemigroups
