@@ -311,6 +311,7 @@ namespace libsemigroups {
       // KnuthBendixBase - interface requirements - contains
       ////////////////////////////////////////////////////////////////////////
 
+      // TODO(0) re-add the doc for this one function
       template <typename Iterator1,
                 typename Iterator2,
                 typename Iterator3,
@@ -332,6 +333,7 @@ namespace libsemigroups {
             first1, last1, first2, last2);
       }
 
+      // TODO(0) re-add the doc for this one function
       template <typename Iterator1,
                 typename Iterator2,
                 typename Iterator3,
@@ -360,6 +362,7 @@ namespace libsemigroups {
       // KnuthBendixBase - interface requirements - reduce
       ////////////////////////////////////////////////////////////////////////
 
+      // TODO(0) re-add the doc for this one function
       template <typename OutputIterator,
                 typename InputIterator1,
                 typename InputIterator2>
@@ -377,6 +380,7 @@ namespace libsemigroups {
             d_first, first, last);
       }
 
+      // TODO(0) re-add the doc for this one function
       template <typename OutputIterator,
                 typename InputIterator1,
                 typename InputIterator2>

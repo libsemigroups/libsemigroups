@@ -130,12 +130,11 @@ namespace libsemigroups {
     using native_word_type = Word;
 
     //! \ingroup knuth_bendix_class_mem_types_group
-    //! \hideinitializer
     //!
     //! \brief Type of the rules in the system.
     //!
     //! Type of the rules in the system.
-    using rule_type = typename KnuthBendixBase_::rule_type;
+    using rule_type = std::pair<Word, Word>;
 
     //! \ingroup knuth_bendix_class_init_group
     //!
@@ -481,7 +480,6 @@ namespace libsemigroups {
           d_first, first, last);
     }
 
-#ifdef PARSED_BY_DOXYGEN
     //! \ingroup knuth_bendix_class_accessors_group
     //! \brief Return a range object containing the active rules.
     //!
@@ -492,8 +490,24 @@ namespace libsemigroups {
     //!
     //! \returns
     //! A range object containing the current active rules.
-    // TODO(0) renovate currently always returns strings
-    using KnuthBendixBase_::active_rules;
+    // TODO(1) should be const
+    // TODO(0) to tpp if possible
+    auto active_rules() {
+      auto result = KnuthBendixBase_::active_rules();
+      if constexpr (std::is_same_v<
+                        native_word_type,
+                        typename KnuthBendixBase_::native_word_type>) {
+        return result;
+      } else {
+        // TODO(1) remove allocations here somehow (probably by making a custom
+        // range object holding memory to put the incoming rules into)
+        return result | rx::transform([](auto const& pair) {
+                 return std::make_pair(
+                     Word(pair.first.begin(), pair.first.end()),
+                     Word(pair.second.begin(), pair.second.end()));
+               });
+      }
+    }
 
     //! \brief Return the node labels of the Gilman \ref WordGraph
     //!
@@ -502,12 +516,23 @@ namespace libsemigroups {
     //! rules of the rewriting system.
     //!
     //! \return The node labels of the Gilman \ref WordGraph, a const
-    //! reference to a `std::vector<std::string>`.
+    //! reference to a `std::vector<Word>`.
     //!
     //! \sa \ref gilman_graph.
-    // TODO(0) renovate currently always returns labels that are strings
-    using KnuthBendixBase_::gilman_graph_node_labels;
-#endif
+    std::vector<Word> gilman_graph_node_labels() {
+      auto base_result = KnuthBendixBase_::gilman_graph_node_labels();
+      if constexpr (std::is_same_v<
+                        native_word_type,
+                        typename KnuthBendixBase_::native_word_type>) {
+        return base_result;
+      } else {
+        std::vector<Word> result;
+        for (auto& label : base_result) {
+          result.emplace_back(label.begin(), label.end());
+        }
+        return result;
+      }
+    }
   };  // class KnuthBendix
 
   //! \ingroup knuth_bendix_class_group

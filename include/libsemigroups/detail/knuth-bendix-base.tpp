@@ -356,10 +356,8 @@ namespace libsemigroups {
       return iterator_range(_rewriter.begin(), _rewriter.end())
              | transform([this](auto const& rule) {
                  // TODO(1) remove allocation
-                 detail::internal_string_type lhs
-                     = detail::internal_string_type(*rule->lhs());
-                 detail::internal_string_type rhs
-                     = detail::internal_string_type(*rule->rhs());
+                 detail::internal_string_type lhs(*rule->lhs());
+                 detail::internal_string_type rhs(*rule->rhs());
                  internal_to_external_string(lhs);
                  internal_to_external_string(rhs);
                  return std::make_pair(lhs, rhs);

@@ -77,7 +77,9 @@ namespace libsemigroups {
 
   namespace {
     struct weird_cmp {
-      bool operator()(rule_type const& x, rule_type const& y) const noexcept {
+      template <typename Word>
+      bool operator()(std::pair<Word, Word> const& x,
+                      std::pair<Word, Word> const& y) const noexcept {
         return shortlex_compare(x.first, y.first)
                || (x.first == y.first && shortlex_compare(x.second, y.second));
       }
@@ -1562,10 +1564,11 @@ namespace libsemigroups {
     std::array<uint64_t, 11> const num
         = {0, 0, 22, 71, 181, 391, 750, 1'317, 2'161, 3'361, 5'006};
 
+    KnuthBendix<word_type, TestType> kb;
     for (size_t n = 2; n < 11; ++n) {
       auto p = presentation::examples::chinese_monoid(n);
       p.contains_empty_word(true);
-      KnuthBendix<word_type, TestType> kb(twosided, p);
+      kb.init(twosided, p);
       kb.run();
       REQUIRE(knuth_bendix::normal_forms(kb).min(0).max(5).count() == num[n]);
     }
@@ -1596,14 +1599,14 @@ namespace libsemigroups {
              | to_vector())
             == std::vector<word_type>({{}, 0_w, 1_w, 10_w}));
     REQUIRE((kb.active_rules() | sort(weird_cmp()) | to_vector())
-            == std::vector<std::pair<std::string, std::string>>(
-                {{{0, 0}, {0}},
-                 {{1, 1}, {1}},
-                 {{0, 1, 0}, {1, 0}},
-                 {{1, 0, 1}, {1, 0}}}));
+            == std::vector<std::pair<word_type, word_type>>(
+                {{00_w, 0_w}, {11_w, 1_w}, {010_w, 10_w}, {101_w, 10_w}}));
+    REQUIRE(kb.gilman_graph_node_labels()
+            == std::vector<word_type>({""_w, 1_w, 0_w, 10_w, 01_w}));
     // The gilman_graph generated is isomorphic to the word_graph given, but not
     // identical. Since the normal forms are correct (see above) the below check
-    // is omitted. REQUIRE(kb.gilman_graph()
+    // is omitted.
+    // REQUIRE(kb.gilman_graph()
     //         == make<WordGraph<size_t>>(5, {{1, 3}, {UNDEFINED, 2}, {},
     //         {4}}));
   }
