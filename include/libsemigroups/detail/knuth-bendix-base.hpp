@@ -851,11 +851,14 @@ namespace libsemigroups {
       void run_impl() override;
       bool finished_impl() const override;
     };  // class KnuthBendixBase
-  }     // namespace detail
+  }  // namespace detail
 
   ////////////////////////////////////////////////////////////////////////
   // global functions - to_human_readable_repr
   ////////////////////////////////////////////////////////////////////////
+
+  // TODO(1) for consistency (with ToddCoxeter), the next two functions should
+  // really be in knuth-bendix.hpp.
 
   //! \ingroup knuth_bendix_group
   //!
