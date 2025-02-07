@@ -173,7 +173,7 @@ namespace libsemigroups {
       using Word = typename Subclass::native_word_type;
 
       // Congruence + ToddCoxeter have their own overloads for this
-      static_assert(!std::is_base_of_v<ToddCoxeterBase, Subclass>
+      static_assert(!std::is_base_of_v<detail::ToddCoxeterBase, Subclass>
                     && !std::is_base_of_v<detail::CongruenceBase, Subclass>);
       static_assert(std::is_base_of_v<detail::CongruenceCommon, Subclass>);
 

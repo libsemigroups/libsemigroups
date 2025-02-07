@@ -45,11 +45,8 @@
 namespace libsemigroups {
 
   // Forward decls
-
   template <typename Word>
   class Congruence;
-
-  class ToddCoxeterBase;
 
   template <typename Word>
   class ToddCoxeter;
@@ -57,6 +54,7 @@ namespace libsemigroups {
   enum class tril;
 
   namespace detail {
+    class ToddCoxeterBase;
     class CongruenceCommon;
     struct CongruenceBase;
 

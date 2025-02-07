@@ -34,16 +34,18 @@
 namespace libsemigroups {
 #ifndef PARSED_BY_DOXYGEN
   class FroidurePinBase;  // forward decl
-  class ToddCoxeterBase;
-
-  template <typename Rewriter, typename ReductionOrder>
-  class KnuthBendixBase;
 
   template <typename Word>
   class Congruence;
 #endif
 
   namespace detail {
+
+    class ToddCoxeterBase;
+
+    template <typename Rewriter, typename ReductionOrder>
+    class KnuthBendixBase;
+
     template <typename Thing>
     struct to_froidure_pin_helper;
 

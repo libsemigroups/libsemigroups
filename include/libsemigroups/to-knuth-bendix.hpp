@@ -22,9 +22,7 @@
 #include "knuth-bendix.hpp"
 
 namespace libsemigroups {
-
   class FroidurePinBase;
-  class ToddCoxeterBase;
   enum class congruence_kind;
 
   KnuthBendix<word_type> to_knuth_bendix(congruence_kind  knd,
