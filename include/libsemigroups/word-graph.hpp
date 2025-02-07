@@ -637,11 +637,11 @@ namespace libsemigroups {
     //! Returns the node adjacent to \p source via the edge labelled \p a, or
     //! \ref UNDEFINED; both are values of type \ref node_type.
     //!
-    //! \complexity
-    //! Constant.
-    //!
     //! \throws LibsemigroupsException if \p source or \p a is not
     //! valid.
+    //!
+    //! \complexity
+    //! Constant.
     // Not noexcept because throw_if_node_out_of_bounds/label aren't
     [[nodiscard]] node_type target(node_type source, label_type a) const;
 
@@ -1449,8 +1449,7 @@ namespace libsemigroups {
     //! \p wg starting at the node \p from labelled by the word defined by \p
     //! first and \p last or \ref UNDEFINED.
     //!
-    //! \tparam Node1  the type of the nodes of the WordGraph
-    //! \p wg.
+    //! \tparam Node1 the type of the nodes of the WordGraph \p wg.
     //!
     //! \tparam Node2 the type of the node \p from (must satisfy `sizeof(Node2)
     //! <= sizeof(Node1)`).
@@ -1460,10 +1459,10 @@ namespace libsemigroups {
     //! \param first iterator into a word.
     //! \param last iterator into a word.
     //!
+    //! \returns A value of type \p Node1.
+    //!
     //! \exceptions
     //! \noexcept
-    //!
-    //! \returns A value of type \p Node1.
     //!
     //! \complexity
     //! At worst the distance from \p first to \p last.
@@ -1492,10 +1491,10 @@ namespace libsemigroups {
     //! \param from the source node.
     //! \param path the word.
     //!
+    //! \returns A value of type \p Node1.
+    //!
     //! \exceptions
     //! \noexcept
-    //!
-    //! \returns A value of type \p Node1.
     //!
     //! \complexity
     //! At worst the length of \p path.
@@ -2065,11 +2064,11 @@ namespace libsemigroups {
     //! \param first iterator into a word.
     //! \param last iterator into a word.
     //!
-    //! \exceptions
-    //! \noexcept
-    //!
     //! \returns A pair consisting of the last node reached and an iterator
     //! pointing at the last letter in the word labelling an edge.
+    //!
+    //! \exceptions
+    //! \noexcept
     //!
     //! \complexity
     //! At worst the distance from \p first to \p last.
@@ -2796,7 +2795,7 @@ namespace libsemigroups {
         // always have an odd number of arguments, so we check that it's even
         // here (the argument x and an odd number of further arguments).
         WordGraph<Node> xy;
-                        operator()(xy, x, std::forward<Args>(args)...);
+        operator()(xy, x, std::forward<Args>(args)...);
         return xy;
       }
 
@@ -2831,7 +2830,7 @@ namespace libsemigroups {
         return is_subrelation(x, static_cast<Node>(0), y, static_cast<Node>(0));
       }
     };  // JoinerMeeterCommon
-  }     // namespace detail
+  }  // namespace detail
 
   //! \ingroup word_graph_group
   //! \brief Class for taking joins of word graphs.

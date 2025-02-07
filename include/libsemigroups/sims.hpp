@@ -665,11 +665,11 @@ namespace libsemigroups {
     //!
     //! \returns A reference to \c this.
     //!
-    //! \sa \ref pruners
-    //!
     //! \warning When running the Sims low-index backtrack with multiple
     //! threads, each added pruner must be guaranteed thread safe. Failing to do
     //! so could cause bad things to happen.
+    //!
+    //! \sa \ref pruners
     template <typename Func>
     Subclass& add_pruner(Func&& func) {
       _pruners.emplace_back(func);
@@ -856,12 +856,12 @@ namespace libsemigroups {
     //! Returns the number of times an idle thread will attempt to restart
     //! before yielding during the execution of Sims1 or Sims2.
     //!
-    //! \note This setting has no effect if \ref number_of_threads is 1.
-    //!
     //! \returns A `size_t`.
     //!
     //! \exceptions
     //! \noexcept
+    //!
+    //! \note This setting has no effect if \ref number_of_threads is 1.
     [[nodiscard]] size_t idle_thread_restarts() const noexcept {
       return _idle_thread_restarts;
     }
@@ -873,14 +873,14 @@ namespace libsemigroups {
     //!
     //! The default value is `64`.
     //!
-    //! \note This setting has no effect if \ref number_of_threads is 1.
-    //!
     //! \param val the maximum number of times an idle thread will attempt to
     //! restart before yielding.
     //!
     //! \returns A reference to \c this.
     //!
     //! \throws LibsemigroupsException if the argument \p val is 0.
+    //!
+    //! \note This setting has no effect if \ref number_of_threads is 1.
     // Number of times an idle thread will attempt to restart before yielding.
     Subclass& idle_thread_restarts(size_t val);
 
@@ -1566,13 +1566,13 @@ namespace libsemigroups {
     //! the parameter \p p is first converted to a value of type
     //! `Presentation<word_type>` and it is this converted value that is used.
     //!
+    //! \tparam Word the type of the words in the presentation \p p.
+    //!
+    //! \param p the presentation.
+    //!
     //! \throws LibsemigroupsException if `to_presentation<word_type>(p)` throws
     //! \throws LibsemigroupsException if `p` is not valid
     //! \throws LibsemigroupsException if `p` has 0-generators and 0-relations.
-    //!
-    //! \tparam Word the type of the words in the presentation \p p .
-    //!
-    //! \param p the presentation.
     //!
     //! \sa presentation
     //! \sa init
@@ -2158,17 +2158,17 @@ namespace libsemigroups {
     //! If no such WordGraph can be found, then an empty WordGraph is returned
     //! (with `0` nodes and `0` edges).
     //!
+    //! \returns A value of type `WordGraph`.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
     //! \warning The return value of this function is recomputed every time it
     //! is called.
     //!
     //! \warning If the return value of \ref number_of_threads is greater than
     //! \c 1, then the value returned by this function is non-deterministic, and
     //! may vary even for the same parameters.
-    //!
-    //! \returns A value of type `WordGraph`.
-    //!
-    //! \exceptions
-    //! \no_libsemigroups_except
     [[nodiscard]] Sims1::word_graph_type word_graph() const;
   };
 
@@ -2268,17 +2268,17 @@ namespace libsemigroups {
     //! WordGraph is empty, and then the penultimate WordGraph is returned
     //! (if any).
     //!
+    //! \returns A value of type `WordGraph<uint32_t>`.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
     //! \warning The return value of this function is recomputed every time
     //! it is called.
     //!
     //! \warning If the return value of \ref number_of_threads is greater
     //! than \c 1, then the value returned by this function is
     //! non-deterministic, and may vary even for the same parameters.
-    //!
-    //! \returns A value of type `WordGraph<uint32_t>`.
-    //!
-    //! \exceptions
-    //! \no_libsemigroups_except
     [[nodiscard]] Sims1::word_graph_type word_graph() const;
   };
 
@@ -2749,8 +2749,6 @@ namespace libsemigroups {
       return const_cgp_iterator(p, &wg, wg.number_of_active_nodes(), 0);
     }
 
-    //!
-    //!
     //! \brief Get an iterator pointing to one after the last two-sided
     //! congruence generating pair.
     //!
@@ -2758,15 +2756,15 @@ namespace libsemigroups {
     //! the two-sided congruence defined by the word graph \p wg on the
     //! semigroup or monoid defined by \p p.
     //!
+    //! \throws LibsemigroupsException if the argument \p wg does not define a
+    //! two-sided congruence on the semigroup or monoid defined by \p p.
+    //!
     //! \note
     //! The generating pairs of a two-sided congruence \f$\rho\f$ as a two-sided
     //! congruence differ from the generating pairs of \f$\rho\f$ as a right
     //! congruence. This function returns the two-sided congruence generating
     //! pairs, not the right congruence generating pairs of a two-sided
     //! congruence.
-    //!
-    //! \throws LibsemigroupsException if the argument \p wg does not define a
-    //! two-sided congruence on the semigroup or monoid defined by \p p.
     template <typename Node>
     const_cgp_iterator
     cend_two_sided_generating_pairs(Presentation<word_type> const& p,
@@ -2881,8 +2879,6 @@ namespace libsemigroups {
           cend_two_sided_generating_pairs_no_checks(p, wg));
     }
 
-    //!
-    //!
     //! \brief Compute the two-sided congruence generating pairs of a word graph
     //! on an f.p. semigroup or monoid.
     //!
@@ -2890,15 +2886,15 @@ namespace libsemigroups {
     //! congruence defined by the
     //! word graph \p wg on the semigroup or monoid defined by \p p.
     //!
+    //! \throws LibsemigroupsException if the argument \p wg does not define a
+    //! two-sided congruence on the semigroup or monoid presented by \p p.
+    //!
     //! \note
     //! The generating pairs of a two-sided congruence \f$\rho\f$ as a two-sided
     //! congruence differ from the generating pairs of \f$\rho\f$ as a right
     //! congruence. This function returns the two-sided congruence generating
     //! pairs, not the right congruence generating pairs of a two-sided
     //! congruence.
-    //!
-    //! \throws LibsemigroupsException if the argument \p wg does not define a
-    //! two-sided congruence on the semigroup or monoid presented by \p p.
     template <typename Node>
     rx::iterator_range<const_cgp_iterator>
     two_sided_generating_pairs(Presentation<word_type> const& p,
@@ -2946,15 +2942,15 @@ namespace libsemigroups {
     //! congruence defined by the
     //! word graph \p wg on the free monoid.
     //!
+    //! \throws LibsemigroupsException if the argument \p wg does not define a
+    //! two-sided congruence on the free monoid.
+    //!
     //! \note
     //! The generating pairs of a two-sided congruence \f$\rho\f$ as a two-sided
     //! congruence differ from the generating pairs of \f$\rho\f$ as a right
     //! congruence. This function returns the two-sided congruence generating
     //! pairs, not the right congruence generating pairs of a two-sided
     //! congruence.
-    //!
-    //! \throws LibsemigroupsException if the argument \p wg does not define a
-    //! two-sided congruence on the free monoid.
     template <typename Node>
     rx::iterator_range<const_cgp_iterator>
     two_sided_generating_pairs(WordGraph<Node> const& wg) {
