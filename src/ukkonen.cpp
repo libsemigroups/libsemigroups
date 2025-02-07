@@ -585,6 +585,5 @@ namespace libsemigroups {
       }
       return result;
     }
-
   }  // namespace ukkonen
 }  // namespace libsemigroups

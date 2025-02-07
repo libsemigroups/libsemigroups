@@ -34,10 +34,13 @@ namespace libsemigroups {
     // TODO(0) seems like _generating_pairs is not reset by this
     if constexpr (!std::is_same_v<Word, word_type>) {
       // to_presentation throws in the next line if p isn't valid
-      ToddCoxeterBase::init(knd, to_presentation<word_type>(p));
+      auto copy = to_presentation<word_type>(p);
+      init();
+      ToddCoxeterBase::init(knd, std::move(copy));
       _presentation = std::move(p);
     } else {
       p.validate();
+      init();
       _presentation = p;  // copy p in to _presentation
       presentation::normalize_alphabet(p);
       ToddCoxeterBase::init(knd, std::move(p));
