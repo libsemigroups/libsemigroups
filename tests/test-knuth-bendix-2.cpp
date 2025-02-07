@@ -53,7 +53,7 @@
 #include "libsemigroups/paths.hpp"         // for Paths
 #include "libsemigroups/presentation-examples.hpp"  // for chinese
 #include "libsemigroups/presentation.hpp"     // for add_rule, Presentation
-#include "libsemigroups/to-froidure-pin.hpp"  // for to_froidure_pin
+#include "libsemigroups/to-froidure-pin.hpp"  // for to<FroidurePin>
 #include "libsemigroups/word-graph.hpp"       // for WordGraph
 
 #include "libsemigroups/detail/report.hpp"  // for ReportGuard
@@ -1811,7 +1811,7 @@ namespace libsemigroups {
     p.alphabet(2);
     presentation::add_idempotent_rules_no_checks(p, 01_w);
     using words::operator+;
-    WordRange    words;
+    WordRange words;
     words.alphabet_size(2).min(0).max(3);
     size_t n = 2;
     for (size_t a = 0; a < n - 1; ++a) {
@@ -1836,7 +1836,7 @@ namespace libsemigroups {
     KnuthBendix<word_type, TestType> kb(twosided, p);
     p = to_presentation<word_type>(kb);
 
-    auto S = to_froidure_pin(kb);
+    auto S = to<FroidurePin>(kb);
     REQUIRE(S.contains_one());
     REQUIRE(S.size() == kb.number_of_classes());
     REQUIRE(S.number_of_idempotents() == 5);

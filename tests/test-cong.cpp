@@ -424,7 +424,7 @@ namespace libsemigroups {
     congruence::add_generating_pair(cong, "a", "b");
 
     REQUIRE(cong.number_of_classes() == 4);
-    REQUIRE(!to_froidure_pin(cong)->contains_one());
+    REQUIRE(!to<FroidurePin>(cong)->contains_one());
   }
 
   LIBSEMIGROUPS_TEST_CASE("Congruence",
@@ -1266,9 +1266,9 @@ namespace libsemigroups {
       REQUIRE(congruence::contains(cong, 0000_w, 0000_w));
       REQUIRE(!congruence::contains(cong, 0000_w, 0001_w));
       if (knd == twosided) {
-        REQUIRE_NOTHROW(to_froidure_pin(cong));
+        REQUIRE_NOTHROW(to<FroidurePin>(cong));
       } else {
-        REQUIRE_THROWS_AS(to_froidure_pin(cong), LibsemigroupsException);
+        REQUIRE_THROWS_AS(to<FroidurePin>(cong), LibsemigroupsException);
       }
 
       WordRange w;

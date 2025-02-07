@@ -34,29 +34,107 @@
 namespace libsemigroups {
 #ifndef LIBSEMIGROUPS_PARSED_BY_DOXYGEN
   class FroidurePinBase;  // forward decl
-
   template <typename Word>
   class Congruence;
-#endif
 
   namespace detail {
-
     class ToddCoxeterImpl;
 
     template <typename Rewriter, typename ReductionOrder>
     class KnuthBendixImpl;
 
+    // TODO rm
     template <typename Thing>
     struct to_froidure_pin_helper;
 
+    // TODO rm
     template <typename Word>
     struct to_froidure_pin_helper<Kambites<Word>> {
       using type = FroidurePin<detail::KE<Word>>;
     };
-  }  // namespace detail
 
+    // TODO rm
+    template <typename Rewriter, typename ReductionOrder>
+    struct to_froidure_pin_helper<
+        detail::KnuthBendixImpl<Rewriter, ReductionOrder>> {
+      using type = FroidurePin<
+          detail::KBE<detail::KnuthBendixImpl<Rewriter, ReductionOrder>>>;
+    };
+
+    // TODO rm
+    template <typename Word, typename Rewriter, typename ReductionOrder>
+    struct to_froidure_pin_helper<KnuthBendix<Word, Rewriter, ReductionOrder>> {
+      using type = FroidurePin<
+          detail::KBE<detail::KnuthBendixImpl<Rewriter, ReductionOrder>>>;
+    };
+  }  // namespace detail
+#endif  // PARSED_BY_DOXYGEN
+
+  // TODO rm
+  // TODO(0) doc
   template <typename Thing>
-  using froidure_pin_t = typename detail::to_froidure_pin_helper<Thing>::type;
+  using froidure_pin_type =
+      typename detail::to_froidure_pin_helper<Thing>::type;
+
+  // TODO(0) doc
+  template <typename Word>
+  FroidurePin(Kambites<Word> const&) -> FroidurePin<detail::KE<Word>>;
+
+  // TODO(0) doc
+  template <typename Rewriter, typename ReductionOrder>
+  FroidurePin(detail::KnuthBendixImpl<Rewriter, ReductionOrder> const&)
+      -> FroidurePin<
+          detail::KBE<detail::KnuthBendixImpl<Rewriter, ReductionOrder>>>;
+
+  // TODO(0) doc
+  FroidurePin(detail::ToddCoxeterImpl const&) -> FroidurePin<detail::TCE>;
+
+  ////////////////////////////////////////////////////////////////////////
+  // Congruence
+  ////////////////////////////////////////////////////////////////////////
+
+  // TODO doc
+  template <template <typename...> typename Thing, typename Word>
+  auto to(Congruence<Word>& cong)
+      -> std::enable_if_t<std::is_same_v<Thing<int>, FroidurePin<int>>,
+                          std::unique_ptr<FroidurePinBase>>;
+
+  ////////////////////////////////////////////////////////////////////////
+  // Kambites
+  ////////////////////////////////////////////////////////////////////////
+
+  template <template <typename...> typename Thing, typename Word>
+  auto to(Kambites<Word>& k) -> std::enable_if_t<
+      std::is_same_v<Thing<detail::KE<Word>>, FroidurePin<detail::KE<Word>>>,
+      FroidurePin<detail::KE<Word>>>;
+
+  ////////////////////////////////////////////////////////////////////////
+  // KnuthBendix
+  ////////////////////////////////////////////////////////////////////////
+
+  // TODO doc
+  template <template <typename...> typename Thing,
+            typename Rewriter,
+            typename ReductionOrder,
+            typename Element
+            = detail::KBE<detail::KnuthBendixImpl<Rewriter, ReductionOrder>>>
+  auto to(detail::KnuthBendixImpl<Rewriter, ReductionOrder>& kb)
+      -> std::enable_if_t<std::is_same_v<Thing<Element>, FroidurePin<Element>>,
+                          FroidurePin<Element>>;
+
+  ////////////////////////////////////////////////////////////////////////
+  // ToddCoxeter
+  ////////////////////////////////////////////////////////////////////////
+  // TODO doc
+
+  template <template <typename...> typename Thing>
+  auto to(detail::ToddCoxeterImpl& tc) -> std::enable_if_t<
+      std::is_same_v<Thing<detail::TCE>, FroidurePin<detail::TCE>>,
+      FroidurePin<detail::TCE>>;
+
+  ////////////////////////////////////////////////////////////////////////
+  // WordGraph
+  ////////////////////////////////////////////////////////////////////////
 
   //! Make a FroidurePin object from a WordGraph.
   //!
@@ -88,126 +166,25 @@ namespace libsemigroups {
   //! happen if, for example, the WordGraph is not complete (i.e. there
   //! exists an edge label and node for which there is no edge with the
   //! given label and given source) or if there is an edge label such that
-  //! \f$\{a, \ldots, b - 1\}f
-  //! \not\subseteq \{a, \ldots, b - 1\}\f$ for the corresponding \f$f\f$.
-  template <typename Element, typename Node>
-  FroidurePin<Element> to_froidure_pin(WordGraph<Node> const& wg,
-                                       size_t                 first,
-                                       size_t                 last) {
-    using node_type = typename WordGraph<Node>::node_type;
-
-    if (first > last) {
-      LIBSEMIGROUPS_EXCEPTION("the 2nd argument (first node) must be at most "
-                              "the 3rd argument (last node), found {} > {}",
-                              first,
-                              last);
-    } else if (first > wg.number_of_nodes()) {
-      LIBSEMIGROUPS_EXCEPTION(
-          "the 2nd argument (first node) must be at most the out-degree of the "
-          "1st argument (WordGraph), found {} > {}",
-          first,
-          wg.out_degree());
-    } else if (last > wg.number_of_nodes()) {
-      LIBSEMIGROUPS_EXCEPTION(
-          "the 3rd argument (last node) must be at most the out-degree of the "
-          "1st argument (WordGraph), found {} > {}",
-          last,
-          wg.out_degree());
-    }
-
-    LIBSEMIGROUPS_ASSERT(wg.out_degree() > 0);
-    FroidurePin<Element> result;
-    Element              x(last - first);
-    // Each label corresponds to a generator of S
-    for (node_type lbl = 0; lbl < wg.out_degree(); ++lbl) {
-      for (size_t n = first; n < last; ++n) {
-        x[n - first] = wg.target(n, lbl) - first;
-      }
-      // The next loop is required because if element_type is a fixed degree
-      // type, such as Transf<5> for example, but first = last = 0, then the
-      // degree of x is still 5 not last - first = 0.
-      for (size_t n = last - first; n < x.degree(); ++n) {
-        x[n] = n;
-      }
-
-      validate(x);
-      result.add_generator(x);
-    }
-    return result;
-  }
+  //! \f$\{a, \ldots, b - 1\}f \not\subseteq \{a, \ldots, b - 1\}\f$ for the
+  //! corresponding \f$f\f$.
+  template <typename Result, typename Node>
+  std::enable_if_t<
+      std::is_same_v<FroidurePin<typename Result::element_type>, Result>,
+      Result>
+  to(WordGraph<Node> const& wg, size_t first, size_t last);
 
   //! Make a FroidurePin object from a WordGraph.
   //!
   //! Calls `to_froidure_pin(wg, 0, wg.number_of_nodes())`; see above.
-  template <typename Element, typename Node>
-  FroidurePin<Element> to_froidure_pin(WordGraph<Node> const& wg) {
-    return to_froidure_pin<Element>(wg, 0, wg.number_of_nodes());
+  template <typename Result, typename Node>
+  std::enable_if_t<
+      std::is_same_v<FroidurePin<typename Result::element_type>, Result>,
+      Result>
+  to(WordGraph<Node> const& wg) {
+    return to<Result>(wg, 0, wg.number_of_nodes());
   }
-
-  FroidurePin<detail::TCE> to_froidure_pin(detail::ToddCoxeterImpl& tc);
-
-  template <typename Rewriter, typename ReductionOrder>
-  FroidurePin<detail::KBE<detail::KnuthBendixImpl<Rewriter, ReductionOrder>>>
-  to_froidure_pin(detail::KnuthBendixImpl<Rewriter, ReductionOrder>& kb) {
-    using KBE = detail::KBE<detail::KnuthBendixImpl<Rewriter, ReductionOrder>>;
-    size_t const n = kb.internal_presentation().alphabet().size();
-
-    if (n == 0) {
-      LIBSEMIGROUPS_EXCEPTION("TODO(0)");
-    } else if (kb.kind() != congruence_kind::twosided) {
-      LIBSEMIGROUPS_EXCEPTION(
-          "the argument must be a 2-sided congruence, found a {} congruence",
-          kb.kind());
-    }
-    kb.run();
-
-    FroidurePin<KBE> result(kb);
-    for (size_t i = 0; i < n; ++i) {
-      result.add_generator(KBE(kb, i));
-    }
-    if (kb.internal_presentation().contains_empty_word()) {
-      result.add_generator(KBE(kb, ""));
-    }
-    return result;
-  }
-
-  // TODO(0) convert other to_froidure_pin's to return unique_ptr
-  template <typename Word>
-  std::unique_ptr<FroidurePinBase> to_froidure_pin(Kambites<Word>& k) {
-    if (k.small_overlap_class() < 4) {
-      LIBSEMIGROUPS_EXCEPTION(
-          "the small overlap class of the argument must be >= 4, found {}",
-          k.small_overlap_class());
-    }
-
-    // TODO(0) deduction guide
-    FroidurePin<detail::KE<Word>> result(k);
-
-    size_t const n = k.presentation().alphabet().size();
-    for (size_t i = 0; i < n; ++i) {
-      result.add_generator(detail::KE<Word>(k, i));
-    }
-    return std::make_unique<decltype(result)>(std::move(result));
-  }
-
-  template <typename Word>
-  std::unique_ptr<FroidurePinBase> to_froidure_pin(Congruence<Word>& cong) {
-    cong.run();
-    if (cong.template has<Kambites<Word>>()) {
-      // TODO(2) there an issue here that if the Kambites clause isn't first,
-      // then we incorrectly start running the other algos here, which run
-      // forever. Probably something goes wrong that the other runners don't
-      // get deleted if Kambites wins, since it's run first.
-      return to_froidure_pin(*cong.template get<Kambites<Word>>());
-    } else if (cong.template has<ToddCoxeter<Word>>()) {
-      auto fp = to_froidure_pin(*cong.template get<ToddCoxeter<Word>>());
-      return std::make_unique<decltype(fp)>(std::move(fp));
-    } else if (cong.template has<KnuthBendix<Word>>()) {
-      auto fp = to_froidure_pin(*cong.template get<KnuthBendix<Word>>());
-      return std::make_unique<decltype(fp)>(std::move(fp));
-    }
-    LIBSEMIGROUPS_EXCEPTION("TODO");
-  }
-
 }  // namespace libsemigroups
+
+#include "to-froidure-pin.tpp"
 #endif  // LIBSEMIGROUPS_TO_FROIDURE_PIN_HPP_

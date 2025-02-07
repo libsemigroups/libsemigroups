@@ -27,7 +27,7 @@
 #include "libsemigroups/constants.hpp"        // for UNDEFINED
 #include "libsemigroups/kambites.hpp"         // for Kambites
 #include "libsemigroups/knuth-bendix.hpp"     // for KnuthBendix
-#include "libsemigroups/to-froidure-pin.hpp"  // for to_froidure_pin
+#include "libsemigroups/to-froidure-pin.hpp"  // for to<FroidurePin>
 #include "libsemigroups/transf.hpp"           // for LeastTransf
 #include "libsemigroups/types.hpp"            // for tril etc
 #include "libsemigroups/word-range.hpp"       // for number_of_words
@@ -163,9 +163,9 @@ namespace libsemigroups {
     REQUIRE(contains(k, "aaaaaef", "aaaaadg"));
     REQUIRE(contains(k, "efababa", "dgababa"));
 
-    auto s = to_froidure_pin(k);
-    s->enumerate(100);
-    REQUIRE(s->current_size() == 8'205);
+    auto s = to<FroidurePin>(k);
+    s.enumerate(100);
+    REQUIRE(s.current_size() == 8'205);
 
     StringRange strings;
     strings.alphabet(p.alphabet()).min(1).max(4);
@@ -453,11 +453,11 @@ namespace libsemigroups {
     REQUIRE(k.number_of_classes() == POSITIVE_INFINITY);
     REQUIRE(number_of_words(p.alphabet().size(), 0, 6) == 19'608);
 
-    auto s = to_froidure_pin(k);
+    auto s = to<FroidurePin>(k);
 
-    s->run_until([&s]() { return s->current_max_word_length() >= 6; });
+    s.run_until([&s]() { return s.current_max_word_length() >= 6; });
 
-    REQUIRE(s->number_of_elements_of_length(0, 6) == 17'921);
+    REQUIRE(s.number_of_elements_of_length(0, 6) == 17'921);
 
     REQUIRE(ukkonen::number_of_distinct_subwords(k.ukkonen()) == 17);
     REQUIRE((kambites::normal_forms(k) | rx::take(100) | rx::to_vector())
@@ -549,8 +549,7 @@ namespace libsemigroups {
     REQUIRE(kambites::reduce(k, "hdfabce") == "dffababcd");
     REQUIRE(contains(k, "hdfabce", "dffababcd"));
 
-    auto s
-        = static_cast<froidure_pin_t<decltype(k)> const&>(*to_froidure_pin(k));
+    auto s = to<FroidurePin>(k);
 
     // The next 7 lines make take approx. 3.6 seconds
     // s.run_until([&s]() {
@@ -608,9 +607,9 @@ namespace libsemigroups {
     REQUIRE(contains(k, "afd", "bgd"));
     REQUIRE(contains(k, "bghcafhbgd", "afdafhafd"));
     REQUIRE(kambites::reduce(k, "bghcafhbgd") == "afdafhafd");
-    auto s = to_froidure_pin(k);
-    s->run_until([&s]() { return s->current_max_word_length() >= 6; });
-    REQUIRE(s->number_of_elements_of_length(0, 6) == 34'819);
+    auto s = to<FroidurePin>(k);
+    s.run_until([&s]() { return s.current_max_word_length() >= 6; });
+    REQUIRE(s.number_of_elements_of_length(0, 6) == 34'819);
 
     REQUIRE(k.number_of_classes() == POSITIVE_INFINITY);
   }
@@ -640,9 +639,9 @@ namespace libsemigroups {
                       LibsemigroupsException);
     REQUIRE(!contains_no_checks(k, "xxxxxxxxxxxxxxxxxxxxxxx", "b"));
 
-    auto s = to_froidure_pin(k);
-    s->run_until([&s]() { return s->current_max_word_length() >= 6; });
-    REQUIRE(s->number_of_elements_of_length(0, 6) == 102'255);
+    auto s = to<FroidurePin>(k);
+    s.run_until([&s]() { return s.current_max_word_length() >= 6; });
+    REQUIRE(s.number_of_elements_of_length(0, 6) == 102'255);
   }
 
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("Kambites",
@@ -694,9 +693,9 @@ namespace libsemigroups {
     REQUIRE(M == 10'057'120);
     REQUIRE(N == 1);
 
-    auto s = to_froidure_pin(k);
-    s->run_until([&s]() { return s->current_max_word_length() >= 6; });
-    REQUIRE(s->number_of_elements_of_length(0, 6) == 255'932);
+    auto s = to<FroidurePin>(k);
+    s.run_until([&s]() { return s.current_max_word_length() >= 6; });
+    REQUIRE(s.number_of_elements_of_length(0, 6) == 255'932);
   }
 
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("Kambites",
@@ -919,10 +918,10 @@ namespace libsemigroups {
             == "bbcabcdaccaccabcddd");
     REQUIRE(contains(l, "bbcabcdaccaccabcddd", "bbcabcdaccaccabcddd"));
 
-    auto s = to_froidure_pin(k);
-    REQUIRE(s->number_of_elements_of_length(0, 0) == 0);
-    REQUIRE(s->number_of_elements_of_length(6, 6) == 0);
-    REQUIRE(s->number_of_elements_of_length(10, 1) == 0);
+    auto s = to<FroidurePin>(k);
+    REQUIRE(s.number_of_elements_of_length(0, 0) == 0);
+    REQUIRE(s.number_of_elements_of_length(6, 6) == 0);
+    REQUIRE(s.number_of_elements_of_length(10, 1) == 0);
   }
 
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("Kambites",
@@ -2187,10 +2186,11 @@ namespace libsemigroups {
     REQUIRE(is_obviously_infinite(k));
     REQUIRE(k.number_of_classes() == POSITIVE_INFINITY);
 
-    auto s = to_froidure_pin(k);
-    REQUIRE(froidure_pin::minimal_factorisation(*s, 100) == 0100_w);
-    // REQUIRE(s->position(element_type(k, 0100_w)) == 100);
-    REQUIRE(s->current_size() == 8196);
+    auto s = to<FroidurePin>(k);
+    REQUIRE(froidure_pin::minimal_factorisation(s, 100) == 0100_w);
+    using element_type = decltype(s)::element_type;
+    REQUIRE(s.position(element_type(k, 0100_w)) == 100);
+    REQUIRE(s.current_size() == 8196);
   }
 
   LIBSEMIGROUPS_TEST_CASE("Kambites",

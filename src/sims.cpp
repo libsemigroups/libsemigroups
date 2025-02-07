@@ -1270,7 +1270,7 @@ namespace libsemigroups {
       ++count;
       if (x.number_of_active_nodes() >= _min) {
         auto first = (presentation().contains_empty_word() ? 0 : 1);
-        auto S     = to_froidure_pin<Transf<0, node_type>>(
+        auto S     = to<FroidurePin<Transf<0, node_type>>>(
             x, first, x.number_of_active_nodes());
         // It'd be nice to reuse S here, but this is tricky because hook
         // maybe called in multiple threads, and so we can't easily do this.

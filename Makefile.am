@@ -1022,8 +1022,8 @@ test_kambites_SOURCES =  tests/test-kambites.cpp
 test_kambites_SOURCES += tests/test-main.cpp
 test_kambites_SOURCES += tests/catch_amalgamated.cpp
 
-# TODO what happened to the KBE tests?
-test_kbe_SOURCES = tests/test-main.cpp
+test_kbe_SOURCES =  tests/test-main.cpp
+test_kbe_SOURCES += tests/test-kbe.cpp
 test_kbe_SOURCES += tests/catch_amalgamated.cpp
 
 test_knuth_bendix_SOURCES =  tests/test-knuth-bendix-1.cpp

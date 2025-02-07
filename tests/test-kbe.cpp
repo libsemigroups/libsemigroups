@@ -16,6 +16,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
+#include <memory>
 #include <vector>  // for vector
 
 #include "catch_amalgamated.hpp"  // for LIBSEMIGROUPS_TEST_CASE
@@ -23,7 +24,7 @@
 
 #include "libsemigroups/froidure-pin.hpp"     // for FroidurePin
 #include "libsemigroups/knuth-bendix.hpp"     // for KnuthBendix
-#include "libsemigroups/to-froidure-pin.hpp"  // for to_froidure_pin
+#include "libsemigroups/to-froidure-pin.hpp"  // for to<FroidurePin>
 #include "libsemigroups/transf.hpp"           // for Transf<>
 #include "libsemigroups/word-range.hpp"       // for literals
 
@@ -43,8 +44,12 @@ namespace libsemigroups {
       S.add_generator(Transf<>({0, 0}));
 
       KnuthBendix kb(congruence_kind::twosided, to_presentation<word_type>(S));
-      KBE         ab(kb, to_string(kb.presentation(), 01_w));
-      KBE         b(ab);
+      // NOTE: don't do "using KBE = KBE<decltype(kb)>;" because this isn't the
+      // same as the next line.
+      using KBE = froidure_pin_type<decltype(kb)>::element_type;
+
+      KBE ab(kb, 01_w);
+      KBE b(ab);
       REQUIRE(b == ab);
       b = ab;
       REQUIRE(b == ab);
@@ -57,22 +62,20 @@ namespace libsemigroups {
 
     LIBSEMIGROUPS_TEST_CASE("KBE", "001", "test", "[quick]") {
       auto                  rg = ReportGuard(REPORT);
-      FroidurePin<Transf<>> S({Transf<>({1, 0}), Transf<>({0, 0})});
+      FroidurePin<Transf<>> S
+          = to_froidure_pin({Transf<>({1, 0}), Transf<>({0, 0})});
 
       REQUIRE(S.size() == 4);
       REQUIRE(S.degree() == 2);
       REQUIRE(S.number_of_rules() == 4);
 
       KnuthBendix kb(congruence_kind::twosided, to_presentation<word_type>(S));
+      using KBE = froidure_pin_type<decltype(kb)>::element_type;
+
       REQUIRE(kb.confluent());
 
-      auto T = to_froidure_pin(kb);
-      T.add_generator(KBE(kb, 0));
-      T.add_generator(KBE(kb, 1));
-
+      auto T = to<FroidurePin>(kb);
       REQUIRE(T.size() == 4);
-
-      REQUIRE(to_string(kb.presentation(), 01_w) == "ab");
 
       KBE ab(kb, 01_w);
       KBE b(kb, 1);
@@ -88,26 +91,25 @@ namespace libsemigroups {
 
     LIBSEMIGROUPS_TEST_CASE("KBE", "002", "factorisation", "[quick]") {
       auto                  rg = ReportGuard(REPORT);
-      FroidurePin<Transf<>> S({Transf<>({1, 0}), Transf<>({0, 0})});
+      FroidurePin<Transf<>> S
+          = to_froidure_pin({Transf<>({1, 0}), Transf<>({0, 0})});
 
       KnuthBendix kb(congruence_kind::twosided, to_presentation<word_type>(S));
       REQUIRE(kb.confluent());
 
-      auto T = to_froidure_pin(kb);
-      T.add_generators({KBE(kb, 0), KBE(kb, 1)});
-
-      KBE ab(kb, 1_w);
-      REQUIRE(T.factorisation(ab) == 1_w);
-      KBE aaa(kb, 000_w);
-      REQUIRE(T.factorisation(aaa) == 000_w);
+      auto T = to<FroidurePin>(kb);
+      REQUIRE(T.size() == 4);
+      REQUIRE(froidure_pin::factorisation(T, 3) == 10_w);
     }
 
     LIBSEMIGROUPS_TEST_CASE("KBE", "003", "swap", "[quick]") {
       auto                  rg = ReportGuard(REPORT);
-      FroidurePin<Transf<>> S({Transf<>({1, 0}), Transf<>({0, 0})});
+      FroidurePin<Transf<>> S
+          = to_froidure_pin({Transf<>({1, 0}), Transf<>({0, 0})});
 
       KnuthBendix kb(congruence_kind::twosided, to_presentation<word_type>(S));
       REQUIRE(kb.confluent());
+      using KBE = froidure_pin_type<decltype(kb)>::element_type;
 
       auto x = KBE(kb, 0);
       auto y = KBE(kb, 1);
@@ -122,12 +124,14 @@ namespace libsemigroups {
 
     LIBSEMIGROUPS_TEST_CASE("KBE", "004", "adapters", "[quick]") {
       auto                  rg = ReportGuard(REPORT);
-      FroidurePin<Transf<>> S({Transf<>({1, 0}), Transf<>({0, 0})});
+      FroidurePin<Transf<>> S
+          = to_froidure_pin({Transf<>({1, 0}), Transf<>({0, 0})});
 
       KnuthBendix kb(congruence_kind::twosided, to_presentation<word_type>(S));
       REQUIRE(kb.confluent());
 
-      auto x = KBE(kb, 0);
+      using KBE = froidure_pin_type<decltype(kb)>::element_type;
+      auto x    = KBE(kb, 0);
       REQUIRE(Complexity<KBE>()(x) == LIMIT_MAX);
       REQUIRE(EqualTo<KBE>()(x, x));
       REQUIRE(One<KBE>()(x) == KBE());
@@ -138,9 +142,11 @@ namespace libsemigroups {
 
     LIBSEMIGROUPS_TEST_CASE("KBE", "005", "conversions", "[quick]") {
       auto                  rg = ReportGuard(REPORT);
-      FroidurePin<Transf<>> S({Transf<>({1, 0}), Transf<>({0, 0})});
+      FroidurePin<Transf<>> S
+          = to_froidure_pin({Transf<>({1, 0}), Transf<>({0, 0})});
 
       KnuthBendix kb(congruence_kind::twosided, to_presentation<word_type>(S));
+      using KBE = froidure_pin_type<decltype(kb)>::element_type;
       REQUIRE(kb.confluent());
 
       auto x = KBE(kb, 0);

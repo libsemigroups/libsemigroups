@@ -37,7 +37,7 @@
 #include "libsemigroups/presentation-examples.hpp"  // for author, symmetric_group
 #include "libsemigroups/presentation.hpp"     // for Presentation, operator==
 #include "libsemigroups/ranges.hpp"           // for operator|, chain
-#include "libsemigroups/to-froidure-pin.hpp"  // for to_froidure_pin
+#include "libsemigroups/to-froidure-pin.hpp"  // for to<FroidurePin>
 #include "libsemigroups/todd-coxeter.hpp"     // for ToddCoxeter
 #include "libsemigroups/types.hpp"            // for congruence_kind, word_type
 #include "libsemigroups/word-range.hpp"       // for operator""_w
@@ -999,7 +999,8 @@ namespace libsemigroups {
     REQUIRE(tc.presentation().rules.size() == 186);
     REQUIRE(!is_obviously_infinite(tc));
     REQUIRE(tc.number_of_classes() == 13'889);
-    // TODO REQUIRE(to_froidure_pin(tc).run().number_of_rules() == 356);
+
+    // REQUIRE(to<FroidurePin>(tc).run().number_of_rules() == 356);
   }
 
   LIBSEMIGROUPS_TEST_CASE(
@@ -1055,7 +1056,7 @@ namespace libsemigroups {
     REQUIRE(!is_obviously_infinite(tc));
     REQUIRE(tc.number_of_classes() == 322'021);
 
-    auto S = to_froidure_pin(tc);
+    auto S = to<FroidurePin>(tc);
     S.run();
     REQUIRE(S.number_of_rules() == 1430);
 

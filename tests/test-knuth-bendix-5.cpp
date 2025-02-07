@@ -49,7 +49,7 @@
 #include "libsemigroups/froidure-pin.hpp"     // for FroidurePin
 #include "libsemigroups/knuth-bendix.hpp"     // for KnuthBendix
 #include "libsemigroups/presentation.hpp"     // for Presentation
-#include "libsemigroups/to-froidure-pin.hpp"  // for to_froidure_pin
+#include "libsemigroups/to-froidure-pin.hpp"  // for to<FroidurePin>
 #include "libsemigroups/to-presentation.hpp"  // for to_presentation
 #include "libsemigroups/transf.hpp"           // for Transf
 #include "libsemigroups/types.hpp"            // for word_type, letter_type
@@ -167,7 +167,7 @@ namespace libsemigroups {
 
     KnuthBendix<word_type, TestType> kb(twosided, p);
     REQUIRE(kb.confluent());
-    auto t = to_froidure_pin(kb);
+    auto t = to<FroidurePin>(kb);
     REQUIRE(t.generator(0).word(kb) == 0_w);
   }
 
@@ -264,11 +264,10 @@ namespace libsemigroups {
     auto ntc = (iterator_range(pp.begin(), pp.end())
                 | filter([](auto const& val) { return val.size() > 1; })
                 | transform([](auto& val) {
-                    std::for_each(
-                        val.begin(), val.end(), [](auto& w) -> auto& {
-                          w.erase(w.begin());
-                          return w;
-                        });
+                    std::for_each(val.begin(), val.end(), [](auto& w) -> auto& {
+                      w.erase(w.begin());
+                      return w;
+                    });
                     return val;
                   }));
 

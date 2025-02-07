@@ -554,7 +554,7 @@ namespace libsemigroups {
     REQUIRE(tc.number_of_classes() == 3);
     REQUIRE(contains(tc, 0_w, 1_w));
 
-    auto T = to_froidure_pin(tc);
+    auto T = to<FroidurePin>(tc);
     REQUIRE(T.size() == 3);
     REQUIRE(word_of(tc, 0) == froidure_pin::factorisation(T, 0));
     REQUIRE(word_of(tc, 1) == froidure_pin::factorisation(T, 1));
@@ -1286,7 +1286,7 @@ namespace libsemigroups {
 
     REQUIRE(tc.number_of_classes() == 34);
 
-    auto S = to_froidure_pin(tc);
+    auto S = to<FroidurePin>(tc);
     REQUIRE(S.size() == 34);
     using detail::TCE;
 
@@ -1431,7 +1431,7 @@ namespace libsemigroups {
       REQUIRE(tc.number_of_classes() == 5);
       REQUIRE(word_of(tc, 0) == 0_w);
       // This next one should throw
-      REQUIRE_THROWS_AS(to_froidure_pin(tc), LibsemigroupsException);
+      REQUIRE_THROWS_AS(to<FroidurePin>(tc), LibsemigroupsException);
     }
     {
       ToddCoxeter tc(twosided, p);
@@ -1560,9 +1560,9 @@ namespace libsemigroups {
       todd_coxeter::add_generating_pair(tc, {1}, {2});
       REQUIRE(tc.number_of_classes() == 1);
       if (tc.kind() == twosided) {
-        REQUIRE(to_froidure_pin(tc).size() == 1);
+        REQUIRE(to<FroidurePin>(tc).size() == 1);
       } else {
-        REQUIRE_THROWS_AS(to_froidure_pin(tc), LibsemigroupsException);
+        REQUIRE_THROWS_AS(to<FroidurePin>(tc), LibsemigroupsException);
       }
     }
   }
@@ -2469,7 +2469,7 @@ namespace libsemigroups {
     REQUIRE(words::human_readable_letter<>(0) == 'a');
     REQUIRE(words::human_readable_index('a') == 0);
     REQUIRE(reduce(tc, "aaaaaaaaaaaaaaaaaaa") == "a");
-    auto S = to_froidure_pin(tc);
+    auto S = to<FroidurePin>(tc);
     REQUIRE(to_knuth_bendix(twosided, S).confluent());
   }
 
@@ -2546,7 +2546,7 @@ namespace libsemigroups {
       section_Cr_style(tc1);
 
       REQUIRE(tc1.number_of_classes() == 21);
-      REQUIRE(tc1.number_of_classes() == to_froidure_pin(tc1).size());
+      REQUIRE(tc1.number_of_classes() == to<FroidurePin>(tc1).size());
       REQUIRE(contains(tc1, w3, w4));
       REQUIRE(reduce(tc1, w3) == reduce(tc1, w4));
     }
@@ -2562,7 +2562,7 @@ namespace libsemigroups {
       section_Cr_style(tc2);
 
       REQUIRE(tc2.number_of_classes() == 21);
-      REQUIRE(tc2.number_of_classes() == to_froidure_pin(tc2).size());
+      REQUIRE(tc2.number_of_classes() == to<FroidurePin>(tc2).size());
       REQUIRE(contains(tc2, w3, w4));
       REQUIRE(reduce(tc2, w3) == reduce(tc2, w4));
     }
@@ -3255,7 +3255,7 @@ namespace libsemigroups {
                                          "aaaaaa",
                                          "aaaaab",
                                          "aaaaaaa"}));
-    REQUIRE(to_froidure_pin(tc).number_of_rules() == 6);
+    REQUIRE(to<FroidurePin>(tc).number_of_rules() == 6);
 
     using namespace std::string_literals;
     REQUIRE(reduce(tc, "aaaaaaab") == "aab");
@@ -4198,7 +4198,7 @@ namespace libsemigroups {
       REQUIRE(p.rules == std::vector<word_type>());
       ToddCoxeter tc(twosided, p);
       REQUIRE(tc.number_of_classes() == num[n] + 1);
-      auto  fp = to_froidure_pin(tc);
+      auto  fp = to<FroidurePin>(tc);
       Gabow scc(fp.right_cayley_graph());
       REQUIRE(scc.number_of_components() == num[n]);
       REQUIRE(fp.number_of_idempotents() == std::pow(2, n) - 1);
@@ -4238,7 +4238,7 @@ namespace libsemigroups {
       // REQUIRE(p.rules == std::vector<word_type>());
       ToddCoxeter tc(twosided, p);
       REQUIRE(tc.number_of_classes() == num[n] + 1);
-      auto  fp = to_froidure_pin(tc);
+      auto  fp = to<FroidurePin>(tc);
       Gabow scc(fp.right_cayley_graph());
       REQUIRE(scc.number_of_components() == num[n]);
       REQUIRE(fp.number_of_idempotents() == std::pow(2, n) - 1);
@@ -4604,7 +4604,7 @@ namespace libsemigroups {
       presentation::add_rule(p, pow({a}, 3), {a});
     }
     using words::operator+;
-    WordRange    words;
+    WordRange words;
     words.alphabet_size(n).min(0).max(8);
 
     for (size_t a = 0; a < n - 1; ++a) {
@@ -4997,7 +4997,7 @@ namespace libsemigroups {
     ToddCoxeter tc(twosided, p);
     REQUIRE(tc.number_of_classes() == 46'656);
 
-    auto S = to_froidure_pin(tc);
+    auto S = to<FroidurePin>(tc);
     REQUIRE((froidure_pin::rules(S) | rx::count()) == 17'785);
     auto kb = to_knuth_bendix(twosided, S);
     auto q  = kb.presentation();

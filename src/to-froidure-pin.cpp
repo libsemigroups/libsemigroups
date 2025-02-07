@@ -16,45 +16,10 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
+// TODO rm this file
+
 #include "libsemigroups/to-froidure-pin.hpp"
 
 #include "libsemigroups/cong.hpp"
 
-namespace libsemigroups {
-
-  using TCE = detail::TCE;
-
-  FroidurePin<TCE> to_froidure_pin(detail::ToddCoxeterImpl& tc) {
-    using word_graph_type = typename detail::ToddCoxeterImpl::word_graph_type;
-
-    if (tc.kind() != congruence_kind::twosided) {
-      LIBSEMIGROUPS_EXCEPTION(
-          "the argument must be a two-sided congruence, found a {} congruence",
-          tc.kind());
-    }
-
-    tc.run();
-    tc.shrink_to_fit();
-    // Ensure class indices and letters are equal!
-    auto wg        = std::make_shared<word_graph_type>(tc.current_word_graph());
-    size_t const n = tc.current_word_graph().out_degree();
-    size_t       m = n;
-    for (letter_type a = 0; a < m;) {
-      if (wg->target_no_checks(0, a) != a + 1) {
-        wg->remove_label(a);
-        m--;
-      } else {
-        ++a;
-      }
-    }
-
-    FroidurePin<TCE> result(wg);
-    for (size_t i = 0; i < n; ++i) {
-      // We use _word_graph.target_no_checks instead of just i, because there
-      // might be more generators than cosets.
-      result.add_generator(TCE(tc.current_word_graph().target_no_checks(0, i)));
-    }
-    return result;
-  }
-
-}  // namespace libsemigroups
+namespace libsemigroups {}  // namespace libsemigroups

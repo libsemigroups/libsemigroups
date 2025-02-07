@@ -375,7 +375,7 @@ namespace libsemigroups {
 
     KnuthBendix kb(congruence_kind::twosided, p);
     REQUIRE(kb.number_of_classes() == 9);
-    auto S = to_froidure_pin(kb);
+    auto S = to<FroidurePin>(kb);
     REQUIRE(S.size() == 9);
 
     WordGraph<size_t> wg(S.right_cayley_graph());
@@ -468,7 +468,7 @@ namespace libsemigroups {
     knuth_bendix::add_generating_pair(
         kb2, to_string(1_w), to_string(00000001_w));
     REQUIRE(kb2.number_of_classes() == 9);
-    auto T = to_froidure_pin(kb2);
+    auto T = to<FroidurePin>(kb2);
     T.run();
     REQUIRE(std::vector<relation_type>(T.cbegin_rules(), T.cend_rules())
             == std::vector<relation_type>(

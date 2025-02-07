@@ -68,7 +68,7 @@ namespace libsemigroups {
           kb.kind());
     }
     // TODO why are we doing this? Why not just use the active rules of kb?
-    auto fp = to_froidure_pin(kb);
+    auto fp = to<FroidurePin>(kb);
     return to_todd_coxeter(knd, fp, fp.right_cayley_graph());
   }
 

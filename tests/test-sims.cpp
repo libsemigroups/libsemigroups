@@ -1101,7 +1101,7 @@ namespace libsemigroups {
     //              20, 13}, {20, 19, 20, 19, 13, 20, 13}, {21, 17, 14, 18, 6,
     //              20, 7}}));
 
-    // auto S = to_froidure_pin<Transf<0, node_type>>(d);
+    // auto S = to<FroidurePin<Transf<0, node_type>>>(d);
     // REQUIRE(S.size() == 105);
     // REQUIRE(S.generator(0) == Transf<0, node_type>::identity(22));
     // REQUIRE(
@@ -1220,7 +1220,7 @@ namespace libsemigroups {
     // on
     // // onesided congruences containing the pair {0}, {1}.
     // REQUIRE(d.number_of_nodes() == 51);
-    // auto S = to_froidure_pin<Transf<0, node_type>>(d);
+    // auto S = to<FroidurePin<Transf<0, node_type>>>(d);
     // REQUIRE(S.size() == 945);
   }
 
@@ -1711,7 +1711,7 @@ namespace libsemigroups {
     auto d = mro.word_graph();
     REQUIRE(d.number_of_nodes() == 11);
     REQUIRE(word_graph::is_strictly_cyclic(d));
-    auto S = to_froidure_pin<Transf<0, node_type>>(d);
+    auto S = to<FroidurePin<Transf<0, node_type>>>(d);
     S.add_generator(one(S.generator(0)));
     REQUIRE(S.size() == 19);
   }
@@ -1739,7 +1739,7 @@ namespace libsemigroups {
     d = mro.word_graph();
 
     REQUIRE(word_graph::is_strictly_cyclic(d));
-    auto S = to_froidure_pin<Transf<0, node_type>>(d);
+    auto S = to<FroidurePin<Transf<0, node_type>>>(d);
     REQUIRE(S.size() == 203);
     // The actual digraph obtained is non-deterministic because we just take
     // whichever one is found first, in multiple threads
@@ -1761,7 +1761,7 @@ namespace libsemigroups {
 
     auto hook = [&](WordGraph<uint32_t> const& x) {
       auto first = 1;
-      auto SS    = to_froidure_pin<Transf<0, node_type>>(
+      auto SS    = to<FroidurePin<Transf<0, node_type>>>(
           x, first, x.number_of_active_nodes());
       SuppressReportFor supp("FroidurePin");
 
@@ -1800,7 +1800,7 @@ namespace libsemigroups {
       auto d = orc.word_graph();
       REQUIRE(orc.target_size() == sizes[n]);
       REQUIRE(word_graph::is_strictly_cyclic(d));
-      auto S = to_froidure_pin<Transf<0, node_type>>(d);
+      auto S = to<FroidurePin<Transf<0, node_type>>>(d);
       S.add_generator(one(S.generator(0)));
       REQUIRE(S.size() == sizes[n]);
       REQUIRE(d.number_of_nodes() == min_degrees[n]);
@@ -1864,7 +1864,7 @@ namespace libsemigroups {
                  .target_size(17)
                  .word_graph();
     REQUIRE(word_graph::is_strictly_cyclic(d));
-    auto S = to_froidure_pin<Transf<0, node_type>>(d);
+    auto S = to<FroidurePin<Transf<0, node_type>>>(d);
     REQUIRE(S.size() == 16);
     REQUIRE(d.number_of_nodes() == 7);
 
@@ -1904,7 +1904,7 @@ namespace libsemigroups {
                      .number_of_threads(std::thread::hardware_concurrency())
                      .word_graph();
         REQUIRE(word_graph::is_strictly_cyclic(d));
-        auto S = to_froidure_pin<Transf<0, node_type>>(d);
+        auto S = to<FroidurePin<Transf<0, node_type>>>(d);
         REQUIRE(S.size() == m * n);
         REQUIRE(d.number_of_nodes() == results[m][n]);
       }
@@ -2024,7 +2024,7 @@ namespace libsemigroups {
     auto         p  = presentation::examples::rectangular_band(1, n);
     auto d = MinimalRepOrc().presentation(p).target_size(n).word_graph();
     REQUIRE(word_graph::is_strictly_cyclic(d));
-    auto S = to_froidure_pin<Transf<0, node_type>>(d);
+    auto S = to<FroidurePin<Transf<0, node_type>>>(d);
     REQUIRE(S.size() == n);
     REQUIRE(d.number_of_nodes() == 5);
   }
@@ -2050,7 +2050,7 @@ namespace libsemigroups {
     REQUIRE(d
             == make<WordGraph<uint32_t>>(
                 4, {{2, 2, 3}, {0, 1, 2}, {2, 2, 2}, {3, 3, 3}}));
-    auto T = to_froidure_pin<Transf<4>>(d);
+    auto T = to<FroidurePin<Transf<4>>>(d);
     REQUIRE(T.generator(0) == Transf<4>({2, 0, 2, 3}));
     REQUIRE(T.generator(1) == Transf<4>({2, 1, 2, 3}));
     REQUIRE(T.generator(2) == Transf<4>({3, 2, 2, 3}));
@@ -2065,7 +2065,7 @@ namespace libsemigroups {
 
     REQUIRE(!word_graph::is_strictly_cyclic(dd));
     REQUIRE(dd.number_of_nodes() == 5);
-    auto U = to_froidure_pin<Transf<5>>(dd);
+    auto U = to<FroidurePin<Transf<5>>>(dd);
     REQUIRE(U.size() == 5);
 
     Sims1 C;
@@ -2075,7 +2075,7 @@ namespace libsemigroups {
     uint64_t non_strictly_cyclic_count = 0;
 
     for (auto it = C.cbegin(5); it != C.cend(5); ++it) {
-      auto W = to_froidure_pin<Transf<0, node_type>>(
+      auto W = to<FroidurePin<Transf<0, node_type>>>(
           *it, 1, it->number_of_active_nodes());
       if (p.contains_empty_word()) {
         auto id = one(W.generator(0));
@@ -2599,7 +2599,7 @@ namespace libsemigroups {
             .target_size(4'862)
             .word_graph();
 
-    auto S = to_froidure_pin<Transf<0, node_type>>(d);
+    auto S = to<FroidurePin<Transf<0, node_type>>>(d);
     S.add_generator(one(S.generator(0)));
     REQUIRE(S.size() == 4'862);
     REQUIRE(orc.min_nodes() == 80);
@@ -2788,7 +2788,7 @@ namespace libsemigroups {
                    .target_size(5)
                    .word_graph();
       REQUIRE(word_graph::is_strictly_cyclic(d));
-      auto S = to_froidure_pin<Transf<0, node_type>>(d);
+      auto S = to<FroidurePin<Transf<0, node_type>>>(d);
       S.add_generator(one(S.generator(0)));
       REQUIRE(S.size() == 5);
       REQUIRE(d.number_of_nodes() == 4);
@@ -3281,7 +3281,7 @@ namespace libsemigroups {
 
     auto hook = [&](word_graph_type const& x) {
       auto first = (T.presentation().contains_empty_word() ? 0 : 1);
-      auto S     = to_froidure_pin<Transf<0, node_type>>(
+      auto S     = to<FroidurePin<Transf<0, node_type>>>(
           x, first, x.number_of_active_nodes());
       if (T.presentation().contains_empty_word()) {
         auto id = one(S.generator(0));

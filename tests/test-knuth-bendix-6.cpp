@@ -44,7 +44,7 @@
 #include "libsemigroups/obvinf.hpp"        // for is_obviously_infinite
 #include "libsemigroups/presentation-examples.hpp"  // for partial_transformation...
 #include "libsemigroups/presentation.hpp"           // for add_rule
-#include "libsemigroups/to-froidure-pin.hpp"        // for to_froidure_pin
+#include "libsemigroups/to-froidure-pin.hpp"        // for to<FroidurePin>
 #include "libsemigroups/types.hpp"                  // for word_type
 #include "libsemigroups/word-range.hpp"             // for operator""_w
 
@@ -232,7 +232,7 @@ namespace libsemigroups {
     presentation::add_rule(p, 001010101010_w, 00_w);
 
     KnuthBendix<word_type, TestType> kb(twosided, p);
-    REQUIRE_NOTHROW(to_froidure_pin(kb));
+    REQUIRE_NOTHROW(to<FroidurePin>(kb));
   }
 
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
@@ -256,22 +256,6 @@ namespace libsemigroups {
     // the copy uses the "active rules" of kb, of which there are 105 since
     // knuth-bendix has already been run.
     REQUIRE(copy.number_of_active_rules() == 105);
-  }
-
-  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
-                                   "136",
-                                   "to_froidure_pin",
-                                   "[quick][knuth-bendix]",
-                                   KNUTH_BENDIX_TYPES) {
-    auto                    rg = ReportGuard(false);
-    Presentation<word_type> p;
-    p.alphabet(2);
-    presentation::add_rule(p, 000_w, 0_w);
-    presentation::add_rule(p, 1111_w, 1_w);
-    presentation::add_rule(p, 011111011_w, 110_w);
-
-    KnuthBendix<word_type, TestType> kb(twosided, p);
-    REQUIRE(to_froidure_pin(kb).size() == 12);
   }
 
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
@@ -373,7 +357,7 @@ namespace libsemigroups {
                                    "[quick][knuth-bendix]",
                                    KNUTH_BENDIX_TYPES) {
     using literals::operator""_w;
-    auto            rg = ReportGuard(false);
+    auto rg = ReportGuard(false);
 
     Presentation<word_type> p1;
     p1.contains_empty_word(true);
