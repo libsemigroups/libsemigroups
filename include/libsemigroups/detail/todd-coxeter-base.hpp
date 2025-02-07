@@ -417,7 +417,7 @@ namespace libsemigroups {
       //! instance if this number is finite, or \ref POSITIVE_INFINITY in some
       //! cases if this number is not finite.
       //!
-      //! \cong_intf_warn_undecidable{Todd-Coxeter}
+      //! \cong_common_warn_undecidable{Todd-Coxeter}
       [[nodiscard]] uint64_t number_of_classes();
 
       ////////////////////////////////////////////////////////////////////////
@@ -1464,7 +1464,7 @@ namespace libsemigroups {
       //!
       //! \returns The current index of the class containing the word.
       //!
-      //! \cong_intf_warn_assume_letters_in_bounds
+      //! \cong_common_warn_assume_letters_in_bounds
       //!
       // NOTE: the graph contains one more node than there are element
       // if the underlying presentation does not contain the empty word
@@ -1496,7 +1496,7 @@ namespace libsemigroups {
       //!
       //! \returns The current index of the class containing the word.
       //!
-      //! \cong_intf_throws_if_letters_out_of_bounds
+      //! \cong_common_throws_if_letters_out_of_bounds
       template <typename Iterator1, typename Iterator2>
       index_type current_index_of(Iterator1 first, Iterator2 last) const {
         throw_if_letter_out_of_bounds(first, last);
@@ -1527,7 +1527,7 @@ namespace libsemigroups {
       //!
       //! \returns The index of the class containing the word.
       //!
-      //! \cong_intf_warn_assume_letters_in_bounds
+      //! \cong_common_warn_assume_letters_in_bounds
       template <typename Iterator1, typename Iterator2>
       index_type index_of_no_checks(Iterator1 first, Iterator2 last);
 
@@ -1555,7 +1555,7 @@ namespace libsemigroups {
       //!
       //! \returns The index of the class containing the word.
       //!
-      //! \cong_intf_throws_if_letters_out_of_bounds
+      //! \cong_common_throws_if_letters_out_of_bounds
       template <typename Iterator1, typename Iterator2>
       index_type index_of(Iterator1 first, Iterator2 last) {
         throw_if_letter_out_of_bounds(first, last);

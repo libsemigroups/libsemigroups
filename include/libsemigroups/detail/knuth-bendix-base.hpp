@@ -303,7 +303,7 @@ namespace libsemigroups {
       //! \returns The number of congruences classes of a \ref_knuth_bendix
       //! instance.
       //!
-      //! \cong_intf_warn_undecidable{Knuth-Bendix}
+      //! \cong_common_warn_undecidable{Knuth-Bendix}
       //!
       //! \note If \c this has been run until finished, then this function can
       //! determine the number of classes of the congruence represented by \c

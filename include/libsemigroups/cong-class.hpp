@@ -57,7 +57,7 @@ namespace libsemigroups {
   //! Congruence.
   //!
   //! Helper functions for the class template Congruence can be found in the
-  //! namespaces \ref cong_intf_helpers_group "congruence_common" and \ref
+  //! namespaces \ref cong_common_helpers_group "congruence_common" and \ref
   //! congruence. At present the helper functions in these two namespaces are
   //! identical, because there are no helper functions that only apply to the
   //! Congruence class template.
@@ -90,7 +90,7 @@ namespace libsemigroups {
   //! \tparam Word the type of the words used in the \ref presentation and
   //! \ref generating_pairs.
   //!
-  //! \sa \ref cong_intf_helpers_group for information about helper functions
+  //! \sa \ref cong_common_helpers_group for information about helper functions
   //! for the Congruence class template.
   //!
   //! \par Example
@@ -258,11 +258,11 @@ namespace libsemigroups {
     //! This function adds a generating pair to the congruence represented by a
     //! \ref Congruence instance.
     //!
-    //! \cong_intf_params_contains
+    //! \cong_common_params_contains
     //!
     //! \returns A reference to `*this`.
     //!
-    //! \cong_intf_warn_assume_letters_in_bounds
+    //! \cong_common_warn_assume_letters_in_bounds
     //!
     //! \warning It is assumed that \ref started returns \c false. Adding
     //! generating pairs after \ref started is not permitted (but also not
@@ -285,13 +285,13 @@ namespace libsemigroups {
     //! This function adds a generating pair to the congruence represented by a
     //! Congruence instance.
     //!
-    //! \cong_intf_params_contains
+    //! \cong_common_params_contains
     //!
     //! \returns A reference to `*this`.
     //!
-    //! \cong_intf_throws_if_letters_out_of_bounds
+    //! \cong_common_throws_if_letters_out_of_bounds
     //!
-    //! \cong_intf_throws_if_started
+    //! \cong_common_throws_if_started
     template <typename Iterator1,
               typename Iterator2,
               typename Iterator3,
@@ -335,14 +335,14 @@ namespace libsemigroups {
     //! This function performs no enumeration, so it is possible for the words
     //! to be contained in the congruence, but that this is not currently known.
     //!
-    //! \cong_intf_params_contains
+    //! \cong_common_params_contains
     //!
     //! \returns
     //! * tril::TRUE if the words are known to belong to the congruence;
     //! * tril::FALSE if the words are known to not belong to the congruence;
     //! * tril::unknown otherwise.
     //!
-    //! \cong_intf_warn_assume_letters_in_bounds
+    //! \cong_common_warn_assume_letters_in_bounds
     template <typename Iterator1,
               typename Iterator2,
               typename Iterator3,
@@ -360,14 +360,14 @@ namespace libsemigroups {
     //! This function performs no enumeration, so it is possible for the words
     //! to be contained in the congruence, but that this is not currently known.
     //!
-    //! \cong_intf_params_contains
+    //! \cong_common_params_contains
     //!
     //! \returns
     //! * tril::TRUE if the words are known to belong to the congruence;
     //! * tril::FALSE if the words are known to not belong to the congruence;
     //! * tril::unknown otherwise.
     //!
-    //! \cong_intf_throws_if_letters_out_of_bounds
+    //! \cong_common_throws_if_letters_out_of_bounds
     template <typename Iterator1,
               typename Iterator2,
               typename Iterator3,
@@ -388,14 +388,14 @@ namespace libsemigroups {
     //! This function performs no enumeration, so it is possible for the words
     //! to be contained in the congruence, but that this is not currently known.
     //!
-    //! \cong_intf_params_contains
+    //! \cong_common_params_contains
     //!
     //! \returns
     //! * tril::TRUE if the words are known to belong to the congruence;
     //! * tril::FALSE if the words are known to not belong to the congruence;
     //! * tril::unknown otherwise.
     //!
-    //! \cong_intf_throws_if_letters_out_of_bounds
+    //! \cong_common_throws_if_letters_out_of_bounds
     //!
     //! \warning Determining the number of classes is undecidable in general,
     //! and this may never terminate.
@@ -418,14 +418,14 @@ namespace libsemigroups {
     //! congruence represented by a \ref Congruence instance. This function
     //! triggers a full enumeration, which may never terminate.
     //!
-    //! \cong_intf_params_contains
+    //! \cong_common_params_contains
     //!
     //! \returns Whether or not the pair belongs to the congruence.
     //!
     //! \warning Determining the number of classes is undecidable in general,
     //! and this may never terminate.
     //!
-    //! \cong_intf_warn_assume_letters_in_bounds
+    //! \cong_common_warn_assume_letters_in_bounds
     template <typename Iterator1,
               typename Iterator2,
               typename Iterator3,
@@ -451,12 +451,12 @@ namespace libsemigroups {
     //! instance is not \ref finished, then it might be that equivalent input
     //! words produce different output words.
     //!
-    //! \cong_intf_params_reduce
+    //! \cong_common_params_reduce
     //!
     //! \returns An \p OutputIterator pointing one beyond the last letter
     //! inserted into \p d_first.
     //!
-    //! \cong_intf_warn_assume_letters_in_bounds
+    //! \cong_common_warn_assume_letters_in_bounds
     template <typename OutputIterator, typename Iterator1, typename Iterator2>
     OutputIterator reduce_no_run_no_checks(OutputIterator d_first,
                                            Iterator1      first,
@@ -471,12 +471,12 @@ namespace libsemigroups {
     //! instance is not \ref finished, then it might be that equivalent input
     //! words produce different output words.
     //!
-    //! \cong_intf_params_reduce
+    //! \cong_common_params_reduce
     //!
     //! \returns An \p OutputIterator pointing one beyond the last letter
     //! inserted into \p d_first.
     //!
-    //! \cong_intf_throws_if_letters_out_of_bounds
+    //! \cong_common_throws_if_letters_out_of_bounds
     template <typename OutputIterator, typename Iterator1, typename Iterator2>
     OutputIterator reduce_no_run(OutputIterator d_first,
                                  Iterator1      first,
@@ -492,12 +492,12 @@ namespace libsemigroups {
     //! iterator \p first and \p last to the output iterator \p d_first. The
     //! word output by this function is a normal form for the input word.
     //!
-    //! \cong_intf_params_reduce
+    //! \cong_common_params_reduce
     //!
     //! \returns An \p OutputIterator pointing one beyond the last letter
     //! inserted into \p d_first.
     //!
-    //! \cong_intf_warn_assume_letters_in_bounds
+    //! \cong_common_warn_assume_letters_in_bounds
     template <typename OutputIterator,
               typename InputIterator1,
               typename InputIterator2>
@@ -515,12 +515,12 @@ namespace libsemigroups {
     //! iterator \p first and \p last to the output iterator \p d_first. The
     //! word output by this function is a normal form for the input word.
     //!
-    //! \cong_intf_params_reduce
+    //! \cong_common_params_reduce
     //!
     //! \returns An \p OutputIterator pointing one beyond the last letter
     //! inserted into \p d_first.
     //!
-    //! \cong_intf_throws_if_letters_out_of_bounds
+    //! \cong_common_throws_if_letters_out_of_bounds
     template <typename OutputIterator,
               typename InputIterator1,
               typename InputIterator2>

@@ -69,20 +69,20 @@ namespace libsemigroups {
 
   namespace congruence_common {
 
-    //! \defgroup cong_intf_helpers_group Common congruence helpers
+    //! \defgroup cong_common_helpers_group Common congruence helpers
     //!
     //! This page contains documentation for helper functions for the classes
     //! Congruence, Kambites, KnuthBendix, and \ref_todd_coxeter. The
     //! functions documented on this page belong to all of the namespaces
-    //! \ref cong_intf_helpers_group "congruence_common", \ref congruence, \ref
+    //! \ref cong_common_helpers_group "congruence_common", \ref congruence, \ref
     //! kambites, \ref knuth_bendix, and \ref todd_coxeter.
 
     ////////////////////////////////////////////////////////////////////////
     // Interface helpers - add_generating_pair
     ////////////////////////////////////////////////////////////////////////
 
-    //! \defgroup cong_intf_helpers_add_pair_group Add generating pairs
-    //! \ingroup cong_intf_helpers_group
+    //! \defgroup cong_common_helpers_add_pair_group Add generating pairs
+    //! \ingroup cong_common_helpers_group
     //!
     //! \brief Add a generating pair using objects instead of iterators.
     //!
@@ -109,7 +109,7 @@ namespace libsemigroups {
     //!
     //! \return A reference to \p thing.
     //!
-    //! \cong_intf_warn_assume_letters_in_bounds
+    //! \cong_common_warn_assume_letters_in_bounds
     // NOTE: we use native_word_type and not another template param to avoid
     // unexpected behaviour, if for example we add words which are strings to a
     // ToddCoxeter<word_type>, then unexpected things might happen.
@@ -200,7 +200,7 @@ namespace libsemigroups {
     //!
     //! \return A reference to \p thing.
     //!
-    //! \cong_intf_throws_if_letters_out_of_bounds
+    //! \cong_common_throws_if_letters_out_of_bounds
     // NOTE: we use native_word_type and not another template param to avoid
     // unexpected behaviour, if for example we add words which are strings to a
     // ToddCoxeter<word_type>, then unexpected things might happen.
@@ -275,8 +275,8 @@ namespace libsemigroups {
     // Interface helpers - currently_contains_no_checks
     ////////////////////////////////////////////////////////////////////////
 
-    //! \defgroup cong_intf_helpers_contains_group Containment
-    //! \ingroup cong_intf_helpers_group
+    //! \defgroup cong_common_helpers_contains_group Containment
+    //! \ingroup cong_common_helpers_group
     //!
     //! \brief Check containment of a pair of words in a congruence.
     //!
@@ -322,7 +322,7 @@ namespace libsemigroups {
     //! * tril::FALSE if the words are known to not belong to the congruence;
     //! * tril::unknown otherwise.
     //!
-    //! \cong_intf_warn_assume_letters_in_bounds
+    //! \cong_common_warn_assume_letters_in_bounds
     // NOTE: we use native_word_type and not another template param to avoid
     // unexpected behaviour, if for example we add words which are strings to a
     // ToddCoxeter<word_type>, then unexpected things might happen.
@@ -425,7 +425,7 @@ namespace libsemigroups {
     //! * tril::FALSE if the words are known to not belong to the congruence;
     //! * tril::unknown otherwise.
     //!
-    //! \cong_intf_throws_if_letters_out_of_bounds
+    //! \cong_common_throws_if_letters_out_of_bounds
     // NOTE: we use native_word_type and not another template param to avoid
     // unexpected behaviour, if for example we add words which are strings to a
     // ToddCoxeter<word_type>, then unexpected things might happen.
@@ -513,7 +513,7 @@ namespace libsemigroups {
     //!
     //! \returns Whether or not the pair belongs to the congruence.
     //!
-    //! \cong_intf_warn_assume_letters_in_bounds
+    //! \cong_common_warn_assume_letters_in_bounds
     // NOTE: we use native_word_type and not another template param to avoid
     // unexpected behaviour, if for example we add words which are strings to a
     // ToddCoxeter<word_type>, then unexpected things might happen.
@@ -606,7 +606,7 @@ namespace libsemigroups {
     //!
     //! \returns Whether or not the pair belongs to the congruence.
     //!
-    //! \cong_intf_throws_if_letters_out_of_bounds
+    //! \cong_common_throws_if_letters_out_of_bounds
     // NOTE: we use native_word_type and not another template param to avoid
     // unexpected behaviour, if for example we add words which are strings to a
     // ToddCoxeter<word_type>, then unexpected things might happen.
@@ -680,8 +680,8 @@ namespace libsemigroups {
     // Interface helpers - reduce_no_run_no_checks
     ////////////////////////////////////////////////////////////////////////
 
-    //! \defgroup cong_intf_helpers_reduce_group Reduce a word
-    //! \ingroup cong_intf_helpers_group
+    //! \defgroup cong_common_helpers_reduce_group Reduce a word
+    //! \ingroup cong_common_helpers_group
     //!
     //! \brief Find an irreducible word equivalent to a given word.
     //!
@@ -725,7 +725,7 @@ namespace libsemigroups {
     //!
     //! \returns An irreducible word equivalent to \p w.
     //!
-    //! \cong_intf_warn_assume_letters_in_bounds
+    //! \cong_common_warn_assume_letters_in_bounds
     // NOTE: we use native_word_type and not another template param to avoid
     // unexpected behaviour, if for example we add words which are strings to a
     // ToddCoxeter<word_type>, then unexpected things might happen.
@@ -786,7 +786,7 @@ namespace libsemigroups {
     //!
     //! \returns An irreducible word equivalent to \p w.
     //!
-    //! \cong_intf_throws_if_letters_out_of_bounds
+    //! \cong_common_throws_if_letters_out_of_bounds
     // NOTE: we use native_word_type and not another template param to avoid
     // unexpected behaviour, if for example we add words which are strings to a
     // ToddCoxeter<word_type>, then unexpected things might happen.
@@ -841,7 +841,7 @@ namespace libsemigroups {
     //!
     //! \returns An irreducible word equivalent to \p w.
     //!
-    //! \cong_intf_warn_assume_letters_in_bounds
+    //! \cong_common_warn_assume_letters_in_bounds
     // NOTE: we use native_word_type and not another template param to avoid
     // unexpected behaviour, if for example we add words which are strings to a
     // ToddCoxeter<word_type>, then unexpected things might happen.
@@ -895,7 +895,7 @@ namespace libsemigroups {
     //!
     //! \returns An irreducible word equivalent to \p w.
     //!
-    //! \cong_intf_throws_if_letters_out_of_bounds
+    //! \cong_common_throws_if_letters_out_of_bounds
     // NOTE: we use native_word_type and not another template param to avoid
     // unexpected behaviour, if for example we add words which are strings to a
     // ToddCoxeter<word_type>, then unexpected things might happen.
@@ -939,8 +939,8 @@ namespace libsemigroups {
     // Interface helpers - partition
     ////////////////////////////////////////////////////////////////////////
 
-    //! \defgroup cong_intf_helpers_partition_group Partitioning
-    //! \ingroup cong_intf_helpers_group
+    //! \defgroup cong_common_helpers_partition_group Partitioning
+    //! \ingroup cong_common_helpers_group
     //!
     //! \brief Partition a range of words by a congruence.
     //!

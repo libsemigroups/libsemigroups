@@ -68,7 +68,7 @@ namespace libsemigroups {
   //! \cite Kambites2009ab, and \cite Mitchell2021aa.
   //!
   //! Helper functions for the class template Kambites can be found in the
-  //! namespace \ref cong_intf_helpers_group "congruence_common" and \ref
+  //! namespace \ref cong_common_helpers_group "congruence_common" and \ref
   //! kambites. At present the helper functions in these two namespaces are
   //! identical, because there are no helper functions that only apply to the
   //! Kambites class template.
@@ -293,11 +293,11 @@ namespace libsemigroups {
     //! This function adds a generating pair to the congruence represented by a
     //! \ref Kambites instance.
     //!
-    //! \cong_intf_params_contains
+    //! \cong_common_params_contains
     //!
     //! \returns A reference to `*this`.
     //!
-    //! \cong_intf_warn_assume_letters_in_bounds
+    //! \cong_common_warn_assume_letters_in_bounds
     template <typename Iterator1,
               typename Iterator2,
               typename Iterator3,
@@ -312,11 +312,11 @@ namespace libsemigroups {
     //! This function adds a generating pair to the congruence represented by a
     //! \ref Kambites instance.
     //!
-    //! \cong_intf_params_contains
+    //! \cong_common_params_contains
     //!
     //! \returns A reference to `*this`.
     //!
-    //! \cong_intf_throws_if_letters_out_of_bounds
+    //! \cong_common_throws_if_letters_out_of_bounds
     template <typename Iterator1,
               typename Iterator2,
               typename Iterator3,
@@ -377,14 +377,14 @@ namespace libsemigroups {
     //! tril::unknown is returned (depending on whether \ref finished returns \c
     //! true or \c false, respectively).
     //!
-    //! \cong_intf_params_contains
+    //! \cong_common_params_contains
     //!
     //! \returns
     //! * tril::TRUE if the words are known to belong to the congruence;
     //! * tril::FALSE if the words are known to not belong to the congruence;
     //! * tril::unknown otherwise.
     //!
-    //! \cong_intf_warn_assume_letters_in_bounds
+    //! \cong_common_warn_assume_letters_in_bounds
     template <typename Iterator1,
               typename Iterator2,
               typename Iterator3,
@@ -408,14 +408,14 @@ namespace libsemigroups {
     //! then this function returns \ref tril::TRUE if the words are  identical;
     //! and \ref tril::unknown otherwise.
     //!
-    //! \cong_intf_params_contains
+    //! \cong_common_params_contains
     //!
     //! \returns
     //! * tril::TRUE if the words are known to belong to the congruence;
     //! * tril::FALSE if the words are known to not belong to the congruence;
     //! * tril::unknown otherwise.
     //!
-    //! \cong_intf_throws_if_letters_out_of_bounds
+    //! \cong_common_throws_if_letters_out_of_bounds
     template <typename Iterator1,
               typename Iterator2,
               typename Iterator3,
@@ -431,11 +431,11 @@ namespace libsemigroups {
     //! \p first1 to \p last1 and \p first2 to \p last2 are contained in the
     //! congruence represented by a \ref Kambites instance.
     //!
-    //! \cong_intf_params_contains
+    //! \cong_common_params_contains
     //!
     //! \returns Whether or not the pair belongs to the congruence.
     //!
-    //! \cong_intf_warn_assume_letters_in_bounds
+    //! \cong_common_warn_assume_letters_in_bounds
     //!
     //! \warning It is assumed but not checked that the \ref
     //! small_overlap_class is at least \f$4\f$.
@@ -457,11 +457,11 @@ namespace libsemigroups {
     //! \p first1 to \p last1 and \p first2 to \p last2 are contained in the
     //! congruence represented by a \ref Kambites instance.
     //!
-    //! \cong_intf_params_contains
+    //! \cong_common_params_contains
     //!
     //! \returns Whether or not the pair belongs to the congruence.
     //!
-    //! \cong_intf_throws_if_letters_out_of_bounds
+    //! \cong_common_throws_if_letters_out_of_bounds
     //!
     //! \throws LibsemigroupsException if \ref small_overlap_class is not at
     //! least \f$4\f$.
@@ -494,12 +494,12 @@ namespace libsemigroups {
     //! output. Note that in a small overlap monoid, every congruence class
     //! is finite, and so this lexicographically least word always exists.
     //!
-    //! \cong_intf_params_reduce
+    //! \cong_common_params_reduce
     //!
     //! \returns An \p OutputIterator pointing one beyond the last letter
     //! inserted into \p d_first.
     //!
-    //! \cong_intf_warn_assume_letters_in_bounds
+    //! \cong_common_warn_assume_letters_in_bounds
     //!
     //! \warning It is assumed but not checked that the \ref
     //! small_overlap_class is at least \f$4\f$.
@@ -519,12 +519,12 @@ namespace libsemigroups {
     //! is finite, and so this lexicographically least word always exists.
     //! form for the input word.
     //!
-    //! \cong_intf_params_reduce
+    //! \cong_common_params_reduce
     //!
     //! \returns An \p OutputIterator pointing one beyond the last letter
     //! inserted into \p d_first.
     //!
-    //! \cong_intf_throws_if_letters_out_of_bounds
+    //! \cong_common_throws_if_letters_out_of_bounds
     //!
     //! \throws LibsemigroupsException if the \ref small_overlap_class is known
     //! and is not at least \f$4\f$.
@@ -546,12 +546,12 @@ namespace libsemigroups {
     //! monoid, every congruence class is finite, and so this
     //! lexicographically least word always exists.
     //!
-    //! \cong_intf_params_reduce
+    //! \cong_common_params_reduce
     //!
     //! \returns An \p OutputIterator pointing one beyond the last letter
     //! inserted into \p d_first.
     //!
-    //! \cong_intf_warn_assume_letters_in_bounds
+    //! \cong_common_warn_assume_letters_in_bounds
     //!
     //! \warning It is assumed but not checked that the \ref
     //! small_overlap_class is at least \f$4\f$.
@@ -575,12 +575,12 @@ namespace libsemigroups {
     //! monoid, every congruence class is finite, and so this
     //! lexicographically least word always exists.
     //!
-    //! \cong_intf_params_reduce
+    //! \cong_common_params_reduce
     //!
     //! \returns An \p OutputIterator pointing one beyond the last letter
     //! inserted into \p d_first.
     //!
-    //! \cong_intf_throws_if_letters_out_of_bounds
+    //! \cong_common_throws_if_letters_out_of_bounds
     //!
     //! \throws LibsemigroupsException if \ref small_overlap_class is not at
     //! least \f$4\f$.

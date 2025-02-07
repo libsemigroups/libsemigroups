@@ -74,7 +74,7 @@ namespace libsemigroups {
   //! template (that accept iterators) whose parameters are not iterators, but
   //! the underlying objects. The helpers documented on this page all belong
   //! to the namespace
-  //! \ref congruence and \ref cong_intf_helpers_group "congruence_common".
+  //! \ref congruence and \ref cong_common_helpers_group "congruence_common".
   namespace congruence {
 
     ////////////////////////////////////////////////////////////////////////

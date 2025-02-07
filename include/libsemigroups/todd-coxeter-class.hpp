@@ -813,11 +813,11 @@ namespace libsemigroups {
     //! by a
     //! \ref_todd_coxeter instance.
     //!
-    //! \cong_intf_params_contains
+    //! \cong_common_params_contains
     //!
     //! \returns A reference to `*this`.
     //!
-    //! \cong_intf_warn_assume_letters_in_bounds
+    //! \cong_common_warn_assume_letters_in_bounds
     //!
     //! \warning It is assumed that \ref started returns \c false. Adding
     //! generating pairs after \ref started is not permitted (but also not
@@ -838,13 +838,13 @@ namespace libsemigroups {
     //! This function adds a generating pair to the congruence represented by
     //! a \ref_todd_coxeter instance.
     //!
-    //! \cong_intf_params_contains
+    //! \cong_common_params_contains
     //!
     //! \returns A reference to `*this`.
     //!
-    //! \cong_intf_throws_if_letters_out_of_bounds
+    //! \cong_common_throws_if_letters_out_of_bounds
     //!
-    //! \cong_intf_throws_if_started
+    //! \cong_common_throws_if_started
     template <typename Iterator1,
               typename Iterator2,
               typename Iterator3,
@@ -875,14 +875,14 @@ namespace libsemigroups {
     //! the words to be contained in the congruence, but that this is not
     //! currently known.
     //!
-    //! \cong_intf_params_contains
+    //! \cong_common_params_contains
     //!
     //! \returns
     //! * tril::TRUE if the words are known to belong to the congruence;
     //! * tril::FALSE if the words are known to not belong to the congruence;
     //! * tril::unknown otherwise.
     //!
-    //! \cong_intf_warn_assume_letters_in_bounds
+    //! \cong_common_warn_assume_letters_in_bounds
     template <typename Iterator1,
               typename Iterator2,
               typename Iterator3,
@@ -909,14 +909,14 @@ namespace libsemigroups {
     //! to be contained in the congruence, but that this is not currently
     //! known.
     //!
-    //! \cong_intf_params_contains
+    //! \cong_common_params_contains
     //!
     //! \returns
     //! * tril::TRUE if the words are known to belong to the congruence;
     //! * tril::FALSE if the words are known to not belong to the congruence;
     //! * tril::unknown otherwise.
     //!
-    //! \cong_intf_throws_if_letters_out_of_bounds
+    //! \cong_common_throws_if_letters_out_of_bounds
     template <typename Iterator1,
               typename Iterator2,
               typename Iterator3,
@@ -941,13 +941,13 @@ namespace libsemigroups {
     //! congruence represented by a \ref_todd_coxeter instance. This function
     //! triggers a full enumeration, which may never terminate.
     //!
-    //! \cong_intf_params_contains
+    //! \cong_common_params_contains
     //!
     //! \returns Whether or not the pair belongs to the congruence.
     //!
-    //! \cong_intf_warn_undecidable{Todd-Coxeter}
+    //! \cong_common_warn_undecidable{Todd-Coxeter}
     //!
-    //! \cong_intf_warn_assume_letters_in_bounds
+    //! \cong_common_warn_assume_letters_in_bounds
     template <typename Iterator1,
               typename Iterator2,
               typename Iterator3,
@@ -972,13 +972,13 @@ namespace libsemigroups {
     //! congruence represented by a \ref_todd_coxeter instance. This function
     //! triggers a full enumeration, which may never terminate.
     //!
-    //! \cong_intf_params_contains
+    //! \cong_common_params_contains
     //!
     //! \returns Whether or not the pair belongs to the congruence.
     //!
-    //! \cong_intf_warn_undecidable{Todd-Coxeter}
+    //! \cong_common_warn_undecidable{Todd-Coxeter}
     //!
-    //! \cong_intf_throws_if_letters_out_of_bounds
+    //! \cong_common_throws_if_letters_out_of_bounds
     template <typename Iterator1,
               typename Iterator2,
               typename Iterator3,
@@ -1006,12 +1006,12 @@ namespace libsemigroups {
     //! the \ref_todd_coxeter instance is not \ref finished, then it might be
     //! that equivalent input words produce different output words.
     //!
-    //! \cong_intf_params_reduce
+    //! \cong_common_params_reduce
     //!
     //! \returns An \p OutputIterator pointing one beyond the last letter
     //! inserted into \p d_first.
     //!
-    //! \cong_intf_warn_assume_letters_in_bounds
+    //! \cong_common_warn_assume_letters_in_bounds
     //!
     template <typename OutputIterator,
               typename InputIterator1,
@@ -1039,12 +1039,12 @@ namespace libsemigroups {
     //! \ref_todd_coxeter instance is not \ref finished, then it might be that
     //! equivalent input words produce different output words.
     //!
-    //! \cong_intf_params_reduce
+    //! \cong_common_params_reduce
     //!
     //! \returns An \p OutputIterator pointing one beyond the last letter
     //! inserted into \p d_first.
     //!
-    //! \cong_intf_throws_if_letters_out_of_bounds
+    //! \cong_common_throws_if_letters_out_of_bounds
     template <typename OutputIterator,
               typename InputIterator1,
               typename InputIterator2>
@@ -1069,14 +1069,14 @@ namespace libsemigroups {
     //! words, the output word is a normal form for the input word or
     //! equivalently a canconical representative of its congruence class.
     //!
-    //! \cong_intf_params_reduce
+    //! \cong_common_params_reduce
     //!
     //! \returns An \p OutputIterator pointing one beyond the last letter
     //! inserted into \p d_first.
     //!
-    //! \cong_intf_warn_assume_letters_in_bounds
+    //! \cong_common_warn_assume_letters_in_bounds
     //!
-    //! \cong_intf_warn_undecidable{Todd-Coxeter}
+    //! \cong_common_warn_undecidable{Todd-Coxeter}
     //!
     template <typename OutputIterator,
               typename InputIterator1,
@@ -1103,14 +1103,14 @@ namespace libsemigroups {
     //! normal form for the input word or equivalently a canconical
     //! representative of its congruence class.
     //!
-    //! \cong_intf_params_reduce
+    //! \cong_common_params_reduce
     //!
     //! \returns An \p OutputIterator pointing one beyond the last letter
     //! inserted into \p d_first.
     //!
-    //! \cong_intf_throws_if_letters_out_of_bounds
+    //! \cong_common_throws_if_letters_out_of_bounds
     //!
-    //! \cong_intf_warn_undecidable{Todd-Coxeter}
+    //! \cong_common_warn_undecidable{Todd-Coxeter}
     //!
     template <typename OutputIterator,
               typename InputIterator1,
@@ -1165,7 +1165,7 @@ namespace libsemigroups {
     //!
     //! \returns The current index of the class containing the word.
     //!
-    //! \cong_intf_warn_assume_letters_in_bounds
+    //! \cong_common_warn_assume_letters_in_bounds
     //!
     // NOTE THAT: the graph contains one more node than there are element if
     // the underlying presentation does not contain the empty word
@@ -1198,7 +1198,7 @@ namespace libsemigroups {
     //!
     //! \returns The current index of the class containing the word.
     //!
-    //! \cong_intf_throws_if_letters_out_of_bounds
+    //! \cong_common_throws_if_letters_out_of_bounds
     template <typename Iterator1, typename Iterator2>
     index_type current_index_of(Iterator1 first, Iterator2 last) const {
       throw_if_letter_out_of_bounds(first, last);
@@ -1228,7 +1228,7 @@ namespace libsemigroups {
     //!
     //! \returns The index of the class containing the word.
     //!
-    //! \cong_intf_warn_assume_letters_in_bounds
+    //! \cong_common_warn_assume_letters_in_bounds
     template <typename Iterator1, typename Iterator2>
     index_type index_of_no_checks(Iterator1 first, Iterator2 last) {
       return ToddCoxeterBase::index_of_no_checks(make_citow(first),
@@ -1258,7 +1258,7 @@ namespace libsemigroups {
     //!
     //! \returns The index of the class containing the word.
     //!
-    //! \cong_intf_throws_if_letters_out_of_bounds
+    //! \cong_common_throws_if_letters_out_of_bounds
     template <typename Iterator1, typename Iterator2>
     index_type index_of(Iterator1 first, Iterator2 last) {
       throw_if_letter_out_of_bounds(first, last);

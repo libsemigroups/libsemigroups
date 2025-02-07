@@ -300,12 +300,12 @@ ALIASES                = "exceptions=\par Exceptions" \
                          "iterator_validity=\par Iterator validity" \
                          "iterator_invalid=This function modifies the object defined by \p this, any iterators, pointers or references pointing into \c this may be invalidated by a call to this function." \
                          "parameters=\par Parameters" \
-                         "cong_intf_warn_assume_letters_in_bounds=\warning This function does not check that the arguments are valid. In particular, it is assumed that every value pointed at by the iterators belongs to `presentation().alphabet()`." \
-                         "cong_intf_warn_undecidable{1}=\warning Termination of the \1 algorithm is undecidable in general, and this function may never terminate." \
-                         "cong_intf_params_contains=\tparam Iterator1 the type of the argument \p first1. \tparam Iterator2 the type of the argument \p last1. \tparam Iterator3 the type of the argument \p first2. \tparam Iterator4 the type of the argument \p last2. \param first1 iterator pointing at the first letter of the first word. \param last1 iterator pointing one beyond the last letter in the first word. \param first2 iterator pointing at the first letter of the second word. \param last2 iterator pointing one beyond the last letter in the second word." \
-                         "cong_intf_params_reduce=\tparam OutputIterator the type of the argument \p d_first. \tparam InputIterator1 the type of the argument \p first. \tparam InputIterator2 the type of the argument \p last. \param d_first output iterator. \param first iterator pointing at the first letter of the input word. \param last iterator pointing one beyond the last letter in the input word." \
-                         "cong_intf_throws_if_started=\throws LibsemigroupsException if \ref started returns \c true." \
-                         "cong_intf_throws_if_letters_out_of_bounds=\throws LibsemigroupsException if any of the values pointed at by the iterators is out of range, i.e. they do not belong to `presentation().alphabet()` and `Presentation::validate_word` throws." \
+                         "cong_common_warn_assume_letters_in_bounds=\warning This function does not check that the arguments are valid. In particular, it is assumed that every value pointed at by the iterators belongs to `presentation().alphabet()`." \
+                         "cong_common_warn_undecidable{1}=\warning Termination of the \1 algorithm is undecidable in general, and this function may never terminate." \
+                         "cong_common_params_contains=\tparam Iterator1 the type of the argument \p first1. \tparam Iterator2 the type of the argument \p last1. \tparam Iterator3 the type of the argument \p first2. \tparam Iterator4 the type of the argument \p last2. \param first1 iterator pointing at the first letter of the first word. \param last1 iterator pointing one beyond the last letter in the first word. \param first2 iterator pointing at the first letter of the second word. \param last2 iterator pointing one beyond the last letter in the second word." \
+                         "cong_common_params_reduce=\tparam OutputIterator the type of the argument \p d_first. \tparam InputIterator1 the type of the argument \p first. \tparam InputIterator2 the type of the argument \p last. \param d_first output iterator. \param first iterator pointing at the first letter of the input word. \param last iterator pointing one beyond the last letter in the input word." \
+                         "cong_common_throws_if_started=\throws LibsemigroupsException if \ref started returns \c true." \
+                         "cong_common_throws_if_letters_out_of_bounds=\throws LibsemigroupsException if any of the values pointed at by the iterators is out of range, i.e. they do not belong to `presentation().alphabet()` and `Presentation::validate_word` throws." \
                          "ref_todd_coxeter=\ref todd_coxeter_class_group \"ToddCoxeter\"" \
                          "ref_knuth_bendix=\ref knuth_bendix_class_group \"KnuthBendix\""
 
@@ -1343,7 +1343,7 @@ VERBATIM_HEADERS       = YES
 # generated with the -Duse_libclang=ON option for CMake.
 # The default value is: NO.
 
-CLANG_ASSISTED_PARSING = NO
+# CLANG_ASSISTED_PARSING = NO
 
 # If the CLANG_ASSISTED_PARSING tag is set to YES and the CLANG_ADD_INC_PATHS
 # tag is set to YES then Doxygen will add the directory of each input to the
@@ -1351,7 +1351,7 @@ CLANG_ASSISTED_PARSING = NO
 # The default value is: YES.
 # This tag requires that the tag CLANG_ASSISTED_PARSING is set to YES.
 
-CLANG_ADD_INC_PATHS    = YES
+# CLANG_ADD_INC_PATHS    = YES
 
 # If clang assisted parsing is enabled you can provide the compiler with command
 # line options that you would normally use when invoking the compiler. Note that
@@ -1359,7 +1359,7 @@ CLANG_ADD_INC_PATHS    = YES
 # specified with INPUT and INCLUDE_PATH.
 # This tag requires that the tag CLANG_ASSISTED_PARSING is set to YES.
 
-CLANG_OPTIONS          =
+# CLANG_OPTIONS          =
 
 # If clang assisted parsing is enabled you can provide the clang parser with the
 # path to the directory containing a file called compile_commands.json. This
@@ -1372,7 +1372,7 @@ CLANG_OPTIONS          =
 # Note: The availability of this option depends on whether or not Doxygen was
 # generated with the -Duse_libclang=ON option for CMake.
 
-CLANG_DATABASE_PATH    =
+# CLANG_DATABASE_PATH    =
 
 #---------------------------------------------------------------------------
 # Configuration options related to the alphabetical class index

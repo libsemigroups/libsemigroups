@@ -74,12 +74,12 @@ namespace libsemigroups {
   //! iterators) whose parameters are not iterators, but objects instead. The
   //! helpers documented on this page all belong to the namespace `kambites`.
   //!
-  //! \sa \ref cong_intf_helpers_group
+  //! \sa \ref cong_common_helpers_group
 
   //! This page contains documentation for everything in the namespace \ref
-  //! kambites. This includes everything from \ref cong_intf_helpers_group, at
+  //! kambites. This includes everything from \ref cong_common_helpers_group, at
   //! present there are no helper functions, beyond those in \ref
-  //! cong_intf_helpers_group, for the \ref Kambites class template.
+  //! cong_common_helpers_group, for the \ref Kambites class template.
   namespace kambites {
     using congruence_common::add_generating_pair;
     using congruence_common::add_generating_pair_no_checks;

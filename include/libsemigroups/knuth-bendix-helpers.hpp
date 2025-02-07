@@ -74,7 +74,7 @@ namespace libsemigroups {
     //! \exceptions
     //! \no_libsemigroups_except
     //!
-    //! \cong_intf_warn_undecidable{Knuth-Bendix}.
+    //! \cong_common_warn_undecidable{Knuth-Bendix}.
     template <typename Word, typename Rewriter, typename ReductionOrder>
     [[nodiscard]] auto
     normal_forms(KnuthBendix<Word, Rewriter, ReductionOrder>& kb) {
@@ -125,7 +125,7 @@ namespace libsemigroups {
     //! of
     //! \p kb1 has fewer nodes than that of \p kb2.
     //!
-    //! \cong_intf_warn_undecidable{Knuth-Bendix}.
+    //! \cong_common_warn_undecidable{Knuth-Bendix}.
     template <typename Word, typename Rewriter, typename ReductionOrder>
     [[nodiscard]] std::vector<std::vector<Word>>
     non_trivial_classes(KnuthBendix<Word, Rewriter, ReductionOrder>& kb1,
@@ -147,11 +147,11 @@ namespace libsemigroups {
   //! helpers documented on this page all belong to the namespace
   //! \ref knuth_bendix.
   //!
-  //! \sa \ref cong_intf_helpers_group
+  //! \sa \ref cong_common_helpers_group
 
   //! This page contains documentation for everything in the namespace \ref
   //! knuth_bendix. This includes everything from
-  //! \ref cong_intf_helpers_group and \ref knuth_bendix_helpers_group.
+  //! \ref cong_common_helpers_group and \ref knuth_bendix_helpers_group.
   namespace knuth_bendix {
 
     ////////////////////////////////////////////////////////////////////////

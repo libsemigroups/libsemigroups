@@ -713,11 +713,11 @@ namespace libsemigroups {
     //! This function adds a pair that must be included in every congruence
     //! returned by a \ref Sims1 or \ref Sims2 instance.
     //!
-    //! \cong_intf_params_contains
+    //! \cong_common_params_contains
     //!
     //! \returns A reference to \c this.
     //!
-    //! \cong_intf_warn_assume_letters_in_bounds
+    //! \cong_common_warn_assume_letters_in_bounds
     template <typename Iterator1,
               typename Iterator2,
               typename Iterator3,
@@ -734,11 +734,11 @@ namespace libsemigroups {
     //! This function adds a pair that must be included in every congruence
     //! returned by a \ref Sims1 or \ref Sims2 instance.
     //!
-    //! \cong_intf_params_contains
+    //! \cong_common_params_contains
     //!
     //! \returns A reference to \c this.
     //!
-    //! \cong_intf_throws_if_letters_out_of_bounds
+    //! \cong_common_throws_if_letters_out_of_bounds
     template <typename Iterator1,
               typename Iterator2,
               typename Iterator3,
@@ -788,11 +788,11 @@ namespace libsemigroups {
     //! This function adds a pair that must be excluded from every congruence
     //! returned by a \ref Sims1 or \ref Sims2 instance.
     //!
-    //! \cong_intf_params_contains
+    //! \cong_common_params_contains
     //!
     //! \returns A reference to \c this.
     //!
-    //! \cong_intf_warn_assume_letters_in_bounds
+    //! \cong_common_warn_assume_letters_in_bounds
     template <typename Iterator1,
               typename Iterator2,
               typename Iterator3,
@@ -810,11 +810,11 @@ namespace libsemigroups {
     //! This function adds a pair that must be excluded from every congruence
     //! returned by a \ref Sims1 or \ref Sims2 instance.
     //!
-    //! \cong_intf_params_contains
+    //! \cong_common_params_contains
     //!
     //! \returns A reference to \c this.
     //!
-    //! \cong_intf_throws_if_letters_out_of_bounds
+    //! \cong_common_throws_if_letters_out_of_bounds
     template <typename Iterator1,
               typename Iterator2,
               typename Iterator3,
@@ -960,7 +960,7 @@ namespace libsemigroups {
     //!
     //! \return A reference to \p sims.
     //!
-    //! \cong_intf_warn_assume_letters_in_bounds
+    //! \cong_common_warn_assume_letters_in_bounds
     //!
     //! \sa \ref Sims1::included_pairs
     template <typename Subclass, typename Word>
@@ -1030,7 +1030,7 @@ namespace libsemigroups {
     //!
     //! \return A reference to \p sims.
     //!
-    //! \cong_intf_throws_if_letters_out_of_bounds
+    //! \cong_common_throws_if_letters_out_of_bounds
     //!
     //! \sa \ref Sims1::included_pairs
     template <typename Subclass, typename Word>
@@ -1098,7 +1098,7 @@ namespace libsemigroups {
     //!
     //! \return A reference to \p sims.
     //!
-    //! \cong_intf_warn_assume_letters_in_bounds
+    //! \cong_common_warn_assume_letters_in_bounds
     //!
     //! \sa \ref Sims1::excluded_pairs
     template <typename Subclass, typename Word>
@@ -1168,7 +1168,7 @@ namespace libsemigroups {
     //!
     //! \return A reference to \p sims.
     //!
-    //! \cong_intf_throws_if_letters_out_of_bounds
+    //! \cong_common_throws_if_letters_out_of_bounds
     //!
     //! \sa \ref Sims1::excluded_pairs
     template <typename Subclass, typename Word>

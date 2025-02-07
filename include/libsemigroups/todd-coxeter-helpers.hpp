@@ -47,7 +47,7 @@
 
 namespace libsemigroups {
   //! This page contains documentation for everything in the namespace \ref
-  //! todd_coxeter. This includes everything from \ref cong_intf_helpers_group
+  //! todd_coxeter. This includes everything from \ref cong_common_helpers_group
   //! and \ref todd_coxeter_helpers_group.
   namespace todd_coxeter {
     ////////////////////////////////////////////////////////////////////////
@@ -73,7 +73,7 @@ namespace libsemigroups {
     //! helpers documented on this page all belong to the namespace \ref
     //! todd_coxeter.
     //!
-    //! \sa \ref cong_intf_helpers_group
+    //! \sa \ref cong_common_helpers_group
     //!
     //! @{
 
@@ -457,7 +457,7 @@ namespace libsemigroups {
     //! \throws LibsemigroupsException if \p n is greater than or equal to
     //! `tc.number_of_classes()`.
     //!
-    //! \cong_intf_warn_undecidable{Todd-Coxeter}
+    //! \cong_common_warn_undecidable{Todd-Coxeter}
     // Can't out of line this because of auto return type
     template <typename Word>
     [[nodiscard]] auto class_by_index(ToddCoxeter<Word>& tc, index_type n) {
@@ -499,7 +499,7 @@ namespace libsemigroups {
     //! \warning This function does not check its arguments. In particular, it
     //! is assumed that \p n is strictly less than `tc.number_of_classes()`.
     //!
-    //! \cong_intf_warn_undecidable{Todd-Coxeter}
+    //! \cong_common_warn_undecidable{Todd-Coxeter}
     // Can't out of line this because of auto return type
     template <typename Word>
     [[nodiscard]] auto class_by_index_no_checks(ToddCoxeter<Word>& tc,
@@ -545,9 +545,9 @@ namespace libsemigroups {
     //! \returns A range object containing the words in the class of the input
     //! word.
     //!
-    //! \cong_intf_throws_if_letters_out_of_bounds
+    //! \cong_common_throws_if_letters_out_of_bounds
     //!
-    //! \cong_intf_warn_undecidable{Todd-Coxeter}
+    //! \cong_common_warn_undecidable{Todd-Coxeter}
     template <typename Word, typename Iterator1, typename Iterator2>
     [[nodiscard]] auto class_of(ToddCoxeter<Word>& tc,
                                 Iterator1          first,
@@ -576,9 +576,9 @@ namespace libsemigroups {
     //! \returns A range object containing the words in the class of the input
     //! word.
     //!
-    //! \cong_intf_warn_assume_letters_in_bounds
+    //! \cong_common_warn_assume_letters_in_bounds
     //!
-    //! \cong_intf_warn_undecidable{Todd-Coxeter}
+    //! \cong_common_warn_undecidable{Todd-Coxeter}
     template <typename Word, typename Iterator1, typename Iterator2>
     [[nodiscard]] auto class_of_no_checks(ToddCoxeter<Word>& tc,
                                           Iterator1          first,
@@ -606,9 +606,9 @@ namespace libsemigroups {
     //! \returns A range object containing the words in the class of the input
     //! word.
     //!
-    //! \cong_intf_throws_if_letters_out_of_bounds
+    //! \cong_common_throws_if_letters_out_of_bounds
     //!
-    //! \cong_intf_warn_undecidable{Todd-Coxeter}
+    //! \cong_common_warn_undecidable{Todd-Coxeter}
     template <typename Word>
     [[nodiscard]] auto class_of(ToddCoxeter<Word>& tc, Word const& w) {
       return class_of(tc, std::begin(w), std::end(w));
@@ -634,9 +634,9 @@ namespace libsemigroups {
     //! \returns A range object containing the words in the class of the input
     //! word.
     //!
-    //! \cong_intf_warn_assume_letters_in_bounds
+    //! \cong_common_warn_assume_letters_in_bounds
     //!
-    //! \cong_intf_warn_undecidable{Todd-Coxeter}
+    //! \cong_common_warn_undecidable{Todd-Coxeter}
     template <typename Word>
     [[nodiscard]] auto class_of_no_checks(ToddCoxeter<Word>& tc,
                                           Word const&        w) {
@@ -663,9 +663,9 @@ namespace libsemigroups {
     //! \returns A range object containing the words in the class of the input
     //! word.
     //!
-    //! \cong_intf_throws_if_letters_out_of_bounds
+    //! \cong_common_throws_if_letters_out_of_bounds
     //!
-    //! \cong_intf_warn_undecidable{Todd-Coxeter}
+    //! \cong_common_warn_undecidable{Todd-Coxeter}
     template <typename Word, typename Int>
     [[nodiscard]] auto class_of(ToddCoxeter<Word>&                tc,
                                 std::initializer_list<Int> const& w) {
@@ -693,9 +693,9 @@ namespace libsemigroups {
     //! \returns A range object containing the words in the class of the input
     //! word.
     //!
-    //! \cong_intf_warn_assume_letters_in_bounds
+    //! \cong_common_warn_assume_letters_in_bounds
     //!
-    //! \cong_intf_warn_undecidable{Todd-Coxeter}
+    //! \cong_common_warn_undecidable{Todd-Coxeter}
     template <typename Word, typename Int>
     [[nodiscard]] auto class_of_no_checks(ToddCoxeter<Word>&                tc,
                                           std::initializer_list<Int> const& w) {
@@ -721,9 +721,9 @@ namespace libsemigroups {
     //! \returns A range object containing the words in the class of the input
     //! word.
     //!
-    //! \cong_intf_warn_assume_letters_in_bounds
+    //! \cong_common_warn_assume_letters_in_bounds
     //!
-    //! \cong_intf_warn_undecidable{Todd-Coxeter}
+    //! \cong_common_warn_undecidable{Todd-Coxeter}
     template <typename Word>
     [[nodiscard]] inline auto class_of_no_checks(ToddCoxeter<Word>& tc,
                                                  char const*        w) {
@@ -749,9 +749,9 @@ namespace libsemigroups {
     //! \returns A range object containing the words in the class of the input
     //! word.
     //!
-    //! \cong_intf_throws_if_letters_out_of_bounds
+    //! \cong_common_throws_if_letters_out_of_bounds
     //!
-    //! \cong_intf_warn_undecidable{Todd-Coxeter}
+    //! \cong_common_warn_undecidable{Todd-Coxeter}
     template <typename Word>
     [[nodiscard]] auto class_of(ToddCoxeter<Word>& tc, char const* w) {
       detail::throw_if_nullptr(w, "2nd");
@@ -872,7 +872,7 @@ namespace libsemigroups {
     //! \exceptions
     //! \no_libsemigroups_except
     //!
-    //! \cong_intf_warn_undecidable{Todd-Coxeter}.
+    //! \cong_common_warn_undecidable{Todd-Coxeter}.
     template <typename Word>
     [[nodiscard]] auto normal_forms(ToddCoxeter<Word>& tc);
 
@@ -903,7 +903,7 @@ namespace libsemigroups {
     //!
     //! \throws LibsemigroupsException if the input range of words is infinite.
     //!
-    //! \cong_intf_warn_undecidable{Todd-Coxeter}.
+    //! \cong_common_warn_undecidable{Todd-Coxeter}.
     // The following function is also declared in cong-common-helpers.hpp:
     template <typename Word, typename Range, typename>
     [[nodiscard]] std::vector<std::vector<Word>>
@@ -934,7 +934,7 @@ namespace libsemigroups {
     //! \throws LibsemigroupsException if the number of classes in \p tc1 or \p
     //! tc2 is infinite.
     //!
-    //! \cong_intf_warn_undecidable{Todd-Coxeter}.
+    //! \cong_common_warn_undecidable{Todd-Coxeter}.
     template <typename Word>
     [[nodiscard]] std::vector<std::vector<Word>>
     non_trivial_classes(ToddCoxeter<Word>& tc1, ToddCoxeter<Word>& tc2);

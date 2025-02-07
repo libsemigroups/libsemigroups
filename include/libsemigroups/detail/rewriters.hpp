@@ -267,11 +267,11 @@ namespace libsemigroups {
       //!
       //! \returns A value of type `int64_t`
       //!
-      //! \complexity
-      //! Constant.
-      //!
       //! \exceptions
       //! \noexcept
+      //!
+      //! \complexity
+      //! Constant.
       [[nodiscard]] int64_t id() const noexcept {
         LIBSEMIGROUPS_ASSERT(_id != 0);
         return _id;
