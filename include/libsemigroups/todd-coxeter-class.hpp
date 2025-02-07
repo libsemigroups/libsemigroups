@@ -470,7 +470,7 @@ namespace libsemigroups {
       };
     };
 
-    // TODO(0) add to KnuthBendix, Kambites, Congruence doc
+    // TODO(0) Kambites, Congruence doc
     //! \ingroup todd_coxeter_class_intf_group
     //!
     //! \brief The kind of the congruence (1- or 2-sided).
@@ -487,7 +487,7 @@ namespace libsemigroups {
     //! Constant.
     [[nodiscard]] congruence_kind kind() const noexcept;
 
-    // TODO(0) add to KnuthBendix, Kambites, Congruence doc
+    // TODO(0)  Kambites, Congruence doc
     //! \ingroup todd_coxeter_class_intf_group
     //!
     //! \brief Returns the number of generating pairs.
