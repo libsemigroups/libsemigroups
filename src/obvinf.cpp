@@ -59,7 +59,7 @@ namespace libsemigroups {
 #ifdef LIBSEMIGROUPS_EIGEN_ENABLED
     _matrix = decltype(_matrix)(0, n);
 #else
-    _matrix           = decltype(_matrix)(n, 0);
+    _matrix = decltype(_matrix)(n, 0);
 #endif
     return *this;
   }
@@ -140,7 +140,7 @@ namespace libsemigroups {
   }
 
   IsObviouslyInfinite&
-  IsObviouslyInfinite::add_rules_no_checks(std::string const&,
+  IsObviouslyInfinite::add_rules_no_checks(std::string const&       lphbt,
                                            const_iterator_word_type first,
                                            const_iterator_word_type last) {
 #ifdef LIBSEMIGROUPS_EIGEN_ENABLED
@@ -154,8 +154,18 @@ namespace libsemigroups {
     std::fill(_matrix.begin(), _matrix.end(), 0);
 #endif
 
-    for (auto it = first; it < last; it += 2) {
-      private_add_rule(matrix_start + (it - first) / 2, *it, *(it + 1));
+    ToWord      to_word(lphbt);
+    word_type   lhs, rhs;
+    std::string tmp;
+    for (auto it = first; it < last; ++it) {
+      // changes lhs in-place
+      tmp.assign(it->begin(), it->end());
+      to_word(lhs, tmp);
+      ++it;
+      // changes rhs in-place
+      tmp.assign(it->begin(), it->end());
+      to_word(rhs, tmp);
+      private_add_rule(matrix_start + (it - first) / 2, lhs, rhs);
     }
     _nr_letter_components = _letter_components.number_of_blocks();
     return *this;
