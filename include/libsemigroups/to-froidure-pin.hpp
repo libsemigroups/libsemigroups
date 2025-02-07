@@ -194,10 +194,10 @@ namespace libsemigroups {
   std::unique_ptr<FroidurePinBase> to_froidure_pin(Congruence<Word>& cong) {
     cong.run();
     if (cong.template has<Kambites<Word>>()) {
-      // TODO(0) there an issue here that if the Kambites clause isn't first,
+      // TODO(2) there an issue here that if the Kambites clause isn't first,
       // then we incorrectly start running the other algos here, which run
       // forever. Probably something goes wrong that the other runners don't
-      // template get deleted if Kambites wins, since it's run first.
+      // get deleted if Kambites wins, since it's run first.
       return to_froidure_pin(*cong.template get<Kambites<Word>>());
     } else if (cong.template has<ToddCoxeter<Word>>()) {
       auto fp = to_froidure_pin(*cong.template get<ToddCoxeter<Word>>());
