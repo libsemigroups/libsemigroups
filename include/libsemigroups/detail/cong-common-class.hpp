@@ -218,7 +218,7 @@ namespace libsemigroups {
      private:
       void throw_if_started() const;
     };  // class CongruenceCommon
-  }  // namespace detail
+  }     // namespace detail
 }  // namespace libsemigroups
 
 #include "cong-common-class.tpp"
