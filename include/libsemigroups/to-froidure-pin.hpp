@@ -74,7 +74,7 @@ namespace libsemigroups {
   //! be derived from FroidurePinBase).
   //! \tparam T the type of the nodes of the digraph.
   //!
-  //! \param ad the WordGraph being used to construct the FroidurePin
+  //! \param wg the WordGraph being used to construct the FroidurePin
   //! object.
   //! \param first the value of \f$a\f$ in the preceding discussion
   //! \param last the value of \f$b\f$ in the preceding discussion
@@ -89,7 +89,7 @@ namespace libsemigroups {
   //! \f$\{a, \ldots, b - 1\}f
   //! \not\subseteq \{a, \ldots, b - 1\}\f$ for the corresponding \f$f\f$.
   template <typename Element, typename Node>
-  FroidurePin<Element> to_froidure_pin(WordGraph<Node> const& ad,
+  FroidurePin<Element> to_froidure_pin(WordGraph<Node> const& wg,
                                        size_t                 first,
                                        size_t                 last) {
     using node_type = typename WordGraph<Node>::node_type;
@@ -99,27 +99,27 @@ namespace libsemigroups {
                               "the 3rd argument (last node), found {} > {}",
                               first,
                               last);
-    } else if (first > ad.number_of_nodes()) {
+    } else if (first > wg.number_of_nodes()) {
       LIBSEMIGROUPS_EXCEPTION(
           "the 2nd argument (first node) must be at most the out-degree of the "
           "1st argument (WordGraph), found {} > {}",
           first,
-          ad.out_degree());
-    } else if (last > ad.number_of_nodes()) {
+          wg.out_degree());
+    } else if (last > wg.number_of_nodes()) {
       LIBSEMIGROUPS_EXCEPTION(
           "the 3rd argument (last node) must be at most the out-degree of the "
           "1st argument (WordGraph), found {} > {}",
           last,
-          ad.out_degree());
+          wg.out_degree());
     }
 
-    LIBSEMIGROUPS_ASSERT(ad.out_degree() > 0);
+    LIBSEMIGROUPS_ASSERT(wg.out_degree() > 0);
     FroidurePin<Element> result;
     Element              x(last - first);
     // Each label corresponds to a generator of S
-    for (node_type lbl = 0; lbl < ad.out_degree(); ++lbl) {
+    for (node_type lbl = 0; lbl < wg.out_degree(); ++lbl) {
       for (size_t n = first; n < last; ++n) {
-        x[n - first] = ad.target(n, lbl) - first;
+        x[n - first] = wg.target(n, lbl) - first;
       }
       // The next loop is required because if element_type is a fixed degree
       // type, such as Transf<5> for example, but first = last = 0, then the
@@ -136,11 +136,10 @@ namespace libsemigroups {
 
   //! Make a FroidurePin object from a WordGraph.
   //!
-  //! Calls `to_froidure_pin(ad, 0, ad.number_of_nodes())`; see above.
-  // TODO(0) ad -> wg
+  //! Calls `to_froidure_pin(wg, 0, wg.number_of_nodes())`; see above.
   template <typename Element, typename Node>
-  FroidurePin<Element> to_froidure_pin(WordGraph<Node> const& ad) {
-    return to_froidure_pin<Element>(ad, 0, ad.number_of_nodes());
+  FroidurePin<Element> to_froidure_pin(WordGraph<Node> const& wg) {
+    return to_froidure_pin<Element>(wg, 0, wg.number_of_nodes());
   }
 
   FroidurePin<detail::TCE> to_froidure_pin(detail::ToddCoxeterBase& tc);
