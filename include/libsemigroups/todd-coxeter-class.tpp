@@ -31,20 +31,17 @@ namespace libsemigroups {
   template <typename Word>
   ToddCoxeter<Word>& ToddCoxeter<Word>::init(congruence_kind      knd,
                                              Presentation<Word>&& p) {
-    // TODO(0) seems like _generating_pairs is not reset by this
     if constexpr (!std::is_same_v<Word, word_type>) {
       // to_presentation throws in the next line if p isn't valid
-      auto copy = to_presentation<word_type>(p);
-      init();
-      ToddCoxeterBase::init(knd, std::move(copy));
+      ToddCoxeterBase::init(knd, to_presentation<word_type>(p));
       _presentation = std::move(p);
     } else {
       p.validate();
-      init();
       _presentation = p;  // copy p in to _presentation
       presentation::normalize_alphabet(p);
       ToddCoxeterBase::init(knd, std::move(p));
     }
+    _generating_pairs.clear();
     return *this;
   }
 
@@ -53,14 +50,7 @@ namespace libsemigroups {
   ToddCoxeter<Word>& ToddCoxeter<Word>::init(congruence_kind        knd,
                                              WordGraph<Node> const& wg) {
     ToddCoxeterBase::init(knd, wg);
-    if constexpr (std::is_same_v<Word, word_type>) {
-      _presentation = current_word_graph().presentation();
-    } else {
-      // TODO(0) implement to_presentation<word_type>(Presentation<word_type>)
-      // which just returns the input unchanged, and remove this if-statement
-      _presentation
-          = to_presentation<Word>(current_word_graph().presentation());
-    }
+    _presentation = to_presentation<Word>(current_word_graph().presentation());
     _generating_pairs.clear();
     return *this;
   }
@@ -81,6 +71,7 @@ namespace libsemigroups {
       presentation::normalize_alphabet(copy);
       ToddCoxeterBase::init(knd, copy, wg);
     }
+    _generating_pairs.clear();
     return *this;
   }
 

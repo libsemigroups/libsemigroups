@@ -129,6 +129,27 @@ namespace libsemigroups {
                           Presentation<WordOutput>>;
 #endif
 
+  //! \ingroup to_presentation_group
+  //!
+  //! \brief Make a presentation from the same type of presentation.
+  //!
+  //! This function just returns its argument \p p, and is included solely for
+  //! the purpose of simplifying certain client code, where presentations must
+  //! be converted from one type to another sometimes, but not other times.
+  //!
+  //! \tparam Word the type of the words in the presentation.
+  //! \param p the input presentation.
+  //!
+  //! \returns The argument \p p by const reference.
+  //!
+  //! \exceptions
+  //! \noexcept
+  template <typename Word>
+  Presentation<Word> const&
+  to_presentation(Presentation<Word> const& p) noexcept {
+    return p;
+  }
+
 #ifdef PARSED_BY_DOXYGEN
   //! \ingroup to_presentation_group
   //!
