@@ -206,7 +206,6 @@ namespace libsemigroups {
       ////////////////////////////////////////////////////////////////////////
 
       bool                            _gen_pairs_initted;
-      std::vector<std::string>        _input_generating_pairs;
       WordGraph<uint32_t>             _gilman_graph;
       std::vector<std::string>        _gilman_graph_node_labels;
       bool                            _internal_is_same_as_external;
@@ -268,8 +267,6 @@ namespace libsemigroups {
                                                      Iterator3 first2,
                                                      Iterator4 last2) {
         LIBSEMIGROUPS_ASSERT(!started());
-        _input_generating_pairs.emplace_back(first1, last1);
-        _input_generating_pairs.emplace_back(first2, last2);
         return CongruenceCommon::add_internal_generating_pair_no_checks<
             KnuthBendixBase>(first1, last1, first2, last2);
       }
@@ -282,6 +279,7 @@ namespace libsemigroups {
                                            Iterator2 last1,
                                            Iterator3 first2,
                                            Iterator4 last2) {
+        LIBSEMIGROUPS_ASSERT(!started());
         return CongruenceCommon::add_generating_pair<KnuthBendixBase>(
             first1, last1, first2, last2);
       }
@@ -651,13 +649,6 @@ namespace libsemigroups {
       [[nodiscard]] Presentation<std::string> const&
       internal_presentation() const noexcept {
         return _presentation;
-      }
-
-      // TODO(0) remove this
-      [[nodiscard]] std::vector<native_word_type> const&
-      generating_pairs() const noexcept {
-        // TODO(0) remove _input_generating_pairs data member completely
-        return _input_generating_pairs;
       }
 
       //! \ingroup knuth_bendix_class_accessors_group
