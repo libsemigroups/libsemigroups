@@ -211,9 +211,9 @@ namespace libsemigroups {
     //! \throws LibsemigroupsException if \p p is not valid.
     //! \throws LibsemigroupsException if \p knd is not \ref
     //! congruence_kind::twosided.
-    // TODO(0) simplify constructors (like for KnuthBendixBase +
-    // ToddCoxeterBase)
-    Kambites(congruence_kind knd, Presentation<native_word_type> const& p);
+    Kambites(congruence_kind knd, Presentation<native_word_type> const& p)
+        // call the rval ref constructor
+        : Kambites(knd, Presentation<native_word_type>(p)) {}
 
     //! \brief Re-initialize a \ref Kambites instance.
     //!
@@ -236,11 +236,17 @@ namespace libsemigroups {
     //! \throws LibsemigroupsException if \p knd is not \ref
     //! congruence_kind::twosided.
     Kambites& init(congruence_kind                       knd,
-                   Presentation<native_word_type> const& p);
+                   Presentation<native_word_type> const& p) {
+      // call the rval ref init
+      return init(knd, Presentation<native_word_type>(p));
+    }
 
     //! \copydoc Kambites(congruence_kind, Presentation<native_word_type>
     //! const&)
-    Kambites(congruence_kind knd, Presentation<native_word_type>&& p);
+    Kambites(congruence_kind knd, Presentation<native_word_type>&& p)
+        : Kambites() {
+      init(knd, std::move(p));
+    }
 
     //! \copydoc init(congruence_kind, Presentation<native_word_type>
     //! const&)
@@ -711,12 +717,6 @@ namespace libsemigroups {
 
    private:
     ////////////////////////////////////////////////////////////////////////
-    // Kambites - init functions - private
-    ////////////////////////////////////////////////////////////////////////
-
-    Kambites& private_init_from_presentation(bool call_init);
-
-    ////////////////////////////////////////////////////////////////////////
     // Kambites - XYZ functions - private
     ////////////////////////////////////////////////////////////////////////
 
@@ -750,7 +750,7 @@ namespace libsemigroups {
     // Returns the index of the relation word r_i = X_iY_iZ_i if [first,
     // last) = X_iY_iw for some w. If no such exists, then UNDEFINED is
     // returned.
-    // Not noexcept because is_prefix isn'Word
+    // Not noexcept because is_prefix isn't
     [[nodiscard]] size_t
     relation_prefix(internal_type_iterator const& first,
                     internal_type_iterator const& last) const;
@@ -759,7 +759,7 @@ namespace libsemigroups {
     // X_iY_i is a clean overlap prefix of <s>, i.e. <s> = X_iY_iw for some
     // w, and there's no factor of <s> of the form X_jY_j starting before
     // the beginning of Y_i. If no such exists, UNDEFINED is returned. Not
-    // noexcept because relation_prefix isn'Word
+    // noexcept because relation_prefix isn't
     [[nodiscard]] inline size_t
     clean_overlap_prefix(internal_type const& s) const {
       return clean_overlap_prefix(s.cbegin(), s.cend());
@@ -798,7 +798,7 @@ namespace libsemigroups {
     //
     // is returned.
     //
-    // Not noexcept because relation_prefix isn'Word
+    // Not noexcept because relation_prefix isn't
     [[nodiscard]] std::
         tuple<size_t, internal_type_iterator, internal_type_iterator>
         p_active(internal_type const&          x,
@@ -807,7 +807,7 @@ namespace libsemigroups {
 
     // Returns a word equal to w in this, starting with the piece p, no
     // checks are performed. Used in the normal_form function. Not noexcept
-    // because detail::is_prefix isn'Word
+    // because detail::is_prefix isn't
     void replace_prefix(internal_type& w, internal_type const& p) const;
 
     ////////////////////////////////////////////////////////////////////////

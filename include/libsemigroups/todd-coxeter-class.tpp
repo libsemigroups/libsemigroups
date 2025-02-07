@@ -31,6 +31,7 @@ namespace libsemigroups {
   template <typename Word>
   ToddCoxeter<Word>& ToddCoxeter<Word>::init(congruence_kind      knd,
                                              Presentation<Word>&& p) {
+    // TODO(0) seems like _generating_pairs is not reset by this
     if constexpr (!std::is_same_v<Word, word_type>) {
       // to_presentation throws in the next line if p isn't valid
       ToddCoxeterBase::init(knd, to_presentation<word_type>(p));

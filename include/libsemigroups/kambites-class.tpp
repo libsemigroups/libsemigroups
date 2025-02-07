@@ -84,9 +84,7 @@ namespace libsemigroups {
     _have_class = false;
     _XYZ_data.clear();
     // Non-mutable
-    // _presentation.init(); FIXME(0) this needs to be added but one of the
-    // other constructors is messed up by this so better just do the
-    // simplification of the constructors now.
+    _presentation.init();
     _generating_pairs.clear();
     _suffix_tree.init();
     return *this;
@@ -108,44 +106,15 @@ namespace libsemigroups {
   Kambites<Word>::~Kambites() = default;
 
   template <typename Word>
-  Kambites<Word>::Kambites(congruence_kind                       knd,
-                           Presentation<native_word_type> const& p)
-      : Kambites() {
-    throw_if_1_sided(knd);
-    p.validate();
-    _presentation = p;
-    private_init_from_presentation(false);
-  }
-
-  template <typename Word>
-  Kambites<Word>&
-  Kambites<Word>::init(congruence_kind                       knd,
-                       Presentation<native_word_type> const& p) {
-    throw_if_1_sided(knd);
-    p.validate();
-    _presentation = p;
-    _generating_pairs.clear();
-    return private_init_from_presentation(true);
-  }
-
-  template <typename Word>
-  Kambites<Word>::Kambites(congruence_kind                  knd,
-                           Presentation<native_word_type>&& p)
-      : Kambites() {
-    throw_if_1_sided(knd);
-    p.validate();
-    _presentation = std::move(p);
-    private_init_from_presentation(false);
-  }
-
-  template <typename Word>
   Kambites<Word>& Kambites<Word>::init(congruence_kind                  knd,
                                        Presentation<native_word_type>&& p) {
     throw_if_1_sided(knd);
     p.validate();
+    init();
     _presentation = std::move(p);
-    _generating_pairs.clear();
-    return private_init_from_presentation(true);
+    ukkonen::add_words_no_checks(
+        _suffix_tree, _presentation.rules.cbegin(), _presentation.rules.cend());
+    return *this;
   }
 
   ////////////////////////////////////////////////////////////////////////
@@ -326,21 +295,6 @@ namespace libsemigroups {
   template <typename Word>
   size_t Kambites<Word>::small_overlap_class() const noexcept {
     return _class;
-  }
-
-  ////////////////////////////////////////////////////////////////////////
-  // Kambites - init functions - private
-  ////////////////////////////////////////////////////////////////////////
-
-  template <typename Word>
-  Kambites<Word>&
-  Kambites<Word>::private_init_from_presentation(bool call_init) {
-    if (call_init) {
-      init();
-    }
-    ukkonen::add_words_no_checks(
-        _suffix_tree, _presentation.rules.cbegin(), _presentation.rules.cend());
-    return *this;
   }
 
   ////////////////////////////////////////////////////////////////////////
