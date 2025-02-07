@@ -73,4 +73,36 @@ namespace libsemigroups {
         first1, last1, first2, last2);
   }
 
+  template <typename Word, typename Rewriter, typename ReductionOrder>
+  auto KnuthBendix<Word, Rewriter, ReductionOrder>::active_rules() {
+    auto result = KnuthBendixBase_::active_rules();
+    if constexpr (std::is_same_v<native_word_type,
+                                 typename KnuthBendixBase_::native_word_type>) {
+      return result;
+    } else {
+      // TODO(1) remove allocations here somehow (probably by making a custom
+      // range object holding memory to put the incoming rules into)
+      return result | rx::transform([](auto const& pair) {
+               return std::make_pair(
+                   Word(pair.first.begin(), pair.first.end()),
+                   Word(pair.second.begin(), pair.second.end()));
+             });
+    }
+  }
+
+  template <typename Word, typename Rewriter, typename ReductionOrder>
+  std::vector<Word>
+  KnuthBendix<Word, Rewriter, ReductionOrder>::gilman_graph_node_labels() {
+    auto base_result = KnuthBendixBase_::gilman_graph_node_labels();
+    if constexpr (std::is_same_v<native_word_type,
+                                 typename KnuthBendixBase_::native_word_type>) {
+      return base_result;
+    } else {
+      std::vector<Word> result;
+      for (auto& label : base_result) {
+        result.emplace_back(label.begin(), label.end());
+      }
+      return result;
+    }
+  }
 }  // namespace libsemigroups

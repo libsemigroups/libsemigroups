@@ -500,23 +500,7 @@ namespace libsemigroups {
     //! \returns
     //! A range object containing the current active rules.
     // TODO(1) should be const
-    // TODO(0) to tpp if possible
-    auto active_rules() {
-      auto result = KnuthBendixBase_::active_rules();
-      if constexpr (std::is_same_v<
-                        native_word_type,
-                        typename KnuthBendixBase_::native_word_type>) {
-        return result;
-      } else {
-        // TODO(1) remove allocations here somehow (probably by making a custom
-        // range object holding memory to put the incoming rules into)
-        return result | rx::transform([](auto const& pair) {
-                 return std::make_pair(
-                     Word(pair.first.begin(), pair.first.end()),
-                     Word(pair.second.begin(), pair.second.end()));
-               });
-      }
-    }
+    auto active_rules();
 
     //! \brief Return the node labels of the Gilman \ref WordGraph
     //!
@@ -528,21 +512,7 @@ namespace libsemigroups {
     //! reference to a `std::vector<Word>`.
     //!
     //! \sa \ref gilman_graph.
-    // TODO(0) to tpp if possible
-    std::vector<Word> gilman_graph_node_labels() {
-      auto base_result = KnuthBendixBase_::gilman_graph_node_labels();
-      if constexpr (std::is_same_v<
-                        native_word_type,
-                        typename KnuthBendixBase_::native_word_type>) {
-        return base_result;
-      } else {
-        std::vector<Word> result;
-        for (auto& label : base_result) {
-          result.emplace_back(label.begin(), label.end());
-        }
-        return result;
-      }
-    }
+    std::vector<Word> gilman_graph_node_labels();
   };  // class KnuthBendix
 
   //! \ingroup knuth_bendix_class_group
