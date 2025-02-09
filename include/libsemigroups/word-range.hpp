@@ -1304,6 +1304,7 @@ namespace libsemigroups {
     template <typename Int>
     [[nodiscard]] std::string
     operator()(std::initializer_list<Int> input) const {
+      static_assert(std::is_integral_v<Int>);
       // TODO(0) use iterators instead
       word_type copy(input.begin(), input.end());
       return    operator()(copy);

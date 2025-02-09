@@ -341,9 +341,9 @@ namespace libsemigroups {
     }
 
     template <typename Word>
-    [[nodiscard]] bool contains_rule(Presentation<Word>& p,
-                                     Word const&         lhs,
-                                     Word const&         rhs) {
+    bool contains_rule(Presentation<Word>& p,
+                       Word const&         lhs,
+                       Word const&         rhs) {
       for (auto it = p.rules.cbegin(); it != p.rules.cend(); it += 2) {
         if ((*it == lhs && *(it + 1) == rhs)
             || (*it == rhs && *(it + 1) == lhs)) {
@@ -568,7 +568,7 @@ namespace libsemigroups {
     Word longest_subword_reducing_length(Presentation<Word>& p) {
       Ukkonen u;
       ukkonen::add_words(u, p.rules.cbegin(), p.rules.cend());
-      ukkonen::detail::GreedyReduceHelper helper(u);
+      detail::GreedyReduceHelper helper(u);
       // Get the best word [first, last) so that replacing every
       // non-overlapping occurrence of [first, last) in p.rules with a new
       // generator "x", and adding "x = [first, last)" as a relation reduces

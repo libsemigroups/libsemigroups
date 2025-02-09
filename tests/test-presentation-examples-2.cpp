@@ -190,13 +190,12 @@ namespace libsemigroups {
     KnuthBendix kb(congruence_kind::twosided, hypo_plactic_monoid(3));
     kb.run();
 
-    word_type                               letters = {0, 1, 2};
-    std::unordered_map<std::string, size_t> map;
-    size_t                                  next = 0;
-    ToString to_string(kb.presentation().alphabet());
+    word_type                             letters = 012_w;
+    std::unordered_map<word_type, size_t> map;
+    size_t                                next = 0;
+
     do {
-      auto s = to_string(letters);
-      next += map.emplace(knuth_bendix::reduce(kb, s), next).second;
+      next += map.emplace(knuth_bendix::reduce(kb, letters), next).second;
     } while (std::next_permutation(letters.begin(), letters.end()));
     REQUIRE(map.size() == 4);
 

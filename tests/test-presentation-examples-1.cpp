@@ -505,7 +505,7 @@ namespace libsemigroups {
       "[pres-examples][quick][no-valgrind]") {
     auto                               rg = ReportGuard(REPORT);
     Presentation<word_type>            p;
-    ToddCoxeter                        tc;
+    ToddCoxeter<word_type>             tc;
     size_t                             min_n = 2;
     size_t                             max_n = 8;
     std::unordered_map<size_t, size_t> factorial;
@@ -1025,14 +1025,14 @@ namespace libsemigroups {
     ToddCoxeter tc(congruence_kind::twosided, renner_type_B_monoid(5, 1));
     REQUIRE(tc.presentation().rules.size() == 272);
     REQUIRE(!is_obviously_infinite(tc));
-    tc.strategy(ToddCoxeter::options::strategy::felsch);
+    tc.strategy(decltype(tc)::options::strategy::felsch);
     REQUIRE(tc.number_of_classes() == 322'021);
     // REQUIRE(S.froidure_pin()->number_of_rules() == 1453);
     // {
     //   congruence::ToddCoxeter tc(
     //       twosided,
     //       S.froidure_pin(),
-    //       congruence::ToddCoxeter::options::froidure_pin::use_cayley_graph);
+    //       congruence::decltype(tc)::options::froidure_pin::use_cayley_graph);
     //   REQUIRE(tc.number_of_classes() == 322021);  // Works!
     // }
     // {
@@ -1049,7 +1049,7 @@ namespace libsemigroups {
       "[extreme][pres-examples][hivert]") {
     auto        rg = ReportGuard(true);
     ToddCoxeter tc(congruence_kind::twosided, renner_type_B_monoid(5, 0));
-    tc.strategy(ToddCoxeter::options::strategy::felsch);
+    tc.strategy(decltype(tc)::options::strategy::felsch);
 
     REQUIRE(tc.presentation().rules.size() == 272);
     REQUIRE(!is_obviously_infinite(tc));
@@ -1144,7 +1144,7 @@ namespace libsemigroups {
       "[extreme][pres-examples][hivert]") {
     auto        rg = ReportGuard(true);
     ToddCoxeter tc(congruence_kind::twosided, renner_type_D_monoid(5, 1));
-    tc.strategy(ToddCoxeter::options::strategy::felsch);
+    tc.strategy(decltype(tc)::options::strategy::felsch);
 
     REQUIRE(tc.presentation().rules.size() == 302);
     REQUIRE(!is_obviously_infinite(tc));
@@ -1159,7 +1159,7 @@ namespace libsemigroups {
       "[extreme][pres-examples][hivert]") {
     auto        rg = ReportGuard(true);
     ToddCoxeter tc(congruence_kind::twosided, renner_type_D_monoid(5, 0));
-    tc.strategy(ToddCoxeter::options::strategy::felsch);
+    tc.strategy(decltype(tc)::options::strategy::felsch);
 
     REQUIRE(tc.presentation().rules.size() == 302);
     REQUIRE(!is_obviously_infinite(tc));
@@ -1174,7 +1174,7 @@ namespace libsemigroups {
       "[extreme][pres-examples][hivert]") {
     auto        rg = ReportGuard(true);
     ToddCoxeter tc(congruence_kind::twosided, renner_type_D_monoid(6, 1));
-    tc.strategy(ToddCoxeter::options::strategy::felsch);
+    tc.strategy(decltype(tc)::options::strategy::felsch);
 
     REQUIRE(tc.presentation().rules.size() == 412);
     REQUIRE(!is_obviously_infinite(tc));
@@ -1189,7 +1189,7 @@ namespace libsemigroups {
       "[extreme][pres-examples][hivert]") {
     auto        rg = ReportGuard(true);
     ToddCoxeter tc(congruence_kind::twosided, renner_type_D_monoid(6, 0));
-    tc.strategy(ToddCoxeter::options::strategy::felsch);
+    tc.strategy(decltype(tc)::options::strategy::felsch);
 
     REQUIRE(tc.presentation().rules.size() == 412);
     REQUIRE(!is_obviously_infinite(tc));

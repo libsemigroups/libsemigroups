@@ -40,11 +40,15 @@
 
 namespace libsemigroups {
 #ifndef PARSED_BY_DOXYGEN
-  class ToddCoxeter;  // forward decl
 
-  template <typename Rewriter, typename ReductionOrder>
-  class KnuthBendix;  // forward decl
-  class Congruence;   // forward decl
+  namespace detail {
+    template <typename Rewriter, typename ReductionOrder>
+    class KnuthBendixImpl;  // forward decl
+    class ToddCoxeterImpl;  // forward decl
+  }                         // namespace detail
+
+  template <typename Word>
+  class Congruence;  // forward decl
 
   template <typename Word>
   class Kambites;  // forward decl
@@ -120,8 +124,8 @@ namespace libsemigroups {
   // functions of an IsObviouslyInfinite (see for example the function
   // is_obviously_infinite for a Presentation). These should be documented.
   //
-  // TODO(1) this class should be more generic, like CongruenceInterface and
-  // its derived classes, allowing arbitrary iterators of rules to be added
+  // TODO(1) this class should be more generic, like detail::CongruenceCommon
+  // and its derived classes, allowing arbitrary iterators of rules to be added
   class IsObviouslyInfinite {
     // The default constructor is private since an object that is default
     // constructed isn't usable with the current public API.
@@ -236,7 +240,8 @@ namespace libsemigroups {
     //! \warning
     //! This function does not check its arguments.
     // TODO(0) does this check its args? Throw?
-    IsObviouslyInfinite& add_rules_no_checks(const_iterator_word_type first,
+    IsObviouslyInfinite& add_rules_no_checks(word_type const&,
+                                             const_iterator_word_type first,
                                              const_iterator_word_type last);
 
     //! \brief Add rules from iterators to std::string.
@@ -264,10 +269,27 @@ namespace libsemigroups {
                                              const_iterator_string first,
                                              const_iterator_string last);
 
-    IsObviouslyInfinite&
-    add_rules_no_checks(Presentation<std::string> const& lphbt,
-                        const_iterator_word_type         first,
-                        const_iterator_word_type         last);
+    //! \brief Add rules from iterators to \ref word_type.
+    //!
+    //! This function adds the rules described by the iterators \p first and \p
+    //! last.
+    //!
+    //! \param lphbt unused (for consistency of interface only)
+    //! \param first iterator pointing at the left-hand-side of the first rule
+    //! to add.
+    //! \param last iterator pointing one beyond the right-hand-side of the last
+    //! rule to add.
+    //!
+    //! \returns A reference to `*this`.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    //! \warning
+    //! This function does not check its arguments.
+    IsObviouslyInfinite& add_rules_no_checks(std::string const&       lphbt,
+                                             const_iterator_word_type first,
+                                             const_iterator_word_type last);
 
     //! \brief Add rules from iterators to std::pair of std::string.
     //!
@@ -406,12 +428,13 @@ namespace libsemigroups {
           rx::seq<typename Presentation<Word>::letter_type>(0)
               | rx::take(p.alphabet().size()) | rx::to_vector());
       IsObviouslyInfinite ioi(copy_p.alphabet().size());
-      ioi.add_rules_no_checks(copy_p.rules.cbegin(), copy_p.rules.cend());
+      ioi.add_rules_no_checks(
+          p.alphabet(), copy_p.rules.cbegin(), copy_p.rules.cend());
       return ioi.result();
     }
 
     IsObviouslyInfinite ioi(p.alphabet().size());
-    ioi.add_rules_no_checks(p.rules.cbegin(), p.rules.cend());
+    ioi.add_rules_no_checks(p.alphabet(), p.rules.cbegin(), p.rules.cend());
     return ioi.result();
   }
 
@@ -440,26 +463,26 @@ namespace libsemigroups {
   //! \ingroup obvinf_group
   //!
   //! \brief Function for checking if the quotient of a finitely presented
-  //! semigroup or monoid defined by a ToddCoxeter object is obviously infinite
-  //! or not.
+  //! semigroup or monoid defined by a ToddCoxeterImpl object is obviously
+  //! infinite or not.
   //!
   //! This function returns \c true if the quotient of the finitely presented
-  //! semigroup or monoid defined by the ToddCoxeter object \p tc is obviously
-  //! infinite; \c false is returned if it is not.
+  //! semigroup or monoid defined by the ToddCoxeterImpl object \p tc is
+  //! obviously infinite; \c false is returned if it is not.
   //!
   //! This function exists to make it simpler to call an
   //! IsObviouslyInfinite object a single time, and uses some information from
-  //! the (possible incomplete) ToddCoxeter object to assist in this
+  //! the (possible incomplete) ToddCoxeterImpl object to assist in this
   //! determination.
   //!
-  //! \param tc the ToddCoxeter instance.
+  //! \param tc the ToddCoxeterImpl instance.
   //!
-  //! \returns Whether or not the quotient defined by a ToddCoxeter instance is
-  //! obviously infinite.
+  //! \returns Whether or not the quotient defined by a ToddCoxeterImpl instance
+  //! is obviously infinite.
   //!
   //! \note If this function returns \c false, it is still possible that the
-  //! quotient defined by the ToddCoxeter object \p tc is infinite.
-  bool is_obviously_infinite(ToddCoxeter const& tc);
+  //! quotient defined by the ToddCoxeterImpl object \p tc is infinite.
+  bool is_obviously_infinite(detail::ToddCoxeterImpl const& tc);
 
   //! \ingroup obvinf_group
   //!
@@ -481,7 +504,9 @@ namespace libsemigroups {
   //!
   //! \note If this function returns \c false, it is still possible that the
   //! congruence has infinitely many classes.
-  bool is_obviously_infinite(Congruence& c);
+  // This function is implemented in cong-class.tpp
+  template <typename Word>
+  bool is_obviously_infinite(Congruence<Word>& c);
 
   //! \ingroup obvinf_group
   //!
@@ -518,37 +543,39 @@ namespace libsemigroups {
   //! \ingroup obvinf_group
   //!
   //! \brief Function for checking if the quotient of a finitely presented
-  //! semigroup or monoid defined by a KnuthBendix object is obviously infinite
-  //! or not.
+  //! semigroup or monoid defined by a KnuthBendixImpl object is obviously
+  //! infinite or not.
   //!
   //! This function returns \c true if the quotient of the finitely presented
-  //! semigroup or monoid defined by the KnuthBendix object \p kb is obviously
-  //! infinite; \c false is returned if it is not.
+  //! semigroup or monoid defined by the KnuthBendixImpl object \p kb is
+  //! obviously infinite; \c false is returned if it is not.
   //!
   //! This function exists to make it simpler to call an IsObviouslyInfinite
   //! object a single time, and uses some information from the (possible
-  //! incomplete) KnuthBendix object to assist in this determination.
+  //! incomplete) KnuthBendixImpl object to assist in this determination.
   //!
-  //! \param kb the KnuthBendix instance.
+  //! \param kb the KnuthBendixImpl instance.
   //!
-  //! \returns Whether or not the quotient defined by a KnuthBendix instance is
-  //! obviously infinite.
+  //! \returns Whether or not the quotient defined by a KnuthBendixImpl instance
+  //! is obviously infinite.
   //!
   //! \note If this function returns \c false, it is still possible that the
-  //! quotient defined by the KnuthBendix object \p kb is infinite.
+  //! quotient defined by the KnuthBendixImpl object \p kb is infinite.
   template <typename Rewriter, typename ReductionOrder>
-  bool is_obviously_infinite(KnuthBendix<Rewriter, ReductionOrder>& kb) {
+  bool
+  is_obviously_infinite(detail::KnuthBendixImpl<Rewriter, ReductionOrder>& kb) {
     if (kb.finished()) {
       return !word_graph::is_acyclic(kb.gilman_graph());
     }
-    auto const& p = kb.presentation();
+    auto const& p = kb.internal_presentation();
     if (p.alphabet().empty()) {
       return false;
     }
     IsObviouslyInfinite ioi(p.alphabet().size());
     ioi.add_rules_no_checks(p.alphabet(), p.rules.cbegin(), p.rules.cend());
-    ioi.add_rules_no_checks(
-        p, kb.generating_pairs().cbegin(), kb.generating_pairs().cend());
+    ioi.add_rules_no_checks(p.alphabet(),
+                            kb.internal_generating_pairs().cbegin(),
+                            kb.internal_generating_pairs().cend());
     return ioi.result();
   }
 

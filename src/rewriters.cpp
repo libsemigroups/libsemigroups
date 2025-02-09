@@ -25,7 +25,7 @@
 
 namespace libsemigroups {
   namespace detail {
-    // Construct from KnuthBendix with new but empty internal_string_type's
+    // Construct from KnuthBendixImpl with new but empty internal_string_type's
     Rule::Rule(int64_t id)
         : _lhs(new internal_string_type()),
           _rhs(new internal_string_type()),
@@ -397,19 +397,24 @@ namespace libsemigroups {
       auto now           = std::chrono::high_resolution_clock::now();
       auto time
           = std::chrono::duration_cast<std::chrono::seconds>(now - start_time);
-
-      report_default("KnuthBendix: locally confluent for: {:>{width}} / "
-                     "{:>{width}} ({:>4.1f}%) pairs of rules ({}s)\n",
-                     detail::group_digits(seen),
-                     total_pairs_s,
-                     (total_pairs != 0)
-                         ? 100 * static_cast<double>(seen) / total_pairs
-                         : 100,
-                     time.count(),
-                     fmt::arg("width", total_pairs_s.size()));
+      if (reporting_enabled()) {
+        report_no_prefix("{:-<95}\n", "");
+        report_default("KnuthBendix: locally confluent for: {0:>{width}} / "
+                       "{1:>{width}} ({2:>4.1f}%) pairs of rules ({3}s)\n",
+                       detail::group_digits(seen),
+                       total_pairs_s,
+                       (total_pairs != 0)
+                           ? 100 * static_cast<double>(seen) / total_pairs
+                           : 100,
+                       time.count(),
+                       fmt::arg("width", total_pairs_s.size()));
+      }
     }
 
     bool RewriteFromLeft::confluent_impl(std::atomic_uint64_t& seen) const {
+      using std::chrono::time_point;
+      time_point start_time = std::chrono::high_resolution_clock::now();
+
       set_cached_confluent(tril::TRUE);
       internal_string_type word1;
       internal_string_type word2;
@@ -447,12 +452,18 @@ namespace libsemigroups {
                 rewrite(word2);
                 if (word1 != word2) {
                   set_cached_confluent(tril::FALSE);
+                  if (reporting_enabled()) {
+                    report_from_confluent(seen, start_time);
+                  }
                   return false;
                 }
               }
             }
           }
         }
+      }
+      if (reporting_enabled()) {
+        report_from_confluent(seen, start_time);
       }
       return cached_confluent();
     }
@@ -469,7 +480,6 @@ namespace libsemigroups {
         using std::chrono::time_point;
         time_point     start_time = std::chrono::high_resolution_clock::now();
         detail::Ticker t([&]() { report_from_confluent(seen, start_time); });
-        report_no_prefix("{:-<95}\n", "");
         return confluent_impl(seen);
       } else {
         return confluent_impl(seen);
@@ -486,7 +496,7 @@ namespace libsemigroups {
     RewriteTrie& RewriteTrie::operator=(RewriteTrie const& that) {
       init();
       RewriterBase::operator=(that);
-      for (auto* crule : that) {
+      for (auto* crule : *this) {
         Rule* rule = const_cast<Rule*>(crule);
         add_rule_to_trie(rule);
       }
@@ -572,6 +582,7 @@ namespace libsemigroups {
           // Find rule that corresponds to terminal node
           Rule const* rule     = _rules.find(current)->second;
           auto        lhs_size = rule->lhs()->size();
+          LIBSEMIGROUPS_ASSERT(lhs_size != 0);
 
           // Check the lhs is smaller than the portion of the word that has
           // been read
@@ -604,7 +615,6 @@ namespace libsemigroups {
         using std::chrono::time_point;
         time_point     start_time = std::chrono::high_resolution_clock::now();
         detail::Ticker t([&]() { report_from_confluent(seen, start_time); });
-        report_no_prefix("{:-<95}\n", "");
         return confluent_impl(seen);
       } else {
         return confluent_impl(seen);
@@ -620,19 +630,24 @@ namespace libsemigroups {
       auto now           = std::chrono::high_resolution_clock::now();
       auto time
           = std::chrono::duration_cast<std::chrono::seconds>(now - start_time);
-
-      report_default("KnuthBendix: locally confluent for: {:>{width}} / "
-                     "{:>{width}} ({:>4.1f}%) rules ({}s)\n",
-                     detail::group_digits(seen),
-                     total_rules_s,
-                     (total_rules != 0)
-                         ? 100 * static_cast<double>(seen) / total_rules
-                         : 100,
-                     time.count(),
-                     fmt::arg("width", total_rules_s.size()));
+      if (reporting_enabled()) {
+        report_no_prefix("{:-<95}\n", "");
+        report_default("KnuthBendix: locally confluent for: {0:>{width}} / "
+                       "{1:>{width}} ({2:>4.1f}%) rules ({3}s)\n",
+                       detail::group_digits(seen),
+                       total_rules_s,
+                       (total_rules != 0)
+                           ? 100 * static_cast<double>(seen) / total_rules
+                           : 100,
+                       time.count(),
+                       fmt::arg("width", total_rules_s.size()));
+      }
     }
 
     bool RewriteTrie::confluent_impl(std::atomic_uint64_t& seen) const {
+      using std::chrono::time_point;
+      time_point start_time = std::chrono::high_resolution_clock::now();
+
       index_type link;
       set_cached_confluent(tril::TRUE);
 
@@ -645,10 +660,17 @@ namespace libsemigroups {
           if (!descendants_confluent(
                   node_it->second, link, _trie.height_no_checks(link))) {
             set_cached_confluent(tril::FALSE);
+            if (reporting_enabled()) {
+              report_from_confluent(seen, start_time);
+            }
             return false;
           }
           link = _trie.suffix_link_no_checks(link);
         }
+      }
+
+      if (reporting_enabled()) {
+        report_from_confluent(seen, start_time);
       }
       // Set cached value
       // set_cached_confluent(tril::TRUE);

@@ -17,10 +17,6 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-// We put this first so that KnuthBendix is defined by the time obvinf.hpp
-// needs it.
-#include "libsemigroups/knuth-bendix.hpp"
-
 #include "libsemigroups/obvinf.hpp"
 
 #include <algorithm>  // for all_of
@@ -29,11 +25,12 @@
 #include <utility>    // for pair
 #include <vector>     // for vector
 
-#include "libsemigroups/cong.hpp"       // for ToWord
-#include "libsemigroups/constants.hpp"  // for UNDEFINED
-#include "libsemigroups/debug.hpp"      // for LIBSEMIGROUPS_ASSERT
-#include "libsemigroups/todd-coxeter.hpp"
-#include "libsemigroups/word-range.hpp"  // for ToWord
+#include "libsemigroups/cong.hpp"          // for ToWord
+#include "libsemigroups/constants.hpp"     // for UNDEFINED
+#include "libsemigroups/debug.hpp"         // for LIBSEMIGROUPS_ASSERT
+#include "libsemigroups/knuth-bendix.hpp"  // for KnuthBendix
+#include "libsemigroups/todd-coxeter.hpp"  // for ToddCoxeterImpl
+#include "libsemigroups/word-range.hpp"    // for ToWord
 
 #include "libsemigroups/detail/eigen.hpp"
 
@@ -69,8 +66,10 @@ namespace libsemigroups {
 
   IsObviouslyInfinite::~IsObviouslyInfinite() = default;
 
+  // First parameter only there for consistency of interface at present
   IsObviouslyInfinite&
-  IsObviouslyInfinite::add_rules_no_checks(const_iterator_word_type first,
+  IsObviouslyInfinite::add_rules_no_checks(word_type const&,
+                                           const_iterator_word_type first,
                                            const_iterator_word_type last) {
 #ifdef LIBSEMIGROUPS_EIGEN_ENABLED
     auto matrix_start = _matrix.rows();
@@ -141,7 +140,7 @@ namespace libsemigroups {
   }
 
   IsObviouslyInfinite&
-  IsObviouslyInfinite::add_rules_no_checks(Presentation<std::string> const& p,
+  IsObviouslyInfinite::add_rules_no_checks(std::string const&       lphbt,
                                            const_iterator_word_type first,
                                            const_iterator_word_type last) {
 #ifdef LIBSEMIGROUPS_EIGEN_ENABLED
@@ -155,19 +154,17 @@ namespace libsemigroups {
     std::fill(_matrix.begin(), _matrix.end(), 0);
 #endif
 
-    word_type lhs, rhs;
+    ToWord      to_word(lphbt);
+    word_type   lhs, rhs;
+    std::string tmp;
     for (auto it = first; it < last; ++it) {
-      lhs.resize(it->size());
-      std::transform(it->begin(),
-                     it->end(),
-                     lhs.begin(),
-                     [&p](auto const& val) { return p.index_no_checks(val); });
+      // changes lhs in-place
+      tmp.assign(it->begin(), it->end());
+      to_word(lhs, tmp);
       ++it;
-      rhs.resize(it->size());
-      std::transform(it->begin(),
-                     it->end(),
-                     rhs.begin(),
-                     [&p](auto const& val) { return p.index_no_checks(val); });
+      // changes rhs in-place
+      tmp.assign(it->begin(), it->end());
+      to_word(rhs, tmp);
       private_add_rule(matrix_start + (it - first) / 2, lhs, rhs);
     }
     _nr_letter_components = _letter_components.number_of_blocks();
@@ -239,7 +236,7 @@ namespace libsemigroups {
     }
   }
 
-  bool is_obviously_infinite(ToddCoxeter const& tc) {
+  bool is_obviously_infinite(detail::ToddCoxeterImpl const& tc) {
     auto const& d = tc.current_word_graph();
     if (tc.finished()
         || word_graph::is_complete(
@@ -248,17 +245,16 @@ namespace libsemigroups {
       // sometimes be empty (0 nodes), but with 1 active node, so this line
       // can throw (because the range pointed at by d.cbegin_active_nodes(),
       // d.cend_active_nodes() is non-empty but d itself has no nodes)
-      // This is an initialization issue for ToddCoxeter, it should always be
-      // true the number of nodes >= number of active nodes.
+      // This is an initialization issue for ToddCoxeterImpl, it should always
+      // be true the number of nodes >= number of active nodes.
       return false;
     }
-    auto                p = tc.native_presentation();
+    auto                p = tc.internal_presentation();
     IsObviouslyInfinite ioi(p.alphabet().size());
-    ioi.add_rules_no_checks(p.rules.cbegin(), p.rules.cend());
-    // TODO(0) if we change generating_pairs to return the non-native words,
-    // then this will not work as expected
-    ioi.add_rules_no_checks(tc.generating_pairs().cbegin(),
-                            tc.generating_pairs().cend());
+    ioi.add_rules_no_checks(p.alphabet(), p.rules.cbegin(), p.rules.cend());
+    ioi.add_rules_no_checks(p.alphabet(),
+                            tc.internal_generating_pairs().cbegin(),
+                            tc.internal_generating_pairs().cend());
     return ioi.result();
   }
 
@@ -271,20 +267,6 @@ namespace libsemigroups {
     // This function required because of the p.alphabet below!
     ioi.add_rules_no_checks(p.alphabet(), p.rules.cbegin(), p.rules.cend());
     return ioi.result();
-  }
-
-  bool is_obviously_infinite(Congruence& cong) {
-    if (cong.has<ToddCoxeter>()
-        && is_obviously_infinite(*cong.get<ToddCoxeter>())) {
-      return true;
-    } else if (cong.has<KnuthBendix<>>()
-               && is_obviously_infinite(*cong.get<KnuthBendix<>>())) {
-      return true;
-    } else if (cong.has<Kambites<word_type>>()
-               && is_obviously_infinite(*cong.get<Kambites<word_type>>())) {
-      return true;
-    }
-    return false;
   }
 
 }  // namespace libsemigroups

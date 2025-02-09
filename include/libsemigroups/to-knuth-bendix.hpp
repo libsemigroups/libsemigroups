@@ -22,13 +22,17 @@
 #include "knuth-bendix.hpp"
 
 namespace libsemigroups {
-
   class FroidurePinBase;
-  class ToddCoxeter;
   enum class congruence_kind;
 
-  KnuthBendix<> to_knuth_bendix(congruence_kind knd, FroidurePinBase& fp);
-  KnuthBendix<> to_knuth_bendix(congruence_kind knd, ToddCoxeter const& tc);
+  KnuthBendix<word_type> to_knuth_bendix(congruence_kind  knd,
+                                         FroidurePinBase& fp);
+
+  template <typename Word>
+  KnuthBendix<Word> to_knuth_bendix(congruence_kind          knd,
+                                    ToddCoxeter<Word> const& tc) {
+    return KnuthBendix<Word>(knd, tc.presentation());
+  }
 
 }  // namespace libsemigroups
 #endif  // LIBSEMIGROUPS_TO_KNUTH_BENDIX_HPP_

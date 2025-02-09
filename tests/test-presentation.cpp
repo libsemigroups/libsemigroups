@@ -2985,4 +2985,152 @@ namespace libsemigroups {
     check_inverses<std::string>();
   }
 
+  LIBSEMIGROUPS_TEST_CASE("Presentation",
+                          "029",
+                          "longest_subword_reducing_length #01",
+                          "[quick][presentation]") {
+    using literals::        operator""_w;
+    Presentation<word_type> p;
+    p.alphabet(4);
+    presentation::add_rule(p, 1212_w, 0_w);
+    presentation::add_rule(p, 1213121312131213_w, 0_w);
+
+    REQUIRE(presentation::longest_subword_reducing_length(p) == 1213_w);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Presentation",
+                          "068",
+                          "longest_subword_reducing_length #02",
+                          "[quick][presentation]") {
+    Presentation<std::string> p;
+    p.alphabet("ab");
+    presentation::add_rule(p, "aaaaa", "bbb");
+    presentation::add_rule(p, "ababa", "aaabaabaaabaa");
+    REQUIRE(presentation::longest_subword_reducing_length(p) == "aba");
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Presentation",
+                          "069",
+                          "longest_subword_reducing_length #03",
+                          "[quick][presentation]") {
+    Presentation<std::string> p;
+    p.alphabet("abc").contains_empty_word(true);
+    presentation::add_rule(p, "aaaaa", "bbb");
+    presentation::add_rule(p, "cba", "aaccaca");
+    presentation::add_rule(p, "aba", "");
+    REQUIRE(presentation::longest_subword_reducing_length(p) == "");
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Presentation",
+                          "070",
+                          "longest_subword_reducing_length #04",
+                          "[quick][presentation]") {
+    using literals::        operator""_w;
+    Presentation<word_type> p;
+    p.alphabet(4);
+    presentation::add_rule(p, 00_w, 10_w);
+    presentation::add_rule(p, 01_w, 20_w);
+    presentation::add_rule(p, 02_w, 30_w);
+    presentation::add_rule(p, 03_w, 11_w);
+    presentation::add_rule(p, 23_w, 222_w);
+    presentation::add_rule(
+        p, 12121212121212_w, 12131213121312131213121312131213_w);
+    REQUIRE(presentation::longest_subword_reducing_length(p) == 12131213_w);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Presentation",
+                          "071",
+                          "longest_subword_reducing_length #05",
+                          "[quick][presentation]") {
+    using literals::        operator""_w;
+    Presentation<word_type> p;
+    p.alphabet(5).contains_empty_word(true);
+    presentation::add_rule(p, 00_w, 10_w);
+    presentation::add_rule(p, 01_w, 20_w);
+    presentation::add_rule(p, 02_w, 30_w);
+    presentation::add_rule(p, 03_w, 11_w);
+    presentation::add_rule(p, 23_w, 222_w);
+    presentation::add_rule(p, 12121212121212_w, 44444444_w);
+    presentation::add_rule(p, 1213_w, {});
+
+    REQUIRE(presentation::longest_subword_reducing_length(p) == 12_w);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Presentation",
+                          "072",
+                          "longest_subword_reducing_length #06",
+                          "[quick][presentation]") {
+    using literals::        operator""_w;
+    Presentation<word_type> p;
+    p.alphabet(6).contains_empty_word(true);
+    presentation::add_rule(p, 00_w, 10_w);
+    presentation::add_rule(p, 01_w, 20_w);
+    presentation::add_rule(p, 02_w, 30_w);
+    presentation::add_rule(p, 03_w, 11_w);
+    presentation::add_rule(p, 23_w, 222_w);
+    presentation::add_rule(p, 5555555_w, 44444444_w);
+    presentation::add_rule(p, 513_w, 12_w);
+
+    REQUIRE(presentation::longest_subword_reducing_length(p) == 4444_w);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Presentation",
+                          "073",
+                          "longest_subword_reducing_length #07",
+                          "[quick][presentation]") {
+    Presentation<std::string> p;
+    p.alphabet("abc").contains_empty_word(true);
+    presentation::add_rule(p, "aaaaaaaaaaaaaa", "bbbbbbbbbbbbbb");
+    presentation::add_rule(p, "cccccccccccccc", "aaaaba");
+    presentation::add_rule(p, "bbb", "bbbbab");
+    presentation::add_rule(p, "aaa", "aaaaca");
+    presentation::add_rule(p, "ccc", "ccccac");
+    presentation::add_rule(p, "aaa", "bbbbcb");
+    presentation::add_rule(p, "ccc", "ccccbc");
+    presentation::add_rule(p, "bbb", "");
+
+    REQUIRE(presentation::longest_subword_reducing_length(p) == "ccc");
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Presentation",
+                          "074",
+                          "longest_subword_reducing_length #08",
+                          "[quick][presentation]") {
+    Presentation<std::string> p;
+    p.alphabet("abcd");
+    presentation::add_rule(p, "aaaaaaaaaaaaaa", "bbbbbbbbbbbbbb");
+    presentation::add_rule(p, "ddddcc", "aaaaba");
+    presentation::add_rule(p, "bbb", "bbbbab");
+    presentation::add_rule(p, "aaa", "aaaaca");
+    presentation::add_rule(p, "dcac", "aaa");
+    presentation::add_rule(p, "bbbbcb", "dcbc");
+    presentation::add_rule(p, "bbb", "ccc");
+
+    REQUIRE(presentation::longest_subword_reducing_length(p) == "bbb");
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Presentation",
+                          "075",
+                          "longest_subword_reducing_length #09",
+                          "[quick][presentation]") {
+    Presentation<std::string> p;
+    p.alphabet("ab");
+    presentation::add_rule(p, "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "bbb");
+    presentation::add_rule(
+        p, "ababa", "aaaaaaaaaaaaaaaabaaaabaaaaaaaaaaaaaaaabaaaa");
+
+    REQUIRE(presentation::longest_subword_reducing_length(p) == "aaaa");
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Presentation",
+                          "076",
+                          "longest_subword_reducing_length #10",
+                          "[quick][presentation]") {
+    Presentation<std::string> p;
+    p.alphabet("abcABC").contains_empty_word(true);
+    presentation::add_rule(p, "aBCbac", "bACbaacA");
+    presentation::add_rule(p, "accAABab", "");
+
+    REQUIRE(presentation::longest_subword_reducing_length(p) == "");
+  }
 }  // namespace libsemigroups

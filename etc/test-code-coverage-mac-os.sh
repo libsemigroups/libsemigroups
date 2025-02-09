@@ -97,9 +97,9 @@ fi
 
 bold "Running lcov and genhtml . . .";
 printf "\033[2m";
-lcov  --directory . --capture --output-file "coverage.info.tmp" --test-name "libsemigroups_1_0_0" --no-checksum --no-external --compat-libtool --gcov-tool "gcov" --ignore-errors negative --ignore-errors empty  --ignore-errors inconsistent --ignore-errors gcov| grep -v "ignoring data for external file"
-lcov  --directory . --remove "coverage.info.tmp" --output-file "coverage.info" --ignore-errors negative --ignore-errors empty --ignore-errors inconsistent --ignore-errors gcov
-LANG=C genhtml --ignore-errors negative --ignore-errors inconsistent --ignore-errors unmapped --prefix . --output-directory "coverage" --title "libsemigroups Code Coverage" --legend --show-details "coverage.info.tmp"
+lcov --ignore-errors mismatch,negative,usage,inconsistent,gcov,count,range --filter range --directory . --capture --output-file "coverage.info.tmp" --test-name "libsemigroups_1_0_0" --no-checksum --no-external --compat-libtool --gcov-tool "gcov" 2>&1 | grep -v "Dropping 'external' file" | grep -v " WARNING: (inconsistent)"
+lcov --ignore-errors unused,inconsistent,gcov --directory . --remove "coverage.info.tmp" "/tmp/*" "/Applications/*" --output-file "coverage.info" 2>&1 | grep -v "Dropping 'external' file" | grep -v " WARNING: (inconsistent)"
+LANG=C genhtml --ignore-errors inconsistent,unmapped,corrupt --prefix . --output-directory "coverage" --title "libsemigroups Code Coverage" --legend --show-details "coverage.info.tmp" 2>&1 | grep -v " WARNING: (inconsistent)"
 rm -f coverage.info.tmp
 printf "\033[0m";
 delete_gcda_files
@@ -108,17 +108,23 @@ fnam=$1
 fnam=${fnam/test_/}
 fnam=${fnam//_/-}
 dir=$(pwd)
-hpp=coverage${dir}/include/libsemigroups/${fnam}.hpp.gcov.html
-tpp=coverage${dir}/include/libsemigroups/${fnam}.tpp.gcov.html
-cpp=coverage${dir}/src/${fnam}.cpp.gcov.html
-if [[ -f $hpp ]]; then
-  echo "See: $hpp"
-fi;
-if [[ -f $cpp ]]; then
-  echo "See: $cpp"
-fi;
-if [[ -f $tpp ]]; then
-  echo "See: $tpp"
-fi;
+hpp=coverage${dir}/include/libsemigroups/${fnam}*.hpp.gcov.html
+tpp=coverage${dir}/include/libsemigroups/${fnam}*.tpp.gcov.html
+cpp=coverage${dir}/src/${fnam}*.cpp.gcov.html
+for file in $hpp; do
+  if [[ -f $file ]]; then
+    echo "See: $file"
+  fi;
+done
+for file in $tpp; do
+  if [[ -f $file ]]; then
+    echo "See: $file"
+  fi;
+done
+for file in $cpp; do
+  if [[ -f $file ]]; then
+    echo "See: $file"
+  fi;
+done
 
 exit 0

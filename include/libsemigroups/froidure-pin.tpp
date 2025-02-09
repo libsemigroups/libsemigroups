@@ -1409,8 +1409,7 @@ namespace libsemigroups {
   };
 
   template <typename Element, typename Traits>
-  [[nodiscard]] std::string
-  to_human_readable_repr(FroidurePin<Element, Traits> const& fp) {
+  std::string to_human_readable_repr(FroidurePin<Element, Traits> const& fp) {
     return fmt::format("<{} enumerated FroidurePin with {} generator{}, {} "
                        "element{}, Cayley graph \u2300 {}, & {} rule{}>",
                        fp.finished() ? "fully" : "partially",

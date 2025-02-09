@@ -72,7 +72,7 @@ namespace libsemigroups {
             _preim_init(n, m, UNDEFINED),
             _preim_next(n, m, UNDEFINED) {}
 
-      void init(size_type m, size_type n);
+      void init(size_type m = 0, size_type n = 0);
 
       template <typename ThatNode>
       explicit WordGraphWithSources(WordGraph<ThatNode> const& that);

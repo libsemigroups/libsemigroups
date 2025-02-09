@@ -23,7 +23,7 @@
 #include <string>   // for string
 #include <vector>   // for vector
 
-#include "libsemigroups/cong-intf.hpp"
+#include "libsemigroups/cong.hpp"
 #include "libsemigroups/types.hpp"
 
 namespace libsemigroups {
@@ -40,9 +40,9 @@ namespace libsemigroups {
   }  // namespace congruence
 
   template <typename S, typename T, typename SFINAE = S>
-  auto make(T const& p) ->
-      typename std::enable_if<std::is_base_of<CongruenceInterface, S>::value,
-                              SFINAE*>::type {
+  auto make(T const& p) -> typename std::enable_if<
+      std::is_base_of<detail::CongruenceCommon, S>::value,
+      SFINAE*>::type {
     auto thing = new S(congruence_kind::twosided);
     thing->set_number_of_generators(p.A);
     for (auto const& x : p.R) {

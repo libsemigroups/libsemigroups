@@ -2404,36 +2404,7 @@ namespace libsemigroups {
     template <typename T>
     auto dfs(Ukkonen const& u, T& helper);
 
-    namespace detail {
-      // TODO when the old ToddCoxeter is removed move this into
-      // presentation.hpp
-      class GreedyReduceHelper {
-       private:
-        size_t              _best;
-        int                 _best_goodness;
-        std::vector<size_t> _distance_from_root;
-        std::vector<size_t> _num_leafs;
-        std::vector<size_t> _scratch;
-        std::vector<size_t> _suffix_index;
-
-       public:
-        using const_iterator = typename Ukkonen::const_iterator;
-
-        explicit GreedyReduceHelper(Ukkonen const& u);
-
-        GreedyReduceHelper()                                     = delete;
-        GreedyReduceHelper(GreedyReduceHelper const&)            = delete;
-        GreedyReduceHelper(GreedyReduceHelper&&)                 = delete;
-        GreedyReduceHelper& operator=(GreedyReduceHelper const&) = delete;
-        GreedyReduceHelper& operator=(GreedyReduceHelper&&)      = delete;
-        ~GreedyReduceHelper();
-
-        void pre_order(Ukkonen const& u, size_t v);
-        void post_order(Ukkonen const& u, size_t v);
-        std::pair<const_iterator, const_iterator> yield(Ukkonen const& u);
-      };
-    }  // namespace detail
-  }    // namespace ukkonen
+  }  // namespace ukkonen
 
   //! \brief Return a human readable representation of an Ukkonen object.
   //!

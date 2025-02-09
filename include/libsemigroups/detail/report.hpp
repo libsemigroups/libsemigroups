@@ -71,7 +71,7 @@ namespace libsemigroups {
     };
 
     // This object is a helper for formatting information reported by various
-    // classes in libsemigroups such as ToddCoxeter, KnuthBendix, etc.
+    // classes in libsemigroups such as ToddCoxeterImpl, KnuthBendixImpl, etc.
     //
     // The idea is to store the rows in the _rows, and to properly align the
     // values in each column. This is done by storing the rows and their widths,
@@ -134,10 +134,8 @@ namespace libsemigroups {
 
   template <typename... Args>
   std::string fmt_default(std::string_view sv, Args&&... args) {
-    auto        tid     = detail::this_threads_id();
-    std::string fmt_str = "#{}: ";
-    fmt_str.append(sv.begin(), sv.end());
-    return fmt::format(std::move(fmt_str), tid, std::forward<Args>(args)...);
+    std::string prefix = fmt::format("#{}: ", detail::this_threads_id());
+    return prefix + fmt::format(sv, std::forward<Args>(args)...);
   }
 
   template <typename... Args>

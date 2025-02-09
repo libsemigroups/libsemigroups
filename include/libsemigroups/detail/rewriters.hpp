@@ -35,7 +35,7 @@
 
 #include "multi-string-view.hpp"  // for MultiStringView
 
-// TODO(2) Add a KnuthBendix pointer to the rewriter class so that overlap
+// TODO(2) Add a KnuthBendixImpl pointer to the rewriter class so that overlap
 // detection can be handled by the rewriter (and therefore depend on the
 // implementation) rather than on the KB object.
 
@@ -119,8 +119,9 @@ namespace libsemigroups {
       //! \brief Return the left-hand side of the rule.
       //!
       //! Return the left-hand side of the rule. If this rule was create by a
-      //! \ref KnuthBendix, this is guaranteed to be greater than its right-hand
-      //! side according to the reduction ordering of that \ref KnuthBendix.
+      //! \ref KnuthBendixImpl, this is guaranteed to be greater than its
+      //! right-hand side according to the reduction ordering of that \ref
+      //! KnuthBendixImpl.
       //!
       //! \returns A pointer to the left-hand side.
       //!
@@ -131,7 +132,7 @@ namespace libsemigroups {
       //! Constant.
       //!
       //! \sa
-      //! \ref KnuthBendix
+      //! \ref KnuthBendixImpl
       [[nodiscard]] internal_string_type* lhs() const noexcept {
         return _lhs;
       }
@@ -139,8 +140,8 @@ namespace libsemigroups {
       //! \brief Return the right-hand side of the rule.
       //!
       //! Return the right-hand side of the rule. If this rule was create by a
-      //! \ref KnuthBendix, this is guaranteed to be less than its left-hand
-      //! side according to the reduction ordering of that \ref KnuthBendix.
+      //! \ref KnuthBendixImpl, this is guaranteed to be less than its left-hand
+      //! side according to the reduction ordering of that \ref KnuthBendixImpl.
       //!
       //! \returns A pointer to the right-hand side.
       //!
@@ -151,7 +152,7 @@ namespace libsemigroups {
       //! Constant.
       //!
       //! \sa
-      //! \ref KnuthBendix
+      //! \ref KnuthBendixImpl
       [[nodiscard]] internal_string_type* rhs() const noexcept {
         return _rhs;
       }
@@ -266,11 +267,11 @@ namespace libsemigroups {
       //!
       //! \returns A value of type `int64_t`
       //!
-      //! \complexity
-      //! Constant.
-      //!
       //! \exceptions
       //! \noexcept
+      //!
+      //! \complexity
+      //! Constant.
       [[nodiscard]] int64_t id() const noexcept {
         LIBSEMIGROUPS_ASSERT(_id != 0);
         return _id;
@@ -641,9 +642,10 @@ namespace libsemigroups {
 
       RewriteTrie() : RewriterBase(true), _rules(), _trie() {}
 
-      RewriteTrie(const RewriteTrie& that);
+      RewriteTrie(RewriteTrie const& that);
 
       RewriteTrie& operator=(RewriteTrie const& that);
+      // TODO(1) move constructor, and move assignment operator
 
       ~RewriteTrie() = default;
 

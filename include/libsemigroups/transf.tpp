@@ -28,8 +28,7 @@ namespace libsemigroups {
   // STATIC
   template <typename Point, typename Container>
   template <typename Subclass, typename OtherContainer>
-  [[nodiscard]] Subclass
-  PTransfBase<Point, Container>::make(OtherContainer&& cont) {
+  Subclass PTransfBase<Point, Container>::make(OtherContainer&& cont) {
     validate_args(std::forward<OtherContainer>(cont));
     Subclass result(cont.begin(), cont.end());
     validate(result);
@@ -39,8 +38,7 @@ namespace libsemigroups {
   // STATIC
   template <typename Point, typename Container>
   template <typename Subclass, typename T>
-  [[nodiscard]] Subclass
-  PTransfBase<Point, Container>::make(std::initializer_list<T> cont) {
+  Subclass PTransfBase<Point, Container>::make(std::initializer_list<T> cont) {
     return make<Subclass, std::vector<T>>(cont);
   }
 
@@ -228,7 +226,7 @@ namespace libsemigroups {
   }
 
   template <size_t N, typename Scalar>
-  [[nodiscard]] PPerm<N, Scalar> right_one(PPerm<N, Scalar> const& x) {
+  PPerm<N, Scalar> right_one(PPerm<N, Scalar> const& x) {
     size_t const     n = x.degree();
     PPerm<N, Scalar> result(n);
     std::fill(result.begin(), result.end(), static_cast<Scalar>(UNDEFINED));
@@ -241,7 +239,7 @@ namespace libsemigroups {
   }
 
   template <size_t N, typename Scalar>
-  [[nodiscard]] PPerm<N, Scalar> left_one(PPerm<N, Scalar> const& x) {
+  PPerm<N, Scalar> left_one(PPerm<N, Scalar> const& x) {
     size_t const     n = x.degree();
     PPerm<N, Scalar> result(n);
     std::fill(result.begin(), result.end(), static_cast<Scalar>(UNDEFINED));
@@ -283,7 +281,7 @@ namespace libsemigroups {
   }
 
   template <size_t N, typename Scalar>
-  [[nodiscard]] Perm<N, Scalar> inverse(Perm<N, Scalar> const& from) {
+  Perm<N, Scalar> inverse(Perm<N, Scalar> const& from) {
     Perm<N, Scalar> to(from.degree());
     inverse(from, to);
     return to;

@@ -43,6 +43,7 @@ commands = {
 def process_file(f):
     check_doc = True
     in_doc = False
+    any_warnings = False
     for line_no, line in enumerate(f):
         if check_doc and "/*" in line:
             check_doc = False
@@ -65,12 +66,21 @@ def process_file(f):
                 highest_level = level
                 break
             if in_doc:
+                any_warnings = True
                 print(
-                    f"{begin_warn_col}warning: {command} is not in the correct place in docstring at {file}:{line_no+1}{end_warn_col}"
+                    f"{begin_warn_col}warning: {command} is not in the correct place in docstring at {file}:{line_no + 1}{end_warn_col}"
                 )
+    return any_warnings
 
 
 print("Checking docstring order in .hpp files . . .")
+any_warnings = False
 for file in files:
     with open(file, "r") as f:
-        process_file(f)
+        any_warnings |= process_file(f)
+
+if any_warnings:
+    print(f"{begin_warn_col}The correct ordering is:")
+    for entity in commands.keys():
+        print(f"  {entity}")
+    print(f"{end_warn_col}", end="")

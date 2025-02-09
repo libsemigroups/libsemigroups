@@ -386,7 +386,6 @@ namespace libsemigroups {
 
     REQUIRE(wg.number_of_nodes() == 10);
     REQUIRE(wg.number_of_edges() == 18);
-    // FIXME Probably an uint32_t(UNDEFINED) versus size_t(UNDEFINED) issue
     wg.target(S.size(), 0, 0);
     wg.target(S.size(), 1, 1);
 

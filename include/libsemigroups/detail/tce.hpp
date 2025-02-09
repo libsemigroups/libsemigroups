@@ -17,9 +17,10 @@
 //
 
 // This file contains the declaration of the class TCE, which is a wrapper
-// around ToddCoxeter class indices, that can be used as the element type for
-// the FroidurePin class template. This file also contains specializations of
-// the adapters complexity, degree, less, one, product, and std::hash for TCE.
+// around ToddCoxeterImpl class indices, that can be used as the element type
+// for the FroidurePin class template. This file also contains specializations
+// of the adapters complexity, degree, less, one, product, and std::hash for
+// TCE.
 
 #ifndef LIBSEMIGROUPS_DETAIL_TCE_HPP_
 #define LIBSEMIGROUPS_DETAIL_TCE_HPP_
@@ -31,7 +32,7 @@
 
 #include "libsemigroups/adapters.hpp"  // for Complexity, Degree, Less, One, Product, ...
 #include "libsemigroups/constants.hpp"     // for LIMIT_MAX
-#include "libsemigroups/todd-coxeter.hpp"  // for ToddCoxeter
+#include "libsemigroups/todd-coxeter.hpp"  // for ToddCoxeterImpl
 
 #include "string.hpp"  // for to_string
 
@@ -43,8 +44,8 @@ namespace libsemigroups {
 
     class TCE {
      public:
-      using node_type       = typename ToddCoxeter::node_type;
-      using word_graph_type = typename ToddCoxeter::word_graph_type;
+      using node_type       = typename ToddCoxeterImpl::node_type;
+      using word_graph_type = typename ToddCoxeterImpl::word_graph_type;
 
       TCE() noexcept                      = default;
       TCE(TCE const&) noexcept            = default;
@@ -73,9 +74,9 @@ namespace libsemigroups {
 
      private:
       // Note that the value of the class_index_type _value below is the
-      // actual class_index_type  used in the ToddCoxeter class and not that
+      // actual class_index_type  used in the ToddCoxeterImpl class and not that
       // number minus 1, which is what "class_index" means in the context of
-      // CongruenceInterface objects.
+      // CongruenceCommon objects.
       node_type _index;
     };
 
@@ -150,7 +151,7 @@ namespace libsemigroups {
 
   template <>
   struct FroidurePinState<detail::TCE> {
-    using type = typename ToddCoxeter::word_graph_type;
+    using type = typename detail::ToddCoxeterImpl::word_graph_type;
   };
 }  // namespace libsemigroups
 

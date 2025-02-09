@@ -1195,8 +1195,8 @@ namespace libsemigroups {
                           "044",
                           "inverse presentation -- operator==",
                           "[stephen][quick][no-valgrind]") {
-    ReportGuard rg(false);
-    ToddCoxeter tc;
+    ReportGuard            rg(false);
+    ToddCoxeter<word_type> tc;
     {
       auto p = presentation::examples::symmetric_inverse_monoid(4);
       REQUIRE(p.contains_empty_word());

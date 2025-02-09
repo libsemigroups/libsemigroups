@@ -364,6 +364,8 @@ namespace libsemigroups {
     //! \warning No checks are performed on the arguments of this function.
     template <typename Iterator>
     Iterator path_to_root_no_checks(Iterator d_first, node_type i) const {
+      LIBSEMIGROUPS_ASSERT(i < _parent.size());
+      LIBSEMIGROUPS_ASSERT(i < _edge_label.size());
       auto it = d_first;
       for (; parent_no_checks(i) != UNDEFINED; ++it) {
         *it = label_no_checks(i);

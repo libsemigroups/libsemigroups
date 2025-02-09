@@ -130,10 +130,16 @@
       <tab type="user" visible="yes" url="@ref libsemigroups::side" title="side" />
       <tab type="user" visible="yes" url="@ref libsemigroups::Action" title="Action" />
       <tab type="user" visible="yes" url="@ref libsemigroups::RightAction" title="RightAction" />
-    </tab>
-    <tab type="usergroup" visible="yes" url="@ref cong_intf_group" title="CongruenceInterface">
-      <tab type="user" visible="yes" url="@ref libsemigroups::CongruenceInterface" title="The CongruenceInterface class"/>
-      <tab type="user" visible="yes" url="@ref cong_intf_helpers_group" title="Helper functions"/>
+      </tab>
+      <tab type="usergroup" visible="yes" url="@ref cong_common_helpers_group" title="Common congruence helpers">
+        <tab type="user" visible="yes" url="@ref cong_common_helpers_add_pair_group" title="Add generating pairs"/>
+        <tab type="user" visible="yes" url="@ref cong_common_helpers_contains_group" title="Containment"/>
+        <tab type="user" visible="yes" url="@ref cong_common_helpers_reduce_group" title="Reduce a word"/>
+        <tab type="user" visible="yes" url="@ref cong_common_helpers_partition_group" title="Partitioning"/>
+      </tab>
+    <tab type="usergroup" visible="yes" url="@ref congruence_group" title="Congruence">
+      <tab type="user" visible="yes" url="@ref congruence_class_group" title="The Congruence class"/>
+      <tab type="user" visible="yes" url="@ref libsemigroups::congruence" title="Congruence helper functions"/>
     </tab>
     <tab type="user" visible="yes" url="@ref froidure_pin_group" title="Froidure-Pin" />
     <tab type="usergroup" visible="yes" url="@ref kambites_group" title="Kambites">
@@ -141,8 +147,8 @@
       <tab type="user" visible="yes" url="@ref libsemigroups::kambites" title="Kambites helper functions" />
     </tab>
     <tab type="usergroup" visible="yes" url="@ref knuth_bendix_group" title="Knuth-Bendix">
-      <tab type="user" visible="yes" url="@ref libsemigroups::KnuthBendix" title="The KnuthBendix class"/>
-      <tab type="user" visible="yes" url="@ref libsemigroups::knuth_bendix" title="Knuth-Bendix helper functions"/>
+      <tab type="user" visible="yes" url="@ref knuth_bendix_class_group" title="The KnuthBendix class"/>
+      <tab type="user" visible="yes" url="@ref knuth_bendix_helpers_group" title="Knuth-Bendix helper functions"/>
     </tab>
     <tab type="user" visible="yes" url="@ref freeband_group" title="Radoszewski-Rytter" />
     <tab type="user" visible="yes" url="@ref schreier_sims_group" title="Schreier-Sims" />

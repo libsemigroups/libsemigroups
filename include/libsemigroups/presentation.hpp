@@ -2374,6 +2374,32 @@ namespace libsemigroups {
     template <typename T>
     struct IsInversePresentationHelper<InversePresentation<T>>
         : std::true_type {};
+
+    class GreedyReduceHelper {
+     private:
+      size_t              _best;
+      int                 _best_goodness;
+      std::vector<size_t> _distance_from_root;
+      std::vector<size_t> _num_leafs;
+      std::vector<size_t> _scratch;
+      std::vector<size_t> _suffix_index;
+
+     public:
+      using const_iterator = typename Ukkonen::const_iterator;
+
+      explicit GreedyReduceHelper(Ukkonen const& u);
+
+      GreedyReduceHelper()                                     = delete;
+      GreedyReduceHelper(GreedyReduceHelper const&)            = delete;
+      GreedyReduceHelper(GreedyReduceHelper&&)                 = delete;
+      GreedyReduceHelper& operator=(GreedyReduceHelper const&) = delete;
+      GreedyReduceHelper& operator=(GreedyReduceHelper&&)      = delete;
+      ~GreedyReduceHelper();
+
+      void pre_order(Ukkonen const& u, size_t v);
+      void post_order(Ukkonen const& u, size_t v);
+      std::pair<const_iterator, const_iterator> yield(Ukkonen const& u);
+    };
   }  // namespace detail
 
   //! \ingroup presentations_group
