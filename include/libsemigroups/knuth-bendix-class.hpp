@@ -75,7 +75,7 @@ namespace libsemigroups {
   //! presentation::add_rule_no_checks(p, "cd", "");
   //! presentation::add_rule_no_checks(p, "dc", "");
   //!
-  //! KnuthBendix kb(twosided, p);
+  //! KnuthBendix<> kb(twosided, p);
   //!
   //! !kb.confluent();              // true
   //! kb.run();
