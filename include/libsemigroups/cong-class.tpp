@@ -331,6 +331,9 @@ namespace libsemigroups {
 #if defined(__clang__)
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wreturn-type"
+#elif defined(__GNUC__) && !defined(__clang__)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wreturn-type"
 #endif
   template <typename Word>
   Presentation<Word> const& Congruence<Word>::presentation() const {
@@ -397,6 +400,8 @@ namespace libsemigroups {
   }
 #if defined(__clang__)
 #pragma clang diagnostic pop
+#elif defined(__GNUC__) && !defined(__clang__)
+#pragma GCC diagnostic pop
 #endif
 
   template <typename Word>
