@@ -40,6 +40,10 @@ namespace libsemigroups {
   //!
   //! This page contains links to the documentation related to the
   //! implementation of the Knuth-Bendix algorithm in `libsemigroups`.
+  //!
+  //! The purpose of this algorithm is to find a locally confluent presentation
+  //! for a semigroup or monoid, with respect to some alphabet order and
+  //! reduction ordering.
 
   //! \defgroup knuth_bendix_class_group KnuthBendix class
   //! \ingroup knuth_bendix_group
