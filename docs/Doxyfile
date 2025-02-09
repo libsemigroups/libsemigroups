@@ -1343,7 +1343,7 @@ VERBATIM_HEADERS       = YES
 # generated with the -Duse_libclang=ON option for CMake.
 # The default value is: NO.
 
-# CLANG_ASSISTED_PARSING = NO
+CLANG_ASSISTED_PARSING = NO
 
 # If the CLANG_ASSISTED_PARSING tag is set to YES and the CLANG_ADD_INC_PATHS
 # tag is set to YES then Doxygen will add the directory of each input to the
@@ -1351,7 +1351,7 @@ VERBATIM_HEADERS       = YES
 # The default value is: YES.
 # This tag requires that the tag CLANG_ASSISTED_PARSING is set to YES.
 
-# CLANG_ADD_INC_PATHS    = YES
+CLANG_ADD_INC_PATHS    = NO
 
 # If clang assisted parsing is enabled you can provide the compiler with command
 # line options that you would normally use when invoking the compiler. Note that
@@ -1359,7 +1359,7 @@ VERBATIM_HEADERS       = YES
 # specified with INPUT and INCLUDE_PATH.
 # This tag requires that the tag CLANG_ASSISTED_PARSING is set to YES.
 
-# CLANG_OPTIONS          =
+CLANG_OPTIONS          = NO
 
 # If clang assisted parsing is enabled you can provide the clang parser with the
 # path to the directory containing a file called compile_commands.json. This
@@ -1372,7 +1372,7 @@ VERBATIM_HEADERS       = YES
 # Note: The availability of this option depends on whether or not Doxygen was
 # generated with the -Duse_libclang=ON option for CMake.
 
-# CLANG_DATABASE_PATH    =
+CLANG_DATABASE_PATH    = NO
 
 #---------------------------------------------------------------------------
 # Configuration options related to the alphabetical class index
