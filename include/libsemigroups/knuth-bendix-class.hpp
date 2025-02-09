@@ -141,8 +141,8 @@ namespace libsemigroups {
     //!
     //! \brief Default constructor.
     //!
-    //! This function default constructs an uninitialised \ref
-    //! KnuthBendix instance.
+    //! This function default constructs an uninitialised \ref KnuthBendix
+    //! instance.
     KnuthBendix() = default;
 
     //! \ingroup knuth_bendix_class_init_group
