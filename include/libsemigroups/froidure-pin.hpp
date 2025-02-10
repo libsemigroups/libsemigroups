@@ -313,7 +313,7 @@ namespace libsemigroups {
    private:
     template <typename T>
     static constexpr bool IsState
-        = ((!std::is_void_v<T>) &&std::is_same_v<state_type, T>);
+        = ((!std::is_void_v<T>) && std::is_same_v<state_type, T>);
 
     ////////////////////////////////////////////////////////////////////////
     // FroidurePin - data - private
@@ -1383,8 +1383,8 @@ namespace libsemigroups {
 
     void expand(size_type);
     void is_one(internal_const_element_type x, element_index_type) noexcept(
-        std::is_nothrow_default_constructible_v<InternalEqualTo>&& noexcept(
-            std::declval<InternalEqualTo>()(x, x)));
+        std::is_nothrow_default_constructible_v<InternalEqualTo>
+        && noexcept(std::declval<InternalEqualTo>()(x, x)));
 
     void copy_generators_from_elements(size_t);
     void closure_update(element_index_type,
@@ -2417,18 +2417,21 @@ namespace libsemigroups {
   //!
   //! \throw LibsemigroupsException if `Degree()(x) != Degree(y)` for any \c x
   //! and \c y in \p gens.
-  template <typename Container>
-  [[nodiscard]] FroidurePin<typename Container::value_type>
-  to_froidure_pin(Container const& gens) {
-    FroidurePin<typename Container::value_type>::throw_if_inconsistent_degree(
-        std::begin(gens), std::end(gens));
+  template <template <typename...> typename Thing,
+            typename Container,
+            typename Element = typename Container::value_type>
+  [[nodiscard]] auto make(Container const& gens)
+      -> std::enable_if_t<std::is_same_v<Thing<Element>, FroidurePin<Element>>,
+                          FroidurePin<Element>> {
+    FroidurePin<Element>::throw_if_inconsistent_degree(std::begin(gens),
+                                                       std::end(gens));
     return FroidurePin(std::begin(gens), std::end(gens));
   }
 
   // TODO(1) make the following work
   // template <typename Container>
   // FroidurePin<typename Container::value_type>
-  // to_froidure_pin(Container&& gens) {
+  // make(Container&& gens) {
   //   return FroidurePin(std::make_move_iterator(std::begin(gens)),
   //                      std::make_move_iterator(std::end(gens)));
   // }
@@ -2452,9 +2455,10 @@ namespace libsemigroups {
   //!
   //! \throw LibsemigroupsException if `Degree()(x) != Degree(y)` for any \c x
   //! and \c y in \p gens.
-  template <typename Element>
-  [[nodiscard]] FroidurePin<Element>
-  to_froidure_pin(std::initializer_list<Element> gens) {
+  template <template <typename...> typename Thing, typename Element>
+  auto make(std::initializer_list<Element> gens)
+      -> std::enable_if_t<std::is_same_v<Thing<Element>, FroidurePin<Element>>,
+                          FroidurePin<Element>> {
     FroidurePin<Element>::throw_if_inconsistent_degree(std::begin(gens),
                                                        std::end(gens));
     return FroidurePin(std::begin(gens), std::end(gens));
@@ -2481,10 +2485,14 @@ namespace libsemigroups {
   //!
   //! \throw LibsemigroupsException if `Degree()(x) != Degree(y)` for any of
   //! the proposed generators \c x and \c y.
-  template <typename Iterator1, typename Iterator2>
-  [[nodiscard]] FroidurePin<std::decay_t<decltype(*std::declval<Iterator1>())>>
-  to_froidure_pin(Iterator1 first, Iterator2 last) {
-    using Element = std::decay_t<decltype(*std::declval<Iterator1>())>;
+  template <template <typename...> typename Thing,
+            typename Iterator1,
+            typename Iterator2,
+            typename Element
+            = std::decay_t<decltype(*std::declval<Iterator1>())>>
+  [[nodiscard]] auto make(Iterator1 first, Iterator2 last)
+      -> std::enable_if_t<std::is_same_v<Thing<Element>, FroidurePin<Element>>,
+                          FroidurePin<Element>> {
     static_assert(
         std::is_same_v<std::decay_t<decltype(*std::declval<Iterator2>())>,
                        Element>);
