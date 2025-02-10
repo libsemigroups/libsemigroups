@@ -181,7 +181,7 @@ namespace libsemigroups {
                                    Congruence<word_type>,
                                    KnuthBendix<word_type>) {
     auto rg = ReportGuard(false);
-    auto S  = to_froidure_pin(
+    auto S  = make<FroidurePin>(
         {Transf<>({1, 3, 4, 2, 3}), Transf<>({3, 2, 1, 3, 3})});
 
     REQUIRE(S.size() == 88);
@@ -226,7 +226,7 @@ namespace libsemigroups {
                                    Congruence<word_type>,
                                    KnuthBendix<word_type>) {
     auto rg = ReportGuard(false);
-    auto S  = to_froidure_pin(
+    auto S  = make<FroidurePin>(
         {Transf<>({1, 3, 4, 2, 3}), Transf<>({3, 2, 1, 3, 3})});
 
     REQUIRE(S.size() == 88);

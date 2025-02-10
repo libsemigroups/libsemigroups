@@ -2197,7 +2197,7 @@ namespace libsemigroups {
                           "078",
                           "large number of rules",
                           "[quick][kambites][no-valgrind]") {
-    auto S = to_froidure_pin({LeastTransf<6>({1, 2, 3, 4, 5, 0}),
+    auto S = make<FroidurePin>({LeastTransf<6>({1, 2, 3, 4, 5, 0}),
                               LeastTransf<6>({1, 0, 2, 3, 4, 5}),
                               LeastTransf<6>({0, 1, 2, 3, 4, 0})});
     REQUIRE(S.size() == 46'656);

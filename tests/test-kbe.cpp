@@ -63,7 +63,7 @@ namespace libsemigroups {
     LIBSEMIGROUPS_TEST_CASE("KBE", "001", "test", "[quick]") {
       auto                  rg = ReportGuard(REPORT);
       FroidurePin<Transf<>> S
-          = to_froidure_pin({Transf<>({1, 0}), Transf<>({0, 0})});
+          = make<FroidurePin>({Transf<>({1, 0}), Transf<>({0, 0})});
 
       REQUIRE(S.size() == 4);
       REQUIRE(S.degree() == 2);
@@ -92,7 +92,7 @@ namespace libsemigroups {
     LIBSEMIGROUPS_TEST_CASE("KBE", "002", "factorisation", "[quick]") {
       auto                  rg = ReportGuard(REPORT);
       FroidurePin<Transf<>> S
-          = to_froidure_pin({Transf<>({1, 0}), Transf<>({0, 0})});
+          = make<FroidurePin>({Transf<>({1, 0}), Transf<>({0, 0})});
 
       KnuthBendix kb(congruence_kind::twosided, to_presentation<word_type>(S));
       REQUIRE(kb.confluent());
@@ -105,7 +105,7 @@ namespace libsemigroups {
     LIBSEMIGROUPS_TEST_CASE("KBE", "003", "swap", "[quick]") {
       auto                  rg = ReportGuard(REPORT);
       FroidurePin<Transf<>> S
-          = to_froidure_pin({Transf<>({1, 0}), Transf<>({0, 0})});
+          = make<FroidurePin>({Transf<>({1, 0}), Transf<>({0, 0})});
 
       KnuthBendix kb(congruence_kind::twosided, to_presentation<word_type>(S));
       REQUIRE(kb.confluent());
@@ -125,7 +125,7 @@ namespace libsemigroups {
     LIBSEMIGROUPS_TEST_CASE("KBE", "004", "adapters", "[quick]") {
       auto                  rg = ReportGuard(REPORT);
       FroidurePin<Transf<>> S
-          = to_froidure_pin({Transf<>({1, 0}), Transf<>({0, 0})});
+          = make<FroidurePin>({Transf<>({1, 0}), Transf<>({0, 0})});
 
       KnuthBendix kb(congruence_kind::twosided, to_presentation<word_type>(S));
       REQUIRE(kb.confluent());
@@ -143,7 +143,7 @@ namespace libsemigroups {
     LIBSEMIGROUPS_TEST_CASE("KBE", "005", "conversions", "[quick]") {
       auto                  rg = ReportGuard(REPORT);
       FroidurePin<Transf<>> S
-          = to_froidure_pin({Transf<>({1, 0}), Transf<>({0, 0})});
+          = make<FroidurePin>({Transf<>({1, 0}), Transf<>({0, 0})});
 
       KnuthBendix kb(congruence_kind::twosided, to_presentation<word_type>(S));
       using KBE = froidure_pin_type<decltype(kb)>::element_type;

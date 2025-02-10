@@ -531,7 +531,7 @@ namespace libsemigroups {
                           "full_transformation_monoid(3) onesided",
                           "[quick][low-index][no-valgrind]") {
     auto rg = ReportGuard(false);
-    auto S  = to_froidure_pin({make<Transf<3>>({1, 2, 0}),
+    auto S  = make<FroidurePin>({make<Transf<3>>({1, 2, 0}),
                                make<Transf<3>>({1, 0, 2}),
                                make<Transf<3>>({0, 1, 0})});
     REQUIRE(S.size() == 27);
@@ -551,7 +551,7 @@ namespace libsemigroups {
                           "full_transformation_monoid(3) left",
                           "[quick][low-index][no-valgrind]") {
     auto rg = ReportGuard(false);
-    auto S  = to_froidure_pin(
+    auto S  = make<FroidurePin>(
         {Transf<3>({1, 2, 0}), Transf<3>({1, 0, 2}), Transf<3>({0, 1, 0})});
     REQUIRE(S.size() == 27);
     auto p = to_presentation<word_type>(S);
@@ -616,7 +616,7 @@ namespace libsemigroups {
                           "symmetric_inverse_monoid(2) from FroidurePin",
                           "[quick][low-index]") {
     auto rg = ReportGuard(false);
-    auto S  = to_froidure_pin({PPerm<2>({1, 0}), PPerm<2>({0}, {0}, 2)});
+    auto S  = make<FroidurePin>({PPerm<2>({1, 0}), PPerm<2>({0}, {0}, 2)});
     REQUIRE(S.size() == 7);
     auto p = to_presentation<word_type>(S);
     presentation::reverse(p);
@@ -2038,7 +2038,7 @@ namespace libsemigroups {
 
     auto rg = ReportGuard(false);
 
-    auto S = to_froidure_pin({make<Transf<6>>({0, 0, 2, 1, 4, 1}),
+    auto S = make<FroidurePin>({make<Transf<6>>({0, 0, 2, 1, 4, 1}),
                               make<Transf<6>>({0, 0, 2, 3, 4, 3}),
                               make<Transf<6>>({0, 2, 2, 0, 4, 4})});
 
@@ -2284,7 +2284,7 @@ namespace libsemigroups {
     using Transf_ = Transf<5>;
     auto rg       = ReportGuard(true);
 
-    auto S = to_froidure_pin({Transf_({1, 0, 2, 3, 4}),
+    auto S = make<FroidurePin>({Transf_({1, 0, 2, 3, 4}),
                               Transf_({3, 0, 1, 2, 4}),
                               Transf_({4, 1, 2, 3, 4}),
                               Transf_({1, 1, 2, 3, 4})});

@@ -95,7 +95,7 @@ namespace libsemigroups {
                                    "[quick][knuth-bendix]",
                                    KNUTH_BENDIX_TYPES) {
     auto rg = ReportGuard(false);
-    auto S  = to_froidure_pin({Transf<>({1, 0}), Transf<>({0, 0})});
+    auto S  = make<FroidurePin>({Transf<>({1, 0}), Transf<>({0, 0})});
     REQUIRE(S.size() == 4);
     REQUIRE(S.number_of_rules() == 4);
 
@@ -177,7 +177,7 @@ namespace libsemigroups {
                                    "[quick]",
                                    KNUTH_BENDIX_TYPES) {
     auto rg = ReportGuard(false);
-    auto S  = to_froidure_pin(
+    auto S  = make<FroidurePin>(
         {Transf<>({1, 3, 4, 2, 3}), Transf<>({3, 2, 1, 3, 3})});
 
     REQUIRE(S.size() == 88);
@@ -198,7 +198,7 @@ namespace libsemigroups {
     using words::operator+;
 
     auto rg = ReportGuard(false);
-    auto S  = to_froidure_pin(
+    auto S  = make<FroidurePin>(
         {Transf<>({1, 3, 4, 2, 3}), Transf<>({3, 2, 1, 3, 3})});
 
     REQUIRE(S.size() == 88);
@@ -295,7 +295,7 @@ namespace libsemigroups {
     using words::operator+;
 
     auto rg = ReportGuard(false);
-    auto S  = to_froidure_pin(
+    auto S  = make<FroidurePin>(
         {Transf<>({1, 3, 4, 2, 3}), Transf<>({3, 2, 1, 3, 3})});
 
     REQUIRE(S.size() == 88);
@@ -390,7 +390,7 @@ namespace libsemigroups {
     using words::operator+;
 
     auto rg = ReportGuard(false);
-    auto S  = to_froidure_pin(
+    auto S  = make<FroidurePin>(
         {Transf<>({1, 3, 4, 2, 3}), Transf<>({3, 2, 1, 3, 3})});
 
     REQUIRE(S.size() == 88);
@@ -454,7 +454,7 @@ namespace libsemigroups {
     using words::operator+;
 
     auto rg = ReportGuard(false);
-    auto S  = to_froidure_pin(
+    auto S  = make<FroidurePin>(
         {Transf<>({1, 3, 4, 2, 3}), Transf<>({3, 2, 1, 3, 3})});
 
     REQUIRE(S.size() == 88);

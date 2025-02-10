@@ -225,7 +225,7 @@ namespace libsemigroups {
                           "[quick][cong][no-valgrind]") {
     auto rg      = ReportGuard(false);
     using Transf = LeastTransf<8>;
-    auto S       = to_froidure_pin({Transf({7, 3, 5, 3, 4, 2, 7, 7}),
+    auto S       = make<FroidurePin>({Transf({7, 3, 5, 3, 4, 2, 7, 7}),
                                     Transf({1, 2, 4, 4, 7, 3, 0, 7}),
                                     Transf({0, 6, 4, 2, 2, 6, 6, 4}),
                                     Transf({3, 6, 3, 4, 0, 6, 0, 7})});
@@ -262,7 +262,7 @@ namespace libsemigroups {
                           "congruence on full PBR monoid on 2 points",
                           "[extreme][cong]") {
     auto rg = ReportGuard(true);
-    auto S  = to_froidure_pin({PBR({{2}, {3}, {0}, {1}}),
+    auto S  = make<FroidurePin>({PBR({{2}, {3}, {0}, {1}}),
                                PBR({{}, {2}, {1}, {0, 3}}),
                                PBR({{0, 3}, {2}, {1}, {}}),
                                PBR({{1, 2}, {3}, {0}, {1}}),
@@ -312,7 +312,7 @@ namespace libsemigroups {
     auto rg = ReportGuard(false);
 
     auto S
-        = to_froidure_pin({LeastPPerm<6>({0, 1, 2}, {4, 0, 1}, 6),
+        = make<FroidurePin>({LeastPPerm<6>({0, 1, 2}, {4, 0, 1}, 6),
                            LeastPPerm<6>({0, 1, 2, 3, 5}, {2, 5, 3, 0, 4}, 6),
                            LeastPPerm<6>({0, 1, 2, 3}, {5, 0, 3, 1}, 6),
                            LeastPPerm<6>({0, 2, 5}, {3, 4, 1}, 6),
@@ -434,7 +434,7 @@ namespace libsemigroups {
     auto rg      = ReportGuard(false);
     using Transf = LeastTransf<5>;
     auto S
-        = to_froidure_pin({Transf({1, 3, 4, 2, 3}), Transf({3, 2, 1, 3, 3})});
+        = make<FroidurePin>({Transf({1, 3, 4, 2, 3}), Transf({3, 2, 1, 3, 3})});
 
     REQUIRE(S.size() == 88);
     REQUIRE(S.number_of_rules() == 18);
@@ -551,7 +551,7 @@ namespace libsemigroups {
                           "[quick][cong]") {
     auto rg      = ReportGuard(false);
     using Transf = LeastTransf<8>;
-    auto       S = to_froidure_pin({Transf({7, 3, 5, 3, 4, 2, 7, 7}),
+    auto       S = make<FroidurePin>({Transf({7, 3, 5, 3, 4, 2, 7, 7}),
                                     Transf({7, 3, 5, 3, 4, 2, 7, 7}),
                                     Transf({7, 3, 5, 3, 4, 2, 7, 7}),
                                     Transf({3, 6, 3, 4, 0, 6, 0, 7})});
@@ -611,7 +611,7 @@ namespace libsemigroups {
                           "[quick][cong][no-valgrind]") {
     auto rg      = ReportGuard(false);
     using Transf = LeastTransf<8>;
-    auto S       = to_froidure_pin({Transf({0, 1, 2, 3, 4, 5, 6, 7}),
+    auto S       = make<FroidurePin>({Transf({0, 1, 2, 3, 4, 5, 6, 7}),
                                     Transf({1, 2, 3, 4, 5, 0, 6, 7}),
                                     Transf({1, 0, 2, 3, 4, 5, 6, 7}),
                                     Transf({0, 1, 2, 3, 4, 0, 6, 7}),
@@ -762,7 +762,7 @@ namespace libsemigroups {
     }
 
     using Transf = LeastTransf<3>;
-    auto fp      = to_froidure_pin({Transf({0, 1, 0}), Transf({0, 1, 2})});
+    auto fp      = make<FroidurePin>({Transf({0, 1, 0}), Transf({0, 1, 2})});
     REQUIRE(fp.size() == 2);
     {
       Congruence cong(twosided, fp, fp.right_cayley_graph());
@@ -790,7 +790,7 @@ namespace libsemigroups {
            BMat({{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {1, 0, 0, 1}}),
            BMat({{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 0}})};
     {
-      auto S = to_froidure_pin(gens);
+      auto S = make<FroidurePin>(gens);
 
       Congruence cong(twosided, S, S.right_cayley_graph());
       congruence::add_generating_pair(cong, {1}, {0});
@@ -818,7 +818,7 @@ namespace libsemigroups {
                                          11011_w}));
     }
     {
-      auto       S = to_froidure_pin({gens[0], gens[2], gens[3]});
+      auto       S = make<FroidurePin>({gens[0], gens[2], gens[3]});
       Congruence cong(twosided, S, S.right_cayley_graph());
       congruence::add_generating_pair(cong, {1}, {0});
 

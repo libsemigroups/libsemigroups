@@ -39,7 +39,7 @@ namespace libsemigroups {
                           "small example 1 .................. Bipartition",
                           "[quick][froidure-pin][bipartition][bipart]") {
     auto        rg = ReportGuard(REPORT);
-    FroidurePin S  = to_froidure_pin(
+    FroidurePin S  = make<FroidurePin>(
         {make<Bipartition>({{1, 5, 8, -1, -2, -4, -10},
                              {2, 4, 7, -8},
                              {3, 6, 9, 10, -3},

@@ -50,7 +50,7 @@ namespace libsemigroups {
            BMat8({{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {1, 0, 0, 1}}),
            BMat8({{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 0}})};
 
-    auto S = to_froidure_pin(gens);
+    auto S = make<FroidurePin>(gens);
 
     REQUIRE(S.current_max_word_length() == 1);
     REQUIRE(!S.finished());
@@ -232,7 +232,7 @@ namespace libsemigroups {
                           "[quick][froidure-pin][bmat8]") {
     std::vector<BMat8> gens;
 
-    REQUIRE_NOTHROW(to_froidure_pin(gens));
+    REQUIRE_NOTHROW(make<FroidurePin>(gens));
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
@@ -244,7 +244,7 @@ namespace libsemigroups {
            BMat8({{0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}, {1, 0, 0, 0}}),
            BMat8({{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {1, 0, 0, 1}}),
            BMat8({{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 0}})};
-    auto S = to_froidure_pin(gens);
+    auto S = make<FroidurePin>(gens);
 
     REQUIRE(!S.contains_one());
     REQUIRE_THROWS_AS(froidure_pin::to_element(S, {}), LibsemigroupsException);
@@ -262,7 +262,7 @@ namespace libsemigroups {
         = {BMat8({{0, 1, 0, 0}, {1, 0, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}),
            BMat8({{0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}, {1, 0, 0, 0}}),
            BMat8({{1, 1, 0, 0}, {1, 0, 1, 0}, {0, 1, 1, 1}, {0, 1, 1, 1}})};
-    auto S = to_froidure_pin(gens);
+    auto S = make<FroidurePin>(gens);
 
     for (size_t i = 0; i < S.size(); ++i) {
       REQUIRE_NOTHROW(S.prefix(i));
@@ -278,7 +278,7 @@ namespace libsemigroups {
         = {BMat8({{0, 1, 0, 0}, {1, 0, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}),
            BMat8({{0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}, {1, 0, 0, 0}}),
            BMat8({{1, 1, 0, 0}, {1, 0, 1, 0}, {0, 1, 1, 1}, {0, 1, 1, 1}})};
-    auto S = to_froidure_pin(gens);
+    auto S = make<FroidurePin>(gens);
 
     for (size_t i = 0; i < S.size(); ++i) {
       REQUIRE_NOTHROW(S.first_letter(i));
@@ -294,7 +294,7 @@ namespace libsemigroups {
         = {BMat8({{0, 1, 0, 0}, {1, 0, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}),
            BMat8({{0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}, {1, 0, 0, 0}}),
            BMat8({{1, 1, 0, 0}, {1, 0, 1, 0}, {0, 1, 1, 1}, {0, 1, 1, 1}})};
-    auto S = to_froidure_pin(gens);
+    auto S = make<FroidurePin>(gens);
 
     for (size_t i = 0; i < S.size(); ++i) {
       REQUIRE_NOTHROW(S.current_length(i));
@@ -309,7 +309,7 @@ namespace libsemigroups {
     std::vector<BMat8> gens
         = {BMat8({{0, 1, 0, 0}, {1, 0, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}),
            BMat8({{1, 1, 0, 0}, {1, 0, 1, 0}, {0, 1, 1, 1}, {0, 1, 1, 1}})};
-    auto S = to_froidure_pin(gens);
+    auto S = make<FroidurePin>(gens);
 
     for (size_t i = 1; i < S.size(); ++i) {
       for (size_t j = 1; j < S.size(); ++j) {
@@ -334,7 +334,7 @@ namespace libsemigroups {
     std::vector<BMat8> gens
         = {BMat8({{0, 1, 0, 0}, {1, 0, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}),
            BMat8({{1, 1, 0, 0}, {1, 0, 1, 0}, {0, 1, 1, 1}, {0, 1, 1, 1}})};
-    auto S = to_froidure_pin(gens);
+    auto S = make<FroidurePin>(gens);
 
     for (size_t i = 1; i < S.size(); ++i) {
       for (size_t j = 1; j < S.size(); ++j) {
@@ -353,7 +353,7 @@ namespace libsemigroups {
                           "025",
                           "exception is_idempotent - BMat8",
                           "[quick][froidure-pin][bmat8][no-valgrind]") {
-    auto S = to_froidure_pin(
+    auto S = make<FroidurePin>(
         {BMat8({{0, 1, 0, 0}, {1, 0, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}),
          BMat8({{0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}, {1, 0, 0, 0}}),
          BMat8({{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {1, 0, 0, 1}}),
@@ -389,7 +389,7 @@ namespace libsemigroups {
                           "copy constructor - BMat8",
                           "[quick][froidure-pin][bmat8][no-valgrind]") {
     auto rg = ReportGuard(REPORT);
-    auto S  = to_froidure_pin(
+    auto S  = make<FroidurePin>(
         {BMat8({{0, 1, 0, 0}, {1, 0, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}),
           BMat8({{0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}, {1, 0, 0, 0}}),
           BMat8({{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {1, 0, 0, 1}}),
