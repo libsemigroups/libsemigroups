@@ -20,31 +20,20 @@
 #define LIBSEMIGROUPS_TO_FROIDURE_PIN_HPP_
 
 #include <cstddef>      // for size_t
+#include <memory>       // for unique_ptr
 #include <type_traits>  // for enable_if_t, is_base_of
 
-#include "debug.hpp"       // for LIBSEMIGROUPS_ASSERT
-#include "exception.hpp"   // for LIBSEMIGROUPS_EXCEPTION
-#include "word-graph.hpp"  // for WordGraph
+#include "cong-class.hpp"          // for Congruence
+#include "froidure-pin.hpp"        // for FroidurePin
+#include "kambites-class.hpp"      // for Kambites
+#include "knuth-bendix-class.hpp"  // for KnuthBendix
+#include "todd-coxeter-class.hpp"  // for ToddCoxeter
 
 #include "detail/kbe.hpp"  // for KBE
 #include "detail/ke.hpp"   // for KE
-#include "detail/rewriters.hpp"
 #include "detail/tce.hpp"  // for TCE
 
 namespace libsemigroups {
-#ifndef LIBSEMIGROUPS_PARSED_BY_DOXYGEN
-  class FroidurePinBase;  // forward decl
-  template <typename Word>
-  class Congruence;
-
-  namespace detail {
-    class ToddCoxeterImpl;
-
-    template <typename Rewriter, typename ReductionOrder>
-    class KnuthBendixImpl;
-
-  }  // namespace detail
-#endif  // PARSED_BY_DOXYGEN
 
   // TODO(0) doc
   template <typename Word>
@@ -57,7 +46,7 @@ namespace libsemigroups {
           detail::KBE<detail::KnuthBendixImpl<Rewriter, ReductionOrder>>>;
 
   // TODO(0) doc
-  FroidurePin(detail::ToddCoxeterImpl const&) -> FroidurePin<detail::TCE>;
+  FroidurePin(detail::ToddCoxeterImpl const&)->FroidurePin<detail::TCE>;
 
   ////////////////////////////////////////////////////////////////////////
   // Congruence

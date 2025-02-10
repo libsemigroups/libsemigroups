@@ -104,6 +104,7 @@ pkginclude_HEADERS += include/libsemigroups/sims.tpp
 pkginclude_HEADERS += include/libsemigroups/stephen.hpp
 pkginclude_HEADERS += include/libsemigroups/stephen.tpp
 pkginclude_HEADERS += include/libsemigroups/to-froidure-pin.hpp
+pkginclude_HEADERS += include/libsemigroups/to-froidure-pin.tpp
 pkginclude_HEADERS += include/libsemigroups/to-knuth-bendix.hpp
 pkginclude_HEADERS += include/libsemigroups/to-presentation.hpp
 pkginclude_HEADERS += include/libsemigroups/to-presentation.tpp

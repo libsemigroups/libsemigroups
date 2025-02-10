@@ -19,7 +19,9 @@
 #ifndef LIBSEMIGROUPS_TO_TODD_COXETER_HPP_
 #define LIBSEMIGROUPS_TO_TODD_COXETER_HPP_
 
+#include "froidure-pin.hpp"
 #include "knuth-bendix.hpp"
+#include "to-froidure-pin.hpp"
 #include "todd-coxeter.hpp"
 
 namespace libsemigroups {
