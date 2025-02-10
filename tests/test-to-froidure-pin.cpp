@@ -82,7 +82,7 @@ namespace libsemigroups {
   namespace {
     template <typename Word, typename OtherWord = Word>
     void check_from_ke(Presentation<Word> const& p) {
-      using literals::operator""_w;
+      using literals::    operator""_w;
       Kambites<OtherWord> k(twosided, p);
       auto                s = to<FroidurePin>(k);
       REQUIRE(s.is_finite() == tril::FALSE);
@@ -189,7 +189,7 @@ namespace libsemigroups {
                           "from Todd-Coxeter",
                           "[quick]") {
     using literals::operator""_w;
-    auto rg = ReportGuard(false);
+    auto            rg = ReportGuard(false);
 
     Presentation<word_type> p;
     p.alphabet(4);
@@ -249,7 +249,7 @@ namespace libsemigroups {
                                    "from KnuthBendix",
                                    "[quick]",
                                    REWRITER_TYPES) {
-    using literals::operator""_w;
+    using literals::        operator""_w;
     auto                    rg = ReportGuard(false);
     Presentation<word_type> p;
     p.alphabet(2);

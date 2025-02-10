@@ -226,9 +226,9 @@ namespace libsemigroups {
     auto rg      = ReportGuard(false);
     using Transf = LeastTransf<8>;
     auto S       = make<FroidurePin>({Transf({7, 3, 5, 3, 4, 2, 7, 7}),
-                                    Transf({1, 2, 4, 4, 7, 3, 0, 7}),
-                                    Transf({0, 6, 4, 2, 2, 6, 6, 4}),
-                                    Transf({3, 6, 3, 4, 0, 6, 0, 7})});
+                                      Transf({1, 2, 4, 4, 7, 3, 0, 7}),
+                                      Transf({0, 6, 4, 2, 2, 6, 6, 4}),
+                                      Transf({3, 6, 3, 4, 0, 6, 0, 7})});
 
     REQUIRE(S.size() == 11804);
     REQUIRE(S.number_of_rules() == 2460);
@@ -263,16 +263,16 @@ namespace libsemigroups {
                           "[extreme][cong]") {
     auto rg = ReportGuard(true);
     auto S  = make<FroidurePin>({PBR({{2}, {3}, {0}, {1}}),
-                               PBR({{}, {2}, {1}, {0, 3}}),
-                               PBR({{0, 3}, {2}, {1}, {}}),
-                               PBR({{1, 2}, {3}, {0}, {1}}),
-                               PBR({{2}, {3}, {0}, {1, 3}}),
-                               PBR({{3}, {1}, {0}, {1}}),
-                               PBR({{3}, {2}, {0}, {0, 1}}),
-                               PBR({{3}, {2}, {0}, {1}}),
-                               PBR({{3}, {2}, {0}, {3}}),
-                               PBR({{3}, {2}, {1}, {0}}),
-                               PBR({{3}, {2, 3}, {0}, {1}})});
+                                 PBR({{}, {2}, {1}, {0, 3}}),
+                                 PBR({{0, 3}, {2}, {1}, {}}),
+                                 PBR({{1, 2}, {3}, {0}, {1}}),
+                                 PBR({{2}, {3}, {0}, {1, 3}}),
+                                 PBR({{3}, {1}, {0}, {1}}),
+                                 PBR({{3}, {2}, {0}, {0, 1}}),
+                                 PBR({{3}, {2}, {0}, {1}}),
+                                 PBR({{3}, {2}, {0}, {3}}),
+                                 PBR({{3}, {2}, {1}, {0}}),
+                                 PBR({{3}, {2, 3}, {0}, {1}})});
 
     // REQUIRE(S.size() == 65536);
     // REQUIRE(S.number_of_rules() == 45416);
@@ -313,14 +313,14 @@ namespace libsemigroups {
 
     auto S
         = make<FroidurePin>({LeastPPerm<6>({0, 1, 2}, {4, 0, 1}, 6),
-                           LeastPPerm<6>({0, 1, 2, 3, 5}, {2, 5, 3, 0, 4}, 6),
-                           LeastPPerm<6>({0, 1, 2, 3}, {5, 0, 3, 1}, 6),
-                           LeastPPerm<6>({0, 2, 5}, {3, 4, 1}, 6),
-                           LeastPPerm<6>({0, 2, 5}, {0, 2, 5}, 6),
-                           LeastPPerm<6>({0, 1, 4}, {1, 2, 0}, 6),
-                           LeastPPerm<6>({0, 2, 3, 4, 5}, {3, 0, 2, 5, 1}, 6),
-                           LeastPPerm<6>({0, 1, 3, 5}, {1, 3, 2, 0}, 6),
-                           LeastPPerm<6>({1, 3, 4}, {5, 0, 2}, 6)});
+                             LeastPPerm<6>({0, 1, 2, 3, 5}, {2, 5, 3, 0, 4}, 6),
+                             LeastPPerm<6>({0, 1, 2, 3}, {5, 0, 3, 1}, 6),
+                             LeastPPerm<6>({0, 2, 5}, {3, 4, 1}, 6),
+                             LeastPPerm<6>({0, 2, 5}, {0, 2, 5}, 6),
+                             LeastPPerm<6>({0, 1, 4}, {1, 2, 0}, 6),
+                             LeastPPerm<6>({0, 2, 3, 4, 5}, {3, 0, 2, 5, 1}, 6),
+                             LeastPPerm<6>({0, 1, 3, 5}, {1, 3, 2, 0}, 6),
+                             LeastPPerm<6>({1, 3, 4}, {5, 0, 2}, 6)});
 
     // REQUIRE(S.size() == 712);
     // REQUIRE(S.number_of_rules() == 1121);
@@ -552,9 +552,9 @@ namespace libsemigroups {
     auto rg      = ReportGuard(false);
     using Transf = LeastTransf<8>;
     auto       S = make<FroidurePin>({Transf({7, 3, 5, 3, 4, 2, 7, 7}),
-                                    Transf({7, 3, 5, 3, 4, 2, 7, 7}),
-                                    Transf({7, 3, 5, 3, 4, 2, 7, 7}),
-                                    Transf({3, 6, 3, 4, 0, 6, 0, 7})});
+                                      Transf({7, 3, 5, 3, 4, 2, 7, 7}),
+                                      Transf({7, 3, 5, 3, 4, 2, 7, 7}),
+                                      Transf({3, 6, 3, 4, 0, 6, 0, 7})});
     Congruence cong(twosided, S, S.right_cayley_graph());
     REQUIRE(cong.number_of_classes() == S.size());
   }
@@ -612,10 +612,10 @@ namespace libsemigroups {
     auto rg      = ReportGuard(false);
     using Transf = LeastTransf<8>;
     auto S       = make<FroidurePin>({Transf({0, 1, 2, 3, 4, 5, 6, 7}),
-                                    Transf({1, 2, 3, 4, 5, 0, 6, 7}),
-                                    Transf({1, 0, 2, 3, 4, 5, 6, 7}),
-                                    Transf({0, 1, 2, 3, 4, 0, 6, 7}),
-                                    Transf({0, 1, 2, 3, 4, 5, 7, 6})});
+                                      Transf({1, 2, 3, 4, 5, 0, 6, 7}),
+                                      Transf({1, 0, 2, 3, 4, 5, 6, 7}),
+                                      Transf({0, 1, 2, 3, 4, 0, 6, 7}),
+                                      Transf({0, 1, 2, 3, 4, 5, 7, 6})});
 
     REQUIRE(S.size() == 93'312);
     std::vector<Transf> elms = {Transf({0, 0, 0, 0, 0, 0, 7, 6}),

@@ -532,8 +532,8 @@ namespace libsemigroups {
                           "[quick][low-index][no-valgrind]") {
     auto rg = ReportGuard(false);
     auto S  = make<FroidurePin>({make<Transf<3>>({1, 2, 0}),
-                               make<Transf<3>>({1, 0, 2}),
-                               make<Transf<3>>({0, 1, 0})});
+                                 make<Transf<3>>({1, 0, 2}),
+                                 make<Transf<3>>({0, 1, 0})});
     REQUIRE(S.size() == 27);
     REQUIRE(S.number_of_generators() == 3);
     REQUIRE(S.number_of_rules() == 16);
@@ -2039,8 +2039,8 @@ namespace libsemigroups {
     auto rg = ReportGuard(false);
 
     auto S = make<FroidurePin>({make<Transf<6>>({0, 0, 2, 1, 4, 1}),
-                              make<Transf<6>>({0, 0, 2, 3, 4, 3}),
-                              make<Transf<6>>({0, 2, 2, 0, 4, 4})});
+                                make<Transf<6>>({0, 0, 2, 3, 4, 3}),
+                                make<Transf<6>>({0, 2, 2, 0, 4, 4})});
 
     REQUIRE(S.size() == 5);
     auto p = to_presentation<word_type>(S);
@@ -2285,9 +2285,9 @@ namespace libsemigroups {
     auto rg       = ReportGuard(true);
 
     auto S = make<FroidurePin>({Transf_({1, 0, 2, 3, 4}),
-                              Transf_({3, 0, 1, 2, 4}),
-                              Transf_({4, 1, 2, 3, 4}),
-                              Transf_({1, 1, 2, 3, 4})});
+                                Transf_({3, 0, 1, 2, 4}),
+                                Transf_({4, 1, 2, 3, 4}),
+                                Transf_({1, 1, 2, 3, 4})});
     REQUIRE(S.size() == 625);
     auto p = to_presentation<word_type>(S);
     presentation::reverse(p);

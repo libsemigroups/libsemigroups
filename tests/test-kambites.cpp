@@ -2198,8 +2198,8 @@ namespace libsemigroups {
                           "large number of rules",
                           "[quick][kambites][no-valgrind]") {
     auto S = make<FroidurePin>({LeastTransf<6>({1, 2, 3, 4, 5, 0}),
-                              LeastTransf<6>({1, 0, 2, 3, 4, 5}),
-                              LeastTransf<6>({0, 1, 2, 3, 4, 0})});
+                                LeastTransf<6>({1, 0, 2, 3, 4, 5}),
+                                LeastTransf<6>({0, 1, 2, 3, 4, 0})});
     REQUIRE(S.size() == 46'656);
     REQUIRE(S.number_of_rules() == 7'939);
     auto     p = to_presentation<word_type>(S);

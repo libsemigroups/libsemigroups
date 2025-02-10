@@ -67,7 +67,7 @@ namespace libsemigroups {
       using type = FroidurePin<
           detail::KBE<detail::KnuthBendixImpl<Rewriter, ReductionOrder>>>;
     };
-  }  // namespace detail
+  }     // namespace detail
 #endif  // PARSED_BY_DOXYGEN
 
   // TODO rm
@@ -87,7 +87,7 @@ namespace libsemigroups {
           detail::KBE<detail::KnuthBendixImpl<Rewriter, ReductionOrder>>>;
 
   // TODO(0) doc
-  FroidurePin(detail::ToddCoxeterImpl const&) -> FroidurePin<detail::TCE>;
+  FroidurePin(detail::ToddCoxeterImpl const&)->FroidurePin<detail::TCE>;
 
   ////////////////////////////////////////////////////////////////////////
   // Congruence

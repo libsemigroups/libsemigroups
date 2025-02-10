@@ -428,7 +428,7 @@ namespace libsemigroups {
     auto                  rg = ReportGuard(REPORT);
     FroidurePin<Transf<>> S
         = make<FroidurePin>({Transf<>({1, 7, 2, 6, 0, 0, 1, 2}),
-                           Transf<>({2, 4, 6, 1, 4, 5, 2, 7})});
+                             Transf<>({2, 4, 6, 1, 4, 5, 2, 7})});
     REQUIRE(S.number_of_idempotents() == 72);
   }
 
@@ -2258,7 +2258,8 @@ namespace libsemigroups {
 
     REQUIRE(T.size() == 119);
 
-    FroidurePin<Transf<>> S = make<FroidurePin>({T.generator(0), T.generator(0)});
+    FroidurePin<Transf<>> S
+        = make<FroidurePin>({T.generator(0), T.generator(0)});
 
     froidure_pin::add_generators(S, {});
     froidure_pin::add_generators(S, {T.generator(0)});
@@ -2450,7 +2451,7 @@ namespace libsemigroups {
                           "exception: generators of different degrees",
                           "[quick][froidure-pin][transf]") {
     REQUIRE_THROWS_AS(make<FroidurePin>({Transf<>({0, 1, 2, 3, 4, 5}),
-                                       Transf<>({0, 1, 2, 3, 4, 5, 5})}),
+                                         Transf<>({0, 1, 2, 3, 4, 5, 5})}),
                       LibsemigroupsException);
   }
 
