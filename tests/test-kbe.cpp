@@ -46,7 +46,7 @@ namespace libsemigroups {
       KnuthBendix kb(congruence_kind::twosided, to_presentation<word_type>(S));
       // NOTE: don't do "using KBE = KBE<decltype(kb)>;" because this isn't the
       // same as the next line.
-      using KBE = froidure_pin_type<decltype(kb)>::element_type;
+      using KBE = typename decltype(to<FroidurePin>(kb))::element_type;
 
       KBE ab(kb, 01_w);
       KBE b(ab);
@@ -61,16 +61,15 @@ namespace libsemigroups {
     }
 
     LIBSEMIGROUPS_TEST_CASE("KBE", "001", "test", "[quick]") {
-      auto                  rg = ReportGuard(REPORT);
-      FroidurePin<Transf<>> S
-          = make<FroidurePin>({Transf<>({1, 0}), Transf<>({0, 0})});
+      auto        rg = ReportGuard(REPORT);
+      FroidurePin S  = make<FroidurePin>({Transf<>({1, 0}), Transf<>({0, 0})});
 
       REQUIRE(S.size() == 4);
       REQUIRE(S.degree() == 2);
       REQUIRE(S.number_of_rules() == 4);
 
       KnuthBendix kb(congruence_kind::twosided, to_presentation<word_type>(S));
-      using KBE = froidure_pin_type<decltype(kb)>::element_type;
+      using KBE = typename decltype(to<FroidurePin>(kb))::element_type;
 
       REQUIRE(kb.confluent());
 
@@ -109,7 +108,7 @@ namespace libsemigroups {
 
       KnuthBendix kb(congruence_kind::twosided, to_presentation<word_type>(S));
       REQUIRE(kb.confluent());
-      using KBE = froidure_pin_type<decltype(kb)>::element_type;
+      using KBE = typename decltype(to<FroidurePin>(kb))::element_type;
 
       auto x = KBE(kb, 0);
       auto y = KBE(kb, 1);
@@ -130,7 +129,7 @@ namespace libsemigroups {
       KnuthBendix kb(congruence_kind::twosided, to_presentation<word_type>(S));
       REQUIRE(kb.confluent());
 
-      using KBE = froidure_pin_type<decltype(kb)>::element_type;
+      using KBE = typename decltype(to<FroidurePin>(kb))::element_type;
       auto x    = KBE(kb, 0);
       REQUIRE(Complexity<KBE>()(x) == LIMIT_MAX);
       REQUIRE(EqualTo<KBE>()(x, x));
@@ -146,7 +145,7 @@ namespace libsemigroups {
           = make<FroidurePin>({Transf<>({1, 0}), Transf<>({0, 0})});
 
       KnuthBendix kb(congruence_kind::twosided, to_presentation<word_type>(S));
-      using KBE = froidure_pin_type<decltype(kb)>::element_type;
+      using KBE = typename decltype(to<FroidurePin>(kb))::element_type;
       REQUIRE(kb.confluent());
 
       auto x = KBE(kb, 0);

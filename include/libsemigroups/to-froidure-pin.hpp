@@ -43,38 +43,8 @@ namespace libsemigroups {
     template <typename Rewriter, typename ReductionOrder>
     class KnuthBendixImpl;
 
-    // TODO rm
-    template <typename Thing>
-    struct to_froidure_pin_helper;
-
-    // TODO rm
-    template <typename Word>
-    struct to_froidure_pin_helper<Kambites<Word>> {
-      using type = FroidurePin<detail::KE<Word>>;
-    };
-
-    // TODO rm
-    template <typename Rewriter, typename ReductionOrder>
-    struct to_froidure_pin_helper<
-        detail::KnuthBendixImpl<Rewriter, ReductionOrder>> {
-      using type = FroidurePin<
-          detail::KBE<detail::KnuthBendixImpl<Rewriter, ReductionOrder>>>;
-    };
-
-    // TODO rm
-    template <typename Word, typename Rewriter, typename ReductionOrder>
-    struct to_froidure_pin_helper<KnuthBendix<Word, Rewriter, ReductionOrder>> {
-      using type = FroidurePin<
-          detail::KBE<detail::KnuthBendixImpl<Rewriter, ReductionOrder>>>;
-    };
-  }     // namespace detail
+  }  // namespace detail
 #endif  // PARSED_BY_DOXYGEN
-
-  // TODO rm
-  // TODO(0) doc
-  template <typename Thing>
-  using froidure_pin_type =
-      typename detail::to_froidure_pin_helper<Thing>::type;
 
   // TODO(0) doc
   template <typename Word>
@@ -87,7 +57,7 @@ namespace libsemigroups {
           detail::KBE<detail::KnuthBendixImpl<Rewriter, ReductionOrder>>>;
 
   // TODO(0) doc
-  FroidurePin(detail::ToddCoxeterImpl const&)->FroidurePin<detail::TCE>;
+  FroidurePin(detail::ToddCoxeterImpl const&) -> FroidurePin<detail::TCE>;
 
   ////////////////////////////////////////////////////////////////////////
   // Congruence
