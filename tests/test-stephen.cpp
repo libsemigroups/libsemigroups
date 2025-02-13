@@ -1421,25 +1421,89 @@ namespace libsemigroups {
             == std::vector<word_type>());
   }
 
-  // TODO(0): uncomment after fixing issue with shared pointers
-  // LIBSEMIGROUPS_TEST_CASE("Stephen",
-  //                         "049",
-  //                         "to_human_readable_repr",
-  //                         "[stephen][quick]") {
-  //   Presentation<word_type> p;
-  //   p.alphabet(01_w);
-  //   p.contains_empty_word(true);
-  //   presentation::add_rule(p, 000_w, 11_w);
-  //   presentation::add_rule(p, 001_w, 10_w);
-  //
-  //   Stephen stephen(p);
-  //   REQUIRE(to_human_readable_repr(stephen)
-  //           == fmt::format("<Stephen object over presentation {} for word {}
-  //           "
-  //                          "with 0 nodes and 0 edges>",
-  //                          to_human_readable_repr(stephen.presentation()),
-  //                          stephen.word()));
-  // }
+  LIBSEMIGROUPS_TEST_CASE("Stephen",
+                          "049",
+                          "to_human_readable_repr",
+                          "[stephen][quick]") {
+    Presentation<word_type> p;
+    p.alphabet(01_w);
+    p.contains_empty_word(true);
+    presentation::add_rule(p, 000_w, 11_w);
+    presentation::add_rule(p, 001_w, 10_w);
+
+    Stephen<Presentation<word_type>> stephen;
+    REQUIRE(to_human_readable_repr(stephen)
+            == fmt::format("<Stephen object over {} for word [] "
+                           "with 0 nodes and 0 edges>",
+                           to_human_readable_repr(stephen.presentation())));
+    stephen.init(p);
+    REQUIRE(to_human_readable_repr(stephen)
+            == fmt::format("<Stephen object over {} for word [] "
+                           "with 0 nodes and 0 edges>",
+                           to_human_readable_repr(stephen.presentation())));
+    stephen.set_word(0110_w);
+    REQUIRE(to_human_readable_repr(stephen)
+            == fmt::format("<Stephen object over {} for word [0, 1, 1, 0] "
+                           "with 0 nodes and 0 edges>",
+                           to_human_readable_repr(stephen.presentation())));
+    stephen.run();
+    REQUIRE(to_human_readable_repr(stephen)
+            == fmt::format("<Stephen object over {} for word [0, 1, 1, 0] "
+                           "with 13 nodes and 26 edges>",
+                           to_human_readable_repr(stephen.presentation())));
+    stephen.set_word(011001100_w);
+    stephen.run();
+    REQUIRE(to_human_readable_repr(stephen)
+            == fmt::format(
+                "<Stephen object over {} for word [0, 1, 1, 0, 0, 1, 1, 0, 0] "
+                "with 13 nodes and 26 edges>",
+                to_human_readable_repr(stephen.presentation())));
+    stephen.set_word(0110011001_w);
+    stephen.run();
+    REQUIRE(to_human_readable_repr(stephen)
+            == fmt::format("<Stephen object over {} for 10 letter word "
+                           "with 13 nodes and 26 edges>",
+                           to_human_readable_repr(stephen.presentation())));
+    stephen.set_word(01100110010_w);
+    stephen.run();
+    REQUIRE(to_human_readable_repr(stephen)
+            == fmt::format("<Stephen object over {} for 11 letter word "
+                           "with 13 nodes and 26 edges>",
+                           to_human_readable_repr(stephen.presentation())));
+
+    ToWord                         to_word("abcABC");
+    InversePresentation<word_type> pi;
+    pi.alphabet(to_word("abcABC"));
+    pi.inverses_no_checks(to_word("ABCabc"));
+    presentation::add_rule(pi, to_word("ac"), to_word("ca"));
+    presentation::add_rule(pi, to_word("ab"), to_word("ba"));
+    presentation::add_rule(pi, to_word("bc"), to_word("cb"));
+
+    Stephen<InversePresentation<word_type>> inverse_stephen;
+    REQUIRE(
+        to_human_readable_repr(inverse_stephen)
+        == fmt::format("<Stephen object over {} for word [] "
+                       "with 0 nodes and 0 edges>",
+                       to_human_readable_repr(inverse_stephen.presentation())));
+    inverse_stephen.init(pi);
+    REQUIRE(
+        to_human_readable_repr(inverse_stephen)
+        == fmt::format("<Stephen object over {} for word [] "
+                       "with 0 nodes and 0 edges>",
+                       to_human_readable_repr(inverse_stephen.presentation())));
+    inverse_stephen.set_word(to_word("BaAbaBcAb"));
+    REQUIRE(to_human_readable_repr(inverse_stephen)
+            == fmt::format(
+                "<Stephen object over {} for word [4, 0, 3, 1, 0, 4, 2, 3, 1] "
+                "with 0 nodes and 0 edges>",
+                to_human_readable_repr(inverse_stephen.presentation())));
+    inverse_stephen.run();
+    REQUIRE(to_human_readable_repr(inverse_stephen)
+            == fmt::format(
+                "<Stephen object over {} for word [4, 0, 3, 1, 0, 4, 2, 3, 1] "
+                "with 7 nodes and 18 edges>",
+                to_human_readable_repr(inverse_stephen.presentation())));
+  }
 
   // The following uses up about 7GB memory to run
   LIBSEMIGROUPS_TEST_CASE("Stephen",

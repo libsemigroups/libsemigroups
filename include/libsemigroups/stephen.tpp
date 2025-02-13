@@ -25,35 +25,35 @@ namespace libsemigroups {
   class Stephen<PresentationType>::StephenGraph
       : public detail::NodeManagedGraph<
             detail::WordGraphWithSources<uint32_t>> {
-    // TODO(0) both of these aliases aren't required.
-    using BaseGraph            = detail::WordGraphWithSources<uint32_t>;
-    using WordGraphWithSources = BaseGraph;
+    using WordGraphWithSources_ = detail::WordGraphWithSources<uint32_t>;
 
    public:
-    using node_type = typename BaseGraph::node_type;
+    using node_type = typename WordGraphWithSources_::node_type;
 
     StephenGraph& init(Presentation<word_type> const& p) {
       NodeManager<node_type>::clear();
-      BaseGraph::init(NodeManager<node_type>::node_capacity(),
-                      p.alphabet().size());
+      WordGraphWithSources_::init(NodeManager<node_type>::node_capacity(),
+                                  p.alphabet().size());
       return *this;
     }
 
     StephenGraph& init(Presentation<word_type>&& p) {
       NodeManager<node_type>::clear();
-      BaseGraph::init(NodeManager<node_type>::node_capacity(),
-                      p.alphabet().size());
+      WordGraphWithSources_::init(NodeManager<node_type>::node_capacity(),
+                                  p.alphabet().size());
       return *this;
     }
 
     using WordGraph<node_type>::target;
     using WordGraph<node_type>::target_no_checks;
 
+    // TODO(1) Add data to the StephenGraph which is a pointer to either the
+    // encompassing Stephen object or the presentation
     void target_no_checks(presentation_type const& p,
                           node_type                from,
                           label_type               letter,
                           node_type                to) {
-      WordGraphWithSources::target_no_checks(from, letter, to);
+      WordGraphWithSources_::target_no_checks(from, letter, to);
       if constexpr (IsInversePresentation<presentation_type>) {
         // convert l (which is an index)
         // -> actual letter
@@ -66,10 +66,12 @@ namespace libsemigroups {
           process_coincidences<detail::DoNotRegisterDefs>();
           return;
         }
-        WordGraphWithSources::target_no_checks(to, ll, from);
+        WordGraphWithSources_::target_no_checks(to, ll, from);
       }
     }
 
+    // TODO(1) Add data to the StephenGraph which is a pointer to either the
+    // encompassing Stephen object or the presentation
     std::pair<bool, node_type>
     complete_path(presentation_type const&  p,
                   node_type                 c,
@@ -101,14 +103,14 @@ namespace libsemigroups {
       // and that this and that are run to the end
       size_t const N = number_of_nodes_active();
       // TODO(1): the following 2 lines are a bit awkward
-      BaseGraph::add_nodes(that.number_of_nodes());
+      WordGraphWithSources_::add_nodes(that.number_of_nodes());
       NodeManager<node_type>::add_active_nodes(that.number_of_nodes());
 
       for (auto n : that.nodes()) {
         for (auto a : that.labels()) {
           auto m = that.target_no_checks(n, a);
           if (m != UNDEFINED) {
-            BaseGraph::target_no_checks(n + N, a, m + N);
+            WordGraphWithSources_::target_no_checks(n + N, a, m + N);
           }
         }
       }
@@ -153,12 +155,13 @@ namespace libsemigroups {
   template <typename OtherPresentationType>
   Stephen<PresentationType>&
   Stephen<PresentationType>::init(OtherPresentationType const& q) {
-    // TODO (0): finish assert
-    static_assert(((IsInversePresentation<PresentationType>)
-                   == (IsInversePresentation<OtherPresentationType>) )
-                      && IsPresentation<PresentationType>
-                      && IsPresentation<OtherPresentationType>,
-                  "TODO");
+    static_assert(
+        ((IsInversePresentation<PresentationType>)
+         == (IsInversePresentation<OtherPresentationType>) )
+            && IsPresentation<PresentationType>
+            && IsPresentation<OtherPresentationType>,
+        "PresentationType and OtherPresentationType must both be presentation "
+        "types and either both are inverse presentaton types or neither is");
     if constexpr (IsInversePresentation<PresentationType>
                   && IsInversePresentation<OtherPresentationType>) {
       return init(to_inverse_presentation<word_type>(q));
@@ -178,6 +181,7 @@ namespace libsemigroups {
   // Public
   ////////////////////////////////////////////////////////////////////////
 
+  // TODO(0): implement init_graph_from_word
   template <typename PresentationType>
   Stephen<PresentationType>&
   Stephen<PresentationType>::set_word(word_type const& w) {
@@ -257,6 +261,8 @@ namespace libsemigroups {
       throw_if_presentation_empty(presentation());
       _something_changed = false;
       _word_graph.init(presentation());
+      // TODO(0): do we need presentation here? Could we set the initial word
+      // when we set_word?
       _word_graph.complete_path(
           presentation(), 0, _word.cbegin(), _word.cend());
     }
@@ -362,19 +368,20 @@ namespace libsemigroups {
              == w.cend();
     }
 
-    template <typename PresentationType>
-    [[nodiscard]] std::string
-    to_human_readable_repr(Stephen<PresentationType> const& x) {
-      std::string word;
-      return fmt::format("<Stephen object over presentation {} for {} with {} "
-                         "nodes and {} edges>",
-                         to_human_readable_repr(x.presentation()),
-                         x.word().size() < 10
-                             ? fmt::format("word {}", x.word())
-                             : fmt::format("{} letter word", x.word().size()),
-                         x.word_graph.number_of_nodes(),
-                         x.word_graph.number_of_edges());
-    }
   }  // namespace stephen
+
+  template <typename PresentationType>
+  [[nodiscard]] std::string
+  to_human_readable_repr(Stephen<PresentationType> const& x) {
+    std::string word;
+    return fmt::format("<Stephen object over {} for {} with {} "
+                       "nodes and {} edges>",
+                       to_human_readable_repr(x.presentation()),
+                       x.word().size() < 10
+                           ? fmt::format("word {}", x.word())
+                           : fmt::format("{} letter word", x.word().size()),
+                       x.word_graph().number_of_nodes(),
+                       x.word_graph().number_of_edges());
+  }
 
 }  // namespace libsemigroups

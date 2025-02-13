@@ -93,13 +93,17 @@ namespace libsemigroups {
     static constexpr bool is_valid_presentation() {
       return std::is_same_v<Q, Presentation<word_type>>
              || std::is_same_v<Q, InversePresentation<word_type>>;
-      // TODO(0): enable this once shared_ptr stuff works
-      // || std::is_same_v<Q, Presentation<std::string>>
-      // || std::is_same_v<Q, InversePresentation<std::string>>;
+      // TODO(0): uncomment when we figure out how to handle std::string
+      // presentations
+      //|| std::is_same_v<Q, Presentation<std::string>>
+      //|| std::is_same_v<Q, InversePresentation<std::string>>;
     }
 
-    // TODO (0): finish assert
-    static_assert(is_valid_presentation<PresentationType>(), "TODO");
+    // TODO (0): Change the error message once std::string presentations are
+    // supported
+    static_assert(is_valid_presentation<PresentationType>(),
+                  "the template parameter PresentationType must be "
+                  "Presentation<word_type> or InversePresentation<word_type>");
 
    public:
     //! The underlying presentation type.
@@ -130,8 +134,6 @@ namespace libsemigroups {
     //! \exceptions
     //! \no_libsemigroups_except
     Stephen();
-
-    // TODO(0): versions of initializing from shared_ptr to presentation
 
     //! \brief Reinitialize an existing Stephen object.
     //!
@@ -342,7 +344,8 @@ namespace libsemigroups {
     //!
     //! \exceptions
     //! \noexcept
-    // TODO(0): throw error if word is not set
+    // TODO(0) handle case when word not set? Or document that its empty if not
+    // set?
     word_type const& word() const noexcept {
       return _word;
     }
