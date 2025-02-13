@@ -20,9 +20,9 @@
 #define LIBSEMIGROUPS_TO_TODD_COXETER_HPP_
 
 #include "froidure-pin.hpp"
-#include "knuth-bendix.hpp"
+#include "knuth-bendix-class.hpp"
 #include "to-froidure-pin.hpp"
-#include "todd-coxeter.hpp"
+#include "todd-coxeter-class.hpp"
 
 namespace libsemigroups {
 
@@ -64,9 +64,8 @@ namespace libsemigroups {
     if (kb.number_of_classes() == POSITIVE_INFINITY) {
       LIBSEMIGROUPS_EXCEPTION(
           "cannot construct a ToddCoxeterImpl instance using the Cayley graph "
-          "of "
-          "an infinite KnuthBendixImpl<> object, maybe try ToddCoxeterImpl({}, "
-          "kb.presentation()) instead?",
+          "of an infinite KnuthBendixImpl<> object, maybe try "
+          "ToddCoxeterImpl({}, kb.presentation()) instead?",
           kb.kind());
     }
     // TODO why are we doing this? Why not just use the active rules of kb?

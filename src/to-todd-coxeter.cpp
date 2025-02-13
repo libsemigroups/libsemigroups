@@ -16,21 +16,4 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include "libsemigroups/to-todd-coxeter.hpp"
-
-#include <utility>  // for move
-#include <vector>   // for allocator, vector
-
-#include "libsemigroups/constants.hpp"          // for Max, operator==, POSI...
-#include "libsemigroups/exception.hpp"          // for LIBSEMIGROUPS_EXCEPTI...
-#include "libsemigroups/froidure-pin-base.hpp"  // for FroidurePinBase
-#include "libsemigroups/froidure-pin.hpp"       // for FroidurePin
-#include "libsemigroups/knuth-bendix.hpp"       // for KnuthBendixImpl<>
-#include "libsemigroups/todd-coxeter.hpp"       // for ToddCoxeterImpl
-#include "libsemigroups/types.hpp"              // for congruence_kind
-#include "libsemigroups/word-graph.hpp"         // for WordGraph
-
-namespace libsemigroups {
-  // TODO(0) delete this file
-
-}  // namespace libsemigroups
+// TODO(0) delete this file
