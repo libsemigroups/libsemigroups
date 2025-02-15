@@ -71,6 +71,56 @@ namespace libsemigroups {
   //! This page contains links to the documentation related to the
   //! Congruence class.
 
+  //! \defgroup congruence_class_mem_types_group Member Types
+  //!
+  //! \ingroup congruence_class_group
+  //!
+  //! \brief Public member types
+  //!
+  //! This page contains the documentation of the public member types of a
+  //! \ref Congruence instance.
+
+  //! \defgroup congruence_class_init_group Constructors + initializers
+  //!
+  //! \ingroup congruence_class_group
+  //!
+  //! \brief Construct or re-initialize a \ref Congruence
+  //! instance (public member function).
+  //!
+  //! This page documents the constructors and initialisers for the
+  //! \ref Congruence class.
+  //!
+  //! Every constructor (except the move + copy constructors, and the move
+  //! and copy assignment operators) has a matching `init` function with the
+  //! same signature that can be used to re-initialize a Congruence
+  //! instance as if it had just been constructed; but without necessarily
+  //! releasing any previous allocated memory.
+
+  //! \defgroup congruence_class_intf_group Common member functions
+  //!
+  //! \ingroup congruence_class_group
+  //!
+  //! \brief Documentation of common member functions of \ref Congruence,
+  //! \ref Kambites, \ref_knuth_bendix, and \ref_todd_coxeter.
+  //!
+  //! This page contains documentation of the member functions of
+  //! \ref Congruence that are implemented in all of the classes Congruence,
+  //! \ref Kambites, \ref_knuth_bendix, and \ref_todd_coxeter.
+
+  //! \defgroup congruence_class_accessors_group Accessors
+  //!
+  //! \ingroup congruence_class_group
+  //!
+  //! \brief Member functions that can be used to access the state of a
+  //! \ref Congruence instance.
+  //!
+  //! This page contains the documentation of the various member functions of
+  //! the \ref Congruence class that can be used to access the state of an
+  //! instance.
+  //!
+  //! Those functions with the prefix `current_` do not perform any
+  //! further enumeration.
+
   //! \ingroup congruence_class_group
   //!
   //! \brief Class for running Kambites, \ref_knuth_bendix, and

@@ -104,7 +104,7 @@ namespace libsemigroups {
   //!
   //! Every constructor (except the move + copy constructors, and the move
   //! and copy assignment operators) has a matching `init` function with the
-  //! same signature that can be used to re-initialize a \ref_knuth_bendix
+  //! same signature that can be used to re-initialize a Kambites
   //! instance as if it had just been constructed; but without necessarily
   //! releasing any previous allocated memory.
 
