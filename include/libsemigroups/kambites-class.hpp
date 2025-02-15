@@ -772,6 +772,8 @@ namespace libsemigroups {
     // Kambites - validation functions - public
     ////////////////////////////////////////////////////////////////////////
 
+    //! \ingroup kambites_class_init_group
+    //!
     //! \brief Throws if any letter in a range is out of bounds.
     //!
     //! This function throws a LibsemigroupsException if any value pointed
@@ -793,6 +795,8 @@ namespace libsemigroups {
       _presentation.validate_word(first, last);
     }
 
+    //! \ingroup kambites_class_init_group
+    //!
     //! \brief Throws if \ref small_overlap_class isn't at least \f$4\f$.
     //!
     //! This function throws an exception if the \ref small_overlap_class is
@@ -802,6 +806,8 @@ namespace libsemigroups {
     //! least \f$4\f$.
     void throw_if_not_C4();
 
+    //! \ingroup kambites_class_init_group
+    //!
     //! \brief Throws if \ref small_overlap_class isn't at least \f$4\f$ if it
     //! is known.
     //!
@@ -812,6 +818,8 @@ namespace libsemigroups {
     //! not at least \f$4\f$.
     void throw_if_not_C4() const;
 
+    //! \ingroup kambites_class_init_group
+    //!
     //! \brief Check if the small overlap class has been computed and is at
     //! least 4.
     //!
