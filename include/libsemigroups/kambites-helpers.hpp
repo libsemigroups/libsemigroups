@@ -126,7 +126,6 @@ namespace libsemigroups {
     // kambites::normal_forms(k2)) (as in ToddCoxeterImpl) because there are
     // infinitely many normal_forms.
 
-    //! @}
   }  // namespace kambites
 }  // namespace libsemigroups
 #endif  // LIBSEMIGROUPS_KAMBITES_HELPERS_HPP_
