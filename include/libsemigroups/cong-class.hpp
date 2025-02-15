@@ -333,6 +333,8 @@ namespace libsemigroups {
     // Congruence - interface requirements - add_generating_pair
     //////////////////////////////////////////////////////////////////////////
 
+    //! \ingroup congruence_class_intf_group
+    //!
     //! \brief Add generating pair via iterators.
     //!
     //! This function adds a generating pair to the congruence represented by a
@@ -360,6 +362,8 @@ namespace libsemigroups {
           Congruence>(first1, last1, first2, last2);
     }
 
+    //! \ingroup congruence_class_intf_group
+    //!
     //! \brief Add generating pair via iterators.
     //!
     //! This function adds a generating pair to the congruence represented by a
@@ -389,6 +393,8 @@ namespace libsemigroups {
     // Congruence - interface requirements - number_of_classes
     ////////////////////////////////////////////////////////////////////////
 
+    //! \ingroup congruence_class_intf_group
+    //!
     //! \brief Compute the number of classes in the congruence.
     //!
     //! This function computes the number of classes in the congruence
@@ -407,6 +413,8 @@ namespace libsemigroups {
     // Congruence - interface requirements - contains
     ////////////////////////////////////////////////////////////////////////
 
+    //! \ingroup congruence_class_intf_group
+    //!
     //! \brief Check containment of a pair of words via iterators.
     //!
     //! This function checks whether or not the words represented by the ranges
@@ -432,6 +440,8 @@ namespace libsemigroups {
                                                     Iterator3 first2,
                                                     Iterator4 last2) const;
 
+    //! \ingroup congruence_class_intf_group
+    //!
     //! \brief Check containment of a pair of words via iterators.
     //!
     //! This function checks whether or not the words represented by the ranges
@@ -460,6 +470,8 @@ namespace libsemigroups {
           first1, last1, first2, last2);
     }
 
+    //! \ingroup congruence_class_intf_group
+    //!
     //! \brief Check containment of a pair of words via iterators.
     //!
     //! This function checks whether or not the words represented by the ranges
@@ -491,6 +503,8 @@ namespace libsemigroups {
           first1, last1, first2, last2);
     }
 
+    //! \ingroup congruence_class_intf_group
+    //!
     //! \brief Check containment of a pair of words via iterators.
     //!
     //! This function checks whether or not the words represented by the ranges
@@ -522,6 +536,8 @@ namespace libsemigroups {
     // Congruence - interface requirements - reduce
     ////////////////////////////////////////////////////////////////////////
 
+    //! \ingroup congruence_class_intf_group
+    //!
     //! \brief Reduce a word with no computation or checks.
     //!
     //! This function writes a reduced word equivalent to the input word
@@ -542,6 +558,8 @@ namespace libsemigroups {
                                            Iterator1      first,
                                            Iterator2      last) const;
 
+    //! \ingroup congruence_class_intf_group
+    //!
     //! \brief Reduce a word with no computation.
     //!
     //! This function writes a reduced word equivalent to the input word
@@ -565,6 +583,8 @@ namespace libsemigroups {
           d_first, first, last);
     }
 
+    //! \ingroup congruence_class_intf_group
+    //!
     //! \brief Reduce a word with no checks.
     //!
     //! This function fully computes the congruence and then writes
@@ -588,6 +608,8 @@ namespace libsemigroups {
           d_first, first, last);
     }
 
+    //! \ingroup congruence_class_intf_group
+    //!
     //! \brief Reduce a word.
     //!
     //! This function fully computes the congruence and then writes
