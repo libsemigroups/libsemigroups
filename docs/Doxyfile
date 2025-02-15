@@ -307,7 +307,9 @@ ALIASES                = "exceptions=\par Exceptions" \
                          "cong_common_throws_if_started=\throws LibsemigroupsException if \ref started returns \c true." \
                          "cong_common_throws_if_letters_out_of_bounds=\throws LibsemigroupsException if any of the values pointed at by the iterators is out of range, i.e. they do not belong to `presentation().alphabet()` and `Presentation::validate_word` throws." \
                          "ref_todd_coxeter=\ref todd_coxeter_class_group \"ToddCoxeter\"" \
-                         "ref_knuth_bendix=\ref knuth_bendix_class_group \"KnuthBendix\""
+                         "ref_knuth_bendix=\ref knuth_bendix_class_group \"KnuthBendix\"" \
+                         "ref_kambites=\ref kambites_class_group \"Kambites\"" \
+                         "ref_congruence=\ref congruence_class_group \"Congruence\"" 
 
 # Set the OPTIMIZE_OUTPUT_FOR_C tag to YES if your project consists of C sources
 # only. Doxygen will then generate output that is more tailored for C. For

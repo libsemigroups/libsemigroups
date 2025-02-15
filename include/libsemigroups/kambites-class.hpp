@@ -73,16 +73,6 @@ namespace libsemigroups {
   //! identical, because there are no helper functions that only apply to the
   //! Kambites class template.
 
-  //! \defgroup kambites_class_group The Kambites class
-  //!
-  //! \ingroup kambites_group
-  //!
-  //! \brief This page contains links to the documentation related to the
-  //! Kambites class.
-  //!
-  //! This page contains links to the documentation related to the
-  //! Kambites class.
-
   //! \defgroup kambites_class_mem_types_group Member Types
   //!
   //! \ingroup kambites_class_group
@@ -133,11 +123,14 @@ namespace libsemigroups {
   //! Those functions with the prefix `current_` do not perform any
   //! further enumeration.
 
-  //! \ingroup kambites_class_group
-  //! \hideinheritancegraph
+  //! \defgroup kambites_class_group The Kambites class
+  //!
+  //! \ingroup kambites_group
   //!
   //! \brief Class template implementing small overlap class, equality, and
   //! normal forms for small overlap monoids.
+  //!
+  //! \hideinheritancegraph
   //!
   //! Defined in `kambites.hpp`.
   //!

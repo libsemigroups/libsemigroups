@@ -62,15 +62,6 @@ namespace libsemigroups {
   //! identical, because there are no helper functions that only apply to the
   //! Congruence class template.
 
-  //! \defgroup congruence_class_group The Congruence class
-  //! \ingroup congruence_group
-  //!
-  //! \brief This page contains links to the documentation related to the
-  //! Congruence class.
-  //!
-  //! This page contains links to the documentation related to the
-  //! Congruence class.
-
   //! \defgroup congruence_class_mem_types_group Member Types
   //!
   //! \ingroup congruence_class_group
@@ -131,7 +122,9 @@ namespace libsemigroups {
   //! Those functions with the prefix `current_` do not perform any
   //! further enumeration.
 
-  //! \ingroup congruence_class_group
+  //! \defgroup congruence_class_group The Congruence class
+  //!
+  //! \ingroup congruence_group
   //!
   //! \brief Class for running Kambites, \ref_knuth_bendix, and
   //! \ref_todd_coxeter in parallel.
