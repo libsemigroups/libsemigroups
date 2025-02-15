@@ -64,6 +64,8 @@ namespace libsemigroups {
     }
   }  // namespace congruence_common
 
+  // TODO at the moment the below topic is empty. Should it still be documented?
+  //! \defgroup kambites_helpers_group Kambites helper functions
   //! \ingroup kambites_group
   //!
   //! \brief Helper functions for the \ref Kambites class template.

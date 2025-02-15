@@ -145,7 +145,7 @@
         <tab type="user" visible="yes" url="@ref congruence_class_intf_group" title = "Common member functions"/>
         <tab type="user" visible="yes" url="@ref congruence_class_accessors_group" title = "Accessors"/>
       </tab>
-      <tab type="user" visible="yes" url="@ref libsemigroups::congruence" title="Congruence helper functions"/>
+      <tab type="user" visible="yes" url="@ref congruence_helpers_group" title="Congruence helper functions"/>
     </tab>
     <tab type="user" visible="yes" url="@ref froidure_pin_group" title="Froidure-Pin" />
     <tab type="usergroup" visible="yes" url="@ref kambites_group" title="Kambites">
@@ -155,7 +155,7 @@
         <tab type="user" visible="yes" url="@ref kambites_class_intf_group" title = "Common member functions"/>
         <tab type="user" visible="yes" url="@ref kambites_class_accessors_group" title = "Accessors"/>
       </tab>
-      <tab type="user" visible="yes" url="@ref libsemigroups::kambites" title="Kambites helper functions" />
+      <tab type="user" visible="yes" url="@ref kambites_helpers_group" title="Kambites helper functions" />
     </tab>
     <tab type="usergroup" visible="yes" url="@ref knuth_bendix_group" title="Knuth-Bendix">
       <tab type="usergroup" visible="yes" url="@ref knuth_bendix_class_group" title="The KnuthBendix class">
