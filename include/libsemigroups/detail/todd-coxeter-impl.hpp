@@ -121,12 +121,12 @@ namespace libsemigroups {
   //! \defgroup todd_coxeter_class_intf_group Common member functions
   //! \ingroup todd_coxeter_class_group
   //!
-  //! \brief Documentation of common member functions of \ref Congruence,
+  //! \brief Documentation of common member functions of \ref_congruence,
   //! \ref_kambites, \ref_knuth_bendix, and \ref_todd_coxeter.
   //!
   //! This page contains documentation of the member functions of
-  //! \ref_todd_coxeter that are implemented in all of the classes Congruence,
-  //! \ref_kambites, \ref_knuth_bendix, and \ref_todd_coxeter.
+  //! \ref_todd_coxeter that are implemented in all of the classes
+  //! \ref_congruence, \ref_kambites, \ref_knuth_bendix, and \ref_todd_coxeter.
 
   //! \defgroup todd_coxeter_class_accessors_group Accessors
   //!

@@ -54,13 +54,13 @@ namespace libsemigroups {
   //! \defgroup congruence_group Congruence
   //!
   //! This page contains links documentation related to the class template
-  //! Congruence.
+  //! \ref_congruence.
   //!
-  //! Helper functions for the class template Congruence can be found in the
-  //! namespaces \ref cong_common_helpers_group "congruence_common" and \ref
+  //! Helper functions for the class template \ref_congruence can be found in
+  //! the namespaces \ref cong_common_helpers_group "congruence_common" and \ref
   //! congruence. At present the helper functions in these two namespaces are
   //! identical, because there are no helper functions that only apply to the
-  //! Congruence class template.
+  //! \ref_congruence class template.
 
   //! \defgroup congruence_class_mem_types_group Member Types
   //!
@@ -69,54 +69,54 @@ namespace libsemigroups {
   //! \brief Public member types
   //!
   //! This page contains the documentation of the public member types of a
-  //! \ref Congruence instance.
+  //! \ref_congruence instance.
 
   //! \defgroup congruence_class_init_group Constructors + initializers
   //!
   //! \ingroup congruence_class_group
   //!
-  //! \brief Construct or re-initialize a \ref Congruence
+  //! \brief Construct or re-initialize a \ref_congruence
   //! instance (public member function).
   //!
   //! This page documents the constructors and initialisers for the
-  //! \ref Congruence class.
+  //! \ref_congruence class.
   //!
   //! Every constructor (except the move + copy constructors, and the move
   //! and copy assignment operators) has a matching `init` function with the
-  //! same signature that can be used to re-initialize a Congruence
+  //! same signature that can be used to re-initialize a \ref_congruence
   //! instance as if it had just been constructed; but without necessarily
   //! releasing any previous allocated memory.
 
   //! \defgroup congruence_class_settings_group Settings
   //! \ingroup congruence_class_group
   //!
-  //! \brief Settings that control the behaviour of a Congruence
+  //! \brief Settings that control the behaviour of a \ref_congruence
   //! instance.
   //!
   //! This page contains information about the member functions of
-  //! Congruence that control various settings that influence the
+  //! \ref_congruence that control various settings that influence the
   //! running of the congruence-based algorithms.
 
   //! \defgroup congruence_class_intf_group Common member functions
   //!
   //! \ingroup congruence_class_group
   //!
-  //! \brief Documentation of common member functions of \ref Congruence,
+  //! \brief Documentation of common member functions of \ref_congruence,
   //! \ref_kambites, \ref_knuth_bendix, and \ref_todd_coxeter.
   //!
   //! This page contains documentation of the member functions of
-  //! \ref Congruence that are implemented in all of the classes Congruence,
-  //! \ref_kambites, \ref_knuth_bendix, and \ref_todd_coxeter.
+  //! \ref_congruence that are implemented in all of the classes
+  //! \ref_congruence, \ref_kambites, \ref_knuth_bendix, and \ref_todd_coxeter.
 
   //! \defgroup congruence_class_accessors_group Accessors
   //!
   //! \ingroup congruence_class_group
   //!
   //! \brief Member functions that can be used to access the state of a
-  //! \ref Congruence instance.
+  //! \ref_congruence instance.
   //!
   //! This page contains the documentation of the various member functions of
-  //! the \ref Congruence class that can be used to access the state of an
+  //! the \ref_congruence class that can be used to access the state of an
   //! instance.
   //!
   //! Those functions with the prefix `current_` do not perform any
@@ -132,7 +132,7 @@ namespace libsemigroups {
   //! Defined in `cong-class.hpp`.
   //!
   //! On this page we describe the functionality relating to the class template
-  //! Congruence in `libsemigroups`. This class can be used for computing a
+  //! \ref_congruence in `libsemigroups`. This class can be used for computing a
   //! congruence over a semigroup or monoid by running every applicable
   //! algorithm from `libsemigroups` (and some variants of the same algorithm)
   //! in parallel. This class is provided for convenience, at present it is not
@@ -140,11 +140,11 @@ namespace libsemigroups {
   //! the classes implementing individual algorithms, such as \ref_kambites,
   //! \ref_knuth_bendix, and \ref_todd_coxeter.
   //!
-  //! \tparam Word the type of the words used in the \ref presentation and
-  //! \ref generating_pairs.
+  //! \tparam Word the type of the words used in the \ref
+  //! Congruence::presentation and \ref Congruence::generating_pairs.
   //!
   //! \sa \ref cong_common_helpers_group for information about helper functions
-  //! for the Congruence class template.
+  //! for the \ref_congruence class template.
   //!
   //! \par Example
   //! \code
@@ -177,10 +177,10 @@ namespace libsemigroups {
     //! \ingroup congruence_class_mem_types_group
     //!
     //! \brief Type of the words in the relations of the presentation stored in
-    //! a \ref Congruence instance.
+    //! a \ref_congruence instance.
     //!
     //! The template parameter \c Word, which is the type of the words in the
-    //! relations of the presentation stored in a \ref Congruence instance.
+    //! relations of the presentation stored in a \ref_congruence instance.
     using native_word_type = Word;
 
     //////////////////////////////////////////////////////////////////////////
@@ -191,7 +191,8 @@ namespace libsemigroups {
     //!
     //! \brief Default constructor.
     //!
-    //! This function default constructs an uninitialised Congruence instance.
+    //! This function default constructs an uninitialised \ref_congruence
+    //! instance.
     Congruence()
         : detail::CongruenceCommon(),
           _race(),
@@ -202,10 +203,10 @@ namespace libsemigroups {
 
     //! \ingroup congruence_class_init_group
     //!
-    //! \brief Re-initialize a Congruence instance.
+    //! \brief Re-initialize a \ref_congruence instance.
     //!
-    //! This function puts a Congruence instance back into the state that it
-    //! would have been in if it had just been newly default constructed.
+    //! This function puts a \ref_congruence instance back into the state that
+    //! it would have been in if it had just been newly default constructed.
     //!
     //! \returns A reference to `*this`.
     //!
@@ -247,7 +248,7 @@ namespace libsemigroups {
     //!
     //! \brief Construct from \ref congruence_kind and Presentation.
     //!
-    //! This function constructs a Congruence instance representing a
+    //! This function constructs a \ref_congruence instance representing a
     //! congruence of kind \p knd over the semigroup or monoid defined by the
     //! presentation \p p.
     //!
@@ -263,11 +264,11 @@ namespace libsemigroups {
 
     //! \ingroup congruence_class_init_group
     //!
-    //! \brief Re-initialize a Congruence instance.
+    //! \brief Re-initialize a \ref_congruence instance.
     //!
-    //! This function puts a Congruence instance back into the state that it
-    //! would have been in if it had just been newly constructed from \p knd and
-    //! \p p.
+    //! This function puts a \ref_congruence instance back into the state that
+    //! it would have been in if it had just been newly constructed from \p knd
+    //! and \p p.
     //!
     //! \param knd the kind (onesided or twosided) of the congruence.
     //! \param p the presentation.
@@ -282,7 +283,7 @@ namespace libsemigroups {
     //!
     //! \brief Construct from congruence_kind, FroidurePin, and WordGraph.
     //!
-    //! Constructs a Congruence over the FroidurePin instance \p S
+    //! Constructs a \ref_congruence over the FroidurePin instance \p S
     //! representing a 1- or 2-sided congruence according to \p knd.
     //!
     //! \tparam Node the type of the nodes in the 3rd argument \p wg (word
@@ -309,9 +310,9 @@ namespace libsemigroups {
     //!
     //! \brief Re-initialize from congruence_kind, FroidurePin, and WordGraph.
     //!
-    //! This function re-initializes a Congruence instance as if it had been
-    //! newly constructed over the FroidurePin instance \p S representing a 1-
-    //! or 2-sided congruence according to \p knd.
+    //! This function re-initializes a \ref_congruence instance as if it had
+    //! been newly constructed over the FroidurePin instance \p S representing a
+    //! 1- or 2-sided congruence according to \p knd.
     //!
     //! \tparam Node the type of the nodes in the 3rd argument \p wg (word
     //! graph).
@@ -341,7 +342,7 @@ namespace libsemigroups {
     //! \brief Add generating pair via iterators.
     //!
     //! This function adds a generating pair to the congruence represented by a
-    //! \ref Congruence instance.
+    //! \ref_congruence instance.
     //!
     //! \cong_common_params_contains
     //!
@@ -370,7 +371,7 @@ namespace libsemigroups {
     //! \brief Add generating pair via iterators.
     //!
     //! This function adds a generating pair to the congruence represented by a
-    //! Congruence instance.
+    //! \ref_congruence instance.
     //!
     //! \cong_common_params_contains
     //!
@@ -401,10 +402,10 @@ namespace libsemigroups {
     //! \brief Compute the number of classes in the congruence.
     //!
     //! This function computes the number of classes in the congruence
-    //! represented by a \ref Congruence instance by running the congruence
+    //! represented by a \ref_congruence instance by running the congruence
     //! enumeration until it terminates.
     //!
-    //! \returns The number of congruences classes of a \ref Congruence
+    //! \returns The number of congruences classes of a \ref_congruence
     //! instance if this number is finite, or \ref POSITIVE_INFINITY in some
     //! cases if this number is not finite.
     //!
@@ -422,7 +423,7 @@ namespace libsemigroups {
     //!
     //! This function checks whether or not the words represented by the ranges
     //! \p first1 to \p last1 and \p first2 to \p last2 are already known to be
-    //! contained in the congruence represented by a \ref Congruence instance.
+    //! contained in the congruence represented by a \ref_congruence instance.
     //! This function performs no enumeration, so it is possible for the words
     //! to be contained in the congruence, but that this is not currently known.
     //!
@@ -449,7 +450,7 @@ namespace libsemigroups {
     //!
     //! This function checks whether or not the words represented by the ranges
     //! \p first1 to \p last1 and \p first2 to \p last2 are already known to be
-    //! contained in the congruence represented by a \ref Congruence instance.
+    //! contained in the congruence represented by a \ref_congruence instance.
     //! This function performs no enumeration, so it is possible for the words
     //! to be contained in the congruence, but that this is not currently known.
     //!
@@ -479,7 +480,7 @@ namespace libsemigroups {
     //!
     //! This function checks whether or not the words represented by the ranges
     //! \p first1 to \p last1 and \p first2 to \p last2 are already known to be
-    //! contained in the congruence represented by a \ref Congruence instance.
+    //! contained in the congruence represented by a \ref_congruence instance.
     //! This function performs no enumeration, so it is possible for the words
     //! to be contained in the congruence, but that this is not currently known.
     //!
@@ -512,7 +513,7 @@ namespace libsemigroups {
     //!
     //! This function checks whether or not the words represented by the ranges
     //! \p first1 to \p last1 and \p first2 to \p last2 are contained in the
-    //! congruence represented by a \ref Congruence instance. This function
+    //! congruence represented by a \ref_congruence instance. This function
     //! triggers a full enumeration, which may never terminate.
     //!
     //! \cong_common_params_contains
@@ -546,7 +547,7 @@ namespace libsemigroups {
     //! This function writes a reduced word equivalent to the input word
     //! described by the iterator \p first and \p last to the output iterator \p
     //! d_first. If \ref finished returns \c true, then the word output by this
-    //! function is a normal form for the input word. If the \ref Congruence
+    //! function is a normal form for the input word. If the \ref_congruence
     //! instance is not \ref finished, then it might be that equivalent input
     //! words produce different output words.
     //!
@@ -568,7 +569,7 @@ namespace libsemigroups {
     //! This function writes a reduced word equivalent to the input word
     //! described by the iterator \p first and \p last to the output iterator \p
     //! d_first. If \ref finished returns \c true, then the word output by this
-    //! function is a normal form for the input word. If the \ref Congruence
+    //! function is a normal form for the input word. If the \ref_congruence
     //! instance is not \ref finished, then it might be that equivalent input
     //! words produce different output words.
     //!
@@ -646,7 +647,7 @@ namespace libsemigroups {
     //! This function throws a LibsemigroupsException if any value pointed at
     //! by an iterator in the range \p first to \p last is out of bounds (i.e.
     //! does not belong to the alphabet of the \ref presentation used to
-    //! construct the \ref Congruence instance).
+    //! construct the \ref_congruence instance).
     //!
     //! \tparam Iterator1 the type of first argument \p first.
     //! \tparam Iterator2 the type of second argument \p last.
@@ -666,11 +667,11 @@ namespace libsemigroups {
     //! \ingroup congruence_class_accessors_group
     //!
     //! \brief Get a derived class of detail::CongruenceCommon being used to
-    //! compute a Congruence instance.
+    //! compute a \ref_congruence instance.
     //!
     //! This function returns a std::shared_ptr to a \p Thing if such an object
     //! is being used or could be used to compute the congruence represented by
-    //! a Congruence instance. If no such \p Thing is available, then an
+    //! a \ref_congruence instance. If no such \p Thing is available, then an
     //! exception is thrown.
     //!
     //! \tparam Thing the type of the detail::CongruenceCommon object being
@@ -687,17 +688,17 @@ namespace libsemigroups {
     //! \ingroup congruence_class_accessors_group
     //!
     //! \brief Check if a derived class of detail::CongruenceCommon being used
-    //! to compute a Congruence instance.
+    //! to compute a \ref_congruence instance.
     //!
     //! This function returns \c true if a \p Thing is being used or could be
-    //! used to compute the congruence represented by a Congruence instance; or
-    //! \c false if not.
+    //! used to compute the congruence represented by a \ref_congruence
+    //! instance; or \c false if not.
     //!
     //! \tparam Thing the type of the detail::CongruenceCommon object being
     //! sought.
     //!
     //! \returns Whether or not a \p Thing is being used to compute the
-    //! Congruence instance.
+    //! \ref_congruence instance.
     //!
     //! \exceptions
     //! \no_libsemigroups_except
@@ -711,7 +712,7 @@ namespace libsemigroups {
     //! \brief Get the current maximum number of threads.
     //!
     //! This function returns the current maximum number of threads that a
-    //! Congruence instance can use.
+    //! \ref_congruence instance can use.
     //!
     //! \returns
     //! The maximum number of threads to use.
@@ -730,7 +731,7 @@ namespace libsemigroups {
     //! \brief Set the maximum number of threads.
     //!
     //! This function can be used to set the maximum number of threads that a
-    //! Congruence instance can use.
+    //! \ref_congruence instance can use.
     //!
     //! \param val the number of threads.
     //!
@@ -751,7 +752,7 @@ namespace libsemigroups {
     //! \brief Get the number of runners.
     //!
     //! This function returns the number of distinct detail::CongruenceCommon
-    //! instances that are contained in a Congruence object.
+    //! instances that are contained in a \ref_congruence object.
     //!
     //! \returns The number of runners.
     //!
@@ -766,8 +767,8 @@ namespace libsemigroups {
     //! \brief Get the presentation defining the parent semigroup of the
     //! congruence.
     //!
-    //! This function returns the presentation used to construct a Congruence
-    //! object.
+    //! This function returns the presentation used to construct a
+    //! \ref_congruence object.
     //!
     //! \returns The presentation.
     //!
@@ -880,15 +881,14 @@ namespace libsemigroups {
 
   //! \ingroup congruence_group
   //!
-  //! \brief Return a human readable representation of a \ref
-  //! Congruence object.
+  //! \brief Return a human readable representation of a \ref_congruence object.
   //!
   //! Defined in `cong-class.hpp`.
   //!
   //! This function returns a human readable representation of a
-  //! \ref Congruence object.
+  //! \ref_congruence object.
   //!
-  //! \param c the \ref Congruence object.
+  //! \param c the \ref_congruence object.
   //!
   //! \returns A std::string containing the representation.
   //!

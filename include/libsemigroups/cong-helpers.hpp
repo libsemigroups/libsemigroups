@@ -68,22 +68,22 @@ namespace libsemigroups {
   //!
   //! \ingroup congruence_group
   //!
-  //! \brief Helper functions for the Congruence class template
+  //! \brief Helper functions for the \ref_congruence class template
   //!
   //! Defined in \c cong-helpers.hpp.
   //!
   //! This page contains documentation for many helper functions for the
-  //! Congruence class template. In particular, these functions include
-  //! versions of several of the member functions of the Congruence class
+  //! \ref_congruence class template. In particular, these functions include
+  //! versions of several of the member functions of the \ref_congruence class
   //! template (that accept iterators) whose parameters are not iterators, but
   //! the underlying objects. The helpers documented on this page all belong
   //! to the namespace
-  //! \ref congruence and \ref cong_common_helpers_group "congruence_common".
+  //! \ref_congruence and \ref cong_common_helpers_group "congruence_common".
 
   //! This page contains documentation for everything in the namespace \ref
   //! congruence. This includes everything from \ref cong_common_helpers_group,
   //! at present there are no helper functions, beyond those in \ref
-  //! cong_common_helpers_group, for the \ref Congruence class template.
+  //! cong_common_helpers_group, for the \ref_congruence class template.
   namespace congruence {
 
     ////////////////////////////////////////////////////////////////////////

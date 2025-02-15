@@ -490,14 +490,14 @@ namespace libsemigroups {
   //! classes.
   //!
   //! This function returns \c true if the quotient of the finitely presented
-  //! semigroup or monoid defined by the Congruence object \p c is obviously
-  //! infinite; \c false is returned if it is not.
+  //! semigroup or monoid defined by the \ref_congruence object \p c is
+  //! obviously infinite; \c false is returned if it is not.
   //!
   //! This function exists to make it simpler to call an IsObviouslyInfinite
   //! object a single time, and uses some information from the (possible
-  //! incomplete) Congruence object to assist in this determination.
+  //! incomplete) \ref_congruence object to assist in this determination.
   //!
-  //! \param c the Congruence instance.
+  //! \param c the \ref_congruence instance.
   //!
   //! \returns Whether or not the congruence obviously has infinitely many
   //! classes.

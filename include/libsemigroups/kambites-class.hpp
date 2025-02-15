@@ -102,11 +102,11 @@ namespace libsemigroups {
   //!
   //! \ingroup kambites_class_group
   //!
-  //! \brief Documentation of common member functions of \ref Congruence,
+  //! \brief Documentation of common member functions of \ref_congruence,
   //! \ref_kambites, \ref_knuth_bendix, and \ref_todd_coxeter.
   //!
   //! This page contains documentation of the member functions of
-  //! \ref_kambites that are implemented in all of the classes Congruence,
+  //! \ref_kambites that are implemented in all of the classes \ref_congruence,
   //! \ref_kambites, \ref_knuth_bendix, and \ref_todd_coxeter.
 
   //! \defgroup kambites_class_accessors_group Accessors
@@ -272,7 +272,7 @@ namespace libsemigroups {
     //! congruences, and so the first parameter \p knd must always be
     //! congruence_kind::twosided. The parameter \p knd is included for
     //! uniformity of interface between with \ref_knuth_bendix, \ref
-    //! \ref_kambites, and \ref Congruence.
+    //! \ref_kambites, and \ref_congruence.
     //!
     //! \param knd the kind (onesided or twosided) of the congruence.
     //! \param p the presentation.
@@ -296,7 +296,7 @@ namespace libsemigroups {
     //! congruences, and so the first parameter \p knd must always be
     //! congruence_kind::twosided. The parameter \p knd is included for
     //! uniformity of interface between with \ref_knuth_bendix, \ref
-    //! \ref_kambites, and \ref Congruence.
+    //! \ref_kambites, and \ref_congruence.
     //!
     //! \param knd the kind (onesided or twosided) of the congruence.
     //! \param p the presentation.
