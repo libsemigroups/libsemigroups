@@ -160,6 +160,8 @@ namespace libsemigroups {
     // Kambites - aliases - public
     ////////////////////////////////////////////////////////////////////////
 
+    //! \ingroup kambites_class_mem_types_group
+    //!
     //! \brief Type of the words in the relations of the presentation stored in
     //! a Kambites instance.
     //!
