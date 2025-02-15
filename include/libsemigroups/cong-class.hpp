@@ -73,8 +73,8 @@ namespace libsemigroups {
 
   //! \ingroup congruence_class_group
   //!
-  //! \brief Class for running Kambites, KnuthBendix, and \ref_todd_coxeter
-  //! in parallel.
+  //! \brief Class for running Kambites, \ref_knuth_bendix, and
+  //! \ref_todd_coxeter in parallel.
   //!
   //! Defined in `cong-class.hpp`.
   //!
@@ -85,7 +85,7 @@ namespace libsemigroups {
   //! in parallel. This class is provided for convenience, at present it is not
   //! very customisable, and lacks some of the fine grained control offered by
   //! the classes implementing individual algorithms, such as Kambites,
-  //! KnuthBendix, and \ref_todd_coxeter.
+  //! \ref_knuth_bendix, and \ref_todd_coxeter.
   //!
   //! \tparam Word the type of the words used in the \ref presentation and
   //! \ref generating_pairs.

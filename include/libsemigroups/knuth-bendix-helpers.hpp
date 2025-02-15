@@ -57,17 +57,17 @@ namespace libsemigroups {
     //! Defined in \c knuth-bendix-helpers.hpp.
     //!
     //! This function returns a range object containing normal forms of the
-    //! classes of the congruence represented by an instance of KnuthBendix.
-    //! The order of the classes, and the normal form that is returned, are
-    //! controlled by the reduction order used to construct \p kb. This function
-    //! triggers a full enumeration of \p kb.
+    //! classes of the congruence represented by an instance of
+    //! \ref_knuth_bendix. The order of the classes, and the normal form that is
+    //! returned, are controlled by the reduction order used to construct \p kb.
+    //! This function triggers a full enumeration of \p kb.
     //!
     //! \tparam Word the type of the words contained in the output range.
-    //! \tparam Rewriter the first template parameter for KnuthBendix.
+    //! \tparam Rewriter the first template parameter for \ref_knuth_bendix.
     //! \tparam ReductionOrder the second template parameter for
-    //! KnuthBendix.
+    //! \ref_knuth_bendix.
     //!
-    //! \param kb the \ref KnuthBendix instance.
+    //! \param kb the \ref_knuth_bendix instance.
     //!
     //! \returns A range object.
     //!
@@ -87,7 +87,7 @@ namespace libsemigroups {
     ////////////////////////////////////////////////////////////////////////
 
     //! \brief Find the non-trivial classes of the quotient of one
-    //! KnuthBendix instance in another.
+    //! \ref_knuth_bendix instance in another.
     //!
     //! Defined in \c knuth-bendix-helpers.hpp.
     //!
@@ -105,12 +105,12 @@ namespace libsemigroups {
     //!
     //! \tparam Word the type of the words contained in the output range
     //! (default: std::string).
-    //! \tparam Rewriter the first template parameter for KnuthBendix.
+    //! \tparam Rewriter the first template parameter for \ref_knuth_bendix.
     //! \tparam ReductionOrder the second template parameter for
-    //! KnuthBendix.
+    //! \ref_knuth_bendix.
     //!
-    //! \param kb1 the first \ref KnuthBendix instance.
-    //! \param kb2 the second \ref KnuthBendix instance.
+    //! \param kb1 the first \ref_knuth_bendix instance.
+    //! \param kb2 the second \ref_knuth_bendix instance.
     //!
     //! \returns The non-trivial classes of \p kb1 in \p kb2.
     //!
@@ -121,7 +121,7 @@ namespace libsemigroups {
     //! \throws LibsemigroupsException if the alphabets of the
     //! presentations of \p kb1 and \p kb2 are not equal.
     //!
-    //! \throws LibsemigroupsException if the \ref KnuthBendix::gilman_graph
+    //! \throws LibsemigroupsException if the \ref_knuth_bendix::gilman_graph
     //! of
     //! \p kb1 has fewer nodes than that of \p kb2.
     //!
@@ -136,13 +136,13 @@ namespace libsemigroups {
   //! \defgroup knuth_bendix_helpers_group Knuth-Bendix helper functions
   //! \ingroup knuth_bendix_group
   //!
-  //! \brief Helper functions for the \ref KnuthBendix class.
+  //! \brief Helper functions for the \ref_knuth_bendix class.
   //!
   //! Defined in \c knuth-bendix-helpers.hpp.
   //!
-  //! This page contains documentation for some helper functions for the \ref
-  //! KnuthBendix class. In particular, these functions include versions of
-  //! several of the member functions of \ref KnuthBendix (that accept
+  //! This page contains documentation for some helper functions for the
+  //! \ref_knuth_bendix class. In particular, these functions include versions
+  //! of several of the member functions of \ref_knuth_bendix (that accept
   //! iterators) whose parameters are not iterators, but objects instead. The
   //! helpers documented on this page all belong to the namespace
   //! \ref knuth_bendix.
@@ -166,23 +166,23 @@ namespace libsemigroups {
     //! Defined in \c knuth-bendix-helpers.hpp.
     //!
     //! This function runs the Knuth-Bendix algorithm on the rewriting
-    //! system represented by a KnuthBendix instance by considering all
+    //! system represented by a \ref_knuth_bendix instance by considering all
     //! overlaps of a given length \f$n\f$ (according to the \ref
     //! KnuthBendix::options::overlap) before those overlaps of length \f$n
     //! + 1\f$.
     //!
     //! \tparam Word the type of the words in the \ref
     //! KnuthBendix::presentation.
-    //! \tparam Rewriter the first template parameter for KnuthBendix.
+    //! \tparam Rewriter the first template parameter for \ref_knuth_bendix.
     //! \tparam ReductionOrder the second template parameter for
-    //! KnuthBendix.
+    //! \ref_knuth_bendix.
     //!
-    //! \param kb the KnuthBendix instance.
+    //! \param kb the \ref_knuth_bendix instance.
     //!
     //! \complexity
     //! See warning.
     //!
-    //! \warning This will terminate when the KnuthBendix instance is
+    //! \warning This will terminate when the \ref_knuth_bendix instance is
     //! confluent, which might be never.
     //!
     //! \sa KnuthBendix::run.
@@ -197,16 +197,16 @@ namespace libsemigroups {
     //!
     //! \tparam Word the type of the words in the \ref
     //! KnuthBendix::presentation.
-    //! \tparam Rewriter the first template parameter for KnuthBendix.
+    //! \tparam Rewriter the first template parameter for \ref_knuth_bendix.
     //! \tparam ReductionOrder the second template parameter for
-    //! KnuthBendix.
+    //! \ref_knuth_bendix.
     //!
-    //! \param kb the KnuthBendix instance defining the rules that are to be
-    //! checked for being reduced.
+    //! \param kb the \ref_knuth_bendix instance defining the rules that are to
+    //! be checked for being reduced.
     //!
     //! \returns \c true if for each pair \f$(A, B)\f$ and \f$(C, D)\f$ of rules
-    //! stored within the KnuthBendix instance, \f$C\f$ is neither a subword
-    //! of \f$A\f$ nor \f$B\f$. Returns \c false otherwise.
+    //! stored within the \ref_knuth_bendix instance, \f$C\f$ is neither a
+    //! subword of \f$A\f$ nor \f$B\f$. Returns \c false otherwise.
 #ifndef PARSED_BY_DOXYGEN
     template <typename Rewriter, typename ReductionOrder>
     [[nodiscard]] bool
@@ -289,7 +289,7 @@ namespace libsemigroups {
     //! \tparam Time type of the 2nd parameter (time to try running
     //! Knuth-Bendix).
     //! \param p the presentation.
-    //! \param t time to run KnuthBendix for every omitted rule.
+    //! \param t time to run \ref_knuth_bendix for every omitted rule.
     //!
     //! \warning The progress of the Knuth-Bendix algorithm may differ between
     //! different calls to this function even if the parameters are identical.

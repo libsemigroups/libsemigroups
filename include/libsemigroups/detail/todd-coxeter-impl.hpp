@@ -126,7 +126,7 @@ namespace libsemigroups {
   //!
   //! This page contains documentation of the member functions of
   //! \ref_todd_coxeter that are implemented in all of the classes Congruence,
-  //! Kambites, KnuthBendix, and \ref_todd_coxeter.
+  //! Kambites, \ref_knuth_bendix, and \ref_todd_coxeter.
 
   //! \defgroup todd_coxeter_class_accessors_group Accessors
   //!

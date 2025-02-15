@@ -119,9 +119,9 @@ namespace libsemigroups {
       //! \brief Return the left-hand side of the rule.
       //!
       //! Return the left-hand side of the rule. If this rule was create by a
-      //! \ref KnuthBendixImpl, this is guaranteed to be greater than its
+      //! \ref_knuth_bendix, this is guaranteed to be greater than its
       //! right-hand side according to the reduction ordering of that \ref
-      //! KnuthBendixImpl.
+      //! \ref_knuth_bendix.
       //!
       //! \returns A pointer to the left-hand side.
       //!
@@ -132,7 +132,7 @@ namespace libsemigroups {
       //! Constant.
       //!
       //! \sa
-      //! \ref KnuthBendixImpl
+      //! \ref_knuth_bendix
       [[nodiscard]] internal_string_type* lhs() const noexcept {
         return _lhs;
       }
@@ -140,8 +140,8 @@ namespace libsemigroups {
       //! \brief Return the right-hand side of the rule.
       //!
       //! Return the right-hand side of the rule. If this rule was create by a
-      //! \ref KnuthBendixImpl, this is guaranteed to be less than its left-hand
-      //! side according to the reduction ordering of that \ref KnuthBendixImpl.
+      //! \ref_knuth_bendix, this is guaranteed to be less than its left-hand
+      //! side according to the reduction ordering of that \ref_knuth_bendix.
       //!
       //! \returns A pointer to the right-hand side.
       //!
@@ -152,7 +152,7 @@ namespace libsemigroups {
       //! Constant.
       //!
       //! \sa
-      //! \ref KnuthBendixImpl
+      //! \ref_knuth_bendix
       [[nodiscard]] internal_string_type* rhs() const noexcept {
         return _rhs;
       }

@@ -72,7 +72,7 @@ namespace libsemigroups {
     //! \defgroup cong_common_helpers_group Common congruence helpers
     //!
     //! This page contains documentation for helper functions for the classes
-    //! Congruence, Kambites, KnuthBendix, and \ref_todd_coxeter. The
+    //! Congruence, Kambites, \ref_knuth_bendix, and \ref_todd_coxeter. The
     //! functions documented on this page belong to all of the namespaces
     //! \ref cong_common_helpers_group "congruence_common", \ref congruence,
     //! \ref kambites, \ref knuth_bendix, and \ref todd_coxeter.
@@ -101,7 +101,7 @@ namespace libsemigroups {
     //! using objects themselves rather than iterators.
     //!
     //! \tparam Thing the type of the first parameter must be one of
-    //! Kambites, KnuthBendix, \ref_todd_coxeter, or Congruence.
+    //! Kambites, \ref_knuth_bendix, \ref_todd_coxeter, or Congruence.
     //!
     //! \param thing the object to add generating pairs to.
     //! \param u the left hand side of the pair to add.
@@ -192,7 +192,7 @@ namespace libsemigroups {
     //! using objects themselves rather than iterators.
     //!
     //! \tparam Thing the type of the first parameter must be one of
-    //! Kambites, KnuthBendix, \ref_todd_coxeter, or Congruence.
+    //! Kambites, \ref_knuth_bendix, \ref_todd_coxeter, or Congruence.
     //!
     //! \param thing the object to add generating pairs to.
     //! \param u the left hand side of the pair to add.
@@ -290,7 +290,7 @@ namespace libsemigroups {
     //! These helper functions can be applied to objects of the types:
     //! * Congruence
     //! * Kambites
-    //! * KnuthBendix
+    //! * \ref_knuth_bendix
     //! * \ref_todd_coxeter
     //!
     //! Functions with the prefix `currently_` do not perform any enumeration
@@ -311,7 +311,7 @@ namespace libsemigroups {
     //! known.
     //!
     //! \tparam Thing the type of the first parameter must be one of
-    //! Kambites, KnuthBendix, \ref_todd_coxeter, or Congruence.
+    //! Kambites, \ref_knuth_bendix, \ref_todd_coxeter, or Congruence.
     //!
     //! \param thing the object to check containment in.
     //! \param u the first word.
@@ -414,7 +414,7 @@ namespace libsemigroups {
     //! known.
     //!
     //! \tparam Thing the type of the first parameter must be one of
-    //! Kambites, KnuthBendix, \ref_todd_coxeter, or Congruence.
+    //! Kambites, \ref_knuth_bendix, \ref_todd_coxeter, or Congruence.
     //!
     //! \param thing the object to check containment in.
     //! \param u the first word.
@@ -505,7 +505,7 @@ namespace libsemigroups {
     //! triggers a full enumeration of \p thing, which may never terminate.
     //!
     //! \tparam Thing the type of the first parameter must be one of
-    //! Kambites, KnuthBendix, \ref_todd_coxeter, or Congruence.
+    //! Kambites, \ref_knuth_bendix, \ref_todd_coxeter, or Congruence.
     //!
     //! \param thing the object to check containment in.
     //! \param u the left hand side of the pair to add.
@@ -598,7 +598,7 @@ namespace libsemigroups {
     //! triggers a full enumeration of \p thing, which may never terminate.
     //!
     //! \tparam Thing the type of the first parameter must be one of
-    //! Kambites, KnuthBendix, \ref_todd_coxeter, or Congruence.
+    //! Kambites, \ref_knuth_bendix, \ref_todd_coxeter, or Congruence.
     //!
     //! \param thing the object to check containment in.
     //! \param u the left hand side of the pair to add.
@@ -695,7 +695,7 @@ namespace libsemigroups {
     //! These helper functions can be applied to objects of the types:
     //! * Congruence
     //! * Kambites
-    //! * KnuthBendix
+    //! * \ref_knuth_bendix
     //! * \ref_todd_coxeter
     //!
     //! Functions with the suffix `_no_run` do not perform any enumeration of
@@ -718,7 +718,7 @@ namespace libsemigroups {
     //! equivalent input words produce different output words.
     //!
     //! \tparam Thing the type of the first parameter must be one of
-    //! Kambites, KnuthBendix, \ref_todd_coxeter, or Congruence.
+    //! Kambites, \ref_knuth_bendix, \ref_todd_coxeter, or Congruence.
     //!
     //! \param thing the object to reduce words in.
     //! \param w the word to reduce.
@@ -779,7 +779,7 @@ namespace libsemigroups {
     //! equivalent input words produce different output words.
     //!
     //! \tparam Thing the type of the first parameter must be one of
-    //! Kambites, KnuthBendix, \ref_todd_coxeter, or Congruence.
+    //! Kambites, \ref_knuth_bendix, \ref_todd_coxeter, or Congruence.
     //!
     //! \param thing the object to reduce words in.
     //! \param w the word to reduce.
@@ -834,7 +834,7 @@ namespace libsemigroups {
     //! word.
     //!
     //! \tparam Thing the type of the first parameter must be one of
-    //! Kambites, KnuthBendix, \ref_todd_coxeter, or Congruence.
+    //! Kambites, \ref_knuth_bendix, \ref_todd_coxeter, or Congruence.
     //!
     //! \param thing the object to reduce words in.
     //! \param w the word to reduce.
@@ -888,7 +888,7 @@ namespace libsemigroups {
     //! word.
     //!
     //! \tparam Thing the type of the first parameter must be one of
-    //! Kambites, KnuthBendix, \ref_todd_coxeter, or Congruence.
+    //! Kambites, \ref_knuth_bendix, \ref_todd_coxeter, or Congruence.
     //!
     //! \param thing the object to reduce words in.
     //! \param w the word to reduce.
@@ -976,7 +976,7 @@ namespace libsemigroups {
     //! enumeration of \p thing.
     //!
     //! \tparam Thing the type of the first parameter must be one of
-    //! Kambites, KnuthBendix, \ref_todd_coxeter, or Congruence.
+    //! Kambites, \ref_knuth_bendix, \ref_todd_coxeter, or Congruence.
     //!
     //! \tparam Range the type of the input range of words, must satisfy
     //! `std::enable_if_t<rx::is_input_or_sink_v<Range>>` and
@@ -1021,7 +1021,7 @@ namespace libsemigroups {
     //! This function triggers a full enumeration of \p thing.
     //!
     //! \tparam Thing the type of the first parameter must be one of
-    //! Kambites, KnuthBendix, \ref_todd_coxeter, or Congruence.
+    //! Kambites, \ref_knuth_bendix, \ref_todd_coxeter, or Congruence.
     //!
     //! \tparam Range the type of the input range of words, must satisfy
     //! `std::enable_if_t<rx::is_input_or_sink_v<Range>>` and
