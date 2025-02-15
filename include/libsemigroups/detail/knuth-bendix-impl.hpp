@@ -96,7 +96,7 @@ namespace libsemigroups {
     //! \brief Settings that control the behaviour of a \ref_knuth_bendix
     //! instance.
     //!
-    //! This page contains information about the member functions of the
+    //! This page contains information about the member functions of
     //! \ref_knuth_bendix that control various settings that influence the
     //! running of the Knuth-Bendix algorithm.
     //!

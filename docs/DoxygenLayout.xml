@@ -138,7 +138,13 @@
         <tab type="user" visible="yes" url="@ref cong_common_helpers_partition_group" title="Partitioning"/>
       </tab>
     <tab type="usergroup" visible="yes" url="@ref congruence_group" title="Congruence">
-      <tab type="user" visible="yes" url="@ref congruence_class_group" title="The Congruence class"/>
+      <tab type="usergroup" visible="yes" url="@ref congruence_class_group" title="The Congruence class">
+        <tab type="user" visible="yes" url="@ref congruence_class_mem_types_group" title = "Member types"/>
+        <tab type="user" visible="yes" url="@ref congruence_class_init_group" title = "Constructors + Initializers"/>
+        <tab type="user" visible="yes" url="@ref congruence_class_settings_group" title = "Settings"/>
+        <tab type="user" visible="yes" url="@ref congruence_class_intf_group" title = "Common member functions"/>
+        <tab type="user" visible="yes" url="@ref congruence_class_accessors_group" title = "Accessors"/>
+      </tab>
       <tab type="user" visible="yes" url="@ref libsemigroups::congruence" title="Congruence helper functions"/>
     </tab>
     <tab type="user" visible="yes" url="@ref froidure_pin_group" title="Froidure-Pin" />

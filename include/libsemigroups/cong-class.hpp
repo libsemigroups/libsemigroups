@@ -102,15 +102,9 @@ namespace libsemigroups {
   //! \brief Settings that control the behaviour of a Congruence
   //! instance.
   //!
-  //! This page contains information about the member functions of the
+  //! This page contains information about the member functions of
   //! Congruence that control various settings that influence the
   //! running of the congruence-based algorithms.
-  //!
-  //! There are a fairly large number of settings, they can profoundly alter
-  //! the run time, but it is hard to predict what settings will work best for
-  //! any particular input.
-  //!
-  //! See also \ref Runner for further settings.
 
   //! \defgroup congruence_class_intf_group Common member functions
   //!
