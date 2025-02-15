@@ -64,7 +64,8 @@ namespace libsemigroups {
 
   }  // namespace congruence_common
 
-  //! Helper functions for the Congruence class template
+  //! \ingroup congruence_group
+  //! \brief Helper functions for the Congruence class template
   //!
   //! Defined in \c cong-helpers.hpp.
   //!

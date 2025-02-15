@@ -64,6 +64,8 @@ namespace libsemigroups {
     }
   }  // namespace congruence_common
 
+  //! \ingroup kambites_group
+  //!
   //! \brief Helper functions for the \ref Kambites class template.
   //!
   //! Defined in \c kambites.hpp.
