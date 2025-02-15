@@ -333,6 +333,8 @@ namespace libsemigroups {
     //! const&)
     Kambites& init(congruence_kind knd, Presentation<native_word_type>&& p);
 
+    //! \ingroup kambites_class_intf_group
+    //!
     //! \brief Get the presentation used to define a \ref Kambites instance
     //! (if any).
     //!
@@ -349,6 +351,8 @@ namespace libsemigroups {
       return _presentation;
     }
 
+    //! \ingroup kambites_class_intf_group
+    //!
     //! \brief Get the generating pairs of the congruence.
     //!
     //! This function returns the generating pairs of the congruence. The words
@@ -369,6 +373,8 @@ namespace libsemigroups {
     // Interface requirements - add_pairs
     ////////////////////////////////////////////////////////////////////////
 
+    //! \ingroup kambites_class_intf_group
+    //!
     //! \brief Add generating pair via iterators.
     //!
     //! This function adds a generating pair to the congruence represented by a
@@ -387,7 +393,8 @@ namespace libsemigroups {
                                             Iterator2 last1,
                                             Iterator3 first2,
                                             Iterator4 last2);
-
+    //! \ingroup kambites_class_intf_group
+    //!
     //! \brief Add generating pair via iterators.
     //!
     //! This function adds a generating pair to the congruence represented by a
@@ -414,6 +421,8 @@ namespace libsemigroups {
     // Interface requirements - number_of_classes
     ////////////////////////////////////////////////////////////////////////
 
+    //! \ingroup kambites_class_intf_group
+    //!
     //! \brief Compute the number of classes in the congruence.
     //!
     //! This function computes the number of classes in the congruence
@@ -439,6 +448,8 @@ namespace libsemigroups {
     // Interface requirements - contains
     ////////////////////////////////////////////////////////////////////////
 
+    //! \ingroup kambites_class_intf_group
+    //!
     //! \brief Check containment of a pair of words via iterators.
     //!
     //! This function checks whether or not the words represented by the ranges
@@ -475,6 +486,8 @@ namespace libsemigroups {
                                                     Iterator3 first2,
                                                     Iterator4 last2) const;
 
+    //! \ingroup kambites_class_intf_group
+    //!
     //! \brief Check containment of a pair of words via iterators.
     //!
     //! This function checks whether or not the words represented by the ranges
@@ -505,7 +518,8 @@ namespace libsemigroups {
                                           Iterator2 last1,
                                           Iterator3 first2,
                                           Iterator4 last2) const;
-
+    //! \ingroup kambites_class_intf_group
+    //!
     //! \brief Check containment of a pair of words via iterators.
     //!
     //! This function checks whether or not the words represented by the ranges
@@ -532,6 +546,8 @@ namespace libsemigroups {
           first1, last1, first2, last2);
     }
 
+    //! \ingroup kambites_class_intf_group
+    //!
     //! \brief Check containment of a pair of words via iterators.
     //!
     //! This function checks whether or not the words represented by the ranges
@@ -564,6 +580,8 @@ namespace libsemigroups {
                                native_word_type const& w) const;
 
    public:
+    //! \ingroup kambites_class_intf_group
+    //!
     //! \brief Reduce a word with no computation of the small_overlap_class
     //! or checks.
     //!
@@ -589,6 +607,8 @@ namespace libsemigroups {
                                            Iterator1      first,
                                            Iterator2      last) const;
 
+    //! \ingroup kambites_class_intf_group
+    //!
     //! \brief Reduce a word with no computation of the small_overlap_class.
     //!
     //! This function writes a reduced word equivalent to the input word
@@ -617,6 +637,8 @@ namespace libsemigroups {
           d_first, first, last);
     }
 
+    //! \ingroup kambites_class_intf_group
+    //!
     //! \brief Reduce a word with no checks.
     //!
     //! This function computes the \ref small_overlap_class and then writes
@@ -646,6 +668,8 @@ namespace libsemigroups {
           d_first, first, last);
     }
 
+    //! \ingroup kambites_class_intf_group
+    //!
     //! \brief Reduce a word.
     //!
     //! This function computes the \ref small_overlap_class and then writes
