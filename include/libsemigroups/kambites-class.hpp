@@ -215,12 +215,16 @@ namespace libsemigroups {
     // Kambites - Constructors, destructor, initialisation - public
     ////////////////////////////////////////////////////////////////////////
 
+    //! \ingroup kambites_class_init_group
+    //!
     //! \brief Default constructor.
     //!
-    //! This function default constructs an uninitialised \ref
-    //! Kambites instance.
+    //! This function default constructs an uninitialised \ref Kambites
+    //! instance.
     Kambites();
 
+    //! \ingroup kambites_class_init_group
+    //!
     //! \brief Re-initialize a \ref Kambites instance.
     //!
     //! This function puts a \ref Kambites instance back into the state that it
@@ -232,20 +236,38 @@ namespace libsemigroups {
     //! \no_libsemigroups_except
     Kambites& init();
 
+    //! \ingroup kambites_class_init_group
+    //!
+    //! \brief Default copy constructor.
+    //!
     //! Default copy constructor.
     Kambites(Kambites const&);
 
+    //! \ingroup kambites_class_init_group
+    //!
+    //! \brief Default move constructor.
+    //!
     //! Default move constructor.
     Kambites(Kambites&&);
 
+    //! \ingroup kambites_class_init_group
+    //!
+    //! \brief Default copy assignment operator.
+    //!
     //! Default copy assignment operator.
     Kambites& operator=(Kambites const&);
 
+    //! \ingroup kambites_class_init_group
+    //!
+    //! \brief Default move assignment operator.
+    //!
     //! Default move assignment operator.
     Kambites& operator=(Kambites&&);
 
     ~Kambites();
 
+    //! \ingroup kambites_class_init_group
+    //!
     //! \brief Construct from \ref congruence_kind and Presentation.
     //!
     //! This function constructs a  \ref Kambites instance representing a
@@ -268,6 +290,8 @@ namespace libsemigroups {
         // call the rval ref constructor
         : Kambites(knd, Presentation<native_word_type>(p)) {}
 
+    //! \ingroup kambites_class_init_group
+    //!
     //! \brief Re-initialize a \ref Kambites instance.
     //!
     //! This function puts a \ref Kambites instance back into the state that
@@ -294,6 +318,8 @@ namespace libsemigroups {
       return init(knd, Presentation<native_word_type>(p));
     }
 
+    //! \ingroup kambites_class_init_group
+    //!
     //! \copydoc Kambites(congruence_kind, Presentation<native_word_type>
     //! const&)
     Kambites(congruence_kind knd, Presentation<native_word_type>&& p)
@@ -301,6 +327,8 @@ namespace libsemigroups {
       init(knd, std::move(p));
     }
 
+    //! \ingroup kambites_class_init_group
+    //!
     //! \copydoc init(congruence_kind, Presentation<native_word_type>
     //! const&)
     Kambites& init(congruence_kind knd, Presentation<native_word_type>&& p);
