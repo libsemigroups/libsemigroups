@@ -171,6 +171,8 @@ namespace libsemigroups {
     // Interface requirements - native-types
     ////////////////////////////////////////////////////////////////////////
 
+    //! \ingroup congruence_class_mem_types_group
+    //!
     //! \brief Type of the words in the relations of the presentation stored in
     //! a \ref Congruence instance.
     //!
