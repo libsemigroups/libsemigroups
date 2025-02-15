@@ -96,6 +96,22 @@ namespace libsemigroups {
   //! instance as if it had just been constructed; but without necessarily
   //! releasing any previous allocated memory.
 
+  //! \defgroup congruence_class_settings_group Settings
+  //! \ingroup congruence_class_group
+  //!
+  //! \brief Settings that control the behaviour of a Congruence
+  //! instance.
+  //!
+  //! This page contains information about the member functions of the
+  //! Congruence that control various settings that influence the
+  //! running of the congruence-based algorithms.
+  //!
+  //! There are a fairly large number of settings, they can profoundly alter
+  //! the run time, but it is hard to predict what settings will work best for
+  //! any particular input.
+  //!
+  //! See also \ref Runner for further settings.
+
   //! \defgroup congruence_class_intf_group Common member functions
   //!
   //! \ingroup congruence_class_group
@@ -660,6 +676,8 @@ namespace libsemigroups {
     // Congruence - member functions - public
     //////////////////////////////////////////////////////////////////////////
 
+    //! \ingroup congruence_class_accessors_group
+    //!
     //! \brief Get a derived class of detail::CongruenceCommon being used to
     //! compute a Congruence instance.
     //!
@@ -679,6 +697,8 @@ namespace libsemigroups {
     template <typename Thing>
     std::shared_ptr<Thing> get() const;
 
+    //! \ingroup congruence_class_accessors_group
+    //!
     //! \brief Check if a derived class of detail::CongruenceCommon being used
     //! to compute a Congruence instance.
     //!
@@ -699,6 +719,8 @@ namespace libsemigroups {
     template <typename Thing>
     [[nodiscard]] bool has() const;
 
+    //! \ingroup congruence_class_settings_group
+    //!
     //! \brief Get the current maximum number of threads.
     //!
     //! This function returns the current maximum number of threads that a
@@ -716,6 +738,8 @@ namespace libsemigroups {
       return _race.max_threads();
     }
 
+    //! \ingroup congruence_class_settings_group
+    //!
     //! \brief Set the maximum number of threads.
     //!
     //! This function can be used to set the maximum number of threads that a
@@ -735,6 +759,8 @@ namespace libsemigroups {
       return *this;
     }
 
+    //! \ingroup congruence_class_settings_group
+    //!
     //! \brief Get the number of runners.
     //!
     //! This function returns the number of distinct detail::CongruenceCommon
@@ -748,6 +774,8 @@ namespace libsemigroups {
       return _race.number_of_runners();
     }
 
+    //! \ingroup congruence_class_intf_group
+    //!
     //! \brief Get the presentation defining the parent semigroup of the
     //! congruence.
     //!
@@ -760,6 +788,8 @@ namespace libsemigroups {
     //! construct or initialise the object.
     [[nodiscard]] Presentation<Word> const& presentation() const;
 
+    //! \ingroup congruence_class_intf_group
+    //!
     //! \brief Get the generating pairs of the congruence.
     //!
     //! This function returns the generating pairs of the congruence, as added
