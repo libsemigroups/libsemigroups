@@ -74,6 +74,7 @@ namespace libsemigroups {
   //! Kambites class template.
 
   //! \defgroup kambites_class_group The Kambites class
+  //!
   //! \ingroup kambites_group
   //!
   //! \brief This page contains links to the documentation related to the
@@ -81,6 +82,56 @@ namespace libsemigroups {
   //!
   //! This page contains links to the documentation related to the
   //! Kambites class.
+
+  //! \defgroup kambites_class_mem_types_group Member Types
+  //!
+  //! \ingroup kambites_class_group
+  //!
+  //! \brief Public member types
+  //!
+  //! This page contains the documentation of the public member types of a
+  //! \ref Kambites instance.
+
+  //! \defgroup kambites_class_init_group Constructors + initializers
+  //!
+  //! \ingroup kambites_class_group
+  //!
+  //! \brief Construct or re-initialize a \ref Kambites
+  //! instance (public member function).
+  //!
+  //! This page documents the constructors and initialisers for the
+  //! \ref Kambites class.
+  //!
+  //! Every constructor (except the move + copy constructors, and the move
+  //! and copy assignment operators) has a matching `init` function with the
+  //! same signature that can be used to re-initialize a \ref_knuth_bendix
+  //! instance as if it had just been constructed; but without necessarily
+  //! releasing any previous allocated memory.
+
+  //! \defgroup kambites_class_intf_group Common member functions
+  //!
+  //! \ingroup kambites_class_group
+  //!
+  //! \brief Documentation of common member functions of \ref Congruence,
+  //! \ref Kambites, \ref_knuth_bendix, and \ref_todd_coxeter.
+  //!
+  //! This page contains documentation of the member functions of
+  //! \ref Kambites that are implemented in all of the classes Congruence,
+  //! \ref Kambites, \ref_knuth_bendix, and \ref_todd_coxeter.
+
+  //! \defgroup kambites_class_accessors_group Accessors
+  //!
+  //! \ingroup kambites_class_group
+  //!
+  //! \brief Member functions that can be used to access the state of a
+  //! \ref Kambites instance.
+  //!
+  //! This page contains the documentation of the various member functions of
+  //! the \ref Kambites class that can be used to access the state of an
+  //! instance.
+  //!
+  //! Those functions with the prefix `current_` do not perform any
+  //! further enumeration.
 
   //! \ingroup kambites_class_group
   //! \hideinheritancegraph
