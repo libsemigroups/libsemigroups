@@ -184,6 +184,8 @@ namespace libsemigroups {
     // Congruence - constructors - public
     //////////////////////////////////////////////////////////////////////////
 
+    //! \ingroup congruence_class_init_group
+    //!
     //! \brief Default constructor.
     //!
     //! This function default constructs an uninitialised Congruence instance.
@@ -195,6 +197,8 @@ namespace libsemigroups {
       init();
     }
 
+    //! \ingroup congruence_class_init_group
+    //!
     //! \brief Re-initialize a Congruence instance.
     //!
     //! This function puts a Congruence instance back into the state that it
@@ -206,20 +210,38 @@ namespace libsemigroups {
     //! \no_libsemigroups_except
     Congruence& init();
 
+    //! \ingroup congruence_class_init_group
+    //!
+    //! \brief Copy constructor.
+    //!
     //! Copy constructor.
     Congruence(Congruence const&) = default;
 
+    //! \ingroup congruence_class_init_group
+    //!
+    //! \brief Move constructor.
+    //!
     //! Move constructor.
     Congruence(Congruence&&) = default;
 
+    //! \ingroup congruence_class_init_group
+    //!
+    //! \brief Copy assignment operator.
+    //!
     //! Copy assignment operator.
     Congruence& operator=(Congruence const&) = default;
 
+    //! \ingroup congruence_class_init_group
+    //!
+    //! \brief Move assignment operator.
+    //!
     //! Move assignment operator.
     Congruence& operator=(Congruence&&) = default;
 
     ~Congruence() = default;
 
+    //! \ingroup congruence_class_init_group
+    //!
     //! \brief Construct from \ref congruence_kind and Presentation.
     //!
     //! This function constructs a Congruence instance representing a
@@ -236,6 +258,8 @@ namespace libsemigroups {
       init(knd, p);
     }
 
+    //! \ingroup congruence_class_init_group
+    //!
     //! \brief Re-initialize a Congruence instance.
     //!
     //! This function puts a Congruence instance back into the state that it
@@ -251,6 +275,8 @@ namespace libsemigroups {
     // NOTE:  No rvalue ref version because we anyway must copy p multiple times
     Congruence& init(congruence_kind knd, Presentation<Word> const& p);
 
+    //! \ingroup congruence_class_init_group
+    //!
     //! \brief Construct from congruence_kind, FroidurePin, and WordGraph.
     //!
     //! Constructs a Congruence over the FroidurePin instance \p S
@@ -276,6 +302,8 @@ namespace libsemigroups {
       init(knd, S, wg);
     }
 
+    //! \ingroup congruence_class_init_group
+    //!
     //! \brief Re-initialize from congruence_kind, FroidurePin, and WordGraph.
     //!
     //! This function re-initializes a Congruence instance as if it had been
@@ -586,6 +614,8 @@ namespace libsemigroups {
     // Congruence - interface requirements - throw_if_letter_out_of_bounds
     ////////////////////////////////////////////////////////////////////////
 
+    //! \ingroup congruence_class_init_group
+    //!
     //! \brief Throws if any letter in a range is out of bounds.
     //!
     //! This function throws a LibsemigroupsException if any value pointed at
