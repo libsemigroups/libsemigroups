@@ -110,11 +110,11 @@ namespace libsemigroups {
     //! \ingroup knuth_bendix_class_group
     //!
     //! \brief Documentation of common member functions of \ref Congruence,
-    //! \ref Kambites, \ref_knuth_bendix, and \ref_todd_coxeter.
+    //! \ref_kambites, \ref_knuth_bendix, and \ref_todd_coxeter.
     //!
     //! This page contains documentation of the member functions of
     //! \ref_knuth_bendix that are implemented in all of the classes Congruence,
-    //! Kambites, \ref_knuth_bendix, and \ref_todd_coxeter.
+    //! \ref_kambites, \ref_knuth_bendix, and \ref_todd_coxeter.
 
     //! \defgroup knuth_bendix_class_accessors_group Accessors
     //!

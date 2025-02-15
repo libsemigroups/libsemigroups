@@ -511,21 +511,21 @@ namespace libsemigroups {
   //! \ingroup obvinf_group
   //!
   //! \brief Function for checking if the finitely presented semigroup or
-  //! monoid defined by a Kambites object obviously has infinite many
+  //! monoid defined by a \ref_kambites object obviously has infinite many
   //! classes.
   //!
   //! This function returns \c true if the finitely presented semigroup or
-  //! monoid defined by a Kambites object is obviously infinite; \c false is
-  //! returned if it is not.
+  //! monoid defined by a \ref_kambites object is obviously infinite; \c false
+  //! is returned if it is not.
   //!
   //! This function exists to make it simpler to call an IsObviouslyInfinite
   //! object a single time, and uses some information from the (possible
-  //! incomplete) Kambites object to assist in this determination.
+  //! incomplete) \ref_kambites object to assist in this determination.
   //!
-  //! \param k the Kambites instance.
+  //! \param k the \ref_kambites instance.
   //!
   //! \returns Whether or not the finitely presented semigroup or
-  //! monoid defined by a Kambites object is obviously infinite.
+  //! monoid defined by a \ref_kambites object is obviously infinite.
   //!
   //! \note If this function returns \c false, it is still possible that the
   //! finitely presented semigroup or monoid defined by \p k is infinite.

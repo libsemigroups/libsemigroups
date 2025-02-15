@@ -102,11 +102,11 @@ namespace libsemigroups {
   //! \ingroup congruence_class_group
   //!
   //! \brief Documentation of common member functions of \ref Congruence,
-  //! \ref Kambites, \ref_knuth_bendix, and \ref_todd_coxeter.
+  //! \ref_kambites, \ref_knuth_bendix, and \ref_todd_coxeter.
   //!
   //! This page contains documentation of the member functions of
   //! \ref Congruence that are implemented in all of the classes Congruence,
-  //! \ref Kambites, \ref_knuth_bendix, and \ref_todd_coxeter.
+  //! \ref_kambites, \ref_knuth_bendix, and \ref_todd_coxeter.
 
   //! \defgroup congruence_class_accessors_group Accessors
   //!
@@ -126,7 +126,7 @@ namespace libsemigroups {
   //!
   //! \ingroup congruence_group
   //!
-  //! \brief Class for running Kambites, \ref_knuth_bendix, and
+  //! \brief Class for running \ref_kambites, \ref_knuth_bendix, and
   //! \ref_todd_coxeter in parallel.
   //!
   //! Defined in `cong-class.hpp`.
@@ -137,7 +137,7 @@ namespace libsemigroups {
   //! algorithm from `libsemigroups` (and some variants of the same algorithm)
   //! in parallel. This class is provided for convenience, at present it is not
   //! very customisable, and lacks some of the fine grained control offered by
-  //! the classes implementing individual algorithms, such as Kambites,
+  //! the classes implementing individual algorithms, such as \ref_kambites,
   //! \ref_knuth_bendix, and \ref_todd_coxeter.
   //!
   //! \tparam Word the type of the words used in the \ref presentation and
