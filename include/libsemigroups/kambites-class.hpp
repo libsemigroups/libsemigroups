@@ -702,6 +702,8 @@ namespace libsemigroups {
     // Kambites - member functions - public
     ////////////////////////////////////////////////////////////////////////
 
+    //! \ingroup kambites_class_accessors_group
+    //!
     //! \brief Get the small overlap class.
     //!
     //! If \f$S\f$ is a finitely presented semigroup with generating set
@@ -735,6 +737,8 @@ namespace libsemigroups {
     // not noexcept because number_of_pieces_no_checks isn't
     [[nodiscard]] size_t small_overlap_class();
 
+    //! \ingroup kambites_class_accessors_group
+    //!
     //! \brief Get the current value of the small overlap class.
     //!
     //! See \ref small_overlap_class() for more details.
@@ -746,6 +750,8 @@ namespace libsemigroups {
     //! \noexcept
     [[nodiscard]] size_t small_overlap_class() const noexcept;
 
+    //! \ingroup kambites_class_accessors_group
+    //!
     //! \brief Returns the suffix tree used to compute pieces.
     //!
     //! This function returns a const reference to the generalised suffix
