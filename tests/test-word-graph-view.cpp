@@ -16,13 +16,22 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include <cstddef>  // for size_t
-#include <utility>  // for std::move
+#include <cstddef>        // for size_t
+#include <stdexcept>      // for runtime_error
+#include <unordered_set>  // for unordered_set
+#include <vector>         // for vector
 
 #include "catch_amalgamated.hpp"  // for REQUIRE, REQUIRE_THROWS_AS, REQUI...
 #include "test-main.hpp"          // for LIBSEMIGROUPS_TEST_CASE
+#include "word-graph-test-common.hpp"  // for add_clique etc
 
+#include "libsemigroups/forest.hpp"  // for Forest
+#include "libsemigroups/paths.hpp"   // for cbegin_pilo
 #include "libsemigroups/word-graph-view.hpp"
+#include "libsemigroups/word-graph.hpp"  // for WordGraph
+#include "libsemigroups/word-range.hpp"  // for literalsR, WordRange
+
+#include "libsemigroups/detail/string.hpp"  // for detail::to_string
 
 namespace libsemigroups {
   struct LibsemigroupsException;
@@ -30,198 +39,20 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("WordGraphView",
                           "000",
                           "empty constructor",
-                          "[quick]") {
+                          "[quick][digraph]") {
     WordGraphView<size_t> g;
     REQUIRE(g.number_of_nodes() == 0);
+    REQUIRE(g.graph == nullptr);
   }
 
   LIBSEMIGROUPS_TEST_CASE("WordGraphView",
                           "001",
-                          "construct new graph",
-                          "[quick]") {
-    WordGraph<size_t>     g(10, 5);
-    WordGraphView<size_t> v(g, 2, 5);
-    REQUIRE(v.number_of_nodes() == 5 - 2);
-    REQUIRE(*(v.cbegin_nodes()) == 0);
-    REQUIRE(*(v.cend_nodes()) == 3);
-  }
-
-  LIBSEMIGROUPS_TEST_CASE("WordGraphView", "002", "copy ctor", "[quick]") {
-    WordGraph<size_t>     g(10, 5);
-    WordGraphView<size_t> v(g, 2, 5);
-    WordGraphView<size_t> v1 = v;
-    REQUIRE(v1.number_of_nodes() == v.number_of_nodes());
-    REQUIRE(v1 == v);
-  }
-
-  LIBSEMIGROUPS_TEST_CASE("WordGraphView", "003", "move ctor", "[quick]") {
-    WordGraph<size_t>     g(10, 5);
-    WordGraphView<size_t> v(g, 2, 5);
-    WordGraphView<size_t> v1(std::move(v));
-    REQUIRE(v1.number_of_nodes() == v.number_of_nodes());
-    REQUIRE(v1 == v);
-  }
-
-  LIBSEMIGROUPS_TEST_CASE("WordGraphView",
-                          "004",
-                          "test offset correct",
-                          "[quick]") {
-    WordGraph<size_t> g(10, 5);
-    g.target(2, 3, 5);
-    g.target(3, 4, 5);
-    WordGraphView<size_t> v(g, 2, 5);
-    REQUIRE(v.target(0, 3) == 3);
-    REQUIRE(v.target(1, 4) == 3);
-  }
-  LIBSEMIGROUPS_TEST_CASE("WordGraphView",
-                          "005",
-                          "test target(s, a) throws correctly",
-                          "[quick]") {
-    WordGraph<size_t> g(10, 5);
-    g.target(2, 3, 5);
-    g.target(3, 4, 5);
-    WordGraphView<size_t> v(g, 2, 5);
-    REQUIRE_THROWS_AS(v.target(5, 3), LibsemigroupsException);
-  }
-
-  LIBSEMIGROUPS_TEST_CASE("WordGraphView",
-                          "006",
-                          "test label bounds checking throws",
-                          "[quick]") {
-    WordGraph<size_t>     g(10, 5);
-    WordGraphView<size_t> v(g, 2, 5);
-    REQUIRE_THROWS_AS(v.target(0, 7), LibsemigroupsException);
-  }
-
-  LIBSEMIGROUPS_TEST_CASE("WordGraphView",
-                          "007",
-                          "test cbegin_targets",
-                          "[quick]") {
-    WordGraph<size_t> g(10, 5);
-    g.target(2, 0, 5);
-    WordGraphView<size_t> v(g, 2, 5);
-
-    auto targets = v.cbegin_targets(0);
-    REQUIRE(*targets == 3);
-    REQUIRE_THROWS_AS(v.cbegin_targets(7), LibsemigroupsException);
-    REQUIRE(*(v.cbegin_targets_no_checks(0)) == 3);
-  }
-
-  LIBSEMIGROUPS_TEST_CASE("WordGraphView",
-                          "008",
-                          "test cend_targets",
-                          "[quick]") {
-    WordGraph<size_t> g(10, 5);
-    g.target(2, 4, 5);
-    WordGraphView<size_t> v(g, 2, 5);
-    auto                  end   = v.cend_targets(0);
-    auto                  begin = v.cbegin_targets(0);
-    REQUIRE_THROWS_AS(v.cend_targets(7), LibsemigroupsException);
-    auto   target = begin;
-    size_t i      = 0;
-    while (target != end) {
-      if (i == 4) {
-        REQUIRE(*target == 3);
-      } else {
-        REQUIRE(*target == UNDEFINED);
-      }
-      ++target;
-      i++;
-    }
-  }
-
-  LIBSEMIGROUPS_TEST_CASE("WordGraphView",
-                          "009",
-                          "test nodes() range",
-                          "[quick]") {
-    WordGraph<size_t> g(10, 5);
-    g.target(2, 4, 5);
-    WordGraphView<size_t> v(g, 2, 5);
-
-    auto   nodes = v.nodes();
-    size_t i     = 0;
-    for (const auto& elem : nodes) {
-      REQUIRE(elem == i++);
-    }
-    REQUIRE(i == 3);
-  }
-
-  LIBSEMIGROUPS_TEST_CASE("WordGraphView",
-                          "010",
-                          "test labels is same as graph labels",
-                          "[quick]") {
-    WordGraph<size_t>     g(10, 5);
-    WordGraphView<size_t> v(g, 2, 5);
-    auto                  v_labels = v.labels();
-
-    size_t i = 0;
-    for (const auto& elem : v_labels) {
-      REQUIRE(elem == i++);
-    }
-    REQUIRE(i == 5);
-  }
-
-  LIBSEMIGROUPS_TEST_CASE("WordGraphView",
-                          "011",
-                          "targets_no_checks",
-                          "[quick]") {
-    WordGraph<size_t> g(10, 5);
-    g.target(2, 1, 5);
-    g.target(2, 2, 6);
-    g.target(2, 3, 4);
-    WordGraphView<size_t> v(g, 2, 5);
-    size_t                i = 0;
-    for (auto target : v.targets_no_checks(0)) {
-      if (i == 0) {
-        REQUIRE(target == UNDEFINED);
-      }
-      if (i == 1) {
-        REQUIRE(target == 3);
-      }
-      if (i == 2) {
-        REQUIRE(target == 4);
-      }
-      if (i == 3) {
-        REQUIRE(target == 2);
-      }
-      if (i == 4) {
-        REQUIRE(target == UNDEFINED);
-      }
-      i++;
-    }
-  }
-
-  LIBSEMIGROUPS_TEST_CASE("WordGraphView",
-                          "012",
-                          "next_label_and_target",
-                          "[quick]") {
-    WordGraph<size_t> g(10, 5);
-    g.target(2, 1, 5);
-    g.target(2, 2, 6);
-    g.target(2, 3, 4);
-    WordGraphView<size_t> v(g, 2, 5);
-
-    std::pair<size_t, size_t> compare_to(1, 3);
-    std::pair<size_t, size_t> compare_to_1(2, 4);
-    REQUIRE(compare_to == v.next_label_and_target(0, 1));
-    REQUIRE(compare_to_1 == v.next_label_and_target(0, 2));
-    REQUIRE_THROWS_AS(v.next_label_and_target(5, 1), LibsemigroupsException);
-    REQUIRE_THROWS_AS(v.next_label_and_target(0, 6), LibsemigroupsException);
-  }
-
-  LIBSEMIGROUPS_TEST_CASE("WordGraphView",
-                          "013",
-                          "graph from view",
-                          "[quick]") {
-    WordGraph<size_t> g(10, 5);
-    g.target(2, 1, 5);
-    g.target(2, 2, 6);
-    g.target(2, 3, 4);
-    WordGraphView<size_t> v(g, 2, 8);
-    WordGraph<size_t> from_view = word_graph_view::create_graph_from_view(v);
-    WordGraphView<size_t> from_graph
-        = WordGraphView<size_t>(from_view, 0, from_view.number_of_nodes());
-    REQUIRE(from_graph == v);
+                          "can access graph",
+                          "[quick][digraph]") {
+    WordGraph<size_t>     g(17, 31);
+    WordGraphView<size_t> v(g, 0, 31);
+    REQUIRE(*v.graph == g);
+    REQUIRE(g.number_of_nodes() == 17);
   }
 
 }  // namespace libsemigroups
