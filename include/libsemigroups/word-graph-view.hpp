@@ -79,24 +79,36 @@ namespace libsemigroups {
     using const_iterator_targets =
         typename detail::DynamicArray2<Node>::const_iterator;
 
-    WordGraph<Node>* graph;
+    const WordGraph<Node>* graph;
 
     //! \brief Construct from an existing WordGraphView
     //! \param graph underlying WordGraphView object
-    WordGraphView(const WordGraph<Node>& graph,
-                  const size_type        _start,
-                  const size_type        _end);
+    WordGraphView(const WordGraph<Node>* graph,
+                  const size_type        start,
+                  const size_type        end);
 
     //! \brief Construct empty object for future assignment
     WordGraphView() : _start(0), _end(0), _degree(0), _nr_nodes(0) {}
 
     //! \brief Reshape this view over the same graph
-    WordGraphView& init(const size_type _start, const size_type _end);
+    WordGraphView& init(const size_type start, const size_type end);
 
-    ~WordGraphView();
+    // TODO check if this destructor should destruct the underlying graph as
+    // well
+    ~WordGraphView() = default;
 
     [[nodiscard]] size_type inline number_of_nodes() const noexcept {
       return _nr_nodes;
+    }
+
+    [[nodiscard]] size_type out_degree() const noexcept;
+
+    [[nodiscard]] size_type start_node() const noexcept {
+      return _start;
+    }
+
+    [[nodiscard]] size_type end_node() const noexcept {
+      return _end;
     }
 
     const_iterator_nodes cbegin_nodes() const noexcept {
@@ -155,7 +167,12 @@ namespace libsemigroups {
   namespace word_graph_view {
     template <typename Node1, typename Node2>
     void throw_if_node_out_of_bounds(WordGraphView<Node1> const& wg, Node2 n);
-  }
+
+    template <typename Node>
+    auto adjacency_matrix(const WordGraphView<Node>& vgw);
+  }  // namespace word_graph_view
 }  // namespace libsemigroups
+
+#include "word-graph-view.tpp"
 
 #endif

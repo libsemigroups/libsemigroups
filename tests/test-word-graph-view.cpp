@@ -16,22 +16,13 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include <cstddef>        // for size_t
-#include <stdexcept>      // for runtime_error
-#include <unordered_set>  // for unordered_set
-#include <vector>         // for vector
+#include <cstddef>    // for size_t
+#include <stdexcept>  // for runtime_error
 
 #include "catch_amalgamated.hpp"  // for REQUIRE, REQUIRE_THROWS_AS, REQUI...
 #include "test-main.hpp"          // for LIBSEMIGROUPS_TEST_CASE
-#include "word-graph-test-common.hpp"  // for add_clique etc
 
-#include "libsemigroups/forest.hpp"  // for Forest
-#include "libsemigroups/paths.hpp"   // for cbegin_pilo
 #include "libsemigroups/word-graph-view.hpp"
-#include "libsemigroups/word-graph.hpp"  // for WordGraph
-#include "libsemigroups/word-range.hpp"  // for literalsR, WordRange
-
-#include "libsemigroups/detail/string.hpp"  // for detail::to_string
 
 namespace libsemigroups {
   struct LibsemigroupsException;
@@ -49,10 +40,87 @@ namespace libsemigroups {
                           "001",
                           "can access graph",
                           "[quick][digraph]") {
-    WordGraph<size_t>     g(17, 31);
-    WordGraphView<size_t> v(g, 0, 31);
+    WordGraph<size_t> g;
+    g.add_nodes(17);
+    WordGraphView<size_t> v(&g, 0, 17);
     REQUIRE(*v.graph == g);
     REQUIRE(g.number_of_nodes() == 17);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("WordGraphView",
+                          "002",
+                          "number of nodes reported correctly",
+                          "[quick][digraph]") {
+    WordGraph<size_t> g;
+    g.add_nodes(17);
+    WordGraphView<size_t> v(&g, 3, 14);
+    REQUIRE(v.number_of_nodes() == 11);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("WordGraphView",
+                          "003",
+                          "exceptions thrown correctly",
+                          "[quick][digraph]") {
+    WordGraph<size_t> g;
+    g.add_nodes(17);
+    WordGraphView<size_t> v(&g, 3, 14);
+    REQUIRE_THROWS_AS(v.cbegin_targets(16), LibsemigroupsException);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("WordGraphView",
+                          "004",
+                          "node iterator range correct",
+                          "[quick][digraph]") {
+    WordGraph<size_t> g;
+    g.add_nodes(17);
+    WordGraphView<size_t> v(&g, 3, 14);
+    auto                  begin = v.cbegin_nodes();
+    auto                  end   = v.cend_nodes();
+    REQUIRE(std::vector<size_t>(begin, end)
+            == std::vector<size_t>({3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13}));
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("WordGraphView",
+                          "005",
+                          "oob target throws",
+                          "[quick][digraph]") {
+    WordGraph<size_t> g;
+    g.add_nodes(17);
+    WordGraphView<size_t> v(&g, 3, 14);
+    REQUIRE_THROWS_AS(v.cbegin_targets(2), LibsemigroupsException);
+    REQUIRE_THROWS_AS(v.cbegin_targets(15), LibsemigroupsException);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("WordGraphView",
+                          "006",
+                          "get targets",
+                          "[quick][digraph]") {
+    WordGraph<size_t> g;
+    g.add_nodes(17);
+    g.add_to_out_degree(5);
+    g.target(3, 0, 4);
+    g.target(3, 1, 5);
+    g.target(3, 2, 6);
+    WordGraphView<size_t> v(&g, 3, 14);
+    auto                  targets = v.targets(*v.cbegin_nodes());
+    for (size_t i = 4; i < 6; i++) {
+      REQUIRE(targets.get() == i);
+      targets.advance_by(1);
+    }
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("WordGraphView",
+                          "007",
+                          "get targets throws",
+                          "[quick][digraph]") {
+    WordGraph<size_t> g;
+    g.add_nodes(17);
+    g.add_to_out_degree(5);
+    g.target(3, 0, 4);
+    g.target(3, 1, 5);
+    g.target(3, 2, 6);
+    WordGraphView<size_t> v(&g, 3, 14);
+    REQUIRE_THROWS_AS(v.targets(1), LibsemigroupsException);
   }
 
 }  // namespace libsemigroups
