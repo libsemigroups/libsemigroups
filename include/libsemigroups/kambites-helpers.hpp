@@ -65,7 +65,6 @@ namespace libsemigroups {
     }
   }  // namespace congruence_common
 
-  // TODO at the moment the below topic is empty. Should it still be documented?
   //! \defgroup kambites_helpers_group Kambites helper functions
   //! \ingroup kambites_group
   //!
@@ -73,13 +72,14 @@ namespace libsemigroups {
   //!
   //! Defined in \c kambites.hpp.
   //!
-  //! This page contains documentation for many helper functions for the
-  //! \ref_kambites class template. In particular, these functions include
-  //! versions of several of the member functions of \ref_kambites (that accept
-  //! iterators) whose parameters are not iterators, but objects instead. The
-  //! helpers documented on this page all belong to the namespace `kambites`.
+  //! This page would contain documentation for helper functions for the
+  //! \ref_kambites class template. However, at present, there are no helper
+  //! functions beyond those in \ref cong_common_helpers_group for the
+  //! \ref_kambites class template.
   //!
-  //! \sa \ref cong_common_helpers_group
+  //! \sa
+  //! * \ref cong_common_helpers_group; and
+  //! * the \ref kambites namespace.
 
   //! This page contains documentation for everything in the namespace
   //! \ref_kambites. This includes everything from \ref
