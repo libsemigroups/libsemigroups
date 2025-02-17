@@ -99,7 +99,7 @@ namespace libsemigroups {
     //!
     //! \tparam Word the type of the second argument \p w.
     //!
-    //! \param tc the ToddCoxeter instance.
+    //! \param tc the \ref_todd_coxeter instance.
     //! \param w the word.
     //!
     //! \returns The current index of the class containing the word.

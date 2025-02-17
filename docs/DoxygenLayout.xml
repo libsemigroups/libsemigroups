@@ -138,16 +138,33 @@
         <tab type="user" visible="yes" url="@ref cong_common_helpers_partition_group" title="Partitioning"/>
       </tab>
     <tab type="usergroup" visible="yes" url="@ref congruence_group" title="Congruence">
-      <tab type="user" visible="yes" url="@ref congruence_class_group" title="The Congruence class"/>
-      <tab type="user" visible="yes" url="@ref libsemigroups::congruence" title="Congruence helper functions"/>
+      <tab type="usergroup" visible="yes" url="@ref congruence_class_group" title="The Congruence class">
+        <tab type="user" visible="yes" url="@ref congruence_class_mem_types_group" title = "Member types"/>
+        <tab type="user" visible="yes" url="@ref congruence_class_init_group" title = "Constructors + Initializers"/>
+        <tab type="user" visible="yes" url="@ref congruence_class_settings_group" title = "Settings"/>
+        <tab type="user" visible="yes" url="@ref congruence_class_intf_group" title = "Common member functions"/>
+        <tab type="user" visible="yes" url="@ref congruence_class_accessors_group" title = "Accessors"/>
+      </tab>
+      <tab type="user" visible="yes" url="@ref congruence_helpers_group" title="Congruence helper functions"/>
     </tab>
     <tab type="user" visible="yes" url="@ref froidure_pin_group" title="Froidure-Pin" />
     <tab type="usergroup" visible="yes" url="@ref kambites_group" title="Kambites">
-      <tab type="user" visible="yes" url="@ref libsemigroups::Kambites" title="The Kambites class" />
-      <tab type="user" visible="yes" url="@ref libsemigroups::kambites" title="Kambites helper functions" />
+      <tab type="usergroup" visible="yes" url="@ref kambites_class_group" title="The Kambites class">
+        <tab type="user" visible="yes" url="@ref kambites_class_mem_types_group" title = "Member types"/>
+        <tab type="user" visible="yes" url="@ref kambites_class_init_group" title = "Constructors + Initializers"/>
+        <tab type="user" visible="yes" url="@ref kambites_class_intf_group" title = "Common member functions"/>
+        <tab type="user" visible="yes" url="@ref kambites_class_accessors_group" title = "Accessors"/>
+      </tab>
+      <tab type="user" visible="yes" url="@ref kambites_helpers_group" title="Kambites helper functions" />
     </tab>
     <tab type="usergroup" visible="yes" url="@ref knuth_bendix_group" title="Knuth-Bendix">
-      <tab type="user" visible="yes" url="@ref knuth_bendix_class_group" title="The KnuthBendix class"/>
+      <tab type="usergroup" visible="yes" url="@ref knuth_bendix_class_group" title="The KnuthBendix class">
+        <tab type="user" visible="yes" url="@ref knuth_bendix_class_mem_types_group" title = "Member types"/>
+        <tab type="user" visible="yes" url="@ref knuth_bendix_class_init_group" title = "Constructors + Initializers"/>
+        <tab type="user" visible="yes" url="@ref knuth_bendix_class_settings_group" title = "Settings"/>
+        <tab type="user" visible="yes" url="@ref knuth_bendix_class_intf_group" title = "Common member functions"/>
+        <tab type="user" visible="yes" url="@ref knuth_bendix_class_accessors_group" title = "Accessors"/>
+      </tab>
       <tab type="user" visible="yes" url="@ref knuth_bendix_helpers_group" title="Knuth-Bendix helper functions"/>
     </tab>
     <tab type="user" visible="yes" url="@ref freeband_group" title="Radoszewski-Rytter" />

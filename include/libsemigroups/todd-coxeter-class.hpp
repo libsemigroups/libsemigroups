@@ -1489,7 +1489,7 @@ namespace libsemigroups {
   //! \brief Return a human readable representation of a \ref_todd_coxeter
   //! object.
   //!
-  //! Defined in `todd-coxeter.hpp`.
+  //! Defined in `todd-coxeter-class.hpp`.
   //!
   //! This function returns a human readable representation of a
   //! \ref_todd_coxeter object.

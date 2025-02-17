@@ -40,6 +40,10 @@ namespace libsemigroups {
   //!
   //! This page contains links to the documentation related to the
   //! implementation of the Knuth-Bendix algorithm in `libsemigroups`.
+  //!
+  //! The purpose of this algorithm is to find a locally confluent presentation
+  //! for a semigroup or monoid, with respect to some alphabet order and
+  //! reduction ordering.
 
   //! \defgroup knuth_bendix_class_group KnuthBendix class
   //! \ingroup knuth_bendix_group
@@ -101,7 +105,7 @@ namespace libsemigroups {
       //! \brief Values for specifying how to measure the length of an
       //! overlap.
       //!
-      //! The values in this enum determine how a KnuthBendixImpl instance
+      //! The values in this enum determine how a \ref_knuth_bendix instance
       //! measures the length \f$d(AB, BC)\f$ of the overlap of two words
       //! \f$AB\f$ and \f$BC\f$:
       //!
@@ -120,10 +124,10 @@ namespace libsemigroups {
     //! \ingroup knuth_bendix_class_mem_types_group
     //!
     //! \brief Type of the letters in the relations of the presentation stored
-    //! in a \ref KnuthBendix instance.
+    //! in a \ref_knuth_bendix instance.
     //!
     //! Type of the letters in the relations of the presentation stored
-    //! in a \ref KnuthBendix instance.
+    //! in a \ref_knuth_bendix instance.
     using native_word_type = Word;
 
     //! \ingroup knuth_bendix_class_mem_types_group
@@ -137,8 +141,8 @@ namespace libsemigroups {
     //!
     //! \brief Default constructor.
     //!
-    //! This function default constructs an uninitialised \ref
-    //! KnuthBendix instance.
+    //! This function default constructs an uninitialised \ref_knuth_bendix
+    //! instance.
     KnuthBendix() = default;
 
     //! \ingroup knuth_bendix_class_init_group
@@ -146,7 +150,7 @@ namespace libsemigroups {
     //! \brief Remove the presentation and rewriter data
     //!
     //! This function clears the rewriter, presentation, settings and stats
-    //! from the KnuthBendix object, putting it back into the state it
+    //! from the \ref_knuth_bendix object, putting it back into the state it
     //! would be in if it was newly default constructed.
     //!
     //! \returns
@@ -164,12 +168,12 @@ namespace libsemigroups {
     //!
     //! Copy constructor.
     //!
-    //! \param that the KnuthBendix instance to copy.
+    //! \param that the \ref_knuth_bendix instance to copy.
     //!
     //! \complexity
     //! \f$O(n)\f$ where \f$n\f$ is the sum of the lengths of the words in
     //! rules of \p that.
-    KnuthBendix(KnuthBendix const&) = default;
+    KnuthBendix(KnuthBendix const& that) = default;
 
     //! \ingroup knuth_bendix_class_init_group
     //!
@@ -204,7 +208,7 @@ namespace libsemigroups {
     //!
     //! \brief Construct from \ref congruence_kind and Presentation.
     //!
-    //! This function constructs a \ref KnuthBendix instance representing
+    //! This function constructs a \ref_knuth_bendix instance representing
     //! a congruence of kind \p knd over the semigroup or monoid defined by
     //! the presentation \p p.
     //!
@@ -218,9 +222,9 @@ namespace libsemigroups {
 
     //! \ingroup knuth_bendix_class_init_group
     //!
-    //! \brief Re-initialize a \ref KnuthBendix instance.
+    //! \brief Re-initialize a \ref_knuth_bendix instance.
     //!
-    //! This function puts a \ref KnuthBendix instance back into the state
+    //! This function puts a \ref_knuth_bendix instance back into the state
     //! that it would have been in if it had just been newly constructed from
     //! \p knd and \p p.
     //!
@@ -242,7 +246,7 @@ namespace libsemigroups {
     //! This function throws a LibsemigroupsException if any value pointed
     //! at by an iterator in the range \p first to \p last is out of bounds
     //! (i.e. does not belong to the alphabet of the \ref presentation used
-    //! to construct the \ref KnuthBendix instance).
+    //! to construct the \ref_knuth_bendix instance).
     //!
     //! \tparam Iterator1 the type of first argument \p first.
     //! \tparam Iterator2 the type of second argument \p last.
@@ -311,10 +315,10 @@ namespace libsemigroups {
     //! \ingroup knuth_bendix_class_intf_group
     //!
     //! \brief Return the presentation used to construct or initialize a
-    //! KnuthBendix object.
+    //! \ref_knuth_bendix object.
     //!
     //! This function returns the presentation used to construct or initialize
-    //! a KnuthBendix object.
+    //! a \ref_knuth_bendix object.
     //!
     //! \returns
     //! A const reference to the presentation.
@@ -337,7 +341,7 @@ namespace libsemigroups {
     //! \brief Add generating pair via iterators.
     //!
     //! This function adds a generating pair to the congruence represented by a
-    //! \ref KnuthBendix instance.
+    //! \ref_knuth_bendix instance.
     //!
     //! \cong_common_params_contains
     //!
@@ -362,7 +366,7 @@ namespace libsemigroups {
     //! \brief Add generating pair via iterators.
     //!
     //! This function adds a generating pair to the congruence represented by a
-    //! \ref KnuthBendix instance.
+    //! \ref_knuth_bendix instance.
     //!
     //! \cong_common_params_contains
     //!
@@ -398,7 +402,7 @@ namespace libsemigroups {
     //!
     //! This function checks whether or not the words represented by the ranges
     //! \p first1 to \p last1 and \p first2 to \p last2 are already known to be
-    //! contained in the congruence represented by a \ref KnuthBendix instance.
+    //! contained in the congruence represented by a \ref_knuth_bendix instance.
     //! This function performs no enumeration, so it is possible for the words
     //! to be contained in the congruence, but that this is not currently known.
     //!
@@ -430,7 +434,7 @@ namespace libsemigroups {
     //!
     //! This function checks whether or not the words represented by the ranges
     //! \p first1 to \p last1 and \p first2 to \p last2 are contained in the
-    //! congruence represented by a \ref KnuthBendix
+    //! congruence represented by a \ref_knuth_bendix
     //! instance. This function triggers a full enumeration,
     //! which may never terminate.
     //!
@@ -465,10 +469,10 @@ namespace libsemigroups {
     //! described by the iterator \p first and \p last to the output iterator \p
     //! d_first. This function triggers no enumeration. The word output by this
     //! function is equivalent to the input word in the congruence defined by a
-    //! \ref KnuthBendix instance. If the KnuthBendix instance is \ref finished,
-    //! then the output word is a normal form for the input word. If the
-    //! KnuthBendix instance is not \ref finished, then it might be that
-    //! equivalent input words produce different output words.
+    //! \ref_knuth_bendix instance. If the \ref_knuth_bendix instance is \ref
+    //! finished, then the output word is a normal form for the input word. If
+    //! the \ref_knuth_bendix instance is not \ref finished, then it might be
+    //! that equivalent input words produce different output words.
     //!
     //! \cong_common_params_reduce
     //!
@@ -496,9 +500,9 @@ namespace libsemigroups {
     //! word equivalent to the input word described by the iterator \p first and
     //! \p last to the output iterator \p d_first. The word output by this
     //! function is equivalent to the input word in the congruence defined by a
-    //! KnuthBendix instance. In other words, the output word is a normal form
-    //! for the input word or equivalently a canconical representative of its
-    //! congruence class.
+    //! \ref_knuth_bendix instance. In other words, the output word is a normal
+    //! form for the input word or equivalently a canconical representative of
+    //! its congruence class.
     //!
     //! \cong_common_params_reduce
     //!
@@ -528,9 +532,9 @@ namespace libsemigroups {
     //! \brief Return a range object containing the active rules.
     //!
     //! This function returns a range object containing the pairs of
-    //! strings which represent the rules of a KnuthBendix instance. The
+    //! strings which represent the rules of a \ref_knuth_bendix instance. The
     //! \c first entry in every such pair is greater than the \c second
-    //! according to the reduction ordering of the KnuthBendix instance.
+    //! according to the reduction ordering of the \ref_knuth_bendix instance.
     //!
     //! \returns
     //! A range object containing the current active rules.

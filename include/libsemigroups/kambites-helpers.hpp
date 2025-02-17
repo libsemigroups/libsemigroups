@@ -45,11 +45,12 @@ namespace libsemigroups {
     //! Defined in \c kambites.hpp.
     //!
     //! This function returns a range object containing short-lex normal forms
-    //! of the classes of the congruence represented by a Kambites instance.
+    //! of the classes of the congruence represented by a \ref_kambites
+    //! instance.
     //!
     //! \tparam Word the type of the words contained in the parameter \p k.
     //!
-    //! \param k the \ref Kambites instance.
+    //! \param k the \ref_kambites instance.
     //!
     //! \returns A range object.
     //!
@@ -64,22 +65,27 @@ namespace libsemigroups {
     }
   }  // namespace congruence_common
 
-  //! \brief Helper functions for the \ref Kambites class template.
+  //! \defgroup kambites_helpers_group Kambites helper functions
+  //! \ingroup kambites_group
+  //!
+  //! \brief Helper functions for the \ref_kambites class template.
   //!
   //! Defined in \c kambites.hpp.
   //!
-  //! This page contains documentation for many helper functions for the \ref
-  //! Kambites class template. In particular, these functions include versions
-  //! of several of the member functions of \ref Kambites (that accept
-  //! iterators) whose parameters are not iterators, but objects instead. The
-  //! helpers documented on this page all belong to the namespace `kambites`.
+  //! This page would contain documentation for helper functions for the
+  //! \ref_kambites class template. However, at present, there are no helper
+  //! functions beyond those in \ref cong_common_helpers_group for the
+  //! \ref_kambites class template.
   //!
-  //! \sa \ref cong_common_helpers_group
+  //! \sa
+  //! * \ref cong_common_helpers_group; and
+  //! * the \ref kambites namespace.
 
-  //! This page contains documentation for everything in the namespace \ref
-  //! kambites. This includes everything from \ref cong_common_helpers_group, at
-  //! present there are no helper functions, beyond those in \ref
-  //! cong_common_helpers_group, for the \ref Kambites class template.
+  //! This page contains documentation for everything in the namespace
+  //! \ref_kambites. This includes everything from \ref
+  //! cong_common_helpers_group, at present there are no helper functions,
+  //! beyond those in \ref cong_common_helpers_group, for the \ref_kambites
+  //! class template.
   namespace kambites {
     using congruence_common::add_generating_pair;
     using congruence_common::add_generating_pair_no_checks;
@@ -126,7 +132,6 @@ namespace libsemigroups {
     // kambites::normal_forms(k2)) (as in ToddCoxeterImpl) because there are
     // infinitely many normal_forms.
 
-    //! @}
   }  // namespace kambites
 }  // namespace libsemigroups
 #endif  // LIBSEMIGROUPS_KAMBITES_HELPERS_HPP_

@@ -67,38 +67,83 @@ namespace libsemigroups {
   //! authors of `libsemigroups`; see \cite Kambites2009aa,
   //! \cite Kambites2009ab, and \cite Mitchell2021aa.
   //!
-  //! Helper functions for the class template Kambites can be found in the
-  //! namespace \ref cong_common_helpers_group "congruence_common" and \ref
-  //! kambites. At present the helper functions in these two namespaces are
+  //! Helper functions for the class template \ref_kambites can be found in the
+  //! namespace \ref cong_common_helpers_group "congruence_common" and
+  //! \ref_kambites. At present the helper functions in these two namespaces are
   //! identical, because there are no helper functions that only apply to the
-  //! Kambites class template.
+  //! \ref_kambites class template.
+
+  //! \defgroup kambites_class_mem_types_group Member Types
+  //!
+  //! \ingroup kambites_class_group
+  //!
+  //! \brief Public member types
+  //!
+  //! This page contains the documentation of the public member types of a
+  //! \ref_kambites instance.
+
+  //! \defgroup kambites_class_init_group Constructors + initializers
+  //!
+  //! \ingroup kambites_class_group
+  //!
+  //! \brief Construct or re-initialize a \ref_kambites
+  //! instance (public member function).
+  //!
+  //! This page documents the constructors and initialisers for the
+  //! \ref_kambites class.
+  //!
+  //! Every constructor (except the move + copy constructors, and the move
+  //! and copy assignment operators) has a matching `init` function with the
+  //! same signature that can be used to re-initialize a \ref_kambites
+  //! instance as if it had just been constructed; but without necessarily
+  //! releasing any previous allocated memory.
+
+  //! \defgroup kambites_class_intf_group Common member functions
+  //!
+  //! \ingroup kambites_class_group
+  //!
+  //! \brief Documentation of common member functions of \ref_congruence,
+  //! \ref_kambites, \ref_knuth_bendix, and \ref_todd_coxeter.
+  //!
+  //! This page contains documentation of the member functions of
+  //! \ref_kambites that are implemented in all of the classes \ref_congruence,
+  //! \ref_kambites, \ref_knuth_bendix, and \ref_todd_coxeter.
+
+  //! \defgroup kambites_class_accessors_group Accessors
+  //!
+  //! \ingroup kambites_class_group
+  //!
+  //! \brief Member functions that can be used to access the state of a
+  //! \ref_kambites instance.
+  //!
+  //! This page contains the documentation of the various member functions of
+  //! the \ref_kambites class that can be used to access the state of an
+  //! instance.
+  //!
+  //! Those functions with the prefix `current_` do not perform any
+  //! further enumeration.
 
   //! \defgroup kambites_class_group The Kambites class
+  //!
   //! \ingroup kambites_group
-  //!
-  //! \brief This page contains links to the documentation related to the
-  //! Kambites class.
-  //!
-  //! This page contains links to the documentation related to the
-  //! Kambites class.
-
-  //! \ingroup kambites_class_group
-  //! \hideinheritancegraph
   //!
   //! \brief Class template implementing small overlap class, equality, and
   //! normal forms for small overlap monoids.
   //!
+  //! \hideinheritancegraph
+  //!
   //! Defined in `kambites.hpp`.
   //!
-  //! This page describes the class template Kambites for determining the
+  //! This page describes the class template \ref_kambites for determining the
   //! small overlap class of a presentation, and, for small overlap monoids
   //! (those with small overlap class 4 or higher) checking equality of words
   //! and for computing normal forms.
   //!
-  //! Note that a Kambites instance represents a congruence on the free monoid
-  //! or semigroup containing the rules of a presentation used to construct the
-  //! instance, and the \ref generating_pairs. As such generating pairs or rules
-  //! are interchangeable in the context of Kambites objects.
+  //! Note that a \ref_kambites instance represents a congruence on the free
+  //! monoid or semigroup containing the rules of a presentation used to
+  //! construct the instance, and the \ref generating_pairs. As such generating
+  //! pairs or rules are interchangeable in the context of \ref_kambites
+  //! objects.
   //!
   //! \tparam Word the type of the words in the presentation.
   // TODO(1) example
@@ -109,11 +154,13 @@ namespace libsemigroups {
     // Kambites - aliases - public
     ////////////////////////////////////////////////////////////////////////
 
+    //! \ingroup kambites_class_mem_types_group
+    //!
     //! \brief Type of the words in the relations of the presentation stored in
-    //! a Kambites instance.
+    //! a \ref_kambites instance.
     //!
     //! Type of the words in the relations of the presentation stored in
-    //! a Kambites instance.
+    //! a \ref_kambites instance.
     using native_word_type
         = std::conditional_t<std::is_same_v<Word, detail::MultiStringView>,
                              std::string,
@@ -162,15 +209,19 @@ namespace libsemigroups {
     // Kambites - Constructors, destructor, initialisation - public
     ////////////////////////////////////////////////////////////////////////
 
+    //! \ingroup kambites_class_init_group
+    //!
     //! \brief Default constructor.
     //!
-    //! This function default constructs an uninitialised \ref
-    //! Kambites instance.
+    //! This function default constructs an uninitialised \ref_kambites
+    //! instance.
     Kambites();
 
-    //! \brief Re-initialize a \ref Kambites instance.
+    //! \ingroup kambites_class_init_group
     //!
-    //! This function puts a \ref Kambites instance back into the state that it
+    //! \brief Re-initialize a \ref_kambites instance.
+    //!
+    //! This function puts a \ref_kambites instance back into the state that it
     //! would have been in if it had just been newly default constructed.
     //!
     //! \returns A reference to `*this`.
@@ -179,31 +230,49 @@ namespace libsemigroups {
     //! \no_libsemigroups_except
     Kambites& init();
 
+    //! \ingroup kambites_class_init_group
+    //!
+    //! \brief Default copy constructor.
+    //!
     //! Default copy constructor.
     Kambites(Kambites const&);
 
+    //! \ingroup kambites_class_init_group
+    //!
+    //! \brief Default move constructor.
+    //!
     //! Default move constructor.
     Kambites(Kambites&&);
 
+    //! \ingroup kambites_class_init_group
+    //!
+    //! \brief Default copy assignment operator.
+    //!
     //! Default copy assignment operator.
     Kambites& operator=(Kambites const&);
 
+    //! \ingroup kambites_class_init_group
+    //!
+    //! \brief Default move assignment operator.
+    //!
     //! Default move assignment operator.
     Kambites& operator=(Kambites&&);
 
     ~Kambites();
 
+    //! \ingroup kambites_class_init_group
+    //!
     //! \brief Construct from \ref congruence_kind and Presentation.
     //!
-    //! This function constructs a  \ref Kambites instance representing a
+    //! This function constructs a  \ref_kambites instance representing a
     //! congruence of kind \p knd over the semigroup or monoid defined by the
     //! presentation \p p.
     //!
-    //! Kambites instances can only be used to compute two-sided congruences,
-    //! and so the first parameter \p knd must always be
+    //! \ref_kambites instances can only be used to compute two-sided
+    //! congruences, and so the first parameter \p knd must always be
     //! congruence_kind::twosided. The parameter \p knd is included for
-    //! uniformity of interface between with \ref KnuthBendixImpl, \ref
-    //! Kambites, and \ref Congruence.
+    //! uniformity of interface between with \ref_knuth_bendix, \ref
+    //! \ref_kambites, and \ref_congruence.
     //!
     //! \param knd the kind (onesided or twosided) of the congruence.
     //! \param p the presentation.
@@ -215,17 +284,19 @@ namespace libsemigroups {
         // call the rval ref constructor
         : Kambites(knd, Presentation<native_word_type>(p)) {}
 
-    //! \brief Re-initialize a \ref Kambites instance.
+    //! \ingroup kambites_class_init_group
     //!
-    //! This function puts a \ref Kambites instance back into the state that
+    //! \brief Re-initialize a \ref_kambites instance.
+    //!
+    //! This function puts a \ref_kambites instance back into the state that
     //! it would have been in if it had just been newly constructed from \p knd
     //! and \p p.
     //!
-    //! Kambites instances can only be used to compute two-sided congruences,
-    //! and so the first parameter \p knd must always be
+    //! \ref_kambites instances can only be used to compute two-sided
+    //! congruences, and so the first parameter \p knd must always be
     //! congruence_kind::twosided. The parameter \p knd is included for
-    //! uniformity of interface between with \ref KnuthBendixImpl, \ref
-    //! Kambites, and \ref Congruence.
+    //! uniformity of interface between with \ref_knuth_bendix, \ref
+    //! \ref_kambites, and \ref_congruence.
     //!
     //! \param knd the kind (onesided or twosided) of the congruence.
     //! \param p the presentation.
@@ -241,6 +312,8 @@ namespace libsemigroups {
       return init(knd, Presentation<native_word_type>(p));
     }
 
+    //! \ingroup kambites_class_init_group
+    //!
     //! \copydoc Kambites(congruence_kind, Presentation<native_word_type>
     //! const&)
     Kambites(congruence_kind knd, Presentation<native_word_type>&& p)
@@ -248,14 +321,18 @@ namespace libsemigroups {
       init(knd, std::move(p));
     }
 
+    //! \ingroup kambites_class_init_group
+    //!
     //! \copydoc init(congruence_kind, Presentation<native_word_type>
     //! const&)
     Kambites& init(congruence_kind knd, Presentation<native_word_type>&& p);
 
-    //! \brief Get the presentation used to define a \ref Kambites instance
+    //! \ingroup kambites_class_intf_group
+    //!
+    //! \brief Get the presentation used to define a \ref_kambites instance
     //! (if any).
     //!
-    //! If a \ref Kambites instance is constructed or initialised using a
+    //! If a \ref_kambites instance is constructed or initialised using a
     //! presentation, then a const reference to this presentation is returned by
     //! this function.
     //!
@@ -268,6 +345,8 @@ namespace libsemigroups {
       return _presentation;
     }
 
+    //! \ingroup kambites_class_intf_group
+    //!
     //! \brief Get the generating pairs of the congruence.
     //!
     //! This function returns the generating pairs of the congruence. The words
@@ -288,10 +367,12 @@ namespace libsemigroups {
     // Interface requirements - add_pairs
     ////////////////////////////////////////////////////////////////////////
 
+    //! \ingroup kambites_class_intf_group
+    //!
     //! \brief Add generating pair via iterators.
     //!
     //! This function adds a generating pair to the congruence represented by a
-    //! \ref Kambites instance.
+    //! \ref_kambites instance.
     //!
     //! \cong_common_params_contains
     //!
@@ -306,11 +387,12 @@ namespace libsemigroups {
                                             Iterator2 last1,
                                             Iterator3 first2,
                                             Iterator4 last2);
-
+    //! \ingroup kambites_class_intf_group
+    //!
     //! \brief Add generating pair via iterators.
     //!
     //! This function adds a generating pair to the congruence represented by a
-    //! \ref Kambites instance.
+    //! \ref_kambites instance.
     //!
     //! \cong_common_params_contains
     //!
@@ -333,17 +415,19 @@ namespace libsemigroups {
     // Interface requirements - number_of_classes
     ////////////////////////////////////////////////////////////////////////
 
+    //! \ingroup kambites_class_intf_group
+    //!
     //! \brief Compute the number of classes in the congruence.
     //!
     //! This function computes the number of classes in the congruence
-    //! represented by a \ref Kambites instance if the \ref
-    //! small_overlap_class is at least \f$4\f$. \ref Kambites instances can
+    //! represented by a \ref_kambites instance if the \ref
+    //! small_overlap_class is at least \f$4\f$. \ref_kambites instances can
     //! only compute the number of classes if the condition of the previous
     //! sentence is fulfilled, and in this case the number of classes is
     //! always \ref POSITIVE_INFINITY. Otherwise an exception is thrown.
     //!
-    //! \returns The number of congruences classes of a \ref
-    //! Kambites if \ref small_overlap_class is at least \f$4\f$.
+    //! \returns The number of congruences classes of a
+    //! \ref_kambites if \ref small_overlap_class is at least \f$4\f$.
     //!
     //! \throws LibsemigroupsException if it is not possible to compute the
     //! number of classes of the congruence because the small overlap class
@@ -358,11 +442,13 @@ namespace libsemigroups {
     // Interface requirements - contains
     ////////////////////////////////////////////////////////////////////////
 
+    //! \ingroup kambites_class_intf_group
+    //!
     //! \brief Check containment of a pair of words via iterators.
     //!
     //! This function checks whether or not the words represented by the ranges
     //! \p first1 to \p last1 and \p first2 to \p last2 are already known to be
-    //! contained in the congruence represented by a \ref Kambites instance.
+    //! contained in the congruence represented by a \ref_kambites instance.
     //! This function performs no enumeration, so it is possible for the words
     //! to be contained in the congruence, but that this is not currently known.
     //!
@@ -394,11 +480,13 @@ namespace libsemigroups {
                                                     Iterator3 first2,
                                                     Iterator4 last2) const;
 
+    //! \ingroup kambites_class_intf_group
+    //!
     //! \brief Check containment of a pair of words via iterators.
     //!
     //! This function checks whether or not the words represented by the ranges
     //! \p first1 to \p last1 and \p first2 to \p last2 are already known to be
-    //! contained in the congruence represented by a \ref Kambites instance.
+    //! contained in the congruence represented by a \ref_kambites instance.
     //! This function performs no enumeration, so it is possible for the words
     //! to be contained in the congruence, but that this is not currently known.
     //!
@@ -424,12 +512,13 @@ namespace libsemigroups {
                                           Iterator2 last1,
                                           Iterator3 first2,
                                           Iterator4 last2) const;
-
+    //! \ingroup kambites_class_intf_group
+    //!
     //! \brief Check containment of a pair of words via iterators.
     //!
     //! This function checks whether or not the words represented by the ranges
     //! \p first1 to \p last1 and \p first2 to \p last2 are contained in the
-    //! congruence represented by a \ref Kambites instance.
+    //! congruence represented by a \ref_kambites instance.
     //!
     //! \cong_common_params_contains
     //!
@@ -451,11 +540,13 @@ namespace libsemigroups {
           first1, last1, first2, last2);
     }
 
+    //! \ingroup kambites_class_intf_group
+    //!
     //! \brief Check containment of a pair of words via iterators.
     //!
     //! This function checks whether or not the words represented by the ranges
     //! \p first1 to \p last1 and \p first2 to \p last2 are contained in the
-    //! congruence represented by a \ref Kambites instance.
+    //! congruence represented by a \ref_kambites instance.
     //!
     //! \cong_common_params_contains
     //!
@@ -483,6 +574,8 @@ namespace libsemigroups {
                                native_word_type const& w) const;
 
    public:
+    //! \ingroup kambites_class_intf_group
+    //!
     //! \brief Reduce a word with no computation of the small_overlap_class
     //! or checks.
     //!
@@ -508,6 +601,8 @@ namespace libsemigroups {
                                            Iterator1      first,
                                            Iterator2      last) const;
 
+    //! \ingroup kambites_class_intf_group
+    //!
     //! \brief Reduce a word with no computation of the small_overlap_class.
     //!
     //! This function writes a reduced word equivalent to the input word
@@ -536,6 +631,8 @@ namespace libsemigroups {
           d_first, first, last);
     }
 
+    //! \ingroup kambites_class_intf_group
+    //!
     //! \brief Reduce a word with no checks.
     //!
     //! This function computes the \ref small_overlap_class and then writes
@@ -565,6 +662,8 @@ namespace libsemigroups {
           d_first, first, last);
     }
 
+    //! \ingroup kambites_class_intf_group
+    //!
     //! \brief Reduce a word.
     //!
     //! This function computes the \ref small_overlap_class and then writes
@@ -597,6 +696,8 @@ namespace libsemigroups {
     // Kambites - member functions - public
     ////////////////////////////////////////////////////////////////////////
 
+    //! \ingroup kambites_class_accessors_group
+    //!
     //! \brief Get the small overlap class.
     //!
     //! If \f$S\f$ is a finitely presented semigroup with generating set
@@ -630,6 +731,8 @@ namespace libsemigroups {
     // not noexcept because number_of_pieces_no_checks isn't
     [[nodiscard]] size_t small_overlap_class();
 
+    //! \ingroup kambites_class_accessors_group
+    //!
     //! \brief Get the current value of the small overlap class.
     //!
     //! See \ref small_overlap_class() for more details.
@@ -641,10 +744,12 @@ namespace libsemigroups {
     //! \noexcept
     [[nodiscard]] size_t small_overlap_class() const noexcept;
 
+    //! \ingroup kambites_class_accessors_group
+    //!
     //! \brief Returns the suffix tree used to compute pieces.
     //!
     //! This function returns a const reference to the generalised suffix
-    //! tree Ukkonoen object containing the relation words of a Kambites
+    //! tree Ukkonoen object containing the relation words of a \ref_kambites
     //! object, that is used to determine the pieces, and decompositions of
     //! the relation words.
     //!
@@ -661,12 +766,14 @@ namespace libsemigroups {
     // Kambites - validation functions - public
     ////////////////////////////////////////////////////////////////////////
 
+    //! \ingroup kambites_class_init_group
+    //!
     //! \brief Throws if any letter in a range is out of bounds.
     //!
     //! This function throws a LibsemigroupsException if any value pointed
     //! at by an iterator in the range \p first to \p last is out of bounds
     //! (i.e. does not belong to the alphabet of the \ref presentation used
-    //! to construct the \ref Kambites instance).
+    //! to construct the \ref_kambites instance).
     //!
     //! \tparam Iterator1 the type of first argument \p first.
     //! \tparam Iterator2 the type of second argument \p last.
@@ -682,6 +789,8 @@ namespace libsemigroups {
       _presentation.validate_word(first, last);
     }
 
+    //! \ingroup kambites_class_init_group
+    //!
     //! \brief Throws if \ref small_overlap_class isn't at least \f$4\f$.
     //!
     //! This function throws an exception if the \ref small_overlap_class is
@@ -691,6 +800,8 @@ namespace libsemigroups {
     //! least \f$4\f$.
     void throw_if_not_C4();
 
+    //! \ingroup kambites_class_init_group
+    //!
     //! \brief Throws if \ref small_overlap_class isn't at least \f$4\f$ if it
     //! is known.
     //!
@@ -701,6 +812,8 @@ namespace libsemigroups {
     //! not at least \f$4\f$.
     void throw_if_not_C4() const;
 
+    //! \ingroup kambites_class_init_group
+    //!
     //! \brief Check if the small overlap class has been computed and is at
     //! least 4.
     //!
@@ -967,14 +1080,14 @@ namespace libsemigroups {
 
   //! \ingroup kambites_group
   //!
-  //! \brief Return a human readable representation of a Kambites object.
+  //! \brief Return a human readable representation of a \ref_kambites object.
   //!
   //! Defined in `kambites.hpp`.
   //!
   //! This function returns a human readable representation of a
-  //! Kambites object.
+  //! \ref_kambites object.
   //!
-  //! \param k the \ref Kambites object.
+  //! \param k the \ref_kambites object.
   //!
   //! \returns A std::string containing the representation.
   //!

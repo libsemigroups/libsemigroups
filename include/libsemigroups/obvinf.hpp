@@ -490,14 +490,14 @@ namespace libsemigroups {
   //! classes.
   //!
   //! This function returns \c true if the quotient of the finitely presented
-  //! semigroup or monoid defined by the Congruence object \p c is obviously
-  //! infinite; \c false is returned if it is not.
+  //! semigroup or monoid defined by the \ref_congruence object \p c is
+  //! obviously infinite; \c false is returned if it is not.
   //!
   //! This function exists to make it simpler to call an IsObviouslyInfinite
   //! object a single time, and uses some information from the (possible
-  //! incomplete) Congruence object to assist in this determination.
+  //! incomplete) \ref_congruence object to assist in this determination.
   //!
-  //! \param c the Congruence instance.
+  //! \param c the \ref_congruence instance.
   //!
   //! \returns Whether or not the congruence obviously has infinitely many
   //! classes.
@@ -511,21 +511,21 @@ namespace libsemigroups {
   //! \ingroup obvinf_group
   //!
   //! \brief Function for checking if the finitely presented semigroup or
-  //! monoid defined by a Kambites object obviously has infinite many
+  //! monoid defined by a \ref_kambites object obviously has infinite many
   //! classes.
   //!
   //! This function returns \c true if the finitely presented semigroup or
-  //! monoid defined by a Kambites object is obviously infinite; \c false is
-  //! returned if it is not.
+  //! monoid defined by a \ref_kambites object is obviously infinite; \c false
+  //! is returned if it is not.
   //!
   //! This function exists to make it simpler to call an IsObviouslyInfinite
   //! object a single time, and uses some information from the (possible
-  //! incomplete) Kambites object to assist in this determination.
+  //! incomplete) \ref_kambites object to assist in this determination.
   //!
-  //! \param k the Kambites instance.
+  //! \param k the \ref_kambites instance.
   //!
   //! \returns Whether or not the finitely presented semigroup or
-  //! monoid defined by a Kambites object is obviously infinite.
+  //! monoid defined by a \ref_kambites object is obviously infinite.
   //!
   //! \note If this function returns \c false, it is still possible that the
   //! finitely presented semigroup or monoid defined by \p k is infinite.
@@ -543,24 +543,24 @@ namespace libsemigroups {
   //! \ingroup obvinf_group
   //!
   //! \brief Function for checking if the quotient of a finitely presented
-  //! semigroup or monoid defined by a KnuthBendixImpl object is obviously
+  //! semigroup or monoid defined by a \ref_knuth_bendix object is obviously
   //! infinite or not.
   //!
   //! This function returns \c true if the quotient of the finitely presented
-  //! semigroup or monoid defined by the KnuthBendixImpl object \p kb is
+  //! semigroup or monoid defined by the \ref_knuth_bendix object \p kb is
   //! obviously infinite; \c false is returned if it is not.
   //!
   //! This function exists to make it simpler to call an IsObviouslyInfinite
   //! object a single time, and uses some information from the (possible
-  //! incomplete) KnuthBendixImpl object to assist in this determination.
+  //! incomplete) \ref_knuth_bendix object to assist in this determination.
   //!
-  //! \param kb the KnuthBendixImpl instance.
+  //! \param kb the \ref_knuth_bendix instance.
   //!
-  //! \returns Whether or not the quotient defined by a KnuthBendixImpl instance
-  //! is obviously infinite.
+  //! \returns Whether or not the quotient defined by a \ref_knuth_bendix
+  //! instance is obviously infinite.
   //!
   //! \note If this function returns \c false, it is still possible that the
-  //! quotient defined by the KnuthBendixImpl object \p kb is infinite.
+  //! quotient defined by the \ref_knuth_bendix object \p kb is infinite.
   template <typename Rewriter, typename ReductionOrder>
   bool
   is_obviously_infinite(detail::KnuthBendixImpl<Rewriter, ReductionOrder>& kb) {
