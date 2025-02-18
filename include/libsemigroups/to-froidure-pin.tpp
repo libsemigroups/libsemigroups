@@ -18,6 +18,19 @@
 
 namespace libsemigroups {
 
+  // TODO(0) doc
+  template <typename Word>
+  FroidurePin(Kambites<Word> const&) -> FroidurePin<detail::KE<Word>>;
+
+  // TODO(0) doc
+  template <typename Rewriter, typename ReductionOrder>
+  FroidurePin(detail::KnuthBendixImpl<Rewriter, ReductionOrder> const&)
+      -> FroidurePin<
+          detail::KBE<detail::KnuthBendixImpl<Rewriter, ReductionOrder>>>;
+
+  // TODO(0) doc
+  FroidurePin(detail::ToddCoxeterImpl const&) -> FroidurePin<detail::TCE>;
+
   ////////////////////////////////////////////////////////////////////////
   // Congruence
   ////////////////////////////////////////////////////////////////////////
@@ -153,11 +166,12 @@ namespace libsemigroups {
   to(WordGraph<Node> const& wg, size_t first, size_t last) {
     using Element = typename Result::element_type;
 
-    if (first > last) {
-      LIBSEMIGROUPS_EXCEPTION("the 2nd argument (first node) must be at most "
-                              "the 3rd argument (last node), found {} > {}",
-                              first,
-                              last);
+    if (first >= last) {
+      LIBSEMIGROUPS_EXCEPTION(
+          "the 2nd argument (first node) must be strictly less than"
+          "the 3rd argument (last node), found {} >= {}",
+          first,
+          last);
     } else if (first > wg.number_of_nodes()) {
       LIBSEMIGROUPS_EXCEPTION(
           "the 2nd argument (first node) must be at most the out-degree of the "
@@ -176,15 +190,20 @@ namespace libsemigroups {
     FroidurePin<Element> result;
     Element              x(last - first);
     // Each label corresponds to a generator of S
-    for (Node lbl = 0; lbl < wg.out_degree(); ++lbl) {
-      for (size_t n = first; n < last; ++n) {
-        x[n - first] = wg.target(n, lbl) - first;
+    for (Node a = 0; a < wg.out_degree(); ++a) {
+      for (size_t s = first; s < last; ++s) {
+        auto t = wg.target_no_checks(s, a);
+        if (t != UNDEFINED) {
+          x[s - first] = t - first;
+        } else {
+          x[s - first] = UNDEFINED;
+        }
       }
       // The next loop is required because if element_type is a fixed degree
       // type, such as Transf<5> for example, but first = last = 0, then the
       // degree of x is still 5 not last - first = 0.
-      for (size_t n = last - first; n < x.degree(); ++n) {
-        x[n] = n;
+      for (size_t s = last - first; s < x.degree(); ++s) {
+        x[s] = s;
       }
       validate(x);
       result.add_generator(x);

@@ -43,9 +43,6 @@
       <tab type="user" visible="yes" url="@ref adapters_hpcombi_group" title="Adapters for HPCombi" />
       <tab type="user" visible="yes" url="@ref adapters_pbr_group" title="Adapters for PBR" />
     </tab>
-    <tab type="usergroup" visible="yes" url="@ref converter_group" title="Converters">
-      <tab type="user" visible="yes" url="@ref to_froidure_pin_group" title="to_froidure_pin" />
-    </tab>
     <tab type="usergroup" visible="yes" url="@ref elements_group" title="Elements">
       <tab type="user" visible="yes" url="@ref bipart_group" title="Bipartitions" />
       <tab type="usergroup" visible="yes" url="@ref matrix_group" title="Matrices">
@@ -207,6 +204,10 @@
       </tab>
       <tab type="user" visible="yes" url="@ref todd_coxeter_helpers_group" title="Todd-Coxeter helper functions" />
     </tab>
+    <tab type="usergroup" visible="yes" url="@ref to_group" title="The `to` function">
+      <tab type="user" visible="yes" url="@ref to_froidure_pin_group" title="to<FroidurePin>"/>
+    </tab>
+
     <tab type="user" visible="yes" url="_HEADING_" title="Bibliography" />
     <tab type="user" visible="yes" url="@ref citelist" title="Bibliography" />
     <tab type="user" visible="yes" url="_HEADING_" title="Further info" />
