@@ -59,8 +59,8 @@ namespace libsemigroups {
     REQUIRE(U.size() == 625);
     auto V = to<FroidurePin<Transf<0, uint8_t>>>(wg, 4, 5);
     REQUIRE(V.size() == 1);
-    auto W = to<FroidurePin<Transf<0, uint8_t>>>(wg, 0, 0);
-    REQUIRE(W.size() == 1);
+    REQUIRE_THROWS_AS((to<FroidurePin<Transf<0, uint8_t>>>(wg, 0, 0)),
+                      LibsemigroupsException);
   }
 
   LIBSEMIGROUPS_TEST_CASE("to<FroidurePin>",
