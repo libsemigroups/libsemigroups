@@ -52,12 +52,6 @@
 #include "detail/stl.hpp"         // for IsIterator
 #include "detail/uf.hpp"          // for Duf
 
-#ifdef LIBSEMIGROUPS_EIGEN_ENABLED
-#include "detail/eigen.hpp"
-#else
-#include "matrix.hpp"
-#endif
-
 namespace libsemigroups {
   template <typename Node>
   class WordGraphView {
@@ -65,6 +59,12 @@ namespace libsemigroups {
     using node_type  = Node;
     using label_type = Node;
     using size_type  = std::size_t;
+
+    static_assert(std::is_integral<Node>(),
+                  "the template parameter Node must be an integral type!");
+    static_assert(
+        std::is_unsigned<Node>(),
+        "the template parameter Node must be an unsigned integral type!");
 
     //! The type of an iterator pointing to the nodes of the word graph view.
     using const_iterator_nodes =
@@ -79,19 +79,37 @@ namespace libsemigroups {
     using const_iterator_targets =
         typename detail::DynamicArray2<Node>::const_iterator;
 
-    const WordGraph<Node>* graph;
-
     //! \brief Construct from an existing WordGraphView
     //! \param graph underlying WordGraphView object
     WordGraphView(const WordGraph<Node>* graph,
                   const size_type        start,
                   const size_type        end);
 
+    //! \brief Copy constructor
+    WordGraphView(WordGraphView const&);
+
+    //! \brief Construct from WordGraph with another node type.
+    //!
+    //! This function can be used to construct a WordGraph<Node> as a copy of a
+    //! WordGraph<OtherNode> so long as `sizeof(OtherNode) <= sizeof(Node)`.
+    //!
+    //! \param that the word graph to copy.
+    //!
+    //! \note Any edge with target \ref UNDEFINED in \p that will have target
+    //! `static_cast<Node>(UNDEFINED)` in the constructed word graph.
+    template <typename OtherNode>
+    WordGraphView(WordGraphView<OtherNode> const& that);
+
     //! \brief Construct empty object for future assignment
-    WordGraphView() : _start(0), _end(0), _degree(0), _nr_nodes(0) {}
+    WordGraphView() : _start(0), _end(0), _nr_nodes(0) {}
 
     //! \brief Reshape this view over the same graph
     WordGraphView& init(const size_type start, const size_type end);
+
+    //! \brief Reassign this view to a different graph, keeping the same
+    //! dimensions
+    template <typename OtherNode>
+    WordGraphView<OtherNode>& init(WordGraph<OtherNode> const& that);
 
     // TODO check if this destructor should destruct the underlying graph as
     // well
@@ -130,11 +148,11 @@ namespace libsemigroups {
 
     [[nodiscard]] const_iterator_targets
     cend_targets_no_checks(node_type source) const noexcept {
-      return graph->_dynamic_array_2.cbegin_row(source) + _degree;
+      return graph->_dynamic_array_2.cbegin_row(source) + graph->out_degree();
     }
 
     [[nodiscard]] auto nodes() const noexcept {
-      return rx::seq<node_type>() | rx::take(number_of_nodes());
+      return rx::iterator_range(cbegin_nodes(), cend_nodes());
     }
 
     [[nodiscard]] auto labels() const noexcept {
@@ -147,6 +165,12 @@ namespace libsemigroups {
                                 cend_targets_no_checks(source));
     }
 
+    [[nodiscard]] std::pair<label_type, node_type>
+    next_label_and_target_no_checks(node_type s, label_type a) const;
+
+    [[nodiscard]] std::pair<label_type, node_type>
+    next_label_and_target(node_type s, label_type a) const;
+
     [[nodiscard]] rx::iterator_range<const_iterator_targets>
     targets(node_type source) const;
 
@@ -157,22 +181,66 @@ namespace libsemigroups {
 
     [[nodiscard]] auto labels_and_targets(node_type source) const;
 
+    [[nodiscard]] bool operator==(WordGraphView const& that) const;
+
+    [[nodiscard]] bool operator!=(WordGraphView const& that) const {
+      return !operator==(that);
+    }
+
+    //! \brief Get the target of the edge with given source node and label.
+    //!
+    //! This function returns the target of the edge with source node \p source
+    //! and label \p a.
+    //!
+    //! \param source the node.
+    //! \param a the label.
+    //!
+    //! \returns
+    //! Returns the node adjacent to \p source via the edge labelled \p a, or
+    //! \ref UNDEFINED; both are values of type \ref node_type.
+    //!
+    //! \complexity
+    //! Constant.
+    //!
+    //! \throws LibsemigroupsException if \p source or \p a is not
+    //! valid.
+    // Not noexcept because throw_if_node_out_of_bounds/label aren't
+    [[nodiscard]] node_type target(node_type source, label_type a) const;
+
+    //! \brief Get the target of the edge with given source node and label.
+    //!
+    //! This function returns the target of the edge with source node \p source
+    //! and label \p a.
+    //!
+    //! \param source the node.
+    //! \param a the label.
+    //!
+    //! \returns
+    //! Returns the node adjacent to \p source via the edge labelled \p a, or
+    //! \ref UNDEFINED; both are values of type \ref node_type.
+    //!
+    //! \complexity
+    //! Constant.
+    //!
+    //! \throws LibsemigroupsException if \p source or \p a is not
+    //! valid.
+    // Not noexcept because throw_if_node_out_of_bounds/label aren't
+    [[nodiscard]] node_type target_no_checks(node_type  source,
+                                             label_type a) const;
+
+    const WordGraph<Node>* graph;
+
    private:
     size_type _start;
     size_type _end;
-    size_type _degree;
     size_type _nr_nodes;
   };
 
   namespace word_graph_view {
     template <typename Node1, typename Node2>
     void throw_if_node_out_of_bounds(WordGraphView<Node1> const& wg, Node2 n);
-
-    template <typename Node>
-    auto adjacency_matrix(const WordGraphView<Node>& vgw);
   }  // namespace word_graph_view
 }  // namespace libsemigroups
-
 #include "word-graph-view.tpp"
 
 #endif
