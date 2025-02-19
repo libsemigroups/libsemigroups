@@ -134,7 +134,7 @@ namespace libsemigroups {
 
   template <typename Word>
   struct IncreaseDegree<detail::KE<Word>> {
-    void operator()(detail::KE<Word> const&) const noexcept {}
+    void operator()(detail::KE<Word> const&, size_t) const noexcept {}
   };
 
   template <typename Word>
