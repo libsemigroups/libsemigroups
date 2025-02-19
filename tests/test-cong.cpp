@@ -26,13 +26,14 @@
 #include "libsemigroups/bmat8.hpp"                  // for BMat8
 #include "libsemigroups/cong.hpp"                   // for Congruence
 #include "libsemigroups/froidure-pin.hpp"           // for FroidurePin
+#include "libsemigroups/knuth-bendix-helpers.hpp"   // for knuth_bendix
 #include "libsemigroups/obvinf.hpp"                 // for is_obviously_infinite
 #include "libsemigroups/pbr.hpp"                    // for PBR
 #include "libsemigroups/presentation-examples.hpp"  // for rook_monoid etc
-#include "libsemigroups/to-froidure-pin.hpp"
-#include "libsemigroups/transf.hpp"      // for Transf<>
-#include "libsemigroups/types.hpp"       // for word_type
-#include "libsemigroups/word-range.hpp"  // for literals
+#include "libsemigroups/to-froidure-pin.hpp"        // for to<FroidurePin>
+#include "libsemigroups/transf.hpp"                 // for Transf<>
+#include "libsemigroups/types.hpp"                  // for word_type
+#include "libsemigroups/word-range.hpp"             // for literals
 
 #include "libsemigroups/detail/report.hpp"  // for ReportGuard
 

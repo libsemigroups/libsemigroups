@@ -29,7 +29,7 @@ namespace libsemigroups {
           detail::KBE<detail::KnuthBendixImpl<Rewriter, ReductionOrder>>>;
 
   // TODO(0) doc
-  FroidurePin(detail::ToddCoxeterImpl const&) -> FroidurePin<detail::TCE>;
+  FroidurePin(detail::ToddCoxeterImpl const&)->FroidurePin<detail::TCE>;
 
   ////////////////////////////////////////////////////////////////////////
   // Congruence
@@ -87,12 +87,12 @@ namespace libsemigroups {
 
   template <template <typename...> typename Thing,
             typename Rewriter,
-            typename ReductionOrder,
-            typename Element>
+            typename ReductionOrder>
   auto to(detail::KnuthBendixImpl<Rewriter, ReductionOrder>& kb)
-      -> std::enable_if_t<std::is_same_v<Thing<Element>, FroidurePin<Element>>,
-                          FroidurePin<Element>> {
-    using KBE      = Element;
+      -> std::enable_if_t<
+          std::is_same_v<Thing<int>, FroidurePin<int>>,
+          FroidurePin<
+              detail::KBE<detail::KnuthBendixImpl<Rewriter, ReductionOrder>>>> {
     size_t const n = kb.internal_presentation().alphabet().size();
 
     if (n == 0) {
@@ -106,6 +106,7 @@ namespace libsemigroups {
     kb.run();
 
     FroidurePin result(kb);
+    using KBE = typename decltype(result)::element_type;
     for (size_t i = 0; i < n; ++i) {
       result.add_generator(KBE(kb, i));
     }
@@ -168,7 +169,7 @@ namespace libsemigroups {
 
     if (first >= last) {
       LIBSEMIGROUPS_EXCEPTION(
-          "the 2nd argument (first node) must be strictly less than"
+          "the 2nd argument (first node) must be strictly less than "
           "the 3rd argument (last node), found {} >= {}",
           first,
           last);

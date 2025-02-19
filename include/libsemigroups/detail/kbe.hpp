@@ -29,7 +29,6 @@
 
 #include "libsemigroups/adapters.hpp"      // for One
 #include "libsemigroups/froidure-pin.hpp"  // for FroidurePin
-#include "libsemigroups/knuth-bendix.hpp"  // for KnuthBendixImpl<KnuthBendix_>
 #include "libsemigroups/obvinf.hpp"        // for is_obviously_infinite
 #include "libsemigroups/types.hpp"         // for word_type, letter_type
 
