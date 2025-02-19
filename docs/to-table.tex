@@ -1,0 +1,37 @@
+\documentclass{standalone}
+\usepackage{booktabs}  % For professional tables
+\usepackage{pifont}    % For check and cross symbols
+\usepackage{graphicx}  % For rotating text
+
+\newcommand{\cmark}{\ding{51}}  % Check mark
+\newcommand{\xmark}{\ding{55}}
+
+\begin{document}
+
+\begin{tabular}{l|c|c|c|c|c|c|c|c|c|c}
+  & \rotatebox{90}{\texttt{Congruence}} &
+  \rotatebox{90}{\texttt{Cutting}} &
+  \rotatebox{90}{\texttt{FroidurePin}} &
+  \rotatebox{90}{\texttt{Kambites}}    &
+  \rotatebox{90}{\texttt{KnuthBendix}}    &
+  \rotatebox{90}{\texttt{SchreierSims}}    &
+  \rotatebox{90}{\texttt{Sims1}}    &
+  \rotatebox{90}{\texttt{Sims2}}    &
+  \rotatebox{90}{\texttt{Stephen}}    &
+  \rotatebox{90}{ \texttt{ToddCoxeter}}
+  \\
+  \midrule
+  \texttt{Congruence}  & & & \cmark  &   \\\hline
+  \texttt{Cutting}  & & & \xmark  &   \\\hline
+  \texttt{FroidurePin} & &  & -  &   \\\hline
+  \texttt{Kambites}   && & \cmark  &   \\\hline
+  \texttt{KnuthBendix}& &   & \cmark  &   \\\hline
+  \texttt{SchreierSims}& &   &  \xmark &   \\\hline
+  \texttt{Sims1}  & & &-    &   \\\hline
+  \texttt{Sims2}  & & &-    &   \\\hline
+  \texttt{Stephen}  & & &-    &   \\\hline
+  \texttt{ToddCoxeter} &&   &\cmark   &   \\
+\end{tabular}
+% \cmark = implemented, \xmark = not yet implemented, -
+% = not applicable
+\end{document}
