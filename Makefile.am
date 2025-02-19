@@ -1231,6 +1231,10 @@ test_word_graph_view_SOURCES =  tests/test-word-graph-view.cpp
 test_word_graph_view_SOURCES += tests/test-main.cpp
 test_word_graph_view_SOURCES += tests/catch_amalgamated.cpp
 
+test_word_graph_view_SOURCES =  tests/test-word-graph-view.cpp
+test_word_graph_view_SOURCES += tests/test-main.cpp
+test_word_graph_view_SOURCES += tests/catch_amalgamated.cpp
+
 test_word_range_SOURCES =  tests/test-word-range.cpp
 test_word_range_SOURCES += tests/test-main.cpp
 test_word_range_SOURCES += third_party/Catch2-3.8.0/catch_amalgamated_patch.cpp
