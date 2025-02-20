@@ -279,60 +279,6 @@ namespace libsemigroups {
     // NOTE:  No rvalue ref version because we anyway must copy p multiple times
     Congruence& init(congruence_kind knd, Presentation<Word> const& p);
 
-    //! \ingroup congruence_class_init_group
-    //!
-    //! \brief Construct from congruence_kind, FroidurePin, and WordGraph.
-    //!
-    //! Constructs a \ref_congruence over the FroidurePin instance \p S
-    //! representing a 1- or 2-sided congruence according to \p knd.
-    //!
-    //! \tparam Node the type of the nodes in the 3rd argument \p wg (word
-    //! graph).
-    //!
-    //! \param knd the kind (onesided or twosided) of the congruence.
-    //! \param S a reference to the FroidurePin over which the congruence
-    //! is being defined.
-    //! \param wg the left or right Cayley graph of S.
-    //!
-    //! \exceptions
-    //! \no_libsemigroups_except
-    //!
-    //! \warning This constructor does not check its arguments.
-    template <typename Node>
-    Congruence(congruence_kind        knd,
-               FroidurePinBase&       S,
-               WordGraph<Node> const& wg)
-        : Congruence() {
-      init(knd, S, wg);
-    }
-
-    //! \ingroup congruence_class_init_group
-    //!
-    //! \brief Re-initialize from congruence_kind, FroidurePin, and WordGraph.
-    //!
-    //! This function re-initializes a \ref_congruence instance as if it had
-    //! been newly constructed over the FroidurePin instance \p S representing a
-    //! 1- or 2-sided congruence according to \p knd.
-    //!
-    //! \tparam Node the type of the nodes in the 3rd argument \p wg (word
-    //! graph).
-    //!
-    //! \param knd the kind (onesided or twosided) of the congruence.
-    //! \param S a reference to the FroidurePin over which the congruence
-    //! is being defined.
-    //! \param wg the left or right Cayley graph of S.
-    //!
-    //! \returns A reference to `*this`.
-    //!
-    //! \exceptions
-    //! \no_libsemigroups_except
-    //!
-    //! \warning This constructor does not check its arguments.
-    template <typename Node>
-    Congruence& init(congruence_kind        knd,
-                     FroidurePinBase&       S,
-                     WordGraph<Node> const& wg);
-
     //////////////////////////////////////////////////////////////////////////
     // Congruence - interface requirements - add_generating_pair
     //////////////////////////////////////////////////////////////////////////
@@ -809,6 +755,15 @@ namespace libsemigroups {
       _runner_kinds.push_back(RunnerKind::K);
     }
 
+    template <typename Result, typename Node>
+    friend auto to(congruence_kind        knd,
+                   FroidurePinBase&       fpb,
+                   WordGraph<Node> const& wg)
+        -> std::enable_if_t<
+            std::is_same_v<Congruence<typename Result::native_word_type>,
+                           Result>,
+            Result>;
+
     void init_runners() const;
 
     //////////////////////////////////////////////////////////////////////////
@@ -844,18 +799,6 @@ namespace libsemigroups {
   // superfluous
   template <typename Word>
   Congruence(congruence_kind, Presentation<Word>&&) -> Congruence<Word>;
-
-  //! \ingroup congruence_class_group
-  //!
-  //! \brief Deduction guide.
-  //!
-  //! Defined in `cong-class.hpp`.
-  //!
-  //! Deduction guide to construct a `Congruence<Word>` from a
-  //! \ref congruence_kind, FroidurePinBase, and WordGraph.
-  template <typename Node>
-  Congruence(congruence_kind knd, FroidurePinBase& S, WordGraph<Node> const& wg)
-      -> Congruence<word_type>;
 
   //! \ingroup congruence_class_group
   //!
