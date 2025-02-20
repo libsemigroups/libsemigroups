@@ -779,6 +779,7 @@ EXTRA_PROGRAMS += test_string
 EXTRA_PROGRAMS += test_timer
 EXTRA_PROGRAMS += test_to_froidure_pin
 EXTRA_PROGRAMS += test_to_presentation
+EXTRA_PROGRAMS += test_to_todd_coxeter
 EXTRA_PROGRAMS += test_todd_coxeter
 EXTRA_PROGRAMS += test_transf
 EXTRA_PROGRAMS += test_types
@@ -873,6 +874,7 @@ test_all_SOURCES += tests/test-string.cpp
 test_all_SOURCES += tests/test-timer.cpp
 test_all_SOURCES += tests/test-to-froidure-pin.cpp
 test_all_SOURCES += tests/test-to-presentation.cpp
+test_all_SOURCES += tests/test-to-todd-coxeter.cpp
 test_all_SOURCES += tests/test-todd-coxeter.cpp
 test_all_SOURCES += tests/test-transf.cpp
 test_all_SOURCES += tests/test-types.cpp
@@ -1127,6 +1129,10 @@ test_to_froidure_pin_SOURCES += tests/catch_amalgamated.cpp
 test_to_presentation_SOURCES =  tests/test-to-presentation.cpp
 test_to_presentation_SOURCES += tests/test-main.cpp
 test_to_presentation_SOURCES += tests/catch_amalgamated.cpp
+
+test_to_todd_coxeter_SOURCES =  tests/test-to-todd-coxeter.cpp
+test_to_todd_coxeter_SOURCES += tests/test-main.cpp
+test_to_todd_coxeter_SOURCES += tests/catch_amalgamated.cpp
 
 test_todd_coxeter_SOURCES =  tests/test-todd-coxeter.cpp
 test_todd_coxeter_SOURCES += tests/test-main.cpp

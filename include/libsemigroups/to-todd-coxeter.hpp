@@ -28,36 +28,19 @@ namespace libsemigroups {
 
   class FroidurePinBase;
 
-  // TODO to_todd_coxeter for FroidurePin<TCE> just return the original
+  // TODO(1) to_todd_coxeter for FroidurePin<TCE> just return the original
   // ToddCoxeter instance.
 
-  // TODO(0) remove default template param
-  template <typename Word = word_type, typename Node>
-  ToddCoxeter<Word> to_todd_coxeter(congruence_kind        knd,
-                                    FroidurePinBase&       fpb,
-                                    WordGraph<Node> const& wg) {
-    using node_type =
-        typename detail::ToddCoxeterImpl::word_graph_type::node_type;
-    using label_type =
-        typename detail::ToddCoxeterImpl::word_graph_type::label_type;
-
-    WordGraph<node_type> copy(wg.number_of_nodes() + 1, wg.out_degree());
-
-    for (label_type a = 0; a < copy.out_degree(); ++a) {
-      copy.target_no_checks(0, a, fpb.position_of_generator_no_checks(a) + 1);
-    }
-
-    for (node_type n = 0; n < copy.number_of_nodes() - 1; ++n) {
-      for (label_type a = 0; a < copy.out_degree(); ++a) {
-        copy.target_no_checks(n + 1, a, wg.target_no_checks(n, a) + 1);
-      }
-    }
-    // TODO(1) move "copy" into ToddCoxeter.
-    return ToddCoxeter<Word>(knd, copy);
-  }
+  // TODO(0) to tpp
+  template <typename Result, typename Node>
+  auto to(congruence_kind knd, FroidurePinBase& fpb, WordGraph<Node> const& wg)
+      -> std::enable_if_t<
+          std::is_same_v<ToddCoxeter<typename Result::native_word_type>,
+                         Result>,
+          Result>;
 
   // TODO(0) allow template param "word_type" to be specified
-  template <typename Rewriter, typename ReductionOrder>
+  template <typename Result, typename Rewriter, typename ReductionOrder>
   ToddCoxeter<word_type>
   to_todd_coxeter(congruence_kind                                    knd,
                   detail::KnuthBendixImpl<Rewriter, ReductionOrder>& kb) {
@@ -70,8 +53,10 @@ namespace libsemigroups {
     }
     // TODO why are we doing this? Why not just use the active rules of kb?
     auto fp = to<FroidurePin>(kb);
-    return to_todd_coxeter(knd, fp, fp.right_cayley_graph());
+    return to<ToddCoxeter<word_type>>(knd, fp, fp.right_cayley_graph());
   }
 
 }  // namespace libsemigroups
+
+#include "to-todd-coxeter.tpp"
 #endif  // LIBSEMIGROUPS_TO_TODD_COXETER_HPP_
