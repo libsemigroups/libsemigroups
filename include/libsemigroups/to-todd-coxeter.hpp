@@ -15,23 +15,31 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
+//
+// This file contains declarations for overloads of the "to" function for
+// outputting a ToddCoxeter object.
 
 #ifndef LIBSEMIGROUPS_TO_TODD_COXETER_HPP_
 #define LIBSEMIGROUPS_TO_TODD_COXETER_HPP_
 
-#include "froidure-pin.hpp"
-#include "knuth-bendix-class.hpp"
-#include "to-froidure-pin.hpp"
-#include "todd-coxeter-class.hpp"
+#include <type_traits>  // for is_same_v, enable_if_t
+
+#include "constants.hpp"           // for POSITIVE_INFINITY
+#include "exception.hpp"           // for LIBSEMIGROUPS_EXCEPTION
+#include "froidure-pin.hpp"        // for FroidurePin
+#include "knuth-bendix-class.hpp"  // for KnuthBendix
+#include "to-froidure-pin.hpp"     // for to<FroidurePin>
+#include "todd-coxeter-class.hpp"  // for ToddCoxeter
 
 namespace libsemigroups {
 
-  class FroidurePinBase;
-
-  // TODO(1) to_todd_coxeter for FroidurePin<TCE> just return the original
+  // TODO(1):
+  // * to<ToddCoxeter> for FroidurePin<TCE> just return the original
   // ToddCoxeter instance.
+  // * to<ToddCoxeter<std::string>>(ToddCoxeter<word_type> const&)
+  // * to<ToddCoxeter<std::string>>(KnuthBendix<word_type> const&)
 
-  // TODO(0) to tpp
+  // TODO(0) doc
   template <typename Result, typename Node>
   auto to(congruence_kind knd, FroidurePinBase& fpb, WordGraph<Node> const& wg)
       -> std::enable_if_t<
@@ -39,22 +47,14 @@ namespace libsemigroups {
                          Result>,
           Result>;
 
-  // TODO(0) allow template param "word_type" to be specified
-  template <typename Result, typename Rewriter, typename ReductionOrder>
-  ToddCoxeter<word_type>
-  to_todd_coxeter(congruence_kind                                    knd,
-                  detail::KnuthBendixImpl<Rewriter, ReductionOrder>& kb) {
-    if (kb.number_of_classes() == POSITIVE_INFINITY) {
-      LIBSEMIGROUPS_EXCEPTION(
-          "cannot construct a ToddCoxeterImpl instance using the Cayley graph "
-          "of an infinite KnuthBendixImpl<> object, maybe try "
-          "ToddCoxeterImpl({}, kb.presentation()) instead?",
-          kb.kind());
-    }
-    // TODO why are we doing this? Why not just use the active rules of kb?
-    auto fp = to<FroidurePin>(kb);
-    return to<ToddCoxeter<word_type>>(knd, fp, fp.right_cayley_graph());
-  }
+  // TODO(0) doc
+  template <template <typename...> typename Thing,
+            typename Word,
+            typename Rewriter,
+            typename ReductionOrder>
+  auto to(congruence_kind knd, KnuthBendix<Word, Rewriter, ReductionOrder>& kb)
+      -> std::enable_if_t<std::is_same_v<ToddCoxeter<Word>, Thing<Word>>,
+                          ToddCoxeter<Word>>;
 
 }  // namespace libsemigroups
 

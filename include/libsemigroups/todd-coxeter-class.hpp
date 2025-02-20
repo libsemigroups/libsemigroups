@@ -734,7 +734,7 @@ namespace libsemigroups {
       init(knd, p, wg);
     }
 
-    // TODO(1) a to_todd_coxeter variant that throws if p is not valid
+    // TODO(1) a "make" variant that throws if params are valid
     template <typename Node>
     ToddCoxeter& init(congruence_kind           knd,
                       Presentation<Word> const& p,

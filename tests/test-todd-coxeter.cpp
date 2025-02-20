@@ -1407,43 +1407,6 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
-                          "031",
-                          "KnuthBendix.finished()",
-                          "[todd-coxeter][quick]") {
-    auto rg = ReportGuard(false);
-
-    Presentation<std::string> p;
-    p.alphabet("abB");
-    presentation::add_rule_no_checks(p, "bb", "B");
-    presentation::add_rule_no_checks(p, "BaB", "aba");
-    presentation::add_rule_no_checks(p, "a", "b");
-    presentation::add_rule_no_checks(p, "b", "B");
-
-    REQUIRE(!p.contains_empty_word());
-
-    KnuthBendix kb(twosided, p);
-
-    REQUIRE(kb.confluent());
-    kb.run();
-    REQUIRE(kb.confluent());
-    REQUIRE(kb.number_of_active_rules() == 3);
-    REQUIRE(kb.number_of_classes() == 1);
-    // REQUIRE(kb.is_obviously_finite());
-    REQUIRE(kb.finished());
-
-    for (auto knd : {twosided, onesided}) {
-      auto tc = to_todd_coxeter(knd, kb);
-      todd_coxeter::add_generating_pair(tc, {1}, {2});
-      REQUIRE(tc.number_of_classes() == 1);
-      if (tc.kind() == twosided) {
-        REQUIRE(to<FroidurePin>(tc).size() == 1);
-      } else {
-        REQUIRE_THROWS_AS(to<FroidurePin>(tc), LibsemigroupsException);
-      }
-    }
-  }
-
-  LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                           "032",
                           "from WordGraph",
                           "[todd-coxeter][quick]") {

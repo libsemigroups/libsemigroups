@@ -67,7 +67,7 @@ namespace libsemigroups {
     // presentation this could take place in the Runner so that they are done
     // in parallel
     add_runner(
-        std::make_shared<ToddCoxeter<Word>>(to_todd_coxeter<Word>(knd, S, wg)));
+        std::make_shared<ToddCoxeter<Word>>(to<ToddCoxeter<Word>>(knd, S, wg)));
 
     // FIXME(1) uncommenting the following lines causes multiple issues in the
     // extreme Congruence test
