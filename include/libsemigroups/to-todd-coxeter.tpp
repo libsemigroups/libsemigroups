@@ -16,6 +16,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
+#include "libsemigroups/exception.hpp"
 namespace libsemigroups {
   template <typename Result, typename Node>
   auto to(congruence_kind knd, FroidurePinBase& fpb, WordGraph<Node> const& wg)
@@ -28,6 +29,12 @@ namespace libsemigroups {
     using label_type =
         typename detail::ToddCoxeterImpl::word_graph_type::label_type;
     using Word = typename Result::native_word_type;
+
+    if (&wg != &fpb.left_cayley_graph() && &wg != &fpb.right_cayley_graph()) {
+      LIBSEMIGROUPS_EXCEPTION(
+          "expected the 3rd argument (WordGraph) to be the left_cayley_graph "
+          "or right_cayley_graph of the 2nd argument (FroidurePin)!")
+    }
 
     WordGraph<node_type> copy(wg.number_of_nodes() + 1, wg.out_degree());
 
@@ -58,7 +65,7 @@ namespace libsemigroups {
           "kb.presentation()) instead?",
           kb.kind());
     }
-    auto fp = to<FroidurePin>(kb);
+    auto fp = to<FroidurePin>(kb);  // throws if kb.kind() != twosided
     return to<ToddCoxeter<Word>>(knd, fp, fp.right_cayley_graph());
   }
 

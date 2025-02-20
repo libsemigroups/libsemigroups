@@ -24,11 +24,10 @@ namespace libsemigroups {
           std::is_same_v<Congruence<typename Result::native_word_type>, Result>,
           Result> {
     using Word = typename Result::native_word_type;
-    if (fpb.is_finite() != tril::FALSE) {
-      fpb.run();
-    } else {
+    if (&wg != &fpb.left_cayley_graph() && &wg != &fpb.right_cayley_graph()) {
       LIBSEMIGROUPS_EXCEPTION(
-          "the 2nd argument does not represent a finite semigroup!");
+          "expected the 3rd argument (WordGraph) to be the left_cayley_graph "
+          "or right_cayley_graph of the 2nd argument (FroidurePin)!")
     }
 
     Congruence<Word> cong;

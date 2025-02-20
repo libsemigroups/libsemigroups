@@ -29,26 +29,36 @@
 
 namespace libsemigroups {
 
-  //! \brief Re-initialize from congruence_kind, FroidurePin, and WordGraph.
+  //! \defgroup to_cong_group to<Congruence>
+  //! \ingroup congruence_group
   //!
-  //! This function re-initializes a Congruence instance as if it had been
-  //! newly constructed over the FroidurePin instance \p S representing a 1-
-  //! or 2-sided congruence according to \p knd.
+  //! \brief Convert to Congruence instance
   //!
-  //! \tparam Node the type of the nodes in the 3rd argument \p wg (word
-  //! graph).
+  //! This page contains documentation related to converting a `libsemigroups`
+  //! objects into a Congruence instances.
+
+  //! \ingroup to_cong_group
   //!
-  //! \param knd the kind (onesided or twosided) of the congruence.
-  //! \param S a reference to the FroidurePin over which the congruence
-  //! is being defined.
-  //! \param wg the left or right Cayley graph of S.
+  //! \brief Convert a \ref FroidurePin object to a Congruence object.
   //!
-  //! \returns A reference to `*this`.
+  //! This function converts the \ref FroidurePin object \p fpb into a
+  //! Congruence object using the WordGraph \p wg (which should be either
+  //! the \ref FroidurePinBase::left_cayley_graph or the \ref
+  //! FroidurePinBase::right_cayley_graph of \p fpb).
   //!
-  //! \exceptions
-  //! \no_libsemigroups_except
+  //! \tparam Result used for SFINAE, the return type of this function.
+  //! \tparam Node the type of the nodes in the WordGraph \p wg.
   //!
-  //! \warning This constructor does not check its arguments.
+  //! \param knd the kind of the congruence being constructed.
+  //! \param fpb the FroidurePin instance to be converted.
+  //! \param wg the left or right Cayley graph of \p fpb.
+  //!
+  //! \returns A Congruence object representing the trivial congruence
+  //! over the semigroup defined by \p fpb.
+  //!
+  //! \throws LibsemigroupsException if \p wg is not the
+  //! \ref FroidurePinBase::left_cayley_graph or the \ref
+  //! FroidurePinBase::right_cayley_graph of \p fpb.
   template <typename Result, typename Node>
   auto to(congruence_kind knd, FroidurePinBase& fpb, WordGraph<Node> const& wg)
       -> std::enable_if_t<

@@ -102,6 +102,7 @@
     <tab type="usergroup" visible="yes" url="@ref ranges_group" title="Ranges" />
     <tab type="user" visible="yes" url="@ref ukkonen_group" title="Suffix trees" />
     <tab type="user" visible="yes" url="@ref aho_corasick_group" title="Tries" />
+    <tab type="user" visible="yes" url="@ref to_group" title="The `to` function"/>
     <tab type="user" visible="yes" url="@ref dot_group" title="Visualisation" />
     <tab type="usergroup" visible="yes" url="@ref word_graph_group" title="Word graphs">
       <tab type="user" visible="yes" url="@ref libsemigroups::Forest" title="Forest" />
@@ -143,8 +144,15 @@
         <tab type="user" visible="yes" url="@ref congruence_class_accessors_group" title = "Accessors"/>
       </tab>
       <tab type="user" visible="yes" url="@ref congruence_helpers_group" title="Congruence helper functions"/>
+      <tab type="user" visible="yes" url="@ref to_cong_group" title="to<Congruence>"/>
     </tab>
-    <tab type="user" visible="yes" url="@ref froidure_pin_group" title="Froidure-Pin" />
+    <tab type="usergroup" visible="yes" url="@ref froidure_pin_group" title="Froidure-Pin" >
+      <tab type="user" visible="yes" url="@ref libsemigroups::FroidurePin" title="The FroidurePin class"/>
+      <tab type="user" visible="yes" url="@ref libsemigroups::FroidurePinBase" title="The FroidurePinBase class"/>
+      <tab type="user" visible="yes" url="@ref libsemigroups::FroidurePinTraits" title="The FroidurePinTraits class"/>
+      <tab type="user" visible="yes" url="@ref libsemigroups::froidure_pin" title="FroidurePin helper functions"/>
+      <tab type="user" visible="yes" url="@ref to_froidure_pin_group" title="to<FroidurePin>"/>
+    </tab>
     <tab type="usergroup" visible="yes" url="@ref kambites_group" title="Kambites">
       <tab type="usergroup" visible="yes" url="@ref kambites_class_group" title="The Kambites class">
         <tab type="user" visible="yes" url="@ref kambites_class_mem_types_group" title = "Member types"/>
@@ -203,11 +211,8 @@
         <tab type="user" visible="yes" url="@ref todd_coxeter_class_index_word_group" title="Index -> word"/>
       </tab>
       <tab type="user" visible="yes" url="@ref todd_coxeter_helpers_group" title="Todd-Coxeter helper functions" />
+      <tab type="user" visible="yes" url="@ref to_todd_coxeter_group" title="to<ToddCoxeter>"/>
     </tab>
-    <tab type="usergroup" visible="yes" url="@ref to_group" title="The `to` function">
-      <tab type="user" visible="yes" url="@ref to_froidure_pin_group" title="to<FroidurePin>"/>
-    </tab>
-
     <tab type="user" visible="yes" url="_HEADING_" title="Bibliography" />
     <tab type="user" visible="yes" url="@ref citelist" title="Bibliography" />
     <tab type="user" visible="yes" url="_HEADING_" title="Further info" />

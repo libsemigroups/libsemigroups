@@ -47,15 +47,20 @@ namespace libsemigroups {
   //!
   //! A summary of the overloads available in `libsemigroups` of
   //! `to<ToType>(FromType)` are given below, where the rows correspond to
-  //! `FromType` and the columns to `ToType`:
+  //! `ToType` and the columns to `FromType`:
   //!
   //! \image html to-table.pdf width=60%
   //!
   //! A tick indicates that this conversion is implemented, a cross
   //! that it is not yet implemented, and a dash that no conversion is possible.
+  //!
+  //! See the following for more details:
+  //! * \ref to_cong_group
+  //! * \ref to_froidure_pin_group
+  //! * \ref to_todd_coxeter_group
 
   //! \defgroup to_froidure_pin_group to<FroidurePin>
-  //! \ingroup to_group
+  //! \ingroup froidure_pin_group
   //!
   //! \brief Convert to a FroidurePin instance.
   //!
@@ -149,7 +154,7 @@ namespace libsemigroups {
   //! \tparam Rewriter the second template parameter for \ref_knuth_bendix.
   //! \tparam ReductionOrder the third template parameter for \ref_knuth_bendix.
   //!
-  //! \param k the \ref_knuth_bendix instance to convert.
+  //! \param kb the \ref_knuth_bendix instance to convert.
   //!
   //! \returns A FroidurePin instance.
   //!
@@ -187,13 +192,13 @@ namespace libsemigroups {
   //!
   //! \returns A FroidurePin instance.
   //!
+  //! \throws LibsemigroupsException if `kb.kind()` is not \ref
+  //! congruence_kind.twosided.
+  //!
   //! \warning The returned FroidurePin instance is always infinite, and so any
   //! calls to any member functions that that trigger a full enumeration will
   //! never terminate (or they will when your computer kills the process because
   //! it has run out of memory).
-  //!
-  //! \throws LibsemigroupsException if `kb.kind()` is not \ref
-  //! congruence_kind.twosided.
   template <template <typename...> typename Thing>
   auto to(detail::ToddCoxeterImpl& tc) -> std::enable_if_t<
       std::is_same_v<Thing<detail::TCE>, FroidurePin<detail::TCE>>,
@@ -250,11 +255,12 @@ namespace libsemigroups {
   //! \throws LibsemigroupsException if \p first or \p last exceeds \ref
   //! WordGraph::number_of_nodes.
   //!
-  //! \throws LibsemigroupsException if \ref validate(Result::element_type
-  //! const&) throws for any of the constructed generators. This can
-  //! happen if, for example, the WordGraph is not complete (i.e. there
-  //! exists an edge label and node for which there is no edge with the
-  //! given label and given source) or if there is an edge label such that
+  //! \throws LibsemigroupsException if
+  //! \ref transf::validate(Result::element_type const&) throws for any of the
+  //! constructed generators. This can happen if, for example, the WordGraph is
+  //! not complete (i.e. there exists an edge label and node for which there is
+  //! no edge with the given label and given source) or if there is an edge
+  //! label such that
   //! \f$\{a, \ldots, b - 1\}f \not\subseteq \{a, \ldots, b - 1\}\f$ for the
   //! corresponding \f$f\f$.
   template <typename Result, typename Node>
