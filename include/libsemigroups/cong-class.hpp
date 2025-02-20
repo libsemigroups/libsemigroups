@@ -32,7 +32,6 @@
 
 #include "knuth-bendix-class.hpp"  // for KnuthBendixImpl
 #include "presentation.hpp"        // for Presentation
-#include "to-todd-coxeter.hpp"     // for to_todd_coxeter
 #include "types.hpp"               // for letter_type, wor...
 
 #include "detail/cong-common-class.hpp"  // for detail::CongruenceCommon

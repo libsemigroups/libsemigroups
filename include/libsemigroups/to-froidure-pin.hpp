@@ -23,6 +23,7 @@
 #include <memory>       // for unique_ptr
 #include <type_traits>  // for enable_if_t, is_base_of
 
+#include "cong-class.hpp"          // for Congruence
 #include "froidure-pin.hpp"        // for FroidurePin
 #include "kambites-class.hpp"      // for Kambites
 #include "knuth-bendix-class.hpp"  // for KnuthBendix
