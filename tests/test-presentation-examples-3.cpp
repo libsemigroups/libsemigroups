@@ -34,7 +34,7 @@
 
 namespace libsemigroups {
 
-  LIBSEMIGROUPS_TEST_CASE("pres-examples",
+  LIBSEMIGROUPS_TEST_CASE("Example",
                           "097",
                           "not_symmetric_group(5) GKKL",
                           "[pres-examples][quick]") {
