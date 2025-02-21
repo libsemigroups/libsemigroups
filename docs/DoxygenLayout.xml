@@ -90,14 +90,14 @@
     <tab type="user" visible="yes" url="@ref orders_group" title="Orders" />
     <tab type="usergroup" visible="yes" url="@ref presentations_group" title="Presentations">
       <tab type="user" visible="yes" url="@ref libsemigroups::Presentation"
-        title="Presentation class" />
+        title="The Presentation class" />
       <tab type="user" visible="yes" url="@ref libsemigroups::InversePresentation"
-        title="InversePresentation class" />
+        title="The InversePresentation class" />
       <tab type="usergroup" visible="yes" url="@ref libsemigroups::presentation"
         title="Helper functions" />
       <tab type="usergroup" visible="yes" url="@ref libsemigroups::presentation::examples" title="Examples" />
       <tab type="usergroup" visible="yes" url="@ref to_presentation_group"
-        title="Making presentations from other objects" />
+       title="to<Presentation>" />
     </tab>
     <tab type="usergroup" visible="yes" url="@ref ranges_group" title="Ranges" />
     <tab type="user" visible="yes" url="@ref ukkonen_group" title="Suffix trees" />

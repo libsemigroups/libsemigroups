@@ -58,6 +58,7 @@ namespace libsemigroups {
   //! * \ref to_cong_group
   //! * \ref to_froidure_pin_group
   //! * \ref to_knuth_bendix_group
+  //! * \ref to_presentation_group
   //! * \ref to_todd_coxeter_group
 
   //! \defgroup to_froidure_pin_group to<FroidurePin>

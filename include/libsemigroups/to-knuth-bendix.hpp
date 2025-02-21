@@ -80,7 +80,7 @@ namespace libsemigroups {
   //! This function converts the \ref_todd_coxeter object \p tc into a
   //! \ref_knuth_bendix object using ToddCoxeter::presentation.
   //!
-  //! \tparam Thing used for SFINAE, must be KnuthBendix.
+  //! \tparam Thing used for SFINAE, must be \ref_knuth_bendix.
   //! \tparam Word the type of the words used in relations in \p kb.
   //!
   //! \param knd the kind of the congruence being constructed.

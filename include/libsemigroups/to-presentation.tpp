@@ -167,7 +167,7 @@ namespace libsemigroups {
       std::is_same_v<InversePresentation<Word>, Thing<Word>>,
       InversePresentation<Word>> {
     InversePresentation<Word> result(p);
-    presentation::normalize_alphabet(result);
+    presentation::normalize_alphabet(result);  // calls p.validate
     result.alphabet(2 * result.alphabet().size());
     auto invs = result.alphabet();
 
