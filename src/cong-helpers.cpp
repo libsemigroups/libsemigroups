@@ -37,7 +37,7 @@
 #include "libsemigroups/paths.hpp"                 // for number_of_paths
 #include "libsemigroups/presentation.hpp"          // for add_rule, longest...
 #include "libsemigroups/ranges.hpp"                // for operator|, iterat...
-#include "libsemigroups/to-presentation.hpp"       // for to_presentation
+#include "libsemigroups/to-presentation.hpp"       // for to<Presentation>
 #include "libsemigroups/todd-coxeter-class.hpp"    // for ToddCoxeter<word_type>
 #include "libsemigroups/todd-coxeter-helpers.hpp"  // for index_of
 #include "libsemigroups/types.hpp"                 // for word_type
@@ -74,7 +74,7 @@ namespace libsemigroups {
     //     return non_trivial_classes(*cong.get<ToddCoxeter<word_type>>(), tc);
     //   } else if (cong.has<KnuthBendixImpl<>>()
     //              && cong.get<KnuthBendixImpl<>>()->finished()) {
-    //     KnuthBendix kb(cong.kind(), to_presentation<std::string>(p));
+    //     KnuthBendix kb(cong.kind(), to<Presentation<std::string>>(p));
     //     auto        strings
     //         = non_trivial_classes(kb, *cong.get<KnuthBendix<std::string>>());
     //     std::vector<std::vector<word_type>> result;

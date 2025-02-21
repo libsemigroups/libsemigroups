@@ -187,7 +187,7 @@ namespace libsemigroups {
     REQUIRE(S.size() == 88);
     REQUIRE(S.number_of_rules() == 18);
 
-    TestType cong(twosided, to_presentation<word_type>(S));
+    TestType cong(twosided, to<Presentation<word_type>>(S));
 
     congruence_common::add_generating_pair(
         cong,
@@ -232,7 +232,7 @@ namespace libsemigroups {
     REQUIRE(S.size() == 88);
     REQUIRE(S.number_of_rules() == 18);
 
-    TestType cong(onesided, to_presentation<word_type>(S));
+    TestType cong(onesided, to<Presentation<word_type>>(S));
     congruence::add_generating_pair(
         cong,
         froidure_pin::factorisation(S, Transf<>({3, 4, 4, 4, 4})),

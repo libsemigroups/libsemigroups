@@ -2202,7 +2202,7 @@ namespace libsemigroups {
                                 LeastTransf<6>({0, 1, 2, 3, 4, 0})});
     REQUIRE(S.size() == 46'656);
     REQUIRE(S.number_of_rules() == 7'939);
-    auto     p = to_presentation<word_type>(S);
+    auto     p = to<Presentation<word_type>>(S);
     Kambites k(twosided, p);
     REQUIRE(k.small_overlap_class() == 1);
     REQUIRE(k.kind() == twosided);

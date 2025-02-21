@@ -599,6 +599,42 @@ namespace libsemigroups {
   template <typename Word>
   KnuthBendix(KnuthBendix<Word>&&) -> KnuthBendix<Word>;
 
+  // TODO(0) move to to-presentation if possible
+  //! \ingroup to_presentation_group
+  //!
+  //! \brief Make a presentation from a \ref_knuth_bendix object.
+  //!
+  //! Defined in \c knuth-bendix.hpp.
+  //!
+  //! This function constructs and returns a Presentation object using the
+  //! currently active rules of \p kb.
+  //!
+  //! No enumeration of the argument \p kb is performed, so it might be the
+  //! case that the resulting presentation does not define the same
+  //! semigroup/monoid as \p kb. To ensure that the resulting presentation
+  //! defines the same semigroup as \p kb, run \ref KnuthBendix::run (or any
+  //! other function that fully enumerates \p kb) prior to calling this
+  //! function.
+  //!
+  //! \tparam Word the type of the rules in the presentation being
+  //! constructed.
+  //!
+  //! \param kb the \ref_knuth_bendix object from which to obtain the rules.
+  //!
+  //! \returns An object of type \c Presentation<Word>.
+  //!
+  //! \exceptions
+  //! \no_libsemigroups_except
+  template <template <typename...> typename Thing,
+            typename Word,
+            typename Rewriter,
+            typename ReductionOrder>
+  auto to(KnuthBendix<Word, Rewriter, ReductionOrder>& kb)
+      -> std::enable_if_t<std::is_same_v<Thing<Word>, Presentation<Word>>,
+                          Presentation<Word>> {
+    return to<Presentation<Word>>(kb);
+  }
+
 }  // namespace libsemigroups
 
 #include "knuth-bendix-class.tpp"

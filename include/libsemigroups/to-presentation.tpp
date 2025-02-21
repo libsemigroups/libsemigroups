@@ -18,11 +18,13 @@
 
 namespace libsemigroups {
 
-  template <typename WordOutput>
-  // TODO(later) why not just to_presentation with no template WordOutput,
-  // always use word_type, and can be converted after if desirable
-  Presentation<WordOutput> to_presentation(FroidurePinBase& fp) {
-    Presentation<WordOutput> p;
+  template <typename Result>
+  auto to(FroidurePinBase& fp) -> std::enable_if_t<
+      std::is_same_v<Presentation<typename Result::word_type>, Result>,
+      Result> {
+    using WordOutput = typename Result::word_type;
+
+    Result p;
     p.alphabet(fp.number_of_generators());
     WordOutput lhs, rhs;
     auto       f = [](auto val) {
@@ -43,24 +45,28 @@ namespace libsemigroups {
     return p;
   }
 
-  template <typename WordOutput, typename WordInput, typename Func>
-  auto to_presentation(Presentation<WordInput> const& p, Func&& f)
-      -> std::enable_if_t<
-          std::is_invocable_v<std::decay_t<Func>,
-                              typename Presentation<WordInput>::letter_type>
-              && !std::is_same_v<WordOutput, WordInput>,
-          Presentation<WordOutput>> {
-    p.validate();
+  template <typename Result, typename Word, typename Func>
+  auto to(Presentation<Word> const& p, Func&& f) -> std::enable_if_t<
+      std::is_same_v<Presentation<typename Result::word_type>, Result>
+          && !std::is_same_v<typename Result::word_type, Word>,
+      Result> {
+    using WordOutput = typename Result::word_type;
+
+    static_assert(
+        std::is_invocable_v<std::decay_t<Func>,
+                            typename Presentation<Word>::letter_type>);
+
     // Must call p.validate otherwise f(val) may segfault if val is not in the
     // alphabet
+    p.validate();
 
-    Presentation<WordOutput> result;
+    Result result;
     result.contains_empty_word(p.contains_empty_word());
     WordOutput new_alphabet;
     new_alphabet.resize(p.alphabet().size());
     std::transform(
         p.alphabet().cbegin(), p.alphabet().cend(), new_alphabet.begin(), f);
-    // TODO(later) use alphabet_no_checks when it is implemented
+    // TODO(1) use alphabet_no_checks when it is implemented
     result.alphabet(new_alphabet);
     WordOutput rel;
     for (auto it = p.rules.cbegin(); it != p.rules.cend(); ++it) {
@@ -72,11 +78,13 @@ namespace libsemigroups {
     return result;
   }
 
-  template <typename WordOutput, typename WordInput>
-  auto to_presentation(Presentation<WordInput> const& p)
-      -> std::enable_if_t<!std::is_same_v<WordOutput, WordInput>,
-                          Presentation<WordOutput>> {
-    return to_presentation<WordOutput>(p, [&p](auto val) {
+  template <typename Result, typename Word>
+  auto to(Presentation<Word> const& p) -> std::enable_if_t<
+      std::is_same_v<Presentation<typename Result::word_type>, Result>
+          && !std::is_same_v<typename Result::word_type, Word>,
+      Result> {
+    using WordOutput = typename Result::word_type;
+    return to<Result>(p, [&p](auto val) {
       return words::human_readable_letter<WordOutput>(p.index(val));
     });
   }
@@ -91,7 +99,7 @@ namespace libsemigroups {
           InversePresentation<WordOutput>> {
     ip.validate_word(ip.inverses().begin(), ip.inverses().end());
     InversePresentation<WordOutput> result(
-        std::move(to_presentation<WordOutput>(ip, f)));
+        std::move(to<Presentation<WordOutput>>(ip, f)));
 
     WordOutput new_inverses;
     new_inverses.resize(ip.inverses().size());

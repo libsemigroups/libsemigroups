@@ -16,6 +16,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
+#include "libsemigroups/detail/report.hpp"
 namespace libsemigroups {
 
   namespace detail {
@@ -364,21 +365,23 @@ namespace libsemigroups {
                });
     }
 
+    // TODO(1) export this for use elsewhere
     template <typename Rewriter, typename ReductionOrder>
-    void KnuthBendixImpl<Rewriter, ReductionOrder>::report_presentation(
-        Presentation<std::string> const& p) const {
+    void
+    KnuthBendixImpl<Rewriter, ReductionOrder>::report_presentation() const {
       using detail::group_digits;
-      auto shortest_short
-          = presentation::shortest_rule_length(internal_presentation());
-      auto longest_short
-          = presentation::longest_rule_length(internal_presentation());
+      // Required so that we can use the current presentation and not the
+      // initial one.
+      // TODO(1) remove the const_cast when KnuthBendix const issues are fixed
+      auto p = to<Presentation<std::string>>(
+          *const_cast<KnuthBendixImpl<Rewriter, ReductionOrder>*>(this));
 
       report_default("KnuthBendix: |A| = {}, |R| = {}, "
                      "|u| + |v| \u2208 [{}, {}], \u2211(|u| + |v|) = {}\n",
                      p.alphabet().size(),
                      group_digits(p.rules.size() / 2),
-                     shortest_short,
-                     longest_short,
+                     presentation::shortest_rule_length(p),
+                     presentation::longest_rule_length(p),
                      group_digits(presentation::length(p)));
     }
 
@@ -388,10 +391,7 @@ namespace libsemigroups {
         report_no_prefix("{:+<95}\n", "");
         report_default("KnuthBendix: STARTING . . .\n");
         report_no_prefix("{:+<95}\n", "");
-        // Required so that we can use the current presentation and not the
-        // initial one.
-        auto p = ::libsemigroups::to_presentation<std::string>(*this);
-        report_presentation(p);
+        report_presentation();
       }
     }
 
@@ -467,8 +467,7 @@ namespace libsemigroups {
         }
 
         report_no_prefix("{:-<95}\n", "");
-        auto p = to_presentation<std::string>(*this);
-        report_presentation(p);
+        report_presentation();
 
         report_no_prefix("{:+<95}\n", "");
         report_default("KnuthBendix: STOPPING -- ");
@@ -1029,9 +1028,12 @@ namespace libsemigroups {
         kb.number_of_inactive_rules());
   }
 
-  template <typename Word, typename Rewriter, typename ReductionOrder>
-  Presentation<Word>
-  to_presentation(detail::KnuthBendixImpl<Rewriter, ReductionOrder>& kb) {
+  template <typename Result, typename Rewriter, typename ReductionOrder>
+  auto to(detail::KnuthBendixImpl<Rewriter, ReductionOrder>& kb)
+      -> std::enable_if_t<
+          std::is_same_v<Presentation<typename Result::word_type>, Result>,
+          Result> {
+    using Word = typename Result::word_type;
     if constexpr (std::is_same_v<Word, std::string>) {
       auto const&               p_orig = kb.internal_presentation();
       Presentation<std::string> p;
@@ -1043,7 +1045,9 @@ namespace libsemigroups {
       }
       return p;
     } else {
-      return to_presentation<Word>(to_presentation<std::string>(kb));
+      // TODO(1) avoid double copy here
+      return to<Presentation<Word>>(to<Presentation<std::string>>(kb));
     }
   }
+
 }  // namespace libsemigroups

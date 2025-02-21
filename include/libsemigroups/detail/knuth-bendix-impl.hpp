@@ -50,7 +50,7 @@
 #include "libsemigroups/order.hpp"            // for ShortLexCompare
 #include "libsemigroups/presentation.hpp"     // for operator!=
 #include "libsemigroups/ranges.hpp"           // for count, iterato...
-#include "libsemigroups/to-presentation.hpp"  // for to_presentation
+#include "libsemigroups/to-presentation.hpp"  // for to<Presentation>
 #include "libsemigroups/types.hpp"            // for congruence_kind
 #include "libsemigroups/word-graph.hpp"       // for WordGraph, to_...
 #include "libsemigroups/word-range.hpp"       // for to_human_reada...
@@ -880,7 +880,7 @@ namespace libsemigroups {
       // KnuthBendixImpl - private member functions
       //////////////////////////////////////////////////////////////////////////
 
-      void report_presentation(Presentation<std::string> const&) const;
+      void report_presentation() const;
       void report_before_run();
       void report_progress_from_thread(std::atomic_bool const&);
       void report_after_run();
@@ -990,41 +990,13 @@ namespace libsemigroups {
   to_human_readable_repr(detail::KnuthBendixImpl<Rewriter, ReductionOrder>& kb);
 #endif
 
-  //! \ingroup to_presentation_group
-  //!
-  //! \brief Make a presentation from a \ref_knuth_bendix object.
-  //!
-  //! Defined in \c knuth-bendix.hpp.
-  //!
-  //! This function constructs and returns a Presentation object using the
-  //! currently active rules of \p kb.
-  //!
-  //! No enumeration of the argument \p kb is performed, so it might be the
-  //! case that the resulting presentation does not define the same
-  //! semigroup/monoid as \p kb. To ensure that the resulting presentation
-  //! defines the same semigroup as \p kb, run \ref KnuthBendix::run (or any
-  //! other function that fully enumerates \p kb) prior to calling this
-  //! function.
-  //!
-  //! \tparam Word the type of the rules in the presentation being
-  //! constructed.
-  //!
-  //! \param kb the \ref_knuth_bendix object from which to obtain the rules.
-  //!
-  //! \returns An object of type \c Presentation<Word>.
-  //!
-  //! \exceptions
-  //! \no_libsemigroups_except
-  // This cannot go into to-presentation.hpp since we include that here
-#if LIBSEMIGROUPS_PARSED_BY_DOXYGEN
-  template <typename Word, typename Rewriter, typename ReductionOrder>
-  Presentation<Word>
-  to_presentation(KnuthBendix<Word, Rewriter, ReductionOrder>& kb);
-#else
-  template <typename Word, typename Rewriter, typename ReductionOrder>
-  Presentation<Word>
-  to_presentation(detail::KnuthBendixImpl<Rewriter, ReductionOrder>& kb);
-#endif
+  //! No doc
+  // TODO(1) kb should be const
+  template <typename Result, typename Rewriter, typename ReductionOrder>
+  auto to(detail::KnuthBendixImpl<Rewriter, ReductionOrder>& kb)
+      -> std::enable_if_t<
+          std::is_same_v<Presentation<typename Result::word_type>, Result>,
+          Result>;
 
 }  // namespace libsemigroups
 

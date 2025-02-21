@@ -151,7 +151,7 @@ namespace libsemigroups {
     presentation::add_rule(p, "ef", "dg");
     check_from_ke(p);
     check_from_ke<std::string, detail::MultiStringView>(p);
-    check_from_ke<word_type>(to_presentation<word_type>(p));
+    check_from_ke<word_type>(to<Presentation<word_type>>(p));
   }
 
   LIBSEMIGROUPS_TEST_CASE("to<FroidurePin>",
@@ -165,8 +165,9 @@ namespace libsemigroups {
     REQUIRE_THROWS_AS(check_from_ke(p), LibsemigroupsException);
     REQUIRE_THROWS_AS((check_from_ke<std::string, detail::MultiStringView>(p)),
                       LibsemigroupsException);
-    REQUIRE_THROWS_AS((check_from_ke<word_type>(to_presentation<word_type>(p))),
-                      LibsemigroupsException);
+    REQUIRE_THROWS_AS(
+        (check_from_ke<word_type>(to<Presentation<word_type>>(p))),
+        LibsemigroupsException);
   }
 
   LIBSEMIGROUPS_TEST_CASE("to<FroidurePin>",
@@ -178,7 +179,7 @@ namespace libsemigroups {
     S.add_generator(Transf<>({1, 0}));
     S.add_generator(Transf<>({0, 0}));
 
-    KnuthBendix kb(twosided, to_presentation<word_type>(S));
+    KnuthBendix kb(twosided, to<Presentation<word_type>>(S));
     auto        s = to<FroidurePin>(kb);
     REQUIRE(s.size() == kb.number_of_classes());
     REQUIRE(s.size() == 4);

@@ -47,7 +47,7 @@ namespace libsemigroups {
   //!
   //! This function converts the \ref FroidurePin object \p fpb into a
   //! \ref_knuth_bendix object using the presentation obtained using \ref
-  //! to_presentation(FroidurePinBase&).
+  //! to<Presentation<Word>>(FroidurePinBase&).
   //!
   //! \tparam Result used for SFINAE, the return type of this function, must be
   //! \c KnuthBendix<Word> for some type \c Word
@@ -62,7 +62,7 @@ namespace libsemigroups {
       std::is_same_v<KnuthBendix<typename Result::native_word_type>, Result>,
       Result> {
     using Word = typename Result::native_word_type;
-    return KnuthBendix<Word>(knd, to_presentation<Word>(fpb));
+    return KnuthBendix<Word>(knd, to<Presentation<Word>>(fpb));
   }
 
   //! \ingroup to_knuth_bendix_group

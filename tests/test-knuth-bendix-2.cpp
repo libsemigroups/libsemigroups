@@ -1623,7 +1623,7 @@ namespace libsemigroups {
     presentation::add_idempotent_rules_no_checks(p, p.alphabet());
 
     KnuthBendix<std::string, TestType> kb(twosided,
-                                          to_presentation<std::string>(p));
+                                          to<Presentation<std::string>>(p));
     kb.run();
 
     REQUIRE(knuth_bendix::reduce(kb, "cbda") == "bcda");
@@ -1834,7 +1834,7 @@ namespace libsemigroups {
     p.contains_empty_word(true);
 
     KnuthBendix<word_type, TestType> kb(twosided, p);
-    p = to_presentation<word_type>(kb);
+    p = to<Presentation>(kb);
 
     auto S = to<FroidurePin>(kb);
     REQUIRE(S.contains_one());

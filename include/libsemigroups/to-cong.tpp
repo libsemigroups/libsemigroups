@@ -49,10 +49,10 @@ namespace libsemigroups {
     // We can no longer add the following runner if wg is the left_cayley_graph
     // of fpb, then the below will compute the corresponding right congruence,
     // which is unavoidable. TODO(1) reconsider this?
-    // auto tc = ToddCoxeter<Word>(knd, to_presentation<Word>(fpb));
+    // auto tc = ToddCoxeter<Word>(knd, to<Presentation<Word>>(fpb));
     // add_runner(std::make_shared<ToddCoxeter<Word>>(std::move(tc)));
 
-    // tc = ToddCoxeter<Word>(knd, to_presentation<Word>(fpb));
+    // tc = ToddCoxeter<Word>(knd, to<Presentation<Word>>(fpb));
     // tc.strategy(ToddCoxeter<Word>::options::strategy::felsch);
     // add_runner(std::make_shared<ToddCoxeter<Word>>(std::move(tc)));
 

@@ -16,6 +16,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
+// TODO(0) use template test case
+
 #include <algorithm>         // for fill,  max_element
 #include <cctype>            // for isprint
 #include <cstdint>           // for uint8_t, uint16_t
@@ -33,7 +35,7 @@
 #include "libsemigroups/exception.hpp"        // for LibsemigroupsException
 #include "libsemigroups/froidure-pin.hpp"     // for FroidurePin
 #include "libsemigroups/presentation.hpp"     // for Presentation, change_...
-#include "libsemigroups/to-presentation.hpp"  // for to_presentation
+#include "libsemigroups/to-presentation.hpp"  // for to<Presentation>
 #include "libsemigroups/types.hpp"            // for word_type
 
 #include "libsemigroups/detail/containers.hpp"  // for StaticVector1, operat...
@@ -53,7 +55,7 @@ namespace libsemigroups {
       S.add_generator(Bipartition({{1, 2}, {3, -3}, {4, -4}, {-1, -2}}));
       REQUIRE(S.size() == 105);
 
-      auto p = to_presentation<W>(S);
+      auto p = to<Presentation<W>>(S);
       REQUIRE(p.alphabet().size() == 4);
       REQUIRE(p.rules.size() == 86);
       REQUIRE(presentation::length(p) == 359);
@@ -81,7 +83,7 @@ namespace libsemigroups {
       }
       p.validate();
 
-      Presentation<W2> q = to_presentation<W2>(p);
+      Presentation<W2> q = to<Presentation<W2>>(p);
       REQUIRE(q.contains_empty_word());
 
       if constexpr (std::is_same_v<W2, std::string>) {
@@ -105,7 +107,7 @@ namespace libsemigroups {
       p.validate();
 
       // Check two conversions gets you back to where you started
-      REQUIRE(p == to_presentation<W1>(q));
+      REQUIRE(p == to<Presentation<W1>>(q));
     }
 
     template <typename W1, typename W2>
@@ -124,7 +126,7 @@ namespace libsemigroups {
       auto f1 = [&p](auto val) {
         return words::human_readable_letter<W2>(p.index(val) + 7);
       };
-      Presentation<W2> q = to_presentation<W2>(p, f1);
+      Presentation<W2> q = to<Presentation<W2>>(p, f1);
       REQUIRE(q.contains_empty_word());
       if constexpr (std::is_same_v<W2, std::string>) {
         REQUIRE(q.alphabet() == "hij");
@@ -136,7 +138,7 @@ namespace libsemigroups {
       q.validate();
 
       auto             f2 = [&p](auto val) { return p.index(val); };
-      Presentation<W2> r  = to_presentation<W2>(p, f2);
+      Presentation<W2> r  = to<Presentation<W2>>(p, f2);
       REQUIRE(r.contains_empty_word());
       REQUIRE(r.alphabet() == W2({0, 1, 2}));
       REQUIRE(r.rules == std::vector<W2>({{0, 1, 2}, {0, 1}, {0, 1, 2}, {}}));
@@ -232,7 +234,7 @@ namespace libsemigroups {
 
   using detail::StaticVector1;
 
-  LIBSEMIGROUPS_TEST_CASE("to_presentation",
+  LIBSEMIGROUPS_TEST_CASE("to<Presentation>",
                           "000",
                           "from FroidurePin",
                           "[quick][to_presentation]") {
@@ -242,7 +244,7 @@ namespace libsemigroups {
     check_to_presentation_from_froidure_pin<std::string>();
   }
 
-  LIBSEMIGROUPS_TEST_CASE("to_presentation",
+  LIBSEMIGROUPS_TEST_CASE("to<Presentation>",
                           "001",
                           "from FroidurePin and alphabet",
                           "[quick][to_presentation]") {
@@ -253,7 +255,7 @@ namespace libsemigroups {
     S.add_generator(Bipartition({{1, 2}, {3, -3}, {4, -4}, {-1, -2}}));
     REQUIRE(S.size() == 105);
 
-    auto p = to_presentation<std::string>(S);
+    auto p = to<Presentation<std::string>>(S);
     // Alphabet too small
     REQUIRE_THROWS_AS(presentation::change_alphabet(p, "abc"),
                       LibsemigroupsException);
@@ -271,7 +273,7 @@ namespace libsemigroups {
     REQUIRE(presentation::longest_subword_reducing_length(p) == "bcb");
   }
 
-  LIBSEMIGROUPS_TEST_CASE("to_presentation",
+  LIBSEMIGROUPS_TEST_CASE("to<Presentation>",
                           "002",
                           "presentation from presentation",
                           "[quick][to_presentation]") {
@@ -292,7 +294,7 @@ namespace libsemigroups {
     //                                         StaticVector1<uint8_t, 3>>();
   }
 
-  LIBSEMIGROUPS_TEST_CASE("to_presentation",
+  LIBSEMIGROUPS_TEST_CASE("to<Presentation>",
                           "003",
                           "presentation from presentation with function",
                           "[quick][to_presentation]") {
@@ -314,7 +316,7 @@ namespace libsemigroups {
         std::string>();
   }
 
-  LIBSEMIGROUPS_TEST_CASE("to_presentation",
+  LIBSEMIGROUPS_TEST_CASE("to<Presentation>",
                           "004",
                           "presentation from presentation and alphabet",
                           "[quick][to_presentation]") {
@@ -325,13 +327,13 @@ namespace libsemigroups {
     presentation::add_rule_no_checks(p, {0, 1, 2}, {});
     // intentionally bad
     REQUIRE_THROWS_AS(p.validate(), LibsemigroupsException);
-    REQUIRE_THROWS_AS(to_presentation<std::string>(p), LibsemigroupsException);
+    REQUIRE_THROWS_AS(to<Presentation<std::string>>(p), LibsemigroupsException);
 
     p.alphabet_from_rules();
     REQUIRE(p.alphabet() == word_type({0, 1, 2}));
     p.validate();
     REQUIRE(p.contains_empty_word());
-    auto q = to_presentation<std::string>(p);
+    auto q = to<Presentation<std::string>>(p);
     presentation::change_alphabet(q, "abc");
     REQUIRE(q.alphabet() == "abc");
     REQUIRE(q.contains_empty_word());
@@ -339,7 +341,7 @@ namespace libsemigroups {
     q.validate();
   }
 
-  LIBSEMIGROUPS_TEST_CASE("to_presentation",
+  LIBSEMIGROUPS_TEST_CASE("to<Presentation>",
                           "005",
                           "use human readable alphabet for to_presentation",
                           "[quick][presentation]") {
@@ -348,10 +350,10 @@ namespace libsemigroups {
     p.contains_empty_word(true);
     presentation::add_rule(p, {0, 1}, {});
 
-    auto q = to_presentation<std::string>(p);
+    auto q = to<Presentation<std::string>>(p);
     REQUIRE(q.alphabet() == "ab");
     REQUIRE(q.rules == std::vector<std::string>({"ab", ""}));
-    q = to_presentation<std::string>(p);
+    q = to<Presentation<std::string>>(p);
     presentation::change_alphabet(q, "xy");
     REQUIRE(q.alphabet() == "xy");
     REQUIRE(q.rules == std::vector<std::string>({"xy", ""}));

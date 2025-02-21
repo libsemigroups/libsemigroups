@@ -40,7 +40,7 @@
 #include "libsemigroups/presentation-examples.hpp"  // for presentation::examples
 #include "libsemigroups/presentation.hpp"           // for longest_rule_length
 #include "libsemigroups/ranges.hpp"                 // for operator|, to_vector
-#include "libsemigroups/to-presentation.hpp"        // for to_presentation
+#include "libsemigroups/to-presentation.hpp"        // for to<Presentation>
 #include "libsemigroups/types.hpp"       // for congruence_kind, word_type
 #include "libsemigroups/word-graph.hpp"  // for is_complete
 #include "libsemigroups/word-range.hpp"  // for operator""_w, to_string
@@ -60,14 +60,14 @@ namespace libsemigroups {
 
   using namespace presentation::examples;
 
-  LIBSEMIGROUPS_TEST_CASE("pres-examples",
+  LIBSEMIGROUPS_TEST_CASE("Example",
                           "085",
                           "chinese_monoid(3)",
-                          "[pres-examples][quick]") {
+                          "[Example][quick]") {
     auto rg = ReportGuard(false);
 
     KnuthBendix kb(congruence_kind::twosided,
-                   to_presentation<std::string>(chinese_monoid(3)));
+                   to<Presentation<std::string>>(chinese_monoid(3)));
     REQUIRE(is_obviously_infinite(kb));
     REQUIRE(kb.number_of_classes() == POSITIVE_INFINITY);
     REQUIRE(kb.presentation().rules
@@ -93,10 +93,10 @@ namespace libsemigroups {
   // Note that the alphabet order matters here, if the lhs of the first
   // relation is abc instead of bac (or rather the alphabet is re-ordered so
   // that the first rule is abc), then this runs forever.
-  LIBSEMIGROUPS_TEST_CASE("pres-examples",
+  LIBSEMIGROUPS_TEST_CASE("Example",
                           "086",
                           "plactic_monoid(3)",
-                          "[pres-examples][quick]") {
+                          "[Example][quick]") {
     auto rg = ReportGuard(false);
     REQUIRE(plactic_monoid(3).rules
             == std::vector<word_type>({102_w,
@@ -115,7 +115,7 @@ namespace libsemigroups {
                                        121_w,
                                        221_w,
                                        212_w}));
-    auto p = to_presentation<std::string>(plactic_monoid(3));
+    auto p = to<Presentation<std::string>>(plactic_monoid(3));
     REQUIRE(p.rules
             == std::vector<std::string>({"bac",
                                          "bca",
@@ -171,20 +171,20 @@ namespace libsemigroups {
     REQUIRE(knuth_bendix::normal_forms(kb).min(1).max(5).count() == 70);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("pres-examples",
+  LIBSEMIGROUPS_TEST_CASE("Example",
                           "087",
                           "stylic_monoid(4)",
-                          "[pres-examples][quick]") {
+                          "[Example][quick]") {
     auto        rg = ReportGuard(false);
     KnuthBendix kb(congruence_kind::twosided, stylic_monoid(4));
     // REQUIRE(kb.number_of_classes() == 51);
     REQUIRE(knuth_bendix::normal_forms(kb).min(0).max(6).count() == 50);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("pres-examples",
+  LIBSEMIGROUPS_TEST_CASE("Example",
                           "088",
                           "hypo_plactic_monoid(3)",
-                          "[pres-examples][quick]") {
+                          "[Example][quick]") {
     auto rg = ReportGuard(false);
 
     KnuthBendix kb(congruence_kind::twosided, hypo_plactic_monoid(3));
@@ -206,10 +206,10 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE(
-      "pres-examples",
+      "Example",
       "089",
       "not_renner_type_B_monoid(3, 1) (Godelle presentation)",
-      "[quick][pres-examples][hivert][no-valgrind]") {
+      "[quick][Example][hivert][no-valgrind]") {
     auto        rg = ReportGuard(false);
     KnuthBendix kb(congruence_kind::twosided, not_renner_type_B_monoid(3, 1));
     REQUIRE(!is_obviously_infinite(kb));
@@ -218,10 +218,10 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE(
-      "pres-examples",
+      "Example",
       "090",
       "not_renner_type_B_monoid(3, 0) (Godelle presentation)",
-      "[quick][pres-examples][hivert][no-valgrind]") {
+      "[quick][Example][hivert][no-valgrind]") {
     auto        rg = ReportGuard(false);
     KnuthBendix kb(congruence_kind::twosided, not_renner_type_B_monoid(3, 0));
     REQUIRE(!is_obviously_infinite(kb));
@@ -230,10 +230,10 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE(
-      "pres-examples",
+      "Example",
       "091",
       "not_renner_type_D_monoid(2, 1) (Godelle presentation)",
-      "[quick][pres-examples][hivert]") {
+      "[quick][Example][hivert]") {
     auto        rg = ReportGuard(false);
     KnuthBendix kb(congruence_kind::twosided, not_renner_type_D_monoid(2, 1));
     REQUIRE(kb.presentation().rules.size() == 68);
@@ -243,10 +243,10 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE(
-      "pres-examples",
+      "Example",
       "092",
       "not_renner_type_D_monoid(2, 0) (Godelle presentation)",
-      "[quick][pres-examples][hivert]") {
+      "[quick][Example][hivert]") {
     auto        rg = ReportGuard(false);
     KnuthBendix kb(congruence_kind::twosided, not_renner_type_D_monoid(2, 0));
 
@@ -256,10 +256,10 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE(
-      "pres-examples",
+      "Example",
       "093",
       "not_renner_type_D_monoid(3, 1) (Godelle presentation)",
-      "[quick][pres-examples][hivert][no-valgrind]") {
+      "[quick][Example][hivert][no-valgrind]") {
     auto        rg = ReportGuard(false);
     KnuthBendix kb(congruence_kind::twosided, not_renner_type_D_monoid(3, 1));
     REQUIRE(kb.presentation().rules.size() == 130);
@@ -268,10 +268,10 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE(
-      "pres-examples",
+      "Example",
       "094",
       "not_renner_type_D_monoid(3, 0) (Godelle presentation)",
-      "[quick][pres-examples][hivert][no-valgrind]") {
+      "[quick][Example][hivert][no-valgrind]") {
     auto        rg = ReportGuard(false);
     KnuthBendix kb(congruence_kind::twosided, not_renner_type_D_monoid(3, 0));
     REQUIRE(kb.presentation().rules.size() == 130);
@@ -280,10 +280,10 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE(
-      "pres-examples",
+      "Example",
       "095",
       "not_renner_type_D_monoid(4, 1) (Godelle presentation)",
-      "[quick][pres-examples][hivert][no-valgrind]") {
+      "[quick][Example][hivert][no-valgrind]") {
     auto        rg = ReportGuard(false);
     KnuthBendix kb(congruence_kind::twosided, not_renner_type_D_monoid(4, 1));
     REQUIRE(kb.presentation().rules.size() == 204);
@@ -293,10 +293,10 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE(
-      "pres-examples",
+      "Example",
       "096",
       "not_renner_type_D_monoid(4, 0) (Godelle presentation)",
-      "[quick][pres-examples][hivert][no-valgrind]") {
+      "[quick][Example][hivert][no-valgrind]") {
     auto        rg = ReportGuard(false);
     KnuthBendix kb(congruence_kind::twosided, not_renner_type_D_monoid(4, 0));
     REQUIRE(kb.presentation().rules.size() == 204);
