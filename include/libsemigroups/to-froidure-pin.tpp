@@ -30,7 +30,7 @@ namespace libsemigroups {
       -> FroidurePin<
           detail::KBE<detail::KnuthBendixImpl<Rewriter, ReductionOrder>>>;
 
-  FroidurePin(detail::ToddCoxeterImpl const&) -> FroidurePin<detail::TCE>;
+  FroidurePin(detail::ToddCoxeterImpl const&)->FroidurePin<detail::TCE>;
 
   ////////////////////////////////////////////////////////////////////////
   // Congruence
