@@ -2,9 +2,10 @@
 \usepackage{booktabs}  % For professional tables
 \usepackage{pifont}    % For check and cross symbols
 \usepackage{graphicx}  % For rotating text
+\usepackage[table]{xcolor}
 
-\newcommand{\cmark}{\ding{51}}  % Check mark
-\newcommand{\xmark}{\ding{55}}
+\newcommand{\cmark}{\cellcolor{green!25}\ding{51}}  % Check mark
+\newcommand{\xmark}{\cellcolor{red!25}\ding{55}}
 
 \begin{document}
 
@@ -14,6 +15,7 @@
   \rotatebox{90}{\texttt{FroidurePin}} &
   \rotatebox{90}{\texttt{Kambites}}    &
   \rotatebox{90}{\texttt{KnuthBendix}}    &
+  \rotatebox{90}{\texttt{Konieczny}}    &
   \rotatebox{90}{\texttt{SchreierSims}}    &
   %\rotatebox{90}{\texttt{Sims1}}    &
   %\rotatebox{90}{\texttt{Sims2}}    &
@@ -22,21 +24,25 @@
   \\
   \midrule
   \texttt{to<Congruence>}& \xmark& \xmark& \cmark& \xmark& \xmark& \xmark&
-  \xmark& \xmark\\\hline
+  \xmark& \xmark & \xmark\\\hline
   \texttt{to<Cutting>} & \xmark& \xmark& \xmark& \xmark& \xmark& \xmark&
-  \xmark& \xmark\\\hline
+  \xmark& \xmark & \xmark\\\hline
   \texttt{to<FroidurePin>} & \cmark& \xmark & \xmark & \cmark  &
-  \cmark & \xmark
-  & \xmark & \cmark \\\hline
+  \cmark & \xmark & \xmark  &\xmark &\cmark \\\hline
   \texttt{to<Kambites>} & \xmark& \xmark& \xmark& \xmark& \xmark& \xmark&
-  \xmark& \xmark\\\hline
-  \texttt{to<KnuthBendix>}& &   &   &   \\\hline
-  \texttt{to<SchreierSims>}& &   &   &   \\\hline
+  \xmark& \xmark & \xmark\\\hline
+  \texttt{to<KnuthBendix>} & \xmark& \xmark& \cmark& \xmark& \xmark& \xmark&
+  \xmark& \xmark & \cmark\\\hline
+  \texttt{to<Konieczny>} & \xmark& \xmark& \xmark& \xmark& \xmark& \xmark&
+  \xmark& \xmark & \xmark\\\hline
+  \texttt{to<SchreierSims>} & \xmark& \xmark& \xmark& \xmark& \xmark& \xmark&
+  \xmark& \xmark & \xmark\\\hline
   %\texttt{to<Sims1>}  & & &    &   \\\hline
   %\texttt{to<Sims2>}  & & &    &   \\\hline
-  \texttt{to<Stephen>}  & & &    &   \\\hline
+  \texttt{to<Stephen>} & \xmark& \xmark& \xmark& \xmark& \xmark& \xmark&
+  \xmark& \xmark & \xmark\\\hline
   \texttt{to<ToddCoxeter>} &\xmark & \xmark & \cmark & \xmark & \cmark & \xmark
-  & \xmark & \xmark \\
+  & \xmark & \xmark  & \xmark\\
 \end{tabular}
 % \cmark = implemented, \xmark = not yet implemented, -
 % = not applicable

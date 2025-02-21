@@ -2309,7 +2309,7 @@ namespace libsemigroups {
     REQUIRE(words::human_readable_index('a') == 0);
     REQUIRE(reduce(tc, "aaaaaaaaaaaaaaaaaaa") == "a");
     auto S = to<FroidurePin>(tc);
-    REQUIRE(to_knuth_bendix(twosided, S).confluent());
+    REQUIRE(to<KnuthBendix<word_type>>(twosided, S).confluent());
   }
 
   // Second of BHN's series of increasingly complicated presentations
@@ -4443,7 +4443,7 @@ namespace libsemigroups {
       presentation::add_rule(p, pow({a}, 3), {a});
     }
     using words::operator+;
-    WordRange    words;
+    WordRange words;
     words.alphabet_size(n).min(0).max(8);
 
     for (size_t a = 0; a < n - 1; ++a) {
@@ -4838,7 +4838,7 @@ namespace libsemigroups {
 
     auto S = to<FroidurePin>(tc);
     REQUIRE((froidure_pin::rules(S) | rx::count()) == 17'785);
-    auto kb = to_knuth_bendix(twosided, S);
+    auto kb = to<KnuthBendix<word_type>>(twosided, S);
     auto q  = kb.presentation();
   }
 

@@ -1,6 +1,6 @@
 //
 // libsemigroups - C++ library for semigroups and monoids
-// Copyright (C) 2023 James D. Mitchell
+// Copyright (C) 2025 James D. Mitchell
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -25,12 +25,78 @@ namespace libsemigroups {
   class FroidurePinBase;
   enum class congruence_kind;
 
-  KnuthBendix<word_type> to_knuth_bendix(congruence_kind  knd,
-                                         FroidurePinBase& fp);
+  //! \defgroup to_knuth_bendix_group to<KnuthBendix>
+  //! \ingroup todd_coxeter_group
+  //!
+  //! \brief Convert to \ref_knuth_bendix instance
+  //!
+  //! This page contains documentation related to converting `libsemigroups`
+  //! objects into \ref_knuth_bendix instances.
 
-  template <typename Word>
-  KnuthBendix<Word> to_knuth_bendix(congruence_kind          knd,
-                                    ToddCoxeter<Word> const& tc) {
+  //! \ingroup to_knuth_bendix_group
+  //!
+  //! \brief Convert a \ref FroidurePin object to a \ref_knuth_bendix object.
+  //!
+  //! Defined in \c to-knuth-bendix.hpp
+  //!
+  //! Despite the hideous signature, this function should be invoked as follows:
+  //!
+  //! \code
+  //! to<KnuthBendix<Word>>(knd, fpb);
+  //! \endcode
+  //!
+  //! This function converts the \ref FroidurePin object \p fpb into a
+  //! \ref_knuth_bendix object using the presentation obtained using \ref
+  //! to_presentation(FroidurePinBase&).
+  //!
+  //! \tparam Result used for SFINAE, the return type of this function, must be
+  //! \c KnuthBendix<Word> for some type \c Word
+  //!
+  //! \param knd the kind of the congruence being constructed.
+  //! \param fpb the FroidurePin instance to be converted.
+  //!
+  //! \returns A \ref_knuth_bendix object representing the trivial congruence
+  //! over the semigroup defined by \p fpb.
+  template <typename Result>
+  auto to(congruence_kind knd, FroidurePinBase& fpb) -> std::enable_if_t<
+      std::is_same_v<KnuthBendix<typename Result::native_word_type>, Result>,
+      Result> {
+    using Word = typename Result::native_word_type;
+    return KnuthBendix<Word>(knd, to_presentation<Word>(fpb));
+  }
+
+  //! \ingroup to_knuth_bendix_group
+  //!
+  //! \brief Convert a \ref_todd_coxeter object to a \ref_knuth_bendix object.
+  //!
+  //! Defined in \c to-knuth-bendix.hpp
+  //!
+  //! Despite the hideous signature, this function should be invoked as follows:
+  //!
+  //! \code
+  //! to<KnuthBendix>(knd, tc);
+  //! \endcode
+  //!
+  //! This function converts the \ref_todd_coxeter object \p tc into a
+  //! \ref_knuth_bendix object using ToddCoxeter::presentation.
+  //!
+  //! \tparam Thing used for SFINAE, must be KnuthBendix.
+  //! \tparam Word the type of the words used in relations in \p kb.
+  //!
+  //! \param knd the kind of the congruence being constructed.
+  //! \param tc the \ref_todd_coxeter object being converted.
+  //!
+  //! \returns A \ref_knuth_bendix object representing the trivial congruence
+  //! over the semigroup defined by \p tc.
+  //!
+  //! \exceptions
+  //! \no_libsemigroups_except
+  template <template <typename...> typename Thing, typename Word>
+  auto to(congruence_kind knd, ToddCoxeter<Word>& tc)
+      -> std::enable_if_t<std::is_same_v<Thing<Word>, KnuthBendix<Word>>,
+                          KnuthBendix<Word>> {
+    // TODO(1) could do a version where we convert tc to FroidurePin, then use
+    // the rules of that instead?
     return KnuthBendix<Word>(knd, tc.presentation());
   }
 

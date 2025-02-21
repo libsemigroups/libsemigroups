@@ -23,7 +23,7 @@
 
 #include "cong-class.hpp"
 #include "froidure-pin-base.hpp"
-#include "to-todd-coxeter.hpp"
+#include "to-cong.hpp"
 #include "types.hpp"
 #include "word-graph.hpp"
 
@@ -36,10 +36,21 @@ namespace libsemigroups {
   //!
   //! This page contains documentation related to converting a `libsemigroups`
   //! objects into a Congruence instances.
+  //!
+  //! \sa \ref to_group for an overview of possible conversions between
+  //! `libsemigroups` types.
 
   //! \ingroup to_cong_group
   //!
   //! \brief Convert a \ref FroidurePin object to a Congruence object.
+  //!
+  //! Defined in \c to-cong.hpp
+  //!
+  //! Despite the hideous signature, this function should be invoked as follows:
+  //!
+  //! \code
+  //! to<Congruence>(knd, fpb, wg);
+  //! \endcode
   //!
   //! This function converts the \ref FroidurePin object \p fpb into a
   //! Congruence object using the WordGraph \p wg (which should be either

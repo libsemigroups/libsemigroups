@@ -27,8 +27,8 @@
 #include "constants.hpp"           // for POSITIVE_INFINITY
 #include "exception.hpp"           // for LIBSEMIGROUPS_EXCEPTION
 #include "froidure-pin.hpp"        // for FroidurePin
-#include "knuth-bendix-class.hpp"  // for KnuthBendix
 #include "to-froidure-pin.hpp"     // for to<FroidurePin>
+#include "todd-coxeter-class.hpp"  // for KnuthBendix
 #include "todd-coxeter-class.hpp"  // for ToddCoxeter
 
 namespace libsemigroups {
@@ -44,19 +44,31 @@ namespace libsemigroups {
   //!
   //! \brief Convert to \ref_todd_coxeter instance
   //!
-  //! This page contains documentation related to converting a `libsemigroups`
-  //! objects into a \ref_todd_coxeter instances.
+  //! This page contains documentation related to converting `libsemigroups`
+  //! objects into \ref_todd_coxeter instances.
+  //!
+  //! \sa \ref to_group for an overview of possible conversions between
+  //! `libsemigroups` types.
 
   //! \ingroup to_todd_coxeter_group
   //!
   //! \brief Convert a \ref FroidurePin object to a \ref_todd_coxeter object.
+  //!
+  //! Defined in \c to-todd-coxeter.hpp
+  //!
+  //! Despite the hideous signature, this function should be invoked as follows:
+  //!
+  //! \code
+  //! to<ToddCoxeter<Word>>(kb);
+  //! \endcode
   //!
   //! This function converts the \ref FroidurePin object \p fpb into a
   //! \ref_todd_coxeter object using the WordGraph \p wg (which should be either
   //! the \ref FroidurePinBase::left_cayley_graph or the \ref
   //! FroidurePinBase::right_cayley_graph of \p fpb).
   //!
-  //! \tparam Result used for SFINAE, the return type of this function.
+  //! \tparam Result used for SFINAE, the return type of this function, must be
+  //! \c ToddCoxeter<Word> for some type \c Word.
   //! \tparam Node the type of the nodes in the WordGraph \p wg.
   //!
   //! \param knd the kind of the congruence being constructed.
@@ -92,11 +104,19 @@ namespace libsemigroups {
   //!
   //! \brief Convert a \ref_knuth_bendix object to a \ref_todd_coxeter object.
   //!
+  //! Defined in \c to-todd-coxeter.hpp
+  //!
+  //! Despite the hideous signature, this function should be invoked as follows:
+  //!
+  //! \code
+  //! to<ToddCoxeter>(kb);
+  //! \endcode
+  //!
   //! This function converts the \ref_knuth_bendix object \p kb into a
   //! \ref_todd_coxeter object using the right Cayley graph of the semigroup
   //! represented by \p kb.
   //!
-  //! \tparam Thing used for SFINAE, must be FroidurePin.
+  //! \tparam Thing used for SFINAE, must be \ref_todd_coxeter.
   //! \tparam Word the type of the words used in relations in \p kb.
   //! \tparam Rewriter the type of rewriter used by \p kb.
   //! \tparam ReductionOrder the type of reduction ordering used by \p kb.

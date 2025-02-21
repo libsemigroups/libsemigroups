@@ -24,6 +24,8 @@
 #include "libsemigroups/todd-coxeter.hpp"       // for ToddCoxeterImpl
 #include "libsemigroups/types.hpp"              // for congruence_kind
 
+// TODO(0) rm this file
+
 namespace libsemigroups {
 
   KnuthBendix<word_type> to_knuth_bendix(congruence_kind  knd,

@@ -51,12 +51,13 @@ namespace libsemigroups {
   //!
   //! \image html to-table.pdf width=60%
   //!
-  //! A tick indicates that this conversion is implemented, a cross
-  //! that it is not yet implemented, and a dash that no conversion is possible.
+  //! A tick indicates that this conversion is implemented, and a cross
+  //! that it is not yet implemented.
   //!
   //! See the following for more details:
   //! * \ref to_cong_group
   //! * \ref to_froidure_pin_group
+  //! * \ref to_knuth_bendix_group
   //! * \ref to_todd_coxeter_group
 
   //! \defgroup to_froidure_pin_group to<FroidurePin>
@@ -66,6 +67,9 @@ namespace libsemigroups {
   //!
   //! This page contains documentation related to converting a `libsemigroups`
   //! object into a \ref FroidurePin instance.
+  //!
+  //! \sa \ref to_group for an overview of possible conversions between
+  //! `libsemigroups` types.
 
   ////////////////////////////////////////////////////////////////////////
   // Congruence
@@ -73,6 +77,8 @@ namespace libsemigroups {
 
   //! \ingroup to_froidure_pin_group
   //! \brief Convert a Congruence object to a FroidurePin object.
+  //!
+  //! Defined in \c to-froidure-pin.hpp
   //!
   //! Despite the hideous signature, this function should be invoked as follows:
   //!
@@ -103,6 +109,8 @@ namespace libsemigroups {
 
   //! \ingroup to_froidure_pin_group
   //! \brief Convert a Kambites object to a FroidurePin object.
+  //!
+  //! Defined in \c to-froidure-pin.hpp
   //!
   //! Despite the hideous signature, this function should be invoked as follows:
   //!
@@ -140,6 +148,8 @@ namespace libsemigroups {
   //!
   //! \brief Convert a \ref_knuth_bendix object to a FroidurePin object.
   //!
+  //! Defined in \c to-froidure-pin.hpp
+  //!
   //! Despite the hideous signature, this function should be invoked as follows:
   //!
   //! \code
@@ -176,6 +186,8 @@ namespace libsemigroups {
   //! \ingroup to_froidure_pin_group
   //! \brief Convert a \ref_todd_coxeter object to a FroidurePin object.
   //!
+  //! Defined in \c to-froidure-pin.hpp
+  //!
   //! Despite the hideous signature, this function should be invoked as follows:
   //!
   //! \code
@@ -211,6 +223,8 @@ namespace libsemigroups {
   //! \ingroup to_froidure_pin_group
   //! \anchor to_froidure_pin
   //! \brief Convert a WordGraph object to a FroidurePin object.
+  //!
+  //! Defined in \c to-froidure-pin.hpp
   //!
   //! This function converts a WordGraph object to a FroidurePin object.
   //! Unlike the other functions on this page, this function should be invoked
@@ -256,7 +270,7 @@ namespace libsemigroups {
   //! WordGraph::number_of_nodes.
   //!
   //! \throws LibsemigroupsException if
-  //! \ref transf::validate(Result::element_type const&) throws for any of the
+  //! \ref validate(Transf<N, Scalar> const&) throws for any of the
   //! constructed generators. This can happen if, for example, the WordGraph is
   //! not complete (i.e. there exists an edge label and node for which there is
   //! no edge with the given label and given source) or if there is an edge
@@ -271,6 +285,8 @@ namespace libsemigroups {
 
   //! \ingroup to_froidure_pin_group
   //! \brief Convert a WordGraph object to a FroidurePin object.
+  //!
+  //! Defined in \c to-froidure-pin.hpp
   //!
   //! Calls `to<FroidurePin>(wg, 0, wg.number_of_nodes())`.
   //!
