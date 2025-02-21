@@ -1,6 +1,6 @@
 //
 // libsemigroups - C++ library for semigroups and monoids
-// Copyright (C) 2022 James D. Mitchell
+// Copyright (C) 2025 James D. Mitchell
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -19,13 +19,13 @@
 #ifndef LIBSEMIGROUPS_TO_CONG_HPP_
 #define LIBSEMIGROUPS_TO_CONG_HPP_
 
-// TODO(0) iwyu
+#include <type_traits>  // for enable_if_t, is_same_v
 
-#include "cong-class.hpp"
-#include "froidure-pin-base.hpp"
-#include "to-cong.hpp"
-#include "types.hpp"
-#include "word-graph.hpp"
+#include "cong-class.hpp"         // for Congruence
+#include "froidure-pin-base.hpp"  // for FroidurePinBase
+#include "to-todd-coxeter.hpp"    // for to<ToddCoxeter>
+#include "types.hpp"              // for congruence_kind
+#include "word-graph.hpp"         // for WordGraph
 
 namespace libsemigroups {
 
