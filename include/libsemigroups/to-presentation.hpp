@@ -16,21 +16,21 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-// TODO(0):
-// * iwyu
-// * "Defined in to-presentation.hpp"
-// * "Despite the horrible signature..."
-
 #ifndef LIBSEMIGROUPS_TO_PRESENTATION_HPP_
 #define LIBSEMIGROUPS_TO_PRESENTATION_HPP_
 
-#include <type_traits>  // for enable_if_t
-#include <utility>      // for pair
+#include <algorithm>    // for transform, rotate
+#include <string>       // for basic_string
+#include <type_traits>  // for is_same_v, ena...
+#include <utility>      // for move
 #include <vector>       // for vector
 
-#include "froidure-pin-base.hpp"   // for FroidurePinBase::const_rule_i...
+#include "froidure-pin-base.hpp"   // for FroidurePinBase
 #include "knuth-bendix-class.hpp"  // for KnuthBendix
 #include "presentation.hpp"        // for Presentation
+#include "word-range.hpp"          // for human_readable...
+
+#include "detail/knuth-bendix-impl.hpp"  // for KnuthBendixImpl
 
 namespace libsemigroups {
 
@@ -46,6 +46,14 @@ namespace libsemigroups {
   //! \ingroup to_presentation_group
   //!
   //! \brief Make a presentation from a FroidurePin object.
+  //!
+  //! Defined in `to-presentation.hpp`.
+  //!
+  //! Despite the hideous signature, this function should be invoked as follows:
+  //!
+  //! \code
+  //! to<Presentation<Word>>(fp);
+  //! \endcode
   //!
   //! This function constructs and returns a Presentation object using the
   //! rules of a FroidurePin object, accessed via FroidurePin::cbegin_rules and
@@ -78,7 +86,13 @@ namespace libsemigroups {
   //!
   //! \brief Make a presentation from a \ref_knuth_bendix object.
   //!
-  //! Defined in \c knuth-bendix.hpp.
+  //! Defined in `to-presentation.hpp`.
+  //!
+  //! Despite the hideous signature, this function should be invoked as follows:
+  //!
+  //! \code
+  //! to<Presentation>(kb);
+  //! \endcode
   //!
   //! This function constructs and returns a Presentation object using the
   //! currently active rules of \p kb.
@@ -117,10 +131,18 @@ namespace libsemigroups {
   //!
   //! \brief Make a presentation from a different type of presentation.
   //!
-  //! Returns a presentation equivalent to the input presentation but of a
-  //! different type (for example, can be used to convert from `std::string`
-  //! to \ref word_type). The second parameter specifies how to map the letters
-  //! of one presentation to the other.
+  //! Defined in `to-presentation.hpp`.
+  //!
+  //! Despite the hideous signature, this function should be invoked as follows:
+  //!
+  //! \code
+  //! to<Presentation<Word>>(p, func);
+  //! \endcode
+  //!
+  //! This function returns a presentation equivalent to the input presentation
+  //! but of a different type (for example, can be used to convert from
+  //! `std::string` to \ref word_type). The second parameter specifies how to
+  //! map the letters of one presentation to the other.
   //!
   //! \tparam WordOutput the type of the words in the returned presentation.
   //! \tparam WordInput the type of the words in the input presentation.
@@ -157,8 +179,16 @@ namespace libsemigroups {
   //! \brief Make an inverse presentation from a different type of inverse
   //! presentation.
   //!
-  //! Returns an inverse presentation equivalent to the input inverse
-  //! presentation but of a different type (for example, can be used to
+  //! Defined in `to-presentation.hpp`.
+  //!
+  //! Despite the hideous signature, this function should be invoked as follows:
+  //!
+  //! \code
+  //! to<InversePresentation<Word>>(p, func);
+  //! \endcode
+  //!
+  //! This function returns an inverse presentation equivalent to the input
+  //! inverse presentation but of a different type (for example, can be used to
   //! convert from `std::string` to \ref word_type). The second parameter
   //! specifies how to map the letters of one inverse presentation to the
   //! other.
@@ -202,9 +232,17 @@ namespace libsemigroups {
   //!
   //! \brief Make a presentation from a different type of presentation.
   //!
-  //! Returns a presentation equivalent to the input presentation but of a
-  //! different type (for example, can be used to convert from `std::string`
-  //! to \ref word_type).
+  //! Defined in `to-presentation.hpp`.
+  //!
+  //! Despite the hideous signature, this function should be invoked as follows:
+  //!
+  //! \code
+  //! to<Presentation<Word>>(p, func);
+  //! \endcode
+  //!
+  //! This function returns a presentation equivalent to the input presentation
+  //! but of a different type (for example, can be used to convert from
+  //! `std::string` to \ref word_type).
   //!
   //! If the alphabet of of \p p is \f$\{a_0, a_1, \dots a_{n-1}\}\f$, then the
   //! conversion from `Presentation<WordInput>::letter_type` to
@@ -237,6 +275,14 @@ namespace libsemigroups {
   //!
   //! \brief Make a presentation from the same type of presentation.
   //!
+  //! Defined in `to-presentation.hpp`.
+  //!
+  //! Despite the hideous signature, this function should be invoked as follows:
+  //!
+  //! \code
+  //! to<Presentation<Word>>(p, func);
+  //! \endcode
+  //!
   //! This function just returns its argument \p p, and is included solely for
   //! the purpose of simplifying certain client code, where presentations must
   //! be converted from one type to another sometimes, but not other times.
@@ -264,9 +310,17 @@ namespace libsemigroups {
   //! \brief Make an inverse presentation from a different type of inverse
   //! presentation.
   //!
-  //! Returns an inverse presentation equivalent to the input presentation but
-  //! of a different type (for example, can be used to convert from
-  //! `std::string` to \ref word_type).
+  //! Defined in `to-presentation.hpp`.
+  //!
+  //! Despite the hideous signature, this function should be invoked as follows:
+  //!
+  //! \code
+  //! to<InversePresentation<Word>>(ip);
+  //! \endcode
+  //!
+  //! This function returns an inverse presentation equivalent to the input
+  //! presentation but of a different type (for example, can be used to convert
+  //! from `std::string` to \ref word_type).
   //!
   //! If the alphabet of of \p ip is \f$\{a_0, a_1, \dots a_{n-1}\}\f$, then
   //! the conversion from `InversePresentation<WordInput>::letter_type` to
@@ -303,6 +357,8 @@ namespace libsemigroups {
   }
 
   // TODO(0) doc
+  //!
+  //! Defined in `to-presentation.hpp`.
   template <typename Result, typename Word>
   auto to(InversePresentation<Word> const& ip) noexcept
       -> std::enable_if_t<std::is_same_v<InversePresentation<Word>, Result>,
@@ -318,8 +374,17 @@ namespace libsemigroups {
   //!
   //! \brief Make an inverse presentation from a presentation
   //!
-  //! Returns an inverse presentation with rules equivalent to those of the
-  //! input presentation, but over a normalised alphabet. If the alphabet of
+  //! Defined in `to-presentation.hpp`.
+  //!
+  //! Despite the hideous signature, this function should be invoked as follows:
+  //!
+  //! \code
+  //! to<InversePresentation<Word>>(p, func);
+  //! \endcode
+  //!
+  //! This function returns an inverse presentation with rules equivalent to
+  //! those of the input presentation, but over a normalised alphabet. If the
+  //! alphabet of
   //! \p p is \f$\{a_0, a_1, \dots, a_{n-1}\}\f$, then the alphabet of the
   //! returned inverse presentation will be \f$\{0, 1, \dots, n-1, n, \dots,
   //! 2n-1\}\f$, where the inverse of letter \f$i\f$ is the letter \f$i + n\,
