@@ -44,16 +44,15 @@
 #include <utility>        // for move, make_pair
 #include <vector>         // for vector
 
-#include "libsemigroups/constants.hpp"        // for POSITIVE_INFINITY
-#include "libsemigroups/debug.hpp"            // for LIBSEMIGROUPS_...
-#include "libsemigroups/obvinf.hpp"           // for is_obviously_infinite
-#include "libsemigroups/order.hpp"            // for ShortLexCompare
-#include "libsemigroups/presentation.hpp"     // for operator!=
-#include "libsemigroups/ranges.hpp"           // for count, iterato...
-#include "libsemigroups/to-presentation.hpp"  // for to<Presentation>
-#include "libsemigroups/types.hpp"            // for congruence_kind
-#include "libsemigroups/word-graph.hpp"       // for WordGraph, to_...
-#include "libsemigroups/word-range.hpp"       // for to_human_reada...
+#include "libsemigroups/constants.hpp"     // for POSITIVE_INFINITY
+#include "libsemigroups/debug.hpp"         // for LIBSEMIGROUPS_...
+#include "libsemigroups/obvinf.hpp"        // for is_obviously_infinite
+#include "libsemigroups/order.hpp"         // for ShortLexCompare
+#include "libsemigroups/presentation.hpp"  // for operator!=
+#include "libsemigroups/ranges.hpp"        // for count, iterato...
+#include "libsemigroups/types.hpp"         // for congruence_kind
+#include "libsemigroups/word-graph.hpp"    // for WordGraph, to_...
+#include "libsemigroups/word-range.hpp"    // for to_human_reada...
 
 #include "cong-common-class.hpp"  // for CongruenceInte...
 #include "fmt.hpp"                // for format, print
@@ -212,7 +211,7 @@ namespace libsemigroups {
       bool                            _internal_is_same_as_external;
       std::unique_ptr<OverlapMeasure> _overlap_measure;
       Presentation<std::string>       _presentation;
-      Rewriter                        _rewriter;
+      mutable Rewriter                _rewriter;
       Settings                        _settings;
       mutable Stats                   _stats;
       mutable std::string             _tmp_element1;
@@ -754,10 +753,7 @@ namespace libsemigroups {
       //!
       //! \complexity
       //! Constant.
-      // TODO(1) this should be const
-      // TODO(1) add note about empty active rules after init and non-const-ness
-      // (this only applies if this becomes const)
-      [[nodiscard]] size_t number_of_active_rules() noexcept;
+      [[nodiscard]] size_t number_of_active_rules() const noexcept;
 
       //! \ingroup knuth_bendix_class_accessors_group
       //!
@@ -927,7 +923,7 @@ namespace libsemigroups {
       void run_impl() override;
       bool finished_impl() const override;
     };  // class KnuthBendixImpl
-  }     // namespace detail
+  }  // namespace detail
 
   ////////////////////////////////////////////////////////////////////////
   // global functions - to_human_readable_repr
