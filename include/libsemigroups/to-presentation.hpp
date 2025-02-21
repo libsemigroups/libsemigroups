@@ -16,6 +16,11 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
+// TODO(0):
+// * iwyu
+// * "Defined in to-presentation.hpp"
+// * "Despite the horrible signature..."
+
 #ifndef LIBSEMIGROUPS_TO_PRESENTATION_HPP_
 #define LIBSEMIGROUPS_TO_PRESENTATION_HPP_
 
@@ -32,6 +37,10 @@ namespace libsemigroups {
   //!
   //! This file contains documentation for creating semigroup and monoid
   //! presentations in `libsemigroups` from other types of objects.
+
+  ////////////////////////////////////////////////////////////////////////
+  // FroidurePin -> Presentation
+  ////////////////////////////////////////////////////////////////////////
 
   //! \ingroup to_presentation_group
   //!
@@ -60,7 +69,10 @@ namespace libsemigroups {
       std::is_same_v<Presentation<typename Result::word_type>, Result>,
       Result>;
 
-#ifdef LIBSEMIGROUPS_PARSED_BY_DOXYGEN
+  ////////////////////////////////////////////////////////////////////////
+  // Presentation + function -> Presentation
+  ////////////////////////////////////////////////////////////////////////
+
   //! \ingroup to_presentation_group
   //!
   //! \brief Make a presentation from a different type of presentation.
@@ -85,18 +97,67 @@ namespace libsemigroups {
   //! different, and `Func` must be a function type that is invocable with
   //! values of `Presentation<WordInput>::letter_type`. If either of this are
   //! not true, then template substitution will fail.
+#ifdef LIBSEMIGROUPS_PARSED_BY_DOXYGEN
   // TODO update
   template <typename WordOutput, typename WordInput, typename Func>
   Presentation<WordOutput> to(Presentation<WordInput> const& p, Func&& f);
 #else
   template <typename Result, typename Word, typename Func>
   auto to(Presentation<Word> const& p, Func&& f) -> std::enable_if_t<
-      std::is_same_v<Presentation<typename Result::word_type>, Result>
-          && !std::is_same_v<typename Result::word_type, Word>,
+      std::is_same_v<Presentation<typename Result::word_type>, Result>,
       Result>;
 #endif
 
+  ////////////////////////////////////////////////////////////////////////
+  // InversePresentation + function -> InversePresentation
+  ////////////////////////////////////////////////////////////////////////
+
+  //! \ingroup to_presentation_group
+  //!
+  //! \brief Make an inverse presentation from a different type of inverse
+  //! presentation.
+  //!
+  //! Returns an inverse presentation equivalent to the input inverse
+  //! presentation but of a different type (for example, can be used to
+  //! convert from `std::string` to \ref word_type). The second parameter
+  //! specifies how to map the letters of one inverse presentation to the
+  //! other.
+  //!
+  //! \tparam WordOutput the type of the words in the returned inverse
+  //! presentation.
+  //! \tparam WordInput the type of the words in the input inverse
+  //! presentation.
+  //! \tparam Func the type of a function for transforming letters.
+  //! \param ip the input inverse presentation.
+  //! \param f a function  mapping
+  //! `InversePresentation<WordInput>::letter_type` to
+  //! `InversePresentation<WordOutput>::letter_type`.
+  //!
+  //! \returns A value of type `InversePresentation<WordOutput>`.
+  //!
+  //! \throws LibsemigroupsException if the alphabet of \p ip contains
+  //! duplicate letters.
+  //!
+  //! \note The types specified by `WordInput` and `WordOutput` must be
+  //! different, and `Func` must be a function type that is invocable with
+  //! values of `Presentation<WordInput>::letter_type`. If either of this are
+  //! not true, then template substitution will fail.
 #ifdef LIBSEMIGROUPS_PARSED_BY_DOXYGEN
+  template <typename WordOutput, typename WordInput, typename Func>
+  InversePresentation<WordOutput> to(InversePresentation<WordInput> const& ip,
+                                     Func&&                                f);
+// TODO(0) update the doc
+#else
+  template <typename Result, typename Word, typename Func>
+  auto to(InversePresentation<Word> const& p, Func&& f) -> std::enable_if_t<
+      std::is_same_v<InversePresentation<typename Result::word_type>, Result>,
+      Result>;
+#endif
+
+  ////////////////////////////////////////////////////////////////////////
+  // Presentation -> Presentation
+  ////////////////////////////////////////////////////////////////////////
+
   //! \ingroup to_presentation_group
   //!
   //! \brief Make a presentation from a different type of presentation.
@@ -120,6 +181,7 @@ namespace libsemigroups {
   //!
   //! \note The types specified by `WordInput` and `WordOutput` must be
   //! different. If not, then template substitution will fail.
+#ifdef LIBSEMIGROUPS_PARSED_BY_DOXYGEN
   template <typename WordOutput, typename WordInput>
   Presentation<WordOutput> to(Presentation<WordInput> const& p);
 // TODO(0) update
@@ -153,81 +215,10 @@ namespace libsemigroups {
     return p;
   }
 
-#ifdef LIBSEMIGROUPS_PARSED_BY_DOXYGEN
-  //! \ingroup to_presentation_group
-  //!
-  //! \brief Make an inverse presentation from a different type of inverse
-  //! presentation.
-  //!
-  //! Returns an inverse presentation equivalent to the input inverse
-  //! presentation but of a different type (for example, can be used to
-  //! convert from `std::string` to \ref word_type). The second parameter
-  //! specifies how to map the letters of one inverse presentation to the
-  //! other.
-  //!
-  //! \tparam WordOutput the type of the words in the returned inverse
-  //! presentation.
-  //! \tparam WordInput the type of the words in the input inverse
-  //! presentation.
-  //! \tparam Func the type of a function for transforming letters.
-  //! \param ip the input inverse presentation.
-  //! \param f a function  mapping
-  //! `InversePresentation<WordInput>::letter_type` to
-  //! `InversePresentation<WordOutput>::letter_type`.
-  //!
-  //! \returns A value of type `InversePresentation<WordOutput>`.
-  //!
-  //! \throws LibsemigroupsException if the alphabet of \p ip contains
-  //! duplicate letters.
-  //!
-  //! \note The types specified by `WordInput` and `WordOutput` must be
-  //! different, and `Func` must be a function type that is invocable with
-  //! values of `Presentation<WordInput>::letter_type`. If either of this are
-  //! not true, then template substitution will fail.
-  template <typename WordOutput, typename WordInput, typename Func>
-  InversePresentation<WordOutput>
-  to_inverse_presentation(InversePresentation<WordInput> const& ip, Func&& f);
-#else
-  template <typename WordOutput, typename WordInput, typename Func>
-  auto to_inverse_presentation(InversePresentation<WordInput> const& ip,
-                               Func&&                                f)
-      -> std::enable_if_t<
-          std::is_invocable_v<std::decay_t<Func>,
-                              typename Presentation<WordInput>::letter_type>
-              && !std::is_same_v<WordOutput, WordInput>,
-          InversePresentation<WordOutput>>;
-#endif
+  ////////////////////////////////////////////////////////////////////////
+  // InversePresentation -> InversePresentation
+  ////////////////////////////////////////////////////////////////////////
 
-  //! \ingroup to_presentation_group
-  //!
-  //! \brief Make an inverse presentation from a presentation
-  //!
-  //! Returns an inverse presentation with rules equivalent to those of the
-  //! input presentation, but over a normalised alphabet. If the alphabet of
-  //! \p p is \f$\{a_0, a_1, \dots, a_{n-1}\}\f$, then the alphabet of the
-  //! returned inverse presentation will be \f$\{0, 1, \dots, n-1, n, \dots,
-  //! 2n-1\}\f$, where the inverse of letter \f$i\f$ is the letter \f$i + n\,
-  //! (\text{mod }2n)\f$.
-  //!
-  //! \tparam Word the type of the words in the presentation.
-  //! \param p the input presentation.
-  //!
-  //! \returns A value of type `InversePresentation<WordOutput>`.
-  //!
-  //! \throws LibsemigroupsException if `p.validate()` throws.
-  //!
-  //! \note The parameter \p p must not be an `InversePresentation`, otherwise
-  //! a compilation error is thrown.
-  template <typename Word>
-  InversePresentation<Word>
-  to_inverse_presentation(Presentation<Word> const& p);
-
-  //! No doc
-  template <typename Word>
-  InversePresentation<Word>
-  to_inverse_presentation(InversePresentation<Word> const& ip) = delete;
-
-#ifdef LIBSEMIGROUPS_PARSED_BY_DOXYGEN
   //! \ingroup to_presentation_group
   //!
   //! \brief Make an inverse presentation from a different type of inverse
@@ -255,14 +246,59 @@ namespace libsemigroups {
   //!
   //! \note The types specified by `WordInput` and `WordOutput` must be
   //! different. If not, then template substitution will fail.
+#ifdef LIBSEMIGROUPS_PARSED_BY_DOXYGEN
   template <typename WordOutput, typename WordInput>
-  InversePresentation<WordOutput>
-  to_inverse_presentation(InversePresentation<WordInput> const& ip);
+  InversePresentation<WordOutput> to(InversePresentation<WordInput> const& ip);
+// TODO(0) update doc
 #else
-  template <typename WordOutput, typename WordInput>
-  auto to_inverse_presentation(InversePresentation<WordInput> const& ip)
-      -> std::enable_if_t<!std::is_same_v<WordOutput, WordInput>,
-                          InversePresentation<WordOutput>>;
+  template <typename Result, typename Word>
+  auto to(InversePresentation<Word> const& ip) noexcept -> std::enable_if_t<
+      std::is_same_v<InversePresentation<typename Result::word_type>, Result>
+          && !std::is_same_v<Word, typename Result::word_type>,
+      Result> {
+    using WordOutput = typename Result::word_type;
+    return to<InversePresentation<WordOutput>>(ip, [&ip](auto val) {
+      return words::human_readable_letter<WordOutput>(ip.index(val));
+    });
+  }
+
+  // TODO(0) doc
+  template <typename Result, typename Word>
+  auto to(InversePresentation<Word> const& ip) noexcept
+      -> std::enable_if_t<std::is_same_v<InversePresentation<Word>, Result>,
+                          Result const&> {
+    return ip;
+  }
+
+  ////////////////////////////////////////////////////////////////////////
+  // Presentation -> InversePresentation
+  ////////////////////////////////////////////////////////////////////////
+
+  //! \ingroup to_presentation_group
+  //!
+  //! \brief Make an inverse presentation from a presentation
+  //!
+  //! Returns an inverse presentation with rules equivalent to those of the
+  //! input presentation, but over a normalised alphabet. If the alphabet of
+  //! \p p is \f$\{a_0, a_1, \dots, a_{n-1}\}\f$, then the alphabet of the
+  //! returned inverse presentation will be \f$\{0, 1, \dots, n-1, n, \dots,
+  //! 2n-1\}\f$, where the inverse of letter \f$i\f$ is the letter \f$i + n\,
+  //! (\text{mod }2n)\f$.
+  //!
+  //! \tparam Word the type of the words in the presentation.
+  //! \param p the input presentation.
+  //!
+  //! \returns A value of type `InversePresentation<WordOutput>`.
+  //!
+  //! \throws LibsemigroupsException if `p.validate()` throws.
+  //!
+  //! \note The parameter \p p must not be an `InversePresentation`, otherwise
+  //! a compilation error is thrown.
+  template <template <typename...> typename Thing, typename Word>
+  auto to(Presentation<Word> const& p) -> std::enable_if_t<
+      std::is_same_v<InversePresentation<Word>, Thing<Word>>,
+      InversePresentation<Word>>;
+
 #endif
 
 }  // namespace libsemigroups

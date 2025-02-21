@@ -177,7 +177,7 @@ namespace libsemigroups {
                         && IsPresentation<P> && IsPresentation<Q>,
                     "TODO");
       if constexpr (IsInversePresentation<P> && IsInversePresentation<Q>) {
-        return init(to_inverse_presentation<word_type>(q));
+        return init(to<InversePresentation<word_type>>(q));
       } else {
         return init(to<Presentation<word_type>>(q));
       }
