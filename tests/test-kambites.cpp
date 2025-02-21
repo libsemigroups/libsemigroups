@@ -512,10 +512,17 @@ namespace libsemigroups {
                           "012",
                           "free semigroup",
                           "[quick][kambites]") {
-    Presentation<std::string> p;
-    p.alphabet("cab");
-    Kambites k(twosided, p);
-    REQUIRE(k.small_overlap_class() == POSITIVE_INFINITY);
+    {
+      Presentation<std::string> p;
+      p.alphabet("cab");
+      Kambites k(twosided, p);
+      REQUIRE(k.small_overlap_class() == POSITIVE_INFINITY);
+    }
+    {
+      Presentation<std::string> p;
+      Kambites                  k(twosided, p);
+      REQUIRE(k.small_overlap_class() == POSITIVE_INFINITY);
+    }
   }
 
   ////////////////////////////////////////////////////////////////////////

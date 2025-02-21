@@ -299,4 +299,13 @@ namespace libsemigroups {
     }
   }
 
+  LIBSEMIGROUPS_TEST_CASE("to<FroidurePin>",
+                          "009",
+                          "from default constructed Kambites",
+                          "[quick]") {
+    Kambites<std::string> k;
+    auto                  fp = to<FroidurePin>(k);
+    REQUIRE(fp.size() == 0);
+  }
+
 }  // namespace libsemigroups
