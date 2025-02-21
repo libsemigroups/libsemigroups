@@ -18,18 +18,19 @@
 
 namespace libsemigroups {
 
-  // TODO(0) doc
+  // The following deduction guides can only really be used in this file,
+  // because we don't expose the type of the elements in FroidurePin objects
+  // arising from Kambites, KnuthBendix, or ToddCoxeter
+
   template <typename Word>
   FroidurePin(Kambites<Word> const&) -> FroidurePin<detail::KE<Word>>;
 
-  // TODO(0) doc
   template <typename Rewriter, typename ReductionOrder>
   FroidurePin(detail::KnuthBendixImpl<Rewriter, ReductionOrder> const&)
       -> FroidurePin<
           detail::KBE<detail::KnuthBendixImpl<Rewriter, ReductionOrder>>>;
 
-  // TODO(0) doc
-  FroidurePin(detail::ToddCoxeterImpl const&)->FroidurePin<detail::TCE>;
+  FroidurePin(detail::ToddCoxeterImpl const&) -> FroidurePin<detail::TCE>;
 
   ////////////////////////////////////////////////////////////////////////
   // Congruence
