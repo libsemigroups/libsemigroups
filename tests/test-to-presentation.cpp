@@ -16,8 +16,6 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-// TODO(0) use template test case
-
 #include <algorithm>         // for fill,  max_element
 #include <cctype>            // for isprint
 #include <cstdint>           // for uint8_t, uint16_t
