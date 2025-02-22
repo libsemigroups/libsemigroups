@@ -98,6 +98,8 @@
       <tab type="usergroup" visible="yes" url="@ref libsemigroups::presentation::examples" title="Examples" />
       <tab type="usergroup" visible="yes" url="@ref to_presentation_group"
        title="to<Presentation>" />
+      <tab type="usergroup" visible="yes" url="@ref to_inverse_presentation_group"
+       title="to<InversePresentation>" />
     </tab>
     <tab type="usergroup" visible="yes" url="@ref ranges_group" title="Ranges" />
     <tab type="user" visible="yes" url="@ref ukkonen_group" title="Suffix trees" />

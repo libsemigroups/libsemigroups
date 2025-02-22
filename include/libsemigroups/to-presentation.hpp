@@ -42,6 +42,11 @@ namespace libsemigroups {
   //! This file contains documentation for creating semigroup and monoid
   //! presentations in `libsemigroups` from other types of objects.
 
+  //! \defgroup to_inverse_presentation_group to<InversePresentation>
+  //!
+  //! This file contains documentation for creating inverse semigroup and monoid
+  //! presentations in `libsemigroups` from other types of objects.
+
   ////////////////////////////////////////////////////////////////////////
   // FroidurePin -> Presentation
   ////////////////////////////////////////////////////////////////////////
@@ -177,7 +182,7 @@ namespace libsemigroups {
   // InversePresentation + function -> InversePresentation
   ////////////////////////////////////////////////////////////////////////
 
-  //! \ingroup to_presentation_group
+  //! \ingroup to_inverse_presentation_group
   //!
   //! \brief Make an inverse presentation from a different type of inverse
   //! presentation.
@@ -302,7 +307,7 @@ namespace libsemigroups {
   // InversePresentation -> InversePresentation
   ////////////////////////////////////////////////////////////////////////
 
-  //! \ingroup to_presentation_group
+  //! \ingroup to_inverse_presentation_group
   //!
   //! \brief Make an inverse presentation from a different type of inverse
   //! presentation.
@@ -347,7 +352,7 @@ namespace libsemigroups {
     });
   }
 
-  //! \ingroup to_presentation_group
+  //! \ingroup to_inverse_presentation_group
   //!
   //! \brief Make an inverse presentation from the same type of inverse
   //! presentation.
@@ -389,7 +394,7 @@ namespace libsemigroups {
   // Presentation -> InversePresentation
   ////////////////////////////////////////////////////////////////////////
 
-  //! \ingroup to_presentation_group
+  //! \ingroup to_inverse_presentation_group
   //!
   //! \brief Make an inverse presentation from a presentation
   //!
