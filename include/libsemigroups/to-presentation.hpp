@@ -34,8 +34,6 @@
 
 namespace libsemigroups {
 
-  // TODO(0) doxygen is still conflating functions
-
   //! \defgroup to_presentation_group to<Presentation>
   //!
   //! This file contains documentation for creating semigroup and monoid
