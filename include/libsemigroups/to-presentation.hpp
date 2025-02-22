@@ -34,7 +34,6 @@
 
 namespace libsemigroups {
 
-  // TODO(0) make to_inverse_presentation_group
   // TODO(0) doxygen is still conflating functions
 
   //! \defgroup to_presentation_group to<Presentation>
@@ -239,9 +238,18 @@ namespace libsemigroups {
   //! to<Presentation<Word>>(p, func);
   //! \endcode
   //!
-  //! This function returns a presentation equivalent to the input presentation
+  //! There are 2 versions of this function:
+  //!
+  //! 1. When `typename Result::word_type` and `Word` are not the same,
+  //! this function returns a presentation equivalent to the input presentation
   //! but of a different type (for example, can be used to convert from
   //! `std::string` to \ref word_type).
+  //!
+  //! 2. When `typename Result::word_type` and `Word` are the same,
+  //! this function just returns its argument \p p (as a reference), and is
+  //! included solely for the purpose of simplifying certain client code, where
+  //! presentations must be converted from one type to another sometimes, but
+  //! not other times.
   //!
   //! If the alphabet of of \p p is \f$\{a_0, a_1, \dots a_{n-1}\}\f$, then the
   //! conversion from `Presentation<WordInput>::letter_type` to
@@ -255,47 +263,18 @@ namespace libsemigroups {
   //!
   //! \returns A value of type `Result`.
   //!
-  //! \throws LibsemigroupsException if `p.validate()` throws.
-  //!
-  //! \note This version of the function is only enabled if `typename
-  //! Result::word_type` and `Word` are not the same.
-  // TODO combine the doc for this and the other version, since doxygen
-  // conflates them anyway.
+  //! \throws LibsemigroupsException if `typename Result::word_type` and `Word`
+  //! are not the same and `p.validate()` throws. If
+  //! `typename Result::word_type` and `Word` are the same, then this function
+  //! is `noexcept`.
   template <typename Result, typename Word>
   auto to(Presentation<Word> const& p) -> std::enable_if_t<
       std::is_same_v<Presentation<typename Result::word_type>, Result>
           && !std::is_same_v<typename Result::word_type, Word>,
       Result>;
 
-  //! \ingroup to_presentation_group
-  //!
-  //! \brief Make a presentation from the same type of presentation.
-  //!
-  //! Defined in `to-presentation.hpp`.
-  //!
-  //! Despite the hideous signature, this function should be invoked as follows:
-  //!
-  //! \code
-  //! to<Presentation<Word>>(p, func);
-  //! \endcode
-  //!
-  //! This function just returns its argument \p p (as a reference), and is
-  //! included solely for the purpose of simplifying certain client code, where
-  //! presentations must be converted from one type to another sometimes, but
-  //! not other times.
-  //!
-  //! \tparam Result the return type, also used for SFINAE, must be
-  //! \c Presentation<Word>.
-  //! \tparam Word the type of the words in the input presentation.
-  //! \param p the input presentation.
-  //!
-  //! \returns The argument \p p by const reference.
-  //!
-  //! \exceptions
-  //! \noexcept
-  //!
-  //! \note This version of the function is only enabled if `typename
-  //! Result::word_type` and `Word` are the same.
+  // This function is documented above because Doxygen conflates these two
+  // functions.
   template <typename Result, typename Word>
   auto to(Presentation<Word> const& p) noexcept
       -> std::enable_if_t<std::is_same_v<Presentation<Word>, Result>,
@@ -320,9 +299,18 @@ namespace libsemigroups {
   //! to<InversePresentation<Word>>(ip);
   //! \endcode
   //!
-  //! This function returns an inverse presentation equivalent to the input
-  //! presentation but of a different type (for example, can be used to convert
-  //! from `std::string` to \ref word_type).
+  //! There are 2 versions of this function:
+  //!
+  //! 1. When `typename Result::word_type` and `Word` are not the same,
+  //! this function returns an inverse presentation equivalent to the input
+  //! inverse presentation but of a different type (for example, can be used to
+  //! convert from `std::string` to \ref word_type).
+  //!
+  //! 2. When `typename Result::word_type` and `Word` are the same,
+  //! this function just returns its argument \p ip (as a reference), and is
+  //! included solely for the purpose of simplifying certain client code, where
+  //! inverse presentations must be converted from one type to another
+  //! sometimes, but not other times.
   //!
   //! If the alphabet of of \p ip is \f$\{a_0, a_1, \dots a_{n-1}\}\f$, then
   //! the conversion from `InversePresentation<WordInput>::letter_type` to
@@ -337,10 +325,10 @@ namespace libsemigroups {
   //!
   //! \returns A value of type `InversePresentation<WordOutput>`.
   //!
-  //! \throws LibsemigroupsException if `p.validate()` throws.
-  //!
-  //! \note This version of the function is only enabled if `typename
-  //! Result::word_type` and `Word` are not the same.
+  //! \throws LibsemigroupsException if `typename Result::word_type` and `Word`
+  //! are not the same and `p.validate()` throws. If
+  //! `typename Result::word_type` and `Word` are the same, then this function
+  //! is `noexcept`.
   template <typename Result, typename Word>
   auto to(InversePresentation<Word> const& ip) noexcept -> std::enable_if_t<
       std::is_same_v<InversePresentation<typename Result::word_type>, Result>
@@ -352,37 +340,8 @@ namespace libsemigroups {
     });
   }
 
-  //! \ingroup to_inverse_presentation_group
-  //!
-  //! \brief Make an inverse presentation from the same type of inverse
-  //! presentation.
-  //!
-  //! Defined in `to-presentation.hpp`.
-  //!
-  //! Despite the hideous signature, this function should be invoked as follows:
-  //!
-  //! \code
-  //! to<InversePresentation<Word>>(p, func);
-  //! \endcode
-  //!
-  //! This function just returns its argument \p ip (as a reference), and is
-  //! included solely for the purpose of simplifying certain client code, where
-  //! presentations must be converted from one type to another sometimes, but
-  //! not other times.
-  //!
-  //! \tparam Result the return type, also used for SFINAE, must be
-  //! \c InversePresentation<Word>.
-  //! \tparam Word the type of the words in the input presentation.
-  //!
-  //! \param ip the input presentation.
-  //!
-  //! \returns The argument \p ip by const reference.
-  //!
-  //! \exceptions
-  //! \noexcept
-  //!
-  //! \note This version of the function is only enabled if `typename
-  //! Result::word_type` and `Word` are the same.
+  // This function is documented above because Doxygen conflates these two
+  // functions.
   template <typename Result, typename Word>
   auto to(InversePresentation<Word> const& ip) noexcept
       -> std::enable_if_t<std::is_same_v<InversePresentation<Word>, Result>,
@@ -413,7 +372,7 @@ namespace libsemigroups {
   //! \f$\{0, 1, \dots, n-1, n, \dots, 2n-1\}\f$, where the inverse of letter
   //! \f$i\f$ is the letter \f$i + n\, (\text{mod }2n)\f$.
   //!
-  //! \tparam Thing, used for SFINAE, must be InversePresentation.
+  //! \tparam Thing used for SFINAE, must be InversePresentation.
   //! \tparam Word the type of the words in the input presentation.
   //! \param p the input presentation.
   //!
@@ -423,10 +382,19 @@ namespace libsemigroups {
   // \note The parameter \p p must not be an `InversePresentation`, otherwise
   // a compilation error is thrown.
   // NOTE: not sure this is true anymore so just leaving it out
+#ifdef PARSED_BY_DOXYGEN
+  // FIXME this is the same hack as elsewhere because Doxygen conflates
+  // functions with trailing return type but the same name and signature.
+  template <template <typename...> typename Thing, typename Word>
+  auto to(Presentation<Word> cont& p) -> std::enable_if_t<
+      std::is_same_v<InversePresentation<Word>, Thing<Word>>,
+      InversePresentation<Word>>;
+#else
   template <template <typename...> typename Thing, typename Word>
   auto to(Presentation<Word> const& p) -> std::enable_if_t<
       std::is_same_v<InversePresentation<Word>, Thing<Word>>,
       InversePresentation<Word>>;
+#endif
 
 }  // namespace libsemigroups
 
