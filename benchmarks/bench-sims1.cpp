@@ -36,7 +36,7 @@
 #include "libsemigroups/presentation-examples.hpp"  // for presentation::examples
 #include "libsemigroups/runner.hpp"
 #include "libsemigroups/sims.hpp"             // for ReportGuard
-#include "libsemigroups/to-presentation.hpp"  // for to_presentation
+#include "libsemigroups/to-presentation.hpp"  // for to<Presentation>
 #include "libsemigroups/transf.hpp"           // for ReportGuard
 #include "libsemigroups/types.hpp"            // for word_type, letter_type
 
@@ -60,7 +60,7 @@ namespace libsemigroups {
     S.add_generator(make<PPerm<3>>({1, 2}, {0, 2}, 3));
     REQUIRE(S.size() == 20);
 
-    auto p = to_presentation<word_type>(S);
+    auto p = to<Presentation<word_type>>(S);
 
     BENCHMARK("Right congruences") {
       Sims1 C;
@@ -88,7 +88,7 @@ namespace libsemigroups {
     S.add_generator(make<PPerm<4>>({1, 2, 3}, {0, 2, 3}, 4));
     REQUIRE(S.size() == 70);
 
-    auto p = to_presentation<word_type>(S);
+    auto p = to<Presentation<word_type>>(S);
 
     BENCHMARK("Right congruences") {
       Sims1 C;
@@ -112,7 +112,7 @@ namespace libsemigroups {
     S.add_generator(BMatFastest<3>({{1, 0, 0}, {0, 1, 0}, {0, 1, 1}}));
     REQUIRE(S.size() == 64);
 
-    auto p = to_presentation<word_type>(S);
+    auto p = to<Presentation<word_type>>(S);
     BENCHMARK("Right congruences") {
       Sims1 C;
       C.presentation(p);
@@ -381,7 +381,7 @@ namespace libsemigroups {
     S.add_generator(make<Transf<4>>({1, 0, 2, 3}));
     S.add_generator(make<Transf<4>>({0, 1, 2, 0}));
     REQUIRE(S.size() == 256);
-    auto p = to_presentation<word_type>(S);
+    auto p = to<Presentation<word_type>>(S);
     bench_length(p);
   }
 
@@ -434,7 +434,7 @@ namespace libsemigroups {
 
     size_t n = 10;
     REQUIRE(S.size() == n * std::pow(2, n) - n + 1);
-    auto p = to_presentation<word_type>(S);
+    auto p = to<Presentation<word_type>>(S);
     bench_length(p, 4, 6);
   }
 
@@ -449,7 +449,7 @@ namespace libsemigroups {
 
     size_t n = 10;
     REQUIRE(S.size() == n * std::pow(2, n) - n + 1);
-    auto p = to_presentation<word_type>(S);
+    auto p = to<Presentation<word_type>>(S);
     bench_length(p, 4, 6);
   }
 
@@ -469,7 +469,7 @@ namespace libsemigroups {
   //   presentation::add_rule_no_checks(p, pow("bc", 3), "");
   //   presentation::add_rule_no_checks(p, pow("bd", 2), "");
   //   presentation::add_rule_no_checks(p, pow("cd", 3), "");
-  //   auto pp = to_presentation<word_type>(p);
+  //   auto pp = to<Presentation<word_type>>(p);
   //   bench_length(pp, 120, 156);
   // }
 
@@ -497,7 +497,7 @@ namespace libsemigroups {
   //   presentation::add_rule_no_checks(p, pow("cd", 3), "");
   //   presentation::add_rule_no_checks(p, pow("ce", 2), "");
   //   presentation::add_rule_no_checks(p, pow("de", 3), "");
-  //   auto pp = to_presentation<word_type>(p);
+  //   auto pp = to<Presentation<word_type>>(p);
   //   bench_length(pp, 720, 1'455);
   // }
 
@@ -550,7 +550,7 @@ namespace libsemigroups {
     FroidurePin<Transf<1>> S;
     S.add_generator(make<Transf<1>>({0}));
     REQUIRE(S.size() == 1);
-    auto p = to_presentation<word_type>(S);
+    auto p = to<Presentation<word_type>>(S);
 
     Sims1 C;
     C.presentation(p);
@@ -565,7 +565,7 @@ namespace libsemigroups {
     S.add_generator(make<Transf<2>>({0, 1}));
     S.add_generator(make<Transf<2>>({0, 0}));
     REQUIRE(S.size() == 2);
-    auto p = to_presentation<word_type>(S);
+    auto p = to<Presentation<word_type>>(S);
 
     Sims1 C;
     C.presentation(p);
@@ -581,7 +581,7 @@ namespace libsemigroups {
     S.add_generator(make<Transf<3>>({0, 0, 2}));
     S.add_generator(make<Transf<3>>({0, 1, 1}));
     REQUIRE(S.size() == 5);
-    auto p = to_presentation<word_type>(S);
+    auto p = to<Presentation<word_type>>(S);
 
     Sims1 C;
     C.presentation(p);
@@ -598,7 +598,7 @@ namespace libsemigroups {
     S.add_generator(make<Transf<4>>({0, 1, 1, 3}));
     S.add_generator(make<Transf<4>>({0, 1, 2, 2}));
     REQUIRE(S.size() == 14);
-    auto p = to_presentation<word_type>(S);
+    auto p = to<Presentation<word_type>>(S);
 
     Sims1 C;
     C.presentation(p);
@@ -616,7 +616,7 @@ namespace libsemigroups {
     S.add_generator(make<Transf<5>>({0, 1, 2, 2, 4}));
     S.add_generator(make<Transf<5>>({0, 1, 2, 3, 3}));
     REQUIRE(S.size() == 42);
-    auto p = to_presentation<word_type>(S);
+    auto p = to<Presentation<word_type>>(S);
 
     Sims1 C;
     C.presentation(p);
@@ -646,7 +646,7 @@ namespace libsemigroups {
     REQUIRE(S.size() == 3);
 
     Sims1 C;
-    C.presentation(to_presentation<word_type>(S));
+    C.presentation(to<Presentation<word_type>>(S));
     BENCHMARK("1 thread") {
       REQUIRE(C.number_of_threads(1).number_of_congruences(3) == 5);
     };
@@ -833,7 +833,7 @@ namespace libsemigroups {
     S.add_generator(Bipartition({{1, -3}, {2, -4}, {3, 4}, {-1, -2}}));
     REQUIRE(S.size() == 81);
 
-    auto p = to_presentation<word_type>(S);
+    auto p = to<Presentation<word_type>>(S);
     p.validate();
     REQUIRE(p.alphabet().size() == 10);
     REQUIRE(presentation::length(p) == 719);
