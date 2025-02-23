@@ -16,12 +16,13 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 // TODO:
-// * nr_h_classes (easy)
+// * nr_h_classes (easy) (nr_r_classes squared)
 // * h_class_reps (harder, as words, and/or as Stephen objects)
 //   either all words labelling a path in both Stephen and Stephen^-1; or
 //   use the automorphism group of Stephen::word_graph() (as per Theorem 3.5).
-// * idempotents (easy, as words and/or Stephen objects)
-// * natural partial order
+// * idempotents (easy, as words and/or Stephen objects) (source + target
+// coincide)
+// * natural partial order (?)
 // * is_natural_less(word, word) and is_natural_less(Stephen, Stephen)
 // * Stephen.natural_order_filter() = S.words_accepted()
 // * d_class reps (easy)
@@ -97,6 +98,8 @@ namespace libsemigroups {
       _stephens.back().set_word(word_type({}));
     }
 
+    // TODO(0) the other constructors/init functions
+
     // TODO to cpp
     // TODO rename number_of_classes
     uint64_t size() {
@@ -134,6 +137,7 @@ namespace libsemigroups {
       auto const&  p = *_presentation;
 
       for (size_t i = 0; i < _stephens.size(); ++i) {
+        // TODO(0) make sensitive to stopped
         auto& s    = _stephens[i];
         auto  word = s.word();
         word.insert(word.begin(), 0);
