@@ -105,7 +105,7 @@ namespace libsemigroups {
                           "symmetric_inverse_monoid",
                           "[cutting][extreme]") {
     InversePresentation<word_type> p = to_inverse_presentation(
-        presentation::examples::symmetric_inverse_monoid(7));
+        presentation::examples::symmetric_inverse_monoid_Shu60(7));
 
     REQUIRE(presentation::length(p) == 340);
     presentation::sort_each_rule(p);
