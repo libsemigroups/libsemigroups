@@ -86,3 +86,5 @@ site/*
 tags
 test_*
 tmp/*
+*.fls
+*.fdb_latexmk

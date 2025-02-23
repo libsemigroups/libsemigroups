@@ -26,7 +26,7 @@
 #include "bench-main.hpp"  // for LIBSEMIGROUPS_BENCHMARK
 #include "catch.hpp"       // for REQUIRE, REQUIRE_NOTHROW, REQUIRE_THROWS_AS
 
-#include "libsemigroups/freeband.hpp"  // for FreeBan`
+#include "libsemigroups/freeband.hpp"  // for freeband_equal_to
 #include "libsemigroups/types.hpp"     // for word_type
 
 namespace libsemigroups {
@@ -45,6 +45,8 @@ namespace libsemigroups {
   void random_tree_word_helper(std::vector<size_t>& cont,
                                word_type&           out,
                                size_t               padding) {
+    std::random_device rd;
+    std::mt19937       g(rd());
     if (cont.size() == 1) {
       out.push_back(cont[0]);
       for (size_t i = 0; i < padding; i++)
@@ -69,7 +71,7 @@ namespace libsemigroups {
       word_type           right;
       std::vector<size_t> right_cont(cont.size());
       std::copy(cont.begin(), cont.end(), right_cont.begin());
-      std::random_shuffle(right_cont.begin(), right_cont.end());
+      std::shuffle(right_cont.begin(), right_cont.end(), g);
       size_t r = right_cont.back();
       // right letter
       out.push_back(r);
@@ -82,10 +84,12 @@ namespace libsemigroups {
 
   word_type random_tree_word(size_t nr_letters, size_t padding) {
     word_type           out;
+    std::random_device  rd;
+    std::mt19937        g(rd());
     std::vector<size_t> cont;
     for (size_t i = 0; i < nr_letters; i++)
       cont.push_back(i);
-    std::random_shuffle(cont.begin(), cont.end());
+    std::shuffle(cont.begin(), cont.end(), g);
     random_tree_word_helper(cont, out, padding);
     return out;
   }

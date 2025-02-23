@@ -20,38 +20,33 @@
 #include "catch.hpp"       // for REQUIRE, REQUIRE_NOTHROW, REQUIRE_THROWS_AS
 
 #include "libsemigroups/order.hpp"       // for LexicographicalCompare
+#include "libsemigroups/ranges.hpp"      // for LexicographicalCompare
 #include "libsemigroups/word-range.hpp"  // for number_of_words
 
 namespace libsemigroups {
 
-  // TODO use Strings
-  TEST_CASE("siso", "[quick]") {
-    BENCHMARK("silo: words length 0 to 13 using iterators") {
-      std::string first = "";
+  TEST_CASE("StringRange", "[quick]") {
+    BENCHMARK("3-letter alphabet + length 0 to 13 + lex") {
+      StringRange strings;
       std::string last(13, 'c');
+      strings.alphabet("abc")
+          .first("")
+          .last(last)
+          .order(Order::lex)
+          .upper_bound(13);
 
-      std::vector<std::string> w;
-      w.reserve(number_of_words(3, 0, 13));
-      w.assign(cbegin_silo("abc", 13, first, last),
-               cend_silo("abc", 13, first, last));
-      REQUIRE(w.size() == number_of_words(3, 0, 13));
-      REQUIRE(w.size() == 797161);
-      REQUIRE(std::is_sorted(
-          w.cbegin(), w.cend(), LexicographicalCompare<std::string>()));
+      REQUIRE(strings.count() == number_of_words(3, 0, 13));
+      REQUIRE(strings.count() == 797'161);
+      REQUIRE(is_sorted(strings, LexicographicalCompare()));
     };
 
-    BENCHMARK("sislo: words length 0 to 13 using iterators") {
-      std::string first = "";
-      std::string last(13, 'a');
-
-      std::vector<std::string> w;
-      w.reserve(number_of_words(3, 0, 13));
-      w.assign(cbegin_sislo("abc", first, last),
-               cend_sislo("abc", first, last));
-      REQUIRE(w.size() == number_of_words(3, 0, 13));
-      REQUIRE(w.size() == 797161);
-      REQUIRE(
-          std::is_sorted(w.cbegin(), w.cend(), ShortLexCompare<std::string>()));
+    BENCHMARK("3-letter alphabet + length 0 to 13 + shortlex") {
+      StringRange strings;
+      std::string last(13, 'c');
+      strings.alphabet("abc").first("").last(last).order(Order::shortlex);
+      REQUIRE(strings.count() == number_of_words(3, 0, 13));
+      REQUIRE(strings.count() == 797'161);
+      REQUIRE(is_sorted(strings, ShortLexCompare()));
     };
   }
 }  // namespace libsemigroups
