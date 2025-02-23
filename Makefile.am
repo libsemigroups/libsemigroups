@@ -797,7 +797,6 @@ EXTRA_PROGRAMS += bench_all
 EXTRA_PROGRAMS += bench_action
 EXTRA_PROGRAMS += bench_bmat
 EXTRA_PROGRAMS += bench_freeband
-EXTRA_PROGRAMS += bench_froidure_pin
 EXTRA_PROGRAMS += bench_kambites
 EXTRA_PROGRAMS += bench_knuth_bendix
 EXTRA_PROGRAMS += bench_konieczny
@@ -1174,7 +1173,6 @@ bench_all_SOURCES += benchmarks/examples/generators.cpp
 bench_all_SOURCES += benchmarks/bench-action.cpp
 bench_all_SOURCES += benchmarks/bench-bmat.cpp
 bench_all_SOURCES += benchmarks/bench-freeband.cpp
-bench_all_SOURCES += benchmarks/bench-froidure-pin.cpp
 bench_all_SOURCES += benchmarks/bench-kambites.cpp
 bench_all_SOURCES += benchmarks/bench-knuth-bendix.cpp
 bench_all_SOURCES += benchmarks/bench-konieczny.cpp
@@ -1199,10 +1197,6 @@ bench_bmat_SOURCES += tests/bmat-data.cpp
 
 bench_freeband_SOURCES =  benchmarks/bench-freeband.cpp
 bench_freeband_SOURCES += benchmarks/bench-main.cpp
-
-bench_froidure_pin_SOURCES =  benchmarks/examples/generators.cpp
-bench_froidure_pin_SOURCES += benchmarks/bench-froidure-pin.cpp
-bench_froidure_pin_SOURCES += benchmarks/bench-main.cpp
 
 bench_kambites_SOURCES =  benchmarks/bench-kambites.cpp
 bench_kambites_SOURCES += benchmarks/bench-main.cpp
