@@ -161,6 +161,7 @@ namespace libsemigroups {
 
       using rule_type        = std::pair<std::string, std::string>;
       using native_word_type = std::string;
+      using rewriter_type    = Rewriter;
 
       //////////////////////////////////////////////////////////////////////////
       // KnuthBendixImpl - types - public
