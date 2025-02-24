@@ -778,6 +778,7 @@ EXTRA_PROGRAMS += test_stephen
 EXTRA_PROGRAMS += test_string
 EXTRA_PROGRAMS += test_timer
 EXTRA_PROGRAMS += test_to_froidure_pin
+EXTRA_PROGRAMS += test_to_knuth_bendix
 EXTRA_PROGRAMS += test_to_presentation
 EXTRA_PROGRAMS += test_to_todd_coxeter
 EXTRA_PROGRAMS += test_todd_coxeter
@@ -873,6 +874,7 @@ test_all_SOURCES += tests/test-stephen.cpp
 test_all_SOURCES += tests/test-string.cpp
 test_all_SOURCES += tests/test-timer.cpp
 test_all_SOURCES += tests/test-to-froidure-pin.cpp
+test_all_SOURCES += tests/test-to-knuth-bendix.cpp
 test_all_SOURCES += tests/test-to-presentation.cpp
 test_all_SOURCES += tests/test-to-todd-coxeter.cpp
 test_all_SOURCES += tests/test-todd-coxeter.cpp
@@ -1125,6 +1127,10 @@ test_timer_SOURCES += tests/catch_amalgamated.cpp
 test_to_froidure_pin_SOURCES =  tests/test-to-froidure-pin.cpp
 test_to_froidure_pin_SOURCES += tests/test-main.cpp
 test_to_froidure_pin_SOURCES += tests/catch_amalgamated.cpp
+
+test_to_knuth_bendix_SOURCES =  tests/test-to-knuth-bendix.cpp
+test_to_knuth_bendix_SOURCES += tests/test-main.cpp
+test_to_knuth_bendix_SOURCES += tests/catch_amalgamated.cpp
 
 test_to_presentation_SOURCES =  tests/test-to-presentation.cpp
 test_to_presentation_SOURCES += tests/test-main.cpp
