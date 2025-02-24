@@ -360,7 +360,7 @@ namespace libsemigroups {
   //! Despite the hideous signature, this function should be invoked as follows:
   //!
   //! \code
-  //! to<InversePresentation<Word>>(p, func);
+  //! to<InversePresentation>(p);
   //! \endcode
   //!
   //! This function returns an inverse presentation with rules equivalent to
