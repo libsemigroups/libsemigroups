@@ -50,7 +50,7 @@ namespace libsemigroups {
   //! to<Presentation<Word>>(FroidurePinBase&).
   //!
   //! \tparam Result used for SFINAE, the return type of this function, must be
-  //! \c KnuthBendix<Word> for some type \c Word
+  //! `KnuthBendix<Word, Rewriter>` for some type \c Word and \c Rewriter.
   //!
   //! \param knd the kind of the congruence being constructed.
   //! \param fpb the FroidurePin instance to be converted.
@@ -59,10 +59,13 @@ namespace libsemigroups {
   //! over the semigroup defined by \p fpb.
   template <typename Result>
   auto to(congruence_kind knd, FroidurePinBase& fpb) -> std::enable_if_t<
-      std::is_same_v<KnuthBendix<typename Result::native_word_type>, Result>,
+      std::is_same_v<KnuthBendix<typename Result::native_word_type,
+                                 typename Result::rewriter_type>,
+                     Result>,
       Result> {
-    using Word = typename Result::native_word_type;
-    return KnuthBendix<Word>(knd, to<Presentation<Word>>(fpb));
+    using Word     = typename Result::native_word_type;
+    using Rewriter = typename Result::rewriter_type;
+    return KnuthBendix<Word, Rewriter>(knd, to<Presentation<Word>>(fpb));
   }
 
   //! \ingroup to_knuth_bendix_group
