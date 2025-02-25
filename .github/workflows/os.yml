@@ -59,13 +59,23 @@ jobs:
   x86-32:
       timeout-minutes: 60
       runs-on: ubuntu-latest
-      env:
-        GH_ACTIONS_ABI: "32"
-        GH_ACTIONS_ARCH: "x86"
-        GH_ACTIONS_TEST_PROG: "test_all"
-        GH_ACTIONS_TEST_TAGS: "[quick][exclude:no-valgrind][exclude:no-coverage][exclude:BMat8]"
+      container: 
+        image: libsemigroups/libsemigroups-docker-x86-32-base:main"
       steps:
          - uses: actions/checkout@v3
-         - name: "Running the quick tests in libsemigroups-docker-x86-32-base docker container . . ."
+         - name: "Fix permissions in docker container . . ."
            run: |
-                ci/launch-docker-container.sh
+            sudo chown -R libsemigroups: /home/libsemigroups
+         - name: "Configure . . ."
+           run: |
+            cd /home/libsemigroups
+            mkdir -p m4
+            ./autogen.sh
+            ./configure --disable-hpcombi # HPCombi doesn't work in 32-bit mode
+         - name: "Build libsemigroups . . ."
+           run: make -j4
+         - name: "Build test_all . . ."
+           run: make test_all -j4
+         - name: "Running the tests . . ."
+           run: |
+             ./test_all "[quick][exclude:no-valgrind][exclude:no-coverage][exclude:BMat8]" --abort
