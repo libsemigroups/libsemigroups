@@ -14,10 +14,8 @@ find src/*.cpp -type f -exec cpplint --repository='include' {} \; | tee -a lint.
 find src/detail/*.cpp -type f -exec cpplint --repository='include' {} \; | tee -a lint.log
 find tests/*.hpp -type f ! -iname "catch_*" -exec cpplint --repository='..' {} \; | tee -a lint.log
 find tests/*.cpp -type f ! -iname "catch_*" -exec cpplint --repository='include' {} \; | tee -a lint.log
-find benchmarks/*.hpp -type f ! -iname "catch.hpp" -exec cpplint --repository='..' {} \; | tee -a lint.log
-find benchmarks/*.cpp -type f -exec cpplint --repository='include' {} \; | tee -a lint.log
-find benchmarks/examples/*.hpp -type f -exec cpplint --repository='..' {} \; | tee -a lint.log
-find benchmarks/examples/*.cpp -type f -exec cpplint {} \; | tee -a lint.log
+find benchmarks/*.hpp -type f ! -iname "catch_*" -exec cpplint --repository='..' {} \; | tee -a lint.log
+find benchmarks/*.cpp -type f ! -iname "catch_*" -exec cpplint --repository='include' {} \; | tee -a lint.log
 
 ! grep -E "Total errors found:" lint.log
 exit_code=$?
