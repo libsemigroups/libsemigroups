@@ -2,13 +2,13 @@
 """
 This module expects to be used as:
 
-./bench_sims "[partition_monoid_2_sided]" --reporter=xml | benchmarks/latex_table.py
+./bench_sims "[partition_monoid_2_sided]" --reporter=xml | benchmarks/to_table.py
 """
 
 import sys
 from bs4 import BeautifulSoup
 from math import floor, log10
-import re
+
 from rich.console import Console
 from rich.table import Table
 
@@ -46,6 +46,7 @@ num_benchmarks = 0
 for line in sys.stdin:
     print(line, file=sys.stdout, flush=True, end="")
     xml_str += line
+    # TODO read the whole of the output, then start processing the xml
 
     if line.find(r"</BenchmarkResults>") != -1:
         xml = BeautifulSoup(xml_str, "xml")

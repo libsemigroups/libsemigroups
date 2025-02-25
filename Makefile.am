@@ -718,9 +718,6 @@ EXTRA_DIST += benchmarks/bench-main.hpp
 ## TODO replace catch.hpp -> catch_amalgamated.hpp
 EXTRA_DIST += benchmarks/catch.hpp 
 EXTRA_DIST += benchmarks/uf-old.hpp
-EXTRA_DIST += benchmarks/examples/common.hpp
-EXTRA_DIST += benchmarks/examples/cong-intf.hpp
-EXTRA_DIST += benchmarks/examples/generators.hpp
 
 ## For testing . . .
 
@@ -798,7 +795,6 @@ EXTRA_PROGRAMS += bench_action
 EXTRA_PROGRAMS += bench_bmat
 EXTRA_PROGRAMS += bench_freeband
 EXTRA_PROGRAMS += bench_kambites
-EXTRA_PROGRAMS += bench_knuth_bendix
 EXTRA_PROGRAMS += bench_konieczny
 EXTRA_PROGRAMS += bench_multi_string_view
 EXTRA_PROGRAMS += bench_sims
@@ -1168,13 +1164,10 @@ test_word_range_SOURCES =  tests/test-word-range.cpp
 test_word_range_SOURCES += tests/test-main.cpp
 test_word_range_SOURCES += tests/catch_amalgamated.cpp
 
-bench_all_SOURCES =  benchmarks/examples/cong-intf.cpp
-bench_all_SOURCES += benchmarks/examples/generators.cpp
-bench_all_SOURCES += benchmarks/bench-action.cpp
+bench_all_SOURCES  = benchmarks/bench-action.cpp
 bench_all_SOURCES += benchmarks/bench-bmat.cpp
 bench_all_SOURCES += benchmarks/bench-freeband.cpp
 bench_all_SOURCES += benchmarks/bench-kambites.cpp
-bench_all_SOURCES += benchmarks/bench-knuth-bendix.cpp
 bench_all_SOURCES += benchmarks/bench-konieczny.cpp
 bench_all_SOURCES += benchmarks/bench-main.cpp
 bench_all_SOURCES += benchmarks/bench-multi-string-view.cpp
@@ -1201,9 +1194,6 @@ bench_freeband_SOURCES += benchmarks/bench-main.cpp
 bench_kambites_SOURCES =  benchmarks/bench-kambites.cpp
 bench_kambites_SOURCES += benchmarks/bench-main.cpp
 
-bench_knuth_bendix_SOURCES =  benchmarks/bench-knuth-bendix.cpp
-bench_knuth_bendix_SOURCES += benchmarks/bench-main.cpp
-
 bench_konieczny_SOURCES =  benchmarks/bench-konieczny.cpp
 bench_konieczny_SOURCES += benchmarks/bench-main.cpp
 
@@ -1211,13 +1201,12 @@ bench_sims_SOURCES =  benchmarks/bench-sims1.cpp
 bench_sims_SOURCES += benchmarks/bench-main.cpp
 
 bench_string_range_SOURCES =  benchmarks/bench-string-range.cpp
-bcench_string_range_SOURCES += benchmarks/bench-main.cpp
+bench_string_range_SOURCES += benchmarks/bench-main.cpp
 
 bench_multi_string_view_SOURCES =  benchmarks/bench-multi-string-view.cpp
 bench_multi_string_view_SOURCES += benchmarks/bench-main.cpp
 
 bench_todd_coxeter_SOURCES =  benchmarks/bench-todd-coxeter.cpp
-bench_todd_coxeter_SOURCES += benchmarks/examples/cong-intf.cpp
 bench_todd_coxeter_SOURCES += benchmarks/bench-main.cpp
 
 bench_uf_SOURCES =  benchmarks/bench-uf.cpp

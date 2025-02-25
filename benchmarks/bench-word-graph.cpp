@@ -173,7 +173,7 @@ namespace libsemigroups {
     return ad;
   }
 
-  TEST_CASE("const_pilo_iterator", "[quick][000]") {
+  TEST_CASE("const_pilo_iterator x 1", "[quick][000]") {
     using node_type = size_t;
     auto   ad       = test_digraph();
     size_t N        = 20;
@@ -186,24 +186,24 @@ namespace libsemigroups {
     BENCHMARK("free function for comparison with const_pilo_iterator") {
       std::pair<std::vector<word_type>, std::vector<node_type>> v
           = paths_in_lex_order(ad, 0, 0, N);
-      REQUIRE(v.first.size() == 1048575);
+      REQUIRE(v.first.size() == 1'048'575);
     };
   }
 
-  TEST_CASE("const_pilo_iterator", "[quick][001]") {
+  TEST_CASE("const_pilo_iterator x 2", "[quick][001]") {
     using node_type = size_t;
     auto   ad       = test_digraph();
     size_t N        = 20;
 
     BENCHMARK("const_pilo_iterator") {
       std::vector<word_type> v(cbegin_pilo(ad, 0, 0, N), cend_pilo(ad));
-      REQUIRE(v.size() == 1048575);
+      REQUIRE(v.size() == 1'048'575);
     };
 
     BENCHMARK("free function for comparison with const_pilo_iterator") {
       std::pair<std::vector<word_type>, std::vector<node_type>> v
           = paths_in_lex_order(ad, 0, 0, N);
-      REQUIRE(v.first.size() == 1048575);
+      REQUIRE(v.first.size() == 1'048'575);
     };
   }
 
@@ -213,19 +213,19 @@ namespace libsemigroups {
 
     BENCHMARK("const_pstilo_iterator") {
       std::vector<word_type> v(cbegin_pstilo(ad, 0, 4, 0, N), cend_pstilo(ad));
-      REQUIRE(v.size() == 524277);
+      REQUIRE(v.size() == 524'277);
     };
 
     BENCHMARK("free function for comparison with const_pstilo_iterator") {
       std::vector<word_type> v = paths_in_lex_order2(ad, 0, 4, 0, N);
-      REQUIRE(v.size() == 524277);
+      REQUIRE(v.size() == 524'277);
     };
   }
 
   TEST_CASE("number_of_paths", "[quick][003]") {
     auto ad = test_digraph();
     BENCHMARK("number_of_paths (uses pstilo)") {
-      REQUIRE(number_of_paths(ad, 0, 4, 0, 24) == 8388595);
+      REQUIRE(number_of_paths(ad, 0, 4, 0, 24) == 8'388'595);
     };
 
     BENCHMARK("number of paths (via pilo)") {
@@ -243,47 +243,47 @@ namespace libsemigroups {
     };
   }
 
-  TEST_CASE("const_pislo_iterator", "[quick][004]") {
+  TEST_CASE("const_pislo_iterator x 1", "[quick][004]") {
     using node_type = size_t;
     auto   ad       = test_digraph();
     size_t N        = 20;
 
     BENCHMARK("const_pislo_iterator") {
       std::vector<word_type> v(cbegin_pislo(ad, 0, 0, N), cend_pislo(ad));
-      REQUIRE(v.size() == 1048575);
+      REQUIRE(v.size() == 1'048'575);
     };
 
     BENCHMARK("free function for comparison with const_pislo_iterator") {
       std::pair<std::vector<word_type>, std::vector<node_type>> v
           = paths_in_shortlex_order(ad, 0, 0, N);
-      REQUIRE(v.first.size() == 1048575);
+      REQUIRE(v.first.size() == 1'048'575);
     };
 
     BENCHMARK("const_pilo_iterator for comparison with const_pislo_iterator") {
       std::vector<word_type> v(cbegin_pilo(ad, 0, 0, N), cend_pilo(ad));
-      REQUIRE(v.size() == 1048575);
+      REQUIRE(v.size() == 1'048'575);
     };
   }
 
-  TEST_CASE("const_pislo_iterator", "[quick][005]") {
+  TEST_CASE("const_pislo_iterator x 2", "[quick][005]") {
     using node_type = size_t;
     auto   ad       = test_digraph();
     size_t N        = 20;
 
     BENCHMARK("const_pislo_iterator") {
       std::vector<word_type> v(cbegin_pislo(ad, 0, 0, N), cend_pislo(ad));
-      REQUIRE(v.size() == 1048575);
+      REQUIRE(v.size() == 1'048'575);
     };
 
     BENCHMARK("free function for comparison with const_pislo_iterator") {
       std::pair<std::vector<word_type>, std::vector<node_type>> v
           = paths_in_shortlex_order(ad, 0, 0, N);
-      REQUIRE(v.first.size() == 1048575);
+      REQUIRE(v.first.size() == 1'048'575);
     };
 
     BENCHMARK("const_pilo_iterator for comparison with const_pislo_iterator") {
       std::vector<word_type> v(cbegin_pilo(ad, 0, 0, N), cend_pilo(ad));
-      REQUIRE(v.size() == 1048575);
+      REQUIRE(v.size() == 1'048'575);
     };
   }
 
@@ -294,13 +294,13 @@ namespace libsemigroups {
     BENCHMARK("const_pstislo_iterator") {
       std::vector<word_type> v(cbegin_pstislo(ad, 0, 4, 0, N),
                                cend_pstislo(ad));
-      REQUIRE(v.size() == 524277);
+      REQUIRE(v.size() == 524'277);
     };
 
     BENCHMARK(
         "const_pstilo_iterator for comparison with const_pstislo_iterator") {
       std::vector<word_type> v(cbegin_pstilo(ad, 0, 4, 0, N), cend_pstilo(ad));
-      REQUIRE(v.size() == 524277);
+      REQUIRE(v.size() == 524'277);
     };
   }
 
@@ -308,7 +308,7 @@ namespace libsemigroups {
   TEST_CASE("number_of_paths matrix vs dfs", "[standard][007]") {
     using algorithm = paths::algorithm;
     std::mt19937 mt;
-    for (size_t M = 100; M < 1000; M += 100) {
+    for (size_t M = 100; M < 1'000; M += 100) {
       std::uniform_int_distribution<size_t> source(0, M - 1);
       for (size_t N = 10; N < 20; N += 5) {
         for (size_t nr_edges = 0; nr_edges <= detail::magic_number(M) * M;

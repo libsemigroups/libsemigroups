@@ -109,7 +109,7 @@ namespace libsemigroups {
         std::tie(lhs, rhs) = example1(N);
         meter.measure([&]() {
           p.rules = {lhs, rhs};
-          k.init(p);
+          k.init(congruence_kind::twosided, p);
           return foo(k);
         });
       };  // NOLINT(readability/braces)
@@ -161,7 +161,7 @@ namespace libsemigroups {
         std::string rhs = "a" + power_string("cb", m) + "a";
         meter.measure([&]() {
           p.rules = {lhs, rhs};
-          k.init(p);
+          k.init(congruence_kind::twosided, p);
           foo(k);
         });
       };  // NOLINT(readability/braces)
@@ -190,18 +190,22 @@ namespace libsemigroups {
 
   template <typename T>
   void equal_to_ex_A1(size_t m) {
+    using Word = typename decltype(Kambites<T>())::native_word_type;
     for (size_t N = 100; N <= 400; N += 8) {
       std::string lhs, rhs;
       std::tie(lhs, rhs) = example1(m);
-      Kambites<T> k;
-      k.set_alphabet("ab");
-      k.add_rule(lhs, rhs);
+      Presentation<Word> p;
+      p.alphabet("ab");
+      presentation::add_rule(p, lhs, rhs);
+
+      Kambites<T> k(congruence_kind::twosided, p);
+
       auto random = random_strings("ab", N, 0, 4 * N + 4) | rx::to_vector();
       auto u      = zip(random_sequence(lhs, rhs, N), random);
       auto v      = zip(random_sequence(lhs, rhs, N), random);
       REQUIRE(k.small_overlap_class() >= 4);
       BENCHMARK(std::to_string(u.size() + v.size())) {
-        std::ignore = k.contains(u, v);
+        std::ignore = kambites::contains_no_checks(k, u, v);
       };
     }
   }
@@ -242,7 +246,7 @@ namespace libsemigroups {
           total++;
           total_length += l.size() + r.size();
           p.rules = {l, r};
-          k.init(p);
+          k.init(congruence_kind::twosided, p);
           if (k.small_overlap_class() >= 4) {
             total_c4++;
           }
@@ -252,7 +256,7 @@ namespace libsemigroups {
           total_length += l.size() + r.size();
           total++;
           p.rules = {l, r};
-          k.init(p);
+          k.init(congruence_kind::twosided, p);
           if (k.small_overlap_class() >= 4) {
             total_c4++;
           }
@@ -370,7 +374,7 @@ namespace libsemigroups {
           total_length += l->size() + r->size();
           total++;
           p.rules = {*l, *r};
-          k.init(p);
+          k.init(congruence_kind::twosided, p);
           if (k.small_overlap_class() >= 4) {
             total_c4++;
           }
@@ -533,7 +537,7 @@ namespace libsemigroups {
         (Catch::Benchmark::Chronometer meter) {
           for (size_t i = 0; i < relations.size() - 1; i += 2) {
             p.rules = {relations[i], relations[i + 1]};
-            k.init(p);
+            k.init(congruence_kind::twosided, p);
             REQUIRE(k.small_overlap_class() >= 4);
 
             auto words = wu(sample_size, relations[i], relations[i + 1], N);
@@ -542,7 +546,7 @@ namespace libsemigroups {
               bool result = true;
               for (auto wit = words.cbegin(); wit < words.cend() - 1;
                    wit += 2) {
-                result &= k.contains(*wit, *(wit + 1));
+                result &= kambites::contains_no_checks(k, *wit, *(wit + 1));
               }
               return result;
             });
@@ -702,7 +706,7 @@ namespace libsemigroups {
         (Catch::Benchmark::Chronometer meter) {
           for (size_t i = 0; i < relations.size() - 1; i += 2) {
             p.rules = {relations[i], relations[i + 1]};
-            k.init(p);
+            k.init(congruence_kind::twosided, p);
             REQUIRE(k.small_overlap_class() >= 4);
 
             auto words = wu(sample_size, relations[i], relations[i + 1], N);
@@ -710,7 +714,8 @@ namespace libsemigroups {
             bool result = true;
             meter.measure([&]() {
               for (auto wit = words.cbegin(); wit < words.cend(); ++wit) {
-                result &= k.contains(k.normal_form(*wit), *wit);
+                result &= kambites::contains_no_checks(
+                    k, kambites::reduce_no_checks(k, *wit), *wit);
               }
             });
             if (!result) {
