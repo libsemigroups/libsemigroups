@@ -60,7 +60,7 @@ jobs:
       timeout-minutes: 60
       runs-on: ubuntu-latest
       container:
-        image: libsemigroups/libsemigroups-docker-x86-32-base
+        image: libsemigroups/libsemigroups-docker-x86-32-base:main
       steps:
          - uses: actions/checkout@v3
          - name: "Fix permissions in docker container . . ."
