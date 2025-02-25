@@ -63,9 +63,11 @@ jobs:
         image: libsemigroups/libsemigroups-docker-x86-32-base:main
         options: --user libsemigroups
       steps:
-         - uses: actions/setup-node@v4
-           with:
-            node-version: 20
+         - name: "Set up Homebrew . . ."
+           uses: Homebrew/actions/setup-homebrew@master
+         - name: "Install latest doxygen . . ."
+           run: |
+                brew install node@20
          - uses: actions/checkout@v4
          - name: "Fix permissions in docker container . . ."
            run: |
