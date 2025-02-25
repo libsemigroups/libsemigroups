@@ -714,13 +714,8 @@ EXTRA_DIST += tests/catch_amalgamated.hpp
 EXTRA_DIST += tests/bmat-data.hpp
 EXTRA_DIST += tests/test-main.hpp
 EXTRA_DIST += tests/word-graph-test-common.hpp
-EXTRA_DIST += benchmarks/bench-main.hpp
-## TODO replace catch.hpp -> catch_amalgamated.hpp
-EXTRA_DIST += benchmarks/catch.hpp 
+EXTRA_DIST += benchmarks/catch_amalgamated.hpp 
 EXTRA_DIST += benchmarks/uf-old.hpp
-EXTRA_DIST += benchmarks/examples/common.hpp
-EXTRA_DIST += benchmarks/examples/cong-intf.hpp
-EXTRA_DIST += benchmarks/examples/generators.hpp
 
 ## For testing . . .
 
@@ -797,12 +792,11 @@ EXTRA_PROGRAMS += bench_all
 EXTRA_PROGRAMS += bench_action
 EXTRA_PROGRAMS += bench_bmat
 EXTRA_PROGRAMS += bench_freeband
-EXTRA_PROGRAMS += bench_froidure_pin
 EXTRA_PROGRAMS += bench_kambites
-EXTRA_PROGRAMS += bench_knuth_bendix
 EXTRA_PROGRAMS += bench_konieczny
 EXTRA_PROGRAMS += bench_multi_string_view
 EXTRA_PROGRAMS += bench_sims
+EXTRA_PROGRAMS += bench_string_range
 EXTRA_PROGRAMS += bench_todd_coxeter
 EXTRA_PROGRAMS += bench_uf
 EXTRA_PROGRAMS += bench_wilo
@@ -1168,68 +1162,63 @@ test_word_range_SOURCES =  tests/test-word-range.cpp
 test_word_range_SOURCES += tests/test-main.cpp
 test_word_range_SOURCES += tests/catch_amalgamated.cpp
 
-bench_all_SOURCES =  benchmarks/examples/cong-intf.cpp
-bench_all_SOURCES += benchmarks/examples/generators.cpp
-bench_all_SOURCES += benchmarks/bench-action.cpp
-bench_all_SOURCES += benchmarks/bench-word-graph.cpp
-bench_all_SOURCES += benchmarks/bench-froidure-pin.cpp
-bench_all_SOURCES += benchmarks/bench-knuth-bendix.cpp
+bench_all_SOURCES  = benchmarks/bench-action.cpp
+bench_all_SOURCES += benchmarks/bench-bmat.cpp
+bench_all_SOURCES += benchmarks/bench-freeband.cpp
+bench_all_SOURCES += benchmarks/bench-kambites.cpp
 bench_all_SOURCES += benchmarks/bench-konieczny.cpp
-bench_all_SOURCES += benchmarks/bench-main.cpp
 bench_all_SOURCES += benchmarks/bench-multi-string-view.cpp
 bench_all_SOURCES += benchmarks/bench-sims1.cpp
+bench_all_SOURCES += benchmarks/bench-string-range.cpp
 bench_all_SOURCES += benchmarks/bench-todd-coxeter.cpp
 bench_all_SOURCES += benchmarks/bench-uf.cpp
 bench_all_SOURCES += benchmarks/bench-wilo.cpp
 bench_all_SOURCES += benchmarks/bench-wislo.cpp
+bench_all_SOURCES += benchmarks/bench-word-graph.cpp
 bench_all_SOURCES += benchmarks/uf-old.cpp
 bench_all_SOURCES += tests/bmat-data.cpp
+bench_all_SOURCES += benchmarks/catch_amalgamated.cpp
 
 bench_action_SOURCES =  benchmarks/bench-action.cpp
-bench_action_SOURCES += benchmarks/bench-main.cpp
+bench_action_SOURCES += benchmarks/catch_amalgamated.cpp
 
 bench_bmat_SOURCES =  benchmarks/bench-bmat.cpp
-bench_bmat_SOURCES += benchmarks/bench-main.cpp
 bench_bmat_SOURCES += tests/bmat-data.cpp
+bench_bmat_SOURCES += benchmarks/catch_amalgamated.cpp
 
 bench_freeband_SOURCES =  benchmarks/bench-freeband.cpp
-bench_freeband_SOURCES += benchmarks/bench-main.cpp
-
-bench_froidure_pin_SOURCES =  benchmarks/examples/generators.cpp
-bench_froidure_pin_SOURCES += benchmarks/bench-froidure-pin.cpp
-bench_froidure_pin_SOURCES += benchmarks/bench-main.cpp
+bench_freeband_SOURCES += benchmarks/catch_amalgamated.cpp
 
 bench_kambites_SOURCES =  benchmarks/bench-kambites.cpp
-bench_kambites_SOURCES += benchmarks/bench-main.cpp
-
-bench_knuth_bendix_SOURCES =  benchmarks/bench-knuth-bendix.cpp
-bench_knuth_bendix_SOURCES += benchmarks/bench-main.cpp
+bench_kambites_SOURCES += benchmarks/catch_amalgamated.cpp
 
 bench_konieczny_SOURCES =  benchmarks/bench-konieczny.cpp
-bench_konieczny_SOURCES += benchmarks/bench-main.cpp
+bench_konieczny_SOURCES += benchmarks/catch_amalgamated.cpp
 
 bench_sims_SOURCES =  benchmarks/bench-sims1.cpp
-bench_sims_SOURCES += benchmarks/bench-main.cpp
+bench_sims_SOURCES += benchmarks/catch_amalgamated.cpp
+
+bench_string_range_SOURCES =  benchmarks/bench-string-range.cpp
+bench_string_range_SOURCES += benchmarks/catch_amalgamated.cpp
 
 bench_multi_string_view_SOURCES =  benchmarks/bench-multi-string-view.cpp
-bench_multi_string_view_SOURCES += benchmarks/bench-main.cpp
+bench_multi_string_view_SOURCES += benchmarks/catch_amalgamated.cpp
 
 bench_todd_coxeter_SOURCES =  benchmarks/bench-todd-coxeter.cpp
-bench_todd_coxeter_SOURCES += benchmarks/examples/cong-intf.cpp
-bench_todd_coxeter_SOURCES += benchmarks/bench-main.cpp
+bench_todd_coxeter_SOURCES += benchmarks/catch_amalgamated.cpp
 
 bench_uf_SOURCES =  benchmarks/bench-uf.cpp
-bench_uf_SOURCES += benchmarks/bench-main.cpp
 bench_uf_SOURCES += benchmarks/uf-old.cpp
+bench_uf_SOURCES += benchmarks/catch_amalgamated.cpp
 
 bench_wilo_SOURCES =  benchmarks/bench-wilo.cpp
-bench_wilo_SOURCES += benchmarks/bench-main.cpp
+bench_wilo_SOURCES += benchmarks/catch_amalgamated.cpp
 
 bench_wislo_SOURCES =  benchmarks/bench-wislo.cpp
-bench_wislo_SOURCES += benchmarks/bench-main.cpp
+bench_wislo_SOURCES += benchmarks/catch_amalgamated.cpp
 
 bench_word_graph_SOURCES =  benchmarks/bench-word-graph.cpp
-bench_word_graph_SOURCES += benchmarks/bench-main.cpp
+bench_word_graph_SOURCES += benchmarks/catch_amalgamated.cpp
 
 ## Make targets
 

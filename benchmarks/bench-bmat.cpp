@@ -21,8 +21,7 @@
 
 #include <cstddef>  // for size_T
 
-#include "bench-main.hpp"  // for CATCH_CONFIG_ENABLE_BENCHMARKING
-#include "catch.hpp"       // for REQUIRE, REQUIRE_NOTHROW, REQUIRE_THROWS_AS
+#include "catch_amalgamated.hpp"  // for REQUIRE, REQUIRE_NOTHROW, REQUIRE_THROWS_AS
 
 #include "libsemigroups/matrix.hpp"  // for BMat
 
@@ -70,20 +69,6 @@ namespace libsemigroups {
     }
   }  // namespace
 
-  // TEST_CASE("BMat0", "[quick][000]") {
-  //   BENCHMARK("redefine") {
-  //     BooleanMat result1(size_t(40));
-  //     BooleanMat result2 = konieczny_data::clark_gens.back();
-  //     REQUIRE(konieczny_data::clark_gens.size() == 6);
-  //     for (size_t i = 0; i < 500; ++i) {
-  //       for (auto const& y : konieczny_data::clark_gens) {
-  //         result1.redefine(result2, y);
-  //         std::swap(result1, result2);
-  //       }
-  //     }
-  //   };
-  // }
-
   TEST_CASE("BMat1", "[quick][001]") {
     std::vector<int>              result1(40 * 40, false);
     std::vector<std::vector<int>> clark;
@@ -113,10 +98,10 @@ namespace libsemigroups {
     auto result2 = clark.back();
     REQUIRE(clark.size() == 6);
 
-    BENCHMARK("product_inplace static matrix") {
+    BENCHMARK("product_inplace_no_checks static matrix") {
       for (size_t i = 0; i < 500; ++i) {
         for (auto& y : clark) {
-          result1.product_inplace(result2, y);
+          result1.product_inplace_no_checks(result2, y);
           std::swap(result1, result2);
         }
       }
@@ -132,10 +117,10 @@ namespace libsemigroups {
     auto result2 = clark.back();
     REQUIRE(clark.size() == 6);
 
-    BENCHMARK("product_inplace dynamic matrix") {
+    BENCHMARK("product_inplace_no_checks dynamic matrix") {
       for (size_t i = 0; i < 500; ++i) {
         for (auto& y : clark) {
-          result1.product_inplace(result2, y);
+          result1.product_inplace_no_checks(result2, y);
           std::swap(result1, result2);
         }
       }
@@ -143,7 +128,7 @@ namespace libsemigroups {
   }
 
   TEST_CASE("BMat4", "[quick][004]") {
-    auto m = BMat<>::identity(16);
+    auto m = BMat<>::one(16);
     BENCHMARK("rowspace size") {
       REQUIRE(matrix::row_space_size(m) == 65535);
     };
