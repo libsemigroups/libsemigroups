@@ -18,8 +18,7 @@
 
 #include <cstddef>  // for size_t
 
-#include "bench-main.hpp"  // for CATCH_CONFIG_ENABLE_BENCHMARKING
-#include "catch_amalgamated.hpp"       // for TEST_CASE, BENCHMARK, REQUIRE
+#include "catch_amalgamated.hpp"  // for TEST_CASE, BENCHMARK, REQUIRE
 
 #include "libsemigroups/bitset.hpp"         // for BitSet
 #include "libsemigroups/bmat-adapters.hpp"  // for BMat adapters
@@ -58,7 +57,7 @@ namespace libsemigroups {
 
     template <typename Mat>
     T operator()(Mat const& x) const {
-      T     res;
+      T res;
       this->operator()(res, x);
       return res;
     }
@@ -89,7 +88,7 @@ namespace libsemigroups {
 
     template <typename Mat>
     T operator()(Mat const& x) const {
-      T     res;
+      T res;
       this->operator()(res, x);
       return res;
     }

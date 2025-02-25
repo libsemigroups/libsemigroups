@@ -23,8 +23,7 @@
 #include <string>
 #include <vector>
 
-#include "bench-main.hpp"  // for LIBSEMIGROUPS_BENCHMARK
-#include "catch_amalgamated.hpp"       // for REQUIRE, REQUIRE_NOTHROW, REQUIRE_THROWS_AS
+#include "catch_amalgamated.hpp"  // for REQUIRE, REQUIRE_NOTHROW, REQUIRE_THROWS_AS
 
 #include "libsemigroups/freeband.hpp"  // for freeband_equal_to
 #include "libsemigroups/types.hpp"     // for word_type

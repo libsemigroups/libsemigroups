@@ -18,7 +18,6 @@
 
 #include <cstddef>  // for size_t
 
-#define CATCH_CONFIG_ENABLE_BENCHMARKING
 #include "catch_amalgamated.hpp"  // for REQUIRE, REQUIRE_NOTHROW, REQUIRE_THROWS_AS
 
 #include "libsemigroups/action.hpp"         // for LeftAction

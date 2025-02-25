@@ -18,7 +18,6 @@
 
 #include <random>  // for default_random_engine
 
-#include "bench-main.hpp"         // for LIBSEMIGROUPS_BENCHMARK
 #include "catch_amalgamated.hpp"  // for REQUIRE, REQUIRE_NOTHROW, REQUIRE_THROWS_AS
 
 #include "uf-old.hpp"  // for UFOld
