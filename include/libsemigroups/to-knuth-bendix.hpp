@@ -103,5 +103,18 @@ namespace libsemigroups {
     return KnuthBendix<Word>(knd, tc.presentation());
   }
 
+  template <typename Result>
+  auto to(congruence_kind                                 knd,
+          ToddCoxeter<typename Result::native_word_type>& tc)
+      -> std::enable_if_t<
+          std::is_same_v<KnuthBendix<typename Result::native_word_type,
+                                     typename Result::rewriter_type>,
+                         Result>,
+          Result> {
+    using Word     = typename Result::native_word_type;
+    using Rewriter = typename Result::rewriter_type;
+    return KnuthBendix<Word, Rewriter>(knd, tc.presentation());
+  }
+
 }  // namespace libsemigroups
 #endif  // LIBSEMIGROUPS_TO_KNUTH_BENDIX_HPP_
