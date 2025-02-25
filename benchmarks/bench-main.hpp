@@ -19,8 +19,6 @@
 #ifndef LIBSEMIGROUPS_BENCHMARKS_BENCH_MAIN_HPP_
 #define LIBSEMIGROUPS_BENCHMARKS_BENCH_MAIN_HPP_
 
-#include <vector>
-
 #define CATCH_CONFIG_ENABLE_BENCHMARKING
 
 #include "catch_amalgamated.hpp"
@@ -45,49 +43,4 @@
     }                                                                         \
   }
 
-namespace libsemigroups {
-  std::string to_hex_string(size_t);
-
-  template <typename TReturnType, typename... TArgs>
-  struct FunctionBase {
-    using return_type = TReturnType;
-  };
-
-  template <typename TSignature>
-  struct Function {};
-
-  // Free functions . . .
-  template <typename TReturnType, typename... TArgs>
-  struct Function<TReturnType(TArgs...)> : FunctionBase<TReturnType, TArgs...> {
-  };
-
-  // Function pointer
-  template <typename TReturnType, typename... TArgs>
-  struct Function<TReturnType (*)(TArgs...)>
-      : FunctionBase<TReturnType, TArgs...> {};
-
-  // Function pointer const
-  template <typename TReturnType, typename... TArgs>
-  struct Function<TReturnType (*const)(TArgs...)>
-      : FunctionBase<TReturnType, TArgs...> {};
-
-  template <typename T, typename S>
-  std::vector<T> initialised_sample(Catch::Benchmark::Chronometer meter,
-                                    S const& sample_constructor_params,
-                                    T (*before_func)(S const&)) {
-    std::vector<T> out;
-    for (int i = 0; i < meter.runs(); ++i) {
-      out.push_back(before_func(sample_constructor_params));
-    }
-    return out;
-  }
-
-  template <typename S, typename T>
-  void cleanup_sample(S after_func, T& data) {
-    for (auto& x : data) {
-      after_func(x);
-    }
-  }
-
-}  // namespace libsemigroups
 #endif  // LIBSEMIGROUPS_BENCHMARKS_BENCH_MAIN_HPP_
