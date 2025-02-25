@@ -23,7 +23,7 @@
 
 #define CATCH_CONFIG_ENABLE_BENCHMARKING
 
-#include "catch.hpp"
+#include "catch_amalgamated.hpp"
 
 // TODO(later) can this be a function rather than a macro??
 

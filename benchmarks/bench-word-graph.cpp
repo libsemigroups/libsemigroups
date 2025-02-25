@@ -21,7 +21,7 @@
 #include <iostream>   // for std::cout
 
 #include "bench-main.hpp"  // for CATCH_CONFIG_ENABLE_BENCHMARKING
-#include "catch.hpp"       // for BENCHMARK, REQUIRE, TEST_CASE
+#include "catch_amalgamated.hpp"       // for BENCHMARK, REQUIRE, TEST_CASE
 
 #include "libsemigroups/paths.hpp"       // for Paths etc
 #include "libsemigroups/types.hpp"       // for word_type

@@ -22,7 +22,7 @@
 
 #include <sstream>
 
-#include "catch.hpp"
+#include "catch_amalgamated.hpp"
 
 namespace libsemigroups {
   std::string to_hex_string(size_t i) {

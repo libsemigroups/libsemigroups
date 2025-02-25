@@ -1180,47 +1180,61 @@ bench_all_SOURCES += benchmarks/bench-wislo.cpp
 bench_all_SOURCES += benchmarks/bench-word-graph.cpp
 bench_all_SOURCES += benchmarks/uf-old.cpp
 bench_all_SOURCES += tests/bmat-data.cpp
+bench_all_SOURCES += benchmarks/catch_amalgamated.cpp
 
 bench_action_SOURCES =  benchmarks/bench-action.cpp
 bench_action_SOURCES += benchmarks/bench-main.cpp
+bench_action_SOURCES += benchmarks/catch_amalgamated.cpp
 
 bench_bmat_SOURCES =  benchmarks/bench-bmat.cpp
 bench_bmat_SOURCES += benchmarks/bench-main.cpp
 bench_bmat_SOURCES += tests/bmat-data.cpp
+bench_bmat_SOURCES += benchmarks/catch_amalgamated.cpp
 
 bench_freeband_SOURCES =  benchmarks/bench-freeband.cpp
 bench_freeband_SOURCES += benchmarks/bench-main.cpp
+bench_freeband_SOURCES += benchmarks/catch_amalgamated.cpp
 
 bench_kambites_SOURCES =  benchmarks/bench-kambites.cpp
 bench_kambites_SOURCES += benchmarks/bench-main.cpp
+bench_kambites_SOURCES += benchmarks/catch_amalgamated.cpp
 
 bench_konieczny_SOURCES =  benchmarks/bench-konieczny.cpp
 bench_konieczny_SOURCES += benchmarks/bench-main.cpp
+bench_konieczny_SOURCES += benchmarks/catch_amalgamated.cpp
 
 bench_sims_SOURCES =  benchmarks/bench-sims1.cpp
 bench_sims_SOURCES += benchmarks/bench-main.cpp
+bench_sims_SOURCES += benchmarks/catch_amalgamated.cpp
 
 bench_string_range_SOURCES =  benchmarks/bench-string-range.cpp
 bench_string_range_SOURCES += benchmarks/bench-main.cpp
+bench_string_range_SOURCES += benchmarks/catch_amalgamated.cpp
 
 bench_multi_string_view_SOURCES =  benchmarks/bench-multi-string-view.cpp
 bench_multi_string_view_SOURCES += benchmarks/bench-main.cpp
+bench_multi_string_view_SOURCES += benchmarks/catch_amalgamated.cpp
 
 bench_todd_coxeter_SOURCES =  benchmarks/bench-todd-coxeter.cpp
 bench_todd_coxeter_SOURCES += benchmarks/bench-main.cpp
+bench_todd_coxeter_SOURCES += benchmarks/catch_amalgamated.cpp
 
 bench_uf_SOURCES =  benchmarks/bench-uf.cpp
 bench_uf_SOURCES += benchmarks/bench-main.cpp
 bench_uf_SOURCES += benchmarks/uf-old.cpp
+bench_uf_SOURCES += benchmarks/catch_amalgamated.cpp
 
 bench_wilo_SOURCES =  benchmarks/bench-wilo.cpp
 bench_wilo_SOURCES += benchmarks/bench-main.cpp
+bench_wilo_SOURCES += benchmarks/catch_amalgamated.cpp
 
 bench_wislo_SOURCES =  benchmarks/bench-wislo.cpp
 bench_wislo_SOURCES += benchmarks/bench-main.cpp
+bench_wislo_SOURCES += benchmarks/catch_amalgamated.cpp
 
 bench_word_graph_SOURCES =  benchmarks/bench-word-graph.cpp
 bench_word_graph_SOURCES += benchmarks/bench-main.cpp
+bench_word_graph_SOURCES += benchmarks/catch_amalgamated.cpp
 
 ## Make targets
 

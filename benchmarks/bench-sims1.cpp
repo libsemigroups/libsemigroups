@@ -25,7 +25,7 @@
 #include <vector>  // for vector, operator==
 
 #include "bench-main.hpp"  // for Benchmark, SourceLineInfo
-#include "catch.hpp"       // for REQUIRE, REQUIRE_NOTHROW, REQUIRE_THROWS_AS
+#include "catch_amalgamated.hpp"       // for REQUIRE, REQUIRE_NOTHROW, REQUIRE_THROWS_AS
 
 #include "libsemigroups/bipart.hpp"  // for Bipartition
 #include "libsemigroups/bmat-fastest.hpp"

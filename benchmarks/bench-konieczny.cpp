@@ -19,7 +19,7 @@
 #include <cstddef>  // for size_t
 
 #include "bench-main.hpp"  // for CATCH_CONFIG_ENABLE_BENCHMARKING
-#include "catch.hpp"       // for TEST_CASE, BENCHMARK, REQUIRE
+#include "catch_amalgamated.hpp"       // for TEST_CASE, BENCHMARK, REQUIRE
 
 #include "libsemigroups/bitset.hpp"         // for BitSet
 #include "libsemigroups/bmat-adapters.hpp"  // for BMat adapters

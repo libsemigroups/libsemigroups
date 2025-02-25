@@ -24,7 +24,7 @@
 #include <string>    // for to_string
 
 #include "bench-main.hpp"  // for CATCH_CONFIG_ENABLE_BENCHMARKING
-#include "catch.hpp"       // for TEST_CASE, BENCHMARK, REQUIRE
+#include "catch_amalgamated.hpp"       // for TEST_CASE, BENCHMARK, REQUIRE
 
 #include "libsemigroups/kambites.hpp"      // for Kambites
 #include "libsemigroups/knuth-bendix.hpp"  // for KnuthBendix
