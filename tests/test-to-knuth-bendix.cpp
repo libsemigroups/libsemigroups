@@ -68,6 +68,48 @@ namespace libsemigroups {
                                    "002",
                                    "from ToddCoxeter",
                                    "[quick][to_knuth_bendix]",
+                                   std::string,
+                                   word_type) {
+    auto rg = ReportGuard(false);
+
+    Presentation<TestType> p;
+    if constexpr (std::is_same_v<TestType, std::string>) {
+      p.alphabet("abB");
+      presentation::add_rule_no_checks(p, "bb", "B");
+      presentation::add_rule_no_checks(p, "BaB", "aba");
+      presentation::add_rule_no_checks(p, "a", "b");
+      presentation::add_rule_no_checks(p, "b", "B");
+    } else if constexpr (std::is_same_v<TestType, word_type>) {
+      p.alphabet({0, 1, 2});
+      presentation::add_rule_no_checks(p, {1, 1}, {2});
+      presentation::add_rule_no_checks(p, {2, 0, 2}, {0, 1, 0});
+      presentation::add_rule_no_checks(p, {0}, {1});
+      presentation::add_rule_no_checks(p, {1}, {2});
+    }
+
+    REQUIRE(!p.contains_empty_word());
+
+    ToddCoxeter<TestType> tc(twosided, p);
+
+    tc.run();
+    REQUIRE(tc.number_of_classes() == 1);
+    REQUIRE(tc.finished());
+
+    for (auto knd : {twosided, onesided}) {
+      auto kb = to<KnuthBendix>(knd, tc);
+      REQUIRE(kb.number_of_classes() == 1);
+      if (kb.kind() == twosided) {
+        REQUIRE(to<FroidurePin>(kb).size() == 1);
+      } else {
+        REQUIRE_THROWS_AS(to<FroidurePin>(kb), LibsemigroupsException);
+      }
+    }
+  }
+
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("to<KnuthBendix>",
+                                   "003",
+                                   "from ToddCoxeter",
+                                   "[quick][to_knuth_bendix]",
                                    RewriteFromLeft_string,
                                    RewriteFromLeft_word,
                                    RewriteTrie_string,
@@ -100,7 +142,7 @@ namespace libsemigroups {
     REQUIRE(tc.finished());
 
     for (auto knd : {twosided, onesided}) {
-      auto kb = to<KnuthBendix>(knd, tc);
+      auto kb = to<KnuthBendix<Word, Rewriter>>(knd, tc);
       REQUIRE(kb.number_of_classes() == 1);
       if (kb.kind() == twosided) {
         REQUIRE(to<FroidurePin>(kb).size() == 1);
