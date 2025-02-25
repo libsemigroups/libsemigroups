@@ -57,7 +57,7 @@ namespace libsemigroups {
 
     template <typename Mat>
     T operator()(Mat const& x) const {
-      T res;
+      T     res;
       this->operator()(res, x);
       return res;
     }
@@ -88,7 +88,7 @@ namespace libsemigroups {
 
     template <typename Mat>
     T operator()(Mat const& x) const {
-      T res;
+      T     res;
       this->operator()(res, x);
       return res;
     }
