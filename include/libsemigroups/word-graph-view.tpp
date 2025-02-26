@@ -1,5 +1,4 @@
 #include "libsemigroups/word-graph-view.hpp"
-#include "word-graph-view.hpp"
 
 namespace libsemigroups {
   template <typename Node>
