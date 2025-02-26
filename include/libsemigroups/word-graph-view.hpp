@@ -22,14 +22,14 @@
 #ifndef LIBSEMIGROUPS_WORD_GRAPH_VIEW_HPP_
 #define LIBSEMIGROUPS_WORD_GRAPH_VIEW_HPP_
 
-#include <type_traits>    // for is_integral
-#include <utility>        // for pair
+#include <type_traits>  // for is_integral
+#include <utility>      // for pair
 
 #include "exception.hpp"   // for LIBSEMIGROUPS_EXCEPTION
 #include "ranges.hpp"      // for rx::ranges without compile warnings
 #include "word-graph.hpp"  // for word_graph pointer
 
-#include "detail/int-range.hpp"   // for IntRange
+#include "detail/int-range.hpp"  // for IntRange
 
 namespace libsemigroups {
   template <typename Node>
