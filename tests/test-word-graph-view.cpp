@@ -30,7 +30,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("WordGraphView",
                           "000",
                           "empty constructor",
-                          "[standard]") {
+                          "[quick]") {
     WordGraphView<size_t> g;
     REQUIRE(g.number_of_nodes() == 0);
     REQUIRE(g.graph == nullptr);
@@ -39,7 +39,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("WordGraphView",
                           "001",
                           "can access graph",
-                          "[standard]") {
+                          "[quick]") {
     WordGraph<size_t> g;
     g.add_nodes(17);
     WordGraphView<size_t> v(&g, 0, 17);
@@ -50,7 +50,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("WordGraphView",
                           "002",
                           "number of nodes reported correctly",
-                          "") {
+                          "[quick]") {
     WordGraph<size_t> g;
     g.add_nodes(17);
     WordGraphView<size_t> v(&g, 3, 14);
@@ -60,7 +60,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("WordGraphView",
                           "003",
                           "exceptions thrown correctly",
-                          "") {
+                          "[quick]") {
     WordGraph<size_t> g;
     g.add_nodes(17);
     WordGraphView<size_t> v(&g, 3, 14);
@@ -70,7 +70,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("WordGraphView",
                           "004",
                           "node iterator range correct",
-                          "") {
+                          "[quick]") {
     WordGraph<size_t> g;
     g.add_nodes(17);
     WordGraphView<size_t> v(&g, 3, 14);
@@ -83,7 +83,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("WordGraphView",
                           "005",
                           "oob target throws",
-                          "[standard]") {
+                          "[quick]") {
     WordGraph<size_t> g;
     g.add_nodes(17);
     WordGraphView<size_t> v(&g, 3, 14);
@@ -91,7 +91,7 @@ namespace libsemigroups {
     REQUIRE_THROWS_AS(v.cbegin_targets(15), LibsemigroupsException);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("WordGraphView", "006", "get targets", "") {
+  LIBSEMIGROUPS_TEST_CASE("WordGraphView", "006", "get targets", "[quick]") {
     WordGraph<size_t> g;
     g.add_nodes(17);
     g.add_to_out_degree(5);
@@ -109,7 +109,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("WordGraphView",
                           "007",
                           "get targets throws",
-                          "[standard]") {
+                          "[quick]") {
     WordGraph<size_t> g;
     g.add_nodes(17);
     g.add_to_out_degree(5);
@@ -123,7 +123,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("WordGraphView",
                           "008",
                           "equality when constructed over same graph",
-                          "") {
+                          "[quick]") {
     WordGraph<size_t> g;
     g.add_nodes(17);
     g.add_to_out_degree(5);
@@ -138,7 +138,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("WordGraphView",
                           "009",
                           "equality when constructed over different graphs",
-                          "") {
+                          "[quick]") {
     WordGraph<size_t> g1;
     g1.add_to_out_degree(5);
     g1.add_nodes(10);

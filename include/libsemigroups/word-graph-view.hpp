@@ -94,74 +94,330 @@ namespace libsemigroups {
     // well
     ~WordGraphView() = default;
 
+    //! \brief The number of nodes that this view ranges over (_end -
+    //! _start)
+    //! \returns
     [[nodiscard]] size_type inline number_of_nodes() const noexcept {
       return _nr_nodes;
     }
 
+    //! \brief Returns the out degree
+    //!
+    //! This function returns the number of edge labels in the word graph
+    //!
+    //! \returns The number of edge labels, type \c size_type
     [[nodiscard]] size_type out_degree() const noexcept;
 
+    //! \brief Returns the node at the start of the range of this
+    //! word graph
+    //! \returns The start node, type \c node_type
     [[nodiscard]] size_type start_node() const noexcept {
       return _start;
     }
 
+    //! \brief Returns the node at the end of the range of this
+    //! word graph
+    //! \returns The end node, type \c node_type
     [[nodiscard]] size_type end_node() const noexcept {
       return _end;
     }
 
+    //! \brief Returns a random access iterator pointing at the first node of
+    //! the word graph.
+    //!
+    //! This function returns a random access iterator pointing at the first
+    //! in the range of this word graph view.
+    //!
+    //! \returns
+    //! An \ref const_iterator_nodes.
+    //!
+    //! \exceptions
+    //! \noexcept
+    //!
+    //! \complexity
+    //! Constant.
     const_iterator_nodes cbegin_nodes() const noexcept {
       return detail::IntRange<node_type>(_start, _end).cbegin();
     }
 
+    //! \brief Returns a random access iterator pointing one past the last node
+    //! of the range of this word graph view
+    //!
+    //! This function returns a random access iterator pointing one beyond the
+    //! last node in the word graph.
+    //!
+    //! \returns
+    //! An \ref const_iterator_nodes.
+    //!
+    //! \exceptions
+    //! \noexcept
+    //!
+    //! \complexity
+    //! Constant.
     [[nodiscard]] const_iterator_nodes cend_nodes() const noexcept {
       return detail::IntRange<node_type>(_start, _end).cend();
     }
 
+    //! \brief Returns a random access iterator pointing at the target of
+    //! the edge with label \p 0 incident to a given node.
+    //!
+    //! This function returns a random access iterator pointing at the
+    //! target of the edge with label \c 0 incident to the source node \p
+    //! source. This target might equal \ref UNDEFINED.
+    //!
+    //! \param source the source node in the word graph.
+    //!
+    //! \returns
+    //! A \ref const_iterator_targets.
+    //!
+    //! \throws LibsemigroupsException if \p source is out of range (i.e.
+    //! greater than or equal to \ref number_of_nodes).
+    //!
+    //! \complexity
+    //! Constant.
+    // Not noexcept because throw_if_node_out_of_bounds isn't
     [[nodiscard]] const_iterator_targets cbegin_targets(node_type source) const;
 
+    //! \brief Returns a random access iterator pointing at the target of
+    //! the edge with label \p 0 incident to a given node.
+    //!
+    //! This function returns a random access iterator pointing at the
+    //! target of the edge with label \c 0 incident to the source node \p
+    //! source. This target might equal \ref UNDEFINED.
+    //!
+    //! \param source a node in the word graph.
+    //!
+    //! \returns
+    //! A \ref const_iterator_targets.
+    //!
+    //! \exceptions
+    //! \noexcept
+    //!
+    //! \complexity
+    //! Constant.
+    //!
+    //! \warning
+    //! No checks whatsoever on the validity of the arguments are performed.
+    //!
+    //! \sa
+    //! \ref cbegin_targets.
     [[nodiscard]] const_iterator_targets
     cbegin_targets_no_checks(node_type source) const noexcept {
       return graph->_dynamic_array_2.cbegin_row(source);
     }
 
+    //! \brief Returns a random access iterator pointing one beyond the target
+    //! of the edge with label `out_degree() - 1` incident to a given node.
+    //!
+    //! This function returns a random access iterator pointing one beyond the
+    //! target of the edge with label `out_degree() - 1` incident to the source
+    //! node \p source. This target might equal \ref UNDEFINED.
+    //!
+    //! \param source a node in the word graph.
+    //!
+    //! \returns
+    //! A \ref const_iterator_targets.
+    //!
+    //! \throws LibsemigroupsException if \p source is out of range (i.e.
+    //! greater than or equal to \ref number_of_nodes).
+    //!
+    //! \complexity
+    //! Constant.
+    // Not noexcept because throw_if_node_out_of_bounds isn't
     [[nodiscard]] const_iterator_targets cend_targets(node_type source) const;
 
+    //! \brief Returns a random access iterator pointing one beyond the target
+    //! of the edge with label `out_degree() - 1` incident to a given node.
+    //!
+    //! This function returns a random access iterator pointing one beyond the
+    //! target of the edge with label `out_degree() - 1` incident to the source
+    //! node \p source. This target might equal \ref UNDEFINED.
+    //!
+    //! \param source a node in the word graph.
+    //!
+    //! \returns
+    //! A \ref const_iterator_targets.
+    //!
+    //! \exceptions
+    //! \noexcept
+    //!
+    //! \complexity
+    //! Constant.
+    //!
+    //! \warning
+    //! No checks whatsoever on the validity of the arguments are performed.
+    //!
+    //! \sa
+    //! \ref cend_targets.
     [[nodiscard]] const_iterator_targets
     cend_targets_no_checks(node_type source) const noexcept {
       return graph->_dynamic_array_2.cbegin_row(source) + graph->out_degree();
     }
 
+    //! \brief Returns a range object containing all nodes in a word graph.
+    //!
+    //! This function returns a range object containing all the nodes in a
+    //! word graph view
+    //!
+    //! \returns A range object.
+    //!
+    //! \exceptions
+    //! \noexcept
     [[nodiscard]] auto nodes() const noexcept {
       return rx::iterator_range(cbegin_nodes(), cend_nodes());
     }
 
+    //! \brief Returns a range object containing all labels of edges in a word
+    //! graph.
+    //!
+    //! This function returns a range object containing all the labels of edges
+    //! in a word graph.
+    //!
+    //! \returns A range object.
+    //!
+    //! \exceptions
+    //! \noexcept
     [[nodiscard]] auto labels() const noexcept {
       return rx::seq<label_type>() | rx::take(out_degree());
     }
 
+    //! \brief Returns a range object containing all the targets of edges with
+    //! a given source.
+    //!
+    //! This function returns a range object containing all the targets of
+    //! edges with source \p source.
+    //!
+    //! \param source the source node.
+    //!
+    //! \returns A range object.
+    //!
+    //! \exceptions
+    //! \noexcept
+    //!
+    //! \warning
+    //! This function performs no checks whatsoever and assumes that \p source
+    //! is a valid node of the word graph (i.e. it is not greater than or equal
+    //! to \ref number_of_nodes).
     [[nodiscard]] rx::iterator_range<const_iterator_targets>
     targets_no_checks(node_type source) const noexcept {
       return rx::iterator_range(cbegin_targets_no_checks(source),
                                 cend_targets_no_checks(source));
     }
 
+    //! \brief Returns a range object containing pairs consisting of edge
+    //! labels and target nodes.
+    //!
+    //! This function returns a range object containing all the edge labels and
+    //! targets of edges with source \p source.
+    //!
+    //! \param source the source node.
+    //!
+    //! \returns A range object.
+    //!
+    //! \exceptions
+    //! \noexcept
+    //!
+    //! \warning
+    //! This function performs no checks whatsoever and assumes that \p source
+    //! is a valid node of the word graph (i.e. it is not greater than or equal
+    //! to \ref number_of_nodes).
     [[nodiscard]] std::pair<label_type, node_type>
     next_label_and_target_no_checks(node_type s, label_type a) const;
 
+    //! \brief Get the next target of an edge incident to a given node that
+    //! doesn't equal \ref UNDEFINED.
+    //!
+    //! This function returns the next target of an edge with label greater
+    //! than or equal to \p a that is incident to the node \p s.
+    //!
+    //! If `target(s, b)` equals \ref UNDEFINED for every value \c b in the
+    //! range \f$[a, n)\f$, where \f$n\f$ is the return value of out_degree()
+    //! then \c x.first and \c x.second equal \ref UNDEFINED.
+    //!
+    //! \param s the node.
+    //! \param a the label.
+    //!
+    //! \returns
+    //! Returns a std::pair
+    //! \c x where:
+    //! 1. \c x.first is adjacent to \p s via an edge labelled
+    //!    \c x.second; and
+    //! 2. \c x.second is the minimum value in the range \f$[a, n)\f$ such that
+    //!    `target(s, x.second)` is not equal to \ref UNDEFINED
+    //!    where \f$n\f$ is the return value of out_degree();
+    //! If no such value exists, then `{UNDEFINED, UNDEFINED}` is returned.
+    //!
+    //! \throws LibsemigroupsException if \p s does not represent a node in \c
+    //! this, or \p a is not a valid edge label.
+    //!
+    //! \complexity
+    //! At worst \f$O(n)\f$ where \f$n\f$ equals out_degree().
+    //!
+    //! \sa next_label_and_target_no_checks.
+    // Not noexcept because next_label_and_target_no_checks is not
     [[nodiscard]] std::pair<label_type, node_type>
     next_label_and_target(node_type s, label_type a) const;
 
+    //! \brief Returns a range object containing all the targets of edges with
+    //! a given source.
+    //!
+    //! This function returns a range object containing all the targets of
+    //! edges with source \p source.
+    //!
+    //! \param source the source node.
+    //!
+    //! \returns A range object.
+    //!
+    //! \throws LibsemigroupsException if \p source is out of range (i.e. it is
+    //! greater than or equal to \ref number_of_nodes)
     [[nodiscard]] rx::iterator_range<const_iterator_targets>
     targets(node_type source) const;
 
+    //! \brief Returns a range object containing pairs consisting of edge
+    //! labels and target nodes.
+    //!
+    //! This function returns a range object containing all the edge labels and
+    //! targets of edges with source \p source.
+    //!
+    //! \param source the source node.
+    //!
+    //! \returns A range object.
+    //!
+    //! \exceptions
+    //! \noexcept
+    //!
+    //! \warning
+    //! This function performs no checks whatsoever and assumes that \p source
+    //! is a valid node of the word graph (i.e. it is not greater than or equal
+    //! to \ref number_of_nodes).
     [[nodiscard]] auto
     labels_and_targets_no_checks(node_type source) const noexcept {
       return rx::enumerate(targets_no_checks(source));
     }
 
+    //! \brief Returns a range object containing pairs consisting of edge
+    //! labels and target nodes.
+    //!
+    //! This function returns a range object containing all the edge labels and
+    //! targets of edges with source \p source.
+    //!
+    //! \param source the source node.
+    //!
+    //! \returns A range object.
+    //!
+    //! \throws LibsemigroupsException if \p source is out of bounds.
     [[nodiscard]] auto labels_and_targets(node_type source) const;
 
+    //! \brief Compares two word graph views to see if they are equal
+    //!
+    //! This operator compares two views over two (not necessarily the same)
+    //! word graph objects to see if the views are equal
+    //! \returns True if this and that have the same number of nodes, out
+    //! degree, and range over nodes with identical values and targets
     [[nodiscard]] bool operator==(WordGraphView const& that) const;
 
+    //! \brief Compares two word graph views to see if they are not equal
+    //! \returns True if this and that are not equal by \c ==
     [[nodiscard]] bool operator!=(WordGraphView const& that) const {
       return !operator==(that);
     }
@@ -207,6 +463,8 @@ namespace libsemigroups {
     [[nodiscard]] node_type target_no_checks(node_type  source,
                                              label_type a) const;
 
+    //! The word graph object which this word graph view abstracts over
+    //! May be null
     const WordGraph<Node>* graph;
 
    private:
@@ -216,6 +474,9 @@ namespace libsemigroups {
   };
 
   namespace word_graph_view {
+    //! \brief Throws \c LIBSEMIGROUPS_EXCEPTION if the target node
+    //! is not within the bounds specified for this word graph view
+    //! that is \c n is not >= _start and <= _end
     template <typename Node1, typename Node2>
     void throw_if_node_out_of_bounds(WordGraphView<Node1> const& wg, Node2 n);
   }  // namespace word_graph_view
