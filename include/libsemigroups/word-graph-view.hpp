@@ -22,14 +22,11 @@
 #ifndef LIBSEMIGROUPS_WORD_GRAPH_VIEW_HPP_
 #define LIBSEMIGROUPS_WORD_GRAPH_VIEW_HPP_
 
-#include <cstddef>    // for size_t
-#include <cstdint>
-#include <type_traits>    // for is_integral, is_unsigned
+#include <type_traits>    // for is_integral
 #include <utility>        // for pair
 
 #include "exception.hpp"   // for LIBSEMIGROUPS_EXCEPTION
-#include "ranges.hpp"      // for rx::ranges? 
-#include "types.hpp"       // for word_type, enable_if_is_same
+#include "ranges.hpp"      // for rx::ranges without compile warnings
 #include "word-graph.hpp"  // for word_graph pointer
 
 #include "detail/int-range.hpp"   // for IntRange
