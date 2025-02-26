@@ -17,40 +17,22 @@
 //
 
 // This file contains an implementation of word graph views, a thin layer over
-// word graphs exposing ranges which avoid the OBO errors
+// word graphs exposing a chosen range of nodes
 
 #ifndef LIBSEMIGROUPS_WORD_GRAPH_VIEW_HPP_
 #define LIBSEMIGROUPS_WORD_GRAPH_VIEW_HPP_
 
-#include <algorithm>  // for uniform_int_distribution
 #include <cstddef>    // for size_t
 #include <cstdint>
-#include <ostream>        // for operator<<
-#include <queue>          // for queue
-#include <random>         // for mt19937
-#include <stack>          // for stack
-#include <string>         // for to_string
-#include <tuple>          // for tie
 #include <type_traits>    // for is_integral, is_unsigned
-#include <unordered_set>  // for unordered_set
 #include <utility>        // for pair
-#include <vector>         // for vector
 
-#include "config.hpp"      // for LIBSEMIGROUPS_EIGEN_EN...
-#include "constants.hpp"   // for UNDEFINED
-#include "debug.hpp"       // for LIBSEMIGROUPS_ASSERT
-#include "dot.hpp"         // for Dot
 #include "exception.hpp"   // for LIBSEMIGROUPS_EXCEPTION
-#include "forest.hpp"      // for Forest
-#include "order.hpp"       // for Order
-#include "ranges.hpp"      // for ??
+#include "ranges.hpp"      // for rx::ranges? 
 #include "types.hpp"       // for word_type, enable_if_is_same
 #include "word-graph.hpp"  // for word_graph pointer
 
-#include "detail/containers.hpp"  // for DynamicArray2
 #include "detail/int-range.hpp"   // for IntRange
-#include "detail/stl.hpp"         // for IsIterator
-#include "detail/uf.hpp"          // for Duf
 
 namespace libsemigroups {
   template <typename Node>
