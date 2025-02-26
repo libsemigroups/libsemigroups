@@ -27,13 +27,19 @@
 namespace libsemigroups {
   struct LibsemigroupsException;
 
-  LIBSEMIGROUPS_TEST_CASE("WordGraphView", "000", "empty constructor", "") {
+  LIBSEMIGROUPS_TEST_CASE("WordGraphView",
+                          "000",
+                          "empty constructor",
+                          "[standard]") {
     WordGraphView<size_t> g;
     REQUIRE(g.number_of_nodes() == 0);
     REQUIRE(g.graph == nullptr);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("WordGraphView", "001", "can access graph", "") {
+  LIBSEMIGROUPS_TEST_CASE("WordGraphView",
+                          "001",
+                          "can access graph",
+                          "[standard]") {
     WordGraph<size_t> g;
     g.add_nodes(17);
     WordGraphView<size_t> v(&g, 0, 17);
@@ -74,7 +80,10 @@ namespace libsemigroups {
             == std::vector<size_t>({3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13}));
   }
 
-  LIBSEMIGROUPS_TEST_CASE("WordGraphView", "005", "oob target throws", "") {
+  LIBSEMIGROUPS_TEST_CASE("WordGraphView",
+                          "005",
+                          "oob target throws",
+                          "[standard]") {
     WordGraph<size_t> g;
     g.add_nodes(17);
     WordGraphView<size_t> v(&g, 3, 14);
@@ -97,7 +106,10 @@ namespace libsemigroups {
     }
   }
 
-  LIBSEMIGROUPS_TEST_CASE("WordGraphView", "007", "get targets throws", "") {
+  LIBSEMIGROUPS_TEST_CASE("WordGraphView",
+                          "007",
+                          "get targets throws",
+                          "[standard]") {
     WordGraph<size_t> g;
     g.add_nodes(17);
     g.add_to_out_degree(5);
