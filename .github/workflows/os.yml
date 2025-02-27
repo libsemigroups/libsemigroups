@@ -38,9 +38,6 @@ jobs:
         - name: "Run the quick tests . . ."
           run: ./test_all "[quick]"
   alpine-32:
-       defaults:
-         run:
-           shell: alpine.sh {0}
        timeout-minutes: 60
        runs-on: ubuntu-latest
        container:
