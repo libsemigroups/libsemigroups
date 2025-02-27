@@ -44,7 +44,7 @@ jobs:
          image: i386/alpine
        steps:
          - name: "Install autotools etc . . ."
-           run: apk add build-base autoconf automake libtool nodejs
+           run: apk add build-base autoconf automake libtool nodejs~20
          - name: "Checkout libsemigroups repo . . ."
            uses: actions/checkout@v3
          - name: "Alpine/musl versions . . ."
