@@ -752,7 +752,7 @@ namespace libsemigroups {
       return _nr_nodes;
     }
 
-#ifndef PARSED_BY_DOXYGEN
+#ifndef LIBSEMIGROUPS_PARSED_BY_DOXYGEN
     WordGraph& number_of_active_nodes(size_type val) {
       _num_active_nodes = val;
       return *this;
@@ -1178,7 +1178,7 @@ namespace libsemigroups {
     //! same out-degree.
     WordGraph& disjoint_union_inplace(WordGraph<Node> const& that);
 
-#ifndef PARSED_BY_DOXYGEN
+#ifndef LIBSEMIGROUPS_PARSED_BY_DOXYGEN
     // These are currently undocumented, because they are hard to use correctly,
     // shouldn't p and q be actual permutation objects?
 
@@ -2974,7 +2974,7 @@ namespace libsemigroups {
                              WordGraph<Node1> const& y,
                              size_t ynum_nodes_reachable_from_root,
                              Node2  yroot);
-#ifdef PARSED_BY_DOXYGEN
+#ifdef LIBSEMIGROUPS_PARSED_BY_DOXYGEN
     //! \brief Replace the contents of a word graph with the join/meet of two
     //! given word graphs with respect to given root vertices.
     //!
@@ -3336,7 +3336,7 @@ namespace libsemigroups {
                              size_t ynum_nodes_reachable_from_root,
                              Node2  yroot);
 
-#ifdef PARSED_BY_DOXYGEN
+#ifdef LIBSEMIGROUPS_PARSED_BY_DOXYGEN
     //! \copydoc Joiner::call_no_checks(WordGraph<Node>&, WordGraph<Node>
     //! const&, Node, WordGraph<Node> const&, Node)
     template <typename Node>

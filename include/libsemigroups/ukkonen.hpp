@@ -29,10 +29,6 @@
 #ifndef LIBSEMIGROUPS_UKKONEN_HPP_
 #define LIBSEMIGROUPS_UKKONEN_HPP_
 
-#ifndef PARSED_BY_DOXYGEN
-#define NOT_PARSED_BY_DOXYGEN
-#endif
-
 #include <algorithm>  // for find_if, copy, max
 #include <cstring>    // for size_t, strlen
 #include <iterator>   // for distance
@@ -200,7 +196,7 @@ namespace libsemigroups {
       //! The index of the parent node.
       node_index_type parent;
 
-#ifdef NOT_PARSED_BY_DOXYGEN
+#ifndef LIBSEMIGROUPS_PARSED_BY_DOXYGEN
       // No doc
       node_index_type link;
       // The next member is a weak indicator of whether or not the node

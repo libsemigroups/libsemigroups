@@ -27,10 +27,6 @@
 #ifndef LIBSEMIGROUPS_WORD_RANGE_HPP_
 #define LIBSEMIGROUPS_WORD_RANGE_HPP_
 
-#ifndef PARSED_BY_DOXYGEN
-#define NOT_PARSED_BY_DOXYGEN
-#endif
-
 #include <cstddef>           // for size_t
 #include <cstdint>           // for uint64_t, uint8_t
 #include <initializer_list>  // for initializer_list

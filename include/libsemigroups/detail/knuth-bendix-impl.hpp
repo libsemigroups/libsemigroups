@@ -950,7 +950,7 @@ namespace libsemigroups {
   //! \param kb the \ref_knuth_bendix object.
   //!
   //! \returns A reference to the first argument.
-#if PARSED_BY_DOXYGEN
+#if LIBSEMIGROUPS_PARSED_BY_DOXYGEN
   template <typename Word, typename Rewriter, typename ReductionOrder>
   std::ostream&
   operator<<(std::ostream&                                      os,
@@ -980,7 +980,7 @@ namespace libsemigroups {
   //!
   //! \returns The representation, a value of type \c std::string.
   // TODO(1) preferably kb would be a const&
-#if PARSED_BY_DOXYGEN
+#if LIBSEMIGROUPS_PARSED_BY_DOXYGEN
   template <typename Word, typename Rewriter, typename ReductionOrder>
   std::string
   to_human_readable_repr(KnuthBendix<Word, Rewriter, ReductionOrder>& kb);
@@ -1016,7 +1016,7 @@ namespace libsemigroups {
   //! \exceptions
   //! \no_libsemigroups_except
   // This cannot go into to-presentation.hpp since we include that here
-#if PARSED_BY_DOXYGEN
+#if LIBSEMIGROUPS_PARSED_BY_DOXYGEN
   template <typename Word, typename Rewriter, typename ReductionOrder>
   Presentation<Word>
   to_presentation(KnuthBendix<Word, Rewriter, ReductionOrder>& kb);

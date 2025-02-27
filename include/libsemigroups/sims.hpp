@@ -1637,7 +1637,7 @@ namespace libsemigroups {
       return *this;
     }
 
-#ifdef PARSED_BY_DOXYGEN
+#ifdef LIBSEMIGROUPS_PARSED_BY_DOXYGEN
     //! \brief Reinitialize an existing Sims1 object.
     //!
     //! This function puts a Sims1 object back into the same state as if
@@ -1899,7 +1899,7 @@ namespace libsemigroups {
       return *this;
     }
 
-#ifdef PARSED_BY_DOXYGEN
+#ifdef LIBSEMIGROUPS_PARSED_BY_DOXYGEN
     //! \brief Reinitialize an existing Sims2 object.
     //!
     //! This function puts a Sims2 object back into the same state as if

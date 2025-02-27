@@ -43,7 +43,7 @@
 
 #include "adapters.hpp"   // for Degree
 #include "bitset.hpp"     // for BitSet
-#include "config.hpp"     // for PARSED_BY_DOXYGEN
+#include "config.hpp"     // for LIBSEMIGROUPS_PARSED_BY_DOXYGEN
 #include "constants.hpp"  // for POSITIVE_INFINITY
 #include "debug.hpp"      // for LIBSEMIGROUPS_ASSERT
 #include "exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
@@ -1122,7 +1122,7 @@ namespace libsemigroups {
     //! \copydoc StaticMatrix::operator=(StaticMatrix&&)
     StaticRowView& operator=(StaticRowView&&) = default;
 
-#ifndef PARSED_BY_DOXYGEN
+#ifndef LIBSEMIGROUPS_PARSED_BY_DOXYGEN
     using RowViewCommon::RowViewCommon;
 
     // TODO(2) This constructor should be private
@@ -1555,7 +1555,7 @@ namespace libsemigroups {
     explicit DynamicRowView(Row const& r)
         : RowViewCommon(r), _length(r.number_of_cols()) {}
 
-#ifndef PARSED_BY_DOXYGEN
+#ifndef LIBSEMIGROUPS_PARSED_BY_DOXYGEN
     using RowViewCommon::RowViewCommon;
 
     // TODO(2) This constructor should be private
@@ -1621,7 +1621,7 @@ namespace libsemigroups {
 
     //! \copydoc StaticRowView::operator*=(scalar_type)
     void operator*=(scalar_type a);
-#endif  // PARSED_BY_DOXYGEN
+#endif  // LIBSEMIGROUPS_PARSED_BY_DOXYGEN
 
    private:
     size_t length_impl() const noexcept {
@@ -1707,7 +1707,7 @@ namespace libsemigroups {
     //! \copydoc StaticRowView::StaticRowView(Row const&)
     explicit DynamicRowView(Row const& r) : RowViewCommon(r), _matrix(&r) {}
 
-#ifndef PARSED_BY_DOXYGEN
+#ifndef LIBSEMIGROUPS_PARSED_BY_DOXYGEN
     using RowViewCommon::RowViewCommon;
 
     // TODO(2) This constructor should be private
@@ -2008,7 +2008,7 @@ namespace libsemigroups {
     //! Default move assignment operator.
     StaticMatrix& operator=(StaticMatrix&&) = default;
 
-#ifndef PARSED_BY_DOXYGEN
+#ifndef LIBSEMIGROUPS_PARSED_BY_DOXYGEN
     // For uniformity of interface, the args do nothing
     StaticMatrix(size_t r, size_t c) : StaticMatrix() {
       (void) r;
@@ -2049,7 +2049,7 @@ namespace libsemigroups {
 
     ~StaticMatrix() = default;
 
-#ifndef PARSED_BY_DOXYGEN
+#ifndef LIBSEMIGROUPS_PARSED_BY_DOXYGEN
     static StaticMatrix one(size_t n) {
       // If specified the value of n must equal R or otherwise weirdness will
       // ensue...
@@ -2079,12 +2079,12 @@ namespace libsemigroups {
       LIBSEMIGROUPS_ASSERT(n == 0 || n == R);
       return one(n);
     }
-#endif  // PARSED_BY_DOXYGEN
+#endif  // LIBSEMIGROUPS_PARSED_BY_DOXYGEN
 
     ////////////////////////////////////////////////////////////////////////
     // StaticMatrix - member function aliases - public
     ////////////////////////////////////////////////////////////////////////
-#ifdef PARSED_BY_DOXYGEN
+#ifdef LIBSEMIGROUPS_PARSED_BY_DOXYGEN
     //! \brief Returns a reference to the specified entry of the matrix.
     //!
     //! Returns a reference to the specified entry of the matrix.
@@ -2691,7 +2691,7 @@ namespace libsemigroups {
     using MatrixCommon::swap;
     using MatrixCommon::transpose;
     using MatrixCommon::transpose_no_checks;
-#endif  // PARSED_BY_DOXYGEN
+#endif  // LIBSEMIGROUPS_PARSED_BY_DOXYGEN
 
    private:
     ////////////////////////////////////////////////////////////////////////
@@ -2920,7 +2920,7 @@ namespace libsemigroups {
     explicit DynamicMatrix(RowView const& rv)
         : MatrixDynamicDim(1, rv.size()), MatrixCommon(rv) {}
 
-#ifndef PARSED_BY_DOXYGEN
+#ifndef LIBSEMIGROUPS_PARSED_BY_DOXYGEN
     // For uniformity of interface, the first arg does nothing
     DynamicMatrix(void const* ptr, size_t r, size_t c) : DynamicMatrix(r, c) {
       (void) ptr;
@@ -2948,7 +2948,7 @@ namespace libsemigroups {
       LIBSEMIGROUPS_ASSERT(ptr == nullptr);
       return one(n);
     }
-#endif  // PARSED_BY_DOXYGEN
+#endif  // LIBSEMIGROUPS_PARSED_BY_DOXYGEN
 
     ~DynamicMatrix();
 
@@ -2973,7 +2973,7 @@ namespace libsemigroups {
       return x;
     }
 
-#ifdef PARSED_BY_DOXYGEN
+#ifdef LIBSEMIGROUPS_PARSED_BY_DOXYGEN
     //! \copydoc StaticMatrix::operator()(size_t, size_t)
     scalar_reference operator()(size_t r, size_t c);
 
@@ -3115,7 +3115,7 @@ namespace libsemigroups {
     // using MatrixCommon::swap; don't want this, see below
     using MatrixCommon::transpose;
     using MatrixCommon::transpose_no_checks;
-#endif  // PARSED_BY_DOXYGEN
+#endif  // LIBSEMIGROUPS_PARSED_BY_DOXYGEN
 
     //! \copydoc StaticMatrix::swap
     void swap(DynamicMatrix& that) noexcept {
@@ -3350,7 +3350,7 @@ namespace libsemigroups {
 
     ~DynamicMatrix();
 
-#ifdef PARSED_BY_DOXYGEN
+#ifdef LIBSEMIGROUPS_PARSED_BY_DOXYGEN
 
     //! \copydoc StaticMatrix::operator()(size_t, size_t)
     scalar_reference operator()(size_t r, size_t c);
@@ -3493,7 +3493,7 @@ namespace libsemigroups {
     // using MatrixCommon::swap; // Don't want this use the one below.
     using MatrixCommon::transpose;
     using MatrixCommon::transpose_no_checks;
-#endif  // PARSED_BY_DOXYGEN
+#endif  // LIBSEMIGROUPS_PARSED_BY_DOXYGEN
 
     //! \copydoc StaticMatrix::swap
     void swap(DynamicMatrix& that) noexcept {

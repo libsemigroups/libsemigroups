@@ -164,7 +164,7 @@ namespace libsemigroups {
     }
   };
 
-#ifndef PARSED_BY_DOXYGEN
+#ifndef LIBSEMIGROUPS_PARSED_BY_DOXYGEN
   // TODO(0) uncomment
   // template <>
   // word_type FroidurePin<

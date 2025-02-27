@@ -953,7 +953,7 @@ namespace libsemigroups {
     //!
     //! @{
 
-#ifndef PARSED_BY_DOXYGEN
+#ifndef LIBSEMIGROUPS_PARSED_BY_DOXYGEN
     // Forward decls defined in todd-coxeter-helpers.tpp and cong-helpers.tpp
     template <typename Word,
               typename Range,

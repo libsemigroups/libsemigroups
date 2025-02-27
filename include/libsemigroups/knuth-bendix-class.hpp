@@ -94,7 +94,7 @@ namespace libsemigroups {
     Presentation<Word> _presentation;
 
    public:
-#ifdef PARSED_BY_DOXYGEN
+#ifdef LIBSEMIGROUPS_PARSED_BY_DOXYGEN
     //! \ingroup knuth_bendix_class_mem_types_group
     //! \brief Struct containing various options that can be used to control
     //! the behaviour of Knuth-Bendix.
@@ -262,7 +262,7 @@ namespace libsemigroups {
       presentation().validate_word(first, last);
     }
 
-#ifdef PARSED_BY_DOXYGEN
+#ifdef LIBSEMIGROUPS_PARSED_BY_DOXYGEN
     //! \ingroup knuth_bendix_class_intf_group
     //!
     //! \brief The kind of the congruence (1- or 2-sided).

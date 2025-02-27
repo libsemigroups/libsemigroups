@@ -70,7 +70,7 @@ namespace libsemigroups {
   // T = StaticVector1<BitSet<N>, N> or std::vector<BitSet<N>>
   // Possibly further container when value_type is BitSet.
   template <typename Mat, typename Container>
-#ifndef PARSED_BY_DOXYGEN
+#ifndef LIBSEMIGROUPS_PARSED_BY_DOXYGEN
   struct ImageRightAction<
       Mat,
       Container,
@@ -119,7 +119,7 @@ namespace libsemigroups {
   //!
   // TODO(0) doc tparams
   template <typename Mat, typename Container>
-#ifndef PARSED_BY_DOXYGEN
+#ifndef LIBSEMIGROUPS_PARSED_BY_DOXYGEN
   struct ImageLeftAction<Mat, Container, std::enable_if_t<IsBMat<Mat>>>
 #else
   struct ImageLeftAction<Mat, Container>
@@ -166,7 +166,7 @@ namespace libsemigroups {
   // dimension of the matrices at compile time, only at run time.
   // TODO(0) doc tparams
   template <typename Mat>
-#ifndef PARSED_BY_DOXYGEN
+#ifndef LIBSEMIGROUPS_PARSED_BY_DOXYGEN
   struct LambdaValue<Mat, std::enable_if_t<IsBMat<Mat>>>
 #else
   struct LambdaValue<Mat>
@@ -197,7 +197,7 @@ namespace libsemigroups {
   //! \sa RhoValue.
   // TODO(0) doc tparams
   template <typename Mat>
-#ifndef PARSED_BY_DOXYGEN
+#ifndef LIBSEMIGROUPS_PARSED_BY_DOXYGEN
   struct RhoValue<Mat, std::enable_if_t<IsBMat<Mat>>>
 #else
   struct RhoValue<Mat>
@@ -228,7 +228,7 @@ namespace libsemigroups {
   //! \sa Lambda.
   // TODO(0) doc tparameters
   template <typename Mat, typename Container>
-#ifndef PARSED_BY_DOXYGEN
+#ifndef LIBSEMIGROUPS_PARSED_BY_DOXYGEN
   struct Lambda<Mat, Container, std::enable_if_t<IsBMat<Mat>>>
 #else
   struct Lambda<Mat, Container>
@@ -276,7 +276,7 @@ namespace libsemigroups {
   //!
   //! \sa Rho.
   template <typename Mat, typename Container>
-#ifndef PARSED_BY_DOXYGEN
+#ifndef LIBSEMIGROUPS_PARSED_BY_DOXYGEN
   struct Rho<Mat, Container, std::enable_if_t<IsBMat<Mat>>>
 #else
   struct Rho<Mat, Container>
@@ -311,7 +311,7 @@ namespace libsemigroups {
   //!
   //! \sa ImageRightAction.
   template <size_t N, typename Mat>
-#ifndef PARSED_BY_DOXYGEN
+#ifndef LIBSEMIGROUPS_PARSED_BY_DOXYGEN
   struct ImageRightAction<Mat, BitSet<N>, std::enable_if_t<IsBMat<Mat>>>
 #else
   struct ImageRightAction<Mat, BitSet<N>>
@@ -355,7 +355,7 @@ namespace libsemigroups {
   //!
   //! \sa RankState.
   template <typename Mat>
-#ifndef PARSED_BY_DOXYGEN
+#ifndef LIBSEMIGROUPS_PARSED_BY_DOXYGEN
   class RankState<Mat, std::enable_if_t<IsBMat<Mat>>>
 #else
   class RankState<Mat>
@@ -437,7 +437,7 @@ namespace libsemigroups {
   //!
   //! \sa Rank.
   template <typename Mat>
-#ifndef PARSED_BY_DOXYGEN
+#ifndef LIBSEMIGROUPS_PARSED_BY_DOXYGEN
   struct Rank<Mat, RankState<Mat>, std::enable_if_t<IsBMat<Mat>>>
 #else
   struct Rank<Mat, RankState<Mat>>

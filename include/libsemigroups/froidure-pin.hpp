@@ -721,7 +721,7 @@ namespace libsemigroups {
     //! \sa \ref position and \ref sorted_position.
     [[nodiscard]] element_index_type current_position(const_reference x) const;
 
-#ifndef PARSED_BY_DOXYGEN
+#ifndef LIBSEMIGROUPS_PARSED_BY_DOXYGEN
     using FroidurePinBase::current_position;
 #endif
 
@@ -991,7 +991,7 @@ namespace libsemigroups {
     //! assumes that \p i is less than \ref size.
     [[nodiscard]] const_reference sorted_at_no_checks(element_index_type i);
 
-#ifndef PARSED_BY_DOXYGEN
+#ifndef LIBSEMIGROUPS_PARSED_BY_DOXYGEN
     // The following are required, they are documented in FroidurePinBase.
     // Sphinx/doxygen get confused by this, so we don't allow Doxygen to parse
     // these two declarations.
