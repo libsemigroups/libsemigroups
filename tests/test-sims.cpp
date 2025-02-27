@@ -5239,4 +5239,21 @@ namespace libsemigroups {
     }
   }
 
+  LIBSEMIGROUPS_TEST_CASE("Sims2",
+                          "086",
+                          "Non-contiguous alphabet",
+                          "[quick][low-index]") {
+    auto                    rg = ReportGuard(false);
+    Presentation<word_type> p;
+    p.contains_empty_word(true);
+    p.alphabet(02_w);
+    presentation::add_rule(p, 000_w, 0_w);
+    presentation::add_rule(p, 22_w, 2_w);
+    presentation::add_rule(p, 0202_w, 0_w);
+
+    Sims1 sims(p);
+    REQUIRE(sims.number_of_congruences(5) == 6);
+    REQUIRE(sims.presentation().alphabet() == p.alphabet());
+  }
+
 }  // namespace libsemigroups
