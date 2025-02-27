@@ -32,7 +32,7 @@
 #include "detail/tce.hpp"  // for TCE
 
 namespace libsemigroups {
-#ifndef PARSED_BY_DOXYGEN
+#ifndef LIBSEMIGROUPS_PARSED_BY_DOXYGEN
   class FroidurePinBase;  // forward decl
 
   template <typename Word>

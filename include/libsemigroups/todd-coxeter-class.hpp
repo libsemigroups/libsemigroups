@@ -292,7 +292,7 @@ namespace libsemigroups {
     }
 
    public:
-#ifdef PARSED_BY_DOXYGEN
+#ifdef LIBSEMIGROUPS_PARSED_BY_DOXYGEN
     //! \ingroup todd_coxeter_class_mem_types_group
     //!
     //! \brief Struct containing various options that can be used to control
@@ -723,7 +723,7 @@ namespace libsemigroups {
     template <typename Node>
     ToddCoxeter& init(congruence_kind knd, WordGraph<Node> const& wg);
 
-#ifndef PARSED_BY_DOXYGEN
+#ifndef LIBSEMIGROUPS_PARSED_BY_DOXYGEN
     // Used in Sims
     // TODO(1) could this and the next function be removed, and replaced
     // with something else?

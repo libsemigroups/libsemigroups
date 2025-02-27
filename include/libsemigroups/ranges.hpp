@@ -38,7 +38,7 @@
 #include <rx/ranges.hpp>  // for count, iterator_range
 #pragma GCC diagnostic pop
 
-#include "config.hpp"  // for PARSED_BY_DOXYGEN
+#include "config.hpp"  // for LIBSEMIGROUPS_PARSED_BY_DOXYGEN
 
 #include "detail/fmt.hpp"     // for fmt::join
 #include "detail/string.hpp"  // for detail::to_string
@@ -153,13 +153,13 @@ namespace libsemigroups {
       }
     };
 
-#ifndef PARSED_BY_DOXYGEN
+#ifndef LIBSEMIGROUPS_PARSED_BY_DOXYGEN
     template <typename InputRange>
     [[nodiscard]] constexpr auto operator()(InputRange&& input) const {
       using Inner = rx::get_range_type_t<InputRange>;
       return Range<Inner>(std::forward<InputRange>(input));
     }
-#endif  // PARSED_BY_DOXYGEN
+#endif  // LIBSEMIGROUPS_PARSED_BY_DOXYGEN
   };
 
   ////////////////////////////////////////////////////////////////////////

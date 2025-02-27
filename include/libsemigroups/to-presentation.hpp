@@ -58,7 +58,7 @@ namespace libsemigroups {
   template <typename Word>
   Presentation<Word> to_presentation(FroidurePinBase& fp);
 
-#ifdef PARSED_BY_DOXYGEN
+#ifdef LIBSEMIGROUPS_PARSED_BY_DOXYGEN
   //! \ingroup to_presentation_group
   //!
   //! \brief Make a presentation from a different type of presentation.
@@ -96,7 +96,7 @@ namespace libsemigroups {
           Presentation<WordOutput>>;
 #endif
 
-#ifdef PARSED_BY_DOXYGEN
+#ifdef LIBSEMIGROUPS_PARSED_BY_DOXYGEN
   //! \ingroup to_presentation_group
   //!
   //! \brief Make a presentation from a different type of presentation.
@@ -150,7 +150,7 @@ namespace libsemigroups {
     return p;
   }
 
-#ifdef PARSED_BY_DOXYGEN
+#ifdef LIBSEMIGROUPS_PARSED_BY_DOXYGEN
   //! \ingroup to_presentation_group
   //!
   //! \brief Make an inverse presentation from a different type of inverse
@@ -221,7 +221,7 @@ namespace libsemigroups {
   InversePresentation<Word>
   to_inverse_presentation(InversePresentation<Word> const& ip) = delete;
 
-#ifdef PARSED_BY_DOXYGEN
+#ifdef LIBSEMIGROUPS_PARSED_BY_DOXYGEN
   //! \ingroup to_presentation_group
   //!
   //! \brief Make an inverse presentation from a different type of inverse

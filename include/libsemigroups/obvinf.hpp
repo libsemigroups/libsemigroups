@@ -39,7 +39,7 @@
 #include "detail/uf.hpp"     // for Duf
 
 namespace libsemigroups {
-#ifndef PARSED_BY_DOXYGEN
+#ifndef LIBSEMIGROUPS_PARSED_BY_DOXYGEN
 
   namespace detail {
     template <typename Rewriter, typename ReductionOrder>

@@ -345,7 +345,7 @@ namespace libsemigroups {
       // presentation has the same constructors, regardless of what they use
       // inside.
 
-#ifndef PARSED_BY_DOXYGEN
+#ifndef LIBSEMIGROUPS_PARSED_BY_DOXYGEN
       // Used in Sims
       // TODO(1) could this and the next function be removed, and replaced
       // with something else?
@@ -508,7 +508,7 @@ namespace libsemigroups {
       // 8. ToddCoxeterImpl - settings - public
       ////////////////////////////////////////////////////////////////////////
 
-#ifndef PARSED_BY_DOXYGEN
+#ifndef LIBSEMIGROUPS_PARSED_BY_DOXYGEN
       // This is documented in Runner, so we don't duplicate the doc here.
       template <typename T>
       void report_every(T val) {
@@ -1130,7 +1130,7 @@ namespace libsemigroups {
       //! \noexcept
       [[nodiscard]] bool use_relations_in_extra() const noexcept;
 
-#ifdef PARSED_BY_DOXYGEN
+#ifdef LIBSEMIGROUPS_PARSED_BY_DOXYGEN
       //! \ingroup todd_coxeter_class_settings_group
       //!
       //! \brief Set the value of the definition version setting.
@@ -1170,7 +1170,7 @@ namespace libsemigroups {
       // 9. ToddCoxeterImpl - accessors - public
       ////////////////////////////////////////////////////////////////////////
 
-#ifndef PARSED_BY_DOXYGEN
+#ifndef LIBSEMIGROUPS_PARSED_BY_DOXYGEN
       [[nodiscard]] Presentation<word_type> const&
       internal_presentation() const noexcept {
         return _word_graph.presentation();

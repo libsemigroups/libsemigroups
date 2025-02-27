@@ -54,7 +54,7 @@ namespace libsemigroups {
     // ToddCoxeter<Word> helpers
     ////////////////////////////////////////////////////////////////////////
 
-#ifndef PARSED_BY_DOXYGEN
+#ifndef LIBSEMIGROUPS_PARSED_BY_DOXYGEN
     // This is just for our convenience here, so not documented.
     using index_type = typename detail::ToddCoxeterImpl::index_type;
 #endif

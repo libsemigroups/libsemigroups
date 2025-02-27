@@ -196,7 +196,7 @@ namespace libsemigroups {
       //! The index of the parent node.
       node_index_type parent;
 
-#ifndef PARSED_BY_DOXYGEN
+#ifndef LIBSEMIGROUPS_PARSED_BY_DOXYGEN
       // No doc
       node_index_type link;
       // The next member is a weak indicator of whether or not the node

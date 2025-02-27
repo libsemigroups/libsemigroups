@@ -97,7 +97,7 @@ namespace libsemigroups {
     // FroidurePin - data members - private
     ////////////////////////////////////////////////////////////////////////
 
-#ifndef PARSED_BY_DOXYGEN
+#ifndef LIBSEMIGROUPS_PARSED_BY_DOXYGEN
     // This now only contains a single data member, which might make it a bit
     // redundant.
     struct Settings {
@@ -226,7 +226,7 @@ namespace libsemigroups {
       return _settings._batch_size;
     }
 
-#ifndef PARSED_BY_DOXYGEN
+#ifndef LIBSEMIGROUPS_PARSED_BY_DOXYGEN
     ////////////////////////////////////////////////////////////////////////
     // FroidurePinBase - pure virtual member functions - public
     ////////////////////////////////////////////////////////////////////////
@@ -234,7 +234,7 @@ namespace libsemigroups {
     [[nodiscard]] virtual size_t number_of_generators() const = 0;
     [[nodiscard]] virtual tril   is_finite() const            = 0;
 
-#endif  // PARSED_BY_DOXYGEN not defined
+#endif  // LIBSEMIGROUPS_PARSED_BY_DOXYGEN not defined
 
     ////////////////////////////////////////////////////////////////////////
     // FroidurePinBase - member functions - public
@@ -1222,7 +1222,7 @@ namespace libsemigroups {
     //! This nested class is the return type of \ref cbegin_rules, \ref
     //! cbegin_current_rules, \ref cend_rules, and \ref cend_current_rules.
     class const_rule_iterator {
-#ifndef PARSED_BY_DOXYGEN
+#ifndef LIBSEMIGROUPS_PARSED_BY_DOXYGEN
 
      public:
       using size_type = typename std::vector<relation_type>::size_type;
@@ -1284,7 +1284,7 @@ namespace libsemigroups {
         std::swap(_gen, that._gen);
         std::swap(_pos, that._pos);
       }
-#endif  // PARSED_BY_DOXYGEN not defined
+#endif  // LIBSEMIGROUPS_PARSED_BY_DOXYGEN not defined
 
      private:
       void populate_relation() const;
@@ -1520,7 +1520,7 @@ namespace libsemigroups {
     //! cbegin_current_normal_forms, \ref cend_normal_forms, and \ref
     //! cend_current_normal_forms.
     class const_normal_form_iterator {
-#ifndef PARSED_BY_DOXYGEN
+#ifndef LIBSEMIGROUPS_PARSED_BY_DOXYGEN
       // Private data
       mutable FroidurePinBase const* _froidure_pin;
       enumerate_index_type           _pos;
@@ -1659,7 +1659,7 @@ namespace libsemigroups {
         _froidure_pin->current_minimal_factorisation_no_checks(
             std::back_inserter(_word), _pos);
       }
-#endif  // PARSED_BY_DOXYGEN not defined
+#endif  // LIBSEMIGROUPS_PARSED_BY_DOXYGEN not defined
     };
 
     //! \brief Returns an iterator pointing at the first normal form (if any).
