@@ -56,8 +56,8 @@ namespace libsemigroups {
       // would be possible to do this without actually constructing `wg` but
       // constructing `wg` is simpler, and so we do that for now.
 
-      auto g1 = kb1.gilman_graph();
-      auto g2 = kb2.gilman_graph();
+      auto const& g1 = kb1.gilman_graph();
+      auto const& g2 = kb2.gilman_graph();
 
       LIBSEMIGROUPS_ASSERT(g1.number_of_nodes() > 0);
       LIBSEMIGROUPS_ASSERT(g2.number_of_nodes() > 0);
@@ -74,7 +74,7 @@ namespace libsemigroups {
       // We need to obtain a mappings from the nodes of
       // g1 to g2 and vice versa.
 
-      using node_type = typename decltype(g1)::node_type;
+      using node_type = typename std::decay_t<decltype(g1)>::node_type;
 
       std::vector<node_type> to_g2(g1.number_of_nodes(),
                                    static_cast<node_type>(UNDEFINED));
