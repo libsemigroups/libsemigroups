@@ -49,7 +49,7 @@ namespace libsemigroups {
   //! Despite the hideous signature, this function should be invoked as follows:
   //!
   //! \code
-  //! to<Congruence>(knd, fpb, wg);
+  //! to<Congruence<Word>>(knd, fpb, wg);
   //! \endcode
   //!
   //! This function converts the \ref FroidurePin object \p fpb into a
@@ -57,7 +57,8 @@ namespace libsemigroups {
   //! the \ref FroidurePinBase::left_cayley_graph or the \ref
   //! FroidurePinBase::right_cayley_graph of \p fpb).
   //!
-  //! \tparam Result used for SFINAE, the return type of this function.
+  //! \tparam Result used for SFINAE, the return type of this function, must be
+  //! `Congruence<Word>` for some type \c Word.
   //! \tparam Node the type of the nodes in the WordGraph \p wg.
   //!
   //! \param knd the kind of the congruence being constructed.
