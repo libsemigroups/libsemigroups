@@ -28,10 +28,6 @@
 #ifndef LIBSEMIGROUPS_KONIECZNY_HPP_
 #define LIBSEMIGROUPS_KONIECZNY_HPP_
 
-#ifndef PARSED_BY_DOXYGEN
-#define NOT_PARSED_BY_DOXYGEN
-#endif
-
 #include <algorithm>      // for binary_search
 #include <cstddef>        // for size_t
 #include <set>            // for set
@@ -1741,7 +1737,7 @@ namespace libsemigroups {
     ////////////////////////////////////////////////////////////////////////
     // DClass - aliases - protected
     ////////////////////////////////////////////////////////////////////////
-#ifdef NOT_PARSED_BY_DOXYGEN
+#ifndef PARSED_BY_DOXYGEN
     using konieczny_type    = Konieczny<Element, Traits>;
     using internal_set_type = std::
         unordered_set<internal_element_type, InternalHash, InternalEqualTo>;
@@ -1800,7 +1796,7 @@ namespace libsemigroups {
           _tmp_rho_value(OneParamRho()(this->to_external_const(rep))) {
       _is_regular_D_class = _parent->is_regular_element_NC(rep);
     }
-#endif  // NOT_PARSED_BY_DOXYGEN
+#endif  // ndef PARSED_BY_DOXYGEN
 
    public:
     ////////////////////////////////////////////////////////////////////////
@@ -1965,7 +1961,7 @@ namespace libsemigroups {
     }
 
    protected:
-#ifdef NOT_PARSED_BY_DOXYGEN
+#ifndef PARSED_BY_DOXYGEN
     ////////////////////////////////////////////////////////////////////////
     // DClass - iterators - protected
     ////////////////////////////////////////////////////////////////////////
@@ -2544,7 +2540,7 @@ namespace libsemigroups {
     // Konieczny is only a friend of RegularDClass so it can call the private
     // constructor
     friend class Konieczny<Element, Traits>;
-#ifdef NOT_PARSED_BY_DOXYGEN
+#ifndef PARSED_BY_DOXYGEN
     // NonRegularDClass is a friend of RegularDClass so it can access private
     // iterators
     friend class Konieczny<Element, Traits>::NonRegularDClass;
@@ -3840,7 +3836,7 @@ namespace libsemigroups {
     _D_rels.push_back(std::vector<D_class_index_type>());
   }
 
-#ifdef NOT_PARSED_BY_DOXYGEN
+#ifndef PARSED_BY_DOXYGEN
   template <typename Element, typename Traits>
   void Konieczny<Element, Traits>::add_D_class(
       Konieczny<Element, Traits>::NonRegularDClass* D) {
