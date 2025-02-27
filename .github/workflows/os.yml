@@ -6,7 +6,7 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  alpine:
+  alpine-64:
       defaults:
         run:
           shell: alpine.sh {0}
@@ -37,6 +37,33 @@ jobs:
           run: make check -j4
         - name: "Run the quick tests . . ."
           run: ./test_all "[quick]"
+  alpine-32:
+       timeout-minutes: 60
+       runs-on: ubuntu-latest
+       container:
+         image: i386/alpine
+       steps:
+         - name: "Install autotools etc . . ."
+           run: apk add build-base autoconf automake libtool nodejs~20
+         - name: "Checkout libsemigroups repo . . ."
+           uses: actions/checkout@v3
+         - name: "Alpine/musl versions . . ."
+           run: |
+                cat /etc/alpine-release
+                apk info musl
+         - name: "Setup ccache . . ."
+           uses: Chocobo1/setup-ccache-action@v1
+           with:
+               update_packager_index: false
+               install_ccache: true
+         - name: "Configure . . ."
+           run: ./autogen.sh && ./configure
+         - name: "Build libsemigroups . . ."
+           run: make -j4
+         - name: "Build test_all . . ."
+           run: make test_all -j4
+         - name: "Run the quick tests . . ."
+           run: ./test_all "[quick][exclude:no-valgrind][exclude:no-coverage][exclude:BMat8]" --abort
   cygwin:
      defaults:
        run:
