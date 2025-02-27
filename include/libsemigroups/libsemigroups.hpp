@@ -41,7 +41,6 @@
 #include "cong-helpers.hpp"
 #include "cong.hpp"
 #include "constants.hpp"
-#include "cutting.hpp"
 #include "debug.hpp"
 #include "deprecated.hpp"
 #include "dot.hpp"
