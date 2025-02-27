@@ -33,7 +33,8 @@ namespace libsemigroups {
 
   namespace word_graph {
 
-#if defined(LIBSEMIGROUPS_EIGEN_ENABLED) && !defined(LIBSEMIGROUPS_PARSED_BY_DOXYGEN)
+#if defined(LIBSEMIGROUPS_EIGEN_ENABLED) \
+    && !defined(LIBSEMIGROUPS_PARSED_BY_DOXYGEN)
     static inline Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic>
     pow(Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> const& x,
         size_t                                                       e) {
