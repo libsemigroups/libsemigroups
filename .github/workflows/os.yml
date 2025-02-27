@@ -46,17 +46,14 @@ jobs:
        container:
          image: i386/alpine
        steps:
+         - name: "Install autotools etc . . ."
+           run: apk add build-base autoconf automake libtool nodejs
+           shell: alpine.sh --root {0}
          - uses: actions/checkout@v3
-         - uses: jirutka/setup-alpine@v1
-           with:
-             branch: v3.15
          - name: "Alpine/musl versions . . ."
            run: |
                 cat /etc/alpine-release
                 apk info musl
-         - name: "Install autotools etc . . ."
-           run: apk add build-base autoconf automake libtool
-           shell: alpine.sh --root {0}
          - name: "Setup ccache . . ."
            uses: Chocobo1/setup-ccache-action@v1
            with:
