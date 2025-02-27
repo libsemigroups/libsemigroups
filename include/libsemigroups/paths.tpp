@@ -534,20 +534,6 @@ namespace libsemigroups {
   }
 
   template <typename Node>
-  typename ReversiblePaths<Node>::output_type
-  ReversiblePaths<Node>::get() const {
-    // TODO(2) optimise for repeated calls with no call to next in between
-    output_type result = Paths<Node>::get();
-    if (!_reverse) {
-      return result;
-    } else {
-      _result = result;
-      std::reverse(_result.begin(), _result.end());
-      return _result;
-    }
-  }
-
-  template <typename Node>
   std::string to_human_readable_repr(Paths<Node> const& p) {
     std::string source_target;
     std::string sep;
@@ -570,14 +556,6 @@ namespace libsemigroups {
     // TODO(0) + 1 correct?
   }
 
-  template <typename Node>
-  std::string to_human_readable_repr(ReversiblePaths<Node> const& p) {
-    using std::string_literals::operator""s;
-    auto result = to_human_readable_repr(static_cast<Paths<Node> const&>(p));
-    result.erase(result.begin(), result.begin() + std::strlen("<Paths"));
-    std::string rev = p.reverse() ? "(reversed)" : "(non-reversed)";
-    return "<ReversiblePaths "s + rev + result;
-  }
 }  // namespace libsemigroups
 
 template <typename Node>

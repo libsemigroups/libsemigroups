@@ -36,8 +36,8 @@
 #include "libsemigroups/constants.hpp"     // for operator==, operator!=
 #include "libsemigroups/knuth-bendix.hpp"  // for KnuthBendix, to_present...
 #include "libsemigroups/obvinf.hpp"        // for is_obviously_infinite
-#include "libsemigroups/paths.hpp"         // for ReversiblePaths
-#include "libsemigroups/presentation-examples.hpp"  // for fpsemigroup
+#include "libsemigroups/paths.hpp"         // for Paths
+#include "libsemigroups/presentation-examples.hpp"  // for presentation::examples
 #include "libsemigroups/presentation.hpp"           // for longest_rule_length
 #include "libsemigroups/ranges.hpp"                 // for operator|, to_vector
 #include "libsemigroups/to-presentation.hpp"        // for to_presentation
