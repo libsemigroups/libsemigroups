@@ -20,7 +20,7 @@ AC_DEFUN([AX_CHECK_FMT], [
         ],
         [AC_MSG_ERROR([cannot use flag --with-external-fmt, the libsemigroups configure file was created on a system without m4 macros for pkg-config available...])])
   else
-        AC_SUBST(FMT_CFLAGS, ['-I$(srcdir)/extern/fmt-10.1.1/include'])
+        AC_SUBST(FMT_CFLAGS, ['-I$(srcdir)/third_party/fmt-10.1.1/include'])
   fi
   AC_SUBST([fmt_PCDEP])
 
