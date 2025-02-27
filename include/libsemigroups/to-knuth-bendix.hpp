@@ -42,7 +42,7 @@ namespace libsemigroups {
   //! Despite the hideous signature, this function should be invoked as follows:
   //!
   //! \code
-  //! to<KnuthBendix<Word>>(knd, fpb);
+  //! to<KnuthBendix<Word, Rewriter>>(knd, fpb);
   //! \endcode
   //!
   //! This function converts the \ref FroidurePin object \p fpb into a
@@ -103,6 +103,32 @@ namespace libsemigroups {
     return KnuthBendix<Word>(knd, tc.presentation());
   }
 
+  //! \ingroup to_knuth_bendix_group
+  //!
+  //! \brief Convert a \ref_todd_coxeter object to a \ref_knuth_bendix object.
+  //!
+  //! Defined in \c to-knuth-bendix.hpp
+  //!
+  //! Despite the hideous signature, this function should be invoked as follows:
+  //!
+  //! \code
+  //! to<KnuthBendix<Word, Rewriter>>(knd, tc);
+  //! \endcode
+  //!
+  //! This function converts the \ref_todd_coxeter object \p tc into a
+  //! \ref_knuth_bendix object using ToddCoxeter::presentation.
+  //!
+  //! \tparam Result used for SFINAE, the return type of this function, must be
+  //! `KnuthBendix<Word, Rewriter>` for some type \c Word and \c Rewriter.
+  //!
+  //! \param knd the kind of the congruence being constructed.
+  //! \param tc the \ref_todd_coxeter object being converted.
+  //!
+  //! \returns A \ref_knuth_bendix object representing the trivial congruence
+  //! over the semigroup defined by \p tc.
+  //!
+  //! \exceptions
+  //! \no_libsemigroups_except
   template <typename Result>
   auto to(congruence_kind                                 knd,
           ToddCoxeter<typename Result::native_word_type>& tc)
