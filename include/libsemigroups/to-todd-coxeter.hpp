@@ -59,7 +59,7 @@ namespace libsemigroups {
   //! Despite the hideous signature, this function should be invoked as follows:
   //!
   //! \code
-  //! to<ToddCoxeter<Word>>(kb);
+  //! to<ToddCoxeter<Word>>(knd, fpb, wg);
   //! \endcode
   //!
   //! This function converts the \ref FroidurePin object \p fpb into a
