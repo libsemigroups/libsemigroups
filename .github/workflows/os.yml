@@ -48,8 +48,8 @@ jobs:
        steps:
          - name: "Install autotools etc . . ."
            run: apk add build-base autoconf automake libtool nodejs
-           shell: alpine.sh --root {0}
-         - uses: actions/checkout@v3
+         - name: "Checkout libsemigroups repo . . ."
+           uses: actions/checkout@v3
          - name: "Alpine/musl versions . . ."
            run: |
                 cat /etc/alpine-release
