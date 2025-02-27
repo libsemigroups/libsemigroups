@@ -6,82 +6,86 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  # alpine:
-  #     defaults:
-  #       run:
-  #         shell: alpine.sh {0}
-  #     runs-on: ubuntu-latest
-  #     steps:
-  #       - uses: actions/checkout@v3
-  #       - uses: jirutka/setup-alpine@v1
-  #         with:
-  #           branch: v3.15
-  #       - name: "Alpine/musl versions . . ."
-  #         run: |
-  #              cat /etc/alpine-release
-  #              apk info musl
-  #       - name: "Install autotools etc . . ."
-  #         run: |
-  #               apk add build-base autoconf automake libtool
-  #         shell: alpine.sh --root {0}
-  #       - name: "Setup ccache . . ."
-  #         uses: Chocobo1/setup-ccache-action@v1
-  #         with:
-  #             update_packager_index: false
-  #             install_ccache: true
-  #       - name: "Configure . . ."
-  #         run: ./autogen.sh && ./configure
-  #       - name: "Build libsemigroups . . ."
-  #         run: make -j4
-  #       - name: "Build test_all . . ."
-  #         run: make check -j4
-  #       - name: "Run the quick tests . . ."
-  #         run: ./test_all "[quick]"
-  # cygwin:
-  #    defaults:
-  #      run:
-  #        shell: C:\cygwin64\bin\bash.exe --login -o igncr '{0}'
-  #    timeout-minutes: 60
-  #    runs-on: windows-latest
-  #    env:
-  #      CHERE_INVOKING: 1
-  #    steps:
-  #       - uses: gap-actions/setup-cygwin@v1
-  #       - uses: actions/checkout@v3
-  #       - name: "Configure . . ."
-  #         run: ./autogen.sh && ./configure --disable-eigen --disable-hpcombi CXXFLAGS="-Os"
-  #       - name: "Build libsemigroups . . ."
-  #         run: make -j4
-  #       - name: "Build test_all . . ."
-  #         run: make check -j4
-  #       - name: "Run the quick tests . . ."
-  #         run: ./test_all "[quick]"
-  x86-32:
-      timeout-minutes: 60
+  alpine-64:
+      defaults:
+        run:
+          shell: alpine.sh {0}
       runs-on: ubuntu-latest
-      container:
-        image: libsemigroups/libsemigroups-docker-x86-32-base:main
-        options: --user libsemigroups
       steps:
-         - name: "Set up Homebrew . . ."
-           uses: Homebrew/actions/setup-homebrew@master
-         - name: "Install latest doxygen . . ."
+        - uses: actions/checkout@v3
+        - uses: jirutka/setup-alpine@v1
+          with:
+            branch: v3.15
+        - name: "Alpine/musl versions . . ."
+          run: |
+               cat /etc/alpine-release
+               apk info musl
+        - name: "Install autotools etc . . ."
+          run: |
+                apk add build-base autoconf automake libtool
+          shell: alpine.sh --root {0}
+        - name: "Setup ccache . . ."
+          uses: Chocobo1/setup-ccache-action@v1
+          with:
+              update_packager_index: false
+              install_ccache: true
+        - name: "Configure . . ."
+          run: ./autogen.sh && ./configure
+        - name: "Build libsemigroups . . ."
+          run: make -j4
+        - name: "Build test_all . . ."
+          run: make check -j4
+        - name: "Run the quick tests . . ."
+          run: ./test_all "[quick]"
+  alpine-32:
+       defaults:
+         run:
+           shell: alpine.sh {0}
+       timeout-minutes: 60
+       runs-on: ubuntu-latest
+       container:
+         image: i386/alpine
+       steps:
+         - uses: actions/checkout@v3
+         - uses: jirutka/setup-alpine@v1
+           with:
+             branch: v3.15
+         - name: "Alpine/musl versions . . ."
            run: |
-                brew install node@20
-         - uses: actions/checkout@v4
-         - name: "Fix permissions in docker container . . ."
-           run: |
-            sudo chown -R libsemigroups: /home/libsemigroups
+                cat /etc/alpine-release
+                apk info musl
+         - name: "Install autotools etc . . ."
+           run: apk add build-base autoconf automake libtool
+           shell: alpine.sh --root {0}
+         - name: "Setup ccache . . ."
+           uses: Chocobo1/setup-ccache-action@v1
+           with:
+               update_packager_index: false
+               install_ccache: true
          - name: "Configure . . ."
-           run: |
-            cd /home/libsemigroups
-            mkdir -p m4
-            ./autogen.sh
-            ./configure --disable-hpcombi # HPCombi doesn't work in 32-bit mode
+           run: ./autogen.sh && ./configure
          - name: "Build libsemigroups . . ."
            run: make -j4
          - name: "Build test_all . . ."
            run: make test_all -j4
-         - name: "Running the tests . . ."
-           run: |
-             ./test_all "[quick][exclude:no-valgrind][exclude:no-coverage][exclude:BMat8]" --abort
+         - name: "Run the quick tests . . ."
+           run: ./test_all "[quick][exclude:no-valgrind][exclude:no-coverage][exclude:BMat8]" --abort
+  cygwin:
+     defaults:
+       run:
+         shell: C:\cygwin64\bin\bash.exe --login -o igncr '{0}'
+     timeout-minutes: 60
+     runs-on: windows-latest
+     env:
+       CHERE_INVOKING: 1
+     steps:
+        - uses: gap-actions/setup-cygwin@v1
+        - uses: actions/checkout@v3
+        - name: "Configure . . ."
+          run: ./autogen.sh && ./configure --disable-eigen --disable-hpcombi CXXFLAGS="-Os"
+        - name: "Build libsemigroups . . ."
+          run: make -j4
+        - name: "Build test_all . . ."
+          run: make check -j4
+        - name: "Run the quick tests . . ."
+          run: ./test_all "[quick]"
