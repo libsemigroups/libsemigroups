@@ -47,7 +47,7 @@ namespace libsemigroups {
            BMat({{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {1, 0, 0, 1}}),
            BMat({{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 0}})};
     Konieczny<BMat> KS(gens);
-    auto            S = to_froidure_pin(gens);
+    auto            S = make<FroidurePin>(gens);
     S.run();
 
     REQUIRE(KS.size() == 63904);
@@ -133,7 +133,7 @@ namespace libsemigroups {
            BMat8({{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 0}})};
 
     Konieczny<BMat8> KS(gens);
-    auto             S = to_froidure_pin(gens);
+    auto             S = make<FroidurePin>(gens);
     KS.run();
     S.run();
     BMat8 idem(BMat8({{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}));

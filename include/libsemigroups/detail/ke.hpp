@@ -23,21 +23,19 @@
 #ifndef LIBSEMIGROUPS_DETAIL_KE_HPP_
 #define LIBSEMIGROUPS_DETAIL_KE_HPP_
 
-#include "libsemigroups/kambites.hpp"  // for Kambites
-
 #include <cstddef>      // for size_t
 #include <functional>   // for hash
 #include <string>       // for basic_string
 #include <type_traits>  // for enable_if_t, integral_constant
 
-#include "libsemigroups/adapters.hpp"      // for Complexity
-#include "libsemigroups/constants.hpp"     // for Max, LimitMax, LIMIT_MAX
-#include "libsemigroups/froidure-pin.hpp"  // for FroidurePin, FroidurePi...
-#include "libsemigroups/kambites.hpp"      // for Kambites
-#include "libsemigroups/order.hpp"         // for shortlex_compare
-#include "libsemigroups/presentation.hpp"  // for to_word
-#include "libsemigroups/types.hpp"         // for word_type, tril
-#include "libsemigroups/word-range.hpp"    // for ToWord, ToString
+#include "libsemigroups/adapters.hpp"        // for Complexity
+#include "libsemigroups/constants.hpp"       // for Max, LimitMax, LIMIT_MAX
+#include "libsemigroups/froidure-pin.hpp"    // for FroidurePin, FroidurePi...
+#include "libsemigroups/kambites-class.hpp"  // for Kambites
+#include "libsemigroups/order.hpp"           // for shortlex_compare
+#include "libsemigroups/presentation.hpp"    // for to_word
+#include "libsemigroups/types.hpp"           // for word_type, tril
+#include "libsemigroups/word-range.hpp"      // for ToWord, ToString
 
 namespace libsemigroups {
   namespace detail {
@@ -59,8 +57,9 @@ namespace libsemigroups {
       KE& operator=(KE&&)      = default;
       ~KE()                    = default;
 
-      KE(Kambites<Word>& k, value_type const& w)
-          : _value(::libsemigroups::kambites::reduce_no_checks(k, w)) {}
+      KE(Kambites<Word>& k, value_type const& w) : _value() {
+        k.reduce_no_checks(std::back_inserter(_value), w.begin(), w.end());
+      }
 
       // KE(Kambites<Word>& k, value_type&& w)
       //     : _value(kambites::reduce_no_checks(k, std::move(w))) {}
@@ -135,7 +134,7 @@ namespace libsemigroups {
 
   template <typename Word>
   struct IncreaseDegree<detail::KE<Word>> {
-    void operator()(detail::KE<Word> const&) const noexcept {}
+    void operator()(detail::KE<Word> const&, size_t) const noexcept {}
   };
 
   template <typename Word>

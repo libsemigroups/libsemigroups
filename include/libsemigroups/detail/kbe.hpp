@@ -29,7 +29,6 @@
 
 #include "libsemigroups/adapters.hpp"      // for One
 #include "libsemigroups/froidure-pin.hpp"  // for FroidurePin
-#include "libsemigroups/knuth-bendix.hpp"  // for KnuthBendixImpl<KnuthBendix_>
 #include "libsemigroups/obvinf.hpp"        // for is_obviously_infinite
 #include "libsemigroups/types.hpp"         // for word_type, letter_type
 
@@ -84,12 +83,6 @@ namespace libsemigroups {
      private:
       internal_string_type _kb_word;
     };
-    // The following are not really required but are here as a reminder that
-    // KBE are used in BruidhinnTraits which depends on the values in the
-    // static_asserts below.
-    // static_assert(!std::is_trivial<KBE>::value, "KBE is trivial!!!");
-    // static_assert(std::integral_constant<bool, (sizeof(KBE) <= 32)>::value,
-    //               "KBE's sizeof exceeds 32!!");
 
   }  // namespace detail
 

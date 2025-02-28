@@ -49,7 +49,7 @@
 #include "libsemigroups/order.hpp"            // for ShortLexCompare, shor...
 #include "libsemigroups/presentation.hpp"     // for Presentation, human_r...
 #include "libsemigroups/ranges.hpp"           // for chain, shortlex_compare
-#include "libsemigroups/to-presentation.hpp"  // for to_presentation
+#include "libsemigroups/to-presentation.hpp"  // for to<Presentation>
 #include "libsemigroups/types.hpp"            // for word_type, letter_type
 #include "libsemigroups/word-range.hpp"       // for operator+=, operator""_w
 
@@ -668,7 +668,7 @@ namespace libsemigroups {
       S.add_generator(Bipartition({{1, 2}, {3, -3}, {4, -4}, {-1, -2}}));
       REQUIRE(S.size() == 105);
 
-      auto p = to_presentation<W>(S);
+      auto p = to<Presentation<W>>(S);
       REQUIRE(presentation::length(p) == 359);
       presentation::remove_duplicate_rules(p);
       REQUIRE(presentation::length(p) == 359);

@@ -526,7 +526,7 @@ namespace libsemigroups {
                           "[no-valgrind][todd-coxeter][quick][no-coverage]") {
     auto rg = ReportGuard(false);
 
-    FroidurePin<BMat8> S = to_froidure_pin(
+    FroidurePin<BMat8> S = make<FroidurePin>(
         {BMat8({{0, 1, 0, 0}, {1, 0, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}),
          BMat8({{0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}, {1, 0, 0, 0}}),
          BMat8({{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {1, 0, 0, 1}}),
@@ -534,7 +534,7 @@ namespace libsemigroups {
 
     REQUIRE(S.size() == 63'904);
 
-    ToddCoxeter tc(twosided, to_presentation<word_type>(S));
+    ToddCoxeter tc(twosided, to<Presentation<word_type>>(S));
 
     todd_coxeter::add_generating_pair_no_checks(tc, 0_w, 1_w);
 
@@ -554,7 +554,7 @@ namespace libsemigroups {
     REQUIRE(tc.number_of_classes() == 3);
     REQUIRE(contains(tc, 0_w, 1_w));
 
-    auto T = to_froidure_pin(tc);
+    auto T = to<FroidurePin>(tc);
     REQUIRE(T.size() == 3);
     REQUIRE(word_of(tc, 0) == froidure_pin::factorisation(T, 0));
     REQUIRE(word_of(tc, 1) == froidure_pin::factorisation(T, 1));
@@ -582,61 +582,9 @@ namespace libsemigroups {
 
     check_normal_forms(tc, tc.number_of_classes());
 
-    tc.init(twosided, to_presentation<word_type>(S));
+    tc.init(twosided, to<Presentation<word_type>>(S));
     REQUIRE(tc.number_of_generating_pairs() == 0);
     REQUIRE(tc.generating_pairs().empty());
-  }
-
-  LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
-                          "004",
-                          "2-sided congruence from FroidurePin",
-                          "[todd-coxeter][quick]") {
-    auto rg = ReportGuard(false);
-
-    using Transf = LeastTransf<5>;
-    FroidurePin<Transf> S
-        = to_froidure_pin({Transf({1, 3, 4, 2, 3}), Transf({3, 2, 1, 3, 3})});
-
-    REQUIRE(S.size() == 88);
-
-    // Construct from Cayley graph of S
-    auto tc = to_todd_coxeter(twosided, S, S.right_cayley_graph());
-    REQUIRE(tc.current_word_graph().number_of_nodes() == 89);
-
-    todd_coxeter::add_generating_pair(
-        tc,
-        froidure_pin::factorisation(S, Transf({3, 4, 4, 4, 4})),
-        froidure_pin::factorisation(S, Transf({3, 1, 3, 3, 3})));
-    REQUIRE(!tc.finished());
-    tc.shrink_to_fit();  // does nothing
-    REQUIRE(!tc.finished());
-    tc.standardize(Order::none);  // does nothing
-    REQUIRE(!tc.finished());
-
-    section_felsch(tc);
-    section_hlt(tc);
-    section_CR_style(tc);
-    section_Rc_style(tc);
-    section_Cr_style(tc);
-    section_R_over_C_style(tc);
-
-    REQUIRE(tc.number_of_classes() == 21);
-    tc.shrink_to_fit();
-    REQUIRE(tc.number_of_classes() == 21);
-    tc.standardize(Order::recursive);
-    auto w = (normal_forms(tc) | to_vector());
-    REQUIRE(w.size() == 21);
-    REQUIRE(w
-            == std::vector<word_type>(
-                {0_w,    00_w,   000_w,   0000_w, 1_w,     10_w,    100_w,
-                 1000_w, 01_w,   010_w,   0100_w, 01000_w, 001_w,   11_w,
-                 110_w,  1100_w, 11000_w, 011_w,  0110_w,  01100_w, 011000_w}));
-    REQUIRE(std::unique(w.begin(), w.end()) == w.end());
-    REQUIRE(std::is_sorted(w.cbegin(), w.cend(), RecursivePathCompare{}));
-    REQUIRE((normal_forms(tc) | all_of([&tc](auto const& u) {
-               return word_of(tc, index_of(tc, u)) == u;
-             })));
-    check_normal_forms(tc, tc.number_of_classes());
   }
 
   LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
@@ -761,79 +709,6 @@ namespace libsemigroups {
     check_complete_compatible(tc);
   }
 
-  // TODO move to test-to-todd-coxeter
-  LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
-                          "009",
-                          "2-sided cong. trans. semigroup",
-                          "[todd-coxeter][quick]") {
-    auto rg = ReportGuard(false);
-    auto S  = to_froidure_pin(
-        {Transf<>({1, 3, 4, 2, 3}), Transf<>({3, 2, 1, 3, 3})});
-
-    REQUIRE(S.size() == 88);
-    REQUIRE(S.number_of_rules() == 18);
-
-    auto tc = to_todd_coxeter(twosided, S, S.right_cayley_graph());
-
-    REQUIRE(froidure_pin::factorisation(S, Transf<>({3, 4, 4, 4, 4}))
-            == 010001100_w);
-    REQUIRE(froidure_pin::factorisation(S, Transf<>({3, 1, 3, 3, 3}))
-            == 10001_w);
-    todd_coxeter::add_generating_pair(
-        tc,
-        froidure_pin::factorisation(S, Transf<>({3, 4, 4, 4, 4})),
-        froidure_pin::factorisation(S, Transf<>({3, 1, 3, 3, 3})));
-
-    section_felsch(tc);
-    section_hlt(tc);
-    section_Rc_style(tc);
-    section_R_over_C_style(tc);
-    section_CR_style(tc);
-    section_Cr_style(tc);
-
-    check_complete_compatible(tc);
-    check_standardize(tc);
-
-    REQUIRE(tc.generating_pairs()[0] == 010001100_w);
-    auto const& d = tc.current_word_graph();
-    REQUIRE(word_graph::is_compatible_no_checks(d,
-                                                d.cbegin_active_nodes(),
-                                                d.cend_active_nodes(),
-                                                tc.generating_pairs().cbegin(),
-                                                tc.generating_pairs().cend()));
-    REQUIRE(tc.number_of_classes() == 21);
-    REQUIRE(tc.number_of_classes() == 21);
-
-    REQUIRE(
-        index_of(tc, froidure_pin::factorisation(S, Transf<>({1, 3, 1, 3, 3})))
-        == index_of(tc,
-                    froidure_pin::factorisation(S, Transf<>({4, 2, 4, 4, 2}))));
-
-    tc.standardize(Order::shortlex);
-
-    auto ntc = non_trivial_classes(
-        tc, S.cbegin_normal_forms(), S.cend_normal_forms());
-
-    REQUIRE(ntc.size() == 1);
-    REQUIRE(ntc[0].size() == 68);
-    REQUIRE(ntc
-            == decltype(ntc)(
-                {{001_w,       101_w,       0001_w,     0010_w,     0011_w,
-                  0101_w,      1001_w,      1010_w,     1011_w,     00001_w,
-                  00010_w,     00011_w,     00100_w,    00101_w,    00110_w,
-                  01010_w,     01011_w,     10001_w,    10010_w,    10011_w,
-                  10100_w,     10101_w,     10110_w,    000010_w,   000011_w,
-                  000100_w,    000101_w,    000110_w,   001000_w,   001100_w,
-                  010001_w,    010100_w,    010101_w,   010110_w,   100010_w,
-                  100011_w,    100100_w,    100101_w,   100110_w,   101000_w,
-                  101100_w,    0000100_w,   0000101_w,  0000110_w,  0001000_w,
-                  0001100_w,   0010001_w,   0100010_w,  0100011_w,  0101000_w,
-                  0101100_w,   1000100_w,   1000101_w,  1000110_w,  1001000_w,
-                  1001100_w,   00001000_w,  00001100_w, 00100010_w, 01000100_w,
-                  01000101_w,  01000110_w,  10001000_w, 10001100_w, 001000100_w,
-                  001000101_w, 010001000_w, 010001100_w}}));
-  }
-
   namespace {
     template <typename Word>
     void test_case_010(ToddCoxeter<Word>& tc, FroidurePin<Transf<>>& S) {
@@ -879,7 +754,7 @@ namespace libsemigroups {
                           "left congruence on transformation semigroup",
                           "[todd-coxeter][quick]") {
     auto rg = ReportGuard(false);
-    auto S  = to_froidure_pin(
+    auto S  = make<FroidurePin>(
         {Transf<>({1, 3, 4, 2, 3}), Transf<>({3, 2, 1, 3, 3})});
 
     REQUIRE(S.size() == 88);
@@ -887,7 +762,7 @@ namespace libsemigroups {
 
     SECTION("construction from presentation") {
       ToddCoxeter tc(onesided,
-                     presentation::reverse(to_presentation<word_type>(S)));
+                     presentation::reverse(to<Presentation<word_type>>(S)));
       todd_coxeter::add_generating_pair(
           tc,
           reverse(froidure_pin::factorisation(S, Transf<>({3, 4, 4, 4, 4}))),
@@ -895,7 +770,7 @@ namespace libsemigroups {
       test_case_010(tc, S);
     }
     SECTION("construction from Cayley graph") {
-      auto tc = to_todd_coxeter(onesided, S, S.left_cayley_graph());
+      auto tc = to<ToddCoxeter<word_type>>(onesided, S, S.left_cayley_graph());
       todd_coxeter::add_generating_pair(
           tc,
           reverse(froidure_pin::factorisation(S, Transf<>({3, 4, 4, 4, 4}))),
@@ -904,7 +779,7 @@ namespace libsemigroups {
     }
     SECTION("default construction + move from Cayley graph") {
       ToddCoxeter<word_type> tc;
-      tc = to_todd_coxeter(onesided, S, S.left_cayley_graph());
+      tc = to<ToddCoxeter<word_type>>(onesided, S, S.left_cayley_graph());
       todd_coxeter::add_generating_pair(
           tc,
           reverse(froidure_pin::factorisation(S, Transf<>({3, 4, 4, 4, 4}))),
@@ -914,7 +789,7 @@ namespace libsemigroups {
     SECTION("default construction + move from presentation") {
       ToddCoxeter<word_type> tc;
       tc = ToddCoxeter(onesided,
-                       presentation::reverse(to_presentation<word_type>(S)));
+                       presentation::reverse(to<Presentation<word_type>>(S)));
       todd_coxeter::add_generating_pair(
           tc,
           reverse(froidure_pin::factorisation(S, Transf<>({3, 4, 4, 4, 4}))),
@@ -928,14 +803,14 @@ namespace libsemigroups {
                           "onesided cong. trans. semigroup",
                           "[todd-coxeter][quick]") {
     auto rg = ReportGuard(false);
-    auto S  = to_froidure_pin(
+    auto S  = make<FroidurePin>(
         {Transf<>({1, 3, 4, 2, 3}), Transf<>({3, 2, 1, 3, 3})});
 
     REQUIRE(S.size() == 88);
     REQUIRE(S.number_of_rules() == 18);
 
-    auto tc = to_todd_coxeter(onesided, S, S.right_cayley_graph());
-    // ToddCoxeter tc(onesided, to_presentation<word_type>(S));
+    auto tc = to<ToddCoxeter<word_type>>(onesided, S, S.right_cayley_graph());
+    // ToddCoxeter tc(onesided, to<Presentation<word_type>>(S));
 
     todd_coxeter::add_generating_pair(
         tc,
@@ -1002,7 +877,8 @@ namespace libsemigroups {
     REQUIRE(S.size() == 88);
     REQUIRE(S.number_of_rules() == 18);
 
-    ToddCoxeter tc = to_todd_coxeter(twosided, S, S.right_cayley_graph());
+    ToddCoxeter tc
+        = to<ToddCoxeter<word_type>>(twosided, S, S.right_cayley_graph());
 
     word_type w1
         = froidure_pin::factorisation(S, S.position(Transf<>({3, 4, 4, 4, 4})));
@@ -1286,7 +1162,7 @@ namespace libsemigroups {
 
     REQUIRE(tc.number_of_classes() == 34);
 
-    auto S = to_froidure_pin(tc);
+    auto S = to<FroidurePin>(tc);
     REQUIRE(S.size() == 34);
     using detail::TCE;
 
@@ -1431,7 +1307,7 @@ namespace libsemigroups {
       REQUIRE(tc.number_of_classes() == 5);
       REQUIRE(word_of(tc, 0) == 0_w);
       // This next one should throw
-      REQUIRE_THROWS_AS(to_froidure_pin(tc), LibsemigroupsException);
+      REQUIRE_THROWS_AS(to<FroidurePin>(tc), LibsemigroupsException);
     }
     {
       ToddCoxeter tc(twosided, p);
@@ -1531,43 +1407,6 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
-                          "031",
-                          "KnuthBendix.finished()",
-                          "[todd-coxeter][quick]") {
-    auto rg = ReportGuard(false);
-
-    Presentation<std::string> p;
-    p.alphabet("abB");
-    presentation::add_rule_no_checks(p, "bb", "B");
-    presentation::add_rule_no_checks(p, "BaB", "aba");
-    presentation::add_rule_no_checks(p, "a", "b");
-    presentation::add_rule_no_checks(p, "b", "B");
-
-    REQUIRE(!p.contains_empty_word());
-
-    KnuthBendix kb(twosided, p);
-
-    REQUIRE(kb.confluent());
-    kb.run();
-    REQUIRE(kb.confluent());
-    REQUIRE(kb.number_of_active_rules() == 3);
-    REQUIRE(kb.number_of_classes() == 1);
-    // REQUIRE(kb.is_obviously_finite());
-    REQUIRE(kb.finished());
-
-    for (auto knd : {twosided, onesided}) {
-      auto tc = to_todd_coxeter(knd, kb);
-      todd_coxeter::add_generating_pair(tc, {1}, {2});
-      REQUIRE(tc.number_of_classes() == 1);
-      if (tc.kind() == twosided) {
-        REQUIRE(to_froidure_pin(tc).size() == 1);
-      } else {
-        REQUIRE_THROWS_AS(to_froidure_pin(tc), LibsemigroupsException);
-      }
-    }
-  }
-
-  LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                           "032",
                           "from WordGraph",
                           "[todd-coxeter][quick]") {
@@ -1610,10 +1449,10 @@ namespace libsemigroups {
     auto rg      = ReportGuard(false);
     using Transf = LeastTransf<5>;
     FroidurePin<Transf> S
-        = to_froidure_pin({Transf({1, 3, 4, 2, 3}), Transf({3, 2, 1, 3, 3})});
+        = make<FroidurePin>({Transf({1, 3, 4, 2, 3}), Transf({3, 2, 1, 3, 3})});
     REQUIRE(S.size() == 88);
     REQUIRE(S.number_of_rules() == 18);
-    auto tc = to_todd_coxeter(
+    auto tc = to<ToddCoxeter<word_type>>(
         twosided, S, S.right_cayley_graph());  // use Cayley graph
     todd_coxeter::add_generating_pair(tc, {0}, {1, 1});
 
@@ -2469,8 +2308,8 @@ namespace libsemigroups {
     REQUIRE(words::human_readable_letter<>(0) == 'a');
     REQUIRE(words::human_readable_index('a') == 0);
     REQUIRE(reduce(tc, "aaaaaaaaaaaaaaaaaaa") == "a");
-    auto S = to_froidure_pin(tc);
-    REQUIRE(to_knuth_bendix(twosided, S).confluent());
+    auto S = to<FroidurePin>(tc);
+    REQUIRE(to<KnuthBendix<word_type>>(twosided, S).confluent());
   }
 
   // Second of BHN's series of increasingly complicated presentations
@@ -2524,7 +2363,7 @@ namespace libsemigroups {
     using Transf = LeastTransf<5>;
 
     FroidurePin<Transf> S
-        = to_froidure_pin({Transf({1, 3, 4, 2, 3}), Transf({3, 2, 1, 3, 3})});
+        = make<FroidurePin>({Transf({1, 3, 4, 2, 3}), Transf({3, 2, 1, 3, 3})});
     REQUIRE(S.size() == 88);
     REQUIRE(S.number_of_rules() == 18);
 
@@ -2533,7 +2372,7 @@ namespace libsemigroups {
     word_type w3 = froidure_pin::factorisation(S, Transf({1, 3, 1, 3, 3}));
     word_type w4 = froidure_pin::factorisation(S, Transf({4, 2, 4, 4, 2}));
 
-    auto p = to_presentation<word_type>(S);
+    auto p = to<Presentation<word_type>>(S);
     {
       ToddCoxeter tc1(twosided, p);
       todd_coxeter::add_generating_pair(tc1, w1, w2);
@@ -2546,7 +2385,7 @@ namespace libsemigroups {
       section_Cr_style(tc1);
 
       REQUIRE(tc1.number_of_classes() == 21);
-      REQUIRE(tc1.number_of_classes() == to_froidure_pin(tc1).size());
+      REQUIRE(tc1.number_of_classes() == to<FroidurePin>(tc1).size());
       REQUIRE(contains(tc1, w3, w4));
       REQUIRE(reduce(tc1, w3) == reduce(tc1, w4));
     }
@@ -2562,7 +2401,7 @@ namespace libsemigroups {
       section_Cr_style(tc2);
 
       REQUIRE(tc2.number_of_classes() == 21);
-      REQUIRE(tc2.number_of_classes() == to_froidure_pin(tc2).size());
+      REQUIRE(tc2.number_of_classes() == to<FroidurePin>(tc2).size());
       REQUIRE(contains(tc2, w3, w4));
       REQUIRE(reduce(tc2, w3) == reduce(tc2, w4));
     }
@@ -3255,7 +3094,7 @@ namespace libsemigroups {
                                          "aaaaaa",
                                          "aaaaab",
                                          "aaaaaaa"}));
-    REQUIRE(to_froidure_pin(tc).number_of_rules() == 6);
+    REQUIRE(to<FroidurePin>(tc).number_of_rules() == 6);
 
     using namespace std::string_literals;
     REQUIRE(reduce(tc, "aaaaaaab") == "aab");
@@ -4198,7 +4037,7 @@ namespace libsemigroups {
       REQUIRE(p.rules == std::vector<word_type>());
       ToddCoxeter tc(twosided, p);
       REQUIRE(tc.number_of_classes() == num[n] + 1);
-      auto  fp = to_froidure_pin(tc);
+      auto  fp = to<FroidurePin>(tc);
       Gabow scc(fp.right_cayley_graph());
       REQUIRE(scc.number_of_components() == num[n]);
       REQUIRE(fp.number_of_idempotents() == std::pow(2, n) - 1);
@@ -4206,7 +4045,7 @@ namespace libsemigroups {
         continue;
       presentation::sort_each_rule(p);
       presentation::sort_rules(p);
-      auto q = to_presentation<std::string>(p);
+      auto q = to<Presentation<std::string>>(p);
       presentation::change_alphabet(q, "abc");
       REQUIRE(q.rules == std::vector<std::string>());
       // REQUIRE((normal_forms(tc) | to_vector())
@@ -4238,7 +4077,7 @@ namespace libsemigroups {
       // REQUIRE(p.rules == std::vector<word_type>());
       ToddCoxeter tc(twosided, p);
       REQUIRE(tc.number_of_classes() == num[n] + 1);
-      auto  fp = to_froidure_pin(tc);
+      auto  fp = to<FroidurePin>(tc);
       Gabow scc(fp.right_cayley_graph());
       REQUIRE(scc.number_of_components() == num[n]);
       REQUIRE(fp.number_of_idempotents() == std::pow(2, n) - 1);
@@ -4345,7 +4184,7 @@ namespace libsemigroups {
     //      "bacdb",
     //      "bcadc",
     //      "bacbdc"};
-    //  auto q       = to_presentation<std::string>(p);
+    //  auto q       = to<Presentation<std::string>>(p);
     //  auto convert = [&](auto const& w) {
     //    return to_string(q, reduce(tc, to_word(q, w)));
     //  };
@@ -4617,20 +4456,7 @@ namespace libsemigroups {
       }
     }
 
-    // KnuthBendix kb(twosided, p);
-    // p = to_presentation<word_type>(to_presentation(kb));
-    // p.contains_empty_word(true);
-
-    // REQUIRE(presentation::length(p) == 475);
-
     ToddCoxeter tc(twosided, p);
-    // while (!tc.finished()) {
-    //   tc.run_for(std::chrono::seconds(2));
-    //   tc.perform_lookahead(false);
-    // }
-    // REQUIRE(p.rules == std::vector<word_type>());
-    // p = to_presentation<word_type>(to_presentation(kb));
-    // REQUIRE(p.rules == std::vector<word_type>());
     REQUIRE(tc.number_of_classes() == 3'945);
   }
 
@@ -4802,7 +4628,7 @@ namespace libsemigroups {
     S.add_generator(PPerm({2, 3, 4}, {1, 4, 3}, 5));
 
     REQUIRE(S.size() == 11);
-    auto p = to_presentation<std::string>(S);
+    auto p = to<Presentation<std::string>>(S);
     REQUIRE(p.alphabet() == "abcd");
     presentation::change_alphabet(p, "xyXY");
     REQUIRE(p.alphabet() == "xyXY");
@@ -4997,9 +4823,9 @@ namespace libsemigroups {
     ToddCoxeter tc(twosided, p);
     REQUIRE(tc.number_of_classes() == 46'656);
 
-    auto S = to_froidure_pin(tc);
+    auto S = to<FroidurePin>(tc);
     REQUIRE((froidure_pin::rules(S) | rx::count()) == 17'785);
-    auto kb = to_knuth_bendix(twosided, S);
+    auto kb = to<KnuthBendix<word_type>>(twosided, S);
     auto q  = kb.presentation();
   }
 

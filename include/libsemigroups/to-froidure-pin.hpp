@@ -20,194 +20,286 @@
 #define LIBSEMIGROUPS_TO_FROIDURE_PIN_HPP_
 
 #include <cstddef>      // for size_t
+#include <memory>       // for unique_ptr
 #include <type_traits>  // for enable_if_t, is_base_of
 
-#include "debug.hpp"       // for LIBSEMIGROUPS_ASSERT
-#include "exception.hpp"   // for LIBSEMIGROUPS_EXCEPTION
-#include "word-graph.hpp"  // for WordGraph
+#include "cong-class.hpp"          // for Congruence
+#include "froidure-pin.hpp"        // for FroidurePin
+#include "kambites-class.hpp"      // for Kambites
+#include "knuth-bendix-class.hpp"  // for KnuthBendix
+#include "todd-coxeter-class.hpp"  // for ToddCoxeter
 
 #include "detail/kbe.hpp"  // for KBE
 #include "detail/ke.hpp"   // for KE
-#include "detail/rewriters.hpp"
 #include "detail/tce.hpp"  // for TCE
 
 namespace libsemigroups {
-#ifndef LIBSEMIGROUPS_PARSED_BY_DOXYGEN
-  class FroidurePinBase;  // forward decl
 
-  template <typename Word>
-  class Congruence;
-#endif
-
-  namespace detail {
-
-    class ToddCoxeterImpl;
-
-    template <typename Rewriter, typename ReductionOrder>
-    class KnuthBendixImpl;
-
-    template <typename Thing>
-    struct to_froidure_pin_helper;
-
-    template <typename Word>
-    struct to_froidure_pin_helper<Kambites<Word>> {
-      using type = FroidurePin<detail::KE<Word>>;
-    };
-  }  // namespace detail
-
-  template <typename Thing>
-  using froidure_pin_t = typename detail::to_froidure_pin_helper<Thing>::type;
-
-  //! Make a FroidurePin object from a WordGraph.
+  //! \defgroup to_group The \`to\` function
   //!
-  //! If \f$m\f$ is the number of nodes in a WordGraph, \f$0 \leq a,  b< m\f$,
-  //! and \f$n\f$ is an edge label, then we define \f$f: \{a, \ldots, b - 1\}
-  //! \to \{0, \ldots, n - 1\}\f$ so that \f$(x)f\f$ equals the target of the
-  //! edge starting at node \f$x\f$ with label \f$n\f$. In this way, every edge
-  //! label in a WordGraph corresponds to a transformation of the nodes of the
-  //! digraph. If \f$\{a, \ldots, b - 1\}f \subseteq \{a, \ldots, b - 1\}\f$,
-  //! then \f$f\f$ is a transformation in the sense of Transf. Assuming that for
-  //! every edge label of the WordGraph the corresponding \f$f\f$ satisfies
+  //! This page contains links to the documentation of the overloads of the
+  //! function template `to` for converting from one type of object in
+  //! `libsemigroups` to another type. These mostly only apply to the types
+  //! implementing the main algorithms in the `libsemigroups`.
+  //!
+  //! For example, to convert a \ref_todd_coxeter object to a \ref FroidurePin
+  //! object, you can simply do `to<FroidurePin>(tc)`.
+  //!
+  //! A summary of the overloads available in `libsemigroups` of
+  //! `to<ToType>(FromType)` are given below, where the rows correspond to
+  //! `ToType` and the columns to `FromType`:
+  //!
+  //! \image html to-table.jpg width=60%
+  //!
+  //! A tick indicates that this conversion is implemented, and a cross
+  //! that it is not yet implemented.
+  //!
+  //! See the following for more details:
+  //! * \ref to_cong_group
+  //! * \ref to_froidure_pin_group
+  //! * \ref to_inverse_presentation_group
+  //! * \ref to_knuth_bendix_group
+  //! * \ref to_presentation_group
+  //! * \ref to_todd_coxeter_group
+
+  //! \defgroup to_froidure_pin_group to<FroidurePin>
+  //! \ingroup froidure_pin_group
+  //!
+  //! \brief Convert to a FroidurePin instance.
+  //!
+  //! This page contains documentation related to converting a `libsemigroups`
+  //! object into a \ref FroidurePin instance.
+  //!
+  //! \sa \ref to_group for an overview of possible conversions between
+  //! `libsemigroups` types.
+
+  ////////////////////////////////////////////////////////////////////////
+  // Congruence
+  ////////////////////////////////////////////////////////////////////////
+
+  //! \ingroup to_froidure_pin_group
+  //! \brief Convert a Congruence object to a FroidurePin object.
+  //!
+  //! Defined in \c to-froidure-pin.hpp
+  //!
+  //! Despite the hideous signature, this function should be invoked as follows:
+  //!
+  //! \code
+  //! to<FroidurePin>(cong);
+  //! \endcode
+  //!
+  //! where \p cong is a Congruence object. The returned FroidurePin object is
+  //! isomorphic to the quotient of the underlying semigroup or monoid of \p
+  //! cong by the congruence represented by \p cong.
+  //!
+  //! \tparam Thing used for SFINAE should be FroidurePin
+  //! \tparam Word the type of the words in relations in \p cong.
+  //! \param cong the Congruence instance to convert.
+  //!
+  //! \returns A FroidurePin instance.
+  //!
+  //! \throws LibsemigroupsException if `cong.kind()` is not \ref
+  //! congruence_kind.twosided.
+  template <template <typename...> typename Thing, typename Word>
+  auto to(Congruence<Word>& cong)
+      -> std::enable_if_t<std::is_same_v<Thing<int>, FroidurePin<int>>,
+                          std::unique_ptr<FroidurePinBase>>;
+
+  ////////////////////////////////////////////////////////////////////////
+  // Kambites
+  ////////////////////////////////////////////////////////////////////////
+
+  //! \ingroup to_froidure_pin_group
+  //! \brief Convert a Kambites object to a FroidurePin object.
+  //!
+  //! Defined in \c to-froidure-pin.hpp
+  //!
+  //! Despite the hideous signature, this function should be invoked as follows:
+  //!
+  //! \code
+  //! to<FroidurePin>(k);
+  //! \endcode
+  //!
+  //! where \p k is a Kambites instance. The returned FroidurePin object is
+  //! isomorphic to the quotient semigroup or monoid represented by \p k.
+  //!
+  //! \tparam Thing used for SFINAE should be FroidurePin
+  //! \tparam Word the type of the words in relations in \p k.
+  //!
+  //! \param k the Kambites instance to convert.
+  //!
+  //! \returns A FroidurePin instance.
+  //!
+  //! \throws LibsemigroupsException if the Kambites::small_overlap_class is not
+  //! at least \f$4\f$.
+  //!
+  //! \warning The returned FroidurePin instance is always infinite, and so any
+  //! calls to any member functions that that trigger a full enumeration will
+  //! never terminate (or they will when your computer kills the process because
+  //! it has run out of memory).
+  template <template <typename...> typename Thing, typename Word>
+  auto to(Kambites<Word>& k) -> std::enable_if_t<
+      std::is_same_v<Thing<detail::KE<Word>>, FroidurePin<detail::KE<Word>>>,
+      FroidurePin<detail::KE<Word>>>;
+
+  ////////////////////////////////////////////////////////////////////////
+  // KnuthBendix
+  ////////////////////////////////////////////////////////////////////////
+
+  //! \ingroup to_froidure_pin_group
+  //!
+  //! \brief Convert a \ref_knuth_bendix object to a FroidurePin object.
+  //!
+  //! Defined in \c to-froidure-pin.hpp
+  //!
+  //! Despite the hideous signature, this function should be invoked as follows:
+  //!
+  //! \code
+  //! to<FroidurePin>(kb);
+  //! \endcode
+  //!
+  //! where \p kb is a \ref_knuth_bendix instance. The returned FroidurePin
+  //! object is isomorphic to the quotient semigroup or monoid represented by \p
+  //! kb.
+  //!
+  //! \tparam Thing used for SFINAE should be FroidurePin.
+  //! \tparam Rewriter the second template parameter for \ref_knuth_bendix.
+  //! \tparam ReductionOrder the third template parameter for \ref_knuth_bendix.
+  //!
+  //! \param kb the \ref_knuth_bendix instance to convert.
+  //!
+  //! \returns A FroidurePin instance.
+  //!
+  //! \throws LibsemigroupsException if `kb.kind()` is not \ref
+  //! congruence_kind.twosided.
+  template <template <typename...> typename Thing,
+            typename Rewriter,
+            typename ReductionOrder>
+  auto to(detail::KnuthBendixImpl<Rewriter, ReductionOrder>& kb)
+      -> std::enable_if_t<
+          std::is_same_v<Thing<int>, FroidurePin<int>>,
+          FroidurePin<
+              detail::KBE<detail::KnuthBendixImpl<Rewriter, ReductionOrder>>>>;
+
+  ////////////////////////////////////////////////////////////////////////
+  // ToddCoxeter
+  ////////////////////////////////////////////////////////////////////////
+
+  //! \ingroup to_froidure_pin_group
+  //! \brief Convert a \ref_todd_coxeter object to a FroidurePin object.
+  //!
+  //! Defined in \c to-froidure-pin.hpp
+  //!
+  //! Despite the hideous signature, this function should be invoked as follows:
+  //!
+  //! \code
+  //! to<FroidurePin>(kb);
+  //! \endcode
+  //!
+  //! where \p kb is a \ref_todd_coxeter instance. The returned FroidurePin
+  //! object is isomorphic to the quotient semigroup or monoid represented by \p
+  //! kb.
+  //!
+  //! \tparam Thing used for SFINAE should be FroidurePin.
+  //!
+  //! \param tc the \ref_todd_coxeter instance to convert.
+  //!
+  //! \returns A FroidurePin instance.
+  //!
+  //! \throws LibsemigroupsException if `kb.kind()` is not \ref
+  //! congruence_kind.twosided.
+  //!
+  //! \warning The returned FroidurePin instance is always infinite, and so any
+  //! calls to any member functions that that trigger a full enumeration will
+  //! never terminate (or they will when your computer kills the process because
+  //! it has run out of memory).
+  template <template <typename...> typename Thing>
+  auto to(detail::ToddCoxeterImpl& tc) -> std::enable_if_t<
+      std::is_same_v<Thing<detail::TCE>, FroidurePin<detail::TCE>>,
+      FroidurePin<detail::TCE>>;
+
+  ////////////////////////////////////////////////////////////////////////
+  // WordGraph
+  ////////////////////////////////////////////////////////////////////////
+
+  //! \ingroup to_froidure_pin_group
+  //! \anchor to_froidure_pin
+  //! \brief Convert a WordGraph object to a FroidurePin object.
+  //!
+  //! Defined in \c to-froidure-pin.hpp
+  //!
+  //! This function converts a WordGraph object to a FroidurePin object.
+  //! Unlike the other functions on this page, this function should be invoked
+  //! as follows (for example):
+  //!
+  //! \code
+  //! to<FroidurePin<Transf<>>(wg, 0, 10);
+  //! \endcode
+  //!
+  //! In other words, the type of the elements of the FroidurePin object should
+  //! be explicitly specified. This type must implement `operator[]` and each
+  //! label `n` in the WordGraph will correspond to a generator `f` in the
+  //! output FroidurePin such that `f[s] = t` whenever there is an edge from `s`
+  //! to `t` in \p wg labelled `n`.
+  //!
+  //! More precisely, if \f$a\f$ and \f$b\f$ are the parameters \p first and \p
+  //! last, respectively, \f$m\f$ is the number of nodes in the WordGraph \p wg,
+  //! \f$0 \leq a,  b< m\f$, and \f$n\f$ is an edge label, then we define
+  //! \f$f: \{a, \ldots, b - 1\} \to \{0, \ldots, m - 1\}\f$ so that \f$(x)f\f$
+  //! equals the target of the edge starting at node \f$x\f$ with label \f$n\f$.
+  //! In this way, every edge label in a WordGraph corresponds to a
+  //! transformation of the nodes of the digraph. If
+  //! \f$\{a, \ldots, b - 1\}f \subseteq \{a, \ldots, b - 1\}\f$, then \f$f\f$
+  //! is a transformation in the sense of Transf. Assuming that for every edge
+  //! label of the WordGraph the corresponding \f$f\f$ satisfies
   //! \f$\{a, \ldots, b - 1\}f \subseteq \{a, \ldots, b - 1\}\f$, then this
-  //! function returns the FroidurePin object corresponding to the semigroup
-  //! generated by the set of all such transformations.
+  //! function returns the FroidurePin object corresponding to the semigroup or
+  //! monoid generated by the set of all such transformations.
   //!
-  //! \tparam S the type of the FroidurePin object being constructed (must
-  //! be derived from FroidurePinBase).
-  //! \tparam T the type of the nodes of the digraph.
+  //! \tparam Result the return type of the function.
+  //! \tparam Node the type of the nodes of the word graph \p wg.
   //!
   //! \param wg the WordGraph being used to construct the FroidurePin
   //! object.
-  //! \param first the value of \f$a\f$ in the preceding discussion
-  //! \param last the value of \f$b\f$ in the preceding discussion
+  //! \param first the value of \f$a\f$ in the preceding discussion.
+  //! \param last the value of \f$b\f$ in the preceding discussion.
   //!
-  //! \returns The constructed FroidurePin object, a value of type \p S.
+  //! \returns The constructed FroidurePin object, a value of type \p Result.
   //!
-  //! \throws LibsemigroupsException if \ref validate(Transf<N, Scalar>
-  //! const&) throws for any of the constructed transformations. This can
-  //! happen if, for example, the WordGraph is not complete (i.e. there
-  //! exists an edge label and node for which there is no edge with the
-  //! given label and given source) or if there is an edge label such that
-  //! \f$\{a, \ldots, b - 1\}f
-  //! \not\subseteq \{a, \ldots, b - 1\}\f$ for the corresponding \f$f\f$.
-  template <typename Element, typename Node>
-  FroidurePin<Element> to_froidure_pin(WordGraph<Node> const& wg,
-                                       size_t                 first,
-                                       size_t                 last) {
-    using node_type = typename WordGraph<Node>::node_type;
-
-    if (first > last) {
-      LIBSEMIGROUPS_EXCEPTION("the 2nd argument (first node) must be at most "
-                              "the 3rd argument (last node), found {} > {}",
-                              first,
-                              last);
-    } else if (first > wg.number_of_nodes()) {
-      LIBSEMIGROUPS_EXCEPTION(
-          "the 2nd argument (first node) must be at most the out-degree of the "
-          "1st argument (WordGraph), found {} > {}",
-          first,
-          wg.out_degree());
-    } else if (last > wg.number_of_nodes()) {
-      LIBSEMIGROUPS_EXCEPTION(
-          "the 3rd argument (last node) must be at most the out-degree of the "
-          "1st argument (WordGraph), found {} > {}",
-          last,
-          wg.out_degree());
-    }
-
-    LIBSEMIGROUPS_ASSERT(wg.out_degree() > 0);
-    FroidurePin<Element> result;
-    Element              x(last - first);
-    // Each label corresponds to a generator of S
-    for (node_type lbl = 0; lbl < wg.out_degree(); ++lbl) {
-      for (size_t n = first; n < last; ++n) {
-        x[n - first] = wg.target(n, lbl) - first;
-      }
-      // The next loop is required because if element_type is a fixed degree
-      // type, such as Transf<5> for example, but first = last = 0, then the
-      // degree of x is still 5 not last - first = 0.
-      for (size_t n = last - first; n < x.degree(); ++n) {
-        x[n] = n;
-      }
-
-      validate(x);
-      result.add_generator(x);
-    }
-    return result;
-  }
-
-  //! Make a FroidurePin object from a WordGraph.
+  //! \throws LibsemigroupsException if \p first > \p last.
   //!
-  //! Calls `to_froidure_pin(wg, 0, wg.number_of_nodes())`; see above.
-  template <typename Element, typename Node>
-  FroidurePin<Element> to_froidure_pin(WordGraph<Node> const& wg) {
-    return to_froidure_pin<Element>(wg, 0, wg.number_of_nodes());
+  //! \throws LibsemigroupsException if \p first or \p last exceeds \ref
+  //! WordGraph::number_of_nodes.
+  //!
+  //! \throws LibsemigroupsException if
+  //! \ref validate(Transf<N, Scalar> const&) throws for any of the
+  //! constructed generators. This can happen if, for example, the WordGraph is
+  //! not complete (i.e. there exists an edge label and node for which there is
+  //! no edge with the given label and given source) or if there is an edge
+  //! label such that
+  //! \f$\{a, \ldots, b - 1\}f \not\subseteq \{a, \ldots, b - 1\}\f$ for the
+  //! corresponding \f$f\f$.
+  template <typename Result, typename Node>
+  auto to(WordGraph<Node> const& wg, size_t first, size_t last)
+      -> std::enable_if_t<
+          std::is_same_v<FroidurePin<typename Result::element_type>, Result>,
+          Result>;
+
+  //! \ingroup to_froidure_pin_group
+  //! \brief Convert a WordGraph object to a FroidurePin object.
+  //!
+  //! Defined in \c to-froidure-pin.hpp
+  //!
+  //! Calls `to<FroidurePin>(wg, 0, wg.number_of_nodes())`.
+  //!
+  //! See \ref to_froidure_pin.
+  template <typename Result, typename Node>
+  auto to(WordGraph<Node> const& wg) -> std::enable_if_t<
+      std::is_same_v<FroidurePin<typename Result::element_type>, Result>,
+      Result> {
+    return to<Result>(wg, 0, wg.number_of_nodes());
   }
-
-  FroidurePin<detail::TCE> to_froidure_pin(detail::ToddCoxeterImpl& tc);
-
-  template <typename Rewriter, typename ReductionOrder>
-  FroidurePin<detail::KBE<detail::KnuthBendixImpl<Rewriter, ReductionOrder>>>
-  to_froidure_pin(detail::KnuthBendixImpl<Rewriter, ReductionOrder>& kb) {
-    using KBE = detail::KBE<detail::KnuthBendixImpl<Rewriter, ReductionOrder>>;
-    size_t const n = kb.internal_presentation().alphabet().size();
-
-    if (n == 0) {
-      LIBSEMIGROUPS_EXCEPTION("TODO(0)");
-    } else if (kb.kind() != congruence_kind::twosided) {
-      LIBSEMIGROUPS_EXCEPTION(
-          "the argument must be a 2-sided congruence, found a {} congruence",
-          kb.kind());
-    }
-    kb.run();
-
-    FroidurePin<KBE> result(kb);
-    for (size_t i = 0; i < n; ++i) {
-      result.add_generator(KBE(kb, i));
-    }
-    if (kb.internal_presentation().contains_empty_word()) {
-      result.add_generator(KBE(kb, ""));
-    }
-    return result;
-  }
-
-  // TODO(0) convert other to_froidure_pin's to return unique_ptr
-  template <typename Word>
-  std::unique_ptr<FroidurePinBase> to_froidure_pin(Kambites<Word>& k) {
-    if (k.small_overlap_class() < 4) {
-      LIBSEMIGROUPS_EXCEPTION(
-          "the small overlap class of the argument must be >= 4, found {}",
-          k.small_overlap_class());
-    }
-
-    // TODO(0) deduction guide
-    FroidurePin<detail::KE<Word>> result(k);
-
-    size_t const n = k.presentation().alphabet().size();
-    for (size_t i = 0; i < n; ++i) {
-      result.add_generator(detail::KE<Word>(k, i));
-    }
-    return std::make_unique<decltype(result)>(std::move(result));
-  }
-
-  template <typename Word>
-  std::unique_ptr<FroidurePinBase> to_froidure_pin(Congruence<Word>& cong) {
-    cong.run();
-    if (cong.template has<Kambites<Word>>()) {
-      // TODO(2) there an issue here that if the Kambites clause isn't first,
-      // then we incorrectly start running the other algos here, which run
-      // forever. Probably something goes wrong that the other runners don't
-      // get deleted if Kambites wins, since it's run first.
-      return to_froidure_pin(*cong.template get<Kambites<Word>>());
-    } else if (cong.template has<ToddCoxeter<Word>>()) {
-      auto fp = to_froidure_pin(*cong.template get<ToddCoxeter<Word>>());
-      return std::make_unique<decltype(fp)>(std::move(fp));
-    } else if (cong.template has<KnuthBendix<Word>>()) {
-      auto fp = to_froidure_pin(*cong.template get<KnuthBendix<Word>>());
-      return std::make_unique<decltype(fp)>(std::move(fp));
-    }
-    LIBSEMIGROUPS_EXCEPTION("TODO");
-  }
-
 }  // namespace libsemigroups
+
+#include "to-froidure-pin.tpp"
 #endif  // LIBSEMIGROUPS_TO_FROIDURE_PIN_HPP_

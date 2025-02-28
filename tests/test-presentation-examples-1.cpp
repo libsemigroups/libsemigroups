@@ -37,7 +37,7 @@
 #include "libsemigroups/presentation-examples.hpp"  // for author, symmetric_group
 #include "libsemigroups/presentation.hpp"     // for Presentation, operator==
 #include "libsemigroups/ranges.hpp"           // for operator|, chain
-#include "libsemigroups/to-froidure-pin.hpp"  // for to_froidure_pin
+#include "libsemigroups/to-froidure-pin.hpp"  // for to<FroidurePin>
 #include "libsemigroups/todd-coxeter.hpp"     // for ToddCoxeter
 #include "libsemigroups/types.hpp"            // for congruence_kind, word_type
 #include "libsemigroups/word-range.hpp"       // for operator""_w
@@ -52,7 +52,7 @@ namespace libsemigroups {
 
   using namespace presentation::examples;
 
-  LIBSEMIGROUPS_TEST_CASE("pres-examples",
+  LIBSEMIGROUPS_TEST_CASE("Example",
                           "000",
                           "test semigroup/monoid status",
                           "[pres-examples][quick]") {
@@ -113,7 +113,7 @@ namespace libsemigroups {
     REQUIRE(zero_rook_monoid_Gay18(5).contains_empty_word());
   }
 
-  LIBSEMIGROUPS_TEST_CASE("pres-examples",
+  LIBSEMIGROUPS_TEST_CASE("Example",
                           "001",
                           "full_transformation_monoid degree except",
                           "[pres-examples][quick]") {
@@ -132,7 +132,7 @@ namespace libsemigroups {
                       LibsemigroupsException);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("pres-examples",
+  LIBSEMIGROUPS_TEST_CASE("Example",
                           "002",
                           "partial_transformation_monoid degree except",
                           "[pres-examples][quick]") {
@@ -143,7 +143,7 @@ namespace libsemigroups {
                       LibsemigroupsException);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("pres-examples",
+  LIBSEMIGROUPS_TEST_CASE("Example",
                           "003",
                           "symmetric_group degree except",
                           "[pres-examples][quick]") {
@@ -154,7 +154,7 @@ namespace libsemigroups {
     REQUIRE_THROWS_AS(symmetric_group_Moo97_b(1), LibsemigroupsException);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("pres-examples",
+  LIBSEMIGROUPS_TEST_CASE("Example",
                           "004",
                           "dual_symmetric_inverse_monoid degree except",
                           "[pres-examples][quick]") {
@@ -162,7 +162,7 @@ namespace libsemigroups {
     REQUIRE_THROWS_AS(dual_symmetric_inverse_monoid(2), LibsemigroupsException);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("pres-examples",
+  LIBSEMIGROUPS_TEST_CASE("Example",
                           "005",
                           "uniform_block_bijection_monoid degree except",
                           "[pres-examples][quick]") {
@@ -171,7 +171,7 @@ namespace libsemigroups {
                       LibsemigroupsException);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("pres-examples",
+  LIBSEMIGROUPS_TEST_CASE("Example",
                           "006",
                           "partition_monoid degree except",
                           "[pres-examples][quick]") {
@@ -180,7 +180,7 @@ namespace libsemigroups {
     REQUIRE_THROWS_AS(partition_monoid_HR05(0), LibsemigroupsException);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("pres-examples",
+  LIBSEMIGROUPS_TEST_CASE("Example",
                           "007",
                           "alternating_group degree except",
                           "[pres-examples][quick]") {
@@ -188,7 +188,7 @@ namespace libsemigroups {
     REQUIRE_THROWS_AS(alternating_group(3), LibsemigroupsException);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("pres-examples",
+  LIBSEMIGROUPS_TEST_CASE("Example",
                           "008",
                           "chinese_monoid degree except",
                           "[pres-examples][quick]") {
@@ -197,7 +197,7 @@ namespace libsemigroups {
     REQUIRE_THROWS_AS(chinese_monoid(0), LibsemigroupsException);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("pres-examples",
+  LIBSEMIGROUPS_TEST_CASE("Example",
                           "009",
                           "monogenic_semigroup degree except",
                           "[pres-examples][quick]") {
@@ -206,7 +206,7 @@ namespace libsemigroups {
     REQUIRE_THROWS_AS(monogenic_semigroup(5, 0), LibsemigroupsException);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("pres-examples",
+  LIBSEMIGROUPS_TEST_CASE("Example",
                           "010",
                           "rectangular_band degree except",
                           "[pres-examples][quick]") {
@@ -217,7 +217,7 @@ namespace libsemigroups {
     REQUIRE_THROWS_AS(rectangular_band(0, 100), LibsemigroupsException);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("pres-examples",
+  LIBSEMIGROUPS_TEST_CASE("Example",
                           "011",
                           "stellar_monoid degree except",
                           "[pres-examples][quick]") {
@@ -226,7 +226,7 @@ namespace libsemigroups {
     REQUIRE_THROWS_AS(stellar_monoid(1), LibsemigroupsException);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("pres-examples",
+  LIBSEMIGROUPS_TEST_CASE("Example",
                           "012",
                           "plactic_monoid degree except",
                           "[pres-examples][quick]") {
@@ -236,7 +236,7 @@ namespace libsemigroups {
     REQUIRE_NOTHROW(plactic_monoid(2));
   }
 
-  LIBSEMIGROUPS_TEST_CASE("pres-examples",
+  LIBSEMIGROUPS_TEST_CASE("Example",
                           "013",
                           "stylic_monoid degree except",
                           "[pres-examples][quick]") {
@@ -245,7 +245,7 @@ namespace libsemigroups {
     REQUIRE_THROWS_AS(stylic_monoid(1), LibsemigroupsException);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("pres-examples",
+  LIBSEMIGROUPS_TEST_CASE("Example",
                           "014",
                           "temperley_lieb_monoid degree except",
                           "[pres-examples][quick]") {
@@ -255,7 +255,7 @@ namespace libsemigroups {
     REQUIRE_THROWS_AS(temperley_lieb_monoid(2), LibsemigroupsException);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("pres-examples",
+  LIBSEMIGROUPS_TEST_CASE("Example",
                           "015",
                           "singular_brauer_monoid degree except",
                           "[pres-examples][quick]") {
@@ -265,7 +265,7 @@ namespace libsemigroups {
     REQUIRE_THROWS_AS(singular_brauer_monoid(2), LibsemigroupsException);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("pres-examples",
+  LIBSEMIGROUPS_TEST_CASE("Example",
                           "016",
                           "orientation_preserving_monoid degree except",
                           "[pres-examples][quick]") {
@@ -276,7 +276,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE(
-      "pres-examples",
+      "Example",
       "017",
       "orientation_preserving_reversing_monoid degree except",
       "[pres-examples][quick]") {
@@ -289,7 +289,7 @@ namespace libsemigroups {
                       LibsemigroupsException);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("pres-examples",
+  LIBSEMIGROUPS_TEST_CASE("Example",
                           "018",
                           "order_preserving_monoid degree except",
                           "[pres-examples][quick]") {
@@ -299,7 +299,7 @@ namespace libsemigroups {
     REQUIRE_THROWS_AS(order_preserving_monoid(2), LibsemigroupsException);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("pres-examples",
+  LIBSEMIGROUPS_TEST_CASE("Example",
                           "019",
                           "cyclic_inverse_monoid degree except",
                           "[pres-examples][quick]") {
@@ -313,7 +313,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE(
-      "pres-examples",
+      "Example",
       "020",
       "order_preserving_cyclic_inverse_monoid degree except",
       "[pres-examples][quick]") {
@@ -326,7 +326,7 @@ namespace libsemigroups {
                       LibsemigroupsException);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("pres-examples",
+  LIBSEMIGROUPS_TEST_CASE("Example",
                           "021",
                           "partial_isometries_cycle_graph_monoid degree except",
                           "[pres-examples][quick]") {
@@ -339,7 +339,7 @@ namespace libsemigroups {
                       LibsemigroupsException);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("pres-examples",
+  LIBSEMIGROUPS_TEST_CASE("Example",
                           "022",
                           "order_preserving_monoid(5)",
                           "[pres-examples][quick]") {
@@ -352,7 +352,7 @@ namespace libsemigroups {
     REQUIRE(tc.number_of_classes() == 126);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("pres-examples",
+  LIBSEMIGROUPS_TEST_CASE("Example",
                           "023",
                           "order_preserving_monoid nr generators and relations",
                           "[pres-examples][quick]") {
@@ -367,7 +367,7 @@ namespace libsemigroups {
     }
   }
 
-  LIBSEMIGROUPS_TEST_CASE("pres-examples",
+  LIBSEMIGROUPS_TEST_CASE("Example",
                           "024",
                           "monogenic_semigroup(4, 9)",
                           "[pres-examples][quick]") {
@@ -378,7 +378,7 @@ namespace libsemigroups {
     REQUIRE(tc.number_of_classes() == 12);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("pres-examples",
+  LIBSEMIGROUPS_TEST_CASE("Example",
                           "025",
                           "dual_symmetric_inverse_monoid(5)",
                           "[pres-examples][quick][no-valgrind]") {
@@ -390,7 +390,7 @@ namespace libsemigroups {
     REQUIRE(tc.number_of_classes() == 6'721);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("pres-examples",
+  LIBSEMIGROUPS_TEST_CASE("Example",
                           "026",
                           "uniform_block_bijection_monoid(5)",
                           "[pres-examples][quick][no-valgrind]") {
@@ -402,7 +402,7 @@ namespace libsemigroups {
     REQUIRE(tc.number_of_classes() == 1'496);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("pres-examples",
+  LIBSEMIGROUPS_TEST_CASE("Example",
                           "027",
                           "partition_monoid(5)",
                           "[pres-examples][standard]") {
@@ -413,7 +413,7 @@ namespace libsemigroups {
     REQUIRE(tc.number_of_classes() == 115'975);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("pres-examples",
+  LIBSEMIGROUPS_TEST_CASE("Example",
                           "028",
                           "singular_brauer_monoid(6)",
                           "[pres-examples][quick][no-valgrind]") {
@@ -423,7 +423,7 @@ namespace libsemigroups {
     REQUIRE(tc.number_of_classes() == 9'676);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("pres-examples",
+  LIBSEMIGROUPS_TEST_CASE("Example",
                           "029",
                           "orientation_preserving_monoid(6)",
                           "[pres-examples][quick][no-valgrind]") {
@@ -433,7 +433,7 @@ namespace libsemigroups {
     REQUIRE(tc.number_of_classes() == 2'742);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("pres-examples",
+  LIBSEMIGROUPS_TEST_CASE("Example",
                           "030",
                           "orientation_preserving_reversing_monoid(5)",
                           "[pres-examples][quick][no-valgrind]") {
@@ -444,7 +444,7 @@ namespace libsemigroups {
     REQUIRE(tc.number_of_classes() == 1'015);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("pres-examples",
+  LIBSEMIGROUPS_TEST_CASE("Example",
                           "031",
                           "partition_monoid(n), 1 <= n <= 3",
                           "[pres-examples][quick]") {
@@ -457,7 +457,7 @@ namespace libsemigroups {
     REQUIRE(tc.number_of_classes() == 2);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("pres-examples",
+  LIBSEMIGROUPS_TEST_CASE("Example",
                           "032",
                           "temperley_lieb_monoid(10)",
                           "[pres-examples][quick][no-valgrind]") {
@@ -467,7 +467,7 @@ namespace libsemigroups {
     REQUIRE(tc.number_of_classes() == 16'796);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("pres-examples",
+  LIBSEMIGROUPS_TEST_CASE("Example",
                           "033",
                           "brauer_monoid(5)",
                           "[pres-examples][quick][no-valgrind]") {
@@ -489,7 +489,7 @@ namespace libsemigroups {
     REQUIRE(tc.number_of_classes() == 105);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("pres-examples",
+  LIBSEMIGROUPS_TEST_CASE("Example",
                           "034",
                           "rectangular_band(5, 9)",
                           "[pres-examples][quick]") {
@@ -499,7 +499,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE(
-      "pres-examples",
+      "Example",
       "035",
       "symmetric_group nr generators, relations and classes",
       "[pres-examples][quick][no-valgrind]") {
@@ -550,7 +550,7 @@ namespace libsemigroups {
     }
   }
 
-  LIBSEMIGROUPS_TEST_CASE("pres-examples",
+  LIBSEMIGROUPS_TEST_CASE("Example",
                           "036",
                           "symmetric inverse monoid Gay presentation",
                           "[pres-examples][quick]") {
@@ -570,7 +570,7 @@ namespace libsemigroups {
     REQUIRE(tc.number_of_classes() == 209);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("pres-examples",
+  LIBSEMIGROUPS_TEST_CASE("Example",
                           "037",
                           "0-Hecke rook monoid",
                           "[pres-examples][quick]") {
@@ -584,7 +584,7 @@ namespace libsemigroups {
     REQUIRE(tc.number_of_classes() == 209);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("pres-examples",
+  LIBSEMIGROUPS_TEST_CASE("Example",
                           "038",
                           "full_transformation_monoid(5) Iwahori",
                           "[pres-examples][quick][no-valgrind]") {
@@ -597,7 +597,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE(
-      "pres-examples",
+      "Example",
       "039",
       "full_transformation_monoid(n = 2, 3) Mitchell + Whyte",
       "[pres-examples][quick]") {
@@ -612,7 +612,7 @@ namespace libsemigroups {
     REQUIRE(tc3.number_of_classes() == 27);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("pres-examples",
+  LIBSEMIGROUPS_TEST_CASE("Example",
                           "040",
                           "full_transformation_monoid(5) Mitchell + Whyte",
                           "[pres-examples][quick]") {
@@ -625,7 +625,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE(
-      "pres-examples",
+      "Example",
       "041",
       "full_transformation_monoid(5) Mitchell + Whyte index 1",
       "[pres-examples]") {
@@ -637,7 +637,7 @@ namespace libsemigroups {
     REQUIRE(tc.number_of_classes() == 3'125);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("pres-examples",
+  LIBSEMIGROUPS_TEST_CASE("Example",
                           "042",
                           "full_transformation_monoid(6) Mitchell + Whyte",
                           "[pres-examples]") {
@@ -649,7 +649,7 @@ namespace libsemigroups {
     REQUIRE(tc.number_of_classes() == 46'656);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("pres-examples",
+  LIBSEMIGROUPS_TEST_CASE("Example",
                           "043",
                           "partial_transformation_monoid(5) Shutov",
                           "[pres-examples][quick][no-valgrind]") {
@@ -660,7 +660,7 @@ namespace libsemigroups {
     REQUIRE(tc.number_of_classes() == 7'776);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("pres-examples",
+  LIBSEMIGROUPS_TEST_CASE("Example",
                           "044",
                           "partial_transformation_monoid(5) Mitchell + Whyte",
                           "[pres-examples][quick]") {
@@ -671,7 +671,7 @@ namespace libsemigroups {
     REQUIRE(tc.number_of_classes() == 7'776);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("pres-examples",
+  LIBSEMIGROUPS_TEST_CASE("Example",
                           "045",
                           "symmetric_inverse_monoid(5)",
                           "[pres-examples][quick][no-valgrind]") {
@@ -683,7 +683,7 @@ namespace libsemigroups {
     REQUIRE(tc.number_of_classes() == 1'546);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("pres-examples",
+  LIBSEMIGROUPS_TEST_CASE("Example",
                           "046",
                           "symmetric_inverse_monoid(4) Mitchell + Whyte",
                           "[pres-examples][quick][no-valgrind]") {
@@ -694,7 +694,7 @@ namespace libsemigroups {
     REQUIRE(tc.number_of_classes() == 209);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("pres-examples",
+  LIBSEMIGROUPS_TEST_CASE("Example",
                           "047",
                           "symmetric_inverse_monoid(5) Mitchell + Whyte",
                           "[pres-examples][quick][no-valgrind]") {
@@ -705,7 +705,7 @@ namespace libsemigroups {
     REQUIRE(tc.number_of_classes() == 1'546);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("pres-examples",
+  LIBSEMIGROUPS_TEST_CASE("Example",
                           "048",
                           "fibonacci_semigroup(2, 5)",
                           "[pres-examples][quick]") {
@@ -714,7 +714,7 @@ namespace libsemigroups {
     REQUIRE(tc.number_of_classes() == 11);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("pres-examples",
+  LIBSEMIGROUPS_TEST_CASE("Example",
                           "049",
                           "alternating_group(7) Moore",
                           "[pres-examples][quick][no-valgrind]") {
@@ -724,7 +724,7 @@ namespace libsemigroups {
     REQUIRE(tc.number_of_classes() == 2'520);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("pres-examples",
+  LIBSEMIGROUPS_TEST_CASE("Example",
                           "050",
                           "full_transformation_monoid(4) Aizenstat",
                           "[pres-examples][quick]") {
@@ -736,7 +736,7 @@ namespace libsemigroups {
     REQUIRE(tc.number_of_classes() == 256);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("pres-examples",
+  LIBSEMIGROUPS_TEST_CASE("Example",
                           "051",
                           "order_preserving_monoid(10)",
                           "[pres-examples][standard]") {
@@ -746,7 +746,7 @@ namespace libsemigroups {
     REQUIRE(tc.number_of_classes() == 92'378);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("pres-examples",
+  LIBSEMIGROUPS_TEST_CASE("Example",
                           "052",
                           "cyclic_inverse_monoid(4) Fernandes b",
                           "[pres-examples][quick]") {
@@ -757,7 +757,7 @@ namespace libsemigroups {
     REQUIRE(tc.number_of_classes() == 61);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("pres-examples",
+  LIBSEMIGROUPS_TEST_CASE("Example",
                           "053",
                           "cyclic_inverse_monoid(8) Fernandes b",
                           "[pres-examples][quick][no-valgrind]") {
@@ -767,7 +767,7 @@ namespace libsemigroups {
     REQUIRE(tc.number_of_classes() == 2'041);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("pres-examples",
+  LIBSEMIGROUPS_TEST_CASE("Example",
                           "054",
                           "cyclic_inverse_monoid Fernandes a",
                           "[pres-examples][quick][no-valgrind]") {
@@ -792,7 +792,7 @@ namespace libsemigroups {
     }
   }
 
-  LIBSEMIGROUPS_TEST_CASE("pres-examples",
+  LIBSEMIGROUPS_TEST_CASE("Example",
                           "055",
                           "cyclic_inverse_monoid Fernandes b",
                           "[pres-examples][quick][no-valgrind]") {
@@ -806,7 +806,7 @@ namespace libsemigroups {
     }
   }
 
-  LIBSEMIGROUPS_TEST_CASE("pres-examples",
+  LIBSEMIGROUPS_TEST_CASE("Example",
                           "056",
                           "order_preserving_cyclic_inverse_monoid(4)",
                           "[pres-examples][quick]") {
@@ -817,7 +817,7 @@ namespace libsemigroups {
     REQUIRE(tc.number_of_classes() == 38);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("pres-examples",
+  LIBSEMIGROUPS_TEST_CASE("Example",
                           "057",
                           "order_preserving_cyclic_inverse_monoid(11)",
                           "[pres-examples][quick][no-valgrind]") {
@@ -828,7 +828,7 @@ namespace libsemigroups {
     REQUIRE(tc.number_of_classes() == 6'120);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("pres-examples",
+  LIBSEMIGROUPS_TEST_CASE("Example",
                           "058",
                           "order_preserving_cyclic_inverse_monoid(11)",
                           "[pres-examples][quick][no-valgrind]") {
@@ -839,7 +839,7 @@ namespace libsemigroups {
     REQUIRE(tc.number_of_classes() == 6'120);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("pres-examples",
+  LIBSEMIGROUPS_TEST_CASE("Example",
                           "059",
                           "partial_isometries_cycle_graph_monoid(5)",
                           "[pres-examples][quick]") {
@@ -850,7 +850,7 @@ namespace libsemigroups {
     REQUIRE(tc.number_of_classes() == 286);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("pres-examples",
+  LIBSEMIGROUPS_TEST_CASE("Example",
                           "060",
                           "partial_isometries_cycle_graph_monoid(4)",
                           "[pres-examples][quick]") {
@@ -861,7 +861,7 @@ namespace libsemigroups {
     REQUIRE(tc.number_of_classes() == 97);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("pres-examples",
+  LIBSEMIGROUPS_TEST_CASE("Example",
                           "061",
                           "partial_isometries_cycle_graph_monoid(10)",
                           "[pres-examples][quick][no-valgrind][no-coverage]") {
@@ -872,7 +872,7 @@ namespace libsemigroups {
     REQUIRE(tc.number_of_classes() == 20'311);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("pres-examples",
+  LIBSEMIGROUPS_TEST_CASE("Example",
                           "062",
                           "not_symmetric_group(4)",
                           "[pres-examples][quick]") {
@@ -883,7 +883,7 @@ namespace libsemigroups {
     REQUIRE(tc.number_of_classes() == 72);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("pres-examples",
+  LIBSEMIGROUPS_TEST_CASE("Example",
                           "063",
                           "partial_brauer_monoid(4)",
                           "[pres-examples][quick][no-valgrind]") {
@@ -895,7 +895,7 @@ namespace libsemigroups {
     REQUIRE_THROWS_AS(partial_brauer_monoid(0), LibsemigroupsException);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("pres-examples",
+  LIBSEMIGROUPS_TEST_CASE("Example",
                           "064",
                           "motzkin_monoid(5)",
                           "[pres-examples][quick]") {
@@ -920,7 +920,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE(
-      "pres-examples",
+      "Example",
       "065",
       "not_renner_type_B_monoid(2, 1) (Godelle presentation)",
       "[quick][pres-examples][hivert]") {
@@ -935,7 +935,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE(
-      "pres-examples",
+      "Example",
       "066",
       "not_renner_type_B_monoid(2, 0) (Godelle presentation)",
       "[quick][pres-examples][hivert]") {
@@ -946,7 +946,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE(
-      "pres-examples",
+      "Example",
       "067",
       "renner_type_B_monoid(2, 1) (Gay-Hivert presentation)",
       "[quick][pres-examples][hivert]") {
@@ -957,7 +957,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE(
-      "pres-examples",
+      "Example",
       "068",
       "renner_type_B_monoid(2, 0) (Gay-Hivert presentation)",
       "[quick][pres-examples][hivert]") {
@@ -968,7 +968,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE(
-      "pres-examples",
+      "Example",
       "069",
       "renner_type_B_monoid(3, 1) (Gay-Hivert presentation)",
       "[quick][pres-examples][hivert][no-valgrind]") {
@@ -979,7 +979,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE(
-      "pres-examples",
+      "Example",
       "070",
       "renner_type_B_monoid(3, 0) (Gay-Hivert presentation)",
       "[quick][pres-examples][hivert][no-valgrind]") {
@@ -990,7 +990,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE(
-      "pres-examples",
+      "Example",
       "071",
       "renner_type_B_monoid(4, 1) (Gay-Hivert presentation)",
       "[quick][pres-examples][hivert][no-valgrind]") {
@@ -999,11 +999,12 @@ namespace libsemigroups {
     REQUIRE(tc.presentation().rules.size() == 186);
     REQUIRE(!is_obviously_infinite(tc));
     REQUIRE(tc.number_of_classes() == 13'889);
-    // TODO REQUIRE(to_froidure_pin(tc).run().number_of_rules() == 356);
+
+    // REQUIRE(to<FroidurePin>(tc).run().number_of_rules() == 356);
   }
 
   LIBSEMIGROUPS_TEST_CASE(
-      "pres-examples",
+      "Example",
       "072",
       "renner_type_B_monoid(4, 0) (Gay-Hivert presentation)",
       "[quick][pres-examples][hivert][no-valgrind]") {
@@ -1017,7 +1018,7 @@ namespace libsemigroups {
 
   // This appears to be an example where KB + FP is faster than TC
   LIBSEMIGROUPS_TEST_CASE(
-      "pres-examples",
+      "Example",
       "073",
       "renner_type_B_monoid(5, 1) (Gay-Hivert presentation)",
       "[extreme][pres-examples][hivert]") {
@@ -1043,7 +1044,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE(
-      "pres-examples",
+      "Example",
       "074",
       "renner_type_B_monoid(5, 0) (Gay-Hivert presentation)",
       "[extreme][pres-examples][hivert]") {
@@ -1055,7 +1056,7 @@ namespace libsemigroups {
     REQUIRE(!is_obviously_infinite(tc));
     REQUIRE(tc.number_of_classes() == 322'021);
 
-    auto S = to_froidure_pin(tc);
+    auto S = to<FroidurePin>(tc);
     S.run();
     REQUIRE(S.number_of_rules() == 1430);
 
@@ -1065,7 +1066,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE(
-      "pres-examples",
+      "Example",
       "075",
       "renner_type_D_monoid(2, 1) (Gay-Hivert presentation)",
       "[quick][pres-examples][hivert]") {
@@ -1077,7 +1078,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE(
-      "pres-examples",
+      "Example",
       "076",
       "renner_type_D_monoid(2, 0) (Gay-Hivert presentation)",
       "[quick][pres-examples][hivert]") {
@@ -1089,7 +1090,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE(
-      "pres-examples",
+      "Example",
       "077",
       "renner_type_D_monoid(3, 1) (Gay-Hivert presentation)",
       "[quick][pres-examples][hivert][no-valgrind]") {
@@ -1101,7 +1102,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE(
-      "pres-examples",
+      "Example",
       "078",
       "renner_type_D_monoid(3, 0) (Gay-Hivert presentation)",
       "[quick][pres-examples][hivert][no-valgrind]") {
@@ -1113,7 +1114,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE(
-      "pres-examples",
+      "Example",
       "079",
       "renner_type_D_monoid(4, 1) (Gay-Hivert presentation)",
       "[quick][pres-examples][hivert][no-valgrind]") {
@@ -1126,7 +1127,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE(
-      "pres-examples",
+      "Example",
       "080",
       "renner_type_D_monoid(4, 0) (Gay-Hivert presentation)",
       "[quick][pres-examples][hivert][no-valgrind]") {
@@ -1138,7 +1139,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE(
-      "pres-examples",
+      "Example",
       "081",
       "renner_type_D_monoid(5, 1) (Gay-Hivert presentation)",
       "[extreme][pres-examples][hivert]") {
@@ -1153,7 +1154,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE(
-      "pres-examples",
+      "Example",
       "082",
       "renner_type_D_monoid(5, 0) (Gay-Hivert presentation)",
       "[extreme][pres-examples][hivert]") {
@@ -1168,7 +1169,7 @@ namespace libsemigroups {
 
   // Takes about 1m46s
   LIBSEMIGROUPS_TEST_CASE(
-      "pres-examples",
+      "Example",
       "083",
       "renner_type_D_monoid(6, 1) (Gay-Hivert presentation)",
       "[extreme][pres-examples][hivert]") {
@@ -1183,7 +1184,7 @@ namespace libsemigroups {
 
   // Takes about 2m42s
   LIBSEMIGROUPS_TEST_CASE(
-      "pres-examples",
+      "Example",
       "084",
       "renner_type_D_monoid(6, 0) (Gay-Hivert presentation)",
       "[extreme][pres-examples][hivert]") {

@@ -43,9 +43,6 @@
       <tab type="user" visible="yes" url="@ref adapters_hpcombi_group" title="Adapters for HPCombi" />
       <tab type="user" visible="yes" url="@ref adapters_pbr_group" title="Adapters for PBR" />
     </tab>
-    <tab type="usergroup" visible="yes" url="@ref converter_group" title="Converters">
-      <tab type="user" visible="yes" url="@ref to_froidure_pin_group" title="to_froidure_pin" />
-    </tab>
     <tab type="usergroup" visible="yes" url="@ref elements_group" title="Elements">
       <tab type="user" visible="yes" url="@ref bipart_group" title="Bipartitions" />
       <tab type="usergroup" visible="yes" url="@ref matrix_group" title="Matrices">
@@ -93,18 +90,21 @@
     <tab type="user" visible="yes" url="@ref orders_group" title="Orders" />
     <tab type="usergroup" visible="yes" url="@ref presentations_group" title="Presentations">
       <tab type="user" visible="yes" url="@ref libsemigroups::Presentation"
-        title="Presentation class" />
+        title="The Presentation class" />
       <tab type="user" visible="yes" url="@ref libsemigroups::InversePresentation"
-        title="InversePresentation class" />
+        title="The InversePresentation class" />
       <tab type="usergroup" visible="yes" url="@ref libsemigroups::presentation"
         title="Helper functions" />
       <tab type="usergroup" visible="yes" url="@ref libsemigroups::presentation::examples" title="Examples" />
       <tab type="usergroup" visible="yes" url="@ref to_presentation_group"
-        title="Making presentations from other objects" />
+       title="to<Presentation>" />
+      <tab type="usergroup" visible="yes" url="@ref to_inverse_presentation_group"
+       title="to<InversePresentation>" />
     </tab>
     <tab type="usergroup" visible="yes" url="@ref ranges_group" title="Ranges" />
     <tab type="user" visible="yes" url="@ref ukkonen_group" title="Suffix trees" />
     <tab type="user" visible="yes" url="@ref aho_corasick_group" title="Tries" />
+    <tab type="user" visible="yes" url="@ref to_group" title="The `to` function"/>
     <tab type="user" visible="yes" url="@ref dot_group" title="Visualisation" />
     <tab type="usergroup" visible="yes" url="@ref word_graph_group" title="Word graphs">
       <tab type="user" visible="yes" url="@ref libsemigroups::Forest" title="Forest" />
@@ -146,8 +146,15 @@
         <tab type="user" visible="yes" url="@ref congruence_class_accessors_group" title = "Accessors"/>
       </tab>
       <tab type="user" visible="yes" url="@ref congruence_helpers_group" title="Congruence helper functions"/>
+      <tab type="user" visible="yes" url="@ref to_cong_group" title="to<Congruence>"/>
     </tab>
-    <tab type="user" visible="yes" url="@ref froidure_pin_group" title="Froidure-Pin" />
+    <tab type="usergroup" visible="yes" url="@ref froidure_pin_group" title="Froidure-Pin" >
+      <tab type="user" visible="yes" url="@ref libsemigroups::FroidurePin" title="The FroidurePin class"/>
+      <tab type="user" visible="yes" url="@ref libsemigroups::FroidurePinBase" title="The FroidurePinBase class"/>
+      <tab type="user" visible="yes" url="@ref libsemigroups::FroidurePinTraits" title="The FroidurePinTraits class"/>
+      <tab type="user" visible="yes" url="@ref libsemigroups::froidure_pin" title="FroidurePin helper functions"/>
+      <tab type="user" visible="yes" url="@ref to_froidure_pin_group" title="to<FroidurePin>"/>
+    </tab>
     <tab type="usergroup" visible="yes" url="@ref kambites_group" title="Kambites">
       <tab type="usergroup" visible="yes" url="@ref kambites_class_group" title="The Kambites class">
         <tab type="user" visible="yes" url="@ref kambites_class_mem_types_group" title = "Member types"/>
@@ -166,6 +173,7 @@
         <tab type="user" visible="yes" url="@ref knuth_bendix_class_accessors_group" title = "Accessors"/>
       </tab>
       <tab type="user" visible="yes" url="@ref knuth_bendix_helpers_group" title="Knuth-Bendix helper functions"/>
+      <tab type="user" visible="yes" url="@ref to_knuth_bendix_group" title="to<KnuthBendix>"/>
     </tab>
     <tab type="user" visible="yes" url="@ref freeband_group" title="Radoszewski-Rytter" />
     <tab type="user" visible="yes" url="@ref schreier_sims_group" title="Schreier-Sims" />
@@ -206,6 +214,7 @@
         <tab type="user" visible="yes" url="@ref todd_coxeter_class_index_word_group" title="Index -> word"/>
       </tab>
       <tab type="user" visible="yes" url="@ref todd_coxeter_helpers_group" title="Todd-Coxeter helper functions" />
+      <tab type="user" visible="yes" url="@ref to_todd_coxeter_group" title="to<ToddCoxeter>"/>
     </tab>
     <tab type="user" visible="yes" url="_HEADING_" title="Bibliography" />
     <tab type="user" visible="yes" url="@ref citelist" title="Bibliography" />

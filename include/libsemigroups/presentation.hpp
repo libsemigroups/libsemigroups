@@ -70,7 +70,7 @@ namespace libsemigroups {
   //! * \ref ::presentation::examples "Presentations for standard examples"
   //!
   //! For documentation on how to create presentations from other
-  //! `libsemigroups` objects, see the documentation for the `to_presentation`
+  //! `libsemigroups` objects, see the documentation for the `to<Presentation>`
   //! functions \ref to_presentation_group "here".
 
   //! No doc

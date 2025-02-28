@@ -80,3 +80,5 @@ third_party/HPCombi/examples
 third_party/HPCombi/src
 third_party/HPCombi/tests
 tmp/*
+*.fdb_latexmk
+*.fls

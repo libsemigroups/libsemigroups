@@ -49,8 +49,8 @@
 #include "libsemigroups/froidure-pin.hpp"     // for FroidurePin
 #include "libsemigroups/knuth-bendix.hpp"     // for KnuthBendix
 #include "libsemigroups/presentation.hpp"     // for Presentation
-#include "libsemigroups/to-froidure-pin.hpp"  // for to_froidure_pin
-#include "libsemigroups/to-presentation.hpp"  // for to_presentation
+#include "libsemigroups/to-froidure-pin.hpp"  // for to<FroidurePin>
+#include "libsemigroups/to-presentation.hpp"  // for to<Presentation>
 #include "libsemigroups/transf.hpp"           // for Transf
 #include "libsemigroups/types.hpp"            // for word_type, letter_type
 #include "libsemigroups/word-range.hpp"       // for operator""_w
@@ -95,11 +95,11 @@ namespace libsemigroups {
                                    "[quick][knuth-bendix]",
                                    KNUTH_BENDIX_TYPES) {
     auto rg = ReportGuard(false);
-    auto S  = to_froidure_pin({Transf<>({1, 0}), Transf<>({0, 0})});
+    auto S  = make<FroidurePin>({Transf<>({1, 0}), Transf<>({0, 0})});
     REQUIRE(S.size() == 4);
     REQUIRE(S.number_of_rules() == 4);
 
-    auto p = to_presentation<word_type>(S);
+    auto p = to<Presentation<word_type>>(S);
 
     KnuthBendix<word_type, TestType> kb(twosided, p);
     // kb.process_pending_rules();
@@ -123,7 +123,7 @@ namespace libsemigroups {
     REQUIRE(S.degree() == 5);
     REQUIRE(S.number_of_rules() == 3);
 
-    auto                             p = to_presentation<word_type>(S);
+    auto                             p = to<Presentation<word_type>>(S);
     KnuthBendix<word_type, TestType> kb(twosided, p);
     // kb.process_pending_rules();
     REQUIRE(kb.confluent());
@@ -145,7 +145,7 @@ namespace libsemigroups {
     REQUIRE(S.degree() == 5);
     REQUIRE(S.number_of_rules() == 18);
 
-    auto                             p = to_presentation<word_type>(S);
+    auto                             p = to<Presentation<word_type>>(S);
     KnuthBendix<word_type, TestType> kb(twosided, p);
     // kb.process_pending_rules();
     REQUIRE(kb.confluent());
@@ -163,11 +163,11 @@ namespace libsemigroups {
     S.add_generator(Transf<>({1, 0}));
     S.add_generator(Transf<>({0, 0}));
 
-    auto p = to_presentation<word_type>(S);
+    auto p = to<Presentation<word_type>>(S);
 
     KnuthBendix<word_type, TestType> kb(twosided, p);
     REQUIRE(kb.confluent());
-    auto t = to_froidure_pin(kb);
+    auto t = to<FroidurePin>(kb);
     REQUIRE(t.generator(0).word(kb) == 0_w);
   }
 
@@ -177,12 +177,12 @@ namespace libsemigroups {
                                    "[quick]",
                                    KNUTH_BENDIX_TYPES) {
     auto rg = ReportGuard(false);
-    auto S  = to_froidure_pin(
+    auto S  = make<FroidurePin>(
         {Transf<>({1, 3, 4, 2, 3}), Transf<>({3, 2, 1, 3, 3})});
 
     REQUIRE(S.size() == 88);
 
-    auto p = to_presentation<word_type>(S);
+    auto p = to<Presentation<word_type>>(S);
 
     KnuthBendix<word_type, TestType> kb(twosided, p);
     kb.run();
@@ -198,13 +198,13 @@ namespace libsemigroups {
     using words::operator+;
 
     auto rg = ReportGuard(false);
-    auto S  = to_froidure_pin(
+    auto S  = make<FroidurePin>(
         {Transf<>({1, 3, 4, 2, 3}), Transf<>({3, 2, 1, 3, 3})});
 
     REQUIRE(S.size() == 88);
     REQUIRE(S.number_of_rules() == 18);
 
-    auto p = to_presentation<word_type>(S);
+    auto p = to<Presentation<word_type>>(S);
 
     KnuthBendix<word_type, TestType> kb1(twosided, p);
     REQUIRE(kb1.number_of_classes() == 88);
@@ -296,13 +296,13 @@ namespace libsemigroups {
     using words::operator+;
 
     auto rg = ReportGuard(false);
-    auto S  = to_froidure_pin(
+    auto S  = make<FroidurePin>(
         {Transf<>({1, 3, 4, 2, 3}), Transf<>({3, 2, 1, 3, 3})});
 
     REQUIRE(S.size() == 88);
     REQUIRE(S.number_of_rules() == 18);
 
-    auto p = to_presentation<word_type>(S);
+    auto p = to<Presentation<word_type>>(S);
 
     KnuthBendix<word_type, TestType> kb(onesided, p);
 
@@ -391,13 +391,13 @@ namespace libsemigroups {
     using words::operator+;
 
     auto rg = ReportGuard(false);
-    auto S  = to_froidure_pin(
+    auto S  = make<FroidurePin>(
         {Transf<>({1, 3, 4, 2, 3}), Transf<>({3, 2, 1, 3, 3})});
 
     REQUIRE(S.size() == 88);
     REQUIRE(S.number_of_rules() == 18);
 
-    auto p = to_presentation<std::string>(S);
+    auto p = to<Presentation<std::string>>(S);
     REQUIRE(!p.contains_empty_word());
     REQUIRE(p.alphabet() == "ab");
 
@@ -455,13 +455,13 @@ namespace libsemigroups {
     using words::operator+;
 
     auto rg = ReportGuard(false);
-    auto S  = to_froidure_pin(
+    auto S  = make<FroidurePin>(
         {Transf<>({1, 3, 4, 2, 3}), Transf<>({3, 2, 1, 3, 3})});
 
     REQUIRE(S.size() == 88);
     REQUIRE(S.number_of_rules() == 18);
 
-    auto p = to_presentation<std::string>(S);
+    auto p = to<Presentation<std::string>>(S);
     REQUIRE(!p.contains_empty_word());
     presentation::reverse(p);
 
@@ -586,7 +586,7 @@ namespace libsemigroups {
     auto l = 010001100_w;
     auto r = 10001_w;
 
-    auto        p = presentation::reverse(to_presentation<word_type>(S));
+    auto        p = presentation::reverse(to<Presentation<word_type>>(S));
     KnuthBendix kb(onesided, p);
     add_generating_pair(kb, reverse(l), reverse(r));
     REQUIRE(kb.number_of_classes() == 69);

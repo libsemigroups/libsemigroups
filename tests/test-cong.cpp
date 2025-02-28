@@ -26,13 +26,15 @@
 #include "libsemigroups/bmat8.hpp"                  // for BMat8
 #include "libsemigroups/cong.hpp"                   // for Congruence
 #include "libsemigroups/froidure-pin.hpp"           // for FroidurePin
+#include "libsemigroups/knuth-bendix-helpers.hpp"   // for knuth_bendix
 #include "libsemigroups/obvinf.hpp"                 // for is_obviously_infinite
 #include "libsemigroups/pbr.hpp"                    // for PBR
 #include "libsemigroups/presentation-examples.hpp"  // for rook_monoid etc
-#include "libsemigroups/to-froidure-pin.hpp"
-#include "libsemigroups/transf.hpp"      // for Transf<>
-#include "libsemigroups/types.hpp"       // for word_type
-#include "libsemigroups/word-range.hpp"  // for literals
+#include "libsemigroups/to-cong.hpp"                // for to<Congruence>
+#include "libsemigroups/to-froidure-pin.hpp"        // for to<FroidurePin>
+#include "libsemigroups/transf.hpp"                 // for Transf<>
+#include "libsemigroups/types.hpp"                  // for word_type
+#include "libsemigroups/word-range.hpp"             // for literals
 
 #include "libsemigroups/detail/report.hpp"  // for ReportGuard
 
@@ -225,15 +227,15 @@ namespace libsemigroups {
                           "[quick][cong][no-valgrind]") {
     auto rg      = ReportGuard(false);
     using Transf = LeastTransf<8>;
-    auto S       = to_froidure_pin({Transf({7, 3, 5, 3, 4, 2, 7, 7}),
-                                    Transf({1, 2, 4, 4, 7, 3, 0, 7}),
-                                    Transf({0, 6, 4, 2, 2, 6, 6, 4}),
-                                    Transf({3, 6, 3, 4, 0, 6, 0, 7})});
+    auto S       = make<FroidurePin>({Transf({7, 3, 5, 3, 4, 2, 7, 7}),
+                                      Transf({1, 2, 4, 4, 7, 3, 0, 7}),
+                                      Transf({0, 6, 4, 2, 2, 6, 6, 4}),
+                                      Transf({3, 6, 3, 4, 0, 6, 0, 7})});
 
     REQUIRE(S.size() == 11804);
     REQUIRE(S.number_of_rules() == 2460);
 
-    Congruence cong(twosided, S, S.right_cayley_graph());
+    auto cong = to<Congruence<word_type>>(twosided, S, S.right_cayley_graph());
     congruence::add_generating_pair(cong, 0321322_w, 322133_w);
 
     REQUIRE(cong.number_of_classes() == 525);
@@ -262,22 +264,22 @@ namespace libsemigroups {
                           "congruence on full PBR monoid on 2 points",
                           "[extreme][cong]") {
     auto rg = ReportGuard(true);
-    auto S  = to_froidure_pin({PBR({{2}, {3}, {0}, {1}}),
-                               PBR({{}, {2}, {1}, {0, 3}}),
-                               PBR({{0, 3}, {2}, {1}, {}}),
-                               PBR({{1, 2}, {3}, {0}, {1}}),
-                               PBR({{2}, {3}, {0}, {1, 3}}),
-                               PBR({{3}, {1}, {0}, {1}}),
-                               PBR({{3}, {2}, {0}, {0, 1}}),
-                               PBR({{3}, {2}, {0}, {1}}),
-                               PBR({{3}, {2}, {0}, {3}}),
-                               PBR({{3}, {2}, {1}, {0}}),
-                               PBR({{3}, {2, 3}, {0}, {1}})});
+    auto S  = make<FroidurePin>({PBR({{2}, {3}, {0}, {1}}),
+                                 PBR({{}, {2}, {1}, {0, 3}}),
+                                 PBR({{0, 3}, {2}, {1}, {}}),
+                                 PBR({{1, 2}, {3}, {0}, {1}}),
+                                 PBR({{2}, {3}, {0}, {1, 3}}),
+                                 PBR({{3}, {1}, {0}, {1}}),
+                                 PBR({{3}, {2}, {0}, {0, 1}}),
+                                 PBR({{3}, {2}, {0}, {1}}),
+                                 PBR({{3}, {2}, {0}, {3}}),
+                                 PBR({{3}, {2}, {1}, {0}}),
+                                 PBR({{3}, {2, 3}, {0}, {1}})});
 
     // REQUIRE(S.size() == 65536);
     // REQUIRE(S.number_of_rules() == 45416);
 
-    Congruence cong(twosided, S, S.right_cayley_graph());
+    auto cong = to<Congruence<word_type>>(twosided, S, S.right_cayley_graph());
     congruence::add_generating_pair(
         cong, {7, 10, 9, 3, 6, 9, 4, 7, 9, 10}, {9, 3, 6, 6, 10, 9, 4, 7});
     congruence::add_generating_pair(
@@ -312,20 +314,20 @@ namespace libsemigroups {
     auto rg = ReportGuard(false);
 
     auto S
-        = to_froidure_pin({LeastPPerm<6>({0, 1, 2}, {4, 0, 1}, 6),
-                           LeastPPerm<6>({0, 1, 2, 3, 5}, {2, 5, 3, 0, 4}, 6),
-                           LeastPPerm<6>({0, 1, 2, 3}, {5, 0, 3, 1}, 6),
-                           LeastPPerm<6>({0, 2, 5}, {3, 4, 1}, 6),
-                           LeastPPerm<6>({0, 2, 5}, {0, 2, 5}, 6),
-                           LeastPPerm<6>({0, 1, 4}, {1, 2, 0}, 6),
-                           LeastPPerm<6>({0, 2, 3, 4, 5}, {3, 0, 2, 5, 1}, 6),
-                           LeastPPerm<6>({0, 1, 3, 5}, {1, 3, 2, 0}, 6),
-                           LeastPPerm<6>({1, 3, 4}, {5, 0, 2}, 6)});
+        = make<FroidurePin>({LeastPPerm<6>({0, 1, 2}, {4, 0, 1}, 6),
+                             LeastPPerm<6>({0, 1, 2, 3, 5}, {2, 5, 3, 0, 4}, 6),
+                             LeastPPerm<6>({0, 1, 2, 3}, {5, 0, 3, 1}, 6),
+                             LeastPPerm<6>({0, 2, 5}, {3, 4, 1}, 6),
+                             LeastPPerm<6>({0, 2, 5}, {0, 2, 5}, 6),
+                             LeastPPerm<6>({0, 1, 4}, {1, 2, 0}, 6),
+                             LeastPPerm<6>({0, 2, 3, 4, 5}, {3, 0, 2, 5, 1}, 6),
+                             LeastPPerm<6>({0, 1, 3, 5}, {1, 3, 2, 0}, 6),
+                             LeastPPerm<6>({1, 3, 4}, {5, 0, 2}, 6)});
 
     // REQUIRE(S.size() == 712);
     // REQUIRE(S.number_of_rules() == 1121);
 
-    Congruence cong(twosided, S, S.right_cayley_graph());
+    auto cong = to<Congruence<word_type>>(twosided, S, S.right_cayley_graph());
     congruence::add_generating_pair(cong, {2, 7}, {1, 6, 6, 1});
     REQUIRE(cong.number_of_classes() == 32);
   }
@@ -424,7 +426,7 @@ namespace libsemigroups {
     congruence::add_generating_pair(cong, "a", "b");
 
     REQUIRE(cong.number_of_classes() == 4);
-    REQUIRE(!to_froidure_pin(cong)->contains_one());
+    REQUIRE(!to<FroidurePin>(cong)->contains_one());
   }
 
   LIBSEMIGROUPS_TEST_CASE("Congruence",
@@ -434,7 +436,7 @@ namespace libsemigroups {
     auto rg      = ReportGuard(false);
     using Transf = LeastTransf<5>;
     auto S
-        = to_froidure_pin({Transf({1, 3, 4, 2, 3}), Transf({3, 2, 1, 3, 3})});
+        = make<FroidurePin>({Transf({1, 3, 4, 2, 3}), Transf({3, 2, 1, 3, 3})});
 
     REQUIRE(S.size() == 88);
     REQUIRE(S.number_of_rules() == 18);
@@ -442,7 +444,7 @@ namespace libsemigroups {
     word_type w1 = froidure_pin::factorisation(S, Transf({3, 4, 4, 4, 4}));
     word_type w2 = froidure_pin::factorisation(S, Transf({3, 4, 4, 4, 4}));
 
-    Congruence cong(twosided, S, S.right_cayley_graph());
+    auto cong = to<Congruence<word_type>>(twosided, S, S.right_cayley_graph());
     congruence::add_generating_pair(
         cong,
         froidure_pin::factorisation(S, Transf({3, 4, 4, 4, 4})),
@@ -551,11 +553,11 @@ namespace libsemigroups {
                           "[quick][cong]") {
     auto rg      = ReportGuard(false);
     using Transf = LeastTransf<8>;
-    auto       S = to_froidure_pin({Transf({7, 3, 5, 3, 4, 2, 7, 7}),
-                                    Transf({7, 3, 5, 3, 4, 2, 7, 7}),
-                                    Transf({7, 3, 5, 3, 4, 2, 7, 7}),
-                                    Transf({3, 6, 3, 4, 0, 6, 0, 7})});
-    Congruence cong(twosided, S, S.right_cayley_graph());
+    auto S       = make<FroidurePin>({Transf({7, 3, 5, 3, 4, 2, 7, 7}),
+                                      Transf({7, 3, 5, 3, 4, 2, 7, 7}),
+                                      Transf({7, 3, 5, 3, 4, 2, 7, 7}),
+                                      Transf({3, 6, 3, 4, 0, 6, 0, 7})});
+    auto cong = to<Congruence<word_type>>(twosided, S, S.right_cayley_graph());
     REQUIRE(cong.number_of_classes() == S.size());
   }
 
@@ -611,11 +613,11 @@ namespace libsemigroups {
                           "[quick][cong][no-valgrind]") {
     auto rg      = ReportGuard(false);
     using Transf = LeastTransf<8>;
-    auto S       = to_froidure_pin({Transf({0, 1, 2, 3, 4, 5, 6, 7}),
-                                    Transf({1, 2, 3, 4, 5, 0, 6, 7}),
-                                    Transf({1, 0, 2, 3, 4, 5, 6, 7}),
-                                    Transf({0, 1, 2, 3, 4, 0, 6, 7}),
-                                    Transf({0, 1, 2, 3, 4, 5, 7, 6})});
+    auto S       = make<FroidurePin>({Transf({0, 1, 2, 3, 4, 5, 6, 7}),
+                                      Transf({1, 2, 3, 4, 5, 0, 6, 7}),
+                                      Transf({1, 0, 2, 3, 4, 5, 6, 7}),
+                                      Transf({0, 1, 2, 3, 4, 0, 6, 7}),
+                                      Transf({0, 1, 2, 3, 4, 5, 7, 6})});
 
     REQUIRE(S.size() == 93'312);
     std::vector<Transf> elms = {Transf({0, 0, 0, 0, 0, 0, 7, 6}),
@@ -637,8 +639,8 @@ namespace libsemigroups {
           return S.contains(x);
         }));
 
-    Congruence cong(onesided, S, S.right_cayley_graph());
-    word_type  w1, w2;
+    auto cong = to<Congruence<word_type>>(onesided, S, S.right_cayley_graph());
+    word_type w1, w2;
     for (size_t i = 0; i < elms.size(); i += 2) {
       froidure_pin::factorisation(S, w1, S.position(elms[i]));
       froidure_pin::factorisation(S, w2, S.position(elms[i + 1]));
@@ -762,10 +764,11 @@ namespace libsemigroups {
     }
 
     using Transf = LeastTransf<3>;
-    auto fp      = to_froidure_pin({Transf({0, 1, 0}), Transf({0, 1, 2})});
+    auto fp      = make<FroidurePin>({Transf({0, 1, 0}), Transf({0, 1, 2})});
     REQUIRE(fp.size() == 2);
     {
-      Congruence cong(twosided, fp, fp.right_cayley_graph());
+      auto cong
+          = to<Congruence<word_type>>(twosided, fp, fp.right_cayley_graph());
       congruence::add_generating_pair(cong, {1}, {0});
       REQUIRE(!is_obviously_infinite(cong));
 
@@ -790,9 +793,10 @@ namespace libsemigroups {
            BMat({{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {1, 0, 0, 1}}),
            BMat({{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 0}})};
     {
-      auto S = to_froidure_pin(gens);
+      auto S = make<FroidurePin>(gens);
 
-      Congruence cong(twosided, S, S.right_cayley_graph());
+      auto cong
+          = to<Congruence<word_type>>(twosided, S, S.right_cayley_graph());
       congruence::add_generating_pair(cong, {1}, {0});
 
       REQUIRE(cong.number_of_classes() == 3);
@@ -818,8 +822,9 @@ namespace libsemigroups {
                                          11011_w}));
     }
     {
-      auto       S = to_froidure_pin({gens[0], gens[2], gens[3]});
-      Congruence cong(twosided, S, S.right_cayley_graph());
+      auto S = make<FroidurePin>({gens[0], gens[2], gens[3]});
+      auto cong
+          = to<Congruence<word_type>>(twosided, S, S.right_cayley_graph());
       congruence::add_generating_pair(cong, {1}, {0});
 
       REQUIRE(cong.number_of_classes() == 2);
@@ -851,7 +856,7 @@ namespace libsemigroups {
     REQUIRE(S.size() == 88);
     REQUIRE(S.degree() == 5);
 
-    Congruence cong(onesided, S, S.left_cayley_graph());
+    auto cong = to<Congruence<word_type>>(onesided, S, S.left_cayley_graph());
 
     congruence::add_generating_pair(cong, 001100010_w, 10001_w);
 
@@ -883,7 +888,7 @@ namespace libsemigroups {
 
     // REQUIRE(S.size() == 88);
     // REQUIRE(S.degree() == 5);
-    Congruence cong(onesided, S, S.right_cayley_graph());
+    auto cong = to<Congruence<word_type>>(onesided, S, S.right_cayley_graph());
     congruence::add_generating_pair(cong, 010001100_w, 10001_w);
 
     REQUIRE(cong.number_of_classes() == 72);
@@ -916,7 +921,7 @@ namespace libsemigroups {
     word_type w1, w2;
     froidure_pin::factorisation(S, w1, S.position(Transf<>({3, 4, 4, 4, 4})));
     froidure_pin::factorisation(S, w2, S.position(Transf<>({3, 1, 3, 3, 3})));
-    Congruence cong(onesided, S, S.right_cayley_graph());
+    auto cong = to<Congruence<word_type>>(onesided, S, S.right_cayley_graph());
     congruence::add_generating_pair(cong, w1, w2);
 
     REQUIRE(cong.number_of_classes() == 72);
@@ -1266,9 +1271,9 @@ namespace libsemigroups {
       REQUIRE(congruence::contains(cong, 0000_w, 0000_w));
       REQUIRE(!congruence::contains(cong, 0000_w, 0001_w));
       if (knd == twosided) {
-        REQUIRE_NOTHROW(to_froidure_pin(cong));
+        REQUIRE_NOTHROW(to<FroidurePin>(cong));
       } else {
-        REQUIRE_THROWS_AS(to_froidure_pin(cong), LibsemigroupsException);
+        REQUIRE_THROWS_AS(to<FroidurePin>(cong), LibsemigroupsException);
       }
 
       WordRange w;

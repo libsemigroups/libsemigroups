@@ -57,7 +57,7 @@ namespace libsemigroups {
                                   {2, 3, 4, 5},
                                   {1, 2, 4}})};
 
-    auto S = to_froidure_pin(gens);
+    auto S = make<FroidurePin>(gens);
 
     S.reserve(4);
 

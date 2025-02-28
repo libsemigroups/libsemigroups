@@ -35,8 +35,8 @@
 #include <vector>       // for vector
 
 #include "presentation.hpp"     // for Presentation
-#include "to-presentation.hpp"  // for to_presentation
-#include "types.hpp"            // for congruence_kind (ptr only)
+#include "to-presentation.hpp"  // for to<Presentation>
+#include "types.hpp"            // for congruence_kind
 
 #include "detail/cong-common-class.hpp"  // for detail::CongruenceCommon
 #include "detail/fmt.hpp"                // for fmt
@@ -734,7 +734,7 @@ namespace libsemigroups {
       init(knd, p, wg);
     }
 
-    // TODO(1) a to_todd_coxeter variant that throws if p is not valid
+    // TODO(1) a "make" variant that throws if params are valid
     template <typename Node>
     ToddCoxeter& init(congruence_kind           knd,
                       Presentation<Word> const& p,

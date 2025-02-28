@@ -81,9 +81,7 @@ namespace libsemigroups {
       p_copy = p;
       presentation::normalize_alphabet(p_copy);
     } else {
-      // p_copy = to_presentation<word_type>(p, [](auto const& x) { return x;
-      // });
-      p_copy = to_presentation<word_type>(p);
+      p_copy = to<Presentation<word_type>>(p);
     }
     try {
       presentation::validate_rules(
@@ -109,7 +107,7 @@ namespace libsemigroups {
     if constexpr (std::is_same_v<Word, word_type>) {
       _presentation = p;
     } else {
-      _presentation = to_presentation<word_type>(p);
+      _presentation = to<Presentation<word_type>>(p);
     }
     _knuth_bendices[0].init(congruence_kind::twosided, _presentation).run();
     std::fill(

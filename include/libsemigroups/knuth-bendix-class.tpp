@@ -23,9 +23,9 @@ namespace libsemigroups {
   KnuthBendix<Word, Rewriter, ReductionOrder>::init(congruence_kind      knd,
                                                     Presentation<Word>&& p) {
     if constexpr (!std::is_same_v<Word, std::string>) {
-      // to_presentation throws in the next line if p isn't valid
+      // to<Presentation> throws in the next line if p isn't valid
       KnuthBendixImpl_::init(
-          knd, to_presentation<std::string>(p, [](auto x) { return x; }));
+          knd, to<Presentation<std::string>>(p, [](auto x) { return x; }));
     } else {
       KnuthBendixImpl_::init(knd, p);
     }

@@ -56,7 +56,7 @@
 #include "libsemigroups/paths.hpp"            // for Paths
 #include "libsemigroups/presentation.hpp"     // for add_rule, Presentation
 #include "libsemigroups/ranges.hpp"           // for equal
-#include "libsemigroups/to-froidure-pin.hpp"  // for to_froidure_pin
+#include "libsemigroups/to-froidure-pin.hpp"  // for to<FroidurePin>
 #include "libsemigroups/types.hpp"            // for word_type
 #include "libsemigroups/word-graph.hpp"       // for WordGraph
 
@@ -405,7 +405,6 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
                                    "008",
                                    "Example 6.4 in Sims",
-
                                    "[quick][knuth-bendix][no-valgrind]",
                                    REWRITER_TYPES) {
     auto rg = ReportGuard(false);
@@ -438,7 +437,7 @@ namespace libsemigroups {
                 {"a",    "b",    "c",    "ab",   "ac",   "ba",   "ca",
                  "aba",  "aca",  "bab",  "bac",  "cab",  "cac",  "abab",
                  "abac", "acab", "acac", "baba", "baca", "caba", "caca"}));
-    auto S = to_froidure_pin(kb);
+    auto S = to<FroidurePin>(kb);
     REQUIRE(S.size() == 168);
     REQUIRE(S.generator(2).string(kb) == "c");
   }
@@ -471,7 +470,7 @@ namespace libsemigroups {
     REQUIRE(wg.number_of_edges() == 13);
     REQUIRE(!word_graph::is_acyclic(wg));
 
-    auto fp = to_froidure_pin(kb);
+    auto fp = to<FroidurePin>(kb);
     fp.enumerate(100);
 
     auto expected = froidure_pin::current_normal_forms(fp);
@@ -518,7 +517,7 @@ namespace libsemigroups {
     REQUIRE(kb.number_of_classes() == 336);
 
     // Test copy constructor
-    auto T = to_froidure_pin(kb);
+    auto T = to<FroidurePin>(kb);
     auto S = froidure_pin::copy_closure(T, {T.generator(0)});
 
     REQUIRE(S.size() == 336);

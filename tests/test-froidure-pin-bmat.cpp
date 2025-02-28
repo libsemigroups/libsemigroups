@@ -156,7 +156,7 @@ namespace libsemigroups {
                                    "[quick][froidure-pin][bmat]",
                                    BMat<4>,
                                    BMat<>) {
-    auto S = to_froidure_pin(
+    auto S = make<FroidurePin>(
         {TestType({{1, 0, 0, 0}, {0, 0, 1, 0}, {1, 0, 0, 1}, {0, 1, 0, 0}}),
          TestType({{1, 0, 0, 1}, {1, 0, 0, 1}, {1, 1, 1, 1}, {0, 1, 1, 0}}),
          TestType({{1, 0, 1, 0}, {1, 0, 1, 1}, {0, 0, 1, 1}, {0, 1, 0, 1}}),

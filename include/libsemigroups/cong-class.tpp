@@ -49,46 +49,6 @@ namespace libsemigroups {
   }
 
   template <typename Word>
-  template <typename Node>
-  Congruence<Word>& Congruence<Word>::init(congruence_kind        knd,
-                                           FroidurePinBase&       S,
-                                           WordGraph<Node> const& wg) {
-    if (S.is_finite() != tril::FALSE) {
-      S.run();
-    } else {
-      LIBSEMIGROUPS_EXCEPTION(
-          "the 2nd argument does not represent a finite semigroup!");
-    }
-    detail::CongruenceCommon::init(knd);
-
-    // TODO(1) if necessary make a runner that tries to S.run(), then get
-    // the Cayley graph and use that in the ToddCoxeter, at present
-    // that'll happen here in the constructor, same for the creation of the
-    // presentation this could take place in the Runner so that they are done
-    // in parallel
-    add_runner(
-        std::make_shared<ToddCoxeter<Word>>(to_todd_coxeter<Word>(knd, S, wg)));
-
-    // FIXME(1) uncommenting the following lines causes multiple issues in the
-    // extreme Congruence test
-    // auto tc = to_todd_coxeter(knd, S, wg);
-    // tc.strategy(ToddCoxeter<Word>::options::strategy::felsch);
-    // add_runner(std::make_shared<ToddCoxeter<Word>>(std::move(tc)));
-
-    // We can no longer add the following runner if wg is the left_cayley_graph
-    // of S, then the below will compute the corresponding right congruence,
-    // which is unavoidable. TODO(1) reconsider this?
-    // auto tc = ToddCoxeter<Word>(knd, to_presentation<Word>(S));
-    // add_runner(std::make_shared<ToddCoxeter<Word>>(std::move(tc)));
-
-    // tc = ToddCoxeter<Word>(knd, to_presentation<Word>(S));
-    // tc.strategy(ToddCoxeter<Word>::options::strategy::felsch);
-    // add_runner(std::make_shared<ToddCoxeter<Word>>(std::move(tc)));
-
-    return *this;
-  }
-
-  template <typename Word>
   template <typename Iterator1,
             typename Iterator2,
             typename Iterator3,

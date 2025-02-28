@@ -1,0 +1,51 @@
+\documentclass{standalone}
+\usepackage{booktabs}  % For professional tables
+\usepackage{pifont}    % For check and cross symbols
+\usepackage{graphicx}  % For rotating text
+\usepackage[table]{xcolor}
+
+\newcommand{\cmark}{\cellcolor{green!25}\ding{51}}  % Check mark
+\newcommand{\xmark}{\cellcolor{red!25}\ding{55}}
+
+\begin{document}
+
+\begin{tabular}{l|c|c|c|c|c|c|c|c|c|c|c|c}
+  & \rotatebox{90}{\texttt{Congruence}} &
+  \rotatebox{90}{\texttt{Cutting}} &
+  \rotatebox{90}{\texttt{FroidurePin}} &
+  \rotatebox{90}{\texttt{InversePresentation}}    &
+  \rotatebox{90}{\texttt{Kambites}}    &
+  \rotatebox{90}{\texttt{KnuthBendix}}    &
+  \rotatebox{90}{\texttt{Konieczny}}    &
+  \rotatebox{90}{\texttt{Presentation}}    &
+  \rotatebox{90}{\texttt{SchreierSims}}    &
+  \rotatebox{90}{\texttt{Stephen}}    &
+  \rotatebox{90}{\texttt{ToddCoxeter}}
+  \\
+  \midrule
+  \texttt{to<Congruence>}& \xmark& \xmark& \cmark& \xmark & \xmark&
+  \xmark& \xmark & \xmark & \xmark & \xmark& \xmark\\\hline
+  \texttt{to<Cutting>} & \xmark& \xmark& \xmark& \xmark& \xmark& \xmark&
+  \xmark& \xmark & \xmark& \xmark & \xmark \\\hline
+  \texttt{to<FroidurePin>} & \cmark& \xmark & \xmark & \xmark & \cmark  &
+  \cmark & \xmark & \xmark & \xmark  &\xmark &\cmark \\\hline
+  \texttt{to<InversePresentation>} & \xmark& \xmark& \xmark& \cmark&
+  \xmark& \xmark& \xmark& \cmark & \xmark& \xmark& \xmark  \\\hline
+  \texttt{to<Kambites>} & \xmark& \xmark& \xmark& \xmark& \xmark& \xmark&
+  \xmark& \xmark & \xmark& \xmark& \xmark  \\\hline
+  \texttt{to<KnuthBendix>} & \xmark& \xmark& \cmark&  \xmark& \xmark
+  & \xmark& \xmark& \xmark& \xmark& \xmark & \cmark\\\hline
+  \texttt{to<Konieczny>} & \xmark& \xmark& \xmark& \xmark& \xmark& \xmark&
+  \xmark& \xmark & \xmark& \xmark& \xmark\\\hline
+  \texttt{to<Presentation>} & \xmark& \xmark& \cmark& \xmark& \xmark& \cmark&
+  \xmark& \cmark & \xmark& \xmark& \xmark\\\hline
+  \texttt{to<SchreierSims>} & \xmark& \xmark& \xmark& \xmark& \xmark& \xmark&
+  \xmark& \xmark & \xmark& \xmark& \xmark\\\hline
+  \texttt{to<Stephen>} & \xmark& \xmark& \xmark& \xmark& \xmark& \xmark&
+  \xmark& \xmark & \xmark& \xmark& \xmark\\\hline
+  \texttt{to<ToddCoxeter>} &\xmark & \xmark & \cmark & \xmark & \xmark & \cmark
+  & \xmark & \xmark  & \xmark& \xmark& \xmark\\
+\end{tabular}
+% \cmark = implemented, \xmark = not yet implemented, -
+% = not applicable
+\end{document}

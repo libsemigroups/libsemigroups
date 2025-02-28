@@ -52,7 +52,7 @@
 #include "libsemigroups/ranges.hpp"                 // for shortlex_compare
 #include "libsemigroups/sims.hpp"                   // for Sims1
 #include "libsemigroups/to-froidure-pin.hpp"        // for make
-#include "libsemigroups/to-presentation.hpp"        // for to_presentation
+#include "libsemigroups/to-presentation.hpp"        // for to<Presentation>
 #include "libsemigroups/todd-coxeter.hpp"           // for ToddCoxeter
 #include "libsemigroups/transf.hpp"                 // for Transf
 #include "libsemigroups/types.hpp"                  // for word_type
@@ -531,13 +531,13 @@ namespace libsemigroups {
                           "full_transformation_monoid(3) onesided",
                           "[quick][low-index][no-valgrind]") {
     auto rg = ReportGuard(false);
-    auto S  = to_froidure_pin({make<Transf<3>>({1, 2, 0}),
-                               make<Transf<3>>({1, 0, 2}),
-                               make<Transf<3>>({0, 1, 0})});
+    auto S  = make<FroidurePin>({make<Transf<3>>({1, 2, 0}),
+                                 make<Transf<3>>({1, 0, 2}),
+                                 make<Transf<3>>({0, 1, 0})});
     REQUIRE(S.size() == 27);
     REQUIRE(S.number_of_generators() == 3);
     REQUIRE(S.number_of_rules() == 16);
-    auto p = to_presentation<word_type>(S);
+    auto p = to<Presentation<word_type>>(S);
     REQUIRE(static_cast<size_t>(std::distance(p.rules.cbegin(), p.rules.cend()))
             == 2 * S.number_of_rules());
     Sims1 C;
@@ -551,10 +551,10 @@ namespace libsemigroups {
                           "full_transformation_monoid(3) left",
                           "[quick][low-index][no-valgrind]") {
     auto rg = ReportGuard(false);
-    auto S  = to_froidure_pin(
+    auto S  = make<FroidurePin>(
         {Transf<3>({1, 2, 0}), Transf<3>({1, 0, 2}), Transf<3>({0, 1, 0})});
     REQUIRE(S.size() == 27);
-    auto p = to_presentation<word_type>(S);
+    auto p = to<Presentation<word_type>>(S);
     presentation::reverse(p);
     Sims1 C(p);
     REQUIRE(C.number_of_congruences(27) == 120);
@@ -616,9 +616,9 @@ namespace libsemigroups {
                           "symmetric_inverse_monoid(2) from FroidurePin",
                           "[quick][low-index]") {
     auto rg = ReportGuard(false);
-    auto S  = to_froidure_pin({PPerm<2>({1, 0}), PPerm<2>({0}, {0}, 2)});
+    auto S  = make<FroidurePin>({PPerm<2>({1, 0}), PPerm<2>({0}, {0}, 2)});
     REQUIRE(S.size() == 7);
-    auto p = to_presentation<word_type>(S);
+    auto p = to<Presentation<word_type>>(S);
     presentation::reverse(p);
     Sims1 C(p);
     REQUIRE(C.number_of_congruences(7) == 10);
@@ -907,7 +907,7 @@ namespace libsemigroups {
     REQUIRE(S.size() == 81);
 
     /// auto p  = presentation::examples::singular_brauer_monoid_MM07(4);
-    auto p = to_presentation<word_type>(S);
+    auto p = to<Presentation<word_type>>(S);
     p.validate();
     REQUIRE(p.alphabet().size() == 10);
     REQUIRE(presentation::length(p) == 719);
@@ -1049,7 +1049,7 @@ namespace libsemigroups {
     S.add_generator(Bipartition({{1, 2}, {3, -3}, {4, -4}, {-1, -2}}));
     REQUIRE(S.size() == 105);
 
-    auto p = to_presentation<word_type>(S);
+    auto p = to<Presentation<word_type>>(S);
     REQUIRE(presentation::length(p) == 359);
     presentation::remove_duplicate_rules(p);
     REQUIRE(presentation::length(p) == 359);
@@ -1101,7 +1101,7 @@ namespace libsemigroups {
     //              20, 13}, {20, 19, 20, 19, 13, 20, 13}, {21, 17, 14, 18, 6,
     //              20, 7}}));
 
-    // auto S = to_froidure_pin<Transf<0, node_type>>(d);
+    // auto S = to<FroidurePin<Transf<0, node_type>>>(d);
     // REQUIRE(S.size() == 105);
     // REQUIRE(S.generator(0) == Transf<0, node_type>::identity(22));
     // REQUIRE(
@@ -1155,7 +1155,7 @@ namespace libsemigroups {
     // -3}, {4, -4}, {5, -5}})); S.add_generator(Bipartition({{1, 2}, {3, -3},
     // {4, -4}, {5, -5}, {-1, -2}})); REQUIRE(S.size() == 945);
 
-    // auto p = to_presentation<word_type>(S);
+    // auto p = to<Presentation<word_type>>(S);
     auto p = presentation::examples::brauer_monoid_KM07(5);
 
     REQUIRE(presentation::length(p) == 240);
@@ -1220,7 +1220,7 @@ namespace libsemigroups {
     // on
     // // onesided congruences containing the pair {0}, {1}.
     // REQUIRE(d.number_of_nodes() == 51);
-    // auto S = to_froidure_pin<Transf<0, node_type>>(d);
+    // auto S = to<FroidurePin<Transf<0, node_type>>>(d);
     // REQUIRE(S.size() == 945);
   }
 
@@ -1711,7 +1711,7 @@ namespace libsemigroups {
     auto d = mro.word_graph();
     REQUIRE(d.number_of_nodes() == 11);
     REQUIRE(word_graph::is_strictly_cyclic(d));
-    auto S = to_froidure_pin<Transf<0, node_type>>(d);
+    auto S = to<FroidurePin<Transf<0, node_type>>>(d);
     S.add_generator(one(S.generator(0)));
     REQUIRE(S.size() == 19);
   }
@@ -1739,7 +1739,7 @@ namespace libsemigroups {
     d = mro.word_graph();
 
     REQUIRE(word_graph::is_strictly_cyclic(d));
-    auto S = to_froidure_pin<Transf<0, node_type>>(d);
+    auto S = to<FroidurePin<Transf<0, node_type>>>(d);
     REQUIRE(S.size() == 203);
     // The actual digraph obtained is non-deterministic because we just take
     // whichever one is found first, in multiple threads
@@ -1761,7 +1761,7 @@ namespace libsemigroups {
 
     auto hook = [&](WordGraph<uint32_t> const& x) {
       auto first = 1;
-      auto SS    = to_froidure_pin<Transf<0, node_type>>(
+      auto SS    = to<FroidurePin<Transf<0, node_type>>>(
           x, first, x.number_of_active_nodes());
       SuppressReportFor supp("FroidurePin");
 
@@ -1800,7 +1800,7 @@ namespace libsemigroups {
       auto d = orc.word_graph();
       REQUIRE(orc.target_size() == sizes[n]);
       REQUIRE(word_graph::is_strictly_cyclic(d));
-      auto S = to_froidure_pin<Transf<0, node_type>>(d);
+      auto S = to<FroidurePin<Transf<0, node_type>>>(d);
       S.add_generator(one(S.generator(0)));
       REQUIRE(S.size() == sizes[n]);
       REQUIRE(d.number_of_nodes() == min_degrees[n]);
@@ -1864,7 +1864,7 @@ namespace libsemigroups {
                  .target_size(17)
                  .word_graph();
     REQUIRE(word_graph::is_strictly_cyclic(d));
-    auto S = to_froidure_pin<Transf<0, node_type>>(d);
+    auto S = to<FroidurePin<Transf<0, node_type>>>(d);
     REQUIRE(S.size() == 16);
     REQUIRE(d.number_of_nodes() == 7);
 
@@ -1904,7 +1904,7 @@ namespace libsemigroups {
                      .number_of_threads(std::thread::hardware_concurrency())
                      .word_graph();
         REQUIRE(word_graph::is_strictly_cyclic(d));
-        auto S = to_froidure_pin<Transf<0, node_type>>(d);
+        auto S = to<FroidurePin<Transf<0, node_type>>>(d);
         REQUIRE(S.size() == m * n);
         REQUIRE(d.number_of_nodes() == results[m][n]);
       }
@@ -2024,7 +2024,7 @@ namespace libsemigroups {
     auto         p  = presentation::examples::rectangular_band(1, n);
     auto d = MinimalRepOrc().presentation(p).target_size(n).word_graph();
     REQUIRE(word_graph::is_strictly_cyclic(d));
-    auto S = to_froidure_pin<Transf<0, node_type>>(d);
+    auto S = to<FroidurePin<Transf<0, node_type>>>(d);
     REQUIRE(S.size() == n);
     REQUIRE(d.number_of_nodes() == 5);
   }
@@ -2038,19 +2038,19 @@ namespace libsemigroups {
 
     auto rg = ReportGuard(false);
 
-    auto S = to_froidure_pin({make<Transf<6>>({0, 0, 2, 1, 4, 1}),
-                              make<Transf<6>>({0, 0, 2, 3, 4, 3}),
-                              make<Transf<6>>({0, 2, 2, 0, 4, 4})});
+    auto S = make<FroidurePin>({make<Transf<6>>({0, 0, 2, 1, 4, 1}),
+                                make<Transf<6>>({0, 0, 2, 3, 4, 3}),
+                                make<Transf<6>>({0, 2, 2, 0, 4, 4})});
 
     REQUIRE(S.size() == 5);
-    auto p = to_presentation<word_type>(S);
+    auto p = to<Presentation<word_type>>(S);
     auto d = MinimalRepOrc().presentation(p).target_size(5).word_graph();
     REQUIRE(word_graph::is_strictly_cyclic(d));
     REQUIRE(d.number_of_nodes() == 4);
     REQUIRE(d
             == make<WordGraph<uint32_t>>(
                 4, {{2, 2, 3}, {0, 1, 2}, {2, 2, 2}, {3, 3, 3}}));
-    auto T = to_froidure_pin<Transf<4>>(d);
+    auto T = to<FroidurePin<Transf<4>>>(d);
     REQUIRE(T.generator(0) == Transf<4>({2, 0, 2, 3}));
     REQUIRE(T.generator(1) == Transf<4>({2, 1, 2, 3}));
     REQUIRE(T.generator(2) == Transf<4>({3, 2, 2, 3}));
@@ -2065,7 +2065,7 @@ namespace libsemigroups {
 
     REQUIRE(!word_graph::is_strictly_cyclic(dd));
     REQUIRE(dd.number_of_nodes() == 5);
-    auto U = to_froidure_pin<Transf<5>>(dd);
+    auto U = to<FroidurePin<Transf<5>>>(dd);
     REQUIRE(U.size() == 5);
 
     Sims1 C;
@@ -2075,7 +2075,7 @@ namespace libsemigroups {
     uint64_t non_strictly_cyclic_count = 0;
 
     for (auto it = C.cbegin(5); it != C.cend(5); ++it) {
-      auto W = to_froidure_pin<Transf<0, node_type>>(
+      auto W = to<FroidurePin<Transf<0, node_type>>>(
           *it, 1, it->number_of_active_nodes());
       if (p.contains_empty_word()) {
         auto id = one(W.generator(0));
@@ -2284,12 +2284,12 @@ namespace libsemigroups {
     using Transf_ = Transf<5>;
     auto rg       = ReportGuard(true);
 
-    auto S = to_froidure_pin({Transf_({1, 0, 2, 3, 4}),
-                              Transf_({3, 0, 1, 2, 4}),
-                              Transf_({4, 1, 2, 3, 4}),
-                              Transf_({1, 1, 2, 3, 4})});
+    auto S = make<FroidurePin>({Transf_({1, 0, 2, 3, 4}),
+                                Transf_({3, 0, 1, 2, 4}),
+                                Transf_({4, 1, 2, 3, 4}),
+                                Transf_({1, 1, 2, 3, 4})});
     REQUIRE(S.size() == 625);
-    auto p = to_presentation<word_type>(S);
+    auto p = to<Presentation<word_type>>(S);
     presentation::reverse(p);
     Sims1 C(p);
     REQUIRE(presentation::longest_rule_length(p) == 18);
@@ -2599,7 +2599,7 @@ namespace libsemigroups {
             .target_size(4'862)
             .word_graph();
 
-    auto S = to_froidure_pin<Transf<0, node_type>>(d);
+    auto S = to<FroidurePin<Transf<0, node_type>>>(d);
     S.add_generator(one(S.generator(0)));
     REQUIRE(S.size() == 4'862);
     REQUIRE(orc.min_nodes() == 80);
@@ -2788,7 +2788,7 @@ namespace libsemigroups {
                    .target_size(5)
                    .word_graph();
       REQUIRE(word_graph::is_strictly_cyclic(d));
-      auto S = to_froidure_pin<Transf<0, node_type>>(d);
+      auto S = to<FroidurePin<Transf<0, node_type>>>(d);
       S.add_generator(one(S.generator(0)));
       REQUIRE(S.size() == 5);
       REQUIRE(d.number_of_nodes() == 4);
@@ -3252,7 +3252,7 @@ namespace libsemigroups {
                           "JonesMonoid(4)",
                           "[extreme][sims1]") {
     using words::pow;
-    Presentation<std::string> p = to_presentation<std::string>(
+    Presentation<std::string> p = to<Presentation<std::string>>(
         presentation::examples::temperley_lieb_monoid(4));
     REQUIRE(p.contains_empty_word());
     presentation::sort_each_rule(p);
@@ -3281,7 +3281,7 @@ namespace libsemigroups {
 
     auto hook = [&](word_graph_type const& x) {
       auto first = (T.presentation().contains_empty_word() ? 0 : 1);
-      auto S     = to_froidure_pin<Transf<0, node_type>>(
+      auto S     = to<FroidurePin<Transf<0, node_type>>>(
           x, first, x.number_of_active_nodes());
       if (T.presentation().contains_empty_word()) {
         auto id = one(S.generator(0));
@@ -3556,7 +3556,7 @@ namespace libsemigroups {
     T.add_generator(make<PPerm<4>>({0, 1, 2}, {0, 1, 2}, 4));
     REQUIRE(T.size() == 61);
 
-    auto p = to_presentation<word_type>(T);
+    auto p = to<Presentation<word_type>>(T);
 
     Sims2 S(p);
     REQUIRE(S.number_of_congruences(61) == 14);
@@ -3612,7 +3612,7 @@ namespace libsemigroups {
     S.add_generator(make<Transf<4>>({0, 1, 1, 3}));
     S.add_generator(make<Transf<4>>({0, 1, 2, 2}));
     REQUIRE(S.size() == 14);
-    auto p = to_presentation<word_type>(S);
+    auto p = to<Presentation<word_type>>(S);
 
     Sims2 C(p);
     REQUIRE(C.number_of_threads(1).number_of_congruences(S.size()) == 133);
@@ -4227,7 +4227,7 @@ namespace libsemigroups {
             == 15);  // correct value is 15
 
     // p  = presentation::examples::partition_monoid(3);
-    // ip = SimsRefinerIdeals(to_presentation<std::string>(p));
+    // ip = SimsRefinerIdeals(to<Presentation<std::string>>(p));
     // s.init(p).add_pruner(ip);
     // REQUIRE(s.number_of_congruences(203) == 5767);  // checked in GAP
   }
@@ -4242,7 +4242,7 @@ namespace libsemigroups {
     presentation::add_rule(p, "aaa", "bb");
     presentation::add_rule(p, "aab", "ba");
 
-    auto q = to_presentation<word_type>(p);
+    auto q = to<Presentation<word_type>>(p);
 
     ToddCoxeter tc(congruence_kind::twosided, q);
     REQUIRE(tc.number_of_classes() == 12);
@@ -4287,7 +4287,7 @@ namespace libsemigroups {
     Sims1       s(p);
     auto const& pp = s.presentation();
 
-    // REQUIRE(to_presentation<std::string>(s.presentation()).rules
+    // REQUIRE(to<Presentation<std::string>>(s.presentation()).rules
     //         == std::vector<std::string>());
     s.number_of_threads(std::thread::hardware_concurrency());
     // REQUIRE(s.number_of_congruences(126) == 37'951);

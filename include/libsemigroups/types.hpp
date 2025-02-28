@@ -69,7 +69,7 @@ namespace libsemigroups {
   //! be 2-sided, left, or right.
   enum class congruence_kind {
     //! Value representing a one-sided congruence.
-    onesided = 0,
+    onesided = 1,
     //! Value representing a two-sided congruence.
     twosided = 2
   };

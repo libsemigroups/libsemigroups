@@ -46,7 +46,7 @@
 #include "libsemigroups/presentation.hpp"          // for Presentation, add...
 #include "libsemigroups/ranges.hpp"                // for ranges
 #include "libsemigroups/runner.hpp"                // for delta
-#include "libsemigroups/to-froidure-pin.hpp"       // for to_froidure_pin
+#include "libsemigroups/to-froidure-pin.hpp"       // for to<FroidurePin>
 #include "libsemigroups/todd-coxeter-helpers.hpp"  // for normal_forms, ind...
 #include "libsemigroups/transf.hpp"                // for Transf
 #include "libsemigroups/types.hpp"                 // for word_type, tril
@@ -181,13 +181,13 @@ namespace libsemigroups {
                                    Congruence<word_type>,
                                    KnuthBendix<word_type>) {
     auto rg = ReportGuard(false);
-    auto S  = to_froidure_pin(
+    auto S  = make<FroidurePin>(
         {Transf<>({1, 3, 4, 2, 3}), Transf<>({3, 2, 1, 3, 3})});
 
     REQUIRE(S.size() == 88);
     REQUIRE(S.number_of_rules() == 18);
 
-    TestType cong(twosided, to_presentation<word_type>(S));
+    TestType cong(twosided, to<Presentation<word_type>>(S));
 
     congruence_common::add_generating_pair(
         cong,
@@ -226,13 +226,13 @@ namespace libsemigroups {
                                    Congruence<word_type>,
                                    KnuthBendix<word_type>) {
     auto rg = ReportGuard(false);
-    auto S  = to_froidure_pin(
+    auto S  = make<FroidurePin>(
         {Transf<>({1, 3, 4, 2, 3}), Transf<>({3, 2, 1, 3, 3})});
 
     REQUIRE(S.size() == 88);
     REQUIRE(S.number_of_rules() == 18);
 
-    TestType cong(onesided, to_presentation<word_type>(S));
+    TestType cong(onesided, to<Presentation<word_type>>(S));
     congruence::add_generating_pair(
         cong,
         froidure_pin::factorisation(S, Transf<>({3, 4, 4, 4, 4})),
@@ -276,7 +276,7 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("CongruenceCommon",
                                    "006",
-                                   "to_froidure_pin",
+                                   "to<FroidurePin>",
                                    "[quick]",
                                    Kambites<>) {
     auto                      rg = ReportGuard(false);
@@ -288,13 +288,13 @@ namespace libsemigroups {
 
     TestType cong(twosided, p);
 
-    auto fp = to_froidure_pin(cong);
+    auto fp = to<FroidurePin>(cong);
 
-    fp->enumerate(1'000);
-    REQUIRE(!fp->finished());
-    REQUIRE(fp->current_size() == 8'205);
+    fp.enumerate(1'000);
+    REQUIRE(!fp.finished());
+    REQUIRE(fp.current_size() == 8'205);
 
-    REQUIRE((froidure_pin::current_normal_forms(*fp) | ToString(p.alphabet())
+    REQUIRE((froidure_pin::current_normal_forms(fp) | ToString(p.alphabet())
              | rx::take(100) | rx::to_vector())
             == std::vector<std::string>(  // codespell:begin-ignore
                 {"a",   "b",   "c",   "d",   "e",   "f",   "g",   "aa",  "ab",
@@ -313,7 +313,7 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("CongruenceCommon",
                                    "007",
-                                   "to_froidure_pin",
+                                   "to<FroidurePin>",
                                    "[quick]",
                                    KnuthBendix<std::string>,
                                    ToddCoxeter<std::string>) {
@@ -331,14 +331,12 @@ namespace libsemigroups {
     TestType cong(twosided, p);
 
     REQUIRE(cong.number_of_classes() == 12);
-    // TODO(0) add Congruence<std::string> above when all to_froidure_pin return
-    // unique_ptrs
-    REQUIRE(to_froidure_pin(cong).size() == 12);
+    REQUIRE(to<FroidurePin>(cong).size() == 12);
   }
 
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("CongruenceCommon",
                                    "008",
-                                   "to_froidure_pin",
+                                   "to<FroidurePin>",
                                    "[quick]",
                                    Congruence<std::string>) {
     auto rg = ReportGuard(false);
@@ -356,7 +354,7 @@ namespace libsemigroups {
     TestType cong(twosided, p);
 
     REQUIRE(cong.number_of_classes() == 12);
-    REQUIRE(to_froidure_pin(cong)->size() == 12);
+    REQUIRE(to<FroidurePin>(cong)->size() == 12);
 
     p.init();
     p.alphabet("abcdefg");
@@ -367,7 +365,7 @@ namespace libsemigroups {
     cong.init(twosided, p);
     REQUIRE(cong.number_of_classes() == POSITIVE_INFINITY);
 
-    auto fp = to_froidure_pin(cong);
+    auto fp = to<FroidurePin>(cong);
     fp->enumerate(1'000);
     REQUIRE(fp->current_size() == 8'205);
   }

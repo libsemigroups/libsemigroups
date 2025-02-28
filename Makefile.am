@@ -103,11 +103,15 @@ pkginclude_HEADERS += include/libsemigroups/sims.hpp
 pkginclude_HEADERS += include/libsemigroups/sims.tpp
 pkginclude_HEADERS += include/libsemigroups/stephen.hpp
 pkginclude_HEADERS += include/libsemigroups/stephen.tpp
+pkginclude_HEADERS += include/libsemigroups/to-cong.hpp
+pkginclude_HEADERS += include/libsemigroups/to-cong.tpp
 pkginclude_HEADERS += include/libsemigroups/to-froidure-pin.hpp
+pkginclude_HEADERS += include/libsemigroups/to-froidure-pin.tpp
 pkginclude_HEADERS += include/libsemigroups/to-knuth-bendix.hpp
 pkginclude_HEADERS += include/libsemigroups/to-presentation.hpp
 pkginclude_HEADERS += include/libsemigroups/to-presentation.tpp
 pkginclude_HEADERS += include/libsemigroups/to-todd-coxeter.hpp
+pkginclude_HEADERS += include/libsemigroups/to-todd-coxeter.tpp
 pkginclude_HEADERS += include/libsemigroups/todd-coxeter-class.hpp
 pkginclude_HEADERS += include/libsemigroups/todd-coxeter-class.tpp
 pkginclude_HEADERS += include/libsemigroups/todd-coxeter-helpers.hpp
@@ -668,9 +672,6 @@ libsemigroups_la_SOURCES += src/presentation.cpp
 libsemigroups_la_SOURCES += src/runner.cpp
 libsemigroups_la_SOURCES += src/sims.cpp
 libsemigroups_la_SOURCES += src/stephen.cpp
-libsemigroups_la_SOURCES += src/to-froidure-pin.cpp
-libsemigroups_la_SOURCES += src/to-knuth-bendix.cpp
-libsemigroups_la_SOURCES += src/to-todd-coxeter.cpp
 libsemigroups_la_SOURCES += src/todd-coxeter-helpers.cpp
 libsemigroups_la_SOURCES += src/ukkonen.cpp
 libsemigroups_la_SOURCES += src/word-range.cpp
@@ -777,7 +778,9 @@ EXTRA_PROGRAMS += test_stephen
 EXTRA_PROGRAMS += test_string
 EXTRA_PROGRAMS += test_timer
 EXTRA_PROGRAMS += test_to_froidure_pin
+EXTRA_PROGRAMS += test_to_knuth_bendix
 EXTRA_PROGRAMS += test_to_presentation
+EXTRA_PROGRAMS += test_to_todd_coxeter
 EXTRA_PROGRAMS += test_todd_coxeter
 EXTRA_PROGRAMS += test_transf
 EXTRA_PROGRAMS += test_types
@@ -871,7 +874,9 @@ test_all_SOURCES += tests/test-stephen.cpp
 test_all_SOURCES += tests/test-string.cpp
 test_all_SOURCES += tests/test-timer.cpp
 test_all_SOURCES += tests/test-to-froidure-pin.cpp
+test_all_SOURCES += tests/test-to-knuth-bendix.cpp
 test_all_SOURCES += tests/test-to-presentation.cpp
+test_all_SOURCES += tests/test-to-todd-coxeter.cpp
 test_all_SOURCES += tests/test-todd-coxeter.cpp
 test_all_SOURCES += tests/test-transf.cpp
 test_all_SOURCES += tests/test-types.cpp
@@ -1022,8 +1027,8 @@ test_kambites_SOURCES =  tests/test-kambites.cpp
 test_kambites_SOURCES += tests/test-main.cpp
 test_kambites_SOURCES += tests/catch_amalgamated.cpp
 
-# TODO what happened to the KBE tests?
-test_kbe_SOURCES = tests/test-main.cpp
+test_kbe_SOURCES =  tests/test-main.cpp
+test_kbe_SOURCES += tests/test-kbe.cpp
 test_kbe_SOURCES += tests/catch_amalgamated.cpp
 
 test_knuth_bendix_SOURCES =  tests/test-knuth-bendix-1.cpp
@@ -1123,9 +1128,17 @@ test_to_froidure_pin_SOURCES =  tests/test-to-froidure-pin.cpp
 test_to_froidure_pin_SOURCES += tests/test-main.cpp
 test_to_froidure_pin_SOURCES += tests/catch_amalgamated.cpp
 
+test_to_knuth_bendix_SOURCES =  tests/test-to-knuth-bendix.cpp
+test_to_knuth_bendix_SOURCES += tests/test-main.cpp
+test_to_knuth_bendix_SOURCES += tests/catch_amalgamated.cpp
+
 test_to_presentation_SOURCES =  tests/test-to-presentation.cpp
 test_to_presentation_SOURCES += tests/test-main.cpp
 test_to_presentation_SOURCES += tests/catch_amalgamated.cpp
+
+test_to_todd_coxeter_SOURCES =  tests/test-to-todd-coxeter.cpp
+test_to_todd_coxeter_SOURCES += tests/test-main.cpp
+test_to_todd_coxeter_SOURCES += tests/catch_amalgamated.cpp
 
 test_todd_coxeter_SOURCES =  tests/test-todd-coxeter.cpp
 test_todd_coxeter_SOURCES += tests/test-main.cpp

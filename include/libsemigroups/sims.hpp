@@ -76,7 +76,7 @@
 #include "dot.hpp"           // for Dot
 #include "exception.hpp"     // for LIBSEMIGROUPS_EXCEPTION
 #include "forest.hpp"        // for Forest
-#include "knuth-bendix.hpp"  // for KnuthBendix, to_presentation
+#include "knuth-bendix.hpp"  // for KnuthBendix, to<Presentation>
 #include "matrix.hpp"        // for DynamicMatrix, MatrixCommon, BMat
 #include "presentation.hpp"  // for Presentation, longest_rule_length, short...
 #include "ranges.hpp"        // for operator|, iterator_range
@@ -493,7 +493,7 @@ namespace libsemigroups {
     //!
     //! \returns A reference to \c this.
     //!
-    //! \throws LibsemigroupsException if `to_presentation<word_type>(p)`
+    //! \throws LibsemigroupsException if `to<Presentation<word_type>>(p)`
     //! throws.
     //!
     //! \throws LibsemigroupsException if `p` is not valid.
@@ -1570,7 +1570,8 @@ namespace libsemigroups {
     //!
     //! \param p the presentation.
     //!
-    //! \throws LibsemigroupsException if `to_presentation<word_type>(p)` throws
+    //! \throws LibsemigroupsException if `to<Presentation<word_type>>(p)`
+    //! throws
     //! \throws LibsemigroupsException if `p` is not valid
     //! \throws LibsemigroupsException if `p` has 0-generators and 0-relations.
     //!
@@ -1613,7 +1614,8 @@ namespace libsemigroups {
     //!
     //! \returns A reference to \c *this.
     //!
-    //! \throws LibsemigroupsException if `to_presentation<word_type>(p)` throws
+    //! \throws LibsemigroupsException if `to<Presentation<word_type>>(p)`
+    //! throws
     //! \throws LibsemigroupsException if `p` is not valid
     //! \throws LibsemigroupsException if `p` has 0-generators and 0-relations.
     //!
@@ -1875,7 +1877,8 @@ namespace libsemigroups {
     //!
     //! \returns A reference to \c *this.
     //!
-    //! \throws LibsemigroupsException if `to_presentation<word_type>(p)` throws
+    //! \throws LibsemigroupsException if `to<Presentation<word_type>>(p)`
+    //! throws
     //! \throws LibsemigroupsException if `p` is not valid
     //! \throws LibsemigroupsException if `p` has 0-generators and 0-relations.
     //!

@@ -22,7 +22,18 @@
 #ifndef LIBSEMIGROUPS_DETAIL_KAMBITES_NF_HPP_
 #define LIBSEMIGROUPS_DETAIL_KAMBITES_NF_HPP_
 
+#include "ke.hpp"
+
 namespace libsemigroups {
+
+  template <typename Element, typename Traits>
+  class FroidurePin;
+
+  template <template <typename...> typename Thing, typename Word>
+  auto to(Kambites<Word>& k) -> std::enable_if_t<
+      std::is_same_v<Thing<detail::KE<Word>>, FroidurePin<detail::KE<Word>>>,
+      FroidurePin<detail::KE<Word>>>;
+
   namespace detail {
     template <typename Word>
     class KambitesNormalFormRange {
@@ -45,10 +56,11 @@ namespace libsemigroups {
 
       KambitesNormalFormRange& init(Kambites<Word>& k) {
         _current.clear();
-        _fpb = to_froidure_pin(k);
-        _it  = _fpb->cbegin_current_normal_forms();
-        _k   = &k;
-        _end = _fpb->cend_current_normal_forms();
+        auto fp = to<FroidurePin>(k);
+        _fpb    = std::make_unique<decltype(fp)>(std::move(fp));
+        _it     = _fpb->cbegin_current_normal_forms();
+        _k      = &k;
+        _end    = _fpb->cend_current_normal_forms();
         return *this;
       }
 

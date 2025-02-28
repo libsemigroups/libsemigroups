@@ -24,48 +24,58 @@
 #include "catch_amalgamated.hpp"  // for REQUIRE, REQUIRE_THROWS_AS, REQUI...
 #include "test-main.hpp"          // for LIBSEMIGROUPS_TEST_CASE
 
+#include "libsemigroups/cong.hpp"             // for Congruence
 #include "libsemigroups/constants.hpp"        // for UNDEFINED
 #include "libsemigroups/exception.hpp"        // for LIBSEMIGROUPS_EXCEPTION
 #include "libsemigroups/froidure-pin.hpp"     // for FroidurePin, Froidure...
+#include "libsemigroups/knuth-bendix.hpp"     // for KnuthBendix
 #include "libsemigroups/to-froidure-pin.hpp"  // for make
 #include "libsemigroups/transf.hpp"           // for Transf
+#include "libsemigroups/types.hpp"            // for congruence_kind
 #include "libsemigroups/word-graph.hpp"       // for WordGraph
 
 #include "libsemigroups/detail/report.hpp"  // for ReportGuard
 
 namespace libsemigroups {
 
-  LIBSEMIGROUPS_TEST_CASE("to_froidure_pin<Transf>",
+  using RewriteTrie     = detail::RewriteTrie;
+  using RewriteFromLeft = detail::RewriteFromLeft;
+
+  congruence_kind constexpr twosided = congruence_kind::twosided;
+
+#define REWRITER_TYPES RewriteTrie, RewriteFromLeft
+
+  LIBSEMIGROUPS_TEST_CASE("to<FroidurePin>",
                           "000",
                           "from WordGraph",
-                          "[quick][to_froidure_pin]") {
+                          "[quick]") {
     auto rg = ReportGuard(false);
-    auto ad = make<WordGraph<uint8_t>>(
+    auto wg = make<WordGraph<uint8_t>>(
         5,
         {{1, 3, 4, 1}, {0, 0, 1, 1}, {2, 1, 2, 2}, {3, 2, 3, 3}, {4, 4, 4, 4}});
-    auto T = to_froidure_pin<Transf<5>>(ad);
+    auto T = to<FroidurePin<Transf<5>>>(wg);
     REQUIRE(T.size() == 625);
-    auto U = to_froidure_pin<Transf<0, uint8_t>>(ad);
+    auto U = to<FroidurePin<Transf<0, uint8_t>>>(wg);
     REQUIRE(U.size() == 625);
-    auto V = to_froidure_pin<Transf<0, uint8_t>>(ad, 4, 5);
+    auto V = to<FroidurePin<Transf<0, uint8_t>>>(wg, 4, 5);
     REQUIRE(V.size() == 1);
-    auto W = to_froidure_pin<Transf<0, uint8_t>>(ad, 0, 0);
-    REQUIRE(W.size() == 1);
+    REQUIRE_THROWS_AS((to<FroidurePin<Transf<0, uint8_t>>>(wg, 0, 0)),
+                      LibsemigroupsException);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("to_froidure_pin<Transf>",
+  LIBSEMIGROUPS_TEST_CASE("to<FroidurePin>",
                           "001",
                           "from WordGraph (exceptions)",
-                          "[quick][make]") {
+                          "[quick]") {
     auto rg = ReportGuard(false);
-    auto ad = make<WordGraph<uint8_t>>(
+    auto wg = make<WordGraph<uint8_t>>(
         5,
         {{1, 3, 4, 1}, {0, 0, 1, 1}, {2, 1, 2, 2}, {3, 2, 3, 3}, {4, 4, 4, 4}});
-    REQUIRE_THROWS_AS((to_froidure_pin<Transf<0, uint8_t>>(ad, 10, 0)),
+    REQUIRE_THROWS_AS((to<FroidurePin<Transf<0, uint8_t>>>(wg, 10, 0)),
                       LibsemigroupsException);
-    REQUIRE_THROWS_AS((to_froidure_pin<Transf<0, uint8_t>>(ad, 10, 11)),
+    REQUIRE_THROWS_AS((to<FroidurePin<Transf<0, uint8_t>>>(wg, 10, 11)),
                       LibsemigroupsException);
-    REQUIRE_THROWS_AS((to_froidure_pin<Transf<0, uint8_t>>(ad, 0, 11)),
+    REQUIRE_THROWS_AS((to<FroidurePin<Transf<0, uint8_t>>>(wg, 0, 11)),
                       LibsemigroupsException);
   }
 
@@ -73,9 +83,8 @@ namespace libsemigroups {
     template <typename Word, typename OtherWord = Word>
     void check_from_ke(Presentation<Word> const& p) {
       using literals::    operator""_w;
-      Kambites<OtherWord> k(congruence_kind::twosided, p);
-      auto                ptr = to_froidure_pin(k);
-      auto& s = static_cast<FroidurePin<detail::KE<OtherWord>>&>(*ptr);
+      Kambites<OtherWord> k(twosided, p);
+      auto                s = to<FroidurePin>(k);
       REQUIRE(s.is_finite() == tril::FALSE);
       s.enumerate(100);
       REQUIRE(s.current_size() == 8'205);
@@ -124,17 +133,17 @@ namespace libsemigroups {
       }
 
       REQUIRE(Complexity<decltype(v)>()(v) == LIMIT_MAX);
-      IncreaseDegree<decltype(v)>()(v);
+      IncreaseDegree<decltype(v)>()(v, 0);
       REQUIRE(Degree<decltype(v)>()(v) == 0);
       v = One<decltype(v)>()();
       REQUIRE(v.to_word(k) == ""_w);
     }
   }  // namespace
 
-  LIBSEMIGROUPS_TEST_CASE("to_froidure_pin<KE>",
+  LIBSEMIGROUPS_TEST_CASE("to<FroidurePin>",
                           "002",
                           "from Kambites (code cov)",
-                          "[quick][make][no-valgrind]") {
+                          "[quick][no-valgrind]") {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("abcdefg");
@@ -142,13 +151,13 @@ namespace libsemigroups {
     presentation::add_rule(p, "ef", "dg");
     check_from_ke(p);
     check_from_ke<std::string, detail::MultiStringView>(p);
-    check_from_ke<word_type>(to_presentation<word_type>(p));
+    check_from_ke<word_type>(to<Presentation<word_type>>(p));
   }
 
-  LIBSEMIGROUPS_TEST_CASE("to_froidure_pin<KE>",
+  LIBSEMIGROUPS_TEST_CASE("to<FroidurePin>",
                           "003",
                           "from Kambites (exceptions)",
-                          "[quick][make]") {
+                          "[quick]") {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("ab");
@@ -156,125 +165,147 @@ namespace libsemigroups {
     REQUIRE_THROWS_AS(check_from_ke(p), LibsemigroupsException);
     REQUIRE_THROWS_AS((check_from_ke<std::string, detail::MultiStringView>(p)),
                       LibsemigroupsException);
-    REQUIRE_THROWS_AS((check_from_ke<word_type>(to_presentation<word_type>(p))),
-                      LibsemigroupsException);
+    REQUIRE_THROWS_AS(
+        (check_from_ke<word_type>(to<Presentation<word_type>>(p))),
+        LibsemigroupsException);
   }
 
-  /*
-  LIBSEMIGROUPS_TEST_CASE("to_froidure_pin<TCE>",
-                          "002",
-                          "from Todd-Coxeter",
-                          "[quick][make]") {
-    using TCE            = detail::TCE;
-    using FroidurePinTCE = FroidurePin<TCE>;
+  LIBSEMIGROUPS_TEST_CASE("to<FroidurePin>",
+                          "004",
+                          "from KnuthBendix",
+                          "[quick]") {
+    auto                  rg = ReportGuard(false);
+    FroidurePin<Transf<>> S;
+    S.add_generator(Transf<>({1, 0}));
+    S.add_generator(Transf<>({0, 0}));
 
-    auto rg = ReportGuard(false);
+    KnuthBendix kb(twosided, to<Presentation<word_type>>(S));
+    auto        s = to<FroidurePin>(kb);
+    REQUIRE(s.size() == kb.number_of_classes());
+    REQUIRE(s.size() == 4);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("to<FroidurePin>",
+                          "005",
+                          "from Todd-Coxeter",
+                          "[quick]") {
+    using literals::operator""_w;
+    auto            rg = ReportGuard(false);
 
     Presentation<word_type> p;
     p.alphabet(4);
-    presentation::add_rule(p, {0, 0}, {0});
-    presentation::add_rule(p, {1, 0}, {1});
-    presentation::add_rule(p, {0, 1}, {1});
-    presentation::add_rule(p, {2, 0}, {2});
-    presentation::add_rule(p, {0, 2}, {2});
-    presentation::add_rule(p, {3, 0}, {3});
-    presentation::add_rule(p, {0, 3}, {3});
-    presentation::add_rule(p, {1, 1}, {0});
-    presentation::add_rule(p, {2, 3}, {0});
-    presentation::add_rule(p, {2, 2, 2}, {0});
-    presentation::add_rule(
-        p, {1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2}, {0});
-    presentation::add_rule(p,
-                                     {1, 2, 1, 3, 1, 2, 1, 3, 1, 2, 1,
-                                      3, 1, 2, 1, 3, 1, 2, 1, 3, 1, 2,
-                                      1, 3, 1, 2, 1, 3, 1, 2, 1, 3},
-                                     {0});
-    // TODO
+    p.rules = {00_w,
+               0_w,
+               10_w,
+               1_w,
+               01_w,
+               1_w,
+               20_w,
+               2_w,
+               02_w,
+               2_w,
+               30_w,
+               3_w,
+               03_w,
+               3_w,
+               11_w,
+               0_w,
+               23_w,
+               0_w,
+               222_w,
+               0_w,
+               12121212121212_w,
+               0_w,
+               12131213121312131213121312131213_w,
+               0_w};
     ToddCoxeter tc(twosided, p);
 
-    section_felsch(tc);
-
-    // check_hlt(tc);
-    // check_felsch(tc);
-    // check_random(tc);
-    // check_Rc_style(tc);
-    // check_R_over_C_style(tc);
-    // check_CR_style(tc);
-    // check_Cr_style(tc);
     REQUIRE(tc.number_of_classes() == 10'752);
-    check_complete_compatible(tc);
+    auto S = to<FroidurePin>(tc);
+    REQUIRE(S.size() == 10'752);
   }
-      // Take a copy to test copy constructor
-      auto& S = static_cast<FroidurePinTCE&>(*tc.quotient_froidure_pin());
-      auto  T = S.copy_closure({S.generator(0)});
 
-      REQUIRE(T.size() == S.size());
-      REQUIRE(T.number_of_generators() == S.number_of_generators());
+  LIBSEMIGROUPS_TEST_CASE("to<FroidurePin>",
+                          "006",
+                          "from Congruence",
+                          "[quick]") {
+    auto                      rg = ReportGuard(false);
+    Presentation<std::string> p;
+    p.alphabet("abBe");
+    presentation::add_identity_rules(p, 'e');
+    presentation::add_rule(p, "aa", "e");
+    presentation::add_rule(p, "BB", "b");
+    presentation::add_rule(p, "BaBaBaB", "abababa");
+    presentation::add_rule(p, "aBabaBabaBabaBab", "BabaBabaBabaBaba");
 
-      REQUIRE(S.size() == 10'752);
-      REQUIRE(S.number_of_idempotents() == 1);
-      for (size_t c = 0; c < tc.number_of_classes(); ++c) {
-        REQUIRE(tc.class_index_to_word(c) == froidure_pin::factorisation(S, c));
-        REQUIRE(tc.word_to_class_index(tc.class_index_to_word(c)) == c);
-      }
-      REQUIRE(tc.finished());
+    Congruence cong(twosided, p);
+    congruence::add_generating_pair(cong, "a", "b");
 
-      tc.standardize(order::recursive);
-      REQUIRE(std::is_sorted(tc.cbegin_normal_forms(),
-                             tc.cend_normal_forms(),
-                             RecursivePathCompare<word_type>{}));
-      REQUIRE(std::vector<word_type>(tc.cbegin_normal_forms(),
-                                     tc.cbegin_normal_forms() + 10)
-              == std::vector<word_type>({{{0},
-                                          {1},
-                                          {2},
-                                          {2, 1},
-                                          {1, 2},
-                                          {1, 2, 1},
-                                          {2, 2},
-                                          {2, 2, 1},
-                                          {2, 1, 2},
-                                          {2, 1, 2, 1}}}));
+    REQUIRE(cong.number_of_classes() == 4);
+    REQUIRE(!to<FroidurePin>(cong)->contains_one());
+  }
 
-      tc.standardize(order::lex);
-      for (size_t c = 0; c < tc.number_of_classes(); ++c) {
-        REQUIRE(tc.word_to_class_index(tc.class_index_to_word(c)) == c);
-      }
-      REQUIRE(std::is_sorted(tc.cbegin_normal_forms(),
-                             tc.cend_normal_forms(),
-                             LexicographicalCompare<word_type>{}));
-      REQUIRE(std::vector<word_type>(tc.cbegin_normal_forms(),
-                                     tc.cbegin_normal_forms() + 10)
-              == std::vector<word_type>({{0},
-                                         {0, 1},
-                                         {0, 1, 2},
-                                         {0, 1, 2, 1},
-                                         {0, 1, 2, 1, 2},
-                                         {0, 1, 2, 1, 2, 1},
-                                         {0, 1, 2, 1, 2, 1, 2},
-                                         {0, 1, 2, 1, 2, 1, 2, 1},
-                                         {0, 1, 2, 1, 2, 1, 2, 1, 2},
-                                         {0, 1, 2, 1, 2, 1, 2, 1, 2, 1}}));
-      tc.standardize(order::shortlex);
-      for (size_t c = 0; c < tc.number_of_classes(); ++c) {
-        REQUIRE(tc.word_to_class_index(tc.class_index_to_word(c)) == c);
-      }
-      REQUIRE(std::is_sorted(tc.cbegin_normal_forms(),
-                             tc.cend_normal_forms(),
-                             ShortLexCompare<word_type>{}));
-      REQUIRE(std::vector<word_type>(tc.cbegin_normal_forms(),
-                                     tc.cbegin_normal_forms() + 10)
-              == std::vector<word_type>({{0},
-                                         {1},
-                                         {2},
-                                         {3},
-                                         {1, 2},
-                                         {1, 3},
-                                         {2, 1},
-                                         {3, 1},
-                                         {1, 2, 1},
-                                         {1, 3, 1}}));
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("to<FroidurePin>",
+                                   "007",
+                                   "from KnuthBendix",
+                                   "[quick]",
+                                   REWRITER_TYPES) {
+    using literals::        operator""_w;
+    auto                    rg = ReportGuard(false);
+    Presentation<word_type> p;
+    p.alphabet(2);
+    presentation::add_rule(p, 000_w, 0_w);
+    presentation::add_rule(p, 1111_w, 1_w);
+    presentation::add_rule(p, 011111011_w, 110_w);
+
+    KnuthBendix<word_type, TestType> kb(twosided, p);
+    REQUIRE(to<FroidurePin>(kb).size() == 12);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("to<FroidurePin>",
+                          "008",
+                          "from ToddCoxeter",
+                          "[quick]") {
+    using literals::        operator""_w;
+    Presentation<word_type> p;
+    p.alphabet(4);
+    presentation::add_rule(p, 00_w, 0_w);
+    presentation::add_rule(p, 10_w, 1_w);
+    presentation::add_rule(p, 01_w, 1_w);
+    presentation::add_rule(p, 20_w, 2_w);
+    presentation::add_rule(p, 02_w, 2_w);
+    presentation::add_rule(p, 30_w, 3_w);
+    presentation::add_rule(p, 03_w, 3_w);
+    presentation::add_rule(p, 11_w, 0_w);
+    presentation::add_rule(p, 23_w, 0_w);
+    presentation::add_rule(p, 222_w, 0_w);
+    presentation::add_rule(p, 12121212121212_w, 0_w);
+    presentation::add_rule(p, 12131213121312131213121312131213_w, 0_w);
+
+    ToddCoxeter tc(twosided, p);
+
+    auto S = to<FroidurePin>(tc);
+    auto T = froidure_pin::copy_closure(S, {S.generator(0)});
+
+    REQUIRE(T.size() == S.size());
+    REQUIRE(T.number_of_generators() == S.number_of_generators());
+
+    REQUIRE(S.size() == 10'752);
+    REQUIRE(S.number_of_idempotents() == 1);
+    for (size_t c = 0; c < tc.number_of_classes(); ++c) {
+      REQUIRE(todd_coxeter::word_of(tc, c)
+              == froidure_pin::factorisation(S, c));
+      REQUIRE(todd_coxeter::index_of(tc, todd_coxeter::word_of(tc, c)) == c);
     }
-*/
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("to<FroidurePin>",
+                          "009",
+                          "from default constructed Kambites",
+                          "[quick]") {
+    Kambites<std::string> k;
+    auto                  fp = to<FroidurePin>(k);
+    REQUIRE(fp.size() == 0);
+  }
 
 }  // namespace libsemigroups
