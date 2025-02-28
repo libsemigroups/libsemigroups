@@ -502,8 +502,7 @@ namespace libsemigroups {
     //! not compatible with \ref included_pairs or \ref excluded_pairs.
     //!
     //! \throws LibsemigroupsException if `p` has 0-generators and 0-relations.
-    template <typename Word>
-    Subclass& presentation(Presentation<Word> const& p);
+    Subclass& presentation(Presentation<word_type> const& p);
 
     //! \brief Get the presentation over which the congruences produced by an
     //! instance are defined.
@@ -1575,16 +1574,12 @@ namespace libsemigroups {
     //!
     //! \sa presentation
     //! \sa init
-    // TODO(0) remove template
-    template <typename Word>
-    explicit Sims1(Presentation<Word> const& p) : Sims1() {
+    explicit Sims1(Presentation<word_type> const& p) : Sims1() {
       presentation(p);
     }
 
     //! \copydoc Sims1::Sims1(Presentation<Word> const&)
-    // TODO(0) remove template
-    template <typename Word>
-    explicit Sims1(Presentation<Word> const&& p) : Sims1() {
+    explicit Sims1(Presentation<word_type> const&& p) : Sims1() {
       presentation(std::move(p));
     }
 
@@ -1857,14 +1852,12 @@ namespace libsemigroups {
     ~Sims2() = default;
 
     //! \copydoc Sims1::Sims1(Presentation<Word> const&)
-    template <typename Word>
-    explicit Sims2(Presentation<Word> const& p) : Sims2() {
+    explicit Sims2(Presentation<word_type> const& p) : Sims2() {
       presentation(p);
     }
 
     //! \copydoc Sims1::Sims1(Presentation<Word> const&)
-    template <typename Word>
-    explicit Sims2(Presentation<Word> const&& p) : Sims2() {
+    explicit Sims2(Presentation<word_type> const&& p) : Sims2() {
       presentation(std::move(p));
     }
 

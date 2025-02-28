@@ -65,8 +65,8 @@ namespace libsemigroups {
   }
 
   template <typename Subclass>
-  template <typename Word>
-  Subclass& SimsSettings<Subclass>::presentation(Presentation<Word> const& p) {
+  Subclass&
+  SimsSettings<Subclass>::presentation(Presentation<word_type> const& p) {
     if (p.alphabet().empty()) {
       LIBSEMIGROUPS_EXCEPTION(
           "the argument (a presentation) must not have 0 generators");
@@ -76,26 +76,21 @@ namespace libsemigroups {
     // calls the concete implementation like e.g. ToddCoxeter
     // TODO(0): (reiniscirpons) use the citw stuff from ToddCoxeter once its
     // available.
-    Presentation<word_type> p_copy;
-    if constexpr (std::is_same_v<Word, word_type>) {
-      p_copy = p;
-      presentation::normalize_alphabet(p_copy);
-    } else {
-      p_copy = to<Presentation<word_type>>(p);
-    }
+
+    presentation::throw_if_not_normalized(p);
     try {
       presentation::validate_rules(
-          p_copy, included_pairs().cbegin(), included_pairs().cend());
+          p, included_pairs().cbegin(), included_pairs().cend());
       presentation::validate_rules(
-          p_copy, excluded_pairs().cbegin(), excluded_pairs().cend());
+          p, excluded_pairs().cbegin(), excluded_pairs().cend());
     } catch (LibsemigroupsException const& e) {
       LIBSEMIGROUPS_EXCEPTION(
           "the argument (a presentation) is not compatible with "
-          "included_pairs() and "
-          "excluded_pairs(), the following exception was thrown:\n{}",
+          "included_pairs() and excluded_pairs(), the following exception was "
+          "thrown :\n {} ",
           e.what());
     }
-    _presentation = std::move(p_copy);
+    _presentation = p;
     _longs_begin  = _presentation.rules.cend();
     return static_cast<Subclass&>(*this);
   }
