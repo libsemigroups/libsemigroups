@@ -514,7 +514,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("Sims1",
                           "005",
                           "partition_monoid(3)",
-                          "[standard][low-index][no-coverage]") {
+                          "[quick][low-index][no-coverage]") {
     auto rg = ReportGuard(false);
     auto p  = presentation::examples::partition_monoid_HR05(3);
     REQUIRE(p.contains_empty_word());
@@ -864,6 +864,8 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Sims1", "021", "exceptions", "[quick][low-index]") {
+    auto rg = ReportGuard(false);
+
     Presentation<word_type> p;
     p.alphabet({0, 1, 2});
     presentation::add_rule(p, {0, 1, 0}, {0, 0});
@@ -891,8 +893,8 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("Sims1",
                           "022",
                           "singular_brauer_monoid(4) (Maltcev-Mazorchuk)",
-                          "[standard][sims1][no-coverage]") {
-    auto                     rg = ReportGuard(true);
+                          "[extreme][sims1][no-coverage]") {
+    auto                     rg = ReportGuard(false);
     FroidurePin<Bipartition> S;
     S.add_generator(Bipartition({{1, 2}, {3, -1}, {4, -2}, {-3, -4}}));
     S.add_generator(Bipartition({{1, 2}, {3, -1}, {4, -4}, {-2, -3}}));
@@ -983,7 +985,7 @@ namespace libsemigroups {
 
       auto const& wg2 = sims.find_if(wg.number_of_active_nodes() - 2,
                                      [](auto const&) { return true; });
-      REQUIRE(sims.stats().total_pending_now == 1'930'725);
+      REQUIRE(sims.stats().total_pending_now == 2'301'444);
       REQUIRE(wg2.number_of_active_nodes() == 0);
     }
     {
@@ -991,9 +993,9 @@ namespace libsemigroups {
 
       auto const& wg = sims.number_of_threads(1).find_if(82, filter);
       REQUIRE(wg.number_of_active_nodes() == 18);
-      REQUIRE(sims.stats().total_pending_now == 1'014'357);
+      REQUIRE(sims.stats().total_pending_now == 3'315'801);
       auto const& wg2 = sims.find_if(wg.number_of_active_nodes() - 2, filter);
-      REQUIRE(sims.stats().total_pending_now == 3'374'651);
+      REQUIRE(sims.stats().total_pending_now == 6'690'452);
       REQUIRE(wg2.number_of_active_nodes() == 0);
     }
     {
@@ -1006,7 +1008,7 @@ namespace libsemigroups {
                 .word_graph();
       REQUIRE(d.number_of_nodes() == 18);
       REQUIRE(orc.target_size() == 82);
-      REQUIRE(orc.stats().total_pending_now == 3'626'612);
+      REQUIRE(orc.stats().total_pending_now == 4'685'894);
     }
     {
       MinimalRepOrc       orc;
@@ -1020,7 +1022,7 @@ namespace libsemigroups {
                 .word_graph();
       REQUIRE(d.number_of_nodes() == 18);
       REQUIRE(orc.target_size() == 82);
-      REQUIRE(orc.stats().total_pending_now == 2'074'472);
+      REQUIRE(orc.stats().total_pending_now == 2'464'042);
     }
 
     //   // p.contains_empty_word(false);
@@ -1627,6 +1629,8 @@ namespace libsemigroups {
                           "036",
                           "check iterator requirements",
                           "[quick][sims1]") {
+    auto rg = ReportGuard(false);
+
     Presentation<word_type> p;
     p.contains_empty_word(true);
     p.alphabet(01_w);
@@ -2151,7 +2155,7 @@ namespace libsemigroups {
                           "048",
                           "stellar_monoid(n) n = 3",
                           "[quick][sims1][babbage]") {
-    auto   rg = ReportGuard(true);
+    auto   rg = ReportGuard(false);
     size_t n  = 3;
     auto   p  = presentation::examples::zero_rook_monoid(n);
     auto   q  = presentation::examples::stellar_monoid(n);
@@ -2583,7 +2587,7 @@ namespace libsemigroups {
                           "068",
                           "RepOrc",
                           "[quick][low-index][no-valgrind]") {
-    auto rg = ReportGuard(true);
+    auto rg = ReportGuard(false);
 
     auto   p = presentation::examples::temperley_lieb_monoid(9);
     RepOrc orc;
@@ -2616,7 +2620,7 @@ namespace libsemigroups {
                           "069",
                           "fp example 1 (settings)",
                           "[quick][low-index]") {
-    auto rg = ReportGuard(true);
+    auto rg = ReportGuard(false);
 
     Presentation<word_type> p;
     p.contains_empty_word(true);
@@ -2773,11 +2777,9 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("Sims1",
                           "070",
-                          "temperley_lieb_monoid(3) - n = minimal rep "
-                          "(single-threaded, reporting on)",
-                          "[standard][sims1]") {
-    std::cout << "\n";  // So that the reporting looks good
-    auto rg = ReportGuard(true);
+                          "temperley_lieb_monoid(3) - minimal rep (1 thread)",
+                          "[quick][sims1]") {
+    auto rg = ReportGuard(false);
 
     for (size_t n = 3; n <= 3; ++n) {
       auto p = presentation::examples::temperley_lieb_monoid(n);
@@ -2801,13 +2803,12 @@ namespace libsemigroups {
                           "071",
                           "FreeSemigroup(2) up to index 4",
                           "[quick][low-index]") {
-    auto                    rg = ReportGuard(true);
+    auto                    rg = ReportGuard(false);
     Presentation<word_type> p;
     p.contains_empty_word(true);
     p.alphabet(2);
     Sims1 S;
     S.presentation(p);
-    std::cout << "\n";  // So that the reporting looks good
     REQUIRE(S.number_of_threads(2).number_of_congruences(4) == 5'477);
   }
 
@@ -2828,6 +2829,7 @@ namespace libsemigroups {
                           "073",
                           "corner case no generators + no relations",
                           "[quick][low-index]") {
+    auto                    rg = ReportGuard(false);
     Presentation<word_type> p;
     p.alphabet(0);
     Sims1 S;
@@ -2942,7 +2944,7 @@ namespace libsemigroups {
                           "077",
                           "2x2 simple semigroups over S(4)",
                           "[quick][sims1]") {
-    auto rg = ReportGuard(true);
+    auto rg = ReportGuard(false);
 
     Presentation<std::string> p;
     p.alphabet("abc");
@@ -3493,7 +3495,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("Sims2",
                           "093",
                           "2-sided T_4",
-                          "[standard][sims2][no-valgrind][no-coverage]") {
+                          "[quick][sims2][no-valgrind][no-coverage]") {
     auto  rg = ReportGuard(false);
     Sims2 S(presentation::examples::full_transformation_monoid_II74(4));
 
@@ -3504,7 +3506,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("Sims2",
                           "094",
                           "2-sided T_4 Iwahori presentation",
-                          "[standard][sims2][low-index][no-valgrind]") {
+                          "[quick][sims2][low-index][no-valgrind]") {
     auto  rg = ReportGuard(false);
     Sims2 S(presentation::examples::full_transformation_monoid_II74(4));
     REQUIRE(S.number_of_congruences(256) == 11);
@@ -3964,7 +3966,7 @@ namespace libsemigroups {
                           "109",
                           "2-sided 2-generated free monoid",
                           "[standard][sims2][no-coverage]") {
-    auto                      rg = ReportGuard(true);
+    auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("ab");
     p.contains_empty_word(true);
@@ -3989,7 +3991,7 @@ namespace libsemigroups {
                           "110",
                           "symmetric inverse monoid (Gay)",
                           "[standard][sims2]") {
-    auto rg = ReportGuard(true);
+    auto rg = ReportGuard(false);
     auto p  = presentation::examples::symmetric_inverse_monoid_Gay18(5);
     presentation::remove_duplicate_rules(p);
     presentation::sort_each_rule(p);
@@ -4035,7 +4037,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("Sims2",
                           "112",
                           "2-sided congruence-free monoid n=8",
-                          "[standard][sims2][no-valgrind]") {
+                          "[quick][sims2][no-valgrind]") {
     auto rg = ReportGuard(false);
     // Presentation taken from
     // Al-Kharousi, F., Cain, A.J., Maltcev, V. et al.
@@ -4089,7 +4091,7 @@ namespace libsemigroups {
   LIBSEMIGROUPS_TEST_CASE("Sims2",
                           "114",
                           "2-sided 2-generated free commutative monoid",
-                          "[standard][sims2][no-valgrind]") {
+                          "[quick][sims2][no-valgrind]") {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("ab");
@@ -4121,7 +4123,7 @@ namespace libsemigroups {
                           "115",
                           "free semilattice n = 8",
                           "[standard][sims1][no-coverage]") {
-    auto rg = ReportGuard(true);
+    auto rg = ReportGuard(false);
     // https://oeis.org/A102894
     constexpr std::array<size_t, 6> results = {0, 1, 4, 45, 2'271, 1'373'701};
     for (auto A : {"a", "ab", "abc", "abcd", "abcde"}) {
@@ -4173,6 +4175,7 @@ namespace libsemigroups {
                           "117",
                           "1-sided ideals 2-generated free semigroup",
                           "[quick][sims1]") {
+    auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("ab");
     p.contains_empty_word(true);
@@ -4200,6 +4203,7 @@ namespace libsemigroups {
                           "118",
                           "1-sided ideals partition monoid, n = 2",
                           "[quick][sims1]") {
+    auto                    rg = ReportGuard(false);
     Presentation<word_type> p;
     p.contains_empty_word(true);
 
@@ -4239,6 +4243,7 @@ namespace libsemigroups {
                           "119",
                           "2-sided ideals Jura's example",
                           "[quick][sims1][no-valgrind]") {
+    auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("ab");
     p.contains_empty_word(false);
@@ -4284,6 +4289,7 @@ namespace libsemigroups {
     presentation::remove_duplicate_rules(p);
     presentation::reduce_complements(p);
     presentation::remove_trivial_rules(p);
+    presentation::normalize_alphabet(p);
 
     // presentation::reverse(p);
     // REQUIRE(presentation::length(p) == 88);
@@ -4362,6 +4368,7 @@ namespace libsemigroups {
                           "122",
                           "partition_monoid(2)",
                           "[quick][sims1]") {
+    auto                    rg = ReportGuard(false);
     Presentation<word_type> p;
     p.contains_empty_word(true);
 
@@ -4387,7 +4394,7 @@ namespace libsemigroups {
     std::atomic_uint64_t result = 0;
     s.for_each(11, [&result, &pp](auto const& wg) {
       if (sims::is_maximal_right_congruence(pp, wg)) {
-        fmt::print("Index {}\n", wg.number_of_active_nodes());
+        // fmt::print("Index {}\n", wg.number_of_active_nodes());
         result++;
       }
     });
@@ -4399,7 +4406,7 @@ namespace libsemigroups {
                           "123",
                           "Adding and removing pruners",
                           "[quick][low-index]") {
-    auto                      rg = ReportGuard(true);
+    auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("ab");
     p.contains_empty_word(false);
@@ -4420,6 +4427,7 @@ namespace libsemigroups {
                           "124",
                           "onesided congruence checking",
                           "[quick][low-index]") {
+    auto                    rg = ReportGuard(false);
     Presentation<word_type> p;
     p.alphabet(01_w);
     p.contains_empty_word(true);
@@ -4471,6 +4479,7 @@ namespace libsemigroups {
                           "125",
                           "Two-sided congruence checking",
                           "[quick][low-index]") {
+    auto                    rg = ReportGuard(false);
     Presentation<word_type> p;
     p.alphabet(01_w);
     p.contains_empty_word(true);
@@ -4513,6 +4522,7 @@ namespace libsemigroups {
                           "126",
                           "to_human_readable_repr test",
                           "[quick][low-index]") {
+    auto                    rg = ReportGuard(false);
     Presentation<word_type> p;
     p.alphabet(01_w);
     p.contains_empty_word(true);
@@ -4815,7 +4825,8 @@ namespace libsemigroups {
                           "127",
                           "symmetric_inverse_monoid(3)",
                           "[quick][low-index]") {
-    auto p = presentation::examples::symmetric_inverse_monoid_Gay18(3);
+    auto rg = ReportGuard(false);
+    auto p  = presentation::examples::symmetric_inverse_monoid_Gay18(3);
     presentation::remove_duplicate_rules(p);
     presentation::sort_each_rule(p);
     presentation::sort_rules(p);
@@ -4832,7 +4843,6 @@ namespace libsemigroups {
     REQUIRE(C.number_of_threads(2).number_of_congruences(34) == 0);
     C.clear_excluded_pairs();
 
-    auto rg = ReportGuard(true);
     REQUIRE(C.number_of_threads(2).number_of_congruences(34) == 274);
 
     sims::add_excluded_pair(C, ""_w, 11_w);
@@ -4856,7 +4866,7 @@ namespace libsemigroups {
                           "128",
                           "SimsRefinerFaithful test",
                           "[quick][low-index]") {
-    auto                    rg = ReportGuard(true);
+    auto                    rg = ReportGuard(false);
     Presentation<word_type> p;
 
     p.alphabet({0, 1});
@@ -4904,7 +4914,7 @@ namespace libsemigroups {
                           "129",
                           "Threading tests",
                           "[quick][low-index]") {
-    auto                    rg = ReportGuard(true);
+    auto                    rg = ReportGuard(false);
     Presentation<word_type> p;
     Sims1                   S;
 
@@ -4930,7 +4940,7 @@ namespace libsemigroups {
                           "130",
                           "MinimalRepOrc test",
                           "[quick][low-index]") {
-    auto                    rg = ReportGuard(true);
+    auto                    rg = ReportGuard(false);
     Presentation<word_type> p;
 
     p.alphabet({0, 1});
