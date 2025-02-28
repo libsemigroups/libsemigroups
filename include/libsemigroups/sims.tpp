@@ -97,13 +97,9 @@ namespace libsemigroups {
 
   // TODO(0): (reiniscirpons) Change this in the same way as we do for Sims1,
   // Once we add the citw stuff
-  template <typename Word>
-  SimsRefinerIdeals& SimsRefinerIdeals::init(Presentation<Word> const& p) {
-    if constexpr (std::is_same_v<Word, word_type>) {
-      _presentation = p;
-    } else {
-      _presentation = to<Presentation<word_type>>(p);
-    }
+  // TODO(0): to cpp
+  SimsRefinerIdeals& SimsRefinerIdeals::init(Presentation<word_type> const& p) {
+    _presentation = p;
     _knuth_bendices[0].init(congruence_kind::twosided, _presentation).run();
     std::fill(
         _knuth_bendices.begin() + 1, _knuth_bendices.end(), _knuth_bendices[0]);

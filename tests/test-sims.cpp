@@ -4180,7 +4180,7 @@ namespace libsemigroups {
     p.alphabet("ab");
     p.contains_empty_word(true);
 
-    SimsRefinerIdeals ip(p);
+    SimsRefinerIdeals ip(to<Presentation<word_type>>(p));
 
     Sims1 s(to<Presentation<word_type>>(p));
     s.number_of_threads(4);

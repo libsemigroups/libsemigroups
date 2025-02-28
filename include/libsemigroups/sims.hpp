@@ -1084,9 +1084,8 @@ namespace libsemigroups {
 
     //! \brief Helper for adding an excluded pair of words.
     //!
-    //! This function can be used to add an excluded pair to \p
-    //! sims using the objects themselves rather than
-    //! using iterators.
+    //! This function can be used to add an excluded pair to \p sims using the
+    //! objects themselves rather than using iterators.
     //!
     //! \tparam Subclass the type of the first parameter.
     //! \tparam Word the type of the second and third parameters.
@@ -1618,19 +1617,15 @@ namespace libsemigroups {
     //! in the same state as if it was default constructed if an exception is
     //! thrown.
     //!
-    //! \sa presentation(Presentation<Word> const&)
-    // TODO(0) remove template
-    template <typename Word>
-    Sims1& init(Presentation<Word> const& p) {
+    //! \sa presentation(Presentation<word_type> const&)
+    Sims1& init(Presentation<word_type> const& p) {
       init();
       presentation(p);
       return *this;
     }
 
-    //! \copydoc Sims1::init(Presentation<Word> const&)
-    // TODO(0) remove template
-    template <typename Word>
-    Sims1& init(Presentation<Word> const&& p) {
+    //! \copydoc Sims1::init(Presentation<word_type> const&)
+    Sims1& init(Presentation<word_type> const&& p) {
       init();
       presentation(std::move(p));
       return *this;
@@ -1840,23 +1835,27 @@ namespace libsemigroups {
 
     //! Default constructor.
     Sims2() = default;
+
     //! Default copy constructor.
     Sims2(Sims2 const& other) = default;
+
     //! Default move constructor.
     Sims2(Sims2&&) = default;
+
     //! Default copy assignment operator.
     Sims2& operator=(Sims2 const&) = default;
+
     //! Default move assignment operator.
     Sims2& operator=(Sims2&&) = default;
 
     ~Sims2() = default;
 
-    //! \copydoc Sims1::Sims1(Presentation<Word> const&)
+    //! \copydoc Sims1::Sims1(Presentation<word_type> const&)
     explicit Sims2(Presentation<word_type> const& p) : Sims2() {
       presentation(p);
     }
 
-    //! \copydoc Sims1::Sims1(Presentation<Word> const&)
+    //! \copydoc Sims1::Sims1(Presentation<word_type> const&)
     explicit Sims2(Presentation<word_type> const&& p) : Sims2() {
       presentation(std::move(p));
     }
@@ -1882,16 +1881,14 @@ namespace libsemigroups {
     //! thrown.
     //!
     //! \sa presentation(Presentation<Word> const&)
-    template <typename Word>
-    Sims2& init(Presentation<Word> const& p) {
+    Sims2& init(Presentation<word_type> const& p) {
       init();
       presentation(p);
       return *this;
     }
 
     //! \copydoc Sims2::init(Presentation<Word> const&)
-    template <typename Word>
-    Sims2& init(Presentation<Word> const&& p) {
+    Sims2& init(Presentation<word_type> const&& p) {
       init();
       presentation(std::move(p));
       return *this;
@@ -3170,8 +3167,7 @@ namespace libsemigroups {
     //! This method assumes that \ref_knuth_bendix terminates on the input
     //! presentation \p p. If this is not the case then th pruner may not
     //! terminate on certain inputs.
-    template <typename Word>
-    explicit SimsRefinerIdeals(Presentation<Word> const& p)
+    explicit SimsRefinerIdeals(Presentation<word_type> const& p)
         : _knuth_bendices(std::thread::hardware_concurrency() + 1,
                           KnuthBendix_()),
           _presentation() {
@@ -3203,8 +3199,7 @@ namespace libsemigroups {
     //! terminate on certain inputs.
     //!
     //! \sa presentation(Presentation<word_type> const&)
-    template <typename Word>
-    SimsRefinerIdeals& init(Presentation<Word> const& p);
+    SimsRefinerIdeals& init(Presentation<word_type> const& p);
 
     //! \brief Get the presentation over which the refiner is defined.
     //!
