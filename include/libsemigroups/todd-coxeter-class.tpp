@@ -88,10 +88,10 @@ namespace libsemigroups {
     // Add the input iterators to _generating_pairs
     _generating_pairs.emplace_back(first1, last1);
     _generating_pairs.emplace_back(first2, last2);
-    ToddCoxeterImpl::add_generating_pair_no_checks(make_citow(first1),
-                                                   make_citow(last1),
-                                                   make_citow(first2),
-                                                   make_citow(last2));
+    ToddCoxeterImpl::add_generating_pair_no_checks(detail::citow(this, first1),
+                                                   detail::citow(this, last1),
+                                                   detail::citow(this, first2),
+                                                   detail::citow(this, last2));
     return *this;
   }
 
