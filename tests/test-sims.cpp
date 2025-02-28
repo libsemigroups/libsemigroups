@@ -5253,6 +5253,7 @@ namespace libsemigroups {
 
     Sims1 sims(p);
     REQUIRE(sims.number_of_congruences(5) == 6);
+    sims::add_excluded_pair(sims, 22_w, 2_w);
     REQUIRE(sims.presentation().alphabet() == p.alphabet());
   }
 

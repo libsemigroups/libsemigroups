@@ -1474,15 +1474,13 @@ namespace libsemigroups {
 
       uint64_t number_of_congruences(size_type n) const;
     };  // SimsBase
-  }     // namespace detail
+  }  // namespace detail
 
   namespace sims {
     class const_cgp_iterator;
     class const_rcgp_iterator;
   }  // namespace sims
 
-  //!
-  //!
   //! \brief For computing finite index right congruences of a finitely
   //! presented semigroup or monoid.
   //!
@@ -1577,19 +1575,21 @@ namespace libsemigroups {
     //!
     //! \sa presentation
     //! \sa init
+    // TODO(0) remove template
     template <typename Word>
     explicit Sims1(Presentation<Word> const& p) : Sims1() {
       presentation(p);
     }
 
     //! \copydoc Sims1::Sims1(Presentation<Word> const&)
+    // TODO(0) remove template
     template <typename Word>
     explicit Sims1(Presentation<Word> const&& p) : Sims1() {
       presentation(std::move(p));
     }
 
     //! Default copy constructor.
-    Sims1(Sims1 const& other) = default;
+    Sims1(Sims1 const&) = default;
 
     //! Default move constructor.
     Sims1(Sims1&&) = default;
@@ -1624,6 +1624,7 @@ namespace libsemigroups {
     //! thrown.
     //!
     //! \sa presentation(Presentation<Word> const&)
+    // TODO(0) remove template
     template <typename Word>
     Sims1& init(Presentation<Word> const& p) {
       init();
@@ -1632,6 +1633,7 @@ namespace libsemigroups {
     }
 
     //! \copydoc Sims1::init(Presentation<Word> const&)
+    // TODO(0) remove template
     template <typename Word>
     Sims1& init(Presentation<Word> const&& p) {
       init();
@@ -1794,7 +1796,7 @@ namespace libsemigroups {
     //!
     //! \sa cbegin
     [[nodiscard]] iterator cend(size_type n) const;
-#endif
+#endif  // LIBSEMIGROUPS_PARSED_BY_DOXYGEN
   };
 
   //!
@@ -1975,7 +1977,7 @@ namespace libsemigroups {
 
       using SimsBase::IteratorBase::stats;
     };  // class iterator_base
-  };    // Sims2
+  };  // Sims2
 
   //!
   //!
