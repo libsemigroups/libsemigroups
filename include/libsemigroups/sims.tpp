@@ -95,17 +95,6 @@ namespace libsemigroups {
     return static_cast<Subclass&>(*this);
   }
 
-  // TODO(0): (reiniscirpons) Change this in the same way as we do for Sims1,
-  // Once we add the citw stuff
-  // TODO(0): to cpp
-  SimsRefinerIdeals& SimsRefinerIdeals::init(Presentation<word_type> const& p) {
-    _presentation = p;
-    _knuth_bendices[0].init(congruence_kind::twosided, _presentation).run();
-    std::fill(
-        _knuth_bendices.begin() + 1, _knuth_bendices.end(), _knuth_bendices[0]);
-    return *this;
-  }
-
   template <typename Subclass>
   SimsSettings<Subclass>::~SimsSettings() = default;
 
@@ -212,11 +201,6 @@ namespace libsemigroups {
                                           wg.number_of_active_nodes());
           tc.init(congruence_kind::onesided, p, copy);
           todd_coxeter::add_generating_pair(tc, wx, wy);
-          // TODO(0): add back asserts once ToddCoxeter is finished
-          // LIBSEMIGROUPS_ASSERT(tc.word_graph().number_of_nodes()
-          //                      == wg.number_of_active_nodes());
-          // LIBSEMIGROUPS_ASSERT(tc.number_of_classes()
-          //                      < wg.number_of_active_nodes());
           if (tc.number_of_classes() > 1) {
             return false;
           }

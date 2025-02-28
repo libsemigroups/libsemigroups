@@ -478,28 +478,21 @@ namespace libsemigroups {
     //! instance are defined.
     //!
     //! \anchor presentation
-    //! Set the presentation over which the congruences produced by an
-    //! instance are defined.
-    //! These are the rules used at every node in the depth first search
-    //! conducted by objects of this type.
+    //! Set the presentation over which the congruences produced by an instance
+    //! are defined. These are the rules used at every node in the depth first
+    //! search conducted by objects of this type.
     //!
-    //! If the template parameter \p Word is not `word_type`, then
-    //! the parameter \p p is first converted to a value of type
-    //! `Presentation<word_type>` and it is this converted value that is used.
-    //!
-    //! \tparam Word the type of words in the input presentation.
     //!
     //! \param p the presentation.
     //!
     //! \returns A reference to \c this.
     //!
-    //! \throws LibsemigroupsException if `to<Presentation<word_type>>(p)`
-    //! throws.
-    //!
     //! \throws LibsemigroupsException if `p` is not valid.
     //!
     //! \throws LibsemigroupsException if the alphabet of `p` is non-empty and
     //! not compatible with \ref included_pairs or \ref excluded_pairs.
+    //!
+    //! \throws Libsemigroups if the alphabet of \p p is not normalized.
     //!
     //! \throws LibsemigroupsException if `p` has 0-generators and 0-relations.
     Subclass& presentation(Presentation<word_type> const& p);
@@ -946,9 +939,8 @@ namespace libsemigroups {
   namespace sims {
     //! \brief Helper for adding an included pair of words.
     //!
-    //! This function can be used to add an included pair to \p
-    //! sims using the objects themselves rather than
-    //! using iterators.
+    //! This function can be used to add an included pair to \p sims using the
+    //! objects themselves rather than using iterators.
     //!
     //! \tparam Subclass the type of the first parameter.
     //! \tparam Word the type of the second and third parameters.
@@ -1553,23 +1545,16 @@ namespace libsemigroups {
 
     //! \brief Construct from a presentation.
     //!
-    //! Constructs an instance from a presentation of any kind.
+    //! Constructs an instance from a presentation of \ref word_type.
     //!
     //! The rules of the presentation \p p are used at every node in the depth
     //! first search conducted by an object of this type.
     //!
-    //! If the template parameter \p Word is not \ref word_type, then
-    //! the parameter \p p is first converted to a value of type
-    //! `Presentation<word_type>` and it is this converted value that is used.
-    //!
-    //! \tparam Word the type of the words in the presentation \p p.
-    //!
     //! \param p the presentation.
     //!
-    //! \throws LibsemigroupsException if `to<Presentation<word_type>>(p)`
-    //! throws
-    //! \throws LibsemigroupsException if `p` is not valid
-    //! \throws LibsemigroupsException if `p` has 0-generators and 0-relations.
+    //! \throws LibsemigroupsException if \p p is not valid.
+    //! \throws LibsemigroupsException if \p p has 0-generators and 0-relations.
+    //! \throws Libsemigroups if the alphabet of \p p is not normalized.
     //!
     //! \sa presentation
     //! \sa init
@@ -1602,16 +1587,13 @@ namespace libsemigroups {
     //! This function puts an object back into the same state as if it had
     //! been newly constructed from the presentation \p p.
     //!
-    //! \tparam Word the type of the words in the presentation \p p .
-    //!
     //! \param p the presentation.
     //!
     //! \returns A reference to \c *this.
     //!
-    //! \throws LibsemigroupsException if `to<Presentation<word_type>>(p)`
-    //! throws
     //! \throws LibsemigroupsException if `p` is not valid
     //! \throws LibsemigroupsException if `p` has 0-generators and 0-relations.
+    //! \throws Libsemigroups if the alphabet of \p p is not normalized.
     //!
     //! \warning This function has no exception guarantee, the object will be
     //! in the same state as if it was default constructed if an exception is
@@ -1865,29 +1847,26 @@ namespace libsemigroups {
     //! This function puts an object back into the same state as if it had
     //! been newly constructed from the presentation \p p.
     //!
-    //! \tparam Word the type of the words in the presentation \p p .
-    //!
     //! \param p the presentation.
     //!
     //! \returns A reference to \c *this.
     //!
-    //! \throws LibsemigroupsException if `to<Presentation<word_type>>(p)`
-    //! throws
     //! \throws LibsemigroupsException if `p` is not valid
     //! \throws LibsemigroupsException if `p` has 0-generators and 0-relations.
+    //! \throws Libsemigroups if the alphabet of \p p is not normalized.
     //!
     //! \warning This function has no exception guarantee, the object will be
     //! in the same state as if it was default constructed if an exception is
     //! thrown.
     //!
-    //! \sa presentation(Presentation<Word> const&)
+    //! \sa presentation(Presentation<word_type> const&)
     Sims2& init(Presentation<word_type> const& p) {
       init();
       presentation(p);
       return *this;
     }
 
-    //! \copydoc Sims2::init(Presentation<Word> const&)
+    //! \copydoc Sims2::init(Presentation<word_type> const&)
     Sims2& init(Presentation<word_type> const&& p) {
       init();
       presentation(std::move(p));
@@ -3159,13 +3138,11 @@ namespace libsemigroups {
     //! Constructs a SimsRefinerIdeals pruner for the semigroup or monoid
     //! defined by \p p.
     //!
-    //! \tparam Word the type of words in the input presentation.
-    //!
     //! \param p the presentation.
     //!
     //! \warning
     //! This method assumes that \ref_knuth_bendix terminates on the input
-    //! presentation \p p. If this is not the case then th pruner may not
+    //! presentation \p p. If this is not the case then this pruner may not
     //! terminate on certain inputs.
     explicit SimsRefinerIdeals(Presentation<word_type> const& p)
         : _knuth_bendices(std::thread::hardware_concurrency() + 1,
@@ -3180,14 +3157,13 @@ namespace libsemigroups {
     //! This function puts an object back into the same state as if it had
     //! been newly constructed from the presentation \p p.
     //!
-    //! \tparam Word the type of words in the input presentation.
-    //!
     //! \param p the presentation.
     //!
     //! \returns A reference to \c *this.
     //!
     //! \throws LibsemigroupsException if `p` is not valid
     //! \throws LibsemigroupsException if `p` has 0-generators and 0-relations.
+    //! \throws Libsemigroups if the alphabet of \p p is not normalized.
     //!
     //! \warning This function has no exception guarantee, the object will be
     //! in the same state as if it was default constructed if an exception is
