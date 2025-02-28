@@ -380,7 +380,7 @@ namespace libsemigroups {
   // \note The parameter \p p must not be an `InversePresentation`, otherwise
   // a compilation error is thrown.
   // NOTE: not sure this is true anymore so just leaving it out
-#ifdef PARSED_BY_DOXYGEN
+#ifdef LIBSEMIGROUPS_PARSED_BY_DOXYGEN
   // FIXME this is the same hack as elsewhere because Doxygen conflates
   // functions with trailing return type but the same name and signature.
   template <template <typename...> typename Thing, typename Word>
