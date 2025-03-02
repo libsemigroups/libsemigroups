@@ -93,13 +93,15 @@ namespace libsemigroups {
     static constexpr bool is_valid_presentation() {
       return std::is_same_v<Q, Presentation<word_type>>
              || std::is_same_v<Q, InversePresentation<word_type>>;
-      // TODO(0): uncomment when we figure out how to handle std::string
+      // TODO(2): uncomment when we figure out how to handle std::string
       // presentations
+      // TODO(0): initially make it only work with canonical presentations of
+      // word_type
       //|| std::is_same_v<Q, Presentation<std::string>>
       //|| std::is_same_v<Q, InversePresentation<std::string>>;
     }
 
-    // TODO (0): Change the error message once std::string presentations are
+    // TODO (2): Change the error message once std::string presentations are
     // supported
     static_assert(is_valid_presentation<PresentationType>(),
                   "the template parameter PresentationType must be "
@@ -119,8 +121,8 @@ namespace libsemigroups {
 
     // Data members
     node_type                         _accept_state;
-    bool                              _something_changed;
     bool                              _finished;
+    bool                              _is_word_set;
     std::shared_ptr<PresentationType> _presentation;
     word_type                         _word;
     StephenGraph                      _word_graph;
@@ -334,6 +336,21 @@ namespace libsemigroups {
     //! to the alphabet of the \ref presentation.
     Stephen& set_word(word_type&& w);
 
+    //! \brief Check if the initial word is set
+    //!
+    //! Returns true if a word has been set with \ref set_word since the last
+    //! presentation change and false otherwise.
+    //!
+    //! \param (None)
+    //!
+    //! \returns A bool.
+    //!
+    //! \exceptions
+    //! \noexcept
+    bool is_word_set() const noexcept {
+      return _is_word_set;
+    }
+
     //! \brief Get the initial word.
     //!
     //! Returns a const reference to the word set by \ref set_word.
@@ -342,11 +359,11 @@ namespace libsemigroups {
     //!
     //! \returns A const reference to a \ref word_type.
     //!
-    //! \exceptions
-    //! \noexcept
-    // TODO(0) handle case when word not set? Or document that its empty if not
-    // set?
-    word_type const& word() const noexcept {
+    //! \throws LibsemigroupsException if no presentation was set at
+    //! the construction or with Stephen::init or if no word was set
+    //! with Stephen::set_word .
+    word_type const& word() const {
+      throw_if_not_ready();
       return _word;
     }
 
@@ -360,15 +377,11 @@ namespace libsemigroups {
     //!
     //! \returns A const reference to a \ref word_graph_type.
     //!
-    //! \exceptions
-    //! \noexcept
-    // TODO(0) add a warning that if the value of word is set, then run is
-    // called, then word is set to another value, then word_graph() is accessed,
-    // then the returned value doesn't relate to the currently set value. Or
-    // better still don't have this behaviour
-    // TODO(0): clear word_graph when set_word is called (with a different word)
-    // TODO(0): throw error if no word is set?
+    //! \throws LibsemigroupsException if no presentation was set at
+    //! the construction or with Stephen::init or if no word was set
+    //! with Stephen::set_word .
     word_graph_type const& word_graph() const noexcept {
+      throw_if_not_ready();
       return _word_graph;
     }
 
@@ -383,7 +396,8 @@ namespace libsemigroups {
     //! \returns A \ref node_type.
     //!
     //! \throws LibsemigroupsException if no presentation was set at
-    //! construction or with \ref init.
+    //! the construction or with Stephen::init or if no word was set
+    //! with Stephen::set_word .
     //!
     //! \cong_intf_warn_undecidable{Stephen}.
     // Throws if run throws, also this is not in the helper namespace because
@@ -420,6 +434,10 @@ namespace libsemigroups {
     //!
     //! \returns (None)
     //!
+    //! \throws LibsemigroupsException if no presentation was set at
+    //! the construction of \c this or \p that or with Stephen::init or if no
+    //! word was set with Stephen::set_word .
+    //!
     //! \cong_intf_warn_undecidable{Stephen}.
     // TODO(0): exceptions?
     void operator*=(Stephen<PresentationType>& that) {
@@ -427,7 +445,7 @@ namespace libsemigroups {
       // the linear graph.
       this->run();
       that.run();
-      // TODO (0) FIXME _word_graph has two mem fns number_nodes_active (in
+      // TODO (2) FIXME _word_graph has two mem fns number_nodes_active (in
       // NodeManager) and number_active_nodes (in WordGraph), this is super
       // confusing!
       size_t const N = _word_graph.number_of_nodes_active();
@@ -435,8 +453,6 @@ namespace libsemigroups {
       _word_graph.merge_nodes_no_checks(accept_state(),
                                         that.initial_state() + N);
       _word_graph.template process_coincidences<detail::DoNotRegisterDefs>();
-      // TODO(0): This should probably be the y.accept_state() + N, but double
-      // check
       _accept_state = UNDEFINED;
       _finished     = false;
       _word.insert(_word.end(), that._word.cbegin(), that._word.cend());
@@ -447,7 +463,7 @@ namespace libsemigroups {
     Stephen& init_after_presentation_set();
     void     throw_if_presentation_empty(presentation_type const&) const;
     void     throw_if_not_ready() const;
-    void     something_changed() noexcept;
+    void     init_word_graph_from_word_no_checks();
 
     void run_impl() override;
     void really_run_impl();
@@ -463,7 +479,11 @@ namespace libsemigroups {
   // The following is not a mistake but intentional, if no presentation type is
   // explicitly used, then we use Presentation<word_type>.
   // Presentation<std::string> is not allowed.
-  // TODO(0): allow for Presentation<std::string>
+  // TODO(2): allow for Presentation<std::string> by templating on word (after
+  // other changes have been made)
+  // TODO(0): Remove template (or have empty template) and just replace Word
+  // with word_type for now
+  // TODO(0): wait what's the point of these deduction guides then?
   template <typename Word>
   Stephen(Presentation<Word> const&) -> Stephen<Presentation<word_type>>;
 
@@ -492,7 +512,7 @@ namespace libsemigroups {
   template <typename Word>
   Stephen(std::shared_ptr<InversePresentation<Word>>&&)
       -> Stephen<InversePresentation<word_type>>;
-  // TODO(0): other shared_ptr guides?
+  // TODO(2): other shared_ptr guides?
 
 }  // namespace libsemigroups
 
@@ -536,7 +556,8 @@ namespace libsemigroups {
     //! \returns A \c bool.
     //!
     //! \throws LibsemigroupsException if no presentation was set at
-    //! the construction of \p s or with \ref Stephen::init.
+    //! the construction of \p s or with Stephen::init or if no word was set
+    //! with Stephen::set_word .
     //!
     //! \cong_intf_warn_undecidable{Stephen}.
     template <typename PresentationType>
@@ -556,7 +577,8 @@ namespace libsemigroups {
     //! \returns A \c bool.
     //!
     //! \throws LibsemigroupsException if no presentation was set at
-    //! the construction of \p s or with Stephen::init.
+    //! the construction of \p s or with Stephen::init or if no word was set
+    //! with Stephen::set_word .
     //!
     //! \cong_intf_warn_undecidable{Stephen}.
     template <typename PresentationType>
@@ -576,13 +598,15 @@ namespace libsemigroups {
     //! \returns A \c const_iterator.
     //!
     //! \throws LibsemigroupsException if no presentation was set at
-    //! the construction of \p s or with Stephen::init.
+    //! the construction of \p s or with Stephen::init or if no word was set
+    //! with Stephen::set_word .
     //!
     //! \cong_intf_warn_undecidable{Stephen}.
     //!
     //! \sa WordGraph::cbegin_pstislo for more information about the
     //! iterators returned by this function.
     // Not noexcept because cend_pstislo isn't
+    // TODO(0): remove
     template <typename PresentationType>
     const_iterator_words_accepted
     cbegin_words_accepted(Stephen<PresentationType>& s,
@@ -599,6 +623,7 @@ namespace libsemigroups {
     //! \cong_intf_warn_undecidable{Stephen}.
     //!
     //! \sa \ref cbegin_words_accepted for more information.
+    // TODO(0): remove
     template <typename PresentationType>
     const_iterator_words_accepted
     cend_words_accepted(Stephen<PresentationType>& s) {
@@ -607,6 +632,7 @@ namespace libsemigroups {
     }
 
     // TODO(0): doc
+    // TODO(0): change return type to Paths<NodeType> or something
     template <typename PresentationType>
     auto words_accepted(Stephen<PresentationType>& s) {
       Paths paths(s.word_graph());
@@ -627,7 +653,8 @@ namespace libsemigroups {
     //! \returns A \c const_iterator_left_factors.
     //!
     //! \throws LibsemigroupsException if no presentation was set at
-    //! the construction of \p s or with Stephen::init.
+    //! the construction of \p s or with Stephen::init or if no word was set
+    //! with Stephen::set_word .
     //!
     //! \cong_intf_warn_undecidable{Stephen}.
     //!
@@ -681,7 +708,8 @@ namespace libsemigroups {
     //! \returns A \c uint64_t.
     //!
     //! \throws LibsemigroupsException if no presentation was set at
-    //! the construction of \p s or with Stephen::init.
+    //! the construction of \p s or with Stephen::init or if no word was set
+    //! with Stephen::set_word .
     //!
     //! \cong_intf_warn_undecidable{Stephen}.
     //!
@@ -714,7 +742,8 @@ namespace libsemigroups {
     //! \returns A \c uint64_t.
     //!
     //! \throws LibsemigroupsException if no presentation was set at
-    //! the construction of \p s or with Stephen::init.
+    //! the construction of \p s or with Stephen::init or if no word was set
+    //! with Stephen::set_word .
     //!
     //! \cong_intf_warn_undecidable{Stephen}.
     //!
@@ -776,7 +805,8 @@ namespace libsemigroups {
   //! \returns A \c const_iterator_left_factors.
   //!
   //! \throws LibsemigroupsException if no presentation was set at
-  //! the construction of \p s or with Stephen::init.
+  //! the construction of \p s or with Stephen::init or if no word was set with
+  //! Stephen::set_word .
   //!
   //! \cong_intf_warn_undecidable{Stephen}.
   //!

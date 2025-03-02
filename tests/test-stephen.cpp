@@ -17,7 +17,7 @@
 //
 
 #define CATCH_CONFIG_ENABLE_ALL_STRINGMAKERS
-// TODO use _w literals
+// TODO(0) use _w literals
 
 #include <cstddef>   // for size_t
 #include <iostream>  // for cout
@@ -141,7 +141,7 @@ namespace libsemigroups {
     auto                    rg = ReportGuard(true);
     Presentation<word_type> p;
     p.alphabet(2);
-    presentation::add_rule(p, {0}, {0, 1});
+    presentation::add_rule(p, 0_w, 01_w);
     Stephen s(p);
     check_000(s);
     s.init(p);
@@ -186,7 +186,7 @@ namespace libsemigroups {
 
     REQUIRE(stephen::accepts(s, 110010_w));
     REQUIRE(stephen::accepts(s, 110010_w));
-    REQUIRE(!stephen::accepts(s, {}));
+    REQUIRE(!stephen::accepts(s, ""_w));
     REQUIRE(!stephen::accepts(s, 0000000000_w));
     REQUIRE(!stephen::accepts(s, 111_w));
     {
@@ -1055,7 +1055,6 @@ namespace libsemigroups {
     presentation::add_rule(p, to_word("xyXxyX"), to_word("xyX"));
 
     auto S = Stephen(p);
-    // FIXME seems like every word is accepted when we don't set the word
     S.set_word(to_word("xyXyy"));
     std::string ys = "";
     for (size_t i = 0; i < 10; ++i) {
@@ -1433,18 +1432,16 @@ namespace libsemigroups {
 
     Stephen<Presentation<word_type>> stephen;
     REQUIRE(to_human_readable_repr(stephen)
-            == fmt::format("<Stephen object over {} for word [] "
-                           "with 0 nodes and 0 edges>",
+            == fmt::format("<Stephen object over {} with no word set>",
                            to_human_readable_repr(stephen.presentation())));
     stephen.init(p);
     REQUIRE(to_human_readable_repr(stephen)
-            == fmt::format("<Stephen object over {} for word [] "
-                           "with 0 nodes and 0 edges>",
+            == fmt::format("<Stephen object over {} with no word set>",
                            to_human_readable_repr(stephen.presentation())));
     stephen.set_word(0110_w);
     REQUIRE(to_human_readable_repr(stephen)
             == fmt::format("<Stephen object over {} for word [0, 1, 1, 0] "
-                           "with 0 nodes and 0 edges>",
+                           "with 8 nodes and 4 edges>",
                            to_human_readable_repr(stephen.presentation())));
     stephen.run();
     REQUIRE(to_human_readable_repr(stephen)
@@ -1452,6 +1449,11 @@ namespace libsemigroups {
                            "with 13 nodes and 26 edges>",
                            to_human_readable_repr(stephen.presentation())));
     stephen.set_word(011001100_w);
+    REQUIRE(to_human_readable_repr(stephen)
+            == fmt::format(
+                "<Stephen object over {} for word [0, 1, 1, 0, 0, 1, 1, 0, 0] "
+                "with 32 nodes and 9 edges>",
+                to_human_readable_repr(stephen.presentation())));
     stephen.run();
     REQUIRE(to_human_readable_repr(stephen)
             == fmt::format(
@@ -1470,6 +1472,10 @@ namespace libsemigroups {
             == fmt::format("<Stephen object over {} for 11 letter word "
                            "with 13 nodes and 26 edges>",
                            to_human_readable_repr(stephen.presentation())));
+    stephen.init(p);
+    REQUIRE(to_human_readable_repr(stephen)
+            == fmt::format("<Stephen object over {} with no word set>",
+                           to_human_readable_repr(stephen.presentation())));
 
     ToWord                         to_word("abcABC");
     InversePresentation<word_type> pi;
@@ -1482,20 +1488,18 @@ namespace libsemigroups {
     Stephen<InversePresentation<word_type>> inverse_stephen;
     REQUIRE(
         to_human_readable_repr(inverse_stephen)
-        == fmt::format("<Stephen object over {} for word [] "
-                       "with 0 nodes and 0 edges>",
+        == fmt::format("<Stephen object over {} with no word set>",
                        to_human_readable_repr(inverse_stephen.presentation())));
     inverse_stephen.init(pi);
     REQUIRE(
         to_human_readable_repr(inverse_stephen)
-        == fmt::format("<Stephen object over {} for word [] "
-                       "with 0 nodes and 0 edges>",
+        == fmt::format("<Stephen object over {} with no word set>",
                        to_human_readable_repr(inverse_stephen.presentation())));
     inverse_stephen.set_word(to_word("BaAbaBcAb"));
     REQUIRE(to_human_readable_repr(inverse_stephen)
             == fmt::format(
                 "<Stephen object over {} for word [4, 0, 3, 1, 0, 4, 2, 3, 1] "
-                "with 0 nodes and 0 edges>",
+                "with 8 nodes and 14 edges>",
                 to_human_readable_repr(inverse_stephen.presentation())));
     inverse_stephen.run();
     REQUIRE(to_human_readable_repr(inverse_stephen)

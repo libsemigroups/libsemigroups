@@ -47,7 +47,7 @@ namespace libsemigroups {
     using WordGraph<node_type>::target;
     using WordGraph<node_type>::target_no_checks;
 
-    // TODO(1) Add data to the StephenGraph which is a pointer to either the
+    // TODO(2) Add data to the StephenGraph which is a pointer to either the
     // encompassing Stephen object or the presentation
     void target_no_checks(presentation_type const& p,
                           node_type                from,
@@ -70,7 +70,7 @@ namespace libsemigroups {
       }
     }
 
-    // TODO(1) Add data to the StephenGraph which is a pointer to either the
+    // TODO(2) Add data to the StephenGraph which is a pointer to either the
     // encompassing Stephen object or the presentation
     std::pair<bool, node_type>
     complete_path(presentation_type const&  p,
@@ -120,8 +120,8 @@ namespace libsemigroups {
   template <typename PresentationType>
   Stephen<PresentationType>::Stephen()
       : _accept_state(UNDEFINED),
-        _something_changed(true),
         _finished(false),
+        _is_word_set(false),
         _presentation(std::make_shared<PresentationType>()),
         _word(),
         _word_graph() {
@@ -130,9 +130,9 @@ namespace libsemigroups {
 
   template <typename PresentationType>
   Stephen<PresentationType>& Stephen<PresentationType>::init() {
-    _accept_state      = UNDEFINED;
-    _something_changed = true;
-    _finished          = false;
+    _accept_state = UNDEFINED;
+    _finished     = false;
+    _is_word_set  = false;
     _presentation->init();
     _word.clear();
     _word_graph.init();
@@ -144,9 +144,10 @@ namespace libsemigroups {
       std::shared_ptr<PresentationType> const& ptr) {
     ptr->validate();
     throw_if_presentation_empty(*ptr);
-    //  TODO(0): check ok
     _presentation = ptr;
-    something_changed();
+    _accept_state = UNDEFINED;
+    _finished     = false;
+    _is_word_set  = false;
     _word.clear();
     return *this;
   }
@@ -162,6 +163,7 @@ namespace libsemigroups {
             && IsPresentation<OtherPresentationType>,
         "PresentationType and OtherPresentationType must both be presentation "
         "types and either both are inverse presentaton types or neither is");
+    // TODO(2): change to work with std::string once stephen_impl is there
     if constexpr (IsInversePresentation<PresentationType>
                   && IsInversePresentation<OtherPresentationType>) {
       return init(to_inverse_presentation<word_type>(q));
@@ -171,23 +173,24 @@ namespace libsemigroups {
   }
 
   template <typename PresentationType>
-  void Stephen<PresentationType>::something_changed() noexcept {
-    _something_changed = true;
-    _finished          = false;
-    _accept_state      = UNDEFINED;
+  void Stephen<PresentationType>::init_word_graph_from_word_no_checks() {
+    _word_graph.init(presentation());
+    _word_graph.complete_path(presentation(), 0, _word.cbegin(), _word.cend());
   }
 
   ////////////////////////////////////////////////////////////////////////
   // Public
   ////////////////////////////////////////////////////////////////////////
 
-  // TODO(0): implement init_graph_from_word
   template <typename PresentationType>
   Stephen<PresentationType>&
   Stephen<PresentationType>::set_word(word_type const& w) {
     presentation().validate_word(w.cbegin(), w.cend());
-    something_changed();
-    _word = w;
+    _accept_state = UNDEFINED;
+    _finished     = false;
+    _word         = w;
+    init_word_graph_from_word_no_checks();
+    _is_word_set = true;
     return *this;
   }
 
@@ -195,14 +198,18 @@ namespace libsemigroups {
   Stephen<PresentationType>&
   Stephen<PresentationType>::set_word(word_type&& w) {
     presentation().validate_word(w.cbegin(), w.cend());
-    something_changed();
-    _word = std::move(w);
+    _accept_state = UNDEFINED;
+    _finished     = false;
+    _word         = std::move(w);
+    init_word_graph_from_word_no_checks();
+    _is_word_set = true;
     return *this;
   }
 
   template <typename PresentationType>
   typename Stephen<PresentationType>::node_type
   Stephen<PresentationType>::accept_state() {
+    throw_if_not_ready();
     if (_accept_state == UNDEFINED) {
       using word_graph::last_node_on_path_no_checks;
       run();
@@ -234,19 +241,26 @@ namespace libsemigroups {
 
   template <typename PresentationType>
   void Stephen<PresentationType>::throw_if_not_ready() const {
-    if (presentation().rules.empty() && presentation().alphabet().empty()) {
+    if (presentation().alphabet().empty()) {
       LIBSEMIGROUPS_EXCEPTION(
           "the presentation must be defined using init() before "
           "calling this function");
-    } else if (word()) {
+    } else if (!_is_word_set) {
+      LIBSEMIGROUPS_EXCEPTION("the word must be set using set_word() before "
+                              "calling this function");
     }
   }
 
   template <typename PresentationType>
   void Stephen<PresentationType>::run_impl() {
+    throw_if_not_ready();
     reset_start_time();
     // TODO(0): report_after_run (including report_why_we_stopped) and
     // report_before_run
+    // Copy from KnuthBendix
+    // Report before - talk about presentation  and what we computed
+    // Report why we stopped - tell why, did it get interupted, ran out of time
+    // etc. After run - fina lstate of object
     if (reporting_enabled()) {
       detail::Ticker t([this]() { _word_graph.report_progress_from_thread(); });
       really_run_impl();
@@ -257,15 +271,6 @@ namespace libsemigroups {
 
   template <typename PresentationType>
   void Stephen<PresentationType>::really_run_impl() {
-    if (_something_changed) {
-      throw_if_presentation_empty(presentation());
-      _something_changed = false;
-      _word_graph.init(presentation());
-      // TODO(0): do we need presentation here? Could we set the initial word
-      // when we set_word?
-      _word_graph.complete_path(
-          presentation(), 0, _word.cbegin(), _word.cend());
-    }
     node_type& current     = _word_graph.cursor();
     auto const rules_begin = presentation().rules.cbegin();
     auto const rules_end   = presentation().rules.cend();
@@ -373,15 +378,23 @@ namespace libsemigroups {
   template <typename PresentationType>
   [[nodiscard]] std::string
   to_human_readable_repr(Stephen<PresentationType> const& x) {
-    std::string word;
-    return fmt::format("<Stephen object over {} for {} with {} "
-                       "nodes and {} edges>",
-                       to_human_readable_repr(x.presentation()),
-                       x.word().size() < 10
-                           ? fmt::format("word {}", x.word())
-                           : fmt::format("{} letter word", x.word().size()),
-                       x.word_graph().number_of_nodes(),
-                       x.word_graph().number_of_edges());
+    if (!x.is_word_set()) {
+      return fmt::format("<Stephen object over {} with no word set>",
+                         to_human_readable_repr(x.presentation()));
+    }
+    return fmt::format(
+        "<Stephen object over {} for {} with {} "
+        "nodes and {} edges>",
+        to_human_readable_repr(x.presentation()),
+        x.word().size() < 10 ? fmt::format("word {}", x.word())
+                             : fmt::format("{} letter word", x.word().size()),
+        // TODO(0): want number of nodes active here, but WordGraph does not
+        // have this, so we get some weird node counts unless Stephen has
+        // finished (when we remove the induced verts). I guess this really
+        // isn't that big of an issue though, since we give no guarantees about
+        // the unfinished word graph?
+        x.word_graph().number_of_nodes(),
+        x.word_graph().number_of_edges());
   }
 
 }  // namespace libsemigroups
