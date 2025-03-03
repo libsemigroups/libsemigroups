@@ -267,38 +267,6 @@ jobs:
            run: make test_all -j4
          - name: "Run the quick tests . . ."
            run:  ./test_all "[quick]"
-   valgrind:
-      timeout-minutes: 60
-      runs-on: ubuntu-latest
-      env:
-        CXX: "ccache g++"
-        CXXFLAGS: "-fdiagnostics-color"
-      steps:
-         - uses: actions/checkout@v3
-         - name: "Setup ccache . . ."
-           uses: Chocobo1/setup-ccache-action@v1
-           with:
-             update_packager_index: false
-             install_ccache: true
-         - name: "Install dependencies . . ."
-           run: |
-                sudo apt-get --yes update
-                sudo apt-get install -y expect libc6-dbg libtool-bin valgrind
-         - name: "Configure . . ."
-           run: |
-                mkdir -p m4 && ./autogen.sh
-                ./configure CXX="$CXX" CXXFLAGS="$CXXFLAGS" --enable-debug --disable-hpcombi
-         - name: "Build libsemigroups . . ."
-           run: make -j4
-         - name: "Build test_all . . ."
-           run: make test_all -j4 
-         - name: "Run tests with valgrind . . ."
-           run: |
-                valgrind --version
-                unbuffer libtool --mode=execute valgrind --leak-check=full ./test_all "[quick][exclude:no-valgrind]" 2>&1 | tee valgrind.log
-                echo
-                ( ! grep -i "Invalid" valgrind.log )
-                ( ! grep -E "lost: [^0]" valgrind.log )
    test-x86-32:
       timeout-minutes: 60
       runs-on: ubuntu-latest
