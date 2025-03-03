@@ -20,6 +20,7 @@ jobs:
           - type: "undefined"
             environment_variables: UBSAN_OPTIONS=log_path=ubsan.log
       fail-fast: false
+    name: ${{ matrix.type }}
     steps:
       - uses: actions/checkout@v3
       - name: "Setup ccache . . ."
