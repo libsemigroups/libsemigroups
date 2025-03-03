@@ -71,10 +71,10 @@ namespace libsemigroups {
       LIBSEMIGROUPS_EXCEPTION(
           "the argument (a presentation) must not have 0 generators");
     }
-    // TODO(0): (reiniscirpons) change this so that we just have a concrete
+    // TODO(1): (reiniscirpons) change this so that we just have a concrete
     // implementation for word_type and then another which takes a Word and then
     // calls the concete implementation like e.g. ToddCoxeter
-    // TODO(0): (reiniscirpons) use the citw stuff from ToddCoxeter once its
+    // TODO(1): (reiniscirpons) use the citw stuff from ToddCoxeter once its
     // available.
 
     presentation::throw_if_not_normalized(p);

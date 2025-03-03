@@ -4958,7 +4958,7 @@ namespace libsemigroups {
     REQUIRE(d.number_of_nodes() == 6);
   }
 
-  // TODO(0): test fails for now, uncomment when we get Sims<Word> to work as
+  // TODO(1): test fails for now, uncomment when we get Sims<Word> to work as
   // per forthcoming changes to congruence interface and friends
   // LIBSEMIGROUPS_TEST_CASE("Sims1",
   //                         "131",

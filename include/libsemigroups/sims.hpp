@@ -20,15 +20,6 @@
 // congruence" algorithm for 1-sided or 2-sided congruences of semigroups and
 // monoids.
 
-// TODO(0):
-// * review the function aliases, and remove them if they are unnecessary
-// * const
-// * noexcept
-// * nodiscard
-// * python bindings
-// * gap bindings
-// * static_assert(std::is_integral_v<Int>); in the appropriate places
-
 // TODO(2) (later):
 // * use SimsRefinerFaithful in RepOrc + MinimalRepOrc
 // * a version which allows specifying the word_graph to Sims1 too
@@ -97,7 +88,7 @@
 //!
 //! This file contains documentation for the functionality in
 //! `libsemigroups` related to the version of low-index congruence
-//! algorithms described in TODO(0).
+//! algorithms described in \cite Anagnostopoulou-Merkouri2023aa
 namespace libsemigroups {
 
   //! \ingroup sims_group
@@ -975,6 +966,7 @@ namespace libsemigroups {
     Subclass& add_included_pair_no_checks(SimsSettings<Subclass>& sims,
                                           std::initializer_list<Int> const& u,
                                           std::initializer_list<Int> const& v) {
+      static_assert(std::is_integral_v<Int>);
       return add_included_pair_no_checks<Subclass, std::vector<Int>>(
           sims, u, v);
     }
@@ -1044,6 +1036,7 @@ namespace libsemigroups {
     Subclass& add_included_pair(SimsSettings<Subclass>&           sims,
                                 std::initializer_list<Int> const& u,
                                 std::initializer_list<Int> const& v) {
+      static_assert(std::is_integral_v<Int>);
       return add_included_pair<Subclass, std::vector<Int>>(sims, u, v);
     }
 
@@ -1112,6 +1105,7 @@ namespace libsemigroups {
     Subclass& add_excluded_pair_no_checks(SimsSettings<Subclass>& sims,
                                           std::initializer_list<Int> const& u,
                                           std::initializer_list<Int> const& v) {
+      static_assert(std::is_integral_v<Int>);
       return add_excluded_pair_no_checks<Subclass, std::vector<Int>>(
           sims, u, v);
     }
@@ -1181,6 +1175,7 @@ namespace libsemigroups {
     Subclass& add_excluded_pair(SimsSettings<Subclass>&           sims,
                                 std::initializer_list<Int> const& u,
                                 std::initializer_list<Int> const& v) {
+      static_assert(std::is_integral_v<Int>);
       return add_excluded_pair<Subclass, std::vector<Int>>(sims, u, v);
     }
 
@@ -2021,15 +2016,14 @@ namespace libsemigroups {
     //! the same SimsSettings as \p s but that is
     //! otherwise uninitialised.
     //!
-    //! \tparam S the type of the argument \p s (which is
-    //! derived from `SimsSettings<S>`).
+    //! \tparam OtherSubclass the type of the argument \p s (which is
+    //! derived from `SimsSettings<OtherSubclass>`).
     //!
     //! \param s the Sims1, Sims2 or MinimalRepOrc whose settings
     //! should be used.
     //!
     //! \exceptions
     //! \no_libsemigroups_except
-    // TODO(0) Fix the template parameter description
     template <typename OtherSubclass>
     explicit RepOrc(SimsSettings<OtherSubclass> const& s) : RepOrc() {
       SimsSettings<RepOrc>::init(s);
@@ -2041,7 +2035,7 @@ namespace libsemigroups {
     //! This function reinitializes a RepOrc instance with
     //! the same SimsSettings as \p s .
     //!
-    //! \tparam S the type of the argument \p s (which is
+    //! \tparam OtherSubclass the type of the argument \p s (which is
     //! derived from `SimsSettings<S>`).
     //!
     //! \param s the Sims1, Sims2 or MinimalRepOrc whose settings
@@ -2049,7 +2043,6 @@ namespace libsemigroups {
     //!
     //! \exceptions
     //! \no_libsemigroups_except
-    // TODO(0) Fix the template parameter description
     template <typename OtherSubclass>
     RepOrc& init(SimsSettings<OtherSubclass> const& s) {
       SimsSettings<RepOrc>::init(s);
