@@ -98,10 +98,6 @@ namespace libsemigroups {
     }
 
     void disjoint_union_inplace_no_checks(StephenGraph const& that) {
-      // TODO(0): throw exception if that.labels() != this->labels()
-      // NOTE(0): Not sure if above needed, we already check that presentations
-      // match in all places where this is called. It is a no checks function
-      // after all
       // TODO(1): the following requires that this and that are standardized
       // and that this and that are run to the end
       // TODO(0): make it work with incomplete non-standardized word graphs.
@@ -156,32 +152,6 @@ namespace libsemigroups {
     return *this;
   }
 
-  template <typename PresentationType>
-  template <typename OtherPresentationType>
-  Stephen<PresentationType>&
-  Stephen<PresentationType>::init(OtherPresentationType const& q) {
-    static_assert(
-        ((IsInversePresentation<PresentationType>)
-         == (IsInversePresentation<OtherPresentationType>) )
-            && IsPresentation<PresentationType>
-            && IsPresentation<OtherPresentationType>,
-        "PresentationType and OtherPresentationType must both be presentation "
-        "types and either both are inverse presentaton types or neither is");
-    // TODO(2): change to work with std::string once stephen_impl is there
-    if constexpr (IsInversePresentation<PresentationType>
-                  && IsInversePresentation<OtherPresentationType>) {
-      return init(to_inverse_presentation<word_type>(q));
-    } else {
-      return init(to_presentation<word_type>(q));
-    }
-  }
-
-  template <typename PresentationType>
-  void Stephen<PresentationType>::init_word_graph_from_word_no_checks() {
-    _word_graph.init(presentation());
-    _word_graph.complete_path(presentation(), 0, _word.cbegin(), _word.cend());
-  }
-
   ////////////////////////////////////////////////////////////////////////
   // Public
   ////////////////////////////////////////////////////////////////////////
@@ -229,21 +199,6 @@ namespace libsemigroups {
   ////////////////////////////////////////////////////////////////////////
 
   template <typename PresentationType>
-  void Stephen<PresentationType>::standardize() {
-    word_graph::standardize(_word_graph);
-    _word_graph.induced_subgraph_no_checks(
-        0, _word_graph.number_of_nodes_active());
-  }
-
-  template <typename PresentationType>
-  void Stephen<PresentationType>::throw_if_presentation_empty(
-      presentation_type const& p) const {
-    if (p.alphabet().empty()) {
-      LIBSEMIGROUPS_EXCEPTION("the presentation must not have 0 generators");
-    }
-  }
-
-  template <typename PresentationType>
   void Stephen<PresentationType>::throw_if_not_ready() const {
     if (presentation().alphabet().empty()) {
       LIBSEMIGROUPS_EXCEPTION(
@@ -282,7 +237,7 @@ namespace libsemigroups {
       using detail::group_digits;
       report_default(
           "Stephen: Computed word graph with |V| = {} and |E| = {}\n",
-          group_digits(_word_graph.number_of_nodes()),
+          group_digits(_word_graph.number_of_nodes_active()),
           group_digits(_word_graph.number_of_edges()));
       report_no_prefix("{:+<95}\n", "");
 
@@ -467,6 +422,7 @@ namespace libsemigroups {
         // finished (when we remove the induced verts). I guess this really
         // isn't that big of an issue though, since we give no guarantees about
         // the unfinished word graph?
+        // TODO(0): In word graph member function of Stephen, set number of active nodes
         x.word_graph().number_of_nodes(),
         x.word_graph().number_of_edges());
   }

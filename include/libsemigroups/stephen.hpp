@@ -43,9 +43,9 @@
 
 // TODO(0)
 // * iwyu
+// TODO(2)
 // * update so that run_for, run_until work properly (at present basically
 //   run_impl starts again from scratch every time)
-// TODO(2)
 // * minimal rep (as per Reinis) (named normal_form?)
 // * invert() - just swap the initial and accept states and re-standardize
 // * idempotent() - just make the accept state = initial state.
@@ -62,7 +62,6 @@
 
 namespace libsemigroups {
 
-  // TODO(0): put reference in bib and use it with \cite
   //! \ingroup stephen_group
   //!
   //! \brief For constructing the word graph of left factors of a word in an
@@ -74,9 +73,8 @@ namespace libsemigroups {
   //! the WordGraph corresponding to the left factors of a word in a finitely
   //! presented semigroup or a finitely presented inverse semigroup. The
   //! algorithm implemented in this class is closely related to the Todd-Coxeter
-  //! algorithm  (as implemented in ToddCoxeter) and originates in [Applications
-  //! of automata theory to presentations of monoids and inverse
-  //! monoids](https://rb.gy/brsuvc) by J. B. Stephen.
+  //! algorithm  (as implemented in ToddCoxeter) and originates in
+  //! \cite Stephen1987aa.
   //!
   //! \tparam PresentationType a type derived from \ref PresentationBase. This
   //! is the type of the underlying presentation used in the Stephen algorithm.
@@ -155,9 +153,16 @@ namespace libsemigroups {
     //! \tparam PresentationType a type derived from \ref PresentationBase
     //!
     //! \param p the presentation.
-    //!
-    //! \throws LibsemigroupsException if `p.validate()` throws.
-    //! \throws LibsemigroupsException if `p.alphabet().size()` is `0`.
+    // Not noexcept because allocated memory
+    // TODO(1): Implement make function which checks args
+    // TODO(1): add checking
+    // Sims PR - function to throw_if_not_normalized_presentation (or something
+    // like that)
+    // Add these to make function:
+    // \throws LibsemigroupsException if `p.validate()` throws.
+    // \throws LibsemigroupsException if `p.alphabet().size()` is `0`.
+    // TODO(0): remove all validation/throwing from initializers and
+    // constructors (move them to the make function)
     explicit Stephen(PresentationType const& p) : Stephen() {
       init(p);
     }
@@ -258,43 +263,6 @@ namespace libsemigroups {
     //! \throws LibsemigroupsException if `ptr->alphabet().size()` is `0`.
     Stephen& init(std::shared_ptr<PresentationType> const& ptr);
 
-    //! \brief Construct from a different presentation type (copy).
-    //!
-    //! Construct an instance from the presentation \p q with a possibly
-    //! different underlying presentation type. This constructor copies \p q.
-    //!
-    //! \tparam PresentationType a type derived from \ref PresentationBase
-    //!
-    //! \tparam OtherPresentationType a type derived from \ref PresentationBase
-    //!
-    //! \param q the presentation.
-    //!
-    //! \throws LibsemigroupsException if `q.validate()` throws.
-    //! \throws LibsemigroupsException if `q.alphabet().size()` is `0`.
-    template <typename OtherPresentationType>
-    explicit Stephen(OtherPresentationType const& q) : Stephen() {
-      init(q);
-    }
-
-    //! \brief Initialize from a different presentation type (copy).
-    //!
-    //! This function puts a Stephen object back into the same state as if it
-    //! had been newly constructed from the presentation \p q with a possibly
-    //! different underlying presentation type. This initializer copies \p q.
-    //!
-    //! \tparam PresentationType a type derived from \ref PresentationBase
-    //!
-    //! \tparam OtherPresentationType a type derived from \ref PresentationBase
-    //!
-    //! \param q the presentation.
-    //!
-    //! \returns A reference to \c this.
-    //!
-    //! \throws LibsemigroupsException if `q.validate()` throws.
-    //! \throws LibsemigroupsException if `q.alphabet().size()` is `0`.
-    template <typename OtherPresentationType>
-    Stephen& init(OtherPresentationType const& q);
-
     //! \brief Get the input presentation.
     //!
     //! This function returns a const reference to the input presentation.
@@ -320,6 +288,8 @@ namespace libsemigroups {
     //!
     //! \throws LibsemigroupsException if the letters in \p w do not all belong
     //! to the alphabet of the \ref presentation.
+    // TODO(0): take in iterators instead of word_types (same as sims)
+    // TODO(0): add _no_checks to all things that can throw
     Stephen& set_word(word_type const& w);
 
     //! \brief Set the initial word (move).
@@ -333,14 +303,13 @@ namespace libsemigroups {
     //!
     //! \throws LibsemigroupsException if the letters in \p w do not all belong
     //! to the alphabet of the \ref presentation.
+    // TODO(0): remove it once we make the above work with iterators.
     Stephen& set_word(word_type&& w);
 
     //! \brief Check if the initial word is set
     //!
     //! Returns true if a word has been set with \ref set_word since the last
     //! presentation change and false otherwise.
-    //!
-    //! \param (None)
     //!
     //! \returns A bool.
     //!
@@ -354,13 +323,12 @@ namespace libsemigroups {
     //!
     //! Returns a const reference to the word set by \ref set_word.
     //!
-    //! \param (None)
-    //!
     //! \returns A const reference to a \ref word_type.
     //!
     //! \throws LibsemigroupsException if no presentation was set at
     //! the construction or with Stephen::init or if no word was set
     //! with Stephen::set_word .
+    // TODO(0): remove params None and returns None
     word_type const& word() const {
       throw_if_not_ready();
       return _word;
@@ -447,12 +415,13 @@ namespace libsemigroups {
             "this.presentation() must equal that.presentation() when appending "
             "Stephen instances")
       }
-      // TODO(0): if only one of this and that is finished, then just tack on
+      // TODO(2): if only one of this and that is finished, then just tack on
       // the linear graph.
-      // TODO(0): Maybe just append without running? Previously there was an
+      // TODO(2): Maybe just append without running? Previously there was an
       // issue with resetting words, but with the current implementation,
       // provided the words have ween set, we should be able to do this with no
       // issues.
+      // TODO(0): Check if works immediately, if not then skip
       this->run();
       that.run();
       // TODO (2) FIXME _word_graph has two mem fns number_nodes_active (in
@@ -474,9 +443,17 @@ namespace libsemigroups {
     void report_after_run();
 
     Stephen& init_after_presentation_set();
-    void     throw_if_presentation_empty(presentation_type const&) const;
-    void     throw_if_not_ready() const;
-    void     init_word_graph_from_word_no_checks();
+    void     throw_if_presentation_empty(presentation_type const& p) const {
+      if (p.alphabet().empty()) {
+        LIBSEMIGROUPS_EXCEPTION("the presentation must not have 0 generators");
+      }
+    }
+    void throw_if_not_ready() const;
+    void init_word_graph_from_word_no_checks() {
+      _word_graph.init(presentation());
+      _word_graph.complete_path(
+          presentation(), 0, _word.cbegin(), _word.cend());
+    }
 
     void run_impl() override;
     void really_run_impl();
@@ -485,45 +462,38 @@ namespace libsemigroups {
       return _finished;
     }
 
-    void standardize();
+    void standardize() {
+      word_graph::standardize(_word_graph);
+      _word_graph.induced_subgraph_no_checks(
+          0, _word_graph.number_of_nodes_active());
+    }
   };
 
   // Deduction guides
   // The following is not a mistake but intentional, if no presentation type is
   // explicitly used, then we use Presentation<word_type>.
   // Presentation<std::string> is not allowed.
-  // TODO(2): allow for Presentation<std::string> by templating on word (after
+  // TODO(2): allow for Presentation<std::string> by templating on Word (after
   // other changes have been made)
-  // TODO(0): Remove template (or have empty template) and just replace Word
-  // with word_type for now
-  // TODO(0): wait what's the point of these deduction guides then?
-  template <typename Word>
-  Stephen(Presentation<Word> const&) -> Stephen<Presentation<word_type>>;
+  Stephen(Presentation<word_type> const&) -> Stephen<Presentation<word_type>>;
 
-  template <typename Word>
-  Stephen(Presentation<Word>&) -> Stephen<Presentation<word_type>>;
+  Stephen(Presentation<word_type>&) -> Stephen<Presentation<word_type>>;
 
-  template <typename Word>
-  Stephen(Presentation<Word>&&) -> Stephen<Presentation<word_type>>;
+  Stephen(Presentation<word_type>&&) -> Stephen<Presentation<word_type>>;
 
-  template <typename Word>
-  Stephen(std::shared_ptr<Presentation<Word>>&&)
+  Stephen(std::shared_ptr<Presentation<word_type>>&&)
       -> Stephen<Presentation<word_type>>;
 
-  template <typename Word>
-  Stephen(InversePresentation<Word> const&)
+  Stephen(InversePresentation<word_type> const&)
       -> Stephen<InversePresentation<word_type>>;
 
-  template <typename Word>
-  Stephen(InversePresentation<Word>&)
+  Stephen(InversePresentation<word_type>&)
       -> Stephen<InversePresentation<word_type>>;
 
-  template <typename Word>
-  Stephen(InversePresentation<Word>&&)
+  Stephen(InversePresentation<word_type>&&)
       -> Stephen<InversePresentation<word_type>>;
 
-  template <typename Word>
-  Stephen(std::shared_ptr<InversePresentation<Word>>&&)
+  Stephen(std::shared_ptr<InversePresentation<word_type>>&&)
       -> Stephen<InversePresentation<word_type>>;
   // TODO(2): other shared_ptr guides?
 
@@ -550,6 +520,9 @@ namespace libsemigroups {
     //! labels a path in Stephen::word_graph with source \c 0 and target
     //! Stephen::accept_state.
     //!
+    //! \tparam PresentationType the type of presentation defining the Stephen
+    //! object, must be derived from \ref PresentationBase.
+    //!
     //! \param s the Stephen instance
     //! \param w a const reference to the input word.
     //!
@@ -560,6 +533,11 @@ namespace libsemigroups {
     //! with Stephen::set_word .
     //!
     //! \cong_intf_warn_undecidable{Stephen}.
+    // TODO(0): change all iterators to word_type
+    // TODO(0): static_assert decltype to check that thing pointed to can be
+    // converted to letter type has declval
+    // TODO(0): maybe the thing above isnt true?
+    // TODO(0): add a todo to add static asserts for it
     template <typename PresentationType>
     bool accepts(Stephen<PresentationType>& s, word_type const& w);
 
@@ -570,6 +548,9 @@ namespace libsemigroups {
     //! word \p w is a left factor of Stephen::word in the semigroup defined
     //! by Stephen::presentation. A word is a left factor of Stephen::word
     //! if it labels a path in Stephen::word_graph with source \c 0.
+    //!
+    //! \tparam PresentationType the type of presentation defining the Stephen
+    //! object, must be derived from \ref PresentationBase.
     //!
     //! \param s the Stephen instance
     //! \param w a const reference to the input word.
@@ -589,6 +570,9 @@ namespace libsemigroups {
     //!
     //! This function triggers the algorithm implemented in this class (if it
     //! hasn't been triggered already).
+    //!
+    //! \tparam PresentationType the type of presentation defining the Stephen
+    //! object, must be derived from \ref PresentationBase.
     //!
     //! \param s the Stephen instance
     //!
@@ -612,6 +596,9 @@ namespace libsemigroups {
     //!
     //! This function triggers the algorithm implemented in this class (if it
     //! hasn't been triggered already).
+    //!
+    //! \tparam PresentationType the type of presentation defining the Stephen
+    //! object, must be derived from \ref PresentationBase.
     //!
     //! \param s the Stephen instance
     //!
@@ -638,6 +625,9 @@ namespace libsemigroups {
     //! max. This is the same as the number of paths in Stephen::word_graph
     //! (if Stephen::run has been called) with source \c 0, target
     //! Stephen::accept_state,  and length in the range \p min to \p max.
+    //!
+    //! \tparam PresentationType the type of presentation defining the Stephen
+    //! object, must be derived from \ref PresentationBase.
     //!
     //! \param s the Stephen instance.
     //! \param min the minimum length of a word (default: 0).
@@ -672,6 +662,9 @@ namespace libsemigroups {
     //! (if Stephen::run has been called) with source \c 0 and length in the
     //! range \p min to \p max.
     //!
+    //! \tparam PresentationType the type of presentation defining the Stephen
+    //! object, must be derived from \ref PresentationBase.
+    //!
     //! \param s the Stephen instance.
     //! \param min the minimum length of a word (default: 0).
     //! \param max one more than the maximum length of a word (default:
@@ -696,7 +689,17 @@ namespace libsemigroups {
       return number_of_paths(s.word_graph(), 0, min, max);
     }
 
-    // TODO(0): doc
+    //! \brief Returns a \ref Dot object representing the Stephen word graph.
+    //!
+    //! This function returns a \ref Dot object representing the underlying word
+    //! graph of the Stephen object \p s.
+    //!
+    //! \tparam PresentationType the type of presentation defining the Stephen
+    //! object, must be derived from \ref PresentationBase.
+    //!
+    //! \param s the Stephen object.
+    //!
+    //! \returns A \ref Dot object.
     template <typename PresentationType>
     Dot dot(Stephen<PresentationType>& s);
   }  // namespace stephen
