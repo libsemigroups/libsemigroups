@@ -2029,6 +2029,7 @@ namespace libsemigroups {
     //!
     //! \exceptions
     //! \no_libsemigroups_except
+    // TODO(0) Fix the template parameter description
     template <typename OtherSubclass>
     explicit RepOrc(SimsSettings<OtherSubclass> const& s) : RepOrc() {
       SimsSettings<RepOrc>::init(s);
@@ -2048,6 +2049,7 @@ namespace libsemigroups {
     //!
     //! \exceptions
     //! \no_libsemigroups_except
+    // TODO(0) Fix the template parameter description
     template <typename OtherSubclass>
     RepOrc& init(SimsSettings<OtherSubclass> const& s) {
       SimsSettings<RepOrc>::init(s);
@@ -2059,7 +2061,7 @@ namespace libsemigroups {
     //! This function sets the minimal number of nodes in
     //! the WordGraph that we are seeking.
     //!
-    //! \param val the minimum number of nodes
+    //! \param val the minimum number of nodes.
     //!
     //! \returns A reference to \c this.
     //!
@@ -2088,7 +2090,7 @@ namespace libsemigroups {
     //! This function sets the maximum number of nodes in the WordGraph that we
     //! are seeking.
     //!
-    //! \param val the maximum number of nodes
+    //! \param val the maximum number of nodes.
     //!
     //! \returns A reference to \c this.
     //!
