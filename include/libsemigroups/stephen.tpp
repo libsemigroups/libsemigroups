@@ -422,7 +422,8 @@ namespace libsemigroups {
         // finished (when we remove the induced verts). I guess this really
         // isn't that big of an issue though, since we give no guarantees about
         // the unfinished word graph?
-        // TODO(0): In word graph member function of Stephen, set number of active nodes
+        // TODO(0): In word graph member function of Stephen, set number of
+        // active nodes
         x.word_graph().number_of_nodes(),
         x.word_graph().number_of_edges());
   }
