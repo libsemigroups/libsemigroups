@@ -17,7 +17,6 @@
 //
 
 #define CATCH_CONFIG_ENABLE_ALL_STRINGMAKERS
-// TODO(0) use _w literals
 
 #include <cstddef>   // for size_t
 #include <iostream>  // for cout
@@ -42,6 +41,7 @@
 #include "libsemigroups/order.hpp"                  // for LexicographicalCom...
 #include "libsemigroups/presentation-examples.hpp"  // for make, fibonacci_se...
 #include "libsemigroups/presentation.hpp"           // for add_rule
+#include "libsemigroups/ranges.hpp"                 // for StringToWord, word...
 #include "libsemigroups/stephen.hpp"                // for Stephen, Stephen::...
 #include "libsemigroups/todd-coxeter.hpp"           // for ToddCoxeter
 #include "libsemigroups/types.hpp"                  // for word_type
@@ -57,7 +57,7 @@ namespace libsemigroups {
   namespace {
     template <typename PresentationType>
     void check_000(Stephen<PresentationType>& s) {
-      s.set_word({0}).run();
+      s.set_word(0_w).run();
       REQUIRE(s.word_graph().number_of_nodes() == 2);
       REQUIRE(
           s.word_graph()
@@ -78,7 +78,7 @@ namespace libsemigroups {
       }
       {
         REQUIRE((stephen::left_factors(s) | rx::take(10) | rx::to_vector())
-                == std::vector<word_type>({{},
+                == std::vector<word_type>({""_w,
                                            0_w,
                                            01_w,
                                            011_w,
@@ -204,7 +204,7 @@ namespace libsemigroups {
     }
     {
       REQUIRE((stephen::left_factors(s) | rx::take(10) | rx::to_vector())
-              == std::vector<word_type>({{},
+              == std::vector<word_type>({""_w,
                                          1_w,
                                          11_w,
                                          110_w,
@@ -405,15 +405,13 @@ namespace libsemigroups {
     REQUIRE(S.word_graph().number_of_nodes() == 15);
     REQUIRE(stephen::number_of_words_accepted(S) == 3);
     REQUIRE(stephen::accepts(S, "aaaeabcd"_w));
-    REQUIRE(std::vector<word_type>(stephen::cbegin_words_accepted(S),
-                                   stephen::cend_words_accepted(S))
+    REQUIRE((stephen::words_accepted(S) | rx::to_vector())
             == std::vector<word_type>({00040123_w, 01230400_w, 0004000400_w}));
 
     S.set_word("aaaeaag"_w).run();
     REQUIRE(S.word_graph().number_of_nodes() == 11);
     REQUIRE(stephen::number_of_words_accepted(S) == 3);
-    REQUIRE(std::vector<word_type>(stephen::cbegin_words_accepted(S),
-                                   stephen::cend_words_accepted(S))
+    REQUIRE((stephen::words_accepted(S) | rx::to_vector())
             == std::vector<word_type>({01236_w, 01245_w, 0004006_w}));
   }
 
@@ -935,11 +933,8 @@ namespace libsemigroups {
     Stephen<Presentation<word_type>> S;
 
     REQUIRE_THROWS_AS(S.accept_state(), LibsemigroupsException);
-    REQUIRE_THROWS_AS(stephen::cbegin_words_accepted(S),
-                      LibsemigroupsException);
-    REQUIRE_THROWS_AS(stephen::cend_words_accepted(S), LibsemigroupsException);
-    REQUIRE_THROWS_AS(stephen::cbegin_left_factors(S), LibsemigroupsException);
-    REQUIRE_THROWS_AS(stephen::cend_left_factors(S), LibsemigroupsException);
+    REQUIRE_THROWS_AS(S.word(), LibsemigroupsException);
+    REQUIRE_THROWS_AS(S.word_graph(), LibsemigroupsException);
 
     REQUIRE_THROWS_AS(stephen::is_left_factor(S, {0, 0, 0}),
                       LibsemigroupsException);
@@ -949,6 +944,30 @@ namespace libsemigroups {
     REQUIRE_THROWS_AS(stephen::number_of_words_accepted(S),
                       LibsemigroupsException);
     REQUIRE_THROWS_AS(S.run(), LibsemigroupsException);
+
+    REQUIRE_THROWS_AS(stephen::words_accepted(S), LibsemigroupsException);
+    REQUIRE_THROWS_AS(stephen::left_factors(S), LibsemigroupsException);
+
+    Presentation<word_type> p;
+    p.alphabet(01_w);
+    presentation::add_rule(p, 01_w, 10_w);
+    S.init(p);
+
+    REQUIRE_THROWS_AS(S.accept_state(), LibsemigroupsException);
+    REQUIRE_THROWS_AS(S.word(), LibsemigroupsException);
+    REQUIRE_THROWS_AS(S.word_graph(), LibsemigroupsException);
+
+    REQUIRE_THROWS_AS(stephen::is_left_factor(S, {0, 0, 0}),
+                      LibsemigroupsException);
+    REQUIRE_THROWS_AS(stephen::accepts(S, {0, 0, 0}), LibsemigroupsException);
+    REQUIRE_THROWS_AS(stephen::number_of_left_factors(S),
+                      LibsemigroupsException);
+    REQUIRE_THROWS_AS(stephen::number_of_words_accepted(S),
+                      LibsemigroupsException);
+    REQUIRE_THROWS_AS(S.run(), LibsemigroupsException);
+
+    REQUIRE_THROWS_AS(stephen::words_accepted(S), LibsemigroupsException);
+    REQUIRE_THROWS_AS(stephen::left_factors(S), LibsemigroupsException);
   }
 
   LIBSEMIGROUPS_TEST_CASE("Stephen",
@@ -1153,7 +1172,7 @@ namespace libsemigroups {
     REQUIRE(p.alphabet().size() == 4);
 
     auto s = Stephen(p);
-    s.set_word({}).run();
+    s.set_word(""_w).run();
     REQUIRE(s.word_graph().number_of_nodes() == 24);
     s.set_word(0_w).run();
     REQUIRE(s.word_graph().number_of_nodes() == 24);
@@ -1232,39 +1251,50 @@ namespace libsemigroups {
   // TODO(0): figure out why this fails
   // This test fails in the fp-inverse-monoids branch and here, not sure if
   // it's supposed to or not should look at it more carefully
-  //   LIBSEMIGROUPS_TEST_CASE("Stephen",
-  //                           "045",
-  //                           "inverse presentation",
-  //                           "[stephen][quick]") {
-  //     ToWord           to_word("abcABC");
-  //     InversePresentation<word_type> p;
-  //     p.alphabet(to_word("abcABC"));
-  //     p.inverses_no_checks(to_word("ABCabc"));
-  //     presentation::add_rule(p, to_word("ac"), to_word("ca"));
-  //     presentation::add_rule(p, to_word("ab"), to_word("ba"));
-  //     presentation::add_rule(p, to_word("bc"), to_word("cb"));
-  //     auto S = Stephen(p);
-  //     auto T = Stephen(p);
+  // NOTE: Test fails, but this is expected. Take e.g. the words aaA and a.
+  // These are distinct elements of the underlying monoid (since aA is an
+  // idempotent but not the identity). Despite this, a will be accepted by the
+  // Stephen object with word aaA. This is because Stephen for inverse monoids
+  // does a slightly different thing to what it does for general monoids.
+  // For a general monoid, the words accepted by Stephen with initial word W
+  // correspond to words equivalent to W in the monoid. For an inverse monoid,
+  // however, words U accepted by Stephen with initial word W correspond to
+  // words such that WW^-1U is equal to W. This is because in an inverse
+  // monoid, we are actually computing within the R-class of W.
+  // TODO(0): Add something about this in accepted and left_factor and all
+  // related methods
   //
-  //     StringRange strings;
-  //     strings.letters("abcABC").first("aaaaa").last("aaaaaaaaa");
+  // LIBSEMIGROUPS_TEST_CASE("Stephen",
+  //                         "045",
+  //                         "inverse presentation",
+  //                         "[stephen][quick]") {
+  //   ToWord                         to_word("abcABC");
+  //   InversePresentation<word_type> p;
+  //   p.alphabet(to_word("abcABC"));
+  //   p.inverses_no_checks(to_word("ABCabc"));
+  //   presentation::add_rule(p, to_word("ac"), to_word("ca"));
+  //   presentation::add_rule(p, to_word("ab"), to_word("ba"));
+  //   presentation::add_rule(p, to_word("bc"), to_word("cb"));
+  //   auto S = Stephen(p);
+  //   auto T = Stephen(p);
   //
-  //     for (auto const& w : strings) {
-  //       S.set_word(to_word(w));
-  //       auto first = ++stephen::cbegin_words_accepted(S);
-  //       auto last  = first;
-  //       std::advance(last, 1024);
-  //       for (auto it = first; it != last; ++it) {
-  //         REQUIRE(stephen::accepts(S, *it));
-  //         if (!stephen::accepts(T.set_word(*it), S.word())) {
-  //           std::cout << "S.word() = " << S.word() << ", T.word() = " <<
-  //           T.word()
-  //                     << std::endl;
-  //         }
-  //         REQUIRE(S == T);
+  //   StringRange strings;
+  //   strings.alphabet("abcABC").first("aaaaa").last("aaaaaaaaa");
+  //
+  //   for (auto const& w : strings) {
+  //     S.set_word(to_word(w));
+  //     for (auto x : stephen::words_accepted(S) | rx::take(1024)) {
+  //       REQUIRE(stephen::accepts(S, x));
+  //       if (!stephen::accepts(T.set_word(x), S.word())) {
+  //         std::cout << "S.word() = " << S.word() << ", T.word() = " <<
+  //         T.word()
+  //                   << "\n"
+  //                   << S.word_graph() << std::endl;
   //       }
+  //       REQUIRE(S == T);
   //     }
   //   }
+  // }
 
   LIBSEMIGROUPS_TEST_CASE("Stephen",
                           "046",
@@ -1311,26 +1341,26 @@ namespace libsemigroups {
                           "[stephen][fail]") {
     auto                    rg = ReportGuard(true);
     Presentation<word_type> p;
-    p.rules = {00_w,       {},         11_w,         {},           22_w,
-               {},         33_w,       {},           44_w,         {},
-               55_w,       {},         66_w,         {},           010101_w,
-               {},         121212_w,   {},           232323_w,     {},
-               343434_w,   {},         454545_w,     {},           565656_w,
-               {},         606060_w,   {},           01020102_w,   {},
-               01030103_w, {},         01040104_w,   {},           01050105_w,
-               {},         01060106_w, {},           12101210_w,   {},
-               12131213_w, {},         12141214_w,   {},           12151215_w,
-               {},         12161216_w, {},           23202320_w,   {},
-               23212321_w, {},         23242324_w,   {},           23252325_w,
-               {},         23262326_w, {},           34303430_w,   {},
-               34313431_w, {},         34323432_w,   {},           34353435_w,
-               {},         34363436_w, {},           45404540_w,   {},
-               45414541_w, {},         45424542_w,   {},           45434543_w,
-               {},         45464546_w, {},           56505650_w,   {},
-               56515651_w, {},         56525652_w,   {},           56535653_w,
-               {},         56545654_w, {},           60616061_w,   {},
-               60626062_w, {},         60636063_w,   {},           60646064_w,
-               {},         60656065_w, {},           071654321_w,  16543217_w,
+    p.rules = {00_w,       ""_w,       11_w,         ""_w,         22_w,
+               ""_w,       33_w,       ""_w,         44_w,         ""_w,
+               55_w,       ""_w,       66_w,         ""_w,         010101_w,
+               ""_w,       121212_w,   ""_w,         232323_w,     ""_w,
+               343434_w,   ""_w,       454545_w,     ""_w,         565656_w,
+               ""_w,       606060_w,   ""_w,         01020102_w,   ""_w,
+               01030103_w, ""_w,       01040104_w,   ""_w,         01050105_w,
+               ""_w,       01060106_w, ""_w,         12101210_w,   ""_w,
+               12131213_w, ""_w,       12141214_w,   ""_w,         12151215_w,
+               ""_w,       12161216_w, ""_w,         23202320_w,   ""_w,
+               23212321_w, ""_w,       23242324_w,   ""_w,         23252325_w,
+               ""_w,       23262326_w, ""_w,         34303430_w,   ""_w,
+               34313431_w, ""_w,       34323432_w,   ""_w,         34353435_w,
+               ""_w,       34363436_w, ""_w,         45404540_w,   ""_w,
+               45414541_w, ""_w,       45424542_w,   ""_w,         45434543_w,
+               ""_w,       45464546_w, ""_w,         56505650_w,   ""_w,
+               56515651_w, ""_w,       56525652_w,   ""_w,         56535653_w,
+               ""_w,       56545654_w, ""_w,         60616061_w,   ""_w,
+               60626062_w, ""_w,       60636063_w,   ""_w,         60646064_w,
+               ""_w,       60656065_w, ""_w,         071654321_w,  16543217_w,
                217121_w,   17171_w,    0102720107_w, 7010270102_w, 107017_w,
                70107010_w, 1217_w,     7121_w};
     p.alphabet_from_rules();
@@ -1386,6 +1416,16 @@ namespace libsemigroups {
     // f << stephen::dot(S).to_string();
     T.set_word(to_word("CcBAabaACBbA"));
     S *= T;
+
+    InversePresentation<word_type> q;
+    q.alphabet(to_word("abcABC"));
+    q.inverses_no_checks(to_word("ABCabc"));
+    presentation::add_rule(q, to_word("ab"), to_word("ba"));
+    T.init(q);
+    T.set_word(to_word("CcBAabaACBbA"));
+    T.run();
+    // Different presentation should throw
+    REQUIRE_THROWS_AS(S *= T, LibsemigroupsException);
   }
 
   LIBSEMIGROUPS_TEST_CASE("Stephen",
@@ -1416,6 +1456,8 @@ namespace libsemigroups {
     S.set_word(0110_w).run();
     REQUIRE(S.word_graph().number_of_nodes() == 8);
     // TODO(0): rename words_accepted -> class_of
+    // TODO(0): Before renaming, make sure it makes sense for inverse monoids
+    // too, I think class_of is misleading in this case.
     REQUIRE((stephen::words_accepted(S) | rx::to_vector())
             == std::vector<word_type>());
   }

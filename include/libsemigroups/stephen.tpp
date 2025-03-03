@@ -99,8 +99,12 @@ namespace libsemigroups {
 
     void disjoint_union_inplace_no_checks(StephenGraph const& that) {
       // TODO(0): throw exception if that.labels() != this->labels()
+      // NOTE(0): Not sure if above needed, we already check that presentations
+      // match in all places where this is called. It is a no checks function
+      // after all
       // TODO(1): the following requires that this and that are standardized
       // and that this and that are run to the end
+      // TODO(0): make it work with incomplete non-standardized word graphs.
       size_t const N = number_of_nodes_active();
       // TODO(1): the following 2 lines are a bit awkward
       WordGraphWithSources_::add_nodes(that.number_of_nodes());
@@ -252,21 +256,60 @@ namespace libsemigroups {
   }
 
   template <typename PresentationType>
+  void Stephen<PresentationType>::report_before_run() {
+    if (reporting_enabled()) {
+      report_no_prefix("{:+<95}\n", "");
+      report_default("Stephen: STARTING . . .\n");
+      report_no_prefix("{:+<95}\n", "");
+      using detail::group_digits;
+      auto shortest_short = presentation::shortest_rule_length(presentation());
+      auto longest_short  = presentation::longest_rule_length(presentation());
+      report_default("Stephen: |w| = {}, |A| = {}, |R| = {}, "
+                     "|u| + |v| \u2208 [{}, {}], \u2211(|u| + |v|) = {}\n",
+                     word().size(),
+                     presentation().alphabet().size(),
+                     group_digits(presentation().rules.size() / 2),
+                     shortest_short,
+                     longest_short,
+                     group_digits(presentation::length(presentation())));
+    }
+  }
+
+  template <typename PresentationType>
+  void Stephen<PresentationType>::report_after_run() {
+    if (reporting_enabled()) {
+      report_no_prefix("{:-<95}\n", "");
+      using detail::group_digits;
+      report_default(
+          "Stephen: Computed word graph with |V| = {} and |E| = {}\n",
+          group_digits(_word_graph.number_of_nodes()),
+          group_digits(_word_graph.number_of_edges()));
+      report_no_prefix("{:+<95}\n", "");
+
+      report_default("Stephen: STOPPING -- ");
+
+      if (finished()) {
+        report_no_prefix("finished!\n");
+      } else {
+        report_why_we_stopped();
+      }
+      report_no_prefix("{:+<95}\n", "");
+    }
+  }
+
+  template <typename PresentationType>
   void Stephen<PresentationType>::run_impl() {
     throw_if_not_ready();
     reset_start_time();
-    // TODO(0): report_after_run (including report_why_we_stopped) and
-    // report_before_run
-    // Copy from KnuthBendix
-    // Report before - talk about presentation  and what we computed
-    // Report why we stopped - tell why, did it get interupted, ran out of time
-    // etc. After run - fina lstate of object
+
+    report_before_run();
     if (reporting_enabled()) {
       detail::Ticker t([this]() { _word_graph.report_progress_from_thread(); });
       really_run_impl();
     } else {
       really_run_impl();
     }
+    report_after_run();
   }
 
   template <typename PresentationType>
@@ -371,6 +414,37 @@ namespace libsemigroups {
                  s.word_graph(), node_type(0), w.cbegin(), w.cend())
                  .second
              == w.cend();
+    }
+
+    template <typename PresentationType>
+    Dot dot(Stephen<PresentationType>& s) {
+      Dot result;
+      result.kind(Dot::Kind::digraph);
+      result.add_node("initial").add_attr("style", "invis");
+      result.add_node("accept").add_attr("style", "invis");
+      for (auto n : s.word_graph().nodes()) {
+        result.add_node(n).add_attr("shape", "box");
+      }
+      result.add_edge("initial", s.initial_state());
+      result.add_edge(s.accept_state(), "accept");
+
+      size_t max_letters = s.presentation().alphabet().size();
+      if constexpr (IsInversePresentation<PresentationType>) {
+        max_letters /= 2;
+      }
+
+      for (auto n : s.word_graph().nodes()) {
+        for (size_t a = 0; a < max_letters; ++a) {
+          auto m = s.word_graph().target(n, a);
+          if (m != UNDEFINED) {
+            result.add_edge(n, m)
+                .add_attr("color", result.colors[a])
+                .add_attr("label", a)
+                .add_attr("minlen", 2);
+          }
+        }
+      }
+      return result;
     }
 
   }  // namespace stephen
