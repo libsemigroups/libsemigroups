@@ -536,7 +536,7 @@ namespace libsemigroups {
     // TODO(0): change all iterators to word_type
     // TODO(0): static_assert decltype to check that thing pointed to can be
     // converted to letter type has declval
-    // TODO(0): maybe the thing above isnt true?
+    // TODO(0): maybe the thing above isn't true?
     // TODO(0): add a todo to add static asserts for it
     template <typename PresentationType>
     bool accepts(Stephen<PresentationType>& s, word_type const& w);
