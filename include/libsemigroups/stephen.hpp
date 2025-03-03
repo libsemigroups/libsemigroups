@@ -475,26 +475,26 @@ namespace libsemigroups {
   // Presentation<std::string> is not allowed.
   // TODO(2): allow for Presentation<std::string> by templating on Word (after
   // other changes have been made)
-  Stephen(Presentation<word_type> const&) -> Stephen<Presentation<word_type>>;
+  Stephen(Presentation<word_type> const&)->Stephen<Presentation<word_type>>;
 
-  Stephen(Presentation<word_type>&) -> Stephen<Presentation<word_type>>;
+  Stephen(Presentation<word_type>&)->Stephen<Presentation<word_type>>;
 
-  Stephen(Presentation<word_type>&&) -> Stephen<Presentation<word_type>>;
+  Stephen(Presentation<word_type>&&)->Stephen<Presentation<word_type>>;
 
   Stephen(std::shared_ptr<Presentation<word_type>>&&)
-      -> Stephen<Presentation<word_type>>;
+      ->Stephen<Presentation<word_type>>;
 
   Stephen(InversePresentation<word_type> const&)
-      -> Stephen<InversePresentation<word_type>>;
+      ->Stephen<InversePresentation<word_type>>;
 
   Stephen(InversePresentation<word_type>&)
-      -> Stephen<InversePresentation<word_type>>;
+      ->Stephen<InversePresentation<word_type>>;
 
   Stephen(InversePresentation<word_type>&&)
-      -> Stephen<InversePresentation<word_type>>;
+      ->Stephen<InversePresentation<word_type>>;
 
   Stephen(std::shared_ptr<InversePresentation<word_type>>&&)
-      -> Stephen<InversePresentation<word_type>>;
+      ->Stephen<InversePresentation<word_type>>;
   // TODO(2): other shared_ptr guides?
 
 }  // namespace libsemigroups
