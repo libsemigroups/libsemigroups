@@ -23,5 +23,5 @@ coverage:
 comment: true
 
 ignore:
- - "extern"
- - "tests"
+  - "third_party"
+  - "tests"
