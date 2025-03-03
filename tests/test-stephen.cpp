@@ -1623,7 +1623,7 @@ namespace libsemigroups {
       stephens[i].run();
       REQUIRE(stephens[i].word_graph().number_of_nodes() == 2);
       REQUIRE(stephens[i].word_graph()
-              == to_word_graph<uint32_t>(
+              == make<WordGraph<uint32_t>>(
                   2,
                   {{1, 1, UNDEFINED, UNDEFINED, UNDEFINED, UNDEFINED},
                    {UNDEFINED, UNDEFINED, UNDEFINED, 0, 0, UNDEFINED}}));
@@ -1643,7 +1643,7 @@ namespace libsemigroups {
       bad_stephens[i].run();
       REQUIRE(bad_stephens[i].word_graph().number_of_nodes() == 2);
       REQUIRE(bad_stephens[i].word_graph()
-              == to_word_graph<uint32_t>(
+              == make<WordGraph<uint32_t>>(
                   2,
                   {{1, 1, UNDEFINED, UNDEFINED, UNDEFINED, UNDEFINED},
                    {UNDEFINED, UNDEFINED, UNDEFINED, 0, 0, UNDEFINED}}));
