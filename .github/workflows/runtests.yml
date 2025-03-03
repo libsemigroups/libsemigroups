@@ -1,4 +1,4 @@
-name: CI
+name: Quick tests
 on: [pull_request]
 
 concurrency:
@@ -6,12 +6,16 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  gcc:
+  basic-tests:
+    name: ${{ matrix.compiler }}
     timeout-minutes: 60
     runs-on: ubuntu-latest
     env:
-      CXX: "ccache g++"
+      CXX: "ccache ${{ matrix.compiler }}"
       CXXFLAGS: "-fdiagnostics-color -O2 -g"
+    strategy:
+      matrix:
+        compiler: ["clang++", "g++"]
     steps:
       - uses: actions/checkout@v3
       - name: "Setup ccache . . ."
@@ -30,7 +34,6 @@ jobs:
         run: make test_all -j4
       - name: "Run the quick and standard tests . . ."
         run: ./test_all "[quick],[standard]"
-
   benchmark:
     timeout-minutes: 10
     runs-on: ubuntu-latest
@@ -54,31 +57,6 @@ jobs:
       - name: "Build bench_all . . ."
         run: |
           make bench_all -j4
-  clang:
-    timeout-minutes: 60
-    runs-on: ubuntu-latest
-    env:
-      CXX: "ccache clang++"
-      CXXFLAGS: "-fdiagnostics-color -O2 -g"
-    steps:
-      - uses: actions/checkout@v3
-      - name: "Setup ccache . . ."
-        uses: Chocobo1/setup-ccache-action@v1
-        with:
-          update_packager_index: false
-          install_ccache: true
-      - name: "Configure . . ."
-        run: |
-          mkdir -p m4
-          ./autogen.sh
-          ./configure CXX="$CXX" CXXFLAGS="$CXXFLAGS" --disable-hpcombi
-      - name: "Build libsemigroups . . ."
-        run: make -j4
-      - name: "Build test_all . . ."
-        run: make test_all -j4
-      - name: "Run the quick and standard tests . . ."
-        run: |
-          ./test_all "[quick],[standard]"
   config-options:
     timeout-minutes: 45
     runs-on: ubuntu-latest
