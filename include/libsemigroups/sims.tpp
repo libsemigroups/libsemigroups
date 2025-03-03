@@ -48,7 +48,7 @@ namespace libsemigroups {
 
   template <typename Subclass>
   template <typename OtherSubclass>
-  SimsSettings<Subclass>&
+  Subclass&
   SimsSettings<Subclass>::init(SimsSettings<OtherSubclass> const& that) {
     _exclude      = that.excluded_pairs();
     _include      = that.included_pairs();
@@ -61,7 +61,7 @@ namespace libsemigroups {
     _num_threads = that.number_of_threads();
     _stats       = that.stats();
     _pruners     = that.pruners();
-    return *this;
+    return static_cast<Subclass&>(*this);
   }
 
   template <typename Subclass>

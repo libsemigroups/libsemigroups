@@ -421,7 +421,7 @@ namespace libsemigroups {
 
     //! Initialize from SimsSettings with different subclass.
     template <typename OtherSubclass>
-    SimsSettings& init(SimsSettings<OtherSubclass> const& that);
+    Subclass& init(SimsSettings<OtherSubclass> const& that);
 
     ~SimsSettings();
 
@@ -1488,7 +1488,7 @@ namespace libsemigroups {
 
       uint64_t number_of_congruences(size_type n) const;
     };  // SimsBase
-  }     // namespace detail
+  }  // namespace detail
 
   namespace sims {
     class const_cgp_iterator;
@@ -1972,7 +1972,7 @@ namespace libsemigroups {
 
       using SimsBase::IteratorBase::stats;
     };  // class iterator_base
-  };    // class Sims2
+  };  // class Sims2
 
   //! \ingroup sims_group
   //!
