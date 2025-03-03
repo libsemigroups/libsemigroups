@@ -1,0 +1,83 @@
+name: Config options
+on: [pull_request]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+
+config-options:
+    timeout-minutes: 45
+    runs-on: ubuntu-latest
+    env:
+      CXX: "ccache g++"
+      CXXFLAGS: "-fdiagnostics-color"
+    steps:
+      - uses: actions/checkout@v3
+      - name: "Setup ccache . . ."
+        uses: Chocobo1/setup-ccache-action@v1
+        with:
+          update_packager_index: false
+          install_ccache: true
+      - name: "Run ./autogen.sh . . ."
+        run: |
+          ./autogen.sh
+      - name: "Test flag: --enable-debug"
+        run: |
+          ./configure CXX="$CXX" CXXFLAGS="$CXXFLAGS" --enable-debug
+          make test_all -j4 || exit 1
+          ./test_all "[quick]"
+      - name: "Test flag: --disable-hpcombi"
+        run: |
+          ./configure CXX="$CXX" CXXFLAGS="$CXXFLAGS" --disable-hpcombi
+          make test_all -j4 || exit 1
+          ./test_all "[quick]"
+      - name: "Test flag: --disable-popcnt --disable-clzll"
+        run: |
+          ./configure CXX="$CXX" CXXFLAGS="$CXXFLAGS" --disable-popcnt --disable-clzll
+          make test_bitset -j4 || exit 1
+          ./test_bitset "[quick]"
+  config-external-deps:
+    timeout-minutes: 45
+    runs-on: ubuntu-latest
+    env:
+      CXX: "ccache g++"
+      CXXFLAGS: "-fdiagnostics-color"
+      PKG_CONFIG_PATH: "/home/runner/micromamba/envs/libsemigroups/lib/pkgconfig:/home/runner/micromamba/envs/libsemigroups/share/pkgconfig/"
+      LD_LIBRARY_PATH: "/home/runner/micromamba/envs/libsemigroups/lib"
+    steps:
+      - uses: actions/checkout@v3
+      - name: "Setup ccache . . ."
+        uses: Chocobo1/setup-ccache-action@v1
+        with:
+          update_packager_index: false
+          install_ccache: true
+      - name: "Install conda environment from environment.yml . . ."
+        uses: mamba-org/setup-micromamba@v1
+        with:
+          environment-file: environment.yml
+      - name: "Run ./autogen.sh . . ."
+        run: ./autogen.sh
+      - name: "Test flag: --with-external-fmt"
+        run: |
+          ./configure CXX="$CXX" CXXFLAGS="$CXXFLAGS" --with-external-fmt
+          make test_all -j4 || exit 1
+          ./test_all "[quick]"
+      - name: "Test flag: --with-external-eigen"
+        run: |
+          make clean
+          ./configure CXX="$CXX" CXXFLAGS="$CXXFLAGS" --with-external-eigen
+          make test_obvinf -j4 || exit 1
+          make test_word_graph -j4 || exit 1
+          ./test_obvinf "[quick]"
+          ./test_word_graph "[quick]"
+      - name: "Test flag: --disable-eigen"
+        run: |
+          make clean
+          ./configure CXX="$CXX" CXXFLAGS="$CXXFLAGS" --disable-eigen
+          make test_obvinf -j4 || exit 1
+          make test_word_graph -j4 || exit 1
+          make test_cong -j4 || exit 1
+          ./test_cong "[quick]"
+          ./test_obvinf "[quick]"
+          ./test_word_graph "[quick]"
