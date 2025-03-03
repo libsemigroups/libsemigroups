@@ -34,7 +34,8 @@ jobs:
         run: make test_all -j4
       - name: "Run the quick and standard tests . . ."
         run: ./test_all "[quick],[standard]"
-  benchmark:
+  benchmarks:
+    name: "Benchmarks compile"
     timeout-minutes: 10
     runs-on: ubuntu-latest
     env:
