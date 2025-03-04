@@ -1,4 +1,4 @@
-name: Quick tests
+name: Coverage
 on: [push, pull_request]
 
 concurrency:
@@ -7,6 +7,7 @@ concurrency:
 
 jobs:
   coverage:
+    name: Quick tests
     timeout-minutes: 60
     runs-on: ubuntu-latest
     env:
