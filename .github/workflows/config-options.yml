@@ -53,7 +53,7 @@ jobs:
           update_packager_index: false
           install_ccache: true
       - name: "Install conda environment from environment.yml . . ."
-        uses: mamba-org/setup-micromamba@v1
+        uses: mamba-org/setup-micromamba@v2
         with:
           environment-file: environment.yml
       - name: "Run ./autogen.sh . . ."
