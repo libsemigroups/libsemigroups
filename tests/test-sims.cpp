@@ -2191,7 +2191,7 @@ namespace libsemigroups {
     REQUIRE(p == q);
 
     for (size_t n = 3; n < 5; ++n) {
-      auto  p = presentation::examples::stylic_monoid(n);
+      p = presentation::examples::stylic_monoid(n);
       Sims1 S;
       S.presentation(p).number_of_threads(std::thread::hardware_concurrency());
       REQUIRE(S.number_of_congruences(size[n]) == num_right[n]);

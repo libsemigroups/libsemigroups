@@ -510,6 +510,8 @@ namespace libsemigroups {
           return true;
         case Order::shortlex:
           return detail::is_shortlex_standardized(wg);
+        case Order::lex:
+        case Order::recursive:
         default:
           LIBSEMIGROUPS_EXCEPTION("not yet implemented")
       }

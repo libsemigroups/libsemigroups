@@ -8254,7 +8254,6 @@ namespace libsemigroups {
     auto const  lbrace = braces[0], rbrace = braces[1];
     if (R != 0 && C != 0) {
       result += lbrace;
-      std::string csep = "";
       for (size_t r = 0; r < R; ++r) {
         result += fmt::format("{}{}", rindent, lbrace);
         rindent          = std::string(prefix.size() + 1, ' ');

@@ -19,12 +19,13 @@
 #include <algorithm>  // for min
 #include <cstddef>    // for size_t
 #include <cstdint>    // for uint_fast8_t, uint16_t
-#include <iterator>
-#include <vector>  // for vector
+#include <iterator>   // for ??
+#include <vector>     // for vector
 
 #include "catch_amalgamated.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 #include "test-main.hpp"
 
+#include "libsemigroups/config.hpp"        // for LIBSEMIGROUPS_HPCOMBI_ENABLED
 #include "libsemigroups/froidure-pin.hpp"  // for FroidurePin<>::element_index_type
 #include "libsemigroups/hpcombi.hpp"       // for Transf16
 #include "libsemigroups/transf.hpp"        // for Transf
@@ -71,18 +72,18 @@ namespace libsemigroups {
     }
   }  // namespace
 
+#ifdef LIBSEMIGROUPS_HPCOMBI_ENABLED
+#define TRANSF_TYPES Transf<>, Transf<8>, HPCombi::Transf16
+#else
+#define TRANSF_TYPES Transf<>, Transf<8>
+#endif
+
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE(
       "FroidurePin",
       "063",
       "JDM favourite",
       "[standard][froidure-pin][transformation][transf]",
-      Transf<>,
-      Transf<8>
-#ifdef LIBSEMIGROUPS_HPCOMBI_ENABLED
-      ,
-      HPCombi::Transf16
-#endif
-  ) {
+      TRANSF_TYPES) {
     auto rg = ReportGuard(REPORT);
 
     FroidurePin<TestType> S;
