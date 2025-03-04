@@ -45,9 +45,9 @@ jobs:
       - name: "Setup compiler . . ."
         if: ${{ matrix.sys.compiler == 'clang' }}
         run: |
-          LLVM_VERSION=${{ matrix.sys.version }}
-          sudo apt-get install llvm-$LLVM_VERSION
-          CXX=clang++-$LLVM_VERSION
+          CLANG_VERSION=${{ matrix.sys.version }}
+          sudo apt-get install clang++-$CLANG_VERSION
+          CXX=clang++-$CLANG_VERSION
           echo "CXX=$CXX" >> $GITHUB_ENV
       - name: "Compiler information"
         run: |
