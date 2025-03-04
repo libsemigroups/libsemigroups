@@ -14,6 +14,7 @@ jobs:
       CXX: ccache ${{ matrix.compiler }}
       CXXFLAGS: -fdiagnostics-color -O2 -g
     strategy:
+      fail-fast: false
       matrix:
         compiler: [clang++, g++]
     steps:
