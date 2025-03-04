@@ -58,38 +58,6 @@ jobs:
       - name: "Build bench_all . . ."
         run: |
           make bench_all -j4
-  coverage:
-    timeout-minutes: 60
-    runs-on: ubuntu-latest
-    env:
-      CXX: "ccache g++"
-      CXXFLAGS: "-fdiagnostics-color"
-    steps:
-      - uses: actions/checkout@v3
-      - name: "Setup ccache . . ."
-        uses: Chocobo1/setup-ccache-action@v1
-        with:
-          update_packager_index: false
-          install_ccache: true
-      - name: "Install dependencies . . ."
-        run: |
-          sudo apt-get --yes update
-          sudo apt-get install -y lcov
-      - name: "Run quick tests . . ."
-        run: |
-          sudo ln -sf /usr/bin/gcov-13 /usr/bin/gcov
-          export GCOV=/usr/bin/gcov-13
-          etc/test-code-coverage.sh test_all "[quick][exclude:no-valgrind][exclude:no-coverage]"
-      - name: "Uploading to Codecov . . ."
-        uses: codecov/codecov-action@v5
-        with:
-          fail_ci_if_error: true
-          files: coverage.info
-          token: ${{ secrets.CODECOV_TOKEN }}
-          verbose: true
-      - name: "Cleanup . . ."
-        run: |
-          rm -f coverage.info
   distcheck:
     timeout-minutes: 15
     runs-on: ubuntu-latest
