@@ -11,72 +11,72 @@ jobs:
     timeout-minutes: 60
     runs-on: ubuntu-latest
     env:
-      CXX: "ccache ${{ matrix.compiler }}"
-      CXXFLAGS: "-fdiagnostics-color -O2 -g"
+      CXX: ccache ${{ matrix.compiler }}
+      CXXFLAGS: -fdiagnostics-color -O2 -g
     strategy:
       matrix:
-        compiler: ["clang++", "g++"]
+        compiler: [clang++, g++]
     steps:
       - uses: actions/checkout@v4
-      - name: "Setup ccache . . ."
+      - name: Setup ccache . . .
         uses: Chocobo1/setup-ccache-action@v1
         with:
           update_packager_index: false
           install_ccache: true
-      - name: "Configure . . ."
+      - name: Configure . . .
         run: |
           mkdir -p m4
           ./autogen.sh 
           ./configure CXX="$CXX" CXXFLAGS="$CXXFLAGS" --disable-hpcombi
-      - name: "Build libsemigroups . . ."
+      - name: Build libsemigroups . . .
         run: make -j4
-      - name: "Build test_all . . ."
+      - name: Build test_all . . .
         run: make test_all -j4
-      - name: "Run the quick and standard tests . . ."
+      - name: Run the quick and standard tests . . .
         run: ./test_all "[quick],[standard]"
   benchmarks:
-    name: "Benchmarks compile"
+    name: Benchmarks compile
     timeout-minutes: 10
     runs-on: ubuntu-latest
     env:
-      CXX: "ccache g++"
-      CXXFLAGS: "-fdiagnostics-color"
+      CXX: ccache g++
+      CXXFLAGS: -fdiagnostics-color
     steps:
       - uses: actions/checkout@v4
-      - name: "Setup ccache . . ."
+      - name: Setup ccache . . .
         uses: Chocobo1/setup-ccache-action@v1
         with:
           update_packager_index: false
           install_ccache: true
-      - name: "Configure . . ."
+      - name: Configure . . .
         run: |
           mkdir -p m4
           ./autogen.sh 
           ./configure CXX="$CXX" CXXFLAGS="$CXXFLAGS"
-      - name: "Build libsemigroups . . ."
+      - name: Build libsemigroups . . .
         run: make -j4
-      - name: "Build bench_all . . ."
+      - name: Build bench_all . . .
         run: |
           make bench_all -j4
   distcheck:
     timeout-minutes: 15
     runs-on: ubuntu-latest
     env:
-      CXX: "ccache g++"
-      CXXFLAGS: "-fdiagnostics-color"
+      CXX: ccache g++
+      CXXFLAGS: -fdiagnostics-color
     steps:
       - uses: actions/checkout@v4
-      - name: "Setup ccache . . ."
+      - name: Setup ccache . . .
         uses: Chocobo1/setup-ccache-action@v1
         with:
           update_packager_index: false
           install_ccache: true
-      - name: "Configure . . ."
+      - name: Configure . . .
         run: |
           mkdir -p m4 
           ./autogen.sh 
           ./configure CXX="$CXX" CXXFLAGS="$CXXFLAGS"
-      - name: "make distcheck . . ."
+      - name: make distcheck . . .
         run: make distcheck -j4
   doc:
     timeout-minutes: 10
@@ -86,25 +86,25 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: 3.13
-      - name: "Install dependencies . . ."
+      - name: Install dependencies . . .
         run: |
           sudo apt-get --yes update
           sudo apt-get install graphviz --yes
-      - name: "Set up Homebrew . . ."
+      - name: Set up Homebrew . . .
         uses: Homebrew/actions/setup-homebrew@master
-      - name: "Install latest doxygen . . ."
+      - name: Install latest doxygen . . .
         run: |
           brew install gcc
           brew install doxygen
-      - name: "Pip install docs/requirements.txt . . ."
+      - name: Pip install docs/requirements.txt . . .
         run: pip install -r docs/requirements.txt
-      - name: "Clone doxygen-awesome-css . . ."
+      - name: Clone doxygen-awesome-css . . .
         run: |
           git submodule update --init --recursive
-      - name: "Configure . . ."
+      - name: Configure . . .
         run: |
           mkdir -p m4 && ./autogen.sh && ./configure
-      - name: "Build documentation . . ."
+      - name: Build documentation . . .
         run: |
           echo "Doxygen version: "
           doxygen --version

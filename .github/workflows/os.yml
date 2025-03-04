@@ -17,26 +17,26 @@ jobs:
       - uses: jirutka/setup-alpine@v1
         with:
           branch: v3.15
-      - name: "Alpine/musl versions . . ."
+      - name: Alpine/musl versions . . .
         run: |
           cat /etc/alpine-release
           apk info musl
-      - name: "Install autotools etc . . ."
+      - name: Install autotools etc . . .
         run: |
           apk add build-base autoconf automake libtool
         shell: alpine.sh --root {0}
-      - name: "Setup ccache . . ."
+      - name: Setup ccache . . .
         uses: Chocobo1/setup-ccache-action@v1
         with:
           update_packager_index: false
           install_ccache: true
-      - name: "Configure . . ."
+      - name: Configure . . .
         run: ./autogen.sh && ./configure
-      - name: "Build libsemigroups . . ."
+      - name: Build libsemigroups . . .
         run: make -j4
-      - name: "Build test_all . . ."
+      - name: Build test_all . . .
         run: make check -j4
-      - name: "Run the quick tests . . ."
+      - name: Run the quick tests . . .
         run: ./test_all "[quick]"
   cygwin:
     name: Cygwin
@@ -50,54 +50,54 @@ jobs:
     steps:
       - uses: gap-actions/setup-cygwin@v1
       - uses: actions/checkout@v4
-      - name: "Configure . . ."
+      - name: Configure . . .
         run: ./autogen.sh && ./configure --disable-eigen --disable-hpcombi CXXFLAGS="-Os"
-      - name: "Build libsemigroups . . ."
+      - name: Build libsemigroups . . .
         run: make -j4
-      - name: "Build test_all . . ."
+      - name: Build test_all . . .
         run: make check -j4
-      - name: "Run the quick tests . . ."
+      - name: Run the quick tests . . .
         run: ./test_all "[quick]"
   macos:
     name: macOS
     timeout-minutes: 60
     runs-on: macOS-latest
     env:
-      CXX: "ccache clang++"
-      CXXFLAGS: "-fdiagnostics-color"
+      CXX: ccache clang++
+      CXXFLAGS: -fdiagnostics-color
     steps:
       - uses: actions/checkout@v4
-      - name: "Setup ccache . . ."
+      - name: Setup ccache . . .
         uses: Chocobo1/setup-ccache-action@v1
         with:
           update_packager_index: false
           install_ccache: true
-      - name: "Install dependencies . . ."
+      - name: Install dependencies . . .
         run: brew install autoconf automake libtool
-      - name: "Clang version . . ."
+      - name: Clang version . . .
         run: clang++ --version
-      - name: "Configure . . ."
+      - name: Configure . . .
         run: |
           mkdir -p m4
           ./autogen.sh
           ./configure CXX="$CXX" CXXFLAGS="$CXXFLAGS" --disable-hpcombi --disable-backward
-      - name: "Build libsemigroups . . ."
+      - name: Build libsemigroups . . .
         run: make -j4
-      - name: "Build test_all . . ."
+      - name: Build test_all . . .
         run: make test_all -j4
-      - name: "Run the quick tests . . ."
+      - name: Run the quick tests . . .
         run: ./test_all "[quick]"
   ubuntu-32:
     name: Ubuntu-32
     timeout-minutes: 60
     runs-on: ubuntu-latest
     env:
-      GH_ACTIONS_ABI: "32"
-      GH_ACTIONS_ARCH: "x86"
-      GH_ACTIONS_TEST_PROG: "test_all"
+      GH_ACTIONS_ABI: 32
+      GH_ACTIONS_ARCH: x86
+      GH_ACTIONS_TEST_PROG: test_all
       GH_ACTIONS_TEST_TAGS: "[quick][exclude:no-valgrind][exclude:no-coverage][exclude:BMat8]"
     steps:
       - uses: actions/checkout@v4
-      - name: "Running the quick tests in libsemigroups-docker-x86-32-base docker container . . ."
+      - name: Running the quick tests in libsemigroups-docker-x86-32-base docker container . . .
         run: |
           ci/launch-docker-container.sh
