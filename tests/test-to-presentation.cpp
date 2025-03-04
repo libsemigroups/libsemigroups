@@ -373,11 +373,11 @@ namespace libsemigroups {
     }
 
     {
-      Presentation<std::vector<uint16_t>> p;
-      p.alphabet(32768);
-      REQUIRE_NOTHROW(to<InversePresentation>(p));
-      p.alphabet(32769);
-      REQUIRE_THROWS(to<InversePresentation>(p));
+      Presentation<std::vector<uint16_t>> q;
+      q.alphabet(32768);
+      REQUIRE_NOTHROW(to<InversePresentation>(q));
+      q.alphabet(32769);
+      REQUIRE_THROWS(to<InversePresentation>(q));
     }
   }
 
