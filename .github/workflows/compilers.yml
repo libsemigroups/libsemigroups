@@ -7,17 +7,25 @@ concurrency:
 
 jobs:
   tests:
-    name: ${{ matrix.compiler }}-${{ matrix.version }}
+    name: ${{ matrix.sys.compiler }}-${{ matrix.sys.version }}
     timeout-minutes: 60
     runs-on: "ubuntu-latest"
     strategy:
       fail-fast: false
       matrix:
-        include:
-          - compiler: "g++"
-            version: [9, 10, 11, 12, 13, 14]
-          - compiler: "clang++"
-            version: [14, 15, 16, 17, 18, 19]
+        sys:
+          - { compiler: "g++", version: "9" }
+          - { compiler: "g++", version: "10" }
+          - { compiler: "g++", version: "11" }
+          - { compiler: "g++", version: "12" }
+          - { compiler: "g++", version: "13" }
+          - { compiler: "g++", version: "14" }
+          - { compiler: "clang++", version: "14" }
+          - { compiler: "clang++", version: "15" }
+          - { compiler: "clang++", version: "16" }
+          - { compiler: "clang++", version: "17" }
+          - { compiler: "clang++", version: "18" }
+          - { compiler: "clang++", version: "19" }
     steps:
       - uses: actions/checkout@v3
       - name: "Setup ccache . . ."
@@ -29,8 +37,8 @@ jobs:
         run: |
           sudo add-apt-repository ppa:ubuntu-toolchain-r/ppa -y
           sudo apt-get --yes update
-          sudo apt-get install ${{ matrix.compiler }}-${{ matrix.version }}
-          CXX=${{ matrix.compiler }}-${{ matrix.version }}
+          sudo apt-get install ${{ matrix.sys.compiler }}-${{ matrix.sys.version }}
+          CXX=${{ matrix.sys.compiler }}-${{ matrix.sys.version }}
           echo "CXX=$CXX" >> $GITHUB_ENV
       - name: "Compiler information"
         run: |
