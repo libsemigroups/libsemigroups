@@ -13,7 +13,7 @@ jobs:
       CXX: "ccache g++"
       CXXFLAGS: "-fdiagnostics-color"
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: "Setup ccache . . ."
         uses: Chocobo1/setup-ccache-action@v1
         with:
@@ -46,7 +46,7 @@ jobs:
       PKG_CONFIG_PATH: "/home/runner/micromamba/envs/libsemigroups/lib/pkgconfig:/home/runner/micromamba/envs/libsemigroups/share/pkgconfig/"
       LD_LIBRARY_PATH: "/home/runner/micromamba/envs/libsemigroups/lib"
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: "Setup ccache . . ."
         uses: Chocobo1/setup-ccache-action@v1
         with:

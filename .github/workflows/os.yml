@@ -13,7 +13,7 @@ jobs:
         shell: alpine.sh {0}
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: jirutka/setup-alpine@v1
         with:
           branch: v3.15
@@ -49,7 +49,7 @@ jobs:
       CHERE_INVOKING: 1
     steps:
       - uses: gap-actions/setup-cygwin@v1
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: "Configure . . ."
         run: ./autogen.sh && ./configure --disable-eigen --disable-hpcombi CXXFLAGS="-Os"
       - name: "Build libsemigroups . . ."
@@ -66,7 +66,7 @@ jobs:
       CXX: "ccache clang++"
       CXXFLAGS: "-fdiagnostics-color"
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: "Setup ccache . . ."
         uses: Chocobo1/setup-ccache-action@v1
         with:
@@ -97,7 +97,7 @@ jobs:
       GH_ACTIONS_TEST_PROG: "test_all"
       GH_ACTIONS_TEST_TAGS: "[quick][exclude:no-valgrind][exclude:no-coverage][exclude:BMat8]"
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: "Running the quick tests in libsemigroups-docker-x86-32-base docker container . . ."
         run: |
           ci/launch-docker-container.sh

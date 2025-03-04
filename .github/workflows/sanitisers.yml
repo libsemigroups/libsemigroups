@@ -22,7 +22,7 @@ jobs:
       fail-fast: false
     name: ${{ matrix.type }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: "Setup ccache . . ."
         uses: Chocobo1/setup-ccache-action@v1
         with:
@@ -52,7 +52,7 @@ jobs:
       CXX: "ccache g++"
       CXXFLAGS: "-fdiagnostics-color"
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: "Setup ccache . . ."
         uses: Chocobo1/setup-ccache-action@v1
         with:
