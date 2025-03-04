@@ -1,4 +1,4 @@
-name: os
+name: OS
 on: [pull_request]
 
 concurrency:
@@ -7,6 +7,7 @@ concurrency:
 
 jobs:
   alpine:
+    name: Alpine
     defaults:
       run:
         shell: alpine.sh {0}
@@ -38,6 +39,7 @@ jobs:
       - name: "Run the quick tests . . ."
         run: ./test_all "[quick]"
   cygwin:
+    name: Cygwin
     defaults:
       run:
         shell: C:\cygwin64\bin\bash.exe --login -o igncr '{0}'
@@ -56,7 +58,8 @@ jobs:
         run: make check -j4
       - name: "Run the quick tests . . ."
         run: ./test_all "[quick]"
-  macosx:
+  macos:
+    name: macOS
     timeout-minutes: 60
     runs-on: macOS-latest
     env:
@@ -84,7 +87,8 @@ jobs:
         run: make test_all -j4
       - name: "Run the quick tests . . ."
         run: ./test_all "[quick]"
-  test-x86-32:
+  ubuntu-32:
+    name: Ubuntu-32
     timeout-minutes: 60
     runs-on: ubuntu-latest
     env:
