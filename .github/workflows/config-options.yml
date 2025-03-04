@@ -104,7 +104,7 @@ jobs:
 
   bitset:
     timeout-minutes: 45
-    name: ${{ matrix.popcnt }} ${{ matrix.ctzll }}
+    name: ${{ matrix.popcnt }} ${{ matrix.clzll }}
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -112,16 +112,16 @@ jobs:
         popcnt:
           - ""
           - "--disable-popcnt"
-        ctzll:
+        clzll:
           - ""
-          - "--disable-ctzll"
+          - "--disable-clzll"
         exclude:
           - popcnt: ""
-            ctzll: ""
+            clzll: ""
     env:
       CXX: "ccache g++"
       CXXFLAGS: "-fdiagnostics-color"
-      CONFIGFLAGS: ${{ matrix.popcnt }} ${{ matrix.ctzll }}
+      CONFIGFLAGS: ${{ matrix.popcnt }} ${{ matrix.clzll }}
     steps:
       - uses: actions/checkout@v4
       - name: "Setup ccache . . ."
