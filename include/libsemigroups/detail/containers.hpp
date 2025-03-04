@@ -402,7 +402,7 @@ namespace libsemigroups {
       }
 
       // Not noexcept because std::vector::operator[] isn't
-      void inline set(size_type i, size_type j, T val) {
+      void set(size_type i, size_type j, T val) {
         LIBSEMIGROUPS_ASSERT(i < _nr_rows && j < _nr_used_cols);
         _vec[i * (_nr_used_cols + _nr_unused_cols) + j] = val;
       }

@@ -84,7 +84,11 @@ namespace libsemigroups {
     return *this;
   }
 
-  Ukkonen::~Ukkonen() = default;
+  Ukkonen::Ukkonen(Ukkonen const&)            = default;
+  Ukkonen::Ukkonen(Ukkonen&&)                 = default;
+  Ukkonen& Ukkonen::operator=(Ukkonen const&) = default;
+  Ukkonen& Ukkonen::operator=(Ukkonen&&)      = default;
+  Ukkonen::~Ukkonen()                         = default;
 
   ////////////////////////////////////////////////////////////////////////
   // Ukkonen - initialisation - public
@@ -296,16 +300,106 @@ namespace libsemigroups {
   }
 
   namespace ukkonen {
+    void add_word_no_checks(Ukkonen& u, word_type const& w) {
+      u.add_word_no_checks(w.cbegin(), w.cend());
+    }
+
     void add_words_no_checks(Ukkonen& st, std::vector<word_type> const& words) {
       for (auto const& word : words) {
         add_word_no_checks(st, word);
       }
     }
 
+    void add_word_no_checks(Ukkonen& u, char const* w) {
+      add_word_no_checks(u, w, w + std::strlen(w));
+    }
+
+    void add_word(Ukkonen& u, word_type const& w) {
+      u.add_word(w.cbegin(), w.cend());
+    }
+
+    void add_word(Ukkonen& u, char const* w) {
+      add_word(u, w, w + std::strlen(w));
+    }
+
     void add_words(Ukkonen& st, std::vector<word_type> const& words) {
       for (auto const& word : words) {
         add_word(st, word);
       }
+    }
+
+    bool is_subword_no_checks(Ukkonen const& u, char const* w) {
+      return is_subword_no_checks(u, w, w + std::strlen(w));
+    }
+
+    bool is_subword_no_checks(Ukkonen const& u, word_type const& w) {
+      return is_subword_no_checks(u, w.cbegin(), w.cend());
+    }
+
+    bool is_subword(Ukkonen const& u, word_type const& w) {
+      return is_subword(u, w.cbegin(), w.cend());
+    }
+
+    bool is_subword(Ukkonen const& u, char const* w) {
+      return is_subword(u, w, w + std::strlen(w));
+    }
+
+    bool is_suffix(Ukkonen const& u, word_type const& w) {
+      return is_suffix(u, w.cbegin(), w.cend());
+    }
+
+    bool is_suffix(Ukkonen const& u, char const* w) {
+      return is_suffix(u, w, w + std::strlen(w));
+    }
+
+    bool is_suffix_no_checks(Ukkonen const& u, word_type const& w) {
+      return is_suffix_no_checks(u, w.cbegin(), w.cend());
+    }
+
+    bool is_suffix_no_checks(Ukkonen const& u, char const* w) {
+      return is_suffix_no_checks(u, w, w + std::strlen(w));
+    }
+
+    std::pair<Ukkonen::State, word_type::const_iterator>
+    traverse_no_checks(Ukkonen const& u, word_type const& w) {
+      return u.traverse_no_checks(w.cbegin(), w.cend());
+    }
+
+    std::pair<Ukkonen::State, char const*> traverse_no_checks(Ukkonen const& u,
+                                                              char const* w) {
+      return u.traverse_no_checks(w, w + std::strlen(w));
+    }
+
+    char const* traverse_no_checks(Ukkonen::State& st,
+                                   Ukkonen const&  u,
+                                   char const*     w) {
+      return u.traverse_no_checks(st, w, w + std::strlen(w));
+    }
+
+    word_type::const_iterator traverse(Ukkonen::State&  st,
+                                       Ukkonen const&   u,
+                                       word_type const& w) {
+      return u.traverse(st, w.cbegin(), w.cend());
+    }
+
+    std::pair<Ukkonen::State, word_type::const_iterator>
+    traverse(Ukkonen const& u, word_type const& w) {
+      return u.traverse(w.cbegin(), w.cend());
+    }
+
+    std::pair<Ukkonen::State, char const*> traverse(Ukkonen const& u,
+                                                    char const*    w) {
+      return u.traverse(w, w + std::strlen(w));
+    }
+
+    word_type::const_iterator traverse_no_checks(Ukkonen::State&  st,
+                                                 Ukkonen const&   u,
+                                                 word_type const& w) {
+      return u.traverse_no_checks(st, w.cbegin(), w.cend());
+    }
+
+    char const* traverse(Ukkonen::State& st, Ukkonen const& u, char const* w) {
+      return u.traverse(st, w, w + std::strlen(w));
     }
 
     size_t number_of_distinct_subwords(Ukkonen const& u) {

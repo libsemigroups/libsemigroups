@@ -58,6 +58,14 @@ namespace libsemigroups {
         }
       }
 
+      KnuthBendixNormalFormRange();
+      KnuthBendixNormalFormRange(KnuthBendixNormalFormRange const&);
+      KnuthBendixNormalFormRange(KnuthBendixNormalFormRange&&);
+      KnuthBendixNormalFormRange& operator=(KnuthBendixNormalFormRange const&);
+      KnuthBendixNormalFormRange& operator=(KnuthBendixNormalFormRange&&);
+
+      ~KnuthBendixNormalFormRange();
+
       output_type get() const {
         word_type const& w = Paths_::get();
         _current.clear();
@@ -88,6 +96,37 @@ namespace libsemigroups {
       static constexpr bool is_idempotent = true;
     };  // class KnuthBendixNormalFormRange
 
+    template <typename Word, typename Rewriter, typename ReductionOrder>
+    KnuthBendixNormalFormRange<Word, Rewriter, ReductionOrder>::
+        KnuthBendixNormalFormRange()
+        = default;
+
+    template <typename Word, typename Rewriter, typename ReductionOrder>
+    KnuthBendixNormalFormRange<Word, Rewriter, ReductionOrder>::
+        KnuthBendixNormalFormRange(KnuthBendixNormalFormRange const&)
+        = default;
+
+    template <typename Word, typename Rewriter, typename ReductionOrder>
+    KnuthBendixNormalFormRange<Word, Rewriter, ReductionOrder>::
+        KnuthBendixNormalFormRange(KnuthBendixNormalFormRange&&)
+        = default;
+
+    template <typename Word, typename Rewriter, typename ReductionOrder>
+    KnuthBendixNormalFormRange<Word, Rewriter, ReductionOrder>&
+    KnuthBendixNormalFormRange<Word, Rewriter, ReductionOrder>::operator=(
+        KnuthBendixNormalFormRange const&)
+        = default;
+
+    template <typename Word, typename Rewriter, typename ReductionOrder>
+    KnuthBendixNormalFormRange<Word, Rewriter, ReductionOrder>&
+    KnuthBendixNormalFormRange<Word, Rewriter, ReductionOrder>::operator=(
+        KnuthBendixNormalFormRange&&)
+        = default;
+
+    template <typename Word, typename Rewriter, typename ReductionOrder>
+    KnuthBendixNormalFormRange<Word, Rewriter, ReductionOrder>::
+        ~KnuthBendixNormalFormRange()
+        = default;
   }  // namespace detail
 }  // namespace libsemigroups
 #endif  // LIBSEMIGROUPS_DETAIL_KNUTH_BENDIX_NF_HPP_

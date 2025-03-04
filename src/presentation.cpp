@@ -59,6 +59,7 @@ namespace libsemigroups {
                            std::vector<int>(alphabet.begin(), alphabet.end()));
       }
     }
+
     GreedyReduceHelper::GreedyReduceHelper(Ukkonen const& st)
         : _best(),
           _best_goodness(),
@@ -133,6 +134,67 @@ namespace libsemigroups {
   }  // namespace detail
 
   namespace presentation {
+    // TODO(1) can the following functions be simplified by using
+    // std::string_view instead? I.e. reduce the number of functions
+
+    void add_rule_no_checks(Presentation<std::string>& p,
+                            char const*                lhop,
+                            char const*                rhop) {
+      // TODO(1) pass iterators to p.add_rule and don't construct std::string
+      // here
+      add_rule_no_checks(p, std::string(lhop), std::string(rhop));
+    }
+
+    void add_rule_no_checks(Presentation<std::string>& p,
+                            std::string const&         lhop,
+                            char const*                rhop) {
+      // TODO(1) pass iterators to p.add_rule and don't construct std::string
+      // here
+      add_rule_no_checks(p, lhop, std::string(rhop));
+    }
+
+    void add_rule_no_checks(Presentation<std::string>& p,
+                            char const*                lhop,
+                            std::string const&         rhop) {
+      add_rule_no_checks(p, std::string(lhop), rhop);
+    }
+
+    void add_rule(Presentation<std::string>& p,
+                  char const*                lhop,
+                  char const*                rhop) {
+      // TODO(1) pass iterators to p.add_rule and don't construct std::string
+      // here
+      add_rule(p, std::string(lhop), std::string(rhop));
+    }
+
+    void add_rule(Presentation<std::string>& p,
+                  std::string const&         lhop,
+                  char const*                rhop) {
+      // TODO(1) pass iterators to p.add_rule and don't construct std::string
+      // here
+      add_rule(p, lhop, std::string(rhop));
+    }
+
+    void add_rule(Presentation<std::string>& p,
+                  char const*                lhop,
+                  std::string const&         rhop) {
+      // TODO(1) pass iterators to p.add_rule and don't construct std::string
+      // here
+      add_rule(p, std::string(lhop), rhop);
+    }
+
+    void add_inverse_rules(Presentation<std::string>& p,
+                           char const*                vals,
+                           char                       e) {
+      add_inverse_rules(p, std::string(vals), e);
+    }
+
+    typename Presentation<std::string>::letter_type
+    replace_word_with_new_generator(Presentation<std::string>& p,
+                                    char const*                w) {
+      return replace_word_with_new_generator(p, w, w + std::strlen(w));
+    }
+
     std::string to_gap_string(Presentation<word_type> const& p,
                               std::string const&             var_name) {
       p.validate();

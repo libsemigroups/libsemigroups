@@ -201,6 +201,8 @@ namespace libsemigroups {
     //! Default move assignment.
     AhoCorasick& operator=(AhoCorasick&&) = default;
 
+    ~AhoCorasick();
+
     //! \brief Reinitialise an existing AhoCorasick object.
     //!
     //! This function puts an AhoCorasick object back into the same state as if

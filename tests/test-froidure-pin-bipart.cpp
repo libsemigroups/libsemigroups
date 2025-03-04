@@ -86,8 +86,8 @@ namespace libsemigroups {
                       LibsemigroupsException);
     pos = 0;
     std::for_each(
-        S.cbegin_idempotents(), S.cend_idempotents(), [&pos](auto const& x) {
-          REQUIRE(x * x == x);
+        S.cbegin_idempotents(), S.cend_idempotents(), [&pos](auto const& y) {
+          REQUIRE(y * y == y);
           ++pos;
         });
     REQUIRE(pos == S.number_of_idempotents());

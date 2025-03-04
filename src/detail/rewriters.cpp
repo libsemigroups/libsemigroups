@@ -290,6 +290,8 @@ namespace libsemigroups {
       }
     }
 
+    RewriteFromLeft::~RewriteFromLeft() = default;
+
     RewriteFromLeft& RewriteFromLeft::init() {
       RewriterBase::init();
       _set_rules.clear();
@@ -486,6 +488,8 @@ namespace libsemigroups {
         return confluent_impl(seen);
       }
     }
+
+    RewriteTrie::~RewriteTrie() = default;
 
     RewriteTrie& RewriteTrie::init() {
       RewriterBase::init();

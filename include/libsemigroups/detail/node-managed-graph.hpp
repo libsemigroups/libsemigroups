@@ -104,7 +104,7 @@ namespace libsemigroups {
       // Constructors + initializers
       ////////////////////////////////////////////////////////////////////////
 
-      NodeManagedGraph() = default;
+      NodeManagedGraph();
       NodeManagedGraph& init();
 
       NodeManagedGraph(NodeManagedGraph const&);

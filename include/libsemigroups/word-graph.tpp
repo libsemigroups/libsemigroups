@@ -33,16 +33,6 @@ namespace libsemigroups {
 
   namespace word_graph {
 
-#if defined(LIBSEMIGROUPS_EIGEN_ENABLED) \
-    && !defined(LIBSEMIGROUPS_PARSED_BY_DOXYGEN)
-    static inline Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic>
-    pow(Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> const& x,
-        size_t                                                       e) {
-      using Mat = Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic>;
-      return Eigen::MatrixPower<Mat>(x)(e);
-    }
-#endif
-
     namespace detail {
       template <typename Node>
       bool is_shortlex_standardized(WordGraph<Node> const& wg) {
@@ -1703,7 +1693,6 @@ namespace libsemigroups {
 
   template <typename Node1, typename Node2>
   bool Meeter::is_subrelation_no_checks(WordGraph<Node1> const& x,
-
                                         size_t xnum_nodes_reachable_from_root,
                                         Node2  xroot,
                                         WordGraph<Node1> const& y,

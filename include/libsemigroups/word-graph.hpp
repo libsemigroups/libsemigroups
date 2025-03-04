@@ -2795,7 +2795,7 @@ namespace libsemigroups {
         // always have an odd number of arguments, so we check that it's even
         // here (the argument x and an odd number of further arguments).
         WordGraph<Node> xy;
-                        operator()(xy, x, std::forward<Args>(args)...);
+        operator()(xy, x, std::forward<Args>(args)...);
         return xy;
       }
 
@@ -2830,7 +2830,7 @@ namespace libsemigroups {
         return is_subrelation(x, static_cast<Node>(0), y, static_cast<Node>(0));
       }
     };  // JoinerMeeterCommon
-  }     // namespace detail
+  }  // namespace detail
 
   //! \ingroup word_graph_group
   //! \brief Class for taking joins of word graphs.
@@ -2871,29 +2871,29 @@ namespace libsemigroups {
     //! \brief Default constructor.
     //!
     //! Default constructor.
-    Joiner() = default;
+    Joiner();
 
     //! \brief Default copy constructor.
     //!
     //! Default copy constructor.
-    Joiner(Joiner const&) = default;
+    Joiner(Joiner const&);
 
     //! \brief Default move constructor.
     //!
     //! Default move constructor.
-    Joiner(Joiner&&) = default;
+    Joiner(Joiner&&);
 
     //! \brief Default copy assignment operator.
     //!
     //! Default copy assignment operator.
-    Joiner& operator=(Joiner const&) = default;
+    Joiner& operator=(Joiner const&);
 
     //! \brief Default move assignment operator.
     //!
     //! Default move assignment operator.
-    Joiner& operator=(Joiner&&) = default;
+    Joiner& operator=(Joiner&&);
 
-    ~Joiner() = default;
+    ~Joiner();
 
     //! \brief Replace the contents of a word graph with the join/meet of two
     //! given word graphs with respect to given root vertices.
@@ -3289,29 +3289,29 @@ namespace libsemigroups {
     //! \brief Default constructor.
     //!
     //! Default constructor.
-    Meeter() = default;
+    Meeter();
 
     //! \brief Default copy constructor.
     //!
     //! Default copy constructor.
-    Meeter(Meeter const&) = default;
+    Meeter(Meeter const&);
 
     //! \brief Default move constructor.
     //!
     //! Default move constructor.
-    Meeter(Meeter&&) = default;
+    Meeter(Meeter&&);
 
     //! \brief Default copy assignment operator.
     //!
     //! Default copy assignment operator.
-    Meeter& operator=(Meeter const&) = default;
+    Meeter& operator=(Meeter const&);
 
     //! \brief Default move assignment operator.
     //!
     //! Default move assignment operator.
-    Meeter& operator=(Meeter&&) = default;
+    Meeter& operator=(Meeter&&);
 
-    ~Meeter() = default;
+    ~Meeter();
 
     //! \copydoc Joiner::call_no_checks(WordGraph<Node>&, WordGraph<Node>
     //! const&, size_t, Node, WordGraph<Node> const&, size_t, Node)

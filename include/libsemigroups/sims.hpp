@@ -1483,7 +1483,7 @@ namespace libsemigroups {
 
       uint64_t number_of_congruences(size_type n) const;
     };  // SimsBase
-  }     // namespace detail
+  }  // namespace detail
 
   namespace sims {
     class const_cgp_iterator;
@@ -1967,7 +1967,7 @@ namespace libsemigroups {
 
       using SimsBase::IteratorBase::stats;
     };  // class iterator_base
-  };    // class Sims2
+  };  // class Sims2
 
   //! \ingroup sims_group
   //!
@@ -3124,6 +3124,7 @@ namespace libsemigroups {
 
    public:
     //! Default constructor.
+    // TODO(1) to tpp
     SimsRefinerIdeals()
         : _knuth_bendices(std::thread::hardware_concurrency() + 1,
                           KnuthBendix_()),
@@ -3137,6 +3138,7 @@ namespace libsemigroups {
     //! been newly default constructed.
     //!
     //! \returns A reference to \c *this.
+    // TODO(1) to tpp
     SimsRefinerIdeals& init() {
       _presentation.init();
       _knuth_bendices[0].init();

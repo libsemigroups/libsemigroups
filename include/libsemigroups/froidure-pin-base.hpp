@@ -2351,11 +2351,9 @@ namespace libsemigroups {
     //!
     //! \note This function does not trigger any enumeration.
     // TODO(1) complexity?
-    [[nodiscard]] static inline auto
-    current_normal_forms(FroidurePinBase const& fpb) {
-      return rx::iterator_range(fpb.cbegin_current_normal_forms(),
-                                fpb.cend_current_normal_forms());
-    }
+    [[nodiscard]] rx::iterator_range<
+        FroidurePinBase::const_normal_form_iterator>
+    current_normal_forms(FroidurePinBase const& fpb);
 
     //! \brief Returns a range object containing normal forms for all the
     //! elements.
@@ -2375,10 +2373,9 @@ namespace libsemigroups {
     //! The same as FroidurePinBase::enumerate.
     //!
     //! \note This function triggers a full enumeration.
-    [[nodiscard]] static inline auto normal_forms(FroidurePinBase& fpb) {
-      return rx::iterator_range(fpb.cbegin_normal_forms(),
-                                fpb.cend_normal_forms());
-    }
+    [[nodiscard]]
+    rx::iterator_range<FroidurePinBase::const_normal_form_iterator>
+    normal_forms(FroidurePinBase& fpb);
 
     //! \brief Returns a range object containing the so-far enumerated
     //! rules.
@@ -2397,10 +2394,8 @@ namespace libsemigroups {
     //!
     //! \note This function does not trigger any enumeration.
     // TODO(1) complexity?
-    [[nodiscard]] static inline auto current_rules(FroidurePinBase const& fpb) {
-      return rx::iterator_range(fpb.cbegin_current_rules(),
-                                fpb.cend_current_rules());
-    }
+    [[nodiscard]] rx::iterator_range<FroidurePinBase::const_rule_iterator>
+    current_rules(FroidurePinBase const& fpb);
 
     //! \brief Returns a range object containing all of the rules.
     //!
@@ -2419,9 +2414,8 @@ namespace libsemigroups {
     //! The same as FroidurePinBase::enumerate.
     //!
     //! \note This function triggers a full enumeration.
-    [[nodiscard]] static inline auto rules(FroidurePinBase& fpb) {
-      return rx::iterator_range(fpb.cbegin_rules(), fpb.cend_rules());
-    }
+    [[nodiscard]] rx::iterator_range<FroidurePinBase::const_rule_iterator>
+    rules(FroidurePinBase& fpb);
 
   }  // namespace froidure_pin
 }  // namespace libsemigroups

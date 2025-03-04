@@ -660,22 +660,24 @@ namespace libsemigroups {
     //! \brief Default copy constructor.
     //!
     //! Default copy constructor.
-    Paths(Paths const&) = default;
+    Paths(Paths const&);
 
     //! \brief Default move constructor.
     //!
     //! Default move constructor.
-    Paths(Paths&&) = default;
+    Paths(Paths&&);
 
     //! \brief Default copy assignment operator.
     //!
     //! Default copy assignment operator.
-    Paths& operator=(Paths const&) = default;
+    Paths& operator=(Paths const&);
 
     //! \brief Default move assignment operator.
     //!
     //! Default move assignment operator.
-    Paths& operator=(Paths&&) = default;
+    Paths& operator=(Paths&&);
+
+    ~Paths();
 
     //! \brief Construct from a WordGraph.
     //!
@@ -740,8 +742,7 @@ namespace libsemigroups {
     //! `source() != UNDEFINED` before calling this function.
     output_type get() const {
       set_iterator_no_checks();
-      return std::visit(
-          [](auto& it) -> auto const& { return *it; }, _current);
+      return std::visit([](auto& it) -> auto const& { return *it; }, _current);
     }
 
     //! \brief Advance to the next path in the range.

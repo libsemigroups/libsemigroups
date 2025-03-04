@@ -192,13 +192,7 @@ namespace libsemigroups {
     //!
     //! This function default constructs an uninitialised \ref_congruence
     //! instance.
-    Congruence()
-        : detail::CongruenceCommon(),
-          _race(),
-          _runners_initted(),
-          _runner_kinds() {
-      init();
-    }
+    Congruence();
 
     //! \ingroup congruence_class_init_group
     //!
@@ -218,30 +212,30 @@ namespace libsemigroups {
     //! \brief Copy constructor.
     //!
     //! Copy constructor.
-    Congruence(Congruence const&) = default;
+    Congruence(Congruence const&);
 
     //! \ingroup congruence_class_init_group
     //!
     //! \brief Move constructor.
     //!
     //! Move constructor.
-    Congruence(Congruence&&) = default;
+    Congruence(Congruence&&);
 
     //! \ingroup congruence_class_init_group
     //!
     //! \brief Copy assignment operator.
     //!
     //! Copy assignment operator.
-    Congruence& operator=(Congruence const&) = default;
+    Congruence& operator=(Congruence const&);
 
     //! \ingroup congruence_class_init_group
     //!
     //! \brief Move assignment operator.
     //!
     //! Move assignment operator.
-    Congruence& operator=(Congruence&&) = default;
+    Congruence& operator=(Congruence&&);
 
-    ~Congruence() = default;
+    ~Congruence();
 
     //! \ingroup congruence_class_init_group
     //!

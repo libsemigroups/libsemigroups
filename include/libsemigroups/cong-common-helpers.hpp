@@ -42,6 +42,8 @@
 #include "exception.hpp"  // for LIBSEMIGROUPS_EXCEPTION
 #include "ranges.hpp"     // for is_input_or_sink_v, iterator_...
 
+#include "detail/string.hpp"  // for throw_if_nullptr
+
 namespace libsemigroups {
 
   // Forward decls
@@ -58,13 +60,6 @@ namespace libsemigroups {
     class CongruenceCommon;
     struct CongruenceBase;
 
-    static inline void throw_if_nullptr(char const*      w,
-                                        std::string_view arg = "1st") {
-      if (w == nullptr) {
-        LIBSEMIGROUPS_EXCEPTION(
-            "the {} argument (char const*) must not be nullptr", arg);
-      }
-    }
   }  // namespace detail
 
   namespace congruence_common {

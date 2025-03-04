@@ -342,8 +342,7 @@ namespace libsemigroups {
     //! function could be anything.
     [[nodiscard]] output_type get() const noexcept {
       set_iterator();
-      return std::visit(
-          [](auto& it) -> auto const& { return *it; }, _current);
+      return std::visit([](auto& it) -> auto const& { return *it; }, _current);
     }
 
     //! \brief Advance to the next value.
@@ -959,7 +958,7 @@ namespace libsemigroups {
     //! * \ref literals
     [[nodiscard]] word_type operator()(std::string const& input) const {
       word_type output;
-                operator()(output, input);
+      operator()(output, input);
       return output;
     }
 
@@ -1292,7 +1291,7 @@ namespace libsemigroups {
     //! * \ref literals
     [[nodiscard]] std::string operator()(word_type const& input) const {
       std::string output;
-                  operator()(output, input);
+      operator()(output, input);
       return output;
     }
 
@@ -1302,7 +1301,7 @@ namespace libsemigroups {
       static_assert(std::is_integral_v<Int>);
       // TODO(0) use iterators instead
       word_type copy(input.begin(), input.end());
-      return    operator()(copy);
+      return operator()(copy);
     }
 
     template <typename InputRange>
@@ -1360,6 +1359,8 @@ namespace libsemigroups {
     Range(InputRange&& input, ToString&& t_str)
         : _input(std::move(input)), _to_string(std::move(t_str)) {}
 
+    ~Range();
+
     // Not noexcept because ToString()() isn't
     [[nodiscard]] output_type get() const {
       return _to_string(_input.get());
@@ -1377,6 +1378,9 @@ namespace libsemigroups {
       return _input.size_hint();
     }
   };
+
+  template <typename InputRange>
+  ToString::Range<InputRange>::~Range() = default;
 
   //! \ingroup words_group
   //!

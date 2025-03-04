@@ -75,7 +75,15 @@ namespace libsemigroups {
                                     size_t                  max) {
       auto am = word_graph::adjacency_matrix(wg);
 #ifdef LIBSEMIGROUPS_EIGEN_ENABLED
-      auto     acc   = word_graph::pow(am, min);
+      using Mat = Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic>;
+#if defined(__GNUC__) && !defined(__clang__)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Winline"
+#endif
+      auto acc = Mat(Eigen::MatrixPower<Mat>(am)(min));
+#if defined(__GNUC__) && !defined(__clang__)
+#pragma GCC diagnostic pop
+#endif
       uint64_t total = 0;
       for (size_t i = min; i < max; ++i) {
         uint64_t add = acc.row(source).sum();
@@ -146,7 +154,15 @@ namespace libsemigroups {
       }
       auto am = word_graph::adjacency_matrix(wg);
 #ifdef LIBSEMIGROUPS_EIGEN_ENABLED
-      auto     acc   = word_graph::pow(am, min);
+      using Mat = Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic>;
+#if defined(__GNUC__) && !defined(__clang__)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Winline"
+#endif
+      auto acc = Mat(Eigen::MatrixPower<Mat>(am)(min));
+#if defined(__GNUC__) && !defined(__clang__)
+#pragma GCC diagnostic pop
+#endif
       uint64_t total = 0;
       for (size_t i = min; i < max; ++i) {
         uint64_t add = acc(source, target);
@@ -439,6 +455,21 @@ namespace libsemigroups {
             number_of_paths_algorithm(wg, source, target, min, max));
     }
   }
+
+  template <typename Node>
+  Paths<Node>::Paths(Paths const&) = default;
+
+  template <typename Node>
+  Paths<Node>::Paths(Paths&&) = default;
+
+  template <typename Node>
+  Paths<Node>& Paths<Node>::operator=(Paths const&) = default;
+
+  template <typename Node>
+  Paths<Node>& Paths<Node>::operator=(Paths&&) = default;
+
+  template <typename Node>
+  Paths<Node>::~Paths() = default;
 
   template <typename Node>
   void Paths<Node>::throw_if_source_undefined() const {

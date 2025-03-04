@@ -16,8 +16,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-// This file contains some functionality missing in some implementations of the
-// stl, or to augment the stl implementations.
+// This file contains the implementations of the functionality declared in
+// word-range.hpp
 
 #include "libsemigroups/word-range.hpp"
 

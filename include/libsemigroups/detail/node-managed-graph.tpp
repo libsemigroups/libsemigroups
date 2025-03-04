@@ -75,6 +75,9 @@ namespace libsemigroups {
     }
 
     template <typename BaseGraph>
+    NodeManagedGraph<BaseGraph>::NodeManagedGraph() = default;
+
+    template <typename BaseGraph>
     NodeManagedGraph<BaseGraph>::NodeManagedGraph(NodeManagedGraph const&)
         = default;
 
@@ -356,5 +359,5 @@ namespace libsemigroups {
         return r.get();
       }
     }  // namespace node_managed_graph
-  }    // namespace detail
+  }  // namespace detail
 }  // namespace libsemigroups

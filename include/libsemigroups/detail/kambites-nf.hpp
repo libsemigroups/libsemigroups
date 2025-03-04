@@ -75,6 +75,8 @@ namespace libsemigroups {
 
       KambitesNormalFormRange& operator=(KambitesNormalFormRange&&) = default;
 
+      ~KambitesNormalFormRange();
+
       // TODO(1) allow setting of min/max etc like Paths
 
       output_type get() const {
@@ -111,8 +113,12 @@ namespace libsemigroups {
       static constexpr bool is_idempotent = true;
     };
 
+    // Deduction guide
     template <typename Word>
     KambitesNormalFormRange(Kambites<Word>&) -> KambitesNormalFormRange<Word>;
+
+    template <typename Word>
+    KambitesNormalFormRange<Word>::~KambitesNormalFormRange() = default;
 
   }  // namespace detail
 }  // namespace libsemigroups

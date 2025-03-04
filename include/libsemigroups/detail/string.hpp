@@ -40,6 +40,9 @@
 namespace libsemigroups {
 
   namespace detail {
+
+    void throw_if_nullptr(char const* w, std::string_view arg = "1st");
+
     // Forward declaration
     template <typename T>
     std::string to_string(T const& n);

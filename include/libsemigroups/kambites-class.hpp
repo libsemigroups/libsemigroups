@@ -839,6 +839,10 @@ namespace libsemigroups {
     // (really_init_XYZ_data) which is called once, and init_XYZ_data which
     // can be called very often.
     // Intentionally inlined, do not move to tpp file.
+#if defined(__GNUC__) && !defined(__clang__)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Winline"
+#endif
     inline void init_XYZ_data(size_t i) const {
       LIBSEMIGROUPS_ASSERT(i < _presentation.rules.size());
       if (_XYZ_data.empty()) {
@@ -848,7 +852,9 @@ namespace libsemigroups {
         really_init_XYZ_data(i);
       }
     }
-
+#if defined(__GNUC__) && !defined(__clang__)
+#pragma GCC diagnostic pop
+#endif
     [[nodiscard]] internal_type const& X(size_t i) const;
     [[nodiscard]] internal_type const& Y(size_t i) const;
     [[nodiscard]] internal_type const& Z(size_t i) const;

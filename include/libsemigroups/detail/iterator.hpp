@@ -393,13 +393,8 @@ namespace libsemigroups {
 
       template <typename Sfinae   = Traits,
                 typename Operator = typename Sfinae::Difference>
-      auto constexpr operator-(IteratorStatefulBase const& that) const noexcept
-          -> ReturnTypeIfExists<Operator, difference_type> {
-        return Operator()(this->get_state(),
-                          this->get_wrapped_iter(),
-                          that.get_state(),
-                          that.get_wrapped_iter());
-      }
+      auto operator-(IteratorStatefulBase const& that) const noexcept
+          -> ReturnTypeIfExists<Operator, difference_type>;
 
       template <typename Sfinae   = Traits,
                 typename Operator = typename Sfinae::Swap>
@@ -440,6 +435,16 @@ namespace libsemigroups {
     IteratorStatefulBase<S, T>&
     IteratorStatefulBase<S, T>::operator=(IteratorStatefulBase&&)
         = default;
+
+    template <typename S, typename T>
+    template <typename Sfinae, typename Operator>
+    auto IteratorStatefulBase<S, T>::operator-(IteratorStatefulBase const& that)
+        const noexcept -> ReturnTypeIfExists<Operator, difference_type> {
+      return Operator()(this->get_state(),
+                        this->get_wrapped_iter(),
+                        that.get_state(),
+                        that.get_wrapped_iter());
+    }
 
     template <typename S, typename T>
     IteratorStatefulBase<S, T>::~IteratorStatefulBase() = default;

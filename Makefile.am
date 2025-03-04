@@ -675,6 +675,7 @@ libsemigroups_la_SOURCES += src/sims.cpp
 libsemigroups_la_SOURCES += src/stephen.cpp
 libsemigroups_la_SOURCES += src/todd-coxeter-helpers.cpp
 libsemigroups_la_SOURCES += src/ukkonen.cpp
+libsemigroups_la_SOURCES += src/word-graph.cpp
 libsemigroups_la_SOURCES += src/word-range.cpp
 
 libsemigroups_la_SOURCES += src/detail/cong-common-class.cpp

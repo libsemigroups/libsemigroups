@@ -33,6 +33,8 @@
 
 namespace libsemigroups {
 
+  AhoCorasick::~AhoCorasick() = default;
+
   AhoCorasick::Node& AhoCorasick::Node::init(index_type  parent,
                                              letter_type a) noexcept {
     _parent        = parent;

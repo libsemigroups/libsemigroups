@@ -411,5 +411,28 @@ namespace libsemigroups {
       return product_by_reduction_no_checks(fpb, i, j);
     }
 
+    rx::iterator_range<FroidurePinBase::const_normal_form_iterator>
+    current_normal_forms(FroidurePinBase const& fpb) {
+      return rx::iterator_range(fpb.cbegin_current_normal_forms(),
+                                fpb.cend_current_normal_forms());
+    }
+
+    rx::iterator_range<FroidurePinBase::const_normal_form_iterator>
+    normal_forms(FroidurePinBase& fpb) {
+      return rx::iterator_range(fpb.cbegin_normal_forms(),
+                                fpb.cend_normal_forms());
+    }
+
+    rx::iterator_range<FroidurePinBase::const_rule_iterator>
+    current_rules(FroidurePinBase const& fpb) {
+      return rx::iterator_range(fpb.cbegin_current_rules(),
+                                fpb.cend_current_rules());
+    }
+
+    rx::iterator_range<FroidurePinBase::const_rule_iterator>
+    rules(FroidurePinBase& fpb) {
+      return rx::iterator_range(fpb.cbegin_rules(), fpb.cend_rules());
+    }
+
   }  // namespace froidure_pin
 }  // namespace libsemigroups

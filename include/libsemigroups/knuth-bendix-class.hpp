@@ -143,7 +143,7 @@ namespace libsemigroups {
     //!
     //! This function default constructs an uninitialised \ref_knuth_bendix
     //! instance.
-    KnuthBendix() = default;
+    KnuthBendix();
 
     //! \ingroup knuth_bendix_class_init_group
     //!
@@ -155,6 +155,7 @@ namespace libsemigroups {
     //!
     //! \returns
     //! A reference to \c this.
+    // TODO(0) to tpp file
     KnuthBendix& init() {
       _generating_pairs.clear();
       _presentation.init();
@@ -173,28 +174,30 @@ namespace libsemigroups {
     //! \complexity
     //! \f$O(n)\f$ where \f$n\f$ is the sum of the lengths of the words in
     //! rules of \p that.
-    KnuthBendix(KnuthBendix const& that) = default;
+    KnuthBendix(KnuthBendix const& that);
 
     //! \ingroup knuth_bendix_class_init_group
     //!
     //! \brief Move constructor.
     //!
     //! Move constructor.
-    KnuthBendix(KnuthBendix&&) = default;
+    KnuthBendix(KnuthBendix&&);
 
     //! \ingroup knuth_bendix_class_init_group
     //!
     //! \brief Copy assignment operator.
     //!
     //! Copy assignment operator.
-    KnuthBendix& operator=(KnuthBendix const&) = default;
+    KnuthBendix& operator=(KnuthBendix const&);
 
     //! \ingroup knuth_bendix_class_init_group
     //!
     //! \brief Move assignment operator.
     //!
     //! Move assignment operator.
-    KnuthBendix& operator=(KnuthBendix&&) = default;
+    KnuthBendix& operator=(KnuthBendix&&);
+
+    ~KnuthBendix();
 
     //! \copydoc KnuthBendix(congruence_kind, Presentation<Word> const&)
     KnuthBendix(congruence_kind knd, Presentation<Word>&& p) : KnuthBendix() {

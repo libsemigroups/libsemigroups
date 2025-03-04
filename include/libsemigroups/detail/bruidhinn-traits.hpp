@@ -92,8 +92,7 @@ namespace libsemigroups {
         return *x;
       }
 
-      inline internal_value_type
-      internal_copy(internal_const_reference x) const {
+      internal_value_type internal_copy(internal_const_reference x) const {
         return new value_type(*x);
       }
 
@@ -155,14 +154,14 @@ namespace libsemigroups {
         return x;
       }
 
-      inline internal_value_type
-      internal_copy(internal_const_reference x) const {
+      internal_value_type internal_copy(internal_const_reference x) const {
         return internal_value_type(x);
       }
 
       inline value_type external_copy(const_reference x) const {
         return value_type(x);
       }
+
       inline void internal_free(internal_value_type) const {}
       inline void external_free(value_type) const {}
     };

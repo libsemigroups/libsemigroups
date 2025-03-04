@@ -26,6 +26,13 @@
 namespace libsemigroups {
   namespace detail {
 
+    void throw_if_nullptr(char const* w, std::string_view arg) {
+      if (w == nullptr) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "the {} argument (char const*) must not be nullptr", arg);
+      }
+    }
+
     // Returns the string s to the power N, not optimized, complexity is O(N *
     // |s|)
     std::string power_string(std::string const& s, size_t N) {
