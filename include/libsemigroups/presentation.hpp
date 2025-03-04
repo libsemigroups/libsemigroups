@@ -2150,7 +2150,7 @@ namespace libsemigroups {
     //!
     //! \tparam Word the type of the words in the presentation.
     //! \param p a reference to the Presentation to construct from.
-    InversePresentation<Word>(Presentation<Word> const& p)
+    InversePresentation(Presentation<Word> const& p)
         : Presentation<Word>(p), _inverses() {}
 
     //! \brief Construct an InversePresentation from a Presentation rvalue
@@ -2161,7 +2161,7 @@ namespace libsemigroups {
     //!
     //! \tparam Word the type of the words in the presentation.
     //! \param p an rvalue reference to the Presentation to construct from.
-    InversePresentation<Word>(Presentation<Word>&& p)
+    InversePresentation(Presentation<Word>&& p)
         : Presentation<Word>(p), _inverses() {}
 
     //! \brief Set the inverse of each letter in the alphabet.

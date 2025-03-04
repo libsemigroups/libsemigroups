@@ -16,6 +16,17 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
+// Some warnings are issues by g++-14 for Perm<1> and PPerm<1>. This makes
+// sense for some of them (where we are testing explicitly for too large
+// containers) but not others where the container has the correct size.
+//
+// It would probably be better to put this diagnostic push/pop around the
+// particular tests, but that doesn't suppress the warnings.
+#pragma GCC diagnostic push
+#if defined(__GNUC__) && !defined(__clang__)
+#pragma GCC diagnostic ignored "-Warray-bounds"
+#endif
+
 #include <cstddef>  // for size_t
 #include <cstdint>  // for uint32_t, int32_t, int64_t
 #include <vector>   // for vector
@@ -26,6 +37,8 @@
 #include "libsemigroups/config.hpp"  // for LIBSEMIGROUPS_SIZEOF_VO...
 #include "libsemigroups/transf.hpp"  // for Transf<>
 #include "libsemigroups/types.hpp"   // for SmallestInteger, Smalle...
+
+#pragma GCC diagnostic pop
 
 namespace libsemigroups {
   struct LibsemigroupsException;

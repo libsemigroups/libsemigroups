@@ -172,11 +172,16 @@ namespace libsemigroups {
 #pragma GCC diagnostic pop
     }
 
+    // g++-14 issues a warning that appears to originate in std::sort for the
+    // line below r = matrix::rows(m);
+#pragma GCC diagnostic push
+#if defined(__GNUC__) && !defined(__clang__)
+#pragma GCC diagnostic ignored "-Warray-bounds="
+#endif
     {
       TestType m({{1, 1}, {0, 0}});
       using RowView = typename TestType::RowView;
-
-      auto r = matrix::rows(m);
+      auto r        = matrix::rows(m);
       REQUIRE(std::vector<bool>(r[0].cbegin(), r[0].cend())
               == std::vector<bool>({true, true}));
       REQUIRE(std::vector<bool>(r[1].cbegin(), r[1].cend())
@@ -191,6 +196,7 @@ namespace libsemigroups {
       REQUIRE(std::vector<bool>(r[1].cbegin(), r[1].cend())
               == std::vector<bool>({true, true}));
     }
+#pragma GCC diagnostic pop
 
     {
       using Row = typename TestType::Row;

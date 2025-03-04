@@ -29,7 +29,8 @@ namespace libsemigroups {
   template <typename Point, typename Container>
   template <typename Subclass, typename OtherContainer>
   Subclass PTransfBase<Point, Container>::make(OtherContainer&& cont) {
-    validate_args(std::forward<OtherContainer>(cont));
+    validate_args(cont);
+    // TODO(1) use move iterator in next line
     Subclass result(cont.begin(), cont.end());
     validate(result);
     return result;
