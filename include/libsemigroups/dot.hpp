@@ -62,8 +62,9 @@ namespace libsemigroups {
     std::string dot_to_string(Thing&& thing) {
       return std::to_string(std::forward<Thing>(thing));
     }
+
   }  // namespace detail
-  //
+
   //! \defgroup dot_group Visualisation
   //!
   //! This page contains links to the various classes and functions in
@@ -135,6 +136,14 @@ namespace libsemigroups {
       template <typename Thing>
       explicit Node(Thing&& thing)
           : attrs(), name(detail::dot_to_string(std::forward<Thing>(thing))) {}
+
+      Node()                       = default;
+      Node(Node const&)            = default;
+      Node(Node&&)                 = default;
+      Node& operator=(Node const&) = default;
+      Node& operator=(Node&&)      = default;
+
+      ~Node();
 
       //! \brief Add an attribute to a node.
       //!
@@ -222,6 +231,13 @@ namespace libsemigroups {
         return *this;
       }
 
+      Edge()                       = default;
+      Edge(Edge const&)            = default;
+      Edge(Edge&&)                 = default;
+      Edge& operator=(Edge const&) = default;
+      Edge& operator=(Edge&&)      = default;
+      ~Edge();
+
       //! No doc
       std::map<std::string, std::string> attrs;
       //! No doc
@@ -260,19 +276,21 @@ namespace libsemigroups {
 
    public:
     //! Default constructor
-    Dot() = default;
+    Dot();
 
     //! Default copy constructor
-    Dot(Dot const&) = default;
+    Dot(Dot const&);
 
     //! Default move constructor
-    Dot(Dot&&) = default;
+    Dot(Dot&&);
 
     //! Default copy assignment operator
-    Dot& operator=(Dot const&) = default;
+    Dot& operator=(Dot const&);
 
     //! Default move assignment operator
-    Dot& operator=(Dot&&) = default;
+    Dot& operator=(Dot&&);
+
+    ~Dot();
 
     //! \brief Set the kind of the represented graph.
     //!
@@ -625,7 +643,7 @@ namespace libsemigroups {
     static void add_or_replace_attr(std::map<std::string, std::string>& attrs,
                                     std::string const&                  key,
                                     std::string const&                  val);
-  };
+  };  // class Dot
 
   // TODO(doc)
   std::string to_human_readable_repr(Dot const& d);

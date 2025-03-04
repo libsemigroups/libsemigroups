@@ -340,16 +340,17 @@ namespace libsemigroups {
     // Caution: this uses the assumption that rules are length reducing, if they
     // are not, then u might not have sufficient space!
     void RewriteFromLeft::rewrite(internal_string_type& u) const {
-      using iterator = internal_string_type::iterator;
+      // Add underscore because there's already an "iterator" alias.
+      using iterator_ = internal_string_type::iterator;
 
       if (u.size() < stats().min_length_lhs_rule) {
         return;
       }
 
-      iterator v_begin = u.begin();
-      iterator v_end   = u.begin() + stats().min_length_lhs_rule - 1;
-      iterator w_begin = v_end;
-      iterator w_end   = u.end();
+      iterator_ v_begin = u.begin();
+      iterator_ v_end   = u.begin() + stats().min_length_lhs_rule - 1;
+      iterator_ w_begin = v_end;
+      iterator_ w_end   = u.end();
 
       RuleLookup lookup;
 

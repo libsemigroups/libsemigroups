@@ -1245,9 +1245,6 @@ namespace libsemigroups {
   }
 
   Sims1::word_graph_type RepOrc::word_graph() const {
-    using word_graph_type = typename Sims1::word_graph_type;
-    using node_type       = typename word_graph_type::node_type;
-
     report_no_prefix("{:+<80}\n", "");
     report_default(
         "RepOrc: Searching for a faithful rep. o.r.c. on [{}, {}) points\n",

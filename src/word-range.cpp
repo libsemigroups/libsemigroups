@@ -78,6 +78,37 @@ namespace libsemigroups {
   }  // namespace detail
 
   namespace words {
+
+    ////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////
+
+    word_type operator+(word_type const& u, word_type const& w) {
+      word_type result(u);
+      result.insert(result.end(), w.cbegin(), w.cend());
+      return result;
+    }
+
+    word_type operator+(word_type const& u, letter_type w) {
+      word_type result(u);
+      result.push_back(w);
+      return result;
+    }
+
+    word_type operator+(letter_type w, word_type const& u) {
+      return word_type({w}) + u;
+    }
+
+    word_type pow(std::initializer_list<letter_type> ilist, size_t n) {
+      return pow(word_type(ilist), n);
+    }
+
+    std::string pow(std::string_view w, size_t n) {
+      return pow(std::string(w), n);
+    }
+
+    ////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////
+
     size_t human_readable_index(char c) {
       static bool first_call = true;
       // It might be preferable to use an array here but char is sometimes
@@ -697,8 +728,8 @@ namespace libsemigroups {
         return true;
       }
 
-      std::string inline evaluate_rpn(std::string const& rpn,
-                                      std::string const& orig) {
+      std::string evaluate_rpn(std::string const& rpn,
+                               std::string const& orig) {
         using namespace words;  // NOLINT(build/namespaces)
         std::stack<std::string>             stck;
         bool                                in_digits = false;

@@ -38,7 +38,16 @@ namespace libsemigroups {
 
     namespace {
       std::string group_digits(uint64_t num) {
+        // Although we ignore -Winline in detail/fmt.hpp, there is still an
+        // warning issued here (with g++-14), which we suppress again.
+#if defined(__GNUC__) && !defined(__clang__)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Winline"
+#endif
         return fmt::to_string(fmt::group_digits(num));
+#if defined(__GNUC__) && !defined(__clang__)
+#pragma GCC diagnostic pop
+#endif
       }
     }  // namespace
 
