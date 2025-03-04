@@ -98,11 +98,8 @@ namespace libsemigroups {
     }
 
     void disjoint_union_inplace_no_checks(StephenGraph const& that) {
-      // TODO(1): the following requires that this and that are standardized
-      // and that this and that are run to the end
-      // TODO(0): make it work with incomplete non-standardized word graphs.
       size_t const N = number_of_nodes_active();
-      // TODO(1): the following 2 lines are a bit awkward
+      // TODO(2): the following 2 lines are a bit awkward
       WordGraphWithSources_::add_nodes(that.number_of_nodes());
       NodeManager<node_type>::add_active_nodes(that.number_of_nodes());
 
@@ -142,8 +139,10 @@ namespace libsemigroups {
   template <typename PresentationType>
   Stephen<PresentationType>& Stephen<PresentationType>::init(
       std::shared_ptr<PresentationType> const& ptr) {
-    ptr->validate();
-    throw_if_presentation_empty(*ptr);
+    // TODO(1): move the commented out lines to the
+    // make<Stephen<PresentationType>> function, once we have it
+    // ptr->validate();
+    // throw_if_presentation_empty(*ptr);
     _presentation = ptr;
     _accept_state = UNDEFINED;
     _finished     = false;
@@ -157,24 +156,13 @@ namespace libsemigroups {
   ////////////////////////////////////////////////////////////////////////
 
   template <typename PresentationType>
+  template <typename Iterator1, typename Iterator2>
   Stephen<PresentationType>&
-  Stephen<PresentationType>::set_word(word_type const& w) {
-    presentation().validate_word(w.cbegin(), w.cend());
+  Stephen<PresentationType>::set_word_no_checks(Iterator1 first,
+                                                Iterator2 last) {
     _accept_state = UNDEFINED;
     _finished     = false;
-    _word         = w;
-    init_word_graph_from_word_no_checks();
-    _is_word_set = true;
-    return *this;
-  }
-
-  template <typename PresentationType>
-  Stephen<PresentationType>&
-  Stephen<PresentationType>::set_word(word_type&& w) {
-    presentation().validate_word(w.cbegin(), w.cend());
-    _accept_state = UNDEFINED;
-    _finished     = false;
-    _word         = std::move(w);
+    _word.assign(first, last);
     init_word_graph_from_word_no_checks();
     _is_word_set = true;
     return *this;
@@ -192,6 +180,43 @@ namespace libsemigroups {
                           .first;
     }
     return _accept_state;
+  }
+
+  template <typename PresentationType>
+  void Stephen<PresentationType>::operator*=(Stephen<PresentationType>& that) {
+    throw_if_not_ready();
+    that.throw_if_not_ready();
+    if (this->presentation() != that.presentation()) {
+      LIBSEMIGROUPS_EXCEPTION(
+          "this.presentation() must equal that.presentation() when appending "
+          "Stephen instances")
+    }
+
+    append_no_checks(that);
+  }
+
+  template <typename PresentationType>
+  void
+  Stephen<PresentationType>::append_no_checks(Stephen<PresentationType>& that) {
+    // NOTE: Appending seems to work fine without running both this and that.
+    // If for some reason this is no longer true later on, uncomment the next
+    // two lines and update docs to indicate algorithm is run when calling
+    // append.
+
+    // this->run();
+    // that.run();
+
+    // TODO (2) FIXME _word_graph has two mem fns number_nodes_active (in
+    // NodeManager) and number_active_nodes (in WordGraph), this is super
+    // confusing!
+    size_t const N = _word_graph.number_of_nodes_active();
+    _word_graph.disjoint_union_inplace_no_checks(that._word_graph);
+    _word_graph.merge_nodes_no_checks(accept_state(), that.initial_state() + N);
+    _word_graph.template process_coincidences<detail::DoNotRegisterDefs>();
+    _accept_state = UNDEFINED;
+    _finished     = false;
+    _word.insert(_word.end(), that._word.cbegin(), that._word.cend());
+    _word_graph.cursor() = initial_state();
   }
 
   ////////////////////////////////////////////////////////////////////////
@@ -347,6 +372,8 @@ namespace libsemigroups {
       _finished = true;
       standardize();
     }
+    // Here so we have accurate data when using to_human_readable_repr
+    _word_graph.number_of_active_nodes(_word_graph.number_of_nodes_active());
   }
 
   namespace stephen {
@@ -411,21 +438,14 @@ namespace libsemigroups {
       return fmt::format("<Stephen object over {} with no word set>",
                          to_human_readable_repr(x.presentation()));
     }
-    return fmt::format(
-        "<Stephen object over {} for {} with {} "
-        "nodes and {} edges>",
-        to_human_readable_repr(x.presentation()),
-        x.word().size() < 10 ? fmt::format("word {}", x.word())
-                             : fmt::format("{} letter word", x.word().size()),
-        // TODO(0): want number of nodes active here, but WordGraph does not
-        // have this, so we get some weird node counts unless Stephen has
-        // finished (when we remove the induced verts). I guess this really
-        // isn't that big of an issue though, since we give no guarantees about
-        // the unfinished word graph?
-        // TODO(0): In word graph member function of Stephen, set number of
-        // active nodes
-        x.word_graph().number_of_nodes(),
-        x.word_graph().number_of_edges());
+    return fmt::format("<Stephen object over {} for {} with {} "
+                       "nodes and {} edges>",
+                       to_human_readable_repr(x.presentation()),
+                       x.word().size() < 10
+                           ? fmt::format("word {}", x.word())
+                           : fmt::format("{} letter word", x.word().size()),
+                       x.word_graph().number_of_active_nodes(),
+                       x.word_graph().number_of_edges());
   }
 
 }  // namespace libsemigroups

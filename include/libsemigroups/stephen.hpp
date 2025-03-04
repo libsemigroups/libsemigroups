@@ -92,8 +92,6 @@ namespace libsemigroups {
              || std::is_same_v<Q, InversePresentation<word_type>>;
       // TODO(2): uncomment when we figure out how to handle std::string
       // presentations
-      // TODO(0): initially make it only work with canonical presentations of
-      // word_type
       //|| std::is_same_v<Q, Presentation<std::string>>
       //|| std::is_same_v<Q, InversePresentation<std::string>>;
     }
@@ -161,8 +159,6 @@ namespace libsemigroups {
     // Add these to make function:
     // \throws LibsemigroupsException if `p.validate()` throws.
     // \throws LibsemigroupsException if `p.alphabet().size()` is `0`.
-    // TODO(0): remove all validation/throwing from initializers and
-    // constructors (move them to the make function)
     explicit Stephen(PresentationType const& p) : Stephen() {
       init(p);
     }
@@ -175,9 +171,6 @@ namespace libsemigroups {
     //! \tparam PresentationType a type derived from \ref PresentationBase
     //!
     //! \param p the presentation.
-    //!
-    //! \throws LibsemigroupsException if `p.validate()` throws.
-    //! \throws LibsemigroupsException if `p.alphabet().size()` is `0`.
     explicit Stephen(PresentationType&& p) : Stephen() {
       init(std::move(p));
     }
@@ -190,9 +183,6 @@ namespace libsemigroups {
     //! \tparam PresentationType a type derived from \ref PresentationBase
     //!
     //! \param ptr a shared pointer to a presentation.
-    //!
-    //! \throws LibsemigroupsException if `*ptr->validate()` throws.
-    //! \throws LibsemigroupsException if `*ptr->alphabet().size()` is `0`.
     explicit Stephen(std::shared_ptr<PresentationType> const& ptr) : Stephen() {
       init(ptr);
     }
@@ -222,9 +212,6 @@ namespace libsemigroups {
     //! \param p the presentation.
     //!
     //! \returns A reference to \c this.
-    //!
-    //! \throws LibsemigroupsException if `p.validate()` throws.
-    //! \throws LibsemigroupsException if `p.alphabet().size()` is `0`.
     Stephen& init(PresentationType const& p) {
       return init(std::make_shared<PresentationType>(p));
     }
@@ -240,9 +227,6 @@ namespace libsemigroups {
     //! \param p the presentation.
     //!
     //! \returns A reference to \c this.
-    //!
-    //! \throws LibsemigroupsException if `p.validate()` throws.
-    //! \throws LibsemigroupsException if `p.alphabet().size()` is `0`.
     Stephen& init(PresentationType&& p) {
       return init(std::make_shared<PresentationType>(std::move(p)));
     }
@@ -258,16 +242,11 @@ namespace libsemigroups {
     //! \param ptr a shared pointer to a presentation.
     //!
     //! \returns A reference to \c this.
-    //!
-    //! \throws LibsemigroupsException if `ptr->validate()` throws.
-    //! \throws LibsemigroupsException if `ptr->alphabet().size()` is `0`.
     Stephen& init(std::shared_ptr<PresentationType> const& ptr);
 
     //! \brief Get the input presentation.
     //!
     //! This function returns a const reference to the input presentation.
-    //!
-    //! \param (None)
     //!
     //! \returns A const reference to a \ref presentation_type.
     //!
@@ -277,34 +256,48 @@ namespace libsemigroups {
       return *_presentation;
     }
 
-    //! \brief Set the initial word (copy).
+    //! \brief Set the initial word.
     //!
-    //! This function can be used to set the word whose left factors, or
-    //! equivalent words, are sought. The input word is copied.
+    //! This function sets the word whose left factors, or equivalent words, are
+    //! sought.
     //!
-    //! \param w a const reference to the input word.
+    //! \tparam Iterator1 the type of the argument \p first1.
+    //! \tparam Iterator2 the type of the argument \p last1.
+    //! \param first iterator pointing at the first letter of the word.
+    //! \param last iterator pointing one beyond the last letter in the word.
     //!
     //! \returns A reference to \c this.
     //!
-    //! \throws LibsemigroupsException if the letters in \p w do not all belong
-    //! to the alphabet of the \ref presentation.
-    // TODO(0): take in iterators instead of word_types (same as sims)
-    // TODO(0): add _no_checks to all things that can throw
-    Stephen& set_word(word_type const& w);
+    //! \cong_common_throws_if_letters_out_of_bounds
+    //!
+    //! \sa stephen::set_word
+    // TODO(1): static_assert decltype to check that thing pointed to can be
+    // converted to letter type (or maybe declval)
+    // TODO(1): maybe the thing above isn't true?
+    // TODO(1): add static asserts to check if iterators are pointing at correct
+    template <typename Iterator1, typename Iterator2>
+    Stephen& set_word(Iterator1 first, Iterator2 last) {
+      presentation().validate_word(first, last);
+      return set_word_no_checks(first, last);
+    }
 
-    //! \brief Set the initial word (move).
+    //! \brief Set the initial word (no checks).
     //!
-    //! This function can be used to set the word whose left factors, or
-    //! equivalent words, are sought. The input word is moved.
+    //! This function sets the word whose left factors, or equivalent words, are
+    //! sought.
     //!
-    //! \param w an rvalue reference to the input word.
+    //! \tparam Iterator1 the type of the argument \p first1.
+    //! \tparam Iterator2 the type of the argument \p last1.
+    //! \param first iterator pointing at the first letter of the word.
+    //! \param last iterator pointing one beyond the last letter in the word.
     //!
     //! \returns A reference to \c this.
     //!
-    //! \throws LibsemigroupsException if the letters in \p w do not all belong
-    //! to the alphabet of the \ref presentation.
-    // TODO(0): remove it once we make the above work with iterators.
-    Stephen& set_word(word_type&& w);
+    //! \cong_common_warn_assume_letters_in_bounds
+    //!
+    //! \sa stephen::set_word_no_checks
+    template <typename Iterator1, typename Iterator2>
+    Stephen& set_word_no_checks(Iterator1 first, Iterator2 last);
 
     //! \brief Check if the initial word is set
     //!
@@ -328,7 +321,6 @@ namespace libsemigroups {
     //! \throws LibsemigroupsException if no presentation was set at
     //! the construction or with Stephen::init or if no word was set
     //! with Stephen::set_word .
-    // TODO(0): remove params None and returns None
     word_type const& word() const {
       throw_if_not_ready();
       return _word;
@@ -339,8 +331,6 @@ namespace libsemigroups {
     //! Returns a const reference to the word graph in its present state. The
     //! algorithm implemented in this class is not triggered by calls to this
     //! function.
-    //!
-    //! \param (None)
     //!
     //! \returns A const reference to a \ref word_graph_type.
     //!
@@ -358,8 +348,6 @@ namespace libsemigroups {
     //! hasn't been triggered already), and then returns the accept state of
     //! the produced word graph.
     //!
-    //! \param (None)
-    //!
     //! \returns A \ref node_type.
     //!
     //! \throws LibsemigroupsException if no presentation was set at
@@ -375,8 +363,6 @@ namespace libsemigroups {
     //!
     //! This function return the initial state of \ref word_graph.
     //!
-    //! \param (None)
-    //!
     //! \returns A \ref node_type.
     //!
     //! \exceptions
@@ -385,21 +371,18 @@ namespace libsemigroups {
       return 0;
     }
 
-    //! \brief Append a Stephen object
+    //! \brief Append a Stephen object.
     //!
-    //! This function triggers a run of the Stephen algorithm of \c this and \p
-    //! that, if it hasn't been run already and then appends the Stephen
-    //! object \p that to \c this. This modifies the current Stephen instance
-    //! in-place. The result is a Stephen instance with underlying word equal
-    //! to the concatenation of \c this.word() and \c that.word().
+    //! This function appends the Stephen object \p that to \c this.
+    //! This modifies the current Stephen instance in-place. The result is a
+    //! Stephen instance with underlying word equal to the concatenation of \c
+    //! this.word() and \c that.word().
     //!
     //! The advantage of this is that if either \c this or \p that have already
-    //! been run, then we can reuse the underlying word graphs instead of having
-    //! to recompute them completely from scratch.
+    //! been (partially) run, then we can reuse the underlying word graphs
+    //! instead of having to recompute them completely from scratch.
     //!
     //! \param that the Stephen instance to append.
-    //!
-    //! \returns (None)
     //!
     //! \throws LibsemigroupsException if no presentation was set at
     //! the construction of \c this or \p that or with Stephen::init or if no
@@ -407,36 +390,28 @@ namespace libsemigroups {
     //!
     //! \throws LibsemigroupsException if the presentations for \c this and \p
     //! that differ.
+    void operator*=(Stephen<PresentationType>& that);
+
+    //! \brief Append a Stephen object (no checks).
     //!
-    //! \cong_intf_warn_undecidable{Stephen}.
-    void operator*=(Stephen<PresentationType>& that) {
-      if (this->presentation() != that.presentation()) {
-        LIBSEMIGROUPS_EXCEPTION(
-            "this.presentation() must equal that.presentation() when appending "
-            "Stephen instances")
-      }
-      // TODO(2): if only one of this and that is finished, then just tack on
-      // the linear graph.
-      // TODO(2): Maybe just append without running? Previously there was an
-      // issue with resetting words, but with the current implementation,
-      // provided the words have ween set, we should be able to do this with no
-      // issues.
-      // TODO(0): Check if works immediately, if not then skip
-      this->run();
-      that.run();
-      // TODO (2) FIXME _word_graph has two mem fns number_nodes_active (in
-      // NodeManager) and number_active_nodes (in WordGraph), this is super
-      // confusing!
-      size_t const N = _word_graph.number_of_nodes_active();
-      _word_graph.disjoint_union_inplace_no_checks(that._word_graph);
-      _word_graph.merge_nodes_no_checks(accept_state(),
-                                        that.initial_state() + N);
-      _word_graph.template process_coincidences<detail::DoNotRegisterDefs>();
-      _accept_state = UNDEFINED;
-      _finished     = false;
-      _word.insert(_word.end(), that._word.cbegin(), that._word.cend());
-      _word_graph.cursor() = initial_state();
-    }
+    //! This function appends the Stephen object \p that to \c this.
+    //! This modifies the current Stephen instance in-place. The result is a
+    //! Stephen instance with underlying word equal to the concatenation of \c
+    //! this.word() and \c that.word().
+    //!
+    //! The advantage of this is that if either \c this or \p that have already
+    //! been (partially) run, then we can reuse the underlying word graphs
+    //! instead of having to recompute them completely from scratch.
+    //!
+    //! \param that the Stephen instance to append.
+    //!
+    //! \warning
+    //! No checks are made on the validity of the parameters to this function.
+    //! Bad things may happen if \p x and \p y have different underlying
+    //! presentations or if either of them is not ready.
+    //!
+    //! \sa Stephen::operator*= .
+    void append_no_checks(Stephen<PresentationType>& that);
 
    private:
     void report_before_run();
@@ -451,8 +426,11 @@ namespace libsemigroups {
     void throw_if_not_ready() const;
     void init_word_graph_from_word_no_checks() {
       _word_graph.init(presentation());
+      _word_graph.report_prefix("Stephen");
       _word_graph.complete_path(
           presentation(), 0, _word.cbegin(), _word.cend());
+      // Here so we have accurate data when using to_human_readable_repr
+      _word_graph.number_of_active_nodes(_word_graph.number_of_nodes_active());
     }
 
     void run_impl() override;
@@ -533,11 +511,8 @@ namespace libsemigroups {
     //! with Stephen::set_word .
     //!
     //! \cong_intf_warn_undecidable{Stephen}.
-    // TODO(0): change all iterators to word_type
-    // TODO(0): static_assert decltype to check that thing pointed to can be
-    // converted to letter type has declval
-    // TODO(0): maybe the thing above isn't true?
-    // TODO(0): add a todo to add static asserts for it
+    // TODO(0): update docs to work emphasize difference between this in Inverse
+    // vs non-inverse presentations.
     template <typename PresentationType>
     bool accepts(Stephen<PresentationType>& s, word_type const& w);
 
@@ -562,6 +537,8 @@ namespace libsemigroups {
     //! with Stephen::set_word .
     //!
     //! \cong_intf_warn_undecidable{Stephen}.
+    // TODO(0): update docs to work emphasize difference between this in Inverse
+    // vs non-inverse presentations.
     template <typename PresentationType>
     bool is_left_factor(Stephen<PresentationType>& s, word_type const& w);
 
@@ -702,6 +679,44 @@ namespace libsemigroups {
     //! \returns A \ref Dot object.
     template <typename PresentationType>
     Dot dot(Stephen<PresentationType>& s);
+
+    //! \brief Set the initial word.
+    //!
+    //! This function can be used to set the word whose left factors, or
+    //! equivalent words, are sought. The input word is copied.
+    //!
+    //! \param w a const reference to the input word.
+    //!
+    //! \returns A reference to \c this.
+    //!
+    //! \throws LibsemigroupsException if the letters in \p w do not all belong
+    //! to the alphabet of the \ref presentation.
+    // things?
+    template <typename PresentationType>
+    Stephen<PresentationType>& set_word(Stephen<PresentationType>& stephen,
+                                        word_type const&           w) {
+      return stephen.set_word(w.cbegin(), w.cend());
+    }
+
+    //! \brief Set the initial word (no checks).
+    //!
+    //! This function can be used to set the word whose left factors, or
+    //! equivalent words, are sought. The input word is copied.
+    //!
+    //! \param w a const reference to the input word.
+    //!
+    //! \returns A reference to \c this.
+    //!
+    //! \warning
+    //! This function does not argument checking whatsoever. It assumes that all
+    //! letters of \p w belong to the alphabet of \ref presentation. Bad things
+    //! may happen if this assumption does not hold.
+    template <typename PresentationType>
+    Stephen<PresentationType>&
+    set_word_no_checks(Stephen<PresentationType>& stephen, word_type const& w) {
+      return stephen.set_word_no_checks(w.cbegin(), w.cend());
+    }
+
   }  // namespace stephen
 
   //! \brief Check equality of two Stephen instances.
