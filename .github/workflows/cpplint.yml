@@ -1,4 +1,4 @@
-name: cpplint
+name: Linting
 on: [pull_request]
 jobs:
   cpplint:
