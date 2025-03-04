@@ -57,41 +57,87 @@ AC_FUNC_MALLOC
 AC_CHECK_FUNCS([gettimeofday memset pow sqrt])
 AC_LANG_POP([C])
 
-# Check if debug mode is enabled
+# To handle the configure option `feature` (specified using either
+# --enable-feature or --disable-feature) use:
+# AC_ARG_ENABLE(feature, help-str, [action-if-given], [action-if-not-given]).
+
+# Note that action-if-given is performed if in --disable-feature is specified.
+
+########################################
+# debug
+########################################
+
+AC_MSG_CHECKING([whether to enable debug mode])
+
+# Check if --enable-debug or --disable-debug was specified, and provide the help
+# string for the flag. If a flag was specified, set the value of debug
+# accordingly. Otherwise, if a flag was not specified, set debug to false.
 AC_ARG_ENABLE([debug],
     [AS_HELP_STRING([--enable-debug], [enable debug mode])],
-    [AC_DEFINE([DEBUG], [1], [define if building in debug mode])],
-    [enable_debug=no]
-    )
-AC_MSG_CHECKING([whether to enable debug mode])
-AC_MSG_RESULT([$enable_debug])
+    [case "${enableval}" in
+        yes) debug=yes ;;
+        no)  debug=no ;;
+        *) AC_MSG_ERROR([bad value ${enableval} for --enable-debug]) ;;
+    esac],
+    [debug=no])
+AC_MSG_RESULT([$debug])
 
-AM_CONDITIONAL([LIBSEMIGROUPS_DEBUG], [test "x$enable_debug" = xyes])
+# Sets a conditional value that can be used in Makefile.am
+AM_CONDITIONAL([LIBSEMIGROUPS_DEBUG], [test "x$debug" = "xyes"])
 
+# Sets the C++ preprocessor macro that goes into config.hpp
+AS_IF([test "x$debug" = "xyes"],
+    AC_DEFINE([DEBUG], [1], [define if building in debug mode]))
+
+########################################
+# compile-warnings
+########################################
+
+AC_MSG_CHECKING([whether enable compiler warnings])
+
+# Check if --enable-compile-warnings or --disable-compile-warnings was
+# specified, and provide the help string for the flag. If a flag was specified,
+# set the value of compile_warnings accordingly. Otherwise, if a flag was not
+# specified, set compile_warnings to no.
 AC_ARG_ENABLE([compile-warnings],
     [AS_HELP_STRING([--enable-compile-warnings], [enable compiler warnings])],
-    [enable_compile_warnings=yes],
-    [enable_compile_warnings=no])
-AC_MSG_CHECKING([whether enable compiler warnings])
-AC_MSG_RESULT([$enable_compile_warnings])
+    [case "${enableval}" in
+        yes) compile_warnings=yes ;;
+        no)  compile_warnings=no ;;
+        *) AC_MSG_ERROR([bad value ${enableval} for --enable-compile-warnings]) ;;
+    esac],
+    [compile_warnings=no])
+AC_MSG_RESULT([$compile_warnings])
 
-AS_IF([test "x$enable_compile_warnings" != "xno"],
+AS_IF([test "x$compile_warnings" = "xyes"],
   [ax_enable_compile_warnings=yes
    AX_COMPILER_FLAGS_CXXFLAGS([WARNING_CXXFLAGS], [], [ dnl
        -pedantic dnl
        -Wold-style-cast])
    AC_SUBST([WARNING_CXXFLAGS])])
 
-# Check if backward-cpp should be enabled
+########################################
+# backward
+########################################
+
+AC_MSG_CHECKING([whether to enable backward mode])
+
+# Check if --enable-backward or --disable-backward was specified, and provide
+# the help string for the flag. If a flag was specified, set the value of
+# backward accordingly. Otherwise, if a flag was not specified, set backward to
+# yes.
 AC_ARG_ENABLE([backward],
     [AS_HELP_STRING([--disable-backward], [disable backward])],
-    [],
-    [enable_backward=yes]
+    [case "${enableval}" in
+        yes) backward=yes ;;
+        no)  backward=no ;;
+        *) AC_MSG_ERROR([bad value ${enableval} for --enable-backward]) ;;
+    esac],
+    [backward=yes]
   )
-AC_MSG_CHECKING([whether to enable backward mode])
-AC_MSG_RESULT([$enable_backward])
+AC_MSG_RESULT([$backward])
 
-AS_IF([test "x$enable_backward" != "xno"], [
+AS_IF([test "x$backward" = "xyes"], [
   AC_CHECK_HEADER(execinfo.h,
     [AC_DEFINE([BACKWARD_ENABLED], [1], [define if building with backward-cpp enabled])],
     [AC_MSG_WARN([backward enabled but execinfo.h not found, disabling backward!])])
@@ -136,14 +182,18 @@ CHECK_COMPILER_BUILTIN([__builtin_clzll],[0]);
 dnl
 dnl User setting: Enable popcnt (on by default)
 dnl
+AC_MSG_CHECKING([whether to try and use __builtin_popcntl])
 AC_ARG_ENABLE([popcnt],
     AS_HELP_STRING([--enable-popcnt], [use __builtin_popcntl if available]),
-    [],
-    [enable_popcnt=yes])
-AC_MSG_CHECKING([whether to try and use __builtin_popcntl])
-AC_MSG_RESULT([$enable_popcnt])
+    [case "${enableval}" in
+        yes) popcnt=yes ;;
+        no)  popcnt=no ;;
+        *) AC_MSG_ERROR([bad value ${enableval} for --enable-popcnt]) ;;
+    esac],
+    [popcnt=yes])
+AC_MSG_RESULT([$popcnt])
 
-AS_IF([test "x$enable_popcnt" != "xno"],
+AS_IF([test "x$popcnt" = "xyes"],
     [USE_POPCNT=1],
     [USE_POPCNT=0])
 
@@ -154,14 +204,18 @@ AC_DEFINE_UNQUOTED([USE_POPCNT],
 dnl
 dnl User setting: Enable clz (on by default)
 dnl
+AC_MSG_CHECKING([whether to try and use __builtin_clzlll])
 AC_ARG_ENABLE([clzll],
     AS_HELP_STRING([--enable-clzll], [use __builtin_clzll if available]),
-    [],
-    [enable_clzll=yes])
-AC_MSG_CHECKING([whether to try and use __builtin_clzlll])
-AC_MSG_RESULT([$enable_clzll])
+    [case "${enableval}" in
+        yes) clzll=yes ;;
+        no)  clzll=no ;;
+        *) AC_MSG_ERROR([bad value ${enableval} for --enable-clzll]) ;;
+    esac],
+    [clzll=yes])
+AC_MSG_RESULT([$clzll])
 
-AS_IF([test "x$enable_clzll" != "xno"],
+AS_IF([test "x$clzll" = "xyes"],
     [USE_CLZLL=1],
     [USE_CLZLL=0])
 
