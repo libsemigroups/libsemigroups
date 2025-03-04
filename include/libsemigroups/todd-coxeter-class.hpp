@@ -38,6 +38,7 @@
 #include "to-presentation.hpp"  // for to<Presentation>
 #include "types.hpp"            // for congruence_kind
 
+#include "detail/citow.hpp"              // for detail::citow and detail::itow
 #include "detail/cong-common-class.hpp"  // for detail::CongruenceCommon
 #include "detail/fmt.hpp"                // for fmt
 #include "detail/todd-coxeter-impl.hpp"  // for ToddCoxeterImpl
@@ -136,160 +137,6 @@ namespace libsemigroups {
    private:
     std::vector<Word>  _generating_pairs;
     Presentation<Word> _presentation;
-
-    // The following is a class for wrapping iterators. This is used by the
-    // member functions that accept iterators (that point at words that might
-    // not be the word_type used by ToddCoxeterImpl) to convert the values
-    // pointed at into word_types, and in the class itow, to allow assignment of
-    // these values too.
-    // CITOW = const_iterator_to_word
-    template <typename Iterator>
-    class citow {
-     protected:
-      Iterator           _it;
-      ToddCoxeter const* _tc;
-
-     public:
-      using internal_iterator_type = Iterator;
-      using value_type             = letter_type;
-      using reference              = letter_type;
-      using const_reference        = value_type;
-      using const_pointer          = value_type const*;
-      using pointer                = value_type*;
-
-      using size_type         = size_t;
-      using difference_type   = std::ptrdiff_t;
-      using iterator_category = std::bidirectional_iterator_tag;
-
-      citow(ToddCoxeter const* tc, Iterator it) : _it(it), _tc(tc) {}
-
-      reference operator*() const {
-        return _tc->_presentation.index_no_checks(*_it);
-      }
-
-      // TODO(1) operator-> ??
-
-      bool operator==(citow<Iterator> that) const noexcept {
-        return _it == that._it;
-      }
-
-      bool operator!=(citow<Iterator> that) const noexcept {
-        return _it != that._it;
-      }
-
-      bool operator<=(citow<Iterator> that) const noexcept {
-        return _it <= that._it;
-      }
-
-      bool operator>=(citow<Iterator> that) const noexcept {
-        return _it >= that._it;
-      }
-
-      bool operator<(citow<Iterator> that) const noexcept {
-        return _it < that._it;
-      }
-
-      bool operator>(citow<Iterator> that) const noexcept {
-        return _it > that._it;
-      }
-
-      citow& operator++() {
-        ++_it;
-        return *this;
-      }
-
-      citow& operator+=(size_type val) noexcept {
-        _it += val;
-        return *this;
-      }
-
-      citow operator+(size_type val) const noexcept {
-        citow result(*this);
-        result += val;
-        return result;
-      }
-
-      citow& operator--() {
-        --_it;
-        return *this;
-      }
-
-      citow& operator-=(size_type val) noexcept {
-        _it -= val;
-        return *this;
-      }
-
-      citow operator-(size_type val) const noexcept {
-        citow result(*this);
-        result -= val;
-        return result;
-      }
-
-      [[nodiscard]] Iterator get() const noexcept {
-        return _it;
-      }
-    };  // class citow
-
-    // itow only differs from citow in the dereference member function
-    // returning a (non-const) reference. A proxy is returned instead which
-    // permits assignment to an output iterator.
-    template <typename Iterator>
-    class itow : public citow<Iterator> {
-      // Proxy class for reference to the returned values
-      class proxy_ref {
-       private:
-        Iterator           _it;
-        ToddCoxeter const* _tc;
-
-       public:
-        // Constructor from ToddCoxeter and iterator
-        proxy_ref(ToddCoxeter const* tc, Iterator it) noexcept
-            : _it(it), _tc(tc) {}
-
-        // Assignment operator to allow setting the value via the proxy
-        Iterator operator=(letter_type i) noexcept {
-          *_it = _tc->_presentation.letter_no_checks(i);
-          return _it;
-        }
-
-        // Conversion operator to obtain the letter corresponding to the
-        // letter_type
-        [[nodiscard]] operator letter_type() const noexcept {
-          return _tc->_presentation.index_no_checks(*_it);
-        }
-      };  // class proxy_ref
-
-     public:
-      using internal_iterator_type = Iterator;
-      using value_type             = letter_type;
-      using reference              = proxy_ref;
-      using const_reference        = value_type;
-
-      // TODO(1) use proxy for pointers too?
-      using const_pointer = value_type const*;
-      using pointer       = value_type*;
-
-      using size_type         = size_t;
-      using difference_type   = std::ptrdiff_t;
-      using iterator_category = std::bidirectional_iterator_tag;
-
-      using citow<Iterator>::citow;
-
-      reference operator*() {
-        return reference(this->_tc, this->_it);
-      }
-    };  // class itow
-
-    // Helpers for constructing citow + itow
-    template <typename Iterator>
-    citow<Iterator> make_citow(Iterator it) const {
-      return citow<Iterator>(this, it);
-    }
-
-    template <typename Iterator>
-    itow<Iterator> make_itow(Iterator it) const {
-      return itow<Iterator>(this, it);
-    }
 
    public:
 #ifdef LIBSEMIGROUPS_PARSED_BY_DOXYGEN
@@ -891,10 +738,11 @@ namespace libsemigroups {
                                       Iterator2 last1,
                                       Iterator3 first2,
                                       Iterator4 last2) const {
-      return ToddCoxeterImpl::currently_contains_no_checks(make_citow(first1),
-                                                           make_citow(last1),
-                                                           make_citow(first2),
-                                                           make_citow(last2));
+      return ToddCoxeterImpl::currently_contains_no_checks(
+          detail::citow(this, first1),
+          detail::citow(this, last1),
+          detail::citow(this, first2),
+          detail::citow(this, last2));
     }
 
     //! \ingroup todd_coxeter_class_intf_group
@@ -956,10 +804,10 @@ namespace libsemigroups {
                             Iterator2 last1,
                             Iterator3 first2,
                             Iterator4 last2) {
-      return ToddCoxeterImpl::contains_no_checks(make_citow(first1),
-                                                 make_citow(last1),
-                                                 make_citow(first2),
-                                                 make_citow(last2));
+      return ToddCoxeterImpl::contains_no_checks(detail::citow(this, first1),
+                                                 detail::citow(this, last1),
+                                                 detail::citow(this, first2),
+                                                 detail::citow(this, last2));
     }
 
     //! \ingroup todd_coxeter_class_intf_group
@@ -1020,7 +868,9 @@ namespace libsemigroups {
                                            InputIterator1 first,
                                            InputIterator2 last) const {
       return ToddCoxeterImpl::reduce_no_run_no_checks(
-                 make_itow(d_first), make_citow(first), make_citow(last))
+                 detail::itow(this, d_first),
+                 detail::citow(this, first),
+                 detail::citow(this, last))
           .get();
     }
 
@@ -1084,8 +934,9 @@ namespace libsemigroups {
     OutputIterator reduce_no_checks(OutputIterator d_first,
                                     InputIterator1 first,
                                     InputIterator2 last) {
-      return ToddCoxeterImpl::reduce_no_checks(
-                 make_itow(d_first), make_citow(first), make_citow(last))
+      return ToddCoxeterImpl::reduce_no_checks(detail::itow(this, d_first),
+                                               detail::citow(this, first),
+                                               detail::citow(this, last))
           .get();
     }
 
@@ -1172,8 +1023,8 @@ namespace libsemigroups {
     template <typename Iterator1, typename Iterator2>
     index_type current_index_of_no_checks(Iterator1 first,
                                           Iterator2 last) const {
-      return ToddCoxeterImpl::current_index_of_no_checks(make_citow(first),
-                                                         make_citow(last));
+      return ToddCoxeterImpl::current_index_of_no_checks(
+          detail::citow(this, first), detail::citow(this, last));
     }
 
     //! \brief Returns the current index of the class containing a word.
@@ -1231,8 +1082,8 @@ namespace libsemigroups {
     //! \cong_common_warn_assume_letters_in_bounds
     template <typename Iterator1, typename Iterator2>
     index_type index_of_no_checks(Iterator1 first, Iterator2 last) {
-      return ToddCoxeterImpl::index_of_no_checks(make_citow(first),
-                                                 make_citow(last));
+      return ToddCoxeterImpl::index_of_no_checks(detail::citow(this, first),
+                                                 detail::citow(this, last));
     }
 
     //! \brief Returns the index of the class containing a word.
@@ -1317,7 +1168,8 @@ namespace libsemigroups {
     template <typename OutputIterator>
     OutputIterator current_word_of_no_checks(OutputIterator d_first,
                                              index_type     i) const {
-      return ToddCoxeterImpl::current_word_of_no_checks(make_itow(d_first), i)
+      return ToddCoxeterImpl::current_word_of_no_checks(
+                 detail::itow(this, d_first), i)
           .get();
     }
 
@@ -1345,7 +1197,8 @@ namespace libsemigroups {
     //! \throws LibsemigroupsException if \p i is out of bounds.
     template <typename OutputIterator>
     OutputIterator current_word_of(OutputIterator d_first, index_type i) const {
-      return ToddCoxeterImpl::current_word_of(make_itow(d_first), i).get();
+      return ToddCoxeterImpl::current_word_of(detail::itow(this, d_first), i)
+          .get();
     }
 
     //! \brief Insert the word representing a class with given index into
@@ -1372,7 +1225,8 @@ namespace libsemigroups {
     //! \throws LibsemigroupsException if \p i is out of bounds.
     template <typename Iterator>
     Iterator word_of_no_checks(Iterator d_first, index_type i) {
-      return ToddCoxeterImpl::word_of_no_checks(make_itow(d_first), i).get();
+      return ToddCoxeterImpl::word_of_no_checks(detail::itow(this, d_first), i)
+          .get();
     }
 
     //! \brief Insert the word representing a class with given index into
@@ -1400,7 +1254,7 @@ namespace libsemigroups {
     //! is assumed that \p i is a valid index of a current class.
     template <typename Iterator>
     Iterator word_of(Iterator d_first, index_type i) {
-      return ToddCoxeterImpl::word_of(make_itow(d_first), i).get();
+      return ToddCoxeterImpl::word_of(detail::itow(this, d_first), i).get();
     }
 
     //! @}

@@ -128,6 +128,7 @@ pkginclude_HEADERS += include/libsemigroups/word-range.hpp
 
 detailincludedir = $(includedir)/libsemigroups/detail
 detailinclude_HEADERS =  include/libsemigroups/detail/bruidhinn-traits.hpp
+detailinclude_HEADERS += include/libsemigroups/detail/citow.hpp
 detailinclude_HEADERS += include/libsemigroups/detail/cong-common-class.hpp
 detailinclude_HEADERS += include/libsemigroups/detail/cong-common-class.tpp
 detailinclude_HEADERS += include/libsemigroups/detail/containers.hpp

@@ -48,7 +48,7 @@ namespace libsemigroups {
 
   template <typename Subclass>
   template <typename OtherSubclass>
-  SimsSettings<Subclass>&
+  Subclass&
   SimsSettings<Subclass>::init(SimsSettings<OtherSubclass> const& that) {
     _exclude      = that.excluded_pairs();
     _include      = that.included_pairs();
@@ -61,58 +61,38 @@ namespace libsemigroups {
     _num_threads = that.number_of_threads();
     _stats       = that.stats();
     _pruners     = that.pruners();
-    return *this;
+    return static_cast<Subclass&>(*this);
   }
 
   template <typename Subclass>
-  template <typename Word>
-  Subclass& SimsSettings<Subclass>::presentation(Presentation<Word> const& p) {
+  Subclass&
+  SimsSettings<Subclass>::presentation(Presentation<word_type> const& p) {
     if (p.alphabet().empty()) {
       LIBSEMIGROUPS_EXCEPTION(
           "the argument (a presentation) must not have 0 generators");
     }
-    // TODO(0): (reiniscirpons) change this so that we just have a concrete
+    // TODO(1): (reiniscirpons) change this so that we just have a concrete
     // implementation for word_type and then another which takes a Word and then
     // calls the concete implementation like e.g. ToddCoxeter
-    // TODO(0): (reiniscirpons) use the citw stuff from ToddCoxeter once its
+    // TODO(1): (reiniscirpons) use the citw stuff from ToddCoxeter once its
     // available.
-    Presentation<word_type> p_copy;
-    if constexpr (std::is_same_v<Word, word_type>) {
-      p_copy = p;
-      presentation::normalize_alphabet(p_copy);
-    } else {
-      p_copy = to<Presentation<word_type>>(p);
-    }
+
+    presentation::throw_if_not_normalized(p);
     try {
       presentation::validate_rules(
-          p_copy, included_pairs().cbegin(), included_pairs().cend());
+          p, included_pairs().cbegin(), included_pairs().cend());
       presentation::validate_rules(
-          p_copy, excluded_pairs().cbegin(), excluded_pairs().cend());
+          p, excluded_pairs().cbegin(), excluded_pairs().cend());
     } catch (LibsemigroupsException const& e) {
       LIBSEMIGROUPS_EXCEPTION(
           "the argument (a presentation) is not compatible with "
-          "included_pairs() and "
-          "excluded_pairs(), the following exception was thrown:\n{}",
+          "included_pairs() and excluded_pairs(), the following exception was "
+          "thrown :\n {} ",
           e.what());
     }
-    _presentation = std::move(p_copy);
+    _presentation = p;
     _longs_begin  = _presentation.rules.cend();
     return static_cast<Subclass&>(*this);
-  }
-
-  // TODO(0): (reiniscirpons) Change this in the same way as we do for Sims1,
-  // Once we add the citw stuff
-  template <typename Word>
-  SimsRefinerIdeals& SimsRefinerIdeals::init(Presentation<Word> const& p) {
-    if constexpr (std::is_same_v<Word, word_type>) {
-      _presentation = p;
-    } else {
-      _presentation = to<Presentation<word_type>>(p);
-    }
-    _knuth_bendices[0].init(congruence_kind::twosided, _presentation).run();
-    std::fill(
-        _knuth_bendices.begin() + 1, _knuth_bendices.end(), _knuth_bendices[0]);
-    return *this;
   }
 
   template <typename Subclass>
@@ -221,11 +201,6 @@ namespace libsemigroups {
                                           wg.number_of_active_nodes());
           tc.init(congruence_kind::onesided, p, copy);
           todd_coxeter::add_generating_pair(tc, wx, wy);
-          // TODO(0): add back asserts once ToddCoxeter is finished
-          // LIBSEMIGROUPS_ASSERT(tc.word_graph().number_of_nodes()
-          //                      == wg.number_of_active_nodes());
-          // LIBSEMIGROUPS_ASSERT(tc.number_of_classes()
-          //                      < wg.number_of_active_nodes());
           if (tc.number_of_classes() > 1) {
             return false;
           }

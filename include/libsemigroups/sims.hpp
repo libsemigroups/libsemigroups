@@ -20,15 +20,6 @@
 // congruence" algorithm for 1-sided or 2-sided congruences of semigroups and
 // monoids.
 
-// TODO(0):
-// * review the function aliases, and remove them if they are unnecessary
-// * const
-// * noexcept
-// * nodiscard
-// * python bindings
-// * gap bindings
-// * static_assert(std::is_integral_v<Int>); in the appropriate places
-
 // TODO(2) (later):
 // * use SimsRefinerFaithful in RepOrc + MinimalRepOrc
 // * a version which allows specifying the word_graph to Sims1 too
@@ -93,13 +84,14 @@
 #include "detail/rewriters.hpp"       // for RewriteTrie
 #include "detail/word-graph-with-sources.hpp"  // for WordGraphWithSources
 
-//! \defgroup congruences_group Congruences
+//! \defgroup sims_group Low-index congruences
 //!
 //! This file contains documentation for the functionality in
-//! `libsemigroups` related to congruences of semigroups and monoids.
+//! `libsemigroups` related to the version of low-index congruence
+//! algorithms described in \cite Anagnostopoulou-Merkouri2023aa
 namespace libsemigroups {
 
-  //!
+  //! \ingroup sims_group
   //!
   //! \brief For keeping track of various statistics arising during the runtime
   //! of the low index algorithm.
@@ -280,7 +272,7 @@ namespace libsemigroups {
     }
   };
 
-  //!
+  //! \ingroup sims_group
   //!
   //! \brief For setting the presentation and various runtime parameters of the
   //! Sims low index algorithm.
@@ -420,7 +412,7 @@ namespace libsemigroups {
 
     //! Initialize from SimsSettings with different subclass.
     template <typename OtherSubclass>
-    SimsSettings& init(SimsSettings<OtherSubclass> const& that);
+    Subclass& init(SimsSettings<OtherSubclass> const& that);
 
     ~SimsSettings();
 
@@ -477,38 +469,28 @@ namespace libsemigroups {
     //! \brief Set the presentation over which the congruences produced by an
     //! instance are defined.
     //!
-    //! \anchor presentation
-    //! Set the presentation over which the congruences produced by an
-    //! instance are defined.
-    //! These are the rules used at every node in the depth first search
-    //! conducted by objects of this type.
+    //! Set the presentation over which the congruences produced by an instance
+    //! are defined. These are the rules used at every node in the depth first
+    //! search conducted by objects of this type.
     //!
-    //! If the template parameter \p Word is not `word_type`, then
-    //! the parameter \p p is first converted to a value of type
-    //! `Presentation<word_type>` and it is this converted value that is used.
-    //!
-    //! \tparam Word the type of words in the input presentation.
     //!
     //! \param p the presentation.
     //!
     //! \returns A reference to \c this.
-    //!
-    //! \throws LibsemigroupsException if `to<Presentation<word_type>>(p)`
-    //! throws.
     //!
     //! \throws LibsemigroupsException if `p` is not valid.
     //!
     //! \throws LibsemigroupsException if the alphabet of `p` is non-empty and
     //! not compatible with \ref included_pairs or \ref excluded_pairs.
     //!
+    //! \throws Libsemigroups if the alphabet of \p p is not normalized.
+    //!
     //! \throws LibsemigroupsException if `p` has 0-generators and 0-relations.
-    template <typename Word>
-    Subclass& presentation(Presentation<Word> const& p);
+    Subclass& presentation(Presentation<word_type> const& p);
 
     //! \brief Get the presentation over which the congruences produced by an
     //! instance are defined.
     //!
-    //! \anchor presentation
     //! Returns a const reference to the current relations of the underlying
     //! presentation.
     //!
@@ -695,9 +677,8 @@ namespace libsemigroups {
     //! pairs returned by \ref included_pairs. In other words, the congruences
     //! computed by this instance are only taken among those that contains the
     //! pairs of elements of the underlying semigroup (defined by the
-    //! presentation returned by \ref presentation and \ref long_rules)
-    //! represented by the relations of the presentation returned by \ref
-    //! included_pairs.
+    //! presentation returned by \ref presentation) represented by the
+    //! relations of the presentation returned by \ref included_pairs.
     //!
     //! \returns A const reference to `std::vector<word_type>`.
     //!
@@ -766,13 +747,12 @@ namespace libsemigroups {
     //!
     //! This function returns the set of excluded pairs.
     //!
-    //! The congruences computed by a Sims1 or Sims2 instance will never contain
-    //! the pairs returned by \ref excluded_pairs. In other words, the
+    //! The congruences computed by a Sims1 or Sims2 instance will never
+    //! contain the pairs returned by \ref excluded_pairs. In other words, the
     //! congruences computed by this instance are only taken among those that do
     //! not contain any of the pairs of elements of the underlying semigroup
-    //! (defined by the presentation returned by \ref presentation and \ref
-    //! long_rules) represented by the relations of the presentation returned by
-    //! \ref excluded_pairs.
+    //! (defined by the presentation returned by \ref presentation) represented
+    //! by the relations of the presentation returned by \ref excluded_pairs.
     //!
     //! \returns A const reference to `std::vector<word_type>`.
     //!
@@ -944,12 +924,17 @@ namespace libsemigroups {
     size_t add_exclude_pruner();
   };
 
+  //! \ingroup sims_group
+  //!
+  //! \brief Helper functions for low-index congruences.
+  //!
+  //! This namespace contains many helper functions for the classes Sims1 and
+  //! Sims2, and related.
   namespace sims {
     //! \brief Helper for adding an included pair of words.
     //!
-    //! This function can be used to add an included pair to \p
-    //! sims using the objects themselves rather than
-    //! using iterators.
+    //! This function can be used to add an included pair to \p sims using the
+    //! objects themselves rather than using iterators.
     //!
     //! \tparam Subclass the type of the first parameter.
     //! \tparam Word the type of the second and third parameters.
@@ -981,6 +966,7 @@ namespace libsemigroups {
     Subclass& add_included_pair_no_checks(SimsSettings<Subclass>& sims,
                                           std::initializer_list<Int> const& u,
                                           std::initializer_list<Int> const& v) {
+      static_assert(std::is_integral_v<Int>);
       return add_included_pair_no_checks<Subclass, std::vector<Int>>(
           sims, u, v);
     }
@@ -1050,6 +1036,7 @@ namespace libsemigroups {
     Subclass& add_included_pair(SimsSettings<Subclass>&           sims,
                                 std::initializer_list<Int> const& u,
                                 std::initializer_list<Int> const& v) {
+      static_assert(std::is_integral_v<Int>);
       return add_included_pair<Subclass, std::vector<Int>>(sims, u, v);
     }
 
@@ -1085,9 +1072,8 @@ namespace libsemigroups {
 
     //! \brief Helper for adding an excluded pair of words.
     //!
-    //! This function can be used to add an excluded pair to \p
-    //! sims using the objects themselves rather than
-    //! using iterators.
+    //! This function can be used to add an excluded pair to \p sims using the
+    //! objects themselves rather than using iterators.
     //!
     //! \tparam Subclass the type of the first parameter.
     //! \tparam Word the type of the second and third parameters.
@@ -1119,6 +1105,7 @@ namespace libsemigroups {
     Subclass& add_excluded_pair_no_checks(SimsSettings<Subclass>& sims,
                                           std::initializer_list<Int> const& u,
                                           std::initializer_list<Int> const& v) {
+      static_assert(std::is_integral_v<Int>);
       return add_excluded_pair_no_checks<Subclass, std::vector<Int>>(
           sims, u, v);
     }
@@ -1188,6 +1175,7 @@ namespace libsemigroups {
     Subclass& add_excluded_pair(SimsSettings<Subclass>&           sims,
                                 std::initializer_list<Int> const& u,
                                 std::initializer_list<Int> const& v) {
+      static_assert(std::is_integral_v<Int>);
       return add_excluded_pair<Subclass, std::vector<Int>>(sims, u, v);
     }
 
@@ -1360,7 +1348,8 @@ namespace libsemigroups {
       // SimsBase nested classes - public
       ////////////////////////////////////////////////////////////////////////
 
-      //! The return type of \ref cbegin and \ref cend.
+      //! The return type of \ref Sims1::cbegin, \ref Sims2::cbegin, \ref
+      //! Sims1::cbegin, and \ref Sims1::cend.
       //!
       //! This is a forward iterator values of this type are expensive to copy
       //! due to their internal state, and prefix increment should be
@@ -1375,18 +1364,28 @@ namespace libsemigroups {
         using iterator_base::try_pop;
 
        public:
-        using const_pointer   = typename iterator_base::const_pointer;
+        //! No doc
+        using const_pointer = typename iterator_base::const_pointer;
+        //! No doc
         using const_reference = typename iterator_base::const_reference;
+        //! No doc
         using size_type = typename std::vector<word_graph_type>::size_type;
+        //! No doc
         using difference_type =
             typename std::vector<word_graph_type>::difference_type;
-        using pointer    = typename std::vector<word_graph_type>::pointer;
-        using reference  = typename std::vector<word_graph_type>::reference;
+        //! No doc
+        using pointer = typename std::vector<word_graph_type>::pointer;
+        //! No doc
+        using reference = typename std::vector<word_graph_type>::reference;
+        //! No doc
         using value_type = word_graph_type;
+        //! No doc
         using iterator_category = std::forward_iterator_tag;
 
+        //! No doc
         using sims_type = typename iterator_base::sims_type;
 
+        //! No doc
         using iterator_base::iterator_base;
 
        private:
@@ -1400,13 +1399,23 @@ namespace libsemigroups {
        public:
         ~iterator();
 
+        //! No doc
         iterator() : iterator_base() {}
+
+        //! No doc
         iterator(iterator const& that) : iterator_base(that) {}
+
+        //! No doc
         iterator(iterator&& that) : iterator_base(std::move(that)) {}
+
+        //! No doc
         iterator& operator=(iterator const& that) {
+          //! No doc
           iterator_base::operator=(that);
           return *this;
         }
+
+        //! No doc
         iterator& operator=(iterator&& that) {
           iterator_base::operator=(std::move(that));
           return *this;
@@ -1481,7 +1490,7 @@ namespace libsemigroups {
     class const_rcgp_iterator;
   }  // namespace sims
 
-  //!
+  //! \ingroup sims_group
   //!
   //! \brief For computing finite index right congruences of a finitely
   //! presented semigroup or monoid.
@@ -1557,39 +1566,30 @@ namespace libsemigroups {
 
     //! \brief Construct from a presentation.
     //!
-    //! Constructs an instance from a presentation of any kind.
+    //! Constructs an instance from a presentation of \ref word_type.
     //!
     //! The rules of the presentation \p p are used at every node in the depth
     //! first search conducted by an object of this type.
     //!
-    //! If the template parameter \p Word is not \ref word_type, then
-    //! the parameter \p p is first converted to a value of type
-    //! `Presentation<word_type>` and it is this converted value that is used.
-    //!
-    //! \tparam Word the type of the words in the presentation \p p.
-    //!
     //! \param p the presentation.
     //!
-    //! \throws LibsemigroupsException if `to<Presentation<word_type>>(p)`
-    //! throws
-    //! \throws LibsemigroupsException if `p` is not valid
-    //! \throws LibsemigroupsException if `p` has 0-generators and 0-relations.
+    //! \throws LibsemigroupsException if \p p is not valid.
+    //! \throws LibsemigroupsException if \p p has 0-generators and 0-relations.
+    //! \throws Libsemigroups if the alphabet of \p p is not normalized.
     //!
     //! \sa presentation
     //! \sa init
-    template <typename Word>
-    explicit Sims1(Presentation<Word> const& p) : Sims1() {
+    explicit Sims1(Presentation<word_type> const& p) : Sims1() {
       presentation(p);
     }
 
-    //! \copydoc Sims1::Sims1(Presentation<Word> const&)
-    template <typename Word>
-    explicit Sims1(Presentation<Word> const&& p) : Sims1() {
+    //! \copydoc Sims1::Sims1(Presentation<word_type> const&)
+    explicit Sims1(Presentation<word_type> const&& p) : Sims1() {
       presentation(std::move(p));
     }
 
     //! Default copy constructor.
-    Sims1(Sims1 const& other) = default;
+    Sims1(Sims1 const&) = default;
 
     //! Default move constructor.
     Sims1(Sims1&&) = default;
@@ -1608,32 +1608,27 @@ namespace libsemigroups {
     //! This function puts an object back into the same state as if it had
     //! been newly constructed from the presentation \p p.
     //!
-    //! \tparam Word the type of the words in the presentation \p p .
-    //!
     //! \param p the presentation.
     //!
     //! \returns A reference to \c *this.
     //!
-    //! \throws LibsemigroupsException if `to<Presentation<word_type>>(p)`
-    //! throws
     //! \throws LibsemigroupsException if `p` is not valid
     //! \throws LibsemigroupsException if `p` has 0-generators and 0-relations.
+    //! \throws Libsemigroups if the alphabet of \p p is not normalized.
     //!
     //! \warning This function has no exception guarantee, the object will be
     //! in the same state as if it was default constructed if an exception is
     //! thrown.
     //!
-    //! \sa presentation(Presentation<Word> const&)
-    template <typename Word>
-    Sims1& init(Presentation<Word> const& p) {
+    //! \sa presentation(Presentation<word_type> const&)
+    Sims1& init(Presentation<word_type> const& p) {
       init();
       presentation(p);
       return *this;
     }
 
-    //! \copydoc Sims1::init(Presentation<Word> const&)
-    template <typename Word>
-    Sims1& init(Presentation<Word> const&& p) {
+    //! \copydoc Sims1::init(Presentation<word_type> const&)
+    Sims1& init(Presentation<word_type> const&& p) {
       init();
       presentation(std::move(p));
       return *this;
@@ -1794,10 +1789,10 @@ namespace libsemigroups {
     //!
     //! \sa cbegin
     [[nodiscard]] iterator cend(size_type n) const;
-#endif
+#endif  // LIBSEMIGROUPS_PARSED_BY_DOXYGEN
   };
 
-  //!
+  //! \ingroup sims_group
   //!
   //! \brief For computing finite index two-sided congruences of a finitely
   //! presented semigroup or monoid.
@@ -1843,26 +1838,28 @@ namespace libsemigroups {
 
     //! Default constructor.
     Sims2() = default;
+
     //! Default copy constructor.
     Sims2(Sims2 const& other) = default;
+
     //! Default move constructor.
     Sims2(Sims2&&) = default;
+
     //! Default copy assignment operator.
     Sims2& operator=(Sims2 const&) = default;
+
     //! Default move assignment operator.
     Sims2& operator=(Sims2&&) = default;
 
     ~Sims2() = default;
 
-    //! \copydoc Sims1::Sims1(Presentation<Word> const&)
-    template <typename Word>
-    explicit Sims2(Presentation<Word> const& p) : Sims2() {
+    //! \copydoc Sims1::Sims1(Presentation<word_type> const&)
+    explicit Sims2(Presentation<word_type> const& p) : Sims2() {
       presentation(p);
     }
 
-    //! \copydoc Sims1::Sims1(Presentation<Word> const&)
-    template <typename Word>
-    explicit Sims2(Presentation<Word> const&& p) : Sims2() {
+    //! \copydoc Sims1::Sims1(Presentation<word_type> const&)
+    explicit Sims2(Presentation<word_type> const&& p) : Sims2() {
       presentation(std::move(p));
     }
 
@@ -1871,32 +1868,27 @@ namespace libsemigroups {
     //! This function puts an object back into the same state as if it had
     //! been newly constructed from the presentation \p p.
     //!
-    //! \tparam Word the type of the words in the presentation \p p .
-    //!
     //! \param p the presentation.
     //!
     //! \returns A reference to \c *this.
     //!
-    //! \throws LibsemigroupsException if `to<Presentation<word_type>>(p)`
-    //! throws
     //! \throws LibsemigroupsException if `p` is not valid
     //! \throws LibsemigroupsException if `p` has 0-generators and 0-relations.
+    //! \throws Libsemigroups if the alphabet of \p p is not normalized.
     //!
     //! \warning This function has no exception guarantee, the object will be
     //! in the same state as if it was default constructed if an exception is
     //! thrown.
     //!
-    //! \sa presentation(Presentation<Word> const&)
-    template <typename Word>
-    Sims2& init(Presentation<Word> const& p) {
+    //! \sa presentation(Presentation<word_type> const&)
+    Sims2& init(Presentation<word_type> const& p) {
       init();
       presentation(p);
       return *this;
     }
 
-    //! \copydoc Sims2::init(Presentation<Word> const&)
-    template <typename Word>
-    Sims2& init(Presentation<Word> const&& p) {
+    //! \copydoc Sims2::init(Presentation<word_type> const&)
+    Sims2& init(Presentation<word_type> const&& p) {
       init();
       presentation(std::move(p));
       return *this;
@@ -1975,20 +1967,19 @@ namespace libsemigroups {
 
       using SimsBase::IteratorBase::stats;
     };  // class iterator_base
-  };    // Sims2
+  };    // class Sims2
 
-  //!
+  //! \ingroup sims_group
   //!
   //! \brief For computing small degree transformation representations of a
   //! finite semigroup or monoid.
   //!
   //! Defined in `sims.hpp`.
   //!
-  //! This class is a helper for Sims1 calling the word_graph member
-  //! function attempts to find a right congruence, represented as an
-  //! WordGraph, of the semigroup or monoid defined by the presentation
-  //! consisting of its \ref presentation and \ref long_rules with the
-  //! following properties:
+  //! This class is a helper for Sims1 calling the word_graph member function
+  //! attempts to find a right congruence, represented as an WordGraph, of the
+  //! semigroup or monoid defined by its \ref presentation with the following
+  //! properties:
   //! * the transformation semigroup defined by the WordGraph has size
   //!   \ref target_size;
   //! * the number of nodes in the WordGraph is at least \ref min_nodes
@@ -2025,8 +2016,8 @@ namespace libsemigroups {
     //! the same SimsSettings as \p s but that is
     //! otherwise uninitialised.
     //!
-    //! \tparam S the type of the argument \p s (which is
-    //! derived from `SimsSettings<S>`).
+    //! \tparam OtherSubclass the type of the argument \p s (which is
+    //! derived from `SimsSettings<OtherSubclass>`).
     //!
     //! \param s the Sims1, Sims2 or MinimalRepOrc whose settings
     //! should be used.
@@ -2044,7 +2035,7 @@ namespace libsemigroups {
     //! This function reinitializes a RepOrc instance with
     //! the same SimsSettings as \p s .
     //!
-    //! \tparam S the type of the argument \p s (which is
+    //! \tparam OtherSubclass the type of the argument \p s (which is
     //! derived from `SimsSettings<S>`).
     //!
     //! \param s the Sims1, Sims2 or MinimalRepOrc whose settings
@@ -2063,7 +2054,7 @@ namespace libsemigroups {
     //! This function sets the minimal number of nodes in
     //! the WordGraph that we are seeking.
     //!
-    //! \param val the minimum number of nodes
+    //! \param val the minimum number of nodes.
     //!
     //! \returns A reference to \c this.
     //!
@@ -2092,7 +2083,7 @@ namespace libsemigroups {
     //! This function sets the maximum number of nodes in the WordGraph that we
     //! are seeking.
     //!
-    //! \param val the maximum number of nodes
+    //! \param val the maximum number of nodes.
     //!
     //! \returns A reference to \c this.
     //!
@@ -2150,9 +2141,8 @@ namespace libsemigroups {
     //! \brief Get the word_graph.
     //!
     //! This function attempts to find a right congruence, represented as an
-    //! WordGraph, of the semigroup or monoid defined by the presentation
-    //! consisting of its \ref presentation and \ref long_rules with the
-    //! following properties:
+    //! WordGraph, of the semigroup or monoid defined by its \ref presentation
+    //! with the following properties:
     //! * the transformation semigroup defined by the WordGraph has size \ref
     //!   target_size;
     //! * the number of nodes in the WordGraph is at least \ref min_nodes
@@ -2173,9 +2163,9 @@ namespace libsemigroups {
     //! \c 1, then the value returned by this function is non-deterministic, and
     //! may vary even for the same parameters.
     [[nodiscard]] Sims1::word_graph_type word_graph() const;
-  };
+  };  // class RepOrc
 
-  //!
+  //! \ingroup sims_group
   //!
   //! \brief For computing the minimal degree of a transformation representation
   //! arising from a right congruences of a finite semigroup or monoid.
@@ -2252,9 +2242,8 @@ namespace libsemigroups {
     //!
     //! This function attempts to find a right congruence, represented as an
     //! WordGraph, with the minimum possible number of nodes such that the
-    //! action of the semigroup or monoid defined by the presentation
-    //! consisting of its \ref presentation and \ref long_rules on the nodes
-    //! of the WordGraph corresponds to a semigroup of size \ref
+    //! action of the semigroup or monoid defined by its \ref presentation on
+    //! the nodes of the WordGraph corresponds to a semigroup of size \ref
     //! target_size.
     //!
     //! If no such WordGraph can be found, then an empty WordGraph is
@@ -2283,13 +2272,11 @@ namespace libsemigroups {
     //! than \c 1, then the value returned by this function is
     //! non-deterministic, and may vary even for the same parameters.
     [[nodiscard]] Sims1::word_graph_type word_graph() const;
-  };
+  };  // class MinimalRepOrc
 
   namespace sims {
     class const_cgp_iterator;
 
-    //!
-    //!
     //! \brief For iterating over the right congruence generating pairs.
     //!
     //! Defined in `sims.hpp`.
@@ -2304,21 +2291,43 @@ namespace libsemigroups {
     // Right Congruence Generating Pairs (rcgp)
     class const_rcgp_iterator {
      public:
+      //! Size type for const_rcgp_iterator.
       using size_type = typename std::vector<relation_type>::size_type;
+
+      //! Difference type for const_rcgp_iterator.
       using difference_type =
           typename std::vector<relation_type>::difference_type;
+
+      //! Type of const pointers to \ref value_type.
       using const_pointer = typename std::vector<relation_type>::const_pointer;
-      using pointer       = typename std::vector<relation_type>::pointer;
+
+      //! Type of pointers to \ref value_type.
+      using pointer = typename std::vector<relation_type>::pointer;
+
+      //! Type of const references to \ref value_type.
       using const_reference =
           typename std::vector<relation_type>::const_reference;
-      using reference         = typename std::vector<relation_type>::reference;
-      using value_type        = relation_type;
+
+      //! Type of references to \ref value_type.
+      using reference = typename std::vector<relation_type>::reference;
+
+      //! Type of values pointed to by const_cgp_iterator.
+      using value_type = relation_type;
+
+      //! Iterator category (forward iterator).
       using iterator_category = std::forward_iterator_tag;
 
-      using word_graph_type   = Sims1::word_graph_type;
+      //! Type of WordGraph.
+      using word_graph_type = Sims1::word_graph_type;
+
+      //! Type of FelschGraph.
       using felsch_graph_type = Sims1::felsch_graph_type;
-      using node_type         = word_graph_type::node_type;
-      using label_type        = word_graph_type::label_type;
+
+      //! Type of the nodes in \ref word_graph_type.
+      using node_type = word_graph_type::node_type;
+
+      //! Type of the labels in \ref word_graph_type.
+      using label_type = word_graph_type::label_type;
 
      protected:
       felsch_graph_type _reconstructed_word_graph;
@@ -2390,7 +2399,7 @@ namespace libsemigroups {
 
       ~const_rcgp_iterator();
 
-      //! Check if both iterators point to the same generating pair
+      //! Check if both iterators point to the same generating pair.
       [[nodiscard]] bool
       operator==(const_rcgp_iterator const& that) const noexcept {
         return _gen == that._gen && _source == that._source;
@@ -2402,31 +2411,32 @@ namespace libsemigroups {
         return !(this->operator==(that));
       }
 
-      //! Return a const reference to the generating pair pointed to by the
-      //! iterator
+      //! \brief Return a const reference to the generating pair pointed to by
+      //! the iterator.
+      //!
+      //! This function returns a const reference to the generating pair pointed
+      //! to by the iterator.
       [[nodiscard]] const_reference operator*() const {
         populate_relation();
         return _relation;
       }
 
       //! Return a const pointer to the generating pair pointed to by the
-      //! iterator
+      //! iterator.
       [[nodiscard]] const_pointer operator->() const {
         populate_relation();
         return &_relation;
       }
 
-      //! No doc
-      // prefix
+      //! Prefix increment operator.
       const_rcgp_iterator const& operator++();
 
-      //! No doc
-      // postfix
+      //! Postfix increment operator.
       const_rcgp_iterator operator++(int) noexcept {
         return detail::default_postfix_increment(*this);
       }
 
-      //! No doc
+      //! %Swap.
       void swap(const_rcgp_iterator& that) noexcept;
 
      protected:
@@ -2438,8 +2448,6 @@ namespace libsemigroups {
       bool populate_relation() const;
     };  // const_rcgp_iterator
 
-    //!
-    //!
     //! \brief For iterating over the two-sided congruence generating pairs.
     //!
     //! Defined in `sims.hpp`.
@@ -2452,19 +2460,41 @@ namespace libsemigroups {
     //! pair iterator.
     class const_cgp_iterator : public const_rcgp_iterator {
      public:
-      using size_type         = const_rcgp_iterator::size_type;
-      using difference_type   = const_rcgp_iterator::difference_type;
-      using const_pointer     = const_rcgp_iterator::const_pointer;
-      using pointer           = const_rcgp_iterator::pointer;
-      using const_reference   = const_rcgp_iterator::const_reference;
-      using reference         = const_rcgp_iterator::reference;
-      using value_type        = relation_type;
+      //! Size type for const_cgp_iterator.
+      using size_type = const_rcgp_iterator::size_type;
+
+      //! Difference type for const_cgp_iterator.
+      using difference_type = const_rcgp_iterator::difference_type;
+
+      //! Type of const pointers to \ref value_type.
+      using const_pointer = const_rcgp_iterator::const_pointer;
+
+      //! Type of pointers to \ref value_type.
+      using pointer = const_rcgp_iterator::pointer;
+
+      //! Type of const references to \ref value_type.
+      using const_reference = const_rcgp_iterator::const_reference;
+
+      //! Type of references to \ref value_type.
+      using reference = const_rcgp_iterator::reference;
+
+      //! Type of values pointed to by const_cgp_iterator.
+      using value_type = relation_type;
+
+      //! Iterator category (forward iterator).
       using iterator_category = std::forward_iterator_tag;
 
-      using word_graph_type   = Sims1::word_graph_type;
+      //! Type of WordGraph.
+      using word_graph_type = Sims1::word_graph_type;
+
+      //! Type of FelschGraph.
       using felsch_graph_type = Sims1::felsch_graph_type;
-      using node_type         = word_graph_type::node_type;
-      using label_type        = word_graph_type::label_type;
+
+      //! Type of the nodes in \ref word_graph_type.
+      using node_type = word_graph_type::node_type;
+
+      //! Type of the labels in \ref word_graph_type.
+      using label_type = word_graph_type::label_type;
 
       using const_rcgp_iterator::const_rcgp_iterator;
 
@@ -2475,24 +2505,22 @@ namespace libsemigroups {
       using const_rcgp_iterator::operator*;
       using const_rcgp_iterator::operator->;
 
-      //! No doc
-      // prefix
+      //! Prefix increment operator.
       const_cgp_iterator const& operator++();
 
-      //! No doc
-      // postfix
+      //! Postfix increment operator.
       const_cgp_iterator operator++(int) noexcept {
         return detail::default_postfix_increment(*this);
       }
 
-      //! No doc
+      //! %Swap.
       void swap(const_cgp_iterator& that) noexcept {
         const_rcgp_iterator::swap(that);
       }
 
      private:
       bool populate_relation() const;
-    };  // const_cgp_iterator
+    };  // class const_cgp_iterator
 
     // Forward decl, documented below
     template <typename Node>
@@ -2516,8 +2544,6 @@ namespace libsemigroups {
     rx::iterator_range<const_cgp_iterator>
     two_sided_generating_pairs(WordGraph<Node> const& wg);
 
-    //!
-    //!
     //! \brief Check if a word graph defines a right congruence on an
     //! f.p. semigroup or monoid.
     //!
@@ -2532,8 +2558,6 @@ namespace libsemigroups {
     void throw_if_not_right_congruence(Presentation<word_type> const& p,
                                        WordGraph<Node> const&         wg);
 
-    //!
-    //!
     //! \brief Check if a word graph defines a right congruence on the dual of
     //! an f.p. semigroup or monoid.
     //!
@@ -2552,8 +2576,6 @@ namespace libsemigroups {
       return is_right_congruence(p_rev, wg);
     }
 
-    //!
-    //!
     //! \brief Check if a word graph defines a two-sided congruence on
     //! an f.p. semigroup or monoid (no checks).
     //!
@@ -2570,8 +2592,6 @@ namespace libsemigroups {
     bool is_two_sided_congruence_no_checks(Presentation<word_type> const& p,
                                            WordGraph<Node> const&         wg);
 
-    //!
-    //!
     //! \brief Check if a word graph defines a two sided congruence on
     //! an f.p. semigroup or monoid.
     //!
@@ -2587,8 +2607,6 @@ namespace libsemigroups {
     void throw_if_not_two_sided_congruence(Presentation<word_type> const& p,
                                            WordGraph<Node> const&         wg);
 
-    //!
-    //!
     //! \brief Get an iterator pointing to the first right congruence generating
     //! pair (no checks).
     //!
@@ -2609,8 +2627,6 @@ namespace libsemigroups {
       return const_rcgp_iterator(p, &wg, 0, 0);
     }
 
-    //!
-    //!
     //! \brief Get an iterator pointing to the first right congruence generating
     //! pair.
     //!
@@ -2628,8 +2644,6 @@ namespace libsemigroups {
       return cbegin_right_generating_pairs_no_checks(p, wg);
     }
 
-    //!
-    //!
     //! \brief Get an iterator pointing to the first two-sided congruence
     //! generating pair (no checks).
     //!
@@ -2658,8 +2672,6 @@ namespace libsemigroups {
       return const_cgp_iterator(p, &wg, 0, 0);
     }
 
-    //!
-    //!
     //! \brief Get an iterator pointing to the first two-sided congruence
     //! generating pair.
     //!
@@ -2684,8 +2696,6 @@ namespace libsemigroups {
       return cbegin_two_sided_generating_pairs_no_checks(p, wg);
     }
 
-    //!
-    //!
     //! \brief Get an iterator pointing to one after the last right congruence
     //! generating pair (no checks).
     //!
@@ -2705,8 +2715,6 @@ namespace libsemigroups {
       return const_rcgp_iterator(p, &wg, wg.number_of_active_nodes(), 0);
     }
 
-    //!
-    //!
     //! \brief Get an iterator pointing to one after the last right congruence
     //! generating pair.
     //!
@@ -2724,8 +2732,6 @@ namespace libsemigroups {
       return cend_right_generating_pairs_no_checks(p, wg);
     }
 
-    //!
-    //!
     //! \brief Get an iterator pointing to one after the last two-sided
     //! congruence generating pair (no checks).
     //!
@@ -2776,8 +2782,6 @@ namespace libsemigroups {
       return cend_two_sided_generating_pairs_no_checks(p, wg);
     }
 
-    //!
-    //!
     //! \brief Compute the right congruence generating pairs of a word graph on
     //! an f.p. semigroup or monoid (no checks).
     //!
@@ -2797,8 +2801,6 @@ namespace libsemigroups {
                                 cend_right_generating_pairs_no_checks(p, wg));
     }
 
-    //!
-    //!
     //! \brief Compute the right congruence generating pairs of a word graph on
     //! an f.p. semigroup or monoid.
     //!
@@ -2816,8 +2818,6 @@ namespace libsemigroups {
       return right_generating_pairs_no_checks(p, wg);
     }
 
-    //!
-    //!
     //! \brief Compute the right congruence generating pairs of a word graph on
     //! the free monoid (no checks).
     //!
@@ -2837,8 +2837,6 @@ namespace libsemigroups {
       return right_generating_pairs_no_checks(p, wg);
     }
 
-    //!
-    //!
     //! \brief Compute the right congruence generating pairs of a word graph on
     //! the free monoid.
     //!
@@ -2852,8 +2850,6 @@ namespace libsemigroups {
     rx::iterator_range<const_rcgp_iterator>
     right_generating_pairs(WordGraph<Node> const& wg);
 
-    //!
-    //!
     //! \brief Compute the two-sided congruence generating pairs of a word graph
     //! on an f.p. semigroup or monoid (no checks).
     //!
@@ -2882,12 +2878,12 @@ namespace libsemigroups {
           cend_two_sided_generating_pairs_no_checks(p, wg));
     }
 
-    //! \brief Compute the two-sided congruence generating pairs of a word graph
-    //! on an f.p. semigroup or monoid.
+    //! \brief Range object containing the two-sided congruence generating pairs
+    //! of a word graph on an f.p. semigroup or monoid.
     //!
     //! \returns the two-sided congruence generating pairs of the two-sided
-    //! congruence defined by the
-    //! word graph \p wg on the semigroup or monoid defined by \p p.
+    //! congruence defined by the word graph \p wg on the semigroup or monoid
+    //! defined by \p p.
     //!
     //! \throws LibsemigroupsException if the argument \p wg does not define a
     //! two-sided congruence on the semigroup or monoid presented by \p p.
@@ -2906,8 +2902,6 @@ namespace libsemigroups {
       return two_sided_generating_pairs_no_checks(p, wg);
     }
 
-    //!
-    //!
     //! \brief Compute the two-sided congruence generating pairs of a word graph
     //! on the free monoid (no checks).
     //!
@@ -2936,8 +2930,6 @@ namespace libsemigroups {
           cend_two_sided_generating_pairs_no_checks(p, wg));
     }
 
-    //!
-    //!
     //! \brief Compute the two-sided congruence generating pairs of a word graph
     //! on the free monoid.
     //!
@@ -2963,8 +2955,6 @@ namespace libsemigroups {
       return two_sided_generating_pairs_no_checks(p, wg);
     }
 
-    //!
-    //!
     //! \brief Check if a word graph defines a maximal right congruence on
     //! an f.p. semigroup or monoid.
     //!
@@ -2975,8 +2965,6 @@ namespace libsemigroups {
     bool is_maximal_right_congruence(Presentation<word_type> const& p,
                                      WordGraph<Node> const&         wg);
 
-    //!
-    //!
     //! \brief Compute the inclusion poset of a collection of congruences
     //! defined by word graphs.
     //!
@@ -2987,7 +2975,7 @@ namespace libsemigroups {
     //! congruences of a given semigroup or monoid, then this is equivalent to
     //! computing the congruence lattice of the semigroup or monoid.
     //!
-    //! \returns a \ref Bmat object.
+    //! \returns a \ref BMat object.
     //!
     //! \warning
     //! This function does no checks on its arguments whatsoever and assumes
@@ -2996,8 +2984,6 @@ namespace libsemigroups {
     template <typename Iterator>
     BMat<> poset(Iterator first, Iterator last);
 
-    //!
-    //!
     //! \brief Construct a \ref Dot object representing the inclusion poset of a
     //! collection of word graphs.
     //!
@@ -3006,10 +2992,9 @@ namespace libsemigroups {
     // very well.
     template <typename Iterator>
     Dot dot_poset(Iterator first, Iterator last);
-
   }  // namespace sims
 
-  //!
+  //! \ingroup sims_group
   //!
   //! \brief For pruning the search tree when looking for congruences arising
   //! from right or two-sided congruences representing faithful actions.
@@ -3095,7 +3080,6 @@ namespace libsemigroups {
 
     //! \brief Get the forbidden pairs defining the refiner.
     //!
-    //! \anchor forbid
     //! Returns a const reference to the current forbidden pairs.
     //!
     //! This function returns the defining forbidden pairs of a
@@ -3117,9 +3101,9 @@ namespace libsemigroups {
     //! Otherwise returns `true`.
     //!
     bool operator()(Sims1::word_graph_type const& wg);
-  };
+  };  // class SimsRefinerFaithful
 
-  //!
+  //! \ingroup sims_group
   //!
   //! \brief For pruning the search tree when looking for congruences arising
   //! from right or two-sided ideals.
@@ -3167,16 +3151,13 @@ namespace libsemigroups {
     //! Constructs a SimsRefinerIdeals pruner for the semigroup or monoid
     //! defined by \p p.
     //!
-    //! \tparam Word the type of words in the input presentation.
-    //!
     //! \param p the presentation.
     //!
     //! \warning
     //! This method assumes that \ref_knuth_bendix terminates on the input
-    //! presentation \p p. If this is not the case then th pruner may not
+    //! presentation \p p. If this is not the case then this pruner may not
     //! terminate on certain inputs.
-    template <typename Word>
-    explicit SimsRefinerIdeals(Presentation<Word> const& p)
+    explicit SimsRefinerIdeals(Presentation<word_type> const& p)
         : _knuth_bendices(std::thread::hardware_concurrency() + 1,
                           KnuthBendix_()),
           _presentation() {
@@ -3189,14 +3170,13 @@ namespace libsemigroups {
     //! This function puts an object back into the same state as if it had
     //! been newly constructed from the presentation \p p.
     //!
-    //! \tparam Word the type of words in the input presentation.
-    //!
     //! \param p the presentation.
     //!
     //! \returns A reference to \c *this.
     //!
     //! \throws LibsemigroupsException if `p` is not valid
     //! \throws LibsemigroupsException if `p` has 0-generators and 0-relations.
+    //! \throws Libsemigroups if the alphabet of \p p is not normalized.
     //!
     //! \warning This function has no exception guarantee, the object will be
     //! in the same state as if it was default constructed if an exception is
@@ -3208,12 +3188,10 @@ namespace libsemigroups {
     //! terminate on certain inputs.
     //!
     //! \sa presentation(Presentation<word_type> const&)
-    template <typename Word>
-    SimsRefinerIdeals& init(Presentation<Word> const& p);
+    SimsRefinerIdeals& init(Presentation<word_type> const& p);
 
     //! \brief Get the presentation over which the refiner is defined.
     //!
-    //! \anchor presentation
     //! Returns a const reference to the current relations of the underlying
     //! presentation.
     //!
@@ -3240,9 +3218,9 @@ namespace libsemigroups {
     //! presentation that was used to construct the SimsRefinerIdeals object. If
     //! this is not the case then th pruner may not terminate on certain inputs.
     bool operator()(Sims1::word_graph_type const& wg);
-  };
+  };  // class SimsRefinerIdeals
 
-  //!
+  //! \ingroup sims_group
   //!
   //! \brief Return a human readable representation of a SimsStats object.
   //!
@@ -3254,7 +3232,7 @@ namespace libsemigroups {
   //! \no_libsemigroups_except
   [[nodiscard]] std::string to_human_readable_repr(SimsStats const& x);
 
-  //!
+  //! \ingroup sims_group
   //!
   //! \brief Return a human readable representation of a Sims1 object.
   //!
@@ -3266,7 +3244,7 @@ namespace libsemigroups {
   //! \no_libsemigroups_except
   [[nodiscard]] std::string to_human_readable_repr(Sims1 const& x);
 
-  //!
+  //! \ingroup sims_group
   //!
   //! \brief Return a human readable representation of a Sims2 object.
   //!
@@ -3278,6 +3256,7 @@ namespace libsemigroups {
   //! \no_libsemigroups_except
   [[nodiscard]] std::string to_human_readable_repr(Sims2 const& x);
 
+  //! \ingroup sims_group
   //!
   //!
   //! \brief Return a human readable representation of a RepOrc object.
@@ -3290,6 +3269,7 @@ namespace libsemigroups {
   //! \no_libsemigroups_except
   [[nodiscard]] std::string to_human_readable_repr(RepOrc const& x);
 
+  //! \ingroup sims_group
   //!
   //!
   //! \brief Return a human readable representation of a MinimalRepOrc object.
@@ -3302,7 +3282,7 @@ namespace libsemigroups {
   //! \no_libsemigroups_except
   [[nodiscard]] std::string to_human_readable_repr(MinimalRepOrc const& x);
 
-  //!
+  //! \ingroup sims_group
   //!
   //! \brief Return a human readable representation of a SimsRefinerIdeals
   //! object.
@@ -3315,7 +3295,7 @@ namespace libsemigroups {
   //! \no_libsemigroups_except
   [[nodiscard]] std::string to_human_readable_repr(SimsRefinerIdeals const& x);
 
-  //! TODO(0) relink all the doc in this file to the correct group!
+  //! \ingroup sims_group
   //!
   //! \brief Return a human readable representation of a SimsRefinerFaithful
   //! object.

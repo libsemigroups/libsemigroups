@@ -369,10 +369,6 @@ namespace libsemigroups {
         internal_presentation().validate_word(first, last);
       }
 
-      static void
-      throw_if_presentation_not_normalized(Presentation<word_type> const&,
-                                           std::string_view arg = "1st");
-
       ////////////////////////////////////////////////////////////////////////
       // 4. ToddCoxeterImpl - interface requirements - add_generating_pair
       ////////////////////////////////////////////////////////////////////////

@@ -510,7 +510,7 @@ namespace libsemigroups {
     presentation::add_rule(p, "yyy", "");
     presentation::add_rule(p, "xyxyxyxyxyxyxy", "");
     Sims1 S;
-    S.presentation(p);
+    S.presentation(to<Presentation<word_type>>(p));
     BENCHMARK("1 thread") {
       REQUIRE(S.number_of_threads(1).number_of_congruences(50) == 75'971);
     };
@@ -532,7 +532,7 @@ namespace libsemigroups {
     presentation::add_rule(p, "YxyyXXYYxyxYxyyXYXyXYYxxyyXYXyXYYxyx", "y");
 
     Sims1 S;
-    S.presentation(p);
+    S.presentation(to<Presentation<word_type>>(p));
     BENCHMARK("1 thread") {
       REQUIRE(S.number_of_threads(1).number_of_congruences(10) == 1);
     };
@@ -633,7 +633,7 @@ namespace libsemigroups {
     presentation::add_rule(p, "yXYYxyYYxyyXYYxyyXyXYYxyX", "");
     presentation::add_rule(p, "YxyyXXYYxyxYxyyXYXyXYYxxyyXYXyXYYxyxY", "");
     Sims1 S;
-    S.presentation(p);
+    S.presentation(to<Presentation<word_type>>(p));
     REQUIRE(S.number_of_threads(4).number_of_congruences(2) == 4);
   }
 
@@ -714,7 +714,7 @@ namespace libsemigroups {
     presentation::add_rule(p, "babaaBaaBaB", "BAbAbAA");
 
     Sims1 S;
-    S.presentation(p);
+    S.presentation(to<Presentation<word_type>>(p));
 
     BENCHMARK("1 thread") {
       REQUIRE(S.number_of_threads(1).number_of_congruences(12) == 6);

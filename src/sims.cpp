@@ -1473,6 +1473,16 @@ namespace libsemigroups {
 
   }  // namespace sims
 
+  // TODO(0): (reiniscirpons) Change this in the same way as we do for Sims1,
+  // Once we add the citw stuff
+  SimsRefinerIdeals& SimsRefinerIdeals::init(Presentation<word_type> const& p) {
+    _presentation = p;
+    _knuth_bendices[0].init(congruence_kind::twosided, _presentation).run();
+    std::fill(
+        _knuth_bendices.begin() + 1, _knuth_bendices.end(), _knuth_bendices[0]);
+    return *this;
+  }
+
   bool SimsRefinerFaithful::operator()(Sims1::word_graph_type const& wg) {
     auto first = _forbid.cbegin(), last = _forbid.cend();
     // TODO(2) use 1 felsch tree per excluded pairs, and use it to check if

@@ -79,6 +79,11 @@ namespace libsemigroups {
       t.string();  // Can't really test this
     }
 
+// The following test frequently fails on cygwin, with
+//  REQUIRE( e.count() > 0 )
+// with expansion:
+//  0 > 0
+#ifndef __CYGWIN__
     LIBSEMIGROUPS_TEST_CASE("Timer", "003", "reset/elapsed method", "[quick]") {
       Timer t;
       std::this_thread::sleep_for(std::chrono::milliseconds(10));
@@ -92,6 +97,7 @@ namespace libsemigroups {
       REQUIRE(e.count() > 0);
       REQUIRE(e.count() < 1000);
     }
+#endif
 
     LIBSEMIGROUPS_TEST_CASE("Timer", "004", "operator<<", "[quick]") {
       std::ostringstream os;
