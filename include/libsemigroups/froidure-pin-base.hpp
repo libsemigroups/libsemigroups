@@ -2373,8 +2373,8 @@ namespace libsemigroups {
     //! The same as FroidurePinBase::enumerate.
     //!
     //! \note This function triggers a full enumeration.
-    [[nodiscard]]
-    rx::iterator_range<FroidurePinBase::const_normal_form_iterator>
+    [[nodiscard]] rx::iterator_range<
+        FroidurePinBase::const_normal_form_iterator>
     normal_forms(FroidurePinBase& fpb);
 
     //! \brief Returns a range object containing the so-far enumerated
