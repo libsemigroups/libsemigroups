@@ -141,6 +141,54 @@ namespace libsemigroups {
             typename Func,
             typename Traits,
             side LeftOrRight>
+  Action<Element, Point, Func, Traits, LeftOrRight>&
+  Action<Element, Point, Func, Traits, LeftOrRight>::operator=(
+      Action const& that) {
+    Runner::operator=(that);
+    _gens  = that._gens;
+    _graph = that._graph;
+    for (auto pt : _orb) {
+      this->internal_free(pt);
+    }
+    _orb.clear();
+    _map.clear();
+    for (auto const& pt : that._orb) {
+      _orb.push_back(this->internal_copy(pt));
+      _map.emplace(_orb.back(), _orb.size() - 1);
+    }
+    _multipliers_from_scc_root = that._multipliers_from_scc_root;
+    _multipliers_to_scc_root   = that._multipliers_to_scc_root;
+    _pos                       = that._pos;
+    _scc                       = that._scc;
+    return *this;
+  }
+
+  template <typename Element,
+            typename Point,
+            typename Func,
+            typename Traits,
+            side LeftOrRight>
+  Action<Element, Point, Func, Traits, LeftOrRight>&
+  Action<Element, Point, Func, Traits, LeftOrRight>::operator=(Action&& that) {
+    Runner::operator=(std::move(that));
+    _gens  = std::move(that._gens);
+    _graph = std::move(that._graph);
+    // We swap the _orb in "this" and "that" so that the elements in both of the
+    // objects are properly freed in the destructor.
+    std::swap(_orb, that._orb);
+    _map                       = std::move(that._map);
+    _multipliers_from_scc_root = std::move(that._multipliers_from_scc_root);
+    _multipliers_to_scc_root   = std::move(that._multipliers_to_scc_root);
+    _pos                       = std::move(that._pos);
+    _scc                       = std::move(that._scc);
+    return *this;
+  }
+
+  template <typename Element,
+            typename Point,
+            typename Func,
+            typename Traits,
+            side LeftOrRight>
   Action<Element, Point, Func, Traits, LeftOrRight>::~Action() {
     if (_tmp_point_init) {
       this->internal_free(_tmp_point);

@@ -371,16 +371,20 @@ namespace libsemigroups {
     Action& init();
 
     //! Default copy constructor.
-    Action(Action const&) = default;
+    Action(Action const& that) : Action() {
+      *this = that;
+    }
 
     //! Default move constructor.
-    Action(Action&&) = default;
+    Action(Action&& that) : Action() {
+      *this = std::move(that);
+    }
 
     //! Default copy assignment operator.
-    Action& operator=(Action const&) = default;
+    Action& operator=(Action const&);
 
     //! Default move assignment operator.
-    Action& operator=(Action&&) = default;
+    Action& operator=(Action&&);
 
     ~Action();
 

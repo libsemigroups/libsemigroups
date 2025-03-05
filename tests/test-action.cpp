@@ -199,7 +199,7 @@ namespace libsemigroups {
     row_orb.add_generator(
         BMat8({{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 0}}));
 
-    row_orb.reserve(1000);
+    row_orb.reserve(1'000);
     row_orb.cache_scc_multipliers(true);
 
     REQUIRE(row_orb.size() == 553);
@@ -385,7 +385,7 @@ namespace libsemigroups {
                   {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15},
                   16));
     o.reserve(70'000);
-    REQUIRE(o.size() == 65536);
+    REQUIRE(o.size() == 65'536);
   }
 
   LIBSEMIGROUPS_TEST_CASE("Action",
@@ -411,7 +411,7 @@ namespace libsemigroups {
         PPerm<16>({0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14},
                   {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15},
                   16));
-    o.reserve(70000);
+    o.reserve(70'000);
     REQUIRE(o.size() == 65'536);
     REQUIRE(o.scc().number_of_components() == 17);
   }
@@ -439,7 +439,7 @@ namespace libsemigroups {
         PPerm<16>({0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14},
                   {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15},
                   16));
-    REQUIRE(o.size() == 65536);
+    REQUIRE(o.size() == 65'536);
     REQUIRE(o.scc().number_of_components() == 17);
   }
 
@@ -491,7 +491,7 @@ namespace libsemigroups {
     o.add_generator(Perm({1, 0, 2, 3, 4, 5, 6, 7, 8, 9}));
     o.add_generator(Perm({1, 2, 3, 4, 5, 6, 7, 8, 9, 0}));
 
-    REQUIRE(o.size() == 30240);
+    REQUIRE(o.size() == 30'240);
   }
 
   LIBSEMIGROUPS_TEST_CASE("Action",
@@ -520,7 +520,10 @@ namespace libsemigroups {
     o.add_generator(Perm({1, 0, 2, 3, 4, 5, 6, 7, 8, 9}));
     o.add_generator(Perm({1, 2, 3, 4, 5, 6, 7, 8, 9, 0}));
 
-    REQUIRE(o.size() == 30240);
+    REQUIRE(o.size() == 30'240);
+    decltype(o) oo;
+    oo = o;
+    REQUIRE(oo.size() == 30'240);
   }
 
   LIBSEMIGROUPS_TEST_CASE("Action", "016", "misc", "[quick]") {
@@ -600,7 +603,7 @@ namespace libsemigroups {
     o.add_generator(Perm({1, 0, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14}));
     o.add_generator(Perm({1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 0}));
 
-    REQUIRE(o.size() == 360360);
+    REQUIRE(o.size() == 360'360);
   }
 
   LIBSEMIGROUPS_TEST_CASE("Action",
@@ -645,8 +648,11 @@ namespace libsemigroups {
     col_orb.run_for(std::chrono::milliseconds(100));
     col_orb.run_for(std::chrono::milliseconds(100));
 
-    REQUIRE(row_orb.size() == 110519);
-    REQUIRE(col_orb.size() == 110519);
+    REQUIRE(row_orb.size() == 110'519);
+    REQUIRE(col_orb.size() == 110'519);
+    row_orb_type oo;
+    oo = row_orb;
+    REQUIRE(oo.size() == 110'519);
   }
 
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("Action",
@@ -714,5 +720,125 @@ namespace libsemigroups {
 
     REQUIRE(row_orb.size() == 110'519);
     REQUIRE(col_orb.size() == 110'519);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Action",
+                          "021",
+                          "constructors",
+                          "[quick][no-valgrind]") {
+    auto rg    = ReportGuard(REPORT);
+    using Perm = LeastPerm<10>;
+
+    RightAction<Perm, std::vector<uint8_t>, OnTuples<Perm, uint8_t>> o;
+    o.add_seed({0, 1, 2, 3, 4});
+    o.add_generator(Perm({1, 0, 2, 3, 4, 5, 6, 7, 8, 9}));
+
+    REQUIRE(o.size() == 2);
+    SECTION("copy constructor") {
+      decltype(o) oo(o);
+      REQUIRE(oo.size() == 2);
+      REQUIRE(oo[0] == std::vector<uint8_t>({0, 1, 2, 3, 4}));
+      REQUIRE(oo[1] == std::vector<uint8_t>({1, 0, 2, 3, 4}));
+    }
+    SECTION("move constructor") {
+      decltype(o) oo(std::move(o));
+      REQUIRE(oo.size() == 2);
+      REQUIRE(oo[0] == std::vector<uint8_t>({0, 1, 2, 3, 4}));
+      REQUIRE(oo[1] == std::vector<uint8_t>({1, 0, 2, 3, 4}));
+    }
+    SECTION("copy assignment") {
+      decltype(o) oo;
+      oo.add_seed({0, 1, 2, 3, 4});
+      oo.add_generator(Perm({1, 0, 2, 3, 4, 5, 6, 7, 8, 9}));
+      REQUIRE(oo.size() == 2);
+      oo = o;
+      REQUIRE(oo.size() == 2);
+      REQUIRE(oo[0] == std::vector<uint8_t>({0, 1, 2, 3, 4}));
+      REQUIRE(oo[1] == std::vector<uint8_t>({1, 0, 2, 3, 4}));
+    }
+    SECTION("move assignment") {
+      decltype(o) oo;
+      oo.add_seed({0, 1, 2, 3, 4});
+      oo.add_generator(Perm({1, 0, 2, 3, 4, 5, 6, 7, 8, 9}));
+      REQUIRE(oo.size() == 2);
+      oo = std::move(o);
+      REQUIRE(oo.size() == 2);
+      REQUIRE(oo[0] == std::vector<uint8_t>({0, 1, 2, 3, 4}));
+      REQUIRE(oo[1] == std::vector<uint8_t>({1, 0, 2, 3, 4}));
+    }
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Action",
+                          "022",
+                          "constructors",
+                          "[quick][no-valgrind]") {
+    row_orb_type o;
+    o.add_seed(bmat8::row_space_basis(
+        BMat8({{1, 1, 1, 0}, {1, 1, 0, 0}, {0, 1, 0, 1}, {0, 1, 0, 0}})));
+
+    o.add_generator(
+        BMat8({{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}));
+    o.add_generator(
+        BMat8({{0, 1, 0, 0}, {1, 0, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}));
+    o.add_generator(
+        BMat8({{0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}, {1, 0, 0, 0}}));
+    o.add_generator(
+        BMat8({{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {1, 0, 0, 1}}));
+    o.add_generator(
+        BMat8({{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 0}}));
+
+    REQUIRE(o.size() == 553);
+
+    SECTION("copy constructor") {
+      decltype(o) oo(o);
+      REQUIRE(oo.size() == 553);
+      REQUIRE(oo[10] == BMat8({{1, 0, 1}, {0, 1, 1}, {0, 0, 1}}));
+      REQUIRE(
+          oo[552]
+          == BMat8({{1, 0, 1, 1}, {0, 1, 1, 1}, {0, 1, 0, 0}, {0, 0, 0, 0}}));
+    }
+    SECTION("move constructor") {
+      decltype(o) oo(std::move(o));
+      REQUIRE(oo.size() == 553);
+      REQUIRE(oo[10] == BMat8({{1, 0, 1}, {0, 1, 1}, {0, 0, 1}}));
+      REQUIRE(
+          oo[552]
+          == BMat8({{1, 0, 1, 1}, {0, 1, 1, 1}, {0, 1, 0, 0}, {0, 0, 0, 0}}));
+    }
+    SECTION("copy assignment") {
+      decltype(o) oo;
+
+      oo.add_seed(bmat8::row_space_basis(
+          BMat8({{1, 1, 1, 0}, {1, 1, 0, 0}, {0, 1, 0, 1}, {0, 1, 0, 0}})));
+
+      oo.add_generator(
+          BMat8({{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}));
+      oo.add_generator(
+          BMat8({{0, 1, 0, 0}, {1, 0, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}));
+      REQUIRE(oo.size() == 2);
+      oo = o;
+      REQUIRE(oo.size() == 553);
+      REQUIRE(oo[10] == BMat8({{1, 0, 1}, {0, 1, 1}, {0, 0, 1}}));
+      REQUIRE(
+          oo[552]
+          == BMat8({{1, 0, 1, 1}, {0, 1, 1, 1}, {0, 1, 0, 0}, {0, 0, 0, 0}}));
+    }
+    SECTION("move assignment") {
+      decltype(o) oo;
+      oo.add_seed(bmat8::row_space_basis(
+          BMat8({{1, 1, 1, 0}, {1, 1, 0, 0}, {0, 1, 0, 1}, {0, 1, 0, 0}})));
+
+      oo.add_generator(
+          BMat8({{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}));
+      oo.add_generator(
+          BMat8({{0, 1, 0, 0}, {1, 0, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}));
+      REQUIRE(oo.size() == 2);
+      oo = std::move(o);
+      REQUIRE(oo.size() == 553);
+      REQUIRE(oo[10] == BMat8({{1, 0, 1}, {0, 1, 1}, {0, 0, 1}}));
+      REQUIRE(
+          oo[552]
+          == BMat8({{1, 0, 1, 1}, {0, 1, 1, 1}, {0, 1, 0, 0}, {0, 0, 0, 0}}));
+    }
   }
 }  // namespace libsemigroups
