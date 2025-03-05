@@ -68,6 +68,9 @@ namespace libsemigroups {
     Konieczny<BMat8> KS(gens);
     KS.run();
 
+    REQUIRE(KS.size() == 10160);
+    REQUIRE(KS.number_of_D_classes() == 66);
+
     size_t count = 0;
     for (BMat8 id : idems) {
       Konieczny<BMat8>::DClass& D = KS.D_class_of_element(id);
@@ -253,5 +256,26 @@ namespace libsemigroups {
     Konieczny<BMat8> KS(gens);
     Konieczny<BMat8> KT(KS);
     KS.run();
+    // KT.run();
+
+    REQUIRE(KT.size() == 10160);
+
+    Konieczny<BMat8> KU(KT);
+
+    REQUIRE(KU.size() == 10160);
+    REQUIRE(KU.number_of_D_classes() == 66);
+
+    Konieczny<BMat8> KV(gens);
+    KV.run_until(
+        [&KV]() -> bool { return KV.current_number_of_D_classes() > 20; });
+    size_t found_classes = KV.current_number_of_D_classes();
+
+    Konieczny<BMat8> KW(KV);
+    REQUIRE(KW.size() == 10160);
+    REQUIRE(KW.number_of_D_classes() == 66);
+    REQUIRE(KV.current_number_of_D_classes() == found_classes);
+
+    KV.run();
+    REQUIRE(KV.size() == 10160);
   }
 }  // namespace libsemigroups

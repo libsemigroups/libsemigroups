@@ -134,6 +134,7 @@ namespace libsemigroups {
       }
       y->set_parent(this);
       DClass_map.emplace(x, y);
+      _D_classes.push_back(y);
     }
 
     _D_rels.clear();
