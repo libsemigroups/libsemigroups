@@ -18,6 +18,167 @@
 namespace libsemigroups {
 
   ////////////////////////////////////////////////////////////////////////
+  // Konieczny - contstructors and initialisers
+  ////////////////////////////////////////////////////////////////////////
+
+  template <typename Element, typename Traits>
+  Konieczny<Element, Traits>::Konieczny()
+      : _adjoined_identity_contained(false),
+        _D_classes(),
+        _D_rels(),
+        _data_initialised(false),
+        _degree(UNDEFINED),
+        _element_pool(),
+        _gens(),
+        _group_indices(),
+        _group_indices_rev(),
+        _lambda_orb(),
+        _lambda_to_D_map(),
+        _nonregular_reps(),
+        _one(),
+        _rank_state(nullptr),
+        _ranks(),
+        _regular_D_classes(),
+        _regular_reps(),
+        _reps_processed(0),
+        _rho_orb(),
+        _rho_to_D_map(),
+        _run_initialised(false),
+        _tmp_lambda_value1(),
+        _tmp_lambda_value2(),
+        _tmp_rho_value1(),
+        _tmp_rho_value2() {
+    _lambda_orb.cache_scc_multipliers(true);
+    _rho_orb.cache_scc_multipliers(true);
+  }
+
+  template <typename Element, typename Traits>
+  Konieczny<Element, Traits>::Konieczny(Konieczny const& that) : Konieczny() {
+    init(that);
+  }
+
+  template <typename Element, typename Traits>
+  Konieczny<Element, Traits>& Konieczny<Element, Traits>::init() {
+    free_internals();
+    _adjoined_identity_contained = false;
+    _D_classes.clear();
+    _D_rels.clear();
+    _data_initialised = false;
+    _degree           = UNDEFINED;
+    _gens.clear();
+    _group_indices.clear();
+    _group_indices_rev.clear();
+    _lambda_orb.init();
+    _lambda_to_D_map.clear();
+    _nonregular_reps.clear();
+    _rank_state = nullptr;
+    _ranks.clear();
+    _regular_D_classes.clear();
+    _regular_reps.clear();
+    _reps_processed = 0;
+    _rho_orb.init();
+    _rho_to_D_map.clear();
+    _run_initialised = false;
+    // TODO clear element pool, change one, _tmp*s?
+    _lambda_orb.cache_scc_multipliers(true);
+    _rho_orb.cache_scc_multipliers(true);
+
+    Runner::init();
+
+    return *this;
+  }
+
+  template <typename Element, typename Traits>
+  Konieczny<Element, Traits>&
+  Konieczny<Element, Traits>::init(Konieczny<Element, Traits> const& that) {
+    free_internals();
+
+    // deal with all the easy data first
+    _adjoined_identity_contained = that._adjoined_identity_contained;
+    _data_initialised            = that._data_initialised;
+    _degree                      = that._degree;
+    _one                         = this->internal_copy(that._one);
+    _rank_state                  = new rank_state_type(*(that._rank_state));
+    _run_initialised             = that._run_initialised;
+    _ranks                       = that._ranks;
+    _group_indices               = that._group_indices;
+    _group_indices_rev           = that._group_indices_rev;
+    _lambda_orb                  = that._lambda_orb;
+    _rho_orb                     = that._rho_orb;
+    _reps_processed              = that._reps_processed;
+
+    InternalVecCopy()(that._gens, _gens);
+
+    // Construct the new DClasses, and record a map from the addresses
+    // of the old classes to the addresses of the corresponding new classes.
+    _D_classes.clear();
+    _regular_D_classes.clear();
+
+    std::unordered_map<DClass*, DClass*> DClass_map;
+
+    for (DClass* x : that._D_classes) {
+      DClass* y;
+      if (x->is_regular_D_class()) {
+        y = new RegularDClass(*static_cast<RegularDClass*>(x));
+        _regular_D_classes.push_back(static_cast<RegularDClass*>(y));
+      } else {
+        y = new NonRegularDClass(*static_cast<NonRegularDClass*>(x));
+        // the DClass_map for the above regular classes should already be
+        // defined, but check to be sure
+        static_cast<NonRegularDClass*>(y)->set_left_idem_class(
+            static_cast<RegularDClass*>(DClass_map.at(
+                static_cast<NonRegularDClass*>(x)->_left_idem_class)));
+        static_cast<NonRegularDClass*>(y)->set_right_idem_class(
+            static_cast<RegularDClass*>(DClass_map.at(
+                static_cast<NonRegularDClass*>(x)->_right_idem_class)));
+      }
+      y->set_parent(this);
+      DClass_map.emplace(x, y);
+    }
+
+    _D_rels.clear();
+    for (std::vector<D_class_index_type> x : that._D_rels) {
+      _D_rels.push_back(x);
+    }
+
+    _lambda_to_D_map.clear();
+    for (auto it = that._lambda_to_D_map.cbegin();
+         it != that._lambda_to_D_map.cend();
+         ++it) {
+      _lambda_to_D_map.insert(std::make_pair(
+          it->first, std::vector<D_class_index_type>(it->second)));
+      // TODO: is this copying required?
+    }
+
+    _rho_to_D_map.clear();
+    for (auto it = that._rho_to_D_map.cbegin(); it != that._rho_to_D_map.cend();
+         ++it) {
+      _rho_to_D_map.insert(std::make_pair(
+          it->first, std::vector<D_class_index_type>(it->second)));
+    }
+
+    // internal reps already freed in free_internals
+    _nonregular_reps.clear();
+    _regular_reps.clear();
+
+    for (auto v : that._nonregular_reps) {
+      _nonregular_reps.push_back(v);
+      for (auto x : _nonregular_reps.back()) {
+        x._elt = this->internal_copy(x._elt);
+      }
+    }
+
+    for (auto v : that._regular_reps) {
+      _regular_reps.push_back(v);
+      for (auto x : _regular_reps.back()) {
+        x._elt = this->internal_copy(x._elt);
+      }
+    }
+
+    return *this;
+  }
+
+  ////////////////////////////////////////////////////////////////////////
   // Konieczny - member functions
   ////////////////////////////////////////////////////////////////////////
 
@@ -337,7 +498,7 @@ namespace libsemigroups {
     // _one is included in _gens
     InternalVecFree()(_gens);
     while (!_ranks.empty()) {
-      for (auto rep_info : _reg_reps[max_rank()]) {
+      for (auto rep_info : _regular_reps[max_rank()]) {
         this->internal_free(rep_info._elt);
       }
       for (auto rep_info : _nonregular_reps[max_rank()]) {
@@ -346,37 +507,6 @@ namespace libsemigroups {
       _ranks.erase(max_rank());
     }
     delete _rank_state;
-  }
-
-  template <typename Element, typename Traits>
-  Konieczny<Element, Traits>& Konieczny<Element, Traits>::init() {
-    free_internals();
-    _adjoined_identity_contained = false;
-    _D_classes.clear();
-    _D_rels.clear();
-    _data_initialised = false;
-    _degree           = UNDEFINED;
-    _gens.clear();
-    _group_indices.clear();
-    _group_indices_rev.clear();
-    _lambda_orb.init();
-    _lambda_to_D_map.clear();
-    _nonregular_reps.clear();
-    _rank_state = nullptr;
-    _ranks.clear();
-    _regular_D_classes.clear();
-    _reg_reps.clear();
-    _reps_processed = 0;
-    _rho_orb.init();
-    _rho_to_D_map.clear();
-    _run_initialised = false;
-    // TODO clear element pool, change one, _tmp*s?
-    _lambda_orb.cache_scc_multipliers(true);
-    _rho_orb.cache_scc_multipliers(true);
-
-    Runner::init();
-
-    return *this;
   }
 
   template <typename Element, typename Traits>
@@ -402,8 +532,9 @@ namespace libsemigroups {
       internal_reference x = rep_info._elt;
       size_t rnk = InternalRank()(_rank_state, this->to_external_const(x));
       _ranks.insert(rnk);
-      if (is_regular_element_no_checks(x, rep_info._lambda_idx, rep_info._rho_idx)) {
-        _reg_reps[rnk].push_back(std::move(rep_info));
+      if (is_regular_element_no_checks(
+              x, rep_info._lambda_idx, rep_info._rho_idx)) {
+        _regular_reps[rnk].push_back(std::move(rep_info));
       } else {
         _nonregular_reps[rnk].push_back(std::move(rep_info));
       }
@@ -486,8 +617,8 @@ namespace libsemigroups {
         std::vector<RepInfo>());
 
     // FIXME these assertions fail
-    // LIBSEMIGROUPS_ASSERT(_reg_reps.empty());
-    _reg_reps = std::vector<std::vector<RepInfo>>(
+    // LIBSEMIGROUPS_ASSERT(_regular_reps.empty());
+    _regular_reps = std::vector<std::vector<RepInfo>>(
         InternalRank()(_rank_state, this->to_external_const(_one)) + 1,
         std::vector<RepInfo>());
   }
@@ -583,7 +714,7 @@ namespace libsemigroups {
                   _ranks.cend(),
                   [this, &number_of_reps_remaining](rank_type x) {
                     number_of_reps_remaining
-                        += _reg_reps[x].size() + _nonregular_reps[x].size();
+                        += _regular_reps[x].size() + _nonregular_reps[x].size();
                   });
     // TODO(later) add layers to report
     report_default(
@@ -621,10 +752,10 @@ namespace libsemigroups {
       LIBSEMIGROUPS_ASSERT(next_reps.empty());
       bool         reps_are_reg = false;
       size_t const mx_rank      = max_rank();
-      if (!_reg_reps[mx_rank].empty()) {
+      if (!_regular_reps[mx_rank].empty()) {
         reps_are_reg = true;
-        std::swap(next_reps, _reg_reps[mx_rank]);
-        _reg_reps[mx_rank].clear();
+        std::swap(next_reps, _regular_reps[mx_rank]);
+        _regular_reps[mx_rank].clear();
       } else {
         std::swap(next_reps, _nonregular_reps[mx_rank]);
         _nonregular_reps[mx_rank].clear();
@@ -659,7 +790,7 @@ namespace libsemigroups {
           if (is_regular_element_no_checks(
                   x, rep_info2._lambda_idx, rep_info2._rho_idx)) {
             LIBSEMIGROUPS_ASSERT(rnk < mx_rank);
-            _reg_reps[rnk].push_back(std::move(rep_info2));
+            _regular_reps[rnk].push_back(std::move(rep_info2));
           } else {
             _nonregular_reps[rnk].push_back(std::move(rep_info2));
           }
@@ -680,7 +811,7 @@ namespace libsemigroups {
         }
         std::swap(next_reps, tmp_next);
       }
-      LIBSEMIGROUPS_ASSERT(_reg_reps[mx_rank].empty());
+      LIBSEMIGROUPS_ASSERT(_regular_reps[mx_rank].empty());
       if (_nonregular_reps[mx_rank].empty()) {
         _ranks.erase(mx_rank);
       }
@@ -724,47 +855,23 @@ namespace libsemigroups {
         unordered_set<internal_element_type, InternalHash, InternalEqualTo>;
 
     ////////////////////////////////////////////////////////////////////////
-    // DClass - constructors - public
+    // DClass - default constructor - private
     ////////////////////////////////////////////////////////////////////////
 
-    //! Deleted.
-    //!
-    //! DClass does not support a copy constructor.
-    DClass(DClass const&) = delete;
-
-    //! Deleted.
-    //!
-    //! DClass does not support a copy assignment operator to avoid accidental
-    //! copying.
-    DClass& operator=(DClass const&) = delete;
-
-    //! Deleted.
-    //!
-    //! DClass does not support a move constructor.
-    DClass(DClass&&) = delete;
-
-    //! Deleted.
-    //!
-    //! DClass does not support a move assignment operator.
-    DClass& operator=(DClass&&) = delete;
-
-    ////////////////////////////////////////////////////////////////////////
-    // DClass - constructor - protected
-    ////////////////////////////////////////////////////////////////////////
-
-    DClass(Konieczny* parent, internal_reference rep)
+   private:
+    DClass()
         : _class_computed(false),
           _H_class(),
           _H_class_computed(false),
+          _is_regular_D_class(),
           _left_indices(),
           _left_mults(),
           _left_mults_inv(),
           _left_reps(),
           _mults_computed(false),
-          _parent(parent),
-          _rank(InternalRank()(parent->_rank_state,
-                               this->to_external_const(rep))),
-          _rep(rep),  // note that rep is not copied and is now owned by this
+          _parent(),
+          _rank(),
+          _rep(),
           _reps_computed(false),
           _right_indices(),
           _right_mults(),
@@ -773,10 +880,64 @@ namespace libsemigroups {
           _tmp_internal_set(),
           _tmp_rep_info_vec(),
           _tmp_internal_vec(),
-          _tmp_lambda_value(OneParamLambda()(this->to_external_const(rep))),
-          _tmp_rho_value(OneParamRho()(this->to_external_const(rep))) {
-      _is_regular_D_class = _parent->is_regular_element_no_checks(rep);
+          _tmp_lambda_value(),
+          _tmp_rho_value() {}
+
+    void init(DClass const& that) {
+      _class_computed     = that._class_computed;
+      _H_class_computed   = that._H_class_computed;
+      _is_regular_D_class = that._is_regular_D_class;
+      _left_indices       = that._left_indices;
+      _mults_computed     = that._mults_computed;
+      _parent             = that._parent;
+      _rank               = that._rank;
+
+      this->internal_free(_rep);
+      _rep           = that._parent->internal_copy(that._rep);
+      _reps_computed = that._reps_computed;
+      _right_indices = that._right_indices;
+
+      InternalVecCopy()(that._H_class, _H_class);
+      InternalVecCopy()(that._left_mults, _left_mults);
+      InternalVecCopy()(that._left_mults_inv, _left_mults_inv);
+      InternalVecCopy()(that._left_reps, _left_reps);
+      InternalVecCopy()(that._right_mults, _right_mults);
+      InternalVecCopy()(that._right_mults_inv, _right_mults_inv);
+      InternalVecCopy()(that._right_reps, _right_reps);
     }
+
+    void clear() {}
+
+    ////////////////////////////////////////////////////////////////////////
+    // DClass - constructors - protected
+    ////////////////////////////////////////////////////////////////////////
+   protected:
+    DClass(Konieczny* parent, internal_reference rep) : DClass() {
+      _parent = parent;
+      _rep    = rep;
+
+      _is_regular_D_class = _parent->is_regular_element_no_checks(_rep);
+      _rank
+          = InternalRank()(parent->_rank_state, this->to_external_const(_rep));
+
+      // Why are these needed?
+      _tmp_lambda_value = OneParamLambda()(this->to_external_const(_rep));
+      _tmp_rho_value    = OneParamRho()(this->to_external_const(_rep));
+    }
+
+    DClass(DClass const& that) : DClass() {
+      init(that);
+    }
+
+    DClass& operator=(DClass const& that) {
+      init(that);
+      return *this;
+    }
+
+    DClass(DClass&&) = default;
+
+    DClass& operator=(DClass&&) = default;
+
 #endif  // NOT_PARSED_BY_DOXYGEN
 
    public:
@@ -804,8 +965,8 @@ namespace libsemigroups {
     //!
     //! The frame used to represent \f$\mathscr{D}\f$-classes depends on the
     //! choice of representative. This function returns the representative
-    //! used by a DClass instance. This may not be the same representative as
-    //! used to construct the instance, but is guaranteed to not change.
+    //! used by a DClass instance. This may not be the same representative
+    //! as used to construct the instance, but is guaranteed to not change.
     //!
     //! \parameters
     //! (None)
@@ -1016,7 +1177,7 @@ namespace libsemigroups {
     ////////////////////////////////////////////////////////////////////////
     // DClass - initialisation member functions - protected
     ////////////////////////////////////////////////////////////////////////
-    virtual void init()                    = 0;
+    virtual void compute_frame()           = 0;
     virtual void compute_left_indices()    = 0;
     virtual void compute_left_mults()      = 0;
     virtual void compute_left_mults_inv()  = 0;
@@ -1064,8 +1225,8 @@ namespace libsemigroups {
     // element of the semigroup, then the behaviour is undefined. This
     // overload of DClass::contains_no_checks is provided in order to avoid
     // recalculating the rank of \p x when it is already known. This member
-    // function involves computing most of the frame for \c this, if it is not
-    // already known.
+    // function involves computing most of the frame for \c this, if it is
+    // not already known.
     //
     // TODO rename
     bool contains_no_checks(internal_const_reference x, size_t rank) {
@@ -1083,13 +1244,13 @@ namespace libsemigroups {
     // element of the semigroup, then the behaviour is undefined. This
     // overload of DClass::contains_no_checks is provided in order to avoid
     // recalculating the rank, lambda value, and rho value of \p x when they
-    // are already known. This member function involves computing most of the
-    // frame for \c this, if it is not already known.
+    // are already known. This member function involves computing most of
+    // the frame for \c this, if it is not already known.
     // TODO rename
     bool contains_no_checks(internal_const_reference x,
-                     size_t                   rank,
-                     lambda_orb_index_type    lpos,
-                     rho_orb_index_type       rpos) {
+                            size_t                   rank,
+                            lambda_orb_index_type    lpos,
+                            rho_orb_index_type       rpos) {
       LIBSEMIGROUPS_ASSERT(this->parent()->InternalRank()(_rank_state, x)
                            == rank);
       return (rank == _rank && contains_no_checks(x, lpos, rpos));
@@ -1108,8 +1269,8 @@ namespace libsemigroups {
     // frame for \c this, if it is not already known.
     // TODO rename
     virtual bool contains_no_checks(internal_const_reference x,
-                             lambda_orb_index_type    lpos,
-                             rho_orb_index_type       rpos)
+                                    lambda_orb_index_type    lpos,
+                                    rho_orb_index_type       rpos)
         = 0;
 
     virtual bool contains(const_reference       x,
@@ -1323,6 +1484,10 @@ namespace libsemigroups {
       return _parent;
     }
 
+    void set_parent(Konieczny* x) noexcept {
+      _parent = x;
+    }
+
     // Watch out! Doesn't copy its argument
     void push_back_H_class(internal_element_type x) {
       _H_class.push_back(x);
@@ -1348,6 +1513,7 @@ namespace libsemigroups {
       return _tmp_internal_set;
     }
 
+    // Elements must be freed before next used
     std::vector<internal_element_type>& internal_vec() const noexcept {
       return _tmp_internal_vec;
     }
@@ -1399,7 +1565,8 @@ namespace libsemigroups {
     // DClass - member functions - private
     ////////////////////////////////////////////////////////////////////////
 
-    // Returns a set of representatives of L- or R-classes covered by \c this.
+    // Returns a set of representatives of L- or R-classes covered by \c
+    // this.
     //
     // The \f$\mathscr{D}\f$-classes of the parent semigroup are enumerated
     // either by finding representatives of all L-classes or all R-classes.
@@ -1407,13 +1574,13 @@ namespace libsemigroups {
     // multipliying the representatives  by generators on either the left or
     // right.
     std::vector<RepInfo>& covering_reps() {
-      init();
+      compute_frame();
       _tmp_rep_info_vec.clear();
       _tmp_internal_set.clear();
       // not thread safe (like everything else in here)
       D_class_index_type class_nr = _parent->_D_classes.size();
-      // TODO(later): how to best decide which side to calculate? One is often
-      // faster
+      // TODO(later): how to best decide which side to calculate? One is
+      // often faster
       if (_parent->_lambda_orb.size() < _parent->_rho_orb.size()) {
         PoolGuard             cg(_parent->element_pool());
         internal_element_type tmp = cg.get();
@@ -1475,26 +1642,27 @@ namespace libsemigroups {
     ////////////////////////////////////////////////////////////////////////
     // DClass - data - private
     ////////////////////////////////////////////////////////////////////////
-    bool                                       _class_computed;
-    std::vector<internal_element_type>         _H_class;
-    bool                                       _H_class_computed;
-    bool                                       _is_regular_D_class;
-    std::vector<lambda_orb_index_type>         _left_indices;
-    std::vector<internal_element_type>         _left_mults;
-    std::vector<internal_element_type>         _left_mults_inv;
-    std::vector<internal_element_type>         _left_reps;
-    bool                                       _mults_computed;
-    Konieczny*                                 _parent;
-    rank_type                                  _rank;
-    internal_element_type                      _rep;
-    bool                                       _reps_computed;
-    std::vector<rho_orb_index_type>            _right_indices;
-    std::vector<internal_element_type>         _right_mults;
-    std::vector<internal_element_type>         _right_mults_inv;
-    std::vector<internal_element_type>         _right_reps;
-    mutable internal_set_type                  _tmp_internal_set;
-    mutable std::vector<RepInfo>               _tmp_rep_info_vec;
-    mutable std::vector<internal_element_type> _tmp_internal_vec;
+    bool                               _class_computed;
+    std::vector<internal_element_type> _H_class;
+    bool                               _H_class_computed;
+    bool                               _is_regular_D_class;
+    std::vector<lambda_orb_index_type> _left_indices;
+    std::vector<internal_element_type> _left_mults;
+    std::vector<internal_element_type> _left_mults_inv;
+    std::vector<internal_element_type> _left_reps;
+    bool                               _mults_computed;
+    Konieczny*                         _parent;
+    rank_type                          _rank;
+    internal_element_type              _rep;
+    bool                               _reps_computed;
+    std::vector<rho_orb_index_type>    _right_indices;
+    std::vector<internal_element_type> _right_mults;
+    std::vector<internal_element_type> _right_mults_inv;
+    std::vector<internal_element_type> _right_reps;
+    mutable internal_set_type _tmp_internal_set;  // Does not own its elements
+    mutable std::vector<RepInfo>
+        _tmp_rep_info_vec;  // RepInfos do not own their rep
+    mutable std::vector<internal_element_type> _tmp_internal_vec;  // Does not
     mutable lambda_value_type                  _tmp_lambda_value;
     mutable rho_value_type                     _tmp_rho_value;
   };
@@ -1540,30 +1708,23 @@ namespace libsemigroups {
     using const_internal_iterator =
         typename std::vector<internal_element_type>::const_iterator;
 
+    void clear() {}
+
     ////////////////////////////////////////////////////////////////////////
-    // RegularDClass - constructor - private
+    // DClass - constructors - protected
     ////////////////////////////////////////////////////////////////////////
-
-    // Deleted.
-    //
-    // RegularDClass does not support a copy constructor.
-    RegularDClass(RegularDClass const&) = delete;
-
-    // Deleted.
-    //
-    // The RegularDClass class does not support a copy assignment operator to
-    // avoid accidental copying.
-    RegularDClass& operator=(RegularDClass const&) = delete;
-
-    // Deleted.
-    //
-    // RegularDClass does not support a move constructor.
-    RegularDClass(RegularDClass&&) = delete;
-
-    // Deleted.
-    //
-    // RegularDClass does not support a move assignment operator.
-    RegularDClass& operator=(RegularDClass&&) = delete;
+   protected:
+    RegularDClass()
+        : Konieczny::DClass(),
+          _H_gens(),
+          _H_gens_computed(false),
+          _idem_reps_computed(false),
+          _lambda_index_positions(),
+          _left_idem_reps(),
+          _left_indices_computed(false),
+          _rho_index_positions(),
+          _right_idem_reps(),
+          _right_indices_computed(false) {}
 
     // Construct from a pointer to a Konieczny object and an element of the
     // semigroup represented by the Konieczny object.
@@ -1595,7 +1756,7 @@ namespace libsemigroups {
         LIBSEMIGROUPS_EXCEPTION("the representative given should be regular");
       }
       parent->make_idem(this->unsafe_rep());
-      init();
+      compute_frame();
 #ifdef LIBSEMIGROUPS_DEBUG
       PoolGuard cg(this->parent()->element_pool());
       auto      tmp = cg.get();
@@ -1603,6 +1764,33 @@ namespace libsemigroups {
       LIBSEMIGROUPS_ASSERT(EqualTo()(this->to_external(tmp), this->rep()));
 #endif
     }
+
+    void init(RegularDClass const& that) {
+      Konieczny<Element, Traits>::DClass::init(that);
+
+      _H_gens_computed        = that._H_gens_computed;
+      _idem_reps_computed     = that._idem_reps_computed;
+      _left_indices_computed  = that._left_indices_computed;
+      _right_indices_computed = that._left_indices_computed;
+
+      _lambda_index_positions = that._lambda_index_positions;
+      _rho_index_positions    = that._rho_index_positions;
+      InternalVecCopy()(that._left_idem_reps, _left_idem_reps);
+      InternalVecCopy()(that._right_idem_reps, _right_idem_reps);
+    }
+
+    RegularDClass(RegularDClass const& that) : RegularDClass() {
+      init(that);
+    }
+
+    RegularDClass& operator=(RegularDClass const& that) {
+      init(that);
+      return *this;
+    }
+
+    RegularDClass(RegularDClass&&) = default;
+
+    RegularDClass& operator=(RegularDClass&&) = default;
 
    public:
     ////////////////////////////////////////////////////////////////////////
@@ -1677,8 +1865,8 @@ namespace libsemigroups {
 
     // \copydoc DClass::contains_no_checks
     bool contains_no_checks(internal_const_reference x,
-                     lambda_orb_index_type    lpos,
-                     rho_orb_index_type       rpos) override {
+                            lambda_orb_index_type    lpos,
+                            rho_orb_index_type       rpos) override {
       // the next line is to suppress compiler warnings
       (void) x;
       LIBSEMIGROUPS_ASSERT(this->parent()->_lambda_orb.position(
@@ -2055,7 +2243,7 @@ namespace libsemigroups {
       this->set_H_class_computed(true);
     }
 
-    void init() override {
+    void compute_frame() override {
       if (this->class_computed()) {
         return;
       }
@@ -2143,29 +2331,25 @@ namespace libsemigroups {
     using internal_set_type = typename DClass::internal_set_type;
 
     ////////////////////////////////////////////////////////////////////////
-    // NonRegularDClass - constructor - private
+    // NonRegularDClass - constructors - private
     ////////////////////////////////////////////////////////////////////////
 
-    // Deleted.
-    //
-    // NonRegularDClass does not support a copy constructor.
-    NonRegularDClass(NonRegularDClass const&) = delete;
-
-    // Deleted.
-    //
-    // The NonRegularDClass class does not support a copy assignment operator
-    // to avoid accidental copying.
-    NonRegularDClass& operator=(NonRegularDClass const&) = delete;
-
-    // Deleted.
-    //
-    // NonRegularDClass does not support a move constructor.
-    NonRegularDClass(NonRegularDClass&&) = delete;
-
-    // Deleted.
-    //
-    // NonRegularDClass does not support a move assignment operator.
-    NonRegularDClass& operator=(NonRegularDClass&&) = delete;
+    NonRegularDClass()
+        : Konieczny::DClass(),
+          _H_set(),
+          _idems_above_computed(false),
+          _lambda_index_positions(),
+          _left_idem_above(),
+          _left_idem_class(),
+          _left_idem_H_class(),
+          _left_idem_left_reps(),
+          _left_indices_computed(false),
+          _rho_index_positions(),
+          _right_idem_above(),
+          _right_idem_class(),
+          _right_idem_H_class(),
+          _right_idem_right_reps(),
+          _right_indices_computed(false) {}
 
     // Construct from a pointer to a Konieczny object and an element of the
     // semigroup represented by the Konieczny object.
@@ -2197,8 +2381,50 @@ namespace libsemigroups {
         LIBSEMIGROUPS_EXCEPTION("NonRegularDClass: the representative "
                                 "given should not be idempotent");
       }
-      init();
+      compute_frame();
     }
+
+    void init(NonRegularDClass const& that) {
+      Konieczny<Element, Traits>::DClass::init(that);
+
+      _idems_above_computed   = that._idems_above_computed;
+      _lambda_index_positions = that._lambda_index_positions;
+      _left_idem_class        = that._left_idem_class;
+      _left_indices_computed  = that._left_indices_computed;
+      _rho_index_positions    = that._rho_index_positions;
+      _right_indices_computed = that._right_indices_computed;
+
+      this->internal_free(_left_idem_above);
+      this->internal_free(_right_idem_above);
+      _left_idem_above  = this->parent()->internal_copy(that._left_idem_above);
+      _right_idem_above = this->parent()->internal_copy(that._right_idem_above);
+
+      InternalVecCopy()(that._left_idem_left_reps, _left_idem_left_reps);
+      InternalVecCopy()(that._left_idem_H_class, _left_idem_H_class);
+      InternalVecCopy()(that._right_idem_H_class, _right_idem_H_class);
+      InternalVecCopy()(that._right_idem_right_reps, _right_idem_right_reps);
+
+      construct_H_set();
+
+      // Warning: if you are copying the DClass, there's a good chance you're
+      // copying the classes above it too, in which case you will need
+      // set_left_idem_class and set_right_idem_class
+      _left_idem_class  = that._left_idem_class;
+      _right_idem_class = that._right_idem_class;
+    }
+
+    NonRegularDClass(NonRegularDClass const& that) : NonRegularDClass() {
+      init(that);
+    }
+
+    NonRegularDClass& operator=(NonRegularDClass const& that) {
+      init(that);
+      return *this;
+    }
+
+    NonRegularDClass(NonRegularDClass&&) = default;
+
+    NonRegularDClass& operator=(NonRegularDClass&&) = default;
 
    public:
     ////////////////////////////////////////////////////////////////////////
@@ -2228,8 +2454,8 @@ namespace libsemigroups {
     ////////////////////////////////////////////////////////////////////////
     using DClass::contains_no_checks;
     bool contains_no_checks(internal_const_reference x,
-                     lambda_orb_index_type    lpos,
-                     rho_orb_index_type       rpos) override {
+                            lambda_orb_index_type    lpos,
+                            rho_orb_index_type       rpos) override {
       if (_lambda_index_positions.find(lpos) == _lambda_index_positions.end()) {
         return false;
       }
@@ -2260,7 +2486,7 @@ namespace libsemigroups {
     ////////////////////////////////////////////////////////////////////////
     // NonRegularDClass - initialisation member functions - private
     ////////////////////////////////////////////////////////////////////////
-    void init() override {
+    void compute_frame() override {
       if (this->class_computed()) {
         return;
       }
@@ -2325,8 +2551,10 @@ namespace libsemigroups {
       LIBSEMIGROUPS_ASSERT(_right_idem_class != NULL);
       _idems_above_computed = true;
 #ifdef LIBSEMIGROUPS_DEBUG
-      LIBSEMIGROUPS_ASSERT(_left_idem_class->contains_no_checks(_left_idem_above));
-      LIBSEMIGROUPS_ASSERT(_right_idem_class->contains_no_checks(_right_idem_above));
+      LIBSEMIGROUPS_ASSERT(
+          _left_idem_class->contains_no_checks(_left_idem_above));
+      LIBSEMIGROUPS_ASSERT(
+          _right_idem_class->contains_no_checks(_right_idem_above));
       LIBSEMIGROUPS_ASSERT(left_found && right_found);
       Product()(this->to_external(tmp),
                 this->rep(),
@@ -2337,6 +2565,14 @@ namespace libsemigroups {
                 this->rep());
       LIBSEMIGROUPS_ASSERT(EqualTo()(this->to_external(tmp), this->rep()));
 #endif
+    }
+
+    void set_left_idem_class(RegularDClass* x) {
+      _left_idem_class = x;
+    }
+
+    void set_right_idem_class(RegularDClass* x) {
+      _right_idem_class = x;
     }
 
     void compute_H_class() override {

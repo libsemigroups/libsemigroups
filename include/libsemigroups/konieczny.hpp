@@ -282,6 +282,16 @@ namespace libsemigroups {
       }
     };
 
+    struct InternalVecCopy : private detail::BruidhinnTraits<Element> {
+      void operator()(std::vector<internal_element_type> const& source,
+                      std::vector<internal_element_type> const& target) {
+        InternalVecFree()(target);
+        for (auto it = source.cbegin(); it != source.cend(); ++it) {
+          target.emplace_back(this->internal_copy(*it));
+        }
+      }
+    };
+
     struct OneParamLambda {
       lambda_value_type operator()(const_reference x) const {
         lambda_value_type lval;
@@ -345,35 +355,7 @@ namespace libsemigroups {
     //! \no_libsemigroups_except
     //!
     //! \sa add_generator and add_generators
-    Konieczny()
-        : _adjoined_identity_contained(false),
-          _D_classes(),
-          _D_rels(),
-          _data_initialised(false),
-          _degree(UNDEFINED),
-          _element_pool(),
-          _gens(),
-          _group_indices(),
-          _group_indices_rev(),
-          _lambda_orb(),
-          _lambda_to_D_map(),
-          _nonregular_reps(),
-          _one(),
-          _rank_state(nullptr),
-          _ranks(),
-          _regular_D_classes(),
-          _reg_reps(),
-          _reps_processed(0),
-          _rho_orb(),
-          _rho_to_D_map(),
-          _run_initialised(false),
-          _tmp_lambda_value1(),
-          _tmp_lambda_value2(),
-          _tmp_rho_value1(),
-          _tmp_rho_value2() {
-      _lambda_orb.cache_scc_multipliers(true);
-      _rho_orb.cache_scc_multipliers(true);
-    }
+    Konieczny();
 
     //! Initialise a Konieczny instance to its default state (or an
     //! indistinguishable one).
@@ -384,9 +366,9 @@ namespace libsemigroups {
     //! \sa add_generator and add_generators
     Konieczny& init();
 
-    //! Deleted.
-    // TODO undelete
-    Konieczny(Konieczny const&) = delete;
+    Konieczny& init(Konieczny const&);
+
+    Konieczny(Konieczny const&);
 
     //! Deleted.
     // TODO undelete
@@ -1257,7 +1239,7 @@ namespace libsemigroups {
     rank_state_type*                  _rank_state;
     std::set<rank_type>               _ranks;
     std::vector<RegularDClass*>       _regular_D_classes;
-    std::vector<std::vector<RepInfo>> _reg_reps;
+    std::vector<std::vector<RepInfo>> _regular_reps;
     size_t                            _reps_processed;
     rho_orb_type                      _rho_orb;
     std::unordered_map<rho_orb_index_type, std::vector<D_class_index_type>>

@@ -235,4 +235,23 @@ namespace libsemigroups {
 #pragma GCC diagnostic pop
 #endif
   }
+
+  LIBSEMIGROUPS_TEST_CASE("Konieczny",
+                          "028",
+                          "copy constructor",
+                          "[quick][bmat8]") {
+    auto                     rg = ReportGuard(REPORT);
+    std::vector<BMat8> const gens
+        = {BMat8({{0, 1, 0, 0}, {1, 0, 0, 1}, {1, 0, 0, 1}, {0, 1, 1, 0}}),
+           BMat8({{0, 1, 0, 1}, {0, 1, 1, 1}, {0, 0, 1, 0}, {1, 1, 1, 1}}),
+           BMat8({{1, 1, 0, 1}, {0, 1, 1, 0}, {0, 0, 0, 0}, {0, 1, 0, 1}}),
+           BMat8({{0, 0, 1, 0}, {0, 0, 1, 1}, {0, 0, 0, 0}, {1, 0, 0, 0}}),
+           BMat8({{1, 1, 0, 1}, {1, 1, 1, 1}, {1, 0, 1, 0}, {0, 1, 1, 0}}),
+           BMat8({{0, 1, 0, 0}, {0, 1, 1, 0}, {1, 0, 1, 0}, {0, 1, 0, 1}}),
+           BMat8({{0, 1, 0, 0}, {0, 0, 0, 1}, {1, 0, 0, 0}, {0, 0, 1, 0}})};
+
+    Konieczny<BMat8> KS(gens);
+    Konieczny<BMat8> KT(KS);
+    KS.run();
+  }
 }  // namespace libsemigroups
