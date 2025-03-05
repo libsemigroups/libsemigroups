@@ -1,36 +1,48 @@
-////////////////////////////////////////////////////////////////////////////////
-//       Copyright (C) 2016 Florent Hivert <Florent.Hivert@lri.fr>,           //
+//****************************************************************************//
+//     Copyright (C) 2016-2024 Florent Hivert <Florent.Hivert@lisn.fr>,       //
 //                                                                            //
-//  Distributed under the terms of the GNU General Public License (GPL)       //
+//  This file is part of HP-Combi <https://github.com/libsemigroups/HPCombi>  //
 //                                                                            //
-//    This code is distributed in the hope that it will be useful,            //
-//    but WITHOUT ANY WARRANTY; without even the implied warranty of          //
-//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU       //
-//   General Public License for more details.                                 //
+//  HP-Combi is free software: you can redistribute it and/or modify it       //
+//  under the terms of the GNU General Public License as published by the     //
+//  Free Software Foundation, either version 3 of the License, or             //
+//  (at your option) any later version.                                       //
 //                                                                            //
-//  The full text of the GPL is available at:                                 //
+//  HP-Combi is distributed in the hope that it will be useful, but WITHOUT   //
+//  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or     //
+//  FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License      //
+//  for  more details.                                                        //
 //                                                                            //
-//                  http://www.gnu.org/licenses/                              //
-////////////////////////////////////////////////////////////////////////////////
+//  You should have received a copy of the GNU General Public License along   //
+//  with HP-Combi. If not, see <https://www.gnu.org/licenses/>.               //
+//****************************************************************************//
 
 /** @file
- * @brief Generic compile time power
- *
- * The goal of this file is to be able to write expressions such as @c
- * pow<23>(2.5) or @c pow<n>(x) where the first expression is entirely
- * computed as compile time and the second one is expanded also as compile
- * time to a O(log n) long sequence of multiplication. Furthermore such
- * expression not only works for numbers for for any type where there is a
- * neutral element and an associative (non necessarily commutative) product,
- * namely what mathematicians call \e monoids. These include for example,
- * strings where the neutral element is the empty string and the product is
- * the concatenation.
- *
- * see HPCombi::power_helper::Monoid<std::string>
- *
- * @example stringmonoid.cpp
- * This is an example of how to use pow with a non numerical Monoid.
- */
+@brief  Generic compile-time unrolling of the fast exponentiation algorithm.
+
+Allows to write expressions such as
+- @c pow<23>(2.5) : entirely computed at compile time
+- @c pow<n>(x) expanded at compile time to a O(log n) long sequence of
+multiplications.
+
+Such expressions work for numbers but also for any type where there is a
+neutral element and an associative (non necessarily commutative) product,
+ie what mathematicians call \e monoids.
+These include for example
+strings where the neutral element is the empty string and the product is
+the concatenation.
+
+See HPCombi::power_helper::Monoid<std::string>
+
+The algorithm used here is based on the base-2 representation of n,
+it is a 2-approximation of the optimum number of multiplications.
+The general problem is called *addition chain* and one can sometimes do better,
+eg on fibonaci numbers, use rather the fibonacci recurrence relation
+to choose which products to compute.
+
+@example stringmonoid.cpp
+how to use pow with a non numerical Monoid.
+*/
 
 #ifndef HPCOMBI_POWER_HPP_
 #define HPCOMBI_POWER_HPP_

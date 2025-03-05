@@ -1,22 +1,27 @@
-////////////////////////////////////////////////////////////////////////////////
-//       Copyright (C) 2016 Florent Hivert <Florent.Hivert@lri.fr>,           //
+//****************************************************************************//
+//     Copyright (C) 2016-2024 Florent Hivert <Florent.Hivert@lisn.fr>,       //
 //                                                                            //
-//  Distributed under the terms of the GNU General Public License (GPL)       //
+//  This file is part of HP-Combi <https://github.com/libsemigroups/HPCombi>  //
 //                                                                            //
-//    This code is distributed in the hope that it will be useful,            //
-//    but WITHOUT ANY WARRANTY; without even the implied warranty of          //
-//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU       //
-//   General Public License for more details.                                 //
+//  HP-Combi is free software: you can redistribute it and/or modify it       //
+//  under the terms of the GNU General Public License as published by the     //
+//  Free Software Foundation, either version 3 of the License, or             //
+//  (at your option) any later version.                                       //
 //                                                                            //
-//  The full text of the GPL is available at:                                 //
+//  HP-Combi is distributed in the hope that it will be useful, but WITHOUT   //
+//  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or     //
+//  FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License      //
+//  for  more details.                                                        //
 //                                                                            //
-//                  http://www.gnu.org/licenses/                              //
-////////////////////////////////////////////////////////////////////////////////
+//  You should have received a copy of the GNU General Public License along   //
+//  with HP-Combi. If not, see <https://www.gnu.org/licenses/>.               //
+//****************************************************************************//
 
 // NOLINT(build/header_guard)
 
-// This is the implementation part of epu8.hpp this should be seen as
-// implementation details and should not be included directly.
+/** @file
+@brief implementation of epu8.hpp ; this file should not be included directly.
+*/
 
 #include <initializer_list>
 #include <iostream>
@@ -549,6 +554,8 @@ inline std::string to_string(HPCombi::epu8 const &a) {
     return ss.str();
 }
 
+//! This type appears in the doc because we provide an equal operator for
+//! HPCombi::epu8.
 template <> struct equal_to<HPCombi::epu8> {
     bool operator()(const HPCombi::epu8 &lhs,
                     const HPCombi::epu8 &rhs) const noexcept {
@@ -556,6 +563,8 @@ template <> struct equal_to<HPCombi::epu8> {
     }
 };
 
+//! This type appears in the doc because we provide a not_equal operator for
+//! HPCombi::epu8.
 template <> struct not_equal_to<HPCombi::epu8> {
     bool operator()(const HPCombi::epu8 &lhs,
                     const HPCombi::epu8 &rhs) const noexcept {
@@ -563,6 +572,8 @@ template <> struct not_equal_to<HPCombi::epu8> {
     }
 };
 
+//! This type appears in the doc because we provide a hash function for
+//! HPCombi::epu8.
 template <> struct hash<HPCombi::epu8> {
     inline size_t operator()(HPCombi::epu8 a) const noexcept {
         unsigned __int128 v0 = simde_mm_extract_epi64(a, 0);
@@ -579,10 +590,12 @@ template <> struct hash<HPCombi::epu8> {
     }
 };
 
+//! This type appears in the doc because we provide a less operator for
+//! HPCombi::epu8.
 template <> struct less<HPCombi::epu8> {
     // WARNING: due to endianness this is not lexicographic comparison,
     //          but we don't care when using in std::set.
-    // 10% faster than calling the lexicographic comparison operator !
+    // 10% faster than calling the lexicographic comparison operator!
     inline size_t operator()(const HPCombi::epu8 &v1,
                              const HPCombi::epu8 &v2) const noexcept {
         simde__m128 v1v = simde__m128(v1), v2v = simde__m128(v2);

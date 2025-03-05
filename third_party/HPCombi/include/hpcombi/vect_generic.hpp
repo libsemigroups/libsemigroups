@@ -1,17 +1,24 @@
-////////////////////////////////////////////////////////////////////////////////
-//       Copyright (C) 2016 Florent Hivert <Florent.Hivert@lri.fr>,           //
+//****************************************************************************//
+//     Copyright (C) 2016-2024 Florent Hivert <Florent.Hivert@lisn.fr>,       //
 //                                                                            //
-//  Distributed under the terms of the GNU General Public License (GPL)       //
+//  This file is part of HP-Combi <https://github.com/libsemigroups/HPCombi>  //
 //                                                                            //
-//    This code is distributed in the hope that it will be useful,            //
-//    but WITHOUT ANY WARRANTY; without even the implied warranty of          //
-//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU       //
-//   General Public License for more details.                                 //
+//  HP-Combi is free software: you can redistribute it and/or modify it       //
+//  under the terms of the GNU General Public License as published by the     //
+//  Free Software Foundation, either version 3 of the License, or             //
+//  (at your option) any later version.                                       //
 //                                                                            //
-//  The full text of the GPL is available at:                                 //
+//  HP-Combi is distributed in the hope that it will be useful, but WITHOUT   //
+//  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or     //
+//  FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License      //
+//  for  more details.                                                        //
 //                                                                            //
-//                  http://www.gnu.org/licenses/                              //
-////////////////////////////////////////////////////////////////////////////////
+//  You should have received a copy of the GNU General Public License along   //
+//  with HP-Combi. If not, see <https://www.gnu.org/licenses/>.               //
+//****************************************************************************//
+
+/** @file
+@brief HPCombi::VectGeneric */
 
 #ifndef HPCOMBI_VECT_GENERIC_HPP_
 #define HPCOMBI_VECT_GENERIC_HPP_
@@ -39,7 +46,12 @@ std::array<Expo, Size> sorted_vect(std::array<Expo, Size> v) {
     return v;
 }
 
-/** A generic class for combinatorial integer vectors.
+/** \ref HPCombi::VectGeneric "VectGeneric" is to \ref HPCombi::Vect16 "Vect16"
+what \ref HPCombi::PermGeneric "PermGeneric" is to \ref HPCombi::Perm16
+"Perm16"; see \ref HPCombi::PermGeneric "PermGeneric".
+
+HPCombi started as a library to manipulate monomials on several variables,
+ie a tuple of *expo*nents. The elements of arrays were thus named Expo.
  */
 template <size_t Size, typename Expo = uint8_t> struct VectGeneric {
     static constexpr size_t size() { return Size; }
@@ -232,6 +244,8 @@ std::ostream &operator<<(std::ostream &stream,
     return stream;
 }
 
+//! This type appears in the doc because we provide a hash function for
+//! HPCombi::VectGeneric.
 template <size_t Size, typename Expo>
 struct hash<HPCombi::VectGeneric<Size, Expo>> {
     size_t operator()(const HPCombi::VectGeneric<Size, Expo> &ar) const {

@@ -1,17 +1,24 @@
-////////////////////////////////////////////////////////////////////////////////
-//     Copyright (C) 2016-2018 Florent Hivert <Florent.Hivert@lri.fr>,        //
+//****************************************************************************//
+//     Copyright (C) 2016-2024 Florent Hivert <Florent.Hivert@lisn.fr>,       //
 //                                                                            //
-//  Distributed under the terms of the GNU General Public License (GPL)       //
+//  This file is part of HP-Combi <https://github.com/libsemigroups/HPCombi>  //
 //                                                                            //
-//    This code is distributed in the hope that it will be useful,            //
-//    but WITHOUT ANY WARRANTY; without even the implied warranty of          //
-//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU       //
-//   General Public License for more details.                                 //
+//  HP-Combi is free software: you can redistribute it and/or modify it       //
+//  under the terms of the GNU General Public License as published by the     //
+//  Free Software Foundation, either version 3 of the License, or             //
+//  (at your option) any later version.                                       //
 //                                                                            //
-//  The full text of the GPL is available at:                                 //
+//  HP-Combi is distributed in the hope that it will be useful, but WITHOUT   //
+//  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or     //
+//  FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License      //
+//  for  more details.                                                        //
 //                                                                            //
-//                  http://www.gnu.org/licenses/                              //
-////////////////////////////////////////////////////////////////////////////////
+//  You should have received a copy of the GNU General Public License along   //
+//  with HP-Combi. If not, see <https://www.gnu.org/licenses/>.               //
+//****************************************************************************//
+
+/** @file
+@brief HPCombi::Vect16 */
 
 #ifndef HPCOMBI_VECT16_HPP_
 #define HPCOMBI_VECT16_HPP_
@@ -27,6 +34,8 @@
 
 namespace HPCombi {
 
+/** Vector of 16 bytes, with some optimized methods, superclass of
+ * HPCombi::Transf16. */
 struct alignas(16) Vect16 {
     static constexpr size_t size() { return 16; }
     using array = typename decltype(Epu8)::array;
@@ -109,6 +118,8 @@ inline std::ostream &operator<<(std::ostream &stream,
     return operator<<(stream, ar.v);
 }
 
+//! This type appears in the doc because we provide a hash function for
+//! HPCombi::Vect16.
 template <> struct hash<HPCombi::Vect16> {
     size_t operator()(const HPCombi::Vect16 &ar) const {
         return std::hash<HPCombi::epu8>{}(ar.v);
