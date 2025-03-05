@@ -1749,8 +1749,11 @@ namespace libsemigroups {
 
       // Start with a word graph where every node is reachable from 0
       WordGraph<Node> wg(0, out_degree);
-      word_graph::add_cycle(wg, number_of_nodes);
+      add_cycle(wg, number_of_nodes);
       wg.remove_target(number_of_nodes - 1, 0);
+
+      LIBSEMIGROUPS_ASSERT(is_acyclic(wg));
+      LIBSEMIGROUPS_ASSERT(is_connected(wg));
 
       // Is this a good choice?
       size_type T = std::max((number_of_nodes * (number_of_nodes - 1)) / 2,
@@ -1768,9 +1771,9 @@ namespace libsemigroups {
         }
         node_type r = wg.target_no_checks(p, a);
         if (r == UNDEFINED) {
-          wg.target(p, a, q);
+          wg.target_no_checks(p, a, q);
           in_degrees[q]++;
-          if (word_graph::is_acyclic(wg)) {
+          if (is_acyclic(wg)) {
             continue;
           }
           wg.remove_target_no_checks(p, a);
@@ -1783,12 +1786,17 @@ namespace libsemigroups {
         } else {
           if (in_degrees[r] >= 2) {
             wg.target_no_checks(p, a, q);
-            if (!word_graph::is_acyclic(wg)) {
+            if (!is_acyclic(wg)) {
               wg.target_no_checks(p, a, r);
+            } else {
+              in_degrees[q]++;
+              in_degrees[r]--;
             }
           }
         }
       }
+      LIBSEMIGROUPS_ASSERT(is_acyclic(wg));
+      LIBSEMIGROUPS_ASSERT(is_connected(wg));
       return wg;
     }
 

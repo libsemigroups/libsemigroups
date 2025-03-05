@@ -238,9 +238,11 @@ namespace libsemigroups {
     auto wg = word_graph::random_acyclic<size_t>(2, 2);
     REQUIRE(word_graph::is_acyclic(wg));
     REQUIRE(word_graph::is_connected(wg));
-    wg = word_graph::random_acyclic<size_t>(10, 10);
-    REQUIRE(word_graph::is_acyclic(wg));
-    REQUIRE(word_graph::is_connected(wg));
+    for (size_t i = 0; i < 1000; ++i) {
+      wg = word_graph::random_acyclic<size_t>(10, 10);
+      REQUIRE(word_graph::is_acyclic(wg));
+      REQUIRE(word_graph::is_connected(wg));
+    }
   }
 
   LIBSEMIGROUPS_TEST_CASE("WordGraph",
