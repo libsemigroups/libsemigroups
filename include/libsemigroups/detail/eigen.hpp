@@ -29,6 +29,7 @@
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
 #pragma clang diagnostic ignored "-Wmissing-noreturn"
 #pragma clang diagnostic ignored "-Wshadow"
+#pragma clang diagnostic ignored "-Wswitch-default"
 #endif
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wold-style-cast"
