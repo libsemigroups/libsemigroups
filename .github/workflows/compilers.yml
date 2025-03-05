@@ -1,0 +1,59 @@
+name: Compilers
+on: [pull_request, workflow_dispatch]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  tests:
+    name: ${{ matrix.sys.compiler }}-${{ matrix.sys.version }}
+    timeout-minutes: 60
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        sys:
+          - { compiler: g++, version: 9 }
+          - { compiler: g++, version: 10 }
+          - { compiler: g++, version: 11 }
+          - { compiler: g++, version: 12 }
+          - { compiler: g++, version: 13 }
+          - { compiler: g++, version: 14 }
+          - { compiler: clang++, version: 14 }
+          - { compiler: clang++, version: 15 }
+          - { compiler: clang++, version: 16 }
+          - { compiler: clang++, version: 17 }
+          - { compiler: clang++, version: 18 }
+          - { compiler: clang++, version: 19 }
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup ccache . . .
+        uses: Chocobo1/setup-ccache-action@v1
+        with:
+          update_packager_index: false
+          install_ccache: true
+      - name: Setup compiler . . .
+        run: |
+          sudo add-apt-repository ppa:ubuntu-toolchain-r/ppa -y
+          sudo apt-get --yes update
+          sudo apt-get install ${{ matrix.sys.compiler }}-${{ matrix.sys.version }}
+          CXX=${{ matrix.sys.compiler }}-${{ matrix.sys.version }}
+          echo "CXX=$CXX" >> $GITHUB_ENV
+      - name: Compiler information
+        run: |
+          echo $CXX
+          $CXX --version
+      - name: Configure . . .
+        env:
+          CXX: ${{ env.CXX }}
+        run: |
+          mkdir -p m4
+          ./autogen.sh 
+          ./configure CXX="$CXX" --disable-hpcombi
+      - name: Build libsemigroups . . .
+        run: make -j4
+      - name: Build test_all . . .
+        run: make test_all -j4
+      - name: Run the quick and standard tests . . .
+        run: ./test_all "[quick],[standard]"

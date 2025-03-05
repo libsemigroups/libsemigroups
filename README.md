@@ -13,6 +13,7 @@ software.
 [![image](https://zenodo.org/badge/DOI/10.5281/zenodo.1437752.svg)](https://doi.org/10.5281/zenodo.1437752)
 [![image](https://anaconda.org/conda-forge/libsemigroups/badges/license.svg)](https://anaconda.org/conda-forge/libsemigroups)
 [![image](https://anaconda.org/conda-forge/libsemigroups/badges/platforms.svg)](https://anaconda.org/conda-forge/libsemigroups)
+[![codecov](https://codecov.io/gh/libsemigroups/libsemigroups/graph/badge.svg?token=lLBnFR6mq5)](https://codecov.io/gh/libsemigroups/libsemigroups)
 
 ## What is libsemigroups?
 

@@ -7891,6 +7891,7 @@ namespace libsemigroups {
             typename
             = std::enable_if_t<IsMatrix<Mat> && !IsMatWithSemiring<Mat>>>
   Mat make(std::vector<std::vector<typename Mat::scalar_type>> const& rows) {
+    // TODO(0) Add row dimension checking for compile-time size matrices
     detail::throw_if_any_row_wrong_size(rows);
     Mat m(rows);
     matrix::throw_if_bad_entry(m);
@@ -7960,6 +7961,7 @@ namespace libsemigroups {
             typename
             = std::enable_if_t<IsMatrix<Mat> && !IsMatWithSemiring<Mat>>>
   Mat make(std::initializer_list<typename Mat::scalar_type> const& row) {
+    // TODO(0) Add row dimension checking for compile-time size matrices
     Mat m(row);
     matrix::throw_if_bad_entry(m);
     return m;
@@ -8005,6 +8007,8 @@ namespace libsemigroups {
   Mat make(Semiring const* semiring,
            std::initializer_list<
                std::initializer_list<typename Mat::scalar_type>> const& rows) {
+    // TODO(0) Add row dimension checking for compile-time size matrices
+    detail::throw_if_any_row_wrong_size(rows);
     Mat m(semiring, rows);
     matrix::throw_if_bad_entry(m);
     return m;
@@ -8046,6 +8050,8 @@ namespace libsemigroups {
             typename = std::enable_if_t<IsMatrix<Mat>>>
   Mat make(Semiring const*                                            semiring,
            std::vector<std::vector<typename Mat::scalar_type>> const& rows) {
+    // TODO(0) Add row dimension checking for compile-time size matrices
+    detail::throw_if_any_row_wrong_size(rows);
     Mat m(semiring, rows);
     matrix::throw_if_bad_entry(m);
     return m;
@@ -8078,6 +8084,7 @@ namespace libsemigroups {
             typename = std::enable_if_t<IsMatrix<Mat>>>
   Mat make(Semiring const*                                         semiring,
            std::initializer_list<typename Mat::scalar_type> const& row) {
+    // TODO(0) Add row dimension checking for compile-time size matrices
     Mat m(semiring, row);
     matrix::throw_if_bad_entry(m);
     return m;

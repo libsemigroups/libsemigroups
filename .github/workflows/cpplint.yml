@@ -1,15 +1,15 @@
-name: cpplint
+name: Linting
 on: [pull_request]
 jobs:
   cpplint:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
-    - uses: actions/setup-python@v4
-    - run: pip install cpplint
-    - run: bash etc/make-lint.sh
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+      - run: pip install cpplint
+      - run: bash etc/make-lint.sh
   codespell:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
-    - uses: codespell-project/actions-codespell@v2
+      - uses: actions/checkout@v4
+      - uses: codespell-project/actions-codespell@v2
