@@ -101,3 +101,23 @@ jobs:
       - name: Running the quick tests in libsemigroups-docker-x86-32-base docker container . . .
         run: |
           ci/launch-docker-container.sh
+  arm:
+    name: Ubuntu-arm
+    runs-on: ubuntu-24.04-arm
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup ccache . . .
+        uses: Chocobo1/setup-ccache-action@v1
+        with:
+          update_packager_index: false
+          install_ccache: true
+      - name: Install autotools etc . . .
+        run: sudo apt-get install autoconf automake libtool
+      - name: Configure . . .
+        run: ./autogen.sh && ./configure
+      - name: Build libsemigroups . . .
+        run: make -j4
+      - name: Build test_all . . .
+        run: make check -j4
+      - name: Run the quick tests . . .
+        run: ./test_all "[quick]"
