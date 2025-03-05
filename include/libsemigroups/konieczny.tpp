@@ -59,6 +59,8 @@ namespace libsemigroups {
 
   template <typename Element, typename Traits>
   Konieczny<Element, Traits>& Konieczny<Element, Traits>::init() {
+    Runner::init();
+
     free_internals();
     _adjoined_identity_contained = false;
     _D_classes.clear();
@@ -83,14 +85,14 @@ namespace libsemigroups {
     _lambda_orb.cache_scc_multipliers(true);
     _rho_orb.cache_scc_multipliers(true);
 
-    Runner::init();
-
     return *this;
   }
 
   template <typename Element, typename Traits>
   Konieczny<Element, Traits>&
   Konieczny<Element, Traits>::init(Konieczny<Element, Traits> const& that) {
+    Runner::init(that);
+
     free_internals();
 
     // deal with all the easy data first
