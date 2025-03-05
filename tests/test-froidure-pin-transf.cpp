@@ -19,7 +19,7 @@
 #include <algorithm>  // for min
 #include <cstddef>    // for size_t
 #include <cstdint>    // for uint_fast8_t, uint16_t
-#include <iterator>   // for ??
+#include <iterator>   // for make_reverse_iterator
 #include <vector>     // for vector
 
 #include "catch_amalgamated.hpp"  // for LIBSEMIGROUPS_TEST_CASE
