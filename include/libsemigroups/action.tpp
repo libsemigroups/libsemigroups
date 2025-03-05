@@ -169,6 +169,7 @@ namespace libsemigroups {
             side LeftOrRight>
   Action<Element, Point, Func, Traits, LeftOrRight>&
   Action<Element, Point, Func, Traits, LeftOrRight>::operator=(Action&& that) {
+    Runner::operator=(that);
     _gens                      = std::move(that._gens);
     _graph                     = std::move(that._graph);
     _orb                       = std::move(that._orb);
