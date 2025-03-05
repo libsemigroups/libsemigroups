@@ -33,5 +33,3 @@ jobs:
         run: make -j4
       - name: Build test_all . . .
         run: make test_all -j4
-      - name: Run the quick and standard tests . . .
-        run: ./test_all "[quick],[standard]"
