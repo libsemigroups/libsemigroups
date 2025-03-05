@@ -415,9 +415,6 @@ namespace libsemigroups {
     if (p.alphabet().empty()) {
       return false;
     }
-    // FIXME! This returns wrong answers if the p.alphabet is not contiguous
-    // At time of writing this (some time after writing the FIXME in the
-    // previous line, I'm not sure there is anything to fix. Maybe there is.
     auto it
         = std::max_element(std::begin(p.alphabet()), std::end(p.alphabet()));
 
