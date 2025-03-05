@@ -115,11 +115,10 @@ namespace libsemigroups {
                                    "[quick][schreier-sims]",
                                    Perm<5>,
                                    PERM_TYPES) {
-    auto rg    = ReportGuard(false);
-    using Perm = TestType;
-    SchreierSims<5, uint8_t, Perm> S;
-    S.add_generator(Perm({1, 0, 2, 3, 4}));
-    S.add_generator(Perm({1, 2, 3, 4, 0}));
+    auto                               rg = ReportGuard(false);
+    SchreierSims<5, uint8_t, TestType> S;
+    S.add_generator(TestType({1, 0, 2, 3, 4}));
+    S.add_generator(TestType({1, 2, 3, 4, 0}));
     REQUIRE(S.number_of_generators() == 2);
     REQUIRE(S.size() == 120);
     REQUIRE(
@@ -133,10 +132,9 @@ namespace libsemigroups {
                                    "[quick][schreier-sims]",
                                    Perm<8>,
                                    PERM_TYPES) {
-    auto rg    = ReportGuard(false);
-    using Perm = TestType;
-    SchreierSims<8, uint8_t, Perm> S;
-    S.add_generator(Perm({0, 6, 2, 3, 4, 5, 1, 7}));
+    auto                               rg = ReportGuard(false);
+    SchreierSims<8, uint8_t, TestType> S;
+    S.add_generator(TestType({0, 6, 2, 3, 4, 5, 1, 7}));
 
     auto W = S;
     REQUIRE(W.size() == 2);
@@ -145,8 +143,8 @@ namespace libsemigroups {
     REQUIRE(!S.finished());
     REQUIRE(!T.finished());
 
-    S.add_generator(Perm({1, 2, 3, 4, 5, 6, 7, 0}));
-    T.add_generator(Perm({1, 2, 3, 4, 5, 6, 7, 0}));
+    S.add_generator(TestType({1, 2, 3, 4, 5, 6, 7, 0}));
+    T.add_generator(TestType({1, 2, 3, 4, 5, 6, 7, 0}));
     REQUIRE(S.size() == 40'320);
     REQUIRE(T.size() == 40'320);
     REQUIRE(to_human_readable_repr(S)
@@ -163,11 +161,10 @@ namespace libsemigroups {
                                    "[quick][schreier-sims]",
                                    Perm<9>,
                                    PERM_TYPES) {
-    auto rg    = ReportGuard(false);
-    using Perm = TestType;
-    SchreierSims<9, uint8_t, Perm> S;
-    S.add_generator(Perm({1, 0, 2, 3, 4, 5, 6, 7, 8}));
-    S.add_generator(Perm({1, 2, 3, 4, 5, 6, 7, 8, 0}));
+    auto                               rg = ReportGuard(false);
+    SchreierSims<9, uint8_t, TestType> S;
+    S.add_generator(TestType({1, 0, 2, 3, 4, 5, 6, 7, 8}));
+    S.add_generator(TestType({1, 2, 3, 4, 5, 6, 7, 8, 0}));
     REQUIRE(S.size() == 362'880);
   }
 
@@ -177,15 +174,18 @@ namespace libsemigroups {
                                    "[quick][schreier-sims]",
                                    Perm<12>,
                                    PERM_TYPES) {
-    auto rg    = ReportGuard(false);
-    using Perm = TestType;
-    SchreierSims<12, uint8_t, Perm> S;
-    S.add_generator(Perm({1, 2, 0, 3, 4, 5, 6, 7, 8, 9, 10, 11}));
-    S.add_generator(Perm({0, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 1}));
+    auto                                rg = ReportGuard(false);
+    SchreierSims<12, uint8_t, TestType> S;
+    S.add_generator(TestType({1, 2, 0, 3, 4, 5, 6, 7, 8, 9, 10, 11}));
+    S.add_generator(TestType({0, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 1}));
 
-    REQUIRE(!S.contains(Perm({11, 10, 0, 6, 8, 2, 3, 5, 4, 7, 9, 1})));
-    REQUIRE(S.contains(Perm({7, 11, 2, 3, 0, 6, 9, 10, 8, 5, 4, 1})));
-    REQUIRE(!S.contains(Perm({11, 10, 0, 6, 8, 2, 3, 5, 4, 7, 9, 1, 12})));
+    REQUIRE(!S.contains(TestType({11, 10, 0, 6, 8, 2, 3, 5, 4, 7, 9, 1})));
+    REQUIRE(S.contains(TestType({7, 11, 2, 3, 0, 6, 9, 10, 8, 5, 4, 1})));
+    if constexpr (std::is_same_v<TestType, Perm<>>) {
+      REQUIRE(
+          !S.contains(TestType({11, 10, 0, 6, 8, 2, 3, 5, 4, 7, 9, 1, 12})));
+    }  // TODO(1) if we have a working version of make<HPCombi::Perm16>, then we
+    // can check that we get an exception from that in an else statement here.
     REQUIRE(S.size() == 239'500'800);
   }
 
@@ -195,13 +195,12 @@ namespace libsemigroups {
                                    "[quick][schreier-sims]",
                                    Perm<16>,
                                    PERM_TYPES) {
-    auto rg    = ReportGuard(false);
-    using Perm = TestType;
-    SchreierSims<16, uint8_t, Perm> S;
+    auto                                rg = ReportGuard(false);
+    SchreierSims<16, uint8_t, TestType> S;
     S.add_generator(
-        Perm({1, 2, 0, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15}));
+        TestType({1, 2, 0, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15}));
     S.add_generator(
-        Perm({1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 0}));
+        TestType({1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 0}));
     REQUIRE(S.size() == static_cast<uint64_t>(20'922'789'888'000));
   }
 
@@ -211,25 +210,26 @@ namespace libsemigroups {
                                    "[quick][schreier-sims]",
                                    Perm<15>,
                                    PERM_TYPES) {
-    auto rg    = ReportGuard(false);
-    using Perm = TestType;
-    SchreierSims<15, uint8_t, Perm> S;
-    S.add_generator(Perm({1, 2, 0, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14}));
-    S.add_generator(Perm({1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 0}));
+    auto                                rg = ReportGuard(false);
+    SchreierSims<15, uint8_t, TestType> S;
+    S.add_generator(
+        TestType({1, 2, 0, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14}));
+    S.add_generator(
+        TestType({1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 0}));
     REQUIRE(S.size() == static_cast<uint64_t>(653'837'184'000));
 
-    REQUIRE(
-        S.contains(Perm({0, 1, 7, 8, 9, 10, 11, 12, 13, 14, 2, 3, 4, 5, 6})));
-    REQUIRE(
-        S.contains(Perm({1, 12, 0, 13, 14, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11})));
-    REQUIRE(
-        S.contains(Perm({12, 0, 1, 13, 14, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11})));
-    REQUIRE(
-        !S.contains(Perm({12, 0, 1, 13, 14, 2, 3, 5, 4, 6, 7, 8, 9, 10, 11})));
-    REQUIRE(
-        !S.contains(Perm({1, 12, 0, 14, 13, 3, 2, 5, 4, 6, 7, 8, 9, 10, 11})));
-    REQUIRE(
-        !S.contains(Perm({0, 1, 7, 9, 8, 11, 10, 12, 13, 14, 2, 3, 6, 5, 4})));
+    REQUIRE(S.contains(
+        TestType({0, 1, 7, 8, 9, 10, 11, 12, 13, 14, 2, 3, 4, 5, 6})));
+    REQUIRE(S.contains(
+        TestType({1, 12, 0, 13, 14, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11})));
+    REQUIRE(S.contains(
+        TestType({12, 0, 1, 13, 14, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11})));
+    REQUIRE(!S.contains(
+        TestType({12, 0, 1, 13, 14, 2, 3, 5, 4, 6, 7, 8, 9, 10, 11})));
+    REQUIRE(!S.contains(
+        TestType({1, 12, 0, 14, 13, 3, 2, 5, 4, 6, 7, 8, 9, 10, 11})));
+    REQUIRE(!S.contains(
+        TestType({0, 1, 7, 9, 8, 11, 10, 12, 13, 14, 2, 3, 6, 5, 4})));
   }
 
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("SchreierSims",
@@ -238,50 +238,49 @@ namespace libsemigroups {
                                    "[quick][schreier-sims]",
                                    Perm<16>,
                                    PERM_TYPES) {
-    auto rg    = ReportGuard(false);
-    using Perm = TestType;
-    SchreierSims<16, uint8_t, Perm> S;
+    auto                                rg = ReportGuard(false);
+    SchreierSims<16, uint8_t, TestType> S;
     S.add_generator(
-        Perm({1, 2, 0, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15}));
+        TestType({1, 2, 0, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15}));
     S.add_generator(
-        Perm({1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 0, 15}));
+        TestType({1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 0, 15}));
     S.add_generator(
-        Perm({0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 14, 15, 13}));
+        TestType({0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 14, 15, 13}));
     REQUIRE(to_human_readable_repr(S)
             == "<partially enumerated SchreierSims with 3 generators & base "
                "size 13>");
     REQUIRE(S.size() == static_cast<uint64_t>(10'461'394'944'000));
     REQUIRE(S.contains(
-        Perm({0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 14, 15, 13})));
+        TestType({0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 14, 15, 13})));
     REQUIRE(!S.contains(
-        Perm({1, 0, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 14, 15, 13})));
+        TestType({1, 0, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 14, 15, 13})));
     REQUIRE(S.contains(
-        Perm({1, 0, 3, 2, 4, 5, 6, 7, 8, 9, 10, 11, 12, 14, 15, 13})));
+        TestType({1, 0, 3, 2, 4, 5, 6, 7, 8, 9, 10, 11, 12, 14, 15, 13})));
 
     REQUIRE(S.contains(
-        Perm({1, 2, 0, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15})));
+        TestType({1, 2, 0, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15})));
     REQUIRE(S.contains(S.generator(0)));
     REQUIRE(S.contains(S.generator(1)));
     REQUIRE(S.contains(S.generator(2)));
     REQUIRE(S.contains(
-        Perm({0, 1, 7, 8, 9, 10, 11, 12, 13, 14, 2, 3, 4, 5, 6, 15})));
+        TestType({0, 1, 7, 8, 9, 10, 11, 12, 13, 14, 2, 3, 4, 5, 6, 15})));
     REQUIRE(S.contains(
-        Perm({1, 12, 0, 13, 14, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 15})));
+        TestType({1, 12, 0, 13, 14, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 15})));
     REQUIRE(S.contains(
-        Perm({12, 0, 1, 13, 14, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 15})));
+        TestType({12, 0, 1, 13, 14, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 15})));
     REQUIRE(!S.contains(
-        Perm({12, 0, 1, 13, 14, 2, 3, 5, 4, 6, 7, 8, 9, 10, 11, 15})));
+        TestType({12, 0, 1, 13, 14, 2, 3, 5, 4, 6, 7, 8, 9, 10, 11, 15})));
     REQUIRE(!S.contains(
-        Perm({1, 12, 0, 14, 13, 3, 2, 5, 4, 6, 7, 8, 9, 10, 11, 15})));
+        TestType({1, 12, 0, 14, 13, 3, 2, 5, 4, 6, 7, 8, 9, 10, 11, 15})));
     REQUIRE(!S.contains(
-        Perm({0, 1, 7, 9, 8, 11, 10, 12, 13, 14, 2, 3, 6, 5, 4, 15})));
+        TestType({0, 1, 7, 9, 8, 11, 10, 12, 13, 14, 2, 3, 6, 5, 4, 15})));
 
     REQUIRE(!S.contains(
-        Perm({1, 0, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 14, 15, 13})));
+        TestType({1, 0, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 14, 15, 13})));
     S.add_generator(
-        Perm({1, 0, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 14, 15, 13}));
+        TestType({1, 0, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 14, 15, 13}));
     REQUIRE(S.contains(
-        Perm({1, 0, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 14, 15, 13})));
+        TestType({1, 0, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 14, 15, 13})));
   }
 
   LIBSEMIGROUPS_TEST_CASE("SchreierSims",
