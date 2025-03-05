@@ -694,7 +694,7 @@ namespace libsemigroups {
     _D_rels.push_back(std::vector<D_class_index_type>());
   }
 
-#ifdef NOT_PARSED_BY_DOXYGEN
+#ifndef LIBSEMIGROUPS_PARSED_BY_DOXYGEN
   template <typename Element, typename Traits>
   void Konieczny<Element, Traits>::add_D_class(
       Konieczny<Element, Traits>::NonRegularDClass* D) {
@@ -702,7 +702,7 @@ namespace libsemigroups {
     add_to_D_maps(_D_classes.size() - 1);
     _D_rels.push_back(std::vector<D_class_index_type>());
   }
-#endif
+#endif  // ndef LIBSEMIGROUPS_PARSED_BY_DOXYGEN
 
   template <typename Element, typename Traits>
   void Konieczny<Element, Traits>::run_report() {
@@ -849,7 +849,7 @@ namespace libsemigroups {
     ////////////////////////////////////////////////////////////////////////
     // DClass - aliases - protected
     ////////////////////////////////////////////////////////////////////////
-#ifdef NOT_PARSED_BY_DOXYGEN
+#ifndef LIBSEMIGROUPS_PARSED_BY_DOXYGEN
     using konieczny_type    = Konieczny<Element, Traits>;
     using internal_set_type = std::
         unordered_set<internal_element_type, InternalHash, InternalEqualTo>;
@@ -938,7 +938,7 @@ namespace libsemigroups {
 
     DClass& operator=(DClass&&) = default;
 
-#endif  // NOT_PARSED_BY_DOXYGEN
+#endif  // ndef LIBSEMIGROUPS_PARSED_BY_DOXYGEN
 
    public:
     ////////////////////////////////////////////////////////////////////////
@@ -1103,7 +1103,7 @@ namespace libsemigroups {
     }
 
    protected:
-#ifdef NOT_PARSED_BY_DOXYGEN
+#ifndef LIBSEMIGROUPS_PARSED_BY_DOXYGEN
     ////////////////////////////////////////////////////////////////////////
     // DClass - iterators - protected
     ////////////////////////////////////////////////////////////////////////
@@ -1346,7 +1346,7 @@ namespace libsemigroups {
         LIBSEMIGROUPS_ASSERT(OneParamLambda()(this->to_external_const(_rep))
                              == OneParamLambda()(this->to_external(tmp2)));
       }
-#endif
+#endif  // ndef LIBSEMIGROUPS_PARSED_BY_DOXYGEN
     }
 
     void push_right_mult(internal_const_reference x) {
@@ -1689,11 +1689,11 @@ namespace libsemigroups {
     // Konieczny is only a friend of RegularDClass so it can call the private
     // constructor
     friend class Konieczny<Element, Traits>;
-#ifdef NOT_PARSED_BY_DOXYGEN
+#ifndef LIBSEMIGROUPS_PARSED_BY_DOXYGEN
     // NonRegularDClass is a friend of RegularDClass so it can access private
     // iterators
     friend class Konieczny<Element, Traits>::NonRegularDClass;
-#endif
+#endif  // ndef LIBSEMIGROUPS_PARSED_BY_DOXYGEN
 
    private:
     ////////////////////////////////////////////////////////////////////////
