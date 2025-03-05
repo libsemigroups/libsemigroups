@@ -22,8 +22,9 @@
 #include "libsemigroups/exception.hpp"
 #include "test-main.hpp"
 
-#include "libsemigroups/obvinf.hpp"      // for IsObviouslyInfinite
-#include "libsemigroups/word-range.hpp"  // for operator""_w
+#include "libsemigroups/obvinf.hpp"        // for IsObviouslyInfinite
+#include "libsemigroups/presentation.hpp"  // for Presentation
+#include "libsemigroups/word-range.hpp"    // for operator""_w
 
 namespace libsemigroups {
   namespace {
@@ -299,5 +300,14 @@ namespace libsemigroups {
     REQUIRE(!ioi.result());
     // This is a presentation for a finite semigroup so
     // we should never detect it as obviously infinite
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("ObviouslyInfinite",
+                          "021",
+                          "from presentation",
+                          "[quick][integer-alphabet]") {
+    Presentation<word_type> p;
+    p.alphabet({0, 2});
+    REQUIRE(is_obviously_infinite(p));
   }
 }  // namespace libsemigroups
