@@ -812,20 +812,23 @@ namespace libsemigroups {
     REQUIRE_THROWS_AS(x.at(0, 8), LibsemigroupsException);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("BMat8", "020", "to_string", "[quick]") {
-    REQUIRE(to_string(bmat8::one(5)) == R"V0G0N(BMat8({{1, 0, 0, 0, 0},
+  LIBSEMIGROUPS_TEST_CASE("BMat8", "020", "to_human_readable_repr", "[quick]") {
+    REQUIRE(to_human_readable_repr(bmat8::one(5))
+            == R"V0G0N(BMat8({{1, 0, 0, 0, 0},
        {0, 1, 0, 0, 0},
        {0, 0, 1, 0, 0},
        {0, 0, 0, 1, 0},
        {0, 0, 0, 0, 1}}))V0G0N");
-    REQUIRE(to_string(BMat8(0)) == "BMat8(0)");
-    REQUIRE(to_string(bmat8::one(5), "[]") == R"V0G0N(BMat8([[1, 0, 0, 0, 0],
+    REQUIRE(to_human_readable_repr(BMat8(0)) == "BMat8(0)");
+    REQUIRE(to_human_readable_repr(bmat8::one(5), "[]")
+            == R"V0G0N(BMat8([[1, 0, 0, 0, 0],
        [0, 1, 0, 0, 0],
        [0, 0, 1, 0, 0],
        [0, 0, 0, 1, 0],
        [0, 0, 0, 0, 1]]))V0G0N");
-    REQUIRE(to_string(BMat8(0), "[]") == "BMat8(0)");
-    REQUIRE_THROWS_AS(to_string(BMat8(0), ""), LibsemigroupsException);
+    REQUIRE(to_human_readable_repr(BMat8(0), "[]") == "BMat8(0)");
+    REQUIRE_THROWS_AS(to_human_readable_repr(BMat8(0), ""),
+                      LibsemigroupsException);
   }
 
 }  // namespace libsemigroups
