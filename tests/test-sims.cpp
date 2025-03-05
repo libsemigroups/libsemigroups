@@ -2191,7 +2191,7 @@ namespace libsemigroups {
     REQUIRE(p == q);
 
     for (size_t n = 3; n < 5; ++n) {
-      auto  p = presentation::examples::stylic_monoid(n);
+      p = presentation::examples::stylic_monoid(n);
       Sims1 S;
       S.presentation(p).number_of_threads(std::thread::hardware_concurrency());
       REQUIRE(S.number_of_congruences(size[n]) == num_right[n]);
@@ -4927,7 +4927,7 @@ namespace libsemigroups {
     S.idle_thread_restarts(1000);
 
     auto wg = S.number_of_threads(1).find_if(
-        4, [](auto const& wg) { return wg.number_of_active_nodes() == 2; });
+        4, [](auto const& x) { return x.number_of_active_nodes() == 2; });
     REQUIRE(wg.number_of_active_nodes() == 2);
     wg = S.number_of_threads(1).find_if(3, [](auto const&) { return false; });
     REQUIRE(wg.number_of_active_nodes() == 0);

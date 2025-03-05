@@ -1,17 +1,24 @@
-////////////////////////////////////////////////////////////////////////////////
-//     Copyright (C) 2023      Florent Hivert <Florent.Hivert@lri.fr>,        //
+//****************************************************************************//
+//     Copyright (C) 2023-2024 Florent Hivert <Florent.Hivert@lisn.fr>,       //
 //                                                                            //
-//  Distributed under the terms of the GNU General Public License (GPL)       //
+//  This file is part of HP-Combi <https://github.com/libsemigroups/HPCombi>  //
 //                                                                            //
-//    This code is distributed in the hope that it will be useful,            //
-//    but WITHOUT ANY WARRANTY; without even the implied warranty of          //
-//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU       //
-//   General Public License for more details.                                 //
+//  HP-Combi is free software: you can redistribute it and/or modify it       //
+//  under the terms of the GNU General Public License as published by the     //
+//  Free Software Foundation, either version 3 of the License, or             //
+//  (at your option) any later version.                                       //
 //                                                                            //
-//  The full text of the GPL is available at:                                 //
+//  HP-Combi is distributed in the hope that it will be useful, but WITHOUT   //
+//  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or     //
+//  FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License      //
+//  for  more details.                                                        //
 //                                                                            //
-//                  http://www.gnu.org/licenses/                              //
-////////////////////////////////////////////////////////////////////////////////
+//  You should have received a copy of the GNU General Public License along   //
+//  with HP-Combi. If not, see <https://www.gnu.org/licenses/>.               //
+//****************************************************************************//
+
+/** @file
+@brief HPCombi::TPUBuild and casts from HPCombi::TPU */
 
 #ifndef HPCOMBI_BUILDER_HPP_
 #define HPCOMBI_BUILDER_HPP_
@@ -26,8 +33,11 @@
 
 namespace HPCombi {
 
-/** Class for factory object associated to a SIMD packed unsigned integers.
+/** Given a transformation from 0..15 → 0..15,
+ * build at compile-time the array representing the transformation.
+ *
  * @details
+ * Class for factory object associated to a SIMD packed unsigned integers.
  * The main purpose of this class is to be able to construct in a \c constexpr
  * way various instances of the \c TPU SIMD vector type. The behavior of
  * an instance of \c TPUBuild<TPU> is designed to mimic the behavior of \c TPU

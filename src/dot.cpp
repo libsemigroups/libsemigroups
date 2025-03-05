@@ -55,6 +55,18 @@ namespace libsemigroups {
     }
   }  // namespace
 
+  Dot::~Dot() = default;
+
+  Dot::Dot() = default;
+
+  Dot::Dot(Dot const&) = default;
+
+  Dot::Dot(Dot&&) = default;
+
+  Dot& Dot::operator=(Dot const&) = default;
+
+  Dot& Dot::operator=(Dot&&) = default;
+
   Dot& Dot::add_subgraph(Dot&& subgraph) {
     subgraph.kind(Kind::subgraph)
         .add_attr("label", subgraph.name())
@@ -137,6 +149,10 @@ namespace libsemigroups {
       it->second = val;
     }
   }
+
+  Dot::Edge::~Edge() = default;
+
+  Dot::Node::~Node() = default;
 
   std::string to_human_readable_repr(Dot const& d) {
     return fmt::format(

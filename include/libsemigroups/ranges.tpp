@@ -46,7 +46,7 @@ namespace libsemigroups {
   ////////////////////////////////////////////////////////////////////////
 
   template <typename Range, typename Compare>
-  constexpr bool is_sorted(Range r, Compare&& comp) {
+  bool is_sorted(Range r, Compare&& comp) {
     if (!r.at_end()) {
       auto first = r.get();
       r.next();
@@ -63,7 +63,7 @@ namespace libsemigroups {
   }
 
   template <typename Range1, typename Range2>
-  constexpr bool equal(Range1 r1, Range2 r2) {
+  bool equal(Range1 r1, Range2 r2) {
     while (!r1.at_end()) {
       if (r1.get() != r2.get()) {
         return false;
@@ -75,7 +75,7 @@ namespace libsemigroups {
   }
 
   template <typename Range1, typename Range2>
-  constexpr bool lexicographical_compare(Range1 r1, Range2 r2) {
+  bool lexicographical_compare(Range1 r1, Range2 r2) {
     while (!r1.at_end() && !r2.at_end()) {
       auto next1 = r1.get();
       auto next2 = r2.get();
@@ -92,7 +92,7 @@ namespace libsemigroups {
   }
 
   template <typename Range1, typename Range2>
-  constexpr bool shortlex_compare(Range1 r1, Range2 r2) {
+  bool shortlex_compare(Range1 r1, Range2 r2) {
     size_t n1 = rx::count()(r1);
     size_t n2 = rx::count()(r2);
     if (n1 != n2) {

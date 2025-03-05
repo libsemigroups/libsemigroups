@@ -13,6 +13,10 @@
 //  You probably shouldn't edit it directly.
 //  ----------------------------------------------------------
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Winline"
+#pragma GCC diagnostic ignored "-Wswitch-enum"
+#pragma GCC diagnostic ignored "-Wswitch-default"
 #include "catch_amalgamated.hpp"
 
 
@@ -11809,3 +11813,4 @@ namespace Catch {
 #if defined(_MSC_VER)
 #pragma warning(pop)
 #endif
+#pragma GCC diagnostic pop

@@ -443,6 +443,8 @@ namespace libsemigroups {
     //! Move assignment operator.
     ToddCoxeter& operator=(ToddCoxeter&&) = default;
 
+    ~ToddCoxeter();
+
     //! \ingroup todd_coxeter_class_init_group
     //! \brief Construct from \ref congruence_kind and Presentation.
     //!

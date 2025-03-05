@@ -16,7 +16,6 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include "libsemigroups/to-froidure-pin.hpp"
 #define CATCH_CONFIG_ENABLE_PAIR_STRINGMAKER
 
 #include <cstddef>  // for size_t
@@ -28,7 +27,9 @@
 #include "libsemigroups/bmat8.hpp"         // for BMat8
 #include "libsemigroups/config.hpp"        // for LIBSEMIGROUPS_SIZEOF_VO...
 #include "libsemigroups/froidure-pin.hpp"  // for FroidurePin, FroidurePi...
+#include "libsemigroups/ranges.hpp"        // for iterator_range
 #include "libsemigroups/types.hpp"         // for word_type
+#include "libsemigroups/word-range.hpp"    // for namespace literals
 
 namespace libsemigroups {
   using namespace literals;
@@ -200,7 +201,15 @@ namespace libsemigroups {
       pos++;
     }
     REQUIRE(pos == S.size());
+
+#if defined(__GNUC__) && !defined(__clang__)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Winline"
+#endif
     REQUIRE((froidure_pin::rules(S) | rx::count()) == S.number_of_rules());
+#if defined(__GNUC__) && !defined(__clang__)
+#pragma GCC diagnostic pop
+#endif
     REQUIRE(S.number_of_rules() == 13'716);
 
     // Copy - after run

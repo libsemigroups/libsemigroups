@@ -747,11 +747,9 @@ namespace libsemigroups {
     //! \warning
     //! No checks that the arguments describe words over the alphabet of the
     //! presentation are performed.
-    inline void add_rule_no_checks(Presentation<std::string>& p,
-                                   char const*                lhop,
-                                   char const*                rhop) {
-      add_rule_no_checks(p, std::string(lhop), std::string(rhop));
-    }
+    void add_rule_no_checks(Presentation<std::string>& p,
+                            char const*                lhop,
+                            char const*                rhop);
 
     //! \brief Add a rule to the presentation by `char const*`.
     //!
@@ -764,11 +762,9 @@ namespace libsemigroups {
     //!
     //! \throws LibsemigroupsException if \p lhop or \p rhop contains any
     //! letters not belonging to `p.alphabet()`.
-    inline void add_rule(Presentation<std::string>& p,
-                         char const*                lhop,
-                         char const*                rhop) {
-      add_rule(p, std::string(lhop), std::string(rhop));
-    }
+    void add_rule(Presentation<std::string>& p,
+                  char const*                lhop,
+                  char const*                rhop);
 
     //! \brief Add a rule to the presentation by `string const &` and `char
     //! const*`.
@@ -782,11 +778,9 @@ namespace libsemigroups {
     //!
     //! \throws LibsemigroupsException if \p lhop or \p rhop contains any
     //! letters not belonging to `p.alphabet()`.
-    inline void add_rule(Presentation<std::string>& p,
-                         std::string const&         lhop,
-                         char const*                rhop) {
-      add_rule(p, lhop, std::string(rhop));
-    }
+    void add_rule(Presentation<std::string>& p,
+                  std::string const&         lhop,
+                  char const*                rhop);
 
     //! \brief Add a rule to the presentation by `char const*` and `string const
     //! &`.
@@ -800,11 +794,9 @@ namespace libsemigroups {
     //!
     //! \throws LibsemigroupsException if \p lhop or \p rhop contains any
     //! letters not belonging to `p.alphabet()`.
-    inline void add_rule(Presentation<std::string>& p,
-                         char const*                lhop,
-                         std::string const&         rhop) {
-      add_rule(p, std::string(lhop), rhop);
-    }
+    void add_rule(Presentation<std::string>& p,
+                  char const*                lhop,
+                  std::string const&         rhop);
 
     //! \brief Add a rule to the presentation by `string const&` and `char
     //! const*`.
@@ -822,11 +814,9 @@ namespace libsemigroups {
     //! \warning
     //! No checks that the arguments describe words over the alphabet of the
     //! presentation are performed.
-    inline void add_rule_no_checks(Presentation<std::string>& p,
-                                   std::string const&         lhop,
-                                   char const*                rhop) {
-      add_rule_no_checks(p, lhop, std::string(rhop));
-    }
+    void add_rule_no_checks(Presentation<std::string>& p,
+                            std::string const&         lhop,
+                            char const*                rhop);
 
     //! \brief Add a rule to the presentation by `char const*` and `string
     //! const&`.
@@ -844,11 +834,9 @@ namespace libsemigroups {
     //! \warning
     //! No checks that the arguments describe words over the alphabet of the
     //! presentation are performed.
-    inline void add_rule_no_checks(Presentation<std::string>& p,
-                                   char const*                lhop,
-                                   std::string const&         rhop) {
-      add_rule_no_checks(p, std::string(lhop), rhop);
-    }
+    void add_rule_no_checks(Presentation<std::string>& p,
+                            char const*                lhop,
+                            std::string const&         rhop);
 
     //! \brief Add a rule to the presentation by `initializer_list`.
     //!
@@ -1097,11 +1085,9 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! \f$O(n)\f$ where \f$n\f$ is `p.alphabet().size()`.
-    inline void add_inverse_rules(Presentation<std::string>& p,
-                                  char const*                vals,
-                                  char                       e = UNDEFINED) {
-      add_inverse_rules(p, std::string(vals), e);
-    }
+    void add_inverse_rules(Presentation<std::string>& p,
+                           char const*                vals,
+                           char                       e = UNDEFINED);
 
     //! \brief Remove duplicate rules.
     //!
@@ -1339,11 +1325,9 @@ namespace libsemigroups {
     //! \returns The new generator added.
     //!
     //! \throws LibsemigroupsException if \p w is empty.
-    inline typename Presentation<std::string>::letter_type
+    typename Presentation<std::string>::letter_type
     replace_word_with_new_generator(Presentation<std::string>& p,
-                                    char const*                w) {
-      return replace_word_with_new_generator(p, w, w + std::strlen(w));
-    }
+                                    char const*                w);
 
     //! \brief Replace non-overlapping instances of a subword by another word.
     //!
@@ -2150,7 +2134,7 @@ namespace libsemigroups {
     //!
     //! \tparam Word the type of the words in the presentation.
     //! \param p a reference to the Presentation to construct from.
-    InversePresentation<Word>(Presentation<Word> const& p)
+    InversePresentation(Presentation<Word> const& p)
         : Presentation<Word>(p), _inverses() {}
 
     //! \brief Construct an InversePresentation from a Presentation rvalue
@@ -2161,7 +2145,7 @@ namespace libsemigroups {
     //!
     //! \tparam Word the type of the words in the presentation.
     //! \param p an rvalue reference to the Presentation to construct from.
-    InversePresentation<Word>(Presentation<Word>&& p)
+    InversePresentation(Presentation<Word>&& p)
         : Presentation<Word>(p), _inverses() {}
 
     //! \brief Set the inverse of each letter in the alphabet.

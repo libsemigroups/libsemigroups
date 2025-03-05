@@ -26,6 +26,13 @@
 namespace libsemigroups {
   namespace detail {
 
+    void throw_if_nullptr(char const* w, std::string_view arg) {
+      if (w == nullptr) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "the {} argument (char const*) must not be nullptr", arg);
+      }
+    }
+
     // Returns the string s to the power N, not optimized, complexity is O(N *
     // |s|)
     std::string power_string(std::string const& s, size_t N) {
@@ -38,7 +45,16 @@ namespace libsemigroups {
 
     namespace {
       std::string group_digits(uint64_t num) {
+        // Although we ignore -Winline in detail/fmt.hpp, there is still an
+        // warning issued here (with g++-14), which we suppress again.
+#if defined(__GNUC__) && !defined(__clang__)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Winline"
+#endif
         return fmt::to_string(fmt::group_digits(num));
+#if defined(__GNUC__) && !defined(__clang__)
+#pragma GCC diagnostic pop
+#endif
       }
     }  // namespace
 

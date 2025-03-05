@@ -39,6 +39,7 @@ namespace libsemigroups {
   //! common finitely presented semigroups and monoids.
   namespace presentation::examples {
 
+#ifdef LIBSEMIGROUPS_PARSED_BY_DOXYGEN
     //! \name Default presentations
     ///@{
     // Forward declarations of the functions so they appear first in the
@@ -80,6 +81,7 @@ namespace libsemigroups {
     Presentation<word_type> uniform_block_bijection_monoid(size_t n);
     Presentation<word_type> zero_rook_monoid(size_t n);
     ///@}
+#endif
 
     //! \name Specific presentations
     //!

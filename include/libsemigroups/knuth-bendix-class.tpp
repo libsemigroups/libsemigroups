@@ -17,6 +17,30 @@
 //
 
 namespace libsemigroups {
+  template <typename Word, typename Rewriter, typename ReductionOrder>
+  KnuthBendix<Word, Rewriter, ReductionOrder>::KnuthBendix() = default;
+
+  template <typename Word, typename Rewriter, typename ReductionOrder>
+  KnuthBendix<Word, Rewriter, ReductionOrder>::KnuthBendix(
+      KnuthBendix const& that)
+      = default;
+
+  template <typename Word, typename Rewriter, typename ReductionOrder>
+  KnuthBendix<Word, Rewriter, ReductionOrder>::KnuthBendix(KnuthBendix&&)
+      = default;
+  template <typename Word, typename Rewriter, typename ReductionOrder>
+
+  KnuthBendix<Word, Rewriter, ReductionOrder>&
+  KnuthBendix<Word, Rewriter, ReductionOrder>::operator=(KnuthBendix const&)
+      = default;
+
+  template <typename Word, typename Rewriter, typename ReductionOrder>
+  KnuthBendix<Word, Rewriter, ReductionOrder>&
+  KnuthBendix<Word, Rewriter, ReductionOrder>::operator=(KnuthBendix&&)
+      = default;
+
+  template <typename Word, typename Rewriter, typename ReductionOrder>
+  KnuthBendix<Word, Rewriter, ReductionOrder>::~KnuthBendix() = default;
 
   template <typename Word, typename Rewriter, typename ReductionOrder>
   KnuthBendix<Word, Rewriter, ReductionOrder>&

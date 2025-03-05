@@ -1,17 +1,24 @@
-////////////////////////////////////////////////////////////////////////////////
-//       Copyright (C) 2016 Florent Hivert <Florent.Hivert@lri.fr>,           //
+//****************************************************************************//
+//     Copyright (C) 2016-2024 Florent Hivert <Florent.Hivert@lisn.fr>,       //
 //                                                                            //
-//  Distributed under the terms of the GNU General Public License (GPL)       //
+//  This file is part of HP-Combi <https://github.com/libsemigroups/HPCombi>  //
 //                                                                            //
-//    This code is distributed in the hope that it will be useful,            //
-//    but WITHOUT ANY WARRANTY; without even the implied warranty of          //
-//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU       //
-//   General Public License for more details.                                 //
+//  HP-Combi is free software: you can redistribute it and/or modify it       //
+//  under the terms of the GNU General Public License as published by the     //
+//  Free Software Foundation, either version 3 of the License, or             //
+//  (at your option) any later version.                                       //
 //                                                                            //
-//  The full text of the GPL is available at:                                 //
+//  HP-Combi is distributed in the hope that it will be useful, but WITHOUT   //
+//  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or     //
+//  FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License      //
+//  for  more details.                                                        //
 //                                                                            //
-//                  http://www.gnu.org/licenses/                              //
-////////////////////////////////////////////////////////////////////////////////
+//  You should have received a copy of the GNU General Public License along   //
+//  with HP-Combi. If not, see <https://www.gnu.org/licenses/>.               //
+//****************************************************************************//
+
+/** @file
+@brief declaration of HPCombi::PermGeneric */
 
 #ifndef HPCOMBI_PERM_GENERIC_HPP_
 #define HPCOMBI_PERM_GENERIC_HPP_
@@ -31,6 +38,14 @@
 
 namespace HPCombi {
 
+/** Vanilla (ie NOT optimized) implementation of a permutation, used to check
+for test correctness and as baseline to measure speedup. Implemented as an std
+array, so the permutation is not necessarily of size n=16. PermGeneric<16>
+should implement as much as possibles of Perm16 (currently not everything due to
+lack of time/need). No optimisation, so prefer to use Perm16.
+
+About Expo, see comment on HPCombi::VectGeneric.
+*/
 template <size_t Size, typename Expo = uint8_t>
 struct PermGeneric : public VectGeneric<Size, Expo> {
     using vect = VectGeneric<Size, Expo>;

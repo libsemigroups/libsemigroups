@@ -41,11 +41,10 @@
 
 #include "debug.hpp"      // for LIBSEMIGROUPS_ASSERT
 #include "exception.hpp"  // for LibsemigroupsException
+#include "ranges.hpp"     // for begin, end
 #include "types.hpp"      // for word_type
 
 #include "detail/word-iterators.hpp"  // for const_wilo_iterator
-
-#include "ranges.hpp"  // for begin, end
 
 namespace libsemigroups {
 
@@ -1361,6 +1360,8 @@ namespace libsemigroups {
     Range(InputRange&& input, ToString&& t_str)
         : _input(std::move(input)), _to_string(std::move(t_str)) {}
 
+    ~Range();
+
     // Not noexcept because ToString()() isn't
     [[nodiscard]] output_type get() const {
       return _to_string(_input.get());
@@ -1378,6 +1379,9 @@ namespace libsemigroups {
       return _input.size_hint();
     }
   };
+
+  template <typename InputRange>
+  ToString::Range<InputRange>::~Range<InputRange>() = default;
 
   //! \ingroup words_group
   //!
@@ -2074,27 +2078,17 @@ namespace libsemigroups {
     //!
     //! \exceptions
     //! \no_libsemigroups_except
-    static inline word_type operator+(word_type const& u, word_type const& w) {
-      word_type result(u);
-      result.insert(result.end(), w.cbegin(), w.cend());
-      return result;
-    }
+    word_type operator+(word_type const& u, word_type const& w);
 
     //! \brief Concatenate a word and a letter.
     //!
     //! See \ref operator_plus "operator+".
-    static inline word_type operator+(word_type const& u, letter_type w) {
-      word_type result(u);
-      result.push_back(w);
-      return result;
-    }
+    word_type operator+(word_type const& u, letter_type w);
 
     //! \brief Concatenate a letter and a word.
     //!
     //! See \ref operator_plus "operator+".
-    static inline word_type operator+(letter_type w, word_type const& u) {
-      return word_type({w}) + u;
-    }
+    word_type operator+(letter_type w, word_type const& u);
 
     ////////////////////////////////////////////////////////////////////////
     // operator+=
@@ -2173,17 +2167,12 @@ namespace libsemigroups {
     //! \brief Returns the power of a word.
     //!
     //! See pow(Word const&, size_t) for details.
-    static inline word_type pow(std::initializer_list<letter_type> ilist,
-                                size_t                             n) {
-      return pow(word_type(ilist), n);
-    }
+    word_type pow(std::initializer_list<letter_type> ilist, size_t n);
 
     //! \brief Returns the power of a string.
     //!
     //! See pow(Word const&, size_t) for details.
-    static inline std::string pow(std::string_view w, size_t n) {
-      return pow(std::string(w), n);
-    }
+    std::string pow(std::string_view w, size_t n);
 
     ////////////////////////////////////////////////////////////////////////
     // prod

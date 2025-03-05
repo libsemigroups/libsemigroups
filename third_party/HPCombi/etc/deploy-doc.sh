@@ -25,4 +25,4 @@ if [ -n "$*" ]; then
 	msg="$*"
 fi
 git commit -m "$msg"
-# git push origin gh-pages
+git push origin gh-pages

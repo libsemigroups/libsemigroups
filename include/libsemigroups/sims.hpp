@@ -3124,6 +3124,7 @@ namespace libsemigroups {
 
    public:
     //! Default constructor.
+    // TODO(1) to tpp
     SimsRefinerIdeals()
         : _knuth_bendices(std::thread::hardware_concurrency() + 1,
                           KnuthBendix_()),
@@ -3137,6 +3138,7 @@ namespace libsemigroups {
     //! been newly default constructed.
     //!
     //! \returns A reference to \c *this.
+    // TODO(1) to tpp
     SimsRefinerIdeals& init() {
       _presentation.init();
       _knuth_bendices[0].init();

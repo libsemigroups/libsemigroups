@@ -1,17 +1,27 @@
-////////////////////////////////////////////////////////////////////////////////
-//     Copyright (C) 2016-2023 Florent Hivert <Florent.Hivert@lri.fr>,        //
+//****************************************************************************//
+//     Copyright (C) 2016-2024 Florent Hivert <Florent.Hivert@lisn.fr>,       //
 //                                                                            //
-//  Distributed under the terms of the GNU General Public License (GPL)       //
+//  This file is part of HP-Combi <https://github.com/libsemigroups/HPCombi>  //
 //                                                                            //
-//    This code is distributed in the hope that it will be useful,            //
-//    but WITHOUT ANY WARRANTY; without even the implied warranty of          //
-//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU       //
-//   General Public License for more details.                                 //
+//  HP-Combi is free software: you can redistribute it and/or modify it       //
+//  under the terms of the GNU General Public License as published by the     //
+//  Free Software Foundation, either version 3 of the License, or             //
+//  (at your option) any later version.                                       //
 //                                                                            //
-//  The full text of the GPL is available at:                                 //
+//  HP-Combi is distributed in the hope that it will be useful, but WITHOUT   //
+//  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or     //
+//  FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License      //
+//  for  more details.                                                        //
 //                                                                            //
-//                  http://www.gnu.org/licenses/                              //
-////////////////////////////////////////////////////////////////////////////////
+//  You should have received a copy of the GNU General Public License along   //
+//  with HP-Combi. If not, see <https://www.gnu.org/licenses/>.               //
+//****************************************************************************//
+
+/** @file
+@brief declaration of HPCombi::epu8.
+
+Contains renaming of some low level functions,
+eg simde_mm_testz_si128(a,a) → is_all_zero(a) */
 
 #ifndef HPCOMBI_EPU8_HPP_
 #define HPCOMBI_EPU8_HPP_
@@ -26,8 +36,16 @@
 #include "debug.hpp"         // for HPCOMBI_ASSERT
 #include "vect_generic.hpp"  // for VectGeneric
 
+#if defined(__GNUC__) && !defined(__clang__)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wswitch-default"
+#pragma GCC diagnostic ignored "-Wpacked"
+#endif
 #include "simde/x86/sse4.1.h"  // for simde_mm_max_epu8, simde...
 #include "simde/x86/sse4.2.h"  // for ???
+#if defined(__GNUC__) && !defined(__clang__)
+#pragma GCC diagnostic pop
+#endif
 
 namespace HPCombi {
 
@@ -37,7 +55,14 @@ operator"" _u8(unsigned long long arg) noexcept {  // NOLINT
     return static_cast<uint8_t>(arg);
 }
 
-/// SIMD vector of 16 unsigned bytes
+/**
+epu8 stands for *Extended Packed Unsigned, grouped by 8 bits*;
+this is the low level type chosen by Intel for their API to intrinsics,
+ie a SIMD vector of 16 unsigned bytes (16×8 = 128bits).
+Functions using this type use semantically equivalent types,
+eg a _m128 which is a vector containing 2 signed 64 bits integers.
+A flag tells the compiler to silently consider those types equivalent.
+*/
 using epu8 = uint8_t __attribute__((vector_size(16)));
 
 static_assert(alignof(epu8) == 16,
@@ -62,22 +87,28 @@ inline bool equal(epu8 a, epu8 b) noexcept {
 /** Non equality of #HPCombi::epu8 */
 inline bool not_equal(epu8 a, epu8 b) noexcept { return !equal(a, b); }
 
-/** Permuting a #HPCombi::epu8 */
+/** Apply a permutation \c b on the vector \c a: for i=0..16 {result[i] =
+ * a[b[i]} */
 inline epu8 permuted_ref(epu8 a, epu8 b) noexcept;
-/** Permuting a #HPCombi::epu8 */
+
+/** Same as \ref HPCombi::permuted_ref "permuted_ref"
+but with an optimized implementation using intrinsics. */
 inline epu8 permuted(epu8 a, epu8 b) noexcept {
     return simde_mm_shuffle_epi8(a, b);
 }
+
 /** Left shifted of a #HPCombi::epu8 inserting a 0
  * @warning we use the convention that the 0 entry is on the left !
  */
 inline epu8 shifted_right(epu8 a) noexcept {
     return simde_mm_bslli_si128(a, 1);
 }
+
 /** Right shifted of a #HPCombi::epu8 inserting a 0
  * @warning we use the convention that the 0 entry is on the left !
  */
 inline epu8 shifted_left(epu8 a) noexcept { return simde_mm_bsrli_si128(a, 1); }
+
 /** Reverting a #HPCombi::epu8 */
 inline epu8 reverted(epu8 a) noexcept { return permuted(a, Epu8.rev()); }
 
@@ -94,7 +125,7 @@ inline bool is_sorted(epu8 a) noexcept;
  * Uses the 9 stages sorting network #sorting_rounds
  */
 inline epu8 sorted(epu8 a) noexcept;
-/** Return a #HPCombi::epu8 with the two half sorted
+/** Return a #HPCombi::epu8 with both halves sorted
  * @details
  * @par Algorithm: Uses a 6 stages sorting network #sorting_rounds8
  */
@@ -105,7 +136,7 @@ inline epu8 sorted8(epu8 a) noexcept;
  * Uses the 9 stages sorting network #sorting_rounds
  */
 inline epu8 revsorted(epu8 a) noexcept;
-/** Return a #HPCombi::epu8 with the two half reverse sorted
+/** Return a #HPCombi::epu8 with both halves reverse sorted
  * @details
  * @par Algorithm: Uses a 6 stages sorting network #sorting_rounds8
  */
@@ -122,37 +153,37 @@ inline epu8 sort_perm(epu8 &a) noexcept;
  */
 inline epu8 sort8_perm(epu8 &a) noexcept;
 
-/** @class common_merge
+/**
  * @brief Merge two sorted epu8
  * @details
  * @param a, b: two #HPCombi::epu8
- * after executing merge, \c a and \c are sorted \c a[15] <= \c b[0]
- */
-/** @copydoc common_merge
- *  @par Algorithm: bitonic merge sorting network
+ * after executing merge, \c a and \c b are sorted and \c a[15] <= \c b[0]
+ * @par Algorithm: bitonic merge sorting network
  */
 inline void merge(epu8 &a, epu8 &b) noexcept;
 
-/** @class common_permutation_of
- * @brief Find if a vector is a permutation of one other
+#ifdef SIMDE_X86_SSE4_2_NATIVE
+/** Same interface as \ref HPCombi::permutation_of "permutation_of" but with a
+   different implementation.
+    @par Algorithm: uses string matching cpmestrm intrinsics
+ */
+inline epu8 permutation_of_cmpestrm(epu8 a, epu8 b) noexcept;
+#endif
+
+/** Same interface as \ref HPCombi::permutation_of "permutation_of" but with a
+   different implementation.
+    @par Algorithm: reference implementation
+ */
+inline epu8 permutation_of_ref(epu8 a, epu8 b) noexcept;
+
+/**
+ * @brief Find if a vector is a permutation of another one
  * @details
  * @param a, b: two #HPCombi::epu8
  * @returns a #HPCombi::epu8
  * For each @f$0 \leq i < 16@f$, \c res[i] is the position in \c a of \c b[i]
      if \c b[i] appears exactly once in \c a, or undefined if not.
- */
-#ifdef SIMDE_X86_SSE4_2_NATIVE
-/** @copydoc common_permutation_of
-    @par Algorithm: uses string matching cpmestrm intrisics
- */
-inline epu8 permutation_of_cmpestrm(epu8 a, epu8 b) noexcept;
-#endif
-/** @copydoc common_permutation_of
-    @par Algorithm: reference implementation
- */
-inline epu8 permutation_of_ref(epu8 a, epu8 b) noexcept;
-/** @copydoc common_permutation_of
-    @par Algorithm: architecture dependent
+ * @par Algorithm: architecture dependent
  */
 inline epu8 permutation_of(epu8 a, epu8 b) noexcept;
 
@@ -177,8 +208,39 @@ inline epu8 random_epu8(uint16_t bnd);
  */
 inline epu8 remove_dups(epu8 a, uint8_t repl = 0) noexcept;
 
-/** @class common_horiz_sum
- * @brief Horizontal sum of a  #HPCombi::epu8
+/** Same interface as \ref HPCombi::horiz_sum "horiz_sum" but with a different
+ * implementation.
+ *  @par Algorithm:
+ *  Reference @f$O(n)@f$ algorithm using loop and indexed access
+ */
+
+inline uint8_t horiz_sum_ref(epu8) noexcept;
+
+/** Same interface as \ref HPCombi::horiz_sum "horiz_sum" but with a different
+ * implementation.
+ *  @par Algorithm:
+ *  Reference @f$O(n)@f$ algorithm using loop and indexed access
+ *  through #HPCombi::VectGeneric
+ */
+
+inline uint8_t horiz_sum_gen(epu8) noexcept;
+
+/** Same interface as \ref HPCombi::horiz_sum "horiz_sum" but with a different
+ * implementation.
+ *  @par Algorithm:
+ *  4-stages parallel algorithm
+ */
+inline uint8_t horiz_sum4(epu8) noexcept;
+
+/** Same interface as \ref HPCombi::horiz_sum "horiz_sum" but with a different
+ * implementation.
+ *  @par Algorithm:
+ *  3-stages parallel algorithm + indexed access
+ */
+inline uint8_t horiz_sum3(epu8) noexcept;
+
+/**
+ * @brief Horizontal sum of a #HPCombi::epu8
  * @details
  * @returns the horizontal sum of the input
  * @par Example:
@@ -188,31 +250,31 @@ inline epu8 remove_dups(epu8 a, uint8_t repl = 0) noexcept;
  * Returns `110`
  * @warning The result is supposed to fit in a \c uint8_t
  */
-/** @copydoc common_horiz_sum
+inline uint8_t horiz_sum(epu8 v) noexcept { return horiz_sum3(v); }
+
+/** Same interface as \ref HPCombi::partial_sums "partial_sums" but with a
+ * different implementation.
  *  @par Algorithm:
  *  Reference @f$O(n)@f$ algorithm using loop and indexed access
  */
-inline uint8_t horiz_sum_ref(epu8) noexcept;
-/** @copydoc common_horiz_sum
+inline epu8 partial_sums_ref(epu8) noexcept;
+
+/** Same interface as \ref HPCombi::partial_sums "partial_sums" but with a
+ * different implementation.
  *  @par Algorithm:
  *  Reference @f$O(n)@f$ algorithm using loop and indexed access
  *  through #HPCombi::VectGeneric
  */
-inline uint8_t horiz_sum_gen(epu8) noexcept;
-/** @copydoc common_horiz_sum
+inline epu8 partial_sums_gen(epu8) noexcept;
+
+/** Same interface as \ref HPCombi::partial_sums "partial_sums" but with a
+ * different implementation.
  *  @par Algorithm:
  *  4-stages parallel algorithm
  */
-inline uint8_t horiz_sum4(epu8) noexcept;
-/** @copydoc common_horiz_sum
- *  @par Algorithm:
- *  3-stages parallel algorithm + indexed access
- */
-inline uint8_t horiz_sum3(epu8) noexcept;
-/** @copydoc common_horiz_sum */
-inline uint8_t horiz_sum(epu8 v) noexcept { return horiz_sum3(v); }
+inline epu8 partial_sums_round(epu8) noexcept;
 
-/** @class common_partial_sums
+/**
  * @brief Horizontal partial sum of a #HPCombi::epu8
  * @details
  * @returns the partials sums of the input
@@ -222,26 +284,38 @@ inline uint8_t horiz_sum(epu8 v) noexcept { return horiz_sum3(v); }
  * @endcode
  * Returns `{ 5,10,12,17,18,24,36,40,40,43,45,56,68,81,95,110}`
  */
-/** @copydoc common_partial_sums
+inline epu8 partial_sums(epu8 v) noexcept { return partial_sums_round(v); }
+
+/** Same interface as \ref HPCombi::horiz_max "horiz_max" but with a different
+ * implementation.
  *  @par Algorithm:
  *  Reference @f$O(n)@f$ algorithm using loop and indexed access
  */
-inline epu8 partial_sums_ref(epu8) noexcept;
-/** @copydoc common_partial_sums
+inline uint8_t horiz_max_ref(epu8) noexcept;
+
+/** Same interface as \ref HPCombi::horiz_max "horiz_max" but with a different
+ * implementation.
  *  @par Algorithm:
  *  Reference @f$O(n)@f$ algorithm using loop and indexed access
  *  through #HPCombi::VectGeneric
  */
-inline epu8 partial_sums_gen(epu8) noexcept;
-/** @copydoc common_partial_sums
+inline uint8_t horiz_max_gen(epu8) noexcept;
+
+/** Same interface as \ref HPCombi::horiz_max "horiz_max" but with a different
+ * implementation.
  *  @par Algorithm:
  *  4-stages parallel algorithm
  */
-inline epu8 partial_sums_round(epu8) noexcept;
-/** @copydoc common_partial_sums */
-inline epu8 partial_sums(epu8 v) noexcept { return partial_sums_round(v); }
+inline uint8_t horiz_max4(epu8) noexcept;
 
-/** @class common_horiz_max
+/** Same interface as \ref HPCombi::horiz_max "horiz_max" but with a different
+ * implementation.
+ *  @par Algorithm:
+ *  3-stages parallel algorithm + indexed access
+ */
+inline uint8_t horiz_max3(epu8) noexcept;
+
+/**
  * @brief Horizontal sum of a  #HPCombi::epu8
  * @details
  * @returns the horizontal sum of the input
@@ -251,31 +325,31 @@ inline epu8 partial_sums(epu8 v) noexcept { return partial_sums_round(v); }
  * @endcode
  * Returns `12`
  */
-/** @copydoc common_horiz_max
+inline uint8_t horiz_max(epu8 v) noexcept { return horiz_max4(v); }
+
+/** Same interface as \ref HPCombi::partial_max "partial_max" but with a
+ * different implementation.
  *  @par Algorithm:
  *  Reference @f$O(n)@f$ algorithm using loop and indexed access
  */
-inline uint8_t horiz_max_ref(epu8) noexcept;
-/** @copydoc common_horiz_max
+inline epu8 partial_max_ref(epu8) noexcept;
+
+/** Same interface as \ref HPCombi::partial_max "partial_max" but with a
+ * different implementation.
  *  @par Algorithm:
  *  Reference @f$O(n)@f$ algorithm using loop and indexed access
  *  through #HPCombi::VectGeneric
  */
-inline uint8_t horiz_max_gen(epu8) noexcept;
-/** @copydoc common_horiz_max
+inline epu8 partial_max_gen(epu8) noexcept;
+
+/** Same interface as \ref HPCombi::partial_max "partial_max" but with a
+ * different implementation.
  *  @par Algorithm:
  *  4-stages parallel algorithm
  */
-inline uint8_t horiz_max4(epu8) noexcept;
-/** @copydoc common_horiz_max
- *  @par Algorithm:
- *  3-stages parallel algorithm + indexed access
- */
-inline uint8_t horiz_max3(epu8) noexcept;
-/** @copydoc common_horiz_max */
-inline uint8_t horiz_max(epu8 v) noexcept { return horiz_max4(v); }
+inline epu8 partial_max_round(epu8) noexcept;
 
-/** @class common_partial_max
+/**
  * @brief Horizontal partial sum of a #HPCombi::epu8
  * @details
  * @returns the partials max of the input
@@ -285,26 +359,38 @@ inline uint8_t horiz_max(epu8 v) noexcept { return horiz_max4(v); }
  * @endcode
  * Returns `{ 5, 5, 5, 5, 5, 6,12,12,12,12,12,12,12,13,14,15}`
  */
-/** @copydoc common_partial_max
+inline epu8 partial_max(epu8 v) noexcept { return partial_max_round(v); }
+
+/** Same interface as \ref HPCombi::horiz_min "horiz_min" but with a different
+ * implementation.
  *  @par Algorithm:
  *  Reference @f$O(n)@f$ algorithm using loop and indexed access
  */
-inline epu8 partial_max_ref(epu8) noexcept;
-/** @copydoc common_partial_max
+inline uint8_t horiz_min_ref(epu8) noexcept;
+
+/** Same interface as \ref HPCombi::horiz_min "horiz_min" but with a different
+ * implementation.
  *  @par Algorithm:
  *  Reference @f$O(n)@f$ algorithm using loop and indexed access
  *  through #HPCombi::VectGeneric
  */
-inline epu8 partial_max_gen(epu8) noexcept;
-/** @copydoc common_partial_max
+inline uint8_t horiz_min_gen(epu8) noexcept;
+
+/** Same interface as \ref HPCombi::horiz_min "horiz_min" but with a different
+ * implementation.
  *  @par Algorithm:
  *  4-stages parallel algorithm
  */
-inline epu8 partial_max_round(epu8) noexcept;
-/** @copydoc common_partial_max */
-inline epu8 partial_max(epu8 v) noexcept { return partial_max_round(v); }
+inline uint8_t horiz_min4(epu8) noexcept;
 
-/** @class common_horiz_min
+/** Same interface as \ref HPCombi::horiz_min "horiz_min" but with a different
+ * implementation.
+ *  @par Algorithm:
+ *  3-stages parallel algorithm + indexed access
+ */
+inline uint8_t horiz_min3(epu8) noexcept;
+
+/**
  * @brief Horizontal sum of a  #HPCombi::epu8
  * @details
  * @returns the horizontal sum of the input
@@ -314,31 +400,31 @@ inline epu8 partial_max(epu8 v) noexcept { return partial_max_round(v); }
  * @endcode
  * Returns `1`
  */
-/** @copydoc common_horiz_min
+inline uint8_t horiz_min(epu8 v) noexcept { return horiz_min4(v); }
+
+/** Same interface as \ref HPCombi::partial_min "partial_min" but with a
+ * different implementation.
  *  @par Algorithm:
  *  Reference @f$O(n)@f$ algorithm using loop and indexed access
  */
-inline uint8_t horiz_min_ref(epu8) noexcept;
-/** @copydoc common_horiz_min
+inline epu8 partial_min_ref(epu8) noexcept;
+
+/** Same interface as \ref HPCombi::partial_min "partial_min" but with a
+ * different implementation.
  *  @par Algorithm:
  *  Reference @f$O(n)@f$ algorithm using loop and indexed access
  *  through #HPCombi::VectGeneric
  */
-inline uint8_t horiz_min_gen(epu8) noexcept;
-/** @copydoc common_horiz_min
+inline epu8 partial_min_gen(epu8) noexcept;
+
+/** Same interface as \ref HPCombi::partial_min "partial_min" but with a
+ * different implementation.
  *  @par Algorithm:
  *  4-stages parallel algorithm
  */
-inline uint8_t horiz_min4(epu8) noexcept;
-/** @copydoc common_horiz_min
- *  @par Algorithm:
- *  3-stages parallel algorithm + indexed access
- */
-inline uint8_t horiz_min3(epu8) noexcept;
-/** @copydoc common_horiz_min */
-inline uint8_t horiz_min(epu8 v) noexcept { return horiz_min4(v); }
+inline epu8 partial_min_round(epu8) noexcept;
 
-/** @class common_partial_min
+/**
  * @brief Horizontal partial sum of a #HPCombi::epu8
  * @details
  * @returns the partials min of the input
@@ -348,27 +434,39 @@ inline uint8_t horiz_min(epu8 v) noexcept { return horiz_min4(v); }
  * @endcode
  * Returns `{ 5, 5, 2, 2, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0}`
  */
-/** @copydoc common_partial_min
- *  @par Algorithm:
- *  Reference @f$O(n)@f$ algorithm using loop and indexed access
- */
-inline epu8 partial_min_ref(epu8) noexcept;
-/** @copydoc common_partial_min
- *  @par Algorithm:
- *  Reference @f$O(n)@f$ algorithm using loop and indexed access
- *  through #HPCombi::VectGeneric
- */
-inline epu8 partial_min_gen(epu8) noexcept;
-/** @copydoc common_partial_min
- *  @par Algorithm:
- *  4-stages parallel algorithm
- */
-inline epu8 partial_min_round(epu8) noexcept;
-/** @copydoc common_partial_min */
 inline epu8 partial_min(epu8 v) noexcept { return partial_min_round(v); }
 
-/** @class common_eval16
- * @brief Evaluation of a #HPCombi::epu8
+/** Same interface as \ref HPCombi::eval16 "eval16" but with a different
+ * implementation.
+ *  @par Algorithm:
+ *  Reference @f$O(n)@f$ algorithm using loop and indexed access
+ */
+inline epu8 eval16_ref(epu8 v) noexcept;
+
+/** Same interface as \ref HPCombi::eval16 "eval16" but with a different
+ * implementation.
+ *  @par Algorithm:
+ *  Reference @f$O(n)@f$ algorithm using loop and cast to array
+ */
+inline epu8 eval16_arr(epu8 v) noexcept;
+
+/** Same interface as \ref HPCombi::eval16 "eval16" but with a different
+ * implementation.
+ *  @par Algorithm:
+ *  Vector @f$O(n)@f$ using cyclic shifting
+ */
+inline epu8 eval16_cycle(epu8 v) noexcept;
+
+/** Same interface as \ref HPCombi::eval16 "eval16" but with a different
+ * implementation.
+ *  @par Algorithm:
+ *  Vector @f$O(n)@f$ using popcount
+ */
+inline epu8 eval16_popcount(epu8 v) noexcept;
+
+/**
+ * @brief Evaluation of a #HPCombi::epu8: count how many times each int of 0..15
+ * appears in the input.
  * @details
  * @param v : a #HPCombi::epu8
  * @returns the evaluation, that is the #HPCombi::epu8 \c r such that
@@ -380,30 +478,32 @@ inline epu8 partial_min(epu8 v) noexcept { return partial_min_round(v); }
  * Returns `{ 1, 1, 2, 1, 1, 3, 1, 0, 0, 0, 0, 1, 2, 1, 1, 1}`
  * @warning The entries larger than 15 are ignored
  */
-/** @copydoc common_eval16
+inline epu8 eval16(epu8 v) noexcept { return eval16_cycle(v); }
+
+/** Same interface as \ref HPCombi::first_diff "first_diff" but with a different
+ * implementation.
  *  @par Algorithm:
  *  Reference @f$O(n)@f$ algorithm using loop and indexed access
  */
-inline epu8 eval16_ref(epu8 v) noexcept;
-/** @copydoc common_eval16
- *  @par Algorithm:
- *  Reference @f$O(n)@f$ algorithm using loop and cast to array
- */
-inline epu8 eval16_arr(epu8 v) noexcept;
-/** @copydoc common_eval16
- *  @par Algorithm:
- *  Vector @f$O(n)@f$ using cyclic shifting
- */
-inline epu8 eval16_cycle(epu8 v) noexcept;
-/** @copydoc common_eval16
- *  @par Algorithm:
- *  Vector @f$O(n)@f$ using popcount
- */
-inline epu8 eval16_popcount(epu8 v) noexcept;
-/** @copydoc common_eval16 */
-inline epu8 eval16(epu8 v) noexcept { return eval16_cycle(v); }
+inline uint64_t first_diff_ref(epu8 a, epu8 b, size_t bound = 16) noexcept;
 
-/** @class common_first_diff
+#ifdef SIMDE_X86_SSE4_2_NATIVE
+/** Same interface as \ref HPCombi::first_diff "first_diff" but with a different
+ * implementation.
+ *  @par Algorithm:
+ *  Using \c cmpestri instruction
+ */
+inline uint64_t first_diff_cmpstr(epu8 a, epu8 b, size_t bound = 16) noexcept;
+#endif
+
+/** Same interface as \ref HPCombi::first_diff "first_diff" but with a different
+ * implementation.
+ *  @par Algorithm:
+ *  Using vector comparison and mask
+ */
+inline uint64_t first_diff_mask(epu8 a, epu8 b, size_t bound = 16) noexcept;
+
+/**
  * @brief The first difference between two #HPCombi::epu8
  * @details
  * @param a, b : two #HPCombi::epu8
@@ -421,32 +521,37 @@ inline epu8 eval16(epu8 v) noexcept { return eval16_cycle(v); }
  * `first_diff(a, b, 7)` returns `3`.
  * @warning `bound` is assumed to be smaller or equal than 16
  */
-/** @copydoc common_first_diff
- *  @par Algorithm:
- *  Reference @f$O(n)@f$ algorithm using loop and indexed access
- */
-inline uint64_t first_diff_ref(epu8 a, epu8 b, size_t bound = 16) noexcept;
-#ifdef SIMDE_X86_SSE4_2_NATIVE
-/** @copydoc common_first_diff
- *  @par Algorithm:
- *  Using \c cmpestri instruction
- */
-inline uint64_t first_diff_cmpstr(epu8 a, epu8 b, size_t bound = 16) noexcept;
-#endif
-/** @copydoc common_first_diff
- *  @par Algorithm:
- *  Using vector comparison and mask
- */
-inline uint64_t first_diff_mask(epu8 a, epu8 b, size_t bound = 16) noexcept;
-/** @copydoc common_first_diff */
 inline uint64_t first_diff(epu8 a, epu8 b, size_t bound = 16) noexcept {
     return first_diff_mask(a, b, bound);
 }
 
-/** @class common_last_diff
+/** Same interface as \ref HPCombi::last_diff "last_diff" but with a different
+ * implementation.
+ *  @par Algorithm:
+ *  Reference @f$O(n)@f$ algorithm using loop and indexed access
+ */
+inline uint64_t last_diff_ref(epu8 a, epu8 b, size_t bound = 16) noexcept;
+
+#ifdef SIMDE_X86_SSE4_2_NATIVE
+/** Same interface as \ref HPCombi::last_diff "last_diff" but with a different
+ * implementation.
+ *  @par Algorithm:
+ *  Using \c cmpestri instruction
+ */
+inline uint64_t last_diff_cmpstr(epu8 a, epu8 b, size_t bound = 16) noexcept;
+#endif
+
+/** Same interface as \ref HPCombi::last_diff "last_diff" but with a different
+ * implementation.
+ *  @par Algorithm:
+ *  Using vector comparison and mask
+ */
+inline uint64_t last_diff_mask(epu8 a, epu8 b, size_t bound = 16) noexcept;
+
+/**
  * @brief The last difference between two #HPCombi::epu8
  * @details
- * @param a, b : two #HPCombi::epu8
+ * @param a, b : #HPCombi::epu8
  * @param bound : a \c size_t
  * @returns the largest index @f$i<bound@f$ such that \c a[i] and \c b[i]
  * differ, 16 if there is no differences before bound.
@@ -461,24 +566,6 @@ inline uint64_t first_diff(epu8 a, epu8 b, size_t bound = 16) noexcept {
  * `last_diff(a, b, 7)` returns `3`.
  * @warning `bound` is assumed to be smaller or equal than 16
  */
-/** @copydoc common_last_diff
- *  @par Algorithm:
- *  Reference @f$O(n)@f$ algorithm using loop and indexed access
- */
-inline uint64_t last_diff_ref(epu8 a, epu8 b, size_t bound = 16) noexcept;
-#ifdef SIMDE_X86_SSE4_2_NATIVE
-/** @copydoc common_last_diff
- *  @par Algorithm:
- *  Using \c cmpestri instruction
- */
-inline uint64_t last_diff_cmpstr(epu8 a, epu8 b, size_t bound = 16) noexcept;
-#endif
-/** @copydoc common_last_diff
- *  @par Algorithm:
- *  Using vector comparison and mask
- */
-inline uint64_t last_diff_mask(epu8 a, epu8 b, size_t bound = 16) noexcept;
-/** @copydoc common_last_diff */
 inline uint64_t last_diff(epu8 a, epu8 b, size_t bound = 16) noexcept {
     return last_diff_mask(a, b, bound);
 }
@@ -565,7 +652,26 @@ inline bool is_transformation(epu8 v, const size_t k = 16) noexcept;
  */
 inline bool is_partial_permutation(epu8 v, const size_t k = 16) noexcept;
 
-/** @class common_is_permutation
+#ifdef SIMDE_X86_SSE4_2_NATIVE
+/** Same interface as \ref HPCombi::is_permutation "is_permutation" but with a
+   different implementation.
+    @par Algorithm: uses string matching cpmestri intrinsics
+ */
+inline bool is_permutation_cpmestri(epu8 v, const size_t k = 16) noexcept;
+#endif
+/** Same interface as \ref HPCombi::is_permutation "is_permutation" but with a
+   different implementation.
+    @par Algorithm: sort the vector and compare to identity
+ */
+inline bool is_permutation_sort(epu8 v, const size_t k = 16) noexcept;
+
+/** Same interface as \ref HPCombi::is_permutation "is_permutation" but with a
+   different implementation.
+    @par Algorithm: uses evaluation
+ */
+inline bool is_permutation_eval(epu8 v, const size_t k = 16) noexcept;
+
+/**
  * @details
  * @returns whether \c *this is a permutation.
  * @param v the vector to test
@@ -574,28 +680,12 @@ inline bool is_partial_permutation(epu8 v, const size_t k = 16) noexcept;
  * If \c *this is a permutation of @f$0\dots n-1@f$ for @f$n<16@f$,
  * it should be completed to a permutation of @f$0\dots 15@f$
  * by adding fixed points. That is the values @f$i\geq n@f$ should be
- * mapped to themself.
+ * mapped to themselves.
  * @par Example:
  * The permutation
  * @f$\begin{matrix}0 1 2 3 4 5\\ 2 0 5 3 1 4 \end{matrix}@f$
  * is encoded by the array {2,0,5,3,1,4,6,7,8,9,10,11,12,13,14,15}
- */
-#ifdef SIMDE_X86_SSE4_2_NATIVE
-/** @copydoc common_is_permutation
-    @par Algorithm: uses string matching cpmestri intrisics
- */
-inline bool is_permutation_cpmestri(epu8 v, const size_t k = 16) noexcept;
-#endif
-/** @copydoc common_is_permutation
-    @par Algorithm: sort the vector and compare to identity
- */
-inline bool is_permutation_sort(epu8 v, const size_t k = 16) noexcept;
-/** @copydoc common_is_permutation
-    @par Algorithm: uses evaluation
- */
-inline bool is_permutation_eval(epu8 v, const size_t k = 16) noexcept;
-/** @copydoc common_is_permutation
-    @par Algorithm: architecture dependent
+ * @par Algorithm: architecture dependent
  */
 inline bool is_permutation(epu8 v, const size_t k = 16) noexcept;
 

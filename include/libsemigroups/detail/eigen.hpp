@@ -19,6 +19,8 @@
 // This file includes relevant headers from eigen and suppresses the compiler
 // warnings emitted from it.
 
+#include "libsemigroups/config.hpp"  // for LIBSEMIGROUPS_EIGEN_ENABLED
+
 #ifndef LIBSEMIGROUPS_DETAIL_EIGEN_HPP_
 #define LIBSEMIGROUPS_DETAIL_EIGEN_HPP_
 #ifdef LIBSEMIGROUPS_EIGEN_ENABLED
@@ -27,6 +29,7 @@
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
 #pragma clang diagnostic ignored "-Wmissing-noreturn"
 #pragma clang diagnostic ignored "-Wshadow"
+#pragma clang diagnostic ignored "-Wswitch-default"
 #endif
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wold-style-cast"

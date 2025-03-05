@@ -32,6 +32,7 @@
 
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wshadow"
+#pragma GCC diagnostic ignored "-Winline"
 #if defined(__GNUC__) && !defined(__clang__)
 #pragma GCC diagnostic ignored "-Wmaybe-uninitialized"
 #endif
@@ -187,7 +188,7 @@ namespace libsemigroups {
   //!
   //! \note This function returns \c true for ranges of size \c 0 and \c 1.
   template <typename Range, typename Compare>
-  constexpr bool is_sorted(Range r, Compare&& comp);
+  bool is_sorted(Range r, Compare&& comp);
 
   //! \ingroup ranges_group
   //!
@@ -207,7 +208,7 @@ namespace libsemigroups {
   //!
   //! \note This function returns \c true for ranges of size \c 0 and \c 1.
   template <typename Range>
-  constexpr bool is_sorted(Range r) {
+  bool is_sorted(Range r) {
     return std::is_sorted(r, std::less<>());
   }
 
@@ -229,7 +230,7 @@ namespace libsemigroups {
   //!
   //! \returns \c true if the ranges are equal and \c false if not.
   template <typename Range1, typename Range2>
-  constexpr bool equal(Range1 r1, Range2 r2);
+  bool equal(Range1 r1, Range2 r2);
 
   //! \ingroup ranges_group
   //!
@@ -250,7 +251,7 @@ namespace libsemigroups {
   //! \returns \c true if the range \p r1 is lexicographically less than the
   //! range \p r2, and \c false it not.
   template <typename Range1, typename Range2>
-  constexpr bool lexicographical_compare(Range1 r1, Range2 r2);
+  bool lexicographical_compare(Range1 r1, Range2 r2);
 
   //! \ingroup ranges_group
   //!
@@ -271,7 +272,7 @@ namespace libsemigroups {
   //! \returns \c true if the range \p r1 is shortlex less than the
   //! range \p r2, and \c false it not.
   template <typename Range1, typename Range2>
-  constexpr bool shortlex_compare(Range1 r1, Range2 r2);
+  bool shortlex_compare(Range1 r1, Range2 r2);
 
   // TODO: recursive_path_compare?
 

@@ -30,9 +30,16 @@
 #if defined(__CYGWIN__) || defined(__CYGWIN32__)
 #undef LIBSEMIGROUPS_BACKWARD_ENABLED
 #else
+#if defined(__GNUC__)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wundef"
+#endif
 #include "backward-cpp/backward.hpp"  // for StackTrace, TraceResolver, Reso...
+#if defined(__GNUC__)
+#pragma GCC diagnostic pop
 #endif
-#endif
+#endif  // defined(__CYGWIN__) || defined(__CYGWIN32__)
+#endif  // LIBSEMIGROUPS_BACKWARD_ENABLED
 
 namespace libsemigroups {
   LibsemigroupsException::LibsemigroupsException(std::string const& fname,

@@ -1,21 +1,26 @@
-////////////////////////////////////////////////////////////////////////////////
-//       Copyright (C) 2018 Finn Smith <fls3@st-andrews.ac.uk>                //
-//       Copyright (C) 2018 James Mitchell <jdm3@st-andrews.ac.uk>            //
-//       Copyright (C) 2018 Florent Hivert <Florent.Hivert@lri.fr>,           //
+//****************************************************************************//
+//    Copyright (C) 2018-2024 Finn Smith <fls3@st-andrews.ac.uk>              //
+//    Copyright (C) 2018-2024 James Mitchell <jdm3@st-andrews.ac.uk>          //
+//    Copyright (C) 2018-2024 Florent Hivert <Florent.Hivert@lisn.fr>,        //
 //                                                                            //
-//  Distributed under the terms of the GNU General Public License (GPL)       //
+//  This file is part of HP-Combi <https://github.com/libsemigroups/HPCombi>  //
 //                                                                            //
-//    This code is distributed in the hope that it will be useful,            //
-//    but WITHOUT ANY WARRANTY; without even the implied warranty of          //
-//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU       //
-//   General Public License for more details.                                 //
+//  HP-Combi is free software: you can redistribute it and/or modify it       //
+//  under the terms of the GNU General Public License as published by the     //
+//  Free Software Foundation, either version 3 of the License, or             //
+//  (at your option) any later version.                                       //
 //                                                                            //
-//  The full text of the GPL is available at:                                 //
+//  HP-Combi is distributed in the hope that it will be useful, but WITHOUT   //
+//  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or     //
+//  FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License      //
+//  for  more details.                                                        //
 //                                                                            //
-//                  http://www.gnu.org/licenses/                              //
-////////////////////////////////////////////////////////////////////////////////
+//  You should have received a copy of the GNU General Public License along   //
+//  with HP-Combi. If not, see <https://www.gnu.org/licenses/>.               //
+//****************************************************************************//
 
-// This file contains a declaration of fast boolean matrices up to dimension 8.
+/** @file
+@brief declaration of HPCombi::BMat8 */
 
 #ifndef HPCOMBI_BMAT8_HPP_
 #define HPCOMBI_BMAT8_HPP_
@@ -36,15 +41,17 @@
 
 namespace HPCombi {
 
-//! Class for fast boolean matrices of dimension up to 8 x 8
-//!
-//! The methods for these small matrices over the boolean semiring
-//! are more optimised than the generic methods for boolean matrices.
-//! Note that all BMat8 are represented internally as an 8 x 8 matrix;
-//! any entries not defined by the user are taken to be 0. This does
-//! not affect the results of any calculations.
-//!
-//! BMat8 is a trivial class.
+/** Boolean matrices of dimension up to 8×8, stored as a single uint64;
+isomorph to binary relations with methods for composition.
+
+The methods for these small matrices over the boolean semiring
+are more optimised than the generic methods for boolean matrices.
+Note that all BMat8 are represented internally as an 8×8 matrix;
+any entries not defined by the user are taken to be 0. This does
+not affect the results of any calculation.
+
+BMat8 is a trivial class.
+*/
 class BMat8 {
  public:
     //! A default constructor.

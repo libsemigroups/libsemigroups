@@ -22,6 +22,15 @@ namespace libsemigroups {
   ////////////////////////////////////////////////////////////////////////
 
   template <typename Word>
+  Congruence<Word>::Congruence()
+      : detail::CongruenceCommon(),
+        _race(),
+        _runners_initted(),
+        _runner_kinds() {
+    init();
+  }
+
+  template <typename Word>
   Congruence<Word>& Congruence<Word>::init() {
     detail::CongruenceCommon::init();
     _race.init();
@@ -29,6 +38,21 @@ namespace libsemigroups {
     _runner_kinds.clear();
     return *this;
   }
+
+  template <typename Word>
+  Congruence<Word>::Congruence(Congruence const&) = default;
+
+  template <typename Word>
+  Congruence<Word>::Congruence(Congruence&&) = default;
+
+  template <typename Word>
+  Congruence<Word>& Congruence<Word>::operator=(Congruence const&) = default;
+
+  template <typename Word>
+  Congruence<Word>& Congruence<Word>::operator=(Congruence&&) = default;
+
+  template <typename Word>
+  Congruence<Word>::~Congruence() = default;
 
   template <typename Word>
   Congruence<Word>& Congruence<Word>::init(congruence_kind           type,

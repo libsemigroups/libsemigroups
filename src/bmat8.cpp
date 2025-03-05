@@ -324,16 +324,16 @@ namespace libsemigroups {
       auto row_vec = bmat8::rows(bmat8::row_space_basis(x));
       auto last    = std::remove(row_vec.begin(), row_vec.end(), 0);
       row_vec.erase(last, row_vec.end());
-      for (uint8_t x : row_vec) {
-        lookup[x] = true;
+      for (uint8_t item : row_vec) {
+        lookup[item] = true;
       }
       std::vector<uint8_t> row_space(row_vec.begin(), row_vec.end());
       for (size_t i = 0; i < row_space.size(); ++i) {
         for (uint8_t row : row_vec) {
-          uint8_t x = row_space[i] | row;
-          if (!lookup[x]) {
-            row_space.push_back(x);
-            lookup[x] = true;
+          uint8_t item = row_space[i] | row;
+          if (!lookup[item]) {
+            row_space.push_back(item);
+            lookup[item] = true;
           }
         }
       }

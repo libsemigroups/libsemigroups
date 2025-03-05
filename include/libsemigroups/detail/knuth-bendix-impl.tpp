@@ -404,7 +404,6 @@ namespace libsemigroups {
       using std::chrono::duration_cast;
 
       using high_resolution_clock = std::chrono::high_resolution_clock;
-      using nanoseconds           = std::chrono::nanoseconds;
 
       if (!pause) {
         auto active   = number_of_active_rules();

@@ -1217,15 +1217,15 @@ namespace libsemigroups {
 
     start = current.num_edges;
     while (start < _felsch_graph.definitions().size()) {
-      auto first = _2_sided_include->begin(current.num_edges);
-      auto last  = _2_sided_include->end(current.num_edges);
-      start      = _felsch_graph.definitions().size();
+      auto first2 = _2_sided_include->begin(current.num_edges);
+      auto last2  = _2_sided_include->end(current.num_edges);
+      start       = _felsch_graph.definitions().size();
       if (!detail::felsch_graph::make_compatible<detail::RegisterDefs>(
               _felsch_graph,
               0,
               _felsch_graph.number_of_active_nodes(),
-              first,
-              last)
+              first2,
+              last2)
           || !_felsch_graph.process_definitions(start)) {
         return false;
       }
@@ -1245,9 +1245,6 @@ namespace libsemigroups {
   }
 
   Sims1::word_graph_type RepOrc::word_graph() const {
-    using word_graph_type = typename Sims1::word_graph_type;
-    using node_type       = typename word_graph_type::node_type;
-
     report_no_prefix("{:+<80}\n", "");
     report_default(
         "RepOrc: Searching for a faithful rep. o.r.c. on [{}, {}) points\n",

@@ -159,17 +159,7 @@ namespace libsemigroups {
     //! \sa report_every(std::chrono::nanoseconds) and report_every(Time).
     // not noexcept because operator- for time_points can throw.
     // TODO(later) remove? Used by Action
-    [[nodiscard]] inline bool report() const {
-      auto t       = std::chrono::high_resolution_clock::now();
-      auto elapsed = t - _last_report.load();
-
-      if (elapsed > _report_time_interval) {
-        _last_report = t;
-        return true;
-      } else {
-        return false;
-      }
-    }
+    [[nodiscard]] bool report() const;
 
     //! \brief Set the minimum elapsed time between reports in nanoseconds.
     //!

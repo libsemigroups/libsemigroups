@@ -603,7 +603,7 @@ namespace libsemigroups {
 
       // TODO(2) the other constructors
 
-      ~RewriteFromLeft() = default;  // TODO(2) out-of-line this
+      ~RewriteFromLeft();
 
       RewriteFromLeft& init();
 
@@ -647,7 +647,7 @@ namespace libsemigroups {
       RewriteTrie& operator=(RewriteTrie const& that);
       // TODO(1) move constructor, and move assignment operator
 
-      ~RewriteTrie() = default;
+      ~RewriteTrie();
 
       RewriteTrie& init();
 

@@ -3240,8 +3240,8 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! Constant
-    DynamicMatrix(Semiring const* semiring, size_t r, size_t c)
-        : MatrixDynamicDim(r, c), MatrixCommon(), _semiring(semiring) {
+    DynamicMatrix(Semiring const* sr, size_t r, size_t c)
+        : MatrixDynamicDim(r, c), MatrixCommon(), _semiring(sr) {
       resize(number_of_rows(), number_of_cols());
     }
 
@@ -3261,11 +3261,11 @@ namespace libsemigroups {
     //! \f$O(mn)\f$ where \f$m\f$ is \ref number_of_rows and \f$n\f$ is \ref
     //! number_of_cols.
     explicit DynamicMatrix(
-        Semiring const* semiring,
-        std::initializer_list<std::initializer_list<scalar_type>> const& rows)
-        : MatrixDynamicDim(rows.size(), rows.begin()->size()),
-          MatrixCommon(rows),
-          _semiring(semiring) {}
+        Semiring const*                                                  sr,
+        std::initializer_list<std::initializer_list<scalar_type>> const& rws)
+        : MatrixDynamicDim(rws.size(), rws.begin()->size()),
+          MatrixCommon(rws),
+          _semiring(sr) {}
 
     //! \brief Construct a matrix over a given semiring (std::vector
     //! of std::vector).
@@ -3282,12 +3282,11 @@ namespace libsemigroups {
     //! \complexity
     //! \f$O(mn)\f$ where \f$m\f$ is \ref number_of_rows and \f$n\f$ is \ref
     //! number_of_cols.
-    explicit DynamicMatrix(Semiring const* semiring,
-                           std::vector<std::vector<scalar_type>> const& rows)
-        : MatrixDynamicDim(rows.size(),
-                           (rows.empty() ? 0 : rows.begin()->size())),
-          MatrixCommon(rows),
-          _semiring(semiring) {}
+    explicit DynamicMatrix(Semiring const*                              sr,
+                           std::vector<std::vector<scalar_type>> const& rws)
+        : MatrixDynamicDim(rws.size(), (rws.empty() ? 0 : rws.begin()->size())),
+          MatrixCommon(rws),
+          _semiring(sr) {}
 
     //! \brief Construct a row over a given semiring (std::initializer_list).
     //!
@@ -3302,11 +3301,9 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! \f$O(mn)\f$ where \f$m\f$ is \ref number_of_cols.
-    explicit DynamicMatrix(Semiring const*                           semiring,
-                           std::initializer_list<scalar_type> const& row)
-        : MatrixDynamicDim(1, row.size()),
-          MatrixCommon(row),
-          _semiring(semiring) {}
+    explicit DynamicMatrix(Semiring const*                           sr,
+                           std::initializer_list<scalar_type> const& rw)
+        : MatrixDynamicDim(1, rw.size()), MatrixCommon(rw), _semiring(sr) {}
 
     //! \brief Construct a row over a given semiring (\ref RowView).
     //!
@@ -4242,7 +4239,7 @@ namespace libsemigroups {
     //!
     //! \param x the matrix to check.
     template <typename Mat>
-    constexpr std::enable_if_t<IsIntMat<Mat>> throw_if_bad_entry(Mat const& x) {
+    std::enable_if_t<IsIntMat<Mat>> throw_if_bad_entry(Mat const& x) {
       using scalar_type = typename Mat::scalar_type;
       auto it = std::find_if(x.cbegin(), x.cend(), [](scalar_type val) {
         return val == POSITIVE_INFINITY || val == NEGATIVE_INFINITY;
@@ -8254,7 +8251,6 @@ namespace libsemigroups {
     auto const  lbrace = braces[0], rbrace = braces[1];
     if (R != 0 && C != 0) {
       result += lbrace;
-      std::string csep = "";
       for (size_t r = 0; r < R; ++r) {
         result += fmt::format("{}{}", rindent, lbrace);
         rindent          = std::string(prefix.size() + 1, ' ');

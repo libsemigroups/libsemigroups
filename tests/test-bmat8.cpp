@@ -643,11 +643,11 @@ namespace libsemigroups {
     std::vector<uint8_t> basis_rows;
 
     for (auto it = S.begin(); it < S.end(); it++) {
-      BMat8 x = *it;
+      BMat8 y = *it;
       rows.clear();
-      bmat8::push_back_rows(rows, x);
+      bmat8::push_back_rows(rows, y);
       basis_rows.clear();
-      bmat8::push_back_rows(basis_rows, bmat8::row_space_basis(x));
+      bmat8::push_back_rows(basis_rows, bmat8::row_space_basis(y));
       for (uint8_t row : basis_rows) {
         REQUIRE((row == 0
                  || std::find(rows.begin(), rows.end(), row) != rows.end()));

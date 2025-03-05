@@ -25,6 +25,9 @@
 // * there's an issue if you add a word containing a very large letter, then
 // add more words so that the unique letter used is now in the word with the
 // very large letter
+// * possibly move more of the inline functions in the ukkoken namespace into
+// the cpp file. Seemingly g++-14 complains about some of these (maybe the
+// others just aren't currently tested).
 
 #ifndef LIBSEMIGROUPS_UKKONEN_HPP_
 #define LIBSEMIGROUPS_UKKONEN_HPP_
@@ -370,22 +373,22 @@ namespace libsemigroups {
     //! \brief Default copy constructor.
     //!
     //! Default copy constructor.
-    Ukkonen(Ukkonen const&) = default;
+    Ukkonen(Ukkonen const&);
 
     //! \brief Default move constructor.
     //!
     //! Default move constructor.
-    Ukkonen(Ukkonen&&) = default;
+    Ukkonen(Ukkonen&&);
 
     //! \brief Default copy assignment.
     //!
     //! Default copy assignment.
-    Ukkonen& operator=(Ukkonen const&) = default;
+    Ukkonen& operator=(Ukkonen const&);
 
     //! \brief Default move assignment.
     //!
     //! Default move assignment.
-    Ukkonen& operator=(Ukkonen&&) = default;
+    Ukkonen& operator=(Ukkonen&&);
 
     ~Ukkonen();
 
@@ -1011,9 +1014,7 @@ namespace libsemigroups {
     //! \brief \copybrief Ukkonen::add_word_no_checks
     //!
     //! See \ref Ukkonen::add_word_no_checks.
-    inline void add_word_no_checks(Ukkonen& u, word_type const& w) {
-      u.add_word_no_checks(w.cbegin(), w.cend());
-    }
+    void add_word_no_checks(Ukkonen& u, word_type const& w);
 
     //! \brief \copybrief Ukkonen::add_word_no_checks
     //!
@@ -1037,9 +1038,7 @@ namespace libsemigroups {
     //! \brief \copybrief Ukkonen::add_word_no_checks
     //!
     //! See \ref Ukkonen::add_word_no_checks.
-    inline void add_word_no_checks(Ukkonen& u, char const* w) {
-      add_word_no_checks(u, w, w + std::strlen(w));
-    }
+    void add_word_no_checks(Ukkonen& u, char const* w);
 
     //! \brief \copybrief Ukkonen::add_word_no_checks
     //!
@@ -1049,9 +1048,7 @@ namespace libsemigroups {
     //! throws.
     //!
     //! \sa \ref Ukkonen::throw_if_contains_unique_letter.
-    inline void add_word(Ukkonen& u, word_type const& w) {
-      u.add_word(w.cbegin(), w.cend());
-    }
+    void add_word(Ukkonen& u, word_type const& w);
 
     //! \brief \copybrief Ukkonen::add_word_no_checks
     //!
@@ -1090,9 +1087,7 @@ namespace libsemigroups {
     //! w + std::strlen(w))` throws.
     //!
     //! \sa \ref Ukkonen::throw_if_contains_unique_letter.
-    inline void add_word(Ukkonen& u, char const* w) {
-      add_word(u, w, w + std::strlen(w));
-    }
+    void add_word(Ukkonen& u, char const* w);
 
     //! \brief Add all words in a std::vector to a Ukkonen object.
     //!
@@ -1169,16 +1164,14 @@ namespace libsemigroups {
     //! \brief \copybrief Ukkonen::traverse_no_checks(Iterator, Iterator) const
     //!
     //! See \ref Ukkonen::traverse_no_checks(Iterator, Iterator) const.
-    inline auto traverse_no_checks(Ukkonen const& u, word_type const& w) {
-      return u.traverse_no_checks(w.cbegin(), w.cend());
-    }
+    std::pair<Ukkonen::State, word_type::const_iterator>
+    traverse_no_checks(Ukkonen const& u, word_type const& w);
 
     //! \brief \copybrief Ukkonen::traverse_no_checks(Iterator, Iterator) const
     //!
     //! See \ref Ukkonen::traverse_no_checks(Iterator, Iterator) const.
-    inline auto traverse_no_checks(Ukkonen const& u, char const* w) {
-      return u.traverse_no_checks(w, w + std::strlen(w));
-    }
+    std::pair<Ukkonen::State, char const*> traverse_no_checks(Ukkonen const& u,
+                                                              char const*    w);
 
     //! \brief \copybrief Ukkonen::traverse_no_checks(Iterator, Iterator) const
     //!
@@ -1201,9 +1194,9 @@ namespace libsemigroups {
     //! `u.throw_if_contains_unique_letter(w.cbegin(),  w.cend())` throws.
     //!
     //! \sa \ref Ukkonen::throw_if_contains_unique_letter.
-    inline auto traverse(Ukkonen const& u, word_type const& w) {
-      return u.traverse(w.cbegin(), w.cend());
-    }
+    //!
+    std::pair<Ukkonen::State, word_type::const_iterator>
+    traverse(Ukkonen const& u, word_type const& w);
 
     //! \brief \copybrief Ukkonen::traverse_no_checks(Iterator, Iterator) const
     //!
@@ -1213,9 +1206,8 @@ namespace libsemigroups {
     //! w + std::strlen(w))` throws.
     //!
     //! \sa \ref Ukkonen::throw_if_contains_unique_letter.
-    inline auto traverse(Ukkonen const& u, char const* w) {
-      return u.traverse(w, w + std::strlen(w));
-    }
+    std::pair<Ukkonen::State, char const*> traverse(Ukkonen const& u,
+                                                    char const*    w);
 
     //! \brief \copybrief Ukkonen::traverse_no_checks(Ukkonen::State&, Iterator,
     //! Iterator) const
@@ -1234,22 +1226,18 @@ namespace libsemigroups {
     //!
     //! See \ref Ukkonen::traverse_no_checks(Ukkonen::State&, Iterator,
     //! Iterator) const.
-    inline auto traverse_no_checks(Ukkonen::State&  st,
-                                   Ukkonen const&   u,
-                                   word_type const& w) {
-      return u.traverse_no_checks(st, w.cbegin(), w.cend());
-    }
+    word_type::const_iterator traverse_no_checks(Ukkonen::State&  st,
+                                                 Ukkonen const&   u,
+                                                 word_type const& w);
 
     //! \brief \copybrief Ukkonen::traverse_no_checks(Ukkonen::State&, Iterator,
     //! Iterator) const
     //!
     //! See \ref Ukkonen::traverse_no_checks(Ukkonen::State&, Iterator,
     //! Iterator) const.
-    inline auto traverse_no_checks(Ukkonen::State& st,
+    char const* traverse_no_checks(Ukkonen::State& st,
                                    Ukkonen const&  u,
-                                   char const*     w) {
-      return u.traverse_no_checks(st, w, w + std::strlen(w));
-    }
+                                   char const*     w);
 
     //! \brief \copybrief Ukkonen::traverse_no_checks(Ukkonen::State&, Iterator,
     //! Iterator) const
@@ -1276,11 +1264,9 @@ namespace libsemigroups {
     //! `u.throw_if_contains_unique_letter(w.cbegin(),  w.cend())` throws.
     //!
     //! \sa \ref Ukkonen::throw_if_contains_unique_letter.
-    inline auto traverse(Ukkonen::State&  st,
-                         Ukkonen const&   u,
-                         word_type const& w) {
-      return u.traverse(st, w.cbegin(), w.cend());
-    }
+    word_type::const_iterator traverse(Ukkonen::State&  st,
+                                       Ukkonen const&   u,
+                                       word_type const& w);
 
     //! \brief \copybrief Ukkonen::traverse_no_checks(Ukkonen::State&, Iterator,
     //! Iterator) const
@@ -1292,9 +1278,7 @@ namespace libsemigroups {
     //! w + std::strlen(w))` throws.
     //!
     //! \sa \ref Ukkonen::throw_if_contains_unique_letter.
-    inline auto traverse(Ukkonen::State& st, Ukkonen const& u, char const* w) {
-      return u.traverse(st, w, w + std::strlen(w));
-    }
+    char const* traverse(Ukkonen::State& st, Ukkonen const& u, char const* w);
 
     //! \brief Check if a word is a subword of any word in a suffix tree.
     //!
@@ -1335,17 +1319,13 @@ namespace libsemigroups {
     //! Iterator)
     //!
     //! See \ref is_subword_no_checks(Ukkonen const&, Iterator, Iterator).
-    inline bool is_subword_no_checks(Ukkonen const& u, char const* w) {
-      return is_subword_no_checks(u, w, w + std::strlen(w));
-    }
+    bool is_subword_no_checks(Ukkonen const& u, char const* w);
 
     //! \brief \copybrief is_subword_no_checks(Ukkonen const&, Iterator,
     //! Iterator)
     //!
     //! See \ref is_subword_no_checks(Ukkonen const&, Iterator, Iterator).
-    inline bool is_subword_no_checks(Ukkonen const& u, word_type const& w) {
-      return is_subword_no_checks(u, w.cbegin(), w.cend());
-    }
+    bool is_subword_no_checks(Ukkonen const& u, word_type const& w);
 
     //! \brief \copybrief is_subword_no_checks(Ukkonen const&, Iterator,
     //! Iterator)
@@ -1385,9 +1365,7 @@ namespace libsemigroups {
     //! w + std::strlen(w))` throws.
     //!
     //! \sa \ref Ukkonen::throw_if_contains_unique_letter.
-    inline bool is_subword(Ukkonen const& u, char const* w) {
-      return is_subword(u, w, w + std::strlen(w));
-    }
+    bool is_subword(Ukkonen const& u, char const* w);
 
     //! \brief \copybrief is_subword_no_checks(Ukkonen const&, Iterator,
     //! Iterator)
@@ -1398,9 +1376,7 @@ namespace libsemigroups {
     //! throws.
     //!
     //! \sa \ref Ukkonen::throw_if_contains_unique_letter.
-    inline bool is_subword(Ukkonen const& u, word_type const& w) {
-      return is_subword(u, w.cbegin(), w.cend());
-    }
+    bool is_subword(Ukkonen const& u, word_type const& w);
 
     //! \brief Check if a word is a suffix of any word in a suffix tree.
     //!
@@ -1443,17 +1419,13 @@ namespace libsemigroups {
     //! See \ref is_suffix_no_checks(Ukkonen const&, Iterator, Iterator).
     // This function is required so that we can use initialiser list, as an
     // argument to is_suffix_no_checks
-    inline bool is_suffix_no_checks(Ukkonen const& u, word_type const& w) {
-      return is_suffix_no_checks(u, w.cbegin(), w.cend());
-    }
+    bool is_suffix_no_checks(Ukkonen const& u, word_type const& w);
 
     //! \brief \copybrief is_suffix_no_checks(Ukkonen const&, Iterator,
     //! Iterator)
     //!
     //! See \ref is_suffix_no_checks(Ukkonen const&, Iterator, Iterator).
-    inline bool is_suffix_no_checks(Ukkonen const& u, char const* w) {
-      return is_suffix_no_checks(u, w, w + std::strlen(w));
-    }
+    bool is_suffix_no_checks(Ukkonen const& u, char const* w);
 
     //! \brief \copybrief is_suffix_no_checks(Ukkonen const&, Iterator,
     //! Iterator)
@@ -1495,9 +1467,7 @@ namespace libsemigroups {
     //! \sa \ref Ukkonen::throw_if_contains_unique_letter.
     // This function is required so that we can use initialiser list, as an
     // argument to is_suffix
-    inline bool is_suffix(Ukkonen const& u, word_type const& w) {
-      return is_suffix(u, w.cbegin(), w.cend());
-    }
+    bool is_suffix(Ukkonen const& u, word_type const& w);
 
     //! \brief \copybrief is_suffix_no_checks(Ukkonen const&, Iterator,
     //! Iterator)
@@ -1508,9 +1478,7 @@ namespace libsemigroups {
     //! w + std::strlen(w))` throws.
     //!
     //! \sa \ref Ukkonen::throw_if_contains_unique_letter.
-    inline bool is_suffix(Ukkonen const& u, char const* w) {
-      return is_suffix(u, w, w + std::strlen(w));
-    }
+    bool is_suffix(Ukkonen const& u, char const* w);
 
     //! \brief Find the maximal prefix of a word occurring in two different
     //! places in a word in a suffix tree.

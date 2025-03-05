@@ -25,7 +25,6 @@
 // for solving the word problem in small overlap monoids, and a novel algorithm
 // for computing normal forms in small overlap monoids, by Maria Tsalakou.
 
-#include "libsemigroups/ukkonen.hpp"
 namespace libsemigroups {
   // Data structure for caching the regularly accessed parts of the
   // relation words.
@@ -39,7 +38,42 @@ namespace libsemigroups {
     internal_type XY;
     internal_type YZ;
     internal_type XYZ;
+
+    RelationWords();
+    RelationWords(RelationWords const&);
+    RelationWords(RelationWords&&);
+    RelationWords& operator=(RelationWords const&);
+    RelationWords& operator=(RelationWords&&);
+    ~RelationWords();
   };
+
+  template <typename Word>
+  Kambites<Word>::RelationWords::RelationWords() = default;
+
+  template <typename Word>
+  Kambites<Word>::RelationWords::RelationWords(
+      typename Kambites<Word>::RelationWords const&)
+      = default;
+
+  template <typename Word>
+  Kambites<Word>::RelationWords::RelationWords(
+      typename Kambites<Word>::RelationWords&&)
+      = default;
+
+  template <typename Word>
+  typename Kambites<Word>::RelationWords&
+  Kambites<Word>::RelationWords::operator=(
+      typename Kambites<Word>::RelationWords const&)
+      = default;
+
+  template <typename Word>
+  typename Kambites<Word>::RelationWords&
+  Kambites<Word>::RelationWords::operator=(
+      typename Kambites<Word>::RelationWords&&)
+      = default;
+
+  template <typename Word>
+  Kambites<Word>::RelationWords::~RelationWords() = default;
 
   template <typename Word>
   class Kambites<Word>::Complements {
@@ -711,7 +745,14 @@ namespace libsemigroups {
   Kambites<Word>::X(size_t i) const {
     LIBSEMIGROUPS_ASSERT(i < _presentation.rules.size());
     LIBSEMIGROUPS_ASSERT(finished_impl());
+#if defined(__GNUC__) && !defined(__clang__)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Winline"
+#endif
     init_XYZ_data(i);
+#if defined(__GNUC__) && !defined(__clang__)
+#pragma GCC diagnostic pop
+#endif
     return _XYZ_data[i].X;
   }
 
@@ -720,7 +761,14 @@ namespace libsemigroups {
   Kambites<Word>::Y(size_t i) const {
     LIBSEMIGROUPS_ASSERT(i < _presentation.rules.size());
     LIBSEMIGROUPS_ASSERT(finished_impl());
+#if defined(__GNUC__) && !defined(__clang__)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Winline"
+#endif
     init_XYZ_data(i);
+#if defined(__GNUC__) && !defined(__clang__)
+#pragma GCC diagnostic pop
+#endif
     return _XYZ_data[i].Y;
   }
 
@@ -729,7 +777,14 @@ namespace libsemigroups {
   Kambites<Word>::Z(size_t i) const {
     LIBSEMIGROUPS_ASSERT(i < _presentation.rules.size());
     LIBSEMIGROUPS_ASSERT(finished_impl());
+#if defined(__GNUC__) && !defined(__clang__)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Winline"
+#endif
     init_XYZ_data(i);
+#if defined(__GNUC__) && !defined(__clang__)
+#pragma GCC diagnostic pop
+#endif
     return _XYZ_data[i].Z;
   }
 
@@ -738,7 +793,14 @@ namespace libsemigroups {
   Kambites<Word>::XY(size_t i) const {
     LIBSEMIGROUPS_ASSERT(i < _presentation.rules.size());
     LIBSEMIGROUPS_ASSERT(finished_impl());
+#if defined(__GNUC__) && !defined(__clang__)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Winline"
+#endif
     init_XYZ_data(i);
+#if defined(__GNUC__) && !defined(__clang__)
+#pragma GCC diagnostic pop
+#endif
     return _XYZ_data[i].XY;
   }
 
@@ -747,7 +809,14 @@ namespace libsemigroups {
   Kambites<Word>::YZ(size_t i) const {
     LIBSEMIGROUPS_ASSERT(i < _presentation.rules.size());
     LIBSEMIGROUPS_ASSERT(finished_impl());
+#if defined(__GNUC__) && !defined(__clang__)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Winline"
+#endif
     init_XYZ_data(i);
+#if defined(__GNUC__) && !defined(__clang__)
+#pragma GCC diagnostic pop
+#endif
     return _XYZ_data[i].YZ;
   }
 
@@ -756,7 +825,14 @@ namespace libsemigroups {
   Kambites<Word>::XYZ(size_t i) const {
     LIBSEMIGROUPS_ASSERT(i < _presentation.rules.size());
     LIBSEMIGROUPS_ASSERT(finished_impl());
+#if defined(__GNUC__) && !defined(__clang__)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Winline"
+#endif
     init_XYZ_data(i);
+#if defined(__GNUC__) && !defined(__clang__)
+#pragma GCC diagnostic pop
+#endif
     return _XYZ_data[i].XYZ;
   }
 

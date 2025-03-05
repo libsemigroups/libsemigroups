@@ -21,6 +21,9 @@
 namespace libsemigroups {
 
   template <typename Word>
+  ToddCoxeter<Word>::~ToddCoxeter() = default;
+
+  template <typename Word>
   ToddCoxeter<Word>& ToddCoxeter<Word>::init() {
     ToddCoxeterImpl::init();
     _generating_pairs.clear();

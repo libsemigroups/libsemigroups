@@ -76,6 +76,18 @@ namespace libsemigroups {
     return *this;
   }
 
+  bool Reporter::report() const {
+    auto t       = std::chrono::high_resolution_clock::now();
+    auto elapsed = t - _last_report.load();
+
+    if (elapsed > _report_time_interval) {
+      _last_report = t;
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   ////////////////////////////////////////////////////////////////////////
   // Runner - constructors - public
   ////////////////////////////////////////////////////////////////////////
