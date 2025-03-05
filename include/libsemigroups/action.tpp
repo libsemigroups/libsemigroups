@@ -144,6 +144,7 @@ namespace libsemigroups {
   Action<Element, Point, Func, Traits, LeftOrRight>&
   Action<Element, Point, Func, Traits, LeftOrRight>::operator=(
       Action const& that) {
+    Runner::operator=(that);
     _gens  = that._gens;
     _graph = that._graph;
     for (auto pt : _orb) {
