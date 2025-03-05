@@ -170,10 +170,12 @@ namespace libsemigroups {
             side LeftOrRight>
   Action<Element, Point, Func, Traits, LeftOrRight>&
   Action<Element, Point, Func, Traits, LeftOrRight>::operator=(Action&& that) {
-    Runner::operator=(that);
-    _gens                      = std::move(that._gens);
-    _graph                     = std::move(that._graph);
-    _orb                       = std::move(that._orb);
+    Runner::operator=(std::move(that));
+    _gens  = std::move(that._gens);
+    _graph = std::move(that._graph);
+    // We swap the _orb in "this" and "that" so that the elements in both of the
+    // objects are properly freed in the destructor.
+    std::swap(_orb, that._orb);
     _map                       = std::move(that._map);
     _multipliers_from_scc_root = std::move(that._multipliers_from_scc_root);
     _multipliers_to_scc_root   = std::move(that._multipliers_to_scc_root);
