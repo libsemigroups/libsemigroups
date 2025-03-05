@@ -97,13 +97,15 @@ namespace libsemigroups {
       return std::make_pair(result, c);
     }
 
-    void disjoint_union_inplace_no_checks(StephenGraph const& that) {
+    void disjoint_union_inplace_no_checks(StephenGraph& that) {
+      word_graph::standardize(that);
+      LIBSEMIGROUPS_ASSERT(word_graph::is_standardized(that));
       size_t const N = number_of_nodes_active();
       // TODO(2): the following 2 lines are a bit awkward
-      WordGraphWithSources_::add_nodes(that.number_of_nodes());
-      NodeManager<node_type>::add_active_nodes(that.number_of_nodes());
+      WordGraphWithSources_::add_nodes(that.number_of_nodes_active());
+      NodeManager<node_type>::add_active_nodes(that.number_of_nodes_active());
 
-      for (auto n : that.nodes()) {
+      for (node_type n = 0; n < that.number_of_nodes_active(); ++n) {
         for (auto a : that.labels()) {
           auto m = that.target_no_checks(n, a);
           if (m != UNDEFINED) {
