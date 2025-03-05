@@ -19,6 +19,8 @@
 // This file includes relevant headers from eigen and suppresses the compiler
 // warnings emitted from it.
 
+#include "libsemigroups/config.hpp"  // for LIBSEMIGROUPS_EIGEN_ENABLED
+
 #ifndef LIBSEMIGROUPS_DETAIL_EIGEN_HPP_
 #define LIBSEMIGROUPS_DETAIL_EIGEN_HPP_
 #ifdef LIBSEMIGROUPS_EIGEN_ENABLED
