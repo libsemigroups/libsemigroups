@@ -284,10 +284,10 @@ namespace libsemigroups {
 
     struct InternalVecCopy : private detail::BruidhinnTraits<Element> {
       void operator()(std::vector<internal_element_type> const& source,
-                      std::vector<internal_element_type> const& target) {
+                      std::vector<internal_element_type>&       target) {
         InternalVecFree()(target);
         for (auto it = source.cbegin(); it != source.cend(); ++it) {
-          target.emplace_back(this->internal_copy(*it));
+          target.push_back(this->internal_copy(*it));
         }
       }
     };
