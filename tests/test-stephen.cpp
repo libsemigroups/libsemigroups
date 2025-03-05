@@ -592,7 +592,8 @@ namespace libsemigroups {
     auto                    rg = ReportGuard(true);
     ToWord                  to_word("abcdefg");
     Presentation<word_type> p;
-    REQUIRE_THROWS_AS(Stephen(p), LibsemigroupsException);
+    // TODO(2): Once we have make<Stephen> check that this error is thrown
+    // REQUIRE_THROWS_AS(Stephen(p), LibsemigroupsException);
     p.alphabet(to_word("abcdefg"));
 
     Stephen S(p);
