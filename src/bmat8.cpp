@@ -244,7 +244,8 @@ namespace libsemigroups {
     return os;
   }
 
-  std::string to_string(BMat8 const& x, std::string const& braces) {
+  std::string to_human_readable_repr(BMat8 const&       x,
+                                     std::string const& braces) {
     if (braces.size() != 2) {
       LIBSEMIGROUPS_EXCEPTION(
           "the 2nd argument (braces) must have size 2, found {}",

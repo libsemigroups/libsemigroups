@@ -191,7 +191,7 @@ namespace libsemigroups {
     }
   }
 
-  std::string to_string(AhoCorasick& ac) {
+  std::string to_human_readable_repr(AhoCorasick& ac) {
     auto        n_nodes = ac.number_of_nodes();
     std::string nodes
         = (n_nodes == 1) ? "1 node" : std::to_string(n_nodes) + " nodes";
