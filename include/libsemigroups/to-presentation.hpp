@@ -381,7 +381,7 @@ namespace libsemigroups {
   // a compilation error is thrown.
   // NOTE: not sure this is true anymore so just leaving it out
 #ifdef LIBSEMIGROUPS_PARSED_BY_DOXYGEN
-  // FIXME this is the same hack as elsewhere because Doxygen conflates
+  // FIXME(1) this is the same hack as elsewhere because Doxygen conflates
   // functions with trailing return type but the same name and signature.
   template <template <typename...> typename Thing, typename Word>
   auto to(Presentation<Word> cont& p) -> std::enable_if_t<

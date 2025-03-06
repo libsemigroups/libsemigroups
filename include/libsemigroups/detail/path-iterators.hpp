@@ -358,7 +358,7 @@ namespace libsemigroups {
         return &(*_it);
       }
 
-      // FIXME Will fail if there are no paths!
+      // FIXME(1) Will fail if there are no paths!
       [[nodiscard]] node_type target() const noexcept {
         return _target;
       }

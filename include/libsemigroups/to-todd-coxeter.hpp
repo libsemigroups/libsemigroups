@@ -82,7 +82,7 @@ namespace libsemigroups {
   //! \ref FroidurePinBase::left_cayley_graph or the \ref
   //! FroidurePinBase::right_cayley_graph of \p fpb.
 #ifdef LIBSEMIGROUPS_PARSED_BY_DOXYGEN
-  // FIXME doxygen conflates this version of "to" with the one of the same
+  // FIXME(1) doxygen conflates this version of "to" with the one of the same
   // signature in "to-cong.hpp" and so we misspell one of the types of the
   // parameters to avoid this
   template <typename Result, typename Node>

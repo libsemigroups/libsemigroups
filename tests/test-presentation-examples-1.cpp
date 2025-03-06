@@ -1060,7 +1060,7 @@ namespace libsemigroups {
     S.run();
     REQUIRE(S.number_of_rules() == 1430);
 
-    //  FIXME the following doesn't seem to work
+    //  FIXME(1) the following doesn't seem to work
     // tc.init(congruence_kind::twosided, S.right_cayley_graph());
     // REQUIRE(tc.number_of_classes() == 322'021);  // Works!
   }

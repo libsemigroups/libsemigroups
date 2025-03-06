@@ -1204,6 +1204,7 @@ namespace libsemigroups {
     ToWord to_word;
     REQUIRE(to_word("abc") == 012_w);
     REQUIRE(to_word("ABC") == word_type({26, 27, 28}));
+    // FIXME(1) this doesn't work REQUIRE(to_word('a') == 0);
   }
 
   LIBSEMIGROUPS_TEST_CASE("ToWord", "040", "code coverage", "[quick]") {

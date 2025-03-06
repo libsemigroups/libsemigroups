@@ -907,7 +907,7 @@ namespace libsemigroups {
               -= (last.get_wrapped_iter() - _container.begin(view_last));
           _container.begin(view_last) = last.get_wrapped_iter();
           if (_container.empty(view_first)) {
-            view_first--;  // FIXME this underflows if view_first == 0
+            view_first--;  // FIXME(1) this underflows if view_first == 0
           }
           if (_container.empty(view_last)) {
             view_last++;

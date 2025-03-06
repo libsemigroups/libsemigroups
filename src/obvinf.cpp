@@ -239,14 +239,17 @@ namespace libsemigroups {
   bool is_obviously_infinite(detail::ToddCoxeterImpl const& tc) {
     auto const& d = tc.current_word_graph();
     if (tc.finished()
-        || word_graph::is_complete(
-            d, d.cbegin_active_nodes(), d.cend_active_nodes())) {
-      // FIXME(0) this doesn't work as expected ATM, since the word graph can
-      // sometimes be empty (0 nodes), but with 1 active node, so this line
-      // can throw (because the range pointed at by d.cbegin_active_nodes(),
-      // d.cend_active_nodes() is non-empty but d itself has no nodes)
-      // This is an initialization issue for ToddCoxeterImpl, it should always
-      // be true the number of nodes >= number of active nodes.
+        || (d.number_of_nodes() != 0
+            && word_graph::is_complete(
+                d, d.cbegin_active_nodes(), d.cend_active_nodes()))) {
+      // TODO(1) Check thoroughly that this works as intended.
+      // Without the check on the number of nodes, this doesn't work as expected
+      // ATM, since the word graph can sometimes be empty (0 nodes), but with 1
+      // active node, so this line can throw (because the range pointed at by
+      // d.cbegin_active_nodes(), d.cend_active_nodes() is non-empty but d
+      // itself has no nodes) This is an initialization issue for
+      // ToddCoxeterImpl, it should always be true the number of nodes >= number
+      // of active nodes.
       return false;
     }
     auto                p = tc.internal_presentation();
