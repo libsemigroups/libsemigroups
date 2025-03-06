@@ -241,7 +241,7 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("Konieczny",
                           "028",
-                          "copy constructor",
+                          "copy constructors",
                           "[quick][bmat8]") {
     auto                     rg = ReportGuard(REPORT);
     std::vector<BMat8> const gens
@@ -256,8 +256,8 @@ namespace libsemigroups {
     Konieczny<BMat8> KS(gens);
     Konieczny<BMat8> KT(KS);
     KS.run();
-    // KT.run();
 
+    REQUIRE(KT.current_size() == 0);
     REQUIRE(KT.size() == 10160);
 
     Konieczny<BMat8> KU(KT);
@@ -270,10 +270,55 @@ namespace libsemigroups {
         [&KV]() -> bool { return KV.current_number_of_D_classes() > 20; });
     size_t found_classes = KV.current_number_of_D_classes();
 
-    Konieczny<BMat8> KW(KV);
+    Konieczny<BMat8> KW;
+    KW = KV;
     REQUIRE(KW.size() == 10160);
     REQUIRE(KW.number_of_D_classes() == 66);
     REQUIRE(KV.current_number_of_D_classes() == found_classes);
+
+    KV.run();
+    REQUIRE(KV.size() == 10160);
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Konieczny",
+                          "029",
+                          "move constructors",
+                          "[quick][bmat8]") {
+    auto                     rg = ReportGuard(REPORT);
+    std::vector<BMat8> const gens
+        = {BMat8({{0, 1, 0, 0}, {1, 0, 0, 1}, {1, 0, 0, 1}, {0, 1, 1, 0}}),
+           BMat8({{0, 1, 0, 1}, {0, 1, 1, 1}, {0, 0, 1, 0}, {1, 1, 1, 1}}),
+           BMat8({{1, 1, 0, 1}, {0, 1, 1, 0}, {0, 0, 0, 0}, {0, 1, 0, 1}}),
+           BMat8({{0, 0, 1, 0}, {0, 0, 1, 1}, {0, 0, 0, 0}, {1, 0, 0, 0}}),
+           BMat8({{1, 1, 0, 1}, {1, 1, 1, 1}, {1, 0, 1, 0}, {0, 1, 1, 0}}),
+           BMat8({{0, 1, 0, 0}, {0, 1, 1, 0}, {1, 0, 1, 0}, {0, 1, 0, 1}}),
+           BMat8({{0, 1, 0, 0}, {0, 0, 0, 1}, {1, 0, 0, 0}, {0, 0, 1, 0}})};
+
+    Konieczny<BMat8> KS(gens);
+    Konieczny<BMat8> KT(std::move(KS));
+
+    REQUIRE(KT.current_size() == 0);
+    KT.run();
+    REQUIRE(KT.current_size() == 10160);
+
+    Konieczny<BMat8> KU = std::move(KT);
+
+    REQUIRE(KU.size() == 10160);
+    REQUIRE(KU.number_of_D_classes() == 66);
+
+    Konieczny<BMat8> KV(gens);
+    KV.run_until(
+        [&KV]() -> bool { return KV.current_number_of_D_classes() > 20; });
+    size_t found_classes = KV.current_number_of_D_classes();
+
+    Konieczny<BMat8> KW;
+    KW = std::move(KV);
+    REQUIRE(KW.current_number_of_D_classes() == found_classes);
+    KW.run();
+
+    LIBSEMIGROUPS_ASSERT(KW.number_of_D_classes() == 66);
+
+    LIBSEMIGROUPS_ASSERT(KW.size() == 10160);
 
     KV.run();
     REQUIRE(KV.size() == 10160);

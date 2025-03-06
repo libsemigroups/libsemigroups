@@ -7,7 +7,7 @@
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 //
-// This program is distributed in the hope that it will be useful,
+// This program is distributed in the hope That it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
@@ -54,44 +54,18 @@ namespace libsemigroups {
 
   template <typename Element, typename Traits>
   Konieczny<Element, Traits>::Konieczny(Konieczny const& that) : Konieczny() {
-    init(that);
+    *this = that;
   }
 
   template <typename Element, typename Traits>
-  Konieczny<Element, Traits>& Konieczny<Element, Traits>::init() {
-    Runner::init();
-
-    free_internals();
-    _adjoined_identity_contained = false;
-    _D_classes.clear();
-    _D_rels.clear();
-    _data_initialised = false;
-    _degree           = UNDEFINED;
-    _gens.clear();
-    _group_indices.clear();
-    _group_indices_rev.clear();
-    _lambda_orb.init();
-    _lambda_to_D_map.clear();
-    _nonregular_reps.clear();
-    _rank_state = nullptr;
-    _ranks.clear();
-    _regular_D_classes.clear();
-    _regular_reps.clear();
-    _reps_processed = 0;
-    _rho_orb.init();
-    _rho_to_D_map.clear();
-    _run_initialised = false;
-    // TODO clear element pool, change one, _tmp*s?
-    _lambda_orb.cache_scc_multipliers(true);
-    _rho_orb.cache_scc_multipliers(true);
-
-    return *this;
+  Konieczny<Element, Traits>::Konieczny(Konieczny&& that) : Konieczny() {
+    *this = std::move(that);
   }
 
   template <typename Element, typename Traits>
   Konieczny<Element, Traits>&
-  Konieczny<Element, Traits>::init(Konieczny<Element, Traits> const& that) {
-    Runner::init(that);
+  Konieczny<Element, Traits>::operator=(Konieczny const& that) {
+    Runner::operator=(that);
 
     free_internals();
 
@@ -177,6 +151,72 @@ namespace libsemigroups {
         x._elt = this->internal_copy(x._elt);
       }
     }
+
+    return *this;
+  }
+
+  template <typename Element, typename Traits>
+  Konieczny<Element, Traits>&
+  Konieczny<Element, Traits>::operator=(Konieczny&& that) {
+    Runner::operator=(that);
+
+    // deal with all the easy data first
+    _adjoined_identity_contained = std::move(that._adjoined_identity_contained);
+    _D_rels                      = std::move(that._D_rels);
+    _data_initialised            = std::move(that._data_initialised);
+    _degree                      = std::move(that._degree);
+    _run_initialised             = std::move(that._run_initialised);
+    _group_indices               = std::move(that._group_indices);
+    _group_indices_rev           = std::move(that._group_indices_rev);
+    _lambda_orb                  = std::move(that._lambda_orb);
+    _rho_orb                     = std::move(that._rho_orb);
+    _reps_processed              = std::move(that._reps_processed);
+
+    std::swap(_D_classes, that._D_classes);
+    for (DClass* x : _D_classes) {
+      x->set_parent(this);
+    }
+    std::swap(
+        _regular_D_classes,
+        that._regular_D_classes);  // not strictly necessary, but reassuring
+
+    std::swap(_gens, that._gens);
+    std::swap(_nonregular_reps, that._nonregular_reps);
+    std::swap(_one, that._one);
+    std::swap(_rank_state, that._rank_state);
+    std::swap(_ranks, that._ranks);  // used in internal_free
+    std::swap(_regular_reps, that._regular_reps);
+
+    return *this;
+  }
+
+  template <typename Element, typename Traits>
+  Konieczny<Element, Traits>& Konieczny<Element, Traits>::init() {
+    Runner::init();
+
+    free_internals();
+    _adjoined_identity_contained = false;
+    _D_classes.clear();
+    _D_rels.clear();
+    _data_initialised = false;
+    _degree           = UNDEFINED;
+    _gens.clear();
+    _group_indices.clear();
+    _group_indices_rev.clear();
+    _lambda_orb.init();
+    _lambda_to_D_map.clear();
+    _nonregular_reps.clear();
+    _rank_state = nullptr;
+    _ranks.clear();
+    _regular_D_classes.clear();
+    _regular_reps.clear();
+    _reps_processed = 0;
+    _rho_orb.init();
+    _rho_to_D_map.clear();
+    _run_initialised = false;
+    // TODO clear element pool, change one, _tmp*s?
+    _lambda_orb.cache_scc_multipliers(true);
+    _rho_orb.cache_scc_multipliers(true);
 
     return *this;
   }

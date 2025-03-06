@@ -324,7 +324,6 @@ namespace libsemigroups {
       }
     };
 
-    // RepInfo does not own its internal_element_type member
     struct RepInfo {
       RepInfo(D_class_index_type    D_idx,
               internal_element_type elt,
@@ -366,21 +365,19 @@ namespace libsemigroups {
     //! \sa add_generator and add_generators
     Konieczny& init();
 
-    Konieczny& init(Konieczny const&);
-
     Konieczny(Konieczny const&);
 
     //! Deleted.
     // TODO undelete
-    Konieczny(Konieczny&&) = delete;
+    Konieczny(Konieczny&&);
 
     //! Deleted.
     // TODO undelete
-    Konieczny& operator=(Konieczny const&) = delete;
+    Konieczny& operator=(Konieczny const&);
 
     //! Deleted.
     // TODO undelete
-    Konieczny& operator=(Konieczny&&) = delete;
+    Konieczny& operator=(Konieczny&&);
 
     //! Construct from generators.
     //!
