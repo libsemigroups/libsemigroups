@@ -1248,6 +1248,7 @@ endif
 
 clean-local:
 	rm -rf docs/html
+	rm -rf docs/pictures/*.{aux,log,pdf}
 	rm -rf coverage/
 	rm -f bench_*
 	rm -f test_*

@@ -1,6 +1,15 @@
 #!/bin/bash
 set -e
 
+echo "Checking whether to build the to-table . . ."
+if command -v pdflatex && command -v ghostscript 2>&1 >/dev/null; then
+    cd docs/pictures
+    echo "Building to-table . . ."
+    pdflatex -shell-escape to-table.tex
+    cd ../..
+else
+    echo "Not building to-table"
+fi
 echo "Checking doc order . . ."
 ./etc/check_doc_order.py
 mkdir -p docs/build
