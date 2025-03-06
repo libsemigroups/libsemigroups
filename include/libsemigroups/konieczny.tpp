@@ -230,21 +230,6 @@ namespace libsemigroups {
   // Konieczny - member functions
   ////////////////////////////////////////////////////////////////////////
 
-  //! Add collection of generators from iterators.
-  //!
-  //! Add copies of the generators in the range \p first to \p last to \c
-  //! this.  See \ref add_generator for a detailed description.
-  //!
-  //! \tparam the type of an iterator pointing to an \ref element_type.
-  //!
-  //! \param first iterator pointing to the first generator to add.
-  //! \param last iterator pointing one past the last generator to add.
-  //!
-  //! \returns (None)
-  //!
-  //! \throws LibsemigroupsException if any of the following hold:
-  //! * the degree of \p x is incompatible with the existing degree.
-  //! * \ref started returns \c true
   template <typename Element, typename Traits>
   template <typename T>
   void Konieczny<Element, Traits>::add_generators(T const& first,
@@ -873,11 +858,11 @@ namespace libsemigroups {
   // Konieczny - DClass
   /////////////////////////////////////////////////////////////////////////////
 
-  //! Defined in `konieczny.hpp`.
+  //! /brief A class representing a \f$\mathscr{D}\f$-class in a Konieczny
+  //! object.
   //!
   //! The nested abstract class Konieczny::DClass represents a
-  //! \f$\mathscr{D}\f$-class via a frame as computed in %Konieczny's
-  //! algorithm. See [here] for more details.
+  //! \f$\mathscr{D}\f$-class via a frame as described in \cite Konieczny1990aa
   //!
   //! As an abstract class, DClass cannot be directly constructed; instead you
   //! should obtain a \f$\mathscr{D}\f$-class by calling
@@ -1009,7 +994,7 @@ namespace libsemigroups {
     // DClass - member functions - public
     ////////////////////////////////////////////////////////////////////////
 
-    //! Returns a representative of the \f$\mathscr{D}\f$-class.
+    //! \brief Get the representative of the \f$\mathscr{D}\f$-class.
     //!
     //! The frame used to represent \f$\mathscr{D}\f$-classes depends on the
     //! choice of representative. This function returns the representative
@@ -1028,7 +1013,7 @@ namespace libsemigroups {
       return this->to_external_const(_rep);
     }
 
-    //! Returns the size of a \f$\mathscr{D}\f$-class.
+    //! \brief Get the size of a \f$\mathscr{D}\f$-class.
     //!
     //! This function triggers the computation of most of the frame
     //! for \c this, if it is not already known.
@@ -1046,7 +1031,7 @@ namespace libsemigroups {
       return number_of_L_classes() * number_of_R_classes() * size_H_class();
     }
 
-    //! Returns the number of \f$\mathscr{L}\f$-classes.
+    //! \brief Get the number of \f$\mathscr{L}\f$-classes within a DClass.
     //!
     //! This function triggers the computation of most of the frame
     //! for \c this, if it is not already known.
@@ -1065,7 +1050,7 @@ namespace libsemigroups {
       return _left_mults.size();
     }
 
-    //! Returns the number of \f$\mathscr{R}\f$-classes.
+    //! \brief Get the number of \f$\mathscr{R}\f$-classes within a DClass.
     //!
     //! This function triggers the computation of most of the frame
     //! for \c this, if it is not already known.
@@ -1085,7 +1070,7 @@ namespace libsemigroups {
       return _right_mults.size();
     }
 
-    //! Returns the size of the \f$\mathscr{H}\f$-classes.
+    //! \brief Get the size of the \f$\mathscr{H}\f$-classes within a DClass.
     //!
     //! This function triggers the computation of most of the frame
     //! for \c this, if it is not already known.
@@ -1105,7 +1090,7 @@ namespace libsemigroups {
       return _H_class.size();
     }
 
-    //! Test regularity of a \f$\mathscr{D}\f$-class.
+    //! \brief Test regularity of a \f$\mathscr{D}\f$-class.
     //!
     //! \parameters
     //! (None)
@@ -1119,7 +1104,7 @@ namespace libsemigroups {
       return _is_regular_D_class;
     }
 
-    //! Test membership of an element.
+    //! \brief Test membership of an element within a \f$\mathscr{D}\f$-class.
     //!
     //! Given an element \p x which may or may not belong to \c parent, this
     //! function returns whether \p x is an element of the
@@ -1142,7 +1127,7 @@ namespace libsemigroups {
       return contains(x, lpos, rpos);
     }
 
-    //! Returns the number of idempotents.
+    //! \brief Get the number of idempotents of a \f$\mathscr{D}\f$-class.
     //!
     //! This function triggers the computation of most of the frame
     //! for \c this, if it is not already known.
@@ -1267,16 +1252,8 @@ namespace libsemigroups {
     // Returns whether the element \p x belongs to this
     // \f$\mathscr{D}\f$-class.
     //
-    // Given an element \p x of the semigroup represented by \c parent, this
-    // function returns whether \p x is an element of the
-    // \f$\mathscr{D}\f$-class represented by \c this. If \p x is not an
-    // element of the semigroup, then the behaviour is undefined. This
-    // overload of DClass::contains_no_checks is provided in order to avoid
-    // recalculating the rank of \p x when it is already known. This member
-    // function involves computing most of the frame for \c this, if it is
-    // not already known.
-    //
-    // TODO rename
+    // This overload of DClass::contains_no_checks is provided in order to avoid
+    // recalculating the rank of \p x when it is already known.
     bool contains_no_checks(internal_const_reference x, size_t rank) {
       LIBSEMIGROUPS_ASSERT(this->parent()->InternalRank()(_rank_state, x)
                            == rank);
@@ -1286,15 +1263,9 @@ namespace libsemigroups {
     // Returns whether the element \p x belongs to this
     // \f$\mathscr{D}\f$-class.
     //
-    // Given an element \p x of the semigroup represented by \c parent, this
-    // function returns whether \p x is an element of the
-    // \f$\mathscr{D}\f$-class represented by \c this. If \p x is not an
-    // element of the semigroup, then the behaviour is undefined. This
-    // overload of DClass::contains_no_checks is provided in order to avoid
+    // This overload of DClass::contains_no_checks is provided in order to avoid
     // recalculating the rank, lambda value, and rho value of \p x when they
-    // are already known. This member function involves computing most of
-    // the frame for \c this, if it is not already known.
-    // TODO rename
+    // are already known.
     bool contains_no_checks(internal_const_reference x,
                             size_t                   rank,
                             lambda_orb_index_type    lpos,
@@ -1307,15 +1278,9 @@ namespace libsemigroups {
     // Returns whether the element \p x belongs to this
     // \f$\mathscr{D}\f$-class.
     //
-    // Given an element \p x of the semigroup represented by \c parent, this
-    // function returns whether \p x is an element of the
-    // \f$\mathscr{D}\f$-class represented by \c this. If \p x is not an
-    // element of the semigroup, then the behaviour is undefined. This
-    // overload of DClass::contains_no_checks is provided in order to avoid
+    // This overload of DClass::contains_no_checks is provided in order to avoid
     // recalculating the lambda value and rho value of \p x  when they are
-    // already known. This member function involves computing most of the
-    // frame for \c this, if it is not already known.
-    // TODO rename
+    // already known.
     virtual bool contains_no_checks(internal_const_reference x,
                                     lambda_orb_index_type    lpos,
                                     rho_orb_index_type       rpos)
