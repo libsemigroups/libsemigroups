@@ -165,7 +165,8 @@ namespace libsemigroups {
     Konieczny<BMat8> KS(gens);
     KS.run();
 
-    REQUIRE(size_t(KS.cend_regular_D_classes() - KS.cbegin_regular_D_classes())
+    REQUIRE(size_t(KS.cend_current_regular_D_classes()
+                   - KS.cbegin_current_regular_D_classes())
             == idems.size());
 
     size_t count = 0;

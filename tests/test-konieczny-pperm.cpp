@@ -61,7 +61,9 @@ namespace libsemigroups {
          LeastPPerm<8>({1, 2, 3, 4, 5, 6, 7}, {0, 1, 2, 3, 4, 5, 6}, 8),
          LeastPPerm<8>({0, 1, 2, 3, 4, 5, 6}, {1, 2, 3, 4, 5, 6, 7}, 8)});
     REQUIRE(S.size() == 1441729);
-    REQUIRE(std::distance(S.cbegin_D_classes(), S.cend_D_classes()) == 9);
+    REQUIRE(
+        std::distance(S.cbegin_current_D_classes(), S.cend_current_D_classes())
+        == 9);
   }
 
   LIBSEMIGROUPS_TEST_CASE("Konieczny",

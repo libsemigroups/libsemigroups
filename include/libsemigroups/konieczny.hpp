@@ -199,7 +199,7 @@ namespace libsemigroups {
 
     //! Type of indices of \f$\mathscr{D}\f$-classes.
     //!
-    //! \sa cbegin_D_classes and cbegin_regular_D_classes.
+    //! \sa cbegin_current_D_classes and cbegin_current_regular_D_classes.
     using D_class_index_type = size_t;
 
     //! The type of lambda values.
@@ -451,7 +451,7 @@ namespace libsemigroups {
     //! As an abstract class, DClass cannot be directly constructed; instead you
     //! should obtain a \f$\mathscr{D}\f$-class by calling
     //! Konieczny::D_class_of_element, or through a function like
-    //! Konieczny::cbegin_D_classes.
+    //! Konieczny::cbegin_current_D_classes.
     //!
     //! \sa Konieczny.
     class DClass : protected detail::BruidhinnTraits<Element> {
@@ -1010,7 +1010,8 @@ namespace libsemigroups {
     //! \f$\mathscr{D}\f$-class.
     size_t number_of_D_classes() {
       run();
-      return std::distance(cbegin_D_classes(), cend_D_classes());
+      return std::distance(cbegin_current_D_classes(),
+                           cend_current_D_classes());
     }
 
     //! \brief Returns the current number of \f$\mathscr{D}\f$-classes.
@@ -1023,7 +1024,8 @@ namespace libsemigroups {
     //!
     //! \note This function triggers no enumeration.
     size_t current_number_of_D_classes() const {
-      return std::distance(cbegin_D_classes(), cend_D_classes());
+      return std::distance(cbegin_current_D_classes(),
+                           cend_current_D_classes());
     }
 
     //! \brief Returns the number of regular \f$\mathscr{D}\f$-classes.
@@ -1051,8 +1053,8 @@ namespace libsemigroups {
     //!
     //! \note This function triggers no enumeration.
     size_t current_number_of_regular_D_classes() const {
-      return std::distance(cbegin_regular_D_classes(),
-                           cend_regular_D_classes());
+      return std::distance(cbegin_current_regular_D_classes(),
+                           cend_current_regular_D_classes());
     }
 
     //! \brief Returns the number of \f$\mathscr{L}\f$-classes.
@@ -1082,9 +1084,9 @@ namespace libsemigroups {
     size_t current_number_of_L_classes() const {
       size_t val = 0;
       std::for_each(
-          cbegin_D_classes(), cend_D_classes(), [&val](DClass const& D) {
-            val += D.number_of_L_classes();
-          });
+          cbegin_current_D_classes(),
+          cend_current_D_classes(),
+          [&val](DClass const& D) { val += D.number_of_L_classes(); });
       return val;
     }
 
@@ -1115,8 +1117,8 @@ namespace libsemigroups {
     size_t current_number_of_regular_L_classes() const {
       size_t val = 0;
       std::for_each(
-          cbegin_regular_D_classes(),
-          cend_regular_D_classes(),
+          cbegin_current_regular_D_classes(),
+          cend_current_regular_D_classes(),
           [&val](DClass const& D) { val += D.number_of_L_classes(); });
       return val;
     }
@@ -1148,9 +1150,9 @@ namespace libsemigroups {
     size_t current_number_of_R_classes() const {
       size_t val = 0;
       std::for_each(
-          cbegin_D_classes(), cend_D_classes(), [&val](DClass const& D) {
-            val += D.number_of_R_classes();
-          });
+          cbegin_current_D_classes(),
+          cend_current_D_classes(),
+          [&val](DClass const& D) { val += D.number_of_R_classes(); });
       return val;
     }
 
@@ -1181,8 +1183,8 @@ namespace libsemigroups {
     size_t current_number_of_regular_R_classes() const {
       size_t val = 0;
       std::for_each(
-          cbegin_regular_D_classes(),
-          cend_regular_D_classes(),
+          cbegin_current_regular_D_classes(),
+          cend_current_regular_D_classes(),
           [&val](DClass const& D) { val += D.number_of_R_classes(); });
       return val;
     }
@@ -1213,10 +1215,12 @@ namespace libsemigroups {
     //! \note This function triggers no enumeration.
     size_t current_number_of_H_classes() const {
       size_t val = 0;
-      std::for_each(
-          cbegin_D_classes(), cend_D_classes(), [&val](DClass const& D) {
-            val += (D.number_of_R_classes() * D.number_of_L_classes());
-          });
+      std::for_each(cbegin_current_D_classes(),
+                    cend_current_D_classes(),
+                    [&val](DClass const& D) {
+                      val += (D.number_of_R_classes()
+                              * D.number_of_L_classes());
+                    });
       return val;
     }
 
@@ -1247,8 +1251,8 @@ namespace libsemigroups {
     size_t current_number_of_idempotents() const {
       size_t val = 0;
       std::for_each(
-          cbegin_regular_D_classes(),
-          cend_regular_D_classes(),
+          cbegin_current_regular_D_classes(),
+          cend_current_regular_D_classes(),
           [&val](RegularDClass const& D) { val += D.number_of_idempotents(); });
       return val;
     }
@@ -1279,8 +1283,8 @@ namespace libsemigroups {
     //! \note This function triggers no enumeration.
     size_t current_number_of_regular_elements() const {
       size_t val = 0;
-      std::for_each(cbegin_regular_D_classes(),
-                    cend_regular_D_classes(),
+      std::for_each(cbegin_current_regular_D_classes(),
+                    cend_current_regular_D_classes(),
                     [&val](DClass const& D) { val += D.size(); });
       return val;
     }
@@ -1315,8 +1319,8 @@ namespace libsemigroups {
     //! \sa \ref size.
     size_t current_size() const {
       size_t val = 0;
-      std::for_each(cbegin_D_classes(),
-                    cend_D_classes(),
+      std::for_each(cbegin_current_D_classes(),
+                    cend_current_D_classes(),
                     [&val](DClass const& D) { val += D.size(); });
       return val;
     }
@@ -1506,7 +1510,8 @@ namespace libsemigroups {
     template <typename T>
     struct DClassIteratorTraits;
 
-    //! \brief  Return type of \ref cbegin_D_classes and \ref cend_D_classes.
+    //! \brief  Return type of \ref cbegin_current_D_classes and \ref
+    //! cend_current_D_classes.
     //!
     //! Type for const random access iterators through the
     //! \f$\mathscr{D}\f$-classes, in the order they were enumerated.
@@ -1528,7 +1533,7 @@ namespace libsemigroups {
     //! \exceptions
     //! \no_libsemigroups_except
     // not noexcept because operator++ isn't necessarily
-    const_d_class_iterator cbegin_D_classes() const {
+    const_d_class_iterator cbegin_current_D_classes() const {
       auto it = _D_classes.cbegin();
       if (_run_initialised) {
         return const_d_class_iterator(it)
@@ -1550,12 +1555,12 @@ namespace libsemigroups {
     //!
     //! \exceptions
     //! \no_libsemigroups_except
-    const_d_class_iterator cend_D_classes() const noexcept {
+    const_d_class_iterator cend_current_D_classes() const noexcept {
       return const_d_class_iterator(_D_classes.cend());
     }
 
-    //! \brief  Return type of \ref cbegin_regular_D_classes and \ref
-    //! cend_regular_D_classes.
+    //! \brief  Return type of \ref cbegin_current_regular_D_classes and \ref
+    //! cend_current_regular_D_classes.
     //!
     //! A type for const random access iterators through the regular
     //! \f$\mathscr{D}\f$-classes, in the order they were enumerated.
@@ -1579,7 +1584,7 @@ namespace libsemigroups {
     //!
     //! \sa cbegin_rdc
     // not noexcept because operator++ isn't necessarily
-    const_regular_d_class_iterator cbegin_regular_D_classes() const {
+    const_regular_d_class_iterator cbegin_current_regular_D_classes() const {
       auto it = _regular_D_classes.cbegin();
       if (_run_initialised) {
         return const_regular_d_class_iterator(it)
@@ -1589,9 +1594,9 @@ namespace libsemigroups {
       }
     }
 
-    //! Shorter form of \ref cbegin_regular_D_classes.
+    //! Shorter form of \ref cbegin_current_regular_D_classes.
     const_regular_d_class_iterator cbegin_rdc() const noexcept {
-      return cbegin_regular_D_classes();
+      return cbegin_current_regular_D_classes();
     }
 
     //! \brief  Returns a const iterator referring to past the pointer to the
@@ -1608,13 +1613,14 @@ namespace libsemigroups {
     //! \no_libsemigroups_except
     //!
     //! \sa \ref cend_rdc
-    const_regular_d_class_iterator cend_regular_D_classes() const noexcept {
+    const_regular_d_class_iterator
+    cend_current_regular_D_classes() const noexcept {
       return const_regular_d_class_iterator(_regular_D_classes.cend());
     }
 
-    //! Shorter form of \ref cend_regular_D_classes.
+    //! Shorter form of \ref cend_current_regular_D_classes.
     const_regular_d_class_iterator cend_rdc() const {
-      return cend_regular_D_classes();
+      return cend_current_regular_D_classes();
     }
 
    private:
@@ -1799,6 +1805,35 @@ namespace libsemigroups {
   bool Konieczny<Element, Traits>::finished_impl() const {
     return _ranks.empty() && _run_initialised;
   }
+
+  //! \ingroup konieczny_group
+  //!
+  //! \brief Return a human readable representation of a Konieczny object.
+  //!
+  //! Return a human readable representation of a Konieczny object.
+  //!
+  //! \param x the Konieczny object.
+  //!
+  //! \exceptions
+  //! \no_libsemigroups_except
+  template <typename Element, typename Traits>
+  [[nodiscard]] std::string
+  to_human_readable_repr(Konieczny<Element, Traits> const& x);
+
+  //! \ingroup konieczny_group
+  //!
+  //! \brief Return a human readable representation of a Konieczny::DClass
+  //! object.
+  //!
+  //! Return a human readable representation of a Konieczny::DClass object.
+  //!
+  //! \param x the Konieczny::DClass object.
+  //!
+  //! \exceptions
+  //! \no_libsemigroups_except
+  template <typename Element, typename Traits>
+  [[nodiscard]] std::string
+  to_human_readable_repr(typename Konieczny<Element, Traits>::DClass const& x);
 
 }  // namespace libsemigroups
 #include "konieczny.tpp"

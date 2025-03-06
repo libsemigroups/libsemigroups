@@ -40,8 +40,8 @@ namespace libsemigroups {
 
     size_t sum = 0;
     std::for_each(
-        S.cbegin_D_classes(),
-        S.cend_D_classes(),
+        S.cbegin_current_D_classes(),
+        S.cend_current_D_classes(),
         [&sum, &S](Konieczny<Transf>::DClass const& x) {
           sum += S.D_class_of_element(x.rep()).number_of_idempotents();
         });
@@ -70,8 +70,8 @@ namespace libsemigroups {
     REQUIRE(S.size() == 597369);
     size_t sum = 0;
     std::for_each(
-        S.cbegin_D_classes(),
-        S.cend_D_classes(),
+        S.cbegin_current_D_classes(),
+        S.cend_current_D_classes(),
         [&sum, &S](Konieczny<Transf>::DClass const& x) {
           sum += S.D_class_of_element(x.rep()).number_of_idempotents();
         });
@@ -133,13 +133,15 @@ namespace libsemigroups {
                            Transf<>({0, 3, 8, 1, 2, 8, 1, 7, 0}),
                            Transf<>({0, 0, 0, 2, 7, 7, 5, 5, 3})});
     S.run_until([&S]() -> bool {
-      return S.cend_D_classes() - S.cbegin_D_classes() > 20;
+      return S.cend_current_D_classes() - S.cbegin_current_D_classes() > 20;
     });
 
-    size_t number_of_classes1 = S.cend_D_classes() - S.cbegin_D_classes();
+    size_t number_of_classes1
+        = S.cend_current_D_classes() - S.cbegin_current_D_classes();
     REQUIRE(number_of_classes1 >= 20);
     S.run();
-    size_t number_of_classes2 = S.cend_D_classes() - S.cbegin_D_classes();
+    size_t number_of_classes2
+        = S.cend_current_D_classes() - S.cbegin_current_D_classes();
     REQUIRE(S.size() == 232511);
     REQUIRE(number_of_classes1 < number_of_classes2);
     REQUIRE(number_of_classes2 == 2122);
