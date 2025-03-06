@@ -54,6 +54,8 @@ coverage/
 docs/build
 docs/source/_generated
 docs/xml
+docs/pictures/*.aux
+docs/pictures/*.pdf
 gh-pages/
 html/
 libsemigroups-*-coverage*
