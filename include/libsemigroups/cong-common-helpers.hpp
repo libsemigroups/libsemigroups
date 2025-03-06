@@ -103,19 +103,17 @@ namespace libsemigroups {
     //! \param u the left hand side of the pair to add.
     //! \param v the right hand side of the pair to add.
     //!
-    //! \return A reference to \p thing.
-    //!
     //! \cong_common_warn_assume_letters_in_bounds
     // NOTE: we use native_word_type and not another template param to avoid
     // unexpected behaviour, if for example we add words which are strings to a
     // ToddCoxeter<word_type>, then unexpected things might happen.
     template <typename Thing>
-    Thing&
+    void
     add_generating_pair_no_checks(Thing&                                  thing,
                                   typename Thing::native_word_type const& u,
                                   typename Thing::native_word_type const& v) {
       static_assert(std::is_base_of_v<detail::CongruenceCommon, Thing>);
-      return thing.add_generating_pair_no_checks(
+      thing.add_generating_pair_no_checks(
           std::begin(u), std::end(u), std::begin(v), std::end(v));
     }
 
@@ -129,12 +127,12 @@ namespace libsemigroups {
     //! See \ref add_generating_pairs_no_checks_main
     //! "add_generating_pair_no_checks" for details.
     template <typename Thing, typename Int>
-    Thing& add_generating_pair_no_checks(Thing& thing,
-                                         std::initializer_list<Int> const& u,
-                                         std::initializer_list<Int> const& v) {
+    void add_generating_pair_no_checks(Thing&                            thing,
+                                       std::initializer_list<Int> const& u,
+                                       std::initializer_list<Int> const& v) {
       static_assert(std::is_base_of_v<detail::CongruenceCommon, Thing>);
       static_assert(std::is_integral_v<Int>);
-      return thing.add_generating_pair_no_checks(
+      thing.add_generating_pair_no_checks(
           std::begin(u), std::end(u), std::begin(v), std::end(v));
     }
 
@@ -146,16 +144,16 @@ namespace libsemigroups {
     //! See \ref add_generating_pairs_no_checks_main
     //! "add_generating_pair_no_checks" for details.
     template <typename Thing>
-    Thing& add_generating_pair_no_checks(Thing&      thing,
-                                         char const* u,
-                                         char const* v) {
+    void add_generating_pair_no_checks(Thing&      thing,
+                                       char const* u,
+                                       char const* v) {
       static_assert(std::is_base_of_v<detail::CongruenceCommon, Thing>);
       LIBSEMIGROUPS_ASSERT(u != nullptr);
       LIBSEMIGROUPS_ASSERT(v != nullptr);
       // We could static_assert that Thing::native_word_type == std::string,
       // but it doesn't seem that adding this restriction would gain us
       // anything, so it is not currently done.
-      return thing.add_generating_pair_no_checks(
+      thing.add_generating_pair_no_checks(
           u, u + std::strlen(u), v, v + std::strlen(v));
     }
 
@@ -168,14 +166,14 @@ namespace libsemigroups {
     //! See \ref add_generating_pairs_no_checks_main
     //! "add_generating_pair_no_checks" for details.
     template <typename Thing>
-    Thing& add_generating_pair_no_checks(Thing&           thing,
-                                         std::string_view u,
-                                         std::string_view v) {
+    void add_generating_pair_no_checks(Thing&           thing,
+                                       std::string_view u,
+                                       std::string_view v) {
       static_assert(std::is_base_of_v<detail::CongruenceCommon, Thing>);
       // We could static_assert that Thing::native_word_type == std::string,
       // but it doesn't seem that adding this restriction would gain us
       // anything, so it is not currently done.
-      return thing.add_generating_pair_no_checks(
+      thing.add_generating_pair_no_checks(
           std::begin(u), std::end(u), std::begin(v), std::end(v));
     }
 
@@ -194,18 +192,16 @@ namespace libsemigroups {
     //! \param u the left hand side of the pair to add.
     //! \param v the right hand side of the pair to add.
     //!
-    //! \return A reference to \p thing.
-    //!
     //! \cong_common_throws_if_letters_out_of_bounds
     // NOTE: we use native_word_type and not another template param to avoid
     // unexpected behaviour, if for example we add words which are strings to a
     // ToddCoxeter<word_type>, then unexpected things might happen.
     template <typename Thing>
-    Thing& add_generating_pair(Thing&                                  thing,
-                               typename Thing::native_word_type const& u,
-                               typename Thing::native_word_type const& v) {
+    void add_generating_pair(Thing&                                  thing,
+                             typename Thing::native_word_type const& u,
+                             typename Thing::native_word_type const& v) {
       static_assert(std::is_base_of_v<detail::CongruenceCommon, Thing>);
-      return thing.add_generating_pair(
+      thing.add_generating_pair(
           std::begin(u), std::end(u), std::begin(v), std::end(v));
     }
 
@@ -218,12 +214,12 @@ namespace libsemigroups {
     //!
     //! See \ref add_generating_pairs_main "add_generating_pairs" for details.
     template <typename Thing, typename Int>
-    Thing& add_generating_pair(Thing&                            thing,
-                               std::initializer_list<Int> const& u,
-                               std::initializer_list<Int> const& v) {
+    void add_generating_pair(Thing&                            thing,
+                             std::initializer_list<Int> const& u,
+                             std::initializer_list<Int> const& v) {
       static_assert(std::is_base_of_v<detail::CongruenceCommon, Thing>);
       static_assert(std::is_integral_v<Int>);
-      return thing.add_generating_pair(
+      thing.add_generating_pair(
           std::begin(u), std::end(u), std::begin(v), std::end(v));
     }
 
@@ -234,15 +230,14 @@ namespace libsemigroups {
     //!
     //! See \ref add_generating_pairs_main "add_generating_pairs" for details.
     template <typename Thing>
-    Thing& add_generating_pair(Thing& thing, char const* u, char const* v) {
+    void add_generating_pair(Thing& thing, char const* u, char const* v) {
       static_assert(std::is_base_of_v<detail::CongruenceCommon, Thing>);
       detail::throw_if_nullptr(u, "2nd");
       detail::throw_if_nullptr(v, "3rd");
       // We could static_assert that Thing::native_word_type == std::string,
       // but it doesn't seem that adding this restriction would gain us
       // anything, so it is not currently done.
-      return thing.add_generating_pair(
-          u, u + std::strlen(u), v, v + std::strlen(v));
+      thing.add_generating_pair(u, u + std::strlen(u), v, v + std::strlen(v));
     }
 
     // This version of the function catches the cases when u & v are not of
@@ -254,14 +249,14 @@ namespace libsemigroups {
     //!
     //! See \ref add_generating_pairs_main "add_generating_pairs" for details.
     template <typename Thing>
-    Thing& add_generating_pair(Thing&           thing,
-                               std::string_view u,
-                               std::string_view v) {
+    void add_generating_pair(Thing&           thing,
+                             std::string_view u,
+                             std::string_view v) {
       static_assert(std::is_base_of_v<detail::CongruenceCommon, Thing>);
       // We could static_assert that Thing::native_word_type == std::string,
       // but it doesn't seem that adding this restriction would gain us
       // anything, so it is not currently done.
-      return thing.add_generating_pair_no_checks(
+      thing.add_generating_pair_no_checks(
           std::begin(u), std::end(u), std::begin(v), std::end(v));
     }
 
