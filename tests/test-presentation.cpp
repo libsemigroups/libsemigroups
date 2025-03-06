@@ -1052,7 +1052,7 @@ namespace libsemigroups {
       REQUIRE(ip.rules == ip.rules);
       REQUIRE(ip.inverses() == W({}));
 
-      InversePresentation<W> ip2 = std::move(p);
+      InversePresentation<W> ip2(std::move(p));
       REQUIRE_THROWS_AS(ip2.validate(), LibsemigroupsException);
       REQUIRE(ip2.alphabet() == ip.alphabet());
       REQUIRE(ip2.rules == ip.rules);
