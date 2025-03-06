@@ -49,7 +49,7 @@ namespace libsemigroups {
   //! `to<ToType>(FromType)` are given below, where the rows correspond to
   //! `ToType` and the columns to `FromType`:
   //!
-  //! \image html to-table.jpg width=60%
+  //! \image html to-table.svg width=60%
   //!
   //! A tick indicates that this conversion is implemented, and a cross
   //! that it is not yet implemented.
