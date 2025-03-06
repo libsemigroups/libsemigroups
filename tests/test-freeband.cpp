@@ -19,8 +19,8 @@
 #include <string>   // for tests with strings
 #include <utility>  // for std::move
 
-#include "catch_amalgamated.hpp"  // for REQUIRE etc
-#include "test-main.hpp"          // for LIBSEMIGROUPS_TEST_CASE
+#include "Catch2-3.7.1/catch_amalgamated.hpp"  // for REQUIRE etc
+#include "test-main.hpp"                       // for LIBSEMIGROUPS_TEST_CASE
 
 #include "libsemigroups/freeband.hpp"  // for freeband_equal_to
 #include "libsemigroups/types.hpp"     // for word_type

@@ -25,7 +25,7 @@
 #include <string>   // for operator+, basic_string
 #include <vector>   // for vector, operator==
 
-#include "catch_amalgamated.hpp"  // for REQUIRE, REQUIRE_NOTHROW, REQUIRE_THROWS_AS
+#include "Catch2-3.7.1/catch_amalgamated.hpp"  // for REQUIRE, REQUIRE_NOTHROW, REQUIRE_THROWS_AS
 
 #include "libsemigroups/presentation-examples.hpp"
 #include "libsemigroups/presentation.hpp"
