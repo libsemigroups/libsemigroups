@@ -842,7 +842,7 @@ namespace libsemigroups {
     if (k.finished()) {
       suffix += " with small overlap class ";
       if (k.small_overlap_class() == POSITIVE_INFINITY) {
-        suffix += fmt::format("{}", POSITIVE_INFINITY);
+        suffix += u8"+\u221E";
       } else {
         suffix += fmt::format("{}", k.small_overlap_class());
       }

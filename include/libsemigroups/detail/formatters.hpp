@@ -51,20 +51,18 @@ struct fmt::formatter<libsemigroups::detail::Timer>
 template <>
 struct fmt::formatter<libsemigroups::PositiveInfinity>
     : fmt::formatter<std::string> {
-  template <typename FormatContext>
-  auto constexpr format(libsemigroups::PositiveInfinity const&,
-                        FormatContext& ctx) const {
-    return formatter<string_view>::format(u8"+\u221E", ctx);
+  format_context::iterator format(libsemigroups::PositiveInfinity,
+                                  format_context& ctx) const {
+    return formatter<std::string>::format(u8"+\u221E", ctx);
   }
 };
 
 template <>
 struct fmt::formatter<libsemigroups::NegativeInfinity>
     : fmt::formatter<std::string> {
-  template <typename FormatContext>
-  auto constexpr format(libsemigroups::NegativeInfinity const&,
-                        FormatContext& ctx) const {
-    return formatter<string_view>::format(u8"-\u221E", ctx);
+  format_context::iterator format(libsemigroups::NegativeInfinity,
+                                  format_context& ctx) const {
+    return formatter<std::string>::format(u8"-\u221E", ctx);
   }
 };
 
