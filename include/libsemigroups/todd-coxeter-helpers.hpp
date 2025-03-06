@@ -755,7 +755,16 @@ namespace libsemigroups {
     template <typename Word>
     [[nodiscard]] auto class_of(ToddCoxeter<Word>& tc, char const* w) {
       detail::throw_if_nullptr(w, "2nd");
+      LIBSEMIGROUPS_ASSERT(w != nullptr);
+
+#if defined(__GNUC__) && !defined(__clang__)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wnonnull"
+#endif
       return class_of(tc, w, w + std::strlen(w));
+#if defined(__GNUC__) && !defined(__clang__)
+#pragma GCC diagnostic pop
+#endif
     }
 
     ////////////////////////////////////////////////////////////////////////

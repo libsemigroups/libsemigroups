@@ -1380,8 +1380,15 @@ namespace libsemigroups {
     }
   };
 
+  // NOTE: This is a terrible hack to avoid compiler warnings. Maybe remove in
+  // the future?
+#if defined(__clang__)
   template <typename InputRange>
   ToString::Range<InputRange>::~Range<InputRange>() = default;
+#elif defined(__GNUC__)
+  template <typename InputRange>
+  ToString::Range<InputRange>::~Range() = default;
+#endif
 
   //! \ingroup words_group
   //!
