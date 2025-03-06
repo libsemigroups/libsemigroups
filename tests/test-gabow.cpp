@@ -21,9 +21,9 @@
 #include <numeric>    // for iota
 #include <vector>     // for vector, operator==...
 
-#include "catch_amalgamated.hpp"       // for operator""_catch_sr, Ass...
-#include "test-main.hpp"               // for LIBSEMIGROUPS_TEST_CASE
-#include "word-graph-test-common.hpp"  // for clique, add_clique
+#include "Catch2-3.7.1/catch_amalgamated.hpp"  // for operator""_catch_sr, Ass...
+#include "test-main.hpp"                       // for LIBSEMIGROUPS_TEST_CASE
+#include "word-graph-test-common.hpp"          // for clique, add_clique
 
 #include "libsemigroups/constants.hpp"   // for UNDEFINED, Undefined, Max
 #include "libsemigroups/exception.hpp"   // for LibsemigroupsException

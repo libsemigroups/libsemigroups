@@ -23,8 +23,9 @@
 //
 // #include <cstddef>
 //
-// #include "catch_amalgamated.hpp"      // for REQUIRE, SECTION, ...
-// #include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
+// #include "Catch2-3.7.1/catch_amalgamated.hpp"      // for
+// REQUIRE, SECTION, ... #include "test-main.hpp"  // for
+// LIBSEMIGROUPS_TEST_CASE
 //
 // #include "libsemigroups/cong-pair.hpp"     // for FpSemigroupByPairs
 // #include "libsemigroups/fpsemi-intf.hpp"   // for FpSemigroupInterface

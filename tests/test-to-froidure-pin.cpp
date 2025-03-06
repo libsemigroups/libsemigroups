@@ -21,8 +21,8 @@
 #include <cstdint>  // for uint8_t
 #include <vector>   // for vector
 
-#include "catch_amalgamated.hpp"  // for REQUIRE, REQUIRE_THROWS_AS, REQUI...
-#include "test-main.hpp"          // for LIBSEMIGROUPS_TEST_CASE
+#include "Catch2-3.7.1/catch_amalgamated.hpp"  // for REQUIRE, REQUIRE_THROWS_AS, REQUI...
+#include "test-main.hpp"                       // for LIBSEMIGROUPS_TEST_CASE
 
 #include "libsemigroups/cong.hpp"             // for Congruence
 #include "libsemigroups/constants.hpp"        // for UNDEFINED

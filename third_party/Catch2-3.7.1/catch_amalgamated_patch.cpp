@@ -1,6 +1,6 @@
 //
 // libsemigroups - C++ library for semigroups and monoids
-// Copyright (C) 2020 James D. Mitchell
+// Copyright (C) 2025 Joseph Edwards
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -16,12 +16,17 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include "Catch2-3.7.1/catch_amalgamated.hpp"  // for REQUIRE etc
-#include "test-main.hpp"                       // for LIBSEMIGROUPS_TEST_CASE
+// This is NOT a Catch2 file, but is included here since we use Catch2 in both
+// the tests and the benchmarks.
 
-#include "libsemigroups/order.hpp"  // for words
-#include "libsemigroups/types.hpp"  // for word_type
+// This file includes the Catch2 source file and suppresses the compiler
+// warnings emitted from it.
 
-namespace libsemigroups {
-  // TODO(later)
-}  // namespace libsemigroups
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Winline"
+#pragma GCC diagnostic ignored "-Wswitch-enum"
+#pragma GCC diagnostic ignored "-Wswitch-default"
+
+#include "catch_amalgamated.cpp"
+
+#pragma GCC diagnostic pop

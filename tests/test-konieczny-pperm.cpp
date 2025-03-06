@@ -16,8 +16,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include "catch_amalgamated.hpp"  // for REQUIRE
-#include "test-main.hpp"          // FOR LIBSEMIGROUPS_TEST_CASE
+#include "Catch2-3.7.1/catch_amalgamated.hpp"  // for REQUIRE
+#include "test-main.hpp"                       // FOR LIBSEMIGROUPS_TEST_CASE
 
 #include "libsemigroups/konieczny.hpp"  // for Konieczny
 #include "libsemigroups/transf.hpp"     // for PPerm

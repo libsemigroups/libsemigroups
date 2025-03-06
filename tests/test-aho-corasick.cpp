@@ -19,8 +19,8 @@
 #include <tuple>   // for __ignore_t, ignore
 #include <vector>  // for vector, operator==
 
-#include "catch_amalgamated.hpp"  // for SourceLineInfo, operator""...
-#include "test-main.hpp"          // for LIBSEMIGROUPS_TEST_CASE
+#include "Catch2-3.7.1/catch_amalgamated.hpp"  // for SourceLineInfo, operator""...
+#include "test-main.hpp"                       // for LIBSEMIGROUPS_TEST_CASE
 
 #include "libsemigroups/aho-corasick.hpp"  // for traverse_word, AhoCorasick
 #include "libsemigroups/aho-corasick.hpp"  // for AhoCorasick
