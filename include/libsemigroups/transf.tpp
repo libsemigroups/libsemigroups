@@ -172,7 +172,7 @@ namespace libsemigroups {
   }
 
   template <typename Return>
-  [[nodiscard]] std::enable_if_t<IsPPerm<Return>, Return>
+  std::enable_if_t<IsPPerm<Return>, Return>
   make(std::vector<typename Return::point_type> const& dom,
        std::vector<typename Return::point_type> const& ran,
        size_t const                                    M) {
