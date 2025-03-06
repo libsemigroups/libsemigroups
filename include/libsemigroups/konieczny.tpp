@@ -749,17 +749,22 @@ namespace libsemigroups {
                     number_of_reps_remaining
                         += _regular_reps[x].size() + _nonregular_reps[x].size();
                   });
+
+    auto run_time        = delta(start_time());
+    auto run_time_string = fmt::format("{:<7}", detail::string_time(run_time));
+
     // TODO(later) add layers to report
     report_default(
         "found {} elements in {} D-classes ({} regular), {} R-classes ({} "
-        "regular), {} L-classes ({} regular)\n",
+        "regular), {} L-classes ({} regular) | {} (total)\n",
         current_size(),
         current_number_of_D_classes(),
         current_number_of_regular_D_classes(),
         current_number_of_R_classes(),
         current_number_of_regular_R_classes(),
         current_number_of_L_classes(),
-        current_number_of_regular_L_classes());
+        current_number_of_regular_L_classes(),
+        run_time_string);
     report_default("there are {} unprocessed reps with ranks in [{}, {}]\n",
                    number_of_reps_remaining,
                    *_ranks.cbegin(),
@@ -850,7 +855,6 @@ namespace libsemigroups {
       }
     }
 
-    report_elapsed_time("Konieczny: ", t);
     report_why_we_stopped();
   }
 
