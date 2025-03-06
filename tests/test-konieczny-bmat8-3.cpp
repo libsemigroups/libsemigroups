@@ -313,14 +313,12 @@ namespace libsemigroups {
 
     Konieczny<BMat8> KW;
     KW = std::move(KV);
+    KV.~Konieczny();
     REQUIRE(KW.current_number_of_D_classes() == found_classes);
     KW.run();
-
     LIBSEMIGROUPS_ASSERT(KW.number_of_D_classes() == 66);
-
     LIBSEMIGROUPS_ASSERT(KW.size() == 10160);
-
-    KV.run();
-    REQUIRE(KV.size() == 10160);
+    KW.run();
+    REQUIRE(KW.size() == 10160);
   }
 }  // namespace libsemigroups

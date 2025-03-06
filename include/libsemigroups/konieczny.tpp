@@ -168,8 +168,6 @@ namespace libsemigroups {
     _run_initialised             = std::move(that._run_initialised);
     _group_indices               = std::move(that._group_indices);
     _group_indices_rev           = std::move(that._group_indices_rev);
-    _lambda_orb                  = std::move(that._lambda_orb);
-    _rho_orb                     = std::move(that._rho_orb);
     _reps_processed              = std::move(that._reps_processed);
 
     std::swap(_D_classes, that._D_classes);
@@ -180,12 +178,19 @@ namespace libsemigroups {
         _regular_D_classes,
         that._regular_D_classes);  // not strictly necessary, but reassuring
 
-    std::swap(_gens, that._gens);
+    std::swap(_lambda_orb, that._lambda_orb);
+    std::swap(_rho_orb, that._rho_orb);
+    std::swap(_lambda_to_D_map, that._lambda_to_D_map);
+    std::swap(_rho_to_D_map, that._rho_to_D_map);
+
     std::swap(_nonregular_reps, that._nonregular_reps);
+    std::swap(_regular_reps, that._regular_reps);
+
+    std::swap(_gens, that._gens);
     std::swap(_one, that._one);
+
     std::swap(_rank_state, that._rank_state);
     std::swap(_ranks, that._ranks);  // used in internal_free
-    std::swap(_regular_reps, that._regular_reps);
 
     return *this;
   }
