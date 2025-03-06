@@ -727,7 +727,6 @@ namespace libsemigroups {
     _D_rels.push_back(std::vector<D_class_index_type>());
   }
 
-#ifndef LIBSEMIGROUPS_PARSED_BY_DOXYGEN
   template <typename Element, typename Traits>
   void Konieczny<Element, Traits>::add_D_class(
       Konieczny<Element, Traits>::NonRegularDClass* D) {
@@ -735,7 +734,6 @@ namespace libsemigroups {
     add_to_D_maps(_D_classes.size() - 1);
     _D_rels.push_back(std::vector<D_class_index_type>());
   }
-#endif  // ndef LIBSEMIGROUPS_PARSED_BY_DOXYGEN
 
   template <typename Element, typename Traits>
   void Konieczny<Element, Traits>::run_report() {
@@ -863,827 +861,413 @@ namespace libsemigroups {
   // Konieczny - DClass
   /////////////////////////////////////////////////////////////////////////////
 
-  //! /brief A class representing a \f$\mathscr{D}\f$-class in a Konieczny
-  //! object.
-  //!
-  //! The nested abstract class Konieczny::DClass represents a
-  //! \f$\mathscr{D}\f$-class via a frame as described in \cite Konieczny1990aa
-  //!
-  //! As an abstract class, DClass cannot be directly constructed; instead you
-  //! should obtain a \f$\mathscr{D}\f$-class by calling
-  //! Konieczny::D_class_of_element.
-  //!
-  //! \sa Konieczny.
-  //!
-  //! [here]:  https://link.springer.com/article/10.1007/BF02573672
   template <typename Element, typename Traits>
-  class Konieczny<Element, Traits>::DClass
-      : protected detail::BruidhinnTraits<Element> {
-    // This friend is only here so that the virtual contains(x, lpos, rpos)
-    // method and the cbegin_left_indices etc. methods can be private.
-    friend class Konieczny<Element, Traits>;
+  Konieczny<Element, Traits>::DClass::DClass()
+      : _class_computed(false),
+        _H_class(),
+        _H_class_computed(false),
+        _is_regular_D_class(),
+        _left_indices(),
+        _left_mults(),
+        _left_mults_inv(),
+        _left_reps(),
+        _mults_computed(false),
+        _parent(),
+        _rank(),
+        _rep(),
+        _reps_computed(false),
+        _right_indices(),
+        _right_mults(),
+        _right_mults_inv(),
+        _right_reps(),
+        _tmp_internal_set(),
+        _tmp_rep_info_vec(),
+        _tmp_internal_vec(),
+        _tmp_lambda_value(),
+        _tmp_rho_value() {}
 
-   protected:
-    ////////////////////////////////////////////////////////////////////////
-    // DClass - aliases - protected
-    ////////////////////////////////////////////////////////////////////////
-#ifndef LIBSEMIGROUPS_PARSED_BY_DOXYGEN
-    using konieczny_type    = Konieczny<Element, Traits>;
-    using internal_set_type = std::
-        unordered_set<internal_element_type, InternalHash, InternalEqualTo>;
+  template <typename Element, typename Traits>
+  void Konieczny<Element, Traits>::DClass::init(DClass const& that) {
+    _class_computed     = that._class_computed;
+    _H_class_computed   = that._H_class_computed;
+    _is_regular_D_class = that._is_regular_D_class;
+    _left_indices       = that._left_indices;
+    _mults_computed     = that._mults_computed;
+    _parent             = that._parent;
+    _rank               = that._rank;
 
-    ////////////////////////////////////////////////////////////////////////
-    // DClass - default constructor - private
-    ////////////////////////////////////////////////////////////////////////
+    this->internal_free(_rep);
+    _rep           = that._parent->internal_copy(that._rep);
+    _reps_computed = that._reps_computed;
+    _right_indices = that._right_indices;
 
-   private:
-    DClass()
-        : _class_computed(false),
-          _H_class(),
-          _H_class_computed(false),
-          _is_regular_D_class(),
-          _left_indices(),
-          _left_mults(),
-          _left_mults_inv(),
-          _left_reps(),
-          _mults_computed(false),
-          _parent(),
-          _rank(),
-          _rep(),
-          _reps_computed(false),
-          _right_indices(),
-          _right_mults(),
-          _right_mults_inv(),
-          _right_reps(),
-          _tmp_internal_set(),
-          _tmp_rep_info_vec(),
-          _tmp_internal_vec(),
-          _tmp_lambda_value(),
-          _tmp_rho_value() {}
+    InternalVecCopy()(that._H_class, _H_class);
+    InternalVecCopy()(that._left_mults, _left_mults);
+    InternalVecCopy()(that._left_mults_inv, _left_mults_inv);
+    InternalVecCopy()(that._left_reps, _left_reps);
+    InternalVecCopy()(that._right_mults, _right_mults);
+    InternalVecCopy()(that._right_mults_inv, _right_mults_inv);
+    InternalVecCopy()(that._right_reps, _right_reps);
+  }
 
-    void init(DClass const& that) {
-      _class_computed     = that._class_computed;
-      _H_class_computed   = that._H_class_computed;
-      _is_regular_D_class = that._is_regular_D_class;
-      _left_indices       = that._left_indices;
-      _mults_computed     = that._mults_computed;
-      _parent             = that._parent;
-      _rank               = that._rank;
+  template <typename Element, typename Traits>
+  void Konieczny<Element, Traits>::DClass::clear() {}
 
-      this->internal_free(_rep);
-      _rep           = that._parent->internal_copy(that._rep);
-      _reps_computed = that._reps_computed;
-      _right_indices = that._right_indices;
+  ////////////////////////////////////////////////////////////////////////
+  // DClass - constructors - protected
+  ////////////////////////////////////////////////////////////////////////
+  template <typename Element, typename Traits>
+  Konieczny<Element, Traits>::DClass::DClass(Konieczny*         parent,
+                                             internal_reference rep)
+      : DClass() {
+    _parent = parent;
+    _rep    = rep;
 
-      InternalVecCopy()(that._H_class, _H_class);
-      InternalVecCopy()(that._left_mults, _left_mults);
-      InternalVecCopy()(that._left_mults_inv, _left_mults_inv);
-      InternalVecCopy()(that._left_reps, _left_reps);
-      InternalVecCopy()(that._right_mults, _right_mults);
-      InternalVecCopy()(that._right_mults_inv, _right_mults_inv);
-      InternalVecCopy()(that._right_reps, _right_reps);
-    }
+    _is_regular_D_class = _parent->is_regular_element_no_checks(_rep);
+    _rank = InternalRank()(parent->_rank_state, this->to_external_const(_rep));
 
-    void clear() {}
+    // Why are these needed?
+    _tmp_lambda_value = OneParamLambda()(this->to_external_const(_rep));
+    _tmp_rho_value    = OneParamRho()(this->to_external_const(_rep));
+  }
 
-    ////////////////////////////////////////////////////////////////////////
-    // DClass - constructors - protected
-    ////////////////////////////////////////////////////////////////////////
-   protected:
-    DClass(Konieczny* parent, internal_reference rep) : DClass() {
-      _parent = parent;
-      _rep    = rep;
+  template <typename Element, typename Traits>
+  Konieczny<Element, Traits>::DClass::DClass(DClass const& that) : DClass() {
+    init(that);
+  }
 
-      _is_regular_D_class = _parent->is_regular_element_no_checks(_rep);
-      _rank
-          = InternalRank()(parent->_rank_state, this->to_external_const(_rep));
+  template <typename Element, typename Traits>
+  typename Konieczny<Element, Traits>::DClass&
+  Konieczny<Element, Traits>::DClass::operator=(DClass const& that) {
+    init(that);
+    return *this;
+  }
 
-      // Why are these needed?
-      _tmp_lambda_value = OneParamLambda()(this->to_external_const(_rep));
-      _tmp_rho_value    = OneParamRho()(this->to_external_const(_rep));
-    }
+  ////////////////////////////////////////////////////////////////////////
+  // DClass - destructor - public
+  ////////////////////////////////////////////////////////////////////////
+  template <typename Element, typename Traits>
+  Konieczny<Element, Traits>::DClass::~DClass() {
+    // the user of _tmp_internal_vec/_tmp_internal_set is responsible for
+    // freeing any necessary elements
+    InternalVecFree()(_H_class);
+    InternalVecFree()(_left_mults);
+    InternalVecFree()(_left_mults_inv);
+    InternalVecFree()(_left_reps);
+    this->internal_free(_rep);
+    InternalVecFree()(_right_mults);
+    InternalVecFree()(_right_mults_inv);
+    InternalVecFree()(_right_reps);
+  }
 
-    DClass(DClass const& that) : DClass() {
-      init(that);
-    }
+  ////////////////////////////////////////////////////////////////////////
+  // DClass - member functions - public
+  ////////////////////////////////////////////////////////////////////////
 
-    DClass& operator=(DClass const& that) {
-      init(that);
-      return *this;
-    }
+  template <typename Element, typename Traits>
+  bool Konieczny<Element, Traits>::DClass::contains(const_reference x) {
+    Lambda()(_tmp_lambda_value, x);
+    Rho()(_tmp_rho_value, x);
+    auto lpos = this->parent()->_lambda_orb.position(_tmp_lambda_value);
+    auto rpos = this->parent()->_rho_orb.position(_tmp_rho_value);
+    return contains(x, lpos, rpos);
+  }
 
-    DClass(DClass&&) = default;
+  ////////////////////////////////////////////////////////////////////////
+  // DClass - containment - protected
+  ////////////////////////////////////////////////////////////////////////
 
-    DClass& operator=(DClass&&) = default;
+  // Returns whether the element \p x belongs to this
+  // \f$\mathscr{D}\f$-class.
+  //
+  // Given an element \p x of the semigroup represented by \c parent, this
+  // function returns whether \p x is an element of the
+  // \f$\mathscr{D}\f$-class represented by \c this. If \p x is not an
+  // element of the semigroup, then the behaviour is undefined.
+  // This member function involved computing most of the frame for
+  // \c this, if it is not already known.
+  template <typename Element, typename Traits>
+  bool Konieczny<Element, Traits>::DClass::contains_no_checks(
+      internal_const_reference x) {
+    Lambda()(_tmp_lambda_value, this->to_external_const(x));
+    LIBSEMIGROUPS_ASSERT(this->parent()->_lambda_orb.position(_tmp_lambda_value)
+                         != UNDEFINED);
 
-#endif  // ndef LIBSEMIGROUPS_PARSED_BY_DOXYGEN
+    Rho()(_tmp_rho_value, this->to_external_const(x));
+    LIBSEMIGROUPS_ASSERT(this->parent()->_rho_orb.position(_tmp_rho_value)
+                         != UNDEFINED);
+    return contains_no_checks(
+        x,
+        this->parent()->_lambda_orb.position(_tmp_lambda_value),
+        this->parent()->_rho_orb.position(_tmp_rho_value));
+  }
 
-   public:
-    ////////////////////////////////////////////////////////////////////////
-    // DClass - destructor - public
-    ////////////////////////////////////////////////////////////////////////
-    virtual ~DClass() {
-      // the user of _tmp_internal_vec/_tmp_internal_set is responsible for
-      // freeing any necessary elements
-      InternalVecFree()(_H_class);
-      InternalVecFree()(_left_mults);
-      InternalVecFree()(_left_mults_inv);
-      InternalVecFree()(_left_reps);
-      this->internal_free(_rep);
-      InternalVecFree()(_right_mults);
-      InternalVecFree()(_right_mults_inv);
-      InternalVecFree()(_right_reps);
-    }
+  // Returns whether the element \p x belongs to this
+  // \f$\mathscr{D}\f$-class.
+  //
+  // This overload of DClass::contains_no_checks is provided in order to avoid
+  // recalculating the rank of \p x when it is already known.
+  template <typename Element, typename Traits>
+  bool Konieczny<Element, Traits>::DClass::contains_no_checks(
+      internal_const_reference x,
+      size_t                   rank) {
+    LIBSEMIGROUPS_ASSERT(this->parent()->InternalRank()(_rank_state, x)
+                         == rank);
+    return (rank == _rank && contains_no_checks(x));
+  }
 
-    ////////////////////////////////////////////////////////////////////////
-    // DClass - member functions - public
-    ////////////////////////////////////////////////////////////////////////
+  // Returns whether the element \p x belongs to this
+  // \f$\mathscr{D}\f$-class.
+  //
+  // This overload of DClass::contains_no_checks is provided in order to avoid
+  // recalculating the rank, lambda value, and rho value of \p x when they
+  // are already known.
+  template <typename Element, typename Traits>
+  bool Konieczny<Element, Traits>::DClass::contains_no_checks(
+      internal_const_reference x,
+      size_t                   rank,
+      lambda_orb_index_type    lpos,
+      rho_orb_index_type       rpos) {
+    LIBSEMIGROUPS_ASSERT(this->parent()->InternalRank()(_rank_state, x)
+                         == rank);
+    return (rank == _rank && contains_no_checks(x, lpos, rpos));
+  }
 
-    //! \brief Get the representative of the \f$\mathscr{D}\f$-class.
-    //!
-    //! The frame used to represent \f$\mathscr{D}\f$-classes depends on the
-    //! choice of representative. This function returns the representative
-    //! used by a DClass instance. This may not be the same representative
-    //! as used to construct the instance, but is guaranteed to not change.
-    //!
-    //! \parameters
-    //! (None)
-    //!
-    //! \returns
-    //! A \ref const_reference.
-    //!
-    //! \exceptions
-    //! \no_libsemigroups_except
-    const_reference rep() const {
-      return this->to_external_const(_rep);
-    }
-
-    //! \brief Get the size of a \f$\mathscr{D}\f$-class.
-    //!
-    //! This function triggers the computation of most of the frame
-    //! for \c this, if it is not already known.
-    //!
-    //! \parameters
-    //! (None)
-    //!
-    //! \returns
-    //! A value of type \c size_t.
-    //!
-    //! \exceptions
-    //! \no_libsemigroups_except
-    size_t size() const {
-      LIBSEMIGROUPS_ASSERT(this->class_computed());
-      return number_of_L_classes() * number_of_R_classes() * size_H_class();
-    }
-
-    //! \brief Get the number of \f$\mathscr{L}\f$-classes within a DClass.
-    //!
-    //! This function triggers the computation of most of the frame
-    //! for \c this, if it is not already known.
-    //!
-    //! \parameters
-    //! (None)
-    //!
-    //! \returns
-    //! A value of type \c size_t.
-    //!
-    //! \exceptions
-    //! \no_libsemigroups_except
-    size_t number_of_L_classes() const {
-      LIBSEMIGROUPS_ASSERT(_left_mults.size() > 0);
-      LIBSEMIGROUPS_ASSERT(this->class_computed());
-      return _left_mults.size();
-    }
-
-    //! \brief Get the number of \f$\mathscr{R}\f$-classes within a DClass.
-    //!
-    //! This function triggers the computation of most of the frame
-    //! for \c this, if it is not already known.
-    //!
-    //! \parameters
-    //! (None)
-    //!
-    //! \returns
-    //! A value of type \c size_t.
-    //!
-    //! \exceptions
-    //! \no_libsemigroups_except
-    size_t number_of_R_classes() const {
-      // compute_right_mults();
-      LIBSEMIGROUPS_ASSERT(_right_mults.size() > 0);
-      LIBSEMIGROUPS_ASSERT(this->class_computed());
-      return _right_mults.size();
-    }
-
-    //! \brief Get the size of the \f$\mathscr{H}\f$-classes within a DClass.
-    //!
-    //! This function triggers the computation of most of the frame
-    //! for \c this, if it is not already known.
-    //!
-    //! \parameters
-    //! (None)
-    //!
-    //! \returns
-    //! A value of type \c size_t.
-    //!
-    //! \exceptions
-    //! \no_libsemigroups_except
-    size_t size_H_class() const {
-      // compute_H_class();
-      LIBSEMIGROUPS_ASSERT(_H_class.size() > 0);
-      LIBSEMIGROUPS_ASSERT(this->class_computed());
-      return _H_class.size();
-    }
-
-    //! \brief Test regularity of a \f$\mathscr{D}\f$-class.
-    //!
-    //! \parameters
-    //! (None)
-    //!
-    //! \returns
-    //! A value of type \c size_t.
-    //!
-    //! \exceptions
-    //! \noexcept
-    bool is_regular_D_class() const noexcept {
-      return _is_regular_D_class;
-    }
-
-    //! \brief Test membership of an element within a \f$\mathscr{D}\f$-class.
-    //!
-    //! Given an element \p x which may or may not belong to \c parent, this
-    //! function returns whether \p x is an element of the
-    //! \f$\mathscr{D}\f$-class represented by \c this.
-    //! This function triggers the computation of most of the frame
-    //! for \c this, if it is not already known.
-    //!
-    //! \param x the element
-    //!
-    //! \returns
-    //! A value of type \c bool.
-    //!
-    //! \exceptions
-    //! \no_libsemigroups_except
-    bool contains(const_reference x) {
-      Lambda()(_tmp_lambda_value, x);
-      Rho()(_tmp_rho_value, x);
-      auto lpos = this->parent()->_lambda_orb.position(_tmp_lambda_value);
-      auto rpos = this->parent()->_rho_orb.position(_tmp_rho_value);
-      return contains(x, lpos, rpos);
-    }
-
-    //! \brief Get the number of idempotents of a \f$\mathscr{D}\f$-class.
-    //!
-    //! This function triggers the computation of most of the frame
-    //! for \c this, if it is not already known.
-    virtual size_t number_of_idempotents() const {
-      return 0;
-    }
-
-   protected:
-#ifndef LIBSEMIGROUPS_PARSED_BY_DOXYGEN
-    ////////////////////////////////////////////////////////////////////////
-    // DClass - iterators - protected
-    ////////////////////////////////////////////////////////////////////////
-    using const_iterator =
-        typename std::vector<internal_element_type>::const_iterator;
-
-    const_iterator cbegin_left_reps() {
-      compute_left_reps();
-      return _left_reps.cbegin();
-    }
-
-    const_iterator cend_left_reps() {
-      compute_left_reps();
-      return _left_reps.cend();
-    }
-
-    const_iterator cbegin_right_reps() {
-      compute_right_reps();
-      return _right_reps.cbegin();
-    }
-
-    const_iterator cend_right_reps() {
-      compute_right_reps();
-      return _right_reps.cend();
-    }
-
-    const_iterator cbegin_left_mults() {
-      compute_left_mults();
-      return _left_mults.cbegin();
-    }
-
-    const_iterator cend_left_mults() {
-      compute_left_mults();
-      return _left_mults.cend();
-    }
-
-    const_iterator cbegin_right_mults() {
-      compute_right_mults();
-      return _right_mults.cbegin();
-    }
-
-    const_iterator cend_right_mults() {
-      compute_right_mults();
-      return _right_mults.cend();
-    }
-
-    const_iterator cbegin_H_class() {
-      compute_H_class();
-      return _H_class.cbegin();
-    }
-
-    const_iterator cend_H_class() {
-      compute_H_class();
-      return _H_class.cend();
-    }
-
-    internal_element_type left_mults_inv(size_t i) {
-      compute_left_mults_inv();
-      return _left_mults_inv[i];
-    }
-
-    internal_element_type right_mults_inv(size_t i) {
-      compute_right_mults_inv();
-      return _right_mults_inv[i];
-    }
-
-    internal_element_type H_class_no_checks(size_t i) const {
-      return _H_class[i];
-    }
-
-    ////////////////////////////////////////////////////////////////////////
-    // DClass - initialisation member functions - protected
-    ////////////////////////////////////////////////////////////////////////
-    virtual void compute_frame()           = 0;
-    virtual void compute_left_indices()    = 0;
-    virtual void compute_left_mults()      = 0;
-    virtual void compute_left_mults_inv()  = 0;
-    virtual void compute_left_reps()       = 0;
-    virtual void compute_right_indices()   = 0;
-    virtual void compute_right_mults()     = 0;
-    virtual void compute_right_mults_inv() = 0;
-    virtual void compute_right_reps()      = 0;
-    virtual void compute_H_class()         = 0;
-
-    ////////////////////////////////////////////////////////////////////////
-    // DClass - containment - protected
-    ////////////////////////////////////////////////////////////////////////
-
-    // Returns whether the element \p x belongs to this
-    // \f$\mathscr{D}\f$-class.
-    //
-    // Given an element \p x of the semigroup represented by \c parent, this
-    // function returns whether \p x is an element of the
-    // \f$\mathscr{D}\f$-class represented by \c this. If \p x is not an
-    // element of the semigroup, then the behaviour is undefined.
-    // This member function involved computing most of the frame for
-    // \c this, if it is not already known.
-    // TODO rename
-    bool contains_no_checks(internal_const_reference x) {
-      Lambda()(_tmp_lambda_value, this->to_external_const(x));
-      LIBSEMIGROUPS_ASSERT(
-          this->parent()->_lambda_orb.position(_tmp_lambda_value) != UNDEFINED);
-
-      Rho()(_tmp_rho_value, this->to_external_const(x));
-      LIBSEMIGROUPS_ASSERT(this->parent()->_rho_orb.position(_tmp_rho_value)
-                           != UNDEFINED);
-      return contains_no_checks(
-          x,
-          this->parent()->_lambda_orb.position(_tmp_lambda_value),
-          this->parent()->_rho_orb.position(_tmp_rho_value));
-    }
-
-    // Returns whether the element \p x belongs to this
-    // \f$\mathscr{D}\f$-class.
-    //
-    // This overload of DClass::contains_no_checks is provided in order to avoid
-    // recalculating the rank of \p x when it is already known.
-    bool contains_no_checks(internal_const_reference x, size_t rank) {
-      LIBSEMIGROUPS_ASSERT(this->parent()->InternalRank()(_rank_state, x)
-                           == rank);
-      return (rank == _rank && contains_no_checks(x));
-    }
-
-    // Returns whether the element \p x belongs to this
-    // \f$\mathscr{D}\f$-class.
-    //
-    // This overload of DClass::contains_no_checks is provided in order to avoid
-    // recalculating the rank, lambda value, and rho value of \p x when they
-    // are already known.
-    bool contains_no_checks(internal_const_reference x,
-                            size_t                   rank,
-                            lambda_orb_index_type    lpos,
-                            rho_orb_index_type       rpos) {
-      LIBSEMIGROUPS_ASSERT(this->parent()->InternalRank()(_rank_state, x)
-                           == rank);
-      return (rank == _rank && contains_no_checks(x, lpos, rpos));
-    }
-
-    // Returns whether the element \p x belongs to this
-    // \f$\mathscr{D}\f$-class.
-    //
-    // This overload of DClass::contains_no_checks is provided in order to avoid
-    // recalculating the lambda value and rho value of \p x  when they are
-    // already known.
-    virtual bool contains_no_checks(internal_const_reference x,
-                                    lambda_orb_index_type    lpos,
-                                    rho_orb_index_type       rpos)
-        = 0;
-
-    virtual bool contains(const_reference       x,
-                          lambda_orb_index_type lpos,
-                          rho_orb_index_type    rpos)
-        = 0;
-
-    ////////////////////////////////////////////////////////////////////////
-    // DClass - accessor member functions - protected
-    ////////////////////////////////////////////////////////////////////////
-
-    size_t number_of_left_reps_no_checks() const noexcept {
-      return _left_reps.size();
-    }
-
-    size_t number_of_right_reps_no_checks() const noexcept {
-      return _right_reps.size();
-    }
-
-    size_t size_H_class_no_checks() const noexcept {
-      return _H_class.size();
-    }
-
-    void push_left_mult(internal_const_reference x) {
-      _left_mults.push_back(this->internal_copy(x));
+  ////////////////////////////////////////////////////////////////////////
+  // DClass - accessor member functions - protected
+  ////////////////////////////////////////////////////////////////////////
+  template <typename Element, typename Traits>
+  void Konieczny<Element, Traits>::DClass::push_left_mult(
+      internal_const_reference x) {
+    _left_mults.push_back(this->internal_copy(x));
 #ifdef LIBSEMIGROUPS_DEBUG
-      PoolGuard             cg1(_parent->element_pool());
-      PoolGuard             cg2(_parent->element_pool());
-      internal_element_type tmp1 = cg1.get();
-      internal_element_type tmp2 = cg2.get();
-      if (_left_reps.size() >= _left_mults.size()) {
-        Product()(this->to_external(tmp1),
-                  this->to_external_const(_rep),
-                  this->to_external_const(x));
-        LIBSEMIGROUPS_ASSERT(OneParamLambda()(this->to_external(tmp1))
-                             == OneParamLambda()(this->to_external_const(
-                                 _left_reps[_left_mults.size() - 1])));
-      }
-      if (_left_mults_inv.size() >= _left_mults.size()) {
-        Product()(this->to_external(tmp1),
-                  this->to_external_const(_rep),
-                  this->to_external_const(x));
-        Product()(this->to_external(tmp2),
-                  this->to_external(tmp1),
-                  this->to_external(_left_mults_inv[_left_mults.size() - 1]));
-        LIBSEMIGROUPS_ASSERT(OneParamLambda()(this->to_external_const(_rep))
-                             == OneParamLambda()(this->to_external(tmp2)));
-      }
-#endif
+    PoolGuard             cg1(_parent->element_pool());
+    PoolGuard             cg2(_parent->element_pool());
+    internal_element_type tmp1 = cg1.get();
+    internal_element_type tmp2 = cg2.get();
+    if (_left_reps.size() >= _left_mults.size()) {
+      Product()(this->to_external(tmp1),
+                this->to_external_const(_rep),
+                this->to_external_const(x));
+      LIBSEMIGROUPS_ASSERT(OneParamLambda()(this->to_external(tmp1))
+                           == OneParamLambda()(this->to_external_const(
+                               _left_reps[_left_mults.size() - 1])));
     }
-
-    void push_left_mult_inv(internal_const_reference x) {
-      _left_mults_inv.push_back(this->internal_copy(x));
-#ifdef LIBSEMIGROUPS_DEBUG
-      PoolGuard             cg1(_parent->element_pool());
-      PoolGuard             cg2(_parent->element_pool());
-      internal_element_type tmp1 = cg1.get();
-      internal_element_type tmp2 = cg2.get();
-      if (_left_reps.size() >= _left_mults_inv.size()) {
-        Product()(this->to_external(tmp1),
-                  this->to_external(_left_reps[_left_mults.size() - 1]),
-                  this->to_external_const(x));
-        LIBSEMIGROUPS_ASSERT(OneParamLambda()(this->to_external_const(_rep))
-                             == OneParamLambda()(this->to_external(tmp1)));
-      }
-      if (_left_mults.size() >= _left_mults_inv.size()) {
-        Product()(this->to_external(tmp1),
-                  this->to_external_const(_rep),
-                  this->to_external(_left_mults[_left_mults_inv.size() - 1]));
-        Product()(this->to_external(tmp2),
-                  this->to_external(tmp1),
-                  this->to_external_const(x));
-        LIBSEMIGROUPS_ASSERT(OneParamLambda()(this->to_external_const(_rep))
-                             == OneParamLambda()(this->to_external(tmp2)));
-      }
-#endif  // ndef LIBSEMIGROUPS_PARSED_BY_DOXYGEN
-    }
-
-    void push_right_mult(internal_const_reference x) {
-      _right_mults.push_back(this->internal_copy(x));
-#ifdef LIBSEMIGROUPS_DEBUG
-      PoolGuard             cg1(_parent->element_pool());
-      PoolGuard             cg2(_parent->element_pool());
-      internal_element_type tmp1 = cg1.get();
-      internal_element_type tmp2 = cg2.get();
-      if (_right_reps.size() >= _right_mults.size()) {
-        Product()(this->to_external(tmp1),
-                  this->to_external_const(x),
-                  this->to_external_const(_rep));
-        LIBSEMIGROUPS_ASSERT(OneParamRho()(this->to_external(tmp1))
-                             == OneParamRho()(this->to_external_const(
-                                 _right_reps[_right_mults.size() - 1])));
-      }
-      if (_right_mults_inv.size() >= _right_mults.size()) {
-        Product()(this->to_external(tmp1),
-                  this->to_external(_right_mults_inv[_right_mults.size() - 1]),
-                  this->to_external_const(x));
-        Product()(this->to_external(tmp2),
-                  this->to_external(tmp1),
-                  this->to_external_const(_rep));
-        LIBSEMIGROUPS_ASSERT(OneParamRho()(this->to_external_const(_rep))
-                             == OneParamRho()(this->to_external(tmp2)));
-      }
-#endif
-    }
-
-    void push_right_mult_inv(internal_const_reference x) {
-      _right_mults_inv.push_back(this->internal_copy(x));
-#ifdef LIBSEMIGROUPS_DEBUG
-      PoolGuard             cg1(_parent->element_pool());
-      PoolGuard             cg2(_parent->element_pool());
-      internal_element_type tmp1 = cg1.get();
-      internal_element_type tmp2 = cg2.get();
-      if (_right_reps.size() >= _right_mults_inv.size()) {
-        Product()(this->to_external(tmp1),
-                  this->to_external_const(x),
-                  this->to_external(_right_reps[_right_mults.size() - 1]));
-        LIBSEMIGROUPS_ASSERT(OneParamRho()(this->to_external_const(_rep))
-                             == OneParamRho()(this->to_external(tmp1)));
-      }
-      if (_right_mults.size() >= _right_mults_inv.size()) {
-        Product()(this->to_external(tmp1),
-                  this->to_external_const(x),
-                  this->to_external(_right_mults[_right_mults_inv.size() - 1]));
-        Product()(this->to_external(tmp2),
-                  this->to_external(tmp1),
-                  this->to_external_const(_rep));
-        LIBSEMIGROUPS_ASSERT(OneParamRho()(this->to_external_const(_rep))
-                             == OneParamRho()(this->to_external(tmp2)));
-      }
-#endif
-    }
-
-    void push_left_rep(internal_const_reference x) {
-      _left_reps.push_back(this->internal_copy(x));
-#ifdef LIBSEMIGROUPS_DEBUG
-      PoolGuard             cg1(_parent->element_pool());
-      internal_element_type tmp = cg1.get();
-      if (_left_mults.size() >= _left_reps.size()) {
-        Product()(this->to_external(tmp),
-                  this->to_external_const(_rep),
-                  this->to_external(_left_mults[_left_reps.size() - 1]));
-        LIBSEMIGROUPS_ASSERT(OneParamLambda()(this->to_external(tmp))
-                             == OneParamLambda()(this->to_external_const(x)));
-      }
-      if (_left_mults_inv.size() >= _left_reps.size()) {
-        Product()(this->to_external(tmp),
-                  this->to_external_const(x),
-                  this->to_external(_left_mults_inv[_left_reps.size() - 1]));
-        LIBSEMIGROUPS_ASSERT(OneParamLambda()(this->to_external_const(_rep))
-                             == OneParamLambda()(this->to_external(tmp)));
-      }
-#endif
-    }
-
-    void push_right_rep(internal_const_reference x) {
-      _right_reps.push_back(this->internal_copy(x));
-#ifdef LIBSEMIGROUPS_DEBUG
-      PoolGuard             cg1(_parent->element_pool());
-      internal_element_type tmp = cg1.get();
-      if (_right_mults.size() >= _right_reps.size()) {
-        Product()(this->to_external(tmp),
-                  this->to_external(_right_mults[_right_reps.size() - 1]),
-                  this->to_external_const(_rep));
-        LIBSEMIGROUPS_ASSERT(OneParamRho()(this->to_external(tmp))
-                             == OneParamRho()(this->to_external_const(x)));
-      }
-      if (_right_mults_inv.size() >= _right_reps.size()) {
-        Product()(this->to_external(tmp),
-                  this->to_external(_right_mults_inv[_right_reps.size() - 1]),
-                  this->to_external_const(x));
-        LIBSEMIGROUPS_ASSERT(OneParamRho()(this->to_external_const(_rep))
-                             == OneParamRho()(this->to_external(tmp)));
-      }
-#endif
-    }
-
-    bool class_computed() const noexcept {
-      return _class_computed;
-    }
-
-    bool mults_computed() const noexcept {
-      return _mults_computed;
-    }
-
-    bool reps_computed() const noexcept {
-      return _reps_computed;
-    }
-
-    bool H_class_computed() const noexcept {
-      return _H_class_computed;
-    }
-
-    void set_class_computed(bool x) noexcept {
-      _class_computed = x;
-    }
-
-    void set_mults_computed(bool x) noexcept {
-      _mults_computed = x;
-    }
-
-    void set_reps_computed(bool x) noexcept {
-      _reps_computed = x;
-    }
-
-    void set_H_class_computed(bool x) noexcept {
-      _H_class_computed = x;
-    }
-
-    Konieczny* parent() const noexcept {
-      return _parent;
-    }
-
-    void set_parent(Konieczny* x) noexcept {
-      _parent = x;
-    }
-
-    // Watch out! Doesn't copy its argument
-    void push_back_H_class(internal_element_type x) {
-      _H_class.push_back(x);
-    }
-
-    std::vector<internal_element_type>& H_class() {
-      return _H_class;
-    }
-
-    lambda_value_type& tmp_lambda_value() const noexcept {
-      return _tmp_lambda_value;
-    }
-
-    rho_value_type& tmp_rho_value() const noexcept {
-      return _tmp_rho_value;
-    }
-
-    rank_type rank() const noexcept {
-      return _rank;
-    }
-
-    internal_set_type& internal_set() const noexcept {
-      return _tmp_internal_set;
-    }
-
-    // Elements must be freed before next used
-    std::vector<internal_element_type>& internal_vec() const noexcept {
-      return _tmp_internal_vec;
-    }
-
-    internal_reference unsafe_rep() noexcept {
-      return _rep;
-    }
-
-    std::vector<lambda_orb_index_type>& left_indices() {
-      return _left_indices;
-    }
-
-    std::vector<rho_orb_index_type>& right_indices() {
-      return _right_indices;
-    }
-
-   protected:
-    ////////////////////////////////////////////////////////////////////////
-    // DClass - index iterators - protected
-    ////////////////////////////////////////////////////////////////////////
-
-    typename std::vector<left_indices_index_type>::const_iterator
-    cbegin_left_indices() {
-      compute_left_indices();
-      return _left_indices.cbegin();
-    }
-
-    typename std::vector<left_indices_index_type>::const_iterator
-    cend_left_indices() {
-      compute_left_indices();
-      return _left_indices.cend();
-    }
-
-    typename std::vector<right_indices_index_type>::const_iterator
-    cbegin_right_indices() {
-      compute_right_indices();
-      return _right_indices.cbegin();
-    }
-
-    typename std::vector<right_indices_index_type>::const_iterator
-    cend_right_indices() {
-      compute_right_indices();
-      return _right_indices.cend();
+    if (_left_mults_inv.size() >= _left_mults.size()) {
+      Product()(this->to_external(tmp1),
+                this->to_external_const(_rep),
+                this->to_external_const(x));
+      Product()(this->to_external(tmp2),
+                this->to_external(tmp1),
+                this->to_external(_left_mults_inv[_left_mults.size() - 1]));
+      LIBSEMIGROUPS_ASSERT(OneParamLambda()(this->to_external_const(_rep))
+                           == OneParamLambda()(this->to_external(tmp2)));
     }
 #endif
+  }
 
-   private:
-    ////////////////////////////////////////////////////////////////////////
-    // DClass - member functions - private
-    ////////////////////////////////////////////////////////////////////////
+  template <typename Element, typename Traits>
+  void Konieczny<Element, Traits>::DClass::push_left_mult_inv(
+      internal_const_reference x) {
+    _left_mults_inv.push_back(this->internal_copy(x));
+#ifdef LIBSEMIGROUPS_DEBUG
+    PoolGuard             cg1(_parent->element_pool());
+    PoolGuard             cg2(_parent->element_pool());
+    internal_element_type tmp1 = cg1.get();
+    internal_element_type tmp2 = cg2.get();
+    if (_left_reps.size() >= _left_mults_inv.size()) {
+      Product()(this->to_external(tmp1),
+                this->to_external(_left_reps[_left_mults.size() - 1]),
+                this->to_external_const(x));
+      LIBSEMIGROUPS_ASSERT(OneParamLambda()(this->to_external_const(_rep))
+                           == OneParamLambda()(this->to_external(tmp1)));
+    }
+    if (_left_mults.size() >= _left_mults_inv.size()) {
+      Product()(this->to_external(tmp1),
+                this->to_external_const(_rep),
+                this->to_external(_left_mults[_left_mults_inv.size() - 1]));
+      Product()(this->to_external(tmp2),
+                this->to_external(tmp1),
+                this->to_external_const(x));
+      LIBSEMIGROUPS_ASSERT(OneParamLambda()(this->to_external_const(_rep))
+                           == OneParamLambda()(this->to_external(tmp2)));
+    }
+#endif
+  }
 
-    // Returns a set of representatives of L- or R-classes covered by \c
-    // this.
-    //
-    // The \f$\mathscr{D}\f$-classes of the parent semigroup are enumerated
-    // either by finding representatives of all L-classes or all R-classes.
-    // This member function returns the representatives obtainable by
-    // multipliying the representatives  by generators on either the left or
-    // right.
-    std::vector<RepInfo>& covering_reps() {
-      compute_frame();
-      _tmp_rep_info_vec.clear();
-      _tmp_internal_set.clear();
-      // not thread safe (like everything else in here)
-      D_class_index_type class_nr = _parent->_D_classes.size();
-      // TODO(later): how to best decide which side to calculate? One is
-      // often faster
-      if (_parent->_lambda_orb.size() < _parent->_rho_orb.size()) {
-        PoolGuard             cg(_parent->element_pool());
-        internal_element_type tmp = cg.get();
-        for (left_indices_index_type i = 0; i < _left_reps.size(); ++i) {
-          internal_element_type w = _left_reps[i];
-          size_t                j = 0;
-          for (auto it = _parent->cbegin_internal_generators();
-               it < _parent->cend_internal_generators();
-               ++it, ++j) {
-            Product()(this->to_external(tmp),
-                      this->to_external_const(w),
-                      this->to_external_const(*it));
-            // TODO(later) this is fragile
-            lambda_orb_index_type lpos
-                = _parent->_lambda_orb.word_graph().target(_left_indices[i], j);
-            Rho()(_tmp_rho_value, this->to_external_const(tmp));
-            rho_orb_index_type rpos
-                = _parent->_rho_orb.position(_tmp_rho_value);
-            if (!contains_no_checks(tmp, lpos, rpos)) {
-              if (_tmp_internal_set.find(tmp) == _tmp_internal_set.end()) {
-                internal_element_type x = this->internal_copy(tmp);
-                _tmp_internal_set.insert(x);
-                _tmp_rep_info_vec.emplace_back(class_nr, x, lpos, rpos);
-              }
-            }
-          }
-        }
-      } else {
-        PoolGuard             cg(_parent->element_pool());
-        internal_element_type tmp = cg.get();
-        for (right_indices_index_type i = 0; i < _right_reps.size(); ++i) {
-          internal_element_type z = _right_reps[i];
-          size_t                j = 0;
-          for (auto it = _parent->cbegin_internal_generators();
-               it < _parent->cend_internal_generators();
-               ++it, ++j) {
-            Product()(this->to_external(tmp),
-                      this->to_external_const(*it),
-                      this->to_external_const(z));
-            // TODO(later) this is fragile
-            rho_orb_index_type rpos
-                = _parent->_rho_orb.word_graph().target(_right_indices[i], j);
-            Lambda()(_tmp_lambda_value, this->to_external_const(tmp));
-            lambda_orb_index_type lpos
-                = _parent->_lambda_orb.position(_tmp_lambda_value);
-            if (!contains_no_checks(tmp, lpos, rpos)) {
-              if (_tmp_internal_set.find(tmp) == _tmp_internal_set.end()) {
-                internal_element_type x = this->internal_copy(tmp);
-                _tmp_internal_set.insert(x);
-                _tmp_rep_info_vec.emplace_back(class_nr, x, lpos, rpos);
-              }
+  template <typename Element, typename Traits>
+  void Konieczny<Element, Traits>::DClass::push_right_mult(
+      internal_const_reference x) {
+    _right_mults.push_back(this->internal_copy(x));
+#ifdef LIBSEMIGROUPS_DEBUG
+    PoolGuard             cg1(_parent->element_pool());
+    PoolGuard             cg2(_parent->element_pool());
+    internal_element_type tmp1 = cg1.get();
+    internal_element_type tmp2 = cg2.get();
+    if (_right_reps.size() >= _right_mults.size()) {
+      Product()(this->to_external(tmp1),
+                this->to_external_const(x),
+                this->to_external_const(_rep));
+      LIBSEMIGROUPS_ASSERT(OneParamRho()(this->to_external(tmp1))
+                           == OneParamRho()(this->to_external_const(
+                               _right_reps[_right_mults.size() - 1])));
+    }
+    if (_right_mults_inv.size() >= _right_mults.size()) {
+      Product()(this->to_external(tmp1),
+                this->to_external(_right_mults_inv[_right_mults.size() - 1]),
+                this->to_external_const(x));
+      Product()(this->to_external(tmp2),
+                this->to_external(tmp1),
+                this->to_external_const(_rep));
+      LIBSEMIGROUPS_ASSERT(OneParamRho()(this->to_external_const(_rep))
+                           == OneParamRho()(this->to_external(tmp2)));
+    }
+#endif
+  }
+
+  template <typename Element, typename Traits>
+  void Konieczny<Element, Traits>::DClass::push_right_mult_inv(
+      internal_const_reference x) {
+    _right_mults_inv.push_back(this->internal_copy(x));
+#ifdef LIBSEMIGROUPS_DEBUG
+    PoolGuard             cg1(_parent->element_pool());
+    PoolGuard             cg2(_parent->element_pool());
+    internal_element_type tmp1 = cg1.get();
+    internal_element_type tmp2 = cg2.get();
+    if (_right_reps.size() >= _right_mults_inv.size()) {
+      Product()(this->to_external(tmp1),
+                this->to_external_const(x),
+                this->to_external(_right_reps[_right_mults.size() - 1]));
+      LIBSEMIGROUPS_ASSERT(OneParamRho()(this->to_external_const(_rep))
+                           == OneParamRho()(this->to_external(tmp1)));
+    }
+    if (_right_mults.size() >= _right_mults_inv.size()) {
+      Product()(this->to_external(tmp1),
+                this->to_external_const(x),
+                this->to_external(_right_mults[_right_mults_inv.size() - 1]));
+      Product()(this->to_external(tmp2),
+                this->to_external(tmp1),
+                this->to_external_const(_rep));
+      LIBSEMIGROUPS_ASSERT(OneParamRho()(this->to_external_const(_rep))
+                           == OneParamRho()(this->to_external(tmp2)));
+    }
+#endif
+  }
+
+  template <typename Element, typename Traits>
+  void Konieczny<Element, Traits>::DClass::push_left_rep(
+      internal_const_reference x) {
+    _left_reps.push_back(this->internal_copy(x));
+#ifdef LIBSEMIGROUPS_DEBUG
+    PoolGuard             cg1(_parent->element_pool());
+    internal_element_type tmp = cg1.get();
+    if (_left_mults.size() >= _left_reps.size()) {
+      Product()(this->to_external(tmp),
+                this->to_external_const(_rep),
+                this->to_external(_left_mults[_left_reps.size() - 1]));
+      LIBSEMIGROUPS_ASSERT(OneParamLambda()(this->to_external(tmp))
+                           == OneParamLambda()(this->to_external_const(x)));
+    }
+    if (_left_mults_inv.size() >= _left_reps.size()) {
+      Product()(this->to_external(tmp),
+                this->to_external_const(x),
+                this->to_external(_left_mults_inv[_left_reps.size() - 1]));
+      LIBSEMIGROUPS_ASSERT(OneParamLambda()(this->to_external_const(_rep))
+                           == OneParamLambda()(this->to_external(tmp)));
+    }
+#endif
+  }
+
+  template <typename Element, typename Traits>
+  void Konieczny<Element, Traits>::DClass::push_right_rep(
+      internal_const_reference x) {
+    _right_reps.push_back(this->internal_copy(x));
+#ifdef LIBSEMIGROUPS_DEBUG
+    PoolGuard             cg1(_parent->element_pool());
+    internal_element_type tmp = cg1.get();
+    if (_right_mults.size() >= _right_reps.size()) {
+      Product()(this->to_external(tmp),
+                this->to_external(_right_mults[_right_reps.size() - 1]),
+                this->to_external_const(_rep));
+      LIBSEMIGROUPS_ASSERT(OneParamRho()(this->to_external(tmp))
+                           == OneParamRho()(this->to_external_const(x)));
+    }
+    if (_right_mults_inv.size() >= _right_reps.size()) {
+      Product()(this->to_external(tmp),
+                this->to_external(_right_mults_inv[_right_reps.size() - 1]),
+                this->to_external_const(x));
+      LIBSEMIGROUPS_ASSERT(OneParamRho()(this->to_external_const(_rep))
+                           == OneParamRho()(this->to_external(tmp)));
+    }
+#endif
+  }
+
+  template <typename Element, typename Traits>
+  std::vector<typename Konieczny<Element, Traits>::RepInfo>&
+  Konieczny<Element, Traits>::DClass::covering_reps() {
+    compute_frame();
+    _tmp_rep_info_vec.clear();
+    _tmp_internal_set.clear();
+    // not thread safe (like everything else in here)
+    D_class_index_type class_nr = _parent->_D_classes.size();
+    // TODO(later): how to best decide which side to calculate? One is
+    // often faster
+    if (_parent->_lambda_orb.size() < _parent->_rho_orb.size()) {
+      PoolGuard             cg(_parent->element_pool());
+      internal_element_type tmp = cg.get();
+      for (left_indices_index_type i = 0; i < _left_reps.size(); ++i) {
+        internal_element_type w = _left_reps[i];
+        size_t                j = 0;
+        for (auto it = _parent->cbegin_internal_generators();
+             it < _parent->cend_internal_generators();
+             ++it, ++j) {
+          Product()(this->to_external(tmp),
+                    this->to_external_const(w),
+                    this->to_external_const(*it));
+          // TODO(later) this is fragile
+          lambda_orb_index_type lpos
+              = _parent->_lambda_orb.word_graph().target(_left_indices[i], j);
+          Rho()(_tmp_rho_value, this->to_external_const(tmp));
+          rho_orb_index_type rpos = _parent->_rho_orb.position(_tmp_rho_value);
+          if (!contains_no_checks(tmp, lpos, rpos)) {
+            if (_tmp_internal_set.find(tmp) == _tmp_internal_set.end()) {
+              internal_element_type x = this->internal_copy(tmp);
+              _tmp_internal_set.insert(x);
+              _tmp_rep_info_vec.emplace_back(class_nr, x, lpos, rpos);
             }
           }
         }
       }
-      return _tmp_rep_info_vec;
+    } else {
+      PoolGuard             cg(_parent->element_pool());
+      internal_element_type tmp = cg.get();
+      for (right_indices_index_type i = 0; i < _right_reps.size(); ++i) {
+        internal_element_type z = _right_reps[i];
+        size_t                j = 0;
+        for (auto it = _parent->cbegin_internal_generators();
+             it < _parent->cend_internal_generators();
+             ++it, ++j) {
+          Product()(this->to_external(tmp),
+                    this->to_external_const(*it),
+                    this->to_external_const(z));
+          // TODO(later) this is fragile
+          rho_orb_index_type rpos
+              = _parent->_rho_orb.word_graph().target(_right_indices[i], j);
+          Lambda()(_tmp_lambda_value, this->to_external_const(tmp));
+          lambda_orb_index_type lpos
+              = _parent->_lambda_orb.position(_tmp_lambda_value);
+          if (!contains_no_checks(tmp, lpos, rpos)) {
+            if (_tmp_internal_set.find(tmp) == _tmp_internal_set.end()) {
+              internal_element_type x = this->internal_copy(tmp);
+              _tmp_internal_set.insert(x);
+              _tmp_rep_info_vec.emplace_back(class_nr, x, lpos, rpos);
+            }
+          }
+        }
+      }
     }
-
-    ////////////////////////////////////////////////////////////////////////
-    // DClass - data - private
-    ////////////////////////////////////////////////////////////////////////
-    bool                               _class_computed;
-    std::vector<internal_element_type> _H_class;
-    bool                               _H_class_computed;
-    bool                               _is_regular_D_class;
-    std::vector<lambda_orb_index_type> _left_indices;
-    std::vector<internal_element_type> _left_mults;
-    std::vector<internal_element_type> _left_mults_inv;
-    std::vector<internal_element_type> _left_reps;
-    bool                               _mults_computed;
-    Konieczny*                         _parent;
-    rank_type                          _rank;
-    internal_element_type              _rep;
-    bool                               _reps_computed;
-    std::vector<rho_orb_index_type>    _right_indices;
-    std::vector<internal_element_type> _right_mults;
-    std::vector<internal_element_type> _right_mults_inv;
-    std::vector<internal_element_type> _right_reps;
-    mutable internal_set_type _tmp_internal_set;  // Does not own its elements
-    mutable std::vector<RepInfo>
-        _tmp_rep_info_vec;  // RepInfos do not own their rep
-    mutable std::vector<internal_element_type> _tmp_internal_vec;  // Does not
-    mutable lambda_value_type                  _tmp_lambda_value;
-    mutable rho_value_type                     _tmp_rho_value;
-  };
+    return _tmp_rep_info_vec;
+  }
 
   /////////////////////////////////////////////////////////////////////////////
   // RegularDClass
