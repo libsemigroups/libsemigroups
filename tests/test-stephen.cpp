@@ -1197,8 +1197,9 @@ namespace libsemigroups {
                           "[stephen][quick][no-valgrind]") {
     ReportGuard            rg(false);
     ToddCoxeter<word_type> tc;
+    using presentation::examples::symmetric_inverse_monoid;
     {
-      auto p = presentation::examples::symmetric_inverse_monoid(4);
+      auto p = symmetric_inverse_monoid(4);
       REQUIRE(p.contains_empty_word());
       REQUIRE(p.alphabet().size() == 4);
       p.validate();
@@ -1206,8 +1207,7 @@ namespace libsemigroups {
     }
 
     {
-      InversePresentation<word_type> p
-          = presentation::examples::symmetric_inverse_monoid(4);
+      InversePresentation<word_type> p(symmetric_inverse_monoid(4));
       p.inverses_no_checks(0123_w);
       p.validate();
 
