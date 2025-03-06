@@ -18,8 +18,8 @@
 
 #include <type_traits>
 
-#include "Catch2-3.7.1/catch_amalgamated.hpp"  // for REQUIRE, REQUIRE_THROWS_AS, REQUI...
-#include "test-main.hpp"                       // for LIBSEMIGROUPS_TEST_CASE
+#include "catch_amalgamated.hpp"  // for REQUIRE, REQUIRE_THROWS_AS, REQUI...
+#include "test-main.hpp"          // for LIBSEMIGROUPS_TEST_CASE
 
 #include "libsemigroups/exception.hpp"        // for LibsemigroupsException
 #include "libsemigroups/froidure-pin.hpp"     // for FroidurePin
