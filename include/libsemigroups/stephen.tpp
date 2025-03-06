@@ -286,6 +286,10 @@ namespace libsemigroups {
 
     report_before_run();
     if (reporting_enabled()) {
+      // TODO(2): Thread sanitizer reports some sort of race condition here. Its
+      // not really an issue since its just reporting, but would be nice to
+      // silence the sanitizer. ToddCoxeter seems to do the same thing and no
+      // sanitizer issues there, so what gives?
       detail::Ticker t([this]() { _word_graph.report_progress_from_thread(); });
       really_run_impl();
     } else {
