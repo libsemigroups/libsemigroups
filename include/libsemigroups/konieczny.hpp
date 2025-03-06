@@ -389,7 +389,7 @@ namespace libsemigroups {
     //!
     //! \exceptions
     //! \no_libsemigroups_except
-    Konieczny(Konieczny const&);
+    Konieczny(Konieczny const& that);
 
     //! \brief Move constructor.
     //!
@@ -403,7 +403,7 @@ namespace libsemigroups {
     //!
     //! \exceptions
     //! \no_libsemigroups_except
-    Konieczny(Konieczny&&);
+    Konieczny(Konieczny&& that);
 
     //! \brief Copy assignment operator.
     Konieczny& operator=(Konieczny const&);
