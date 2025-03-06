@@ -716,11 +716,11 @@ EXTRA_DIST += etc/make-format.sh
 EXTRA_DIST += etc/make-lint.sh
 EXTRA_DIST += etc/version-number.sh
 EXTRA_DIST += third_party/HPCombi/HPCOMBI_VERSION
-EXTRA_DIST += tests/catch_amalgamated.hpp
+EXTRA_DIST += third_party/Catch2-3.7.1/catch_amalgamated.cpp
+EXTRA_DIST += third_party/Catch2-3.7.1/catch_amalgamated.hpp
 EXTRA_DIST += tests/bmat-data.hpp
 EXTRA_DIST += tests/test-main.hpp
 EXTRA_DIST += tests/word-graph-test-common.hpp
-EXTRA_DIST += benchmarks/catch_amalgamated.hpp 
 EXTRA_DIST += benchmarks/uf-old.hpp
 
 ## For testing . . .
@@ -1279,6 +1279,7 @@ uninstall-hook:
 	if test -d ${hpcombisimdewasmincludedir}; then rmdir ${hpcombisimdewasmincludedir}; fi
 	if test -d ${hpcombisimdex86includedir}; then rmdir ${hpcombisimdex86includedir}; fi
 	if test -d ${hpcombiincludedir}; then rm -rf ${hpcombiincludedir}; fi
+	if test -d ${catch2includedir}; then rm -rf ${catch2includedir}; fi
 	if test -d ${includedir}/libsemigroups; then rmdir ${includedir}/libsemigroups; fi
 .PHONY: uninstall-hook
 
