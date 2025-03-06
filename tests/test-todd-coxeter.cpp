@@ -20,7 +20,7 @@
 #include <fstream>   // for ofstream
 #include <iostream>  // for cout
 
-#include "catch_amalgamated.hpp"  // for TEST_CASE
+#include "Catch2-3.7.1/catch_amalgamated.hpp"  // for TEST_CASE
 #include "libsemigroups/constants.hpp"
 #include "test-main.hpp"  // for LIBSEMIGROUPS_TEST_CASE
 

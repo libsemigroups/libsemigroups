@@ -18,8 +18,8 @@
 
 #define CATCH_CONFIG_ENABLE_PAIR_STRINGMAKER
 
-#include "catch_amalgamated.hpp"  // for operator""_catch_sr
-#include "test-main.hpp"          // for LIBSEMIGROUPS_TEST_CASE
+#include "Catch2-3.7.1/catch_amalgamated.hpp"  // for operator""_catch_sr
+#include "test-main.hpp"                       // for LIBSEMIGROUPS_TEST_CASE
 
 #include "libsemigroups/ranges.hpp"  // for ChainRange, get_range...
 

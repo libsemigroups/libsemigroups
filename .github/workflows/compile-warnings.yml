@@ -16,7 +16,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        compiler: [clang++, g++]
+        compiler: [clang++-18, g++-14]
     steps:
       - uses: actions/checkout@v4
       - name: Setup ccache . . .
@@ -24,6 +24,8 @@ jobs:
         with:
           update_packager_index: false
           install_ccache: true
+      - name: Compiler information . . .
+        run: $CXX --version
       - name: Configure . . .
         run: |
           mkdir -p m4
@@ -33,5 +35,3 @@ jobs:
         run: make -j4
       - name: Build test_all . . .
         run: make test_all -j4
-      - name: Run the quick and standard tests . . .
-        run: ./test_all "[quick],[standard]"

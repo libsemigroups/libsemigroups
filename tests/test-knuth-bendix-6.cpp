@@ -36,8 +36,8 @@
 #include <utility>  // for move
 #include <vector>   // for vector
 
-#include "catch_amalgamated.hpp"  // for operator""_catch_sr
-#include "test-main.hpp"          // for LIBSEMIGROUPS_TEMPLATE_TEST_CASE
+#include "Catch2-3.7.1/catch_amalgamated.hpp"  // for operator""_catch_sr
+#include "test-main.hpp"  // for LIBSEMIGROUPS_TEMPLATE_TEST_CASE
 
 #include "libsemigroups/constants.hpp"     // for operator==, Max, POSIT...
 #include "libsemigroups/knuth-bendix.hpp"  // for KnuthBendix, normal_forms

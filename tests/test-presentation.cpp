@@ -35,8 +35,8 @@
 #include <utility>           // for move, make_pair, swap
 #include <vector>            // for vector, operator==, swap
 
-#include "catch_amalgamated.hpp"  // for operator""_catch_sr
-#include "test-main.hpp"          // for LIBSEMIGROUPS_TEST_CASE
+#include "Catch2-3.7.1/catch_amalgamated.hpp"  // for operator""_catch_sr
+#include "test-main.hpp"                       // for LIBSEMIGROUPS_TEST_CASE
 
 #include "libsemigroups/ranges.hpp"  // for ChainRange, get_range...
 
@@ -1052,7 +1052,7 @@ namespace libsemigroups {
       REQUIRE(ip.rules == ip.rules);
       REQUIRE(ip.inverses() == W({}));
 
-      InversePresentation<W> ip2 = std::move(p);
+      InversePresentation<W> ip2(std::move(p));
       REQUIRE_THROWS_AS(ip2.validate(), LibsemigroupsException);
       REQUIRE(ip2.alphabet() == ip.alphabet());
       REQUIRE(ip2.rules == ip.rules);
@@ -2644,16 +2644,22 @@ namespace libsemigroups {
       p.alphabet("ab");
       REQUIRE_EXCEPTION_MSG(p.validate_letter('c'),
                             "invalid letter \'c\', valid letters are \"ab\"");
-      REQUIRE_EXCEPTION_MSG(p.validate_letter(-109),
-                            "invalid letter (char with value) -109, valid "
-                            "letters are \"ab\" == [97, 98]");
+      if constexpr (std::is_unsigned_v<char>) {
+        REQUIRE_EXCEPTION_MSG(p.validate_letter(-109),
+                              "invalid letter (char with value) 147, valid "
+                              "letters are \"ab\" == [97, 98]");
+      } else {
+        REQUIRE_EXCEPTION_MSG(p.validate_letter(-109),
+                              "invalid letter (char with value) -109, valid "
+                              "letters are \"ab\" == [97, 98]");
+      }
       p.alphabet({0, 1});
       REQUIRE_EXCEPTION_MSG(
           p.validate_letter('c'),
           "invalid letter 'c', valid letters are (char values) [0, 1]");
       if constexpr (std::is_unsigned_v<char>) {
-        REQUIRE_EXCEPTION_MSG(p.validate_letter(148),
-                              "invalid letter (char with value) 148, valid "
+        REQUIRE_EXCEPTION_MSG(p.validate_letter(-109),
+                              "invalid letter (char with value) 147, valid "
                               "letters are (char values) [0, 1]");
       } else {
         REQUIRE_EXCEPTION_MSG(p.validate_letter(-109),

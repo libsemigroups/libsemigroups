@@ -21,8 +21,8 @@
 #include <unordered_set>  // for unordered_set
 #include <vector>         // for vector
 
-#include "catch_amalgamated.hpp"  // for REQUIRE, REQUIRE_THROWS_AS, REQUI...
-#include "test-main.hpp"          // for LIBSEMIGROUPS_TEST_CASE
+#include "Catch2-3.7.1/catch_amalgamated.hpp"  // for REQUIRE, REQUIRE_THROWS_AS, REQUI...
+#include "test-main.hpp"                       // for LIBSEMIGROUPS_TEST_CASE
 #include "word-graph-test-common.hpp"  // for add_clique etc
 
 #include "libsemigroups/forest.hpp"      // for Forest

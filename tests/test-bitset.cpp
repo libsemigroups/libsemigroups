@@ -16,9 +16,9 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include "catch_amalgamated.hpp"     // for REQUIRE
-#include "libsemigroups/bitset.hpp"  // for BitSet
-#include "test-main.hpp"             // for LIBSEMIGROUPS_TEMPLATE_TEST_CASE
+#include "Catch2-3.7.1/catch_amalgamated.hpp"  // for REQUIRE
+#include "libsemigroups/bitset.hpp"            // for BitSet
+#include "test-main.hpp"  // for LIBSEMIGROUPS_TEMPLATE_TEST_CASE
 
 namespace libsemigroups {
 

@@ -22,18 +22,18 @@
 
 // #define CATCH_CONFIG_ENABLE_PAIR_STRINGMAKER
 
-#include <cmath>                           // for pow
-#include <cstddef>                         // for size_t
-#include <unordered_map>                   // for operator!=
-#include <vector>                          // for vector, allocator, oper...
-                                           //
-#include "catch_amalgamated.hpp"           // for StringRef, SourceLineInfo
-#include "test-main.hpp"                   // for LIBSEMIGROUPS_TEST_CASE
-                                           //
-#include "libsemigroups/constants.hpp"     // for operator!=
-#include "libsemigroups/exception.hpp"     // for LibsemigroupsException
-#include "libsemigroups/froidure-pin.hpp"  // for FroidurePin
-#include "libsemigroups/obvinf.hpp"        // for is_obviously_infinite
+#include <cmath>                               // for pow
+#include <cstddef>                             // for size_t
+#include <unordered_map>                       // for operator!=
+#include <vector>                              // for vector, allocator, oper...
+                                               //
+#include "Catch2-3.7.1/catch_amalgamated.hpp"  // for StringRef, SourceLineInfo
+#include "test-main.hpp"                       // for LIBSEMIGROUPS_TEST_CASE
+                                               //
+#include "libsemigroups/constants.hpp"         // for operator!=
+#include "libsemigroups/exception.hpp"         // for LibsemigroupsException
+#include "libsemigroups/froidure-pin.hpp"      // for FroidurePin
+#include "libsemigroups/obvinf.hpp"            // for is_obviously_infinite
 #include "libsemigroups/presentation-examples.hpp"  // for author, symmetric_group
 #include "libsemigroups/presentation.hpp"     // for Presentation, operator==
 #include "libsemigroups/ranges.hpp"           // for operator|, chain

@@ -20,7 +20,7 @@
 #include <cstddef>    // for size_t
 #include <iostream>   // for std::cout
 
-#include "catch_amalgamated.hpp"  // for BENCHMARK, REQUIRE, TEST_CASE
+#include "Catch2-3.7.1/catch_amalgamated.hpp"  // for BENCHMARK, REQUIRE, TEST_CASE
 
 #include "libsemigroups/paths.hpp"       // for Paths etc
 #include "libsemigroups/types.hpp"       // for word_type
