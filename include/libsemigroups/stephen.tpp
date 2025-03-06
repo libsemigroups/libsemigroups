@@ -29,6 +29,7 @@ namespace libsemigroups {
 
    public:
     using node_type = typename WordGraphWithSources_::node_type;
+    using WordGraphWithSources_::init;
 
     StephenGraph& init(Presentation<word_type> const& p) {
       NodeManager<node_type>::clear();
