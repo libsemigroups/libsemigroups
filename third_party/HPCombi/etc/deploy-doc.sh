@@ -7,6 +7,17 @@ if ! [[ -d "gh-pages" ]] ; then
     exit 1 
 fi
 
+if ! [[ $# == 0 || $# == 1 ]] ; then
+  echo "Usage : $0 [-DDOXYGEN_EXECUTABLE=/path/to/doxygen/executable]"
+  exit 1
+fi
+
+if [[ $# == 1 && "${1:0:21}" != "-DDOXYGEN_EXECUTABLE=" ]] ; then
+  echo "Usage : $0 [-DDOXYGEN_EXECUTABLE=/path/to/doxygen/executable]"
+  exit 1
+fi
+
+printf "\033[0;32m\033[0m\n"
 printf "\033[0;32mDeploying updates to GitHub...\033[0m\n"
 
 mkdir -p build
@@ -14,7 +25,7 @@ cd build
 if [[ -f Makefile ]] ; then
   make clean
 fi
-cmake ..
+cmake .. $1
 make doc
 cd ..
 cp -r build/doc/html/* gh-pages
