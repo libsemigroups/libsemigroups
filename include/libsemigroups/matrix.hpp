@@ -3919,16 +3919,18 @@ namespace libsemigroups {
     // printed correctly. If we just did fmt::format("{}", val) and val ==
     // POSITIVE_INFINITY, but the type of val is, say, size_t, then this
     // wouldn't use the formatter for PositiveInfinity.
+    //
+    // Also in fmt v11.1.4 the custom formatter for POSITIVE_INFINITY and
+    // NEGATIVE_INFINITY stopped working (and I wasn't able to figure out why)
     template <typename Scalar>
     std::string entry_repr(Scalar a) {
-      static_assert(std::is_integral_v<Scalar>);
-
-      if constexpr (std::is_signed_v<Scalar>) {
+      if constexpr (std::is_same_v<Scalar, NegativeInfinity>
+                    || std::is_signed_v<Scalar>) {
         if (a == NEGATIVE_INFINITY) {
           return u8"-\u221E";
         }
       }
-      if (a == static_cast<Scalar>(POSITIVE_INFINITY)) {
+      if (a == POSITIVE_INFINITY) {
         return u8"+\u221E";
       }
       return fmt::format("{}", a);
@@ -4547,10 +4549,12 @@ namespace libsemigroups {
       if (it != x.cend()) {
         auto [r, c] = x.coords(it);
         LIBSEMIGROUPS_EXCEPTION(
-            "invalid entry, expected entries to be integers or {}, "
-            "but found {} in entry ({}, {})",
-            NEGATIVE_INFINITY,
-            POSITIVE_INFINITY,
+            "invalid entry, expected entries to be integers or {} (= {}), "
+            "but found {} (= {}) in entry ({}, {})",
+            entry_repr(NEGATIVE_INFINITY),
+            static_cast<scalar_type>(NEGATIVE_INFINITY),
+            entry_repr(POSITIVE_INFINITY),
+            static_cast<scalar_type>(POSITIVE_INFINITY),
             r,
             c);
       }
@@ -4574,10 +4578,13 @@ namespace libsemigroups {
     std::enable_if_t<IsMaxPlusMat<Mat>>
     throw_if_bad_entry(Mat const&, typename Mat::scalar_type val) {
       if (val == POSITIVE_INFINITY) {
+        using scalar_type = typename Mat::scalar_type;
         LIBSEMIGROUPS_EXCEPTION("invalid entry, expected entries to be "
-                                "integers or {} but found {}",
-                                NEGATIVE_INFINITY,
-                                POSITIVE_INFINITY);
+                                "integers or {} (= {}) but found {} (= {})",
+                                entry_repr(NEGATIVE_INFINITY),
+                                static_cast<scalar_type>(NEGATIVE_INFINITY),
+                                entry_repr(POSITIVE_INFINITY),
+                                static_cast<scalar_type>(POSITIVE_INFINITY));
       }
     }
   }  // namespace matrix
@@ -4846,10 +4853,12 @@ namespace libsemigroups {
       if (it != x.cend()) {
         auto [r, c] = x.coords(it);
         LIBSEMIGROUPS_EXCEPTION(
-            "invalid entry, expected entries to be integers or {}, "
-            "but found {} in entry ({}, {})",
-            POSITIVE_INFINITY,
-            NEGATIVE_INFINITY,
+            "invalid entry, expected entries to be integers or {} (= {}), "
+            "but found {} (= {}) in entry ({}, {})",
+            entry_repr(POSITIVE_INFINITY),
+            static_cast<scalar_type>(POSITIVE_INFINITY),
+            entry_repr(NEGATIVE_INFINITY),
+            static_cast<scalar_type>(NEGATIVE_INFINITY),
             r,
             c);
       }
@@ -4873,10 +4882,13 @@ namespace libsemigroups {
     std::enable_if_t<IsMinPlusMat<Mat>>
     throw_if_bad_entry(Mat const&, typename Mat::scalar_type val) {
       if (val == NEGATIVE_INFINITY) {
+        using scalar_type = typename Mat::scalar_type;
         LIBSEMIGROUPS_EXCEPTION("invalid entry, expected entries to be "
-                                "integers or {} but found {}",
-                                POSITIVE_INFINITY,
-                                NEGATIVE_INFINITY);
+                                "integers or {} (= {}) but found {} (= {})",
+                                entry_repr(POSITIVE_INFINITY),
+                                static_cast<scalar_type>(POSITIVE_INFINITY),
+                                entry_repr(NEGATIVE_INFINITY),
+                                static_cast<scalar_type>(NEGATIVE_INFINITY));
       }
     }
   }  // namespace matrix
@@ -5314,10 +5326,11 @@ namespace libsemigroups {
       if (it != m.cend()) {
         auto [r, c] = m.coords(it);
         LIBSEMIGROUPS_EXCEPTION(
-            "invalid entry, expected values in {{0, 1, ..., {}, {}}} "
+            "invalid entry, expected values in {{0, 1, ..., {}, {} (= {})}} "
             "but found {} in entry ({}, {})",
             t,
-            NEGATIVE_INFINITY,
+            entry_repr(NEGATIVE_INFINITY),
+            static_cast<scalar_type>(NEGATIVE_INFINITY),
             detail::entry_repr(*it),
             r,
             c);
@@ -5351,10 +5364,11 @@ namespace libsemigroups {
       scalar_type const t = matrix::threshold(m);
       if (val == POSITIVE_INFINITY || 0 > val || val > t) {
         LIBSEMIGROUPS_EXCEPTION(
-            "invalid entry, expected values in {{0, 1, ..., {}, -{}}} "
+            "invalid entry, expected values in {{0, 1, ..., {}, -{} (= {})}} "
             "but found {}",
             t,
-            NEGATIVE_INFINITY,
+            entry_repr(NEGATIVE_INFINITY),
+            static_cast<scalar_type>(NEGATIVE_INFINITY),
             detail::entry_repr(val));
       }
     }
@@ -5792,10 +5806,11 @@ namespace libsemigroups {
         std::tie(r, c) = m.coords(it);
 
         LIBSEMIGROUPS_EXCEPTION(
-            "invalid entry, expected values in {{0, 1, ..., {}, {}}} "
+            "invalid entry, expected values in {{0, 1, ..., {}, {} (= {})}} "
             "but found {} in entry ({}, {})",
             t,
-            u8"\u221E",
+            detail::entry_repr(POSITIVE_INFINITY),
+            static_cast<scalar_type>(POSITIVE_INFINITY),
             detail::entry_repr(*it),
             r,
             c);
@@ -5830,10 +5845,11 @@ namespace libsemigroups {
       scalar_type const t = matrix::threshold(m);
       if (!(val == POSITIVE_INFINITY || (0 <= val && val <= t))) {
         LIBSEMIGROUPS_EXCEPTION(
-            "invalid entry, expected values in {{0, 1, ..., {}, {}}} "
+            "invalid entry, expected values in {{0, 1, ..., {}, {} (= {})}} "
             "but found {}",
             t,
-            u8"\u221E",
+            detail::entry_repr(POSITIVE_INFINITY),
+            static_cast<scalar_type>(POSITIVE_INFINITY),
             detail::entry_repr(val));
       }
     }
