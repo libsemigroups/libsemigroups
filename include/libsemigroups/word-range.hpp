@@ -1381,7 +1381,7 @@ namespace libsemigroups {
   };
 
   template <typename InputRange>
-  ToString::Range<InputRange>::~Range<InputRange>() = default;
+  ToString::Range<InputRange>::~Range() = default;
 
   //! \ingroup words_group
   //!
