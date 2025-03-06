@@ -44,8 +44,15 @@
 #pragma GCC diagnostic ignored "-Wswitch-default"
 #pragma GCC diagnostic ignored "-Wpacked"
 #endif
+#if defined(__clang__)
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wbitwise-instead-of-logical"
+#endif
 #include "simde/x86/sse4.1.h"
 #include "simde/x86/sse4.2.h"
+#if defined(__clang__)
+#pragma clang diagnostic pop
+#endif
 #if defined(__GNUC__) && !defined(__clang__)
 #pragma GCC diagnostic pop
 #endif
