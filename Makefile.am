@@ -173,7 +173,7 @@ detailinclude_HEADERS += include/libsemigroups/detail/word-graph-with-sources.tp
 detailinclude_HEADERS += include/libsemigroups/detail/word-iterators.hpp
 
 catch2includedir = $(includedir)/libsemigroups/Catch2-3.7.1/
-catch2include_HEADERS = third_party/Catch2-3.7.1/catch_amalgamated_patch.hpp
+catch2include_HEADERS = third_party/Catch2-3.7.1/catch_amalgamated.hpp
 
 magicenumincludedir = $(includedir)/libsemigroups/magic_enum
 magicenuminclude_HEADERS = third_party/magic_enum/magic_enum.hpp
