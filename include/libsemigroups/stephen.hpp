@@ -148,7 +148,7 @@ namespace libsemigroups {
     // TODO(2): Implement make<Stephen> function which checks args
     // Should presentation::throw_if_not_normalized (until we separate the
     // implementation and external interface later on).
-    // Shoudl also throw if `p.validate()` throws.
+    // Should also throw if `p.validate()` throws.
     // Should also throw if if `p.alphabet().size()` is `0`.
 
     //! \brief Construct from a presentation (copy).
@@ -449,7 +449,7 @@ namespace libsemigroups {
   // explicitly used, then we use Presentation<word_type>.
   // Presentation<std::string> is not allowed.
   // TODO(2): allow for Presentation<std::string> by templating on Word (after
-  // we separate implentation and interface)
+  // we separate implementation and interface)
 
   //! \ingroup stephen_group
   //!
