@@ -506,7 +506,7 @@ namespace libsemigroups {
     REQUIRE_THROWS_AS(words.order(Order::recursive), LibsemigroupsException);
 
     WordRange copy;
-    copy.     operator=(words);
+    copy.operator=(words);
     REQUIRE(copy.get() == 00_w);
     copy.next();
     REQUIRE(copy.get() == 000_w);
@@ -519,7 +519,7 @@ namespace libsemigroups {
     REQUIRE(copy.count() == 25);
 
     WordRange move;
-    move.     operator=(std::move(words));
+    move.operator=(std::move(words));
     REQUIRE(equal(copy, move));
     REQUIRE(move.upper_bound() == 28);
     REQUIRE(move.first() == 0_w);
@@ -748,8 +748,10 @@ namespace libsemigroups {
                           "shortlex | corner cases",
                           "[shortlex][quick]") {
     StringRange strings;
-    // TODO first and last throw if they contain letters not in the alphabet
     strings.alphabet("ab").last("").first("bbaaab");
+
+    REQUIRE_THROWS_AS(strings.last("c"), LibsemigroupsException);
+    REQUIRE_THROWS_AS(strings.first("c"), LibsemigroupsException);
 
     REQUIRE((strings | count()) == 0);
 
@@ -901,7 +903,7 @@ namespace libsemigroups {
     REQUIRE_THROWS_AS(strings.order(Order::recursive), LibsemigroupsException);
 
     StringRange copy;
-    copy.       operator=(strings);
+    copy.operator=(strings);
     REQUIRE(copy.get() == "aa");
     copy.next();
     REQUIRE(copy.get() == "aaa");
@@ -914,7 +916,7 @@ namespace libsemigroups {
     REQUIRE(copy.count() == 25);
 
     StringRange move;
-    move.       operator=(std::move(strings));
+    move.operator=(std::move(strings));
     REQUIRE(equal(copy, move));
     REQUIRE(move.upper_bound() == 28);
     REQUIRE(move.first() == "a");
@@ -976,7 +978,7 @@ namespace libsemigroups {
     REQUIRE_THROWS_AS("a*a*b*bc"_p, LibsemigroupsException);
     REQUIRE("           "_p == "");
 
-    // TODO the error message for the block of lines aren't very good
+    // TODO(2) the error message for the block of lines aren't very good
     REQUIRE_THROWS_AS("(a*b)^3*b"_p, LibsemigroupsException);
     REQUIRE_THROWS_AS("(a*b)^3*bc"_p, LibsemigroupsException);
     REQUIRE_THROWS_AS("(2^2)"_p, LibsemigroupsException);
@@ -1018,8 +1020,8 @@ namespace libsemigroups {
                           "[quick][word_functions]") {
     using namespace literals;
     using words::operator+;
-    word_type    w = 01_w;
-    word_type    v = 2_w;
+    word_type w = 01_w;
+    word_type v = 2_w;
     REQUIRE((w + v) == 012_w);
     REQUIRE((w + v + w) == 01201_w);
 
@@ -1037,8 +1039,8 @@ namespace libsemigroups {
                           "[quick][word_functions]") {
     using namespace literals;
     using words::operator+=;
-    word_type    w = 123_w;
-    word_type    v = 345_w;
+    word_type w = 123_w;
+    word_type v = 345_w;
     w += v;
     REQUIRE(w == 123345_w);
     word_type t = word_type({});

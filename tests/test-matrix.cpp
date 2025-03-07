@@ -633,7 +633,7 @@ namespace libsemigroups {
     }
 
     auto m  = make<TestType>(sr,
-                            {{2, 2, 0, 1},
+                             {{2, 2, 0, 1},
                               {0, 0, 1, 3},
                               {1, NEGATIVE_INFINITY, 0, 0},
                               {0, 1, 0, 1}});
@@ -998,10 +998,6 @@ namespace libsemigroups {
     y = x;
     REQUIRE(&x != &y);
     REQUIRE(x == y);
-    // TODO uncomment or remove
-    // REQUIRE(y
-    //         == make<TestType>(nullptr, {{-2, 2, 0}, {-1, 0, 0}, {1, -3,
-    //         1}}));
 
     auto yy(y);
     REQUIRE(yy == y);
@@ -1069,7 +1065,9 @@ namespace libsemigroups {
       BMat<> y(2, 1);
       REQUIRE_THROWS_AS(matrix::pow(y, 2), LibsemigroupsException);
     }
-    { REQUIRE_THROWS_AS(make<BMat<>>({{0, 1}, {0}}), LibsemigroupsException); }
+    {
+      REQUIRE_THROWS_AS(make<BMat<>>({{0, 1}, {0}}), LibsemigroupsException);
+    }
     {
       BMat<> y(2, 2);
       std::fill(y.begin(), y.end(), 0);
@@ -1096,7 +1094,9 @@ namespace libsemigroups {
       BMat<>                        x(v);
       REQUIRE(x == BMat<>({{true, false}, {true, false}}));
     }
-    { BMat<> x; }
+    {
+      BMat<> x;
+    }
     {
       using Mat               = NTPMat<>;
       NTPSemiring<> const* sr = new NTPSemiring<>(23, 1);

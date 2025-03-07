@@ -60,7 +60,7 @@ namespace libsemigroups {
   struct LibsemigroupsException;  // forward decl
 
   namespace {
-    // TODO add to word_graph helper namespace
+    // TODO(2) add to word_graph helper namespace
     void add_chain(WordGraph<size_t>& word_graph, size_t n) {
       size_t old_nodes = word_graph.number_of_nodes();
       word_graph.add_nodes(n);

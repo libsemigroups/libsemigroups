@@ -206,7 +206,7 @@ struct LibsemigroupsListener : Catch::EventListenerBase {
 
     SectionStats(Catch::SectionStats const& ss, SectionInfo const& si)
         : duration(std::chrono::nanoseconds(
-            static_cast<uint64_t>(ss.durationInSeconds * std::pow(10, 9)))),
+              static_cast<uint64_t>(ss.durationInSeconds * std::pow(10, 9)))),
           name(si.name) {}
   };
 
@@ -262,7 +262,7 @@ struct LibsemigroupsListener : Catch::EventListenerBase {
   }
 
   void sectionStarting(Catch::SectionInfo const& sectionInfo) override {
-    // TODO handle arbitrary depth subsections
+    // TODO(2) handle arbitrary depth subsections
     set_most_recent_section_info(sectionInfo);
     if (current_test_case_info().category != "extreme") {
       if (_section_depth == 1 && _current_section_name != sectionInfo.name) {
