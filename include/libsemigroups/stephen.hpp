@@ -450,24 +450,89 @@ namespace libsemigroups {
   // Presentation<std::string> is not allowed.
   // TODO(2): allow for Presentation<std::string> by templating on Word (after
   // we separate implentation and interface)
+
+  //! \ingroup stephen_group
+  //!
+  //! \brief Deduction guide.
+  //!
+  //! Defined in `stephen.hpp`
+  //!
+  //! Deduction guide to construct a `Stephen<Presentation<word_type>>` from a
+  //! `Presentation<word_type> const&`.
   Stephen(Presentation<word_type> const&)->Stephen<Presentation<word_type>>;
 
+  //! \ingroup stephen_group
+  //!
+  //! \brief Deduction guide.
+  //!
+  //! Defined in `stephen.hpp`
+  //!
+  //! Deduction guide to construct a `Stephen<Presentation<word_type>>` from a
+  //! `Presentation<word_type>&`.
   Stephen(Presentation<word_type>&)->Stephen<Presentation<word_type>>;
 
+  //! \ingroup stephen_group
+  //!
+  //! \brief Deduction guide.
+  //!
+  //! Defined in `stephen.hpp`
+  //!
+  //! Deduction guide to construct a `Stephen<Presentation<word_type>>` from a
+  //! `Presentation<word_type>&&`.
   Stephen(Presentation<word_type>&&)->Stephen<Presentation<word_type>>;
 
+  //! \ingroup stephen_group
+  //!
+  //! \brief Deduction guide.
+  //!
+  //! Defined in `stephen.hpp`
+  //!
+  //! Deduction guide to construct a `Stephen<Presentation<word_type>>` from a
+  //! `std::shared_ptr<Presentation<word_type>>&&`.
   Stephen(std::shared_ptr<Presentation<word_type>>&&)
       ->Stephen<Presentation<word_type>>;
 
+  //! \ingroup stephen_group
+  //!
+  //! \brief Deduction guide.
+  //!
+  //! Defined in `stephen.hpp`
+  //!
+  //! Deduction guide to construct a `Stephen<InversePresentation<word_type>>`
+  //! from an `InversePresentation<word_type> const&`.
   Stephen(InversePresentation<word_type> const&)
       ->Stephen<InversePresentation<word_type>>;
 
+  //! \ingroup stephen_group
+  //!
+  //! \brief Deduction guide.
+  //!
+  //! Defined in `stephen.hpp`
+  //!
+  //! Deduction guide to construct a `Stephen<InversePresentation<word_type>>`
+  //! from an `InversePresentation<word_type>&`.
   Stephen(InversePresentation<word_type>&)
       ->Stephen<InversePresentation<word_type>>;
 
+  //! \ingroup stephen_group
+  //!
+  //! \brief Deduction guide.
+  //!
+  //! Defined in `stephen.hpp`
+  //!
+  //! Deduction guide to construct a `Stephen<InversePresentation<word_type>>`
+  //! from an `InversePresentation<word_type>&&`.
   Stephen(InversePresentation<word_type>&&)
       ->Stephen<InversePresentation<word_type>>;
 
+  //! \ingroup stephen_group
+  //!
+  //! \brief Deduction guide.
+  //!
+  //! Defined in `stephen.hpp`
+  //!
+  //! Deduction guide to construct a `Stephen<InversePresentation<word_type>>`
+  //! from a `std::shared_ptr<InversePresentation<word_type>>&&`.
   Stephen(std::shared_ptr<InversePresentation<word_type>>&&)
       ->Stephen<InversePresentation<word_type>>;
   // TODO(2): other shared_ptr guides?
