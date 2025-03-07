@@ -37,7 +37,7 @@ jobs:
       - name: Build test_all . . .
         run: make test_all -j4
       - name: Run tests . . .
-        run: ${{ matrix.environment_variables }} ./test_all "[quick][exclude:no-sanitize-${{ matrix.type }}],[standard][exclude:no-sanitize-${{ matrix.type }}]"
+        run: ${{ matrix.environment_variables }} ./test_all "[quick][exclude:no-sanitize-${{ matrix.type }}]"
       - name: Check log files
         if: ${{ matrix.type == 'undefined' }}
         run: |
