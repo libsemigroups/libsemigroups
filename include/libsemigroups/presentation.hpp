@@ -1981,7 +1981,8 @@ namespace libsemigroups {
     //! left-hand side is removed and the corresponding value in \p inverses is
     //! appended to the front of the right-hand side.
     //!
-    //! \tparam Word the type of the words in the presentation.
+    //! \tparam Word1 the type of the words in the presentation.
+    //! \tparam Word2 the type of the words \p letters and \p inverses.
     //! \param p the presentation.
     //! \param letters the letters that can be replaced in the left-hand side.
     //! \param inverses the inverses of the letters.
@@ -1996,47 +1997,51 @@ namespace libsemigroups {
     //! there is no guarantee the the semigroup \f$S\f$ defined by \p p before
     //! this function is called will be isomorphic to the semigroup \f$S'\f$
     //! defined by \p p after this function is called.
-    template <typename Word>
-    void balance_no_checks(Presentation<Word>& p,
-                           Word const&         letters,
-                           Word const&         inverses);
+    template <typename Word1, typename Word2>
+    void balance_no_checks(Presentation<Word1>& p,
+                           Word2 const&         letters,
+                           Word2 const&         inverses);
 
     //! \brief Balance the length of the left-hand and right-hand sides.
     //!
-    //! This function first sorts the sides of each rules so that the larger
-    //! side of the rule is on the left. Then for each rule, while the last
-    //! letter of the left-hand side is in \p letters, the last letter of the
-    //! left-hand side is removed and the corresponding value in \p inverses is
-    //! appended to the end of the right-hand side. Next, while the first
-    //! letter of the left-hand side is in \p letters, the first letter of the
-    //! left-hand side is removed and the corresponding value in \p inverses is
-    //! appended to the front of the right-hand side.
+    //! This is an overload for \ref
+    //! balance_no_checks(Presentation<Word1>&, Word2 const&, Word2 const&)
+    //! to allow, for example, std::initializer_list to be used for the
+    //! parameters \p letters and \p inverses.
+    template <typename Word>
+    void balance_no_checks(Presentation<Word>& p,
+                           Word const&         letters,
+                           Word const&         inverses) {
+      balance_no_checks<Word, Word>(p, letters, inverses);
+    }
+
+    //! \brief Balance the length of the left-hand and right-hand sides.
     //!
-    //! \tparam Word the type of the words in the presentation.
-    //! \param p the presentation.
-    //! \param letters the letters that can be replaced in the left-hand side.
-    //! \param inverses the inverses of the letters.
-    //!
-    //! \exceptions
-    //! \no_libsemigroups_except
-    //!
-    //! \warning
-    //! This function assumes that the semigroup defined by \p p is isomorphic
-    //! to a group, and that \p inverses are valid. However, this function does
-    //! no checks on its arguments. If the previous assumptions do not hold,
-    //! there is no guarantee the the semigroup \f$S\f$ defined by \p p before
-    //! this function is called will be isomorphic to the semigroup \f$S'\f$
-    //! defined by \p p after this function is called.
+    //! This is an overload for \ref
+    //! balance_no_checks(Presentation<Word1>&, Word2 const&, Word2 const&)
+    //! to allow, string literals to be used for the parameters \p letters and
+    //! \p inverses.
     inline void balance_no_checks(Presentation<std::string>& p,
                                   char const*                letters,
                                   char const*                inverses) {
-      balance_no_checks(p, std::string(letters), std::string(inverses));
+      balance_no_checks(
+          p, std::string_view(letters), std::string_view(inverses));
+    }
+
+    //! \brief Balance the length of the left-hand and right-hand sides.
+    //!
+    //! This is an overload for \ref
+    //! balance_no_checks(Presentation<Word1>&, Word2 const&, Word2 const&)
+    //! to allow, std::string_view to be used for the parameters \p letters and
+    //! \p inverses.
+    inline void balance_no_checks(Presentation<std::string>& p,
+                                  std::string_view           letters,
+                                  std::string_view           inverses) {
+      balance_no_checks<std::string, std::string_view>(p, letters, inverses);
     }
 
     // TODO(later) add balance that checks p contains empty word, no duplicate
     // letters in alphabet, and inverses are valid.
-
-    // TODO(later) add balance for presentation word_types
 
     // //! \brief TODO
     // //!

@@ -4743,8 +4743,7 @@ namespace libsemigroups {
     presentation::add_rule(p, "(ACac)^4"_p, "");
     presentation::add_rule(p, "BabAA"_p, "");
     presentation::add_rule(p, "(abc)^7"_p, "");
-    // TODO(0) allow balance with char const*
-    presentation::balance_no_checks(p, p.alphabet(), std::string("ABCabc"));
+    presentation::balance_no_checks(p, p.alphabet(), "ABCabc");
 
     ToddCoxeter tc(twosided, p);
     tc.strategy(options::strategy::felsch).use_relations_in_extra(true);
