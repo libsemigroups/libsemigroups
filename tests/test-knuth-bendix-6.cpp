@@ -431,4 +431,15 @@ namespace libsemigroups {
     REQUIRE(kb3.number_of_active_rules() == 4);
   }
 
+  LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
+                                   "148",
+                                   "close to or greater than 255 letters",
+                                   "[quick][knuth-bendix]",
+                                   KNUTH_BENDIX_TYPES) {
+    Presentation<word_type> p;
+    p.alphabet(257);
+
+    REQUIRE_THROWS_AS(KnuthBendix(twosided, p), LibsemigroupsException);
+  }
+
 }  // namespace libsemigroups
