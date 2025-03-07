@@ -18,8 +18,8 @@
 
 #define CATCH_CONFIG_ENABLE_PAIR_STRINGMAKER
 
-#include <cstdint>  // for uint32_t
 #include <cstddef>  // for size_t
+#include <cstdint>  // for uint32_t
 #include <vector>   // for vector
 
 #include "Catch2-3.7.1/catch_amalgamated.hpp"  // for REQUIRE, REQUIRE_THROWS_AS, REQUI...
