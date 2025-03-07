@@ -584,7 +584,7 @@ namespace libsemigroups {
             == PPerm<3>({0, 2}, {0, 2}, 3));
     REQUIRE_THROWS_AS(o.root_of_scc(make<PPerm<3>>({0, 3}, {0, 3}, 4)),
                       LibsemigroupsException);
-    REQUIRE(*begin(o) == PPerm<3>({0, 1, 2}, {0, 1, 2}, 3));
+    REQUIRE(*o.begin() == PPerm<3>({0, 1, 2}, {0, 1, 2}, 3));
   }
 
   LIBSEMIGROUPS_TEST_CASE("Action",

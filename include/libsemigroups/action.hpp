@@ -877,51 +877,6 @@ namespace libsemigroups {
             typename Func,
             typename Traits = ActionTraits<Element, Point>>
   using LeftAction = Action<Element, Point, Func, Traits, side::left>;
-
-  // TODO(1): doc (not individually but globally for libsemigroups)
-  template <typename Element,
-            typename Point,
-            typename Func,
-            typename Traits,
-            side LeftOrRight>
-  [[nodiscard]] auto
-  begin(Action<Element, Point, Func, Traits, LeftOrRight> const& action) {
-    return action.begin();
-  }
-
-  // TODO(1): doc (not individually but globally for libsemigroups)
-  template <typename Element,
-            typename Point,
-            typename Func,
-            typename Traits,
-            side LeftOrRight>
-  [[nodiscard]] auto
-  end(Action<Element, Point, Func, Traits, LeftOrRight> const& action) {
-    return action.end();
-  }
-
-  // TODO(1): doc (not individually but globally for libsemigroups)
-  template <typename Element,
-            typename Point,
-            typename Func,
-            typename Traits,
-            side LeftOrRight>
-  [[nodiscard]] auto
-  cbegin(Action<Element, Point, Func, Traits, LeftOrRight> const& action) {
-    return action.cbegin();
-  }
-
-  // TODO(1): doc (not individually but globally for libsemigroups)
-  template <typename Element,
-            typename Point,
-            typename Func,
-            typename Traits,
-            side LeftOrRight>
-  [[nodiscard]] auto
-  cend(Action<Element, Point, Func, Traits, LeftOrRight> const& action) {
-    return action.cend();
-  }
-
 }  // namespace libsemigroups
 
 #include "action.tpp"
