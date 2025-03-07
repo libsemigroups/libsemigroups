@@ -24,7 +24,7 @@
 namespace libsemigroups {
   // struct ForTesting {};
 
-  LIBSEMIGROUPS_TEST_CASE("Constants", "001", "Undefined", "[quick]") {
+  LIBSEMIGROUPS_TEST_CASE("Constants", "000", "Undefined", "[quick]") {
     // operator==
     REQUIRE(UNDEFINED == UNDEFINED);
     REQUIRE(!(UNDEFINED == POSITIVE_INFINITY));
@@ -76,7 +76,7 @@ namespace libsemigroups {
     // REQUIRE(UNDEFINED < ForTesting());
   }
 
-  LIBSEMIGROUPS_TEST_CASE("Constants", "002", "PositiveInfinity", "[quick]") {
+  LIBSEMIGROUPS_TEST_CASE("Constants", "001", "PositiveInfinity", "[quick]") {
     // operator==
     REQUIRE(POSITIVE_INFINITY == POSITIVE_INFINITY);
     REQUIRE(!(POSITIVE_INFINITY == UNDEFINED));
@@ -124,7 +124,7 @@ namespace libsemigroups {
     // REQUIRE(ForTesting() < POSITIVE_INFINITY);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("Constants", "003", "NegativeInfinity", "[quick]") {
+  LIBSEMIGROUPS_TEST_CASE("Constants", "002", "NegativeInfinity", "[quick]") {
     // operator==
     REQUIRE(NEGATIVE_INFINITY == NEGATIVE_INFINITY);
     REQUIRE(!(NEGATIVE_INFINITY == UNDEFINED));
@@ -172,7 +172,7 @@ namespace libsemigroups {
     // REQUIRE(!(NEGATIVE_INFINITY == size_t(0)));
   }
 
-  LIBSEMIGROUPS_TEST_CASE("Constants", "004", "LimitMax", "[quick]") {
+  LIBSEMIGROUPS_TEST_CASE("Constants", "003", "LimitMax", "[quick]") {
     // operator==
     REQUIRE(LIMIT_MAX == LIMIT_MAX);
     REQUIRE(!(LIMIT_MAX == UNDEFINED));

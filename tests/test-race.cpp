@@ -65,7 +65,7 @@ namespace libsemigroups {
       }
     };
 
-    LIBSEMIGROUPS_TEST_CASE("Race", "001", "run_for", "[quick]") {
+    LIBSEMIGROUPS_TEST_CASE("Race", "000", "run_for", "[quick]") {
       auto rg = ReportGuard(false);
       Race rc;
       rc.max_threads(1);
@@ -76,7 +76,7 @@ namespace libsemigroups {
       REQUIRE(rc.winner() != nullptr);
     }
 
-    LIBSEMIGROUPS_TEST_CASE("Race", "002", "run_until", "[quick]") {
+    LIBSEMIGROUPS_TEST_CASE("Race", "001", "run_until", "[quick]") {
       auto rg = ReportGuard(false);
       Race rc;
       rc.add_runner(std::make_shared<TestRunner1>());
@@ -86,7 +86,7 @@ namespace libsemigroups {
       REQUIRE(rc.winner() != nullptr);
     }
 
-    LIBSEMIGROUPS_TEST_CASE("Race", "003", "exceptions", "[quick]") {
+    LIBSEMIGROUPS_TEST_CASE("Race", "002", "exceptions", "[quick]") {
       auto rg = ReportGuard(false);
       Race rc;
       REQUIRE_THROWS_AS(rc.run_for(std::chrono::milliseconds(10)),
@@ -102,7 +102,7 @@ namespace libsemigroups {
       REQUIRE_THROWS_AS(rc.add_runner(tr), LibsemigroupsException);
     }
 
-    LIBSEMIGROUPS_TEST_CASE("Race", "004", "iterators", "[quick]") {
+    LIBSEMIGROUPS_TEST_CASE("Race", "003", "iterators", "[quick]") {
       auto rg = ReportGuard(false);
       Race rc;
       rc.max_threads(2);
@@ -113,7 +113,7 @@ namespace libsemigroups {
       REQUIRE(2 == rc.number_of_runners());
     }
 
-    LIBSEMIGROUPS_TEST_CASE("Race", "005", "find_runner", "[quick]") {
+    LIBSEMIGROUPS_TEST_CASE("Race", "004", "find_runner", "[quick]") {
       auto rg = ReportGuard(false);
       Race rc;
       rc.max_threads(2);
@@ -123,7 +123,7 @@ namespace libsemigroups {
       REQUIRE(rc.find_runner<TestRunner2>() == nullptr);
     }
 
-    LIBSEMIGROUPS_TEST_CASE("Race", "006", "run_func", "[quick]") {
+    LIBSEMIGROUPS_TEST_CASE("Race", "005", "run_func", "[quick]") {
       auto rg = ReportGuard(false);
       Race rc;
       rc.max_threads(2);
@@ -133,7 +133,7 @@ namespace libsemigroups {
       REQUIRE(rc.winner() != nullptr);
     }
 
-    LIBSEMIGROUPS_TEST_CASE("Race", "007", "run_func", "[quick]") {
+    LIBSEMIGROUPS_TEST_CASE("Race", "006", "run_func", "[quick]") {
       auto rg = ReportGuard(false);
       Race rc;
       rc.max_threads(2);
@@ -145,7 +145,7 @@ namespace libsemigroups {
       REQUIRE(rc.winner() != nullptr);
     }
 
-    LIBSEMIGROUPS_TEST_CASE("Race", "008", "run_func", "[quick]") {
+    LIBSEMIGROUPS_TEST_CASE("Race", "007", "run_func", "[quick]") {
       auto rg = ReportGuard(false);
       Race rc;
       rc.max_threads(4);

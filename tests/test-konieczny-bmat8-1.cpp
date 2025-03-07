@@ -28,7 +28,7 @@
 namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("Konieczny",
-                          "009",
+                          "005",
                           "regular elements and idempotents",
                           "[quick][no-valgrind][bmat8]") {
 #ifdef LIBSEMIGROUPS_HPCOMBI_ENABLED
@@ -76,7 +76,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Konieczny",
-                          "010",
+                          "006",
                           "regular D-class 01",
                           "[quick][bmat8]") {
     auto                     rg   = ReportGuard(false);
@@ -96,7 +96,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Konieczny",
-                          "011",
+                          "007",
                           "regular D-class 02",
                           "[quick][bmat8][no-valgrind]") {
     auto                     rg = ReportGuard(false);
@@ -118,7 +118,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Konieczny",
-                          "012",
+                          "008",
                           "regular D-class 04: contains",
                           "[quick][no-valgrind][bmat8]") {
     auto                     rg = ReportGuard(false);
@@ -144,7 +144,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Konieczny",
-                          "013",
+                          "009",
                           "non-regular D-classes 01",
                           "[quick][bmat8]") {
     auto                     rg    = ReportGuard(false);
@@ -245,7 +245,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Konieczny",
-                          "014",
+                          "010",
                           "RegularDClass",
                           "[quick][bmat8]") {
     auto                     rg = ReportGuard(false);
@@ -267,7 +267,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Konieczny",
-                          "015",
+                          "011",
                           "full bmat monoid 4",
                           "[quick][no-valgrind][bmat8]") {
     auto                     rg = ReportGuard(false);

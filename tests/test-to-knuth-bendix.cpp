@@ -44,7 +44,7 @@ namespace libsemigroups {
   using RewriteTrie_word       = std::pair<RewriteTrie, word_type>;
 
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("to<KnuthBendix>",
-                                   "001",
+                                   "010",
                                    "from FroidurePin",
                                    "[quick][to_knuth_bendix]",
                                    RewriteFromLeft_string,
@@ -65,7 +65,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("to<KnuthBendix>",
-                                   "002",
+                                   "011",
                                    "from ToddCoxeter",
                                    "[quick][to_knuth_bendix]",
                                    std::string,
@@ -107,7 +107,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("to<KnuthBendix>",
-                                   "003",
+                                   "012",
                                    "from ToddCoxeter",
                                    "[quick][to_knuth_bendix]",
                                    RewriteFromLeft_string,

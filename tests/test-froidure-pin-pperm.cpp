@@ -31,7 +31,7 @@ namespace libsemigroups {
   struct LibsemigroupsException;
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin<PPerm<>>",
-                          "058",
+                          "037",
                           "",
                           "[quick][froidure-pin][pperm]") {
     auto rg = ReportGuard(false);
@@ -77,7 +77,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin<PPerm<>>",
-                          "059",
+                          "038",
                           "",
                           "[quick][froidure-pin][pperm]") {
     auto                 rg = ReportGuard(false);
@@ -119,7 +119,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin<PPerm<>>",
-                          "060",
+                          "039",
                           "exceptions: add_generator(s)",
                           "[quick][froidure-pin][pperm]") {
     FroidurePin<PPerm<>> S;

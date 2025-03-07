@@ -34,7 +34,7 @@ namespace libsemigroups {
   struct LibsemigroupsException;
 
   LIBSEMIGROUPS_TEST_CASE("Konieczny",
-                          "016",
+                          "012",
                           "full bmat monoid 5",
                           "[extreme][bmat8]") {
 #ifdef LIBSEMIGROUPS_HPCOMBI_ENABLED
@@ -124,7 +124,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Konieczny",
-                          "017",
+                          "013",
                           "regular generated bmat monoid 4 idempotents",
                           "[quick][no-valgrind][bmat8]") {
     auto                     rg = ReportGuard(false);
@@ -171,7 +171,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Konieczny",
-                          "018",
+                          "014",
                           "regular generated bmat monoid 5",
                           "[extreme][bmat8]") {
 #ifdef LIBSEMIGROUPS_HPCOMBI_ENABLED
@@ -231,7 +231,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Konieczny",
-                          "019",
+                          "015",
                           "my favourite example",
                           "[quick][finite][no-valgrind][bmat8]") {
     auto                     rg   = ReportGuard(false);
@@ -305,7 +305,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Konieczny",
-                          "020",
+                          "016",
                           "another large example",
                           "[quick][no-valgrind][bmat8]") {
 #ifdef LIBSEMIGROUPS_HPCOMBI_ENABLED
@@ -388,7 +388,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Konieczny",
-                          "021",
+                          "017",
                           "my favourite example transposed",
                           "[quick][no-valgrind][bmat8]") {
     auto                     rg   = ReportGuard(false);
@@ -462,7 +462,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Konieczny",
-                          "022",
+                          "018",
                           "full bmat monoid 5 with stop in Action",
                           "[extreme][bmat8]") {
 #ifdef LIBSEMIGROUPS_HPCOMBI_ENABLED
@@ -559,7 +559,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Konieczny",
-                          "023",
+                          "019",
                           "regular generated bmat monoid 5 with stops",
                           "[extreme][bmat8]") {
     auto                     rg             = ReportGuard(true);
@@ -595,7 +595,7 @@ namespace libsemigroups {
     REQUIRE(T.number_of_idempotents() == 73023);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("Konieczny", "024", "exceptions", "[quick][bmat8]") {
+  LIBSEMIGROUPS_TEST_CASE("Konieczny", "020", "exceptions", "[quick][bmat8]") {
     auto                     rg    = ReportGuard(false);
     const std::vector<BMat8> gens  = {BMat8({{0, 1, 0}, {0, 0, 1}, {1, 0, 0}}),
                                       BMat8({{0, 1, 0}, {1, 0, 0}, {0, 0, 1}}),
@@ -636,7 +636,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Konieczny",
-                          "025",
+                          "021",
                           "0-parameter constructor",
                           "[quick][no-valgrind][bmat8]") {
     auto                     rg   = ReportGuard(false);

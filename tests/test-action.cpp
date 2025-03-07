@@ -46,7 +46,7 @@ namespace libsemigroups {
   using col_orb_type    = LeftAction<BMat8, BMat8, col_action_type>;
 
   LIBSEMIGROUPS_TEST_CASE("Action",
-                          "001",
+                          "000",
                           "row and column basis orbits for BMat8 x 1",
                           "[quick]") {
     auto         rg = ReportGuard(false);
@@ -69,7 +69,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Action",
-                          "002",
+                          "001",
                           "row and column basis orbits for BMat8 x 2",
                           "[quick]") {
     using bmat8::col_space_basis;
@@ -129,7 +129,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Action",
-                          "003",
+                          "002",
                           "add generators after enumeration",
                           "[quick]") {
     using bmat8::col_space_basis;
@@ -177,7 +177,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Action",
-                          "004",
+                          "003",
                           "multipliers for BMat8 row and column orbits",
                           "[quick][no-valgrind]") {
     using bmat8::col_space_basis;
@@ -254,7 +254,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Action",
-                          "005",
+                          "004",
                           "orbits for regular boolean mat monoid 5",
                           "[quick][no-valgrind]") {
     auto                     rg             = ReportGuard(false);
@@ -295,7 +295,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Action",
-                          "006",
+                          "005",
                           "orbits for regular boolean mat monoid 6",
                           "[extreme]") {
     auto                     rg             = ReportGuard(true);
@@ -336,7 +336,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Action",
-                          "007",
+                          "006",
                           "partial perm image orbit x 1",
                           "[quick]") {
     auto rg = ReportGuard(false);
@@ -361,7 +361,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Action",
-                          "008",
+                          "007",
                           "partial perm image orbit x 2",
                           "[quick][no-valgrind]") {
     auto rg = ReportGuard(false);
@@ -388,7 +388,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Action",
-                          "009",
+                          "008",
                           "partial perm image orbit x 3",
                           "[quick][no-valgrind]") {
     auto rg = ReportGuard(false);
@@ -416,7 +416,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Action",
-                          "010",
+                          "009",
                           "partial perm image orbit x 4",
                           "[quick][no-valgrind]") {
     auto rg = ReportGuard(false);
@@ -443,7 +443,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Action",
-                          "011",
+                          "010",
                           "permutation on integers",
                           "[quick]") {
     auto rg    = ReportGuard(false);
@@ -458,7 +458,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Action",
-                          "012",
+                          "011",
                           "permutation on sets, arrays",
                           "[quick]") {
     auto rg    = ReportGuard(false);
@@ -476,7 +476,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Action",
-                          "013",
+                          "012",
                           "permutation on tuples, arrays",
                           "[quick][no-valgrind]") {
     auto rg    = ReportGuard(false);
@@ -494,7 +494,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Action",
-                          "014",
+                          "013",
                           "permutation on sets, vectors",
                           "[quick]") {
     auto rg    = ReportGuard(false);
@@ -508,7 +508,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Action",
-                          "015",
+                          "014",
                           "permutation on tuples, vectors",
                           "[quick][no-valgrind]") {
     auto rg    = ReportGuard(false);
@@ -525,7 +525,7 @@ namespace libsemigroups {
     REQUIRE(oo.size() == 30'240);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("Action", "016", "misc", "[quick]") {
+  LIBSEMIGROUPS_TEST_CASE("Action", "015", "misc", "[quick]") {
     auto rg    = ReportGuard(false);
     using Perm = LeastPerm<8>;
     RightAction<Perm, uint8_t, ImageRightAction<Perm, uint8_t>> o;
@@ -557,7 +557,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Action",
-                          "017",
+                          "016",
                           "partial perm image orbit",
                           "[quick]") {
     auto rg = ReportGuard(false);
@@ -588,7 +588,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Action",
-                          "018",
+                          "017",
                           "permutation on tuples, arrays (360360)",
                           "[quick][no-valgrind]") {
     auto rg    = ReportGuard(false);
@@ -606,7 +606,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Action",
-                          "019",
+                          "018",
                           "orbits for regular BMat8 monoid 5 with stop/start",
                           "[quick][no-valgrind]") {
     auto                     rg             = ReportGuard(false);
@@ -655,7 +655,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("Action",
-                                   "020",
+                                   "019",
                                    "regular boolean mat monoid 5",
                                    "[quick][no-valgrind]",
                                    BMat<>,
@@ -722,7 +722,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Action",
-                          "021",
+                          "020",
                           "constructors",
                           "[quick][no-valgrind]") {
     auto rg    = ReportGuard(false);
@@ -768,7 +768,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Action",
-                          "022",
+                          "021",
                           "constructors",
                           "[quick][no-valgrind]") {
     row_orb_type o;

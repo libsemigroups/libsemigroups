@@ -109,7 +109,7 @@ namespace libsemigroups {
   static_assert(!std::is_trivial<IntPair>::value, "IntPair is not non-trivial");
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
-                          "039",
+                          "027",
                           "(pairs of integers) non-trivial user type",
                           "[quick][froidure-pin][intpairs][108]") {
     auto                 rg = ReportGuard(false);

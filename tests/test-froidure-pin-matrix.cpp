@@ -29,7 +29,7 @@ namespace libsemigroups {
   struct LibsemigroupsException;
 
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("FroidurePin",
-                                   "040",
+                                   "028",
                                    "Example 000",
                                    "[quick][froidure-pin][matrix]",
                                    MaxPlusMat<2>,
@@ -71,7 +71,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("FroidurePin",
-                                   "042",
+                                   "029",
                                    "Example 001",
                                    "[extreme][froidure-pin][matrix]",
                                    (NTPMat<0, 6, 3>),
@@ -95,7 +95,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("FroidurePin",
-                                   "044",
+                                   "030",
                                    "Example 004",
                                    "[quick][froidure-pin][matrix]",
                                    MinPlusMat<>,
@@ -123,7 +123,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("FroidurePin",
-                                   "046",
+                                   "031",
                                    "Example 005",
                                    "[quick][froidure-pin][matrix]",
                                    (MaxPlusTruncMat<33, 3>),
@@ -161,7 +161,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("FroidurePin",
-                                   "049",
+                                   "032",
                                    "Example 006",
                                    "[quick][froidure-pin][matrix]",
                                    (MinPlusTruncMat<11, 3>),
@@ -197,7 +197,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("FroidurePin",
-                                   "052",
+                                   "033",
                                    "Example 007",
                                    "[quick][froidure-pin][matrix]",
                                    (NTPMat<11, 3>),

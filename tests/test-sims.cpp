@@ -3311,7 +3311,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Sims1",
-                          "087",
+                          "086",
                           "2-sylvester monoid",
                           "[fail][sims1]") {
     Presentation<word_type> p;
@@ -3343,7 +3343,7 @@ namespace libsemigroups {
             == 0);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("Sims1", "088", "Brauer monoid", "[fail][sims1]") {
+  LIBSEMIGROUPS_TEST_CASE("Sims1", "087", "Brauer monoid", "[fail][sims1]") {
     // This doesn't fail it's just very extreme
     auto          p = presentation::examples::brauer_monoid(5);
     MinimalRepOrc orc;
@@ -3365,7 +3365,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Sims1",
-                          "089",
+                          "088",
                           "partial Brauer monoid",
                           "[fail][sims1]") {
     // This doesn't fail it's just very extreme
@@ -3390,7 +3390,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Sims1",
-                          "090",
+                          "089",
                           "possible full transf. monoid 8",
                           "[extreme][sims1]") {
     auto                    rg = ReportGuard(true);
@@ -3432,7 +3432,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Sims1",
-                          "091",
+                          "090",
                           "free semilattice n = 8",
                           "[fail][sims1]") {
     Presentation<std::string> p;
@@ -3468,7 +3468,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Sims2",
-                          "092",
+                          "091",
                           "temperley_lieb_monoid(4) from presentation",
                           "[quick][sims2][low-index]") {
     auto  rg = ReportGuard(false);
@@ -3490,7 +3490,7 @@ namespace libsemigroups {
 
   // Takes approx. 13.5s in debug mode.
   LIBSEMIGROUPS_TEST_CASE("Sims2",
-                          "093",
+                          "092",
                           "2-sided T_4",
                           "[quick][sims2][no-valgrind][no-coverage]") {
     auto  rg = ReportGuard(false);
@@ -3501,7 +3501,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Sims2",
-                          "094",
+                          "093",
                           "2-sided T_4 Iwahori presentation",
                           "[quick][sims2][low-index][no-valgrind]") {
     auto  rg = ReportGuard(false);
@@ -3512,7 +3512,7 @@ namespace libsemigroups {
   // Not sure if the next test case runs to completion or not, JDM ran this
   // for 2m30s and it didn't terminate.
   LIBSEMIGROUPS_TEST_CASE("Sims2",
-                          "095",
+                          "094",
                           "2-sided T_4 Aizenstat presentation",
                           "[fail][sims2][low-index]") {
     auto  rg = ReportGuard(true);
@@ -3525,7 +3525,7 @@ namespace libsemigroups {
   // Not sure if the next test case runs to completion or not, JDM ran this
   // for 2m30s and it didn't terminate.
   LIBSEMIGROUPS_TEST_CASE("Sims2",
-                          "096",
+                          "095",
                           "2-sided S_6 Burnside+Miller presentation",
                           "[fail][sims2][low-index]") {
     auto  rg = ReportGuard(true);
@@ -3535,7 +3535,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Sims2",
-                          "097",
+                          "096",
                           "2-sided CI_4 Fernandes presentation",
                           "[standard][sims2][low-index]") {
     auto  rg = ReportGuard(false);
@@ -3546,7 +3546,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Sims2",
-                          "098",
+                          "097",
                           "2-sided CI_4 Froidure-Pin presentation",
                           "[standard][sims2][low-index]") {
     auto                  rg = ReportGuard(false);
@@ -3565,7 +3565,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Sims2",
-                          "099",
+                          "098",
                           "2-sided (2,3,7) triangle group",
                           "[quick][sims2][low-index][no-valgrind]") {
     auto                      rg = ReportGuard(false);
@@ -3583,7 +3583,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Sims2",
-                          "100",
+                          "099",
                           "2-sided Heineken group",
                           "[extreme][sims2][low-index]") {
     auto                      rg = ReportGuard(true);
@@ -3604,7 +3604,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Sims2",
-                          "101",
+                          "100",
                           "2-sided Catalan monoid n=4",
                           "[quick][sims2][low-index][no-valgrind]") {
     auto                   rg = ReportGuard(false);
@@ -3624,7 +3624,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Sims2",
-                          "102",
+                          "101",
                           "2-sided Heineken monoid",
                           "[extreme][sims2][low-index]") {
     auto                      rg = ReportGuard(true);
@@ -3650,7 +3650,7 @@ namespace libsemigroups {
 
   // Takes approx. 1 minute
   LIBSEMIGROUPS_TEST_CASE("Sims2",
-                          "103",
+                          "102",
                           "2-sided Fibonacci(2, 9)",
                           "[extreme][sims2][low-index]") {
     auto                      rg = ReportGuard(true);
@@ -3684,7 +3684,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Sims2",
-                          "104",
+                          "103",
                           "2-sided one-relation baaabaaa=aba",
                           "[standard][sims2][low-index][no-coverage]") {
     auto                      rg = ReportGuard(false);
@@ -3743,7 +3743,7 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE(
       "Sims2",
-      "105",
+      "104",
       "2-sided one-relation baabbaa=a",
       "[extreme][sims2][low-index][no-valgrind][no-coverage]") {
     auto                      rg = ReportGuard(true);
@@ -3795,7 +3795,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Sims2",
-                          "106",
+                          "105",
                           "2-sided full transformation monoid 2",
                           "[quick][sims2]") {
     auto                    rg = ReportGuard(false);
@@ -3858,7 +3858,7 @@ namespace libsemigroups {
         == std::vector<relation_type>({{100_w, 1_w}}));
   }
 
-  LIBSEMIGROUPS_TEST_CASE("Sims2", "107", "2-sided example", "[quick][sims1]") {
+  LIBSEMIGROUPS_TEST_CASE("Sims2", "106", "2-sided example", "[quick][sims1]") {
     auto                    rg = ReportGuard(false);
     Presentation<word_type> p;
     p.contains_empty_word(true);
@@ -3881,7 +3881,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Sims2",
-                          "108",
+                          "107",
                           "2-sided full transf. monoid 3",
                           "[quick][sims2]") {
     auto                      rg = ReportGuard(false);
@@ -3960,7 +3960,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Sims2",
-                          "109",
+                          "108",
                           "2-sided 2-generated free monoid",
                           "[standard][sims2][no-coverage]") {
     auto                      rg = ReportGuard(false);
@@ -3985,7 +3985,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Sims2",
-                          "110",
+                          "109",
                           "symmetric inverse monoid (Gay)",
                           "[standard][sims2]") {
     auto rg = ReportGuard(false);
@@ -3999,7 +3999,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Sims2",
-                          "111",
+                          "110",
                           "2-sided congruence-free monoid n=3",
                           "[quick][sims2][no-valgrind]") {
     auto rg = ReportGuard(false);
@@ -4032,7 +4032,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Sims2",
-                          "112",
+                          "111",
                           "2-sided congruence-free monoid n=8",
                           "[quick][sims2][no-valgrind]") {
     auto rg = ReportGuard(false);
@@ -4070,7 +4070,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Sims2",
-                          "113",
+                          "112",
                           "2-sided bicyclic monoid",
                           "[quick][sims2][no-valgrind]") {
     auto                      rg = ReportGuard(false);
@@ -4086,7 +4086,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Sims2",
-                          "114",
+                          "113",
                           "2-sided 2-generated free commutative monoid",
                           "[quick][sims2][no-valgrind]") {
     auto                      rg = ReportGuard(false);
@@ -4117,7 +4117,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Sims2",
-                          "115",
+                          "114",
                           "free semilattice n = 8",
                           "[standard][sims1][no-coverage]") {
     auto rg = ReportGuard(false);
@@ -4137,7 +4137,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Sims2",
-                          "116",
+                          "115",
                           "2-sided 2-generated free semigroup",
                           "[quick][sims2]") {
     auto                      rg = ReportGuard(false);
@@ -4169,7 +4169,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Sims2",
-                          "117",
+                          "116",
                           "1-sided ideals 2-generated free semigroup",
                           "[quick][sims1]") {
     auto                      rg = ReportGuard(false);
@@ -4197,7 +4197,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Sims1",
-                          "118",
+                          "117",
                           "1-sided ideals partition monoid, n = 2",
                           "[quick][sims1]") {
     auto                    rg = ReportGuard(false);
@@ -4237,7 +4237,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Sims2",
-                          "119",
+                          "118",
                           "2-sided ideals Jura's example",
                           "[quick][sims1][no-valgrind]") {
     auto                      rg = ReportGuard(false);
@@ -4275,7 +4275,7 @@ namespace libsemigroups {
 
   // about 2 seconds
   LIBSEMIGROUPS_TEST_CASE("Sims2",
-                          "120",
+                          "119",
                           "order_preserving_monoid(5)",
                           "[standard][sims1][no-coverage]") {
     auto rg = ReportGuard(false);
@@ -4335,7 +4335,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Sims2",
-                          "121",
+                          "120",
                           "order_preserving_monoid(6)",
                           "[fail][sims1]") {
     auto rg = ReportGuard(false);
@@ -4362,7 +4362,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Sims2",
-                          "122",
+                          "121",
                           "partition_monoid(2)",
                           "[quick][sims1]") {
     auto                    rg = ReportGuard(false);
@@ -4400,7 +4400,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Sims2",
-                          "123",
+                          "122",
                           "Adding and removing pruners",
                           "[quick][low-index]") {
     auto                      rg = ReportGuard(false);
@@ -4421,7 +4421,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Sims1",
-                          "124",
+                          "123",
                           "onesided congruence checking",
                           "[quick][low-index]") {
     auto                    rg = ReportGuard(false);
@@ -4473,7 +4473,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Sims2",
-                          "125",
+                          "124",
                           "Two-sided congruence checking",
                           "[quick][low-index]") {
     auto                    rg = ReportGuard(false);
@@ -4516,7 +4516,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Sims1",
-                          "126",
+                          "125",
                           "to_human_readable_repr test",
                           "[quick][low-index]") {
     auto                    rg = ReportGuard(false);
@@ -4819,7 +4819,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Sims1",
-                          "127",
+                          "126",
                           "symmetric_inverse_monoid(3)",
                           "[quick][low-index]") {
     auto rg = ReportGuard(false);
@@ -4860,7 +4860,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Sims1",
-                          "128",
+                          "127",
                           "SimsRefinerFaithful test",
                           "[quick][low-index]") {
     auto                    rg = ReportGuard(false);
@@ -4908,7 +4908,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Sims1",
-                          "129",
+                          "128",
                           "Threading tests",
                           "[quick][low-index]") {
     auto                    rg = ReportGuard(false);
@@ -4934,7 +4934,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Sims1",
-                          "130",
+                          "129",
                           "MinimalRepOrc test",
                           "[quick][low-index]") {
     auto                    rg = ReportGuard(false);
@@ -4990,7 +4990,7 @@ namespace libsemigroups {
   // }
 
   LIBSEMIGROUPS_TEST_CASE("Sims2",
-                          "256",
+                          "130",
                           "Partition monoid mfrc",
                           "[fail][low-index]") {
     // This doesn't fail it's just very extreme
@@ -5039,7 +5039,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Sims2",
-                          "257",
+                          "131",
                           "Temperley-Lieb monoid mfrc",
                           "[fail][low-index]") {
     // This doesn't fail it's just very extreme
@@ -5105,7 +5105,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Sims2",
-                          "258",
+                          "132",
                           "Partial Brauer monoid mfrc",
                           "[fail][low-index]") {
     // This doesn't fail it's just very extreme
@@ -5151,7 +5151,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Sims2",
-                          "259",
+                          "133",
                           "Motzkin monoid mfrc",
                           "[fail][low-index]") {
     // This doesn't fail it's just very extreme
@@ -5200,7 +5200,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Sims2",
-                          "260",
+                          "134",
                           "Brauer monoid mfrc",
                           "[fail][low-index]") {
     // This doesn't fail it's just very extreme
@@ -5251,7 +5251,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Sims2",
-                          "086",
+                          "135",
                           "Non-contiguous alphabet",
                           "[quick][low-index]") {
     auto                    rg = ReportGuard(false);

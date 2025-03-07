@@ -26,7 +26,7 @@
 namespace libsemigroups {
   struct LibsemigroupsException;
 
-  LIBSEMIGROUPS_TEST_CASE("Forest", "001", "test forest", "[quick]") {
+  LIBSEMIGROUPS_TEST_CASE("Forest", "000", "test forest", "[quick]") {
     Forest forest(100);
     REQUIRE(forest.number_of_nodes() == 100);
     for (size_t i = 1; i < 100; ++i) {

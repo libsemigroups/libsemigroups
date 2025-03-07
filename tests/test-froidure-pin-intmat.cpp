@@ -35,7 +35,7 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE(
       "FroidurePin",
-      "032",
+      "022",
       "Example 000",
       "[quick][froidure-pin][intmat][no-sanitize-undefined]",
       (IntMat<0, 0, int64_t>),
@@ -89,7 +89,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("FroidurePin",
-                                   "034",
+                                   "023",
                                    "Example 001",
                                    "[quick][froidure-pin][intmat]",
                                    (IntMat<0, 0, int64_t>),
@@ -123,7 +123,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("FroidurePin",
-                                   "036",
+                                   "024",
                                    "exception: current_position",
                                    "[quick][froidure-pin][element]",
                                    IntMat<2>,
@@ -146,7 +146,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("FroidurePin",
-                                   "037",
+                                   "025",
                                    "exception: to_element",
                                    "[quick][froidure-pin][element]",
                                    IntMat<2>,
@@ -166,7 +166,7 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE(
       "FroidurePin",
-      "038",
+      "026",
       "exception: prefix, suffix, first_letter",
       "[quick][froidure-pin][element][no-valgrind]",
       IntMat<2>,

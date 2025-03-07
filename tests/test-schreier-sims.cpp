@@ -2985,7 +2985,7 @@ namespace libsemigroups {
   //     }
 
   LIBSEMIGROUPS_TEST_CASE("SchreierSims",
-                          "036",
+                          "033",
                           "symmetric perm. group (degree 5)",
                           "[quick][schreier-sims]") {
     auto rg    = ReportGuard(false);
@@ -2997,7 +2997,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("SchreierSims",
-                          "037",
+                          "034",
                           "alternating perm. group (degree 17)",
                           "[quick][schreier-sims][no-valgrind]") {
     auto             rg = ReportGuard(false);
@@ -3063,7 +3063,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("SchreierSims",
-                          "038",
+                          "035",
                           "exceptions",
                           "[quick][schreier-sims]") {
     auto rg    = ReportGuard(false);
@@ -3093,7 +3093,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("SchreierSims",
-                          "039",
+                          "036",
                           "exceptions",
                           "[quick][schreier-sims]") {
     auto rg    = ReportGuard(false);
@@ -3110,7 +3110,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("SchreierSims",
-                          "040",
+                          "037",
                           "trivial group",
                           "[quick][schreier-sims]") {
     auto            rg = ReportGuard(false);
@@ -3126,7 +3126,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("SchreierSims",
-                          "041",
+                          "038",
                           "A17 bug",
                           "[quick][schreier-sims]") {
     auto             rg = ReportGuard(false);
@@ -3180,7 +3180,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("SchreierSims",
-                          "042",
+                          "039",
                           "orbit_lookup test",
                           "[quick][schreier-sims]") {
     auto             rg = ReportGuard(false);
@@ -3289,7 +3289,7 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE(
       "SchreierSims",
-      "043",
+      "040",
       "transversal_element and inverse_transversal_element test",
       "[quick][schreier-sims][no-valgrind]") {
     auto             rg = ReportGuard(false);
@@ -3346,7 +3346,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("SchreierSims",
-                          "044",
+                          "041",
                           "trivial perm. group intersection (degree 1)",
                           "[quick][schreier-sims][intersection]") {
     auto            rg = ReportGuard(false);
@@ -3360,7 +3360,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("SchreierSims",
-                          "045",
+                          "042",
                           "trivial perm. group intersection (degree 2)",
                           "[quick][schreier-sims][intersection]") {
     auto            rg = ReportGuard(false);
@@ -3376,7 +3376,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("SchreierSims",
-                          "046",
+                          "043",
                           "cyclic group intersection (degree 13)",
                           "[quick][schreier-sims][intersection]") {
     auto             rg = ReportGuard(false);
@@ -3395,7 +3395,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("SchreierSims",
-                          "047",
+                          "044",
                           "D10 and Z5 intersection",
                           "[quick][schreier-sims][intersection]") {
     auto             rg = ReportGuard(false);
@@ -3414,7 +3414,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("SchreierSims",
-                          "048",
+                          "045",
                           "D8 and Q8 intersection",
                           "[quick][schreier-sims][intersection]") {
     auto            rg = ReportGuard(false);
@@ -3432,7 +3432,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("SchreierSims",
-                          "049",
+                          "046",
                           "primitive on 8 points intersection",
                           "[quick][schreier-sims][intersection]") {
     auto            rg = ReportGuard(false);
@@ -3449,7 +3449,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("SchreierSims",
-                          "050",
+                          "047",
                           "primitive on 8 points intersection (swap order)",
                           "[quick][schreier-sims][intersection]") {
     auto            rg = ReportGuard(false);
@@ -3466,7 +3466,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("SchreierSims",
-                          "051",
+                          "048",
                           "A13 and PGL(2, 11) intersection",
                           "[quick][schreier-sims][intersection]") {
     auto             rg = ReportGuard(false);
@@ -3485,7 +3485,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("SchreierSims",
-                          "052",
+                          "049",
                           "A13 and PGL(2, 11) intersection (swap order)",
                           "[quick][schreier-sims][intersection]") {
     auto             rg = ReportGuard(false);
@@ -3505,7 +3505,7 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE(
       "SchreierSims",
-      "053",
+      "050",
       "S17 and A39 intersection",
       "[standard][schreier-sims][no-valgrind][intersection]") {
     auto             rg = ReportGuard(false);
@@ -3541,7 +3541,7 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE(
       "SchreierSims",
-      "054",
+      "051",
       "A50 and PGL(2, 49) intersection",
       "[extreme][schreier-sims][no-valgrind][intersection]") {
     auto             rg = ReportGuard(false);
@@ -3592,7 +3592,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("SchreierSims",
-                          "055",
+                          "052",
                           "3^3:13 and 3^3.2.A(4) intersection",
                           "[quick][schreier-sims][intersection]") {
     auto             rg = ReportGuard(false);
@@ -3629,7 +3629,7 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE(
       "SchreierSims",
-      "056",
+      "053",
       "PGamma(2, 9) wreath Sym(2) and Alt(6)^2.D_8 intersection",
       "[standard][schreier-sims][no-valgrind][intersection]") {
     auto              rg = ReportGuard(false);
@@ -3683,7 +3683,7 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE(
       "SchreierSims",
-      "057",
+      "054",
       "Alt(6)^2.2^2:4 and Alt(6)^2.4 intersection",
       "[standard][schreier-sims][no-valgrind][intersection]") {
     auto              rg = ReportGuard(false);
@@ -3729,7 +3729,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("SchreierSims",
-                          "058",
+                          "055",
                           "3^3(S(4) x 2) and ASL(3, 3) intersection",
                           "[quick][schreier-sims][intersection]") {
     auto             rg = ReportGuard(false);
@@ -3765,7 +3765,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("SchreierSims",
-                          "059",
+                          "056",
                           "7^2:3 x Q(8) and 7^2:D(2*6) intersection",
                           "[quick][schreier-sims][intersection]") {
     auto             rg = ReportGuard(false);
@@ -3820,7 +3820,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("SchreierSims",
-                          "060",
+                          "057",
                           "D(2*53) and 53:13 intersection",
                           "[quick][schreier-sims][intersection]") {
     auto             rg = ReportGuard(false);
@@ -3851,7 +3851,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("SchreierSims",
-                          "061",
+                          "058",
                           "2^6:(7 x D_14) and PSL(2, 6)^2.4 intersection",
                           "[quick][schreier-sims][intersection]") {
     auto             rg = ReportGuard(false);
@@ -3907,7 +3907,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("SchreierSims",
-                          "062",
+                          "059",
                           "2^6:(S_3 x GL(3, 2)) and 2.6:Alt(7) intersection",
                           "[quick][schreier-sims][intersection][no-valgrind]") {
     auto             rg = ReportGuard(false);
@@ -3979,7 +3979,7 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE(
       "SchreierSims",
-      "063",
+      "060",
       "AGL(7, 2) and PGL(2, 127) intersection",
       "[extreme][schreier-sims][no-valgrind][intersection]") {
     auto              rg = ReportGuard(false);
@@ -4066,7 +4066,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("SchreierSims",
-                          "064",
+                          "061",
                           "PSL(2, 127) and AGL(1, 2^7) intersection",
                           "[quick][schreier-sims][intersection][no-valgrind]") {
     auto              rg = ReportGuard(false);
@@ -4151,7 +4151,7 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE(
       "SchreierSims",
-      "065",
+      "062",
       "PSL(3, 4).2 and PSL(3, 4).2 (nontrivial) intersection",
       "[quick][schreier-sims][intersection]") {
     auto              rg = ReportGuard(false);
@@ -4252,7 +4252,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("SchreierSims",
-                          "066",
+                          "063",
                           "PSL(3, 4).Sym(3) and PSL(3, 4).2 intersection",
                           "[quick][schreier-sims][intersection]") {
     auto              rg = ReportGuard(false);
@@ -4359,7 +4359,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("SchreierSims",
-                          "067",
+                          "064",
                           "3^4:5:4 and D_16:4 intersection",
                           "[quick][schreier-sims][intersection]") {
     auto             rg = ReportGuard(false);
@@ -4436,7 +4436,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("SchreierSims",
-                          "068",
+                          "065",
                           "uint8_t Perm",
                           "[quick][schreier-sims][copy constructor]") {
     auto rg    = ReportGuard(false);

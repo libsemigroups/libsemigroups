@@ -90,7 +90,7 @@ namespace libsemigroups {
   }  // namespace
 
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
-                                   "125",
+                                   "119",
                                    "transformation semigroup (size 4)",
                                    "[quick][knuth-bendix]",
                                    KNUTH_BENDIX_TYPES) {
@@ -110,7 +110,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
-                                   "126",
+                                   "120",
                                    "transformation semigroup (size 9)",
                                    "[quick][knuth-bendix]",
                                    KNUTH_BENDIX_TYPES) {
@@ -132,7 +132,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
-                                   "127",
+                                   "121",
                                    "transformation semigroup (size 88)",
                                    "[quick][knuth-bendix]",
                                    KNUTH_BENDIX_TYPES) {
@@ -154,7 +154,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
-                                   "128",
+                                   "122",
                                    "internal_string_to_word",
                                    "[quick]",
                                    KNUTH_BENDIX_TYPES) {
@@ -172,7 +172,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
-                                   "129",
+                                   "123",
                                    "internal_string_to_word x 2",
                                    "[quick]",
                                    KNUTH_BENDIX_TYPES) {
@@ -191,7 +191,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
-                                   "130",
+                                   "124",
                                    "manual onesided congruence",
                                    "[quick][knuth-bendix]",
                                    KNUTH_BENDIX_TYPES) {
@@ -289,7 +289,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
-                                   "131",
+                                   "125",
                                    "onesided congruence!!!",
                                    "[quick][knuth-bendix]",
                                    KNUTH_BENDIX_TYPES) {
@@ -384,7 +384,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
-                                   "132",
+                                   "126",
                                    "manual left congruence!!!",
                                    "[quick][knuth-bendix]",
                                    KNUTH_BENDIX_TYPES) {
@@ -448,7 +448,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
-                                   "133",
+                                   "127",
                                    "automatic left congruence!!!",
                                    "[quick][knuth-bendix][no-valgrind]",
                                    KNUTH_BENDIX_TYPES) {
@@ -574,7 +574,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
-                          "134",
+                          "128",
                           "left congruence on finite semigroup",
                           "[quick]") {
     auto                  rg = ReportGuard(false);

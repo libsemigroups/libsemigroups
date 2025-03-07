@@ -54,7 +54,7 @@ namespace libsemigroups {
   using detail::StaticVector1;
 
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("to<Presentation>",
-                                   "000",
+                                   "013",
                                    "from FroidurePin",
                                    "[quick][to_presentation]",
                                    word_type,
@@ -83,7 +83,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("to<Presentation>",
-                          "001",
+                          "014",
                           "from FroidurePin and alphabet",
                           "[quick][to_presentation]") {
     FroidurePin<Bipartition> S;
@@ -125,7 +125,7 @@ namespace libsemigroups {
       = std::pair<StaticVector1<uint8_t, 3>, StaticVector1<uint8_t, 3>>;
 
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("to<Presentation>",
-                                   "002",
+                                   "015",
                                    "from present.",
                                    "[quick][to_presentation]",
                                    string_string,
@@ -180,7 +180,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("to<Presentation>",
-                                   "003",
+                                   "016",
                                    "from present. + func.",
                                    "[quick][to_presentation]",
                                    string_string,
@@ -229,7 +229,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("to<Presentation>",
-                          "004",
+                          "017",
                           "from present. and alphabet",
                           "[quick][to_presentation]") {
     Presentation<word_type> p;
@@ -254,7 +254,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("to<Presentation>",
-                          "005",
+                          "018",
                           "use human readable alphabet for to<Presentation>",
                           "[quick][presentation]") {
     Presentation<word_type> p;
@@ -272,7 +272,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("to<InversePresentation>",
-                                   "006",
+                                   "019",
                                    "from inv. present.",
                                    "[quick][to_presentation]",
                                    string_string,
@@ -342,7 +342,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("to<InversePresentation>",
-                                   "007",
+                                   "020",
                                    "from present.",
                                    "[quick][to_presentation][no-valgrind]",
                                    std::string,

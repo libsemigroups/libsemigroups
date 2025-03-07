@@ -281,7 +281,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("Matrix",
-                                   "002",
+                                   "001",
                                    "boolean matrix - test 2",
                                    "[quick]",
                                    BMat<3>,
@@ -298,7 +298,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("Matrix",
-                                   "003",
+                                   "002",
                                    "boolean matrix - test 3",
                                    "[quick]",
                                    BMat<2>,
@@ -315,7 +315,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("Matrix",
-                                   "004",
+                                   "003",
                                    "boolean matrix - test 4",
                                    "[quick]",
                                    BMat<3>,
@@ -338,7 +338,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("Matrix",
-                                   "006",
+                                   "004",
                                    "boolean matrix - row_basis",
                                    "[quick]",
                                    BMat<3>,
@@ -369,7 +369,7 @@ namespace libsemigroups {
   ////////////////////////////////////////////////////////////////////////
 
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("Matrix",
-                                   "008",
+                                   "005",
                                    "integer matrix - test 1",
                                    "[quick]",
                                    IntMat<3>,
@@ -421,7 +421,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Matrix",
-                          "010",
+                          "006",
                           "integer matrix - code cov",
                           "[quick]") {
     IntMat<>* A = new IntMat<>();
@@ -448,7 +448,7 @@ namespace libsemigroups {
   ////////////////////////////////////////////////////////////////////////
 
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("Matrix",
-                                   "011",
+                                   "007",
                                    "max-plus matrix - test 1",
                                    "[quick]",
                                    MaxPlusMat<>,
@@ -478,7 +478,7 @@ namespace libsemigroups {
     REQUIRE(Hash<TestType>()(y) != 0);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("Matrix", "013", "MaxPlusMat code cov", "[quick]") {
+  LIBSEMIGROUPS_TEST_CASE("Matrix", "008", "MaxPlusMat code cov", "[quick]") {
     MaxPlusMat<3>* B = new MaxPlusMat<3>();
     delete B;
     MaxPlusMat<3>::Row* C = new MaxPlusMat<3>::Row();
@@ -490,7 +490,7 @@ namespace libsemigroups {
   ////////////////////////////////////////////////////////////////////////
 
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("Matrix",
-                                   "014",
+                                   "009",
                                    "min-plus matrix - test 1",
                                    "[quick]",
                                    MinPlusMat<3>,
@@ -545,7 +545,7 @@ namespace libsemigroups {
     }
   }
 
-  LIBSEMIGROUPS_TEST_CASE("Matrix", "016", "MinPlusMat code cov", "[quick]") {
+  LIBSEMIGROUPS_TEST_CASE("Matrix", "010", "MinPlusMat code cov", "[quick]") {
     MinPlusMat<3>* B = new MinPlusMat<3>();
     delete B;
     MinPlusMat<3>::Row* C = new MinPlusMat<3>::Row();
@@ -557,7 +557,7 @@ namespace libsemigroups {
   ////////////////////////////////////////////////////////////////////////
 
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("Matrix",
-                                   "017",
+                                   "011",
                                    "max-plus trunc. matrix - test 1",
                                    "[quick]",
                                    (MaxPlusTruncMat<5, 2>),
@@ -615,7 +615,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("Matrix",
-                                   "020",
+                                   "012",
                                    "max-plus trunc. matrix - test 2",
                                    "[quick]",
                                    (MaxPlusTruncMat<5, 4>),
@@ -670,7 +670,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("Matrix",
-                                   "023",
+                                   "013",
                                    "max-plus trunc. matrix - test 3",
                                    "[quick]",
                                    (MaxPlusTruncMat<33, 3>),
@@ -706,7 +706,7 @@ namespace libsemigroups {
     delete sr;
   }
 
-  LIBSEMIGROUPS_TEST_CASE("Matrix", "026", "MaxPlusMat code cov", "[quick]") {
+  LIBSEMIGROUPS_TEST_CASE("Matrix", "014", "MaxPlusMat code cov", "[quick]") {
     MaxPlusTruncMat<33, 3>* B = new MaxPlusTruncMat<33, 3>();
     delete B;
     MaxPlusTruncMat<5, 2>::Row* C = new MaxPlusTruncMat<5, 2>::Row();
@@ -726,7 +726,7 @@ namespace libsemigroups {
   ////////////////////////////////////////////////////////////////////////
 
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("Matrix",
-                                   "027",
+                                   "015",
                                    "min-plus trunc. matrix - test 1",
                                    "[quick]",
                                    (MinPlusTruncMat<33, 3>),
@@ -772,7 +772,7 @@ namespace libsemigroups {
   ////////////////////////////////////////////////////////////////////////
 
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("Matrix",
-                                   "030",
+                                   "016",
                                    "3x3 matrix, t = 0, p = 3",
                                    "[quick]",
                                    (NTPMat<0, 3, 3, 3>),
@@ -805,7 +805,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("Matrix",
-                                   "034",
+                                   "017",
                                    "4x4 matrix, t = 0, p = 10",
                                    "[quick]",
                                    (NTPMat<0, 10>),
@@ -875,7 +875,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("Matrix",
-                                   "036",
+                                   "018",
                                    "4x4 matrix, t = 0, p = 10",
                                    "[quick]",
                                    (NTPMat<0, 10, 4, 4>),
@@ -918,7 +918,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("Matrix",
-                                   "038",
+                                   "019",
                                    "3x3 matrix, t = 33, p = 2",
                                    "[quick]",
                                    (NTPMat<33, 2>),
@@ -955,7 +955,7 @@ namespace libsemigroups {
   ////////////////////////////////////////////////////////////////////////
 
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("Matrix",
-                                   "042",
+                                   "020",
                                    "3x3 matrix",
                                    "[quick]",
                                    (ProjMaxPlusMat<3, 3>),
@@ -1040,7 +1040,7 @@ namespace libsemigroups {
     REQUIRE(matrix::pow(x, 0) == TestType::one(3));
   }
 
-  LIBSEMIGROUPS_TEST_CASE("Matrix", "044", "exceptions", "[quick][element]") {
+  LIBSEMIGROUPS_TEST_CASE("Matrix", "021", "exceptions", "[quick][element]") {
     using Mat               = NTPMat<>;
     using scalar_type       = typename Mat::scalar_type;
     NTPSemiring<> const* sr = new NTPSemiring<>(23, 1);
@@ -1055,7 +1055,7 @@ namespace libsemigroups {
     delete sr;
   }
 
-  LIBSEMIGROUPS_TEST_CASE("Matrix", "045", "code coverage", "[quick]") {
+  LIBSEMIGROUPS_TEST_CASE("Matrix", "022", "code coverage", "[quick]") {
     {
       BMat<> x(0, 0);
       x.transpose();
@@ -1113,14 +1113,14 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("BMatFastest",
-                          "046",
+                          "023",
                           "check no throw",
                           "[quick][matrix]") {
     REQUIRE_NOTHROW(BMatFastest<3>({{0, 1}, {0, 1}}));
   }
 
   LIBSEMIGROUPS_TEST_CASE("Matrix",
-                          "047",
+                          "024",
                           "to_human_readable_repr",
                           "[quick][matrix]") {
     BMat<3> x({{0, 1, 0}, {0, 1, 0}, {0, 0, 0}});
