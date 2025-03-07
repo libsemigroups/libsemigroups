@@ -4115,7 +4115,7 @@ namespace libsemigroups {
     REQUIRE(s.number_of_congruences(12) == 19'245);
     REQUIRE(s.number_of_congruences(13) == 32'299);
 
-    check_meets_and_joins(s.cbegin(3), s.cend(3));
+    check_meets_and_joins(s.cbegin(5), s.cend(5));
   }
 
   LIBSEMIGROUPS_TEST_CASE("Sims2",
