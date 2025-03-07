@@ -520,7 +520,7 @@ namespace libsemigroups {
   //! advantages over using \ref recursive_path_compare otherwise.
   //!
   //! \sa
-  //! \ref recursive_path_compare(T const&, T, S const&, S).
+  //! \ref recursive_path_compare(T const&, T, T const&, T).
   struct RecursivePathCompare {
     //! \brief  Call operator that compares \p x and \p y using
     //! \ref recursive_path_compare.

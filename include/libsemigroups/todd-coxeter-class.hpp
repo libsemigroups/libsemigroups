@@ -293,7 +293,7 @@ namespace libsemigroups {
       //! \brief Values for specifying how to handle edge definitions.
       //!
       //! The values in this enum can be used as the argument for
-      //! \ref ToddCoxeter::def_version().
+      //! \ref def_version.
       //!
       //! For our purposes, a definition is a recently defined edge in the
       //! word graph that we are attempting to construct in an instance of
