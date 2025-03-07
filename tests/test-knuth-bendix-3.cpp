@@ -82,7 +82,7 @@ namespace libsemigroups {
   }  // namespace
 
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
-                                   "069",
+                                   "072",
                                    "Chap. 11, Lem. 1.8 (q = 6, r = 5) in NR",
                                    "[knuth-bendix][quick]",
                                    KNUTH_BENDIX_TYPES) {
@@ -131,7 +131,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
-                                   "070",
+                                   "073",
                                    "NR Chap. 11, §2 (q=6, r=2, \u03B1=abaabba)",
                                    "[knuth-bendix][quick]",
                                    KNUTH_BENDIX_TYPES) {
@@ -157,7 +157,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
-                                   "071",
+                                   "074",
                                    "Chap. 8, Thm. 4.2 in NR ",
                                    "[knuth-bendix][quick]",
                                    KNUTH_BENDIX_TYPES) {
@@ -197,7 +197,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
-                                   "072",
+                                   "075",
                                    "equal_to fp semigroup",
                                    "[quick][knuth-bendix]",
                                    KNUTH_BENDIX_TYPES) {
@@ -228,7 +228,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
-                                   "073",
+                                   "076",
                                    "equal_to free semigroup",
                                    "[quick][knuth-bendix]",
                                    KNUTH_BENDIX_TYPES) {
@@ -253,7 +253,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
-                                   "074",
+                                   "077",
                                    "gap/smalloverlap/gap/test.gi",
                                    "[quick][knuth-bendix][smalloverlap]",
                                    KNUTH_BENDIX_TYPES) {
@@ -287,7 +287,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
-                                   "075",
+                                   "078",
                                    "gap/smalloverlap/gap/test.gi:49",
                                    "[quick][knuth-bendix][smalloverlap]",
                                    KNUTH_BENDIX_TYPES) {
@@ -320,7 +320,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
-                                   "076",
+                                   "079",
                                    "gap/smalloverlap/gap/test.gi:63",
                                    "[quick][knuth-bendix][smalloverlap]",
                                    KNUTH_BENDIX_TYPES) {
@@ -350,7 +350,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
-                                   "077",
+                                   "080",
                                    "gap/smalloverlap/gap/test.gi:70",
                                    "[quick][knuth-bendix][smalloverlap]",
                                    KNUTH_BENDIX_TYPES) {
@@ -386,7 +386,7 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE(
       "KnuthBendix",
-      "078",
+      "081",
       "gap/smalloverlap/gap/test.gi:77",
       "[quick][knuth-bendix][smalloverlap][no-valgrind]",
       KNUTH_BENDIX_TYPES) {
@@ -420,7 +420,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
-                                   "079",
+                                   "082",
                                    "gap/pkg/smalloverlap/gap/test.gi:85",
                                    "[quick][knuth-bendix][smalloverlap]",
                                    KNUTH_BENDIX_TYPES) {
@@ -447,7 +447,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
-                                   "080",
+                                   "083",
                                    "Von Dyck (2,3,7) group",
                                    "[quick][knuth-bendix][kbmag]",
                                    KNUTH_BENDIX_TYPES) {
@@ -481,7 +481,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
-                                   "081",
+                                   "084",
                                    "Von Dyck (2,3,7) group - alternate",
                                    "[no-valgrind][quick][knuth-bendix][kbmag]",
                                    KNUTH_BENDIX_TYPES) {
@@ -511,7 +511,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
-                                   "082",
+                                   "085",
                                    "rewriting system from another test",
                                    "[quick][knuth-bendix][kbmag]",
                                    KNUTH_BENDIX_TYPES) {
@@ -566,7 +566,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
-                                   "083",
+                                   "086",
                                    "rewriting system from Congruence 20",
                                    "[quick][knuth-bendix]",
                                    KNUTH_BENDIX_TYPES) {
@@ -588,7 +588,7 @@ namespace libsemigroups {
   // 2-generator free abelian group (with this ordering KB terminates - but
   // no all)
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
-                                   "084",
+                                   "087",
                                    "(from kbmag/standalone/kb_data/ab2)",
                                    "[quick][knuth-bendix][kbmag][shortlex]",
                                    KNUTH_BENDIX_TYPES) {
@@ -624,7 +624,7 @@ namespace libsemigroups {
   // with the commented out ordering, terminates almost immediately with the
   // uncommented order.
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
-                                   "085",
+                                   "088",
                                    "kbmag/standalone/kb_data/d22",
                                    "[quick][knuth-bendix][kbmag][shortlex]",
                                    KNUTH_BENDIX_TYPES) {
@@ -700,7 +700,7 @@ namespace libsemigroups {
 
   // No generators - no anything!
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
-                                   "086",
+                                   "089",
                                    "(from kbmag/standalone/kb_data/degen1)",
                                    "[quick][knuth-bendix][kbmag][shortlex]",
                                    KNUTH_BENDIX_TYPES) {
@@ -719,7 +719,7 @@ namespace libsemigroups {
 
   // Symmetric group S_4
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
-                                   "087",
+                                   "090",
                                    "(from kbmag/standalone/kb_data/s4)",
                                    "[quick][knuth-bendix][kbmag][shortlex]",
                                    KNUTH_BENDIX_TYPES) {
@@ -755,7 +755,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
-                                   "088",
+                                   "091",
                                    "fp semigroup",
                                    "[quick][knuth-bendix]",
                                    KNUTH_BENDIX_TYPES) {
@@ -788,7 +788,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
-                                   "089",
+                                   "092",
                                    "Chap. 11, Sec. 1 (q = 4, r = 3) in NR",
                                    "[knuth-bendix][quick]",
                                    KNUTH_BENDIX_TYPES) {
@@ -845,7 +845,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
-                                   "090",
+                                   "093",
                                    "Chap. 11, Sec. 1 (q = 8, r = 5) in NR",
                                    "[no-valgrind][knuth-bendix][quick]",
                                    KNUTH_BENDIX_TYPES) {
@@ -898,7 +898,7 @@ namespace libsemigroups {
 
   // See KBFP 07 also.
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
-                                   "091",
+                                   "094",
                                    "Chap. 7, Thm. 3.9 in NR",
                                    "[no-valgrind][knuth-bendix][quick]",
                                    KNUTH_BENDIX_TYPES) {
@@ -923,7 +923,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
-                                   "092",
+                                   "095",
                                    "F(2, 5) - Chap. 9, Sec. 1 in NR",
                                    "[knuth-bendix][quick]",
                                    KNUTH_BENDIX_TYPES) {
@@ -952,7 +952,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
-                                   "093",
+                                   "096",
                                    "F(2, 6) - Chap. 9, Sec. 1 in NR",
                                    "[knuth-bendix][quick]",
                                    KNUTH_BENDIX_TYPES) {
@@ -983,7 +983,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
-                                   "094",
+                                   "097",
                                    "Chap. 10, Sec. 4 in NR",
                                    "[knuth-bendix][quick]",
                                    KNUTH_BENDIX_TYPES) {
@@ -1012,7 +1012,7 @@ namespace libsemigroups {
   // should be 2. With exponent 3, the presentation defines the trivial group,
   // with exponent of 2, it defines the symmetric group as desired.
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
-                                   "095",
+                                   "098",
                                    "Sym(5) - Chap. 3, Prop. 1.1 in NR",
                                    "[no-valgrind][knuth-bendix][quick]",
                                    KNUTH_BENDIX_TYPES) {
@@ -1051,7 +1051,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
-                                   "096",
+                                   "099",
                                    "SL(2, 7) - Chap. 3, Prop. 1.5 in NR",
                                    "[no-valgrind][quick][knuth-bendix]",
                                    KNUTH_BENDIX_TYPES) {
@@ -1089,7 +1089,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
-                                   "097",
+                                   "100",
                                    "bicyclic monoid",
                                    "[knuth-bendix][quick]",
                                    KNUTH_BENDIX_TYPES) {
@@ -1117,7 +1117,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
-                                   "098",
+                                   "101",
                                    "plactic monoid of degree 2",
                                    "[knuth-bendix][quick]",
                                    KNUTH_BENDIX_TYPES) {
@@ -1148,7 +1148,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
-                                   "099",
+                                   "102",
                                    "before Chap. 7, Prop. 1.1 in NR",
                                    "[knuth-bendix][quick]",
                                    KNUTH_BENDIX_TYPES) {
@@ -1173,7 +1173,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
-                                   "100",
+                                   "103",
                                    "Chap. 7, Thm. 3.6 in NR",
                                    "[knuth-bendix][quick]",
                                    KNUTH_BENDIX_TYPES) {
@@ -1212,7 +1212,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
-                                   "101",
+                                   "104",
                                    "finite semigroup",
                                    "[knuth-bendix][quick]",
                                    KNUTH_BENDIX_TYPES) {
@@ -1252,7 +1252,7 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE(
       "KnuthBendix",
-      "999",
+      "105",
       "Giles Gardam in \"A counterexample to the unit conjecture for group "
       "rings\" (https://arxiv.org/abs/2102.11818)",
       "[fail]",

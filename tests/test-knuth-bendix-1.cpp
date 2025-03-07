@@ -1255,7 +1255,7 @@ namespace libsemigroups {
   // the PCP generators. It is essential for success that reasonably low
   // values of the maxstoredlen parameter are given.
   // LIBSEMIGROUPS_TEMPLATE_TEST_CASE(
-  //           //     "013",
+  //           //     "027",
   //     "(from kbmag/standalone/kb_data/verifynilp)",
   //     "000","[quick][knuth-bendix]"[kbmag][recursive],
   //  REWRITER_TYPES){}
@@ -1362,7 +1362,7 @@ namespace libsemigroups {
   //  A nonhopfian group
   // LIBSEMIGROUPS_TEMPLATE_TEST_CASE(
   //                         "(from kbmag/standalone/kb_data/nonhopf)",
-  // "027","[quick][knuth-bendix]"[kbmag][recursive],
+  // "028","[quick][knuth-bendix]"[kbmag][recursive],
   // REWRITER_TYPES){
   //   KnuthBendix<std::string, TestType> kb(new RECURSIVE(), "aAbB");
   //   presentation::add_rule_no_checks(p, "Baab", "aaa");
@@ -1381,7 +1381,7 @@ namespace libsemigroups {
 
   // LIBSEMIGROUPS_TEMPLATE_TEST_CASE(
   //                         "(from kbmag/standalone/kb_data/freenilpc3)",
-  // "028","[quick][knuth-bendix]"[kbmag][recursive],
+  // "029","[quick][knuth-bendix]"[kbmag][recursive],
   // REWRITER_TYPES){
   //   KnuthBendix<std::string, TestType> kb(new RECURSIVE(), "yYdDcCbBaA");
   //   presentation::add_rule_no_checks(p, "BAba", "c");
@@ -1415,7 +1415,7 @@ namespace libsemigroups {
   // because the copy constructors for KnuthBendix<std::string, TestType> et al.
   // don't currently work LIBSEMIGROUPS_TEMPLATE_TEST_CASE(
   //                         "add_rule after knuth_bendix",
-  //                         "029","[quick][knuth-bendix]",
+  //                         "030","[quick][knuth-bendix]",
   //  REWRITER_TYPES){
   //   auto        rg = ReportGuard(false);
   //   KnuthBendix<std::string, TestType> kb;
@@ -1465,7 +1465,7 @@ namespace libsemigroups {
   // Free nilpotent group of rank 2 and class 2
   // LIBSEMIGROUPS_TEMPLATE_TEST_CASE(
   //                         "(from kbmag/standalone/kb_data/nilp2)",
-  // "030","[quick][knuth-bendix]"[kbmag][recursive],
+  // "031","[quick][knuth-bendix]"[kbmag][recursive],
   // REWRITER_TYPES){
   //   KnuthBendix<std::string, TestType> kb(new RECURSIVE(), "cCbBaA");
   //   presentation::add_rule_no_checks(p, "ba", "abc");
@@ -1514,7 +1514,7 @@ namespace libsemigroups {
   // presentation here was derived by first applying the NQA to find the
   // maximal nilpotent quotient, and then introducing new generators for
   // the PCP generators. LIBSEMIGROUPS_TEMPLATE_TEST_CASE(
-  //           //     "020",
+  //           //     "032",
   //     "(from kbmag/standalone/kb_data/heinnilp)",
   //     "[fail][knuth-bendix]"[kbmag][recursive], REWRITER_TYPES){
   //   // TODO(later) fails because internal_rewrite expect rules to be

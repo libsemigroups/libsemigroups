@@ -78,7 +78,7 @@ namespace libsemigroups {
 
   // Takes approx. 2s
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
-                                   "102",
+                                   "106",
                                    "Sims Ex. 6.6 (limited overlap lengths)",
                                    "[standard][knuth-bendix]",
                                    KNUTH_BENDIX_TYPES) {
@@ -112,7 +112,7 @@ namespace libsemigroups {
 
   // Takes approx. 2s
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
-                                   "103",
+                                   "107",
                                    "kbmag/standalone/kb_data/funny3",
                                    "[standard][knuth-bendix][kbmag][shortlex]",
                                    KNUTH_BENDIX_TYPES) {
@@ -153,7 +153,7 @@ namespace libsemigroups {
   // Takes approx. 10s
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE(
       "KnuthBendix",
-      "104",
+      "108",
       "kbmag/standalone/kb_data/f27) (finite) (2 / 2",
       "[extreme][knuth-bendix][kbmag][shortlex]",
       KNUTH_BENDIX_TYPES) {
@@ -185,7 +185,7 @@ namespace libsemigroups {
   // Mathieu group M_11
   // Takes approx. 58s (majority in checking confluence)
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
-                                   "105",
+                                   "109",
                                    "kbmag/standalone/kb_data/m11",
                                    "[extreme][knuth-bendix][kbmag][shortlex]",
                                    KNUTH_BENDIX_TYPES) {
@@ -231,7 +231,7 @@ namespace libsemigroups {
   // Weyl group E8 (all gens involutory).
   // Takes approx. 5s for KnuthBendix
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
-                                   "106",
+                                   "110",
                                    "kbmag/standalone/kb_data/e8",
                                    "[extreme][knuth-bendix][kbmag][shortlex]",
                                    KNUTH_BENDIX_TYPES) {
@@ -286,7 +286,7 @@ namespace libsemigroups {
   // Takes > 1m (knuth_bendix), didn't run to the end
   // Takes approx. 6s (knuth_bendix_by_overlap_length)
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
-                                   "107",
+                                   "111",
                                    "kbmag/standalone/kb_data/degen4b",
                                    "[extreme][knuth-bendix][kbmag][shortlex]",
                                    KNUTH_BENDIX_TYPES) {
@@ -314,7 +314,7 @@ namespace libsemigroups {
   // Takes approx. 12s (knuth_bendix_by_overlap_length)
   // Takes > 19s (knuth_bendix), didn't run to the end
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
-                                   "108",
+                                   "112",
                                    "kbmag/standalone/kb_data/f27_2gen",
                                    "[extreme][knuth-bendix][kbmag][shortlex]",
                                    KNUTH_BENDIX_TYPES) {
@@ -338,7 +338,7 @@ namespace libsemigroups {
 
   // Takes approx. 1m8s
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
-                                   "109",
+                                   "113",
                                    "Example 6.6 in Sims",
                                    "[extreme][knuth-bendix]",
                                    KNUTH_BENDIX_TYPES) {
@@ -366,7 +366,7 @@ namespace libsemigroups {
   // Takes approx. 13s
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE(
       "KnuthBendix",
-      "110",
+      "114",
       "kbmag/standalone/kb_data/f27) (infinite) (1 / 2",
       "[extreme][knuth-bendix][kbmag][shortlex]",
       KNUTH_BENDIX_TYPES) {
@@ -396,7 +396,7 @@ namespace libsemigroups {
   // An extension of 2^6 be L32
   // Takes approx. 1m7s
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
-                                   "111",
+                                   "115",
                                    "kbmag/standalone/kb_data/l32ext",
                                    "[extreme][knuth-bendix][kbmag][shortlex]",
                                    KNUTH_BENDIX_TYPES) {
@@ -433,7 +433,7 @@ namespace libsemigroups {
   ////////////////////////////////////////////////////////////////////////
 
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
-                                   "112",
+                                   "116",
                                    "Ceitin's undecidable word problem example",
                                    "[fail][knuth-bendix]",
                                    KNUTH_BENDIX_TYPES) {
@@ -455,7 +455,7 @@ namespace libsemigroups {
 
   // kbmag/standalone/kb_data/verifynilp
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
-                                   "113",
+                                   "117",
                                    "kbmag/standalone/kb_data/verifynilp",
                                    "[fail][knuth-bendix][kbmag][shortlex]",
                                    KNUTH_BENDIX_TYPES) {
@@ -498,7 +498,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
-                                   "114",
+                                   "118",
                                    "Sorouhesh",
                                    "[quick][knuth-bendix][kbmag][shortlex]",
                                    KNUTH_BENDIX_TYPES) {
@@ -627,7 +627,7 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE(
       "KnuthBendix",
-      "115",
+      "119",
       "all 2-generated 1-relation semigroups 1 to 10",
       "[fail][knuth-bendix][xxx]",
       KNUTH_BENDIX_TYPES) {
@@ -681,7 +681,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
-                                   "116",
+                                   "120",
                                    "hard 2-generated 1-relation monoid",
                                    "[fail][knuth-bendix][xxx2]",
                                    KNUTH_BENDIX_TYPES) {
@@ -698,7 +698,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
-                                   "117",
+                                   "121",
                                    "Konovalov",
                                    "[quick][knuth-bendix]",
                                    KNUTH_BENDIX_TYPES) {
@@ -716,7 +716,7 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE(
       "KnuthBendix",
-      "118",
+      "122",
       "https://math.stackexchange.com/questions/2649807",
       "[knuth-bendix][fail]",
       KNUTH_BENDIX_TYPES) {
@@ -759,7 +759,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
-                                   "119",
+                                   "123",
                                    "example with undecidable word problem",
                                    "[knuth-bendix][extreme]",
                                    KNUTH_BENDIX_TYPES) {
@@ -777,7 +777,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("KnuthBendix",
-                          "136",
+                          "124",
                           "partition_monoid(7)",
                           "[knuthbendix][extreme]") {
     auto        rg = ReportGuard(true);
