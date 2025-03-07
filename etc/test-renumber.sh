@@ -27,7 +27,7 @@ fi
 FNAME="$1" python3 - <<END
 import os, re, sys
 p1 = re.compile(r'"\d\d\d",')
-p2 = re.compile(r'LIBSEMIGROUPS_TEST_CASE')
+p2 = re.compile(r'(LIBSEMIGROUPS_TEST_CASE|LIBSEMIGROUPS_TEMPLATE_TEST_CASE)')
 lines = []
 with open(os.environ['FNAME'], 'r') as f:
   lines = f.readlines()
