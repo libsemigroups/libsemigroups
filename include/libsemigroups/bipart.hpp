@@ -743,10 +743,10 @@ namespace libsemigroups {
   //! function, see the following:
   //! * \ref make_blocks_group
   //! * \ref make_bipart_group
-  //! * \ref make_forest_group
+  //! * \ref make<Forest>(std::vector<size_t>,std::vector<size_t>)
+  //! "make<Forest>"
   //! * \ref make_froidure_pin_group
-  //! * \ref make_matrix_with_semiring_group
-  //! * \ref make_matrix__without_semiring_group
+  //! * \ref make_matrix_group
   //! * \ref make_pbr_group
   //! * \ref make_transf_group
   //! * \ref make_perm_group
@@ -762,7 +762,7 @@ namespace libsemigroups {
   //! \ref Blocks instance.
   //!
   //! \sa \ref make_group for an overview of possible uses of the `make`
-  //! function
+  //! function.
 
   //! \ingroup make_blocks_group
   //!
@@ -1509,7 +1509,7 @@ namespace libsemigroups {
   //! \ref Bipartition instance.
   //!
   //! \sa \ref make_group for an overview of possible uses of the this
-  //! function
+  //! function.
 
   //! \ingroup make_bipart_group
   //!

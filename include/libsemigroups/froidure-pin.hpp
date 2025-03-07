@@ -2368,7 +2368,18 @@ namespace libsemigroups {
 
   }  // namespace froidure_pin
 
-  //! \relates FroidurePin
+  //! \defgroup make_froidure_pin_group make<FroidurePin>
+  //! \ingroup froidure_pin_group
+  //!
+  //! \brief Safely construct a \ref FroidurePin instance.
+  //!
+  //! This page contains documentation related to safely constructing a
+  //! \ref FroidurePin instance.
+  //!
+  //! \sa \ref make_group for an overview of possible uses of the `make`
+  //! function.
+
+  //! \ingroup make_froidure_pin_group
   //!
   //! \brief Construct a FroidurePin iinstance from container of generators.
   //!
@@ -2400,7 +2411,7 @@ namespace libsemigroups {
   //                      std::make_move_iterator(std::end(gens)));
   // }
 
-  //! \relates FroidurePin
+  //! \ingroup make_froidure_pin_group
   //!
   //! \brief Construct a FroidurePin instance from std::initializer_list of
   //! generators.
@@ -2428,7 +2439,7 @@ namespace libsemigroups {
     return FroidurePin(std::begin(gens), std::end(gens));
   }
 
-  //! \relates FroidurePin
+  //! \ingroup make_froidure_pin_group
   //!
   //! \brief Construct a FroidurePin instance from range of elements given by
   //! iterators.

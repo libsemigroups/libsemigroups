@@ -81,6 +81,7 @@
           <tab type="user" visible="yes" url="@ref libsemigroups::StaticRowView"
             title="StaticRowView" />
         </tab>
+        <tab type="user" visible="yes" url="@ref make_matrix_group" title="make<Matrix>"/>
       </tab>
       <tab type="user" visible="yes" url="@ref pbr_group"
         title="Partitioned binary relations (PBRs)" />
@@ -161,6 +162,7 @@
       <tab type="user" visible="yes" url="@ref libsemigroups::FroidurePinTraits" title="The FroidurePinTraits class"/>
       <tab type="user" visible="yes" url="@ref libsemigroups::froidure_pin" title="FroidurePin helper functions"/>
       <tab type="user" visible="yes" url="@ref to_froidure_pin_group" title="to<FroidurePin>"/>
+      <tab type="user" visible="yes" url="@ref make_froidure_pin_group" title="make<FroidurePin>"/>
     </tab>
     <tab type="usergroup" visible="yes" url="@ref kambites_group" title="Kambites">
       <tab type="usergroup" visible="yes" url="@ref kambites_class_group" title="The Kambites class">
