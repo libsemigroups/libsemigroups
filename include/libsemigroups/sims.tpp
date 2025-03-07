@@ -188,15 +188,15 @@ namespace libsemigroups {
 
       auto   tree = word_graph::spanning_tree(wg, 0);
       size_t N    = wg.number_of_active_nodes();
-
+      // TODO(1) avoid allocating wx + wy every time in these loops
       for (Node x = 0; x < N - 1; ++x) {
-        auto wx = tree.path_to_root(x);
+        auto wx = forest::path_to_root_no_checks(tree, x);
         std::reverse(wx.begin(), wx.end());
         for (Node y = x + 1; y < N; ++y) {
-          auto wy = tree.path_to_root(y);
+          auto wy = forest::path_to_root_no_checks(tree, y);
           std::reverse(wy.begin(), wy.end());
           auto copy = wg;
-          // TODO(2) avoid the copy here
+          // TODO(2) avoid the copy here, WordGraphView
           copy.induced_subgraph_no_checks(static_cast<Node>(0),
                                           wg.number_of_active_nodes());
           tc.init(congruence_kind::onesided, p, copy);

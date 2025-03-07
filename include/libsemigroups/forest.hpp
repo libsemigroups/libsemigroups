@@ -334,19 +334,6 @@ namespace libsemigroups {
       return _edge_label;
     }
 
-    //! \brief Modifies \p w to contain the labels of the edges on the path
-    //! to a root node from \p i.
-    //!
-    //! This function modifies its first argument \p w in-place to contain the
-    //! labels of the edges on the path to a root node from node \p i.
-    //!
-    //! \param w value to contain the result.
-    //! \param i the node.
-    //!
-    //! \warning No checks are performed on the arguments of this function.
-    // TODO(0) to helper
-    void path_to_root_no_checks(word_type& w, node_type i) const;
-
     //! \brief Store the labels of the edges on the path to a root node from \p
     //! i.
     //!
@@ -375,59 +362,11 @@ namespace libsemigroups {
       return it;
     }
 
-    //! \brief Returns a word containing the labels of the edges on the path
-    //! to a root node from \p i.
+    //! \brief Throw an exception if a node is out of bound.
     //!
-    //! This function returns a word containing the labels of the edges on the
-    //! path to a root node from node \p i.
+    //! This function throws an exception if the node \p v is out of points.
     //!
-    //! \param i the node.
-    //!
-    //! \returns The word labelling the path from a root node to \p i.
-    //!
-    //! \warning No checks are performed on the arguments of this function.
-    // TODO(0) to helper
-    [[nodiscard]] word_type path_to_root_no_checks(node_type i) const {
-      word_type w;
-      path_to_root_no_checks(w, i);
-      return w;
-    }
-
-    //! \brief Modifies \p w to contain the labels of the edges on the path
-    //! to a root node from \p i.
-    //!
-    //! This function modifies its first argument \p w in-place to contain the
-    //! labels of the edges on the path to a root node from node \p i.
-    //!
-    //! \param w value to contain the result.
-    //! \param i the node.
-    //!
-    //! \throws LibsemigroupsException if \p i is greater than or equal to \ref
-    //! number_of_nodes.
-    void path_to_root(word_type& w, node_type i) const {
-      throw_if_node_out_of_bounds(i);
-      path_to_root_no_checks(w, i);
-    }
-
-    //! \brief Returns a word containing the labels of the edges on the path
-    //! to a root node from \p i.
-    //!
-    //! This function returns a word containing the labels of the edges on the
-    //! path to a root node from node \p i.
-    //!
-    //! \param i the node.
-    //!
-    //! \returns The word labelling the path from a root node to \p i.
-    //!
-    //! \throws LibsemigroupsException if \p i is greater than or equal to \ref
-    //! number_of_nodes.
-    [[nodiscard]] word_type path_to_root(node_type i) const {
-      word_type w;
-      path_to_root(w, i);
-      return w;
-    }
-
-   private:
+    //! \param v the node.
     void throw_if_node_out_of_bounds(node_type v) const;
   };
 
@@ -524,10 +463,90 @@ namespace libsemigroups {
   //! \exceptions
   //! \no_libsemigroups_except
   [[nodiscard]] std::string to_human_readable_repr(Forest const& f);
+
+  //! \ingroup word_graph_group
+  //! \brief Helper functions for the Forest class
+  //!
+  //! This page contains the documentation of some helper functions for the
+  //! Forest class.
+  namespace forest {
+    //! \brief Modifies \p w to contain the labels of the edges on the path
+    //! to a root node from \p i.
+    //!
+    //! This function modifies its first argument \p w in-place to contain the
+    //! labels of the edges on the path to a root node from node \p i.
+    //!
+    //! \param f the forest.
+    //! \param w value to contain the result.
+    //! \param i the node.
+    //!
+    //! \warning No checks are performed on the arguments of this function.
+    void path_to_root_no_checks(Forest const&     f,
+                                word_type&        w,
+                                Forest::node_type i);
+
+    //! \brief Returns a word containing the labels of the edges on the path
+    //! to a root node from \p i.
+    //!
+    //! This function returns a word containing the labels of the edges on the
+    //! path to a root node from node \p i.
+    //!
+    //! \param f the forest.
+    //! \param i the node.
+    //!
+    //! \returns The word labelling the path from a root node to \p i.
+    //!
+    //! \warning No checks are performed on the arguments of this function.
+    [[nodiscard]] word_type path_to_root_no_checks(Forest const&     f,
+                                                   Forest::node_type i);
+
+    //! \brief Modifies \p w to contain the labels of the edges on the path
+    //! to a root node from \p i.
+    //!
+    //! This function modifies its first argument \p w in-place to contain the
+    //! labels of the edges on the path to a root node from node \p i.
+    //!
+    //! \param f the forest.
+    //! \param w value to contain the result.
+    //! \param i the node.
+    //!
+    //! \throws LibsemigroupsException if \p i is greater than or equal to \ref
+    //! Forest::number_of_nodes.
+    void path_to_root(Forest const& f, word_type& w, Forest::node_type i);
+
+    //! \brief Returns a word containing the labels of the edges on the path
+    //! to a root node from \p i.
+    //!
+    //! This function returns a word containing the labels of the edges on the
+    //! path to a root node from node \p i.
+    //!
+    //! \param f the forest.
+    //! \param i the node.
+    //!
+    //! \returns The word labelling the path from a root node to \p i.
+    //!
+    //! \throws LibsemigroupsException if \p i is greater than or equal to \ref
+    //! Forest::number_of_nodes.
+    [[nodiscard]] word_type path_to_root(Forest const& f, Forest::node_type i);
+
+  }  // namespace forest
 }  // namespace libsemigroups
 
+//! \ingroup word_graph_group
+//!
+//! \brief Custom formatter for libsemigroup::Forest objects.
+//!
+//! This is a custom formatter for [fmt](https://fmt.dev/11.1/) and the
+//! libsemigroups::Forest class.
+//!
+//! The intention is to provide a string representation that could be used to
+//! reconstruct the libsemigroups::Forest object. For a more human readable
+//! representation see
+//! \ref libsemigroups::to_human_readable_repr(libsemigroups::Forest const&)
+//! "to_human_readable_repr".
 template <>
 struct fmt::formatter<libsemigroups::Forest> : fmt::formatter<std::string> {
+  //! The formatter call operator.
   template <typename FormatContext>
   auto format(libsemigroups::Forest const& f, FormatContext& ctx) const {
     return formatter<string_view>::format(
