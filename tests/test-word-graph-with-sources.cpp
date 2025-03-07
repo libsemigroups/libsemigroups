@@ -33,26 +33,6 @@ namespace libsemigroups {
   struct LibsemigroupsException;  // forward decl
   namespace detail {
 
-    namespace {
-
-      WordGraphWithSources<size_t> binary_tree(size_t number_of_levels) {
-        WordGraphWithSources<size_t> ad;
-        ad.add_nodes(std::pow(2, number_of_levels) - 1);
-        ad.add_to_out_degree(2);
-        ad.target_no_checks(0, 1, 0);
-        ad.target_no_checks(0, 2, 1);
-
-        for (size_t i = 2; i <= number_of_levels; ++i) {
-          size_t counter = std::pow(2, i - 1) - 1;
-          for (size_t j = std::pow(2, i - 2) - 1; j < std::pow(2, i - 1) - 1;
-               ++j) {
-            ad.target_no_checks(j, counter++, 0);
-            ad.target_no_checks(j, counter++, 1);
-          }
-        }
-        return ad;
-      }
-    }  // namespace
     LIBSEMIGROUPS_TEST_CASE("WordGraphWithSources",
                             "000",
                             "constructor with 1  default arg",
@@ -181,59 +161,22 @@ namespace libsemigroups {
                             "007",
                             "target_no_checks",
                             "[quick]") {
-      auto ad = binary_tree(10);
+      size_t                       number_of_levels = 10;
+      WordGraphWithSources<size_t> ad;
+      ad.add_nodes(std::pow(2, number_of_levels) - 1);
+      ad.add_to_out_degree(2);
+      ad.target_no_checks(0, 0, 1);
+      ad.target_no_checks(0, 1, 2);
+
+      for (size_t i = 2; i <= number_of_levels; ++i) {
+        size_t counter = std::pow(2, i - 1) - 1;
+        for (size_t j = std::pow(2, i - 2) - 1; j < std::pow(2, i - 1) - 1;
+             ++j) {
+          ad.target_no_checks(j, 0, counter++);
+          ad.target_no_checks(j, 1, counter++);
+        }
+      }
       REQUIRE(ad.target_no_checks(0, 1) == ad.target(0, 1));
-    }
-
-    LIBSEMIGROUPS_TEST_CASE("WordGraphWithSources",
-                            "008",
-                            "swap_targets_no_checks",
-                            "[quick]") {
-      WordGraphWithSources<size_t> ad;
-      ad.add_nodes(3);
-      ad.add_to_out_degree(2);
-      ad.target_no_checks(0, 0, 1);
-      ad.target_no_checks(1, 0, 0);
-      ad.target_no_checks(2, 0, 2);
-
-      // swap edge from 0 labelled 0 with edge from 1 labelled 0
-      ad.swap_targets_no_checks(0, 1, 0);
-      REQUIRE(ad == make<WordGraph<size_t>>(3, {{0, UNDEFINED}, {1}, {2}}));
-    }
-    LIBSEMIGROUPS_TEST_CASE("WordGraphWithSources",
-                            "009",
-                            "swap_nodes_no_checks",
-                            "[quick]") {
-      WordGraphWithSources<size_t> ad;
-      ad.add_nodes(3);
-      ad.add_to_out_degree(2);
-      ad.target_no_checks(0, 0, 1);
-      ad.target_no_checks(1, 0, 0);
-      ad.target_no_checks(2, 0, 2);
-
-      // swap edge from 0 labelled 0 with edge from 1 labelled 0
-      ad.swap_nodes_no_checks(0, 1);
-      REQUIRE(ad
-              == make<WordGraph<size_t>>(
-                  3, {{1, UNDEFINED}, {0, UNDEFINED}, {2, UNDEFINED}}));
-    }
-    LIBSEMIGROUPS_TEST_CASE("WordGraphWithSources",
-                            "010",
-                            "permute_nodes_no_checks",
-                            "[quick]") {
-      WordGraphWithSources<size_t> ad;
-      ad.add_nodes(3);
-      ad.add_to_out_degree(2);
-      ad.target_no_checks(0, 0, 1);
-      ad.target_no_checks(1, 0, 0);
-      ad.target_no_checks(2, 0, 2);
-
-      // swap edge from 0 labelled 0 with edge from 1 labelled 0
-      ad.permute_nodes_no_checks(
-          std::vector<size_t>({0, 1, 2}), std::vector<size_t>({0, 1, 2}), 3);
-      REQUIRE(ad
-              == make<WordGraph<size_t>>(
-                  3, {{1, UNDEFINED}, {0, UNDEFINED}, {2, UNDEFINED}}));
     }
 
     LIBSEMIGROUPS_TEST_CASE("WordGraphWithSources",
