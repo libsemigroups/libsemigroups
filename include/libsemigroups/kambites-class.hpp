@@ -862,6 +862,7 @@ namespace libsemigroups {
     //! Constant.
     [[nodiscard]] size_t number_of_generating_pairs() const noexcept;
 #endif
+
    private:
     ////////////////////////////////////////////////////////////////////////
     // Kambites - XYZ functions - private
