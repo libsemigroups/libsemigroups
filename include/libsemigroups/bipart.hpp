@@ -141,7 +141,7 @@ namespace libsemigroups {
     //! \complexity
     //! \f$O(n)\f$ where \f$n\f$ is the degree().
     [[nodiscard]] std::vector<std::vector<int32_t>>
-    underlying_partition(Bipartition const&);
+    underlying_partition(Bipartition const& x);
 
     //! \brief Validates a bipartition.
     //!

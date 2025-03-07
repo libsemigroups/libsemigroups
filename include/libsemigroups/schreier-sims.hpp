@@ -989,7 +989,7 @@ namespace libsemigroups {
     // 2. Make the Screier-Sims object during runtime, since we compute the
     //    stabilizers of the intersection already.
     // 3. Refactor for more generality (i.e. so the template parameters N don't
-    //    all have to be the same
+    //    all have to be the same.
     //
     // TODO (from JDM):
     // * use the no_checks mem fns of SchreierSims now that they exist
@@ -1010,7 +1010,6 @@ namespace libsemigroups {
   //! permutation groups.
   //!
   //! \param S the SchreierSims object.
-  //! \param braces the braces to use to delineate rows (default: `"{}"`).
   //! \param max_width the maximum width of the returned representation
   //! (default: \c 72).
   template <size_t N, typename Point, typename Element, typename Traits>
