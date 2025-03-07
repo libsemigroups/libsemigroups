@@ -18,6 +18,7 @@
 
 #define CATCH_CONFIG_ENABLE_PAIR_STRINGMAKER
 
+#include <cstdint>  // for uint32_t
 #include <cstddef>  // for size_t
 #include <vector>   // for vector
 
@@ -183,7 +184,7 @@ namespace libsemigroups {
                             "052",
                             "operator<<",
                             "[quick]") {
-      WordGraphWithSources<size_t> ad;
+      WordGraphWithSources<uint32_t> ad;
       ad.add_nodes(3);
       ad.add_to_out_degree(2);
       ad.target_no_checks(0, 0, 1);
@@ -192,10 +193,9 @@ namespace libsemigroups {
 
       std::ostringstream oss;
       oss << ad;
-      REQUIRE(
-          oss.str()
-          == "{3, {{1, 18446744073709551615}, {0, 18446744073709551615}, {2, "
-             "18446744073709551615}}}");
+      REQUIRE(oss.str()
+              == "{3, {{1, 4294967295}, {0, 4294967295}, {2, "
+                 "4294967295}}}");
     }
 
     LIBSEMIGROUPS_TEST_CASE("WordGraphWithSources",
