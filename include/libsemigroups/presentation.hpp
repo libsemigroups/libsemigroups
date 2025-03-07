@@ -1464,13 +1464,27 @@ namespace libsemigroups {
     //! \exceptions
     //! \no_libsemigroups_except
     template <typename Word>
-    Presentation<Word>& reverse(Presentation<Word>& p) {
+    void reverse(Presentation<Word>& p) {
       for (auto& rule : p.rules) {
         std::reverse(rule.begin(), rule.end());
       }
-      return p;
     }
 
+    //! \brief Reverse every rule.
+    //!
+    //! Reverse every rule.
+    //!
+    //! \tparam Word the type of the words in the presentation.
+    //! \param p an rvalue reference for a presentation.
+    //!
+    //! \returns An rvalue reference to the reversed presentation.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    // This is the only place that JDE can find where a helper that modifies its
+    // first argument is not void. This is deliberate, since if we weren't to
+    // return anything, the first parameter would go out of scope immediately
+    // after this call and this function would be pointless .
     template <typename Word>
     Presentation<Word>&& reverse(Presentation<Word>&& p) {
       for (auto& rule : p.rules) {
