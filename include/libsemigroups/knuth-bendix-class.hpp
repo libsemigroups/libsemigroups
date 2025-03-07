@@ -155,7 +155,7 @@ namespace libsemigroups {
     //!
     //! \returns
     //! A reference to \c this.
-    // TODO(0) to tpp file
+    // TODO(1) to tpp file
     KnuthBendix& init() {
       _generating_pairs.clear();
       _presentation.init();

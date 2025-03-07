@@ -53,6 +53,7 @@ namespace libsemigroups {
   namespace detail {
     std::string const& chars_in_human_readable_order();
   }
+
   // TODO(0) doc
   template <typename Word>
   Word& reverse(Word&& w) {
@@ -1297,11 +1298,11 @@ namespace libsemigroups {
       return output;
     }
 
+    // TODO(1) doc
     template <typename Int>
     [[nodiscard]] std::string
     operator()(std::initializer_list<Int> input) const {
       static_assert(std::is_integral_v<Int>);
-      // TODO(0) use iterators instead
       word_type copy(input.begin(), input.end());
       return    operator()(copy);
     }
