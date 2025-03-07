@@ -75,11 +75,13 @@ namespace libsemigroups {
   //! descriptions in the [DOT][] language of the [Graphviz][] graph drawing
   //! software.
   //!
-  //! The function \ref dot can be used to produce initial Dot objects for
+  //! The function \c dot can be used to produce initial Dot objects for
   //! various of the data structures and algorithms in `libsemigroups`:
   //!
-  //! * \ref dot(AhoCorasick&)
-  //! * \ref word_graph::dot(WordGraph<Node> const& wg)
+  //! * \ref aho_corasick::dot(AhoCorasick&)
+  //! * \ref stephen::dot(Stephen<P>&)
+  //! * \ref ukkonen::dot(Ukkonen const&)
+  //! * \ref word_graph::dot(WordGraph<Node> const&)
   //!
   //! [DOT]: https://www.graphviz.org/doc/info/lang.html
   //! [Graphviz]: https://www.graphviz.org
