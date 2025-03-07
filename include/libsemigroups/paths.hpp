@@ -748,8 +748,8 @@ namespace libsemigroups {
 
     //! \brief Advance to the next path in the range.
     //!
-    //! Advance to the current path in the range. If \ref at_end returns \c
-    //! true, then this function does nothing.
+    //! Advance to the current path in the range. If \ref Paths::at_end returns
+    //! \c true, then this function does nothing.
     //!
     //! \warning It is the responsibility of the caller to ensure that
     //! `source() != UNDEFINED` before calling this function.
@@ -779,8 +779,8 @@ namespace libsemigroups {
     //! \brief Get the size of the range.
     //!
     //! This function returns the number of paths in the range. The output is
-    //! identical to that of \ref count, and is included for compatibility with
-    //! [rx::ranges][].
+    //! identical to that of \ref Paths::count, and is included for
+    //! compatibility with [rx::ranges][].
     //!
     //! [rx::ranges]: https://github.com/simonask/rx-ranges
     //!
@@ -793,8 +793,8 @@ namespace libsemigroups {
     //! \brief Get the size of the range.
     //!
     //! This function returns the number of paths in the range. The output is
-    //! identical to that of \ref size_hint, and is included for compatibility
-    //! with [rx::ranges][].
+    //! identical to that of \ref Paths::size_hint, and is included for
+    //! compatibility with [rx::ranges][].
     //!
     //! [rx::ranges]: https://github.com/simonask/rx-ranges
     //!

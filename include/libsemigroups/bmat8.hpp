@@ -374,7 +374,7 @@ namespace libsemigroups {
     //! is possible to access entries that you might not believe exist.
     //!
     //! \sa
-    //! \ref BMat8::operator()(size_t r) \ref bmat8::rows, and
+    //! \ref BMat8::operator()(size_t) const \ref bmat8::rows, and
     //! \ref bmat8::to_vector.
     [[nodiscard]] uint8_t at(size_t r) const;
 
