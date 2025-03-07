@@ -466,7 +466,7 @@ namespace libsemigroups {
                    tc.internal_generating_pairs().cbegin(),
                    tc.internal_generating_pairs().cend());
       LIBSEMIGROUPS_ASSERT(!_settings_stack.empty());
-      // TODO(0) don't we need to reset the setting_stack here too?
+      // TODO(1) don't we need to reset the setting_stack here too?
       return *this;
     }
 
@@ -766,8 +766,8 @@ namespace libsemigroups {
       if (reporting_enabled()
           && (!running_for()
               || report_every() >= std::chrono::milliseconds(1'500))) {
-        // TODO(0) report_strategy
-        // TODO(0) if using ACE style strategy include the value of the relevant
+        // TODO(1) report_strategy
+        // TODO(1) if using ACE style strategy include the value of the relevant
         // setting
         auto msg = fmt::format("{:+<90}\n", "");
         msg += fmt_default("ToddCoxeter: Using {} strategy . . .\n",
@@ -832,7 +832,7 @@ namespace libsemigroups {
 
       if (kind() == congruence_kind::twosided
           && !internal_generating_pairs().empty()) {
-        // TODO(0) avoid copy of presentation here, if possible
+        // TODO(1) avoid copy of presentation here, if possible
         Presentation<word_type> p = internal_presentation();
         if (p.alphabet().size() != _word_graph.out_degree()) {
           LIBSEMIGROUPS_ASSERT(p.alphabet().size() == 0);
