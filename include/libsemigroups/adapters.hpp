@@ -760,14 +760,10 @@ namespace libsemigroups {
       std::sort(res.begin(), res.end());
     }
   };
-  //! @}
 
   /////////////////////////////////////////////////////////////////////
   // KONIECZNY THINGS
   /////////////////////////////////////////////////////////////////////
-
-  //! \addtogroup adapters_no_default_group
-  //! @{
 
   //! \brief Adapter for lambda functions.
   //!
@@ -925,6 +921,5 @@ namespace libsemigroups {
             typename       = void>
   struct Rank;
 
-  //! @}
 }  // namespace libsemigroups
 #endif  // LIBSEMIGROUPS_ADAPTERS_HPP_
