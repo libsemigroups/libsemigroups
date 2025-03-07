@@ -731,6 +731,8 @@ namespace libsemigroups {
   //! Return a human readable representation of a WordRange object.
   //!
   //! \param wr the WordRange object.
+  //! \param max_width the maximum width of the returned string (default: \c
+  //! 72).
   //!
   //! \exceptions
   //! \no_libsemigroups_except
@@ -1912,6 +1914,8 @@ namespace libsemigroups {
   //! Return a human readable representation of a StringRange object.
   //!
   //! \param sr the StringRange object.
+  //! \param max_width the maximum width of the returned string (default: \c
+  //! 72).
   //!
   //! \exceptions
   //! \no_libsemigroups_except
