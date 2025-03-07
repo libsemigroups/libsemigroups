@@ -1291,54 +1291,53 @@ namespace libsemigroups {
     }
   }
 
-  // TODO(0): figure out why this fails
-  // This test fails in the fp-inverse-monoids branch and here, not sure if
-  // it's supposed to or not should look at it more carefully
-  // NOTE: Test fails, but this is expected. Take e.g. the words aaA and a.
-  // These are distinct elements of the underlying monoid (since aA is an
-  // idempotent but not the identity). Despite this, a will be accepted by the
-  // Stephen object with word aaA. This is because Stephen for inverse monoids
-  // does a slightly different thing to what it does for general monoids.
-  // For a general monoid, the words accepted by Stephen with initial word W
-  // correspond to words equivalent to W in the monoid. For an inverse monoid,
-  // however, words U accepted by Stephen with initial word W correspond to
-  // words such that WW^-1U is equal to W. This is because in an inverse
-  // monoid, we are actually computing within the R-class of W.
-  // TODO(0): Write this down somwehere e.g. next to accepted_words
-  // TODO(0): Add something about this in accepted and left_factor and all
-  // related methods
-  //
-  // LIBSEMIGROUPS_TEST_CASE("Stephen",
-  //                         "045",
-  //                         "inverse presentation",
-  //                         "[stephen][quick]") {
-  //   ToWord                         to_word("abcABC");
-  //   InversePresentation<word_type> p;
-  //   p.alphabet(to_word("abcABC"));
-  //   p.inverses_no_checks(to_word("ABCabc"));
-  //   presentation::add_rule(p, to_word("ac"), to_word("ca"));
-  //   presentation::add_rule(p, to_word("ab"), to_word("ba"));
-  //   presentation::add_rule(p, to_word("bc"), to_word("cb"));
-  //   auto S = Stephen(p);
-  //   auto T = Stephen(p);
-  //
-  //   StringRange strings;
-  //   strings.alphabet("abcABC").first("aaaaa").last("aaaaaaaaa");
-  //
-  //   for (auto const& w : strings) {
-  //     stephen::set_word(S, to_word(w));
-  //     for (auto x : stephen::words_accepted(S) | rx::take(1024)) {
-  //       REQUIRE(stephen::accepts(S, x));
-  //       if (!stephen::accepts(stephen::set_word(T, x), S.word())) {
-  //         std::cout << "S.word() = " << S.word() << ", T.word() = " <<
-  //         T.word()
-  //                   << "\n"
-  //                   << S.word_graph() << std::endl;
-  //       }
-  //       REQUIRE(S == T);
-  //     }
-  //   }
-  // }
+  namespace {
+    std::string invert(std::string const& g) {
+      auto invert = [](char c) {
+        if (std::isupper(c)) {
+          return std::tolower(c);
+        } else {
+          return std::toupper(c);
+        }
+      };
+      auto G = g;
+      std::reverse(G.begin(), G.end());
+      std::transform(G.begin(), G.end(), G.begin(), invert);
+      return G;
+    }
+  }  // namespace
+
+  LIBSEMIGROUPS_TEST_CASE("Stephen",
+                          "045",
+                          "inverse presentation",
+                          "[stephen][standard]") {
+    using words::                  operator+;
+    ReportGuard                    rg(false);
+    ToWord                         to_word("abcABC");
+    InversePresentation<word_type> p;
+    p.alphabet(to_word("abcABC"));
+    p.inverses_no_checks(to_word("ABCabc"));
+    presentation::add_rule(p, to_word("ac"), to_word("ca"));
+    presentation::add_rule(p, to_word("ab"), to_word("ba"));
+    presentation::add_rule(p, to_word("bc"), to_word("cb"));
+    auto S = Stephen(p);
+    auto T = Stephen(p);
+
+    StringRange strings;
+    strings.alphabet("abcABC").first("aaa").last("aaaaa");
+
+    for (auto const& w : strings) {
+      stephen::set_word(S, to_word(w));
+      for (auto x : stephen::words_accepted(S) | rx::take(1024)) {
+        REQUIRE(stephen::accepts(S, x));
+        // Need to use ww^{-1}x because we are working in an inverse
+        // presentation
+        stephen::set_word(T, to_word(w) + to_word(invert(w)) + x);
+        REQUIRE(stephen::accepts(T, S.word()));
+        REQUIRE(S == T);
+      }
+    }
+  }
 
   LIBSEMIGROUPS_TEST_CASE("Stephen",
                           "046",
@@ -1420,7 +1419,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Stephen",
-                          "045",
+                          "047",
                           "Munn tree products",
                           "[stephen][quick]") {
     using words::pow;
