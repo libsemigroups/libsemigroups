@@ -208,21 +208,25 @@ namespace libsemigroups {
     REQUIRE(T.size() == 32311832);
 
     size_t sum = 0;
-    std::for_each(T.cbegin_rdc(), T.cend_rdc(), [&sum](DClass const& x) {
-      sum += x.size();
-    });
+    std::for_each(T.cbegin_regular_D_classes(),
+                  T.cend_regular_D_classes(),
+                  [&sum](DClass const& x) { sum += x.size(); });
     REQUIRE(sum == 8683982);
 
     sum = 0;
-    std::for_each(T.cbegin_rdc(), T.cend_rdc(), [&sum](DClass const& x) {
-      sum += x.number_of_idempotents();
-    });
+    std::for_each(
+        T.cbegin_regular_D_classes(),
+        T.cend_regular_D_classes(),
+        [&sum](DClass const& x) { sum += x.number_of_idempotents(); });
     REQUIRE(sum == 73023);
 
     sum = 0;
-    std::for_each(T.cbegin_rdc(), T.cend_rdc(), [&sum, &T](DClass const& x) {
-      sum += T.D_class_of_element(x.rep()).number_of_idempotents();
-    });
+    std::for_each(
+        T.cbegin_regular_D_classes(),
+        T.cend_regular_D_classes(),
+        [&sum, &T](DClass const& x) {
+          sum += T.D_class_of_element(x.rep()).number_of_idempotents();
+        });
     REQUIRE(sum == 73023);
     REQUIRE(T.number_of_idempotents() == 73023);
 #ifdef LIBSEMIGROUPS_HPCOMBI_ENABLED
