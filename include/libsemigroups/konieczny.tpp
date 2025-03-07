@@ -127,7 +127,6 @@ namespace libsemigroups {
          ++it) {
       _lambda_to_D_map.insert(std::make_pair(
           it->first, std::vector<D_class_index_type>(it->second)));
-      // TODO: is this copying required?
     }
 
     _rho_to_D_map.clear();
@@ -366,6 +365,7 @@ namespace libsemigroups {
     return UNDEFINED;
   }
 
+  // TODO(later): it must be possible to do better than this
   template <typename Element, typename Traits>
   void Konieczny<Element, Traits>::idem_in_H_class(
       internal_reference       res,
@@ -653,17 +653,22 @@ namespace libsemigroups {
     LIBSEMIGROUPS_ASSERT((_rank_state == nullptr)
                          == (std::is_void_v<rank_state_type>) );
 
+#ifdef LIBSEMIGROUPS_DEBUG
     // We can safely just replace the vectors without deleting their
     // contents, since we know that the run has not been initialised and
     // they are empty.
-    // FIXME these assertions fail
-    // LIBSEMIGROUPS_ASSERT(_nonregular_reps.empty());
+    for (auto v : _nonregular_reps) {
+      LIBSEMIGROUPS_ASSERT(v.empty());
+    }
+    for (auto v : _regular_reps) {
+      LIBSEMIGROUPS_ASSERT(v.empty());
+    }
+#endif  // LIBSEMIGROUPS_DEBUG
+
     _nonregular_reps = std::vector<std::vector<RepInfo>>(
         InternalRank()(_rank_state, this->to_external_const(_one)) + 1,
         std::vector<RepInfo>());
 
-    // FIXME these assertions fail
-    // LIBSEMIGROUPS_ASSERT(_regular_reps.empty());
     _regular_reps = std::vector<std::vector<RepInfo>>(
         InternalRank()(_rank_state, this->to_external_const(_one)) + 1,
         std::vector<RepInfo>());
