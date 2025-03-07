@@ -690,7 +690,7 @@ namespace libsemigroups {
     // Coxeter+Moser presentation for the symmetric group), Example 7.1.2 in
     // Joel gay's thesis (JDM the presentation in Example 7.1.2 seems to have
     // 2n - 1 generators whereas this function returns a monoid on n
-    // generators. TODO ask Florent again if this reference is correct Maybe
+    // generators. TODO(1) ask Florent again if this reference is correct Maybe
     // should be Solomon:
     // https://www.sciencedirect.com/science/article/pii/S0021869303005933/pdf
     [[nodiscard]] Presentation<word_type>
@@ -751,8 +751,8 @@ namespace libsemigroups {
     [[nodiscard]] Presentation<word_type>
     uniform_block_bijection_monoid_Fit03(size_t n);
 
-    // TODO add okada_monoid
-    // TODO add free_semilattice
+    // TODO(1) add okada_monoid
+    // TODO(1) add free_semilattice
 
     //! \brief A presentation for the \f$0\f$-rook monoid.
     //!

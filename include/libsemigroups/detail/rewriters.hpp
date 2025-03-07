@@ -187,7 +187,7 @@ namespace libsemigroups {
       //!
       //! \sa
       //! \ref RewriterBase::active_rules()
-      // TODO check the above ref points to something sensible
+      // TODO(1) check the above ref points to something sensible
       [[nodiscard]] inline bool active() const noexcept {
         LIBSEMIGROUPS_ASSERT(_id != 0);
         return (_id > 0);
@@ -682,7 +682,7 @@ namespace libsemigroups {
                                                index_type  current_node,
                                                size_t backtrack_depth) const;
 
-      // TODO (After removing virtual functions) Put in base
+      // TODO(2) (After removing virtual functions) Put in base
       void rewrite(Rule* rule) const {
         rewrite(*rule->lhs());
         rewrite(*rule->rhs());

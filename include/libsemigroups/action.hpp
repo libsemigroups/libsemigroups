@@ -439,7 +439,7 @@ namespace libsemigroups {
     //! \complexity
     //! Constant.
     Action& add_generator(element_type const& gen) {
-      // TODO shouldn't this check if the degree of gen is the same as the
+      // TODO(1) shouldn't this check if the degree of gen is the same as the
       // degrees of the other generators in _gens?
       _gens.push_back(gen);
       return *this;

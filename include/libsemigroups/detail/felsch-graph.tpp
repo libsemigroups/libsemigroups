@@ -52,7 +52,6 @@ namespace libsemigroups {
       return *this;
     }
 
-    // TODO Move back to hpp
     template <typename Word, typename Node, typename Definitions>
     FelschGraph<Word, Node, Definitions>::FelschGraph(
         Presentation<Word> const& p)
@@ -69,14 +68,12 @@ namespace libsemigroups {
       return private_init_from_presentation();
     }
 
-    // TODO Move back to hpp
     template <typename Word, typename Node, typename Definitions>
     FelschGraph<Word, Node, Definitions>::FelschGraph(Presentation<Word>&& p)
         : FelschGraph() {
       init(std::move(p));
     }
 
-    // TODO Move back to hpp
     template <typename Word, typename Node, typename Definitions>
     FelschGraph<Word, Node, Definitions>&
     FelschGraph<Word, Node, Definitions>::init(Presentation<Word>&& p) {
@@ -84,7 +81,6 @@ namespace libsemigroups {
       return private_init_from_presentation();
     }
 
-    // TODO Move back to hpp
     template <typename Word, typename Node, typename Definitions>
     template <typename M>
     FelschGraph<Word, Node, Definitions>::FelschGraph(WordGraph<M> const& ad)
@@ -92,7 +88,6 @@ namespace libsemigroups {
       init(ad);
     }
 
-    // TODO Move back to hpp
     template <typename Word, typename Node, typename Definitions>
     template <typename M>
     FelschGraph<Word, Node, Definitions>&
@@ -101,14 +96,12 @@ namespace libsemigroups {
       return private_init_from_word_graph();
     }
 
-    // TODO Move back to hpp
     template <typename Word, typename Node, typename Definitions>
     FelschGraph<Word, Node, Definitions>::FelschGraph(WordGraph<Node>&& ad)
         : FelschGraph() {
       init(std::move(ad));
     }
 
-    // TODO Move back to hpp
     template <typename Word, typename Node, typename Definitions>
     FelschGraph<Word, Node, Definitions>&
     FelschGraph<Word, Node, Definitions>::init(WordGraph<Node>&& ad) {
@@ -119,7 +112,7 @@ namespace libsemigroups {
     template <typename Word, typename Node, typename Definitions>
     FelschGraph<Word, Node, Definitions>::~FelschGraph() = default;
 
-    // TODO this should be removed
+    // TODO(2) this should be removed
     template <typename Word, typename Node, typename Definitions>
     FelschGraph<Word, Node, Definitions>&
     FelschGraph<Word, Node, Definitions>::presentation(
@@ -465,7 +458,7 @@ namespace libsemigroups {
       return true;
     }
 
-    // TODO remove code dupl with process_definitions_v2
+    // TODO(2) remove code dupl with process_definitions_v2
     template <typename Word, typename Node, typename Definitions>
     template <typename Incompatible, typename PreferredDefs>
     bool FelschGraph<Word, Node, Definitions>::process_definitions_v1(
@@ -524,8 +517,8 @@ namespace libsemigroups {
             auto u_last  = u.cend() - 1;
 
             if (u_first > u_last) {
-              // TODO this shouldn't really be necessary, i.e. I don't think we
-              // should ever reach here if this is implemented correctly,
+              // TODO(2) this shouldn't really be necessary, i.e. I don't think
+              // we should ever reach here if this is implemented correctly,
               // this is reached in i.e. Sims1 test case 034.
               // In more words, if felsch_tree().length() (maybe - 1) is longer
               // than u, then we shouldn't be here at all

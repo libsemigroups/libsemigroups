@@ -19,7 +19,7 @@
 // This file contains a declaration of a class called FelschGraph which is
 // used by the classes Sims1 and ToddCoxeterImpl.
 
-// TODO:
+// TODO(2):
 // * iwyu
 // * noexcept
 // * test file

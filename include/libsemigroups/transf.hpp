@@ -86,7 +86,7 @@ namespace libsemigroups {
   //! \ldots, (n - 1)f)\f$ where the value \ref UNDEFINED is used to
   //! indicate that \f$(i)f\f$ is, you guessed it, undefined (i.e. not among
   //! the points where \f$f\f$ is defined).
-  // TODO example
+  // TODO(1) example
 
   //! \ingroup transf_group
   //! \brief Helper variable template.
@@ -470,7 +470,7 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! Constant.
-    // TODO better exception message for python bindings
+    // TODO(1) better exception message for python bindings
     [[nodiscard]] point_type& at(size_t i) {
       return _container.at(i);
     }
@@ -488,7 +488,7 @@ namespace libsemigroups {
     //!
     //! \complexity
     //! Constant.
-    // TODO better exception message for python bindings
+    // TODO(1) better exception message for python bindings
     [[nodiscard]] point_type const& at(size_t i) const {
       return _container.at(i);
     }
@@ -951,7 +951,7 @@ namespace libsemigroups {
   //!
   //! \complexity
   //! Linear in degree().
-  // TODO to tpp
+  // TODO(1) to tpp
   template <typename T>
   auto validate(T const& f) -> std::enable_if_t<IsPTransf<T>> {
     size_t const M = f.degree();
@@ -1285,7 +1285,7 @@ namespace libsemigroups {
 
   namespace detail {
     //! No doc
-    // TODO to tpp
+    // TODO(1) to tpp
     template <typename Iterator>
     void validate_no_duplicates(
         Iterator                                                    first,
@@ -1818,7 +1818,7 @@ namespace libsemigroups {
   //! Linear in \c f.degree().
   template <size_t N, typename Scalar>
   [[nodiscard]] PPerm<N, Scalar> right_one(PPerm<N, Scalar> const& f);
-  // TODO void pass by reference version
+  // TODO(1) void pass by reference version
 
   //! \ingroup transf_group
   //! \brief Returns the left one of a partial perm.
@@ -1839,7 +1839,7 @@ namespace libsemigroups {
   //! Linear in \c f.degree().
   template <size_t N, typename Scalar>
   [[nodiscard]] PPerm<N, Scalar> left_one(PPerm<N, Scalar> const& f);
-  // TODO void pass by reference version
+  // TODO(1) void pass by reference version
 
   //! \ingroup transf_group
   //! \brief Replace contents of a partial perm with the inverse of another.
