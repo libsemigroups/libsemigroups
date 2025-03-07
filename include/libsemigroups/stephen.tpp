@@ -21,38 +21,40 @@
 #include "libsemigroups/detail/report.hpp"
 namespace libsemigroups {
 
-  template <typename P>
-  class Stephen<P>::StephenGraph : public detail::NodeManagedGraph<
-                                       detail::WordGraphWithSources<uint32_t>> {
-    // TODO(0) both of these aliases aren't required.
-    using BaseGraph            = detail::WordGraphWithSources<uint32_t>;
-    using WordGraphWithSources = BaseGraph;
+  template <typename PresentationType>
+  class Stephen<PresentationType>::StephenGraph
+      : public detail::NodeManagedGraph<
+            detail::WordGraphWithSources<uint32_t>> {
+    using WordGraphWithSources_ = detail::WordGraphWithSources<uint32_t>;
 
    public:
-    using node_type = typename BaseGraph::node_type;
+    using node_type = typename WordGraphWithSources_::node_type;
+    using WordGraphWithSources_::init;
 
     StephenGraph& init(Presentation<word_type> const& p) {
       NodeManager<node_type>::clear();
-      BaseGraph::init(NodeManager<node_type>::node_capacity(),
-                      p.alphabet().size());
+      WordGraphWithSources_::init(NodeManager<node_type>::node_capacity(),
+                                  p.alphabet().size());
       return *this;
     }
 
     StephenGraph& init(Presentation<word_type>&& p) {
       NodeManager<node_type>::clear();
-      BaseGraph::init(NodeManager<node_type>::node_capacity(),
-                      p.alphabet().size());
+      WordGraphWithSources_::init(NodeManager<node_type>::node_capacity(),
+                                  p.alphabet().size());
       return *this;
     }
 
     using WordGraph<node_type>::target;
     using WordGraph<node_type>::target_no_checks;
 
+    // TODO(2) Add data to the StephenGraph which is a pointer to either the
+    // encompassing Stephen object or the presentation
     void target_no_checks(presentation_type const& p,
                           node_type                from,
                           label_type               letter,
                           node_type                to) {
-      WordGraphWithSources::target_no_checks(from, letter, to);
+      WordGraphWithSources_::target_no_checks(from, letter, to);
       if constexpr (IsInversePresentation<presentation_type>) {
         // convert l (which is an index)
         // -> actual letter
@@ -65,10 +67,12 @@ namespace libsemigroups {
           process_coincidences<detail::DoNotRegisterDefs>();
           return;
         }
-        WordGraphWithSources::target_no_checks(to, ll, from);
+        WordGraphWithSources_::target_no_checks(to, ll, from);
       }
     }
 
+    // TODO(2) Add data to the StephenGraph which is a pointer to either the
+    // encompassing Stephen object or the presentation
     std::pair<bool, node_type>
     complete_path(presentation_type const&  p,
                   node_type                 c,
@@ -94,107 +98,83 @@ namespace libsemigroups {
       return std::make_pair(result, c);
     }
 
-    void disjoint_union_inplace_no_checks(StephenGraph const& that) {
-      // TODO throw exception if that.labels() != this->labels()
-      // TODO the following requires that this and that are standardized
-      // and that this and that are run to the end
+    void disjoint_union_inplace_no_checks(StephenGraph& that) {
+      word_graph::standardize(that);
+      LIBSEMIGROUPS_ASSERT(word_graph::is_standardized(that));
       size_t const N = number_of_nodes_active();
-      // TODO the following 2 lines are a bit awkward
-      BaseGraph::add_nodes(that.number_of_nodes());
-      NodeManager<node_type>::add_active_nodes(that.number_of_nodes());
+      // TODO(2): the following 2 lines are a bit awkward
+      WordGraphWithSources_::add_nodes(that.number_of_nodes_active());
+      NodeManager<node_type>::add_active_nodes(that.number_of_nodes_active());
 
-      for (auto n : that.nodes()) {
+      for (node_type n = 0; n < that.number_of_nodes_active(); ++n) {
         for (auto a : that.labels()) {
           auto m = that.target_no_checks(n, a);
           if (m != UNDEFINED) {
-            BaseGraph::target_no_checks(n + N, a, m + N);
+            WordGraphWithSources_::target_no_checks(n + N, a, m + N);
           }
         }
       }
     }
   };
 
-  template <typename P>
-  Stephen<P>::Stephen()
+  template <typename PresentationType>
+  Stephen<PresentationType>::Stephen()
       : _accept_state(UNDEFINED),
-        _something_changed(true),
         _finished(false),
-        _presentation(),
+        _is_word_set(false),
+        _presentation(std::make_shared<PresentationType>()),
         _word(),
         _word_graph() {
     _word_graph.report_prefix("Stephen");
   }
 
-  template <typename P>
-  Stephen<P>& Stephen<P>::init() {
-    _accept_state      = UNDEFINED;
-    _something_changed = true;
-    _finished          = false;
-    _presentation.init();
+  template <typename PresentationType>
+  Stephen<PresentationType>& Stephen<PresentationType>::init() {
+    _accept_state = UNDEFINED;
+    _finished     = false;
+    _is_word_set  = false;
+    _presentation->init();
     _word.clear();
     _word_graph.init();
     _word_graph.report_prefix("Stephen");
   }
 
-  template <typename P>
-  Stephen<P>::Stephen(P const& p) : Stephen() {
-    init(p);
-  }
-
-  template <typename P>
-  Stephen<P>::Stephen(P&& p) : Stephen() {
-    init(std::move(p));
-  }
-
-  template <typename P>
-  Stephen<P>& Stephen<P>::init(P&& p) {
-    deref_if_necessary(p).validate();
-    throw_if_presentation_empty(deref_if_necessary(p));
-    _presentation = std::move(p);
-    something_changed();
+  template <typename PresentationType>
+  Stephen<PresentationType>& Stephen<PresentationType>::init(
+      std::shared_ptr<PresentationType> const& ptr) {
+    // TODO(1): move the commented out lines to the
+    // make<Stephen<PresentationType>> function, once we have it
+    // ptr->validate();
+    // throw_if_presentation_empty(*ptr);
+    _presentation = ptr;
+    _accept_state = UNDEFINED;
+    _finished     = false;
+    _is_word_set  = false;
     _word.clear();
     return *this;
-  }
-
-  template <typename P>
-  Stephen<P>& Stephen<P>::init(P const& p) {
-    deref_if_necessary(p).validate();
-    throw_if_presentation_empty(deref_if_necessary(p));
-    _presentation = p;
-    something_changed();
-    _word.clear();
-    return *this;
-  }
-
-  template <typename P>
-  void Stephen<P>::something_changed() noexcept {
-    _something_changed = true;
-    _finished          = false;
-    _accept_state      = UNDEFINED;
   }
 
   ////////////////////////////////////////////////////////////////////////
   // Public
   ////////////////////////////////////////////////////////////////////////
 
-  template <typename P>
-  Stephen<P>& Stephen<P>::set_word(word_type const& w) {
-    presentation().validate_word(w.cbegin(), w.cend());
-    something_changed();
-    _word = w;
+  template <typename PresentationType>
+  template <typename Iterator1, typename Iterator2>
+  Stephen<PresentationType>&
+  Stephen<PresentationType>::set_word_no_checks(Iterator1 first,
+                                                Iterator2 last) {
+    _accept_state = UNDEFINED;
+    _finished     = false;
+    _word.assign(first, last);
+    init_word_graph_from_word_no_checks();
+    _is_word_set = true;
     return *this;
   }
 
-  template <typename P>
-  Stephen<P>& Stephen<P>::set_word(word_type&& w) {
-    presentation().validate_word(w.cbegin(), w.cend());
-    something_changed();
-    _word = std::move(w);
-    return *this;
-  }
-
-  template <typename P>
-  typename Stephen<P>::node_type Stephen<P>::accept_state() {
+  template <typename PresentationType>
+  typename Stephen<PresentationType>::node_type
+  Stephen<PresentationType>::accept_state() {
+    throw_if_not_ready();
     if (_accept_state == UNDEFINED) {
       using word_graph::last_node_on_path_no_checks;
       run();
@@ -205,47 +185,122 @@ namespace libsemigroups {
     return _accept_state;
   }
 
+  template <typename PresentationType>
+  void Stephen<PresentationType>::operator*=(Stephen<PresentationType>& that) {
+    throw_if_not_ready();
+    that.throw_if_not_ready();
+    if (this->presentation() != that.presentation()) {
+      LIBSEMIGROUPS_EXCEPTION(
+          "this.presentation() must equal that.presentation() when appending "
+          "Stephen instances")
+    }
+
+    append_no_checks(that);
+  }
+
+  template <typename PresentationType>
+  void
+  Stephen<PresentationType>::append_no_checks(Stephen<PresentationType>& that) {
+    // NOTE: Appending seems to work fine without running both this and that.
+    // If for some reason this is no longer true later on, uncomment the next
+    // two lines and update docs to indicate algorithm is run when calling
+    // append.
+
+    // this->run();
+    // that.run();
+
+    // TODO (2) FIXME _word_graph has two mem fns number_nodes_active (in
+    // NodeManager) and number_active_nodes (in WordGraph), this is super
+    // confusing!
+    size_t const N = _word_graph.number_of_nodes_active();
+    _word_graph.disjoint_union_inplace_no_checks(that._word_graph);
+    _word_graph.merge_nodes_no_checks(accept_state(), that.initial_state() + N);
+    _word_graph.template process_coincidences<detail::DoNotRegisterDefs>();
+    _accept_state = UNDEFINED;
+    _finished     = false;
+    _word.insert(_word.end(), that._word.cbegin(), that._word.cend());
+    _word_graph.cursor() = initial_state();
+  }
+
   ////////////////////////////////////////////////////////////////////////
   // Private Member Functions
   ////////////////////////////////////////////////////////////////////////
 
-  template <typename P>
-  void Stephen<P>::standardize() {
-    word_graph::standardize(_word_graph);
-    _word_graph.induced_subgraph_no_checks(
-        0, _word_graph.number_of_nodes_active());
-  }
-
-  template <typename P>
-  void
-  Stephen<P>::throw_if_presentation_empty(presentation_type const& p) const {
-    if (p.alphabet().empty()) {
-      LIBSEMIGROUPS_EXCEPTION("the presentation must not have 0 generators");
+  template <typename PresentationType>
+  void Stephen<PresentationType>::throw_if_not_ready() const {
+    if (presentation().alphabet().empty()) {
+      LIBSEMIGROUPS_EXCEPTION(
+          "the presentation must be defined using init() before "
+          "calling this function");
+    } else if (!_is_word_set) {
+      LIBSEMIGROUPS_EXCEPTION("the word must be set using set_word() before "
+                              "calling this function");
     }
   }
 
-  template <typename P>
-  void Stephen<P>::run_impl() {
-    reset_start_time();
-    // TODO report_after_run (including report_why_we_stopped) and
-    // report_before_run
+  template <typename PresentationType>
+  void Stephen<PresentationType>::report_before_run() {
     if (reporting_enabled()) {
+      report_no_prefix("{:+<95}\n", "");
+      report_default("Stephen: STARTING . . .\n");
+      report_no_prefix("{:+<95}\n", "");
+      using detail::group_digits;
+      auto shortest_short = presentation::shortest_rule_length(presentation());
+      auto longest_short  = presentation::longest_rule_length(presentation());
+      report_default("Stephen: |w| = {}, |A| = {}, |R| = {}, "
+                     "|u| + |v| \u2208 [{}, {}], \u2211(|u| + |v|) = {}\n",
+                     word().size(),
+                     presentation().alphabet().size(),
+                     group_digits(presentation().rules.size() / 2),
+                     shortest_short,
+                     longest_short,
+                     group_digits(presentation::length(presentation())));
+    }
+  }
+
+  template <typename PresentationType>
+  void Stephen<PresentationType>::report_after_run() {
+    if (reporting_enabled()) {
+      report_no_prefix("{:-<95}\n", "");
+      using detail::group_digits;
+      report_default(
+          "Stephen: Computed word graph with |V| = {} and |E| = {}\n",
+          group_digits(_word_graph.number_of_nodes_active()),
+          group_digits(_word_graph.number_of_edges()));
+      report_no_prefix("{:+<95}\n", "");
+
+      report_default("Stephen: STOPPING -- ");
+
+      if (finished()) {
+        report_no_prefix("finished!\n");
+      } else {
+        report_why_we_stopped();
+      }
+      report_no_prefix("{:+<95}\n", "");
+    }
+  }
+
+  template <typename PresentationType>
+  void Stephen<PresentationType>::run_impl() {
+    throw_if_not_ready();
+    reset_start_time();
+
+    report_before_run();
+    if (reporting_enabled()) {
+      // TODO(2): Thread sanitizer reports some sort of race condition here. Its
+      // not really an issue since its just reporting, but would be nice to
+      // silence the sanitizer. ToddCoxeter seems to do the same thing and no
+      // sanitizer issues there, so what gives?
       detail::Ticker t([this]() { _word_graph.report_progress_from_thread(); });
       really_run_impl();
     } else {
       really_run_impl();
     }
+    report_after_run();
   }
 
-  template <typename P>
-  void Stephen<P>::really_run_impl() {
-    if (_something_changed) {
-      throw_if_presentation_empty(presentation());
-      _something_changed = false;
-      _word_graph.init(presentation());
-      _word_graph.complete_path(
-          presentation(), 0, _word.cbegin(), _word.cend());
-    }
+  template <typename PresentationType>
+  void Stephen<PresentationType>::really_run_impl() {
     node_type& current     = _word_graph.cursor();
     auto const rules_begin = presentation().rules.cbegin();
     auto const rules_end   = presentation().rules.cend();
@@ -324,28 +379,79 @@ namespace libsemigroups {
       _finished = true;
       standardize();
     }
+    // Here so we have accurate data when using to_human_readable_repr
+    _word_graph.number_of_active_nodes(_word_graph.number_of_nodes_active());
   }
 
   namespace stephen {
 
-    template <typename P>
-    bool accepts(Stephen<P>& s, word_type const& w) {
+    template <typename PresentationType>
+    bool accepts(Stephen<PresentationType>& s, word_type const& w) {
       using word_graph::follow_path;
-      using node_type = typename Stephen<P>::node_type;
+      using node_type = typename Stephen<PresentationType>::node_type;
       s.run();
       LIBSEMIGROUPS_ASSERT(s.accept_state() != UNDEFINED);
       return s.accept_state() == follow_path(s.word_graph(), node_type(0), w);
     }
 
-    template <typename P>
-    bool is_left_factor(Stephen<P>& s, word_type const& w) {
+    template <typename PresentationType>
+    bool is_left_factor(Stephen<PresentationType>& s, word_type const& w) {
       using word_graph::last_node_on_path;
-      using node_type = typename Stephen<P>::node_type;
+      using node_type = typename Stephen<PresentationType>::node_type;
       s.run();
       return last_node_on_path(
                  s.word_graph(), node_type(0), w.cbegin(), w.cend())
                  .second
              == w.cend();
     }
+
+    template <typename PresentationType>
+    Dot dot(Stephen<PresentationType>& s) {
+      Dot result;
+      result.kind(Dot::Kind::digraph);
+      result.add_node("initial").add_attr("style", "invis");
+      result.add_node("accept").add_attr("style", "invis");
+      for (auto n : s.word_graph().nodes()) {
+        result.add_node(n).add_attr("shape", "box");
+      }
+      result.add_edge("initial", s.initial_state());
+      result.add_edge(s.accept_state(), "accept");
+
+      size_t max_letters = s.presentation().alphabet().size();
+      if constexpr (IsInversePresentation<PresentationType>) {
+        max_letters /= 2;
+      }
+
+      for (auto n : s.word_graph().nodes()) {
+        for (size_t a = 0; a < max_letters; ++a) {
+          auto m = s.word_graph().target(n, a);
+          if (m != UNDEFINED) {
+            result.add_edge(n, m)
+                .add_attr("color", result.colors[a])
+                .add_attr("label", a)
+                .add_attr("minlen", 2);
+          }
+        }
+      }
+      return result;
+    }
+
   }  // namespace stephen
+
+  template <typename PresentationType>
+  std::string to_human_readable_repr(Stephen<PresentationType> const& x) {
+    if (!x.is_word_set()) {
+      return fmt::format("<Stephen object over {} with no word set>",
+                         to_human_readable_repr(x.presentation()));
+    }
+    return fmt::format("<Stephen object over {} for {} with {} "
+                       "nodes and {} edges>",
+                       to_human_readable_repr(x.presentation()),
+                       x.word().size() < 10
+                           ? fmt::format("word {}", x.word())
+                           : fmt::format("{} letter word", x.word().size()),
+                       x.word_graph().number_of_active_nodes(),
+                       x.word_graph().number_of_edges());
+  }
+
 }  // namespace libsemigroups

@@ -676,7 +676,6 @@ libsemigroups_la_SOURCES += src/presentation-examples.cpp
 libsemigroups_la_SOURCES += src/presentation.cpp
 libsemigroups_la_SOURCES += src/runner.cpp
 libsemigroups_la_SOURCES += src/sims.cpp
-libsemigroups_la_SOURCES += src/stephen.cpp
 libsemigroups_la_SOURCES += src/todd-coxeter-helpers.cpp
 libsemigroups_la_SOURCES += src/ukkonen.cpp
 libsemigroups_la_SOURCES += src/word-graph.cpp

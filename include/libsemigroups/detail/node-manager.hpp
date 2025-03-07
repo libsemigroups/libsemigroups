@@ -22,12 +22,16 @@
 #ifndef LIBSEMIGROUPS_DETAIL_NODE_MANAGER_HPP_
 #define LIBSEMIGROUPS_DETAIL_NODE_MANAGER_HPP_
 
-#include <cstddef>  // for size_t
-#include <cstdint>  // for uint32_t
-#include <vector>   // for vector
+#include <cstddef>      // for size_t
+#include <cstdint>      // for uint32_t
+#include <numeric>      // for iota
+#include <type_traits>  // for true_type
+#include <vector>       // for vector
 
+#include "libsemigroups/config.hpp"     // for LIBSEMIGROUPS_DEBUG
 #include "libsemigroups/constants.hpp"  // for UNDEFINED
 #include "libsemigroups/debug.hpp"      // for LIBSEMIGROUPS_ASSERT/DEBUG
+#include "libsemigroups/exception.hpp"  // for LISEMIGROUPS_EXCEPTION
 #include "libsemigroups/ranges.hpp"
 
 namespace libsemigroups {

@@ -298,6 +298,9 @@ namespace libsemigroups {
 
       auto run_time = delta(start_time());
 
+      // TODO (2): FIXME The following 3 lines are not thread safe and can cause
+      // data races. One way of resolving this would be to change the data
+      // members of node managed graph to be atomic
       auto const active  = this->number_of_nodes_active();
       auto const killed  = this->number_of_nodes_killed();
       auto const defined = this->number_of_nodes_defined();

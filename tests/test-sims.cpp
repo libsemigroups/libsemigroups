@@ -66,8 +66,6 @@
 #include "libsemigroups/detail/report.hpp"          // for ReportGuard
 #include "libsemigroups/detail/word-graph-with-sources.hpp"  // for WordGra...
 
-#include "rx/ranges.hpp"  // for operator|, iterator_range
-
 namespace libsemigroups {
 
   using word_graph_type = typename Sims1::word_graph_type;

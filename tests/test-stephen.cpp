@@ -17,38 +17,39 @@
 //
 
 #define CATCH_CONFIG_ENABLE_ALL_STRINGMAKERS
-// TODO use _w literals
 
-#include <cstddef>   // for size_t
-#include <iostream>  // for cout
-
-#include <algorithm>    // for for_each
-#include <chrono>       // for duration, microsec...
-#include <cstddef>      // for size_t
-#include <cstdint>      // for size_t
-#include <fstream>      // for ofstream
-#include <iostream>     // for string, char_traits
-#include <iterator>     // for advance
-#include <string>       // for swap, basic_string
-#include <type_traits>  // for remove_reference<>...
-#include <utility>      // for move
-#include <vector>       // for vector, operator==
+#include <algorithm>      // for for_each
+#include <cctype>         // for isupper
+#include <cstddef>        // for size_t
+#include <cstdint>        // for uint32_t
+#include <iostream>       // for operator<<
+#include <memory>         // for make_shared
+#include <string>         // for basic_st...
+#include <tuple>          // for tie
+#include <unordered_map>  // for operator==
+#include <utility>        // for make_pair
+#include <vector>         // for vector
 
 #include "Catch2-3.7.1/catch_amalgamated.hpp"  // for REQUIRE, REQUIRE_THROWS_AS, REQUI...
 #include "test-main.hpp"                       // for LIBSEMIGROUPS_TEST_CASE
 
 #include "libsemigroups/constants.hpp"              // for UNDEFINED
-#include "libsemigroups/exception.hpp"              // for LibsemigroupsExcep...
-#include "libsemigroups/order.hpp"                  // for LexicographicalCom...
-#include "libsemigroups/presentation-examples.hpp"  // for make, fibonacci_se...
-#include "libsemigroups/presentation.hpp"           // for add_rule
-#include "libsemigroups/stephen.hpp"                // for Stephen, Stephen::...
-#include "libsemigroups/todd-coxeter.hpp"           // for ToddCoxeter
+#include "libsemigroups/exception.hpp"              // for Libsemig...
+#include "libsemigroups/order.hpp"                  // for Lexicogr...
+#include "libsemigroups/paths.hpp"                  // for Paths
+#include "libsemigroups/presentation-examples.hpp"  // for symmetric...
+#include "libsemigroups/presentation.hpp"           // for InverseP...
+#include "libsemigroups/ranges.hpp"                 // for operator|
+#include "libsemigroups/stephen.hpp"                // for Stephen
+#include "libsemigroups/todd-coxeter-class.hpp"     // for ToddCoxeter
+#include "libsemigroups/todd-coxeter-helpers.hpp"   // for index_of
 #include "libsemigroups/types.hpp"                  // for word_type
-#include "libsemigroups/word-graph.hpp"             // for WordGraph, ope...
-#include "libsemigroups/word-range.hpp"             // for StringToWord, word...
+#include "libsemigroups/word-graph.hpp"             // for WordGraph
+#include "libsemigroups/word-range.hpp"             // for ToWord
 
-#include "libsemigroups/detail/report.hpp"  // for ReportGuard
+#include "libsemigroups/detail/fmt.hpp"       // for format
+#include "libsemigroups/detail/iterator.hpp"  // for operator+
+#include "libsemigroups/detail/report.hpp"    // for ReportGuard
 
 namespace libsemigroups {
   using namespace literals;
@@ -57,7 +58,7 @@ namespace libsemigroups {
   namespace {
     template <typename PresentationType>
     void check_000(Stephen<PresentationType>& s) {
-      s.set_word({0}).run();
+      stephen::set_word(s, 0_w).run();
       REQUIRE(s.word_graph().number_of_nodes() == 2);
       REQUIRE(
           s.word_graph()
@@ -78,7 +79,7 @@ namespace libsemigroups {
       }
       {
         REQUIRE((stephen::left_factors(s) | rx::take(10) | rx::to_vector())
-                == std::vector<word_type>({{},
+                == std::vector<word_type>({""_w,
                                            0_w,
                                            01_w,
                                            011_w,
@@ -91,15 +92,15 @@ namespace libsemigroups {
       }
     }
 
-    void verify_c4_normal_form(Presentation<std::string> const& p,
-                               std::string const&               word,
-                               std::string const&               nf) {
-      ToWord  to_word(p.alphabet());
+    // TODO(2): change this once we allow std::string presentations
+    void verify_c4_normal_form(Presentation<word_type> const& p,
+                               word_type const&               word,
+                               word_type const&               nf) {
       Stephen S(p);
-      S.set_word(to_word(word)).run();
+      stephen::set_word(S, word).run();
 
-      REQUIRE((stephen::words_accepted(S) | ToString(p.alphabet())
-               | rx::sort(LexicographicalCompare()) | rx::take(1))
+      REQUIRE((stephen::words_accepted(S) | rx::sort(LexicographicalCompare())
+               | rx::take(1))
                   .get()
               == nf);
 
@@ -110,26 +111,26 @@ namespace libsemigroups {
               == stephen::words_accepted(S).count());
     }
 
-    void verify_c4_equal_to(Presentation<std::string> const& p,
-                            std::string const&               word1,
-                            std::string const&               word2) {
-      ToWord  to_word(p.alphabet());
+    // TODO(2): change this once we allow std::string presentations
+    void verify_c4_equal_to(Presentation<word_type> const& p,
+                            word_type const&               word1,
+                            word_type const&               word2) {
       Stephen S(p);
-      S.set_word(to_word(word1)).run();
-      REQUIRE(stephen::accepts(S, to_word(word2)));
-      S.set_word(to_word(word2)).run();
-      REQUIRE(stephen::accepts(S, to_word(word1)));
+      stephen::set_word(S, word1).run();
+      REQUIRE(stephen::accepts(S, word2));
+      stephen::set_word(S, word2).run();
+      REQUIRE(stephen::accepts(S, word1));
     }
 
-    void verify_c4_not_equal_to(Presentation<std::string> const& p,
-                                std::string const&               word1,
-                                std::string const&               word2) {
-      ToWord  to_word(p.alphabet());
+    // TODO(2): change this once we allow std::string presentations
+    void verify_c4_not_equal_to(Presentation<word_type> const& p,
+                                word_type const&               word1,
+                                word_type const&               word2) {
       Stephen S(p);
-      S.set_word(to_word(word1)).run();
-      REQUIRE(!stephen::accepts(S, to_word(word2)));
-      S.set_word(to_word(word2)).run();
-      REQUIRE(!stephen::accepts(S, to_word(word1)));
+      stephen::set_word(S, word1).run();
+      REQUIRE(!stephen::accepts(S, word2));
+      stephen::set_word(S, word2).run();
+      REQUIRE(!stephen::accepts(S, word1));
     }
 
   }  // namespace
@@ -138,10 +139,10 @@ namespace libsemigroups {
                           "000",
                           "basic test 1",
                           "[quick][stephen]") {
-    auto                    rg = ReportGuard(true);
+    auto                    rg = ReportGuard(false);
     Presentation<word_type> p;
     p.alphabet(2);
-    presentation::add_rule(p, {0}, {0, 1});
+    presentation::add_rule(p, 0_w, 01_w);
     Stephen s(p);
     check_000(s);
     s.init(p);
@@ -152,14 +153,14 @@ namespace libsemigroups {
                           "001",
                           "basic test 2",
                           "[quick][stephen]") {
-    auto                    rg = ReportGuard(true);
+    auto                    rg = ReportGuard(false);
     Presentation<word_type> p;
     p.alphabet(2);
     presentation::add_rule(p, 000_w, 0_w);
     presentation::add_rule(p, 111_w, 1_w);
     presentation::add_rule(p, 0101_w, 00_w);
     Stephen s(p);
-    s.set_word(1101_w).run();
+    stephen::set_word(s, 1101_w).run();
     REQUIRE(s.word_graph().number_of_nodes() == 7);
     REQUIRE(s.word_graph()
             == make<WordGraph<uint32_t>>(7,
@@ -186,7 +187,7 @@ namespace libsemigroups {
 
     REQUIRE(stephen::accepts(s, 110010_w));
     REQUIRE(stephen::accepts(s, 110010_w));
-    REQUIRE(!stephen::accepts(s, {}));
+    REQUIRE(!stephen::accepts(s, ""_w));
     REQUIRE(!stephen::accepts(s, 0000000000_w));
     REQUIRE(!stephen::accepts(s, 111_w));
     {
@@ -204,7 +205,7 @@ namespace libsemigroups {
     }
     {
       REQUIRE((stephen::left_factors(s) | rx::take(10) | rx::to_vector())
-              == std::vector<word_type>({{},
+              == std::vector<word_type>({""_w,
                                          1_w,
                                          11_w,
                                          110_w,
@@ -221,7 +222,7 @@ namespace libsemigroups {
                  })));
     }
 
-    s.set_word(00_w).run();
+    stephen::set_word(s, 00_w).run();
     REQUIRE(s.word_graph().number_of_nodes() == 5);
     REQUIRE(s.word_graph()
             == make<WordGraph<uint32_t>>(
@@ -230,7 +231,7 @@ namespace libsemigroups {
     p.rules.clear();
     presentation::add_rule(p, 000_w, 0_w);
     presentation::add_rule(p, 111_w, 1_w);
-    s.init(p).set_word(00_w).run();
+    stephen::set_word(s.init(p), 00_w).run();
     REQUIRE(s.word_graph().number_of_nodes() == 3);
     REQUIRE(s.word_graph()
             == make<WordGraph<uint32_t>>(
@@ -241,13 +242,13 @@ namespace libsemigroups {
                           "002",
                           "full transf monoid",
                           "[quick][stephen][no-valgrind]") {
-    auto   rg = ReportGuard(true);
+    auto   rg = ReportGuard(false);
     size_t n  = 5;
     auto   p  = presentation::examples::full_transformation_monoid_II74(n);
     p.validate();
 
     Stephen s(std::move(p));
-    s.set_word(010111020120_w).run();
+    stephen::set_word(s, 010111020120_w).run();
     REQUIRE(s.word_graph().number_of_nodes() == 120);
     REQUIRE(
         s.word_graph()
@@ -315,48 +316,54 @@ namespace libsemigroups {
              {94, 108, 109, 115, UNDEFINED}, {99, 102, 116, 103, UNDEFINED}}));
   }
 
+  // TODO(2): add a version of all test cases for std::string once this is
+  // allowed by Stephen.
   LIBSEMIGROUPS_TEST_CASE("Stephen",
                           "003",
                           "from step_hen 002",
                           "[quick][stephen]") {
-    Presentation<std::string> p;
-    p.alphabet("ab");
-    presentation::add_rule(p, "aaa", "a");
-    presentation::add_rule(p, "bbb", "b");
-    presentation::add_rule(p, "abab", "aa");
+    ReportGuard             rg(false);
+    ToWord                  to_word("ab");
+    Presentation<word_type> p;
+    p.alphabet(to_word("ab"));
+    presentation::add_rule(p, to_word("aaa"), to_word("a"));
+    presentation::add_rule(p, to_word("bbb"), to_word("b"));
+    presentation::add_rule(p, to_word("abab"), to_word("aa"));
 
     Stephen S(p);
-    S.set_word("bbab"_w);
+    stephen::set_word(S, to_word("bbab"));
 
-    REQUIRE(stephen::accepts(S, "bbaaba"_w));
-    REQUIRE(!stephen::accepts(S, ""_w));
-    REQUIRE(!stephen::accepts(S, "aaaaaaaaaa"_w));
-    REQUIRE(!stephen::accepts(S, "bbb"_w));
+    REQUIRE(stephen::accepts(S, to_word("bbaaba")));
+    REQUIRE(!stephen::accepts(S, to_word("")));
+    REQUIRE(!stephen::accepts(S, to_word("aaaaaaaaaa")));
+    REQUIRE(!stephen::accepts(S, to_word("bbb")));
 
-    S.set_word("bba"_w);
-    REQUIRE(stephen::accepts(S, "bbabb"_w));
-    REQUIRE(stephen::accepts(S, "bba"_w));
-    REQUIRE(!stephen::accepts(S, "bbb"_w));
-    REQUIRE(!stephen::accepts(S, "a"_w));
-    REQUIRE(!stephen::accepts(S, "ab"_w));
+    stephen::set_word(S, to_word("bba"));
+    REQUIRE(stephen::accepts(S, to_word("bbabb")));
+    REQUIRE(stephen::accepts(S, to_word("bba")));
+    REQUIRE(!stephen::accepts(S, to_word("bbb")));
+    REQUIRE(!stephen::accepts(S, to_word("a")));
+    REQUIRE(!stephen::accepts(S, to_word("ab")));
 
-    S.set_word("bbaab"_w);
-    REQUIRE(stephen::accepts(S, "bbaba"_w));
+    stephen::set_word(S, to_word("bbaab"));
+    REQUIRE(stephen::accepts(S, to_word("bbaba")));
   }
 
   LIBSEMIGROUPS_TEST_CASE("Stephen",
                           "004",
                           "from step_hen 003",
                           "[quick][stephen]") {
-    Presentation<std::string> p;
-    p.alphabet("abcdefg");
-    presentation::add_rule(p, "aaaeaa", "abcd");
-    presentation::add_rule(p, "ef", "dg");
+    ReportGuard             rg(false);
+    ToWord                  to_word("abcdefg");
+    Presentation<word_type> p;
+    p.alphabet(to_word("abcdefg"));
+    presentation::add_rule(p, to_word("aaaeaa"), to_word("abcd"));
+    presentation::add_rule(p, to_word("ef"), to_word("dg"));
 
     Stephen S(p);
 
-    S.set_word("abcef"_w).run();
-    REQUIRE("abcef"_w == 01245_w);
+    stephen::set_word(S, to_word("abcef")).run();
+    REQUIRE(to_word("abcef") == 01245_w);
     REQUIRE(S.word_graph()
             == make<WordGraph<uint32_t>>(
                 11,
@@ -382,12 +389,11 @@ namespace libsemigroups {
                   10},
                  {UNDEFINED, UNDEFINED, UNDEFINED, UNDEFINED, UNDEFINED, 10},
                  {7}}));
-    ToWord to_word;
-    auto   rule = to_word(p.rules[0]);
-    auto   m    = word_graph::last_node_on_path(
+    auto rule = p.rules[0];
+    auto m    = word_graph::last_node_on_path(
                  S.word_graph(), 0, rule.cbegin(), rule.cend())
                  .first;
-    rule   = to_word(p.rules[1]);
+    rule   = p.rules[1];
     auto n = word_graph::last_node_on_path(
                  S.word_graph(), 0, rule.cbegin(), rule.cend())
                  .first;
@@ -395,25 +401,23 @@ namespace libsemigroups {
     REQUIRE(n != UNDEFINED);
     REQUIRE(m == n);
     REQUIRE(S.word_graph().number_of_nodes() == 11);
-    REQUIRE(stephen::accepts(S, "aaaeaag"_w));
+    REQUIRE(stephen::accepts(S, to_word("aaaeaag")));
     REQUIRE(stephen::number_of_words_accepted(S) == 3);
     REQUIRE((stephen::words_accepted(S) | rx::to_vector())
             == std::vector<word_type>({01236_w, 01245_w, 0004006_w}));
 
-    S.set_word("aaaeaaaeaa"_w).run();
+    stephen::set_word(S, to_word("aaaeaaaeaa")).run();
 
     REQUIRE(S.word_graph().number_of_nodes() == 15);
     REQUIRE(stephen::number_of_words_accepted(S) == 3);
-    REQUIRE(stephen::accepts(S, "aaaeabcd"_w));
-    REQUIRE(std::vector<word_type>(stephen::cbegin_words_accepted(S),
-                                   stephen::cend_words_accepted(S))
+    REQUIRE(stephen::accepts(S, to_word("aaaeabcd")));
+    REQUIRE((stephen::words_accepted(S) | rx::to_vector())
             == std::vector<word_type>({00040123_w, 01230400_w, 0004000400_w}));
 
-    S.set_word("aaaeaag"_w).run();
+    stephen::set_word(S, to_word("aaaeaag")).run();
     REQUIRE(S.word_graph().number_of_nodes() == 11);
     REQUIRE(stephen::number_of_words_accepted(S) == 3);
-    REQUIRE(std::vector<word_type>(stephen::cbegin_words_accepted(S),
-                                   stephen::cend_words_accepted(S))
+    REQUIRE((stephen::words_accepted(S) | rx::to_vector())
             == std::vector<word_type>({01236_w, 01245_w, 0004006_w}));
   }
 
@@ -421,50 +425,61 @@ namespace libsemigroups {
                           "005",
                           "from step_hen 004",
                           "[quick][stephen]") {
-    Presentation<std::string> p;
-    p.alphabet("abc");
-    presentation::add_rule(p, "ab", "ba");
-    presentation::add_rule(p, "ac", "cc");
-    presentation::add_rule(p, "ac", "a");
-    presentation::add_rule(p, "cc", "a");
-    presentation::add_rule(p, "bc", "cc");
-    presentation::add_rule(p, "bcc", "b");
-    presentation::add_rule(p, "bc", "b");
-    presentation::add_rule(p, "cc", "b");
-    presentation::add_rule(p, "a", "b");
+    ReportGuard             rg(false);
+    ToWord                  to_word("abc");
+    Presentation<word_type> p;
+    p.alphabet(to_word("abc"));
+    presentation::add_rule(p, to_word("ab"), to_word("ba"));
+    presentation::add_rule(p, to_word("ac"), to_word("cc"));
+    presentation::add_rule(p, to_word("ac"), to_word("a"));
+    presentation::add_rule(p, to_word("cc"), to_word("a"));
+    presentation::add_rule(p, to_word("bc"), to_word("cc"));
+    presentation::add_rule(p, to_word("bcc"), to_word("b"));
+    presentation::add_rule(p, to_word("bc"), to_word("b"));
+    presentation::add_rule(p, to_word("cc"), to_word("b"));
+    presentation::add_rule(p, to_word("a"), to_word("b"));
 
     Stephen S(p);
-    S.set_word("abcc"_w).run();
-    REQUIRE(stephen::accepts(S, "baac"_w));
+    stephen::set_word(S, to_word("abcc")).run();
+    REQUIRE(stephen::accepts(S, to_word("baac")));
     REQUIRE(S.word_graph().number_of_nodes() == 3);
     REQUIRE(stephen::number_of_words_accepted(S) == POSITIVE_INFINITY);
-    REQUIRE((stephen::words_accepted(S) | rx::take(10) | ToString("abc")
-             | rx::to_vector())
-            == std::vector<std::string>(
-                {"a", "b", "aa", "ab", "ac", "ba", "bb", "bc", "ca", "cb"}));
+    REQUIRE((stephen::words_accepted(S) | rx::take(10) | rx::to_vector())
+            == std::vector<word_type>({to_word("a"),
+                                       to_word("b"),
+                                       to_word("aa"),
+                                       to_word("ab"),
+                                       to_word("ac"),
+                                       to_word("ba"),
+                                       to_word("bb"),
+                                       to_word("bc"),
+                                       to_word("ca"),
+                                       to_word("cb")}));
   }
 
   LIBSEMIGROUPS_TEST_CASE("Stephen",
                           "006",
                           "from step_hen 005",
                           "[quick][stephen]") {
-    Presentation<std::string> p;
-    p.alphabet("abcd");
-    presentation::add_rule(p, "bb", "c");
-    presentation::add_rule(p, "caca", "abab");
-    presentation::add_rule(p, "bc", "d");
-    presentation::add_rule(p, "cb", "d");
-    presentation::add_rule(p, "aa", "d");
-    presentation::add_rule(p, "ad", "a");
-    presentation::add_rule(p, "da", "a");
-    presentation::add_rule(p, "bd", "b");
-    presentation::add_rule(p, "db", "b");
-    presentation::add_rule(p, "cd", "c");
-    presentation::add_rule(p, "dc", "c");
+    ReportGuard             rg(false);
+    ToWord                  to_word("abcd");
+    Presentation<word_type> p;
+    p.alphabet(to_word("abcd"));
+    presentation::add_rule(p, to_word("bb"), to_word("c"));
+    presentation::add_rule(p, to_word("caca"), to_word("abab"));
+    presentation::add_rule(p, to_word("bc"), to_word("d"));
+    presentation::add_rule(p, to_word("cb"), to_word("d"));
+    presentation::add_rule(p, to_word("aa"), to_word("d"));
+    presentation::add_rule(p, to_word("ad"), to_word("a"));
+    presentation::add_rule(p, to_word("da"), to_word("a"));
+    presentation::add_rule(p, to_word("bd"), to_word("b"));
+    presentation::add_rule(p, to_word("db"), to_word("b"));
+    presentation::add_rule(p, to_word("cd"), to_word("c"));
+    presentation::add_rule(p, to_word("dc"), to_word("c"));
 
     Stephen S(p);
-    S.set_word("dabdaaadabab"_w).run();
-    REQUIRE(stephen::accepts(S, "abdadcaca"_w));
+    stephen::set_word(S, to_word("dabdaaadabab")).run();
+    REQUIRE(stephen::accepts(S, to_word("abdadcaca")));
     REQUIRE(S.word_graph().number_of_nodes() == 25);
     REQUIRE(stephen::number_of_words_accepted(S) == POSITIVE_INFINITY);
   }
@@ -475,7 +490,7 @@ namespace libsemigroups {
                           "[stephen][extreme]") {
     auto    rg = ReportGuard(true);
     Stephen S(presentation::examples::fibonacci_semigroup(4, 6));
-    S.set_word(0123_w).run_for(std::chrono::seconds(10));
+    stephen::set_word(S, 0123_w).run_for(std::chrono::seconds(10));
     REQUIRE(!S.finished());
   }
 
@@ -484,33 +499,33 @@ namespace libsemigroups {
       "008",
       "C(4) monoid normal form (test_case_knuth_bendix_055)",
       "[stephen][quick]") {
-    auto                      rg = ReportGuard(false);
-    Presentation<std::string> p;
-    p.alphabet("abcdefg");
-    presentation::add_rule(p, "abcd", "ce");
-    presentation::add_rule(p, "df", "dg");
+    auto                    rg = ReportGuard(false);
+    ToWord                  to_word("abcdefg");
+    Presentation<word_type> p;
+    p.alphabet(to_word("abcdefg"));
+    presentation::add_rule(p, to_word("abcd"), to_word("ce"));
+    presentation::add_rule(p, to_word("df"), to_word("dg"));
 
     Stephen S(p);
-    S.set_word("dfabcdf"_w).run();
+    stephen::set_word(S, to_word("dfabcdf")).run();
 
     REQUIRE(S.word_graph().number_of_nodes() == 9);
     REQUIRE(stephen::number_of_words_accepted(S) == 8);
 
-    REQUIRE(
-        (stephen::words_accepted(S) | ToString(p.alphabet()) | rx::to_vector())
-        == std::vector<std::string>({"dfcef",
-                                     "dfceg",
-                                     "dgcef",
-                                     "dgceg",
-                                     "dfabcdf",
-                                     "dfabcdg",
-                                     "dgabcdf",
-                                     "dgabcdg"}));
+    REQUIRE((stephen::words_accepted(S) | rx::to_vector())
+            == std::vector<word_type>({to_word("dfcef"),
+                                       to_word("dfceg"),
+                                       to_word("dgcef"),
+                                       to_word("dgceg"),
+                                       to_word("dfabcdf"),
+                                       to_word("dfabcdg"),
+                                       to_word("dgabcdf"),
+                                       to_word("dgabcdg")}));
 
     REQUIRE((stephen::words_accepted(S) | rx::sort(LexicographicalCompare())
-             | rx::take(1) | ToString(p.alphabet()))
+             | rx::take(1))
                 .get()
-            == "dfabcdf");
+            == to_word("dfabcdf"));
 
     REQUIRE((stephen::words_accepted(S) | rx::all_of([&S](auto const& w) {
                return stephen::accepts(S, w);
@@ -518,34 +533,33 @@ namespace libsemigroups {
     REQUIRE(stephen::number_of_words_accepted(S)
             == stephen::words_accepted(S).count());
 
-    S.set_word("abcdfceg"_w).run();
+    stephen::set_word(S, to_word("abcdfceg")).run();
     REQUIRE(stephen::number_of_words_accepted(S) == 16);
 
-    REQUIRE((stephen::words_accepted(S) | ToString(p.alphabet())
-             | rx::sort(LexicographicalCompare()) | rx::to_vector())
-            == std::vector<std::string>({"abcdfabcdf",
-                                         "abcdfabcdg",
-                                         "abcdfcef",
-                                         "abcdfceg",
-                                         "abcdgabcdf",
-                                         "abcdgabcdg",
-                                         "abcdgcef",
-                                         "abcdgceg",
-                                         "cefabcdf",
-                                         "cefabcdg",
-                                         "cefcef",
-                                         "cefceg",
-                                         "cegabcdf",
-                                         "cegabcdg",
-                                         "cegcef",
-                                         "cegceg"}));
+    REQUIRE((stephen::words_accepted(S) | rx::sort(LexicographicalCompare())
+             | rx::to_vector())
+            == std::vector<word_type>({to_word("abcdfabcdf"),
+                                       to_word("abcdfabcdg"),
+                                       to_word("abcdfcef"),
+                                       to_word("abcdfceg"),
+                                       to_word("abcdgabcdf"),
+                                       to_word("abcdgabcdg"),
+                                       to_word("abcdgcef"),
+                                       to_word("abcdgceg"),
+                                       to_word("cefabcdf"),
+                                       to_word("cefabcdg"),
+                                       to_word("cefcef"),
+                                       to_word("cefceg"),
+                                       to_word("cegabcdf"),
+                                       to_word("cegabcdg"),
+                                       to_word("cegcef"),
+                                       to_word("cegceg")}));
 
-    REQUIRE(ToString(p.alphabet())(stephen::words_accepted(S)
-                                   | rx::sort(LexicographicalCompare())
-                                   | rx::take(1))
+    REQUIRE((stephen::words_accepted(S) | rx::sort(LexicographicalCompare())
+             | rx::take(1))
                 .get()
-            == "abcdfabcdf");
-    REQUIRE(stephen::accepts(S, "abcdfabcdf"_w));
+            == to_word("abcdfabcdf"));
+    REQUIRE(stephen::accepts(S, to_word("abcdfabcdf")));
   }
 
   LIBSEMIGROUPS_TEST_CASE(
@@ -553,80 +567,81 @@ namespace libsemigroups {
       "009",
       "C(4) monoid normal form (test_case_gap_smalloverlap_85)",
       "[stephen][quick]") {
-    auto                      rg = ReportGuard(false);
-    Presentation<std::string> p;
-    p.alphabet("cab");
-    presentation::add_rule(p, "aabc", "acba");
+    auto                    rg = ReportGuard(false);
+    ToWord                  to_word("abc");
+    Presentation<word_type> p;
+    p.alphabet(to_word("cab"));
+    presentation::add_rule(p, to_word("aabc"), to_word("acba"));
 
-    ToWord  word("cab");
     Stephen S(p);
-    S.set_word(word("a")).run();
-    REQUIRE(!stephen::accepts(S, word("b")));
+    stephen::set_word(S, to_word("a")).run();
+    REQUIRE(!stephen::accepts(S, to_word("b")));
 
-    S.set_word(word("aabcabc")).run();
-    REQUIRE(stephen::accepts(S, word("aabccba")));
+    stephen::set_word(S, to_word("aabcabc")).run();
+    REQUIRE(stephen::accepts(S, to_word("aabccba")));
 
-    S.set_word(word("aabccba")).run();
-    REQUIRE(stephen::accepts(S, word("aabcabc")));
+    stephen::set_word(S, to_word("aabccba")).run();
+    REQUIRE(stephen::accepts(S, to_word("aabcabc")));
 
-    S.set_word(word("acba")).run();
-    auto words = stephen::words_accepted(S) | ToString(p.alphabet());
+    stephen::set_word(S, to_word("acba")).run();
 
-    REQUIRE((words | rx::to_vector())
-            == std::vector<std::string>({"acba", "aabc"}));
-    verify_c4_normal_form(p, "acba", "aabc");
+    REQUIRE((stephen::words_accepted(S) | rx::to_vector())
+            == std::vector<word_type>({to_word("aabc"), to_word("acba")}));
+    verify_c4_normal_form(p, to_word("acba"), to_word("aabc"));
   }
 
   LIBSEMIGROUPS_TEST_CASE("Stephen",
                           "010",
                           "code coverage",
                           "[stephen][quick]") {
-    auto                      rg = ReportGuard(true);
-    Presentation<std::string> p;
-    REQUIRE_THROWS_AS(Stephen(p), LibsemigroupsException);
-    p.alphabet("abcdefg");
+    auto                    rg = ReportGuard(false);
+    ToWord                  to_word("abcdefg");
+    Presentation<word_type> p;
+    // TODO(2): Once we have make<Stephen> check that this error is thrown
+    // REQUIRE_THROWS_AS(Stephen(p), LibsemigroupsException);
+    p.alphabet(to_word("abcdefg"));
 
     Stephen S(p);
-    auto    w = "abbbddbcbcbc"_w;
-    S.set_word(w);
+    auto    w = to_word("abbbddbcbcbc");
+    stephen::set_word(S, w);
     S.run();
     REQUIRE(S.finished());
     S.run();
-    S.set_word("abbbddbcbcbc"_w);  // resets
+    stephen::set_word(S, to_word("abbbddbcbcbc"));  // resets
     S.report_every(std::chrono::microseconds(10));
 
     S.run();
 
     Stephen T(S);
     REQUIRE(stephen::accepts(T, w));
-    REQUIRE(!stephen::accepts(T, "abbbd"_w));
+    REQUIRE(!stephen::accepts(T, to_word("abbbd")));
     REQUIRE(stephen::number_of_words_accepted(T) == 1);
     REQUIRE(stephen::number_of_left_factors(T) == w.size() + 1);
     REQUIRE(stephen::accepts(S, w));
-    REQUIRE(!stephen::accepts(S, "abbbd"_w));
+    REQUIRE(!stephen::accepts(S, to_word("abbbd")));
     REQUIRE(stephen::number_of_words_accepted(S) == 1);
     REQUIRE(stephen::number_of_left_factors(S) == w.size() + 1);
 
     Stephen U(std::move(S));
     REQUIRE(stephen::accepts(U, w));
-    REQUIRE(!stephen::accepts(U, "abbbd"_w));
+    REQUIRE(!stephen::accepts(U, to_word("abbbd")));
     REQUIRE(stephen::number_of_words_accepted(U) == 1);
     REQUIRE(stephen::number_of_left_factors(U) == w.size() + 1);
 
     S = T;
     REQUIRE(stephen::accepts(T, w));
-    REQUIRE(!stephen::accepts(T, "abbbd"_w));
+    REQUIRE(!stephen::accepts(T, to_word("abbbd")));
     REQUIRE(stephen::number_of_words_accepted(T) == 1);
     REQUIRE(stephen::number_of_left_factors(T) == w.size() + 1);
     REQUIRE(stephen::accepts(S, w));
-    REQUIRE(!stephen::accepts(S, "abbbd"_w));
+    REQUIRE(!stephen::accepts(S, to_word("abbbd")));
     REQUIRE(stephen::number_of_words_accepted(S) == 1);
     REQUIRE(stephen::number_of_left_factors(S) == w.size() + 1);
 
     decltype(S) V;
     V = std::move(S);
     REQUIRE(stephen::accepts(V, w));
-    REQUIRE(!stephen::accepts(V, "abbbd"_w));
+    REQUIRE(!stephen::accepts(V, to_word("abbbd")));
     REQUIRE(stephen::number_of_words_accepted(V) == 1);
     REQUIRE(stephen::number_of_left_factors(V) == w.size() + 1);
     REQUIRE(V.word() == w);
@@ -638,21 +653,23 @@ namespace libsemigroups {
       "011",
       "C(4) monoid normal form (test_case_gap_smalloverlap_49)",
       "[stephen][quick]") {
-    Presentation<std::string> p;
-    p.alphabet("abcdefgh");
+    ReportGuard             rg(false);
+    ToWord                  to_word("abcdefgh");
+    Presentation<word_type> p;
+    p.alphabet(to_word("abcdefgh"));
 
-    presentation::add_rule(p, "abcd", "ce");
-    presentation::add_rule(p, "df", "hd");
-    verify_c4_equal_to(p, "abchd", "abcdf");
-    verify_c4_equal_to(p, "abchd", "abchd");
-    verify_c4_equal_to(p, "abchdf", "abchhd");
-    verify_c4_equal_to(p, "abchd", "cef");
-    verify_c4_equal_to(p, "cef", "abchd");
-    verify_c4_not_equal_to(p, "abchf", "abcdf");
+    presentation::add_rule(p, to_word("abcd"), to_word("ce"));
+    presentation::add_rule(p, to_word("df"), to_word("hd"));
+    verify_c4_equal_to(p, to_word("abchd"), to_word("abcdf"));
+    verify_c4_equal_to(p, to_word("abchd"), to_word("abchd"));
+    verify_c4_equal_to(p, to_word("abchdf"), to_word("abchhd"));
+    verify_c4_equal_to(p, to_word("abchd"), to_word("cef"));
+    verify_c4_equal_to(p, to_word("cef"), to_word("abchd"));
+    verify_c4_not_equal_to(p, to_word("abchf"), to_word("abcdf"));
 
-    verify_c4_equal_to(p, "hdfabce", "dffababcd");
+    verify_c4_equal_to(p, to_word("hdfabce"), to_word("dffababcd"));
 
-    verify_c4_normal_form(p, "hdfabce", "dffababcd");
+    verify_c4_normal_form(p, to_word("hdfabce"), to_word("dffababcd"));
   }
 
   LIBSEMIGROUPS_TEST_CASE(
@@ -660,14 +677,16 @@ namespace libsemigroups {
       "012",
       "C(4) monoid normal form (test_case_gap_smalloverlap_63)",
       "[stephen][quick]") {
-    Presentation<std::string> p;
-    p.alphabet("abcdefgh");
+    ReportGuard             rg(false);
+    ToWord                  to_word("abcdefgh");
+    Presentation<word_type> p;
+    p.alphabet(to_word("abcdefgh"));
 
-    presentation::add_rule(p, "afh", "bgh");
-    presentation::add_rule(p, "hc", "d");
-    verify_c4_equal_to(p, "afd", "bgd");
-    verify_c4_equal_to(p, "bghcafhbgd", "afdafhafd");
-    verify_c4_normal_form(p, "bghcafhbgd", "afdafhafd");
+    presentation::add_rule(p, to_word("afh"), to_word("bgh"));
+    presentation::add_rule(p, to_word("hc"), to_word("d"));
+    verify_c4_equal_to(p, to_word("afd"), to_word("bgd"));
+    verify_c4_equal_to(p, to_word("bghcafhbgd"), to_word("afdafhafd"));
+    verify_c4_normal_form(p, to_word("bghcafhbgd"), to_word("afdafhafd"));
   }
 
   LIBSEMIGROUPS_TEST_CASE(
@@ -675,50 +694,58 @@ namespace libsemigroups {
       "013",
       "C(4) monoid equal to (test_case_gap_smalloverlap_70)",
       "[stephen][quick]") {
-    Presentation<std::string> p;
-    p.alphabet("abcdefghij");
+    ReportGuard             rg(false);
+    ToWord                  to_word("abcdefghij");
+    Presentation<word_type> p;
+    p.alphabet(to_word("abcdefghij"));
 
-    presentation::add_rule(p, "afh", "bgh");
-    presentation::add_rule(p, "hc", "de");
-    presentation::add_rule(p, "ei", "j");
+    presentation::add_rule(p, to_word("afh"), to_word("bgh"));
+    presentation::add_rule(p, to_word("hc"), to_word("de"));
+    presentation::add_rule(p, to_word("ei"), to_word("j"));
 
-    verify_c4_equal_to(p, "afdj", "bgdj");
-    verify_c4_not_equal_to(p, "jjjjjjjjjjjjjjjjjjjjjjj", "b");
+    verify_c4_equal_to(p, to_word("afdj"), to_word("bgdj"));
+    verify_c4_not_equal_to(p, to_word("jjjjjjjjjjjjjjjjjjjjjjj"), to_word("b"));
   }
 
   LIBSEMIGROUPS_TEST_CASE("Stephen",
                           "014",
                           "C(4) monoid normal form (test_case_ex_3_13_14)",
                           "[stephen][quick]") {
-    Presentation<std::string> p;
-    p.alphabet("abcd");
-    presentation::add_rule(p, "abbba", "cdc");
-    verify_c4_normal_form(p, "cdcdcabbbabbbabbcd", "abbbadcabbbabbbabbcd");
-    verify_c4_equal_to(p, "cdcdcabbbabbbabbcd", "abbbadcabbbabbbabbcd");
+    ReportGuard             rg(false);
+    ToWord                  to_word("abcd");
+    Presentation<word_type> p;
+    p.alphabet(to_word("abcd"));
+    presentation::add_rule(p, to_word("abbba"), to_word("cdc"));
+    verify_c4_normal_form(
+        p, to_word("cdcdcabbbabbbabbcd"), to_word("abbbadcabbbabbbabbcd"));
+    verify_c4_equal_to(
+        p, to_word("cdcdcabbbabbbabbcd"), to_word("abbbadcabbbabbbabbcd"));
 
-    verify_c4_equal_to(p, "abbbadcbbba", "cdabbbcdc");
-    verify_c4_equal_to(p, "cdabbbcdc", "cdabbbcdc");
-    verify_c4_normal_form(p, "cdabbbcdc", "abbbadcbbba");
+    verify_c4_equal_to(p, to_word("abbbadcbbba"), to_word("cdabbbcdc"));
+    verify_c4_equal_to(p, to_word("cdabbbcdc"), to_word("cdabbbcdc"));
+    verify_c4_normal_form(p, to_word("cdabbbcdc"), to_word("abbbadcbbba"));
   }
 
   LIBSEMIGROUPS_TEST_CASE("Stephen",
                           "015",
                           "C(4) monoid normal form (test_case_ex_3_15)",
                           "[stephen][quick]") {
-    Presentation<std::string> p;
-    p.alphabet("abcd");
-    presentation::add_rule(p, "aabc", "acba");
-    std::string original = "cbacbaabcaabcacbacba";
-    std::string expected = "cbaabcabcaabcaabcabc";
+    ReportGuard             rg(false);
+    ToWord                  to_word("abcd");
+    Presentation<word_type> p;
+    p.alphabet(to_word("abcd"));
+    presentation::add_rule(p, to_word("aabc"), to_word("acba"));
+    word_type original = to_word("cbacbaabcaabcacbacba");
+    word_type expected = to_word("cbaabcabcaabcaabcabc");
 
-    verify_c4_equal_to(p, "cbaabcabcaabcaabccba", original);
+    verify_c4_equal_to(p, to_word("cbaabcabcaabcaabccba"), original);
     verify_c4_equal_to(p, original, expected);
     verify_c4_equal_to(p, expected, original);
-    verify_c4_equal_to(p, "cbaabcabcaabcaabccba", expected);
+    verify_c4_equal_to(p, to_word("cbaabcabcaabcaabccba"), expected);
 
-    verify_c4_equal_to(p, original, "cbaabcabcaabcaabccba");
+    verify_c4_equal_to(p, original, to_word("cbaabcabcaabcaabccba"));
 
-    verify_c4_equal_to(p, expected, "cbaabcabcaabcaabccba");
+    verify_c4_equal_to(p, expected, to_word("cbaabcabcaabcaabccba"));
     verify_c4_normal_form(p, original, expected);
   }
 
@@ -726,11 +753,13 @@ namespace libsemigroups {
                           "016",
                           "C(4) monoid normal form (test_case_ex_3_16)",
                           "[stephen][quick]") {
-    Presentation<std::string> p;
-    p.alphabet("abcd");
-    presentation::add_rule(p, "abcd", "acca");
-    std::string original = "bbcabcdaccaccabcddd";
-    std::string expected = "bbcabcdabcdbcdbcddd";
+    ReportGuard             rg(false);
+    ToWord                  to_word("abcd");
+    Presentation<word_type> p;
+    p.alphabet(to_word("abcd"));
+    presentation::add_rule(p, to_word("abcd"), to_word("acca"));
+    word_type original = to_word("bbcabcdaccaccabcddd");
+    word_type expected = to_word("bbcabcdabcdbcdbcddd");
 
     verify_c4_equal_to(p, original, expected);
     verify_c4_equal_to(p, expected, original);
@@ -743,203 +772,238 @@ namespace libsemigroups {
                           "017",
                           "C(4) monoid normal form (test_case_mt_3)",
                           "[stephen][quick]") {
-    Presentation<std::string> p;
-    p.alphabet("abcd");
-    presentation::add_rule(p, "abcd", "accca");
+    ReportGuard             rg(false);
+    ToWord                  to_word("abcd");
+    Presentation<word_type> p;
+    p.alphabet(to_word("abcd"));
+    presentation::add_rule(p, to_word("abcd"), to_word("accca"));
 
-    verify_c4_normal_form(p, "bbcabcdaccaccabcddd", "bbcabcdaccaccabcddd");
-    verify_c4_equal_to(p, "bbcabcdaccaccabcddd", "bbcabcdaccaccabcddd");
+    verify_c4_normal_form(
+        p, to_word("bbcabcdaccaccabcddd"), to_word("bbcabcdaccaccabcddd"));
+    verify_c4_equal_to(
+        p, to_word("bbcabcdaccaccabcddd"), to_word("bbcabcdaccaccabcddd"));
   }
 
   LIBSEMIGROUPS_TEST_CASE("Stephen",
                           "018",
                           "C(4) monoid normal form (test_case_mt_5)",
                           "[stephen][quick]") {
-    Presentation<std::string> p;
-    p.alphabet("abc");
-    presentation::add_rule(p, "ac", "cbbbbc");
+    ReportGuard             rg(false);
+    ToWord                  to_word("abc");
+    Presentation<word_type> p;
+    p.alphabet(to_word("abc"));
+    presentation::add_rule(p, to_word("ac"), to_word("cbbbbc"));
 
-    verify_c4_normal_form(p, "acbbbbc", "aac");
-    verify_c4_equal_to(p, "acbbbbc", "aac");
+    verify_c4_normal_form(p, to_word("acbbbbc"), to_word("aac"));
+    verify_c4_equal_to(p, to_word("acbbbbc"), to_word("aac"));
   }
 
   LIBSEMIGROUPS_TEST_CASE("Stephen",
                           "019",
                           "C(4) monoid normal form (test_case_mt_6)",
                           "[stephen][quick]") {
-    Presentation<std::string> p;
-    p.alphabet("abc");
-    presentation::add_rule(p, "ccab", "cbac");
+    ReportGuard             rg(false);
+    ToWord                  to_word("abc");
+    Presentation<word_type> p;
+    p.alphabet(to_word("abc"));
+    presentation::add_rule(p, to_word("ccab"), to_word("cbac"));
 
-    verify_c4_normal_form(p, "bacbaccabccabcbacbac", "bacbacbaccbaccbacbac");
-    verify_c4_equal_to(p, "bacbaccabccabcbacbac", "bacbacbaccbaccbacbac");
-    verify_c4_normal_form(p, "ccabcbaccab", "cbaccbacbac");
-    verify_c4_equal_to(p, "ccabcbaccab", "cbaccbacbac");
+    verify_c4_normal_form(
+        p, to_word("bacbaccabccabcbacbac"), to_word("bacbacbaccbaccbacbac"));
+    verify_c4_equal_to(
+        p, to_word("bacbaccabccabcbacbac"), to_word("bacbacbaccbaccbacbac"));
+    verify_c4_normal_form(p, to_word("ccabcbaccab"), to_word("cbaccbacbac"));
+    verify_c4_equal_to(p, to_word("ccabcbaccab"), to_word("cbaccbacbac"));
   }
 
   LIBSEMIGROUPS_TEST_CASE("Stephen",
                           "020",
                           "C(4) monoid normal form (test_case_mt_10)",
                           "[stephen][quick]") {
-    Presentation<std::string> p;
-    p.alphabet("abcdefghij");
-    presentation::add_rule(p, "afh", "bgh");
-    presentation::add_rule(p, "hc", "de");
-    presentation::add_rule(p, "ei", "j");
+    ReportGuard             rg(false);
+    ToWord                  to_word("abcdefghij");
+    Presentation<word_type> p;
+    p.alphabet(to_word("abcdefghij"));
+    presentation::add_rule(p, to_word("afh"), to_word("bgh"));
+    presentation::add_rule(p, to_word("hc"), to_word("de"));
+    presentation::add_rule(p, to_word("ei"), to_word("j"));
 
-    verify_c4_normal_form(p, "bgdj", "afdei");
-    verify_c4_equal_to(p, "bgdj", "afdei");
+    verify_c4_normal_form(p, to_word("bgdj"), to_word("afdei"));
+    verify_c4_equal_to(p, to_word("bgdj"), to_word("afdei"));
   }
 
   LIBSEMIGROUPS_TEST_CASE("Stephen",
                           "021",
                           "C(4) monoid normal form (test_case_mt_13)",
                           "[stephen][quick]") {
-    Presentation<std::string> p;
-    p.alphabet("abcd");
-    presentation::add_rule(p, "abcd", "dcba");
+    ReportGuard             rg(false);
+    ToWord                  to_word("abcd");
+    Presentation<word_type> p;
+    p.alphabet(to_word("abcd"));
+    presentation::add_rule(p, to_word("abcd"), to_word("dcba"));
 
-    verify_c4_normal_form(p, "dcbdcba", "abcdbcd");
-    verify_c4_equal_to(p, "dcbdcba", "abcdbcd");
+    verify_c4_normal_form(p, to_word("dcbdcba"), to_word("abcdbcd"));
+    verify_c4_equal_to(p, to_word("dcbdcba"), to_word("abcdbcd"));
   }
 
   LIBSEMIGROUPS_TEST_CASE("Stephen",
                           "022",
                           "C(4) monoid normal form (test_case_mt_14)",
                           "[stephen][quick]") {
-    Presentation<std::string> p;
-    p.alphabet("abcd");
-    presentation::add_rule(p, "abca", "dcbd");
+    ReportGuard             rg(false);
+    ToWord                  to_word("abcd");
+    Presentation<word_type> p;
+    p.alphabet(to_word("abcd"));
+    presentation::add_rule(p, to_word("abca"), to_word("dcbd"));
 
-    verify_c4_normal_form(p, "dcbabca", "abcacbd");
-    verify_c4_equal_to(p, "dcbabca", "abcacbd");
+    verify_c4_normal_form(p, to_word("dcbabca"), to_word("abcacbd"));
+    verify_c4_equal_to(p, to_word("dcbabca"), to_word("abcacbd"));
   }
 
   LIBSEMIGROUPS_TEST_CASE("Stephen",
                           "023",
                           "C(4) monoid normal form (test_case_mt_15)",
                           "[stephen][quick]") {
-    Presentation<std::string> p;
-    p.alphabet("abcd");
-    presentation::add_rule(p, "abcd", "dcba");
-    presentation::add_rule(p, "adda", "dbbd");
+    ReportGuard             rg(false);
+    ToWord                  to_word("abcd");
+    Presentation<word_type> p;
+    p.alphabet(to_word("abcd"));
+    presentation::add_rule(p, to_word("abcd"), to_word("dcba"));
+    presentation::add_rule(p, to_word("adda"), to_word("dbbd"));
 
-    verify_c4_normal_form(p, "dbbabcd", "addacba");
-    verify_c4_equal_to(p, "dbbabcd", "addacba");
+    verify_c4_normal_form(p, to_word("dbbabcd"), to_word("addacba"));
+    verify_c4_equal_to(p, to_word("dbbabcd"), to_word("addacba"));
   }
 
   LIBSEMIGROUPS_TEST_CASE("Stephen",
                           "024",
                           "C(4) monoid normal form (test_case_mt_16)",
                           "[stephen][quick]") {
-    Presentation<std::string> p;
-    p.alphabet("abcdefg");
-    presentation::add_rule(p, "abcd", "acca");
-    presentation::add_rule(p, "gf", "ge");
+    ReportGuard             rg(false);
+    ToWord                  to_word("abcdefg");
+    Presentation<word_type> p;
+    p.alphabet(to_word("abcdefg"));
+    presentation::add_rule(p, to_word("abcd"), to_word("acca"));
+    presentation::add_rule(p, to_word("gf"), to_word("ge"));
 
-    verify_c4_normal_form(p, "accabcdgf", "abcdbcdge");
-    verify_c4_equal_to(p, "accabcdgf", "abcdbcdge");
+    verify_c4_normal_form(p, to_word("accabcdgf"), to_word("abcdbcdge"));
+    verify_c4_equal_to(p, to_word("accabcdgf"), to_word("abcdbcdge"));
   }
 
   LIBSEMIGROUPS_TEST_CASE("Stephen",
                           "025",
                           "C(4) monoid normal form (test_case_mt_17)",
                           "[stephen][quick]") {
-    Presentation<std::string> p;
-    p.alphabet("abcd");
-    presentation::add_rule(
-        p, "ababbabbbabbbb", "abbbbbabbbbbbabbbbbbbabbbbbbbb");
-    presentation::add_rule(
-        p, "cdcddcdddcdddd", "cdddddcddddddcdddddddcdddddddd");
+    ReportGuard             rg(false);
+    ToWord                  to_word("abcd");
+    Presentation<word_type> p;
+    p.alphabet(to_word("abcd"));
+    presentation::add_rule(p,
+                           to_word("ababbabbbabbbb"),
+                           to_word("abbbbbabbbbbbabbbbbbbabbbbbbbb"));
+    presentation::add_rule(p,
+                           to_word("cdcddcdddcdddd"),
+                           to_word("cdddddcddddddcdddddddcdddddddd"));
 
-    verify_c4_normal_form(
-        p, "abbbacdddddcddddddcdddddddcdddddddd", "abbbacdcddcdddcdddd");
-    verify_c4_equal_to(
-        p, "abbbacdddddcddddddcdddddddcdddddddd", "abbbacdcddcdddcdddd");
+    verify_c4_normal_form(p,
+                          to_word("abbbacdddddcddddddcdddddddcdddddddd"),
+                          to_word("abbbacdcddcdddcdddd"));
+    verify_c4_equal_to(p,
+                       to_word("abbbacdddddcddddddcdddddddcdddddddd"),
+                       to_word("abbbacdcddcdddcdddd"));
   }
 
   LIBSEMIGROUPS_TEST_CASE("Stephen",
                           "026",
                           "C(4) monoid normal form (test_case_weak_1)",
                           "[stephen][quick]") {
-    Presentation<std::string> p;
-    p.alphabet("abcd");
-    presentation::add_rule(p, "acba", "aabc");
-    presentation::add_rule(p, "acba", "dbbbd");
+    ReportGuard             rg(false);
+    ToWord                  to_word("abcd");
+    Presentation<word_type> p;
+    p.alphabet(to_word("abcd"));
+    presentation::add_rule(p, to_word("acba"), to_word("aabc"));
+    presentation::add_rule(p, to_word("acba"), to_word("dbbbd"));
 
-    verify_c4_equal_to(p, "aaabc", "adbbbd");
-    verify_c4_equal_to(p, "adbbbd", "aaabc");
+    verify_c4_equal_to(p, to_word("aaabc"), to_word("adbbbd"));
+    verify_c4_equal_to(p, to_word("adbbbd"), to_word("aaabc"));
 
-    verify_c4_equal_to(p, "aaabcadbbbd", "adbbbdadbbbd");
-    verify_c4_equal_to(p, "aaabcaaabc", "adbbbdadbbbd");
-    verify_c4_equal_to(p, "acba", "dbbbd");
-    verify_c4_equal_to(p, "acbabbbd", "aabcbbbd");
-    verify_c4_equal_to(p, "aabcbbbd", "acbabbbd");
+    verify_c4_equal_to(p, to_word("aaabcadbbbd"), to_word("adbbbdadbbbd"));
+    verify_c4_equal_to(p, to_word("aaabcaaabc"), to_word("adbbbdadbbbd"));
+    verify_c4_equal_to(p, to_word("acba"), to_word("dbbbd"));
+    verify_c4_equal_to(p, to_word("acbabbbd"), to_word("aabcbbbd"));
+    verify_c4_equal_to(p, to_word("aabcbbbd"), to_word("acbabbbd"));
   }
 
   LIBSEMIGROUPS_TEST_CASE("Stephen",
                           "027",
                           "C(4) monoid normal form (test_case_weak_2)",
                           "[stephen][quick]") {
-    Presentation<std::string> p;
-    p.alphabet("abcd");
-    presentation::add_rule(p, "acba", "aabc");
-    presentation::add_rule(p, "acba", "adbd");
-    verify_c4_equal_to(p, "acbacba", "aabcabc");
-    verify_c4_normal_form(p, "acbacba", "aabcabc");
-    verify_c4_equal_to(p, "aabcabc", "acbacba");
-    verify_c4_normal_form(p, "aabcabc", "aabcabc");
+    ReportGuard             rg(false);
+    ToWord                  to_word("abcd");
+    Presentation<word_type> p;
+    p.alphabet(to_word("abcd"));
+    presentation::add_rule(p, to_word("acba"), to_word("aabc"));
+    presentation::add_rule(p, to_word("acba"), to_word("adbd"));
+    verify_c4_equal_to(p, to_word("acbacba"), to_word("aabcabc"));
+    verify_c4_normal_form(p, to_word("acbacba"), to_word("aabcabc"));
+    verify_c4_equal_to(p, to_word("aabcabc"), to_word("acbacba"));
+    verify_c4_normal_form(p, to_word("aabcabc"), to_word("aabcabc"));
   }
 
   LIBSEMIGROUPS_TEST_CASE("Stephen",
                           "028",
                           "C(4) monoid normal form (test_case_weak_3)",
                           "[stephen][quick]") {
-    Presentation<std::string> p;
-    p.alphabet("abcde");
-    presentation::add_rule(p, "bceac", "aeebbc");
-    presentation::add_rule(p, "aeebbc", "dabcd");
-    verify_c4_normal_form(p, "bceacdabcd", "aeebbcaeebbc");
-    verify_c4_normal_form(p, "aeebbcaeebbc", "aeebbcaeebbc");
+    ReportGuard             rg(false);
+    ToWord                  to_word("abcde");
+    Presentation<word_type> p;
+    p.alphabet(to_word("abcde"));
+    presentation::add_rule(p, to_word("bceac"), to_word("aeebbc"));
+    presentation::add_rule(p, to_word("aeebbc"), to_word("dabcd"));
+    verify_c4_normal_form(p, to_word("bceacdabcd"), to_word("aeebbcaeebbc"));
+    verify_c4_normal_form(p, to_word("aeebbcaeebbc"), to_word("aeebbcaeebbc"));
   }
 
   LIBSEMIGROUPS_TEST_CASE("Stephen",
                           "029",
                           "C(4) monoid normal form (test_case_weak_4)",
                           "[stephen][quick]") {
-    Presentation<std::string> p;
-    p.alphabet("abcd");
-    presentation::add_rule(p, "acba", "aabc");
-    presentation::add_rule(p, "acba", "dbbd");
-    verify_c4_normal_form(p, "bbacbcaaabcbbd", "bbacbcaaabcbbd");
-    verify_c4_normal_form(p, "acbacba", "aabcabc");
-    verify_c4_normal_form(p, "aabcabc", "aabcabc");
+    ReportGuard             rg(false);
+    ToWord                  to_word("abcd");
+    Presentation<word_type> p;
+    p.alphabet(to_word("abcd"));
+    presentation::add_rule(p, to_word("acba"), to_word("aabc"));
+    presentation::add_rule(p, to_word("acba"), to_word("dbbd"));
+    verify_c4_normal_form(
+        p, to_word("bbacbcaaabcbbd"), to_word("bbacbcaaabcbbd"));
+    verify_c4_normal_form(p, to_word("acbacba"), to_word("aabcabc"));
+    verify_c4_normal_form(p, to_word("aabcabc"), to_word("aabcabc"));
   }
 
   LIBSEMIGROUPS_TEST_CASE("Stephen",
                           "030",
                           "C(4) monoid normal form (test_case_weak_5)",
                           "[stephen][quick]") {
-    Presentation<std::string> p;
-    p.alphabet("abcd");
-    presentation::add_rule(p, "acba", "aabc");
-    presentation::add_rule(p, "acba", "adbd");
-    verify_c4_normal_form(p, "acbacba", "aabcabc");
-    verify_c4_normal_form(p, "aabcabc", "aabcabc");
+    ReportGuard             rg(false);
+    ToWord                  to_word("abcd");
+    Presentation<word_type> p;
+    p.alphabet(to_word("abcd"));
+    presentation::add_rule(p, to_word("acba"), to_word("aabc"));
+    presentation::add_rule(p, to_word("acba"), to_word("adbd"));
+    verify_c4_normal_form(p, to_word("acbacba"), to_word("aabcabc"));
+    verify_c4_normal_form(p, to_word("aabcabc"), to_word("aabcabc"));
   }
 
   LIBSEMIGROUPS_TEST_CASE("Stephen",
                           "031",
                           "Test behaviour when uninitialised",
                           "[stephen][quick]") {
+    ReportGuard                      rg(false);
     Stephen<Presentation<word_type>> S;
 
     REQUIRE_THROWS_AS(S.accept_state(), LibsemigroupsException);
-    REQUIRE_THROWS_AS(stephen::cbegin_words_accepted(S),
-                      LibsemigroupsException);
-    REQUIRE_THROWS_AS(stephen::cend_words_accepted(S), LibsemigroupsException);
-    REQUIRE_THROWS_AS(stephen::cbegin_left_factors(S), LibsemigroupsException);
-    REQUIRE_THROWS_AS(stephen::cend_left_factors(S), LibsemigroupsException);
+    REQUIRE_THROWS_AS(S.word(), LibsemigroupsException);
+    REQUIRE_THROWS_AS(S.word_graph(), LibsemigroupsException);
 
     REQUIRE_THROWS_AS(stephen::is_left_factor(S, {0, 0, 0}),
                       LibsemigroupsException);
@@ -949,14 +1013,40 @@ namespace libsemigroups {
     REQUIRE_THROWS_AS(stephen::number_of_words_accepted(S),
                       LibsemigroupsException);
     REQUIRE_THROWS_AS(S.run(), LibsemigroupsException);
+
+    REQUIRE_THROWS_AS(stephen::words_accepted(S), LibsemigroupsException);
+    REQUIRE_THROWS_AS(stephen::left_factors(S), LibsemigroupsException);
+
+    Presentation<word_type> p;
+    p.alphabet(01_w);
+    presentation::add_rule(p, 01_w, 10_w);
+    S.init(p);
+
+    REQUIRE_THROWS_AS(S.accept_state(), LibsemigroupsException);
+    REQUIRE_THROWS_AS(S.word(), LibsemigroupsException);
+    REQUIRE_THROWS_AS(S.word_graph(), LibsemigroupsException);
+
+    REQUIRE_THROWS_AS(stephen::is_left_factor(S, {0, 0, 0}),
+                      LibsemigroupsException);
+    REQUIRE_THROWS_AS(stephen::accepts(S, {0, 0, 0}), LibsemigroupsException);
+    REQUIRE_THROWS_AS(stephen::number_of_left_factors(S),
+                      LibsemigroupsException);
+    REQUIRE_THROWS_AS(stephen::number_of_words_accepted(S),
+                      LibsemigroupsException);
+    REQUIRE_THROWS_AS(S.run(), LibsemigroupsException);
+
+    REQUIRE_THROWS_AS(stephen::words_accepted(S), LibsemigroupsException);
+    REQUIRE_THROWS_AS(stephen::left_factors(S), LibsemigroupsException);
   }
 
   LIBSEMIGROUPS_TEST_CASE("Stephen",
                           "034",
-                          "(inverse presentation) "
-                          "step_hen/tests/test_schutzenbergergraph.py:test_001",
+                          "(inverse) "
+                          "step_hen test_schutzenbergergraph 001 "
+                          "(string)",
                           "[stephen][quick]") {
-    ToWord to_word("abcABC");
+    ReportGuard rg(false);
+    ToWord      to_word("abcABC");
 
     InversePresentation<word_type> p;
     p.alphabet(to_word("abcABC"));
@@ -964,59 +1054,61 @@ namespace libsemigroups {
 
     auto S = Stephen(std::move(p));
 
-    S.set_word(to_word("aBcAbC")).run();
+    stephen::set_word(S, to_word("aBcAbC")).run();
 
     REQUIRE(S.finished());
     REQUIRE(S.word_graph().number_of_nodes() == 7);
     REQUIRE(!stephen::accepts(S, to_word("BaAbaBcAbC")));
     REQUIRE(stephen::accepts(S, to_word("aBcCbBcAbC")));
 
-    S.set_word(to_word("aBcCbBcAbC"));
+    stephen::set_word(S, to_word("aBcCbBcAbC"));
     REQUIRE(stephen::accepts(S, to_word("aBcAbC")));
 
-    S.set_word(to_word("BaAbaBcAbC"));
+    stephen::set_word(S, to_word("BaAbaBcAbC"));
     REQUIRE(stephen::accepts(S, to_word("aBcAbC")));
   }
 
   LIBSEMIGROUPS_TEST_CASE("Stephen",
                           "035",
-                          "(inverse presentation) "
-                          "step_hen/tests/test_schutzenbergergraph.py:test_001",
+                          "(inverse) "
+                          "step_hen test_schutzenbergergraph 001",
                           "[stephen][quick]") {
-    InversePresentation<std::string> p;
-    p.alphabet("abcABC");
-    p.inverses_no_checks("ABCabc");
-    ToWord to_word(p.alphabet());
+    ReportGuard                    rg(false);
+    ToWord                         to_word("abcABC");
+    InversePresentation<word_type> p;
+    p.alphabet(to_word("abcABC"));
+    p.inverses_no_checks(to_word("ABCabc"));
 
     Stephen S(p);
     REQUIRE(to_word("aBcAbC") == 042315_w);
 
-    S.set_word(to_word("aBcAbC")).run();
+    stephen::set_word(S, to_word("aBcAbC")).run();
 
     REQUIRE(S.finished());
     REQUIRE(S.word_graph().number_of_nodes() == 7);
     REQUIRE(!stephen::accepts(S, to_word("BaAbaBcAbC")));
     REQUIRE(stephen::accepts(S, to_word("aBcCbBcAbC")));
 
-    S.set_word(to_word("aBcCbBcAbC"));
+    stephen::set_word(S, to_word("aBcCbBcAbC"));
     REQUIRE(stephen::accepts(S, to_word("aBcAbC")));
 
-    S.set_word(to_word("BaAbaBcAbC"));
+    stephen::set_word(S, to_word("BaAbaBcAbC"));
     REQUIRE(stephen::accepts(S, to_word("aBcAbC")));
   }
 
   LIBSEMIGROUPS_TEST_CASE("Stephen",
                           "036",
-                          "(inverse presentation) "
-                          "step_hen/tests/test_schutzenbergergraph.py:test_002",
+                          "(inverse) "
+                          "step_hen test_schutzenbergergraph 002",
                           "[stephen][quick]") {
+    ReportGuard                    rg(false);
     ToWord                         to_word("abcABC");
     InversePresentation<word_type> p;
     p.alphabet(to_word("abcABC"));
     p.inverses_no_checks(to_word("ABCabc"));
 
     auto S = Stephen(p);
-    S.set_word(to_word("aBbcABAabCc")).run();
+    stephen::set_word(S, to_word("aBbcABAabCc")).run();
 
     REQUIRE(S.accept_state() == 4);
     REQUIRE(word_graph::follow_path(S.word_graph(), 0, S.word()) == 4);
@@ -1025,28 +1117,30 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("Stephen",
                           "037",
-                          "(inverse presentation) "
-                          "step_hen/tests/test_schutzenbergergraph.py:test_003",
+                          "(inverse) "
+                          "step_hen test_schutzenbergergraph 003",
                           "[stephen][quick]") {
+    ReportGuard                    rg(false);
     ToWord                         to_word("xyXY");
     InversePresentation<word_type> p;
     p.alphabet(to_word("xyXY"));
     p.inverses_no_checks(to_word("XYxy"));
 
     auto S = Stephen(p);
-    S.set_word(to_word("xxxyyy")).run();
+    stephen::set_word(S, to_word("xxxyyy")).run();
 
     REQUIRE(stephen::accepts(S, to_word("xxxyyyYYYXXXxxxyyy")));
-    S.set_word(to_word("xxxyyyYYYXXXxxxyyy"));
+    stephen::set_word(S, to_word("xxxyyyYYYXXXxxxyyy"));
     REQUIRE(stephen::accepts(S, to_word("xxxyyy")));
     REQUIRE(!stephen::accepts(S, to_word("xxx")));
   }
 
   LIBSEMIGROUPS_TEST_CASE("Stephen",
                           "038",
-                          "(inverse presentation) "
-                          "step_hen/tests/test_schutzenbergergraph.py:test_004",
+                          "(inverse) "
+                          "step_hen test_schutzenbergergraph 004",
                           "[stephen][quick]") {
+    ReportGuard                    rg(false);
     ToWord                         to_word("xyXY");
     InversePresentation<word_type> p;
     p.alphabet(to_word("xyXY"));
@@ -1054,8 +1148,7 @@ namespace libsemigroups {
     presentation::add_rule(p, to_word("xyXxyX"), to_word("xyX"));
 
     auto S = Stephen(p);
-    // FIXME seems like every word is accepted when we don't set the word
-    S.set_word(to_word("xyXyy"));
+    stephen::set_word(S, to_word("xyXyy"));
     std::string ys = "";
     for (size_t i = 0; i < 10; ++i) {
       REQUIRE(stephen::accepts(S, to_word(std::string("x") + ys + "Xyy")));
@@ -1083,9 +1176,10 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("Stephen",
                           "039",
-                          "(inverse presentation) "
-                          "step_hen/tests/test_schutzenbergergraph.py:test_005",
+                          "(inverse) "
+                          "step_hen test_schutzenbergergraph 005",
                           "[stephen][quick]") {
+    ReportGuard                    rg(false);
     ToWord                         to_word("xyXY");
     InversePresentation<word_type> p;
     p.alphabet(to_word("xyXY"));
@@ -1094,7 +1188,7 @@ namespace libsemigroups {
     presentation::add_rule(p, to_word("xyxy"), to_word("xy"));
 
     auto S = Stephen(p);
-    S.set_word(to_word("xyXyy"));
+    stephen::set_word(S, to_word("xyXyy"));
     REQUIRE(stephen::accepts(S, to_word("y")));
     REQUIRE(stephen::accepts(S, to_word("xxxxxxxxxxxxx")));
     REQUIRE(stephen::accepts(S, to_word("xyXxyxyxyxyxyXyy")));
@@ -1103,9 +1197,10 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("Stephen",
                           "040",
-                          "(inverse presentation) "
-                          "step_hen/tests/test_schutzenbergergraph.py:test_006",
+                          "(inverse) "
+                          "step_hen test_schutzenbergergraph 006",
                           "[stephen][quick]") {
+    ReportGuard                    rg(false);
     ToWord                         to_word("abcABC");
     InversePresentation<word_type> p;
     p.alphabet(to_word("abcABC"));
@@ -1115,7 +1210,7 @@ namespace libsemigroups {
     presentation::add_rule(p, to_word("bc"), to_word("cb"));
 
     auto S = Stephen(p);
-    S.set_word(to_word("BaAbaBcAbC"));
+    stephen::set_word(S, to_word("BaAbaBcAbC"));
     S.run();
     REQUIRE(S.word_graph().number_of_nodes() == 7);
     REQUIRE(S.word_graph()
@@ -1131,7 +1226,8 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Stephen", "041", "corner case", "[stephen][quick]") {
-    ToWord to_word("x");
+    ReportGuard rg(false);
+    ToWord      to_word("x");
 
     Presentation<word_type> p;
     p.contains_empty_word(true);
@@ -1140,7 +1236,7 @@ namespace libsemigroups {
     presentation::add_rule(p, to_word("xxxx"), to_word("xx"));
 
     Stephen S(p);
-    S.set_word(""_w);
+    stephen::set_word(S, ""_w);
     S.run();
     REQUIRE(S.accept_state() == 0);
     REQUIRE(S.word_graph().number_of_nodes() == 1);
@@ -1148,24 +1244,26 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Stephen", "042", "empty word", "[stephen][quick]") {
-    auto p = presentation::examples::symmetric_inverse_monoid(4);
+    ReportGuard rg(false);
+    auto        p = presentation::examples::symmetric_inverse_monoid(4);
     REQUIRE(p.contains_empty_word());
     REQUIRE(p.alphabet().size() == 4);
 
     auto s = Stephen(p);
-    s.set_word({}).run();
+    stephen::set_word(s, ""_w).run();
     REQUIRE(s.word_graph().number_of_nodes() == 24);
-    s.set_word(0_w).run();
+    stephen::set_word(s, 0_w).run();
     REQUIRE(s.word_graph().number_of_nodes() == 24);
-    s.set_word(1_w).run();
+    stephen::set_word(s, 1_w).run();
     REQUIRE(s.word_graph().number_of_nodes() == 24);
-    s.set_word(2_w).run();
+    stephen::set_word(s, 2_w).run();
     REQUIRE(s.word_graph().number_of_nodes() == 24);
-    s.set_word(3_w).run();
+    stephen::set_word(s, 3_w).run();
     REQUIRE(s.word_graph().number_of_nodes() == 48);
   }
 
   LIBSEMIGROUPS_TEST_CASE("Stephen", "043", "shared_ptr", "[stephen][quick]") {
+    ReportGuard                    rg(false);
     ToWord                         to_word("abcABC");
     InversePresentation<word_type> p;
     p.alphabet(to_word("abcABC"));
@@ -1175,8 +1273,8 @@ namespace libsemigroups {
     presentation::add_rule(p, to_word("bc"), to_word("cb"));
 
     auto ptr = std::make_shared<decltype(p)>(p);
-    auto S   = Stephen<std::shared_ptr<InversePresentation<word_type>>>(ptr);
-    S.set_word(to_word("BaAbaBcAbC"));
+    auto S   = Stephen<InversePresentation<word_type>>(ptr);
+    stephen::set_word(S, to_word("BaAbaBcAbC"));
     S.run();
     REQUIRE(S.word_graph().number_of_nodes() == 7);
     REQUIRE(S.word_graph()
@@ -1213,7 +1311,7 @@ namespace libsemigroups {
 
       Stephen S(p);
       auto    w = 0120112010222201_w;
-      S.set_word(w);
+      stephen::set_word(S, w);
 
       REQUIRE(stephen::number_of_words_accepted(S) == POSITIVE_INFINITY);
 
@@ -1223,47 +1321,59 @@ namespace libsemigroups {
 
         for (auto const& ww : (stephen::words_accepted(S) | rx::take(1024))) {
           REQUIRE(todd_coxeter::index_of(tc, ww) == index);
-          REQUIRE(stephen::accepts(T.set_word(ww), ww));
+          REQUIRE(stephen::accepts(stephen::set_word(T, ww), ww));
         }
       }
     }
   }
 
-  // This test fails in the fp-inverse-monoids branch and here, not sure if
-  // it's supposed to or not should look at it more carefully
-  //   LIBSEMIGROUPS_TEST_CASE("Stephen",
-  //                           "045",
-  //                           "inverse presentation",
-  //                           "[stephen][quick]") {
-  //     ToWord           to_word("abcABC");
-  //     InversePresentation<word_type> p;
-  //     p.alphabet(to_word("abcABC"));
-  //     p.inverses_no_checks(to_word("ABCabc"));
-  //     presentation::add_rule(p, to_word("ac"), to_word("ca"));
-  //     presentation::add_rule(p, to_word("ab"), to_word("ba"));
-  //     presentation::add_rule(p, to_word("bc"), to_word("cb"));
-  //     auto S = Stephen(p);
-  //     auto T = Stephen(p);
-  //
-  //     StringRange strings;
-  //     strings.letters("abcABC").first("aaaaa").last("aaaaaaaaa");
-  //
-  //     for (auto const& w : strings) {
-  //       S.set_word(to_word(w));
-  //       auto first = ++stephen::cbegin_words_accepted(S);
-  //       auto last  = first;
-  //       std::advance(last, 1024);
-  //       for (auto it = first; it != last; ++it) {
-  //         REQUIRE(stephen::accepts(S, *it));
-  //         if (!stephen::accepts(T.set_word(*it), S.word())) {
-  //           std::cout << "S.word() = " << S.word() << ", T.word() = " <<
-  //           T.word()
-  //                     << std::endl;
-  //         }
-  //         REQUIRE(S == T);
-  //       }
-  //     }
-  //   }
+  namespace {
+    std::string invert(std::string const& g) {
+      auto invert = [](char c) {
+        if (std::isupper(c)) {
+          return std::tolower(c);
+        } else {
+          return std::toupper(c);
+        }
+      };
+      auto G = g;
+      std::reverse(G.begin(), G.end());
+      std::transform(G.begin(), G.end(), G.begin(), invert);
+      return G;
+    }
+  }  // namespace
+
+  LIBSEMIGROUPS_TEST_CASE("Stephen",
+                          "045",
+                          "inverse presentation",
+                          "[stephen][standard]") {
+    using words::                  operator+;
+    ReportGuard                    rg(false);
+    ToWord                         to_word("abcABC");
+    InversePresentation<word_type> p;
+    p.alphabet(to_word("abcABC"));
+    p.inverses_no_checks(to_word("ABCabc"));
+    presentation::add_rule(p, to_word("ac"), to_word("ca"));
+    presentation::add_rule(p, to_word("ab"), to_word("ba"));
+    presentation::add_rule(p, to_word("bc"), to_word("cb"));
+    auto S = Stephen(p);
+    auto T = Stephen(p);
+
+    StringRange strings;
+    strings.alphabet("abcABC").first("aaa").last("aaaaa");
+
+    for (auto const& w : strings) {
+      stephen::set_word(S, to_word(w));
+      for (auto x : stephen::words_accepted(S) | rx::take(1024)) {
+        REQUIRE(stephen::accepts(S, x));
+        // Need to use ww^{-1}x because we are working in an inverse
+        // presentation
+        stephen::set_word(T, to_word(w) + to_word(invert(w)) + x);
+        REQUIRE(stephen::accepts(T, S.word()));
+        REQUIRE(S == T);
+      }
+    }
+  }
 
   LIBSEMIGROUPS_TEST_CASE("Stephen",
                           "046",
@@ -1276,7 +1386,7 @@ namespace libsemigroups {
 
     auto      S = Stephen(p);
     word_type w = 0120112010222201_w;
-    S.set_word(w);
+    stephen::set_word(S, w);
     REQUIRE(stephen::number_of_words_accepted(S) == POSITIVE_INFINITY);
 
     {
@@ -1297,59 +1407,59 @@ namespace libsemigroups {
                           "032",
                           "Plactic monoid",
                           "[stephen][quick]") {
-    auto p = presentation::examples::plactic_monoid(4);
+    auto rg = ReportGuard(false);
+    auto p  = presentation::examples::plactic_monoid(4);
     p.contains_empty_word(true);
     Stephen s(p);
-    s.set_word(0013122_w).run();
+    stephen::set_word(s, 0013122_w).run();
     REQUIRE(!stephen::accepts(s, 0013212_w));
   }
 
   LIBSEMIGROUPS_TEST_CASE("Stephen",
                           "033",
                           "Whyte's 4-relation full transf monoid 8",
-                          "[stephen][fail]") {
-    auto                    rg = ReportGuard(true);
+                          "[stephen][standard]") {
+    auto                    rg = ReportGuard(false);
     Presentation<word_type> p;
-    p.rules = {00_w,       {},         11_w,         {},           22_w,
-               {},         33_w,       {},           44_w,         {},
-               55_w,       {},         66_w,         {},           010101_w,
-               {},         121212_w,   {},           232323_w,     {},
-               343434_w,   {},         454545_w,     {},           565656_w,
-               {},         606060_w,   {},           01020102_w,   {},
-               01030103_w, {},         01040104_w,   {},           01050105_w,
-               {},         01060106_w, {},           12101210_w,   {},
-               12131213_w, {},         12141214_w,   {},           12151215_w,
-               {},         12161216_w, {},           23202320_w,   {},
-               23212321_w, {},         23242324_w,   {},           23252325_w,
-               {},         23262326_w, {},           34303430_w,   {},
-               34313431_w, {},         34323432_w,   {},           34353435_w,
-               {},         34363436_w, {},           45404540_w,   {},
-               45414541_w, {},         45424542_w,   {},           45434543_w,
-               {},         45464546_w, {},           56505650_w,   {},
-               56515651_w, {},         56525652_w,   {},           56535653_w,
-               {},         56545654_w, {},           60616061_w,   {},
-               60626062_w, {},         60636063_w,   {},           60646064_w,
-               {},         60656065_w, {},           071654321_w,  16543217_w,
+    p.rules = {00_w,       ""_w,       11_w,         ""_w,         22_w,
+               ""_w,       33_w,       ""_w,         44_w,         ""_w,
+               55_w,       ""_w,       66_w,         ""_w,         010101_w,
+               ""_w,       121212_w,   ""_w,         232323_w,     ""_w,
+               343434_w,   ""_w,       454545_w,     ""_w,         565656_w,
+               ""_w,       606060_w,   ""_w,         01020102_w,   ""_w,
+               01030103_w, ""_w,       01040104_w,   ""_w,         01050105_w,
+               ""_w,       01060106_w, ""_w,         12101210_w,   ""_w,
+               12131213_w, ""_w,       12141214_w,   ""_w,         12151215_w,
+               ""_w,       12161216_w, ""_w,         23202320_w,   ""_w,
+               23212321_w, ""_w,       23242324_w,   ""_w,         23252325_w,
+               ""_w,       23262326_w, ""_w,         34303430_w,   ""_w,
+               34313431_w, ""_w,       34323432_w,   ""_w,         34353435_w,
+               ""_w,       34363436_w, ""_w,         45404540_w,   ""_w,
+               45414541_w, ""_w,       45424542_w,   ""_w,         45434543_w,
+               ""_w,       45464546_w, ""_w,         56505650_w,   ""_w,
+               56515651_w, ""_w,       56525652_w,   ""_w,         56535653_w,
+               ""_w,       56545654_w, ""_w,         60616061_w,   ""_w,
+               60626062_w, ""_w,       60636063_w,   ""_w,         60646064_w,
+               ""_w,       60656065_w, ""_w,         071654321_w,  16543217_w,
                217121_w,   17171_w,    0102720107_w, 7010270102_w, 107017_w,
                70107010_w, 1217_w,     7121_w};
     p.alphabet_from_rules();
     presentation::balance_no_checks(p, 0123456_w, 0123456_w);
 
     Stephen s(p);
-    s.set_word(1217_w);
-
-    while (!s.finished()) {
-      s.run_for(std::chrono::seconds(1));
-    }
+    stephen::set_word(s, 1217_w);
+    s.run();
 
     REQUIRE(word_graph::last_node_on_path(s.word_graph(), 0, 1217_w).first
             == word_graph::last_node_on_path(s.word_graph(), 0, 7121_w).first);
+    REQUIRE(stephen::accepts(s, 7121_w));
   }
 
   LIBSEMIGROUPS_TEST_CASE("Stephen",
-                          "045",
+                          "047",
                           "Munn tree products",
                           "[stephen][quick]") {
+    ReportGuard rg(false);
     using words::pow;
     ToWord to_word("abcABC");
 
@@ -1360,8 +1470,8 @@ namespace libsemigroups {
     auto S = Stephen(p);
     auto T = Stephen(p);
 
-    S.set_word(to_word("aBbcaABAabCc"));
-    T.set_word(to_word("aBbcaABAabCc"));
+    stephen::set_word(S, to_word("aBbcaABAabCc"));
+    stephen::set_word(T, to_word("aBbcaABAabCc"));
     S.run();
     REQUIRE(S.word_graph().number_of_nodes() == 7);
 
@@ -1375,16 +1485,26 @@ namespace libsemigroups {
     REQUIRE(S.finished());
     REQUIRE(S.word_graph().number_of_nodes() == 12);
     REQUIRE(stephen::accepts(S, pow(T.word(), 2)));
-    T.set_word(pow(T.word(), 2));
+    stephen::set_word(T, pow(T.word(), 2));
     T.run();
     REQUIRE(S == T);
     REQUIRE(stephen::words_accepted(S).get() == 0202_w);
     REQUIRE(stephen::number_of_left_factors(S) == POSITIVE_INFINITY);
-    S.set_word(to_word("aBbcaABAabCc"));
+    stephen::set_word(S, to_word("aBbcaABAabCc"));
     // std::ofstream f("wordgraph.gv");
     // f << stephen::dot(S).to_string();
-    T.set_word(to_word("CcBAabaACBbA"));
+    stephen::set_word(T, to_word("CcBAabaACBbA"));
     S *= T;
+
+    InversePresentation<word_type> q;
+    q.alphabet(to_word("abcABC"));
+    q.inverses_no_checks(to_word("ABCabc"));
+    presentation::add_rule(q, to_word("ab"), to_word("ba"));
+    T.init(q);
+    stephen::set_word(T, to_word("CcBAabaACBbA"));
+    T.run();
+    // Different presentation should throw
+    REQUIRE_THROWS_AS(S *= T, LibsemigroupsException);
   }
 
   LIBSEMIGROUPS_TEST_CASE("Stephen",
@@ -1400,24 +1520,210 @@ namespace libsemigroups {
     presentation::add_rule(p, to_word("aA"), to_word(""));
 
     Stephen S(p);
-    S.set_word(""_w).run();
-    REQUIRE(S.word_graph().number_of_nodes() == 0);
+    stephen::set_word(S, ""_w).run();
+    // NOTE: Must fail since a^nA^n = 1 for all n, but a^n are each in a
+    // distinct R-class, so the Stephen graph will have infinitely many
+    // vertices.
+    REQUIRE(S.word_graph().number_of_nodes() == POSITIVE_INFINITY);
   }
 
   LIBSEMIGROUPS_TEST_CASE("Stephen",
                           "048",
-                          "plactic monoid",
-                          "[stephen][fail]") {
-    ReportGuard rg(true);
+                          "chinese monoid",
+                          "[stephen][quick]") {
+    ReportGuard rg(false);
     auto        p = presentation::examples::chinese_monoid(3);
 
     Stephen S(p);
-    S.set_word(0110_w).run();
+    stephen::set_word(S, 0110_w).run();
     REQUIRE(S.word_graph().number_of_nodes() == 8);
-    // TODO rename words_accepted -> class_of
     REQUIRE((stephen::words_accepted(S) | rx::to_vector())
-            == std::vector<word_type>());
+            == std::vector<word_type>({0101_w, 0110_w, 1001_w}));
   }
 
-  // TODO the examples from Stephen's paper/thesis?
+  LIBSEMIGROUPS_TEST_CASE("Stephen",
+                          "049",
+                          "to_human_readable_repr",
+                          "[stephen][quick]") {
+    ReportGuard             rg(false);
+    Presentation<word_type> p;
+    p.alphabet(01_w);
+    p.contains_empty_word(true);
+    presentation::add_rule(p, 000_w, 11_w);
+    presentation::add_rule(p, 001_w, 10_w);
+
+    Stephen<Presentation<word_type>> stephen;
+    REQUIRE(to_human_readable_repr(stephen)
+            == fmt::format("<Stephen object over {} with no word set>",
+                           to_human_readable_repr(stephen.presentation())));
+    stephen.init(p);
+    REQUIRE(to_human_readable_repr(stephen)
+            == fmt::format("<Stephen object over {} with no word set>",
+                           to_human_readable_repr(stephen.presentation())));
+    stephen::set_word(stephen, 0110_w);
+    REQUIRE(to_human_readable_repr(stephen)
+            == fmt::format("<Stephen object over {} for word [0, 1, 1, 0] "
+                           "with 5 nodes and 4 edges>",
+                           to_human_readable_repr(stephen.presentation())));
+    stephen.run();
+    REQUIRE(to_human_readable_repr(stephen)
+            == fmt::format("<Stephen object over {} for word [0, 1, 1, 0] "
+                           "with 13 nodes and 26 edges>",
+                           to_human_readable_repr(stephen.presentation())));
+    stephen::set_word(stephen, 011001100_w);
+    REQUIRE(to_human_readable_repr(stephen)
+            == fmt::format(
+                "<Stephen object over {} for word [0, 1, 1, 0, 0, 1, 1, 0, 0] "
+                "with 10 nodes and 9 edges>",
+                to_human_readable_repr(stephen.presentation())));
+    stephen.run();
+    REQUIRE(to_human_readable_repr(stephen)
+            == fmt::format(
+                "<Stephen object over {} for word [0, 1, 1, 0, 0, 1, 1, 0, 0] "
+                "with 13 nodes and 26 edges>",
+                to_human_readable_repr(stephen.presentation())));
+    stephen::set_word(stephen, 0110011001_w);
+    stephen.run();
+    REQUIRE(to_human_readable_repr(stephen)
+            == fmt::format("<Stephen object over {} for 10 letter word "
+                           "with 13 nodes and 26 edges>",
+                           to_human_readable_repr(stephen.presentation())));
+    stephen::set_word(stephen, 01100110010_w);
+    stephen.run();
+    REQUIRE(to_human_readable_repr(stephen)
+            == fmt::format("<Stephen object over {} for 11 letter word "
+                           "with 13 nodes and 26 edges>",
+                           to_human_readable_repr(stephen.presentation())));
+    stephen.init(p);
+    REQUIRE(to_human_readable_repr(stephen)
+            == fmt::format("<Stephen object over {} with no word set>",
+                           to_human_readable_repr(stephen.presentation())));
+
+    ToWord                         to_word("abcABC");
+    InversePresentation<word_type> pi;
+    pi.alphabet(to_word("abcABC"));
+    pi.inverses_no_checks(to_word("ABCabc"));
+    presentation::add_rule(pi, to_word("ac"), to_word("ca"));
+    presentation::add_rule(pi, to_word("ab"), to_word("ba"));
+    presentation::add_rule(pi, to_word("bc"), to_word("cb"));
+
+    Stephen<InversePresentation<word_type>> inverse_stephen;
+    REQUIRE(
+        to_human_readable_repr(inverse_stephen)
+        == fmt::format("<Stephen object over {} with no word set>",
+                       to_human_readable_repr(inverse_stephen.presentation())));
+    inverse_stephen.init(pi);
+    REQUIRE(
+        to_human_readable_repr(inverse_stephen)
+        == fmt::format("<Stephen object over {} with no word set>",
+                       to_human_readable_repr(inverse_stephen.presentation())));
+    stephen::set_word(inverse_stephen, to_word("BaAbaBcAb"));
+    REQUIRE(to_human_readable_repr(inverse_stephen)
+            == fmt::format(
+                "<Stephen object over {} for word [4, 0, 3, 1, 0, 4, 2, 3, 1] "
+                "with 8 nodes and 14 edges>",
+                to_human_readable_repr(inverse_stephen.presentation())));
+    inverse_stephen.run();
+    REQUIRE(to_human_readable_repr(inverse_stephen)
+            == fmt::format(
+                "<Stephen object over {} for word [4, 0, 3, 1, 0, 4, 2, 3, 1] "
+                "with 7 nodes and 18 edges>",
+                to_human_readable_repr(inverse_stephen.presentation())));
+  }
+
+  // The following uses up about 7GB memory to run
+  LIBSEMIGROUPS_TEST_CASE("Stephen",
+                          "050",
+                          "shared_ptr memory check",
+                          "[stephen][extreme][no-valgrind]") {
+    ReportGuard                    rg(true);
+    ToWord                         to_word("abcABC");
+    InversePresentation<word_type> p;
+    p.alphabet(to_word("abcABC"));
+    p.inverses_no_checks(to_word("ABCabc"));
+    presentation::add_rule(p, to_word("a"), to_word("b"));
+    for (size_t i = 0; i < 2 << 14; ++i) {
+      presentation::add_rule(p, random_word(2 << 9, 6), random_word(2 << 9, 6));
+    }  // About 500 Mb in size
+    auto ptr = std::make_shared<InversePresentation<word_type>>(
+        p);  // Adds another 500 Mb due to copy
+
+    size_t                                               n = 12;
+    std::vector<Stephen<InversePresentation<word_type>>> stephens(n);
+    // Uses no extra memory with shared pointer
+    std::cout << "Shared pointer - no extra memory\n";
+    for (size_t i = 0; i < n; ++i) {
+      std::cout << i << "\n";
+      stephens[i].init(ptr);
+      if (i % 2 == 0) {
+        stephen::set_word(stephens[i], to_word("a"));
+      } else {
+        stephen::set_word(stephens[i], to_word("b"));
+      }
+      stephens[i].run();
+      REQUIRE(stephens[i].word_graph().number_of_nodes() == 2);
+      REQUIRE(stephens[i].word_graph()
+              == make<WordGraph<uint32_t>>(
+                  2,
+                  {{1, 1, UNDEFINED, UNDEFINED, UNDEFINED, UNDEFINED},
+                   {UNDEFINED, UNDEFINED, UNDEFINED, 0, 0, UNDEFINED}}));
+    }
+
+    std::vector<Stephen<InversePresentation<word_type>>> bad_stephens(n);
+    // Uses 6GB extra memory without shared pointer
+    std::cout << "No shared pointer - about 6GB peak memory usage\n";
+    for (size_t i = 0; i < n; ++i) {
+      std::cout << i << "\n";
+      bad_stephens[i].init(p);
+      if (i % 2 == 0) {
+        stephen::set_word(bad_stephens[i], to_word("a"));
+      } else {
+        stephen::set_word(bad_stephens[i], to_word("b"));
+      }
+      bad_stephens[i].run();
+      REQUIRE(bad_stephens[i].word_graph().number_of_nodes() == 2);
+      REQUIRE(bad_stephens[i].word_graph()
+              == make<WordGraph<uint32_t>>(
+                  2,
+                  {{1, 1, UNDEFINED, UNDEFINED, UNDEFINED, UNDEFINED},
+                   {UNDEFINED, UNDEFINED, UNDEFINED, 0, 0, UNDEFINED}}));
+    }
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("Stephen",
+                          "051",
+                          "Incomplete Munn tree products",
+                          "[stephen][quick]") {
+    ReportGuard rg(false);
+    using words::pow;
+    ToWord to_word("abcABC");
+
+    InversePresentation<word_type> p;
+    p.alphabet(to_word("abcABC"));
+    p.inverses_no_checks(to_word("ABCabc"));
+
+    auto S  = Stephen(p);
+    auto Si = Stephen(p);
+    auto T  = Stephen(p);
+    auto Ti = Stephen(p);
+
+    stephen::set_word(S, to_word("aBbcaABAabCc")).run();
+    stephen::set_word(T, to_word("aBbcaABAabCc")).run();
+    S *= T;
+    S.run();
+
+    stephen::set_word(Si, to_word("aBbcaABAabCc"));
+    Si *= T;
+    Si.run();
+    REQUIRE(Si == S);
+
+    stephen::set_word(Si, to_word("aBbcaABAabCc"));
+    stephen::set_word(Ti, to_word("aBbcaABAabCc"));
+    Si.run();
+    Si *= Ti;
+    Si.run();
+    REQUIRE(Si == S);
+  }
+
+  // TODO(2): the examples from Stephen's paper/thesis?
 }  // namespace libsemigroups

@@ -312,6 +312,8 @@ namespace libsemigroups {
         _forwd[_last_active_node] = c;
       }
       _bckwd[c]        = _last_active_node;
+      _current         = _current == _first_free_node ? c : _current;
+      _current_la      = _current_la == _first_free_node ? c : _current_la;
       _first_free_node = c;
       _ident[c]        = _id_node;
     }
