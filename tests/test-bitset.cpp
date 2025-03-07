@@ -365,7 +365,7 @@ namespace libsemigroups {
     }
 
     // block_type constructor
-    // TODO(0) separate test case
+    // TODO(1) separate test case
     BitSet<30> bs2(0x15);
     REQUIRE(bs2.count() == 3);
     REQUIRE(bs2[0]);

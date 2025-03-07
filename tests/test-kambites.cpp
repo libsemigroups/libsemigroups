@@ -276,7 +276,7 @@ namespace libsemigroups {
     }
   }
 
-  // TODO(0) split into multiple tests
+  // TODO(1) split into multiple tests
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("Kambites",
                                    "006",
                                    "random",

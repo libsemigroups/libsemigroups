@@ -150,7 +150,6 @@ namespace libsemigroups {
 
   }  // namespace blocks
 
-  // TODO(0) update!
   [[nodiscard]] std::string to_human_readable_repr(Blocks const&    x,
                                                    std::string_view braces,
                                                    size_t           max_width) {

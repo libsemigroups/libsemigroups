@@ -16,29 +16,30 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-// This file contains an implementation of Gabow's algorithm for WordGraphs.
+// This file contains some common functionality for tests involving WordGraphs.
 
 #ifndef LIBSEMIGROUPS_TESTS_WORD_GRAPH_TEST_COMMON_HPP_
 #define LIBSEMIGROUPS_TESTS_WORD_GRAPH_TEST_COMMON_HPP_
 
-// TODO:
-// * iwyu
+#include <cmath>      // for pow
+#include <cstddef>    // for size_t
+#include <stdexcept>  // for runtime_error
 
 #include "libsemigroups/word-graph.hpp"  // for WordGraph
 
 namespace libsemigroups {
 
   template <typename Node = size_t>
-  void add_clique(WordGraph<Node>& digraph, size_t n) {
-    if (n != digraph.out_degree()) {
+  void add_clique(WordGraph<Node>& wg, size_t n) {
+    if (n != wg.out_degree()) {
       throw std::runtime_error("can't do it!");
     }
-    size_t old_nodes = digraph.number_of_nodes();
-    digraph.add_nodes(n);
+    size_t old_nodes = wg.number_of_nodes();
+    wg.add_nodes(n);
 
-    for (Node i = old_nodes; i < digraph.number_of_nodes(); ++i) {
-      for (Node j = old_nodes; j < digraph.number_of_nodes(); ++j) {
-        digraph.target(i, j - old_nodes, j);
+    for (Node i = old_nodes; i < wg.number_of_nodes(); ++i) {
+      for (Node j = old_nodes; j < wg.number_of_nodes(); ++j) {
+        wg.target(i, j - old_nodes, j);
       }
     }
   }

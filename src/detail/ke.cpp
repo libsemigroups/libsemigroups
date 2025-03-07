@@ -30,7 +30,7 @@ namespace libsemigroups {
     class MultiStringView;  // forward decl
   }
 
-  // TODO(0) uncomment
+  // TODO(1) uncomment
   //  template <>
   //  word_type FroidurePin<
   //      detail::KE<std::string>,
@@ -80,6 +80,7 @@ namespace libsemigroups {
     return tril::FALSE;
   }
 
+  // TODO(1) uncomment
   //   template <>
   //   size_t FroidurePin<detail::KE<std::string>,
   //                      FroidurePinTraits<detail::KE<std::string>,

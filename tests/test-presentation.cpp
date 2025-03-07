@@ -60,6 +60,7 @@
 
 // TODO(later) Add tests for add_cyclic_conjugates
 // TODO(later) Change word_type({0, 1, 2}) to "012"_w
+// TODO(1) use LIBSEMIGROUPS_TEMPLATE_TEST_CASE
 
 namespace libsemigroups {
 
@@ -1379,7 +1380,7 @@ namespace libsemigroups {
                           "[quick][presentation]") {
     auto rg = ReportGuard(false);
     check_add_commutes_rules<word_type>();
-    // TODO Can't do this until operator+ works with StaticVector
+    // TODO(1) Can't do this until operator+ works with StaticVector
     // check_add_commutes_rules<StaticVector1<uint16_t, 10>>();
     check_add_commutes_rules<std::string>();
   }
@@ -1507,7 +1508,7 @@ namespace libsemigroups {
                           "[quick][presentation]") {
     auto rg = ReportGuard(false);
     check_balance<word_type>();
-    // TODO Can't do this until StaticVector1 has .front or . end
+    // TODO(1) Can't do this until StaticVector1 has .front or . end
     // check_balance<StaticVector1<uint16_t, 10>>();
     check_balance<std::string>();
   }
@@ -2677,7 +2678,6 @@ namespace libsemigroups {
           presentation::add_inverse_rules(p, {0, 0}),
           "invalid inverses, the letter (char with value) 0 is duplicated!");
       p.alphabet(3);
-      // TODO this one could be better
       REQUIRE_EXCEPTION_MSG(
           presentation::add_inverse_rules(p, {'b', 'c', 'a'}),
           "invalid inverses, 'a' ^ -1 = 'b' but 'b' ^ -1 = 'c'");

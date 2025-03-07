@@ -998,10 +998,6 @@ namespace libsemigroups {
     y = x;
     REQUIRE(&x != &y);
     REQUIRE(x == y);
-    // TODO uncomment or remove
-    // REQUIRE(y
-    //         == make<TestType>(nullptr, {{-2, 2, 0}, {-1, 0, 0}, {1, -3,
-    //         1}}));
 
     auto yy(y);
     REQUIRE(yy == y);

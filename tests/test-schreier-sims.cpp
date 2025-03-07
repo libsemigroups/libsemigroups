@@ -19,11 +19,11 @@
 //
 //   https://github.com/james-d-mitchell/libsemigroups/pull/39
 //
-// by Alex Levine and Luke Elliott. Many examples here taken from
+// by Alex Levine and Luna Elliott. Many examples here taken from
 //
 //   http://brauer.maths.qmul.ac.uk/Atlas/
 
-// TODO:
+// TODO(1):
 // * iwyu
 // * remove raw pointers
 // * thousand separators

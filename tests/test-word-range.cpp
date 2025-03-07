@@ -748,8 +748,10 @@ namespace libsemigroups {
                           "shortlex | corner cases",
                           "[shortlex][quick]") {
     StringRange strings;
-    // TODO first and last throw if they contain letters not in the alphabet
     strings.alphabet("ab").last("").first("bbaaab");
+
+    REQUIRE_THROWS_AS(strings.last("c"), LibsemigroupsException);
+    REQUIRE_THROWS_AS(strings.first("c"), LibsemigroupsException);
 
     REQUIRE((strings | count()) == 0);
 
@@ -976,7 +978,7 @@ namespace libsemigroups {
     REQUIRE_THROWS_AS("a*a*b*bc"_p, LibsemigroupsException);
     REQUIRE("           "_p == "");
 
-    // TODO the error message for the block of lines aren't very good
+    // TODO(2) the error message for the block of lines aren't very good
     REQUIRE_THROWS_AS("(a*b)^3*b"_p, LibsemigroupsException);
     REQUIRE_THROWS_AS("(a*b)^3*bc"_p, LibsemigroupsException);
     REQUIRE_THROWS_AS("(2^2)"_p, LibsemigroupsException);

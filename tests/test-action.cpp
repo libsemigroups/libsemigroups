@@ -326,7 +326,7 @@ namespace libsemigroups {
                                                       {0, 0, 0, 0, 0, 0}})};
     row_orb_type             row_orb;
 
-    row_orb.add_seed(bmat8::one());  // TODO(0) change to BMat8::one for
+    row_orb.add_seed(bmat8::one());  // TODO(1) change to BMat8::one for
                                      // consistency
     for (BMat8 g : reg_bmat6_gens) {
       row_orb.add_generator(g);

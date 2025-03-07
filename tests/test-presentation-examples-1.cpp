@@ -57,7 +57,7 @@ namespace libsemigroups {
                           "test semigroup/monoid status",
                           "[pres-examples][quick]") {
     auto rg = ReportGuard(REPORT);
-    // TODO(0) Add tests for all functions
+    // TODO(2) Add tests for all functions
     REQUIRE(alternating_group_Moo97(5).contains_empty_word());
     REQUIRE(brauer_monoid_KM07(5).contains_empty_word());
     REQUIRE(chinese_monoid_CEKNH01(5).contains_empty_word());
@@ -603,13 +603,16 @@ namespace libsemigroups {
       "[pres-examples][quick]") {
     auto rg = ReportGuard(REPORT);
 
-    ToddCoxeter tc2(congruence_kind::twosided,
-                    full_transformation_monoid_MW24_a(2));
+    ToddCoxeter tc2(congruence_kind::twosided, full_transformation_monoid(2));
     REQUIRE(tc2.number_of_classes() == 4);
 
-    ToddCoxeter tc3(congruence_kind::twosided,
-                    full_transformation_monoid_MW24_a(3));
+    ToddCoxeter tc3(congruence_kind::twosided, full_transformation_monoid(3));
     REQUIRE(tc3.number_of_classes() == 27);
+
+    REQUIRE_THROWS_AS(full_transformation_monoid_MW24_a(2),
+                      LibsemigroupsException);
+    REQUIRE_THROWS_AS(full_transformation_monoid_MW24_a(3),
+                      LibsemigroupsException);
   }
 
   LIBSEMIGROUPS_TEST_CASE("Example",

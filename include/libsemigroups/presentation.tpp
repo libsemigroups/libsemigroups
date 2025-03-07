@@ -1013,15 +1013,15 @@ namespace libsemigroups {
       presentation::add_rules_no_checks(p, q);
     }
 
-    template <typename Word>
-    void balance_no_checks(Presentation<Word>& p,
-                           Word const&         letters,
-                           Word const&         inverses) {
+    template <typename Word1, typename Word2>
+    void balance_no_checks(Presentation<Word1>& p,
+                           Word2 const&         letters,
+                           Word2 const&         inverses) {
       // TODO(later) check args (including that p.contains_empty_word)
       // So that longer relations are on the lhs
       presentation::sort_each_rule(p);
 
-      std::unordered_map<typename Word::value_type, size_t> map;
+      std::unordered_map<typename Word2::value_type, size_t> map;
 
       for (auto [i, x] : rx::enumerate(letters)) {
         map.emplace(x, i);
