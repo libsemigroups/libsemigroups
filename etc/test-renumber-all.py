@@ -3,7 +3,7 @@
 
 The script should be run from the libsemigroups root directory. The numbering
 always starts from 0. Files are processed in lexicographic order. Within each
-file, test cases are numbered sequentially in order of occurence. Across test
+file, test cases are numbered sequentially in order of occurrence. Across test
 files, the test case family name (e.g. "Stephen" or "ToddCoxeter") is used to
 determine the number of the first test case.
 """
