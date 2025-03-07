@@ -345,4 +345,21 @@ namespace libsemigroups {
     REQUIRE(S.size() == 610);
   }
 
+  LIBSEMIGROUPS_TEST_CASE("Konieczny",
+                          "047",
+                          "exceptions: keep object valid after refusing to run",
+                          "[quick][transf][no-valgrind]") {
+    auto rg      = ReportGuard(REPORT);
+    using Transf = LeastTransf<5>;
+
+    Konieczny<Transf> S;
+
+    REQUIRE_THROWS_AS(S.run(), LibsemigroupsException);
+
+    S.add_generator(Transf({1, 2, 3, 4, 0}));
+    S.add_generator(Transf({0, 0, 2, 3, 4}));
+
+    REQUIRE(S.size() == 610);
+  }
+
 }  // namespace libsemigroups

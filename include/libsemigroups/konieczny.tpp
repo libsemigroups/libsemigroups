@@ -24,6 +24,7 @@ namespace libsemigroups {
   template <typename Element, typename Traits>
   Konieczny<Element, Traits>::Konieczny()
       : _adjoined_identity_contained(false),
+        _can_accept_generators(true),
         _D_classes(),
         _D_rels(),
         _data_initialised(false),
@@ -71,18 +72,20 @@ namespace libsemigroups {
 
     // deal with all the easy data first
     _adjoined_identity_contained = that._adjoined_identity_contained;
+    _can_accept_generators       = that._can_accept_generators;
     _data_initialised            = that._data_initialised;
     _degree                      = that._degree;
-    _one                         = this->internal_copy(that._one);
-    _rank_state                  = new rank_state_type(*(that._rank_state));
-    _run_initialised             = that._run_initialised;
-    _ranks                       = that._ranks;
     _group_indices               = that._group_indices;
     _group_indices_rev           = that._group_indices_rev;
     _lambda_orb                  = that._lambda_orb;
-    _rho_orb                     = that._rho_orb;
+    _one                         = this->internal_copy(that._one);
+    _rank_state                  = new rank_state_type(*(that._rank_state));
+    _ranks                       = that._ranks;
     _reps_processed              = that._reps_processed;
+    _rho_orb                     = that._rho_orb;
+    _run_initialised             = that._run_initialised;
 
+    _element_pool.init(_one);
     InternalVecCopy()(that._gens, _gens);
 
     // Construct the new DClasses, and record a map from the addresses
@@ -162,6 +165,7 @@ namespace libsemigroups {
 
     // deal with all the easy data first
     _adjoined_identity_contained = std::move(that._adjoined_identity_contained);
+    _can_accept_generators       = std::move(that._can_accept_generators);
     _D_rels                      = std::move(that._D_rels);
     _data_initialised            = std::move(that._data_initialised);
     _degree                      = std::move(that._degree);
@@ -192,6 +196,8 @@ namespace libsemigroups {
     std::swap(_rank_state, that._rank_state);
     std::swap(_ranks, that._ranks);  // used in internal_free
 
+    std::swap(_element_pool, that._element_pool);
+
     return *this;
   }
 
@@ -201,6 +207,7 @@ namespace libsemigroups {
 
     free_internals();
     _adjoined_identity_contained = false;
+    _can_accept_generators       = true;
     _D_classes.clear();
     _D_rels.clear();
     _data_initialised = false;
@@ -234,7 +241,7 @@ namespace libsemigroups {
   template <typename T>
   void Konieczny<Element, Traits>::add_generators(T const& first,
                                                   T const& last) {
-    if (started()) {
+    if (!_can_accept_generators) {
       LIBSEMIGROUPS_EXCEPTION(
           "cannot add generators after the algorithm has begun!");
     }
@@ -547,8 +554,13 @@ namespace libsemigroups {
     if (_run_initialised) {
       return;
     }
+
     // ensure the data is set up correctly
     init_data();
+
+    // no more adding generators
+    _can_accept_generators = false;
+
     // compute orbits (can stop during these enumerations)
     compute_orbs();
     // we might have stopped; then we shouldn't attempt to anything else since
@@ -626,7 +638,8 @@ namespace libsemigroups {
 
   template <typename Element, typename Traits>
   void Konieczny<Element, Traits>::init_rank_state_and_rep_vecs() {
-    if (started() || _run_initialised) {
+    if (!_can_accept_generators) {
+      // enumeration has already started, so no can't call this anymore
       LIBSEMIGROUPS_EXCEPTION("too late to initialise rank/rep vecs!");
     }
 

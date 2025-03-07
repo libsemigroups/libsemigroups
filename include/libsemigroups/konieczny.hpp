@@ -1767,6 +1767,7 @@ namespace libsemigroups {
     // Konieczny - data - private
     ////////////////////////////////////////////////////////////////////////
     bool                                         _adjoined_identity_contained;
+    bool                                         _can_accept_generators;
     std::vector<DClass*>                         _D_classes;
     std::vector<std::vector<D_class_index_type>> _D_rels;
     bool                                         _data_initialised;
