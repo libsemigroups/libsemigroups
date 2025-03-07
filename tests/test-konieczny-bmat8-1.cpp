@@ -27,8 +27,6 @@
 
 namespace libsemigroups {
 
-  constexpr bool REPORT = false;
-
   LIBSEMIGROUPS_TEST_CASE("Konieczny",
                           "009",
                           "regular elements and idempotents",
@@ -39,7 +37,7 @@ namespace libsemigroups {
 #pragma GCC diagnostic ignored "-Winline"
 #endif
     using BMat = BMatFastest<4>;
-    auto rg    = ReportGuard(REPORT);
+    auto rg    = ReportGuard(false);
 
     const std::vector<BMat> gens
         = {BMat({{0, 1, 0, 0}, {1, 0, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}),
@@ -81,7 +79,7 @@ namespace libsemigroups {
                           "010",
                           "regular D-class 01",
                           "[quick][bmat8]") {
-    auto                     rg   = ReportGuard(REPORT);
+    auto                     rg   = ReportGuard(false);
     const std::vector<BMat8> gens = {BMat8({{0, 1, 0}, {0, 0, 1}, {1, 0, 0}}),
                                      BMat8({{0, 1, 0}, {1, 0, 0}, {0, 0, 1}}),
                                      BMat8({{1, 0, 0}, {1, 1, 0}, {0, 0, 1}}),
@@ -101,7 +99,7 @@ namespace libsemigroups {
                           "011",
                           "regular D-class 02",
                           "[quick][bmat8][no-valgrind]") {
-    auto                     rg = ReportGuard(REPORT);
+    auto                     rg = ReportGuard(false);
     const std::vector<BMat8> gens
         = {BMat8({{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}),
            BMat8({{0, 1, 0, 0}, {1, 0, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}),
@@ -123,7 +121,7 @@ namespace libsemigroups {
                           "012",
                           "regular D-class 04: contains",
                           "[quick][no-valgrind][bmat8]") {
-    auto                     rg = ReportGuard(REPORT);
+    auto                     rg = ReportGuard(false);
     const std::vector<BMat8> gens
         = {BMat8({{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}),
            BMat8({{0, 1, 0, 0}, {1, 0, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}),
@@ -149,7 +147,7 @@ namespace libsemigroups {
                           "013",
                           "non-regular D-classes 01",
                           "[quick][bmat8]") {
-    auto                     rg    = ReportGuard(REPORT);
+    auto                     rg    = ReportGuard(false);
     const std::vector<BMat8> gens  = {BMat8({{0, 1, 0}, {0, 0, 1}, {1, 0, 0}}),
                                       BMat8({{0, 1, 0}, {1, 0, 0}, {0, 0, 1}}),
                                       BMat8({{1, 0, 0}, {1, 1, 0}, {0, 0, 1}}),
@@ -250,7 +248,7 @@ namespace libsemigroups {
                           "014",
                           "RegularDClass",
                           "[quick][bmat8]") {
-    auto                     rg = ReportGuard(REPORT);
+    auto                     rg = ReportGuard(false);
     const std::vector<BMat8> gens
         = {BMat8({{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}),
            BMat8({{0, 1, 0, 0}, {1, 0, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}),
@@ -272,7 +270,7 @@ namespace libsemigroups {
                           "015",
                           "full bmat monoid 4",
                           "[quick][no-valgrind][bmat8]") {
-    auto                     rg = ReportGuard(REPORT);
+    auto                     rg = ReportGuard(false);
     const std::vector<BMat8> bmat4_gens
         = {BMat8({{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}),
            BMat8({{1, 1, 1, 0}, {1, 0, 0, 1}, {0, 1, 0, 1}, {0, 0, 1, 1}}),

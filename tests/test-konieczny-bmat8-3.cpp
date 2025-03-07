@@ -26,7 +26,6 @@
 
 namespace libsemigroups {
 
-  constexpr bool REPORT = false;
   namespace {
     void test_it(Konieczny<BMat8>&           KS,
                  std::vector<BMat8>&         non_reg_reps,
@@ -44,7 +43,7 @@ namespace libsemigroups {
                           "026",
                           "non-regular D-classes 02",
                           "[quick][bmat8][no-valgrind]") {
-    auto                     rg = ReportGuard(REPORT);
+    auto                     rg = ReportGuard(false);
     std::vector<BMat8> const gens
         = {BMat8({{0, 1, 0, 0}, {1, 0, 0, 1}, {1, 0, 0, 1}, {0, 1, 1, 0}}),
            BMat8({{0, 1, 0, 1}, {0, 1, 1, 1}, {0, 0, 1, 0}, {1, 1, 1, 1}}),

@@ -31,13 +31,11 @@ namespace libsemigroups {
 
 namespace libsemigroups {
 
-  constexpr bool REPORT = false;
-
   LIBSEMIGROUPS_TEST_CASE("FroidurePin<PBR>",
                           "056",
                           "example 1",
                           "[quick][froidure-pin][pbr]") {
-    auto             rg   = ReportGuard(REPORT);
+    auto             rg   = ReportGuard(false);
     std::vector<PBR> gens = {PBR({{3, 5},
                                   {0, 1, 2, 3, 4, 5},
                                   {0, 2, 3, 4, 5},
@@ -130,7 +128,7 @@ namespace libsemigroups {
                           "057",
                           "example 2",
                           "[quick][froidure-pin][pbr]") {
-    auto rg = ReportGuard(REPORT);
+    auto rg = ReportGuard(false);
 
     FroidurePin<PBR> S;
     S.add_generator(PBR({{1}, {4}, {3}, {1}, {0, 2}, {0, 3, 4, 5}}));

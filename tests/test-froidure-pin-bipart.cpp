@@ -32,13 +32,11 @@ namespace libsemigroups {
   // Forward declaration
   struct LibsemigroupsException;
 
-  constexpr bool REPORT = false;
-
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
                           "000",
                           "small example 1 .................. Bipartition",
                           "[quick][froidure-pin][bipartition][bipart]") {
-    auto        rg = ReportGuard(REPORT);
+    auto        rg = ReportGuard(false);
     FroidurePin S  = make<FroidurePin>(
         {make<Bipartition>({{1, 5, 8, -1, -2, -4, -10},
                              {2, 4, 7, -8},
@@ -98,7 +96,7 @@ namespace libsemigroups {
                           "001",
                           "default constructed .............. Bipartition",
                           "[quick][froidure-pin][bipartition][bipart]") {
-    auto rg = ReportGuard(REPORT);
+    auto rg = ReportGuard(false);
 
     FroidurePin<Bipartition> S;
     S.add_generator(Bipartition(
@@ -158,7 +156,7 @@ namespace libsemigroups {
                           "002",
                           "small example 2 - Bipartition",
                           "[quick][froidure-pin][element]") {
-    auto                     rg = ReportGuard(REPORT);
+    auto                     rg = ReportGuard(false);
     FroidurePin<Bipartition> S;
     S.add_generator(Bipartition(
         {0, 1, 2, 1, 0, 2, 1, 0, 2, 2, 0, 0, 2, 0, 3, 4, 4, 1, 3, 0}));

@@ -27,15 +27,13 @@
 
 namespace libsemigroups {
 
-  constexpr bool REPORT = false;
-
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("Konieczny",
                                    "000",
                                    "4x4 boolean matrix semigroup (size 26)",
                                    "[quick][bmat]",
                                    BMat<>,
                                    BMat<4>) {
-    auto                  rg = ReportGuard(REPORT);
+    auto                  rg = ReportGuard(false);
     std::vector<TestType> gens
         = {TestType({{0, 1, 0, 1}, {1, 0, 0, 0}, {0, 1, 1, 1}, {0, 1, 1, 0}}),
            TestType({{0, 1, 1, 1}, {1, 1, 0, 0}, {0, 0, 0, 0}, {1, 1, 1, 1}}),
@@ -51,7 +49,7 @@ namespace libsemigroups {
                                    "[quick][bmat][no-valgrind]",
                                    BMat<>,
                                    BMat<4>) {
-    auto                  rg = ReportGuard(REPORT);
+    auto                  rg = ReportGuard(false);
     std::vector<TestType> gens
         = {TestType({{1, 0, 0, 0}, {0, 0, 1, 0}, {1, 0, 0, 1}, {0, 1, 0, 0}}),
            TestType({{1, 0, 0, 1}, {1, 0, 0, 1}, {1, 1, 1, 1}, {0, 1, 1, 0}}),
@@ -81,7 +79,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Konieczny", "006", "exceptions", "[quick][bmat]") {
-    auto rg = ReportGuard(REPORT);
+    auto rg = ReportGuard(false);
     REQUIRE_THROWS_AS(
         Konieczny<BMat<>>(
             {BMat<>({{1, 0, 0, 0}, {0, 0, 1, 0}, {1, 0, 0, 1}, {0, 1, 0, 0}}),
@@ -96,7 +94,7 @@ namespace libsemigroups {
                                    "[quick][bmat][no-valgrind]",
                                    BMat<>,
                                    BMat<5>) {
-    auto                  rg   = ReportGuard(REPORT);
+    auto                  rg   = ReportGuard(false);
     std::vector<TestType> gens = {TestType({{0, 1, 1, 1, 0},
                                             {0, 0, 1, 0, 0},
                                             {1, 0, 0, 1, 0},

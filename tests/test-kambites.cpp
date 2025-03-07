@@ -40,7 +40,6 @@ namespace libsemigroups {
   using namespace literals;
   struct LibsemigroupsException;  // Forward decl
 
-  constexpr bool REPORT = false;
   using detail::MultiStringView;
 
   congruence_kind constexpr onesided = congruence_kind::onesided;
@@ -149,7 +148,7 @@ namespace libsemigroups {
                                    "[quick][kambites][no-valgrind]",
                                    MultiStringView,
                                    std::string) {
-    auto rg = ReportGuard(REPORT);
+    auto rg = ReportGuard(false);
 
     Presentation<std::string> p;
     p.alphabet("abcdefg");
@@ -194,7 +193,7 @@ namespace libsemigroups {
                                    "[quick][kambites]",
                                    MultiStringView,
                                    std::string) {
-    auto rg = ReportGuard(REPORT);
+    auto rg = ReportGuard(false);
 
     Presentation<std::string> p;
     p.alphabet("aAbBcCe");
@@ -254,7 +253,7 @@ namespace libsemigroups {
                                    "[quick][kambites]",
                                    MultiStringView,
                                    std::string) {
-    auto rg = ReportGuard(REPORT);
+    auto rg = ReportGuard(false);
     for (size_t i = 4; i < 20; ++i) {
       std::string lhs;
       for (size_t b = 1; b <= i; ++b) {
@@ -283,7 +282,7 @@ namespace libsemigroups {
                                    "[quick][kambites]",
                                    MultiStringView,
                                    std::string) {
-    auto rg = ReportGuard(REPORT);
+    auto rg = ReportGuard(false);
     {
       Presentation<std::string> p;
       p.alphabet("abcdefghi");
@@ -427,7 +426,7 @@ namespace libsemigroups {
                                    "[quick][kambites][no-valgrind]",
                                    std::string,
                                    MultiStringView) {
-    auto rg = ReportGuard(REPORT);
+    auto rg = ReportGuard(false);
 
     Presentation<std::string> p;
     p.alphabet("abcdefg");
@@ -482,7 +481,7 @@ namespace libsemigroups {
                                    "[quick][kambites]",
                                    std::string,
                                    MultiStringView) {
-    auto rg = ReportGuard(REPORT);
+    auto rg = ReportGuard(false);
 
     Presentation<std::string> p;
     p.alphabet("cab");
@@ -599,7 +598,7 @@ namespace libsemigroups {
                                    "[quick][kambites][no-valgrind]",
                                    std::string,
                                    MultiStringView) {
-    auto                      rg = ReportGuard(REPORT);
+    auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("abcdefgh");
 
@@ -627,7 +626,7 @@ namespace libsemigroups {
                                    "[quick][kambites][no-valgrind]",
                                    std::string,
                                    MultiStringView) {
-    auto rg = ReportGuard(REPORT);
+    auto rg = ReportGuard(false);
     // The following permits a more complex test of case (6), which also
     // involves using the case (2) code to change the prefix being looked
     // for:
@@ -657,7 +656,7 @@ namespace libsemigroups {
                                    "[standard][kambites]",
                                    std::string,
                                    MultiStringView) {
-    auto rg = ReportGuard(REPORT);
+    auto rg = ReportGuard(false);
     // A slightly more complicated presentation for testing case (6), in
     // which the max piece suffixes of the first two relation words no
     // longer agree (since fh and gh are now pieces).
@@ -711,7 +710,7 @@ namespace libsemigroups {
                                    "[quick][kambites]",
                                    std::string,
                                    MultiStringView) {
-    auto rg = ReportGuard(REPORT);
+    auto rg = ReportGuard(false);
     // A slightly more complicated presentation for testing case (6), in
     // which the max piece suffixes of the first two relation words no
     // longer agree (since fh and gh are now pieces).
@@ -729,7 +728,7 @@ namespace libsemigroups {
                                    "[quick][kambites]",
                                    std::string,
                                    MultiStringView) {
-    auto rg = ReportGuard(REPORT);
+    auto rg = ReportGuard(false);
     // Example 3.13 + 3.14
     Presentation<std::string> p;
     p.alphabet("abcd");
@@ -752,7 +751,7 @@ namespace libsemigroups {
                                    "[quick][kambites]",
                                    std::string,
                                    MultiStringView) {
-    auto rg = ReportGuard(REPORT);
+    auto rg = ReportGuard(false);
     // Example 3.15
     Presentation<std::string> p;
     p.alphabet("abcd");
@@ -781,7 +780,7 @@ namespace libsemigroups {
                                    "[quick][kambites]",
                                    std::string,
                                    MultiStringView) {
-    auto                      rg = ReportGuard(REPORT);
+    auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("abcd");
     presentation::add_rule(p, "abcd", "acca");
@@ -803,7 +802,7 @@ namespace libsemigroups {
                                    "[quick][kambites][no-valgrind]",
                                    std::string,
                                    MultiStringView) {
-    auto                      rg = ReportGuard(REPORT);
+    auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("abcd");
     presentation::add_rule(p, "abcd", "acca");
@@ -843,7 +842,7 @@ namespace libsemigroups {
                                    "[quick][kambites]",
                                    std::string,
                                    MultiStringView) {
-    auto                      rg = ReportGuard(REPORT);
+    auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("ab");
     presentation::add_rule(p, "aaa", "a");
@@ -869,7 +868,7 @@ namespace libsemigroups {
                                    "[quick][kambites]",
                                    std::string,
                                    MultiStringView) {
-    auto                      rg = ReportGuard(REPORT);
+    auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("abcdefg");
     presentation::add_rule(p, "abcd", "aaaeaa");
@@ -894,7 +893,7 @@ namespace libsemigroups {
                                    "[quick][kambites]",
                                    std::string,
                                    MultiStringView) {
-    auto                      rg = ReportGuard(REPORT);
+    auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("abcd");
     presentation::add_rule(p, "abcd", "accca");
@@ -937,7 +936,7 @@ namespace libsemigroups {
                                    "[quick][kambites]",
                                    std::string,
                                    MultiStringView) {
-    auto                      rg = ReportGuard(REPORT);
+    auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("abc");
     presentation::add_rule(p, "ac", "cbbbbc");
@@ -955,7 +954,7 @@ namespace libsemigroups {
                                    "[quick][kambites]",
                                    std::string,
                                    MultiStringView) {
-    auto                      rg = ReportGuard(REPORT);
+    auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("abc");
     presentation::add_rule(p, "ccab", "cbac");
@@ -975,7 +974,7 @@ namespace libsemigroups {
                                    "[quick][kambites]",
                                    std::string,
                                    MultiStringView) {
-    auto                      rg = ReportGuard(REPORT);
+    auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("abcdefghij");
     presentation::add_rule(p, "afh", "bgh");
@@ -994,7 +993,7 @@ namespace libsemigroups {
                                    "[quick][kambites]",
                                    std::string,
                                    MultiStringView) {
-    auto                      rg = ReportGuard(REPORT);
+    auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("abcd");
     presentation::add_rule(p, "abcd", "dcba");
@@ -1011,7 +1010,7 @@ namespace libsemigroups {
                                    "[quick][kambites]",
                                    std::string,
                                    MultiStringView) {
-    auto                      rg = ReportGuard(REPORT);
+    auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("abcd");
     presentation::add_rule(p, "abca", "dcbd");
@@ -1028,7 +1027,7 @@ namespace libsemigroups {
                                    "[quick][kambites]",
                                    std::string,
                                    MultiStringView) {
-    auto                      rg = ReportGuard(REPORT);
+    auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("abcd");
     presentation::add_rule(p, "abcd", "dcba");
@@ -1047,7 +1046,7 @@ namespace libsemigroups {
                                    "[quick][kambites]",
                                    std::string,
                                    MultiStringView) {
-    auto                      rg = ReportGuard(REPORT);
+    auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("abcdefg");
     presentation::add_rule(p, "abcd", "acca");
@@ -1065,7 +1064,7 @@ namespace libsemigroups {
                                    "[quick][kambites]",
                                    std::string,
                                    MultiStringView) {
-    auto                      rg = ReportGuard(REPORT);
+    auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("abcd");
     presentation::add_rule(
@@ -1088,7 +1087,7 @@ namespace libsemigroups {
                                    "[quick][kambites]",
                                    std::string,
                                    MultiStringView) {
-    auto                      rg = ReportGuard(REPORT);
+    auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("abcd");
     presentation::add_rule(p, "acba", "aabc");
@@ -1119,7 +1118,7 @@ namespace libsemigroups {
                                    "[quick][kambites]",
                                    std::string,
                                    MultiStringView) {
-    auto                      rg = ReportGuard(REPORT);
+    auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("abcd");
     presentation::add_rule(p, "acba", "aabc");
@@ -1145,7 +1144,7 @@ namespace libsemigroups {
                                    "[quick][kambites]",
                                    std::string,
                                    MultiStringView) {
-    auto rg = ReportGuard(REPORT);
+    auto rg = ReportGuard(false);
 
     Presentation<std::string> p;
     p.alphabet("abcde");
@@ -1170,7 +1169,7 @@ namespace libsemigroups {
                                    "[quick][kambites]",
                                    std::string,
                                    MultiStringView) {
-    auto rg = ReportGuard(REPORT);
+    auto rg = ReportGuard(false);
 
     Presentation<std::string> p;
     p.alphabet("abcd");
@@ -2121,7 +2120,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Kambites", "075", "example 1", "[quick][kambites]") {
-    auto                    rg = ReportGuard(REPORT);
+    auto                    rg = ReportGuard(false);
     Presentation<word_type> p;
     p.alphabet(2);
     presentation::add_rule(p, 000_w, 0_w);
@@ -2136,7 +2135,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Kambites", "076", "example 2", "[quick][kambites]") {
-    auto                    rg = ReportGuard(REPORT);
+    auto                    rg = ReportGuard(false);
     Presentation<word_type> p;
     p.alphabet(7);
     presentation::add_rule(p, 0123_w, 000400_w);
