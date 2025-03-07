@@ -1663,15 +1663,12 @@ namespace libsemigroups {
     //! \param fp the FroidurePin instance.
     //! \param coll the collection of generators to add.
     //!
-    //! \returns A const reference to the first parameter.
-    //!
     //! \throws LibsemigroupsException if the degree of \p x is incompatible
     //! with the existing degree of \p fp (if any).
     template <typename Container>
-    FroidurePin<typename Container::value_type>&
-    add_generators(FroidurePin<typename Container::value_type>& fp,
-                   Container const&                             coll) {
-      return fp.add_generators(std::begin(coll), std::end(coll));
+    void add_generators(FroidurePin<typename Container::value_type>& fp,
+                        Container const&                             coll) {
+      fp.add_generators(std::begin(coll), std::end(coll));
     }
 
     //! \brief Add collection of generators from container.
@@ -1684,15 +1681,13 @@ namespace libsemigroups {
     //! \param fp the FroidurePin instance.
     //! \param coll the collection of generators to add.
     //!
-    //! \returns A const reference to the first parameter.
-    //!
     //! \warning This function does not check its arguments. In particular, it
     //! is assumed that the generators in \p gens all have the same degree.
     template <typename Container>
-    FroidurePin<typename Container::value_type>&
+    void
     add_generators_no_checks(FroidurePin<typename Container::value_type>& fp,
                              Container const& coll) {
-      return fp.add_generators_no_checks(std::begin(coll), std::end(coll));
+      fp.add_generators_no_checks(std::begin(coll), std::end(coll));
     }
 
     // TODO(1) make the following work
@@ -1715,14 +1710,12 @@ namespace libsemigroups {
     //! \param fp the FroidurePin instance.
     //! \param coll the collection of generators to add.
     //!
-    //! \returns A const reference to the first parameter.
-    //!
     //! \throws LibsemigroupsException if the degree of \p x is incompatible
     //! with the existing degree of \p fp (if any).
     template <typename Element>
-    FroidurePin<Element>& add_generators(FroidurePin<Element>&          fp,
-                                         std::initializer_list<Element> coll) {
-      return fp.add_generators(std::begin(coll), std::end(coll));
+    void add_generators(FroidurePin<Element>&          fp,
+                        std::initializer_list<Element> coll) {
+      fp.add_generators(std::begin(coll), std::end(coll));
     }
 
     //! \brief Add collection of generators from initializer list.
@@ -1735,15 +1728,12 @@ namespace libsemigroups {
     //! \param fp the FroidurePin instance.
     //! \param coll the collection of generators to add.
     //!
-    //! \returns A const reference to the first parameter.
-    //!
     //! \warning This function does not check its arguments. In particular, it
     //! is assumed that the generators in \p coll all have the same degree.
     template <typename Element>
-    FroidurePin<Element>&
-    add_generators_no_checks(FroidurePin<Element>&          fp,
-                             std::initializer_list<Element> coll) {
-      return fp.add_generators_no_checks(std::begin(coll), std::end(coll));
+    void add_generators_no_checks(FroidurePin<Element>&          fp,
+                                  std::initializer_list<Element> coll) {
+      fp.add_generators_no_checks(std::begin(coll), std::end(coll));
     }
 
     //! \brief Copy a FroidurePin instance and add a collection of generators
@@ -1845,15 +1835,12 @@ namespace libsemigroups {
     //! \param fp the FroidurePin instance.
     //! \param coll the collection of generator to add.
     //!
-    //! \returns A const reference to the first parameter.
-    //!
     //! \throws LibsemigroupsException if the degree of \p x is incompatible
     //! with the existing degree of \p fp (if any).
     template <typename Container>
-    FroidurePin<typename Container::value_type>&
-    closure(FroidurePin<typename Container::value_type>& fp,
-            Container const&                             coll) {
-      return fp.closure(std::begin(coll), std::end(coll));
+    void closure(FroidurePin<typename Container::value_type>& fp,
+                 Container const&                             coll) {
+      fp.closure(std::begin(coll), std::end(coll));
     }
 
     //! \brief Add non-redundant generators from a container.
@@ -1865,15 +1852,12 @@ namespace libsemigroups {
     //! \param fp the FroidurePin instance.
     //! \param coll the collection of generator to add.
     //!
-    //! \returns A const reference to the first parameter.
-    //!
     //! \warning This function does not check its arguments. In particular, it
     //! is assumed that the generators in \p coll all have the same degree.
     template <typename Container>
-    FroidurePin<typename Container::value_type>&
-    closure_no_checks(FroidurePin<typename Container::value_type>& fp,
-                      Container const&                             coll) {
-      return fp.closure_no_checks(std::begin(coll), std::end(coll));
+    void closure_no_checks(FroidurePin<typename Container::value_type>& fp,
+                           Container const&                             coll) {
+      fp.closure_no_checks(std::begin(coll), std::end(coll));
     }
 
     //! \brief Add non-redundant generators from a std::initializer_list.
@@ -1884,15 +1868,13 @@ namespace libsemigroups {
     //!
     //! \param fp the FroidurePin instance.
     //! \param coll the collection of generator to add.
-    //!
-    //! \returns A const reference to the first parameter.
     //!
     //! \throws LibsemigroupsException if the degree of \p x is incompatible
     //! with the existing degree of \p fp (if any).
     template <typename Element>
-    FroidurePin<Element>& closure(FroidurePin<Element>&          fp,
-                                  std::initializer_list<Element> coll) {
-      return fp.closure(std::begin(coll), std::end(coll));
+    void closure(FroidurePin<Element>&          fp,
+                 std::initializer_list<Element> coll) {
+      fp.closure(std::begin(coll), std::end(coll));
     }
 
     //! \brief Add non-redundant generators from a std::initializer_list.
@@ -1904,15 +1886,12 @@ namespace libsemigroups {
     //! \param fp the FroidurePin instance.
     //! \param coll the collection of generator to add.
     //!
-    //! \returns A const reference to the first parameter.
-    //!
     //! \warning This function does not check its arguments. In particular, it
     //! is assumed that the generators in \p coll all have the same degree.
     template <typename Element>
-    FroidurePin<Element>&
-    closure_no_checks(FroidurePin<Element>&          fp,
-                      std::initializer_list<Element> coll) {
-      return fp.closure_no_checks(std::begin(coll), std::end(coll));
+    void closure_no_checks(FroidurePin<Element>&          fp,
+                           std::initializer_list<Element> coll) {
+      fp.closure_no_checks(std::begin(coll), std::end(coll));
     }
 
     //! \brief Copy and add non-redundant generators from a container.
