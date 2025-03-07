@@ -24,13 +24,11 @@
 
 namespace libsemigroups {
 
-  constexpr bool REPORT = false;
-
   LIBSEMIGROUPS_TEST_CASE("Konieczny",
                           "028",
                           "partial perm",
                           "[quick][pperm][no-valgrind]") {
-    auto                             rg = ReportGuard(REPORT);
+    auto                             rg = ReportGuard(false);
     std::vector<LeastPPerm<9>> const gens
         = {LeastPPerm<9>({0, 2, 3, 7}, {1, 6, 7, 3}, 9),
            LeastPPerm<9>({0, 1, 2, 3, 4, 7}, {6, 5, 8, 0, 2, 1}, 9),
@@ -55,7 +53,7 @@ namespace libsemigroups {
                           "029",
                           "symmetric inverse monoid n = 8",
                           "[quick][pperm][no-valgrind]") {
-    auto                     rg = ReportGuard(REPORT);
+    auto                     rg = ReportGuard(false);
     Konieczny<LeastPPerm<8>> S(
         {LeastPPerm<8>({0, 1, 2, 3, 4, 5, 6, 7}, {0, 1, 2, 3, 4, 5, 6, 7}, 8),
          LeastPPerm<8>({0, 1, 2, 3, 4, 5, 6, 7}, {1, 2, 3, 4, 5, 6, 7, 0}, 8),
@@ -70,7 +68,7 @@ namespace libsemigroups {
                           "030",
                           "exceptions",
                           "[quick][pperm][no-valgrind]") {
-    auto rg          = ReportGuard(REPORT);
+    auto rg          = ReportGuard(false);
     using point_type = typename PPerm<>::point_type;
     std::vector<point_type> v(65, 0);
     std::iota(v.begin(), v.end(), 0);

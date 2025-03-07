@@ -30,13 +30,11 @@ namespace libsemigroups {
   // Forward declaration
   struct LibsemigroupsException;
 
-  constexpr bool REPORT = false;
-
   LIBSEMIGROUPS_TEST_CASE("FroidurePin<PPerm<>>",
                           "058",
                           "",
                           "[quick][froidure-pin][pperm]") {
-    auto rg = ReportGuard(REPORT);
+    auto rg = ReportGuard(false);
 
     FroidurePin<PPerm<>> S;
     S.add_generator(PPerm<>({0, 3, 4, 5}, {1, 0, 3, 2}, 6));
@@ -82,7 +80,7 @@ namespace libsemigroups {
                           "059",
                           "",
                           "[quick][froidure-pin][pperm]") {
-    auto                 rg = ReportGuard(REPORT);
+    auto                 rg = ReportGuard(false);
     FroidurePin<PPerm<>> S;
     S.add_generator(PPerm<>({0, 1, 2, 3, 5, 6, 9}, {9, 7, 3, 5, 4, 2, 1}, 11));
     S.add_generator(PPerm<>({4, 5, 0}, {10, 0, 1}, 11));

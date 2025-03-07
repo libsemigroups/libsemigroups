@@ -36,8 +36,6 @@ namespace libsemigroups {
 
   struct LibsemigroupsException;
 
-  bool constexpr REPORT = false;
-
 #if (LIBSEMIGROUPS_SIZEOF_VOID_P == 8)
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
@@ -397,7 +395,7 @@ namespace libsemigroups {
                           "026",
                           "copy constructor - BMat8",
                           "[quick][froidure-pin][bmat8][no-valgrind]") {
-    auto rg = ReportGuard(REPORT);
+    auto rg = ReportGuard(false);
     auto S  = make<FroidurePin>(
         {BMat8({{0, 1, 0, 0}, {1, 0, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}),
           BMat8({{0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}, {1, 0, 0, 0}}),

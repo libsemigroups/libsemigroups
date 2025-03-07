@@ -105,13 +105,11 @@ namespace libsemigroups {
     std::swap(buf, rows);
   }
 
-  constexpr bool REPORT = false;
-
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
                           "055",
                           "(tropical max-plus semiring matrices)",
                           "[quick][froidure-pin][tropmaxplus]") {
-    auto rg = ReportGuard(REPORT);
+    auto rg = ReportGuard(false);
     // threshold 9, 2 x 2
     using Mat = MaxPlusTruncMat<9, 2>;
     using Row = typename Mat::Row;

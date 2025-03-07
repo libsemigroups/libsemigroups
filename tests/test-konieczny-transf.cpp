@@ -25,14 +25,12 @@
 
 namespace libsemigroups {
 
-  constexpr bool REPORT = false;
-
   LIBSEMIGROUPS_TEST_CASE("Konieczny",
                           "031",
                           "transformations",
                           "[quick][transf]") {
     using Transf         = LeastTransf<5>;
-    auto              rg = ReportGuard(REPORT);
+    auto              rg = ReportGuard(false);
     Konieczny<Transf> S({Transf({1, 0, 2, 3, 4}),
                          Transf({1, 2, 3, 4, 0}),
                          Transf({0, 0, 2, 3, 4})});
@@ -59,7 +57,7 @@ namespace libsemigroups {
                           "transformations - JDM favourite example",
                           "[quick][no-valgrind][transf]") {
     using Transf         = LeastTransf<8>;
-    auto              rg = ReportGuard(REPORT);
+    auto              rg = ReportGuard(false);
     Konieczny<Transf> S({Transf({1, 7, 2, 6, 0, 4, 1, 5}),
                          Transf({2, 4, 6, 1, 4, 5, 2, 7}),
                          Transf({3, 0, 7, 2, 4, 6, 2, 4}),
@@ -84,7 +82,7 @@ namespace libsemigroups {
                           "033",
                           "transformations - large example",
                           "[quick][no-valgrind][transf]") {
-    auto                        rg   = ReportGuard(REPORT);
+    auto                        rg   = ReportGuard(false);
     std::vector<Transf<>> const gens = {Transf<>({2, 1, 0, 4, 2, 1, 1, 8, 0}),
                                         Transf<>({1, 7, 6, 2, 5, 1, 1, 4, 3}),
                                         Transf<>({1, 0, 7, 2, 1, 3, 1, 3, 7}),
@@ -113,7 +111,7 @@ namespace libsemigroups {
                           "034",
                           "transformations - large example with stop",
                           "[quick][no-valgrind][transf]") {
-    auto                rg = ReportGuard(REPORT);
+    auto                rg = ReportGuard(false);
     Konieczny<Transf<>> S({Transf<>({2, 1, 0, 4, 2, 1, 1, 8, 0}),
                            Transf<>({1, 7, 6, 2, 5, 1, 1, 4, 3}),
                            Transf<>({1, 0, 7, 2, 1, 3, 1, 3, 7}),
@@ -127,7 +125,7 @@ namespace libsemigroups {
                           "035",
                           "transformations - large example with run_until",
                           "[quick][no-valgrind][transf]") {
-    auto                rg = ReportGuard(REPORT);
+    auto                rg = ReportGuard(false);
     Konieczny<Transf<>> S({Transf<>({2, 1, 0, 4, 2, 1, 1, 8, 0}),
                            Transf<>({1, 7, 6, 2, 5, 1, 1, 4, 3}),
                            Transf<>({1, 0, 7, 2, 1, 3, 1, 3, 7}),
@@ -150,7 +148,7 @@ namespace libsemigroups {
                           "036",
                           "transformations - large example with stop in Action",
                           "[quick][no-valgrind][transf]") {
-    auto                rg = ReportGuard(REPORT);
+    auto                rg = ReportGuard(false);
     Konieczny<Transf<>> S({Transf<>({2, 1, 0, 4, 2, 1, 1, 8, 0}),
                            Transf<>({1, 7, 6, 2, 5, 1, 1, 4, 3}),
                            Transf<>({1, 0, 7, 2, 1, 3, 1, 3, 7}),
@@ -168,7 +166,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Konieczny", "037", "exceptions", "[quick][transf]") {
-    auto rg          = ReportGuard(REPORT);
+    auto rg          = ReportGuard(false);
     using point_type = typename Transf<>::point_type;
     std::vector<point_type> v(65, 0);
     std::iota(v.begin(), v.end(), 0);
@@ -180,7 +178,7 @@ namespace libsemigroups {
                           "038",
                           "transformations: contains",
                           "[quick][transf]") {
-    auto                rg = ReportGuard(REPORT);
+    auto                rg = ReportGuard(false);
     Konieczny<Transf<>> S({Transf<>({1, 0, 2, 3, 4}),
                            Transf<>({1, 2, 3, 4, 0}),
                            Transf<>({0, 0, 2, 3, 4})});
@@ -259,7 +257,7 @@ namespace libsemigroups {
                           "040",
                           "transformations - destructor coverage",
                           "[quick][transf][no-valgrind]") {
-    auto rg      = ReportGuard(REPORT);
+    auto rg      = ReportGuard(false);
     using Transf = LeastTransf<9>;
     Konieczny<Transf> S({Transf({2, 1, 0, 4, 2, 1, 1, 8, 0}),
                          Transf({1, 7, 6, 2, 5, 1, 1, 4, 3}),
@@ -280,7 +278,7 @@ namespace libsemigroups {
                           "041",
                           "current_number_D_classes",
                           "[quick][transf][no-valgrind]") {
-    auto rg      = ReportGuard(REPORT);
+    auto rg      = ReportGuard(false);
     using Transf = LeastTransf<9>;
     Konieczny<Transf> S({Transf({2, 1, 0, 4, 2, 1, 1, 8, 0}),
                          Transf({1, 7, 6, 2, 5, 1, 1, 4, 3}),
@@ -302,7 +300,7 @@ namespace libsemigroups {
                           "042",
                           "add_generator",
                           "[quick][transf][no-valgrind]") {
-    auto rg      = ReportGuard(REPORT);
+    auto rg      = ReportGuard(false);
     using Transf = LeastTransf<16>;
 
     Konieczny<Transf> S({Transf({1, 0, 2, 3, 4})});
@@ -320,7 +318,7 @@ namespace libsemigroups {
                           "043",
                           "add_generator",
                           "[quick][transf][no-valgrind]") {
-    auto rg      = ReportGuard(REPORT);
+    auto rg      = ReportGuard(false);
     using Transf = LeastTransf<16>;
 
     Konieczny<Transf> S;

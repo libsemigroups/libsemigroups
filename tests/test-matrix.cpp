@@ -42,8 +42,6 @@ namespace libsemigroups {
   template <size_t N>
   class BitSet;
 
-  constexpr bool REPORT = false;
-
   namespace {
 
     ////////////////////////////////////////////////////////////////////////
@@ -134,7 +132,7 @@ namespace libsemigroups {
                                    "[quick]",
                                    BMat<2>,
                                    BMat<>) {
-    auto rg = ReportGuard(REPORT);
+    auto rg = ReportGuard(false);
     {
       TestType m = make<TestType>({{0, 1}, {0, 1}});
       REQUIRE_NOTHROW(matrix::throw_if_bad_entry(m));
@@ -288,7 +286,7 @@ namespace libsemigroups {
                                    "[quick]",
                                    BMat<3>,
                                    BMat<>) {
-    auto     rg = ReportGuard(REPORT);
+    auto     rg = ReportGuard(false);
     TestType m(3, 3);
     m.product_inplace_no_checks(TestType({{1, 1, 0}, {0, 0, 1}, {1, 0, 1}}),
                                 TestType({{1, 0, 1}, {0, 0, 1}, {1, 1, 0}}));
@@ -585,7 +583,7 @@ namespace libsemigroups {
       REQUIRE(m2(0, 1) == 4);
     }
 
-    auto rg = ReportGuard(REPORT);
+    auto rg = ReportGuard(false);
     {
       std::vector<std::array<scalar_type, 2>> expected;
       expected.push_back({1, 1});
@@ -637,7 +635,7 @@ namespace libsemigroups {
                               {0, 0, 1, 3},
                               {1, NEGATIVE_INFINITY, 0, 0},
                               {0, 1, 0, 1}});
-    auto rg = ReportGuard(REPORT);
+    auto rg = ReportGuard(false);
     auto r  = matrix::row_basis(m);
     REQUIRE(r.size() == 4);
     REQUIRE(r[0] == make<Row>(sr, {0, 0, 1, 3}));
@@ -788,7 +786,7 @@ namespace libsemigroups {
       sr = new NTPSemiring<>(0, 3);
     }
     using Row   = typename TestType::Row;
-    auto     rg = ReportGuard(REPORT);
+    auto     rg = ReportGuard(false);
     TestType m(sr, 3, 3);
     // REQUIRE(matrix::throw_if_bad_entry(m)); // m might not be valid!
     m.product_inplace_no_checks(
@@ -820,7 +818,7 @@ namespace libsemigroups {
     using RowView     = typename TestType::RowView;
     using scalar_type = typename TestType::scalar_type;
 
-    auto rg = ReportGuard(REPORT);
+    auto rg = ReportGuard(false);
 
     TestType m = make<TestType>(
         sr, {{1, 1, 0, 0}, {2, 0, 2, 0}, {1, 2, 3, 9}, {0, 0, 0, 7}});
@@ -890,7 +888,7 @@ namespace libsemigroups {
       sr = new NTPSemiring<>(0, 10);
     }
 
-    auto     rg = ReportGuard(REPORT);
+    auto     rg = ReportGuard(false);
     TestType m(sr, {{1, 1, 0, 0}, {2, 0, 2, 0}, {1, 2, 3, 9}, {0, 0, 0, 7}});
     REQUIRE(m.number_of_cols() == 4);
     REQUIRE(m.number_of_rows() == 4);

@@ -28,15 +28,13 @@ namespace libsemigroups {
   // Forward declaration
   struct LibsemigroupsException;
 
-  constexpr bool REPORT = false;
-
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("FroidurePin",
                                    "061",
                                    "example 1",
                                    "[quick][froidure-pin][projmaxplus]",
                                    ProjMaxPlusMat<3>,
                                    ProjMaxPlusMat<>) {
-    auto                  rg = ReportGuard(REPORT);
+    auto                  rg = ReportGuard(false);
     FroidurePin<TestType> S;
     S.add_generator(TestType({{0, 1, 2}, {3, 4, 1}, {2, 1, 1}}));
     S.add_generator(TestType({{0, 1, 1}, {1, 1, 1}, {0, 0, 0}}));
@@ -82,7 +80,7 @@ namespace libsemigroups {
                                    "[quick][froidure-pin][element]",
                                    ProjMaxPlusMat<3>,
                                    ProjMaxPlusMat<>) {
-    auto                  rg = ReportGuard(REPORT);
+    auto                  rg = ReportGuard(false);
     auto                  id = TestType::one(3);
     FroidurePin<TestType> S;
     S.add_generator(id);

@@ -35,10 +35,8 @@ namespace libsemigroups {
 
   namespace detail {
 
-    constexpr bool REPORT = false;
-
     LIBSEMIGROUPS_TEST_CASE("KBE", "000", "constructors", "[quick]") {
-      auto                  rg = ReportGuard(REPORT);
+      auto                  rg = ReportGuard(false);
       FroidurePin<Transf<>> S;
       S.add_generator(Transf<>({1, 0}));
       S.add_generator(Transf<>({0, 0}));
@@ -61,7 +59,7 @@ namespace libsemigroups {
     }
 
     LIBSEMIGROUPS_TEST_CASE("KBE", "001", "test", "[quick]") {
-      auto        rg = ReportGuard(REPORT);
+      auto        rg = ReportGuard(false);
       FroidurePin S  = make<FroidurePin>({Transf<>({1, 0}), Transf<>({0, 0})});
 
       REQUIRE(S.size() == 4);
@@ -89,7 +87,7 @@ namespace libsemigroups {
     }
 
     LIBSEMIGROUPS_TEST_CASE("KBE", "002", "factorisation", "[quick]") {
-      auto                  rg = ReportGuard(REPORT);
+      auto                  rg = ReportGuard(false);
       FroidurePin<Transf<>> S
           = make<FroidurePin>({Transf<>({1, 0}), Transf<>({0, 0})});
 
@@ -102,7 +100,7 @@ namespace libsemigroups {
     }
 
     LIBSEMIGROUPS_TEST_CASE("KBE", "003", "swap", "[quick]") {
-      auto                  rg = ReportGuard(REPORT);
+      auto                  rg = ReportGuard(false);
       FroidurePin<Transf<>> S
           = make<FroidurePin>({Transf<>({1, 0}), Transf<>({0, 0})});
 
@@ -122,7 +120,7 @@ namespace libsemigroups {
     }
 
     LIBSEMIGROUPS_TEST_CASE("KBE", "004", "adapters", "[quick]") {
-      auto                  rg = ReportGuard(REPORT);
+      auto                  rg = ReportGuard(false);
       FroidurePin<Transf<>> S
           = make<FroidurePin>({Transf<>({1, 0}), Transf<>({0, 0})});
 
@@ -140,7 +138,7 @@ namespace libsemigroups {
     }
 
     LIBSEMIGROUPS_TEST_CASE("KBE", "005", "conversions", "[quick]") {
-      auto                  rg = ReportGuard(REPORT);
+      auto                  rg = ReportGuard(false);
       FroidurePin<Transf<>> S
           = make<FroidurePin>({Transf<>({1, 0}), Transf<>({0, 0})});
 

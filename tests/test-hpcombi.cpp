@@ -68,10 +68,8 @@ namespace std {
 
 namespace libsemigroups {
 
-  constexpr bool REPORT = false;
-
   LIBSEMIGROUPS_TEST_CASE("HPCombi", "000", "Transf16", "[quick][hpcombi]") {
-    auto rg = ReportGuard(REPORT);
+    auto rg = ReportGuard(false);
     auto S  = make<FroidurePin>({Transf16({1, 2, 0})});
     REQUIRE(S.size() == 3);
     REQUIRE(S.number_of_idempotents() == 1);
@@ -258,7 +256,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("HPCombi", "010", "Transf16", "[standard][hpcombi]") {
-    auto rg = ReportGuard(REPORT);
+    auto rg = ReportGuard(false);
     auto S  = make<FroidurePin>({Transf16({1, 7, 2, 6, 0, 4, 1, 5}),
                                  Transf16({2, 4, 6, 1, 4, 5, 2, 7}),
                                  Transf16({3, 0, 7, 2, 4, 6, 2, 4}),
@@ -272,7 +270,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("HPCombi", "011", "Transf16", "[standard][hpcombi]") {
-    auto rg = ReportGuard(REPORT);
+    auto rg = ReportGuard(false);
 
     using Transf = libsemigroups::Transf<>;
     auto S       = make<FroidurePin>({Transf({1, 7, 2, 6, 0, 4, 1, 5}),

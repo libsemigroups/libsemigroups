@@ -35,8 +35,6 @@ namespace libsemigroups {
   // Forward declaration
   struct LibsemigroupsException;
 
-  bool constexpr REPORT = false;
-
   ////////////////////////////////////////////////////////////////////////
   // Test cases - BMat
   ////////////////////////////////////////////////////////////////////////
@@ -47,7 +45,7 @@ namespace libsemigroups {
                                    "[quick][froidure-pin][bmat]",
                                    BMat<4>,
                                    BMat<>) {
-    auto                  rg = ReportGuard(REPORT);
+    auto                  rg = ReportGuard(false);
     FroidurePin<TestType> S;
     S.add_generator(
         TestType({{0, 1, 0, 1}, {1, 0, 0, 0}, {0, 1, 1, 1}, {0, 1, 1, 0}}));
@@ -98,7 +96,7 @@ namespace libsemigroups {
                                    "[quick][froidure-pin][bmat][no-valgrind]",
                                    BMat<4>,
                                    BMat<>) {
-    auto                  rg = ReportGuard(REPORT);
+    auto                  rg = ReportGuard(false);
     FroidurePin<TestType> S;
     S.add_generator(
         TestType({{0, 1, 0, 0}, {1, 0, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}));
@@ -118,7 +116,7 @@ namespace libsemigroups {
                                    "[quick][froidure-pin][bmat]",
                                    BMat<3>,
                                    BMat<>) {
-    auto rg = ReportGuard(REPORT);
+    auto rg = ReportGuard(false);
 
     FroidurePin<TestType> S;
     S.add_generator(TestType({{1, 0, 1}, {0, 1, 0}, {0, 1, 0}}));

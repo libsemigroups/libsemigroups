@@ -32,7 +32,6 @@
 namespace libsemigroups {
 
   struct LibsemigroupsException;
-  constexpr bool REPORT = false;
 
   LIBSEMIGROUPS_TEST_CASE("Konieczny",
                           "016",
@@ -128,7 +127,7 @@ namespace libsemigroups {
                           "017",
                           "regular generated bmat monoid 4 idempotents",
                           "[quick][no-valgrind][bmat8]") {
-    auto                     rg = ReportGuard(REPORT);
+    auto                     rg = ReportGuard(false);
     const std::vector<BMat8> reg_bmat4_gens
         = {BMat8({{0, 1, 0, 0}, {1, 0, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}),
            BMat8({{0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}, {1, 0, 0, 0}}),
@@ -235,7 +234,7 @@ namespace libsemigroups {
                           "019",
                           "my favourite example",
                           "[quick][finite][no-valgrind][bmat8]") {
-    auto                     rg   = ReportGuard(REPORT);
+    auto                     rg   = ReportGuard(false);
     const std::vector<BMat8> gens = {BMat8({{0, 1, 0, 0, 0, 0, 0, 0},
                                             {0, 0, 0, 0, 0, 0, 0, 1},
                                             {0, 0, 1, 0, 0, 0, 0, 0},
@@ -315,7 +314,7 @@ namespace libsemigroups {
 #pragma GCC diagnostic ignored "-Winline"
 #endif
     using BMat                   = BMatFastest<8>;
-    auto                    rg   = ReportGuard(REPORT);
+    auto                    rg   = ReportGuard(false);
     const std::vector<BMat> gens = {BMat({{0, 1, 0, 0, 0, 0, 0, 0},
                                           {0, 0, 0, 0, 0, 1, 0, 0},
                                           {0, 0, 0, 0, 0, 1, 0, 0},
@@ -392,7 +391,7 @@ namespace libsemigroups {
                           "021",
                           "my favourite example transposed",
                           "[quick][no-valgrind][bmat8]") {
-    auto                     rg   = ReportGuard(REPORT);
+    auto                     rg   = ReportGuard(false);
     const std::vector<BMat8> gens = {BMat8({{0, 0, 0, 0, 1, 0, 0, 0},
                                             {1, 0, 0, 0, 0, 0, 1, 0},
                                             {0, 0, 1, 0, 0, 0, 0, 0},
@@ -597,7 +596,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Konieczny", "024", "exceptions", "[quick][bmat8]") {
-    auto                     rg    = ReportGuard(REPORT);
+    auto                     rg    = ReportGuard(false);
     const std::vector<BMat8> gens  = {BMat8({{0, 1, 0}, {0, 0, 1}, {1, 0, 0}}),
                                       BMat8({{0, 1, 0}, {1, 0, 0}, {0, 0, 1}}),
                                       BMat8({{1, 0, 0}, {1, 1, 0}, {0, 0, 1}}),
@@ -640,7 +639,7 @@ namespace libsemigroups {
                           "025",
                           "0-parameter constructor",
                           "[quick][no-valgrind][bmat8]") {
-    auto                     rg   = ReportGuard(REPORT);
+    auto                     rg   = ReportGuard(false);
     const std::vector<BMat8> gens = {BMat8({{0, 1, 0, 0, 0, 0, 0, 0},
                                             {0, 0, 0, 0, 0, 1, 0, 0},
                                             {0, 0, 0, 0, 0, 1, 0, 0},

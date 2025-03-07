@@ -27,7 +27,6 @@
 
 namespace libsemigroups {
   struct LibsemigroupsException;
-  constexpr bool REPORT = false;
 
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("FroidurePin",
                                    "040",
@@ -35,7 +34,7 @@ namespace libsemigroups {
                                    "[quick][froidure-pin][matrix]",
                                    MaxPlusMat<2>,
                                    MaxPlusMat<>) {
-    auto                  rg = ReportGuard(REPORT);
+    auto                  rg = ReportGuard(false);
     FroidurePin<TestType> S;
     S.add_generator(make<TestType>({{0, -4}, {-4, -1}}));
     S.add_generator(make<TestType>({{0, -3}, {-3, -1}}));
@@ -101,7 +100,7 @@ namespace libsemigroups {
                                    "[quick][froidure-pin][matrix]",
                                    MinPlusMat<>,
                                    MinPlusMat<2>) {
-    auto                  rg = ReportGuard(REPORT);
+    auto                  rg = ReportGuard(false);
     FroidurePin<TestType> S;
     S.add_generator(make<TestType>({{1, 0}, {0, POSITIVE_INFINITY}}));
 
@@ -130,7 +129,7 @@ namespace libsemigroups {
                                    (MaxPlusTruncMat<33, 3>),
                                    MaxPlusTruncMat<33>,
                                    MaxPlusTruncMat<>) {
-    auto rg = ReportGuard(REPORT);
+    auto rg = ReportGuard(false);
 
     MaxPlusTruncSemiring<> const* sr = nullptr;
     if constexpr (!std::is_same_v<typename TestType::semiring_type, void>) {
@@ -168,7 +167,7 @@ namespace libsemigroups {
                                    (MinPlusTruncMat<11, 3>),
                                    MinPlusTruncMat<11>,
                                    MinPlusTruncMat<>) {
-    auto rg = ReportGuard(REPORT);
+    auto rg = ReportGuard(false);
 
     MinPlusTruncSemiring<>* sr = nullptr;
     if constexpr (!std::is_same_v<typename TestType::semiring_type, void>) {
@@ -203,7 +202,7 @@ namespace libsemigroups {
                                    "[quick][froidure-pin][matrix]",
                                    (NTPMat<11, 3>),
                                    NTPMat<>) {
-    auto rg = ReportGuard(REPORT);
+    auto rg = ReportGuard(false);
 
     NTPSemiring<>* sr = nullptr;
     if constexpr (!std::is_same_v<typename TestType::semiring_type, void>) {

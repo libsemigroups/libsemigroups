@@ -28,8 +28,6 @@
 
 namespace libsemigroups {
 
-  constexpr bool REPORT = false;
-
   template <typename TIntegralType>
   struct Complexity<
       TIntegralType,
@@ -83,7 +81,7 @@ namespace libsemigroups {
                           "031",
                           "uint32_t/uint8_t",
                           "[quick][froidure-pin][integers]") {
-    auto                  rg = ReportGuard(REPORT);
+    auto                  rg = ReportGuard(false);
     FroidurePin<uint32_t> S;
     S.add_generator(2);
     REQUIRE(S.size() == 32);

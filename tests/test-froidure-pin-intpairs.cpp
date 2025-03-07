@@ -27,7 +27,6 @@
 #include "libsemigroups/froidure-pin.hpp"  // for FroidurePin<>::element_i...
 
 namespace libsemigroups {
-  constexpr bool REPORT = false;
 
   class IntPair {
    public:
@@ -113,7 +112,7 @@ namespace libsemigroups {
                           "039",
                           "(pairs of integers) non-trivial user type",
                           "[quick][froidure-pin][intpairs][108]") {
-    auto                 rg = ReportGuard(REPORT);
+    auto                 rg = ReportGuard(false);
     FroidurePin<IntPair> S;
     S.add_generator(IntPair(1, 1));
     REQUIRE(S.size() == 1);

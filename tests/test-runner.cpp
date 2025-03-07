@@ -35,8 +35,6 @@
 namespace libsemigroups {
   struct LibsemigroupsException;
 
-  constexpr bool REPORT = false;
-
   namespace detail {
 
     class TestRunner1 : public Runner {
@@ -122,7 +120,7 @@ namespace libsemigroups {
     }
 
     LIBSEMIGROUPS_TEST_CASE("Runner", "000", "run_for", "[quick]") {
-      auto        rg = ReportGuard(REPORT);
+      auto        rg = ReportGuard(false);
       TestRunner1 tr;
       tr.run_for(std::chrono::milliseconds(10));
       REQUIRE(tr.finished());
@@ -133,7 +131,7 @@ namespace libsemigroups {
     }
 
     LIBSEMIGROUPS_TEST_CASE("Runner", "001", "run_for", "[quick]") {
-      auto        rg = ReportGuard(REPORT);
+      auto        rg = ReportGuard(false);
       TestRunner1 tr;
       tr.run_for(std::chrono::nanoseconds(1000000));
       REQUIRE(tr.finished());
@@ -142,7 +140,7 @@ namespace libsemigroups {
     }
 
     LIBSEMIGROUPS_TEST_CASE("Runner", "002", "run_for", "[quick]") {
-      auto        rg = ReportGuard(REPORT);
+      auto        rg = ReportGuard(false);
       TestRunner2 tr;
       tr.run_for(std::chrono::milliseconds(50));
       REQUIRE(!tr.finished());
@@ -172,7 +170,7 @@ namespace libsemigroups {
     }
 
     LIBSEMIGROUPS_TEST_CASE("Runner", "003", "run_for", "[quick]") {
-      auto        rg = ReportGuard(REPORT);
+      auto        rg = ReportGuard(false);
       TestRunner3 tr;
       tr.run_for(FOREVER);
       REQUIRE(tr.started());
@@ -185,7 +183,7 @@ namespace libsemigroups {
     }
 
     LIBSEMIGROUPS_TEST_CASE("Runner", "004", "started", "[quick]") {
-      auto        rg = ReportGuard(REPORT);
+      auto        rg = ReportGuard(false);
       TestRunner1 tr;
       REQUIRE(!tr.started());
       tr.run_for(std::chrono::nanoseconds(1000000));
@@ -199,7 +197,7 @@ namespace libsemigroups {
                             "005",
                             "run_until",
                             "[quick][no-valgrind]") {
-      auto        rg = ReportGuard(REPORT);
+      auto        rg = ReportGuard(false);
       TestRunner1 tr;
       size_t      i = 0;
       tr.run_until([&i]() -> bool {
@@ -212,7 +210,7 @@ namespace libsemigroups {
     }
 
     LIBSEMIGROUPS_TEST_CASE("Runner", "006", "kill", "[quick]") {
-      auto        rg = ReportGuard(REPORT);
+      auto        rg = ReportGuard(false);
       TestRunner1 tr;
       tr.kill();
       REQUIRE(!tr.finished());
@@ -222,7 +220,7 @@ namespace libsemigroups {
     }
 
     LIBSEMIGROUPS_TEST_CASE("Runner", "007", "copy constructor", "[quick]") {
-      auto        rg = ReportGuard(REPORT);
+      auto        rg = ReportGuard(false);
       TestRunner1 tr1;
       tr1.run_for(std::chrono::milliseconds(10));
       REQUIRE(tr1.finished());
@@ -237,7 +235,7 @@ namespace libsemigroups {
     }
 
     LIBSEMIGROUPS_TEST_CASE("Runner", "008", "report", "[quick]") {
-      auto        rg = ReportGuard(REPORT);
+      auto        rg = ReportGuard(false);
       TestRunner1 tr;
       REQUIRE(!tr.report());
       tr.report_every(std::chrono::milliseconds(10));
@@ -261,7 +259,7 @@ namespace libsemigroups {
                             "009",
                             "run_until with function pointer",
                             "[quick][no-valgrind]") {
-      auto        rg = ReportGuard(REPORT);
+      auto        rg = ReportGuard(false);
       TestRunner1 tr;
       tr.run_until(fn_ptr);
       REQUIRE(tr.finished());
@@ -278,7 +276,7 @@ namespace libsemigroups {
                             "011",
                             "run throws an exception",
                             "[quick][no-valgrind]") {
-      auto        rg = ReportGuard(REPORT);
+      auto        rg = ReportGuard(false);
       TestRunner4 tr;
       REQUIRE_THROWS_AS(tr.run(), LibsemigroupsException);
       REQUIRE(tr.current_state() == Runner::state::not_running);

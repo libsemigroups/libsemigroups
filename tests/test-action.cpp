@@ -39,7 +39,6 @@ namespace libsemigroups {
   using namespace rx;
 
   struct LibsemigroupsException;  // forward decl
-  constexpr bool REPORT = false;
 
   using row_action_type = ImageRightAction<BMat8, BMat8>;
   using col_action_type = ImageLeftAction<BMat8, BMat8>;
@@ -50,7 +49,7 @@ namespace libsemigroups {
                           "001",
                           "row and column basis orbits for BMat8 x 1",
                           "[quick]") {
-    auto         rg = ReportGuard(REPORT);
+    auto         rg = ReportGuard(false);
     row_orb_type row_orb;
     row_orb.add_seed(BMat8({{1, 0, 0}, {0, 1, 0}, {0, 0, 0}}));
     row_orb.add_generator(BMat8({{0, 1, 0}, {1, 0, 0}, {0, 0, 1}}));
@@ -76,7 +75,7 @@ namespace libsemigroups {
     using bmat8::col_space_basis;
     using bmat8::row_space_basis;
 
-    auto         rg = ReportGuard(REPORT);
+    auto         rg = ReportGuard(false);
     row_orb_type row_orb;
     row_orb.add_seed(row_space_basis(
         BMat8({{1, 1, 1, 0}, {1, 1, 0, 0}, {0, 1, 0, 1}, {0, 1, 0, 0}})));
@@ -135,7 +134,7 @@ namespace libsemigroups {
                           "[quick]") {
     using bmat8::col_space_basis;
     using bmat8::row_space_basis;
-    auto         rg = ReportGuard(REPORT);
+    auto         rg = ReportGuard(false);
     row_orb_type row_orb;
     row_orb.add_seed(row_space_basis(
         BMat8({{1, 1, 1, 0}, {1, 1, 0, 0}, {0, 1, 0, 1}, {0, 1, 0, 0}})));
@@ -183,7 +182,7 @@ namespace libsemigroups {
                           "[quick][no-valgrind]") {
     using bmat8::col_space_basis;
     using bmat8::row_space_basis;
-    auto         rg = ReportGuard(REPORT);
+    auto         rg = ReportGuard(false);
     row_orb_type row_orb;
     row_orb.add_seed(row_space_basis(
         BMat8({{1, 1, 1, 0}, {1, 1, 0, 0}, {0, 1, 0, 1}, {0, 1, 0, 0}})));
@@ -258,7 +257,7 @@ namespace libsemigroups {
                           "005",
                           "orbits for regular boolean mat monoid 5",
                           "[quick][no-valgrind]") {
-    auto                     rg             = ReportGuard(REPORT);
+    auto                     rg             = ReportGuard(false);
     const std::vector<BMat8> reg_bmat5_gens = {BMat8({{0, 1, 0, 0, 0},
                                                       {1, 0, 0, 0, 0},
                                                       {0, 0, 1, 0, 0},
@@ -340,7 +339,7 @@ namespace libsemigroups {
                           "007",
                           "partial perm image orbit x 1",
                           "[quick]") {
-    auto rg = ReportGuard(REPORT);
+    auto rg = ReportGuard(false);
     RightAction<PPerm<8>, PPerm<8>, ImageRightAction<PPerm<8>, PPerm<8>>> o;
     o.add_seed(PPerm<8>::one(8));
     o.add_generator(
@@ -365,7 +364,7 @@ namespace libsemigroups {
                           "008",
                           "partial perm image orbit x 2",
                           "[quick][no-valgrind]") {
-    auto rg = ReportGuard(REPORT);
+    auto rg = ReportGuard(false);
     RightAction<PPerm<16>, PPerm<16>, ImageRightAction<PPerm<16>, PPerm<16>>> o;
     o.add_seed(PPerm<16>::one(16));
     o.add_generator(
@@ -392,7 +391,7 @@ namespace libsemigroups {
                           "009",
                           "partial perm image orbit x 3",
                           "[quick][no-valgrind]") {
-    auto rg = ReportGuard(REPORT);
+    auto rg = ReportGuard(false);
     RightAction<PPerm<16>, PPerm<16>, ImageRightAction<PPerm<16>, PPerm<16>>> o;
     o.add_seed(One<PPerm<16>>()(16));
     o.add_generator(
@@ -420,7 +419,7 @@ namespace libsemigroups {
                           "010",
                           "partial perm image orbit x 4",
                           "[quick][no-valgrind]") {
-    auto rg = ReportGuard(REPORT);
+    auto rg = ReportGuard(false);
     LeftAction<PPerm<16>, PPerm<16>, ImageLeftAction<PPerm<16>, PPerm<16>>> o;
     o.add_seed(One<PPerm<16>>()(16));
     o.add_generator(
@@ -447,7 +446,7 @@ namespace libsemigroups {
                           "011",
                           "permutation on integers",
                           "[quick]") {
-    auto rg    = ReportGuard(REPORT);
+    auto rg    = ReportGuard(false);
     using Perm = LeastPerm<8>;
     RightAction<Perm, uint8_t, ImageRightAction<Perm, uint8_t>> o;
     o.add_seed(0);
@@ -462,7 +461,7 @@ namespace libsemigroups {
                           "012",
                           "permutation on sets, arrays",
                           "[quick]") {
-    auto rg    = ReportGuard(REPORT);
+    auto rg    = ReportGuard(false);
     using Perm = LeastPerm<10>;
 
     RightAction<Perm,
@@ -480,7 +479,7 @@ namespace libsemigroups {
                           "013",
                           "permutation on tuples, arrays",
                           "[quick][no-valgrind]") {
-    auto rg    = ReportGuard(REPORT);
+    auto rg    = ReportGuard(false);
     using Perm = LeastPerm<10>;
 
     RightAction<Perm,
@@ -498,7 +497,7 @@ namespace libsemigroups {
                           "014",
                           "permutation on sets, vectors",
                           "[quick]") {
-    auto rg    = ReportGuard(REPORT);
+    auto rg    = ReportGuard(false);
     using Perm = LeastPerm<10>;
 
     RightAction<Perm, std::vector<uint8_t>, OnSets<Perm, uint8_t>> o;
@@ -512,7 +511,7 @@ namespace libsemigroups {
                           "015",
                           "permutation on tuples, vectors",
                           "[quick][no-valgrind]") {
-    auto rg    = ReportGuard(REPORT);
+    auto rg    = ReportGuard(false);
     using Perm = LeastPerm<10>;
 
     RightAction<Perm, std::vector<uint8_t>, OnTuples<Perm, uint8_t>> o;
@@ -527,7 +526,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Action", "016", "misc", "[quick]") {
-    auto rg    = ReportGuard(REPORT);
+    auto rg    = ReportGuard(false);
     using Perm = LeastPerm<8>;
     RightAction<Perm, uint8_t, ImageRightAction<Perm, uint8_t>> o;
     REQUIRE(o.current_size() == 0);
@@ -561,7 +560,7 @@ namespace libsemigroups {
                           "017",
                           "partial perm image orbit",
                           "[quick]") {
-    auto rg = ReportGuard(REPORT);
+    auto rg = ReportGuard(false);
     RightAction<PPerm<3>, PPerm<3>, ImageRightAction<PPerm<3>, PPerm<3>>> o;
     o.add_seed(PPerm<3>({0, 1, 2}, {0, 1, 2}, 3));
     o.add_generator(PPerm<3>({0, 1, 2}, {1, 2, 0}, 3));
@@ -592,7 +591,7 @@ namespace libsemigroups {
                           "018",
                           "permutation on tuples, arrays (360360)",
                           "[quick][no-valgrind]") {
-    auto rg    = ReportGuard(REPORT);
+    auto rg    = ReportGuard(false);
     using Perm = LeastPerm<15>;
 
     RightAction<Perm,
@@ -610,7 +609,7 @@ namespace libsemigroups {
                           "019",
                           "orbits for regular BMat8 monoid 5 with stop/start",
                           "[quick][no-valgrind]") {
-    auto                     rg             = ReportGuard(REPORT);
+    auto                     rg             = ReportGuard(false);
     const std::vector<BMat8> reg_bmat5_gens = {BMat8({{0, 1, 0, 0, 0},
                                                       {1, 0, 0, 0, 0},
                                                       {0, 0, 1, 0, 0},
@@ -726,7 +725,7 @@ namespace libsemigroups {
                           "021",
                           "constructors",
                           "[quick][no-valgrind]") {
-    auto rg    = ReportGuard(REPORT);
+    auto rg    = ReportGuard(false);
     using Perm = LeastPerm<10>;
 
     RightAction<Perm, std::vector<uint8_t>, OnTuples<Perm, uint8_t>> o;
