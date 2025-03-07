@@ -281,7 +281,7 @@ namespace libsemigroups {
     //! connected components.
     //!
     //! This function returns a range object consisting of roots of the strongly
-    //! connected components.
+    //! connected components; see \ref ranges_group for more details.
     //!
     //! \returns
     //! A range object by value.
@@ -291,7 +291,6 @@ namespace libsemigroups {
     //!
     //! \note This function triggers the computation of the strongly connected
     //! components (if they are not already known).
-    // TODO(0) add reference to range doc when available
     [[nodiscard]] auto roots() const {
       run();
       return (rx::iterator_range(_comps.cbegin(), _comps.cend())
