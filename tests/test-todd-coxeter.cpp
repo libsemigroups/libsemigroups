@@ -422,7 +422,7 @@ namespace libsemigroups {
       return w == class_of(tc, w).get();
     }));
 
-    // TODO implement cbegin/cend_wirpo (words in recursive path order
+    // TODO(2) implement cbegin/cend_wirpo (words in recursive path order
     // for (size_t i = 2; i < 6; ++i) {
     //   for (size_t j = 2; j < 10 - i; ++j) {
     //     auto v
@@ -1356,7 +1356,6 @@ namespace libsemigroups {
     REQUIRE(tc2.number_of_classes() == 1);
   }
 
-  // TODO move to to-todd-coxeter.hpp
   LIBSEMIGROUPS_TEST_CASE("ToddCoxeter",
                           "029",
                           "from KnuthBendix",
@@ -2179,9 +2178,9 @@ namespace libsemigroups {
     // REQUIRE(presentation::length(p) == 8'515);
 
     ToddCoxeter tc(congruence_kind::twosided, p);
-    // TODO should be some interplay between lookahead_min and lookahead_next,
-    // i.e.  lookahead_min shouldn't be allowed to be greater than
-    // lookahead_next, maybe?
+    // TODO(1) should be some interplay between lookahead_min and
+    // lookahead_next, i.e.  lookahead_min shouldn't be allowed to be greater
+    // than lookahead_next, maybe?
     tc.lookahead_min(2'500'000).lookahead_growth_factor(1.2);
     REQUIRE(tc.number_of_classes() == 823'543);
   }
@@ -2509,8 +2508,6 @@ namespace libsemigroups {
 
     REQUIRE(tc.number_of_classes() == 99);
     REQUIRE(tc.finished());
-    // TODO uncomment
-    // REQUIRE(tc.is_obviously_finite());
   }
 
   // The following 8 examples are from Trevor Walker's Thesis: Semigroup
@@ -3814,8 +3811,7 @@ namespace libsemigroups {
         .use_relations_in_extra(true)
         .def_max(10'000)
         .lower_bound(10'200'960);
-
-    // TODO uncomment
+    // TODO(1) uncomment
     //     .reserve(50'000'000);
 
     REQUIRE(tc.number_of_classes() == 10'200'960);
@@ -4450,7 +4446,7 @@ namespace libsemigroups {
       presentation::add_rule(p, pow({a}, 3), {a});
     }
     using words::operator+;
-    WordRange    words;
+    WordRange words;
     words.alphabet_size(n).min(0).max(8);
 
     for (size_t a = 0; a < n - 1; ++a) {
@@ -4546,8 +4542,7 @@ namespace libsemigroups {
       ToddCoxeter tc(twosided, p);
       REQUIRE(tc.number_of_classes() == 40'321);
     }
-
-    // TODO lookahead_max
+    // TODO(1) lookahead_max
     // .lookahead_style(options::lookahead_style::felsch)
     // .lower_bound(16'777'216);
 

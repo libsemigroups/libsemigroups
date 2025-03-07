@@ -60,6 +60,7 @@
 
 // TODO(later) Add tests for add_cyclic_conjugates
 // TODO(later) Change word_type({0, 1, 2}) to "012"_w
+// TODO(1) use LIBSEMIGROUPS_TEMPLATE_TEST_CASE
 
 namespace libsemigroups {
 
@@ -1379,7 +1380,7 @@ namespace libsemigroups {
                           "[quick][presentation]") {
     auto rg = ReportGuard(false);
     check_add_commutes_rules<word_type>();
-    // TODO Can't do this until operator+ works with StaticVector
+    // TODO(1) Can't do this until operator+ works with StaticVector
     // check_add_commutes_rules<StaticVector1<uint16_t, 10>>();
     check_add_commutes_rules<std::string>();
   }
@@ -1507,7 +1508,7 @@ namespace libsemigroups {
                           "[quick][presentation]") {
     auto rg = ReportGuard(false);
     check_balance<word_type>();
-    // TODO Can't do this until StaticVector1 has .front or . end
+    // TODO(1) Can't do this until StaticVector1 has .front or . end
     // check_balance<StaticVector1<uint16_t, 10>>();
     check_balance<std::string>();
   }
@@ -2637,7 +2638,7 @@ namespace libsemigroups {
                           "meaningful exception messages",
                           "[quick][presentation]") {
     using literals::operator""_w;
-    auto            rg = ReportGuard(false);
+    auto rg = ReportGuard(false);
 
     {
       Presentation<std::string> p;
@@ -2677,7 +2678,6 @@ namespace libsemigroups {
           presentation::add_inverse_rules(p, {0, 0}),
           "invalid inverses, the letter (char with value) 0 is duplicated!");
       p.alphabet(3);
-      // TODO this one could be better
       REQUIRE_EXCEPTION_MSG(
           presentation::add_inverse_rules(p, {'b', 'c', 'a'}),
           "invalid inverses, 'a' ^ -1 = 'b' but 'b' ^ -1 = 'c'");
@@ -2719,7 +2719,7 @@ namespace libsemigroups {
                           "056",
                           "add_generator (std::string)",
                           "[quick][presentation]") {
-    auto            rg = ReportGuard(false);
+    auto rg = ReportGuard(false);
     using literals::operator""_w;
 
     {
@@ -2995,7 +2995,7 @@ namespace libsemigroups {
                           "029",
                           "longest_subword_reducing_length #01",
                           "[quick][presentation]") {
-    using literals::        operator""_w;
+    using literals::operator""_w;
     Presentation<word_type> p;
     p.alphabet(4);
     presentation::add_rule(p, 1212_w, 0_w);
@@ -3031,7 +3031,7 @@ namespace libsemigroups {
                           "070",
                           "longest_subword_reducing_length #04",
                           "[quick][presentation]") {
-    using literals::        operator""_w;
+    using literals::operator""_w;
     Presentation<word_type> p;
     p.alphabet(4);
     presentation::add_rule(p, 00_w, 10_w);
@@ -3048,7 +3048,7 @@ namespace libsemigroups {
                           "071",
                           "longest_subword_reducing_length #05",
                           "[quick][presentation]") {
-    using literals::        operator""_w;
+    using literals::operator""_w;
     Presentation<word_type> p;
     p.alphabet(5).contains_empty_word(true);
     presentation::add_rule(p, 00_w, 10_w);
@@ -3066,7 +3066,7 @@ namespace libsemigroups {
                           "072",
                           "longest_subword_reducing_length #06",
                           "[quick][presentation]") {
-    using literals::        operator""_w;
+    using literals::operator""_w;
     Presentation<word_type> p;
     p.alphabet(6).contains_empty_word(true);
     presentation::add_rule(p, 00_w, 10_w);
