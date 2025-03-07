@@ -486,8 +486,6 @@ namespace libsemigroups {
      private:
       DClass();
 
-      void init(DClass const& that);
-
       void clear();
 
       ////////////////////////////////////////////////////////////////////////
@@ -500,9 +498,8 @@ namespace libsemigroups {
 
       DClass& operator=(DClass const& that);
 
-      DClass(DClass&&) = default;
-
-      DClass& operator=(DClass&&) = default;
+      DClass(DClass&&)            = delete;
+      DClass& operator=(DClass&&) = delete;
 
 #endif  // ndef LIBSEMIGROUPS_PARSED_BY_DOXYGEN
 

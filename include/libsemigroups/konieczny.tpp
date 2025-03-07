@@ -915,30 +915,6 @@ namespace libsemigroups {
         _tmp_rho_value() {}
 
   template <typename Element, typename Traits>
-  void Konieczny<Element, Traits>::DClass::init(DClass const& that) {
-    _class_computed     = that._class_computed;
-    _H_class_computed   = that._H_class_computed;
-    _is_regular_D_class = that._is_regular_D_class;
-    _left_indices       = that._left_indices;
-    _mults_computed     = that._mults_computed;
-    _parent             = that._parent;
-    _rank               = that._rank;
-
-    this->internal_free(_rep);
-    _rep           = that._parent->internal_copy(that._rep);
-    _reps_computed = that._reps_computed;
-    _right_indices = that._right_indices;
-
-    InternalVecCopy()(that._H_class, _H_class);
-    InternalVecCopy()(that._left_mults, _left_mults);
-    InternalVecCopy()(that._left_mults_inv, _left_mults_inv);
-    InternalVecCopy()(that._left_reps, _left_reps);
-    InternalVecCopy()(that._right_mults, _right_mults);
-    InternalVecCopy()(that._right_mults_inv, _right_mults_inv);
-    InternalVecCopy()(that._right_reps, _right_reps);
-  }
-
-  template <typename Element, typename Traits>
   void Konieczny<Element, Traits>::DClass::clear() {}
 
   ////////////////////////////////////////////////////////////////////////
@@ -961,13 +937,32 @@ namespace libsemigroups {
 
   template <typename Element, typename Traits>
   Konieczny<Element, Traits>::DClass::DClass(DClass const& that) : DClass() {
-    init(that);
+    *this = that;
   }
 
   template <typename Element, typename Traits>
   typename Konieczny<Element, Traits>::DClass&
   Konieczny<Element, Traits>::DClass::operator=(DClass const& that) {
-    init(that);
+    _class_computed     = that._class_computed;
+    _H_class_computed   = that._H_class_computed;
+    _is_regular_D_class = that._is_regular_D_class;
+    _left_indices       = that._left_indices;
+    _mults_computed     = that._mults_computed;
+    _parent             = that._parent;
+    _rank               = that._rank;
+
+    this->internal_free(_rep);
+    _rep           = that._parent->internal_copy(that._rep);
+    _reps_computed = that._reps_computed;
+    _right_indices = that._right_indices;
+
+    InternalVecCopy()(that._H_class, _H_class);
+    InternalVecCopy()(that._left_mults, _left_mults);
+    InternalVecCopy()(that._left_mults_inv, _left_mults_inv);
+    InternalVecCopy()(that._left_reps, _left_reps);
+    InternalVecCopy()(that._right_mults, _right_mults);
+    InternalVecCopy()(that._right_mults_inv, _right_mults_inv);
+    InternalVecCopy()(that._right_reps, _right_reps);
     return *this;
   }
 
@@ -1395,8 +1390,12 @@ namespace libsemigroups {
 #endif
     }
 
-    void init(RegularDClass const& that) {
-      Konieczny<Element, Traits>::DClass::init(that);
+    RegularDClass(RegularDClass const& that) : RegularDClass() {
+      *this = that;
+    }
+
+    RegularDClass& operator=(RegularDClass const& that) {
+      Konieczny<Element, Traits>::DClass::operator=(that);
 
       _H_gens_computed        = that._H_gens_computed;
       _idem_reps_computed     = that._idem_reps_computed;
@@ -1407,20 +1406,12 @@ namespace libsemigroups {
       _rho_index_positions    = that._rho_index_positions;
       InternalVecCopy()(that._left_idem_reps, _left_idem_reps);
       InternalVecCopy()(that._right_idem_reps, _right_idem_reps);
-    }
 
-    RegularDClass(RegularDClass const& that) : RegularDClass() {
-      init(that);
-    }
-
-    RegularDClass& operator=(RegularDClass const& that) {
-      init(that);
       return *this;
     }
 
-    RegularDClass(RegularDClass&&) = default;
-
-    RegularDClass& operator=(RegularDClass&&) = default;
+    RegularDClass(RegularDClass&&)            = delete;
+    RegularDClass& operator=(RegularDClass&&) = delete;
 
    public:
     ////////////////////////////////////////////////////////////////////////
@@ -2013,8 +2004,8 @@ namespace libsemigroups {
       compute_frame();
     }
 
-    void init(NonRegularDClass const& that) {
-      Konieczny<Element, Traits>::DClass::init(that);
+    NonRegularDClass& operator=(NonRegularDClass const& that) {
+      Konieczny<Element, Traits>::DClass::operator=(that);
 
       _idems_above_computed   = that._idems_above_computed;
       _lambda_index_positions = that._lambda_index_positions;
@@ -2040,20 +2031,16 @@ namespace libsemigroups {
       // set_left_idem_class and set_right_idem_class
       _left_idem_class  = that._left_idem_class;
       _right_idem_class = that._right_idem_class;
-    }
 
-    NonRegularDClass(NonRegularDClass const& that) : NonRegularDClass() {
-      init(that);
-    }
-
-    NonRegularDClass& operator=(NonRegularDClass const& that) {
-      init(that);
       return *this;
     }
 
-    NonRegularDClass(NonRegularDClass&&) = default;
+    NonRegularDClass(NonRegularDClass const& that) : NonRegularDClass() {
+      *this = that;
+    }
 
-    NonRegularDClass& operator=(NonRegularDClass&&) = default;
+    NonRegularDClass(NonRegularDClass&&)            = delete;
+    NonRegularDClass& operator=(NonRegularDClass&&) = delete;
 
    public:
     ////////////////////////////////////////////////////////////////////////
