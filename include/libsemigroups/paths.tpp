@@ -584,7 +584,6 @@ namespace libsemigroups {
         sep,
         p.min(),
         p.max() == POSITIVE_INFINITY ? "\u221e" : std::to_string(p.max() + 1));
-    // TODO(0) + 1 correct?
   }
 
 }  // namespace libsemigroups

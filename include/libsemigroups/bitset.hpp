@@ -17,7 +17,7 @@
 //
 
 // 1) doc TODO(1)
-// 2) tpp file TODO(0)
+// 2) tpp file TODO(1)
 
 #ifndef LIBSEMIGROUPS_BITSET_HPP_
 #define LIBSEMIGROUPS_BITSET_HPP_
