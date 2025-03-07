@@ -183,7 +183,7 @@ namespace libsemigroups {
       return _alphabet;
     }
 
-    // TODO (later) alphabet_no_checks
+    // TODO(later) alphabet_no_checks
 
     //! \brief Set the alphabet by size.
     //!
@@ -205,7 +205,7 @@ namespace libsemigroups {
     //! * \ref validate_alphabet
     //! * \ref validate_rules
     //! * \ref validate
-    // TODO Rename alphabet_size
+    // TODO(1) Rename alphabet_size
     Presentation& alphabet(size_type n);
 
     //! \brief Set the alphabet const reference.
@@ -2057,17 +2057,6 @@ namespace libsemigroups {
     // TODO(later) add balance that checks p contains empty word, no duplicate
     // letters in alphabet, and inverses are valid.
 
-    // //! \brief TODO
-    // //!
-    // //! TODO
-    // //!
-    // //! \tparam Word the type of the words in the presentation
-    // //! \param p the presentation
-    // //! \param lhs TODO
-    // //! \param rhs TODO
-    // //!
-    // //! \throws LibsemigroupsException if either \p lhs or \p rhs contain
-    // //! letters not in `p.alphabet()`
     // // TODO(later) do a proper version of this, where the inverses are
     // // specified, rather than being assumed to be upper/lower cases
     // template <typename Word>

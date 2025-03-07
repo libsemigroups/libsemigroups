@@ -728,6 +728,41 @@ namespace libsemigroups {
     //! \noexcept
     [[nodiscard]] std::vector<Word> const& generating_pairs() const;
 
+#ifdef LIBSEMIGROUPS_PARSED_BY_DOXYGEN
+    //! \ingroup congruence_class_intf_group
+    //!
+    //! \brief The kind of the congruence (1- or 2-sided).
+    //!
+    //! This function returns the kind of the congruence represented by a
+    //! \ref_congruence instance; see \ref congruence_kind for details.
+    //!
+    //! \return The kind of the congruence (1- or 2-sided).
+    //!
+    //! \exceptions
+    //! \noexcept
+    //!
+    //! \complexity
+    //! Constant.
+    [[nodiscard]] congruence_kind kind() const noexcept;
+
+    //! \ingroup congruence_class_intf_group
+    //!
+    //! \brief Returns the number of generating pairs.
+    //!
+    //! This function returns the number of generating pairs, which is the
+    //! size of \ref generating_pairs divided by \f$2\f$.
+    //!
+    //! \returns
+    //! The number of generating pairs.
+    //!
+    //! \exceptions
+    //! \noexcept
+    //!
+    //! \complexity
+    //! Constant.
+    [[nodiscard]] size_t number_of_generating_pairs() const noexcept;
+#endif
+
    private:
     //////////////////////////////////////////////////////////////////////////
     // Congruence - member functions - private

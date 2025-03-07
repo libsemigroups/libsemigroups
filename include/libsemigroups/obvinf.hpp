@@ -239,7 +239,6 @@ namespace libsemigroups {
     //!
     //! \warning
     //! This function does not check its arguments.
-    // TODO(0) does this check its args? Throw?
     IsObviouslyInfinite& add_rules_no_checks(word_type const&,
                                              const_iterator_word_type first,
                                              const_iterator_word_type last);

@@ -92,10 +92,6 @@ namespace libsemigroups {
     return *this;
   }
 
-  void Forest::path_to_root_no_checks(word_type& w, node_type i) const {
-    path_to_root_no_checks(std::back_inserter(w), i);
-  }
-
   void Forest::throw_if_node_out_of_bounds(node_type v) const {
     if (v >= number_of_nodes()) {
       LIBSEMIGROUPS_EXCEPTION("node value out of bounds, expected value in "
@@ -114,5 +110,31 @@ namespace libsemigroups {
                        num_roots,
                        num_roots == 1 ? "" : "s");
   }
+
+  namespace forest {
+    void path_to_root_no_checks(Forest const&     f,
+                                word_type&        w,
+                                Forest::node_type i) {
+      f.path_to_root_no_checks(std::back_inserter(w), i);
+    }
+
+    [[nodiscard]] word_type path_to_root_no_checks(Forest const&     f,
+                                                   Forest::node_type i) {
+      word_type w;
+      path_to_root_no_checks(f, w, i);
+      return w;
+    }
+
+    void path_to_root(Forest const& f, word_type& w, Forest::node_type i) {
+      f.throw_if_node_out_of_bounds(i);
+      path_to_root_no_checks(f, w, i);
+    }
+
+    [[nodiscard]] word_type path_to_root(Forest const& f, Forest::node_type i) {
+      word_type w;
+      path_to_root(f, w, i);
+      return w;
+    }
+  }  // namespace forest
 
 }  // namespace libsemigroups

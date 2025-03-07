@@ -274,7 +274,7 @@ namespace libsemigroups {
   template <typename Range1, typename Range2>
   bool shortlex_compare(Range1 r1, Range2 r2);
 
-  // TODO: recursive_path_compare?
+  // TODO(1) recursive_path_compare?
 
   ////////////////////////////////////////////////////////////////////////
   // Custom combinators

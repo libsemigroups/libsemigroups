@@ -229,7 +229,6 @@ namespace libsemigroups {
     }
   }
 
-  // TODO use to_printable
   template <typename Word>
   void Presentation<Word>::validate_letter(
       typename Presentation<Word>::letter_type c) const {
@@ -528,7 +527,7 @@ namespace libsemigroups {
       size_t const n     = rules.size() / 2;
 
       // Create a permutation of the even indexed entries in vec
-      // TODO be nice to not have to create perm here but I couldn't quite
+      // TODO(2) be nice to not have to create perm here but I couldn't quite
       // figure out how to remove it.
       auto perm
           = (seq<size_t>() | take(n) | sort([&rules, &cmp](auto i, auto j) {

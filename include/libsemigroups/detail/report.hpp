@@ -49,7 +49,8 @@ namespace libsemigroups {
     // TickerImpl, which contains the data required by the function to be
     // called, inside the Ticker, can outlive the Ticker, the TickerImpl is
     // deleted by the function called in the thread.
-    // TODO(0) prevent too many Tickers being created at a time
+    // TODO(1) prevent too many Tickers being created at a time, really just
+    // launch a single thread to do reporting for the duration.
     class Ticker {
       class TickerImpl;
 

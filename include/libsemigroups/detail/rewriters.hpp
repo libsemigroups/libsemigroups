@@ -187,7 +187,7 @@ namespace libsemigroups {
       //!
       //! \sa
       //! \ref RewriterBase::active_rules()
-      // TODO check the above ref points to something sensible
+      // TODO(1) check the above ref points to something sensible
       [[nodiscard]] inline bool active() const noexcept {
         LIBSEMIGROUPS_ASSERT(_id != 0);
         return (_id > 0);
@@ -412,7 +412,7 @@ namespace libsemigroups {
         return _cursors[index];
       }
 
-      // TODO(0) is this ever called?
+      // TODO(1) is this ever called?
       void add_active_rule(Rule* rule) {
         _active_rules.push_back(rule);
       }
@@ -427,7 +427,7 @@ namespace libsemigroups {
 
       [[nodiscard]] iterator erase_from_active_rules(iterator it);
 
-      // TODO(0) this feels like it should be add_active rule. The above
+      // TODO(1) this feels like it should be add_active rule. The above
       // add_active_rule seems a bit dangerous
       void add_rule(Rule* rule);
 
@@ -462,7 +462,7 @@ namespace libsemigroups {
           = std::unordered_set<internal_char_type>::const_iterator;
 
      public:
-      // TODO(0) to cpp
+      // TODO(1) to cpp
       RewriterBase()
           : _alphabet(),
             _cached_confluent(false),
@@ -571,7 +571,7 @@ namespace libsemigroups {
         if (lhs != rhs) {
           if (add_pending_rule(new_rule(
                   lhs.cbegin(), lhs.cend(), rhs.cbegin(), rhs.cend()))) {
-            // TODO(0) only process_pending_rules when ready to run
+            // TODO(1) only process_pending_rules when ready to run
             process_pending_rules();
           }
         }
@@ -611,7 +611,7 @@ namespace libsemigroups {
 
       [[nodiscard]] bool confluent() const;
 
-      // TODO(0) private?
+      // TODO(1) private?
       void add_rule(Rule* rule);
 
       using RewriterBase::add_rule;
@@ -682,7 +682,7 @@ namespace libsemigroups {
                                                index_type  current_node,
                                                size_t backtrack_depth) const;
 
-      // TODO (After removing virtual functions) Put in base
+      // TODO(2) (After removing virtual functions) Put in base
       void rewrite(Rule* rule) const {
         rewrite(*rule->lhs());
         rewrite(*rule->rhs());

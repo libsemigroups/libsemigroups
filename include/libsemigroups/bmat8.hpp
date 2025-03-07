@@ -18,7 +18,7 @@
 
 // This file contains a declaration of fast boolean matrices up to dimension 8.
 
-// TODO
+// TODO(1)
 // * is it better to pass BMat8 by value rather than by const&?
 
 #ifndef LIBSEMIGROUPS_BMAT8_HPP_

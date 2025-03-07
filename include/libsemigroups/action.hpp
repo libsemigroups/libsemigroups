@@ -439,7 +439,7 @@ namespace libsemigroups {
     //! \complexity
     //! Constant.
     Action& add_generator(element_type const& gen) {
-      // TODO shouldn't this check if the degree of gen is the same as the
+      // TODO(1) shouldn't this check if the degree of gen is the same as the
       // degrees of the other generators in _gens?
       _gens.push_back(gen);
       return *this;
@@ -877,51 +877,6 @@ namespace libsemigroups {
             typename Func,
             typename Traits = ActionTraits<Element, Point>>
   using LeftAction = Action<Element, Point, Func, Traits, side::left>;
-
-  // TODO(1): doc (not individually but globally for libsemigroups)
-  template <typename Element,
-            typename Point,
-            typename Func,
-            typename Traits,
-            side LeftOrRight>
-  [[nodiscard]] auto
-  begin(Action<Element, Point, Func, Traits, LeftOrRight> const& action) {
-    return action.begin();
-  }
-
-  // TODO(1): doc (not individually but globally for libsemigroups)
-  template <typename Element,
-            typename Point,
-            typename Func,
-            typename Traits,
-            side LeftOrRight>
-  [[nodiscard]] auto
-  end(Action<Element, Point, Func, Traits, LeftOrRight> const& action) {
-    return action.end();
-  }
-
-  // TODO(1): doc (not individually but globally for libsemigroups)
-  template <typename Element,
-            typename Point,
-            typename Func,
-            typename Traits,
-            side LeftOrRight>
-  [[nodiscard]] auto
-  cbegin(Action<Element, Point, Func, Traits, LeftOrRight> const& action) {
-    return action.cbegin();
-  }
-
-  // TODO(1): doc (not individually but globally for libsemigroups)
-  template <typename Element,
-            typename Point,
-            typename Func,
-            typename Traits,
-            side LeftOrRight>
-  [[nodiscard]] auto
-  cend(Action<Element, Point, Func, Traits, LeftOrRight> const& action) {
-    return action.cend();
-  }
-
 }  // namespace libsemigroups
 
 #include "action.tpp"

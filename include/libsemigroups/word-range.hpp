@@ -53,7 +53,18 @@ namespace libsemigroups {
   namespace detail {
     std::string const& chars_in_human_readable_order();
   }
-  // TODO(0) doc
+
+  //! \ingroup words_group
+  //! \brief Reverse an object.
+  //!
+  //! This function just calls `std::reverse(w.begin(), w.end())`
+  //! and is for convenience.
+  //!
+  //! \tparam Word
+  //!
+  //! \param w the word to reverse.
+  //!
+  //! \returns A reference to the parameter \p w.
   template <typename Word>
   Word& reverse(Word&& w) {
     std::reverse(w.begin(), w.end());
@@ -1297,11 +1308,11 @@ namespace libsemigroups {
       return output;
     }
 
+    // TODO(1) doc
     template <typename Int>
     [[nodiscard]] std::string
     operator()(std::initializer_list<Int> input) const {
       static_assert(std::is_integral_v<Int>);
-      // TODO(0) use iterators instead
       word_type copy(input.begin(), input.end());
       return    operator()(copy);
     }

@@ -337,13 +337,12 @@ namespace libsemigroups {
     //! \brief Returns a range object of references to the current nodes.
     //!
     //! Returns a range object of references for the current nodes in the
-    //! represented graph.
+    //! represented graph; see \ref ranges_group for more details.
     //!
     //! \returns A range object.
     //!
     //! \exceptions
     //! \noexcept
-    // TODO(0) add a reference to the ranges page when it exists
     auto nodes() noexcept {
       return rx::iterator_range(_nodes.begin(), _nodes.end())
              | rx::transform([](auto& pair) -> Node& { return pair.second; });
@@ -352,13 +351,12 @@ namespace libsemigroups {
     //! \brief Returns a range object of const references to the current nodes.
     //!
     //! Returns a range object of const references for the current nodes in the
-    //! represented graph.
+    //! represented graph; see \ref ranges_group for more details.
     //!
     //! \returns A range object.
     //!
     //! \exceptions
     //! \noexcept
-    // TODO(0) add a reference to the ranges page when it exists
     auto nodes() const noexcept {
       return rx::iterator_range(_nodes.begin(), _nodes.end())
              | rx::transform(
@@ -605,8 +603,26 @@ namespace libsemigroups {
       return _edges.back();
     }
 
-    // Returns the first edge from head to tail.
-    // TODO(0) doc
+    //! \brief Returns the first edge with given head and tail.
+    //!
+    //! This function returns the first edge with head and tail obtained from \p
+    //! head and \p tail by converting \p head and \p tail to std::string
+    //! objects (unless they are std::string, std::string_view, or `char const*`
+    //! already) using std::to_string.
+    //!
+    //! \tparam Thing1 the type of the 1st argument.
+    //! \tparam Thing2 the type of the 2nd argument.
+    //!
+    //! \param head the head of the edge
+    //! \param tail the tail of the edge
+    //!
+    //! \returns A reference to the Edge object from \p head to \p tail.
+    //!
+    //! \throws LibsemigroupsException if \p head or \p tail does not represent
+    //! a node in the graph.
+    //!
+    //! \throws LibsemigroupsException if there's no edge from \p head to \p
+    //! tail.
     template <typename Thing1, typename Thing2>
     Edge& edge(Thing1&& head, Thing2&& tail) {
       auto head_str = detail::dot_to_string(std::forward<Thing1>(head));
@@ -645,16 +661,53 @@ namespace libsemigroups {
                                     std::string const&                  val);
   };  // class Dot
 
-  // TODO(doc)
+  //! \relates Dot
+  //!
+  //! \brief Return a human readable representation of a Dot object.
+  //!
+  //! Return a human readable representation of a Dot object.
+  //!
+  //! \param d the Dot object.
+  //!
+  //! \exceptions
+  //! \no_libsemigroups_except
   std::string to_human_readable_repr(Dot const& d);
 
-  // TODO(doc)
+  //! \relates Dot::Node
+  //!
+  //! \brief Return a human readable representation of a Dot::Node object.
+  //!
+  //! Return a human readable representation of a Dot::Node object.
+  //!
+  //! \param n the Dot::Node object.
+  //!
+  //! \exceptions
+  //! \no_libsemigroups_except
   std::string to_human_readable_repr(Dot::Node const& n);
 
-  // TODO(doc)
+  //! \relates Dot::Edge
+  //!
+  //! \brief Return a human readable representation of a Dot::Edge object.
+  //!
+  //! Return a human readable representation of a Dot::Edge object.
+  //!
+  //! \param e the Dot::Edge object.
+  //!
+  //! \exceptions
+  //! \no_libsemigroups_except
   std::string to_human_readable_repr(Dot::Edge const& e);
 
-  // TODO(doc)
+  //! \relates Dot
+  //!
+  //! \brief Return a human readable representation of a Dot::Kind object.
+  //!
+  //! Return a human readable representation of a Dot::Kind object.
+  //!
+  //! \param k the Dot::Kind object.
+  //! \param sep separator to use between "Dot" and "Kind" (defaults to "::").
+  //!
+  //! \exceptions
+  //! \no_libsemigroups_except
   std::string to_human_readable_repr(Dot::Kind const&   k,
                                      std::string const& sep = "::");
 

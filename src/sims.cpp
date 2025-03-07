@@ -1440,11 +1440,14 @@ namespace libsemigroups {
       if (_relation.first.empty() && !at_end()) {
         LIBSEMIGROUPS_ASSERT(_relation.second.empty());
         LIBSEMIGROUPS_ASSERT(_gen > 0);
-        _tree.path_to_root_no_checks(_relation.first, _source);
+        forest::path_to_root_no_checks(_tree, _relation.first, _source);
+
         std::reverse(_relation.first.begin(), _relation.first.end());
         _relation.first.push_back(_gen - 1);
-        _tree.path_to_root_no_checks(
-            _relation.second, _word_graph->target_no_checks(_source, _gen - 1));
+        forest::path_to_root_no_checks(
+            _tree,
+            _relation.second,
+            _word_graph->target_no_checks(_source, _gen - 1));
         std::reverse(_relation.second.begin(), _relation.second.end());
         return true;
       }

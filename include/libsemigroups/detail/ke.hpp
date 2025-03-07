@@ -164,7 +164,7 @@ namespace libsemigroups {
   };
 
 #ifndef LIBSEMIGROUPS_PARSED_BY_DOXYGEN
-  // TODO(0) uncomment
+  // TODO(1) uncomment
   // template <>
   // word_type FroidurePin<
   //     detail::KE<std::string>,

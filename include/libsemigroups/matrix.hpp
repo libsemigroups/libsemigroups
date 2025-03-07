@@ -6629,26 +6629,22 @@ namespace libsemigroups {
       // Comparison operators
       ////////////////////////////////////////////////////////////////////////
 
-      // TODO template
       bool operator==(ProjMaxPlusMat const& that) const {
         normalize();
         that.normalize();
         return _underlying_mat == that._underlying_mat;
       }
 
-      // TODO template
       bool operator!=(ProjMaxPlusMat const& that) const {
         return !(_underlying_mat == that._underlying_mat);
       }
 
-      // TODO template
       bool operator<(ProjMaxPlusMat const& that) const {
         normalize();
         that.normalize();
         return _underlying_mat < that._underlying_mat;
       }
 
-      // TODO template
       bool operator>(ProjMaxPlusMat const& that) const {
         return that < *this;
       }
@@ -7084,14 +7080,13 @@ namespace libsemigroups {
     //! \par Example
     //!
     //! \code
-    //! auto x == ProjMaxPlusMat<>::make({{-2, 2, 0}, {-1, 0, 0}, {1, -3,
+    //! auto x == make<ProjMaxPlusMat<>>({{-2, 2, 0}, {-1, 0, 0}, {1, -3,
     //! 1}}));
     //! // returns {{-1, 0, -1}, {-2, -1, -2}, {-1, 0, -1}}
     //! matrix::pow(x, 100);
     //! \endcode
     // TODO(1) pow_no_checks
     // TODO(2) version that changes x in-place
-    // TODO(0) update the code in the examples
     template <typename Mat>
     Mat pow(Mat const& x, typename Mat::scalar_type e) {
       using scalar_type = typename Mat::scalar_type;
@@ -7833,10 +7828,9 @@ namespace libsemigroups {
     //! \par Example
     //!
     //! \code
-    //! auto x = BMat<>::make({{1, 0, 0}, {0, 0, 1}, {0, 1, 0}});
+    //! auto x = make<BMat<>>({{1, 0, 0}, {0, 0, 1}, {0, 1, 0}});
     //! matrix::row_space_size(x); // returns 7
     //! \endcode
-    // TODO(0) Update the code in the examples
     template <typename Mat, typename = std::enable_if_t<IsBMat<Mat>>>
     size_t row_space_size(Mat const& x) {
       size_t const M                 = detail::BitSetCapacity<Mat>::value;
