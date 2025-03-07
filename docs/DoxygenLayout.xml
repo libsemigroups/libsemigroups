@@ -44,7 +44,14 @@
       <tab type="user" visible="yes" url="@ref adapters_pbr_group" title="Adapters for PBR" />
     </tab>
     <tab type="usergroup" visible="yes" url="@ref elements_group" title="Elements">
-      <tab type="user" visible="yes" url="@ref bipart_group" title="Bipartitions" />
+      <tab type="usergroup" visible="yes" url="@ref bipart_group" title="Bipartitions" >
+        <tab type="user" visible="yes" url="@ref libsemigroups::Bipartition" title="The Bipartition class"/>
+        <tab type="user" visible="yes" url="@ref libsemigroups::Blocks" title="The Blocks class"/>
+        <tab type="user" visible="yes" url="@ref libsemigroups::bipartition" title="Bipartition helper functions"/>
+        <tab type="user" visible="yes" url="@ref libsemigroups::blocks" title="Blocks helper functions"/>
+        <tab type="user" visible="yes" url="@ref make_bipart_group" title="make<Biparition>"/>
+        <tab type="user" visible="yes" url="@ref make_blocks_group" title="make<Blocks>"/>
+      </tab>
       <tab type="usergroup" visible="yes" url="@ref matrix_group" title="Matrices">
         <tab type="usergroup" visible="yes" url="[none]" title="Over specific semirings">
           <tab type="user" visible="yes" url="@ref bmat_index_group" title="Boolean matrices" />
