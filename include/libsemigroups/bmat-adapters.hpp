@@ -16,7 +16,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-// TODO(0): almost all parameters and t-parameters are not documented in this
+// TODO(1): almost all parameters and t-parameters are not documented in this
 // file.
 
 #ifndef LIBSEMIGROUPS_BMAT_ADAPTERS_HPP_
@@ -84,7 +84,7 @@ namespace libsemigroups {
     //!
     //! Modifies \p res in-place to hold the image of \p pt under the right
     //! action of \p x.
-    // TODO(0) parameters not documented
+    // TODO(1) parameters not documented
     // not noexcept because BitSet<N>::apply isn'Container
     void operator()(Container& res, Container const& pt, Mat const& x) const {
       using value_type = typename Container::value_type;
@@ -117,7 +117,7 @@ namespace libsemigroups {
   //!
   //! \sa ImageLeftAction.
   //!
-  // TODO(0) doc tparams
+  // TODO(1) doc tparams
   template <typename Mat, typename Container>
 #ifndef LIBSEMIGROUPS_PARSED_BY_DOXYGEN
   struct ImageLeftAction<Mat, Container, std::enable_if_t<IsBMat<Mat>>>
@@ -129,7 +129,7 @@ namespace libsemigroups {
     //!
     //! Modifies \p res in-place to hold the image of \p pt under the left
     //! action of \p x.
-    // TODO(0) doc parameters
+    // TODO(1) doc parameters
     void operator()(Container& res, Container const& pt, Mat const& x) const {
       const_cast<Mat*>(&x)->transpose();
       try {
@@ -164,7 +164,7 @@ namespace libsemigroups {
   // This currently limits the use of Konieczny to matrices of dimension at
   // most 64 with the default traits class, since we cannot know the
   // dimension of the matrices at compile time, only at run time.
-  // TODO(0) doc tparams
+  // TODO(1) doc tparams
   template <typename Mat>
 #ifndef LIBSEMIGROUPS_PARSED_BY_DOXYGEN
   struct LambdaValue<Mat, std::enable_if_t<IsBMat<Mat>>>
@@ -195,7 +195,7 @@ namespace libsemigroups {
   //! true). If not, template substitution will fail.
   //!
   //! \sa RhoValue.
-  // TODO(0) doc tparams
+  // TODO(1) doc tparams
   template <typename Mat>
 #ifndef LIBSEMIGROUPS_PARSED_BY_DOXYGEN
   struct RhoValue<Mat, std::enable_if_t<IsBMat<Mat>>>
@@ -226,7 +226,7 @@ namespace libsemigroups {
   //! true). If not, template substitution will fail.
   //!
   //! \sa Lambda.
-  // TODO(0) doc tparameters
+  // TODO(1) doc tparameters
   template <typename Mat, typename Container>
 #ifndef LIBSEMIGROUPS_PARSED_BY_DOXYGEN
   struct Lambda<Mat, Container, std::enable_if_t<IsBMat<Mat>>>
@@ -237,7 +237,7 @@ namespace libsemigroups {
     //! \brief Modifies \p res in-place to contain the row space basis of \p x.
     //!
     //! Modifies \p res in-place to contain the row space basis of \p x.
-    // TODO(0) doc parameters
+    // TODO(1) doc parameters
     void operator()(Container& res, Mat const& x) const {
       using value_type = typename Container::value_type;
       size_t const N   = value_type().size();

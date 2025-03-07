@@ -3055,7 +3055,7 @@ namespace libsemigroups {
     //! \warning
     //! This method does not verify if \p forbid contains trivial pairs or not.
     // TODO(2): Construct from std::vector<std::string>
-    // TODO(0) construct from iterators, and move word_type version of to helper
+    // TODO(1) construct from iterators, and move word_type version of to helper
     // namespace
     explicit SimsRefinerFaithful(std::vector<word_type> const& forbid)
         : _forbid(forbid) {}
@@ -3070,7 +3070,7 @@ namespace libsemigroups {
     //!
     //! \warning
     //! This method does not verify if \p forbid contains trivial pairs or not.
-    // TODO(0) construct from iterators, and move word_type version of to helper
+    // TODO(1) construct from iterators, and move word_type version of to helper
     // namespace
     SimsRefinerFaithful& init(std::vector<word_type> const& forbid) {
       _forbid.clear();
