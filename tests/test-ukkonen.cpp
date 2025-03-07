@@ -492,7 +492,7 @@ namespace libsemigroups {
     REQUIRE(ukkonen::number_of_pieces(t, "xxx") == POSITIVE_INFINITY);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("Ukkonen", "018", "pieces", "[quick][ukkonen]") {
+  LIBSEMIGROUPS_TEST_CASE("Ukkonen", "008", "pieces", "[quick][ukkonen]") {
     Ukkonen t;
     ToWord  string_to_word("ab");
     ukkonen::add_word(t, string_to_word("baabbaaaa"));
@@ -518,7 +518,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Ukkonen",
-                          "019",
+                          "009",
                           "code coverage",
                           "[quick][ukkonen]") {
     Ukkonen u;
@@ -623,7 +623,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Ukkonen",
-                          "020",
+                          "010",
                           "code coverage",
                           "[quick][ukkonen]") {
     Ukkonen u;

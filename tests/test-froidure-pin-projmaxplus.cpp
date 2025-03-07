@@ -29,7 +29,7 @@ namespace libsemigroups {
   struct LibsemigroupsException;
 
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("FroidurePin",
-                                   "061",
+                                   "040",
                                    "example 1",
                                    "[quick][froidure-pin][projmaxplus]",
                                    ProjMaxPlusMat<3>,
@@ -75,7 +75,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("FroidurePin",
-                                   "062",
+                                   "041",
                                    "example 2",
                                    "[quick][froidure-pin][element]",
                                    ProjMaxPlusMat<3>,

@@ -31,7 +31,7 @@ namespace libsemigroups {
   // count_sort and radix_sort functions.
   /*
   LIBSEMIGROUPS_TEST_CASE("Test right and left",
-                          "001",
+                          "000",
                           "",
                           "[freeband][quick]") {
     word_type w = {0, 0, 0, 0, 1, 1, 0, 0, 2};
@@ -60,7 +60,7 @@ namespace libsemigroups {
             {4, 4, 5, 7, 8, 9, UNDEFINED, UNDEFINED, UNDEFINED, UNDEFINED}));
   }
 
-  LIBSEMIGROUPS_TEST_CASE("Test radix_sort", "002", "", "[freeband][quick]") {
+  LIBSEMIGROUPS_TEST_CASE("Test radix_sort", "001", "", "[freeband][quick]") {
     std::vector<word_type> level_edges = {{0, 0, 0, 0},
                                           {0, 1, 1, 0},
                                           {0, 2, 2, 0},
@@ -117,7 +117,7 @@ namespace libsemigroups {
   }
   */
 
-  LIBSEMIGROUPS_TEST_CASE("freeband_equal_to", "001", "", "[freeband][quick]") {
+  LIBSEMIGROUPS_TEST_CASE("freeband_equal_to", "002", "", "[freeband][quick]") {
     REQUIRE(freeband_equal_to({}, {}));
     REQUIRE(!freeband_equal_to({0, 0}, {}));
     REQUIRE(!freeband_equal_to({}, {0}));

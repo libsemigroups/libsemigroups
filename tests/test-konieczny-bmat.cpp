@@ -44,7 +44,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("Konieczny",
-                                   "002",
+                                   "001",
                                    "4x4 boolean matrix semigroup (size 415)",
                                    "[quick][bmat][no-valgrind]",
                                    BMat<>,
@@ -63,7 +63,7 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE(
       "Konieczny",
-      "004",
+      "002",
       "40x40 boolean matrix semigroup (size 248'017)",
       "[extreme][bmat]",
       BMat<40>,
@@ -78,7 +78,7 @@ namespace libsemigroups {
     REQUIRE(S.size() == 248'017);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("Konieczny", "006", "exceptions", "[quick][bmat]") {
+  LIBSEMIGROUPS_TEST_CASE("Konieczny", "003", "exceptions", "[quick][bmat]") {
     auto rg = ReportGuard(false);
     REQUIRE_THROWS_AS(
         Konieczny<BMat<>>(
@@ -89,7 +89,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("Konieczny",
-                                   "007",
+                                   "004",
                                    "5x5 boolean matrix semigroup (size 513)",
                                    "[quick][bmat][no-valgrind]",
                                    BMat<>,

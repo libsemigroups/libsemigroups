@@ -23,7 +23,7 @@
 #include "libsemigroups/types.hpp"   // for SmallestInteger, Smalle...
 
 namespace libsemigroups {
-  LIBSEMIGROUPS_TEST_CASE("SmallestInteger", "001", "", "[quick]") {
+  LIBSEMIGROUPS_TEST_CASE("SmallestInteger", "000", "", "[quick]") {
     REQUIRE(sizeof(SmallestInteger<0>::type) == 1);
     REQUIRE(sizeof(SmallestInteger<255>::type) == 1);
     REQUIRE(sizeof(SmallestInteger<256>::type) == 2);

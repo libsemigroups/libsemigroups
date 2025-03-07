@@ -31,7 +31,7 @@ namespace libsemigroups {
   congruence_kind constexpr onesided = congruence_kind::onesided;
 
   LIBSEMIGROUPS_TEST_CASE("to<ToddCoxeter<word_type>>",
-                          "000",
+                          "021",
                           "from WordGraph",
                           "[quick]") {
     auto rg = ReportGuard(false);
@@ -76,7 +76,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("to<ToddCoxeter<std::string>>",
-                          "001",
+                          "022",
                           "from WordGraph",
                           "[quick]") {
     auto rg = ReportGuard(false);
@@ -122,7 +122,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("to<ToddCoxeter<word_type>>",
-                          "002",
+                          "023",
                           "from WordGraph",
                           "[todd-coxeter][quick]") {
     auto rg = ReportGuard(false);
@@ -184,7 +184,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("to<ToddCoxeter>",
-                          "003",
+                          "024",
                           "from KnuthBendix",
                           "[quick]") {
     auto rg = ReportGuard(false);

@@ -35,7 +35,7 @@ namespace libsemigroups {
   namespace detail {
 
     LIBSEMIGROUPS_TEST_CASE("WordGraphWithSources",
-                            "044",
+                            "000",
                             "constructor with 1  default arg",
                             "[quick][digraph]") {
       WordGraphWithSources<size_t> g;
@@ -44,7 +44,7 @@ namespace libsemigroups {
     }
 
     LIBSEMIGROUPS_TEST_CASE("WordGraphWithSources",
-                            "045",
+                            "001",
                             "constructor with 0 default args",
                             "[quick][digraph]") {
       for (size_t j = 0; j < 100; ++j) {
@@ -55,7 +55,7 @@ namespace libsemigroups {
     }
 
     LIBSEMIGROUPS_TEST_CASE("WordGraphWithSources",
-                            "046",
+                            "002",
                             "add nodes",
                             "[quick][digraph]") {
       WordGraphWithSources<size_t> g(3);
@@ -69,7 +69,7 @@ namespace libsemigroups {
     }
 
     LIBSEMIGROUPS_TEST_CASE("WordGraphWithSources",
-                            "047",
+                            "003",
                             "add edges",
                             "[quick][digraph]") {
       WordGraph<size_t> g(17, 31);
@@ -104,7 +104,7 @@ namespace libsemigroups {
     }
 
     LIBSEMIGROUPS_TEST_CASE("WordGraphWithSources",
-                            "048",
+                            "004",
                             "exceptions",
                             "[quick][digraph]") {
       WordGraphWithSources<size_t> graph(10, 5);
@@ -120,7 +120,7 @@ namespace libsemigroups {
     }
 
     LIBSEMIGROUPS_TEST_CASE("WordGraphWithSources",
-                            "049",
+                            "005",
                             "reserve",
                             "[quick][digraph]") {
       WordGraphWithSources<size_t> graph;
@@ -135,7 +135,7 @@ namespace libsemigroups {
     }
 
     LIBSEMIGROUPS_TEST_CASE("WordGraphWithSources",
-                            "050",
+                            "006",
                             "default constructors",
                             "[quick][digraph]") {
       auto g1 = WordGraphWithSources<size_t>();
@@ -159,7 +159,7 @@ namespace libsemigroups {
     }
 
     LIBSEMIGROUPS_TEST_CASE("WordGraphWithSources",
-                            "051",
+                            "007",
                             "target_no_checks",
                             "[quick]") {
       size_t                       number_of_levels = 10;
@@ -181,7 +181,7 @@ namespace libsemigroups {
     }
 
     LIBSEMIGROUPS_TEST_CASE("WordGraphWithSources",
-                            "052",
+                            "008",
                             "operator<<",
                             "[quick]") {
       WordGraphWithSources<uint32_t> ad;
@@ -199,7 +199,7 @@ namespace libsemigroups {
     }
 
     LIBSEMIGROUPS_TEST_CASE("WordGraphWithSources",
-                            "053",
+                            "009",
                             "quotient",
                             "[quick]") {
       WordGraphWithSources<size_t> dws1(0, 0);
@@ -209,7 +209,7 @@ namespace libsemigroups {
     }
 
     LIBSEMIGROUPS_TEST_CASE("WordGraphWithSources",
-                            "054",
+                            "010",
                             "hopcroft_karp_quotient",
                             "[quick]") {
       WordGraphWithSources<size_t> d1(3, 3);

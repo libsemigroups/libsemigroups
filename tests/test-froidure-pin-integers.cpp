@@ -78,7 +78,7 @@ namespace libsemigroups {
   };
 
   LIBSEMIGROUPS_TEST_CASE("FroidurePin",
-                          "031",
+                          "021",
                           "uint32_t/uint8_t",
                           "[quick][froidure-pin][integers]") {
     auto                  rg = ReportGuard(false);

@@ -238,7 +238,7 @@ namespace libsemigroups {
   // }
 
   LIBSEMIGROUPS_TEST_CASE("Gabow",
-                          "009",
+                          "007",
                           "large cycle",
                           "[quick][gabow][no-valgrind]") {
     WordGraph<size_t> wg;
@@ -257,7 +257,7 @@ namespace libsemigroups {
              | all_of([&scc](node_type i) { return scc.id(i) == 1; })));
   }
 
-  LIBSEMIGROUPS_TEST_CASE("Gabow", "010", "component", "[quick][gabow]") {
+  LIBSEMIGROUPS_TEST_CASE("Gabow", "008", "component", "[quick][gabow]") {
     using node_type = decltype(clique(1))::node_type;
 
     for (size_t n = 10; n < 512; n *= 4) {
@@ -310,7 +310,7 @@ namespace libsemigroups {
     }
   }
 
-  LIBSEMIGROUPS_TEST_CASE("Gabow", "011", "root of scc", "[quick][gabow]") {
+  LIBSEMIGROUPS_TEST_CASE("Gabow", "009", "root of scc", "[quick][gabow]") {
     auto wg = clique(10);
     for (size_t n = 0; n < 99; ++n) {
       add_clique(wg, 10);
@@ -333,7 +333,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Gabow",
-                          "012",
+                          "010",
                           "reverse_spanning_forest",
                           "[quick][gabow]") {
     auto wg = make<WordGraph<size_t>>(
@@ -345,7 +345,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Gabow",
-                          "013",
+                          "011",
                           "to_human_readable_repr",
                           "[quick][gabow]") {
     auto wg = make<WordGraph<size_t>>(

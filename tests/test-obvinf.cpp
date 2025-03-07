@@ -41,7 +41,7 @@ namespace libsemigroups {
   using namespace literals;
 
   LIBSEMIGROUPS_TEST_CASE("ObviouslyInfinite",
-                          "001",
+                          "000",
                           "Multiple rule additions",
                           "[quick]") {
     IsObviouslyInfinite      ioi(3);
@@ -73,7 +73,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("ObviouslyInfinite",
-                          "002",
+                          "001",
                           "b^n does not occur on its own in any relation",
                           "[quick]") {
     IsObviouslyInfinite      ioi(2);
@@ -83,7 +83,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("ObviouslyInfinite",
-                          "003",
+                          "002",
                           "Preserves occurrences of the generator 'a'",
                           "[quick]") {
     IsObviouslyInfinite      ioi(2);
@@ -93,7 +93,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("ObviouslyInfinite",
-                          "004",
+                          "003",
                           "Less relations than generators",
                           "[quick]") {
     IsObviouslyInfinite      ioi(3);
@@ -103,7 +103,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("ObviouslyInfinite",
-                          "005",
+                          "004",
                           "Relations preserve length",
                           "[quick]") {
     IsObviouslyInfinite      ioi(3);
@@ -114,7 +114,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("ObviouslyInfinite",
-                          "006",
+                          "005",
                           "Matrix has non empty kernel",
                           "[quick]") {
     IsObviouslyInfinite    ioi(2);
@@ -131,7 +131,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("ObviouslyInfinite",
-                          "007",
+                          "006",
                           "Free product of trivial semigroups",
                           "[quick]") {
     IsObviouslyInfinite      ioi(2);
@@ -141,7 +141,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("ObviouslyInfinite",
-                          "008",
+                          "007",
                           "Another free product",
                           "[quick]") {
     IsObviouslyInfinite      ioi(5);
@@ -152,7 +152,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("ObviouslyInfinite",
-                          "009",
+                          "008",
                           "Infinite but not obviously so",
                           "[quick]") {
     IsObviouslyInfinite      ioi(2);
@@ -164,7 +164,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("ObviouslyInfinite",
-                          "010",
+                          "009",
                           "Finite semigroup",
                           "[quick]") {
     IsObviouslyInfinite      ioi(3);
@@ -177,7 +177,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("ObviouslyInfinite",
-                          "011",
+                          "010",
                           "Multiple rule additions",
                           "[quick][integer-alphabet]") {
     IsObviouslyInfinite    ioi(3);
@@ -207,7 +207,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("ObviouslyInfinite",
-                          "012",
+                          "011",
                           "b^n does not occur on its own in any relation",
                           "[quick][integer-alphabet]") {
     IsObviouslyInfinite    ioi(2);
@@ -217,7 +217,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("ObviouslyInfinite",
-                          "013",
+                          "012",
                           "Preserves occurrences of the generator 'a'",
                           "[quick][integer-alphabet]") {
     IsObviouslyInfinite    ioi(2);
@@ -227,7 +227,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("ObviouslyInfinite",
-                          "014",
+                          "013",
                           "Less relations than generators",
                           "[quick][integer-alphabet]") {
     IsObviouslyInfinite    ioi(3);
@@ -237,7 +237,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("ObviouslyInfinite",
-                          "015",
+                          "014",
                           "Relations preserve length",
                           "[quick][integer-alphabet]") {
     IsObviouslyInfinite    ioi(3);
@@ -248,7 +248,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("ObviouslyInfinite",
-                          "016",
+                          "015",
                           "Matrix has non empty kernel",
                           "[quick][integer-alphabet]") {
     IsObviouslyInfinite    ioi(2);
@@ -258,7 +258,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("ObviouslyInfinite",
-                          "017",
+                          "016",
                           "Free product of trivial semigroups",
                           "[quick][integer-alphabet]") {
     IsObviouslyInfinite    ioi(2);
@@ -268,7 +268,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("ObviouslyInfinite",
-                          "018",
+                          "017",
                           "Another free product",
                           "[quick][integer-alphabet]") {
     IsObviouslyInfinite    ioi(5);
@@ -279,7 +279,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("ObviouslyInfinite",
-                          "019",
+                          "018",
                           "Infinite but not obviously so",
                           "[quick][integer-alphabet]") {
     IsObviouslyInfinite    ioi(2);
@@ -291,7 +291,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("ObviouslyInfinite",
-                          "020",
+                          "019",
                           "Finite semigroup",
                           "[quick][integer-alphabet]") {
     IsObviouslyInfinite    ioi(3);
@@ -304,7 +304,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("ObviouslyInfinite",
-                          "021",
+                          "020",
                           "from presentation",
                           "[quick][integer-alphabet]") {
     Presentation<word_type> p;
@@ -313,7 +313,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("ObviouslyInfinite",
-                          "022",
+                          "021",
                           "from ToddCoxeter",
                           "[quick][integer-alphabet]") {
     ToddCoxeter<word_type> tc(congruence_kind::twosided,

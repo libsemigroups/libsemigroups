@@ -28,7 +28,7 @@
 namespace libsemigroups {
   namespace detail {
     LIBSEMIGROUPS_TEST_CASE("Timer",
-                            "001",
+                            "000",
                             "string method (1 argument)",
                             "[quick]") {
       Timer                    t;
@@ -71,7 +71,7 @@ namespace libsemigroups {
     }
 
     LIBSEMIGROUPS_TEST_CASE("Timer",
-                            "002",
+                            "001",
                             "string method (0 arguments)",
                             "[quick]") {
       Timer t;
@@ -84,7 +84,7 @@ namespace libsemigroups {
 // with expansion:
 //  0 > 0
 #ifndef __CYGWIN__
-    LIBSEMIGROUPS_TEST_CASE("Timer", "003", "reset/elapsed method", "[quick]") {
+    LIBSEMIGROUPS_TEST_CASE("Timer", "002", "reset/elapsed method", "[quick]") {
       Timer t;
       std::this_thread::sleep_for(std::chrono::milliseconds(10));
       auto e
@@ -99,7 +99,7 @@ namespace libsemigroups {
     }
 #endif
 
-    LIBSEMIGROUPS_TEST_CASE("Timer", "004", "operator<<", "[quick]") {
+    LIBSEMIGROUPS_TEST_CASE("Timer", "003", "operator<<", "[quick]") {
       std::ostringstream os;
       Timer              t;
       os << t;

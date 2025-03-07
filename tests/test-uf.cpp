@@ -30,7 +30,7 @@
 
 namespace libsemigroups {
   namespace detail {
-    LIBSEMIGROUPS_TEST_CASE("UF", "001", "constructor by size", "[quick]") {
+    LIBSEMIGROUPS_TEST_CASE("UF", "000", "constructor by size", "[quick]") {
       {
         Duf<> uf(7);
         REQUIRE(uf.size() == 7);
@@ -51,7 +51,7 @@ namespace libsemigroups {
       }
     }
 
-    LIBSEMIGROUPS_TEST_CASE("UF", "002", "copy constructor", "[quick]") {
+    LIBSEMIGROUPS_TEST_CASE("UF", "001", "copy constructor", "[quick]") {
       {
         Duf<> uf(11);
         uf.unite(0, 10);
@@ -105,7 +105,7 @@ namespace libsemigroups {
       }
     }
 
-    LIBSEMIGROUPS_TEST_CASE("UF", "003", "find", "[quick]") {
+    LIBSEMIGROUPS_TEST_CASE("UF", "002", "find", "[quick]") {
       {
         Duf<> uf(11);
         uf.unite(0, 10);
@@ -150,7 +150,7 @@ namespace libsemigroups {
       }
     }
 
-    LIBSEMIGROUPS_TEST_CASE("Duf", "004", "unite", "[quick]") {
+    LIBSEMIGROUPS_TEST_CASE("Duf", "003", "unite", "[quick]") {
       Duf<> uf(12);
       uf.unite(0, 1);
       uf.unite(4, 2);
@@ -207,7 +207,7 @@ namespace libsemigroups {
           uf.cbegin(), uf.cend(), [&uf](size_t i) { return uf.find(i) == i; }));
     }
 
-    LIBSEMIGROUPS_TEST_CASE("Suf", "005", "unite", "[quick]") {
+    LIBSEMIGROUPS_TEST_CASE("Suf", "004", "unite", "[quick]") {
       Suf<12> uf;
       uf.unite(0, 1);
       uf.unite(4, 2);
@@ -264,7 +264,7 @@ namespace libsemigroups {
           uf.cbegin(), uf.cend(), [&uf](size_t i) { return uf.find(i) == i; }));
     }
 
-    LIBSEMIGROUPS_TEST_CASE("Duf", "006", "compress", "[quick]") {
+    LIBSEMIGROUPS_TEST_CASE("Duf", "005", "compress", "[quick]") {
       {
         Duf<> uf(12);
         uf.unite(0, 1);
@@ -294,7 +294,7 @@ namespace libsemigroups {
       }
     }
 
-    LIBSEMIGROUPS_TEST_CASE("Suf", "007", "compress", "[quick]") {
+    LIBSEMIGROUPS_TEST_CASE("Suf", "006", "compress", "[quick]") {
       {
         Suf<12> uf;
         uf.unite(0, 1);
@@ -321,7 +321,7 @@ namespace libsemigroups {
       }
     }
 
-    LIBSEMIGROUPS_TEST_CASE("Duf", "008", "resize", "[quick]") {
+    LIBSEMIGROUPS_TEST_CASE("Duf", "007", "resize", "[quick]") {
       Duf<> uf(0);
       for (size_t i = 0; i < 10; ++i) {
         uf.resize(i);
@@ -358,7 +358,7 @@ namespace libsemigroups {
       REQUIRE(uf.number_of_blocks() == 23);
     }
 
-    LIBSEMIGROUPS_TEST_CASE("Duf", "009", "resize", "[quick]") {
+    LIBSEMIGROUPS_TEST_CASE("Duf", "008", "resize", "[quick]") {
       Duf<> uf({0, 0, 2, 3, 3, 5});
       REQUIRE(uf.size() == 6);
       uf.resize(7);
@@ -374,7 +374,7 @@ namespace libsemigroups {
               == std::vector<size_t>({2, 3, 5, 6, 7}));
     }
 
-    LIBSEMIGROUPS_TEST_CASE("Duf", "010", "big chain", "[no-valgrind][quick]") {
+    LIBSEMIGROUPS_TEST_CASE("Duf", "009", "big chain", "[no-valgrind][quick]") {
       std::vector<size_t> tab;
       tab.push_back(0);
       for (size_t i = 0; i < 100000; i++) {
@@ -392,7 +392,7 @@ namespace libsemigroups {
       }
     }
 
-    LIBSEMIGROUPS_TEST_CASE("Suf", "011", "big chain", "[no-valgrind][quick]") {
+    LIBSEMIGROUPS_TEST_CASE("Suf", "010", "big chain", "[no-valgrind][quick]") {
       std::array<uint32_t, 100001> tab;
       std::iota(tab.begin() + 1, tab.end(), 0);
       Suf<100001> uf(std::move(tab));
@@ -407,7 +407,7 @@ namespace libsemigroups {
       }
     }
 
-    LIBSEMIGROUPS_TEST_CASE("Duf", "012", "empty table", "[quick]") {
+    LIBSEMIGROUPS_TEST_CASE("Duf", "011", "empty table", "[quick]") {
       Duf<> uf(0);
       REQUIRE(uf.number_of_blocks() == 0);
       uf.resize(1);
@@ -415,12 +415,12 @@ namespace libsemigroups {
       REQUIRE(uf.number_of_blocks() == 1);
     }
 
-    LIBSEMIGROUPS_TEST_CASE("Suf", "013", "empty table", "[quick]") {
+    LIBSEMIGROUPS_TEST_CASE("Suf", "012", "empty table", "[quick]") {
       Suf<0> uf;
       REQUIRE(uf.number_of_blocks() == 0);
     }
 
-    LIBSEMIGROUPS_TEST_CASE("Duf", "014", "join", "[quick]") {
+    LIBSEMIGROUPS_TEST_CASE("Duf", "013", "join", "[quick]") {
       Duf<> uf1(10);
       uf1.unite(2, 4);
       uf1.unite(4, 9);
@@ -445,7 +445,7 @@ namespace libsemigroups {
               == std::vector<size_t>({4, 5, 6, 8}));
     }
 
-    LIBSEMIGROUPS_TEST_CASE("Suf", "015", "join", "[quick]") {
+    LIBSEMIGROUPS_TEST_CASE("Suf", "014", "join", "[quick]") {
       Suf<10> uf1;
       uf1.unite(2, 4);
       uf1.unite(4, 9);
@@ -470,7 +470,7 @@ namespace libsemigroups {
               == std::vector<size_t>({4, 5, 6, 8}));
     }
 
-    LIBSEMIGROUPS_TEST_CASE("Duf", "016", "contains", "[quick]") {
+    LIBSEMIGROUPS_TEST_CASE("Duf", "015", "contains", "[quick]") {
       Duf<> uf1(10);
       uf1.unite(2, 4);
       uf1.unite(4, 9);
@@ -510,7 +510,7 @@ namespace libsemigroups {
       REQUIRE(uf1 != uf2);
     }
 
-    LIBSEMIGROUPS_TEST_CASE("Suf", "017", "contains", "[quick]") {
+    LIBSEMIGROUPS_TEST_CASE("Suf", "016", "contains", "[quick]") {
       Suf<10> uf1;
       uf1.unite(2, 4);
       uf1.unite(4, 9);
@@ -550,7 +550,7 @@ namespace libsemigroups {
       REQUIRE(uf1 != uf2);
     }
 
-    LIBSEMIGROUPS_TEST_CASE("Duf", "018", "swap", "[quick]") {
+    LIBSEMIGROUPS_TEST_CASE("Duf", "017", "swap", "[quick]") {
       Duf<> uf1(10);
       uf1.unite(2, 4);
       uf1.unite(4, 9);
@@ -581,7 +581,7 @@ namespace libsemigroups {
       REQUIRE(uf2 == uf1);
     }
 
-    LIBSEMIGROUPS_TEST_CASE("Suf", "019", "swap", "[quick]") {
+    LIBSEMIGROUPS_TEST_CASE("Suf", "018", "swap", "[quick]") {
       Suf<10> uf1;
       uf1.unite(2, 4);
       uf1.unite(4, 9);

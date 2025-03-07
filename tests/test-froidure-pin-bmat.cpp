@@ -91,7 +91,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("FroidurePin",
-                                   "007",
+                                   "006",
                                    "regular bmat monoid 4",
                                    "[quick][froidure-pin][bmat][no-valgrind]",
                                    BMat<4>,
@@ -111,7 +111,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("FroidurePin",
-                                   "009",
+                                   "007",
                                    "small example 2",
                                    "[quick][froidure-pin][bmat]",
                                    BMat<3>,
@@ -149,7 +149,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("FroidurePin",
-                                   "011",
+                                   "008",
                                    "small example 3",
                                    "[quick][froidure-pin][bmat]",
                                    BMat<4>,
@@ -164,7 +164,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("FroidurePin",
-                                   "013",
+                                   "009",
                                    "Clark generators",
                                    "[extreme][froidure-pin][bmat]",
                                    BMat<40>,

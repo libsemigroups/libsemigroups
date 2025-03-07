@@ -26,7 +26,7 @@
 namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE("Konieczny",
-                          "031",
+                          "027",
                           "transformations",
                           "[quick][transf]") {
     using Transf         = LeastTransf<5>;
@@ -53,7 +53,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Konieczny",
-                          "032",
+                          "028",
                           "transformations - JDM favourite example",
                           "[quick][no-valgrind][transf]") {
     using Transf         = LeastTransf<8>;
@@ -79,7 +79,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Konieczny",
-                          "033",
+                          "029",
                           "transformations - large example",
                           "[quick][no-valgrind][transf]") {
     auto                        rg   = ReportGuard(false);
@@ -108,7 +108,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Konieczny",
-                          "034",
+                          "030",
                           "transformations - large example with stop",
                           "[quick][no-valgrind][transf]") {
     auto                rg = ReportGuard(false);
@@ -122,7 +122,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Konieczny",
-                          "035",
+                          "031",
                           "transformations - large example with run_until",
                           "[quick][no-valgrind][transf]") {
     auto                rg = ReportGuard(false);
@@ -145,7 +145,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Konieczny",
-                          "036",
+                          "032",
                           "transformations - large example with stop in Action",
                           "[quick][no-valgrind][transf]") {
     auto                rg = ReportGuard(false);
@@ -165,7 +165,7 @@ namespace libsemigroups {
     REQUIRE(S.size() == 232511);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("Konieczny", "037", "exceptions", "[quick][transf]") {
+  LIBSEMIGROUPS_TEST_CASE("Konieczny", "033", "exceptions", "[quick][transf]") {
     auto rg          = ReportGuard(false);
     using point_type = typename Transf<>::point_type;
     std::vector<point_type> v(65, 0);
@@ -175,7 +175,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Konieczny",
-                          "038",
+                          "034",
                           "transformations: contains",
                           "[quick][transf]") {
     auto                rg = ReportGuard(false);
@@ -214,7 +214,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Konieczny",
-                          "039",
+                          "035",
                           "transformations Hall monoid 5",
                           "[extreme][transf]") {
     auto rg      = ReportGuard();
@@ -254,7 +254,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Konieczny",
-                          "040",
+                          "036",
                           "transformations - destructor coverage",
                           "[quick][transf][no-valgrind]") {
     auto rg      = ReportGuard(false);
@@ -275,7 +275,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Konieczny",
-                          "041",
+                          "037",
                           "current_number_D_classes",
                           "[quick][transf][no-valgrind]") {
     auto rg      = ReportGuard(false);
@@ -297,7 +297,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Konieczny",
-                          "042",
+                          "038",
                           "add_generator",
                           "[quick][transf][no-valgrind]") {
     auto rg      = ReportGuard(false);
@@ -315,7 +315,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Konieczny",
-                          "043",
+                          "039",
                           "add_generator",
                           "[quick][transf][no-valgrind]") {
     auto rg      = ReportGuard(false);

@@ -1040,7 +1040,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Stephen",
-                          "034",
+                          "032",
                           "(inverse) "
                           "step_hen test_schutzenbergergraph 001 "
                           "(string)",
@@ -1069,7 +1069,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Stephen",
-                          "035",
+                          "033",
                           "(inverse) "
                           "step_hen test_schutzenbergergraph 001",
                           "[stephen][quick]") {
@@ -1097,7 +1097,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Stephen",
-                          "036",
+                          "034",
                           "(inverse) "
                           "step_hen test_schutzenbergergraph 002",
                           "[stephen][quick]") {
@@ -1116,7 +1116,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Stephen",
-                          "037",
+                          "035",
                           "(inverse) "
                           "step_hen test_schutzenbergergraph 003",
                           "[stephen][quick]") {
@@ -1136,7 +1136,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Stephen",
-                          "038",
+                          "036",
                           "(inverse) "
                           "step_hen test_schutzenbergergraph 004",
                           "[stephen][quick]") {
@@ -1175,7 +1175,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Stephen",
-                          "039",
+                          "037",
                           "(inverse) "
                           "step_hen test_schutzenbergergraph 005",
                           "[stephen][quick]") {
@@ -1196,7 +1196,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Stephen",
-                          "040",
+                          "038",
                           "(inverse) "
                           "step_hen test_schutzenbergergraph 006",
                           "[stephen][quick]") {
@@ -1225,7 +1225,7 @@ namespace libsemigroups {
                  {UNDEFINED, UNDEFINED, UNDEFINED, 5, UNDEFINED, 4}}));
   }
 
-  LIBSEMIGROUPS_TEST_CASE("Stephen", "041", "corner case", "[stephen][quick]") {
+  LIBSEMIGROUPS_TEST_CASE("Stephen", "039", "corner case", "[stephen][quick]") {
     ReportGuard rg(false);
     ToWord      to_word("x");
 
@@ -1243,7 +1243,7 @@ namespace libsemigroups {
     REQUIRE(!stephen::accepts(S, to_word("x")));
   }
 
-  LIBSEMIGROUPS_TEST_CASE("Stephen", "042", "empty word", "[stephen][quick]") {
+  LIBSEMIGROUPS_TEST_CASE("Stephen", "040", "empty word", "[stephen][quick]") {
     ReportGuard rg(false);
     auto        p = presentation::examples::symmetric_inverse_monoid(4);
     REQUIRE(p.contains_empty_word());
@@ -1262,7 +1262,7 @@ namespace libsemigroups {
     REQUIRE(s.word_graph().number_of_nodes() == 48);
   }
 
-  LIBSEMIGROUPS_TEST_CASE("Stephen", "043", "shared_ptr", "[stephen][quick]") {
+  LIBSEMIGROUPS_TEST_CASE("Stephen", "041", "shared_ptr", "[stephen][quick]") {
     ReportGuard                    rg(false);
     ToWord                         to_word("abcABC");
     InversePresentation<word_type> p;
@@ -1290,7 +1290,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Stephen",
-                          "044",
+                          "042",
                           "inverse presentation -- operator==",
                           "[stephen][quick][no-valgrind]") {
     ReportGuard            rg(false);
@@ -1344,7 +1344,7 @@ namespace libsemigroups {
   }  // namespace
 
   LIBSEMIGROUPS_TEST_CASE("Stephen",
-                          "045",
+                          "043",
                           "inverse presentation",
                           "[stephen][standard]") {
     using words::                  operator+;
@@ -1376,7 +1376,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Stephen",
-                          "046",
+                          "044",
                           "non-inverse presentation -- operator==",
                           "[stephen][quick][no-valgrind]") {
     ReportGuard rg(false);
@@ -1404,7 +1404,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Stephen",
-                          "032",
+                          "045",
                           "Plactic monoid",
                           "[stephen][quick]") {
     auto rg = ReportGuard(false);
@@ -1416,7 +1416,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Stephen",
-                          "033",
+                          "046",
                           "Whyte's 4-relation full transf monoid 8",
                           "[stephen][standard]") {
     auto                    rg = ReportGuard(false);
@@ -1508,7 +1508,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Stephen",
-                          "047",
+                          "048",
                           "bicyclic monoid",
                           "[stephen][fail]") {
     ReportGuard                    rg(true);
@@ -1528,7 +1528,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Stephen",
-                          "048",
+                          "049",
                           "chinese monoid",
                           "[stephen][quick]") {
     ReportGuard rg(false);
@@ -1542,7 +1542,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Stephen",
-                          "049",
+                          "050",
                           "to_human_readable_repr",
                           "[stephen][quick]") {
     ReportGuard             rg(false);
@@ -1633,7 +1633,7 @@ namespace libsemigroups {
 
   // The following uses up about 7GB memory to run
   LIBSEMIGROUPS_TEST_CASE("Stephen",
-                          "050",
+                          "051",
                           "shared_ptr memory check",
                           "[stephen][extreme][no-valgrind]") {
     ReportGuard                    rg(true);
@@ -1691,7 +1691,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Stephen",
-                          "051",
+                          "052",
                           "Incomplete Munn tree products",
                           "[stephen][quick]") {
     ReportGuard rg(false);

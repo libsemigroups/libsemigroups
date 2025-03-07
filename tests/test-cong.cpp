@@ -121,7 +121,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Congruence",
-                          "007",
+                          "002",
                           "2-sided congruence from presentation",
                           "[quick][cong]") {
     auto                    rg = ReportGuard(false);
@@ -146,7 +146,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Congruence",
-                          "008",
+                          "003",
                           "2-sided congruence from presentation",
                           "[quick][cong]") {
     auto                    rg = ReportGuard(false);
@@ -177,7 +177,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Congruence",
-                          "009",
+                          "004",
                           "infinite 2-sided congruence from presentation",
                           "[quick][cong]") {
     auto rg = ReportGuard(false);
@@ -222,7 +222,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Congruence",
-                          "010",
+                          "005",
                           "2-sided congruence on finite semigroup",
                           "[quick][cong][no-valgrind]") {
     auto rg      = ReportGuard(false);
@@ -260,7 +260,7 @@ namespace libsemigroups {
   // threads blocks the others from stopping, extending the time
   // taken for this to run.
   LIBSEMIGROUPS_TEST_CASE("Congruence",
-                          "011",
+                          "006",
                           "congruence on full PBR monoid on 2 points",
                           "[extreme][cong]") {
     auto rg = ReportGuard(true);
@@ -308,7 +308,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Congruence",
-                          "012",
+                          "007",
                           "2-sided congruence on finite semigroup",
                           "[quick][cong][no-valgrind]") {
     auto rg = ReportGuard(false);
@@ -333,7 +333,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Congruence",
-                          "013",
+                          "008",
                           "trivial 2-sided congruence on bicyclic monoid",
                           "[quick][cong][no-valgrind]") {
     auto                    rg = ReportGuard(false);
@@ -350,7 +350,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Congruence",
-                          "014",
+                          "009",
                           "non-trivial 2-sided congruence on bicyclic monoid",
                           "[quick][cong]") {
     auto rg = ReportGuard(false);
@@ -393,7 +393,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Congruence",
-                          "015",
+                          "010",
                           "2-sided congruence on free abelian monoid",
                           "[quick][cong]") {
     auto                    rg = ReportGuard(false);
@@ -410,7 +410,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Congruence",
-                          "016",
+                          "011",
                           "example where TC works but KB doesn't",
                           "[quick][cong]") {
     auto                      rg = ReportGuard(false);
@@ -430,7 +430,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Congruence",
-                          "017",
+                          "012",
                           "2-sided congruence on finite semigroup",
                           "[quick][cong]") {
     auto rg      = ReportGuard(false);
@@ -458,7 +458,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Congruence",
-                          "018",
+                          "013",
                           "infinite fp semigroup from GAP library",
                           "[quick][cong]") {
     auto                    rg = ReportGuard(false);
@@ -497,7 +497,7 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEST_CASE(
       "Congruence",
-      "019",
+      "014",
       "2-sided cong. from presentation with infinite classes ",
       "[quick][cong]") {
     using words::operator+;
@@ -522,7 +522,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Congruence",
-                          "020",
+                          "015",
                           "trivial cong. on an fp semigroup",
                           "[quick][cong][no-valgrind]") {
     auto                      rg = ReportGuard(false);
@@ -548,7 +548,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Congruence",
-                          "021",
+                          "016",
                           "duplicate generators",
                           "[quick][cong]") {
     auto rg      = ReportGuard(false);
@@ -562,7 +562,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Congruence",
-                          "022",
+                          "017",
                           "non-trivial classes",
                           "[quick][cong]") {
     auto rg = ReportGuard(false);
@@ -608,7 +608,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Congruence",
-                          "023",
+                          "018",
                           "onesided congruence on finite semigroup",
                           "[quick][cong][no-valgrind]") {
     auto rg      = ReportGuard(false);
@@ -650,7 +650,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Congruence",
-                          "024",
+                          "019",
                           "redundant generating pairs",
                           "[quick][cong]") {
     auto                    rg = ReportGuard(false);
@@ -663,7 +663,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Congruence",
-                          "025",
+                          "020",
                           "2-sided cong. on free semigroup",
                           "[quick][cong]") {
     auto                      rg = ReportGuard(false);
@@ -676,7 +676,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Congruence",
-                          "026",
+                          "021",
                           "is_obviously_(in)finite",
                           "[quick][cong]") {
     auto rg = ReportGuard(false);
@@ -777,7 +777,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Congruence",
-                          "028",
+                          "022",
                           "2-sided congruences of BMat8 semigroup",
                           "[quick][cong][no-valgrind]") {
 #ifdef LIBSEMIGROUPS_HPCOMBI_ENABLED
@@ -845,7 +845,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Congruence",
-                          "029",
+                          "023",
                           "left congruence on finite semigroup",
                           "[quick][cong]") {
     auto                  rg = ReportGuard(false);
@@ -878,7 +878,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Congruence",
-                          "030",
+                          "024",
                           "onesided congruence on finite semigroup",
                           "[quick][cong]") {
     auto                  rg = ReportGuard(false);
@@ -907,7 +907,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Congruence",
-                          "031",
+                          "025",
                           "onesided congruence on finite semigroup",
                           "[quick][cong]") {
     auto                  rg = ReportGuard(false);
@@ -940,7 +940,7 @@ namespace libsemigroups {
     REQUIRE(!congruence::contains(cong, w3, w5));
   }
 
-  LIBSEMIGROUPS_TEST_CASE("Congruence", "032", "contains", "[quick][cong]") {
+  LIBSEMIGROUPS_TEST_CASE("Congruence", "026", "contains", "[quick][cong]") {
     auto                      rg = ReportGuard(false);
     Presentation<std::string> p;
     p.alphabet("ab");
@@ -984,7 +984,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Congruence",
-                          "033",
+                          "027",
                           "stellar_monoid S2",
                           "[quick][cong]") {
     auto                    rg = ReportGuard(false);
@@ -1013,7 +1013,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Congruence",
-                          "034",
+                          "028",
                           "stellar_monoid S3",
                           "[quick][cong]") {
     auto                    rg = ReportGuard(false);
@@ -1058,7 +1058,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Congruence",
-                          "035",
+                          "029",
                           "stellar_monoid S4",
                           "[quick][cong][no-valgrind]") {
     auto                    rg = ReportGuard(false);
@@ -1091,7 +1091,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Congruence",
-                          "036",
+                          "030",
                           "stellar_monoid S5",
                           "[quick][cong][no-valgrind]") {
     auto                    rg = ReportGuard(false);
@@ -1125,7 +1125,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Congruence",
-                          "037",
+                          "031",
                           "stellar_monoid S6",
                           "[quick][cong][no-valgrind]") {
     auto                    rg = ReportGuard(false);
@@ -1155,7 +1155,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Congruence",
-                          "038",
+                          "032",
                           "stellar_monoid S7",
                           "[quick][cong][no-valgrind]") {
     auto                    rg = ReportGuard(false);
@@ -1185,7 +1185,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Congruence",
-                          "039",
+                          "033",
                           "left cong. on an f.p. semigroup",
                           "[quick][cong]") {
     auto rg = ReportGuard(false);
@@ -1214,7 +1214,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Congruence",
-                          "040",
+                          "034",
                           "2-sided cong. on infinite f.p. semigroup",
                           "[quick][cong]") {
     auto                    rg = ReportGuard(false);
@@ -1233,7 +1233,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Congruence",
-                          "042",
+                          "035",
                           "const_contains",
                           "[quick][cong][no-valgrind]") {
     auto                    rg = ReportGuard(false);
@@ -1258,7 +1258,7 @@ namespace libsemigroups {
     }
   }
 
-  LIBSEMIGROUPS_TEST_CASE("Congruence", "043", "no winner", "[quick][cong]") {
+  LIBSEMIGROUPS_TEST_CASE("Congruence", "036", "no winner", "[quick][cong]") {
     auto                    rg = ReportGuard(false);
     Presentation<word_type> p;
     p.alphabet(2);
@@ -1286,7 +1286,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Congruence",
-                          "044",
+                          "037",
                           "congruence over smalloverlap",
                           "[quick][cong]") {
     auto                      rg = ReportGuard(false);
@@ -1328,7 +1328,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEST_CASE("Congruence",
-                          "002",
+                          "038",
                           "python problem example",
                           "[quick][cong]") {
     Presentation<std::string> p;
