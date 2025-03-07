@@ -402,12 +402,13 @@ namespace libsemigroups {
   }  // namespace detail
 }  // namespace libsemigroups
 
+#ifndef LIBSEMIGROUPS_PARSED_BY_DOXYGEN
 // TODO replace uint32_t by Node
 template <>
 struct rx::is_input_range<
     typename libsemigroups::detail::NodeManager<uint32_t>::ActiveNodesRange>
     : std::true_type {};
-
+#endif
 #include "node-manager.tpp"
 
 #endif  // LIBSEMIGROUPS_DETAIL_NODE_MANAGER_HPP_

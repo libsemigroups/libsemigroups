@@ -564,5 +564,4 @@ struct fmt::formatter<libsemigroups::Forest> : fmt::formatter<std::string> {
         fmt::format("{{{}, {}}}", f.parents(), f.labels()), ctx);
   }
 };
-
 #endif  // LIBSEMIGROUPS_FOREST_HPP_
