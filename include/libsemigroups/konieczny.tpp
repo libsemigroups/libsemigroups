@@ -225,7 +225,6 @@ namespace libsemigroups {
     _rho_orb.init();
     _rho_to_D_map.clear();
     _run_initialised = false;
-    // TODO clear element pool, change one, _tmp*s?
     _lambda_orb.cache_scc_multipliers(true);
     _rho_orb.cache_scc_multipliers(true);
 
@@ -627,7 +626,7 @@ namespace libsemigroups {
     // if _one is created but not immediately push into _gens
     // it won't be freed if there are exceptions thrown!
     _one = this->to_internal(One()(x));
-    _gens.push_back(_one);  // TODO(later): maybe not this
+    _gens.push_back(_one);
 
     _element_pool.init(_one);
 
@@ -758,6 +757,10 @@ namespace libsemigroups {
     if (!report()) {
       return;
     }
+
+    using detail::group_digits;
+    using detail::string_time;
+
     size_t number_of_reps_remaining = 0;
     std::for_each(_ranks.cbegin(),
                   _ranks.cend(),
@@ -766,25 +769,32 @@ namespace libsemigroups {
                         += _regular_reps[x].size() + _nonregular_reps[x].size();
                   });
 
-    auto run_time        = delta(start_time());
-    auto run_time_string = fmt::format("{:<7}", detail::string_time(run_time));
+    auto const size = fmt::format("{:<11}", group_digits(current_size()));
+    auto const Dcs
+        = fmt::format("{:<9}", group_digits(current_number_of_D_classes()));
+    auto const Rcs
+        = fmt::format("{:<9}", group_digits(current_number_of_R_classes()));
+    auto const Lcs
+        = fmt::format("{:<9}", group_digits(current_number_of_L_classes()));
+    auto const reps_string
+        = fmt::format("{:<9}", group_digits(number_of_reps_remaining));
+    auto const repinfo_string = fmt::format("{} (reps todo, ranks {}-{})",
+                                            reps_string,
+                                            group_digits(*_ranks.cbegin()),
+                                            group_digits(max_rank()));
+
+    auto const run_time_string
+        = fmt::format("{:<7}", detail::string_time(delta(start_time())));
 
     // TODO(later) add layers to report
-    report_default(
-        "found {} elements in {} D-classes ({} regular), {} R-classes ({} "
-        "regular), {} L-classes ({} regular) | {} (total)\n",
-        current_size(),
-        current_number_of_D_classes(),
-        current_number_of_regular_D_classes(),
-        current_number_of_R_classes(),
-        current_number_of_regular_R_classes(),
-        current_number_of_L_classes(),
-        current_number_of_regular_L_classes(),
-        run_time_string);
-    report_default("there are {} unprocessed reps with ranks in [{}, {}]\n",
-                   number_of_reps_remaining,
-                   *_ranks.cbegin(),
-                   max_rank());
+    report_default("Konieczny: {} (size) | {} (D-classes) | {} (L-classes) | "
+                   "{} (R-classes) | {:<36} | {}\n",
+                   size,
+                   Dcs,
+                   Lcs,
+                   Rcs,
+                   repinfo_string,
+                   run_time_string);
   }
 
   template <typename Element, typename Traits>
@@ -1541,7 +1551,6 @@ namespace libsemigroups {
       for (auto val : lorb.scc().component_of(lval_pos)) {
         _lambda_index_positions.emplace(val, this->left_indices().size());
         this->left_indices().push_back(val);
-        // TODO(later) prove this works
 #ifdef LIBSEMIGROUPS_DEBUG
         PoolGuard cg(this->parent()->element_pool());
         PoolGuard cg2(this->parent()->element_pool());
