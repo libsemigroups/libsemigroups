@@ -1065,7 +1065,9 @@ namespace libsemigroups {
       BMat<> y(2, 1);
       REQUIRE_THROWS_AS(matrix::pow(y, 2), LibsemigroupsException);
     }
-    { REQUIRE_THROWS_AS(make<BMat<>>({{0, 1}, {0}}), LibsemigroupsException); }
+    REQUIRE_THROWS_AS(make<BMat<>>({{0, 1}, {0}}), LibsemigroupsException);
+    REQUIRE_THROWS_AS(make<BMat<3>>({{0, 0}, {0, 0}}), LibsemigroupsException);
+
     {
       BMat<> y(2, 2);
       std::fill(y.begin(), y.end(), 0);

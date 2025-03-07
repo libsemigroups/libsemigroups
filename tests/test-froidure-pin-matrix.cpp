@@ -150,10 +150,12 @@ namespace libsemigroups {
     REQUIRE(S.position(S.generator(0)) == 0);
     REQUIRE(S.contains(S.generator(0)));
 
-    // TODO(0) uncomment the below, and correctly handle wrong dimensions for
-    // make with matrices with compile time dimensions such as
-    // MaxPlusTruncMat<33, 3>
-    // auto x = make<TestType>(sr, {{2, 2}, {1, 0}});
+    if constexpr (IsStaticMatrix<TestType>) {
+      REQUIRE_THROWS_AS(S.position(make<TestType>(sr, {{2, 2}, {1, 0}})),
+                        LibsemigroupsException);
+    } else {
+      REQUIRE(S.position(make<TestType>(sr, {{2, 2}, {1, 0}})) == UNDEFINED);
+    }
     auto x = make<TestType>(sr, {{2, 2, 0}, {1, 0, 0}, {0, 0, 0}});
     REQUIRE(S.position(x) == UNDEFINED);
     delete sr;
