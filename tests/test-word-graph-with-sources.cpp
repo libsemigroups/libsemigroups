@@ -262,7 +262,7 @@ namespace libsemigroups {
       WordGraphWithSources<size_t> dws1(0, 0);
       WordGraphWithSources<size_t> dws1_q(0, 0);
       Joiner                       joiner;
-      REQUIRE(joiner.is_subrelation(dws1, dws1_q));
+      REQUIRE_THROWS(joiner.is_subrelation(dws1, dws1_q));
     }
 
     LIBSEMIGROUPS_TEST_CASE("WordGraphWithSources",
