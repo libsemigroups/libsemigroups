@@ -19,30 +19,32 @@
 #ifndef LIBSEMIGROUPS_STEPHEN_HPP_
 #define LIBSEMIGROUPS_STEPHEN_HPP_
 
-#include <chrono>       // for high_resolution_clock
-#include <cstddef>      // for size_t
-#include <cstdint>      // for size_t
-#include <type_traits>  // for decay_t, is_base_of_v
-#include <utility>      // for forward
-#include <vector>       // for vector
+#include <array>    // for array
+#include <cstddef>  // for size_t
+#include <cstdint>  // for uint32_t
+#include <memory>   // for shared_ptr
+#include <string>   // for string
+#include <tuple>    // for tie
+#include <utility>  // for make_pair
+#include <vector>   // for vector
 
-#include "constants.hpp"  // for PositiveInfinity
-#include "dot.hpp"        // for Dot
-#include "exception.hpp"
-#include "paths.hpp"            // for const_pislo_iterator etc
-#include "presentation.hpp"     // for Presentation
-#include "runner.hpp"           // for Runner
-#include "to-presentation.hpp"  // for make
-#include "types.hpp"            // for word_type
-#include "word-graph.hpp"       // for WordGraph, Act...
+#include "constants.hpp"     // for Max, UNDEFINED
+#include "debug.hpp"         // for LIBSEMIGROUPS_ASSERT
+#include "dot.hpp"           // for Dot
+#include "exception.hpp"     // for LIBSEMIGROUPS_EXCEPTION
+#include "paths.hpp"         // for Paths
+#include "presentation.hpp"  // for Presentation
+#include "runner.hpp"        // for Runner
+#include "types.hpp"         // for word_type
+#include "word-graph.hpp"    // for WordGraph
 
-#include "detail/int-range.hpp"                // for IntegralRange<>::v...
-#include "detail/node-managed-graph.hpp"       // for NodeManagedGraph
-#include "detail/stl.hpp"                      // for IsStdSharedPtr
-#include "detail/word-graph-with-sources.hpp"  // for DigraphWithSources
+#include "detail/felsch-graph.hpp"             // for DoNotReg...
+#include "detail/node-managed-graph.hpp"       // for NodeMana...
+#include "detail/node-manager.hpp"             // for NodeManager
+#include "detail/report.hpp"                   // for report_n...
+#include "detail/string.hpp"                   // for group_di...
+#include "detail/word-graph-with-sources.hpp"  // for WordGrap...
 
-// TODO(0)
-// * iwyu
 // TODO(2)
 // * update so that run_for, run_until work properly (at present basically
 //   run_impl starts again from scratch every time)
