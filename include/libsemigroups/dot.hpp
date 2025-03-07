@@ -661,16 +661,53 @@ namespace libsemigroups {
                                     std::string const&                  val);
   };  // class Dot
 
-  // TODO(doc)
+  //! \relates Dot
+  //!
+  //! \brief Return a human readable representation of a Dot object.
+  //!
+  //! Return a human readable representation of a Dot object.
+  //!
+  //! \param d the Dot object.
+  //!
+  //! \exceptions
+  //! \no_libsemigroups_except
   std::string to_human_readable_repr(Dot const& d);
 
-  // TODO(doc)
+  //! \relates Dot::Node
+  //!
+  //! \brief Return a human readable representation of a Dot::Node object.
+  //!
+  //! Return a human readable representation of a Dot::Node object.
+  //!
+  //! \param n the Dot::Node object.
+  //!
+  //! \exceptions
+  //! \no_libsemigroups_except
   std::string to_human_readable_repr(Dot::Node const& n);
 
-  // TODO(doc)
+  //! \relates Dot::Edge
+  //!
+  //! \brief Return a human readable representation of a Dot::Edge object.
+  //!
+  //! Return a human readable representation of a Dot::Edge object.
+  //!
+  //! \param e the Dot::Edge object.
+  //!
+  //! \exceptions
+  //! \no_libsemigroups_except
   std::string to_human_readable_repr(Dot::Edge const& e);
 
-  // TODO(doc)
+  //! \relates Dot
+  //!
+  //! \brief Return a human readable representation of a Dot::Kind object.
+  //!
+  //! Return a human readable representation of a Dot::Kind object.
+  //!
+  //! \param k the Dot::Kind object.
+  //! \param sep separator to use between "Dot" and "Kind" (defaults to "::").
+  //!
+  //! \exceptions
+  //! \no_libsemigroups_except
   std::string to_human_readable_repr(Dot::Kind const&   k,
                                      std::string const& sep = "::");
 
