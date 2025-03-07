@@ -439,8 +439,7 @@ namespace libsemigroups {
   }  // namespace stephen
 
   template <typename PresentationType>
-  [[nodiscard]] std::string
-  to_human_readable_repr(Stephen<PresentationType> const& x) {
+  std::string to_human_readable_repr(Stephen<PresentationType> const& x) {
     if (!x.is_word_set()) {
       return fmt::format("<Stephen object over {} with no word set>",
                          to_human_readable_repr(x.presentation()));
