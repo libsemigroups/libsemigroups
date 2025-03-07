@@ -26,7 +26,7 @@ namespace libsemigroups {
   enum class congruence_kind;
 
   //! \defgroup to_knuth_bendix_group to<KnuthBendix>
-  //! \ingroup todd_coxeter_group
+  //! \ingroup knuth_bendix_group
   //!
   //! \brief Convert to \ref_knuth_bendix instance
   //!
