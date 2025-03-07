@@ -1400,52 +1400,6 @@ namespace libsemigroups {
              && is_regular_element_no_checks(this->to_internal_const(x));
     }
 
-    //! \brief  Add a copy of an element to the generators.
-    //!
-    //! It is possible, if perhaps not desirable,  to add the same generator
-    //! multiple times.
-    //!
-    //! \param gen the generator to add.
-    //!
-    //! \throws LibsemigroupsException if any of the following hold:
-    //! * the degree of \p x is incompatible with the existing degree
-    //! * \ref started returns \c true
-    void add_generator(const_reference gen) {
-      add_generators(&gen, &gen + 1);
-    }
-
-    //! \brief  Add collection of generators from container.
-    //!
-    //! See \ref add_generator for a detailed description.
-    //!
-    //! \tparam T the type of the container for generators to add (must be a
-    //! non-pointer type).
-    //!
-    //! \param coll the collection of generators to add.
-    //!
-    //! \throws LibsemigroupsException if any of the following hold:
-    //! * the degree of \p x is incompatible with the existing degree.
-    //! * \ref started returns \c true
-    template <typename T>
-    void add_generators(T const& coll) {
-      static_assert(!std::is_pointer_v<T>,
-                    "the template parameter T must not be a pointer");
-      add_generators(coll.begin(), coll.end());
-    }
-
-    //! \brief  Add collection of generators from initializer list.
-    //!
-    //! See \ref add_generator for a detailed description.
-    //!
-    //! \param coll the collection of generators to add.
-    //!
-    //! \throws LibsemigroupsException if any of the following hold:
-    //! * the degree of \p x is incompatible with the existing degree.
-    //! * \ref started returns \c true
-    void add_generators(std::initializer_list<const_element_type> coll) {
-      add_generators<std::initializer_list<const_element_type>>(coll);
-    }
-
     //! \brief  \brief Add collection of generators from iterators.
     //!
     //! Add copies of the generators in the range \p first to \p last to \c
@@ -1461,6 +1415,20 @@ namespace libsemigroups {
     //! * \ref started returns \c true
     template <typename T>
     void add_generators(T const& first, T const& last);
+
+    //! \brief Add a copy of an element to the generators of a Konieczny.
+    //!
+    //! It is possible, if perhaps not desirable, to add the same generator
+    //! multiple times.
+    //!
+    //! \param gen the generator to add.
+    //!
+    //! \throws LibsemigroupsException if any of the following hold:
+    //! * the degree of \p x is incompatible with \c K.degree()
+    //! * \ref \c K.started() returns \c true
+    void add_generator(const_reference gen) {
+      add_generators(&gen, &gen + 1);
+    }
 
     ////////////////////////////////////////////////////////////////////////
     // Konieczny - iterators - public
@@ -1835,6 +1803,50 @@ namespace libsemigroups {
   template <typename Element, typename Traits>
   [[nodiscard]] std::string
   to_human_readable_repr(typename Konieczny<Element, Traits>::DClass const& x);
+
+  //! \ingroup konieczny_group
+  //!
+  //! \brief This namespace contains helper functions for the Konieczny class
+  //! template.
+  namespace konieczny {
+
+    //! \brief  Add collection of generators from container.
+    //!
+    //! See \ref add_generator for a detailed description.
+    //!
+    //! \tparam T the type of the container for generators to add (must be a
+    //! non-pointer type).
+    //!
+    //! \param coll the collection of generators to add.
+    //!
+    //! \throws LibsemigroupsException if any of the following hold:
+    //! * the degree of \p x is incompatible with the existing degree.
+    //! * \ref started returns \c true
+    template <typename Element, typename Traits, typename T>
+    void add_generators(Konieczny<Element, Traits> K, T const& coll) {
+      static_assert(!std::is_pointer_v<T>,
+                    "the template parameter T must not be a pointer");
+      K.add_generators(coll.begin(), coll.end());
+    }
+
+    //! \brief  Add collection of generators from initializer list.
+    //!
+    //! See \ref add_generator for a detailed description.
+    //!
+    //! \param coll the collection of generators to add.
+    //!
+    //! \throws LibsemigroupsException if any of the following hold:
+    //! * the degree of \p x is incompatible with the existing degree.
+    //! * \ref started returns \c true
+    template <typename Element, typename Traits>
+    void add_generators(
+        Konieczny<Element, Traits>& K,
+        std::initializer_list<
+            typename Konieczny<Element, Traits>::const_element_type> coll) {
+      K.template add_generators<std::initializer_list<
+          typename Konieczny<Element, Traits>::const_element_type>>(coll);
+    }
+  }  // namespace konieczny
 
 }  // namespace libsemigroups
 #include "konieczny.tpp"

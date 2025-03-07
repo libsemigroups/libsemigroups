@@ -632,7 +632,8 @@ namespace libsemigroups {
                    - KS.cbegin_current_regular_D_classes())
             == idems.size());
 
-    REQUIRE_THROWS_AS(KS.add_generators(gens), LibsemigroupsException);
+    REQUIRE_THROWS_AS(konieczny::add_generators(KS, gens),
+                      LibsemigroupsException);
     REQUIRE_THROWS_AS(KS.add_generator(gens[0]), LibsemigroupsException);
   }
 
@@ -710,7 +711,7 @@ namespace libsemigroups {
     for (auto x : gens) {
       S.add_generator(x);
     }
-    S.add_generators(gens);
+    konieczny::add_generators(S, gens);
 
     REQUIRE(S.size() == 201750);
   }

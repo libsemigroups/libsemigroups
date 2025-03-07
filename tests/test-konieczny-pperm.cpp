@@ -89,11 +89,13 @@ namespace libsemigroups {
                                               10)),
                       LibsemigroupsException);
     REQUIRE_THROWS_AS(
-        S.add_generators(std::vector<PPerm<>>(
-            {PPerm<>({0, 1, 2, 3, 5, 6, 8}, {2, 4, 6, 1, 5, 8, 7}, 9),
-             PPerm<>({0, 1, 2, 3, 4, 5, 6, 8, 9},
-                     {1, 7, 2, 6, 0, 4, 8, 5, 9},
-                     10)})),
+        konieczny::add_generators(
+            S,
+            std::vector<PPerm<>>(
+                {PPerm<>({0, 1, 2, 3, 5, 6, 8}, {2, 4, 6, 1, 5, 8, 7}, 9),
+                 PPerm<>({0, 1, 2, 3, 4, 5, 6, 8, 9},
+                         {1, 7, 2, 6, 0, 4, 8, 5, 9},
+                         10)})),
         LibsemigroupsException);
     REQUIRE(S.size() == 21033);
     REQUIRE_THROWS_AS(S.add_generators(gens.begin(), gens.begin() + 2),
