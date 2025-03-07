@@ -89,7 +89,7 @@ namespace libsemigroups {
   // Fibonacci group F(2,5) - monoid presentation - has order 12 (group
   // elements + empty word)
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
-                                   "031",
+                                   "033",
                                    "kbmag/standalone/kb_data/f25monoid",
                                    "[quick][knuth-bendix][kbmag][shortlex]",
                                    REWRITER_TYPES) {
@@ -159,7 +159,7 @@ namespace libsemigroups {
   // trivial group - BHN presentation
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE(
       "KnuthBendix",
-      "032",
+      "034",
       "kbmag/standalone/kb_data/degen4a",
       "[quick][knuth-bendix][kbmag][shortlex][no-valgrind]",
       REWRITER_TYPES) {
@@ -199,7 +199,7 @@ namespace libsemigroups {
 
   // Torus group
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
-                                   "033",
+                                   "035",
                                    "kbmag/standalone/kb_data/torus",
                                    "[quick][knuth-bendix][kbmag][shortlex]",
                                    REWRITER_TYPES) {
@@ -252,7 +252,7 @@ namespace libsemigroups {
   //  3-fold cover of A_6
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE(
       "KnuthBendix",
-      "034",
+      "036",
       "kbmag/standalone/kb_data/3a6",
       "[quick][knuth-bendix][kbmag][shortlex][no-valgrind]",
       REWRITER_TYPES) {
@@ -311,7 +311,7 @@ namespace libsemigroups {
 
   //  Free group on 2 generators
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
-                                   "035",
+                                   "037",
                                    "kbmag/standalone/kb_data/f2",
                                    "[quick][knuth-bendix][kbmag][shortlex]",
                                    REWRITER_TYPES) {
@@ -356,7 +356,7 @@ namespace libsemigroups {
   // Symmetric group S_16
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE(
       "KnuthBendix",
-      "036",
+      "038",
       "kbmag/standalone/kb_data/s16",
       "[quick][knuth-bendix][kbmag][shortlex][no-valgrind]",
       REWRITER_TYPES) {
@@ -622,7 +622,7 @@ namespace libsemigroups {
   // Presentation of group A_4 regarded as monoid presentation - gives
   // infinite monoid.
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
-                                   "037",
+                                   "039",
                                    "kbmag/standalone/kb_data/a4monoid",
                                    "[quick][knuth-bendix][kbmag][shortlex]",
                                    REWRITER_TYPES) {
@@ -659,7 +659,7 @@ namespace libsemigroups {
   // fairly clearly the trivial group
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE(
       "KnuthBendix",
-      "038",
+      "040",
       "kbmag/standalone/kb_data/degen3",
       "[quick][knuth-bendix][kbmag][shortlex][no-valgrind]",
       REWRITER_TYPES) {
@@ -690,7 +690,7 @@ namespace libsemigroups {
 
   // infinite cyclic group
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
-                                   "039",
+                                   "041",
                                    "kbmag/standalone/kb_data/ab1",
                                    "[quick][knuth-bendix][kbmag][shortlex]",
                                    REWRITER_TYPES) {
@@ -712,7 +712,7 @@ namespace libsemigroups {
 
   // A generator, but trivial.
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
-                                   "040",
+                                   "042",
                                    "kbmag/standalone/kb_data/degen2",
                                    "[quick][knuth-bendix][kbmag][shortlex]",
                                    REWRITER_TYPES) {
@@ -738,7 +738,7 @@ namespace libsemigroups {
 
   // Fibonacci group F(2,5)
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
-                                   "041",
+                                   "043",
                                    "kbmag/standalone/kb_data/f25",
                                    "[quick][knuth-bendix][kbmag][shortlex]",
                                    REWRITER_TYPES) {
@@ -796,7 +796,7 @@ namespace libsemigroups {
 
   // Von Dyck (2,3,7) group - infinite hyperbolic
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
-                                   "042",
+                                   "044",
                                    "kbmag/standalone/kb_data/237",
                                    "[quick][knuth-bendix][kbmag][shortlex]",
                                    REWRITER_TYPES) {
@@ -855,7 +855,7 @@ namespace libsemigroups {
 
   // Cyclic group of order 2.
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
-                                   "043",
+                                   "045",
                                    "kbmag/standalone/kb_data/c2",
                                    "[quick][knuth-bendix][kbmag][shortlex]",
                                    REWRITER_TYPES) {
@@ -881,7 +881,7 @@ namespace libsemigroups {
   // The group is S_4, and the subgroup H of order 4. There are 30 reduced
   // words - 24 for the group elements, and 6 for the 6 cosets Hg.
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
-                                   "044",
+                                   "046",
                                    "kbmag/standalone/kb_data/cosets",
                                    "[quick][knuth-bendix][kbmag][shortlex]",
                                    REWRITER_TYPES) {
@@ -937,7 +937,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
-                                   "045",
+                                   "047",
                                    "Ex. 5.1 in Sims (KnuthBendix 09 again)",
                                    "[quick][knuth-bendix]",
                                    REWRITER_TYPES) {
@@ -962,7 +962,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
-                                   "046",
+                                   "048",
                                    "kbmag/standalone/kb_data/nilp2",
                                    "[quick][knuth-bendix][kbmag][shortlex]",
                                    REWRITER_TYPES) {
@@ -982,7 +982,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
-                                   "047",
+                                   "049",
                                    "Ex. 6.4 in Sims",
                                    "[quick][knuth-bendix][no-valgrind]",
                                    REWRITER_TYPES) {
@@ -1024,7 +1024,7 @@ namespace libsemigroups {
   // Von Dyck (2,3,7) group - infinite hyperbolic
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE(
       "KnuthBendix",
-      "048",
+      "050",
       "KnuthBendix 071 again",
       "[no-valgrind][quick][knuth-bendix][shortlex]",
       REWRITER_TYPES) {
@@ -1099,7 +1099,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
-                                   "049",
+                                   "051",
                                    "Sims Ex. 5.4 - alt. overlap policy",
                                    "[quick][knuth-bendix]",
                                    REWRITER_TYPES) {
@@ -1142,7 +1142,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
-                                   "050",
+                                   "052",
                                    "Sims - Ex. 5.4 - alt. overlap policy",
                                    "[quick][knuth-bendix]",
                                    REWRITER_TYPES) {
@@ -1172,7 +1172,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
-                                   "051",
+                                   "053",
                                    "operator<<",
                                    "[quick][knuth-bendix]",
                                    REWRITER_TYPES) {
@@ -1198,7 +1198,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
-                                   "052",
+                                   "054",
                                    "confluence_interval",
                                    "[quick][knuth-bendix]",
                                    REWRITER_TYPES) {
@@ -1215,7 +1215,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
-                                   "053",
+                                   "055",
                                    "max_overlap",
                                    "[quick][knuth-bendix]",
                                    REWRITER_TYPES) {
@@ -1235,7 +1235,7 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE(
       "KnuthBendix",
-      "054",
+      "056",
       "kbmag/standalone/kb_data/d22",
       "[quick][knuth-bendix][fpsemi][kbmag][shortlex]",
       REWRITER_TYPES) {
@@ -1271,7 +1271,7 @@ namespace libsemigroups {
 
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE(
       "KnuthBendix",
-      "055",
+      "057",
       "kbmag/standalone/kb_data/d22",
       "[quick][knuth-bendix][fpsemi][kbmag][shortlex]",
       REWRITER_TYPES) {
@@ -1298,7 +1298,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
-                                   "056",
+                                   "058",
                                    "small example",
                                    "[quick][knuth-bendix][shortlex]",
                                    REWRITER_TYPES) {
@@ -1318,7 +1318,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
-                                   "057",
+                                   "059",
                                    "code coverage",
                                    "[quick]",
                                    REWRITER_TYPES) {
@@ -1334,7 +1334,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
-                                   "058",
+                                   "060",
                                    "small overlap 1",
                                    "[quick]",
                                    REWRITER_TYPES) {
@@ -1369,7 +1369,7 @@ namespace libsemigroups {
 
   // Symmetric group S_9
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
-                                   "059",
+                                   "061",
                                    "kbmag/standalone/kb_data/s9",
                                    "[quick][knuth-bendix][kbmag][shortlex]",
                                    REWRITER_TYPES) {
@@ -1419,7 +1419,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
-                                   "060",
+                                   "062",
                                    "C(4) monoid",
                                    "[quick][knuth-bendix]",
                                    REWRITER_TYPES) {
@@ -1434,7 +1434,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
-                                   "061",
+                                   "063",
                                    "1-relation hard case",
                                    "[fail][knuth-bendix]",
                                    REWRITER_TYPES) {
@@ -1452,7 +1452,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
-                                   "062",
+                                   "064",
                                    "1-relation hard case x 2",
                                    "[quick][knuth-bendix][no-valgrind]",
                                    REWRITER_TYPES) {
@@ -1515,7 +1515,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
-                                   "063",
+                                   "065",
                                    "search for a monoid that might not exist",
                                    "[quick][knuth-bendix]",
                                    REWRITER_TYPES) {
@@ -1553,7 +1553,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
-                                   "064",
+                                   "066",
                                    "Chinese monoid",
                                    "[knuth-bendix][quick][no-valgrind]",
                                    REWRITER_TYPES) {
@@ -1575,7 +1575,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
-                                   "065",
+                                   "067",
                                    "hypostylic",
                                    "[todd-coxeter][quick]",
                                    REWRITER_TYPES) {
@@ -1612,7 +1612,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
-                                   "066",
+                                   "068",
                                    "Chinese id monoid",
                                    "[todd-coxeter][quick]",
                                    REWRITER_TYPES) {
@@ -1632,7 +1632,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
-                                   "067",
+                                   "069",
                                    "sigma sylvester monoid",
                                    "[todd-coxeter][quick][no-valgrind]",
                                    REWRITER_TYPES) {
@@ -1769,7 +1769,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
-                                   "027",
+                                   "070",
                                    "Reinis MFE",
                                    "[todd-coxeter][quick]",
                                    REWRITER_TYPES) {
@@ -1785,7 +1785,7 @@ namespace libsemigroups {
   }
 
   LIBSEMIGROUPS_TEMPLATE_TEST_CASE("KnuthBendix",
-                                   "068",
+                                   "071",
                                    "sigma sylvester monoid x 2",
                                    "[todd-coxeter][quick]",
                                    REWRITER_TYPES) {
