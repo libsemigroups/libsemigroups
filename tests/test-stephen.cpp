@@ -18,37 +18,38 @@
 
 #define CATCH_CONFIG_ENABLE_ALL_STRINGMAKERS
 
-#include <cstddef>   // for size_t
-#include <iostream>  // for cout
-
-#include <algorithm>    // for for_each
-#include <chrono>       // for duration, microsec...
-#include <cstddef>      // for size_t
-#include <cstdint>      // for size_t
-#include <fstream>      // for ofstream
-#include <iostream>     // for string, char_traits
-#include <iterator>     // for advance
-#include <string>       // for swap, basic_string
-#include <type_traits>  // for remove_reference<>...
-#include <utility>      // for move
-#include <vector>       // for vector, operator==
+#include <algorithm>      // for for_each
+#include <cctype>         // for isupper
+#include <cstddef>        // for size_t
+#include <cstdint>        // for uint32_t
+#include <iostream>       // for operator<<
+#include <memory>         // for make_shared
+#include <string>         // for basic_st...
+#include <tuple>          // for tie
+#include <unordered_map>  // for operator==
+#include <utility>        // for make_pair
+#include <vector>         // for vector
 
 #include "Catch2-3.7.1/catch_amalgamated.hpp"  // for REQUIRE, REQUIRE_THROWS_AS, REQUI...
 #include "test-main.hpp"                       // for LIBSEMIGROUPS_TEST_CASE
 
 #include "libsemigroups/constants.hpp"              // for UNDEFINED
-#include "libsemigroups/exception.hpp"              // for LibsemigroupsExcep...
-#include "libsemigroups/order.hpp"                  // for LexicographicalCom...
-#include "libsemigroups/presentation-examples.hpp"  // for make, fibonacci_se...
-#include "libsemigroups/presentation.hpp"           // for add_rule
-#include "libsemigroups/ranges.hpp"                 // for StringToWord, word...
-#include "libsemigroups/stephen.hpp"                // for Stephen, Stephen::...
-#include "libsemigroups/todd-coxeter.hpp"           // for ToddCoxeter
+#include "libsemigroups/exception.hpp"              // for Libsemig...
+#include "libsemigroups/order.hpp"                  // for Lexicogr...
+#include "libsemigroups/paths.hpp"                  // for Paths
+#include "libsemigroups/presentation-examples.hpp"  // for symmetri...
+#include "libsemigroups/presentation.hpp"           // for InverseP...
+#include "libsemigroups/ranges.hpp"                 // for operator|
+#include "libsemigroups/stephen.hpp"                // for Stephen
+#include "libsemigroups/todd-coxeter-class.hpp"     // for ToddCoxeter
+#include "libsemigroups/todd-coxeter-helpers.hpp"   // for index_of
 #include "libsemigroups/types.hpp"                  // for word_type
-#include "libsemigroups/word-graph.hpp"             // for WordGraph, ope...
-#include "libsemigroups/word-range.hpp"             // for StringToWord, word...
+#include "libsemigroups/word-graph.hpp"             // for WordGraph
+#include "libsemigroups/word-range.hpp"             // for ToWord
 
-#include "libsemigroups/detail/report.hpp"  // for ReportGuard
+#include "libsemigroups/detail/fmt.hpp"       // for format
+#include "libsemigroups/detail/iterator.hpp"  // for operator+
+#include "libsemigroups/detail/report.hpp"    // for ReportGuard
 
 namespace libsemigroups {
   using namespace literals;
