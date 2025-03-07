@@ -141,9 +141,9 @@ namespace libsemigroups {
   //!
   //! Note that a \ref_kambites instance represents a congruence on the free
   //! monoid or semigroup containing the rules of a presentation used to
-  //! construct the instance, and the \ref generating_pairs. As such generating
-  //! pairs or rules are interchangeable in the context of \ref_kambites
-  //! objects.
+  //! construct the instance, and the \ref Kambites::generating_pairs. As such
+  //! generating pairs or rules are interchangeable in the context of
+  //! \ref_kambites objects.
   //!
   //! \tparam Word the type of the words in the presentation.
   // TODO(1) example
