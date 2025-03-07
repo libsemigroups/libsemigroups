@@ -427,8 +427,8 @@ namespace libsemigroups {
 
     //! \brief Remove all of the edges in the word graph.
     //!
-    //! Set every target of every source with every possible label to \ref
-    //! UNDEFINED.
+    //! Set every target of every source with every possible label to
+    //! \ref UNDEFINED.
     //!
     //! \returns A reference to `*this`.
     //!

@@ -163,8 +163,8 @@ namespace libsemigroups {
     //! never checked.
     //!
     //! \warning No checks are performed on the arguments of this function. In
-    //! particular, if \p node or \p parent is greater than or equal to \ref
-    //! number_of_nodes, then bad things may happen.
+    //! particular, if \p node or \p parent is greater than or equal to
+    //! \ref number_of_nodes, then bad things may happen.
     Forest& set_parent_and_label_no_checks(node_type  node,
                                            node_type  parent,
                                            label_type gen) {

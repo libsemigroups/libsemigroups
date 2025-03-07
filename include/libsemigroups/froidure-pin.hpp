@@ -119,8 +119,8 @@ namespace libsemigroups {
   //! Jean-Eric Pin. A FroidurePin instance is defined by a generating set, and
   //! the main function is \ref run, which implements the Froidure-Pin
   //! Algorithm. If \ref run is invoked and \ref finished returns \c true, then
-  //! the size \ref size, the left and right Cayley graphs \ref
-  //! left_cayley_graph and \ref right_cayley_graph are determined, and a
+  //! the size \ref size, the left and right Cayley graphs
+  //! \ref left_cayley_graph and \ref right_cayley_graph are determined, and a
   //! confluent terminating presentation \ref froidure_pin::rules for the
   //! semigroup is known.
   //!
@@ -595,8 +595,8 @@ namespace libsemigroups {
     //!
     //! \warning This function does not check its arguments. In particular, it
     //! is assumed that every value in the ranges from \p first1 to \p last1 and
-    //! from \p first2 to \p last2 is strictly less than \ref
-    //! number_of_generators.
+    //! from \p first2 to \p last2 is strictly less than
+    //! \ref number_of_generators.
     template <typename Iterator1,
               typename Iterator2,
               typename Iterator3,
@@ -657,17 +657,17 @@ namespace libsemigroups {
     //! \brief Returns the generator with specified index.
     //!
     //! This function returns the generator with index \p i, where the order is
-    //! that in which the generators were added at construction, or via \ref
-    //! init, \ref add_generator, \ref add_generators, \ref closure, \ref
-    //! copy_closure, or \ref copy_add_generators.
+    //! that in which the generators were added at construction, or via
+    //! \ref init, \ref add_generator, \ref add_generators, \ref closure,
+    //! \ref copy_closure, or \ref copy_add_generators.
     //!
     //! \param i the index of a generator.
     //!
     //! \returns
     //! The generator with given index.
     //!
-    //! \throws LibsemigroupsException if \p i is greater than or equal to \ref
-    //! number_of_generators().
+    //! \throws LibsemigroupsException if \p i is greater than or equal to
+    //! \ref number_of_generators().
     //!
     //! \note
     //! Note that `generator(j)` is in general not in position \p j.
@@ -679,9 +679,9 @@ namespace libsemigroups {
     //! \brief Returns the generator with specified index.
     //!
     //! This function returns the generator with index \p i, where the order is
-    //! that in which the generators were added at construction, or via \ref
-    //! init, \ref add_generator, \ref add_generators, \ref closure, \ref
-    //! copy_closure, or \ref copy_add_generators.
+    //! that in which the generators were added at construction, or via
+    //! \ref init, \ref add_generator, \ref add_generators, \ref closure,
+    //! \ref copy_closure, or \ref copy_add_generators.
     //!
     //! \param i the index of a generator.
     //!
@@ -842,8 +842,8 @@ namespace libsemigroups {
     //! The parameter \p val is also used to initialise certain data members.
     //! If you know a good upper bound for the size of your semigroup, then it
     //! might be a good idea to call this  function with that upper bound as an
-    //! argument; this can significantly improve the performance of the \ref
-    //! run  function, and consequently every other function too.
+    //! argument; this can significantly improve the performance of the
+    //! \ref run  function, and consequently every other function too.
     //!
     //! \param val the number of elements to reserve space for.
     //!
@@ -1445,8 +1445,8 @@ namespace libsemigroups {
     //! according to Less.
     using const_iterator_sorted = const_iterator_pair_first;
 
-    //! \brief Return type of \ref cbegin_idempotents and \ref
-    //! cend_idempotents.
+    //! \brief Return type of \ref cbegin_idempotents and
+    //! \ref cend_idempotents.
     //!
     //! A type for const random access iterators through the idempotents, in
     //! order of generation (short-lex order).
@@ -2418,8 +2418,8 @@ namespace libsemigroups {
   //!
   //! This function can be used to construct a FroidurePin instance from a
   //! std::initializer_list of generators after first verifying that the
-  //! proposed generators all have equal degree. See \ref
-  //! FroidurePin::add_generator for more details.
+  //! proposed generators all have equal degree. See
+  //! \ref FroidurePin::add_generator for more details.
   //!
   //! \tparam Element the type of the elements in the FroidurePin instance.
   //!

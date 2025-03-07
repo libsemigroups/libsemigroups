@@ -46,9 +46,9 @@
 #include "detail/path-iterators.hpp"  // for const_pilo_iterat...
 
 namespace libsemigroups {
-  //! This page contains documentation for everything in the namespace \ref
-  //! todd_coxeter. This includes everything from \ref cong_common_helpers_group
-  //! and \ref todd_coxeter_helpers_group.
+  //! This page contains documentation for everything in the namespace
+  //! \ref todd_coxeter. This includes everything from \ref
+  //! cong_common_helpers_group and \ref todd_coxeter_helpers_group.
   namespace todd_coxeter {
     ////////////////////////////////////////////////////////////////////////
     // ToddCoxeter<Word> helpers
@@ -70,8 +70,8 @@ namespace libsemigroups {
     //! \ref_todd_coxeter class. In particular, these functions include versions
     //! of several of the member functions of \ref_todd_coxeter (that accept
     //! iterators) whose parameters are not iterators, but objects instead. The
-    //! helpers documented on this page all belong to the namespace \ref
-    //! todd_coxeter.
+    //! helpers documented on this page all belong to the namespace
+    //! \ref todd_coxeter.
     //!
     //! \sa \ref cong_common_helpers_group
     //!
@@ -374,8 +374,8 @@ namespace libsemigroups {
     //!
     //! See ToddCoxeter::word_of_no_checks for details.
     //!
-    //! \tparam Word the type of the returned word (default: \ref
-    //! libsemigroups::word_type "word_type").
+    //! \tparam Word the type of the returned word (default:
+    //! \ref libsemigroups::word_type "word_type").
     //!
     //! \param tc the  \ref_todd_coxeter instance.
     //! \param i the index of the class.
@@ -391,8 +391,8 @@ namespace libsemigroups {
     //!
     //! See ToddCoxeter::word_of for details.
     //!
-    //! \tparam Word the type of the returned word (default: \ref
-    //! libsemigroups::word_type "word_type").
+    //! \tparam Word the type of the returned word (default:
+    //! \ref libsemigroups::word_type "word_type").
     //!
     //! \param tc the  \ref_todd_coxeter instance.
     //! \param i the index of the class.
@@ -407,8 +407,8 @@ namespace libsemigroups {
     //!
     //! See ToddCoxeter::word_of_no_checks for details.
     //!
-    //! \tparam Word the type of the returned word (default: \ref
-    //! libsemigroups::word_type "word_type").
+    //! \tparam Word the type of the returned word (default:
+    //! \ref libsemigroups::word_type "word_type").
     //!
     //! \param tc the \ref_todd_coxeter instance.
     //! \param i the index of the class.
@@ -423,8 +423,8 @@ namespace libsemigroups {
     //!
     //! See ToddCoxeter::word_of for details.
     //!
-    //! \tparam Word the type of the returned word (default: \ref
-    //! libsemigroups::word_type "word_type").
+    //! \tparam Word the type of the returned word (default:
+    //! \ref libsemigroups::word_type "word_type").
     //!
     //! \param tc the  \ref_todd_coxeter instance.
     //! \param i the index of the class.
@@ -932,8 +932,8 @@ namespace libsemigroups {
     //! \ref_todd_coxeter instance \p tc1. This function triggers a full
     //! enumeration of \p tc1 and \p tc2.
     //!
-    //! \tparam Word the type of the words in the output (defaults \ref
-    //! libsemigroups::word_type "word_type").
+    //! \tparam Word the type of the words in the output (defaults
+    //! \ref libsemigroups::word_type "word_type").
     //!
     //! \param tc1 the \ref_todd_coxeter instance to use for partitioning.
     //! \param tc2 the \ref_todd_coxeter instance to be partitioned.

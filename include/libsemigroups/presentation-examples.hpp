@@ -91,8 +91,8 @@ namespace libsemigroups {
     //! for any semigroup or monoid.
     //!
     //! For each semigroup or monoid, there is a corresponding default
-    //! function that is documented in the \ref
-    //! default_presentations_member_group "Default presentations" section.
+    //! function that is documented in the
+    //! \ref default_presentations_member_group "Default presentations" section.
     //!
     ///@{
 

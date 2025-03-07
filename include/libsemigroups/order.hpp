@@ -341,8 +341,8 @@ namespace libsemigroups {
     return shortlex_compare(x->cbegin(), x->cend(), y->cbegin(), y->cend());
   }
 
-  //! \brief A stateless struct with binary call operator using \ref
-  //! shortlex_compare.
+  //! \brief A stateless struct with binary call operator using
+  //! \ref shortlex_compare.
   //!
   //! Defined in `order.hpp`.
   //!
@@ -444,8 +444,8 @@ namespace libsemigroups {
     }
   }
 
-  //! \brief Compare two objects of the same type using \ref
-  //! recursive_path_compare.
+  //! \brief Compare two objects of the same type using
+  //! \ref recursive_path_compare.
   //!
   //! Defined in `order.hpp`.
   //!
@@ -513,8 +513,8 @@ namespace libsemigroups {
   //!
   //! Defined in `order.hpp`.
   //!
-  //! A stateless struct with binary call operator using \ref
-  //! recursive_path_compare.
+  //! A stateless struct with binary call operator using
+  //! \ref recursive_path_compare.
   //!
   //! This only exists to be used as a template parameter, and has no
   //! advantages over using \ref recursive_path_compare otherwise.

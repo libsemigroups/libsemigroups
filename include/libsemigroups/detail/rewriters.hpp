@@ -43,12 +43,7 @@
 //!
 //! This file contains documentation for the functionality of the following
 //! classes in `libsemigroups`:
-//! * \ref libsemigroups::Rule "Rule"
-//! * \ref RuleLookup
-//! * \ref Rules
-//! * \ref RewriterBase
-//! * \ref RewriteFromLeft
-//! * \ref RewriteTrie
+//! * \ref libsemigroups::detail::Rule
 namespace libsemigroups {
   namespace detail {
     // TODO(2) remove from libsemigroups namespace and put into relevant class
@@ -120,7 +115,7 @@ namespace libsemigroups {
       //!
       //! Return the left-hand side of the rule. If this rule was create by a
       //! \ref_knuth_bendix, this is guaranteed to be greater than its
-      //! right-hand side according to the reduction ordering of that \ref
+      //! right-hand side according to the reduction ordering of that
       //! \ref_knuth_bendix.
       //!
       //! \returns A pointer to the left-hand side.

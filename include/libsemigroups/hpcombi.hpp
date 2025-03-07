@@ -93,9 +93,9 @@ namespace libsemigroups {
   //! `libsemigroups` that adapts the types in `HPCombi` for use with the
   //! algorithms in libsemigroups. The functionality in this section is only
   //! available if libsemigroups is compiled with `HPCombi` support enabled;
-  //! this is only possible on certain computer architectures. See the \ref
-  //! install.md "installation instructions" and the HPCombi documentation for
-  //! further details.
+  //! this is only possible on certain computer architectures. See the
+  //! \ref install.md "installation instructions" and the HPCombi documentation
+  //! for further details.
   //!
   //! @{
 

@@ -105,8 +105,8 @@ namespace libsemigroups {
   //! \defgroup todd_coxeter_class_settings_group Settings
   //! \ingroup todd_coxeter_class_group
   //!
-  //! \brief Settings that control the behaviour of a  \ref
-  //! todd_coxeter_class_group  instance.
+  //! \brief Settings that control the behaviour of a  
+  //! \ref todd_coxeter_class_group  instance.
   //!
   //! This page contains information about the member functions of the
   //! \ref_todd_coxeter that control various settings that influence the
@@ -733,8 +733,8 @@ namespace libsemigroups {
       //! values are ToddCoxeter::options::lookahead_extent::partial or
       //! ToddCoxeter::options::lookahead_extent::full.
       //!
-      //! The default value of this setting is \ref
-      //! ToddCoxeter::options::lookahead_extent::partial.
+      //! The default value of this setting is 
+      //! \ref ToddCoxeter::options::lookahead_extent::partial.
       //!
       //! \param val the extent.
       //!
@@ -750,8 +750,8 @@ namespace libsemigroups {
       //! This function returns the current value of the lookahead extent
       //! setting.
       //!
-      //! The default value of this setting is \ref
-      //! ToddCoxeter::options::lookahead_extent::partial.
+      //! The default value of this setting is 
+      //! \ref ToddCoxeter::options::lookahead_extent::partial.
       //!
       //! \returns The current lookahead extent.
       //!
@@ -801,8 +801,8 @@ namespace libsemigroups {
       //! any lookahead if the number of active nodes already exceeds the
       //! value of \ref lookahead_next or the number of nodes killed during
       //! the lookahead is less than the number of active nodes divided by
-      //! \ref lookahead_growth_threshold, then the value of \ref
-      //! lookahead_next is increased.
+      //! \ref lookahead_growth_threshold, then the value of 
+      //! \ref lookahead_next is increased.
       //!
       //! The default value is `4`.
       //!
@@ -833,15 +833,15 @@ namespace libsemigroups {
       //! After a lookahead is performed the value of \ref lookahead_next is
       //! modified depending on the outcome of the current lookahead. If the
       //! return value of \ref lookahead_next is too small or too large,
-      //! then the value is adjusted according to \ref
-      //! lookahead_growth_factor and
+      //! then the value is adjusted according to 
+      //! \ref lookahead_growth_factor and
       //! \ref lookahead_growth_threshold. This setting specified the
       //! minimum possible value for lookahead_next().
       //!
       //! The default value is \c 10'000.
       //!
-      //! \param val value indicating the minimum value of \ref
-      //! lookahead_next.
+      //! \param val value indicating the minimum value of 
+      //! \ref lookahead_next.
       //!
       //! \returns A reference to `*this`.
       //!
@@ -923,8 +923,8 @@ namespace libsemigroups {
       //! \brief Get the current value of the lookahead stop early interval.
       //!
       //! This function returns the current value of the lookahead stop
-      //! early interval. See \ref
-      //! lookahead_stop_early_interval(std::chrono::nanoseconds) for a full
+      //! early interval. See 
+      //! \ref lookahead_stop_early_interval(std::chrono::nanoseconds) for a full
       //! description of this setting.
       //!
       //! \returns The length of the interval in nanoseconds.
@@ -1007,8 +1007,8 @@ namespace libsemigroups {
       //! This function can be used to set a lower bound for the number of
       //! classes of the congruence represented by a  \ref_todd_coxeter
       //! instance. If the number of active nodes becomes at least the value of
-      //! the argument, and the word graph is complete (\ref
-      //! word_graph::is_complete returns \c true), then the enumeration is
+      //! the argument, and the word graph is complete (
+      //! \ref word_graph::is_complete returns \c true), then the enumeration is
       //! terminated. When the given bound is equal to the number of classes,
       //! this may prevent following the paths labelled by relations at many
       //! nodes when there is no possibility of finding coincidences.
@@ -1199,8 +1199,8 @@ namespace libsemigroups {
       //! any order); that the number of nodes (including those that are
       //! inactive) should coincide with the number of active nodes; that
       //! the graph is complete; or that the graph is compatible with the
-      //! relations of the \ref presentation or with the \ref
-      //! ToddCoxeter::generating_pairs.
+      //! relations of the \ref presentation or with the 
+      //! \ref ToddCoxeter::generating_pairs.
       //!
       //! The functions \ref standardize(Order) and \ref shrink_to_fit can
       //! be used to modify the returned word graph in-place to have
@@ -1236,8 +1236,8 @@ namespace libsemigroups {
       //! complete or compatible for some values of the settings. For example,
       //! if the setting \ref lower_bound is used but is not the same as the
       //! number of classes in the congruence, then the WordGraph returned by
-      //! this function may not be compatible with the relations of \ref
-      //! presentation or \ref ToddCoxeter::generating_pairs.
+      //! this function may not be compatible with the relations of 
+      //! \ref presentation or \ref ToddCoxeter::generating_pairs.
       //!
       //! \returns A const reference to the underlying WordGraph.
       word_graph_type const& word_graph();
@@ -1272,8 +1272,8 @@ namespace libsemigroups {
       //! \ingroup todd_coxeter_class_accessors_group
       //! \brief Get the spanning tree of the underlying word graph.
       //!
-      //! This function returns a const reference to a spanning tree (a \ref
-      //! Forest) for the underlying WordGraph (returned by \ref word_graph)
+      //! This function returns a const reference to a spanning tree (a 
+      //! \ref Forest) for the underlying WordGraph (returned by \ref word_graph)
       //! with the nodes appearing in short-lex order. This function
       //! triggers a full congruence enumeration.
       //!
@@ -1287,8 +1287,8 @@ namespace libsemigroups {
       //!
       //! This function returns the standardization order currently used in
       //! the underlying word graph. The return value of this function will
-      //! be the argument of the most recent call to \ref
-      //! standardize(Order); or Order::none.
+      //! be the argument of the most recent call to 
+      //! \ref standardize(Order); or Order::none.
       //!
       //! The return value of this function indicates the following:
       //! * Order::none implies that no standardization has been performed
@@ -1377,9 +1377,9 @@ namespace libsemigroups {
       //! \ingroup todd_coxeter_class_mod_group
       //! \brief Standardize the \ref current_word_graph.
       //!
-      //! This function standardizes the return value of \ref
-      //! current_word_graph, and does not trigger any enumeration. See \ref
-      //! standardization_order for a full description. The return value of
+      //! This function standardizes the return value of 
+      //! \ref current_word_graph, and does not trigger any enumeration. See 
+      //! \ref standardization_order for a full description. The return value of
       //! this function indicates whether or not the \ref current_word_graph
       //! was modified. In other words, if this function returns \c true,
       //! then the word graph was not previously standardized with respect
@@ -1406,8 +1406,8 @@ namespace libsemigroups {
       //! style and extent of this lookahead are controlled by the settings
       //! \ref lookahead_style and \ref lookahead_extent.
       //!
-      //! If the argument \p stop_early is \c true, then the settings \ref
-      //! lookahead_stop_early_interval and \ref lookahead_stop_early_ratio
+      //! If the argument \p stop_early is \c true, then the settings 
+      //! \ref lookahead_stop_early_interval and \ref lookahead_stop_early_ratio
       //! are used to determine whether or not the lookahead should be
       //! aborted early. If \p stop_early is \c false, then these settings
       //! are ignored.
@@ -1427,8 +1427,8 @@ namespace libsemigroups {
       //! class in a \ref_todd_coxeter
       //! instance.
       //!
-      //! This page contains documentation for the member functions of \ref
-      //! todd_coxeter_class_group  that can be used to
+      //! This page contains documentation for the member functions of 
+      //! \ref todd_coxeter_class_group  that can be used to
       //! convert a word into the index of congruence class.
       //!
       //! \sa \ref todd_coxeter_class_index_word_group for the inverses of
@@ -1440,14 +1440,14 @@ namespace libsemigroups {
       //!
       //! This function returns the current index of the class containing
       //! the word described by the iterators \p first and \p last. No
-      //! enumeration is triggered by calls to this function. Unless \ref
-      //! finished returns \c true, the index returned by this function is
+      //! enumeration is triggered by calls to this function. Unless 
+      //! \ref finished returns \c true, the index returned by this function is
       //! essentially arbitrary, and can only really be used to check
       //! whether or not two words are currently known to belong to the
       //! congruence.
       //!
-      //! The returned index is obtained by following the path in \ref
-      //! current_word_graph from node \c 0 labelled by the word given by
+      //! The returned index is obtained by following the path in 
+      //! \ref current_word_graph from node \c 0 labelled by the word given by
       //! the arguments \p first and \p last. If there is no such path, then
       //! \ref UNDEFINED is returned.
       //!
@@ -1472,14 +1472,14 @@ namespace libsemigroups {
       //!
       //! This function returns the current index of the class containing
       //! the word described by the iterators \p first and \p last. No
-      //! enumeration is triggered by calls to this function. Unless \ref
-      //! finished returns \c true, the index returned by this function is
+      //! enumeration is triggered by calls to this function. Unless 
+      //! \ref finished returns \c true, the index returned by this function is
       //! essentially arbitrary, and can only really be used to check
       //! whether or not two words are currently known to belong to the
       //! congruence.
       //!
-      //! The returned index is obtained by following the path in \ref
-      //! current_word_graph from node \c 0 labelled by the word given by
+      //! The returned index is obtained by following the path in 
+      //! \ref current_word_graph from node \c 0 labelled by the word given by
       //! the arguments \p first and \p last. If there is no such path, then
       //! \ref UNDEFINED is returned.
       //!
@@ -1503,13 +1503,13 @@ namespace libsemigroups {
       //!
       //! This function returns the index of the class containing the word
       //! described by the iterators \p first and \p last. A full
-      //! enumeration is triggered by calls to this function. If the \ref
-      //! current_word_graph has not already been standardized, then this
+      //! enumeration is triggered by calls to this function. If the 
+      //! \ref current_word_graph has not already been standardized, then this
       //! function first standardizes it with respect to Order::shortlex;
       //! otherwise the existing standardization order is used.
       //!
-      //! The returned index is obtained by following the path in \ref
-      //! current_word_graph from node \c 0 labelled by the word given by
+      //! The returned index is obtained by following the path in 
+      //! \ref current_word_graph from node \c 0 labelled by the word given by
       //! the arguments \p first and \p last. Since a full enumeration is
       //! triggered by calls to this function, the word graph is complete,
       //! and so the return value is never \ref UNDEFINED.
@@ -1531,13 +1531,13 @@ namespace libsemigroups {
       //!
       //! This function returns the index of the class containing the word
       //! described by the iterators \p first and \p last. A full
-      //! enumeration is triggered by calls to this function. If the \ref
-      //! current_word_graph has not already been standardized, then this
+      //! enumeration is triggered by calls to this function. If the 
+      //! \ref current_word_graph has not already been standardized, then this
       //! function first standardizes it with respect to Order::shortlex;
       //! otherwise the existing standardization order is used.
       //!
-      //! The returned index is obtained by following the path in \ref
-      //! current_word_graph from node \c 0 labelled by the word given by
+      //! The returned index is obtained by following the path in 
+      //! \ref current_word_graph from node \c 0 labelled by the word given by
       //! the arguments \p first and \p last. Since a full enumeration is
       //! triggered by calls to this function, the word graph is complete,
       //! and so the return value is never \ref UNDEFINED.

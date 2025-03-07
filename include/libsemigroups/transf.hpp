@@ -256,8 +256,8 @@ namespace libsemigroups {
     //! \param cont the container.
     //!
     //! \throw LibsemigroupsException if any of the following hold:
-    //! * the size of \p cont is incompatible with \ref
-    //! PTransfBase::container_type.
+    //! * the size of \p cont is incompatible with
+    //! \ref PTransfBase::container_type.
     //! * any value in \p cont exceeds `cont.size()` and is not equal to
     //!   UNDEFINED.
     //!
@@ -279,8 +279,8 @@ namespace libsemigroups {
     //! \param cont the initializer list.
     //!
     //! \throw LibsemigroupsException if any of the following hold:
-    //! * the size of \p cont is incompatible with \ref
-    //! PTransfBase::container_type.
+    //! * the size of \p cont is incompatible with
+    //! \ref PTransfBase::container_type.
     //! * any value in \p cont exceeds `cont.size()` and is not equal to
     //!   UNDEFINED.
     //!
@@ -892,8 +892,8 @@ namespace libsemigroups {
   //! This alias equals either DynamicPTransf or StaticPTransf depending on
   //! the template parameters \p N and \p Scalar.
   //!
-  //! If \p N is \c 0 (the default), then \c PTransf is \ref
-  //! DynamicPTransf. In this case the default value of \p Scalar is \c
+  //! If \p N is \c 0 (the default), then \c PTransf is
+  //! \ref DynamicPTransf. In this case the default value of \p Scalar is \c
   //! uint32_t. If \p N is not \c 0, then \c PTransf is \ref StaticPTransf,
   //! and the default value of \p Scalar is the smallest integer type able to
   //! hold \c N. See also SmallestInteger.
@@ -948,8 +948,8 @@ namespace libsemigroups {
   //!
   //! \throw LibsemigroupsException if any of the following hold:
   //! * the size of \p cont is incompatible with `T::container_type`.
-  //! * any value in \p cont exceeds `cont.size()` and is not equal to \ref
-  //!   UNDEFINED.
+  //! * any value in \p cont exceeds `cont.size()` and is not equal to
+  //! \ref UNDEFINED.
   //!
   //! \complexity
   //! Linear in degree().
@@ -1826,8 +1826,8 @@ namespace libsemigroups {
   //! \brief Returns the left one of a partial perm.
   //!
   //! This function returns a newly constructed partial perm with degree equal
-  //! to \p N that fixes every value in the domain of \p f, and is \ref
-  //! UNDEFINED on any other values.
+  //! to \p N that fixes every value in the domain of \p f, and is
+  //! \ref UNDEFINED on any other values.
   //!
   //! \param f the partial perm
   //!

@@ -150,8 +150,8 @@ namespace libsemigroups {
     struct options : public FelschGraphSettings_::options {
       //! \brief Enum class containing various strategies.
       //!
-      //! The values in this enum can be passed to the member function \ref
-      //! strategy to define the strategy to be used when performing a
+      //! The values in this enum can be passed to the member function
+      //! \ref strategy to define the strategy to be used when performing a
       //! congruence enumeration.
       //!
       //! Several of the strategies mimic
@@ -182,8 +182,9 @@ namespace libsemigroups {
         //! This strategy is meant to mimic the
         //! [ACE](https://staff.itee.uq.edu.au/havas/) strategy R/C. The HLT
         //! strategy is run until the first lookahead is triggered (when the
-        //! number of active nodes in \ref current_word_graph is at least \ref
-        //! lookahead_next). A full lookahead is then performed, and then the CR
+        //! number of active nodes in \ref current_word_graph is at least
+        //! \ref lookahead_next). A full lookahead is then performed, and then
+        //! the CR
         //! strategy is used.
         R_over_C,
 
@@ -594,8 +595,8 @@ namespace libsemigroups {
     //!
     //! This function throws a LibsemigroupsException if any value pointed
     //! at by an iterator in the range \p first to \p last is out of
-    //! bounds (i.e. does not belong to the alphabet of the \ref
-    //! presentation used to construct the \ref_todd_coxeter instance).
+    //! bounds (i.e. does not belong to the alphabet of the
+    //! \ref presentation used to construct the \ref_todd_coxeter instance).
     //!
     //! \tparam Iterator1 the type of first argument \p first.
     //! \tparam Iterator2 the type of second argument \p last.
@@ -616,9 +617,9 @@ namespace libsemigroups {
     //! \brief Get the generating pairs of the congruence.
     //!
     //! This function returns the generating pairs of the congruence. The
-    //! words comprising the generating pairs are converted to \ref
-    //! native_word_type as they are added via \ref add_generating_pair. This
-    //! function returns the std::vector of these \ref native_word_type.
+    //! words comprising the generating pairs are converted to
+    //! \ref native_word_type as they are added via \ref add_generating_pair.
+    //! This function returns the std::vector of these \ref native_word_type.
     //!
     //! \returns The std::vector of generating pairs.
     //!
@@ -849,9 +850,9 @@ namespace libsemigroups {
     //! \p d_first. This function triggers no enumeration. The word output by
     //! this function is equivalent to the input word in the congruence
     //! defined by a
-    //! \ref_todd_coxeter instance. If the \ref_todd_coxeter instance is \ref
-    //! finished, then the output word is a normal form for the input word. If
-    //! the \ref_todd_coxeter instance is not \ref finished, then it might be
+    //! \ref_todd_coxeter instance. If the \ref_todd_coxeter instance is
+    //! \ref finished, then the output word is a normal form for the input word.
+    //! If the \ref_todd_coxeter instance is not \ref finished, then it might be
     //! that equivalent input words produce different output words.
     //!
     //! \cong_common_params_reduce
@@ -883,11 +884,10 @@ namespace libsemigroups {
     //! \p d_first. This function triggers no enumeration. The word output by
     //! this function is equivalent to the input word in the congruence
     //! defined by a
-    //! \ref_todd_coxeter instance. If the \ref_todd_coxeter instance is \ref
-    //! finished, then the output word is a normal form for the input word. If
-    //! the
-    //! \ref_todd_coxeter instance is not \ref finished, then it might be that
-    //! equivalent input words produce different output words.
+    //! \ref_todd_coxeter instance. If the \ref_todd_coxeter instance is
+    //! \ref finished, then the output word is a normal form for the input word.
+    //! If the \ref_todd_coxeter instance is not \ref finished, then it might be
+    //! that equivalent input words produce different output words.
     //!
     //! \cong_common_params_reduce
     //!
@@ -1003,10 +1003,10 @@ namespace libsemigroups {
     //! and can only really be used to check whether or not two words are
     //! currently known to belong to the congruence.
     //!
-    //! The returned index is obtained by following the path in \ref
-    //! current_word_graph from node \c 0 labelled by the word given by the
-    //! arguments \p first and \p last. If there is no such path, then \ref
-    //! UNDEFINED is returned.
+    //! The returned index is obtained by following the path in
+    //! \ref current_word_graph from node \c 0 labelled by the word given by the
+    //! arguments \p first and \p last. If there is no such path, then
+    //! \ref UNDEFINED is returned.
     //!
     //! \tparam Iterator1 the type of first argument \p first.
     //! \tparam Iterator2 the type of second argument \p last.
@@ -1036,10 +1036,10 @@ namespace libsemigroups {
     //! and can only really be used to check whether or not two words are
     //! currently known to belong to the congruence.
     //!
-    //! The returned index is obtained by following the path in \ref
-    //! current_word_graph from node \c 0 labelled by the word given by the
-    //! arguments \p first and \p last. If there is no such path, then \ref
-    //! UNDEFINED is returned.
+    //! The returned index is obtained by following the path in
+    //! \ref current_word_graph from node \c 0 labelled by the word given by the
+    //! arguments \p first and \p last. If there is no such path, then
+    //! \ref UNDEFINED is returned.
     //!
     //! \tparam Iterator1 the type of first argument \p first.
     //! \tparam Iterator2 the type of second argument \p last.
@@ -1065,8 +1065,8 @@ namespace libsemigroups {
     //! standardizes it with respect to Order::shortlex; otherwise the
     //! existing standardization order is used.
     //!
-    //! The returned index is obtained by following the path in \ref
-    //! current_word_graph from node \c 0 labelled by the word given by the
+    //! The returned index is obtained by following the path in
+    //! \ref current_word_graph from node \c 0 labelled by the word given by the
     //! arguments \p first and \p last. Since a full enumeration is triggered
     //! by calls to this function, the word graph is complete, and so the
     //! return value is never \ref UNDEFINED.
@@ -1095,8 +1095,8 @@ namespace libsemigroups {
     //! standardizes it with respect to Order::shortlex; otherwise the
     //! existing standardization order is used.
     //!
-    //! The returned index is obtained by following the path in \ref
-    //! current_word_graph from node \c 0 labelled by the word given by the
+    //! The returned index is obtained by following the path in
+    //! \ref current_word_graph from node \c 0 labelled by the word given by the
     //! arguments \p first and \p last. Since a full enumeration is triggered
     //! by calls to this function, the word graph is complete, and so the
     //! return value is never \ref UNDEFINED.

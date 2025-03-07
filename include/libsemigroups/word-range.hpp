@@ -747,8 +747,8 @@ namespace libsemigroups {
   //!
   //! Defined in `word-range.hpp`.
   //!
-  //! An instance of this class is used to convert from std::string to \ref
-  //! word_type. The characters in the string are converted to integers
+  //! An instance of this class is used to convert from std::string to
+  //! \ref word_type. The characters in the string are converted to integers
   //! according to their position in alphabet used to construct a ToWord
   //! instance if one is provided, or using \ref words::human_readable_index
   //! otherwise.
@@ -875,8 +875,8 @@ namespace libsemigroups {
 
     //! Check if the current ToWord instance can convert a specified letter.
     //!
-    //! This function returns \c true if \p c can can be converted to a \ref
-    //! letter_type using this ToWord instance, and \c false otherwise.
+    //! This function returns \c true if \p c can can be converted to a
+    //! \ref letter_type using this ToWord instance, and \c false otherwise.
     //!
     //! \param c the char to check the convertibility of.
     //!
@@ -914,8 +914,8 @@ namespace libsemigroups {
     //!
     //! This function converts its argument \p input into a word_type. The
     //! characters of \p input are converted using the alphabet used to
-    //! construct the object or set via init(), or with \ref
-    //! words::human_readable_index if \ref empty returns `true`.
+    //! construct the object or set via init(), or with
+    //! \ref words::human_readable_index if \ref empty returns `true`.
     //!
     //! \param input the string to convert.
     //!
@@ -957,8 +957,8 @@ namespace libsemigroups {
     //!
     //! This function converts its argument \p input into a word_type The
     //! characters of \p input are converted using the alphabet used to
-    //! construct the object or set via init(), or with \ref
-    //! words::human_readable_index if \ref empty returns `true`.
+    //! construct the object or set via init(), or with
+    //! \ref words::human_readable_index if \ref empty returns `true`.
     //!
     //! \param input the string to convert.
     //!
@@ -1227,8 +1227,8 @@ namespace libsemigroups {
     //! This function converts its second argument \p input into a std::string
     //! and stores the result in the first argument \p output. The characters of
     //! \p input are converted using the alphabet used to construct the object
-    //! or set via init(), or with \ref words::human_readable_letter if \ref
-    //! empty returns `true`.
+    //! or set via init(), or with \ref words::human_readable_letter if
+    //! \ref empty returns `true`.
     //!
     //! The contents of the first argument \p output, if any, is removed.
     //!
@@ -1248,8 +1248,8 @@ namespace libsemigroups {
     //!
     //! This function converts its argument \p input into a std::string. The
     //! characters of \p input are converted using the alphabet used to
-    //! construct the object or set via init(), or with \ref
-    //! words::human_readable_letter if \ref empty returns `true`.
+    //! construct the object or set via init(), or with
+    //! \ref words::human_readable_letter if \ref empty returns `true`.
     //!
     //! \param input the \ref word_type to convert.
     //!
@@ -1271,8 +1271,8 @@ namespace libsemigroups {
     //! This function converts its second argument \p input into a std::string
     //! and stores the result in the first argument \p output. The characters of
     //! \p input are converted using the alphabet used to construct the object
-    //! or set via init(), or with \ref words::human_readable_letter if \ref
-    //! empty returns `true`.
+    //! or set via init(), or with \ref words::human_readable_letter if
+    //! \ref empty returns `true`.
     //!
     //! The contents of the first argument \p output, if any, is removed.
     //!
@@ -1291,8 +1291,8 @@ namespace libsemigroups {
     //!
     //! This function converts its argument \p input into a std::string. The
     //! characters of \p input are converted using the alphabet used to
-    //! construct the object or set via init(), or with \ref
-    //! words::human_readable_letter if \ref empty returns `true`.
+    //! construct the object or set via init(), or with
+    //! \ref words::human_readable_letter if \ref empty returns `true`.
     //!
     //! \param input the string to convert.
     //!
@@ -1940,9 +1940,9 @@ namespace libsemigroups {
     //! \anchor literal_operator_w
     //! \brief Literal for defining \ref word_type over integers less than 10.
     //!
-    //! This operator provides a convenient brief means of constructing a  \ref
-    //! word_type from an sequence of literal integer digits or a string. For
-    //! example, \c 0123_w produces the same output as `word_type({0, 1, 2,
+    //! This operator provides a convenient brief means of constructing a
+    //! \ref word_type from an sequence of literal integer digits or a string.
+    //! For example, \c 0123_w produces the same output as `word_type({0, 1, 2,
     //! 3})` and so too does \c "abcd"_w.
     //!
     //! There are some gotchas and this operator should be used with some care:
@@ -1954,8 +1954,8 @@ namespace libsemigroups {
     //! will not compile because it is interpreted as an invalid octal. However
     //! `"08"_w` behaves as expected.
     //! * if \p w consists of characters in `a-zA-Z`, then the output is
-    //! the same as that of `ToWord::operator()(w)`, see \ref
-    //! ToWord::operator()()
+    //! the same as that of `ToWord::operator()(w)`, see
+    //! \ref ToWord::operator()()
     //!
     //! \param w the letters of the word.
     //! \param n the length of \p w (defaults to the length of \p w).

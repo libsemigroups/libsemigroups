@@ -243,8 +243,8 @@ namespace libsemigroups {
       //! (defaults to \c 0).
       //! \param r one after the right most index and value of the data member
       //! \p r (defaults to \c 0).
-      //! \param parent of the node being constructed (defaults to \ref
-      //! UNDEFINED).
+      //! \param parent of the node being constructed (defaults to
+      //! \ref UNDEFINED).
       //!
       //! \exceptions
       //! \no_libsemigroups_except
@@ -457,8 +457,8 @@ namespace libsemigroups {
     //! tree.
     //!
     //! Returns the number of distinct non-empty words in the suffix tree. This
-    //! is the number of distinct non-empty words added via \ref
-    //! Ukkonen::add_word or \ref Ukkonen::add_word_no_checks.
+    //! is the number of distinct non-empty words added via
+    //! \ref Ukkonen::add_word or \ref Ukkonen::add_word_no_checks.
     //!
     //! \returns A value of type `size_t`.
     //!
@@ -500,8 +500,8 @@ namespace libsemigroups {
     //! \noexcept
     //!
     //! \complexity
-    //! \f$O(n)\f$ where \f$n\f$ is the return value of \ref
-    //! number_of_distinct_words.
+    //! \f$O(n)\f$ where \f$n\f$ is the return value of
+    //! \ref number_of_distinct_words.
     size_t length_of_words() const noexcept;
 
     //! \brief Returns the number of non-empty words in the suffix tree.
@@ -516,8 +516,8 @@ namespace libsemigroups {
     //! \noexcept
     //!
     //! \complexity
-    //! \f$O(n)\f$ where \f$n\f$ is the return value of \ref
-    //! number_of_distinct_words.
+    //! \f$O(n)\f$ where \f$n\f$ is the return value of
+    //! \ref number_of_distinct_words.
     size_t number_of_words() const noexcept {
       return std::accumulate(_multiplicity.cbegin(), _multiplicity.cend(), 0);
     }
@@ -665,8 +665,8 @@ namespace libsemigroups {
     //! Constant.
     //!
     //! \warning This function does no checks on its arguments whatsoever. In
-    //! particular, if \p i is greater than \ref length_of_words + \ref
-    //! number_of_distinct_words, then bad things will happen.
+    //! particular, if \p i is greater than \ref length_of_words +
+    //! \ref number_of_distinct_words, then bad things will happen.
     word_index_type word_index_no_checks(index_type i) const {
       LIBSEMIGROUPS_ASSERT(i < _word.size());
       return _word_index_lookup[i];
@@ -813,8 +813,8 @@ namespace libsemigroups {
     //! that the suffix tree contains (the words added to the suffix tree via
     //! `add_word` or `add_word_no_checks`), then this function returns the
     //! index of that word. If the word corresponding to \p first and \p last
-    //! is not one of the words that the suffix tree represents, then \ref
-    //! UNDEFINED is returned.
+    //! is not one of the words that the suffix tree represents, then
+    //! \ref UNDEFINED is returned.
     //!
     //! \tparam Iterator the type of the arguments.
     //! \param first iterator pointing to the first letter of the word to check.
@@ -2327,8 +2327,9 @@ namespace libsemigroups {
     //! defined by \p u.
     //!
     //! Internally, all words added to the suffix tree are stored as a single
-    //! string delimited by unique letters. The edge labels present in this \ref
-    //! Dot object correspond to intervals of letters in that delimited string.
+    //! string delimited by unique letters. The edge labels present in this
+    //! \ref Dot object correspond to intervals of letters in that delimited
+    //! string.
     //!
     //! \param u the Ukkonen object.
     //!

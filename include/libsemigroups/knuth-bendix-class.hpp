@@ -472,9 +472,9 @@ namespace libsemigroups {
     //! described by the iterator \p first and \p last to the output iterator \p
     //! d_first. This function triggers no enumeration. The word output by this
     //! function is equivalent to the input word in the congruence defined by a
-    //! \ref_knuth_bendix instance. If the \ref_knuth_bendix instance is \ref
-    //! finished, then the output word is a normal form for the input word. If
-    //! the \ref_knuth_bendix instance is not \ref finished, then it might be
+    //! \ref_knuth_bendix instance. If the \ref_knuth_bendix instance is
+    //! \ref finished, then the output word is a normal form for the input word.
+    //! If the \ref_knuth_bendix instance is not \ref finished, then it might be
     //! that equivalent input words produce different output words.
     //!
     //! \cong_common_params_reduce

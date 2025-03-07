@@ -54,8 +54,8 @@ namespace libsemigroups {
   //!
   //! This function converts the \ref FroidurePin object \p fpb into a
   //! Congruence object using the WordGraph \p wg (which should be either
-  //! the \ref FroidurePinBase::left_cayley_graph or the \ref
-  //! FroidurePinBase::right_cayley_graph of \p fpb).
+  //! the \ref FroidurePinBase::left_cayley_graph or the
+  //! \ref FroidurePinBase::right_cayley_graph of \p fpb).
   //!
   //! \tparam Result used for SFINAE, the return type of this function, must be
   //! `Congruence<Word>` for some type \c Word.
@@ -69,8 +69,8 @@ namespace libsemigroups {
   //! over the semigroup defined by \p fpb.
   //!
   //! \throws LibsemigroupsException if \p wg is not the
-  //! \ref FroidurePinBase::left_cayley_graph or the \ref
-  //! FroidurePinBase::right_cayley_graph of \p fpb.
+  //! \ref FroidurePinBase::left_cayley_graph or the
+  //! \ref FroidurePinBase::right_cayley_graph of \p fpb.
   template <typename Result, typename Node>
   auto to(congruence_kind knd, FroidurePinBase& fpb, WordGraph<Node> const& wg)
       -> std::enable_if_t<

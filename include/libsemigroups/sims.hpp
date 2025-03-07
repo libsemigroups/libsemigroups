@@ -959,9 +959,9 @@ namespace libsemigroups {
     //! \brief Helper for adding a generating pair of words
     //! (std::initializer_list).
     //!
-    //! See \ref
-    //! add_included_pair_no_checks<Subclass, Word>(SimsSettings<Subclass>&,
-    //! Word const&, Word const&) for details.
+    //! See
+    //! \ref add_included_pair_no_checks<Subclass,
+    //! Word>(SimsSettings<Subclass>&, Word const&, Word const&) for details.
     template <typename Subclass, typename Int>
     Subclass& add_included_pair_no_checks(SimsSettings<Subclass>& sims,
                                           std::initializer_list<Int> const& u,
@@ -974,9 +974,9 @@ namespace libsemigroups {
     //! \brief Helper for adding a generating pair of words
     //! (string literals).
     //!
-    //! See \ref
-    //! add_included_pair_no_checks<Subclass, Word>(SimsSettings<Subclass>&,
-    //! Word const&, Word const&) for details.
+    //! See
+    //! \ref add_included_pair_no_checks<Subclass,
+    //! Word>(SimsSettings<Subclass>&, Word const&, Word const&) for details.
     template <typename Subclass>
     Subclass& add_included_pair_no_checks(SimsSettings<Subclass>& sims,
                                           char const*             u,
@@ -990,9 +990,9 @@ namespace libsemigroups {
     //! \brief Helper for adding a generating pair of words
     //! (std::string_view).
     //!
-    //! See \ref
-    //! add_included_pair_no_checks<Subclass, Word>(SimsSettings<Subclass>&,
-    //! Word const&, Word const&) for details.
+    //! See
+    //! \ref add_included_pair_no_checks<Subclass,
+    //! Word>(SimsSettings<Subclass>&, Word const&, Word const&) for details.
     template <typename Subclass>
     Subclass& add_included_pair_no_checks(SimsSettings<Subclass>& sims,
                                           std::string_view        u,
@@ -1029,9 +1029,9 @@ namespace libsemigroups {
     //! \brief Helper for adding a included pair of words
     //! (std::initializer_list).
     //!
-    //! See \ref
-    //! add_included_pair<Subclass, Word>(SimsSettings<Subclass>&, Word const&,
-    //! Word const&) for details.
+    //! See
+    //! \ref add_included_pair<Subclass, Word>(SimsSettings<Subclass>&, Word
+    //! const&, Word const&) for details.
     template <typename Subclass, typename Int>
     Subclass& add_included_pair(SimsSettings<Subclass>&           sims,
                                 std::initializer_list<Int> const& u,
@@ -1043,9 +1043,9 @@ namespace libsemigroups {
     //! \brief Helper for adding a included pair of words
     //! (string literals).
     //!
-    //! See \ref
-    //! add_included_pair<Subclass, Word>(SimsSettings<Subclass>&, Word const&,
-    //! Word const&) for details.
+    //! See
+    //! \ref add_included_pair<Subclass, Word>(SimsSettings<Subclass>&, Word
+    //! const&, Word const&) for details.
     template <typename Subclass>
     Subclass& add_included_pair(SimsSettings<Subclass>& sims,
                                 char const*             u,
@@ -1059,9 +1059,9 @@ namespace libsemigroups {
     //! \brief Helper for adding a included pair of words
     //! (std::string_view).
     //!
-    //! See \ref
-    //! add_included_pair<Subclass, Word>(SimsSettings<Subclass>&, Word const&,
-    //! Word const&) for details.
+    //! See
+    //! \ref add_included_pair<Subclass, Word>(SimsSettings<Subclass>&, Word
+    //! const&, Word const&) for details.
     template <typename Subclass>
     Subclass& add_included_pair(SimsSettings<Subclass>& sims,
                                 std::string_view        u,
@@ -1098,9 +1098,9 @@ namespace libsemigroups {
     //! \brief Helper for adding a excluded pair of words
     //! (std::initializer_list).
     //!
-    //! See \ref
-    //! add_excluded_pair_no_checks<Subclass, Word>(SimsSettings<Subclass>&,
-    //! Word const&, Word const&) for details.
+    //! See
+    //! \ref add_excluded_pair_no_checks<Subclass,
+    //! Word>(SimsSettings<Subclass>&, Word const&, Word const&) for details.
     template <typename Subclass, typename Int>
     Subclass& add_excluded_pair_no_checks(SimsSettings<Subclass>& sims,
                                           std::initializer_list<Int> const& u,
@@ -1113,9 +1113,9 @@ namespace libsemigroups {
     //! \brief Helper for adding a excluded pair of words
     //! (string literals).
     //!
-    //! See \ref
-    //! add_excluded_pair_no_checks<Subclass, Word>(SimsSettings<Subclass>&,
-    //! Word const&, Word const&) for details.
+    //! See
+    //! \ref add_excluded_pair_no_checks<Subclass,
+    //! Word>(SimsSettings<Subclass>&, Word const&, Word const&) for details.
     template <typename Subclass>
     Subclass& add_excluded_pair_no_checks(SimsSettings<Subclass>& sims,
                                           char const*             u,
@@ -1129,9 +1129,9 @@ namespace libsemigroups {
     //! \brief Helper for adding a excluded pair of words
     //! (std::string_view).
     //!
-    //! See \ref
-    //! add_excluded_pair_no_checks<Subclass, Word>(SimsSettings<Subclass>&,
-    //! Word const&, Word const&) for details.
+    //! See
+    //! \ref add_excluded_pair_no_checks<Subclass,
+    //! Word>(SimsSettings<Subclass>&, Word const&, Word const&) for details.
     template <typename Subclass>
     Subclass& add_excluded_pair_no_checks(SimsSettings<Subclass>& sims,
                                           std::string_view        u,
@@ -1168,9 +1168,9 @@ namespace libsemigroups {
     //! \brief Helper for adding a excluded pair of words
     //! (std::initializer_list).
     //!
-    //! See \ref
-    //! add_excluded_pair<Subclass, Word>(SimsSettings<Subclass>&, Word const&,
-    //! Word const&) for details.
+    //! See
+    //! \ref add_excluded_pair<Subclass, Word>(SimsSettings<Subclass>&, Word
+    //! const&, Word const&) for details.
     template <typename Subclass, typename Int>
     Subclass& add_excluded_pair(SimsSettings<Subclass>&           sims,
                                 std::initializer_list<Int> const& u,
@@ -1182,9 +1182,9 @@ namespace libsemigroups {
     //! \brief Helper for adding a excluded pair of words
     //! (string literals).
     //!
-    //! See \ref
-    //! add_excluded_pair<Subclass, Word>(SimsSettings<Subclass>&, Word const&,
-    //! Word const&) for details.
+    //! See
+    //! \ref add_excluded_pair<Subclass, Word>(SimsSettings<Subclass>&, Word
+    //! const&, Word const&) for details.
     template <typename Subclass>
     Subclass& add_excluded_pair(SimsSettings<Subclass>& sims,
                                 char const*             u,
@@ -1198,9 +1198,9 @@ namespace libsemigroups {
     //! \brief Helper for adding a excluded pair of words
     //! (std::string_view).
     //!
-    //! See \ref
-    //! add_excluded_pair<Subclass, Word>(SimsSettings<Subclass>&, Word const&,
-    //! Word const&) for details.
+    //! See
+    //! \ref add_excluded_pair<Subclass, Word>(SimsSettings<Subclass>&, Word
+    //! const&, Word const&) for details.
     template <typename Subclass>
     Subclass& add_excluded_pair(SimsSettings<Subclass>& sims,
                                 std::string_view        u,
@@ -1348,8 +1348,8 @@ namespace libsemigroups {
       // SimsBase nested classes - public
       ////////////////////////////////////////////////////////////////////////
 
-      //! The return type of \ref Sims1::cbegin, \ref Sims2::cbegin, \ref
-      //! Sims1::cbegin, and \ref Sims1::cend.
+      //! The return type of \ref Sims1::cbegin, \ref Sims2::cbegin,
+      //! \ref Sims1::cbegin, and \ref Sims1::cend.
       //!
       //! This is a forward iterator values of this type are expensive to copy
       //! due to their internal state, and prefix increment should be
@@ -1506,13 +1506,13 @@ namespace libsemigroups {
   //! monoids by R. Cirpons, J. D. Mitchell, and M. Tsalakou; see
   //! \cite Anagnostopoulou-Merkouri2023aa
   //!
-  //! The purpose of this class is to provide the functions \ref cbegin, \ref
-  //! cend, \ref for_each, and \ref find_if which permit iterating through the
-  //! one-sided congruences of a semigroup or monoid defined by a presentation
-  //! containing (a possibly empty) set of pairs and with at most a given number
-  //! of classes. An iterator returned by \ref cbegin points at an WordGraph
-  //! instance containing the action of the semigroup or monoid on the classes
-  //! of a congruence.
+  //! The purpose of this class is to provide the functions \ref cbegin,
+  //! \ref cend, \ref for_each, and \ref find_if which permit iterating through
+  //! the one-sided congruences of a semigroup or monoid defined by a
+  //! presentation containing (a possibly empty) set of pairs and with at most a
+  //! given number of classes. An iterator returned by \ref cbegin points at an
+  //! WordGraph instance containing the action of the semigroup or monoid on the
+  //! classes of a congruence.
   //!
   //! \sa Sims2 for equivalent functionality for 2-sided congruences.
   //! \sa SimsSettings for the various things that can be set in a Sims1 object.
@@ -1803,13 +1803,13 @@ namespace libsemigroups {
   //! congruence algorithm for 2-sided congruences. The algorithm implemented by
   //! this class is described in \cite Anagnostopoulou-Merkouri2023aa.
   //!
-  //! The purpose of this class is to provide the functions \ref cbegin, \ref
-  //! cend, \ref for_each, and \ref find_if which permit iterating through the
-  //! two-sided congruences of a semigroup or monoid defined by a presentation
-  //! containing, or not containing, (possibly empty) sets of pairs and with at
-  //! most a given number of classes. An iterator returned by \ref cbegin points
-  //! at an WordGraph instance containing the action of the semigroup or monoid
-  //! on the classes of a congruence.
+  //! The purpose of this class is to provide the functions \ref cbegin,
+  //! \ref cend, \ref for_each, and \ref find_if which permit iterating through
+  //! the two-sided congruences of a semigroup or monoid defined by a
+  //! presentation containing, or not containing, (possibly empty) sets of pairs
+  //! and with at most a given number of classes. An iterator returned by \ref
+  //! cbegin points at an WordGraph instance containing the action of the
+  //! semigroup or monoid on the classes of a congruence.
   //!
   //! \sa Sims1 for equivalent functionality for 1-sided congruences.
   //! \sa SimsSettings for the various things that can be set in a Sims2 object.
@@ -2143,8 +2143,8 @@ namespace libsemigroups {
     //! This function attempts to find a right congruence, represented as an
     //! WordGraph, of the semigroup or monoid defined by its \ref presentation
     //! with the following properties:
-    //! * the transformation semigroup defined by the WordGraph has size \ref
-    //!   target_size;
+    //! * the transformation semigroup defined by the WordGraph has size
+    //! \ref target_size;
     //! * the number of nodes in the WordGraph is at least \ref min_nodes
     //!   and at most \ref max_nodes.
     //!
@@ -2243,8 +2243,8 @@ namespace libsemigroups {
     //! This function attempts to find a right congruence, represented as an
     //! WordGraph, with the minimum possible number of nodes such that the
     //! action of the semigroup or monoid defined by its \ref presentation on
-    //! the nodes of the WordGraph corresponds to a semigroup of size \ref
-    //! target_size.
+    //! the nodes of the WordGraph corresponds to a semigroup of size
+    //! \ref target_size.
     //!
     //! If no such WordGraph can be found, then an empty WordGraph is
     //! returned (with `0` nodes and `0` edges).

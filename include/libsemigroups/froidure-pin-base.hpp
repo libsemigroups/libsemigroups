@@ -1219,8 +1219,8 @@ namespace libsemigroups {
 
     //! \brief Return type of \ref cbegin_rules and \ref cend_rules.
     //!
-    //! This nested class is the return type of \ref cbegin_rules, \ref
-    //! cbegin_current_rules, \ref cend_rules, and \ref cend_current_rules.
+    //! This nested class is the return type of \ref cbegin_rules,
+    //! \ref cbegin_current_rules, \ref cend_rules, and \ref cend_current_rules.
     class const_rule_iterator {
 #ifndef LIBSEMIGROUPS_PARSED_BY_DOXYGEN
 
@@ -1513,12 +1513,12 @@ namespace libsemigroups {
 
     // TODO(later) it'd be more efficient to have this be a forward
     // iterator only (i.e. as is done in the GAP version of FroidurePin)
-    //! \brief Return type of \ref cbegin_normal_forms and \ref
-    //! cend_normal_forms.
+    //! \brief Return type of \ref cbegin_normal_forms and
+    //! \ref cend_normal_forms.
     //!
-    //! This nested class is the return type of \ref cbegin_normal_forms, \ref
-    //! cbegin_current_normal_forms, \ref cend_normal_forms, and \ref
-    //! cend_current_normal_forms.
+    //! This nested class is the return type of \ref cbegin_normal_forms,
+    //! \ref cbegin_current_normal_forms, \ref cend_normal_forms, and
+    //! \ref cend_current_normal_forms.
     class const_normal_form_iterator {
 #ifndef LIBSEMIGROUPS_PARSED_BY_DOXYGEN
       // Private data
@@ -1669,8 +1669,8 @@ namespace libsemigroups {
     //! instance (if any).
     //!
     //! This function does not perform any enumeration of the FroidurePin. If
-    //! you want to obtain the complete set of rules, then use \ref
-    //! cbegin_normal_forms instead.
+    //! you want to obtain the complete set of rules, then use
+    //! \ref cbegin_normal_forms instead.
     //!
     //! \returns An iterator of type \ref const_normal_form_iterator
     //! pointing to a \ref word_type.
@@ -1694,8 +1694,8 @@ namespace libsemigroups {
     //! FroidurePinBase instance (if any).
     //!
     //! This function does not perform any enumeration of the FroidurePin. If
-    //! you want to obtain the complete set of rules, then use \ref
-    //! cend_normal_forms instead.
+    //! you want to obtain the complete set of rules, then use
+    //! \ref cend_normal_forms instead.
     //!
     //! \returns An iterator of type \ref const_normal_form_iterator
     //! pointing to a \ref word_type.
@@ -1767,8 +1767,8 @@ namespace libsemigroups {
 
     //! \brief Throw an exception if an index is out of range.
     //!
-    //! This function throws an exception if the argument \p i exceeds \ref
-    //! current_size.
+    //! This function throws an exception if the argument \p i exceeds
+    //! \ref current_size.
     //!
     //! \param i the index to check.
     //!
@@ -1915,8 +1915,8 @@ namespace libsemigroups {
     //! \param w a word in the generators.
     //!
     //! \returns
-    //! The index of the element corresponding to the word \p w, or \ref
-    //! UNDEFINED if there is no such element.
+    //! The index of the element corresponding to the word \p w, or
+    //! \ref UNDEFINED if there is no such element.
     //!
     //! \complexity
     //! \f$O(n)\f$ where \f$n\f$ is the length of the word \p w.
@@ -2068,8 +2068,8 @@ namespace libsemigroups {
     //! \note This function does not trigger any enumeration.
     //!
     //! \warning This function does not check that \p pos is valid. In
-    //! particular, it is assumed that \p pos is strictly less than \ref
-    //! FroidurePinBase::current_size.
+    //! particular, it is assumed that \p pos is strictly less than
+    //! \ref FroidurePinBase::current_size.
     template <typename Word>
     void current_minimal_factorisation_no_checks(
         FroidurePinBase const&              fpb,
@@ -2104,8 +2104,8 @@ namespace libsemigroups {
     //! \note This function does not trigger any enumeration.
     //!
     //! \warning This function does not check that \p pos is valid. In
-    //! particular, it is assumed that \p pos is strictly less than \ref
-    //! FroidurePinBase::current_size.
+    //! particular, it is assumed that \p pos is strictly less than
+    //! \ref FroidurePinBase::current_size.
     template <typename Word = word_type>
     [[nodiscard]] Word current_minimal_factorisation_no_checks(
         FroidurePinBase const&              fpb,
@@ -2269,8 +2269,8 @@ namespace libsemigroups {
     //! \note This function does not trigger any enumeration.
     //!
     //! \warning This function does not check that \p pos is valid. In
-    //! particular, it is assumed that \p pos is strictly less than \ref
-    //! FroidurePinBase::current_size.
+    //! particular, it is assumed that \p pos is strictly less than
+    //! \ref FroidurePinBase::current_size.
     template <typename Word>
     void
     current_factorisation_no_checks(FroidurePinBase const&              fpb,
@@ -2298,8 +2298,8 @@ namespace libsemigroups {
     //! least \p pos elements are found.
     //!
     //! \warning This function does not check that \p pos is valid. In
-    //! particular, it is assumed that \p pos is strictly less than \ref
-    //! FroidurePinBase::current_size.
+    //! particular, it is assumed that \p pos is strictly less than
+    //! \ref FroidurePinBase::current_size.
     template <typename Word>
     void factorisation(FroidurePinBase&                    fpb,
                        Word&                               word,

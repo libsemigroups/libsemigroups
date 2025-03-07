@@ -92,8 +92,8 @@ namespace libsemigroups {
     using const_element_type =
         typename detail::BruidhinnTraits<Element>::const_value_type;
 
-    //! Alias for \ref LambdaValue with template parameter \ref
-    //! element_type.
+    //! Alias for \ref LambdaValue with template parameter
+    //! \ref element_type.
     using lambda_value_type =
         typename ::libsemigroups::LambdaValue<element_type>::type;
 
@@ -1538,8 +1538,8 @@ namespace libsemigroups {
       return cend_current_D_classes();
     }
 
-    //! \brief  Return type of \ref cbegin_current_regular_D_classes and \ref
-    //! cend_current_regular_D_classes.
+    //! \brief  Return type of \ref cbegin_current_regular_D_classes and
+    //! \ref cend_current_regular_D_classes.
     //!
     //! A type for const random access iterators through the regular
     //! \f$\mathscr{D}\f$-classes, in the order they were enumerated.

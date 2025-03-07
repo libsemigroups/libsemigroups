@@ -118,9 +118,9 @@ namespace libsemigroups {
   //!
   //! \brief Value for something undefined.
   //!
-  //! This variable is used to indicate that a value is undefined. \ref
-  //! UNDEFINED is comparable with any integral value (signed or unsigned) or
-  //! constant via `==` and `!=` but not via `<` or `>`.
+  //! This variable is used to indicate that a value is undefined.
+  //! \ref UNDEFINED is comparable with any integral value (signed or unsigned)
+  //! or constant via `==` and `!=` but not via `<` or `>`.
   extern Undefined const UNDEFINED;
 
   //! \ingroup constants_group

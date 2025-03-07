@@ -571,8 +571,8 @@ namespace libsemigroups {
   //! Defined in `paths.hpp`.
   //!
   //! This class represents a range object that facilitates iterating through
-  //! the paths in a WordGraph from a given \ref source node (possible to a \ref
-  //! target node) in a particular \ref order.
+  //! the paths in a WordGraph from a given \ref source node (possible to a
+  //! \ref target node) in a particular \ref order.
   //!
   //! \tparam Node the type of the nodes in the underlying WordGraph.
   //!
@@ -933,8 +933,8 @@ namespace libsemigroups {
       return _target;
     }
 
-    //! \brief Get the current target node of the path labelled by \ref
-    //! get.
+    //! \brief Get the current target node of the path labelled by
+    //! \ref get.
     //!
     //! This function returns the current target node of the path labelled by
     //! \ref get. If there is no such path (because, for example, the source

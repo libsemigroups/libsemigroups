@@ -56,10 +56,10 @@ namespace libsemigroups {
   //! \ref_congruence.
   //!
   //! Helper functions for the class template \ref_congruence can be found in
-  //! the namespaces \ref cong_common_helpers_group "congruence_common" and \ref
-  //! congruence. At present the helper functions in these two namespaces are
-  //! identical, because there are no helper functions that only apply to the
-  //! \ref_congruence class template.
+  //! the namespaces \ref cong_common_helpers_group "congruence_common" and
+  //! \ref congruence. At present the helper functions in these two namespaces
+  //! are identical, because there are no helper functions that only apply to
+  //! the \ref_congruence class template.
 
   //! \defgroup congruence_class_mem_types_group Member Types
   //!
@@ -139,8 +139,8 @@ namespace libsemigroups {
   //! the classes implementing individual algorithms, such as \ref_kambites,
   //! \ref_knuth_bendix, and \ref_todd_coxeter.
   //!
-  //! \tparam Word the type of the words used in the \ref
-  //! Congruence::presentation and \ref Congruence::generating_pairs.
+  //! \tparam Word the type of the words used in the
+  //! \ref Congruence::presentation and \ref Congruence::generating_pairs.
   //!
   //! \sa \ref cong_common_helpers_group for information about helper functions
   //! for the \ref_congruence class template.

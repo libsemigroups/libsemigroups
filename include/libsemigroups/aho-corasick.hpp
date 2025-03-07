@@ -891,8 +891,8 @@ namespace libsemigroups {
     //! throws.
     //!
     //! \sa \ref traverse_word_no_checks(AhoCorasick const& ac, index_type
-    //! start, Iterator first, Iterator last), \ref
-    //! AhoCorasick::validate_active_node_index.
+    //! start, Iterator first, Iterator last),
+    //! \ref AhoCorasick::validate_active_node_index.
     template <typename Iterator>
     [[nodiscard]] index_type traverse_word(AhoCorasick const& ac,
                                            index_type         start,

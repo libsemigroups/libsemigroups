@@ -655,8 +655,8 @@ namespace libsemigroups {
     //! \brief Check if the runner is currently running for a particular length
     //! of time.
     //!
-    //! If the Runner is currently running because its member function \ref
-    //! run_for has been invoked, then this function returns \c true.
+    //! If the Runner is currently running because its member function
+    //! \ref run_for has been invoked, then this function returns \c true.
     //! Otherwise, \c false is returned.
     //!
     //! \returns
@@ -674,8 +674,8 @@ namespace libsemigroups {
     //! \brief Check if the runner is currently running until a nullary
     //! predicate returns \c true.
     //!
-    //! If the Runner is currently running because its member function \ref
-    //! run_until has been invoked, then this function returns \c true.
+    //! If the Runner is currently running because its member function
+    //! \ref run_until has been invoked, then this function returns \c true.
     //! Otherwise, \c false is returned.
     //!
     //! \returns

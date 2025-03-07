@@ -374,8 +374,8 @@ namespace libsemigroups {
     //! is possible to access entries that you might not believe exist.
     //!
     //! \sa
-    //! \ref BMat8::operator()(size_t r) \ref bmat8::rows, and \ref
-    //! bmat8::to_vector.
+    //! \ref BMat8::operator()(size_t r) \ref bmat8::rows, and
+    //! \ref bmat8::to_vector.
     [[nodiscard]] uint8_t at(size_t r) const;
 
     //! \brief Access entries in a matrix (no bound checks).
@@ -845,8 +845,8 @@ namespace libsemigroups {
     //! \brief Returns the minimum dimension of a BMat8.
     //!
     //! This function returns the maximal \c n such that row \c n or
-    //! column \c n contains a \c 1. Equivalent to the maximum of \ref
-    //! number_of_rows and \ref number_of_cols.
+    //! column \c n contains a \c 1. Equivalent to the maximum of
+    //! \ref number_of_rows and \ref number_of_cols.
     //!
     //! \param x the matrix.
     //!

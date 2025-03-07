@@ -582,8 +582,8 @@ namespace libsemigroups {
     //!
     //! Check if the alphabet and rules are valid.
     //!
-    //! \throws LibsemigroupsException if \ref validate_alphabet or \ref
-    //! validate_rules does.
+    //! \throws LibsemigroupsException if \ref validate_alphabet or
+    //! \ref validate_rules does.
     //!
     //! \complexity
     //! Worst case \f$O(mnp)\f$ where \f$m\f$ is the length of length of the
@@ -2103,8 +2103,8 @@ namespace libsemigroups {
   //!
   //! This class template can be used to construction inverse presentations for
   //! semigroups or monoids and is intended to be used as the input to other
-  //! algorithms in `libsemigroups`. This class inherits from \ref
-  //! Presentation<Word>.
+  //! algorithms in `libsemigroups`. This class inherits from
+  //! \ref Presentation<Word>.
   //!
   //! \tparam Word the type of the underlying words.
   template <typename Word>

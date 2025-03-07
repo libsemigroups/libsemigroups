@@ -49,8 +49,8 @@ namespace libsemigroups {
   //! \endcode
   //!
   //! This function converts the \ref FroidurePin object \p fpb into a
-  //! \ref_knuth_bendix object using the presentation obtained using \ref
-  //! to<Presentation<Word>>(FroidurePinBase&).
+  //! \ref_knuth_bendix object using the presentation obtained using
+  //! \ref to<Presentation<Word>>(FroidurePinBase&).
   //!
   //! \tparam Result used for SFINAE, the return type of this function, must be
   //! `KnuthBendix<Word, Rewriter>` for some type \c Word and \c Rewriter.

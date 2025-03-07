@@ -99,8 +99,8 @@ namespace libsemigroups {
   //!
   //! \returns A FroidurePin instance.
   //!
-  //! \throws LibsemigroupsException if `cong.kind()` is not \ref
-  //! congruence_kind.twosided.
+  //! \throws LibsemigroupsException if `cong.kind()` is not
+  //! \ref congruence_kind.twosided.
   template <template <typename...> typename Thing, typename Word>
   auto to(Congruence<Word>& cong)
       -> std::enable_if_t<std::is_same_v<Thing<int>, FroidurePin<int>>,
@@ -171,8 +171,8 @@ namespace libsemigroups {
   //!
   //! \returns A FroidurePin instance.
   //!
-  //! \throws LibsemigroupsException if `kb.kind()` is not \ref
-  //! congruence_kind.twosided.
+  //! \throws LibsemigroupsException if `kb.kind()` is not
+  //! \ref congruence_kind.twosided.
   template <template <typename...> typename Thing,
             typename Rewriter,
             typename ReductionOrder>
@@ -237,8 +237,8 @@ namespace libsemigroups {
   //!
   //! \returns A FroidurePin instance.
   //!
-  //! \throws LibsemigroupsException if `kb.kind()` is not \ref
-  //! congruence_kind.twosided.
+  //! \throws LibsemigroupsException if `kb.kind()` is not
+  //! \ref congruence_kind.twosided.
   //!
   //! \warning The returned FroidurePin instance is always infinite, and so any
   //! calls to any member functions that that trigger a full enumeration will
@@ -299,8 +299,8 @@ namespace libsemigroups {
   //!
   //! \throws LibsemigroupsException if \p first > \p last.
   //!
-  //! \throws LibsemigroupsException if \p first or \p last exceeds \ref
-  //! WordGraph::number_of_nodes.
+  //! \throws LibsemigroupsException if \p first or \p last exceeds
+  //! \ref WordGraph::number_of_nodes.
   //!
   //! \throws LibsemigroupsException if
   //! \ref validate(Transf<N, Scalar> const&) throws for any of the
