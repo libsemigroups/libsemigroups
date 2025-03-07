@@ -57,7 +57,7 @@ namespace libsemigroups {
                           "test semigroup/monoid status",
                           "[pres-examples][quick]") {
     auto rg = ReportGuard(REPORT);
-    // TODO(0) Add tests for all functions
+    // TODO(2) Add tests for all functions
     REQUIRE(alternating_group_Moo97(5).contains_empty_word());
     REQUIRE(brauer_monoid_KM07(5).contains_empty_word());
     REQUIRE(chinese_monoid_CEKNH01(5).contains_empty_word());
