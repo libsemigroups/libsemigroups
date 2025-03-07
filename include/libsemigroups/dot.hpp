@@ -36,6 +36,7 @@
 
 namespace libsemigroups {
 
+#ifndef LIBSEMIGROUPS_PARSED_BY_DOXYGEN
   namespace detail {
 
     inline std::string const& dot_to_string(std::string const& x) {
@@ -64,6 +65,8 @@ namespace libsemigroups {
     }
 
   }  // namespace detail
+
+#endif  // LIBSEMIGROUPS_PARSED_BY_DOXYGEN
 
   //! \defgroup dot_group Visualisation
   //!
