@@ -1488,8 +1488,8 @@ namespace libsemigroups {
     using const_d_class_iterator
         = detail::ConstIteratorStateless<DClassIteratorTraits<DClass>>;
 
-    //! \brief  Returns a const iterator referring to a pointer to the first
-    //! \f$\mathscr{D}\f$-class.
+    //! \brief  Returns a const iterator referring to a pointer to the current
+    //! first \f$\mathscr{D}\f$-class.
     //!
     //! This  function does not trigger any enumeration; the iterator returned
     //! may be invalidated by any call to a non-const member function of the
@@ -1512,7 +1512,7 @@ namespace libsemigroups {
     }
 
     //! \brief  Returns a const iterator referring to past the pointer to the
-    //! last \f$\mathscr{D}\f$-class.
+    //! current last \f$\mathscr{D}\f$-class.
     //!
     //! This  function does not trigger any enumeration; the iterator returned
     //! may be invalidated by any call to a non-const member function of the
@@ -1527,6 +1527,30 @@ namespace libsemigroups {
       return const_d_class_iterator(_D_classes.cend());
     }
 
+    //! \brief Returns a const iterator referring to a pointer to the first
+    //! \f$\mathscr{D}\f$-class.
+    //!
+    //! This function triggers the main algorithm to run fully.
+    //!
+    //! \returns
+    //! A value of type \c const_d_class_iterator.
+    const_d_class_iterator cbegin_D_classes() {
+      run();
+      return cbegin_current_D_classes();
+    }
+
+    //! \brief Returns a const iterator referring to past the pointer to the
+    //! last \f$\mathscr{D}\f$-class.
+    //!
+    //! This function triggers the main algorithm to run fully.
+    //!
+    //! \returns
+    //! A value of type \c const_d_class_iterator.
+    const_d_class_iterator cend_D_classes() {
+      run();
+      return cend_current_D_classes();
+    }
+
     //! \brief  Return type of \ref cbegin_current_regular_D_classes and \ref
     //! cend_current_regular_D_classes.
     //!
@@ -1537,8 +1561,8 @@ namespace libsemigroups {
     using const_regular_d_class_iterator
         = detail::ConstIteratorStateless<DClassIteratorTraits<RegularDClass>>;
 
-    //! \brief  Returns a const iterator referring to a pointer to the first
-    //! regular \f$\mathscr{D}\f$-class.
+    //! \brief  Returns a const iterator referring to a pointer to the current
+    //! first regular \f$\mathscr{D}\f$-class.
     //!
     //! This  function does not trigger any enumeration; the iterator returned
     //! may be invalidated by any call to a non-const member function of the
@@ -1550,7 +1574,6 @@ namespace libsemigroups {
     //! \exceptions
     //! \no_libsemigroups_except
     //!
-    //! \sa cbegin_rdc
     // not noexcept because operator++ isn't necessarily
     const_regular_d_class_iterator cbegin_current_regular_D_classes() const {
       auto it = _regular_D_classes.cbegin();
@@ -1562,13 +1585,8 @@ namespace libsemigroups {
       }
     }
 
-    //! Shorter form of \ref cbegin_current_regular_D_classes.
-    const_regular_d_class_iterator cbegin_rdc() const noexcept {
-      return cbegin_current_regular_D_classes();
-    }
-
     //! \brief  Returns a const iterator referring to past the pointer to the
-    //! last regular \f$\mathscr{D}\f$-class.
+    //! current last regular \f$\mathscr{D}\f$-class.
     //!
     //! This  function does not trigger any enumeration; the iterator returned
     //! may be invalidated by any call to a non-const member function of the
@@ -1579,15 +1597,39 @@ namespace libsemigroups {
     //!
     //! \exceptions
     //! \no_libsemigroups_except
-    //!
-    //! \sa \ref cend_rdc
     const_regular_d_class_iterator
     cend_current_regular_D_classes() const noexcept {
       return const_regular_d_class_iterator(_regular_D_classes.cend());
     }
 
-    //! Shorter form of \ref cend_current_regular_D_classes.
-    const_regular_d_class_iterator cend_rdc() const {
+    //! \brief  Returns a const iterator referring to a pointer to the first
+    //! regular \f$\mathscr{D}\f$-class.
+    //!
+    //! This function triggers the main algorithm to run fully.
+    //!
+    //! \returns
+    //! A value of type \c const_d_class_iterator.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    //!
+    const_regular_d_class_iterator cbegin_regular_D_classes() {
+      run();
+      return cbegin_current_regular_D_classes();
+    }
+
+    //! \brief  Returns a const iterator referring to past the pointer to the
+    //! last regular \f$\mathscr{D}\f$-class.
+    //!
+    //! This function triggers the main algorithm to run fully.
+    //!
+    //! \returns
+    //! A value of type \c const_d_class_iterator.
+    //!
+    //! \exceptions
+    //! \no_libsemigroups_except
+    const_regular_d_class_iterator cend_regular_D_classes() {
+      run();
       return cend_current_regular_D_classes();
     }
 
