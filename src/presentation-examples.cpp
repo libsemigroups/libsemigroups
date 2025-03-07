@@ -1287,35 +1287,42 @@ namespace libsemigroups {
       return p;
     }
 
-    // From Theorem 1.5 of arXiv:2406.19294
-    Presentation<word_type> full_transformation_monoid_MW24_a(size_t n) {
+    Presentation<word_type> full_transformation_monoid(size_t n) {
       if (n < 2) {
         LIBSEMIGROUPS_EXCEPTION(
             "the 1st argument (degree) must be at least 2, found {}", n);
+      } else if (n < 4) {
+        Presentation<word_type> p;
+        if (n == 2) {
+          presentation::add_rule_no_checks(p, 00_w, ""_w);
+          presentation::add_rule_no_checks(p, 01_w, 1_w);
+          presentation::add_rule_no_checks(p, 11_w, 1_w);
+          p.alphabet_from_rules();
+          p.contains_empty_word(true);
+          return p;
+        } else if (n == 3) {
+          presentation::add_rule_no_checks(p, 00_w, ""_w);
+          presentation::add_rule_no_checks(p, 11_w, ""_w);
+          presentation::add_rule_no_checks(p, 010_w, 101_w);
+          presentation::add_rule_no_checks(p, 02_w, 2_w);
+          presentation::add_rule_no_checks(p, 2121_w, 2_w);
+          presentation::add_rule_no_checks(p, pow(0102_w, 3) + 010_w, 20102_w);
+          p.alphabet_from_rules();
+          p.contains_empty_word(true);
+          return p;
+        }
       }
-      Presentation<word_type> p;
-      // TODO(0) should the small degree presentations stay, since they don't
-      // correspond to the paper?
-      if (n == 2) {
-        presentation::add_rule_no_checks(p, 00_w, ""_w);
-        presentation::add_rule_no_checks(p, 01_w, 1_w);
-        presentation::add_rule_no_checks(p, 11_w, 1_w);
-        p.alphabet_from_rules();
-        p.contains_empty_word(true);
-        return p;
-      } else if (n == 3) {
-        presentation::add_rule_no_checks(p, 00_w, ""_w);
-        presentation::add_rule_no_checks(p, 11_w, ""_w);
-        presentation::add_rule_no_checks(p, 010_w, 101_w);
-        presentation::add_rule_no_checks(p, 02_w, 2_w);
-        presentation::add_rule_no_checks(p, 2121_w, 2_w);
-        presentation::add_rule_no_checks(p, pow(0102_w, 3) + 010_w, 20102_w);
-        p.alphabet_from_rules();
-        p.contains_empty_word(true);
-        return p;
+      return full_transformation_monoid_MW24_a(n);
+    }
+
+    // From Theorem 1.5 of arXiv:2406.19294
+    Presentation<word_type> full_transformation_monoid_MW24_a(size_t n) {
+      if (n < 4) {
+        LIBSEMIGROUPS_EXCEPTION(
+            "the 1st argument (degree) must be at least 4, found {}", n);
       }
 
-      p = symmetric_group_Car56(n);
+      auto p = symmetric_group_Car56(n);
 
       // From Theorem 1.5 of arXiv:2406.19294
 
@@ -1352,30 +1359,14 @@ namespace libsemigroups {
 
     // From Theorem 1.5 of arXiv:2406.19294
     Presentation<word_type> full_transformation_monoid_MW24_b(size_t n) {
-      if (n < 3) {
+      if (n < 5) {
         LIBSEMIGROUPS_EXCEPTION(
-            "the 1st argument (degree) must be at least 3, found {}", n);
+            "the 1st argument (degree) must be at least 5, found {}", n);
       } else if (n % 2 != 1) {
         LIBSEMIGROUPS_EXCEPTION(
             "the 1st argument (degree) must be odd, found {}", n);
       }
-      Presentation<word_type> p;
-
-      // TODO(0) should the small degree presentations stay, since they don't
-      // correspond to the paper?
-      if (n == 3) {
-        presentation::add_rule_no_checks(p, 00_w, ""_w);
-        presentation::add_rule_no_checks(p, 11_w, ""_w);
-        presentation::add_rule_no_checks(p, 010_w, 101_w);
-        presentation::add_rule_no_checks(p, 02_w, 2_w);
-        presentation::add_rule_no_checks(p, 2121_w, 2_w);
-        presentation::add_rule_no_checks(p, pow(0102_w, 3) + 010_w, 20102_w);
-        p.alphabet_from_rules();
-        p.contains_empty_word(true);
-        return p;
-      }
-
-      p = symmetric_group_Car56(n);
+      auto p = symmetric_group_Car56(n);
 
       // Relation T7
       presentation::add_rule_no_checks(

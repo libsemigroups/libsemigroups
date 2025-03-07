@@ -976,8 +976,8 @@ namespace libsemigroups {
                                       Word const&         letters1,
                                       Word const&         letters2) {
       using words::operator+;
-      size_t      m = letters1.size(), n = letters2.size();
-      Word const *shorter = &letters1, *longer = &letters2;
+      size_t       m = letters1.size(), n = letters2.size();
+      Word const * shorter = &letters1, *longer = &letters2;
       if (m > n) {
         std::swap(shorter, longer);
         std::swap(m, n);

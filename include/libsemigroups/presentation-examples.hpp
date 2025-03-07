@@ -238,7 +238,7 @@ namespace libsemigroups {
     //!
     //! \returns A value of type `Presentation<word_type>`.
     //!
-    //! \throws LibsemigroupsException if `n < 2`.
+    //! \throws LibsemigroupsException if `n < 4`.
     [[nodiscard]] Presentation<word_type>
     full_transformation_monoid_MW24_a(size_t n);
 
@@ -817,7 +817,7 @@ namespace libsemigroups {
     //! This function performs exactly the same as
     //! `chinese_monoid_CEKNH01`, and exists as a convenience
     //! function for when a presentation for the Chinese monoid is required,
-    //! but the relations of the presentation are not important.
+    //! but the particular relations in the presentation are not important.
     //!
     //! \sa
     //! `chinese_monoid_CEKNH01`.
@@ -831,7 +831,8 @@ namespace libsemigroups {
     //! This function performs exactly the same as
     //! `cyclic_inverse_monoid_Fer22_b`, and exists as a convenience
     //! function for when a presentation for the cyclic inverse monoid
-    //! is required, but the relations of the presentation are not important.
+    //! is required, but the particular relations in the presentation are not
+    //! important.
     //!
     //! \sa
     //! For a specific %presentation of the full transformation monoid, see
@@ -849,7 +850,8 @@ namespace libsemigroups {
     //! This function performs exactly the same as
     //! `dual_symmetric_inverse_monoid_EEF07`, and exists as a convenience
     //! function for when a presentation for the dual symmetric inverse monoid
-    //! is required, but the relations of the presentation are not important.
+    //! is required, but the particular relations in the presentation are not
+    //! important.
     //!
     //! \sa
     //! `dual_symmetric_inverse_monoid`.
@@ -873,13 +875,23 @@ namespace libsemigroups {
       return fibonacci_semigroup_CRRT94(r, n);
     }
 
-    //! \copydoc full_transformation_monoid_MW24_a
+    //! \brief A presentation for the full transformation monoid.
+    //!
+    //! This function returns a monoid presentation defining the full
+    //! transformation monoid of degree \p n.
+    //!
+    //! \param n the degree of the full transformation monoid.
+    //!
+    //! \returns A value of type `Presentation<word_type>`.
+    //!
+    //! \throws LibsemigroupsException if `n < 2`.
     //!
     //! \note
-    //! This function performs exactly the same as
+    //! This function is almost exactly the same as
     //! `full_transformation_monoid_MW24_a`, and exists as a convenience
     //! function for when a presentation for the full transformation monoid is
-    //! required, but the relations of the presentation are not important.
+    //! required, but the particular relations in the presentation are not
+    //! important.
     //!
     //! \sa
     //! For a specific %presentation of the full transformation monoid, see
@@ -888,10 +900,7 @@ namespace libsemigroups {
     //! * `full_transformation_monoid_II74`;
     //! * `full_transformation_monoid_MW24_a`;
     //! * `full_transformation_monoid_MW24_b`.
-    [[nodiscard]] inline Presentation<word_type>
-    full_transformation_monoid(size_t n) {
-      return full_transformation_monoid_MW24_a(n);
-    }
+    [[nodiscard]] Presentation<word_type> full_transformation_monoid(size_t n);
 
     //! \copydoc hypo_plactic_monoid_Nov00
     //!
@@ -977,7 +986,8 @@ namespace libsemigroups {
     //! This function performs exactly the same as
     //! `not_symmetric_group_GKKL08`, and exists as a convenience function for
     //! when a presentation that incorrectly claims to be the symmetric group
-    //! required, but the relations of the presentation are not important.
+    //! required, but the particular relations in the presentation are not
+    //! important.
     //!
     //! \sa
     //! `not_symmetric_group_GKKL08`.
@@ -1007,7 +1017,8 @@ namespace libsemigroups {
     //! This function performs exactly the same as
     //! `order_preserving_monoid_AR00`, and exists as a convenience
     //! function for when a presentation for the order preserving monoid is
-    //! required, but the relations of the presentation are not important.
+    //! required, but the particular relations in the presentation are not
+    //! important.
     //!
     //! \sa
     //! `order_preserving_monoid_AR00`.
@@ -1023,7 +1034,7 @@ namespace libsemigroups {
     //! `orientation_preserving_monoid_AR00`, and exists as a convenience
     //! function for when a presentation for the the monoid of
     //! orientation preserving mappings on a finite chain is required,
-    //! but the relations of the presentation are not important.
+    //! but the particular relations in the presentation are not important.
     //!
     //! \sa
     //! `orientation_preserving_monoid_AR00`.
@@ -1039,7 +1050,8 @@ namespace libsemigroups {
     //! `orientation_preserving_reversing_monoid_AR00`, and exists as a
     //! convenience function for when a presentation for the monoid of
     //! orientation preserving or reversing mappings on a finite chain is
-    //! required, but the relations of the presentation are not important.
+    //! required, but the particular relations in the presentation are not
+    //! important.
     //!
     //! \sa
     //! `orientation_preserving_reversing_monoid_AR00`.
@@ -1085,7 +1097,8 @@ namespace libsemigroups {
     //! This function performs exactly the same as
     //! `partial_transformation_monoid_MW24`, and exists as a convenience
     //! function for when a presentation for the partial transformation monoid
-    //! is required, but the relations of the presentation are not important.
+    //! is required, but the particular relations in the presentation are not
+    //! important.
     //!
     //! \sa
     //! For a specific %presentation of the full transformation monoid, see
@@ -1158,7 +1171,7 @@ namespace libsemigroups {
     //! This function performs exactly the same as
     //! `renner_type_B_monoid_Gay18`, and exists as a convenience function for
     //! when a presentation for the Renner monoid of type B is required, but
-    //! the relations of the presentation are not important.
+    //! the particular relations in the presentation are not important.
     //!
     //! \sa
     //! `renner_type_B_monoid_Gay18`.
@@ -1173,7 +1186,7 @@ namespace libsemigroups {
     //! This function performs exactly the same as
     //! `renner_type_D_monoid_Gay18`, and exists as a convenience function for
     //! when a presentation for the Renner monoid of type D is required, but
-    //! the relations of the presentation are not important.
+    //! the particular relations in the presentation are not important.
     //!
     //! \sa
     //! `renner_type_D_monoid_Gay18`
@@ -1188,7 +1201,7 @@ namespace libsemigroups {
     //! This function performs exactly the same as
     //! `sigma_plactic_monoid_AHMNT24`, and exists as a convenience function for
     //! when a presentation for the \f$\sigma\f$-plactic monoid is required, but
-    //! the relations of the presentation are not important.
+    //! the particular relations in the presentation are not important.
     //!
     //! \sa
     //! `sigma_plactic_monoid_AHMNT24`
@@ -1203,7 +1216,8 @@ namespace libsemigroups {
     //! This function performs exactly the same as
     //! `singular_brauer_monoid_MM07`, and exists as a convenience function
     //! for when a presentation for the singular part of the brauer monoid is
-    //! required, but the relations of the presentation are not important.
+    //! required, but the particular relations in the presentation are not
+    //! important.
     //!
     //! \sa
     //! `singular_brauer_monoid_MM07`.
@@ -1281,7 +1295,8 @@ namespace libsemigroups {
     //! This function performs exactly the same as
     //! `symmetric_inverse_monoid_MW24`, and exists as a convenience
     //! function for when a presentation for the symmetric inverse monoid
-    //! is required, but the relations of the presentation are not important.
+    //! is required, but the particular relations in the presentation are not
+    //! important.
     //!
     //! \sa
     //! For a specific %presentation of the full transformation monoid, see
@@ -1300,7 +1315,7 @@ namespace libsemigroups {
     //! This function performs exactly the same as
     //! `temperley_lieb_monoid_Eas21`, and exists as a convenience function
     //! for when a presentation for the Temperley-Lieb monoid is required, but
-    //! the relations of the presentation are not important.
+    //! the particular relations in the presentation are not important.
     //!
     //! \sa
     //! `temperley_lieb_monoid_Eas21`.

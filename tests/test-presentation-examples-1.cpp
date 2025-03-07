@@ -603,13 +603,16 @@ namespace libsemigroups {
       "[pres-examples][quick]") {
     auto rg = ReportGuard(REPORT);
 
-    ToddCoxeter tc2(congruence_kind::twosided,
-                    full_transformation_monoid_MW24_a(2));
+    ToddCoxeter tc2(congruence_kind::twosided, full_transformation_monoid(2));
     REQUIRE(tc2.number_of_classes() == 4);
 
-    ToddCoxeter tc3(congruence_kind::twosided,
-                    full_transformation_monoid_MW24_a(3));
+    ToddCoxeter tc3(congruence_kind::twosided, full_transformation_monoid(3));
     REQUIRE(tc3.number_of_classes() == 27);
+
+    REQUIRE_THROWS_AS(full_transformation_monoid_MW24_a(2),
+                      LibsemigroupsException);
+    REQUIRE_THROWS_AS(full_transformation_monoid_MW24_a(3),
+                      LibsemigroupsException);
   }
 
   LIBSEMIGROUPS_TEST_CASE("Example",
