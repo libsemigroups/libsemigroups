@@ -314,6 +314,7 @@ namespace libsemigroups {
       using iterator_category = std::forward_iterator_tag;
 
      private:
+      size_t                             _count;
       detail::const_pislo_iterator<Node> _it;
       node_type                          _target;
       detail::const_pislo_iterator<Node> _end;  // TODO(2) remove?
@@ -332,7 +333,10 @@ namespace libsemigroups {
                              node_type                   target,
                              size_type                   min,
                              size_type                   max)
-          : _it(ptr, source, min, max),
+          : _count(source == UNDEFINED
+                       ? 0
+                       : number_of_paths(*ptr, source, target, min, max)),
+            _it(ptr, source, min, max),
             _target(target),
             _end(cend_pislo(*ptr)) {
         operator++();
@@ -358,7 +362,6 @@ namespace libsemigroups {
         return &(*_it);
       }
 
-      // FIXME(1) Will fail if there are no paths!
       [[nodiscard]] node_type target() const noexcept {
         return _target;
       }
