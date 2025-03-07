@@ -980,8 +980,8 @@ namespace libsemigroups {
     REQUIRE((p | all_of(std::move(checker1))));
 
     std::unordered_set<word_type> distinct_words;
-    for (auto it = begin(p); it != end(p); ++it) {  // FIXME the range based for
-                                                    // here doesn't work
+    for (auto it = begin(p); it != end(p); ++it) {  // TODO(1) the range based
+                                                    // for here doesn't work
       distinct_words.insert(*it);
     }
     REQUIRE(distinct_words.size() == 35'300);

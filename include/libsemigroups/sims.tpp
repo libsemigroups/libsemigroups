@@ -221,7 +221,11 @@ namespace libsemigroups {
 
       for (size_t i = 0; i < n; ++i) {
         for (size_t j = 0; j < n; ++j) {
-          mat1(i, j) = hk.is_subrelation_no_checks(graphs[i], graphs[j]);
+          if (i != j) {
+            mat1(i, j) = hk.is_subrelation_no_checks(graphs[i], graphs[j]);
+          } else {
+            mat1(i, j) = false;
+          }
         }
       }
 
