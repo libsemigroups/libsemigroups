@@ -28,9 +28,9 @@ namespace libsemigroups {
       LIBSEMIGROUPS_ASSERT(!_settings_stack.empty());
       detail::CongruenceCommon::init(knd);
       init();
-      // FIXME setting the setting in the next line, and adding a Felsch runner
-      // to the word graph version of Congruence leads to an incorrect answer
-      // for the extreme test in congruence def_max(POSITIVE_INFINITY);
+      // FIXME(1) setting the setting in the next line, and adding a Felsch
+      // runner to the word graph version of Congruence leads to an incorrect
+      // answer for the extreme test in congruence def_max(POSITIVE_INFINITY);
       _word_graph = wg;
       _word_graph.presentation().alphabet(wg.out_degree());
       copy_settings_into_graph();

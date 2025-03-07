@@ -103,14 +103,14 @@ namespace libsemigroups {
       return std::string(x, 1);
     }
 
-    // FIXME test_action doesn't compile if the function below is not present,
+    // test_action doesn't compile if the function below is not present,
     // it complains that it doesn't know how to format PPerm's, I don't
     // understand the issue
     template <typename T>
     std::ostream& operator<<(std::ostream& os, std::vector<T> const& vec) {
       return ::libsemigroups::operator<<(os, vec);
     }
-    // FIXME and test-knuth-bendix doesn't compile without this one
+    // and test-knuth-bendix doesn't compile without this one
     template <typename T, typename S>
     std::ostream& operator<<(std::ostream& os, std::pair<T, S> const& p) {
       return ::libsemigroups::operator<<(os, p);

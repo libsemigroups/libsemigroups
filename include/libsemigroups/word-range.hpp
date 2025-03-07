@@ -965,7 +965,8 @@ namespace libsemigroups {
 
     [[nodiscard]] letter_type operator()(char input) const {
       // TODO improve this
-      // FIXME it also doesn't work
+      // FIXME(1) it also doesn't work for example to_word('a') returns 63 for
+      // some reason
       word_type output;
       // operator()(output, std::string_view(&input, 1));
       operator()(output, std::string(input, 1));

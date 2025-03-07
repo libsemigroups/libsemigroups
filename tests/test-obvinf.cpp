@@ -24,6 +24,7 @@
 
 #include "libsemigroups/obvinf.hpp"        // for IsObviouslyInfinite
 #include "libsemigroups/presentation.hpp"  // for Presentation
+#include "libsemigroups/todd-coxeter.hpp"  // for ToddCoxeter
 #include "libsemigroups/word-range.hpp"    // for operator""_w
 
 namespace libsemigroups {
@@ -309,5 +310,18 @@ namespace libsemigroups {
     Presentation<word_type> p;
     p.alphabet({0, 2});
     REQUIRE(is_obviously_infinite(p));
+  }
+
+  LIBSEMIGROUPS_TEST_CASE("ObviouslyInfinite",
+                          "022",
+                          "from ToddCoxeter",
+                          "[quick][integer-alphabet]") {
+    ToddCoxeter<word_type> tc(congruence_kind::twosided,
+                              WordGraph<uint32_t>(1, 2));
+
+    REQUIRE(tc.current_word_graph().number_of_nodes() == 1);
+    REQUIRE(tc.current_word_graph().number_of_nodes_active() == 1);
+
+    REQUIRE(is_obviously_infinite(tc));
   }
 }  // namespace libsemigroups

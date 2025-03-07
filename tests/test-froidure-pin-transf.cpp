@@ -224,7 +224,6 @@ namespace libsemigroups {
     }
   }
 
-  // FIXME not sure that this isn't much slower than it used to be
   LIBSEMIGROUPS_TEST_CASE("FroidurePin<Transf>",
                           "070",
                           "exception prefix",
@@ -241,7 +240,6 @@ namespace libsemigroups {
     REQUIRE_THROWS_AS(U.prefix(U.size()), LibsemigroupsException);
   }
 
-  // FIXME not sure that this isn't much slower than it used to be
   LIBSEMIGROUPS_TEST_CASE("FroidurePin<Transf>",
                           "071",
                           "exception suffix",

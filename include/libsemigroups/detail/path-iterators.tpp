@@ -375,14 +375,29 @@ namespace libsemigroups {
     template <typename Node>
     const_pstislo_iterator<Node> const&
     const_pstislo_iterator<Node>::operator++() {
+      // FIXME(1) the following is a hack to avoid the situation where there are
+      // only finitely many paths from _source to _target but there are
+      // infinitely many paths rooted at _source. Without the hack this function
+      // will run forever in such situations. The fixme is to remove the hack
+      // and to properly implement pislo (not using pilo) and pstislo iterators
+      // (analogous to pstilo iterator).
+      if (_count == 0) {
+        _it = _end;
+        return *this;
+      }
+
       if (_it.target() != UNDEFINED) {
         ++_it;
+
         while (_it.target() != _target && _it != _end) {
           ++_it;
         }
         if (_it == _end) {
           _target = UNDEFINED;
         }
+      }
+      if (_count != POSITIVE_INFINITY) {
+        _count--;
       }
       return *this;
     }

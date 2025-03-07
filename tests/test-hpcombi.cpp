@@ -319,12 +319,14 @@ namespace libsemigroups {
     auto S  = make<FroidurePin>({Transf16({1, 2, 3, 4, 5, 6, 7, 0}),
                                  Transf16({1, 0, 2, 3, 4, 5, 6, 7}),
                                  Transf16({0, 1, 2, 3, 4, 5, 6, 0})});
-    // FIXME(later)
     // 1. including the next line makes this test run extremely slowly
     // (20/09/2019) under clang.
     // 2. Without the next line this is no faster than the next test.
     // 3. Does not appear to be an issue under gcc (FLS) - takes ~7s
-    // S.reserve(2 * std::pow(8, 8));
+    // It seems that if we put 8 ^ 8 in here for reserve, then since it is
+    // divisible by 16 something horrible goes wrong in the hashing when
+    // compiled with clang. Choosing a prime, makes this fast again.
+    S.reserve(2 * 16777259);
     REQUIRE(S.size() == 16777216);
   }
 

@@ -1673,14 +1673,21 @@ namespace libsemigroups {
     auto c = class_by_index(tc, 0);
     REQUIRE(c.get() == 0_w);
     REQUIRE(!c.at_end());
-    // c.next();  // FIXME runs forever, but shouldn't!
-    // REQUIRE(c.at_end());
+    REQUIRE(Paths(tc.current_word_graph()).source(0).target(1).count() == 1);
+    auto pp = Paths(tc.current_word_graph()).source(0).target(1);
+    REQUIRE(pp.order() == Order::shortlex);
+    REQUIRE(pp.get() == 0_w);
+    REQUIRE(!pp.at_end());
+    pp.next();
+    c.next();
+    REQUIRE(c.at_end());
+    // TODO(1) the following no longer work
     // REQUIRE((class_by_index(tc, 0) | rx::count()) == 1);
     // REQUIRE((class_by_index(tc, 1) | rx::count()) == 1);
     // REQUIRE((class_by_index(tc, 2) | rx::count()) == 1);
-    // TODO(1) the following no longer work
     // REQUIRE(class_by_index(tc, 3).count() == POSITIVE_INFINITY);
     // REQUIRE(class_by_index(tc, 4).count() == POSITIVE_INFINITY);
+
     REQUIRE(!p.contains_empty_word());
     REQUIRE_THROWS_AS(class_of(tc, ""_w), LibsemigroupsException);
     REQUIRE_THROWS_AS(class_of(tc, {}), LibsemigroupsException);
