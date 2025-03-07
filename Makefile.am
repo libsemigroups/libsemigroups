@@ -888,6 +888,7 @@ test_all_SOURCES += tests/test-transf.cpp
 test_all_SOURCES += tests/test-types.cpp
 test_all_SOURCES += tests/test-uf.cpp
 test_all_SOURCES += tests/test-ukkonen.cpp
+test_all_SOURCES += tests/test-word-graph-with-sources.cpp
 test_all_SOURCES += tests/test-word-graph.cpp
 test_all_SOURCES += tests/test-word-range.cpp
 
@@ -1167,6 +1168,7 @@ test_ukkonen_SOURCES += tests/test-main.cpp
 test_ukkonen_SOURCES += third_party/Catch2-3.7.1/catch_amalgamated_patch.cpp
 
 test_word_graph_SOURCES =  tests/test-word-graph.cpp
+test_word_graph_SOURCES +=  tests/test-word-graph-with-sources.cpp
 test_word_graph_SOURCES += tests/test-main.cpp
 test_word_graph_SOURCES += third_party/Catch2-3.7.1/catch_amalgamated_patch.cpp
 
