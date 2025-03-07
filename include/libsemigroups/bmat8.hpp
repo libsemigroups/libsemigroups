@@ -962,6 +962,15 @@ namespace libsemigroups {
   std::string to_human_readable_repr(BMat8 const&       x,
                                      std::string const& braces = "{}");
 
+  //! \ingroup bmat8_group
+  //! \brief Multiplication operator.
+  //!
+  //! This function allows BMat8 objects to be multiplied by scalars
+  //!
+  //! \param scalar a boolean scalar.
+  //! \param x the matrix.
+  //!
+  //! \returns The product `scalar * x`.
   [[nodiscard]] constexpr BMat8 operator*(bool         scalar,
                                           BMat8 const& x) noexcept {
     if (scalar) {
