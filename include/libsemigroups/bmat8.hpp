@@ -68,7 +68,7 @@ namespace libsemigroups {
   //!
   //! Defined in `bmat8.hpp`.
   //!
-  //! \brief Fast boolean matrices of dimension up to 8 x 8
+  //! \brief Fast boolean matrices of dimension up to 8 x 8.
   //!
   //! This class represents 8 x 8 matrices over the boolean semiring.
   //! The functions for these small matrices over the boolean semiring
@@ -413,8 +413,8 @@ namespace libsemigroups {
     //!
     //! Returns the value of the entry in the row \p r and column \p c.
     //!
-    //! \param r the row
-    //! \param c the column
+    //! \param r the row.
+    //! \param c the column.
     //!
     //! \throws LibsemigroupsException if \p r or \p c is out of bounds.
     //!
@@ -429,8 +429,8 @@ namespace libsemigroups {
     //!
     //! Returns a reference to the entry in the row \p r and column \p c.
     //!
-    //! \param r the row
-    //! \param c the column
+    //! \param r the row.
+    //! \param c the column.
     //!
     //! \throws LibsemigroupsException if \p r or \p c is out of bounds.
     //!
@@ -460,7 +460,7 @@ namespace libsemigroups {
       return _data;
     }
 
-    //! \brief Returns the matrix product of \c this and \p that
+    //! \brief Returns the matrix product of \c this and \p that.
     //!
     //! This function returns the standard matrix product (over the
     //! boolean semiring) of two BMat8 objects.
@@ -501,7 +501,7 @@ namespace libsemigroups {
       }
     }
 
-    //! \brief Multiply a BMat8 by a scalar (in-place)
+    //! \brief Multiply a BMat8 by a scalar (in-place).
     //!
     //! This function returns the product of a BMat8 object and the boolean
     //! scalar value \p scalar.
@@ -648,7 +648,7 @@ namespace libsemigroups {
     //! in the main diagonal equal to \c 1 and every other value equal to \c
     //! 0.
     //!
-    //! \param dim the dimension of the identity (default: 8)
+    //! \param dim the dimension of the identity (default: 8).
     //!
     //! \returns
     //! A BMat8.
@@ -938,14 +938,14 @@ namespace libsemigroups {
   }  // namespace bmat8
 
   //! \ingroup bmat8_group
-  //! \brief Insertion operator
+  //! \brief Insertion operator.
   //!
   //! This function allows BMat8 objects to be inserted into an
   //! std::ostringstream.
   std::ostringstream& operator<<(std::ostringstream& os, BMat8 const& x);
 
   //! \ingroup bmat8_group
-  //! \brief Insertion operator
+  //! \brief Insertion operator.
   //!
   //! This function allows BMat8 objects to be inserted into a
   //! std::ostream.
@@ -954,7 +954,7 @@ namespace libsemigroups {
   //! \ingroup bmat8_group
   //! \brief Returns a string representation.
   //!
-  //! \param x the matrix
+  //! \param x the matrix.
   //! \param braces the type of braces to use in the returned string (default:
   //! `"{}"`).
   //!
@@ -965,7 +965,7 @@ namespace libsemigroups {
   //! \ingroup bmat8_group
   //! \brief Multiplication operator.
   //!
-  //! This function allows BMat8 objects to be multiplied by scalars
+  //! This function allows BMat8 objects to be multiplied by scalars.
   //!
   //! \param scalar a boolean scalar.
   //! \param x the matrix.
