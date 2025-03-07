@@ -2851,6 +2851,7 @@ namespace libsemigroups {
    private:
     detail::Duf<>                             _uf;
     std::stack<std::pair<uint64_t, uint64_t>> _stck;
+    std::vector<uint64_t>                     _lookup;
 
     template <typename Node>
     [[nodiscard]] Node find(WordGraph<Node> const& x,

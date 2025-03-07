@@ -1603,12 +1603,26 @@ namespace libsemigroups {
         ynum_nodes_reachable_from_root,
         yroot);
     _uf.normalize();
+    // It can be that _uf is equivalent to [0, 0, 2] at this point (and there's
+    // no way for it to not be like this, because 2 doesn't belong to the class
+    // of 0), and so we require the following lookup.
+    _lookup.resize(xnum_nodes_reachable_from_root);
+    LIBSEMIGROUPS_ASSERT(_lookup.size() == xnum_nodes_reachable_from_root);
+    std::fill(_lookup.begin(), _lookup.end(), static_cast<Node>(UNDEFINED));
+    size_t next_node = 0;
+
+    for (Node s = 0; s < xnum_nodes_reachable_from_root; ++s) {
+      auto ss = _uf.find(s);
+      if (_lookup[ss] == static_cast<Node>(UNDEFINED)) {
+        _lookup[ss] = next_node++;
+      }
+    }
 
     xy.init(_uf.number_of_blocks(), x.out_degree());
     for (Node s = 0; s < xnum_nodes_reachable_from_root; ++s) {
       for (auto [a, t] : x.labels_and_targets_no_checks(s)) {
         if (t != static_cast<Node>(UNDEFINED)) {
-          xy.target_no_checks(_uf.find(s), a, _uf.find(t));
+          xy.target_no_checks(_lookup[_uf.find(s)], a, _lookup[_uf.find(t)]);
         }
       }
     }
@@ -1623,7 +1637,7 @@ namespace libsemigroups {
                                         Node2  yroot) {
     static_assert(sizeof(Node2) <= sizeof(Node1));
 
-    if (ynum_nodes_reachable_from_root >= xnum_nodes_reachable_from_root) {
+    if (ynum_nodes_reachable_from_root > xnum_nodes_reachable_from_root) {
       return false;
     }
 
@@ -1700,7 +1714,7 @@ namespace libsemigroups {
                                         Node2  yroot) {
     static_assert(sizeof(Node2) <= sizeof(Node1));
     // If x is a subrelation of y, then the meet of x and y must be x.
-    if (ynum_nodes_reachable_from_root >= xnum_nodes_reachable_from_root) {
+    if (ynum_nodes_reachable_from_root > xnum_nodes_reachable_from_root) {
       return false;
     }
     auto xy = call_no_checks(x,

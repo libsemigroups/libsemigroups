@@ -196,18 +196,17 @@ namespace libsemigroups {
                   == std::tuple(joiner.is_subrelation(graphs[i], graphs[j]),
                                 graphs[i],
                                 graphs[j]));
-          // TODO(1): FIXME the below doesn't seem to work, but JDM expected
-          // it to.
-          //
-          // joiner(tmp, graphs[i], graphs[j]);
-          // REQUIRE(meeter.is_subrelation(graphs[j], tmp));
-          // REQUIRE(meeter.is_subrelation(graphs[i], tmp));
-          // REQUIRE(joiner.is_subrelation(graphs[j], tmp));
-          // REQUIRE(joiner.is_subrelation(graphs[i], tmp));
-          // REQUIRE(meeter.is_subrelation(tmp, graphs[j]));
-          // REQUIRE(meeter.is_subrelation(tmp, graphs[i]));
-          // REQUIRE(joiner.is_subrelation(tmp, graphs[j]));
-          // REQUIRE(joiner.is_subrelation(tmp, graphs[i]));
+          joiner(tmp, graphs[i], graphs[j]);
+          REQUIRE(joiner.is_subrelation(graphs[i], tmp));
+          REQUIRE(joiner.is_subrelation(graphs[j], tmp));
+          REQUIRE(meeter.is_subrelation(graphs[i], tmp));
+          REQUIRE(meeter.is_subrelation(graphs[j], tmp));
+
+          meeter(tmp, graphs[i], graphs[j]);
+          REQUIRE(joiner.is_subrelation(tmp, graphs[i]));
+          REQUIRE(joiner.is_subrelation(tmp, graphs[j]));
+          REQUIRE(meeter.is_subrelation(tmp, graphs[i]));
+          REQUIRE(meeter.is_subrelation(tmp, graphs[j]));
         }
       }
     }
@@ -4116,7 +4115,7 @@ namespace libsemigroups {
     REQUIRE(s.number_of_congruences(12) == 19'245);
     REQUIRE(s.number_of_congruences(13) == 32'299);
 
-    check_meets_and_joins(s.cbegin(5), s.cend(5));
+    check_meets_and_joins(s.cbegin(3), s.cend(3));
   }
 
   LIBSEMIGROUPS_TEST_CASE("Sims2",
