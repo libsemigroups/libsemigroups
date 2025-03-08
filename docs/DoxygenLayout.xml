@@ -119,6 +119,7 @@
     <tab type="user" visible="yes" url="@ref dot_group" title="Visualisation" />
     <tab type="usergroup" visible="yes" url="@ref word_graph_group" title="Word graphs">
       <tab type="user" visible="yes" url="@ref libsemigroups::Forest" title="Forest" />
+      <tab type="user" visible="yes" url="@ref make_forest_group" title="make<Forest>" />
       <tab type="user" visible="yes" url="@ref gabow_group" title="Gabow" />
       <tab type="user" visible="yes" url="@ref libsemigroups::Joiner" title="Joiner" />
       <tab type="user" visible="yes" url="@ref libsemigroups::Meeter" title="Meeter" />

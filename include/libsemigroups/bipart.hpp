@@ -743,21 +743,14 @@ namespace libsemigroups {
   //! function, see the following:
   //! * \ref make_blocks_group
   //! * \ref make_bipart_group
-  //! * \ref make<Forest>(std::vector<size_t>,std::vector<size_t>)
-  //! "make<Forest>"
+  //! * \ref make_forest_group
   //! * \ref make_froidure_pin_group
   //! * \ref make_matrix_group
   //! * \ref make_pbr_group
-  //! * \ref make<Transf>(OtherContainer&&) "make<Transf>"
-  //! * \ref Perm "make<Perm>"
-  //! * \ref make<PPerm>(std::vector<typename Return::point_type> const&,
-  //! std::vector<typename Return::point_type> const&, size_t) "make<PPerm>"
+  //! * \ref make_transf_group
+  //! * \ref make_pperm_group
+  //! * \ref make_perm_group
   //! * \ref make_word_graph_group
-  // TODO(1) Update the Perm link to actually point to the make function. The
-  // overloads for make for Perm and Transf are identical, so Doxygen can't seem
-  // to distinguish them. Ideally, every class would have its own
-  // make_CLASS_group to reference, but this would involve quite a big doc
-  // resturctue.
 
   //! \defgroup make_blocks_group make<Blocks>
   //! \ingroup bipart_group

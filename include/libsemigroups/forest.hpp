@@ -431,7 +431,18 @@ namespace libsemigroups {
     void throw_if_node_out_of_bounds(node_type v) const;
   };
 
-  //! \relates Forest
+  //! \defgroup make_forest_group make<Forest>
+  //! \ingroup word_graph_group
+  //!
+  //! \brief Safely construct a \ref Forest instance.
+  //!
+  //! This page contains documentation related to safely constructing a
+  //! \ref Forest instance.
+  //!
+  //! \sa \ref make_group for an overview of possible uses of the `make`
+  //! function.
+
+  //! \ingroup make_forest_group
   //!
   //! \brief Construct a Forest from parents and labels.
   //!
@@ -483,7 +494,7 @@ namespace libsemigroups {
     return result;
   }
 
-  //! \relates Forest
+  //! \ingroup make_forest_group
   //!
   //! \brief Construct a Forest from parents and labels.
   //!
