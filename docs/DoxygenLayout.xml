@@ -115,6 +115,7 @@
     <tab type="usergroup" visible="yes" url="@ref ranges_group" title="Ranges" />
     <tab type="user" visible="yes" url="@ref ukkonen_group" title="Suffix trees" />
     <tab type="user" visible="yes" url="@ref aho_corasick_group" title="Tries" />
+    <tab type="user" visible="yes" url="@ref make_group" title="The `make` function"/>
     <tab type="user" visible="yes" url="@ref to_group" title="The `to` function"/>
     <tab type="user" visible="yes" url="@ref dot_group" title="Visualisation" />
     <tab type="usergroup" visible="yes" url="@ref word_graph_group" title="Word graphs">
