@@ -600,9 +600,25 @@ namespace libsemigroups {
     void validate_alphabet(decltype(_alphabet_map)& alphabet_map) const;
   };  // class Presentation
 
+  //! \ingroup presentations_group
+  //!
+  //! \brief Deduction guide.
+  //!
+  //! Defined in `presentation.hpp`
+  //!
+  //! Deduction guide to construct a `Presentation<Word>` from a
+  //! `Presentation<Word> const&`.
   template <typename Word>
   Presentation(Presentation<Word> const&) -> Presentation<Word>;
 
+  //! \ingroup presentations_group
+  //!
+  //! \brief Deduction guide.
+  //!
+  //! Defined in `presentation.hpp`
+  //!
+  //! Deduction guide to construct a `Presentation<Word>` from a
+  //! `Presentation<Word>&&`.
   template <typename Word>
   Presentation(Presentation<Word>&&) -> Presentation<Word>;
 

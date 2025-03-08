@@ -82,7 +82,7 @@ namespace libsemigroups {
   //! various of the data structures and algorithms in `libsemigroups`:
   //!
   //! * \ref aho_corasick::dot(AhoCorasick&)
-  //! * \ref stephen::dot(Stephen<P>&)
+  //! * \ref stephen::dot(Stephen<PresentationType>&)
   //! * \ref ukkonen::dot(Ukkonen const&)
   //! * \ref word_graph::dot(WordGraph<Node> const&)
   //!

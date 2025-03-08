@@ -179,10 +179,6 @@ namespace libsemigroups {
       //!
       //! \complexity
       //! Constant.
-      //!
-      //! \sa
-      //! \ref RewriterBase::active_rules()
-      // TODO(1) check the above ref points to something sensible
       [[nodiscard]] inline bool active() const noexcept {
         LIBSEMIGROUPS_ASSERT(_id != 0);
         return (_id > 0);
