@@ -749,10 +749,16 @@ namespace libsemigroups {
   //! * \ref make_matrix_group
   //! * \ref make<PBR>(PBR::vector_type<int32_t>, PBR::vector_type<int32_t>)
   //! "make<PBR>"
-  //! * \ref make_transf_group
-  //! * \ref make_perm_group
-  //! * \ref make_pperm_group
+  //! * \ref make<Transf>(OtherContainer&&) "make<Transf>"
+  //! * \ref Perm "make<Perm>"
+  //! * \ref make<PPerm>(std::vector<typename Return::point_type> const&,
+  //! std::vector<typename Return::point_type> const&, size_t) "make<PPerm>"
   //! * \ref make_word_graph_group
+  // TODO(1) Update the Perm link to actually point to the make function. The
+  // overloads for make for Perm and Transf are identical, so Doxygen can't seem
+  // to distinguish them. Ideally, every class would have its own
+  // make_CLASS_group to reference, but this would involve quite a big doc
+  // resturctue.
 
   //! \defgroup make_blocks_group make<Blocks>
   //! \ingroup bipart_group
@@ -1548,7 +1554,7 @@ namespace libsemigroups {
     return make<Bipartition, std::initializer_list<uint32_t>>(cont);
   }
 
-  //! \relates make_bipart_group
+  //! \ingroup make_bipart_group
   //!
   //! \copydoc make(Container const&)
   template <typename Return>
