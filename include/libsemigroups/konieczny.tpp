@@ -69,6 +69,8 @@ namespace libsemigroups {
     Runner::operator=(that);
 
     free_internals();
+    _gens.clear();
+    InternalVecCopy()(that._gens, _gens);
 
     // deal with all the easy data first
     _adjoined_identity_contained = that._adjoined_identity_contained;
@@ -78,15 +80,16 @@ namespace libsemigroups {
     _group_indices               = that._group_indices;
     _group_indices_rev           = that._group_indices_rev;
     _lambda_orb                  = that._lambda_orb;
-    _one                         = this->internal_copy(that._one);
-    _rank_state                  = new rank_state_type(*(that._rank_state));
-    _ranks                       = that._ranks;
-    _reps_processed              = that._reps_processed;
-    _rho_orb                     = that._rho_orb;
-    _run_initialised             = that._run_initialised;
+    if (_data_initialised) {
+      _one = _gens.back();
+    }
+    _rank_state      = new rank_state_type(*(that._rank_state));
+    _ranks           = that._ranks;
+    _reps_processed  = that._reps_processed;
+    _rho_orb         = that._rho_orb;
+    _run_initialised = that._run_initialised;
 
     _element_pool.init(_one);
-    InternalVecCopy()(that._gens, _gens);
 
     // Construct the new DClasses, and record a map from the addresses
     // of the old classes to the addresses of the corresponding new classes.
@@ -537,10 +540,10 @@ namespace libsemigroups {
     // _one is included in _gens
     InternalVecFree()(_gens);
     while (!_ranks.empty()) {
-      for (auto rep_info : _regular_reps[max_rank()]) {
+      for (auto& rep_info : _regular_reps[max_rank()]) {
         this->internal_free(rep_info._elt);
       }
-      for (auto rep_info : _nonregular_reps[max_rank()]) {
+      for (auto& rep_info : _nonregular_reps[max_rank()]) {
         this->internal_free(rep_info._elt);
       }
       _ranks.erase(max_rank());
