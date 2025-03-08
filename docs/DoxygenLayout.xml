@@ -83,8 +83,11 @@
         </tab>
         <tab type="user" visible="yes" url="@ref make_matrix_group" title="make<Matrix>"/>
       </tab>
-      <tab type="user" visible="yes" url="@ref pbr_group"
-        title="Partitioned binary relations (PBRs)" />
+      <tab type="usergroup" visible="yes" url="@ref pbr_group" title="Partitioned binary relations (PBRs)">
+        <tab type="user" visible="yes" url="@ref libsemigroups::PBR" title="PBR" />
+        <tab type="user" visible="yes" url="@ref libsemigroups::pbr" title="PBR helper functions" />
+        <tab type="user" visible="yes" url="@ref make_pbr_group" title="make<PBR>" />
+      </tab>
       <tab type="user" visible="yes" url="@ref transf_group" title="Transformations" />
     </tab>
     <tab type="usergroup" visible="yes" url="@ref misc_group" title="Miscellaneous">
@@ -121,7 +124,7 @@
       <tab type="user" visible="yes" url="@ref libsemigroups::Meeter" title="Meeter" />
       <tab type="user" visible="yes" url="@ref paths_group" title="Paths" />
       <tab type="user" visible="yes" url="@ref libsemigroups::WordGraph" title="WordGraph" />
-      <tab type="user" visible="yes" url="@ref libsemigroups::word_graph" title="WordGraph helpers" />
+      <tab type="user" visible="yes" url="@ref libsemigroups::word_graph" title="WordGraph helper functions" />
       <tab type="user" visible="yes" url="@ref make_word_graph_group" title="make<WordGraph>" />
     </tab>
     <tab type="usergroup" visible="yes" url="@ref words_group" title="Words">
@@ -140,7 +143,7 @@
       <tab type="user" visible="yes" url="@ref libsemigroups::Action" title="Action" />
       <tab type="user" visible="yes" url="@ref libsemigroups::RightAction" title="RightAction" />
       </tab>
-      <tab type="usergroup" visible="yes" url="@ref cong_common_helpers_group" title="Common congruence helpers">
+      <tab type="usergroup" visible="yes" url="@ref cong_common_helpers_group" title="Common congruence helper function">
         <tab type="user" visible="yes" url="@ref cong_common_helpers_add_pair_group" title="Add generating pairs"/>
         <tab type="user" visible="yes" url="@ref cong_common_helpers_contains_group" title="Containment"/>
         <tab type="user" visible="yes" url="@ref cong_common_helpers_reduce_group" title="Reduce a word"/>

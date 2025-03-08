@@ -747,8 +747,7 @@ namespace libsemigroups {
   //! "make<Forest>"
   //! * \ref make_froidure_pin_group
   //! * \ref make_matrix_group
-  //! * \ref make<PBR>(PBR::vector_type<int32_t>, PBR::vector_type<int32_t>)
-  //! "make<PBR>"
+  //! * \ref make_pbr_group
   //! * \ref make<Transf>(OtherContainer&&) "make<Transf>"
   //! * \ref Perm "make<Perm>"
   //! * \ref make<PPerm>(std::vector<typename Return::point_type> const&,
