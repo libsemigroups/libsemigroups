@@ -253,6 +253,7 @@ fmtinclude_HEADERS += third_party/fmt-10.1.1/include/fmt/os.h
 fmtinclude_HEADERS += third_party/fmt-10.1.1/include/fmt/ostream.h
 fmtinclude_HEADERS += third_party/fmt-10.1.1/include/fmt/printf.h
 fmtinclude_HEADERS += third_party/fmt-10.1.1/include/fmt/ranges.h
+fmtinclude_HEADERS += third_party/fmt-10.1.1/include/fmt/std.h
 fmtinclude_HEADERS += third_party/fmt-10.1.1/include/fmt/xchar.h
 endif
 

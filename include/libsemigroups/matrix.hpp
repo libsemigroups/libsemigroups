@@ -7907,7 +7907,18 @@ namespace libsemigroups {
     return x * a;
   }
 
+  //! \defgroup make_matrix_group make<Matrix>
   //! \ingroup matrix_group
+  //!
+  //! \brief Safely construct a \ref matrix_group "Matrix" instance.
+  //!
+  //! This page contains documentation related to safely constructing a
+  //! \ref matrix_group "Matrix" instance.
+  //!
+  //! \sa \ref make_group for an overview of possible uses of the this
+  //! function.
+
+  //! \ingroup make_matrix_group
   //!
   //! \brief Validates the arguments, constructs a matrix, and validates it.
   //!
@@ -7943,7 +7954,7 @@ namespace libsemigroups {
     return m;
   }
 
-  //! \ingroup matrix_group
+  //! \ingroup make_matrix_group
   //!
   //! \brief Validates the arguments, constructs a matrix, and validates it.
   //!
@@ -7976,7 +7987,7 @@ namespace libsemigroups {
     return make<Mat>(std::vector<std::vector<typename Mat::scalar_type>>(rows));
   }
 
-  //! \ingroup matrix_group
+  //! \ingroup make_matrix_group
   //!
   //! \brief Constructs a row and validates it.
   //!
@@ -8013,7 +8024,7 @@ namespace libsemigroups {
   }
   // TODO(1) vector version of above
 
-  //! \ingroup matrix_group
+  //! \ingroup make_matrix_group
   //!
   //! \brief Constructs a matrix (from std::initializer_list) and validates
   //! it.
@@ -8059,7 +8070,7 @@ namespace libsemigroups {
     return m;
   }
 
-  //! \ingroup matrix_group
+  //! \ingroup make_matrix_group
   //!
   //! \brief Constructs a matrix (from std::vector of std::vector) and
   //! validates it.
@@ -8102,7 +8113,7 @@ namespace libsemigroups {
     return m;
   }
 
-  //! \ingroup matrix_group
+  //! \ingroup make_matrix_group
   //!
   //! \brief Constructs a row and validates it.
   //!
@@ -8135,7 +8146,7 @@ namespace libsemigroups {
     return m;
   }
 
-  //! \ingroup matrix_group
+  //! \ingroup make_matrix_group
   //!
   //! \brief Constructs a projective max-plus matrix (from
   //! std::initializer_list) and validates it.

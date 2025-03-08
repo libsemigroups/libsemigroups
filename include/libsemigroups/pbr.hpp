@@ -532,7 +532,18 @@ namespace libsemigroups {
     return result;
   }
 
-  //! \relates PBR
+  //! \defgroup make_pbr_group make<PBR>
+  //! \ingroup pbr_group
+  //!
+  //! \brief Safely construct a \ref PBR instance.
+  //!
+  //! This page contains documentation related to safely constructing a
+  //! \ref PBR instance.
+  //!
+  //! \sa \ref make_group for an overview of possible uses of the `make`
+  //! function.
+
+  //! \ingroup make_pbr_group
   //!
   //! \brief Construct and validate a \ref PBR.
   //!
@@ -560,7 +571,7 @@ namespace libsemigroups {
     return make<PBR, decltype(args)>(args);
   }
 
-  //! \relates PBR
+  //! \ingroup make_pbr_group
   //!
   //! \copydoc make(PBR::vector_type<int32_t>, PBR::vector_type<int32_t>)
   template <typename Return>
@@ -570,7 +581,7 @@ namespace libsemigroups {
     return PBR(detail::process_left_right(left, right));
   }
 
-  //! \relates PBR
+  //! \ingroup make_pbr_group
   //!
   //! \brief Construct and validate a \ref PBR.
   //!

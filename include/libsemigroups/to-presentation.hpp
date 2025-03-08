@@ -38,11 +38,17 @@ namespace libsemigroups {
   //!
   //! This file contains documentation for creating semigroup and monoid
   //! presentations in `libsemigroups` from other types of objects.
+  //!
+  //! \sa \ref to_group for an overview of possible conversions between
+  //! `libsemigroups` types.
 
   //! \defgroup to_inverse_presentation_group to<InversePresentation>
   //!
   //! This file contains documentation for creating inverse semigroup and monoid
   //! presentations in `libsemigroups` from other types of objects.
+  //!
+  //! \sa \ref to_group for an overview of possible conversions between
+  //! `libsemigroups` types.
 
   ////////////////////////////////////////////////////////////////////////
   // FroidurePin -> Presentation

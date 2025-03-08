@@ -728,7 +728,42 @@ namespace libsemigroups {
     void throw_if_class_index_out_of_range(size_t index) const;
   };  // class Blocks
 
-  //! \relates Blocks
+  //! \defgroup make_group The \`make\` function
+  //!
+  //! This page contains links to the documentation of the overloads of the
+  //! function template \c make for constructing objects in `libsemigroups`.
+  //! This construction is done with more checks than provided by the
+  //! constructors, often in more convenient ways than offered by the construct.
+  //!
+  //! For example, to construct a \ref FroidurePin instance from a
+  //! std::initializer_list of generators after first verifying that the
+  //! proposed generators all have equal degree, use `make<FroidurePin>(gens)`.
+  //!
+  //! For more information about the overloads/specializations of the \c make
+  //! function, see the following:
+  //! * \ref make_blocks_group
+  //! * \ref make_bipart_group
+  //! * \ref make_forest_group
+  //! * \ref make_froidure_pin_group
+  //! * \ref make_matrix_group
+  //! * \ref make_pbr_group
+  //! * \ref make_transf_group
+  //! * \ref make_pperm_group
+  //! * \ref make_perm_group
+  //! * \ref make_word_graph_group
+
+  //! \defgroup make_blocks_group make<Blocks>
+  //! \ingroup bipart_group
+  //!
+  //! \brief Safely construct a \ref Blocks instance.
+  //!
+  //! This page contains documentation related to safely constructing a
+  //! \ref Blocks instance.
+  //!
+  //! \sa \ref make_group for an overview of possible uses of the `make`
+  //! function.
+
+  //! \ingroup make_blocks_group
   //!
   //! \brief Validate the arguments, construct a Blocks object, and validate
   //! it.
@@ -752,7 +787,7 @@ namespace libsemigroups {
     return result;
   }
 
-  //! \relates Blocks
+  //! \ingroup make_blocks_group
   //!
   //! \brief Validate the arguments, construct a Blocks object, and validate
   //! it.
@@ -1464,7 +1499,18 @@ namespace libsemigroups {
     void init_trans_blocks_lookup() const;
   };  // class Bipartition
 
-  //! \relates Bipartition
+  //! \defgroup make_bipart_group make<Bipartition>
+  //! \ingroup bipart_group
+  //!
+  //! \brief Safely construct a \ref Bipartition instance.
+  //!
+  //! This page contains documentation related to safely constructing a
+  //! \ref Bipartition instance.
+  //!
+  //! \sa \ref make_group for an overview of possible uses of the this
+  //! function.
+
+  //! \ingroup make_bipart_group
   //!
   //! \brief Validate the arguments, construct a bipartition, and validate it.
   //!
@@ -1489,7 +1535,7 @@ namespace libsemigroups {
     return result;
   }
 
-  //! \relates Bipartition
+  //! \ingroup make_bipart_group
   //!
   //! \brief Validate the arguments, construct a bipartition, and validate it.
   //!
@@ -1500,7 +1546,7 @@ namespace libsemigroups {
     return make<Bipartition, std::initializer_list<uint32_t>>(cont);
   }
 
-  //! \relates Bipartition
+  //! \ingroup make_bipart_group
   //!
   //! \copydoc make(Container const&)
   template <typename Return>

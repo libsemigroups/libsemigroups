@@ -44,7 +44,14 @@
       <tab type="user" visible="yes" url="@ref adapters_pbr_group" title="Adapters for PBR" />
     </tab>
     <tab type="usergroup" visible="yes" url="@ref elements_group" title="Elements">
-      <tab type="user" visible="yes" url="@ref bipart_group" title="Bipartitions" />
+      <tab type="usergroup" visible="yes" url="@ref bipart_group" title="Bipartitions" >
+        <tab type="user" visible="yes" url="@ref libsemigroups::Bipartition" title="The Bipartition class"/>
+        <tab type="user" visible="yes" url="@ref libsemigroups::Blocks" title="The Blocks class"/>
+        <tab type="user" visible="yes" url="@ref libsemigroups::bipartition" title="Bipartition helper functions"/>
+        <tab type="user" visible="yes" url="@ref libsemigroups::blocks" title="Blocks helper functions"/>
+        <tab type="user" visible="yes" url="@ref make_bipart_group" title="make<Biparition>"/>
+        <tab type="user" visible="yes" url="@ref make_blocks_group" title="make<Blocks>"/>
+      </tab>
       <tab type="usergroup" visible="yes" url="@ref matrix_group" title="Matrices">
         <tab type="usergroup" visible="yes" url="[none]" title="Over specific semirings">
           <tab type="user" visible="yes" url="@ref bmat_index_group" title="Boolean matrices" />
@@ -74,9 +81,13 @@
           <tab type="user" visible="yes" url="@ref libsemigroups::StaticRowView"
             title="StaticRowView" />
         </tab>
+        <tab type="user" visible="yes" url="@ref make_matrix_group" title="make<Matrix>"/>
       </tab>
-      <tab type="user" visible="yes" url="@ref pbr_group"
-        title="Partitioned binary relations (PBRs)" />
+      <tab type="usergroup" visible="yes" url="@ref pbr_group" title="Partitioned binary relations (PBRs)">
+        <tab type="user" visible="yes" url="@ref libsemigroups::PBR" title="PBR" />
+        <tab type="user" visible="yes" url="@ref libsemigroups::pbr" title="PBR helper functions" />
+        <tab type="user" visible="yes" url="@ref make_pbr_group" title="make<PBR>" />
+      </tab>
       <tab type="user" visible="yes" url="@ref transf_group" title="Transformations" />
     </tab>
     <tab type="usergroup" visible="yes" url="@ref misc_group" title="Miscellaneous">
@@ -104,16 +115,19 @@
     <tab type="usergroup" visible="yes" url="@ref ranges_group" title="Ranges" />
     <tab type="user" visible="yes" url="@ref ukkonen_group" title="Suffix trees" />
     <tab type="user" visible="yes" url="@ref aho_corasick_group" title="Tries" />
+    <tab type="user" visible="yes" url="@ref make_group" title="The `make` function"/>
     <tab type="user" visible="yes" url="@ref to_group" title="The `to` function"/>
     <tab type="user" visible="yes" url="@ref dot_group" title="Visualisation" />
     <tab type="usergroup" visible="yes" url="@ref word_graph_group" title="Word graphs">
       <tab type="user" visible="yes" url="@ref libsemigroups::Forest" title="Forest" />
+      <tab type="user" visible="yes" url="@ref make_forest_group" title="make<Forest>" />
       <tab type="user" visible="yes" url="@ref gabow_group" title="Gabow" />
       <tab type="user" visible="yes" url="@ref libsemigroups::Joiner" title="Joiner" />
       <tab type="user" visible="yes" url="@ref libsemigroups::Meeter" title="Meeter" />
       <tab type="user" visible="yes" url="@ref paths_group" title="Paths" />
       <tab type="user" visible="yes" url="@ref libsemigroups::WordGraph" title="WordGraph" />
-      <tab type="user" visible="yes" url="@ref libsemigroups::word_graph" title="WordGraph helpers" />
+      <tab type="user" visible="yes" url="@ref libsemigroups::word_graph" title="WordGraph helper functions" />
+      <tab type="user" visible="yes" url="@ref make_word_graph_group" title="make<WordGraph>" />
     </tab>
     <tab type="usergroup" visible="yes" url="@ref words_group" title="Words">
       <tab type="user" visible="yes" url="@ref libsemigroups::WordRange" title="WordRange" />
@@ -131,7 +145,7 @@
       <tab type="user" visible="yes" url="@ref libsemigroups::Action" title="Action" />
       <tab type="user" visible="yes" url="@ref libsemigroups::RightAction" title="RightAction" />
       </tab>
-      <tab type="usergroup" visible="yes" url="@ref cong_common_helpers_group" title="Common congruence helpers">
+      <tab type="usergroup" visible="yes" url="@ref cong_common_helpers_group" title="Common congruence helper function">
         <tab type="user" visible="yes" url="@ref cong_common_helpers_add_pair_group" title="Add generating pairs"/>
         <tab type="user" visible="yes" url="@ref cong_common_helpers_contains_group" title="Containment"/>
         <tab type="user" visible="yes" url="@ref cong_common_helpers_reduce_group" title="Reduce a word"/>
@@ -154,6 +168,7 @@
       <tab type="user" visible="yes" url="@ref libsemigroups::FroidurePinTraits" title="The FroidurePinTraits class"/>
       <tab type="user" visible="yes" url="@ref libsemigroups::froidure_pin" title="FroidurePin helper functions"/>
       <tab type="user" visible="yes" url="@ref to_froidure_pin_group" title="to<FroidurePin>"/>
+      <tab type="user" visible="yes" url="@ref make_froidure_pin_group" title="make<FroidurePin>"/>
     </tab>
     <tab type="usergroup" visible="yes" url="@ref kambites_group" title="Kambites">
       <tab type="usergroup" visible="yes" url="@ref kambites_class_group" title="The Kambites class">

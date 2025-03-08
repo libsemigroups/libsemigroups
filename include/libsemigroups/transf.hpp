@@ -1112,7 +1112,18 @@ namespace libsemigroups {
   // make<Transf>
   ////////////////////////////////////////////////////////////////////////
 
-  //! \relates Transf
+  //! \defgroup make_transf_group make<Transf>
+  //! \ingroup transf_group
+  //!
+  //! \brief Safely construct a \ref Transf instance.
+  //!
+  //! This page contains documentation related to safely constructing a
+  //! \ref Transf instance.
+  //!
+  //! \sa \ref make_group for an overview of possible uses of the `make`
+  //! function.
+
+  //! \ingroup make_transf_group
   //!
   //! \brief Construct a \ref Transf from universal reference container and
   //! validate.
@@ -1140,7 +1151,7 @@ namespace libsemigroups {
     return Return::template make<Return>(std::forward<OtherContainer>(cont));
   }
 
-  //! \relates Transf
+  //! \ingroup make_transf_group
   //!
   //! \brief Construct a \ref Transf from initializer list and validate.
   //!
@@ -1382,7 +1393,18 @@ namespace libsemigroups {
   // make<PPerm>
   ////////////////////////////////////////////////////////////////////////
 
-  //! \relates PPerm
+  //! \defgroup make_pperm_group make<PPerm>
+  //! \ingroup transf_group
+  //!
+  //! \brief Safely construct a \ref PPerm instance.
+  //!
+  //! This page contains documentation related to safely constructing a
+  //! \ref PPerm instance.
+  //!
+  //! \sa \ref make_group for an overview of possible uses of the `make`
+  //! function.
+
+  //! \ingroup make_pperm_group
   //!
   //! \brief Construct a \ref PPerm from universal reference container and
   //! validate.
@@ -1411,7 +1433,7 @@ namespace libsemigroups {
     return Return::template make<Return>(std::forward<OtherContainer>(cont));
   }
 
-  //! \relates PPerm
+  //! \ingroup make_pperm_group
   //!
   //! \brief Construct a \ref PPerm from initializer list and validate.
   //!
@@ -1439,7 +1461,7 @@ namespace libsemigroups {
         std::move(cont));
   }
 
-  //! \relates PPerm
+  //! \ingroup make_pperm_group
   //!
   //! \brief Construct a \ref PPerm from domain, range, and degree, and
   //! validate.
@@ -1468,7 +1490,7 @@ namespace libsemigroups {
        std::vector<typename Return::point_type> const& ran,
        size_t                                          M);
 
-  //! \relates PPerm
+  //! \ingroup make_pperm_group
   //!
   //! \brief Construct a \ref PPerm from domain, range, and degree, and
   //! validate.
@@ -1607,7 +1629,18 @@ namespace libsemigroups {
   // make<Perm>
   ////////////////////////////////////////////////////////////////////////
 
-  //! \relates Perm
+  //! \defgroup make_perm_group make<Perm>
+  //! \ingroup transf_group
+  //!
+  //! \brief Safely construct a \ref Perm instance.
+  //!
+  //! This page contains documentation related to safely constructing a
+  //! \ref Perm instance.
+  //!
+  //! \sa \ref make_group for an overview of possible uses of the `make`
+  //! function.
+
+  //! \ingroup make_perm_group
   //!
   //! \brief Construct from universal reference container and validate.
   //!
@@ -1636,7 +1669,7 @@ namespace libsemigroups {
     return Return::template make<Return>(std::forward<OtherContainer>(cont));
   }
 
-  //! \relates Perm
+  //! \ingroup make_perm_group
   //!
   //! \brief Construct from universal reference container and validate.
   //!
