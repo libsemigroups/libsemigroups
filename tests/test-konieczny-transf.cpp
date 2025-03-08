@@ -349,7 +349,7 @@ namespace libsemigroups {
                           "047",
                           "exceptions: keep object valid after refusing to run",
                           "[quick][transf][no-valgrind]") {
-    auto rg      = ReportGuard(REPORT);
+    auto rg      = ReportGuard(false);
     using Transf = LeastTransf<5>;
 
     Konieczny<Transf> S;
