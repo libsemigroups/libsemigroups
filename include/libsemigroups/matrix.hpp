@@ -67,7 +67,7 @@ namespace libsemigroups {
   //!    compile time: \ref StaticMatrix;
   //! 2. those whose arithmetic operation can be defined at compile time but
   //!    whose dimensions can be set at run time:
-  //! \ref DynamicMatrixStaticArith
+  //!    \ref DynamicMatrixStaticArith
   //!    "DynamicMatrix (with compile-time arithmetic)";
   //! 3. those whose arithmetic operations and dimensions can be set at run
   //!    time: \ref DynamicMatrixDynamicArith
@@ -1270,7 +1270,7 @@ namespace libsemigroups {
     //! \tparam U  either \ref Row, \ref StaticRowView,
     //! \ref DynamicRowViewStaticArith
     //! "DynamicRowView (compile-time arithmetic)", or
-    //! \ref  DynamicRowViewDynamicArith "DynamicRowView (run-time arithmetic)"
+    //! \ref DynamicRowViewDynamicArith "DynamicRowView (run-time arithmetic)"
     //! \param that  \ref Row, \ref StaticRowView,
     //! \ref DynamicRowViewStaticArith
     //! "DynamicRowView (compile-time arithmetic)", or
