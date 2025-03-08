@@ -2733,7 +2733,7 @@ namespace libsemigroups {
   //! \ingroup make_word_graph_group
   //!
   // clang-format off
-  //! \copydoc make(size_t, std::initializer_list<std::vector<typename Return::node_type>>)
+  //! \copydoc make(size_t, std::initializer_list<std::vector<typename Return::node_type>>) //NOLINT()
   // clang-format on
   template <typename Return>
   [[nodiscard]] std::enable_if_t<IsWordGraph<Return>, Return>
