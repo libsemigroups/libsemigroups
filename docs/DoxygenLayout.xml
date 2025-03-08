@@ -122,6 +122,7 @@
       <tab type="user" visible="yes" url="@ref paths_group" title="Paths" />
       <tab type="user" visible="yes" url="@ref libsemigroups::WordGraph" title="WordGraph" />
       <tab type="user" visible="yes" url="@ref libsemigroups::word_graph" title="WordGraph helpers" />
+      <tab type="user" visible="yes" url="@ref make_word_graph_group" title="make<WordGraph>" />
     </tab>
     <tab type="usergroup" visible="yes" url="@ref words_group" title="Words">
       <tab type="user" visible="yes" url="@ref libsemigroups::WordRange" title="WordRange" />

@@ -2686,7 +2686,18 @@ namespace libsemigroups {
   template <typename Node>
   std::ostream& operator<<(std::ostream& os, WordGraph<Node> const& wg);
 
-  //! \relates WordGraph
+  //! \defgroup make_word_graph_group make<WordGraph>
+  //! \ingroup word_graph_group
+  //!
+  //! \brief Safely construct a \ref WordGraph instance.
+  //!
+  //! This page contains documentation related to safely constructing a
+  //! \ref WordGraph instance.
+  //!
+  //! \sa \ref make_group for an overview of possible uses of the `make`
+  //! function.
+
+  //! \ingroup make_word_graph_group
   //!
   //! \brief Constructs a word graph from a number of nodes and targets.
   //!
@@ -2720,7 +2731,7 @@ namespace libsemigroups {
   make(size_t                                                         num_nodes,
        std::initializer_list<std::vector<typename Return::node_type>> targets);
 
-  //! \relates WordGraph
+  //! \ingroup make_word_graph_group
   //!
   //! \copydoc make
   template <typename Return>
